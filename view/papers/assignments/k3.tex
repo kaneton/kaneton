@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/papers/assignments/k3.tex
 %%
 %% created       matthieu bucchianeri   [fri feb 10 13:52:29 2006]
-%% updated       matthieu bucchianeri   [wed feb 15 23:33:56 2006]
+%% updated       matthieu bucchianeri   [mon feb 27 12:45:33 2006]
 %%
 
 \section{k3}
@@ -15,15 +15,69 @@ k3 goals are:
 
 \begin{itemize}
 
-\item To implement virtual memory (region manager)
+\item To implement virtual memory (region manager \& map manager)
 
 \item To complete as and segment with virtual memory related functions
 
-\item To implement a few drivers
+\item To implement the event manager and the time manager
+
+\item To program a keyboard driver
+
+\item To implement a kernelspace mini-shell
 
 \end{itemize}
 
 \subsection{region manager}
+
+\subsubsection{Functions to implement}
+
+\prototype{t\_error \textbf{region\_show}(t\_asid \textbf{asid},
+                                          t\_regid \textbf{regid});}
+
+\prototype{t\_error \textbf{region\_dump}(t\_asid \textbf{asid});}
+
+\prototype{t\_error \textbf{region\_reserve}(t\_asid \textbf{asid},
+                                             t\_segid \textbf{segid},
+                                             t\_paddr \textbf{offset},
+                                             t\_opts \textbf{opts},
+                                             t\_vaddr \textbf{address},
+                                             t\_vsize \textbf{size},
+                                             t\_regid* \textbf{regid});}
+
+\prototype{t\_error \textbf{region\_release}(t\_asid \textbf{asid},
+                                             t\_regid \textbf{regid});}
+
+\prototype{t\_error \textbf{region\_flush}(t\_asid \textbf{asid});}
+
+\prototype{t\_error \textbf{region\_get}(t\_asid \textbf{asid},
+                                         t\_regid \textbf{regid},
+                                         o\_region**\textbf{o});}
+
+\prototype{t\_error \textbf{region\_init}(t\_vaddr \textbf{start},
+                                          t\_vsize \textbf{size});}
+
+\prototype{t\_error \textbf{region\_clean}(void);}
+
+\prototype{t\_error \textbf{region\_fit}(o\_as* \textbf{as},
+                                         t\_vsize \textbf{size},
+                                         t\_vaddr* \textbf{address});}
+
+\subsection{map manager}
+
+\subsubsection{Code to write}
+
+\prototype{t\_error \textbf{map\_reserve}(t\_asid \textbf{asid},
+                                          t\_opts \textbf{opts},
+                                          t\_vaddr* \textbf{addr},
+                                          t\_vsize \textbf{size},
+                                          t\_perms \textbf{perms});}
+
+\prototype{t\_error \textbf{map\_release}(t\_asid \textbf{asid},
+                                          t\_vaddr \textbf{addr});}
+
+\prototype{t\_error \textbf{map\_init}(void);}
+
+\prototype{t\_error \textbf{map\_clean}(void);}
 
 \subsection{as manager}
 
@@ -79,3 +133,12 @@ physical memory with paging mode enabled is not possible on Intel.
 
 Students have to write these functions even if they chose ia32-segment
 (which code will be very simple).
+
+\subsection{event manager}
+
+\subsection{time manager}
+
+\subsection{keyboard driver}
+
+\subsection{kernel mini-shell}
+

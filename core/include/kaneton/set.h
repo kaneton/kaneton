@@ -417,9 +417,6 @@ t_error			set_object_array(t_setid		setid,
 					 t_iterator		iterator,
 					 void**			data);
 
-t_error			set_clone_array(t_setid			old,
-					t_setid*		new);
-
 t_error			set_reserve_array(t_opts		opts,
 					  t_setsz		initsz,
 					  t_size		datasz,
@@ -490,9 +487,6 @@ t_error			set_locate_ll(t_setid			setid,
 t_error			set_object_ll(t_setid			setid,
 				      t_iterator		iterator,
 				      void**			data);
-
-t_error			set_clone_ll(t_setid			old,
-				     t_setid*			new);
 
 t_error			set_reserve_ll(t_opts			opts,
 				       t_size			datasz,
@@ -594,9 +588,6 @@ t_error			set_object_bpt(t_setid			setid,
 				       t_iterator		iterator,
 				       void**			data);
 
-t_error			set_clone_bpt(t_setid			old,
-				      t_setid*			new);
-
 t_error			set_reserve_bpt(t_opts			opts,
 					t_size			datasz,
 					t_bpt_nodesz(set)	nodesz,
@@ -681,9 +672,6 @@ t_error			set_locate_pipe(t_setid			setid,
 t_error			set_object_pipe(t_setid			setid,
 					t_iterator		iterator,
 					void**			data);
-
-t_error			set_clone_pipe(t_setid			old,
-				       t_setid*			new);
 
 
 /*

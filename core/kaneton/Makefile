@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/core/kaneton/Makefile
+## file          /home/buckman/kaneton/core/kaneton/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [sat feb 25 15:15:18 2006]
+## updated       matthieu bucchianeri   [mon feb 27 15:07:54 2006]
 ##
 
 #
@@ -32,6 +32,7 @@ SUBDIRS			:=		arch				\
 					id				\
 					region				\
 					segment				\
+					map				\
 					set				\
 					stats				\
 					event				\
@@ -47,6 +48,7 @@ KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 					$(_ID_LO_)			\
 					$(_REGION_LO_)			\
 					$(_SEGMENT_LO_)			\
+					$(_MAP_LO_)			\
 					$(_SET_LO_)			\
 					$(_STATS_LO_)			\
 					$(_EVENT_LO_)			\

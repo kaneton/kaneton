@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/kaneton.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri feb 17 19:32:28 2006]
+ * updated       matthieu bucchianeri   [sun feb 26 13:12:29 2006]
  */
 
 /*
@@ -161,6 +161,13 @@ void			kaneton(t_init*				bootloader)
     kaneton_error("cannot initialise the region manager\n");
 
   /*
+   * 12
+   */
+
+  if (map_init() != ERROR_NONE)
+    kaneton_error("cannot initialise the map manager\n");
+
+  /*
    * 12)
    */
 
@@ -226,6 +233,8 @@ void			kaneton(t_init*				bootloader)
   */
 
 //  task_clean();
+
+ map_clean();
 
   region_clean();
 

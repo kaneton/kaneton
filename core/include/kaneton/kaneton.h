@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/include/kaneton/kaneton.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:23:47 2006]
+ * updated       matthieu bucchianeri   [sun feb 26 13:05:00 2006]
  */
 
 #ifndef KANETON_KANETON_H
@@ -93,6 +93,7 @@
 #include <kaneton/init.h>
 #include <kaneton/region.h>
 #include <kaneton/segment.h>
+#include <kaneton/map.h>
 #include <kaneton/set.h>
 #include <kaneton/stats.h>
 #include <kaneton/task.h>
