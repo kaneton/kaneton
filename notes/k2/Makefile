@@ -3,13 +3,13 @@
 ## 
 ## Makefile
 ## 
-## path          /root/goinfre/projects/kaneton/notes/k2
+## path          /root/data/research/projects/svn/kaneton/notes
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Sun Nov 21 14:13:54 2004   mycure
-## last update   Sun Jan 30 01:55:02 2005   mycure
+## last update   Fri Mar 18 13:49:58 2005   mycure
 ##
 
 NAME		=		k2
@@ -38,6 +38,8 @@ XPDF		=		xpdf
 GV		=		gv
 
 RM		=		rm -f
+
+all:		pdf
 
 $(NAME_DVI):	$(NAME_TEX)
 	@$(LATEX) $(NAME_TEX)

@@ -3,13 +3,13 @@
 ## 
 ## Makefile
 ## 
-## path          /root/data/research/epita/kaneton/projects/k2
+## path          /root/data/research/projects/svn/kaneton/projects
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Sun Nov 21 14:13:54 2004   mycure
-## last update   Fri Dec  3 15:12:32 2004   mycure
+## last update   Fri Mar 18 13:51:31 2005   mycure
 ##
 
 NAME		=		k2-subject
@@ -38,6 +38,8 @@ XPDF		=		xpdf
 GV		=		gv
 
 RM		=		rm -f
+
+all:		pdf
 
 $(NAME_DVI):	$(NAME_TEX)
 	@$(LATEX) $(NAME_TEX)

@@ -3,13 +3,13 @@
 ## 
 ## Makefile
 ## 
-## path          /root/data/research/epita/kaneton/notes/languages
+## path          /root/data/research/projects/svn/kaneton/notes
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Sun Nov 21 14:13:54 2004   mycure
-## last update   Fri Jan  7 20:35:05 2005   mycure
+## last update   Fri Mar 18 13:50:22 2005   mycure
 ##
 
 NAME		=		languages
@@ -38,6 +38,8 @@ XPDF		=		xpdf
 GV		=		gv
 
 RM		=		rm -f
+
+all:		pdf
 
 $(NAME_DVI):	$(NAME_TEX)
 	@$(LATEX) $(NAME_TEX)
