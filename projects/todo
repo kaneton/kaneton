@@ -1,5 +1,82 @@
 -- spargo
 
+utiliser des identifiants pour les regions de memoire que ce soit
+physique comme virtuelle comme ca on peut les identifier.
+
+une zone physique est nommee: "segment"
+une zone virtuelle est nommee: "region" (XXX?XXX)
+
+peut etre une troisieme classe "map" segment+region
+
+une fois ces structures definies, on definit des identifiants:
+  t_segid, t_regid, t_mapid
+
+et donc la structure as devient:
+
+t_segment
+{
+  t_paddr address;
+  t_psize npages;
+
+  t_owner owner;
+
+  [...] /* protections, etc.. */
+}
+
+t_regid
+{
+  t_vaddr address;
+  t_vsize npages;
+
+  [...] /* etc.. */
+}
+
+t_mapid
+{
+  t_segid segment;
+  t_regid regid;
+}
+
+t_as
+{
+  t_asid asid;
+  t_tskid tskid;
+  t_owner owner;
+  t_modid modid;
+
+  t_setid segments; /* set of segid */
+  t_setid regions; /* set of regid */
+  t_setid maps; /* set of mapid */
+}
+
+-- k4 - spargo
+
+as_modid() pour recuperer le modid correspond a un as.
+comme ca le gestionnaire de module peut connaitre le modid d un as pour
+liberer les pages correspondantes au module
+
+-- spargo
+
+pensez que lorsqu on libere on voudrait bien recuperer un identifiant
+pour pouvoir reutiliser l'espace libere.
+
+-- spargo
+
+penser que dans kaneton lorsqu un mm_rsv est fait apres on ne peut pas
+"give" le truc car on ne connait pas l identifiant
+
+-- k4
+
+dans kaneton virer le crt de k7 et le mettre dans k4 et l expliquer
+
+-- k7
+
+au final rien a faire a part le libc, bien dire qu il faut la faire complete
+sinon ca fera bcp de boulot pour les files systems et ils n auront pas le
+temps.
+
+-- spargo
+
 plutot que task/thread_wait() qui attend que la tache meurt, on pourrait faire
 task/thread_wait(status) qui attend que la tache passe en etat status.
 

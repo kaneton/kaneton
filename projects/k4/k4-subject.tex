@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Sat Feb 26 15:06:05 2005   mycure
-%% last update   Tue Mar 29 03:17:55 2005   mycure
+%% last update   Fri Apr  1 14:06:39 2005   mycure
 %%
 
 \documentclass[10pt,a4wide]{article}
@@ -428,7 +428,9 @@ red\'efinition des identifiants du syst\`eme.
 
 En effet, nous allons introduire un nouveau type nomm\'e \textbf{t\_id}.
 D\'esormais tous les identifiants seront des alias de ce type. Cela implique
-quelques modifications dans vos fichiers en-t\^ete.
+quelques modifications dans vos fichiers en-t\^ete. R\'ef\'erez vous
+\`a la section Types qui contient la red\'efinition des types des projets
+diff\'erents.
 
 \paragraph{}
 
@@ -441,7 +443,7 @@ de l'objet dans son ensemble.
 
 Il faut savoir que le gestionnaire d'ensembles est capable de g\'erer
 des ensembles de types diverses. Le tableau ci-dessous liste quelque-uns
-des types d'ensemble class\'es dans deux cat\'egories: \textbf{sort enabled},
+des types d'ensemble class\'es dans trois cat\'egories: \textbf{sort enabled},
 \textbf{sort disabled} et \textbf{manual sort}.
 
 \begin{center}
@@ -498,16 +500,16 @@ Cette fonction initialise le gestionnaire d'ensembles.
                                     t\_sort \textbf{sort},
                                     t\_size \textbf{objectsz}, \\
 \bigskip
-\hspace{3.6cm}                      t\_setsz \textbf{setsz},
+\hspace{3.6cm}                      t\_setsz \textbf{initsz},
                                     t\_setid* \textbf{setid});
 
 \paragraph{}
 
 Cette fonction r\'eserve un ensemble de type \textbf{type}. Chaque objet
 de l'ensemble aura une taille de \textbf{objectsz} octets.
-L'argument \textbf{setsz} sp\'ecifie la taille initiale de l'ensemble,
+L'argument \textbf{initsz} sp\'ecifie la taille initiale de l'ensemble,
 en d'autres termes, le nombre d'objets \`a pr\'eallouer. Attention,
-\textbf{objectsz} est exprim\'e en octets et \textbf{setsz} est exprim\'e
+\textbf{objectsz} est exprim\'e en octets et \textbf{initsz} est exprim\'e
 en nombre d'objets.
 
 \paragraph{}
@@ -536,7 +538,10 @@ Le type SET\_TYPE\_ANY permet au gestionnaire d'ensembles de choisir
 la structure de donn\'ees ad\'equate en fonction de la taille des objets
 et du nombre d'objets \`a pr\'eallouer. Il est clair que pour une taille
 d'objets de 32-bit, un arbre est surement d\'emesur\'e. En l'occurence
-un tableau dyamique est s\^urement le meilleur choix.
+un tableau dyamique est s\^urement le meilleur choix. Rappellons en effet
+que le gestionnaire d'ensembles repose sur la fonction \textbf{malloc}()
+et donc obligatoirement sur les fonctions qui l'accompagnent comme par
+exemple \textbf{realloc}(), \textbf{calloc}(), etc..
 
 \paragraph{}
 
@@ -566,61 +571,62 @@ pr\'ec\'edemment cr\'ees.
 
 \hspace{1.5cm}int \textbf{set\_get}(t\_setid \textbf{setid},
                                     t\_id \textbf{id},
-                                    void** \textbf{object});
+                                    t\_iterator* \textbf{iterator});
 
 \paragraph{}
 
-Cette fonction retourne dans \textbf{object} l'adresse de l'objet
+Cette fonction retourne dans \textbf{iterator} l'it\'erateur de l'objet
 identifi\'e par \textbf{id}.
 
 \paragraph{}
 
 Attention, cette fonction ne doit pas \^etre utilis\'ee \`a la l\'eg\`ere
-car une mauvaise manipulation peut rendre l'ensemble instable. En d'autres
-termes, par exemple pour les types d'ensembles de base, il ne faut
-absolument pas modifier l'identifiant de l'objet.
+car une mauvaise manipulation peut rendre l'ensemble instable. Par exemple,
+il ne faut absolument pas modifier l'identifiant de l'objet. Cette remarque
+est valable pour toutes les fonctions ci-dessous qui permettent de
+retrouver et possiblement modifier un objet.
 
 \paragraph{}
 
 \hspace{1.5cm}int \textbf{set\_head}(t\_setid \textbf{setid},
-                                     void* \textbf{object});
+                                     t\_iterator* \textbf{iterator});
 
 \paragraph{}
 
-Cette fonction retourne dans \textbf{object} le premier objet de
+Cette fonction retourne dans \textbf{iterator} le premier objet de
 l'ensemble \textbf{setid}.
 
 \paragraph{}
 
 \hspace{1.5cm}int \textbf{set\_tail}(t\_setid \textbf{setid},
-                                     void* \textbf{object});
+                                     t\_iterator* \textbf{iterator});
 
 \paragraph{}
 
-Cette fonction retourne dans \textbf{object} l'adresse du dernier
+Cette fonction retourne dans \textbf{iterator} l'it\'erateur du dernier
 \'el\'ement de l'ensemble.
 
 \paragraph{}
 
 \hspace{1.5cm}int \textbf{set\_prev}(t\_setid \textbf{setid},
-                                     t\_id \textbf{id},
-                                     void* \textbf{object});
+                                     t\_iterator \textbf{current},
+                                     t\_iterator* \textbf{previous});
 
 \paragraph{}
 
-Cette fonction retourne dans \textbf{object} l'adresse de l'objet
-pr\'ec\'edent l'objet \textbf{id}.
+Cette fonction retourne dans \textbf{previous} l'it\'erateur de l'objet
+pr\'ec\'edent l'objet \textbf{current}.
 
 \paragraph{}
 
 \hspace{1.5cm}int \textbf{set\_next}(t\_setid \textbf{setid},
-                                     t\_id \textbf{id},
-                                     void* \textbf{object});
+                                     t\_iterator \textbf{current},
+                                     t\_iterator* \textbf{next});
 
 \paragraph{}
 
-Cette fonction retourne dans \textbf{object} l'adresse de l'objet
-succ\'edant l'objet \textbf{id}.
+Cette fonction retourne dans \textbf{next} l'it\'erateur de l'objet
+succ\'edant l'objet \textbf{current}.
 
 \paragraph{}
 
@@ -720,7 +726,7 @@ Cette fonction r\'einitialise le gestionnaire d'ensembles.
 
 \paragraph{}
 
-\`A savoir que le gestionnaire d'ensembles n'acceptent aucune collision.
+\`A savoir que le gestionnaire d'ensembles n'accepte aucune collision.
 C'est \`a dire que les identifiants dans un ensemble \textit{doivent}
 \^etre unique. Si cette r\`egle n'est pas respect\'ee, le gestionnaire
 d'ensembles ne peut garantir de bons r\'esultats.
@@ -731,7 +737,7 @@ De plus, l'utilisateur d'un ensemble doit \^etre conscient du type
 de l'ensemble lorsqu'il effectue des op\'erations. En effet ins\'erer
 un objet avant un autre lorsque le type de l'ensemble est SET\_TYPE\_ARRAY
 et que le nombre d'\'el\'ements de l'ensemble est important n'aura pas les
-m\^eme cons\'equences au niveau rapidit\'e que de le faire dans un
+m\^eme cons\'equences au niveau performances que de le faire dans un
 ensemble du type SET\_TYPE\_BTREE par exemple.
 
 \paragraph{}
@@ -744,8 +750,8 @@ pour l'ordonnanceur par exemple.
 
 \paragraph{}
 
-Il sera \'egalement int\'eressant de fournir des fonctions pour cette
-surcouche. Pour cela \`a vous de faire preuve d'imagination.
+Il vous faudra certainement pour cela d\'efinir une interface suppl\'ementaire.
+Libre \`a vous concernant l'\'etablissement de cette interface.
 
 \paragraph{}
 
@@ -762,13 +768,17 @@ l'exploration d'un ensemble.
 
 \paragraph{}
 
-\hspace{1.5cm}\textbf{SET\_FOREACH}(\_mode\_, \_object\_)
+\hspace{1.5cm}\textbf{SET\_FOREACH}(\_mode\_, \_setid\_, \_iterator\_)
 
 \paragraph{}
 
 Cette macro va parcourir un ensemble en fonction du mode de travers\'ee
 \textbf{\_mode\_}: FOREACH\_FORWARD qui va parcourir de la t\^ete vers
 la queue et FOREACH\_BACKWARD qui va parcourir de la queue vers la t\^ete.
+Bien entendu cette macro utilisera les fonctions: \textbf{set\_head}(),
+\textbf{set\_tail}(), \textbf{set\_prev}() et \textbf{set\_next}().
+Pour plus d'informations sur la macro, r\'ef\'erez vous \`a la section
+Types et plus particuli\`erement au type \textbf{t\_set}.
 
 \paragraph{}
 
@@ -777,19 +787,22 @@ petit exemple:
 
 \begin{verbatim}
 {
-  void*         object;
+  t_iterator    iterator;
+  t_setid       setid;
 
   [...]
 
-  set_rsv([...]);
+  set_rsv([...], &setid);
 
   set_insert([...]);
   set_insert([...]);
   set_insert([...]);
 
-  SET_FOREACH(FOREACH_FORWARD, object)
+  SET_FOREACH(FOREACH_FORWARD, setid, &iterator)
     {
-      printf(``object's id is: %u\n'', *((t_id*)object));
+      printf(``[object] id:%u addr:0x%x\n'',
+             ITERATOR_ID(&iterator),
+             ITERATOR_ADDR(&iterator));
     }
 }
 \end{verbatim}
@@ -912,6 +925,7 @@ typedef struct          s_as
 {
   t_asid                asid;
   t_tskid               tskid;
+  t_ownid               ownid;
   t_modid               modid;
 
   [pas_data_structure]  pas;
@@ -932,13 +946,62 @@ actuellement charg\'e dans cet espace d'adressage et surtout lequel.
 
 \paragraph{}
 
-Ensuite il va vous falloir ajouter deux fonctionnalit\'es \`a votre
+Le champ \textbf{ownid} nous permet de savoir qui a r\'eserv\'e cet
+espace d'adressage. Ce champ se retrouvera dans nombre de structures:
+\textbf{t\_as}, \textbf{t\_thread}, \textbf{t\_task} et repr\'esente
+dans chacun des cas le propri\'etaire de l'entit\'e, en d'autres termes
+l'entit\'e l'ayant cr\'e\'ee. Il est clair que seul le propri\'etaire
+pourra modifier une structure via les interfaces.
+
+\paragraph{}
+
+Ensuite il va vous falloir ajouter six fonctionnalit\'es \`a votre
 interface de gestion d'espaces d'adressage.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{as\_attach}(t\_tskid \textbf{tskid},
-                                      t\_asid \textbf{asid});
+\hspace{1.5cm}int \textbf{as\_tskid}(t\_asid \textbf{asid},
+                                     t\_tskid* \textbf{tskid});
+
+\paragraph{}
+
+Cette fonction remplie l'argument \textbf{tskid} avec l'identifiant
+de la t\^ache utilisant l'espace d'adressage \textbf{asid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{as\_modid}(t\_asid \textbf{asid},
+                                     t\_modid* \textbf{modid});
+
+\paragraph{}
+
+Cette fonction remplie l'argument \textbf{modid} avec l'identifiant
+du module pr\'esent dans l'espace d'adressage \textbf{asid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{as\_ownid}(t\_asid \textbf{asid},
+                                     t\_ownid* \textbf{ownid});
+
+\paragraph{}
+
+Cette fonction remplie l'argument \textbf{ownid} avec l'identifiant
+du propri\'etaire de l'espace d'adressage.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{as\_give}(t\_asid \textbf{asid},
+                                    t\_ownid \textbf{ownid});
+
+\paragraph{}
+
+Cette fonction change le propri\'etaire de l'espace d'adressage
+\textbf{asid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{as\_attach}(t\_asid \textbf{asid},
+                                      t\_tskid \textbf{tskid});
 
 \paragraph{}
 
@@ -947,8 +1010,9 @@ Cette fonction attache un espace d'adressage \`a une t\^ache.
 \paragraph{}
 
 Bien entendu la fonction retourne une erreur si l'\textbf{asid} n'est
-pas valide ou bien si la t\^ache dispose d\'ej\`a d'un espace
-d'adressage.
+pas valide, si la t\^ache dispose d\'ej\`a d'un espace d'adressage, ou
+bien si le propri\'etaire de l'espace d'adressage ne correspond pas
+\`a celui de la t\^ache.
 
 \paragraph{}
 
@@ -965,6 +1029,42 @@ d'adressage pour qu'il soit coh\'erent vis-\`a-vis des autres. En effet
 lorsque la fonction \textbf{as\_rel}() est invoqu\'ee, si l'espace
 d'adressage en question est attach\'e \`a une t\^ache, il faudra penser
 \`a d\'etacher l'espace d'adressage avant de le lib\'erer.
+
+\subsection{Physical memory}
+
+\paragraph{}
+
+Il vous sera \'egalement demand\'e de rajouter dans vos structures
+d\'ecrivant les zones de m\'emoire physique, un champ:
+\textbf{t\_ownid ownid}.
+
+\paragraph{}
+
+Gr\^ace \`a ce champ, il sera possible au propri\'etaire de donner une zone
+physique \`a une autre entit\'e du syst\`eme au moyen de la fonction
+ci-dessous.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{pm\_ownid}(t\_paddr \textbf{paddr},
+                                     t\_psize \textbf{npages},
+                                     t\_ownid* \textbf{ownid});
+
+\paragraph{}
+
+Cette fonction remplie \textbf{ownid} avec l'identifiant du propri\'etaire
+de la zone physique d\'ecrite par \textbf{paddr} et \textbf{npages}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{pm\_give}(t\_paddr \textbf{paddr},
+                                    t\_psize \textbf{npages},
+                                    t\_ownid \textbf{ownid});
+
+\paragraph{}
+
+Cette fonction modifie le propri\'etaire de la zone d\'efinie par
+\textbf{paddr} et \textbf{npages}.
 
 \subsection{Cpu}
 
@@ -1055,7 +1155,17 @@ les t\^aches du syst\`eme: \textbf{task\_setid}().
 
 #include [...]
 
+/*
+ * the tasks set of the system
+ */
+
 t_setid         tasks;
+
+/*
+ * the kernel task
+ */
+
+t_task          ktask;
 
 int             task_init(void)
 {
@@ -1129,8 +1239,8 @@ du syst\`eme.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{task\_getprior}(t\_tskid \textbf{tskid},
-                                          t\_prior* \textbf{prior});
+\hspace{1.5cm}int \textbf{task\_prior}(t\_tskid \textbf{tskid},
+                                       t\_prior* \textbf{prior});
 
 \paragraph{}
 
@@ -1139,8 +1249,8 @@ de la t\^ache \textbf{tskid}.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{task\_setprior}(t\_tskid \textbf{tskid},
-                                          t\_prior \textbf{prior});
+\hspace{1.5cm}int \textbf{task\_grade}(t\_tskid \textbf{tskid},
+                                        t\_prior \textbf{prior});
 
 \paragraph{}
 
@@ -1254,16 +1364,6 @@ arr\^et\'ee.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{task\_ptskid}(t\_tskid \textbf{tskid},
-                                        t\_tskid* \textbf{ptskid});
-
-\paragraph{}
-
-Cette fonction remplie l'argument \textbf{ptskid} avec l'identifiant de
-la t\^ache parente de la t\^ache \textbf{tskid}.
-
-\paragraph{}
-
 \hspace{1.5cm}int \textbf{task\_asid}(t\_tskid \textbf{tskid},
                                       t\_asid* \textbf{asid});
 
@@ -1271,6 +1371,25 @@ la t\^ache parente de la t\^ache \textbf{tskid}.
 
 Cette fonction remplie l'argument \textbf{asid} avec l'identifiant de
 l'espace d'adressage de la t\^ache \textbf{tskid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{task\_ownid}(t\_tskid \textbf{tskid},
+                                       t\_ownid* \textbf{ownid});
+
+\paragraph{}
+
+Cette fonction remplie l'argument \textbf{ownid} avec l'identifiant de
+la t\^ache parente de la t\^ache \textbf{tskid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{task\_give}(t\_tskid \textbf{tskid},
+                                      t\_ownid \textbf{ownid});
+
+\paragraph{}
+
+Cette fonction modifie le propri\'etaire de la t\^ache \textbf{tskid}.
 
 \paragraph{}
 
@@ -1369,8 +1488,8 @@ comme arr\^et\'e.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{thread\_getprior}(t\_thrid \textbf{thrid},
-                                            t\_prior* \textbf{prior});
+\hspace{1.5cm}int \textbf{thread\_prior}(t\_thrid \textbf{thrid},
+                                         t\_prior* \textbf{prior});
 
 \paragraph{}
 
@@ -1379,8 +1498,8 @@ Cette fonction retourne la priorit\'e du thread dans la variable
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{thread\_setprior}(t\_thrid \textbf{thrid},
-                                            t\_prior \textbf{prior});
+\hspace{1.5cm}int \textbf{thread\_grade}(t\_thrid \textbf{thrid},
+                                         t\_prior \textbf{prior});
 
 \paragraph{}
 
@@ -1464,6 +1583,25 @@ Cette fonction arr\^ete la thread \textbf{thrid}.
 
 Cette fonction remplie l'argument \textbf{tskid} avec l'identifiant de
 la t\^ache contenant le thread \textbf{thrid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{thread\_ownid}(t\_thrid \textbf{thrid},
+                                         t\_ownid* \textbf{ownid});
+
+\paragraph{}
+
+Cette fonction retourne dans \textbf{ownid} l'identifiant du propri\'etaire
+du thread \textbf{thrid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{thread\_give}(t\_thrid \textbf{thrid},
+                                        t\_ownid \textbf{ownid});
+
+\paragraph{}
+
+Cette fonction modifie le propri\'etaire du thread \textbf{thrid}.
 
 \paragraph{}
 
@@ -1593,8 +1731,8 @@ cr\'eer cet ensemble qui sera ensuite pass\'e \`a la fonction
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{thread\_attach}(t\_tskid \textbf{tskid},
-                                          t\_thrid \textbf{thrid});
+\hspace{1.5cm}int \textbf{thread\_attach}(t\_thrid \textbf{thrid},
+                                          t\_tskid \textbf{tskid});
 
 \paragraph{}
 
@@ -1603,8 +1741,8 @@ la t\^ache \textbf{tskid}.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{thread\_detach}(t\_tskid \textbf{tskid},
-                                          t\_thrid \textbf{thrid});
+\hspace{1.5cm}int \textbf{thread\_detach}(t\_thrid \textbf{thrid},
+                                          t\_tskid \textbf{tskid});
 
 \paragraph{}
 
@@ -1870,6 +2008,40 @@ gestion des messages.
 
 Cette fonction r\'einitialise le gestionnaire de modules.
 
+\section{CRT}
+
+\paragraph{}
+
+Le CRT - C Run Time - est une partie de la bibliot\`eque standard qui s'occupe
+d'installer un environnement propice \`a l'ex\'ecution d'une t\^ache.
+
+\paragraph{}
+
+Sur un syst\`eme classique, celui-ci s'occupe de replacer les arguments
+correctement pour que la fonction \textbf{main}() puisse les r\'ecup\'erer
+etc..
+
+\paragraph{}
+
+Dans le cas de \textbf{kaneton}, le CRT n'aurait presque rien \`a faire
+mis \`a part d\'eclarer des variables globales comme par exemple
+\textbf{errno} ou bien initialiser des fonctions de la libc ayant diff\'erents
+comportements caract\'eris\'es par leur initialisation comme par exemple
+\textbf{malloc}().
+
+\paragraph{}
+
+Nous vous demandons de mettre en place un CRT qui sera ensuite utilis\'e
+lors de l'\'edition de liens de chacun de vos ex\'ecutables compil\'es
+pour kaneton.
+
+\paragraph{}
+
+Concernant le contenu du CRT, libre \`a vous d'y inclure ce que vous
+d\'esirez. Bien entendu un certain nombre de fonctionnalit\'es doivent
+absolument \^etre fournies: \textbf{errno}, arguments accessibles \`a
+la fonction \textbf{main} etc..
+
 \section{Types}
 
 \paragraph{}
@@ -1911,6 +2083,8 @@ d'un identifiant soit un nombre.
 \begin{verbatim}
 #define ASID_UNUSED             ID_UNUSED
 
+#define ASID_KERNEL             0
+
 typedef t_id            t_asid;
 \end{verbatim}
 
@@ -1925,6 +2099,7 @@ typedef struct          s_as
 {
   t_asid                asid;
   t_tskid               tskid;
+  t_ownid               ownid;
   t_modid               modid;
 
   t_setid               pas;
@@ -1984,6 +2159,8 @@ unique.
 \begin{verbatim}
 #define TSKID_UNUSED            ID_UNUSED
 
+#define TSKID_KERNEL            0
+
 typedef t_id            t_tskid;
 \end{verbatim}
 
@@ -1996,6 +2173,8 @@ unique, peu importe \`a qui est attach\'e le thread.
 
 \begin{verbatim}
 #define THRID_UNUSED            ID_UNUSED
+
+#define THRID_KERNEL            0
 
 typedef t_id            t_thrid;
 \end{verbatim}
@@ -2090,6 +2269,32 @@ pourront tr\`es bien \'evoluer au cours du temps.
 typedef t_uint8         t_lifetime;
 \end{verbatim}
 
+\subsection{t\_iterator}
+
+\paragraph{}
+
+Ce type repr\'esente un it\'erateur et est utilis\'e dans le gestionnaire
+d'ensemble pour garder la coh\'erence des identificateurs mais \'egalement
+en utilisant les adresses des objets pour augmenter les performances.
+
+\begin{verbatim}
+#define ITERATOR_UNUSED(_iterator_)                                     \
+  ((((_iterator_)->id == ID_UNUSED) &&                                  \
+   ((_iterator_)->addr == NULL)) ? 0 : -1)
+
+#define ITERATOR_ID(_iterator_)                                         \
+  (_iterator_)->id
+
+#define ITERATOR_ADDR(_iterator_)                                       \
+  (_iterator_)->addr
+
+typedef struct          s_iterator
+{
+  t_id                  id;
+  void*                 addr;
+}                       t_iterator;
+\end{verbatim}
+
 \subsection{t\_wait}
 
 \paragraph{}
@@ -2175,7 +2380,7 @@ typedef struct          s_wait
 
 \paragraph{}
 
-Ce type repr\'esente un contexte d'ex\'ecution ind\'ependemment de
+Ce type repr\'esente un contexte d'ex\'ecution ind\'ependant de
 l'architecture.
 
 \begin{verbatim}
@@ -2261,6 +2466,18 @@ Ce type repr\'esente un type de trie.
 typedef t_uint32        t_sort;
 \end{verbatim}
 
+\subsection{t\_ownid}
+
+\paragraph{}
+
+Ce type repr\'esente un propri\'etaire d'entit\'e.
+
+\begin{verbatim}
+#define OWNID_UNUSED            TSKID_UNUSED
+
+typedef t_tskid         t_ownid;
+\end{verbatim}
+
 \subsection{t\_set}
 
 \paragraph{}
@@ -2268,11 +2485,28 @@ typedef t_uint32        t_sort;
 Ce type repr\'esente la structure repr\'esentant un ensemble.
 
 \begin{verbatim}
+#define FOREACH_FORWARD         0x1
+#define FOREACH_BACKWARD        0x2
+
+#define SET_FOREACH(_mode_, _setid_, _iterator_)                        \
+  for ((_iterator_)->id = ID_UNUSED,                                    \
+       (_iterator_)->addr = NULL;                                       \
+        ((ITERATOR_UNUSED((_iterator_)) == 0) ?                         \
+          ((_mode_) == FOREACH_FORWARD ?                                \
+            set_head((_setid_), (_iterator_)) :                         \
+            set_tail((_setid_), (_iterator_))) :                        \
+          ((_mode_) == FOREACH_FORWARD ?                                \
+            set_next((_setid_), *(_iterator_), (_iterator_)) :          \
+            set_prev((_setid_), *(_iterator_), (_iterator_)))) == 0;    \
+       )
+
 typedef struct          s_set
 {
   t_setid               setid;
   t_type                type;
   t_sort                sort;
+  t_size                objectsz;
+  t_setsz               initsz;
   void*                 data;
 }                       t_set;
 \end{verbatim}
@@ -2306,7 +2540,7 @@ Ce type repr\'esente une description de t\^ache.
 typedef struct          s_task
 {
   t_tskid               tskid;
-  t_tskid               ptskid;
+  t_ownid               ownid;
   t_asid                asid;
 
   t_setid               threads;
@@ -2336,6 +2570,7 @@ typedef struct          s_thread
 {
   t_thrid               thrid;
   t_tskid               tskid;
+  t_ownid               ownid;
 
   t_prior               prior;
 
@@ -2376,6 +2611,8 @@ typedef struct          s_sched
   t_setid               run;
 
   t_thrid               thrid;
+
+  machdep_include(sched);
 }                       t_sched;
 \end{verbatim}
 
@@ -2410,14 +2647,14 @@ pid_t           fork(void)
   task_rsv(CLASS_USER, BEHAV_TIMESHARING, PRIOR_TIMESHARING, &new);
 
   as_clone(asid, &asid);
-  as_attach(new, asid);
+  as_attach(asid, new);
 
   /*
    * we decided to clone only one thread, the one calling
    * the fork() function, so the current thread.
    */
   thread_clone(thrid, &thrid);
-  thread_attach(new, thrid);
+  thread_attach(thrid, new);
 
   thread_store(thrid, &thrctx);
   thrctx.pc = (t_pc)endoffork;
@@ -2488,10 +2725,10 @@ t_tskid         task_create(char *filename,
   task_rsv(class, BEHAV_TIMESHARING, PRIOR_TIMESHARING, &tskid);
 
   as_rsv(&asid);
-  as_attach(tskid, asid);
+  as_attach(asid, tskid);
 
   thread_rsv(&thrid);
-  thread_attach(tskid, asid);
+  thread_attach(thrid, tskid);
 
   mod_add(filename, LIFETIME_FINITE, &modid);
   mod_load(modid, asid);
@@ -2504,7 +2741,6 @@ t_tskid         task_create(char *filename,
 
   thread_stack(thrid, THREAD_STACKSZ);
   thread_args(thrid, pack, packsz);
-
   free(pack);
 
   thread_run(thrid);
