@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Mon Feb 21 16:03:31 2005   mycure
-%% last update   Mon Feb 21 16:03:32 2005   mycure
+%% last update   Sun Mar 20 23:48:38 2005   mycure
 %%
 
 \documentclass[10pt,a4wide]{article}
@@ -57,6 +57,19 @@
 
 \item explication de la possibilit\'e de faire du swapping mais qu'il
       faut rajouter une traduction physical -> virtual
+
+\item explication de la structure t\_as et des champs pas et vas
+
+\item explication de la gestion de t\_pm pm; avec une page d\'ecoup\'ee
+      et toutes les areas mises dans la freelist
+
+\item expliquer aussi: soit on un a kasid et un kas, dans ce cas t\_pm pm,
+      et kas doivent etre g\'er\'es via des pages directement d\'ecoup\'ees,
+      soit on n'utilise pas de kas car seul le kasid compte. lorsque celui-ci
+      est utilis\'e on ne met \`a jour aucun espace d'adressage.
+
+\item faire un exemple avec les allocations: t\_pm pm, as0, as1, pm\_rsv(),
+      vm\_rsv() et l'evolution de t\_pm pm et des deux as.
 
 \item explication de l'IDT
 

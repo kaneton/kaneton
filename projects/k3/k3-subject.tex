@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Mon Feb 21 16:02:38 2005   mycure
-%% last update   Fri Mar 18 13:22:10 2005   mycure
+%% last update   Wed Mar 23 17:19:19 2005   mycure
 %%
 
 \documentclass[10pt,a4wide]{article}
@@ -28,7 +28,7 @@
 \rhead{k3 subject}
 \rfoot{\scriptsize{EPITA System Lab}}
 
-\title{kaneton3}
+\title{kaneton-3}
 
 \author{Julien Quintard - \small{quinta\_j@epita.fr} \\
         Jean-Pascal Billaud - \small{billau\_j@epita.fr} \\ \\
@@ -162,6 +162,14 @@ virtuelles mais \'egalement de manipuler des donn\'ees en virtuel.
 
 \paragraph{}
 
+\hspace{1.5cm}int \textbf{vm\_init}(void);
+
+\paragraph{}
+
+Cette fonction initialise le gestionnaire de m\'emoire virtuelle.
+
+\paragraph{}
+
 \hspace{1.5cm}int \textbf{vm\_rsv}(t\_asid \textbf{asid},
                                    t\_vaddr* \textbf{vaddr},
                                    t\_vsize \textbf{npages},
@@ -186,20 +194,6 @@ Cette fonction modifiera \'egalement l'espace d'adressage \textbf{asid}.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{vm\_rel}(t\_asid \textbf{asid},
-                                   t\_vaddr \textbf{vaddr},
-                                   t\_vsize \textbf{npages});
-
-\paragraph{}
-
-Cette fonction lib\`ere de la m\'emoire virtuelle.
-
-\paragraph{}
-
-Cette fonction modifiera l'espace d'adressage \textbf{asid}.
-
-\paragraph{}
-
 \hspace{1.5cm}int \textbf{vm\_attr}(t\_asid \textbf{asid},
                                     t\_vaddr \textbf{vaddr},
                                     t\_vsize \textbf{npages},
@@ -220,6 +214,20 @@ en software.
 \paragraph{}
 
 Nous vous le conseillons pour une question de logique.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{vm\_rel}(t\_asid \textbf{asid},
+                                   t\_vaddr \textbf{vaddr},
+                                   t\_vsize \textbf{npages});
+
+\paragraph{}
+
+Cette fonction lib\`ere de la m\'emoire virtuelle.
+
+\paragraph{}
+
+Cette fonction modifiera l'espace d'adressage \textbf{asid}.
 
 \paragraph{}
 
@@ -272,12 +280,42 @@ sur cette zone virtuelle.
                                     t\_vaddr \textbf{src},
                                     t\_asid \textbf{to},
                                     t\_vaddr \textbf{dst},
-                                    t\_vsize \textbf{nbytes});
+                                    t\_size \textbf{nbytes});
 
 \paragraph{}
 
 Cette fonction se charge de copier un nombre d'octets donn\'e entre
 deux espaces d'adressage virtuels.
+
+\paragraph{}
+
+Pour utiliser cette fonction il faudra disposer de droits sp\'eciaux
+car il est clair que tout le monde ne peut pas se permettre de copier
+des donn\'ees un peu n'importe o\`u.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{vm\_flush}(t\_asid \textbf{asid});
+
+\paragraph{}
+
+Cette fonction se charge de nettoyer l'espace d'adressage \textbf{asid}
+de tout son espace d'adressage virtuel.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{vm\_clean}(void);
+
+\paragraph{}
+
+Cette fonction r\'einitialise le gestionnaire de m\'emoire virtuelle.
+
+\subsection{Allocation de m\'emoire}
+
+\paragraph{}
+
+Cette section n'est pas fondamentale mais permet de simplifier l'allocation
+de pages m\'emoire pour une utilisation imm\'ediate.
 
 \paragraph{}
 
@@ -339,11 +377,22 @@ Ce type d\'ecrit un nombre de pages virtuelles.
 typedef t_uint32        t_vsize;
 \end{verbatim}
 
-\subsection{t\_vmflags}
+\subsection{t\_size}
 
 \paragraph{}
 
-Repr\'esente les diff\'erents flags qu'utilise le gestionnaire de la m\'emoire
+Ce type d\'ecrit une taille en octets.
+
+\begin{verbatim}
+typedef t_uint32        t_size;
+\end{verbatim}
+
+\subsection{t\_flags}
+
+\paragraph{}
+
+Repr\'esente les diff\'erents flags. Ce type a d\'ej\`a \'et\'e vu mais nous
+rajoutons ici diff\'erentes valeurs qu'utilise le gestionnaire de m\'emoire
 virtuelle.
 
 \begin{verbatim}
@@ -354,7 +403,7 @@ virtuelle.
  * ...
  */
 
-typedef t_uint16        t_vmflags;
+typedef t_uint32        t_flags;
 \end{verbatim}
 
 \section{Bonus}

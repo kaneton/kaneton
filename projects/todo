@@ -1,5 +1,102 @@
 -- spargo
 
+plutot que task/thread_wait() qui attend que la tache meurt, on pourrait faire
+task/thread_wait(status) qui attend que la tache passe en etat status.
+
+comme ca on peut attendre que la tache meurt, mais on peut aussi attendre
+qu'elle recoive un I/O etc..
+
+reflechir a ca car c est + generique donc plus interessant
+
+-- spargo
+
+mettre la zone contenant le module avec une propriete MODULE. quoi que de
+toute facon c'est une zone partagee donc on le sait donc ca sert surement a
+rien.
+
+-- spargo
+
+le fait d'avoi les taches, as  et thread dissocies font qu on pourrait tres
+bien prefabriquer des espaces d adressage par exemple pour les binaire
+extremement utilies: ls etc.. mais egalement des tasks entieres prefabriquees.
+
+-- k5
+
+mutex_acq(); /* aquerit le lock */
+mutex_rel(); /* libere le lock */
+
+-- k5
+
+wait, quel code renvoye si jamais la tache/thread est force d etre stoppe.
+
+-- k5
+
++sondage
+
+-- k5
+
+t_eventid a approfondir
+
+-- k[all]
+
+rajouter dans chaque structure: machdep_include(XXX)
+
+-- k2
+
+rajouter t_pm pm dans les types
+
+-- k5
+
+reflechir au ptit bout de code pour eviter la propagation
+
+-- k5
+
+bien expliquer que jusqu a maintenant on faisait des interfaces c est a dire
+des fonctions et que maintenant on va greffer des messages. le systeme
+est simple, les variables sont construites on extrayant du message les valeurs
+et les fonctions de l interface sont appelles, comme ca on ne modifie
+rien au code existant et en PLUS, le kernel peut appeller des fonctions
+dans son meme code, cad le kernel sans avoir besoin de creer un message
+ce qui serait stupide.
+
+-- k5
+
+dire que en utilisant la libc, on peut par exemple passer -1 plutot
+que faire un sched_tskid() lorsqu on appelle le gestionnaire de tasks.
+
+lorsque le message arrivera, le gestionnaire de tasks saura que nous
+parlons du tskid correspondant a la tache appellante.
+
+-- sondage sur kaneton
+
+comment son les cours
+comment son les sujets
+comment son les tps
+
+difficultes?
+
+idees?
+
+commentaires?
+
+-- k5
+
+faire en sorte que si une personne de le class N veut envoyer un message
+a une personne de la classe N-1 ca chie.
+
+-- k5
+
+timer_add()
+timer_remove()
+
+envoie de message lorsque le timer est ecoule
+
+la encore il risque d'y avoir quelques problemes. le temps ne sera
+vraiment pas precis car il pourra y avoir N process prioritaires dans
+la run queue: driver, service etc..
+
+-- spargo
+
 reflechir au kernel comme a fait phix c'est a dire pour eviter
 la propagation:
   . mettre les structures importantes dans l espace user avec protection
@@ -8,44 +105,30 @@ la propagation:
   . on a juste a faire une copie de l'as et hop on peut l'envoyer
     sur le reseau
 
+le truc cool de tout avoir dans l espace kernel c'est qu'on stocke
+tout et donc pour faire des operations sur plusieurs trucs c est vachement
+simple alors que sinon c est chiant avec le truc a phix.
+
+pour eviter la propagation il faudra avoir une tite lib dependante
+que tu fous en meme haute a la place du kernel. cette truc recoit
+l'interruption et contexte switch pour passer la main au kernel. enfin
+en gros contexte switch ici == changement de cr3 si on se demerde bien =
+si apres le changement de cr3 les instructions executees sont correctes
+dans le nouvel espace, celui du kernel.
+en faisant ca, la lib ne sera jamais modifiee et donc pas de propagation.
+pour pas se faire chier on pourrait reserver genre 1 page pour faire ca.
+(attentoin ne pas reserver la derniere page pour faire des vaddr non valide
+a -1).
+
+pour pouvoir migrer c'est simple il suffit de faire une fonction
+qui va faire des get dans chaque gestionnaire et donc former un package
+ayant un format et decrivant la memoire. pas super complique, ca prend
+un peu de temps mais c'est fatal.
+
 -- spargo
 
 etudier tout le SMP pour faire un gestionnaire de CPU et pour pouvoir
 specifier les cpu sur lesquels vont tourner les threads
-
--- k4
-
-BEHAV_KERNEL, BEHAV_REALTIME, BEHAV_... /* comportements */
-PRIOR_KERNEL, PRIOR_REALTIME, PRIOR_... /* priorites par defaut */
-CLASS_KERNEL, CLASS_DRIVER, CLASS_SERVICE, CLASS_USER
-
--- k4
-
-TASK_FOREACH et THREAD_FOREACH ce serait pas mal quand meme
-
--- k4
-
-repenser des trucs:
-	. gestionnaire cpu pour recuperer la tache en cours et la thread
-	en cours
-	. gestionnaire de sched plus coherent
-	. gestionnaire de tasks aussi
-
--- k4
-
-les "deamons" ont comme parent mod qui lui meme a comme parent le kernel.
-donc mod joue un peu le role de init.
-
--- k4
-
-dire que l'emulation de fork est crade car N threads = N-1 stacks perdues.
-
-il y a des moyens pour parer cela:
-	1) pour tous les threads virer les stacks
-	   ca necessite un appel systeme pour le faire ou
-	   bien un appel systeme pour passer tous les threads
-
-de toute facon on emule fork donc on s en fout un peu
 
 -- spargo
 
@@ -59,15 +142,6 @@ vfs_clone() qui va dupliquer une table de l ancien pour le nouveau.
 lors d'un open read write, on matte le caller et on matte ensuite
 sa table associee. on a donc une table par caller.
 
--- k4
-
-thread
-{
-  stack_addr
-  stack_npages
-  entry_point
-};
-
 -- spargo
 
 il faudra faire des le debut en parallele:
@@ -75,16 +149,6 @@ il faudra faire des le debut en parallele:
 	. une personne du reseau
 	. une personne ou deux de pleins de petits trucs: fichier de conf,
 	  emulation 64-bit sur intel etc..
-
--- k4
-
-task_create() puis task_run() ou task_stop()
-
-thread_store() pour sauvegarder le contexte
-
-oh:
-
-mod_load(tskid, thrid, modid);
 
 -- k5
 
@@ -101,20 +165,13 @@ msg. comme ca au fur et a mesure les threads se bloquent, attendant des msgs.
 quand un nouveau msg arrive, la premiere thread attendant un msg trouvee
 est reveillee et le msg delivered.
 
--- k4 - spargo
+-- spargo
 
-task_wait(taskid) pour attendre que la task meurt
-thread_wait(thrid) pour attendre que le thread meurt
 group_wait(grpid) pour attendre qu un groupe creve genre pour le recrer
 
 => on devrait faire plus general que juste pour la mort d'une entite.
 
-task_getid()
-thread_getid()
-
-generalement on utilisera thread_wait()
-
--- spargo - k4
+-- spargo - k5
 
 lors du srv_reg(id?, max_msgs);
 
@@ -122,63 +179,6 @@ lors du srv_reg(id?, max_msgs);
 
 inutile d avoir une liste en user car le kernel suffit + le kernel bloque
 le user si plus de message.
-
--- k4
-
-int task_load(t_taskid taskid, t_modid modid);
-	-> check if as + mm_rsv + copy
-
-int task_unload(t_taskid taskid);
-	/* pour ca il faut garder trace des pages utilisees par le binaire
-	   l'avantage c'est qu'apres on peut recycler TRES facilement
-	   les structures */
-
-int task_reload(t_taskid taskid, t_modid modid);
-	-> task_unload() + task_load()
-
-int task_clean();
-
-~~~~~
-
-thread:
-
-int thread_init();
-
---------------------
-XXX CONTINUER CA XXX
---------------------
-
-int thread_rsv(t_thrtype type, t_vaddr entry,
-               t_uint32 nstkpages, t_thrid *thrid);
-int thread_rel(thrid) [todo k4]
-
-flags: THREAD_TYPE_NORMAL, THREAD_TYPE_MSG
-
-thread_attach(taskid, thrid) [todo k4]
-thread_detach(thrid) [todo k4]
-
-int thread_clean();
-
-~~~~~
-
-typedef struct s_task
-{
-  char name[TASK_NAMESZ + 1]; /* XXX ??? */
-  t_taskid taskid;
-  t_state state; /* RUNNING, IO, etc.. */
-  t_class class;
-  t_uint32 nthreads;
-  t_thread *threads;
-} t_task;
-
-typedef struct s_thread
-{
-  t_thrid thrid;
-  t_type type;
-
-  t_thread *prv;
-  t_thread *nxt;
-} t_thread;
 
 -- spargo
 
@@ -282,72 +282,13 @@ faire une abstraction pour les io/ports avec le gestionnaire de device
 car ppc ne dispose pas de inb oub il faut passer par le MMU pour lui
 dire telle addr = tel device
 
--- k4
-
-set de regs independent: fp pc
-set de regs dependent: donc prevoir des machdep pour les operations style
-                       load, save etc..
-
-scheduler: sched_next, sched_save? ...
-
-voir avec JP pour le scheduler comment il va marcher, quand il sera appelle.
-
-thread_new(stacksize, eip);
-
--- k4
-
-bonus +parser a integrer
-
--- k4
-
-bonus: fichier de configuration a integrer
-
---
-
-. page fault a gerer dans k4 enfin leur dire de le gerer pour killer le process
+-- k7
 
 . durant k7 ils peuvent faire un petit fs en ram pour gerer les modules grub
 
--- ?
+-- k5
 
-modeliser un systeme pour les exceptions generiques
-
---
-
- t_srv, t_srvid
-
----
-
-as:
-
-as_rsv(*asid) [ok]
-as_rel(asid) [ok]
-
-as_attach(taskid, asid) [todo k4]
-as_detach(asid) [todo k4]
-
-thread:
-
-thread_rsv(*thrid) [todo k4]
-thread_rel(thrid) [todo k4]
-
-thread_attach(taskid, thrid) [todo k4]
-thread_detach(thrid) [todo k4]
-
-task:
-
-task_rsv(*taskid) [todo k4]
-task_rel(taskid) [todo k4]
-
-task_load(taskid, modid) [todo k4]
-	-> check + mm_rsv + copy + thread_rsv (main) + thread_attach
-
-task_unload(taskid) [todo k4]
-	/* pour ca il faut garder trace des pages utilisees par le binaire
-	   l'avantage c'est qu'apres on peut recycler TRES facilement
-	   les structures */
-
-task_reload(taskid, modid) [todo k4]
+t_srv, t_srvid
 
 -- k5
 
@@ -362,16 +303,6 @@ et priorites via un systeme de classes + chainage dans le kernel des messages
 sils ne peuvent pas etre achemines.
 
 + priorites du scheduler.
-
--- k4
-
-t_as
-{
-  t_taskid taskid; /* dans k4 ou k5 */
-  t_asid asid;
-  [physical description]
-  [virtual description]
-}
 
 -- k5
 
@@ -401,10 +332,6 @@ et on en deduit le segid et hop int_add()
 
 expliquer la table de traps et faire en sorte qu on puisse register plusieurs
   handlers.
-
--- k4
-
-schedule de threads
 
 -- spargo
 
@@ -455,24 +382,16 @@ en fait les groups c est cool mais il faudrait que le createur du groupe
 broadcast pour demander si des gens veulent rentrer. meme systeme que j avais
 penser.
 
--- k5 - k4
+-- k5
 
 trap_add(*trapid, thrid, eventid);
 
-srv_add(*srvid, thrid);
+-- k?
 
--- k4
+leur faire faire un sujet de modelisation: fs.
 
-processus = la notion de processus n'existe pas dans LSE/OS. neanmoins nous
-            utiliserons ce terme comme alias du mot "task" et plus
-            particulierement pour les taches utilisateur.
-
--- k4
-
-il faut etre root ou systeme pour ajouter des services/drivers
-
-load(PL_SERVICE) /* service */
-load(PL_USER); /* processus */
+encore mieux toute la fin du projet c'est de la modelisation par
+leurs soins: ide, fs mais aussi un serveur de securite unix etc..
 
 -- spargo
 
@@ -607,25 +526,7 @@ Permet de d\'esactiver la gestion de cette trap.
 
 D\'etruit toute les traps enregistr\'ee.
 
--- k4
-
-\subsection{t\_thrid}
-
-\paragraph{}
-
-Ce type repr\'esente un identifiant de thread. La gestion des threads ne
-sera faite que dans k4 mais il est indispensable d'utiliser ce type
-d\`es maintenant.
-
-\paragraph{}
-
-L'utilisation de ce type est requis pour l'installation de trap. Pour des
-raisons \'evidentes il ne vous sera pas possible d'installer de trap
-tant que les threads ne seront pas g\'er\'ees, mais cela n'est pas important.
-
-\begin{verbatim}
-typedef t_uint32        t_thrid;
-\end{verbatim}
+-- k5
 
 \subsection{t\_trapid}
 

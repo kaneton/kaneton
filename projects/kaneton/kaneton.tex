@@ -5,13 +5,13 @@
 %% 
 %% kaneton.tex
 %% 
-%% path          /root/data/research/projects/svn/kaneton/projects/k4
+%% path          /root/data/research/projects/svn/kaneton/projects/kaneton
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Mon Feb 21 16:02:54 2005   mycure
-%% last update   Sat Mar 12 01:19:34 2005   mycure
+%% last update   Tue Mar 29 02:38:50 2005   mycure
 %%
 
 \documentclass[10pt,a4wide]{article}
@@ -46,13 +46,13 @@
 
 \section{Introduction}
 
-kaneton est un kernel que les \'el\`eves d'epita en specialisation syst\`eme,
-r\'eseau et s\'ecurit\'e devront d\'evelopper.
+\textbf{kaneton} est un kernel que les \'el\`eves d'epita en sp\'ecialisation
+syst\`eme, r\'eseau et s\'ecurit\'e devront mod\'eliser et d\'evelopper.
 
 \paragraph{}
 
-L'objectif est d'arriver a d\'evelopper un noyau de syst\`eme d'exploitation
-extr\^emement propre au niveau mod\'elisation pour permettre le portage
+L'objectif est d'arriver \`a d\'evelopper un noyau de syst\`eme d'exploitation
+dot\'e d'une mod\'elisation extr\^emement propre pour permettre le portage
 vers d'autres architectures sans efforts.
 
 \paragraph{}
@@ -67,7 +67,8 @@ d'un syst\`eme d'exploitation moderne.
 
 Il faut savoir que la partie du d\'eveloppement la plus compliqu\'ee est
 certainement celle li\'ee directement au processeur car comprendre
-et r\'eparer les erreurs est assez fastidieux.
+et r\'eparer les erreurs li\'ees aux structures hardware n'est pas chose
+ais\'ee.
 
 \paragraph{}
 
@@ -93,21 +94,20 @@ processeur, de pratiquer plusieurs langages de bas niveau notamment
 l'assembleur intel et le C. Une fois ces \'etapes que l'on pourrait
 qualifier de ``hardware'' d\'epass\'ees, l'\'etudiant devra faire face
 \`a des probl\'ematiques de plus haut niveau comme par exemple la gestion
-m\'emoire, le scheduling, la portabilit\'e, et bien d'autres designs pour la
-gestion d'\'el\'ements noyaux.
+m\'emoire, l'ordonnanceur, la portabilit\'e etc..
 
 \newpage
 
 \section{Organisation}
 
-Le projet kaneton est decoup\'e en sous projets de sorte que l'etudiant
-valide bien chaque notion: mode d'adressages, gestion memoire, gestion
-des processus etc..
+Le projet \textbf{kaneton} est decoup\'e en sous projets de sorte que
+l'etudiant valide bien chaque notion: mode d'adressages, gestion memoire,
+gestion des processus etc..
 
 \paragraph{}
 
-Voyons donc d\'esormais la liste des sous projets, des \'etapes que
-l'\'etudiant devra suivre.
+La liste des sous projets, des \'etapes que l'\'etudiant devra suivre est
+expos\'ee ci-dessous.
 
 \newpage
 
@@ -143,8 +143,8 @@ la future ex\'ecution du kernel.
 \subsubsection{k2}
 
 Lancement du kernel et mise en place d'un certain nombre de gestionnaires:
-m\'emoire physique, interruptions etc.. et certains drivers basiques:
-timer, console, clavier etc..
+espaces d'adressage, m\'emoire physique, interruptions etc.. et certains
+drivers basiques: timer, PIC, console, clavier etc..
 
 \vspace{5cm}
 
@@ -170,7 +170,9 @@ Mise en place du gestionnaire de m\'emoire virtuelle.
 
 \subsubsection{k4}
 
-Mise en place de la gestion des processus avec gestion des threads.
+Mise en place du gestionnaire de processus avec gestion des threads, de
+l'ordonnanceur, mais \'egalement d'un gestionnaire d'ensembles et
+d'un gestionnaire de modules.
 
 \vspace{5cm}
 
@@ -182,8 +184,7 @@ Mise en place de la gestion des processus avec gestion des threads.
 
 \subsubsection{k5}
 
-D\'eveloppement des IPC et d\'eveloppement d'un systeme de buffering de
-messages.
+D\'eveloppement d'un syst\`eme de communication inter-processus.
 
 \vspace{5cm}
 
@@ -222,7 +223,7 @@ d'une libc avec les librairies utilisateurs: crt etc..
 
 \subsubsection{k8}
 
-D\'eveloppement d'un syst\`eme de fichier et du syst\`eme de fichier
+D\'eveloppement d'un syst\`eme de fichiers et du syst\`eme de fichiers
 g\'en\'erique VFS.
 
 \vspace{5cm}
@@ -237,7 +238,7 @@ g\'en\'erique VFS.
 
 \subsubsection{k9}
 
-D\'eveloppement du driver pci et du driver r\'eseau.
+D\'eveloppement du driver PCI et du driver r\'eseau.
 
 \vspace{5cm}
 
@@ -269,7 +270,7 @@ Chaque projet se d\'eroule de la facon suivante:
       atteindre, des notions \`a acqu\'erir, de la mod\'elisation propos\'ee
       etc..
 
-\item \textbf{Tp}: durant le projet, des tps seront organis\'es,
+\item \textbf{Tp}: durant le projet, des TPs seront organis\'es,
       g\'en\'eralement une sc\'eance toute les semaines, afin que vous
       puissiez poser vos questions.
 
@@ -308,7 +309,7 @@ pourrez tout \`a fait prendre la d\'ecision d'impl\'ementer votre
 propre mod\'elisation. Dans ce cas, vous devrez nous fournir une documentation
 claire et pr\'ecise expliquant vos choix. Si votre mod\'elisation est
 intelligente et apporte des inovations par rapport \`a celle fournie,
-nous prendrons certainement la d\'ecision d'utiliser votre impl\'ementation.
-Libre \`a vous donc de nous \'epater.
+votre note se verra amelior\'ee et votre mod\'elisation pourrait devenir
+celle que nous proposerons pour les ann\'ees suivantes.
 
 \end{document}
