@@ -132,9 +132,6 @@
  * element is released, for example into the functions set_remove(),
  * set_flush(), set_release() etc..
  *
- * moreover the FREE option is used in the set_clone() function to
- * duplicate every element.
- *
  * be careful to never set the FREE option with the ALLOCATE option. the
  * FREE option tells the set manager that the user is using preallocated
  * objects which is the contrary to the allocate option.

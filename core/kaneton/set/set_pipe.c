@@ -447,18 +447,4 @@ t_error			set_object_pipe(t_setid			setid,
   SET_LEAVE(set, retval);
 }
 
-/*
- * this function just returns an error.
- *
- * deprecated.
- */
-
-t_error			set_clone_pipe(t_setid			old,
-				       t_setid*			new)
-{
-  SET_ENTER(set);
-
-  SET_LEAVE(set, ERROR_UNKNOWN);
-}
-
 /*                                                                 [cut] /k2 */

@@ -27,10 +27,6 @@
  * but  some operation  requires to  shift entire  parts of  the array
  * (loss of performances).
  *
- * when an array set is cloned, data are reorganised in. it means than
- * when a  clone operation occurs,  the array is reduced  clearing the
- * empty/unused places.
- *
  * options:    SET_OPT_CONTAINER,    SET_OPT_SORT,   SET_OPT_ORGANISE,
  * SET_OPT_ALLOC, SET_OPT_FREE
  */
@@ -1294,61 +1290,6 @@ t_error			set_object_array(t_setid		setid,
     *data = o->u.array.array[iterator.u.array.i];
   else
     SET_LEAVE(set, ERROR_UNKNOWN);
-
-  SET_LEAVE(set, ERROR_NONE);
-}
-
-/*
- * this function clones a set.
- *
- * steps:
- *
- * 1) gets the descriptor.
- * 2) reserves a new set.
- * 3) copies data.
- */
-
-t_error			set_clone_array(t_setid			old,
-					t_setid*		new)
-{
-  o_set*       		o;
-  t_setid		clone;
-  t_iterator		it;
-  t_state		state;
-  void*			pdata;
-
-  SET_ENTER(set);
-
-  /*
-   * 1)
-   */
-
-  if (set_descriptor(old, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (set_reserve(array, o->u.array.opts, o->size, o->u.array.datasz,
-			&clone) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
-  set_foreach(SET_OPT_FORWARD, old, &it, state)
-    {
-      if (set_object(old, it, (void**)&pdata) != ERROR_NONE ||
-	  set_add(clone, pdata) != ERROR_NONE)
-	{
-	  set_release(clone);
-	  SET_LEAVE(set, ERROR_UNKNOWN);
-	}
-    }
-
-  *new = clone;
 
   SET_LEAVE(set, ERROR_NONE);
 }

@@ -252,9 +252,6 @@ typedef struct
 #define set_release(_setid_, _args_...)					\
   set_trap(set_release, _setid_, ##_args_)
 
-#define set_clone(_setid_, _args_...)					\
-  set_trap(set_clone, _setid_, ##_args_)
-
 #define set_head(_setid_, _args_...)					\
   set_trap(set_head, _setid_, ##_args_)
 
@@ -757,9 +754,6 @@ t_error			set_locate_stack(t_setid		setid,
 t_error			set_object_stack(t_setid		setid,
 					 t_iterator		iterator,
 					 void**			data);
-
-t_error			set_clone_stack(t_setid			old,
-					t_setid*		new);
 
 
 /*

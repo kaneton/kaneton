@@ -5,10 +5,6 @@
    - 
 
 --
- buckman: quand on fait un make clear ca ne nettoie pas tout dans
- papers/kaneton. adapte ton makefile
-
---
  k3: rapport de modelisation sur les events
 
  ce serait une bonne idee car c'est relativement simple et en meme temps
