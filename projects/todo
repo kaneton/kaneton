@@ -1,5 +1,187 @@
 -- spargo
 
+reflechir au kernel comme a fait phix c'est a dire pour eviter
+la propagation:
+  . mettre les structures importantes dans l espace user avec protection
+    systeme
+  . avec ca le kernel est tres petit
+  . on a juste a faire une copie de l'as et hop on peut l'envoyer
+    sur le reseau
+
+-- spargo
+
+etudier tout le SMP pour faire un gestionnaire de CPU et pour pouvoir
+specifier les cpu sur lesquels vont tourner les threads
+
+-- k4
+
+BEHAV_KERNEL, BEHAV_REALTIME, BEHAV_... /* comportements */
+PRIOR_KERNEL, PRIOR_REALTIME, PRIOR_... /* priorites par defaut */
+CLASS_KERNEL, CLASS_DRIVER, CLASS_SERVICE, CLASS_USER
+
+-- k4
+
+TASK_FOREACH et THREAD_FOREACH ce serait pas mal quand meme
+
+-- k4
+
+repenser des trucs:
+	. gestionnaire cpu pour recuperer la tache en cours et la thread
+	en cours
+	. gestionnaire de sched plus coherent
+	. gestionnaire de tasks aussi
+
+-- k4
+
+les "deamons" ont comme parent mod qui lui meme a comme parent le kernel.
+donc mod joue un peu le role de init.
+
+-- k4
+
+dire que l'emulation de fork est crade car N threads = N-1 stacks perdues.
+
+il y a des moyens pour parer cela:
+	1) pour tous les threads virer les stacks
+	   ca necessite un appel systeme pour le faire ou
+	   bien un appel systeme pour passer tous les threads
+
+de toute facon on emule fork donc on s en fout un peu
+
+-- spargo
+
+dire que les signaux nous semblent prehistorique comme d'autre concepts
+posix. donc on a pas implementer de signaux. neanmoins ils peuvent etre
+emules.
+
+-- k? for vfs
+
+vfs_clone() qui va dupliquer une table de l ancien pour le nouveau.
+lors d'un open read write, on matte le caller et on matte ensuite
+sa table associee. on a donc une table par caller.
+
+-- k4
+
+thread
+{
+  stack_addr
+  stack_npages
+  entry_point
+};
+
+-- spargo
+
+il faudra faire des le debut en parallele:
+	. un petit groupe qui s'occupe du core: mm, tasks etc...
+	. une personne du reseau
+	. une personne ou deux de pleins de petits trucs: fichier de conf,
+	  emulation 64-bit sur intel etc..
+
+-- k4
+
+task_create() puis task_run() ou task_stop()
+
+thread_store() pour sauvegarder le contexte
+
+oh:
+
+mod_load(tskid, thrid, modid);
+
+-- k5
+
+pas de thread de msg, seulement un appel pour connaitre la taille du prochain
+msg et un appel pour le recuperer. comme ca un seul thread pourrait tres bien
+faire un while(1) { get_msg; treat_msg; } ou alors suivre le modele que
+nous conseillons avec une thread qui recupere les msg comme ca ca augmente
+le parallelisme oou bien les threads demandent directement au kernel le
+prochain msg.
+
+si il n y a plus de msg, la thread est bloque et marque comme attendant un
+msg. comme ca au fur et a mesure les threads se bloquent, attendant des msgs.
+
+quand un nouveau msg arrive, la premiere thread attendant un msg trouvee
+est reveillee et le msg delivered.
+
+-- k4 - spargo
+
+task_wait(taskid) pour attendre que la task meurt
+thread_wait(thrid) pour attendre que le thread meurt
+group_wait(grpid) pour attendre qu un groupe creve genre pour le recrer
+
+=> on devrait faire plus general que juste pour la mort d'une entite.
+
+task_getid()
+thread_getid()
+
+generalement on utilisera thread_wait()
+
+-- spargo - k4
+
+lors du srv_reg(id?, max_msgs);
+
+-- k5
+
+inutile d avoir une liste en user car le kernel suffit + le kernel bloque
+le user si plus de message.
+
+-- k4
+
+int task_load(t_taskid taskid, t_modid modid);
+	-> check if as + mm_rsv + copy
+
+int task_unload(t_taskid taskid);
+	/* pour ca il faut garder trace des pages utilisees par le binaire
+	   l'avantage c'est qu'apres on peut recycler TRES facilement
+	   les structures */
+
+int task_reload(t_taskid taskid, t_modid modid);
+	-> task_unload() + task_load()
+
+int task_clean();
+
+~~~~~
+
+thread:
+
+int thread_init();
+
+--------------------
+XXX CONTINUER CA XXX
+--------------------
+
+int thread_rsv(t_thrtype type, t_vaddr entry,
+               t_uint32 nstkpages, t_thrid *thrid);
+int thread_rel(thrid) [todo k4]
+
+flags: THREAD_TYPE_NORMAL, THREAD_TYPE_MSG
+
+thread_attach(taskid, thrid) [todo k4]
+thread_detach(thrid) [todo k4]
+
+int thread_clean();
+
+~~~~~
+
+typedef struct s_task
+{
+  char name[TASK_NAMESZ + 1]; /* XXX ??? */
+  t_taskid taskid;
+  t_state state; /* RUNNING, IO, etc.. */
+  t_class class;
+  t_uint32 nthreads;
+  t_thread *threads;
+} t_task;
+
+typedef struct s_thread
+{
+  t_thrid thrid;
+  t_type type;
+
+  t_thread *prv;
+  t_thread *nxt;
+} t_thread;
+
+-- spargo
+
 pour le sharing c'est simple. on creer une structure contenant une adresse,
 une taille et une liste de fonctions.
 
@@ -93,6 +275,28 @@ msg
 
 l'object manager recoit le msg et extrait la methode, puis deduit le nombre
 d'args et les extrait pour ensuite appeller la fonction==methode.
+
+-- spargo
+
+faire une abstraction pour les io/ports avec le gestionnaire de device
+car ppc ne dispose pas de inb oub il faut passer par le MMU pour lui
+dire telle addr = tel device
+
+-- k4
+
+set de regs independent: fp pc
+set de regs dependent: donc prevoir des machdep pour les operations style
+                       load, save etc..
+
+scheduler: sched_next, sched_save? ...
+
+voir avec JP pour le scheduler comment il va marcher, quand il sera appelle.
+
+thread_new(stacksize, eip);
+
+-- k4
+
+bonus +parser a integrer
 
 -- k4
 
@@ -257,20 +461,6 @@ trap_add(*trapid, thrid, eventid);
 
 srv_add(*srvid, thrid);
 
--- k4 avec les classes
-
-user = ne communique pas avec le hard
-
-service = un processus qui "fournit un service" avec des privileges accrus.
-          generalement ces processus recoivent des messages et execute une
-          tache mais si ceux ci ne le font pas ils se nomment tout de meme
-          services par rapport a leurs privileges. finallement un appelle
-          service un processus qui sert le kernel dans ses taches.
-
-driver = service mais qui communique en plus avec le hard
-
-kernel = il peut communiquer avec tlm et a acces a tout
-
 -- k4
 
 processus = la notion de processus n'existe pas dans LSE/OS. neanmoins nous
@@ -434,7 +624,7 @@ raisons \'evidentes il ne vous sera pas possible d'installer de trap
 tant que les threads ne seront pas g\'er\'ees, mais cela n'est pas important.
 
 \begin{verbatim}
-typedef u_int32_t       t_thrid;
+typedef t_uint32        t_thrid;
 \end{verbatim}
 
 \subsection{t\_trapid}
@@ -447,7 +637,7 @@ Ce type repr\'esente un identifiant de trap.
 typedef struct          s_trapid
 {
   t_hwid                hwid;
-  u_int32_t             id;
+  t_uint32              id;
 }                       t_trapid;
 \end{verbatim}
 

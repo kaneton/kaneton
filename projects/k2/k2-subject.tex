@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Mon Feb 21 16:02:16 2005   mycure
-%% last update   Sat Feb 26 14:34:21 2005   mycure
+%% last update   Fri Mar 18 13:11:27 2005   mycure
 %%
 
 \documentclass[10pt,a4wide]{article}
@@ -24,9 +24,9 @@
 
 \bibliographystyle{plain}
 
-\lhead{{\scriptsize kaneton project}}
+\lhead{\scriptsize{kaneton project}}
 \rhead{k2 subject}
-\rfoot{\scriptsize EPITA System Lab}
+\rfoot{\scriptsize{EPITA System Lab}}
 
 \title{kaneton2}
 
@@ -41,6 +41,8 @@
 \maketitle
 
 \section{Informations}
+
+\paragraph{}
 
 \begin{tabular}{p{7cm}l}
 
@@ -126,6 +128,8 @@ sera suivie pour tous les projets, de k0 \`a kn.
 
 \subsection{Console}
 
+\paragraph{}
+
 Nous vous laissons le choix de l'interface de la gestion de la console.
 
 \paragraph{}
@@ -180,7 +184,7 @@ Cette fonction initialise la gestion des espaces adressage.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{as\_rsv}(t\_asid \textbf{*asid});
+\hspace{1.5cm}int \textbf{as\_rsv}(t\_asid* \textbf{asid});
 
 \paragraph{}
 
@@ -191,8 +195,56 @@ son identifiant.
 
 \paragraph{}
 
+Attention, un espace d'adressage d\'ecrit la m\'emoire physique et
+virtuelle utilis\'ee mais ne comprend pas la m\'emoire n\'ecessaire
+\`a sa gestion.
+
+\paragraph{}
+
+Pour ces raisons lors de la r\'eservation d'espace m\'emoire pour la
+cr\'eation de la structure \textbf{as} il ne faudra pas passer l'\textbf{asid}
+correspondant \`a l'espace d'adressage en cours de construction mais
+bien l'\textbf{asid} du kernel car c'est ce dernier qui doit s'occuper
+de trouver de la m\'emoire pour stocker les structures de donn\'ees.
+
+\paragraph{}
+
+\'Evidemment pour la cr\'eation de l'espace d'adressage du kernel, il suffit
+de le d\'eclarer en global dans le code du kernel.
+
+\begin{verbatim}
+
+--- kaneton/as.c
+
+#include [...]
+
+/*
+ * describes the kernel address space
+ */
+
+t_as            kas;
+t_asid          kasid;
+
+[...]
+
+--- kaneton/pm.c
+
+#include [...]
+
+/*
+ * describes the system's physical memory
+ */
+
+t_pm            pm;
+
+[...]
+
+\end{verbatim}
+
+\paragraph{}
+
 \hspace{1.5cm}int \textbf{as\_get}(t\_asid \textbf{asid},
-                                   t\_as \textbf{*as});
+                                   t\_as* \textbf{as});
 
 \paragraph{}
 
@@ -215,6 +267,18 @@ allocations de m\'emoire sur un espace d'adressage.
 \paragraph{}
 
 Cette fonction lib\`ere l'espace d'adressage sp\'ecifi\'e.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{as\_clone}(t\_asid \textbf{old},
+                                     t\_asid \textbf{new});
+
+\paragraph{}
+
+Cette fonction duplique un espace d'adressage. Suivant les bonus que vous
+avez/aurez fait, il est possible d'appliquer des optimisations sur les zones
+comme par exemple en mettant les pages en \'ecriture, en ``copy-on-write''
+etc.. pour gagner du temps lors du clonage.
 
 \paragraph{}
 
@@ -270,10 +334,10 @@ Cette fonction initialise la gestion des segments.
 \paragraph{}
 
 \hspace{1.5cm}int \textbf{seg\_add}(t\_paddr \textbf{start},
-                                    t\_paddr \textbf{size},
+                                    t\_psize \textbf{size},
                                     t\_pl \textbf{pl},
                                     t\_segtype \textbf{type},
-                                    t\_segid \textbf{*segid});
+                                    t\_segid* \textbf{segid});
 
 \paragraph{}
 
@@ -296,7 +360,7 @@ du segment.
 
 \hspace{1.5cm}int \textbf{seg\_modify}(t\_segid \textbf{segid},
                                        t\_paddr \textbf{start},
-                                       t\_paddr \textbf{size},
+                                       t\_psize \textbf{size},
                                        t\_pl \textbf{pl},
                                        t\_segtype \textbf{type});
 
@@ -365,7 +429,7 @@ la structure de donn\'ees appropri\'ee: tableau, liste chain\'ee, arbre etc..
 \paragraph{}
 
 \hspace{1.5cm}int \textbf{pm\_init}(t\_paddr \textbf{start},
-                                    t\_paddr \textbf{size});
+                                    t\_psize \textbf{size});
 
 \paragraph{}
 
@@ -374,8 +438,8 @@ Cette fonction se charge d'initialiser le gestionnaire de m\'emoire physique.
 \paragraph{}
 
 \hspace{1.5cm}int \textbf{pm\_rsv}(t\_asid \textbf{asid},
-                                   t\_paddr \textbf{*addr},
-                                   t\_paddr \textbf{npages},
+                                   t\_paddr* \textbf{addr},
+                                   t\_psize \textbf{npages},
                                    t\_pmflags \textbf{flags});
 
 \paragraph{}
@@ -387,7 +451,14 @@ de m\'emoire physique.
 
 L'argument \textbf{*addr} doit \^etre rempli par la fonction, indiquant
 l'adresse de la zone allou\'ee. L'argument \textbf{flags} indique les options
-d'allocation: PM\_FLAG\_ANY, PM\_FLAG\_DMA etc..
+d'allocation: PM\_FLAG\_ANY, PM\_FLAG\_SPECIFIC, PM\_FLAG\_DMA etc..
+
+\paragraph{}
+
+L'option PM\_FLAG\_SPECIFIC permet de sp\'ecifier une adresse physique
+\`a laquelle l'appellant d\'esire allouer ces pages de m\'emoire physique.
+Si les pages de m\'emoire physique ne sont pas disponibles \`a cet
+emplacement, la fonction retourne une erreur.
 
 \paragraph{}
 
@@ -405,14 +476,17 @@ dans l'unique but de garder les structures coh\'erentes.
 
 \hspace{1.5cm}int \textbf{pm\_attr}(t\_asid \textbf{asid},
                                     t\_paddr \textbf{addr},
-                                    t\_paddr \textbf{npages},
+                                    t\_psize \textbf{npages},
                                     t\_pattr \textbf{attr});
 
 \paragraph{}
 
 Cette op\'eration permet de modifier les attributs d'une page physique.
 Les attributs pourraient \^etre: PM\_ATTR\_SHARE pour marquer la zone
-comme partag\'ee, PM\_ATTR\_COW pour le ``copy-on-write'' ou m\^eme
+comme partag\'ee, PM\_ATTR\_COW pour le ``copy-on-write'',
+PM\_ATTR\_PERSISTENT pour marquer une zone comme r\'esidente permanent
+en m\'emoire afin de limiter les fautes de pages et autre swapping
+extr\^emement g\'enants dans les applications temps r\'eelles, ou bien m\^eme
 PM\_ATTR\_AGGREGATE pour marquer une zone comme \'etant un objet. Ce dernier
 attribut force le gestionnaire de m\'emoire physique \`a consid\'erer
 cette zone comme elle est et non \`a fusionner ou d\'ecouper celle-ci.
@@ -426,7 +500,7 @@ la section Bonus.
 
 \hspace{1.5cm}int \textbf{pm\_rel}(t\_asid \textbf{asid},
                                    t\_paddr \textbf{addr},
-                                   t\_paddr \textbf{npages});
+                                   t\_psize \textbf{npages});
 
 \paragraph{}
 
@@ -490,7 +564,7 @@ Cette fonction initialise la gestion des interruptions.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{int\_rsv}(u\_int8\_t \textbf{entry},
+\hspace{1.5cm}int \textbf{int\_rsv}(t\_uint8 \textbf{entry},
                                     t\_inttype \textbf{type},
                                     t\_segid \textbf{segid},
                                     t\_pl \textbf{pl},
@@ -511,7 +585,7 @@ ce point tr\`es pr\'ecis sera explicit\'e ult\'erieurement.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{int\_rel}(u\_int8\_t \textbf{entry});
+\hspace{1.5cm}int \textbf{int\_rel}(t\_uint8 \textbf{entry});
 
 \paragraph{}
 
@@ -601,6 +675,86 @@ vous devrez utilis\'es.
 Nous vous exposons ici un exemple de d\'efinition de ces types. Rien ne vous
 oblige \`a les suivre.
 
+\subsection{t\_uint8}
+
+\paragraph{}
+
+Ce type repr\'esente un nombre non sign\'e sur 8 bits.
+
+\begin{verbatim}
+typedef unsigned char   t_uint8
+\end{verbatim}
+
+\subsection{t\_sint8}
+
+\paragraph{}
+
+Ce type repr\'esente un nombre sign\'e sur 8 bits.
+
+\begin{verbatim}
+typedef signed char     t_sint8
+\end{verbatim}
+
+\subsection{t\_uint16}
+
+\paragraph{}
+
+Ce type repr\'esente un nombre non sign\'e sur 16 bits.
+
+\begin{verbatim}
+typedef unsigned short  t_uint16
+\end{verbatim}
+
+\subsection{t\_sint16}
+
+\paragraph{}
+
+Ce type repr\'esente un nombre sign\'e sur 16 bits.
+
+\begin{verbatim}
+typedef signed short    t_sint16
+\end{verbatim}
+
+\subsection{t\_uint32}
+
+\paragraph{}
+
+Ce type repr\'esente un nombre non sign\'e sur 32 bits.
+
+\begin{verbatim}
+typedef unsigned int    t_uint32
+\end{verbatim}
+
+\subsection{t\_sint32}
+
+\paragraph{}
+
+Ce type repr\'esente un nombre sign\'e sur 32 bits.
+
+\begin{verbatim}
+typedef signed int      t_sint32
+\end{verbatim}
+
+\subsection{t\_uint64}
+
+\paragraph{}
+
+Ce type repr\'esente un nombre non sign\'e sur 64 bits.
+
+\begin{verbatim}
+typedef unsigned quad_t t_uint64
+\end{verbatim}
+
+\subsection{t\_sint64}
+
+\paragraph{}
+
+Ce type repr\'esente un nombre sign\'e sur 64 bits.
+
+\begin{verbatim}
+typedef quad_t          t_sint64
+\end{verbatim}
+
 \subsection{t\_paddr}
 
 \paragraph{}
@@ -610,7 +764,20 @@ partie ``machine dependent'' de kaneton pour des raisons \'evidentes de
 portabilit\'e sur des architectures diff\'erentes style 64-bit par exemple.
 
 \begin{verbatim}
-typedef u_int32_t       t_paddr;
+typedef t_uint32        t_paddr;
+\end{verbatim}
+
+\subsection{t\_psize}
+
+\paragraph{}
+
+Ce type repr\'esente une taille, un nombre de pages physique. Ce type
+sera d\'efini par la partie ``machine dependent'' de kaneton pour des
+raisons \'evidentes de portabilit\'e sur des architectures diff\'erentes
+style 64-bit par exemple.
+
+\begin{verbatim}
+typedef t_uint32        t_psize;
 \end{verbatim}
 
 \subsection{t\_vaddr}
@@ -621,7 +788,7 @@ Ce type repr\'esente une adresse virtuelle. M\^eme chose que pour
 \textbf{t\_paddr}, ce type sera d\'efini pour la partie ``machine dependent''.
 
 \begin{verbatim}
-typedef u_int32_t       t_vaddr;
+typedef t_uint32        t_vaddr;
 \end{verbatim}
 
 \subsection{t\_asid}
@@ -632,7 +799,9 @@ Ce type identifie un espace d'adressage et n'est compos\'e que
 d'un identifiant soit un nombre.
 
 \begin{verbatim}
-typedef u_int32_t       t_asid;
+#define ASID_UNUSED             ((t_asid)-1)
+
+typedef t_uint32        t_asid;
 \end{verbatim}
 
 \subsection{t\_as}
@@ -664,15 +833,15 @@ que cet objet aura les privil\`eges utilisateur, la partie d\'ependante
 pourra donc choisir ais\'ement les valeurs \`a inscrire au niveau hardware.
 
 \begin{verbatim}
-#define PL_KERNEL       0x00
-#define PL_SERVICE      0x01
-#define PL_USER         0x02
+#define PL_KERNEL               0x00
+#define PL_SERVICE              0x01
+#define PL_USER                 0x02
 
-#define PL_READ         0x04
-#define PL_WRITE        0x08
-#define PL_EXEC         0x10
+#define PL_READ                 0x04
+#define PL_WRITE                0x08
+#define PL_EXEC                 0x10
 
-typedef u_int16_t       t_pl;
+typedef t_uint16        t_pl;
 \end{verbatim}
 
 \subsection{t\_segtype}
@@ -687,10 +856,10 @@ Cette partie fait totalement partie de la partie ``machine dependent''
 \'etant donn\'e que la notion de segment n'est pas g\'en\'erique.
 
 \begin{verbatim}
-#define SEG_TYPE_MEM    0x00
-#define SEG_TYPE_TSS    0x01
+#define SEG_TYPE_MEM            0x00
+#define SEG_TYPE_TSS            0x01
 
-typedef u_int8_t        t_segtype;
+typedef t_uint8         t_segtype;
 \end{verbatim}
 
 \subsection{t\_segid}
@@ -705,7 +874,9 @@ un nombre.
 Cette partie fait encore totalement partie de la partie ``machine dependent''.
 
 \begin{verbatim}
-typedef u_int32_t       t_segid;
+#define SEGID_UNUSED            ((t_segid)-1)
+
+typedef t_uint32        t_segid;
 \end{verbatim}
 
 \subsection{t\_pmflags}
@@ -716,14 +887,13 @@ Repr\'esente les diff\'erents flags qu'utilise la gestion de la m\'emoire
 physique.
 
 \begin{verbatim}
-#define PM_FLAG_ANY     0x00
-#define PM_FLAG_DMA     0x01
+#define PM_FLAG_ANY             0x00
+#define PM_FLAG_SPECIFIC        0x01
+#define PM_FLAG_DMA             0x02
 
-/*
- * ...
- */
+[...]
 
-typedef u_int16_t       t_pmflags;
+typedef t_uint16        t_pmflags;
 \end{verbatim}
 
 \subsection{t\_inttype}
@@ -739,12 +909,12 @@ Cette partie fait totalement partie de la partie ``machine dependent''
 \'etant donn\'e que la notion d'interruption n'est pas g\'en\'erique.
 
 \begin{verbatim}
-#define INT_TYPE_INT    0x00
-#define INT_TYPE_TRAP   0x01
-#define INT_TYPE_TASK   0x02
-#define INT_TYPE_CALL   0x03
+#define INT_TYPE_INT            0x00
+#define INT_TYPE_TRAP           0x01
+#define INT_TYPE_TASK           0x02
+#define INT_TYPE_CALL           0x03
 
-typedef u_int8_t        t_inttype;
+typedef t_uint8         t_inttype;
 \end{verbatim}
 
 \subsection{t\_eventid}
@@ -761,7 +931,9 @@ l'IRQ du p\'eriph\'erique. Gr\^ace \`a cela vous pourrez tester vos
 drivers etc..
 
 \begin{verbatim}
-typedef u_int32_t       t_eventid;
+#define EVENTID_UNUSED          ((t_eventid)-1)
+
+typedef t_uint32        t_eventid;
 \end{verbatim}
 
 \newpage
@@ -836,11 +1008,15 @@ La partie \textbf{pas} ne devrait rien avoir \`a faire sur IA-32.
 
 \subsection{int}
 
+\paragraph{}
+
 La gestion des interruptions est une partie totalement d\'ependante de
 l'architecture. Celle ci devra donc \^etre construite pour pouvoir
 coller ensuite avec les traps.
 
 \subsection{pic}
+
+\paragraph{}
 
 La gestion du PIC est soumise est m\^eme contraintes que le gestionnaire
 d'interruptions.
@@ -872,59 +1048,268 @@ l'architecture Sparc?
 
 \paragraph{}
 
-Nous vous proposons ici une solution que vous pouvez choisir d'adopter ou non.
+Tout d'abord une partie d\'ependante est d\'ecoup\'ee en gestionnaires
+tout comme la partie ind\'ependante de l'architecture: pm, as,
+task, sched etc..
+
+\paragraph{}
+
+Chaque gestionnaire est compos\'e d'une interface d\'ecrivant les actions
+pouvant \^etre entreprises sur sa partie d\'ependante et bien entendu d'un
+ensemble de donn\'ees d\'ependantes encore une fois de l'architecture.
+
+\paragraph{}
+
+L'interface et les donn\'ees ne sont jamais acc\'ed\'es directement
+par la partie ind\'ependante de l'architecture mais plut\^ot via
+deux op\'erations pr\'ed\'efinies: \textbf{machdep\_call}() et
+\textbf{machdep\_include}(); ces deux op\'erations \'etant d\'efinies
+exclusivement par la partie d\'ependante de l'architecture,
+g\'en\'eralement sous forme de ``macros''.
+
+\paragraph{}
+
+\hspace{1.5cm}\#define \textbf{machdep\_call}(\_mng\_, \_function\_);
+
+\paragraph{}
+
+L'op\'eration \textbf{machdep\_call}() permet de faire appel \`a la
+fonctionnalit\'e \textbf{\_function\_} offerte, ou non, par
+la partie d\'ependante de l'architecture du gestionnaire
+\textbf{\_mng\_}.
+
+\paragraph{}
+
+\hspace{1.5cm}\#define \textbf{machdep\_include}(\_object\_);
+
+\paragraph{}
+
+L'op\'eration \textbf{machdep\_include}() permet de demander \`a la partie
+d\'ependante de l'architecture si celle-ci d\'esire inclure des donn\'ees
+dans l'objet \textbf{object}.
+
+\paragraph{}
+
+Comme vous pouvez le constater tout est fait pour que la partie ind\'ependante
+ne soit pas au courant de ce que fait la partie d\'ependante. De plus
+la partie d\'ependante peut d\'ecider ou non d'impl\'ementer l'interface
+et/ou d'inclure des donn\'ees. Voici quelques exemples plus parlant
+qui montrent bien la libert\'e offerte \`a la partie d\'ependante
+de l'architecture concernant l'impl\'ementation.
+
+\paragraph{}
+
+Attention, tous les exemples qui suivent ne repr\'esentent absolument
+pas les r\'eelles structures et interfaces que vous devez impl\'ementer.
+
+\paragraph{}
+
+Il est important de noter qu'une interface est toujours d\'eclar\'ee en
+utilisant le pr\'efixe: \textbf{i\_} et qu'une structure d\'efinisant
+des donn\'ees d\'ependantes et toujours pr\'efix\'ee par \textbf{d\_}.
+L'utlisation de tels pr\'efixes permet de toujours s'y retrouver
+tr\`es rapidement dans le code.
+
+\paragraph{}
+
+Imaginons une architecture \textit{imaginaire} sur laquelle aucune
+partie d\'ependante de l'architecture ne serait n\'ecessaire,
+\textbf{machdep\_call}() et \textbf{machdep\_include}() pourraient
+\^etre impl\'ement\'ees de la sorte:
 
 \begin{verbatim}
 
--- kernel/ia-32/pm.c
+-- kaneton/machdep/machdep.h
 
-typedef struct  s_pm_dep
+[...]
+
+#define machdep_call(_mng_, _function_)                                 \
+  /* nothing */
+
+#define machdep_include(_object_)                                       \
+  /* nothing */
+
+[...]
+
+\end{verbatim}
+
+\paragraph{}
+
+Cet exemple est parlant car il montre bien que cette architecture ne veut
+rien impl\'ementer. Pour cela, la partie d\'ependante de l'architecture
+se contente de d\'efinir les deux op\'erations comme ``vides'' et le tour
+est jou\'e. L'architecture ne d\'efinira absolument rien de plus.
+
+\paragraph{}
+
+En revanche sur une architecture dit \textit{normale}, l'impl\'ementation
+ressemblerait plus \`a cela:
+
+\begin{verbatim}
+
+-- kaneton/machdep/machdep.h
+
+[...]
+
+#define machdep_call(_mng_, _function_)                                 \
+  machdep_call_##_mng_(_function_)
+
+#define machdep_include(_object_)                                       \
+  machdep_include_##_object_()
+
+[...]
+
+\end{verbatim}
+
+\paragraph{}
+
+Ensuite libre \`a la partie d\'ependante d'un gestionnaire d'impl\'ementer
+les fonctionnalit\'es: interface et/ou donn\'ees, comme le d\'emontre
+l'exemple suivant:
+
+\begin{verbatim}
+
+-- kaneton/ia-32/as.h
+
+[...]
+
+#define machdep_call_as(_function_)                                     \
+  /* nothing */
+
+#define machdep_include_as()                                            \
+  d_machdep_as  machdep;
+
+typedef struct  d_machdep_as
 {
-  int           (*pm_init)(t_paddr      start,
+  t_uint32      pd;
+}               d_machdep_as;
+
+[...]
+
+-- kaneton/as.h
+
+[...]
+
+typedef struct  t_as
+{
+  /*
+   * physical's data structure
+   * virtual's data structure
+   *
+   * ...
+   */
+
+  machdep_include(as);
+}
+
+[...]
+
+\end{verbatim}
+
+\paragraph{}
+
+La structure \textbf{t\_as} ressemblera finalement \`a cela:
+
+\begin{verbatim}
+
+typedef struct  t_as
+{
+  /*
+   * physical's data structure
+   * virtual's data structure
+   *
+   * ...
+   */
+
+  d_machdep_as  machdep;
+}
+
+\end{verbatim}
+
+\paragraph{}
+
+Bien entendu le code ind\'ependant de l'architecture du kernel s'engage
+\`a ne jamais nommer un champ de structure \textbf{machdep}, celui-ci
+\'etant exclusivement r\'eserv\'e \`a la partie d\'ependante de l'architecture.
+
+\paragraph{}
+
+Vous aurez bien entendu compris que l'avantage d'un tel syst\`eme est la
+possibilit\'e pour la partie d\'ependante de ne pas d\'eclarer inutilement
+ni de donn\'ees ni d'interface.
+
+\paragraph{}
+
+Voyons d\'esormais l'utilisation de l'interface des parties d\'ependantes
+de l'architecture. Dans l'exemple pr\'ec\'edent, la partie d\'ependante
+du gestionnaire d'espace d'adressage ne fournissait aucune interface.
+Voyons d\'esormais un exemple contraire.
+
+\begin{verbatim}
+
+-- kaneton/ia-32/pm.h
+
+[...]
+
+#define machdep_call_pm(_function_)                                     \
+  machdep_pm_interface._function_
+
+#define machdep_include_pm()                                            \
+  /* nothing */
+
+typedef struct  i_machdep_pm
+{
+  void          (*pm_init)(t_paddr      start,
                            t_paddr      size);
   /*
    * pm_rsv, pm_attr, pm_rel, pm_clean
    *
    * ...
    */
-}               t_pm_dep;
+}               i_machdep_pm;
 
-t_pm_dep        pm_dep =
+i_machdep_pm    machdep_pm_interface =
 {
   ia32_pm_init,
   ia32_pm_rsv,
+  NULL,
   ia32_pm_rel,
   ia32_pm_clean,
 };
 
-int             ia32_pm_init(t_paddr    start,
+void            ia32_pm_init(t_paddr    start,
                              t_paddr    size)
 {
   seg_init();
 
-  seg_add(...);
-  seg_add(...);
-  seg_add(...);
-  seg_add(...);
+  seg_add([...]);
+  seg_add([...]);
+  seg_add([...]);
+  seg_add([...]);
 
-  /*
-   * ...
-   */
+  [...]
 
   return (0);
 }
 
--- kernel/pm.c
+[...]
+
+-- kaneton/pm.c
+
+[...]
+
+/*
+ * describes the system's physical memory
+ */
+
+t_pm            pm;
 
 int             pm_init(t_paddr         start,
                         t_paddr         size)
 {
-  if (pm_dep.pm_init != NULL)
-    pm_dep.pm_init(start, size);
+  machdep_call(pm, pm_init);
 
-  /*
-   * ...
-   */
+  [...]
 
   return (0);
 }
@@ -934,29 +1319,59 @@ int             pm_init(t_paddr         start,
  *
  * ...
  */
+
+[...]
+
 \end{verbatim}
 
-\paragraph{}
-
-L'utilisation de structure d\'ecrivant les fonctions d\'ependantes de
-l'architecture \`a appeller permet aux architectures qui n'ont pas
-besoin de fonctionnalit\'es d\'ependantes de l'architecture de ne
-pas \^etre oblig\'ees de d\'efinir des fonctions vides. La seule d\'eclaration
-requise \'etant la structure d\'efinissant les fonctions d\'ependantes
-de l'architecture \`a appeller.
+\section{Organisation}
 
 \paragraph{}
 
-Encore une fois cette impl\'ementation est pratique car la partie
-ind\'ependante ne se soucie de rien mis \`a part du fait qu'une structure
-d\'ecrivant les fonctions d\'ependantes de l'architecture existe.
+Voici une vue d'ensemble sur l'organisation des vos fichiers sources
+afin de rendre les compilations plus simples en fonction de l'architecture.
 
 \paragraph{}
 
-\`A vous de voir ce qu'il serait ing\'enieux de rajouter en param\`etre.
-De plus il serait int\'eressant de rajouter un champ dans vos structures
-de donn\'ees ind\'ependantes pour que les parties d\'ependantes puisse
-stocker des informations.
+\begin{verbatim}
+/
+
+    /include                              /* includes */
+        /kaneton
+        /machdep   -----------+
+        /sparc-64             |
+        /ia-32    <-----------+
+        [...]
+
+    /kaneton                              /* kaneton core */
+        /machdep   -----------+
+        /sparc-64             |
+        /ia-32    <-----------+
+        [...]
+
+    /lib
+        /klibc                            /* kaneton C library */
+            /machdep   -------+
+            /sparc-64         |
+            /ia-32    <-------+
+            [...]
+        /ulibc                            /* unix-emulation library */
+
+    /drivers
+        /tty
+        /ide
+        [...]
+
+    /services
+        /dev
+        /vfs
+        [...]
+
+    /users
+        /ls
+        /sh
+        [...]
+\end{verbatim}
 
 \section{Bonus}
 
@@ -965,6 +1380,8 @@ stocker des informations.
 Voici les bonus de ce projet.
 
 \subsection{Attributes}
+
+\paragraph{}
 
 Un ajout int\'eressant dans la gestion de la m\'emoire physique sera
 de permettre le partage de pages physiques et plus particuli\`erement
@@ -993,6 +1410,8 @@ De plus il vous sera demander de g\'erer les attributs COW et AGGREGATE.
 
 \subsection{Tty}
 
+\paragraph{}
+
 Il pourrait \^etre int\'eressant de disposer de diff\'erents tty, c'est \`a
 dire des couples console - clavier diff\'erent.
 
@@ -1002,6 +1421,8 @@ Il vous sera donc demand\'e de fournir un interface compl\`ete pour la
 manipulation des tty.
 
 \subsection{Clock}
+
+\paragraph{}
 
 La gestion de l'heure peut \^etre int\'eressant. Il vous sera donc
 demand\'e de toujours avoir une date mise \`a jour.
@@ -1059,5 +1480,28 @@ l'objet.
 
 Bien entendu, l'acc\`es aux objets utilisera forc\'ement une
 exclusion mutuelle.
+
+\section{Bibliographie}
+
+\paragraph{}
+
+Voici la bibliographie de k2.
+
+\subsection{Pic}
+
+\paragraph{}
+
+\begin{itemize}
+\item IA-32 Intel Architecture Software Developer's Manual Volume 3:
+      System Programming Guide - Chapter 5 Interrupt And Exception Handling.
+\end{itemize}
+
+\subsection{Interruptions et exceptions}
+
+\paragraph{}
+
+\begin{itemize}
+\item Intel 8259A Programmable Interrupt Controller.
+\end{itemize}
 
 \end{document}

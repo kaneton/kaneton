@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Mon Feb 21 16:02:38 2005   mycure
-%% last update   Sat Feb 26 14:50:52 2005   mycure
+%% last update   Sat Mar 12 01:54:19 2005   mycure
 %%
 
 \documentclass[10pt,a4wide]{article}
@@ -24,9 +24,9 @@
 
 \bibliographystyle{plain}
 
-\lhead{{\scriptsize kaneton project}}
+\lhead{\scriptsize{kaneton project}}
 \rhead{k3 subject}
-\rfoot{\scriptsize EPITA System Lab}
+\rfoot{\scriptsize{EPITA System Lab}}
 
 \title{kaneton3}
 
@@ -159,8 +159,9 @@ virtuelles mais \'egalement de manipuler des donn\'ees en virtuel.
 \paragraph{}
 
 \hspace{1.5cm}int \textbf{vm\_rsv}(t\_asid \textbf{asid},
-                                   t\_vaddr \textbf{*vaddr},
-                                   t\_vaddr \textbf{npages});
+                                   t\_vaddr* \textbf{vaddr},
+                                   t\_vsize \textbf{npages},
+                                   t\_vmflags \textbf{flags});
 
 \paragraph{}
 
@@ -172,13 +173,18 @@ contient l'adresse trouv\'ee pour effectuer cette allocation.
 
 \paragraph{}
 
+Les options sont identiques \`a celles de la fonction \textbf{pm\_rsv}()
+comme par exemple: VM\_FLAG\_ANY, VM\_FLAG\_SPECIFIC etc..
+
+\paragraph{}
+
 Cette fonction modifiera \'egalement l'espace d'adressage \textbf{asid}.
 
 \paragraph{}
 
 \hspace{1.5cm}int \textbf{vm\_rel}(t\_asid \textbf{asid},
                                    t\_vaddr \textbf{vaddr},
-                                   t\_vaddr \textbf{npages});
+                                   t\_vsize \textbf{npages});
 
 \paragraph{}
 
@@ -192,7 +198,7 @@ Cette fonction modifiera l'espace d'adressage \textbf{asid}.
 
 \hspace{1.5cm}int \textbf{vm\_attr}(t\_asid \textbf{asid},
                                     t\_vaddr \textbf{vaddr},
-                                    t\_vaddr \textbf{npages},
+                                    t\_vsize \textbf{npages},
                                     t\_vattr \textbf{attr});
 
 \paragraph{}
@@ -216,7 +222,7 @@ Nous vous le conseillons pour une question de logique.
 \hspace{1.5cm}int \textbf{vm\_map}(t\_asid \textbf{asid},
 				   t\_paddr \textbf{paddr},
                                    t\_vaddr \textbf{vaddr},
-                                   t\_vaddr \textbf{npages});
+                                   t\_vsize \textbf{npages});
 
 \paragraph{}
 
@@ -249,7 +255,7 @@ faire et ce qu'il faudrait enlever ou ajouter aux gestionnaires exitants.
 
 \hspace{1.5cm}int \textbf{vm\_unmap}(t\_asid \textbf{asid},
                                      t\_vaddr \textbf{vaddr},
-                                     t\_vaddr \textbf{npages});
+                                     t\_vsize \textbf{npages});
 
 \paragraph{}
 
@@ -262,7 +268,7 @@ sur cette zone virtuelle.
                                     t\_vaddr \textbf{src},
                                     t\_asid \textbf{to},
                                     t\_vaddr \textbf{dst},
-                                    t\_vaddr \textbf{nbytes});
+                                    t\_vsize \textbf{nbytes});
 
 \paragraph{}
 
@@ -272,8 +278,8 @@ deux espaces d'adressage virtuels.
 \paragraph{}
 
 \hspace{1.5cm}int \textbf{mm\_rsv}(t\_asid \textbf{asid},
-                                   t\_vaddr \textbf{*vaddr},
-                                   t\_vaddr \textbf{npages});
+                                   t\_vaddr* \textbf{vaddr},
+                                   t\_vsize \textbf{npages});
 
 \paragraph{}
 
@@ -286,7 +292,7 @@ et utilisable: \textbf{pm\_rsv}(), \textbf{vm\_rsv}() et \textbf{vm\_map}().
 
 \hspace{1.5cm}int \textbf{mm\_rel}(t\_asid \textbf{asid},
                                    t\_vaddr \textbf{vaddr},
-                                   t\_vaddr \textbf{npages});
+                                   t\_vsize \textbf{npages});
 
 \paragraph{}
 
@@ -312,11 +318,39 @@ au seul type suivant.
 Ce type d\'ecrit les attributs que peut prendre une page virtuelle.
 
 \begin{verbatim}
-#define VM_ATTR_EXEC    0x0
-#define VM_ATTR_READ    0x1
-#define VM_ATTR_WRITE   0x2
+#define VM_ATTR_EXEC            0x0
+#define VM_ATTR_READ            0x1
+#define VM_ATTR_WRITE           0x2
 
-typedef u_int8_t        t_vattr;
+typedef t_uint8         t_vattr;
+\end{verbatim}
+
+\subsection{t\_vsize}
+
+\paragraph{}
+
+Ce type d\'ecrit un nombre de pages virtuelles.
+
+\begin{verbatim}
+typedef t_uint32        t_vsize;
+\end{verbatim}
+
+\subsection{t\_vmflags}
+
+\paragraph{}
+
+Repr\'esente les diff\'erents flags qu'utilise le gestionnaire de la m\'emoire
+virtuelle.
+
+\begin{verbatim}
+#define VM_FLAG_ANY             0x00
+#define VM_FLAG_SPECIFIC        0x01
+
+/*
+ * ...
+ */
+
+typedef t_uint16        t_vmflags;
 \end{verbatim}
 
 \subsection{Bonus}
