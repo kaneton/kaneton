@@ -1,0 +1,241 @@
+. page fault a gerer dans k3
+
+. durant k7 ils peuvent faire un petit fs en ram pour gerer les modules grub
+
+---
+
+ t_task, t_thread, t_as, t_asid, t_taskid, t_srv, t_srvid, t_threadid ..
+ pm: partie dependent et indep
+ mail stevens: publi + andy
+
+ load, unload, reload
+ expliquer les structures: asid, as, ...
+
+---
+
+as:
+
+as_rsv(*asid) [ok]
+as_rel(asid) [ok]
+
+as_attach(taskid, asid) [todo k4]
+as_detach(asid) [todo k4]
+
+thread:
+
+thread_rsv(*thrid) [todo k4]
+thread_rel(thrid) [todo k4]
+
+thread_attach(taskid, thrid) [todo k4]
+thread_detach(thrid) [todo k4]
+
+task:
+
+task_rsv(*taskid) [todo k4]
+task_rel(taskid) [todo k4]
+
+task_load(taskid, modid) [todo k4]
+	-> check + mm_rsv + copy + thread_rsv (main) + thread_attach
+
+task_unload(taskid) [todo k4]
+	/* pour ca il faut garder trace des pages utilisees par le binaire
+	   l'avantage c'est qu'apres on peut recycler TRES facilement
+	   les structures */
+
+task_reload(taskid, modid) [todo k4]
+
+--
+
+t_segid
+t_paddr
+t_pl
+t_segtype
+
+t_as
+{
+  t_asid asid;
+  [physical description]
+  [virtual description]
+}
+
+t_asid
+t_pmflags
+t_trapid (contient le t_hwid)
+t_hwid
+t_inttype
+t_vaddr
+
+explique qu on peut tres facilement utiliser des unions, qui sont ici
+tres appropriees car utilisant des types bien specifiques. neamoins des
+defines feront l'affaire.
+
+struct
+{
+  ia32_pm_init, -> seg_init() + seg_add() * 4
+  ia32_pm_rsv,
+  ia32_pm_rel,
+  ia32_pm_clear,
+}	t_pm_dep;
+
+expliquer un fonctionnement de pm_rsv vm_rsv vm_map vm_unmap
+
+expliquer que lorsque l'on fait un msg_init -> int_add() * N +
+  wrapper etc..
+lors du trap_add() on recupere le segid par rapport au thread
+  et hop int_add()
+
+expliquer la table de traps et faire en sorte qu on puisse register plusieurs
+  handler pour les traps mais egalement pour les msgs
+
++bonus: gerer l'heure
+
+fonction pour liberer la memoire physique appartenant a un asid ?
+
+--
+
+expliquer quand pm_rsv -> plist et quand vm_map -> vlist
+
+--
+
+schedule de threads
+
+--
+
+prevoir pour plusieurs processeurs, reprendre sur vianney
+
+--
+
+. expliquer comment on va gerer les traps -> int etc.. table de traps
+  broadcast de traps etc.. bottom-halves
+
+. expliquer comment on va gerer les msgs
+
+--
+
+expliquer que dans tous les cas les handlers d interruptions seront des
+INTGATE (ce qui facilite le portage) et que ensuite on dispatch. CA ressemble
+au bottom-halves de linux.
+
+-- faire relire a fabien
+
+permettre de flusher les traps que sur un hwid precis plutot que tout
+
+--
+
+virer tous les cas de write pendant un read et comme ca distribue tres
+simplle -> demander a laurent
+
+--
+
+alors:
+
+ - il faut pouvoir faire en sorte qu'une interruption lance plusieurs thread
+ - il faut pouvoir faire qu un message arrive chez plusieurs personne pour
+   un seul envoie -> broadcast
+
+. un systeme de groupe est complique a envisage dans le seul ou implicitement
+  c'est bizarre et explicitement c'est difficile de savoir a l avance qui va
+  vouloir se joindre a son groupe pour eventuellement recevoir les messages
+  du groupe.
+
+. un systeme de ressource hardware et virtuelle c'est le bon truc sauf que
+  ce n'est pas le bon nommage. finallement on veut acceder a un point
+  de liaison qui se trouve etre finallement une trap.
+
+. la question est donc comment creer, joindre et gerer ces points de liaisons.
+  quels vont etre les noms de ces points, comment la gestion des traps va
+  t elle evoluer pour utiliser ces points? comment les message vont etre
+  crees pour utiliser ces points de liaison?
+
+-- chiche
+
+int main()
+{
+  thrid = thread_add(srv);
+
+  trapid = trap_rsv(); /* owner = current task */
+
+  trap_add(trapid);
+
+  srv_reg(trapid);
+
+  msg_send(trapid);  
+}
+
+-- client
+
+int main()
+{
+  trap_find(
+}
+
+--
+
+trap_reg
+msg_reg
+
+--
+
+table de traps lorsqu on recoit une interruption.
+
+--
+
+le probleme c'est: comment identifier quelque chose pour communiquer avec
+une personne.
+
+--
+
+ioacquire etc... c'est interessant au niveau conceptuel mais finallement
+c'est un peu se prendre la tete: 1) le kernel et les services peuvent faire
+des io 2) le user ne peut pas Voila les points. Maintenant limites les services
+on s en fout car de toute facon certains archi ne pourront pas le permettre.
+de plus ca sert presque a rien puisque on estime que les services cooperent
+avec le kernel
+
+--
+
+service = un processus qui "fournit un service" avec des privileges accrus.
+          generalement ces processus recoivent des messages et execute une
+          tache mais si ceux ci ne le font pas ils se nomment tout de meme
+          services par rapport a leurs privileges. finallement un appelle
+          service un processus qui sert le kernel dans ses taches.
+
+--
+
+processus = la notion de processus n'existe pas dans LSE/OS. neanmoins nous
+            utiliserons ce terme comme alias du mot "task" et plus
+            particulierement pour les taches utilisateur.
+
+--
+
+load(PL_SERVICE) /* 
+load(PL_USER); /* processus */
+
+--
+
+mutex: acquire + release, avec des noms de zones critiques. bien pour la
+ memoire distribuee. mais peut etre peut on berner les autre a chopper une
+ zone de merde pour faire de la merde sur une autre zone finallement. si
+ c'est le cas, le coup des objets avec methodes c'est mieux car c'est du code
+ sur qui sera execute et en plus au bon endroit, style sur la machine owner
+ de la zone partagee.
+
+--
+
+est ce possible de multicaster un message ou une trap a des services.
+je veux dire au niveau implementation, lancer les handlers ininterruptibles.
+ca me semble chaud.
+
+--
+
+nodeid
+
+--
+
+faire un schema d'un machine et aussi d'un reseau:
+
+  as -------------------------+
+   | init rsv rel clear | get |
+   |                          |
+   +--------------------------+
+
