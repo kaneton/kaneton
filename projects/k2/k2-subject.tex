@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Mon Feb 21 16:02:16 2005   mycure
-%% last update   Mon Feb 21 16:02:17 2005   mycure
+%% last update   Fri Feb 25 12:15:12 2005   mycure
 %%
 
 \documentclass[10pt,a4wide]{article}
@@ -98,7 +98,6 @@ Voici les \'etapes \`a respecter:
 \item gestionnaire d'espaces d'adressage.
 \item gestionnaire de segmentation.
 \item gestionnaire de m\'emoire physique.
-\item gestionnaire de traps.
 \item gestionnaire d'interruptions et d'exceptions.
 \item gestion du PIC.
 \item d\'eveloppement d'un driver clavier.
@@ -107,24 +106,18 @@ Voici les \'etapes \`a respecter:
       une commande au clavier et effectue une op\'eration.
 \end{enumerate}
 
-\paragraph{}
-
-Une fois ces op\'erations effectu\'ees vous pourriez d\'ej\`a consid\'erer
-avoir un kernel presque complet. Nous pourrions dans tous les cas dire
-que le plus d\^ur est fait.
-
 \section{Interfaces}
 
 \paragraph{}
 
 Nous vous rappellons que vous \^etes libres d'utiliser une autre
-interface. Dans ce cas il vous sera demander une documentation expliquant
+interface. Dans ce cas il vous sera demand\'e une documentation expliquant
 vos choix tr\`es pr\'ecis\'ement. Sans celle-ci votre travail serait
 consid\'er\'e comme inachev\'e et non concordant avec le sujet.
 
 \paragraph{}
 
-Les fonctions des interfaces retournent \textbf{0} si tout c'est
+Les fonctions des interfaces retournent \textbf{0} si tout s'est
 pass\'e correctement ou \textbf{-1} s'il s'est produit une erreur.
 Il vous est autoris\'e d'\'etendre la gestion des erreurs en
 renvoyant une valeur n\'egative s'il s'est produit une erreur,
@@ -164,7 +157,11 @@ espaces d'adressage.
 \paragraph{}
 
 Cette partie du syst\`eme sera compl\'et\'ee dans les projets suivants,
-principalement dans k3, qui se chargera de toute la partie virtuelle.
+principalement dans k3, qui se chargera de toute la partie virtuelle et dans
+k4 pour finaliser le tout. \`A noter que les seules entit\'es \`a appliquer
+des op\'erations sur les espaces d'adressage sont: le gestionnaire de m\'emoire
+physique, le gestionnaire de m\'emoire virtuelle et bien entendu le
+gestionnaire d'espaces d'adressage.
 
 \paragraph{}
 
@@ -203,17 +200,13 @@ Cette fonction retourne l'adresse de la structure d\'ecrivant l'espace
 d'adressage \`a partir de son identifiant. Cette fonction peut \^etre
 consid\'er\'ee comme priv\'ee dans le sens o\`u seules les fonctions
 influant sur les espaces d'adressage devraient y faire appel:
-\textbf{pm\_rsv}(), \textbf{vm\_rel} etc..
+\textbf{pm\_rsv}(), \textbf{vm\_rel}() etc..
 
 \paragraph{}
 
 Pour rappel, les gestionnaires d'espace d'adressage, de m\'emoire physique
 et de m\'emoire virtuelle fonctionnent ensemble pour garder traces des
-allocations de m\'emoire. Tout cela se caract\'erisant par une manipulation
-de deux types de structure: \textbf{t\_pm} qui repr\'esente l'\'etat g\'eneral
-de la m\'emoire physique du syst\`eme et \textbf{t\_as} qui d\'ecrit
-un espace d'adressage; chaque t\^ache ayant th\'eoriquement un espace
-d'adressage.
+allocations de m\'emoire sur un espace d'adressage.
 
 \paragraph{}
 
@@ -237,7 +230,7 @@ Cette fonction d\'etruit tous les espaces d'adressage.
 
 Nous vous demandons de d\'evelopper une interface pour la gestion des
 segments. Comme nous l'avons vu en cours, le gestionnaire
-de segmentation sur processeur IA-32 inclue la gestion des segments
+de segmentation sur processeur IA-32 inclut la gestion des segments
 m\'emoire ainsi que la gestion des contextes processeur TSS.
 
 \paragraph{}
@@ -291,7 +284,8 @@ place en l'indiquant au processeur.
 
 L'argument \textbf{pl} repr\'esente le ``Privilege Level'': PL\_KERNEL,
 PL\_SERVICE, PL\_USER mais \'egalement PL\_EXEC, PL\_READ, PL\_WRITE
-alors que \textbf{type} repr\'esente le type du segment: SEG\_MEM, SEG\_TSS.
+alors que \textbf{type} repr\'esente le type du segment: SEG\_TYPE\_MEM,
+SEG\_TYPE\_TSS.
 
 \paragraph{}
 
@@ -344,6 +338,14 @@ partie est absolument inutile puisque faisant partie de la partie ``machine
 dependent''. N\'eanmoins celle-ci est pr\'esente pour que vous vous
 familiarisiez avec ce type de gestionnaires.
 
+\paragraph{}
+
+\`A Noter que si vous trouvez que garder une correspondance identifiant:objet
+est trop lourd il vous est toujours possible de renvoyer l'adresse de l'objet,
+cette adresse repr\'esentant par la m\^eme occasion l'identifiant de l'objet.
+Cette m\'ethode fonctionne mais est bien entendu beaucoup moins propre car
+aucun contr\^ole ne peut \^etre fait sur un identifiant.
+
 \subsection{M\'emoire physique}
 
 \paragraph{}
@@ -351,7 +353,7 @@ familiarisiez avec ce type de gestionnaires.
 Il vous est \'egalement demand\'e de fournir une interface pour
 l'utilisation de la m\'emoire physique. Comme nous venons de le voir,
 la partie ``machine dependent'' du gestionnaire de m\'emoire physique
-sera g\'er\'ee par le gestionnaire de segments. Voyons d\'esormais
+sera principalement compos\'ee du gestionnaire de segments. Voyons d\'esormais
 l'interface de la partie ``machine independent''.
 
 \paragraph{}
@@ -401,6 +403,28 @@ dans l'unique but de garder les structures coh\'erentes.
 
 \paragraph{}
 
+
+\hspace{1.5cm}int \textbf{pm\_attr}(t\_asid \textbf{asid},
+                                    t\_paddr \textbf{addr},
+                                    t\_paddr \textbf{npages},
+                                    t\_pattr \textbf{attr});
+
+\paragraph{}
+
+Cette op\'eration permet de modifier les attributs d'une page physique.
+Les attributs pourraient \^etre: PM\_ATTR\_SHARE pour marquer la zone
+comme partag\'ee, PM\_ATTR\_COW pour le ``copy-on-write'' ou m\^eme
+PM\_ATTR\_AGGREGATE pour marquer une zone comme \'etant un objet. Ce dernier
+attribut force le gestionnaire de m\'emoire physique \`a consid\'erer
+cette zone comme elle est et non \`a fusionner ou d\'ecouper celle-ci.
+
+\paragraph{}
+
+\`A noter que cette fonction est en option, pour plus d'informations voir
+la section Bonus.
+
+\paragraph{}
+
 \hspace{1.5cm}int \textbf{pm\_rel}(t\_asid \textbf{asid},
                                    t\_paddr \textbf{addr},
                                    t\_paddr \textbf{npages});
@@ -426,12 +450,17 @@ Cette fonction lib\`ere toute la m\'emoire physique que l'espace d'adressage
 
 \paragraph{}
 
+M\^eme chose pour cette fonction, il faudra \'egalement intervenir sur
+l'\textbf{as} sp\'ecifi\'e.
+
+\paragraph{}
+
 \hspace{1.5cm}int \textbf{pm\_clear}(void);
 
 \paragraph{}
 
 Cette fonction r\'einitialise la gestion de la m\'emoire physique en lib\'erant
-les pages utilis\'ees.
+toutes les pages de m\'emoires physiques r\'eserv\'ees.
 
 \subsection{Interruptions/Exceptions}
 
@@ -462,7 +491,7 @@ Cette fonction initialise la gestion des interruptions.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{int\_add}(u\_int8\_t \textbf{entry},
+\hspace{1.5cm}int \textbf{int\_rsv}(u\_int8\_t \textbf{entry},
                                     t\_inttype \textbf{type},
                                     t\_segid \textbf{segid},
                                     t\_pl \textbf{pl},
@@ -472,13 +501,13 @@ Cette fonction initialise la gestion des interruptions.
 
 Cette fonction ajoute un handler sur le vecteur d'interruption \textbf{entry}.
 Le param\`etre \textbf{type} repr\'esente le type de handler \`a g\'erer:
-INT\_INTGATE, INT\_TRAPGATE, INT\_TASKGATE ou INT\_CALLGATE. L'argument
+INT\_TYPE\_INT, INT\_TYPE\_TRAP, INT\_TYPE\_TASK ou INT\_TYPE\_CALL. L'argument
 \textbf{segid} repr\'esente le segment contenant le handler et \textbf{pl}
 repr\'esente les privil\`eges de l'interruption.
 
 \paragraph{}
 
-\`A savoir que nous utiliserons seulement le type INT\_INTGATE, mais
+\`A savoir que nous utiliserons seulement le type INT\_TYPE\_INT, mais
 ce point tr\`es pr\'ecis sera explicit\'e ult\'erieurement.
 
 \paragraph{}
@@ -486,8 +515,9 @@ ce point tr\`es pr\'ecis sera explicit\'e ult\'erieurement.
 \hspace{1.5cm}int \textbf{int\_modify}(u\_int8\_t \textbf{entry},
                                        t\_inttype \textbf{type},
                                        t\_segid \textbf{segid},
-                                       t\_pl \textbf{pl},
-                                       t\_vaddr \textbf{handler});
+                                       t\_pl \textbf{pl}, \\
+\bigskip
+\hspace{4.3cm}                         t\_vaddr \textbf{handler});
 
 \paragraph{}
 
@@ -495,11 +525,11 @@ Cette fonction modifie une interruption d\'ej\`a enregistr\'ee.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{int\_remove}(u\_int8\_t \textbf{entry});
+\hspace{1.5cm}int \textbf{int\_rel}(u\_int8\_t \textbf{entry});
 
 \paragraph{}
 
-Cette fonction efface une entr\'ee de la table d'interruptions.
+Cette fonction lib\`ere une entr\'ee de la table d'interruptions.
 
 \paragraph{}
 
@@ -508,125 +538,6 @@ Cette fonction efface une entr\'ee de la table d'interruptions.
 \paragraph{}
 
 Cette fonction r\'einitialise la gestion des interruptions.
-
-\subsection{Traps}
-
-\paragraph{}
-
-La gestion des interruptions est tr\`es importante car elle va permettre
-\`a votre kernel de recevoir des messages provenant des p\'eriph\'eriques.
-
-\paragraph{}
-
-Le concept d'interruption et d'exception est encore une fois trop
-sp\'ecifique \`a Intel. Il pourrait exister des architectures sur
-lesquelles ces concepts sont confondus. Pour cette raison les exceptions
-comme les interruptions seront consid\'er\'ees en tant que \textbf{trap}.
-
-\paragraph{}
-
-Une \textbf{trap} repr\'esentant une porte d'entr\'ee vers une t\^ache pour
-les \'ev\`enements mat\'eriels, que ce soit un \'ev\`enement provenant
-d'un p\'eriph\'erique comme du processeur.
-
-XXX trap sont aussi des portes pour les messages ... enfin il faut trouver
-    comment faire pour envoyer un message vers un identifiant alors que tu
-    veux certainement l envoyer a une personne. en realite il faut mettre
-    en valeur des cas concrets. style hop communication entre deux process
-    pour faire tel trucs. de meme genre un truc qui veut des stats sur le
-    reseau, il devra y avoir un process qui se registera sur la meme trap
-    que celle du driver reseau pour recevoir les stats. les questions sont
-    comment retrouver les traps, donc comment retrouver les task etc..
-
-\paragraph{}
-
-La gestion de message ne se base pas sur les traps mais utilise un autre
-m\'ecanisme. Les traps sont exclusivement r\'es\`erv\'ees \`a l'acheminement
-d'\`ev\`enement que nous nommeront ``mat\'eriels''.
-
-\paragraph{}
-
-Il faut tout de m\^eme savoir que chaque \'ev\`enement mat\'eriel sera
-transmis au handler sous forme de message. Lorsque vous ajouterez donc une
-trap sur tel \'ev\`enement, pensez que la thread qui sera r\'eveill\'ee
-devra \^etre capable de traiter un message en entr\'ee.
-
-\paragraph{}
-
-\hspace{1.5cm}int \textbf{trap\_init}(void);
-
-\paragraph{}
-
-Cette fonction initialise la gestion des traps.
-
-\paragraph{}
-
-\hspace{1.5cm}int \textbf{trap\_add}(t\_hwid \textbf{hwid},
-                                     t\_thrid \textbf{thrid},
-                                     t\_trapid \textbf{*trapid});
-
-\paragraph{}
-
-Cette fonction ajoute une trap qui d\'eclenchera l'ex\'ecution de la thread
-\textbf{thrid} lorsque l'\'ev\`ement \textbf{hwid} se manifestera.
-
-\paragraph{}
-
-Nous vous conseillons de faire en sorte qu'une fois la trap trait\'ee il
-soit possible d'en recevoir une nouvelle. Ceci n'est qu'un conseil qu'il
-faudra prendre en compte lors de l'\'elaboration du code de vos handlers
-de messages.
-
-\paragraph{}
-
-Le param\`etre \textbf{hwid} peut sembler flou. En effet cet argument
-repr\'esente un identifiant de ressource. Dans le cas d'Intel nous pouvons
-imaginer que vos drivers vont interroger le controlleur PCI pour obtenir
-l'IRQ correspondant \`a ce p\'eriph\'erique. Cet IRQ sera donc
-transmis en tant que \textbf{hwid}.
-
-\paragraph{}
-
-Le fait est que peu importe ce que repr\'esente \textbf{hwid}. Le plus
-important \'etant qu'une norme soit d\'efinie. Dans tous les cas nous pouvons
-dire que l'argument \textbf{hwid} repr\'esente un identifiant de ressource
-et que cet identifiant est assign\'e par le mat\'eriel. Le tout \'etant
-que la partie ``machine dependent'' de votre kernel soit capable de mettre
-en place des traps \`a partir de cet identifiant de ressource.
-
-\paragraph{}
-
-\hspace{1.5cm}int \textbf{trap\_modify}(t\_trapid \textbf{trapid},
-                               	        t\_thrid \textbf{thrid});
-
-\paragraph{}
-
-Cette fonction permet de modifier une trap d\'ej\`a enregistr\'ee.
-
-\paragraph{}
-
-\hspace{1.5cm}int \textbf{trap\_remove}(t\_trapid \textbf{trapid});
-
-\paragraph{}
-
-Permet d'effacer la trap du gestionnaire de traps.
-
-\paragraph{}
-
-\hspace{1.5cm}int \textbf{trap\_enable}(t\_trapid \textbf{trapid});
-
-\paragraph{}
-
-Permet d'activer la gestion de cette trap. \`A vous de d\'ecider si jamais
-l'installation d'une trap l'active par d\'efaut.
-
-\paragraph{}
-
-\hspace{1.5cm}int \textbf{trap\_disable}(t\_trapid \textbf{trapid});
-
-\paragraph{}
-
-Permet de d\'esactiver la gestion de cette trap.
 
 \subsection{Clavier}
 
@@ -651,11 +562,6 @@ raison la gestion du PIC sera incluse dans la partie ``machine dependent''.
 
 \paragraph{}
 
-Tous les appels \`a l'interface PIC seront faits \`a partir du gestionnaire
-de traps.
-
-\paragraph{}
-
 \hspace{1.5cm}int \textbf{pic\_init}(void);
 
 \paragraph{}
@@ -664,19 +570,19 @@ Cette fonction initialise la gestion du PIC.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{pic\_enable}(t\_hwid \textbf{hwid});
+\hspace{1.5cm}int \textbf{pic\_enable}(t\_eventid \textbf{eventid});
 
 \paragraph{}
 
-Cette fonction active l'interruption \textbf{hwid}.
+Cette fonction active l'interruption \textbf{eventid}.
 
 \paragraph{}
 
-\hspace{1.5cm}int \textbf{pic\_disable}(t\_hwid \textbf{hwid});
+\hspace{1.5cm}int \textbf{pic\_disable}(t\_eventid \textbf{eventid});
 
 \paragraph{}
 
-Cette fonction d\'esactive l'interruption \textbf{hwid}.
+Cette fonction d\'esactive l'interruption \textbf{eventid}.
 
 \paragraph{}
 
@@ -688,12 +594,189 @@ Cette fonction r\'einitialise la gestion du PIC.
 
 \subsection{Timer}
 
+\paragraph{}
+
 L'interface du timer est laiss\'ee au choix du groupe.
 
 \paragraph{}
 
 Le but \'etant de g\'erer les interruptions timer et de retenir le nombre
 de \textbf{ticks} \'ecoul\'es.
+
+\section{Types}
+
+\paragraph{}
+
+Voici une explication plus compl\`ete des nouveaux types que
+vous devrez utilis\'es.
+
+\paragraph{}
+
+Nous vous exposons ici un exemple de d\'efinition de ces types. Rien ne vous
+oblige \`a les suivre.
+
+\subsection{t\_paddr}
+
+\paragraph{}
+
+Ce type repr\'esente une adresse physique. Ce type sera d\'efini par la
+partie ``machine dependent'' de kaneton pour des raisons \'evidentes de
+portabilit\'e sur des architectures diff\'erentes style 64-bit par exemple.
+
+\begin{verbatim}
+typedef u_int32_t       t_paddr;
+\end{verbatim}
+
+\subsection{t\_vaddr}
+
+\paragraph{}
+
+Ce type repr\'esente une adresse virtuelle. M\^eme chose que pour
+\textbf{t\_paddr}, ce type sera d\'efini pour la partie ``machine dependent''.
+
+\begin{verbatim}
+typedef u_int32_t       t_vaddr;
+\end{verbatim}
+
+\subsection{t\_asid}
+
+\paragraph{}
+
+Ce type identifie un espace d'adressage et n'est compos\'e que
+d'un identifiant soit un nombre.
+
+\begin{verbatim}
+typedef u_int32_t       t_asid;
+\end{verbatim}
+
+\subsection{t\_as}
+
+\paragraph{}
+
+Ce type d\'ecrit un espace d'adressage et est compos\'e d'un identifiant et
+de deux structures de donn\'ees, l'une d\'ecrivant l'espace physique utilis\'e
+par cet espace d'adressage et l'autre d\'ecrivant l'espace virtuel utilis\'e
+par ce m\^eme objet.
+
+\begin{verbatim}
+typedef struct          s_as
+{
+  t_asid                asid;
+  [pas_data_structure]  pas;
+  [vas_data_structure]  vas;
+}                       t_as;
+\end{verbatim}
+
+\subsection{t\_pl}
+
+\paragraph{}
+
+Ce type repr\'esente un ensemble de privil\`eges. Attention le fait
+d'utiliser le flag PL\_USER ne signifie pas du tout que le CPL sera
+d\'efinit \`a \textbf{2}. Cela d\'efinit juste une valeur pour savoir
+que cet objet aura les privil\`eges utilisateur, la partie d\'ependante
+pourra donc choisir ais\'ement les valeurs \`a inscrire au niveau hardware.
+
+\begin{verbatim}
+#define PL_KERNEL       0x00
+#define PL_SERVICE      0x01
+#define PL_USER         0x02
+
+#define PL_READ         0x04
+#define PL_WRITE        0x08
+#define PL_EXEC         0x10
+
+typedef u_int16_t       t_pl;
+\end{verbatim}
+
+\subsection{t\_segtype}
+
+\paragraph{}
+
+Repr\'esente les types de segment disponible.
+
+\paragraph{}
+
+Cette partie fait totalement partie de la partie ``machine dependent''
+\'etant donn\'e que la notion de segment n'est pas g\'en\'erique.
+
+\begin{verbatim}
+#define SEG_TYPE_MEM    0x00
+#define SEG_TYPE_TSS    0x01
+
+typedef u_int8_t        t_segtype;
+\end{verbatim}
+
+\subsection{t\_segid}
+
+\paragraph{}
+
+Ce type identifie un segment et n'est compos\'e que d'un identifiant soit
+un nombre.
+
+\paragraph{}
+
+Cette partie fait encore totalement partie de la partie ``machine dependent''.
+
+\begin{verbatim}
+typedef u_int32_t       t_segid;
+\end{verbatim}
+
+\subsection{t\_pmflags}
+
+\paragraph{}
+
+Repr\'esente les diff\'erents flags qu'utilise la gestion de la m\'emoire
+physique.
+
+\begin{verbatim}
+#define PM_FLAG_ANY     0x00
+#define PM_FLAG_DMA     0x01
+
+/*
+ * ...
+ */
+
+typedef u_int16_t       t_pmflags;
+\end{verbatim}
+
+\subsection{t\_inttype}
+
+\paragraph{}
+
+Repr\'esente les diff\'erents types d'interruptions g\'er\'es par
+l'architecture IA-32.
+
+\paragraph{}
+
+Cette partie fait totalement partie de la partie ``machine dependent''
+\'etant donn\'e que la notion d'interruption n'est pas g\'en\'erique.
+
+\begin{verbatim}
+#define INT_TYPE_INT    0x00
+#define INT_TYPE_TRAP   0x01
+#define INT_TYPE_TASK   0x02
+#define INT_TYPE_CALL   0x03
+
+typedef u_int8_t        t_inttype;
+\end{verbatim}
+
+\subsection{t\_eventid}
+
+\paragraph{}
+
+Ce type repr\'esente un \'ev\`enement hardware. Inutile de s'\'etendre sur
+le sujet, ces notions seront approfondies dans les sujets suivants.
+
+\paragraph{}
+
+Pour k2, un \'ev\`ement hardware est tout simplement caract\'eris\'e par
+l'IRQ du p\'eriph\'erique. Gr\^ace \`a cela vous pourrez tester vos
+drivers etc..
+
+\begin{verbatim}
+typedef u_int32_t       t_eventid;
+\end{verbatim}
 
 \newpage
 
@@ -702,65 +785,80 @@ de \textbf{ticks} \'ecoul\'es.
 \paragraph{}
 
 Voici une visualisation de l'interaction entre la partie
-``machine independent'' et la partie ``machine dependent''
+``machine independent'' et la partie ``machine dependent'' suivi
+d'une explication de chaque sous partie.
+
+\paragraph{}
 
 \begin{figure}[h]
 \centerline{\includegraphics{figures/visualisation.eps}}
 \end{figure}
 
-Nous pouvons distinguer trois sections:
-
-\subsection{``Machine independent''}
+\subsection{pm}
 
 \paragraph{}
 
-La premi\`ere section est enti\`erement ind\'ependante de l'architecture et
-est compos\'ee du gestionnaire de m\'emoire physique et du gestionnaire
-d'espace d'adressage.
+La partie ind\'ependante de l'architecture se contente de g\'erer les
+structures de donn\'ees d\'ecrivant les espaces d'adressage physique,
+c'est-\`a-dire un espace d'adressage physique par espace d'adressage
+et un espace physique g\'en\'eral qui repr\'esente la m\'emoire
+physique du syst\`eme.
 
 \paragraph{}
 
-En effet le gestionnaire de m\'emoire physique se contente de g\'erer
-une zone de m\'emoire avec des propri\'et\'es sur certaines zones: utilis\'ee,
-inutilis\'ee, partag\'ee etc..
-
-\subsection{Interfaces}
+La partie d\'ependante se contente de g\'erer les structures de donn\'ees
+hardware en rapport avec la gestion de la m\'emoire physique.
 
 \paragraph{}
 
-La seconde section de la figure est compos\'ee des interfaces de communication
-entre la partie d\'ependante de l'architecture et la partie ind\'ependante.
+Dans le cas de l'architecture IA-32, il vous suffira \`a l'initialisation de la
+m\'emoire physique de cr\'eer tous les segments n\'ecessaires.
+
+\subsection{as}
 
 \paragraph{}
 
-Ainsi une partie du gestionnaire de traps sera contenue dans la partie
-``machine independent'' car celui-ci n'a pas besoin de connaitre le
-fonctionnement des traps au niveau hardware. En revanche une partie
-du gestionnaire de traps sera contenue dans la partie ``machine dependent''
-car celle-ci aura comme but de mettre en place une trap au niveau hardware.
+La partie ind\'ependante de l'architecture de la gestion des espaces
+d'adressage se contente de g\'erer les structures de donn\'ees
+g\'en\'eriques: la structure de donn\'ees d\'ecrivant l'espace physique
+et celle d\'ecrivant l'espace virtuel.
 
 \paragraph{}
 
-Ces interfaces seront toujours compos\'ees de deux parties bien distinctes:
-une partie destin\'ee \`a la mise en place hardware du concept en
-question et une partie plus haut niveau destin\'ee \`a la gestion du concept
-sans se pr\'eoccuper de l'impl\'ementation.
-
-\subsection{``Machine dependent''}
+Le seul but des fonctions de gestion de l'espace d'adressage est de
+r\'eserver, de lib\'erer ou de retrouver un espace d'adressage.
 
 \paragraph{}
 
-La troisi\`eme section est enti\`erement compos\'ee de code li\'e \`a
-l'architecture, dans notre cas IA-32.
+Les structures internes aux espaces d'adressage ne sont modifi\'ees que
+par le gestionnaire de m\'emoire physique et le gestionnaire de m\'emoire
+virtuelle.
 
 \paragraph{}
 
-En effet le concept d'interruption n'est pas connu de la partie
-``machine independent'', seulement de la partie ``machine dependent'' des
-traps. M\^eme chose pour le PIC qui pourrait ne pas exister sur
-certaines architectures.
+La partie d\'ependante se contentera de mettre en place les structures
+hardware.
 
-\subsection{Hi\'erarchie}
+\paragraph{}
+
+Sur l'architecture IA-32 par exemple, lors de la r\'eservation
+d'un espace d'adressage, la partie d\'ependante devra r\'eserver une page
+physique pour y stocker le \textbf{page directory} et l'initialiser. La
+partie d\'ependante s'occupant de cette partie sur le sch\'ema se nomme
+\textbf{vas}.
+
+\subsection{int}
+
+La gestion des interruptions est une partie totalement d\'ependante de
+l'architecture. Celle ci devra donc \^etre construite pour pouvoir
+coller ensuite avec les traps.
+
+\subsection{pic}
+
+La gestion du PIC est soumise est m\^eme contraintes que le gestionnaire
+d'interruptions.
+
+\section{Hi\'erarchie}
 
 \paragraph{}
 
@@ -776,9 +874,95 @@ aux couches ``machine dependent''.
 Cette hi\'erarchie ne doit jamais \^etre bris\'ee sans quoi le mod\`ele
 deviendra incoh\'erent.
 
-\section{Types}
+\section{Portabilit\'e}
 
-XXX expliquer les types, sturctures etc.. genre ceux dependent ..
+\paragraph{}
+
+La question qui subsiste est: Comment bien dissocier la partie ``machine
+dependent'' de la partie ``machine independent''? Comment lancer, par
+exemple, la fonction \textbf{seg\_init}() sur l'architecture IA-32 mais par sur
+l'architecture Sparc?
+
+\paragraph{}
+
+Nous vous proposons ici une solution que vous pouvez choisir d'adopter ou non.
+
+\begin{verbatim}
+
+-- kernel/ia-32/pm.c
+
+typedef struct  s_pm_dep
+{
+  int           (*pm_init)(t_paddr      start,
+                           t_paddr      size);
+  /*
+   * pm_rsv, pm_attr, pm_rel, pm_clean
+   *
+   * ...
+   */
+}               t_pm_dep;
+
+t_pm_dep        pm_dep =
+{
+  ia32_pm_init,
+  ia32_pm_rsv,
+  ia32_pm_rel,
+  ia32_pm_clean,
+};
+
+int             ia32_pm_init(t_paddr    start,
+                             t_paddr    size)
+{
+  seg_init();
+
+  seg_add(...);
+  seg_add(...);
+  seg_add(...);
+  seg_add(...);
+
+  /*
+   * ...
+   */
+
+  return (0);
+}
+
+-- kernel/pm.c
+
+int             pm_init(t_paddr         start,
+                        t_paddr         size)
+{
+  if (pm_dep.pm_init != NULL)
+    pm_dep.pm_init(start, size);
+
+  /*
+   * ...
+   */
+
+  return (0);
+}
+
+/*
+ * pm_rsv, pm_attr, pm_rel, pm_clean
+ *
+ * ...
+ */
+\end{verbatim}
+
+\paragraph{}
+
+L'utilisation de structure d\'ecrivant les fonctions d\'ependantes de
+l'architecture \`a appeller permet aux architectures qui n'ont pas
+besoin de fonctionnalit\'es d\'ependantes de l'architecture de ne
+pas \^etre oblig\'ees de d\'efinir des fonctions vides. La seule d\'eclaration
+requise \'etant la structure d\'efinissant les fonctions d\'ependantes
+de l'architecture \`a appeller.
+
+\paragraph{}
+
+Encore une fois cette impl\'ementation est pratique car la partie
+ind\'ependante ne se soucie de rien mis \`a part du fait qu'une structure
+d\'ecrivant les fonctions d\'ependantes de l'architecture existe.
 
 \section{Bonus}
 
@@ -786,10 +970,11 @@ XXX expliquer les types, sturctures etc.. genre ceux dependent ..
 
 Voici les bonus de ce projet.
 
-\subsection{Sharing}
+\subsection{Attributes}
 
 Un ajout int\'eressant dans la gestion de la m\'emoire physique sera
-de permettre le partage de pages physiques.
+de permettre le partage de pages physiques et plus particuli\`erement
+la modification des attributs de pages physique.
 
 \paragraph{}
 
@@ -808,6 +993,10 @@ Une optimisation sera d'introduire un syst\`eme de protection pour que
 seuls les espaces d'adressage autoris\'es puissent mapper cette page
 partag\'ee.
 
+\paragraph{}
+
+De plus il vous sera demander de g\'erer les attributs COW et AGGREGATE.
+
 \subsection{Tty}
 
 Il pourrait \^etre int\'eressant de disposer de diff\'erents tty, c'est \`a
@@ -815,7 +1004,17 @@ dire des couples console - clavier diff\'erent.
 
 \paragraph{}
 
-Il vous sera donc demander de fournir un interface compl\`ete pour la
+Il vous sera donc demand\'e de fournir un interface compl\`ete pour la
 manipulation des tty.
+
+\subsection{Clock}
+
+La gestion de l'heure peut \^etre int\'eressant. Il vous sera donc
+demand\'e de toujours avoir une date mise \`a jour.
+
+\paragraph{}
+
+Bien entendu il vous sera \'egalement demand\'e de fournir une commande
+dans l'interpr\'eteur afin de mettre en valeur votre travail.
 
 \end{document}

@@ -1,15 +1,30 @@
+-- spargo
+
+pour le sharing c'est simple. on creer une structure contenant une adresse,
+une taille et une liste de fonctions.
+
+ensuite ben on appelle une fct pour lui specifier l'adresse de l objet
+et sa taille. la structure contient egalement un lock.
+
+ensuite on peut mettre des proprietes sur les objets: SHARED, COW
+
+comme ca on peut tres bien marquer une .. XXX ..
+
+XXX il faut reussir a faire comme du sharing sur des as mais avec
+    des objets en listant les cas. style RO, ca veut dire que personne
+    n'ecrira dedans donc les utilisateurs liront le truc UNE seule fois
+    donc lire via un objet c est correct, le non-parallelisme n'intervenant
+    qu une seule fois
+
+--
+
 . page fault a gerer dans k3
 
 . durant k7 ils peuvent faire un petit fs en ram pour gerer les modules grub
 
----
+--
 
- t_task, t_thread, t_as, t_asid, t_taskid, t_srv, t_srvid, t_threadid ..
- pm: partie dependent et indep
- mail stevens: publi + andy
-
- load, unload, reload
- expliquer les structures: asid, as, ...
+ t_srv, t_srvid
 
 ---
 
@@ -46,28 +61,33 @@ task_reload(taskid, modid) [todo k4]
 
 --
 
-t_segid
-t_paddr
-t_pl
-t_segtype
+expliquer que le chainage de trap va permettre de faire du multicasting de
+message mais egalement de gerer les conflits d'irq avec 2 periph utilisant
+la meme irq.
+
+dans tous les cas c est du multicast car les drivers regarderont juste si
+c est bien leur periph qui a fait le msg.
+
+et priorites via un systeme de classes + chainage dans le kernel des messages
+sils ne peuvent pas etre achemines.
+
++ priorites du scheduler.
+
+--
 
 t_as
 {
+  t_taskid taskid; /* dans k4 ou k5 */
   t_asid asid;
   [physical description]
   [virtual description]
 }
 
-t_asid
-t_pmflags
-t_trapid (contient le t_hwid)
-t_hwid
-t_inttype
-t_vaddr
+-- avec les traps
 
-explique qu on peut tres facilement utiliser des unions, qui sont ici
-tres appropriees car utilisant des types bien specifiques. neamoins des
-defines feront l'affaire.
+expliquer le systeme pour recueillir les int avec handler generic etc..
+
+. dire dans k5 que desormais les handlers de traps devront gerer les messages
 
 struct
 {
@@ -77,55 +97,60 @@ struct
   ia32_pm_clear,
 }	t_pm_dep;
 
-expliquer un fonctionnement de pm_rsv vm_rsv vm_map vm_unmap
+--
 
-expliquer que lorsque l'on fait un msg_init -> int_add() * N +
-  wrapper etc..
-lors du trap_add() on recupere le segid par rapport au thread
-  et hop int_add()
+expliquer le systeme:
 
-expliquer la table de traps et faire en sorte qu on puisse register plusieurs
-  handler pour les traps mais egalement pour les msgs
-
-+bonus: gerer l'heure
-
-fonction pour liberer la memoire physique appartenant a un asid ?
+prsv ajoute un truc dans la liste physique de l asid (*)
+vrsv ajoute un truc dans la liste virtuelle
+vmap enleve dans la liste physique mais ajoute l addr physique dans le truc v
+vunmap enleve la reference vers physique et ajoute un truc physique
+vrel enelve dans v
+prel enleve dan p (*)
 
 --
 
-expliquer quand pm_rsv -> plist et quand vm_map -> vlist
+expliquer que lorsque l'on fait un msg_init -> int_add() * N +
+  wrapper etc..
+
+-- 
+
+lors du trap_add() on recupere le PL par rapport au thread
+et on en deduit le segid et hop int_add()
+
+--
+
+expliquer la table de traps et faire en sorte qu on puisse register plusieurs
+  handler pour les traps mais egalement pour les msgs
 
 --
 
 schedule de threads
 
---
+-- spargo
 
 prevoir pour plusieurs processeurs, reprendre sur vianney
 
 --
 
-. expliquer comment on va gerer les traps -> int etc.. table de traps
-  broadcast de traps etc.. bottom-halves
+trap avec priorites reduite: USER => bottom halves. si bcp de traps
+de register sur un evenement alors les derniers registers se comporteront
+comme des bottom halves du fait du nombre de personnes a reveiller.
 
-. expliquer comment on va gerer les msgs
-
---
+-- trap
 
 expliquer que dans tous les cas les handlers d interruptions seront des
-INTGATE (ce qui facilite le portage) et que ensuite on dispatch. CA ressemble
-au bottom-halves de linux.
+INTGATE (ce qui facilite le portage) et que ensuite on dispatch. + bottom-h
 
--- faire relire a fabien
-
-permettre de flusher les traps que sur un hwid precis plutot que tout
-
---
+-- spargo
 
 virer tous les cas de write pendant un read et comme ca distribue tres
 simplle -> demander a laurent
 
---
+-- spargo
+
+il faudrait deja penser le systeme de groupe sur une seule machine et ensuite
+pour le distribue ce serait pareil avec +machid
 
 alors:
 
@@ -147,58 +172,29 @@ alors:
   t elle evoluer pour utiliser ces points? comment les message vont etre
   crees pour utiliser ces points de liaison?
 
--- chiche
-
-int main()
-{
-  thrid = thread_add(srv);
-
-  trapid = trap_rsv(); /* owner = current task */
-
-  trap_add(trapid);
-
-  srv_reg(trapid);
-
-  msg_send(trapid);  
-}
-
--- client
-
-int main()
-{
-  trap_find(
-}
+en fait les groups c est cool mais il faudrait que le createur du groupe
+broadcast pour demander si des gens veulent rentrer. meme systeme que j avais
+penser.
 
 --
 
-trap_reg
-msg_reg
+trap_add(*trapid, thrid, eventid);
 
---
+srv_add(*srvid, thrid);
 
-table de traps lorsqu on recoit une interruption.
+-- k4 avec les classes
 
---
-
-le probleme c'est: comment identifier quelque chose pour communiquer avec
-une personne.
-
---
-
-ioacquire etc... c'est interessant au niveau conceptuel mais finallement
-c'est un peu se prendre la tete: 1) le kernel et les services peuvent faire
-des io 2) le user ne peut pas Voila les points. Maintenant limites les services
-on s en fout car de toute facon certains archi ne pourront pas le permettre.
-de plus ca sert presque a rien puisque on estime que les services cooperent
-avec le kernel
-
---
+user = ne communique pas avec le hard
 
 service = un processus qui "fournit un service" avec des privileges accrus.
           generalement ces processus recoivent des messages et execute une
           tache mais si ceux ci ne le font pas ils se nomment tout de meme
           services par rapport a leurs privileges. finallement un appelle
           service un processus qui sert le kernel dans ses taches.
+
+driver = service mais qui communique en plus avec le hard
+
+kernel = il peut communiquer avec tlm et a acces a tout
 
 --
 
@@ -208,10 +204,12 @@ processus = la notion de processus n'existe pas dans LSE/OS. neanmoins nous
 
 --
 
-load(PL_SERVICE) /* 
+il faut etre root ou systeme pour ajouter des services/drivers
+
+load(PL_SERVICE) /* service */
 load(PL_USER); /* processus */
 
---
+-- spargo
 
 mutex: acquire + release, avec des noms de zones critiques. bien pour la
  memoire distribuee. mais peut etre peut on berner les autre a chopper une
@@ -220,22 +218,165 @@ mutex: acquire + release, avec des noms de zones critiques. bien pour la
  sur qui sera execute et en plus au bon endroit, style sur la machine owner
  de la zone partagee.
 
---
-
-est ce possible de multicaster un message ou une trap a des services.
-je veux dire au niveau implementation, lancer les handlers ininterruptibles.
-ca me semble chaud.
-
---
+-- spargo
 
 nodeid
 
---
+-- spargo
 
 faire un schema d'un machine et aussi d'un reseau:
 
-  as -------------------------+
-   | init rsv rel clear | get |
-   |                          |
-   +--------------------------+
+-- k3
+
+modifier les attr d une page virtuelle: rwx dans k3
+
+-- k5
+
+\item gestionnaire de traps.
+
+\subsection{Traps}
+
+\paragraph{}
+
+La gestion des interruptions est tr\`es importante car elle va permettre
+\`a votre kernel de recevoir des messages provenant des p\'eriph\'eriques.
+
+\paragraph{}
+
+Le concept d'interruption et d'exception est encore une fois trop
+sp\'ecifique \`a Intel. Il pourrait exister des architectures sur
+lesquelles ces concepts sont confondus. Pour cette raison les exceptions
+comme les interruptions seront consid\'er\'ees en tant que \textbf{trap}.
+
+\paragraph{}
+
+Une \textbf{trap} repr\'esentant une porte d'entr\'ee vers une t\^ache pour
+les \'ev\`enements mat\'eriels, que ce soit un \'ev\`enement provenant
+d'un p\'eriph\'erique comme du processeur.
+
+\paragraph{}
+
+La gestion de message inter-processus ne se base pas sur les traps
+mais utilise un autre m\'ecanisme. Les traps sont exclusivement
+r\'es\`erv\'ees \`a l'acheminement d'\`ev\`enement que nous
+nommeront ``mat\'eriels''.
+
+\paragraph{}
+
+Il faut tout de m\^eme savoir que chaque \'ev\`enement mat\'eriel sera
+transmis au handler sous forme de message. Lorsque vous ajouterez donc une
+trap sur un tel \'ev\`enement, pensez que le thread qui sera r\'eveill\'e
+devra \^etre capable de traiter un message en entr\'ee.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_init}(void);
+
+\paragraph{}
+
+Cette fonction initialise la gestion des traps.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_add}(t\_hwid \textbf{hwid},
+                                     t\_thrid \textbf{thrid},
+                                     t\_trapid \textbf{*trapid});
+
+\paragraph{}
+
+Cette fonction ajoute une trap qui d\'eclenchera l'ex\'ecution du thread
+\textbf{thrid} lorsque l'\'ev\`ement \textbf{hwid} se manifestera.
+
+\paragraph{}
+
+Nous vous conseillons de faire en sorte qu'une fois la trap trait\'ee il
+soit possible d'en recevoir une nouvelle. Ceci n'est qu'un conseil qu'il
+faudra prendre en compte lors de l'\'elaboration du code de vos handlers
+de messages.
+
+\paragraph{}
+
+Le param\`etre \textbf{hwid} peut sembler flou. En effet cet argument
+repr\'esente un identifiant de ressource. Dans le cas d'Intel nous pouvons
+imaginer que vos drivers vont interroger le controlleur PCI pour obtenir
+l'IRQ correspondant \`a ce p\'eriph\'erique. Dans le cas d'Intel, cet
+IRQ sera transmis en tant que \textbf{hwid} puisqu'il repr\'esente l'unique
+identifiant de ressource disponible.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_modify}(t\_trapid \textbf{*trapid},
+                               	        t\_thrid \textbf{thrid});
+
+\paragraph{}
+
+Cette fonction permet de modifier une trap d\'ej\`a enregistr\'ee.
+Cette fonction met \'egalement \`a jour l'identifiant \textbf{trapid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_remove}(t\_trapid \textbf{trapid});
+
+\paragraph{}
+
+Permet d'effacer la trap du gestionnaire de traps.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_enable}(t\_trapid \textbf{trapid});
+
+\paragraph{}
+
+Permet d'activer la gestion de cette trap. \`A vous de d\'ecider si jamais
+l'installation d'une trap l'active par d\'efaut.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_disable}(t\_trapid \textbf{trapid});
+
+\paragraph{}
+
+Permet de d\'esactiver la gestion de cette trap.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_clean}(void);
+
+\paragraph{}
+
+D\'etruit toute les traps enregistr\'ee.
+
+--
+
+\subsection{t\_thrid}
+
+\paragraph{}
+
+Ce type repr\'esente un identifiant de thread. La gestion des threads ne
+sera faite que dans k4 mais il est indispensable d'utiliser ce type
+d\`es maintenant.
+
+\paragraph{}
+
+L'utilisation de ce type est requis pour l'installation de trap. Pour des
+raisons \'evidentes il ne vous sera pas possible d'installer de trap
+tant que les threads ne seront pas g\'er\'ees, mais cela n'est pas important.
+
+\begin{verbatim}
+typedef u_int32_t       t_thrid;
+\end{verbatim}
+
+\subsection{t\_trapid}
+
+\paragraph{}
+
+Ce type repr\'esente un identifiant de trap.
+
+\begin{verbatim}
+typedef struct          s_trapid
+{
+  t_hwid                hwid;
+  u_int32_t             id;
+}                       t_trapid;
+\end{verbatim}
 
