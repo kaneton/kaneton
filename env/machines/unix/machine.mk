@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/machines/unix/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [tue feb 21 23:27:56 2006]
+## updated       julien quintard   [sat feb 25 15:55:22 2006]
 ##
 
 #
@@ -29,7 +29,7 @@
 #
 
 %.o:			%.asm
-	$(call assemble-asm,$@,$<,"--format elf")
+	$(call assemble-asm,$@,$<,"--output-format elf")
 
 %.o:			%.S
 	$(call assemble-S,$@,$<,)
@@ -99,33 +99,33 @@ ifeq ($(_DISPLAY_),color)			# if the user wants to display
 						# the text with color
 
 define print
-  options='';								\
-  for opt in $(3); do							\
-    case "$$opt" in							\
+  print_options=""							; \
+  for o in $(3); do							\
+    case "$${o}" in							\
       "--no-newline")							\
-        options="$$options -n"						\
+        print_options="$${print_options} -n"				; \
         ;;								\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
-  $(call print-$(1),$(2),$$options)
+    esac								; \
+  done									; \
+  $(call print-$(1),$(2),$${print_options})
 endef
 
 else						# if not ...
 
 define print
-  options='';								\
-  for opt in $(3); do							\
-    case "$$opt" in							\
+  print_options=""							; \
+  for o in $(3); do							\
+    case "$${o}" in							\
       "--no-newline")							\
-        options="$$options -n"						\
+        print_options="$${print_options} -n"				; \
         ;;								\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
-  $(call print-non-color,$(2),$$options)
+    esac								; \
+  done									; \
+  $(call print-non-color,$(2),$${print_options})
 endef
 
 endif
@@ -139,37 +139,37 @@ endif
 #
 
 define pretty-printer-red
-  $(call print,blue,[,--no-newline)					; \
-  $(call print,red,$(1),--no-newline)					; \
-  $(call print,blue,],--no-newline)					; \
+  $(call print,blue,[,"--no-newline")					; \
+  $(call print,red,$(1),"--no-newline")					; \
+  $(call print,blue,],"--no-newline")					; \
   $(call print,white,$(3)$(2),)
 endef
 
 define pretty-printer-green
-  $(call print,blue,[,--no-newline)					; \
-  $(call print,green,$(1),--no-newline)					; \
-  $(call print,blue,],--no-newline)					; \
+  $(call print,blue,[,"--no-newline")					; \
+  $(call print,green,$(1),"--no-newline")				; \
+  $(call print,blue,],"--no-newline")					; \
   $(call print,white,$(3)$(2),)
 endef
 
 define pretty-printer-yellow
-  $(call print,blue,[,--no-newline)					; \
-  $(call print,yellow,$(1),--no-newline)				; \
-  $(call print,blue,],--no-newline)					; \
+  $(call print,blue,[,"--no-newline")					; \
+  $(call print,yellow,$(1),"--no-newline")				; \
+  $(call print,blue,],"--no-newline")					; \
   $(call print,white,$(3)$(2),)
 endef
 
 define pretty-printer-magenta
-  $(call print,blue,[,--no-newline)					; \
-  $(call print,magenta,$(1),--no-newline)				; \
-  $(call print,blue,],--no-newline)					; \
+  $(call print,blue,[,"--no-newline")					; \
+  $(call print,magenta,$(1),"--no-newline")				; \
+  $(call print,blue,],"--no-newline")					; \
   $(call print,white,$(3)$(2),)
 endef
 
 define pretty-printer-cyan
-  $(call print,blue,[,--no-newline)					; \
-  $(call print,cyan,$(1),--no-newline)					; \
-  $(call print,blue,],--no-newline)					; \
+  $(call print,blue,[,"--no-newline")					; \
+  $(call print,cyan,$(1),"--no-newline")				; \
+  $(call print,blue,],"--no-newline")					; \
   $(call print,white,$(3)$(2),)
 endef
 
@@ -194,49 +194,65 @@ endef
 #
 
 define change-directory
-  options='';								\
-  for opt in $(2); do							\
-    case "$$opt" in							\
+  change_directory_options=""						; \
+  for o in $(2); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
-  $(_CD_) $$options $(1)
+    esac								; \
+  done									; \
+  $(_CD_) $${change_directory_options} $(1)
 endef
 
 #
-# launch a new program, script etc..
+# launch a new shell script
 #
-# $(1):		the file to launch
+# $(1):		the shell script to launch
 # $(2):		arguments
 # $(3):		advanced options
 #
 
-define launch
-  $(_SHELL_) $(3) $(1) $(2)
+define shell-script
+  shell_script_options=""						; \
+  for o in $(3); do							\
+    case "$${o}" in							\
+      *)								\
+        ;;								\
+    esac								; \
+  done									; \
+  $(_SHELL_) $${shell_script_options} $(1) $(2)
 endef
 
 #
 # call make in each directory of the list
+#
+# the directories in the list must be direct subdirectories
 #
 # $(1):		the directory list
 # $(2):		advanced options
 #
 
 define makefile
-  for i in $(1) ; do							\
-    $(_CD_) $$i								; \
+  makefile_options=""							; \
+  for o in $(2); do							\
+    case "$${o}" in							\
+      *)								\
+        ;;								\
+    esac								; \
+  done									; \
+  for d in $(1) ; do							\
+    $(call change-directory,$${d},)					; \
     return=$$?								; \
-    if [ $$return -ne 0 ] ; then					\
+    if [ $${return} -ne 0 ] ; then					\
       exit 0								; \
     fi									; \
-    $(_MAKE_) $(_MAKEFLAGS_) $(2)					; \
+    $(_MAKE_) $${makefile_options} $(_MAKEFLAGS_) $(2)			; \
     return=$$?								; \
-    if [ $$return -ne 0 ] ; then					\
-      $(call pretty-printer,red,ERROR,$$i,			)	; \
-      exit $$return							; \
+    if [ $${return} -ne 0 ] ; then					\
+      $(call pretty-printer,red,ERROR,$${d},			)	; \
+      exit $${return}							; \
     fi									; \
-    $(_CD_) ..								; \
+    $(call change-directory,..,)					; \
   done
 endef
 
@@ -249,15 +265,16 @@ endef
 #
 
 define preprocess
-  options_pp='';							\
-  for opt in $(3); do							\
-    case "$$opt" in							\
+  preprocess_options=""							; \
+  for o in $(3); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
+    esac								; \
+  done									; \
   $(call pretty-printer,green,PREPROCESS,$(2),		)		; \
-  $(_CPP_) -P $(_CPPFLAGS_) $$options_pp $(2) -o $(1) $(_VERBOSE_)
+  $(_CPP_) -P $(_CPPFLAGS_) $${preprocess_options}			\
+           $(2) -o $(1) $(_VERBOSE_)
 endef
 
 #
@@ -269,15 +286,16 @@ endef
 #
 
 define compile-c
-  options_cc='';							\
-  for opt in $(3); do							\
-    case "$$opt" in							\
+  compile_c_options=""							; \
+  for o in $(3); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
+    esac								; \
+  done									; \
   $(call pretty-printer,green,COMPILE-C,$(2),		)		; \
-  $(_CC_) $(_CFLAGS_) $$options_cc -c $(2) -o $(1) $(_VERBOSE_)
+  $(_CC_) $(_CFLAGS_) $${compile_c_options}				\
+          -c $(2) -o $(1) $(_VERBOSE_)
 endef
 
 #
@@ -289,13 +307,13 @@ endef
 #
 
 define lex-l
-  options_ll='';							\
-  for opt in $(3); do							\
-    case "$$opt" in							\
+  lex_l_options=""							; \
+  for o in $(3); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
+    esac								; \
+  done									; \
   $(call pretty-printer,green,LEX-L,$(2),			)	; \
   $(_LEX_) $(2) > $(1)
 endef
@@ -309,15 +327,16 @@ endef
 #
 
 define assemble-S
-  options_as='';							\
-  for opt in $(3); do							\
-    case "$$opt" in							\
+  assemble_S_options=""							; \
+  for o in $(3); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
+    esac								; \
+  done									; \
   $(call pretty-printer,green,ASSEMBLE-S,$(2),		)		; \
-  $(_CC_) $(_CFLAGS_) $$options_as -c $(2) -o $(1) $(_VERBOSE_)
+  $(_CC_) $(_CFLAGS_) $${assemble_S_options}				\
+          -c $(2) -o $(1) $(_VERBOSE_)
 endef
 
 #
@@ -329,19 +348,20 @@ endef
 #
 
 define assemble-asm
-  options_aa='';							\
-  for opt in $(3); do							\
-    case "$$opt" in							\
-      "--format"*)							\
-	options_aa="$$options_aa `$(_ECHO_) $$opt | $(_SED_) -e		\
-			's/--format/-f/1'`"				\
+  assemble_asm_options=""						; \
+  for o in $(3); do							\
+    case "$${o}" in							\
+      "--output-format"*)						\
+	assemble_asm_options="$${assemble_asm_options}			\
+                              `$(_ECHO_) $${o}				| \
+                                $(_SED_) 's/--output-format/-f/1'`"	; \
         ;;								\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
+    esac								; \
+  done									; \
   $(call pretty-printer,green,ASSEMBLE-ASM,$(2),		)	; \
-  $(_NASM_) $$options_aa $(2) -o $(1) $(_VERBOSE_)
+  $(_NASM_) $${assemble_asm_options} $(2) -o $(1) $(_VERBOSE_)
 endef
 
 #
@@ -353,20 +373,20 @@ endef
 #
 
 define static-library
-  options_sl='';							\
-  for opt in $(3); do							\
-    case "$$opt" in							\
+  static_library_options=""						; \
+  for o in $(3); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
+    esac								; \
+  done									; \
   $(call pretty-printer,magenta,STATIC-LIBRARY,$(1),	)		; \
-  $(_AR_) $$options_sl $(1) $(2) $(_VERBOSE_)				; \
-  $(_RANLIB_) $$options_sl $(1) $(_VERBOSE_)
+  $(_AR_) $${static_library_options} $(1) $(2) $(_VERBOSE_)		; \
+  $(_RANLIB_) $${static_library_options} $(1) $(_VERBOSE_)
 endef
 
 #
-# create a dynamic library from object files and/or static libraries
+# create a dynamic library from object files, static libraries
 # and/or dynamic libraries
 #
 # $(1):		dynamic library file name
@@ -375,15 +395,16 @@ endef
 #
 
 define dynamic-library
-  options_dl='';							\
-  for opt in $(3); do							\
-    case "$$opt" in							\
+  dynamic_library_options=""						; \
+  for o in $(3); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
+    esac								; \
+  done									; \
   $(call pretty-printer,magenta,DYNAMIC-LIBRARY,$(1),	)		; \
-  $(_LD_) $(_LDFLAGS_) --shared $$options_dl -o $(1) $(2) $(_VERBOSE_)
+  $(_LD_) --shared $(_LDFLAGS_) $${dynamic_library_options}		\
+          -o $(1) $(2) $(_VERBOSE_)
 endef
 
 #
@@ -395,19 +416,27 @@ endef
 #
 
 define executable
-  options_e='';								\
-  for opt in $(3); do							\
-    case "$$opt" in							\
-      "--lds"*)								\
-	options_e="$$options_e `$(_ECHO_) $$opt | $(_SED_) -e		\
-		's/--lds/-T/1'`"					\
+  executable_options=""							; \
+  for o in $(3); do							\
+    case "$${o}" in							\
+      "--ld-script"*)							\
+	executable_options="$${executable_options}			\
+                            `$(_ECHO_) $${o}				| \
+                            $(_SED_) -e 's/--ld-script/-T/1'`"		; \
+        ;;								\
+      "--no-standard-include")						\
+	executable_options="$${executable_options} -nostdinc"		; \
+        ;;								\
+      "--no-standard-library")						\
+	executable_options="$${executable_options} -nostdlib"		; \
         ;;								\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
+    esac								; \
+  done									; \
   $(call pretty-printer,magenta,EXECUTABLE,$(1),		)	; \
-  $(_LD_) $(_LDFLAGS_) $$options_e -o $(1) $(2) $(_VERBOSE_)
+  $(_CC_) $(_CFLAGS_) $(_LDFLAGS_) $${executable_options}		\
+          -o $(1) $(2) $(_VERBOSE_)
 endef
 
 #
@@ -421,15 +450,16 @@ endef
 #
 
 define archive
-  options_ar='';							\
-  for opt in $(3); do							\
-    case "$$opt" in							\
+  archive_options=""							; \
+  for o in $(3); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
+    esac								; \
+  done									; \
   $(call pretty-printer,magenta,ARCHIVE,$(1),		)		; \
-  $(_LD_) $(_LDFLAGS_) -r $$options_ar -o $(1) $(2) $(_VERBOSE_)
+  $(_LD_) -r $(_LDFLAGS_) $${archive_options}				\
+          -o $(1) $(2) $(_VERBOSE_)
 endef
 
 #
@@ -440,18 +470,18 @@ endef
 #
 
 define remove
-  options_rm='';							\
-  for opt in $(2); do							\
-    case "$$opt" in							\
+  remove_options=""							; \
+  for o in $(2); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
-  for i in $(1) ; do							\
-    if [ -e $$i ] ; then						\
-      $(call pretty-printer,red,REMOVE,$$i,		)		; \
+    esac								; \
+  done									; \
+  for f in $(1) ; do							\
+    if [ -e $${f} ] ; then						\
+      $(call pretty-printer,red,REMOVE,$${f},		)		; \
     fi									; \
-    $(_RM_) $$options_rm $$i $(_VERBOSE_)				; \
+    $(_RM_) $${remove_options} $${f} $(_VERBOSE_)			; \
   done
 endef
 
@@ -472,17 +502,17 @@ endef
 #
 
 define prototypes
-  options_proto='';							\
-  for opt in $(2); do							\
-    case "$$opt" in							\
+  prototypes_options=""							; \
+  for o in $(2); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
-  for i in $(1) ; do							\
-    if [ -e $$i ] ; then						\
-      $(call pretty-printer,yellow,PROTOTYPES,$$i,		)	; \
-      $(_PROTO_TOOL_) $$options_proto $(1)	$(_VERBOSE_)		; \
+    esac								; \
+  done									; \
+  for f in $(1) ; do							\
+    if [ -e $${f} ] ; then						\
+      $(call pretty-printer,yellow,PROTOTYPES,$${f},		)	; \
+      $(_PROTO_TOOL_) $${prototypes_options} $${f} $(_VERBOSE_)		; \
     fi									; \
   done
 endef
@@ -496,18 +526,18 @@ endef
 #
 
 define dependencies
-  options_dep='';							\
-  for opt in $(3); do							\
-    case "$$opt" in							\
+  dependencies_options=""						; \
+  for o in $(3); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
+    esac								; \
+  done									; \
   $(_TOUCH_) $(2)							; \
-  for i in $(1) ; do							\
-    if [ -e $$i ] ; then						\
+  for f in $(1) ; do							\
+    if [ -e $${f} ] ; then						\
       $(call pretty-printer,yellow,DEPENDENCIES,$$i,		)	; \
-      $(_CC_) $(_CFLAGS_) -M -MG $$options_dep $$i >> $(2)		; \
+      $(_CC_) $(_CFLAGS_) -M -MG $${dependencies_options} $${f} >> $(2)	; \
     fi									; \
   done
 endef
@@ -516,6 +546,9 @@ endef
 # generate a version file
 #
 # $(1):		the version file to generate
+# $(2):		the user name
+# $(3):		the host name
+# $(4):		the date
 #
 
 define version
@@ -537,15 +570,15 @@ endef
 #
 
 define link
- options_ln='';								\
-  for opt in $(3); do							\
-    case "$$opt" in							\
+  link_options=""							; \
+  for o in $(3); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
+    esac								; \
+  done									; \
   $(call pretty-printer,cyan,LINK,$(1),			)		; \
-  $(_LN_) $$options_ln $(2) $(1) $(_VERBOSE_)
+  $(_LN_) $${link_options} $(2) $(1) $(_VERBOSE_)
 endef
 
 #
@@ -556,16 +589,18 @@ endef
 #
 
 define compile-tex
-  options_tex='';							\
-  for opt in $(2); do							\
-    case "$$opt" in							\
+  compile_tex_options=""						; \
+  for o in $(2); do							\
+    case "$${o}" in							\
       *)								\
         ;;								\
-    esac;								\
-  done;									\
+    esac								; \
+  done									; \
   $(call pretty-printer,green,COMPILE-TEX,$(1),		)		; \
-  $(_PDFLATEX_) $$options_tex $(1).tex -o $(1).pdf $(_VERBOSE_)		; \
-  $(_PDFLATEX_) $$options_tex $(1).tex -o $(1).pdf $(_VERBOSE_)
+  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			\
+                -o $(1).pdf $(_VERBOSE_)				; \
+  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			\
+                -o $(1).pdf $(_VERBOSE_)
 endef
 
 #
@@ -626,7 +661,7 @@ define view
 endef
 
 #
-# gets a file contents
+# returns a file contents
 #
 # $(1):		the file
 # $(2):		advanced options

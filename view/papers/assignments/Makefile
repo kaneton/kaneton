@@ -34,6 +34,7 @@ PAPER			:=		assignments
 
 GARBAGE			:=		$(PAPER).aux			\
 					$(PAPER).log			\
+					$(PAPER).toc			\
 					$(PAPER).dvi			\
 					$(PAPER).ps			\
 					$(PAPER).pdf			

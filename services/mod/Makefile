@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/services/mod/Makefile
+## file          /home/mycure/kaneton/services/mod/Makefile
 ##
 ## created       julien quintard   [fri feb 11 03:00:09 2005]
-## updated       matthieu bucchianeri   [sun dec 18 12:04:51 2005]
+## updated       julien quintard   [sat feb 25 14:46:41 2006]
 ##
 
 #
@@ -40,7 +40,9 @@ MOD_INCLUDE		:=
 
 $(MOD):			libs $(MOD_O)
 	$(call executable,$(MOD),$(MOD_O) $(_KLIBC_A_),			\
-	  "--lds $(_MACHDEP_LDS_DIR_)/service.lds")
+                 "--ld-script $(_MACHDEP_LDS_DIR_)/service.lds"		\
+                 "--no-standard-include"				\
+                 "--no-standard-library")
 
 libs:
 	$(call make,$(_KLIBC_DIR_),)

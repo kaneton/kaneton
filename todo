@@ -1,4 +1,13 @@
 --
+ questions k1, kaneton:
+   - a quoi sert machdep_data()
+   - comment fonctionne le systeme d'appel de la partie dependante
+   - 
+
+--
+ finalement mettre internship dans view
+
+--
  buckman: quand on fait un make clear ca ne nettoie pas tout dans
  papers/kaneton. adapte ton makefile
 

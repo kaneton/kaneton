@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       julien quintard   [thu feb 23 07:28:13 2006]
+## updated       julien quintard   [sat feb 25 15:48:20 2006]
 ##
 
 #
@@ -123,12 +123,12 @@ dep:
 
 build:
 	$(call change-directory,$(_MBL_DIR_)/$(_MBL_),)			; \
-	$(call launch,$(_MBL_).sh,build,)				; \
+	$(call shell-script,$(_MBL_).sh,build,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 install:		kaneton
 	$(call change-directory,$(_MBL_DIR_)/$(_MBL_),)			; \
-	$(call launch,$(_MBL_).sh,install,)				; \
+	$(call shell-script,$(_MBL_).sh,install,)			; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 #
@@ -144,12 +144,12 @@ check:
 
 view- view:
 	$(call change-directory,$(_VIEW_DIR_),)				; \
-	$(call launch,$(_VIEW_SCRIPT_),$*,)				; \
+	$(call shell-script,$(_VIEW_SCRIPT_),$*,)			; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 view-%:
 	$(call change-directory,$(_VIEW_DIR_),)				; \
-	$(call launch,$(_VIEW_SCRIPT_),$*,)				; \
+	$(call shell-script,$(_VIEW_SCRIPT_),$*,)			; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 #
@@ -176,12 +176,12 @@ dist:			export-dist
 
 export- export:
 	$(call change-directory,$(_EXPORT_DIR_),)			; \
-	$(call launch,$(_EXPORT_SCRIPT_),,)				; \
+	$(call shell-script,$(_EXPORT_SCRIPT_),,)			; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 export-%:
 	$(call change-directory,$(_EXPORT_DIR_),)			; \
-	$(call launch,$(_EXPORT_SCRIPT_),$*,)				; \
+	$(call shell-script,$(_EXPORT_SCRIPT_),$*,)			; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 #
@@ -192,14 +192,14 @@ cheat- cheat:
 	$(call makefile,$(_CTCOMPARE_DIR_),)
 
 	$(call change-directory,$(_CHEAT_DIR_),)			; \
-	$(call launch,$(_CHEAT_SCRIPT_),,)				; \
+	$(call shell-script,$(_CHEAT_SCRIPT_),,)			; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 cheat-%:
 	$(call makefile,$(_CTCOMPARE_DIR_),)
 
 	$(call change-directory,$(_CHEAT_DIR_),)			; \
-	$(call launch,$(_CHEAT_SCRIPT_),$*,)				; \
+	$(call shell-script,$(_CHEAT_SCRIPT_),$*,)			; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 #

@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/buckman/kaneton/view/papers/assignments/k1.tex
+%% file          /home/mycure/kaneton/view/papers/assignments/k1.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:38 2006]
-%% updated       matthieu bucchianeri   [wed feb 15 00:18:57 2006]
+%% updated       julien quintard   [sat feb 25 18:12:50 2006]
 %%
 
 %
@@ -15,7 +15,19 @@
 
 \section{k1}
 
-\subsection{General description}
+%
+% overview
+%
+
+\subsection{Overview}
+
+XXX
+
+%
+% description
+%
+
+\subsection{Description}
 
 The \textbf{k1} project consists in the development of the bootloader.
 
@@ -27,13 +39,6 @@ The relocation is not really necessary but we wanted the students
 to understand low-level programming and more especially programming
 in a very strict environment with no fine-grain allocator provided.
 
-Needless to  say, the  student will have  to install and  activate the
-protected mode and the  virtual memory (students choosing ia32 without
-paging will have to find an alternative to virtual memory).
-
-Even if  the multi-bootloader  (GRUB for example)  activated protected
-mode, you must ensure that it is correctly installed.
-
 So in this project, the student has to write the entire code of the
 bootloader. The only requirement is to be compliant with the structure
 passed to the kernel.
@@ -43,6 +48,39 @@ driver code generic so you can reuse it in the next steps.
 
 The initialization structure called \textbf{t\_init} is defined in the
 file \textit{core/include/kaneton/init.h}.
+
+\begin{verbatim}
+typedef struct
+{
+  t_paddr                       mem;
+  t_psize                       memsz;
+
+  t_paddr                       kcode;
+  t_psize                       kcodesz;
+
+  t_paddr                       init;
+  t_psize                       initsz;
+
+  t_modules*                    modules;
+  t_psize                       modulessz;
+
+  t_uint32                      nsegments;
+  o_segment*                    segments;
+  t_psize                       segmentssz;
+
+  t_uint32                      nregions;
+  o_region*                     regions;
+  t_psize                       regionssz;
+
+  t_paddr                       kstack;
+  t_psize                       kstacksz;
+
+  t_paddr                       alloc;
+  t_psize                       allocsz;
+
+  machdep_data(init);
+}                               t_init;
+\end{verbatim}
 
 The \textbf{mem} and \textbf{memsz} fields indicate the available physical
 memory of the system.
@@ -167,3 +205,13 @@ Here are the two possibilities:
 \item ia32-virtual, where you use paging
 \item ia32-segment, without paging
 \end{itemize}
+
+---
+
+Needless to  say, the  student will have  to install and  activate the
+protected mode and the  virtual memory (students choosing ia32 without
+paging will have to find an alternative to virtual memory).
+
+Even if  the multi-bootloader  (GRUB for example)  activated protected
+mode, you must ensure that it is correctly installed.
+

@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/export_kaneton/kaneton/core/bootloader/arch/ia32-segment/Makefile
+## file          /home/mycure/kaneton/core/bootloader/arch/ia32-segment/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:05:35 2005]
-## updated       matthieu bucchianeri   [mon jan 30 20:22:22 2006]
+## updated       julien quintard   [sat feb 25 14:41:49 2006]
 ##
 
 #
@@ -50,8 +50,10 @@ CFLAGS			+=		-D___bootloader
 
 $(BOOTLOADER):		libs $(BOOTLOADER_O)
 	$(call executable,$(BOOTLOADER),$(BOOTLOADER_O)			\
-	  $(_KLIBC_A_) $(_LIBIA32_A_),					\
-	"--lds $(_MACHDEP_LDS_DIR_)/bootloader.lds")
+	         $(_KLIBC_A_) $(_LIBIA32_A_),				\
+	         "--ld-script $(_MACHDEP_LDS_DIR_)/bootloader.lds"	\
+                 "--no-standard-include"				\
+                 "--no-standard-library")
 
 	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
 

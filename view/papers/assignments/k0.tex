@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/buckman/kaneton/view/papers/assignments/k0.tex
+%% file          /home/mycure/kaneton/view/papers/assignments/k0.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:23 2006]
-%% updated       matthieu bucchianeri   [tue feb  7 11:49:25 2006]
+%% updated       julien quintard   [sat feb 25 17:02:07 2006]
 %%
 
 %
@@ -15,7 +15,11 @@
 
 \section{k0}
 
-\subsection{Basic rules}
+%
+% overview
+%
+
+\subsection{Overview}
 
 The \textbf{k0} project consists in the development of the bootstrap.
 
@@ -25,6 +29,9 @@ projects.
 The only  goal is to develop  a bootstrap in assembly,  loading an ELF
 binary object from  floppy drive into main memory  and finally jumping
 on the binary entry point.
+
+Generally, and on many architectures, the bootstrap also installs
+a more evolved memory addressing model.
 
 %
 % ia32
@@ -38,3 +45,7 @@ lauching the binary object.
 Moreover, the project's diffculty resides in the development of an
 application first evolving in real mode, then in protected mode, all
 in a single assembly file.
+
+With this project the students will learn how to use the BIOS interrupts
+to perform complex tasks and to develop a very low-level program dealing
+with microprocessors crashes.

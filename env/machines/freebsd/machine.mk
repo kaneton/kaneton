@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/machines/freebsd/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [mon feb 20 23:05:56 2006]
+## updated       julien quintard   [sat feb 25 14:49:09 2006]
 ##
 
 #
