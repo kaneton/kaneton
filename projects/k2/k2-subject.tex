@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Mon Feb 21 16:02:16 2005   mycure
-%% last update   Fri Feb 25 12:15:12 2005   mycure
+%% last update   Sat Feb 26 10:49:20 2005   mycure
 %%
 
 \documentclass[10pt,a4wide]{article}
@@ -845,7 +845,8 @@ Sur l'architecture IA-32 par exemple, lors de la r\'eservation
 d'un espace d'adressage, la partie d\'ependante devra r\'eserver une page
 physique pour y stocker le \textbf{page directory} et l'initialiser. La
 partie d\'ependante s'occupant de cette partie sur le sch\'ema se nomme
-\textbf{vas}.
+\textbf{vas}. Attention cette partie ne sera d\'evelopp\'ee que dans k3.
+La partie \textbf{pas} ne devrait rien avoir \`a faire sur IA-32.
 
 \subsection{int}
 
@@ -964,6 +965,13 @@ Encore une fois cette impl\'ementation est pratique car la partie
 ind\'ependante ne se soucie de rien mis \`a part du fait qu'une structure
 d\'ecrivant les fonctions d\'ependantes de l'architecture existe.
 
+\paragraph{}
+
+\`A vous de voir ce qu'il serait ing\'enieux de rajouter en param\`etre.
+De plus il serait int\'eressant de rajouter un champ dans vos structures
+de donn\'ees ind\'ependantes pour que les parties d\'ependantes puisse
+stocker des informations.
+
 \section{Bonus}
 
 \paragraph{}
@@ -1016,5 +1024,54 @@ demand\'e de toujours avoir une date mise \`a jour.
 
 Bien entendu il vous sera \'egalement demand\'e de fournir une commande
 dans l'interpr\'eteur afin de mettre en valeur votre travail.
+
+\subsection{Objects: ``Sharing sux''}
+
+\paragraph{}
+
+Pour les plus courageux nous vous proposons la mod\'elisation d'un nouveau
+syst\`eme pour le partage de donn\'ees d'une mani\`ere plus propre que
+le partage de pages.
+
+\paragraph{}
+
+Ce syst\`eme est bas\'e sur l'utilisation d'objets et est donc beaucoup
+plus haut niveau que le partage de pages.
+
+\paragraph{}
+
+Nous vous demandons donc une mod\'elisation compl\`ete d'un tel syst\`eme
+avec bien entendu une impl\'ementation. Le papier d\'ecrivant votre
+syst\`eme devra comprendre les avantages et inconv\'enients d'un tel
+syst\`eme.
+
+\paragraph{}
+
+Vous indiquerez \'egalement dans votre description si il est utile de
+permettre aux processus, services etc.. d'allouer directement de la
+m\'emoire physique avec un tel syst\`eme.
+
+\paragraph{}
+
+Ce bonus est destin\'e \`a vous faire r\'efl\'echir sur les syt\`emes
+existants et sur ce qu'un syst\`eme \`a base d'objets peut permettre.
+
+\paragraph{}
+
+Attention nous utilisons ici le terme d'objet mais par forc\'ement au sens
+complet: donn\'ees internes et m\'ethodes. C'est \`a vous d'imaginer un
+syst\`eme en C qui apporte la propret\'e des objets avec si possible
+un syst\`eme de contr\^ole sur les acc\`es aux objets.
+
+\paragraph{}
+
+Ce syst\`eme devra permettre le partage d'objets par plusieurs entit\'es
+qui auront pr\'ealablement \'et\'e autoris\'ees par l'entit\'e ma\^itre de
+l'objet.
+
+\paragraph{}
+
+Bien entendu, l'acc\`es aux objets utilisera forc\'ement une
+exclusion mutuelle.
 
 \end{document}

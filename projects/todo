@@ -16,11 +16,84 @@ XXX il faut reussir a faire comme du sharing sur des as mais avec
     donc lire via un objet c est correct, le non-parallelisme n'intervenant
     qu une seule fois
 
+-- spargo
+
+meme process qui mappe n fois la meme page physique XXX objects [ok]
+n process qui mappe n fois la meme page physique XXX objects [ok] 
+
+. prevoir un objet manager
+
+dans l'as de la task:
+
+ pas: liste de zones appartenant 
+
+[pm]
+ . 0-4 asid0
+ . 5-2 asid0
+ . 12-4 asid1
+ . 20-10 asobj
+
+[as0]
+ pas
+  . 0-4
+  . 5-2
+ vas
+  . 5-1
+
+[asobj] /* object manager */ 
+
+en resumer, "pas" decrit ce que l'asid detient comme zones physiques mais juste
+addr-size, aucune propriete. l'avantage: si un veut detruire l'espace physique
+utilise par un processus, le gestionnaire de mem physique n'aura qu'a parcourir
+la liste et hop c'est rapide et niquel.
+"vas" lui decrit juste les zones virtuelles utilisees, avec MAPPEE ou NON
+et si MAPPEE l'addr physique qui correspond.
+
+dans spargo il faudra faire autrement, cad limite le champ d'action pour
+par exemple soit se faire chier un peu et faire comme ca soit ne pas se
+faire chier et ne pas permettre vm_rsv sans mapping. enfin dans tous les
+cas ca fait juste un FLAG en + cest pas si grave.
+
+ce qui est puissant c'est que le swapper s'en branle GRAVE. au pire le
+object manager peut mettre un flag OBJECT pour dire que cette zone
+physique contient des objects donc a swapper en dernier.
+
+dans tous les cas c'est mieux qu'avant car avant on se faisait chier
+DANS LE PM_MNG a garder:
+
+1) tous les mecs qui mappent une page pour que le swapper puisse
+   facilement les marquer non-present si il swappait.
+   ce qui faisait que le pm_mng gerait des addr virtuelles, ca puait un max.
+2) maintenant le pm-mng ne s occupe que de gerer des zones physique avec
+   des attributs et c est ce qu on veut.
+
+quand on veut acceder a un objet:
+
+msg
+{
+  cmd = OBJECT_CALL; /* sera surement inutile car dest=object mng */
+  args
+  {
+    method;
+    arg1;
+    arg2;
+    arg3;
+    arg4;
+  }
+};
+
+l'object manager recoit le msg et extrait la methode, puis deduit le nombre
+d'args et les extrait pour ensuite appeller la fonction==methode.
+
 --
 
-. page fault a gerer dans k3
+. page fault a gerer dans k4 enfin leur dire de le gerer pour killer le process
 
 . durant k7 ils peuvent faire un petit fs en ram pour gerer les modules grub
+
+-- ?
+
+modeliser un systeme pour les exceptions generiques
 
 --
 
@@ -59,7 +132,7 @@ task_unload(taskid) [todo k4]
 
 task_reload(taskid, modid) [todo k4]
 
---
+-- k5
 
 expliquer que le chainage de trap va permettre de faire du multicasting de
 message mais egalement de gerer les conflits d'irq avec 2 periph utilisant
@@ -73,7 +146,7 @@ sils ne peuvent pas etre achemines.
 
 + priorites du scheduler.
 
---
+-- k4
 
 t_as
 {
@@ -83,7 +156,7 @@ t_as
   [virtual description]
 }
 
--- avec les traps
+-- k5
 
 expliquer le systeme pour recueillir les int avec handler generic etc..
 
@@ -97,28 +170,17 @@ struct
   ia32_pm_clear,
 }	t_pm_dep;
 
---
-
-expliquer le systeme:
-
-prsv ajoute un truc dans la liste physique de l asid (*)
-vrsv ajoute un truc dans la liste virtuelle
-vmap enleve dans la liste physique mais ajoute l addr physique dans le truc v
-vunmap enleve la reference vers physique et ajoute un truc physique
-vrel enelve dans v
-prel enleve dan p (*)
-
---
+-- k5
 
 expliquer que lorsque l'on fait un msg_init -> int_add() * N +
   wrapper etc..
 
--- 
+--  k5
 
 lors du trap_add() on recupere le PL par rapport au thread
 et on en deduit le segid et hop int_add()
 
---
+-- 
 
 expliquer la table de traps et faire en sorte qu on puisse register plusieurs
   handler pour les traps mais egalement pour les msgs
@@ -380,3 +442,9 @@ typedef struct          s_trapid
 }                       t_trapid;
 \end{verbatim}
 
+-- annees a venir
+
+. automatisation de tests via moulinettes
+. intra pour poser des questions (quoique peut etre inutile si moulinettes)
+. faire en sorte qu on ne soit pas obliger de dl la tarball etc.. en salle
+  rack car ca peut tricher et bon c'est vraiment de la merde.
