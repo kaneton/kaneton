@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/assignments/k0.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:23 2006]
-%% updated       julien quintard   [sat feb 25 17:02:07 2006]
+%% updated       julien quintard   [sun feb 26 17:44:56 2006]
 %%
 
 %
@@ -23,8 +23,20 @@
 
 The \textbf{k0} project consists in the development of the bootstrap.
 
-This project is very specific and will not be re-used in the future
+This project is very specific and will not be reused in the future
 projects.
+
+Indeed, we will use a multibootloader like \textit{grub} or \textit{lilo}
+as the bootstrap in the next steps.
+
+The main goal of the bootstrap is to launch the bootloader in a better
+execution environment, with a better memory addressing model etc..
+
+%
+% assignments
+%
+
+\subsection{Assignments}
 
 The only  goal is to develop  a bootstrap in assembly,  loading an ELF
 binary object from  floppy drive into main memory  and finally jumping
@@ -33,19 +45,27 @@ on the binary entry point.
 Generally, and on many architectures, the bootstrap also installs
 a more evolved memory addressing model.
 
+The project's diffculty resides in the development of an
+application first evolving in a basic addressing model, then in
+a more evolved one, all in a single assembly file.
+
+Another difficulty is to deal with microprocessor crashes.
+
 %
 % ia32
 %
 
-\subsection{IA-32 implementation}
+\subsection{Intel Architecture 32-bit Implementation}
 
-The student will have to install and activate the protected mode before
-lauching the binary object.
+First of all, the students will certainly want to use the BIOS interrupts
+to perform the most complex tasks like loading the ELF binary object
+from the floppy drive into main memory.
 
-Moreover, the project's diffculty resides in the development of an
-application first evolving in real mode, then in protected mode, all
-in a single assembly file.
+The only alternative to this is to develop your own floppy device driver.
 
-With this project the students will learn how to use the BIOS interrupts
-to perform complex tasks and to develop a very low-level program dealing
-with microprocessors crashes.
+Then the students will have to install and activate the protected mode.
+
+At this point, the microprocessor is evolving into its 32-bit addressing
+mode.
+
+Finally, the binary object just needs to be launched.

@@ -1,4 +1,17 @@
 --
+ faire une template pour internship
+
+--
+ expliquez les choix de design (tout ce que j explique a l oral a l etudiant)
+ dans kaneton plutot quand dans assignments.
+
+ sauf pour k1 ou c'est trop specifique.
+
+ d ailleurs il n y a pas de section k1 dans kaneton.pdf
+
+ une fois que ca ce sera fait je pourrais ecrire lectures::kaneton.pdf
+
+--
  questions k1, kaneton:
    - a quoi sert machdep_data()
    - comment fonctionne le systeme d'appel de la partie dependante

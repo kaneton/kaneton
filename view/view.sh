@@ -77,7 +77,7 @@ warning()
 {
   # display information and ask the user to continue or cancel
   display " your current configuration" "+"
-  display "   format:                   ${_FORMAT_}" "+"
+  display "   pdf viewer:               ${_PDFVIEWER_}" "+"
   display ""
   display "   paper:                    ${LOCATION}" "+"
   display ""
