@@ -27,12 +27,23 @@ include			../../../env/.env.mk
 
 PAPER			:=		kaneton
 
-GARBAGE			:=		$(PAPER).aux			\
-					$(PAPER).log			\
-					$(PAPER).dvi			\
-					$(PAPER).ps			\
-					$(PAPER).pdf			\
-					$(PAPER).toc
+SRC			:=		1-goals.tex			\
+					2-overview.tex			\
+					3-devenv.tex			\
+					4-source.tex			\
+					5-coding.tex			\
+					6-indep.tex			\
+					7-tools.tex			\
+					8-tests.tex			\
+					9-glossary.tex			\
+					kaneton.tex
+
+GARBAGE			:=		$(SRC:.tex=.aux)		\
+					$(SRC:.tex=.log)		\
+					$(SRC:.tex=.dvi)		\
+					$(SRC:.tex=.ps)			\
+					$(SRC:.tex=.pdf)		\
+					$(SRC:.tex=.toc)
 
 #
 # ---------- rules ------------------------------------------------------------

@@ -5,9 +5,6 @@
    - 
 
 --
- finalement mettre internship dans view
-
---
  buckman: quand on fait un make clear ca ne nettoie pas tout dans
  papers/kaneton. adapte ton makefile
 
@@ -27,11 +24,7 @@
  deduire la taille du cache, par exemple 3, pour etre sur disons 5.
 
 --
- ne pas mettre les logos dans des rep particuliers mais dans view/logos.
-
- par exemple buckman pour le logo de kaneton.pdf
-
- de plus pour kaneton.pdf utiliser la template paper.tex OU en faire
+ Pour kaneton.pdf utiliser la template paper.tex OU en faire
  une nouvelle genre book.
 
  baisser la taille de police et eviter tout ce qui est \\ \vspace \hspace etc..
@@ -55,16 +48,7 @@
  revoir segment : acces direct (read/write) et resize + split (regions).
 
 --
- passer toutes les images de jpg -> pdf: il reste kaneton, assignments et
- quelques de seminar: donc buckman et cedric a vous de jouer.
-
- xfig: export en eps
-   puis
- epstopdf
-
- comme ca on a des images propres.
-
- de plus les images microkernel_examples_* dans seminar a passer au format xfig
+ les images microkernel_examples_* dans seminar sont a passer au format xfig
 
 --
  le cours intel a integrer a la tarball
