@@ -1,3 +1,9 @@
+-- set
+
+pour la migration de process:
+
+une fonction: set_pack() serait interessante
+
 -- spargo
 
 utiliser des identifiants pour les regions de memoire que ce soit
