@@ -725,20 +725,3 @@ the double colon makes the rule terminal, which means that its prerequisite may 
 
 
 orthographe: prerequisite, prerequisites
-
-XXX ----------------------------------------------------------------------- XXX
-
-soit la population P constitue de X individus a un instant T.
-
-soit la fonction C(B) qui exprime un choix en fonction d'un bagage
-ou background.
-
-le background etant considere comme le bagage au sens general: intellectuel,
-environnemental, experimental etc.. mais egalement genetique.
-
-soit la fonction I(x1, x2) exprimant l'interaction de deux individus.
-cette fonction modifiant le bagage de chacun des deux individus en interaction
-
-soit B le bagage de chacun des X individus exprimable, calculable, ALORS
-
-  soit x un individu:

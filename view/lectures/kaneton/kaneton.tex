@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/kaneton/kaneton.tex
 %%
 %% created       julien quintard   [sun dec  4 16:40:51 2005]
-%% updated       julien quintard   [mon dec 26 21:43:46 2005]
+%% updated       julien quintard   [thu feb 23 12:07:37 2006]
 %%
 
 %
@@ -90,7 +90,7 @@
 
   \nl
 
-  All these kernels are different, but what are these differencies.
+  All these kernels are different, but what are these differencies?
 
   \nl
 
@@ -101,7 +101,7 @@
 
   This course is divided in sessions, each session dealing with the
   related project. Each session tries to give students a complete view
-  on kernel designers choices.
+  on kernel designers' choices.
 \end{frame}
 
 % 3)
@@ -109,7 +109,7 @@
 \begin{frame}
   \frametitle{Architectures}
 
-  This project should be develop on any architecture, the students group
+  This project should be developed on any architecture, the students group
   choosing its architecture.
 
   \nl
@@ -143,9 +143,13 @@
   \nl
 
   Indeed, the students did not understand the different memory models
-  or only in theory. To make this more understandable, we decided to
-  introduce a new project where students will have to deal with very
-  low programming and the very first memory model: the Intel real mode.
+  or only in theory.
+
+  \nl
+
+  To make this more understandable, we decided to introduce a new project
+  where students will have to deal with very low-level programming and the
+  very first memory model: the Intel real mode.
 \end{frame}
 
 % 2)
@@ -161,11 +165,13 @@
 
   \begin{enumerate}[<+->]
     \item
-      Displays some messages using BIOS interrupts facilities.
+      Display some messages using BIOS interrupts facilities.
     \item
-      Installs the new memory model.
+      Load the kernel from the boot device, the floppy device for example.
     \item
-      Launches the bootloader.
+      Install the new memory model.
+    \item
+      Launch the bootloader.
   \end{enumerate}
 \end{frame}
 
@@ -195,7 +201,7 @@
 
   \nl
 
-  In fact, the bootloader deals with low level programming and generally
+  In fact, the bootloader deals with low-level programming and generally
   installs everything needed by the kernel. Then the kernel can be launched
   and can run without taking care of low-level stuff.
 \end{frame}
@@ -249,8 +255,170 @@
 
   Indeed, the information structure is extremely compact. So each group
   will have to build this structure which contains specific substructures
-  like segments, regions which are dynamic data structure and modules
+  like segments, regions which are dynamic data structures and modules
   which have to be located in a specific place.
+\end{frame}
+
+%
+% k2
+%
+
+\section{k2}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The goal of the \textbf{k2} project is to develop some high level
+  managers including:
+
+  \begin{itemize}[<+->]
+    \item
+      id manager
+    \item
+      set manager
+    \item
+      as manager
+    \item
+      segment manager
+  \end{itemize}
+
+  Of course the relation with the bootloader's information structure must
+  be done.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{id manager}
+
+  This manager just provide an easy way to generate and more generally
+  manage identifiers.
+
+  \nl
+
+  Moreover this manager can recycle the identifiers when necessary.
+
+  \nl
+
+  \textbf{kaneton} was developed using 64-bit identifiers especially not
+  to care about identifiers recycling.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{set manager}
+
+  The set manager is used to organise data structures contrary to other
+  systems like Linux, BSD and Solaris which are composed of specific
+  data structures like linked-list, trees everywhere it is necessary.
+
+  \nl
+
+  This design leads to a very elegant source code.
+
+  \nl
+
+  Nevertheless there exists inherent problems. The set manager is based
+  over the malloc() function which is used to provide fine-grained memory.
+
+  \nl
+
+  The malloc() function needs to allocate memory so to call the segment
+  and region managers, but these managers use the set manager to store their
+  objects. This infinite loop is resolved by the alloc survey area provided
+  by the bootloader.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Nomenclature}
+
+  \textbf{kaneton} use a very specific nomenclature.
+
+  \nl
+
+  In kaneton, structures are called objects when the first 64-bit field
+  is used as an identifier for this object.
+
+  \nl
+
+  Then, the set manager use this field to organise objects into set objects.
+
+  \nl
+
+  Finally, a funny notice, the set manager use a set container to store
+  the set object, but this set container is also a set object.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{as manager}
+
+  An address space is a set of addressable addresses.
+
+  \nl
+
+  In \textbf{kaneton}, an address space is composed of a segment set and
+  region set.
+
+  \nl
+
+  The segment set contains the list of the segments reserved
+  for this address space and the region set contains the regions used
+  to associate virtual memory with physical one.
+
+  \nl
+
+  Note that, once the id, set, as and segment managers will be initialised,
+  the core will have to inject the segments and regions provided by the
+  bootloader into the kernel address space.
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{segment manager}
+
+  The segment manager just provides an interface to manipulate segments
+  including reservation, releasing etc..
+
+  \nl
+
+  The segment manager, in other terms, manipulate the physical memory.
+
+  \nl
+
+  Note that there exists many ways to keep track of memory usage including:
+
+  \begin{itemize}[<+->]
+    \item
+      Bitmaps.
+    \item
+      Advanced bitmaps.
+    \item
+      Areas via a data structure, generally a linked-list.
+    \item
+      Evolved areas providing facilities to sharing and swapping.
+    \item
+      Buddy systems.
+  \end{itemize}
+
+  \textbf{kaneton} just use areas represented by segment object, themselves
+  stored in a set object.
+
+  \nl
+
+  Moreover, the \textbf{kaneton} microkernel just uses a very simple first-fit
+  algorithm to manage the segment set.
+
+  \nl
+
+  Remember the fact that \textbf{kaneton} is a pedagogic project.
 \end{frame}
 
 \end{document}

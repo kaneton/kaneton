@@ -7,7 +7,7 @@
 ## file          /home/mycure/kaneton/cheat/cheat.sh
 ##
 ## created       julien quintard   [sat feb 18 19:09:32 2006]
-## updated       julien quintard   [tue feb 21 22:54:42 2006]
+## updated       julien quintard   [wed feb 22 19:43:05 2006]
 ##
 
 #
@@ -62,7 +62,7 @@ warning()
 {
   # display information and ask the user to continue or cancel
   display " your current configuration" "+"
-  display "   ignore level:             ${_CHEAT_IGNORE_}" "+"
+  display "   filter:                   ${_CHEAT_FILTER_}" "+"
   display ""
   display "   year:                     ${YEAR}" "+"
   display "   stage:                    ${STAGE}" "+"
@@ -185,12 +185,12 @@ for a in ${args} ; do
   let "i += 1"
 done
 
-# XXX
-# check the number of arguments.
-#if [ ${#in} -ne 3 ] ; then
-#  usage
-#  exit -1
-#fi
+# checks the number of arguments.
+if [ ${#in[*]} -ne 2 ] ; then
+  usage
+  display ""
+  exit -1
+fi
 
 year=${in[0]}
 stage=${in[1]}

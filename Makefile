@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       julien quintard   [tue feb 21 23:01:44 2006]
+## updated       julien quintard   [thu feb 23 07:28:13 2006]
 ##
 
 #
@@ -160,40 +160,7 @@ info:
 	$(call print,white,,)
 
 	$(call print,blue,"--- ",--no-newline)
-	$(call print,white,kaneton,)
-
-	$(call print,white,,)
-
-	$(call print,blue,"# ",--no-newline)
-	$(call print,white,authors:,)
-	$(call print,white,,)
-	$(call print,white,     julien quintard - quinta_j@gmail.com,)
-	$(call print,white,     jean-pascal billaud - billau_j@epita.fr,)
-
-	$(call print,white,,)
-
-	$(call print,blue,"# ",--no-newline)
-	$(call print,white,assistants:,)
-	$(call print,white,,)
-	$(call print,white,     cedric aubouy - aubouy_c@epita.fr,)
-	$(call print,white,     renaud lienhart - lienha_r@epita.fr,)
-
-	$(call print,white,,)
-
-	$(call print,blue,"# ",--no-newline)
-	$(call print,white,kaneton reference:,)
-	$(call print,white,,)
-	$(call print,white,     matthieu bucchianeri - bucchi_m@epita.fr,)
-	$(call print,white,     renaud voltz - voltz_r@epita.fr,)
-
-	$(call print,white,,)
-
-	$(call print,blue,"# ",--no-newline)
-	$(call print,white,contributors:,)
-	$(call print,white,,)
-	$(call print,white,     christophe eymard - eymard_c@epita.fr,)
-	$(call print,white,     solal jacob - jacob_s@epitech.net,)
-	$(call print,white,     fabien le-mentec - le-men_f@epita.fr,)
+	$(call print,white,http://www.kaneton.org,)
 
 	$(call print,white,,)
 

@@ -1,10 +1,32 @@
 --
+ buckman: quand on fait un make clear ca ne nettoie pas tout dans
+ papers/kaneton. adapte ton makefile
+
+--
+ k3: rapport de modelisation sur les events
+
+ ce serait une bonne idee car c'est relativement simple et en meme temps
+ ca demande de la reflexion vu que c'est proche de l'archi.
+
+--
+ pour le probleme de dependance entre segments et malloc() il suffit d'avoir
+ un cache d'objets segment dans le manager de segment. et le segment
+ manager pioche dedans pour ajouter des segments. donc set_reserve()
+ sans l'option ALLOC.
+
+ il suffit de calculer la limite d'appels recursifs a segment et d'en
+ deduire la taille du cache, par exemple 3, pour etre sur disons 5.
+
+--
  ne pas mettre les logos dans des rep particuliers mais dans view/logos.
 
  par exemple buckman pour le logo de kaneton.pdf
 
  de plus pour kaneton.pdf utiliser la template paper.tex OU en faire
  une nouvelle genre book.
+
+ baisser la taille de police et eviter tout ce qui est \\ \vspace \hspace etc..
+ car ca rend le code latex illisible.
 
 --
  checker le bootloader, les regions puent du cul j'ai du me planter.
