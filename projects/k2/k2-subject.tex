@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Mon Feb 21 16:02:16 2005   mycure
-%% last update   Sat Feb 26 10:49:20 2005   mycure
+%% last update   Sat Feb 26 14:34:21 2005   mycure
 %%
 
 \documentclass[10pt,a4wide]{article}
@@ -403,7 +403,6 @@ dans l'unique but de garder les structures coh\'erentes.
 
 \paragraph{}
 
-
 \hspace{1.5cm}int \textbf{pm\_attr}(t\_asid \textbf{asid},
                                     t\_paddr \textbf{addr},
                                     t\_paddr \textbf{npages},
@@ -509,19 +508,6 @@ repr\'esente les privil\`eges de l'interruption.
 
 \`A savoir que nous utiliserons seulement le type INT\_TYPE\_INT, mais
 ce point tr\`es pr\'ecis sera explicit\'e ult\'erieurement.
-
-\paragraph{}
-
-\hspace{1.5cm}int \textbf{int\_modify}(u\_int8\_t \textbf{entry},
-                                       t\_inttype \textbf{type},
-                                       t\_segid \textbf{segid},
-                                       t\_pl \textbf{pl}, \\
-\bigskip
-\hspace{4.3cm}                         t\_vaddr \textbf{handler});
-
-\paragraph{}
-
-Cette fonction modifie une interruption d\'ej\`a enregistr\'ee.
 
 \paragraph{}
 

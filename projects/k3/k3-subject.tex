@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Mon Feb 21 16:02:38 2005   mycure
-%% last update   Sat Feb 26 13:47:37 2005   mycure
+%% last update   Sat Feb 26 14:50:52 2005   mycure
 %%
 
 \documentclass[10pt,a4wide]{article}
@@ -68,6 +68,15 @@ d'espace d'adressage et certains drivers.
 Le but de ce projet est de r\'ealiser un ensemble de fonctions pour la
 gestion de la m\'emoire virtuelle et bien entendu de finaliser par la
 m\^eme occasion le gestionnaire d'espaces d'adressage.
+
+\paragraph{}
+
+En effet au terme de ce projet, une entit\'e pourra d\'ecider de cr\'eer
+un espace d'adressage et de r\'eserver un nombre de pages sans probl\`emes.
+Le kernel devra donc s'occuper de la r\'eservation des structures de
+donn\'ees g\'en\'eriques mais \'egalement propre au processeur, les
+initialiser, les maintenir \`a jour, en installer de nouvelles si n\'ecessaire
+etc..
 
 \paragraph{}
 
@@ -137,7 +146,9 @@ de votre kernel.
 En effet dans le bootloader, vous mappiez nombre de pages physiques
 mais vous ne gardiez aucune trace de ces allocations. Pour initialiser
 ce syst\`eme de traces d'allocation, prenez exemple sur votre
-initialisation des zones physiques.
+initialisation des zones physiques, le but \'etant que l'espace
+d'adressage du kernel soit coh\'erent et repr\'esente r\'eellement
+la m\'emoire virtuelle utilis\'ee par le kernel.
 
 \paragraph{}
 
@@ -155,9 +166,9 @@ virtuelles mais \'egalement de manipuler des donn\'ees en virtuel.
 
 Cette fonction se contente d'allouer un nombre donn\'e de pages virtuelles
 dans un espace d'adressage donn\'e: \textbf{asid}. Le param\`etre
-contient en entr\'ee l'adresse \`a laquelle l'appellant d\'esire r\'eserver
-de la m\'emoire virtuelle. En sortie, ce param\`etre contient la premi\`ere
-adresse trouv\'ee pour effectuer cette allocation.
+\textbf{*vaddr} contient en entr\'ee l'adresse \`a laquelle l'appellant
+d\'esire r\'eserver de la m\'emoire virtuelle. En sortie, ce param\`etre
+contient l'adresse trouv\'ee pour effectuer cette allocation.
 
 \paragraph{}
 
@@ -179,6 +190,29 @@ Cette fonction modifiera l'espace d'adressage \textbf{asid}.
 
 \paragraph{}
 
+\hspace{1.5cm}int \textbf{vm\_attr}(t\_asid \textbf{asid},
+                                    t\_vaddr \textbf{vaddr},
+                                    t\_vaddr \textbf{npages},
+                                    t\_vattr \textbf{attr});
+
+\paragraph{}
+
+Cette fonction permet la modification des attributs d'une zone de
+m\'emoire virtuelle. Les attributs pourraient \^etre compos\'es
+des flags suivants: VM\_ATTR\_EXEC, VM\_ATTR\_READ, VM\_ATTR\_WRITE etc..
+
+\paragraph{}
+
+Cette fonction modifiera l'espace d'adressage \textbf{asid} seulement si
+vous d\'ecidez de garder une trace plus compl\`ete de la m\'emoire virtuelle
+en software.
+
+\paragraph{}
+
+Nous vous le conseillons pour une question de logique.
+
+\paragraph{}
+
 \hspace{1.5cm}int \textbf{vm\_map}(t\_asid \textbf{asid},
 				   t\_paddr \textbf{paddr},
                                    t\_vaddr \textbf{vaddr},
@@ -194,22 +228,22 @@ un nombre de pages donn\'e.
 
 Cette fonction effectuera des modifications sur l'espace d'adressage.
 En effet il faudra que l'espace d'adressage ait bien pris en compte que
-d\'esormais cette zone physique est mapp\'ee par une adresse virtuelle.
+d\'esormais cette zone physique est mapp\'ee par une - ou plusieurs -
+adresses virtuelles.
 
 \paragraph{}
 
 Vos structures doivent permettre le fait qu'une zone physique soit mapp\'ee
-par plusieurs pages virtuelle de ce m\^eme espace d'adressage mais \'egalement
+par plusieurs pages virtuelles de ce m\^eme espace d'adressage mais \'egalement
 qu'une zone soit mapp\'ee par plusieurs processus voire \textbf{n} fois
 chacun. Bien entendu cette fonctionnalit\'e ne vous sera possible et demand\'ee
 que si vous avez effectu\'e le bonus \textbf{Sharing} du projet pr\'ec\'edent.
 
 \paragraph{}
 
-Si vous avez effectuer le bonus \textbf{Object} vous devez savoir le faire
-en utilisant des objets et vous serez donc capable d'expliquer pourquoi
-les structures de donn\'ees du gestionnaire d'espace d'adressage sont
-simple et ce qu'elles devraient contenir, d\'ecrire.
+Si vous avez effectu\'e le bonus \textbf{Object} vous devez savoir le faire
+en utilisant des objets et vous serez donc capable d'expliquer comment
+faire et ce qu'il faudrait enlever ou ajouter aux gestionnaires exitants.
 
 \paragraph{}
 
@@ -219,8 +253,8 @@ simple et ce qu'elles devraient contenir, d\'ecrire.
 
 \paragraph{}
 
-Cette fonction enl\`eve la correspondance pr\'ec\'edemment attribu\'ee entre
-la zone virtuelle et la zone physique.
+Cette fonction enl\`eve la correspondance pr\'ec\'edemment \'etablie
+sur cette zone virtuelle.
 
 \paragraph{}
 
@@ -245,8 +279,8 @@ deux espaces d'adressage virtuels.
 
 La fonction \textbf{mm\_rsv}() se charge d'allouer \textbf{npages} physiques
 et virtuelles et de les mapper. Cette fonction effectue donc les trois
-t\^aches fondamentales pour allouer de la m\'emoire: \textbf{pm\_rsv}(),
-\textbf{vm\_rsv}() et \textbf{vm\_map}().
+t\^aches fondamentales pour allouer de la m\'emoire et la rendre disponible
+et utilisable: \textbf{pm\_rsv}(), \textbf{vm\_rsv}() et \textbf{vm\_map}().
 
 \paragraph{}
 
@@ -258,6 +292,32 @@ t\^aches fondamentales pour allouer de la m\'emoire: \textbf{pm\_rsv}(),
 
 Cette fonction se charge de lib\'erer la m\'emoire physique et la m\'emoire
 virtuelle tout en invalidant le mapping.
+
+\section{Types}
+
+\paragraph{}
+
+Voici une explication plus compl\`ete des nouveaux types que
+vous devrez utilis\'es.
+
+\paragraph{}
+
+Dans ce projet, les nouveaux types, sont rares et se limitent en r\'ealit\'e
+au seul type suivant.
+
+\subsection{t\_vattr}
+
+\paragraph{}
+
+Ce type d\'ecrit les attributs que peut prendre une page virtuelle.
+
+\begin{verbatim}
+#define VM_ATTR_EXEC    0x0
+#define VM_ATTR_READ    0x1
+#define VM_ATTR_WRITE   0x2
+
+typedef u_int8_t        t_vattr;
+\end{verbatim}
 
 \subsection{Bonus}
 

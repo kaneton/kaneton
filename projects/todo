@@ -67,6 +67,15 @@ DANS LE PM_MNG a garder:
 2) maintenant le pm-mng ne s occupe que de gerer des zones physique avec
    des attributs et c est ce qu on veut.
 
+au pire c'est peut etre inutile finallement de garder la correspondance
+v -> p en hardware, il faut voir, car si c'est le cas on vire tout.
+
+sinon on peut peut etre aussi faire une correspondance p -> v. il faut lister
+les cas ou ca sert pour etre sur.
+
+est ce que chaque vas doit garder traces des attributs? je pense que oui
+ca parait logique.
+
 quand on veut acceder a un objet:
 
 msg
@@ -84,6 +93,10 @@ msg
 
 l'object manager recoit le msg et extrait la methode, puis deduit le nombre
 d'args et les extrait pour ensuite appeller la fonction==methode.
+
+-- k4
+
+bonus: fichier de configuration a integrer
 
 --
 
@@ -180,12 +193,12 @@ expliquer que lorsque l'on fait un msg_init -> int_add() * N +
 lors du trap_add() on recupere le PL par rapport au thread
 et on en deduit le segid et hop int_add()
 
--- 
+-- k5
 
 expliquer la table de traps et faire en sorte qu on puisse register plusieurs
-  handler pour les traps mais egalement pour les msgs
+  handlers.
 
---
+-- k4
 
 schedule de threads
 
@@ -193,13 +206,13 @@ schedule de threads
 
 prevoir pour plusieurs processeurs, reprendre sur vianney
 
---
+-- k5
 
 trap avec priorites reduite: USER => bottom halves. si bcp de traps
 de register sur un evenement alors les derniers registers se comporteront
 comme des bottom halves du fait du nombre de personnes a reveiller.
 
--- trap
+-- k5
 
 expliquer que dans tous les cas les handlers d interruptions seront des
 INTGATE (ce qui facilite le portage) et que ensuite on dispatch. + bottom-h
@@ -207,7 +220,7 @@ INTGATE (ce qui facilite le portage) et que ensuite on dispatch. + bottom-h
 -- spargo
 
 virer tous les cas de write pendant un read et comme ca distribue tres
-simplle -> demander a laurent
+simple -> demander a laurent
 
 -- spargo
 
@@ -238,7 +251,7 @@ en fait les groups c est cool mais il faudrait que le createur du groupe
 broadcast pour demander si des gens veulent rentrer. meme systeme que j avais
 penser.
 
---
+-- k5 - k4
 
 trap_add(*trapid, thrid, eventid);
 
@@ -258,13 +271,13 @@ driver = service mais qui communique en plus avec le hard
 
 kernel = il peut communiquer avec tlm et a acces a tout
 
---
+-- k4
 
 processus = la notion de processus n'existe pas dans LSE/OS. neanmoins nous
             utiliserons ce terme comme alias du mot "task" et plus
             particulierement pour les taches utilisateur.
 
---
+-- k4
 
 il faut etre root ou systeme pour ajouter des services/drivers
 
@@ -287,10 +300,6 @@ nodeid
 -- spargo
 
 faire un schema d'un machine et aussi d'un reseau:
-
--- k3
-
-modifier les attr d une page virtuelle: rwx dans k3
 
 -- k5
 
@@ -408,7 +417,7 @@ Permet de d\'esactiver la gestion de cette trap.
 
 D\'etruit toute les traps enregistr\'ee.
 
---
+-- k4
 
 \subsection{t\_thrid}
 
