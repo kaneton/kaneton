@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat feb 18 18:53:45 2006]
+ * updated       matthieu bucchianeri   [mon feb 20 12:00:34 2006]
  */
 
 /*
@@ -58,9 +58,9 @@ i_segment		segment_interface =
     NULL,
     NULL,
     NULL,
-    NULL,
-    NULL,
-    NULL,
+    ia32_segment_read,
+    ia32_segment_write,
+    ia32_segment_copy,
     NULL,
     NULL,
     NULL,
@@ -79,6 +79,194 @@ i_segment		segment_interface =
  */
 
 /*                                                                  [cut] k2 */
+
+/*
+ * this function reads directly from a segment to a buffer.
+ *
+ * steps:
+ *
+ * 1) get the segment object.
+ * 2) check offset and size.
+ * 3) map the segment portion with a region.
+ * 4) copy from segment to the buffer.
+ * 5) unmap the region.
+ */
+
+t_error			ia32_segment_read(t_segid		segid,
+					  t_paddr		offs,
+					  void*			buff,
+					  t_psize		sz)
+{
+  o_segment*		o;
+  t_regid		reg;
+
+  SEGMENT_ENTER(segment);
+
+  /*
+   * 1)
+   */
+
+  if (segment_get(segid, &o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (offs + sz > o->size)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (region_reserve(o->asid, segid, offs, REGION_OPT_NONE, 0, sz, &reg) !=
+      ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  memcpy(buff, (void*)(t_vaddr)reg, sz);
+
+  /*
+   * 5)
+   */
+
+  if (region_release(o->asid, reg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
+}
+
+/*
+ * this function write directly to a segment from a buffer.
+ *
+ * steps:
+ *
+ * 1) get the segment object.
+ * 2) check offset and size.
+ * 3) map the segment portion with a region.
+ * 4) copy from the buffer to the segment.
+ * 5) unmap the region.
+ */
+
+t_error			ia32_segment_write(t_segid		segid,
+					   t_paddr		offs,
+					   const void*		buff,
+					   t_psize		sz)
+{
+  o_segment*		o;
+  t_regid		reg;
+
+  SEGMENT_ENTER(segment);
+
+  /*
+   * 1)
+   */
+
+  if (segment_get(segid, &o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (offs + sz > o->size)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (region_reserve(o->asid, segid, offs, REGION_OPT_NONE, 0, sz, &reg) !=
+      ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  memcpy((void*)(t_vaddr)reg, buff, sz);
+
+  /*
+   * 5)
+   */
+
+  if (region_release(o->asid, reg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
+}
+
+/*
+ * this function copies a block of bytes from one segment to another.
+ *
+ * steps:
+ *
+ * 1) get the segment objects.
+ * 2) check for offsets and size.
+ * 3) map temporarily the two segments.
+ * 4) do the copy.
+ * 5) unmap the segments.
+ */
+
+t_error			ia32_segment_copy(t_segid		dst,
+					  t_paddr		offsd,
+					  t_segid		src,
+					  t_paddr		offss,
+					  t_psize		sz)
+{
+  t_regid		regs;
+  t_regid		regd;
+  o_segment*		segs;
+  o_segment*		segd;
+
+  SEGMENT_ENTER(segment);
+
+  /*
+   * 1)
+   */
+
+  if (segment_get(dst, &segd) != ERROR_NONE ||
+      segment_get(src, &segs) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (offsd + sz > segd->size || offss + sz > segs->size)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (region_reserve(segs->asid, src, offss, REGION_OPT_NONE, 0, sz, &regs) !=
+      ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (region_reserve(segd->asid, dst, offsd, REGION_OPT_NONE, 0, sz, &regd) !=
+      ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  memcpy((void*)(t_vaddr)regd, (void*)(t_vaddr)regs, sz);
+
+  /*
+   * 5)
+   */
+
+  if (region_release(segs->asid, regs) != ERROR_NONE ||
+      region_release(segd->asid, regd) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
+}
 
 /*
  * this function just initialises the machine-dependent segment manager.

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [sat feb 18 18:53:57 2006]
+ * updated       matthieu bucchianeri   [mon feb 20 11:11:26 2006]
  */
 
 /*
@@ -37,6 +37,7 @@
  */
 
 extern m_task*		task;
+extern t_asid		kasid;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -112,14 +113,33 @@ t_error			ia32_task_release(t_tskid		tskid)
 }
 
 /*
- * XXX
+ * this function initializes the task manager and the kernel task.
+ *
+ * steps:
+ *
+ * 1) get the kernel address space.
+ * 2) activate the new kernel address space.
  */
 
 t_error			ia32_task_init(void)
 {
+  o_as*			o;
+
   TASK_ENTER(task);
 
-  /* XXX */
+  /*
+   * 1)
+   */
+
+  if (as_get(kasid, &o) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (pd_activate(o->machdep.pd) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_NONE);
 }

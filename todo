@@ -15,7 +15,7 @@
  questions k1, kaneton:
    - a quoi sert machdep_data()
    - comment fonctionne le systeme d'appel de la partie dependante
-   - 
+   -
 
 --
  k3: rapport de modelisation sur les events
@@ -40,11 +40,6 @@
  car ca rend le code latex illisible.
 
 --
- checker le bootloader, les regions puent du cul j'ai du me planter.
- revoir aussi la gestion des pt en interne. coder la surcouche map_reserve,
- ca pourra clarifier le code. *chiche*
-
---
  check as & co: en fait c debile de les mettre dans check/arch, il faudra les
  deplacer dans check/core/kaneton
 
@@ -54,7 +49,8 @@
  prochain
 
 --
- revoir segment : acces direct (read/write) et resize + split (regions).
+ revoir segment : acces direct (read/write) a optimiser et resize + split
+ (doivent gerer les regions).
 
 --
  les images microkernel_examples_* dans seminar sont a passer au format xfig

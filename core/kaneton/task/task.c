@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [sat feb 18 18:56:25 2006]
+ * updated       matthieu bucchianeri   [mon feb 20 10:59:57 2006]
  */
 
 /*
@@ -573,6 +573,12 @@ t_error			task_init(void)
 	  return (ERROR_UNKNOWN);
 	}
     }
+
+  /*
+   * XXX on vient de regenerer l'as du kernel, il faudrait le switcher
+   * normalement. donc la on le fait en dur dans le machdep_call,
+   * faudra changer.
+   */
 
   /*
    * 8)

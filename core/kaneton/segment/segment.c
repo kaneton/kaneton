@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun feb 19 18:58:49 2006]
+ * updated       matthieu bucchianeri   [mon feb 20 11:59:34 2006]
  */
 
 /*
@@ -621,11 +621,7 @@ t_error			segment_coalesce(t_segid	s1,
  *
  * steps:
  *
- * 1) get the segment object.
- * 2) check offset and size.
- * 3) map the segment portion with a region.
- * 4) copy from segment to the buffer.
- * 5) unmap the region.
+ * 1) call machine dependent code.
  */
 
 t_error			segment_read(t_segid		segid,
@@ -633,44 +629,13 @@ t_error			segment_read(t_segid		segid,
 				     void*		buff,
 				     t_psize		sz)
 {
-  o_segment*		o;
-  t_regid		reg;
-
   SEGMENT_ENTER(segment);
 
   /*
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (offs + sz > o->size)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
-  if (region_reserve(o->asid, segid, offs, REGION_OPT_NONE, 0, sz, &reg) !=
-      ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 4)
-   */
-
-  memcpy(buff, (void*)(t_vaddr)reg, sz);
-
-  /*
-   * 5)
-   */
-
-  if (region_release(o->asid, reg) != ERROR_NONE)
+  if (machdep_call(segment, segment_read, segid, offs, buff, sz) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
@@ -681,11 +646,7 @@ t_error			segment_read(t_segid		segid,
  *
  * steps:
  *
- * 1) get the segment object.
- * 2) check offset and size.
- * 3) map the segment portion with a region.
- * 4) copy from the buffer to the segment.
- * 5) unmap the region.
+ * 1) call the dependent code.
  */
 
 t_error			segment_write(t_segid		segid,
@@ -693,44 +654,14 @@ t_error			segment_write(t_segid		segid,
 				      const void*	buff,
 				      t_psize		sz)
 {
-  o_segment*		o;
-  t_regid		reg;
-
   SEGMENT_ENTER(segment);
 
   /*
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (offs + sz > o->size)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
-  if (region_reserve(o->asid, segid, offs, REGION_OPT_NONE, 0, sz, &reg) !=
+  if (machdep_call(segment, segment_write, segid, offs, buff, sz) !=
       ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 4)
-   */
-
-  memcpy((void*)(t_vaddr)reg, buff, sz);
-
-  /*
-   * 5)
-   */
-
-  if (region_release(o->asid, reg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
@@ -741,11 +672,7 @@ t_error			segment_write(t_segid		segid,
  *
  * steps:
  *
- * 1) get the segment objects.
- * 2) check for offsets and size.
- * 3) map temporarily the two segments.
- * 4) do the copy.
- * 5) unmap the segments.
+ * 1) call machine dependent code.
  */
 
 t_error			segment_copy(t_segid		dst,
@@ -754,51 +681,14 @@ t_error			segment_copy(t_segid		dst,
 				     t_paddr		offss,
 				     t_psize		sz)
 {
-  t_regid		regs;
-  t_regid		regd;
-  o_segment*		segs;
-  o_segment*		segd;
-
   SEGMENT_ENTER(segment);
 
   /*
    * 1)
    */
 
-  if (segment_get(dst, &segd) != ERROR_NONE ||
-      segment_get(src, &segs) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (offsd + sz > segd->size || offss + sz > segs->size)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
-  if (region_reserve(segs->asid, src, offss, REGION_OPT_NONE, 0, sz, &regs) !=
+  if (machdep_call(segment, segment_copy, dst, offsd, src, offss, sz) !=
       ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-  if (region_reserve(segd->asid, dst, offsd, REGION_OPT_NONE, 0, sz, &regd) !=
-      ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 4)
-   */
-
-  memcpy((void*)(t_vaddr)regd, (void*)(t_vaddr)regs, sz);
-
-  /*
-   * 5)
-   */
-
-  if (region_release(segs->asid, regs) != ERROR_NONE ||
-      region_release(segd->asid, regd) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);

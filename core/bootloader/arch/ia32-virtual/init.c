@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [sat feb 18 19:17:21 2006]
+ * updated       matthieu bucchianeri   [mon feb 20 10:48:49 2006]
  */
 
 /*
@@ -290,32 +290,32 @@ void			bootloader_init_regions(void)
    * 4)
    */
 
-  init->regions[3].address = init->segments[4].address;
-  init->regions[3].size = init->segments[4].size;
+  init->regions[3].address = init->segments[7].address;
+  init->regions[3].size = init->segments[7].size;
   init->regions[3].offset = 0;
 
   /*
    * 5)
    */
 
-  init->regions[4].address = init->segments[5].address;
-  init->regions[4].size = init->segments[5].size;
+  init->regions[4].address = init->segments[8].address;
+  init->regions[4].size = init->segments[8].size;
   init->regions[4].offset = 0;
 
   /*
    * 6)
    */
 
-  init->regions[5].address = init->segments[6].address;
-  init->regions[5].size = init->segments[6].size;
+  init->regions[5].address = init->segments[9].address;
+  init->regions[5].size = init->segments[9].size;
   init->regions[5].offset = 0;
 
   /*
    * 7)
    */
 
-  init->regions[6].address = init->segments[7].address;
-  init->regions[6].size = init->segments[7].size;
+  init->regions[6].address = init->segments[10].address;
+  init->regions[6].size = init->segments[10].size;
   init->regions[6].offset = 0;
 }
 
@@ -504,10 +504,6 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
 
   /*
    * 8)
-   */
-
-  /*
-   * XXX temporary, pre-allocate four pages
    */
 
   init->alloc = bootloader_init_alloc(12 * PAGESZ, &allocsz);

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun feb 19 19:12:36 2006]
+ * updated       matthieu bucchianeri   [mon feb 20 12:20:52 2006]
  */
 
 /*
@@ -117,13 +117,9 @@ t_error			ia32_as_show(t_asid			asid)
  * steps:
  *
  * 1) get the as object.
- * 2) kernel task case:
- *  a) get the page directory from the init variable.
- *  b) inject current page tables and map them so the kernel can access them.
- * 3) normal address space:
- *  a) reserve a segment for the directory.
- *  b) reserve a region for the directory in the kernel address space.
- *  c) build a new page directory for the as.
+ * 2) reserve a segment for the directory.
+ * 3) reserve a region for the directory in the kernel address space.
+ * 4) build a new page directory for the as.
  */
 
 t_error			ia32_as_reserve(t_tskid			tskid,
@@ -145,79 +141,44 @@ t_error			ia32_as_reserve(t_tskid			tskid,
   if (as_get(*asid, &o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
+  /*
+   * 2)
+   */
+
+  if (segment_reserve(*asid, PAGESZ,
+		      PERM_READ | PERM_WRITE, &seg) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (segment_get(seg, &oseg) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
   if (tskid == ktask)
     {
       /*
-       * 2)
+       * XXX we have to do the mapping by hand since the kernel pd is
+       * not initialized.
        */
 
-      /*
-       * a)
-       */
 
-      memcpy(&o->machdep.pd, &init->machdep.pd, sizeof (t_directory));
-      kasid = *asid;
 
-      /*
-       * b)
-       */
-
-      o_segment		seg;
-
-      for (pde = 0; pde < PD_MAX_ENTRIES; pde++)
-	{
-	  if (pd_get_table(&o->machdep.pd, pde, &table) == ERROR_NONE)
-	    {
-	      seg.address = (t_paddr)table.entries;
-	      seg.size = PAGESZ;
-	      seg.perms = PERM_READ | PERM_WRITE;
-
-#if (DEBUG & DEBUG_AS)
-	      printf("injecting segment %p for pde %d\n", seg.address, pde);
-#endif
-
-	      if (segment_inject(&seg, *asid) != ERROR_NONE)
-		REGION_LEAVE(region, ERROR_UNKNOWN);
-
-	      if (region_reserve(kasid, (t_segid)seg.address, 0,
-				 REGION_OPT_FORCE, (t_vaddr)seg.address,
-				 PAGESZ, &reg) != ERROR_NONE)
-		REGION_LEAVE(region, ERROR_UNKNOWN);
-	    }
-	}
     }
   else
     {
-      /*
-       * 3)
-       */
-
-      /*
-       * a)
-       */
-
-      if (segment_reserve(*asid, PAGESZ,
-			  PERM_READ | PERM_WRITE, &seg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      if (segment_get(seg, &oseg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      /*
-       * b)
-       */
-
       if (region_reserve(kasid, seg, 0, REGION_OPT_FORCE, seg, PAGESZ, &reg) !=
 	  ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      /*
-       * c)
-       */
-
-      if (pd_build(oseg->address, &o->machdep.pd, 1) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
     }
+
+  /*
+   * 4)
+   */
+
+  if (pd_build(oseg->address, &o->machdep.pd, 1) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
 }

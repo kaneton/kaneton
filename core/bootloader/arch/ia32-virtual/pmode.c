@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/export_kaneton/kaneton/core/bootloader/arch/ia32-virtual/pmode.c
+ * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/pmode.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [mon jan 30 20:22:46 2006]
+ * updated       matthieu bucchianeri   [tue feb 28 14:03:51 2006]
  */
 
 /*
@@ -77,10 +77,10 @@ extern t_init*		init;
 void			bootloader_pmode_init(void)
 {
   t_gdt			gdt;
-/*                                                                  [cut] /k1 */
+/*                                                                 [cut] /k1 */
 /*                                                                  [cut] k3 */
   t_idt			idt;
-/*                                                                  [cut] /k3 */
+/*                                                                 [cut] /k3 */
 /*                                                                  [cut] k1 */
   t_segment		seg;
   t_uint16		kcs;
@@ -105,12 +105,12 @@ void			bootloader_pmode_init(void)
       bootloader_error();
     }
 
-/*                                                                  [cut] /k1 */
+/*                                                                 [cut] /k1 */
 /*                                                                  [cut] k3 */
   /*
    * 2)
    */
-  if (idt_build(PMODE_GDT_ENTRIES,
+  if (idt_build(PMODE_IDT_ENTRIES,
 		bootloader_init_alloc(PMODE_IDT_ENTRIES *
 				      sizeof(t_idte), NULL),
 		&idt, 1) != ERROR_NONE)
@@ -125,7 +125,7 @@ void			bootloader_pmode_init(void)
 	bootloader_error();
       }
 
-/*                                                                  [cut] /K3 */
+/*                                                                 [cut] /k3 */
 /*                                                                  [cut] k1 */
 
 
@@ -163,9 +163,17 @@ void			bootloader_pmode_init(void)
   gdt_build_selector(PMODE_BOOTLOADER_DS, prvl_supervisor, &kds);
   pmode_set_segment_registers(kcs, kds);
 
+/*                                                                 [cut] /k1 */
+/*                                                                  [cut] k3 */
+
   /*
    * 5)
    */
+
+  pic_init();
+
+/*                                                                 [cut] /k3 */
+/*                                                                  [cut] k1 */
 
   pmode_enable();
 
@@ -174,10 +182,10 @@ void			bootloader_pmode_init(void)
    */
 
   memcpy(&init->machdep.gdt, &gdt, sizeof (t_gdt));
-/*                                                                  [cut] /k1 */
+/*                                                                 [cut] /k1 */
 /*                                                                  [cut] k3 */
   memcpy(&init->machdep.idt, &idt, sizeof (t_idt));
-/*                                                                  [cut] /k3 */
+/*                                                                 [cut] /k3 */
 /*                                                                  [cut] k1 */
 }
 

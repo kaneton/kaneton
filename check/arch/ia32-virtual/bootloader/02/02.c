@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/bootloader/02/02.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [fri feb 17 18:35:57 2006]
+ * updated       matthieu bucchianeri   [mon feb 20 10:47:25 2006]
  */
 
 #include <klibc.h>
@@ -53,10 +53,10 @@ void		check_bootloader_02(void)
   CHECK_REG(0, init->segments[1].address, 0, init->segments[1].size);
   CHECK_REG(1, init->segments[2].address, 0, init->segments[2].size);
   CHECK_REG(2, init->segments[3].address, 0, init->segments[3].size);
-  CHECK_REG(3, init->segments[4].address, 0, init->segments[4].size);
-  CHECK_REG(4, init->segments[5].address, 0, init->segments[5].size);
-  CHECK_REG(5, init->segments[6].address, 0, init->segments[6].size);
-  CHECK_REG(6, init->segments[7].address, 0, init->segments[7].size);
+  CHECK_REG(3, init->segments[7].address, 0, init->segments[7].size);
+  CHECK_REG(4, init->segments[8].address, 0, init->segments[8].size);
+  CHECK_REG(5, init->segments[9].address, 0, init->segments[9].size);
+  CHECK_REG(6, init->segments[10].address, 0, init->segments[10].size);
 
   TEST_LEAVE;
 }
