@@ -70,9 +70,8 @@ extern t_init*		init;
  * 2) create a new idt and enable it.
  * 3) set two segments for the rest of the operations.
  * 4) update the segments registers.
- * 5) configure pics 8259
- * 6) finally install the protected mode.
- * 7) update the init structure.
+ * 5) finally install the protected mode.
+ * 6) update the init structure.
  */
 
 void			bootloader_pmode_init(void)
@@ -164,25 +163,14 @@ void			bootloader_pmode_init(void)
   gdt_build_selector(PMODE_BOOTLOADER_DS, prvl_supervisor, &kds);
   pmode_set_segment_registers(kcs, kds);
 
-/*                                                                  [cut] /k1 */
-/*                                                                  [cut] k3 */
   /*
    * 5)
-   */
-
-  pic_init();
-/*                                                                  [cut] /k3 */
-/*                                                                  [cut] k1 */
-
-
-  /*
-   * 6)
    */
 
   pmode_enable();
 
   /*
-   * 7)
+   * 6)
    */
 
   memcpy(&init->machdep.gdt, &gdt, sizeof (t_gdt));

@@ -9,15 +9,14 @@
  * updated       renaud voltz   [sun feb 12 22:26:04 2006]
  */
 
-#ifndef EVENT_EVENT_H
-#define EVENT_EVENT_H
+#ifndef KANETON_EVENT_H
+#define KANETON_EVENT_H
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
-
 #include <kaneton/id.h>
 #include <kaneton/types.h>
 
@@ -32,6 +31,8 @@
 typedef struct
 {
   t_eventid			eventid;
+
+  t_setid			tasks;
 
   machdep_data(o_event);
 }				o_event;
@@ -58,12 +59,11 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*event_subscribe)(void);
-  t_error			(*event_unsubscribe)(void);
+  t_error			(*event_reserve)(t_eventid);
+  t_error			(*event_release)(t_eventid);
   t_error			(*event_init)(void);
   t_error			(*event_clean)(void);
 }				i_event;
-
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -115,11 +115,20 @@ t_error			event_show(t_eventid			eventid);
 
 t_error			event_dump(void);
 
-t_error			event_subscribe(t_eventid		evenid,
+t_error			event_notify(t_eventid			eventid);
+
+t_error			event_reserve(t_eventid			eventid);
+
+t_error			event_release(t_eventid			eventid);
+
+t_error			event_subscribe(t_eventid		eventid,
 					t_tskid			tskid);
 
-t_error			event_unsubscribe(t_eventid		evenid,
-					  t_tskid		taskid);
+t_error			event_unsubscribe(t_eventid		eventid,
+					  t_tskid		tskid);
+
+t_error			event_get(t_eventid			eventid,
+				  o_event**			o);
 
 t_error			event_init(void);
 

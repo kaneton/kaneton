@@ -31,6 +31,13 @@
  */
 
 /*
+ * misc
+ */
+
+#define EXCEPTION_NR	32
+#define IRQ_NR		16
+
+/*
  * save cpu register on the stack
  */
 
@@ -83,11 +90,11 @@
  */
 
 #define EXCEPTION_PREHANDLER(_nr_)					\
-  void	handler_exception##_nr_(void)					\
+  void	prehandler_exception##_nr_(void)				\
     {									\
       asm volatile(SAVE_REG						\
 		   LOAD_SEG_REG);					\
-      exception_wrapper(_nr_);						\
+      interrupt_wrapper(IDT_EXCEPTION_BASE + _nr_);			\
       asm volatile(RESTORE_REG						\
 		   ADJUST_STACK						\
 		   "iret\n\t");						\
@@ -98,11 +105,11 @@
  */
 
 #define IRQ_PREHANDLER(_nr_)						\
-  void	handler_irq##_nr_(void)						\
+  void	prehandler_irq##_nr_(void)					\
     {									\
       asm volatile(SAVE_REG						\
 		   LOAD_SEG_REG);					\
-      irq_wrapper(_nr_);						\
+      interrupt_wrapper(IDT_IRQ_BASE + _nr_);				\
       asm volatile(RESTORE_REG						\
 		   ADJUST_STACK						\
 		   "iret\n\t");						\
@@ -112,8 +119,8 @@
  * ---------- types -----------------------------------------------------------
  */
 
-typedef void			(*t_interrupt_handler)(void);
-
+typedef void			(*t_interrupt_pre_hdl)(void);
+typedef void			(*t_interrupt_hdl)(t_uint32);
 /*
  * ---------- prototypes ------------------------------------------------------
  */
@@ -122,59 +129,59 @@ typedef void			(*t_interrupt_handler)(void);
  * ../interrupt/exception.c
  */
 
-void	handler_exception0(void);
-void	handler_exception1(void);
-void	handler_exception2(void);
-void	handler_exception3(void);
-void	handler_exception4(void);
-void	handler_exception5(void);
-void	handler_exception6(void);
-void	handler_exception7(void);
-void	handler_exception8(void);
-void	handler_exception9(void);
-void	handler_exception10(void);
-void	handler_exception11(void);
-void	handler_exception12(void);
-void	handler_exception13(void);
-void	handler_exception14(void);
-void	handler_exception15(void);
-void	handler_exception16(void);
-void	handler_exception17(void);
-void	handler_exception18(void);
-void	handler_exception19(void);
-void	handler_exception20(void);
-void	handler_exception21(void);
-void	handler_exception22(void);
-void	handler_exception23(void);
-void	handler_exception24(void);
-void	handler_exception25(void);
-void	handler_exception26(void);
-void	handler_exception27(void);
-void	handler_exception28(void);
-void	handler_exception29(void);
-void	handler_exception30(void);
-void	handler_exception31(void);
+void	prehandler_exception0(void);
+void	prehandler_exception1(void);
+void	prehandler_exception2(void);
+void	prehandler_exception3(void);
+void	prehandler_exception4(void);
+void	prehandler_exception5(void);
+void	prehandler_exception6(void);
+void	prehandler_exception7(void);
+void	prehandler_exception8(void);
+void	prehandler_exception9(void);
+void	prehandler_exception10(void);
+void	prehandler_exception11(void);
+void	prehandler_exception12(void);
+void	prehandler_exception13(void);
+void	prehandler_exception14(void);
+void	prehandler_exception15(void);
+void	prehandler_exception16(void);
+void	prehandler_exception17(void);
+void	prehandler_exception18(void);
+void	prehandler_exception19(void);
+void	prehandler_exception20(void);
+void	prehandler_exception21(void);
+void	prehandler_exception22(void);
+void	prehandler_exception23(void);
+void	prehandler_exception24(void);
+void	prehandler_exception25(void);
+void	prehandler_exception26(void);
+void	prehandler_exception27(void);
+void	prehandler_exception28(void);
+void	prehandler_exception29(void);
+void	prehandler_exception30(void);
+void	prehandler_exception31(void);
 
 /*
  * ../interrupt/irq.c
  */
 
-void    handler_irq0(void);
-void    handler_irq1(void);
-void    handler_irq2(void);
-void    handler_irq3(void);
-void    handler_irq4(void);
-void    handler_irq5(void);
-void    handler_irq6(void);
-void    handler_irq7(void);
-void    handler_irq8(void);
-void    handler_irq9(void);
-void    handler_irq10(void);
-void    handler_irq11(void);
-void    handler_irq12(void);
-void    handler_irq13(void);
-void    handler_irq14(void);
-void    handler_irq15(void);
+void    prehandler_irq0(void);
+void    prehandler_irq1(void);
+void    prehandler_irq2(void);
+void    prehandler_irq3(void);
+void    prehandler_irq4(void);
+void    prehandler_irq5(void);
+void    prehandler_irq6(void);
+void    prehandler_irq7(void);
+void    prehandler_irq8(void);
+void    prehandler_irq9(void);
+void    prehandler_irq10(void);
+void    prehandler_irq11(void);
+void    prehandler_irq12(void);
+void    prehandler_irq13(void);
+void    prehandler_irq14(void);
+void    prehandler_irq15(void);
 
 /*
  * eop

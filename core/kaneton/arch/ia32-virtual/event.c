@@ -30,17 +30,6 @@
 #include <kaneton.h>
 
 /*
- * ---------- extern ----------------------------------------------------------
- */
-
-extern m_event*			event;
-
-extern t_interrupt_handler      exception_handlers[32];
-
-extern t_interrupt_handler      irq_handlers[16];
-
-
-/*
  * ---------- globals ---------------------------------------------------------
  */
 
@@ -48,13 +37,13 @@ extern t_interrupt_handler      irq_handlers[16];
  * the address space manager interface.
  */
 
-i_event                  event_interface =
+i_event				event_interface =
   {
 
     /*								[cut] k3 */
 
-    ia32_event_subscribe,
-    ia32_event_unsubscribe,
+    ia32_event_reserve,
+    ia32_event_release,
     ia32_event_init,
     ia32_event_clean
 
@@ -67,123 +56,115 @@ i_event                  event_interface =
  */
 
 /*
- * XXX EVENT
- */
-
-t_error			ia32_event_subscribe(void)
-{
-
-  return ERROR_NONE;
-}
-
-/*
- * XXX EVENT
- */
-
-t_error			ia32_event_unsubscribe(void)
-{
-
-  return ERROR_NONE;
-}
-
-/*
- * XXX EVENT
+ * reserve an event on the ia32 architecture.
  *
  * steps:
  *
- * 1) init exceptions
- * 2) init irq
+ * 1) check id bounds.
+ * 2) unmask hardware interrupt if id is an irq.
+ */
+
+t_error			ia32_event_reserve(t_eventid		id)
+{
+  /*
+   * 1)
+   */
+
+  if (id >= EXCEPTION_NR + IRQ_NR)
+    return ERROR_UNKNOWN;
+
+  /*
+   * 2)
+   */
+
+  if ((id >= IDT_IRQ_BASE) && (id < IDT_IRQ_BASE + IRQ_NR))
+    pic_enable_irq(id - IDT_IRQ_BASE);
+
+  return ERROR_NONE;
+}
+
+/*
+ * release an event on the ia32 architecture.
+ *
+ * steps:
+ *
+ * 1) check id bounds.
+ * 2) mask hardware interrupt if needed.
+ */
+
+t_error			ia32_event_release(t_eventid		id)
+{
+  /*
+   * 1)
+   */
+
+  if (id >= EXCEPTION_NR + IRQ_NR)
+    return ERROR_UNKNOWN;
+
+  /*
+   * 2)
+   */
+
+  if ((id >= IDT_IRQ_BASE) && (id < IDT_IRQ_BASE + IRQ_NR))
+    pic_disable_irq(id - IDT_IRQ_BASE);
+
+  return ERROR_NONE;
+}
+
+/*
+ * initialize events on the ia32 architecture.
+ *
+ * steps:
+ *
+ * 1) init interrupts.
+ * 3) set default handler for every event.
  */
 
 t_error			ia32_event_init(void)
 {
+  int			i;
+
   /*
    * 1)
    */
 
-  if (exception_init() != ERROR_NONE)
+  if (interrupt_init() != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (interrupt_set_handler(ia32_generic_handler) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
    * 2)
    */
 
-  if (irq_init() != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
-  ia32_event_add(33, 0, XXX);
+  for (i = 0; i < EXCEPTION_NR + IRQ_NR; i++)
+    event_reserve(i);
 
   return ERROR_NONE;
 }
+
+/*
+ * this function cleans the machine-dependent event manager.
+ */
 
 t_error			ia32_event_clean(void)
 {
+  int			i;
+
+  for (i = 0; i < EXCEPTION_NR + IRQ_NR; i++)
+    event_release(i);
 
   return ERROR_NONE;
 }
 
-
 /*
- * XXX EVENT
- *
- * steps:
- *
- * 1) check id bounds
- * 2) add an exception handler
- * 3) add an irq handler
- * 4) XXX just for debug
+ * generic handler for ia32 architecture events.
  */
 
-t_error			ia32_event_add(t_uint16			id,
-				       t_prvl			privilege,
-				       t_interrupt_handler	handler)
+void			ia32_generic_handler(t_uint32		nr)
 {
-  /*
-   * 1)
-   */
+  t_eventid		eventid = nr;
 
-  if (id >= IDT_MAX_ENTRIES)
-    return ERROR_UNKNOWN;
-
-  /*
-   * 2)
-   */
-
-  if ((id >= IDT_EXCEPTION_BASE) && (id < IDT_EXCEPTION_BASE + 32))
-    {
-      exception_handlers[id] = handler;
-
-      return ERROR_NONE;
-    }
-
-  /*
-   * 3)
-   */
-
-  if ((id >= IDT_IRQ_BASE) && (id < IDT_IRQ_BASE + 16))
-    {
-      irq_handlers[id - IDT_IRQ_BASE] = handler;
-
-      pic_enable_irq(id - IDT_IRQ_BASE);
-
-      return ERROR_NONE;
-    }
-
-  /*
-   * 4)
-   */
-
-  printf("ia32_event: id does not match neither an exception or an irq\n");
-
-  return ERROR_UNKNOWN;
-}
-
-/*
- * XXX EVENT (remove me)
- * fake handler, just for testing ...
- */
-
-void	XXX(void)
-{
-  printf("kbd interrupt\n");
+  event_notify(eventid);
 }

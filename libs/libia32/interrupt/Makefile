@@ -28,8 +28,8 @@ include			../../../env/.env.mk
 INTERRUPT_LO		:=		interrupt.lo
 
 INTERRUPT_C		:=		pic.c			\
-					exception.c		\
-					irq.c
+					interrupt.c
+
 
 INTERRUPT_O		:=		$(INTERRUPT_C:.c=.o)
 

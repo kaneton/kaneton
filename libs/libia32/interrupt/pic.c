@@ -22,7 +22,8 @@
  *
  * students will use this file to place functions they wrote to manage
  * the pic. students may write as many functions as they whant without
- * any restrictions.
+ * any restrictions. Note that the pic is set to cascade mode, with normal
+ * EOI.
  *
  */
 

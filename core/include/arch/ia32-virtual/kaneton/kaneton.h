@@ -91,26 +91,22 @@ t_error			ia32_segment_clean(void);
  * ../../../../kaneton/arch/machdep/event.c
  */
 
-t_error			ia32_event_subscribe(void);
+t_error			ia32_event_reserve(t_eventid		id);
 
-t_error			ia32_event_unsubscribe(void);
+t_error			ia32_event_release(t_eventid		id);
 
 t_error			ia32_event_init(void);
 
 t_error			ia32_event_clean(void);
 
-t_error			ia32_event_add(t_uint16			id,
-				       t_prvl			privilege,
-				       t_interrupt_handler	handler);
-
-void	XXX(void);
+void			ia32_generic_handler(t_uint32		nr);
 
 
 /*
  * ../../../../kaneton/arch/machdep/task.c
  */
 
-t_error			ia32_task_clone(t_tskid		old,
+t_error			ia32_task_clone(t_tskid			old,
 					t_tskid*		new);
 
 t_error			ia32_task_reserve(t_class		class,

@@ -72,7 +72,7 @@ i_task			task_interface =
  * XXX
  */
 
-t_error			ia32_task_clone(t_tskid		old,
+t_error			ia32_task_clone(t_tskid			old,
 					t_tskid*		new)
 {
   TASK_ENTER(task);

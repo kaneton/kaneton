@@ -198,8 +198,8 @@ t_error			task_reserve(t_class			class,
 
 t_error			task_release(t_tskid			tskid);
 
-t_error			task_get(t_tskid				tskid,
-				 o_task**				o);
+t_error			task_get(t_tskid			tskid,
+				 o_task**			o);
 
 t_error			task_init(void);
 

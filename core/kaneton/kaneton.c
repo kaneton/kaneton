@@ -73,8 +73,9 @@ t_init*			init;
  * 8) initialises the set manager.
  * 9) initialises the address space manager.
  * 10) initialises the segment manager.
- *
- * XXX
+ * 11) XXX
+ * 12) XXX
+ * 13) initialise the event manager.
  */
 
 /*                                                                 [cut] /k2 */
@@ -167,13 +168,17 @@ void			kaneton(t_init*				bootloader)
     kaneton_error("cannot initialise the task manager\n");
 
   /*
-   * XXX EVENT
+   * 13)
    */
 
   if (event_init() != ERROR_NONE)
     kaneton_error("cannot initialize events\n");
 
+
   STI();
+
+  event_subscribe(33, 3);
+  event_subscribe(33, 8);
 
   while (1)
     ;

@@ -39,8 +39,7 @@
  *      ../paging/pt.c
  *      ../paging/tlb.c
  *      ../interrupt/pic.c
- *      ../interrupt/exception.c
- *      ../interrupt/irq.c
+ *      ../interrupt/interrupt.c
  */
 
 /*
@@ -250,33 +249,20 @@ t_error			pic_acknowledge(t_uint8			irq);
 
 
 /*
- * ../interrupt/exception.c
+ * ../interrupt/interrupt.c
  */
 
-t_error			exception_add(t_uint8			nr,
+t_error			interrupt_add(t_uint8			nr,
 				      t_prvl			privilege,
-				      t_interrupt_handler	handler);
+				      t_interrupt_pre_hdl	handler);
 
-t_error			exception_init(void);
+t_error			interrupt_set_handler(t_interrupt_hdl	handler);
 
-void			exception_wrapper(t_uint32		nr);
+t_error			interrupt_init(void);
 
-void			exception_handler_default(void);
+void			interrupt_wrapper(t_uint32		nr);
 
-
-/*
- * ../interrupt/irq.c
- */
-
-t_error			irq_add(t_uint8				nr,
-				t_prvl				privilege,
-				t_interrupt_handler		handler);
-
-t_error			irq_init(void);
-
-void			irq_wrapper(t_uint32			nr);
-
-void			irq_default_handler(void);
+void			interrupt_default_handler(t_uint32	nr);
 
 
 /*

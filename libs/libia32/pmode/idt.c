@@ -56,8 +56,8 @@ t_idt           idt;
  *
  * steps:
  *
- * 1) retrieve the global pointer if needed
- * XXX
+ * 1) retrieve the global pointer if needed.
+ * XXX EVENT
  */
 
 t_error			idt_dump(t_idt*				dump_idt)
@@ -75,8 +75,9 @@ t_error			idt_dump(t_idt*				dump_idt)
     dump_idt = &idt;
 
   /*
-   * XXX a quoi sert entries ?! (meme chose dans ../pmode/gdt.h)
+   * XXX EVENT a quoi sert entries ?! (meme chose dans ../pmode/gdt.h).
    */
+
   entries = dump_idt->descriptor;
 
   /*
@@ -106,7 +107,7 @@ t_error			idt_dump(t_idt*				dump_idt)
 }
 
 /*
- * return the size of an idt
+ * return the size of an idt.
  */
 
 t_error			idt_size(t_idt*				table,
@@ -121,14 +122,14 @@ t_error			idt_size(t_idt*				table,
 }
 
 /*
- * build an idt
+ * build an idt.
  *
  * steps:
  *
- * 1) check the number of entries
- * 2) align address (for best performances)
- * 3) build the idt structure
- * 4) clear the table if necessary
+ * 1) check the number of entries.
+ * 2) align address (for best performances).
+ * 3) build the idt structure.
+ * 4) clear the table if necessary.
  */
 
 t_error			idt_build(t_uint16			entries,
@@ -199,7 +200,7 @@ t_error			idt_activate(t_idt			new_idt)
 }
 
 /*
- * import descriptors from previous idt
+ * import descriptors from previous idt.
  *
  * steps:
  *
@@ -238,7 +239,7 @@ t_error			idt_import(t_idt*			idt)
 }
 
 /*
- * add a gate, overwritting previous present one
+ * add a gate, overwritting previous present one.
  *
  * steps:
  *
@@ -299,7 +300,7 @@ t_error			idt_add_gate(t_idt*			table,
 }
 
 /*
- * get an idt entry
+ * get an idt entry.
  *
  * steps:
  *

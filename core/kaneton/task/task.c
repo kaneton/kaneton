@@ -415,8 +415,8 @@ t_error			task_release(t_tskid			tskid)
    */
 
   /* XXX
-  if (thread_flush(o->threads) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+     if (thread_flush(o->threads) != ERROR_NONE)
+     TASK_LEAVE(task, ERROR_UNKNOWN);
   */
 
   if (set_release(o->threads) != ERROR_NONE)
@@ -443,8 +443,8 @@ t_error			task_release(t_tskid			tskid)
  * this function gets a task object from the task container.
  */
 
-t_error			task_get(t_tskid				tskid,
-				 o_task**				o)
+t_error			task_get(t_tskid			tskid,
+				 o_task**			o)
 {
   TASK_ENTER(task);
 
