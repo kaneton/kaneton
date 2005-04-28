@@ -1,0 +1,151 @@
+%%
+%% copyright quintard julien
+%% 
+%% kaneton
+%% 
+%% k6-subject.tex
+%% 
+%% path          /root/data/research/projects/svn/kaneton/projects/k6
+%% 
+%% made by mycure
+%%         quintard julien   [quinta_j@epita.fr]
+%% 
+%% started on    Tue Mar 29 04:09:14 2005   mycure
+%% last update   Sat Apr  2 01:55:00 2005   mycure
+%%
+
+\documentclass[10pt,a4wide]{article}
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{fancyheadings}
+\pagestyle{fancy}
+
+\bibliographystyle{plain}
+
+\lhead{\scriptsize{kaneton project}}
+\rhead{k6 subject}
+\rfoot{\scriptsize{EPITA System Lab}}
+
+\title{kaneton-6}
+
+\author{Julien Quintard - \small{quinta\_j@epita.fr} \\
+        Jean-Pascal Billaud - \small{billau\_j@epita.fr} \\ \\
+	\small{last updated by} \\
+	Julien Quintard - \small{quinta\_j@epita.fr}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Informations}
+
+\begin{tabular}{p{7cm}l}
+
+Date de rendu: & Lundi XXX 2005 \`a 23h42 \\
+Dur\'ee du projet: & 2 semaines \\
+Nom du fichier de rendu: & k6.tar.gz \\
+Responsable du projet: & Julien Quintard - \small{quinta\_j@epita.fr} \\
+                       & Jean-Pascal Billaud - \small{billau\_j@epita.fr} \\
+Newsgroups d\'edi\'es: & epita.kaneton, epita.adm.sr \\
+Langages: & asm, C \\
+Architectures: & Intel 32-bit \\
+Nombre de personnes par groupes: & 3 \`a 5
+
+\end{tabular}
+
+\section{Introduction}
+
+\paragraph{}
+
+Votre syst\`eme est d\'esormais complet. Tout ce qu'il peut manquer
+ce sont des drivers, des services, bref des fonctionnalit\'es qu'un
+syst\`eme d'exploitation digne de ce nom se doit de fournir.
+
+\paragraph{}
+
+Le but de ce projet va \^etre de d\'evelopper toute la couche bas niveau
+n\'ecessaire pour pouvoir ensuite mettre en place un syst\`eme pour sauvegarder
+des donn\'ees.
+
+\section{Travail Demand\'e}
+
+\paragraph{}
+
+Le projet consiste donc \`a d\'evelopper un driver IDE indispensable pour
+pouvoir stocker des donn\'ees sur un disque d\^ur. De plus un gestionnaire
+de partitions vous sera demand\'e.
+
+\paragraph{}
+
+Ce projet ne demande quasiment aucune mod\'elisation et nous vous demandons
+de ne pas trop en faire car le sujet suivant pourrait vous amener \`a modifier
+beaucoup de choses si jamais votre conception \'etait trop avanc\'ee pour
+ce projet. En d'autres termes, concentrez vous sur le pilotage du disque
+d\^ur.
+
+\paragraph{}
+
+Nous vous demandons de fournir deux services: un service \textbf{ide} capable
+de d\'etecter, de lire, d'\'ecrire etc.. les disque d\^urs pr\'esents
+sur la machine et un service \textbf{part} identifiant les partitions
+pr\'esentes sur chaque disque d\^ur d\'etecter par le service \textbf{ide}.
+
+\paragraph{}
+
+Ces deux services seront donc forc\'es de communiquer ensemble pour
+s'\'echanger des informations, utilisant de fait les fonctionnalit\'es
+mis en oeuvre dans les tranches pr\'ec\'edantes.
+
+\paragraph{}
+
+Lors du d\'emarrage de votre kernel il vous sera demand\'e d'afficher
+la liste des disques d\^urs d\'etecter accompagn\'e de toutes les
+informations sur ces disques: capacit\'e, modes de transfert support\'es,
+modes DMA support\'es etc.. bref tout ce que vous pouvez d\'etecter.
+
+\paragraph{}
+
+Il vous est \'egalement demand\'e d'afficher la liste des partitions
+d\'etecter avec pour chacune d'elle: la taille, le type (Win95, ext2,
+reiserfs etc..) et si celle-ci est une partition \'etendue.
+
+\section{Interfaces}
+
+\paragraph{}
+
+Concernant les interfaces pour la communication entre vos services, nous
+vous laissons libre.
+
+\paragraph{}
+
+Rappellons tout de m\^eme que le travail de mod\'elisation prendra forme
+dans le sujet suivant. De ce fait, ne perdez pas votre temps \`a concevoir
+quelque chose de compliquer pour ce projet.
+
+\section{Bibliographie}
+
+\paragraph{}
+
+Voici la bibliographie li\'ee \`a ce projet.
+
+\subsection{IDE}
+
+\paragraph{}
+
+\begin{itemize}
+\item ATA/ATAPI Specifications
+\item CHS Translation
+\end{itemize}
+
+\subsection{Part}
+
+\paragraph{}
+
+\begin{itemize}
+\item Partition Specifications
+\end{itemize}
+
+\end{document}

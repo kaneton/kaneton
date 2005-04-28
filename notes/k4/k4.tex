@@ -1,0 +1,102 @@
+%%
+%% copyright quintard julien
+%% 
+%% kaneton
+%% 
+%% k4.tex
+%% 
+%% path          /root/data/research/projects/svn/kaneton/notes/k4
+%% 
+%% made by mycure
+%%         quintard julien   [quinta_j@epita.fr]
+%% 
+%% started on    Mon Mar 21 13:16:44 2005   mycure
+%% last update   Mon Mar 21 13:18:10 2005   mycure
+%%
+
+\documentclass[10pt,a4wide]{article}
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{fancyheadings}
+\pagestyle{fancy}
+
+\bibliographystyle{plain}
+
+\lhead{{\scriptsize kaneton project}}
+\rhead{k4 notes}
+\rfoot{\scriptsize EPITA System Lab}
+
+\title{k4}
+
+\author{Julien Quintard - \small{quinta\_j@epita.fr} \\
+        Jean-Pascal Billaud - \small{billau\_j@epita.fr} \\ \\
+	\small{last updated by} \\
+	Julien Quintard - \small{quinta\_j@epita.fr}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Notes}
+
+\begin{enumerate}
+
+\item explication g\'en\'erale du projet
+
+\item explication des interfaces
+
+\item scheduler:
+
+\begin{verbatim}
+
+(*) le kernel doit garder en memoire:
+	. a) le nombre de processes en cours
+	. b) la somme des priorites des processes
+	. c) le quantum actuel
+
+	-> quantum total = a * c
+	-> quantum du process = priority * quantum total / b
+
+(*) le process doit garder en memoire:
+        . d) le nombre de threads
+	. e) la somme des priorites des threads
+
+	-> quantum du thread = priority * quantum du process / e
+
+(*) si le quantum d'un process descend en dessous du seuil de la classe
+    inferieure c'est que ca commence a devenir tendu et la par exemple
+    on pourrait envisager sur un systeme distribue a migrer des processus
+    et a lancer les nouveaux processus sur une autre machine.
+
+\end{verbatim}
+
+exemple:
+
+\begin{verbatim}
+
+5 tasks avec une somme de priorites de 276 avec 20ms par defaut par processus
+soit 20*5=100ms pour tout le monde:
+        1) B 15
+        2) R 100
+        3) T 33
+        4) T 58
+        5) I 70
+
+IL FAUT DONC TJS GARDER LA SOMME DES PRIORITES DES PROCESSUS
+
+1) 15*100/276   =       5.4             /* a calculer en ticks apres */
+2) 100*100/276  =       36.2
+3) 33*100/276   =       11.9
+4) 58*100/276   =       21.0
+5) 70*100/276   =       25.3
+
+                        99.8
+
+\end{verbatim}
+
+\end{enumerate}
+
+\end{document}

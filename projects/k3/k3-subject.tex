@@ -1,0 +1,445 @@
+%%
+%% copyright quintard julien
+%% 
+%% kaneton
+%% 
+%% k3-subject.tex
+%% 
+%% path          /root/data/research/projects/svn/kaneton/projects/k3
+%% 
+%% made by mycure
+%%         quintard julien   [quinta_j@epita.fr]
+%% 
+%% started on    Mon Feb 21 16:02:38 2005   mycure
+%% last update   Wed Mar 23 17:19:19 2005   mycure
+%%
+
+\documentclass[10pt,a4wide]{article}
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{fancyheadings}
+\pagestyle{fancy}
+
+\bibliographystyle{plain}
+
+\lhead{\scriptsize{kaneton project}}
+\rhead{k3 subject}
+\rfoot{\scriptsize{EPITA System Lab}}
+
+\title{kaneton-3}
+
+\author{Julien Quintard - \small{quinta\_j@epita.fr} \\
+        Jean-Pascal Billaud - \small{billau\_j@epita.fr} \\ \\
+	\small{last updated by} \\
+	Julien Quintard - \small{quinta\_j@epita.fr}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Informations}
+
+\paragraph{}
+
+\begin{tabular}{p{7cm}l}
+
+Date de rendu: & Lundi 14 Mars 2005 \`a 23h42 \\
+Dur\'ee du projet: & 3 semaines \\
+Nom du fichier de rendu: & k3.tar.gz \\
+Responsable du projet: & Julien Quintard - \small{quinta\_j@epita.fr} \\
+                       & Jean-Pascal Billaud - \small{billau\_j@epita.fr} \\
+Newsgroups d\'edi\'es: & epita.kaneton, epita.adm.sr \\
+Langages: & asm, C \\
+Architectures: & Intel 32-bit \\
+Nombre de personnes par groupes: & 3 \`a 5
+
+\end{tabular}
+
+\section{Introduction}
+
+\paragraph{}
+
+Votre kernel poss\`ede un gestionnaire de m\'emoire physique, un gestionnaire
+d'espace d'adressage et certains drivers.
+
+\paragraph{}
+
+Le but de ce projet est de r\'ealiser un ensemble de fonctions pour la
+gestion de la m\'emoire virtuelle et bien entendu de finaliser par la
+m\^eme occasion le gestionnaire d'espaces d'adressage.
+
+\paragraph{}
+
+En effet au terme de ce projet, une entit\'e pourra d\'ecider de cr\'eer
+un espace d'adressage et de r\'eserver un nombre de pages sans probl\`emes.
+Le kernel devra donc s'occuper de la r\'eservation des structures de
+donn\'ees g\'en\'eriques mais \'egalement propre au processeur, les
+initialiser, les maintenir \`a jour, en installer de nouvelles si n\'ecessaire
+etc..
+
+\paragraph{}
+
+Pour le moment le kernel dispose de son espace d'adressage virtuel.
+N\'eanmoins, mis \`a part l'installation de son adressage, nous n'avons
+fourni aucune interface pour ajouter, modifier ou enlever des \'el\'ements
+de cet espace d'adressage virtuel.
+
+\paragraph{}
+
+Au terme de cette \'etape, kaneton sera capable de r\'eserver et
+de lib\'erer des pages virtuelles pour n'importe quel espace d'adressage,
+mais \'egalement d'accomplir des t\^aches plus complexes sur la
+m\'emoire virtuelle.
+
+\section{Travail Demand\'e}
+
+\paragraph{}
+
+Le projet consiste \`a d\'evelopper un gestionnaire de m\'emoire virtuelle.
+
+\paragraph{}
+
+Il ne vous sera rien demander d'autre que le fait de fournir une interface
+fonctionnelle.
+
+\section{Interfaces}
+
+\paragraph{}
+
+\subsection{Espaces d'adressage}
+
+\paragraph{}
+
+Dans cette partie il vous sera demand\'e de mener le d\'eveloppement du
+gestionnaire d'espace d'adressage \`a son terme en d\'eveloppant toute la
+partie espace d'adressage virtuels.
+
+\paragraph{}
+
+Un espace d'adressage virtuel est un ensemble d'\'el\'ements d\'ecrivant
+la m\'emoire virtuelle en mettant en relation des zones virtuelles avec des
+zones physiques ou bien simplement des zones virtuelles n'ayant aucune
+correspondance (tout du moins pour l'instant) avec des zones physiques.
+
+\paragraph{}
+
+Dans le cas du processeur Intel, la m\'emoire virtuelle est d\'ecrite
+par le syst\`eme de traduction d'adresses nomm\'e ``Pagination''. La
+partie ``machine dependent'' du gestionnaire d'espace d'adressage sera
+donc compos\'e d'une sous partie nomm\'ee \textbf{vas} s'occupant de la
+gestion des structures hardware en relation avec la m\'emoire virtuelle.
+
+\paragraph{}
+
+Votre travail consiste donc essentiellement \`a d\'evelopper la sous-partie
+\textbf{vas} et \`a relier cette partie ``machine dependent'' au gestionnaire
+d'espace d'adressage ``machine independent''.
+
+\subsection{M\'emoire virtuelle}
+
+\paragraph{}
+
+Dans un premier temps, il vous faudra initialiser les zones virtuelles
+de votre kernel.
+
+\paragraph{}
+
+En effet dans le bootloader, vous mappiez nombre de pages physiques
+mais vous ne gardiez aucune trace de ces allocations. Pour initialiser
+ce syst\`eme de traces d'allocation, prenez exemple sur votre
+initialisation des zones physiques, le but \'etant que l'espace
+d'adressage du kernel soit coh\'erent et repr\'esente r\'eellement
+la m\'emoire virtuelle utilis\'ee par le kernel.
+
+\paragraph{}
+
+Votre gestionnaire de m\'emoire virtuelle doit fournir un certain nombre
+de fonctionnalit\'es permettant d'allouer, de lib\'erer des pages
+virtuelles mais \'egalement de manipuler des donn\'ees en virtuel.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{vm\_init}(void);
+
+\paragraph{}
+
+Cette fonction initialise le gestionnaire de m\'emoire virtuelle.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{vm\_rsv}(t\_asid \textbf{asid},
+                                   t\_vaddr* \textbf{vaddr},
+                                   t\_vsize \textbf{npages},
+                                   t\_vmflags \textbf{flags});
+
+\paragraph{}
+
+Cette fonction se contente d'allouer un nombre donn\'e de pages virtuelles
+dans un espace d'adressage donn\'e: \textbf{asid}. Le param\`etre
+\textbf{*vaddr} contient en entr\'ee l'adresse \`a laquelle l'appellant
+d\'esire r\'eserver de la m\'emoire virtuelle. En sortie, ce param\`etre
+contient l'adresse trouv\'ee pour effectuer cette allocation.
+
+\paragraph{}
+
+Les options sont identiques \`a celles de la fonction \textbf{pm\_rsv}()
+comme par exemple: VM\_FLAG\_ANY, VM\_FLAG\_SPECIFIC etc..
+
+\paragraph{}
+
+Cette fonction modifiera \'egalement l'espace d'adressage \textbf{asid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{vm\_attr}(t\_asid \textbf{asid},
+                                    t\_vaddr \textbf{vaddr},
+                                    t\_vsize \textbf{npages},
+                                    t\_vattr \textbf{attr});
+
+\paragraph{}
+
+Cette fonction permet la modification des attributs d'une zone de
+m\'emoire virtuelle. Les attributs pourraient \^etre compos\'es
+des flags suivants: VM\_ATTR\_EXEC, VM\_ATTR\_READ, VM\_ATTR\_WRITE etc..
+
+\paragraph{}
+
+Cette fonction modifiera l'espace d'adressage \textbf{asid} seulement si
+vous d\'ecidez de garder une trace plus compl\`ete de la m\'emoire virtuelle
+en software.
+
+\paragraph{}
+
+Nous vous le conseillons pour une question de logique.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{vm\_rel}(t\_asid \textbf{asid},
+                                   t\_vaddr \textbf{vaddr},
+                                   t\_vsize \textbf{npages});
+
+\paragraph{}
+
+Cette fonction lib\`ere de la m\'emoire virtuelle.
+
+\paragraph{}
+
+Cette fonction modifiera l'espace d'adressage \textbf{asid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{vm\_map}(t\_asid \textbf{asid},
+				   t\_paddr \textbf{paddr},
+                                   t\_vaddr \textbf{vaddr},
+                                   t\_vsize \textbf{npages});
+
+\paragraph{}
+
+Cette fonction \'etablie une correspondance entre l'adresse physique
+\textbf{paddr} et l'adresse virtuelle \textbf{vaddr} et cela pour
+un nombre de pages donn\'e.
+
+\paragraph{}
+
+Cette fonction effectuera des modifications sur l'espace d'adressage.
+En effet il faudra que l'espace d'adressage ait bien pris en compte que
+d\'esormais cette zone physique est mapp\'ee par une - ou plusieurs -
+adresses virtuelles.
+
+\paragraph{}
+
+Vos structures doivent permettre le fait qu'une zone physique soit mapp\'ee
+par plusieurs pages virtuelles de ce m\^eme espace d'adressage mais \'egalement
+qu'une zone soit mapp\'ee par plusieurs processus voire \textbf{n} fois
+chacun. Bien entendu cette fonctionnalit\'e ne vous sera possible et demand\'ee
+que si vous avez effectu\'e le bonus \textbf{Sharing} du projet pr\'ec\'edent.
+
+\paragraph{}
+
+Si vous avez effectu\'e le bonus \textbf{Object} vous devez savoir le faire
+en utilisant des objets et vous serez donc capable d'expliquer comment
+faire et ce qu'il faudrait enlever ou ajouter aux gestionnaires exitants.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{vm\_unmap}(t\_asid \textbf{asid},
+                                     t\_vaddr \textbf{vaddr},
+                                     t\_vsize \textbf{npages});
+
+\paragraph{}
+
+Cette fonction enl\`eve la correspondance pr\'ec\'edemment \'etablie
+sur cette zone virtuelle.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{vm\_copy}(t\_asid \textbf{from},
+                                    t\_vaddr \textbf{src},
+                                    t\_asid \textbf{to},
+                                    t\_vaddr \textbf{dst},
+                                    t\_size \textbf{nbytes});
+
+\paragraph{}
+
+Cette fonction se charge de copier un nombre d'octets donn\'e entre
+deux espaces d'adressage virtuels.
+
+\paragraph{}
+
+Pour utiliser cette fonction il faudra disposer de droits sp\'eciaux
+car il est clair que tout le monde ne peut pas se permettre de copier
+des donn\'ees un peu n'importe o\`u.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{vm\_flush}(t\_asid \textbf{asid});
+
+\paragraph{}
+
+Cette fonction se charge de nettoyer l'espace d'adressage \textbf{asid}
+de tout son espace d'adressage virtuel.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{vm\_clean}(void);
+
+\paragraph{}
+
+Cette fonction r\'einitialise le gestionnaire de m\'emoire virtuelle.
+
+\subsection{Allocation de m\'emoire}
+
+\paragraph{}
+
+Cette section n'est pas fondamentale mais permet de simplifier l'allocation
+de pages m\'emoire pour une utilisation imm\'ediate.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{mm\_rsv}(t\_asid \textbf{asid},
+                                   t\_vaddr* \textbf{vaddr},
+                                   t\_vsize \textbf{npages});
+
+\paragraph{}
+
+La fonction \textbf{mm\_rsv}() se charge d'allouer \textbf{npages} physiques
+et virtuelles et de les mapper. Cette fonction effectue donc les trois
+t\^aches fondamentales pour allouer de la m\'emoire et la rendre disponible
+et utilisable: \textbf{pm\_rsv}(), \textbf{vm\_rsv}() et \textbf{vm\_map}().
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{mm\_rel}(t\_asid \textbf{asid},
+                                   t\_vaddr \textbf{vaddr},
+                                   t\_vsize \textbf{npages});
+
+\paragraph{}
+
+Cette fonction se charge de lib\'erer la m\'emoire physique et la m\'emoire
+virtuelle tout en invalidant le mapping.
+
+\section{Types}
+
+\paragraph{}
+
+Voici une explication plus compl\`ete des nouveaux types que
+vous devrez utilis\'es.
+
+\paragraph{}
+
+Dans ce projet, les nouveaux types, sont rares et se limitent en r\'ealit\'e
+au seul type suivant.
+
+\subsection{t\_vattr}
+
+\paragraph{}
+
+Ce type d\'ecrit les attributs que peut prendre une page virtuelle.
+
+\begin{verbatim}
+#define VM_ATTR_EXEC            0x0
+#define VM_ATTR_READ            0x1
+#define VM_ATTR_WRITE           0x2
+
+typedef t_uint8         t_vattr;
+\end{verbatim}
+
+\subsection{t\_vsize}
+
+\paragraph{}
+
+Ce type d\'ecrit un nombre de pages virtuelles.
+
+\begin{verbatim}
+typedef t_uint32        t_vsize;
+\end{verbatim}
+
+\subsection{t\_size}
+
+\paragraph{}
+
+Ce type d\'ecrit une taille en octets.
+
+\begin{verbatim}
+typedef t_uint32        t_size;
+\end{verbatim}
+
+\subsection{t\_flags}
+
+\paragraph{}
+
+Repr\'esente les diff\'erents flags. Ce type a d\'ej\`a \'et\'e vu mais nous
+rajoutons ici diff\'erentes valeurs qu'utilise le gestionnaire de m\'emoire
+virtuelle.
+
+\begin{verbatim}
+#define VM_FLAG_ANY             0x00
+#define VM_FLAG_SPECIFIC        0x01
+
+/*
+ * ...
+ */
+
+typedef t_uint32        t_flags;
+\end{verbatim}
+
+\section{Bonus}
+
+\paragraph{}
+
+Voici les bonus de ce projet.
+
+\subsection{malloc}
+
+\paragraph{}
+
+Nous vous proposons en bonus le d\'eveloppement de la fonction malloc
+pour pouvoir allouer de la m\'emoire avec une granularit\'e accrue.
+
+\paragraph{}
+
+Il vous sera demand\'e de construire votre malloc intelligemment de sorte
+que le m\^eme code puisse fonctionner pour un espace d'adressage diff\'erent,
+c'est \`a dire pour le kernel comme pour un processus.
+
+\section{Bibliographie}
+
+\paragraph{}
+
+Voici la bibliographie de k3.
+
+\subsection{M\'emoire virtuelle}
+
+\paragraph{}
+
+\begin{itemize}
+\item IA-32 Intel Architecture Software Developer's Manual Volume 3:
+      System Programming Guide - Chapter 3 Protected-Mode Memory Management.
+\item IA-32 Intel Architecture Software Developer's Manual Volume 3:
+      System Programming Guide - Chapter 4 Protection.
+\end{itemize}
+
+\end{document}
