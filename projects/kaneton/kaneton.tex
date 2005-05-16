@@ -5,13 +5,13 @@
 %% 
 %% kaneton.tex
 %% 
-%% path          /root/data/research/projects/svn/kaneton/projects/kaneton
+%% path          /home/mycure/data/research/projects/kaneton/projects/kaneton
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Mon Feb 21 16:02:54 2005   mycure
-%% last update   Sat Apr  2 01:44:06 2005   mycure
+%% last update   Mon May  9 15:26:32 2005   mycure
 %%
 
 \documentclass[10pt,a4wide]{article}
@@ -26,7 +26,7 @@
 
 \lhead{\scriptsize{kaneton project}}
 \rhead{kaneton}
-\rfoot{\scriptsize{EPITA System Lab}}
+\rfoot{\scriptsize{EPITA System Laboratory}}
 
 \title{kaneton}
 
@@ -46,24 +46,29 @@
 
 \section{Introduction}
 
-\textbf{kaneton} est un kernel que les \'el\`eves d'epita en sp\'ecialisation
-syst\`eme, r\'eseau et s\'ecurit\'e devront mod\'eliser et d\'evelopper.
+\paragraph{}
+
+\textbf{kaneton} est un kernel que les \'el\`eves d'EPITA en sp\'ecialisation
+syst\`eme, r\'eseau et s\'ecurit\'e devront concevoir et d\'evelopper durant
+la p\'eriode de Janvier \`a Octobre.
 
 \paragraph{}
 
 L'objectif est d'arriver \`a d\'evelopper un noyau de syst\`eme d'exploitation
-dot\'e d'une mod\'elisation extr\^emement propre pour permettre le portage
-vers d'autres architectures sans efforts.
+dot\'e d'une mod\'elisation propre pour permettre le portage vers d'autres
+architectures sans effort.
 
 \paragraph{}
 
-Le but du projet est de faire acqu\'erir aux \'el\`eves toutes les notions
-processeur, syst\`eme, et algorithmique n\'ecessaire pour l'\'elaboration
+Le but du projet est de faire acqu\'erir aux \'etudiants toutes les notions
+processeur, syst\`eme, et algorithmique n\'ecessaires \`a l'\'elaboration
 d'un syst\`eme d'exploitation moderne.
 
 \newpage
 
 \section{Projet}
+
+\paragraph{}
 
 Il faut savoir que la partie du d\'eveloppement la plus compliqu\'ee est
 certainement celle li\'ee directement au processeur car comprendre
@@ -73,25 +78,25 @@ ais\'ee.
 \paragraph{}
 
 L'objectif de ce projet sera donc d'amener l'\'etudiant \`a comprendre le
-fonctionnement d'un processeur donn\'e, dans notre cas Intel, puis toutes
-les phases de mises en place d'un syst\`eme d'exploitation pour finir
-par les drivers et autres installations pour permettre les futures ex\'ecutions
+fonctionnement d'un processeur donn\'e, dans notre cas Intel, mais \'egalement
+toutes les phases de mises en place d'un syst\`eme d'exploitation pour finir
+par les pilotes et autres installations pour permettre les futures ex\'ecutions
 de programmes utilisateurs.
 
 \paragraph{}
 
-L'\'etudiant, \`a la fin de l'ann\'ee, aura d\'evelopp\'e un syst\`eme
+L'\'etudiant, \`a la fin de son cycle, aura d\'evelopp\'e un syst\`eme
 d'exploitation de type micro-kernel complet et portable comprenant une
 gestion de m\'emoire, une gestion des processus avec threads, une gestion
 des entr\'ees/sorties, une gestion des communication inter-processus
-mais aussi une gestion des p\'eriph\'eriques avec plusieurs drivers:
-r\'eseau, disque dur, file systems etc..
+mais aussi une gestion des p\'eriph\'eriques avec plusieurs pilotes:
+disque dur, file systems etc..
 
 \paragraph{}
 
 L'\'etudiant aura donc la possibilit\'e d'\'etudier le fonctionnement d'un
-processeur, de pratiquer plusieurs langages de bas niveau notamment
-l'assembleur intel et le C. Une fois ces \'etapes que l'on pourrait
+processeur, de pratiquer plusieurs langages de programmation bas niveau
+notamment l'Assembleur Intel et le C. Une fois ces \'etapes que l'on pourrait
 qualifier de ``hardware'' d\'epass\'ees, l'\'etudiant devra faire face
 \`a des probl\'ematiques de plus haut niveau comme par exemple la gestion
 m\'emoire, l'ordonnanceur, la portabilit\'e etc..
@@ -100,23 +105,54 @@ m\'emoire, l'ordonnanceur, la portabilit\'e etc..
 
 \section{Organisation}
 
+\paragraph{}
+
 Le projet \textbf{kaneton} est decoup\'e en sous projets de sorte que
 l'etudiant valide bien chaque notion: mode d'adressages, gestion memoire,
 gestion des processus etc..
 
 \paragraph{}
 
-La liste des sous projets, des \'etapes que l'\'etudiant devra suivre est
-expos\'ee ci-dessous.
+La liste des sous projets, des \'etapes, des tranches que l'\'etudiant
+devra suivre et valider est expos\'ee ci-dessous.
 
 \newpage
 
-\subsection{KAN1: Mise en place du kernel}
+\subsection{KAN1: Gestion du d\'emarrage}
+
+\paragraph{}
 
 \subsubsection{k0}
 
-D\'eveloppement d'un bootstrap. L'\'etudiant sera amen\'e \`a comprendre
-un mode d'adressage du processeur et d'en installer un nouveau.
+\paragraph{}
+
+Le projet s'\'etale sur \textbf{une} semaine.
+
+\paragraph{}
+
+L'\'etudiant disposera de \textbf{quatre} heures de cours et de \textbf{trois}
+heures de travaux pratiques.
+
+\paragraph{}
+
+Le but du projet est le d\'eveloppement d'un bootstrap.
+L'\'etudiant sera amen\'e \`a comprendre un mode d'adressage du processeur
+et d'en installer un nouveau.
+
+\paragraph{}
+
+Ce projet vise \`a familiariser l'\'etudiant au d\'eveloppement bas
+niveau. Ce projet n'est qu'une introduction au projet \textbf{kaneton}
+dans le sens o\`u ce sera la seule tranche qui ne sera pas r\'eutilis\'ee
+dans les projets suivants.
+
+\paragraph{}
+
+Via ce projet, l'\'etudiant aura l'occasion d'acqu\'erir une culture
+g\'en\'erale sur le fonctionnement du BIOS, des bootloader (grub, lilo
+etc..) mais \'egalement sur les modes de communication entre les
+diff\'erents p\'eriph\'eriques, notion indispensable pour le futurs
+projets.
 
 \vspace{5cm}
 
@@ -128,9 +164,27 @@ un mode d'adressage du processeur et d'en installer un nouveau.
 
 \subsubsection{k1}
 
-D\'eveloppement d'un bootloader. Celui ci devra mettre en place un nouveau
-mode d'adressage et installer une configuration m\'emoire satisfaisante pour
-la future ex\'ecution du kernel.
+\paragraph{}
+
+Le projet s'\'etale sur \textbf{deux} semaines.
+
+\paragraph{}
+
+L'\'etudiant disposera de \textbf{quatre} heures de cours et de \textbf{six}
+heures de travaux pratiques.
+
+\paragraph{}
+
+Le but du projet est le d\'eveloppement d'un bootloader.
+Celui ci devra mettre en place un nouveau mode d'adressage et installer
+une configuration m\'emoire satisfaisante pour la future ex\'ecution du kernel.
+
+\paragraph{}
+
+\`A travers ce projet, l'\'etudiant aura l'occasion d'acqu\'erir de nouvelles
+notions processeurs et de les appliquer. Ce projet introduit la notion
+de m\'emoire virtuelle, une notion fondamentale pour la suite du projet
+\textbf{kaneton}.
 
 \vspace{5cm}
 
@@ -142,9 +196,33 @@ la future ex\'ecution du kernel.
 
 \subsubsection{k2}
 
-Lancement du kernel et mise en place d'un certain nombre de gestionnaires:
-espaces d'adressage, m\'emoire physique, interruptions etc.. et certains
-drivers basiques: timer, PIC, console, clavier etc..
+\paragraph{}
+
+Le projet s'\'etale sur \textbf{quatres} semaines.
+
+\paragraph{}
+
+L'\'etudiant disposera de \textbf{quatre} heures de cours et de \textbf{douze}
+heures de travaux pratiques.
+
+\paragraph{}
+
+Le but du projet est le lancement du kernel et la mise en place d'un certain
+nombre de gestionnaires: espaces d'adressage, m\'emoire physique,
+interruptions etc.. et certains pilotes basiques: timer, PIC, console,
+clavier etc..
+
+\paragraph{}
+
+Ce projet est une des tranches les plus importantes du projet et ne devra
+pas \^etre pris \`a la l\'eg\`ere.
+
+\paragraph{}
+
+L'\'etudiant via ce projet aura l'occasion de se familiariser avec le
+fonctionnement des communications avec les p\'eriph\'eriques, la notion de
+temps, et le d\'eveloppement de pilotes basiques mais surtout les
+probl\'ematiques li\'ees \`a la portabilit\'e.
 
 \vspace{5cm}
 
@@ -154,11 +232,29 @@ drivers basiques: timer, PIC, console, clavier etc..
 
 \newpage
 
-\subsection{KAN2: Gestion des ressources et IPC}
+\subsection{KAN2: Gestion de l'ex\'ecution}
+
+\paragraph{}
 
 \subsubsection{k3}
 
-Mise en place du gestionnaire de m\'emoire virtuelle.
+\paragraph{}
+
+Le projet s'\'etale sur \textbf{deux} semaines.
+
+\paragraph{}
+
+L'\'etudiant disposera de \textbf{quatre} heures de cours et de \textbf{six}
+heures de travaux pratiques.
+
+\paragraph{}
+
+Le but du projet est la mise en place du gestionnaire de m\'emoire virtuelle.
+
+\paragraph{}
+
+L'\'etudiant confortera durant cette p\'eriode ses acquis vis-\`a-vis du
+fonctionnement interne du processeur.
 
 \vspace{5cm}
 
@@ -170,9 +266,30 @@ Mise en place du gestionnaire de m\'emoire virtuelle.
 
 \subsubsection{k4}
 
-Mise en place du gestionnaire de processus avec gestion des threads, de
-l'ordonnanceur, mais \'egalement d'un gestionnaire d'ensembles et
-d'un gestionnaire de modules.
+\paragraph{}
+
+Le projet s'\'etale sur \textbf{cinq} semaines.
+
+\paragraph{}
+
+L'\'etudiant disposera de \textbf{quatre} heures de cours et de \textbf{quinze}
+heures de travaux pratiques.
+
+\paragraph{}
+
+Le but du projet est la mise en place du gestionnaire de processus avec
+gestion des threads, de l'ordonnanceur, mais \'egalement d'un gestionnaire
+d'ensembles et d'un gestionnaire de modules.
+
+\paragraph{}
+
+Ce projet est tr\`es certainement le plus important de tous.
+
+\paragraph{}
+
+L'\'etudiant aura l'occasion d'acqu\'erir de nouvelles notions processeur
+mais \'egalement de d\'evelopper des interfaces complexes mais coh\'erentes
+pour permettre la gestion des processus.
 
 \vspace{5cm}
 
@@ -182,9 +299,31 @@ d'un gestionnaire de modules.
 
 \newpage
 
+\subsection{KAN3: Communications et Ressources}
+
+\paragraph{}
+
 \subsubsection{k5}
 
-D\'eveloppement d'un syst\`eme de communication inter-processus.
+\paragraph{}
+
+Le projet s'\'etale sur \textbf{deux} semaines.
+
+\paragraph{}
+
+L'\'etudiant disposera de \textbf{trois} heures de cours et de \textbf{six}
+heures de travaux pratiques.
+
+\paragraph{}
+
+Le but du projet est le d\'eveloppement d'un syst\`eme de communication
+inter-processus.
+
+\paragraph{}
+
+L'\'etudiant aura l'occasion de d\'ecouvrir les diff\'erentes techniques
+connues pour mettre en place la communication et les probl\`emes
+d'impl\'ementation connus.
 
 \vspace{5cm}
 
@@ -194,11 +333,27 @@ D\'eveloppement d'un syst\`eme de communication inter-processus.
 
 \newpage
 
-\subsection{KAN3: Syst\`eme de fichiers}
-
 \subsubsection{k6}
 
-D\'eveloppement d'un driver IDE et d'une gestion des partitions.
+\paragraph{}
+
+Le projet s'\'etale sur \textbf{trois} semaines.
+
+\paragraph{}
+
+L'\'etudiant disposera de \textbf{trois} heures de cours et de \textbf{neuf}
+heures de travaux pratiques.
+
+\paragraph{}
+
+Le but du projet est le d\'eveloppement d'un pilote IDE et d'un
+gestionnaire des partitions.
+
+\paragraph{}
+
+L'\'etudiant se confronter cette fois-ci au d\'eveloppement d'un pilote
+bien plus complexe et devra faire face \`a cette difficult\'e en se
+documentant correctement sur les m\'ecanismes bas niveau utilis\'es.
 
 \vspace{5cm}
 
@@ -210,7 +365,27 @@ D\'eveloppement d'un driver IDE et d'une gestion des partitions.
 
 \subsubsection{k7}
 
-D\'eveloppement d'un gestionnaire de p\'eriph\'eriques.
+\paragraph{}
+
+Le projet s'\'etale sur \textbf{deux} semaines.
+
+\paragraph{}
+
+L'\'etudiant disposera de \textbf{deux} heures de cours et de \textbf{six}
+heures de travaux pratiques.
+
+\paragraph{}
+
+Le but du projet est de concevoir enti\`erement un syst\`eme et de
+l'impl\'ementer. L'objet du projet est le d\'eveloppement d'un gestionnaire
+de p\'eriph\'eriques.
+
+\paragraph{}
+
+L'\'etudiant devra faire face \`a toute une phase de r\'eflexion li\'ee
+\`a la conception suivie de l'\'etablissement d'un dossier de sp\'ecification.
+L'\'etudiant jouera donc un double r\^ole, celui de l'architecte et celui
+du d\'eveloppeur.
 
 \vspace{5cm}
 
@@ -220,10 +395,30 @@ D\'eveloppement d'un gestionnaire de p\'eriph\'eriques.
 
 \newpage
 
+\subsection{KAN4: Syst\`emes de fichiers}
+
+\paragraph{}
+
 \subsubsection{k8}
 
-D\'eveloppement d'un syst\`eme de fichiers et du syst\`eme de fichiers
-g\'en\'erique VFS.
+\paragraph{}
+
+Le projet s'\'etale sur \textbf{quatre} semaines.
+
+\paragraph{}
+
+L'\'etudiant disposera de \textbf{quatre} heures de cours et de \textbf{douze}
+heures de travaux pratiques.
+
+\paragraph{}
+
+Le but du projet est de concevoir et impl\'ementer un syst\`eme de fichiers
+basique.
+
+\paragraph{}
+
+L'\'etudiant aura l'occasion d'\'etudier le fonctionnement des syst\`emes
+de fichiers anciens tout comme modernes et d'en d\'evelopper un.
 
 \vspace{5cm}
 
@@ -233,11 +428,26 @@ g\'en\'erique VFS.
 
 \newpage
 
-\subsection{KAN4: R\'eseau}
-
 \subsubsection{k9}
 
-D\'eveloppement du driver PCI et du driver r\'eseau.
+\paragraph{}
+
+Le projet s'\'etale sur \textbf{deux} semaines.
+
+\paragraph{}
+
+L'\'etudiant disposera de \textbf{trois} heures de cours et de \textbf{six}
+heures de travaux pratiques.
+
+\paragraph{}
+
+Le but du projet est de d\'evelopper un syst\`eme de fichiers virtuel VFS
+et un syst\`eme de fichiers situ\'e en m\'emoire principale ModFS.
+
+\paragraph{}
+
+L'\'etudiant aura donc la possibilit\'e d'\'etudier le fonctionnement
+d'une interface g\'en\'erique, dans notre cas VFS.
 
 \vspace{5cm}
 
@@ -249,7 +459,20 @@ D\'eveloppement du driver PCI et du driver r\'eseau.
 
 \subsubsection{k10}
 
-D\'eveloppement d'une stack TCP/IP.
+\paragraph{}
+
+Le projet s'\'etale sur \textbf{deux} semaines.
+
+\paragraph{}
+
+L'\'etudiant disposera de \textbf{deux} heures de cours et de \textbf{six}
+heures de travaux pratiques.
+
+\paragraph{}
+
+Le but du projet est de d\'evelopper une partie du syst\`eme librement.
+L'\'etudiant devra donc \'etablir un cahier des charges, des sp\'ecifications
+et impl\'ementer sa conception.
 
 \vspace{5cm}
 
@@ -302,7 +525,7 @@ cours n'aura quasiment aucun document \`a lire.
 \paragraph{}
 
 Certains projets sont destin\'es \`a initier les \'etudiants \`a la
-mod\'elisation dans un kernel. Dans ces projets particuliers, nous
+mod\'elisation noyau. Dans ces projets particuliers, nous
 vous invitons \`a suivre notre mod\'elisation. N\'eanmoins vous
 pourrez tout \`a fait prendre la d\'ecision d'impl\'ementer votre
 propre mod\'elisation. Dans ce cas, vous devrez nous fournir une documentation
@@ -310,5 +533,10 @@ claire et pr\'ecise expliquant vos choix. Si votre mod\'elisation est
 intelligente et apporte des inovations par rapport \`a celle fournie,
 votre note se verra amelior\'ee et votre mod\'elisation pourrait devenir
 celle que nous proposerons pour les ann\'ees suivantes.
+
+\paragraph{}
+
+Attention, il vous faudra tout de m\^eme fournir une couche de compatibilit\'e
+avec notre mod\'elisation pour permettre \`a notre moulinette de passer.
 
 \end{document}

@@ -1,0 +1,678 @@
+\documentclass[10pt,a4wide]{article}
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{graphicx}
+\usepackage{graphics}
+\usepackage{fancyheadings}
+\pagestyle{fancy}
+
+\bibliographystyle{plain}
+
+\lhead{\scriptsize{kaneton project}}
+\rhead{k5 subject}
+\rfoot{\scriptsize{EPITA System Lab}}
+
+\title{kaneton-5}
+
+\author{Julien Quintard - \small{quinta\_j@epita.fr} \\
+        Jean-Pascal Billaud - \small{billau\_j@epita.fr} \\ \\
+	\small{last updated by} \\
+	Jean-Pascal Billaud - \small{billau\_j@epita.fr}}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Informations}
+
+\paragraph{}
+
+\begin{tabular}{p{7cm}l}
+
+Date de rendu: & Lundi 16 Mai 2005 \`a 23h42 \\
+Dur\'ee du projet: & 3 semaines \\
+Nom du fichier de rendu: & k5.tar.gz \\
+Responsable du projet: & Julien Quintard - \small{quinta\_j@epita.fr} \\
+                       & Jean-Pascal Billaud - \small{billau\_j@epita.fr} \\
+Newsgroups d\'edi\'es: & epita.kaneton, epita.adm.sr \\
+Langages: & asm, C \\
+Architectures: & Intel 32-bit \\
+Nombre de personnes par groupes: & 3 \`a 5
+
+\end{tabular}
+
+\section{Introduction}
+
+\paragraph{}
+
+Nous voil\`a donc au terme de la premi\`ere et de la plus importante partie de ce projet.\\
+k5 est par cons\'equent le plus important puisque c'est gr\^ace \`a lui que
+kaneton va enfin pouvoir vivre de mani\`ere presque autonome dans le sens o\`u il
+proposera un syst\`eme de communication.\\
+D\'es lors ce m\'ecanisme est la porte ouverte vers le d\'eveloppement userland avec des
+binaires ayant besoins d'une API syst\`eme.
+
+\paragraph{}
+
+Jusqu'ici, vous avez donc d\'evelopp\'e un d\'ebut d'architecture micro-kernel dans lequel
+vous avez une gestion de quelques drivers qui seront certainement \`a externaliser
+, une gestion avanc\'ee de la m\'emoire physique et virtuelle, une gestion des processus et
+enfin une gestion minimale des interruptions et exceptions.\\
+A pr\'esent nous allons mettre en place un syst\`eme de communication bas\'e sur les messages, qui sont
+en fait uniquement une \'evolution logique des appels syst\`emes notamment tr\`es utilis\'es dans tous
+les syst\`emes d'exploitation distribu\'es.
+
+\paragraph{}
+
+Ce projet se divise donc en plusieurs parties, la premi\`ere concernant la gestion des \'ev\`enements
+permettant de leur donner un sens via un d\'eroutement logicielle.\\
+Puis nous aurons besoin de d\'efinir un m\'ecanisme de gestion de trap fortement li\'e \`a notre
+gestionnaire d'\'ev\`enements, jouant le r\^ole de newsgroup syst\`eme dans lequel chaque entit\'ee
+logicielle pourra s'abonner et ainsi recevoir des messages pouvant \^etre unicast, multicast ou broadcast.\\
+Pour finir, une derni\`ere interface sera \`a d\'evelopper permettant de g\'erer ce fameux syst\`eme
+de message.
+
+\section{Travail Demand\'e}
+
+\section{Interfaces}
+
+\subsection{Ev\`enements}
+
+\paragraph{}
+
+Les \'ev\`enements ont d\'ej\`a \'et\'e introduit lors de k2 et repr\'esentent
+les diff\'erentes interruptions qu'un processeur peut fournir, c'est \`a dire si l'on se place sur
+Intel les interruptions hardware, les exceptions et les interruptions software.\\
+G\'erer un \'ev\`enement veut dire tout simplement lui donner un sens, ce qui se traduit dans notre
+cas par un d\'eroutement logicielle.\\
+Bien \'evidemment ce gestionnaire est la fronti\`ere entre la partie d\'ependante et ind\'ependante de
+l'architecture et devra faire appel au code d\'ependant de l'architecture  pour rajouter par exemple
+ces d\'eroutements.
+Nous verrons plus loin que tous ces d\'eroutements logicielles repr\'esenteront un wrapper qui permettra
+de d\'ecouvrir la nature de l'\'ev\`enement et ainsi donner la possibilit\'e de faire une translation
+\'ev\`enement-trap.
+
+\paragraph{}
+
+Voici l'interface \`a mettre en place pour faire en sorte d\'evelopp\'e ce gestionnaire indispensable.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{event\_init}(void);
+
+\paragraph{}
+
+Cette fonction permet d'initialiser le gestionnaire ce qui peut impliquer un appel sous Intel aux fonctions
+d\'ependantes \textbf{int\_init} et \textbf{pic\_init}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{event\_rsv}(t\_eventid \textbf{eventid},
+                                      t\_event \textbf{event});
+
+\paragraph{}
+
+Cette fonction permet de d\'efinir le d\'eroutement \textbf{event} \`a l'\'ev\`enement \textbf{eventid}
+ce qui peut impliquer un appel sous Intel aux fonctions d\'ependantes \textbf{int\_rsv} et \textbf{pic\_enable}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{event\_rel}(t\_eventid \textbf{eventid});
+
+\paragraph{}
+
+Cette fonction permet de supprimer le d\'eroutement de l'\'ev\`enement \textbf{eventid}
+ce qui peut impliquer un appel sous Intel aux fonctions d\'ependantes \textbf{int\_rel} et \textbf{pic\_disable}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{event\_clean}(void);
+
+\paragraph{}
+
+Cette fonction permet de lib\'erer les structures en relation avec ce gestionnaire ce qui peut impliquer un appel
+sous Intel aux fonctions d\'ependantes \textbf{int\_clean} et \textbf{pic\_clean}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{event\_flush}(void);
+
+\paragraph{}
+
+Cette fonction permet d'enlever les d\'eroutements de tous les \'ev\`enements ce qui peut impliquer un appel
+sous Intel aux fonctions d\'ependantes \textbf{int\_rel} et \textbf{pic\_disable}.
+
+\paragraph{}
+
+Les types ici introduits seront d\'efinis dans la section pr\'evu \`a cet effet.
+
+\subsection{Traps}
+
+\paragraph{}
+
+Nous venons de d\'efinir la notion d'\'ev\`enements ce qui nous a permis de gagner au niveau de la mod\'elisation d'une part
+et de plus nous a permis de cr\'eer la fronti\`ere entre la partie d\'ependante et ind\'ependante de cette partie
+englobant la gestion des interruptions, des IRQs, etc ...
+
+\paragraph{}
+
+Une trap est en fait comme un esp\`ece de bureau de poste qui recoit des \'ev\`enements et qui les adresse \`a un ou
+plusieurs abonn\'es, ces derniers \'etant des t\^aches.\\
+Ainsi chaque t\^ache a la possibilit\'e de s'abonner ou de se d\'esabonner \`a une trap ce qui a pour effet de
+rajouter ou d'enlever \`a l'ensemble des abonn\'es la t\^ache concern\'ee.\
+Ce gestionnaire de trap est donc la partie cruciale du syst\`eme permettant de faire fonctionner notre
+m\'ecanisme de communication.\\
+Toutes les traps devraient \^etre logiquement stock\'ees dans un ensemble mais si vous n'avez pas impl\'ement\'es cette m\'ethode
+permettant d'avoir des structures de donn\'ee universelles vous aurez la possibilit\'e de choisir une tableau ou autres.
+
+\paragraph{}
+
+Voici l'interface \`a suivre pour le gestionnaire de trap.\\
+La premi\`ere partie de cette interface sera exclusivement d\'edi\'ee au kernel, la partie suivante
+proposera une interface permettant aux t\^aches de s'abonner ou non \`a une trap.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_init}(void);
+
+\paragraph{}
+
+Cette fonction va initialiser les structures li\'ees au gestionnaire de trap.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_clean}(void);
+
+\paragraph{}
+
+Cette fonction va lib\'erer les structures du gestionnaire de trap.
+
+\paragraph{}
+
+Pour des raisons \'evidentes, un syst\`eme de priorit\'e est n\'ecessaire pour la gestion des traps en effet,
+il serait regretable que n'importe qui puisse s'abonner \`a n'importe quelle trap.\\
+Ainsi la gestion des priorit\'es sera g\'er\'ee avec les fonctions suivantes.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_grade}(t\_trapid \textbf{trapid},
+                                       t\_pl \textbf{pl});
+
+\paragraph{}
+
+Cette fonction permet de mettre \`a jour la priorit\'e avec l'argument \textbf{pl} la trap repr\'esent\'e par
+\textbf{trapid}.
+
+\paragraph{}
+
+\hspace{1.5cm}t\_pl \textbf{trap\_pl}(t\_trapid \textbf{trapid});
+
+\paragraph{}
+
+Cette fonction permet de r\'ecup\'ere le privil\`ege de la trap repr\'esent\'e par \textbf{trapid}.
+
+\paragraph{}
+
+Comme nous l'avons pr\'esent\'e plus haut, chaque trap va contenir un ensemble d'abonn\'es il nous faut donc des fonctions
+permettant de g\'erer cela.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_subscribe}(t\_trapid \textbf{trapid},
+                                           t\_tskid \textbf{tskid});
+
+\paragraph{}
+
+Permet de rajouter la t\^ache \textbf{tskid} dans l'ensemble des abonn\'es de la trap \textbf{trapid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_unsubscribe}(t\_trapid \textbf{trapid},
+                                             t\_tskid \textbf{tskid});
+
+\paragraph{}
+
+Permet d'enlever la t\^ache \textbf{tskid} dans l'ensemble des abonn\'es de la trap \textbf{trapid}.
+
+\paragraph{}
+
+Une dernier concept \`a greffer \`a notre gestionnaire de trap est la notion de comportement.\\
+En effet, les traps ne r\'eagissent pas de la m\^eme mani\`ere lorsqu'elles sont d\'eclench\'ees par
+un \'ev\`enement.\\
+Par exemple une trap d\'eclench\'ee \`a cause d'un \'ev\`enement correspondant \`a une IRQ, doit
+tout de suite forger un message et le mettre dans la queue de messages correspondant \`a tous les abonn\'es
+de cette derni\`ere.\\
+Au contraire si la trap est d\'eclench\'ee \`a cause d'un \'ev\`enement correspondant \`a un envoi de message
+, elle doit par cons\'equent aller chercher le message dans l'espace d'adressage de la t\^ache courante, analyser
+le header du message et enfin le poster dans la queue de message de l'abonn\'e cibl\'e.\\
+Ces raisons justifient donc le fait que chaque trap peut avoir son propre comportement \`a l'arriv\'ee d'un
+\'ev\`enement.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_setbehave}(t\_trapid \textbf{trapid}
+                                           t\_behave \textbf{behave});
+
+\paragraph{}
+
+Cette fonction met \`a jour le comportement avec le comportement \textbf{t\_behave} la trap \textbf{trapid}.
+
+\paragraph{}
+
+\hspace{1.5cm}t\_behave \textbf{trap\_getbehave}(t\_trapid \textbf{trapid});
+
+\paragraph{}
+
+Cette fonction r\'ecup\`ere le comportement la trap \textbf{trapid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_delbehave}(t\_trapid \textbf{trapid});
+
+\paragraph{}
+
+Cette fonction permet d'enlever le comportement de la trap \textbf{trapid}, ce qui a pour effet de lui mettre
+un comportement par d\'efaut qui l'inhibe implicitement.\\
+Beaucoup de possibilit\'es peuvent \^etre imagin\'ees pour ce comportement par d\'efaut.
+
+\paragraph{}
+
+Nous venons de pr\'esenter l'interface du gestionnaire dans le kernel, \`a pr\'esent nous allons voir les deux fonctions
+de la libc permettant \`a une t\^ache de s'abonner ou de se d\'esabonner \`a une trap, ces derni\`eres font \'evidemment
+partie int\'egrante de la libc.\\
+A noter que que pour abonner ou d\'esabonner une autre t\^ache il vaut avoir des droits le permettant sinon il est
+\'evident qu'au niveau stabilit\'e et s\'ecurit\'e du syst\`eme cela ne sera pas une bonne id\'ee.\\
+Nous verrons que ces demandes userland sont r\'egis par notre syst\`eme de message que nous d\'ecrirons plus loin.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_subscribe}(t\_trapid \textbf{trapid},
+                                           t\_tskid \textbf{tskid});
+
+\paragraph{}
+
+Permet \`a la t\^ache courante de s'abonner \`a la trap \textbf{trapid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{trap\_unsubscribe}(t\_trapid \textbf{trapid},
+                                             t\_tskid \textbf{tskid});
+
+\paragraph{}
+
+Permet \`a la t\^ache courante de se d\'esabonner de la trap \textbf{trapid}.
+
+\paragraph{}
+
+Ces deux derniers gestionnaires vont nous permettre d'avoir un terrain stable pour pouvoir impl\'ementer notre syst\`eme
+de message.\\
+Dans la prochaine section nous allons voir ce qu'implique le syst\`eme de message de part ces structures dans le kernel mais
+aussi en userland.
+
+\subsection{Msg}
+
+\paragraph{}
+
+Dans kaneton les communications inter-processus se font par le biais de messages qui sont, nous le rappelons, une \'evolution
+des appels syst\`emes traditionnels.\\
+Un message est tout simplement un packet logiciel structur\'e par un header donnant certaines informations concernant le
+message ainsi que les donn\'ees ayant un sens pour le destinaire du message.\\
+
+\paragraph{}
+
+L'envoi effectif d'un message se fait de mani\`ere naturelle par un \'ev\'enement logiciel qui par la suite sera trait\'e par
+le comportement de la trap correspondante.\\
+L'emplacement du message sera donc pass\'e en param\`etre de l'\'ev\'enement logiciel dans le registre pr\'edestin\'e \`a
+accueillir le premier argument.\\
+La gestion des arguments et par cons\'equent des registres est totalement d\'ependant de l'architecture ainsi il faudra faire
+un ensemble de macros permettant d'acc\'eder \`a ces derniers.\\
+Ainsi gr\^ace \`a ces macros, la trap permettant de recevoir les \'ev\'enements correspondants \`a des envois de messages aura
+la possibilit\'e de r\'ecup\'erer l'adresse du message dans la m\'emoire.
+
+\paragraph{}
+
+Avant d'aller plus loin pr\'esentons la structure du header d'un message qui pourra peut-\^etre vous faire penser \`a une trame UDP.
+
+\paragraph{}
+
+%%\centerline{\includegraphics{msgheader.jpg}}
+
+\paragraph{}
+
+Nous trouvons bien \'evidement les deux champs correspondant \`a la source et la destination repr\'esent\'e par des \textbf{t\_taskid}.\\
+Les types \textbf{t\_ty} et \textbf{t\_ty} sont relatifs aux types du message au niveau kernel et au niveau software.\\
+Le type kernel \`a pour but de donner des pr\'ecisions concernant l'envoi du message : broadcast, multicast et unicast, mais
+aussi si la t\^ache \'emettrice d\'esire attendre une r\'eponse ou non.\\
+Le type software est lui totalement d\'ependant de la t\^ache destinatrice mais nous verrons son utilit\'e lors de la r\'eception de
+message.\\
+Finalement le dernier champ correspond \`a la taille des donn\'ees, ces donn\'ees ayant une structure propre au serveur r\'eceptionnant
+le message.
+
+\paragraph{}
+
+Pour revenir \`a notre envoi effectif de message, chaque t\^ache poss\'edent un contexte de message qu'il peut faire \'evoluer
+gr\^ace \`a une libraire pr\'evue \`a cet effet ayant l'interface suivante.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{msg\_init}();
+
+\paragraph{}
+
+Permet \`a la t\^ache courante de cr\'eer son contexte de message ce qui signifie cr\'eer un ensemble d\'edi\'e \`a l'envoi de
+message.\\
+Cet ensemble sera tr\`es utile afin de stoker des messages en attente d'envoi ou en attente de traitement.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{msg\_clear}();
+
+\paragraph{}
+
+Permet \`a la t\^ache courante de d\'etruire son contexte de message et ainsi lib\'erer l'ensemble pr\'ec\'edemment r\'eserv\'e.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{msg\_create}(t\_msgid *\textbf{msgid});
+
+\paragraph{}
+
+Cette fonction cr\'ee un message et le rajoute dans l'ensemble, ce dernier message est en attente de recevoir un contenu.\\
+La fonction fourni un identifiant de message de type \textbf{t\_msgid} permettant de retrouver ais\'ement le message en attente pour
+des traitements ult\'erieurs avant un \'eventuel envoi.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{msg\_delete}(t\_msgid \textbf{msgid});
+
+\paragraph{}
+
+Cette fonction permet de d\'etruire le message \textbf{msgid} de l'ensemble.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{msg\_storehd}(t\_msgid \textbf{msgid},
+                                        t\_msghd *\textbf{phd});
+
+\paragraph{}
+
+Cette fonction permet d'affecter le header \textbf{*phd} \`a au message \textbf{msgid}.\\
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{msg\_loadhd}(t\_msgid \textbf{msgid},
+                                       t\_msghd *\textbf{phd});
+
+\paragraph{}
+
+Cette fonction permet de conna\^itre le header du message \textbf{msgid}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{msg\_storedata}(t\_msgid \textbf{msgid},
+                                          t\_data \textbf{data});
+
+\paragraph{}
+
+Cette fonction de mettre \`a jour avec les donn\'ees \textbf{data} de taille \textbf{sz} le contenu du message \textbf{msgid}.
+
+\paragraph{}
+
+\hspace{1.5cm}t\_data \textbf{msg\_loaddata}(t\_msgid \textbf{msgid},
+                                             t\_size *\textbf{psz});
+
+\paragraph{}
+
+Cette fonction permet de r\'ecup\'erer les donn\'ees du message \textbf{msgid} tout en pr\'ecisant la taille point\'e par \textbf{psz}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{msg\_send}(t\_msgid \textbf{msgid});
+
+\paragraph{}
+
+Cette fonction permet d'\'em\^etre le message \textbf{msgid}, ce dernier message devant \^etre forg\'e correctement.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{msg\_rcv}(t\_sbtype \textbf{type},
+			       	    t\_msgid *\textbf{msgid});
+
+\paragraph{}
+
+Cette fonction permet de r\'ecup\'erer le prochain message \'etant du type \textbf{type}, si ce dernier type vaut TYPE\_ANY alors le demandeur
+recevra un message de type software quelconque.\\
+Ce type est tr\`es utilis\'e lorsque vous avez une t\^ache contenant beaucoup de threads chacun ayant un r\^ole particulier.\\
+Ainsi chaque thread est demandeur de messages d'un type particulier.\\
+Nous verrons plus loin qu'il y a des types softwares pr\'ed\'efinis.
+
+\paragraph{}
+
+Les utilisateurs ne vont bien entendu pas utiliser cette librairie directement, pour la simple raison qu'ils n'ont pas envie de savoir
+comment fonctionne ce genre de m\'ecanisme.\\
+Si l'on prend l'exemple de Linux, lorsque vous faites un acc\`es en lecture sur un descripteur de fichier vous ne forgez pas votre
+\'ev\'enement du style :
+\begin{verbatim}
+mov ecx, DATA_SZ
+mov edx, DATA_PTR
+mov ebx, FD
+mov eax, READ_TRAP
+int 0x80
+\end{verbatim}
+En effet vous faites quelques choses de plus simple du genre :
+\begin{verbatim}
+read (fd, data, sz);
+\end{verbatim}
+C'est pourquoi avec kaneton se sera le m\^eme syst\`eme, en effet l'utilisateur fera des appels \`a des librairies fourni par les services
+ou par le kernel, ces derni\`eres fonctions encapsulant la libraire de messages d\'efini ci-dessus.\\
+La libraire syst\`eme fournie par le kernel est l'ensemble de toutes les fonctions pr\'esent\'ees depuis k2, en effet une t\^ache peut allouer
+de la m\'emoire et s'abonner \`a une trap etc..., tout ceci r\'egis par des messages.\\
+Deux nouvelles fonctionnalit\'es vont \^etre ajout\'ees \`a cette libraire syst\`eme.
+
+\paragraph{}
+
+\hspace{1.5cm}t\_data \textbf{request}(t\_type \textbf{type},
+                                       t\_msghd *\textbf{phd});
+
+\paragraph{}
+
+Cette fonction permet \`a une t\^ache de r\'ecup\'erer le prochain message de type software \textbf{type} lui \'etant destin\'e.\\
+Toutes informations concernant le message ainsi recu se trouveront dans le header de message rempli \`a cet effet \textbf{phd}.
+
+\paragraph{}
+
+\hspace{1.5cm}int \textbf{reply}(t\_taskid \textbf{tskid},
+                                 t\_rtvl \textbf{rtvl});
+
+\paragraph{}
+
+Cette fonction permet d'envoyer un message au kernel afin qu'il puisse mettre \`a jour la valeur de retour avec \textbf{rtvl} du client
+\textbf{tskid} en attente de r\'eponse et ainsi de le remettre en ex\'ecution.
+
+\section{Update des \'etapes pr\'ec\'edentes}
+
+\paragraph{}
+
+Nous venons de d\'efinir des notions peu complexe mais il se trouve que comme toutes choses il faut bien r\'efl\'echir au structure de donn\'ee
+n\'ecessaire afin que la mod\'elisation ne devienne pas excessivement lourde.\\
+Dans un premier temps, ils nous faut pr\'evoir une structure de donn\'ee permettant de garder trace de tous les messages en attente pour une t\^ache
+sp\'ecifique, et la bien entendu il para\^it \'evident qu'il faudra rajouter un ensemble comportant tous les messages et rajouter cet ensemble
+dans la structure \textbf{t\_task}.\\
+Ainsi ce premier point de mod\'elisation est r\'egl\'e.
+
+\paragraph{}
+
+Un second point \`a r\'egler concerne la mort d'un service ayant des t\^aches qui attendent un r\'esultat, ces derni\`eres t\^aches ayant bien
+entendu \'emis un message ayant un \textbf{ty} comportant la n\'ecessit\'e d'avoir une r\'eponse.\\
+Ici encore pour faire tr\'es simple nous allons rajouter un ensemble de t\^aches qui attendent une r\'eponse, de cette mani\`ere si le service
+meurt, le kernel pourra ais\'ement d\'etecter les t\^aches bloqu\'ees et ainsi les remettre en ex\'ecution avec une erreur en guise de valeur de retour.\\
+La solution consistant \`a dire que la l'ensemble des messages en attente correspond \`a l'ensemble des t\^aches en attente est mauvaise
+dans le sens o\`u il n'y a pas forc\'ement que des messages qui attendent un r\'eponse ainsi cela reste une id\'ee peu convenable.\\
+
+\paragraph{}
+
+Pour finir on a dit plus haut, que l'adresse d'un message se trouvait dans un registre du contexte de la t\^ache concern\'ee hors nous
+rappelons que nous essayons de faire une mod\'elisation ind\'ependantes de l'architecture ainsi il vous faudra utiliser des fonctions
+d\'ependante de l'architecture qui pourront tr\`es bien prendre une structure \textbf{t\_thrid} et qui irait chercher dans le contexte de
+ce dernier le registre int\'eressant afin de pouvoir localiser le message.\\
+Bien \'evidement, il semble que vous commencez \`a bien ma\^itriser l'environnement kernel pour savoir cr\'eer un petite interface
+de ce type.
+
+\section{Types}
+
+\subsection{t\_eventid}
+Ce type permet d'identifier un \'ev\'enement.
+\begin{verbatim}
+typedef t_uint32	t_eventid;
+\end{verbatim}
+
+\subsection{t\_trapid}
+Ce type permet d'identifier une trap.
+\begin{verbatim}
+typedef t_uint32	t_trapid;
+\end{verbatim}
+
+\subsection{t\_trap}
+Ce type d\'efini la structure d'une trap.
+\begin{verbatim}
+typedef struct		s_trap
+{
+  t_trapid		trapid;
+  t_pl			pl;
+  t_behave		behave;
+  t_setid		lstid;
+}			t_trap;
+\end{verbatim}
+
+\subsection{t\_behave}
+Ce type repr\'esente un comportement pour une trap.
+\begin{verbatim}
+typedef int		(*t_behave) ();
+\end{verbatim}
+
+\subsection{t\_msgid}
+Ce type repr\'esente un comportement pour une trap.
+\begin{verbatim}
+typedef u_int32		t_msgid;
+\end{verbatim}
+
+\subsection{t\_msghd}
+Ce type repr\'esente la structure d'un header de message.
+\begin{verbatim}
+typedef struct		s_msghd
+{
+  t_type		knty;
+  t_type		sbty;
+  t_taskid		srcid;
+  t_taskid		dstid;
+  t_size		datasz;
+}	__attribute__ ((packed)) t_msghd;
+\end{verbatim}
+
+\subsection{t\_msg}
+Ce type repr\'esente la structure d'un message stock\'ee dans un ensemble.
+\begin{verbatim}
+typedef struct		s_msg
+{
+  t_msgid		msgid;
+  t_msghd		*msghd;
+}			t_msg;
+\end{verbatim}
+
+\subsection{t\_type}
+Ce premier type permet de d\'efinir comment ce message doit \^etre distribu\'e, en effet on peut faire du broadcast, de l'unicast mais aussi
+du multicast mais uniquement sur son groupe car nous travaillons avec du multicast ``close group''.\\
+De plus l'\'emetteur peur pr\'eciser si son envoi attend une r\'eponse ou si ce n'est pas le cas.
+\begin{verbatim}
+#define TYPE_NRPL	0x0
+#define TYPE_RPL	0x1
+#define TYPE_BROAD	0x2
+#define TYPE_MULTI	0x4
+#define TYPE_UNI	0x8
+\end{verbatim}
+\paragraph{}
+Ce second type d\'efini le champ sous-type d'un message en effet comme expliqu\'e plus haut ce sous-type va permettre \`a la t\^ache demandeuse
+de message de faire une s\'election parmi tous les messages arriv\'es.\\
+Par exemple, un thread pourrait ne vouloir recevoir que les messages dont le sous-type vaut 0x2 car il se trouve que ces messages
+correspondent \`a ses fonctions.\\
+\paragraph{}
+D'autre part, nous pouvons remarquer qu'il y a un type pr\'ed\'efin qui correspond au message engendr\'e par un \'ev\'enement hardware.\\
+En effet lorsqu'un \'ev\'enement d\'eclenche une trap g\'erant des \'ev\'enements hardware son comportement logique est de forger un message
+et de lui mettre le sous-type d\'efini ci-dessous afin que le thread charg\'e de communiquer avec le mat\'eriel, le puisse en ne demandant que
+des messages ayant ce sous-type.\\
+Il est \'evident que lorsqu'il y a une IRQ vous ne recevez pas de message, de ce fait \'etant donn\'e que notre syst\`eme de communication est bas\'e
+sur ce m\'ecanisme, il n'est pas du tout envisageable de faire des exceptions, tout fonctionne avec des messages ou rien ne fonctionne avec, c'est
+un choix.
+\begin{verbatim}
+#define TYPE_IRQ	0x0
+#define TYPE_IDENT	0x1
+
+typedef u_int16		t_type;
+\end{verbatim}
+
+\section{Bonus}
+
+\subsection{Finder (MacOS X powa)}
+
+\paragraph{}
+
+Depuis le d\'ebut de ce sujet nous avons parl\'e d'envoyer \`a un destinataire un message ayant un sens pour ce dernier.\\
+Le seul probl\`eme actuellement, c'est qu'on ne sait pas comment localiser un service, en effet nous ne poss\'edons pas son
+\textbf{tskid}.\\
+La solution pour ceux qui ne veulent pas faire le bonus, est de rajouter dans leur fichier de configuration un champ tskid en
+pr\'ecisant un nombre fixe correspondant \`a celui mis dans les libraires de ce service.\\
+Une autre solution bien plus int\'eressante est de d\'evelopper un finder qui, nous allons le voir, va \'eviter l'utilisation
+de tskid statique et surtout barbare.
+
+\paragraph{}
+
+Donc un finder est un service qui conna\^it les tskid de tous les services s'ex\'ecutant sur une machine. Ainsi il vous suffit
+de faire une requ\^ete \`a ce finder afin qu'il vous donne l'information vous permettant d'envoyer un message au service qui
+vous int\'eresse.\\
+En fait, ce n'est pas l'utilisateur directement qui va envoyer une requ\^ete \`a ce finder mais c'est plut\^ot les libraires des services
+qui vont se charger de la transaction, car tout doit \^etre transparent pour l'utilisateur.
+
+\paragraph{}
+
+Afin que le finder puisse conna\^itre tous les services d'une machine, il faut que ces derniers services utilisent le m\'ecanisme
+d'enregistrement.\\
+C'est \`a dire tous services qui se lance doit dans un premier temps faire une demande d'enregistrement aupr\`es du finder afin qu'il puisse
+le conna\^itre.
+
+\paragraph{}
+
+Un point \`a soulever est comment dire au finder je d\'esire trouver l'identifiant de t\^ache du service correspondant au r\'eseau ?\\
+La solution est simple, chaque service doit avoir une signature num\'erique qui est totalement unique ainsi l'enregistrement d'un service
+se fera gr\^ace \`a son identifiant de t\^ache et de sa signature.\\
+Bien \'evidemment cette signature sera connue des librairies afin qu'elles puissent essayer de localiser leurs services respectifs.
+
+\paragraph{}
+
+Dernier point, comment localiser le finder ?\\
+Ceci est une question d\'elicate dans le sens o\`u comme la gestion de la m\'emoire, on risque de tourner en rond.\\
+C'est pourquoi il y a deux solutions permettant de trouver notre fameux finder.\\
+La premi\`ere consiste simplement \`a donner un identifiant de t\^ache unique au finder afin qu'on puisse le trouver
+sans difficult\'e.\\
+Une autre solution qui semble \^etre bien meilleur est d'envoyer un message d'identification en broadcast ainsi toutes les t\^aches abonn\'ees
+\`a cette trap recevront le message, il suffira d'attendre la r\'eponse du finder tout simplement.\\
+On utilisera pour cette derni\`ere solution le sous-type d\'efini plus haut \textbf{TYPE\_IDENT}.
+
+\subsection{Timeout}
+
+\paragraph{}
+
+Imaginons une situation un peu critique dans le sens o\`u l'on a une t\^ache qui a d\'ecid\'e de forger ces messages lui-m\^eme est de les envoyer
+\`a un server en pr\'ecisant un type software inexistant pour le destinataire.\\
+Ainsi, le server concern\'e ne prendra jamais en compte ces messages et ils resteront ind\'efiniment dans la queue de message.\\
+Pire encore si la t\^ache exp\'editrice a d\'ecid\'e de spamer ce server, cela engendra une allocation totale de la m\'emoire bloquant ainsi toutes
+actions du kernel.
+
+\paragraph{}
+
+Vous devez donc impl\'ementez un syst\`eme de vie d'un message, ainsi lorsque son temps de vie est expir\'e le message concern\'e sera tout simplement
+d\'etruit de l'ensemble de message.\\
+Pour ce faire, vous devez utiliser une API g\'erant les timers que vous d\'evelopperez \`a votre guise, bien \'evidemment cette API sera surement
+incluse dans votre driver timer.
+
+\end{document}
