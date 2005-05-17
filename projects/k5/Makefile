@@ -9,7 +9,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Sun Nov 21 14:13:54 2004   mycure
-## last update   Mon May 16 15:57:24 2005   mycure
+## last update   Tue May 17 15:54:21 2005   mycure
 ##
 
 NAME		=		k5-subject
@@ -31,6 +31,7 @@ NAME_LOF	=		$(NAME).lof
 LATEX		=		latex
 DVIPS		=		dvips
 PS2PDF		=		ps2pdf
+PDFLATEX	=		pdflatex
 
 EMACS		=		emacs -nw
 XDVI		=		xdvi
@@ -50,8 +51,8 @@ $(NAME_DVI):	$(NAME_TEX)
 $(NAME_PS):	$(NAME_DVI)
 	@$(DVIPS) -o $(NAME_PS) $(NAME_DVI)
 
-$(NAME_PDF):	$(NAME_PS)
-	@$(PS2PDF) $(NAME_PS)
+$(NAME_PDF):	$(NAME_TEX)
+	@$(PDFLATEX) $(NAME_TEX)
 
 dvi:		$(NAME_DVI)
 ps:		$(NAME_PS)

@@ -3,13 +3,13 @@
 ## 
 ## Makefile
 ## 
-## path          /root/data/research/projects/svn/kaneton/projects
+## path          /home/mycure/data/research/projects/kaneton/projects/k4
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Sun Nov 21 14:13:54 2004   mycure
-## last update   Fri Mar 18 13:51:44 2005   mycure
+## last update   Tue May 17 15:53:17 2005   mycure
 ##
 
 NAME		=		k4-subject
@@ -31,6 +31,7 @@ NAME_LOF	=		$(NAME).lof
 LATEX		=		latex
 DVIPS		=		dvips
 PS2PDF		=		ps2pdf
+PDFLATEX	=		pdflatex
 
 EMACS		=		emacs -nw
 XDVI		=		xdvi
@@ -50,8 +51,8 @@ $(NAME_DVI):	$(NAME_TEX)
 $(NAME_PS):	$(NAME_DVI)
 	@$(DVIPS) -o $(NAME_PS) $(NAME_DVI)
 
-$(NAME_PDF):	$(NAME_PS)
-	@$(PS2PDF) $(NAME_PS)
+$(NAME_PDF):	$(NAME_TEX)
+	@$(PDFLATEX) $(NAME_TEX)
 
 dvi:		$(NAME_DVI)
 ps:		$(NAME_PS)

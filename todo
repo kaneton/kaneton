@@ -1,2 +1,6 @@
 . demander les cours
 . demander leur reaction vis a vis du projet, des cours, idees remarques etc..
+
+. modifier les prototypes du gestionnaire d ensemble, genre un argument
+  options (void*) qui sera interprete par le type d ensemble en question.
+  par exemple pour le b+tree on pourra passer la taille des noeuds etc..

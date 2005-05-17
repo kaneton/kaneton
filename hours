@@ -6,40 +6,47 @@ dev			1		1		0
 
 languages		1		1		0
 
-k0			1+3		3		1
+--
 
-k1			1+3		3+3		2
+k0			4		3		1
 
-k2			1+3		3+3		2   => +2
+k1			4		3+3		2
 
-k3			1+3		3+3+3		3   => -1
-
-k4			1+2		3+3+3		3   => +2
-
-k5			1+2		3+3		2   => +1
-
-k6			1+1		3+3		2
-
-k7			1+1		3+3		2
-
-k8			1+3		3+3+3		3
-
-k9			1+1		3+3		2
-
-k10			1+3		3+3		3
-
-kn			1		3		1
-
-total			40		77		26
-
+k2			4		3+3+3+3		4
 
 --
 
-40 heures de cours et 77 heures de tps soit 117 heures
+k3			4		3+3		2
 
-26 semaines soit 6 mois et 2 semaines
+k4			4		3+3+3+3+3	5
 
 --
+
+k5			3		3+3		2
+
+k6			3		3+3+3		3
+
+k7			2		3+3		2
+
+--
+
+k8			4		3+3+3+3		4
+
+k9			3		3+3		2
+
+k10			2		3+3		2
+
+--
+
+total			40		86		29
+
+--
+
+40 heures de cours et 86 heures de tps soit 128 heures
+
+29 semaines soit 7 mois et 1 semaine
+
+-- ???
 
 t5b:		presentation, dev, languages, k0, k1, k2	: 15 heures de cours, 17 heures de tp
 
@@ -48,27 +55,3 @@ t6:		k3, k4, k5					: 10 heures de cours, 24 heures de tp
 t7:		k6, k7, k8					: 8 heures de cours, 21 heures de tp
 
 t8:		k9, k10, kn					: 7 heures de cours, 15 heures de tp
-
---
-
-Kaneton
-
-Annee: Inge2 Inge3						Obligatoire
-
-Enseignants: Julien Quintard, Jean-Pascal Billaud
-
-Duree: 117h						Credits ECTS: XXX
-
-Notions abordees (au format ACM): XXX
-
-Objectifs:
-
-	Faire decouvrir aux etudiants la modelisation et le developpement
-	des systemes d'exploitation sur architecture Intel.
-
-Contenu du cours:
-
-	- Fonctionnement d'un processeur Intel
-	- Modelisation d'un systeme d'exploitation
-	- Gestion des ressources
-	- Developpement de pilotes
