@@ -1,0 +1,124 @@
+##
+## copyright quintard julien
+## 
+## kaneton
+## 
+## README
+## 
+## path          /home/mycure/kaneton/source
+## 
+## made by mycure
+##         quintard julien   [quinta_j@epita.fr]
+## 
+## started on    Fri Feb 11 14:05:03 2005   mycure
+## last update   Tue May 24 13:26:28 2005   mycure
+##
+
+			----------[ conf ]----------
+
+a kaneton developer has to fill three configuration files located at:
+
+			src/conf/$USER/
+
+---[ $USER.conf
+
+  this file describes the development environment, architecture variables
+  compiling variables etc..
+
+---[ modules.conf
+
+  this file lists the files to be loaded by the bootloader
+
+---[ kaneton.conf
+
+  this file describes the kaneton kernel with many parameters
+
+			----------[ env ]----------
+
+a development environment describes binaries, compiling options,
+linking options etc.. to use when developing kaneton.
+
+a different environment exists for each operating system. for more information
+take a look to the env/ directory.
+
+each environment, directory is composed of one (but can be more) file:
+
+---[ kaneton.mk
+
+  this file describes the makefile dependencies to use to compile the
+  kaneton kernel.
+
+  so, you can here specify compile and linking options but also binaries
+  to use.
+
+			----------[ make ]----------
+
+---[ install
+
+syntax:		make install
+
+example:	make install
+
+  this command will create the working environment like scripts, makefiles,
+  dependencies etc..
+
+  this script has to be ran before any another make
+
+  note that by default this command will be run if never launched before
+
+---[ clean
+
+syntax:		make clean
+
+example:	make clean
+
+  this command cleans the working environment, which is useful before
+  committing or packaging
+
+---[ kaneton
+
+syntax:		make kaneton
+
+example:	make kaneton
+
+  this command will create the kernel, the modules etc..
+
+---[ all
+
+syntax:		make all
+
+example:	make all
+
+  this command will create the kernel, the modules etc..
+
+---[ distclean
+
+syntax:		make distclean
+
+example:	make distclean
+
+  this command will clean the development tree
+
+---[ proto
+
+syntax:		make proto
+
+example:	make proto
+
+  this command will create header prototypes
+
+---[ init
+
+syntax:		make init
+
+example:	make init
+
+  this command will create an initial bootable device
+
+---[ boot
+
+syntax:		make dist
+
+example:	make dist
+
+  this command copy the kernel and modules on the bootable device

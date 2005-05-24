@@ -1,0 +1,221 @@
+#!/bin/sh
+## copyright quintard julien
+## 
+## kaneton
+## 
+## clean
+## 
+## path          /home/mycure/kaneton/source/env
+## 
+## made by mycure
+##         quintard julien   [quinta_j@epita.fr]
+## 
+## started on    Fri Feb 11 02:14:03 2005   mycure
+## last update   Tue May 24 13:18:36 2005   mycure
+##
+
+# INFORMATIONS
+#
+# this script has to be run in its directory: src/env/
+# or with "make clean" in the src/ directory
+
+
+
+# CONFIGURATION FILE PATH
+#
+# the configuration file
+CONF="../conf/"$USER"/"$USER".conf"
+
+
+
+# CONFIGURATION FILE VARIABLES
+#
+# default globals
+ENVIRONMENT="unknown"
+ARCHITECTURE="unknown"
+
+
+
+# CLEAN SPECIFIC VARIABLES
+#
+# generic names for this script
+COMMON_MK=".common.mk"
+KANETON_MK=".kaneton.mk"
+
+
+
+# READ CONFIGURATION FILE
+#
+# function used to read the configuration file and to load
+# important variables
+read_kaneton_conf()
+{
+  # env
+  ENVIRONMENT=`cat $CONF | grep -E "^ENVIRONMENT = .*$" | cut -b 15-`
+
+  # architecture
+  ARCHITECTURE=`cat $CONF | grep -E "^ARCHITECTURE = .*$" | cut -b 16-`
+}
+
+
+
+# GENERIC OPERATING SYSTEMS
+#
+# this function cleans the development environment for generic
+# operating systems
+clean_generic()
+{
+  # cleaning dev tree
+  if [ -f $KANETON_MK ] ; then
+    print "   cleaning development tree" "+"
+    make distclean 1>&2 > /dev/null
+  fi
+
+  # makefile dependencies
+  print "   cleaning makefile dependencies" "+"
+  rm -f $COMMON_MK
+  rm -f $KANETON_MK
+
+  # remove the links to machine-dependent directories
+  print "   removing links to machine-dependent directories" "+"
+  rm -f core/bootloader/arch/machdep
+  rm -f core/include/arch/machdep
+  rm -f core/kaneton/arch/machdep
+}
+
+
+
+# EXOTIC OPERATING SYSTEMS
+#
+# write here each specific clean function for exotic operating systems
+clean_your_arch()
+{
+  exit -1
+}
+
+
+
+# USAGE
+#
+# this function displays the usage but does not exit
+usage()
+{
+  print " usage: clean" "!"
+}
+
+
+
+# WARNING
+#
+# this function alerts the user, displaying information and asking to continue
+warning()
+{
+  # display information and ask the user to continue or cancel
+  print " your current configuration:" "+"
+  print "   environment:              $ENVIRONMENT" "+"
+  print "   architecture:             $ARCHITECTURE" "+"
+  print ""
+  print " to cancel press CTRL^C, otherwise press enter" "?"
+
+  NEEDLESS=""
+  read NEEDLESS
+}
+
+
+
+# CLEAN
+#
+# this function installs the environment, calling the function(s) depending
+# of your operating system
+clean()
+{
+  case "$ENVIRONMENT" in
+    "linux")
+      print " cleaning linux environment" "+"
+      clean_generic
+      ;;
+
+    "mac")
+      print " cleaning mac environment" "+"
+      clean_generic
+      ;;
+
+    *)
+      print " unknown system: $ENVIRONMENT" "!"
+      print ""
+      print " please check your ENVIRONMENT variable in $CONF" "!"
+      print ""
+      usage
+      print ""
+      print " supported systems are:" "!"
+      print "      linux" "!"
+      print "      mac" "!"
+      exit
+      ;;
+  esac
+}
+
+
+
+# PRINT A MESSAGE
+#
+# print a message with a header
+print()
+{
+  msg=$1
+  header=$2
+
+  case "$header" in
+    "+")
+      echo -n -e '\E[;34m'"\033[1m[\033[0m"
+      echo -n -e '\E[;32m'"\033[1m+\033[0m"
+      echo -n -e '\E[;34m'"\033[1m]\033[0m"
+      ;;
+
+    "!")
+      echo -n -e '\E[;34m'"\033[1m[\033[0m"
+      echo -n -e '\E[;31m'"\033[1m!\033[0m"
+      echo -n -e '\E[;34m'"\033[1m]\033[0m"
+      ;;
+
+    "?")
+      echo -n -e '\E[;34m'"\033[1m[\033[0m"
+      echo -n -e '\E[;33m'"\033[1m\033[5m?\033[0m\033[0m"
+      echo -n -e '\E[;34m'"\033[1m]\033[0m"
+      ;;
+
+    *)
+      ;;
+  esac
+
+  echo -e "\033[1m$msg\033[0m"
+  tput sgr0
+}
+
+
+
+# ENTRY POINT
+#
+# entry point of this script
+
+# start of clean
+print " cleaning environment" "+"
+print ""
+
+# call the read_kaneton_conf function
+read_kaneton_conf
+
+# call the warning function
+warning
+
+# go into the src/ directory
+cd ..
+
+# clean environment
+clean
+
+# return into the env/ directory
+cd env
+
+# end of clean
+print " environment cleaned successfully" "+"
