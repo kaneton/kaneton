@@ -5,13 +5,13 @@
 ## 
 ## README
 ## 
-## path          /home/mycure/kaneton/source
+## path          /home/mycure/data/research/projects/kaneton/source
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Tue May 24 13:26:28 2005   mycure
+## last update   Wed May 25 06:16:21 2005   mycure
 ##
 
 			----------[ conf ]----------
@@ -53,11 +53,32 @@ each environment, directory is composed of one (but can be more) file:
 
 			----------[ make ]----------
 
----[ install
+first a developer has to install a development environment:
 
-syntax:		make install
+	make init
 
-example:	make install
+then he is able to compile:
+
+	make
+
+when finished, the developer then wants to test his kernel either on
+another machine or in an emulator, so he has to build a floppy. before all,
+he must initialize the boot device with the kaneton boot device format:
+
+	make boot-init
+
+then the developer just has to install the kernel and modules on the boot
+device:
+
+	make boot-install
+
+after all, the boot device is ready.
+
+---[ init
+
+syntax:		make init
+
+example:	make init
 
   this command will create the working environment like scripts, makefiles,
   dependencies etc..
@@ -107,18 +128,18 @@ example:	make proto
 
   this command will create header prototypes
 
----[ init
+---[ boot-init
 
-syntax:		make init
+syntax:		make boot-init
 
-example:	make init
+example:	make boot-init
 
   this command will create an initial bootable device
 
----[ boot
+---[ boot-install
 
-syntax:		make dist
+syntax:		make boot-install
 
-example:	make dist
+example:	make boot-install
 
-  this command copy the kernel and modules on the bootable device
+  this command copies the kernel and modules on the bootable device

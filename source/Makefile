@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/source
+## path          /home/mycure/data/research/projects/kaneton/source
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Fri May 20 13:47:47 2005   mycure
+## last update   Wed May 25 06:07:18 2005   mycure
 ##
 
 all:			kaneton
@@ -22,16 +22,16 @@ all:			kaneton
 
 .common.mk:
 	@if [ ! -f .common.mk ] ; then					\
-	make install							; \
+	make init							; \
 	fi
 
 #
 # environment
 #
 
-install:
+init:
 	@cd env								; \
-	./install							; \
+	./init								; \
 	cd ..
 
 clean:
@@ -79,7 +79,7 @@ BOOTLOADER		=	`cat $(CONF)				| \
 				 grep -E "^BOOTLOADER = .*$$"		| \
 				 cut -b 14-`
 
-init:			.common.mk
+boot-init:		.common.mk
 	@case "$(BOOTLOADER)" in					\
 	  "grub")							\
 	    cd utils							; \
@@ -102,7 +102,7 @@ init:			.common.mk
 	    ;;								\
 	esac
 
-boot:			.common.mk
+boot-install:		.common.mk
 	@case "$(BOOTLOADER)" in					\
 	  "grub")							\
 	    cd utils							; \

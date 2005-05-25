@@ -3,21 +3,21 @@
 ## 
 ## kaneton
 ## 
-## install
+## init
 ## 
-## path          /home/mycure/kaneton/source/env
+## path          /home/mycure/data/research/projects/kaneton/source/env
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Tue May 24 13:16:41 2005   mycure
+## last update   Wed May 25 06:08:48 2005   mycure
 ##
 
 # INFORMATIONS
 #
 # this script has to be run in its directory: src/env/
-# or with "make install" in the src/ directory
+# or with "make init" in the src/ directory
 
 
 
@@ -64,7 +64,7 @@ read_kaneton_conf()
 # this function installs the development environment for generic operating
 # systems if you have an exotic operating system, please do not call or/and
 # call your own version
-install_generic()
+init_generic()
 {
   # makefile dependencies
   GENERIC_COMMON_MK="env/common/common.mk"
@@ -90,8 +90,8 @@ install_generic()
 
 # EXOTIC OPERATING SYSTEMS
 #
-# write here each specific install function for exotic operating systems
-install_your_arch()
+# write here each specific init function for exotic operating systems
+init_your_arch()
 {
   exit -1
 }
@@ -103,7 +103,7 @@ install_your_arch()
 # this function displays the usage but does not exit
 usage()
 {
-  print " usage: install" "!"
+  print " usage: init" "!"
 }
 
 
@@ -126,21 +126,21 @@ warning()
 
 
 
-# INSTALL
+# INIT
 #
 # this function installs the environment, calling the function(s) depending
 # of your operating system
-install()
+init()
 {
   case "$ENVIRONMENT" in
     "linux")
       print " installing linux environment" "+"
-      install_generic
+      init_generic
       ;;
 
     "mac")
       print " installing mac environment" "+"
-      install_generic
+      init_generic
       ;;
 
     *)
@@ -216,7 +216,7 @@ warning
 cd ..
 
 # install environment
-install
+init
 
 # return into the env/ directory
 cd env
