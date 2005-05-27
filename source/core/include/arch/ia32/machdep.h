@@ -5,13 +5,13 @@
  * 
  * machdep.h
  * 
- * path          /home/mycure/kaneton/src/libs
+ * path          /home/mycure/data/research/projects/kaneton/source/core/include/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Fri May  6 00:44:11 2005   mycure
+ * last update   Fri May 27 10:37:46 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
@@ -26,6 +26,8 @@
 #include <arch/machdep/pio.h>
 #include <arch/machdep/stdarg.h>
 #include <arch/machdep/types.h>
+
+#include <arch/machdep/multiboot.h>
 
 #include <arch/machdep/as.h>
 #include <arch/machdep/cpu.h>
