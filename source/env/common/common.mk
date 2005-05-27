@@ -5,13 +5,13 @@
 ## 
 ## common.mk
 ## 
-## path          /home/mycure/kaneton/src/env
+## path          /home/mycure/data/research/projects/kaneton/source
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Fri May 20 10:03:53 2005   mycure
+## last update   Fri May 27 10:32:58 2005   mycure
 ##
 
 #
@@ -27,7 +27,7 @@ _MACHDEP_DIR_		=		$(_CORE_KANETON_DIR_)/arch/machdep
 _MACHDEP_INCLUDE_DIR_	=		$(_CORE_INCLUDE_DIR_)/arch/machdep
 _DIST_DIR_		=		$(_SRC_DIR_)/dist
 _ENV_DIR_		=		$(_SRC_DIR_)/env
-_LDS_DIR_		=		$(_SRC_DIR_)/lds
+_LDS_DIR_		=		$(_SRC_DIR_)/lds/arch/machdep
 _LIB_DIR_		=		$(_SRC_DIR_)/libs
 _LIB_INCLUDE_DIR_	=		$(_LIB_DIR_)
 _INCLUDES_		=		-I$(_CORE_INCLUDE_DIR_)		\

@@ -5,11 +5,17 @@
  * 
  * bootloader.c
  * 
- * path          /home/mycure/kaneton/src/core/bootloader/arch/ia32
+ * path          /home/mycure/data/research/projects/kaneton/source/core/bootloader/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri May  6 00:45:33 2005   mycure
+ * last update   Fri May 27 10:22:40 2005   mycure
  */
+
+int			main(int		magic,
+			     void *i)
+{
+
+}
