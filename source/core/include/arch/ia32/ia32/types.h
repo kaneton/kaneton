@@ -5,13 +5,13 @@
  * 
  * types.h
  * 
- * path          /home/mycure/data/research/projects/kaneton/source/core/include/arch/ia32
+ * path          /home/mycure/kaneton/core/include/arch/ia32/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri May 27 11:10:12 2005   mycure
+ * last update   Sat May 28 18:13:38 2005   mycure
  */
 
 #ifndef IA32_TYPES_H
@@ -31,6 +31,7 @@ typedef unsigned long long	t_uint64;
 typedef signed long long	t_sint64;
 
 typedef t_uint32		t_paddr;
+typedef t_uint32		t_vaddr;
 
 /* XXX */
 
