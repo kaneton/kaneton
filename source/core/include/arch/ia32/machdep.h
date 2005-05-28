@@ -5,13 +5,13 @@
  * 
  * machdep.h
  * 
- * path          /home/mycure/data/research/projects/kaneton/source/core/include/arch/ia32
+ * path          /home/mycure/kaneton/core/include/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Fri May 27 10:37:46 2005   mycure
+ * last update   Sat May 28 17:06:10 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
@@ -21,26 +21,27 @@
  * includes
  */
 
-#include <arch/machdep/asm.h>
-#include <arch/machdep/limits.h>
-#include <arch/machdep/pio.h>
-#include <arch/machdep/stdarg.h>
-#include <arch/machdep/types.h>
+#include <arch/machdep/ia32/asm.h>
+#include <arch/machdep/ia32/limits.h>
+#include <arch/machdep/ia32/pio.h>
+#include <arch/machdep/ia32/stdarg.h>
+#include <arch/machdep/ia32/types.h>
 
-#include <arch/machdep/multiboot.h>
+#include <arch/machdep/sys/multiboot.h>
+#include <arch/machdep/sys/elf.h>
 
-#include <arch/machdep/as.h>
-#include <arch/machdep/cpu.h>
-#include <arch/machdep/map.h>
-#include <arch/machdep/msg.h>
-#include <arch/machdep/region.h>
-#include <arch/machdep/sched.h>
-#include <arch/machdep/segment.h>
-#include <arch/machdep/set.h>
-#include <arch/machdep/task.h>
-#include <arch/machdep/thread.h>
-#include <arch/machdep/time.h>
-#include <arch/machdep/trap.h>
+#include <arch/machdep/kaneton/as.h>
+#include <arch/machdep/kaneton/cpu.h>
+#include <arch/machdep/kaneton/map.h>
+#include <arch/machdep/kaneton/msg.h>
+#include <arch/machdep/kaneton/region.h>
+#include <arch/machdep/kaneton/sched.h>
+#include <arch/machdep/kaneton/segment.h>
+#include <arch/machdep/kaneton/set.h>
+#include <arch/machdep/kaneton/task.h>
+#include <arch/machdep/kaneton/thread.h>
+#include <arch/machdep/kaneton/time.h>
+#include <arch/machdep/kaneton/trap.h>
 
 /*
  * architecture defines
