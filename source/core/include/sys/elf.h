@@ -47,7 +47,7 @@
  *	http://www.sco.com/developer/gabi/latest/ch4.eheader.html
  */
 
-#include <machdep/elf_machdep.h>
+#include <arch/machdep/machdep.h>
 
 typedef	u_int8_t  	Elf_Byte;
 
