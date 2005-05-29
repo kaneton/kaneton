@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun May 29 00:14:37 2005   mycure
+ * last update   Sun May 29 12:45:01 2005   mycure
  */
 
 #ifndef IA32_ASM_H
@@ -37,25 +37,9 @@
 #define		__ALIGNED__(_value_)					\
   __attribute__ ((aligned (_value_)))
 
-#endif
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * pio.h
- * 
- * path          /home/mycure/kaneton/core/include/arch/ia32
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:24:13 2005   mycure
- * last update   Sat May 28 22:22:17 2005   mycure
+ * pio macros
  */
-
-#ifndef IA32_PIO_H
-#define IA32_PIO_H		1
 
 #define		outb(port, data)					\
   asm volatile ("outb %%al, %%dx" :: "d" (port), "a" (data))
