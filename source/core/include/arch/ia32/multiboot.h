@@ -3,17 +3,17 @@
  *
  * multiboot.h
  *
- * path          /home/mycure/data/research/projects/kaneton/source/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/include/arch/ia32
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 18:49:33 2004   mycure
- * last update   Fri May 27 10:26:42 2005   mycure
+ * last update   Sat May 28 22:22:12 2005   mycure
  */
 
 #ifndef IA32_MULTIBOOT_H
-#define IA32_MULTIBOOT_H
+#define IA32_MULTIBOOT_H	1
 
 /*
  * defines
@@ -25,43 +25,43 @@
  * structures / types
  */
 
-typedef struct	multiboot_header
+typedef struct			multiboot_header
 {
-  unsigned int	magic;
-  unsigned int	flags;
-  unsigned int	checksum;
-  unsigned int	header_addr;
-  unsigned int	load_addr;
-  unsigned int	load_end_addr;
-  unsigned int	bss_end_addr;
-  unsigned int	entry_addr;
-}		multiboot_header_t;
+  unsigned int			magic;
+  unsigned int			flags;
+  unsigned int			checksum;
+  unsigned int			header_addr;
+  unsigned int			load_addr;
+  unsigned int			load_end_addr;
+  unsigned int			bss_end_addr;
+  unsigned int			entry_addr;
+}				multiboot_header_t;
 
-typedef struct	aout_symbol_table
+typedef struct			aout_symbol_table
 {
-  unsigned int	tabsize;
-  unsigned int	strsize;
-  unsigned int	addr;
-  unsigned int	reserved;
-}		aout_symbol_table_t;
+  unsigned int			tabsize;
+  unsigned int			strsize;
+  unsigned int			addr;
+  unsigned int			reserved;
+}				aout_symbol_table_t;
 
-typedef struct	elf_section_header_table
+typedef struct			elf_section_header_table
 {
-  unsigned int	num;
-  unsigned int	size;
-  unsigned int	addr;
-  unsigned int	shndx;
-}		elf_section_header_table_t;
+  unsigned int			num;
+  unsigned int			size;
+  unsigned int			addr;
+  unsigned int			shndx;
+}				elf_section_header_table_t;
 
-typedef struct	multiboot_info
+typedef struct			multiboot_info
 {
-  unsigned int	flags;
-  unsigned int	mem_lower;
-  unsigned int	mem_upper;
-  unsigned int	boot_device;
-  unsigned int	cmdline;
-  unsigned int	mods_count;
-  unsigned int	mods_addr;
+  unsigned int			flags;
+  unsigned int			mem_lower;
+  unsigned int			mem_upper;
+  unsigned int			boot_device;
+  unsigned int			cmdline;
+  unsigned int			mods_count;
+  unsigned int			mods_addr;
 
   union
   {
@@ -69,27 +69,26 @@ typedef struct	multiboot_info
     elf_section_header_table_t	elf_sec;
   }				u;
 
-  unsigned int	mmap_length;
-  unsigned int	mmap_addr;
-}		multiboot_info_t;
+  unsigned int			mmap_length;
+  unsigned int			mmap_addr;
+}				multiboot_info_t;
 
-typedef struct	module
+typedef struct			module
 {
-  unsigned int	mod_start;
-  unsigned int	mod_end;
+  unsigned int			mod_start;
+  unsigned int			mod_end;
+  unsigned int			string;
+  unsigned int			reserved;
+}				module_t;
 
-  unsigned int	string;
-  unsigned int	reserved;
-}		module_t;
-
-typedef struct	memory_map
+typedef struct			memory_map
 {
-  unsigned int	size;
-  unsigned int	base_addr_low;
-  unsigned int	base_addr_high;
-  unsigned int	length_low;
-  unsigned int	length_high;
-  unsigned int	type;
-}		memory_map_t;
+  unsigned int			size;
+  unsigned int			base_addr_low;
+  unsigned int			base_addr_high;
+  unsigned int			length_low;
+  unsigned int			length_high;
+  unsigned int			type;
+}				memory_map_t;
 
 #endif
