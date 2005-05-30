@@ -3,133 +3,235 @@
  *
  * gdt.c
  *
- * path          /home/mycure/data/research/projects/kaneton/source/core/bootloader/arch/machdep
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Fri May 27 12:02:40 2005   mycure
+ * last update   Mon May 30 13:07:14 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
 
-t_gdt* gdt = (t_gdt *) PMAP_GDT_ADDR;
-t_gdtr gdtr;
+t_gdt			gdt __ALIGNED__(8) = (t_gdt)GDT_ADDR;
+t_gdtr			gdtr;
 
-voidgdt_init()
+/*
+ * this function dumps the global offset tables in a human readable form
+ * which is very very useful for debugging.
+ */
+
+#if (IA32_DEBUG & IA32_DEBUG_GDT)
+void			gdt_dump(void)
 {
-  t_gdtksegcode;
-  t_gdtksegdata;
-  t_gdtusegcode;
-  t_gdtusegdata;
+  t_uint16		entries = gdtr.size / sizeof(t_gdte);
+  t_uint16		i;
 
-  memset(gdt, 0, sizeof (t_gdt) * GDT_ENTRIES);
-  memset(&ksegcode, 0, sizeof (t_gdt));
-  memset(&ksegdata, 0, sizeof (t_gdt));
-  memset(&usegcode, 0, sizeof (t_gdt));
-  memset(&usegdata, 0, sizeof (t_gdt));
-  memset(&gdtr, 0, sizeof(t_gdtr));
+  cons_msg('#', "dumping global offset table 0x%x entries\n", gdt);
+  printf("\n");
+  printf("     |  no  |       base - limit      |      type       |"
+	 "   flags    |\n");
+  printf("     ----------------------------------------------------"
+	 "-------------\n");
 
-  /*
-   * init gdt kernel and user code/data descriptor
-   */
+  for (i = 0; i < entries; i++)
+    {
+      char		hrt[5];
+      char		hrf[4];
 
-  gdt_get_segment(&ksegcode, 0xfffff, 0,
-		    GDT_GRAN | GDT_USE32 | GDT_DPL0 | GDT_SYS | GDT_PRESENT
-		  | GDT_TYPE_CODE);
-  gdt_get_segment(&ksegdata, 0xfffff, 0,
-		    GDT_GRAN | GDT_USE32 | GDT_DPL0 | GDT_SYS | GDT_PRESENT
-		  | GDT_TYPE_DATA);
-  gdt_get_segment(&usegcode, 0xfffff, 0,
-		    GDT_GRAN | GDT_USE32 | GDT_DPL3 | GDT_SYS | GDT_PRESENT
-		  | GDT_TYPE_CODE);
-  gdt_get_segment(&usegdata, 0xfffff, 0,
-		    GDT_GRAN | GDT_USE32 | GDT_DPL3 | GDT_SYS | GDT_PRESENT
-		  | GDT_TYPE_DATA);
+      /*
+       * human readable type
+       */
 
-  gdt_set_segment(gdt, &ksegcode);
-  gdt_set_segment(gdt, &ksegdata);
-  gdt_set_segment(gdt, &usegcode);
-  gdt_set_segment(gdt, &usegdata);
+      memset(hrt, '.', 4);
+      hrt[4] = 0;
 
-  gdtr.size = (u_int16_t) 5 * sizeof (t_gdt);
-  gdtr.addr = (u_int32_t) gdt;
+      if ((gdt[i].type & GDT_PRESENT) == GDT_PRESENT)
+	hrt[0] = 'P';
 
-  gdt_install();
+      if ((gdt[i].type & GDT_DPL3) == GDT_DPL3)
+	hrt[1] = '3';
+      else if ((gdt[i].type & GDT_DPL2) == GDT_DPL2)
+	hrt[1] = '2';
+      else if ((gdt[i].type & GDT_DPL1) == GDT_DPL1)
+	hrt[1] = '1';
+      else if ((gdt[i].type & GDT_DPL0) == GDT_DPL0)
+	hrt[1] = '0';
 
-  gdt_cpu(KERNEL_CS, KERNEL_DS);
+      if ((gdt[i].type & GDT_S) == GDT_S)
+	hrt[2] = 'S';
 
-  gdt_protected();
+      if ((gdt[i].type & GDT_CODE) == GDT_CODE)
+	hrt[3] = 'C';
+      else if ((gdt[i].type & GDT_DATA) == GDT_DATA)
+	hrt[3] = 'D';
+
+      /*
+       * human readable flags
+       */
+
+      memset(hrf, '.', 3);
+      hrf[3] = 0;
+
+      if ((gdt[i].flags & GDT_GRANULAR) == GDT_GRANULAR)
+	hrf[0] = 'G';
+
+      if ((gdt[i].flags & GDT_USE32) == GDT_USE32)
+	{
+	  hrf[1] = '3';
+	  hrf[2] = '2';
+	}
+      else if ((gdt[i].flags & GDT_USE16) == GDT_USE16)
+	{
+	  hrf[1] = '1';
+	  hrf[2] = '6';
+	}
+
+      printf("     | %04u | 0x%08x - 0x%08x | %s (%08b) | %s (%04b) |\n",
+	     i,
+	     (gdt[i].base_00_15 & 0x0000ffff) |
+	     ((gdt[i].base_16_23 << 16) & 0x00ff0000) |
+	     ((gdt[i].base_24_31 << 24) & 0xff000000),
+	     (gdt[i].limit_00_15 & 0x0000ffff) |
+	     ((gdt[i].limit_16_19 << 16) & 0x000f0000),
+	     hrt, (gdt[i].type & 0x000000ff),
+	     hrf, (gdt[i].flags & 0x000000f));
+    }
+
+  printf("\n");
+}
+#endif
+
+/*
+ * this function update the segment registers to work with the new
+ * global offset table.
+ */
+
+void			gdt_update_registers(t_uint16	gdt_kernel_cs,
+					     t_uint16	gdt_kernel_ds)
+{
+  t_reg16		cs = (gdt_kernel_cs << 3) | GDT_TI_GDT | 0;
+  t_reg16		ds = (gdt_kernel_ds << 3) | GDT_TI_GDT | 0;
+
+  asm volatile ("pushl %0\n"
+		"pushl $gdt_update_registers_label\n"
+		"lret\n"
+		"gdt_update_registers_label:\n"
+		"movl %1, %%eax\n"
+		"movw %%ax, %%ds\n"
+		"movw %%ax, %%ss\n"
+		"movw %%ax, %%es\n"
+		"movw %%ax, %%fs\n"
+		"movw %%ax, %%gs\n"
+		:
+		: "g" (cs), "g" (ds));
 }
 
-voidgdt_reinit()
+/*
+ * this function installs the protected mode setting one bit in cr0.
+ */
+
+void			gdt_enable(void)
 {
-  gdtr.size = (u_int16_t) 5 * sizeof (t_gdt);
+  asm volatile ("movl %%cr0, %%eax\n"
+		"orw %%ax, 1\n"
+		"movl %%eax, %%cr0\n"
+		::);
+}
+
+/*
+ * this function sets a new entry in the current global offset table.
+ */
+
+void			gdt_set(t_uint16		entry,
+				t_paddr			base,
+				t_psize			limit,
+				t_uint8			type,
+				t_uint8			flags)
+{
+  if (entry >= GDT_ENTRIES)
+    bootloader_error();
+
+  gdt[entry].limit_00_15 = limit & 0x0000ffff;
+  gdt[entry].base_00_15 = (t_uint32)base & 0x0000ffff;
+  gdt[entry].base_16_23 = ((t_uint32)base >> 16) & 0x000000ff;
+  gdt[entry].type = type;
+  gdt[entry].limit_16_19 = (limit >> 16) & 0x0000000f;
+  gdt[entry].flags = flags;
+  gdt[entry].base_24_31 = ((t_uint32)base >> 24) & 0x0000000f;
+}
+
+/*
+ * this function initializes the global offset tables inserting
+ * height entries for the kernel, drivers, services and user tasks.
+ *
+ * each segment has the same size with different rights: read/execution,
+ * read/write etc..
+ *
+ * then the function loads the new global offset table, updates the
+ * segment registers and finally installs the protected mode.
+ */
+
+void			gdt_init(void)
+{
+  memset(gdt, 0x0, GDT_ENTRIES * sizeof(t_gdte));
+
+  gdt_set(GDT_KERNEL_CS, 0x0, 0xffffffff,
+	  GDT_PRESENT | GDT_DPL0 | GDT_S | GDT_CODE,
+	  GDT_GRANULAR | GDT_USE32);
+
+  gdt_set(GDT_KERNEL_DS, 0x0, 0xffffffff,
+	  GDT_PRESENT | GDT_DPL0 | GDT_S | GDT_DATA,
+	  GDT_GRANULAR | GDT_USE32);
+
+  gdt_set(GDT_DRIVER_CS, 0x0, 0xffffffff,
+	  GDT_PRESENT | GDT_DPL1 | GDT_S | GDT_CODE,
+	  GDT_GRANULAR | GDT_USE32);
+
+  gdt_set(GDT_DRIVER_DS, 0x0, 0xffffffff,
+	  GDT_PRESENT | GDT_DPL1 | GDT_S | GDT_DATA,
+	  GDT_GRANULAR | GDT_USE32);
+
+  gdt_set(GDT_SERVICE_CS, 0x0, 0xffffffff,
+	  GDT_PRESENT | GDT_DPL2 | GDT_S | GDT_CODE,
+	  GDT_GRANULAR | GDT_USE32);
+
+  gdt_set(GDT_SERVICE_DS, 0x0, 0xffffffff,
+	  GDT_PRESENT | GDT_DPL2 | GDT_S | GDT_DATA,
+	  GDT_GRANULAR | GDT_USE32);
+
+  gdt_set(GDT_USER_CS, 0x0, 0xffffffff,
+	  GDT_PRESENT | GDT_DPL3 | GDT_S | GDT_CODE,
+	  GDT_GRANULAR | GDT_USE32);
+
+  gdt_set(GDT_USER_DS, 0x0, 0xffffffff,
+	  GDT_PRESENT | GDT_DPL3 | GDT_S | GDT_DATA,
+	  GDT_GRANULAR | GDT_USE32);
+
+  gdtr.address = (t_uint32)gdt;
+  gdtr.size = (t_uint16)(GDT_VALID_ENTRIES * sizeof(t_gdte));
+
+  LGDT(gdtr);
+
+  gdt_update_registers(GDT_KERNEL_CS, GDT_KERNEL_DS);
+
+  gdt_enable();
+
+#if (IA32_DEBUG & IA32_DEBUG_GDT)
+  gdt_dump();
+#endif
+
+}
+
+/*
+void gdt_reinit()
+{
+  gdtr.size = (u_int16_t) 5 * sizeof (t_gdte);
   gdtr.addr = (u_int32_t) VMAP_GDT_ADDR;
 
   gdt_install();
   gdt_cpu(KERNEL_CS, KERNEL_DS);
 }
-
-voidgdt_protected()
-{
-  __asm__ __volatile__ ("mov %%cr0,%%eax\n"
-			"or %%ax,1\n"
-			"mov %%eax, %%cr0\n"
-			: :);
-}
-
-voidgdt_install()
-{
-  __asm__ __volatile__ ("lgdt %0":: "m" (gdtr));
-}
-
-voidgdt_cpu(intsegcode,
-	    intsegdata)
-{
-  __asm__ __volatile__ ("pushl %0\n"
-			"pushl $cs_jump\n"
-			"lret\n"
-                        "cs_jump:\n"
-			"mov %1, %%eax\n"
-			"mov %%ax, %%ds\n"
-			"mov %%ax, %%es\n"
-			"mov %%ax, %%fs\n"
-			"mov %%ax, %%gs\n"
-			"mov %%ax, %%ss\n"
-			: : "g" (segcode), "g" (segdata));
-}
-
-voidgdt_get_segment(t_gdt*seg,
-		    u_int32_tlimit,
-		    u_int32_tbase,
-		    u_int16_tflags)
-{
-  seg->limit_0_15 = limit & 0xffff;
-  seg->flags = flags | (((limit >> 16) & 0xf) << 8);
-  seg->base_0_15 = base & 0xffff;
-  seg->base_16_23 = (base >> 16) & 0xff;
-  seg->base_24_31 = (base >> 24) & 0xff;;
-}
-
-intgdt_set_segment(t_gdt*gdt,
-		   t_gdt*seg)
-{
-  intind;
-
-  for (ind = 1; ind < GDT_ENTRIES; ind++)
-    {
-      if (!gdt[ind].limit_0_15 &&
-	    !gdt[ind].base_0_15 &&
-	    !gdt[ind].base_16_23 &&
-	    !gdt[ind].flags &&
-	  !gdt[ind].base_24_31)
-	{
-	  memcpy(gdt + ind, seg, sizeof (t_gdt));
-	  break;
-	}
-    }
-  return ind * 8;
-}
+*/
