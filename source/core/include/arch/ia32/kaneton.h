@@ -5,27 +5,17 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton/core/include/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Mon May 30 14:10:03 2005   mycure
- * last update   Mon May 30 16:50:10 2005   mycure
+ * last update   Mon May 30 17:06:58 2005   mycure
  */
 
 #ifndef IA32_KANETON_H
 #define IA32_KANETON_H		1
-
-/*
- * externs
- */
-
-#ifdef ___bootloader
-extern t_kaneton	kaneton;
-#else
-/* XXX */
-#endif
 
 /*
  * defines

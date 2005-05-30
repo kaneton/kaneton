@@ -5,13 +5,13 @@
  * 
  * libc.h
  * 
- * path          /home/mycure/kaneton/src/core/bootloader
+ * path          /home/mycure/kaneton/libs/klibc/libc
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Fri May  6 00:31:24 2005   mycure
+ * last update   Mon May 30 16:33:26 2005   mycure
  */
 
 #ifndef LIBC_LIBC_H
@@ -145,7 +145,7 @@ int			strcmp(const char	*s1,
  */
 
 char			*strcpy(char		*to,
-				char		*from);
+				const char	*from);
 
 
 /*
@@ -212,6 +212,26 @@ u_long			strtoul(const char	*nptr,
 /*
  * ../../libc/printf.o
  */
+
+int			printf_char(char	c);
+
+int			printf_string(char	*string,
+				      int	ladjust,
+				      int	padchar,
+				      int	padlen);
+
+int			printf_long(long	value,
+				    int		base,
+				    int		hdl_sign,
+				    int		ladjust,
+				    int		padchar,
+				    int		padlen);
+
+int			vprintf(const char	*fmt,
+				va_list		args);
+
+int			printf(char		*fmt,
+			       ...);
 
 /*
  * ../../libc/sum2.c

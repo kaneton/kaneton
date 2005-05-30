@@ -5,13 +5,13 @@
 ## 
 ## kaneton.mk.linux
 ## 
-## path          /home/mycure/kaneton/source
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:06:42 2005   mycure
-## last update   Tue May 24 13:20:13 2005   mycure
+## last update   Sat May 28 17:53:50 2005   mycure
 ##
 
 #
@@ -43,5 +43,7 @@ _LN_			=		ln -s -f
 #
 
 CFLAGS			=		-nostdinc -nostdlib		\
-					-O0 $(_INCLUDES_) -g
-LDFLAGS			=		$(_INCLUDES_)
+					-fno-builtin			\
+					-O0 $(_INCLUDES_)
+LDFLAGS			=		-nostdinc -nostdlib		\
+					$(_INCLUDES_)

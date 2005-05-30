@@ -5,13 +5,13 @@
  * 
  * types.h
  * 
- * path          /home/mycure/kaneton/src/libs/klibc/include/libsys
+ * path          /home/mycure/kaneton/libs/klibc/include/libsys
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:40:57 2005   mycure
- * last update   Sat Apr 23 16:44:52 2005   mycure
+ * last update   Sat May 28 22:20:35 2005   mycure
  */
 
 #ifndef LIBSYS_TYPES_H

@@ -11,11 +11,17 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon May 30 15:42:49 2005   mycure
+ * last update   Mon May 30 22:50:05 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
+
+t_kaneton		kaneton;
+
+void			(*kernel)(t_kaneton*);
+t_reg32			ebp;
+t_reg32			esp;
 
 /*
  * a funny function which do nothing.
@@ -39,6 +45,11 @@ void			bootloader_error(void)
  * 2) initializes the kernel stack located at KANETON_KERNEL_STACK
  * 3) for each module, copies it into its new location, starting at
  *    KANETON_MODULES
+ *
+ * this function also updates the kaneton memory structure especially
+ * modules and areas.
+ *
+ * each module is followed in main memory by its name.
  */
 
 t_vaddr			bootloader_relocate(multiboot_info_t*	mbi)
@@ -64,9 +75,18 @@ t_vaddr			bootloader_relocate(multiboot_info_t*	mbi)
     }
 
   memcpy((void*)KANETON_KERNEL_CODE, (const void*)mod[0].mod_start, modsz);
+  strcpy((char*)(KANETON_KERNEL_CODE + modsz), (const char*)mod[0].string);
+
+  kaneton.modules[0].name = (char*)(KANETON_KERNEL_CODE + modsz);
+  kaneton.modules[0].address = KANETON_KERNEL_CODE;
+  kaneton.modules[0].size = modsz;
+
+  kaneton.areas[3].address = KANETON_KERNEL_CODE;
+  kaneton.areas[3].size = KANETON_KERNEL_CODESZ;
 
   cons_msg('+', " %s relocated from 0x%x to 0x%x (0x%x)\n",
-	   mod[0].string, mod[0].mod_start, KANETON_KERNEL_CODE, modsz);
+	   kaneton.modules[0].name, mod[0].mod_start,
+	   kaneton.modules[0].address, kaneton.modules[0].size);
 
   /*
    * 2)
@@ -74,21 +94,67 @@ t_vaddr			bootloader_relocate(multiboot_info_t*	mbi)
    * nothing to do here.
    */
 
+  kaneton.areas[4].address = KANETON_KERNEL_STACK;
+  kaneton.areas[4].size = KANETON_KERNEL_STACKSZ;
+
   /*
    * 3)
    */
 
   for (i = 1; i < mbi->mods_count; i++)
     {
+      t_uint32		length = strlen((char*)mod[i].string);
+
       modsz = mod[i].mod_end - mod[i].mod_start;
 
       memcpy((void*)addr, (const void*)mod[i].mod_start, modsz);
+      strcpy((char*)(addr + modsz), (const char*)mod[i].string);
 
-      addr += (modsz / PAGESZ + ((modsz % PAGESZ) ? 1 : 0)) * PAGESZ;
+      kaneton.modules[i].name = (char*)(addr + modsz);
+      kaneton.modules[i].address = addr;
+      kaneton.modules[i].size = modsz;
 
       cons_msg('+', " %s relocated from 0x%x to 0x%x (0x%x)\n",
-	       mod[i].string, mod[i].mod_start, addr, modsz);
+	       kaneton.modules[i].name, mod[i].mod_start,
+	       kaneton.modules[i].address, kaneton.modules[i].size);
+
+      addr += ((modsz + length) / PAGESZ +
+	       (((modsz + length) % PAGESZ) ? 1 : 0)) * PAGESZ;
+
+      kaneton.areas[4 + i].address = kaneton.modules[i].address;
+      kaneton.areas[4 + i].size = addr - kaneton.modules[i].address;
     }
+
+  return (khdr->e_entry);
+}
+
+/*
+ * this function dumps the kaneton memory structure
+ */
+
+void			bootloader_kaneton_dump(void)
+{
+  t_uint32		i;
+
+  cons_msg('+', "dumping kaneton memory structure\n");
+
+  cons_msg('+', " memory: %u bytes\n", kaneton.size);
+  cons_msg('+', " modules: %u\n", kaneton.nmodules);
+
+  for (i = 0; i < kaneton.nmodules; i++)
+    cons_msg('+', "  [%u] %s 0x%x (0x%x)\n",
+	     i,
+	     kaneton.modules[i].name,
+	     kaneton.modules[i].address,
+	     kaneton.modules[i].size);
+  /*
+  cons_msg('+', " areas: %u\n", kaneton.nareas);
+
+  for (i = 0; i < kaneton.nareas; i++)
+    cons_msg('+', "  [%u] 0x%x (0x%x)\n", i,
+	     kaneton.areas[i].address,
+	     kaneton.areas[i].size);
+  */
 }
 
 /*
@@ -96,77 +162,106 @@ t_vaddr			bootloader_relocate(multiboot_info_t*	mbi)
  *
  * the booloder:
  *
- * 1) relocates binaries, data, stack
- * 2) installs the protected mode
- * 3) installs the paging mode
+ * 1) initializes the kaneton memory structure
+ * 2) relocates binaries, data, stack
+ * 3) installs the protected mode
+ * 4) installs the paging mode
+ * 5) update registers for the new kernel stack
+ * 6) then, the kernel is launched
+ * 7) this part is only reached if the kernel exit
+ *
+ * note that areas are composed of:
+ *  [0] ISA
+ *  [1] GDT
+ *  [2] PD and PTs
+ *  [3] kernel code
+ *  [4] kernel stack
+ *  [5-] the modules
  */
 
-int			main(t_uint32			magic,
-			     multiboot_info_t*		mbi)
+void bande()
 {
+
+}
+
+int			bootloader(t_uint32		magic,
+				   multiboot_info_t*	mbi)
+{
+  t_uint32		nareas = 5 + mbi->mods_count;
+  t_area		areas[nareas];
+  t_uint32		nmodules = mbi->mods_count;
+  t_module		modules[nmodules];
+
   cons_init();
 
   if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
     bootloader_error();
 
-  printf("                      --- the kaneton operating system ---\n\n\n");
+  printf("\n                      --- the kaneton operating system ---\n\n");
 
-  bootloader_relocate(mbi);
+  /*
+   * 1)
+   */
+
+  kaneton.start = 0;
+  kaneton.size = mbi->mem_upper * 1024;
+  kaneton.modules = modules;
+  kaneton.nmodules = nmodules;
+  kaneton.areas = areas;
+  kaneton.nareas = nareas;
+
+  kaneton.areas[0].address = 0x0;
+  kaneton.areas[0].size = 0x000fffff;
+
+  /*
+   * 2)
+   */
+
+  kernel = (void (*)(t_kaneton*))bootloader_relocate(mbi);
+
+  /*
+   * 3)
+   */
 
   pmode_init();
 
-  paging_init();
-
-#if 1
-  printf("memory: 0x%x to %u\n", mbi->mem_lower, mbi->mem_upper);
-  printf("mmap: 0x%x size 0x%x\n", mbi->mmap_addr, mbi->mmap_length);
-
-  printf("main function: 0x%x\n", main);
-
-  {
-    int		ebp, esp;
-
-    asm volatile ("movl %%ebp, %0\n"
-		  "movl %%esp, %1\n"
-		  : "=m" (ebp), "=m" (esp)
-		  :);
-
-    printf("ebp: 0x%x esp: 0x%x\n", ebp, esp);
-  }
-
-  printf("elf: 0x%x size 0x%x num %u\n", mbi->u.elf_sec.addr,
-	 mbi->u.elf_sec.size, mbi->u.elf_sec.num);
-#endif
-
-  /* XXX passer une sorte de stack au kernel qui contiendrait
-   * une liste des zones memoire avec attributs: BIOS, KERNEL etc..
-   *
-   * le fait de la passer au kernel rend l'implementation du bootloader
-   * independant de la structure de donnees utilisee par le kernel
+  /*
+   * 4)
    */
 
+  paging_init();
+
   /*
-    {
-      pmap_init(minfo);
-      vmap_init(minfo);
-      gdt_reinit();
+   * 5)
+   */
 
-      header = (Elf32_Ehdr *)mod->mod_start;
-      kernel = (t_func)header->e_entry;
+  asm volatile ("movl %%ebp, %0\n"
+		"movl %%esp, %1\n"
+		: "=m" (ebp), "=m" (esp)
+		:);
 
-      // penser a creer une stack, modifier esp et ebp
-      // puis a bien la mapper
+  asm volatile ("movl %0, %%ebp\n"
+		"movl %0, %%esp\n"
+		"pushl %1\n"
+		:
+		: "g" (KANETON_KERNEL_STACK + KANETON_KERNEL_STACKSZ - 1),
+		  "g" (&kaneton));
 
-      asm volatile ("mov %0, %%esp" : : "g" (sp_init));
+  /*
+   * 6)
+   */
 
-      kernel(VMAP_MNG_ADDR, minfo);
-    }
-  */
+  kernel(&kaneton);
 
-  cons_msg('+', "kaneton bootloaded\n");
+  asm volatile ("movl %0, %%ebp\n"
+		"movl %1, %%esp\n"
+		:
+		: "g" (ebp), "g" (esp));
 
-  /* XXX jump on the kernel */
+  /*
+   * 7)
+   */
 
-  while (1)
-    ;
+  cons_msg('!', "error: kernel exited\n");
+  bootloader_error();
 }

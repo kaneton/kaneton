@@ -5,26 +5,26 @@
  * 
  * ctype.h
  * 
- * path          /home/mycure/kaneton/src/libs/klibc/include/libc
+ * path          /home/mycure/kaneton/libs/klibc/include/libc
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:25 2005   mycure
- * last update   Sat Apr 23 16:41:46 2005   mycure
+ * last update   Sat May 28 22:17:15 2005   mycure
  */
 
 #ifndef LIBC_CTYPE_H
 #define LIBC_CTYPE_H		1
 
-#define _U		0x01
-#define _L		0x02
-#define _N		0x04
-#define _S		0x08
-#define _P		0x10
-#define _C		0x20
-#define _X		0x40
-#define _B		0x80
+#define _U			0x01
+#define _L			0x02
+#define _N			0x04
+#define _S			0x08
+#define _P			0x10
+#define _C			0x20
+#define _X			0x40
+#define _B			0x80
 
 extern const u_char	_ctype[];
 extern const short	_ctype_toupper[];

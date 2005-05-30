@@ -5,13 +5,13 @@
 ## 
 ## grub.sh
 ## 
-## path          /home/mycure/kaneton/source
+## path          /home/mycure/data/research/projects/kaneton/source/utils
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Fri May 20 17:21:20 2005   mycure
+## last update   Fri May 27 10:54:32 2005   mycure
 ##
 
 # INFORMATIONS
@@ -40,7 +40,6 @@ UDEVICE="unknown"
 MDEVICE="unknown"
 IMAGE="unknown"
 
-TIMEOUT="5"
 KANETON_IMAGE="data/kaneton.img"
 MENU="/tmp/menu.lst"
 
@@ -124,8 +123,6 @@ menu()
   # create new version
   echo "title $TITLE" >> $MENU
   echo "" >> $MENU
-  echo "timeout $TIMEOUT" >> $MENU
-  echo "" >> $MENU
 
   # insert each module in menu
 
@@ -158,16 +155,18 @@ menu()
   i=0
   for module in $MODULES ; do
     if [ $i = 0 ] ; then
-      boot=$module
+      kernel=$module
+    else
+      modules="$modules $module"
     fi
     i=1
   done
 
-  echo $boot | sed "s/^.*\/\(.*\)$/kernel \/modules\/\1/g" >> $MENU
+  echo $kernel | sed "s/^.*\/\(.*\)$/kernel \/modules\/\1/g" >> $MENU
 
   echo "" >> $MENU
 
-  for module in $MODULES
+  for module in $modules
   do
       echo $module | sed "s/^.*\/\(.*\)$/module \/modules\/\1/g" >> $MENU
   done

@@ -1,6 +1,6 @@
-.global ___kaneton_entry
+.global bootloader_entry
 
-___kaneton_entry:
+bootloader_entry:
 	push %ebx
 	push %eax
-	call main
+	call bootloader

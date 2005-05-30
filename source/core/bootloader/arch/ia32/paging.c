@@ -11,26 +11,17 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Mon May 30 15:26:25 2005   mycure
+ * last update   Mon May 30 22:26:56 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
 
+extern t_kaneton	kaneton;
+
 t_pde*			pd __ALIGNED__(4096) = (t_pde*)PAGING_PD;
-
-t_pte*			identity __ALIGNED__(4096) = (t_pte*)PAGING_PT0;
-
-/*
-voidpg_enable()
-{
-  asm("movl %0, %%eax\n"
-      "movl %%eax, %%cr3\n"
-      "movl %%cr0, %%eax\n"
-      "orl $0x80000000, %%eax\n"
-      "movl %%eax, %%cr0" : : "r" (pgd));
-}
-*/
+t_pte*			pt0 __ALIGNED__(4096) = (t_pte*)PAGING_PT0;
+t_pte*			pt1 __ALIGNED__(4096) = (t_pte*)PAGING_PT1;
 
 /*
  * this function dumps a page table in a human readable form which
@@ -53,9 +44,6 @@ void			paging_dump_table(t_pte*	table,
 
       if ((opts & OPTS_PRESENT) && !(table[i] & PAGING_P))
 	continue;
-
-      if (i > 10)
-	return;
 
       /*
        * human readable flags
@@ -128,27 +116,64 @@ void			paging_enable(void)
 
 /*
  * this function initializes the paging.
+ *
+ * this function:
+ *
+ * 1) installs the page directory
+ * 2) installs the identity mapping via the first page table
+ * 3) installs extra identity mapping with the second page table
+ *    to be able to map the kernel stack
+ * 4) load the new page directory
+ * 5) enable the paging mode
  */
 
 void			paging_init(void)
 {
-  /* XXX
+  t_uint32		addr;
   t_uint32		i;
 
-  memset(pd, 0x0, PAGING_NPDE * sizeof(t_pde));
-  pd[PAGING_PDE(0x0)] = (t_uint32)identity | PAGING_P | PAGING_RW | PAGING_S;
+  /*
+   * 1)
+   */
 
-  memset(identity, 0x0, PAGING_NPTE * sizeof(t_pte));
-  for (i = 0; i < PAGING_NPTE; i++)
-    {
-      identity[PAGING_PTE(i * PAGESZ)] = (i * PAGESZ) |
-	PAGING_P | PAGING_RW | PAGING_S;
-    }
+  memset(pd, 0x0, PAGING_NPDE * sizeof(t_pde));
+
+  pd[0] = (t_uint32)pt0 | PAGING_P | PAGING_RW | PAGING_S;
+  pd[1] = (t_uint32)pt1 | PAGING_P | PAGING_RW | PAGING_S;
+
+  /*
+   * 2)
+   */
+
+  memset(pt0, 0x0, PAGING_NPTE * sizeof(t_pte));
+
+  for (i = 0, addr = 0; i < PAGING_NPTE; i++, addr += 4096)
+    pt0[PAGING_PTE(addr)] = addr | PAGING_P | PAGING_RW | PAGING_S;
+
+  /*
+   * 3)
+   */
+
+  memset(pt1, 0x0, PAGING_NPTE * sizeof(t_pte));
+
+  for (i = 0;
+       addr < (KANETON_KERNEL_STACK + KANETON_KERNEL_STACKSZ);
+       i++, addr += 4096)
+    pt1[PAGING_PTE(addr)] = addr | PAGING_P | PAGING_RW | PAGING_S;
+
+  /*
+   * 4)
+   */
 
   LCR3(pd);
 
+  /*
+   * 5)
+   */
+
   paging_enable();
-  */
+
+  cons_msg('+', "paging enabled\n");
 }
 
 /*

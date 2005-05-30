@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:55:06 2005   mycure
- * last update   Mon May 30 17:05:04 2005   mycure
+ * last update   Mon May 30 22:19:34 2005   mycure
  */
 
 #ifndef IA32_PMODE_H
@@ -21,7 +21,7 @@
  * defines
  */
 
-#define PMODE_GDT_ADDR		0x10000
+#define PMODE_GDT_ADDR		0x1f000
 
 #define PMODE_GDT_ENTRIES	256
 #define PMODE_GDT_VALID_ENTRIES	(1 + 8)

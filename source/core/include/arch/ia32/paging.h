@@ -5,13 +5,13 @@
  * 
  * paging.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton/core/include/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:39:42 2005   mycure
- * last update   Mon May 30 15:23:20 2005   mycure
+ * last update   Mon May 30 22:19:22 2005   mycure
  */
 
 #ifndef IA32_PAGING_H
@@ -21,9 +21,9 @@
  * defines
  */
 
-#define PAGING_PD		0x101000	/* kernel page table */
-
-#define PAGING_PT0		0x102000	/* page table 0 */
+#define PAGING_PD		0x10e000	/* kernel page table */
+#define PAGING_PT0		0x10d000	/* page table 0 */
+#define PAGING_PT1		0x10c000	/* page table 1*/
 
 #define PAGING_NPDE		1024
 #define PAGING_NPTE		1024

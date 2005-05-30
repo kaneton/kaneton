@@ -5,13 +5,13 @@
 ## 
 ## .bochsrc
 ## 
-## path          /mnt/goinfre/projects/kaneton/src
+## path          /home/mycure/data/research/projects/kaneton/source
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 01:49:25 2005   mycure
-## last update   Fri Feb 11 02:03:42 2005   mycure
+## last update   Fri May 27 10:44:15 2005   mycure
 ##
 
 #
@@ -24,9 +24,10 @@ vgaromimage: /usr/local/share/bochs/VGABIOS-elpin-2.40
 ips: 500000
 megs: 32
 
-#floppya: 1_44=k.img, status=inserted
+floppya: 1_44=/home/mycure/mycure.img, status=inserted
+#floppya: 1_44=/dev/fd0
+
 boot: floppy
-floppya: 1_44=/dev/fd0
 
 i440fxsupport: enabled=1
 

@@ -1,7 +1,7 @@
 /*
  * kaneton
  *
- * gdt.c
+ * pmode.c
  *
  * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  *
@@ -9,22 +9,24 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Mon May 30 15:20:56 2005   mycure
+ * last update   Mon May 30 17:37:39 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
 
-t_gdte*			gdt __ALIGNED__(8) = (t_gdte*)GDT_ADDR;
+extern t_kaneton	kaneton;
+
+t_gdte*			gdt __ALIGNED__(8) = (t_gdte*)PMODE_GDT_ADDR;
 t_gdtr			gdtr;
 
 /*
- * this function dumps the global offset tables in a human readable form
+ * this function dumps the global offset table in a human readable form
  * which is very very useful for debugging.
  */
 
-#if (IA32_DEBUG & IA32_DEBUG_GDT)
-void			gdt_dump(void)
+#if (IA32_DEBUG & IA32_DEBUG_PMODE)
+void			pmode_gdt_dump(void)
 {
   t_uint16		entries = gdtr.size / sizeof(t_gdte);
   t_uint16		i;
@@ -48,24 +50,24 @@ void			gdt_dump(void)
       memset(hrt, '.', 4);
       hrt[4] = 0;
 
-      if ((gdt[i].type & GDT_PRESENT) == GDT_PRESENT)
+      if ((gdt[i].type & PMODE_GDT_PRESENT) == PMODE_GDT_PRESENT)
 	hrt[0] = 'P';
 
-      if ((gdt[i].type & GDT_DPL3) == GDT_DPL3)
+      if ((gdt[i].type & PMODE_GDT_DPL3) == PMODE_GDT_DPL3)
 	hrt[1] = '3';
-      else if ((gdt[i].type & GDT_DPL2) == GDT_DPL2)
+      else if ((gdt[i].type & PMODE_GDT_DPL2) == PMODE_GDT_DPL2)
 	hrt[1] = '2';
-      else if ((gdt[i].type & GDT_DPL1) == GDT_DPL1)
+      else if ((gdt[i].type & PMODE_GDT_DPL1) == PMODE_GDT_DPL1)
 	hrt[1] = '1';
-      else if ((gdt[i].type & GDT_DPL0) == GDT_DPL0)
+      else if ((gdt[i].type & PMODE_GDT_DPL0) == PMODE_GDT_DPL0)
 	hrt[1] = '0';
 
-      if ((gdt[i].type & GDT_S) == GDT_S)
+      if ((gdt[i].type & PMODE_GDT_S) == PMODE_GDT_S)
 	hrt[2] = 'S';
 
-      if ((gdt[i].type & GDT_CODE) == GDT_CODE)
+      if ((gdt[i].type & PMODE_GDT_CODE) == PMODE_GDT_CODE)
 	hrt[3] = 'C';
-      else if ((gdt[i].type & GDT_DATA) == GDT_DATA)
+      else if ((gdt[i].type & PMODE_GDT_DATA) == PMODE_GDT_DATA)
 	hrt[3] = 'D';
 
       /*
@@ -75,15 +77,15 @@ void			gdt_dump(void)
       memset(hrf, '.', 3);
       hrf[3] = 0;
 
-      if ((gdt[i].flags & GDT_GRANULAR) == GDT_GRANULAR)
+      if ((gdt[i].flags & PMODE_GDT_GRANULAR) == PMODE_GDT_GRANULAR)
 	hrf[0] = 'G';
 
-      if ((gdt[i].flags & GDT_USE32) == GDT_USE32)
+      if ((gdt[i].flags & PMODE_GDT_USE32) == PMODE_GDT_USE32)
 	{
 	  hrf[1] = '3';
 	  hrf[2] = '2';
 	}
-      else if ((gdt[i].flags & GDT_USE16) == GDT_USE16)
+      else if ((gdt[i].flags & PMODE_GDT_USE16) == PMODE_GDT_USE16)
 	{
 	  hrf[1] = '1';
 	  hrf[2] = '6';
@@ -109,16 +111,16 @@ void			gdt_dump(void)
  * global offset table.
  */
 
-void			gdt_update_registers(t_uint16	gdt_kernel_cs,
-					     t_uint16	gdt_kernel_ds)
+void			pmode_update_registers(t_uint16	gdt_kernel_cs,
+					       t_uint16	gdt_kernel_ds)
 {
-  t_reg16		cs = (gdt_kernel_cs << 3) | GDT_TI_GDT | 0;
-  t_reg16		ds = (gdt_kernel_ds << 3) | GDT_TI_GDT | 0;
+  t_reg16		cs = (gdt_kernel_cs << 3) | PMODE_GDT_TI_GDT | 0;
+  t_reg16		ds = (gdt_kernel_ds << 3) | PMODE_GDT_TI_GDT | 0;
 
   asm volatile ("pushl %0\n"
-		"pushl $gdt_update_registers_label\n"
+		"pushl $pmode_update_registers_label\n"
 		"lret\n"
-		"gdt_update_registers_label:\n"
+		"pmode_update_registers_label:\n"
 		"movl %1, %%eax\n"
 		"movw %%ax, %%ds\n"
 		"movw %%ax, %%ss\n"
@@ -133,7 +135,7 @@ void			gdt_update_registers(t_uint16	gdt_kernel_cs,
  * this function installs the protected mode setting one bit in cr0.
  */
 
-void			gdt_enable(void)
+void			pmode_enable(void)
 {
   asm volatile ("movl %%cr0, %%eax\n"
 		"orw %%ax, 1\n"
@@ -145,13 +147,13 @@ void			gdt_enable(void)
  * this function sets a new entry in the current global offset table.
  */
 
-void			gdt_set(t_uint16		entry,
-				t_paddr			base,
-				t_psize			limit,
-				t_uint8			type,
-				t_uint8			flags)
+void			pmode_gdt_set(t_uint16		entry,
+				      t_paddr		base,
+				      t_psize		limit,
+				      t_uint8		type,
+				      t_uint8		flags)
 {
-  if (entry >= GDT_ENTRIES)
+  if (entry >= PMODE_GDT_ENTRIES)
     bootloader_error();
 
   gdt[entry].limit_00_15 = limit & 0x0000ffff;
@@ -174,64 +176,57 @@ void			gdt_set(t_uint16		entry,
  * segment registers and finally installs the protected mode.
  */
 
-void			gdt_init(void)
+void			pmode_init(void)
 {
-  memset(gdt, 0x0, GDT_ENTRIES * sizeof(t_gdte));
+  memset(gdt, 0x0, PMODE_GDT_ENTRIES * sizeof(t_gdte));
 
-  gdt_set(GDT_KERNEL_CS, 0x0, 0xffffffff,
-	  GDT_PRESENT | GDT_DPL0 | GDT_S | GDT_CODE,
-	  GDT_GRANULAR | GDT_USE32);
+  pmode_gdt_set(PMODE_GDT_KERNEL_CS, 0x0, 0xffffffff,
+		PMODE_GDT_PRESENT | PMODE_GDT_DPL0 | PMODE_GDT_S |
+		PMODE_GDT_CODE, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
 
-  gdt_set(GDT_KERNEL_DS, 0x0, 0xffffffff,
-	  GDT_PRESENT | GDT_DPL0 | GDT_S | GDT_DATA,
-	  GDT_GRANULAR | GDT_USE32);
+  pmode_gdt_set(PMODE_GDT_KERNEL_DS, 0x0, 0xffffffff,
+		PMODE_GDT_PRESENT | PMODE_GDT_DPL0 | PMODE_GDT_S |
+		PMODE_GDT_DATA, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
 
-  gdt_set(GDT_DRIVER_CS, 0x0, 0xffffffff,
-	  GDT_PRESENT | GDT_DPL1 | GDT_S | GDT_CODE,
-	  GDT_GRANULAR | GDT_USE32);
+  pmode_gdt_set(PMODE_GDT_DRIVER_CS, 0x0, 0xffffffff,
+		PMODE_GDT_PRESENT | PMODE_GDT_DPL1 | PMODE_GDT_S |
+		PMODE_GDT_CODE, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
 
-  gdt_set(GDT_DRIVER_DS, 0x0, 0xffffffff,
-	  GDT_PRESENT | GDT_DPL1 | GDT_S | GDT_DATA,
-	  GDT_GRANULAR | GDT_USE32);
+  pmode_gdt_set(PMODE_GDT_DRIVER_DS, 0x0, 0xffffffff,
+		PMODE_GDT_PRESENT | PMODE_GDT_DPL1 | PMODE_GDT_S |
+		PMODE_GDT_DATA, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
 
-  gdt_set(GDT_SERVICE_CS, 0x0, 0xffffffff,
-	  GDT_PRESENT | GDT_DPL2 | GDT_S | GDT_CODE,
-	  GDT_GRANULAR | GDT_USE32);
+  pmode_gdt_set(PMODE_GDT_SERVICE_CS, 0x0, 0xffffffff,
+		PMODE_GDT_PRESENT | PMODE_GDT_DPL2 | PMODE_GDT_S |
+		PMODE_GDT_CODE, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
 
-  gdt_set(GDT_SERVICE_DS, 0x0, 0xffffffff,
-	  GDT_PRESENT | GDT_DPL2 | GDT_S | GDT_DATA,
-	  GDT_GRANULAR | GDT_USE32);
+  pmode_gdt_set(PMODE_GDT_SERVICE_DS, 0x0, 0xffffffff,
+		PMODE_GDT_PRESENT | PMODE_GDT_DPL2 | PMODE_GDT_S |
+		PMODE_GDT_DATA, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
 
-  gdt_set(GDT_USER_CS, 0x0, 0xffffffff,
-	  GDT_PRESENT | GDT_DPL3 | GDT_S | GDT_CODE,
-	  GDT_GRANULAR | GDT_USE32);
+  pmode_gdt_set(PMODE_GDT_USER_CS, 0x0, 0xffffffff,
+		PMODE_GDT_PRESENT | PMODE_GDT_DPL3 | PMODE_GDT_S |
+		PMODE_GDT_CODE, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
 
-  gdt_set(GDT_USER_DS, 0x0, 0xffffffff,
-	  GDT_PRESENT | GDT_DPL3 | GDT_S | GDT_DATA,
-	  GDT_GRANULAR | GDT_USE32);
+  pmode_gdt_set(PMODE_GDT_USER_DS, 0x0, 0xffffffff,
+		PMODE_GDT_PRESENT | PMODE_GDT_DPL3 | PMODE_GDT_S |
+		PMODE_GDT_DATA, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
 
   gdtr.address = (t_uint32)gdt;
-  gdtr.size = (t_uint16)(GDT_VALID_ENTRIES * sizeof(t_gdte));
+  gdtr.size = (t_uint16)(PMODE_GDT_VALID_ENTRIES * sizeof(t_gdte));
+
+  kaneton.areas[1].address = PMODE_GDT_ADDR;
+  kaneton.areas[2].size = PAGESZ;
 
   LGDT(gdtr);
 
-  gdt_update_registers(GDT_KERNEL_CS, GDT_KERNEL_DS);
+  pmode_update_registers(PMODE_GDT_KERNEL_CS, PMODE_GDT_KERNEL_DS);
 
-  gdt_enable();
+  pmode_enable();
+
+  cons_msg('+', "protected mode enabled\n");
 
 #if (IA32_DEBUG & IA32_DEBUG_GDT)
-  gdt_dump();
+  pmode_gdt_dump();
 #endif
-
 }
-
-/*
-void gdt_reinit()
-{
-  gdtr.size = (u_int16_t) 5 * sizeof (t_gdte);
-  gdtr.addr = (u_int32_t) VMAP_GDT_ADDR;
-
-  gdt_install();
-  gdt_cpu(KERNEL_CS, KERNEL_DS);
-}
-*/

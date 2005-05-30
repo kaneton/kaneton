@@ -5,13 +5,13 @@
  * 
  * libsys.h
  * 
- * path          /home/mycure/kaneton/src/libs/klibc/libsys
+ * path          /home/mycure/kaneton/libs/klibc/include/libsys
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:36:32 2005   mycure
- * last update   Tue May  3 19:49:37 2005   mycure
+ * last update   Sat May 28 22:17:58 2005   mycure
  */
 
 #ifndef LIBSYS_LIBSYS_H
@@ -35,6 +35,7 @@
 /*
  * ../../libsys/perror.c
  */
+
 /*
  * eop
  */
