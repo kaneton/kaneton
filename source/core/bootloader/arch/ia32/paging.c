@@ -11,15 +11,15 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Mon May 30 12:04:57 2005   mycure
+ * last update   Mon May 30 15:26:25 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
 
-t_pd			pd __ALIGNED__(4096) = (t_pd)PAGING_PD;
+t_pde*			pd __ALIGNED__(4096) = (t_pde*)PAGING_PD;
 
-t_pt			identity __ALIGNED__(4096) = (t_pt)PAGING_PT_IDENTITY;
+t_pte*			identity __ALIGNED__(4096) = (t_pte*)PAGING_PT0;
 
 /*
 voidpg_enable()
@@ -33,14 +33,13 @@ voidpg_enable()
 */
 
 /*
- * this function dumps a table (page directory or page table) in
- * a human readable form which is very useful for debugging.
+ * this function dumps a page table in a human readable form which
+ * is very useful for debugging.
  */
 
-void			paging_dump_table(t_pt		table,
+void			paging_dump_table(t_pte*	table,
 					  t_opts	opts)
 {
-  t_uint16		entries = 1024;
   t_uint16		i;
 
   cons_msg('#', "dumping table 0x%x entries\n", table);
@@ -48,7 +47,7 @@ void			paging_dump_table(t_pt		table,
   printf("     |  no  |  address   |            flags            |\n");
   printf("     ---------------------------------------------------\n");
 
-  for (i = 0; i < entries; i++)
+  for (i = 0; i < PAGING_NPTE; i++)
     {
       char		hrf[13];
 
@@ -106,6 +105,16 @@ void			paging_dump_table(t_pt		table,
 }
 
 /*
+ * this function dumps a page directory
+ */
+
+void			paging_dump_directory(t_pde*	directory,
+					      t_opts	opts)
+{
+  paging_dump_table((t_pte*)directory, opts);
+}
+
+/*
  * this function enables the paging mode setting one bit in cr0.
  */
 
@@ -123,6 +132,7 @@ void			paging_enable(void)
 
 void			paging_init(void)
 {
+  /* XXX
   t_uint32		i;
 
   memset(pd, 0x0, PAGING_NPDE * sizeof(t_pde));
@@ -138,6 +148,7 @@ void			paging_init(void)
   LCR3(pd);
 
   paging_enable();
+  */
 }
 
 /*

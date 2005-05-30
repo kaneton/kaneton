@@ -9,13 +9,13 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Mon May 30 13:07:14 2005   mycure
+ * last update   Mon May 30 15:20:56 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
 
-t_gdt			gdt __ALIGNED__(8) = (t_gdt)GDT_ADDR;
+t_gdte*			gdt __ALIGNED__(8) = (t_gdte*)GDT_ADDR;
 t_gdtr			gdtr;
 
 /*
