@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:39:42 2005   mycure
- * last update   Sun May 29 13:04:10 2005   mycure
+ * last update   Mon May 30 11:56:11 2005   mycure
  */
 
 #ifndef IA32_PAGING_H
@@ -34,8 +34,8 @@
 #define PAGING_PT_SHIFT		12
 #define PAGING_PT_MASK		0x000003ff
 
-#define PAGING_PAGE_MASK	0xfffff000
-#define PAGING_OFFSET_MASK	0x00000fff
+#define PAGING_ADDRESS_MASK	0xfffff000
+#define PAGING_FLAGS_MASK	0x00000fff
 
 /*
  * macros
@@ -52,11 +52,11 @@
  */
 
 #define PAGING_GLOBAL		0x100
-#define PAGING_4M		0x080
+#define PAGING_PS		0x080
 #define PAGING_DIRTY		0x040
 #define PAGING_ACCESSED		0x020
-#define PAGING_PCD		0x010
-#define PAGING_PWT		0x008
+#define PAGING_PCD		0x010	/* page-level cache disable */
+#define PAGING_PWT		0x008	/* page-level write through */
 #define PAGING_U		0x004	/* user */
 #define PAGING_S		0x000	/* supervisor */
 #define PAGING_RW		0x002
@@ -67,17 +67,8 @@
  * types
  */
 
-typedef struct			s_pte
-{
-  t_uint32			flags : 12;
-  t_uint32			address;
-}				__PACKED__ t_pte;
-
-typedef struct			s_pde
-{
-  t_uint32			flags : 12;
-  t_uint32			address;
-}				__PACKED__ t_pde;
+typedef t_uint32		t_pde;
+typedef t_uint32		t_pte;
 
 typedef t_pte*			t_pt;
 typedef t_pde*			t_pd;

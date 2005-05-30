@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Sun May 29 12:45:13 2005   mycure
+ * last update   Sun May 29 13:05:59 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
@@ -22,6 +22,7 @@
  */
 
 #include <arch/machdep/asm.h>
+#include <arch/machdep/limits.h>
 #include <arch/machdep/stdarg.h>
 #include <arch/machdep/types.h>
 
