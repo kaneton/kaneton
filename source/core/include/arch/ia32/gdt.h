@@ -5,13 +5,13 @@
  * 
  * gdt.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32
+ * path          /home/mycure/kaneton/core/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:55:06 2005   mycure
- * last update   Sun May 29 15:23:14 2005   mycure
+ * last update   Mon May 30 15:20:27 2005   mycure
  */
 
 #ifndef IA32_GDT_H
@@ -96,7 +96,5 @@ typedef struct			s_gdtr
   t_uint16			size;
   t_uint32			address;
 }				__PACKED__ t_gdtr;
-
-typedef t_gdte*			t_gdt;
 
 #endif

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun May 29 15:29:45 2005   mycure
+ * last update   Mon May 30 14:49:30 2005   mycure
  */
 
 #ifndef IA32_TYPES_H
@@ -35,9 +35,9 @@ typedef t_uint16		t_reg16;
 typedef t_uint32		t_reg32;
 typedef t_uint64		t_reg64;
 
-typedef void*			t_paddr;
+typedef t_uint32		t_paddr;
 typedef t_uint32		t_psize;
-typedef void*			t_vaddr;
+typedef t_uint32		t_vaddr;
 typedef t_uint32		t_vsize;
 
 typedef t_uint32		t_size;
