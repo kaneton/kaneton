@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Wed Jun  1 11:23:05 2005   mycure
+ * last update   Wed Jun  1 11:47:58 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
@@ -22,13 +22,13 @@
  */
 
 #include <arch/machdep/asm.h>
-#include <arch/machdep/limits.h>
 #include <arch/machdep/stdarg.h>
 #include <arch/machdep/types.h>
 
 #include <arch/machdep/pmode.h>
 #include <arch/machdep/paging.h>
 
+#include <arch/machdep/kaneton.h>
 #include <arch/machdep/bootloader.h>
 #include <arch/machdep/cons.h>
 
@@ -49,13 +49,6 @@
 #include <arch/machdep/kaneton/time.h>
 #include <arch/machdep/kaneton/trap.h>
 */
-
-/*
- * architecture defines
- */
-
-#define ___endian		LITTLE_ENDIAN
-#define ___32bits		1
 
 /*
  * machdep transparent traps

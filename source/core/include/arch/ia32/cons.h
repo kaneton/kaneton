@@ -11,11 +11,22 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:24:13 2005   mycure
- * last update   Sat May 28 22:21:51 2005   mycure
+ * last update   Wed Jun  1 11:46:32 2005   mycure
  */
 
 #ifndef IA32_CONS_H
 #define IA32_CONS_H		1
+
+/*
+ * details about console format:
+ *
+ * flicker   :   0 = disable    1 = enable
+ * back      :   0 = black      1 = blue       2 = green      3 = cyan
+ *               4 = red        5 = magenta    6 = yellow     7 = white
+ * intensity :   0 = disable    1 = enable
+ * front     :   0 = black      1 = blue       2 = green      3 = cyan
+ *               4 = red        5 = magenta    6 = yellow     7 = white
+ */
 
 /*
  * defines
@@ -36,16 +47,5 @@ typedef struct			s_cons
   t_uint8			attr;
   char*				vga;
 }				t_cons;
-
-/*
- * details about console format:
- *
- * flicker   :   0 = disable    1 = enable
- * back      :   0 = black      1 = blue       2 = green      3 = cyan
- *               4 = red        5 = magenta    6 = yellow     7 = white
- * intensity :   0 = disable    1 = enable
- * front     :   0 = black      1 = blue       2 = green      3 = cyan
- *               4 = red        5 = magenta    6 = yellow     7 = white
- */
 
 #endif
