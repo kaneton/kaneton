@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 18:49:33 2004   mycure
- * last update   Sat May 28 22:22:12 2005   mycure
+ * last update   Wed Jun  1 08:34:04 2005   mycure
  */
 
 #ifndef IA32_MULTIBOOT_H
