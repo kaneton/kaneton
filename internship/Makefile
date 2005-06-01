@@ -1,12 +1,12 @@
 ##
-## licence       kaneton licence
+## licence       Kaneton licence
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/internship/Makefile
+## file          /home/rhino/kaneton/internship/Makefile
 ##
-## created       julien quintard   [sat jan 21 23:55:55 2006]
-## updated       julien quintard   [sat jan 21 23:56:17 2006]
+## created       renaud voltz   [thu feb  9 02:37:29 2006]
+## updated       renaud voltz   [thu feb  9 02:37:29 2006]
 ##
 
 #
@@ -22,13 +22,22 @@ include			../env/.env.mk
 .PHONY:		all clear proto dep
 
 #
+# ---------- variables --------------------------------------------------------
+#
+
+SUBDIRS			:=		check
+
+#
 # ---------- rules ------------------------------------------------------------
 #
 
 all:
+	$(call makefile,$(SUBDIRS),)
 
 clear:
-	$(call purge,)
+	$(call makefile,$(SUBDIRS),clear)
+
+	$(call purge)
 
 proto:
 

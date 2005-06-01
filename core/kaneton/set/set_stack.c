@@ -420,7 +420,11 @@ t_error			set_locate_stack(t_setid		setid,
 					 t_id			id,
 					 t_iterator*		iterator)
 {
+  t_error		retval;
+
   SET_ENTER(set);
+
+  retval = set_locate_ll(setid, id, iterator);
 
   SET_LEAVE(set, ERROR_UNKNOWN);
 }

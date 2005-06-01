@@ -1,0 +1,242 @@
+%%
+%% licence       Kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/rhino/check.tex
+%%
+%% created       renaud voltz   [thu feb  9 01:59:06 2006]
+%% updated       renaud voltz   [thu feb  9 01:59:06 2006]
+%%
+
+%
+% class
+%
+
+\documentclass[10pt,a4wide]{article}
+
+%
+% packages
+%
+
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{fancyheadings}
+\usepackage{multicol}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{verbatim}
+
+\pagestyle{fancy}
+
+\setlength{\footrulewidth}{0.3pt}
+\setlength{\parindent}{0.3cm}
+\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+
+%
+% verbatim font
+%
+
+\definecolor{verbatimcolor}{rgb}{0,0.4,0}
+
+\makeatletter
+\renewcommand{\verbatim@font}
+  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
+\makeatother
+
+%
+% header
+%
+
+\rfoot{\scriptsize{The kaneton microkernel project}}
+
+\date{\scriptsize{\today}}
+
+%
+% title
+%
+
+\title{Test framework}
+
+%
+% authors
+%
+
+\author{\small{Solal Jacob}}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% ---------- abstract ---------------------------------------------------------
+%
+
+\begin{abstract}
+
+\indent The test framework ains at mesuring the reliability of the Kaneton
+microkernel. It is organized around two parts. On the one hand, tests are
+written and executed within Kaneton, on the other hand, a Python script runs on
+another independant system. This document concerns users who want to build a
+new tests set and also contributors who would like to upgrade the test
+environment itself.
+
+\end{abstract}
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+\section{Framework architecture}
+
+\indent As the test environment is supposed to check Kaneton's reliability, it
+cannot assume that Kaneton is safe and therefore it cannot be installed on the
+tested system. Thus, the test environment has been designed to check Kaneton
+from another independant system. Both of Kaneton and the independant system can
+communicate via the serial port.\\
+\\
+\indent Once the tests are written (Kaneton-side), the Makefile needs to be
+modified to turn the kernel into debug mode. This mode enables the tests,
+executes them and sends their results through the serial port to the script.
+When debug mode is enabled, Kaneton first initializes the serial driver (default
+settings are COM1 at 56kb/s) and then waits for commands from the serial
+connection.\\
+\\
+The test script is written in Python and depends on a C/Python module whose
+role is to manage serial communication. It is based on a dedicated protocol
+also used in Kaneton. All was done to simplify the script development.\\
+\\
+\indent Strong conventions have been established to write test scripts and to
+manage the Kaneton Makefile. They must be known and respected to add new tests.
+These conventions are deeply detailed in the next paragraphs.
+
+
+\section{How to add and to launch tests}
+
+\subsection{How to add tests}
+As already said, test writting must obey certain rules. Conventions on
+directory and file naming were chosen as follow:
+\begin{enumerate}
+\item A test dedicated to a specific part of Kaneton must be created in the same
+directory tree than the piece of Kaneton it is supposed to check. This new
+directory tree must be placed in kaneton/check/.
+\item A test is a directory named 01, 02, \ldots, N and containing the following
+files:
+\begin{itemize}
+\item .c: the test itself which is part of Kaneton
+\item .res: the expected output for the corresponding .c
+\item parse\_res.py: a python function which must be modify to parse the
+result.
+\end{itemize}
+\item A file named list and containing all the names of the tests separated by a
+single \textbackslash n must be placed in every level of the check directory
+tree.
+\\
+\end{enumerate}
+{\bf Example:}\\
+Assuming we want to write two tests checking the printf function
+which is located in kaneton/klibc/libstring/, we need to create the following
+ directory tree:
+
+\begin{verbatim}
+    kaneton/check/
+                 libs/
+                     klibc/
+                          listring/
+                                  printf/
+                                        01/
+                                           01.c
+                                           01.res
+                                           pares\_res.py
+                                        02/
+                                           02.c
+                                           02.res
+                                           pares\_res.py
+                                        list		 => 01\n02\n
+                                  list			 => printf\n
+                          list				 => libstring\n
+                     list				 => klibc\n
+                 list					 => libs\n
+
+\end{verbatim}
+
+
+\subsection{How to launch tests}
+\begin{itemize}
+\item Install the Python module by running ./domodules in kaneton/tools/python/
+\item Select the tests to enable by adding their name in the appropriate `list`
+text file (see Directory Convention for further details).
+\item Configure Kaneton to run in debug mode:
+\begin{description}
+\item env/users/user.conf: delete the line: {\tt override \_CHECK\_}
+\item env/users/conf.h: add the line:  {\tt \#define SERIAL}
+\end{description}
+\item Build the kernel
+\item During kernel execution, run ./check.py to get the tests results
+\end{itemize}
+
+
+\section{Serial driver and the test framework on Kaneton}
+
+The serial driver can be found in kaneton/core/kaneton/debug/serial.c.\\
+Initialization is performed by passing the desired com\_port and baud\_rate to
+the serial\_init function. Basic values as SERIAL\_8N1 and SERIAL\_FIFO\_8 are
+defined for recurrent usages; you will find them in
+kaneton/core/include/kaneton/serial.h.\\
+Once the driver is setup, the functions serial\_read and serial\_write permit
+to transfert data trough the serial port (see serial.h for further
+information). Keep in mind that this serial driver was written in pole mode. So
+it requires a 1GHz processor to achieve high-speed (56kbp/s) communication
+without trouble.
+
+The test framework routines can be found in
+kaneton/core/kaneton/debug/debug.c.\\
+A call to the debug\_init function performs all initializations needed by the
+test framework. It calls serial\_init, printf\_init, allocates sufficient memory
+and waits for new messages in a never ending loop. printf\_init permits to
+redirect printf output towards the serial port using serial\_put function as a
+parameter. debug\_recv reads in input until it receives "command". Then it
+waits for the address of the command to execute, executes it and uses
+serial\_put to send the command result through the serial port.\\
+
+
+\section{Python script and C/Python modules}
+
+check.py is the script which analyzes the tests results. It  can be found in
+kaneton/check/. The C/Python kserialmodule in kaneton/tools/python/ must be
+installed prior to launch ./check.py. Just run ./domodules to do so. This
+module permits Python applications to use serial\_init, serial\_recv and
+serial\_send functions, and thus to communicate with Kaneton. The line\\
+\\
+\indent{\tt from kserial import *}\\
+\\
+in the main function of check.py shows how to use the kserial module.\\
+\\
+\indent The script check.py first initializes the serial communication by a
+call to serial\_init("/dev/ttyS0"), what implies that we run check.py on Linux
+on COM1. Then the script uses the function ListTest to recursively find the tests
+it will have to execute. All the tests found are added to a list. This list is
+parsed and test functions are sequentially sent to Kaneton for execution. Their
+result is compared to their corresponding .res by their associated
+parse\_res.py script. Every failure or success is stored in order to compute
+and display totals.
+
+
+\end{document}
+
+
+
+
+
+
+
