@@ -1,12 +1,12 @@
 ##
-## licence       kaneton licence
+## licence       Kaneton licence
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_ll/04/Makefile
+## file          /home/rhino/kaneton/check/core/kaneton/set/set_stack/05/Makefile
 ##
-## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [tue jan  3 23:55:07 2006]
+## created       renaud voltz   [fri feb 10 15:24:00 2006]
+## updated       renaud voltz   [fri feb 10 15:24:00 2006]
 ##
 
 #

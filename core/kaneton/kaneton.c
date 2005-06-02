@@ -225,6 +225,8 @@ void			kaneton(t_init*				bootloader)
 
 /*                                                                 [cut] /k2 */
 
+
+
   while (1)
     ;
 }

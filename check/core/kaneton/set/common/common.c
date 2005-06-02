@@ -52,7 +52,7 @@ void	check_set_tests(void)
   check_set_ll_09();
   check_set_ll_10();
   check_set_ll_11();
-  check_set_ll_12();*/
+  check_set_ll_12();
   check_set_pipe_01();
   check_set_pipe_02();
   check_set_pipe_03();
@@ -62,16 +62,15 @@ void	check_set_tests(void)
   check_set_pipe_07();
   check_set_pipe_08();
   check_set_pipe_09();
-
   check_set_stack_01();
-    check_set_stack_02();
-    check_set_stack_03();
+  check_set_stack_02();
+  check_set_stack_03();
   check_set_stack_04();
-   check_set_stack_05();
-    check_set_stack_06();
-    check_set_stack_07();
-    check_set_stack_08();
-    check_set_stack_09();
+  check_set_stack_05();
+  check_set_stack_06();
+  check_set_stack_07();
+  check_set_stack_08();
+  check_set_stack_09();*/
   /* XXX continue tests */
 }
 

@@ -1,12 +1,12 @@
 ##
-## licence       Kaneton licence
+## licence       kaneton licence
 ##
 ## project       kaneton
 ##
-## file          /home/rhino/kaneton/check/core/kaneton/set/set_stack/04/Makefile
+## file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_ll/07/Makefile
 ##
-## created       renaud voltz   [fri feb 10 15:23:45 2006]
-## updated       renaud voltz   [fri feb 10 15:23:45 2006]
+## created       julien quintard   [mon nov 28 18:59:45 2005]
+## updated       matthieu bucchianeri   [tue jan  3 23:54:53 2006]
 ##
 
 #
@@ -25,9 +25,9 @@ include			../../../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TEST_LO			:=		04.lo
+TEST_LO			:=		06.lo
 
-TEST_C			:=		04.c
+TEST_C			:=		06.c
 
 TEST_O			:=		$(TEST_C:.c=.o)
 
