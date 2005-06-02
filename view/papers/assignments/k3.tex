@@ -1,0 +1,81 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/buckman/kaneton/view/papers/assignments/k3.tex
+%%
+%% created       matthieu bucchianeri   [fri feb 10 13:52:29 2006]
+%% updated       matthieu bucchianeri   [fri feb 10 14:57:06 2006]
+%%
+
+\section{k3}
+
+k3 goals are:
+
+\begin{itemize}
+
+\item To implement virtual memory (region manager)
+
+\item To complete as and segment with virtual memory related functions
+
+\item To implement a few drivers
+
+\end{itemize}
+
+\subsection{region manager}
+
+\subsection{as manager}
+
+Students must finish the as manager adding the following functions:
+
+\prototype{t\_error \textbf{as\_paddr}(t\_asid \textbf{asid},
+                                       t\_regid \textbf{regid},
+                                       t\_vaddr	\textbf{virtual},
+                                       t\_paddr* \textbf{physical});}
+
+This function translates a virtual address to a physical address.
+
+\prototype{t\_error \textbf{as\_vaddr}(t\_asid \textbf{as},
+                                       t\_segid \textbf{segid},
+                                       t\_paddr \textbf{physical},
+                                       t\_vaddr* \textbf{virtual});}
+
+This function translates a physical address to a virtual address.
+
+\subsection{segment manager}
+
+\subsubsection{Functions to add}
+
+In this part  of kaneton, students have to  finish the segment manager
+adding the following functions:
+
+\prototype{t\_error \textbf{segment\_read}(t\_segid \textbf{segid},
+                                           t\_paddr \textbf{offs},
+                                           const void* \textbf{buff},
+                                           t\_psize \textbf{sz});}
+
+This function reads raw data from a segment into a buffer.
+
+\prototype{t\_error \textbf{segment\_write}(t\_segid \textbf{segid},
+                                            t\_paddr \textbf{offs},
+                                            void* \textbf{buff},
+                                            t\_psize \textbf{sz});}
+
+This function writes data to a segment.
+
+\prototype{t\_error \textbf{segment\_copy}(t\_segid \textbf{dst},
+                                           t\_paddr \textbf{offsd},
+                                           t\_segid \textbf{src},
+                                           t\_paddr \textbf{offss},
+                                           t\_psize \textbf{sz});}
+
+This function copies data from one segment to another.
+
+\subsubsection{IA-32 implementation}
+
+These three functions  were not asked for k2  since directly accessing
+physical memory with paging mode enabled is not possible on Intel.
+
+Students have to write these functions even if they chose ia32-segment
+(which code will be very simple).

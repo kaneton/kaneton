@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/papers/assignments/k2.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       matthieu bucchianeri   [wed feb  8 14:27:42 2006]
+%% updated       matthieu bucchianeri   [fri feb 10 14:51:19 2006]
 %%
 
 %
@@ -39,7 +39,7 @@ the microkernel:
 
 The id manager is used to generate identifiers from an identifier object.
 
-Once  the identifier object  initialised --  you got  a \textbf{o\_id}
+Once the  identifier object initialised  -- you got  an \textbf{o\_id}
 structure -- the identifiers can be generated.
 
 Remember that identifiers only consist in a 64-bits integer.
@@ -115,9 +115,9 @@ sets.
 \subsubsection{Students work}
 
 The  manager code  is given,  see  \textit{core/kaneton/set/set.c} and
-\textit{core/include/kaneton.h}. Take a look at the information section
-in the header of the manager code: each steps of the creation of a set
-is described.
+\textit{core/include/kaneton/set.h}.  Take a  look at  the information
+section in the header of the  manager code: each steps of the creation
+of a set is described.
 
 The student will have to  write the entire code for the \textbf{array}
 and \textbf{ll} implementations.
@@ -349,20 +349,6 @@ This function should only be used by the segment and region managers.
 This function just returns the address space object corresponding to
 the address space identifier.
 
-\prototype{t\_error \textbf{as\_paddr}(t\_asid \textbf{asid},
-                                       t\_regid \textbf{regid},
-                                       t\_vaddr	\textbf{virtual},
-                                       t\_paddr* \textbf{physical});}
-
-This function translates a virtual address to a physical address.
-
-\prototype{t\_error \textbf{as\_vaddr}(t\_asid \textbf{as},
-                                       t\_segid \textbf{segid},
-                                       t\_paddr \textbf{physical},
-                                       t\_vaddr* \textbf{virtual});}
-
-This function translates a physical address to a virtual address.
-
 \prototype{t\_error \textbf{as\_init}(void);}
 
 This function initialises the address space manager.
@@ -447,28 +433,6 @@ This function split a segment into two segments.
 
 This function merges two segments into a single one.
 
-\prototype{t\_error \textbf{segment\_read}(t\_segid \textbf{segid},
-                                           t\_paddr \textbf{offs},
-                                           const void* \textbf{buff},
-                                           t\_psize \textbf{sz});}
-
-This function reads raw data from a segment into a buffer.
-
-\prototype{t\_error \textbf{segment\_write}(t\_segid \textbf{segid},
-                                            t\_paddr \textbf{offs},
-                                            void* \textbf{buff},
-                                            t\_psize \textbf{sz});}
-
-This function writes data to a segment.
-
-\prototype{t\_error \textbf{segment\_copy}(t\_segid \textbf{dst},
-                                           t\_paddr \textbf{offsd},
-                                           t\_segid \textbf{src},
-                                           t\_paddr \textbf{offss},
-                                           t\_psize \textbf{sz});}
-
-This function copies data from one segment to another.
-
 \prototype{t\_error \textbf{segment\_reserve}(t\_asid \textbf{asid},
                                               t\_psize \textbf{size},
                                               t\_perms \textbf{perms},
@@ -483,25 +447,88 @@ This function releases a segment.
 \prototype{t\_error \textbf{segment\_catch}(t\_asid \textbf{asid},
                                             t\_segid \textbf{segid});}
 
-
+This function  is used to  force a segment  to be given to  an address
+space.  ``catcheable''  segments  are   reserved  by  the  kernel  for
+architecture specific managers. Catcheable segments are defined in the
+\textit{kaneton.conf} file.
 
 \prototype{t\_error \textbf{segment\_perms}(t\_segid \textbf{segid},
                                             t\_perms \textbf{perms});}
 
+This function changes permissions for a segment.
+
 \prototype{t\_error \textbf{segment\_type}(t\_segid \textbf{segid},
                                            t\_type \textbf{type});}
 
+This function retrieves the type of a segment.
+
 \prototype{t\_error \textbf{segment\_flush}(t\_asid \textbf{asid});}
+
+This function  flushes the  segment container, releasing  all segments
+for all address spaces.
 
 \prototype{t\_error \textbf{segment\_get}(t\_segid \textbf{segid},
                                           o\_segment** \textbf{o});}
 
+This  function  gets  the  segment  object  associated  to  a  segment
+identifier.
+
 \prototype{t\_error \textbf{segment\_init}(void);}
+
+This function initialises the segment manager.
 
 \prototype{t\_error \textbf{segment\_clean}(void);}
 
+This function cleans the segment manager.
+
+In  addition,  students  have  to  implement  a  first-fit  allocation
+algorithm for physical pages.
+
+\prototype{t\_error \textbf{segment\_fit}(o\_as* \textbf{as},
+                                          t\_psize \textbf{size},
+                                          t\_paddr* \textbf{address});}
+
+This function searchs  the given address space for  a segment of given
+size.
+
+This function must  be placed in a separated file: take  a look at the
+\textbf{\_SEGMENT\_FILE\_} variable in you \textit{user.conf} file.
+
+As there  can be more than  one algorithm available, do  not forget to
+use  the  \textbf{SEGMENT\_FIT} define  in  your \textit{conf.h}  file
+(default  value is \textbf{FIT\_FIRST}.  More values  can be  added in
+\textit{core/include/kaneton/kaneton.h}
 
 \subsubsection{IA-32 implementation}
+
+Students  have to  implement all  the architecture-dependent  code for
+Intel.
+
+Depending  on the  chosen variation  around IA-32,  there  are several
+rules to follow:
+
+\begin{itemize}
+
+\item ia32-virtual:
+\begin{itemize}
+
+\item Segment  sizes are  aligned on page  size. Assuming you  are not
+using PSE  (4 Mbyte pages), this  value will be 4096.  Remember to use
+the \textbf{PAGESZ} define.
+
+\item You must create two segments  (one for code, the other for data)
+per task class:  kernel, driver, service, and user  program.  Each one
+must have the appropriate privilege level and permissions.
+
+\end{itemize}
+
+\item ia32-segment:
+\begin{itemize}
+
+\item Obi-Wan Kenobi
+
+\end{itemize}
+\end{itemize}
 
 %
 % modification to kernel main
@@ -509,10 +536,35 @@ This function releases a segment.
 
 \subsection{kernel main procedure}
 
+As the first managers are now  working, it is time to write the kernel
+main procedure.
+
+This  one is  contained  in \textit{core/kaneton/kaneton.c}.  Students
+must first initialize the \textbf{init} variable from the one given by
+the bootloader. Then, they  must initialize the differents manager. Do
+not forget that  it is better to initialize the  set manager before as
+an segment, since these managers rely on sets !
+
+Finally, all  managers must be destroyed  calling the \textbf{\_clean}
+functions for each one (in the good order !).
+
+You might place  code for your tests between these  two phases. Do not
+forget to disable it for the final tarball.
+
 %
 % bonus
 %
 
 \subsection{k2 bonus}
 
-Faire un allocateur meilleur qu'un first fit.
+Students can implement a better allocation algorithm for
+segments. Here are some examples:
+
+\begin{itemize}
+
+\item Best-fit (slower but less external fragmentation)
+\item Buddy systems
+\item Slab allocator
+\item \ldots
+
+\end{itemize}
