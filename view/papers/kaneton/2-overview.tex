@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/papers/kaneton/2-overview.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:09:45 2006]
-%% updated       matthieu bucchianeri   [mon jan 30 17:52:23 2006]
+%% updated       matthieu bucchianeri   [fri feb 10 16:24:57 2006]
 %%
 
 %
@@ -17,8 +17,10 @@
 
 \newpage
 
-\paragraph{}
-\kaneton micro-kernel is only the \textbf{core} of an operating system. Main task like hardware drivers or user services are implemented as \textbf{servers}. So the micro-kernel only has a few functionalities:\\
+\kaneton  micro-kernel  is  only  the \textbf{core}  of  an  operating
+system.  Main  task  like   hardware  drivers  or  user  services  are
+implemented as  \textbf{servers}. So the  micro-kernel only has  a few
+functionalities:\\
 
 \begin{itemize}
 \item Memory management
@@ -27,20 +29,17 @@
 \item Events and I/O
 \end{itemize}
 
-\paragraph{}
 In  this chapter, we  will describe  briefly these  tasks and  all the
 associated modules and managers.
 
 \section{Memory management}
 
-\paragraph{}
 Handling  the  memory  --  from  virtual  address  space  to  physical
 addressing  --   is  done   by  three  major   managers:  \textbf{as},
 \textbf{segment} and \textbf{region}.
 
 \subsection*{as, the address space manager}
 
-\paragraph{}
 In  \kaneton, we  call  an  \textbf{address space}  a  list of  memory
 location referenced by a task. Each task has its own address space.
 

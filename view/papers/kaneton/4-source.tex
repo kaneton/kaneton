@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/papers/kaneton/4-source.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:32:40 2006]
-%% updated       matthieu bucchianeri   [tue feb  7 15:47:01 2006]
+%% updated       matthieu bucchianeri   [fri feb 10 18:27:14 2006]
 %%
 
 %
@@ -16,5 +16,95 @@
 \chapter{Description of the source tree}
 
 \newpage
+
+This section describes \kaneton source tree in details:
+
+\begin{verbatim}
+ check/
+ core/
+ drivers
+ env/
+ export/
+ libs/
+ programs/
+ services/
+ tools/
+\end{verbatim}
+
+\section{check/}
+
+The \textbf{check}  subdirectory containes \kaneton  test suite. Check
+chapter 9 -- \textbf{Test suite} for more information.
+
+\section{core/}
+
+This subdirectory is the most important of the project. It contains
+all the microkernel code, the bootloader and the bootstrap.
+
+\subsection*{core/bootstrap/}
+
+This directory contains bootstraps for all supported architectures.
+
+\begin{verbatim}
+ core/bootstrap/arch/
+                     ia32-virtual
+                     ultrasparc
+                     ...
+\end{verbatim}
+
+\subsection*{core/bootloader/}
+
+This directory contains bootloaders for all supported architectures.
+
+\begin{verbatim}
+ core/bootloader/arch/
+                      ia32-virtual
+                      ultrasparc
+                      ...
+\end{verbatim}
+
+\subsection*{core/kaneton/}
+
+This place containts \kaneton source code. It is divided as shown below:
+
+\begin{verbatim}
+ core/kaneton/
+              arch/
+              as/
+              conf/
+              debug/
+              id/
+              region/
+              schedule/
+              segment/
+              set/
+              stats/
+              task/
+              thread/
+\end{verbatim}
+
+Notice that there is one subdirectory per manager.
+
+The  \textbf{conf} sudirectory  contains links  to user  profile files
+(\textit{conf.c} and \textit{conf.h}).
+
+\textbf{debug} contains  a console driver  (only for the  kernel early
+boot, later, a console service  is launched) and a serial driver (used
+by the test tools).
+
+All  architecture  dependent code  is  placed  in \textbf{arch}.  This
+directory contains subdirectories for each architecture.
+
+\begin{verbatim}
+ core/kaneton/arch/
+                   ia32-virtual
+                   ultrasparc
+                   ...
+\end{verbatim}
+
+Each   of    these   subdirectories   contains    files   implementing
+architecture-dependent code for each manager.
+
+\section{drivers/}
 
 % end of include file
