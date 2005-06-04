@@ -9,13 +9,21 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Mon May 30 17:37:39 2005   mycure
+ * last update   Wed Jun  1 12:10:34 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
 
-extern t_kaneton	kaneton;
+/*
+ * the memory description
+ */
+
+extern t_memory		memory;
+
+/*
+ * the system's global offset table
+ */
 
 t_gdte*			gdt __ALIGNED__(8) = (t_gdte*)PMODE_GDT_ADDR;
 t_gdtr			gdtr;
@@ -172,13 +180,24 @@ void			pmode_gdt_set(t_uint16		entry,
  * each segment has the same size with different rights: read/execution,
  * read/write etc..
  *
- * then the function loads the new global offset table, updates the
- * segment registers and finally installs the protected mode.
+ * the function:
+ *
+ * 1) sets the height segments for the kernel, driver, service and user
+ * 2) loads the GDT
+ * 3) updates the segments registers
+ * 4) finally installs the protected mode
+ * 5) and then updates the memory description variable
+ *
+ * this function then update the memory description variable.
  */
 
 void			pmode_init(void)
 {
   memset(gdt, 0x0, PMODE_GDT_ENTRIES * sizeof(t_gdte));
+
+  /*
+   * 1)
+   */
 
   pmode_gdt_set(PMODE_GDT_KERNEL_CS, 0x0, 0xffffffff,
 		PMODE_GDT_PRESENT | PMODE_GDT_DPL0 | PMODE_GDT_S |
@@ -212,15 +231,24 @@ void			pmode_init(void)
 		PMODE_GDT_PRESENT | PMODE_GDT_DPL3 | PMODE_GDT_S |
 		PMODE_GDT_DATA, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
 
+  /*
+   * 2)
+   */
+
   gdtr.address = (t_uint32)gdt;
   gdtr.size = (t_uint16)(PMODE_GDT_VALID_ENTRIES * sizeof(t_gdte));
 
-  kaneton.areas[1].address = PMODE_GDT_ADDR;
-  kaneton.areas[2].size = PAGESZ;
-
   LGDT(gdtr);
 
+  /*
+   * 3)
+   */
+
   pmode_update_registers(PMODE_GDT_KERNEL_CS, PMODE_GDT_KERNEL_DS);
+
+  /*
+   * 4)
+   */
 
   pmode_enable();
 
@@ -229,4 +257,11 @@ void			pmode_init(void)
 #if (IA32_DEBUG & IA32_DEBUG_GDT)
   pmode_gdt_dump();
 #endif
+
+  /*
+   * 5)
+   */
+
+  memory.areas[1].address = PMODE_GDT_ADDR;
+  memory.areas[1].size = PAGESZ;
 }

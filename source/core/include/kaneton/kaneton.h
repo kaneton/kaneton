@@ -5,13 +5,13 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton/core/include/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Mon May 30 16:31:17 2005   mycure
+ * last update   Wed Jun  1 11:55:31 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
@@ -37,7 +37,7 @@ typedef struct			s_area
   t_psize			size;
 }				t_area;
 
-typedef struct			s_kaneton
+typedef struct			s_memory
 {
   t_paddr			start;
   t_psize			size;
@@ -48,7 +48,7 @@ typedef struct			s_kaneton
   t_area*			areas;
   t_uint32			nareas;
 
-  /* XXX machdep gdtr, cons(x,y), */
-}				t_kaneton;
+  machdep_include(memory);
+}				t_memory;
 
 #endif

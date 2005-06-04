@@ -11,13 +11,21 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Mon May 30 22:26:56 2005   mycure
+ * last update   Wed Jun  1 12:53:08 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
 
-extern t_kaneton	kaneton;
+/*
+ * the memory description variable
+ */
+
+extern t_memory		memory;
+
+/*
+ * the kernel page directory and page tables
+ */
 
 t_pde*			pd __ALIGNED__(4096) = (t_pde*)PAGING_PD;
 t_pte*			pt0 __ALIGNED__(4096) = (t_pte*)PAGING_PT0;
@@ -28,6 +36,7 @@ t_pte*			pt1 __ALIGNED__(4096) = (t_pte*)PAGING_PT1;
  * is very useful for debugging.
  */
 
+#if (IA32_DEBUG & IA32_DEBUG_PAGING)
 void			paging_dump_table(t_pte*	table,
 					  t_opts	opts)
 {
@@ -91,16 +100,19 @@ void			paging_dump_table(t_pte*	table,
 
   printf("\n");
 }
+#endif
 
 /*
  * this function dumps a page directory
  */
 
+#if (IA32_DEBUG & IA32_DEBUG_PAGING)
 void			paging_dump_directory(t_pde*	directory,
 					      t_opts	opts)
 {
   paging_dump_table((t_pte*)directory, opts);
 }
+#endif
 
 /*
  * this function enables the paging mode setting one bit in cr0.
@@ -121,10 +133,11 @@ void			paging_enable(void)
  *
  * 1) installs the page directory
  * 2) installs the identity mapping via the first page table
- * 3) installs extra identity mapping with the second page table
- *    to be able to map the kernel stack
- * 4) load the new page directory
- * 5) enable the paging mode
+ * 3) installs extra identity mapping to be able to map the kernel code,
+ *    the kernel stack and the GDT
+ * 4) loads the new page directory
+ * 5) enables the paging mode
+ * 6) updates the memory description variable
  */
 
 void			paging_init(void)
@@ -157,7 +170,7 @@ void			paging_init(void)
   memset(pt1, 0x0, PAGING_NPTE * sizeof(t_pte));
 
   for (i = 0;
-       addr < (KANETON_KERNEL_STACK + KANETON_KERNEL_STACKSZ);
+       addr < (BOOTLOADER_KSTACK + BOOTLOADER_KSTACKSZ);
        i++, addr += 4096)
     pt1[PAGING_PTE(addr)] = addr | PAGING_P | PAGING_RW | PAGING_S;
 
@@ -174,116 +187,23 @@ void			paging_init(void)
   paging_enable();
 
   cons_msg('+', "paging enabled\n");
+
+  /*
+   * 6)
+   */
+
+  memory.areas[2].address = PAGING_PT0;
+  memory.areas[2].size = 3 * PAGESZ; /* PD, PT0, PT1 */
+
+XXX
+
+  /* XXX faire en sorte de copier le necessaire des infos pour que
+   *     ca fonctionne une fois le kernel lance.
+   *   on doit copier: t_memory, t_area[], t_module[]
+   * genre calculer pour faire ca:
+   *
+   * [t_memory: areas, modules][areas][modules]
+   *             |_______|_______^        ^
+   *                     |________________|
+   */
 }
-
-/*
-
-t_pde*pgd = (t_pde *)PMAP_PD_ADDR;
-t_pte*ptk = (t_pte *)PMAP_PTK_ADDR;
-t_pte*ptm = (t_pte *)PMAP_PTM_ADDR;
-t_pte*pts = (t_pte *)PMAP_PTS_ADDR;
-t_pte*pth = (t_pte *)PMAP_PTH_ADDR;
-t_pte*ptt = (t_pte *)PMAP_PTT_ADDR;
-t_pte*pt0 = (t_pte *)PMAP_PT0_ADDR;
-
-voidvmap_init(multiboot_info_t *minfo)
-{
-  module_t*mod = (module_t *)minfo->mods_addr;
-  intindex;
-  intpde;
-  intpa;
-  intva;
-  inti;
-
-  memset(pgd, 0, sizeof (t_pde) * PD_ENTRIES);
-  memset(ptk, 0, sizeof (t_pte) * PT_ENTRIES);
-  memset(ptm, 0, sizeof (t_pte) * PT_ENTRIES);
-  memset(ptt, 0, sizeof (t_pte) * PT_ENTRIES);
-  memset(pt0, 0, sizeof (t_pte) * PT_ENTRIES);
-  memset(pts, 0, sizeof (t_pte) * PT_ENTRIES);
-  memset(pth, 0, sizeof (t_pte) * PT_ENTRIES);
-
-  // identity mapping with pt0
-  // liveness mapping
-
-  pde = (0x0 & PD_MASK) >> PD_SHIFT;
-  pgd[pde] =  PMAP_PT0_ADDR | PG_RW | PG_P;
-
-  for (index = 0; index < 1024; index++)
-    {
-      pa = index * PAGESZ;
-      va = index * PAGESZ;
-      pde = (va & PT_MASK) >> PT_SHIFT;
-      pt0[pde] = pa | PG_RW | PG_P;
-    }
-
-  // kernel mapping
-
-  pde = (VMAP_KERN_ADDR & PD_MASK) >> PD_SHIFT;
-  pgd[pde] = PMAP_PTK_ADDR | PG_RW | PG_P;
-
-  for (i = 0, index = mod->mod_start;
-       index < AROUND(mod->mod_end);
-       index += PAGESZ, i++)
-    {
-      pa = index;
-      va = VMAP_KERN_ADDR + (i * PAGESZ);
-      pde = (va & PT_MASK) >> PT_SHIFT;
-      ptk[pde] = pa | PG_RW | PG_P;
-    }
-
-  // console mapping
-
-  pa = PMAP_CONS_ADDR;
-  va = VMAP_CONS_ADDR;
-  pde = (va & PT_MASK) >> PT_SHIFT;
-  ptk[pde] = pa | PG_RW | PG_P;
-
-  // memory management mapping
-
-  pde = (VMAP_PTT_ADDR & PD_MASK) >> PD_SHIFT;
-  pgd[pde] = PMAP_PTM_ADDR | PG_RW | PG_P;
-
-  pa = PMAP_PTT_ADDR;
-  va = VMAP_PTT_ADDR;
-  pde = (va & PT_MASK) >> PT_SHIFT;
-  ptm[pde] = pa | PG_RW | PG_P;
-
-  pa = PMAP_MNG_ADDR;
-  va = VMAP_MNG_ADDR;
-  pde = (va & PT_MASK) >> PT_SHIFT;
-  ptm[pde] = pa | PG_RW | PG_P;
-
-  // super page table mapping
-
-  pde = (VMAP_TPAGE_ADDR & PD_MASK) >> PD_SHIFT;
-  pgd[pde] = PMAP_PTT_ADDR | PG_RW | PG_P;
-
-  for (index = 0; index < PMAP_KERN_NPGS; index++)
-    {
-      pa = PMAP_PD_ADDR + (index * PAGESZ);
-      va = VMAP_TPAGE_ADDR + (index * PAGESZ);
-      pde = (va & PT_MASK) >> PT_SHIFT;
-      ptt[pde] = pa | PG_RW | PG_P;
-    }
-
-  // heap mapping
-
-  pde = (VMAP_HEAP_ADDR & PD_MASK) >> PD_SHIFT;
-  pgd[pde] = PMAP_PTH_ADDR | PG_RW | PG_P;
-
-  // stack mapping
-
-  pde = (VMAP_STACK_ADDR & PD_MASK) >> PD_SHIFT;
-  pgd[pde] = PMAP_PTS_ADDR | PG_RW | PG_P;
-
-  pa = PMAP_STACK_ADDR;
-  va = VMAP_STACK_ADDR;
-  pde = (va & PT_MASK) >> PT_SHIFT;
-  pts[pde] = pa | PG_RW | PG_P;
-
-  pg_enable();
-}
-
-
-*/
