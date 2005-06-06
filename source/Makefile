@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/data/research/projects/kaneton/source
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Wed May 25 06:07:18 2005   mycure
+## last update   Wed Jun  1 11:12:24 2005   mycure
 ##
 
 all:			kaneton
@@ -72,12 +72,12 @@ proto:			.common.mk
 # distribution
 #
 
-CONF			=	conf/$(USER)/$(USER).conf
-MODULES			=	conf/$(USER)/modules.conf
+CONF			=		conf/$(USER)/$(USER).conf
+MODULES			=		conf/$(USER)/modules.conf
 
-BOOTLOADER		=	`cat $(CONF)				| \
-				 grep -E "^BOOTLOADER = .*$$"		| \
-				 cut -b 14-`
+BOOTLOADER		=		`cat $(CONF)			| \
+					 grep -E "^BOOTLOADER = .*$$"	| \
+					 cut -b 14-`
 
 boot-init:		.common.mk
 	@case "$(BOOTLOADER)" in					\

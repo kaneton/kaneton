@@ -5,13 +5,13 @@
 ## 
 ## .bochsrc
 ## 
-## path          /home/mycure/data/research/projects/kaneton/source
+## path          /home/mycure/kaneton/dist
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 01:49:25 2005   mycure
-## last update   Fri May 27 10:44:15 2005   mycure
+## last update   Sat Jun  4 22:30:50 2005   mycure
 ##
 
 #
@@ -19,7 +19,12 @@
 #
 
 romimage: file=/usr/local/share/bochs/BIOS-bochs-2-processors, address=0xf0000
+
+## normal case
 vgaromimage: /usr/local/share/bochs/VGABIOS-elpin-2.40
+
+## for vbe
+#vgaromimage: /home/mycure/VGABIOS-lgpl-latest.bin
 
 ips: 500000
 megs: 32

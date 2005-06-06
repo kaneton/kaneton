@@ -5,13 +5,13 @@
 ## 
 ## common.mk
 ## 
-## path          /home/mycure/data/research/projects/kaneton/source
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Fri May 27 10:32:58 2005   mycure
+## last update   Sat Jun  4 22:18:25 2005   mycure
 ##
 
 #
@@ -20,6 +20,7 @@
 
 _SRC_DIR_		=		___kaneton_sed___
 _CORE_DIR_		=		$(_SRC_DIR_)/core
+_CORE_BOOTSTRAO_DIR_	=		$(_SRC_DIR_)/core/bootstrap
 _CORE_BOOTLOADER_DIR_	=		$(_SRC_DIR_)/core/bootloader
 _CORE_INCLUDE_DIR_	=		$(_SRC_DIR_)/core/include
 _CORE_KANETON_DIR_	=		$(_SRC_DIR_)/core/kaneton
@@ -47,6 +48,7 @@ _LILO_			=		$(_UTILS_DIR_)/lilo.sh
 # kaneton binaries
 #
 
+_BOOTSTRAP_		=		$(_CORE_BOOTSTRAP_DIR_)/bootstrap
 _BOOTLOADER_		=		$(_CORE_BOOTLOADER_DIR_)/bootloader
 _KANETON_		=		$(_CORE_KANETON_DIR_)/kaneton
 
@@ -84,7 +86,7 @@ include			$(_SRC_DIR_)/.kaneton.mk
 #
 
 %.o:		%.asm
-	$(call cc-asm-o,$<,$@,)
+	$(call cc-asm-o,$<,$@,-f elf)
 
 %.o:		%.S
 	$(call cc-S-o,$<,$@,)
@@ -178,13 +180,13 @@ endef
 # from asm file to object file
 #
 # $(1):		asm file
-# $(2):		object file
+# $(2):		elf file
 # $(3):		advanced options
 #
 
 define cc-asm-o
   @$(call pretty-printer,green,NASM,$(1),			)	; \
-  $(_NASM_) -f elf $(_KANETON_OPTS_) $(3) $(1) -o $(2)
+  $(_NASM_) $(_KANETON_OPTS_) $(3) $(1) -o $(2)
 endef
 
 #
