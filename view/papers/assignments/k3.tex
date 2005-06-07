@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/papers/assignments/k3.tex
 %%
 %% created       matthieu bucchianeri   [fri feb 10 13:52:29 2006]
-%% updated       matthieu bucchianeri   [fri feb 10 14:57:06 2006]
+%% updated       matthieu bucchianeri   [wed feb 15 23:33:56 2006]
 %%
 
 \section{k3}
@@ -52,14 +52,14 @@ adding the following functions:
 
 \prototype{t\_error \textbf{segment\_read}(t\_segid \textbf{segid},
                                            t\_paddr \textbf{offs},
-                                           const void* \textbf{buff},
+                                           void* \textbf{buff},
                                            t\_psize \textbf{sz});}
 
 This function reads raw data from a segment into a buffer.
 
 \prototype{t\_error \textbf{segment\_write}(t\_segid \textbf{segid},
                                             t\_paddr \textbf{offs},
-                                            void* \textbf{buff},
+                                            const void* \textbf{buff},
                                             t\_psize \textbf{sz});}
 
 This function writes data to a segment.

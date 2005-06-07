@@ -4,12 +4,7 @@
  inventaire des fonctions a terminer :
   - as_clone
   - as_vaddr
-  - segment_clone
-  - segment_read / write / copy
-  - segment_split / coalesce / resize
   - ia32_region_release
-  - segment_catch
-  - region_reserve	<< verifier  l'adresse pour le OPT_FORCE
   - gdt_import 		<< eventuellement la virer
   - ldt_get_segment
   - set_delete_bpt	<< julien !

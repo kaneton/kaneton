@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 31 00:39:03 2006]
+ * updated       matthieu bucchianeri   [wed feb 15 23:44:25 2006]
  */
 
 /*
@@ -374,52 +374,378 @@ t_error			segment_give(t_asid		asid,
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
+/*
+ * this function  resizes a  segment. if there  is not enough  room to
+ * enlarge  the segment,  a new  one  is allocated  elsewhere and  the
+ * previous one is cleared.
+ *
+ * steps:
+ *
+ * 1) search for the designated segment.
+ * 2) if we are increasing the size.
+ *  a) check for the next segment.
+ *  b) if there is no room for the segment, create a new one, copy data
+       and release previous one.
+   3) otherwise, simply change the size field.
+ * 4) call machine dependent code.
+ */
+
 t_error			segment_resize(t_segid		segid,
-				       t_psize		new_size)
+				       t_psize		new_size,
+				       t_segid*		new_seg)
 {
+  o_segment*		o;
+  o_segment*		onext;
+  t_iterator		it;
+  t_iterator		next;
+  t_uint8		changed = 0;
+
   SEGMENT_ENTER(segment);
 
-  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  /*
+   * 1)
+   */
+
+  if (set_locate(segment->container, segid, &it) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (set_object(segment->container, it, (void**)&o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (new_size > o->size)
+    {
+
+      /*
+       * a)
+       */
+
+      if (set_next(segment->container, it, &next) == ERROR_NONE)
+	{
+	  if (set_object(segment->container, next, (void**)&onext) !=
+	      ERROR_NONE)
+	    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+	  /*
+	   * b)
+	   */
+
+	  if (o->address + new_size >= onext->address)
+	    {
+	      if (segment_reserve(o->asid, new_size, o->perms, new_seg) !=
+		  ERROR_NONE)
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+	      if (segment_copy(*new_seg, 0, segid, 0, o->size) != ERROR_NONE)
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+	      if (segment_release(segid) != ERROR_NONE)
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+	      changed = 1;
+	    }
+	}
+    }
+
+  /*
+   * 3)
+   */
+
+  if (!changed)
+    {
+      o->size = new_size;
+      *new_seg = segid;
+    }
+
+  /*
+   * 4)
+   */
+
+  if (machdep_call(segment, segment_resize, segid, new_size) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
 }
+
+/*
+ * this function splits a segment into two new segments.
+ *
+ * steps:
+ *
+ * 1) get address space and segment objects.
+ * 2) check for split point and cut first segment.
+ * 3) create the second segment.
+ * 4) call machine-dependent code.
+ */
 
 t_error			segment_split(t_segid		segid,
 				      t_psize		sz1,
 				      t_segid*		s1,
 				      t_segid*		s2)
 {
+  o_as*			as;
+  o_segment*		o;
+  o_segment		n;
+
   SEGMENT_ENTER(segment);
 
-  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  /*
+   * 1)
+   */
+
+  if (segment_get(segid, &o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (as_get(o->asid, &as) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (sz1 >= o->size)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  o->size = sz1;
+  *s1 = segid;
+
+  /*
+   * 3)
+   */
+
+  n.asid = o->asid;
+  n.size = o->size - sz1;
+  n.perms = o->perms;
+  n.address = o->address + sz1;
+
+  *s2 = n.segid = (t_segid)n.address;
+
+  if (set_add(segment->container, &n) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (set_add(as->segments, &n.segid) != ERROR_NONE)
+    {
+      set_remove(segment->container, n.segid);
+
+      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 4)
+   */
+
+  if (machdep_call(segment, segment_split, segid, sz1, s1, s2) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
 }
+
+/*
+ * this function coalesce two adjacent segments.
+ *
+ * steps:
+ *
+ * 1) swap the two segments if necessary so the s1 is the lower address segment
+ * 2) get the two segment objects.
+ * 3) ensure the two segments are adjacent.
+ * 4) enlarge the first one so it overlap with the second one.
+ * 5) release the now useless second segment.
+ * 6) call machine-dependent code.
+ */
 
 t_error			segment_coalesce(t_segid	s1,
 					 t_segid	s2,
 					 t_segid*	new_seg)
 {
+  o_segment*		seg1;
+  o_segment*		seg2;
+  t_segid		tmp;
+
   SEGMENT_ENTER(segment);
 
-  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  /*
+   * 1)
+   */
+
+  if (s2 < s1)
+    {
+      tmp = s1;
+      s1 = s2;
+      s2 = tmp;
+    }
+
+  /*
+   * 2)
+   */
+
+  if (segment_get(s1, &seg1) != ERROR_NONE ||
+      segment_get(s2, &seg1) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (seg1->address + seg1->size != seg2->address)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  seg1->size += seg2->size;
+
+  /*
+   * 5)
+   */
+
+  if (segment_release(s2) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 6)
+   */
+
+  if (machdep_call(segment, segment_coalesce, s1, s2, new_seg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
 }
+
+/*
+ * this function reads directly from a segment to a buffer.
+ *
+ * steps:
+ *
+ * 1) get the segment object.
+ * 2) check offset and size.
+ * 3) map the segment portion with a region.
+ * 4) copy from segment to the buffer.
+ * 5) unmap the region.
+ */
 
 t_error			segment_read(t_segid		segid,
 				     t_paddr		offs,
-				     const void*	buff,
+				     void*		buff,
 				     t_psize		sz)
 {
+  o_segment*		o;
+  t_regid		reg;
+
   SEGMENT_ENTER(segment);
 
-  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  /*
+   * 1)
+   */
+
+  if (segment_get(segid, &o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (offs + sz > o->size)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (region_reserve(o->asid, segid, offs, REGION_OPT_NONE, 0, sz, &reg) !=
+      ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  memcpy(buff, (void*)(t_vaddr)reg, sz);
+
+  /*
+   * 5)
+   */
+
+  if (region_release(o->asid, reg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
 }
+
+/*
+ * this function write directly to a segment from a buffer.
+ *
+ * steps:
+ *
+ * 1) get the segment object.
+ * 2) check offset and size.
+ * 3) map the segment portion with a region.
+ * 4) copy from the buffer to the segment.
+ * 5) unmap the region.
+ */
 
 t_error			segment_write(t_segid		segid,
 				      t_paddr		offs,
-				      void*		buff,
+				      const void*	buff,
 				      t_psize		sz)
 {
+  o_segment*		o;
+  t_regid		reg;
+
   SEGMENT_ENTER(segment);
 
-  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  /*
+   * 1)
+   */
+
+  if (segment_get(segid, &o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (offs + sz > o->size)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (region_reserve(o->asid, segid, offs, REGION_OPT_NONE, 0, sz, &reg) !=
+      ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  memcpy((void*)(t_vaddr)reg, buff, sz);
+
+  /*
+   * 5)
+   */
+
+  if (region_release(o->asid, reg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
 }
+
+/*
+ * this function copies a block of bytes from one segment to another.
+ *
+ * steps:
+ *
+ * 1) get the segment objects.
+ * 2) check for offsets and size.
+ * 3) map temporarily the two segments.
+ * 4) do the copy.
+ * 5) unmap the segments.
+ */
 
 t_error			segment_copy(t_segid		dst,
 				     t_paddr		offsd,
@@ -427,9 +753,54 @@ t_error			segment_copy(t_segid		dst,
 				     t_paddr		offss,
 				     t_psize		sz)
 {
+  t_regid		regs;
+  t_regid		regd;
+  o_segment*		segs;
+  o_segment*		segd;
+
   SEGMENT_ENTER(segment);
 
-  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  /*
+   * 1)
+   */
+
+  if (segment_get(dst, &segd) != ERROR_NONE ||
+      segment_get(src, &segs) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (offsd + sz > segd->size || offss + sz > segs->size)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (region_reserve(segs->asid, src, offss, REGION_OPT_NONE, 0, sz, &regs) !=
+      ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (region_reserve(segd->asid, dst, offsd, REGION_OPT_NONE, 0, sz, &regd) !=
+      ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  memcpy((void*)(t_vaddr)regd, (void*)(t_vaddr)regs, sz);
+
+  /*
+   * 5)
+   */
+
+  if (region_release(segs->asid, regs) != ERROR_NONE ||
+      region_release(segd->asid, regd) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
 /*
@@ -564,18 +935,20 @@ t_error			segment_release(t_segid			segid)
  *
  * steps:
  *
- * 1) gets the address space object.
- * 2) gets the segment object.
- * 3) checks the segment type.
- * 4) finally adds the segment into the address space object
- * 5) and marks the segment as classical memory segment.
- * 6) calls the machine-dependent code.
+ * 1) get the address space object.
+ * 2) get the segment object.
+ * 3) check the segment type.
+ * 4) remove the segment from the previous as.
+ * 5) finally add the segment into the address space object.
+ * 6) mark the segment as classical memory segment and update the asid.
+ * 7) call the machine-dependent code.
  */
 
 t_error			segment_catch(t_asid			asid,
 				      t_segid			segid)
 {
   o_as*                 as;
+  o_as*			old;
   o_segment*		o;
 
   SEGMENT_ENTER(segment);
@@ -605,20 +978,28 @@ t_error			segment_catch(t_asid			asid,
    * 4)
    */
 
-  /* XXX d'abord l'enlever de l'ancien asid si present, ensuite le rajouter
-   mais egalement mettre l'asid correctement */
-
-  if (set_add(as->segments, &o->segid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (o->asid != ID_UNUSED && as_get(o->asid, &old) == ERROR_NONE)
+    {
+      if (set_remove(old->segments, o->segid) != ERROR_NONE)
+	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    }
 
   /*
    * 5)
    */
 
-  o->type = SEGMENT_TYPE_MEMORY;
+  if (set_add(as->segments, &o->segid) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 6)
+   */
+
+  o->type = SEGMENT_TYPE_MEMORY;
+  o->asid = asid;
+
+  /*
+   * 7)
    */
 
   if (machdep_call(segment, segment_catch, asid, segid) != ERROR_NONE)

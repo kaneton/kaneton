@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [tue jan 31 00:44:09 2006]
+ * updated       matthieu bucchianeri   [wed feb 15 23:47:25 2006]
  */
 
 /*
@@ -201,7 +201,8 @@ t_error			region_reserve(t_asid			asid,
     {
     case REGION_OPT_FORCE:
       {
-	/* XXX verifier que cette adresse est bonne */
+	if (address < region->start || address >= region->start + region->size)
+	  REGION_LEAVE(region, ERROR_UNKNOWN);
 
 	o.address = address;
 

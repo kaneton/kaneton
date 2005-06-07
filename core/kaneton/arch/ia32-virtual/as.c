@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 31 00:27:59 2006]
+ * updated       matthieu bucchianeri   [wed feb 15 22:16:08 2006]
  */
 
 /*
@@ -145,6 +145,11 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 #endif
 
 	      if (segment_inject(&seg, *asid) != ERROR_NONE)
+		REGION_LEAVE(region, ERROR_UNKNOWN);
+
+	      if (region_reserve(kasid, (t_segid)seg.address, 0,
+				 REGION_OPT_FORCE, (t_vaddr)seg.address,
+				 PAGESZ, &reg) != ERROR_NONE)
 		REGION_LEAVE(region, ERROR_UNKNOWN);
 	    }
 	}

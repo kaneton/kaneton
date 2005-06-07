@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/papers/assignments/k2.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       matthieu bucchianeri   [wed feb 15 18:07:47 2006]
+%% updated       matthieu bucchianeri   [wed feb 15 23:33:37 2006]
 %%
 
 %
@@ -444,7 +444,8 @@ these must be passed to the inject function at kernel boot time.
 This function gives an address space from one process to another.
 
 \prototype{t\_error \textbf{segment\_resize}(t\_segid \textbf{segid},
-                                             t\_psize \textbf{new\_size});}
+                                             t\_psize \textbf{new\_size},
+                                             t\_segid \textbf{new\_seg});}
 
 This function resizes a segment.
 

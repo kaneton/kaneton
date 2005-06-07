@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/include/kaneton/segment.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [thu jan 26 11:48:16 2006]
+ * updated       matthieu bucchianeri   [wed feb 15 23:24:45 2006]
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -105,11 +105,11 @@ typedef struct
 						    t_segid*);
   t_error			(*segment_read)(t_segid,
 						t_paddr,
-						const void*,
+						void*,
 						t_psize);
   t_error			(*segment_write)(t_segid,
 						 t_paddr,
-						 void*,
+						 const void*,
 						 t_psize);
   t_error			(*segment_copy)(t_segid,
 						t_paddr,
@@ -194,7 +194,8 @@ t_error			segment_give(t_asid		asid,
 				     t_segid		segid);
 
 t_error			segment_resize(t_segid		segid,
-				       t_psize		new_size);
+				       t_psize		new_size,
+				       t_segid*		new_seg);
 
 t_error			segment_split(t_segid		segid,
 				      t_psize		sz1,
@@ -207,12 +208,12 @@ t_error			segment_coalesce(t_segid	s1,
 
 t_error			segment_read(t_segid		segid,
 				     t_paddr		offs,
-				     const void*	buff,
+				     void*		buff,
 				     t_psize		sz);
 
 t_error			segment_write(t_segid		segid,
 				      t_paddr		offs,
-				      void*		buff,
+				      const void*	buff,
 				      t_psize		sz);
 
 t_error			segment_copy(t_segid		dst,
