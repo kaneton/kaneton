@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/papers/assignments/k2.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       matthieu bucchianeri   [fri feb 10 14:51:19 2006]
+%% updated       matthieu bucchianeri   [wed feb 15 18:07:47 2006]
 %%
 
 %
@@ -20,14 +20,36 @@ the microkernel:
 
 \begin{itemize}
   \item
-    The id manager.
+    The id manager
   \item
-    The set manager.
+    The set manager
   \item
-    The address space manager.
+    The address space manager
   \item
-    The segment manager.
+    The segment manager
+  \item
+    A  simple  console manager  (should  be  copy  \& paste  from  your
+    bootloader's code)
 \end{itemize}
+
+The id  manager is very important  because it is very  simple and will
+introduce you how managers  are implemented in kaneton. Every students
+should be able  to understand it before starting  other managers (sets
+and memory).
+
+as  and  segment  introduce  calls  to  machine-dependent  code,  this
+mecanism  must be well  understood by  every students.  Moreover, many
+parts of  the kernel will  lead student to  use the sets, so  the sets
+interface must be clearly understood.
+
+For the two first managers,  you have to follow precisely the bevavior
+as described  in the kaneton  reference documentation. For  the memory
+management, you must be totally compliant with the given interface and
+the   described   behavior,   but   algorithm  (especially   for   the
+machine-dependent code) are design-free.
+
+To  finish, notice  that  the current  implementation  of the  console
+driver is not clean and will be changed in future kaneton projects.
 
 %
 % id manager
@@ -306,8 +328,8 @@ An address space is composed of a set of segments and a set of regions.
 
 \subsubsection{Students work}
 
-Students have to  write all code of this manager. No  need to say that
-intensive  use  of  sets  (previously described)  is  necessary.  This
+Students have to write the whole  code of this manager. No need to say
+that intensive use of  sets (previously described) is necessary.  This
 manager will introduce you how to program with the set manager.
 
 \prototype{t\_error \textbf{as\_show}(t\_asid \textbf{asid});}
@@ -375,6 +397,9 @@ point of view.  Next, they will fill the \textbf{do\_as} structure in
 To  finish,   they  must   implement  all  dependent   functions  they
 need. Remember that functions in \textit{libia32} should be reused.
 
+Take a look at the  kaneton reference paper for more information about
+machine-dependent calls.
+
 %
 % segment manager.
 %
@@ -389,7 +414,8 @@ to read or write directly into physical memory.
 
 \subsubsection{Students work}
 
-Students have to write everything in this manager.
+Students have to write everything in this manager. Some functions will
+be added in k3.
 
 \prototype{t\_error \textbf{segment\_show}(t\_segid \textbf{segid});}
 
@@ -408,7 +434,9 @@ This function clones a segment copying its content.
 \prototype{t\_error \textbf{segment\_inject}(o\_segment* \textbf{seg},
                                              t\_asid \textbf{asid});}
 
-This function injects a preallocated segment in the segment container.
+This  function   injects  a  pre-allocated  segment   in  the  segment
+container.  This function  concerns k1  pre-reserved segments.  All of
+these must be passed to the inject function at kernel boot time.
 
 \prototype{t\_error \textbf{segment\_give}(t\_asid \textbf{asid},
                                            t\_segid \textbf{segid});}
@@ -531,6 +559,57 @@ must have the appropriate privilege level and permissions.
 \end{itemize}
 
 %
+% console manager
+%
+
+\subsection{console manager}
+
+\subsubsection{Students work}
+
+In fact only two functions are required for the console driver.
+
+\prototype{void \textbf{cons\_attr}(t\_uint8 \textbf{attr});}
+
+This is  the first \textbf{required} function.  This function modifies
+display attributes for next characters printing.
+
+\prototype{int \textbf{cons\_print\_char}(char \textbf{c});}
+
+This  is  the second  \textbf{required}  function.  It  adds a  single
+character with the currently defined attribute.
+
+Next  functions   are  not  necessary,  but  you   must  provide  some
+equivalent.
+
+\prototype{void \textbf{cons\_clear}(void);}
+
+This function clears the console.
+
+\prototype{void \textbf{cons\_scroll}(t\_uint16 \textbf{lines});}
+
+This function scrolls by given number of lines.
+
+\prototype{void \textbf{cons\_print\_string}(char* \textbf{string});}
+
+This function prints a string.
+
+\prototype{void \textbf{cons\_msg}(char \textbf{indicator},
+                                   char* \textbf{fmt},
+                                   ...);}
+
+This function is used to display formatted and coloured messages.
+
+\prototype{t\_error \textbf{cons\_init}(void);}
+
+\prototype{t\_error \textbf{cons\_clean}(void);}
+
+%
+% klibc introduction
+%
+
+\subsection{klibc introduction}
+
+%
 % modification to kernel main
 %
 
@@ -543,7 +622,16 @@ This  one is  contained  in \textit{core/kaneton/kaneton.c}.  Students
 must first initialize the \textbf{init} variable from the one given by
 the bootloader. Then, they  must initialize the differents manager. Do
 not forget that  it is better to initialize the  set manager before as
-an segment, since these managers rely on sets !
+and segment, since these managers rely on sets !
+
+Do not  forget to  initialize the kernel  standard library.   You must
+initialize  the  \textbf{printf}  function  passing  pointers  to  the
+console  manager functions to  \textbf{print\_init}. In  addition, you
+must initialize the kernel  \textbf{malloc} function which is used for
+early initial stages  (until as, segment and region  are running, this
+will  be  possible  in  k3).  You must  use  the  \textbf{alloc\_init}
+function,  passing  the  survey   area  pre-allocated  in  k1  (fields
+\textbf{alloc} and \textbf{allocsz} of \textbf{t\_init}).
 
 Finally, all  managers must be destroyed  calling the \textbf{\_clean}
 functions for each one (in the good order !).
