@@ -5,13 +5,13 @@
 ## 
 ## common.mk
 ## 
-## path          /home/mycure/kaneton/env/common
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Wed Jun  8 16:53:19 2005   mycure
+## last update   Wed Jun  8 17:23:40 2005   mycure
 ##
 
 #
@@ -269,4 +269,19 @@ endef
 define proto
   @$(call pretty-printer,yellow,PROTO,$(1),			)	; \
   $(_PROTO_) $(2) $(1)
+endef
+
+#
+# link
+#
+# $(1):		link created
+# $(2):		destination
+# $(3):		advances options
+#
+
+define link
+  echo "---------- link from $(1) to $(2) [$(3)] in $(PWD)"
+
+  @$(call pretty-printer,yellow,LINK,$(1),			)	; \
+  $(_LN_) $(3) $(2) $(1)
 endef

@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/src/libs/klibc
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:29:19 2005   mycure
-## last update   Thu May  5 22:41:39 2005   mycure
+## last update   Wed Jun  8 17:20:19 2005   mycure
 ##
 
 include			../../.common.mk
@@ -29,8 +29,8 @@ CFLAGS			+=		-D___kaneton
 all:			sublibs
 	$(call ar-a-a,$(LIBNAME),$(LIBC) $(LIBSYS),)
 
-	@$(_LN_) klibc/$(LIBNAME) $(_LIBC_A_)
-	@$(_LN_) klibc/$(LIBINCLUDE) $(_LIBC_H_)
+	$(call link,$(_LIBC_A_),klibc/$(LIBNAME),)
+	$(call link,$(_LIBC_H_),klibc/$(LIBINCLUDE),)
 
 sublibs:
 	@for i in $(SUBDIRS) ; do					\

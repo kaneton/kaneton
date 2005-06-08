@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/bootloader/arch/ia32
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Sat Jun  4 20:38:04 2005   mycure
+## last update   Wed Jun  8 17:20:40 2005   mycure
 ##
 
 include			../../../../.common.mk
@@ -23,8 +23,7 @@ VERSION_O		=		$(VERSION_C:.c=.o)
 
 BOOTLOADER_INCLUDE	=		$(_CORE_INCLUDE_DIR_)/kaneton/bootloader.h
 
-BOOTLOADER_O		=		$(VERSION_O)			\
-					bootloader.o			\
+BOOTLOADER_O		=		bootloader.o			\
 					cons.o				\
 					entry.o				\
 					multiboot.o			\
@@ -42,16 +41,15 @@ DATE			=		`date`
 
 CFLAGS			+=		-D___bootloader -D___kaneton
 
-all:			version $(BOOTLOADER_O)
-	$(call ld,$(BOOTLOADER),$(BOOTLOADER_O) $(_LIBC_A_),		\
-	  -T $(_LDS_DIR_)/bootloader.lds)
+all:			$(BOOTLOADER_O)
+	@echo -n "const char version[] = \"$(TITLE) $(VERSION)" > $(VERSION_C)
+	@echo " $(DATE) $(USER)@$(HOSTNAME)\";" >> $(VERSION_C)
+	$(call cc-c-o,$(VERSION_O),$(VERSION_C),)
 
-	@$(_LN_) arch/machdep/$(BOOTLOADER) $(_BOOTLOADER_)
+	$(call ld,$(BOOTLOADER),$(VERSION_O) $(BOOTLOADER_O)		\
+	  $(_LIBC_A_), -T $(_LDS_DIR_)/bootloader.lds)
 
-version:
-	@echo -n "const char version[] = \"$(TITLE) $(VERSION) " > $(VERSION_C)
-	@echo "$(DATE) $(USER)@$(HOSTNAME)\";" >> $(VERSION_C)
-	$(call cc-c-o,$(VERSION_C),$(VERSION_O),)
+	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
 
 distclean:
 	$(call rm,$(VERSION_C),)
