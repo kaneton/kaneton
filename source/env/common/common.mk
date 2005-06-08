@@ -5,13 +5,13 @@
 ## 
 ## common.mk
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/env/common
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sat Jun  4 22:18:25 2005   mycure
+## last update   Wed Jun  8 16:53:19 2005   mycure
 ##
 
 #
@@ -86,13 +86,13 @@ include			$(_SRC_DIR_)/.kaneton.mk
 #
 
 %.o:		%.asm
-	$(call cc-asm-o,$<,$@,-f elf)
+	$(call cc-asm-o,$@,$<,-f elf)
 
 %.o:		%.S
-	$(call cc-S-o,$<,$@,)
+	$(call cc-S-o,$@,$<,)
 
 %.o:		%.c
-	$(call cc-c-o,$<,$@,)
+	$(call cc-c-o,$@,$<,)
 
 #
 # pretty-printer defines
@@ -153,40 +153,40 @@ endef
 #
 # from C file to object file
 #
-# $(1):		C file
-# $(2):		object file
+# $(1):		object file
+# $(2):		C file
 # $(3):		advanced options
 #
 
 define cc-c-o
-  @$(call pretty-printer,green,CC,$(1),			)		; \
-  $(CC) $(CFLAGS) $(_KANETON_OPTS_) $(3) -c $(1) -o $(2)
+  @$(call pretty-printer,green,CC,$(2),			)		; \
+  $(CC) $(CFLAGS) $(_KANETON_OPTS_) $(3) -c $(2) -o $(1)
 endef
 
 #
 # from S file to object file
 #
-# $(1):		S file
-# $(2):		object file
+# $(1):		object file
+# $(2):		S file
 # $(3):		advanced options
 #
 
 define cc-S-o
-  @$(call pretty-printer,green,CC,$(1),			)		; \
-  $(CC) $(CFLAGS) $(_KANETON_OPTS_) $(3) -c $(1) -o $(2)
+  @$(call pretty-printer,green,CC,$(2),			)		; \
+  $(CC) $(CFLAGS) $(_KANETON_OPTS_) $(3) -c $(2) -o $(1)
 endef
 
 #
 # from asm file to object file
 #
-# $(1):		asm file
-# $(2):		elf file
+# $(1):		object file
+# $(2):		asm file
 # $(3):		advanced options
 #
 
 define cc-asm-o
-  @$(call pretty-printer,green,NASM,$(1),			)	; \
-  $(_NASM_) $(_KANETON_OPTS_) $(3) $(1) -o $(2)
+  @$(call pretty-printer,green,NASM,$(2),			)	; \
+  $(_NASM_) $(_KANETON_OPTS_) $(3) $(2) -o $(1)
 endef
 
 #
@@ -206,7 +206,7 @@ endef
 # from archives to archive
 #
 # $(1):		archive
-# $(2):		archives
+# $(2):		archive files
 # $(3):		advanced options
 #
 

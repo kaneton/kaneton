@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon May 30 22:36:40 2005   mycure
+ * last update   Mon Jun  6 14:57:42 2005   mycure
  */
 
 #include <libc.h>
@@ -74,11 +74,11 @@ void                    cons_print_char(char            c)
   cons.column++;
 }
 
-void		kaneton(t_kaneton*			kaneton)
+void		kaneton(t_memory*			memory)
 {
   printf("kaneton loaded successfully\n");
 
-  printf("&kaneton: 0x%x\n", kaneton);
+  printf("&memory: 0x%x\n", memory);
 
   //while (1);
 }

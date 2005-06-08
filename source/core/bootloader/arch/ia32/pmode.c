@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Wed Jun  1 12:10:34 2005   mycure
+ * last update   Mon Jun  6 14:52:58 2005   mycure
  */
 
 #include <libc.h>

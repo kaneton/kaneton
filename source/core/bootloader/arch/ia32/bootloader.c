@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jun  1 11:56:45 2005   mycure
+ * last update   Mon Jun  6 16:42:48 2005   mycure
  */
 
 #include <libc.h>
@@ -173,14 +173,13 @@ void			bootloader_memory_dump(void)
 	     memory.modules[i].name,
 	     memory.modules[i].address,
 	     memory.modules[i].size);
-  /*
+
   cons_msg('+', " areas: %u\n", memory.nareas);
 
   for (i = 0; i < memory.nareas; i++)
     cons_msg('+', "  [%u] 0x%x (0x%x)\n", i,
 	     memory.areas[i].address,
 	     memory.areas[i].size);
-  */
 }
 
 /*
@@ -250,6 +249,8 @@ int			bootloader(t_uint32		magic,
 
   pmode_init();
 
+  bootloader_memory_dump();
+
   /*
    * 4)
    */
@@ -276,7 +277,7 @@ int			bootloader(t_uint32		magic,
    * 6)
    */
 
-  /* XXX kernel(&memory); */
+  /* kernel(&memory); */
 
   asm volatile ("movl %0, %%ebp\n"
 		"movl %1, %%esp\n"

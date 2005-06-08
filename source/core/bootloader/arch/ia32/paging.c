@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Wed Jun  1 12:53:08 2005   mycure
+ * last update   Mon Jun  6 14:53:06 2005   mycure
  */
 
 #include <libc.h>
@@ -195,7 +195,7 @@ void			paging_init(void)
   memory.areas[2].address = PAGING_PT0;
   memory.areas[2].size = 3 * PAGESZ; /* PD, PT0, PT1 */
 
-XXX
+  //XXX
 
   /* XXX faire en sorte de copier le necessaire des infos pour que
    *     ca fonctionne une fois le kernel lance.
