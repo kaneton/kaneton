@@ -23,6 +23,9 @@
 #include "misc/types.h"
 #include "paging/paging.h"
 #include "pmode/pmode.h"
+#include "pmode/gdt.h"
+#include "pmode/idt.h"
+
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -30,12 +33,12 @@
  *      ../pmode/pmode.c
  *      ../pmode/gdt.c
  *      ../pmode/ldt.c
+ *      ../pmode/idt.c
  *      ../paging/paging.c
  *      ../paging/pd.c
  *      ../paging/pt.c
  *      ../paging/tlb.c
  *      ../interrupt/interrupt.c
- *      ../interrupt/idt.c
  */
 
 /*
@@ -133,6 +136,36 @@ t_error			ldt_build_selector(t_ldt*	table,
 
 
 /*
+ * ../pmode/idt.c
+ */
+
+t_error			idt_dump(t_idt*			dump_idt);
+
+t_error			idt_size(t_idt*			table,
+				 t_uint16		*size);
+
+t_error			idt_build(t_uint16		entries,
+				  t_paddr		base,
+				  t_idt*		idt,
+				  t_uint8		clear);
+
+t_error			idt_activate(t_idt		new_idt);
+
+t_error			idt_import(t_idt*		idt);
+
+t_error			idt_add_gate(t_idt*		table,
+				     t_uint16		index,
+				     t_gate		gate);
+
+t_error			idt_get_gate(t_idt*		table,
+				     t_uint16		index,
+				     t_gate*		gate);
+
+t_error			idt_delete_gate(t_idt*		table,
+					t_uint16	gate_id);
+
+
+/*
  * ../paging/paging.c
  */
 
@@ -205,10 +238,11 @@ t_error			tlb_flush(void);
  * ../interrupt/interrupt.c
  */
 
+t_error			interrupt_init(void);
 
-/*
- * ../interrupt/idt.c
- */
+t_error			interrupt_enable(t_uint8			irq);
+
+t_error			interrupt_disable(t_uint8			irq);
 
 
 /*

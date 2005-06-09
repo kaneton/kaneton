@@ -57,6 +57,16 @@
 	       : "=m" (_var_)						\
 	       :)
 
+#define		LIDT(_var_)						\
+  asm volatile("lidt %0\n"						\
+	       :							\
+	       : "m" (_var_))
+
+#define		SIDT(_var_)						\
+  asm volatile("sidt %0\n"						\
+	       : "=m" (_var_)						\
+	       :)
+
 #define		LCR3(_var_)						\
   asm volatile("movl %0, %%eax\n"					\
 	       "movl %%eax, %%cr3\n"					\

@@ -96,6 +96,7 @@
 #include <kaneton/set.h>
 #include <kaneton/stats.h>
 #include <kaneton/task.h>
+#include <kaneton/event.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

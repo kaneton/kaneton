@@ -25,7 +25,10 @@ include			../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		pmode paging interrupt #tss
+SUBDIRS			:=		pmode				\
+					paging				\
+					interrupt			#\
+#					#tss
 
 PMODE_LO		:=		pmode/pmode.lo
 PAGING_LO		:=		paging/paging.lo

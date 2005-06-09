@@ -78,6 +78,7 @@ typedef struct
 /*                                                                [cut] k1   */
 
   t_gdt				gdt;
+  t_idt				idt;
   t_directory			pd;
 
 /*                                                               [cut] /k1   */

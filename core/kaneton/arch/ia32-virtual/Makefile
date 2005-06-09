@@ -30,6 +30,7 @@ MACHDEP_LO		:=		machdep.lo
 MACHDEP_C		:=		as.c				\
 					region.c			\
 					segment.c			\
+					event.c				\
 					task.c
 
 MACHDEP_O		:=		$(MACHDEP_C:.c=.o)

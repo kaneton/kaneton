@@ -54,6 +54,16 @@ extern t_gdt		gdt;
 
 /*                                                                 [cut] /k2 */
 
+/*                                                                  [cut] k3 */
+
+/*
+ * global interrupt descriptor table
+ */
+
+extern t_idt		idt;
+
+/*                                                                 [cut] /k3 */
+
 /*
  * ---------- functions -------------------------------------------------------
  */
@@ -65,7 +75,7 @@ extern t_gdt		gdt;
  *
  * steps:
  *
- * 1) copies gdt from the init variable.
+ * 1) copie gdt and idt from the init variable.
  * 2) enable protected mode.
  */
 
@@ -77,6 +87,11 @@ t_error			pmode_init(void)
    */
 
   memcpy(&gdt, &init->machdep.gdt, sizeof (t_gdt));
+/*                                                                 [cut] /k2 */
+/*                                                                 [cut] k3 */
+  memcpy(&idt, &init->machdep.idt, sizeof (t_idt));
+/*                                                                 [cut] /k3 */
+/*                                                                 [cut] k2 */
 
   /*
    * 2)
@@ -118,20 +133,20 @@ t_error			pmode_enable(void)
 t_error			pmode_set_segment_registers(t_uint16	seg_code,
 						    t_uint16	seg_data)
 {
-  asm volatile ("pushl %0\n\t"
-		"pushl $pmode_update_registers_label\n\t"
-		"lret\n\t"
-		"pmode_update_registers_label:\n\t"
-		"movl %1, %%eax\n\t"
-		"movw %%ax, %%ds\n\t"
-		"movw %%ax, %%ss\n\t"
-		"movw %%ax, %%es\n\t"
-		"movw %%ax, %%fs\n\t"
-		"movw %%ax, %%gs\n\t"
-		:
-		: "g" (seg_code), "g" (seg_data)
-		: "memory", "%eax"
-		);
+  asm volatile("pushl %0\n\t"
+	       "pushl $pmode_update_registers_label\n\t"
+	       "lret\n\t"
+	       "pmode_update_registers_label:\n\t"
+	       "movl %1, %%eax\n\t"
+	       "movw %%ax, %%ds\n\t"
+	       "movw %%ax, %%ss\n\t"
+	       "movw %%ax, %%es\n\t"
+	       "movw %%ax, %%fs\n\t"
+	       "movw %%ax, %%gs\n\t"
+	       :
+	       : "g" (seg_code), "g" (seg_data)
+	       : "memory", "%eax"
+	       );
 
   return ERROR_NONE;
 }

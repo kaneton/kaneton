@@ -29,7 +29,8 @@ PMODE_LO		:=		pmode.lo
 
 PMODE_C			:=		pmode.c				\
 					gdt.c				\
-					ldt.c
+					ldt.c				\
+					idt.c
 
 PMODE_O			:=		$(PMODE_C:.c=.o)
 

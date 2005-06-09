@@ -31,6 +31,7 @@
 #include <arch/machdep/kaneton/region.h>
 #include <arch/machdep/kaneton/segment.h>
 #include <arch/machdep/kaneton/stats.h>
+#include <arch/machdep/kaneton/event.h>
 #include <arch/machdep/kaneton/task.h>
 
 /*
@@ -39,6 +40,7 @@
  *      ../../../../kaneton/arch/machdep/as.c
  *      ../../../../kaneton/arch/machdep/region.c
  *      ../../../../kaneton/arch/machdep/segment.c
+ *      ../../../../kaneton/arch/machdep/event.c
  *      ../../../../kaneton/arch/machdep/task.c
  */
 
@@ -81,6 +83,21 @@ t_error			ia32_region_clean(void);
 t_error			ia32_segment_init(t_fit			fit);
 
 t_error			ia32_segment_clean(void);
+
+
+/*
+ * ../../../../kaneton/arch/machdep/event.c
+ */
+
+t_error                 exception_generic(void);
+
+t_error                 interrupt_generic(void);
+
+t_error			ia32_event_init(void);
+
+t_error         ia32_event_add(t_uint16			id,
+			       t_prvl			privilege,
+			       t_uint32			handler);
 
 
 /*

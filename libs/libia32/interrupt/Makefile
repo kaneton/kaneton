@@ -27,8 +27,7 @@ include			../../../env/.env.mk
 
 INTERRUPT_LO		:=		interrupt.lo
 
-INTERRUPT_C		:=		interrupt.c			\
-					idt.c
+INTERRUPT_C		:=		interrupt.c
 
 INTERRUPT_O		:=		$(INTERRUPT_C:.c=.o)
 

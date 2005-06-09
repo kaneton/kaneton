@@ -81,7 +81,6 @@ t_init*			init;
 
 void			kaneton(t_init*				bootloader)
 {
-
 /*                                                                  [cut] k2 */
 
   /*
@@ -166,6 +165,13 @@ void			kaneton(t_init*				bootloader)
 
   if (task_init() != ERROR_NONE)
     kaneton_error("cannot initialise the task manager\n");
+
+  /*
+   * XXX EVENT
+   */
+
+  if (event_init() != ERROR_NONE)
+    kaneton_error("cannot initialize events\n");
 
 #ifdef CONF_ENABLE_CHECK
   check_tests();

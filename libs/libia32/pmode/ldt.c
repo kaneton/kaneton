@@ -215,8 +215,8 @@ t_error			ldt_add_segment(t_ldt*		table,
    * 2)
    */
 
-  table->descriptor[segment].type = GDT_TYPE_PRESENT |
-    GDT_TYPE_MK_DPL(descriptor.privilege);
+  table->descriptor[segment].type = DESC_TYPE_PRESENT |
+    DESC_MK_DPL(descriptor.privilege);
   table->descriptor[segment].type |= GDT_TYPE_S | descriptor.type.usr;
 
   /*
@@ -275,7 +275,7 @@ t_error			ldt_reserve_segment(t_ldt*	table,
 
   look = 1;
   while (look < table->count &&
-	 (table->descriptor[look].type & GDT_TYPE_PRESENT))
+	 (table->descriptor[look].type & DESC_TYPE_PRESENT))
     look++;
 
   if (look == table->count)
@@ -334,7 +334,7 @@ t_error			ldt_delete_segment(t_ldt*	table,
    * 2)
    */
 
-  table->descriptor[segment].type &= ~GDT_TYPE_PRESENT;
+  table->descriptor[segment].type &= ~DESC_TYPE_PRESENT;
 
   return ERROR_NONE;
 }

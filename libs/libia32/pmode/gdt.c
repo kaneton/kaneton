@@ -324,8 +324,8 @@ t_error			gdt_add_segment(t_gdt*		table,
    * 3)
    */
 
-  table->descriptor[segment].type = GDT_TYPE_PRESENT |
-    GDT_TYPE_MK_DPL(descriptor.privilege);
+  table->descriptor[segment].type = DESC_TYPE_PRESENT |
+    DESC_MK_DPL(descriptor.privilege);
   if (descriptor.is_system)
     table->descriptor[segment].type |= descriptor.type.sys;
   else
@@ -395,7 +395,7 @@ t_error			gdt_reserve_segment(t_gdt*	table,
 
   look = 1;
   while (look < table->count &&
-	 (table->descriptor[look].type & GDT_TYPE_PRESENT))
+	 (table->descriptor[look].type & DESC_TYPE_PRESENT))
     look++;
 
   if (look == table->count)
@@ -439,7 +439,7 @@ t_error			gdt_get_segment(t_gdt*		table,
    */
 
   if (index >= table->count ||
-      !(table->descriptor[index].type & GDT_TYPE_PRESENT))
+      !(table->descriptor[index].type & DESC_TYPE_PRESENT))
     return ERROR_UNKNOWN;
 
   /*
@@ -456,7 +456,7 @@ t_error			gdt_get_segment(t_gdt*		table,
   if (table->descriptor[index].flags & GDT_FLAG_GRANULAR)
     segment->limit *= 4096;
 
-  segment->privilege = GDT_TYPE_GET_DPL(table->descriptor[index].type);
+  segment->privilege = DESC_GET_DPL(table->descriptor[index].type);
 
   segment->is_system = !(table->descriptor[index].type & GDT_TYPE_S);
 
@@ -504,7 +504,7 @@ t_error			gdt_delete_segment(t_gdt*	table,
    * 3)
    */
 
-  table->descriptor[segment].type &= ~GDT_TYPE_PRESENT;
+  table->descriptor[segment].type &= ~DESC_TYPE_PRESENT;
 
   return ERROR_NONE;
 }
