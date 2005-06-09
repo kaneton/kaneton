@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jun  6 14:57:42 2005   mycure
+ * last update   Wed Jun  8 20:59:27 2005   mycure
  */
 
 #include <libc.h>
@@ -76,6 +76,8 @@ void                    cons_print_char(char            c)
 
 void		kaneton(t_memory*			memory)
 {
+  while (1);
+
   printf("kaneton loaded successfully\n");
 
   printf("&memory: 0x%x\n", memory);

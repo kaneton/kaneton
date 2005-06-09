@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Wed Jun  1 11:59:47 2005   mycure
+ * last update   Thu Jun  9 18:40:36 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
@@ -21,10 +21,12 @@
  * debug
  */
 
-#define IA32_DEBUG_PMODE	0x1
-#define IA32_DEBUG_PAGING	0x2
+#define IA32_DEBUG_BOOTLOADER	0x1
+#define IA32_DEBUG_PMODE	0x2
+#define IA32_DEBUG_PAGING	0x4
 
-#define IA32_DEBUG		(IA32_DEBUG_PMODE | IA32_DEBUG_PAGING)
+#define IA32_DEBUG							\
+  (IA32_DEBUG_BOOTLOADER | IA32_DEBUG_PAGING)
 
 /*
  * includes
@@ -74,16 +76,17 @@
   machdep_include_##_object_()
 
 /*
- * memory object
+ * bootloader memory description
  */
 
-typedef struct		s_machdep_memory
+typedef struct		s_machdep_bmem
 {
-  t_gdtr		gdtr;
-  t_cons		cons;
-}			t_machdep_memory;
+  t_gdte*		gdt;
+  t_pde*		pd;
+  t_cons*		cons;
+}			t_machdep_bmem;
 
-#define		machdep_include_memory()				\
-  t_machdep_memory	machdep
+#define		machdep_include_bmem()					\
+  t_machdep_bmem	machdep
 
 #endif

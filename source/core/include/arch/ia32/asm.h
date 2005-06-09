@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun May 29 13:38:12 2005   mycure
+ * last update   Thu Jun  9 13:59:15 2005   mycure
  */
 
 #ifndef IA32_ASM_H
@@ -53,16 +53,6 @@
 
 
 /* XXX */
-
-/*
- * gcc defines
- */
-
-#define		__PACKED__						\
-  __attribute__ ((packed))
-
-#define		__ALIGNED__(_value_)					\
-  __attribute__ ((aligned (_value_)))
 
 /*
  * pio macros

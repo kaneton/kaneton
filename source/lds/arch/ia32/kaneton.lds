@@ -4,7 +4,7 @@ ENTRY(kaneton)
 
 SECTIONS
 {
-	. = 0x00200000 + SIZEOF_HEADERS;
+	. = 0x01000000 + SIZEOF_HEADERS;
 	
 	.text :
 	{

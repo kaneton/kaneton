@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Wed Jun  8 17:23:40 2005   mycure
+## last update   Wed Jun  8 20:11:32 2005   mycure
 ##
 
 #
@@ -280,8 +280,6 @@ endef
 #
 
 define link
-  echo "---------- link from $(1) to $(2) [$(3)] in $(PWD)"
-
   @$(call pretty-printer,yellow,LINK,$(1),			)	; \
   $(_LN_) $(3) $(2) $(1)
 endef

@@ -12,7 +12,7 @@ jmp main			; jump to the main program
 
 print_string:
 	mov ah, 0x0e		; the function to call with int 0x10
-	mov bx, 0x0f		; the console attributes
+	mov bx, 0x07		; the console attributes
 
 print_string_loop:
 	lodsb			; load a character from esi into al
@@ -103,21 +103,31 @@ main:
 	mov si, rmode_message
 	call print_string
 
-	mov si, newline
-	call print_string
+	call floppy_read	; read the ELF from the floppy
 
-	call floppy_read
+	call pmode_enable	; enable the protected mode
 
-	call pmode_enable
+				; once the protected mode is enabled
+				; the function pmode_main will be launched
+
+[BITS 32]
 
 ;;
 ;; PROTECTED MODE MAIN
 ;;
 
 pmode_main:
+	mov ax, 0x10		; represent the data segment selector
+	mov ds, ax		; set the data segment register
+	mov ss, ax		; set the stack segment register
+	mov es, ax		; set the es register
+	mov fs, ax		; set the fs register
+	mov gs, ax		; set the gs register
+	mov esp, 0x9000		; reinitialize the stack pointer
 
-while:
-	jmp while
+	jmp edx			; jump to the ELF entry point we got earlier
+
+				; after all the ELF is launched
 
 ;;
 ;; DATA

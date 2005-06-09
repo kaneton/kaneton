@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Mon Jun  6 14:52:58 2005   mycure
+ * last update   Thu Jun  9 18:41:58 2005   mycure
  */
 
 #include <libc.h>
@@ -19,13 +19,21 @@
  * the memory description
  */
 
-extern t_memory		memory;
+extern t_bmem*		bmem;
+
+/*
+ * the usefula variables
+ */
+
+extern t_bmods*		bmods;
+extern t_bareas*	bareas;
+extern t_kareas*	kareas;
 
 /*
  * the system's global offset table
  */
 
-t_gdte*			gdt __ALIGNED__(8) = (t_gdte*)PMODE_GDT_ADDR;
+t_gdte*			gdt;
 t_gdtr			gdtr;
 
 /*
@@ -180,23 +188,35 @@ void			pmode_gdt_set(t_uint16		entry,
  * each segment has the same size with different rights: read/execution,
  * read/write etc..
  *
- * the function:
+ * steps:
  *
- * 1) sets the height segments for the kernel, driver, service and user
- * 2) loads the GDT
- * 3) updates the segments registers
- * 4) finally installs the protected mode
- * 5) and then updates the memory description variable
- *
- * this function then update the memory description variable.
+ * 1) allocates and initializes the memory for the global offset table
+ * 2) sets the global offset table address in the bootloader memory
+ *    description structure.
+ * 3) sets the height segments for the kernel, driver, service and user.
+ * 4) loads the GDT
+ * 5) updates the segments registers
+ * 6) finally installs the protected mode
+ * 6) and then updates the memory description variable
  */
 
 void			pmode_init(void)
 {
+  /*
+   * 1)
+   */
+
+  gdt = (t_gdte*)bootloader_alloc(PMODE_GDT_ENTRIES * sizeof(t_gdte), NULL);
   memset(gdt, 0x0, PMODE_GDT_ENTRIES * sizeof(t_gdte));
 
   /*
-   * 1)
+   * 2)
+   */
+
+  bmem->machdep.gdt = gdt;
+
+  /*
+   * 3)
    */
 
   pmode_gdt_set(PMODE_GDT_KERNEL_CS, 0x0, 0xffffffff,
@@ -232,7 +252,7 @@ void			pmode_init(void)
 		PMODE_GDT_DATA, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
 
   /*
-   * 2)
+   * 4)
    */
 
   gdtr.address = (t_uint32)gdt;
@@ -241,27 +261,20 @@ void			pmode_init(void)
   LGDT(gdtr);
 
   /*
-   * 3)
+   * 5)
    */
 
   pmode_update_registers(PMODE_GDT_KERNEL_CS, PMODE_GDT_KERNEL_DS);
 
   /*
-   * 4)
+   * 6)
    */
 
   pmode_enable();
 
   cons_msg('+', "protected mode enabled\n");
 
-#if (IA32_DEBUG & IA32_DEBUG_GDT)
+#if (IA32_DEBUG & IA32_DEBUG_PMODE)
   pmode_gdt_dump();
 #endif
-
-  /*
-   * 5)
-   */
-
-  memory.areas[1].address = PMODE_GDT_ADDR;
-  memory.areas[1].size = PAGESZ;
 }

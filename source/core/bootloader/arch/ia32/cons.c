@@ -11,19 +11,13 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Sun May 29 15:56:47 2005   mycure
+ * last update   Thu Jun  9 18:44:56 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
 
-t_cons			cons =
-  {
-    .line = 0,
-    .column = 0,
-    .attr = CONS_ATTR,
-    .vga = (char*)CONS_ADDR
-  };
+t_cons			cons;
 
 /*
  * this function just clears the console.
@@ -35,11 +29,37 @@ void			cons_clear(void)
 
   for (i = 0; i < CONS_SIZE; i++)
     {
-      cons.vga[i] = 0;
+      cons.vga[i + 0] = 0;
       cons.vga[i + 1] = cons.attr;
     }
 
   cons.line = 0;
+  cons.column = 0;
+}
+
+/*
+ * this function scrolls the screen.
+ */
+
+void			cons_scroll(t_uint16			lines)
+{
+  t_uint16		src;
+  t_uint16		dst;
+
+  for (src = lines * CONS_COLUMNS * CONS_BPC, dst = 0;
+       src < CONS_SIZE;
+       src++, dst++)
+    cons.vga[dst] = cons.vga[src];
+
+  for (src = (CONS_LINES - lines) * CONS_COLUMNS * CONS_BPC;
+       src < CONS_SIZE;
+       src += 2)
+    {
+      cons.vga[src + 0] = 0;
+      cons.vga[src + 1] = cons.attr;
+    }
+
+  cons.line -= lines;
   cons.column = 0;
 }
 
@@ -63,10 +83,9 @@ void			cons_print_char(char		c)
 
   if (pos >= CONS_SIZE)
     {
-      cons.line = 0;
-      cons.column = 0;
+      cons_scroll(1);
 
-      cons_clear(); /* XXX */
+      pos = cons.line * CONS_COLUMNS * CONS_BPC + cons.column * CONS_BPC;
     }
 
   cons.vga[pos] = c;
@@ -88,6 +107,10 @@ void			cons_print_string(char*	string)
 
 /*
  * this function prints a status message.
+ *
+ * '+' is used for printing information about the execution.
+ * '#' is used for printing debug information.
+ * '!' is used for printing error messages.
  */
 
 void			cons_msg(char		indicator,
@@ -102,13 +125,13 @@ void			cons_msg(char		indicator,
 
   switch (indicator)
     {
-    case '+':				/* ok */
+    case '+':
       cons.attr = 0xa;
       break;
-    case '#':				/* debug */
+    case '#':
       cons.attr = 0x5;
       break;
-    case '!':				/* error */
+    case '!':
       cons.attr = 0xc;
       break;
     }
@@ -128,10 +151,24 @@ void			cons_msg(char		indicator,
 }
 
 /*
+ * this function loads the current console state to pass it to the kernel.
+ */
+
+void			cons_load(void)
+{
+  /* XXX */
+}
+
+/*
  * this function just initializes the bootloader console.
  */
 
 void			cons_init(void)
 {
+  cons.line = 0;
+  cons.column = 0;
+  cons.attr = CONS_ATTR;
+  cons.vga = (char*)CONS_ADDR;
+
   cons_clear();
 }

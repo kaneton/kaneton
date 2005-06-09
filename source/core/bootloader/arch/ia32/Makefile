@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/core/bootloader/arch/ia32
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Wed Jun  8 17:20:40 2005   mycure
+## last update   Thu Jun  9 18:40:19 2005   mycure
 ##
 
 include			../../../../.common.mk
@@ -42,7 +42,7 @@ DATE			=		`date`
 CFLAGS			+=		-D___bootloader -D___kaneton
 
 all:			$(BOOTLOADER_O)
-	@echo -n "const char version[] = \"$(TITLE) $(VERSION)" > $(VERSION_C)
+	@echo -n "const char version[] = \"$(TITLE)-$(VERSION)" > $(VERSION_C)
 	@echo " $(DATE) $(USER)@$(HOSTNAME)\";" >> $(VERSION_C)
 	$(call cc-c-o,$(VERSION_O),$(VERSION_C),)
 
@@ -53,6 +53,7 @@ all:			$(BOOTLOADER_O)
 
 distclean:
 	$(call rm,$(VERSION_C),)
+	$(call rm,$(VERSION_O),)
 	$(call rm,$(BOOTLOADER_O),)
 	$(call rm,$(BOOTLOADER),)
 

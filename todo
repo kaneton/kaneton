@@ -7,3 +7,6 @@
 
 . bien preciser dans k4 que par defaut il est inutile de faire un wait
   sur ces fils pour les detruire enfin je crois.
+
+--
+ assistant: intra, tests moulinettes

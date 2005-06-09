@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Wed Jun  8 16:58:29 2005   mycure
+## last update   Wed Jun  8 18:43:55 2005   mycure
 ##
 
 include			../../../../.common.mk
@@ -21,16 +21,18 @@ BOOTSTRAP_ASM		=		bootstrap.asm
 
 BOOTLOADER		=		bootloader
 BOOTLOADER_O		=		bootloader.o
-BOOTLODER_C		=		bootloader.c
+BOOTLOADER_C		=		bootloader.c
 
 all:			
 	$(call cc-asm-o,$(BOOTSTRAP),$(BOOTSTRAP_ASM),-f bin)
 
 	$(call cc-c-o,$(BOOTLOADER_O),$(BOOTLOADER_C),)
 	$(call ld,$(BOOTLOADER),$(BOOTLOADER_O),			\
-	  -T $(_LDS_DIR_)/bootloader.lds)
+	  -T $(_LDS_DIR_)/bootstrap.lds)
 
 distclean:
 	$(call rm,$(BOOTSTRAP),)
+	$(call rm,$(BOOTLOADER_O),)
+	$(call rm,$(BOOTLOADER),)
 
 	@$(_PURGE_)

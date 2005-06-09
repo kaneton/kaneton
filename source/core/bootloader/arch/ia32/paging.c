@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Mon Jun  6 14:53:06 2005   mycure
+ * last update   Thu Jun  9 21:24:09 2005   mycure
  */
 
 #include <libc.h>
@@ -21,15 +21,16 @@
  * the memory description variable
  */
 
-extern t_memory		memory;
+extern t_bmem*			memory;
 
 /*
  * the kernel page directory and page tables
  */
 
-t_pde*			pd __ALIGNED__(4096) = (t_pde*)PAGING_PD;
-t_pte*			pt0 __ALIGNED__(4096) = (t_pte*)PAGING_PT0;
-t_pte*			pt1 __ALIGNED__(4096) = (t_pte*)PAGING_PT1;
+t_pde*			pd;
+t_pte*			pt0;
+
+t_pte*			pt;
 
 /*
  * this function dumps a page table in a human readable form which
@@ -134,32 +135,31 @@ void			paging_enable(void)
  * 1) installs the page directory
  * 2) installs the identity mapping via the first page table
  * 3) installs extra identity mapping to be able to map the kernel code,
- *    the kernel stack and the GDT
+ *    the kernel stack, the global offset table, the modules etc..
  * 4) loads the new page directory
  * 5) enables the paging mode
- * 6) updates the memory description variable
  */
 
 void			paging_init(void)
 {
+  t_uint32		limit;
   t_uint32		addr;
-  t_uint32		i;
+  t_uint16		i;
 
   /*
    * 1)
    */
 
+  pd = (t_pde*)bootloader_alloc(PAGING_NPDE * sizeof(t_pde), NULL);
   memset(pd, 0x0, PAGING_NPDE * sizeof(t_pde));
-
   pd[0] = (t_uint32)pt0 | PAGING_P | PAGING_RW | PAGING_S;
-  pd[1] = (t_uint32)pt1 | PAGING_P | PAGING_RW | PAGING_S;
 
   /*
    * 2)
    */
 
+  pt0 = (t_pte*)bootloader_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
   memset(pt0, 0x0, PAGING_NPTE * sizeof(t_pte));
-
   for (i = 0, addr = 0; i < PAGING_NPTE; i++, addr += 4096)
     pt0[PAGING_PTE(addr)] = addr | PAGING_P | PAGING_RW | PAGING_S;
 
@@ -167,13 +167,32 @@ void			paging_init(void)
    * 3)
    */
 
-  memset(pt1, 0x0, PAGING_NPTE * sizeof(t_pte));
+  limit = bootloader_alloc(0, NULL);
 
-  for (i = 0;
+  for (addr = BOOTLOADER_RELOCATE; addr < limit; addr += 4096)
+    {
+      if (!(pd[PAGING_PDE(addr)] & PAGING_P))
+	{
+	  pt = (t_pte*)bootloader_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
+	  memset(pt, 0x0, PAGING_NPTE * sizeof(t_pte));
+	}
+      else
+	pt = pd[PAGING_PDE(addr)] & 
+    }
+
+  while (1);
+
+  /* XXX
+  memset(pt4, 0x0, PAGING_NPTE * sizeof(t_pte));
+
+  for (addr = BOOTLOADER_KCODE;
        addr < (BOOTLOADER_KSTACK + BOOTLOADER_KSTACKSZ);
-       i++, addr += 4096)
-    pt1[PAGING_PTE(addr)] = addr | PAGING_P | PAGING_RW | PAGING_S;
+       addr += 4096)
+    pt4[PAGING_PTE(addr)] = addr | PAGING_P | PAGING_RW | PAGING_S;
 
+  printf("%u-> %u\n",
+	 BOOTLOADER_KCODE, BOOTLOADER_KSTACK + BOOTLOADER_KSTACKSZ);
+  */
   /*
    * 4)
    */
@@ -187,23 +206,4 @@ void			paging_init(void)
   paging_enable();
 
   cons_msg('+', "paging enabled\n");
-
-  /*
-   * 6)
-   */
-
-  memory.areas[2].address = PAGING_PT0;
-  memory.areas[2].size = 3 * PAGESZ; /* PD, PT0, PT1 */
-
-  //XXX
-
-  /* XXX faire en sorte de copier le necessaire des infos pour que
-   *     ca fonctionne une fois le kernel lance.
-   *   on doit copier: t_memory, t_area[], t_module[]
-   * genre calculer pour faire ca:
-   *
-   * [t_memory: areas, modules][areas][modules]
-   *             |_______|_______^        ^
-   *                     |________________|
-   */
 }

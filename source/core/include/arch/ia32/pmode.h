@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:55:06 2005   mycure
- * last update   Mon May 30 22:19:34 2005   mycure
+ * last update   Thu Jun  9 13:59:38 2005   mycure
  */
 
 #ifndef IA32_PMODE_H
@@ -21,7 +21,9 @@
  * defines
  */
 
-#define PMODE_GDT_ADDR		0x1f000
+#define BOOTLOADER_PMODESZ	(1 * PAGESZ)
+
+#define PMODE_GDT_ADDR		BOOTLOADER_PMODE
 
 #define PMODE_GDT_ENTRIES	256
 #define PMODE_GDT_VALID_ENTRIES	(1 + 8)
@@ -89,12 +91,12 @@ typedef struct			s_gdte
   t_uint8			limit_16_19 : 4;
   t_uint8			flags : 4;
   t_uint8			base_24_31;
-}				__PACKED__ t_gdte;
+}				__attribute__ ((packed)) t_gdte;
 
 typedef struct			s_gdtr
 {
   t_uint16			size;
   t_uint32			address;
-}				__PACKED__ t_gdtr;
+}				__attribute__ ((packed)) t_gdtr;
 
 #endif
