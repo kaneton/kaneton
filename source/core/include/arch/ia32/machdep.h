@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Thu Jun  9 18:40:36 2005   mycure
+ * last update   Fri Jun 10 13:31:46 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
@@ -79,14 +79,14 @@
  * bootloader memory description
  */
 
-typedef struct		s_machdep_bmem
+typedef struct		s_machdep_init
 {
   t_gdte*		gdt;
   t_pde*		pd;
-  t_cons*		cons;
-}			t_machdep_bmem;
+  t_cons		cons;
+}			t_machdep_init;
 
-#define		machdep_include_bmem()					\
-  t_machdep_bmem	machdep
+#define		machdep_include_init()					\
+  t_machdep_init	machdep
 
 #endif

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:39:42 2005   mycure
- * last update   Wed Jun  8 21:35:43 2005   mycure
+ * last update   Thu Jun  9 21:26:48 2005   mycure
  */
 
 #ifndef IA32_PAGING_H
@@ -36,8 +36,8 @@
 #define PAGING_PT_SHIFT		12
 #define PAGING_PT_MASK		0x000003ff
 
-#define PAGING_ADDRESS_MASK	0xfffff000
-#define PAGING_FLAGS_MASK	0x00000fff
+#define PAGING_ADDRESS		0xfffff000
+#define PAGING_FLAGS		0x00000fff
 
 /*
  * macros
