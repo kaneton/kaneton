@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jun  8 20:59:27 2005   mycure
+ * last update   Fri Jun 10 15:45:31 2005   mycure
  */
 
 #include <libc.h>
@@ -41,6 +41,16 @@ void                    cons_clear(void)
 
   cons.line = 0;
   cons.column = 0;
+}
+
+/*
+ * this function is called by the printf function to change
+ * the current console attributes.
+ */
+
+void			cons_attr(t_uint8		attr)
+{
+  cons.attr = attr;
 }
 
 /*
@@ -74,13 +84,11 @@ void                    cons_print_char(char            c)
   cons.column++;
 }
 
-void		kaneton(t_memory*			memory)
+void		kaneton(t_init*				init)
 {
-  while (1);
-
   printf("kaneton loaded successfully\n");
 
-  printf("&memory: 0x%x\n", memory);
+  printf("&init: 0x%x\n", init);
 
-  //while (1);
+  while (1);
 }

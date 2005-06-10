@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Thu Jun  9 18:40:19 2005   mycure
+## last update   Fri Jun 10 15:06:22 2005   mycure
 ##
 
 include			../../../../.common.mk
@@ -28,7 +28,8 @@ BOOTLOADER_O		=		bootloader.o			\
 					entry.o				\
 					multiboot.o			\
 					paging.o			\
-					pmode.o				
+					pmode.o				\
+					segment.o			
 
 CONF			=		$(_CONF_DIR_)/$(USER)/$(USER).conf
 TITLE			=		`cat $(CONF)			| \

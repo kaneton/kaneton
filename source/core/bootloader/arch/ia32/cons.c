@@ -11,11 +11,21 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Thu Jun  9 18:44:56 2005   mycure
+ * last update   Fri Jun 10 15:39:16 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
+
+/*
+ * the init variable.
+ */
+
+extern t_init*		init;
+
+/*
+ * the console variable.
+ */
 
 t_cons			cons;
 
@@ -64,6 +74,16 @@ void			cons_scroll(t_uint16			lines)
 }
 
 /*
+ * this function is called by the printf function to change the
+ * current console attributes with the sequence %#.
+ */
+
+void			cons_attr(t_uint8		attr)
+{
+  cons.attr = attr;
+}
+
+/*
  * this function is called by the printf function to print a
  * character.
  */
@@ -90,6 +110,7 @@ void			cons_print_char(char		c)
 
   cons.vga[pos] = c;
   cons.vga[pos + 1] = cons.attr;
+
   cons.column++;
 }
 
@@ -151,12 +172,16 @@ void			cons_msg(char		indicator,
 }
 
 /*
- * this function loads the current console state to pass it to the kernel.
+ * this function loads the current console state into the init
+ * variable to pass it to the kernel.
+ *
+ * this step is just used to keep the console in the same state between
+ * the bootloader and the kernel.
  */
 
 void			cons_load(void)
 {
-  /* XXX */
+  memcpy(&init->machdep.cons, &cons, sizeof(t_cons));
 }
 
 /*
@@ -171,4 +196,6 @@ void			cons_init(void)
   cons.vga = (char*)CONS_ADDR;
 
   cons_clear();
+
+  cons_msg('+', "console manager initialized\n");
 }

@@ -9,28 +9,20 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Thu Jun  9 18:41:58 2005   mycure
+ * last update   Fri Jun 10 15:43:58 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
 
 /*
- * the memory description
+ * the init variable.
  */
 
-extern t_bmem*		bmem;
+extern t_init*		init;
 
 /*
- * the usefula variables
- */
-
-extern t_bmods*		bmods;
-extern t_bareas*	bareas;
-extern t_kareas*	kareas;
-
-/*
- * the system's global offset table
+ * the system's global offset table.
  */
 
 t_gdte*			gdt;
@@ -123,7 +115,7 @@ void			pmode_gdt_dump(void)
 #endif
 
 /*
- * this function update the segment registers to work with the new
+ * this function updates the segment registers to work with the new
  * global offset table.
  */
 
@@ -148,7 +140,7 @@ void			pmode_update_registers(t_uint16	gdt_kernel_cs,
 }
 
 /*
- * this function installs the protected mode setting one bit in cr0.
+ * this function installs the protected mode setting the first bit of cr0.
  */
 
 void			pmode_enable(void)
@@ -182,7 +174,7 @@ void			pmode_gdt_set(t_uint16		entry,
 }
 
 /*
- * this function initializes the global offset tables inserting
+ * this function initializes the global offset table inserting
  * height entries for the kernel, drivers, services and user tasks.
  *
  * each segment has the same size with different rights: read/execution,
@@ -190,14 +182,13 @@ void			pmode_gdt_set(t_uint16		entry,
  *
  * steps:
  *
- * 1) allocates and initializes the memory for the global offset table
- * 2) sets the global offset table address in the bootloader memory
- *    description structure.
+ * 1) allocates and initializes the memory for the global offset table.
+ * 2) sets the global offset table address in the init variable.
  * 3) sets the height segments for the kernel, driver, service and user.
- * 4) loads the GDT
- * 5) updates the segments registers
- * 6) finally installs the protected mode
- * 6) and then updates the memory description variable
+ * 4) loads the GDT.
+ * 5) updates the segments registers.
+ * 6) finally installs the protected mode.
+ * 7) dumps the global offset table if required.
  */
 
 void			pmode_init(void)
@@ -213,7 +204,7 @@ void			pmode_init(void)
    * 2)
    */
 
-  bmem->machdep.gdt = gdt;
+  init->machdep.gdt = gdt;
 
   /*
    * 3)
@@ -273,6 +264,10 @@ void			pmode_init(void)
   pmode_enable();
 
   cons_msg('+', "protected mode enabled\n");
+
+  /*
+   * 7)
+   */
 
 #if (IA32_DEBUG & IA32_DEBUG_PMODE)
   pmode_gdt_dump();

@@ -35,7 +35,6 @@
 /*
  * ../../libsys/perror.c
  */
-
 /*
  * eop
  */

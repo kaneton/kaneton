@@ -213,26 +213,6 @@ u_long			strtoul(const char	*nptr,
  * ../../libc/printf.o
  */
 
-int			printf_char(char	c);
-
-int			printf_string(char	*string,
-				      int	ladjust,
-				      int	padchar,
-				      int	padlen);
-
-int			printf_long(long	value,
-				    int		base,
-				    int		hdl_sign,
-				    int		ladjust,
-				    int		padchar,
-				    int		padlen);
-
-int			vprintf(const char	*fmt,
-				va_list		args);
-
-int			printf(char		*fmt,
-			       ...);
-
 /*
  * ../../libc/sum2.c
  */

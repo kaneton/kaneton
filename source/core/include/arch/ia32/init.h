@@ -3,7 +3,7 @@
  * 
  * kaneton
  * 
- * bootloader.h
+ * init.h
  * 
  * path          /home/mycure/kaneton/core/include/arch/ia32
  * 
@@ -11,18 +11,16 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Mon May 30 14:10:03 2005   mycure
- * last update   Thu Jun  9 15:37:13 2005   mycure
+ * last update   Fri Jun 10 15:17:47 2005   mycure
  */
 
-#ifndef IA32_BOOTLOADER_H
-#define IA32_BOOTLOADER_H	1
+#ifndef IA32_INIT_H
+#define IA32_INIT_H		1
 
 /*
  * defines
  */
 
-#define BOOTLOADER_RELOCATE	0x1000000
-
-#define BOOTLOADER_KSTACKSZ	(2 * PAGESZ)
+#define INIT_RELOCATE		0x1000000
 
 #endif

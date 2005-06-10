@@ -3,21 +3,28 @@
  *
  * printf.c
  *
- * path          /home/mycure/kaneton/libs/klibc/libc
+ * path          /home/mycure/kaneton/libs/klibc
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Thu May  6 14:37:44 2004   mycure
- * last update   Sun May 29 14:08:38 2005   mycure
+ * last update   Fri Jun 10 00:11:30 2005   mycure
  */
 
 #include <arch/machdep/machdep.h>
 #include <klibc/include/klibc.h>
 
+void			printf_attr(char	attr)
+{
+  cons_attr(attr);
+}
+
 int			printf_char(char	c)
 {
   cons_print_char(c);
+
+  return (1);
 }
 
 int			printf_string(char	*string,
@@ -202,7 +209,14 @@ int			vprintf(const char	*fmt,
 	      case 'l':
 		longflag = 1;
 		goto _next_char_;
+	      case '#':
+		{
+		  value = (long) va_arg(args, int);
 
+		  printf_attr(value);
+
+		  break;
+		}
 	      case 'b':
 		{
 		  if (longflag)

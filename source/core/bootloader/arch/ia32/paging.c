@@ -11,20 +11,24 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Thu Jun  9 21:24:09 2005   mycure
+ * last update   Fri Jun 10 15:42:28 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
 
 /*
- * the memory description variable
+ * the init variable.
  */
 
-extern t_bmem*			memory;
+extern t_init*			init;
 
 /*
- * the kernel page directory and page tables
+ * the kernel page directory and page tables.
+ *
+ * the page table pt0 is used for identity mapping from 0 to 4 Mb while
+ * the page table pt is dynamically used for identity mapping from
+ * 16 Mb to ... approximately 20 Mb.
  */
 
 t_pde*			pd;
@@ -95,8 +99,8 @@ void			paging_dump_table(t_pte*	table,
 
       printf("     | %04u | 0x%08x | %s (%012b) |\n",
 	     i,
-	     (table[i] & PAGING_ADDRESS_MASK),
-	     hrf, (table[i] & PAGING_FLAGS_MASK));
+	     (table[i] & PAGING_ADDRESS),
+	     hrf, (table[i] & PAGING_FLAGS));
     }
 
   printf("\n");
@@ -104,7 +108,7 @@ void			paging_dump_table(t_pte*	table,
 #endif
 
 /*
- * this function dumps a page directory
+ * this function dumps a page directory.
  */
 
 #if (IA32_DEBUG & IA32_DEBUG_PAGING)
@@ -116,7 +120,7 @@ void			paging_dump_directory(t_pde*	directory,
 #endif
 
 /*
- * this function enables the paging mode setting one bit in cr0.
+ * this function enables the paging mode setting the last bit of cr0.
  */
 
 void			paging_enable(void)
@@ -130,14 +134,15 @@ void			paging_enable(void)
 /*
  * this function initializes the paging.
  *
- * this function:
+ * steps:
  *
- * 1) installs the page directory
- * 2) installs the identity mapping via the first page table
- * 3) installs extra identity mapping to be able to map the kernel code,
+ * 1) allocates and initializes the page directory.
+ * 2) sets the page directory address into the init variable.
+ * 3) installs the identity mapping via the first page table.
+ * 4) installs extra identity mapping to be able to map the kernel code,
  *    the kernel stack, the global offset table, the modules etc..
- * 4) loads the new page directory
- * 5) enables the paging mode
+ * 5) loads the new page directory.
+ * 6) enables the paging mode.
  */
 
 void			paging_init(void)
@@ -152,55 +157,55 @@ void			paging_init(void)
 
   pd = (t_pde*)bootloader_alloc(PAGING_NPDE * sizeof(t_pde), NULL);
   memset(pd, 0x0, PAGING_NPDE * sizeof(t_pde));
-  pd[0] = (t_uint32)pt0 | PAGING_P | PAGING_RW | PAGING_S;
 
   /*
    * 2)
    */
 
-  pt0 = (t_pte*)bootloader_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
-  memset(pt0, 0x0, PAGING_NPTE * sizeof(t_pte));
-  for (i = 0, addr = 0; i < PAGING_NPTE; i++, addr += 4096)
-    pt0[PAGING_PTE(addr)] = addr | PAGING_P | PAGING_RW | PAGING_S;
+  init->machdep.pd = pd;
 
   /*
    * 3)
    */
 
+  pt0 = (t_pte*)bootloader_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
+  memset(pt0, 0x0, PAGING_NPTE * sizeof(t_pte));
+
+  pd[0] = (t_uint32)pt0 | PAGING_P | PAGING_RW | PAGING_S;
+
+  for (i = 0, addr = 0; i < PAGING_NPTE; i++, addr += 4096)
+    pt0[PAGING_PTE(addr)] = addr | PAGING_P | PAGING_RW | PAGING_S;
+
+  /*
+   * 4)
+   */
+
   limit = bootloader_alloc(0, NULL);
 
-  for (addr = BOOTLOADER_RELOCATE; addr < limit; addr += 4096)
+  for (addr = INIT_RELOCATE; addr < limit; addr += 4096)
     {
-      if (!(pd[PAGING_PDE(addr)] & PAGING_P))
+      if ((pd[PAGING_PDE(addr)] & PAGING_ADDRESS) == 0)
 	{
 	  pt = (t_pte*)bootloader_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
 	  memset(pt, 0x0, PAGING_NPTE * sizeof(t_pte));
+
+	  pd[PAGING_PDE(addr)] = (t_uint32)pt | PAGING_P |
+	    PAGING_RW | PAGING_S;
 	}
       else
-	pt = pd[PAGING_PDE(addr)] & 
+	pt = (t_pte*)(pd[PAGING_PDE(addr)] & PAGING_ADDRESS);
+
+      pt[PAGING_PTE(addr)] = addr | PAGING_P | PAGING_RW | PAGING_S;
     }
 
-  while (1);
-
-  /* XXX
-  memset(pt4, 0x0, PAGING_NPTE * sizeof(t_pte));
-
-  for (addr = BOOTLOADER_KCODE;
-       addr < (BOOTLOADER_KSTACK + BOOTLOADER_KSTACKSZ);
-       addr += 4096)
-    pt4[PAGING_PTE(addr)] = addr | PAGING_P | PAGING_RW | PAGING_S;
-
-  printf("%u-> %u\n",
-	 BOOTLOADER_KCODE, BOOTLOADER_KSTACK + BOOTLOADER_KSTACKSZ);
-  */
   /*
-   * 4)
+   * 5)
    */
 
   LCR3(pd);
 
   /*
-   * 5)
+   * 6)
    */
 
   paging_enable();

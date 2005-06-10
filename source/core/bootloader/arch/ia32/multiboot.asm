@@ -10,12 +10,3 @@ align 4
 	dd MULTIBOOT_HEADER_MAGIC
 	dd MULTIBOOT_HEADER_FLAGS
 	dd MULTIBOOT_CHECKSUM
-	dd 0
-	dd 0
-	dd 0
-	dd 0
-	dd 0
-	dd 0
-	dd 800
-	dd 600
-	dd 32

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Fri Jun 10 13:31:46 2005   mycure
+ * last update   Fri Jun 10 15:22:49 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
@@ -37,7 +37,7 @@
 #include <arch/machdep/types.h>
 
 #include <arch/machdep/kaneton.h>
-#include <arch/machdep/bootloader.h>
+#include <arch/machdep/init.h>
 #include <arch/machdep/cons.h>
 #include <arch/machdep/pmode.h>
 #include <arch/machdep/paging.h>
