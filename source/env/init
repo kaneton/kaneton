@@ -5,13 +5,13 @@
 ## 
 ## init
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/env
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sat Jun  4 22:20:20 2005   mycure
+## last update   Sun Jun 12 21:01:29 2005   mycure
 ##
 
 # INFORMATIONS
@@ -59,48 +59,6 @@ read_kaneton_conf()
 
 
 
-# GENERIC OPERATING SYSTEMS
-#
-# this function installs the development environment for generic operating
-# systems if you have an exotic operating system, please do not call or/and
-# call your own version
-init_generic()
-{
-  # makefile dependencies
-  GENERIC_COMMON_MK="env/common/common.mk"
-  GENERIC_KANETON_MK="env/"$ENVIRONMENT"/kaneton.mk"
-
-  # links
-  print "   installing machine-specific files" "+"
-  ln -s -f $GENERIC_KANETON_MK $KANETON_MK
-
-  # sed
-  print "   generating makefile dependencies" "+"
-  sed s/___kaneton_sed___/$(pwd | sed 's/\//\\\//g')/g $GENERIC_COMMON_MK \
-      > $COMMON_MK
-
-  # create the symbolic link for architecture dependencies
-  print "   installing links to machine-dependent directories" "+"
-  ln -s -f $ARCHITECTURE core/bootstrap/arch/machdep
-  ln -s -f $ARCHITECTURE core/bootloader/arch/machdep
-  ln -s -f $ARCHITECTURE core/include/arch/machdep
-  ln -s -f $ARCHITECTURE core/kaneton/arch/machdep
-
-  ln -s -f $ARCHITECTURE lds/arch/machdep
-}
-
-
-
-# EXOTIC OPERATING SYSTEMS
-#
-# write here each specific init function for exotic operating systems
-init_your_arch()
-{
-  exit -1
-}
-
-
-
 # USAGE
 #
 # this function displays the usage but does not exit
@@ -135,30 +93,18 @@ warning()
 # of your operating system
 init()
 {
-  case "$ENVIRONMENT" in
-    "linux")
-      print " installing linux environment" "+"
-      init_generic
-      ;;
+  if [ ! -d env/$ENVIRONMENT ] ; then
+    print " unknown system: $ENVIRONMENT" "!"
+    print ""
+    print " please check your ENVIRONMENT variable in $CONF" "!"
+    print ""
+    usage
+    exit
+  fi
 
-    "mac")
-      print " installing mac environment" "+"
-      init_generic
-      ;;
-
-    *)
-      print " unknown system: $ENVIRONMENT" "!"
-      print ""
-      print " please check your ENVIRONMENT variable in $CONF" "!"
-      print ""
-      usage
-      print ""
-      print " supported systems are:" "!"
-      print "      linux" "!"
-      print "      mac" "!"
-      exit
-      ;;
-  esac
+  if [ -f env/$ENVIRONMENT/init ] ; then
+    ./env/$ENVIRONMENT/init
+  fi
 }
 
 
@@ -216,13 +162,13 @@ read_kaneton_conf
 warning
 
 # go into the src/ directory
-cd ..
+cd ../
 
 # install environment
 init
 
 # return into the env/ directory
-cd env
+cd env/
 
 # end of installation
 print " environment installed successfully" "+"
