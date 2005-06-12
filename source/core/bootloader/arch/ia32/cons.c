@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Fri Jun 10 15:39:16 2005   mycure
+ * last update   Fri Jun 10 16:25:14 2005   mycure
  */
 
 #include <libc.h>
@@ -131,7 +131,7 @@ void			cons_print_string(char*	string)
  *
  * '+' is used for printing information about the execution.
  * '#' is used for printing debug information.
- * '!' is used for printing error messages.
+ * '!' is used for printing warning and error messages.
  */
 
 void			cons_msg(char		indicator,
@@ -141,25 +141,25 @@ void			cons_msg(char		indicator,
   t_uint8		attr = cons.attr;
   va_list		args;
 
-  cons.attr = 0x9;
+  cons.attr = CONS_FRONT(CONS_BLUE) | CONS_BACK(CONS_BLACK) | CONS_INT;
   cons_print_char('[');
 
   switch (indicator)
     {
     case '+':
-      cons.attr = 0xa;
+      cons.attr = CONS_FRONT(CONS_GREEN) | CONS_BACK(CONS_BLACK) | CONS_INT;
       break;
     case '#':
-      cons.attr = 0x5;
+      cons.attr = CONS_FRONT(CONS_MAGENTA) | CONS_BACK(CONS_BLACK) | CONS_INT;
       break;
     case '!':
-      cons.attr = 0xc;
+      cons.attr = CONS_FRONT(CONS_RED) | CONS_BACK(CONS_BLACK) | CONS_INT;
       break;
     }
 
   cons_print_char(indicator);
 
-  cons.attr = 0x9;
+  cons.attr = CONS_FRONT(CONS_BLUE) | CONS_BACK(CONS_BLACK) | CONS_INT;
   cons_print_string("] ");
 
   cons.attr = attr;
@@ -192,7 +192,7 @@ void			cons_init(void)
 {
   cons.line = 0;
   cons.column = 0;
-  cons.attr = CONS_ATTR;
+  cons.attr = CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT;
   cons.vga = (char*)CONS_ADDR;
 
   cons_clear();

@@ -5,16 +5,16 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/src/core/kaneton/map
+## path          /home/mycure/kaneton/core/kaneton/map
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Thu May  5 23:52:32 2005   mycure
+## last update   Sun Jun 12 21:16:55 2005   mycure
 ##
 
-include			../../../.common.mk
+include			../../../.kaneton.mk
 
 MAP			=		map.a
 

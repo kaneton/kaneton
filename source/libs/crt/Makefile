@@ -5,16 +5,16 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/src/libs/crt
+## path          /home/mycure/kaneton/libs/crt
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Fri May  6 00:12:42 2005   mycure
+## last update   Sun Jun 12 21:19:11 2005   mycure
 ##
 
-include			../../.common.mk
+include			../../.kaneton.mk
 
 CRT			=		crt.a
 
@@ -32,4 +32,4 @@ distclean:
 	$(call rm,$(CRT),)
 
 proto:
-	
+	;

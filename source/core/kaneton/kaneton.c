@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jun 10 15:45:31 2005   mycure
+ * last update   Sun Jun 12 17:49:38 2005   mycure
  */
 
 #include <libc.h>
@@ -21,7 +21,7 @@ t_cons                  cons =
   {
     .line = 0,
     .column = 0,
-    .attr = CONS_ATTR,
+    .attr = 0x0f,
     .vga = (char*)CONS_ADDR
   };
 

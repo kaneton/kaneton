@@ -5,16 +5,16 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/src/services
+## path          /home/mycure/kaneton/services
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Thu May  5 11:46:28 2005   mycure
+## last update   Sun Jun 12 21:20:25 2005   mycure
 ##
 
-include			../.common.mk
+include			../.kaneton.mk
 
 SUBDIRS			=		cons				\
 					dsh				\

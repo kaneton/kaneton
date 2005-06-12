@@ -5,13 +5,13 @@
 ## 
 ## init
 ## 
-## path          /home/mycure/kaneton/env
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Jun 12 21:24:39 2005   mycure
+## last update   Sun Jun 12 21:42:45 2005   mycure
 ##
 
 # INFORMATIONS
@@ -74,12 +74,26 @@ init()
 
   # create the symbolic link for architecture dependencies
   print "   installing links to machine-dependent directories" "+"
-  ln -s -f $ARCHITECTURE core/bootstrap/arch/machdep
-  ln -s -f $ARCHITECTURE core/bootloader/arch/machdep
-  ln -s -f $ARCHITECTURE core/include/arch/machdep
-  ln -s -f $ARCHITECTURE core/kaneton/arch/machdep
 
-  ln -s -f $ARCHITECTURE lds/arch/machdep
+  if [ ! -e core/bootstrap/arch/machdep ] ; then
+    ln -s $ARCHITECTURE core/bootstrap/arch/machdep
+  fi
+
+  if [ ! -e core/bootloader/arch/machdep ] ; then
+    ln -s $ARCHITECTURE core/bootloader/arch/machdep
+  fi
+
+  if [ ! -e core/include/arch/machdep ] ; then
+    ln -s $ARCHITECTURE core/include/arch/machdep
+  fi
+
+  if [ ! -e core/kaneton/arch/machdep ] ; then
+    ln -s $ARCHITECTURE core/kaneton/arch/machdep
+  fi
+
+  if [ ! -e lds/arch/machdep ] ; then
+    ln -s $ARCHITECTURE lds/arch/machdep
+  fi
 }
 
 

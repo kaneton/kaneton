@@ -5,16 +5,16 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/src/core/kaneton/as
+## path          /home/mycure/kaneton/core/kaneton/as
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Thu May  5 23:17:08 2005   mycure
+## last update   Sun Jun 12 21:16:27 2005   mycure
 ##
 
-include			../../../.common.mk
+include			../../../.kaneton.mk
 
 AS			=		as.a
 

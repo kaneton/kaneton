@@ -5,16 +5,16 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/src/services/cons
+## path          /home/mycure/kaneton/services/cons
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Thu May  5 18:38:24 2005   mycure
+## last update   Sun Jun 12 21:20:33 2005   mycure
 ##
 
-include			../../.common.mk
+include			../../.kaneton.mk
 
 CONS			=		cons
 

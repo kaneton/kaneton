@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Fri Jun 10 15:23:44 2005   mycure
+ * last update   Sun Jun 12 17:42:23 2005   mycure
  */
 
 #ifndef KANETON_INIT_H
@@ -27,7 +27,7 @@
 
 typedef struct			s_module
 {
-  char				name[MOD_NAMESZ];
+  char				name[MOD_NAMESZ + 1];
   t_psize			size;
 }				t_module;
 
@@ -40,7 +40,7 @@ typedef struct			s_modules
  * segments
  */
 
-typedef struct			s_segment
+typedef struct			s_segment /* XXX to move to segment.h */
 {
   t_paddr			address;
   t_psize			size;
@@ -56,7 +56,7 @@ typedef struct			s_segments
  * regions
  */
 
-typedef struct			s_region
+typedef struct			s_region /* XXX to move the region.h */
 {
   t_vaddr			address;
   t_vsize			size;
@@ -69,7 +69,7 @@ typedef struct			s_regions
 }				t_regions;
 
 /*
- * init structure
+ * the init structure
  */
 
 typedef struct			s_init
@@ -80,11 +80,8 @@ typedef struct			s_init
   t_paddr			kcode;
   t_psize			kcodesz;
 
-  t_paddr			kstack;
-  t_psize			kstacksz;
-
-  t_paddr			segmng;
-  t_psize			segmngsz;
+  t_paddr			init;
+  t_psize			initsz;
 
   t_modules*			modules;
   t_psize			modulessz;
@@ -94,6 +91,12 @@ typedef struct			s_init
 
   t_regions*			regions;
   t_psize			regionssz;
+
+  t_paddr			kstack;
+  t_psize			kstacksz;
+
+  t_paddr			segmng;
+  t_psize			segmngsz;
 
   machdep_include(init);
 }				t_init;

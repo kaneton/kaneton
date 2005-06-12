@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Wed Jun  1 11:12:24 2005   mycure
+## last update   Sun Jun 12 21:30:46 2005   mycure
 ##
 
 all:			kaneton
@@ -20,8 +20,8 @@ all:			kaneton
 # dependency
 #
 
-.common.mk:
-	@if [ ! -f .common.mk ] ; then					\
+.kaneton.mk:
+	@if [ ! -e .kaneton.mk ] ; then					\
 	make init							; \
 	fi
 
@@ -45,14 +45,14 @@ clean:
 
 SUBDIRS			=	libs core services
 
-kaneton:		.common.mk
+kaneton:		.kaneton.mk
 	@for i in $(SUBDIRS); do					\
 	cd $$i								; \
 	make								; \
 	cd ..								; \
 	done
 
-distclean:		.common.mk
+distclean:		.kaneton.mk
 	@for i in $(SUBDIRS); do					\
 	cd $$i								; \
 	make distclean							; \
@@ -61,7 +61,7 @@ distclean:		.common.mk
 
 	@rm -f *~ .*~ \#~ .\#~
 
-proto:			.common.mk
+proto:			.kaneton.mk
 	@for i in $(SUBDIRS); do					\
 	cd $$i								; \
 	make proto							; \
@@ -79,7 +79,7 @@ BOOTLOADER		=		`cat $(CONF)			| \
 					 grep -E "^BOOTLOADER = .*$$"	| \
 					 cut -b 14-`
 
-boot-init:		.common.mk
+boot-init:		.kaneton.mk
 	@case "$(BOOTLOADER)" in					\
 	  "grub")							\
 	    cd utils							; \
@@ -102,7 +102,7 @@ boot-init:		.common.mk
 	    ;;								\
 	esac
 
-boot-install:		.common.mk
+boot-install:		.kaneton.mk
 	@case "$(BOOTLOADER)" in					\
 	  "grub")							\
 	    cd utils							; \

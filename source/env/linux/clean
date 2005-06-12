@@ -5,13 +5,13 @@
 ## 
 ## clean
 ## 
-## path          /home/mycure/kaneton/env
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Jun 12 21:25:38 2005   mycure
+## last update   Sun Jun 12 21:31:31 2005   mycure
 ##
 
 # INFORMATIONS
@@ -65,7 +65,7 @@ read_kaneton_conf()
 clean()
 {
   # cleaning dev tree
-  if [ -f $KANETON_MK ] ; then
+  if [ -e $KANETON_MK ] ; then
     print "   cleaning development tree" "+"
     make distclean 1>&2 > /dev/null
   fi

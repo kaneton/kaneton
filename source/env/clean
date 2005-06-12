@@ -5,13 +5,13 @@
 ## 
 ## clean
 ## 
-## path          /home/mycure/kaneton/env
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:14:03 2005   mycure
-## last update   Sun Jun 12 21:24:25 2005   mycure
+## last update   Sun Jun 12 21:31:14 2005   mycure
 ##
 
 # INFORMATIONS
@@ -111,7 +111,7 @@ clean()
     exit
   fi
 
-  if [ ! -f env/$ENVIRONMENT/clean ] ; then
+  if [ ! -e env/$ENVIRONMENT/clean ] ; then
     print " unknown system: $ENVIRONMENT" "!"
     print ""
     print " please check your ENVIRONMENT variable in $CONF" "!"

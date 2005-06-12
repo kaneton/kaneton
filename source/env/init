@@ -5,13 +5,13 @@
 ## 
 ## init
 ## 
-## path          /home/mycure/kaneton/env
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Jun 12 21:23:57 2005   mycure
+## last update   Sun Jun 12 21:31:08 2005   mycure
 ##
 
 # INFORMATIONS
@@ -101,7 +101,7 @@ init()
     exit
   fi
 
-  if [ ! -f env/$ENVIRONMENT/init ] ; then
+  if [ ! -e env/$ENVIRONMENT/init ] ; then
     print " unknown system: $ENVIRONMENT" "!"
     print ""
     print " please check your ENVIRONMENT variable in $CONF" "!"

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jun 10 15:33:17 2005   mycure
+ * last update   Sun Jun 12 20:50:13 2005   mycure
  */
 
 #include <libc.h>
@@ -57,6 +57,100 @@ void			bootloader_error(void)
 {
   while (1)
     ;
+}
+
+/*
+ * this function adds the segments to the init variable.
+ *
+ * steps:
+ *
+ * 1) adds the ISA segment from 0 to 1Mb.
+ * 2) 
+ */
+
+void			bootloader_segments(void)
+{
+  /*
+   * 1)
+   */
+
+  init->segments->segments[0].address = 0x0;
+  init->segments->segments[0].size = 0x000fffff;
+
+  /*
+   * 2)
+   */
+
+  init->segments->segments[1].address = init->kcode;
+  init->segments->segments[1].size = init->kcodesz;
+
+  /*
+   * 3)
+   */
+
+  init->segments->segments[2].address = init->init;
+  init->segments->segments[2].size = init->initsz;
+
+  /*
+   * 4)
+   */
+
+  init->segments->segments[3].address = (t_paddr)init->modules;
+  init->segments->segments[3].size = init->modulessz;
+
+  /*
+   * 5)
+   */
+
+  init->segments->segments[4].address = (t_paddr)init->segments;
+  init->segments->segments[4].size = init->segmentssz;
+
+  /*
+   * 6)
+   */
+
+  init->segments->segments[5].address = (t_paddr)init->regions;
+  init->segments->segments[5].size = init->regionssz;
+
+  /*
+   * 7)
+   */
+
+  init->segments->segments[6].address = init->kstack;
+  init->segments->segments[6].size = init->kstacksz;
+
+  /*
+   * 8)
+   */
+
+  init->segments->segments[7].address = init->segmng;
+  init->segments->segments[7].size = init->segmngsz;
+
+  printf("segmng: 0x%x 0x%x\n", init->segments->segments[7].address,
+	 init->segmng);
+
+  /*
+   * 9)
+   */
+
+  init->segments->segments[8].address = (t_paddr)init->machdep.gdt;
+  init->segments->segments[8].size = PAGESZ;
+
+  /*
+   * 10)
+   */
+
+  init->segments->segments[9].address = (t_paddr)init->machdep.pd;
+  init->segments->segments[9].size = PAGESZ;
+}
+
+/*
+ * XXX
+ */
+
+void			bootloader_regions(void)
+{
+  /* XXX */
 }
 
 /*
@@ -113,14 +207,15 @@ t_vaddr			bootloader_relocate(multiboot_info_t*	mbi)
   module_t*		mod = (module_t*)mbi->mods_addr;
   Elf32_Ehdr*		khdr = (Elf32_Ehdr*)mod->mod_start;
   t_uint32		nmodules = mbi->mods_count;
-  t_uint32		nsegments = 0; /* XXX */
-  t_uint32		nregions = 0; /* XXX */
+  t_uint32		nsegments = INIT_SEGMENTS;
+  t_uint32		nregions = INIT_REGIONS;
   t_psize		modulessz;
   t_psize		segmentssz;
   t_psize		regionssz;
   t_paddr		kcode;
   t_psize		kcodesz;
   t_module*		module;
+  t_psize		initsz;
   t_psize		modsz;
   t_uint32		i;
 
@@ -142,7 +237,7 @@ t_vaddr			bootloader_relocate(multiboot_info_t*	mbi)
    * 2)
    */
 
-  init = (t_init*)bootloader_alloc(sizeof(t_init), NULL);
+  init = (t_init*)bootloader_alloc(sizeof(t_init), &initsz);
   memset(init, 0x0, sizeof(t_init));
 
   /*
@@ -158,6 +253,8 @@ t_vaddr			bootloader_relocate(multiboot_info_t*	mbi)
 
   init->mem = 0;
   init->memsz = mbi->mem_upper * 1024;
+  init->init = (t_paddr)init;
+  init->initsz = initsz;
   init->kcode = kcode;
   init->kcodesz = kcodesz;
 
@@ -184,11 +281,6 @@ t_vaddr			bootloader_relocate(multiboot_info_t*	mbi)
   init->regionssz = regionssz;
   init->regions->nregions = nregions;
   init->regions->regions = (t_region*)(init->regions + sizeof(t_regions));
-
-  /* ISA XXX
-  init.areas[0].address = 0x0;
-  init.areas[0].size = 0x000fffff;
-  */
 
   /*
    * 5)
@@ -219,9 +311,16 @@ t_vaddr			bootloader_relocate(multiboot_info_t*	mbi)
 
       modsz = mod[i].mod_end - mod[i].mod_start;
 
+      if (strlen((char*)mod[i].string) >= MOD_NAMESZ)
+	cons_msg('!', "the module name %s will be truncated to %u bytes\n",
+		 mod[i].string, MOD_NAMESZ);
+
       strncpy(module->name, (char*)mod[i].string, MOD_NAMESZ);
+      module->name[MOD_NAMESZ] = 0;
+
       memcpy((void*)(module + sizeof(t_module)),
 	     (const void*)mod[i].mod_start, modsz);
+
       module->size = modsz;
 
       cons_msg('+', " %s relocated from 0x%x to 0x%x (0x%x)\n",
@@ -306,10 +405,14 @@ void			bootloader_dump(void)
 	   init->segmngsz);
 
   cons_msg('#', " %#~ia32%# global offset table: 0x%x\n",
-	   0x0b, 0x0f, init->machdep.gdt);
+	   CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) | CONS_INT,
+	   CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT,
+	   init->machdep.gdt);
 
   cons_msg('#', " %#~ia32%# page directory: 0x%x\n",
-	   0x0b, 0x0f, init->machdep.pd);
+	   CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) | CONS_INT,
+	   CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT,
+	   init->machdep.pd);
 }
 #endif
 
@@ -319,15 +422,16 @@ void			bootloader_dump(void)
  * steps:
  *
  * 1) initializes the console and checks the magic number.
- * 2) relocates binaries, data, stack.
+ * 2) relocates binaries, data, stack
  * 3) initializes the segment manager.
  * 4) installs the protected mode.
  * 5) installs the paging mode.
- * 6) loads the console state for the kernel.
- * 7) dumps the init structure if required.
- * 8) update registers for the new kernel stack.
- * 9) then, the kernel is launched.
- * 10) this part is only reached if the kernel exit.
+ * 6) computes the segments and regions to pass to the kernel.
+ * 7) loads the console state for the kernel.
+ * 8) dumps the init structure if required.
+ * 9) update registers for the new kernel stack.
+ * 10) then, the kernel is launched.
+ * 11) this part is only reached if the kernel exit.
  */
 
 int			bootloader(t_uint32			magic,
@@ -375,10 +479,17 @@ int			bootloader(t_uint32			magic,
    * 6)
    */
 
-  cons_load();
+  bootloader_segments();
+  bootloader_regions();
 
   /*
    * 7)
+   */
+
+  cons_load();
+
+  /*
+   * 8)
    */
 
 #if (IA32_DEBUG & IA32_DEBUG_BOOTLOADER)
@@ -386,7 +497,7 @@ int			bootloader(t_uint32			magic,
 #endif
 
   /*
-   * 8)
+   * 9)
    */
 
   asm volatile ("movl %%ebp, %0\n"
@@ -402,7 +513,7 @@ int			bootloader(t_uint32			magic,
 		  "g" (init));
 
   /*
-   * 9)
+   * 10)
    */
 
   kernel(init);
@@ -413,9 +524,15 @@ int			bootloader(t_uint32			magic,
 		: "g" (ebp), "g" (esp));
 
   /*
-   * 10)
+   * 11)
    */
 
   cons_msg('!', "error: kernel exited\n");
   bootloader_error();
 }
+
+/*
+ * XXX
+ *
+ * - gerer de grands noms de modules
+ */

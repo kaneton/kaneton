@@ -5,16 +5,16 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/core
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:24:11 2005   mycure
-## last update   Sat Jun  4 22:19:21 2005   mycure
+## last update   Sun Jun 12 21:14:28 2005   mycure
 ##
 
-include			../.common.mk
+include			../.kaneton.mk
 
 SUBDIRS			=		bootstrap bootloader kaneton
 

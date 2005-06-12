@@ -5,13 +5,13 @@
  * 
  * libc.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/libc
+ * path          /home/mycure/kaneton/libs/klibc
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Mon May 30 16:33:26 2005   mycure
+ * last update   Sun Jun 12 20:44:02 2005   mycure
  */
 
 #ifndef LIBC_LIBC_H
@@ -36,7 +36,7 @@
  *                 ../../libc/strlen.c           ../../libc/strncat.c
  *                 ../../libc/strncmp.c          ../../libc/strncpy.c
  *                 ../../libc/strtol.c           ../../libc/strtoul.c
- *                 ../../libc/printf.o           ../../libc/sum2.c
+ *                 ../../libc/printf.c           ../../libc/sum2.c
  */
 
 /*
@@ -210,8 +210,36 @@ u_long			strtoul(const char	*nptr,
 
 
 /*
- * ../../libc/printf.o
+ * ../../libc/printf.c
  */
+
+void			printf_attr(char	attr);
+
+
+int			printf_char(char	c);
+
+
+int			printf_string(char	*string,
+				      int	ladjust,
+				      int	padchar,
+				      int	padlen);
+
+
+int			printf_long(long	value,
+				    int		base,
+				    int		hdl_sign,
+				    int		ladjust,
+				    int		padchar,
+				    int		padlen);
+
+
+int			vprintf(const char	*fmt,
+				va_list		args);
+
+
+int			printf(char		*fmt,
+			       ...);
+
 
 /*
  * ../../libc/sum2.c

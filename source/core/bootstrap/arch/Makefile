@@ -11,10 +11,10 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sat Jun  4 20:53:54 2005   mycure
+## last update   Sun Jun 12 21:15:17 2005   mycure
 ##
 
-include			../../../.common.mk
+include			../../../.kaneton.mk
 
 all:
 	@cd machdep							; \

@@ -5,13 +5,13 @@
 ## 
 ## common.mk
 ## 
-## path          /home/mycure/kaneton/env/linux
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sun Jun 12 21:11:39 2005   mycure
+## last update   Sun Jun 12 21:37:39 2005   mycure
 ##
 
 #
@@ -283,10 +283,10 @@ endef
 
 define rm
   @for i in $(1) ; do							\
-    if [ -f $$i ] ; then						\
+    if [ -e $$i ] ; then						\
       $(call pretty-printer,magenta,RM,$$i,			)	; \
-      $(_RM_) $(2) $$i							; \
-    fi									\
+    fi									; \
+    $(_RM_) $(2) $$i							; \
   done
 endef
 
