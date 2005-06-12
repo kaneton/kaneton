@@ -5,13 +5,13 @@
 ## 
 ## clean
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/env
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:14:03 2005   mycure
-## last update   Sat Jun  4 22:20:32 2005   mycure
+## last update   Sun Jun 12 21:24:25 2005   mycure
 ##
 
 # INFORMATIONS
@@ -39,7 +39,6 @@ ARCHITECTURE="unknown"
 # CLEAN SPECIFIC VARIABLES
 #
 # generic names for this script
-COMMON_MK=".common.mk"
 KANETON_MK=".kaneton.mk"
 
 
@@ -55,35 +54,6 @@ read_kaneton_conf()
 
   # architecture
   ARCHITECTURE=`cat $CONF | grep -E "^ARCHITECTURE = .*$" | cut -b 16-`
-}
-
-
-
-# GENERIC OPERATING SYSTEMS
-#
-# this function cleans the development environment for generic
-# operating systems
-clean_generic()
-{
-  # cleaning dev tree
-  if [ -f $KANETON_MK ] ; then
-    print "   cleaning development tree" "+"
-    make distclean 1>&2 > /dev/null
-  fi
-
-  # makefile dependencies
-  print "   cleaning makefile dependencies" "+"
-  rm -f $COMMON_MK
-  rm -f $KANETON_MK
-
-  # remove the links to machine-dependent directories
-  print "   removing links to machine-dependent directories" "+"
-  rm -f core/bootstrap/arch/machdep
-  rm -f core/bootloader/arch/machdep
-  rm -f core/include/arch/machdep
-  rm -f core/kaneton/arch/machdep
-
-  rm -f lds/arch/machdep
 }
 
 
@@ -132,30 +102,25 @@ warning()
 # of your operating system
 clean()
 {
-  case "$ENVIRONMENT" in
-    "linux")
-      print " cleaning linux environment" "+"
-      clean_generic
-      ;;
+  if [ ! -d env/$ENVIRONMENT ] ; then
+    print " unknown system: $ENVIRONMENT" "!"
+    print ""
+    print " please check your ENVIRONMENT variable in $CONF" "!"
+    print ""
+    usage
+    exit
+  fi
 
-    "mac")
-      print " cleaning mac environment" "+"
-      clean_generic
-      ;;
+  if [ ! -f env/$ENVIRONMENT/clean ] ; then
+    print " unknown system: $ENVIRONMENT" "!"
+    print ""
+    print " please check your ENVIRONMENT variable in $CONF" "!"
+    print ""
+    usage
+    exit
+  fi
 
-    *)
-      print " unknown system: $ENVIRONMENT" "!"
-      print ""
-      print " please check your ENVIRONMENT variable in $CONF" "!"
-      print ""
-      usage
-      print ""
-      print " supported systems are:" "!"
-      print "      linux" "!"
-      print "      mac" "!"
-      exit
-      ;;
-  esac
+  ./env/$ENVIRONMENT/clean
 }
 
 

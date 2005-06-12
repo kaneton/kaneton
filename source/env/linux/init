@@ -5,13 +5,13 @@
 ## 
 ## init
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/env
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Jun 12 21:08:26 2005   mycure
+## last update   Sun Jun 12 21:24:39 2005   mycure
 ##
 
 # INFORMATIONS
@@ -40,7 +40,6 @@ ARCHITECTURE="unknwon"
 # INSTALL SPECIFIC VARIABLES
 #
 # generic names for this script
-COMMON_MK=".common.mk"
 KANETON_MK=".kaneton.mk"
 
 
@@ -66,17 +65,12 @@ read_kaneton_conf()
 init()
 {
   # makefile dependencies
-  GENERIC_COMMON_MK="env/common.mk"
   GENERIC_KANETON_MK="env/"$ENVIRONMENT"/kaneton.mk"
-
-  # links
-  print "   installing machine-specific files" "+"
-  ln -s -f $GENERIC_KANETON_MK $KANETON_MK
 
   # sed
   print "   generating makefile dependencies" "+"
-  sed s/___kaneton_sed___/$(pwd | sed 's/\//\\\//g')/g $GENERIC_COMMON_MK \
-      > $COMMON_MK
+  sed s/___kaneton_sed___/$(pwd | sed 's/\//\\\//g')/g $GENERIC_KANETON_MK \
+      > $KANETON_MK
 
   # create the symbolic link for architecture dependencies
   print "   installing links to machine-dependent directories" "+"

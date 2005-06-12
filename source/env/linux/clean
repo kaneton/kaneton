@@ -3,7 +3,7 @@
 ## 
 ## kaneton
 ## 
-## init
+## clean
 ## 
 ## path          /home/mycure/kaneton/env
 ## 
@@ -11,20 +11,21 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Jun 12 21:23:57 2005   mycure
+## last update   Sun Jun 12 21:25:38 2005   mycure
 ##
 
 # INFORMATIONS
 #
-# this script has to be run in its directory: src/env/
-# or with "make init" in the src/ directory
+# this script has to be run in the directory src/
+#
+# this script must always be run by the script src/env/clean
 
 
 
 # CONFIGURATION FILE PATH
 #
 # the configuration file
-CONF="../conf/"$USER"/"$USER".conf"
+CONF="conf/"$USER"/"$USER".conf"
 
 
 
@@ -58,59 +59,29 @@ read_kaneton_conf()
 
 
 
-# USAGE
+# clean
 #
-# this function displays the usage but does not exit
-usage()
+# clean the environment for linux operating system
+clean()
 {
-  print " usage: init" "!"
-}
-
-
-
-# WARNING
-#
-# this function alerts the user, displaying information and asking to continue
-warning()
-{
-  # display information and ask the user to continue or cancel
-  print " your current configuration:" "+"
-  print "   environment:              $ENVIRONMENT" "+"
-  print "   architecture:             $ARCHITECTURE" "+"
-  print ""
-  print " to cancel press CTRL^C, otherwise press enter" "?"
-
-  NEEDLESS=""
-  read NEEDLESS
-}
-
-
-
-# INIT
-#
-# this function installs the environment, calling the script depending
-# of your operating system
-init()
-{
-  if [ ! -d env/$ENVIRONMENT ] ; then
-    print " unknown system: $ENVIRONMENT" "!"
-    print ""
-    print " please check your ENVIRONMENT variable in $CONF" "!"
-    print ""
-    usage
-    exit
+  # cleaning dev tree
+  if [ -f $KANETON_MK ] ; then
+    print "   cleaning development tree" "+"
+    make distclean 1>&2 > /dev/null
   fi
 
-  if [ ! -f env/$ENVIRONMENT/init ] ; then
-    print " unknown system: $ENVIRONMENT" "!"
-    print ""
-    print " please check your ENVIRONMENT variable in $CONF" "!"
-    print ""
-    usage
-    exit
-  fi
+  # makefile dependencies
+  print "   cleaning makefile dependencies" "+"
+  rm -f $KANETON_MK
 
-  ./env/$ENVIRONMENT/init
+  # remove the links to machine-dependent directories
+  print "   removing links to machine-dependent directories" "+"
+  rm -f core/bootstrap/arch/machdep
+  rm -f core/bootloader/arch/machdep
+  rm -f core/include/arch/machdep
+  rm -f core/kaneton/arch/machdep
+
+  rm -f lds/arch/machdep
 }
 
 
@@ -156,25 +127,8 @@ print()
 #
 # entry point of this script
 
-# start of installation
-
-print " installing environment" "+"
-print ""
-
 # call the read_kaneton_conf function
 read_kaneton_conf
 
-# call the warning function
-warning
-
-# go into the src/ directory
-cd ../
-
 # install environment
-init
-
-# return into the env/ directory
-cd env/
-
-# end of installation
-print " environment installed successfully" "+"
+clean
