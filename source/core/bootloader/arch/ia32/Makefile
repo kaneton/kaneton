@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Sun Jun 12 21:14:58 2005   mycure
+## last update   Sun Jun 12 22:14:39 2005   mycure
 ##
 
 include			../../../../.kaneton.mk
@@ -45,20 +45,21 @@ CFLAGS			+=		-D___bootloader -D___kaneton
 all:			$(BOOTLOADER_O)
 	@echo -n "const char version[] = \"$(TITLE)-$(VERSION)" > $(VERSION_C)
 	@echo " $(DATE) $(USER)@$(HOSTNAME)\";" >> $(VERSION_C)
-	$(call cc-c-o,$(VERSION_O),$(VERSION_C),)
 
-	$(call ld,$(BOOTLOADER),$(VERSION_O) $(BOOTLOADER_O)		\
-	  $(_LIBC_A_), -T $(_LDS_DIR_)/bootloader.lds)
+	$(call compile-c,$(VERSION_O),$(VERSION_C),)
+
+	$(call dynamic-library,$(BOOTLOADER),$(VERSION_O)		\
+	  $(BOOTLOADER_O) $(_LIBC_A_), -T $(_LDS_DIR_)/bootloader.lds)
 
 	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
 
 distclean:
-	$(call rm,$(VERSION_C),)
-	$(call rm,$(VERSION_O),)
-	$(call rm,$(BOOTLOADER_O),)
-	$(call rm,$(BOOTLOADER),)
+	$(call remove,$(VERSION_C),)
+	$(call remove,$(VERSION_O),)
+	$(call remove,$(BOOTLOADER_O),)
+	$(call remove,$(BOOTLOADER),)
 
-	@$(_PURGE_)
+	$(call purge,)
 
 proto:
-	$(call proto,$(BOOTLOADER_INCLUDE),)
+	$(call prototypes,$(BOOTLOADER_INCLUDE),)

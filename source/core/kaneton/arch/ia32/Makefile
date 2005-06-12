@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 12 21:16:16 2005   mycure
+## last update   Sun Jun 12 22:23:51 2005   mycure
 ##
 
 include			../../../../.kaneton.mk
@@ -36,15 +36,15 @@ MACHDEP_O		=		as.o				\
 CFLAGS			+=		-D___kernel -D___kaneton
 
 all:			$(MACHDEP_O)
-	$(call ar-o-a,$(MACHDEP),$(MACHDEP_O),)
-	$(call ranlib,$(MACHDEP),)
+	$(call archive,$(MACHDEP),$(MACHDEP_O),)
+	$(call static-library,$(MACHDEP),)
 
 distclean:
-	$(call rm,$(MACHDEP_O),)
+	$(call remove,$(MACHDEP_O),)
 
-	@$(_PURGE_)
+	$(call purge,)
 
-	$(call rm,$(MACHDEP),)
+	$(call remove,$(MACHDEP),)
 
 proto:
-	$(call proto,$(MACHDEP_INCLUDE),)
+	$(call prototypes,$(MACHDEP_INCLUDE),)

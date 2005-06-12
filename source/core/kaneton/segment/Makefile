@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 12 21:17:37 2005   mycure
+## last update   Sun Jun 12 22:25:22 2005   mycure
 ##
  
 include			../../../.kaneton.mk
@@ -25,15 +25,15 @@ SEGMENT_O		=		segment.o
 CFLAGS			+=		-D___kernel -D___kaneton
 
 all:			$(SEGMENT_O)
-	$(call ar-o-a,$(SEGMENT),$(SEGMENT_O),)
-	$(call ranlib,$(SEGMENT),)
+	$(call archive,$(SEGMENT),$(SEGMENT_O),)
+	$(call static-library,$(SEGMENT),)
 
 distclean:
-	$(call rm,$(SEGMENT_O),)
+	$(call remove,$(SEGMENT_O),)
 
-	@$(_PURGE_)
+	$(call purge,)
 
-	$(call rm,$(SEGMENT),)
+	$(call remove,$(SEGMENT),)
 
 proto:
-	$(call proto,$(SEGMENT_INCLUDE),)
+	$(call prototypes,$(SEGMENT_INCLUDE),)

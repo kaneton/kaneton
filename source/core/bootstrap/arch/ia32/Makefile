@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Sun Jun 12 21:15:26 2005   mycure
+## last update   Sun Jun 12 22:17:38 2005   mycure
 ##
 
 include			../../../../.kaneton.mk
@@ -24,15 +24,16 @@ BOOTLOADER_O		=		bootloader.o
 BOOTLOADER_C		=		bootloader.c
 
 all:			
-	$(call cc-asm-o,$(BOOTSTRAP),$(BOOTSTRAP_ASM),-f bin)
+	$(call compile-asm,$(BOOTSTRAP),$(BOOTSTRAP_ASM),-f bin)
 
-	$(call cc-c-o,$(BOOTLOADER_O),$(BOOTLOADER_C),)
-	$(call ld,$(BOOTLOADER),$(BOOTLOADER_O),			\
+	$(call compile-c,$(BOOTLOADER_O),$(BOOTLOADER_C),)
+
+	$(call dynamic-library,$(BOOTLOADER),$(BOOTLOADER_O),		\
 	  -T $(_LDS_DIR_)/bootstrap.lds)
 
 distclean:
-	$(call rm,$(BOOTSTRAP),)
-	$(call rm,$(BOOTLOADER_O),)
-	$(call rm,$(BOOTLOADER),)
+	$(call remove,$(BOOTSTRAP),)
+	$(call remove,$(BOOTLOADER_O),)
+	$(call remove,$(BOOTLOADER),)
 
-	@$(_PURGE_)
+	$(call purge,)

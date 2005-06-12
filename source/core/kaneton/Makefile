@@ -11,24 +11,13 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 12 21:15:43 2005   mycure
+## last update   Sun Jun 12 22:24:44 2005   mycure
 ##
 
 include			../../.kaneton.mk
 
 SUBDIRS			=		arch				\
-					as				\
-					cpu				\
-					map				\
-					msg				\
-					region				\
-					sched				\
-					segment				\
-					set				\
-					task				\
-					thread				\
-					time				\
-					trap
+					segment				
 
 KANETON			=		kaneton
 
@@ -40,40 +29,40 @@ CFLAGS			+=		-D___kernel -D___kaneton
 
 all:			$(KANETON_O)
 	@for i in $(SUBDIRS) ; do					\
-	cd $$i								; \
-	make								; \
-	cd ..								; \
+	$(CD) $$i							; \
+	$(MAKE)								; \
+	$(CD) ..							; \
 	done
 
-	$(call ld,$(KANETON),	$(KANETON_O)				\
-				$(_MACHDEP_A_)				\
-				$(_AS_A_)				\
-				$(_CPU_A_)				\
-				$(_MAP_A_)				\
-				$(_MSG_A_)				\
-				$(_REGION_A_)				\
-				$(_SCHED_A_)				\
-				$(_SEGMENT_A_)				\
-				$(_SET_A_)				\
-				$(_TASK_A_)				\
-				$(_THREAD_A_)				\
-				$(_TIME_A_)				\
-				$(_TRAP_A_)				\
-				$(_LIBC_A_),				\
+	$(call dynamic-library,$(KANETON),	$(KANETON_O)		\
+						$(_MACHDEP_A_)		\
+						$(_AS_A_)		\
+						$(_CPU_A_)		\
+						$(_MAP_A_)		\
+						$(_MSG_A_)		\
+						$(_REGION_A_)		\
+						$(_SCHED_A_)		\
+						$(_SEGMENT_A_)		\
+						$(_SET_A_)		\
+						$(_TASK_A_)		\
+						$(_THREAD_A_)		\
+						$(_TIME_A_)		\
+						$(_TRAP_A_)		\
+						$(_LIBC_A_),		\
 	  -T $(_LDS_DIR_)/kaneton.lds)
 
 distclean:
 	@for i in $(SUBDIRS) ; do					\
-	cd $$i								; \
-	make distclean							; \
-	cd ..								; \
+	$(CD) $$i							; \
+	$(MAKE) distclean						; \
+	$(CD) ..							; \
 	done
 
-	$(call rm,$(KANETON_O),)
+	$(call remove,$(KANETON_O),)
 
-	@$(_PURGE_)
+	$(call purge,)
 
-	$(call rm,$(KANETON),)
+	$(call remove,$(KANETON),)
 
 proto:
-	$(call proto,$(KANETON_INCLUDE),)
+	$(call prototypes,$(KANETON_INCLUDE),)

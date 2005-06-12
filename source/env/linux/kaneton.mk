@@ -5,13 +5,13 @@
 ## 
 ## common.mk
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/core/kaneton/arch/ia32
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sun Jun 12 21:37:39 2005   mycure
+## last update   Sun Jun 12 22:23:25 2005   mycure
 ##
 
 #
@@ -115,13 +115,13 @@ LDFLAGS			=		-nostdinc -nostdlib		\
 #
 
 %.o:		%.asm
-	$(call cc-asm-o,$@,$<,-f elf)
+	$(call compile-asm,$@,$<,-f elf)
 
 %.o:		%.S
-	$(call cc-S-o,$@,$<,)
+	$(call compile-S,$@,$<,)
 
 %.o:		%.c
-	$(call cc-c-o,$@,$<,)
+	$(call compile-c,$@,$<,)
 
 #
 # pretty-printer defines
@@ -180,14 +180,14 @@ define pretty-printer
 endef
 
 #
-# from C file to object file
+# from c file to object file
 #
 # $(1):		object file
-# $(2):		C file
+# $(2):		c file
 # $(3):		advanced options
 #
 
-define cc-c-o
+define compile-c
   @$(call pretty-printer,green,CC,$(2),			)		; \
   $(CC) $(CFLAGS) $(_KANETON_OPTS_) $(3) -c $(2) -o $(1)
 endef
@@ -200,7 +200,7 @@ endef
 # $(3):		advanced options
 #
 
-define cc-S-o
+define compile-S
   @$(call pretty-printer,green,CC,$(2),			)		; \
   $(CC) $(CFLAGS) $(_KANETON_OPTS_) $(3) -c $(2) -o $(1)
 endef
@@ -213,7 +213,7 @@ endef
 # $(3):		advanced options
 #
 
-define cc-asm-o
+define compile-asm
   @$(call pretty-printer,green,NASM,$(2),			)	; \
   $(_NASM_) $(_KANETON_OPTS_) $(3) $(2) -o $(1)
 endef
@@ -226,7 +226,7 @@ endef
 # $(3):		advanced options
 #
 
-define ar-o-a
+define archive
   @$(call pretty-printer,red,AR,$(1),			)		; \
   $(_AR_) cq $(3) $(1) $(2)
 endef
@@ -239,7 +239,7 @@ endef
 # $(3):		advanced options
 #
 
-define ar-a-a
+define archive-from-archives
   @$(call pretty-printer,red,AR,$(1),			)		; \
   (echo "CREATE $(1)"							; \
    for i in $(2) ; do							\
@@ -250,13 +250,13 @@ define ar-a-a
 endef
 
 #
-# archive
+# create a static library with index from an archive
 #
 # $(1):		archive file
 # $(2):		advanced options
 #
 
-define ranlib
+define static-library
   @$(call pretty-printer,red,RANLIB,$(1),		)		; \
   $(_RANLIB_) $(2) $(1)
 endef
@@ -269,7 +269,7 @@ endef
 # $(3):		advanced options
 #
 
-define ld
+define dynamic-library
   @$(call pretty-printer,red,LD,$(1),			)		; \
   $(_LD_) $(LDFLAGS) $(3) -o $(1) $(2)
 endef
@@ -281,7 +281,7 @@ endef
 # $(2):		advanced options
 #
 
-define rm
+define remove
   @for i in $(1) ; do							\
     if [ -e $$i ] ; then						\
       $(call pretty-printer,magenta,RM,$$i,			)	; \
@@ -297,7 +297,7 @@ endef
 # $(2):		advanced options
 #
 
-define proto
+define prototypes
   @$(call pretty-printer,yellow,PROTO,$(1),			)	; \
   $(_PROTO_) $(2) $(1)
 endef

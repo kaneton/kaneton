@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 12 20:50:13 2005   mycure
+ * last update   Sun Jun 12 21:56:57 2005   mycure
  */
 
 #include <libc.h>
@@ -65,7 +65,15 @@ void			bootloader_error(void)
  * steps:
  *
  * 1) adds the ISA segment from 0 to 1Mb.
- * 2) 
+ * 2) adds the kernel code segment.
+ * 3) adds the init structure segment.
+ * 4) adds the modules segment.
+ * 5) adds the segments segment.
+ * 6) adds the regions segment.
+ * 7) adds the kernel stack segment.
+ * 8) adds the segment manager segment.
+ * 9) adds the global offset table segment.
+ * 10) adds the page directory segment.
  */
 
 void			bootloader_segments(void)
@@ -125,9 +133,6 @@ void			bootloader_segments(void)
 
   init->segments->segments[7].address = init->segmng;
   init->segments->segments[7].size = init->segmngsz;
-
-  printf("segmng: 0x%x 0x%x\n", init->segments->segments[7].address,
-	 init->segmng);
 
   /*
    * 9)
