@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Sun Jun 12 21:21:00 2005   mycure
+## last update   Sun Jun 12 22:43:59 2005   mycure
 ##
 
 include			../../.kaneton.mk
@@ -24,14 +24,14 @@ MOD_O			=		mod.o				\
 MOD_INCLUDE		=		
 
 all:			$(MOD_O)
-	$(call ld,$(MOD),$(MOD_O) $(_LIBC_A_),				\
+	$(call dynamic-linker,$(MOD),$(MOD_O) $(_LIBC_A_),		\
 	  -T $(_LDS_DIR_)/service.lds)
 
 distclean:
-	$(call rm,$(MOD_O),)
-	$(call rm,$(MOD),)
+	$(call remove,$(MOD_O),)
+	$(call remove,$(MOD),)
 
-	@$(_PURGE_)
+	$(call purge,)
 
 proto:
-	$(call proto,$(MOD_INCLUDE),)
+	$(call prototypes,$(MOD_INCLUDE),)

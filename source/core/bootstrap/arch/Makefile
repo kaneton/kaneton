@@ -11,24 +11,24 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 12 22:16:51 2005   mycure
+## last update   Sun Jun 12 22:31:20 2005   mycure
 ##
 
 include			../../../.kaneton.mk
 
 all:
-	@$(CD) machdep							; \
-	$(MAKE)								; \
-	$(CD) ..
+	@$(_CD_) machdep						; \
+	$(_MAKE_)							; \
+	$(_CD_) ..
 
 distclean:
-	@$(CD) machdep							; \
-	$(MAKE) distclean						; \
-	$(CD) ..
+	@$(_CD_) machdep						; \
+	$(_MAKE_) distclean						; \
+	$(_CD_) ..
 
 	$(call purge,)
 
 proto:
-	@$(CD) machdep							; \
-	$(MAKE) proto							; \
-	$(CD) ..
+	@$(_CD_) machdep						; \
+	$(_MAKE_) proto							; \
+	$(_CD_) ..

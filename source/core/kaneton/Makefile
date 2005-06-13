@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 12 22:24:44 2005   mycure
+## last update   Sun Jun 12 22:52:41 2005   mycure
 ##
 
 include			../../.kaneton.mk
@@ -29,33 +29,22 @@ CFLAGS			+=		-D___kernel -D___kaneton
 
 all:			$(KANETON_O)
 	@for i in $(SUBDIRS) ; do					\
-	$(CD) $$i							; \
-	$(MAKE)								; \
-	$(CD) ..							; \
+	$(_CD_) $$i							; \
+	$(_MAKE_)							; \
+	$(_CD_) ..							; \
 	done
 
-	$(call dynamic-library,$(KANETON),	$(KANETON_O)		\
+	$(call dynamic-linker,$(KANETON),	$(KANETON_O)		\
 						$(_MACHDEP_A_)		\
-						$(_AS_A_)		\
-						$(_CPU_A_)		\
-						$(_MAP_A_)		\
-						$(_MSG_A_)		\
-						$(_REGION_A_)		\
-						$(_SCHED_A_)		\
 						$(_SEGMENT_A_)		\
-						$(_SET_A_)		\
-						$(_TASK_A_)		\
-						$(_THREAD_A_)		\
-						$(_TIME_A_)		\
-						$(_TRAP_A_)		\
 						$(_LIBC_A_),		\
 	  -T $(_LDS_DIR_)/kaneton.lds)
 
 distclean:
 	@for i in $(SUBDIRS) ; do					\
-	$(CD) $$i							; \
-	$(MAKE) distclean						; \
-	$(CD) ..							; \
+	$(_CD_) $$i							; \
+	$(_MAKE_) distclean						; \
+	$(_CD_) ..							; \
 	done
 
 	$(call remove,$(KANETON_O),)

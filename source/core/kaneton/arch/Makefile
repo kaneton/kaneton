@@ -5,30 +5,30 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton/core/kaneton/arch
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 12 22:26:31 2005   mycure
+## last update   Sun Jun 12 22:51:56 2005   mycure
 ##
 
 include			../../../.kaneton.mk
 
 all:
-	@(CD) machdep							; \
-	$(MAKE)								; \
-	$(CD) ..
+	@$(_CD_) machdep						; \
+	$(_MAKE_)							; \
+	$(_CD_) ..
 
 distclean:
-	@$(CD) machdep							; \
-	$(MAKE) distclean						; \
-	$(CD) ..
+	@$(_CD_) machdep						; \
+	$(_MAKE_) distclean						; \
+	$(_CD_) ..
 
 	$(call purge,)
 
 proto:
-	@$(CD) machdep							; \
-	$(MAKE) proto							; \
-	$(CD) ..
+	@$(_CD_) machdep						; \
+	$(_MAKE_) proto							; \
+	$(_CD_) ..

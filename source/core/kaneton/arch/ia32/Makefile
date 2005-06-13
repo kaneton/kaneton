@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 12 22:23:51 2005   mycure
+## last update   Sun Jun 12 22:36:55 2005   mycure
 ##
 
 include			../../../../.kaneton.mk
@@ -37,7 +37,8 @@ CFLAGS			+=		-D___kernel -D___kaneton
 
 all:			$(MACHDEP_O)
 	$(call archive,$(MACHDEP),$(MACHDEP_O),)
-	$(call static-library,$(MACHDEP),)
+
+	$(call static-linker,$(MACHDEP),)
 
 distclean:
 	$(call remove,$(MACHDEP_O),)

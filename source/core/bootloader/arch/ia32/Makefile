@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Sun Jun 12 22:14:39 2005   mycure
+## last update   Sun Jun 12 22:50:04 2005   mycure
 ##
 
 include			../../../../.kaneton.mk
@@ -48,7 +48,7 @@ all:			$(BOOTLOADER_O)
 
 	$(call compile-c,$(VERSION_O),$(VERSION_C),)
 
-	$(call dynamic-library,$(BOOTLOADER),$(VERSION_O)		\
+	$(call dynamic-linker,$(BOOTLOADER),$(VERSION_O)		\
 	  $(BOOTLOADER_O) $(_LIBC_A_), -T $(_LDS_DIR_)/bootloader.lds)
 
 	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)

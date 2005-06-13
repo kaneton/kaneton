@@ -5,13 +5,13 @@
 ## 
 ## common.mk
 ## 
-## path          /home/mycure/kaneton/core/kaneton/arch/ia32
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sun Jun 12 22:23:25 2005   mycure
+## last update   Sun Jun 12 22:53:07 2005   mycure
 ##
 
 #
@@ -62,19 +62,7 @@ _LIBC_H_		=		$(_LIB_DIR_)/libc.h
 _CRT_A_			=		$(_LIB_DIR_)/crt.a
 
 _MACHDEP_A_		=		$(_MACHDEP_DIR_)/machdep.a
-_AS_A_			=		$(_CORE_KANETON_DIR_)/as/as.a
-_CPU_A_			=		$(_CORE_KANETON_DIR_)/cpu/cpu.a
-_MAP_A_			=		$(_CORE_KANETON_DIR_)/map/map.a
-_MSG_A_			=		$(_CORE_KANETON_DIR_)/msg/msg.a
-_REGION_A_		=		$(_CORE_KANETON_DIR_)/region/region.a
-_SCHED_A_		=		$(_CORE_KANETON_DIR_)/sched/sched.a
 _SEGMENT_A_		=		$(_CORE_KANETON_DIR_)/segment/segment.a
-_SET_A_			=		$(_CORE_KANETON_DIR_)/set/set.a
-_TASK_A_		=		$(_CORE_KANETON_DIR_)/task/task.a
-_THREAD_A_		=		$(_CORE_KANETON_DIR_)/thread/thread.a
-_TIME_A_		=		$(_CORE_KANETON_DIR_)/time/time.a
-_TRAP_A_		=		$(_CORE_KANETON_DIR_)/trap/trap.a
-
 
 #
 # c compiler
@@ -239,7 +227,7 @@ endef
 # $(3):		advanced options
 #
 
-define archive-from-archives
+define archives
   @$(call pretty-printer,red,AR,$(1),			)		; \
   (echo "CREATE $(1)"							; \
    for i in $(2) ; do							\
@@ -256,7 +244,7 @@ endef
 # $(2):		advanced options
 #
 
-define static-library
+define static-linker
   @$(call pretty-printer,red,RANLIB,$(1),		)		; \
   $(_RANLIB_) $(2) $(1)
 endef
@@ -269,7 +257,7 @@ endef
 # $(3):		advanced options
 #
 
-define dynamic-library
+define dynamic-linker
   @$(call pretty-printer,red,LD,$(1),			)		; \
   $(_LD_) $(LDFLAGS) $(3) -o $(1) $(2)
 endef
@@ -313,4 +301,13 @@ endef
 define link
   @$(call pretty-printer,yellow,LINK,$(1),			)	; \
   $(_LN_) $(3) $(2) $(1)
+endef
+
+#
+# purge
+#
+
+define purge
+  @$(call pretty-printer,yellow,PURGE,,				)	; \
+  $(_PURGE_)
 endef

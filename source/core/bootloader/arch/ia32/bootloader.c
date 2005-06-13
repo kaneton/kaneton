@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 12 21:56:57 2005   mycure
+ * last update   Sun Jun 12 23:14:22 2005   mycure
  */
 
 #include <libc.h>
@@ -150,7 +150,11 @@ void			bootloader_segments(void)
 }
 
 /*
- * XXX
+ * this function adds the regions to the init variable.
+ *
+ * steps:
+ *
+ * 1) 
  */
 
 void			bootloader_regions(void)

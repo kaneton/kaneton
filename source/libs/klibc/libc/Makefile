@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:56:59 2005   mycure
-## last update   Sun Jun 12 21:20:02 2005   mycure
+## last update   Sun Jun 12 22:40:53 2005   mycure
 ##
 
 include			../../../.kaneton.mk
@@ -43,15 +43,16 @@ LIBC_O			=		_ctype.o			\
 					sum2.o				
 
 all:			$(LIBC_O)
-	$(call ar-o-a,$(LIBNAME),$(LIBC_O),)
-	$(call ranlib,$(LIBNAME),)
+	$(call archive,$(LIBNAME),$(LIBC_O),)
+
+	$(call static-linker,$(LIBNAME),)
 
 distclean:
-	$(call rm,$(LIBC_O),)
+	$(call remove,$(LIBC_O),)
 
-	@$(_PURGE_)
+	$(call purge,)
 
-	$(call rm,$(LIBNAME),)
+	$(call remove,$(LIBNAME),)
 
 proto:
-	$(call proto,$(LIBINCLUDE),)
+	$(call prototypes,$(LIBINCLUDE),)

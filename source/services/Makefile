@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Sun Jun 12 21:20:25 2005   mycure
+## last update   Sun Jun 12 22:41:55 2005   mycure
 ##
 
 include			../.kaneton.mk
@@ -35,7 +35,7 @@ distclean:
 	$(_CD_) ..							; \
 	done
 
-	@$(_PURGE_)
+	$(call purge,)
 
 proto:
 	@for i in $(SUBDIRS) ; do					\

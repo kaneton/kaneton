@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:05:40 2005   mycure
-## last update   Sun Jun 12 21:20:13 2005   mycure
+## last update   Sun Jun 12 22:41:25 2005   mycure
 ##
 
 include			../../../.kaneton.mk
@@ -23,15 +23,16 @@ LIBSYS_O		=		perror.o
 
 
 all:			$(LIBSYS_O)
-	$(call ar-o-a,$(LIBNAME),$(LIBSYS_O),)
-	$(call ranlib,$(LIBNAME),)
+	$(call archive,$(LIBNAME),$(LIBSYS_O),)
+
+	$(call static-library,$(LIBNAME),)
 
 distclean:
-	$(call rm,$(LIBSYS_O),)
+	$(call remove,$(LIBSYS_O),)
 
-	@$(_PURGE_)
+	$(call purge,)
 
-	$(call rm,$(LIBNAME),)
+	$(call remove,$(LIBNAME),)
 
 proto:
-	$(call proto,$(LIBINCLUDE),)
+	$(call prototypes,$(LIBINCLUDE),)

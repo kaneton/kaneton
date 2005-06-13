@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/libs
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:28:05 2005   mycure
-## last update   Sun Jun 12 21:29:25 2005   mycure
+## last update   Sun Jun 12 22:38:32 2005   mycure
 ##
 
 include			../.kaneton.mk
@@ -37,12 +37,7 @@ distclean:
 	$(_CD_) ..							; \
 	done
 
-	@$(_PURGE_)
-
-	$(call rm,$(_LIBC_A_),)
-	$(call rm,$(_LIBC_H_),)
-
-	$(call rm,$(_CRT_A_),)
+	$(call purge,)
 
 proto:
 	@for i in $(SUBDIRS) ; do					\

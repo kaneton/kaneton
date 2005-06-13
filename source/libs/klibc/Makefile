@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:29:19 2005   mycure
-## last update   Sun Jun 12 21:19:52 2005   mycure
+## last update   Sun Jun 12 22:40:04 2005   mycure
 ##
 
 include			../../.kaneton.mk
@@ -27,7 +27,7 @@ LIBSYS			=		libsys/libsys.a
 CFLAGS			+=		-D___kaneton
 
 all:			sublibs
-	$(call ar-a-a,$(LIBNAME),$(LIBC) $(LIBSYS),)
+	$(call archives,$(LIBNAME),$(LIBC) $(LIBSYS),)
 
 	$(call link,$(_LIBC_A_),klibc/$(LIBNAME),)
 	$(call link,$(_LIBC_H_),klibc/$(LIBINCLUDE),)
@@ -46,9 +46,12 @@ distclean:
 	$(_CD_) .. 							; \
 	done
 
-	@$(_PURGE_)
+	$(call purge,)
 
-	$(call rm,$(LIBNAME),)
+	$(call remove,$(LIBNAME),)
+
+	$(call remove,$(_LIBC_A_),)
+	$(call remove,$(_LIBC_H_),)
 
 proto:
 	@for i in $(SUBDIRS) ; do					\

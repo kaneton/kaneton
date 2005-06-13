@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 12 21:19:11 2005   mycure
+## last update   Sun Jun 12 22:39:05 2005   mycure
 ##
 
 include			../../.kaneton.mk
@@ -21,15 +21,16 @@ CRT			=		crt.a
 CRT_O			=		crt.o				
 
 all:			$(CRT_O)
-	$(call ar-o-a,$(CRT),$(CRT_O),)
-	$(call ranlib,$(CRT),)
+	$(call archive,$(CRT),$(CRT_O),)
+
+	$(call static-library,$(CRT),)
 
 distclean:
-	$(call rm,$(CRT_O),)
+	$(call remove,$(CRT_O),)
 
-	@$(_PURGE_)
+	$(call purge,)
 
-	$(call rm,$(CRT),)
+	$(call remove,$(CRT),)
 
 proto:
 	;

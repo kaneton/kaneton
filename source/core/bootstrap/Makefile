@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Sun Jun 12 22:16:15 2005   mycure
+## last update   Sun Jun 12 22:30:36 2005   mycure
 ##
 
 include			../../.kaneton.mk
@@ -19,20 +19,20 @@ include			../../.kaneton.mk
 BOOTSTRAP		=		bootstrap
 
 all:
-	@$(CD) arch							; \
-	$(MAKE)								; \
-	$(CD) ..
+	@$(_CD_) arch							; \
+	$(_MAKE_)							; \
+	$(_CD_) ..
 
 distclean:
-	@$(CD) arch							; \
-	$(MAKE) distclean						; \
-	$(CD) ..
+	@$(_CD_) arch							; \
+	$(_MAKE_) distclean						; \
+	$(_CD_) ..
 
 	$(call remove,$(BOOTSTRAP),)
 
 	$(call purge,)
 
 proto:
-	@$(CD) arch							; \
-	$(MAKE) proto							; \
-	$(CD) ..
+	@$(_CD_) arch							; \
+	$(_MAKE_) proto							; \
+	$(_CD_) ..
