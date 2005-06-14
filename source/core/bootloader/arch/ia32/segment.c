@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Fri Jun 10 16:21:32 2005   mycure
+ * last update   Mon Jun 13 13:38:27 2005   mycure
  */
 
 #include <libc.h>
@@ -37,6 +37,4 @@ void			segment_init(void)
 
   init->segmng = bootloader_alloc(PAGESZ, &segmngsz);
   init->segmngsz = segmngsz;
-
-  cons_msg('+', "segment manager initialized\n");
 }

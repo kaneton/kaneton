@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Sun Jun 12 20:44:02 2005   mycure
+ * last update   Tue Jun 14 14:21:51 2005   mycure
  */
 
 #ifndef LIBC_LIBC_H
@@ -24,6 +24,7 @@
 #include <arch/machdep/machdep.h>
 
 #include "ctype.h"
+#include "printf.h"
 
 /*
  * prototypes:     ../../libc/_ctype.c           ../../libc/bcmp.c
@@ -213,31 +214,29 @@ u_long			strtoul(const char	*nptr,
  * ../../libc/printf.c
  */
 
-void			printf_attr(char	attr);
+int			printf_string(char			*string,
+				      unsigned int		flags,
+				      int			len1,
+				      int			len2);
 
 
-int			printf_char(char	c);
+int			printf_quad(quad_t			value,
+				    int				base,
+				    int				hdl_sign,
+				    unsigned int		flags,
+				    int				len1,
+				    int				len2);
 
 
-int			printf_string(char	*string,
-				      int	ladjust,
-				      int	padchar,
-				      int	padlen);
+int			vprintf(const char			*fmt,
+				va_list				args);
 
 
-int			printf_long(long	value,
-				    int		base,
-				    int		hdl_sign,
-				    int		ladjust,
-				    int		padchar,
-				    int		padlen);
+int			printf_init(t_printf_char_fn		pc,
+				    t_printf_attr_fn		pa);
 
 
-int			vprintf(const char	*fmt,
-				va_list		args);
-
-
-int			printf(char		*fmt,
+int			printf(char				*fmt,
 			       ...);
 
 

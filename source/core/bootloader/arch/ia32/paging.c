@@ -5,13 +5,13 @@
  * 
  * paging.c
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Fri Jun 10 15:42:28 2005   mycure
+ * last update   Mon Jun 13 14:32:19 2005   mycure
  */
 
 #include <libc.h>
@@ -42,8 +42,8 @@ t_pte*			pt;
  */
 
 #if (IA32_DEBUG & IA32_DEBUG_PAGING)
-void			paging_dump_table(t_pte*	table,
-					  t_opts	opts)
+void			paging_dump_table(t_pte*		table,
+					  t_opts		opts)
 {
   t_uint16		i;
 
@@ -112,8 +112,8 @@ void			paging_dump_table(t_pte*	table,
  */
 
 #if (IA32_DEBUG & IA32_DEBUG_PAGING)
-void			paging_dump_directory(t_pde*	directory,
-					      t_opts	opts)
+void			paging_dump_directory(t_pde*		directory,
+					      t_opts		opts)
 {
   paging_dump_table((t_pte*)directory, opts);
 }

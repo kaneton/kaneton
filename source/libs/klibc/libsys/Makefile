@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:05:40 2005   mycure
-## last update   Sun Jun 12 22:41:25 2005   mycure
+## last update   Tue Jun 14 14:34:16 2005   mycure
 ##
 
 include			../../../.kaneton.mk
@@ -19,7 +19,8 @@ include			../../../.kaneton.mk
 LIBNAME			=		libsys.a
 LIBINCLUDE		=		../include/libsys/libsys.h
 
-LIBSYS_O		=		perror.o			
+LIBSYS_O		=		perror.o			\
+					quad.o				
 
 
 all:			$(LIBSYS_O)

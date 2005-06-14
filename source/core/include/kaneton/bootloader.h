@@ -5,81 +5,16 @@
  * 
  * bootloader.h
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Fri Jun 10 15:15:11 2005   mycure
+ * last update   Mon Jun 13 14:20:32 2005   mycure
  */
 
 #ifndef KANETON_BOOTLOADER_H
 #define KANETON_BOOTLOADER_H	1
-
-#ifdef ___bootloader
-
-/*
- * prototypes:     ../../bootloader/arch/machdep/bootloader.h
- *                 ../../bootloader/arch/machdep/elf.h
- *                 ../../bootloader/arch/machdep/machdep.h
- *                 ../../bootloader/arch/machdep/paging.h
- *                 ../../bootloader/arch/machdep/stdarg.h
- *                 ../../bootloader/arch/machdep/asm.h
- *                 ../../bootloader/arch/machdep/cons.h
- *                 ../../bootloader/arch/machdep/limits.h
- *                 ../../bootloader/arch/machdep/multiboot.h
- *                 ../../bootloader/arch/machdep/pmode.h
- *                 ../../bootloader/arch/machdep/types.h
- */
-
-/*
- * ../../bootloader/arch/machdep/bootloader.h
- */
-
-/*
- * ../../bootloader/arch/machdep/elf.h
- */
-
-/*
- * ../../bootloader/arch/machdep/machdep.h
- */
-
-/*
- * ../../bootloader/arch/machdep/paging.h
- */
-
-/*
- * ../../bootloader/arch/machdep/stdarg.h
- */
-
-/*
- * ../../bootloader/arch/machdep/asm.h
- */
-
-/*
- * ../../bootloader/arch/machdep/cons.h
- */
-
-/*
- * ../../bootloader/arch/machdep/limits.h
- */
-
-/*
- * ../../bootloader/arch/machdep/multiboot.h
- */
-
-/*
- * ../../bootloader/arch/machdep/pmode.h
- */
-
-/*
- * ../../bootloader/arch/machdep/types.h
- */
-/*
- * eop
- */
-
-#endif
 
 #endif

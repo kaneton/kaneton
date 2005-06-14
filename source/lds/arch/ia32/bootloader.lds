@@ -4,7 +4,7 @@ ENTRY(bootloader_entry)
 
 SECTIONS
 {
-	. = 0x100000 + SIZEOF_HEADERS;
+	. = 0x200000 + SIZEOF_HEADERS;
 	
 	.text :
 	{

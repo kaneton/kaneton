@@ -5,13 +5,13 @@
  * 
  * cons.c
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Tue Jun 14 14:37:52 2005   mycure
+ * last update   Tue Jun 14 12:56:16 2005   mycure
  */
 
 #include <libc.h>
@@ -174,35 +174,23 @@ void			cons_msg(char				indicator,
 }
 
 /*
- * this function loads the current console state into the init
- * variable to pass it to the kernel.
- *
- * this step is just used to keep the console in the same state between
- * the bootloader and the kernel.
- */
-
-void			cons_load(void)
-{
-  memcpy(&init->machdep.cons, &cons, sizeof(t_cons));
-}
-
-/*
  * this function just initializes the bootloader console.
  *
- * this function also initializes the printf function to work with
- * the console.
+ * this function also initializes the printf function to work with the
+ * console.
  */
 
 int			cons_init(void)
 {
-  cons.line = 0;
-  cons.column = 0;
-  cons.attr = CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT;
-  cons.vga = (char*)CONS_ADDR;
-
-  cons_clear();
+  memcpy(&cons, &init->machdep.cons, sizeof(t_cons));
 
   printf_init(cons_print_char, cons_attr);
 
   return (0);
 }
+
+/*
+ * XXX
+ *
+ * [+] ce gestionnaire est provisoire car cela devrait etre un service.
+ */

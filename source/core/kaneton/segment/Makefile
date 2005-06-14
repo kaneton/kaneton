@@ -11,14 +11,14 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 12 22:35:55 2005   mycure
+## last update   Mon Jun 13 14:34:07 2005   mycure
 ##
  
 include			../../../.kaneton.mk
 
 SEGMENT			=		segment.a
 
-SEGMENT_INCLUDE		=		$(_INCLUDE_DIR_)/segment.h
+SEGMENT_INCLUDE		=		$(_CORE_INCLUDE_DIR_)/kaneton/segment.h
 
 SEGMENT_O		=		segment.o			
 

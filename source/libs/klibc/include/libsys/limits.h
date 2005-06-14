@@ -5,13 +5,13 @@
  * 
  * limits.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include/libsys
+ * path          /home/mycure/kaneton/libs/klibc/libsys
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:38:13 2005   mycure
- * last update   Sat May 28 22:19:35 2005   mycure
+ * last update   Tue Jun 14 14:13:18 2005   mycure
  */
 
 #ifndef LIBSYS_LIMITS_H
@@ -66,5 +66,15 @@
 #define SLLONG_MAX		0x7fffffffffffffffL
 #define ULLONG_MIN		0x0000000000000000UL
 #define ULLONG_MAX		0xffffffffffffffffUL
+
+/*
+ * quad size
+ */
+
+#define QUAD_BITS		64
+#define SQUAD_MIN		(-0x7fffffffffffffffL - 1)
+#define SQUAD_MAX		0x7fffffffffffffffL
+#define UQUAD_MIN		0x0000000000000000UL
+#define UQUAD_MAX		0xffffffffffffffffUL
 
 #endif

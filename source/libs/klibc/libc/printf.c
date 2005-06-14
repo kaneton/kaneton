@@ -3,37 +3,28 @@
  *
  * printf.c
  *
- * path          /home/mycure/kaneton/libs/klibc
+ * path          /home/mycure/kaneton/libs/klibc/libc
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Thu May  6 14:37:44 2004   mycure
- * last update   Fri Jun 10 00:11:30 2005   mycure
+ * last update   Tue Jun 14 15:01:58 2005   mycure
  */
 
 #include <arch/machdep/machdep.h>
 #include <klibc/include/klibc.h>
 
-void			printf_attr(char	attr)
-{
-  cons_attr(attr);
-}
+t_printf_char_fn	printf_char = NULL;
+t_printf_attr_fn	printf_attr = NULL;
 
-int			printf_char(char	c)
-{
-  cons_print_char(c);
-
-  return (1);
-}
-
-int			printf_string(char	*string,
-				      int	ladjust,
-				      int	padchar,
-				      int	padlen)
+int			printf_string(char			*string,
+				      unsigned int		flags,
+				      int			len1,
+				      int			len2)
 {
   unsigned int		written;
-  int			pad;
+  int			padlen;
   int			i;
 
   written = 0;
@@ -44,50 +35,52 @@ int			printf_string(char	*string,
   for (i = 0; string[i]; i++)
     ;
 
-  pad = padlen - i;
-
-  if (pad < 0)
-    pad = 0;
-
-  if (ladjust)
-    pad = -pad;
-
-  for (; pad > 0; pad--)
+  if (!(flags & PRINTF_DOT))
     {
-      if (padchar)
-	written += printf_char(padchar);
-      else
-	written += printf_char(' ');
+      padlen = len1 - i;
+
+      if (padlen < 0)
+	padlen = 0;
+
+      if (flags & PRINTF_LADJUST)
+	padlen = -padlen;
+
+      for (; padlen > 0; padlen--)
+	if (printf_char != NULL)
+	  written += printf_char(' ');
     }
 
-  for (i = 0; string[i]; i++)
-    written += printf_char(string[i]);
+  for (i = 0; (string[i] != 0) && (i < len1 != -1 ? len1 : i + 1); i++)
+    if (printf_char != NULL)
+      written += printf_char(string[i]);
 
-  for (; pad < 0; pad++)
+  if (!(flags & PRINTF_DOT))
     {
-      if (padchar)
-	written += printf_char(padchar);
-      else
-	written += printf_char(' ');
+      for (; padlen < 0; padlen++)
+	if (printf_char != NULL)
+	  written += printf_char(' ');
     }
 
   return (written);
 }
 
-int			printf_long(long	value,
-				    int		base,
-				    int		hdl_sign,
-				    int		ladjust,
-				    int		padchar,
-				    int		padlen)
+int			printf_quad(quad_t			value,
+				    int				base,
+				    int				hdl_sign,
+				    unsigned int		flags,
+				    int				len1,
+				    int				len2)
 {
-  char			convert[256 + 1];
+  char			convert[256];
   unsigned int		written;
+  int			padlen;
   int			caps;
   char			sign;
-  int			pad;
-  long			v;
+  u_quad_t		v;
   int			i;
+
+  if (flags & PRINTF_DOT)
+    PRINTF_SWAP(len1, len2);
 
   written = 0;
   caps = 0;
@@ -116,71 +109,83 @@ int			printf_long(long	value,
     }
   convert[i] = 0;
 
-  pad = padlen - i;
-  if (pad < 0)
-    pad = 0;
+  padlen = len1 - i;
 
-  if (ladjust)
-    pad = -pad;
+  if (padlen < 0)
+    padlen = 0;
 
-  if (pad > 0)
+  if (flags & PRINTF_LADJUST)
+    padlen = -padlen;
+
+  if ((flags & PRINTF_ZPAD) && (padlen > 0))
     {
       if (sign)
 	{
-	  written += printf_char(sign);
+	  if (printf_char != NULL)
+	    written += printf_char(sign);
 	  sign = 0;
-	  pad--;
+	  padlen--;
 	}
 
-      for (; pad > 0; pad--)
-	{
-	  if (padchar)
-	    written += printf_char(padchar);
-	  else
-	    written += printf_char(' ');
-	}
+      for (; padlen > 0; padlen--)
+	if (printf_char != NULL)
+	  written += printf_char('0');
+    }
+
+  if (padlen > 0)
+    {
+      if (printf_char != NULL)
+	written += printf_char(' ');
     }
 
   if (sign)
-    written += printf_char(sign);
+    if (printf_char != NULL)
+      written += printf_char(sign);
 
   for (i--; i >= 0; i--)
-    written += printf_char(convert[i]);
+    if (printf_char != NULL)
+      written += printf_char(convert[i]);
 
-  for (; pad < 0; pad++)
+  for (; padlen < 0; padlen++)
     {
-      if (padchar)
-	written += printf_char(padchar);
-      else
+      if (printf_char != NULL)
 	written += printf_char(' ');
     }
 
   return (written);
 }
 
-int			vprintf(const char	*fmt,
-				va_list		args)
+int			vprintf(const char			*fmt,
+				va_list				args)
 {
+  quad_t		quadvalue;
+  char			charvalue;
+  char*			strvalue;
+  int			quadflag;
   int			longflag;
-  int			ladjust;
+  int			starflag;
   unsigned int		written;
-  char			padchar;
-  int			padlen;
-  long			value;
-  char			c;
+  unsigned int		flags;
+  int			len1;
+  int			len2;
   int			i;
+  char			c;
 
+  starflag = 0;
+  flags = 0;
   for (written = 0, i = 0; fmt[i]; i++)
     {
-      padchar = 0;
-      padlen = 0;
+      quadflag = 0;
       longflag = 0;
 
       switch (fmt[i])
 	{
 	case '%':
 	  {
-	    ladjust = 0;
+	    starflag = 0;
+	    flags = 0;
+	    len1 = -1;
+	    len2 = -1;
 
 	  _next_char_:
 
@@ -195,120 +200,168 @@ int			vprintf(const char	*fmt,
 		}
 	      case '-':
 		{
-		  ladjust = 1;
+		  flags |= PRINTF_LADJUST;
+		  goto _next_char_;
+		}
+	      case '*':
+		{
+		  len1 = va_arg(args, int);
+		  starflag = 1;
+		  goto _next_char_;
+		}
+	      case '.':
+		{
+		  len2 = len1;
+		  len1 = -1;
+		  flags |= PRINTF_DOT;
+
 		  goto _next_char_;
 		}
 	      case '0':
-		if (padlen == 0)
-		  padchar = '0';
+		{
+		  if (starflag)
+		    {
+		      flags |= PRINTF_ZPAD;
+		      goto _next_char_;
+		    }
+
+		  if (len1 == -1)
+		    flags |= PRINTF_ZPAD;
+		}
 	      case '1': case '2': case '3':
 	      case '4': case '5': case '6':
 	      case '7': case '8': case '9':
-		padlen = padlen * 10 + c - '0';
-		goto _next_char_;
+		{
+		  if (len1 == -1)
+		    len1 = 0;
+		  len1 = len1 * 10 + c - '0';
+		  goto _next_char_;
+		}
+	      case 'q':
+		{
+		  quadflag = 1;
+		  goto _next_char_;
+		}
 	      case 'l':
-		longflag = 1;
-		goto _next_char_;
+		{
+		  longflag = 1;
+		  goto _next_char_;
+		}
 	      case '#':
 		{
-		  value = (long) va_arg(args, int);
+		  charvalue = (char) va_arg(args, int);
 
-		  printf_attr(value);
+		  if (printf_attr != NULL)
+		    printf_attr(charvalue);
 
 		  break;
 		}
 	      case 'b':
 		{
-		  if (longflag)
-		    value = va_arg(args, long);
+		  if (quadflag)
+		    quadvalue = va_arg(args, quad_t);
+		  else if (longflag)
+		    quadvalue = (u_quad_t) va_arg(args, long);
 		  else
-		    value = (long) va_arg(args, int);
+		    quadvalue = (u_quad_t) va_arg(args, int);
 
-		  written += printf_long(value, 2, 1, ladjust,
-					 padchar, padlen);
+		  written += printf_quad(quadvalue, 2, 0, flags,
+					 len1, len2);
 
 		  break;
 		}
-	      case 'd': case 'i':
+	      case 'd': case 'i': case 'D':
 		{
-		  if (longflag)
-		    value = va_arg(args, long);
+		  if (quadflag)
+		    quadvalue = va_arg(args, quad_t);
+		  else if (longflag)
+		    quadvalue = (quad_t) va_arg(args, long);
 		  else
-		    value = (long) va_arg(args, int);
+		    quadvalue = (quad_t) va_arg(args, int);
 
-		  written += printf_long(value, 10, 1, ladjust,
-					 padchar, padlen);
+		  written += printf_quad(quadvalue, 10, 1, flags,
+					 len1, len2);
 
 		  break;
 		}
-	      case 'u':
+	      case 'u': case 'U':
 		{
-		  if (longflag)
-		    value = va_arg(args, long);
+		  if (quadflag)
+		    quadvalue = va_arg(args, quad_t);
+		  else if (longflag)
+		    quadvalue = (u_quad_t) va_arg(args, long);
 		  else
-		    value = (long) va_arg(args, int);
+		    quadvalue = (u_quad_t) va_arg(args, int);
 
-		  written += printf_long(value, 10, 0, ladjust,
-					 padchar, padlen);
+		  written += printf_quad(quadvalue, 10, 0, flags,
+					 len1, len2);
 
 		  break;
 		}
-	      case 'o':
+	      case 'o': case 'O':
 		{
-		  if (longflag)
-		    value = va_arg(args, long);
+		  if (quadflag)
+		    quadvalue = va_arg(args, quad_t);
+		  else if (longflag)
+		    quadvalue = (u_quad_t) va_arg(args, long);
 		  else
-		    value = (long) va_arg(args, int);
+		    quadvalue = (u_quad_t) va_arg(args, int);
 
-		  written += printf_long(value, 8, 0, ladjust,
-					 padchar, padlen);
+		  written += printf_quad(quadvalue, 8, 0, flags,
+					 len1, len2);
 
 		  break;
 		}
-	      case 'x':
+	      case 'p': case 'x':
 		{
-		  if (longflag)
-		    value = va_arg(args, long);
+		  if (quadflag)
+		    quadvalue = va_arg(args, quad_t);
+		  else if (longflag)
+		    quadvalue = (u_quad_t) va_arg(args, long);
 		  else
-		    value = (long) va_arg(args, int);
+		    quadvalue = (u_quad_t) va_arg(args, int);
 
-		  written += printf_long(value, 16, 0, ladjust,
-					 padchar, padlen);
+		  written += printf_quad(quadvalue, 16, 0, flags,
+					 len1, len2);
 
 		  break;
 		}
 	      case 'X':
 		{
-		  if (longflag)
-		    value = va_arg(args, long);
+		  if (quadflag)
+		    quadvalue = va_arg(args, quad_t);
+		  else if (longflag)
+		    quadvalue = (u_quad_t) va_arg(args, long);
 		  else
-		    value = (long) va_arg(args, int);
+		    quadvalue = (u_quad_t) va_arg(args, int);
 
-		  written += printf_long(value, -16, 0, ladjust,
-					 padchar, padlen);
+		  written += printf_quad(quadvalue, -16, 0, flags,
+					 len1, len2);
 
 		  break;
 		}
 	      case 's':
 		{
-		  value = (long) va_arg(args, char *);
+		  strvalue = va_arg(args, char *);
 
-		  written += printf_string((char *) value, ladjust,
-					   padchar, padlen);
+		  written += printf_string(strvalue, flags,
+					   len1, len2);
 
 		  break;
 		}
 	      case 'c':
 		{
-		  value = (long) va_arg(args, int);
+		  charvalue = va_arg(args, int);
 
-		  written += printf_char(value);
+		  if (printf_char != NULL)
+		    written += printf_char(charvalue);
 
 		  break;
 		}
 	      case '%':
 		{
-		  written += printf_char('%');
+		  if (printf_char != NULL)
+		    written += printf_char(c);
 
 		  break;
 		}
@@ -322,7 +375,8 @@ int			vprintf(const char	*fmt,
 	  }
 	default:
 	  {
-	    written += printf_char(fmt[i]);
+	    if (printf_char != NULL)
+	      written += printf_char(fmt[i]);
 	    break;
 	  }
 	}
@@ -333,7 +387,16 @@ int			vprintf(const char	*fmt,
   return (written);
 }
 
-int			printf(char		*fmt,
+int			printf_init(t_printf_char_fn		pc,
+				    t_printf_attr_fn		pa)
+{
+  printf_char = pc;
+  printf_attr = pa;
+
+  return (0);
+}
+
+int			printf(char				*fmt,
 			       ...)
 {
   unsigned int		written;

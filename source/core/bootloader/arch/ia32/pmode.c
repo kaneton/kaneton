@@ -3,13 +3,13 @@
  *
  * pmode.c
  *
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/kaneton
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Fri Jun 10 15:43:58 2005   mycure
+ * last update   Mon Jun 13 14:32:58 2005   mycure
  */
 
 #include <libc.h>
@@ -119,8 +119,8 @@ void			pmode_gdt_dump(void)
  * global offset table.
  */
 
-void			pmode_update_registers(t_uint16	gdt_kernel_cs,
-					       t_uint16	gdt_kernel_ds)
+void			pmode_update_registers(t_uint16		gdt_kernel_cs,
+					       t_uint16		gdt_kernel_ds)
 {
   t_reg16		cs = (gdt_kernel_cs << 3) | PMODE_GDT_TI_GDT | 0;
   t_reg16		ds = (gdt_kernel_ds << 3) | PMODE_GDT_TI_GDT | 0;
@@ -155,11 +155,11 @@ void			pmode_enable(void)
  * this function sets a new entry in the current global offset table.
  */
 
-void			pmode_gdt_set(t_uint16		entry,
-				      t_paddr		base,
-				      t_psize		limit,
-				      t_uint8		type,
-				      t_uint8		flags)
+void			pmode_gdt_set(t_uint16			entry,
+				      t_paddr			base,
+				      t_psize			limit,
+				      t_uint8			type,
+				      t_uint8			flags)
 {
   if (entry >= PMODE_GDT_ENTRIES)
     bootloader_error();

@@ -5,13 +5,13 @@
 ## 
 ## common.mk
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/env
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sun Jun 12 22:53:07 2005   mycure
+## last update   Mon Jun 13 23:10:54 2005   mycure
 ##
 
 #
@@ -94,9 +94,11 @@ _LN_			=		ln -s -f
 
 CFLAGS			=		-nostdinc -nostdlib		\
 					-fno-builtin			\
-					-O0 $(_INCLUDES_)
+					-O0 $(_INCLUDES_)		\
+					-D___little_endian		\
+					-D___32bit			
 LDFLAGS			=		-nostdinc -nostdlib		\
-					$(_INCLUDES_)
+					$(_INCLUDES_)			
 
 #
 # traps to the pretty-printer

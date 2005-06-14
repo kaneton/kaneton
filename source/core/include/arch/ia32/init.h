@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Mon May 30 14:10:03 2005   mycure
- * last update   Fri Jun 10 16:44:49 2005   mycure
+ * last update   Mon Jun 13 13:07:07 2005   mycure
  */
 
 #ifndef IA32_INIT_H
@@ -27,6 +27,10 @@
 
 /*
  * the segments represent the physical memory areas to keep safe.
+ * once the kernel will be launched, it will initialize its segment manager,
+ * in other words, its physical memory manager. the segments listed in the
+ * init structure specify the areas to reserve because they are to be
+ * never written.
  *
  * the segments are composed of ISA, kernel code, the init structure, the
  * module structures, the segment structures, the region structures, the
@@ -38,6 +42,9 @@
 
 /*
  * the regions represent the physical memory to be mapped by the kernel.
+ * once the kernel will have initialized its segment manager, it will
+ * initialize its region manager, in other words, its virtual memory manager.
+ * the regions specify the segments to map after the initialization process.
  *
  * indeed, some segments do not need to be accessed by the kernel after
  * the kernel initialization like the module structures, the segment

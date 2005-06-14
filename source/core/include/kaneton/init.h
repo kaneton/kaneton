@@ -11,11 +11,21 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Sun Jun 12 17:42:23 2005   mycure
+ * last update   Mon Jun 13 16:11:40 2005   mycure
  */
 
 #ifndef KANETON_INIT_H
 #define KANETON_INIT_H		1
+
+/*
+ * includes
+ */
+
+#include <kaneton/segment.h>
+
+/*
+ * defines
+ */
 
 #define MOD_NAMESZ		32 /* XXX to put into the mod manager */
 
@@ -37,29 +47,13 @@ typedef struct			s_modules
 }				t_modules;
 
 /*
- * segments
- */
-
-typedef struct			s_segment /* XXX to move to segment.h */
-{
-  t_paddr			address;
-  t_psize			size;
-}				t_segment;
-
-typedef struct			s_segments
-{
-  t_uint32			nsegments;
-  t_segment*			segments;
-}				t_segments;
-
-/*
  * regions
  */
 
 typedef struct			s_region /* XXX to move the region.h */
 {
   t_vaddr			address;
-  t_vsize			size;
+  t_segid			segid;
 }				t_region;
 
 typedef struct			s_regions
@@ -70,6 +64,10 @@ typedef struct			s_regions
 
 /*
  * the init structure
+ *
+ * note that concerning the segments and the regions, the kernel waits
+ * for sorted segments and regions the segment[0] being the lowest in
+ * memory.
  */
 
 typedef struct			s_init

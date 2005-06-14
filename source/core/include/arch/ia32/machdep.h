@@ -5,13 +5,13 @@
  * 
  * machdep.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Fri Jun 10 15:22:49 2005   mycure
+ * last update   Mon Jun 13 14:28:15 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
@@ -26,7 +26,7 @@
 #define IA32_DEBUG_PAGING	0x4
 
 #define IA32_DEBUG							\
-  (IA32_DEBUG_BOOTLOADER | IA32_DEBUG_PAGING)
+  (0)
 
 /*
  * includes
@@ -36,14 +36,15 @@
 #include <arch/machdep/stdarg.h>
 #include <arch/machdep/types.h>
 
+#include <arch/machdep/multiboot.h>
+#include <arch/machdep/elf.h>
+
 #include <arch/machdep/kaneton.h>
 #include <arch/machdep/init.h>
 #include <arch/machdep/cons.h>
 #include <arch/machdep/pmode.h>
 #include <arch/machdep/paging.h>
-
-#include <arch/machdep/multiboot.h>
-#include <arch/machdep/elf.h>
+#include <arch/machdep/bootloader.h>
 
 /* XXX
 #include <arch/machdep/kaneton/as.h>

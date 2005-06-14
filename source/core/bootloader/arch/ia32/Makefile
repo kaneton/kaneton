@@ -11,17 +11,14 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Sun Jun 12 22:50:04 2005   mycure
+## last update   Tue Jun 14 14:44:47 2005   mycure
 ##
 
 include			../../../../.kaneton.mk
 
 BOOTLOADER		=		bootloader
 
-VERSION_C		=		version.c
-VERSION_O		=		$(VERSION_C:.c=.o)
-
-BOOTLOADER_INCLUDE	=		$(_CORE_INCLUDE_DIR_)/kaneton/bootloader.h
+BOOTLOADER_INCLUDE	=		$(_MACHDEP_INCLUDE_DIR_)/bootloader.h
 
 BOOTLOADER_O		=		bootloader.o			\
 					cons.o				\
@@ -31,31 +28,15 @@ BOOTLOADER_O		=		bootloader.o			\
 					pmode.o				\
 					segment.o			
 
-CONF			=		$(_CONF_DIR_)/$(USER)/$(USER).conf
-TITLE			=		`cat $(CONF)			| \
-					 grep -E "^TITLE = .*$$"	| \
-					 cut -b 9-`
-VERSION			=		`cat $(CONF)			| \
-					 grep -E "^VERSION = .*$$"	| \
-					 cut -b 11-`
-DATE			=		`date`
-
 CFLAGS			+=		-D___bootloader -D___kaneton
 
 all:			$(BOOTLOADER_O)
-	@echo -n "const char version[] = \"$(TITLE)-$(VERSION)" > $(VERSION_C)
-	@echo " $(DATE) $(USER)@$(HOSTNAME)\";" >> $(VERSION_C)
-
-	$(call compile-c,$(VERSION_O),$(VERSION_C),)
-
-	$(call dynamic-linker,$(BOOTLOADER),$(VERSION_O)		\
-	  $(BOOTLOADER_O) $(_LIBC_A_), -T $(_LDS_DIR_)/bootloader.lds)
+	$(call dynamic-linker,$(BOOTLOADER),$(BOOTLOADER_O)		\
+	  $(_LIBC_A_), -T $(_LDS_DIR_)/bootloader.lds)
 
 	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
 
 distclean:
-	$(call remove,$(VERSION_C),)
-	$(call remove,$(VERSION_O),)
 	$(call remove,$(BOOTLOADER_O),)
 	$(call remove,$(BOOTLOADER),)
 

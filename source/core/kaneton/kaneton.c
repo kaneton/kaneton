@@ -11,84 +11,126 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 12 17:49:38 2005   mycure
+ * last update   Tue Jun 14 15:20:41 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
 
-t_cons                  cons =
-  {
-    .line = 0,
-    .column = 0,
-    .attr = 0x0f,
-    .vga = (char*)CONS_ADDR
-  };
-
 /*
- * this function just clears the console.
+ * this variable is generated when the kernel is compiled, indicating
+ * the current kernel version.
  */
 
-void                    cons_clear(void)
+extern const char	version[];
+
+/*
+ * init variable received from the bootloader specifying segments, regions,
+ * physical memory layout etc..
+ */
+
+t_init*			init;
+
+/*
+ * this function displays the kaneton parameters.
+ */
+
+void			kaneton_dump(void)
 {
-  t_uint16              i;
+  cons_msg('#', "dumping kernel parameters:\n");
 
-  for (i = 0; i < CONS_SIZE; i++)
-    {
-      cons.vga[i] = 0;
-      cons.vga[i + 1] = cons.attr;
-    }
+#if defined(___bootloader)
+  cons_msg('#', " mode: bootloader\n");
 
-  cons.line = 0;
-  cons.column = 0;
+  cons_msg('!', " error: kernel compiled in a bad way where ___bootloader"
+	   " is defined\n");
+  // XXX kaneton_error();
+#elif defined(___kernel)
+  cons_msg('#', " mode: kernel\n");
+#else
+  cons_msg('!', " error: no mode defined\n");
+  // XXX kaneton_error();
+#endif
+
+#if defined(___kaneton)
+  cons_msg('#', " name: kaneton\n");
+#else
+  cons_msg('!', " error: ___kaneton not defined\n");
+  // XXX kaneton_error();
+#endif
+
+#if defined(___32bit)
+  cons_msg('#', " wordsize: 32-bit\n");
+#elif defined(___64bit)
+  cons_msg('#', " wordsize: 64-bit\n");
+#else
+  cons_msg('!', " error: no wordsize defined\n");
+  // XXX kaneton_error();
+#endif
+
+#if defined(___little_endian)
+  cons_msg('#', " endian: little\n");
+#elif defined(___big_endian)
+  cons_msg('#', " endian: big\n");
+#else
+  cons_msg('!', " error: no endian defined\n");
+  // XXX kaneton_error();
+#endif
+
 }
 
 /*
- * this function is called by the printf function to change
- * the current console attributes.
+ * this function simply initializes each manager.
+ *
+ * steps:
+ *
+ * 1) sets the init variable from the bootloader argument.
+ * 2) initializes the console manager.
+ * 3) displays the current kaneton version.
+ * 4) if needed, displays the kernel parameters: 
+ * 5) initializes the segment manager.
+ *
+ * XXX
  */
 
-void			cons_attr(t_uint8		attr)
+void			kaneton(t_init*				bootloader)
 {
-  cons.attr = attr;
-}
+  /*
+   * 1)
+   */
 
-/*
- * this function is called by the printf function to print a
- * character.
- */
+  init = bootloader;
 
-void                    cons_print_char(char            c)
-{
-  t_uint16              pos = cons.line * CONS_COLUMNS * CONS_BPC +
-    cons.column * CONS_BPC;
+  /*
+   * 2)
+   */
 
-  if (c == '\n')
-    {
-      cons.line++;
-      cons.column = 0;
+  if (cons_init() != 0)
+    cons_msg('!', "error: cannot initialize the console manager\n");
 
-      return ;
-    }
+  /*
+   * 3)
+   */
 
-  if (pos >= CONS_SIZE)
-    {
-      cons.line = 0;
-      cons.column = 0;
+  printf("\n");
+  cons_msg('+', "%s\n", version);
+  printf("\n");
 
-      cons_clear(); /* XXX */
-    }
+  /*
+   * 4)
+   */
 
-  cons.vga[pos] = c;
-  cons.vga[pos + 1] = cons.attr;
-  cons.column++;
-}
+#if (KANETON_DEBUG & KANETON_DEBUG_PARAMS)
+  kaneton_dump();
+#endif
 
-void		kaneton(t_init*				init)
-{
-  printf("kaneton loaded successfully\n");
+  /*
+   * 5)
+   */
 
-  printf("&init: 0x%x\n", init);
+  if (segment_init() != 0)
+    cons_msg('!', "error: cannot initialize the segment manager");
 
-  while (1);
+  while (1)
+    ;
 }

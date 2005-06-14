@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:24:13 2005   mycure
- * last update   Fri Jun 10 16:04:58 2005   mycure
+ * last update   Mon Jun 13 12:59:24 2005   mycure
  */
 
 #ifndef IA32_CONS_H

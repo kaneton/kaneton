@@ -11,17 +11,11 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 12 23:14:22 2005   mycure
+ * last update   Tue Jun 14 14:44:59 2005   mycure
  */
 
 #include <libc.h>
 #include <kaneton.h>
-
-/*
- * the current version of the kaneton project.
- */
-
-extern const char	version[];
 
 /*
  * init variable, describing the initial memory layout.
@@ -83,7 +77,7 @@ void			bootloader_segments(void)
    */
 
   init->segments->segments[0].address = 0x0;
-  init->segments->segments[0].size = 0x000fffff;
+  init->segments->segments[0].size = 0x00100000;
 
   /*
    * 2)
@@ -154,12 +148,58 @@ void			bootloader_segments(void)
  *
  * steps:
  *
- * 1) 
+ * 1) adds the ISA region.
+ * 2) adds the kernel code region.
+ * 3) adds the init structure region.
+ * 4) adds the kernel stack region.
+ * 5) adds the segment manager region.
+ * 6) adds the global offset table region.
+ * 7) adds the page directory region.
  */
 
 void			bootloader_regions(void)
 {
-  /* XXX */
+  /*
+   * 1)
+   */
+
+  init->regions->regions[0].address = init->segments->segments[0].address;
+
+  /*
+   * 2)
+   */
+
+  init->regions->regions[1].address = init->segments->segments[1].address;
+
+  /*
+   * 3)
+   */
+
+  init->regions->regions[2].address = init->segments->segments[2].address;
+
+  /*
+   * 4)
+   */
+
+  init->regions->regions[3].address = init->segments->segments[6].address;
+
+  /*
+   * 5)
+   */
+
+  init->regions->regions[4].address = init->segments->segments[7].address;
+
+  /*
+   * 6)
+   */
+
+  init->regions->regions[5].address = init->segments->segments[8].address;
+
+  /*
+   * 7)
+   */
+
+  init->regions->regions[6].address = init->segments->segments[9].address;
 }
 
 /*
@@ -312,7 +352,7 @@ t_vaddr			bootloader_relocate(multiboot_info_t*	mbi)
    * 7)
    */
 
-  for (i = 0, module = (t_module*)(init->modules + sizeof(t_modules));
+  for (i = 0, module = (t_module*)((t_uint32)init->modules + sizeof(t_modules));
        i < init->modules->nmodules;
        i++)
     {
@@ -325,9 +365,8 @@ t_vaddr			bootloader_relocate(multiboot_info_t*	mbi)
 		 mod[i].string, MOD_NAMESZ);
 
       strncpy(module->name, (char*)mod[i].string, MOD_NAMESZ);
-      module->name[MOD_NAMESZ] = 0;
 
-      memcpy((void*)(module + sizeof(t_module)),
+      memcpy((void*)((t_uint32)module + sizeof(t_module)),
 	     (const void*)mod[i].mod_start, modsz);
 
       module->size = modsz;
@@ -372,7 +411,8 @@ void			bootloader_dump(void)
 	   init->modules,
 	   init->modulessz);
 
-  for (i = 0, module = (t_module*)(init->modules + sizeof(t_modules));
+  for (i = 0, module = (t_module*)((t_uint32)init->modules +
+				   sizeof(t_modules));
        i < init->modules->nmodules;
        i++)
     {
@@ -400,10 +440,9 @@ void			bootloader_dump(void)
 	   init->regionssz);
 
   for (i = 0; i < init->regions->nregions; i++)
-    cons_msg('#', "  [%u] 0x%x (0x%x)\n",
+    cons_msg('#', "  [%u] 0x%x\n",
 	     i,
-	     init->regions->regions[i].address,
-	     init->regions->regions[i].size);
+	     init->regions->regions[i].address);
 
   cons_msg('#', " kernel stack: 0x%x - %u bytes\n",
 	   init->kstack,
@@ -436,8 +475,8 @@ void			bootloader_dump(void)
  * 4) installs the protected mode.
  * 5) installs the paging mode.
  * 6) computes the segments and regions to pass to the kernel.
- * 7) loads the console state for the kernel.
- * 8) dumps the init structure if required.
+ * 7) dumps the init structure if required.
+ * 8) loads the console state for the kernel.
  * 9) update registers for the new kernel stack.
  * 10) then, the kernel is launched.
  * 11) this part is only reached if the kernel exit.
@@ -457,8 +496,6 @@ int			bootloader(t_uint32			magic,
     bootloader_error();
 
   printf("\n                      --- the kaneton operating system ---\n\n");
-
-  cons_msg('+', "%s\n\n", version);
 
   /*
    * 2)
@@ -495,15 +532,15 @@ int			bootloader(t_uint32			magic,
    * 7)
    */
 
-  cons_load();
+#if (IA32_DEBUG & IA32_DEBUG_BOOTLOADER)
+  bootloader_dump();
+#endif
 
   /*
    * 8)
    */
 
-#if (IA32_DEBUG & IA32_DEBUG_BOOTLOADER)
-  bootloader_dump();
-#endif
+  cons_load();
 
   /*
    * 9)

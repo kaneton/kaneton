@@ -5,13 +5,13 @@
  * 
  * types.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include/libsys
+ * path          /home/mycure/kaneton/libs/klibc/libsys
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:40:57 2005   mycure
- * last update   Sat May 28 22:20:35 2005   mycure
+ * last update   Mon Jun 13 17:37:10 2005   mycure
  */
 
 #ifndef LIBSYS_TYPES_H
@@ -53,6 +53,8 @@ typedef u_int32_t		mode_t;		/* permissions */
 typedef u_int16_t		umode_t;	/* extended permissions */
 typedef u_int32_t		nlink_t;	/* link count */
 typedef u_long			off_t;		/* file offset */
+typedef int64_t			quad_t;		/* signed quad */
+typedef u_int64_t		u_quad_t;	/* unsigned quad */
 typedef int64_t			pid_t;		/* process id */
 typedef u_long			rlim_t;		/* resource limit */
 typedef int32_t			segsz_t;	/* segment size */
