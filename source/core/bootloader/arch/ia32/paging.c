@@ -5,13 +5,13 @@
  * 
  * paging.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Mon Jun 13 14:32:19 2005   mycure
+ * last update   Tue Jun 14 18:29:04 2005   mycure
  */
 
 #include <libc.h>
@@ -155,7 +155,7 @@ void			paging_init(void)
    * 1)
    */
 
-  pd = (t_pde*)bootloader_alloc(PAGING_NPDE * sizeof(t_pde), NULL);
+  pd = (t_pde*)init_alloc(PAGING_NPDE * sizeof(t_pde), NULL);
   memset(pd, 0x0, PAGING_NPDE * sizeof(t_pde));
 
   /*
@@ -168,7 +168,7 @@ void			paging_init(void)
    * 3)
    */
 
-  pt0 = (t_pte*)bootloader_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
+  pt0 = (t_pte*)init_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
   memset(pt0, 0x0, PAGING_NPTE * sizeof(t_pte));
 
   pd[0] = (t_uint32)pt0 | PAGING_P | PAGING_RW | PAGING_S;
@@ -180,13 +180,13 @@ void			paging_init(void)
    * 4)
    */
 
-  limit = bootloader_alloc(0, NULL);
+  limit = init_alloc(0, NULL);
 
   for (addr = INIT_RELOCATE; addr < limit; addr += 4096)
     {
       if ((pd[PAGING_PDE(addr)] & PAGING_ADDRESS) == 0)
 	{
-	  pt = (t_pte*)bootloader_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
+	  pt = (t_pte*)init_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
 	  memset(pt, 0x0, PAGING_NPTE * sizeof(t_pte));
 
 	  pd[PAGING_PDE(addr)] = (t_uint32)pt | PAGING_P |

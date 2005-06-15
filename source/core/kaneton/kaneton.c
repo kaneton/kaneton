@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/segment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Jun 14 15:20:41 2005   mycure
+ * last update   Tue Jun 14 19:19:37 2005   mycure
  */
 
 #include <libc.h>
@@ -88,6 +88,7 @@ void			kaneton_dump(void)
  * 2) initializes the console manager.
  * 3) displays the current kaneton version.
  * 4) if needed, displays the kernel parameters: 
+ * 6) initializes the address space manager.
  * 5) initializes the segment manager.
  *
  * XXX
@@ -128,8 +129,14 @@ void			kaneton(t_init*				bootloader)
    * 5)
    */
 
+  if (as_init() != 0)
+    cons_msg('!', "error: cannot initialize the address space manager\n");
+  /*
+   * 6)
+   */
+
   if (segment_init() != 0)
-    cons_msg('!', "error: cannot initialize the segment manager");
+    cons_msg('!', "error: cannot initialize the segment manager\n");
 
   while (1)
     ;

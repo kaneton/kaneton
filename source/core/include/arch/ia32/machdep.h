@@ -5,13 +5,13 @@
  * 
  * machdep.h
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/include/arch/machdep
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Mon Jun 13 14:28:15 2005   mycure
+ * last update   Tue Jun 14 19:29:34 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
@@ -21,7 +21,7 @@
  * debug
  */
 
-#define IA32_DEBUG_BOOTLOADER	0x1
+#define IA32_DEBUG_INIT		0x1
 #define IA32_DEBUG_PMODE	0x2
 #define IA32_DEBUG_PAGING	0x4
 

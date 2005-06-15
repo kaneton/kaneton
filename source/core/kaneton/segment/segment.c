@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/as
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Jun 14 14:31:16 2005   mycure
+ * last update   Tue Jun 14 19:35:24 2005   mycure
  */
 
 #include <libc.h>
@@ -137,7 +137,7 @@ t_segment*		segment_pop(void)
 
 /*
  * this functions initializes the segment manager from the init
- * variables containing segments to keep safe.
+ * variable containing segments to keep safe.
  *
  * steps:
  *
@@ -173,41 +173,27 @@ int			segment_init(void)
    * XXX
    */
 
-  for (i = init->segments->nsegments - 1; i >= 0; i--)
+  /*
+   * XXX revoir le bootloader pour qu il mette les permissions a mettre
+   * sur chaque zone genre RX sur les modules.
+   */
+
+  for (i = 0; i < init->segments->nsegments; i++)
     {
-      t_segment*	s;
+      t_segment		s;
 
-      s = segment_pop();
+      s.segid = segment_id();
+      s.address = init->segments->segments[i].address;
+      s.size = init->segments->segments[i].size;
 
-      s->segid = segment_id();
-      s->address = init->segments->segments[i].address;
-      s->size = init->segments->segments[i].size;
-
-      if (segments.segments == NULL)
-	{
-	  s->prv = NULL;
-	  s->nxt = NULL;
-
-	  segments.segments = s;
-	}
-      else
-	{
-	  s->prv = NULL;
-	  s->nxt = segments.segments;
-
-	  segments.segments->prv = s;
-
-	  segments.segments = s;
-	}
-
-      segments.nsegments++;
+      // XXX segment_add(AS_KERNEL, &s);
     }
 
   /*
    * XXX
    */
 
-#if 1 /* XXX */
+#if (KANETON_DEBUG & KANETON_DEBUG_SEGMENT)
   segment_dump();
 #endif
 

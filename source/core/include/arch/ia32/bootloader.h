@@ -5,13 +5,13 @@
  * 
  * bootloader.h
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/include/arch/machdep
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Mon Jun 13 14:39:12 2005   mycure
+ * last update   Tue Jun 14 19:29:55 2005   mycure
  */
 
 #ifndef IA32_BOOTLOADER_H

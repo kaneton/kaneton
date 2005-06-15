@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Mon Jun 13 13:38:27 2005   mycure
+ * last update   Tue Jun 14 18:29:21 2005   mycure
  */
 
 #include <libc.h>
@@ -22,8 +22,8 @@
 extern t_init*		init;
 
 /*
- * this function just initializes the segment managers allocating
- * a page of physical memory.
+ * this function just initializes the segment manager allocating
+ * pages of physical memory.
  */
 
 void			segment_init(void)
@@ -33,8 +33,10 @@ void			segment_init(void)
   /*
    * XXX allocates a number of pages in relation with the number of
    * segments: init->segments->nsegments
+   *
+   * XXX for the moment we preallocate four pages
    */
 
-  init->segmng = bootloader_alloc(PAGESZ, &segmngsz);
+  init->segmng = init_alloc(4 * PAGESZ, &segmngsz);
   init->segmngsz = segmngsz;
 }

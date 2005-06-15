@@ -5,13 +5,13 @@
  * 
  * init.h
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton/core/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Mon Jun 13 16:11:40 2005   mycure
+ * last update   Tue Jun 14 17:56:44 2005   mycure
  */
 
 #ifndef KANETON_INIT_H
@@ -95,6 +95,9 @@ typedef struct			s_init
 
   t_paddr			segmng;
   t_psize			segmngsz;
+
+  t_paddr			asmng;
+  t_psize			asmngsz;
 
   machdep_include(init);
 }				t_init;

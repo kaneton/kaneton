@@ -3,13 +3,13 @@
  *
  * pmode.c
  *
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Mon Jun 13 14:32:58 2005   mycure
+ * last update   Tue Jun 14 18:28:39 2005   mycure
  */
 
 #include <libc.h>
@@ -197,7 +197,7 @@ void			pmode_init(void)
    * 1)
    */
 
-  gdt = (t_gdte*)bootloader_alloc(PMODE_GDT_ENTRIES * sizeof(t_gdte), NULL);
+  gdt = (t_gdte*)init_alloc(PMODE_GDT_ENTRIES * sizeof(t_gdte), NULL);
   memset(gdt, 0x0, PMODE_GDT_ENTRIES * sizeof(t_gdte));
 
   /*

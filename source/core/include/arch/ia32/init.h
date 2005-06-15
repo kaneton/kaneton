@@ -5,13 +5,13 @@
  * 
  * init.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Mon May 30 14:10:03 2005   mycure
- * last update   Mon Jun 13 13:07:07 2005   mycure
+ * last update   Tue Jun 14 17:49:31 2005   mycure
  */
 
 #ifndef IA32_INIT_H
@@ -34,11 +34,11 @@
  *
  * the segments are composed of ISA, kernel code, the init structure, the
  * module structures, the segment structures, the region structures, the
- * kernel stack, the segment manager structure, the global offset table and
- * the page directory.
+ * kernel stack, the segment manager structure, the address space
+ * manager structure, the global offset table and the page directory.
  */
 
-#define INIT_SEGMENTS		10
+#define INIT_SEGMENTS		11
 
 /*
  * the regions represent the physical memory to be mapped by the kernel.
@@ -48,13 +48,13 @@
  *
  * indeed, some segments do not need to be accessed by the kernel after
  * the kernel initialization like the module structures, the segment
- * structures and the region structures.
+ * structures, the address space manager structure and the region structures.
  *
  * moreover, the kernel will rebuild a page directory so the page tables
  * are now needless explaining why they are neither present in the segments
  * nor in the regions.
  */
 
-#define INIT_REGIONS		7
+#define INIT_REGIONS		8
 
 #endif

@@ -11,13 +11,14 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Tue Jun 14 15:20:35 2005   mycure
+## last update   Tue Jun 14 19:34:32 2005   mycure
 ##
 
 include			../../.kaneton.mk
 
 SUBDIRS			=		arch				\
-					segment				
+					segment				\
+					as				
 
 KANETON			=		kaneton
 
@@ -54,6 +55,7 @@ all:			$(KANETON_O)
 	$(call dynamic-linker,$(KANETON),	$(VERSION_O)		\
 						$(KANETON_O)		\
 						$(_MACHDEP_A_)		\
+						$(_AS_A_)		\
 						$(_SEGMENT_A_)		\
 						$(_LIBC_A_),		\
 	  -T $(_LDS_DIR_)/kaneton.lds)
@@ -75,4 +77,10 @@ distclean:
 	$(call remove,$(KANETON),)
 
 proto:
+	@for i in $(SUBDIRS) ; do					\
+	$(_CD_) $$i							; \
+	$(_MAKE_) proto							; \
+	$(_CD_) ..							; \
+	done
+
 	$(call prototypes,$(KANETON_INCLUDE),)

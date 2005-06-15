@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Tue Jun 14 15:13:56 2005   mycure
+ * last update   Tue Jun 14 19:22:07 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
@@ -21,7 +21,9 @@
  * debug
  */
 
-#define KANETON_DEBUG_PARAMS	0x1
+#define KANETON_DEBUG_PARAMS	(1 << 0)
+#define KANETON_DEBUG_AS	(1 << 1)
+#define KANETON_DEBUG_SEGMENT	(1 << 2)
 
 #define KANETON_DEBUG							\
   (0 | KANETON_DEBUG_PARAMS)
@@ -46,6 +48,9 @@
 /*
  * ../../kaneton/kaneton.c
  */
+
+void			kaneton_dump(void);
+
 
 void			kaneton(t_init*				bootloader);
 

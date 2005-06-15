@@ -5,13 +5,13 @@
 ## 
 ## common.mk
 ## 
-## path          /home/mycure/kaneton/env
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Mon Jun 13 23:10:54 2005   mycure
+## last update   Tue Jun 14 19:26:06 2005   mycure
 ##
 
 #
@@ -63,6 +63,7 @@ _CRT_A_			=		$(_LIB_DIR_)/crt.a
 
 _MACHDEP_A_		=		$(_MACHDEP_DIR_)/machdep.a
 _SEGMENT_A_		=		$(_CORE_KANETON_DIR_)/segment/segment.a
+_AS_A_			=		$(_CORE_KANETON_DIR_)/as/as.a
 
 #
 # c compiler
