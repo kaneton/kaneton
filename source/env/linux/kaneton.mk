@@ -3,7 +3,7 @@
 ## 
 ## kaneton
 ## 
-## common.mk
+## .kaneton.mk
 ## 
 ## path          /home/mycure/kaneton
 ## 
@@ -11,59 +11,20 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Tue Jun 14 19:26:06 2005   mycure
+## last update   Thu Jun 16 16:26:29 2005   mycure
 ##
 
 #
-# kaneton directories
+# the source directory
 #
 
 _SRC_DIR_		=		___kaneton_sed___
-_CORE_DIR_		=		$(_SRC_DIR_)/core
-_CORE_BOOTSTRAO_DIR_	=		$(_SRC_DIR_)/core/bootstrap
-_CORE_BOOTLOADER_DIR_	=		$(_SRC_DIR_)/core/bootloader
-_CORE_INCLUDE_DIR_	=		$(_SRC_DIR_)/core/include
-_CORE_KANETON_DIR_	=		$(_SRC_DIR_)/core/kaneton
-_MACHDEP_DIR_		=		$(_CORE_KANETON_DIR_)/arch/machdep
-_MACHDEP_INCLUDE_DIR_	=		$(_CORE_INCLUDE_DIR_)/arch/machdep
-_DIST_DIR_		=		$(_SRC_DIR_)/dist
-_ENV_DIR_		=		$(_SRC_DIR_)/env
-_LDS_DIR_		=		$(_SRC_DIR_)/lds/arch/machdep
-_LIB_DIR_		=		$(_SRC_DIR_)/libs
-_LIB_INCLUDE_DIR_	=		$(_LIB_DIR_)
-_INCLUDES_		=		-I$(_CORE_INCLUDE_DIR_)		\
-					-I$(_LIB_INCLUDE_DIR_)
-_CONF_DIR_		=		$(_SRC_DIR_)/conf
-_UTILS_DIR_		=		$(_SRC_DIR_)/utils
 
 #
-# kaneton utils
+# include .common.mk
 #
 
-_PROTO_			=		$(_UTILS_DIR_)/mkp.pl
-_GRUB_			=		$(_UTILS_DIR_)/grub.sh
-_LILO_			=		$(_UTILS_DIR_)/lilo.sh
-
-#
-# kaneton binaries
-#
-
-_BOOTSTRAP_		=		$(_CORE_BOOTSTRAP_DIR_)/bootstrap
-_BOOTLOADER_		=		$(_CORE_BOOTLOADER_DIR_)/bootloader
-_KANETON_		=		$(_CORE_KANETON_DIR_)/kaneton
-
-#
-# kaneton libraries
-#
-
-_LIBC_A_		=		$(_LIB_DIR_)/libc.a
-_LIBC_H_		=		$(_LIB_DIR_)/libc.h
-
-_CRT_A_			=		$(_LIB_DIR_)/crt.a
-
-_MACHDEP_A_		=		$(_MACHDEP_DIR_)/machdep.a
-_SEGMENT_A_		=		$(_CORE_KANETON_DIR_)/segment/segment.a
-_AS_A_			=		$(_CORE_KANETON_DIR_)/as/as.a
+include			.common.mk
 
 #
 # c compiler
@@ -179,7 +140,7 @@ endef
 #
 
 define compile-c
-  @$(call pretty-printer,green,CC,$(2),			)		; \
+  @$(call pretty-printer,green,COMPILE-C,$(2),		)		; \
   $(CC) $(CFLAGS) $(_KANETON_OPTS_) $(3) -c $(2) -o $(1)
 endef
 
@@ -192,7 +153,7 @@ endef
 #
 
 define compile-S
-  @$(call pretty-printer,green,CC,$(2),			)		; \
+  @$(call pretty-printer,green,COMPILE-S,$(2),		)		; \
   $(CC) $(CFLAGS) $(_KANETON_OPTS_) $(3) -c $(2) -o $(1)
 endef
 
@@ -205,7 +166,7 @@ endef
 #
 
 define compile-asm
-  @$(call pretty-printer,green,NASM,$(2),			)	; \
+  @$(call pretty-printer,green,COMPILE-ASM,$(2),		)	; \
   $(_NASM_) $(_KANETON_OPTS_) $(3) $(2) -o $(1)
 endef
 
@@ -218,7 +179,7 @@ endef
 #
 
 define archive
-  @$(call pretty-printer,red,AR,$(1),			)		; \
+  @$(call pretty-printer,magenta,ARCHIVE,$(1),		)		; \
   $(_AR_) cq $(3) $(1) $(2)
 endef
 
@@ -231,7 +192,7 @@ endef
 #
 
 define archives
-  @$(call pretty-printer,red,AR,$(1),			)		; \
+  @$(call pretty-printer,magenta,ARCHIVES,$(1),		)		; \
   (echo "CREATE $(1)"							; \
    for i in $(2) ; do							\
      echo "ADDLIB $$i"							; \
@@ -248,7 +209,7 @@ endef
 #
 
 define static-linker
-  @$(call pretty-printer,red,RANLIB,$(1),		)		; \
+  @$(call pretty-printer,magenta,STATIC-LINKER,$(1),		)	; \
   $(_RANLIB_) $(2) $(1)
 endef
 
@@ -261,7 +222,7 @@ endef
 #
 
 define dynamic-linker
-  @$(call pretty-printer,red,LD,$(1),			)		; \
+  @$(call pretty-printer,magenta,DYNAMIC-LINKER,$(1),	)		; \
   $(_LD_) $(LDFLAGS) $(3) -o $(1) $(2)
 endef
 
@@ -275,7 +236,7 @@ endef
 define remove
   @for i in $(1) ; do							\
     if [ -e $$i ] ; then						\
-      $(call pretty-printer,magenta,RM,$$i,			)	; \
+      $(call pretty-printer,red,REMOVE,$$i,		)		; \
     fi									; \
     $(_RM_) $(2) $$i							; \
   done
@@ -289,7 +250,7 @@ endef
 #
 
 define prototypes
-  @$(call pretty-printer,yellow,PROTO,$(1),			)	; \
+  @$(call pretty-printer,yellow,PROTOTYPES,$(1),		)	; \
   $(_PROTO_) $(2) $(1)
 endef
 
@@ -311,6 +272,6 @@ endef
 #
 
 define purge
-  @$(call pretty-printer,yellow,PURGE,,				)	; \
+  @$(call pretty-printer,yellow,PURGE,,)				; \
   $(_PURGE_)
 endef
