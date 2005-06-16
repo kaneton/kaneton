@@ -5,26 +5,24 @@
  * 
  * bootloader.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/machdep
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Tue Jun 14 19:29:55 2005   mycure
+ * last update   Thu Jun 16 15:59:53 2005   mycure
  */
 
 #ifndef IA32_BOOTLOADER_H
 #define IA32_BOOTLOADER_H	1
 
-#ifdef ___bootloader
-
 /*
  * prototypes:     ../../../bootloader/arch/ia32/bootloader.c
  *                 ../../../bootloader/arch/ia32/cons.c
+ *                 ../../../bootloader/arch/ia32/init.c
  *                 ../../../bootloader/arch/ia32/paging.c
  *                 ../../../bootloader/arch/ia32/pmode.c
- *                 ../../../bootloader/arch/ia32/segment.c
  */
 
 /*
@@ -32,22 +30,6 @@
  */
 
 void			bootloader_error(void);
-
-
-void			bootloader_segments(void);
-
-
-void			bootloader_regions(void);
-
-
-t_paddr			bootloader_alloc(t_psize		size,
-					 t_psize*		psize);
-
-
-t_vaddr			bootloader_relocate(multiboot_info_t*	mbi);
-
-
-void			bootloader_dump(void);
 
 
 int			bootloader(t_uint32			magic,
@@ -82,6 +64,26 @@ void			cons_load(void);
 
 
 int			cons_init(void);
+
+
+/*
+ * ../../../bootloader/arch/ia32/init.c
+ */
+
+void			init_dump(void);
+
+
+void			init_segments(void);
+
+
+void			init_regions(void);
+
+
+t_paddr			init_alloc(t_psize			size,
+				   t_psize*			psize);
+
+
+t_vaddr			init_relocate(multiboot_info_t*		mbi);
 
 
 /*
@@ -125,17 +127,8 @@ void			pmode_gdt_set(t_uint16			entry,
 
 void			pmode_init(void);
 
-
-/*
- * ../../../bootloader/arch/ia32/segment.c
- */
-
-void			segment_init(void);
-
 /*
  * eop
  */
-
-#endif
 
 #endif

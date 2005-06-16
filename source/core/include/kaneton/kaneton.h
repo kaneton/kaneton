@@ -5,13 +5,13 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton/dist
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Tue Jun 14 19:22:07 2005   mycure
+ * last update   Wed Jun 15 19:43:27 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
@@ -32,7 +32,6 @@
  * includes
  */
 
-#include <kaneton/bootloader.h>
 #include <kaneton/init.h>
 
 #include <kaneton/errno.h>
