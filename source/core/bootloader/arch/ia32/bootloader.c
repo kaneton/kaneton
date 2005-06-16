@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Jun 14 18:28:27 2005   mycure
+ * last update   Thu Jun 16 15:55:52 2005   mycure
  */
 
 #include <libc.h>
@@ -56,16 +56,14 @@ void			bootloader_error(void)
  *
  * 1) initializes the console and checks the magic number.
  * 2) relocates binaries, data, stack
- * 3) initializes the segment manager.
- * 4) initializes the address space manager.
- * 5) installs the protected mode.
- * 6) installs the paging mode.
- * 7) computes the segments and regions to pass to the kernel.
- * 8) dumps the init structure if required.
- * 9) loads the console state for the kernel.
- * 10) update registers for the new kernel stack.
- * 11) then, the kernel is launched.
- * 12) this part is only reached if the kernel exit.
+ * 3) installs the protected mode.
+ * 4) installs the paging mode.
+ * 5) computes the segments and regions to pass to the kernel.
+ * 6) dumps the init structure if required.
+ * 7) loads the console state for the kernel.
+ * 8) update registers for the new kernel stack.
+ * 9) then, the kernel is launched.
+ * 10) this part is only reached if the kernel exit.
  */
 
 int			bootloader(t_uint32			magic,
@@ -93,35 +91,23 @@ int			bootloader(t_uint32			magic,
    * 3)
    */
 
-  segment_init();
+  pmode_init();
 
   /*
    * 4)
    */
 
-  as_init();
-
-  /*
-   * 5)
-   */
-
-  pmode_init();
-
-  /*
-   * 6)
-   */
-
   paging_init();
 
   /*
-   * 7)
+   * 5)
    */
 
   init_segments();
   init_regions();
 
   /*
-   * 8)
+   * 6)
    */
 
 #if (IA32_DEBUG & IA32_DEBUG_INIT)
@@ -129,13 +115,13 @@ int			bootloader(t_uint32			magic,
 #endif
 
   /*
-   * 9)
+   * 7)
    */
 
   cons_load();
 
   /*
-   * 10)
+   * 8)
    */
 
   asm volatile ("movl %%ebp, %0\n"
@@ -151,7 +137,7 @@ int			bootloader(t_uint32			magic,
 		  "g" (init));
 
   /*
-   * 11)
+   * 9)
    */
 
   while (1);
@@ -164,7 +150,7 @@ int			bootloader(t_uint32			magic,
 		: "g" (ebp), "g" (esp));
 
   /*
-   * 12)
+   * 10)
    */
 
   cons_msg('!', "error: kernel exited\n");

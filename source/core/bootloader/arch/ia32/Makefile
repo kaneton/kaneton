@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Tue Jun 14 18:29:30 2005   mycure
+## last update   Thu Jun 16 15:58:11 2005   mycure
 ##
 
 include			../../../../.kaneton.mk
@@ -20,15 +20,13 @@ BOOTLOADER		=		bootloader
 
 BOOTLOADER_INCLUDE	=		$(_MACHDEP_INCLUDE_DIR_)/bootloader.h
 
-BOOTLOADER_O		=		as.o				\
-					bootloader.o			\
+BOOTLOADER_O		=		bootloader.o			\
 					cons.o				\
 					entry.o				\
 					init.o				\
 					multiboot.o			\
 					paging.o			\
-					pmode.o				\
-					segment.o			
+					pmode.o				
 
 CFLAGS			+=		-D___bootloader -D___kaneton
 

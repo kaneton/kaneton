@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Tue Jun 14 18:27:39 2005   mycure
+ * last update   Thu Jun 16 15:57:55 2005   mycure
  */
 
 #include <libc.h>
@@ -115,93 +115,123 @@ void			init_dump(void)
  *
  * steps:
  *
- * 1) adds the ISA segment from 0 to 1Mb.
- * 2) adds the kernel code segment.
- * 3) adds the init structure segment.
- * 4) adds the modules segment.
- * 5) adds the segments segment.
- * 6) adds the regions segment.
- * 7) adds the kernel stack segment.
- * 8) adds the segment manager segment.
- * 9) adds the address space manager segment.
- * 10) adds the global offset table segment.
- * 11) adds the page directory segment.
+ * 1) allocates memory for the segment manager.
+ * 2) allocates memory for the address space manager.
+ * 3) adds the ISA segment from 0 to 1Mb.
+ * 4) adds the kernel code segment.
+ * 5) adds the init structure segment.
+ * 6) adds the modules segment.
+ * 7) adds the segments segment.
+ * 8) adds the regions segment.
+ * 9) adds the kernel stack segment.
+ * 10) adds the segment manager segment.
+ * 11) adds the address space manager segment.
+ * 12) adds the global offset table segment.
+ * 13) adds the page directory segment.
  */
 
 void			init_segments(void)
 {
+  t_psize		segmngsz;
+  t_psize		asmngsz;
+
   /*
    * 1)
+   */
+
+  /*
+   * XXX allocates a number of pages in relation with the number of
+   * segments: init->segments->nsegments.
+   *
+   * XXX for the moment we preallocate four pages.
+   */
+
+  init->segmng = init_alloc(4 * PAGESZ, &segmngsz);
+  init->segmngsz = segmngsz;
+
+  /*
+   * 2)
+   */
+
+  /*
+   * XXX for the moment we preallocate 2 pages for the as manager.
+   */
+
+  init->asmng = init_alloc(2 * PAGESZ, &asmngsz);
+  init->asmngsz = asmngsz;
+
+  /*
+   * 3)
    */
 
   init->segments->segments[0].address = 0x0;
   init->segments->segments[0].size = 0x00100000;
 
   /*
-   * 2)
+   * 4)
    */
 
   init->segments->segments[1].address = init->kcode;
   init->segments->segments[1].size = init->kcodesz;
 
   /*
-   * 3)
+   * 5)
    */
 
   init->segments->segments[2].address = init->init;
   init->segments->segments[2].size = init->initsz;
 
   /*
-   * 4)
+   * 6)
    */
 
   init->segments->segments[3].address = (t_paddr)init->modules;
   init->segments->segments[3].size = init->modulessz;
 
   /*
-   * 5)
+   * 7)
    */
 
   init->segments->segments[4].address = (t_paddr)init->segments;
   init->segments->segments[4].size = init->segmentssz;
 
   /*
-   * 6)
+   * 8)
    */
 
   init->segments->segments[5].address = (t_paddr)init->regions;
   init->segments->segments[5].size = init->regionssz;
 
   /*
-   * 7)
+   * 9)
    */
 
   init->segments->segments[6].address = init->kstack;
   init->segments->segments[6].size = init->kstacksz;
 
   /*
-   * 8)
+   * 10)
    */
 
   init->segments->segments[7].address = init->segmng;
   init->segments->segments[7].size = init->segmngsz;
 
   /*
-   * 9)
+   * 11)
    */
 
   init->segments->segments[8].address = init->asmng;
   init->segments->segments[8].size = init->asmngsz;
 
   /*
-   * 10)
+   * 12)
    */
 
   init->segments->segments[9].address = (t_paddr)init->machdep.gdt;
   init->segments->segments[9].size = PAGESZ;
 
   /*
-   * 11)
+   * 13)
    */
 
   init->segments->segments[10].address = (t_paddr)init->machdep.pd;
