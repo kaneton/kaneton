@@ -5,13 +5,13 @@
  * 
  * init.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton/core/include/arch/machdep
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Tue Jun 14 17:56:44 2005   mycure
+ * last update   Fri Jun 17 14:56:18 2005   mycure
  */
 
 #ifndef KANETON_INIT_H
@@ -27,8 +27,6 @@
  * defines
  */
 
-#define MOD_NAMESZ		32 /* XXX to put into the mod manager */
-
 #define INIT_KSTACKSZ		8192
 
 /*
@@ -37,7 +35,7 @@
 
 typedef struct			s_module
 {
-  char				name[MOD_NAMESZ + 1];
+  char*				name;
   t_psize			size;
 }				t_module;
 

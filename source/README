@@ -5,13 +5,13 @@
 ## 
 ## README
 ## 
-## path          /home/mycure/data/research/projects/kaneton/source
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Wed May 25 06:16:21 2005   mycure
+## last update   Thu Jun 16 17:06:21 2005   mycure
 ##
 
 			----------[ conf ]----------
@@ -78,8 +78,6 @@ after all, the boot device is ready.
 
 syntax:		make init
 
-example:	make init
-
   this command will create the working environment like scripts, makefiles,
   dependencies etc..
 
@@ -91,8 +89,6 @@ example:	make init
 
 syntax:		make clean
 
-example:	make clean
-
   this command cleans the working environment, which is useful before
   committing or packaging
 
@@ -100,15 +96,11 @@ example:	make clean
 
 syntax:		make kaneton
 
-example:	make kaneton
-
   this command will create the kernel, the modules etc..
 
 ---[ all
 
 syntax:		make all
-
-example:	make all
 
   this command will create the kernel, the modules etc..
 
@@ -116,15 +108,11 @@ example:	make all
 
 syntax:		make distclean
 
-example:	make distclean
-
   this command will clean the development tree
 
 ---[ proto
 
 syntax:		make proto
-
-example:	make proto
 
   this command will create header prototypes
 
@@ -132,14 +120,145 @@ example:	make proto
 
 syntax:		make boot-init
 
-example:	make boot-init
-
   this command will create an initial bootable device
 
 ---[ boot-install
 
 syntax:		make boot-install
 
-example:	make boot-install
-
   this command copies the kernel and modules on the bootable device
+
+			----------[ makefiles ]----------
+
+a portable makefiles system is provided for the kaneton project. each
+makefile of the project uses either macros defined in the kaneton.mk
+makefile dependency located in the directory env/{operating system}/kaneton.mk
+or directly defined commands like $(_MAKE_) or $(_CD_) etc..
+
+this system leads to a central system, so to simpler portability.
+
+this system uses few macros explained below.
+
+for more informations, take a look at a kaneton.mk makefile dependency.
+
+the syntax used to call a macro in a makefile is:
+
+	$(call thismacroisinteresting,argument1,argument2,argument3)
+
+---[ pretty-printer
+
+  this macro is used to pretty print a message. any action performed
+  by a makefile is displayed, so this macro is called.
+
+  arguments:
+
+    1:		the color used to display the action name
+    2:		the name of the action performed
+    3:		the file on which the action is performed
+    4:		the identation between the action name and the file name
+
+---[ compile-c
+
+  this macro is used to compiler a C file to produce an object file.
+
+  arguments:
+
+    1:		the object file name
+    2:		the C file name
+    3:		advanced options like additional C flags
+
+---[ compile-S
+
+  this macro is used to compile a S file to produce an object file.
+
+  arguments:
+
+    1:		the object file name
+    2:		the S file name
+    3:		advanced options
+
+---[ compile-asm
+
+  this macro is used to compile a asm file to produce an object file.
+
+  arguments:
+
+    1:		the object file name
+    2:		the asm file name
+    3:		advanced options
+
+---[ archive
+
+  this macro is used to group object files into one archive.
+
+  arguments:
+
+    1:		the archive file name
+    2:		the object file names
+    3:		advanced options
+
+---[ archives
+
+  this macro is used to build an archive from different archives.
+
+  arguments:
+
+    1:		the archive file name
+    2:		the archive file names
+    3:		advanced options
+
+---[ static-linker
+
+  this macro is used to call the static linker, so to build a
+  static library from an archive.
+
+  arguments:
+
+    1:		the archive file name
+    2:		advanced options
+
+---[ dynamic-linker
+
+  this macro is used to call the dynamic linker, so to build dynamic
+  libraries or binaries.
+
+  arguments:
+
+    1:		library file name
+    2:		objects and/or archives and/or libraries file names
+    3:		advanced options
+
+---[ remove
+
+  this macro is called to remove files.
+
+  arguments:
+
+    1:		the file names
+    2:		advanced options
+
+---[ prototypes
+
+  this macro is called to build prototypes in header files.
+
+  arguments:
+
+    1:		the header file name
+    2:		advanced options
+
+---[ link
+
+  this macro build a symbolic link to a file.
+
+  arguments:
+
+    1:		the file name to create so the symbolic link
+    2:		the destination file name
+    3:		advanced options
+
+---[ purge
+
+  this macro is used to clean the current directory from useless files
+  like emacs backups (~ files) etc..
+
+  no argument

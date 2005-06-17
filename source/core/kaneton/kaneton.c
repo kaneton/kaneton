@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/segment
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Jun 14 19:19:37 2005   mycure
+ * last update   Fri Jun 17 14:51:04 2005   mycure
  */
 
 #include <libc.h>
@@ -116,6 +116,8 @@ void			kaneton(t_init*				bootloader)
   printf("\n");
   cons_msg('+', "%s\n", version);
   printf("\n");
+
+  while (1); /* XXX */
 
   /*
    * 4)

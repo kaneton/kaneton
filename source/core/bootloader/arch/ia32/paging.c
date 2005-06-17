@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Tue Jun 14 18:29:04 2005   mycure
+ * last update   Fri Jun 17 14:50:20 2005   mycure
  */
 
 #include <libc.h>
@@ -42,12 +42,12 @@ t_pte*			pt;
  */
 
 #if (IA32_DEBUG & IA32_DEBUG_PAGING)
-void			paging_dump_table(t_pte*		table,
-					  t_opts		opts)
+void			bootloader_paging_dump_table(t_pte*	table,
+						     t_opts	opts)
 {
   t_uint16		i;
 
-  cons_msg('#', "dumping table 0x%x entries\n", table);
+  bootloader_cons_msg('#', "dumping table 0x%x entries\n", table);
   printf("\n");
   printf("     |  no  |  address   |            flags            |\n");
   printf("     ---------------------------------------------------\n");
@@ -112,10 +112,10 @@ void			paging_dump_table(t_pte*		table,
  */
 
 #if (IA32_DEBUG & IA32_DEBUG_PAGING)
-void			paging_dump_directory(t_pde*		directory,
-					      t_opts		opts)
+void			bootloader_paging_dump_directory(t_pde*	directory,
+							 t_opts	opts)
 {
-  paging_dump_table((t_pte*)directory, opts);
+  bootloader_paging_dump_table((t_pte*)directory, opts);
 }
 #endif
 
@@ -123,7 +123,7 @@ void			paging_dump_directory(t_pde*		directory,
  * this function enables the paging mode setting the last bit of cr0.
  */
 
-void			paging_enable(void)
+void			bootloader_paging_enable(void)
 {
   asm volatile ("movl %%cr0, %%eax\n"
 		"orl $0x80000000, %%eax\n"
@@ -145,7 +145,7 @@ void			paging_enable(void)
  * 6) enables the paging mode.
  */
 
-void			paging_init(void)
+void			bootloader_paging_init(void)
 {
   t_uint32		limit;
   t_uint32		addr;
@@ -155,7 +155,7 @@ void			paging_init(void)
    * 1)
    */
 
-  pd = (t_pde*)init_alloc(PAGING_NPDE * sizeof(t_pde), NULL);
+  pd = (t_pde*)bootloader_init_alloc(PAGING_NPDE * sizeof(t_pde), NULL);
   memset(pd, 0x0, PAGING_NPDE * sizeof(t_pde));
 
   /*
@@ -168,7 +168,7 @@ void			paging_init(void)
    * 3)
    */
 
-  pt0 = (t_pte*)init_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
+  pt0 = (t_pte*)bootloader_init_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
   memset(pt0, 0x0, PAGING_NPTE * sizeof(t_pte));
 
   pd[0] = (t_uint32)pt0 | PAGING_P | PAGING_RW | PAGING_S;
@@ -180,13 +180,14 @@ void			paging_init(void)
    * 4)
    */
 
-  limit = init_alloc(0, NULL);
+  limit = bootloader_init_alloc(0, NULL);
 
   for (addr = INIT_RELOCATE; addr < limit; addr += 4096)
     {
       if ((pd[PAGING_PDE(addr)] & PAGING_ADDRESS) == 0)
 	{
-	  pt = (t_pte*)init_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
+	  pt = (t_pte*)bootloader_init_alloc(PAGING_NPTE * sizeof(t_pte),
+					     NULL);
 	  memset(pt, 0x0, PAGING_NPTE * sizeof(t_pte));
 
 	  pd[PAGING_PDE(addr)] = (t_uint32)pt | PAGING_P |
@@ -208,7 +209,7 @@ void			paging_init(void)
    * 6)
    */
 
-  paging_enable();
+  bootloader_paging_enable();
 
-  cons_msg('+', "paging enabled\n");
+  bootloader_cons_msg('+', "paging enabled\n");
 }

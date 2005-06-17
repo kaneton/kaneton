@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/core/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Sun Jun 12 21:30:46 2005   mycure
+## last update   Fri Jun 17 15:02:13 2005   mycure
 ##
 
 all:			kaneton
@@ -80,47 +80,7 @@ BOOTLOADER		=		`cat $(CONF)			| \
 					 cut -b 14-`
 
 boot-init:		.kaneton.mk
-	@case "$(BOOTLOADER)" in					\
-	  "grub")							\
-	    cd utils							; \
-	    ./grub.sh init						; \
-	    cd ..							; \
-	    ;;								\
-	  "lilo")							\
-	    cd utils							; \
-	    ./lilo.sh init						; \
-	    cd ..							; \
-	    ;;								\
-	  *)								\
-	    echo "[!] unknown bootloader"				; \
-	    echo ""							; \
-	    echo "[!] please check your BOOTLOADER variable in $(CONF)"	; \
-	    echo ""							; \
-	    echo "[!] current supported bootloader are:"		; \
-	    echo "[!]      grub"					; \
-	    echo "[!]      lilo"					; \
-	    ;;								\
-	esac
+	./$(_UTILS_DIR_)/$(BOOTLOADER) init
 
 boot-install:		.kaneton.mk
-	@case "$(BOOTLOADER)" in					\
-	  "grub")							\
-	    cd utils							; \
-	    ./grub.sh boot						; \
-	    cd ..							; \
-	    ;;								\
-	  "lilo")							\
-	    cd utils							; \
-	    ./lilo.sh boot						; \
-	    cd ..							; \
-	    ;;								\
-	  *)								\
-	    echo "[!] unknown bootloader"				; \
-	    echo ""							; \
-	    echo "[!] please check your BOOTLOADER variable in $(CONF)"	; \
-	    echo ""							; \
-	    echo "[!] current supported bootloader are:"		; \
-	    echo "[!]      grub"					; \
-	    echo "[!]      lilo"					; \
-	    ;;								\
-	esac
+	./$(_UTILS_DIR_)/$(BOOTLOADER) install

@@ -5,13 +5,13 @@
 ## 
 ## grub.sh
 ## 
-## path          /home/mycure/data/research/projects/kaneton/source/utils
+## path          /home/mycure/kaneton/utils
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Fri May 27 10:54:32 2005   mycure
+## last update   Fri Jun 17 15:04:39 2005   mycure
 ##
 
 # INFORMATIONS
@@ -83,7 +83,7 @@ read_kaneton_conf()
 # this function displays the usage but does not exit
 usage()
 {
-  print " usage: grub.sh init|boot" "!"
+  print " usage: grub.sh init|install" "!"
 }
 
 
@@ -146,6 +146,7 @@ menu()
       print ""
       usage
       print " supported boot modes for grub are:" "!"
+      print "      floppy-image" "!"
       print "      floppy" "!"
       print "      tftp" "!"
       exit
@@ -194,10 +195,10 @@ init()
       print " please check your BOOTMODE variable in $CONF" "!"
       print ""
       usage
-      print " current supported boot modes for grub are:" "!"
+      print " current supported boot modes for grub are:" "!" 
+      print "      floppy-image" "!"
       print "      floppy" "!"
       print "      tftp" "!"
-      print "      floppy-image" "!"
       exit
       ;;
   esac
@@ -205,10 +206,10 @@ init()
 
 
 
-# BOOT
+# INSTALL
 #
 # installs the distribution on the boot device
-boot()
+install()
 {
   case "$BOOTMODE" in
     "floppy")
@@ -275,9 +276,9 @@ boot()
       print ""
       usage
       print " current supported boot modes for grub are:" "!"
+      print "      floppy-image" "!"
       print "      floppy" "!"
       print "      tftp" "!"
-      print "      floppy-image" "!"
       exit
       ;;
   esac
@@ -354,7 +355,7 @@ case "$action" in
     print " boot system initialized successfully" "+"
     ;;
 
-  "boot")
+  "install")
     # initializing boot system
     print " initializing boot system" "+"
     print ""
@@ -368,8 +369,8 @@ case "$action" in
     # call the menu function
     menu
 
-    # call the boot function
-    boot
+    # call the install function
+    install
 
     # boot system initialized
     print " boot system initialized successfully" "+"
@@ -381,7 +382,7 @@ case "$action" in
     usage
     print " supported action are:" "!"
     print "      init" "!"
-    print "      boot" "!"
+    print "      install" "!"
     exit
     ;;
 esac

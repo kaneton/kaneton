@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Tue Jun 14 18:28:39 2005   mycure
+ * last update   Fri Jun 17 14:50:35 2005   mycure
  */
 
 #include <libc.h>
@@ -34,12 +34,12 @@ t_gdtr			gdtr;
  */
 
 #if (IA32_DEBUG & IA32_DEBUG_PMODE)
-void			pmode_gdt_dump(void)
+void			bootloader_pmode_gdt_dump(void)
 {
   t_uint16		entries = gdtr.size / sizeof(t_gdte);
   t_uint16		i;
 
-  cons_msg('#', "dumping global offset table 0x%x entries\n", gdt);
+  bootloader_cons_msg('#', "dumping global offset table 0x%x entries\n", gdt);
   printf("\n");
   printf("     |  no  |       base - limit      |      type       |"
 	 "   flags    |\n");
@@ -119,11 +119,11 @@ void			pmode_gdt_dump(void)
  * global offset table.
  */
 
-void			pmode_update_registers(t_uint16		gdt_kernel_cs,
-					       t_uint16		gdt_kernel_ds)
+void			bootloader_pmode_update_registers(t_uint16	kcs,
+							  t_uint16	kds)
 {
-  t_reg16		cs = (gdt_kernel_cs << 3) | PMODE_GDT_TI_GDT | 0;
-  t_reg16		ds = (gdt_kernel_ds << 3) | PMODE_GDT_TI_GDT | 0;
+  t_reg16		cs = (kcs << 3) | PMODE_TI_GDT | 0;
+  t_reg16		ds = (kds << 3) | PMODE_TI_GDT | 0;
 
   asm volatile ("pushl %0\n"
 		"pushl $pmode_update_registers_label\n"
@@ -143,7 +143,7 @@ void			pmode_update_registers(t_uint16		gdt_kernel_cs,
  * this function installs the protected mode setting the first bit of cr0.
  */
 
-void			pmode_enable(void)
+void			bootloader_pmode_enable(void)
 {
   asm volatile ("movl %%cr0, %%eax\n"
 		"orw %%ax, 1\n"
@@ -155,11 +155,11 @@ void			pmode_enable(void)
  * this function sets a new entry in the current global offset table.
  */
 
-void			pmode_gdt_set(t_uint16			entry,
-				      t_paddr			base,
-				      t_psize			limit,
-				      t_uint8			type,
-				      t_uint8			flags)
+void			bootloader_pmode_gdt_set(t_uint16	entry,
+						 t_paddr	base,
+						 t_psize	limit,
+						 t_uint8	type,
+						 t_uint8	flags)
 {
   if (entry >= PMODE_GDT_ENTRIES)
     bootloader_error();
@@ -191,13 +191,14 @@ void			pmode_gdt_set(t_uint16			entry,
  * 7) dumps the global offset table if required.
  */
 
-void			pmode_init(void)
+void			bootloader_pmode_init(void)
 {
   /*
    * 1)
    */
 
-  gdt = (t_gdte*)init_alloc(PMODE_GDT_ENTRIES * sizeof(t_gdte), NULL);
+  gdt = (t_gdte*)bootloader_init_alloc(PMODE_GDT_ENTRIES * sizeof(t_gdte),
+				       NULL);
   memset(gdt, 0x0, PMODE_GDT_ENTRIES * sizeof(t_gdte));
 
   /*
@@ -210,37 +211,45 @@ void			pmode_init(void)
    * 3)
    */
 
-  pmode_gdt_set(PMODE_GDT_KERNEL_CS, 0x0, 0xffffffff,
-		PMODE_GDT_PRESENT | PMODE_GDT_DPL0 | PMODE_GDT_S |
-		PMODE_GDT_CODE, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
+  bootloader_pmode_gdt_set(PMODE_GDT_KERNEL_CS, 0x0, 0xffffffff,
+			   PMODE_GDT_PRESENT | PMODE_GDT_DPL0 | PMODE_GDT_S |
+			   PMODE_GDT_CODE, PMODE_GDT_GRANULAR |
+			   PMODE_GDT_USE32);
 
-  pmode_gdt_set(PMODE_GDT_KERNEL_DS, 0x0, 0xffffffff,
-		PMODE_GDT_PRESENT | PMODE_GDT_DPL0 | PMODE_GDT_S |
-		PMODE_GDT_DATA, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
+  bootloader_pmode_gdt_set(PMODE_GDT_KERNEL_DS, 0x0, 0xffffffff,
+			   PMODE_GDT_PRESENT | PMODE_GDT_DPL0 | PMODE_GDT_S |
+			   PMODE_GDT_DATA, PMODE_GDT_GRANULAR |
+			   PMODE_GDT_USE32);
 
-  pmode_gdt_set(PMODE_GDT_DRIVER_CS, 0x0, 0xffffffff,
-		PMODE_GDT_PRESENT | PMODE_GDT_DPL1 | PMODE_GDT_S |
-		PMODE_GDT_CODE, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
+  bootloader_pmode_gdt_set(PMODE_GDT_DRIVER_CS, 0x0, 0xffffffff,
+			   PMODE_GDT_PRESENT | PMODE_GDT_DPL1 | PMODE_GDT_S |
+			   PMODE_GDT_CODE, PMODE_GDT_GRANULAR |
+			   PMODE_GDT_USE32);
 
-  pmode_gdt_set(PMODE_GDT_DRIVER_DS, 0x0, 0xffffffff,
-		PMODE_GDT_PRESENT | PMODE_GDT_DPL1 | PMODE_GDT_S |
-		PMODE_GDT_DATA, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
+  bootloader_pmode_gdt_set(PMODE_GDT_DRIVER_DS, 0x0, 0xffffffff,
+			   PMODE_GDT_PRESENT | PMODE_GDT_DPL1 | PMODE_GDT_S |
+			   PMODE_GDT_DATA, PMODE_GDT_GRANULAR |
+			   PMODE_GDT_USE32);
 
-  pmode_gdt_set(PMODE_GDT_SERVICE_CS, 0x0, 0xffffffff,
-		PMODE_GDT_PRESENT | PMODE_GDT_DPL2 | PMODE_GDT_S |
-		PMODE_GDT_CODE, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
+  bootloader_pmode_gdt_set(PMODE_GDT_SERVICE_CS, 0x0, 0xffffffff,
+			   PMODE_GDT_PRESENT | PMODE_GDT_DPL2 | PMODE_GDT_S |
+			   PMODE_GDT_CODE, PMODE_GDT_GRANULAR |
+			   PMODE_GDT_USE32);
 
-  pmode_gdt_set(PMODE_GDT_SERVICE_DS, 0x0, 0xffffffff,
-		PMODE_GDT_PRESENT | PMODE_GDT_DPL2 | PMODE_GDT_S |
-		PMODE_GDT_DATA, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
+  bootloader_pmode_gdt_set(PMODE_GDT_SERVICE_DS, 0x0, 0xffffffff,
+			   PMODE_GDT_PRESENT | PMODE_GDT_DPL2 | PMODE_GDT_S |
+			   PMODE_GDT_DATA, PMODE_GDT_GRANULAR |
+			   PMODE_GDT_USE32);
 
-  pmode_gdt_set(PMODE_GDT_USER_CS, 0x0, 0xffffffff,
-		PMODE_GDT_PRESENT | PMODE_GDT_DPL3 | PMODE_GDT_S |
-		PMODE_GDT_CODE, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
+  bootloader_pmode_gdt_set(PMODE_GDT_USER_CS, 0x0, 0xffffffff,
+			   PMODE_GDT_PRESENT | PMODE_GDT_DPL3 | PMODE_GDT_S |
+			   PMODE_GDT_CODE, PMODE_GDT_GRANULAR |
+			   PMODE_GDT_USE32);
 
-  pmode_gdt_set(PMODE_GDT_USER_DS, 0x0, 0xffffffff,
-		PMODE_GDT_PRESENT | PMODE_GDT_DPL3 | PMODE_GDT_S |
-		PMODE_GDT_DATA, PMODE_GDT_GRANULAR | PMODE_GDT_USE32);
+  bootloader_pmode_gdt_set(PMODE_GDT_USER_DS, 0x0, 0xffffffff,
+			   PMODE_GDT_PRESENT | PMODE_GDT_DPL3 | PMODE_GDT_S |
+			   PMODE_GDT_DATA, PMODE_GDT_GRANULAR |
+			   PMODE_GDT_USE32);
 
   /*
    * 4)
@@ -255,21 +264,21 @@ void			pmode_init(void)
    * 5)
    */
 
-  pmode_update_registers(PMODE_GDT_KERNEL_CS, PMODE_GDT_KERNEL_DS);
+  bootloader_pmode_update_registers(PMODE_GDT_KERNEL_CS, PMODE_GDT_KERNEL_DS);
 
   /*
    * 6)
    */
 
-  pmode_enable();
+  bootloader_pmode_enable();
 
-  cons_msg('+', "protected mode enabled\n");
+  bootloader_cons_msg('+', "protected mode enabled\n");
 
   /*
    * 7)
    */
 
 #if (IA32_DEBUG & IA32_DEBUG_PMODE)
-  pmode_gdt_dump();
+  bootloader_pmode_gdt_dump();
 #endif
 }

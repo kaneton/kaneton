@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Thu Jun 16 15:57:55 2005   mycure
+ * last update   Fri Jun 17 14:58:48 2005   mycure
  */
 
 #include <libc.h>
@@ -30,83 +30,87 @@ t_init*			init;
  */
 
 #if (IA32_DEBUG & IA32_DEBUG_INIT)
-void			init_dump(void)
+void			bootloader_init_dump(void)
 {
   t_module*		module;
   t_uint32		i;
 
-  cons_msg('#', "dumping memory structure\n");
+  bootloader_cons_msg('#', "dumping memory structure\n");
 
-  cons_msg('#', " memory: 0x%x - %u bytes\n",
-	   init->mem,
-	   init->memsz);
+  bootloader_cons_msg('#', " memory: 0x%x - %u bytes\n",
+		      init->mem,
+		      init->memsz);
 
-  cons_msg('#', " kernel code: 0x%x - %u bytes\n",
-	   init->kcode,
-	   init->kcodesz);
+  bootloader_cons_msg('#', " kernel code: 0x%x - %u bytes\n",
+		      init->kcode,
+		      init->kcodesz);
 
-  cons_msg('#', " init structure: 0x%x - %u bytes\n",
-	   init,
-	   sizeof(t_init));
+  bootloader_cons_msg('#', " init structure: 0x%x - %u bytes\n",
+		      init,
+		      sizeof(t_init));
 
-  cons_msg('#', " modules: 0x%x - %u bytes\n",
-	   init->modules,
-	   init->modulessz);
+  bootloader_cons_msg('#', " modules: 0x%x - %u bytes\n",
+		      init->modules,
+		      init->modulessz);
 
   for (i = 0, module = (t_module*)((t_uint32)init->modules +
 				   sizeof(t_modules));
        i < init->modules->nmodules;
        i++)
     {
-      cons_msg('#', "  [%u] %s 0x%x (0x%x)\n",
-	       i,
-	       module->name,
-	       module,
-	       module->size);
+      bootloader_cons_msg('#', "  [%u] %s 0x%x (0x%x)\n",
+			  i,
+			  module->name,
+			  module,
+			  module->size);
 
       module = (t_module*)((t_uint32)module + sizeof(t_module) + module->size);
     }
 
-  cons_msg('#', " segments: 0x%x - %u bytes\n",
-	   init->segments,
-	   init->segmentssz);
+  bootloader_cons_msg('#', " segments: 0x%x - %u bytes\n",
+		      init->segments,
+		      init->segmentssz);
 
   for (i = 0; i < init->segments->nsegments; i++)
-    cons_msg('#', "  [%u] 0x%x (0x%x)\n",
-	     i,
-	     init->segments->segments[i].address,
-	     init->segments->segments[i].size);
+    bootloader_cons_msg('#', "  [%u] 0x%x (0x%x)\n",
+			i,
+			init->segments->segments[i].address,
+			init->segments->segments[i].size);
 
-  cons_msg('#', " regions: 0x%x - %u bytes\n",
-	   init->regions,
-	   init->regionssz);
+  bootloader_cons_msg('#', " regions: 0x%x - %u bytes\n",
+		      init->regions,
+		      init->regionssz);
 
   for (i = 0; i < init->regions->nregions; i++)
-    cons_msg('#', "  [%u] 0x%x\n",
-	     i,
-	     init->regions->regions[i].address);
+    bootloader_cons_msg('#', "  [%u] 0x%x\n",
+			i,
+			init->regions->regions[i].address);
 
-  cons_msg('#', " kernel stack: 0x%x - %u bytes\n",
-	   init->kstack,
-	   init->kstacksz);
+  bootloader_cons_msg('#', " kernel stack: 0x%x - %u bytes\n",
+		      init->kstack,
+		      init->kstacksz);
 
-  cons_msg('#', " segment manager: 0x%x - %u bytes\n",
-	   init->segmng,
-	   init->segmngsz);
+  bootloader_cons_msg('#', " segment manager: 0x%x - %u bytes\n",
+		      init->segmng,
+		      init->segmngsz);
 
-  cons_msg('#', " address space manager: 0x%x - %u bytes\n",
-	   init->asmng,
-	   init->asmngsz);
+  bootloader_cons_msg('#', " address space manager: 0x%x - %u bytes\n",
+		      init->asmng,
+		      init->asmngsz);
 
-  cons_msg('#', " %#~ia32%# global offset table: 0x%x\n",
-	   CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) | CONS_INT,
-	   CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT,
-	   init->machdep.gdt);
+  bootloader_cons_msg('#', " %#~ia32%# global offset table: 0x%x\n",
+		      CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) |
+		      CONS_INT,
+		      CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) |
+		      CONS_INT,
+		      init->machdep.gdt);
 
-  cons_msg('#', " %#~ia32%# page directory: 0x%x\n",
-	   CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) | CONS_INT,
-	   CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT,
-	   init->machdep.pd);
+  bootloader_cons_msg('#', " %#~ia32%# page directory: 0x%x\n",
+		      CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) |
+		      CONS_INT,
+		      CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) |
+		      CONS_INT,
+		      init->machdep.pd);
 }
 #endif
 
@@ -130,7 +134,7 @@ void			init_dump(void)
  * 13) adds the page directory segment.
  */
 
-void			init_segments(void)
+void			bootloader_init_segments(void)
 {
   t_psize		segmngsz;
   t_psize		asmngsz;
@@ -146,7 +150,7 @@ void			init_segments(void)
    * XXX for the moment we preallocate four pages.
    */
 
-  init->segmng = init_alloc(4 * PAGESZ, &segmngsz);
+  init->segmng = bootloader_init_alloc(4 * PAGESZ, &segmngsz);
   init->segmngsz = segmngsz;
 
   /*
@@ -157,7 +161,7 @@ void			init_segments(void)
    * XXX for the moment we preallocate 2 pages for the as manager.
    */
 
-  init->asmng = init_alloc(2 * PAGESZ, &asmngsz);
+  init->asmng = bootloader_init_alloc(2 * PAGESZ, &asmngsz);
   init->asmngsz = asmngsz;
 
   /*
@@ -253,7 +257,7 @@ void			init_segments(void)
  * 8) adds the page directory region.
  */
 
-void			init_regions(void)
+void			bootloader_init_regions(void)
 {
   /*
    * 1)
@@ -311,8 +315,8 @@ void			init_regions(void)
  * page tables etc..
  */
 
-t_paddr			init_alloc(t_psize			size,
-				   t_psize*			psize)
+t_paddr			bootloader_init_alloc(t_psize		size,
+					      t_psize*		psize)
 {
   static t_paddr	relocate = INIT_RELOCATE;
   t_paddr		allocated = relocate;
@@ -353,7 +357,7 @@ t_paddr			init_alloc(t_psize			size,
  * 7) for each module, copies it into its new location.
  */
 
-t_vaddr			init_relocate(multiboot_info_t*		mbi)
+t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
 {
   module_t*		mod = (module_t*)mbi->mods_addr;
   Elf32_Ehdr*		khdr = (Elf32_Ehdr*)mod->mod_start;
@@ -370,17 +374,17 @@ t_vaddr			init_relocate(multiboot_info_t*		mbi)
   t_psize		modsz;
   t_uint32		i;
 
-  cons_msg('+', "relocating kernel and modules...\n");
+  bootloader_cons_msg('+', "relocating kernel and modules...\n");
 
   /*
    * 1)
    */
 
-  kcode = init_alloc(mod->mod_end - mod->mod_start, &kcodesz);
+  kcode = bootloader_init_alloc(mod->mod_end - mod->mod_start, &kcodesz);
 
   if (kcode != INIT_RELOCATE)
     {
-      cons_msg('!', "error: kernel exited\n");
+      bootloader_cons_msg('!', "error: kernel exited\n");
       bootloader_error();
     }
 
@@ -388,7 +392,7 @@ t_vaddr			init_relocate(multiboot_info_t*		mbi)
    * 2)
    */
 
-  init = (t_init*)init_alloc(sizeof(t_init), &initsz);
+  init = (t_init*)bootloader_init_alloc(sizeof(t_init), &initsz);
   memset(init, 0x0, sizeof(t_init));
 
   /*
@@ -396,7 +400,8 @@ t_vaddr			init_relocate(multiboot_info_t*		mbi)
    */
 
   for (modulessz = 0, i = 0; i < nmodules; i++)
-    modulessz += mod[i].mod_end - mod[i].mod_start;
+    modulessz += mod[i].mod_end - mod[i].mod_start +
+      strlen((char*)mod[i].string) + 1;
 
   /*
    * 4)
@@ -409,25 +414,28 @@ t_vaddr			init_relocate(multiboot_info_t*		mbi)
   init->kcode = kcode;
   init->kcodesz = kcodesz;
 
-  init->modules = (t_modules*)init_alloc(sizeof(t_modules) +
-					       nmodules * sizeof(t_module) +
-					       modulessz,
-					       &modulessz);
+  init->modules =
+    (t_modules*)bootloader_init_alloc(sizeof(t_modules) +
+				      nmodules * sizeof(t_module) +
+				      modulessz,
+				      &modulessz);
   memset(init->modules, 0x0, modulessz);
   init->modulessz = modulessz;
   init->modules->nmodules = nmodules;
 
-  init->segments = (t_segments*)init_alloc(sizeof(t_segment) +
-						 nsegments * sizeof(t_segment),
-						 &segmentssz);
+  init->segments =
+    (t_segments*)bootloader_init_alloc(sizeof(t_segment) +
+				       nsegments * sizeof(t_segment),
+				       &segmentssz);
   memset(init->segments, 0x0, segmentssz);
   init->segmentssz = segmentssz;
   init->segments->nsegments = nsegments;
   init->segments->segments = (t_segment*)(init->segments + sizeof(t_segments));
 
-  init->regions = (t_regions*)init_alloc(sizeof(t_regions) +
-					       nregions * sizeof(t_region),
-					       &regionssz);
+  init->regions =
+    (t_regions*)bootloader_init_alloc(sizeof(t_regions) +
+				      nregions * sizeof(t_region),
+				      &regionssz);
   memset(init->regions, 0x0, regionssz);
   init->regionssz = regionssz;
   init->regions->nregions = nregions;
@@ -440,14 +448,14 @@ t_vaddr			init_relocate(multiboot_info_t*		mbi)
   modsz = mod->mod_end - mod->mod_start;
   memcpy((void*)init->kcode, (const void*)mod[0].mod_start, modsz);
 
-  cons_msg('+', " kernel relocated from 0x%x to 0x%x (0x%x)\n",
-	   mod[0].mod_start, init->kcode, modsz);
+  bootloader_cons_msg('+', " kernel relocated from 0x%x to 0x%x (0x%x)\n",
+		      mod[0].mod_start, init->kcode, modsz);
 
   /*
    * 6)
    */
 
-  init->kstack = init_alloc(INIT_KSTACKSZ, NULL);
+  init->kstack = bootloader_init_alloc(INIT_KSTACKSZ, NULL);
   init->kstacksz = INIT_KSTACKSZ;
 
   /*
@@ -463,24 +471,22 @@ t_vaddr			init_relocate(multiboot_info_t*		mbi)
 
       modsz = mod[i].mod_end - mod[i].mod_start;
 
-      if (strlen((char*)mod[i].string) >= MOD_NAMESZ)
-	cons_msg('!', "the module name %s will be truncated to %u bytes\n",
-		 mod[i].string, MOD_NAMESZ);
-
-      strncpy(module->name, (char*)mod[i].string, MOD_NAMESZ);
+      module->name = (char*)((t_uint32)module + sizeof(t_module) + modsz);
+      strcpy(module->name, (char*)mod[i].string);
 
       memcpy((void*)((t_uint32)module + sizeof(t_module)),
 	     (const void*)mod[i].mod_start, modsz);
 
       module->size = modsz;
 
-      cons_msg('+', " %s relocated from 0x%x to 0x%x (0x%x)\n",
-	       module->name,
-	       mod[i].mod_start,
-	       module,
-	       module->size);
+      bootloader_cons_msg('+', " %s relocated from 0x%x to 0x%x (0x%x)\n",
+			  module->name,
+			  mod[i].mod_start,
+			  module,
+			  module->size);
 
-      module = (t_module*)((t_uint32)module + sizeof(t_module) + module->size);
+      module = (t_module*)((t_uint32)module + sizeof(t_module) +
+			   module->size + strlen(module->name) + 1);
     }
 
   return (khdr->e_entry);

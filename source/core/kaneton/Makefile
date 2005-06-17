@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Tue Jun 14 19:34:32 2005   mycure
+## last update   Fri Jun 17 14:28:26 2005   mycure
 ##
 
 include			../../.kaneton.mk
@@ -29,21 +29,19 @@ KANETON_O		=		kaneton.o			\
 
 CFLAGS			+=		-D___kaneton -D___kernel
 
+VERSION_H		=		$(_CORE_INCLUDE_DIR_)/version.h
 VERSION_C		=		version.c
 VERSION_O		=		$(VERSION_C:.c=.o)
 
-CONF			=		$(_CONF_DIR_)/$(USER)/$(USER).conf
-TITLE			=		`cat $(CONF)			| \
-					 grep -E "^TITLE = .*$$"	| \
-					 cut -b 9-`
-VERSION			=		`cat $(CONF)			| \
-					 grep -E "^VERSION = .*$$"	| \
-					 cut -b 11-`
 DATE			=		`date`
 
 all:			$(KANETON_O)
-	@echo -n "const char version[] = \"$(TITLE)-$(VERSION)" > $(VERSION_C)
-	@echo " $(DATE) $(USER)@$(HOSTNAME)\";" >> $(VERSION_C)
+	@echo -n "" > $(VERSION_C)
+	@echo "#include <libc.h>" >> $(VERSION_C)
+	@echo "#include <kaneton.h>" >> $(VERSION_C)
+	@echo "" >> $(VERSION_C)
+	@echo -n "const char version[] = TITLE\"-\"VERSION" >> $(VERSION_C)
+	@echo "\" $(DATE) $(USER)@$(HOSTNAME)\";" >> $(VERSION_C)
 	$(call compile-c,$(VERSION_O),$(VERSION_C),)
 
 	@for i in $(SUBDIRS) ; do					\

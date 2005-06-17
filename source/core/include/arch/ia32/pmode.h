@@ -5,13 +5,13 @@
  * 
  * pmode.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:55:06 2005   mycure
- * last update   Thu Jun  9 13:59:38 2005   mycure
+ * last update   Fri Jun 17 14:44:02 2005   mycure
  */
 
 #ifndef IA32_PMODE_H
@@ -28,8 +28,8 @@
 #define PMODE_GDT_ENTRIES	256
 #define PMODE_GDT_VALID_ENTRIES	(1 + 8)
 
-#define PMODE_GDT_TI_GDT	0x0
-#define PMODE_GDT_TI_LDT	0x1
+#define PMODE_TI_GDT		0x0
+#define PMODE_TI_LDT		0x1
 
 /*
  * options

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Jun 16 15:55:52 2005   mycure
+ * last update   Fri Jun 17 14:46:37 2005   mycure
  */
 
 #include <libc.h>
@@ -74,7 +74,7 @@ int			bootloader(t_uint32			magic,
    * 1)
    */
 
-  cons_init();
+  bootloader_cons_init();
 
   if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
     bootloader_error();
@@ -85,40 +85,40 @@ int			bootloader(t_uint32			magic,
    * 2)
    */
 
-  kernel = (void (*)(t_init*))init_relocate(mbi);
+  kernel = (void (*)(t_init*))bootloader_init_relocate(mbi);
 
   /*
    * 3)
    */
 
-  pmode_init();
+  bootloader_pmode_init();
 
   /*
    * 4)
    */
 
-  paging_init();
+  bootloader_paging_init();
 
   /*
    * 5)
    */
 
-  init_segments();
-  init_regions();
+  bootloader_init_segments();
+  bootloader_init_regions();
 
   /*
    * 6)
    */
 
 #if (IA32_DEBUG & IA32_DEBUG_INIT)
-  init_dump();
+  bootloader_init_dump();
 #endif
 
   /*
    * 7)
    */
 
-  cons_load();
+  bootloader_cons_load();
 
   /*
    * 8)
@@ -140,8 +140,6 @@ int			bootloader(t_uint32			magic,
    * 9)
    */
 
-  while (1);
-
   kernel(init);
 
   asm volatile ("movl %0, %%ebp\n"
@@ -153,12 +151,6 @@ int			bootloader(t_uint32			magic,
    * 10)
    */
 
-  cons_msg('!', "error: kernel exited\n");
+  bootloader_cons_msg('!', "error: kernel exited\n");
   bootloader_error();
 }
-
-/*
- * XXX
- *
- * - gerer de grands noms de modules
- */

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Tue Jun 14 14:37:52 2005   mycure
+ * last update   Fri Jun 17 14:49:11 2005   mycure
  */
 
 #include <libc.h>
@@ -33,7 +33,7 @@ t_cons			cons;
  * this function just clears the console.
  */
 
-void			cons_clear(void)
+void			bootloader_cons_clear(void)
 {
   t_uint16		i;
 
@@ -51,7 +51,7 @@ void			cons_clear(void)
  * this function scrolls the screen.
  */
 
-void			cons_scroll(t_uint16			lines)
+void			bootloader_cons_scroll(t_uint16		lines)
 {
   t_uint16		src;
   t_uint16		dst;
@@ -78,7 +78,7 @@ void			cons_scroll(t_uint16			lines)
  * current console attributes with the sequence %#.
  */
 
-void			cons_attr(t_uint8			attr)
+void			bootloader_cons_attr(t_uint8		attr)
 {
   cons.attr = attr;
 }
@@ -88,7 +88,7 @@ void			cons_attr(t_uint8			attr)
  * character.
  */
 
-int			cons_print_char(char			c)
+int			bootloader_cons_print_char(char		c)
 {
   t_uint16		pos = cons.line * CONS_COLUMNS * CONS_BPC +
     cons.column * CONS_BPC;
@@ -103,7 +103,7 @@ int			cons_print_char(char			c)
 
   if (pos >= CONS_SIZE)
     {
-      cons_scroll(1);
+      bootloader_cons_scroll(1);
 
       pos = cons.line * CONS_COLUMNS * CONS_BPC + cons.column * CONS_BPC;
     }
@@ -120,12 +120,12 @@ int			cons_print_char(char			c)
  * this function just prints a string.
  */
 
-void			cons_print_string(char*			string)
+void			bootloader_cons_print_string(char*	string)
 {
   t_uint32		i;
 
   for (i = 0; string[i]; i++)
-    cons_print_char(string[i]);
+    bootloader_cons_print_char(string[i]);
 }
 
 /*
@@ -136,15 +136,15 @@ void			cons_print_string(char*			string)
  * '!' is used for printing warning and error messages.
  */
 
-void			cons_msg(char				indicator,
-				 char*				fmt,
-				 ...)
+void			bootloader_cons_msg(char		indicator,
+					    char*		fmt,
+					    ...)
 {
   t_uint8		attr = cons.attr;
   va_list		args;
 
   cons.attr = CONS_FRONT(CONS_BLUE) | CONS_BACK(CONS_BLACK) | CONS_INT;
-  cons_print_char('[');
+  bootloader_cons_print_char('[');
 
   switch (indicator)
     {
@@ -159,10 +159,10 @@ void			cons_msg(char				indicator,
       break;
     }
 
-  cons_print_char(indicator);
+  bootloader_cons_print_char(indicator);
 
   cons.attr = CONS_FRONT(CONS_BLUE) | CONS_BACK(CONS_BLACK) | CONS_INT;
-  cons_print_string("] ");
+  bootloader_cons_print_string("] ");
 
   cons.attr = attr;
 
@@ -181,7 +181,7 @@ void			cons_msg(char				indicator,
  * the bootloader and the kernel.
  */
 
-void			cons_load(void)
+void			bootloader_cons_load(void)
 {
   memcpy(&init->machdep.cons, &cons, sizeof(t_cons));
 }
@@ -193,16 +193,16 @@ void			cons_load(void)
  * the console.
  */
 
-int			cons_init(void)
+int			bootloader_cons_init(void)
 {
   cons.line = 0;
   cons.column = 0;
   cons.attr = CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT;
   cons.vga = (char*)CONS_ADDR;
 
-  cons_clear();
+  bootloader_cons_clear();
 
-  printf_init(cons_print_char, cons_attr);
+  printf_init(bootloader_cons_print_char, bootloader_cons_attr);
 
   return (0);
 }
