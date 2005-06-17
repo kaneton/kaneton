@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Thu Jun 16 16:48:29 2005   mycure
+## last update   Fri Jun 17 16:10:30 2005   mycure
 ##
 
 #
@@ -93,8 +93,7 @@ CFLAGS			=		-nostdinc -nostdlib		\
 LDFLAGS			=		-nostdinc -nostdlib		\
 					$(_INCLUDES_)			
 
-_KANETON_OPTS_		=		-D___little_endian		\
-					-D___32bit			
+_KANETON_OPTS_		=		
 
 #
 # binaries

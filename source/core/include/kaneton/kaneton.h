@@ -5,17 +5,24 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton/dist
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Wed Jun 15 19:43:27 2005   mycure
+ * last update   Fri Jun 17 16:07:26 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
 #define KANETON_KANETON_H	1
+
+/*
+ * development mode
+ */
+
+#define MODE_DEVELOPMENT	(1 << 0)
+#define MODE_RELEASE		(1 << 1)
 
 /*
  * debug

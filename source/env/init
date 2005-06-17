@@ -5,13 +5,13 @@
 ## 
 ## init
 ## 
-## path          /home/mycure/kaneton/env
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Fri Jun 17 14:17:56 2005   mycure
+## last update   Fri Jun 17 16:08:29 2005   mycure
 ##
 
 # INFORMATIONS
@@ -189,7 +189,12 @@ version()
 
   echo "#define VERSION			\"$VERSION\"" >> $VERSION_H
 
-  echo "#define MODE			\"$MODE\"" >> $VERSION_H
+  if [ $MODE = "development" ] ; then
+    echo "#define MODE			MODE_DEVELOPMENT" >> $VERSION_H
+  fi
+  if [ $MODE = "release" ] ; then
+    echo "#define MODE			MODE_RELEASE" >> $VERSION_H
+  fi
 
   echo "#define LIBC			\"$LIBC\"" >> $VERSION_H
 
