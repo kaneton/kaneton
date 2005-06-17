@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Jun 12 23:11:12 2005   mycure
+## last update   Fri Jun 17 14:17:56 2005   mycure
 ##
 
 # INFORMATIONS
@@ -31,8 +31,20 @@ CONF="../conf/"$USER"/"$USER".conf"
 # CONFIGURATION FILE VARIABLES
 #
 # default globals
+TITLE="unknown"
+VERSION="unknown"
+LIBC="unknown"
 ENVIRONMENT="unknown"
 ARCHITECTURE="unknwon"
+BOOTLOADER="unknown"
+MODE="unknown"
+
+
+
+# VERSION HEADER FILE
+#
+# the version header file to generate
+VERSION_H="core/include/version.h"
 
 
 
@@ -49,11 +61,26 @@ KANETON_MK=".kaneton.mk"
 # important variables
 read_kaneton_conf()
 {
-  # env
+  # title
+  TITLE=`cat $CONF | grep -E "^TITLE = .*$" | cut -b 9-`
+
+  # version
+  VERSION=`cat $CONF | grep -E "^VERSION = .*$" | cut -b 11-`
+
+  # mode
+  MODE=`cat $CONF | grep -E "^MODE = .*$" | cut -b 8-`
+
+  # libc
+  LIBC=`cat $CONF | grep -E "^LIBC = .*$" | cut -b 8-`
+
+  # environment
   ENVIRONMENT=`cat $CONF | grep -E "^ENVIRONMENT = .*$" | cut -b 15-`
 
   # architecture
   ARCHITECTURE=`cat $CONF | grep -E "^ARCHITECTURE = .*$" | cut -b 16-`
+
+  # architecture
+  BOOTLOADER=`cat $CONF | grep -E "^BOOTLOADER = .*$" | cut -b 14-`
 }
 
 
@@ -75,8 +102,13 @@ warning()
 {
   # display information and ask the user to continue or cancel
   print " your current configuration:" "+"
+  print "   title:                    $TITLE" "+"
+  print "   version:                  $VERSION" "+"
+  print "   mode:                     $MODE" "+"
+  print "   libc:                     $LIBC" "+"
   print "   environment:              $ENVIRONMENT" "+"
   print "   architecture:             $ARCHITECTURE" "+"
+  print "   bootloader:               $BOOTLOADER" "+"
   print ""
   print " to cancel press CTRL^C, otherwise press enter" "?"
 
@@ -139,6 +171,41 @@ init()
 
 
 
+# VERSION
+#
+# this function generates the version header file from the configuration file
+version()
+{
+  print " generating the version header file" "+"
+
+  echo -n "" > $VERSION_H
+
+  echo "#ifndef VERSION_H" >> $VERSION_H
+  echo "#define VERSION_H		1" >> $VERSION_H
+
+  echo "" >> $VERSION_H
+
+  echo "#define TITLE			\"$TITLE\"" >> $VERSION_H
+
+  echo "#define VERSION			\"$VERSION\"" >> $VERSION_H
+
+  echo "#define MODE			\"$MODE\"" >> $VERSION_H
+
+  echo "#define LIBC			\"$LIBC\"" >> $VERSION_H
+
+  echo "#define ENVIRONMENT		\"$ENVIRONMENT\"" >> $VERSION_H
+
+  echo "#define ARCHITECTURE		\"$ARCHITECTURE\"" >> $VERSION_H
+
+  echo "#define BOOTLOADER		\"$BOOTLOADER\"" >> $VERSION_H
+
+  echo "" >> $VERSION_H
+
+  echo "#endif" >> $VERSION_H
+}
+
+
+
 # PRINT A MESSAGE
 #
 # print a message with a header
@@ -196,6 +263,9 @@ cd ../
 
 # install environment
 init
+
+# generate the version header file
+version
 
 # return into the env/ directory
 cd env/

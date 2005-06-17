@@ -11,8 +11,20 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Thu Jun 16 16:29:31 2005   mycure
+## last update   Thu Jun 16 16:48:29 2005   mycure
 ##
+
+#
+# informations
+#
+# you generally do not need to modify the kaneton directories, kaneton
+# utils, and kaneton binaries.
+#
+# nevertheless, you should change the c compiler, compiler and linker
+# flags and the binaires.
+#
+# if needed also modify the makefile macros to match with your binaries.
+#
 
 #
 # kaneton directories
@@ -72,6 +84,19 @@ _AS_A_			=		$(_CORE_KANETON_DIR_)/as/as.a
 CC			=		gcc
 
 #
+# compiler and linker flags
+#
+
+CFLAGS			=		-nostdinc -nostdlib		\
+					-fno-builtin			\
+					-O0 $(_INCLUDES_)		
+LDFLAGS			=		-nostdinc -nostdlib		\
+					$(_INCLUDES_)			
+
+_KANETON_OPTS_		=		-D___little_endian		\
+					-D___32bit			
+
+#
 # binaries
 #
 
@@ -88,18 +113,6 @@ _CAT_			=		cat
 _MCOPY_			=		mcopy -no
 _MDEL_			=		mdel
 _LN_			=		ln -s -f
-
-#
-# compiler and linker flags
-#
-
-CFLAGS			=		-nostdinc -nostdlib		\
-					-fno-builtin			\
-					-O0 $(_INCLUDES_)		\
-					-D___little_endian		\
-					-D___32bit			
-LDFLAGS			=		-nostdinc -nostdlib		\
-					$(_INCLUDES_)			
 
 #
 # traps to the pretty-printer
@@ -206,7 +219,7 @@ endef
 
 define compile-asm
   @$(call pretty-printer,green,COMPILE-ASM,$(2),		)	; \
-  $(_NASM_) $(_KANETON_OPTS_) $(3) $(2) -o $(1)
+  $(_NASM_) $(3) $(2) -o $(1)
 endef
 
 #
