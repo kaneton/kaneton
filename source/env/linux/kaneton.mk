@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sat Jun 18 15:10:06 2005   mycure
+## last update   Sat Jun 18 15:43:53 2005   mycure
 ##
 
 #
@@ -356,6 +356,15 @@ define remove
 endef
 
 #
+# purge
+#
+
+define purge
+  @$(call pretty-printer,red,PURGE,,)					; \
+  $(_PURGE_)
+endef
+
+#
 # prototypes
 #
 # $(1):		file
@@ -365,28 +374,6 @@ endef
 define prototypes
   @$(call pretty-printer,yellow,PROTOTYPES,$(1),		)	; \
   $(_PROTO_) $(2) $(1)
-endef
-
-#
-# link
-#
-# $(1):		link created
-# $(2):		destination
-# $(3):		advances options
-#
-
-define link
-  @$(call pretty-printer,yellow,LINK,$(1),			)	; \
-  $(_LN_) $(3) $(2) $(1)
-endef
-
-#
-# purge
-#
-
-define purge
-  @$(call pretty-printer,red,PURGE,,)					; \
-  $(_PURGE_)
 endef
 
 #
@@ -420,4 +407,17 @@ define version
   echo "" >> $(1)							; \
   echo -n "const char version[] = TITLE\"-\"VERSION" >> $(1)		; \
   echo "\" $(DATE) $(USER)@$(HOSTNAME)\";" >> $(1)
+endef
+
+#
+# link
+#
+# $(1):		link created
+# $(2):		destination
+# $(3):		advances options
+#
+
+define link
+  @$(call pretty-printer,cyan,LINK,$(1),			)	; \
+  $(_LN_) $(3) $(2) $(1)
 endef

@@ -5,13 +5,13 @@
 ## 
 ## README
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton/dist
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Sat Jun 18 15:14:07 2005   mycure
+## last update   Sat Jun 18 15:44:00 2005   mycure
 ##
 
 			----------[ conf ]----------
@@ -243,6 +243,13 @@ the syntax used to call a function in a makefile is:
     1:		the file names
     2:		advanced options
 
+---[ purge
+
+  this function is used to clean the current directory from useless files
+  like emacs backups (~ files) etc..
+
+  no argument
+
 ---[ prototypes
 
   this function is called to build prototypes in header files.
@@ -251,23 +258,6 @@ the syntax used to call a function in a makefile is:
 
     1:		the header file name
     2:		advanced options
-
----[ link
-
-  this function build a symbolic link to a file.
-
-  arguments:
-
-    1:		the file name to create so the symbolic link
-    2:		the destination file name
-    3:		advanced options
-
----[ purge
-
-  this function is used to clean the current directory from useless files
-  like emacs backups (~ files) etc..
-
-  no argument
 
 ---[ dependencies
 
@@ -288,3 +278,13 @@ the syntax used to call a function in a makefile is:
   argument:
 
     1:		the version file to generate
+
+---[ link
+
+  this function build a symbolic link to a file.
+
+  arguments:
+
+    1:		the file name to create so the symbolic link
+    2:		the destination file name
+    3:		advanced options
