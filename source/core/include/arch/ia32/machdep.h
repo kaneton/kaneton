@@ -11,16 +11,13 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Sat Jun 18 16:32:53 2005   mycure
+ * last update   Sun Jun 19 00:21:42 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
 #define IA32_MACHDEP_H		1
 
-/*
- * defines
- */
-
+/* XXX to move in kaneton/debug.h */
 /*
  * debug
  */
@@ -31,6 +28,15 @@
 
 #define IA32_DEBUG							\
   (0)
+
+/*
+ * includes
+ */
+
+#include <arch/machdep/ia32/ia32.h>
+#include <arch/machdep/kaneton/kaneton.h>
+#include <arch/machdep/services/services.h>
+#include <arch/machdep/sys/sys.h>
 
 /*
  * includes
