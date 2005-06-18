@@ -5,17 +5,27 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Fri Jun 17 16:07:26 2005   mycure
+ * last update   Sat Jun 18 16:20:20 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
 #define KANETON_KANETON_H	1
+
+/*
+ * dependencies
+ */
+
+#include <machdep/arch/machdep.h>
+
+/*
+ * defines
+ */
 
 /*
  * development mode
