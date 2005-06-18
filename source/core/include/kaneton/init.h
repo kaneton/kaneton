@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Sat Jun 18 16:21:55 2005   mycure
+ * last update   Sat Jun 18 16:32:29 2005   mycure
  */
 
 #ifndef KANETON_INIT_H

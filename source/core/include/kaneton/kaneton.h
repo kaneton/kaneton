@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sat Jun 18 16:23:22 2005   mycure
+ * last update   Sun Jun 19 00:16:50 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
@@ -35,22 +35,12 @@
 #define MODE_RELEASE		(1 << 1)
 
 /*
- * debug
- */
-
-#define KANETON_DEBUG_PARAMS	(1 << 0)
-#define KANETON_DEBUG_AS	(1 << 1)
-#define KANETON_DEBUG_SEGMENT	(1 << 2)
-
-#define KANETON_DEBUG							\
-  (0 | KANETON_DEBUG_PARAMS)
-
-/*
  * includes
  */
 
-#include <kaneton/init.h>
 #include <kaneton/as.h>
+#include <kaneton/debug.h>
+#include <kaneton/init.h>
 #include <kaneton/segment.h>
 
 /*
