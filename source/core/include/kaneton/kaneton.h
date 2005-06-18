@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sat Jun 18 16:20:20 2005   mycure
+ * last update   Sat Jun 18 16:23:22 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
@@ -50,10 +50,7 @@
  */
 
 #include <kaneton/init.h>
-
-#include <kaneton/errno.h>
-#include <kaneton/suberrno.h>
-
+#include <kaneton/as.h>
 #include <kaneton/segment.h>
 
 /*
