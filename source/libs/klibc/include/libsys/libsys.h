@@ -5,13 +5,13 @@
  * 
  * libsys.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/libsys
+ * path          /home/mycure/kaneton/libs/klibc/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:36:32 2005   mycure
- * last update   Mon Jun 13 17:41:43 2005   mycure
+ * last update   Sat Jun 18 16:09:37 2005   mycure
  */
 
 #ifndef LIBSYS_LIBSYS_H
@@ -21,17 +21,15 @@
  * includes
  */
 
-#include "types.h"
-
-#include "errno.h"
-#include "limits.h"
-#include "services.h"
-#include "suberrno.h"
-#include "quad.h"
+#include <klibc/include/libsys/errno.h>
+#include <klibc/include/libsys/limits.h>
+#include <klibc/include/libsys/services.h>
+#include <klibc/include/libsys/suberrno.h>
+#include <klibc/include/libsys/types.h>
+#include <klibc/include/libsys/quad.h>
 
 /*
- * prototypes:     ../../libsys/perror.c
- *                 ../../libsys/quad.c
+ * prototypes:     ../../libsys/perror.c         ../../libsys/quad.c
  */
 
 /*

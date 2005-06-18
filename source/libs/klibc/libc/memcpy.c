@@ -5,23 +5,23 @@
  * 
  * memcpy.c
  * 
- * path          /home/mycure/kaneton/src/libs/klibc/libc
+ * path          /home/mycure/kaneton/libs/klibc/libc
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:51:54 2005   mycure
- * last update   Sat Apr 23 16:58:15 2005   mycure
+ * last update   Sat Jun 18 15:48:42 2005   mycure
  */
 
 #include <klibc/include/klibc.h>
 
-void			*memcpy(void		*dest,
-				const void	*src,
-				size_t		n)
+void*			memcpy(void*		dest,
+			       const void*	src,
+			       size_t		n)
 {
-  char			*d = dest;
-  const char		*s = src;
+  char*			d = dest;
+  const char*		s = src;
   u_int			i;
 
   if ((n == 0) || (src == dest))

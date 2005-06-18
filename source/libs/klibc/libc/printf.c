@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Thu May  6 14:37:44 2004   mycure
- * last update   Tue Jun 14 15:01:58 2005   mycure
+ * last update   Sat Jun 18 15:50:06 2005   mycure
  */
 
 #include <arch/machdep/machdep.h>
@@ -18,7 +18,7 @@
 t_printf_char_fn	printf_char = NULL;
 t_printf_attr_fn	printf_attr = NULL;
 
-int			printf_string(char			*string,
+int			printf_string(char*			string,
 				      unsigned int		flags,
 				      int			len1,
 				      int			len2)
@@ -155,7 +155,7 @@ int			printf_quad(quad_t			value,
   return (written);
 }
 
-int			vprintf(const char			*fmt,
+int			vprintf(const char*			fmt,
 				va_list				args)
 {
   quad_t		quadvalue;
@@ -342,7 +342,7 @@ int			vprintf(const char			*fmt,
 		}
 	      case 's':
 		{
-		  strvalue = va_arg(args, char *);
+		  strvalue = va_arg(args, char*);
 
 		  written += printf_string(strvalue, flags,
 					   len1, len2);
@@ -396,7 +396,7 @@ int			printf_init(t_printf_char_fn		pc,
   return (0);
 }
 
-int			printf(char				*fmt,
+int			printf(char*				fmt,
 			       ...)
 {
   unsigned int		written;

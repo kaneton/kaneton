@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 13:53:34 2005   mycure
- * last update   Sat May 28 22:16:44 2005   mycure
+ * last update   Sat Jun 18 16:13:06 2005   mycure
  */
 
 #ifndef KLIBC_H
@@ -21,7 +21,7 @@
  * general defines
  */
 
-#define NULL			((void *) 0)
+#define NULL			((void *)0)
 
 #ifndef FALSE
 #define FALSE			(0 == 1)
@@ -34,20 +34,15 @@
 #define EOF			-1
 
 /*
- * endian byte order definitions
- */
-
-#define LITTLE_ENDIAN		1234	/* LSB first: i386, vax ... */
-#define BIG_ENDIAN		4321	/* MSB first: 68000, ibm, net ... */
-#define PDP_ENDIAN		3412	/* LSB first in word,
-					   MSW first in long */
-
-/*
  * includes
  */
 
-#include <klibc/include/libsys/libsys.h>
 #include <klibc/include/libc/libc.h>
+#include <klibc/include/libsys/libsys.h>
+
+/*
+ * errno
+ */
 
 extern int	errno;
 extern int	suberrno;

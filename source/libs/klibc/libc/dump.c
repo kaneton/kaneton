@@ -5,20 +5,20 @@
  * 
  * dump.c
  * 
- * path          /home/mycure/kaneton/src/libs/klibc/libc
+ * path          /home/mycure/kaneton/libs/klibc/libc
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:50:21 2005   mycure
- * last update   Sat Apr 23 16:53:28 2005   mycure
+ * last update   Sat Jun 18 15:46:59 2005   mycure
  */
 
 #include <klibc/include/klibc.h>
 
 #define LINEDUMPS	16
 
-void			dump_buf(u_int8_t	*buf,
+void			dump_buf(u_int8_t*	buf,
 				 u_int		address,
 				 u_int		size)
 {
@@ -62,7 +62,7 @@ void			dump_buf(u_int8_t	*buf,
   printf("\n");
 }
 
-void			dump(char		*data,
+void			dump(char*		data,
 			     u_int		size)
 {
   char			buf[LINEDUMPS];

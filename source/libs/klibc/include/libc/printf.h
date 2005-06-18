@@ -5,17 +5,23 @@
  * 
  * printf.h
  * 
- * path          /home/mycure/kaneton/services/cons
+ * path          /home/mycure/kaneton/libs/klibc/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Sat Jun 18 12:13:53 2005   mycure
+ * last update   Sat Jun 18 16:07:43 2005   mycure
  */
 
 #ifndef LIBC_PRINTF_H
 #define LIBC_PRINTF_H		1
+
+/*
+ * dependencies
+ */
+
+#include <klibc/include/libsys/types.h>
 
 /*
  * defines

@@ -5,14 +5,16 @@
 ## 
 ## README
 ## 
-## path          /home/mycure/kaneton/dist
+## path          /home/mycure/kaneton/core/include
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Sat Jun 18 15:44:00 2005   mycure
+## last update   Sun Jun 19 01:17:55 2005   mycure
 ##
+
+
 
 			----------[ conf ]----------
 
@@ -33,6 +35,8 @@ a kaneton developer has to fill three configuration files located at:
 
   this file describes the kaneton kernel with many parameters.
 
+
+
 			----------[ env ]----------
 
 a development environment describes binaries, compiling options,
@@ -50,6 +54,8 @@ each environment, directory is composed of one (but can be more) file:
 
   so, you can here specify compile and linking options but also binaries
   to use.
+
+
 
 			----------[ make ]----------
 
@@ -133,6 +139,14 @@ syntax:		make install
 syntax:		make check
 
   this command runs tests to validate the current kaneton version.
+
+---[ info
+
+syntax:		make info
+
+  this command displays information about the kaneton project.
+
+
 
 			----------[ makefiles ]----------
 
@@ -288,3 +302,145 @@ the syntax used to call a function in a makefile is:
     1:		the file name to create so the symbolic link
     2:		the destination file name
     3:		advanced options
+
+
+
+			----------[ types ]----------
+
+the types used in the kaneton project follow precise rules defined below.
+
+using these rules leads to a very clear source code. indeed, it is now
+very easy to know what a variable is with its type.
+
+---[ structures
+
+  the structures are declared with the prefix 's_'.
+
+---[ basic/general
+
+  the basic/general types are defined using the prefix 't_'.
+
+---[ managers
+
+  the structures used to describe a manager use the prefix 'm_'.
+
+---[ objects
+
+  the object types are declared using the prefix 'o_'.
+
+---[ capabilities
+
+  the capability types are defined with the prefix 'c_'.
+
+---[ interfaces
+
+  the interface types are declared with the prefix 'i_'.
+
+---[ machine-dependent
+
+  the machine-dependent types use the prefix 'd_'.
+
+
+
+			----------[ defines ]----------
+
+the kaneton kernel uses few fundamental defines listed below:
+
+---[ ___bootloader
+
+  indicates that we are currently compiling the bootloader.
+
+---[ ___kernel
+
+  indicates that we are currently compiling the kernel
+
+---[ ___kaneton
+
+  indicates that this program was compiled for the kaneton kernel.
+
+---[ ___32bits
+
+  indicates that this program was compiled to run on a 32-bit processor.
+
+---[ ___64bits
+
+  indicates that this program was compiled to run on a 64-bit processor.
+
+---[ ___128bits
+
+  indicates that this program was compiled to run on a 128-bit processor.
+
+---[ ___little_endian
+
+  indicates that this program was compiled to run on a little endian processor.
+
+---[ ___big_endian
+
+  indicates that this program was compiled to run on a big endian processor.
+
+
+
+			----------[ coding style ]----------
+
+the kaneton project developers try to follow a coding style. this
+coding style was introduced to normalize the source code, leading to
+a more readable source code.
+
+nevertheless, you can adapt this coding style to your own but try
+to follow the rules.
+
+---[ low case
+
+  the entire source code is written using low case. moreover the comments
+  are also written using low case.
+
+---[ function returns
+
+  a function must return zero if there is no error, otherwise return minus one.
+  an error code can be returned to specify a precise error.
+
+---[ headers
+
+  please use this header for all the files you want to edit.
+
+	/*
+	 * copyright quintard julien
+	 * 
+	 * kaneton
+	 * 
+	 * kaneton.c
+	 * 
+	 * path          /home/mycure/kaneton/core/kaneton
+	 * 
+	 * made by mycure
+	 *         quintard julien   [quinta_j@epita.fr]
+	 * 
+	 * started on    Fri Feb 11 14:05:03 2005   mycure
+	 * last update   Sun Jun 19 01:02:32 2005   mycure
+	 */
+
+---[ indentation
+
+XXX + exceptions
+
+---[ types
+
+  try to use the kaneton types: t_uint8, t_sint16, t_uint64 etc..
+  rather than unsigned char or unsigned long long int.
+
+---[ comments
+
+  the comments must have this specific form:
+
+	/*
+	 * a comment
+	 */
+
+  or on multi-lines:
+
+	/*
+	 * a comment on line one
+	 * a comment on line two
+	 * a comment on line three
+	 */
+

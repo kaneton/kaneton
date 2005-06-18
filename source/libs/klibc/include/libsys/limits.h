@@ -5,17 +5,21 @@
  * 
  * limits.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/libsys
+ * path          /home/mycure/kaneton/libs/klibc/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:38:13 2005   mycure
- * last update   Tue Jun 14 14:13:18 2005   mycure
+ * last update   Sat Jun 18 16:10:17 2005   mycure
  */
 
 #ifndef LIBSYS_LIMITS_H
 #define LIBSYS_LIMITS_H		1
+
+/*
+ * defines
+ */
 
 /*
  * char size

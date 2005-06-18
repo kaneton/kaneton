@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Jun 12 21:42:45 2005   mycure
+## last update   Sat Jun 18 23:57:36 2005   mycure
 ##
 
 # INFORMATIONS
@@ -44,6 +44,14 @@ KANETON_MK=".kaneton.mk"
 
 
 
+# BINARIES
+#
+# the list of binaries used to compile the kaneton kernel on
+# linux operating systems.
+BINARIES="gcc make rm ar ranlib ld nasm ln"
+
+
+
 # READ CONFIGURATION FILE
 #
 # function used to read the configuration file and to load
@@ -59,6 +67,24 @@ read_kaneton_conf()
 
 
 
+# CHECK
+#
+# checks wheter the binaries used to compile the kaneton kernel are
+# present on the system.
+check()
+{
+  print "   checking binaries" "+"
+
+  for i in $BINARIES ; do
+    which $i 2> /dev/null > /dev/null
+    if [ $? -ne 0 ] ; then
+      print "    binary '$i' not present on your system" "!"
+    fi
+  done
+}
+
+
+
 # INIT
 #
 # installs the environment for linux operating system
@@ -69,31 +95,26 @@ init()
 
   # sed
   print "   generating makefile dependencies" "+"
+
+  rm -f $KANETON_MK
+
   sed s/___kaneton_sed___/$(pwd | sed 's/\//\\\//g')/g $GENERIC_KANETON_MK \
       > $KANETON_MK
 
   # create the symbolic link for architecture dependencies
   print "   installing links to machine-dependent directories" "+"
 
-  if [ ! -e core/bootstrap/arch/machdep ] ; then
-    ln -s $ARCHITECTURE core/bootstrap/arch/machdep
-  fi
+  rm -f core/bootstrap/arch/machdep
+  rm -f core/bootloader/arch/machdep
+  rm -f core/include/arch/machdep
+  rm -f core/kaneton/arch/machdep
+  rm -f lds/arch/machdep
 
-  if [ ! -e core/bootloader/arch/machdep ] ; then
-    ln -s $ARCHITECTURE core/bootloader/arch/machdep
-  fi
-
-  if [ ! -e core/include/arch/machdep ] ; then
-    ln -s $ARCHITECTURE core/include/arch/machdep
-  fi
-
-  if [ ! -e core/kaneton/arch/machdep ] ; then
-    ln -s $ARCHITECTURE core/kaneton/arch/machdep
-  fi
-
-  if [ ! -e lds/arch/machdep ] ; then
-    ln -s $ARCHITECTURE lds/arch/machdep
-  fi
+  ln -s $ARCHITECTURE core/bootstrap/arch/machdep
+  ln -s $ARCHITECTURE core/bootloader/arch/machdep
+  ln -s $ARCHITECTURE core/include/arch/machdep
+  ln -s $ARCHITECTURE core/kaneton/arch/machdep
+  ln -s $ARCHITECTURE lds/arch/machdep
 }
 
 
@@ -144,3 +165,6 @@ read_kaneton_conf
 
 # install environment
 init
+
+# check the binaries
+check

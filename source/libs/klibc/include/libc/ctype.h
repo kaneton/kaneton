@@ -5,17 +5,27 @@
  * 
  * ctype.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include/libc
+ * path          /home/mycure/kaneton/libs/klibc/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:25 2005   mycure
- * last update   Sat May 28 22:17:15 2005   mycure
+ * last update   Sat Jun 18 16:07:15 2005   mycure
  */
 
 #ifndef LIBC_CTYPE_H
 #define LIBC_CTYPE_H		1
+
+/*
+ * dependencies
+ */
+
+#include <klibc/include/libsys/types.h>
+
+/*
+ * defines
+ */
 
 #define _U			0x01
 #define _L			0x02
@@ -26,9 +36,17 @@
 #define _X			0x40
 #define _B			0x80
 
+/*
+ * extern
+ */
+
 extern const u_char	_ctype[];
 extern const short	_ctype_toupper[];
 extern const short	_ctype_tolower[];
+
+/*
+ * macros
+ */
 
 #define isdigit(c)	((int) ((_ctype + 1)[(int) (c)] & _N))
 #define islower(c)	((int) ((_ctype + 1)[(int) (c)] & _L))

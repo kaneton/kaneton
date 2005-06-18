@@ -1,11 +1,6 @@
 _ctype.o: _ctype.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -18,17 +13,17 @@ _ctype.o: _ctype.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 bcmp.o: bcmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -41,17 +36,17 @@ bcmp.o: bcmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 bcopy.o: bcopy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -64,17 +59,17 @@ bcopy.o: bcopy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 bzero.o: bzero.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -87,17 +82,17 @@ bzero.o: bzero.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 dump.o: dump.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -110,17 +105,17 @@ dump.o: dump.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 index.o: index.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -133,17 +128,17 @@ index.o: index.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 memcmp.o: memcmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -156,17 +151,17 @@ memcmp.o: memcmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 memcpy.o: memcpy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -179,17 +174,17 @@ memcpy.o: memcpy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 memset.o: memset.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -202,9 +197,14 @@ memset.o: memset.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 printf.o: printf.c \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
@@ -219,24 +219,19 @@ printf.o: printf.c \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
   /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 rindex.o: rindex.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -249,17 +244,17 @@ rindex.o: rindex.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 strcat.o: strcat.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -272,17 +267,17 @@ strcat.o: strcat.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 strchr.o: strchr.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -295,17 +290,17 @@ strchr.o: strchr.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 strcmp.o: strcmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -318,17 +313,17 @@ strcmp.o: strcmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 strcpy.o: strcpy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -341,17 +336,17 @@ strcpy.o: strcpy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 strlen.o: strlen.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -364,17 +359,17 @@ strlen.o: strlen.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 strncat.o: strncat.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -387,17 +382,17 @@ strncat.o: strncat.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 strncmp.o: strncmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -410,17 +405,17 @@ strncmp.o: strncmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 strncpy.o: strncpy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -433,17 +428,17 @@ strncpy.o: strncpy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 strtol.o: strtol.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -456,17 +451,17 @@ strtol.o: strtol.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 strtoul.o: strtoul.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -479,17 +474,17 @@ strtoul.o: strtoul.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
 sum2.o: sum2.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
-  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/machdep/asm.h \
   /home/mycure/kaneton/core/include/arch/machdep/stdarg.h \
@@ -502,6 +497,11 @@ sum2.o: sum2.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/machdep/pmode.h \
   /home/mycure/kaneton/core/include/arch/machdep/paging.h \
   /home/mycure/kaneton/core/include/arch/machdep/bootloader.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h
+  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/services.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h \
+  /home/mycure/kaneton/libs/klibc/include/libsys/quad.h

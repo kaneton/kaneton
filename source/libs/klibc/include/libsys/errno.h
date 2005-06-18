@@ -5,17 +5,21 @@
  * 
  * errno.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include/libsys
+ * path          /home/mycure/kaneton/libs/klibc/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:33:38 2005   mycure
- * last update   Sat May 28 22:17:46 2005   mycure
+ * last update   Sat Jun 18 16:10:00 2005   mycure
  */
 
 #ifndef LIBSYS_ERRNO_H
 #define LIBSYS_ERRNO_H		1
+
+/*
+ * defines
+ */
 
 #define EZERO			0	/* no error */
 
@@ -27,11 +31,5 @@
 
 #define EBAD			600	/* bad element */
 #define EBUSY			700	/* object busy */
-
-/*
- * errno descriptions
- */
-
-//extern  /* XXX */
 
 #endif

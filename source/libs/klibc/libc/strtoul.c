@@ -5,22 +5,22 @@
  * 
  * strtoul.c
  * 
- * path          /home/mycure/kaneton/src/libs/klibc/libc
+ * path          /home/mycure/kaneton/libs/klibc/libc
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:56:28 2005   mycure
- * last update   Sat Apr 23 17:00:37 2005   mycure
+ * last update   Sat Jun 18 16:01:20 2005   mycure
  */
 
 #include <klibc/include/klibc.h>
 
-u_long			strtoul(const char	*nptr,
-				char		**endptr,
+unsigned long		strtoul(const char*	nptr,
+				char**		endptr,
 				int		base)
 {
-  const char		*s = nptr;
+  const char*		s = nptr;
   unsigned long		cutoff;
   int			cutlim;
   unsigned long		acc;
@@ -98,7 +98,7 @@ u_long			strtoul(const char	*nptr,
     acc = -acc;
 
   if (endptr != 0)
-    *endptr = (char *) (any ? s - 1 : nptr);
+    *endptr = (char*) (any ? s - 1 : nptr);
 
   return (acc);
 }

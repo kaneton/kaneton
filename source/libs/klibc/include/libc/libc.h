@@ -5,26 +5,31 @@
  * 
  * libc.h
  * 
- * path          /home/mycure/kaneton/libs/klibc
+ * path          /home/mycure/kaneton/libs/klibc/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Tue Jun 14 14:21:51 2005   mycure
+ * last update   Sat Jun 18 16:09:26 2005   mycure
  */
 
 #ifndef LIBC_LIBC_H
 #define LIBC_LIBC_H		1
 
 /*
+ * dependencies
+ */
+
+#include <klibc/include/libsys/types.h>
+#include <arch/machdep/machdep.h>
+
+/*
  * includes
  */
 
-#include <arch/machdep/machdep.h>
-
-#include "ctype.h"
-#include "printf.h"
+#include <klibc/include/libc/ctype.h>
+#include <klibc/include/libc/printf.h>
 
 /*
  * prototypes:     ../../libc/_ctype.c           ../../libc/bcmp.c
@@ -48,8 +53,8 @@
  * ../../libc/bcmp.c
  */
 
-int			bcmp(const void		*b1,
-			     const void		*b2,
+int			bcmp(const void*	b1,
+			     const void*	b2,
 			     size_t		length);
 
 
@@ -57,8 +62,8 @@ int			bcmp(const void		*b1,
  * ../../libc/bcopy.c
  */
 
-void			bcopy(const void	*src,
-			      void		*dst,
+void			bcopy(const void*	src,
+			      void*		dst,
 			      size_t		n);
 
 
@@ -66,7 +71,7 @@ void			bcopy(const void	*src,
  * ../../libc/bzero.c
  */
 
-void			bzero(void		*dst,
+void			bzero(void*		dst,
 			      size_t		length);
 
 
@@ -74,12 +79,12 @@ void			bzero(void		*dst,
  * ../../libc/dump.c
  */
 
-void			dump_buf(u_int8_t	*buf,
+void			dump_buf(u_int8_t*	buf,
 				 u_int		address,
 				 u_int		size);
 
 
-void			dump(char		*data,
+void			dump(char*		data,
 			     u_int		size);
 
 
@@ -87,32 +92,32 @@ void			dump(char		*data,
  * ../../libc/strchr.c
  */
 
-char			*strchr(const char	*p,
-				int		ch);
+char*			strchr(const char*	p,
+			       int		ch);
 
 
 /*
  * ../../libc/rindex.c
  */
 
-char			*rindex(const char	*p,
-				int		ch);
+char*			rindex(const char*	p,
+			       int		ch);
 
 
 /*
  * ../../libc/index.c
  */
 
-char			*index(const char	*p,
-			       int		ch);
+char*			index(const char*	p,
+			      int		ch);
 
 
 /*
  * ../../libc/memcmp.c
  */
 
-int			memcmp(const void	*s1,
-			       const void	*s2,
+int			memcmp(const void*	s1,
+			       const void*	s2,
 			       size_t n);
 
 
@@ -120,66 +125,66 @@ int			memcmp(const void	*s1,
  * ../../libc/memset.c
  */
 
-void			*memset(void		*s,
-				int		c,
-				size_t		n);
+void*			memset(void*		s,
+			       int		c,
+			       size_t		n);
 
 
 /*
  * ../../libc/strcat.c
  */
 
-char			*strcat(char		*s,
-				const char	*append);
+char*			strcat(char*		s,
+			       const char*	append);
 
 
 /*
  * ../../libc/strcmp.c
  */
 
-int			strcmp(const char	*s1,
-			       const char	*s2);
+int			strcmp(const char*	s1,
+			       const char*	s2);
 
 
 /*
  * ../../libc/strcpy.c
  */
 
-char			*strcpy(char		*to,
-				const char	*from);
+char*			strcpy(char*		to,
+			       const char*	from);
 
 
 /*
  * ../../libc/memcpy.c
  */
 
-void			*memcpy(void		*dest,
-				const void	*src,
-				size_t		n);
+void*			memcpy(void*		dest,
+			       const void*	src,
+			       size_t		n);
 
 
 /*
  * ../../libc/strlen.c
  */
 
-size_t			strlen(const char	*str);
+size_t			strlen(const char*	str);
 
 
 /*
  * ../../libc/strncat.c
  */
 
-char			*strncat(char		*dst,
-				 char		*src,
-				 size_t		n);
+char*			strncat(char*		dst,
+				char*		src,
+				size_t		n);
 
 
 /*
  * ../../libc/strncmp.c
  */
 
-int			strncmp(const char	*s1,
-				const char	*s2,
+int			strncmp(const char*	s1,
+				const char*	s2,
 				size_t		n);
 
 
@@ -187,17 +192,17 @@ int			strncmp(const char	*s1,
  * ../../libc/strncpy.c
  */
 
-char			*strncpy(char		*to,
-				 char		*from,
-				 size_t		n);
+char*			strncpy(char*		to,
+				char*		from,
+				size_t		n);
 
 
 /*
  * ../../libc/strtol.c
  */
 
-long			strtol(const char	*nptr,
-			       char		**endptr,
+long			strtol(const char*	nptr,
+			       char**		endptr,
 			       int		base);
 
 
@@ -205,8 +210,8 @@ long			strtol(const char	*nptr,
  * ../../libc/strtoul.c
  */
 
-u_long			strtoul(const char	*nptr,
-				char		**endptr,
+unsigned long		strtoul(const char*	nptr,
+				char**		endptr,
 				int		base);
 
 
@@ -214,7 +219,7 @@ u_long			strtoul(const char	*nptr,
  * ../../libc/printf.c
  */
 
-int			printf_string(char			*string,
+int			printf_string(char*			string,
 				      unsigned int		flags,
 				      int			len1,
 				      int			len2);
@@ -228,7 +233,7 @@ int			printf_quad(quad_t			value,
 				    int				len2);
 
 
-int			vprintf(const char			*fmt,
+int			vprintf(const char*			fmt,
 				va_list				args);
 
 
@@ -236,7 +241,7 @@ int			printf_init(t_printf_char_fn		pc,
 				    t_printf_attr_fn		pa);
 
 
-int			printf(char				*fmt,
+int			printf(char*				fmt,
 			       ...);
 
 

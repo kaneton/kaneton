@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sat Jun 18 15:33:57 2005   mycure
+## last update   Sat Jun 18 23:30:38 2005   mycure
 ##
 
 # INFORMATIONS
@@ -76,11 +76,11 @@ clean()
 
   # remove the links to machine-dependent directories
   print "   removing links to machine-dependent directories" "+"
+
   rm -f core/bootstrap/arch/machdep
   rm -f core/bootloader/arch/machdep
   rm -f core/include/arch/machdep
   rm -f core/kaneton/arch/machdep
-
   rm -f lds/arch/machdep
 }
 

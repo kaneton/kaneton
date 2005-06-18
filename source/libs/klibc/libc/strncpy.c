@@ -11,14 +11,14 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:05:19 2005   mycure
- * last update   Fri Jun 10 14:50:36 2005   mycure
+ * last update   Sat Jun 18 15:53:05 2005   mycure
  */
 
 #include <klibc/include/klibc.h>
 
-char			*strncpy(char		*to,
-				 char		*from,
-				 size_t		n)
+char*			strncpy(char*		to,
+				char*		from,
+				size_t		n)
 {
   u_int			i;
 

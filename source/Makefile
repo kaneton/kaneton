@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/services
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Sat Jun 18 11:58:05 2005   mycure
+## last update   Sun Jun 19 01:19:09 2005   mycure
 ##
 
 #
@@ -20,13 +20,25 @@
 
 .SILENT:
 
-.PHONY:		all init clean kaneton clear proto dep build install check
+.PHONY:		all init clean kaneton clear purge proto		\
+		dep build install check
 
 #
 # shell
 #
 
 SHELL			:=		/bin/sh
+
+#
+# variables
+#
+
+SUBDIRS			=	libs core services
+
+CONF_BOOTLOADER		:=						\
+  $(shell cat conf/$(USER)/$(USER).conf					| \
+          grep -E "^BOOTLOADER = .*$$"					| \
+          cut -b 14-)
 
 #
 # the default rule
@@ -52,7 +64,7 @@ init:
 	./init								; \
 	cd ..
 
-clean:
+clean:			purge
 	@cd env								; \
 	./clean								; \
 	cd ..
@@ -61,8 +73,6 @@ clean:
 # development
 #
 
-SUBDIRS			=	libs core services
-
 kaneton:		.kaneton.mk
 	@for i in $(SUBDIRS); do					\
 	cd $$i								; \
@@ -70,13 +80,14 @@ kaneton:		.kaneton.mk
 	cd ..								; \
 	done
 
-clear:			.kaneton.mk
+clear:			.kaneton.mk purge
 	@for i in $(SUBDIRS); do					\
 	cd $$i								; \
 	make clear							; \
 	cd ..								; \
 	done
 
+purge:
 	@rm -f *~ .*~ \#~ .\#~
 
 #
@@ -107,12 +118,12 @@ dep:			.kaneton.mk
 
 build:			.kaneton.mk
 	@cd utils							; \
-	./$(_CONF_BOOTLOADER_) build					; \
+	./$(CONF_BOOTLOADER) build					; \
 	cd ..
 
 install:		.kaneton.mk
 	@cd utils/							; \
-	./$(_CONF_BOOTLOADER_) install					; \
+	./$(CONF_BOOTLOADER) install					; \
 	cd ..
 
 #
@@ -120,4 +131,22 @@ install:		.kaneton.mk
 #
 
 check:			.kaneton.mk
-	;
+
+#
+# info
+#
+
+info:
+	@echo ""
+	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton\033[0m"
+	@echo ""
+	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mcreators:\033[0m"
+	@echo ""
+	@echo -e "     \033[1mquintard julien - quinta_j@epita.fr\033[0m"
+	@echo ""
+	@echo -e "     \033[1mbillaud jean-pascal - billau_j@epita.fr\033[0m"
+	@echo ""
+	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mcontributors:\033[0m"
+	@echo ""
+	@echo -e "     \033[1mrenaud lienhart - lienha_r@epita.fr\033[0m"
+	@echo ""

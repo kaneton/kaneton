@@ -5,22 +5,22 @@
  * 
  * strtol.c
  * 
- * path          /home/mycure/kaneton/src/libs/klibc/libc
+ * path          /home/mycure/kaneton/libs/klibc/libc
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:56:18 2005   mycure
- * last update   Sat Apr 23 17:00:20 2005   mycure
+ * last update   Sat Jun 18 15:53:34 2005   mycure
  */
 
 #include <klibc/include/klibc.h>
 
-long			strtol(const char	*nptr,
-			       char		**endptr,
+long			strtol(const char*	nptr,
+			       char**		endptr,
 			       int		base)
 {
-  const char		*s = nptr;
+  const char*		s = nptr;
   long			cutoff;
   int			cutlim;
   long			acc;
@@ -125,7 +125,7 @@ long			strtol(const char	*nptr,
     }
 
   if (endptr != 0)
-    *endptr = (char *) (any ? s - 1 : nptr);
+    *endptr = (char*) (any ? s - 1 : nptr);
 
   return (acc);
 }
