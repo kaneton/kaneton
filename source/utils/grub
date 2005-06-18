@@ -5,13 +5,13 @@
 ## 
 ## grub.sh
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/utils
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Fri Jun 17 15:32:29 2005   mycure
+## last update   Sat Jun 18 11:38:20 2005   mycure
 ##
 
 # INFORMATIONS
@@ -83,7 +83,7 @@ read_kaneton_conf()
 # this function displays the usage but does not exit
 usage()
 {
-  print " usage: grub.sh init|install" "!"
+  print " usage: grub.sh build|install" "!"
 }
 
 
@@ -175,10 +175,10 @@ menu()
 
 
 
-# INIT
+# BUILD
 #
 # initialize the boot device
-init()
+build()
 {
   case "$BOOTMODE" in
     "floppy"|"tftp")
@@ -337,7 +337,7 @@ action="$1"
 shift
 
 case "$action" in
-  "init")
+  "build")
     # initializing boot system
     print " initializing boot system" "+"
     print ""
@@ -349,7 +349,7 @@ case "$action" in
     warning
 
     # call the init function
-    init
+    build
 
     # boot system initialized
     print " boot system initialized successfully" "+"
@@ -380,9 +380,6 @@ case "$action" in
     print " unknown action \"$action\"" "!"
     print ""
     usage
-    print " supported action are:" "!"
-    print "      init" "!"
-    print "      install" "!"
     exit
     ;;
 esac

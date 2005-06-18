@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Jun 12 21:31:31 2005   mycure
+## last update   Sat Jun 18 15:33:57 2005   mycure
 ##
 
 # INFORMATIONS
@@ -67,7 +67,7 @@ clean()
   # cleaning dev tree
   if [ -e $KANETON_MK ] ; then
     print "   cleaning development tree" "+"
-    make distclean 1>&2 > /dev/null
+    make clear 1>&2 > /dev/null
   fi
 
   # makefile dependencies

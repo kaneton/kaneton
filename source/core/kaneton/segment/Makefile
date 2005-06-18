@@ -5,36 +5,67 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton/core/kaneton/segment
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Jun 13 14:34:07 2005   mycure
+## last update   Sat Jun 18 15:23:56 2005   mycure
 ##
+
+#
+# dependencies
+#
  
 include			../../../.kaneton.mk
 
-SEGMENT			=		segment.a
+#
+# directives
+#
 
-SEGMENT_INCLUDE		=		$(_CORE_INCLUDE_DIR_)/kaneton/segment.h
+.PHONY:		clear proto dep
 
-SEGMENT_O		=		segment.o			
+#
+# variables
+#
 
-CFLAGS			+=		-D___kernel -D___kaneton
+SEGMENT			:=		segment.a
 
-all:			$(SEGMENT_O)
+SEGMENT_C		:=		segment.c			
+
+SEGMENT_O		:=		$(SEGMENT_C:.c=.o)
+
+SEGMENT_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/segment.h
+
+CFLAGS			+=		-D___kernel
+
+#
+# rules
+#
+
+$(SEGMENT):		$(SEGMENT_O)
 	$(call archive,$(SEGMENT),$(SEGMENT_O),)
 
 	$(call static-linker,$(SEGMENT),)
 
-distclean:
+clear:
 	$(call remove,$(SEGMENT_O),)
-
-	$(call purge,)
 
 	$(call remove,$(SEGMENT),)
 
+	$(call purge,)
+
 proto:
 	$(call prototypes,$(SEGMENT_INCLUDE),)
+
+dep:
+	$(call remove,$(_MAKEFILE_MK_),)
+
+	$(call dependencies,$(SEGMENT_C),$(_MAKEFILE_MK_),)
+
+#
+# dependencies
+#
+
+include			./$(_MAKEFILE_MK_)

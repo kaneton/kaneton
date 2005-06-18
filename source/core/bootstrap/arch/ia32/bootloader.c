@@ -35,7 +35,7 @@ void			cons_print_char(char			c)
 
 void			cons_print_string(char*			string)
 {
-  int		i;
+  int			i;
 
   for (i = 0; string[i]; i++)
     cons_print_char(string[i]);

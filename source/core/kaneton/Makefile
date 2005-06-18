@@ -11,68 +11,95 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Fri Jun 17 14:28:26 2005   mycure
+## last update   Sat Jun 18 15:08:30 2005   mycure
 ##
+
+#
+# dependencies
+#
 
 include			../../.kaneton.mk
 
-SUBDIRS			=		arch				\
+#
+# directives
+#
+
+.PHONY:		clear proto dep
+
+#
+# variables
+#
+
+# kaneton libraries
+
+SUBDIRS			:=		arch				\
 					segment				\
 					as				
 
-KANETON			=		kaneton
+KANETON_LIBS		:=		$(_MACHDEP_A_)			\
+					$(_AS_A_)			\
+					$(_SEGMENT_A_)			
 
-KANETON_INCLUDE		=		$(_CORE_INCLUDE_DIR_)/kaneton/kaneton.h
+# kaneton binary
 
-KANETON_O		=		kaneton.o			\
-					cons.o				
+KANETON			:=		kaneton
 
-CFLAGS			+=		-D___kaneton -D___kernel
+KANETON_C		:=		kaneton.c			\
+					cons.c				
 
-VERSION_H		=		$(_CORE_INCLUDE_DIR_)/version.h
-VERSION_C		=		version.c
-VERSION_O		=		$(VERSION_C:.c=.o)
+KANETON_O		:=		$(KANETON_C:.c=.o)
 
-DATE			=		`date`
+KANETON_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/kaneton.h
 
-all:			$(KANETON_O)
-	@echo -n "" > $(VERSION_C)
-	@echo "#include <libc.h>" >> $(VERSION_C)
-	@echo "#include <kaneton.h>" >> $(VERSION_C)
-	@echo "" >> $(VERSION_C)
-	@echo -n "const char version[] = TITLE\"-\"VERSION" >> $(VERSION_C)
-	@echo "\" $(DATE) $(USER)@$(HOSTNAME)\";" >> $(VERSION_C)
+CFLAGS			+=		-D___kernel
+
+# version file
+
+VERSION_C		:=		version.c
+
+VERSION_O		:=		$(VERSION_C:.c=.o)
+
+VERSION_H		:=		$(_CORE_INCLUDE_DIR_)/version.h
+
+DATE			:=		$(shell date)
+
+#
+# rules
+#
+
+$(KANETON):		$(KANETON_O) $(KANETON_LIBS)
+	$(call version,$(VERSION_C))
+
 	$(call compile-c,$(VERSION_O),$(VERSION_C),)
 
+	$(call dynamic-linker,$(KANETON),	$(VERSION_O)		\
+						$(KANETON_O)		\
+						$(KANETON_LIBS)		\
+						$(_LIBC_A_),		\
+	  -T $(_LDS_DIR_)/kaneton.lds)
+
+$(KANETON_LIBS):
 	@for i in $(SUBDIRS) ; do					\
 	$(_CD_) $$i							; \
 	$(_MAKE_)							; \
 	$(_CD_) ..							; \
 	done
 
-	$(call dynamic-linker,$(KANETON),	$(VERSION_O)		\
-						$(KANETON_O)		\
-						$(_MACHDEP_A_)		\
-						$(_AS_A_)		\
-						$(_SEGMENT_A_)		\
-						$(_LIBC_A_),		\
-	  -T $(_LDS_DIR_)/kaneton.lds)
-
-distclean:
+clear:
 	@for i in $(SUBDIRS) ; do					\
 	$(_CD_) $$i							; \
-	$(_MAKE_) distclean						; \
+	$(_MAKE_) clear							; \
 	$(_CD_) ..							; \
 	done
-
-	$(call remove,$(KANETON_O),)
 
 	$(call remove,$(VERSION_O),)
 	$(call remove,$(VERSION_C),)
 
-	$(call purge,)
+	$(call remove,$(KANETON_O),)
 
 	$(call remove,$(KANETON),)
+
+	$(call purge,)
 
 proto:
 	@for i in $(SUBDIRS) ; do					\
@@ -82,3 +109,20 @@ proto:
 	done
 
 	$(call prototypes,$(KANETON_INCLUDE),)
+
+dep:
+	@for i in $(SUBDIRS) ; do					\
+	$(_CD_) $$i							; \
+	$(_MAKE_) dep							; \
+	$(_CD_) ..							; \
+	done
+
+	$(call remove,$(_MAKEFILE_MK_),)
+
+	$(call dependencies,$(KANETON_C),$(_MAKEFILE_MK_),)
+
+#
+# dependencies
+#
+
+include			./$(_MAKEFILE_MK_)

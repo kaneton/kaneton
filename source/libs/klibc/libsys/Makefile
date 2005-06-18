@@ -11,29 +11,60 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:05:40 2005   mycure
-## last update   Tue Jun 14 14:34:16 2005   mycure
+## last update   Sat Jun 18 13:20:36 2005   mycure
 ##
+
+#
+# dependencies
+#
 
 include			../../../.kaneton.mk
 
-LIBNAME			=		libsys.a
-LIBINCLUDE		=		../include/libsys/libsys.h
+#
+# directives
+#
 
-LIBSYS_O		=		perror.o			\
-					quad.o				
+.PHONY:		clear proto dep
 
+#
+# variables
+#
 
-all:			$(LIBSYS_O)
-	$(call archive,$(LIBNAME),$(LIBSYS_O),)
+LIBSYS			:=		libsys.a
 
-	$(call static-library,$(LIBNAME),)
+LIBSYS_C		:=		perror.c			\
+					quad.c				
 
-distclean:
+LIBSYS_O		:=		$(LIBSYS_C:.c=.o)
+
+LIBSYS_INCLUDE		:=		../include/libsys/libsys.h
+
+#
+# rules
+#
+
+$(LIBSYS):		$(LIBSYS_O)
+	$(call archive,$(LIBSYS),$(LIBSYS_O),)
+
+	$(call static-library,$(LIBSYS),)
+
+clear:
 	$(call remove,$(LIBSYS_O),)
+
+	$(call remove,$(LIBSYS),)
 
 	$(call purge,)
 
-	$(call remove,$(LIBNAME),)
-
 proto:
-	$(call prototypes,$(LIBINCLUDE),)
+	$(call prototypes,$(LIBSYS_INCLUDE),)
+
+dep:
+	$(call remove,$(_MAKEFILE_MK_),)
+
+	$(call dependencies,$(LIBSYS_C),$(_MAKEFILE_MK_),)
+
+#
+# dependencies
+#
+
+include			./$(_MAKEFILE_MK_)

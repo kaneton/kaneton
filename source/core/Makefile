@@ -11,12 +11,30 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:24:11 2005   mycure
-## last update   Sun Jun 12 22:54:54 2005   mycure
+## last update   Sat Jun 18 13:24:07 2005   mycure
 ##
+
+#
+# dependencies
+#
 
 include			../.kaneton.mk
 
+#
+# directives
+#
+
+.PHONY:		all clear proto dep
+
+#
+# variables
+#
+
 SUBDIRS			=		bootstrap bootloader kaneton
+
+#
+# rules
+#
 
 all:
 	@for i in $(SUBDIRS) ; do					\
@@ -25,10 +43,10 @@ all:
 	$(_CD_) ..							; \
 	done
 
-distclean:
+clear:
 	@for i in $(SUBDIRS) ; do					\
 	$(_CD_) $$i							; \
-	$(_MAKE_) distclean						; \
+	$(_MAKE_) clear							; \
 	$(_CD_) ..							; \
 	done
 
@@ -38,5 +56,12 @@ proto:
 	@for i in $(SUBDIRS) ; do					\
 	$(_CD_) $$i							; \
 	$(_MAKE_) proto							; \
+	$(_CD_) ..							; \
+	done
+
+dep:
+	@for i in $(SUBDIRS) ; do					\
+	$(_CD_) $$i							; \
+	$(_MAKE_) dep							; \
 	$(_CD_) ..							; \
 	done

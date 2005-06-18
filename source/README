@@ -5,13 +5,13 @@
 ## 
 ## README
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/core/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Thu Jun 16 17:06:21 2005   mycure
+## last update   Sat Jun 18 15:14:07 2005   mycure
 ##
 
 			----------[ conf ]----------
@@ -27,11 +27,11 @@ a kaneton developer has to fill three configuration files located at:
 
 ---[ modules.conf
 
-  this file lists the files to be loaded by the bootloader
+  this file lists the files to be loaded by the bootloader.
 
 ---[ kaneton.conf
 
-  this file describes the kaneton kernel with many parameters
+  this file describes the kaneton kernel with many parameters.
 
 			----------[ env ]----------
 
@@ -59,18 +59,18 @@ first a developer has to install a development environment:
 
 then he is able to compile:
 
-	make
+	make kaneton
 
 when finished, the developer then wants to test his kernel either on
 another machine or in an emulator, so he has to build a floppy. before all,
 he must initialize the boot device with the kaneton boot device format:
 
-	make boot-init
+	make build
 
 then the developer just has to install the kernel and modules on the boot
 device:
 
-	make boot-install
+	make install
 
 after all, the boot device is ready.
 
@@ -81,16 +81,16 @@ syntax:		make init
   this command will create the working environment like scripts, makefiles,
   dependencies etc..
 
-  this script has to be ran before any another make
+  this script has to be ran before any another make.
 
-  note that by default this command will be run if never launched before
+  note that by default this command will be run if never launched before.
 
 ---[ clean
 
 syntax:		make clean
 
   this command cleans the working environment, which is useful before
-  committing or packaging
+  committing or packaging.
 
 ---[ kaneton
 
@@ -98,57 +98,63 @@ syntax:		make kaneton
 
   this command will create the kernel, the modules etc..
 
----[ all
+---[ clear
 
-syntax:		make all
+syntax:		make clear
 
-  this command will create the kernel, the modules etc..
-
----[ distclean
-
-syntax:		make distclean
-
-  this command will clean the development tree
+  this command will clear the development tree.
 
 ---[ proto
 
 syntax:		make proto
 
-  this command will create header prototypes
+  this command will create header prototypes.
 
----[ boot-init
+---[ dep
 
-syntax:		make boot-init
+syntax:		make dep
 
-  this command will create an initial bootable device
+  this command will generate every C file dependencies.
 
----[ boot-install
+---[ build
 
-syntax:		make boot-install
+syntax:		make build
 
-  this command copies the kernel and modules on the bootable device
+  this command will create an initial bootable device.
+
+---[ install
+
+syntax:		make install
+
+  this command copies the kernel and modules on the bootable device.
+
+---[ check
+
+syntax:		make check
+
+  this command runs tests to validate the current kaneton version.
 
 			----------[ makefiles ]----------
 
 a portable makefiles system is provided for the kaneton project. each
-makefile of the project uses either macros defined in the kaneton.mk
+makefile of the project uses either functions defined in the kaneton.mk
 makefile dependency located in the directory env/{operating system}/kaneton.mk
 or directly defined commands like $(_MAKE_) or $(_CD_) etc..
 
 this system leads to a central system, so to simpler portability.
 
-this system uses few macros explained below.
+this system uses few functions explained below.
 
 for more informations, take a look at a kaneton.mk makefile dependency.
 
-the syntax used to call a macro in a makefile is:
+the syntax used to call a function in a makefile is:
 
-	$(call thismacroisinteresting,argument1,argument2,argument3)
+	$(call thisfunctionisinteresting,argument1,argument2,argument3)
 
 ---[ pretty-printer
 
-  this macro is used to pretty print a message. any action performed
-  by a makefile is displayed, so this macro is called.
+  this function is used to pretty print a message. any action performed
+  by a makefile is displayed, so this function is called.
 
   arguments:
 
@@ -159,7 +165,7 @@ the syntax used to call a macro in a makefile is:
 
 ---[ compile-c
 
-  this macro is used to compiler a C file to produce an object file.
+  this function is used to compiler a C file to produce an object file.
 
   arguments:
 
@@ -169,7 +175,7 @@ the syntax used to call a macro in a makefile is:
 
 ---[ compile-S
 
-  this macro is used to compile a S file to produce an object file.
+  this function is used to compile a S file to produce an object file.
 
   arguments:
 
@@ -179,7 +185,7 @@ the syntax used to call a macro in a makefile is:
 
 ---[ compile-asm
 
-  this macro is used to compile a asm file to produce an object file.
+  this function is used to compile a asm file to produce an object file.
 
   arguments:
 
@@ -189,7 +195,7 @@ the syntax used to call a macro in a makefile is:
 
 ---[ archive
 
-  this macro is used to group object files into one archive.
+  this function is used to group object files into one archive.
 
   arguments:
 
@@ -199,7 +205,7 @@ the syntax used to call a macro in a makefile is:
 
 ---[ archives
 
-  this macro is used to build an archive from different archives.
+  this function is used to build an archive from different archives.
 
   arguments:
 
@@ -209,7 +215,7 @@ the syntax used to call a macro in a makefile is:
 
 ---[ static-linker
 
-  this macro is used to call the static linker, so to build a
+  this function is used to call the static linker, so to build a
   static library from an archive.
 
   arguments:
@@ -219,7 +225,7 @@ the syntax used to call a macro in a makefile is:
 
 ---[ dynamic-linker
 
-  this macro is used to call the dynamic linker, so to build dynamic
+  this function is used to call the dynamic linker, so to build dynamic
   libraries or binaries.
 
   arguments:
@@ -230,7 +236,7 @@ the syntax used to call a macro in a makefile is:
 
 ---[ remove
 
-  this macro is called to remove files.
+  this function is called to remove files.
 
   arguments:
 
@@ -239,7 +245,7 @@ the syntax used to call a macro in a makefile is:
 
 ---[ prototypes
 
-  this macro is called to build prototypes in header files.
+  this function is called to build prototypes in header files.
 
   arguments:
 
@@ -248,7 +254,7 @@ the syntax used to call a macro in a makefile is:
 
 ---[ link
 
-  this macro build a symbolic link to a file.
+  this function build a symbolic link to a file.
 
   arguments:
 
@@ -258,7 +264,27 @@ the syntax used to call a macro in a makefile is:
 
 ---[ purge
 
-  this macro is used to clean the current directory from useless files
+  this function is used to clean the current directory from useless files
   like emacs backups (~ files) etc..
 
   no argument
+
+---[ dependencies
+
+  this function generates makefile rules for C files dependencies. this
+  is especially useful for header file dependencies.
+
+  arguments:
+
+    1:		the files for which the dependencies have to be generated
+    2:		the output file which will contain makefile rules
+    3:		advanced options
+
+---[ version
+
+  this function generates a version file containing a string describing
+  the kernel version: date, user, host machine, title, version etc..
+
+  argument:
+
+    1:		the version file to generate

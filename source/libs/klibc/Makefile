@@ -11,51 +11,74 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:29:19 2005   mycure
-## last update   Sun Jun 12 22:40:04 2005   mycure
+## last update   Sat Jun 18 13:12:50 2005   mycure
 ##
+
+#
+# dependencies
+#
 
 include			../../.kaneton.mk
 
-SUBDIRS			=		libc libsys
+#
+# directives
+#
 
-LIBNAME			=		klibc.a
-LIBINCLUDE		=		include/klibc.h
+.PHONY:		clear proto dep
 
-LIBC			=		libc/libc.a
-LIBSYS			=		libsys/libsys.a
+#
+# variables
+#
 
-CFLAGS			+=		-D___kaneton
+SUBDIRS			:=		libc libsys
 
-all:			sublibs
-	$(call archives,$(LIBNAME),$(LIBC) $(LIBSYS),)
+LIB_C			:=		klibc.a
+LIB_H			:=		include/klibc.h
 
-	$(call link,$(_LIBC_A_),klibc/$(LIBNAME),)
-	$(call link,$(_LIBC_H_),klibc/$(LIBINCLUDE),)
+LIBC			:=		libc/libc.a
+LIBSYS			:=		libsys/libsys.a
 
-sublibs:
+#
+# rules
+#
+
+$(LIB_C):		$(LIBC) $(LIBSYS)
+	$(call archives,$(LIB_C),$(LIBC) $(LIBSYS),)
+
+	$(call link,$(_LIBC_A_),klibc/$(LIB_C),)
+	$(call link,$(_LIBC_H_),klibc/$(LIB_H),)
+
+$(LIBC) $(LIBSYS):
 	@for i in $(SUBDIRS) ; do					\
 	$(_CD_) $$i							; \
 	$(_MAKE_) 							; \
 	$(_CD_) ..							; \
 	done
 
-distclean:
+clear:
 	@for i in $(SUBDIRS) ; do					\
 	$(_CD_) $$i 							; \
-	$(_MAKE_) distclean 						; \
+	$(_MAKE_) clear 						; \
 	$(_CD_) .. 							; \
 	done
 
-	$(call purge,)
-
-	$(call remove,$(LIBNAME),)
+	$(call remove,$(LIB_C),)
 
 	$(call remove,$(_LIBC_A_),)
 	$(call remove,$(_LIBC_H_),)
+
+	$(call purge,)
 
 proto:
 	@for i in $(SUBDIRS) ; do					\
 	$(_CD_) $$i 							; \
 	$(_MAKE_) proto 						; \
+	$(_CD_) .. 							; \
+	done
+
+dep:
+	@for i in $(SUBDIRS) ; do					\
+	$(_CD_) $$i 							; \
+	$(_MAKE_) dep 							; \
 	$(_CD_) .. 							; \
 	done

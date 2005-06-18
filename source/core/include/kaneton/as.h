@@ -47,6 +47,9 @@ typedef struct			s_ass
  * ../../kaneton/as/as.c
  */
 
+void			as_dump(void);
+
+
 int			as_init(void);
 
 /*

@@ -11,27 +11,57 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Sun Jun 12 22:43:59 2005   mycure
+## last update   Sat Jun 18 15:36:49 2005   mycure
 ##
+
+#
+# dependencies
+#
 
 include			../../.kaneton.mk
 
-MOD			=		mod
+#
+# directives
+#
 
-MOD_O			=		mod.o				\
-					modfs.o
+.PHONY:		clear proto dep
 
-MOD_INCLUDE		=		
+#
+# variables
+#
 
-all:			$(MOD_O)
+MOD			:=		mod
+
+MOD_C			:=		mod.c				\
+					modfs.c				
+
+MOD_O			:=		$(MOD_C:.c=.o)
+
+MOD_INCLUDE		:=		
+
+#
+# rules
+#
+
+$(MOD):			$(MOD_O)
 	$(call dynamic-linker,$(MOD),$(MOD_O) $(_LIBC_A_),		\
 	  -T $(_LDS_DIR_)/service.lds)
 
-distclean:
+clear:
 	$(call remove,$(MOD_O),)
 	$(call remove,$(MOD),)
 
 	$(call purge,)
 
 proto:
-	$(call prototypes,$(MOD_INCLUDE),)
+
+dep:
+	$(call remove,$(_MAKEFILE_MK_),)
+
+	$(call dependencies,$(MOD_C),$(_MAKEFILE_MK_),)
+
+#
+# dependencies
+#
+
+include			./$(_MAKEFILE_MK_)

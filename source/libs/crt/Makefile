@@ -5,32 +5,63 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/libs/crt
+## path          /home/mycure/kaneton/libs
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 12 22:39:05 2005   mycure
+## last update   Sat Jun 18 15:36:07 2005   mycure
 ##
+
+#
+# dependencies
+#
 
 include			../../.kaneton.mk
 
-CRT			=		crt.a
+#
+# directives
+#
 
-CRT_O			=		crt.o				
+.PHONY:		clear proto dep
 
-all:			$(CRT_O)
+#
+# variables
+#
+
+CRT			:=		crt.a
+
+CRT_C			:=		crt.c				
+
+CRT_O			:=		$(CRT_C:.c=.o)
+
+CRT_INCLUDE		:=		
+
+#
+# rules
+#
+
+$(CRT):			$(CRT_O)
 	$(call archive,$(CRT),$(CRT_O),)
 
 	$(call static-library,$(CRT),)
 
-distclean:
+clear:
 	$(call remove,$(CRT_O),)
+	$(call remove,$(CRT),)
 
 	$(call purge,)
 
-	$(call remove,$(CRT),)
-
 proto:
-	;
+
+dep:
+	$(call remove,$(_MAKEFILE_MK_),)
+
+	$(call dependencies,$(CRT_C),$(_MAKEFILE_MK_),)
+
+#
+# dependencies
+#
+
+include			./$(_MAKEFILE_MK_)

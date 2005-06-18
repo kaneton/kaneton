@@ -11,107 +11,169 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Fri Jun 17 16:10:30 2005   mycure
+## last update   Sat Jun 18 15:10:06 2005   mycure
 ##
 
 #
 # informations
 #
-# you generally do not need to modify the kaneton directories, kaneton
-# utils, and kaneton binaries.
+# you generally do not need to modify the kaneton directories,
+# makefiles dependency, kaneton utils, kaneton binaries, kaneton
+# libraries and user configuration addons.
 #
-# nevertheless, you should change the c compiler, compiler and linker
-# flags and the binaires.
+# nevertheless, you can change the c compiler, compiler and linker
+# flags and the binaries.
 #
-# if needed also modify the makefile macros to match with your binaries.
+# if needed also modify the makefile functions to match with your binaries.
 #
+
+#
+# makefile directives
+#
+
+.SILENT:
+
+#
+# shell
+#
+
+SHELL			:=		/bin/sh
 
 #
 # kaneton directories
 #
 
-_SRC_DIR_		=		___kaneton_sed___
-_CORE_DIR_		=		$(_SRC_DIR_)/core
-_CORE_BOOTSTRAO_DIR_	=		$(_SRC_DIR_)/core/bootstrap
-_CORE_BOOTLOADER_DIR_	=		$(_SRC_DIR_)/core/bootloader
-_CORE_INCLUDE_DIR_	=		$(_SRC_DIR_)/core/include
-_CORE_KANETON_DIR_	=		$(_SRC_DIR_)/core/kaneton
-_MACHDEP_DIR_		=		$(_CORE_KANETON_DIR_)/arch/machdep
-_MACHDEP_INCLUDE_DIR_	=		$(_CORE_INCLUDE_DIR_)/arch/machdep
-_DIST_DIR_		=		$(_SRC_DIR_)/dist
-_ENV_DIR_		=		$(_SRC_DIR_)/env
-_LDS_DIR_		=		$(_SRC_DIR_)/lds/arch/machdep
-_LIB_DIR_		=		$(_SRC_DIR_)/libs
-_LIB_INCLUDE_DIR_	=		$(_LIB_DIR_)
-_INCLUDES_		=		-I$(_CORE_INCLUDE_DIR_)		\
-					-I$(_LIB_INCLUDE_DIR_)
-_CONF_DIR_		=		$(_SRC_DIR_)/conf
-_UTILS_DIR_		=		$(_SRC_DIR_)/utils
+_SRC_DIR_		:=		___kaneton_sed___
+
+_CORE_DIR_		:=		$(_SRC_DIR_)/core
+_CORE_BOOTSTRAP_DIR_	:=		$(_SRC_DIR_)/core/bootstrap
+_CORE_BOOTLOADER_DIR_	:=		$(_SRC_DIR_)/core/bootloader
+_CORE_INCLUDE_DIR_	:=		$(_SRC_DIR_)/core/include
+_CORE_KANETON_DIR_	:=		$(_SRC_DIR_)/core/kaneton
+
+_MACHDEP_KANETON_DIR_	:=		$(_CORE_KANETON_DIR_)/arch/machdep
+_MACHDEP_INCLUDE_DIR_	:=		$(_CORE_INCLUDE_DIR_)/arch/machdep
+
+_DIST_DIR_		:=		$(_SRC_DIR_)/dist
+_ENV_DIR_		:=		$(_SRC_DIR_)/env
+_LDS_DIR_		:=		$(_SRC_DIR_)/lds/arch/machdep
+_CONF_DIR_		:=		$(_SRC_DIR_)/conf
+_UTILS_DIR_		:=		$(_SRC_DIR_)/utils
+
+_LIBS_DIR_		:=		$(_SRC_DIR_)/libs
+_LIBS_INCLUDE_DIR_	:=		$(_LIBS_DIR_)
+
+_INCLUDES_		:=		-I$(_CORE_INCLUDE_DIR_)		\
+					-I$(_LIBS_INCLUDE_DIR_)
+
+#
+# makefiles dependency
+#
+
+_MAKEFILE_MK_		:=		.makefile.mk
 
 #
 # kaneton utils
 #
 
-_PROTO_			=		$(_UTILS_DIR_)/mkp.pl
-_GRUB_			=		$(_UTILS_DIR_)/grub.sh
-_LILO_			=		$(_UTILS_DIR_)/lilo.sh
+_PROTO_			:=		$(_UTILS_DIR_)/mkp.pl
 
 #
 # kaneton binaries
 #
 
-_BOOTSTRAP_		=		$(_CORE_BOOTSTRAP_DIR_)/bootstrap
-_BOOTLOADER_		=		$(_CORE_BOOTLOADER_DIR_)/bootloader
-_KANETON_		=		$(_CORE_KANETON_DIR_)/kaneton
+_BOOTSTRAP_		:=		$(_CORE_BOOTSTRAP_DIR_)/bootstrap
+_BOOTLOADER_		:=		$(_CORE_BOOTLOADER_DIR_)/bootloader
+_KANETON_		:=		$(_CORE_KANETON_DIR_)/kaneton
 
 #
 # kaneton libraries
 #
 
-_LIBC_A_		=		$(_LIB_DIR_)/libc.a
-_LIBC_H_		=		$(_LIB_DIR_)/libc.h
+_LIBC_A_		:=		$(_LIBS_DIR_)/libc.a
+_LIBC_H_		:=		$(_LIBS_DIR_)/libc.h
 
-_CRT_A_			=		$(_LIB_DIR_)/crt.a
+_CRT_A_			:=		$(_LIBS_DIR_)/crt.a
 
-_MACHDEP_A_		=		$(_MACHDEP_DIR_)/machdep.a
-_SEGMENT_A_		=		$(_CORE_KANETON_DIR_)/segment/segment.a
-_AS_A_			=		$(_CORE_KANETON_DIR_)/as/as.a
+_MACHDEP_A_		:=		$(_MACHDEP_KANETON_DIR_)/machdep.a
+_SEGMENT_A_		:=		$(_CORE_KANETON_DIR_)/segment/segment.a
+_AS_A_			:=		$(_CORE_KANETON_DIR_)/as/as.a
+
+#
+# user configuration addons
+#
+
+_CONF_CFLAGS_		:=						\
+  $(shell cat $(_CONF_DIR_)/$(USER)/$(USER).conf			| \
+          grep -E "^CFLAGS = .*$$"					| \
+          cut -b 10-)
+
+_CONF_LDFLAGS_		:=						\
+  $(shell cat $(_CONF_DIR_)/$(USER)/$(USER).conf			| \
+          grep -E "^LDFLAGS = .*$$"					| \
+          cut -b 11-)
+
+_CONF_CPPFLAGS_		:=						\
+  $(shell cat $(_CONF_DIR_)/$(USER)/$(USER).conf			| \
+          grep -E "^CPPFLAGS = .*$$"					| \
+          cut -b 12-)
+
+_CONF_MAKEFLAGS_	:=						\
+  $(shell cat $(_CONF_DIR_)/$(USER)/$(USER).conf			| \
+          grep -E "^MAKEFLAGS = .*$$"					| \
+          cut -b 13-)
+
+#
+# user configuration variables used in makefiles
+#
+
+_CONF_BOOTLOADER_	:=						\
+  $(shell cat $(_CONF_DIR_)/$(USER)/$(USER).conf			| \
+          grep -E "^BOOTLOADER = .*$$"					| \
+          cut -b 14-)
+
+_CONF_LIBC_		:=						\
+  $(shell cat $(_CONF_DIR_)/$(USER)/$(USER).conf			| \
+          grep -E "^LIBC = .*$$"					| \
+          cut -b 8-)
 
 #
 # c compiler
 #
 
-CC			=		gcc
+CC			:=		gcc
 
 #
 # compiler and linker flags
 #
 
-CFLAGS			=		-nostdinc -nostdlib		\
+CFLAGS			:=		-D___kaneton			\
+					-nostdinc -nostdlib		\
 					-fno-builtin			\
-					-O0 $(_INCLUDES_)		
-LDFLAGS			=		-nostdinc -nostdlib		\
-					$(_INCLUDES_)			
+					-O0 $(_INCLUDES_)		\
+					$(_CONF_CFLAGS_)		
 
-_KANETON_OPTS_		=		
+LDFLAGS			:=		-nostdinc -nostdlib		\
+					$(_INCLUDES_)			\
+					$(_CONF_LDFLAGS_)		
+
+CPPFLAGS		:=		$(_CONF_CPPFLAGS_)
+
+MAKEFLAGS		:=		$(_CONF_MAKEFLAGS_)		
 
 #
 # binaries
 #
 
-_MAKE_			=		make
-_RM_			=		rm -f
-_PURGE_			=		$(RM) *~ .*~ \#* .\#*
-_AR_			=		ar
-_RANLIB_		=		ranlib
-_CD_			=		cd
-_CP_			=		cp
-_LD_			=		ld
-_NASM_			=		nasm
-_CAT_			=		cat
-_MCOPY_			=		mcopy -no
-_MDEL_			=		mdel
-_LN_			=		ln -s -f
+_MAKE_			:=		make
+_RM_			:=		rm -f
+_PURGE_			:=		$(RM) *~ .*~ \#* .\#*
+_AR_			:=		ar
+_RANLIB_		:=		ranlib
+_CD_			:=		cd
+_LD_			:=		ld
+_NASM_			:=		nasm
+_LN_			:=		ln -s -f
 
 #
 # traps to the pretty-printer
@@ -192,7 +254,7 @@ endef
 
 define compile-c
   @$(call pretty-printer,green,COMPILE-C,$(2),		)		; \
-  $(CC) $(CFLAGS) $(_KANETON_OPTS_) $(3) -c $(2) -o $(1)
+  $(CC) $(CFLAGS) $(3) -c $(2) -o $(1)
 endef
 
 #
@@ -205,7 +267,7 @@ endef
 
 define compile-S
   @$(call pretty-printer,green,COMPILE-S,$(2),		)		; \
-  $(CC) $(CFLAGS) $(_KANETON_OPTS_) $(3) -c $(2) -o $(1)
+  $(CC) $(CFLAGS) $(3) -c $(2) -o $(1)
 endef
 
 #
@@ -323,6 +385,39 @@ endef
 #
 
 define purge
-  @$(call pretty-printer,yellow,PURGE,,)				; \
+  @$(call pretty-printer,red,PURGE,,)					; \
   $(_PURGE_)
+endef
+
+#
+# dependencies
+#
+# $(1):		the files for which the dependencies are generated
+# $(2):		the output file
+# $(3):		advanced options
+#
+
+define dependencies
+  for i in $(1) ; do							\
+    if [ -e $$i ] ; then						\
+      $(call pretty-printer,yellow,DEPENDENCIES,$$i,		)	; \
+      $(CC) $(CFLAGS) -M $(3) $$i >> $(2)				; \
+    fi									; \
+  done
+endef
+
+#
+# version
+#
+# $(1):		the version file to generate
+#
+
+define version
+  @$(call pretty-printer,yellow,VERSION,$(1),		)		; \
+  echo -n "" > $(1)							; \
+  echo "#include <libc.h>" >> $(1)					; \
+  echo "#include <kaneton.h>" >> $(1)					; \
+  echo "" >> $(1)							; \
+  echo -n "const char version[] = TITLE\"-\"VERSION" >> $(1)		; \
+  echo "\" $(DATE) $(USER)@$(HOSTNAME)\";" >> $(1)
 endef

@@ -5,13 +5,13 @@
  * 
  * quad.c
  * 
- * path          /home/mycure/kaneton/libs/klibc/libsys
+ * path          /home/mycure/kaneton/libs/klibc
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:08:53 2005   mycure
- * last update   Tue Jun 14 14:11:55 2005   mycure
+ * last update   Fri Jun 17 16:15:22 2005   mycure
  */
 
 #include <klibc/include/klibc.h>

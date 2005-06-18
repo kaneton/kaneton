@@ -11,29 +11,42 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:28:05 2005   mycure
-## last update   Sun Jun 12 22:38:32 2005   mycure
+## last update   Sat Jun 18 13:00:22 2005   mycure
 ##
+
+#
+# dependencies
+#
 
 include			../.kaneton.mk
 
-CONF			=		$(_CONF_DIR_)/$(USER)/$(USER).conf
-LIBC			=		`cat $(CONF)			| \
-					 grep -E "^LIBC = .*$$"		| \
-					 cut -b 8-`
+#
+# directives
+#
 
-SUBDIRS			=		$(LIBC) crt
+.PHONY:		all clear proto dep
+
+#
+# variables
+#
+
+SUBDIRS			:=		$(_CONF_LIBC_) crt
+
+#
+# rules
+#
 
 all:
 	@for i in $(SUBDIRS) ; do					\
 	$(_CD_) $$i 							; \
-	$(_MAKE_) 							; \
-	$(_CD_) .. 							; \
+	$(_MAKE_) 	 						; \
+	$(_CD_) ..							; \
 	done
 
-distclean:
+clear:
 	@for i in $(SUBDIRS) ; do					\
 	$(_CD_) $$i 							; \
-	$(_MAKE_) distclean 						; \
+	$(_MAKE_) clear 						; \
 	$(_CD_) ..							; \
 	done
 
@@ -43,5 +56,12 @@ proto:
 	@for i in $(SUBDIRS) ; do					\
 	$(_CD_) $$i 							; \
 	$(_MAKE_) proto 						; \
+	$(_CD_) .. 							; \
+	done
+
+dep:
+	@for i in $(SUBDIRS) ; do					\
+	$(_CD_) $$i 							; \
+	$(_MAKE_) dep	 						; \
 	$(_CD_) .. 							; \
 	done

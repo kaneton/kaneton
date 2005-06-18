@@ -5,19 +5,37 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/services
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Fri Jun 17 15:50:29 2005   mycure
+## last update   Sat Jun 18 11:58:05 2005   mycure
 ##
+
+#
+# directives
+#
+
+.SILENT:
+
+.PHONY:		all init clean kaneton clear proto dep build install check
+
+#
+# shell
+#
+
+SHELL			:=		/bin/sh
+
+#
+# the default rule
+#
 
 all:			kaneton
 
 #
-# dependency
+# environment dependency
 #
 
 .kaneton.mk:
@@ -52,14 +70,18 @@ kaneton:		.kaneton.mk
 	cd ..								; \
 	done
 
-distclean:		.kaneton.mk
+clear:			.kaneton.mk
 	@for i in $(SUBDIRS); do					\
 	cd $$i								; \
-	make distclean							; \
+	make clear							; \
 	cd ..								; \
 	done
 
 	@rm -f *~ .*~ \#~ .\#~
+
+#
+# prototypes
+#
 
 proto:			.kaneton.mk
 	@for i in $(SUBDIRS); do					\
@@ -69,21 +91,33 @@ proto:			.kaneton.mk
 	done
 
 #
+# dependencies
+#
+
+dep:			.kaneton.mk
+	@for i in $(SUBDIRS); do					\
+	cd $$i								; \
+	make dep							; \
+	cd ..								; \
+	done
+
+#
 # distribution
 #
 
-CONF			=		../conf/$(USER)/$(USER).conf
-
-BOOTLOADER		=		`cat $(CONF)			| \
-					 grep -E "^BOOTLOADER = .*$$"	| \
-					 cut -b 14-`
-
-boot-init:		.kaneton.mk
+build:			.kaneton.mk
 	@cd utils							; \
-	./$(BOOTLOADER) init						; \
+	./$(_CONF_BOOTLOADER_) build					; \
 	cd ..
 
-boot-install:		.kaneton.mk
+install:		.kaneton.mk
 	@cd utils/							; \
-	./$(BOOTLOADER) install						; \
+	./$(_CONF_BOOTLOADER_) install					; \
 	cd ..
+
+#
+# check
+#
+
+check:			.kaneton.mk
+	;

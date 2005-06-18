@@ -5,17 +5,20 @@
  * 
  * quad.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/libsys
+ * path          /home/mycure/kaneton/libs/klibc
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:40:57 2005   mycure
- * last update   Tue Jun 14 14:01:37 2005   mycure
+ * last update   Sat Jun 18 10:52:06 2005   mycure
  */
 
 #ifndef LIBSYS_QUAD_H
 #define LIBSYS_QUAD_H		1
+
+/* XXX */
+#include <arch/machdep/machdep.h>
 
 /*
  * depending on the desired operation, we view a `long long' (aka quad_t) in
