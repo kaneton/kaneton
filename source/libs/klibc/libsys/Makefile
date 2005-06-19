@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/libs/klibc/libsys
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:05:40 2005   mycure
-## last update   Sat Jun 18 13:20:36 2005   mycure
+## last update   Sun Jun 19 14:46:59 2005   mycure
 ##
 
 #
@@ -37,7 +37,7 @@ LIBSYS_C		:=		perror.c			\
 
 LIBSYS_O		:=		$(LIBSYS_C:.c=.o)
 
-LIBSYS_INCLUDE		:=		../include/libsys/libsys.h
+LIBSYS_INCLUDE		:=		$(_LIBS_DIR_)/klibc/include/libsys/libsys.h
 
 #
 # rules
