@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Jun 19 17:33:08 2005   mycure
+## last update   Sun Jun 19 17:33:59 2005   mycure
 ##
 
 # INFORMATIONS
@@ -216,6 +216,8 @@ version()
 # this function generates C files dependencies.
 dep()
 {
+  print " generating files dependencies" "+"
+
   make dep 2> /dev/null > /dev/null
 }
 
