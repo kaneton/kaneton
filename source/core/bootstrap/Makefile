@@ -5,35 +5,35 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/bootstrap
+## path          /home/mycure/kaneton/core
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Sat Jun 18 15:26:18 2005   mycure
+## last update   Sun Jun 19 21:01:03 2005   mycure
 ##
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			../../.kaneton.mk
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
 .PHONY:		all clear proto dep
 
 #
-# variables
+# ---------- variables --------------------------------------------------------
 #
 
 BOOTSTRAP		=		bootstrap
 
 #
-# rules
+# ---------- rules ------------------------------------------------------------
 #
 
 all:

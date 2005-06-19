@@ -5,40 +5,42 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton/core
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sat Jun 18 15:08:30 2005   mycure
+## last update   Sun Jun 19 21:05:04 2005   mycure
 ##
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			../../.kaneton.mk
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		libs clear proto dep
 
 #
-# variables
+# ---------- variables --------------------------------------------------------
 #
 
 # kaneton libraries
 
 SUBDIRS			:=		arch				\
+					as				\
 					segment				\
-					as				
+					set				
 
 KANETON_LIBS		:=		$(_MACHDEP_A_)			\
 					$(_AS_A_)			\
-					$(_SEGMENT_A_)			
+					$(_SEGMENT_A_)			\
+					$(_SET_A_)			
 
 # kaneton binary
 
@@ -64,10 +66,10 @@ VERSION_H		:=		$(_CORE_INCLUDE_DIR_)/version.h
 DATE			:=		$(shell date)
 
 #
-# rules
+# ---------- rules ------------------------------------------------------------
 #
 
-$(KANETON):		$(KANETON_O) $(KANETON_LIBS)
+$(KANETON):		$(KANETON_O) libs
 	$(call version,$(VERSION_C))
 
 	$(call compile-c,$(VERSION_O),$(VERSION_C),)
@@ -78,7 +80,7 @@ $(KANETON):		$(KANETON_O) $(KANETON_LIBS)
 						$(_LIBC_A_),		\
 	  -T $(_LDS_DIR_)/kaneton.lds)
 
-$(KANETON_LIBS):
+libs:
 	@for i in $(SUBDIRS) ; do					\
 	$(_CD_) $$i							; \
 	$(_MAKE_)							; \
@@ -122,7 +124,7 @@ dep:
 	$(call dependencies,$(KANETON_C),$(_MAKEFILE_MK_),)
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			./$(_MAKEFILE_MK_)

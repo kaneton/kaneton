@@ -5,29 +5,29 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton/segment
+## path          /home/mycure/kaneton/core
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sat Jun 18 15:23:56 2005   mycure
+## last update   Sun Jun 19 21:08:24 2005   mycure
 ##
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
  
 include			../../../.kaneton.mk
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
 .PHONY:		clear proto dep
 
 #
-# variables
+# ---------- variables --------------------------------------------------------
 #
 
 SEGMENT			:=		segment.a
@@ -41,7 +41,7 @@ SEGMENT_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/segment.h
 CFLAGS			+=		-D___kernel
 
 #
-# rules
+# ---------- rules ------------------------------------------------------------
 #
 
 $(SEGMENT):		$(SEGMENT_O)
@@ -65,7 +65,7 @@ dep:
 	$(call dependencies,$(SEGMENT_C),$(_MAKEFILE_MK_),)
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			./$(_MAKEFILE_MK_)

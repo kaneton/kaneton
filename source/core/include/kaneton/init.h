@@ -5,33 +5,33 @@
  * 
  * init.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Sun Jun 19 16:08:11 2005   mycure
+ * last update   Sun Jun 19 20:11:10 2005   mycure
  */
 
 #ifndef KANETON_INIT_H
 #define KANETON_INIT_H		1
 
 /*
- * dependencies
+ * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
 #include <kaneton/segment.h>
 
 /*
- * defines
+ * ---------- defines ---------------------------------------------------------
  */
 
 #define INIT_KSTACKSZ		(2 * PAGESZ)
 
 /*
- * types
+ * ---------- types -----------------------------------------------------------
  */
 
 /*

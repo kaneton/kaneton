@@ -3,13 +3,13 @@
  *
  * printf.c
  *
- * path          /home/mycure/kaneton/libs/klibc/libc
+ * path          /home/mycure/kaneton/libs/klibc
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Thu May  6 14:37:44 2004   mycure
- * last update   Sat Jun 18 15:50:06 2005   mycure
+ * last update   Sun Jun 19 19:24:57 2005   mycure
  */
 
 #include <arch/machdep/machdep.h>

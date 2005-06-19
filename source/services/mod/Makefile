@@ -11,23 +11,23 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Sat Jun 18 15:36:49 2005   mycure
+## last update   Sun Jun 19 20:56:21 2005   mycure
 ##
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			../../.kaneton.mk
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
 .PHONY:		clear proto dep
 
 #
-# variables
+# ---------- variables --------------------------------------------------------
 #
 
 MOD			:=		mod
@@ -40,7 +40,7 @@ MOD_O			:=		$(MOD_C:.c=.o)
 MOD_INCLUDE		:=		
 
 #
-# rules
+# ---------- rules ------------------------------------------------------------
 #
 
 $(MOD):			$(MOD_O)
@@ -61,7 +61,7 @@ dep:
 	$(call dependencies,$(MOD_C),$(_MAKEFILE_MK_),)
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			./$(_MAKEFILE_MK_)

@@ -5,17 +5,25 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 19 16:02:23 2005   mycure
+ * last update   Sun Jun 19 21:25:02 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <libc.h>
 #include <kaneton.h>
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
 
 /*
  * this variable is generated when the kernel is compiled, indicating
@@ -30,6 +38,10 @@ extern const char	version[];
  */
 
 t_init*			init;
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
 
 /*
  * this function displays the kaneton parameters.

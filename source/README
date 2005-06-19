@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Sun Jun 19 16:36:03 2005   mycure
+## last update   Sun Jun 19 21:16:14 2005   mycure
 ##
 
 
@@ -622,3 +622,22 @@ the kaneton project will be automatically evaluated.
 please set the mode RELEASE to indicate that we can evaluate your project.
 
 the user configuration used to evaluate your project is 'eval'.
+
+---[ sections
+
+  each file including header files, source files and makefiles are divided
+  into sections.
+
+  for example header files contain info, dependencies, defines, types,
+  prototypes, macros etc.. sections.
+
+  source files contain globals, includes, functions etc.. sections.
+
+  makefiles contain dependencies, directives, variables, rules etc.. sections.
+
+  try to respect the syntax used to divide files into sections, for example
+  for source files:
+
+	/*
+	 * ---------- my_function ---------------------------------------------
+	 */

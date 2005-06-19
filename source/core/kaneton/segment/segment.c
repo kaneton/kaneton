@@ -5,17 +5,25 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/segment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 19 15:17:50 2005   mycure
+ * last update   Sun Jun 19 21:27:45 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <libc.h>
 #include <kaneton.h>
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
 
 /*
  * the variable init.
@@ -34,6 +42,10 @@ extern t_init*		init;
  */
 
 /* XXX t_segments		segments; */
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
 
 /*
  * this function just returns an identfier.

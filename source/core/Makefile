@@ -11,29 +11,29 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:24:11 2005   mycure
-## last update   Sat Jun 18 13:24:07 2005   mycure
+## last update   Sun Jun 19 21:00:37 2005   mycure
 ##
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			../.kaneton.mk
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
 .PHONY:		all clear proto dep
 
 #
-# variables
+# ---------- variables --------------------------------------------------------
 #
 
 SUBDIRS			=		bootstrap bootloader kaneton
 
 #
-# rules
+# ---------- rules ------------------------------------------------------------
 #
 
 all:

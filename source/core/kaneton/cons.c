@@ -11,11 +11,19 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Tue Jun 14 12:56:16 2005   mycure
+ * last update   Sun Jun 19 21:24:10 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <libc.h>
 #include <kaneton.h>
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
 
 /*
  * the init variable.
@@ -28,6 +36,10 @@ extern t_init*		init;
  */
 
 t_cons			cons;
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
 
 /*
  * this function just clears the console.

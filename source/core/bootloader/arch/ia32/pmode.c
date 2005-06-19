@@ -9,11 +9,19 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Sun Jun 19 16:15:08 2005   mycure
+ * last update   Sun Jun 19 21:23:13 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <libc.h>
 #include <kaneton.h>
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
 
 /*
  * the init variable.
@@ -27,6 +35,10 @@ extern t_init*		init;
 
 t_gdte*			gdt;
 t_gdtr			gdtr;
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
 
 /*
  * this function dumps the global offset table in a human readable form

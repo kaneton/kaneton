@@ -5,20 +5,20 @@
  * 
  * bootloader.h
  * 
- * path          /home/mycure/kaneton/core/bootloader
+ * path          /home/mycure/kaneton/core/include/arch/ia32/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Sun Jun 19 14:36:14 2005   mycure
+ * last update   Sun Jun 19 20:34:46 2005   mycure
  */
 
 #ifndef IA32_KANETON_BOOTLOADER_H
 #define IA32_KANETON_BOOTLOADER_H	1
 
 /*
- * dependencies
+ * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/ia32/ia32/pmode.h>
@@ -27,7 +27,7 @@
 #include <arch/ia32/ia32/types.h>
 
 /*
- * types
+ * ---------- types -----------------------------------------------------------
  */
 
 typedef struct
@@ -38,11 +38,19 @@ typedef struct
 }				d_init;
 
 /*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+/*
  * machdep traps
  */
 
 #define		machdep_include_init()					\
   d_init			machdep
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ */
 
 /*
  * prototypes:     ../../../../bootloader/arch/ia32/bootloader.c

@@ -11,11 +11,11 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Sun Jun 19 01:19:09 2005   mycure
+## last update   Sun Jun 19 20:52:10 2005   mycure
 ##
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
 .SILENT:
@@ -24,13 +24,13 @@
 		dep build install check
 
 #
-# shell
+# ---------- shell ------------------------------------------------------------
 #
 
 SHELL			:=		/bin/sh
 
 #
-# variables
+# ---------- variables --------------------------------------------------------
 #
 
 SUBDIRS			=	libs core services
@@ -41,13 +41,13 @@ CONF_BOOTLOADER		:=						\
           cut -b 14-)
 
 #
-# the default rule
+# ---------- default rule -----------------------------------------------------
 #
 
 all:			kaneton
 
 #
-# environment dependency
+# ---------- environment dependency -------------------------------------------
 #
 
 .kaneton.mk:
@@ -56,7 +56,7 @@ all:			kaneton
 	fi
 
 #
-# environment
+# ---------- environment ------------------------------------------------------
 #
 
 init:
@@ -70,7 +70,7 @@ clean:			purge
 	cd ..
 
 #
-# development
+# ---------- development ------------------------------------------------------
 #
 
 kaneton:		.kaneton.mk
@@ -91,7 +91,7 @@ purge:
 	@rm -f *~ .*~ \#~ .\#~
 
 #
-# prototypes
+# ---------- prototypes -------------------------------------------------------
 #
 
 proto:			.kaneton.mk
@@ -102,7 +102,7 @@ proto:			.kaneton.mk
 	done
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 dep:			.kaneton.mk
@@ -113,7 +113,7 @@ dep:			.kaneton.mk
 	done
 
 #
-# distribution
+# ---------- distribution -----------------------------------------------------
 #
 
 build:			.kaneton.mk
@@ -127,13 +127,13 @@ install:		.kaneton.mk
 	cd ..
 
 #
-# check
+# ---------- check ------------------------------------------------------------
 #
 
 check:			.kaneton.mk
 
 #
-# info
+# ---------- info -------------------------------------------------------------
 #
 
 info:

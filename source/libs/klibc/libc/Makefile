@@ -5,29 +5,29 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/libs
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:56:59 2005   mycure
-## last update   Sun Jun 19 14:46:28 2005   mycure
+## last update   Sun Jun 19 20:59:16 2005   mycure
 ##
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			../../../.kaneton.mk
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
 .PHONY:		clear proto dep
 
 #
-# variables
+# ---------- variables --------------------------------------------------------
 #
 
 LIBC			:=		libc.a
@@ -60,7 +60,7 @@ LIBC_O			:=		$(LIBC_C:.c=.o)
 LIBC_INCLUDE		:=		$(_LIBS_DIR_)/klibc/include/libc/libc.h
 
 #
-# rules
+# ---------- rules ------------------------------------------------------------
 #
 
 $(LIBC):		$(LIBC_O)
@@ -84,7 +84,7 @@ dep:
 	$(call dependencies,$(LIBC_C),$(_MAKEFILE_MK_),)
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			./$(_MAKEFILE_MK_)

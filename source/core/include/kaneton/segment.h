@@ -11,20 +11,20 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Jun 19 15:17:16 2005   mycure
+ * last update   Sun Jun 19 20:14:29 2005   mycure
  */
 
 #ifndef KANETON_SEGMENT_H
 #define KANETON_SEGMENT_H	1
 
 /*
- * dependencies
+ * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
 
 /*
- * types
+ * ---------- types -----------------------------------------------------------
  */
 
 /*
@@ -56,6 +56,10 @@ typedef struct
 {
 
 }				m_segment;
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ */
 
 /*
  * prototypes:     ../../kaneton/segment/segment.c

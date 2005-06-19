@@ -5,29 +5,29 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/bootstrap/arch/ia32
+## path          /home/mycure/kaneton/core
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Sat Jun 18 15:32:23 2005   mycure
+## last update   Sun Jun 19 21:02:45 2005   mycure
 ##
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			../../../../.kaneton.mk
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
 .PHONY:		clear proto dep
 
 #
-# variables
+# ---------- variables --------------------------------------------------------
 #
 
 # bootstrap
@@ -45,7 +45,7 @@ BOOTLOADER_C		=		bootloader.c
 BOOTLOADER_O		=		$(BOOTLOADER_C:.c=.o)
 
 #
-# rules
+# ---------- rules ------------------------------------------------------------
 #
 
 $(BOOTSTRAP):		$(BOOTLOADER)
@@ -69,4 +69,3 @@ clear:
 proto:
 
 dep:
-

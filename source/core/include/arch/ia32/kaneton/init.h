@@ -5,20 +5,20 @@
  * 
  * init.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32
+ * path          /home/mycure/kaneton/core/include/arch/ia32/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Mon May 30 14:10:03 2005   mycure
- * last update   Sun Jun 19 14:32:47 2005   mycure
+ * last update   Sun Jun 19 20:35:10 2005   mycure
  */
 
 #ifndef IA32_INIT_H
 #define IA32_INIT_H		1
 
 /*
- * defines
+ * ---------- defines ---------------------------------------------------------
  */
 
 /*

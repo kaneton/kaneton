@@ -5,26 +5,26 @@
  * 
  * pmode.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32
+ * path          /home/mycure/kaneton/core/include/arch/ia32/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:55:06 2005   mycure
- * last update   Sun Jun 19 16:25:59 2005   mycure
+ * last update   Sun Jun 19 20:38:06 2005   mycure
  */
 
 #ifndef IA32_IA32_PMODE_H
 #define IA32_IA32_PMODE_H	1
 
 /*
- * dependencies
+ * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/ia32/ia32/types.h>
 
 /*
- * defines
+ * ---------- defines ---------------------------------------------------------
  */
 
 /*
@@ -73,7 +73,7 @@
 #define PMODE_GDT_DATA		(1 << 1)
 
 /*
- * types
+ * ---------- types -----------------------------------------------------------
  */
 
 typedef struct

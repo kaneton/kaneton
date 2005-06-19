@@ -11,10 +11,14 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:24:13 2005   mycure
- * last update   Sun Jun 19 16:09:56 2005   mycure
+ * last update   Sun Jun 19 20:24:31 2005   mycure
  */
 
+/* XXX info a remplir mieux */
+
 /*
+ * ---------- info ------------------------------------------------------------
+ *
  * details about console format:
  *
  * flicker   :   0 = disable    1 = enable
@@ -29,13 +33,13 @@
 #define IA32_CONS_H		1
 
 /*
- * dependencies
+ * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/ia32/ia32/types.h>
 
 /*
- * defines
+ * ---------- defines ---------------------------------------------------------
  */
 
 #define CONS_ADDR		0xb8000
@@ -44,9 +48,6 @@
 #define CONS_COLUMNS		80
 #define CONS_BPC		2
 #define CONS_TAB		8
-
-#define CONS_FRONT(_color_)	(_color_)
-#define CONS_BACK(_color_)	(_color_ << 4)
 
 #define CONS_FLI		(1 << 7)
 #define CONS_INT		(1 << 3)
@@ -61,7 +62,14 @@
 #define CONS_WHITE		0x7
 
 /*
- * types
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#define CONS_FRONT(_color_)	(_color_)
+#define CONS_BACK(_color_)	(_color_ << 4)
+
+/*
+ * ---------- types -----------------------------------------------------------
  */
 
 typedef struct

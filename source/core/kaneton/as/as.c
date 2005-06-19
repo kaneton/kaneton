@@ -3,7 +3,7 @@
  * 
  * kaneton
  * 
- * segment.c
+ * as.c
  * 
  * path          /home/mycure/kaneton/core/kaneton/as
  * 
@@ -11,17 +11,29 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Jun 16 16:00:49 2005   mycure
+ * last update   Sun Jun 19 21:26:20 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <libc.h>
 #include <kaneton.h>
 
 /*
+ * ---------- globals ---------------------------------------------------------
+ */
+
+/*
  * the variable init.
  */
 
 extern t_init*		init;
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
 
 /*
  * this function dumps the address spaces managed by the kernel.

@@ -11,29 +11,29 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:28:05 2005   mycure
-## last update   Sat Jun 18 13:00:22 2005   mycure
+## last update   Sun Jun 19 20:57:12 2005   mycure
 ##
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			../.kaneton.mk
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
 .PHONY:		all clear proto dep
 
 #
-# variables
+# ---------- variables --------------------------------------------------------
 #
 
 SUBDIRS			:=		$(_CONF_LIBC_) crt
 
 #
-# rules
+# ---------- rules ------------------------------------------------------------
 #
 
 all:

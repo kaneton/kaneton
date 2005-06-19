@@ -11,11 +11,19 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 19 15:15:39 2005   mycure
+ * last update   Sun Jun 19 21:20:24 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <libc.h>
 #include <kaneton.h>
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
 
 /*
  * the init variable.
@@ -36,6 +44,10 @@ void			(*kernel)(t_init*);
 
 t_reg32			ebp;
 t_reg32			esp;
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
 
 /*
  * a funny function which do nothing.

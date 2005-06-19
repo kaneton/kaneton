@@ -5,29 +5,29 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/bootstrap/arch
+## path          /home/mycure/kaneton/core
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sat Jun 18 15:27:12 2005   mycure
+## last update   Sun Jun 19 21:01:27 2005   mycure
 ##
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			../../../.kaneton.mk
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
 .PHONY:		all clear proto dep
 
 #
-# rules
+# ---------- rules ------------------------------------------------------------
 #
 
 all:

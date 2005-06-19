@@ -5,29 +5,29 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/bootloader
+## path          /home/mycure/kaneton/core
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Sun Jun 19 14:35:41 2005   mycure
+## last update   Sun Jun 19 21:04:17 2005   mycure
 ##
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			../../../../.kaneton.mk
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
 .PHONY:		clear proto dep
 
 #
-# variables
+# ---------- variables --------------------------------------------------------
 #
 
 BOOTLOADER		:=		bootloader
@@ -47,7 +47,7 @@ BOOTLOADER_INCLUDE	:=		$(_MACHDEP_INCLUDE_DIR_)/kaneton/bootloader.h
 CFLAGS			+=		-D___bootloader
 
 #
-# rules
+# ---------- rules ------------------------------------------------------------
 #
 
 $(BOOTLOADER):		$(BOOTLOADER_O)
@@ -71,7 +71,7 @@ dep:
 	$(call dependencies,$(BOOTLOADER_C),$(_MAKEFILE_MK_),)
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			./$(_MAKEFILE_MK_)

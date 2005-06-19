@@ -5,20 +5,20 @@
  * 
  * types.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton/core/include/arch/ia32/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 19 16:12:47 2005   mycure
+ * last update   Sun Jun 19 20:39:13 2005   mycure
  */
 
 #ifndef IA32_IA32_TYPES_H
 #define IA32_IA32_TYPES_H	1
 
 /*
- * types
+ * ---------- types -----------------------------------------------------------
  */
 
 typedef unsigned char		t_uint8;

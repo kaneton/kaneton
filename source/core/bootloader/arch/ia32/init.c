@@ -9,11 +9,19 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Sun Jun 19 15:14:14 2005   mycure
+ * last update   Sun Jun 19 21:22:11 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <libc.h>
 #include <kaneton.h>
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
 
 /*
  * init variable, describing the initial memory layout.
@@ -24,6 +32,10 @@
  */
 
 t_init*			init;
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
 
 /*
  * this function dumps the init structure

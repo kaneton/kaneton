@@ -5,26 +5,26 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Jun 19 16:04:51 2005   mycure
+ * last update   Sun Jun 19 20:13:56 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
 #define KANETON_KANETON_H	1
 
 /*
- * dependencies
+ * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
 
 /*
- * defines
+ * ---------- defines ---------------------------------------------------------
  */
 
 /*
@@ -50,7 +50,7 @@
 #define MODE_RELEASE		(1 << 1)
 
 /*
- * includes
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <kaneton/as.h>
@@ -58,6 +58,10 @@
 #include <kaneton/init.h>
 #include <kaneton/segment.h>
 #include <kaneton/set.h>
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ */
 
 /*
  * prototypes:     ../../kaneton/kaneton.c

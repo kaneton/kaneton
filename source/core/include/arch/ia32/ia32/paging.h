@@ -5,26 +5,30 @@
  * 
  * paging.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32
+ * path          /home/mycure/kaneton/core/include/arch/ia32/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:39:42 2005   mycure
- * last update   Sun Jun 19 16:30:40 2005   mycure
+ * last update   Sun Jun 19 20:37:38 2005   mycure
  */
 
 #ifndef IA32_IA32_PAGING_H
 #define IA32_IA32_PAGING_H	1
 
 /*
- * dependencies
+ * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/ia32/ia32/types.h>
 
 /*
- * defines
+ * ---------- defines ---------------------------------------------------------
+ */
+
+/*
+ * paging defines
  */
 
 #define PAGING_NPDE		1024
@@ -38,16 +42,6 @@
 
 #define PAGING_ADDRESS		0xfffff000
 #define PAGING_FLAGS		0x00000fff
-
-/*
- * macros
- */
-
-#define PAGING_PDE(_vaddr_)						\
-  ((_vaddr_ >> PAGING_PD_SHIFT) & PAGING_PD_MASK)
-
-#define PAGING_PTE(_vaddr_)						\
-  ((_vaddr_ >> PAGING_PT_SHIFT) & PAGING_PT_MASK)
 
 /*
  * paging flags
@@ -66,7 +60,17 @@
 #define PAGING_P		(1 << 0)	/* present */
 
 /*
- * types
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#define PAGING_PDE(_vaddr_)						\
+  ((_vaddr_ >> PAGING_PD_SHIFT) & PAGING_PD_MASK)
+
+#define PAGING_PTE(_vaddr_)						\
+  ((_vaddr_ >> PAGING_PT_SHIFT) & PAGING_PT_MASK)
+
+/*
+ * ---------- types -----------------------------------------------------------
  */
 
 typedef t_uint32		t_pde;

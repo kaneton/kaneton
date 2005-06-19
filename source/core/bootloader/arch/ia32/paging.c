@@ -11,11 +11,19 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Sun Jun 19 15:15:10 2005   mycure
+ * last update   Sun Jun 19 21:22:36 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <libc.h>
 #include <kaneton.h>
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
 
 /*
  * the init variable.
@@ -35,6 +43,10 @@ t_pde*			pd;
 t_pte*			pt0;
 
 t_pte*			pt;
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
 
 /*
  * this function dumps a page table in a human readable form which

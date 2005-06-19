@@ -5,29 +5,29 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/libs
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:05:40 2005   mycure
-## last update   Sun Jun 19 14:46:59 2005   mycure
+## last update   Sun Jun 19 20:59:48 2005   mycure
 ##
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			../../../.kaneton.mk
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
 .PHONY:		clear proto dep
 
 #
-# variables
+# ---------- variables --------------------------------------------------------
 #
 
 LIBSYS			:=		libsys.a
@@ -40,7 +40,7 @@ LIBSYS_O		:=		$(LIBSYS_C:.c=.o)
 LIBSYS_INCLUDE		:=		$(_LIBS_DIR_)/klibc/include/libsys/libsys.h
 
 #
-# rules
+# ---------- rules ------------------------------------------------------------
 #
 
 $(LIBSYS):		$(LIBSYS_O)
@@ -64,7 +64,7 @@ dep:
 	$(call dependencies,$(LIBSYS_C),$(_MAKEFILE_MK_),)
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			./$(_MAKEFILE_MK_)

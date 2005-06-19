@@ -5,29 +5,29 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/libs/klibc
+## path          /home/mycure/kaneton/libs
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:29:19 2005   mycure
-## last update   Sat Jun 18 13:12:50 2005   mycure
+## last update   Sun Jun 19 20:58:37 2005   mycure
 ##
 
 #
-# dependencies
+# ---------- dependencies -----------------------------------------------------
 #
 
 include			../../.kaneton.mk
 
 #
-# directives
+# ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		libs clear proto dep
 
 #
-# variables
+# ---------- variables --------------------------------------------------------
 #
 
 SUBDIRS			:=		libc libsys
@@ -39,16 +39,16 @@ LIBC			:=		libc/libc.a
 LIBSYS			:=		libsys/libsys.a
 
 #
-# rules
+# ---------- rules ------------------------------------------------------------
 #
 
-$(LIB_C):		$(LIBC) $(LIBSYS)
+$(LIB_C):		$(LIBC) libs
 	$(call archives,$(LIB_C),$(LIBC) $(LIBSYS),)
 
 	$(call link,$(_LIBC_A_),klibc/$(LIB_C),)
 	$(call link,$(_LIBC_H_),klibc/$(LIB_H),)
 
-$(LIBC) $(LIBSYS):
+libs:
 	@for i in $(SUBDIRS) ; do					\
 	$(_CD_) $$i							; \
 	$(_MAKE_) 							; \

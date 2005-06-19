@@ -11,11 +11,15 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 19 14:09:42 2005   mycure
+ * last update   Sun Jun 19 20:35:54 2005   mycure
  */
 
 #ifndef IA32_IA32_ASM_H
 #define IA32_IA32_ASM_H		1
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
 
 /*
  * asm macros

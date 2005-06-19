@@ -5,13 +5,13 @@
 ## 
 ## .kaneton.mk
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/core/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sat Jun 18 23:34:43 2005   mycure
+## last update   Sun Jun 19 19:20:24 2005   mycure
 ##
 
 #
@@ -96,8 +96,9 @@ _LIBC_H_		:=		$(_LIBS_DIR_)/libc.h
 _CRT_A_			:=		$(_LIBS_DIR_)/crt.a
 
 _MACHDEP_A_		:=		$(_MACHDEP_KANETON_DIR_)/machdep.a
-_SEGMENT_A_		:=		$(_CORE_KANETON_DIR_)/segment/segment.a
 _AS_A_			:=		$(_CORE_KANETON_DIR_)/as/as.a
+_SEGMENT_A_		:=		$(_CORE_KANETON_DIR_)/segment/segment.a
+_SET_A_			:=		$(_CORE_KANETON_DIR_)/set/set.a
 
 #
 # user configuration addons
