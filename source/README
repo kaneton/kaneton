@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Sun Jun 19 01:17:55 2005   mycure
+## last update   Sun Jun 19 14:03:19 2005   mycure
 ##
 
 
@@ -419,10 +419,6 @@ to follow the rules.
 	 * last update   Sun Jun 19 01:02:32 2005   mycure
 	 */
 
----[ indentation
-
-XXX + exceptions
-
 ---[ types
 
   try to use the kaneton types: t_uint8, t_sint16, t_uint64 etc..
@@ -444,3 +440,182 @@ XXX + exceptions
 	 * a comment on line three
 	 */
 
+---[ includes
+
+  the kaneton kernel was developed in a way that permits programmers
+  to only have to include two files: libc.h for the C library and
+  kaneton.h for the operating system headers.
+
+	#include <libc.h>
+	#include <kaneton.h>
+
+	int		main(int		argc,
+			     char**		argv)
+	{
+	  /*
+	   * your code here
+	   */
+
+	  return (0);
+	}
+
+---[ indentation
+
+  the indentation used in kaneton is the one shown bellow:
+
+	#include <libc.h>
+
+	struct		s_mystruct
+	{
+	  int		value;
+	};
+
+	typedef s_mystruct		t_mytype;
+
+	#define DEBUG			1
+
+	#ifdef DEBUG
+	t_uint8			flag = 0;
+	#endif
+
+	extern int		errno;
+
+	int			function(int			arg1,
+					 char			arg2,
+					 void*			arg3)
+	{
+	  t_mytype		myvar;
+
+	  if (arg1 == 0)
+	    {
+	      function(0, '0', NULL);
+	    }
+
+	  return (-1);
+	}
+
+---[ variable names
+
+  few rules must be followed.
+
+  every variable representing a size use the 'sz' suffix.
+
+	#define PAGESZ
+
+	int			modsz;
+
+  every variable representing a number of objects use the 'n' prefix:
+
+	int			nclusters;
+
+  moreover, the types are used as pre-names:
+
+	t_vaddr			video_vaddr;
+
+  is not correct, instead prefer:
+
+	t_vaddr			video;
+
+---[ names
+
+  names for functions, structures, types, variables etc.. must be choose
+  carefully. first the names must be in english and in lower case.
+
+  every function name must be prefixed by its module, manager, in other
+  words by its context name or its name space.
+  for example every function for the console driver are prefixed by 'cons_':
+  cons_init(), cons_print_char(), etc..
+
+---[ comments
+
+  to keep the code clear while commenting each part of functions, we
+  advise you to use this form:
+
+	/*
+	 * description of the function in few lines.
+	 *
+	 * steps:
+	 *
+	 * 1) first the function does that.
+	 * 2) then it does another thing.
+	 * 3) after, ...
+	 * 4) finally, it does nothing.
+	 */
+
+  also try to cut the includes into parts like: dependencies, includes,
+  defines, types, prototypes etc..
+
+	/*
+	 * dependencies
+	 */
+
+	#include <...>
+
+	/*
+	 * includes
+	 */
+
+	#include <...>
+	#include <...>
+
+	/*
+	 * defines
+	 */
+
+	#define ...
+
+	/*
+	 * types
+	 */
+
+	typedef ...;
+
+	/*
+	 * prototypes:             ../../directory/file1.c
+	 *                         ../../directory/file2.c
+	 */
+
+	/*
+	 * eop
+	 */
+
+---[ prototypes
+
+  note that the prototypes are generated using the command: 'make proto'.
+  all you have to write these lines:
+
+	/*
+	 * prototypes:             path/to/file1
+	 *                         path/to/file2
+	 */
+
+	/*
+	 * eop
+	 */
+
+  and the command 'make proto' will generate prototypes from the C files
+  and insert them between the two tags: prototypes and eop.
+
+---[ redefinition
+
+  the includes files contain anti-redifinition defines.
+
+	#ifndef KANETON_INIT_H
+	#define KANETON_INIT_H
+
+	/*
+	 * your code here
+	 */
+
+	#endif
+
+  please respect this rule: always compose the name of the anti-redefinition
+  using the path from the include directory.
+
+			----------[ evaluation ]----------
+
+the kaneton project will be automatically evaluated.
+
+please set the mode RELEASE to indicate that we can evaluate your project.
+
+the user configuration used to evaluate your project is 'eval'.
