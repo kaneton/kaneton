@@ -11,17 +11,21 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:39:42 2005   mycure
- * last update   Thu Jun  9 21:26:48 2005   mycure
+ * last update   Sun Jun 19 14:30:04 2005   mycure
  */
 
-#ifndef IA32_PAGING_H
-#define IA32_PAGING_H		1
+#ifndef IA32_IA32_PAGING_H
+#define IA32_IA32_PAGING_H	1
+
+/*
+ * dependencies
+ */
+
+#include <arch/ia32/ia32/types.h>
 
 /*
  * defines
  */
-
-#define BOOTLOADER_PAGING	XXX
 
 #define PAGING_PD		0x401000	/* kernel page table */
 #define PAGING_PT0		0x402000	/* page table 0 */

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Fri Jun 17 16:11:11 2005   mycure
+ * last update   Sun Jun 19 14:31:11 2005   mycure
  */
 
 #ifndef IA32_KANETON_H
@@ -27,19 +27,11 @@
 #define PAGESZ			4096
 
 /*
- * prototypes:     ../../../kaneton/arch/ia32/as.c
- *                 ../../../kaneton/arch/ia32/segment.c
+ * includes
  */
 
-/*
- * ../../../kaneton/arch/ia32/as.c
- */
-
-/*
- * ../../../kaneton/arch/ia32/segment.c
- */
-/*
- * eop
- */
+#include <arch/ia32/kaneton/bootloader.h>
+#include <arch/ia32/kaneton/debug.h>
+#include <arch/ia32/kaneton/init.h>
 
 #endif

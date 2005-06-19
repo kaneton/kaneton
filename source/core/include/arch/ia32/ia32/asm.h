@@ -5,20 +5,20 @@
  * 
  * asm.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32
+ * path          /home/mycure/kaneton/core/include/arch/ia32/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Jun  9 13:59:15 2005   mycure
+ * last update   Sun Jun 19 14:09:42 2005   mycure
  */
 
-#ifndef IA32_ASM_H
-#define IA32_ASM_H		1
+#ifndef IA32_IA32_ASM_H
+#define IA32_IA32_ASM_H		1
 
 /*
- * asm defines
+ * asm macros
  */
 
 #define		CLI()							\
@@ -50,9 +50,6 @@
 		"movl %%eax, %0\n"					\
 		: "=m" (_var_)						\
 		:)
-
-
-/* XXX */
 
 /*
  * pio macros

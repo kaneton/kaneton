@@ -5,13 +5,13 @@
  * 
  * segment.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sat Jun 18 16:23:10 2005   mycure
+ * last update   Sun Jun 19 14:38:04 2005   mycure
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -21,13 +21,13 @@
  * dependencies
  */
 
-#include <machdep/arch/machdep.h>
+#include <arch/machdep/machdep.h>
 
 /*
  * types
  */
 
-typedef struct			s_segment
+typedef struct
 {
   t_segid			segid;
 
@@ -40,7 +40,7 @@ typedef struct			s_segment
   struct s_segment*		nxt;
 }				t_segment;
 
-typedef struct			s_segments
+typedef struct
 {
   t_uint32			nsegments;
 

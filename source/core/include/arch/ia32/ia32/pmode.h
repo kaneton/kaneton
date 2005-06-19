@@ -5,20 +5,30 @@
  * 
  * pmode.h
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/include/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:55:06 2005   mycure
- * last update   Fri Jun 17 14:44:02 2005   mycure
+ * last update   Sun Jun 19 14:30:10 2005   mycure
  */
 
-#ifndef IA32_PMODE_H
-#define IA32_PMODE_H		1
+#ifndef IA32_IA32_PMODE_H
+#define IA32_IA32_PMODE_H	1
+
+/*
+ * dependencies
+ */
+
+#include <arch/ia32/ia32/types.h>
 
 /*
  * defines
+ */
+
+/*
+ * general
  */
 
 #define BOOTLOADER_PMODESZ	(1 * PAGESZ)
@@ -35,8 +45,8 @@
  * options
  */
 
-#define OPTS_ZERO		0x0
-#define OPTS_PRESENT		0x1
+#define PMODE_OPTS_ZERO		0x0
+#define PMODE_OPTS_PRESENT	0x1
 
 /*
  * gdt entries
@@ -82,7 +92,7 @@
  * types
  */
 
-typedef struct			s_gdte
+typedef struct
 {
   t_uint16			limit_00_15;
   t_uint16			base_00_15;
@@ -93,7 +103,7 @@ typedef struct			s_gdte
   t_uint8			base_24_31;
 }				__attribute__ ((packed)) t_gdte;
 
-typedef struct			s_gdtr
+typedef struct
 {
   t_uint16			size;
   t_uint32			address;

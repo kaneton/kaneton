@@ -5,46 +5,55 @@
  * 
  * bootloader.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32
+ * path          /home/mycure/kaneton/core/bootloader
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Sun Jun 19 00:31:50 2005   mycure
+ * last update   Sun Jun 19 14:36:14 2005   mycure
  */
 
-#ifndef IA32_BOOTLOADER_H
-#define IA32_BOOTLOADER_H	1
+#ifndef IA32_KANETON_BOOTLOADER_H
+#define IA32_KANETON_BOOTLOADER_H	1
+
+/*
+ * dependencies
+ */
+
+#include <arch/ia32/ia32/pmode.h>
+#include <arch/ia32/ia32/paging.h>
+#include <arch/ia32/services/cons.h>
+#include <arch/ia32/ia32/types.h>
 
 /*
  * types
  */
 
-typedef struct		s_machdep_init
+typedef struct
 {
-  t_gdte*		gdt;
-  t_pde*		pd;
-  t_cons		cons;
-}			d_machdep_init;
+  t_gdte*			gdt;
+  t_pde*			pd;
+  t_cons			cons;
+}				d_init;
 
 /*
  * machdep traps
  */
 
 #define		machdep_include_init()					\
-  d_machdep_init	machdep
+  d_init			machdep
 
 /*
- * prototypes:     ../../../bootloader/arch/ia32/bootloader.c
- *                 ../../../bootloader/arch/ia32/cons.c
- *                 ../../../bootloader/arch/ia32/init.c
- *                 ../../../bootloader/arch/ia32/paging.c
- *                 ../../../bootloader/arch/ia32/pmode.c
+ * prototypes:     ../../../../bootloader/arch/ia32/bootloader.c
+ *                 ../../../../bootloader/arch/ia32/cons.c
+ *                 ../../../../bootloader/arch/ia32/init.c
+ *                 ../../../../bootloader/arch/ia32/paging.c
+ *                 ../../../../bootloader/arch/ia32/pmode.c
  */
 
 /*
- * ../../../bootloader/arch/ia32/bootloader.c
+ * ../../../../bootloader/arch/ia32/bootloader.c
  */
 
 void			bootloader_error(void);
@@ -55,7 +64,7 @@ int			bootloader(t_uint32			magic,
 
 
 /*
- * ../../../bootloader/arch/ia32/cons.c
+ * ../../../../bootloader/arch/ia32/cons.c
  */
 
 void			bootloader_cons_clear(void);
@@ -85,7 +94,7 @@ int			bootloader_cons_init(void);
 
 
 /*
- * ../../../bootloader/arch/ia32/init.c
+ * ../../../../bootloader/arch/ia32/init.c
  */
 
 void			bootloader_init_dump(void);
@@ -105,7 +114,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi);
 
 
 /*
- * ../../../bootloader/arch/ia32/paging.c
+ * ../../../../bootloader/arch/ia32/paging.c
  */
 
 void			bootloader_paging_dump_table(t_pte*	table,
@@ -123,7 +132,7 @@ void			bootloader_paging_init(void);
 
 
 /*
- * ../../../bootloader/arch/ia32/pmode.c
+ * ../../../../bootloader/arch/ia32/pmode.c
  */
 
 void			bootloader_pmode_gdt_dump(void);

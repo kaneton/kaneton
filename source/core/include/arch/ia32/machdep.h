@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Sun Jun 19 00:29:52 2005   mycure
+ * last update   Sun Jun 19 14:29:25 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
@@ -21,10 +21,10 @@
  * includes
  */
 
-#include <arch/machdep/ia32/ia32.h>
-#include <arch/machdep/kaneton/kaneton.h>
-#include <arch/machdep/services/services.h>
-#include <arch/machdep/sys/sys.h>
+#include <arch/ia32/ia32/ia32.h>
+#include <arch/ia32/kaneton/kaneton.h>
+#include <arch/ia32/services/services.h>
+#include <arch/ia32/sys/sys.h>
 
 /*
  * machdep transparent traps
@@ -38,5 +38,21 @@
 
 #define		machdep_include(_object_)				\
   machdep_include_##_object_()
+
+/*
+ * prototypes:     ../../../kaneton/arch/ia32/as.c
+ *                 ../../../kaneton/arch/ia32/segment.c
+ */
+
+/*
+ * ../../../kaneton/arch/ia32/as.c
+ */
+
+/*
+ * ../../../kaneton/arch/ia32/segment.c
+ */
+/*
+ * eop
+ */
 
 #endif

@@ -3,17 +3,17 @@
  *
  * multiboot.h
  *
- * path          /home/mycure/kaneton/core/include/arch/ia32
+ * path          /home/mycure/kaneton/core/include/arch/ia32/ia32
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 18:49:33 2004   mycure
- * last update   Wed Jun  1 08:34:04 2005   mycure
+ * last update   Sun Jun 19 14:09:34 2005   mycure
  */
 
-#ifndef IA32_MULTIBOOT_H
-#define IA32_MULTIBOOT_H	1
+#ifndef IA32_IA32_MULTIBOOT_H
+#define IA32_IA32_MULTIBOOT_H	1
 
 /*
  * defines

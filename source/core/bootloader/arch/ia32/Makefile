@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/bootloader/arch/ia32
+## path          /home/mycure/kaneton/core/bootloader
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Sat Jun 18 14:56:01 2005   mycure
+## last update   Sun Jun 19 14:35:41 2005   mycure
 ##
 
 #
@@ -42,7 +42,7 @@ BOOTLOADER_C		:=		bootloader.c			\
 
 BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)
 
-BOOTLOADER_INCLUDE	:=		$(_MACHDEP_INCLUDE_DIR_)/bootloader.h
+BOOTLOADER_INCLUDE	:=		$(_MACHDEP_INCLUDE_DIR_)/kaneton/bootloader.h
 
 CFLAGS			+=		-D___bootloader
 

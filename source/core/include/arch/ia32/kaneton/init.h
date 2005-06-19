@@ -5,17 +5,21 @@
  * 
  * init.h
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/include/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Mon May 30 14:10:03 2005   mycure
- * last update   Tue Jun 14 17:49:31 2005   mycure
+ * last update   Sun Jun 19 14:32:47 2005   mycure
  */
 
 #ifndef IA32_INIT_H
 #define IA32_INIT_H		1
+
+/*
+ * defines
+ */
 
 /*
  * this address defines the 16Mb. the kernel will be relocates at this

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sat Jun 18 16:23:42 2005   mycure
+ * last update   Sun Jun 19 14:40:30 2005   mycure
  */
 
 #ifndef KANETON_AS_H
@@ -21,23 +21,16 @@
  * dependencies
  */
 
-#include <machdep/arch/machdep.h>
+#include <arch/machdep/machdep.h>
 
 /*
  * types
  */
 
-typedef struct			s_as
+typedef struct
 {
   t_asid			asid;
-}				t_segment;
-
-typedef struct			s_ass
-{
-  t_uint32			nass;
-
-  t_as*				ass;
-}				t_ass;
+}				t_as;
 
 /*
  * prototypes:     ../../kaneton/as/as.c

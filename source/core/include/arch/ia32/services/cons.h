@@ -11,11 +11,8 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:24:13 2005   mycure
- * last update   Mon Jun 13 12:59:24 2005   mycure
+ * last update   Sun Jun 19 14:33:38 2005   mycure
  */
-
-#ifndef IA32_CONS_H
-#define IA32_CONS_H		1
 
 /*
  * details about console format:
@@ -27,6 +24,15 @@
  * front     :   0 = black      1 = blue       2 = green      3 = cyan
  *               4 = red        5 = magenta    6 = yellow     7 = white
  */
+
+#ifndef IA32_CONS_H
+#define IA32_CONS_H		1
+
+/*
+ * dependencies
+ */
+
+#include <arch/ia32/ia32/types.h>
 
 /*
  * defines
@@ -54,7 +60,11 @@
 #define CONS_YELLOW		0x6
 #define CONS_WHITE		0x7
 
-typedef struct			s_cons
+/*
+ * types
+ */
+
+typedef struct
 {
   t_uint16			line;
   t_uint16			column;

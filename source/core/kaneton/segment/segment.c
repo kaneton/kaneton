@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/as
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Jun 14 19:35:24 2005   mycure
+ * last update   Sun Jun 19 14:43:10 2005   mycure
  */
 
 #include <libc.h>
@@ -65,11 +65,13 @@ void			segment_dump(void)
   cons_msg('#', " segments: %u\n",
 	   segments.nsegments);
 
+  /* XXX
   for (s = segments.segments; s != NULL; s = s->nxt)
     cons_msg('#', "  [%qu] 0x%x - %u bytes\n",
 	     s->segid,
 	     s->address,
 	     s->size);
+  */
 }
 
 /*
@@ -78,6 +80,7 @@ void			segment_dump(void)
 
 void			segment_push(t_segment*			push)
 {
+  /* XXX
   push->segid = 0;
   push->address = 0;
   push->size = 0;
@@ -100,6 +103,7 @@ void			segment_push(t_segment*			push)
     }
 
   stack.nsegments++;
+  */
 }
 
 /*
@@ -111,7 +115,8 @@ t_segment*		segment_pop(void)
   t_segment*		pop;
 
   /* XXX */
-  if (stack.nsegments < 2)
+
+  // XXX if (stack.nsegments < 2)
     {
       /* XXX reserver une page de memoire physique, et la decoupee
        * pour faire des segment_push()
@@ -121,7 +126,7 @@ t_segment*		segment_pop(void)
       cons_msg('!', "error: not enough memory\n");
       // XXX kaneton_error();
     }
-
+    /*  XXX
   pop = stack.segments;
 
   stack.segments = pop->nxt;
@@ -133,6 +138,7 @@ t_segment*		segment_pop(void)
   stack.nsegments--;
 
   return (pop);
+    */
 }
 
 /*
@@ -154,21 +160,21 @@ int			segment_init(void)
   /*
    * XXX
    */
-
+  /* XXX 
   stack.nsegments = 0;
   stack.segments = 0;
 
   n = init->segmngsz / sizeof(t_segment);
   for (i = 0; i < n; i++)
     segment_push((t_segment*)(init->segmng + i * sizeof(t_segment)));
-
+  */
   /*
    * XXX
    */
-
+  /* XXX
   segments.nsegments = 0;
   segments.segments = NULL;
-
+  */
   /*
    * XXX
    */
@@ -177,7 +183,7 @@ int			segment_init(void)
    * XXX revoir le bootloader pour qu il mette les permissions a mettre
    * sur chaque zone genre RX sur les modules.
    */
-
+  /* XXX
   for (i = 0; i < init->segments->nsegments; i++)
     {
       t_segment		s;
@@ -188,7 +194,7 @@ int			segment_init(void)
 
       // XXX segment_add(AS_KERNEL, &s);
     }
-
+  */
   /*
    * XXX
    */

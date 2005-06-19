@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton/arch/ia32
+## path          /home/mycure/kaneton/core/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sat Jun 18 15:18:21 2005   mycure
+## last update   Sun Jun 19 14:41:33 2005   mycure
 ##
 
 #
@@ -37,7 +37,7 @@ MACHDEP_C		:=		as.c				\
 
 MACHDEP_O		:=		$(MACHDEP_C:.c=.o)
 
-MACHDEP_INCLUDE		:=		$(_MACHDEP_INCLUDE_DIR_)/kaneton.h
+MACHDEP_INCLUDE		:=		$(_MACHDEP_INCLUDE_DIR_)/machdep.h
 
 CFLAGS			+=		-D___kernel
 

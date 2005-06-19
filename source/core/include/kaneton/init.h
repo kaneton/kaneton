@@ -5,13 +5,13 @@
  * 
  * init.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Sat Jun 18 16:32:29 2005   mycure
+ * last update   Sun Jun 19 14:38:12 2005   mycure
  */
 
 #ifndef KANETON_INIT_H
@@ -21,7 +21,7 @@
  * dependencies
  */
 
-#include <machdep/arch/machdep.h>
+#include <arch/machdep/machdep.h>
 #include <kaneton/segment.h>
 
 /*
@@ -38,13 +38,13 @@
  * modules
  */
 
-typedef struct			s_module
+typedef struct
 {
   char*				name;
   t_psize			size;
 }				t_module;
 
-typedef struct			s_modules
+typedef struct
 {
   t_uint32			nmodules;
 }				t_modules;
@@ -53,13 +53,13 @@ typedef struct			s_modules
  * regions
  */
 
-typedef struct			s_region /* XXX to move the region.h */
+typedef struct			/* XXX to move the region.h */
 {
   t_vaddr			address;
   t_segid			segid;
 }				t_region;
 
-typedef struct			s_regions
+typedef struct
 {
   t_uint32			nregions;
   t_region*			regions;
@@ -73,7 +73,7 @@ typedef struct			s_regions
  * memory.
  */
 
-typedef struct			s_init
+typedef struct
 {
   t_paddr			mem;
   t_psize			memsz;
