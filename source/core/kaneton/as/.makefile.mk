@@ -32,6 +32,7 @@ as.o: as.c /home/mycure/kaneton/libs/libc.h \
   /home/mycure/kaneton/core/include/kaneton/debug.h \
   /home/mycure/kaneton/core/include/kaneton/init.h \
   /home/mycure/kaneton/core/include/kaneton/segment.h \
+  /home/mycure/kaneton/core/include/kaneton/set.h \
   /home/mycure/kaneton/core/include/services/services.h \
   /home/mycure/kaneton/core/include/sys/sys.h \
   /home/mycure/kaneton/core/include/sys/elf.h

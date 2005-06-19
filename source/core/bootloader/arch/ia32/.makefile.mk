@@ -32,6 +32,7 @@ bootloader.o: bootloader.c /home/mycure/kaneton/libs/libc.h \
   /home/mycure/kaneton/core/include/kaneton/debug.h \
   /home/mycure/kaneton/core/include/kaneton/init.h \
   /home/mycure/kaneton/core/include/kaneton/segment.h \
+  /home/mycure/kaneton/core/include/kaneton/set.h \
   /home/mycure/kaneton/core/include/services/services.h \
   /home/mycure/kaneton/core/include/sys/sys.h \
   /home/mycure/kaneton/core/include/sys/elf.h
@@ -69,6 +70,7 @@ cons.o: cons.c /home/mycure/kaneton/libs/libc.h \
   /home/mycure/kaneton/core/include/kaneton/debug.h \
   /home/mycure/kaneton/core/include/kaneton/init.h \
   /home/mycure/kaneton/core/include/kaneton/segment.h \
+  /home/mycure/kaneton/core/include/kaneton/set.h \
   /home/mycure/kaneton/core/include/services/services.h \
   /home/mycure/kaneton/core/include/sys/sys.h \
   /home/mycure/kaneton/core/include/sys/elf.h
@@ -106,6 +108,7 @@ init.o: init.c /home/mycure/kaneton/libs/libc.h \
   /home/mycure/kaneton/core/include/kaneton/debug.h \
   /home/mycure/kaneton/core/include/kaneton/init.h \
   /home/mycure/kaneton/core/include/kaneton/segment.h \
+  /home/mycure/kaneton/core/include/kaneton/set.h \
   /home/mycure/kaneton/core/include/services/services.h \
   /home/mycure/kaneton/core/include/sys/sys.h \
   /home/mycure/kaneton/core/include/sys/elf.h
@@ -143,6 +146,7 @@ paging.o: paging.c /home/mycure/kaneton/libs/libc.h \
   /home/mycure/kaneton/core/include/kaneton/debug.h \
   /home/mycure/kaneton/core/include/kaneton/init.h \
   /home/mycure/kaneton/core/include/kaneton/segment.h \
+  /home/mycure/kaneton/core/include/kaneton/set.h \
   /home/mycure/kaneton/core/include/services/services.h \
   /home/mycure/kaneton/core/include/sys/sys.h \
   /home/mycure/kaneton/core/include/sys/elf.h
@@ -180,6 +184,7 @@ pmode.o: pmode.c /home/mycure/kaneton/libs/libc.h \
   /home/mycure/kaneton/core/include/kaneton/debug.h \
   /home/mycure/kaneton/core/include/kaneton/init.h \
   /home/mycure/kaneton/core/include/kaneton/segment.h \
+  /home/mycure/kaneton/core/include/kaneton/set.h \
   /home/mycure/kaneton/core/include/services/services.h \
   /home/mycure/kaneton/core/include/sys/sys.h \
   /home/mycure/kaneton/core/include/sys/elf.h
