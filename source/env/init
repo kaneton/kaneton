@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sat Jun 18 11:13:39 2005   mycure
+## last update   Sun Jun 19 17:30:53 2005   mycure
 ##
 
 # INFORMATIONS
@@ -211,6 +211,16 @@ version()
 
 
 
+# DEPENDENCIES
+#
+# this function generates C files dependencies.
+dep()
+{
+  make dep
+}
+
+
+
 # PRINT A MESSAGE
 #
 # print a message with a header
@@ -271,6 +281,9 @@ init
 
 # generate the version header file
 version
+
+# generate the files dependencies
+dep
 
 # return into the env/ directory
 cd env/
