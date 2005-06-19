@@ -11,23 +11,23 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:24:25 2005   mycure
- * last update   Sun Jun 19 20:38:59 2005   mycure
+ * last update   Sun Jun 19 21:33:27 2005   mycure
  */
 
 #ifndef IA32_IA32_STDARG_H
 #define IA32_IA32_STDARG_H	1
 
 /*
- * ---------- extern ----------------------------------------------------------
- */
-
-extern void va_end	(va_list);
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
 typedef char*			va_list;
+
+/*
+ * ---------- extern ----------------------------------------------------------
+ */
+
+extern void va_end	(va_list);
 
 /*
  * ---------- macros ----------------------------------------------------------

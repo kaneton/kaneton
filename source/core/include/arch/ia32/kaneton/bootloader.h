@@ -5,13 +5,13 @@
  * 
  * bootloader.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32/kaneton
+ * path          /home/mycure/kaneton/core/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Sun Jun 19 20:34:46 2005   mycure
+ * last update   Sun Jun 19 22:02:00 2005   mycure
  */
 
 #ifndef IA32_KANETON_BOOTLOADER_H
@@ -50,14 +50,12 @@ typedef struct
 
 /*
  * ---------- prototypes ------------------------------------------------------
- */
-
-/*
- * prototypes:     ../../../../bootloader/arch/ia32/bootloader.c
- *                 ../../../../bootloader/arch/ia32/cons.c
- *                 ../../../../bootloader/arch/ia32/init.c
- *                 ../../../../bootloader/arch/ia32/paging.c
- *                 ../../../../bootloader/arch/ia32/pmode.c
+ *
+ *      ../../../../bootloader/arch/ia32/bootloader.c
+ *      ../../../../bootloader/arch/ia32/cons.c
+ *      ../../../../bootloader/arch/ia32/init.c
+ *      ../../../../bootloader/arch/ia32/paging.c
+ *      ../../../../bootloader/arch/ia32/pmode.c
  */
 
 /*

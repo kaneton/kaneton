@@ -5,20 +5,20 @@
  * 
  * klibc.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/libs/klibc/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 13:53:34 2005   mycure
- * last update   Sun Jun 19 16:03:45 2005   mycure
+ * last update   Sun Jun 19 22:08:43 2005   mycure
  */
 
 #ifndef KLIBC_H
 #define KLIBC_H			1
 
 /*
- * general defines
+ * ---------- defines ---------------------------------------------------------
  */
 
 #define NULL			((void *)0)
@@ -34,14 +34,14 @@
 #define EOF			-1
 
 /*
- * includes
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/libc/libc.h>
 #include <klibc/include/libsys/libsys.h>
 
 /*
- * errno
+ * ---------- extern ----------------------------------------------------------
  */
 
 extern int	errno;

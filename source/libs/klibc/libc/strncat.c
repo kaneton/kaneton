@@ -11,14 +11,22 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:55:14 2005   mycure
- * last update   Sat Jun 18 15:52:05 2005   mycure
+ * last update   Sun Jun 19 22:28:22 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/klibc.h>
 
-char*			strncat(char*		dst,
-				char*		src,
-				size_t		n)
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+char*			strncat(char*				dst,
+				char*				src,
+				size_t				n)
 {
   u_int			i;
   u_int			j;

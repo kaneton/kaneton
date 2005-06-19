@@ -11,16 +11,24 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:50:21 2005   mycure
- * last update   Sat Jun 18 15:46:59 2005   mycure
+ * last update   Sun Jun 19 22:23:59 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/klibc.h>
 
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
 #define LINEDUMPS	16
 
-void			dump_buf(u_int8_t*	buf,
-				 u_int		address,
-				 u_int		size)
+void			dump_buf(u_int8_t*			buf,
+				 u_int				address,
+				 u_int				size)
 {
   u_int			i;
 
@@ -62,8 +70,8 @@ void			dump_buf(u_int8_t*	buf,
   printf("\n");
 }
 
-void			dump(char*		data,
-			     u_int		size)
+void			dump(char*				data,
+			     u_int				size)
 {
   char			buf[LINEDUMPS];
   u_int			i;

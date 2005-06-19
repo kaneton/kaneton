@@ -11,20 +11,20 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Sat Jun 18 16:07:43 2005   mycure
+ * last update   Sun Jun 19 22:18:12 2005   mycure
  */
 
 #ifndef LIBC_PRINTF_H
 #define LIBC_PRINTF_H		1
 
 /*
- * dependencies
+ * ---------- dependencies ----------------------------------------------------
  */
 
 #include <klibc/include/libsys/types.h>
 
 /*
- * defines
+ * ---------- defines ---------------------------------------------------------
  */
 
 #define PRINTF_LADJUST		0x1
@@ -32,7 +32,7 @@
 #define PRINTF_DOT		0x4
 
 /*
- * macros
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define PRINTF_SWAP(_i1_, _i2_)						\
@@ -45,7 +45,7 @@
   }
 
 /*
- * types
+ * ---------- types -----------------------------------------------------------
  */
 
 typedef int			(*t_printf_char_fn)(char	c);

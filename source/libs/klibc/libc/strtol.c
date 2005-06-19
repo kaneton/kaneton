@@ -11,14 +11,22 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:56:18 2005   mycure
- * last update   Sat Jun 18 15:53:34 2005   mycure
+ * last update   Sun Jun 19 22:29:16 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/klibc.h>
 
-long			strtol(const char*	nptr,
-			       char**		endptr,
-			       int		base)
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+long			strtol(const char*			nptr,
+			       char**				endptr,
+			       int				base)
 {
   const char*		s = nptr;
   long			cutoff;

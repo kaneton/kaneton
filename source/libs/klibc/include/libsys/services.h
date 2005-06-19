@@ -11,14 +11,14 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:34:07 2005   mycure
- * last update   Sat Jun 18 16:10:28 2005   mycure
+ * last update   Sun Jun 19 22:19:21 2005   mycure
  */
 
 #ifndef LIBSYS_SERVICES_H
 #define LIBSYS_SERVICES_H	1
 
 /*
- * defines
+ * ---------- defines ---------------------------------------------------------
  */
 
 #define SERVICE_CORE	0x00

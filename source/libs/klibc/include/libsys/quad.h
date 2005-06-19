@@ -5,24 +5,28 @@
  * 
  * quad.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/libs/klibc/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:40:57 2005   mycure
- * last update   Sun Jun 19 16:06:50 2005   mycure
+ * last update   Sun Jun 19 22:20:58 2005   mycure
  */
 
 #ifndef LIBSYS_QUAD_H
 #define LIBSYS_QUAD_H		1
 
 /*
- * dependencies
+ * ---------- dependencies ----------------------------------------------------
  */
 
 #include <klibc/include/libsys/types.h>
 #include <arch/machdep/machdep.h>
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
 
 /*
  * depending on the desired operation, we view a `long long' (aka quad_t) in
@@ -36,6 +40,12 @@ union		uu
   long		sl[2];			/* as two signed longs */
   u_long	ul[2];			/* as two unsigned longs */
 };
+
+typedef unsigned int		qshift_t;
+
+/*
+ * ---------- defines ---------------------------------------------------------
+ */
 
 /*
  * define high and low longwords.
@@ -63,6 +73,10 @@ union		uu
 #define QUAD_HALF_BITS		(sizeof(long) * CHAR_BITS / 2)
 
 /*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+/*
  * extract high and low shortwords from longword, and move low shortword of
  * longword to upper half of long, i.e., produce the upper longword of
  * ((quad_t)(x) << (number_of_bits_in_long/2)).  (`x' must actually be u_long.)
@@ -80,11 +94,5 @@ union		uu
 
 #define QUAD_LHUP(x)							\
   ((u_long)(x) << QUAD_HALF_BITS)
-
-/*
- * types
- */
-
-typedef unsigned int		qshift_t;
 
 #endif

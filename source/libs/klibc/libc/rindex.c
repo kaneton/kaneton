@@ -11,13 +11,21 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:53:05 2005   mycure
- * last update   Sat Jun 18 15:50:18 2005   mycure
+ * last update   Sun Jun 19 22:27:09 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/klibc.h>
 
-char*			rindex(const char*	p,
-			       int		ch)
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+char*			rindex(const char*			p,
+			       int				ch)
 {
   int			loccur;
   u_int			i;

@@ -1,4 +1,4 @@
-_ctype.o: _ctype.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
+ctype.o: ctype.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \

@@ -5,19 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton/core/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Sun Jun 19 20:13:19 2005   mycure
- */
-
-/*
- * ---------- info ------------------------------------------------------------
- *
- * XXX
+ * last update   Sun Jun 19 22:37:15 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -69,18 +63,21 @@ typedef struct
 typedef struct
 {
   o_set				segments;
-  o_set				
 
   o_set*			sets;
 }				m_set;
 
 /*
  * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../../kaneton/set/set.c
  */
 
 /*
- * prototypes:     ../../kaneton/set/set.c
+ * ../../kaneton/set/set.c
  */
+
+int			set_init(void);
 
 /*
  * eop

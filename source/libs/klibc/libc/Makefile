@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/libs
+## path          /home/mycure/kaneton/libs/klibc/libc
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:56:59 2005   mycure
-## last update   Sun Jun 19 20:59:16 2005   mycure
+## last update   Sun Jun 19 22:16:41 2005   mycure
 ##
 
 #
@@ -32,7 +32,7 @@ include			../../../.kaneton.mk
 
 LIBC			:=		libc.a
 
-LIBC_C			:=		_ctype.c			\
+LIBC_C			:=		ctype.c				\
 					bcmp.c				\
 					bcopy.c				\
 					bzero.c				\

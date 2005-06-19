@@ -3,20 +3,32 @@
  *
  * printf.c
  *
- * path          /home/mycure/kaneton/libs/klibc
+ * path          /home/mycure/kaneton/libs/klibc/libc
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Thu May  6 14:37:44 2004   mycure
- * last update   Sun Jun 19 19:24:57 2005   mycure
+ * last update   Sun Jun 19 22:26:53 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
 #include <klibc/include/klibc.h>
 
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
+
 t_printf_char_fn	printf_char = NULL;
 t_printf_attr_fn	printf_attr = NULL;
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
 
 int			printf_string(char*			string,
 				      unsigned int		flags,

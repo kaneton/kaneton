@@ -11,13 +11,21 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:50:14 2005   mycure
- * last update   Sat Jun 18 15:46:31 2005   mycure
+ * last update   Sun Jun 19 22:23:34 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/klibc.h>
 
-void			bzero(void*		dst,
-			      size_t		length)
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+void			bzero(void*				dst,
+			      size_t				length)
 {
   u_char		*data = dst;
 

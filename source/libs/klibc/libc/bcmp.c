@@ -11,14 +11,22 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:49:47 2005   mycure
- * last update   Sat Jun 18 15:46:13 2005   mycure
+ * last update   Sun Jun 19 22:23:19 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/klibc.h>
 
-int			bcmp(const void*	b1,
-			     const void*	b2,
-			     size_t		length)
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+int			bcmp(const void*			b1,
+			     const void*			b2,
+			     size_t				length)
 {
   const char*		p1 = b1;
   const char*		p2 = b2;

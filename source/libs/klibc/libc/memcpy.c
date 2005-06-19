@@ -11,14 +11,22 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:51:54 2005   mycure
- * last update   Sat Jun 18 15:48:42 2005   mycure
+ * last update   Sun Jun 19 22:25:10 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/klibc.h>
 
-void*			memcpy(void*		dest,
-			       const void*	src,
-			       size_t		n)
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+void*			memcpy(void*				dest,
+			       const void*			src,
+			       size_t				n)
 {
   char*			d = dest;
   const char*		s = src;

@@ -11,14 +11,22 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:56:28 2005   mycure
- * last update   Sat Jun 18 16:01:20 2005   mycure
+ * last update   Sun Jun 19 22:29:32 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/klibc.h>
 
-unsigned long		strtoul(const char*	nptr,
-				char**		endptr,
-				int		base)
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+unsigned long		strtoul(const char*			nptr,
+				char**				endptr,
+				int				base)
 {
   const char*		s = nptr;
   unsigned long		cutoff;

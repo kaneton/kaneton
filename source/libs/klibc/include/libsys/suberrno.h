@@ -11,14 +11,14 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:40:07 2005   mycure
- * last update   Sat Jun 18 16:10:41 2005   mycure
+ * last update   Sun Jun 19 22:19:29 2005   mycure
  */
 
 #ifndef LIBSYS_SUBERRNO_H
 #define LIBSYS_SUBERRNO_H	1
 
 /*
- * defines
+ * ---------- defines ---------------------------------------------------------
  */
 
 /*

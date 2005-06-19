@@ -5,16 +5,24 @@
  * 
  * _ctype.c
  * 
- * path          /home/mycure/kaneton/src/libs/klibc/libc
+ * path          /home/mycure/kaneton/libs/klibc/libc
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:49:35 2005   mycure
- * last update   Sat Apr 23 16:52:33 2005   mycure
+ * last update   Sun Jun 19 22:24:27 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/klibc.h>
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
 
 const u_char		_ctype[(1 << CHAR_BITS) + 1] = 
 {

@@ -11,20 +11,20 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:25 2005   mycure
- * last update   Sat Jun 18 16:07:15 2005   mycure
+ * last update   Sun Jun 19 22:17:36 2005   mycure
  */
 
 #ifndef LIBC_CTYPE_H
 #define LIBC_CTYPE_H		1
 
 /*
- * dependencies
+ * ---------- dependencies ----------------------------------------------------
  */
 
 #include <klibc/include/libsys/types.h>
 
 /*
- * defines
+ * ---------- defines ---------------------------------------------------------
  */
 
 #define _U			0x01
@@ -37,7 +37,7 @@
 #define _B			0x80
 
 /*
- * extern
+ * ---------- extern ----------------------------------------------------------
  */
 
 extern const u_char	_ctype[];
@@ -45,7 +45,7 @@ extern const short	_ctype_toupper[];
 extern const short	_ctype_tolower[];
 
 /*
- * macros
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define isdigit(c)	((int) ((_ctype + 1)[(int) (c)] & _N))

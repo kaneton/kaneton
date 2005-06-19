@@ -25,11 +25,11 @@ sub mkproto_file_to_check ($)
 
     while ($line = <$handle>)
     {
-	last if ($line =~ "prototypes");
+	last if ($line =~ "---------- prototypes ------------------------------------------------------");
     }
 
     mkproto_error () if (!defined ($line));
-    $line =~ s/prototypes://g;
+    $line =~ s/---------- prototypes ------------------------------------------------------//g;
 
     my $end = 0;
 
@@ -42,14 +42,20 @@ sub mkproto_file_to_check ($)
 	}
 	else
 	{
-	    if ($line =~ " *[*]{1}[ \t]*([^ ]*)[ \t]*([^ ]*)")
+	    if ($line =~ " [*] *\$")
 	    {
-		$src[$index] = $1;
-		$index++;
-		if ($2 ne "")
+	    }
+	    else
+	    {
+		if ($line =~ " *[*]{1}[ \t]*([^ ]*)[ \t]*([^ ]*)")
 		{
-		    $src[$index] = $2;
+		    $src[$index] = $1;
 		    $index++;
+		    if ($2 ne "")
+		    {
+			$src[$index] = $2;
+			$index++;
+		    }
 		}
 	    }
 	}

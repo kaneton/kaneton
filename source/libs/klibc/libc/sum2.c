@@ -5,19 +5,27 @@
  * 
  * sum2.c
  * 
- * path          /home/mycure/kaneton/src/libs/klibc/libc
+ * path          /home/mycure/kaneton/libs/klibc/libc
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:56:44 2005   mycure
- * last update   Sat Apr 23 17:02:05 2005   mycure
+ * last update   Sun Jun 19 22:29:45 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/klibc.h>
 
-u_int32_t		sum2(char		*buf,
-			     int		size)
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+u_int32_t		sum2(char				*buf,
+			     int				size)
 {
   register u_int32_t	thecrc;
   register u_int32_t	total;

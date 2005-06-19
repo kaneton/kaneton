@@ -5,16 +5,24 @@
  * 
  * quad.c
  * 
- * path          /home/mycure/kaneton/libs/klibc
+ * path          /home/mycure/kaneton/libs/klibc/libsys
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:08:53 2005   mycure
- * last update   Fri Jun 17 16:15:22 2005   mycure
+ * last update   Sun Jun 19 22:30:39 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/klibc.h>
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
 
 /*
  * add two quads.  this is trivial since a one-bit carry from a single

@@ -11,14 +11,14 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:36:32 2005   mycure
- * last update   Sat Jun 18 16:09:37 2005   mycure
+ * last update   Sun Jun 19 22:18:58 2005   mycure
  */
 
 #ifndef LIBSYS_LIBSYS_H
 #define LIBSYS_LIBSYS_H		1
 
 /*
- * includes
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/libsys/errno.h>
@@ -29,7 +29,10 @@
 #include <klibc/include/libsys/quad.h>
 
 /*
- * prototypes:     ../../libsys/perror.c         ../../libsys/quad.c
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../../libsys/perror.c
+ *      ../../libsys/quad.c
  */
 
 /*

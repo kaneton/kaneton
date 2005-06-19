@@ -11,14 +11,22 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:55:34 2005   mycure
- * last update   Sat Jun 18 15:52:51 2005   mycure
+ * last update   Sun Jun 19 22:28:37 2005   mycure
+ */
+
+/*
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc/include/klibc.h>
 
-int			strncmp(const char*	s1,
-				const char*	s2,
-				size_t		n)
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+int			strncmp(const char*			s1,
+				const char*			s2,
+				size_t				n)
 {
   u_int			i;
   u_int			j;
