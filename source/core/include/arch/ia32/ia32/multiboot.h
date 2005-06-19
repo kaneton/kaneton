@@ -3,13 +3,13 @@
  *
  * multiboot.h
  *
- * path          /home/mycure/kaneton/core/include/arch/ia32/ia32
+ * path          /home/mycure/kaneton/core/include/arch/ia32
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 18:49:33 2004   mycure
- * last update   Sun Jun 19 14:09:34 2005   mycure
+ * last update   Sun Jun 19 16:11:30 2005   mycure
  */
 
 #ifndef IA32_IA32_MULTIBOOT_H
@@ -25,7 +25,7 @@
  * structures / types
  */
 
-typedef struct			multiboot_header
+typedef struct
 {
   unsigned int			magic;
   unsigned int			flags;
@@ -37,7 +37,7 @@ typedef struct			multiboot_header
   unsigned int			entry_addr;
 }				multiboot_header_t;
 
-typedef struct			aout_symbol_table
+typedef struct
 {
   unsigned int			tabsize;
   unsigned int			strsize;
@@ -45,7 +45,7 @@ typedef struct			aout_symbol_table
   unsigned int			reserved;
 }				aout_symbol_table_t;
 
-typedef struct			elf_section_header_table
+typedef struct
 {
   unsigned int			num;
   unsigned int			size;
@@ -53,7 +53,7 @@ typedef struct			elf_section_header_table
   unsigned int			shndx;
 }				elf_section_header_table_t;
 
-typedef struct			multiboot_info
+typedef struct
 {
   unsigned int			flags;
   unsigned int			mem_lower;
@@ -73,7 +73,7 @@ typedef struct			multiboot_info
   unsigned int			mmap_addr;
 }				multiboot_info_t;
 
-typedef struct			module
+typedef struct
 {
   unsigned int			mod_start;
   unsigned int			mod_end;
@@ -81,7 +81,7 @@ typedef struct			module
   unsigned int			reserved;
 }				module_t;
 
-typedef struct			memory_map
+typedef struct
 {
   unsigned int			size;
   unsigned int			base_addr_low;

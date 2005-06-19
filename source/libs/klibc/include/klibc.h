@@ -5,13 +5,13 @@
  * 
  * klibc.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 13:53:34 2005   mycure
- * last update   Sat Jun 18 16:13:06 2005   mycure
+ * last update   Sun Jun 19 16:03:45 2005   mycure
  */
 
 #ifndef KLIBC_H

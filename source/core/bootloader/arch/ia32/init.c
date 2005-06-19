@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Fri Jun 17 14:58:48 2005   mycure
+ * last update   Sun Jun 19 15:14:14 2005   mycure
  */
 
 #include <libc.h>
@@ -168,78 +168,78 @@ void			bootloader_init_segments(void)
    * 3)
    */
 
-  init->segments->segments[0].address = 0x0;
-  init->segments->segments[0].size = 0x00100000;
+  init->segments[0].address = 0x0;
+  init->segments[0].size = 0x00100000;
 
   /*
    * 4)
    */
 
-  init->segments->segments[1].address = init->kcode;
-  init->segments->segments[1].size = init->kcodesz;
+  init->segments[1].address = init->kcode;
+  init->segments[1].size = init->kcodesz;
 
   /*
    * 5)
    */
 
-  init->segments->segments[2].address = init->init;
-  init->segments->segments[2].size = init->initsz;
+  init->segments[2].address = init->init;
+  init->segments[2].size = init->initsz;
 
   /*
    * 6)
    */
 
-  init->segments->segments[3].address = (t_paddr)init->modules;
-  init->segments->segments[3].size = init->modulessz;
+  init->segments[3].address = (t_paddr)init->modules;
+  init->segments[3].size = init->modulessz;
 
   /*
    * 7)
    */
 
-  init->segments->segments[4].address = (t_paddr)init->segments;
-  init->segments->segments[4].size = init->segmentssz;
+  init->segments[4].address = (t_paddr)init->segments;
+  init->segments[4].size = init->segmentssz;
 
   /*
    * 8)
    */
 
-  init->segments->segments[5].address = (t_paddr)init->regions;
-  init->segments->segments[5].size = init->regionssz;
+  init->segments[5].address = (t_paddr)init->regions;
+  init->segments[5].size = init->regionssz;
 
   /*
    * 9)
    */
 
-  init->segments->segments[6].address = init->kstack;
-  init->segments->segments[6].size = init->kstacksz;
+  init->segments[6].address = init->kstack;
+  init->segments[6].size = init->kstacksz;
 
   /*
    * 10)
    */
 
-  init->segments->segments[7].address = init->segmng;
-  init->segments->segments[7].size = init->segmngsz;
+  init->segments[7].address = init->segmng;
+  init->segments[7].size = init->segmngsz;
 
   /*
    * 11)
    */
 
-  init->segments->segments[8].address = init->asmng;
-  init->segments->segments[8].size = init->asmngsz;
+  init->segments[8].address = init->asmng;
+  init->segments[8].size = init->asmngsz;
 
   /*
    * 12)
    */
 
-  init->segments->segments[9].address = (t_paddr)init->machdep.gdt;
-  init->segments->segments[9].size = PAGESZ;
+  init->segments[9].address = (t_paddr)init->machdep.gdt;
+  init->segments[9].size = PAGESZ;
 
   /*
    * 13)
    */
 
-  init->segments->segments[10].address = (t_paddr)init->machdep.pd;
-  init->segments->segments[10].size = PAGESZ;
+  init->segments[10].address = (t_paddr)init->machdep.pd;
+  init->segments[10].size = PAGESZ;
 }
 
 /*
@@ -263,49 +263,49 @@ void			bootloader_init_regions(void)
    * 1)
    */
 
-  init->regions->regions[0].address = init->segments->segments[0].address;
+  init->regions[0].address = init->segments[0].address;
 
   /*
    * 2)
    */
 
-  init->regions->regions[1].address = init->segments->segments[1].address;
+  init->regions[1].address = init->segments[1].address;
 
   /*
    * 3)
    */
 
-  init->regions->regions[2].address = init->segments->segments[2].address;
+  init->regions[2].address = init->segments[2].address;
 
   /*
    * 4)
    */
 
-  init->regions->regions[3].address = init->segments->segments[6].address;
+  init->regions[3].address = init->segments[6].address;
 
   /*
    * 5)
    */
 
-  init->regions->regions[4].address = init->segments->segments[7].address;
+  init->regions[4].address = init->segments[7].address;
 
   /*
    * 6)
    */
 
-  init->regions->regions[5].address = init->segments->segments[8].address;
+  init->regions[5].address = init->segments[8].address;
 
   /*
    * 7)
    */
 
-  init->regions->regions[6].address = init->segments->segments[9].address;
+  init->regions[6].address = init->segments[9].address;
 
   /*
    * 8)
    */
 
-  init->regions->regions[7].address = init->segments->segments[10].address;
+  init->regions[7].address = init->segments[10].address;
 }
 
 /*
@@ -424,22 +424,18 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
   init->modules->nmodules = nmodules;
 
   init->segments =
-    (t_segments*)bootloader_init_alloc(sizeof(t_segment) +
-				       nsegments * sizeof(t_segment),
+    (o_segment*)bootloader_init_alloc(nsegments * sizeof(o_segment),
 				       &segmentssz);
   memset(init->segments, 0x0, segmentssz);
+  init->nsegments = nsegments;
   init->segmentssz = segmentssz;
-  init->segments->nsegments = nsegments;
-  init->segments->segments = (t_segment*)(init->segments + sizeof(t_segments));
 
   init->regions =
-    (t_regions*)bootloader_init_alloc(sizeof(t_regions) +
-				      nregions * sizeof(t_region),
+    (o_region*)bootloader_init_alloc(nregions * sizeof(o_region),
 				      &regionssz);
   memset(init->regions, 0x0, regionssz);
+  init->nregions = nregions;
   init->regionssz = regionssz;
-  init->regions->nregions = nregions;
-  init->regions->regions = (t_region*)(init->regions + sizeof(t_regions));
 
   /*
    * 5)

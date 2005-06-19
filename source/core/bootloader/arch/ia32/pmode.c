@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Fri Jun 17 14:50:35 2005   mycure
+ * last update   Sun Jun 19 16:15:08 2005   mycure
  */
 
 #include <libc.h>
@@ -256,7 +256,7 @@ void			bootloader_pmode_init(void)
    */
 
   gdtr.address = (t_uint32)gdt;
-  gdtr.size = (t_uint16)(PMODE_GDT_VALID_ENTRIES * sizeof(t_gdte));
+  gdtr.size = (t_uint16)(PMODE_GDT_ENTRIES * sizeof(t_gdte));
 
   LGDT(gdtr);
 
@@ -271,8 +271,6 @@ void			bootloader_pmode_init(void)
    */
 
   bootloader_pmode_enable();
-
-  bootloader_cons_msg('+', "protected mode enabled\n");
 
   /*
    * 7)

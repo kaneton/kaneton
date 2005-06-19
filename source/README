@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Sun Jun 19 14:22:11 2005   mycure
+## last update   Sun Jun 19 16:36:03 2005   mycure
 ##
 
 
@@ -45,7 +45,7 @@ linking options etc.. to use when developing kaneton.
 a different environment exists for each operating system. for more information
 take a look to the env/ directory.
 
-each environment, directory is composed of one (but can be more) file:
+each environment, directory is composed of three (but can be more) files:
 
 ---[ kaneton.mk
 
@@ -53,7 +53,20 @@ each environment, directory is composed of one (but can be more) file:
   kaneton kernel.
 
   so, you can here specify compile and linking options but also binaries
-  to use.
+  to use. moreover you can decide how to compile, link, remove, display
+  information in relating with the compile process.
+
+---[ init
+
+  this shell script is called by the init shell script located in the
+  env/ directory. the goal of this script is to install operating system
+  dependent files like kaneton.mk. moreover this script checks wheter
+  the binaries required for the compile process.
+
+---[ clean
+
+  this shell script simply clears every installations made by the init
+  shell script.
 
 
 
@@ -358,25 +371,15 @@ the kaneton kernel uses few fundamental defines listed below:
 
   indicates that this program was compiled for the kaneton kernel.
 
----[ ___32bits
+---[ ___wordsz
 
-  indicates that this program was compiled to run on a 32-bit processor.
+  indicates that this program was compiled to run on a ___wordsz
+  value processor.
 
----[ ___64bits
+---[ ___endian
 
-  indicates that this program was compiled to run on a 64-bit processor.
-
----[ ___128bits
-
-  indicates that this program was compiled to run on a 128-bit processor.
-
----[ ___little_endian
-
-  indicates that this program was compiled to run on a little endian processor.
-
----[ ___big_endian
-
-  indicates that this program was compiled to run on a big endian processor.
+  indicates that this program was compiled to run on a ___endian value
+  processor.
 
 
 

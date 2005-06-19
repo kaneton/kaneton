@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 19 14:40:47 2005   mycure
+ * last update   Sun Jun 19 16:12:47 2005   mycure
  */
 
 #ifndef IA32_IA32_TYPES_H
@@ -46,6 +46,7 @@ typedef t_uint32		t_offset;
 typedef t_uint32		t_opts;
 
 typedef t_uint64		t_id;
+typedef t_id			t_setid;
 typedef t_id			t_segid;
 typedef t_id			t_asid;
 

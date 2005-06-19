@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:55:06 2005   mycure
- * last update   Sun Jun 19 14:30:10 2005   mycure
+ * last update   Sun Jun 19 16:25:59 2005   mycure
  */
 
 #ifndef IA32_IA32_PMODE_H
@@ -31,22 +31,10 @@
  * general
  */
 
-#define BOOTLOADER_PMODESZ	(1 * PAGESZ)
-
-#define PMODE_GDT_ADDR		BOOTLOADER_PMODE
-
 #define PMODE_GDT_ENTRIES	256
-#define PMODE_GDT_VALID_ENTRIES	(1 + 8)
 
 #define PMODE_TI_GDT		0x0
 #define PMODE_TI_LDT		0x1
-
-/*
- * options
- */
-
-#define PMODE_OPTS_ZERO		0x0
-#define PMODE_OPTS_PRESENT	0x1
 
 /*
  * gdt entries
@@ -65,28 +53,24 @@
  * gdt flags
  */
 
-#define PMODE_GDT_GRANULAR	0x8
-
-#define PMODE_GDT_USE32		0x4
-#define PMODE_GDT_USE16		0x0
-
-#define PMODE_GDT_AVAILABLE	0x1
+#define PMODE_GDT_GRANULAR	(1 << 3)
+#define PMODE_GDT_USE32		(1 << 2)
+#define PMODE_GDT_USE16		(0 << 2)
+#define PMODE_GDT_AVAILABLE	(1 << 0)
 
 /*
  * gdt type
  */
 
-#define PMODE_GDT_PRESENT	0x80
+#define PMODE_GDT_PRESENT	(1 << 7)
+#define PMODE_GDT_DPL3		((1 << 6) | (1 << 5))
+#define PMODE_GDT_DPL2		(1 << 6)
+#define PMODE_GDT_DPL1		(1 << 5)
+#define PMODE_GDT_DPL0		(0 << 5)
+#define PMODE_GDT_S		(1 << 4)
 
-#define PMODE_GDT_DPL3		0x60
-#define PMODE_GDT_DPL2		0x40
-#define PMODE_GDT_DPL1		0x20
-#define PMODE_GDT_DPL0		0x00
-
-#define PMODE_GDT_S		0x10
-
-#define PMODE_GDT_CODE		0x0a		/* execute and read only */
-#define PMODE_GDT_DATA		0x02		/* read and write */
+#define PMODE_GDT_CODE		((1 << 3) | (1 << 1))
+#define PMODE_GDT_DATA		(1 << 1)
 
 /*
  * types

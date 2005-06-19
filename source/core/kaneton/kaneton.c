@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 19 13:40:02 2005   mycure
+ * last update   Sun Jun 19 16:02:23 2005   mycure
  */
 
 #include <libc.h>
@@ -59,18 +59,20 @@ void			kaneton_dump(void)
   // XXX kaneton_error();
 #endif
 
-#if defined(___32bit)
+#if (___wordsz == WORDSZ_32)
   cons_msg('#', " wordsize: 32-bit\n");
-#elif defined(___64bit)
+#elif (___wordsz == WORDSZ_64)
   cons_msg('#', " wordsize: 64-bit\n");
+#elif (___wordsz == WORDSZ_128)
+  cons_msg('#', " wordsize: 128-bit\n");
 #else
-  cons_msg('!', " error: no wordsize defined\n");
+  cons_msg('!', " error: no word size defined\n");
   // XXX kaneton_error();
 #endif
 
-#if defined(___little_endian)
+#if (___endian == ENDIAN_LITTLE)
   cons_msg('#', " endian: little\n");
-#elif defined(___big_endian)
+#elif (___endian == ENDIAN_BIG)
   cons_msg('#', " endian: big\n");
 #else
   cons_msg('!', " error: no endian defined\n");

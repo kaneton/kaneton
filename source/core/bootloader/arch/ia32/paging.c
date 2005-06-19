@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Fri Jun 17 14:50:20 2005   mycure
+ * last update   Sun Jun 19 15:15:10 2005   mycure
  */
 
 #include <libc.h>
@@ -210,6 +210,4 @@ void			bootloader_paging_init(void)
    */
 
   bootloader_paging_enable();
-
-  bootloader_cons_msg('+', "paging enabled\n");
 }

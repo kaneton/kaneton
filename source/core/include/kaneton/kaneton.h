@@ -5,13 +5,13 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Jun 19 14:37:30 2005   mycure
+ * last update   Sun Jun 19 16:04:51 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
@@ -28,6 +28,21 @@
  */
 
 /*
+ * endian
+ */
+
+#define ENDIAN_LITTLE		(1 << 0)
+#define ENDIAN_BIG		(1 << 1)
+
+/*
+ * word size
+ */
+
+#define WORDSZ_32		(1 << 0)
+#define WORDSZ_64		(1 << 1)
+#define WORDSZ_128		(1 << 2)
+
+/*
  * development mode
  */
 
@@ -42,6 +57,7 @@
 #include <kaneton/debug.h>
 #include <kaneton/init.h>
 #include <kaneton/segment.h>
+#include <kaneton/set.h>
 
 /*
  * prototypes:     ../../kaneton/kaneton.c

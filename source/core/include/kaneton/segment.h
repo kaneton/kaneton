@@ -5,13 +5,13 @@
  * 
  * segment.h
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Jun 19 14:38:04 2005   mycure
+ * last update   Sun Jun 19 15:17:16 2005   mycure
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -27,6 +27,10 @@
  * types
  */
 
+/*
+ * segment object
+ */
+
 typedef struct
 {
   t_segid			segid;
@@ -35,17 +39,23 @@ typedef struct
   t_psize			size;
 
   /* t_ownid			ownid; */
-
-  struct s_segment*		prv;
-  struct s_segment*		nxt;
-}				t_segment;
+}				o_segment;
 
 typedef struct
 {
   t_uint32			nsegments;
 
-  t_segment*			segments;
+  o_segment*			segments;
 }				t_segments;
+
+/*
+ * segment manager
+ */
+
+typedef struct
+{
+
+}				m_segment;
 
 /*
  * prototypes:     ../../kaneton/segment/segment.c
@@ -61,10 +71,10 @@ t_segid			segment_id(void);
 void			segment_dump(void);
 
 
-void			segment_push(t_segment*			push);
+void			segment_push(o_segment*			push);
 
 
-t_segment*		segment_pop(void);
+o_segment*		segment_pop(void);
 
 
 int			segment_init(void);

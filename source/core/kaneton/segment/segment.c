@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 19 14:43:10 2005   mycure
+ * last update   Sun Jun 19 15:17:50 2005   mycure
  */
 
 #include <libc.h>
@@ -27,13 +27,13 @@ extern t_init*		init;
  * the stack of free segment structures, in other words the freelist.
  */
 
-t_segments		stack;
+/* XXX t_segments		stack; */
 
 /*
  * the list of segments.
  */
 
-t_segments		segments;
+/* XXX t_segments		segments; */
 
 /*
  * this function just returns an identfier.
@@ -41,18 +41,18 @@ t_segments		segments;
  * for the moment, this function justs increments a number and never
  * recycles identifiers.
  */
-
+/* XXX
 t_segid			segment_id(void)
 {
   static t_segid	segid = 0;
 
   return (segid++);
 }
-
+*/
 /*
  * this function dumps the segments.
  */
-
+/* XXX
 void			segment_dump(void)
 {
   t_segment*		s;
@@ -65,22 +65,19 @@ void			segment_dump(void)
   cons_msg('#', " segments: %u\n",
 	   segments.nsegments);
 
-  /* XXX
   for (s = segments.segments; s != NULL; s = s->nxt)
     cons_msg('#', "  [%qu] 0x%x - %u bytes\n",
 	     s->segid,
 	     s->address,
 	     s->size);
-  */
 }
-
+*/
 /*
  * this function adds a segment structure to the freelist.
  */
-
-void			segment_push(t_segment*			push)
+/* XXX
+void			segment_push(o_segment*			push)
 {
-  /* XXX
   push->segid = 0;
   push->address = 0;
   push->size = 0;
@@ -103,30 +100,26 @@ void			segment_push(t_segment*			push)
     }
 
   stack.nsegments++;
-  */
 }
-
+*/
 /*
  * this function pops a segment structure from the stack.
  */
-
-t_segment*		segment_pop(void)
+/* XXX
+o_segment*		segment_pop(void)
 {
   t_segment*		pop;
 
-  /* XXX */
-
   // XXX if (stack.nsegments < 2)
     {
-      /* XXX reserver une page de memoire physique, et la decoupee
-       * pour faire des segment_push()
-       */
+    // XXX reserver une page de memoire physique, et la decoupee
+    // pour faire des segment_push()
+    //
 
-      /* XXX */
       cons_msg('!', "error: not enough memory\n");
       // XXX kaneton_error();
     }
-    /*  XXX
+
   pop = stack.segments;
 
   stack.segments = pop->nxt;
@@ -138,9 +131,8 @@ t_segment*		segment_pop(void)
   stack.nsegments--;
 
   return (pop);
-    */
 }
-
+*/
 /*
  * this functions initializes the segment manager from the init
  * variable containing segments to keep safe.
@@ -158,26 +150,16 @@ int			segment_init(void)
   t_sint32		i;
 
   /*
-   * XXX
-   */
-  /* XXX 
   stack.nsegments = 0;
   stack.segments = 0;
 
   n = init->segmngsz / sizeof(t_segment);
   for (i = 0; i < n; i++)
     segment_push((t_segment*)(init->segmng + i * sizeof(t_segment)));
-  */
-  /*
-   * XXX
-   */
-  /* XXX
+
   segments.nsegments = 0;
   segments.segments = NULL;
   */
-  /*
-   * XXX
-   */
 
   /*
    * XXX revoir le bootloader pour qu il mette les permissions a mettre

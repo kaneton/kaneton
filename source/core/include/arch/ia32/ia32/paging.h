@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:39:42 2005   mycure
- * last update   Sun Jun 19 14:30:04 2005   mycure
+ * last update   Sun Jun 19 16:30:40 2005   mycure
  */
 
 #ifndef IA32_IA32_PAGING_H
@@ -26,10 +26,6 @@
 /*
  * defines
  */
-
-#define PAGING_PD		0x401000	/* kernel page table */
-#define PAGING_PT0		0x402000	/* page table 0 */
-#define PAGING_PT4		0x406000	/* page table 4 */
 
 #define PAGING_NPDE		1024
 #define PAGING_NPTE		1024
@@ -57,17 +53,17 @@
  * paging flags
  */
 
-#define PAGING_GLOBAL		0x100	/* global */
-#define PAGING_PS		0x080	/* page size */
-#define PAGING_DIRTY		0x040	/* dirty */
-#define PAGING_ACCESSED		0x020	/* accessed */
-#define PAGING_PCD		0x010	/* page-level cache disable */
-#define PAGING_PWT		0x008	/* page-level write through */
-#define PAGING_U		0x004	/* user */
-#define PAGING_S		0x000	/* supervisor */
-#define PAGING_RW		0x002	/* read/write */
-#define PAGING_RO		0x000	/* read only */
-#define PAGING_P		0x001	/* present */
+#define PAGING_GLOBAL		(1 << 8)	/* global */
+#define PAGING_PS		(1 << 7)	/* page size */
+#define PAGING_DIRTY		(1 << 6)	/* dirty */
+#define PAGING_ACCESSED		(1 << 5)	/* accessed */
+#define PAGING_PCD		(1 << 4)	/* page-level cache disable */
+#define PAGING_PWT		(1 << 3)	/* page-level write through */
+#define PAGING_U		(1 << 2)	/* user */
+#define PAGING_S		(0 << 2)	/* supervisor */
+#define PAGING_RW		(1 << 1)	/* read/write */
+#define PAGING_RO		(0 << 1)	/* read only */
+#define PAGING_P		(1 << 0)	/* present */
 
 /*
  * types

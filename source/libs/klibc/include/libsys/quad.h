@@ -5,13 +5,13 @@
  * 
  * quad.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:40:57 2005   mycure
- * last update   Sat Jun 18 16:12:29 2005   mycure
+ * last update   Sun Jun 19 16:06:50 2005   mycure
  */
 
 #ifndef LIBSYS_QUAD_H
@@ -41,12 +41,10 @@ union		uu
  * define high and low longwords.
  */
 
-#ifdef ___little_endian
+#if (___endian == ENDIAN_LITTLE)
 #define QUAD_HIGHWORD		1
 #define QUAD_LOWWORD		0
-#endif
-
-#ifdef ___big_endian
+#elif (___endian == ENDIAN_BIG)
 #define QUAD_HIGHWORD		0
 #define QUAD_LOWWORD		1
 #endif

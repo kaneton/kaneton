@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Sun Jun 19 14:32:35 2005   mycure
+ * last update   Sun Jun 19 16:10:35 2005   mycure
  */
 
 #ifndef IA32_KANETON_DEBUG_H
@@ -21,9 +21,9 @@
  * defines
  */
 
-#define IA32_DEBUG_INIT		0x1
-#define IA32_DEBUG_PMODE	0x2
-#define IA32_DEBUG_PAGING	0x4
+#define IA32_DEBUG_INIT		(1 << 0)
+#define IA32_DEBUG_PMODE	(1 << 1)
+#define IA32_DEBUG_PAGING	(1 << 2)
 
 #define IA32_DEBUG							\
   (0)

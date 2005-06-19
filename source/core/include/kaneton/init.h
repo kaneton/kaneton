@@ -5,13 +5,13 @@
  * 
  * init.h
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Sun Jun 19 14:38:12 2005   mycure
+ * last update   Sun Jun 19 16:08:11 2005   mycure
  */
 
 #ifndef KANETON_INIT_H
@@ -28,7 +28,7 @@
  * defines
  */
 
-#define INIT_KSTACKSZ		8192
+#define INIT_KSTACKSZ		(2 * PAGESZ)
 
 /*
  * types
@@ -57,13 +57,7 @@ typedef struct			/* XXX to move the region.h */
 {
   t_vaddr			address;
   t_segid			segid;
-}				t_region;
-
-typedef struct
-{
-  t_uint32			nregions;
-  t_region*			regions;
-}				t_regions;
+}				o_region;
 
 /*
  * the init structure
@@ -87,10 +81,12 @@ typedef struct
   t_modules*			modules;
   t_psize			modulessz;
 
-  t_segments*			segments;
+  t_uint32			nsegments;
+  o_segment*			segments;
   t_psize			segmentssz;
 
-  t_regions*			regions;
+  t_uint32			nregions;
+  o_region*			regions;
   t_psize			regionssz;
 
   t_paddr			kstack;
