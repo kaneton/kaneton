@@ -5,13 +5,13 @@
 ## 
 ## README
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/source
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Sun Jun 19 21:16:14 2005   mycure
+## last update   Mon Jun 20 07:26:17 2005   mycure
 ##
 
 
@@ -639,5 +639,5 @@ the user configuration used to evaluate your project is 'eval'.
   for source files:
 
 	/*
-	 * ---------- my_function ---------------------------------------------
+	 * ---------- includes ------------------------------------------------
 	 */
