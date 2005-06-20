@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/source
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Sun Jun 19 22:37:15 2005   mycure
+ * last update   Mon Jun 20 08:43:29 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -66,6 +66,37 @@ typedef struct
 
   o_set*			sets;
 }				m_set;
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#define set_rsv(_type_, ...)						\
+  set_rsv_##_type_(...)
+
+#define set_rel(_type_, ...)						\
+  set_rel_##_type_(...)
+
+#define set_add(_type_, ...)						\
+  set_add_##_type_(...)
+
+#define set_remove(_type_, ...)						\
+  set_remove_##_type_(...)
+
+#define set_insert(_type_, ...)						\
+  set_insert_##_type_(...)
+
+#define set_insert_head(_type_, ...)					\
+  set_insert_head_##_type_(...)
+
+#define set_insert_tail(_type_, ...)					\
+  set_insert_tail_##_type_(...)
+
+#define set_insert_before(_type_, ...)					\
+  set_insert_before_##_type_(...)
+
+#define set_insert_after(_type_, ...)					\
+  set_insert_after_##_type_(...)
 
 /*
  * ---------- prototypes ------------------------------------------------------

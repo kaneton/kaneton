@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/source/core/kaneton/set
+ * path          /home/mycure/source
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jun 20 08:05:17 2005   mycure
+ * last update   Mon Jun 20 08:45:24 2005   mycure
  */
 
 /*
@@ -42,6 +42,17 @@ m_set			set;
  */
 
 /*
+ * this function returns the set corresponding to a set identifier.
+ */
+
+int			set_get(t_setid				setid,
+				o_set**				set)
+{
+
+  return (0);
+}
+
+/*
  * this function initializes the set manager.
  *
  * steps:
@@ -55,4 +66,3 @@ int			set_init(void)
 
   
 }
-
