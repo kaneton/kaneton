@@ -5,13 +5,19 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/segment
+ * path          /home/mycure/source/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 19 21:27:45 2005   mycure
+ * last update   Mon Jun 20 08:05:23 2005   mycure
+ */
+
+/*
+ * ---------- info ------------------------------------------------------------
+ *
+ * XXX
  */
 
 /*
