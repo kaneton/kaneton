@@ -1,175 +1,79 @@
 ##
 ## copyright quintard julien
 ## 
-## kaneton
+## spargo
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/source
+## path          /home/mycure/data/research/projects/spargo/specifications/paper
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
-## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Jun 20 08:01:31 2005   mycure
+## started on    Tue Mar 29 13:16:14 2005   mycure
+## last update   Sat May 14 21:52:04 2005   mycure
 ##
 
-#
-# ---------- directives -------------------------------------------------------
-#
+NAME		=		paper
 
-.SILENT:
+## intermidiate names
 
-.PHONY:		all init clean kaneton clear purge proto		\
-		dep build install check
+NAME_TEX	=		$(NAME).tex
+NAME_DVI	=		$(NAME).dvi
+NAME_PS		=		$(NAME).ps
+NAME_PDF	=		$(NAME).pdf
 
-#
-# ---------- shell ------------------------------------------------------------
-#
+NAME_AUX	=		$(NAME).aux
+NAME_TOC	=		$(NAME).toc
+NAME_LOG	=		$(NAME).log
+NAME_LOF	=		$(NAME).lof
 
-SHELL			:=		/bin/sh
+## binaries
 
-#
-# ---------- variables --------------------------------------------------------
-#
+LATEX		=		latex
+DVIPS		=		dvips
+PS2PDF		=		ps2pdf
 
-SUBDIRS			=	libs core services
+EMACS		=		emacs -nw
+XDVI		=		xdvi
+XPDF		=		xpdf
+GV		=		gv
 
-CONF_BOOTLOADER		:=						\
-  $(shell cat conf/$(USER)/$(USER).conf					| \
-          grep -E "^BOOTLOADER = .*$$"					| \
-          cut -b 14-)
+RM		=		rm -f
 
-CONF_VERSION		:=						\
-  $(shell cat conf/$(USER)/$(USER).conf					| \
-          grep -E "^VERSION = .*$$"					| \
-          cut -b 11-)
+all:		pdf
 
-#
-# ---------- default rule -----------------------------------------------------
-#
+$(NAME_DVI):	$(NAME_TEX)
+	@$(LATEX) $(NAME_TEX)
 
-all:			kaneton
+	@$(LATEX) $(NAME_TEX)
+	@$(LATEX) $(NAME_TEX)
 
-#
-# ---------- environment dependency -------------------------------------------
-#
+$(NAME_PS):	$(NAME_DVI)
+	@$(DVIPS) -o $(NAME_PS) $(NAME_DVI)
 
-.kaneton.mk:
-	@if [ ! -e .kaneton.mk ] ; then					\
-	make init							; \
-	fi
+$(NAME_PDF):	$(NAME_PS)
+	@$(PS2PDF) $(NAME_PS)
 
-#
-# ---------- environment ------------------------------------------------------
-#
+dvi:		$(NAME_DVI)
+ps:		$(NAME_PS)
+pdf:		$(NAME_PDF)
 
-init:
-	@cd env								; \
-	./init								; \
-	cd ..
+clean:
+	@$(RM) $(NAME_AUX) $(NAME_TOC) $(NAME_LOG) $(NAME_LOF)
+	@$(RM) *~
 
-clean:			purge
-	@cd env								; \
-	./clean								; \
-	cd ..
+distclean:	clean
+	@$(RM) $(NAME_DVI) $(NAME_PS) $(NAME_PDF)
 
-#
-# ---------- development ------------------------------------------------------
-#
+tex:
+	@$(EMACS) $(NAME_TEX)
 
-kaneton:		.kaneton.mk
-	@for i in $(SUBDIRS); do					\
-	cd $$i								; \
-	make								; \
-	cd ..								; \
-	done
+xdvi:		dvi
+	@$(XDVI) $(NAME_DVI)
 
-clear:			.kaneton.mk purge
-	@for i in $(SUBDIRS); do					\
-	cd $$i								; \
-	make clear							; \
-	cd ..								; \
-	done
+gv:		ps
+	@$(GV) $(NAME_PS)
 
-purge:
-	@rm -f *~ .*~ \#~ .\#~
-
-#
-# ---------- prototypes -------------------------------------------------------
-#
-
-proto:			.kaneton.mk
-	@for i in $(SUBDIRS); do					\
-	cd $$i								; \
-	make proto							; \
-	cd ..								; \
-	done
-
-#
-# ---------- dependencies -----------------------------------------------------
-#
-
-dep:			.kaneton.mk
-	@for i in $(SUBDIRS); do					\
-	cd $$i								; \
-	make dep							; \
-	cd ..								; \
-	done
-
-#
-# ---------- boot -------------------------------------------------------------
-#
-
-build:			.kaneton.mk
-	@cd utils							; \
-	./$(CONF_BOOTLOADER) build					; \
-	cd ..
-
-install:		.kaneton.mk
-	@cd utils/							; \
-	./$(CONF_BOOTLOADER) install					; \
-	cd ..
-
-#
-# ---------- check ------------------------------------------------------------
-#
-
-check:			.kaneton.mk
-
-#
-# ---------- info -------------------------------------------------------------
-#
-
-info:
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton\033[0m"
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mauthors:\033[0m"
-	@echo ""
-	@echo -e "     \033[1mquintard julien - quinta_j@epita.fr\033[0m"
-	@echo ""
-	@echo -e "     \033[1mbillaud jean-pascal - billau_j@epita.fr\033[0m"
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1massistants:\033[0m"
-	@echo ""
-	@echo -e "     \033[1mrenaud lienhart - lienha_r@epita.fr\033[0m"
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mcontributors:\033[0m"
-	@echo ""
-	@echo -e "     \033[1mchristophe eymard - eymard_c@epita.fr\033[0m"
-	@echo ""
-
-#
-# ---------- distribution -----------------------------------------------------
-#
-
-distrib:
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mbuilding kaneton...\033[0m"
-
-	@tar czf ../kaneton-$(CONF_VERSION).tar.gz .
-
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton built\033[0m"
-	@echo ""
+xpdf:		pdf
+	@$(XPDF) $(NAME_PDF)
