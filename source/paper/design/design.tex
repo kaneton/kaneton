@@ -1,17 +1,21 @@
 %%
 %% copyright quintard julien
 %% 
-%% v3-design
+%% design
 %% 
-%% v3-design.tex
+%% design.tex
 %% 
-%% path          /home/mycure/data/research/projects/spargo/specifications/paper
+%% path          /home/mycure/kaneton/paper/design
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Fri Feb  4 15:10:05 2005   mycure
-%% last update   Thu May 19 08:48:40 2005   mycure
+%% last update   Mon Jun 20 14:15:49 2005   mycure
+%%
+
+%%
+%% ---------- packages ---------------------------------------------------------
 %%
 
 \documentclass[10pt,a4wide]{article}
@@ -20,19 +24,25 @@
 \usepackage{graphicx}
 \usepackage{fancyheadings}
 \usepackage{multicol}
+\usepackage{indentfirst}
 \pagestyle{fancy}
+
 \setlength{\footrulewidth}{0.3pt}
+\setlength{\parindent}{0.3cm}
+\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
 
-\bibliographystyle{plain}
+%%
+%% ---------- header -----------------------------------------------------------
+%%
 
-\lhead{\scriptsize{The Spargo Distributed Operating System}}
-\rhead{\scriptsize{Specifications}}
-\rfoot{\scriptsize{EPITA System Laboratory}}
+\lhead{\scriptsize{The kaneton distributed operating system}}
+\rhead{\scriptsize{The kaneton design concepts}}
+\rfoot{\scriptsize{EPITA Computer System Laboratory}}
 
-\title{The Spargo Distributed Operating System Specifications}
+\title{The kaneton distributed operating system}
 
 \author{\small{Julien Quintard} \\
-        \scriptsize{Epita System Laboratory, Paris, France}}
+        \scriptsize{EPITA Computer System Laboratory, Paris, France}}
 
 \date{\scriptsize{\today}}
 
@@ -40,9 +50,13 @@
 
 \maketitle
 
+%%
+%% ---------- abstract ---------------------------------------------------------
+%%
+
 \begin{abstract}
 
-This paper describes the design of the Spargo distributed operating system.
+This paper describes the design of the kaneton distributed operating system.
 This system was designed to be ported on many architectures without being
 intrusive. Moreover, the main goal of this system was to design a powerful
 system able to adapt itself on a network constantly in evolution and to
@@ -53,174 +67,125 @@ the latter describing the distributed operating system algorithms.
 
 \end{abstract}
 
-\paragraph{}
-\paragraph{}
-
-
+%
+% ---------- text --------------------------------------------------------------
+%
 
 \begin{multicols}{2}
 
 
 
-\section{The Spargo History}
+\section{The kaneton history}
 
-\paragraph{}
+kaneton originated at the EPITA Computer System Laboratory as a pedagogic
+project in operating systems. The project was primainly designed by two students
+Julien Quintard and Jean-Pascal Billaud although many other people also
+contributed to the design and will especially contribute to the implementation.
 
-Spargo originated at the EPITA System Laboratory as a research project
-in operating systems. Having recently developed a nano-kernel, the laboratory
-decided to begin the design and development of an operating system with
-a more powerful design and able to share ressources on a large network.
-Nevertheless, the goal of the first release is to develop an operational
-prototype running on a dozen of computers.
-
-\paragraph{}
-
-The project was designed primarly by two students, Julien Quintard and
-Jean-Pascal Billaud although many other people also contributed to the
-design and will especially contribute to the implementation.
-The development of the project is now ready to start and the first release
-is announced for the end of the year.
+Having recently developed an micro-kernel base operating system called LSE/OS,
+the two students decided to begin the design and development of an operating
+system with a more powerful design and able to share resources on a large
+network. Nevertheless, the goal of this project remains to be a pedagogic
+one. For this reason special interest was made on the design and on the
+implementation to be as simple as possible
 
 
 
-\section{The Spargo Goals}
-
-\paragraph{}
+\section{The kaneton goals}
 
 Many research projects in distributed systems started with an existing system.
-For the Spargo distributed operating system, we decided to totally design a
-new system. Nevertheless, the EPITA system laboratory previously developed a
-nano-kernel under the supervisation of Vianney Rancurel. This system had
-powerful features and was able to run UNIX programs due to the development of
-a UNIX-emulation library. This system, having reached an interesting state,
-was not designed to be portable enough, so we decided to work on a new
-core design rather than modify the LSE/OS kernel.
+For the kaneton distributed operating system, we decided to totally design a
+new system. Indeed, the previous EPITA Computer System Laboratory projects in
+operating systems were not portable enough, so we decided to totally design
+this new kernel from scratch with a special intereset for the portability.
 
-\paragraph{}
-
-It was obvious that to avoid the work of having to rewrite a huge amount
-of application softwares, a UNIX emulation library will be added later.
-Indeed, some of the good ideas of the LSE/OS nano-kernel have been
-reintroduced with little changes or rethinking.
-
-\paragraph{}
-
-The primary goal of the Spargo operating system was to design a distributed
+The primary goal of the kaneton operating system was to design a distributed
 operating system but to be totally transparent from the user point of view.
 Moreover, a special interest was made on scalable networks, especially
 to manage the distributed system nodes neither in a totally centralized way
 nor in a totally distributed way but rather in a more moldable way where groups
 constantly evolve in size. Another goal was to provide an abstraction to
-communications in the distributed system. In addition, the Spargo distributed
+communications in the distributed system. In addition, the kaneton distributed
 operating system will provide a transparent and easy way to migrate processes
 on the network, to manage distributed memory while being fault tolerant.
 
-\paragraph{}
-
-The Spargo operating system was first developed to looks like a typical
-timesharing system to the user. Nevertheless, Spargo was also designed to
+The kaneton operating system was first developed to looks like a typical
+timesharing system to the user. Nevertheless, kaneton was also designed to
 become a very scalable system and to provide a powerful system for
-parallel programming.
+parallel and distributed programming.
 
 
 
-\section{The Spargo Architecture}
+\section{The kaneton architecture}
 
-\paragraph{}
-
-Before describing the Spargo microkernel internals or the Spargo distributed
+Before describing the kaneton microkernel internals or the kaneton distributed
 operating system, it is useful first to outline the kind of hardware for
 which the system was designed.
 
-\paragraph{}
-
-The Spargo microkernel has been designed to deal with multiple architectures
+The kaneton microkernel has been designed to deal with multiple architectures
 and heterogeneous systems. It was designed with two main requirements about the
 hardware:
 
 \begin{enumerate}
 
 \item Virtual memory is needed by the microkernel.
-
 \item Each CPU must have about tens of megabytes of memory.
 
 \end{enumerate}
 
-The Spargo microkernel can be ported on any architecture which respects these
+The kaneton microkernel can be ported on any architecture which respects these
 requirements.
 
 
 
-\section{The Spargo Microkernel}
+\section{The kaneton microkernel}
 
-\paragraph{}
-
-The Spargo operating system is composed of two parts: a \textbf{microkernel}
+The kaneton operating system is composed of two parts: a \textbf{microkernel}
 which runs on every processor machine of the system and a collection of
 \textbf{servers} that provide most of traditional operating system
 functionalities: drivers, file servers etc..
 
-\paragraph{}
-
-We will see later that the term \textbf{server} is not used in the Spargo
+We will see later that the term \textbf{server} is not used in the kaneton
 documentation. Instead the terms: driver, service etc.. will be used.
 
-\paragraph{}
-
-The Spargo microkernel runs on every machine of the system including
+The kaneton microkernel runs on every machine of the system including
 workstations, the pool processors, specialized servers etc.. The microkernel
 has four primary functionalities to provide:
 
 \begin{enumerate}
 
 \item Communication
-
 \item Memory management
-
 \item Process management
-
 \item I/O
 
 \end{enumerate}
 
-\paragraph{}
-
-We will now describe microkernel's components to understand how the Spargo
+We will now describe microkernel's components to understand how the kaneton
 microkernel provides communication, memory management, process management etc..
 
 \subsection{Objects And Protections}
 
-\paragraph{}
-
-To protect objects on the system, the Spargo distributed operating system uses
+To protect objects on the system, the kaneton distributed operating system uses
 capabilities.
-
-\paragraph{}
 
 A \textbf{capability} provides an easy way to allow other tasks of the
 system to access a privileged object.
-
-\paragraph{}
 
 To illustrate this concept, consider a program which allocate a segment of
 physical memory. Then it decides to allow another program to only read
 this segment. Then it will generate a less privileged capability and give
 it to the other program. After all, the second program will be able to read
-the segment but not to write it.
-
-\paragraph{}
+the segment but not to write it. This example is not the best in which sharing
+segments using this method is not the best choice.
 
 A common capability includes the object identifier, the permissions of the
 capability on the object, listing allowed operations, a check field assuring
 security and other specific fields like for example the location of the
 service, a lifetime etc..
 
-\paragraph{}
-
-Unlike many distributed systems, the Spargo microkernel uses specific and
+Unlike many distributed systems, the kaneton microkernel uses specific and
 specialized capabilites to increase scalability.
-
-\paragraph{}
 
 Consider a modern file system with billions of inodes; this file system
 certainly wants to build capabilities with a 64-bit identifier.
@@ -230,61 +195,45 @@ identifier in its capabilities because there will certainly never be more than
 65000 printers on this system. Each service is different so each service
 will want to use its own capability's format.
 
-\paragraph{}
-
 The use of specific and specialized capabilites forces the programs to ask
 the services to build new capabilites, unlike other systems. Indeed,
 the other systems generally use generic capabilites to permit programs to
 generate capabilities by themselves. This was not our choice and the result is
 more scalable capabilites but a performance loss in capability generation.
 
-\paragraph{}
-
 Moreover, using this scheme permit services to use the cryptographic algorithm
 they want.
 
-\paragraph{}
-
 Note that the capability generation does not often happen. Moreover,
-a capability can be generated and used by many other programs because
+a capability can be generated and used by many other tasks because
 capabilites are generally used to restrict permissions. A capability
 is not unique to its user, so a program can generate a capability and
 distribute it to many other programs giving them the same permissions.
-
-\paragraph{}
 
 To conclude, this system is performant in a normal use but can become
 slow if a program has to generate many different capabilities, this case
 being rare.
 
-\paragraph{}
-
 The use of specific capabilities allows services to create capabilities,
 for example, without identifier or with extra permission fields.
-
-\paragraph{}
 
 Nevertheless a capability has to protect operations from malicious programs
 trying to generate correct capabilites. For this reason, the check field is
 highly recommended.
 
-\paragraph{}
-
 Note that the use of the check field does not garantee security on a
-distributed system. For this reason, the Spargo distributed operating
+distributed system. For this reason, the kaneton distributed operating
 system can evolve with three security policy:
 
 \begin{enumerate}
 
-\item \textbf{No security}: with this policy, the security fields of the
+\item \textbf{No security}: with this policy, the security field of the
       capabilities are not used. No cryptography is used on the system
       to garantee security.
-
 \item \textbf{Local security}: with it, the capabilities are protected from
       malicious programs and users using the check field. So, while there
       is no network message passing of capabilites, the system can be
       considered as safe.
-
 \item \textbf{Global security}: with this security policy, the distributed
       operating system is safe. Every capability is protected with its check
       field but in addition each message on the network is protected by
@@ -294,12 +243,8 @@ system can evolve with three security policy:
 
 \subsection{Communication}
 
-\paragraph{}
-
-The Spargo microkernel and more generally the Spargo distributed operating
+The kaneton microkernel and more generally the kaneton distributed operating
 system uses messages to communicate with everything.
-
-\paragraph{}
 
 A key concept behind the Spargo microkernel is precisly the use of messages
 to communicate with everything including, tasks, groups, nodes etc..
@@ -307,13 +252,9 @@ The communication unification is one of the choice that many other distributed
 operating systems do not make. Instead, many systems uses RPC as the key
 mechanism for communication between machines.
 
-\paragraph{}
-
 The RPC system deals with many problems like memory references from which the
 RPC system does not know the size. These problems are very difficult to
 resolve and implies many complex mechanisms to install while being performant.
-
-\paragraph{}
 
 A distributed operating system communicates with other nodes of the system in
 a very strict way, dealing with a protocol. So the RPC system seemed to be very
@@ -321,7 +262,8 @@ complex for our requirements. We decided to not base our system on it and
 instead, to use a simple unified message mechanism. Nevertheless, the RPC
 system will be allowed but for the userland applications.
 
-\paragraph{}
+Keep in mind that the kaneton project must be as simple as possible to be
+understood by students.
 
 To unify communications via messages, the microkernel translates every event
 into a message. For example, when an interrupt is received by the kernel
@@ -329,13 +271,9 @@ interrupt handler, a message is built and forwarded to the server dedicated
 to this interrupt. So, each server just has to take care of how to receive
 messages and how to reply them.
 
-\paragraph{}
-
 Note that no group communication is provided by the microkernel. Indeed, the
-group communication concept is inherent to the distributed oeprating system.
-The group communication is explained later in this paper.
-
-\paragraph{}
+group communication concept is inherent to the distributed operating system.
+The group communication will be explained later in this paper.
 
 The microkernel includes an authentification mechanism to protect tasks from
 sending messages everywhere they want to. To communicate with another task
@@ -345,44 +283,31 @@ to the server. The authentification server is described later in this paper.
 
 \subsection{Memory}
 
-\paragraph{}
-
 The memory model of the Spargo microkernel is very simple. Each address space
 of the system is composed of segments and regions.
-
-\paragraph{}
 
 A \textbf{segment} consists of a linear sequence of physical addresses.
 A segment describes one area of physical memory including the
 first address, the last but also some properties like the owner of this
 segment, the permissions: execution, read, write etc.. and some
-extra attributes. Segments can be accessed via mappings or directly with
-the functions \textbf{seg\_read}(), \textbf{seg\_write}() and
-\textbf{seg\_copy}(). Each segment is identified by an unique identifier
-and manipulated with a capability.
-
-\paragraph{}
+extra attributes. Segments can be accessed via mappings or directly via
+the segment interface provided by the kaneton microkernel. Each segment
+is identified by an unique identifier and manipulated with a capability.
 
 A \textbf{region} consists of a linear sequence of virtual addresses.
 A region has no properties and is only used to map a valid segment.
 Using a region in the virtual memory will reference the segment's data
 it maps.
 
-\paragraph{}
-
-An \textbf{address space} is a list of memory locations. In the Spargo
+An \textbf{address space} is a list of memory locations. In the kaneton
 microkernel, an address space includes the list of the segments and regions.
 So an address space describes the available process' memory. An address space
 is identified by its unique identifier and manipulated with a capability.
-
-\paragraph{}
 
 Like all the system, the Spargo memory model is based on little objects which
 are linked to build more complex objects. An address space is composed
 of segments and regions. This model implies that a program is allow to
 manages its entire memory itself, its physical memory like its virtual one.
-
-\paragraph{}
 
 This design leads to very interesting features and more parallelism.
 The kernel is now able to create a dozen of address spaces, and then to
@@ -393,12 +318,9 @@ is independent from others.
 
 \subsection{Set}
 
-\paragraph{}
-
-The Spargo microkernel internally uses a set manager which organizes data
+The kaneton microkernel internally uses a set manager which organizes data
 for other kernel managers. Each set is identified by an unique identifier.
-
-\paragraph{}
+The entire microkernel is based on the sets.
 
 Using this manager leads to a very elegant and maintenable source code. From
 this fact, every kernel manager uses the set manager to store its data. For
@@ -406,31 +328,25 @@ example the task manager uses the set manager to store every task of the
 system. Additionnaly, each task contains a set composed of the threads of
 this task.
 
-\paragraph{}
-
 Such a system provides an easy way to store data without effort. From this
 fact, the task manager for example do not care about how to store data.
-
-\paragraph{}
 
 Moreover, it is possible to optimize the code where it is needed. In this
 case, it will be useful to optimize the data structures in the set manager
 and \textit{not} in every manager using such a data structure like
 other systems do.
 
-\paragraph{}
-
 Indeed, the other operating systems generally use pointers to link kernel
 structures together and implicitly form sets. Nevertheless, such a source code
 is human unreadable and leads to many programming confusions and errors.
 
-\paragraph{}
+kaneton being a pedagogic distributed operating system project, we wanted
+to use the simplest design possible.
 
 The set manager provides many different data structures like linked-list,
 double linked-list, circular queue, stack, pipe, array, binary tree, b+-tree
-etc..
-
-\paragraph{}
+etc.. Moreover the set manager can be extended without affecting the others
+managers using it.
 
 In this way, every kernel manager is now able to use the set manager to
 store its data. The set manager also provides tools like \textbf{iterators}
@@ -438,9 +354,9 @@ to easily and quickly go through sets.
 
 \subsection{Process}
 
-\paragraph{}
+XXX
 
-The Spargo microkernel uses a specific nomenclature which is different
+The kaneton microkernel uses a specific nomenclature which is different
 from other oeprating systems.
 
 \paragraph{}
