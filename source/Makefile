@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/source
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Sun Jun 19 20:52:10 2005   mycure
+## last update   Mon Jun 20 08:01:31 2005   mycure
 ##
 
 #
@@ -39,6 +39,11 @@ CONF_BOOTLOADER		:=						\
   $(shell cat conf/$(USER)/$(USER).conf					| \
           grep -E "^BOOTLOADER = .*$$"					| \
           cut -b 14-)
+
+CONF_VERSION		:=						\
+  $(shell cat conf/$(USER)/$(USER).conf					| \
+          grep -E "^VERSION = .*$$"					| \
+          cut -b 11-)
 
 #
 # ---------- default rule -----------------------------------------------------
@@ -113,7 +118,7 @@ dep:			.kaneton.mk
 	done
 
 #
-# ---------- distribution -----------------------------------------------------
+# ---------- boot -------------------------------------------------------------
 #
 
 build:			.kaneton.mk
@@ -140,13 +145,31 @@ info:
 	@echo ""
 	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton\033[0m"
 	@echo ""
-	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mcreators:\033[0m"
+	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mauthors:\033[0m"
 	@echo ""
 	@echo -e "     \033[1mquintard julien - quinta_j@epita.fr\033[0m"
 	@echo ""
 	@echo -e "     \033[1mbillaud jean-pascal - billau_j@epita.fr\033[0m"
 	@echo ""
-	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mcontributors:\033[0m"
+	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1massistants:\033[0m"
 	@echo ""
 	@echo -e "     \033[1mrenaud lienhart - lienha_r@epita.fr\033[0m"
+	@echo ""
+	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mcontributors:\033[0m"
+	@echo ""
+	@echo -e "     \033[1mchristophe eymard - eymard_c@epita.fr\033[0m"
+	@echo ""
+
+#
+# ---------- distribution -----------------------------------------------------
+#
+
+distrib:
+	@echo ""
+	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mbuilding kaneton...\033[0m"
+
+	@tar czf ../kaneton-$(CONF_VERSION).tar.gz .
+
+	@echo ""
+	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton built\033[0m"
 	@echo ""
