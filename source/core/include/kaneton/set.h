@@ -108,6 +108,10 @@ typedef struct
  * ../../kaneton/set/set.c
  */
 
+int			set_get(t_setid				setid,
+				o_set**				set);
+
+
 int			set_init(void);
 
 /*

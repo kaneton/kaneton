@@ -1,17 +1,17 @@
 %%
 %% copyright quintard julien
 %% 
-%% design
+%% kaneton
 %% 
 %% design.tex
 %% 
-%% path          /home/mycure/kaneton/paper/design
+%% path          /home/mycure/kaneton
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Fri Feb  4 15:10:05 2005   mycure
-%% last update   Mon Jun 20 14:29:48 2005   mycure
+%% last update   Mon Jun 20 15:53:09 2005   mycure
 %%
 
 %%
@@ -246,7 +246,7 @@ system can evolve with three security policy:
 The kaneton microkernel and more generally the kaneton distributed operating
 system uses messages to communicate with everything.
 
-A key concept behind the Spargo microkernel is precisly the use of messages
+A key concept behind the kaneton microkernel is precisly the use of messages
 to communicate with everything including, tasks, groups, nodes etc..
 The communication unification is one of the choice that many other distributed
 operating systems do not make. Instead, many systems uses RPC as the key
@@ -283,7 +283,7 @@ to the server. The authentification server is described later in this paper.
 
 \subsection{Memory}
 
-The memory model of the Spargo microkernel is very simple. Each address space
+The memory model of the kaneton microkernel is very simple. Each address space
 of the system is composed of segments and regions.
 
 A \textbf{segment} consists of a linear sequence of physical addresses.
@@ -304,7 +304,7 @@ microkernel, an address space includes the list of the segments and regions.
 So an address space describes the available process' memory. An address space
 is identified by its unique identifier and manipulated with a capability.
 
-Like all the system, the Spargo memory model is based on little objects which
+Like all the system, the kaneton memory model is based on little objects which
 are linked to build more complex objects. An address space is composed
 of segments and regions. This model implies that a program is allow to
 manages its entire memory itself, its physical memory like its virtual one.
@@ -357,68 +357,48 @@ to easily and quickly go through sets.
 The kaneton microkernel uses a specific nomenclature which is different
 from other oeprating systems.
 
-\paragraph{}
-
 The system is composed of five different entities in relation with execution.
 
-\paragraph{}
-
-A \textbf{module} represents an passive execution entity in main memory.
+A \textbf{module} represents a passive execution entity in main memory.
 Indeed, a module does not run and has no execution context. The modules are
 managed by the module service to reside in main memory the time it is
-necessary. For example a very used program like \textbf{/bin/ls} certainly
+necessary. For example a very used program like \textit{/bin/ls} certainly
 becomes an important module due of its use. Fundamental system's drivers
 and services are persistent modules because they will be used in the case
 of a crash to restart the crashed service without any dependency.
 A module is identified by an unique identifier and manipulated with a
 capability.
 
-\paragraph{}
-
 A \textbf{user} task is the lowest privileged task on the system.
 The common user programs are the well-known UNIX{\scriptsize \copyright}
-programs like \textbf{/bin/ls}, \textbf{/bin/wc}, \textbf{/usr/bin/cc} etc..
+programs like \textit{/bin/ls}, \textit{/bin/wc}, \textit{/usr/bin/cc} etc..
 A user task is a task with no privilege. All it can do is compute some things,
 manage data and send messages to more privileged processes.
-
-\paragraph{}
 
 A \textbf{service} is a server which provides a so-called service. A service
 waits for messages, perform a task, and return the result of the service.
 
-\paragraph{}
-
 A \textbf{driver} is a service which can communicate with hardware devices.
 So, the I/O operations are reserved to tasks which are at least a driver.
-
-\paragraph{}
 
 Finally, a \textbf{kernel} is a kind of super-driver in which it provides
 many services while communicating with hardware devices. Moreover, it is
 the only task able to modify every system's internal data structure.
 
-\paragraph{}
-
 Every task can only be called by less or equal privileged tasks.
 
-\paragraph{}
-
-The Spargo microkernel does not have processes in the
-UNIX{\scriptsize \copyright} terms. Indeed, the Spargo microkernel manage tasks.
-A \textbf{task} is a non-active entity because a task is never scheduled.
-A task, in the Spargo terms, is a container which describes an executive
+The kaneton microkernel does not have processes in the
+UNIX{\scriptsize \copyright} terms. Indeed, the kaneton microkernel manages
+tasks. A \textbf{task} is a non-active entity because a task is never scheduled.
+A task, in the kaneton terms, is a container which describes an executive
 environment, context. Each task has an address space describing its useable
 memory and one or more threads. A task with only an address space and one
 thread is essentially identical to a UNIX{\scriptsize \copyright} process.
-The term \textbf{process} will sometimes be used in this paper to describe
-a Spargo task.
+The term \textbf{process} will sometimes be used in this paper and more
+generally in the kaneton documentation to describe a kaneton task.
 
-\paragraph{}
-
-Each task of the Spargo system is manipulated with a capability including
+Each task of the kaneton system is manipulated with a capability including
 its unique identifier.
-
-\paragraph{}
 
 The consequence of this scheme is a huge parallelism for the
 task creation and more generally in all operations in relation with
@@ -429,70 +409,51 @@ structures: task, thread, address space, etc.. Indeed, it is now possible to
 unlink, for example, an address space either to release it or to link it to
 another task.
 
-\paragraph{}
-
-A \textbf{thread} is the active entity because it is this one which is
+The \textbf{thread} is the active entity because it is this one which is
 scheduled. Such a thread has a single address space, belongs to a single
 task, has a set of registers, a program counter and finally a stack.
 Needless to say that the Spargo microkernel handles threads as kernel threads.
 Each thread has an unique identifier and is manipulated by a capability.
 
-\paragraph{}
-
 Like address spaces and many other parts of the system, a more complex
-object is created by linking simpler one. The process of task creation
+object is created by linking simpler one together. The process of task creation
 it listed below:
 
 \begin{enumerate}
 
 \item a task structure is reserved
-
 \item an address space is linked to the task
-
 \item one or more threads are linked to the task
 
 \end{enumerate}
 
-\paragraph{}
-
 Each task has three important properties: a class, a behaviour and a priority.
-
-\paragraph{}
 
 The \textbf{class} is chosen at the task creation time. This property
 informs the kernel about the nature of the task, its role on the system.
 In addition, this class will implicitly determine the rights of the task
 on the system. The different classes are \textit{kernel}, \textit{driver},
 \textit{service}, \textit{user}. On many architectures, the kernel, driver
-and service classes will have the same system priority. Nevertheless few
-architectures provides different system privileges.
+and service classes will have the same hardware system priority.
+Nevertheless few architectures provides different hardware system privileges
+like Intel Architecture.
 
-\paragraph{}
-
-The \textbf{behaviour} specifies the kernel the type of the task from the
+The \textbf{behaviour} specifies the kernel, the type of the task from the
 scheduler point of view. The different values for the behaviour are
-\textit{kernel}, \textit{realtime}, \textit{interactive}, \textit{timesharing},
-\textit{backgroud}. Each behaviour defines a range of priorities for the
+\textit{kernel}, \textit{realtime}, \textit{interactive}, \textit{timesharing}
+and \textit{backgroud}. Each behaviour defines a range of priorities for the
 task.
-
-\paragraph{}
 
 The \textbf{priority} is a value included in the range defined by the
 task behaviour. Any thread of a task can update the priority of its
 task in this range modifying the task priority from the scheduler point of view.
 
-\paragraph{}
-
 With these properties, a user can create a task very reactive setting an
 appropriate behaviour and then update its priority to adjust its quantum.
 This mechanism gives the programs many possibilities and permits them to
-choose its execution context.
-
-\paragraph{}
+choose their execution context.
 
 The threads also have an important property: a priority.
-
-\paragraph{}
 
 Each thread of a task can set its own priority in the range \textbf{[10, 250[}.
 From this fact, a thread can set itself an higher priority than the other
@@ -501,43 +462,30 @@ Once again, this mechanism give more liberty to the programs.
 
 \subsection{Processor}
 
-\paragraph{}
-
 The processor manager also and commonly called cpu manager provides a small
-set of primitives to manages the processors on which a task run.
-
-\paragraph{}
+set of primitives to manage the processors on which a task run.
 
 Each thread of the system has the possibility of choosing the processors
 on which they want to be run or more precisly the processors which are allowed
 to run this thread.
 
-\paragraph{}
-
-This feature was directly imported from Mach [XXX]. Indeed this mechanism
-provides the threads of a task the possibility of settle, distribute
-the processors in the best way for the program execution on multiprocessors.
-The scheduling is done using priorities, so the programmer has fine-grain
-control over which threads are most important and which are least important.
-
-\paragraph{}
+This feature was directly imported from the Mach operating system.
+Indeed this mechanism provides the threads of a task the possibility of
+settle, distribute the processors in the best way for the program
+execution on multiprocessors. The scheduling is done using priorities,
+so the programmer has fine-grain control over which threads
+are most important and which are least important.
 
 Each processor of each machine has an unique identifier and is manipulated
 with a capability.
 
 \subsection{Servers}
 
-\paragraph{}
-
-Let's talk about the most important servers of the Spargo microkernel.
+Let's talk about the most important servers of the kaneton microkernel.
 
 \subsubsection{Module}
 
-\paragraph{}
-
 The module service keep track of the current modules.
-
-\paragraph{}
 
 With each module is associated a \textbf{lifetime} specifying module's
 importance. With it, the module service will be able to release certain
@@ -548,36 +496,26 @@ service's main memory to be re-launched if the current IDE driver crashes.
 This mechanism provides an easy way to lauch fundamental servers independlty
 of others.
 
-\paragraph{}
-
 Due to this mechanism, the programs have to ask the module service to load
 a binary into their address spaces. Notice that from this fact, the module
 service role is also to bind server's name to modules' identifier. By this
 the kernel \textit{never} handles strings in its core source code, resulting
 in a simpler source code.
 
-\paragraph{}
-
 The module service is divided into two parts. The first one called \textbf{mod}
-manages modules, lifetime and loads the module into address spaces when needed.
-The other part called \textbf{modfs} is a main memory file system listing
-current modules managed by the module manager.
-
-\paragraph{}
+manages modules, lifetime and loads the module into tasks' address spaces
+when needed. The other part called \textbf{modfs} is a main memory file
+system listing current modules managed by the module manager.
 
 When a program asks the module service to load a module into its address
 space, the module manager just reserve a region into the program's address
-space mapping the shared segment corresponding to the module's binary in
+space, mapping the shared segment corresponding to the module's binary in
 main memory.
 
 \subsubsection{Name}
 
-\paragraph{}
-
 The name service \textbf{ns} provides few primitives to locate services
 either on the local machine or on the network.
-
-\paragraph{}
 
 Indeed, the name service is composed of two parts, the centralized name
 service \textbf{cns} which is used to locate drivers, services etc.. on
@@ -586,8 +524,6 @@ used to locate nodes, groups, etc.. on the distributed operating system.
 The distributed name service and more precisly the name group will be
 explained later in the paper.
 
-\paragraph{}
-
 The name service was introduced to provide dynamic service execution, allowing
 concurrency. Indeed, the name service can decide to dispatch the work between
 few identical services. Moreover, the concurrency is allowed and a client
@@ -595,11 +531,7 @@ can ask the name service to locate a precise service.
 
 \subsubsection{Authentification}
 
-\paragraph{}
-
 The \textbf{auth} service checks if two tasks are allowed to communicate.
-
-\paragraph{}
 
 When a task wants to send a message to another one, it first has to ask
 the authentification service a capability allowing it to send messages. Then,
@@ -607,32 +539,22 @@ when sending a message, the kernel will check the capability's validity.
 For example, the IDE driver should only receive messages from the file systems.
 A user application trying to forge an illegal message will be refused.
 
-\paragraph{}
-
 Moreover, the authentification service will establish a blacklist listing
 malicious programs and/or users, preventing system saturation or other
 problems.
 
 \subsubsection{Shared Memory}
 
-\paragraph{}
-
 The shared memory service commonly called the \textbf{sm} service is used
 to shared segments with other address space.
-
-\paragraph{}
 
 The shared memory manager is composed of two subparts, the centralized
 shared memory \textbf{csm} and the distributed shared memory \textbf{dsm}.
 Each one manages shared memory in its context either on the local system
 or on the global distributed system.
 
-\paragraph{}
-
 Using the shared memory manager ensures that the memory will not be release
 if one or more programs are using it.
-
-\paragraph{}
 
 The distributed shared memory service is used to share memory with
 programs on the network. Moreover, it provides a way to reserve huge amount
@@ -645,66 +567,18 @@ memory group will be explained later in this paper.
 
 The Spargo microkernel uses a simple paradigm which allow programmers to
 manage memory and execution context as they wanted to. A special interest
-was ported on the parallel programming providing complete primitives to
-manage priorities on many levels: thread, task and processor.
+was ported on the parallel and distributed programming providing complete
+primitives to manage priorities on many levels: thread, task and processor.
 
-\paragraph{}
+To conclude, the kaneton microkernel allows programs to manage their objects
+themselves to scale little by little to a better resources distribution.
 
-To conclude, the Spargo microkernel allows programs to manage their objects
-themselves to scale little by little to a better ressources distribution.
+
+
+\section{The kaneton distributed operating system}
+
+
 
 \end{multicols}
 
 \end{document}
-
---
-
-XXX cauth et dauth -> revoir cela
-XXX dauth fera les droits entre les nodes. ensuite un message qui arrive
-XXX de l exterieur est considere comme un programme user mais etant identifie
-XXX comme venant de l ext. bien dissocier les differents noeuds ext sinon un
-XXX mec qui fout la merde et hop plus personne n a le droit de send de msg.
-
-\section{The Distributed Operating System}
-
-\paragraph{}
-
-The Spargo distributed operating system is based on the concept of scalable groups.
-
-XXX
-
-XXX le groupe de memoire distribuee permet egalement de reserver bcp de memoire.
-XXX le groupe se charge meme si il faut de reserver sur differentes machines
-XXX et de ensuite faire mapper ce qu il faut au client.
-
---
-
----[ il me reste a concevoir:
-
--- microkernel
-
-3) integrer le gestionnaire de cpu avec une interface sched plus complete
-   gerant le scheduler pour que les threads puissent choisir de s executer
-   sur tel ou tel processeur reserve. (bien entendu lorsque l on reservera
-   N processeurs, il est clair que ces N processeurs doivent se trouver sur
-   un meme machine sinon ca n a pas de sens de scheduler le thread t0 sur la
-   machine m9 et le thread t1 sur la machine m2)
-
-4) revoir les processus pour que ce soit coherent
-
--- distributed operating system
-
-5) synchronization du temps: clock, mutex, transactions, deadlocks
-
-6) etablir la couche de transport
-
-7) gestion des messages (trouver un nom au systeme de message car IPC
-   et RPC ca va pas: GEC: generic entity communication?, ne pas utiliser
-   le P pour process car pas de process dans spargo): unicast, multicast
-   broadcast, Point-to-Point, Group
-
-8) pool de processeurs
-
---
-
-XXX tableau recapitulatif et comparatif avec les autres kernel

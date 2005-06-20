@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Tue Mar 29 13:16:14 2005   mycure
-## last update   Mon Jun 20 13:42:05 2005   mycure
+## last update   Mon Jun 20 15:29:35 2005   mycure
 ##
 
 NAME		=		design
@@ -52,6 +52,8 @@ RM		=		rm -f
 
 all:		pdf
 
+# compile
+
 $(NAME_DVI):	$(NAME_TEX)
 	@$(LATEX) $(NAME_TEX)
 
@@ -68,6 +70,8 @@ dvi:		$(NAME_DVI)
 ps:		$(NAME_PS)
 pdf:		$(NAME_PDF)
 
+# clear
+
 clear:
 	@$(RM) $(NAME_AUX) $(NAME_TOC) $(NAME_LOG) $(NAME_LOF)
 	@$(RM) *~
@@ -75,8 +79,12 @@ clear:
 clean:		clear
 	@$(RM) $(NAME_DVI) $(NAME_PS) $(NAME_PDF)
 
+# edit
+
 tex:
 	@$(EMACS) $(NAME_TEX)
+
+# viewer
 
 xdvi:		dvi
 	@$(XDVI) $(NAME_DVI)

@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Jun 20 14:29:23 2005   mycure
+## last update   Mon Jun 20 15:16:56 2005   mycure
 ##
 
 #
@@ -158,6 +158,14 @@ info:
 	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mcontributors:\033[0m"
 	@echo ""
 	@echo -e "     \033[1mchristophe eymard - eymard_c@epita.fr\033[0m"
+	@echo ""
+	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mnews group:\033[0m"
+	@echo ""
+	@echo -e "     \033[1mepita.cours.kaneton\033[0m"
+	@echo ""
+	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mmailing-list:\033[0m"
+	@echo ""
+	@echo -e "     \033[1mkaneton@lse.epita.fr\033[0m"
 	@echo ""
 
 #

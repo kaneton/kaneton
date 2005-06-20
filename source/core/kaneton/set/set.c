@@ -5,19 +5,38 @@
  * 
  * set.c
  * 
- * path          /home/mycure/source
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jun 20 08:45:24 2005   mycure
+ * last update   Mon Jun 20 16:01:34 2005   mycure
  */
 
 /*
  * ---------- info ------------------------------------------------------------
  *
- * XXX
+ * the set manager is used to manages the data structure in order to simplify
+ * the other kernel managers. indeed, every kernel manager including the
+ * task manager, the thread manager, the segment manager etc.. use the
+ * set manager to store the data rather than create themselves data structures
+ * by their own.
+ *
+ * notice that the set manager is based on the malloc() function. indeed
+ * the set manager maintains a data structure containing the set descriptors.
+ * moreover some data structure type required the malloc() function, the
+ * simplest example being the array data structure which require the realloc()
+ * function to be able to extend the data structure without effort.
+ *
+ * due to this requirement, the set manager cannot manage the data structure
+ * for the segments of the segment manager, the kernel address space segments
+ * and the kernel address space regions of the address space manager because
+ * the malloc() function is not provided yet. to bypass this restriction these
+ * three sets are managed by the hand to allow every kernel manager to use
+ * the set manager.
+ *
+ * the implementation used macros. XXX
  */
 
 /*
