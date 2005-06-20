@@ -5,13 +5,13 @@
 ## 
 ## README
 ## 
-## path          /home/mycure/source
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Mon Jun 20 08:00:53 2005   mycure
+## last update   Mon Jun 20 14:28:55 2005   mycure
 ##
 
 
@@ -163,8 +163,7 @@ syntax:		make info
 
 syntax:		make distrib
 
-  this command builds a kaneton tarball ready to be evaluated and place
-  it into the parent directory of the source directory.
+  this command builds a kaneton tarball ready to be evaluated.
 
 
 
