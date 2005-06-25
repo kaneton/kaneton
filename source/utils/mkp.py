@@ -4,15 +4,43 @@
 # Makeprotos / mkp.py
 #   Made by pwipwi <pwipwi@lse.epita.fr>
 # This python script was created to
-#   1) Give me an opportunity to practice it a bit :)
+#   1) Give me an opportunity to practice python a bit :)
 #   2) Replace old mkp.pl, which was sufficient, but a bit unreadable.
+#
+# usage:
+#    ./mkp.py header
+#
+#  For this script to work efficiently, you have a few things to do :
+#       * Code with the Epita CSS, at least in function declaration.
+#         This little script is far from being a C parser, so it will
+#         exclusively recognize Epita CSS' functions declarations
+#       * In the header, make the prototype section _THE LAST ONE_, and
+#         be sure to enclose the contents of your header by a #ifdef
+#         #endif, as the script shall trash everything starting from
+#         the * -------- prototypes ---------- section to the end
+#         of the file. The script adds a #endif
+#       * Last but not least, you need to have a VALID prototypes secion.
+#         it looks like that
+#         /*
+#          * ---------- prototypes --------------------
+#          *
+#          *      ./relative/path/to/file/1
+#          *      ./relative/path/to/file/2
+#          *      ./et/caetera
+#          */
+#         Be sure to respect the spacing, as the script is especially not
+#         tolerant with them (especially before the *).
+#         You can have as much spaces as you want between the * and the file
+#         names, though.
+#
+#  That should do the trick. If you ever encounter a problem which is most
+#  likely a bug in that script, please send me a mail.
+#
 
 # System module
 import sys
 # OS specific module
 import os
-# Globing module
-import glob
 # Regular Expression module
 import re
 
@@ -61,7 +89,7 @@ def fn_readprotosfiles(fp, functions):
   """
   filelist = []
   line = fp.readline()
-  while line <> '' and not re.match(' \* ---------- prototypes ------------------------------------------------------', line):
+  while line <> '' and not re.match(' \* -+ prototypes -+', line):
     functions.beginning.append(line)
     line = fp.readline()
   if line == '':
