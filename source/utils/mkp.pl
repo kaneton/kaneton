@@ -35,7 +35,7 @@ sub mkproto_file_to_check ($)
 
     do
     {
-	chomp $line;
+      chomp $line;
 	if ($line =~ " *[*]{1}\/")
 	{
 	    $end = 1;
