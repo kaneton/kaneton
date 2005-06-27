@@ -8,17 +8,17 @@
 #   2) Replace old mkp.pl, which was sufficient, but a bit unreadable.
 #
 # usage:
-#    ./mkp.py header
+#    ./mkp.py header1 header2 ...
 #
 #  For this script to work efficiently, you have a few things to do :
 #       * Code with the Epita CSS, at least in function declaration.
 #         This little script is far from being a C parser, so it will
 #         exclusively recognize Epita CSS' functions declarations
-#       * In the header, make the prototype section _THE LAST ONE_, and
-#         be sure to enclose the contents of your header by a #ifdef
-#         #endif, as the script shall trash everything starting from
-#         the * -------- prototypes ---------- section to the end
-#         of the file. The script adds a #endif
+#       * You have to end your prototypes section by a
+#         /*
+#          * eop
+#          */
+#          statement
 #       * Last but not least, you need to have a VALID prototypes secion.
 #         it looks like that
 #         /*
@@ -26,6 +26,7 @@
 #          *
 #          *      ./relative/path/to/file/1
 #          *      ./relative/path/to/file/2
+#          *
 #          *      ./et/caetera
 #          */
 #         Be sure to respect the spacing, as the script is especially not
@@ -55,6 +56,7 @@ class cl_functions:
   def __init__(self):
     self.di_files = {} # initialise file dictionnary
     self.beginning = []
+    self.ending = []
     self.filenames = []
 
   def add_filename(self, str_filename):
@@ -95,9 +97,10 @@ def fn_readprotosfiles(fp, functions):
   if line == '':
     fn_error('this file doesn\'t contain a valid prototype section', 3)
   # iterate until the end of the prototypes section
-  endre = re.compile(' \*/')
-  filere = re.compile(' \*\s+[./a-zA-Z0-9]+')
+  endre = re.compile('.*\*/')
+  filere = re.compile('\s*\*+\s+[./a-zA-Z0-9]+')
   filenamere = re.compile('[./a-zA-Z0-9]+')
+  eopre = re.compile('\s*\*+\s+eop')
   while line <> '' and not endre.match(line):
     functions.beginning.append(line)
     if filere.match(line):
@@ -105,7 +108,18 @@ def fn_readprotosfiles(fp, functions):
       filelist.append(line)
     line = fp.readline()
   functions.beginning.append(line)
+  while line <> '' and not eopre.match(line):
+    line = fp.readline()
+  while line <> '' and not endre.match(line):
+    line = fp.readline()
+  if line == '':
+    fn_error("no eop in" + fp.filename, 3)
+  while line <> '':
+    line = fp.readline()
+    functions.ending.append(line)
   del filere
+  del endre
+  del filenamere
   return filelist
 
 ##
@@ -160,7 +174,8 @@ def fn_write_header(functions, filename):
     for func in functions.di_files[file]:
       fp.writelines(func)
       fp.write('\n')
-  fp.write('\n/*\n * eop\n */\n\n#endif\n')
+  fp.write('\n/*\n * eop\n */\n')
+  fp.writelines(functions.ending)
   fp.close()
 
 ##
