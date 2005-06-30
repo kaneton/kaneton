@@ -72,8 +72,27 @@
 
 void			kaneton_dump(void);
 
+#if defined(___bootloader);
+
+  // XXX kaneton_error();;
+
+#elif defined(___kernel);
+
+  // XXX kaneton_error();;
+
+#if defined(___kaneton);
+
+  // XXX kaneton_error();;
+
+  // XXX kaneton_error();;
+
+  // XXX kaneton_error();;
 
 void			kaneton(t_init*				bootloader);
+
+  /* XXX malloc_init() */;
+
+  /* XXX set_init(); */;
 
 
 /*
@@ -82,25 +101,20 @@ void			kaneton(t_init*				bootloader);
 
 void			cons_clear(void);
 
-
 void			cons_scroll(t_uint16			lines);
-
 
 void			cons_attr(t_uint8			attr);
 
-
 int			cons_print_char(char			c);
 
-
 void			cons_print_string(char*			string);
-
 
 void			cons_msg(char				indicator,
 				 char*				fmt,
 				 ...);
 
-
 int			cons_init(void);
+
 
 /*
  * eop

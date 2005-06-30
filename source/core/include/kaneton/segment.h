@@ -69,17 +69,22 @@ typedef struct
 
 void			segment_id(t_segid*			segid);
 
-
 void			segment_dump(void);
-
 
 void			segment_push(o_segment*			push);
 
-
 o_segment*		segment_pop(void);
 
+    // pour faire des segment_push();
+
+      // XXX kaneton_error();;
 
 int			segment_init(void);
+
+    segment_push((t_segment*)(init->segmng + i * sizeof(t_segment)));;
+
+      // XXX segment_add(AS_KERNEL, &s);;
+
 
 /*
  * eop

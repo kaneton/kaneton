@@ -179,14 +179,21 @@ extern m_set		set;
  * ../../kaneton/set/set.c
  */
 
-int			set_id(t_setid*				setid);
+ * notice that the set manager is based on the malloc() function. indeed;
 
+ * moreover some data structure type required the malloc() function, the;
+
+ * simplest example being the array data structure which require the realloc();
+
+ * the malloc() function is not provided yet. to bypass this restriction these;
+
+int			set_id(t_setid*				setid);
 
 int			set_get(t_setid				setid,
 				o_set**				o);
 
-
 int			set_init(void);
+
 
 /*
  * eop
