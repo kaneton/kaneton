@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Sun Jun 19 21:22:11 2005   mycure
+ * last update   Tue Jun 21 13:05:33 2005   mycure
  */
 
 /*
@@ -76,39 +76,36 @@ void			bootloader_init_dump(void)
 			  module,
 			  module->size);
 
-      module = (t_module*)((t_uint32)module + sizeof(t_module) + module->size);
+      module = (t_module*)((t_uint32)module + sizeof(t_module) +
+			   module->size + strlen(module->name) + 1);
     }
 
   bootloader_cons_msg('#', " segments: 0x%x - %u bytes\n",
 		      init->segments,
 		      init->segmentssz);
 
-  for (i = 0; i < init->segments->nsegments; i++)
+  for (i = 0; i < init->nsegments; i++)
     bootloader_cons_msg('#', "  [%u] 0x%x (0x%x)\n",
 			i,
-			init->segments->segments[i].address,
-			init->segments->segments[i].size);
+			init->segments[i].address,
+			init->segments[i].size);
 
   bootloader_cons_msg('#', " regions: 0x%x - %u bytes\n",
 		      init->regions,
 		      init->regionssz);
 
-  for (i = 0; i < init->regions->nregions; i++)
+  for (i = 0; i < init->nregions; i++)
     bootloader_cons_msg('#', "  [%u] 0x%x\n",
 			i,
-			init->regions->regions[i].address);
+			init->regions[i].address);
 
   bootloader_cons_msg('#', " kernel stack: 0x%x - %u bytes\n",
 		      init->kstack,
 		      init->kstacksz);
 
-  bootloader_cons_msg('#', " segment manager: 0x%x - %u bytes\n",
-		      init->segmng,
-		      init->segmngsz);
-
-  bootloader_cons_msg('#', " address space manager: 0x%x - %u bytes\n",
-		      init->asmng,
-		      init->asmngsz);
+  bootloader_cons_msg('#', " malloc pages: 0x%x - %u bytes\n",
+		      init->malloc,
+		      init->mallocsz);
 
   bootloader_cons_msg('#', " %#~ia32%# global offset table: 0x%x\n",
 		      CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) |
@@ -131,127 +128,109 @@ void			bootloader_init_dump(void)
  *
  * steps:
  *
- * 1) allocates memory for the segment manager.
- * 2) allocates memory for the address space manager.
- * 3) adds the ISA segment from 0 to 1Mb.
- * 4) adds the kernel code segment.
- * 5) adds the init structure segment.
- * 6) adds the modules segment.
- * 7) adds the segments segment.
- * 8) adds the regions segment.
- * 9) adds the kernel stack segment.
- * 10) adds the segment manager segment.
- * 11) adds the address space manager segment.
- * 12) adds the global offset table segment.
- * 13) adds the page directory segment.
+ * 1) allocates memory for the malloc() function. indeed the malloc() function
+ *    needs to be able to provide memory until the virtual memory manager
+ *    is installed. thus the malloc() function will be able to ask
+ *    the virtual memory manager to provide virtual pages and to map it
+ *    into the kernel address space to continue to provide its service.
+ *    so the malloc() function needs an amount of critical pages to work with
+ *    until the virtual memory is initialized.
+ * 2) adds the ISA segment from 0 to 1Mb.
+ * 3) adds the kernel code segment.
+ * 4) adds the init structure segment.
+ * 5) adds the modules segment.
+ * 6) adds the segments segment.
+ * 7) adds the regions segment.
+ * 8) adds the kernel stack segment.
+ * 9) adds the malloc segment.
+ * 10) adds the global offset table segment.
+ * 11) adds the page directory segment.
  */
 
 void			bootloader_init_segments(void)
 {
-  t_psize		segmngsz;
-  t_psize		asmngsz;
+  t_psize		mallocsz;
 
   /*
    * 1)
    */
 
   /*
-   * XXX allocates a number of pages in relation with the number of
-   * segments: init->segments->nsegments.
-   *
-   * XXX for the moment we preallocate four pages.
+   * XXX temporary, pre-allocate four pages
    */
 
-  init->segmng = bootloader_init_alloc(4 * PAGESZ, &segmngsz);
-  init->segmngsz = segmngsz;
+  init->malloc = bootloader_init_alloc(4 * PAGESZ, &mallocsz);
+  init->mallocsz = mallocsz;
 
   /*
    * 2)
-   */
-
-  /*
-   * XXX for the moment we preallocate 2 pages for the as manager.
-   */
-
-  init->asmng = bootloader_init_alloc(2 * PAGESZ, &asmngsz);
-  init->asmngsz = asmngsz;
-
-  /*
-   * 3)
    */
 
   init->segments[0].address = 0x0;
   init->segments[0].size = 0x00100000;
 
   /*
-   * 4)
+   * 3)
    */
 
   init->segments[1].address = init->kcode;
   init->segments[1].size = init->kcodesz;
 
   /*
-   * 5)
+   * 4)
    */
 
   init->segments[2].address = init->init;
   init->segments[2].size = init->initsz;
 
   /*
-   * 6)
+   * 5)
    */
 
   init->segments[3].address = (t_paddr)init->modules;
   init->segments[3].size = init->modulessz;
 
   /*
-   * 7)
+   * 6)
    */
 
   init->segments[4].address = (t_paddr)init->segments;
   init->segments[4].size = init->segmentssz;
 
   /*
-   * 8)
+   * 7)
    */
 
   init->segments[5].address = (t_paddr)init->regions;
   init->segments[5].size = init->regionssz;
 
   /*
-   * 9)
+   * 8)
    */
 
   init->segments[6].address = init->kstack;
   init->segments[6].size = init->kstacksz;
 
   /*
+   * 9)
+   */
+
+  init->segments[7].address = init->malloc;
+  init->segments[7].size = init->mallocsz;
+
+  /*
    * 10)
    */
 
-  init->segments[7].address = init->segmng;
-  init->segments[7].size = init->segmngsz;
+  init->segments[8].address = (t_paddr)init->machdep.gdt;
+  init->segments[8].size = PAGESZ;
 
   /*
    * 11)
    */
 
-  init->segments[8].address = init->asmng;
-  init->segments[8].size = init->asmngsz;
-
-  /*
-   * 12)
-   */
-
-  init->segments[9].address = (t_paddr)init->machdep.gdt;
+  init->segments[9].address = (t_paddr)init->machdep.pd;
   init->segments[9].size = PAGESZ;
-
-  /*
-   * 13)
-   */
-
-  init->segments[10].address = (t_paddr)init->machdep.pd;
-  init->segments[10].size = PAGESZ;
 }
 
 /*
@@ -263,10 +242,9 @@ void			bootloader_init_segments(void)
  * 2) adds the kernel code region.
  * 3) adds the init structure region.
  * 4) adds the kernel stack region.
- * 5) adds the segment manager region.
- * 6) adds the address space manager region.
- * 7) adds the global offset table region.
- * 8) adds the page directory region.
+ * 5) adds the malloc region.
+ * 6) adds the global offset table region.
+ * 7) adds the page directory region.
  */
 
 void			bootloader_init_regions(void)
@@ -312,12 +290,6 @@ void			bootloader_init_regions(void)
    */
 
   init->regions[6].address = init->segments[9].address;
-
-  /*
-   * 8)
-   */
-
-  init->regions[7].address = init->segments[10].address;
 }
 
 /*

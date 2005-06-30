@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Mon Jun 20 14:28:55 2005   mycure
+## last update   Mon Jun 20 21:56:25 2005   mycure
 ##
 
 
@@ -159,9 +159,9 @@ syntax:		make info
 
   this command displays information about the kaneton project.
 
----[ distrib
+---[ dist
 
-syntax:		make distrib
+syntax:		make dist
 
   this command builds a kaneton tarball ready to be evaluated.
 

@@ -67,7 +67,7 @@ typedef struct
  * ../../kaneton/segment/segment.c
  */
 
-t_segid			segment_id(void);
+void			segment_id(t_segid*			segid);
 
 
 void			segment_dump(void);

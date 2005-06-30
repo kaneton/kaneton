@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/source/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jun 20 08:05:23 2005   mycure
+ * last update   Mon Jun 20 21:56:00 2005   mycure
  */
 
 /*
@@ -60,7 +60,7 @@ extern t_init*		init;
  * recycles identifiers.
  */
 /* XXX
-t_segid			segment_id(void)
+void			segment_id(t_segid*			segid)
 {
   static t_segid	segid = 0;
 

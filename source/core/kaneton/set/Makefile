@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core
+## path          /home/mycure/kaneton/core/kaneton/set
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 19 21:08:53 2005   mycure
+## last update   Mon Jun 20 21:42:28 2005   mycure
 ##
 
 #
@@ -32,7 +32,8 @@ include			../../../.kaneton.mk
 
 SET			:=		set.a
 
-SET_C			:=		set.c				
+SET_C			:=		set.c				\
+					set_ll.c			
 
 SET_O			:=		$(SET_C:.c=.o)
 
@@ -45,6 +46,8 @@ CFLAGS			+=		-D___kernel
 #
 
 $(SET):			$(SET_O)
+	$(call remove,$(SET),)
+
 	$(call archive,$(SET),$(SET_O),)
 
 	$(call static-linker,$(SET),)

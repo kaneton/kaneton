@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core
+## path          /home/mycure/kaneton/core/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 19 21:08:24 2005   mycure
+## last update   Mon Jun 20 17:10:24 2005   mycure
 ##
 
 #
@@ -45,6 +45,8 @@ CFLAGS			+=		-D___kernel
 #
 
 $(SEGMENT):		$(SEGMENT_O)
+	$(call remove,$(SEGMENT),)
+
 	$(call archive,$(SEGMENT),$(SEGMENT_O),)
 
 	$(call static-linker,$(SEGMENT),)

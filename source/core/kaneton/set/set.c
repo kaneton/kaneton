@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jun 20 16:01:34 2005   mycure
+ * last update   Mon Jun 20 23:24:54 2005   mycure
  */
 
 /*
@@ -36,7 +36,7 @@
  * three sets are managed by the hand to allow every kernel manager to use
  * the set manager.
  *
- * the implementation used macros. XXX
+ * the implementation use macros. XXX
  */
 
 /*
@@ -61,14 +61,35 @@ m_set			set;
  */
 
 /*
+ * this function returns an unique unused set identifier.
+ */
+
+int			set_id(t_setid*				setid)
+{
+  return (set.id++);
+}
+
+/*
  * this function returns the set corresponding to a set identifier.
  */
 
 int			set_get(t_setid				setid,
-				o_set**				set)
+				o_set**				o)
 {
+  printf("set_get(): %qu\n", setid);
 
-  return (0);
+  switch (setid)
+    {
+    case SETID_SEGMENTS:
+
+      printf("SEGMENTS\n");
+
+      *o = &set.segments;
+
+      return (0);
+    }
+
+  return (-1);
 }
 
 /*
@@ -83,5 +104,12 @@ int			set_init(void)
 {
   memset(&set, 0x0, sizeof(m_set));
 
-  
+  set.id = SET_ID;
+
+  set_make(ll, &set.segments, SETID_SEGMENTS, NULL, NULL);
+
+  set_make(ll, &set.ksegments, SETID_KSEGMENTS, NULL, NULL);
+  set_make(ll, &set.kregions, SETID_KREGIONS, NULL, NULL);
+
+  return (0);
 }

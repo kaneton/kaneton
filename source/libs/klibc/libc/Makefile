@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:56:59 2005   mycure
-## last update   Sun Jun 19 22:16:41 2005   mycure
+## last update   Mon Jun 20 17:09:47 2005   mycure
 ##
 
 #
@@ -64,6 +64,8 @@ LIBC_INCLUDE		:=		$(_LIBS_DIR_)/klibc/include/libc/libc.h
 #
 
 $(LIBC):		$(LIBC_O)
+	$(call remove,$(LIBC),)
+
 	$(call archive,$(LIBC),$(LIBC_O),)
 
 	$(call static-linker,$(LIBC),)

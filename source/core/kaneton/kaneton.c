@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 19 22:26:07 2005   mycure
+ * last update   Tue Jun 21 13:07:28 2005   mycure
  */
 
 /*
@@ -130,6 +130,9 @@ void			kaneton(t_init*				bootloader)
   printf("\n");
   cons_msg('+', "%s\n", version);
   printf("\n");
+
+  /* XXX malloc_init() */
+  /* XXX set_init(); */
 
   while (1); /* XXX */
 

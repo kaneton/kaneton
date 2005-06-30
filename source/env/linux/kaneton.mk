@@ -5,17 +5,17 @@
 ## 
 ## .kaneton.mk
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sun Jun 19 19:20:24 2005   mycure
+## last update   Thu Jun 30 20:02:05 2005   mycure
 ##
 
 #
-# informations
+# ---------- informations -----------------------------------------------------
 #
 # you generally do not need to modify the kaneton directories,
 # makefiles dependency, kaneton utils, kaneton binaries, kaneton
@@ -28,19 +28,19 @@
 #
 
 #
-# makefile directives
+# ---------- directives -------------------------------------------------------
 #
 
 .SILENT:
 
 #
-# shell
+# ---------- shell ------------------------------------------------------------
 #
 
 SHELL			:=		/bin/sh
 
 #
-# kaneton directories
+# ---------- kaneton directories ----------------------------------------------
 #
 
 _SRC_DIR_		:=		___kaneton_sed___
@@ -67,19 +67,19 @@ _INCLUDES_		:=		-I$(_CORE_INCLUDE_DIR_)		\
 					-I$(_LIBS_INCLUDE_DIR_)
 
 #
-# makefiles dependency
+# ---------- makefiles dependency ---------------------------------------------
 #
 
 _MAKEFILE_MK_		:=		.makefile.mk
 
 #
-# kaneton utils
+# ---------- kaneton utils ----------------------------------------------------
 #
 
-_PROTO_			:=		$(_UTILS_DIR_)/mkp.pl
+_PROTO_			:=		$(_UTILS_DIR_)/mkp.py
 
 #
-# kaneton binaries
+# ---------- kaneton binaries -------------------------------------------------
 #
 
 _BOOTSTRAP_		:=		$(_CORE_BOOTSTRAP_DIR_)/bootstrap
@@ -87,7 +87,7 @@ _BOOTLOADER_		:=		$(_CORE_BOOTLOADER_DIR_)/bootloader
 _KANETON_		:=		$(_CORE_KANETON_DIR_)/kaneton
 
 #
-# kaneton libraries
+# ---------- kaneton libraries ------------------------------------------------
 #
 
 _LIBC_A_		:=		$(_LIBS_DIR_)/libc.a
@@ -101,7 +101,7 @@ _SEGMENT_A_		:=		$(_CORE_KANETON_DIR_)/segment/segment.a
 _SET_A_			:=		$(_CORE_KANETON_DIR_)/set/set.a
 
 #
-# user configuration addons
+# ---------- user configuration addons ----------------------------------------
 #
 
 _CONF_CFLAGS_		:=						\
@@ -130,13 +130,13 @@ _CONF_LIBC_		:=						\
           cut -b 8-)
 
 #
-# c compiler
+# ---------- c compiler -------------------------------------------------------
 #
 
 CC			:=		gcc
 
 #
-# compiler and linker flags
+# ---------- compiler and linker flags ----------------------------------------
 #
 
 CFLAGS			:=		-D___kaneton			\
@@ -154,7 +154,7 @@ CPPFLAGS		:=		$(_CONF_CPPFLAGS_)
 MAKEFLAGS		:=		$(_CONF_MAKEFLAGS_)		
 
 #
-# binaries
+# ---------- binaries ---------------------------------------------------------
 #
 
 _MAKE_			:=		make
@@ -168,7 +168,7 @@ _NASM_			:=		nasm
 _LN_			:=		ln -s -f
 
 #
-# traps to the pretty-printer
+# ---------- traps ------------------------------------------------------------
 #
 
 %.o:		%.asm
@@ -179,6 +179,10 @@ _LN_			:=		ln -s -f
 
 %.o:		%.c
 	$(call compile-c,$@,$<,)
+
+#
+# ---------- functions --------------------------------------------------------
+#
 
 #
 # pretty-printer defines

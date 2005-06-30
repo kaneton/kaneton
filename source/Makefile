@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Jun 20 15:16:56 2005   mycure
+## last update   Mon Jun 20 18:54:27 2005   mycure
 ##
 
 #
@@ -21,7 +21,7 @@
 .SILENT:
 
 .PHONY:		all init clean kaneton clear purge proto		\
-		dep build install check
+		dep build install check info dist
 
 #
 # ---------- shell ------------------------------------------------------------
@@ -159,7 +159,7 @@ info:
 	@echo ""
 	@echo -e "     \033[1mchristophe eymard - eymard_c@epita.fr\033[0m"
 	@echo ""
-	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mnews group:\033[0m"
+	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mnews-group:\033[0m"
 	@echo ""
 	@echo -e "     \033[1mepita.cours.kaneton\033[0m"
 	@echo ""
@@ -172,7 +172,7 @@ info:
 # ---------- distribution -----------------------------------------------------
 #
 
-distrib:
+dist:
 	@echo ""
 	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mbuilding kaneton...\033[0m"
 

@@ -5,13 +5,13 @@
  * 
  * types.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32/ia32
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jun 19 20:39:13 2005   mycure
+ * last update   Mon Jun 20 16:28:19 2005   mycure
  */
 
 #ifndef IA32_IA32_TYPES_H
@@ -44,6 +44,7 @@ typedef t_uint32		t_size;
 typedef t_uint32		t_offset;
 
 typedef t_uint32		t_opts;
+typedef t_uint32		t_type;
 
 typedef t_uint64		t_id;
 typedef t_id			t_setid;
