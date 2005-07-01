@@ -10,11 +10,11 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ##
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Sat Jun 18 23:52:59 2005   mycure
+## last update   Thu Jun 30 20:24:28 2005   mycure
 ##
 
 #
-# this file have to be named $USER.conf.
+# this file have to be named $USER.
 #
 
 # TITLE
@@ -47,29 +47,29 @@ MODE = development
 
 LIBC = klibc
 
-# CFLAGS
+# UCFLAGS
 #
 # specify additional c flags.
 
-CFLAGS = 
+UCFLAGS = 
 
-# LDFLAGS
+# ULDFLAGS
 #
 # specify additional ld flags.
 
-LDFLAGS = 
+ULDFLAGS = 
 
-# CPPFLAGS
+# UCPPFLAGS
 #
 # specify additional cpp flags.
 
-CPPFLAGS = 
+UCPPFLAGS = 
 
-# MAKEFLAGS
+# UMAKEFLAGS
 #
 # specify additional make flags.
 
-MAKEFLAGS = 
+UMAKEFLAGS = 
 
 # ADDRESS
 #
