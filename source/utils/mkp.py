@@ -127,22 +127,33 @@ def fn_readprotosfiles(fp, functions):
 ##
 def fn_processfile(filename, functions):
   """Process files
-  returns a function list
+  returns a function list from the given file
   """
   inside_funcion = 0
+  inside_comment = 0
   currentlist = []
 
   try:
     fp = open(filename, 'r')
   except IOError:
     fn_error("unable to open" + filename, 4)
-  functionre = re.compile('(([\*\w]+)\s+)+\w+\(')
+  functionre = re.compile('^[a-zA-Z0-9_](([\*\w]*)\s+)+\w+\(') # function declaration
+  commentre = re.compile('/\*') # comment start
+  endcomre = re.compile('\*/') # comment end
+  staticre = re.compile('static') # static keyword
   for line in fp.readlines():
     matched = functionre.search(line)
-    if matched:
+    commatched = commentre.search(line)
+    endcommatched = endcomre.search(line)
+    if commatched:
+      inside_comment = inside_comment + 1
+    if endcommatched:
+      inside_comment = inside_comment - 1
+    if matched and not inside_comment:
       inside_funcion = 1
     if inside_funcion:
-      if re.search('\)', line):
+      static_match = staticre.search(line)
+      if re.search('\)', line) and not static_match:
 	line = re.match("(.*)$", line).group(0)
 	line = line + ';\n'
 	currentlist.append(line)
@@ -151,7 +162,10 @@ def fn_processfile(filename, functions):
 	inside_funcion = 0
 	continue
       else:
-        currentlist.append(line)
+	if not static_match:
+	  currentlist.append(line)
+	else:
+	  inside_funcion = 0
 	continue
   fp.close()
   
