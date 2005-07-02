@@ -5,13 +5,13 @@
 ## 
 ## clean
 ## 
-## path          /home/mycure/kaneton/env
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:14:03 2005   mycure
-## last update   Fri Jun 17 14:18:26 2005   mycure
+## last update   Fri Jul  1 13:13:16 2005   mycure
 ##
 
 # INFORMATIONS
@@ -57,10 +57,10 @@ KANETON_MK=".kaneton.mk"
 read_kaneton_conf()
 {
   # environment
-  ENVIRONMENT=`cat $CONF | grep -E "^ENVIRONMENT = .*$" | cut -b 15-`
+  ENVIRONMENT=`cat $CONF | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
 
   # architecture
-  ARCHITECTURE=`cat $CONF | grep -E "^ARCHITECTURE = .*$" | cut -b 16-`
+  ARCHITECTURE=`cat $CONF | grep -E "^_ARCHITECTURE_ = .*$" | cut -b 18-`
 }
 
 

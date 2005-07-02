@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Jun 20 18:54:27 2005   mycure
+## last update   Fri Jul  1 13:07:14 2005   mycure
 ##
 
 #
@@ -35,15 +35,11 @@ SHELL			:=		/bin/sh
 
 SUBDIRS			=	libs core services
 
-CONF_BOOTLOADER		:=						\
-  $(shell cat conf/$(USER)/$(USER).conf					| \
-          grep -E "^BOOTLOADER = .*$$"					| \
-          cut -b 14-)
+#
+# ---------- user configuration -----------------------------------------------
+#
 
-CONF_VERSION		:=						\
-  $(shell cat conf/$(USER)/$(USER).conf					| \
-          grep -E "^VERSION = .*$$"					| \
-          cut -b 11-)
+include			conf/$(USER)/$(USER).conf
 
 #
 # ---------- default rule -----------------------------------------------------
@@ -123,12 +119,12 @@ dep:			.kaneton.mk
 
 build:			.kaneton.mk
 	@cd utils							; \
-	./$(CONF_BOOTLOADER) build					; \
+	./$(_BOOTLOADER_) build						; \
 	cd ..
 
 install:		.kaneton.mk
 	@cd utils/							; \
-	./$(CONF_BOOTLOADER) install					; \
+	./$(_BOOTLOADER_) install					; \
 	cd ..
 
 #
@@ -176,8 +172,8 @@ dist:
 	@echo ""
 	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mbuilding kaneton...\033[0m"
 
-	@tar czf /tmp/kaneton-$(CONF_VERSION).tar.gz .
-	@mv /tmp/kaneton-$(CONF_VERSION).tar.gz .
+	@tar czf /tmp/kaneton-$(_VERSION_).tar.gz .
+	@mv /tmp/kaneton-$(_VERSION_).tar.gz .
 
 	@echo ""
 	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton built\033[0m"

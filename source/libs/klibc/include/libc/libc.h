@@ -62,7 +62,6 @@
  * ../../libc/ctype.c
  */
 
-
 /*
  * ../../libc/bcmp.c
  */
@@ -96,6 +95,7 @@ void			bzero(void*				dst,
 void			dump_buf(u_int8_t*			buf,
 				 u_int				address,
 				 u_int				size);
+
 
 void			dump(char*				data,
 			     u_int				size);
@@ -145,6 +145,7 @@ int			printf_string(char*			string,
 				      int			len1,
 				      int			len2);
 
+
 int			printf_quad(quad_t			value,
 				    int				base,
 				    int				hdl_sign,
@@ -152,11 +153,14 @@ int			printf_quad(quad_t			value,
 				    int				len1,
 				    int				len2);
 
+
 int			vprintf(const char*			fmt,
 				va_list				args);
 
+
 int			printf_init(t_printf_char_fn		pc,
 				    t_printf_attr_fn		pa);
+
 
 int			printf(char*				fmt,
 			       ...);
@@ -260,7 +264,6 @@ unsigned long		strtoul(const char*			nptr,
 
 u_int32_t		sum2(char				*buf,
 			     int				size);
-
 
 /*
  * eop

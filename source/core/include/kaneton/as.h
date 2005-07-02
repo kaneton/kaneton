@@ -44,10 +44,8 @@ typedef struct
 
 void			as_dump(void);
 
+
 int			as_init(void);
-
-    segment_push((t_segment*)(init->segmng + i * sizeof(t_segment)));;
-
 
 /*
  * eop

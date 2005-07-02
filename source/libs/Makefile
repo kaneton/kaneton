@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/libs
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:28:05 2005   mycure
-## last update   Sun Jun 19 20:57:12 2005   mycure
+## last update   Fri Jul  1 13:20:37 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		$(_CONF_LIBC_) crt
+SUBDIRS			:=		$(_LIBC_) crt
 
 #
 # ---------- rules ------------------------------------------------------------

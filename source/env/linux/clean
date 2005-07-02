@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sat Jun 18 23:30:38 2005   mycure
+## last update   Fri Jul  1 13:15:07 2005   mycure
 ##
 
 # INFORMATIONS
@@ -50,11 +50,11 @@ KANETON_MK=".kaneton.mk"
 # important variables
 read_kaneton_conf()
 {
-  # env
-  ENVIRONMENT=`cat $CONF | grep -E "^ENVIRONMENT = .*$" | cut -b 15-`
+  # environment
+  ENVIRONMENT=`cat $CONF | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
 
   # architecture
-  ARCHITECTURE=`cat $CONF | grep -E "^ARCHITECTURE = .*$" | cut -b 16-`
+  ARCHITECTURE=`cat $CONF | grep -E "^_ARCHITECTURE_ = .*$" | cut -b 18-`
 }
 
 

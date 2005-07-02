@@ -64,6 +64,7 @@ typedef struct
 
 void			bootloader_error(void);
 
+
 int			bootloader(t_uint32			magic,
 				   multiboot_info_t*		mbi);
 
@@ -74,19 +75,26 @@ int			bootloader(t_uint32			magic,
 
 void			bootloader_cons_clear(void);
 
+
 void			bootloader_cons_scroll(t_uint16		lines);
+
 
 void			bootloader_cons_attr(t_uint8		attr);
 
+
 int			bootloader_cons_print_char(char		c);
 
+
 void			bootloader_cons_print_string(char*	string);
+
 
 void			bootloader_cons_msg(char		indicator,
 					    char*		fmt,
 					    ...);
 
+
 void			bootloader_cons_load(void);
+
 
 int			bootloader_cons_init(void);
 
@@ -97,26 +105,18 @@ int			bootloader_cons_init(void);
 
 void			bootloader_init_dump(void);
 
- * 1) allocates memory for the malloc() function. indeed the malloc() function;
-
- *    is installed. thus the malloc() function will be able to ask;
-
- *    so the malloc() function needs an amount of critical pages to work with;
 
 void			bootloader_init_segments(void);
 
+
 void			bootloader_init_regions(void);
+
 
 t_paddr			bootloader_init_alloc(t_psize		size,
 					      t_psize*		psize);
 
+
 t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi);
-
-				      nmodules * sizeof(t_module) +;
-
-    (o_segment*)bootloader_init_alloc(nsegments * sizeof(o_segment),;
-
-    (o_region*)bootloader_init_alloc(nregions * sizeof(o_region),;
 
 
 /*
@@ -126,24 +126,15 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi);
 void			bootloader_paging_dump_table(t_pte*	table,
 						     t_opts	opts);
 
+
 void			bootloader_paging_dump_directory(t_pde*	directory,
 							 t_opts	opts);
 
+
 void			bootloader_paging_enable(void);
 
+
 void			bootloader_paging_init(void);
-
-  pd = (t_pde*)bootloader_init_alloc(PAGING_NPDE * sizeof(t_pde), NULL);;
-
-  memset(pd, 0x0, PAGING_NPDE * sizeof(t_pde));;
-
-  pt0 = (t_pte*)bootloader_init_alloc(PAGING_NPTE * sizeof(t_pte), NULL);;
-
-  memset(pt0, 0x0, PAGING_NPTE * sizeof(t_pte));;
-
-	  pt = (t_pte*)bootloader_init_alloc(PAGING_NPTE * sizeof(t_pte),;
-
-	  memset(pt, 0x0, PAGING_NPTE * sizeof(t_pte));;
 
 
 /*
@@ -152,10 +143,13 @@ void			bootloader_paging_init(void);
 
 void			bootloader_pmode_gdt_dump(void);
 
+
 void			bootloader_pmode_update_registers(t_uint16	kcs,
 							  t_uint16	kds);
 
+
 void			bootloader_pmode_enable(void);
+
 
 void			bootloader_pmode_gdt_set(t_uint16	entry,
 						 t_paddr	base,
@@ -163,14 +157,8 @@ void			bootloader_pmode_gdt_set(t_uint16	entry,
 						 t_uint8	type,
 						 t_uint8	flags);
 
+
 void			bootloader_pmode_init(void);
-
-  gdt = (t_gdte*)bootloader_init_alloc(PMODE_GDT_ENTRIES * sizeof(t_gdte),;
-
-  memset(gdt, 0x0, PMODE_GDT_ENTRIES * sizeof(t_gdte));;
-
-  gdtr.size = (t_uint16)(PMODE_GDT_ENTRIES * sizeof(t_gdte));;
-
 
 /*
  * eop

@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Thu Jun 30 20:02:05 2005   mycure
+## last update   Fri Jul  1 13:05:54 2005   mycure
 ##
 
 #
@@ -104,30 +104,7 @@ _SET_A_			:=		$(_CORE_KANETON_DIR_)/set/set.a
 # ---------- user configuration addons ----------------------------------------
 #
 
-_CONF_CFLAGS_		:=						\
-  $(shell cat $(_CONF_DIR_)/$(USER)/$(USER).conf			| \
-          grep -E "^CFLAGS = .*$$"					| \
-          cut -b 10-)
-
-_CONF_LDFLAGS_		:=						\
-  $(shell cat $(_CONF_DIR_)/$(USER)/$(USER).conf			| \
-          grep -E "^LDFLAGS = .*$$"					| \
-          cut -b 11-)
-
-_CONF_CPPFLAGS_		:=						\
-  $(shell cat $(_CONF_DIR_)/$(USER)/$(USER).conf			| \
-          grep -E "^CPPFLAGS = .*$$"					| \
-          cut -b 12-)
-
-_CONF_MAKEFLAGS_	:=						\
-  $(shell cat $(_CONF_DIR_)/$(USER)/$(USER).conf			| \
-          grep -E "^MAKEFLAGS = .*$$"					| \
-          cut -b 13-)
-
-_CONF_LIBC_		:=						\
-  $(shell cat $(_CONF_DIR_)/$(USER)/$(USER).conf			| \
-          grep -E "^LIBC = .*$$"					| \
-          cut -b 8-)
+include			$(_CONF_DIR_)/$(USER)/$(USER).conf
 
 #
 # ---------- c compiler -------------------------------------------------------
@@ -143,15 +120,15 @@ CFLAGS			:=		-D___kaneton			\
 					-nostdinc -nostdlib		\
 					-fno-builtin			\
 					-O0 $(_INCLUDES_)		\
-					$(_CONF_CFLAGS_)		
+					$(_CFLAGS_)			
 
 LDFLAGS			:=		-nostdinc -nostdlib		\
 					$(_INCLUDES_)			\
-					$(_CONF_LDFLAGS_)		
+					$(_LDFLAGS_)			
 
-CPPFLAGS		:=		$(_CONF_CPPFLAGS_)
+CPPFLAGS		:=		$(_CPPFLAGS_)			
 
-MAKEFLAGS		:=		$(_CONF_MAKEFLAGS_)		
+MAKEFLAGS		:=		$(_MAKEFLAGS_)			
 
 #
 # ---------- binaries ---------------------------------------------------------

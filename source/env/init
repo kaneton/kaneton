@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Jun 19 17:33:59 2005   mycure
+## last update   Fri Jul  1 13:11:48 2005   mycure
 ##
 
 # INFORMATIONS
@@ -62,25 +62,25 @@ KANETON_MK=".kaneton.mk"
 read_kaneton_conf()
 {
   # title
-  TITLE=`cat $CONF | grep -E "^TITLE = .*$" | cut -b 9-`
+  TITLE=`cat $CONF | grep -E "^_TITLE_ = .*$" | cut -b 11-`
 
   # version
-  VERSION=`cat $CONF | grep -E "^VERSION = .*$" | cut -b 11-`
+  VERSION=`cat $CONF | grep -E "^_VERSION_ = .*$" | cut -b 13-`
 
   # mode
-  MODE=`cat $CONF | grep -E "^MODE = .*$" | cut -b 8-`
+  MODE=`cat $CONF | grep -E "^_MODE_ = .*$" | cut -b 10-`
 
   # libc
-  LIBC=`cat $CONF | grep -E "^LIBC = .*$" | cut -b 8-`
+  LIBC=`cat $CONF | grep -E "^_LIBC_ = .*$" | cut -b 10-`
 
   # environment
-  ENVIRONMENT=`cat $CONF | grep -E "^ENVIRONMENT = .*$" | cut -b 15-`
+  ENVIRONMENT=`cat $CONF | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
 
   # architecture
-  ARCHITECTURE=`cat $CONF | grep -E "^ARCHITECTURE = .*$" | cut -b 16-`
+  ARCHITECTURE=`cat $CONF | grep -E "^_ARCHITECTURE_ = .*$" | cut -b 18-`
 
-  # architecture
-  BOOTLOADER=`cat $CONF | grep -E "^BOOTLOADER = .*$" | cut -b 14-`
+  # bootloader
+  BOOTLOADER=`cat $CONF | grep -E "^_BOOTLOADER_ = .*$" | cut -b 16-`
 }
 
 
