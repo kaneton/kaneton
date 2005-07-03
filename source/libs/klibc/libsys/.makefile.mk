@@ -1,7 +1,9 @@
 perror.o: perror.c
 quad.o: quad.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/libc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/asm.h \
@@ -18,8 +20,8 @@ quad.o: quad.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/core/include/arch/ia32/services/services.h \
   /home/mycure/kaneton/core/include/arch/ia32/sys/sys.h \
   /home/mycure/kaneton/core/include/arch/ia32/sys/elf.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/ctype.h \
-  /home/mycure/kaneton/libs/klibc/include/libc/printf.h \
+  /home/mycure/kaneton/libs/klibc/include/libstring/ctype.h \
+  /home/mycure/kaneton/libs/klibc/include/libstring/printf.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/libsys.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/errno.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/limits.h \

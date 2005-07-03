@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:56:59 2005   mycure
-## last update   Sun Jul  3 14:33:48 2005   mycure
+## last update   Sun Jul  3 14:48:13 2005   mycure
 ##
 
 #
@@ -36,7 +36,6 @@ LIBSTRING_C		:=		ctype.c				\
 					bcmp.c				\
 					bcopy.c				\
 					bzero.c				\
-					dump.c				\
 					index.c				\
 					memcmp.c			\
 					memcpy.c			\
@@ -52,8 +51,7 @@ LIBSTRING_C		:=		ctype.c				\
 					strncmp.c			\
 					strncpy.c			\
 					strtol.c			\
-					strtoul.c			\
-					sum2.c
+					strtoul.c			
 
 LIBSTRING_O		:=		$(LIBSTRING_C:.c=.o)
 

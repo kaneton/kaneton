@@ -88,18 +88,6 @@ void			bzero(void*				dst,
 
 
 /*
- * ../../libstring/dump.c
- */
-
-void			dump_buf(u_int8_t*			buf,
-				 u_int				address,
-				 u_int				size);
-
-void			dump(char*				data,
-			     u_int				size);
-
-
-/*
  * ../../libstring/index.c
  */
 
@@ -250,14 +238,6 @@ long			strtol(const char*			nptr,
 unsigned long		strtoul(const char*			nptr,
 				char**				endptr,
 				int				base);
-
-
-/*
- * ../../libstring/sum2.c
- */
-
-u_int32_t		sum2(char				*buf,
-			     int				size);
 
 
 /*

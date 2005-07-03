@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:05:40 2005   mycure
-## last update   Sun Jul  3 14:39:43 2005   mycure
+## last update   Sun Jul  3 14:53:41 2005   mycure
 ##
 
 #
@@ -32,7 +32,9 @@ include			../../../.kaneton.mk
 
 LIBDATA			:=		libdata.a
 
-LIBDATA_C		:=		
+LIBDATA_C		:=		dump.c				\
+					malloc.c			\
+					sum2.c				
 
 LIBDATA_O		:=		$(LIBDATA_C:.c=.o)
 
