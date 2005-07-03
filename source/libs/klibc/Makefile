@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/libs/klibc
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:29:19 2005   mycure
-## last update   Sun Jul  3 14:35:43 2005   mycure
+## last update   Sun Jul  3 19:41:26 2005   mycure
 ##
 
 #
@@ -44,7 +44,7 @@ LIBSYS			:=		libsys/libsys.a
 #
 
 $(LIBC_A):		libs
-	$(call archives,$(LIBC_A),$(LIBSTRING) $(LIBSYS),)
+	$(call archives,$(LIBC_A),$(LIBDATA) $(LIBSTRING) $(LIBSYS),)
 
 	$(call link,$(_LIBC_A_),klibc/$(LIBC_A),)
 	$(call link,$(_LIBC_H_),klibc/$(LIBC_H),)

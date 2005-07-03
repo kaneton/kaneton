@@ -1,7 +1,7 @@
 ctype.o: ctype.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -30,7 +30,7 @@ ctype.o: ctype.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 bcmp.o: bcmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -59,7 +59,7 @@ bcmp.o: bcmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 bcopy.o: bcopy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -88,7 +88,7 @@ bcopy.o: bcopy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 bzero.o: bzero.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -117,7 +117,7 @@ bzero.o: bzero.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 index.o: index.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -146,7 +146,7 @@ index.o: index.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 memcmp.o: memcmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -175,7 +175,7 @@ memcmp.o: memcmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 memcpy.o: memcpy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -204,7 +204,7 @@ memcpy.o: memcpy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 memset.o: memset.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -250,7 +250,7 @@ printf.o: printf.c \
   /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/ctype.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/printf.h \
@@ -263,7 +263,7 @@ printf.o: printf.c \
 rindex.o: rindex.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -292,7 +292,7 @@ rindex.o: rindex.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 strcat.o: strcat.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -321,7 +321,7 @@ strcat.o: strcat.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 strchr.o: strchr.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -350,7 +350,7 @@ strchr.o: strchr.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 strcmp.o: strcmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -379,7 +379,7 @@ strcmp.o: strcmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 strcpy.o: strcpy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -408,7 +408,7 @@ strcpy.o: strcpy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 strlen.o: strlen.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -437,7 +437,7 @@ strlen.o: strlen.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 strncat.o: strncat.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -466,7 +466,7 @@ strncat.o: strncat.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 strncmp.o: strncmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -495,7 +495,7 @@ strncmp.o: strncmp.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 strncpy.o: strncpy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -524,7 +524,7 @@ strncpy.o: strncpy.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 strtol.o: strtol.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
@@ -553,7 +553,7 @@ strtol.o: strtol.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
 strtoul.o: strtoul.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \

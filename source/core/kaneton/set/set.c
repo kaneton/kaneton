@@ -5,17 +5,17 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jun 20 23:24:54 2005   mycure
+ * last update   Sun Jul  3 19:44:09 2005   mycure
  */
 
 /*
- * ---------- info ------------------------------------------------------------
+ * ---------- information -----------------------------------------------------
  *
  * the set manager is used to manages the data structure in order to simplify
  * the other kernel managers. indeed, every kernel manager including the

@@ -5,17 +5,19 @@
  * 
  * malloc.c
  * 
- * path          /home/mycure/kaneton/libs/klibc/libdata
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:50:21 2005   mycure
- * last update   Sun Jul  3 19:28:06 2005   mycure
+ * last update   Sun Jul  3 19:44:54 2005   mycure
  */
 
 /*
- * ---------- inf -------------------------------------------------------------
+ * ---------- information -----------------------------------------------------
+ *
+ * XXX
  */
 
 /*
@@ -44,5 +46,5 @@ int			alloc_init(t_vaddr			addr,
 {
   memset(&alloc, 0x0, sizeof(t_alloc));
 
-  alloc_add(addr, size);
+  // XXX alloc_add(addr, size);
 }

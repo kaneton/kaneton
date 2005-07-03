@@ -5,17 +5,17 @@
  * 
  * as.c
  * 
- * path          /home/mycure/source/core/kaneton/set
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jun 20 08:05:28 2005   mycure
+ * last update   Sun Jul  3 19:43:54 2005   mycure
  */
 
 /*
- * ---------- info ------------------------------------------------------------
+ * ---------- information -----------------------------------------------------
  *
  * XXX
  */

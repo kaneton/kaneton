@@ -2,7 +2,7 @@ perror.o: perror.c
 quad.o: quad.c /home/mycure/kaneton/libs/klibc/include/klibc.h \
   /home/mycure/kaneton/libs/klibc/include/libdata/libdata.h \
   /home/mycure/kaneton/libs/klibc/include/libsys/types.h \
-  /home/mycure/kaneton/libs/klibc/include/libdata/malloc.h \
+  /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h \
   /home/mycure/kaneton/libs/klibc/include/libstring/libstring.h \
   /home/mycure/kaneton/core/include/arch/machdep/machdep.h \
   /home/mycure/kaneton/core/include/arch/ia32/ia32/ia32.h \
