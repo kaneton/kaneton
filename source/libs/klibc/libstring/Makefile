@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/libs/klibc/libc
+## path          /home/mycure/kaneton/libs/klibc/libstring
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:56:59 2005   mycure
-## last update   Mon Jun 20 17:09:47 2005   mycure
+## last update   Sun Jul  3 14:33:48 2005   mycure
 ##
 
 #
@@ -30,9 +30,9 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-LIBC			:=		libc.a
+LIBSTRING		:=		libstring.a
 
-LIBC_C			:=		ctype.c				\
+LIBSTRING_C		:=		ctype.c				\
 					bcmp.c				\
 					bcopy.c				\
 					bzero.c				\
@@ -55,35 +55,35 @@ LIBC_C			:=		ctype.c				\
 					strtoul.c			\
 					sum2.c
 
-LIBC_O			:=		$(LIBC_C:.c=.o)
+LIBSTRING_O		:=		$(LIBSTRING_C:.c=.o)
 
-LIBC_INCLUDE		:=		$(_LIBS_DIR_)/klibc/include/libc/libc.h
+LIBSTRING_INCLUDE	:=		$(_LIBS_DIR_)/klibc/include/libstring/libstring.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(LIBC):		$(LIBC_O)
-	$(call remove,$(LIBC),)
+$(LIBSTRING):		$(LIBSTRING_O)
+	$(call remove,$(LIBSTRING),)
 
-	$(call archive,$(LIBC),$(LIBC_O),)
+	$(call archive,$(LIBSTRING),$(LIBSTRING_O),)
 
-	$(call static-linker,$(LIBC),)
+	$(call static-linker,$(LIBSTRING),)
 
 clear:
-	$(call remove,$(LIBC_O),)
+	$(call remove,$(LIBSTRING_O),)
 
-	$(call remove,$(LIBC),)
+	$(call remove,$(LIBSTRING),)
 
 	$(call purge,)
 
 proto:
-	$(call prototypes,$(LIBC_INCLUDE),)
+	$(call prototypes,$(LIBSTRING_INCLUDE),)
 
 dep:
 	$(call remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(LIBC_C),$(_MAKEFILE_MK_),)
+	$(call dependencies,$(LIBSTRING_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

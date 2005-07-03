@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:29:19 2005   mycure
-## last update   Sun Jun 19 21:35:49 2005   mycure
+## last update   Sun Jul  3 14:35:43 2005   mycure
 ##
 
 #
@@ -30,23 +30,24 @@ include			../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		libc libsys
+SUBDIRS			:=		libdata libstring libsys
 
-LIB_C			:=		klibc.a
-LIB_H			:=		include/klibc.h
+LIBC_A			:=		klibc.a
+LIBC_H			:=		include/klibc.h
 
-LIBC			:=		libc/libc.a
+LIBDATA			:=		libdata/libdata.a
+LIBSTRING		:=		libstring/libstring.a
 LIBSYS			:=		libsys/libsys.a
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(LIB_C):		libs
-	$(call archives,$(LIB_C),$(LIBC) $(LIBSYS),)
+$(LIBC_A):		libs
+	$(call archives,$(LIBC_A),$(LIBSTRING) $(LIBSYS),)
 
-	$(call link,$(_LIBC_A_),klibc/$(LIB_C),)
-	$(call link,$(_LIBC_H_),klibc/$(LIB_H),)
+	$(call link,$(_LIBC_A_),klibc/$(LIBC_A),)
+	$(call link,$(_LIBC_H_),klibc/$(LIBC_H),)
 
 libs:
 	@for i in $(SUBDIRS) ; do					\
@@ -62,7 +63,7 @@ clear:
 	$(_CD_) .. 							; \
 	done
 
-	$(call remove,$(LIB_C),)
+	$(call remove,$(LIBC_A),)
 
 	$(call remove,$(_LIBC_A_),)
 	$(call remove,$(_LIBC_H_),)
