@@ -3,7 +3,7 @@
  * 
  * kaneton
  * 
- * libstring.h
+ * libdata.h
  * 
  * path          /home/mycure/kaneton/libs/klibc/include/libdata
  * 
@@ -11,49 +11,29 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Sun Jul  3 14:49:26 2005   mycure
+ * last update   Sun Jul  3 14:49:36 2005   mycure
  */
 
-#ifndef LIBSTRING_LIBSTRING_H
-#define LIBSTRING_LIBSTRING_H	1
+#ifndef LIBDATA_LIBDATA_H
+#define LIBDATA_LIBDATA_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <klibc/include/libsys/types.h>
-#include <arch/machdep/machdep.h>
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc/include/libstring/ctype.h>
-#include <klibc/include/libstring/printf.h>
+// XXX #include <klibc/include/libdata/malloc.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../libstring/ctype.c
- *      ../../libstring/bcmp.c
- *      ../../libstring/bcopy.c
- *      ../../libstring/bzero.c
- *      ../../libstring/index.c
- *      ../../libstring/memcmp.c
- *      ../../libstring/memcpy.c
- *      ../../libstring/memset.c
- *      ../../libstring/printf.c
- *      ../../libstring/rindex.c
- *      ../../libstring/strcat.c
- *      ../../libstring/strchr.c
- *      ../../libstring/strcmp.c
- *      ../../libstring/strcpy.c
- *      ../../libstring/strlen.c
- *      ../../libstring/strncat.c
- *      ../../libstring/strncmp.c
- *      ../../libstring/strncpy.c
- *      ../../libstring/strtol.c
- *      ../../libstring/strtoul.c
+ *      ../../libstring/dump.c
+ *      ../../libstring/sum2.c
  */
 
 /*
