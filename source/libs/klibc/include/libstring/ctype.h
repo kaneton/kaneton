@@ -5,17 +5,17 @@
  * 
  * ctype.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include
+ * path          /home/mycure/kaneton/libs/klibc/include/libstring
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:25 2005   mycure
- * last update   Sun Jun 19 22:17:36 2005   mycure
+ * last update   Sun Jul  3 14:38:01 2005   mycure
  */
 
-#ifndef LIBC_CTYPE_H
-#define LIBC_CTYPE_H		1
+#ifndef LIBSTRING_CTYPE_H
+#define LIBSTRING_CTYPE_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------

@@ -3,19 +3,19 @@
  * 
  * kaneton
  * 
- * libc.h
+ * libstring.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/libs/klibc/include/libstring
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Thu Jun 30 20:03:46 2005   mycure
+ * last update   Sun Jul  3 14:37:45 2005   mycure
  */
 
-#ifndef LIBC_LIBC_H
-#define LIBC_LIBC_H		1
+#ifndef LIBC_LIBSTRING_H
+#define LIBC_LIBSTRING_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -28,43 +28,43 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc/include/libc/ctype.h>
-#include <klibc/include/libc/printf.h>
+#include <klibc/include/libstring/ctype.h>
+#include <klibc/include/libstring/printf.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../libc/ctype.c
- *      ../../libc/bcmp.c
- *      ../../libc/bcopy.c
- *      ../../libc/bzero.c
- *      ../../libc/dump.c
- *      ../../libc/index.c
- *      ../../libc/memcmp.c
- *      ../../libc/memcpy.c
- *      ../../libc/memset.c
- *      ../../libc/printf.c
- *      ../../libc/rindex.c
- *      ../../libc/strcat.c
- *      ../../libc/strchr.c
- *      ../../libc/strcmp.c
- *      ../../libc/strcpy.c
- *      ../../libc/strlen.c
- *      ../../libc/strncat.c
- *      ../../libc/strncmp.c
- *      ../../libc/strncpy.c
- *      ../../libc/strtol.c
- *      ../../libc/strtoul.c
- *      ../../libc/sum2.c
+ *      ../../libstring/ctype.c
+ *      ../../libstring/bcmp.c
+ *      ../../libstring/bcopy.c
+ *      ../../libstring/bzero.c
+ *      ../../libstring/dump.c
+ *      ../../libstring/index.c
+ *      ../../libstring/memcmp.c
+ *      ../../libstring/memcpy.c
+ *      ../../libstring/memset.c
+ *      ../../libstring/printf.c
+ *      ../../libstring/rindex.c
+ *      ../../libstring/strcat.c
+ *      ../../libstring/strchr.c
+ *      ../../libstring/strcmp.c
+ *      ../../libstring/strcpy.c
+ *      ../../libstring/strlen.c
+ *      ../../libstring/strncat.c
+ *      ../../libstring/strncmp.c
+ *      ../../libstring/strncpy.c
+ *      ../../libstring/strtol.c
+ *      ../../libstring/strtoul.c
+ *      ../../libstring/sum2.c
  */
 
 /*
- * ../../libc/ctype.c
+ * ../../libstring/ctype.c
  */
 
 
 /*
- * ../../libc/bcmp.c
+ * ../../libstring/bcmp.c
  */
 
 int			bcmp(const void*			b1,
@@ -73,7 +73,7 @@ int			bcmp(const void*			b1,
 
 
 /*
- * ../../libc/bcopy.c
+ * ../../libstring/bcopy.c
  */
 
 void			bcopy(const void*			src,
@@ -82,7 +82,7 @@ void			bcopy(const void*			src,
 
 
 /*
- * ../../libc/bzero.c
+ * ../../libstring/bzero.c
  */
 
 void			bzero(void*				dst,
@@ -90,7 +90,7 @@ void			bzero(void*				dst,
 
 
 /*
- * ../../libc/dump.c
+ * ../../libstring/dump.c
  */
 
 void			dump_buf(u_int8_t*			buf,
@@ -102,7 +102,7 @@ void			dump(char*				data,
 
 
 /*
- * ../../libc/index.c
+ * ../../libstring/index.c
  */
 
 char*			index(const char*			p,
@@ -110,7 +110,7 @@ char*			index(const char*			p,
 
 
 /*
- * ../../libc/memcmp.c
+ * ../../libstring/memcmp.c
  */
 
 int			memcmp(const void*			s1,
@@ -119,7 +119,7 @@ int			memcmp(const void*			s1,
 
 
 /*
- * ../../libc/memcpy.c
+ * ../../libstring/memcpy.c
  */
 
 void*			memcpy(void*				dest,
@@ -128,7 +128,7 @@ void*			memcpy(void*				dest,
 
 
 /*
- * ../../libc/memset.c
+ * ../../libstring/memset.c
  */
 
 void*			memset(void*				s,
@@ -137,7 +137,7 @@ void*			memset(void*				s,
 
 
 /*
- * ../../libc/printf.c
+ * ../../libstring/printf.c
  */
 
 int			printf_string(char*			string,
@@ -163,7 +163,7 @@ int			printf(char*				fmt,
 
 
 /*
- * ../../libc/rindex.c
+ * ../../libstring/rindex.c
  */
 
 char*			rindex(const char*			p,
@@ -171,7 +171,7 @@ char*			rindex(const char*			p,
 
 
 /*
- * ../../libc/strcat.c
+ * ../../libstring/strcat.c
  */
 
 char*			strcat(char*				s,
@@ -179,7 +179,7 @@ char*			strcat(char*				s,
 
 
 /*
- * ../../libc/strchr.c
+ * ../../libstring/strchr.c
  */
 
 char*			strchr(const char*			p,
@@ -187,7 +187,7 @@ char*			strchr(const char*			p,
 
 
 /*
- * ../../libc/strcmp.c
+ * ../../libstring/strcmp.c
  */
 
 int			strcmp(const char*			s1,
@@ -195,7 +195,7 @@ int			strcmp(const char*			s1,
 
 
 /*
- * ../../libc/strcpy.c
+ * ../../libstring/strcpy.c
  */
 
 char*			strcpy(char*				to,
@@ -203,14 +203,14 @@ char*			strcpy(char*				to,
 
 
 /*
- * ../../libc/strlen.c
+ * ../../libstring/strlen.c
  */
 
 size_t			strlen(const char*			str);
 
 
 /*
- * ../../libc/strncat.c
+ * ../../libstring/strncat.c
  */
 
 char*			strncat(char*				dst,
@@ -219,7 +219,7 @@ char*			strncat(char*				dst,
 
 
 /*
- * ../../libc/strncmp.c
+ * ../../libstring/strncmp.c
  */
 
 int			strncmp(const char*			s1,
@@ -228,7 +228,7 @@ int			strncmp(const char*			s1,
 
 
 /*
- * ../../libc/strncpy.c
+ * ../../libstring/strncpy.c
  */
 
 char*			strncpy(char*				to,
@@ -237,7 +237,7 @@ char*			strncpy(char*				to,
 
 
 /*
- * ../../libc/strtol.c
+ * ../../libstring/strtol.c
  */
 
 long			strtol(const char*			nptr,
@@ -246,7 +246,7 @@ long			strtol(const char*			nptr,
 
 
 /*
- * ../../libc/strtoul.c
+ * ../../libstring/strtoul.c
  */
 
 unsigned long		strtoul(const char*			nptr,
@@ -255,7 +255,7 @@ unsigned long		strtoul(const char*			nptr,
 
 
 /*
- * ../../libc/sum2.c
+ * ../../libstring/sum2.c
  */
 
 u_int32_t		sum2(char				*buf,

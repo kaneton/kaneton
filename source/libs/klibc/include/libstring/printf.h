@@ -5,17 +5,17 @@
  * 
  * printf.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include
+ * path          /home/mycure/kaneton/libs/klibc/include/libstring
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Sun Jun 19 22:18:12 2005   mycure
+ * last update   Sun Jul  3 14:38:18 2005   mycure
  */
 
-#ifndef LIBC_PRINTF_H
-#define LIBC_PRINTF_H		1
+#ifndef LIBSTRING_PRINTF_H
+#define LIBSTRING_PRINTF_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
