@@ -1,0 +1,1177 @@
+physical memory
+
+t_pm pm; compose de segments:
+
+	seg - seg - seg - seg - seg - seg
+
+-- task death
+
+qaund une tache meurt, on prend tous ses threads, on les fait mourir
+egalement et liberant ce qu il faut. ensuite on prend l'as, et on passe
+en premier l ensemble des segments, pour chaque segment on le libere et
+on fait de meme avec les regions, les map et on finit avec l as.
+
+--
+
+le concept de segment est directement lie au concept de memoire physique. celui
+ci n'a de sens que sur une machine donnee. spargo ne permet pas a des machines
+distantes de reserver des segments sur d'autres machines. en effet
+l'introduction de segments au niveau du systeme requiert des identifiants
+uniques pour les segments mais egalement pour les espaces d'adressage.
+tout cela serait conceptuellement interessant mais absolument catastrophique
+au niveau des performances etant donne qu il faudrait demander a un
+gestionnaire (groupe de taches sur le systeme) de reserver un identifiant
+pour ce segment ou cet espace d adressage et cela n'est pas concevable.
+
+pour cette raison, un gestionnaire d'objets fut introduit. le role du
+gestionnaire d'objets est de garder trace des objets, de les stocker,
+de les distribuer etc..
+
+le gestionnaire d'objets est un groupe de services, chaque service etant
+situe sur divers machines.
+
+via ce gestionnaire d objets il est possible de creer un objet, l espace
+etant reserve par le gestionnaire d objets. de ce fait, il est concevable
+de reserver une grande quantite de memoire, ce qui serait par exemple
+impossible sur sa machine. cette memoire ne pouvant etre accedee directement
+si elle est trop grande mais sera bien accessible via lecture/ecriture
+comme un fichier. cette memoire pourra donc faire office de sauvegarde
+volatile. de plus les objets serviront a mettre en place le partage
+de donnees.
+
+XXX seg_read, seg_write
+XXX obj_read, obj_write
+
+personne = tache (sur le systeme)
+
+XXX d ailleurs l allocation des identifants de taches: unique ou combinaison?
+
+t_seg
+{
+  t_segid segid;
+
+  t_asid asid;  /* when the task which have rsv the asid linked this this
+                   segment dies, his as is releases so its segments too */
+
+  t_paddr addr;
+  t_psize size;
+
+  t_type type; /* AGGREGATE, PERSISTENT, ... cf: lse/os et kaneton */
+  t_attr attr; /* EXEC, READ, WRITE .. on pourrait le mettre dans type pour
+                  gagner de la place */
+  [...]
+}
+
+-- address spaces
+
+un espace d'adressage represente un espace de memoire addressable, c'est
+a dire utilisable. celui-ci est compose d un ensemble de memoire physique
+et d un ensemble de memoire virtuelle.
+
+1) quand est ce qu'une tache peut vouloir reserver de la memoire physique?
+
+ lorsqu il veut la reserver puis la partager, ou la reserver et la donner
+a un autre process. il peut egalement vouloir la reserver en mode special
+comme par exemple le DMA.
+
+pour recapituler:
+
+  a) un service reserve de la memoire physique DMA pour que le periph
+     ecrive/lise dedans et que ce soit rapide.
+       -> dans ce cas la memoire sera forcement mappee par le process soit
+          pour y mettre des donnees soit pour les lire donc un objet
+          c'est bon; en gros ici c est un peu comme on veut: seg, map ou object.
+
+  b) un process veut reserver de la memoire pour une autre personne. c est
+     bizarre mais le gestionnaire de module le fait par exemple. dans ce
+     cas soit le process qui reserve le map soit il ne le fait pas, dans tous
+     les cas il a le choix. donc en imaginant qu il ne veuille pas le mapper
+     c est juste une zone reservee non mappee qui sera mappee par
+     le processus qui recuperera la zone (ou peut etre pas mais peu importe).
+       -> donc la la solution c est clairement un segment, une map ou un object.
+          dans tous les cas c est un seg qu on donne.
+
+XXX identifiant memoire, on file un cap au gestionnaire de modules ou bien on
+    dit au kernel que le gestionnaire de modules a le droit de modifier son as
+    genre un cap par unite fondamentale: seg, reg, map, task, thread, msg
+XXX genre ce serait un truc fondamental, 
+
+  c) reserver de la memoire pour la partager.
+       -> objet
+
+pour recapituler apres reflexion:
+
+  a) segment ou bien map, comme il veut mais le plus logique serait map
+  b) segment ou map si il veut l utiliser avec de la donner
+  c) objet car partage.
+
+objet: segment que plusieurs entites du systeme utilisent.
+
+groupe: gestionnaire d'objets car les objets sont partages sur le systeme
+
+-- chaque as est lie a une tache: dans chaque as on trouve la tache qui
+   lui correspond et dans chaque tache on trouve l as. donc si la tache
+   meurt on libere l'as sans probleme et si l'as est detruit on peut
+   retrouver la tache pour le detacher.
+
+as_init();
+as_rsv();
+as_rel();
+as_clean();
+as_attach();
+as_detach();
+as_give();
+as_clone();
+as_get();
+as_tskid(); /* tache */
+as_modid(); /* module */
+as_ownid(); /* owner */
+
+-- chaque segment est lie a un as et chaque as contient l ensemble des segments
+   qui lui appartiennent. comme ca si un as est detruit il est simple de
+   retrouver les segments lui appartenant et savoir a quel as appartient un
+   segment c est utile pour ameliorer la gestion de la memoire physique
+   split, coalesce etc..
+
+   a noter qu il est impossible de donner un segment a quelqu un
+
+XXX QUIQUE? ce serait rajouter dans l ensemble des segments c est tout
+    et apres libre au mec de l utiliser. suffit de faire seg_give(as, as);
+
+seg_init();
+seg_rsv();
+seg_rel();
+seg_clean();
+seg_attr();
+seg_asid(); /* as */
+
+-- chaque region est implicitement lie a un as. mais il est inutile que les
+   regions contiennent un champ correspondant a l as car ceux ci ne vivent
+   que dans les as. chaque as dispose de la liste des regions qui le compose
+   de sorte que si un as est detruit toutes les regions soient facilement
+   retrouvable pour etre liberees.
+
+reg_init();
+reg_rsv();
+reg_rel();
+reg_clean();
+reg_flush();
+
+-- 
+
+map_init();
+map_rsv();
+map_rel();
+map_clean();
+map_flush();
+
+t_reg
+{
+  t_regid regid;
+
+
+}
+
+t_as
+{
+  t_asid asid;
+
+  t_tskid tskid; /* task which is linked with this as */
+  t_ownid ownid; /* task which reserved this as. used when the ownid dies
+                    to release this as */
+  t_modid modid; /* modules which is currently loaded */
+
+  /* memory objects in construction */
+
+  t_setid segments; /* a set of unmapped segments held by this as */
+  t_setid regions; /* a set of null-mapped regions held by this as */
+
+  /* correct memory objects */
+
+  t_setid maps; /* the set of correct,mapped virtual memory regions
+                   any access in these regions will succeeded,
+                   for example when a page fault occurs, it is obvious
+                   that the page fault address will never be held in these
+                   maps */
+}
+
+toutes les fonctions retourne t_error
+
+-- capabilities
+
+XXX erreur car pour le set mng nodeid != id
+XXX ptet que ce serait bien du C++ pour les templates pour le set mng
+
+objid: location + 
+location: 48-bit (location = nodeid: 16-bit + tskid: 32-bit)
+objid: 32-bit
+rights: 8-bit (soit 256 operations differentes) XXX
+check: 56-bit (assez pour que ce ne soit pas recalculable
+               car 2^48 possibilites)
+
+soit:
+	identifiant: 8: 0000 1000
+	rights: 14: 0000 1110
+	check: 2: 0000 0010
+	f(x): x+9
+
+on calcule de nouveaux droits: 5 et on construit un nouveau cap:
+
+	identifiant: 8: 0000 1000
+	rights: 5: 0000 0101
+	check: f(2) = 11: 0000 1011
+
+de ce fait la deuxieme capability a des droits differents du premier. mais
+surtout il est impossible de generer a partir de la deuxieme cap une
+cap ayant des droits accrus puisque pour cela il faut retrouver: rights
+et check. etant donne que la fonction f(x) est une fonction a sens unique
+
+il est clair que pour pouvoir donner des droits
+
+-- distributed
+
+un systeme d'exploitation distribue est compose de services eparpilles sur
+le reseau/system.
+
+ces services fournissent des fonctionnalites aux clients avec lesquels
+ils communiquent.
+
+[*] pour pouvoir fournir egalement un service en etant le kernel il faut
+    qu'il y ait un service dkernel qui recoive les requetes exterieures
+    pour en faire des requetes internes valides.
+
+[*] lorsqu'un noeud utilise le systeme distrbue, aucune communication
+    ne se fait directement. c'est a dire qu'un noeud ne communiquera
+    JAMAIS directement avec un service pour lui demander de faire quelque
+    chose. en effet spargo fut bati sur un concept d'evolution extremement
+    eleve mais egalement sur une tolerance au fautes accrus. de ce fait
+    il est inadmissible de communiquer avec un service en lui demandant
+    par exemple de lire un fichier dans un mode special car ce service
+    pourrait crasher, etre sature ou meme vouloir interdire ce mode d'une
+    seconde a l'autre. pour eviter cela toutes les demandes de services
+    se font au groupe qui se charge de fournir ce service. de ce fait
+    le concept de processus "service" n'est que sous-jacent au concept
+    de groupe "service". l avantage de demander un serivce a un groupe
+    est que le groupe peut mieux dispatcher le travail, trouver la meilleure
+    personne qui puisse rendre ce service, faire coahbiter des versions
+    de services differentes etc..
+
+ne serait il pas bien de rajouter dans une section ELF le nombre de proc
+et la mem necessaire pour le programme car la comment savoir si il faut
+le distribue? le seul moyen est de laisser le truc se developper via
+la creation de threads et a la fin quand c est plus possible sur ce systeme
+ben on le migre mais c est un peu lourd, il vaudrait mieux prevenir que
+guerir. d un autre cote le server de run il choisir le meilleur endroit
+(cad le moins charge) mais peut etre qu on voudrait que ce soit un proc
+avec 5 prcesseurs et tres peu de memoire.
+
+bien sur pas complique de demander au serveur de run un truc particulier
+style N processeurs et M memoire. mais comment le deduire a partir
+d'un simple binaire? fichier de conf (statique), section elf (automatique
+mais + complique)
+
+- 26/04/05 --------------------------------------------------------------------
+
+recapitulons les groupes:
+
+. name group: s'occupe de faire la traduction nom -> adresse.
+              ce groupe doit pouvoir gerer des versions, des attributs etc..
+              de sorte que des versions differentes d'un mec service tournent
+              ensembles.
+
+              this group plays this replicated data in each member of
+              this group. this choice was made to make the system transparent
+              scalable, modular and not network architeecture dependent.
+
+              this group manages all the system. it is the only group knowing
+              which computer belongs to the distributed operating system.
+              it also plays the role of system head-quarters because it will
+              also manage authentifications etc.. if require.
+
+
+concernant la communication:
+
+. block vs nonblock:
+	block par defaut mais on fournira des fonctions pour tous les types:
+	bloquant, non-bloquant, timer etc.. pour cela notre systeme de
+	message doit etre extrement configurable.
+
+. buffer vs nonbuffer:
+	buffer
+
+. reliable vs nonreliable:
+	reliable mais il faut trouver l'implementation, peut etre avec
+	timeout, bref a revoir: XXX
+
+. the identification of objects on the system is based on capabilities
+  [amoeba]. nevertheless, the spargo distributed operating system provides
+  three ways to identify objects, each being based on the capability system:
+  the first just uses the id field, the second adds rights so use the entire
+  capability and the third adds cryptographic security to avoid network
+  sniffing. This last point being provided by the message system over the
+  network. The fact of having three different ways to identify objects will
+  open ways to futurs researchs of benchmarks of theses different techniques.
+
+. we decided to not base the spargo distributed system on RPC. Indeed, we
+  wanted to abstract communications in every ways. All the system uses
+  message passing to communicate, adding cryptographic security if
+  necessary.
+  the RPC [RPC: XXX a finir de lire] will be used in userland by user
+  applications. Indeed, the RPC system adapted to applications more than to
+  kernels because kernels or services (servers) which communicate together can
+  easily find a message format. I want to say here that services wait for
+  messages while user applications like libraries do not. It is so stupid to
+  use RPC when it is not necessary. In other words, the spargo micro-kernel is
+  based on message passing so the distributed operating system will be too. If
+  the micro-kernel used conventional syscalls like monolithic kernels we will
+  certainly have choiced to use RPC.
+
+  pour etre plus clair, il est evident que les choses compliquees du RPC
+  sont la gestion des espaces d adressages, plus precisement les pointeurs.
+  il est clair que la gestion des pointeurs n a pas a etre traitee entre
+  les services puisque toutes les donnees seront fournies dans le message.
+
+. concernant les messages on utilise le copy/restore, c'est a dire qu on
+  fournit toutes les informations (input) dans le message lui meme, par
+  exemple pour un write() on insere le buffer dans le message, de sorte
+  que le serveur le recupere et puisse s'en servir. cette methode est
+  ideale pour eviter l'utilisation de pointeurs. cet technique appuie
+  notre choix concernant la non utilisation de RPC. bien entendu cette
+  technique est optimiser pour ne pas avoir a construire de message enorme
+  sans necessite. par exemple une requete read() ne contiendra pas de
+  buffer car celui-ci est tout a fait inutile. en revanche la reponse
+  contiendra le buffer desire. la methode du copy/restore introduit donc
+  des variables de type: input, output, input/output. l'implementation
+  devra donc prevoir le controle des variables (input alors que ca devrait
+  etre une output) mais egalement une description des varaibles contenues
+  dans un message accompagnee du type de chacune.
+
+  concernant l'envoi de messages, celui-ci suit le modele de kaneton
+  c'est a dire l'utilisation d'une mailbox (a taille limitee: lors de sa
+  creation) dynamique (?) ou non (?).
+
+  XXX
+  la seule difference etant qu il faut cette fois ci permettre l'envoi de
+  message node.taskid pour permettre la communication entre deux processus
+  distants. XXX ??? sur les autres systemes cela n est pas permis, seulement
+  de communiquer via des ports de sorte de savoir ou se trouve le truc. nous
+  nous pourrions tres bien avoir un name service propre a chaque noeud
+  qui en fonction de certains attributs (nom, version, date, fonctions),
+  tout comme le name group, nous fournirait un chemin vers le serveur. de
+  cette maniere toute la communication se ferait par message et limite le
+  tcp/ip et les serveur classiques se baserait la dessus. l avantage c est
+  l unification des communications mais egalement et surtout l extreme
+  transparence et maleabilite du systeme. l inconvenient c est les messages
+  qui sont plus gros que de simple packet avec gestion par ports (systeme
+  classique). pour resume simplement, les systemes classiques utilisent des
+  ports pour pour retrouver les serveur, le truc etant assez static, dynamique
+  pour certains mais dans aucun cas ce n'est transparent. avec notre systeme
+  c est extremement transparent et ca permet l execution concurrente de
+  plusieurs version d'un meme serveur. bref ca rejoint le nommage classique.
+  [papier nommage: XXX a finir de lire]
+
+. concernant la communication, l'endian utilise est tjs celui du client.
+  un champ du message par exemple le premier octet indique l endian utilise
+  de sorte que le server puisse entamer la conversion, si necessaire.
+
+. concernant les stubs, ceux-ci sont inutiles dans notre cas. posons nous la
+  question: quand est ce qu'un choix doit etre pris concernant: la machine
+  courant ou trouver mieux sur le reseau? quelques reponses: lancement d'un
+  processus, allocation d'un objet (XXX renommer objet en autre chose style
+  aggregat), ouverture d'un fichier (soit localement soit sur un serveur
+  de fichiers) etc..
+
+  il est clair que la plupart des appels transmettra en realite un message
+  a un service dedie a la prise de decision: soit traiter la requete localement
+  soit faire appel au groupe du systeme distribue. bien entendu dans le cas
+  d'un systeme distribue compose d'une seule machine, celle-ci aura un service
+  dedie par exemple pour RUN mais contiendra egalement le groupe RUN soit
+  un service dedie au groupe RUN. Pour resumer chaque micro-kernel disposera
+  d'un ensemble de services fondamentaux: run, fs, obj (XXX a renommer)
+  et dev
+
+  XXX il sera surement possible de fusionner le service dedie au forward
+      et le service du groupe. l avantage: une requete par de la libc arrive
+      dans le service, si celui-ci fait parti du groupe distribue il a juste
+      a prendre la decision de ou le mettre. dans l autre cas il faut
+      forwarder au groupe, c'est a dire surement faire une requete au
+      name server pour savoir ou il se trouve.
+
+  toutes les autres requetes de la libc vont directement au kernel.
+
+  une amelioration, dans la lignee des stubs, sera d'integrer dans la libc
+  une reconnaissances des services lancees tous les N temps. en effet toutes
+  les 30 secondes (par exemple) la libc sonde le systeme et etablit une
+  liste des services pouvant mener a de meilleures performances, autrement
+  dit des services dedies a certains traitement: nos chers forwarders.
+  de cette facon une requete pourra aller directement au kernel si par exemple
+  le service dedie RUN n'est pas actif. par contre 10 minutes plus tard il se
+  lance et la requete va donc se diriger a ce dernier. de cette facon il prend
+  la decision soit de la traiter localement soit en distribue. cela peut
+  revenir au meme que la precedente requete mais lui laisse le choix
+  d'optimiser celle-ci.
+
+  . au niveau de la politique du bind c est a dire du fonctionnement
+    du name group il faut lire les publis sur le nommage des systemes
+    distribues: genre nommage a partir d attributs: nom, data, version,
+    fonctionnalites pour premettre la concurrence des serveurs aux
+    attributs differents. ensuite il faut le coder. ce serait le boulot
+    d'une personne.
+
+  . a chaque lancement d'un service, le service se register aupres du name
+    service qui lui, va communiquer les infos au name group.
+    XXX apres il faut reflechir a propos de l integration des services par
+    rapport aux groupes, c est le seul probleme qu il reste.
+
+  . pour reclarifier, le name group redirige juste sur les groupes qu il faut
+    pour satisfaire une requete. ensuite c'est le groupe qui decide qui
+    va traiter la requete en fonction de ses capacites, ses attributs, sa
+    charge etc.. bref c est le groupe qui est charge de decider car c est lui
+    qui a toutes les infos.
+
+  . on pourrait imaginer que le name group tous les N temps sonde les neouds,
+    les groupes, les services pour mettre a jour ses listes.
+
+  . XXX prevoir un systeme pour liberer les ressources d'une machine qui
+    vient de rebooter, genre broadcaster un message a tous les nodes ou un
+    systeme style notify comme vianney, les gens se register et recoive un
+    message lorsque le truc creve.
+
+  . XXX comment le comportement des communications reseaux il va falloir
+    resoudre les differents problemes: impossible de trouver le server,
+    request lost, reply lost, server crashes, client crashes.
+    aucune possibilite a resoudre le truc correctement: p. 82 - ...
+
+  . les communications reseaux seront assurees "connectionless" car pour
+    l'instant le systeme est destine a des reseaux locaux.
+    neanmoins ce point sera tres facilement modifiable.
+
+  . nous utiliserons le "blast protocol". ce protocole n'envoie un ACK
+    qu'une fois tous les fragments, packets constituant un message recu.
+    nous commencerons par nous baser sur de l'UDP sans aucun check mais
+    dans un futur proche notre systeme de message se basera sur un protocole
+    fait main eliminant les choses inutiles de l UDP. (p. 92) en effet
+    Schroeder and Burrows le disent.
+
+  . un service peut appartenir a plusieurs groupes a la fois. pour differencier
+    les messages personnel des message emanants du groupe1 comme du groupe2
+    on utilisera simplement un mechanisme de trie a la demande comme expliquer
+    dans kaneton.
+
+  . la communication par groupe et la communication en generale est
+    independante de l architecture reseau. c'est la couche la plus basses
+    qui choisira en fonction des fonctionnalites du reseau les modes de
+    transmission a utiliser: broadcast, multicast, unicast. en effet plus
+    on prend la decision tard dans les couches, plus la dependance a
+    l architecture reseau s efface et plus le systeme est portable.
+
+  . XXX revoir lamport
+
+-- group communications
+
+. un message a un groupe implique que tous les membres le recoive
+
+. closed groups: inaccessibles de l exterieur. par exemple un ensemble de
+                 process qui travaillent ensemble peuvent en creer un.
+. open groups: pour permettre a l exterieur de request. par exemple c est utile
+               lorsque utilise pour decider quel membre va traiter l operation.
+
+. peer groups: pas de leader, pas de point critique, par contre prise de
+               decisions plus complexes
+. hierarchical groups: un leader et des workers, le leader prend les
+                       decisions mais par contre il est le point critique
+
+dans notre cas nous utiliserons un "closed group". en effet la seule methode
+pour envoye un message a un groupe sera de localise un des membres du groupe
+via le name group pour ensuite envoye un message a ce membre. ce dernier
+se chargera de communiquer le message a tous les autres membres du groupe
+en utilisant un protocole fiable.
+
+La plupart des problemes lies aux systemes distribues est de choisir les
+algorithmes: soit centralises soit distribues. Il est clair que les meme
+problematiques reviennent constamment: les algorithmes centralises sont
+rapides, facile a implementer mais souffre d'un grave probleme; si ce
+point crashe sous la charge ou pour une autre raison tout le systeme
+en souffre gravement. A l inverse, les algorithmes distribues sont compliques
+a mettre en oeuvre mais s adapte bien aux systeme evolutifs. Dans la majeure
+partie des cas un algorithme centralise est utilise pour des raisons
+de performances en mettant en place des technique pour reprendre des
+crashes eventuels (qui sont en pratique quasi inexistants): pour
+donner quelques exemples, le name server est generalement centralise tout
+comme le group server etc..
+
+Le systeme Spargo se base sur le concept "presque tout est groupe". En effet le
+name group s occupe de gerer la resolution des noms et est donc adapter
+aux evolutions du systemes. en realite tout n'est pas groupe, loin de la
+mais lorsqu il s agit d'interagir avec des entites assurant la fiabilite
+du systeme, ces entites sont toujours representes par des groupes evolutifs.
+en effet ces groupes evoluent avec le temps, grossissant si necessaire pour
+s adapter au systeme.
+
+. les membres d un groupe peuvent partir des qu ils veulent pour la simple
+  et bonne raison que sinon un membre qui crashe represente une catastrophe
+  pour le groupe. Donc deux situations: un membre annonce a tout le groupe
+  qu il part, ou il crashe et dans ce cas le groupe doit se rendre compte
+  du fait qu il ne repond plus et l enlever de la liste des membres (et
+  certainement demander un nouveau membre parmi les noeuds du systeme).
+
+  en realite tout le systeme se base sur le fonctionnement des groupes et
+  tout le fonctionnement des groupes se base sur une bonne communication
+  dans le groupe c est a dire un mode de transmission sur (reliable).
+
+. le fait de reperer qu un membre n est plus en vie
+
+. un client essaie de contacter quelqu un, si celui ci ne repond pas
+  il en informe le name group qui transmet au groupe concerne. ce qui
+  est bien pour mettre a jour les listes et surtout beaucoup mieux que de
+  sonder tous les N temps.
+
+. communication par groupe: send(), receive() et maintenant
+  group_send(), group_receive() ou alors peut etre mieux, utiliser un
+  arguments OPT_GROUP car en realite quand on envoie a un groupe on va
+  recevoir combien de reponses le mieux serait une donc bon receive() ce
+  serait pas mal.
+
+. lorsqu on envoie un message a un groupe, on l envoie a un membre du groupe
+  qui se charge de le transmettre a tout le groupe. la question que nous
+  nous posons est le cas de la reponse. combien de reponses devont nous
+  recevoir. si une seule, qui l envoie? etc..
+
+  Spargo fonctionne en ne renvoyant qu'une seule reponse lors d'une demande
+  a un groupe. la reponse est toujours envoyee par le sequenceur.
+
+  nous savons que notre systeme de communication par groupe garantit le fait
+  que tout le monde recoit le message dans le meme ordre. de plus si la requete
+  est perdue, rien n'a ete fait donc ce n'est pas grave et simplement reemis.
+  une fois que le sequenceur aura recu le message ou plus exactement une fois
+  que les k membres auront bien recu le message, le groupe SERA TENU de
+  renvoyer une reponse au client.
+
+  comme dit precedemment c est le sequenceur qui s'en chargera. en effet
+  l'implementation doit etre revu afin d'associer a chaque entree de
+  l'history buffer un champ indiquant la reponse a envoyee et si oui
+  ou non elle a bien ete envoyee.
+
+  de plus l'algorithme de nettoyage de l history buffer doit etre revu
+  et alleger afin de ne pas nettoyer les entrees trop recentes. une entree
+  ne peut etre nettoyee si jamais la reponse n'a pas ete envoyee ou bien
+  si cette reponse est trop recente.
+
+  (il serait peut plus envisageable de faire une autre buffer de reponse)
+
+  en effet le fait de garder trace de la reponse garantit la transmission
+  de la reponse avec tolerance a k pannes.
+
+. si un process est migre on ne peut pas detecter la reemission car
+  nodeid n est plus identique au moment de la reemission. soit on trouve
+  un autre moyen soit on refuse la migration si en train d envoye des
+  messages.
+
+  un autre moyen serait de demander un identifiant unique sur tout le systeme
+  des que l'on desire communiquer avec une machine differente de notre noeud.
+  ainsi lors d'une migration on indique au name group que desormais notre
+  identifiant unique correspondra au nouveau nodeid+taskid. des lors
+  lorsqu une tache essaiera de contacter l'ancienne adresse ca deconnera
+  et donc demandera au name group la nouvelle adresse.
+
+XXX lorsqu un client envoie une requete il est clair qu elle risque de
+    timeout avant que le serveur ait transmis a tous les membres et que
+    ensuite l operations fut accomplie. pour ces raisons il semble evident
+    qu une sorte de ACK provisoire soit envoye pour "rassurer" le client
+    et pour lui eviter de repeter l operation mais surtout opur lui
+    eviter d arreter son application croyant le serveur mort ou quelque
+    chose comme ca.
+    une autre solution serait d attendre la reemission pour lui renvoye
+    "c est bon boby on traite", cette derniere etant surement plus adaptee
+    car le groupe est equipe pour faire face aux reemissions, c est a dire
+    qu il est capable de les detecter.
+
+. que ce passe t il si jamais on veut envoyer une seule reponse et que
+  pourtant deux serveurs veulent repondre differemment? par exemple
+  une base de donnees a reussie mais pas l autre. deja c est un
+  comportement anormal.
+  dans ce cas un peu complique, il faut que le groupe retourne que tout
+  s'est bien passe puisque au moins une operation a reussie. en revanche
+  il est clair qu il faudrait faire en sorte de ressayer ulterieurement
+  bref pour garder les deux entites coherentes.
+  XXX tout cela est trop complique il faut l'etudier en profondeur tout
+      en differenciant les requetes qui modifie des celles qui ne le font
+      pas.
+
+. une methode pour trouver un membre du groupe pour ensuite envoyer au
+  groupe serait de demander au name group de localiser le groupe FS par
+  exemple: le name groupe renvoie un couple compose de l identifiant du
+  groupe et d une partie cache correspondant a un membre du groupe, ce
+  dernier etant utilise pour communiquer avec le groupe. si ulterieurement
+  les communications foirent, il suffira de redemander les coordonnes du
+  groupe au name groupe.
+
+XXX il nous faut une methode generique pour detecter la reemission car c est
+    ce qui va nous permettre de resoudre bcp de problemes dans la communication
+    par groupe surtout.
+    pour detecter les retransmissions il faut disposer d un identifiant
+    de message unique. en l'occurance une methode simple serait d utiliser
+    le nodeid avec le timestamp (utilisant une horloge logique: Lamport)
+
+XXX membership
+
+-------------------------------------------------------------------------------
+
+conclusion de la communication par groupes:
+
+  - un groupe est un ensemble de services soit envoluant ensemble.
+    chaque membre du groupe recoit tous les messages a destination du groupe.
+    chaque membre garde une liste des membres.
+    c'est le sequenceur qui repond aux requetes, tout le reste est fait
+    par chaque membre.
+
+  ---[ name group
+
+le name group effectue la resolution des noms: node, groups etc..
+le name group est le point sensible du systeme, il ne doit jamais tombe,
+c'est a dire qu il doit etre compose de suffisamment de machines mais surtout
+que chacun des membres du groupe doit disposer d'une copie des informations
+pour pouvoir continuer a vivre si jamais un des membre crashe.
+
+  ---[ run group
+
+le run group est consitue des services ayant chacun des informations
+sur l etat des noeuds au niveau processeur mais egalement memoire:
+architecture processeur, puissance processeur, vitesse memoire, quantite
+de memoire etc..
+
+  ---[ dsm group
+
+le dsm group s occupe de gerer la memoire partagee distribue. ce groupe
+est utilise par exemple pour allouer une grande quantite de memoire, celle-ci
+n etant pas disponible sur sa propre machine ou bien pour tout simplement
+partager de la memoire.
+ce groupe se charge de garder trace des zones allouees et de qui les utilisent.
+
+  ---[ dev group
+
+XXX
+ce groupe s occupe de garder trace des peripheriques speciaux du systeme
+comme par exemple les imprimantes etc..
+XXX
+
+  ---[ fs group
+
+ce groupe est constitue de services qui gardent trace des file systems
+presents sur le systeme, des groupes de file systems, de leur types
+etc..
+
+  ---[ my-reiserfs group
+
+ce groupe est constitue de plusieurs services chacun repliquant les
+donnees sur differents peripheriques de stockage.
+
+  ---[ sync group
+
+ce groupe gere les systemes de synchronisation distribues: mutex,
+semaphores etc..
+
+. dans le cas general des groupes, losqu un groupe est indisponible par
+  exemple parcequ il est en train de se reconstruire on doit prevoir
+  le fait qu un client qui essaie de contacter le groupe ne doit pas
+  timeouter pour creer le groupe sinon ca fait plusieurs groupes identiques
+  et ca chie.
+
+
+les systemes de communication de groupe sont les suivants.
+
+  ---[ intra group
+
+le protocole de communication a l interieur d'un groupe suit le "reliable
+broadcast protocol" concu pour le systeme Amoeba [].
+
+bien entendu le systeme se chargera toujours d'utiliser le meilleur protocole
+de transmission disponible: multicast, broadcast, unicast.
+
+ce protocole permet d assurer l'atomicite de la communication mais egalement
+de garantir l'arrivage des messages dans le meme ordre pour tous les
+destinataires (global time ordering).
+
+le protocole est le suivant:
+
+il existe 3 files:
+  . history: contenant les messages qu il faut garder pour assurer la tolerance
+             aux fautes
+  . temporary: contenant les messages recus du groupe mais encore non
+               approuves par le sequenceur.
+  . accept: messages pret a etre transmis aux couches superieures
+            bref les messages acceptes
+
+il existe une constante:
+  . k: nombre de membres assurant la tolerance aux fautes
+
+1) un membre du groupe decide de communiquer avec l'ensemble du groupe
+
+2) le membre decide d'un identifiant unique pour nommer le message, en
+   l'occurence nous utiliserons juste le couple: nodeid+timestamp=msgid
+
+3) ce dernier multicast/broadcast/unicast le message aux membres du groupe
+   en mettant en route un timeout. si ce timeout arrive a expiration le membre
+   renvoie son message. la cause de cette reemission etant certainement le
+   fait que le sequenceur n'ait pas recu le message.
+
+4) chaque personne qui recoit le message le stocke dans la file "temporary",
+   attendant le message officiel du sequenceur pour accepter le message.
+
+5) si jamais un membre qui recoit le message (temporaire) fait partie des
+   membres assurant la tolerance aux fautes, celui-ci doit immediatement
+   avertir le sequenceur en lui envoyer un message unicast.
+
+6) si le sequenceur n'a pas recu le message (temporaire) celui-ci ne fera
+   rien et le client timeoutera et relancera le message. dans le cas contraire
+   il attend que les k membres lui ai envoye un message pour lui assurer
+   le fait que le message est present dans au moins k files "temporary".
+
+7) une fois les k messages recus, le sequenceur multicast/broadcast/unicast
+   un message validant le message precedant. le message validant doit
+   contenir l'identifiant du precedant message mais egalement un identifiant
+   de message de groupes (gmsgid), ce dernier permettant aux membres
+   loupant des messages de les redemander au sequenceur.
+
+8) le membre qui recoit ce dernier message valide le message identifie
+   en le passant de la file "temporary" a la file "accept". si le membre
+   faisait parti des k membres, il se charge egalement de le copier dans
+   la file "history" en assignant son nouvel identifiant (gmsgid)
+
+   de plus il faut pouvoir vider la file "temporary". en effet si le sequenceur
+   n a pas vu le message, les autres membres vont stockes temporairement le
+   message en attendant un message validant qui ne viendra jamais. la solution
+   est donc d installer un timer, si celui ci expire, le message temporaire
+   est detruit. cela peut paraitre brutal face a un leger retard mais au pire
+   le seul incident qui subviendra sera l obligation pour le membre de
+   redemander entierement le message au sequenceur.
+
+9) une erreur peut tout de meme survenir si le client envoie un message, le
+   sequenceur le recoit, repond avec le message validant aux membres, mais
+   aucun des membres ne le recoit car le message est perdu. dans ce cas, le
+   compteur de reference des messages du groupe (gmsgid) a ete incremente
+   mais personne ne l'a recu. que va t il se passer alors?
+   le client va timeouter et va donc relancer la requete. les membres
+   recevant la requete vont sans se poser de question l ajouter a la file
+   "temporary". le sequenceur en revanche, ayant dans sa file "history"
+   trace du fait que cette requete a bien ete enregistree va repondre
+   directement au client en lui assurant le fait que la requete s'est bien
+   faite enregistree. XXX revoir en lisant la publie.
+
+ce protocole est parfait puisqu il garantit un fonctionnement du groupe
+sans perte de message avec k crashes arbitraires. de plus les messages
+sont toujours livres dans l ordre d emission.
+
+pour finir ce protocole offre toutes ces options contre un simple retard
+constate dans le cas ou un membre ne recoit pas un message, ce qui est
+en pratique EXTREMEMENT rare.
+
+il faut egalment faire attention a bien garder la file "history" la plus
+courte possible. pour cela voici l algorithme utilise:
+
+1) 
+
+  ---[ overlapping groups
+
+il est clair que le global time ordering est totalement respecte tant que
+le mode de transmission utilise reste multicast ou broadcast. le seul
+probleme subsistant etant le choix entre soit differencier deux messages
+par leur date d arrivee ou par la date d'arrivee du message validant.
+
+en effet un message M1 peut arriver avant un message M2. en revanche le
+deuxieme groupe est plus petit ou bien dispose d'un degre d'elasticite
+(resilience degree) moins important de sorte que le message validant M2
+arrive avant celui validant M1. la question etant: finalement quel message
+est arrive avant l'autre. XXX
+
+en ce qui concerne les architectures ne disposant ni de multicast ni de
+broadcast, le probleme est un peu plus complique. le fait d'utiliser
+l'unicast risque de nous mener a un etat ou une machine recoit M1 puis M2
+alors qu'une autre recoit M2 puis M1 (p. 109).
+
+notre systeme ne gerera pas le seqencage des message emanents de groupes
+differents car cela ne parait pas indispensable.
+
+la seule solution pour TOUJOURS garder le sequencage des messages
+est de se baser le timestamp contenu dans le message lui meme:
+
+1) un client prend la decision d'envoye un message a un groupe.
+2) la couche basse se rend compte que seul l unicast est disponible
+   de ce fait elle va effectuer N envoie de message.
+3) la couche basse insere un timestamp identique dans chaque message indiquant
+   la date de l envoi theorique du message.
+4) lorsque un membre recoit deux message emanants de deux groupes differents
+   il peut des lors savoir lequel aura du arriver theoriquement avant l'autre
+   en se basant sur le timestamp. si la theorie veut qu ils soient partis
+   au meme instant alors le premier arrive gagne.
+
+bien entendu cela n'est pas concevable car une personne recevant un message M2
+plus age (theoriquement) qu un autre M1. neanmoins le message M2 est valide
+avant le M1: que doit on faire?
+
+soit l on desire vraiment assurer la sequence de messages, dans ce cas, il
+faut attendre que le message precedent soit valide pour le privilegier ou alors
+attendre le timeout du message precedent; soit on ne le desire pas, dans ce
+cas on s en tient a l algorithm "reliable broadcast protocol".
+
+de plus cela pose peut etre des problemes de securite, si jamais quelqu un
+forge un packet ayant une date inferieure ??? je ne sais pas mais cela voudrait
+dire que l on pourrait attendre de voir ce que la machine A envoie, analyser,
+envoyer en consequences de la machine B en se faisant passer pour un message
+anterieur.
+
+pour conclure, il existe un algorithme (XXX lire si il a deja ete invente
+mais je suppose que oui, voir les references du papier sur le reliable
+broadcast protocol) mais il n est pas parfait, ralentit encore un peu
+le protocole general et surtout n est pas indispensable.
+
+  ---[ to group
+
+maintenant que nous savons comment propager un message d'un membre aux
+autres de facon atomique et fiable, la question est de savoir comment
+transmettre un message a un groupe autrement dit a UNE personne du groupe.
+
+1) un client veut communiquer avec le groupe G. il demande donc au name group
+   de localiser le groupe G.
+2) le name groupe renvoie un identifiant de groupe compose de l'identifiant
+   veritable du groupe et du partie cachee correspondant a l'"adresse" de
+   communication (ethernet, id etc..) d'un des membres du groupe.
+
+   toute une etude pourra donc etre faite sur le choix de ce membre: random,
+   load balancing etc..
+3) ensuite le client utilisera cette "adresse" pour communiquer avec le
+   groupe.
+4) si jamais ce membre crashe, le client redemandera l'adresse du groupe
+   et le name group lui renverra en partie cachee l'adresse d'un autre
+   membre.
+
+   (par partie cache nous voulons dire partie interpretee par la partie
+    dependante de l architecture du client)
+
+  ---[ sequencer crash
+
+XXX
+
+  ---[ member crash
+
+XXX identique list users etc..
+
+XXX probleme, liste users dupliquee name group et group en question
+
+    1) les membre d un gropue sont obliges de connaitres les autrs membres
+       pour la comm du groupe amelioree mais aussi parceque lorsque le
+       sequenceur crashe il faut pouvoir communiquer avec les autres membres.
+
+XXX peut etre possible de garder la liste de k seulement.
+
+XXX de toute facon c est un des k qui deviendra leader puisque c'est eux
+XXX qui ont les infos.
+
+--
+
+XXX je pense qu il devrait y avoir un groupe gerant les FS c est a dire
+    ayant toutes les infos: style ce groupe est un FS avec ce type de FS
+    gerer, tels attributs etc.. alors ce service est un autre FS...
+
+    bref un systeme de nommage identique au groupe name
+
+    comme ca on pourrait faire des requetes pour demander un FS de type
+    XFS ayant au moins 5 Go de libre, ayant les attributs etendus d actives
+    et ayant les droits en ecriture pour mon user.
+
+. dans spargo, les capabilities sont dynamique. de ce fait il est complique
+  d en generer de nouvelles. donc soit on a une partie commune mais ca
+  revient a faire des cap statiques. la solution: un syscall pour en
+  generer. cela n est pas un probleme puisque on en genere pas non plus
+  des milliards. de plus c est le format qui est important, on peut en
+  demander une nouvelle et ensuite la filer a plusieurs personne. donc
+  ce n est pas un probleme.
+  bien entendu histoire de rappeller, si on veut DONNER un objet (par la
+  on entend une entite du systeme) il suffit de filer la cap d origine
+  qui a tout les droits.
+
+. donc au final peer group (pas de hierarchie) avec un sequenceurs et
+  des K. le groupe est close, cad qu on ne peut pas envoye un message
+  a tout le groupe de l exterieur, simplement a un membre du groupe
+  celui-ci se chargeant de retransmettre le message.
+
+. lorsqu un client trouve un membre d un groupe qui ne repond pas il peut
+  en avertir le name group: "ce mec il est down". de ce fait le name group
+  va en avertir le groupe (lui il peut car il a la liste des membres il est
+  donc sur d en trouver un). le groupe va verifier en essayant de contacter
+  le membre en question. une fois detecter qu il est mort le groupe en
+  avertit le name group pour que ce dernier mette a jour sa liste.
+
+  rappellons que seul le name group dispose de l ensemble de membres des
+  groupes. un membre de groupe ne sait jamais quels sont ses coequipies; la
+  seule chose qu il sait c est qui est le sequenceur.
+
+XXX gerer le fait qu une meme source envoie un meme message (nodeid+timestamp)
+    a deux membres. il faudrait que le sequenceur se rende compte que
+    c est deux fois le meme message.
+
+XXX le debut, si on broadcast pour trouver le name group. si le broadcast
+    n'arrive pas au name group on l a dans le cul. solution soit on prie,
+    soit on dit aussi a tous les noeuds du systeme de repondre au
+    broadcast "le name groupe il est la bas" cette derniere methode
+    reduisant considerablement les chances d erreur. neanmoins sur un
+    grand reseau ca fait bcp de flux. d un autre cote c est normal
+    donc je pense que cette methode est pas mal.
+
+XXX on pourrait penser qu un group charge de la gestion des groupes serait
+    encore mieux, c est a reflechir. neanmoins le name group est fait pour
+    ca, et le fait qu il soit evolutif, adaptable, ca ne pose pas de problemes.
+    si le name server doit gerer aussi la charge d un group server et bien
+    aucun probleme il sera deux fois plus gros.
+
+. gestion de la memoire a l octet plutot qu a la page pour coller aux
+  architectures qui le permette -> areas a l octet.
+
+. pour gerer le temps nous utiliserons l algorithme de Lamport sur les
+  horloges logiques.
+
+  le principe est le suivant:
+
+  si un noeud recoit un message emis a une date T anterieure a la date
+  courante de ce noeud, alors le date de ce noeud est mise a jour a
+  T + 1. de ce fait tous les conditions requises concernant la synchronisation
+  du temps sont respectees ("happens before relation"):
+
+    1) soit deux evenement A et B, si A arrive avant B alors A->B doit etre
+       verifiee. en d autres termes, tout le systeme doit voir A arriver
+       avant B.
+    2) soit A l evenement correspondant a l envoi d un message sur une machine
+       et B la reception sur une autre machine, A->B doit toujours etre
+       respectee car l envoi intervient toujours avant la reception.
+
+  de plus a chaque envoi ou reception d'un message, la clock doit etre
+  avancee de 1 pour toujours avoir une clock differente entre deux messages
+  successivement proche.
+
+  pour differencier deux messages envoyes emis d'une meme machine rapidement
+  on utilisera le pid pour les differencier: le pid le plus petit etant
+  le message anterieur.
+
+  via cette derniere chose nous pouvons respecter les trois regles suivantes
+  qui forment les prerequis du "happens before relation":
+
+    1) si A arrives avant B dans le meme process C(A) < C(B)
+    2) si a et b representent l envoi et la reception d un message, C(A) < C(B)
+    3) pour tous les evenements A et B, C(A) != C(B)
+
+XXX horloge physique, nous aurions surement besoin d une synchronisation ?
+    ca a la limite on s en fout, ca rejoint les serveurs de temps, c est
+    limite userland, enfin au pire un service qui demande a un time group
+    etudier le truc.
+
+XXX register aupres du timer pour generer un message avec tel contenu
+    dans tant de temps avec MA source et telle destination
+
+. chaque noeud a une table avec les adresses des principaux groupes (voire
+  tous les groupes connus a cette epoque). tous les T temps, il met a jour
+  sa table en demandant au name group.
+
+. le truc vraiment bien avec notre systeme de groupe c est que les groupes
+  ne sont pas composes de tous les membres en question. prenons l exemple
+  des mutex. il existe deux categories d algo, les centralises, rapide
+  mais non fiable et les distribues, fiable mais generant ENORMEMENT de
+  trafic. Notre solution est ideale car elle permet de limitee le nombre
+  de personnes impliquees aux nombres de membres dans le groupe. en l occurence
+  pour les mutex seuls les membres du groupe seront impliques, de ce fait
+  le trafic genere sera important pour un algo distribue par rapport
+  a un algo centralise mais toujours raisonnable compare aux nombres
+  de personnes impliquees. bien sur un groupe compose de 100 services
+  generera un trafic enorme egalement mais il faut savoir qu un groupe
+  gerant les mutex compose de 100 services ne se produira que si le systeme
+  atteint par exemple une taille de 2000 machines.
+
+  cet exemple n'a pas lieu d etre etant donne que pour Spargo nous utiliserons
+  un algorithem centralise car notre systeme nous le permet. en effet notre
+  systeme se base sur les groupes et la replication de donnees. de ce fait
+  un membre du groupe peut crasher, le groupe est garantit fiable et
+  ne tombera pas.
+
+  l algorithme utilise se base sur le timestamp et est donc directement
+  en relation avec l algorithme de Lamport utilise pour distingue
+  deux evenements en l occurence deux reception de messages.
+
+  l algorithme est extremement simple, il consiste a regarder si le mutex
+  est deja utilise, si c est le cas, l emetteur est rajoutee a la file,
+  et un message WAIT est repondu. dans le cas contraire le mutex est acquit
+  et un message OK est envoye.
+
+  pour pouvoir gerer ce systeme de WAIT vs OK sans trop de difficulte chaque
+  machine voulant utiliser les mutex doit avoir un service de mutex, celui
+  ci se chargeant de communiquer avec le mutex group si necessaire.
+
+  XXX on pourrait imaginer des options pour les locks pour augmenter les
+  performances: LOCK LOCAL, DISTRIBUTED LOCK, l un se limitant au noeud
+  en cours, l autre etant exclusivement au DSM car il semble qu il n y ait
+  pas d autres lieux d utiliser des mutex que pour la DSM.
+
+  XXX truc encore plus fou on opurrait ptet utiliser un algo distribue
+  genre dans le groupe il utilise l algo distribue pour gagner le lock
+  correspondant au message recu par l un des membres. bref un membre se bat
+  pour obtenir le lock que veut la personne qui l a contactee. A ETUDIER.
+
+  XXX attention l algo distribue est paradoxalement le plus sensible
+  aux crashes
+
+  l algo centralise est niquel une fois la replication mise en place (ce qui
+  est notre cas) car une machine peut crasher ca ne change rien. la seule
+  difficulte etant de bien envoye la reponse mais ca c est un autre probleme
+  deja aborde.
+
+. pour les mutex, ca se passe dans un groupe, de ce fait pas besoin d'utiliser
+  un algorithme d election de leader pour elire le coordinator. tout se
+  base sur le groupe et la replication.
+
+XXX peut etre dans le groupe le sequenceur devrait il repondre comme ca
+    il pourrait mettre un flag sur un message pour dire, ce message j ai
+    repondu ca en accord avec le groupe. de meme il pourrait avant de repondre
+    envoye un message aux k pour assurer la tolerance aux fautes.
+
+. pour l election de leader, nous utiliserons le "buddy algorithm"
+  [Garcia-Molina (1982)]. en effet le "ring algorithm" necessite de connaitre
+  les membres du groupe et encore mieux de les classer. notre systeme
+  de groupe suppose que les membres d'un groupe ne connaissent pas les
+  autres membres (mis a part en demandant au name group). de ce fait
+  le buddy algorithm nous convient parfaitement.
+
+. le name group n'a absolument pas a savoir qui est le sequenceur ou
+  coordinator d'un groupe, il s en fout completement puisque lorsqu il fait
+  un traduction, il se contente de renvoye un identifiant de groupe accompagne
+  par une partie cachee composee d un identifiant de noeud, ce dernier
+  faisant partie du groupe.
+
+  en d autres termes lorsqu il y a reelection de leader le name group s'en
+  fout. par contre ce dont il ne se fout pas c'est de savoir que l'ancien
+  leader vient tres certainement de crasher.
+
+  d'ailleurs ca me fait penser qu il faudrait eviter les crashs, car si un
+  service crashe, il ne sera certainement plus dans le groupe au reboot
+  puisque celui-ci aura ete re-amenage.
+
+. XXX il faudra revoir car il est possible que nous splittions le name
+  group en plusieurs sous groupes car sinon il va avoir bcp a gerer:
+  identification, groups, nodes, etc..
+
+. spargo a ete concu pour permettre la programmation parallele sans difficulte
+  et pour resister aux pannes. neanmoins pour l'instant, les fautes
+  byzantines sont ignorees.
+
+. trois niveaux de capabilites, bien les expliquer.
+
+XXX revoir l algo de lamport car je ne comprends pas tout.
+
+XXX systeme de messages, lorsqu on recoit un msg ca lance un service
+XXX demande de droits pour pouvoir envoyer des messages (capability?)
+
+---------- 5 ----------
+
+XXX transactions ? p. 145 -5-
+
+XXX deadlocks ?
+
+XXX etudier le run group et la collecte d informations sur la memoire
+    disponible et la charge de chaque noeud
+
+XXX les fichiers on verra plus tard
+
+-- microkernel
+
+. au niveau du microkernel, nous gerons les threads en kernel land
+
+. les bibliotheques doivent etre reentrantes, comme par exemple la libc
+  et malloc. si la thread1 rentre commence a modifier la structure de donnees
+  de malloc et la thread2 arrive -> error. il faut donc locker soit les parties
+  sensibles de malloc, soit malloc entierement.
+
+. le concept de message est en relation avec les processus. un threadA
+  envoie un message a une tache et non a un threadB. il se peut que ce soit
+  le threadB qui recoive le message si c est lui qui le demande au kernel.
+
+. on propose aux threads de choisir leurs priorites par rapports aux autres
+  mais egalement de choisir leurs processeurs pour augmenter les possibilites
+  face a la programmation parallele.
+
+  XXX etudier les interfaces concernant les processeurs. genre masque de bits
+  si ANY alors tous les bits a 1 sinon que ceux que l on veut.
+
+. il faut inclure dans les capabilities un champs nodeid qui evitera qu'on
+  gagne le droit d'utiliser l objet A de la machine 1 en obtenant une
+  capability de la machine 2 sur un objet egalement nomme A.
+
+  de plus faire en sorte que le champ check inclue TOUT: droits, location etc..
+
+. lorsqu un segment est mappe, le mapping counter de ce segment est
+  incremente, evitant ainsi le swapping de segments encore utilises.
+
+  revoir la difference finalement entre capability passing for segments
+  and shared memory.
+
+XXX matter flip qui addresse les process plutot que les machines
+
+XXX rematter l'algo de distribution dans un groupe. l'algo optimise implique
+    que tous les membres d'un groupe connaissent les membres du groupe.
+    c'est possible mais peut etre chiant? -> revoir
+
+XXX dire dans la doc que concernant la synchronisation on fournit:
+    mutex et semaphores.
+
+XXX relire chorus, comparaisons etc.. bien preciser que nous presque tout
+    est objet: as, segment, thread, task etc.. comparer avec les autres
+    systeme. prendre exemple sur chorus pour ne rien oublier de preciser.
+
+XXX finalement peut etre utiliser les RPC car au final ca ne fait que prendre
+    une description de fonction et construire un message. d un autre cote
+    c'est bien pour le dynamisme mais inutile en kernel. le truc con c'est
+    que c'est deja optimise.
+
+XXX si le binder du systeme s occupe de retrouver des services en plus
+    des groupes alors il lui faut la liste des services. en realite ca va
+    fonctioner pareil pour les services et les groupes. un service se register
+    en disant "moi je fais ca" et un groupe se register en disant
+    "mon groupe fait ca" et ensuite les autres membres du groupe ne se
+    register par mais joigne le groupe, ce qui revient environ au meme mais
+    d'une maniere differente pour bien differencier les deux cas.
+
+-------------------------------------------------------------------------------
+
+--- gros problemes qu il reste a regler
+
+  . quel liens entre les services et les groupes. par exemple le name service
+    fait il parti du name group, les file servers forment ils un gropue? ou y
+    a t il simplement un group de gestionnaires. bref comment va fonctionner
+    la communication en groupe, a qui on va send la requete comme ca va
+    etre dispatcher dans le group et qui va repondre, ce sont ca les reelles
+    questions.
+
+[RPC]
+@article{357392,
+ author = {Andrew D. Birrell and Bruce Jay Nelson},
+ title = {Implementing remote procedure calls},
+ journal = {ACM Trans. Comput. Syst.},
+ volume = {2},
+ number = {1},
+ year = {1984},
+ issn = {0734-2071},
+ pages = {39--59},
+ doi = {http://doi.acm.org/10.1145/2080.357392},
+ publisher = {ACM Press},
+ address = {New York, NY, USA},
+ }
+
+@article{70732,
+ author = {M. Frans Kaashoek and A. S. Tanenbaum and S. F. Hummel},
+ title = {An efficient reliable broadcast protocol},
+ journal = {SIGOPS Oper. Syst. Rev.},
+ volume = {23},
+ number = {4},
+ year = {1989},
+ issn = {0163-5980},
+ pages = {5--19},
+ doi = {http://doi.acm.org/10.1145/70730.70732},
+ publisher = {ACM Press},
+ address = {New York, NY, USA},
+ }
