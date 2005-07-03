@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Fri Jul  1 13:05:54 2005   mycure
+## last update   Sun Jul  3 14:45:08 2005   mycure
 ##
 
 #
@@ -143,6 +143,7 @@ _CD_			:=		cd
 _LD_			:=		ld
 _NASM_			:=		nasm
 _LN_			:=		ln -s -f
+_TOUCH_			:=		touch
 
 #
 # ---------- traps ------------------------------------------------------------
@@ -358,6 +359,7 @@ endef
 #
 
 define dependencies
+  @$(_TOUCH_) $(2)							; \
   for i in $(1) ; do							\
     if [ -e $$i ] ; then						\
       $(call pretty-printer,yellow,DEPENDENCIES,$$i,		)	; \

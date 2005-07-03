@@ -3,13 +3,13 @@
  *
  * init.c
  *
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Tue Jun 21 13:05:33 2005   mycure
+ * last update   Sun Jul  3 15:21:46 2005   mycure
  */
 
 /*
@@ -103,9 +103,9 @@ void			bootloader_init_dump(void)
 		      init->kstack,
 		      init->kstacksz);
 
-  bootloader_cons_msg('#', " malloc pages: 0x%x - %u bytes\n",
-		      init->malloc,
-		      init->mallocsz);
+  bootloader_cons_msg('#', " alloc pages: 0x%x - %u bytes\n",
+		      init->alloc,
+		      init->allocsz);
 
   bootloader_cons_msg('#', " %#~ia32%# global offset table: 0x%x\n",
 		      CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) |
@@ -128,12 +128,12 @@ void			bootloader_init_dump(void)
  *
  * steps:
  *
- * 1) allocates memory for the malloc() function. indeed the malloc() function
+ * 1) allocates memory for the alloc() function. indeed the alloc() function
  *    needs to be able to provide memory until the virtual memory manager
- *    is installed. thus the malloc() function will be able to ask
+ *    is installed. thus the alloc() function will be able to ask
  *    the virtual memory manager to provide virtual pages and to map it
  *    into the kernel address space to continue to provide its service.
- *    so the malloc() function needs an amount of critical pages to work with
+ *    so the alloc() function needs an amount of critical pages to work with
  *    until the virtual memory is initialized.
  * 2) adds the ISA segment from 0 to 1Mb.
  * 3) adds the kernel code segment.
@@ -142,14 +142,14 @@ void			bootloader_init_dump(void)
  * 6) adds the segments segment.
  * 7) adds the regions segment.
  * 8) adds the kernel stack segment.
- * 9) adds the malloc segment.
+ * 9) adds the alloc segment.
  * 10) adds the global offset table segment.
  * 11) adds the page directory segment.
  */
 
 void			bootloader_init_segments(void)
 {
-  t_psize		mallocsz;
+  t_psize		allocsz;
 
   /*
    * 1)
@@ -159,8 +159,8 @@ void			bootloader_init_segments(void)
    * XXX temporary, pre-allocate four pages
    */
 
-  init->malloc = bootloader_init_alloc(4 * PAGESZ, &mallocsz);
-  init->mallocsz = mallocsz;
+  init->alloc = bootloader_init_alloc(4 * PAGESZ, &allocsz);
+  init->allocsz = allocsz;
 
   /*
    * 2)
@@ -215,8 +215,8 @@ void			bootloader_init_segments(void)
    * 9)
    */
 
-  init->segments[7].address = init->malloc;
-  init->segments[7].size = init->mallocsz;
+  init->segments[7].address = init->alloc;
+  init->segments[7].size = init->allocsz;
 
   /*
    * 10)
@@ -242,7 +242,7 @@ void			bootloader_init_segments(void)
  * 2) adds the kernel code region.
  * 3) adds the init structure region.
  * 4) adds the kernel stack region.
- * 5) adds the malloc region.
+ * 5) adds the alloc region.
  * 6) adds the global offset table region.
  * 7) adds the page directory region.
  */

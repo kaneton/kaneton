@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Fri Jul  1 13:14:48 2005   mycure
+## last update   Sun Jul  3 14:45:18 2005   mycure
 ##
 
 # INFORMATIONS
@@ -48,7 +48,7 @@ KANETON_MK=".kaneton.mk"
 #
 # the list of binaries used to compile the kaneton kernel on
 # linux operating systems.
-BINARIES="gcc make rm ar ranlib ld nasm ln"
+BINARIES="gcc make rm ar ranlib ld nasm ln touch"
 
 
 

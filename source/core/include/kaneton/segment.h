@@ -67,19 +67,8 @@ typedef struct
  * ../../kaneton/segment/segment.c
  */
 
-void			segment_id(t_segid*			segid);
-
-
-void			segment_dump(void);
-
-
-void			segment_push(o_segment*			push);
-
-
-o_segment*		segment_pop(void);
-
-
 int			segment_init(void);
+
 
 /*
  * eop

@@ -5,13 +5,13 @@
  * 
  * libdata.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/libdata
+ * path          /home/mycure/kaneton/libs/klibc/include/libdata
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Sun Jul  3 14:54:01 2005   mycure
+ * last update   Sun Jul  3 19:40:07 2005   mycure
  */
 
 #ifndef LIBDATA_LIBDATA_H
@@ -27,7 +27,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc/include/libdata/malloc.h>
+#include <klibc/include/libdata/alloc.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

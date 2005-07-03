@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Tue Jun 21 13:00:37 2005   mycure
+ * last update   Sun Jul  3 15:21:05 2005   mycure
  */
 
 #ifndef KANETON_INIT_H
@@ -92,8 +92,8 @@ typedef struct
   t_paddr			kstack;
   t_psize			kstacksz;
 
-  t_paddr			malloc;
-  t_psize			mallocsz;
+  t_paddr			alloc;
+  t_psize			allocsz;
 
   machdep_include(init);
 }				t_init;

@@ -181,12 +181,11 @@ extern m_set		set;
 
 int			set_id(t_setid*				setid);
 
-
 int			set_get(t_setid				setid,
 				o_set**				o);
 
-
 int			set_init(void);
+
 
 /*
  * eop

@@ -5,13 +5,13 @@
 ## 
 ## grub.sh
 ## 
-## path          /home/mycure/kaneton/utils
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Thu Jun 30 20:18:06 2005   mycure
+## last update   Sun Jul  3 14:26:09 2005   mycure
 ##
 
 # INFORMATIONS
@@ -23,7 +23,7 @@
 # CONFIGURATION FILE PATH
 #
 # configuration file
-CONF="../conf/"$USER"/"$USER
+CONF="../conf/"$USER"/"$USER".conf"
 MODULES=`sed "s/#.*//g" ../conf/"$USER"/modules.conf | grep -v "^$"`
 
 
@@ -52,28 +52,28 @@ MENU="/tmp/menu.lst"
 read_kaneton_conf()
 {
   # title
-  TITLE=`cat $CONF | grep -E "^TITLE = .*$" | cut -b 9-`
+  TITLE=`cat $CONF | grep -E "^_TITLE_ = .*$" | cut -b 11-`
 
   # address
-  ADDRESS=`cat $CONF | grep -E "^ADDRESS = .*$" | cut -b 11-`
+  ADDRESS=`cat $CONF | grep -E "^_ADDRESS_ = .*$" | cut -b 13-`
 
   # tftp address
-  TFTP_ADDRESS=`cat $CONF | grep -E "^TFTP_ADDRESS = .*$" | cut -b 16-`
+  TFTP_ADDRESS=`cat $CONF | grep -E "^_TFTP_ADDRESS_ = .*$" | cut -b 18-`
 
   # tftp directory
-  TFTP_DIRECTORY=`cat $CONF | grep -E "^TFTP_DIRECTORY = .*$" | cut -b 18-`
+  TFTP_DIRECTORY=`cat $CONF | grep -E "^_TFTP_DIRECTORY_ = .*$" | cut -b 20-`
 
   # bootmode
-  BOOTMODE=`cat $CONF | grep -E "^BOOTMODE = .*$" | cut -b 12-`
+  BOOTMODE=`cat $CONF | grep -E "^_BOOTMODE_ = .*$" | cut -b 14-`
 
   # unix device
-  UDEVICE=`cat $CONF | grep -E "^UDEVICE = .*$" | cut -b 11-`
+  UDEVICE=`cat $CONF | grep -E "^_UDEVICE_ = .*$" | cut -b 13-`
 
   # mtools device
-  MDEVICE=`cat $CONF | grep -E "^MDEVICE = .*$" | cut -b 11-`
+  MDEVICE=`cat $CONF | grep -E "^_MDEVICE_ = .*$" | cut -b 13-`
 
   # image
-  IMAGE=`cat $CONF | grep -E "^IMAGE = .*$" | cut -b 9-`
+  IMAGE=`cat $CONF | grep -E "^_IMAGE_ = .*$" | cut -b 11-`
 }
 
 

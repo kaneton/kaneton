@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Fri Jul  1 13:11:48 2005   mycure
+## last update   Sun Jul  3 14:31:00 2005   mycure
 ##
 
 # INFORMATIONS
@@ -36,7 +36,7 @@ VERSION="unknown"
 LIBC="unknown"
 ENVIRONMENT="unknown"
 ARCHITECTURE="unknwon"
-BOOTLOADER="unknown"
+MULTIBOOTLOADER="unknown"
 MODE="unknown"
 
 
@@ -79,8 +79,8 @@ read_kaneton_conf()
   # architecture
   ARCHITECTURE=`cat $CONF | grep -E "^_ARCHITECTURE_ = .*$" | cut -b 18-`
 
-  # bootloader
-  BOOTLOADER=`cat $CONF | grep -E "^_BOOTLOADER_ = .*$" | cut -b 16-`
+  # multibootloader
+  MULTIBOOTLOADER=`cat $CONF | grep -E "^_MULTIBOOTLOADER_ = .*$" | cut -b 21-`
 }
 
 
@@ -108,7 +108,7 @@ warning()
   print "   libc:                     $LIBC" "+"
   print "   environment:              $ENVIRONMENT" "+"
   print "   architecture:             $ARCHITECTURE" "+"
-  print "   bootloader:               $BOOTLOADER" "+"
+  print "   multibootloader:          $MULTIBOOTLOADER" "+"
   print ""
   print " to cancel press CTRL^C, otherwise press enter" "?"
 
@@ -201,8 +201,6 @@ version()
   echo "#define ENVIRONMENT		\"$ENVIRONMENT\"" >> $VERSION_H
 
   echo "#define ARCHITECTURE		\"$ARCHITECTURE\"" >> $VERSION_H
-
-  echo "#define BOOTLOADER		\"$BOOTLOADER\"" >> $VERSION_H
 
   echo "" >> $VERSION_H
 

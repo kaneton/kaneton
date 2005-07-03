@@ -44,8 +44,8 @@ typedef struct
 
 void			as_dump(void);
 
-
 int			as_init(void);
+
 
 /*
  * eop

@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Jun 21 13:07:28 2005   mycure
+ * last update   Sun Jul  3 15:20:54 2005   mycure
  */
 
 /*
@@ -47,28 +47,25 @@ t_init*			init;
  * this function displays the kaneton parameters.
  */
 
+#if (KANETON_DEBUG & KANETON_DEBUG_PARAMS)
 void			kaneton_dump(void)
 {
   cons_msg('#', "dumping kernel parameters:\n");
 
 #if defined(___bootloader)
   cons_msg('#', " mode: bootloader\n");
-
-  cons_msg('!', " error: kernel compiled in a bad way where ___bootloader"
-	   " is defined\n");
-  // XXX kaneton_error();
+  kaneton_error("kernel compiled in a bad way where ___bootloader"
+		"is defined\n");
 #elif defined(___kernel)
   cons_msg('#', " mode: kernel\n");
 #else
-  cons_msg('!', " error: no mode defined\n");
-  // XXX kaneton_error();
+  kaneton_error("no mode defined\n");
 #endif
 
 #if defined(___kaneton)
   cons_msg('#', " name: kaneton\n");
 #else
-  cons_msg('!', " error: ___kaneton not defined\n");
-  // XXX kaneton_error();
+  kaneton_error("___kaneton not defined\n");
 #endif
 
 #if (___wordsz == WORDSZ_32)
@@ -78,8 +75,7 @@ void			kaneton_dump(void)
 #elif (___wordsz == WORDSZ_128)
   cons_msg('#', " wordsize: 128-bit\n");
 #else
-  cons_msg('!', " error: no word size defined\n");
-  // XXX kaneton_error();
+  kaneton_error("no word size defined\n");
 #endif
 
 #if (___endian == ENDIAN_LITTLE)
@@ -87,11 +83,11 @@ void			kaneton_dump(void)
 #elif (___endian == ENDIAN_BIG)
   cons_msg('#', " endian: big\n");
 #else
-  cons_msg('!', " error: no endian defined\n");
-  // XXX kaneton_error();
+  kaneton_error("no endian defined\n");
 #endif
 
 }
+#endif
 
 /*
  * this function simply initializes each manager.
@@ -131,11 +127,6 @@ void			kaneton(t_init*				bootloader)
   cons_msg('+', "%s\n", version);
   printf("\n");
 
-  /* XXX malloc_init() */
-  /* XXX set_init(); */
-
-  while (1); /* XXX */
-
   /*
    * 4)
    */
@@ -143,6 +134,13 @@ void			kaneton(t_init*				bootloader)
 #if (KANETON_DEBUG & KANETON_DEBUG_PARAMS)
   kaneton_dump();
 #endif
+
+  /* XXX */
+  alloc_init(init->alloc, init->allocsz);
+
+  /* XXX set_init(); */
+
+  while (1); /* XXX */
 
   /*
    * 5)

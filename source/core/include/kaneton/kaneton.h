@@ -5,13 +5,13 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Jun 19 22:05:01 2005   mycure
+ * last update   Sun Jul  3 15:13:19 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
@@ -50,6 +50,25 @@
 #define MODE_RELEASE		(1 << 1)
 
 /*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#define kaneton_error(_fmt_...)						\
+  {									\
+    printf("%#[%#!%#]%# %s:%u: ",					\
+           CONS_FRONT(CONS_BLUE) | CONS_BACK(CONS_BLACK) | CONS_INT,	\
+           CONS_FRONT(CONS_RED) | CONS_BACK(CONS_BLACK) | CONS_INT,	\
+           CONS_FRONT(CONS_BLUE) | CONS_BACK(CONS_BLACK) | CONS_INT,	\
+           CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT,	\
+           __FILE__,							\
+           __LINE__);							\
+    printf(_fmt_);							\
+									\
+    while (1)								\
+      ;									\
+  }
+
+/*
  * ---------- includes --------------------------------------------------------
  */
 
@@ -72,7 +91,6 @@
 
 void			kaneton_dump(void);
 
-
 void			kaneton(t_init*				bootloader);
 
 
@@ -82,25 +100,20 @@ void			kaneton(t_init*				bootloader);
 
 void			cons_clear(void);
 
-
 void			cons_scroll(t_uint16			lines);
-
 
 void			cons_attr(t_uint8			attr);
 
-
 int			cons_print_char(char			c);
 
-
 void			cons_print_string(char*			string);
-
 
 void			cons_msg(char				indicator,
 				 char*				fmt,
 				 ...);
 
-
 int			cons_init(void);
+
 
 /*
  * eop
