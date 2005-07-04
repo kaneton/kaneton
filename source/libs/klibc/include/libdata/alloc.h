@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Mon Jul  4 11:56:14 2005   mycure
+ * last update   Mon Jul  4 14:28:40 2005   mycure
  */
 
 #ifndef LIBDATA_ALLOC_H

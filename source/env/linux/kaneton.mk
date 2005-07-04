@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Mon Jul  4 13:47:45 2005   mycure
+## last update   Mon Jul  4 14:20:24 2005   mycure
 ##
 
 #
@@ -237,7 +237,6 @@ endef
 define make
   @for i in $(1) ; do							\
     $(_CD_) $$i								; \
-    $(call pretty-printer,yellow,MAKE,$$i,			)	; \
     $(_MAKE_) $(2)							; \
     return=$$?								; \
     if [ $$return -ne 0 ] ; then					\
