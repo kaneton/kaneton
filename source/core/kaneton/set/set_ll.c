@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jun 20 23:24:01 2005   mycure
+ * last update   Mon Jul  4 17:14:41 2005   mycure
  */
 
 /*
@@ -40,16 +40,12 @@ int			set_add_ll(t_setid			setid,
  */
 
 int			set_make_ll(o_set*			o,
-				    t_setid			setid,
-				    t_set_alloc_fn		alloc,
-				    t_set_free_fn		free)
+				    t_setid			setid)
 {
   memset(o, 0x0, sizeof(o_set));
 
   o->setid = setid;
   o->type = SET_TYPE_LL;
-  o->alloc = alloc;
-  o->free = free;
 
   return (0);
 }

@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:14:03 2005   mycure
-## last update   Mon Jul  4 12:06:42 2005   mycure
+## last update   Mon Jul  4 17:32:54 2005   mycure
 ##
 
 # INFORMATIONS
@@ -151,6 +151,22 @@ version()
 
 
 
+# DEPENDENCIES
+#
+# this function cleans C files dependencies.
+dep()
+{
+  print " cleaning of makefile dependencies" "+"
+
+  makefiles=`find ./ -name .makefile.mk`
+
+  for m in $makefiles ; do
+    echo -n "" > $m
+  done
+}
+
+
+
 # PRINT A MESSAGE
 #
 # print a message with a header
@@ -210,6 +226,9 @@ clean
 
 # remove the version header file
 version
+
+# clean the files dependencies
+dep
 
 # return into the env/ directory
 cd env

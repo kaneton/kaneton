@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Mon Jul  4 13:40:34 2005   mycure
+## last update   Mon Jul  4 17:30:38 2005   mycure
 ##
 
 
@@ -80,9 +80,18 @@ then he is able to compile:
 
 	make kaneton
 
+after that, for the kernel developer, another task has to be performed
+to ensure the source files dependencies:
+
+	make dep
+
+with this command a source file will be correctly re-compiled if
+the developer modify an header file in relation with it.
+
 when finished, the developer then wants to test his kernel either on
-another machine or in an emulator, so he has to build a floppy. before all,
-he must initialize the boot device with the kaneton boot device format:
+another machine or in an emulator, so he has to build a boot device.
+before all, he must initialize the boot device with the kaneton boot
+device format:
 
 	make build
 

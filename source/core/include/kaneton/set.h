@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Mon Jun 20 23:38:19 2005   mycure
+ * last update   Mon Jul  4 16:25:12 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -56,16 +56,6 @@
  */
 
 /*
- * the types of function used for allocation.
- */
-
-typedef int			(*t_set_alloc_fn)(t_size	size,
-						  void**	address);
-
-typedef int			(*t_set_free_fn)(void*		address,
-						 t_size		size);
-
-/*
  * a set object
  *
  * the setid field represent the set identifier used to retrieve the set
@@ -78,9 +68,6 @@ typedef struct
   t_setid			setid;
 
   t_type			type;
-
-  t_set_alloc_fn		alloc;
-  t_set_free_fn			free;
 
   union
   {
@@ -101,11 +88,6 @@ typedef struct
 typedef struct
 {
   t_segid			id;
-
-  o_set				segments;
-
-  o_set				ksegments;
-  o_set				kregions;
 
   o_set*			sets;
 }				m_set;

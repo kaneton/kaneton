@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Mon Jul  4 14:20:24 2005   mycure
+## last update   Mon Jul  4 17:13:25 2005   mycure
 ##
 
 #
@@ -392,7 +392,7 @@ define dependencies
   for i in $(1) ; do							\
     if [ -e $$i ] ; then						\
       $(call pretty-printer,yellow,DEPENDENCIES,$$i,		)	; \
-      $(CC) $(CFLAGS) -M $(3) $$i >> $(2)				; \
+      $(CC) $(CFLAGS) -M -MG $(3) $$i >> $(2)				; \
     fi									; \
   done
 endef
