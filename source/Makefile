@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Jul  4 17:11:26 2005   mycure
+## last update   Mon Jul  4 17:54:17 2005   mycure
 ##
 
 #
@@ -27,7 +27,7 @@ include			./.kaneton.mk
 .SILENT:
 
 .PHONY:		all init clean kaneton clear purge proto		\
-		dep build install check info dist
+		dep build install check info dist kaneton.mk
 
 #
 # ---------- variables --------------------------------------------------------
@@ -36,6 +36,8 @@ include			./.kaneton.mk
 SHELL			:=		/bin/sh
 
 SUBDIRS			:=		libs core services
+
+KANETON_MK_SIZE		:=		$(shell stat -c "%s" .kaneton.mk)
 
 #
 # ---------- default rule -----------------------------------------------------
@@ -47,6 +49,18 @@ all:			kaneton
 # ---------- environment ------------------------------------------------------
 #
 
+kaneton.mk:
+	@if [ $(KANETON_MK_SIZE) -eq 0 ] ; then				\
+	  cd env							; \
+	  $(SHELL) init							; \
+	  cd ..								; \
+									\
+	  echo ""							; \
+	  echo -n -e '\E[;31m'"\033[1m  -----\033[0m "			; \
+	  echo -e "\033[1myou can now run your command...\033[0m"	; \
+	  echo ""							; \
+	fi
+
 init:
 	@cd env								; \
 	$(SHELL) init							; \
@@ -57,43 +71,45 @@ clean:
 	$(SHELL) clean							; \
 	cd ..
 
+	rm -f *~
+
 #
 # ---------- development ------------------------------------------------------
 #
 
-kaneton:
+kaneton:		kaneton.mk
 	$(call make,$(SUBDIRS),)
 
-clear:
+clear:			kaneton.mk
 	$(call make,$(SUBDIRS),clear)
 
-purge:
+purge:			kaneton.mk
 	$(call purge,)
 
 #
 # ---------- prototypes -------------------------------------------------------
 #
 
-proto:
+proto:			kaneton.mk
 	$(call make,$(SUBDIRS),proto)
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-dep:
+dep:			kaneton.mk
 	$(call make,$(SUBDIRS),dep)
 
 #
 # ---------- boot -------------------------------------------------------------
 #
 
-build:
+build:			kaneton.mk
 	@cd utils							; \
 	$(SHELL) $(_MULTIBOOTLOADER_) build				; \
 	cd ..
 
-install:
+install:		kaneton.mk
 	@cd utils/							; \
 	$(SHELL) $(_MULTIBOOTLOADER_) install				; \
 	cd ..
@@ -141,5 +157,5 @@ info:
 # ---------- distribution -----------------------------------------------------
 #
 
-dist:
+dist:			kaneton.mk
 	$(call dist)
