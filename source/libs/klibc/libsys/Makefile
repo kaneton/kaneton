@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/libs/klibc/libsys
+## path          /home/mycure/kaneton/libs/klibc
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:05:40 2005   mycure
-## last update   Mon Jun 20 17:09:58 2005   mycure
+## last update   Mon Jul  4 12:58:08 2005   mycure
 ##
 
 #

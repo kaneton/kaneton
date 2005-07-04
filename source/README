@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Mon Jul  4 11:43:56 2005   mycure
+## last update   Mon Jul  4 13:40:34 2005   mycure
 ##
 
 
@@ -322,13 +322,19 @@ the syntax used to call a function in a makefile is:
 
 ---[ link
 
-  this function build a symbolic link to a file.
+  this function builds a symbolic link to a file.
 
   arguments:
 
     1:		the file name to create so the symbolic link
     2:		the destination file name
     3:		advanced options
+
+---[ dist
+
+  this function builds a tarball from the current source code.
+
+  no arguments
 
 
 

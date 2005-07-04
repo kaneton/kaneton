@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Jul  4 12:11:03 2005   mycure
+## last update   Mon Jul  4 13:50:39 2005   mycure
 ##
 
 #
@@ -24,12 +24,16 @@ include			./.kaneton.mk
 # ---------- directives -------------------------------------------------------
 #
 
+.SILENT:
+
 .PHONY:		all init clean kaneton clear purge proto		\
 		dep build install check info dist
 
 #
 # ---------- variables --------------------------------------------------------
 #
+
+SHELL			:=		/bin/sh
 
 SUBDIRS			:=		libs core services
 
@@ -45,12 +49,12 @@ all:			kaneton
 
 init:
 	@cd env								; \
-	./init								; \
+	$(SHELL) init							; \
 	cd ..
 
 clean:
 	@cd env								; \
-	./clean								; \
+	$(SHELL) clean							; \
 	cd ..
 
 #
@@ -86,12 +90,12 @@ dep:
 
 build:
 	@cd utils							; \
-	./$(_MULTIBOOTLOADER_) build					; \
+	$(SHELL) $(_MULTIBOOTLOADER_) build				; \
 	cd ..
 
 install:
 	@cd utils/							; \
-	./$(_MULTIBOOTLOADER_) install					; \
+	$(SHELL) $(_MULTIBOOTLOADER_) install				; \
 	cd ..
 
 #
@@ -136,16 +140,6 @@ info:
 #
 # ---------- distribution -----------------------------------------------------
 #
-# XXX $(call dist)
-#
 
 dist:
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mbuilding kaneton...\033[0m"
-
-	@tar czf /tmp/kaneton-$(_VERSION_).tar.gz .
-	@mv /tmp/kaneton-$(_VERSION_).tar.gz .
-
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton built\033[0m"
-	@echo ""
+	$(call dist)

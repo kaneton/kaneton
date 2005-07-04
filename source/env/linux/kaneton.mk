@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Mon Jul  4 12:10:21 2005   mycure
+## last update   Mon Jul  4 13:47:45 2005   mycure
 ##
 
 #
@@ -144,6 +144,9 @@ _LD_			:=		ld
 _NASM_			:=		nasm
 _LN_			:=		ln -s -f
 _TOUCH_			:=		touch
+_WC_			:=		wc
+_TAIL_			:=		tail
+_TAR_			:=		tar
 
 #
 # ---------- traps ------------------------------------------------------------
@@ -215,7 +218,13 @@ endef
 #
 
 define pretty-printer
-  $(call pretty-printer-$(1),$(2),$(3),$(4))
+  length=`echo $(3) | $(_WC_) -c`					; \
+  if [ $$length -gt 56 ] ; then						\
+    name="..."`echo $(3) | $(_TAIL_) -c 53`				; \
+  else									\
+    name=$(3)								; \
+  fi									; \
+  $(call pretty-printer-$(1),$(2),$$name,$(4))
 endef
 
 #
@@ -416,4 +425,18 @@ endef
 define link
   @$(call pretty-printer,cyan,LINK,$(1),			)	; \
   $(_LN_) $(3) $(2) $(1)
+endef
+
+#
+# dist
+#
+
+define dist
+  @echo ""								; \
+  echo -e '\E[;34m'"\033[1m---\033[0m \033[1mbuilding kaneton..\033[0m"	; \
+  $(_TAR_) -czf /tmp/kaneton-$(_VERSION_).tar.gz .			; \
+  $(_MV_) /tmp/kaneton-$(_VERSION_).tar.gz .				; \
+  echo ""								; \
+  echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton built\033[0m"	; \
+  echo ""
 endef
