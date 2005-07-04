@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core
+## path          /home/mycure/kaneton/core/bootstrap/arch
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 19 21:01:27 2005   mycure
+## last update   Mon Jul  4 11:48:03 2005   mycure
 ##
 
 #
@@ -31,23 +31,15 @@ include			../../../.kaneton.mk
 #
 
 all:
-	@$(_CD_) machdep						; \
-	$(_MAKE_)							; \
-	$(_CD_) ..
+	$(call make,machdep,)
 
 clear:
-	@$(_CD_) machdep						; \
-	$(_MAKE_) clear							; \
-	$(_CD_) ..
+	$(call make,machdep,clear)
 
 	$(call purge,)
 
 proto:
-	@$(_CD_) machdep						; \
-	$(_MAKE_) proto							; \
-	$(_CD_) ..
+	$(call make,machdep,proto)
 
 dep:
-	@$(_CD_) machdep						; \
-	$(_MAKE_) dep							; \
-	$(_CD_) ..
+	$(call make,machdep,dep)

@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Sun Jun 19 20:52:53 2005   mycure
+## last update   Mon Jul  4 11:53:16 2005   mycure
 ##
 
 #
@@ -40,31 +40,15 @@ SUBDIRS			:=		cons				\
 #
 
 all:
-	@for i in $(SUBDIRS) ; do					\
-	$(_CD_) $$i							; \
-	$(_MAKE_)							; \
-	$(_CD_) ..							; \
-	done
+	$(call make,$(SUBDIRS),)
 
 clear:
-	@for i in $(SUBDIRS) ; do					\
-	$(_CD_) $$i							; \
-	$(_MAKE_) clear							; \
-	$(_CD_) ..							; \
-	done
+	$(call make,$(SUBDIRS),clear)
 
 	$(call purge,)
 
 proto:
-	@for i in $(SUBDIRS) ; do					\
-	$(_CD_) $$i							; \
-	$(_MAKE_) proto							; \
-	$(_CD_) ..							; \
-	done
+	$(call make,$(SUBDIRS),proto)
 
 dep:
-	@for i in $(SUBDIRS) ; do					\
-	$(_CD_) $$i							; \
-	$(_MAKE_) dep							; \
-	$(_CD_) ..							; \
-	done
+	$(call make,$(SUBDIRS),dep)

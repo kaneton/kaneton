@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sun Jul  3 14:45:08 2005   mycure
+## last update   Mon Jul  4 12:10:21 2005   mycure
 ##
 
 #
@@ -216,6 +216,27 @@ endef
 
 define pretty-printer
   $(call pretty-printer-$(1),$(2),$(3),$(4))
+endef
+
+#
+# make
+#
+# $(1):		the directory list
+# $(2):		advanced options
+#
+
+define make
+  @for i in $(1) ; do							\
+    $(_CD_) $$i								; \
+    $(call pretty-printer,yellow,MAKE,$$i,			)	; \
+    $(_MAKE_) $(2)							; \
+    return=$$?								; \
+    if [ $$return -ne 0 ] ; then					\
+      $(call pretty-printer,red,ERROR,$$i,			)	; \
+      exit $$return							; \
+    fi									; \
+    $(_CD_) ..								; \
+  done
 endef
 
 #

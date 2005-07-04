@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/libs/klibc
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:29:19 2005   mycure
-## last update   Sun Jul  3 19:41:26 2005   mycure
+## last update   Mon Jul  4 11:52:21 2005   mycure
 ##
 
 #
@@ -50,18 +50,10 @@ $(LIBC_A):		libs
 	$(call link,$(_LIBC_H_),klibc/$(LIBC_H),)
 
 libs:
-	@for i in $(SUBDIRS) ; do					\
-	$(_CD_) $$i							; \
-	$(_MAKE_) 							; \
-	$(_CD_) ..							; \
-	done
+	$(call make,$(SUBDIRS),)
 
 clear:
-	@for i in $(SUBDIRS) ; do					\
-	$(_CD_) $$i 							; \
-	$(_MAKE_) clear 						; \
-	$(_CD_) .. 							; \
-	done
+	$(call make,$(SUBDIRS),clear)
 
 	$(call remove,$(LIBC_A),)
 
@@ -71,15 +63,7 @@ clear:
 	$(call purge,)
 
 proto:
-	@for i in $(SUBDIRS) ; do					\
-	$(_CD_) $$i 							; \
-	$(_MAKE_) proto 						; \
-	$(_CD_) .. 							; \
-	done
+	$(call make,$(SUBDIRS),proto)
 
 dep:
-	@for i in $(SUBDIRS) ; do					\
-	$(_CD_) $$i 							; \
-	$(_MAKE_) dep 							; \
-	$(_CD_) .. 							; \
-	done
+	$(call make,$(SUBDIRS),dep)

@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:14:03 2005   mycure
-## last update   Fri Jul  1 13:13:16 2005   mycure
+## last update   Mon Jul  4 12:06:42 2005   mycure
 ##
 
 # INFORMATIONS
@@ -40,13 +40,6 @@ ARCHITECTURE="unknown"
 #
 # the version header file to generate
 VERSION_H="core/include/version.h"
-
-
-
-# CLEAN SPECIFIC VARIABLES
-#
-# generic names for this script
-KANETON_MK=".kaneton.mk"
 
 
 

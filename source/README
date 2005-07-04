@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Mon Jun 20 21:56:25 2005   mycure
+## last update   Mon Jul  4 11:43:56 2005   mycure
 ##
 
 
@@ -171,8 +171,7 @@ syntax:		make dist
 
 a portable makefiles system is provided for the kaneton project. each
 makefile of the project uses either functions defined in the kaneton.mk
-makefile dependency located in the directory env/{operating system}/kaneton.mk
-or directly defined commands like $(_MAKE_) or $(_CD_) etc..
+makefile dependency located in the directory env/{operating system}/kaneton.mk.
 
 this system leads to a central system, so to simpler portability.
 
@@ -195,6 +194,15 @@ the syntax used to call a function in a makefile is:
     2:		the name of the action performed
     3:		the file on which the action is performed
     4:		the identation between the action name and the file name
+
+---[ make
+
+  this function performs a make in every directory
+
+  arguments:
+
+    1:		the directory list
+    2:		advanced options
 
 ---[ compile-c
 

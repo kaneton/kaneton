@@ -5,56 +5,39 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/data/research/projects/kaneton/source
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Sun Jul  3 19:57:53 2005   mycure
+## last update   Mon Jul  4 12:11:03 2005   mycure
 ##
+
+#
+# ---------- dependencies -----------------------------------------------------
+#
+
+include			./.kaneton.mk
 
 #
 # ---------- directives -------------------------------------------------------
 #
 
-.SILENT:
-
 .PHONY:		all init clean kaneton clear purge proto		\
 		dep build install check info dist
-
-#
-# ---------- shell ------------------------------------------------------------
-#
-
-SHELL			:=		/bin/sh
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			=	libs core services
-
-#
-# ---------- user configuration -----------------------------------------------
-#
-
-include			conf/$(USER)/$(USER).conf
+SUBDIRS			:=		libs core services
 
 #
 # ---------- default rule -----------------------------------------------------
 #
 
 all:			kaneton
-
-#
-# ---------- environment dependency -------------------------------------------
-#
-
-.kaneton.mk:
-	@if [ ! -e .kaneton.mk ] ; then					\
-	make init							; \
-	fi
 
 #
 # ---------- environment ------------------------------------------------------
@@ -65,7 +48,7 @@ init:
 	./init								; \
 	cd ..
 
-clean:			purge
+clean:
 	@cd env								; \
 	./clean								; \
 	cd ..
@@ -74,55 +57,39 @@ clean:			purge
 # ---------- development ------------------------------------------------------
 #
 
-kaneton:		.kaneton.mk
-	@for i in $(SUBDIRS); do					\
-	cd $$i								; \
-	make								; \
-	cd ..								; \
-	done
+kaneton:
+	$(call make,$(SUBDIRS),)
 
-clear:			.kaneton.mk purge
-	@for i in $(SUBDIRS); do					\
-	cd $$i								; \
-	make clear							; \
-	cd ..								; \
-	done
+clear:
+	$(call make,$(SUBDIRS),clear)
 
 purge:
-	@rm -f *~ .*~ \#~ .\#~
+	$(call purge,)
 
 #
 # ---------- prototypes -------------------------------------------------------
 #
 
-proto:			.kaneton.mk
-	@for i in $(SUBDIRS); do					\
-	cd $$i								; \
-	make proto							; \
-	cd ..								; \
-	done
+proto:
+	$(call make,$(SUBDIRS),proto)
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-dep:			.kaneton.mk
-	@for i in $(SUBDIRS); do					\
-	cd $$i								; \
-	make dep							; \
-	cd ..								; \
-	done
+dep:
+	$(call make,$(SUBDIRS),dep)
 
 #
 # ---------- boot -------------------------------------------------------------
 #
 
-build:			.kaneton.mk
+build:
 	@cd utils							; \
 	./$(_MULTIBOOTLOADER_) build					; \
 	cd ..
 
-install:		.kaneton.mk
+install:
 	@cd utils/							; \
 	./$(_MULTIBOOTLOADER_) install					; \
 	cd ..
@@ -130,8 +97,10 @@ install:		.kaneton.mk
 #
 # ---------- check ------------------------------------------------------------
 #
+# XXX
+#
 
-check:			.kaneton.mk
+check:
 
 #
 # ---------- information ------------------------------------------------------
@@ -166,6 +135,8 @@ info:
 
 #
 # ---------- distribution -----------------------------------------------------
+#
+# XXX $(call dist)
 #
 
 dist:

@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/core/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Jun 20 17:04:34 2005   mycure
+## last update   Mon Jul  4 11:49:08 2005   mycure
 ##
 
 #
@@ -81,18 +81,10 @@ $(KANETON):		$(KANETON_O) libs
 	  -T $(_LDS_DIR_)/kaneton.lds)
 
 libs:
-	@for i in $(SUBDIRS) ; do					\
-	$(_CD_) $$i							; \
-	$(_MAKE_)							; \
-	$(_CD_) ..							; \
-	done
+	$(call make,$(SUBDIRS),)
 
 clear:
-	@for i in $(SUBDIRS) ; do					\
-	$(_CD_) $$i							; \
-	$(_MAKE_) clear							; \
-	$(_CD_) ..							; \
-	done
+	$(call make,$(SUBDIRS),clear)
 
 	$(call remove,$(VERSION_O),)
 	$(call remove,$(VERSION_C),)
@@ -104,20 +96,12 @@ clear:
 	$(call purge,)
 
 proto:
-	@for i in $(SUBDIRS) ; do					\
-	$(_CD_) $$i							; \
-	$(_MAKE_) proto							; \
-	$(_CD_) ..							; \
-	done
+	$(call make,$(SUBDIRS),proto)
 
 	$(call prototypes,$(KANETON_INCLUDE),)
 
 dep:
-	@for i in $(SUBDIRS) ; do					\
-	$(_CD_) $$i							; \
-	$(_MAKE_) dep							; \
-	$(_CD_) ..							; \
-	done
+	$(call make,$(SUBDIRS),dep)
 
 	$(call remove,$(_MAKEFILE_MK_),)
 
