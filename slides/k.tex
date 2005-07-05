@@ -474,7 +474,7 @@
 
   \begin{itemize}
   \item
-    Fragmentation should not be an issue as RAM is UMA
+    Fragmentation should not be an issue as RAM is UMA: we don't care about contiguous memory.
   \item
     Need a way to efficiently share memory
   \end{itemize}
@@ -515,6 +515,40 @@
   \vspace{10pt}
   A reasonable solution to describe an address space is to use a N-Tree. The nodes of this tree are often called \texttt{page tables}.
 \end{frame}
+
+\begin{frame}
+  \frametitle{Page tables}
+
+  \begin{figure}
+  \includegraphics[scale=0.25]{pagetable.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Translation mechanism}
+
+  \begin{figure}
+  \includegraphics[scale=0.5]{virt.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{PDE}
+
+  \begin{figure}
+  \includegraphics[scale=0.4]{pde.png}
+  \end{figure}
+\end{frame}
+
+\begin{frame}
+  \frametitle{PTE}
+
+  \begin{figure}
+  \includegraphics[scale=0.4]{pte.png}
+  \end{figure}
+\end{frame}
+
+% FIXME: TLB
 
 \section{Interrupts}
 
