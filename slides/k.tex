@@ -548,7 +548,21 @@
   \end{figure}
 \end{frame}
 
-% FIXME: TLB
+\begin{frame}
+  \frametitle{TLB}
+
+  Translating a virtual address costs 2 memory accesses.\\
+  \vspace{10pt}
+  The \texttt{Translation Lookaside Buffer} is an on-core cache of recently used translations.\\
+  It is the responsibility of the system programmer to maintain its consistency (eurk).
+  \vspace{10pt}
+  \begin{itemize}
+  \item
+    Invalidate one entry: \texttt{invlpg}
+  \item
+    Invalidate the whole TLB: overwrite \texttt{cr3}
+  \end{itemize}
+\end{frame}
 
 \section{Interrupts}
 
