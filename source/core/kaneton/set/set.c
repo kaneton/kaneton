@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jul  4 16:56:13 2005   mycure
+ * last update   Mon Jul  4 21:48:55 2005   mycure
  */
 
 /*
@@ -68,6 +68,19 @@ m_set			set;
  */
 
 /*
+ * this function adds the set object to the set objects list.
+ */
+
+int			set_object(o_set*			o)
+{
+  /*
+   * XXX
+   */
+
+  return (0);
+}
+
+/*
  * this function returns an unique unused set identifier.
  */
 
@@ -84,6 +97,10 @@ int			set_get(t_setid				setid,
 				o_set**				o)
 {
   printf("set_get(): %qu\n", setid);
+
+  /*
+   * XXX
+   */
 
   return (-1);
 }

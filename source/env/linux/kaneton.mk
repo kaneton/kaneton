@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Mon Jul  4 17:13:25 2005   mycure
+## last update   Mon Jul  4 21:51:53 2005   mycure
 ##
 
 #
@@ -370,13 +370,17 @@ endef
 #
 # prototypes
 #
-# $(1):		file
+# $(1):		file list
 # $(2):		advanced options
 #
 
 define prototypes
-  @$(call pretty-printer,yellow,PROTOTYPES,$(1),		)	; \
-  $(_PROTO_) $(2) $(1)
+  for i in $(1) ; do							\
+    if [ -e $$i ] ; then						\
+      $(call pretty-printer,yellow,PROTOTYPES,$$i,		)	; \
+      $(_PROTO_) $(2) $(1)						; \
+    fi									; \
+  done
 endef
 
 #

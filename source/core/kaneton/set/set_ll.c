@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jul  4 17:14:41 2005   mycure
+ * last update   Mon Jul  4 21:54:50 2005   mycure
  */
 
 /*
@@ -32,33 +32,41 @@
 int			set_add_ll(t_setid			setid,
 				   void*			data)
 {
-  printf("[ll] adding: 0x%x\n", data);
+  o_set*		o;
+
+#if 1
+  printf("[set_ll] adding: 0x%x\n", data);
+#endif
+
+  if ((o = set_get(setid)) != 0)
+    return (-1);
+
+
 }
 
 /*
  * XXX
  */
 
-int			set_make_ll(o_set*			o,
-				    t_setid			setid)
+int			set_rsv_ll(t_opts			opts,
+				   t_size			datasz,
+				   t_setid*			setid)
 {
+  o_set*		o;
+
+  if (set_id(setid) != 0)
+    return (-1);
+
+  if ((o = malloc(sizeof(o_set))) == NULL)
+    return (-1);
+
   memset(o, 0x0, sizeof(o_set));
 
-  o->setid = setid;
+  o->setid = *setid;
   o->type = SET_TYPE_LL;
 
-  return (0);
-}
-
-/*
- * XXX
- */
-
-int			set_rsv_ll(t_setid*			setid)
-{
-  set_id(setid);
-
-  /* set_make(ll, *setid, ... */
+  o->u.ll.opts = opts;
+  o->u.ll.datasz = datasz;
 
   return (0);
 }

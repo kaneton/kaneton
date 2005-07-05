@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Mon Jul  4 17:30:38 2005   mycure
+## last update   Mon Jul  4 21:51:00 2005   mycure
 ##
 
 
@@ -306,7 +306,7 @@ the syntax used to call a function in a makefile is:
 
   arguments:
 
-    1:		the header file name
+    1:		the header file name list
     2:		advanced options
 
 ---[ dependencies

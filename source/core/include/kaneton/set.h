@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Mon Jul  4 16:25:12 2005   mycure
+ * last update   Mon Jul  4 21:48:21 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -34,22 +34,18 @@
  */
 
 /*
- * identifiers
- */
-
-#define SETID_SEGMENTS		((t_setid)0x0)
-
-#define SETID_KSEGMENTS		((t_setid)0x1)
-#define SETID_KREGIONS		((t_setid)0x2)
-
-#define SET_ID			((t_setid)0x3)
-
-/*
  * foreach
  */
 
 #define SET_OPT_FORWARD		0x1
 #define SET_OPT_BACKWARD	0x2
+
+/*
+ * options
+ */
+
+#define SET_OPT_NONE		0x00
+#define SET_OPT_ALLOC		0x01
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -79,10 +75,6 @@ typedef struct
  * the set manager
  *
  * this type contains all the information needed by the set manager.
- *
- * note that there is three special fields segments, ksegments and kregions.
- * these fields are present because they cannot be managed like other
- * sets because the malloc() function is not provided yet.
  */
 
 typedef struct
@@ -125,8 +117,8 @@ extern m_set		set;
     }									\
   )
 
-#define set_make(_type_, _args_...)					\
-  set_make_##_type_(_args_)
+#define set_rsv(_type_, _args_...)					\
+  set_rsv_##_type_(_args_)
 
 #define set_add(_setid_, _args_...)					\
   set_trap(set_add, _setid_, _args_)
@@ -160,6 +152,8 @@ extern m_set		set;
 /*
  * ../../kaneton/set/set.c
  */
+
+int			set_object(o_set*			o);
 
 int			set_id(t_setid*				setid);
 
