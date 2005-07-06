@@ -20,7 +20,8 @@
  * to fetch the adress.
  * This macro shall be used in both implementations.
  */
-#define __align(Addr)  (Addr) + sizeof (t_vaddr) - (((t_vaddr) Addr + 1) % sizeof (t_vaddr) - 1)
+#define __align(Addr)  ((Addr) + sizeof (t_vaddr) - \
+    (((t_vaddr) Addr + 1) % sizeof (t_vaddr) - 1))
 
 /*
  * ---------- information -----------------------------------------------------
@@ -54,27 +55,37 @@ t_alloc			alloc;
  * Later, a buddy system algorithm shall be implemented.
  */
 
-# define __next_chunk(Chunk) (void *) ((t_vaddr) Chunk + Chunk->size)
+# define __next_chunk(Chunk) (void *) ((t_vaddr) Chunk + Chunk->size + \
+    sizeof (t_chunk))
 # define __prev_chunk(Chunk) (void *) (Chunk->prv)
+# define __chunk_size(Chunk) (Chunk->size + sizeof (t_chunk))
+# define __chunk_ptr(Chunk) ((void *) ((t_vaddr) Chunk + sizeof (t_chunk)))
+
+/*
+ * This value is used to specify when we agree to fragment a chunk :
+ * for example, it would be useless to fragment a chunk when there
+ * is just enough space
+ */
+# define __TOLERANCE  (3 * sizeof (t_chunk))
 
 /*!
-** @brief 	Segments a contiguous zone of allocation
-**
-**   Here we take a chunk, make it of size "size", and make a new
-**   chunk right after it. It is the contrary of merge.
-**
-** @param chunk		The chunk we want to fragment
-** @param size		The size we want it to be
-**
-** @return 0 if all went smoothly, 1 otherwise.
-*/
+ * @brief 	Segments a contiguous zone of allocation
+ *
+ *   Here we take a chunk, make it of size "size", and make a new
+ *   chunk right after it. It is the contrary of merge.
+ *
+ * @param chunk		The chunk we want to fragment
+ * @param size		The size we want it to be
+ *
+ * @return 0 if all went smoothly, 1 otherwise.
+ */
 static int		fragment(t_chunk *chunk, size_t size)
 {
   t_chunk		*new = NULL;
-  size_t		size_save = size;
+  size_t		size_save = chunk->size;
 
-  if (!(chunk->flags & ALLOC_FREE))
-    return 1;
+  /*if (!(chunk->flags & ALLOC_FREE))
+    return 1;*/
   chunk->size = __align(size);
   new = __next_chunk(chunk);
   new->size = size_save - sizeof (t_chunk) - size;
@@ -88,42 +99,121 @@ static int		fragment(t_chunk *chunk, size_t size)
 }
 
 /*!
-** @brief Merge free chunks
-**
-** @param chunk		The starting chunk we want to merge.
-*/
-static void		merge(t_chunk chunk)
+ * @brief Merge free chunks
+ *
+ *   There are two steps in the merging process :
+ *     1) We merge all the previous free blocks
+ *     2) We merge all the next free blocks with this one.
+ *
+ * @param chunk		The starting chunk we want to merge.
+ */
+static t_chunk		*merge(t_chunk *chunk)
 {
+  t_chunk		*runner = NULL;
 
-}
-
-void*			malloc(size_t				size)
-{
-
+  /*
+   * 1)
+   */
+  for (runner = __prev_chunk(chunk);
+      runner && runner->flags & ALLOC_FREE;
+      runner = __prev_chunk(runner))
+  {
+    runner->size += __chunk_size(chunk);
+    chunk = runner;
+  }
+  /*
+   * 2)
+   */
+  if (!(chunk->flags & ALLOC_LAST))
+    for (runner = __next_chunk(chunk);
+	runner->flags & ALLOC_FREE;)
+    {
+      chunk->size += __chunk_size(runner);
+      runner = __next_chunk(runner);
+      runner->prv = (void *) chunk;
+    }
+  return chunk;
 }
 
 /*!
-** @brief Initialiaze the allocation structure.
-**
-** The initialisation is done in two passes.
-** 1) It inits the main structure to contain : the address of the
-**   first block, the whole size, the adress of the whole free space,
-**   and the adress of the heap (useful if we want to modify the space later on)
-**
-** 2) It initialises the first (and last) block, filling it with the size of
-**   the space it contains, the flags, and the location of the previous block,
-**   which is zero, since there isn't any yet.
-**
-**   Now, we're ready to rock.
-**   Folks, remember that for the sake of optimization, we try to keep all the
-**   addresses aligned, so don't mind the funky pointer arithmetics.
-**
-** @param addr	The adress of the beginning of the heap
-** @param size	The size of it all
-**
-** @return	zero. I don't even understand why I should say that it didn't
-** 		went smooth.
-*/
+ * @brief Allocate memory
+ *
+ * @param size		The size to allocate
+ *
+ * @return a pointer to the newly allocated space
+ */
+void*			malloc(size_t				size)
+{
+  t_chunk		*runner = NULL;
+
+  for (runner = alloc.first_blk;
+      !(runner->flags & ALLOC_FREE) && __align(size) > runner->size &&
+      !(runner->flags & ALLOC_LAST);
+      runner = __next_chunk(runner))
+    ;
+  if (runner->flags & ALLOC_LAST && !(runner->flags & ALLOC_FREE))
+    return NULL; /* ENOMEM */
+  if (runner->size - __align(size) > __TOLERANCE)
+    fragment(runner, __align(size));
+  return __chunk_ptr(runner);
+}
+
+/*!
+ * @brief Free a previously allocated area.
+ *
+ * @param ptr		the pointer to the area.
+ */
+void			free(void				*ptr)
+{
+  t_chunk		*chunk;
+
+  chunk = ptr;
+  chunk -= 1;
+  chunk->flags |= ALLOC_FREE;
+  merge(chunk);
+}
+
+
+static void		dump_chunk(t_chunk *chunk)
+{
+  printf("%x : %d bytes, flags : %x \n", (t_vaddr) chunk,
+      chunk->size,
+      chunk->flags);
+}
+
+void			alloc_dump()
+{
+  t_chunk		*runner = NULL;
+
+  for (runner = alloc.first_blk;
+      !(runner->flags & ALLOC_LAST);
+      runner = __next_chunk(runner))
+    dump_chunk(runner);
+  dump_chunk(runner);
+}
+
+/*!
+ * @brief Initialiaze the allocation structure.
+ *
+ * The initialisation is done in two passes.
+ * 1) It inits the main structure to contain : the address of the
+ *   first block, the whole size, the adress of the whole free space,
+ *   and the adress of the heap (useful if we want to modify the space later on)
+ *
+ * 2) It initialises the first (and last) block, filling it with the size of
+ *   the space it contains, the flags, and the location of the previous block,
+ *   which is zero, since there isn't any yet.
+ *
+ *   Now, we're ready to rock.
+ *   Folks, remember that for the sake of optimization, we try to keep all the
+ *   addresses aligned, so don't mind the funky pointer arithmetics.
+ *
+ * @param addr	The adress of the beginning of the heap
+ * @param size	The size of it all
+ *
+ * @return	zero. I don't even understand why I should say that it didn't
+ * 		went smooth.
+ */
 int			alloc_init(t_vaddr			addr,
 				   t_size			size)
 {
@@ -133,7 +223,7 @@ int			alloc_init(t_vaddr			addr,
    * 1)
    */
   alloc.addr = addr;
-  alloc.first_blk = (t_chunk*) __align(addr);
+  alloc.first_blk = (t_chunk *) __align(addr);
   alloc.size = size;
   alloc.heap = addr + sizeof (t_chunk);
 

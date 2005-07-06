@@ -11,11 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 02:32:39 2005   mycure
-<<<<<<< .mine
 ** Last update Sun Jul  3 23:25:23 2005 Christophe Eymard
-=======
- * last update   Mon Jul  4 14:28:40 2005   mycure
->>>>>>> .r138
  */
 
 #ifndef LIBDATA_ALLOC_H
@@ -26,7 +22,7 @@
  */
 
 # include <klibc/include/libsys/types.h>
-# include "../../../../core/include/arch/machdep/machdep.h"
+# include <arch/machdep/machdep.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -54,9 +50,9 @@ struct				s_chunk
   unsigned int			flags;
   struct s_chunck*		prv;
   char				align[sizeof (t_vaddr) - ((sizeof (size_t) +
-							sizeof (unsigned int) +
-							sizeof (t_vaddr)) %
-						       sizeof (t_vaddr))];
+							   sizeof (unsigned int) +
+							   sizeof (t_vaddr)) %
+      							  sizeof (t_vaddr))];
 } __attribute__ ((__packed__));
 
 typedef struct s_chunk t_chunk;
