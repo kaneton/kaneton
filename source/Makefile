@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Jul  4 17:54:17 2005   mycure
+## last update   Sat Jul  9 14:49:02 2005   mycure
 ##
 
 #
@@ -109,7 +109,7 @@ build:			kaneton.mk
 	$(SHELL) $(_MULTIBOOTLOADER_) build				; \
 	cd ..
 
-install:		kaneton.mk
+install:		kaneton.mk kaneton
 	@cd utils/							; \
 	$(SHELL) $(_MULTIBOOTLOADER_) install				; \
 	cd ..
@@ -157,5 +157,5 @@ info:
 # ---------- distribution -----------------------------------------------------
 #
 
-dist:			kaneton.mk
+dist:			kaneton.mk kaneton
 	$(call dist)

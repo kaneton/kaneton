@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jul  4 21:38:09 2005   mycure
+ * last update   Sat Jul  9 15:46:14 2005   mycure
  */
 
 /*
@@ -147,9 +147,6 @@ void			kaneton(t_init*				bootloader)
 
     set_rsv(ll, SET_OPT_ALLOC, sizeof(int), &setid);
   }
-
-  /* XXX */
-  while (1);
 
   /*
    * 5)

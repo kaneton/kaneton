@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Mon Jul  4 21:51:00 2005   mycure
+## last update   Wed Jul  6 13:05:34 2005   mycure
 ##
 
 
@@ -101,6 +101,9 @@ device:
 	make install
 
 after all, the boot device is ready.
+
+note that the kaneton makefile use special advanced makefile features. so,
+please use gmake if you want your kernel to compile successfully.
 
 ---[ init
 

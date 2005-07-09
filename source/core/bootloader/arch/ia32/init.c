@@ -3,13 +3,13 @@
  *
  * init.c
  *
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Sun Jul  3 15:21:46 2005   mycure
+ * last update   Sat Jul  9 15:00:32 2005   mycure
  */
 
 /*
@@ -128,105 +128,85 @@ void			bootloader_init_dump(void)
  *
  * steps:
  *
- * 1) allocates memory for the alloc() function. indeed the alloc() function
- *    needs to be able to provide memory until the virtual memory manager
- *    is installed. thus the alloc() function will be able to ask
- *    the virtual memory manager to provide virtual pages and to map it
- *    into the kernel address space to continue to provide its service.
- *    so the alloc() function needs an amount of critical pages to work with
- *    until the virtual memory is initialized.
- * 2) adds the ISA segment from 0 to 1Mb.
- * 3) adds the kernel code segment.
- * 4) adds the init structure segment.
- * 5) adds the modules segment.
- * 6) adds the segments segment.
- * 7) adds the regions segment.
- * 8) adds the kernel stack segment.
- * 9) adds the alloc segment.
- * 10) adds the global offset table segment.
- * 11) adds the page directory segment.
+ * 1) adds the ISA segment from 0 to 1Mb.
+ * 2) adds the kernel code segment.
+ * 3) adds the init structure segment.
+ * 4) adds the modules segment.
+ * 5) adds the segments segment.
+ * 6) adds the regions segment.
+ * 7) adds the kernel stack segment.
+ * 8) adds the alloc segment.
+ * 9) adds the global offset table segment.
+ * 10) adds the page directory segment.
  */
 
 void			bootloader_init_segments(void)
 {
-  t_psize		allocsz;
-
   /*
    * 1)
-   */
-
-  /*
-   * XXX temporary, pre-allocate four pages
-   */
-
-  init->alloc = bootloader_init_alloc(4 * PAGESZ, &allocsz);
-  init->allocsz = allocsz;
-
-  /*
-   * 2)
    */
 
   init->segments[0].address = 0x0;
   init->segments[0].size = 0x00100000;
 
   /*
-   * 3)
+   * 2)
    */
 
   init->segments[1].address = init->kcode;
   init->segments[1].size = init->kcodesz;
 
   /*
-   * 4)
+   * 3)
    */
 
   init->segments[2].address = init->init;
   init->segments[2].size = init->initsz;
 
   /*
-   * 5)
+   * 4)
    */
 
   init->segments[3].address = (t_paddr)init->modules;
   init->segments[3].size = init->modulessz;
 
   /*
-   * 6)
+   * 5)
    */
 
   init->segments[4].address = (t_paddr)init->segments;
   init->segments[4].size = init->segmentssz;
 
   /*
-   * 7)
+   * 6)
    */
 
   init->segments[5].address = (t_paddr)init->regions;
   init->segments[5].size = init->regionssz;
 
   /*
-   * 8)
+   * 7)
    */
 
   init->segments[6].address = init->kstack;
   init->segments[6].size = init->kstacksz;
 
   /*
-   * 9)
+   * 8)
    */
 
   init->segments[7].address = init->alloc;
   init->segments[7].size = init->allocsz;
 
   /*
-   * 10)
+   * 9)
    */
 
   init->segments[8].address = (t_paddr)init->machdep.gdt;
   init->segments[8].size = PAGESZ;
 
   /*
-   * 11)
+   * 10)
    */
 
   init->segments[9].address = (t_paddr)init->machdep.pd;
@@ -339,6 +319,13 @@ t_paddr			bootloader_init_alloc(t_psize		size,
  * 5) copies the kernel code into its new location.
  * 6) initializes the kernel stack.
  * 7) for each module, copies it into its new location.
+ * 8) allocates memory for the alloc() function. indeed the alloc() function
+ *    needs to be able to provide memory until the virtual memory manager
+ *    is installed. thus the alloc() function will be able to ask
+ *    the virtual memory manager to provide virtual pages and to map it
+ *    into the kernel address space to continue to provide its service.
+ *    so the alloc() function needs an amount of critical pages to work with
+ *    until the virtual memory is initialized.
  */
 
 t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
@@ -353,6 +340,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
   t_psize		regionssz;
   t_paddr		kcode;
   t_psize		kcodesz;
+  t_psize		allocsz;
   t_module*		module;
   t_psize		initsz;
   t_psize		modsz;
@@ -468,6 +456,17 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
       module = (t_module*)((t_uint32)module + sizeof(t_module) +
 			   module->size + strlen(module->name) + 1);
     }
+
+  /*
+   * 8)
+   */
+
+  /*
+   * XXX temporary, pre-allocate four pages
+   */
+
+  init->alloc = bootloader_init_alloc(4 * PAGESZ, &allocsz);
+  init->allocsz = allocsz;
 
   return (khdr->e_entry);
 }

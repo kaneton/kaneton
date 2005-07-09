@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jul  4 21:54:50 2005   mycure
+ * last update   Wed Jul  6 17:19:02 2005   mycure
  */
 
 /*
@@ -38,9 +38,10 @@ int			set_add_ll(t_setid			setid,
   printf("[set_ll] adding: 0x%x\n", data);
 #endif
 
+  /*
   if ((o = set_get(setid)) != 0)
     return (-1);
-
+  */
 
 }
 
