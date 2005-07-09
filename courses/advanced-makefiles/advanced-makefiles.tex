@@ -1,0 +1,453 @@
+%%
+%% copyright quintard julien
+%% 
+%% kaneton
+%% 
+%% advanced-makefiles.tex
+%% 
+%% path          /home/mycure/data/research/projects/kaneton/courses/advanced-makefiles
+%% 
+%% made by mycure
+%%         quintard julien   [quinta_j@epita.fr]
+%% 
+%% started on    Tue Jul  5 12:23:08 2005   mycure
+%% last update   Wed Jul  6 15:03:30 2005   mycure
+%%
+
+%
+% class
+%
+
+\documentclass{beamer}
+
+%
+% packages
+%
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{amsmath,amssymb}
+\usepackage[latin1]{inputenc}
+\usepackage{colortbl}
+\usepackage[english]{babel}
+\usepackage{verbatim}
+\usepackage{times}
+
+%
+% style
+%
+
+\setbeamertemplate{background canvas}[vertical shading][bottom=red!10,top=blue!10]
+\usetheme{Ilmenau}
+\usefonttheme[onlysmall]{structurebold}
+
+\setbeamercovered{dynamic}
+
+%
+% verbatim font
+%
+
+\makeatletter
+\renewcommand{\verbatim@font}
+  {\ttfamily\tiny\selectfont}
+\makeatother
+
+%
+% title
+%
+
+\title[Advanced~Makefiles~Programming]{Advanced~Makefiles~Programming}
+
+%
+% authors
+%
+
+\author[Julien~Quintard]
+{
+  Julien~Quintard\inst{1} \\
+  {\tiny quinta\_j@lse.epita.fr}
+}
+
+\institute[EPITA Computer System Laboratory]
+{
+  \inst{1} EPITA Computer System Laboratory
+}
+
+%
+% date
+%
+
+\date[\today]{\today}
+
+%
+% subject
+%
+
+\subject{Advanced Makefile Programming}
+
+%
+% table of contents at the beginning of each section
+%
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[current,currentsubsection]
+  \end{frame}
+}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+  \tableofcontents
+\end{frame}
+
+%
+% overview
+%
+
+\section{Overview}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Common Makefiles}
+
+  \begin{block}{Good Characteristics}
+    \begin{itemize}
+      \item
+        use object dependencies to, automatically, generate object files.
+      \item
+        generate object file names from source file names.
+      \item
+        use macro \alert{as well as possible}.
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Common Makefiles}
+
+  \begin{alertblock}{Bad Characteristics}
+    \begin{itemize}
+      \item<1->
+        do not use full dependencies like header file dependencies.
+      \item<1->
+        are never parameterizable.
+      \item<1->
+        are too specific to the current environment, inclusions,
+        multi-developers etc..
+      \item<2->
+        work well, so, do not change for the next three decades...
+    \end{itemize}
+  \end{alertblock}
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{An Example of Common Makefiles}
+
+  \begin{Example}
+    \verbatiminput{includes/makefile-common.li}
+  \end{Example}
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{More Complete Makefiles}
+
+  \begin{block}{Characteristics}
+    \begin{itemize}
+      \item
+        handle header file dependencies, generally using dependency generation.
+      \item
+        use macros for every file name, binary, etc..
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{An Example of More Complete Makefiles}
+
+  \begin{Example}
+    \verbatiminput{includes/makefile-complete.li}
+  \end{Example}
+
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Notes}
+
+  \begin{block}{Characteristics}
+    \begin{itemize}
+      \item
+        note that this makefile is correct but seems very \alert{ugly}.
+      \item
+        indeed, for a project with 1000 source files, it will be hard to
+        write every header file dependencies, for each file...
+      \item
+        nevertheless, this makefile will recompile the two source files
+        every time the header file is modified.
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+%
+% features
+%
+
+\section{Features}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Advanced Makefiles Features}
+
+  \begin{block}{Characteristics}
+    \begin{itemize}
+      \item<1->
+        use makefile inclusions.
+      \item<1->
+        centralize the macros to be used by every makefile using
+        macros and functions.
+      \item<1->
+        know all about default makefile rules.
+      \item<1->
+        use makefile directives and flags.
+      \item<1->
+        avoid hard-coded path and relative path like: -I../../libs/mylib.a
+      \item<1->
+        finally, handle header files dependencies.
+      \item<2->
+        be careful, these feature are mainly implemented by \alert{gmake},
+        so will not be supported by portable make.
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+%
+% directives
+%
+
+\section{Directives}
+
+% 1)
+
+\begin{frame}
+  \frametitle{
+
+- exemple avec les entering directory
+- option -s
+- directive SILENT
+
+\end{frame}
+
+%
+% rules
+%
+
+\section{Rules}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Implicit Rules}
+
+  \begin{block}{Characteristics}
+    \begin{itemize}
+      \item<1->
+        the makefile system is based on implicit rules which make the
+        programmer's life easier.
+      \item<1->
+        the command \textit{make -p} lists the entire list of rules including
+        default ones.
+      \item<1->
+        the best example is the object generation which is done by an implicit
+        rule.
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Implicit Rule Example - {\small make -p}}
+
+  \begin{Example}
+    \verbatiminput{includes/implicit-rules-1.li}
+  \end{Example}
+
+  \begin{Example}
+    \verbatiminput{includes/implicit-rules-2.li}
+  \end{Example}
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Implicit Rule Example}
+
+  \begin{Example}
+    \verbatiminput{includes/makefile-implicit-rules.li}
+  \end{Example}
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Target Grouping}
+
+  \begin{block}{Characteristics}
+    \begin{itemize}
+      \item
+        the last example seemed ugly because there was duplication.
+      \item
+        moreover, the two source files had the same dependencies. This
+        fact leading too many duplications.
+      \item
+        the solution is to use target grouping.
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Target Grouping Example}
+
+  \begin{Example}
+    \verbatiminput{includes/makefile-target-grouping.li}
+  \end{Example}
+
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Implicit Rules Redefinition}
+
+  \begin{block}{Characteristics}
+    \begin{itemize}
+      \item
+        the implicit rules make the programmer's life easier, but what
+        for crazy makefile programmers?
+      \item
+        the implicit rules can be redefined.
+      \item
+        this feature is very useful because it permits to centralize
+        many operations like compiling, linking etc..
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Implicit Rules Redefinition Example}
+
+  \begin{columns}
+
+    \column{7cm}
+      \begin{Example}
+        \verbatiminput{includes/makefile-implicit-rules-redefinition.li}
+      \end{Example}
+
+    \column{4cm}
+      \begin{Example}
+        \verbatiminput{includes/implicit-rules-redefinition.li}
+      \end{Example}
+
+  \end{columns}
+
+\end{frame}
+
+
+\end{document}
+
+
+
+
+% ----------------------------------------------
+
+
+
+\subsection<presentation>*{Further Reading}
+
+\begin{frame}
+  \frametitle<presentation>{For Further Reading}
+  
+  \beamertemplatebookbibitems
+  
+  \begin{thebibliography}{10}
+    
+  \bibitem{sal:b:formal-languages}
+    A.~Salomaa.
+    \newblock {\em Formal Languages}.
+    \newblock Academic Press, 1973.
+    \pause
+
+  \beamertemplatearticlebibitems
+  \bibitem{dij:j:smoothsort}
+    E.~Dijkstra.
+    \newblock Smoothsort, an alternative for sorting in situ.
+    \newblock {\em Science of Computer Programming}, 1(3):223--233,
+    1982.
+    \pause
+
+  \bibitem{FeldmanO1973}
+    E.~Feldman and J.~Owings, Jr.
+    \newblock A class of universal linear bounded automata.
+    \newblock {\em Information Sciences}, 6:187--190, 1973.
+    \pause
+
+  \bibitem{JancarMPV1995}
+    P.~Jan{\v c}ar, F.~Mr{\'a}z, M.~Pl{\'a}tek, and J.~Vogel.
+    \newblock Restarting automata.
+    \newblock {\em FCT Conference 1995}, LNCS 985, pages
+    282--292. 1995.
+  \end{thebibliography}
+\end{frame}
+
+--
+
+- .silent .PHONY etc..
+
+- ifdef ifeq etc..
+
+- functions

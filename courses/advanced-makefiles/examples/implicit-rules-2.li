@@ -1,0 +1,7 @@
+# Not a target:
+.S.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  commands to execute (built-in):
+        $(COMPILE.S) -o $@ $<
