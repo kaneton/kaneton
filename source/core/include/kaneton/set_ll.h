@@ -72,4 +72,8 @@ typedef struct
  *      ../../kaneton/set/set_ll.c
  */
 
+/*
+ * eop
+ */
+
 #endif
