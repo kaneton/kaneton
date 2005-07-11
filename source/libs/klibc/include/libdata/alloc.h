@@ -49,10 +49,6 @@ struct				s_chunk
   size_t			size;
   unsigned int			flags;
   struct s_chunck*		prv;
-  char				align[sizeof (t_vaddr) - ((sizeof (size_t) +
-							   sizeof (unsigned int) +
-							   sizeof (t_vaddr)) %
-      							  sizeof (t_vaddr))];
 } __attribute__ ((__packed__));
 
 typedef struct s_chunk t_chunk;

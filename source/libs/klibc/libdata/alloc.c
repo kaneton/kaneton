@@ -20,13 +20,13 @@
  * to fetch the adress.
  * This macro shall be used in both implementations.
  */
-#define __align(Addr)  ((Addr) + sizeof (t_vaddr) - \
-    (((t_vaddr) Addr + 1) % sizeof (t_vaddr) - 1))
+#define __align(Addr)  (Addr % sizeof (t_vaddr) ? ((Addr) + sizeof (t_vaddr) - \
+    (((t_vaddr) Addr + 1) % sizeof (t_vaddr) - 1)) : Addr)
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX
+ *
  */
 
 /*
@@ -90,6 +90,7 @@ static int		fragment(t_chunk *chunk, size_t size)
   new = __next_chunk(chunk);
   new->size = size_save - sizeof (t_chunk) - size;
   new->flags = ALLOC_FREE;
+  new->prv = chunk;
   if (chunk->flags & ALLOC_LAST)
   {
     chunk->flags &= ~(ALLOC_LAST);
@@ -126,12 +127,20 @@ static t_chunk		*merge(t_chunk *chunk)
    */
   if (!(chunk->flags & ALLOC_LAST))
     for (runner = __next_chunk(chunk);
-	runner->flags & ALLOC_FREE;)
+	runner->flags & ALLOC_FREE && !(runner->flags & ALLOC_LAST);
+	)
     {
       chunk->size += __chunk_size(runner);
       runner = __next_chunk(runner);
       runner->prv = (void *) chunk;
     }
+  if (runner->flags == (ALLOC_LAST | ALLOC_FREE))
+  {
+    chunk->size += __chunk_size(runner);
+    runner = __next_chunk(runner);
+    runner->prv = (void *) chunk;
+    chunk->flags |= ALLOC_LAST;
+  }
   return chunk;
 }
 
@@ -147,7 +156,7 @@ void*			malloc(size_t				size)
   t_chunk		*runner = NULL;
 
   for (runner = alloc.first_blk;
-      !(runner->flags & ALLOC_FREE) && __align(size) > runner->size &&
+      !(runner->flags & ALLOC_FREE) || __align(size) > runner->size ||
       !(runner->flags & ALLOC_LAST);
       runner = __next_chunk(runner))
     ;
@@ -155,6 +164,7 @@ void*			malloc(size_t				size)
     return NULL; /* ENOMEM */
   if (runner->size - __align(size) > __TOLERANCE)
     fragment(runner, __align(size));
+  runner->flags &= ~ALLOC_FREE;
   return __chunk_ptr(runner);
 }
 
@@ -185,6 +195,7 @@ void			alloc_dump()
 {
   t_chunk		*runner = NULL;
 
+  printf("-- Dumping allocation state : \n");
   for (runner = alloc.first_blk;
       !(runner->flags & ALLOC_LAST);
       runner = __next_chunk(runner))
@@ -198,7 +209,7 @@ void			alloc_dump()
  * The initialisation is done in two passes.
  * 1) It inits the main structure to contain : the address of the
  *   first block, the whole size, the adress of the whole free space,
- *   and the adress of the heap (useful if we want to modify the space later on)
+ *   and the adress of the heap (useful if we want to modify the space later)
  *
  * 2) It initialises the first (and last) block, filling it with the size of
  *   the space it contains, the flags, and the location of the previous block,
