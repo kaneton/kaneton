@@ -262,6 +262,8 @@ int			alloc_init(t_vaddr			addr,
     alloc_dump();
     free(test);
     alloc_dump();
+    while (1)
+      ;
   }*/
 
   return 0;
