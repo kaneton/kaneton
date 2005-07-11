@@ -246,6 +246,24 @@ int			alloc_init(t_vaddr			addr,
   alloc.first_blk->flags = ALLOC_FREE | ALLOC_LAST;
   alloc.first_blk->prv = NULL;
 
+
+  /* test block follows */
+  /*{
+    void		*test, *toto, *tata, *titi;
+
+    test = malloc(100);
+    toto = malloc(200);
+    tata = malloc(300);
+    titi = malloc(400);
+    alloc_dump();
+    free(toto);
+    free(titi);
+    free(tata);
+    alloc_dump();
+    free(test);
+    alloc_dump();
+  }*/
+
   return 0;
 }
 
