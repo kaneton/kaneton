@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Sat Jul  9 21:53:09 2005   mycure
+%% last update   Mon Jul 11 14:04:43 2005   mycure
 %%
 
 %
@@ -170,7 +170,7 @@
   \frametitle{An Example of Common Makefiles}
 
   \begin{Example}
-    \verbatiminput{includes/makefile-common.li}
+    \verbatiminput{examples/makefile-common.li}
   \end{Example}
 
 \end{frame}
@@ -197,7 +197,7 @@
   \frametitle{An Example of More Complete Makefiles}
 
   \begin{Example}
-    \verbatiminput{includes/makefile-complete.li}
+    \verbatiminput{examples/makefile-complete.li}
   \end{Example}
 
 \end{frame}
@@ -265,23 +265,69 @@
 % 1)
 
 \begin{frame}
-  \frametitle{Directive}
+  \frametitle{Directives}
 
   \begin{block}{Characteristics}
     \begin{itemize}
       \item
         used to parameter makefiles.
       \item
-        \textit{.SILENT} is used to
+        \textit{.PHONY} contains the targets for which the makefile system
+        runs commands unconditionally.
+      \item
+        \textit{.SUFFIXES} contains the suffix list to check for.
+      \item
+        \textit{.DEFAULT} contains commands which are used for any target
+        for which no rule are found.
+      \item
+        \textit{.IGNORE} contains rules for which the makefile system
+        will ignore errors.
+      \item
+        \textit{.SILENT} is used to not print make actions.
     \end{itemize}
   \end{block}
 
-- exemple avec les entering directory
-- option -s
-- directive SILENT
+\end{frame}
 
-        \textit{include} is used to include other makefiles.
+% 2)
+
+\begin{frame}
+  \frametitle{Directives Example}
+
+  \begin{Example}
+    \verbatiminput{examples/directives.li}
+  \end{Example}
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Other Directives}
+
+  \begin{block}{Characteristics}
+    \begin{itemize}
       \item
+        \textit{include} is used to include another makefile. This feature
+        is very useful to centralize the macros.
+      \item
+        \textit{-include} can be used to ignore unexisting makefiles.
+      \item
+        conditional parts are used to set makefile conditions:
+        \textit{ifeq}, \textit{ifdef} etc..
+    \end{itemize}
+  \end{block}
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Other Directives Examples}
+
+  \begin{Example}
+    \verbatiminput{examples/makefile-conditional-parts.li}
+  \end{Example}
 
 \end{frame}
 
@@ -318,11 +364,11 @@
   \frametitle{Implicit Rule Example - {\small make -p}}
 
   \begin{Example}
-    \verbatiminput{includes/implicit-rules-1.li}
+    \verbatiminput{examples/implicit-rules-1.li}
   \end{Example}
 
   \begin{Example}
-    \verbatiminput{includes/implicit-rules-2.li}
+    \verbatiminput{examples/implicit-rules-2.li}
   \end{Example}
 
 \end{frame}
@@ -333,7 +379,7 @@
   \frametitle{Implicit Rule Example}
 
   \begin{Example}
-    \verbatiminput{includes/makefile-implicit-rules.li}
+    \verbatiminput{examples/makefile-implicit-rules.li}
   \end{Example}
 
 \end{frame}
@@ -363,7 +409,7 @@
   \frametitle{Target Grouping Example}
 
   \begin{Example}
-    \verbatiminput{includes/makefile-target-grouping.li}
+    \verbatiminput{examples/makefile-target-grouping.li}
   \end{Example}
 
 \end{frame}
@@ -397,12 +443,12 @@
 
     \column{7cm}
       \begin{Example}
-        \verbatiminput{includes/makefile-implicit-rules-redefinition.li}
+        \verbatiminput{examples/makefile-implicit-rules-redefinition.li}
       \end{Example}
 
     \column{4cm}
       \begin{Example}
-        \verbatiminput{includes/implicit-rules-redefinition.li}
+        \verbatiminput{examples/implicit-rules-redefinition.li}
       \end{Example}
 
   \end{columns}
@@ -458,8 +504,5 @@
 
 --
 
-- .silent .PHONY etc..
-
-- ifdef ifeq etc..
-
 - functions
+
