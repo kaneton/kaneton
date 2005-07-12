@@ -11,7 +11,21 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Jul 12 21:22:01 2005   mycure
+ * last update   Wed Jul 13 00:47:51 2005   mycure
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this subpart of set is used to build linked-list data structures.
+ *
+ * note that this data structure is in fact a doubly linked-list.
+ *
+ * each set of this type can be used in two ways. the first one ask the
+ * set manager to allocate and copy each object to add while the second
+ * way tells the set manager to simply include the objects in the set.
+ *
+ * XXX sort
  */
 
 /*
@@ -26,7 +40,9 @@
  */
 
 /*
- * XXX
+ * this function returns an iterator on the first element of the list.
+ *
+ * if there is no element in the list, the function return -1.
  */
 
 int			set_head_ll(t_setid			setid,
@@ -50,7 +66,9 @@ int			set_head_ll(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function returns an iterator on the last element of the list.
+ *
+ * if there is no element in the list, the function return -1.
  */
 
 int			set_tail_ll(t_setid			setid,
@@ -74,7 +92,7 @@ int			set_tail_ll(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function returns an iterator on the previous element.
  */
 
 int			set_prev_ll(t_setid			setid,
@@ -100,7 +118,7 @@ int			set_prev_ll(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function returns an iterator on the next element of the list.
  */
 
 int			set_next_ll(t_setid			setid,
@@ -126,7 +144,22 @@ int			set_next_ll(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function adds an element in the linked-list.
+ *
+ * steps:
+ *
+ * 1) checks whether the set manager was previously initialized.
+ * 2) gets the set object corresponding to the set identifier.
+ * 3) allocates and initializes the new node for the new element.
+ * 4) performs operations from the set options: alloc or not etc..
+ * 5) inserts the new node in the list
+ *   a) inserts the new node into the list.
+ *     i) there is an identifier collision so the add operation
+ *        is not possible.
+ *     ii) inserts the new node in the linked-list.
+ *   b) inserts the new node at the end of the list.
+ *   c) the list is empty, so the new node becomes the list.
+ * 6) increments the number of elements in the list.
  */
 
 int			set_add_ll(t_setid			setid,
@@ -135,43 +168,71 @@ int			set_add_ll(t_setid			setid,
   t_set_ll_node*	n;
   o_set*		o;
 
+  /*
+   * 1)
+   */
+
   set_check(set);
+
+  /*
+   * 2)
+   */
 
   if (set_object(setid, &o) != 0)
     return (-1);
+
+  /*
+   * 3)
+   */
 
   if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
     return (-1);
 
   memset(n, 0x0, sizeof(t_set_ll_node));
 
-  if (o->u.ll.opts & SET_OPT_ALLOC)
+  /*
+   * 4)
+   */
+
+  switch (o->u.ll.opts)
     {
-      if ((n->data = malloc(o->u.ll.datasz)) == NULL)
-	{
-	  free(n);
+    case SET_OPT_ALLOC:
+      {
+	if ((n->data = malloc(o->u.ll.datasz)) == NULL)
+	  {
+	    free(n);
 
-	  return (-1);
-	}
+	    return (-1);
+	  }
 
-      memcpy(n->data, data, o->u.ll.datasz);
+	memcpy(n->data, data, o->u.ll.datasz);
+      }
+    default:
+      n->data = data;
     }
-  else
-    n->data = data;
+
+  /*
+   * 5)
+   */
 
   if (o->u.ll.head != NULL)
     {
       t_set_ll_node	*tmp;
 
+      /*
+       * a)
+       */
+
       for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->nxt)
 	{
 	  if (*((t_id*)n->data) == *((t_id*)tmp->data))
 	    {
-	      /* XXX id collision */
+	      /*
+	       * i)
+	       */
 
-	      printf("id collision detected: %qu vs %qu\n",
-		     *((t_id*)n->data),
-		     *((t_id*)tmp->data));
+	      kaneton_error("the set manager detected a "
+			    "identifier collision\n");
 
 	      if (o->u.ll.opts & SET_OPT_ALLOC)
 		free(n->data);
@@ -183,6 +244,10 @@ int			set_add_ll(t_setid			setid,
 
 	  if (*((t_id*)n->data) < *((t_id*)tmp->data))
 	    {
+	      /*
+	       * ii)
+	       */
+
 	      n->prv = tmp->prv;
 	      n->nxt = tmp;
 
@@ -200,6 +265,10 @@ int			set_add_ll(t_setid			setid,
 	    }
 	}
 
+      /*
+       * b
+       */
+
       if (tmp == NULL)
 	{
 	  n->prv = o->u.ll.tail;
@@ -215,6 +284,10 @@ int			set_add_ll(t_setid			setid,
     }
   else
     {
+      /*
+       * c)
+       */
+
       n->prv = NULL;
       n->nxt = NULL;
 
@@ -222,13 +295,21 @@ int			set_add_ll(t_setid			setid,
       o->u.ll.tail = n;
     }
 
+  /*
+   * 6)
+   */
+
   o->size++;
 
   return (0);
 }
 
 /*
- * XXX
+ * this function removes an element of the list.
+ *
+ * steps:
+ *
+ * 1) XXX
  */
 
 int			set_remove_ll(t_setid			setid,
@@ -240,7 +321,15 @@ int			set_remove_ll(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function reserves a set.
+ *
+ * steps:
+ *
+ * 1) checks whether the set managers was previously initialized.
+ * 2) reserves a set unused identifier for this new set.
+ * 3) allocates and initializes the set structure.
+ * 4) initializes the set structure's fields.
+ * 5) adds the set object to the set objects container.
  */
 
 int			set_rsv_ll(t_opts			opts,
@@ -249,10 +338,22 @@ int			set_rsv_ll(t_opts			opts,
 {
   o_set*		o;
 
+  /*
+   * 1)
+   */
+
   set_check(set);
+
+  /*
+   * 2)
+   */
 
   if (set_id_rsv(setid) != 0)
     return (-1);
+
+  /*
+   * 3)
+   */
 
   if ((o = malloc(sizeof(o_set))) == NULL)
     {
@@ -263,9 +364,22 @@ int			set_rsv_ll(t_opts			opts,
 
   memset(o, 0x0, sizeof(o_set));
 
+  /*
+   * 4)
+   */
+
   o->id = *setid;
   o->size = 0;
   o->type = SET_TYPE_LL;
+
+  o->u.ll.opts = opts;
+  o->u.ll.datasz = datasz;
+  o->u.ll.head = NULL;
+  o->u.ll.tail = NULL;
+
+  /*
+   * 5)
+   */
 
   if (set_object_add(o) != 0)
     {
@@ -274,11 +388,6 @@ int			set_rsv_ll(t_opts			opts,
 
       return (-1);
     }
-
-  o->u.ll.opts = opts;
-  o->u.ll.datasz = datasz;
-  o->u.ll.head = NULL;
-  o->u.ll.tail = NULL;
 
   return (0);
 }
@@ -291,8 +400,6 @@ int			set_get_ll(t_setid			setid,
 				   t_iterator			iterator,
 				   void**			data)
 {
-  /* XXX faire des checks supplementaires */
-
   t_set_ll_node*	n = iterator;
 
   set_check(set);

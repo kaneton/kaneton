@@ -11,23 +11,11 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Mon Jul 11 22:32:14 2005   mycure
+ * last update   Wed Jul 13 00:23:11 2005   mycure
  */
 
 #ifndef KANETON_SET_LL_H
 #define KANETON_SET_LL_H	1
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * this subpart of set is used to build linked-list data structures.
- *
- * note that this data structure is in fact a doubly linked-list.
- *
- * each set of this type can be used in two ways. the first one ask the
- * set manager to allocate and copy each object to add while the second
- * way tells the set manager to simply include the objects in the set.
- */
 
 /*
  * ---------- dependencies ----------------------------------------------------

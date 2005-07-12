@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jul  3 19:44:19 2005   mycure
+ * last update   Wed Jul 13 00:49:17 2005   mycure
  */
 
 /*
@@ -38,16 +38,10 @@
 extern t_init*		init;
 
 /*
- * the stack of free segment structures, in other words the freelist.
+ * XXX
  */
 
-/* XXX t_segments		stack; */
-
-/*
- * the list of segments.
- */
-
-/* XXX t_segments		segments; */
+//m_segment*		segment;
 
 /*
  * ---------- functions -------------------------------------------------------
