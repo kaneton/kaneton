@@ -44,6 +44,10 @@
 
 void*			malloc(size_t				size);
 
+void			free(void				*ptr);
+
+void			alloc_dump();
+
 int			alloc_init(t_vaddr			addr,
 				   t_size			size);
 

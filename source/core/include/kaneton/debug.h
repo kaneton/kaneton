@@ -5,13 +5,13 @@
  * 
  * init.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Sun Jul  3 15:14:27 2005   mycure
+ * last update   Tue Jul 12 20:35:52 2005   mycure
  */
 
 #ifndef KANETON_DEBUG_H
@@ -24,6 +24,7 @@
 #define KANETON_DEBUG_PARAMS	(1 << 0)
 #define KANETON_DEBUG_AS	(1 << 1)
 #define KANETON_DEBUG_SEGMENT	(1 << 2)
+#define KANETON_DEBUG_SET	(1 << 3)
 
 #define KANETON_DEBUG							\
   (0)

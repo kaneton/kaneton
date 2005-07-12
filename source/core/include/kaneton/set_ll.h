@@ -5,13 +5,13 @@
  * 
  * set_ll.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Mon Jul  4 21:36:00 2005   mycure
+ * last update   Mon Jul 11 22:32:14 2005   mycure
  */
 
 #ifndef KANETON_SET_LL_H
@@ -63,7 +63,8 @@ typedef struct
 
   t_size			datasz;
 
-  t_set_ll_node*		ll;
+  t_set_ll_node*		head;
+  t_set_ll_node*		tail;
 }				t_set_ll;
 
 /*

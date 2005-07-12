@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sat Jul  9 15:46:14 2005   mycure
+ * last update   Tue Jul 12 20:40:20 2005   mycure
  */
 
 /*
@@ -117,7 +117,7 @@ void			kaneton(t_init*				bootloader)
    */
 
   if (cons_init() != 0)
-    cons_msg('!', "error: cannot initialize the console manager\n");
+    kaneton_error("cannot initialize the console manager\n");
 
   /*
    * 3)
@@ -135,31 +135,36 @@ void			kaneton(t_init*				bootloader)
   kaneton_dump();
 #endif
 
-  /* XXX */
-  alloc_init(init->alloc, init->allocsz);
-
-  /* XXX */
-  set_init();
-
-  /* XXX */
-  {
-    t_setid setid;
-
-    set_rsv(ll, SET_OPT_ALLOC, sizeof(int), &setid);
-  }
-
   /*
    * 5)
    */
 
-  if (as_init() != 0)
-    cons_msg('!', "error: cannot initialize the address space manager\n");
+  alloc_init(init->alloc, init->allocsz);
+
   /*
    * 6)
    */
 
+  if (set_init() != 0)
+    kaneton_error("cannot initialize the set manager\n");
+
+  /*
+   * 7)
+   */
+
+  if (as_init() != 0)
+    kaneton_error("cannot initialize the address space manager\n");
+
+  /*
+   * 8)
+   */
+
   if (segment_init() != 0)
-    cons_msg('!', "error: cannot initialize the segment manager\n");
+    kaneton_error("cannot initialize the segment manager\n");
+
+  /*
+   * 9)
+   */
 
   while (1)
     ;

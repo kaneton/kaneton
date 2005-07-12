@@ -5,7 +5,7 @@
  *
  * malloc.c
  *
- * path          /home/mycure/kaneton
+ * path          /home/mycure/data/research/projects/kaneton/source
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
@@ -20,7 +20,8 @@
  * to fetch the adress.
  * This macro shall be used in both implementations.
  */
-#define __align(Addr)  (Addr % sizeof (t_vaddr) ? ((Addr) + sizeof (t_vaddr) - \
+
+#define __align(Addr)  (Addr % sizeof (t_vaddr) ? ((Addr) + sizeof (t_vaddr) -\
     (((t_vaddr) Addr + 1) % sizeof (t_vaddr) - 1)) : Addr)
 
 /*

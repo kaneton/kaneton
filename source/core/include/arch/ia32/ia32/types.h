@@ -5,13 +5,13 @@
  * 
  * types.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jun 20 16:28:19 2005   mycure
+ * last update   Mon Jul 11 21:35:24 2005   mycure
  */
 
 #ifndef IA32_IA32_TYPES_H
@@ -50,5 +50,7 @@ typedef t_uint64		t_id;
 typedef t_id			t_setid;
 typedef t_id			t_segid;
 typedef t_id			t_asid;
+
+typedef t_uint64		t_setsz;
 
 #endif

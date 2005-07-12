@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Wed Jul  6 13:05:34 2005   mycure
+## last update   Tue Jul 12 20:03:57 2005   mycure
 ##
 
 
@@ -454,26 +454,12 @@ to follow the rules.
 	 * last update   Sun Jun 19 01:02:32 2005   mycure
 	 */
 
+  some emacs configuration file are present in the conf/ directory.
+
 ---[ types
 
   try to use the kaneton types: t_uint8, t_sint16, t_uint64 etc..
   rather than unsigned char or unsigned long long int.
-
----[ comments
-
-  the comments must have this specific form:
-
-	/*
-	 * a comment
-	 */
-
-  or on multi-lines:
-
-	/*
-	 * a comment on line one
-	 * a comment on line two
-	 * a comment on line three
-	 */
 
 ---[ includes
 
@@ -563,6 +549,20 @@ to follow the rules.
 
 ---[ comments
 
+  the comments must have this specific form:
+
+	/*
+	 * a comment
+	 */
+
+  or on multi-lines:
+
+	/*
+	 * a comment on line one
+	 * a comment on line two
+	 * a comment on line three
+	 */
+
   to keep the code clear while commenting each part of functions, we
   advise you to use this form:
 
@@ -620,8 +620,10 @@ to follow the rules.
   all you have to write these lines:
 
 	/*
-	 * prototypes:             path/to/file1
-	 *                         path/to/file2
+	 * ---------- prototypes ----------------------------------------------
+         * 
+	 *      path/to/file1
+	 *      path/to/file2
 	 */
 
 	/*
@@ -673,3 +675,12 @@ the user configuration used to evaluate your project is 'eval'.
 	/*
 	 * ---------- includes ------------------------------------------------
 	 */
+
+  each important file for example the main file of a manager have to
+  contain a section "information" describing the manager.
+
+  so, for example, the malloc() function suite is described in the source file
+  containing its source code.
+
+  the set manager is decribed in the file set.c containing the main sources
+  of this manager.

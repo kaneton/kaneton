@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Mon Jul  4 21:48:21 2005   mycure
+ * last update   Tue Jul 12 21:20:24 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -32,6 +32,12 @@
 /*
  * ---------- defines ---------------------------------------------------------
  */
+
+/*
+ * defines
+ */
+
+#define SET_ID_CONTAINER	0LL
 
 /*
  * foreach
@@ -61,7 +67,9 @@
 
 typedef struct
 {
-  t_setid			setid;
+  t_setid			id;
+
+  t_setsz			size;
 
   t_type			type;
 
@@ -72,27 +80,44 @@ typedef struct
 }				o_set;
 
 /*
+ * an iterator
+ */
+
+typedef void*			t_iterator;
+
+/*
  * the set manager
  *
- * this type contains all the information needed by the set manager.
+ * this type contains all the information needed by the set manager: the
+ * next unused identifier and the set objects container.
  */
 
 typedef struct
 {
-  t_segid			id;
+  t_setid			id;
 
-  o_set*			sets;
+  o_set*			container;
 }				m_set;
 
 /*
  * ---------- extern ----------------------------------------------------------
  */
 
-extern m_set		set;
+extern m_set*		set;
 
 /*
  * ---------- macros ----------------------------------------------------------
  */
+
+/*
+ * check
+ */
+
+#define set_check(_set_)						\
+  {									\
+    if ((_set_) == NULL)						\
+      return (-1);							\
+  }
 
 /*
  * traps
@@ -104,7 +129,7 @@ extern m_set		set;
       int		_r_ = -1;					\
       o_set*		_set_;						\
 									\
-      if (set_get((_setid_), &_set_) == 0)				\
+      if (set_object((_setid_), &_set_) == 0)				\
         {								\
           switch (_set_->type)						\
             {								\
@@ -120,6 +145,21 @@ extern m_set		set;
 #define set_rsv(_type_, _args_...)					\
   set_rsv_##_type_(_args_)
 
+#define set_head(_setid_, _args_...)					\
+  set_trap(set_head, _setid_, _args_)
+
+#define set_tail(_setid_, _args_...)					\
+  set_trap(set_tail, _setid_, _args_)
+
+#define set_prev(_setid_, _args_...)					\
+  set_trap(set_prev, _setid_, _args_)
+
+#define set_next(_setid_, _args_...)					\
+  set_trap(set_next, _setid_, _args_)
+
+#define set_get(_setid_, _args_...)					\
+  set_trap(set_get, _setid_, _args_)
+
 #define set_add(_setid_, _args_...)					\
   set_trap(set_add, _setid_, _args_)
 
@@ -130,17 +170,15 @@ extern m_set		set;
  * foreach
  */
 
-#define SET_FOREACH(_type_, _mode_, _setid_, _iterator_)		\
-  for ((_iterator_) = NULL;						\
-        (((_iterator_) == NULL) ?					\
-          ((_mode_) == FOREACH_FORWARD ?				\
-            set_head((_type_), (_setid_), (_iterator_)) :		\
-            set_tail((_type_), (_setid_), (_iterator_))) :		\
-          ((_mode_) == FOREACH_FORWARD ?				\
-            set_next((_type_), (_setid_),				\
-                     *(_iterator_), (_iterator_)) :			\
-            set_prev((_type_), (_setid_), *(_iterator_),		\
-                     (_iterator_)))) == 0;				\
+#define set_foreach(_opt_, _setid_, _iterator_)				\
+  for (*(_iterator_) = NULL;						\
+        ((*(_iterator_) == NULL) ?					\
+          ((_opt_) == SET_OPT_FORWARD ?					\
+            set_head((_setid_), (_iterator_)) == 0 :			\
+            set_tail((_setid_), (_iterator_)) == 0) :			\
+          ((_opt_) == SET_OPT_FORWARD ?					\
+            set_next((_setid_), *(_iterator_), (_iterator_)) == 0 :	\
+            set_prev((_setid_), *(_iterator_), (_iterator_)) == 0));	\
        )
 
 /*
@@ -153,12 +191,22 @@ extern m_set		set;
  * ../../kaneton/set/set.c
  */
 
-int			set_object(o_set*			o);
+int			set_dump(t_setid			setid);
 
-int			set_id(t_setid*				setid);
+int			set_object_add(o_set*			o);
 
-int			set_get(t_setid				setid,
-				o_set**				o);
+int			set_object_remove(t_setid		setid);
+
+int			set_object(t_setid			setid,
+				   o_set**			o);
+
+int			set_id_rsv(t_setid*			setid);
+
+int			set_id_rel(t_setid			setid);
+
+int			set_find(t_setid			setid,
+				 t_id				id,
+				 t_iterator*			iterator);
 
 int			set_init(void);
 
