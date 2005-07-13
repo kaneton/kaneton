@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Tue Jul 12 21:20:24 2005   mycure
+ * last update   Wed Jul 13 15:35:15 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -58,7 +58,7 @@
  */
 
 /*
- * a set object
+ * set object
  *
  * the setid field represent the set identifier used to retrieve the set
  * data structure. the union is composed of subparts dependending of the
@@ -80,13 +80,13 @@ typedef struct
 }				o_set;
 
 /*
- * an iterator
+ * iterator
  */
 
 typedef void*			t_iterator;
 
 /*
- * the set manager
+ * set manager
  *
  * this type contains all the information needed by the set manager: the
  * next unused identifier and the set objects container.

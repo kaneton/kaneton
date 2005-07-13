@@ -5,13 +5,13 @@
  * 
  * as.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Jun 19 22:04:07 2005   mycure
+ * last update   Wed Jul 13 15:36:27 2005   mycure
  */
 
 #ifndef KANETON_AS_H
@@ -27,10 +27,27 @@
  * ---------- types -----------------------------------------------------------
  */
 
+/*
+ * as object
+ */
+
 typedef struct
 {
   t_asid			asid;
-}				t_as;
+
+  t_setid			segments;
+  t_setid			regions;
+}				o_as;
+
+/*
+ * as manager
+ */
+
+typedef struct
+{
+  t_asid			id;
+
+}				m_as;
 
 /*
  * ---------- prototypes ------------------------------------------------------

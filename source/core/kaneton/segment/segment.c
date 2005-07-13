@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 13 00:49:17 2005   mycure
+ * last update   Wed Jul 13 01:32:56 2005   mycure
  */
 
 /*
@@ -41,7 +41,7 @@ extern t_init*		init;
  * XXX
  */
 
-//m_segment*		segment;
+m_segment*		segment;
 
 /*
  * ---------- functions -------------------------------------------------------

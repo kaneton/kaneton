@@ -5,13 +5,13 @@
  * 
  * segment.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Jun 19 22:05:15 2005   mycure
+ * last update   Wed Jul 13 15:35:06 2005   mycure
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -37,16 +37,7 @@ typedef struct
 
   t_paddr			address;
   t_psize			size;
-
-  /* t_ownid			ownid; */
 }				o_segment;
-
-typedef struct
-{
-  t_uint32			nsegments;
-
-  o_segment*			segments;
-}				t_segments;
 
 /*
  * segment manager
@@ -54,7 +45,10 @@ typedef struct
 
 typedef struct
 {
+  t_paddr			start;
+  t_psize			size;
 
+  t_setid			segments;
 }				m_segment;
 
 /*
