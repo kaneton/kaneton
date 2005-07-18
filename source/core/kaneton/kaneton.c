@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Jul 12 20:40:20 2005   mycure
+ * last update   Mon Jul 18 11:10:31 2005   mycure
  */
 
 /*
@@ -97,9 +97,10 @@ void			kaneton_dump(void)
  * 1) sets the init variable from the bootloader argument.
  * 2) initializes the console manager.
  * 3) displays the current kaneton version.
- * 4) if needed, displays the kernel parameters: 
- * 6) initializes the address space manager.
- * 5) initializes the segment manager.
+ * 4) if needed, displays the kernel parameters.
+ * 5) initializes the fine grained allocator.
+ * 6) initializes the set manager.
+ * 7) initializes the address space manager.
  *
  * XXX
  */
@@ -156,14 +157,14 @@ void			kaneton(t_init*				bootloader)
     kaneton_error("cannot initialize the address space manager\n");
 
   /*
-   * 8)
+   * XXX)
    */
 
   if (segment_init() != 0)
     kaneton_error("cannot initialize the segment manager\n");
 
   /*
-   * 9)
+   * XXX)
    */
 
   while (1)

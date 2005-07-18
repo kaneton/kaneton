@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 13 00:47:27 2005   mycure
+ * last update   Mon Jul 18 13:15:40 2005   mycure
  */
 
 /*
@@ -393,7 +393,8 @@ int			set_init(void)
    * 2)
    */
 
-  set_rsv(ll, SET_OPT_NONE, sizeof(o_set), &needless);
+  if (set_rsv(ll, SET_OPT_NONE, sizeof(o_set), &needless) != 0)
+    return (-1);
 
   /*
    * 3)

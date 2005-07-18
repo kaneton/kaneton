@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 13 01:32:56 2005   mycure
+ * last update   Mon Jul 18 11:22:19 2005   mycure
  */
 
 /*
@@ -30,12 +30,6 @@
 /*
  * ---------- globals ---------------------------------------------------------
  */
-
-/*
- * the variable init.
- */
-
-extern t_init*		init;
 
 /*
  * XXX

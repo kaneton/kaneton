@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Jul  4 11:49:08 2005   mycure
+## last update   Mon Jul 18 14:47:37 2005   mycure
 ##
 
 #
@@ -34,11 +34,13 @@ include			../../.kaneton.mk
 
 SUBDIRS			:=		arch				\
 					as				\
+					id				\
 					segment				\
 					set				
 
 KANETON_LIBS		:=		$(_MACHDEP_A_)			\
 					$(_AS_A_)			\
+					$(_ID_A_)			\
 					$(_SEGMENT_A_)			\
 					$(_SET_A_)			
 
