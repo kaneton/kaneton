@@ -1,0 +1,30 @@
+--
+ faire un gestionnaire d'id
+
+--
+ assert() a coder
+
+--
+ perms sur les segments dans le bootloader
+
+--
+ repartir les prototypes dans arch/ia32/machdep.h dans les autres fichiers.
+
+--
+ rajouter la compression dans grub.sh et le stripping aussi
+ avec option
+
+--
+ faire la moulinette de decoupage en foncion de balises
+
+--
+ lors des affichages, decouper la chaine pour que ca ne depasse pas
+ les 80 colonnes:
+
+	[LINK]		libc.a
+	[LINK]		...hdep/set/set.a
+
+-- pwipwi
+ alloc.c: virer les macros d alignement etc.. et en faire des plus
+          generiques.
+          mettre les macros dans les .h
