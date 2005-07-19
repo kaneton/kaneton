@@ -43,6 +43,25 @@ typedef struct
  */
 
 /*
+ * ../../kaneton/id/id.c
+ */
+
+int			id_rsv(o_id*				o,
+			       t_id*				id);
+
+int			id_rel(o_id*				o,
+			       t_id				id);
+
+int			id_build(o_id*				o);
+
+int			id_destroy(o_id*			o);
+
+int			id_init(void);
+
+int			id_clean(void);
+
+
+/*
  * eop
  */
 

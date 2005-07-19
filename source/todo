@@ -1,5 +1,9 @@
 --
- faire un gestionnaire d'id
+ le dump devrait etre fait par la partie specifique: ll, bpt etc..
+
+--
+ mieux faire les erreurs, printf error dans les trucs et kaneton error
+ dans kaneton.c
 
 --
  assert() a coder
@@ -20,6 +24,9 @@
 --
  lors des affichages, decouper la chaine pour que ca ne depasse pas
  les 80 colonnes:
+
+ A LA LIMITE faire une variable qui donne le nombre de colonnes dans
+ le USER.conf
 
 	[LINK]		libc.a
 	[LINK]		...hdep/set/set.a

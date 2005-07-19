@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Tue Jul 19 14:18:26 2005   mycure
+ * last update   Tue Jul 19 16:04:34 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -45,7 +45,8 @@
  */
 
 #define SET_OPT_NONE		0x00
-#define SET_OPT_ALLOC		0x01
+#define SET_OPT_CONTAINER	0x01
+#define SET_OPT_ALLOC		0x02
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -121,7 +122,7 @@ extern m_set*		set;
       int		_r_ = -1;					\
       o_set*		_set_;						\
 									\
-      if (set_object((_setid_), &_set_) == 0)				\
+      if (set_descriptor((_setid_), &_set_) == 0)			\
         {								\
           switch (_set_->type)						\
             {								\
@@ -185,16 +186,12 @@ extern m_set*		set;
 
 int			set_dump(t_setid			setid);
 
-int			set_object_add(o_set*			o);
+int			set_new(o_set*				o);
 
-int			set_object_remove(t_setid		setid);
+int			set_delete(t_setid			setid);
 
-int			set_object(t_setid			setid,
-				   o_set**			o);
-
-int			set_id_rsv(t_setid*			setid);
-
-int			set_id_rel(t_setid			setid);
+int			set_descriptor(t_setid			setid,
+				       o_set**			o);
 
 int			set_find(t_setid			setid,
 				 t_id				id,

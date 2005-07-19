@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Jul 19 14:22:19 2005   mycure
+ * last update   Tue Jul 19 16:21:49 2005   mycure
  */
 
 /*
@@ -74,20 +74,31 @@
  *    contains the set data structure containing the objects, the number
  *    of objects managed, the identifier of the set etc..
  *
- *  object
+ *  node
  *
- *    an object is a set node. indeed, each iterator references an object
- *    to be able to locate the previous and next nodes/objects in this
+ *    a node is a data structure element. indeed, each iterator references a
+ *    node to be able to locate the previous and next nodes in this
  *    set.
  *
- *  data
+ *  object
  *
- *    data, in the set manager terms, is the data contained in
+ *    an object, in the set manager terms, is the data contained in
  *    a set node, the data the "user" wants to store using the set manager.
  *
- * in other words, the containers is a set which contains the set descriptors.
- * each set descriptor contains a data structure composed of objects
- * which contain the data provided by the set manager user.
+ * in other words, the container is a set which contains the set descriptors.
+ * each set descriptor contains a data structure composed of nodes
+ * which contain the objects provided by the set manager user.
+ *
+ * note that in the kaneton terms, the set manager is composed of objects.
+ * indeed, the container, each descriptor are in fact set objects (o_set)
+ * so kaneton objects.
+ *
+ * moreover, the objects the user provides to the set manager to be stored
+ * also are kaneton objects.
+ *
+ * remember that, in the kaneton terms, an object structure always begins
+ * with an identifier and is manipulated by a capability on the distributed
+ * system.
  */
 
 /*
@@ -112,7 +123,7 @@ m_set*			set = NULL;
  */
 
 /*
- * this function dumps set data contained in the container of
+ * this function dumps set objects contained in the container of
  * the set manager.
  *
  * in other words, this function displays the set descriptors.
@@ -123,7 +134,7 @@ m_set*			set = NULL;
  *
  * 1) checks if the set manager was previously initialized.
  * 2) gets the set descriptor from its identifier.
- * 3) prints each data identifier.
+ * 3) prints each objects' identifier.
  */
 
 #if (KANETON_DEBUG & KANETON_DEBUG_SET)
@@ -158,8 +169,8 @@ int			set_dump(t_setid			setid)
     {
       if (set_get(setid, i, &data) != 0)
 	{
-	  kaneton_error("the set manager cannot find the set object "
-			"corresponding to a set identifier\n");
+	  cons_msg('!', "the set manager cannot find the set object "
+		   "corresponding to a set identifier\n");
 
 	  return (-1);
 	}
@@ -177,9 +188,9 @@ int			set_dump(t_setid			setid)
  * steps:
  *
  * 1) checks whether the set manager was previously initialized.
- * 2) if the object to add is the set which will contain the set objects
- *    just put it as the set objects container.
- * 3) otherwise, add this object in the set object container.
+ * 2) if the descriptor to add is the set which will contain the set objects,
+ *    the container, just put it as the set container.
+ * 3) otherwise, add this object in the set container.
  */
 
 int			set_new(o_set*				o)
@@ -196,7 +207,7 @@ int			set_new(o_set*				o)
 
   if (o->id == set->contid)
     {
-      set->cont = o;
+      memcpy(set->cont, o, sizeof(o_set));
 
       return (0);
     }
@@ -207,8 +218,8 @@ int			set_new(o_set*				o)
 
   if (set_add(set->cont->id, o) != 0)
     {
-      kaneton_error("the set manager is unable to add this object "
-		    "to the set objects container\n");
+      cons_msg('!', "the set manager is unable to add this set descriptor "
+	       "to the set container\n");
 
       return (-1);
     }
@@ -217,13 +228,13 @@ int			set_new(o_set*				o)
 }
 
 /*
- * this function removes a set object from the set objects container.
+ * this function removes a set descriptor from the set container.
  *
  * steps:
  *
  * 1) checks whether the set manager was previously initialized.
  * 2) removing the container object is not allowed.
- * 3) removes the set object from the set objects container.
+ * 3) removes the set descriptor from the set container.
  */
 
 int			set_delete(t_setid			setid)
@@ -240,8 +251,7 @@ int			set_delete(t_setid			setid)
 
   if (setid == set->contid)
     {
-      kaneton_error("the set manager cannot remove the set object container"
-		    "object\n");
+      cons_msg('!', "the set manager cannot remove the set container\n");
 
       return (-1);
     }
@@ -252,8 +262,8 @@ int			set_delete(t_setid			setid)
 
   if (set_remove(set->cont->id, setid) != 0)
     {
-      kaneton_error("the set manager is unable to remove this object "
-		    "from the set objects container\n");
+      cons_msg('!', "the set manager is unable to remove this descriptor "
+	       "from the set container\n");
 
       return (-1);
     }
@@ -262,19 +272,18 @@ int			set_delete(t_setid			setid)
 }
 
 /*
- * this function returns the set object corresponding to a set identifier.
+ * this function returns the set descriptor corresponding to a set identifier.
  *
  * steps:
  *
  * 1) checks whether the set manager was previously initialized.
- * 2) if the looked for object is the set objects container, just returns
- *    it.
- * 3) otherwise, try to find the set object in the set objects container
+ * 2) if the looked for descriptor is the set container, just return it.
+ * 3) otherwise, try to find the set descriptor in the set container
  *    and return it if possible.
  */
 
-int			set_object(t_setid			setid,
-				   o_set**			o)
+int			set_descriptor(t_setid			setid,
+				       o_set**			o)
 {
   t_iterator		i;
 
@@ -299,7 +308,7 @@ int			set_object(t_setid			setid,
    * 3)
    */
 
-  if (set_find(set->container->id, setid, &i) != 0)
+  if (set_find(set->cont->id, setid, &i) != 0)
     return (-1);
 
   *o = i;
@@ -336,10 +345,10 @@ int			set_find(t_setid			setid,
    * 2)
    */
 
-  if (set_object(setid, &o) != 0)
+  if (set_descriptor(setid, &o) != 0)
     {
-      kaneton_error("the set manager is not able to find the set object "
-		    "corresponding to the set identifier %qu\n", setid);
+      cons_msg('!', "the set manager is not able to find the set object "
+	       "corresponding to the set identifier %qu\n", setid);
 
       return (-1);
     }
@@ -352,8 +361,8 @@ int			set_find(t_setid			setid,
     {
       if (set_get(setid, i, &data) != 0)
 	{
-	  kaneton_error("the set manager cannot find the set object "
-			"corresponding to a set identifier\n");
+	  cons_msg('!', "the set manager cannot find the set object "
+		   "corresponding to a set identifier\n");
 
 	  return (-1);
 	}
@@ -375,9 +384,12 @@ int			set_find(t_setid			setid,
  * steps:
  *
  * 1) allocates and initializes the set manager structure.
- * 2) reserves the set objects container which will contain the
- *    set objects reserved later.
- * 3) if necessary, dumps the set objects container.
+ * 2) builds the identifier object used to generate set identifiers.
+ * 3) reserves an identifier for the container.
+ * 4) allocates the set container structure.
+ * 5) reserves the set container which will contain the set descriptors
+ *    reserved later.
+ * 6) if necessary, dumps the set container.
  */
 
 int			set_init(void)
@@ -393,45 +405,42 @@ int			set_init(void)
 
   memset(set, 0x0, sizeof(m_set));
 
-  /* XXX */
-  id_build(&set->id);
-  {
-    t_id	id;
-
-    id_rsv(&set->id, &id);
-    printf("_ %qu\n", id);
-
-    id_rsv(&set->id, &id);
-    printf("_ %qu\n", id);
-
-    id_rsv(&set->id, &id);
-    printf("_ %qu\n", id);
-  }
-
-  while (1)
-    ;
-  /* XXX */
-
   /*
    * 2)
    */
 
-  if (set_rsv(ll, SET_OPT_NONE, sizeof(o_set), &needless) != 0)
+  if (id_build(&set->id) != 0)
     return (-1);
 
   /*
    * 3)
    */
 
+  if (id_rsv(&set->id, &set->contid) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if ((set->cont = malloc(sizeof(o_set))) == NULL)
+    return (-1);
+
+  /*
+   * 5)
+   */
+
+  if (set_rsv(ll, SET_OPT_ALLOC | SET_OPT_CONTAINER,
+	      sizeof(o_set), &needless) != 0)
+    return (-1);
+
+  /*
+   * 6)
+   */
+
 #if (KANETON_DEBUG & KANETON_DEBUG_SET)
-  set_dump(set->container->id);
+  set_dump(set->cont->id);
 #endif
 
   return (0);
 }
-
-/*
- * XXX
- *
- * ajouter SORT
- */

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 13 00:47:51 2005   mycure
+ * last update   Tue Jul 19 16:22:06 2005   mycure
  */
 
 /*
@@ -25,7 +25,7 @@
  * set manager to allocate and copy each object to add while the second
  * way tells the set manager to simply include the objects in the set.
  *
- * XXX sort
+ * XXX ajouter sort
  */
 
 /*
@@ -40,9 +40,9 @@
  */
 
 /*
- * this function returns an iterator on the first element of the list.
+ * this function returns an iterator on the first node of the list.
  *
- * if there is no element in the list, the function return -1.
+ * if there is no node in the list, the function returns -1.
  */
 
 int			set_head_ll(t_setid			setid,
@@ -54,7 +54,7 @@ int			set_head_ll(t_setid			setid,
 
   memset(iterator, 0x0, sizeof(t_iterator));
 
-  if (set_object(setid, &o) != 0)
+  if (set_descriptor(setid, &o) != 0)
     return (-1);
 
   if (o->size == 0)
@@ -66,9 +66,9 @@ int			set_head_ll(t_setid			setid,
 }
 
 /*
- * this function returns an iterator on the last element of the list.
+ * this function returns an iterator on the last node of the list.
  *
- * if there is no element in the list, the function return -1.
+ * if there is no node in the list, the function returns -1.
  */
 
 int			set_tail_ll(t_setid			setid,
@@ -80,7 +80,7 @@ int			set_tail_ll(t_setid			setid,
 
   memset(iterator, 0x0, sizeof(t_iterator));
 
-  if (set_object(setid, &o) != 0)
+  if (set_descriptor(setid, &o) != 0)
     return (-1);
 
   if (o->size == 0)
@@ -92,7 +92,7 @@ int			set_tail_ll(t_setid			setid,
 }
 
 /*
- * this function returns an iterator on the previous element.
+ * this function returns an iterator on the previous node.
  */
 
 int			set_prev_ll(t_setid			setid,
@@ -106,7 +106,7 @@ int			set_prev_ll(t_setid			setid,
 
   memset(previous, 0x0, sizeof(t_iterator));
 
-  if (set_object(setid, &o) != 0)
+  if (set_descriptor(setid, &o) != 0)
     return (-1);
 
   if (c->prv == NULL)
@@ -118,7 +118,7 @@ int			set_prev_ll(t_setid			setid,
 }
 
 /*
- * this function returns an iterator on the next element of the list.
+ * this function returns an iterator on the next node of the list.
  */
 
 int			set_next_ll(t_setid			setid,
@@ -132,7 +132,7 @@ int			set_next_ll(t_setid			setid,
 
   memset(next, 0x0, sizeof(t_iterator));
 
-  if (set_object(setid, &o) != 0)
+  if (set_descriptor(setid, &o) != 0)
     return (-1);
 
   if (c->nxt == NULL)
@@ -144,22 +144,22 @@ int			set_next_ll(t_setid			setid,
 }
 
 /*
- * this function adds an element in the linked-list.
+ * this function adds an object in the linked-list.
  *
  * steps:
  *
  * 1) checks whether the set manager was previously initialized.
- * 2) gets the set object corresponding to the set identifier.
- * 3) allocates and initializes the new node for the new element.
+ * 2) gets the set descriptor corresponding to the set identifier.
+ * 3) allocates and initializes the new node for the new object.
  * 4) performs operations from the set options: alloc or not etc..
  * 5) inserts the new node in the list
- *   a) inserts the new node into the list.
+ *   a) inserts the new node in the list.
  *     i) there is an identifier collision so the add operation
  *        is not possible.
  *     ii) inserts the new node in the linked-list.
  *   b) inserts the new node at the end of the list.
  *   c) the list is empty, so the new node becomes the list.
- * 6) increments the number of elements in the list.
+ * 6) increments the number of nodes in the list.
  */
 
 int			set_add_ll(t_setid			setid,
@@ -178,7 +178,7 @@ int			set_add_ll(t_setid			setid,
    * 2)
    */
 
-  if (set_object(setid, &o) != 0)
+  if (set_descriptor(setid, &o) != 0)
     return (-1);
 
   /*
@@ -194,20 +194,19 @@ int			set_add_ll(t_setid			setid,
    * 4)
    */
 
-  switch (o->u.ll.opts)
+  if (o->u.ll.opts & SET_OPT_ALLOC)
     {
-    case SET_OPT_ALLOC:
-      {
-	if ((n->data = malloc(o->u.ll.datasz)) == NULL)
-	  {
-	    free(n);
+      if ((n->data = malloc(o->u.ll.datasz)) == NULL)
+	{
+	  free(n);
 
-	    return (-1);
-	  }
+	  return (-1);
+	}
 
-	memcpy(n->data, data, o->u.ll.datasz);
-      }
-    default:
+      memcpy(n->data, data, o->u.ll.datasz);
+    }
+  else
+    {
       n->data = data;
     }
 
@@ -231,8 +230,11 @@ int			set_add_ll(t_setid			setid,
 	       * i)
 	       */
 
-	      kaneton_error("the set manager detected a "
-			    "identifier collision\n");
+	      cons_msg('!', "the set manager detected a identifier "
+		       "collision in the set %qu on the object"
+		       "identifier %qu\n",
+		       o->id,
+		       *((t_id*)n->data));
 
 	      if (o->u.ll.opts & SET_OPT_ALLOC)
 		free(n->data);
@@ -305,7 +307,7 @@ int			set_add_ll(t_setid			setid,
 }
 
 /*
- * this function removes an element of the list.
+ * this function removes a node from the list.
  *
  * steps:
  *
@@ -325,18 +327,18 @@ int			set_remove_ll(t_setid			setid,
  *
  * steps:
  *
- * 1) checks whether the set managers was previously initialized.
- * 2) reserves a set unused identifier for this new set.
- * 3) allocates and initializes the set structure.
- * 4) initializes the set structure's fields.
- * 5) adds the set object to the set objects container.
+ * 1) checks whether the set manager was previously initialized.
+ * 2) initializes the set descriptor.
+ * 3) if necessary, reserves an unused identifier for this new set.
+ * 4) initializes the set descriptor fields.
+ * 5) adds the set descriptor to the set container.
  */
 
 int			set_rsv_ll(t_opts			opts,
 				   t_size			datasz,
 				   t_setid*			setid)
 {
-  o_set*		o;
+  o_set			o;
 
   /*
    * 1)
@@ -348,43 +350,42 @@ int			set_rsv_ll(t_opts			opts,
    * 2)
    */
 
-  if (set_id_rsv(setid) != 0)
-    return (-1);
+  memset(&o, 0x0, sizeof(o_set));
 
   /*
    * 3)
    */
 
-  if ((o = malloc(sizeof(o_set))) == NULL)
+  if (opts & SET_OPT_CONTAINER)
     {
-      set_id_rel(*setid);
-
-      return (-1);
+      *setid = set->contid;
     }
-
-  memset(o, 0x0, sizeof(o_set));
+  else
+    {
+      if (id_rsv(&set->id, setid) != 0)
+	return (-1);
+    }
 
   /*
    * 4)
    */
 
-  o->id = *setid;
-  o->size = 0;
-  o->type = SET_TYPE_LL;
+  o.id = *setid;
+  o.size = 0;
+  o.type = SET_TYPE_LL;
 
-  o->u.ll.opts = opts;
-  o->u.ll.datasz = datasz;
-  o->u.ll.head = NULL;
-  o->u.ll.tail = NULL;
+  o.u.ll.opts = opts;
+  o.u.ll.datasz = datasz;
+  o.u.ll.head = NULL;
+  o.u.ll.tail = NULL;
 
   /*
    * 5)
    */
 
-  if (set_object_add(o) != 0)
+  if (set_new(&o) != 0)
     {
-      free(o);
-      set_id_rel(*setid);
+      id_rel(&set->id, *setid);
 
       return (-1);
     }
