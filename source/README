@@ -5,13 +5,13 @@
 ## 
 ## README
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/source
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Tue Jul 12 20:03:57 2005   mycure
+## last update   Thu Jan 28 05:51:40 1999   mycure
 ##
 
 
@@ -581,33 +581,33 @@ to follow the rules.
   defines, types, prototypes etc..
 
 	/*
-	 * dependencies
+	 * ---------- dependencies --------------------------------------------
 	 */
 
 	#include <...>
 
 	/*
-	 * includes
+	 * ---------- includes ------------------------------------------------
 	 */
 
 	#include <...>
 	#include <...>
 
 	/*
-	 * defines
+	 * ---------- defines -------------------------------------------------
 	 */
 
 	#define ...
 
 	/*
-	 * types
+	 * ---------- types ---------------------------------------------------
 	 */
 
 	typedef ...;
 
 	/*
-	 * prototypes:             ../../directory/file1.c
-	 *                         ../../directory/file2.c
+	 * ---------- prototypes ----------------------------------------------
+         *
 	 */
 
 	/*
@@ -649,13 +649,6 @@ to follow the rules.
   please respect this rule: always compose the name of the anti-redefinition
   using the path from the include directory.
 
-			----------[ evaluation ]----------
-
-the kaneton project will be automatically evaluated.
-
-please set the mode RELEASE to indicate that we can evaluate your project.
-
-the user configuration used to evaluate your project is 'eval'.
 
 ---[ sections
 
@@ -684,3 +677,13 @@ the user configuration used to evaluate your project is 'eval'.
 
   the set manager is decribed in the file set.c containing the main sources
   of this manager.
+
+
+
+			----------[ evaluation ]----------
+
+the kaneton project will be automatically evaluated.
+
+please set the mode RELEASE to indicate that we can evaluate your project.
+
+the user configuration used to evaluate your project is 'eval'.
