@@ -98,8 +98,8 @@ def fn_readprotosfiles(fp, functions):
     fn_error('this file doesn\'t contain a valid prototype section', 3)
   # iterate until the end of the prototypes section
   endre = re.compile('.*\*/')
-  filere = re.compile('\s*\*+\s+[./a-zA-Z0-9]+')
-  filenamere = re.compile('[./a-zA-Z0-9]+')
+  filere = re.compile('\s*\*+\s+[./_a-zA-Z0-9]+')
+  filenamere = re.compile('[./_a-zA-Z0-9]+')
   eopre = re.compile('\s*\*+\s+eop')
   while line <> '' and not endre.match(line):
     functions.beginning.append(line)
