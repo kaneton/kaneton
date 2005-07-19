@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Wed Jul 13 15:35:15 2005   mycure
+ * last update   Tue Jul 19 14:18:26 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -32,12 +32,6 @@
 /*
  * ---------- defines ---------------------------------------------------------
  */
-
-/*
- * defines
- */
-
-#define SET_ID_CONTAINER	0LL
 
 /*
  * foreach
@@ -87,16 +81,14 @@ typedef void*			t_iterator;
 
 /*
  * set manager
- *
- * this type contains all the information needed by the set manager: the
- * next unused identifier and the set objects container.
  */
 
 typedef struct
 {
-  t_setid			id;
+  o_id				id;
 
-  o_set*			container;
+  t_id				contid;
+  o_set*			cont;
 }				m_set;
 
 /*

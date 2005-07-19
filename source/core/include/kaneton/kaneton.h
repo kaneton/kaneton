@@ -5,13 +5,13 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Jul  3 15:13:19 2005   mycure
+ * last update   Mon Jul 18 15:04:56 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
@@ -74,6 +74,7 @@
 
 #include <kaneton/as.h>
 #include <kaneton/debug.h>
+#include <kaneton/id.h>
 #include <kaneton/init.h>
 #include <kaneton/segment.h>
 #include <kaneton/set.h>

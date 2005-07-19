@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jul 18 13:15:40 2005   mycure
+ * last update   Tue Jul 19 14:22:19 2005   mycure
  */
 
 /*
@@ -24,28 +24,29 @@
  * by their own.
  *
  * notice that the set manager is based on the malloc() suite functions. indeed
- * the set manager maintains a data structure containing the set descriptors.
- * moreover some data structure type required the malloc() suite functions, the
- * simplest example being the array data structure which require the realloc()
- * function to be able to extend the data structure without effort.
+ * the set manager maintains a data structure containing the set descriptors:
+ * the container. moreover some data structure types required the malloc()
+ * suite functions, the simplest example being the array data structure
+ * which requires the realloc() function to be able to extend the data
+ * structure without effort.
  *
  * due to this requirement, the set manager cannot manage the data structure
  * for the segments of the segment manager, the kernel address space segments
  * and the kernel address space regions of the address space manager because
  * the malloc() function is not provided yet. to bypass this restriction
- * the kaneton kernel uses a initial malloc() version which is based on
+ * the kaneton kernel uses an initial malloc() version which is based on
  * a little amount of memory provided by the bootloader, via the fields
  * alloc and allocsz of the init structure.
  *
- * then once the kernel starts, the malloc() suite functions are initialized
- * using this special memory used by the segment manager, the region
- * manager and the address space manager to initialize themselves. thereafter,
- * the malloc() suite functions are able to work properly.
+ * using this initial malloc() function, the set manager is able to build
+ * sets for every kernel managers: segment manager, address space manager,
+ * region manager etc..
  *
- * the implementation use macros to provide different data structure
- * creation with different number of arguments and type of arguments.
+ * the implementation use macros to provide different data structures
+ * creation with different number of arguments and different
+ * type of arguments.
  *
- * note that the set manager uses itself to store the set objects.
+ * note that the set manager uses itself to store the set descriptors.
  *
  * to add a data structure to the set manager you have to complete
  * the following steps:
@@ -60,6 +61,33 @@
  *     in the set_trap() macro, in the set.h header file.
  *
  * X represents the new data structure short name.
+ *
+ * nomenclature:
+ *
+ *  container
+ *
+ *    the container is the set which contains all the set descriptors.
+ *
+ *  descriptor
+ *
+ *    a set descriptor is the set meta-data. indeed, a set descriptor
+ *    contains the set data structure containing the objects, the number
+ *    of objects managed, the identifier of the set etc..
+ *
+ *  object
+ *
+ *    an object is a set node. indeed, each iterator references an object
+ *    to be able to locate the previous and next nodes/objects in this
+ *    set.
+ *
+ *  data
+ *
+ *    data, in the set manager terms, is the data contained in
+ *    a set node, the data the "user" wants to store using the set manager.
+ *
+ * in other words, the containers is a set which contains the set descriptors.
+ * each set descriptor contains a data structure composed of objects
+ * which contain the data provided by the set manager user.
  */
 
 /*
@@ -84,15 +112,18 @@ m_set*			set = NULL;
  */
 
 /*
- * this function dumps set objects contained in the set manager.
+ * this function dumps set data contained in the container of
+ * the set manager.
+ *
+ * in other words, this function displays the set descriptors.
  *
  * the function just displays the identifier of each element.
  *
  * steps:
  *
  * 1) checks if the set manager was previously initialized.
- * 2) gets the set object from its identifier.
- * 3) prints each element's identifier.
+ * 2) gets the set descriptor from its identifier.
+ * 3) prints each data identifier.
  */
 
 #if (KANETON_DEBUG & KANETON_DEBUG_SET)
@@ -112,7 +143,7 @@ int			set_dump(t_setid			setid)
    * 2)
    */
 
-  if (set_object(setid, &o) != 0)
+  if (set_descriptor(setid, &o) != 0)
     return (-1);
 
   /*
@@ -141,7 +172,7 @@ int			set_dump(t_setid			setid)
 #endif
 
 /*
- * this function adds a set object to the set objects list.
+ * this function adds a set descriptor to the set container.
  *
  * steps:
  *
@@ -151,7 +182,7 @@ int			set_dump(t_setid			setid)
  * 3) otherwise, add this object in the set object container.
  */
 
-int			set_object_add(o_set*			o)
+int			set_new(o_set*				o)
 {
   /*
    * 1)
@@ -163,9 +194,9 @@ int			set_object_add(o_set*			o)
    * 2)
    */
 
-  if (o->id == SET_ID_CONTAINER)
+  if (o->id == set->contid)
     {
-      set->container = o;
+      set->cont = o;
 
       return (0);
     }
@@ -174,7 +205,7 @@ int			set_object_add(o_set*			o)
    * 3)
    */
 
-  if (set_add(set->container->id, o) != 0)
+  if (set_add(set->cont->id, o) != 0)
     {
       kaneton_error("the set manager is unable to add this object "
 		    "to the set objects container\n");
@@ -195,7 +226,7 @@ int			set_object_add(o_set*			o)
  * 3) removes the set object from the set objects container.
  */
 
-int			set_object_remove(t_setid		setid)
+int			set_delete(t_setid			setid)
 {
   /*
    * 1)
@@ -207,7 +238,7 @@ int			set_object_remove(t_setid		setid)
    * 2)
    */
 
-  if (setid == SET_ID_CONTAINER)
+  if (setid == set->contid)
     {
       kaneton_error("the set manager cannot remove the set object container"
 		    "object\n");
@@ -219,7 +250,7 @@ int			set_object_remove(t_setid		setid)
    * 3)
    */
 
-  if (set_remove(set->container->id, setid) != 0)
+  if (set_remove(set->cont->id, setid) != 0)
     {
       kaneton_error("the set manager is unable to remove this object "
 		    "from the set objects container\n");
@@ -257,9 +288,9 @@ int			set_object(t_setid			setid,
    * 2)
    */
 
-  if (setid == SET_ID_CONTAINER)
+  if (setid == set->contid)
     {
-      *o = set->container;
+      *o = set->cont;
 
       return (0);
     }
@@ -272,33 +303,6 @@ int			set_object(t_setid			setid,
     return (-1);
 
   *o = i;
-
-  return (0);
-}
-
-/*
- * this function returns an unique unused set identifier.
- */
-
-int			set_id_rsv(t_setid*			setid)
-{
-  set_check(set);
-
-  *setid = set->id++;
-
-  return (0);
-}
-
-/*
- * this function releases a previously reserved identifier.
- *
- * because we use 64-bit integer, we do not care about recycling
- * identifiers, so just do nothing in this case.
- */
-
-int			set_id_rel(t_setid			setid)
-{
-  set_check(set);
 
   return (0);
 }
@@ -388,6 +392,25 @@ int			set_init(void)
     return (-1);
 
   memset(set, 0x0, sizeof(m_set));
+
+  /* XXX */
+  id_build(&set->id);
+  {
+    t_id	id;
+
+    id_rsv(&set->id, &id);
+    printf("_ %qu\n", id);
+
+    id_rsv(&set->id, &id);
+    printf("_ %qu\n", id);
+
+    id_rsv(&set->id, &id);
+    printf("_ %qu\n", id);
+  }
+
+  while (1)
+    ;
+  /* XXX */
 
   /*
    * 2)

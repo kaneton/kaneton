@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jul 18 11:10:31 2005   mycure
+ * last update   Mon Jul 18 15:10:46 2005   mycure
  */
 
 /*
@@ -99,8 +99,9 @@ void			kaneton_dump(void)
  * 3) displays the current kaneton version.
  * 4) if needed, displays the kernel parameters.
  * 5) initializes the fine grained allocator.
- * 6) initializes the set manager.
- * 7) initializes the address space manager.
+ * 6) initializes the id manager.
+ * 7) initializes the set manager.
+ * 8) initializes the address space manager.
  *
  * XXX
  */
@@ -146,11 +147,18 @@ void			kaneton(t_init*				bootloader)
    * 6)
    */
 
+  if (id_init() != 0)
+    kaneton_error("cannot initialize the id manager\n");
+
+  /*
+   * 7)
+   */
+
   if (set_init() != 0)
     kaneton_error("cannot initialize the set manager\n");
 
   /*
-   * 7)
+   * 8)
    */
 
   if (as_init() != 0)
