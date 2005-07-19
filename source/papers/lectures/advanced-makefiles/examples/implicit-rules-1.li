@@ -1,8 +1,0 @@
-chiche.o: chiche.c header.h
-#  Implicit rule search has been done.
-#  Implicit/static pattern stem: `chiche'
-#  Last modified 2005-07-06 13:24:31.560012712
-#  File has been updated.
-#  Successfully updated.
-#  commands to execute (built-in):
-        $(COMPILE.c) $(OUTPUT_OPTION) $<
