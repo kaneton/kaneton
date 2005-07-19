@@ -1,0 +1,20 @@
+PROJECT         =               myproject
+SRCS_C          =               main.c  \
+                                chiche.c
+SRCS_ASM        =               ia32.asm
+OBJS_C          =               $(SRCS_C:.c=.o)
+OBJS_ASM        =               $(SRCS_ASM:.asm=.o)
+NASM            =               nasm
+
+all:            $(OBJS_C) $(OBJS_ASM)
+        @$(CC) $(OBJS_C) $(OBJS_ASM) -o $(PROJECT)
+
+%.o:		%.c
+        @echo COMPILING C
+        @$(CC) -c $<
+
+%.o:		%.asm
+        @echo COMPILING ASM
+        @$(NASM) -f elf $< -o $@
+
+chiche.o main.o: header.h

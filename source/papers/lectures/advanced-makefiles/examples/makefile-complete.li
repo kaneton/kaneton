@@ -1,0 +1,17 @@
+PROJECT         =               myproject
+SRCS            =               main.c  \
+                                chiche.c
+OBJS            =               $(SRCS:.c=.o)
+RM		=		rm -f
+
+all:            $(OBJS)
+        $(CC) $(OBJS) -o $(PROJECT)
+
+main.o:		header.h
+        $(CC) -c main.c
+
+chiche.o:	header.h
+        $(CC) -c chiche.c
+
+clean:
+        $(RM) $(OBJS) $(PROJECT)
