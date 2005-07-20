@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jan 29 05:20:08 1999   mycure
+ * last update   Fri Jan 29 06:45:37 1999   mycure
  */
 
 /*
@@ -152,7 +152,7 @@ int			as_rsv(t_asid*				asid)
    * 4)
    */
 
-  if (set_rsv(ll, SET_OPT_ALLOC, sizeof(t_segid), &o.segments) != 0)
+  if (set_rsv(array, SET_OPT_SORT, sizeof(t_segid), &o.segments) != 0)
     {
       id_rel(&as->id, o.asid);
 
@@ -163,7 +163,7 @@ int			as_rsv(t_asid*				asid)
    * 5)
    */
 
-  if (set_rsv(ll, SET_OPT_ALLOC, sizeof(o_region), &o.regions) != 0)
+  if (set_rsv(array, SET_OPT_SORT, sizeof(o_region), &o.regions) != 0)
     {
       id_rel(&as->id, o.asid);
 

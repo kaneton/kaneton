@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jan 29 05:08:24 1999   mycure
+ * last update   Fri Jan 29 06:58:50 1999   mycure
  */
 
 /*
@@ -105,6 +105,19 @@
  *
  * using the ## with variadic macros allow the use of a variable arguments
  * parameter to be empty, deleting the previous comma if needed.
+ *
+ * note that this advanced feature is only implemented by the gnu
+ * c preprocessor.
+ *
+ * each data structure allows some options to parameterise the data structure
+ * wanted. the common ones are: allocate, sort etc..
+ *
+ * the allocate option may be disabled for certain data structures because
+ * of its meaningless for this data structure.
+ *
+ * note that the sort option may becomes very inefficient for some data
+ * structures. moreover the identifier collision detection may only
+ * takes place if the sort option is enabled.
  */
 
 /*
@@ -461,7 +474,7 @@ int			set_init(void)
    * 4)
    */
 
-  if (set_rsv(ll, SET_OPT_ALLOC | SET_OPT_CONTAINER,
+  if (set_rsv(ll, SET_OPT_CONTAINER | SET_OPT_ALLOC | SET_OPT_SORT,
 	      sizeof(o_set), &needless) != 0)
     {
       cons_msg('!', "set: unable to reserve the set container\n");

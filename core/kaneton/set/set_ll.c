@@ -5,13 +5,13 @@
  * 
  * set_ll.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jan 29 05:27:50 1999   mycure
+ * last update   Fri Jan 29 07:02:20 1999   mycure
  */
 
 /*
@@ -152,13 +152,15 @@ int			set_next_ll(t_setid			setid,
  * 2) gets the set descriptor corresponding to the set identifier.
  * 3) allocates and initialises the new node for the new object.
  * 4) performs operations from the set options: alloc or not etc..
- * 5) inserts the new node in the list
- *   a) inserts the new node in the list.
- *     i) there is an identifier collision so the add operation
- *        is not possible.
- *     ii) inserts the new node in the linked-list.
- *   b) inserts the new node at the end of the list.
- *   c) the list is empty, so the new node becomes the list.
+ * 5) inserts the new node in the list.
+ *   A) sorts the nodes.
+ *     a) inserts the new node in the list.
+ *       i) there is an identifier collision so the add operation
+ *          is not possible.
+ *       ii) inserts the new node in the linked-list.
+ *     b) inserts the new node at the end of the list.
+ *     c) the list is empty, so the new node becomes the list.
+ *   B) does not sort the nodes.
  * 6) increments the number of nodes in the list.
  */
 
@@ -214,86 +216,111 @@ int			set_add_ll(t_setid			setid,
    * 5)
    */
 
-  if (o->u.ll.head != NULL)
+  if (o->u.ll.opts & SET_OPT_SORT)
     {
-      t_set_ll_node	*tmp;
-
       /*
-       * a)
+       * A)
        */
 
-      for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->nxt)
+      if (o->u.ll.head != NULL)
 	{
-	  if (*((t_id*)n->data) == *((t_id*)tmp->data))
+	  t_set_ll_node	*tmp;
+
+	  /*
+	   * a)
+	   */
+
+	  for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->nxt)
 	    {
-	      /*
-	       * i)
-	       */
+	      if (*((t_id*)n->data) == *((t_id*)tmp->data))
+		{
+		  /*
+		   * i)
+		   */
 
-	      cons_msg('!', "set: identifier collision detected "
-		       "in the set %qu on the object identifier %qu\n",
-		       o->id,
-		       *((t_id*)n->data));
+		  cons_msg('!', "set: identifier collision detected "
+			   "in the set %qu on the object identifier %qu\n",
+			   o->id,
+			   *((t_id*)n->data));
 
-	      if (o->u.ll.opts & SET_OPT_ALLOC)
-		free(n->data);
+		  if (o->u.ll.opts & SET_OPT_ALLOC)
+		    free(n->data);
 
-	      free(n);
+		  free(n);
 
-	      return (-1);
+		  return (-1);
+		}
+
+	      if (*((t_id*)n->data) < *((t_id*)tmp->data))
+		{
+		  /*
+		   * ii)
+		   */
+
+		  n->prv = tmp->prv;
+		  n->nxt = tmp;
+
+		  if (n->prv != NULL)
+		    n->prv->nxt = n;
+		  else
+		    o->u.ll.head = n;
+
+		  if (n->nxt != NULL)
+		    n->nxt->prv = n;
+		  else
+		    o->u.ll.tail = n;
+
+		  break;
+		}
 	    }
 
-	  if (*((t_id*)n->data) < *((t_id*)tmp->data))
-	    {
-	      /*
-	       * ii)
-	       */
+	  /*
+	   * b
+	   */
 
-	      n->prv = tmp->prv;
-	      n->nxt = tmp;
+	  if (tmp == NULL)
+	    {
+	      n->prv = o->u.ll.tail;
+	      n->nxt = NULL;
 
 	      if (n->prv != NULL)
 		n->prv->nxt = n;
 	      else
 		o->u.ll.head = n;
 
-	      if (n->nxt != NULL)
-		n->nxt->prv = n;
-	      else
-		o->u.ll.tail = n;
-
-	      break;
+	      o->u.ll.tail = n;
 	    }
 	}
-
-      /*
-       * b
-       */
-
-      if (tmp == NULL)
+      else
 	{
-	  n->prv = o->u.ll.tail;
+	  /*
+	   * c)
+	   */
+
+	  n->prv = NULL;
 	  n->nxt = NULL;
 
-	  if (n->prv != NULL)
-	    n->prv->nxt = n;
-	  else
-	    o->u.ll.head = n;
-
+	  o->u.ll.head = n;
 	  o->u.ll.tail = n;
 	}
     }
   else
     {
       /*
-       * c)
+       * B)
        */
 
       n->prv = NULL;
-      n->nxt = NULL;
+      n->nxt = o->u.ll.head;
 
-      o->u.ll.head = n;
-      o->u.ll.tail = n;
+      if (n->nxt != NULL)
+	n->nxt->prv = n;
+
+      if ((o->u.ll.head == NULL) && (o->u.ll.tail == NULL))
+	{
+	  o->u.ll.head = n;
+	  o->u.ll.tail = n;
+	}
     }
 
   /*
@@ -310,13 +337,78 @@ int			set_add_ll(t_setid			setid,
  *
  * steps:
  *
- * 1) XXX
+ * 1) checks whether the set manager was initialised.
+ * 2) gets the set descriptor given its set identifier.
+ * 3) tries to locate the looked for node given its identifier.
+ * 4) if not found, returns an error.
+ * 5) reorganises the linked-list.
+ * 6) if needed, frees the object's memory.
+ * 7) frees the node's memory.
+ * 8) decrements the number of nodes in the linked-list data structure.
  */
 
 int			set_remove_ll(t_setid			setid,
 				      t_id			id)
 {
-  /* XXX */
+  t_set_ll_node		*tmp;
+  o_set*		o;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->nxt)
+    if (id == *((t_id*)tmp->data))
+      break;
+
+  /*
+   * 4)
+   */
+
+  if (tmp == NULL)
+    return (-1);
+
+  /*
+   * 5)
+   */
+
+  if (tmp->prv != NULL)
+    tmp->prv->nxt = tmp->nxt;
+
+  if (tmp->nxt != NULL)
+    tmp->nxt->prv = tmp->prv;
+
+  /*
+   * 6)
+   */
+
+  if (o->u.ll.opts & SET_OPT_ALLOC)
+    free(tmp->data);
+
+  /*
+   * 7)
+   */
+
+  free(tmp);
+
+  /*
+   * 8)
+   */
+
+  o->size--;
 
   return (0);
 }

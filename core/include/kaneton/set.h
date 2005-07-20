@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Wed Jul 20 21:15:30 2005   mycure
+ * last update   Fri Jan 29 06:44:18 1999   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -36,19 +36,16 @@
 #define SET_TYPE_LL		0x02
 
 /*
- * foreach
- */
-
-#define SET_OPT_FORWARD		0x1
-#define SET_OPT_BACKWARD	0x2
-
-/*
  * options
  */
 
 #define SET_OPT_NONE		0x00
-#define SET_OPT_CONTAINER	0x01
-#define SET_OPT_ALLOC		0x02
+
+#define SET_OPT_FORWARD		0x01
+#define SET_OPT_BACKWARD	0x02
+#define SET_OPT_CONTAINER	0x04
+#define SET_OPT_ALLOC		0x08
+#define SET_OPT_SORT		0x10
 
 /*
  * ---------- types -----------------------------------------------------------

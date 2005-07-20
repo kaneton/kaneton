@@ -5,13 +5,13 @@
  * 
  * set_ll.h
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Wed Jul 20 21:15:05 2005   mycure
+ * last update   Fri Jan 29 06:43:50 1999   mycure
  */
 
 #ifndef KANETON_SET_LL_H
