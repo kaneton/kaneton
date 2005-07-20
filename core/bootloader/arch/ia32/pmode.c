@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Sun Jun 19 21:23:13 2005   mycure
+ * last update   Fri Jan 29 05:13:03 1999   mycure
  */
 
 /*
@@ -186,7 +186,7 @@ void			bootloader_pmode_gdt_set(t_uint16	entry,
 }
 
 /*
- * this function initializes the global offset table inserting
+ * this function initialises the global offset table inserting
  * height entries for the kernel, drivers, services and user tasks.
  *
  * each segment has the same size with different rights: read/execution,
@@ -194,7 +194,7 @@ void			bootloader_pmode_gdt_set(t_uint16	entry,
  *
  * steps:
  *
- * 1) allocates and initializes the memory for the global offset table.
+ * 1) allocates and initialises the memory for the global offset table.
  * 2) sets the global offset table address in the init variable.
  * 3) sets the height segments for the kernel, driver, service and user.
  * 4) loads the GDT.

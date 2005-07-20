@@ -5,13 +5,13 @@
  * 
  * set_ll.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 20 21:26:44 2005   mycure
+ * last update   Fri Jan 29 05:09:20 1999   mycure
  */
 
 /*
@@ -148,9 +148,9 @@ int			set_next_ll(t_setid			setid,
  *
  * steps:
  *
- * 1) checks whether the set manager was previously initialized.
+ * 1) checks whether the set manager was previously initialised.
  * 2) gets the set descriptor corresponding to the set identifier.
- * 3) allocates and initializes the new node for the new object.
+ * 3) allocates and initialises the new node for the new object.
  * 4) performs operations from the set options: alloc or not etc..
  * 5) inserts the new node in the list
  *   a) inserts the new node in the list.
@@ -343,10 +343,10 @@ int			set_get_ll(t_setid			setid,
  *
  * steps:
  *
- * 1) checks whether the set manager was previously initialized.
- * 2) initializes the set descriptor.
+ * 1) checks whether the set manager was previously initialised.
+ * 2) initialises the set descriptor.
  * 3) if necessary, reserves an unused identifier for this new set.
- * 4) initializes the set descriptor fields.
+ * 4) initialises the set descriptor fields.
  * 5) adds the set descriptor to the set container.
  */
 

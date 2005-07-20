@@ -5,13 +5,13 @@
  * 
  * id.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jul 18 16:46:14 2005   mycure
+ * last update   Fri Jan 29 05:06:25 1999   mycure
  */
 
 /*
@@ -60,7 +60,7 @@ int			id_rel(o_id*				o,
 }
 
 /*
- * this function initializes an id object.
+ * this function initialises an id object.
  */
 
 int			id_build(o_id*				o)
@@ -82,7 +82,7 @@ int			id_destroy(o_id*			o)
 }
 
 /*
- * this function must initialize the id manager.
+ * this function must initialise the id manager.
  *
  * nothing to do here but return.
  */

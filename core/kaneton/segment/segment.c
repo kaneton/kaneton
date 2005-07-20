@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jul 18 11:22:19 2005   mycure
+ * last update   Fri Jan 29 05:09:42 1999   mycure
  */
 
 /*
@@ -140,13 +140,13 @@ o_segment*		segment_pop(void)
 }
 */
 /*
- * this functions initializes the segment manager from the init
+ * this functions initialises the segment manager from the init
  * variable containing segments to keep safe.
  *
  * steps:
  *
- * 1) initializes the stack.
- * 2) initializes the segments inserting the segments specified by the
+ * 1) initialises the stack.
+ * 2) initialises the segments inserting the segments specified by the
  *    init variable.
  */
 

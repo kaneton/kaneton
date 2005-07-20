@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Sun Jun 19 21:24:10 2005   mycure
+ * last update   Fri Jan 29 05:10:36 1999   mycure
  */
 
 /*
@@ -186,9 +186,9 @@ void			cons_msg(char				indicator,
 }
 
 /*
- * this function just initializes the bootloader console.
+ * this function just initialises the bootloader console.
  *
- * this function also initializes the printf function to work with the
+ * this function also initialises the printf function to work with the
  * console.
  */
 

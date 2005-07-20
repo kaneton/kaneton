@@ -5,13 +5,13 @@
  * 
  * set_array.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 20 21:28:59 2005   mycure
+ * last update   Fri Jan 29 05:07:39 1999   mycure
  */
 
 /*
@@ -215,8 +215,8 @@ int			set_get_array(t_setid			setid,
  *
  * steps:
  *
- * 1) checks whether the set manager was previously initialized.
- * 2) initializes the set descriptor.
+ * 1) checks whether the set manager was previously initialised.
+ * 2) initialises the set descriptor.
  * 3) if necessary, reserves an unused identifier for this new set.
  * 4) XXX
  * 5) adds the set descriptor to the set container.

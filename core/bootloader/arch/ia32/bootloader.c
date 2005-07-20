@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sat Jul  9 15:36:17 2005   mycure
+ * last update   Fri Jan 29 05:11:01 1999   mycure
  */
 
 /*
@@ -66,7 +66,7 @@ void			bootloader_error(void)
  *
  * steps:
  *
- * 1) initializes the console and checks the magic number.
+ * 1) initialises the console and checks the magic number.
  * 2) relocates binaries, data, stack
  * 3) installs the protected mode.
  * 4) installs the paging mode.

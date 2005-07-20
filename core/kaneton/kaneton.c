@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/as
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 20 20:20:15 2005   mycure
+ * last update   Fri Jan 29 05:10:19 1999   mycure
  */
 
 /*
@@ -90,19 +90,19 @@ void			kaneton_dump(void)
 #endif
 
 /*
- * this function simply initializes each manager.
+ * this function simply initialises each manager.
  *
  * steps:
  *
  * 1) sets the init variable from the bootloader argument.
- * 2) initializes the console manager.
+ * 2) initialises the console manager.
  * 3) displays the current kaneton version.
  * 4) if needed, displays the kernel parameters.
- * 5) initializes the fine grained allocator.
- * 6) initializes the id manager.
- * 7) initializes the set manager.
- * 8) initializes the address space manager.
- * 9) initializes the segment manager.
+ * 5) initialises the fine grained allocator.
+ * 6) initialises the id manager.
+ * 7) initialises the set manager.
+ * 8) initialises the address space manager.
+ * 9) initialises the segment manager.
  *
  * XXX
  */
@@ -120,7 +120,7 @@ void			kaneton(t_init*				bootloader)
    */
 
   if (cons_init() != 0)
-    kaneton_error("cannot initialize the console manager\n");
+    kaneton_error("cannot initialise the console manager\n");
 
   /*
    * 3)
@@ -149,28 +149,28 @@ void			kaneton(t_init*				bootloader)
    */
 
   if (id_init() != 0)
-    kaneton_error("cannot initialize the id manager\n");
+    kaneton_error("cannot initialise the id manager\n");
 
   /*
    * 7)
    */
 
   if (set_init() != 0)
-    kaneton_error("cannot initialize the set manager\n");
+    kaneton_error("cannot initialise the set manager\n");
 
   /*
    * 8)
    */
 
   if (as_init() != 0)
-    kaneton_error("cannot initialize the address space manager\n");
+    kaneton_error("cannot initialise the address space manager\n");
 
   /*
    * 9)
    */
 
   if (segment_init() != 0)
-    kaneton_error("cannot initialize the segment manager\n");
+    kaneton_error("cannot initialise the segment manager\n");
 
   /*
    * XXX)

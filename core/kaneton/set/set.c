@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 20 21:28:34 2005   mycure
+ * last update   Fri Jan 29 05:08:24 1999   mycure
  */
 
 /*
@@ -138,7 +138,7 @@ m_set*			set = NULL;
  *
  * steps:
  *
- * 1) checks if the set manager was previously initialized.
+ * 1) checks if the set manager was previously initialised.
  * 2) gets the set descriptor from its identifier.
  * 3) prints each objects' identifier.
  */
@@ -210,7 +210,7 @@ int			set_size(t_setid			setid,
  *
  * steps:
  *
- * 1) checks whether the set manager was previously initialized.
+ * 1) checks whether the set manager was previously initialised.
  * 2) if the descriptor to add is the set which will contain the set objects,
  *    the container, just put it as the set container.
  * 3) otherwise, add this object in the set container.
@@ -258,7 +258,7 @@ int			set_new(o_set*				o)
  *
  * steps:
  *
- * 1) checks whether the set manager was previously initialized.
+ * 1) checks whether the set manager was previously initialised.
  * 2) removing the container object is not allowed.
  * 3) removes the set descriptor from the set container.
  */
@@ -302,7 +302,7 @@ int			set_delete(t_setid			setid)
  *
  * steps:
  *
- * 1) checks whether the set manager was previously initialized.
+ * 1) checks whether the set manager was previously initialised.
  * 2) if the looked for descriptor is the set container, just return it.
  * 3) otherwise, try to find the set descriptor in the set container
  *    and return it if possible.
@@ -348,7 +348,7 @@ int			set_descriptor(t_setid			setid,
  *
  * steps:
  *
- * 1) checks whether the set manager was previously initialized.
+ * 1) checks whether the set manager was previously initialised.
  * 2) gets the set object corresponding to the set identifier.
  * 3) tries to find the identifier looked for in the set object's elements.
  */
@@ -405,11 +405,11 @@ int			set_find(t_setid			setid,
 }
 
 /*
- * this function initializes the set manager.
+ * this function initialises the set manager.
  *
  * steps:
  *
- * 1) allocates and initializes the set manager structure.
+ * 1) allocates and initialises the set manager structure.
  * 2) builds the identifier object used to generate set identifiers.
  * 3) reserves an identifier for the container.
  * 4) reserves the set container which will contain the set descriptors
@@ -441,7 +441,7 @@ int			set_init(void)
 
   if (id_build(&set->id) != 0)
     {
-      cons_msg('!', "set: unable to initialize the identifier object\n");
+      cons_msg('!', "set: unable to initialise the identifier object\n");
 
       return (-1);
     }

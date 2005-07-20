@@ -5,13 +5,13 @@
 ## 
 ## grub.sh
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/utils
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Sun Jul  3 14:26:09 2005   mycure
+## last update   Fri Jan 29 05:17:54 1999   mycure
 ##
 
 # INFORMATIONS
@@ -177,7 +177,7 @@ menu()
 
 # BUILD
 #
-# initialize the boot device
+# initialise the boot device
 build()
 {
   case "$BOOTMODE" in
@@ -338,8 +338,8 @@ shift
 
 case "$action" in
   "build")
-    # initializing boot system
-    print " initializing boot system" "+"
+    # initialising boot system
+    print " initialising boot system" "+"
     print ""
 
     # call the read_kaneton_conf function
@@ -351,13 +351,13 @@ case "$action" in
     # call the init function
     build
 
-    # boot system initialized
-    print " boot system initialized successfully" "+"
+    # boot system initialised
+    print " boot system initialised successfully" "+"
     ;;
 
   "install")
-    # initializing boot system
-    print " initializing boot system" "+"
+    # initialising boot system
+    print " initialising boot system" "+"
     print ""
 
     # call the read_kaneton_conf function
@@ -372,8 +372,8 @@ case "$action" in
     # call the install function
     install
 
-    # boot system initialized
-    print " boot system initialized successfully" "+"
+    # boot system initialised
+    print " boot system initialised successfully" "+"
     ;;
 
   *)

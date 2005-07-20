@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Sun Jun 19 21:21:06 2005   mycure
+ * last update   Fri Jan 29 05:11:15 1999   mycure
  */
 
 /*
@@ -199,9 +199,9 @@ void			bootloader_cons_load(void)
 }
 
 /*
- * this function just initializes the bootloader console.
+ * this function just initialises the bootloader console.
  *
- * this function also initializes the printf function to work with
+ * this function also initialises the printf function to work with
  * the console.
  */
 

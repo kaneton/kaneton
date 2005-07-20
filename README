@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Wed Jul 20 21:35:52 2005   mycure
+## last update   Fri Jan 29 05:05:13 1999   mycure
 ##
 
 
@@ -97,7 +97,7 @@ the developer modify an header file in relation with it.
 
 when finished, the developer then wants to test his kernel either on
 another machine or in an emulator, so he has to build a boot device.
-before all, he must initialize the boot device with the kaneton boot
+before all, he must initialise the boot device with the kaneton boot
 device format:
 
 	make build
@@ -425,7 +425,7 @@ the kaneton kernel uses few fundamental defines listed below:
 			----------[ coding style ]----------
 
 the kaneton project developers try to follow a coding style. this
-coding style was introduced to normalize the source code, leading to
+coding style was introduced to normalise the source code, leading to
 a more readable source code.
 
 nevertheless, you can adapt this coding style to your own but try
@@ -640,9 +640,9 @@ to follow the rules.
   and the command 'make proto' will generate prototypes from the C files
   and insert them between the two tags: prototypes and eop.
 
----[ redefinition
+---[ guard macro
 
-  the includes files contain anti-redifinition defines.
+  the includes files contain guard macros.
 
 	#ifndef KANETON_INIT_H
 	#define KANETON_INIT_H

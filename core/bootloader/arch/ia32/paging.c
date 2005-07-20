@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Sat Jul  9 15:05:07 2005   mycure
+ * last update   Fri Jan 29 05:12:37 1999   mycure
  */
 
 /*
@@ -144,11 +144,11 @@ void			bootloader_paging_enable(void)
 }
 
 /*
- * this function initializes the paging.
+ * this function initialises the paging.
  *
  * steps:
  *
- * 1) allocates and initializes the page directory.
+ * 1) allocates and initialises the page directory.
  * 2) sets the page directory address into the init variable.
  * 3) installs the identity mapping via the first page table.
  * 4) installs extra identity mapping to be able to map the kernel code,

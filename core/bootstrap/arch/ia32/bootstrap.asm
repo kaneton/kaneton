@@ -31,7 +31,7 @@ print_string_done:
 ;;
 
 floppy_read:
-	xor ax, ax		; to reinitialize the floppy controller
+	xor ax, ax		; to reinitialise the floppy controller
 
 floppy_read_init:
 	int 0x13		; ask the BIOS to perform the task
@@ -89,12 +89,12 @@ pmode_enable:
 ;;
 
 main:
-	xor ax, ax		; initialize ax
-	mov ds, ax		; initialize ds
+	xor ax, ax		; initialise ax
+	mov ds, ax		; initialise ds
 
 	cli
-	mov ss, ax		; initialize ss
-	mov sp, 0xffff		; initialize the stack pointer
+	mov ss, ax		; initialise ss
+	mov sp, 0xffff		; initialise the stack pointer
 	sti
 
 	mov si, newline
@@ -123,7 +123,7 @@ pmode_main:
 	mov es, ax		; set the es register
 	mov fs, ax		; set the fs register
 	mov gs, ax		; set the gs register
-	mov esp, 0x9000		; reinitialize the stack pointer
+	mov esp, 0x9000		; reinitialise the stack pointer
 
 	jmp edx			; jump to the ELF entry point we got earlier
 
