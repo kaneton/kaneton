@@ -5,13 +5,13 @@
 ## 
 ## README
 ## 
-## path          /home/mycure/kaneton/source
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Thu Jan 28 05:51:40 1999   mycure
+## last update   Wed Jul 20 21:35:52 2005   mycure
 ##
 
 
@@ -67,6 +67,13 @@ each environment, directory is composed of three (but can be more) files:
 
   this shell script simply clears every installations made by the init
   shell script.
+
+
+
+		----------[ concurrent versioning system ]----------
+
+please make sure to launch the command 'make clean' before committing
+any modifications
 
 
 

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 20 21:26:52 2005   mycure
+ * last update   Wed Jul 20 21:28:59 2005   mycure
  */
 
 /*
@@ -173,7 +173,7 @@ int			set_add_array(t_setid			setid,
    * 6)
    */
 
-  o->size++;
+  /* XXX o->size++; */
 
   return (0);
 }
@@ -201,10 +201,8 @@ int			set_remove_array(t_setid		setid,
 
 int			set_get_array(t_setid			setid,
 				      t_iterator		iterator,
-				      void**		data)
+				      void**			data)
 {
-  t_set_array_node*	n = iterator;
-
   set_check(set);
 
   /* XXX *data = n->data; */
@@ -224,7 +222,8 @@ int			set_get_array(t_setid			setid,
  * 5) adds the set descriptor to the set container.
  */
 
-int			set_rsv_array(t_size			datasz,
+int			set_rsv_array(t_opts			opts,
+				      t_size			datasz,
 				      t_setid*			setid)
 {
   o_set			o;

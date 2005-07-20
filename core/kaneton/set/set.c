@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/as
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 20 20:18:49 2005   mycure
+ * last update   Wed Jul 20 21:28:34 2005   mycure
  */
 
 /*
@@ -173,7 +173,7 @@ int			set_dump(t_setid			setid)
 
   set_foreach(SET_OPT_FORWARD, setid, &i)
     {
-      if (set_get(setid, i, (void*)&data) != 0)
+      if (set_get(setid, i, (void**)&data) != 0)
 	{
 	  cons_msg('!', "set: cannot find the set object "
 		   "corresponding to a set identifier\n");
