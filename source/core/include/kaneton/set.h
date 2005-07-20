@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Tue Jul 19 16:04:34 2005   mycure
+ * last update   Wed Jul 20 15:03:06 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -22,12 +22,7 @@
  */
 
 #include <arch/machdep/machdep.h>
-
-/*
- * ---------- includes --------------------------------------------------------
- */
-
-#include <kaneton/set_ll.h>
+#include <kaneton/id.h>
 
 /*
  * ---------- defines ---------------------------------------------------------
@@ -47,6 +42,22 @@
 #define SET_OPT_NONE		0x00
 #define SET_OPT_CONTAINER	0x01
 #define SET_OPT_ALLOC		0x02
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * iterator
+ */
+
+typedef void*			t_iterator;
+
+/*
+ * ---------- includes --------------------------------------------------------
+ */
+
+#include <kaneton/set_ll.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -73,12 +84,6 @@ typedef struct
     t_set_ll			ll;
   }				u;
 }				o_set;
-
-/*
- * iterator
- */
-
-typedef void*			t_iterator;
 
 /*
  * set manager
@@ -138,6 +143,9 @@ extern m_set*		set;
 #define set_rsv(_type_, _args_...)					\
   set_rsv_##_type_(_args_)
 
+#define set_rel(_setid_)						\
+  set_trap(set_rel, _setid_)
+
 #define set_head(_setid_, _args_...)					\
   set_trap(set_head, _setid_, _args_)
 
@@ -185,6 +193,9 @@ extern m_set*		set;
  */
 
 int			set_dump(t_setid			setid);
+
+int			set_size(t_setid			setid,
+				 t_setsz*			size);
 
 int			set_new(o_set*				o);
 

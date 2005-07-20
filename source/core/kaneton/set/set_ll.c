@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Jul 19 16:22:06 2005   mycure
+ * last update   Wed Jul 20 14:33:53 2005   mycure
  */
 
 /*
@@ -230,9 +230,8 @@ int			set_add_ll(t_setid			setid,
 	       * i)
 	       */
 
-	      cons_msg('!', "the set manager detected a identifier "
-		       "collision in the set %qu on the object"
-		       "identifier %qu\n",
+	      cons_msg('!', "set: identifier collision detected "
+		       "in the set %qu on the object identifier %qu\n",
 		       o->id,
 		       *((t_id*)n->data));
 
@@ -389,6 +388,22 @@ int			set_rsv_ll(t_opts			opts,
 
       return (-1);
     }
+
+  return (0);
+}
+
+/*
+ * this function releases a set.
+ *
+ * steps:
+ *
+ * 1) XXX
+ */
+
+int			set_rel_ll(t_setid			setid,
+				   int i)
+{
+  /* XXX */
 
   return (0);
 }

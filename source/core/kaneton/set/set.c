@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Jul 19 16:21:49 2005   mycure
+ * last update   Wed Jul 20 15:00:47 2005   mycure
  */
 
 /*
@@ -169,7 +169,7 @@ int			set_dump(t_setid			setid)
     {
       if (set_get(setid, i, &data) != 0)
 	{
-	  cons_msg('!', "the set manager cannot find the set object "
+	  cons_msg('!', "set: cannot find the set object "
 		   "corresponding to a set identifier\n");
 
 	  return (-1);
@@ -181,6 +181,23 @@ int			set_dump(t_setid			setid)
   return (0);
 }
 #endif
+
+/*
+ * this function fills the variable size with the set size.
+ */
+
+int			set_size(t_setid			setid,
+				 t_setsz*			size)
+{
+  o_set*		o;
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  *size = o->size;
+
+  return (0);
+}
 
 /*
  * this function adds a set descriptor to the set container.
@@ -207,6 +224,9 @@ int			set_new(o_set*				o)
 
   if (o->id == set->contid)
     {
+      if ((set->cont = malloc(sizeof(o_set))) == NULL)
+	return (-1);
+
       memcpy(set->cont, o, sizeof(o_set));
 
       return (0);
@@ -218,7 +238,7 @@ int			set_new(o_set*				o)
 
   if (set_add(set->cont->id, o) != 0)
     {
-      cons_msg('!', "the set manager is unable to add this set descriptor "
+      cons_msg('!', "set: unable to add this set descriptor "
 	       "to the set container\n");
 
       return (-1);
@@ -251,7 +271,7 @@ int			set_delete(t_setid			setid)
 
   if (setid == set->contid)
     {
-      cons_msg('!', "the set manager cannot remove the set container\n");
+      cons_msg('!', "set: cannot remove the set container\n");
 
       return (-1);
     }
@@ -262,7 +282,7 @@ int			set_delete(t_setid			setid)
 
   if (set_remove(set->cont->id, setid) != 0)
     {
-      cons_msg('!', "the set manager is unable to remove this descriptor "
+      cons_msg('!', "set: unable to remove this descriptor "
 	       "from the set container\n");
 
       return (-1);
@@ -347,7 +367,7 @@ int			set_find(t_setid			setid,
 
   if (set_descriptor(setid, &o) != 0)
     {
-      cons_msg('!', "the set manager is not able to find the set object "
+      cons_msg('!', "set: not able to find the set object "
 	       "corresponding to the set identifier %qu\n", setid);
 
       return (-1);
@@ -359,9 +379,9 @@ int			set_find(t_setid			setid,
 
   set_foreach(SET_OPT_FORWARD, setid, &i)
     {
-      if (set_get(setid, i, &data) != 0)
+      if (set_get(setid, i, (void**)&data) != 0)
 	{
-	  cons_msg('!', "the set manager cannot find the set object "
+	  cons_msg('!', "set: cannot find the set object "
 		   "corresponding to a set identifier\n");
 
 	  return (-1);
@@ -386,10 +406,9 @@ int			set_find(t_setid			setid,
  * 1) allocates and initializes the set manager structure.
  * 2) builds the identifier object used to generate set identifiers.
  * 3) reserves an identifier for the container.
- * 4) allocates the set container structure.
- * 5) reserves the set container which will contain the set descriptors
+ * 4) reserves the set container which will contain the set descriptors
  *    reserved later.
- * 6) if necessary, dumps the set container.
+ * 5) if necessary, dumps the set container.
  */
 
 int			set_init(void)
@@ -401,7 +420,12 @@ int			set_init(void)
    */
 
   if ((set = malloc(sizeof(m_set))) == NULL)
-    return (-1);
+    {
+      cons_msg('!', "set: cannot allocate memory for the set manager "
+	       "structure\n");
+
+      return (-1);
+    }
 
   memset(set, 0x0, sizeof(m_set));
 
@@ -410,32 +434,37 @@ int			set_init(void)
    */
 
   if (id_build(&set->id) != 0)
-    return (-1);
+    {
+      cons_msg('!', "set: unable to initialize the identifier object\n");
+
+      return (-1);
+    }
 
   /*
    * 3)
    */
 
   if (id_rsv(&set->id, &set->contid) != 0)
-    return (-1);
+    {
+      cons_msg('!', "set: unable to reserve an identifier\n");
+
+      return (-1);
+    }
 
   /*
    * 4)
    */
 
-  if ((set->cont = malloc(sizeof(o_set))) == NULL)
-    return (-1);
+  if (set_rsv(ll, SET_OPT_ALLOC | SET_OPT_CONTAINER,
+	      sizeof(o_set), &needless) != 0)
+    {
+      cons_msg('!', "set: unable to reserve the set container\n");
+
+      return (-1);
+    }
 
   /*
    * 5)
-   */
-
-  if (set_rsv(ll, SET_OPT_ALLOC | SET_OPT_CONTAINER,
-	      sizeof(o_set), &needless) != 0)
-    return (-1);
-
-  /*
-   * 6)
    */
 
 #if (KANETON_DEBUG & KANETON_DEBUG_SET)
