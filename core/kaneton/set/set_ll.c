@@ -5,13 +5,13 @@
  * 
  * set_ll.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jan 29 05:09:20 1999   mycure
+ * last update   Fri Jan 29 05:27:50 1999   mycure
  */
 
 /*
@@ -25,7 +25,7 @@
  * set manager to allocate and copy each object to add while the second
  * way tells the set manager to simply include the objects in the set.
  *
- * XXX ajouter sort
+ * XXX add sort
  */
 
 /*
