@@ -1,1 +1,0 @@
-crt.o: crt.c
