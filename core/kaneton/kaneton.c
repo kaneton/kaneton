@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton/as
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Jul 18 15:10:46 2005   mycure
+ * last update   Wed Jul 20 20:20:15 2005   mycure
  */
 
 /*
@@ -102,6 +102,7 @@ void			kaneton_dump(void)
  * 6) initializes the id manager.
  * 7) initializes the set manager.
  * 8) initializes the address space manager.
+ * 9) initializes the segment manager.
  *
  * XXX
  */
@@ -165,7 +166,7 @@ void			kaneton(t_init*				bootloader)
     kaneton_error("cannot initialize the address space manager\n");
 
   /*
-   * XXX)
+   * 9)
    */
 
   if (segment_init() != 0)

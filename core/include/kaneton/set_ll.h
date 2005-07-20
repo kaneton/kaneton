@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Tue Jul 19 17:11:45 2005   mycure
+ * last update   Wed Jul 20 21:15:05 2005   mycure
  */
 
 #ifndef KANETON_SET_LL_H
@@ -23,16 +23,6 @@
 
 #include <kaneton/set.h>
 #include <arch/machdep/machdep.h>
-
-/*
- * ---------- defines ---------------------------------------------------------
- */
-
-/*
- * set type
- */
-
-#define SET_TYPE_LL		0x01
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -90,8 +80,7 @@ int			set_rsv_ll(t_opts			opts,
 				   t_size			datasz,
 				   t_setid*			setid);
 
-int			set_rel_ll(t_setid			setid,
-				   int i);
+int			set_rel_ll(t_setid			setid);
 
 int			set_get_ll(t_setid			setid,
 				   t_iterator			iterator,

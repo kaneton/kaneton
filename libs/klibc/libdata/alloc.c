@@ -5,13 +5,13 @@
  *
  * malloc.c
  *
- * path          /home/mycure/data/research/projects/kaneton/source
+ * path          /home/mycure/kaneton
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 02:50:21 2005   mycure
-** Last update Sun Jul  3 23:35:23 2005 Christophe Eymard
+ * Last update Sun Jul  3 23:35:23 2005 Christophe Eymard
  */
 
 /*

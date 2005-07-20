@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 20 14:33:53 2005   mycure
+ * last update   Wed Jul 20 21:26:44 2005   mycure
  */
 
 /*
@@ -322,6 +322,23 @@ int			set_remove_ll(t_setid			setid,
 }
 
 /*
+ * this function returns an object given its iterator.
+ */
+
+int			set_get_ll(t_setid			setid,
+				   t_iterator			iterator,
+				   void**			data)
+{
+  t_set_ll_node*	n = iterator;
+
+  set_check(set);
+
+  *data = n->data;
+
+  return (0);
+}
+
+/*
  * this function reserves a set.
  *
  * steps:
@@ -400,27 +417,9 @@ int			set_rsv_ll(t_opts			opts,
  * 1) XXX
  */
 
-int			set_rel_ll(t_setid			setid,
-				   int i)
+int			set_rel_ll(t_setid			setid)
 {
   /* XXX */
-
-  return (0);
-}
-
-/*
- * this function returns an object given its iterator.
- */
-
-int			set_get_ll(t_setid			setid,
-				   t_iterator			iterator,
-				   void**			data)
-{
-  t_set_ll_node*	n = iterator;
-
-  set_check(set);
-
-  *data = n->data;
 
   return (0);
 }

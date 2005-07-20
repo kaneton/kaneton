@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton/as
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 20 15:00:47 2005   mycure
+ * last update   Wed Jul 20 20:18:49 2005   mycure
  */
 
 /*
@@ -41,10 +41,6 @@
  * using this initial malloc() function, the set manager is able to build
  * sets for every kernel managers: segment manager, address space manager,
  * region manager etc..
- *
- * the implementation use macros to provide different data structures
- * creation with different number of arguments and different
- * type of arguments.
  *
  * note that the set manager uses itself to store the set descriptors.
  *
@@ -99,6 +95,16 @@
  * remember that, in the kaneton terms, an object structure always begins
  * with an identifier and is manipulated by a capability on the distributed
  * system.
+ *
+ * the implementation uses macros to provide different data structures
+ * manipulation with different number of arguments and different
+ * type of arguments.
+ *
+ * note the specific use of the ## in the set header located
+ * in core/include/kaneton/.
+ *
+ * using the ## with variadic macros allow the use of a variable arguments
+ * parameter to be empty, deleting the previous comma if needed.
  */
 
 /*
@@ -167,7 +173,7 @@ int			set_dump(t_setid			setid)
 
   set_foreach(SET_OPT_FORWARD, setid, &i)
     {
-      if (set_get(setid, i, &data) != 0)
+      if (set_get(setid, i, (void*)&data) != 0)
 	{
 	  cons_msg('!', "set: cannot find the set object "
 		   "corresponding to a set identifier\n");
@@ -175,7 +181,7 @@ int			set_dump(t_setid			setid)
 	  return (-1);
 	}
 
-      cons_msg('#', "%qu\n", data->id);
+      cons_msg('#', "  %qu\n", data->id);
     }
 
   return (0);

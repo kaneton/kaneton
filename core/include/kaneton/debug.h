@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Tue Jul 19 16:54:54 2005   mycure
+ * last update   Wed Jul 20 20:19:04 2005   mycure
  */
 
 #ifndef KANETON_DEBUG_H
@@ -27,6 +27,6 @@
 #define KANETON_DEBUG_SET	(1 << 3)
 
 #define KANETON_DEBUG							\
-  (0 | KANETON_DEBUG_AS)
+  (0)
 
 #endif

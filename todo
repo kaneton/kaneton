@@ -1,4 +1,17 @@
 --
+ id_dump(o_id* o)
+
+--
+ virer les alias de t_id de la partie dependante
+
+--
+ faire un module debug qui utilise le driver serial pour afficher
+ ou un autre genre bochs etc..
+
+--
+ utiliser #error et #warning notamment dans kaneton.c
+
+--
  le dump devrait etre fait par la partie specifique: ll, bpt etc..
 
 --

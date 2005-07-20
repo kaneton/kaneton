@@ -5,19 +5,40 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton/as
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Jul 20 14:47:16 2005   mycure
+ * last update   Wed Jul 20 21:09:22 2005   mycure
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX
+ * the address space manager manages address spaces.
+ *
+ * in kaneton, the address spaces are not directly linked to processes.
+ *
+ * in fact, an address space has to be reserved to, then, be attached
+ * to a task.
+ *
+ * an address space describes process' useable memory. each address space
+ * is composed of two set.
+ *
+ * the first describes the segments hold by this address space, in other
+ * words the physical memory.
+ *
+ * the latter describes the regions, the virtual areas which reference
+ * some segments.
+ *
+ * note the the address space manager specifically manages the kernel
+ * address space because there is no task object for the kernel so
+ * no address space linked to it.
+ *
+ * we wanted to be able to dump the memory used by the kernel so we
+ * decided to create a static kernel address space.
  */
 
 /*
@@ -46,7 +67,10 @@ m_as*			as = NULL;
  *
  * steps:
  *
- * XXX)
+ * 1) checks whether the address space manager was previously initialized.
+ * 2) gets the set's size.
+ * 3) for each addres space hold by the address space container, dumps
+ *    the address space identifier.
  */
 
 #if (KANETON_DEBUG & KANETON_DEBUG_AS)
@@ -81,7 +105,7 @@ int			as_dump(void)
       if (set_get(as->container, i, (void**)&data) != 0)
 	return (-1);
 
-      cons_msg('#', "%qu\n", data->asid);
+      cons_msg('#', "  %qu\n", data->asid);
     }
 
   return (0);
@@ -89,17 +113,44 @@ int			as_dump(void)
 #endif
 
 /*
- * this function reserves an address space
+ * this function reserves an address space.
+ *
+ * steps:
+ *
+ * 1) first, checks whether the address space manager is initialized.
+ * 2) initializes the address space object.
+ * 3) reserves an identifier for the address space object.
+ * 4) reserves the set of segments for the new address space object.
+ * 5) reserves the set of regions for the new address space object.
+ * 6) adds the new address space object in the address space container.
  */
 
 int			as_rsv(t_asid*				asid)
 {
   o_as			o;
 
+  /*
+   * 1)
+   */
+
+  as_check(set);
+
+  /*
+   * 2)
+   */
+
   memset(&o, 0x0, sizeof(o_as));
+
+  /*
+   * 3)
+   */
 
   if (id_rsv(&as->id, &o.asid) != 0)
     return (-1);
+
+  /*
+   * 4)
+   */
 
   if (set_rsv(ll, SET_OPT_ALLOC, sizeof(t_segid), &o.segments) != 0)
     {
@@ -108,22 +159,30 @@ int			as_rsv(t_asid*				asid)
       return (-1);
     }
 
+  /*
+   * 5)
+   */
+
   if (set_rsv(ll, SET_OPT_ALLOC, sizeof(o_region), &o.regions) != 0)
     {
       id_rel(&as->id, o.asid);
 
-      // XXX set_rel(o.segments);
+      set_rel(o.segments);
 
       return (-1);
     }
+
+  /*
+   * 6)
+   */
 
   if (set_add(as->container, &o) != 0)
     {
       id_rel(&as->id, o.asid);
 
-      // XXX set_rel(o.segments);
+      set_rel(o.segments);
 
-      // XXX set_rel(o.regions);
+      set_rel(o.regions);
 
       return (-1);
     }
@@ -132,12 +191,123 @@ int			as_rsv(t_asid*				asid)
 }
 
 /*
- * this functions initializes the address space manager from the init
- * variable.
+ * this function releases an address space.
  *
  * steps:
  *
- * 1) XXX
+ * 1) checks whether the address space manager was previously initialized.
+ * 2) gets the address space object given its identifier.
+ * 3) releases the address space object identifier.
+ * 4) releases the address space object's set of segments.
+ * 5) releases the address space object's set of regions.
+ * 6) removes the address space object from the address space container.
+ */
+
+int			as_rel(t_asid				asid)
+{
+  t_iterator		iterator;
+  o_as			*o;
+
+  /*
+   * 1)
+   */
+
+  as_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (as_get(asid, &o) != 0)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (id_rel(&as->id, o->asid) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (set_rel(o->segments) != 0)
+    return (-1);
+
+  /*
+   * 5)
+   */
+
+  if (set_rel(o->regions) != 0)
+    return (-1);
+
+  /*
+   * 6)
+   */
+
+  if (set_remove(as->container, o->asid) != 0)
+    return (-1);
+
+  return (0);
+}
+
+/*
+ * this function gets an address space object from the address space
+ * container from its identifier.
+ *
+ * steps:
+ *
+ * 1) checks whether the address space manager was previously initialized.
+ * 2) finds the address space object in the address space container
+ *    given its identifier.
+ * 3) gets the address space object from the previously found iterator.
+ */
+
+int			as_get(t_asid				asid,
+			       o_as**				o)
+{
+  t_iterator		iterator;
+
+  /*
+   * 1)
+   */
+
+  as_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (set_find(as->container, asid, &iterator) != 0)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (set_get(as->container, iterator, (void*)o) != 0)
+    return (-1);
+
+  return (0);
+}
+
+/*
+ * this functions initializes the address space manager from the init
+ * variable.
+ *
+ * this function takes care of initializing and builing the kernel
+ * address space.
+ *
+ * steps:
+ *
+ * 1) allocates and initializes the address space manager structure.
+ * 2) initializes the identifier object to be able to generate
+ *    the address space identifiers.
+ * 3) reserves the addres space container set which will contain
+ *    the address space build later.
+ * 4) reserves the kernel address space.
+ * 5) if asked, dumps the address space manager.
  */
 
 int			as_init(void)
@@ -199,3 +369,4 @@ int			as_init(void)
 
   return (0);
 }
+

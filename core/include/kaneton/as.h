@@ -81,6 +81,11 @@ int			as_dump(void);
 
 int			as_rsv(t_asid*				asid);
 
+int			as_rel(t_asid				asid);
+
+int			as_get(t_asid				asid,
+			       o_as**				o);
+
 int			as_init(void);
 
 

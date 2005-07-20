@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Wed Jul 20 15:03:06 2005   mycure
+ * last update   Wed Jul 20 21:15:30 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -27,6 +27,13 @@
 /*
  * ---------- defines ---------------------------------------------------------
  */
+
+/*
+ * types
+ */
+
+#define SET_TYPE_ARRAY		0x01
+#define SET_TYPE_LL		0x02
 
 /*
  * foreach
@@ -132,7 +139,7 @@ extern m_set*		set;
           switch (_set_->type)						\
             {								\
               case SET_TYPE_LL:						\
-                _r_ = _func_##_ll((_setid_), _args_);			\
+                _r_ = _func_##_ll((_setid_), ##_args_);			\
                 break;							\
             }								\
         }								\
@@ -143,29 +150,29 @@ extern m_set*		set;
 #define set_rsv(_type_, _args_...)					\
   set_rsv_##_type_(_args_)
 
-#define set_rel(_setid_)						\
-  set_trap(set_rel, _setid_)
+#define set_rel(_setid_, _args_...)					\
+  set_trap(set_rel, _setid_, ##_args_)
 
 #define set_head(_setid_, _args_...)					\
-  set_trap(set_head, _setid_, _args_)
+  set_trap(set_head, _setid_, ##_args_)
 
 #define set_tail(_setid_, _args_...)					\
-  set_trap(set_tail, _setid_, _args_)
+  set_trap(set_tail, _setid_, ##_args_)
 
 #define set_prev(_setid_, _args_...)					\
-  set_trap(set_prev, _setid_, _args_)
+  set_trap(set_prev, _setid_, ##_args_)
 
 #define set_next(_setid_, _args_...)					\
-  set_trap(set_next, _setid_, _args_)
+  set_trap(set_next, _setid_, ##_args_)
 
 #define set_get(_setid_, _args_...)					\
-  set_trap(set_get, _setid_, _args_)
+  set_trap(set_get, _setid_, ##_args_)
 
 #define set_add(_setid_, _args_...)					\
-  set_trap(set_add, _setid_, _args_)
+  set_trap(set_add, _setid_, ##_args_)
 
 #define set_remove(_setid_, _args_...)					\
-  set_trap(set_remove, _setid_, _args_)
+  set_trap(set_remove, _setid_, ##_args_)
 
 /*
  * foreach

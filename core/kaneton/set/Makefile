@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Jul  4 21:53:45 2005   mycure
+## last update   Wed Jul 20 21:13:12 2005   mycure
 ##
 
 #
@@ -33,11 +33,13 @@ include			../../../.kaneton.mk
 SET			:=		set.a
 
 SET_C			:=		set.c				\
+					set_array.c			\
 					set_ll.c			
 
 SET_O			:=		$(SET_C:.c=.o)
 
 SET_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/set.h \
+					$(_CORE_INCLUDE_DIR_)/kaneton/set_array.h \
 					$(_CORE_INCLUDE_DIR_)/kaneton/set_ll.h
 
 CFLAGS			+=		-D___kernel
