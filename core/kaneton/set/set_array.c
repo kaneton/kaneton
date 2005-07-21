@@ -5,13 +5,13 @@
  * 
  * set_array.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jan 29 05:07:39 1999   mycure
+ * last update   Fri Jan 29 08:11:39 1999   mycure
  */
 
 /*
@@ -246,7 +246,7 @@ int			set_rsv_array(t_opts			opts,
 
   if (opts & SET_OPT_CONTAINER)
     {
-      *setid = set->contid;
+      *setid = set->setid;
     }
   else
     {

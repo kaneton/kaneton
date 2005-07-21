@@ -5,13 +5,13 @@
  * 
  * set_ll.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jan 29 07:02:20 1999   mycure
+ * last update   Fri Jan 29 08:12:40 1999   mycure
  */
 
 /*
@@ -24,8 +24,6 @@
  * each set of this type can be used in two ways. the first one ask the
  * set manager to allocate and copy each object to add while the second
  * way tells the set manager to simply include the objects in the set.
- *
- * XXX add sort
  */
 
 /*
@@ -466,7 +464,7 @@ int			set_rsv_ll(t_opts			opts,
 
   if (opts & SET_OPT_CONTAINER)
     {
-      *setid = set->contid;
+      *setid = set->setid;
     }
   else
     {
@@ -506,12 +504,53 @@ int			set_rsv_ll(t_opts			opts,
  *
  * steps:
  *
- * 1) XXX
+ * 1) checks whether the set manager was previously initialised.
+ * 2) tries to find and gets an iterator on the node holding the set to
+ *    release.
+ * 3) gets the set given its set identifier.
+ * 4) if needed, releases the set identifier.
+ * 5) then, removes the set from the set container.
  */
 
 int			set_rel_ll(t_setid			setid)
 {
-  /* XXX */
+  t_iterator		iterator;
+  o_set			*o;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (set_find(set->setid, setid, &iterator) != 0)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (set_get(set->setid, iterator, (void**)&o) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (!(o->u.ll.opts & SET_OPT_CONTAINER))
+    if (id_rel(&set->id, o->id) != 0)
+      return (-1);
+
+  /*
+   * 5)
+   */
+
+  if (set_delete(o->id) != 0)
+    return (-1);
 
   return (0);
 }

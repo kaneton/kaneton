@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jan 29 06:58:50 1999   mycure
+ * last update   Fri Jan 29 08:11:26 1999   mycure
  */
 
 /*
@@ -241,12 +241,12 @@ int			set_new(o_set*				o)
    * 2)
    */
 
-  if (o->id == set->contid)
+  if (o->id == set->setid)
     {
-      if ((set->cont = malloc(sizeof(o_set))) == NULL)
+      if ((set->container = malloc(sizeof(o_set))) == NULL)
 	return (-1);
 
-      memcpy(set->cont, o, sizeof(o_set));
+      memcpy(set->container, o, sizeof(o_set));
 
       return (0);
     }
@@ -255,7 +255,7 @@ int			set_new(o_set*				o)
    * 3)
    */
 
-  if (set_add(set->cont->id, o) != 0)
+  if (set_add(set->container->id, o) != 0)
     {
       cons_msg('!', "set: unable to add this set descriptor "
 	       "to the set container\n");
@@ -288,7 +288,7 @@ int			set_delete(t_setid			setid)
    * 2)
    */
 
-  if (setid == set->contid)
+  if (setid == set->setid)
     {
       cons_msg('!', "set: cannot remove the set container\n");
 
@@ -299,7 +299,7 @@ int			set_delete(t_setid			setid)
    * 3)
    */
 
-  if (set_remove(set->cont->id, setid) != 0)
+  if (set_remove(set->container->id, setid) != 0)
     {
       cons_msg('!', "set: unable to remove this descriptor "
 	       "from the set container\n");
@@ -336,9 +336,9 @@ int			set_descriptor(t_setid			setid,
    * 2)
    */
 
-  if (setid == set->contid)
+  if (setid == set->setid)
     {
-      *o = set->cont;
+      *o = set->container;
 
       return (0);
     }
@@ -347,7 +347,7 @@ int			set_descriptor(t_setid			setid,
    * 3)
    */
 
-  if (set_find(set->cont->id, setid, &i) != 0)
+  if (set_find(set->container->id, setid, &i) != 0)
     return (-1);
 
   *o = i;
@@ -463,7 +463,7 @@ int			set_init(void)
    * 3)
    */
 
-  if (id_rsv(&set->id, &set->contid) != 0)
+  if (id_rsv(&set->id, &set->setid) != 0)
     {
       cons_msg('!', "set: unable to reserve an identifier\n");
 
@@ -487,7 +487,7 @@ int			set_init(void)
    */
 
 #if (KANETON_DEBUG & KANETON_DEBUG_SET)
-  set_dump(set->cont->id);
+  set_dump(set->container->id);
 #endif
 
   return (0);
