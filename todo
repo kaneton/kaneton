@@ -1,4 +1,7 @@
 --
+ set_dump_ll _array etc..
+
+--
  http://perso.wanadoo.fr/philippe.michel/qnx/
 
  http://xos.freezee.org/index.php?page=video
@@ -7,7 +10,8 @@
  id_dump(o_id* o)
 
 --
- virer les alias de t_id de la partie dependante
+ virer les alias de t_id de la partie dependante et meme plus
+ generalement les types qui n ont rien a y faire
 
 --
  faire un module debug qui utilise le driver serial pour afficher
@@ -53,3 +57,9 @@
  alloc.c: virer les macros d alignement etc.. et en faire des plus
           generiques.
           mettre les macros dans les .h
+
+ realloc
+
+--
+ peut etre changer la nomenclature de set, object -> data
+ car ca prete a confusion avec la nomenclature kaneton

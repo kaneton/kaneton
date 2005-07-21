@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jan 29 06:45:37 1999   mycure
+ * last update   Thu Jul 21 19:54:42 2005   mycure
  */
 
 /*
@@ -102,7 +102,7 @@ int			as_dump(void)
 
   set_foreach(SET_OPT_FORWARD, as->container, &i)
     {
-      if (set_get(as->container, i, (void**)&data) != 0)
+      if (set_object(as->container, i, (void**)&data) != 0)
 	return (-1);
 
       cons_msg('#', "  %qu\n", data->asid);
@@ -152,7 +152,8 @@ int			as_rsv(t_asid*				asid)
    * 4)
    */
 
-  if (set_rsv(array, SET_OPT_SORT, sizeof(t_segid), &o.segments) != 0)
+  if (set_rsv(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_SEGMENTS_INITSZ,
+	      sizeof(t_segid), &o.segments) != 0)
     {
       id_rel(&as->id, o.asid);
 
@@ -163,7 +164,8 @@ int			as_rsv(t_asid*				asid)
    * 5)
    */
 
-  if (set_rsv(array, SET_OPT_SORT, sizeof(o_region), &o.regions) != 0)
+  if (set_rsv(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_REGIONS_INITSZ,
+	      sizeof(o_region), &o.regions) != 0)
     {
       id_rel(&as->id, o.asid);
 
@@ -259,9 +261,7 @@ int			as_rel(t_asid				asid)
  * steps:
  *
  * 1) checks whether the address space manager was previously initialised.
- * 2) finds the address space object in the address space container
- *    given its identifier.
- * 3) gets the address space object from the previously found iterator.
+ * 3) gets the address space object in the address space container.
  */
 
 int			as_get(t_asid				asid,
@@ -279,14 +279,7 @@ int			as_get(t_asid				asid,
    * 2)
    */
 
-  if (set_find(as->container, asid, &iterator) != 0)
-    return (-1);
-
-  /*
-   * 3)
-   */
-
-  if (set_get(as->container, iterator, (void*)o) != 0)
+  if (set_get(as->container, asid, (void**)o) != 0)
     return (-1);
 
   return (0);
@@ -369,4 +362,3 @@ int			as_init(void)
 
   return (0);
 }
-

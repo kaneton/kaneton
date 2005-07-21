@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jan 29 08:12:40 1999   mycure
+ * last update   Thu Jul 21 22:22:43 2005   mycure
  */
 
 /*
@@ -142,30 +142,24 @@ int			set_next_ll(t_setid			setid,
 }
 
 /*
- * this function adds an object in the linked-list.
+ * this function inserts a new node at the head of the list.
  *
  * steps:
  *
- * 1) checks whether the set manager was previously initialised.
- * 2) gets the set descriptor corresponding to the set identifier.
- * 3) allocates and initialises the new node for the new object.
- * 4) performs operations from the set options: alloc or not etc..
- * 5) inserts the new node in the list.
- *   A) sorts the nodes.
- *     a) inserts the new node in the list.
- *       i) there is an identifier collision so the add operation
- *          is not possible.
- *       ii) inserts the new node in the linked-list.
- *     b) inserts the new node at the end of the list.
- *     c) the list is empty, so the new node becomes the list.
- *   B) does not sort the nodes.
- * 6) increments the number of nodes in the list.
+ * 1) checks whether the set manager was previously initiailised.
+ * 2) avoids bad identifiers.
+ * 3) gets the set descriptor corresponding to the set identifier.
+ * 4) if the sort option is enable, this operation is not allowed.
+ * 5) allocates and initialises the new node.
+ * 6) performs operations from the set options: alloc or not etc..
+ * 7) inserts the new node and reorganises the list.
+ * 8) increments the number of nodes in the list.
  */
 
-int			set_add_ll(t_setid			setid,
-				   void*			data)
+int			set_insert_head_ll(t_setid		setid,
+					   void*		data)
 {
-  t_set_ll_node*	n;
+  t_set_ll_node		*n;
   o_set*		o;
 
   /*
@@ -178,11 +172,25 @@ int			set_add_ll(t_setid			setid,
    * 2)
    */
 
-  if (set_descriptor(setid, &o) != 0)
+  if (*((t_id*)data) == ID_UNUSED)
     return (-1);
 
   /*
    * 3)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (o->u.ll.opts & SET_OPT_SORT)
+    return (-1);
+
+  /*
+   * 5)
    */
 
   if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
@@ -191,7 +199,7 @@ int			set_add_ll(t_setid			setid,
   memset(n, 0x0, sizeof(t_set_ll_node));
 
   /*
-   * 4)
+   * 6)
    */
 
   if (o->u.ll.opts & SET_OPT_ALLOC)
@@ -211,7 +219,391 @@ int			set_add_ll(t_setid			setid,
     }
 
   /*
+   * 7)
+   */
+
+  n->prv = NULL;
+  n->nxt = o->u.ll.head;
+
+  if (n->nxt != NULL)
+    n->nxt->prv = n;
+
+  o->u.ll.head = n;
+
+  if (o->u.ll.tail == NULL)
+    o->u.ll.tail = n;
+
+  /*
+   * 8)
+   */
+
+  o->size++;
+
+  return (0);
+}
+
+/*
+ * this function inserts a new node at the tail of the list.
+ *
+ * steps:
+ *
+ * 1) checks whether the set manager was previously initiailised.
+ * 2) avoid bad identifiers.
+ * 3) gets the set descriptor corresponding to the set identifier.
+ * 4) if the sort option is enable, this operation is not allowed.
+ * 5) allocates and initialises the new node.
+ * 6) performs operations from the set options: alloc or not etc..
+ * 7) inserts the new node and reorganises the list.
+ * 8) increments the number of nodes in the list.
+ */
+
+int			set_insert_tail_ll(t_setid		setid,
+					   void*		data)
+{
+  t_set_ll_node		*n;
+  o_set*		o;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (*((t_id*)data) == ID_UNUSED)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (o->u.ll.opts & SET_OPT_SORT)
+    return (-1);
+
+  /*
    * 5)
+   */
+
+  if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
+    return (-1);
+
+  memset(n, 0x0, sizeof(t_set_ll_node));
+
+  /*
+   * 6)
+   */
+
+  if (o->u.ll.opts & SET_OPT_ALLOC)
+    {
+      if ((n->data = malloc(o->u.ll.datasz)) == NULL)
+	{
+	  free(n);
+
+	  return (-1);
+	}
+
+      memcpy(n->data, data, o->u.ll.datasz);
+    }
+  else
+    {
+      n->data = data;
+    }
+
+  /*
+   * 7)
+   */
+
+  n->prv = o->u.ll.tail;
+  n->nxt = NULL;
+
+  if (n->prv != NULL)
+    n->prv->nxt = n;
+
+  o->u.ll.tail = n;
+
+  if (o->u.ll.head == NULL)
+    o->u.ll.head = n;
+
+  /*
+   * 8)
+   */
+
+  o->size++;
+
+  return (0);
+}
+
+/*
+ * XXX
+ */
+
+int			set_insert_before_ll(t_setid		setid,
+					     t_iterator		iterator,
+					     void*		data)
+{
+  t_set_ll_node		*i = iterator;
+  t_set_ll_node		*n;
+  o_set*		o;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (*((t_id*)data) == ID_UNUSED)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (o->u.ll.opts & SET_OPT_SORT)
+    return (-1);
+
+  /*
+   * 5)
+   */
+
+  if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
+    return (-1);
+
+  memset(n, 0x0, sizeof(t_set_ll_node));
+
+  /*
+   * 6)
+   */
+
+  if (o->u.ll.opts & SET_OPT_ALLOC)
+    {
+      if ((n->data = malloc(o->u.ll.datasz)) == NULL)
+	{
+	  free(n);
+
+	  return (-1);
+	}
+
+      memcpy(n->data, data, o->u.ll.datasz);
+    }
+  else
+    {
+      n->data = data;
+    }
+
+  /*
+   * 7)
+   */
+
+  n->prv = i->prv;
+  n->nxt = i;
+
+  i->prv = n;
+
+  if (n->prv != NULL)
+    n->prv->nxt = n;
+  else
+    o->u.ll.head = n;
+
+  /*
+   * 8)
+   */
+
+  o->size++;
+
+  return (0);
+}
+
+/*
+ * XXX
+ */
+
+int			set_insert_after_ll(t_setid		setid,
+					    t_iterator		iterator,
+					    void*		data)
+{
+  t_set_ll_node		*i = iterator;
+  t_set_ll_node		*n;
+  o_set*		o;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+ 
+  /*
+   * 2)
+   */
+
+  if (*((t_id*)data) == ID_UNUSED)
+    return (-1);
+
+ /*
+   * 3)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (o->u.ll.opts & SET_OPT_SORT)
+    return (-1);
+
+  /*
+   * 5)
+   */
+
+  if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
+    return (-1);
+
+  memset(n, 0x0, sizeof(t_set_ll_node));
+
+  /*
+   * 6)
+   */
+
+  if (o->u.ll.opts & SET_OPT_ALLOC)
+    {
+      if ((n->data = malloc(o->u.ll.datasz)) == NULL)
+	{
+	  free(n);
+
+	  return (-1);
+	}
+
+      memcpy(n->data, data, o->u.ll.datasz);
+    }
+  else
+    {
+      n->data = data;
+    }
+
+  /*
+   * 7)
+   */
+
+  n->nxt = i->nxt;
+  n->prv = i;
+
+  i->nxt = n;
+
+  if (n->nxt != NULL)
+    n->nxt->prv = n;
+  else
+    o->u.ll.tail = n;
+
+  /*
+   * 8)
+   */
+
+  o->size++;
+
+  return (0);
+}
+
+/*
+ * this function adds an object in the linked-list.
+ *
+ * steps:
+ *
+ * 1) checks whether the set manager was previously initialised.
+ * 2) avoids bad identifiers.
+ * 3) gets the set descriptor corresponding to the set identifier.
+ * 4) allocates and initialises the new node for the new object.
+ * 5) performs operations from the set options: alloc or not etc..
+ * 6) inserts the new node in the list.
+ *   A) sorts the nodes.
+ *     a) inserts the new node in the list.
+ *       i) there is an identifier collision so the add operation
+ *          is not possible.
+ *       ii) inserts the new node in the linked-list.
+ *     b) inserts the new node at the end of the list.
+ *     c) the list is empty, so the new node becomes the list.
+ *   B) does not sort the nodes.
+ * 7) increments the number of nodes in the list.
+ */
+
+int			set_add_ll(t_setid			setid,
+				   void*			data)
+{
+  t_set_ll_node*	n;
+  o_set*		o;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (*((t_id*)data) == ID_UNUSED)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if ((n = malloc(sizeof(t_set_ll_node))) == NULL)
+    return (-1);
+
+  memset(n, 0x0, sizeof(t_set_ll_node));
+
+  /*
+   * 5)
+   */
+
+  if (o->u.ll.opts & SET_OPT_ALLOC)
+    {
+      if ((n->data = malloc(o->u.ll.datasz)) == NULL)
+	{
+	  free(n);
+
+	  return (-1);
+	}
+
+      memcpy(n->data, data, o->u.ll.datasz);
+    }
+  else
+    {
+      n->data = data;
+    }
+
+  /*
+   * 6)
    */
 
   if (o->u.ll.opts & SET_OPT_SORT)
@@ -314,15 +706,14 @@ int			set_add_ll(t_setid			setid,
       if (n->nxt != NULL)
 	n->nxt->prv = n;
 
-      if ((o->u.ll.head == NULL) && (o->u.ll.tail == NULL))
-	{
-	  o->u.ll.head = n;
-	  o->u.ll.tail = n;
-	}
+      o->u.ll.head = n;
+
+      if (o->u.ll.tail == NULL)
+	o->u.ll.tail = n;
     }
 
   /*
-   * 6)
+   * 7)
    */
 
   o->size++;
@@ -336,13 +727,14 @@ int			set_add_ll(t_setid			setid,
  * steps:
  *
  * 1) checks whether the set manager was initialised.
- * 2) gets the set descriptor given its set identifier.
- * 3) tries to locate the looked for node given its identifier.
- * 4) if not found, returns an error.
- * 5) reorganises the linked-list.
- * 6) if needed, frees the object's memory.
- * 7) frees the node's memory.
- * 8) decrements the number of nodes in the linked-list data structure.
+ * 2) avoids bad identifiers.
+ * 3) gets the set descriptor given its set identifier.
+ * 4) tries to locate the looked for node given its identifier.
+ * 5) if not found, returns an error.
+ * 6) reorganises the linked-list.
+ * 7) if needed, frees the object's memory.
+ * 8) frees the node's memory.
+ * 9) decrements the number of nodes in the linked-list data structure.
  */
 
 int			set_remove_ll(t_setid			setid,
@@ -361,11 +753,18 @@ int			set_remove_ll(t_setid			setid,
    * 2)
    */
 
-  if (set_descriptor(setid, &o) != 0)
+  if (id == ID_UNUSED)
     return (-1);
 
   /*
    * 3)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 4)
    */
 
   for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->nxt)
@@ -373,37 +772,41 @@ int			set_remove_ll(t_setid			setid,
       break;
 
   /*
-   * 4)
+   * 5)
    */
 
   if (tmp == NULL)
     return (-1);
 
   /*
-   * 5)
+   * 6)
    */
 
   if (tmp->prv != NULL)
     tmp->prv->nxt = tmp->nxt;
+  else
+    o->u.ll.head = tmp->nxt;
 
   if (tmp->nxt != NULL)
     tmp->nxt->prv = tmp->prv;
+  else
+    o->u.ll.tail = tmp->prv;
 
   /*
-   * 6)
+   * 7)
    */
 
   if (o->u.ll.opts & SET_OPT_ALLOC)
     free(tmp->data);
 
   /*
-   * 7)
+   * 8)
    */
 
   free(tmp);
 
   /*
-   * 8)
+   * 9)
    */
 
   o->size--;
@@ -415,9 +818,9 @@ int			set_remove_ll(t_setid			setid,
  * this function returns an object given its iterator.
  */
 
-int			set_get_ll(t_setid			setid,
-				   t_iterator			iterator,
-				   void**			data)
+int			set_object_ll(t_setid			setid,
+				      t_iterator		iterator,
+				      void**			data)
 {
   t_set_ll_node*	n = iterator;
 
@@ -491,7 +894,8 @@ int			set_rsv_ll(t_opts			opts,
 
   if (set_new(&o) != 0)
     {
-      id_rel(&set->id, *setid);
+      if (!(opts & SET_OPT_CONTAINER))
+	id_rel(&set->id, o.id);
 
       return (-1);
     }
@@ -505,16 +909,14 @@ int			set_rsv_ll(t_opts			opts,
  * steps:
  *
  * 1) checks whether the set manager was previously initialised.
- * 2) tries to find and gets an iterator on the node holding the set to
- *    release.
- * 3) gets the set given its set identifier.
+ * 2) gets the set given its set identifier.
+ * 3) cannot release the set container.
  * 4) if needed, releases the set identifier.
  * 5) then, removes the set from the set container.
  */
 
 int			set_rel_ll(t_setid			setid)
 {
-  t_iterator		iterator;
   o_set			*o;
 
   /*
@@ -527,15 +929,19 @@ int			set_rel_ll(t_setid			setid)
    * 2)
    */
 
-  if (set_find(set->setid, setid, &iterator) != 0)
+  if (set_descriptor(setid, &o) != 0)
     return (-1);
 
   /*
    * 3)
    */
 
-  if (set_get(set->setid, iterator, (void**)&o) != 0)
-    return (-1);
+  if (setid == set->setid)
+    {
+      cons_msg('!', "set: cannot release the set container\n");
+
+      return (-1);
+    }
 
   /*
    * 4)

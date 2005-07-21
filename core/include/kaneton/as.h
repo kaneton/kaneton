@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Wed Jul 20 14:15:56 2005   mycure
+ * last update   Thu Jul 21 15:34:02 2005   mycure
  */
 
 #ifndef KANETON_AS_H
@@ -23,6 +23,13 @@
 
 #include <arch/machdep/machdep.h>
 #include <kaneton/id.h>
+
+/*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+#define AS_SEGMENTS_INITSZ	0x4
+#define AS_REGIONS_INITSZ	0x4
 
 /*
  * ---------- types -----------------------------------------------------------

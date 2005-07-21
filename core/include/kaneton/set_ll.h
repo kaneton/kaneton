@@ -70,21 +70,35 @@ int			set_next_ll(t_setid			setid,
 				    t_iterator			current,
 				    t_iterator*			next);
 
+int			set_insert_head_ll(t_setid		setid,
+					   void*		data);
+
+int			set_insert_tail_ll(t_setid		setid,
+					   void*		data);
+
+int			set_insert_before_ll(t_setid		setid,
+					     t_iterator		iterator,
+					     void*		data);
+
+int			set_insert_after_ll(t_setid		setid,
+					    t_iterator		iterator,
+					    void*		data);
+
 int			set_add_ll(t_setid			setid,
 				   void*			data);
 
 int			set_remove_ll(t_setid			setid,
 				      t_id			id);
 
+int			set_object_ll(t_setid			setid,
+				      t_iterator		iterator,
+				      void**			data);
+
 int			set_rsv_ll(t_opts			opts,
 				   t_size			datasz,
 				   t_setid*			setid);
 
 int			set_rel_ll(t_setid			setid);
-
-int			set_get_ll(t_setid			setid,
-				   t_iterator			iterator,
-				   void**			data);
 
 
 /*

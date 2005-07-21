@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Fri Jan 29 08:09:50 1999   mycure
+ * last update   Thu Jul 21 15:31:00 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -61,6 +61,7 @@ typedef void*			t_iterator;
  * ---------- includes --------------------------------------------------------
  */
 
+#include <kaneton/set_array.h>
 #include <kaneton/set_ll.h>
 
 /*
@@ -85,6 +86,7 @@ typedef struct
 
   union
   {
+    t_set_array			array;
     t_set_ll			ll;
   }				u;
 }				o_set;
@@ -135,6 +137,9 @@ extern m_set*		set;
         {								\
           switch (_set_->type)						\
             {								\
+              case SET_TYPE_ARRAY:					\
+                _r_ = _func_##_array((_setid_), ##_args_);		\
+                break;							\
               case SET_TYPE_LL:						\
                 _r_ = _func_##_ll((_setid_), ##_args_);			\
                 break;							\
@@ -162,14 +167,26 @@ extern m_set*		set;
 #define set_next(_setid_, _args_...)					\
   set_trap(set_next, _setid_, ##_args_)
 
-#define set_get(_setid_, _args_...)					\
-  set_trap(set_get, _setid_, ##_args_)
+#define set_object(_setid_, _args_...)					\
+  set_trap(set_object, _setid_, ##_args_)
 
 #define set_add(_setid_, _args_...)					\
   set_trap(set_add, _setid_, ##_args_)
 
 #define set_remove(_setid_, _args_...)					\
   set_trap(set_remove, _setid_, ##_args_)
+
+#define set_insert_head(_setid_, _args_...)				\
+  set_trap(set_insert_head, _setid_, ##_args_)
+
+#define set_insert_tail(_setid_, _args_...)				\
+  set_trap(set_insert_tail, _setid_, ##_args_)
+
+#define set_insert_before(_setid_, _args_...)				\
+  set_trap(set_insert_before, _setid_, ##_args_)
+
+#define set_insert_after(_setid_, _args_...)				\
+  set_trap(set_insert_after, _setid_, ##_args_)
 
 /*
  * foreach
@@ -208,9 +225,13 @@ int			set_delete(t_setid			setid);
 int			set_descriptor(t_setid			setid,
 				       o_set**			o);
 
-int			set_find(t_setid			setid,
-				 t_id				id,
-				 t_iterator*			iterator);
+int			set_locate(t_setid			setid,
+				   t_id				id,
+				   t_iterator*			iterator);
+
+int			set_get(t_setid				setid,
+				t_id				id,
+				void**				o);
 
 int			set_init(void);
 

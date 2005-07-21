@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Mon Jul 18 15:03:10 2005   mycure
+ * last update   Thu Jul 21 18:52:59 2005   mycure
  */
 
 #ifndef KANETON_ID_H
@@ -22,6 +22,12 @@
  */
 
 #include <arch/machdep/machdep.h>
+
+/*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+#define ID_UNUSED		((t_id)-1)
 
 /*
  * ---------- types -----------------------------------------------------------

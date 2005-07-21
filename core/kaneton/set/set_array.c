@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jan 29 08:11:39 1999   mycure
+ * last update   Thu Jul 21 22:25:13 2005   mycure
  */
 
 /*
@@ -50,8 +50,8 @@
 int			set_head_array(t_setid			setid,
 				       t_iterator*		iterator)
 {
-  /*
   o_set*		o;
+  t_sint32		i;
 
   set_check(set);
 
@@ -63,9 +63,15 @@ int			set_head_array(t_setid			setid,
   if (o->size == 0)
     return (-1);
 
-  *iterator = o->u.ll.head;
-  */
-  return (0);
+  for (i = 0; i < o->u.array.arraysz; i++)
+    if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) != ID_UNUSED)
+      {
+	*iterator = o->u.array.array + (i * o->u.array.datasz);
+
+	return (0);
+      }
+
+  return (-1);
 }
 
 /*
@@ -77,8 +83,8 @@ int			set_head_array(t_setid			setid,
 int			set_tail_array(t_setid			setid,
 				       t_iterator*		iterator)
 {
-  /*
   o_set*		o;
+  t_sint32		i;
 
   set_check(set);
 
@@ -90,9 +96,15 @@ int			set_tail_array(t_setid			setid,
   if (o->size == 0)
     return (-1);
 
-  *iterator = o->u.ll.tail;
-  */
-  return (0);
+  for (i = o->u.array.arraysz - 1; i >= 0; i++)
+    if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) != ID_UNUSED)
+      {
+	*iterator = o->u.array.array + (i * o->u.array.datasz);
+
+	return (0);
+      }
+
+  return (-1);
 }
 
 /*
@@ -103,9 +115,8 @@ int			set_prev_array(t_setid			setid,
 				       t_iterator		current,
 				       t_iterator*		previous)
 {
-  /*
-  t_set_array_node*	c = current;
   o_set*		o;
+  t_sint32		i;
 
   set_check(set);
 
@@ -114,12 +125,16 @@ int			set_prev_array(t_setid			setid,
   if (set_descriptor(setid, &o) != 0)
     return (-1);
 
-  if (c->prv == NULL)
-    return (-1);
+  for (i = (((t_uint8*)current - o->u.array.array) / o->u.array.datasz) - 1;
+       i >= 0; i++)
+    if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) != ID_UNUSED)
+      {
+	*previous = o->u.array.array + (i * o->u.array.datasz);
 
-  *previous = c->prv;
-  */
-  return (0);
+	return (0);
+      }
+
+  return (-1);
 }
 
 /*
@@ -130,9 +145,8 @@ int			set_next_array(t_setid			setid,
 				       t_iterator		current,
 				       t_iterator*		next)
 {
-  /*
-  t_set_array_node*	c = current;
   o_set*		o;
+  t_sint32		i;
 
   set_check(set);
 
@@ -141,11 +155,213 @@ int			set_next_array(t_setid			setid,
   if (set_descriptor(setid, &o) != 0)
     return (-1);
 
-  if (c->nxt == NULL)
+  for (i = (((t_uint8*)current - o->u.array.array) / o->u.array.datasz) + 1;
+       i < o->u.array.arraysz; i++)
+    if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) != ID_UNUSED)
+      {
+	*next = o->u.array.array + (i * o->u.array.datasz);
+
+	return (0);
+      }
+
+  return (-1);
+}
+
+/*
+ * this function inserts a new entry at the head of the array.
+ *
+ * steps:
+ *
+ * 1) XXX
+ */
+
+int			set_insert_head_array(t_setid		setid,
+					      void*		data)
+{
+  o_set*		o;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (*((t_id*)data) == ID_UNUSED)
     return (-1);
 
-  *next = c->nxt;
+  /*
+   * 3)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (o->u.ll.opts & SET_OPT_SORT)
+    return (-1);
+
+  /* XXX */
+
+  /*
+   * 8)
+   */
+
+  o->size++;
+
+  return (0);
+}
+
+/*
+ * this function inserts a new entry at the tail of the array.
+ *
+ * steps:
+ *
+ * 1) XXX
   */
+
+int			set_insert_tail_array(t_setid		setid,
+					      void*		data)
+{
+  o_set*		o;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (*((t_id*)data) == ID_UNUSED)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (o->u.ll.opts & SET_OPT_SORT)
+    return (-1);
+
+  /* XXX */
+
+  /*
+   * 8)
+   */
+
+  o->size++;
+
+  return (0);
+}
+
+/*
+ * XXX
+ */
+
+int			set_insert_before_array(t_setid		setid,
+						t_iterator	iterator,
+						void*		data)
+{
+  o_set*		o;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (*((t_id*)data) == ID_UNUSED)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (o->u.ll.opts & SET_OPT_SORT)
+    return (-1);
+
+  /* XXX */
+
+  /*
+   * 8)
+   */
+
+  o->size++;
+
+  return (0);
+}
+
+/*
+ * XXX
+ */
+
+int			set_insert_after_array(t_setid		setid,
+					       t_iterator	iterator,
+					       void*		data)
+{
+  o_set*		o;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+ 
+  /*
+   * 2)
+   */
+
+  if (*((t_id*)data) == ID_UNUSED)
+    return (-1);
+
+ /*
+   * 3)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (o->u.ll.opts & SET_OPT_SORT)
+    return (-1);
+
+  /* XXX */
+
+  /*
+   * 8)
+   */
+
+  o->size++;
+
   return (0);
 }
 
@@ -161,19 +377,119 @@ int			set_next_array(t_setid			setid,
 int			set_add_array(t_setid			setid,
 				      void*			data)
 {
+  o_set*		o;
+  t_sint32		i;
+  t_sint32		j;
+
   /*
    * 1)
    */
 
   set_check(set);
 
-  /* XXX */
+  /*
+   * 2)
+   */
+
+  if (*((t_id*)data) == ID_UNUSED)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (o->size == o->u.array.arraysz)
+    {
+      /* XXX wait for the implementation by pwipwi
+      if ((o->u.array.array = realloc(o->u.array.array,
+				      (o->u.array.arraysz * 2) *
+				      o->u.array.datasz)) == NULL)
+	{
+	  cons_msg('!', "set: not enough memory to extend the array\n");
+
+	  return (-1);
+	}
+      */
+
+      for (i = o->u.array.arraysz; i < (o->u.array.arraysz * 2); i++)
+	*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) = ID_UNUSED;
+
+      o->u.array.arraysz *= 2;
+    }
+
+  /*
+   * 5)
+   */
+
+  if (o->u.array.opts & SET_OPT_SORT)
+    {
+      /*
+       * A)
+       */
+
+      for (i = 0; i < o->size; i++)
+	{
+	  if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) >
+	      *((t_id*)data))
+	    {
+	      for (j = o->size - 1; j >= i; j--)
+		{
+		  memcpy(o->u.array.array + ((j + 1) * o->u.array.datasz),
+			 o->u.array.array + (j * o->u.array.datasz),
+			 o->u.array.datasz);
+		}
+
+	      memcpy(o->u.array.array + (i * o->u.array.datasz),
+		     data, o->u.array.datasz);
+
+	      break;
+	    }
+	}
+
+      if (i == o->size)
+	{
+	  memcpy(o->u.array.array + (o->size * o->u.array.datasz),
+		 data, o->u.array.datasz);
+	}
+    }
+  else
+    {
+      /*
+       * B)
+       */
+
+      for (i = 0; i < o->u.array.arraysz; i++)
+	{
+	  if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) ==
+	      ID_UNUSED)
+	    {
+	      memcpy(o->u.array.array + (i * o->u.array.datasz),
+		     data, o->u.array.datasz);
+
+	      break;
+	    }
+
+	  if (i == o->u.array.arraysz)
+	    {
+	      cons_msg('!', "set: unreachable code reached\n");
+
+	      return (-1);
+	    }
+	}
+    }
 
   /*
    * 6)
    */
 
-  /* XXX o->size++; */
+  o->size++;
 
   return (0);
 }
@@ -199,13 +515,13 @@ int			set_remove_array(t_setid		setid,
  * this function returns an object given its iterator.
  */
 
-int			set_get_array(t_setid			setid,
-				      t_iterator		iterator,
-				      void**			data)
+int			set_object_array(t_setid		setid,
+					 t_iterator		iterator,
+					 void**			data)
 {
   set_check(set);
 
-  /* XXX *data = n->data; */
+  *data = iterator;
 
   return (0);
 }
@@ -216,17 +532,20 @@ int			set_get_array(t_setid			setid,
  * steps:
  *
  * 1) checks whether the set manager was previously initialised.
- * 2) initialises the set descriptor.
- * 3) if necessary, reserves an unused identifier for this new set.
- * 4) XXX
- * 5) adds the set descriptor to the set container.
+ * 2) the array sets only works with the option alloc.
+ * 3) initialises the set descriptor.
+ * 4) if necessary, reserves an unused identifier for this new set.
+ * 5) initialises the set fields allocating the array.
+ * 6) adds the set descriptor in the set container.
  */
 
 int			set_rsv_array(t_opts			opts,
+				      t_setsz			initsz,
 				      t_size			datasz,
 				      t_setid*			setid)
 {
   o_set			o;
+  t_setsz		i;
 
   /*
    * 1)
@@ -238,10 +557,17 @@ int			set_rsv_array(t_opts			opts,
    * 2)
    */
 
-  memset(&o, 0x0, sizeof(o_set));
+  if (!(opts & SET_OPT_ALLOC))
+    return (-1);
 
   /*
    * 3)
+   */
+
+  memset(&o, 0x0, sizeof(o_set));
+
+  /*
+   * 4)
    */
 
   if (opts & SET_OPT_CONTAINER)
@@ -255,18 +581,40 @@ int			set_rsv_array(t_opts			opts,
     }
 
   /*
-   * 4)
+   * 5)
    */
 
-  /* XXX */
+  o.id = *setid;
+  o.size = 0;
+  o.type = SET_TYPE_ARRAY;
+
+  o.u.array.opts = opts;
+  o.u.array.datasz = datasz;
+  o.u.array.arraysz = initsz == 0 ? 1 : initsz;
+
+  if ((o.u.array.array = malloc(o.u.array.arraysz * o.u.array.datasz)) == NULL)
+    {
+      if (!(opts & SET_OPT_CONTAINER))
+	id_rel(&set->id, o.id);
+
+      return (-1);
+    }
+
+  memset(o.u.array.array, 0x0, o.u.array.arraysz * o.u.array.datasz);
+
+  for (i = 0; i < o.u.array.arraysz; i++)
+    *((t_id*)(o.u.array.array + (i * o.u.array.datasz))) = ID_UNUSED;
 
   /*
-   * 5)
+   * 6)
    */
 
   if (set_new(&o) != 0)
     {
-      id_rel(&set->id, *setid);
+      free(o.u.array.array);
+
+      if (!(opts & SET_OPT_CONTAINER))
+	id_rel(&set->id, o.id);
 
       return (-1);
     }
@@ -279,12 +627,62 @@ int			set_rsv_array(t_opts			opts,
  *
  * steps:
  *
- * 1) XXX
+ * 1) checks whether the set manager was previously initialised.
+ * 2) gets the set given its set identifier.
+ * 3) cannot release the set container.
+ * 4) if needed, releases the set identifier.
+ * 5) frees the array allocated at the set reservation.
+ * 6) then, removes the set from the set container.
  */
 
 int			set_rel_array(t_setid			setid)
 {
-  /* XXX */
+  o_set			*o;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (setid == set->setid)
+    {
+      cons_msg('!', "set: cannot release the set container\n");
+
+      return (-1);
+    }
+
+  /*
+   * 4)
+   */
+
+  if (!(o->u.array.opts & SET_OPT_CONTAINER))
+    if (id_rel(&set->id, o->id) != 0)
+      return (-1);
+
+  /*
+   * 5)
+   */
+
+  free(o->u.array.array);
+
+  /*
+   * 6)
+   */
+
+  if (set_delete(o->id) != 0)
+    return (-1);
 
   return (0);
 }
