@@ -204,6 +204,22 @@ void			alloc_dump()
   dump_chunk(runner);
 }
 
+/*
+ * Warning : this is highly bugged.
+ */
+void			*realloc(void 				*ptr,
+				 size_t				size)
+{
+  void			*new = NULL;
+  size_t		i = 0;
+
+  new = malloc(size);
+  for (i = 0; i < size; i++)
+    (char*) new[i] = (char*) ptr[i];
+  free(ptr);
+  return new;
+}
+
 /*!
  * @brief Initialiaze the allocation structure.
  *
