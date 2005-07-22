@@ -1,5 +1,9 @@
 --
- set_dump_ll _array etc..
+ coder les fonctions clone: as_clone(), set_clone(), id_clone() etc..
+
+--
+ revoir set_array et le termine et surtout teste car sera utilise par
+ bcp de manager notamment as, task, thread etc..
 
 --
  http://perso.wanadoo.fr/philippe.michel/qnx/
@@ -22,10 +26,6 @@
 
 --
  le dump devrait etre fait par la partie specifique: ll, bpt etc..
-
---
- mieux faire les erreurs, printf error dans les trucs et kaneton error
- dans kaneton.c
 
 --
  assert() a coder

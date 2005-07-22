@@ -5,19 +5,24 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jan 29 05:09:42 1999   mycure
+ * last update   Fri Jul 22 15:21:17 2005   mycure
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX
+ * XXX les segments ont un identificateur pour etre retrouve facilement
+ *     neanmoins ceux ci ne peuvent pas etre tries selon cet identificateur
+ *     sinon l ensemble ne serait pas trier en fonction de l agencement
+ *     de la memoire physique. on va donc generer des identifiants pour
+ *     pouvoir les retrouver mais on va creer un set qu'on va organiser
+ *     nous meme afin qu'il soit trier selon les adresses physiques.
  */
 
 /*
@@ -28,11 +33,22 @@
 #include <kaneton.h>
 
 /*
+ * ---------- extern ----------------------------------------------------------
+ */
+
+/*
+ * the init variable, filled by the bootloader, containing in this case
+ * the list of segments to mark used.
+ */
+
+extern t_init*		init;
+
+/*
  * ---------- globals ---------------------------------------------------------
  */
 
 /*
- * XXX
+ * the segment manager structure.
  */
 
 m_segment*		segment;
@@ -42,149 +58,181 @@ m_segment*		segment;
  */
 
 /*
- * this function just returns an identfier.
- *
- * for the moment, this function justs increments a number and never
- * recycles identifiers.
- */
-/* XXX
-void			segment_id(t_segid*			segid)
-{
-  static t_segid	segid = 0;
-
-  return (segid++);
-}
-*/
-/*
  * this function dumps the segments.
+ *
+ * steps:
+ *
+ * 1) gets the size of the segment set.
+ * 2) prints the header message.
+ * 3) for each entry in the segment set, prints the area,
+ *    its size and permissions.
  */
-/* XXX
-void			segment_dump(void)
+
+#if (KANETON_DEBUG & KANETON_DEBUG_SEGMENT)
+int			segment_dump(void)
 {
-  t_segment*		s;
+  o_segment*		data;
+  t_setsz		size;
+  t_iterator		i;
 
-  cons_msg('#', "dumping segments:\n");
+  /*
+   * 1)
+   */
 
-  cons_msg('#', " stack: %u\n",
-	   stack.nsegments);
+  if (set_size(segment->container, &size) != 0)
+    return (-1);
 
-  cons_msg('#', " segments: %u\n",
-	   segments.nsegments);
+  /*
+   * 2)
+   */
 
-  for (s = segments.segments; s != NULL; s = s->nxt)
-    cons_msg('#', "  [%qu] 0x%x - %u bytes\n",
-	     s->segid,
-	     s->address,
-	     s->size);
-}
-*/
-/*
- * this function adds a segment structure to the freelist.
- */
-/* XXX
-void			segment_push(o_segment*			push)
-{
-  push->segid = 0;
-  push->address = 0;
-  push->size = 0;
+  cons_msg('#', "dumping %qu segment(s) from the segment container:\n", size);
 
-  if (stack.segments == NULL)
+  /*
+   * 3)
+   */
+
+  set_foreach(SET_OPT_FORWARD, segment->container, &i)
     {
-      push->prv = NULL;
-      push->nxt = NULL;
+      char		perms[4];
 
-      stack.segments = push;
-    }
-  else
-    {
-      push->prv = NULL;
-      push->nxt = stack.segments;
+      if (set_object(segment->container, i, (void**)&data) != 0)
+	{
+	  cons_msg('!', "set: cannot find the segment object "
+		   "corresponding to its identifier\n");
 
-      stack.segments->prv = push;
+	  return (-1);
+	}
 
-      stack.segments = push;
-    }
+      memset(perms, '.', 3);
+      perms[3] = 0;
 
-  stack.nsegments++;
-}
-*/
-/*
- * this function pops a segment structure from the stack.
- */
-/* XXX
-o_segment*		segment_pop(void)
-{
-  t_segment*		pop;
+      if (data->perms & PERM_READ)
+	perms[0] = 'r';
 
-  // XXX if (stack.nsegments < 2)
-    {
-    // XXX reserver une page de memoire physique, et la decoupee
-    // pour faire des segment_push()
-    //
+      if (data->perms & PERM_WRITE)
+	perms[1] = 'w';
 
-      cons_msg('!', "error: not enough memory\n");
-      // XXX kaneton_error();
+      if (data->perms & PERM_EXEC)
+	perms[2] = 'x';
+
+      cons_msg('#', "  [%qd] 0x%08x - 0x%08x %s (%u bytes)\n",
+	       data->segid,
+	       data->address,
+	       data->address + data->size,
+	       perms,
+	       data->size);
     }
 
-  pop = stack.segments;
-
-  stack.segments = pop->nxt;
-  stack.segments->prv = NULL;
-
-  pop->prv = NULL;
-  pop->nxt = NULL;
-
-  stack.nsegments--;
-
-  return (pop);
+  return (0);
 }
-*/
+#endif
+
 /*
- * this functions initialises the segment manager from the init
+ * this function reserves a segment given the desired size.
+ *
+ * steps:
+ *
+ * 1) XXX
+ */
+
+int			segment_rsv(t_asid			asid,
+				    t_psize			size,
+				    t_opts			opts,
+				    t_segid*			segid)
+{
+
+  return (0);
+}
+
+/*
+ * this function initialises the segment manager from the init
  * variable containing segments to keep safe.
  *
  * steps:
  *
- * 1) initialises the stack.
- * 2) initialises the segments inserting the segments specified by the
- *    init variable.
+ * 1) allocates and initialises the segment manager structure.
+ * 2) initialises the segment manager structure fields from the init
+ *    structure.
+ * 3) initialises the identifier object to be able to generate
+ *    the segment identifiers.
+ * 4) reserves the segment set which will contain the system's segments.
+ * 5) for each pre-reserved segment, inserts it into the segment container.
+ * 6) if needed, dumps the segments.
  */
 
 int			segment_init(void)
 {
-  t_uint32		n;
-  t_sint32		i;
+  t_uint32		i;
 
   /*
-  stack.nsegments = 0;
-  stack.segments = 0;
-
-  n = init->segmngsz / sizeof(t_segment);
-  for (i = 0; i < n; i++)
-    segment_push((t_segment*)(init->segmng + i * sizeof(t_segment)));
-
-  segments.nsegments = 0;
-  segments.segments = NULL;
-  */
-
-  /*
-   * XXX revoir le bootloader pour qu il mette les permissions a mettre
-   * sur chaque zone genre RX sur les modules.
+   * 1)
    */
-  /* XXX
-  for (i = 0; i < init->segments->nsegments; i++)
+
+  if ((segment = malloc(sizeof(m_segment))) == NULL)
     {
-      t_segment		s;
+      cons_msg('!', "segment: cannot allocate memory for the segment "
+	       "manager structure\n");
 
-      s.segid = segment_id();
-      s.address = init->segments->segments[i].address;
-      s.size = init->segments->segments[i].size;
-
-      // XXX segment_add(AS_KERNEL, &s);
+      return (-1);
     }
-  */
+
+  memset(segment, 0x0, sizeof(m_segment));
+
   /*
-   * XXX
+   * 2)
+   */
+
+  segment->start = init->mem;
+  segment->size = init->memsz;
+
+  /*
+   * 3)
+   */
+
+  if (id_build(&segment->id) != 0)
+    {
+      cons_msg('!', "segment: unable to initialise the identifier object\n");
+
+      return (-1);
+    }
+
+  /*
+   * 4)
+   */
+
+  if (set_rsv(ll, SET_OPT_ALLOC, sizeof(o_segment), &segment->container) != 0)
+    {
+      cons_msg('!', "segment: unable to reserve the segment container\n");
+
+      return (-1);
+    }
+
+  /*
+   * 5)
+   */
+
+  for (i = 0; i < init->nsegments; i++)
+    {
+      if (id_rsv(&segment->id, &init->segments[i].segid) != 0)
+	{
+	  cons_msg('!', "segment: unable to generate a segment identifier "
+		   "for the pre-reserved segments\n");
+
+	  return (-1);
+	}
+
+      if (set_insert_tail(segment->container, &init->segments[i]) != 0)
+	{
+	  cons_msg('!', "segment: cannot add a pre-reserved segment in "
+		   "the segment container\n");
+
+	  return (-1);
+	}
+    }
+
+  /*
+   * 6)
    */
 
 #if (KANETON_DEBUG & KANETON_DEBUG_SEGMENT)

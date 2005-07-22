@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Wed Jul 13 15:35:06 2005   mycure
+ * last update   Fri Jul 22 15:21:42 2005   mycure
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -37,6 +37,8 @@ typedef struct
 
   t_paddr			address;
   t_psize			size;
+
+  t_perms			perms;
 }				o_segment;
 
 /*
@@ -45,11 +47,27 @@ typedef struct
 
 typedef struct
 {
+  o_id				id;
+
   t_paddr			start;
   t_psize			size;
 
-  t_setid			segments;
+  t_setid			container;
 }				m_segment;
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+/*
+ * check
+ */
+
+#define segment_check(_segment_)					\
+  {									\
+    if ((_segment_) == NULL)						\
+      return (-1);							\
+  }
 
 /*
  * ---------- prototypes ------------------------------------------------------

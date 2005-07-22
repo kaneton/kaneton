@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Jul 21 20:30:30 2005   mycure
+ * last update   Fri Jul 22 14:29:55 2005   mycure
  */
 
 /*
@@ -43,6 +43,10 @@
  * region manager etc..
  *
  * note that the set manager uses itself to store the set descriptors.
+ *
+ * moreover, the set manager will provide a very very simple way to compare
+ * different algorithms in different cases just by modifying the
+ * call to set_rsv() in the desired manager.
  *
  * to add a data structure to the set manager you have to complete
  * the following steps:
@@ -530,7 +534,7 @@ int			set_init(void)
   set_dump(set->container->id);
 #endif
 
-#if 1 /* SET_TYPE_ARRAY */
+#if 0 /* SET_TYPE_ARRAY */
  {
    t_iterator	iterator;
    t_id		data;

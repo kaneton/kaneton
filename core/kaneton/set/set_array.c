@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Jul 21 22:25:13 2005   mycure
+ * last update   Fri Jul 22 13:13:19 2005   mycure
  */
 
 /*
@@ -204,7 +204,7 @@ int			set_insert_head_array(t_setid		setid,
    * 4)
    */
 
-  if (o->u.ll.opts & SET_OPT_SORT)
+  if (o->u.array.opts & SET_OPT_SORT)
     return (-1);
 
   /* XXX */
@@ -255,7 +255,7 @@ int			set_insert_tail_array(t_setid		setid,
    * 4)
    */
 
-  if (o->u.ll.opts & SET_OPT_SORT)
+  if (o->u.array.opts & SET_OPT_SORT)
     return (-1);
 
   /* XXX */
@@ -303,7 +303,7 @@ int			set_insert_before_array(t_setid		setid,
    * 4)
    */
 
-  if (o->u.ll.opts & SET_OPT_SORT)
+  if (o->u.array.opts & SET_OPT_SORT)
     return (-1);
 
   /* XXX */
@@ -325,7 +325,10 @@ int			set_insert_after_array(t_setid		setid,
 					       t_iterator	iterator,
 					       void*		data)
 {
+  t_uint8*		n;
   o_set*		o;
+  t_sint32		i;
+  t_sint32		j;
 
   /*
    * 1)
@@ -351,10 +354,63 @@ int			set_insert_after_array(t_setid		setid,
    * 4)
    */
 
-  if (o->u.ll.opts & SET_OPT_SORT)
+  if (o->u.array.opts & SET_OPT_SORT)
     return (-1);
 
-  /* XXX */
+  /*
+   * 5)
+   */
+
+  if (o->size == o->u.array.arraysz)
+    {
+      /* XXX wait for the implementation by pwipwi
+      if ((o->u.array.array = realloc(o->u.array.array,
+				      (o->u.array.arraysz * 2) *
+				      o->u.array.datasz)) == NULL)
+	{
+	  cons_msg('!', "set: not enough memory to extend the array\n");
+
+	  return (-1);
+	}
+      */
+
+      for (i = o->u.array.arraysz; i < (o->u.array.arraysz * 2); i++)
+	*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) = ID_UNUSED;
+
+      o->u.array.arraysz *= 2;
+    }
+
+  /*
+   * 6)
+   */
+
+  n = (t_uint8*)iterator + o->u.array.datasz;
+
+  /*
+   * 7)
+   */
+
+  if (*(t_id*)n == ID_UNUSED)
+    {
+      memcpy(n, data, o->u.array.datasz);
+    }
+  else
+    {
+      /* XXX faire 2 cas
+      for (i = ((n - o->u.array.array) / o->u.array.datasz) + 1;
+	   i < o->u.array.arraysz; i++)
+	if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) ==
+	    ID_UNUSED)
+	  {
+	  for (j = o->u.array.arraysz - 1; j >= i; j--)
+	    {
+	      memcpy(o->u.array.array + ((j + 1) * o->u.array.datasz),
+		     o->u.array.array + (j * o->u.array.datasz),
+		     o->u.array.datasz);
+	    }
+	}
+      */
+    }
 
   /*
    * 8)

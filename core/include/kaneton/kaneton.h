@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Mon Jul 18 15:04:56 2005   mycure
+ * last update   Fri Jul 22 14:48:53 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
@@ -48,6 +48,14 @@
 
 #define MODE_DEVELOPMENT	(1 << 0)
 #define MODE_RELEASE		(1 << 1)
+
+/*
+ * perms
+ */
+
+#define PERM_READ		0x1
+#define PERM_WRITE		0x2
+#define PERM_EXEC		0x4
 
 /*
  * ---------- macros ----------------------------------------------------------

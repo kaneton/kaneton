@@ -3,13 +3,13 @@
  *
  * init.c
  *
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Fri Jan 29 05:12:18 1999   mycure
+ * last update   Fri Jul 22 14:45:44 2005   mycure
  */
 
 /*
@@ -148,6 +148,7 @@ void			bootloader_init_segments(void)
 
   init->segments[0].address = 0x0;
   init->segments[0].size = 0x00100000;
+  init->segments[0].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 2)
@@ -155,6 +156,7 @@ void			bootloader_init_segments(void)
 
   init->segments[1].address = init->kcode;
   init->segments[1].size = init->kcodesz;
+  init->segments[1].perms = PERM_READ | PERM_EXEC;
 
   /*
    * 3)
@@ -162,6 +164,7 @@ void			bootloader_init_segments(void)
 
   init->segments[2].address = init->init;
   init->segments[2].size = init->initsz;
+  init->segments[2].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 4)
@@ -169,6 +172,7 @@ void			bootloader_init_segments(void)
 
   init->segments[3].address = (t_paddr)init->modules;
   init->segments[3].size = init->modulessz;
+  init->segments[3].perms = PERM_READ | PERM_EXEC;
 
   /*
    * 5)
@@ -176,6 +180,7 @@ void			bootloader_init_segments(void)
 
   init->segments[4].address = (t_paddr)init->segments;
   init->segments[4].size = init->segmentssz;
+  init->segments[4].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 6)
@@ -183,6 +188,7 @@ void			bootloader_init_segments(void)
 
   init->segments[5].address = (t_paddr)init->regions;
   init->segments[5].size = init->regionssz;
+  init->segments[5].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 7)
@@ -190,6 +196,7 @@ void			bootloader_init_segments(void)
 
   init->segments[6].address = init->kstack;
   init->segments[6].size = init->kstacksz;
+  init->segments[6].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 8)
@@ -197,6 +204,7 @@ void			bootloader_init_segments(void)
 
   init->segments[7].address = init->alloc;
   init->segments[7].size = init->allocsz;
+  init->segments[7].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 9)
@@ -204,6 +212,7 @@ void			bootloader_init_segments(void)
 
   init->segments[8].address = (t_paddr)init->machdep.gdt;
   init->segments[8].size = PAGESZ;
+  init->segments[8].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 10)
@@ -211,6 +220,7 @@ void			bootloader_init_segments(void)
 
   init->segments[9].address = (t_paddr)init->machdep.pd;
   init->segments[9].size = PAGESZ;
+  init->segments[9].perms = PERM_READ | PERM_WRITE;
 }
 
 /*

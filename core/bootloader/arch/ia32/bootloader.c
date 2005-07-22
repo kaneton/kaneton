@@ -5,13 +5,13 @@
  * 
  * bootloader.c
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jan 29 05:11:01 1999   mycure
+ * last update   Fri Jul 22 14:37:17 2005   mycure
  */
 
 /*
@@ -91,7 +91,9 @@ int			bootloader(t_uint32			magic,
   if (magic != MULTIBOOT_BOOTLOADER_MAGIC)
     bootloader_error();
 
-  printf("\n                      --- the kaneton operating system ---\n\n");
+  printf("\n");
+  printf("                --- the kaneton distributed operating system ---\n");
+  printf("\n");
 
   /*
    * 2)

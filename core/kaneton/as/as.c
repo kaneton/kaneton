@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Jul 21 19:54:42 2005   mycure
+ * last update   Fri Jul 22 14:02:32 2005   mycure
  */
 
 /*
@@ -334,7 +334,8 @@ int			as_init(void)
    * 3)
    */
 
-  if (set_rsv(ll, SET_OPT_ALLOC, sizeof(o_as), &as->container) != 0)
+  if (set_rsv(ll, SET_OPT_ALLOC | SET_OPT_SORT,
+	      sizeof(o_as), &as->container) != 0)
     {
       cons_msg('!', "as: unable to reserve the address space container\n");
 

@@ -5,13 +5,13 @@
  * 
  * id.c
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Jul 21 18:52:50 2005   mycure
+ * last update   Fri Jul 22 14:06:18 2005   mycure
  */
 
 /*
@@ -36,6 +36,15 @@
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * this function dumps the id object's state.
+ */
+
+void			id_dump(o_id*				o)
+{
+  cons_msg('#', "id object's state: %qu\n", o->id);
+}
 
 /*
  * this function reserves an identifier in an identifier object
