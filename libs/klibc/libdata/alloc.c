@@ -215,7 +215,7 @@ void			*realloc(void 				*ptr,
 
   new = malloc(size);
   for (i = 0; i < size; i++)
-    (char*) new[i] = (char*) ptr[i];
+    ((char*) new)[i] = ((char*) ptr)[i];
   free(ptr);
   return new;
 }
