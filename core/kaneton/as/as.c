@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jul 22 14:02:32 2005   mycure
+ * last update   Fri Jul 22 16:05:48 2005   mycure
  */
 
 /*
@@ -57,6 +57,12 @@
  */
 
 m_as*			as = NULL;
+
+/*
+ * the kernel address space.
+ */
+
+t_asid			kas = ID_UNUSED;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -145,8 +151,10 @@ int			as_rsv(t_asid*				asid)
    * 3)
    */
 
-  if (id_rsv(&as->id, &o.asid) != 0)
+  if (id_rsv(&as->id, asid) != 0)
     return (-1);
+
+  o.asid = *asid;
 
   /*
    * 4)
@@ -267,8 +275,6 @@ int			as_rel(t_asid				asid)
 int			as_get(t_asid				asid,
 			       o_as**				o)
 {
-  t_iterator		iterator;
-
   /*
    * 1)
    */
@@ -346,7 +352,7 @@ int			as_init(void)
    * 4)
    */
 
-  if (as_rsv(&as->kas) != 0)
+  if (as_rsv(&kas) != 0)
     {
       cons_msg('!', "as: unable to reserve the kernel address space\n");
 

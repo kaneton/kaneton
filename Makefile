@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Sat Jul  9 14:49:02 2005   mycure
+## last update   Sat Jul 23 14:44:43 2005   mycure
 ##
 
 #
@@ -143,6 +143,8 @@ info:
 	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mcontributors:\033[0m"
 	@echo ""
 	@echo -e "     \033[1mchristophe eymard - eymard_c@epita.fr\033[0m"
+	@echo -e "     \033[1mcedric aubouy - aubouy_c@epita.fr\033[0m"
+	@echo -e "     \033[1mfabien le-mentec - le-men_f@epita.fr\033[0m"
 	@echo ""
 	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mnews-group:\033[0m"
 	@echo ""

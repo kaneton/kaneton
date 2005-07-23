@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jul 22 15:21:17 2005   mycure
+ * last update   Sat Jul 23 14:42:42 2005   mycure
  */
 
 /*
@@ -42,6 +42,12 @@
  */
 
 extern t_init*		init;
+
+/*
+ * the kernel address space identifier.
+ */
+
+extern t_asid		kas;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -137,12 +143,104 @@ int			segment_dump(void)
  */
 
 int			segment_rsv(t_asid			asid,
+				    t_fit			fit,
 				    t_psize			size,
-				    t_opts			opts,
 				    t_segid*			segid)
 {
+  o_segment*		head;
+  o_segment*		tail;
+  o_segment*		current;
+  t_iterator		i;
+  o_as*			as;
 
-  return (0);
+  /*
+   *
+   */
+
+  if (as_get(asid, &as) != 0)
+    return (-1);
+
+  if (fit == SEGMENT_FIT_FIRST)
+    {
+      /*
+       *
+       */
+
+      if (set_head(segment->container, &i) != 0)
+	return (-1);
+
+      if (set_object(segment->container, i, (void**)&head) != 0)
+	return (-1);
+
+      /*
+       *
+       */
+
+      if ((head->address - segment->start) >= size)
+	{
+	  printf("FOUND AT THE HEAD\n");
+
+	  return (0);
+	}
+
+      /*
+       *
+       */
+
+      set_foreach(SET_OPT_FORWARD, segment->container, &i)
+	{
+	  o_segment*	next;
+	  t_iterator	j;
+
+	  if (set_object(segment->container, i, (void**)&current) != 0)
+	    {
+	      cons_msg('!', "set: cannot find the segment object "
+		       "corresponding to its identifier\n");
+
+	      return (-1);
+	    }
+
+	  if (set_next(segment->container, i, &j) != 0)
+	    break;
+
+	  if (set_object(segment->container, j, (void**)&next) != 0)
+	    return (-1);
+
+	  if ((next->address - (current->address + current->size)) >= size)
+	    {
+	      printf("FOUND BETWEEEN 0x%x and 0x%x\n",
+		     current->address,
+		     next->address);
+
+	      return (0);
+	    }
+	}
+
+      /*
+       *
+       */
+
+      if (set_tail(segment->container, &i) != 0)
+	return (-1);
+
+      if (set_object(segment->container, i, (void**)&tail) != 0)
+	return (-1);
+
+      /*
+       *
+       */
+
+      if (((segment->start + segment->size) - (tail->address + tail->size)) >=
+	  size)
+	{
+	  printf("FOUND AT THE TAIL\n");
+
+	  return (0);
+	}
+    }
+
+
+  return (-1);
 }
 
 /*
@@ -237,6 +335,15 @@ int			segment_init(void)
 
 #if (KANETON_DEBUG & KANETON_DEBUG_SEGMENT)
   segment_dump();
+#endif
+
+#if 1
+ {
+   t_segid	segid;
+
+   if (segment_rsv(kas, SEGMENT_FIT_FIRST, PAGESZ, &segid) != 0)
+     printf("error: segment_rsv()\n");
+ }
 #endif
 
   return (0);

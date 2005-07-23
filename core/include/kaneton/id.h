@@ -52,6 +52,8 @@ typedef struct
  * ../../kaneton/id/id.c
  */
 
+void			id_dump(o_id*				o);
+
 int			id_rsv(o_id*				o,
 			       t_id*				id);
 

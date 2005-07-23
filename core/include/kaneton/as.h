@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Fri Jul 22 15:21:26 2005   mycure
+ * last update   Fri Jul 22 18:52:19 2005   mycure
  */
 
 #ifndef KANETON_AS_H
@@ -26,6 +26,10 @@
 
 /*
  * ---------- defines ---------------------------------------------------------
+ */
+
+/*
+ * init sizes for the array data structure set
  */
 
 #define AS_SEGMENTS_INITSZ	0x4
@@ -54,8 +58,6 @@ typedef struct
 typedef struct
 {
   o_id				id;
-
-  t_asid			kas;
 
   t_setid			container;
 }				m_as;

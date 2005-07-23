@@ -1,4 +1,8 @@
 --
+ prendre les infos sur les news, en faire un FAQ, mais aussi prendre
+ certains posts de sites, books etc.. et les mettre dans KanetonDocumentation
+
+--
  coder les fonctions clone: as_clone(), set_clone(), id_clone() etc..
 
 --
@@ -9,9 +13,6 @@
  http://perso.wanadoo.fr/philippe.michel/qnx/
 
  http://xos.freezee.org/index.php?page=video
-
---
- id_dump(o_id* o)
 
 --
  virer les alias de t_id de la partie dependante et meme plus
@@ -63,3 +64,313 @@
 --
  peut etre changer la nomenclature de set, object -> data
  car ca prete a confusion avec la nomenclature kaneton
+
+-- vbe
+
+http://xos.freezee.org/doc/video/GUI_TUT.PDF
+http://my.execpc.com/~geezer/os/
+http://glek.net/subversion/os/
+http://www.vesa.org/Public/VBE/
+http://66.249.93.104/search?q=cache:z5-PUmUi77IJ:www.inversereality.org/files/vesavideomodes.pdf+vbe2+pdf&hl=fr
+http://ript.net/~spec/vbe2/
+
+http://www.djm.co.za/spoon/grub/install.php
+http://www.student.cs.uwaterloo.ca/~cs452/grub/
+
+http://www.openbg.net/sto/os/xml/grub.html
+
+http://rampex.ihep.su/Linux/linux_howto/html/tutorials/mini/Vesafb-5.html
+
+http://www.mega-tokyo.com/forum/index.php?board=1;action=display;threadid=6186;start=0
+http://bcos.hopto.org/index.html
+http://www.google.com/search?hl=en&ie=UTF-8&q=vesa+programming
+
+/* --------------------------------------------XXX-------------------------- */
+
+typedef unsigned short dw;
+typedef unsigned char db;
+typedef unsigned int dd;
+
+typedef struct vbe_modeinfoblock
+{
+  /* Mandatory information for all VBE revisions */
+  dw mode_attributes;
+  db win_a_attributes,win_b_attributes;
+  dw win_granulatiry, win_size, win_a_segment, win_b_segment;
+  dd win_func_ptr;
+  dw bytes_per_scan_line;
+
+  /* Mandatory information for VBE 1.2 and above */
+  dw x_resolution, y_resolution;
+  db x_char_size, y_char_size, number_of_planes, bits_per_pixel;
+  db number_of_banks, memory_model, bank_size, number_of_image_pages;
+  db reserved1;
+
+  db red_mask_size ,red_field_position;
+  db green_mask_size, green_field_position;
+  db blue_mask_size, blue_field_position;
+  db rsvd_mask_size, rsvd_field_position;
+  db direct_color_mode_info;
+
+  /* Mandatory information for VBE 2.0 and above */
+  dd phys_base_ptr;
+  dd reserved2;
+  dw reserved3;
+
+  /* Mandatory information for VBE 3.0 and above */
+  dw lin_bytes_per_scan_line;
+  db bnk_number_of_image_pages;
+  db lin_number_of_image_pages;
+  db lin_red_mask_size, lin_red_field_position;
+  db lin_green_mask_size, lin_green_field_position;
+  db lin_blue_mask_size, lin_blue_field_position;
+  db lin_rsvd_mask_size, lin_rsvd_field_position;
+  dd max_pixel_clock;
+  db reserved4[189];
+
+} __attribute((packed)) vbe_modeinfoblock_t;
+
+void vesa(void* v)
+{
+  vbe_modeinfoblock_t* mib = v;
+
+  int* video_base;
+
+  int x_resolution, y_resolution, bits_per_pixel;
+
+  video_base = (int *)mib->phys_base_ptr;
+  x_resolution = mib->x_resolution;
+  y_resolution = mib->y_resolution;
+  bits_per_pixel = mib->bits_per_pixel;
+
+  _main_();
+}
+
+/* code here */
+
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 200
+
+unsigned char *VGA = (unsigned char *)0xA0000;
+unsigned char *dbl_buffer;
+
+typedef struct tagBITMAP /* the structure for a bitmap. */
+{
+  unsigned int width;
+  unsigned int height;
+  unsigned char *data;
+} BITMAP;
+
+typedef struct tagRECT
+{
+  long x1;
+  long y1;
+  long x2;
+  long y2;
+} RECT;
+
+void init_dbl_buffer(void)
+{
+  dbl_buffer = (unsigned char *) malloc (SCREEN_WIDTH * SCREEN_HEIGHT);
+  if (dbl_buffer == NULL)
+    {
+      printf("Not enough memory for double buffer.\n");
+
+      /* XXX */
+      /*
+      getch();
+      exit(1);
+      */
+      while (1);
+    }
+}
+
+void update_screen(void)
+{
+#ifdef VERTICAL_RETRACE
+  while ((inportb(0x3DA) & 0x08));
+  while (!(inportb(0x3DA) & 0x08));
+#endif
+  memcpy(VGA, dbl_buffer, (unsigned int)(SCREEN_WIDTH * SCREEN_HEIGHT));
+}
+
+void setpixel (BITMAP *bmp, int x, int y, unsigned char color)
+{
+  bmp->data[y * bmp->width + x];
+}
+
+/* Draws a filled in rectangle IN A BITMAP. To fill a full bitmap call as drawrect (&bmp, 0, 0, bmp.width, bmp.height, color);*/
+
+void drawrect(BITMAP *bmp, unsigned short x, unsigned short y, unsigned short x2, unsigned short y2, unsigned char color)
+{
+  unsigned short tx, ty;
+  for (ty = y; ty < y2; ty++)
+    for (tx = x; tx < x2; tx++)
+      setpixel (bmp, tx, ty, color);
+}
+
+void draw_bitmap_old(BITMAP *bmp, int x, int y)
+{
+  int j;
+  unsigned int screen_offset = (y << 8) + (y << 6) + x;
+  unsigned int bitmap_offset = 0;
+  for(j = 0; j < bmp->height; j++)
+    {
+      memcpy(&dbl_buffer[screen_offset], &bmp->data[bitmap_offset], bmp->width);
+      bitmap_offset += bmp->width;
+      screen_offset += SCREEN_WIDTH;
+    }
+}
+
+void _main_(void)
+{
+
+  /* XXX */
+  {
+    int i;
+
+    for (i = 0; i < 4000; i++)
+      VGA[i] = 0xff;
+  }
+  /* XXX */
+
+  /* You must clear the double buffer every time to avoid evil messes (go ahead and try without this, you will see) */
+
+  memset (dbl_buffer, 0, SCREEN_WIDTH * SCREEN_HEIGHT);
+  /* DRAW ALL BITMAPS AND DO GUI CODE HERE */
+  /* Draws the double buffer */
+
+  update_screen();
+}
+
+/* /code here */
+
+
+/* code here -> reboot ---- ------------------------------------------------ */
+
+typedef unsigned short WORD;
+typedef unsigned char BYTE;
+typedef unsigned int DWORD;
+
+/* Structure for VESA BIOS EXTENTION mode information as defined by VESA */
+typedef struct tagSVGAMODEINFO
+{
+
+  /* mandatory information for all VBE verson */
+  WORD modeattributes;          /* Mode attributes  */
+  BYTE winattributes;           /* Window A attributes */
+  BYTE winbattributes;          /* Window B attributes */
+  WORD wingranularity;          /* Window granularity */
+  WORD winsize;              /* Window size */
+  WORD winasegment;           /* Window A start segment */
+  WORD winbsegment;           /* Window B segment  */
+  DWORD winfuncptr;           /* pointer to window function */
+  WORD bytesperscanline;        /* Bytes per scanline  */
+
+
+  /* Mandatory information for VBE 1.2 and higher */
+  WORD xresolution;           /* Horizontal resolution in pixels */
+  WORD yresolution;           /* Vertical resolution in pixel */
+  BYTE xcharsize;              /* Character cell width in pixels */
+  BYTE ycharsize;              /* Character cell height in pixels */
+  BYTE numberofplanes;        /* Number of memoryplanes  */
+  BYTE bitsperpixel;           /* bits per pixel  */
+  BYTE numberofbanks;           /* Number of banks  */
+  BYTE numberofimagepages;     /* Number of images  */
+  BYTE reserved1;              /* Reserved for page function */
+
+  /* Direct color fields */
+  BYTE redmasksize;            /* size of direct color red mask in bits */
+  BYTE redfieldposition;        /* Bit position of lsb of red mask */
+  BYTE greenmasksize;          /* size of direct color green mask in bits */
+  BYTE greenfieldposition;     /* Bit position of lsb of green mask */
+  BYTE bluemasksize;            /* size of direct color blue mask in bits */
+  BYTE bluefieldposition;        /* Bit position of lsb of blue mask */
+  BYTE rsvdmasksize;            /* size of direct color reserved mask in bits */
+  BYTE reservedfieldposition;     /* Bit position of lsb of reserved mask */
+  BYTE directcolormodeinfo;    /* Direct color mode attributes  */
+
+  /* Mandatory information for VBE 2.0 and above    */
+  DWORD physbaseptr;           /* Physical addres for flat frame buffer */
+  DWORD offscreenmemoffset;     /* Pointer to start of off screen memory */
+  WORD offscreenmemsize;        /* Amount of offscreen memory in 1kb units */
+  char reserved2[206];        /* Reserved */
+} SVGAMODEINFO;
+
+char font_a[]= {0x00, /* 00000000 */
+		0x00, /* 00000000 */
+		0x00, /* 00000000 */
+		0x00, /* 00000000 */
+		0x00, /* 00000000 */
+		0x78, /* 01111000 */
+		0x0c, /* 00001100 */
+		0x7c, /* 01111100 */
+		0xcc, /* 11001100 */
+		0xcc, /* 11001100 */
+		0xcc, /* 11001100 */
+		0x76, /* 01110110 */
+		0x00, /* 00000000 */
+		0x00, /* 00000000 */
+		0x00, /* 00000000 */
+		0x00};
+
+unsigned long  RGBA_black = 0x00000000;
+
+#define CHAR_HEIGHT    16
+#define CHAR_WIDTH    8
+
+unsigned long *framebuffer;
+
+SVGAMODEINFO *vbe_mode_info;
+
+void show_character(char *font, unsigned long *VRAM,
+		    unsigned long color, int rowlength);
+
+int vbe_init(multiboot_info_t *mbi)
+{
+  int i, j;
+
+  printf("init VBE ... ");
+
+  if(mbi->flags & (1 << 11))
+    {
+      vbe_mode_info = (SVGAMODEINFO *)mbi->vbe_mode_info;
+
+      framebuffer = (unsigned long *)vbe_mode_info->physbaseptr;
+
+      if(framebuffer != NULL)
+	{
+	  int offset = 0;
+
+	  for(j=0; j < 600; j++)
+	    {
+	      for(i=0; i < 800; i++)
+		{
+		  offset = 800*j + i;
+		  framebuffer[offset] = RGBA_black;
+		}
+	    }
+	  show_character(font_a,framebuffer,0xFFFFFFFF, 800);
+	}
+    }
+  return 0;
+}
+
+void show_character(char *font, unsigned long *VRAM,
+		    unsigned long color, int rowlength)
+{
+  int i, j;
+
+  for (i=0;i<CHAR_HEIGHT;i++,VRAM+=rowlength)
+    {
+      unsigned long *row=VRAM;
+
+      for (j=1<<CHAR_WIDTH;j!=0;j=j>>1)
+	{
+	  if (font[i]&j) *row=color;
+	  row++;
+	}
+    }
+}
+
+/* /code here -> reboot ---- ----------------------------------------------- */

@@ -62,6 +62,20 @@ int			set_next_array(t_setid			setid,
 				       t_iterator		current,
 				       t_iterator*		next);
 
+int			set_insert_head_array(t_setid		setid,
+					      void*		data);
+
+int			set_insert_tail_array(t_setid		setid,
+					      void*		data);
+
+int			set_insert_before_array(t_setid		setid,
+						t_iterator	iterator,
+						void*		data);
+
+int			set_insert_after_array(t_setid		setid,
+					       t_iterator	iterator,
+					       void*		data);
+
 int			set_add_array(t_setid			setid,
 				      void*			data);
 

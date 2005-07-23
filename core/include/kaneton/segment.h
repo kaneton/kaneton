@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Fri Jul 22 15:21:42 2005   mycure
+ * last update   Fri Jul 22 18:53:18 2005   mycure
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -22,6 +22,17 @@
  */
 
 #include <arch/machdep/machdep.h>
+
+/*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+/*
+ * fit
+ */
+
+#define SEGMENT_FIT_FIRST	0x1
+#define SEGMENT_FIT_WORST	0x2
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -78,6 +89,13 @@ typedef struct
 /*
  * ../../kaneton/segment/segment.c
  */
+
+int			segment_dump(void);
+
+int			segment_rsv(t_asid			asid,
+				    t_fit			fit,
+				    t_psize			size,
+				    t_segid*			segid);
 
 int			segment_init(void);
 

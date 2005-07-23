@@ -3,13 +3,13 @@
  *
  * multiboot.h
  *
- * path          /home/mycure/kaneton/core/include/arch/ia32/ia32
+ * path          /home/mycure/kaneton
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 18:49:33 2004   mycure
- * last update   Sun Jun 19 20:36:31 2005   mycure
+ * last update   Sat Jul 23 00:05:06 2005   mycure
  */
 
 #ifndef IA32_IA32_MULTIBOOT_H
@@ -71,6 +71,18 @@ typedef struct
 
   unsigned int			mmap_length;
   unsigned int			mmap_addr;
+
+  /* XXX */
+  unsigned long drives_length;
+  unsigned long drives_addr;
+  unsigned long config_table;
+  unsigned long boot_loader_name;
+  unsigned long apm_table;
+  unsigned long vbe_control_info;
+  unsigned long vbe_mode_info;
+  unsigned short
+  vbe_mode, vbe_interface_seg, vbe_interface_off, vbe_interface_len;
+  /* XXX */
 }				multiboot_info_t;
 
 typedef struct
