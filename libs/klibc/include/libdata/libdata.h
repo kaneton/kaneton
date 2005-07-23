@@ -5,13 +5,13 @@
  * 
  * libdata.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/libs/klibc/libdata
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Mon Jul  4 21:40:43 2005   mycure
+ * last update   Sat Jul 23 14:50:31 2005   mycure
  */
 
 #ifndef LIBDATA_LIBDATA_H
@@ -47,6 +47,9 @@ void*			malloc(size_t				size);
 void			free(void				*ptr);
 
 void			alloc_dump();
+
+void*			realloc(void 				*ptr,
+				 size_t				size);
 
 int			alloc_init(t_vaddr			addr,
 				   t_size			size);

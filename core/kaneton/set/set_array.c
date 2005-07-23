@@ -5,13 +5,13 @@
  * 
  * set_array.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jul 22 13:13:19 2005   mycure
+ * last update   Sat Jul 23 14:49:25 2005   mycure
  */
 
 /*
@@ -363,7 +363,6 @@ int			set_insert_after_array(t_setid		setid,
 
   if (o->size == o->u.array.arraysz)
     {
-      /* XXX wait for the implementation by pwipwi
       if ((o->u.array.array = realloc(o->u.array.array,
 				      (o->u.array.arraysz * 2) *
 				      o->u.array.datasz)) == NULL)
@@ -372,7 +371,6 @@ int			set_insert_after_array(t_setid		setid,
 
 	  return (-1);
 	}
-      */
 
       for (i = o->u.array.arraysz; i < (o->u.array.arraysz * 2); i++)
 	*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) = ID_UNUSED;
@@ -463,7 +461,6 @@ int			set_add_array(t_setid			setid,
 
   if (o->size == o->u.array.arraysz)
     {
-      /* XXX wait for the implementation by pwipwi
       if ((o->u.array.array = realloc(o->u.array.array,
 				      (o->u.array.arraysz * 2) *
 				      o->u.array.datasz)) == NULL)
@@ -472,7 +469,6 @@ int			set_add_array(t_setid			setid,
 
 	  return (-1);
 	}
-      */
 
       for (i = o->u.array.arraysz; i < (o->u.array.arraysz * 2); i++)
 	*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) = ID_UNUSED;
