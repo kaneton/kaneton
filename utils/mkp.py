@@ -137,7 +137,7 @@ def fn_processfile(filename, functions):
     fp = open(filename, 'r')
   except IOError:
     fn_error("unable to open" + filename, 4)
-  functionre = re.compile('^[a-zA-Z0-9_](([\*\w]*)\s+)+\w+\(') # function declaration
+  functionre = re.compile('^[a-zA-Z0-9_](([\*\w]*)\s+\**)+\w+\(') # function declaration
   commentre = re.compile('/\*') # comment start
   endcomre = re.compile('\*/') # comment end
   staticre = re.compile('static') # static keyword
