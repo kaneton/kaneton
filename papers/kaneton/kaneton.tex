@@ -5,13 +5,13 @@
 %% 
 %% design.tex
 %% 
-%% path          /home/mycure/data/research/projects/kaneton/papers/kaneton
+%% path          /home/mycure/kaneton/papers/kaneton
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Fri Feb  4 15:10:05 2005   mycure
-%% last update   Fri Jul 22 12:40:09 2005   mycure
+%% last update   Sun Jul 24 21:33:37 2005   mycure
 %%
 
 %%
@@ -35,11 +35,11 @@
 %% --------- header -----------------------------------------------------------
 %%
 
-\lhead{\scriptsize{The kaneton distributed operating system}}
-\rhead{\scriptsize{The kaneton implementation}}
-\rfoot{\scriptsize{EPITA Computer System Laboratory - www.lse.epita.fr}}
+\lhead{\scriptsize{The kaneton Distributed Operating System}}
+\rhead{\scriptsize{The kaneton Implementation}}
+\rfoot{\scriptsize{EPITA Computer System Laboratory}}
 
-\title{The kaneton distributed operating system implementation}
+\title{The kaneton Distributed Operating System Implementation}
 
 \author{\small{Julien Quintard} \\
         \scriptsize{EPITA Computer System Laboratory, Paris, France}}
@@ -64,6 +64,110 @@
 
 
 
-\section{The project}
+\section{The Project}
+
+This document describes the kaneton project.
+
+kaneton is a pedagogic distributed operating system kernel developed
+by EPITA students during their specialization year.
+
+This project consists in the design and development of parts of a
+distributed operating system including the micro-kernel and the servers.
+
+The kaneton operating system, especially the kaneton micro-kernel was
+designed in a very specific way to keep the design the simpler as possible
+to be understable by the students.
+
+Nevertheless, the kaneton project and especially the kaneton reference
+distributed operating system was implementing using modern tools and
+modern programming techniques.
+
+The kaneton micro-kernel is divided into managers which perform very
+specific tasks and make the design simpler to understand.
+
+We decided to develop a micro-kernel because this type of kernel is very
+modular, secure, strong and clear.
+
+All these characteristics make the micro-kernel a perfect development
+project for students.
+
+We also decided to develop a distributed operating system, because these
+operating systems are modern, very interesting from the design and
+implementation point of view. Moreover, the students have to know about
+these operating systems.
+
+The goals of the project are to lead the student to understand one or more
+processors, an entire micro-kernel design and implementation and finally
+the principles and paradigms of a distributed operating system.
+
+The kaneton project was introduced at EPITA by two students
+	Julien Quintard
+	  \footnote{quinta\_j@epita.fr} and
+	Jean-Pascal Billaud
+	  \footnote{billau\_j@epita.fr}.
+
+This document especially describes the kaneton reference distributed
+operating system developed by
+	Julien Quintard,
+	Renaud Lienhart
+	  \footnote{lienha\_r@epita.fr},
+	Fabien Le-Mentec
+	  \footnote{le-men\_f@epita.fr},
+	Christophe Eymard
+	  \footnote{eymard\_c@epita.fr} and
+	C\'edric Aubouy
+	  \footnote{aubouy\_c@epita.fr}.
+
+
+
+\section{The Bootstrap}
+
+The bootstrap is a little code which is launch by the BIOS.
+
+Its role is to launch the bootloader. To do this, it has to read the
+bootloader on a device which can be the floppy, the hard drive,
+the network etc..
+
+\subsection{Intel Architecture 32-bit}
+
+For the Intel Architecture 32-bit (IA32), we decided to use the
+	GRUB MultiBoot boot loader
+	  \footnote{http://www.gnu.org/software/grub/}.
+
+Indeed, the GRUB bootloader handles many different boot devices with
+many different hardware devices: floppy, hard drive, network etc..
+
+Moreover, the GRUB bootloader provide the possibility to load
+modules in main memory. This feature is very intersting for a micro-kernel
+because we can now tell GRUB to load every micro-kernel's servers into
+main memory.
+
+The EPITA Computer System Laboratory currently develop an Intel Architecture
+32-bit bootstrap. For more information, take a look to the Laboratory
+website: \textbf{http://www.lse.epita.fr}.
+
+In technical terms, the bootstrap just load and lanch the bootloader
+which will be able to initialise the kernel.
+
+
+
+\section{The Bootloader}
+
+The bootloader's goal is to initialise the kernel environment.
+
+In kaneton, the kernel, when launched, has to run in a very specific
+environment.
+
+First, the virtual memory has to be initialised. Second, a special
+information structure called \textbf{init} has to be provided to
+the kernel when started.
+
+So, the bootloader has to fill in these requirements to be able
+to correctly laucnh the kernel.
+
+\subsection{Intel Architecture 32-bit}
 
 \end{document}
+\label{}
+\ref{}
+\pageref{}

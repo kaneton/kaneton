@@ -95,6 +95,7 @@ int			segment_dump(void);
 int			segment_rsv(t_asid			asid,
 				    t_fit			fit,
 				    t_psize			size,
+				    t_perms			perms,
 				    t_segid*			segid);
 
 int			segment_init(void);

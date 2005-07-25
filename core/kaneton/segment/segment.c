@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sat Jul 23 14:42:42 2005   mycure
+ * last update   Sun Jul 24 16:56:06 2005   mycure
  */
 
 /*
@@ -122,7 +122,7 @@ int			segment_dump(void)
       if (data->perms & PERM_EXEC)
 	perms[2] = 'x';
 
-      cons_msg('#', "  [%qd] 0x%08x - 0x%08x %s (%u bytes)\n",
+      cons_msg('#', "  [%02qd] 0x%08x - 0x%08x %s (%u bytes)\n",
 	       data->segid,
 	       data->address,
 	       data->address + data->size,
@@ -145,6 +145,7 @@ int			segment_dump(void)
 int			segment_rsv(t_asid			asid,
 				    t_fit			fit,
 				    t_psize			size,
+				    t_perms			perms,
 				    t_segid*			segid)
 {
   o_segment*		head;
@@ -178,7 +179,30 @@ int			segment_rsv(t_asid			asid,
 
       if ((head->address - segment->start) >= size)
 	{
-	  printf("FOUND AT THE HEAD\n");
+	  o_segment	o;
+
+	  memset(&o, 0x0, sizeof(o_segment));
+
+	  if (id_rsv(&segment->id, &o.segid) != 0)
+	    return (-1);
+
+	  o.address = head->address + head->size;
+	  o.size = size;
+	  o.perms = perms;
+
+	  if (set_insert_after(segment->container, i, &o) != 0)
+	    {
+	      id_rel(&segment->id, o.segid);
+
+	      return (-1);
+	    }
+
+	  if (set_add(as->segments, &o.segid) != 0)
+	    {
+	      id_rel(&segment->id, o.segid);
+
+	      set_remove(segment->container, o.segid);
+	    }
 
 	  return (0);
 	}
@@ -208,9 +232,30 @@ int			segment_rsv(t_asid			asid,
 
 	  if ((next->address - (current->address + current->size)) >= size)
 	    {
-	      printf("FOUND BETWEEEN 0x%x and 0x%x\n",
-		     current->address,
-		     next->address);
+	      o_segment	o;
+
+	      memset(&o, 0x0, sizeof(o_segment));
+
+	      if (id_rsv(&segment->id, &o.segid) != 0)
+		return (-1);
+
+	      o.address = current->address + current->size;
+	      o.size = size;
+	      o.perms = perms;
+
+	      if (set_insert_after(segment->container, i, &o) != 0)
+		{
+		  id_rel(&segment->id, o.segid);
+
+		  return (-1);
+		}
+
+	      if (set_add(as->segments, &o.segid) != 0)
+		{
+		  id_rel(&segment->id, o.segid);
+
+		  set_remove(segment->container, o.segid);
+		}
 
 	      return (0);
 	    }
@@ -233,7 +278,30 @@ int			segment_rsv(t_asid			asid,
       if (((segment->start + segment->size) - (tail->address + tail->size)) >=
 	  size)
 	{
-	  printf("FOUND AT THE TAIL\n");
+	  o_segment	o;
+
+	  memset(&o, 0x0, sizeof(o_segment));
+
+	  if (id_rsv(&segment->id, &o.segid) != 0)
+	    return (-1);
+
+	  o.address = tail->address + tail->size;
+	  o.size = size;
+	  o.perms = perms;
+
+	  if (set_insert_after(segment->container, i, &o) != 0)
+	    {
+	      id_rel(&segment->id, o.segid);
+
+	      return (-1);
+	    }
+
+	  if (set_add(as->segments, &o.segid) != 0)
+	    {
+	      id_rel(&segment->id, o.segid);
+
+	      set_remove(segment->container, o.segid);
+	    }
 
 	  return (0);
 	}
@@ -341,8 +409,11 @@ int			segment_init(void)
  {
    t_segid	segid;
 
-   if (segment_rsv(kas, SEGMENT_FIT_FIRST, PAGESZ, &segid) != 0)
+   if (segment_rsv(kas, SEGMENT_FIT_FIRST, PAGESZ,
+		   PERM_EXEC, &segid) != 0)
      printf("error: segment_rsv()\n");
+
+   segment_dump();
  }
 #endif
 

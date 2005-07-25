@@ -1,4 +1,12 @@
 --
+ set_type(bpt)
+
+--
+ clarifier le segment manager et eviter le redondance de code
+
+ tester le segment manager
+
+--
  prendre les infos sur les news, en faire un FAQ, mais aussi prendre
  certains posts de sites, books etc.. et les mettre dans KanetonDocumentation
 
@@ -374,3 +382,8 @@ void show_character(char *font, unsigned long *VRAM,
 }
 
 /* /code here -> reboot ---- ----------------------------------------------- */
+
+--
+ 500 heures -> 10 000 euros
+
+ tarif: 25 euros de l heure
