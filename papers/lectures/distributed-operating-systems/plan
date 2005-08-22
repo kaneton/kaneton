@@ -12,7 +12,10 @@
 * Course Information
 
 Course: Distributed Operating Systems
+
 Lecturer: Julien Quintard - quinta_j@lse.epita.fr
+
+Hours: XXX
 
 * Topics
 
@@ -27,4 +30,125 @@ Synchronisation
   Deadlocks
 
 Processes
-  
+  Threads
+  System Models
+  Processor Allocation
+  Fault Tolerance
+  Real-Time Distributed Systems
+
+File Systems
+  Design
+  Implementation
+
+Shared Memory
+  Introduction
+  Consistency Models
+  Page-based Model
+  Shared-Variable Model
+  Object-Based Model
+
+Amoeba
+  Introduction
+  Objects and Capabilities
+  Process Management
+  Memory Management
+  Communication
+  Servers
+
+Chorus
+  Introduction
+  Process Management
+  Memory Management
+  Communication
+  Unix Emulation
+  COOL: An Object Oriented Subsystem
+
+* Additional Documentation
+
+Distributed Operating Systems - Andrew S. Tanenbaum
+
+Distributed Systems - Andrew S. Tanenbaum, Maarteen van Steen
+
+Many Publications, take a look at ACM - www.acm.org
+
+XXX give them a list of publications
+
+* Definition
+
+"A distributed system is a collection of independent computers
+ that appear to the users of the system as a single computer."
+
+[schema: 3 machines en reseau: OS (local) + servers (dist) + applications (dist)]
+
+* Advantages
+
+Economics: Microprocessors offer a better price/performance than mainframes
+
+Speed: A distributed system may have more total computing power than
+       a mainframe
+
+Adaptability: A distributed system will always be more scalable than
+              a mainframe
+
+Reliability: If one machine crashes on a distributed system, the system
+             as a whole still survive
+
+Incremental Growth: Computing power can be easily added to a distributed system
+
+Flexibility: Spread the workload over the available machines in the most
+             cost effective way
+
+* Disadvantages
+
+Softwares: To make these systems work, we have to develop softwares to connect
+           the machines to build the distributed system
+
+Networking: The network can saturate or cause other problems we will study
+            later
+
+Security: Easy access also applies to secret data
+
+* Hardware Concepts
+
+The Flynn's (1972) classification scheme which use two characteristics:
+
+  1) the number of instruction streams
+  2) the number of data streams
+
+The different categories:
+
+  SISD: all traditional uniprocessor computers from personal computers
+        to large mainframes.
+
+  SISM: these machines are useful for computations that repeat the same
+        calculation on many sets of data, for example, adding up all the
+        elements of 64 independent vectors. Some supercomputers are SIMD.
+
+  MISD: no known computs fits this model.
+
+  MIMD: means a group of independent computers, each with its own
+        program counter, program and data. All distributed systems are MIMD.
+
+This classification is not good enough to distinguish different distributed
+systems.
+
+The MIMD computers are divided into two groups:
+
+  Multiprocessors: which have shared memory so have a single virtual address
+                   space that is shared by all the CPUs
+
+  Multicomputers: which do not and, in contrast, every machine of a
+                  multicomputer has its own private memory.
+
+The best example of multicomputer is a collection of personal computers
+connected by a network.
+
+We will not go further into the hardware concepts because these are not
+so important for us and this course.
+
+* Software Concepts
+
+Although the hardware is important, the software is even more important
+especially in distributed systems because these are based on multiples
+machines which communicate.
+

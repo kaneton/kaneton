@@ -5,13 +5,13 @@
 ## 
 ## .kaneton.mk
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Mon Jul 18 14:47:50 2005   mycure
+## last update   Mon Aug 22 15:02:06 2005   mycure
 ##
 
 #
@@ -118,12 +118,16 @@ CC			:=		gcc
 #
 
 CFLAGS			:=		-D___kaneton			\
-					-nostdinc -nostdlib		\
+					-nostdinc			\
+					-nostdlib			\
 					-fno-builtin			\
-					-O0 $(_INCLUDES_)		\
-					$(_CFLAGS_)			
+					-O0				\
+					$(_INCLUDES_)			\
+					$(_CFLAGS_)			\
+					$(_KFLAGS_)			
 
-LDFLAGS			:=		-nostdinc -nostdlib		\
+LDFLAGS			:=		-nostdinc			\
+					-nostdlib			\
 					$(_INCLUDES_)			\
 					$(_LDFLAGS_)			
 
@@ -153,13 +157,13 @@ _TAR_			:=		tar
 # ---------- traps ------------------------------------------------------------
 #
 
-%.o:		%.asm
+%.o:			%.asm
 	$(call compile-asm,$@,$<,-f elf)
 
-%.o:		%.S
+%.o:			%.S
 	$(call compile-S,$@,$<,)
 
-%.o:		%.c
+%.o:			%.c
 	$(call compile-c,$@,$<,)
 
 #
