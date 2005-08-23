@@ -1,4 +1,7 @@
 --
+ printf_init() rajouter un fit
+
+--
  set_type(bpt)
 
 --
