@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Jul 18 14:47:37 2005   mycure
+## last update   Tue Aug 23 23:09:00 2005   mycure
 ##
 
 #
@@ -49,7 +49,8 @@ KANETON_LIBS		:=		$(_MACHDEP_A_)			\
 KANETON			:=		kaneton
 
 KANETON_C		:=		kaneton.c			\
-					cons.c				
+					cons.c				\
+					serial.c			
 
 KANETON_O		:=		$(KANETON_C:.c=.o)
 
