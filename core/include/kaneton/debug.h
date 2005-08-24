@@ -27,6 +27,5 @@
 #define KANETON_DEBUG_SET	(1 << 3)
 
 #define KANETON_DEBUG							\
-  (0 | KANETON_DEBUG_SET | KANETON_DEBUG_SEGMENT)
-
+ 0
 #endif

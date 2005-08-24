@@ -68,7 +68,8 @@ int			serial_init(void)
   /*
    * XXX
    */
-
+	printf("init rs-232\n");
+	
   return (0);
 }
 

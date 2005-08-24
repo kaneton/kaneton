@@ -126,6 +126,19 @@ int			cons_init(void);
 
 
 /*
+ * ../../kaneton/serial.c
+ */
+
+int			serial_read(t_uint8*			data);
+
+int			serial_write(t_uint8*			data);
+
+int			serial_init(void);
+
+int			serial_clean(void);
+
+
+/*
  * eop
  */
 

@@ -405,7 +405,7 @@ int			segment_init(void)
   segment_dump();
 #endif
 
-#if 1
+#if 0
  {
    t_segid	segid;
 
