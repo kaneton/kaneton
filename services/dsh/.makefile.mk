@@ -1,1 +1,0 @@
-dsh.o: dsh.c
