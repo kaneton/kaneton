@@ -182,5 +182,48 @@ remotely by using such a command:
 
 It is so possible to execute some programs on remote workstations.
 
-The best example are file servers like EPITA File Servers which store
-every students' files
+The servers like File Servers must take care of the fact that there are
+different types of operating systems. Moreover, each workstation can
+have a different view of the file system's hierarchy.
+
+We speak here of a system, where each machine has a high degree of autonomy
+and there are few system-wide requirements, people usually speak of network
+operating systems.
+
+-[ True Distributed Systems
+
+Tightly-Coupled Software with Loosely-Coupled Headware.
+
+The next evolutionary step beyond the Network Operating Systems are the
+True Distributed Systems.
+
+In fact, in Network Operating Systems, each user knows that his computer
+is independent and always know where his remote program is run because
+he chose the location.
+
+In the True Distributed Systems, the user considers the entire system
+as a typical single timesharing system.
+
+People talk about these systems as a Single-System Image or as a
+Virtual Uniprocessor.
+
+The requirements are:
+  generalisation for communication, for example using RPC
+  generalisation for protections, for example capabilities. mixing capabilites
+    and ACL is a mistake.
+  process management and memory management must be the same on every
+    computer, contrary to the network operating systems in which every
+    node do whatever it wants.
+  the system calls must be oriented distributed system
+  the file system must be the same everywhere, with the same restrictions,
+    the same security.
+  -> so the same kernel must run on every machine.
+
+This requirement make the life easier for the user and for the developer.
+
+Think that a process could be migrated from one kernel to another one.
+
+Nevertheless, each kernel also manages its local resources.
+For example, the swapping and paging of pages is an action that the local
+kernel has to make.
+
