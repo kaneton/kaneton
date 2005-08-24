@@ -19,6 +19,11 @@ Hours: XXX
 
 * Topics
 
+Introduction
+  Hardware Concepts
+  Software Concepts
+  Design Issues
+
 Communication
   Group Communication
 
@@ -150,5 +155,32 @@ so important for us and this course.
 
 Although the hardware is important, the software is even more important
 especially in distributed systems because these are based on multiples
-machines which communicate.
+machines which communicate together.
 
+We will see different types of software concepts:
+
+  Network Operating Systems
+  True Distributed Systems
+  Multiprocessor Timesharing Systems
+
+-[ Network Operating Systems
+
+Loosely-Coupled Software with Loosely-Coupled Hardware which is the most
+common combination at many organisations.
+
+The best example is a network of workstations connected by a LAN like the
+EPITA Network.
+
+Each machine is independent, has its own operating system (which can be
+different from the other machines), has its own hard disk and run commands
+locally.
+
+However, its is sometimes possible for a user to log into another workstation
+remotely by using such a command:
+
+  ssh [machine]
+
+It is so possible to execute some programs on remote workstations.
+
+The best example are file servers like EPITA File Servers which store
+every students' files
