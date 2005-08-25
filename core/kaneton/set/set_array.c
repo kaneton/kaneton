@@ -5,13 +5,13 @@
  * 
  * set_array.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/segment
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Aug 25 18:27:44 2005   mycure
+ * last update   Fri Aug 26 01:43:10 2005   mycure
  */
 
 /*
@@ -28,6 +28,9 @@
  * XXX en effet le but de cette structure de donnes et de contenir en elle
  *     meme les donnees, generalement des petites donnees comme des
  *     identfificateurs.
+ *
+ * XXX on peut optimiser en utilisant le cas SORT:
+ *     head = 0, tail = size-1, prv = --, nxt = ++
  */
 
 /*

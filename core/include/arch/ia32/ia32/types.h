@@ -5,13 +5,13 @@
  * 
  * types.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Aug 26 01:13:20 2005   mycure
+ * last update   Fri Aug 26 01:27:27 2005   mycure
  */
 
 #ifndef IA32_IA32_TYPES_H
@@ -35,33 +35,9 @@ typedef unsigned long long	t_uint64;
 typedef signed long long	t_sint64;
 
 /*
- * register types
+ * ---------- includes --------------------------------------------------------
  */
 
-typedef t_uint8			t_reg8;
-typedef t_uint16		t_reg16;
-typedef t_uint32		t_reg32;
-typedef t_uint64		t_reg64;
-
-/*
- * memory types
- */
-
-typedef t_uint32		t_paddr;
-typedef t_uint32		t_psize;
-typedef t_uint32		t_vaddr;
-typedef t_uint32		t_vsize;
-
-typedef t_uint32		t_size;
-typedef t_uint32		t_offset;
-
-/*
- * special types
- */
-
-typedef t_uint32		t_opts;
-typedef t_uint32		t_perms;
-typedef t_uint32		t_type;
-typedef t_uint32		t_fit;
+#include <kaneton/types.h>
 
 #endif
