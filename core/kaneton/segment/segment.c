@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/segment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Jul 24 16:56:06 2005   mycure
+ * last update   Wed Aug 24 18:18:09 2005   mycure
  */
 
 /*
@@ -68,13 +68,13 @@ m_segment*		segment;
  *
  * steps:
  *
- * 1) gets the size of the segment set.
- * 2) prints the header message.
- * 3) for each entry in the segment set, prints the area,
+ * 1) checks whether the segment manager was previously initialised.
+ * 2) gets the size of the segment set.
+ * 3) prints the header message.
+ * 4) for each entry in the segment set, prints the area,
  *    its size and permissions.
  */
 
-#if (KANETON_DEBUG & KANETON_DEBUG_SEGMENT)
 int			segment_dump(void)
 {
   o_segment*		data;
@@ -85,17 +85,23 @@ int			segment_dump(void)
    * 1)
    */
 
-  if (set_size(segment->container, &size) != 0)
-    return (-1);
+  segment_check(segment);
 
   /*
    * 2)
    */
 
-  cons_msg('#', "dumping %qu segment(s) from the segment container:\n", size);
+  if (set_size(segment->container, &size) != 0)
+    return (-1);
 
   /*
    * 3)
+   */
+
+  cons_msg('#', "dumping %qu segment(s) from the segment container:\n", size);
+
+  /*
+   * 4)
    */
 
   set_foreach(SET_OPT_FORWARD, segment->container, &i)
@@ -132,18 +138,23 @@ int			segment_dump(void)
 
   return (0);
 }
-#endif
 
 /*
  * this function reserves a segment given the desired size.
  *
  * steps:
  *
- * 1) XXX
+ * 1) checks whether the segment manager is initialised.
+ * 2) gets the address space object given its identifier.
+ * 3) chooses the correct fit.
+ *   A) gets the first segment.
+ *   B) tries to find space before the first segment.
+ *   C) for each segment, tries to find space after it.
+ *   D) gets the last segment.
+ *   E) tries to find space after the last segment.
  */
 
 int			segment_rsv(t_asid			asid,
-				    t_fit			fit,
 				    t_psize			size,
 				    t_perms			perms,
 				    t_segid*			segid)
@@ -155,160 +166,265 @@ int			segment_rsv(t_asid			asid,
   o_as*			as;
 
   /*
-   *
+   * 1)
+   */
+
+  segment_check(segment);
+
+  /*
+   * 2)
    */
 
   if (as_get(asid, &as) != 0)
     return (-1);
 
-  if (fit == SEGMENT_FIT_FIRST)
+  /*
+   * 3)
+   */
+
+  switch (segment->fit)
     {
-      /*
-       *
-       */
+    case SEGMENT_FIT_FIRST:
+      {
+	/*
+	 * A)
+	 */
 
-      if (set_head(segment->container, &i) != 0)
-	return (-1);
+	if (set_head(segment->container, &i) != 0)
+	  return (-1);
 
-      if (set_object(segment->container, i, (void**)&head) != 0)
-	return (-1);
+	if (set_object(segment->container, i, (void**)&head) != 0)
+	  return (-1);
 
-      /*
-       *
-       */
+	/*
+	 * B)
+	 */
 
-      if ((head->address - segment->start) >= size)
-	{
-	  o_segment	o;
+	if ((head->address - segment->start) >= size)
+	  {
+	    o_segment	o;
 
-	  memset(&o, 0x0, sizeof(o_segment));
+	    memset(&o, 0x0, sizeof(o_segment));
 
-	  if (id_rsv(&segment->id, &o.segid) != 0)
-	    return (-1);
-
-	  o.address = head->address + head->size;
-	  o.size = size;
-	  o.perms = perms;
-
-	  if (set_insert_after(segment->container, i, &o) != 0)
-	    {
-	      id_rel(&segment->id, o.segid);
-
+	    if (id_rsv(&segment->id, &o.segid) != 0)
 	      return (-1);
-	    }
 
-	  if (set_add(as->segments, &o.segid) != 0)
-	    {
-	      id_rel(&segment->id, o.segid);
+	    o.address = head->address + head->size;
+	    o.size = size;
+	    o.perms = perms;
 
-	      set_remove(segment->container, o.segid);
-	    }
+	    if (set_insert_after(segment->container, i, &o) != 0)
+	      {
+		id_rel(&segment->id, o.segid);
 
-	  return (0);
-	}
-
-      /*
-       *
-       */
-
-      set_foreach(SET_OPT_FORWARD, segment->container, &i)
-	{
-	  o_segment*	next;
-	  t_iterator	j;
-
-	  if (set_object(segment->container, i, (void**)&current) != 0)
-	    {
-	      cons_msg('!', "set: cannot find the segment object "
-		       "corresponding to its identifier\n");
-
-	      return (-1);
-	    }
-
-	  if (set_next(segment->container, i, &j) != 0)
-	    break;
-
-	  if (set_object(segment->container, j, (void**)&next) != 0)
-	    return (-1);
-
-	  if ((next->address - (current->address + current->size)) >= size)
-	    {
-	      o_segment	o;
-
-	      memset(&o, 0x0, sizeof(o_segment));
-
-	      if (id_rsv(&segment->id, &o.segid) != 0)
 		return (-1);
+	      }
 
-	      o.address = current->address + current->size;
-	      o.size = size;
-	      o.perms = perms;
+	    if (set_add(as->segments, &o.segid) != 0)
+	      {
+		id_rel(&segment->id, o.segid);
 
-	      if (set_insert_after(segment->container, i, &o) != 0)
-		{
-		  id_rel(&segment->id, o.segid);
+		set_remove(segment->container, o.segid);
+	      }
 
-		  return (-1);
-		}
+	    return (0);
+	  }
 
-	      if (set_add(as->segments, &o.segid) != 0)
-		{
-		  id_rel(&segment->id, o.segid);
+	/*
+	 * C)
+	 */
 
-		  set_remove(segment->container, o.segid);
-		}
+	set_foreach(SET_OPT_FORWARD, segment->container, &i)
+	  {
+	    o_segment*	next;
+	    t_iterator	j;
 
-	      return (0);
-	    }
-	}
+	    if (set_object(segment->container, i, (void**)&current) != 0)
+	      {
+		cons_msg('!', "set: cannot find the segment object "
+			 "corresponding to its identifier\n");
 
-      /*
-       *
-       */
+		return (-1);
+	      }
 
-      if (set_tail(segment->container, &i) != 0)
-	return (-1);
+	    if (set_next(segment->container, i, &j) != 0)
+	      break;
 
-      if (set_object(segment->container, i, (void**)&tail) != 0)
-	return (-1);
-
-      /*
-       *
-       */
-
-      if (((segment->start + segment->size) - (tail->address + tail->size)) >=
-	  size)
-	{
-	  o_segment	o;
-
-	  memset(&o, 0x0, sizeof(o_segment));
-
-	  if (id_rsv(&segment->id, &o.segid) != 0)
-	    return (-1);
-
-	  o.address = tail->address + tail->size;
-	  o.size = size;
-	  o.perms = perms;
-
-	  if (set_insert_after(segment->container, i, &o) != 0)
-	    {
-	      id_rel(&segment->id, o.segid);
-
+	    if (set_object(segment->container, j, (void**)&next) != 0)
 	      return (-1);
-	    }
 
-	  if (set_add(as->segments, &o.segid) != 0)
-	    {
-	      id_rel(&segment->id, o.segid);
+	    if ((next->address - (current->address + current->size)) >= size)
+	      {
+		o_segment o;
 
-	      set_remove(segment->container, o.segid);
-	    }
+		memset(&o, 0x0, sizeof(o_segment));
 
-	  return (0);
-	}
+		if (id_rsv(&segment->id, &o.segid) != 0)
+		  return (-1);
+
+		o.address = current->address + current->size;
+		o.size = size;
+		o.perms = perms;
+
+		if (set_insert_after(segment->container, i, &o) != 0)
+		  {
+		    id_rel(&segment->id, o.segid);
+
+		    return (-1);
+		  }
+
+		if (set_add(as->segments, &o.segid) != 0)
+		  {
+		    id_rel(&segment->id, o.segid);
+
+		    set_remove(segment->container, o.segid);
+		  }
+
+		return (0);
+	      }
+	  }
+
+	/*
+	 * D)
+	 */
+
+	if (set_tail(segment->container, &i) != 0)
+	  return (-1);
+
+	if (set_object(segment->container, i, (void**)&tail) != 0)
+	  return (-1);
+
+	/*
+	 * E)
+	 */
+
+	if (((segment->start + segment->size) -
+	     (tail->address + tail->size)) >= size)
+	  {
+	    o_segment	o;
+
+	    memset(&o, 0x0, sizeof(o_segment));
+
+	    if (id_rsv(&segment->id, &o.segid) != 0)
+	      return (-1);
+
+	    o.address = tail->address + tail->size;
+	    o.size = size;
+	    o.perms = perms;
+
+	    if (set_insert_after(segment->container, i, &o) != 0)
+	      {
+		id_rel(&segment->id, o.segid);
+
+		return (-1);
+	      }
+
+	    if (set_add(as->segments, &o.segid) != 0)
+	      {
+		id_rel(&segment->id, o.segid);
+
+		set_remove(segment->container, o.segid);
+	      }
+
+	    return (0);
+	  }
+      }
+    default:
+      {
+	return (-1);
+      }
     }
 
-
   return (-1);
+}
+
+/*
+ * this function releases a segment.
+ *
+ * steps:
+ *
+ * 1) checks whether the segment manager was previously initialised.
+ * 2) gets the as object from its identifier.
+ * 3) removes the segment from the address space.
+ * 4) removes the segment from the segment container.
+ */
+
+int			segment_rel(t_asid			asid,
+				    t_segid			segid)
+{
+  o_as*			as;
+
+  /*
+   * 1)
+   */
+
+  segment_check(segment);
+
+  /*
+   * 2)
+   */
+
+  if (as_get(asid, &as) != 0)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (set_remove(as->segments, segid) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (set_remove(segment->container, segid) != 0)
+    return (-1);
+
+  return (0);
+}
+
+/*
+ * this function sets the permissions of a segment.
+ */
+
+int			segment_perms(t_asid			asid,
+				      t_segid			segid,
+				      t_perms			perms)
+{
+  /*
+   * XXX
+   */
+
+  return (0);
+}
+
+/*
+ * XXX
+ */
+
+int			segment_flush(t_asid			asid)
+{
+  /*
+   * XXX
+   */
+
+  return (0);
+}
+
+/*
+ * XXX
+ */
+
+int			segment_get(t_asid			asid,
+				    t_segid			segid,
+				    o_segment*			o)
+{
+  /*
+   * XXX
+   */
+
+  return (0);
 }
 
 /*
@@ -327,7 +443,7 @@ int			segment_rsv(t_asid			asid,
  * 6) if needed, dumps the segments.
  */
 
-int			segment_init(void)
+int			segment_init(t_fit			fit)
 {
   t_uint32		i;
 
@@ -351,6 +467,7 @@ int			segment_init(void)
 
   segment->start = init->mem;
   segment->size = init->memsz;
+  segment->fit = fit;
 
   /*
    * 3)
@@ -405,17 +522,53 @@ int			segment_init(void)
   segment_dump();
 #endif
 
-#if 0
+#if 1
  {
    t_segid	segid;
 
-   if (segment_rsv(kas, SEGMENT_FIT_FIRST, PAGESZ,
-		   PERM_EXEC, &segid) != 0)
+   if (segment_rsv(kas, PAGESZ, PERM_EXEC, &segid) != 0)
      printf("error: segment_rsv()\n");
+
+   if (segment_rel(kas, 01) != 0)
+     printf("error: segment_rel()\n");
+
+   if (segment_rel(kas, 03) != 0)
+     printf("error: segment_rel()\n");
 
    segment_dump();
  }
 #endif
+
+  return (0);
+}
+
+/*
+ * this function just reinitialises the segment manager.
+ *
+ * steps:
+ *
+ * 1) destroys the id object.
+ * 2) frees the segment manager structure's memory.
+ */
+
+int			segment_clean(void)
+{
+  /*
+   * 1)
+   */
+
+  if (id_destroy(&segment->id) != 0)
+    {
+      cons_msg('!', "segment: unable to destroy the identifier object\n");
+
+      return (-1);
+    }
+
+  /*
+   * 2)
+   */
+
+  free(segment);
 
   return (0);
 }

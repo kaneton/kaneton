@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton/segment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jul 22 14:29:55 2005   mycure
+ * last update   Wed Aug 24 17:07:43 2005   mycure
  */
 
 /*
@@ -160,7 +160,6 @@ m_set*			set = NULL;
  * 3) prints each objects' identifier.
  */
 
-#if (KANETON_DEBUG & KANETON_DEBUG_SET)
 int			set_dump(t_setid			setid)
 {
   o_set*		data;
@@ -204,7 +203,6 @@ int			set_dump(t_setid			setid)
 
   return (0);
 }
-#endif
 
 /*
  * this function fills the variable size with the set size.
@@ -682,6 +680,37 @@ int			set_init(void)
    while (1);
  }
 #endif
+
+  return (0);
+}
+
+/*
+ * this function just reinitialises the set manager.
+ *
+ * steps:
+ *
+ * 1) destroys the id object.
+ * 2) frees the set manager structure's memory.
+ */
+
+int			set_clean(void)
+{
+  /*
+   * 1)
+   */
+
+  if (id_destroy(&set->id) != 0)
+    {
+      cons_msg('!', "set: unable to destroy the identifier object\n");
+
+      return (-1);
+    }
+
+  /*
+   * 2)
+   */
+
+  free(set);
 
   return (0);
 }

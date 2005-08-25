@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Fri Jul 22 18:53:18 2005   mycure
+ * last update   Wed Aug 24 16:01:46 2005   mycure
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -63,6 +63,8 @@ typedef struct
   t_paddr			start;
   t_psize			size;
 
+  t_fit				fit;
+
   t_setid			container;
 }				m_segment;
 
@@ -93,12 +95,13 @@ typedef struct
 int			segment_dump(void);
 
 int			segment_rsv(t_asid			asid,
-				    t_fit			fit,
 				    t_psize			size,
 				    t_perms			perms,
 				    t_segid*			segid);
 
-int			segment_init(void);
+int			segment_init(t_fit			fit);
+
+int			segment_clean(void);
 
 
 /*

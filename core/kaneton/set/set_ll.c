@@ -5,13 +5,13 @@
  * 
  * set_ll.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton/segment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Jul 21 22:22:43 2005   mycure
+ * last update   Wed Aug 24 18:15:47 2005   mycure
  */
 
 /*
@@ -810,6 +810,17 @@ int			set_remove_ll(t_setid			setid,
    */
 
   o->size--;
+
+  return (0);
+}
+
+/*
+ * XXX
+ */
+
+int			set_flush_ll(t_setid			setid)
+{
+  /* XXX */
 
   return (0);
 }

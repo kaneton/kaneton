@@ -1,4 +1,13 @@
 --
+ array: recherche dichotomique lorsqu il est trie
+
+--
+ set_flush
+
+--
+ fonctions pour retrouver XXXpermsXXX, size a partir du segid
+
+--
  expliquer les design patterns: factory (id, segment, set etc..)
 
 --

@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton/segment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jul 22 16:05:48 2005   mycure
+ * last update   Wed Aug 24 17:06:40 2005   mycure
  */
 
 /*
@@ -79,7 +79,6 @@ t_asid			kas = ID_UNUSED;
  *    the address space identifier.
  */
 
-#if (KANETON_DEBUG & KANETON_DEBUG_AS)
 int			as_dump(void)
 {
   o_as*			data;
@@ -116,7 +115,6 @@ int			as_dump(void)
 
   return (0);
 }
-#endif
 
 /*
  * this function reserves an address space.
@@ -366,6 +364,37 @@ int			as_init(void)
 #if (KANETON_DEBUG & KANETON_DEBUG_AS)
   as_dump();
 #endif
+
+  return (0);
+}
+
+/*
+ * this function just reinitialises the address space manager.
+ *
+ * steps:
+ *
+ * 1) destroys the id object.
+ * 2) frees the address space manager structure's memory.
+ */
+
+int			as_clean(void)
+{
+  /*
+   * 1)
+   */
+
+  if (id_destroy(&as->id) != 0)
+    {
+      cons_msg('!', "as: unable to destroy the identifier object\n");
+
+      return (-1);
+    }
+
+  /*
+   * 2)
+   */
+
+  free(as);
 
   return (0);
 }

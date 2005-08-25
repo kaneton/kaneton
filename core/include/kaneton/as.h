@@ -97,6 +97,8 @@ int			as_get(t_asid				asid,
 
 int			as_init(void);
 
+int			as_clean(void);
+
 
 /*
  * eop

@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/segment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Aug 24 12:48:10 2005   mycure
+ * last update   Wed Aug 24 17:07:01 2005   mycure
  */
 
 /*
@@ -47,7 +47,6 @@ t_init*			init;
  * this function displays the kaneton parameters.
  */
 
-#if (KANETON_DEBUG & KANETON_DEBUG_PARAMS)
 void			kaneton_dump(void)
 {
   cons_msg('#', "dumping kernel parameters:\n");
@@ -85,9 +84,7 @@ void			kaneton_dump(void)
 #else
   kaneton_error("no endian defined\n");
 #endif
-
 }
-#endif
 
 /*
  * this function simply initialises each manager.
@@ -169,7 +166,7 @@ void			kaneton(t_init*				bootloader)
    * 9)
    */
 
-  if (segment_init() != 0)
+  if (segment_init(SEGMENT_FIT_FIRST) != 0)
     kaneton_error("cannot initialise the segment manager\n");
 
 #ifdef KANETON_SERIAL

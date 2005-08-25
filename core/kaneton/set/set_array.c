@@ -5,13 +5,13 @@
  * 
  * set_array.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/segment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sat Jul 23 14:49:25 2005   mycure
+ * last update   Wed Aug 24 18:16:04 2005   mycure
  */
 
 /*
@@ -557,6 +557,17 @@ int			set_add_array(t_setid			setid,
 
 int			set_remove_array(t_setid		setid,
 					 t_id			id)
+{
+  /* XXX */
+
+  return (0);
+}
+
+/*
+ * XXX
+ */
+
+int			set_flush_array(t_setid			setid)
 {
   /* XXX */
 

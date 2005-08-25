@@ -5,13 +5,13 @@
  * 
  * cons.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/segment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Fri Jan 29 05:10:36 1999   mycure
+ * last update   Wed Aug 24 15:53:12 2005   mycure
  */
 
 /*
@@ -198,6 +198,17 @@ int			cons_init(void)
 
   printf_init(cons_print_char, cons_attr);
 
+  return (0);
+}
+
+/*
+ * this function just reinitialises the bootloader console.
+ *
+ * there is nothing special to do.
+ */
+
+int			cons_clean(void)
+{
   return (0);
 }
 

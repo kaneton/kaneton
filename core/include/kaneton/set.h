@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Thu Jul 21 15:31:00 2005   mycure
+ * last update   Wed Aug 24 18:12:05 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -176,6 +176,9 @@ extern m_set*		set;
 #define set_remove(_setid_, _args_...)					\
   set_trap(set_remove, _setid_, ##_args_)
 
+#define set_flush(_setid_, _args_...)					\
+  set_trap(set_flush, _setid_, ##_args_)
+
 #define set_insert_head(_setid_, _args_...)				\
   set_trap(set_insert_head, _setid_, ##_args_)
 
@@ -234,6 +237,8 @@ int			set_get(t_setid				setid,
 				void**				o);
 
 int			set_init(void);
+
+int			set_clean(void);
 
 
 /*

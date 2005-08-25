@@ -124,6 +124,8 @@ void			cons_msg(char				indicator,
 
 int			cons_init(void);
 
+int			cons_clean(void);
+
 
 /*
  * ../../kaneton/serial.c
