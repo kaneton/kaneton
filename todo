@@ -1,5 +1,19 @@
 --
+ faire des tests sur les ensembles et sur les segments
+
+--
+ segment_init(2, 0, 1M, FIRST_FIT,
+                 1M, 4G, WORST_FIT)
+  or
+
+ segment_init();
+ segment_range();
+ segment_range();
+
+--
  array: recherche dichotomique lorsqu il est trie
+
+ en realite, le set_locate est trop generique, il faudrait le specicialise
 
 --
  set_flush

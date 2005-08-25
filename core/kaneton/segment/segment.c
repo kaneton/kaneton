@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Aug 24 18:18:09 2005   mycure
+ * last update   Thu Aug 25 16:24:42 2005   mycure
  */
 
 /*
@@ -392,9 +392,42 @@ int			segment_perms(t_asid			asid,
 				      t_segid			segid,
 				      t_perms			perms)
 {
+  o_as*			as;
+  t_iterator		i;
+  o_segment*		o;
+
   /*
-   * XXX
+   * 1)
    */
+
+  segment_check(segment);
+
+  /*
+   * 2)
+   */
+
+  if (as_get(asid, &as) != 0)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (set_locate(as->segments, segid, &i) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
+  if (segment_get(segid, &o) != 0)
+    return (-1);
+
+  /*
+   * 5)
+   */
+
+  o->perms = perms;
 
   return (0);
 }
@@ -405,9 +438,55 @@ int			segment_perms(t_asid			asid,
 
 int			segment_flush(t_asid			asid)
 {
+  o_segment*		data;
+  o_as*			as;
+  t_iterator		i;
+
   /*
-   * XXX
+   * 1)
    */
+
+  segment_check(segment);
+
+  /*
+   * 2)
+   */
+
+  if (as_get(asid, &as) != 0)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  set_foreach(SET_OPT_FORWARD, as->segments, &i)
+    {
+      if (set_object(as->segments, i, (void**)&data) != 0)
+	{
+	  cons_msg('!', "segment: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  return (-1);
+	}
+
+      cons_msg('#', "  %qd\n",
+	       data->segid == ID_UNUSED ? -1 : data->segid);
+
+      if (set_remove(segment->container, data->segid) != 0)
+	{
+	  cons_msg('!', "segment: cannot remove the previously found "
+		   "object\n");
+
+	  return (-1);
+	}
+    }
+
+  /*
+   * 4)
+   */
+
+  if (set_flush(as->segments) != 0)
+    return (-1);
 
   return (0);
 }
@@ -416,13 +495,21 @@ int			segment_flush(t_asid			asid)
  * XXX
  */
 
-int			segment_get(t_asid			asid,
-				    t_segid			segid,
-				    o_segment*			o)
+int			segment_get(t_segid			segid,
+				    o_segment**			o)
 {
   /*
-   * XXX
+   * 1)
    */
+
+  segment_check(segment);
+
+  /*
+   * 2)
+   */
+
+  if (set_get(segment->container, segid, (void**)o) != 0)
+    return (-1);
 
   return (0);
 }
@@ -536,6 +623,9 @@ int			segment_init(t_fit			fit)
      printf("error: segment_rel()\n");
 
    segment_dump();
+
+   if (segment_flush(kas) != 0)
+     printf("error: segment_flush()\n");
  }
 #endif
 

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Aug 24 17:07:43 2005   mycure
+ * last update   Thu Aug 25 18:34:51 2005   mycure
  */
 
 /*
@@ -80,6 +80,8 @@
  *    node to be able to locate the previous and next nodes in this
  *    set.
  *
+ *    sometimes, the node is also the object as in the array data structure.
+ *
  *  object
  *
  *    an object, in the set manager terms, is the data contained in
@@ -144,65 +146,6 @@ m_set*			set = NULL;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * this function dumps set objects contained in the container of
- * the set manager.
- *
- * in other words, this function displays the set descriptors.
- *
- * the function just displays the identifier of each element.
- *
- * steps:
- *
- * 1) checks if the set manager was previously initialised.
- * 2) gets the set descriptor from its identifier.
- * 3) prints each objects' identifier.
- */
-
-int			set_dump(t_setid			setid)
-{
-  o_set*		data;
-  o_set*		o;
-  t_iterator		i;
-
-  /*
-   * 1)
-   */
-
-  set_check(set);
-
-  /*
-   * 2)
-   */
-
-  if (set_descriptor(setid, &o) != 0)
-    return (-1);
-
-  /*
-   * 3)
-   */
-
-  cons_msg('#', "dumping %qu node(s) from the set %qu:\n",
-	   o->size,
-	   setid);
-
-  set_foreach(SET_OPT_FORWARD, setid, &i)
-    {
-      if (set_object(setid, i, (void**)&data) != 0)
-	{
-	  cons_msg('!', "set: cannot find the object "
-		   "corresponding to its identifier\n");
-
-	  return (-1);
-	}
-
-      cons_msg('#', "  %qd [XXX] 0x%x\n",
-	       data->id == ID_UNUSED ? -1 : data->id, i);
-    }
-
-  return (0);
-}
 
 /*
  * this function fills the variable size with the set size.
@@ -354,68 +297,6 @@ int			set_descriptor(t_setid			setid,
 }
 
 /*
- * this generic function tries to find an object with its identifier and build
- * a corresponding identifier.
- *
- * steps:
- *
- * 1) checks whether the set manager was previously initialised.
- * 2) gets the set object corresponding to the set identifier.
- * 3) tries to find the identifier looked for in the set object's elements.
- */
-
-int			set_locate(t_setid			setid,
-				   t_id				id,
-				   t_iterator*			iterator)
-{
-  t_id*			data;
-  o_set*		o;
-  t_iterator		i;
-
-  /*
-   * 1)
-   */
-
-  set_check(set);
-
-  /*
-   * 2)
-   */
-
-  if (set_descriptor(setid, &o) != 0)
-    {
-      cons_msg('!', "set: not able to locate the set object "
-	       "corresponding to the set identifier %qu\n", setid);
-
-      return (-1);
-    }
-
-  /*
-   * 3)
-   */
-
-  set_foreach(SET_OPT_FORWARD, setid, &i)
-    {
-      if (set_object(setid, i, (void**)&data) != 0)
-	{
-	  cons_msg('!', "set: cannot find the object "
-		   "corresponding to its identifier\n");
-
-	  return (-1);
-	}
-
-      if (*data == id)
-	{
-	  memcpy(iterator, &i, sizeof(t_iterator));
-
-	  return (0);
-	}
-    }
-
-  return (-1);
-}
-
-/*
  * this function returns an object given its identifier without being
  * force to deal with iterators.
  *
@@ -530,155 +411,9 @@ int			set_init(void)
 
 #if (KANETON_DEBUG & KANETON_DEBUG_SET)
   set_dump(set->container->id);
-#endif
 
-#if 0 /* SET_TYPE_ARRAY */
- {
-   t_iterator	iterator;
-   t_id		data;
-   t_id		*o;
-   t_setid	id;
-
-   printf("SET_TYPE_ARRAY\n");
-
-   if (set_rsv(array, SET_OPT_ALLOC | SET_OPT_SORT, 10,
-	       sizeof(t_uint64), &id) != 0)
-     printf("error: set_rsv()\n");
-
-   data = 98LL;
-   if (set_add(id, &data) != 0)
-     printf("error: set_add()\n");
-
-   data = 843536LL;
-   if (set_add(id, &data) != 0)
-     printf("error: set_add()\n");
-
-   data = 100LL;
-   if (set_add(id, &data) != 0)
-     printf("error: set_add()\n");
-
-   /* XXX continue the tests */
-
-   set_dump(id);
-
-   while (1);
- }
-#endif
-
-#if 0 /* SET_TYPE_LL */
- {
-   t_iterator	iterator;
-   t_id		data;
-   t_id		*o;
-   t_setid	id;
-
-   printf("SET_TYPE_LL\n");
-
-   if (set_rsv(ll, SET_OPT_ALLOC, sizeof(t_uint64), &id) != 0)
-     printf("error: set_rsv()\n");
-
-   data = 98LL;
-   if (set_add(id, &data) != 0)
-     printf("error: set_add()\n");
-
-   data = 843536LL;
-   if (set_add(id, &data) != 0)
-     printf("error: set_add()\n");
-
-   data = 23987LL;
-   if (set_add(id, &data) != 0)
-     printf("error: set_add()\n");
-
-   set_dump(id);
-
-   if (set_locate(id, 98LL, &iterator) != 0)
-     printf("error: set_locate()\n");
-
-   if (set_object(id, iterator, (void**)&o) != 0)
-     printf("error: set_object()\n");
-
-   printf("locate() -> object(): 0x%x %qu\n", iterator, *o);
-
-   if (set_get(id, 320498523LL, (void**)&o) == 0)
-     printf("error: set_get(), found a unexisting object\n");
-
-   if (set_get(id, 843536LL, (void**)&o) != 0)
-     printf("error: set_get()\n");
-
-   printf("get(): %qu\n", *o);
-
-   if (set_remove(id, 23987LL) != 0)
-     printf("error: set_remove()\n");
-
-   data = 6354LL;
-   if (set_add(id, &data) != 0)
-     printf("error: set_add()\n");
-
-   data = 45897634543LL;
-   if (set_add(id, &data) != 0)
-     printf("error: set_add()\n");
-
-   data = 0LL;
-   if (set_add(id, &data) != 0)
-     printf("error: set_add()\n");
-
-   if (set_remove(id, 0LL) != 0)
-     printf("error: set_remove()\n");
-
-   data = 234LL;
-   if (set_add(id, &data) != 0)
-     printf("error: set_add()\n");
-
-   if (set_remove(id, 45897634543LL) != 0)
-     printf("error: set_remove()\n");
-
-   if (set_remove(id, 234LL) != 0)
-     printf("error: set_remove()\n");
-
-   data = 78LL;
-   if (set_insert_head(id, &data) != 0)
-     printf("error: set_insert_head()\n");
-
-   data = 1LL;
-   if (set_insert_tail(id, &data) != 0)
-     printf("error: set_insert_tail()\n");
-
-   if (set_locate(id, 1LL, &iterator) != 0)
-     printf("error: set_locate()\n");
-
-   data = 789456LL;
-   if (set_insert_before(id, iterator, &data) != 0)
-     printf("error: set_insert_before()\n");
-
-   if (set_locate(id, 78LL, &iterator) != 0)
-     printf("error: set_locate()\n");
-
-   data = 42LL;
-   if (set_insert_before(id, iterator, &data) != 0)
-     printf("error: set_insert_before()\n");
-
-   set_dump(id);
-
-   if (set_locate(id, 42LL, &iterator) != 0)
-     printf("error: set_locate()\n");
-
-   data = 123456LL;
-   if (set_insert_after(id, iterator, &data) != 0)
-     printf("error: set_insert_after()\n");
-
-   if (set_locate(id, 1LL, &iterator) != 0)
-     printf("error: set_locate()\n");
-
-   data = 21LL;
-   if (set_insert_after(id, iterator, &data) != 0)
-     printf("error: set_insert_after()\n");
-
-   set_dump(id);
-
-   alloc_dump();
-
-   while (1);
- }
+  set_test(SET_TYPE_LL);
+  // XXX set_test(SET_TYPE_ARRAY);
 #endif
 
   return (0);
@@ -689,14 +424,26 @@ int			set_init(void)
  *
  * steps:
  *
- * 1) destroys the id object.
- * 2) frees the set manager structure's memory.
+ * 1) flush the set container.
+ * 2) destroys the id object.
+ * 3) frees the set manager structure's memory.
  */
 
 int			set_clean(void)
 {
   /*
    * 1)
+   */
+
+  if (set_flush(set->setid) != 0)
+    {
+      cons_msg('!', "set: unable to flush the set container\n");
+
+      return (-1);
+    }
+
+  /*
+   * 2)
    */
 
   if (id_destroy(&set->id) != 0)
@@ -707,10 +454,183 @@ int			set_clean(void)
     }
 
   /*
-   * 2)
+   * 3)
    */
 
   free(set);
+
+  return (0);
+}
+
+/*
+ * this function tests the set manager
+ */
+
+int			set_test(t_type				type)
+{
+  switch (type)
+    {
+    case SET_TYPE_ARRAY:
+      {
+	t_iterator	iterator;
+	t_id		data;
+	t_id		*o;
+	t_setid		id;
+
+	cons_msg('#', "testing SET_TYPE_ARRAY\n");
+
+	if (set_rsv(array, SET_OPT_ALLOC | SET_OPT_SORT, 10,
+		    sizeof(t_uint64), &id) != 0)
+	  printf("error: set_rsv()\n");
+
+	data = 98LL;
+	if (set_add(id, &data) != 0)
+	  printf("error: set_add()\n");
+
+	data = 843536LL;
+	if (set_add(id, &data) != 0)
+	  printf("error: set_add()\n");
+
+	data = 100LL;
+	if (set_add(id, &data) != 0)
+	  printf("error: set_add()\n");
+
+	/* XXX continue the tests */
+
+	set_dump(id);
+
+	while (1);
+      }
+    case SET_TYPE_LL:
+      {
+	t_iterator	iterator;
+	t_id		data;
+	t_id		*o;
+	t_setid		id;
+
+	cons_msg('#', "testing SET_TYPE_LL\n");
+
+	if (set_rsv(ll, SET_OPT_ALLOC, sizeof(t_uint64), &id) != 0)
+	  printf("error: set_rsv()\n");
+
+	data = 98LL;
+	if (set_add(id, &data) != 0)
+	  printf("error: set_add()\n");
+
+	data = 843536LL;
+	if (set_add(id, &data) != 0)
+	  printf("error: set_add()\n");
+
+	data = 23987LL;
+	if (set_add(id, &data) != 0)
+	  printf("error: set_add()\n");
+
+	set_dump(id);
+
+	if (set_locate(id, 98LL, &iterator) != 0)
+	  printf("error: set_locate()\n");
+
+	if (set_object(id, iterator, (void**)&o) != 0)
+	  printf("error: set_object()\n");
+
+	printf("locate(): 0x%x object(): %qu\n", iterator, *o);
+
+	if (set_get(id, 320498523LL, (void**)&o) == 0)
+	  printf("error: set_get(), found a unexisting object\n");
+
+	if (set_get(id, 843536LL, (void**)&o) != 0)
+	  printf("error: set_get()\n");
+
+	printf("get(): %qu\n", *o);
+
+	if (set_remove(id, 23987LL) != 0)
+	  printf("error: set_remove()\n");
+
+	data = 6354LL;
+	if (set_add(id, &data) != 0)
+	  printf("error: set_add()\n");
+
+	data = 45897634543LL;
+	if (set_add(id, &data) != 0)
+	  printf("error: set_add()\n");
+
+	data = 0LL;
+	if (set_add(id, &data) != 0)
+	  printf("error: set_add()\n");
+
+	if (set_remove(id, 0LL) != 0)
+	  printf("error: set_remove()\n");
+
+	data = 234LL;
+	if (set_add(id, &data) != 0)
+	  printf("error: set_add()\n");
+
+	if (set_remove(id, 45897634543LL) != 0)
+	  printf("error: set_remove()\n");
+
+	if (set_remove(id, 234LL) != 0)
+	  printf("error: set_remove()\n");
+
+	data = 78LL;
+	if (set_insert_head(id, &data) != 0)
+	  printf("error: set_insert_head()\n");
+
+	data = 1LL;
+	if (set_insert_tail(id, &data) != 0)
+	  printf("error: set_insert_tail()\n");
+
+	if (set_locate(id, 1LL, &iterator) != 0)
+	  printf("error: set_locate()\n");
+
+	data = 789456LL;
+	if (set_insert_before(id, iterator, &data) != 0)
+	  printf("error: set_insert_before()\n");
+
+	if (set_locate(id, 78LL, &iterator) != 0)
+	  printf("error: set_locate()\n");
+
+	data = 42LL;
+	if (set_insert_before(id, iterator, &data) != 0)
+	  printf("error: set_insert_before()\n");
+
+	set_dump(id);
+
+	if (set_locate(id, 42LL, &iterator) != 0)
+	  printf("error: set_locate()\n");
+
+	data = 123456LL;
+	if (set_insert_after(id, iterator, &data) != 0)
+	  printf("error: set_insert_after()\n");
+
+	if (set_locate(id, 1LL, &iterator) != 0)
+	  printf("error: set_locate()\n");
+
+	data = 21LL;
+	if (set_insert_after(id, iterator, &data) != 0)
+	  printf("error: set_insert_after()\n");
+
+	set_dump(id);
+
+	set_flush(id);
+
+	set_dump(id);
+
+	printf("id: %qu\n", id);
+
+	set_dump(set->setid);
+
+	if (set_rel(id) != 0)
+	  printf("error: set_rel()\n");
+
+	set_dump(set->setid);
+
+	alloc_dump();
+
+	while (1);
+
+	/* chaque operation fut validee, aucune perte de memoire */
+      }
+    }
 
   return (0);
 }

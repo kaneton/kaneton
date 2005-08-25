@@ -99,6 +99,18 @@ int			segment_rsv(t_asid			asid,
 				    t_perms			perms,
 				    t_segid*			segid);
 
+int			segment_rel(t_asid			asid,
+				    t_segid			segid);
+
+int			segment_perms(t_asid			asid,
+				      t_segid			segid,
+				      t_perms			perms);
+
+int			segment_flush(t_asid			asid);
+
+int			segment_get(t_segid			segid,
+				    o_segment**			o);
+
 int			segment_init(t_fit			fit);
 
 int			segment_clean(void);

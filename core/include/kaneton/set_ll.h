@@ -56,6 +56,8 @@ typedef struct
  * ../../kaneton/set/set_ll.c
  */
 
+int			set_dump_ll(t_setid			setid);
+
 int			set_head_ll(t_setid			setid,
 				    t_iterator*			iterator);
 
@@ -89,6 +91,12 @@ int			set_add_ll(t_setid			setid,
 
 int			set_remove_ll(t_setid			setid,
 				      t_id			id);
+
+int			set_flush_ll(t_setid			setid);
+
+int			set_locate_ll(t_setid			setid,
+				      t_id			id,
+				      t_iterator*		iterator);
 
 int			set_object_ll(t_setid			setid,
 				      t_iterator		iterator,

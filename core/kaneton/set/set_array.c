@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Aug 24 18:16:04 2005   mycure
+ * last update   Thu Aug 25 18:27:44 2005   mycure
  */
 
 /*
@@ -40,6 +40,59 @@
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * this function dumps set objects contained in a set.
+ *
+ * steps:
+ *
+ * 1) checks if the set manager was previously initialised.
+ * 2) gets the set descriptor from its identifier.
+ * 3) prints each objects' identifier.
+ */
+
+int			set_dump_array(t_setid			setid)
+{
+  o_set*		data;
+  o_set*		o;
+  t_iterator		i;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  cons_msg('#', "dumping %qu node(s) from the array set %qu:\n",
+	   o->size,
+	   setid);
+
+  set_foreach(SET_OPT_FORWARD, setid, &i)
+    {
+      if (set_object(setid, i, (void**)&data) != 0)
+	{
+	  cons_msg('!', "set: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  return (-1);
+	}
+
+      cons_msg('#', "  %qd\n", *data);
+    }
+
+  return (0);
+}
 
 /*
  * this function returns an iterator on the first entry on the array.
@@ -575,6 +628,24 @@ int			set_flush_array(t_setid			setid)
 }
 
 /*
+ * this function tries to find an object with its identifier and build
+ * a corresponding identifier.
+ *
+ * steps:
+ *
+ * 1) XXX
+ */
+
+int			set_locate_array(t_setid		setid,
+					 t_id			id,
+					 t_iterator*		iterator)
+{
+  /* XXX */
+
+  return (-1);
+}
+
+/*
  * this function returns an object given its iterator.
  */
 
@@ -692,10 +763,11 @@ int			set_rsv_array(t_opts			opts,
  *
  * 1) checks whether the set manager was previously initialised.
  * 2) gets the set given its set identifier.
- * 3) cannot release the set container.
- * 4) if needed, releases the set identifier.
- * 5) frees the array allocated at the set reservation.
- * 6) then, removes the set from the set container.
+ * 3) flushs the set.
+ * 4) cannot release the set container.
+ * 5) if needed, releases the set identifier.
+ * 6) frees the array allocated at the set reservation.
+ * 7) then, removes the set from the set container.
  */
 
 int			set_rel_array(t_setid			setid)
@@ -719,6 +791,13 @@ int			set_rel_array(t_setid			setid)
    * 3)
    */
 
+  if (set_flush(setid) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
   if (setid == set->setid)
     {
       cons_msg('!', "set: cannot release the set container\n");
@@ -727,7 +806,7 @@ int			set_rel_array(t_setid			setid)
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if (!(o->u.array.opts & SET_OPT_CONTAINER))
@@ -735,13 +814,13 @@ int			set_rel_array(t_setid			setid)
       return (-1);
 
   /*
-   * 5)
+   * 6)
    */
 
   free(o->u.array.array);
 
   /*
-   * 6)
+   * 7)
    */
 
   if (set_delete(o->id) != 0)

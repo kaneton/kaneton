@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Wed Aug 24 18:12:05 2005   mycure
+ * last update   Thu Aug 25 18:24:50 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -167,9 +167,6 @@ extern m_set*		set;
 #define set_next(_setid_, _args_...)					\
   set_trap(set_next, _setid_, ##_args_)
 
-#define set_object(_setid_, _args_...)					\
-  set_trap(set_object, _setid_, ##_args_)
-
 #define set_add(_setid_, _args_...)					\
   set_trap(set_add, _setid_, ##_args_)
 
@@ -190,6 +187,15 @@ extern m_set*		set;
 
 #define set_insert_after(_setid_, _args_...)				\
   set_trap(set_insert_after, _setid_, ##_args_)
+
+#define set_locate(_setid_, _args_...)					\
+  set_trap(set_locate, _setid_, ##_args_)
+
+#define set_object(_setid_, _args_...)					\
+  set_trap(set_object, _setid_, ##_args_)
+
+#define set_dump(_setid_, _args_...)					\
+  set_trap(set_dump, _setid_, ##_args_)
 
 /*
  * foreach
@@ -216,8 +222,6 @@ extern m_set*		set;
  * ../../kaneton/set/set.c
  */
 
-int			set_dump(t_setid			setid);
-
 int			set_size(t_setid			setid,
 				 t_setsz*			size);
 
@@ -228,10 +232,6 @@ int			set_delete(t_setid			setid);
 int			set_descriptor(t_setid			setid,
 				       o_set**			o);
 
-int			set_locate(t_setid			setid,
-				   t_id				id,
-				   t_iterator*			iterator);
-
 int			set_get(t_setid				setid,
 				t_id				id,
 				void**				o);
@@ -239,6 +239,8 @@ int			set_get(t_setid				setid,
 int			set_init(void);
 
 int			set_clean(void);
+
+int			set_test(t_type				type);
 
 
 /*

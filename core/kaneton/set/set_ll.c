@@ -11,19 +11,23 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Aug 24 18:15:47 2005   mycure
+ * last update   Thu Aug 25 18:40:59 2005   mycure
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * this subpart of set is used to build linked-list data structures.
+ * this subpart of the set manager is used to build linked-list
+ * data structures.
  *
  * note that this data structure is in fact a doubly linked-list.
  *
  * each set of this type can be used in two ways. the first one ask the
  * set manager to allocate and copy each object to add while the second
  * way tells the set manager to simply include the objects in the set.
+ *
+ * moreover, the linked-list data structure can be used either with the
+ * sort option or without.
  */
 
 /*
@@ -36,6 +40,53 @@
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * this function dumps set objects contained in a set.
+ *
+ * steps:
+ *
+ * 1) checks if the set manager was previously initialised.
+ * 2) gets the set descriptor from its identifier.
+ * 3) prints each objects' identifier.
+ */
+
+int			set_dump_ll(t_setid			setid)
+{
+  o_set*		o;
+  t_iterator		i;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  cons_msg('#', "dumping %qu node(s) from the linked-list set %qu:\n",
+	   o->size,
+	   setid);
+
+  set_foreach(SET_OPT_FORWARD, setid, &i)
+    {
+      t_set_ll_node*	n = (t_set_ll_node*)i;
+
+      cons_msg('#', "  %qd <0x%x, 0x%x, 0x%x>\n",
+	       *((t_id*)n->data), n->prv, n, n->nxt);
+    }
+
+  return (0);
+}
 
 /*
  * this function returns an iterator on the first node of the list.
@@ -344,7 +395,18 @@ int			set_insert_tail_ll(t_setid		setid,
 }
 
 /*
- * XXX
+ * this function inserts an object before the one referenced by the iterator.
+ *
+ * steps:
+ *
+ * 1) checks whether the set manager was previously initialised.
+ * 2) checks for a bad identifier.
+ * 3) gets the descriptor of the set.
+ * 4) does not allow this operation if the sort option is not set.
+ * 5) allocates a new node and initialises it.
+ * 6) if the alloc option is set, allocates space for the object.
+ * 7) inserts the node, so reorganises the linked-list.
+ * 8) increments the objects counter.
  */
 
 int			set_insert_before_ll(t_setid		setid,
@@ -435,7 +497,19 @@ int			set_insert_before_ll(t_setid		setid,
 }
 
 /*
- * XXX
+ * this function inserts a new object after a existing one referenced
+ * by the iterator.
+ *
+ * steps:
+ *
+ * 1) checks whether the set manager was previously initialised.
+ * 2) checks for a bad identifier.
+ * 3) gets the descriptor of the set.
+ * 4) does not allow this operation if the sort option is not set.
+ * 5) allocates a new node and initialises it.
+ * 6) if the alloc option is set, allocates space for the object.
+ * 7) inserts the node, so reorganises the linked-list.
+ * 8) increments the objects counter.
  */
 
 int			set_insert_after_ll(t_setid		setid,
@@ -727,20 +801,158 @@ int			set_add_ll(t_setid			setid,
  * steps:
  *
  * 1) checks whether the set manager was initialised.
- * 2) avoids bad identifiers.
- * 3) gets the set descriptor given its set identifier.
- * 4) tries to locate the looked for node given its identifier.
- * 5) if not found, returns an error.
- * 6) reorganises the linked-list.
- * 7) if needed, frees the object's memory.
- * 8) frees the node's memory.
- * 9) decrements the number of nodes in the linked-list data structure.
+ * 2) gets the set descriptor given its set identifier.
+ * 3) tries to locate the looked for node given its identifier.
+ * 4) reorganises the linked-list.
+ * 5) if needed, frees the object's memory.
+ * 6) frees the node's memory.
+ * 7) decrements the number of nodes in the linked-list data structure.
  */
 
 int			set_remove_ll(t_setid			setid,
 				      t_id			id)
 {
-  t_set_ll_node		*tmp;
+  t_set_ll_node*	tmp;
+  o_set*		o;
+  t_iterator		i;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  if (set_locate(setid, id, &i) != 0)
+    return (-1);
+
+  tmp = (t_set_ll_node*)i;
+
+  /*
+   * 4)
+   */
+
+  if (tmp->prv != NULL)
+    tmp->prv->nxt = tmp->nxt;
+  else
+    o->u.ll.head = tmp->nxt;
+
+  if (tmp->nxt != NULL)
+    tmp->nxt->prv = tmp->prv;
+  else
+    o->u.ll.tail = tmp->prv;
+
+  /*
+   * 5)
+   */
+
+  if (o->u.ll.opts & SET_OPT_ALLOC)
+    free(tmp->data);
+
+  /*
+   * 6)
+   */
+
+  free(tmp);
+
+  /*
+   * 7)
+   */
+
+  o->size--;
+
+  return (0);
+}
+
+/*
+ * this function flushes the set, freeing each element.
+ *
+ * steps
+ *
+ * 1) checks whether the set manager was previously initialised.
+ * 2) gets the descriptor given its identifier.
+ * 3) frees each object of the set.
+ * 4) resets the linked-list variables.
+ * 5) resets the linked-list counter.
+ */
+
+int			set_flush_ll(t_setid			setid)
+{
+  t_set_ll_node*	tmp;
+  o_set*		o;
+
+  /*
+   * 1)
+   */
+
+  set_check(set);
+
+  /*
+   * 2)
+   */
+
+  if (set_descriptor(setid, &o) != 0)
+    return (-1);
+
+  /*
+   * 3)
+   */
+
+  for (tmp = o->u.ll.tail; tmp != NULL; )
+    {
+      t_set_ll_node*	t = tmp->prv;
+
+      if (o->u.ll.opts & SET_OPT_ALLOC)
+	free(tmp->data);
+
+      free(tmp);
+
+      tmp = t;
+    }
+
+  /*
+   * 4)
+   */
+
+  o->u.ll.head = NULL;
+  o->u.ll.tail = NULL;
+
+  /*
+   * 5)
+   */
+
+  o->size = 0;
+
+  return (0);
+}
+
+/*
+ * this function tries to find an object with its identifier and build
+ * a corresponding identifier.
+ *
+ * steps:
+ *
+ * 1) checks whether the set manager was previously initialised.
+ * 2) checks if the identifier is a correct one.
+ * 3) gets the set object corresponding to the set identifier.
+ * 4) tries to find the identifier looked for in the set object's elements.
+ */
+
+int			set_locate_ll(t_setid			setid,
+				      t_id			id,
+				      t_iterator*		iterator)
+{
+  t_set_ll_node*	tmp;
   o_set*		o;
 
   /*
@@ -768,61 +980,16 @@ int			set_remove_ll(t_setid			setid,
    */
 
   for (tmp = o->u.ll.head; tmp != NULL; tmp = tmp->nxt)
-    if (id == *((t_id*)tmp->data))
-      break;
+    {
+      if (*((t_id*)tmp->data) == id)
+	{
+	  memcpy(iterator, &tmp, sizeof(t_iterator));
 
-  /*
-   * 5)
-   */
+	  return (0);
+	}
+    }
 
-  if (tmp == NULL)
-    return (-1);
-
-  /*
-   * 6)
-   */
-
-  if (tmp->prv != NULL)
-    tmp->prv->nxt = tmp->nxt;
-  else
-    o->u.ll.head = tmp->nxt;
-
-  if (tmp->nxt != NULL)
-    tmp->nxt->prv = tmp->prv;
-  else
-    o->u.ll.tail = tmp->prv;
-
-  /*
-   * 7)
-   */
-
-  if (o->u.ll.opts & SET_OPT_ALLOC)
-    free(tmp->data);
-
-  /*
-   * 8)
-   */
-
-  free(tmp);
-
-  /*
-   * 9)
-   */
-
-  o->size--;
-
-  return (0);
-}
-
-/*
- * XXX
- */
-
-int			set_flush_ll(t_setid			setid)
-{
-  /* XXX */
-
-  return (0);
+  return (-1);
 }
 
 /*
@@ -921,9 +1088,10 @@ int			set_rsv_ll(t_opts			opts,
  *
  * 1) checks whether the set manager was previously initialised.
  * 2) gets the set given its set identifier.
- * 3) cannot release the set container.
- * 4) if needed, releases the set identifier.
- * 5) then, removes the set from the set container.
+ * 3) flushs the set to release every objects contained in it.
+ * 4) cannot release the set container.
+ * 5) if needed, releases the set identifier.
+ * 6) then, removes the set from the set container.
  */
 
 int			set_rel_ll(t_setid			setid)
@@ -947,6 +1115,13 @@ int			set_rel_ll(t_setid			setid)
    * 3)
    */
 
+  if (set_flush(setid) != 0)
+    return (-1);
+
+  /*
+   * 4)
+   */
+
   if (setid == set->setid)
     {
       cons_msg('!', "set: cannot release the set container\n");
@@ -955,7 +1130,7 @@ int			set_rel_ll(t_setid			setid)
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if (!(o->u.ll.opts & SET_OPT_CONTAINER))
@@ -963,7 +1138,7 @@ int			set_rel_ll(t_setid			setid)
       return (-1);
 
   /*
-   * 5)
+   * 6)
    */
 
   if (set_delete(o->id) != 0)
