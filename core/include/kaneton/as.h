@@ -5,13 +5,13 @@
  * 
  * as.h
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton/core/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Fri Jul 22 18:52:19 2005   mycure
+ * last update   Fri Aug 26 01:04:23 2005   mycure
  */
 
 #ifndef KANETON_AS_H
@@ -38,6 +38,12 @@
 /*
  * ---------- types -----------------------------------------------------------
  */
+
+/*
+ * as identifier
+ */
+
+typedef t_id			t_asid;
 
 /*
  * as object

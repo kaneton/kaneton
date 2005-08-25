@@ -5,13 +5,13 @@
  * 
  * id.h
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton/core/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Thu Jul 21 18:52:59 2005   mycure
+ * last update   Fri Aug 26 01:09:25 2005   mycure
  */
 
 #ifndef KANETON_ID_H
@@ -24,23 +24,29 @@
 #include <arch/machdep/machdep.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
- */
-
-#define ID_UNUSED		((t_id)-1)
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
 /*
- * id object
+ * identifier type
+ */
+
+typedef t_uint64		t_id;
+
+/*
+ * identifier object
  */
 
 typedef struct
 {
   t_id				id;
 }				o_id;
+
+/*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+#define ID_UNUSED		((t_id)-1)
 
 /*
  * ---------- prototypes ------------------------------------------------------

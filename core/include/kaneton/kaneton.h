@@ -5,13 +5,13 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Tue Aug 23 23:08:02 2005   mycure
+ * last update   Fri Aug 26 01:13:49 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H

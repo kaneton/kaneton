@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Thu Aug 25 19:14:27 2005   mycure
+ * last update   Fri Aug 26 01:07:24 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -68,6 +68,18 @@ typedef void*			t_iterator;
 /*
  * ---------- types -----------------------------------------------------------
  */
+
+/*
+ * set identifier
+ */
+
+typedef t_id			t_setid;
+
+/*
+ * set size
+ */
+
+typedef t_uint64		t_setsz;
 
 /*
  * set object
