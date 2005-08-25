@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Aug 25 18:34:51 2005   mycure
+ * last update   Thu Aug 25 19:18:32 2005   mycure
  */
 
 /*
@@ -412,8 +412,9 @@ int			set_init(void)
 #if (KANETON_DEBUG & KANETON_DEBUG_SET)
   set_dump(set->container->id);
 
-  set_test(SET_TYPE_LL);
+  // XXX-OK set_test(SET_TYPE_LL);
   // XXX set_test(SET_TYPE_ARRAY);
+  set_test(SET_TYPE_BPT);
 #endif
 
   return (0);
@@ -500,6 +501,22 @@ int			set_test(t_type				type)
 	set_dump(id);
 
 	while (1);
+
+	break;
+      }
+    case SET_TYPE_BPT:
+      {
+	t_setid		id;
+
+	cons_msg('#', "testing SET_TYPE_BPT\n");
+
+	if (set_rsv(bpt, SET_OPT_ALLOC | SET_OPT_SORT,
+		    sizeof(t_uint64), &id) != 0)
+	  printf("error: set_rsv()\n");
+
+	while (1);
+
+	break;
       }
     case SET_TYPE_LL:
       {
@@ -628,7 +645,13 @@ int			set_test(t_type				type)
 
 	while (1);
 
-	/* chaque operation fut validee, aucune perte de memoire */
+	break;
+
+	/*
+	 * XXX
+	 *
+	 * chaque operation fut validee, aucune perte de memoire
+	 */
       }
     }
 

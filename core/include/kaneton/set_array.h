@@ -86,9 +86,9 @@ int			set_remove_array(t_setid		setid,
 
 int			set_flush_array(t_setid			setid);
 
-int			set_locate_ll(t_setid			setid,
-				      t_id			id,
-				      t_iterator*		iterator);
+int			set_locate_array(t_setid		setid,
+					 t_id			id,
+					 t_iterator*		iterator);
 
 int			set_object_array(t_setid		setid,
 					 t_iterator		iterator,

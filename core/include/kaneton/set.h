@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Thu Aug 25 18:24:50 2005   mycure
+ * last update   Thu Aug 25 19:14:27 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -33,14 +33,14 @@
  */
 
 #define SET_TYPE_ARRAY		0x01
-#define SET_TYPE_LL		0x02
+#define SET_TYPE_BPT		0x02
+#define SET_TYPE_LL		0x03
 
 /*
  * options
  */
 
 #define SET_OPT_NONE		0x00
-
 #define SET_OPT_FORWARD		0x01
 #define SET_OPT_BACKWARD	0x02
 #define SET_OPT_CONTAINER	0x04
@@ -62,6 +62,7 @@ typedef void*			t_iterator;
  */
 
 #include <kaneton/set_array.h>
+#include <kaneton/set_bpt.h>
 #include <kaneton/set_ll.h>
 
 /*
@@ -87,6 +88,7 @@ typedef struct
   union
   {
     t_set_array			array;
+    t_set_bpt			bpt;
     t_set_ll			ll;
   }				u;
 }				o_set;
@@ -139,6 +141,9 @@ extern m_set*		set;
             {								\
               case SET_TYPE_ARRAY:					\
                 _r_ = _func_##_array((_setid_), ##_args_);		\
+                break;							\
+              case SET_TYPE_BPT:					\
+                _r_ = _func_##_bpt((_setid_), ##_args_);		\
                 break;							\
               case SET_TYPE_LL:						\
                 _r_ = _func_##_ll((_setid_), ##_args_);			\

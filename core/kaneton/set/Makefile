@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Wed Jul 20 21:13:12 2005   mycure
+## last update   Thu Aug 25 19:06:07 2005   mycure
 ##
 
 #
@@ -34,6 +34,7 @@ SET			:=		set.a
 
 SET_C			:=		set.c				\
 					set_array.c			\
+					set_bpt.c			\
 					set_ll.c			
 
 SET_O			:=		$(SET_C:.c=.o)
