@@ -39,45 +39,16 @@
  * this function reads on the serial device.
  */
 
-int 	serial_get_char(void)
-{
-	int c;
-	
-	while (1)
-	{
-		INB(COM1 + 5, c);
-		if ((c & 0x01))
-		{
-		INB(COM1, c);
-		return (c);
-		}	
-	}
-}
-
-
 int			serial_read(t_uint8*			data, int size, int* n)
 {
- 
-	int i;
-	int c;
-	
-	for (i = 0; i < size; i++)
-	{
-		*data = (char) serial_get_char();
-		data++;
-	}
-	/*vider le buffer */
-	*data = '\0';
-	
-	
-	/*
+  /*
    * XXX
    */
-/*	*n = 0;
+	*n = 0;
 	
 	while (size) 
 	{
-	INB(COM1 + 5, *data);   ou si y a encore des caractere ds le buffer
+	INB(COM1 + 5, *data); 
 	  if (*data & 1)
 	     {
 		INB(COM1, *data);
@@ -89,7 +60,7 @@ int			serial_read(t_uint8*			data, int size, int* n)
 	     }
 	}
   *data = '\0';
-	*/
+
   return (0);
 }
 
@@ -142,7 +113,7 @@ int			serial_init(void)
 	while (1)
 	{
 	serial_read(buff, 10, &n);
-	printf("%s\n", buff);
+	printf("%s", buff);
 	}
 
 	return (0);
