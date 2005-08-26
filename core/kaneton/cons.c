@@ -112,7 +112,14 @@ int			cons_print_char(char			c)
 
       return ;
     }
+  
+  if (c == '\r')
+    {
+      cons.column = 0;
 
+      return ;
+    }
+  
   if (pos >= CONS_SIZE)
     {
       cons_scroll(1);

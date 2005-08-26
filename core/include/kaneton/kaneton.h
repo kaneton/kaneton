@@ -132,9 +132,9 @@ int			cons_clean(void);
  * ../../kaneton/serial.c
  */
 
-int			serial_read(t_uint8*			data);
+int			serial_read(t_uint8*			data, int size, int* n);
 
-int			serial_write(t_uint8*			data);
+int			serial_write(t_uint8*			data, int size, int* n);
 
 int			serial_init(void);
 
