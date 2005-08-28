@@ -5,13 +5,13 @@
  * 
  * id.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton/stats
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Jul 22 14:06:18 2005   mycure
+ * last update   Sun Aug 28 19:47:56 2005   mycure
  */
 
 /*

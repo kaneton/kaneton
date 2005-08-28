@@ -1,4 +1,8 @@
 --
+ un bon test: on initialise tout, ensuite on detruit tout et on verifie
+ qu on a pas perdu de memoire, comme ca on verra si les ensembles sont bons
+
+--
  conf/
  stats/
 

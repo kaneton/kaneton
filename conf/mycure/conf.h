@@ -5,13 +5,13 @@
  * 
  * conf.h
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/conf/mycure
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Aug 28 16:23:31 2005   mycure
- * last update   Sun Aug 28 18:22:01 2005   mycure
+ * last update   Sun Aug 28 19:59:22 2005   mycure
  */
 
 #ifndef KANETON_CONF_H
@@ -64,6 +64,21 @@
  */
 
 #define CONF_DEBUG							\
-  (DEBUG_SEGMENT)
+  (0)
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../../kaneton/conf/conf.c
+ */
+
+/*
+ * ../../kaneton/conf/conf.c
+ */
+
+
+/*
+ * eop
+ */
 
 #endif

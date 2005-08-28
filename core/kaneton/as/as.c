@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/stats
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Aug 28 18:22:25 2005   mycure
+ * last update   Sun Aug 28 19:55:00 2005   mycure
  */
 
 /*
@@ -133,6 +133,8 @@ int			as_rsv(t_asid*				asid)
 {
   o_as			o;
 
+  STATS_BEGIN(as->stats);
+
   /*
    * 1)
    */
@@ -195,6 +197,8 @@ int			as_rsv(t_asid*				asid)
       return (-1);
     }
 
+  STATS_END(as->stats);
+
   return (0);
 }
 
@@ -215,6 +219,8 @@ int			as_rel(t_asid				asid)
 {
   t_iterator		iterator;
   o_as			*o;
+
+  STATS_BEGIN(as->stats);
 
   /*
    * 1)
@@ -257,6 +263,8 @@ int			as_rel(t_asid				asid)
   if (set_remove(as->container, o->asid) != 0)
     return (-1);
 
+  STATS_END(as->stats);
+
   return (0);
 }
 
@@ -273,6 +281,8 @@ int			as_rel(t_asid				asid)
 int			as_get(t_asid				asid,
 			       o_as**				o)
 {
+  STATS_BEGIN(as->stats);
+
   /*
    * 1)
    */
@@ -285,6 +295,8 @@ int			as_get(t_asid				asid,
 
   if (set_get(as->container, asid, (void**)o) != 0)
     return (-1);
+
+  STATS_END(as->stats);
 
   return (0);
 }
@@ -304,7 +316,8 @@ int			as_get(t_asid				asid,
  * 3) reserves the addres space container set which will contain
  *    the address space build later.
  * 4) reserves the kernel address space.
- * 5) if asked, dumps the address space manager.
+ * 5) tries to reserve a statistics object.
+ * 6) if asked, dumps the address space manager.
  */
 
 int			as_init(void)
@@ -361,6 +374,17 @@ int			as_init(void)
    * 5)
    */
 
+  if (stats_rsv("as", &as->stats) != 0)
+    {
+      cons_msg('!', "as: unable to reserve a statistics object\n");
+
+      return (-1);
+    }
+
+  /*
+   * 6)
+   */
+
 #if (DEBUG & DEBUG_AS)
   as_dump();
 #endif
@@ -373,16 +397,28 @@ int			as_init(void)
  *
  * steps:
  *
- * 1) releases the kernel address space.
- * 2) releases the address space's container.
- * 3) destroys the id object.
- * 4) frees the address space manager structure's memory.
+ * 1) releases the statistics object.
+ * 2) releases the kernel address space.
+ * 3) releases the address space's container.
+ * 4) destroys the id object.
+ * 5) frees the address space manager structure's memory.
  */
 
 int			as_clean(void)
 {
   /*
    * 1)
+   */
+
+  if (stats_rel(as->stats) != 0)
+    {
+      cons_msg('!', "as: unable to release the statistics object\n");
+
+      return (-1);
+    }
+
+  /*
+   * 2)
    */
 
   if (as_rel(kas) != 0)
@@ -393,7 +429,7 @@ int			as_clean(void)
     }
 
   /*
-   * 2)
+   * 3)
    */
 
   if (set_rel(as->container) != 0)
@@ -404,7 +440,7 @@ int			as_clean(void)
     }
 
   /*
-   * 3)
+   * 4)
    */
 
   if (id_destroy(&as->id) != 0)
@@ -415,7 +451,7 @@ int			as_clean(void)
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   free(as);

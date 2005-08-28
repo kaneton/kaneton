@@ -5,13 +5,13 @@
  * 
  * stats.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/stats
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Aug 28 18:22:58 2005   mycure
+ * last update   Sun Aug 28 19:57:36 2005   mycure
  */
 
 /*
@@ -45,6 +45,26 @@ m_stats*		stats;
  * XXX
  */
 
+void			stats_begin(t_staid			staid,
+				    char*			function)
+{
+  printf("stats_begin: %s\n", function);
+}
+
+/*
+ * XXX
+ */
+
+void			stats_end(t_staid			staid,
+				  char*				function)
+{
+
+}
+
+/*
+ * XXX
+ */
+
 int			stats_dump(void)
 {
   /* XXX */
@@ -56,7 +76,26 @@ int			stats_dump(void)
  * XXX
  */
 
-int			stats_rsv(char*				name)
+int			stats_add(void)
+{
+
+}
+
+/*
+ * XXX
+ */
+
+int			stats_remove(void)
+{
+
+}
+
+/*
+ * XXX
+ */
+
+int			stats_rsv(char*				name,
+				  t_staid*			staid)
 {
   o_stats		o;
 
@@ -65,8 +104,10 @@ int			stats_rsv(char*				name)
   if ((o.name = strdup(name)) == NULL)
     return (-1);
 
-  if (id_rsv(&stats->id, &o.staid) != 0)
+  if (id_rsv(&stats->id, staid) != 0)
     return (-1);
+
+  o.staid = *staid;
 
   /* XXX array */
 
@@ -96,10 +137,19 @@ int			stats_rsv(char*				name)
 
 int			stats_rel(t_staid			staid)
 {
-  if (set_remove(stats->container, staid) != 0)
+  o_stats*		o;
+
+  if (set_get(stats->container, staid, (void**)&o) != 0)
     return (-1);
 
-  /* XXX */
+  /* XXX foreach pour pouvoir liberer chaque chaine NAME */
+  if (set_rel(o->functions) != 0)
+    return (-1);
+
+  free(o->name);
+
+  if (set_remove(stats->container, o->staid) != 0)
+    return (-1);
 
   return (0);
 }

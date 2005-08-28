@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/stats
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Aug 28 18:23:56 2005   mycure
+ * last update   Sun Aug 28 19:59:37 2005   mycure
  */
 
 /*
@@ -42,49 +42,6 @@ t_init*			init;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * this function displays the kaneton parameters.
- */
-
-void			kaneton_dump(void)
-{
-  cons_msg('#', "dumping kernel parameters:\n");
-
-#if defined(___bootloader)
-  cons_msg('#', " mode: bootloader\n");
-  kaneton_error("kernel compiled in a bad way where ___bootloader"
-		"is defined\n");
-#elif defined(___kernel)
-  cons_msg('#', " mode: kernel\n");
-#else
-  kaneton_error("no mode defined\n");
-#endif
-
-#if defined(___kaneton)
-  cons_msg('#', " name: kaneton\n");
-#else
-  kaneton_error("___kaneton not defined\n");
-#endif
-
-#if (___wordsz == WORDSZ_32)
-  cons_msg('#', " wordsize: 32-bit\n");
-#elif (___wordsz == WORDSZ_64)
-  cons_msg('#', " wordsize: 64-bit\n");
-#elif (___wordsz == WORDSZ_128)
-  cons_msg('#', " wordsize: 128-bit\n");
-#else
-  kaneton_error("no word size defined\n");
-#endif
-
-#if (___endian == ENDIAN_LITTLE)
-  cons_msg('#', " endian: little\n");
-#elif (___endian == ENDIAN_BIG)
-  cons_msg('#', " endian: big\n");
-#else
-  kaneton_error("no endian defined\n");
-#endif
-}
 
 /*
  * this function simply initialises each manager.
@@ -201,4 +158,47 @@ void			kaneton(t_init*				bootloader)
   set_clean();
 
   id_clean();
+}
+
+/*
+ * this function displays the kaneton parameters.
+ */
+
+void			kaneton_dump(void)
+{
+  cons_msg('#', "dumping kernel parameters:\n");
+
+#if defined(___bootloader)
+  cons_msg('#', " mode: bootloader\n");
+  kaneton_error("kernel compiled in a bad way where ___bootloader"
+		"is defined\n");
+#elif defined(___kernel)
+  cons_msg('#', " mode: kernel\n");
+#else
+  kaneton_error("no mode defined\n");
+#endif
+
+#if defined(___kaneton)
+  cons_msg('#', " name: kaneton\n");
+#else
+  kaneton_error("___kaneton not defined\n");
+#endif
+
+#if (___wordsz == WORDSZ_32)
+  cons_msg('#', " wordsize: 32-bit\n");
+#elif (___wordsz == WORDSZ_64)
+  cons_msg('#', " wordsize: 64-bit\n");
+#elif (___wordsz == WORDSZ_128)
+  cons_msg('#', " wordsize: 128-bit\n");
+#else
+  kaneton_error("no word size defined\n");
+#endif
+
+#if (___endian == ENDIAN_LITTLE)
+  cons_msg('#', " endian: little\n");
+#elif (___endian == ENDIAN_BIG)
+  cons_msg('#', " endian: big\n");
+#else
+  kaneton_error("no endian defined\n");
+#endif
 }

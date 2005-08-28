@@ -96,9 +96,9 @@
  * ../../kaneton/kaneton.c
  */
 
-void			kaneton_dump(void);
-
 void			kaneton(t_init*				bootloader);
+
+void			kaneton_dump(void);
 
 
 /*

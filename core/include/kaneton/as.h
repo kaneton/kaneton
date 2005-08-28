@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Fri Aug 26 01:21:57 2005   mycure
+ * last update   Sun Aug 28 19:48:41 2005   mycure
  */
 
 #ifndef KANETON_AS_H
@@ -59,6 +59,8 @@ typedef struct
 typedef struct
 {
   o_id				id;
+
+  t_staid			stats;
 
   t_setid			container;
 }				m_as;
