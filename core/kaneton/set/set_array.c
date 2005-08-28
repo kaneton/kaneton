@@ -5,13 +5,13 @@
  * 
  * set_array.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Aug 26 01:43:10 2005   mycure
+ * last update   Fri Aug 26 15:35:47 2005   mycure
  */
 
 /*
@@ -29,8 +29,17 @@
  *     meme les donnees, generalement des petites donnees comme des
  *     identfificateurs.
  *
- * XXX on peut optimiser en utilisant le cas SORT:
- *     head = 0, tail = size-1, prv = --, nxt = ++
+ * XXX ca foire le truc: il ne faut pas faire une erreur si jamais il n'y
+ *     a pas de place pour inserer apres par exemple. il faut se demerder
+ *     pour caser le truc, par exemple en allouant de la place.
+ *
+ * XXX option ORGANISE pour toujours faire en sorte que le tableau soit
+ *     le plus petit possible.
+ *
+ * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ORGANISE
+ * XXX SET_OPT_ALLOC ?
+ *
+ * XXX set_insert_array(set, position)
  */
 
 /*
@@ -98,6 +107,44 @@ int			set_dump_array(t_setid			setid)
 }
 
 /*
+ * XXX
+ */
+
+int			set_expand_array(o_set*			o)
+{
+  if (o->size == o->u.array.arraysz)
+    {
+      if ((o->u.array.array = realloc(o->u.array.array,
+				      (o->u.array.arraysz * 2) *
+				      o->u.array.datasz)) == NULL)
+	{
+	  cons_msg('!', "set: not enough memory to expand the array\n");
+
+	  return (-1);
+	}
+
+      for (i = o->u.array.arraysz; i < (o->u.array.arraysz * 2); i++)
+	*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) = ID_UNUSED;
+
+      o->u.array.arraysz *= 2;
+    }
+
+  return (0);
+}
+
+/*
+ * XXX
+ */
+
+int			set_insert_array(o_set*			o,
+					 t_sint32		position)
+{
+  /* XXX */
+
+  return (0);
+}
+
+/*
  * this function returns an iterator on the first entry on the array.
  *
  * if there is no node in the list, the function returns -1.
@@ -119,13 +166,23 @@ int			set_head_array(t_setid			setid,
   if (o->size == 0)
     return (-1);
 
-  for (i = 0; i < o->u.array.arraysz; i++)
-    if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) != ID_UNUSED)
-      {
-	*iterator = o->u.array.array + (i * o->u.array.datasz);
+  if (o->u.array.opts & SET_OPT_ORGANISE)
+    {
+      *iterator = o->u.array.array;
 
-	return (0);
-      }
+      return (0);
+    }
+  else
+    {
+      for (i = 0; i < o->u.array.arraysz; i++)
+	if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) !=
+	    ID_UNUSED)
+	  {
+	    *iterator = o->u.array.array + (i * o->u.array.datasz);
+
+	    return (0);
+	  }
+    }
 
   return (-1);
 }
@@ -152,13 +209,23 @@ int			set_tail_array(t_setid			setid,
   if (o->size == 0)
     return (-1);
 
-  for (i = o->u.array.arraysz - 1; i >= 0; i++)
-    if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) != ID_UNUSED)
-      {
-	*iterator = o->u.array.array + (i * o->u.array.datasz);
+  if (o->u.array.opts & SET_OPT_ORGANISE)
+    {
+      *iterator = o->u.array.array + ((o->size - 1) * o->u.array.datasz);
 
-	return (0);
-      }
+      return (0);
+    }
+  else
+    {
+      for (i = o->u.array.arraysz - 1; i >= 0; i--)
+	if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) !=
+	    ID_UNUSED)
+	  {
+	    *iterator = o->u.array.array + (i * o->u.array.datasz);
+
+	    return (0);
+	  }
+    }
 
   return (-1);
 }
@@ -181,14 +248,28 @@ int			set_prev_array(t_setid			setid,
   if (set_descriptor(setid, &o) != 0)
     return (-1);
 
-  for (i = (((t_uint8*)current - o->u.array.array) / o->u.array.datasz) - 1;
-       i >= 0; i++)
-    if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) != ID_UNUSED)
-      {
-	*previous = o->u.array.array + (i * o->u.array.datasz);
+  i = (((t_uint8*)current - o->u.array.array) / o->u.array.datasz) - 1;
 
-	return (0);
-      }
+  if (o->u.array.opts & SET_OPT_ORGANISE)
+    {
+      if (i >= 0)
+	{
+	  *previous = o->u.array.array + (i * o->u.array.datasz);
+
+	  return (0);
+	}
+    }
+  else
+    {
+      for (; i >= 0; i--)
+	if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) !=
+	    ID_UNUSED)
+	  {
+	    *previous = o->u.array.array + (i * o->u.array.datasz);
+
+	    return (0);
+	  }
+    }
 
   return (-1);
 }
@@ -211,14 +292,28 @@ int			set_next_array(t_setid			setid,
   if (set_descriptor(setid, &o) != 0)
     return (-1);
 
-  for (i = (((t_uint8*)current - o->u.array.array) / o->u.array.datasz) + 1;
-       i < o->u.array.arraysz; i++)
-    if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) != ID_UNUSED)
-      {
-	*next = o->u.array.array + (i * o->u.array.datasz);
+  i = (((t_uint8*)current - o->u.array.array) / o->u.array.datasz) + 1;
 
-	return (0);
-      }
+  if (o->u.array.opts & SET_OPT_ORGANISE)
+    {
+      if (i < o->size)
+	{
+	  *next = o->u.array.array + (i * o->u.array.datasz);
+
+	  return (0);
+	}
+    }
+  else
+    {
+      for (; i < o->u.array.arraysz; i++)
+	if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) !=
+	    ID_UNUSED)
+	  {
+	    *next = o->u.array.array + (i * o->u.array.datasz);
+
+	    return (0);
+	  }
+    }
 
   return (-1);
 }
@@ -235,6 +330,7 @@ int			set_insert_head_array(t_setid		setid,
 					      void*		data)
 {
   o_set*		o;
+  t_sint32		i;
 
   /*
    * 1)
@@ -263,7 +359,19 @@ int			set_insert_head_array(t_setid		setid,
   if (o->u.array.opts & SET_OPT_SORT)
     return (-1);
 
-  /* XXX */
+  /*
+   * 5)
+   */
+
+  if (set_expand_array(o) != 0)
+    return (-1);
+
+  /*
+   * 6)
+   */
+
+  if (set_insert_array(o, 0) != 0)
+    return (-1);
 
   /*
    * 8)
@@ -280,12 +388,13 @@ int			set_insert_head_array(t_setid		setid,
  * steps:
  *
  * 1) XXX
-  */
+ */
 
 int			set_insert_tail_array(t_setid		setid,
 					      void*		data)
 {
   o_set*		o;
+  t_sint32		i;
 
   /*
    * 1)
@@ -314,7 +423,28 @@ int			set_insert_tail_array(t_setid		setid,
   if (o->u.array.opts & SET_OPT_SORT)
     return (-1);
 
-  /* XXX */
+  /*
+   * 5)
+   */
+
+  if (set_expand_array(o) != 0)
+    return (-1);
+
+  /*
+   * 6)
+   */
+
+  if (o->u.array.opts & SET_OPT_ORGANISE)
+    i = o->size;
+  else
+    i = o->u.array.arraysz - 1;
+
+  /*
+   * 7)
+   */
+
+  if (set_insert_array(o, i) != 0)
+    return (-1);
 
   /*
    * 8)
@@ -334,6 +464,7 @@ int			set_insert_before_array(t_setid		setid,
 						void*		data)
 {
   o_set*		o;
+  t_sint32		i;
 
   /*
    * 1)
@@ -417,22 +548,8 @@ int			set_insert_after_array(t_setid		setid,
    * 5)
    */
 
-  if (o->size == o->u.array.arraysz)
-    {
-      if ((o->u.array.array = realloc(o->u.array.array,
-				      (o->u.array.arraysz * 2) *
-				      o->u.array.datasz)) == NULL)
-	{
-	  cons_msg('!', "set: not enough memory to extend the array\n");
-
-	  return (-1);
-	}
-
-      for (i = o->u.array.arraysz; i < (o->u.array.arraysz * 2); i++)
-	*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) = ID_UNUSED;
-
-      o->u.array.arraysz *= 2;
-    }
+  if (set_expand_array(o) != 0)
+    return (-1);
 
   /*
    * 6)
@@ -444,25 +561,56 @@ int			set_insert_after_array(t_setid		setid,
    * 7)
    */
 
-  if (*(t_id*)n == ID_UNUSED)
+  if (*((t_id*)n) == ID_UNUSED)
     {
       memcpy(n, data, o->u.array.datasz);
     }
   else
     {
-      /* XXX faire 2 cas
-      for (i = ((n - o->u.array.array) / o->u.array.datasz) + 1;
-	   i < o->u.array.arraysz; i++)
-	if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) ==
-	    ID_UNUSED)
-	  {
-	  for (j = o->u.array.arraysz - 1; j >= i; j--)
-	    {
-	      memcpy(o->u.array.array + ((j + 1) * o->u.array.datasz),
-		     o->u.array.array + (j * o->u.array.datasz),
-		     o->u.array.datasz);
-	    }
+      if (o->u.array.opts & SET_OPT_ORGANISE)
+	{
+	  i = o->size;
+
+	  /* XXX decalage droite >> */
 	}
+      else
+	{
+	  for (i = ((n - o->u.array.array) / o->u.array.datasz) + 1;
+	       i < o->u.array.arraysz; i++)
+	    {
+	      if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) ==
+		  ID_UNUSED)
+		{
+		  for (j = o->u.array.arraysz - 1; j >= i; j--)
+		    {
+		      memcpy(o->u.array.array + ((j + 1) * o->u.array.datasz),
+			     o->u.array.array + (j * o->u.array.datasz),
+			     o->u.array.datasz);
+		    }
+
+		  break;
+		}
+	    }
+
+	  if (i == o->u.array.arraysz)
+	    {
+	      for (i = ((n - o->u.array.array) / o->u.array.datasz) - 1;
+		   i < o->u.array.arraysz; i++)
+		{
+		  if (*((t_id*)(o->u.array.array + (i * o->u.array.datasz))) ==
+		      ID_UNUSED)
+		    {
+		      for (j = o->u.array.arraysz - 1; j >= i; j--)
+			{
+			  memcpy(o->u.array.array +
+				 ((j + 1) * o->u.array.datasz),
+				 o->u.array.array + (j * o->u.array.datasz),
+				 o->u.array.datasz);
+			}
+		  }
+	      }
+	}
+
       */
     }
 
@@ -521,7 +669,7 @@ int			set_add_array(t_setid			setid,
 				      (o->u.array.arraysz * 2) *
 				      o->u.array.datasz)) == NULL)
 	{
-	  cons_msg('!', "set: not enough memory to extend the array\n");
+	  cons_msg('!', "set: not enough memory to expand the array\n");
 
 	  return (-1);
 	}

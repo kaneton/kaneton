@@ -5,13 +5,13 @@
  * 
  * set_ll.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/segment
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Aug 25 18:40:59 2005   mycure
+ * last update   Fri Aug 26 14:50:58 2005   mycure
  */
 
 /*
@@ -28,6 +28,8 @@
  *
  * moreover, the linked-list data structure can be used either with the
  * sort option or without.
+ *
+ * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ALLOC
  */
 
 /*

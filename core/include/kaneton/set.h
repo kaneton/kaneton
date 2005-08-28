@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Fri Aug 26 01:23:46 2005   mycure
+ * last update   Fri Aug 26 13:27:35 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -47,6 +47,7 @@
 #define SET_OPT_CONTAINER	0x04
 #define SET_OPT_ALLOC		0x08
 #define SET_OPT_SORT		0x10
+#define SET_OPT_ORGANISE	0x20
 
 /*
  * ---------- types -----------------------------------------------------------
