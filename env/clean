@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:14:03 2005   mycure
-## last update   Mon Jul  4 17:32:54 2005   mycure
+## last update   Sun Aug 28 16:10:07 2005   mycure
 ##
 
 # INFORMATIONS
@@ -33,13 +33,6 @@ CONF="../conf/"$USER"/"$USER".conf"
 # default globals
 ENVIRONMENT="unknown"
 ARCHITECTURE="unknown"
-
-
-
-# VERSION HEADER FILE
-#
-# the version header file to generate
-VERSION_H="core/include/version.h"
 
 
 
@@ -139,14 +132,15 @@ clean()
 
 
 
-# VERSION
+# CONFIGURATION
 #
-# cleans the version header file
-version()
+# this function unlinks the kernel configuration files.
+conf()
 {
-  print " removing the version header file" "+"
+  print " unlinking kernel configuration files" "+"
 
-  rm -f $VERSION_H
+  rm core/kaneton/conf/conf.c
+  rm core/include/kaneton/conf.h
 }
 
 
@@ -224,8 +218,8 @@ cd ..
 # clean environment
 clean
 
-# remove the version header file
-version
+# unlink the configuration files
+conf
 
 # clean the files dependencies
 dep

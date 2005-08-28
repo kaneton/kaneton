@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/stats
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Aug 28 15:30:56 2005   mycure
+ * last update   Sun Aug 28 18:23:34 2005   mycure
  */
 
 /*
@@ -605,7 +605,7 @@ int			segment_init(t_fit			fit)
    * 6)
    */
 
-#if (KANETON_DEBUG & KANETON_DEBUG_SEGMENT)
+#if (DEBUG & DEBUG_SEGMENT)
   segment_dump();
 #endif
 

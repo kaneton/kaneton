@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton/stats
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Sun Aug 28 15:01:46 2005   mycure
+## last update   Sun Aug 28 18:09:58 2005   mycure
 ##
 
 #
@@ -71,7 +71,7 @@ clean:
 	$(SHELL) clean							; \
 	cd ..
 
-	rm -f *~
+	@rm -f *~
 
 #
 # ---------- development ------------------------------------------------------

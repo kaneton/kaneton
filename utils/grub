@@ -5,13 +5,13 @@
 ## 
 ## grub.sh
 ## 
-## path          /home/mycure/kaneton/utils
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Fri Jan 29 05:17:54 1999   mycure
+## last update   Sun Aug 28 16:28:11 2005   mycure
 ##
 
 # INFORMATIONS
@@ -31,7 +31,6 @@ MODULES=`sed "s/#.*//g" ../conf/"$USER"/modules.conf | grep -v "^$"`
 # CONFIGURATION FILE VARIABLES
 #
 # default globals
-TITLE="unknown"
 ADDRESS="unknown"
 TFTP_ADDRESS="unknown"
 TFTP_DIRECTOR="unknown"
@@ -51,9 +50,6 @@ MENU="/tmp/menu.lst"
 # important variables
 read_kaneton_conf()
 {
-  # title
-  TITLE=`cat $CONF | grep -E "^_TITLE_ = .*$" | cut -b 11-`
-
   # address
   ADDRESS=`cat $CONF | grep -E "^_ADDRESS_ = .*$" | cut -b 13-`
 
@@ -95,7 +91,6 @@ warning()
 {
   # display information and ask the user to continue or cancel
   print " your current configuration" "+"
-  print "   title:                    $TITLE" "+"
   print "   address:                  $ADDRESS" "+"
   print "   tftp address:             $TFTP_ADDRESS" "+"
   print "   tftp directory:           $TFTP_DIRECTORY" "+"
@@ -121,7 +116,7 @@ menu()
   rm -f $MENU 2>&1 > /dev/null
 
   # create new version
-  echo "title $TITLE" >> $MENU
+  echo "title kaneton" >> $MENU
   echo "" >> $MENU
 
   # insert each module in menu

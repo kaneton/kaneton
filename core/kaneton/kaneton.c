@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/stats
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Aug 28 14:16:45 2005   mycure
+ * last update   Sun Aug 28 18:23:56 2005   mycure
  */
 
 /*
@@ -131,7 +131,7 @@ void			kaneton(t_init*				bootloader)
    * 4)
    */
 
-#if (KANETON_DEBUG & KANETON_DEBUG_PARAMS)
+#if (DEBUG & DEBUG_PARAMS)
   kaneton_dump();
 #endif
 
@@ -159,7 +159,7 @@ void			kaneton(t_init*				bootloader)
    * 8)
    */
 
-#ifdef STATS_MODE
+#ifdef CONF_STATS
   if (stats_init() != 0)
     kaneton_error("cannot initialise the stats manager\n");
 #endif

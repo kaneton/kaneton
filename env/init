@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Fri Jan 29 05:18:43 1999   mycure
+## last update   Sun Aug 28 16:27:25 2005   mycure
 ##
 
 # INFORMATIONS
@@ -31,20 +31,10 @@ CONF="../conf/"$USER"/"$USER".conf"
 # CONFIGURATION FILE VARIABLES
 #
 # default globals
-TITLE="unknown"
-VERSION="unknown"
 LIBC="unknown"
 ENVIRONMENT="unknown"
 ARCHITECTURE="unknwon"
 MULTIBOOTLOADER="unknown"
-MODE="unknown"
-
-
-
-# VERSION HEADER FILE
-#
-# the version header file to generate
-VERSION_H="core/include/version.h"
 
 
 
@@ -54,15 +44,6 @@ VERSION_H="core/include/version.h"
 # important variables
 read_kaneton_conf()
 {
-  # title
-  TITLE=`cat $CONF | grep -E "^_TITLE_ = .*$" | cut -b 11-`
-
-  # version
-  VERSION=`cat $CONF | grep -E "^_VERSION_ = .*$" | cut -b 13-`
-
-  # mode
-  MODE=`cat $CONF | grep -E "^_MODE_ = .*$" | cut -b 10-`
-
   # libc
   LIBC=`cat $CONF | grep -E "^_LIBC_ = .*$" | cut -b 10-`
 
@@ -95,9 +76,6 @@ warning()
 {
   # display information and ask the user to continue or cancel
   print " your current configuration:" "+"
-  print "   title:                    $TITLE" "+"
-  print "   version:                  $VERSION" "+"
-  print "   mode:                     $MODE" "+"
   print "   libc:                     $LIBC" "+"
   print "   environment:              $ENVIRONMENT" "+"
   print "   architecture:             $ARCHITECTURE" "+"
@@ -164,40 +142,15 @@ init()
 
 
 
-# VERSION
+# CONFIGURATION
 #
-# this function generates the version header file from the configuration file
-version()
+# this function links the kernel configuration files.
+conf()
 {
-  print " generating the version header file" "+"
+  print " linking kernel configuration files" "+"
 
-  echo -n "" > $VERSION_H
-
-  echo "#ifndef VERSION_H" >> $VERSION_H
-  echo "#define VERSION_H		1" >> $VERSION_H
-
-  echo "" >> $VERSION_H
-
-  echo "#define TITLE			\"$TITLE\"" >> $VERSION_H
-
-  echo "#define VERSION			\"$VERSION\"" >> $VERSION_H
-
-  if [ $MODE = "development" ] ; then
-    echo "#define MODE			MODE_DEVELOPMENT" >> $VERSION_H
-  fi
-  if [ $MODE = "release" ] ; then
-    echo "#define MODE			MODE_RELEASE" >> $VERSION_H
-  fi
-
-  echo "#define LIBC			\"$LIBC\"" >> $VERSION_H
-
-  echo "#define ENVIRONMENT		\"$ENVIRONMENT\"" >> $VERSION_H
-
-  echo "#define ARCHITECTURE		\"$ARCHITECTURE\"" >> $VERSION_H
-
-  echo "" >> $VERSION_H
-
-  echo "#endif" >> $VERSION_H
+  ln -s ../../../conf/$USER/conf.c core/kaneton/conf/conf.c
+  ln -s ../../../conf/$USER/conf.h core/include/kaneton/conf.h
 }
 
 
@@ -276,8 +229,8 @@ cd ../
 # install environment
 init
 
-# generate the version header file
-version
+# link kernel configuration
+conf
 
 # generate the files dependencies
 dep

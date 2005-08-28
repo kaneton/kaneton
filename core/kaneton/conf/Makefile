@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/services/dsh
+## path          /home/mycure/kaneton/core/kaneton/conf
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
-## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Sun Aug 28 18:01:41 2005   mycure
+## started on    Fri Feb 11 02:57:24 2005   mycure
+## last update   Sun Aug 28 16:01:08 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
-
-include			../../.kaneton.mk
+ 
+include			../../../.kaneton.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -29,35 +29,42 @@ include			../../.kaneton.mk
 #
 # ---------- variables --------------------------------------------------------
 #
+ 
+CONF			:=		conf.a
 
-DSH			:=		dsh
+CONF_C			:=		conf.c			
 
-DSH_C			:=		dsh.c
+CONF_O			:=		$(CONF_C:.c=.o)
 
-DSH_O			:=		$(DSH_C:.c=.o)
+CONF_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/conf.h
 
-DSH_INCLUDE		=		
+CFLAGS			+=		-D___kernel
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(DSH):			$(DSH_O)
-	$(call dynamic-linker,$(DSH),$(DSH_O) $(_LIBC_A_),		\
-	  -T $(_LDS_DIR_)/service.lds)
+$(CONF):		$(CONF_O)
+	$(call remove,$(CONF),)
+
+	$(call archive,$(CONF),$(CONF_O),)
+
+	$(call static-linker,$(CONF),)
 
 clear:
-	$(call remove,$(DSH_O),)
-	$(call remove,$(DSH),)
+	$(call remove,$(CONF_O),)
+
+	$(call remove,$(CONF),)
 
 	$(call purge,)
 
 proto:
+	$(call prototypes,$(CONF_INCLUDE),)
 
 dep:
 	$(call remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(DSH_C),$(_MAKEFILE_MK_),)
+	$(call dependencies,$(CONF_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

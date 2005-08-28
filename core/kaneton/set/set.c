@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/segment
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Aug 25 19:18:32 2005   mycure
+ * last update   Sun Aug 28 18:22:47 2005   mycure
  */
 
 /*
@@ -409,7 +409,7 @@ int			set_init(void)
    * 5)
    */
 
-#if (KANETON_DEBUG & KANETON_DEBUG_SET)
+#if (DEBUG & DEBUG_SET)
   set_dump(set->container->id);
 
   // XXX-OK set_test(SET_TYPE_LL);

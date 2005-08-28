@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sun Aug 28 13:41:50 2005   mycure
+## last update   Sun Aug 28 18:25:55 2005   mycure
 ##
 
 #
@@ -381,7 +381,7 @@ endef
 #
 
 define prototypes
-  for i in $(1) ; do							\
+  @for i in $(1) ; do							\
     if [ -e $$i ] ; then						\
       $(call pretty-printer,yellow,PROTOTYPES,$$i,		)	; \
       $(_PROTO_) $(2) $(1)						; \
@@ -419,7 +419,7 @@ define version
   echo "#include <libc.h>" >> $(1)					; \
   echo "#include <kaneton.h>" >> $(1)					; \
   echo "" >> $(1)							; \
-  echo -n "const char version[] = TITLE\"-\"VERSION" >> $(1)		; \
+  echo -n "const char version[] = CONF_TITLE\"-\"CONF_VERSION" >> $(1)	; \
   echo "\" $(DATE) $(USER)@$(HOSTNAME)\";" >> $(1)
 endef
 

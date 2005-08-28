@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Aug 28 14:08:15 2005   mycure
+ * last update   Sun Aug 28 18:15:15 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
@@ -43,14 +43,6 @@
 #define WORDSZ_128		(1 << 2)
 
 /*
- * development mode
- */
-
-#define MODE_DEVELOPMENT	(1 << 0)
-#define MODE_STATS		(1 << 1)
-#define MODE_RELEASE		(1 << 2)
-
-/*
  * perms
  */
 
@@ -80,6 +72,8 @@
 /*
  * ---------- includes --------------------------------------------------------
  */
+
+#include <kaneton/conf.h>
 
 #include <kaneton/as.h>
 #include <kaneton/debug.h>
