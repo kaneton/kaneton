@@ -5,13 +5,13 @@
  * 
  * set_array.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton/stats
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Aug 26 15:35:47 2005   mycure
+ * last update   Sun Aug 28 14:03:20 2005   mycure
  */
 
 /*
@@ -112,6 +112,8 @@ int			set_dump_array(t_setid			setid)
 
 int			set_expand_array(o_set*			o)
 {
+  t_sint32		i;
+
   if (o->size == o->u.array.arraysz)
     {
       if ((o->u.array.array = realloc(o->u.array.array,
@@ -607,11 +609,10 @@ int			set_insert_after_array(t_setid		setid,
 				 o->u.array.array + (j * o->u.array.datasz),
 				 o->u.array.datasz);
 			}
-		  }
-	      }
+		    }
+		}
+	    }
 	}
-
-      */
     }
 
   /*

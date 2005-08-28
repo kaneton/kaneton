@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:56:59 2005   mycure
-## last update   Mon Jul  4 17:22:32 2005   mycure
+## last update   Sun Aug 28 14:42:30 2005   mycure
 ##
 
 #
@@ -46,6 +46,7 @@ LIBSTRING_C		:=		ctype.c				\
 					strchr.c			\
 					strcmp.c			\
 					strcpy.c			\
+					strdup.c			\
 					strlen.c			\
 					strncat.c			\
 					strncmp.c			\

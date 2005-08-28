@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/segment
+ * path          /home/mycure/kaneton/core/kaneton/stats
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Aug 25 16:24:42 2005   mycure
+ * last update   Sun Aug 28 15:30:56 2005   mycure
  */
 
 /*
@@ -637,14 +637,26 @@ int			segment_init(t_fit			fit)
  *
  * steps:
  *
- * 1) destroys the id object.
- * 2) frees the segment manager structure's memory.
+ * 1) releases the segment container.
+ * 2) destroys the id object.
+ * 3) frees the segment manager structure's memory.
  */
 
 int			segment_clean(void)
 {
   /*
    * 1)
+   */
+
+  if (set_rel(segment->container) != 0)
+    {
+      cons_msg('!', "segment: unable to release the segment container\n");
+
+      return (-1);
+    }
+
+  /*
+   * 2)
    */
 
   if (id_destroy(&segment->id) != 0)
@@ -655,7 +667,7 @@ int			segment_clean(void)
     }
 
   /*
-   * 2)
+   * 3)
    */
 
   free(segment);

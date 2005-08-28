@@ -5,13 +5,13 @@
  * 
  * types.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/stats
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Fri Aug 26 01:27:34 2005   mycure
+ * last update   Sun Aug 28 15:22:49 2005   mycure
  */
 
 #ifndef KANETON_TYPES_H
@@ -56,6 +56,7 @@ typedef t_uint32		t_opts;
 typedef t_uint32		t_perms;
 typedef t_uint32		t_type;
 typedef t_uint32		t_fit;
+typedef t_uint32		t_state;
 
 /*
  * identifier types
@@ -66,5 +67,6 @@ typedef t_uint64		t_id;
 typedef t_id			t_setid;
 typedef t_id			t_segid;
 typedef t_id			t_asid;
+typedef t_id			t_staid;
 
 #endif

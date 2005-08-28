@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/segment
+ * path          /home/mycure/kaneton/core/kaneton/stats
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Aug 24 17:07:01 2005   mycure
+ * last update   Sun Aug 28 14:16:45 2005   mycure
  */
 
 /*
@@ -159,6 +159,15 @@ void			kaneton(t_init*				bootloader)
    * 8)
    */
 
+#ifdef STATS_MODE
+  if (stats_init() != 0)
+    kaneton_error("cannot initialise the stats manager\n");
+#endif
+
+  /*
+   * 8)
+   */
+
   if (as_init() != 0)
     kaneton_error("cannot initialise the address space manager\n");
 
@@ -180,4 +189,16 @@ void			kaneton(t_init*				bootloader)
 
   while (1)
     ;
+
+  /*
+   * XXX)
+   */
+
+  segment_clean();
+
+  as_clean();
+
+  set_clean();
+
+  id_clean();
 }

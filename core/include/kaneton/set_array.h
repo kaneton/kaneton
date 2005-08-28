@@ -50,6 +50,11 @@ typedef struct
 
 int			set_dump_array(t_setid			setid);
 
+int			set_expand_array(o_set*			o);
+
+int			set_insert_array(o_set*			o,
+					 t_sint32		position);
+
 int			set_head_array(t_setid			setid,
 				       t_iterator*		iterator);
 

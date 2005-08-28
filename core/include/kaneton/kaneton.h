@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Fri Aug 26 01:22:58 2005   mycure
+ * last update   Sun Aug 28 14:08:15 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
@@ -47,7 +47,8 @@
  */
 
 #define MODE_DEVELOPMENT	(1 << 0)
-#define MODE_RELEASE		(1 << 1)
+#define MODE_STATS		(1 << 1)
+#define MODE_RELEASE		(1 << 2)
 
 /*
  * perms
@@ -87,6 +88,7 @@
 #include <kaneton/init.h>
 #include <kaneton/segment.h>
 #include <kaneton/set.h>
+#include <kaneton/stats.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -134,7 +136,7 @@ int			cons_clean(void);
 
 int			serial_read(t_uint8*			data, int size, int* n);
 
-int			serial_write(t_uint8*			data, int size, int* n);
+int			serial_write(t_uint8*			data,	int		size, int* n);
 
 int			serial_init(void);
 

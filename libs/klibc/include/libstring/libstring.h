@@ -5,13 +5,13 @@
  * 
  * libstring.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include/libdata
+ * path          /home/mycure/kaneton/libs/klibc/libstring
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Sun Jul  3 14:49:26 2005   mycure
+ * last update   Sun Aug 28 14:44:10 2005   mycure
  */
 
 #ifndef LIBSTRING_LIBSTRING_H
@@ -48,6 +48,7 @@
  *      ../../libstring/strchr.c
  *      ../../libstring/strcmp.c
  *      ../../libstring/strcpy.c
+ *      ../../libstring/strdup.c
  *      ../../libstring/strlen.c
  *      ../../libstring/strncat.c
  *      ../../libstring/strncmp.c
@@ -186,6 +187,13 @@ int			strcmp(const char*			s1,
 
 char*			strcpy(char*				to,
 			       const char*			from);
+
+
+/*
+ * ../../libstring/strdup.c
+ */
+
+char*			strdup(const char*			from);
 
 
 /*

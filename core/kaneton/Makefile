@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Tue Aug 23 23:09:00 2005   mycure
+## last update   Sun Aug 28 13:41:13 2005   mycure
 ##
 
 #
@@ -36,13 +36,15 @@ SUBDIRS			:=		arch				\
 					as				\
 					id				\
 					segment				\
-					set				
+					set				\
+					stats				
 
 KANETON_LIBS		:=		$(_MACHDEP_A_)			\
 					$(_AS_A_)			\
 					$(_ID_A_)			\
 					$(_SEGMENT_A_)			\
-					$(_SET_A_)			
+					$(_SET_A_)			\
+					$(_STATS_A_)			
 
 # kaneton binary
 

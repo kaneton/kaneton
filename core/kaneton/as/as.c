@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/segment
+ * path          /home/mycure/kaneton/core/kaneton/stats
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Aug 24 17:06:40 2005   mycure
+ * last update   Sun Aug 28 14:15:34 2005   mycure
  */
 
 /*
@@ -373,14 +373,38 @@ int			as_init(void)
  *
  * steps:
  *
- * 1) destroys the id object.
- * 2) frees the address space manager structure's memory.
+ * 1) releases the kernel address space.
+ * 2) releases the address space's container.
+ * 3) destroys the id object.
+ * 4) frees the address space manager structure's memory.
  */
 
 int			as_clean(void)
 {
   /*
    * 1)
+   */
+
+  if (as_rel(kas) != 0)
+    {
+      cons_msg('!', "as: unable to release the kernel address space\n");
+
+      return (-1);
+    }
+
+  /*
+   * 2)
+   */
+
+  if (set_rel(as->container) != 0)
+    {
+      cons_msg('!', "as: unable to release the as' container\n");
+
+      return (-1);
+    }
+
+  /*
+   * 3)
    */
 
   if (id_destroy(&as->id) != 0)
@@ -391,7 +415,7 @@ int			as_clean(void)
     }
 
   /*
-   * 2)
+   * 4)
    */
 
   free(as);

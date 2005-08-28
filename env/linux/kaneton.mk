@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Mon Aug 22 15:02:06 2005   mycure
+## last update   Sun Aug 28 13:41:50 2005   mycure
 ##
 
 #
@@ -100,6 +100,7 @@ _AS_A_			:=		$(_CORE_KANETON_DIR_)/as/as.a
 _ID_A_			:=		$(_CORE_KANETON_DIR_)/id/id.a
 _SEGMENT_A_		:=		$(_CORE_KANETON_DIR_)/segment/segment.a
 _SET_A_			:=		$(_CORE_KANETON_DIR_)/set/set.a
+_STATS_A_		:=		$(_CORE_KANETON_DIR_)/stats/stats.a
 
 #
 # ---------- user configuration addons ----------------------------------------

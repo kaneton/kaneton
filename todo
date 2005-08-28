@@ -1,4 +1,12 @@
 --
+ ameliorer les makefiles avec possibilites de verbose (-v): affiche la compile
+ et silent (-s): n'affiche rien
+
+--
+ faire un truc mieux que -DSTATS_MODE, il faudrait un fichier de conf
+ kernel, pour que ce soit bon.
+
+--
  faire le set de hash
 
 --
