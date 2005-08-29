@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Aug 28 19:57:36 2005   mycure
+ * last update   Mon Aug 29 13:53:30 2005   mycure
  */
 
 /*
@@ -49,6 +49,8 @@ void			stats_begin(t_staid			staid,
 				    char*			function)
 {
   printf("stats_begin: %s\n", function);
+
+  printf("-> %s\n", __FUNCTION__);
 }
 
 /*

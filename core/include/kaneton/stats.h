@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Sun Aug 28 20:02:30 2005   mycure
+ * last update   Mon Aug 29 13:57:32 2005   mycure
  */
 
 #ifndef KANETON_STATS_H
@@ -98,19 +98,22 @@ typedef struct
  * traps
  */
 
-#ifdef CONF_STATS
+#if 1 //def CONF_STATS
 
 #define STATS_BEGIN(_stats_)						\
   stats_begin((_stats_), __FUNCTION__)
 
+//  stats_begin((_stats_), __FUNCTION__)
+
 #define STATS_END(_stats_)						\
-  stats_end((_stats_), __FUNCTION__)
+
+//  stats_end((_stats_), __FUNCTION__)
 
 #else
 
-#define stats_begin(_stats_)
+#define STATS_BEGIN(_stats_)
 
-#define stats_end(_stats_)
+#define STATS_END(_stats_)
 
 #endif
 
