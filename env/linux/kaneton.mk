@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sun Aug 28 18:25:55 2005   mycure
+## last update   Tue Aug 30 12:36:08 2005   mycure
 ##
 
 #
@@ -443,8 +443,8 @@ endef
 define dist
   @echo ""								; \
   echo -e '\E[;34m'"\033[1m---\033[0m \033[1mbuilding kaneton..\033[0m"	; \
-  $(_TAR_) -czf /tmp/kaneton-$(_VERSION_).tar.gz .			; \
-  $(_MV_) /tmp/kaneton-$(_VERSION_).tar.gz .				; \
+  $(_TAR_) -czf /tmp/kaneton.tar.gz .					; \
+  $(_MV_) /tmp/kaneton.tar.gz .						; \
   echo ""								; \
   echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton built\033[0m"	; \
   echo ""

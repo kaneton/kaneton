@@ -5,13 +5,13 @@
  * 
  * segment.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Fri Aug 26 01:21:18 2005   mycure
+ * last update   Tue Aug 30 13:14:25 2005   mycure
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -62,6 +62,8 @@ typedef struct
 {
   o_id				id;
 
+  t_staid			stats;
+
   t_paddr			start;
   t_psize			size;
 
@@ -78,10 +80,32 @@ typedef struct
  * check
  */
 
-#define segment_check(_segment_)					\
+#define SEGMENT_CHECK(_segment_)					\
   {									\
     if ((_segment_) == NULL)						\
-      return (-1);							\
+      return (ERROR_UNKNOWN);						\
+  }
+
+/*
+ * enter
+ */
+
+#define SEGMENT_ENTER(_segment_)					\
+  {									\
+    SEGMENT_CHECK((_segment_));						\
+									\
+    STATS_BEGIN((_segment_)->stats);					\
+  }
+
+/*
+ * leave
+ */
+
+#define SEGMENT_LEAVE(_segment_, _error_)				\
+  {									\
+    STATS_END((_segment_)->stats, (_error_));				\
+									\
+    return (_error_);							\
   }
 
 /*
@@ -94,28 +118,28 @@ typedef struct
  * ../../kaneton/segment/segment.c
  */
 
-int			segment_dump(void);
+t_error			segment_dump(void);
 
-int			segment_rsv(t_asid			asid,
+t_error			segment_rsv(t_asid			asid,
 				    t_psize			size,
 				    t_perms			perms,
 				    t_segid*			segid);
 
-int			segment_rel(t_asid			asid,
+t_error			segment_rel(t_asid			asid,
 				    t_segid			segid);
 
-int			segment_perms(t_asid			asid,
+t_error			segment_perms(t_asid			asid,
 				      t_segid			segid,
 				      t_perms			perms);
 
-int			segment_flush(t_asid			asid);
+t_error			segment_flush(t_asid			asid);
 
-int			segment_get(t_segid			segid,
+t_error			segment_get(t_segid			segid,
 				    o_segment**			o);
 
-int			segment_init(t_fit			fit);
+t_error			segment_init(t_fit			fit);
 
-int			segment_clean(void);
+t_error			segment_clean(void);
 
 
 /*

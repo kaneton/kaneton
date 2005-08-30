@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/stats
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Aug 28 19:55:00 2005   mycure
+ * last update   Tue Aug 30 12:25:17 2005   mycure
  */
 
 /*
@@ -73,47 +73,42 @@ t_asid			kas = ID_UNUSED;
  *
  * steps:
  *
- * 1) checks whether the address space manager was previously initialised.
- * 2) gets the set's size.
- * 3) for each addres space hold by the address space container, dumps
+ * 1) gets the set's size.
+ * 2) for each addres space hold by the address space container, dumps
  *    the address space identifier.
  */
 
-int			as_dump(void)
+t_error			as_dump(void)
 {
   o_as*			data;
   t_setsz		size;
   o_set*		o;
   t_iterator		i;
 
+  AS_ENTER(as);
+
   /*
    * 1)
    */
 
-  as_check(set);
+  if (set_size(as->container, &size) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 2)
-   */
-
-  if (set_size(as->container, &size) != 0)
-    return (-1);
-
-  /*
-   * 3)
    */
 
   cons_msg('#', "dumping %qu address space(s):\n", size);
 
   set_foreach(SET_OPT_FORWARD, as->container, &i)
     {
-      if (set_object(as->container, i, (void**)&data) != 0)
-	return (-1);
+      if (set_object(as->container, i, (void**)&data) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
 
       cons_msg('#', "  %qu\n", data->asid);
     }
 
-  return (0);
+  AS_LEAVE(as, ERROR_NONE);
 }
 
 /*
@@ -121,85 +116,75 @@ int			as_dump(void)
  *
  * steps:
  *
- * 1) first, checks whether the address space manager is initialised.
- * 2) initialises the address space object.
- * 3) reserves an identifier for the address space object.
- * 4) reserves the set of segments for the new address space object.
- * 5) reserves the set of regions for the new address space object.
- * 6) adds the new address space object in the address space container.
+ * 1) initialises the address space object.
+ * 2) reserves an identifier for the address space object.
+ * 3) reserves the set of segments for the new address space object.
+ * 4) reserves the set of regions for the new address space object.
+ * 5) adds the new address space object in the address space container.
  */
 
-int			as_rsv(t_asid*				asid)
+t_error			as_rsv(t_asid*				asid)
 {
   o_as			o;
 
-  STATS_BEGIN(as->stats);
+  AS_ENTER(as);
 
   /*
    * 1)
    */
 
-  as_check(set);
+  memset(&o, 0x0, sizeof(o_as));
 
   /*
    * 2)
    */
 
-  memset(&o, 0x0, sizeof(o_as));
+  if (id_rsv(&as->id, asid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  o.asid = *asid;
 
   /*
    * 3)
    */
 
-  if (id_rsv(&as->id, asid) != 0)
-    return (-1);
+  if (set_rsv(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_SEGMENTS_INITSZ,
+	      sizeof(t_segid), &o.segments) != ERROR_NONE)
+    {
+      id_rel(&as->id, o.asid);
 
-  o.asid = *asid;
+      AS_LEAVE(as, ERROR_UNKNOWN);
+    }
 
   /*
    * 4)
    */
 
-  if (set_rsv(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_SEGMENTS_INITSZ,
-	      sizeof(t_segid), &o.segments) != 0)
+  if (set_rsv(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_REGIONS_INITSZ,
+	      sizeof(o_region), &o.regions) != ERROR_NONE)
     {
       id_rel(&as->id, o.asid);
 
-      return (-1);
+      set_rel(o.segments);
+
+      AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
   /*
    * 5)
    */
 
-  if (set_rsv(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_REGIONS_INITSZ,
-	      sizeof(o_region), &o.regions) != 0)
+  if (set_add(as->container, &o) != ERROR_NONE)
     {
       id_rel(&as->id, o.asid);
 
       set_rel(o.segments);
-
-      return (-1);
-    }
-
-  /*
-   * 6)
-   */
-
-  if (set_add(as->container, &o) != 0)
-    {
-      id_rel(&as->id, o.asid);
-
-      set_rel(o.segments);
-
       set_rel(o.regions);
 
-      return (-1);
+      AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
-  STATS_END(as->stats);
-
-  return (0);
+  AS_LEAVE(as, ERROR_NONE);
 }
 
 /*
@@ -207,65 +192,56 @@ int			as_rsv(t_asid*				asid)
  *
  * steps:
  *
- * 1) checks whether the address space manager was previously initialised.
- * 2) gets the address space object given its identifier.
- * 3) releases the address space object identifier.
- * 4) releases the address space object's set of segments.
- * 5) releases the address space object's set of regions.
- * 6) removes the address space object from the address space container.
+ * 1) gets the address space object given its identifier.
+ * 2) releases the address space object identifier.
+ * 3) releases the address space object's set of segments.
+ * 4) releases the address space object's set of regions.
+ * 5) removes the address space object from the address space container.
  */
 
-int			as_rel(t_asid				asid)
+t_error			as_rel(t_asid				asid)
 {
   t_iterator		iterator;
   o_as			*o;
 
-  STATS_BEGIN(as->stats);
+  AS_ENTER(as);
 
   /*
    * 1)
    */
 
-  as_check(set);
+  if (as_get(asid, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (as_get(asid, &o) != 0)
-    return (-1);
+  if (id_rel(&as->id, o->asid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (id_rel(&as->id, o->asid) != 0)
-    return (-1);
+  if (set_rel(o->segments) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (set_rel(o->segments) != 0)
-    return (-1);
+  if (set_rel(o->regions) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 5)
    */
 
-  if (set_rel(o->regions) != 0)
-    return (-1);
+  if (set_remove(as->container, o->asid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
-  /*
-   * 6)
-   */
-
-  if (set_remove(as->container, o->asid) != 0)
-    return (-1);
-
-  STATS_END(as->stats);
-
-  return (0);
+  AS_LEAVE(as, ERROR_NONE);
 }
 
 /*
@@ -274,31 +250,22 @@ int			as_rel(t_asid				asid)
  *
  * steps:
  *
- * 1) checks whether the address space manager was previously initialised.
- * 3) gets the address space object in the address space container.
+ * 1) gets the address space object in the address space container.
  */
 
-int			as_get(t_asid				asid,
+t_error			as_get(t_asid				asid,
 			       o_as**				o)
 {
-  STATS_BEGIN(as->stats);
+  AS_ENTER(as);
 
   /*
    * 1)
    */
 
-  as_check(set);
+  if (set_get(as->container, asid, (void**)o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
-  /*
-   * 2)
-   */
-
-  if (set_get(as->container, asid, (void**)o) != 0)
-    return (-1);
-
-  STATS_END(as->stats);
-
-  return (0);
+  AS_LEAVE(as, ERROR_NONE);
 }
 
 /*
@@ -315,12 +282,12 @@ int			as_get(t_asid				asid,
  *    the address space identifiers.
  * 3) reserves the addres space container set which will contain
  *    the address space build later.
- * 4) reserves the kernel address space.
- * 5) tries to reserve a statistics object.
+ * 4) tries to reserve a statistics object.
+ * 5) reserves the kernel address space.
  * 6) if asked, dumps the address space manager.
  */
 
-int			as_init(void)
+t_error			as_init(void)
 {
   /*
    * 1)
@@ -331,7 +298,7 @@ int			as_init(void)
       cons_msg('!', "as: cannot allocate memory for the address space manager "
 	       "structure\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   memset(as, 0x0, sizeof(m_as));
@@ -340,11 +307,11 @@ int			as_init(void)
    * 2)
    */
 
-  if (id_build(&as->id) != 0)
+  if (id_build(&as->id) != ERROR_NONE)
     {
       cons_msg('!', "as: unable to initialise the identifier object\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -352,33 +319,28 @@ int			as_init(void)
    */
 
   if (set_rsv(ll, SET_OPT_ALLOC | SET_OPT_SORT,
-	      sizeof(o_as), &as->container) != 0)
+	      sizeof(o_as), &as->container) != ERROR_NONE)
     {
       cons_msg('!', "as: unable to reserve the address space container\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   /*
    * 4)
    */
 
-  if (as_rsv(&kas) != 0)
-    {
-      cons_msg('!', "as: unable to reserve the kernel address space\n");
-
-      return (-1);
-    }
+  STATS_RSV("as", &as->stats);
 
   /*
    * 5)
    */
 
-  if (stats_rsv("as", &as->stats) != 0)
+  if (as_rsv(&kas) != ERROR_NONE)
     {
-      cons_msg('!', "as: unable to reserve a statistics object\n");
+      cons_msg('!', "as: unable to reserve the kernel address space\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -389,7 +351,7 @@ int			as_init(void)
   as_dump();
 #endif
 
-  return (0);
+  return (ERROR_NONE);
 }
 
 /*
@@ -397,57 +359,52 @@ int			as_init(void)
  *
  * steps:
  *
- * 1) releases the statistics object.
- * 2) releases the kernel address space.
+ * 1) releases the kernel address space.
+ * 2) releases the statistics object.
  * 3) releases the address space's container.
  * 4) destroys the id object.
  * 5) frees the address space manager structure's memory.
  */
 
-int			as_clean(void)
+t_error			as_clean(void)
 {
   /*
    * 1)
    */
 
-  if (stats_rel(as->stats) != 0)
+  if (as_rel(kas) != ERROR_NONE)
     {
-      cons_msg('!', "as: unable to release the statistics object\n");
+      cons_msg('!', "as: unable to release the kernel address space\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   /*
    * 2)
    */
 
-  if (as_rel(kas) != 0)
-    {
-      cons_msg('!', "as: unable to release the kernel address space\n");
-
-      return (-1);
-    }
+  STATS_REL(as->stats);
 
   /*
    * 3)
    */
 
-  if (set_rel(as->container) != 0)
+  if (set_rel(as->container) != ERROR_NONE)
     {
       cons_msg('!', "as: unable to release the as' container\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   /*
    * 4)
    */
 
-  if (id_destroy(&as->id) != 0)
+  if (id_destroy(&as->id) != ERROR_NONE)
     {
       cons_msg('!', "as: unable to destroy the identifier object\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -456,5 +413,5 @@ int			as_clean(void)
 
   free(as);
 
-  return (0);
+  return (ERROR_NONE);
 }

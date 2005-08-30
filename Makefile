@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/core/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Sun Aug 28 18:09:58 2005   mycure
+## last update   Tue Aug 30 12:47:05 2005   mycure
 ##
 
 #
@@ -133,7 +133,6 @@ info:
 	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mauthors:\033[0m"
 	@echo ""
 	@echo -e "     \033[1mquintard julien - quinta_j@epita.fr\033[0m"
-	@echo ""
 	@echo -e "     \033[1mbillaud jean-pascal - billau_j@epita.fr\033[0m"
 	@echo ""
 	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1massistants:\033[0m"
@@ -145,7 +144,7 @@ info:
 	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mcontributors:\033[0m"
 	@echo ""
 	@echo -e "     \033[1mchristophe eymard - eymard_c@epita.fr\033[0m"
-	@echo -e "     \033[1mXXX - XXX@epitech.net\033[0m"
+	@echo -e "     \033[1msolal jacob - jacob_s@epitech.net\033[0m"
 	@echo ""
 	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mnews-group:\033[0m"
 	@echo ""

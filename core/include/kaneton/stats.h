@@ -5,13 +5,13 @@
  * 
  * stats.h
  * 
- * path          /home/mycure/kaneton/core/kaneton/stats
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Mon Aug 29 13:57:32 2005   mycure
+ * last update   Tue Aug 30 13:15:16 2005   mycure
  */
 
 #ifndef KANETON_STATS_H
@@ -24,13 +24,6 @@
 #include <arch/machdep/machdep.h>
 #include <kaneton/id.h>
 #include <kaneton/types.h>
-
-/*
- * ---------- defines ---------------------------------------------------------
- */
-
-#define STATS_STATE_NONE	(1 << 0)
-#define STATS_STATE_FUNC	(1 << 1)
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -47,8 +40,6 @@ typedef struct
   t_id				id;
 
   char*				name;
-
-  t_state			state;
 
   t_uint32			calls;
   t_uint32			errors;
@@ -88,32 +79,72 @@ typedef struct
  * check
  */
 
-#define stats_check(_stats_)						\
+#define STATS_CHECK(_stats_)						\
   {									\
     if ((_stats_) == NULL)						\
-      return (-1);							\
+      return (ERROR_UNKNOWN);						\
+  }
+
+/*
+ * enter
+ */
+
+#define STATS_ENTER(_stats_)						\
+  {									\
+    STATS_CHECK((_stats_));						\
+  }
+
+/*
+ * leave
+ */
+
+#define STATS_LEAVE(_stats_, _error_)					\
+  {									\
+    return (_error_);							\
   }
 
 /*
  * traps
  */
 
-#if 1 //def CONF_STATS
+#ifdef CONF_STATS
+
+#define STATS_DUMP()							\
+  stats_dump()
 
 #define STATS_BEGIN(_stats_)						\
-  stats_begin((_stats_), __FUNCTION__)
+  stats_begin((_stats_), (char*)__FUNCTION__)
 
-//  stats_begin((_stats_), __FUNCTION__)
+#define STATS_END(_stats_, _error_)					\
+  stats_end((_stats_), (char*)__FUNCTION__, (_error_))
 
-#define STATS_END(_stats_)						\
+#define STATS_RSV(_name_, _staid_)					\
+  stats_rsv((_name_), (_staid_))
 
-//  stats_end((_stats_), __FUNCTION__)
+#define STATS_REL(_staid_)						\
+  stats_rel((_staid_))
+
+#define STATS_INIT()							\
+  stats_init()
+
+#define STATS_CLEAN()							\
+  stats_clean()
 
 #else
 
+#define STATS_DUMP()
+
 #define STATS_BEGIN(_stats_)
 
-#define STATS_END(_stats_)
+#define STATS_END(_stats_, _error_)
+
+#define STATS_RSV(_name_, _staid_)
+
+#define STATS_REL(_staid_)
+
+#define STATS_INIT()
+
+#define STATS_CLEAN()
 
 #endif
 
@@ -127,26 +158,23 @@ typedef struct
  * ../../kaneton/stats/stats.c
  */
 
-void			stats_begin(t_staid			staid,
+t_error			stats_begin(t_staid			staid,
 				    char*			function);
 
-void			stats_end(t_staid			staid,
-				  char*				function);
+t_error			stats_end(t_staid			staid,
+				  char*				function,
+				  t_error			error);
 
-int			stats_dump(void);
+t_error			stats_dump(void);
 
-int			stats_add(void);
-
-int			stats_remove(void);
-
-int			stats_rsv(char*				name,
+t_error			stats_rsv(char*				name,
 				  t_staid*			staid);
 
-int			stats_rel(t_staid			staid);
+t_error			stats_rel(t_staid			staid);
 
-int			stats_init(void);
+t_error			stats_init(void);
 
-int			stats_clean(void);
+t_error			stats_clean(void);
 
 
 /*

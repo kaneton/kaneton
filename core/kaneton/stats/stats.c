@@ -5,19 +5,27 @@
  * 
  * stats.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/stats
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Aug 29 13:53:30 2005   mycure
+ * last update   Tue Aug 30 13:21:10 2005   mycure
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX
+ * XXX dire que id et set ne peuvent pas etre benche car stats depend
+ *     d eux.
+ *
+ * XXX on peut egalement etendre le concept et faire en sorte d'etre
+ *     independent pour pouvoir bencher id, et surtout set qui doit etre
+ *     benche car c est la qu on va passer bcp de temps.
+ *     genre faire un pauvre tableau car il n'y aura que de l'ajout quasiment.
+ *
+ * XXX greper STATS_BEGIN et STATS_END
  */
 
 /*
@@ -45,122 +53,205 @@ m_stats*		stats;
  * XXX
  */
 
-void			stats_begin(t_staid			staid,
+t_error			stats_begin(t_staid			staid,
 				    char*			function)
 {
-  printf("stats_begin: %s\n", function);
+  t_id			id;
+  o_stats*		o;
+  o_stats_func*		f;
 
-  printf("-> %s\n", __FUNCTION__);
+  STATS_ENTER(stats);
+
+  if (set_get(stats->container, staid, (void**)&o) != ERROR_NONE)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
+
+  id = (t_id)sum2(function, strlen(function));
+
+  if (set_get(o->functions, id, (void**)&f) != ERROR_NONE)
+    {
+      o_stats_func	n;
+
+      memset(&n, 0x0, sizeof(o_stats_func));
+
+      n.id = id;
+      n.name = strdup(function);
+      n.calls = 1;
+      n.errors = 0;
+
+      /* XXX timer */
+
+      if (set_add(o->functions, &n) != ERROR_NONE)
+	{
+	  printf("XXX: begin: error\n");
+
+	  STATS_LEAVE(stats, ERROR_UNKNOWN);
+	}
+    }
+  else
+    {
+      f->calls++;
+    }
+
+  STATS_LEAVE(stats, ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-void			stats_end(t_staid			staid,
-				  char*				function)
+t_error			stats_end(t_staid			staid,
+				  char*				function,
+				  t_error			error)
 {
+  t_id			id;
+  o_stats*		o;
+  o_stats_func*		f;
 
+  STATS_ENTER(stats);
+
+  if (set_get(stats->container, staid, (void**)&o) != ERROR_NONE)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
+
+  id = (t_id)sum2(function, strlen(function));
+
+  if (set_get(o->functions, id, (void**)&f) != ERROR_NONE)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
+
+  if (error != ERROR_NONE)
+    f->errors++;
+
+  STATS_LEAVE(stats, ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-int			stats_dump(void)
+t_error			stats_dump(void)
 {
-  /* XXX */
+  t_setsz		size;
+  o_stats*		o;
+  o_stats_func*		f;
+  t_iterator		i;
+  t_iterator		j;
 
-  return (0);
+  STATS_ENTER(stats);
+
+  if (set_size(stats->container, &size) != ERROR_NONE)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
+
+  cons_msg('#', "dumping %qu statistic(s):\n",
+	   size);
+
+  set_foreach(SET_OPT_FORWARD, stats->container, &i)
+    {
+      if (set_object(stats->container, i, (void**)&o) != ERROR_NONE)
+	{
+	  cons_msg('!', "stats: cannot find the stats object "
+		   "corresponding to its identifier\n");
+
+	  STATS_LEAVE(stats, ERROR_UNKNOWN);
+	}
+
+      cons_msg('#', "  [%qu] %s\n",
+	       o->staid,
+	       o->name);
+
+      set_foreach(SET_OPT_FORWARD, o->functions, &j)
+	{
+	  if (set_object(o->functions, j, (void**)&f) != ERROR_NONE)
+	    {
+	      cons_msg('!', "stats: cannot find the stats object "
+		       "corresponding to its identifier\n");
+
+	      STATS_LEAVE(stats, ERROR_UNKNOWN);
+	    }
+
+	  /* XXX timer */
+
+	  cons_msg('#', "    %s: %u error(s) on %u call(s)\n",
+		   f->name,
+		   f->errors,
+		   f->calls);
+	}
+    }
+
+  STATS_LEAVE(stats, ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-int			stats_add(void)
-{
-
-}
-
-/*
- * XXX
- */
-
-int			stats_remove(void)
-{
-
-}
-
-/*
- * XXX
- */
-
-int			stats_rsv(char*				name,
+t_error			stats_rsv(char*				name,
 				  t_staid*			staid)
 {
   o_stats		o;
 
+  STATS_ENTER(stats);
+
   memset(&o, 0x0, sizeof(o_stats));
 
   if ((o.name = strdup(name)) == NULL)
-    return (-1);
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
 
-  if (id_rsv(&stats->id, staid) != 0)
-    return (-1);
+  if (id_rsv(&stats->id, staid) != ERROR_NONE)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
 
   o.staid = *staid;
 
   /* XXX array */
 
   if (set_rsv(ll, SET_OPT_ALLOC | SET_OPT_SORT,
-	      sizeof(o_stats_func), &o.functions) != 0)
+	      sizeof(o_stats_func), &o.functions) != ERROR_NONE)
     {
       free(o.name);
 
-      return (-1);
+      STATS_LEAVE(stats, ERROR_UNKNOWN);
     }
 
-  if (set_add(stats->container, &o) != 0)
+  if (set_add(stats->container, &o) != ERROR_NONE)
     {
       free(o.name);
 
       set_rel(o.functions);
 
-      return (-1);
+      STATS_LEAVE(stats, ERROR_UNKNOWN);
     }
 
-  return (0);
+  STATS_LEAVE(stats, ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-int			stats_rel(t_staid			staid)
+t_error			stats_rel(t_staid			staid)
 {
   o_stats*		o;
 
-  if (set_get(stats->container, staid, (void**)&o) != 0)
-    return (-1);
+  STATS_ENTER(stats);
+
+  if (set_get(stats->container, staid, (void**)&o) != ERROR_NONE)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
 
   /* XXX foreach pour pouvoir liberer chaque chaine NAME */
-  if (set_rel(o->functions) != 0)
-    return (-1);
+  if (set_rel(o->functions) != ERROR_NONE)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
 
   free(o->name);
 
-  if (set_remove(stats->container, o->staid) != 0)
-    return (-1);
+  if (set_remove(stats->container, o->staid) != ERROR_NONE)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
 
-  return (0);
+  STATS_LEAVE(stats, ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-int			stats_init(void)
+t_error			stats_init(void)
 {
   /*
    * 1)
@@ -171,7 +262,7 @@ int			stats_init(void)
       cons_msg('!', "stats: cannot allocate memory for the stats manager "
 	       "structure\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   memset(stats, 0x0, sizeof(m_stats));
@@ -180,11 +271,11 @@ int			stats_init(void)
    * 2)
    */
 
-  if (id_build(&stats->id) != 0)
+  if (id_build(&stats->id) != ERROR_NONE)
     {
       cons_msg('!', "stats: unable to initialise the identifier object\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -194,46 +285,46 @@ int			stats_init(void)
   /* XXX array */
 
   if (set_rsv(ll, SET_OPT_ALLOC | SET_OPT_SORT,
-	      sizeof(o_stats), &stats->container) != 0)
+	      sizeof(o_stats), &stats->container) != ERROR_NONE)
     {
       cons_msg('!', "stats: unable to reserve the stats container\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
 #if (DEBUG & DEBUG_STATS)
   stats_dump(void);
 #endif
 
-  return (0);
+  return (ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-int			stats_clean(void)
+t_error			stats_clean(void)
 {
   /*
    * 1)
    */
 
-  if (set_rel(stats->container) != 0)
+  if (set_rel(stats->container) != ERROR_NONE)
     {
       cons_msg('!', "stats: unable to release the stats container\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   /*
    * 2)
    */
 
-  if (id_destroy(&stats->id) != 0)
+  if (id_destroy(&stats->id) != ERROR_NONE)
     {
       cons_msg('!', "stats: unable to destroy the identifier object\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -242,5 +333,5 @@ int			stats_clean(void)
 
   free(stats);
 
-  return (0);
+  return (ERROR_NONE);
 }

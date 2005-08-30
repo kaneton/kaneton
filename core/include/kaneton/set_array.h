@@ -48,63 +48,63 @@ typedef struct
  * ../../kaneton/set/set_array.c
  */
 
-int			set_dump_array(t_setid			setid);
+t_error			set_dump_array(t_setid			setid);
 
-int			set_expand_array(o_set*			o);
+t_error			set_expand_array(o_set*			o);
 
-int			set_insert_array(o_set*			o,
+t_error			set_insert_array(o_set*			o,
 					 t_sint32		position);
 
-int			set_head_array(t_setid			setid,
+t_error			set_head_array(t_setid			setid,
 				       t_iterator*		iterator);
 
-int			set_tail_array(t_setid			setid,
+t_error			set_tail_array(t_setid			setid,
 				       t_iterator*		iterator);
 
-int			set_prev_array(t_setid			setid,
+t_error			set_prev_array(t_setid			setid,
 				       t_iterator		current,
 				       t_iterator*		previous);
 
-int			set_next_array(t_setid			setid,
+t_error			set_next_array(t_setid			setid,
 				       t_iterator		current,
 				       t_iterator*		next);
 
-int			set_insert_head_array(t_setid		setid,
+t_error			set_insert_head_array(t_setid		setid,
 					      void*		data);
 
-int			set_insert_tail_array(t_setid		setid,
+t_error			set_insert_tail_array(t_setid		setid,
 					      void*		data);
 
-int			set_insert_before_array(t_setid		setid,
+t_error			set_insert_before_array(t_setid		setid,
 						t_iterator	iterator,
 						void*		data);
 
-int			set_insert_after_array(t_setid		setid,
+t_error			set_insert_after_array(t_setid		setid,
 					       t_iterator	iterator,
 					       void*		data);
 
-int			set_add_array(t_setid			setid,
+t_error			set_add_array(t_setid			setid,
 				      void*			data);
 
-int			set_remove_array(t_setid		setid,
+t_error			set_remove_array(t_setid		setid,
 					 t_id			id);
 
-int			set_flush_array(t_setid			setid);
+t_error			set_flush_array(t_setid			setid);
 
-int			set_locate_array(t_setid		setid,
+t_error			set_locate_array(t_setid		setid,
 					 t_id			id,
 					 t_iterator*		iterator);
 
-int			set_object_array(t_setid		setid,
+t_error			set_object_array(t_setid		setid,
 					 t_iterator		iterator,
 					 void**			data);
 
-int			set_rsv_array(t_opts			opts,
+t_error			set_rsv_array(t_opts			opts,
 				      t_setsz			initsz,
 				      t_size			datasz,
 				      t_setid*			setid);
 
-int			set_rel_array(t_setid			setid);
+t_error			set_rel_array(t_setid			setid);
 
 
 /*

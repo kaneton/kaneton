@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Aug 28 18:23:34 2005   mycure
+ * last update   Tue Aug 30 12:33:19 2005   mycure
  */
 
 /*
@@ -23,6 +23,8 @@
  *     de la memoire physique. on va donc generer des identifiants pour
  *     pouvoir les retrouver mais on va creer un set qu'on va organiser
  *     nous meme afin qu'il soit trier selon les adresses physiques.
+ *
+ * XXX SEGMENT_ENTER et SEGMENT_LEAVE
  */
 
 /*
@@ -68,52 +70,47 @@ m_segment*		segment;
  *
  * steps:
  *
- * 1) checks whether the segment manager was previously initialised.
- * 2) gets the size of the segment set.
- * 3) prints the header message.
- * 4) for each entry in the segment set, prints the area,
+ * 1) gets the size of the segment set.
+ * 2) prints the header message.
+ * 3) for each entry in the segment set, prints the area,
  *    its size and permissions.
  */
 
-int			segment_dump(void)
+t_error			segment_dump(void)
 {
   o_segment*		data;
   t_setsz		size;
   t_iterator		i;
 
+  SEGMENT_ENTER(segment);
+
   /*
    * 1)
    */
 
-  segment_check(segment);
+  if (set_size(segment->container, &size) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (set_size(segment->container, &size) != 0)
-    return (-1);
-
-  /*
-   * 3)
-   */
-
   cons_msg('#', "dumping %qu segment(s) from the segment container:\n", size);
 
   /*
-   * 4)
+   * 3)
    */
 
   set_foreach(SET_OPT_FORWARD, segment->container, &i)
     {
       char		perms[4];
 
-      if (set_object(segment->container, i, (void**)&data) != 0)
+      if (set_object(segment->container, i, (void**)&data) != ERROR_NONE)
 	{
 	  cons_msg('!', "set: cannot find the segment object "
 		   "corresponding to its identifier\n");
 
-	  return (-1);
+	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 	}
 
       memset(perms, '.', 3);
@@ -136,7 +133,7 @@ int			segment_dump(void)
 	       data->size);
     }
 
-  return (0);
+  SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
 /*
@@ -144,9 +141,8 @@ int			segment_dump(void)
  *
  * steps:
  *
- * 1) checks whether the segment manager is initialised.
- * 2) gets the address space object given its identifier.
- * 3) chooses the correct fit.
+ * 1) gets the address space object given its identifier.
+ * 2) chooses the correct fit.
  *   A) gets the first segment.
  *   B) tries to find space before the first segment.
  *   C) for each segment, tries to find space after it.
@@ -154,7 +150,7 @@ int			segment_dump(void)
  *   E) tries to find space after the last segment.
  */
 
-int			segment_rsv(t_asid			asid,
+t_error			segment_rsv(t_asid			asid,
 				    t_psize			size,
 				    t_perms			perms,
 				    t_segid*			segid)
@@ -165,21 +161,17 @@ int			segment_rsv(t_asid			asid,
   t_iterator		i;
   o_as*			as;
 
+  SEGMENT_ENTER(segment);
+
   /*
    * 1)
    */
 
-  segment_check(segment);
+  if (as_get(asid, &as) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
-   */
-
-  if (as_get(asid, &as) != 0)
-    return (-1);
-
-  /*
-   * 3)
    */
 
   switch (segment->fit)
@@ -190,11 +182,11 @@ int			segment_rsv(t_asid			asid,
 	 * A)
 	 */
 
-	if (set_head(segment->container, &i) != 0)
-	  return (-1);
+	if (set_head(segment->container, &i) != ERROR_NONE)
+	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-	if (set_object(segment->container, i, (void**)&head) != 0)
-	  return (-1);
+	if (set_object(segment->container, i, (void**)&head) != ERROR_NONE)
+	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 	/*
 	 * B)
@@ -206,28 +198,30 @@ int			segment_rsv(t_asid			asid,
 
 	    memset(&o, 0x0, sizeof(o_segment));
 
-	    if (id_rsv(&segment->id, &o.segid) != 0)
-	      return (-1);
+	    if (id_rsv(&segment->id, &o.segid) != ERROR_NONE)
+	      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 	    o.address = head->address + head->size;
 	    o.size = size;
 	    o.perms = perms;
 
-	    if (set_insert_after(segment->container, i, &o) != 0)
+	    if (set_insert_after(segment->container, i, &o) != ERROR_NONE)
 	      {
 		id_rel(&segment->id, o.segid);
 
-		return (-1);
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 	      }
 
-	    if (set_add(as->segments, &o.segid) != 0)
+	    if (set_add(as->segments, &o.segid) != ERROR_NONE)
 	      {
 		id_rel(&segment->id, o.segid);
 
 		set_remove(segment->container, o.segid);
+
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 	      }
 
-	    return (0);
+	    SEGMENT_LEAVE(segment, ERROR_NONE);
 	  }
 
 	/*
@@ -239,19 +233,20 @@ int			segment_rsv(t_asid			asid,
 	    o_segment*	next;
 	    t_iterator	j;
 
-	    if (set_object(segment->container, i, (void**)&current) != 0)
+	    if (set_object(segment->container, i, (void**)&current) !=
+		ERROR_NONE)
 	      {
 		cons_msg('!', "set: cannot find the segment object "
 			 "corresponding to its identifier\n");
 
-		return (-1);
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 	      }
 
-	    if (set_next(segment->container, i, &j) != 0)
+	    if (set_next(segment->container, i, &j) != ERROR_NONE)
 	      break;
 
-	    if (set_object(segment->container, j, (void**)&next) != 0)
-	      return (-1);
+	    if (set_object(segment->container, j, (void**)&next) != ERROR_NONE)
+	      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 	    if ((next->address - (current->address + current->size)) >= size)
 	      {
@@ -259,28 +254,30 @@ int			segment_rsv(t_asid			asid,
 
 		memset(&o, 0x0, sizeof(o_segment));
 
-		if (id_rsv(&segment->id, &o.segid) != 0)
-		  return (-1);
+		if (id_rsv(&segment->id, &o.segid) != ERROR_NONE)
+		  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 		o.address = current->address + current->size;
 		o.size = size;
 		o.perms = perms;
 
-		if (set_insert_after(segment->container, i, &o) != 0)
+		if (set_insert_after(segment->container, i, &o) != ERROR_NONE)
 		  {
 		    id_rel(&segment->id, o.segid);
 
-		    return (-1);
+		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 		  }
 
-		if (set_add(as->segments, &o.segid) != 0)
+		if (set_add(as->segments, &o.segid) != ERROR_NONE)
 		  {
 		    id_rel(&segment->id, o.segid);
 
 		    set_remove(segment->container, o.segid);
+
+		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 		  }
 
-		return (0);
+		SEGMENT_LEAVE(segment, ERROR_NONE);
 	      }
 	  }
 
@@ -288,11 +285,11 @@ int			segment_rsv(t_asid			asid,
 	 * D)
 	 */
 
-	if (set_tail(segment->container, &i) != 0)
-	  return (-1);
+	if (set_tail(segment->container, &i) != ERROR_NONE)
+	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-	if (set_object(segment->container, i, (void**)&tail) != 0)
-	  return (-1);
+	if (set_object(segment->container, i, (void**)&tail) != ERROR_NONE)
+	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 	/*
 	 * E)
@@ -305,37 +302,39 @@ int			segment_rsv(t_asid			asid,
 
 	    memset(&o, 0x0, sizeof(o_segment));
 
-	    if (id_rsv(&segment->id, &o.segid) != 0)
-	      return (-1);
+	    if (id_rsv(&segment->id, &o.segid) != ERROR_NONE)
+	      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 	    o.address = tail->address + tail->size;
 	    o.size = size;
 	    o.perms = perms;
 
-	    if (set_insert_after(segment->container, i, &o) != 0)
+	    if (set_insert_after(segment->container, i, &o) != ERROR_NONE)
 	      {
 		id_rel(&segment->id, o.segid);
 
-		return (-1);
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 	      }
 
-	    if (set_add(as->segments, &o.segid) != 0)
+	    if (set_add(as->segments, &o.segid) != ERROR_NONE)
 	      {
 		id_rel(&segment->id, o.segid);
 
 		set_remove(segment->container, o.segid);
+
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 	      }
 
-	    return (0);
+	    SEGMENT_LEAVE(segment, ERROR_NONE);
 	  }
       }
     default:
       {
-	return (-1);
+	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
       }
     }
 
-  return (-1);
+  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 }
 
 /*
@@ -343,52 +342,51 @@ int			segment_rsv(t_asid			asid,
  *
  * steps:
  *
- * 1) checks whether the segment manager was previously initialised.
- * 2) gets the as object from its identifier.
- * 3) removes the segment from the address space.
- * 4) removes the segment from the segment container.
+ * 1) gets the as object from its identifier.
+ * 2) removes the segment from the address space.
+ * 3) removes the segment from the segment container.
  */
 
-int			segment_rel(t_asid			asid,
+t_error			segment_rel(t_asid			asid,
 				    t_segid			segid)
 {
   o_as*			as;
+
+  SEGMENT_ENTER(segment);
 
   /*
    * 1)
    */
 
-  segment_check(segment);
-
-  /*
-   * 2)
-   */
-
-  if (as_get(asid, &as) != 0)
-    return (-1);
+  if (as_get(asid, &as) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (set_remove(as->segments, segid) != 0)
-    return (-1);
+  if (set_remove(as->segments, segid) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (set_remove(segment->container, segid) != 0)
-    return (-1);
+  if (set_remove(segment->container, segid) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  return (0);
+  SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
 /*
  * this function sets the permissions of a segment.
+ *
+ * steps:
+ *
+ * 1) XXX
  */
 
-int			segment_perms(t_asid			asid,
+t_error			segment_perms(t_asid			asid,
 				      t_segid			segid,
 				      t_perms			perms)
 {
@@ -396,122 +394,106 @@ int			segment_perms(t_asid			asid,
   t_iterator		i;
   o_segment*		o;
 
+  SEGMENT_ENTER(segment);
+
   /*
    * 1)
    */
 
-  segment_check(segment);
+  if (as_get(asid, &as) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (as_get(asid, &as) != 0)
-    return (-1);
+  if (set_locate(as->segments, segid, &i) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (set_locate(as->segments, segid, &i) != 0)
-    return (-1);
+  if (segment_get(segid, &o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (segment_get(segid, &o) != 0)
-    return (-1);
-
-  /*
-   * 5)
-   */
-
   o->perms = perms;
 
-  return (0);
+  SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-int			segment_flush(t_asid			asid)
+t_error			segment_flush(t_asid			asid)
 {
   o_segment*		data;
   o_as*			as;
   t_iterator		i;
 
+  SEGMENT_ENTER(segment);
+
   /*
    * 1)
    */
 
-  segment_check(segment);
+  if (as_get(asid, &as) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (as_get(asid, &as) != 0)
-    return (-1);
-
-  /*
-   * 3)
-   */
-
   set_foreach(SET_OPT_FORWARD, as->segments, &i)
     {
-      if (set_object(as->segments, i, (void**)&data) != 0)
+      if (set_object(as->segments, i, (void**)&data) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot find the object "
 		   "corresponding to its identifier\n");
 
-	  return (-1);
+	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 	}
 
       cons_msg('#', "  %qd\n",
 	       data->segid == ID_UNUSED ? -1 : data->segid);
 
-      if (set_remove(segment->container, data->segid) != 0)
+      if (set_remove(segment->container, data->segid) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot remove the previously found "
 		   "object\n");
 
-	  return (-1);
+	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 	}
     }
 
   /*
-   * 4)
+   * 3)
    */
 
-  if (set_flush(as->segments) != 0)
-    return (-1);
+  if (set_flush(as->segments) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  return (0);
+  SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-int			segment_get(t_segid			segid,
+t_error			segment_get(t_segid			segid,
 				    o_segment**			o)
 {
-  /*
-   * 1)
-   */
+  SEGMENT_ENTER(segment);
 
-  segment_check(segment);
+  if (set_get(segment->container, segid, (void**)o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  /*
-   * 2)
-   */
-
-  if (set_get(segment->container, segid, (void**)o) != 0)
-    return (-1);
-
-  return (0);
+  SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
 /*
@@ -527,10 +509,11 @@ int			segment_get(t_segid			segid,
  *    the segment identifiers.
  * 4) reserves the segment set which will contain the system's segments.
  * 5) for each pre-reserved segment, inserts it into the segment container.
- * 6) if needed, dumps the segments.
+ * 6) tries to reserve a statistics object.
+ * 7) if needed, dumps the segments.
  */
 
-int			segment_init(t_fit			fit)
+t_error			segment_init(t_fit			fit)
 {
   t_uint32		i;
 
@@ -543,7 +526,7 @@ int			segment_init(t_fit			fit)
       cons_msg('!', "segment: cannot allocate memory for the segment "
 	       "manager structure\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   memset(segment, 0x0, sizeof(m_segment));
@@ -560,22 +543,23 @@ int			segment_init(t_fit			fit)
    * 3)
    */
 
-  if (id_build(&segment->id) != 0)
+  if (id_build(&segment->id) != ERROR_NONE)
     {
       cons_msg('!', "segment: unable to initialise the identifier object\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   /*
    * 4)
    */
 
-  if (set_rsv(ll, SET_OPT_ALLOC, sizeof(o_segment), &segment->container) != 0)
+  if (set_rsv(ll, SET_OPT_ALLOC, sizeof(o_segment), &segment->container) !=
+      ERROR_NONE)
     {
       cons_msg('!', "segment: unable to reserve the segment container\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -584,20 +568,21 @@ int			segment_init(t_fit			fit)
 
   for (i = 0; i < init->nsegments; i++)
     {
-      if (id_rsv(&segment->id, &init->segments[i].segid) != 0)
+      if (id_rsv(&segment->id, &init->segments[i].segid) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: unable to generate a segment identifier "
 		   "for the pre-reserved segments\n");
 
-	  return (-1);
+	  return (ERROR_UNKNOWN);
 	}
 
-      if (set_insert_tail(segment->container, &init->segments[i]) != 0)
+      if (set_insert_tail(segment->container, &init->segments[i]) !=
+	  ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot add a pre-reserved segment in "
 		   "the segment container\n");
 
-	  return (-1);
+	  return (ERROR_UNKNOWN);
 	}
     }
 
@@ -605,31 +590,37 @@ int			segment_init(t_fit			fit)
    * 6)
    */
 
+  STATS_RSV("segment", &segment->stats);
+
+  /*
+   * 7)
+   */
+
 #if (DEBUG & DEBUG_SEGMENT)
   segment_dump();
 #endif
 
-#if 1
+#if 0
  {
    t_segid	segid;
 
-   if (segment_rsv(kas, PAGESZ, PERM_EXEC, &segid) != 0)
+   if (segment_rsv(kas, PAGESZ, PERM_EXEC, &segid) != ERROR_NONE)
      printf("error: segment_rsv()\n");
 
-   if (segment_rel(kas, 01) != 0)
+   if (segment_rel(kas, 01) != ERROR_NONE)
      printf("error: segment_rel()\n");
 
-   if (segment_rel(kas, 03) != 0)
+   if (segment_rel(kas, 03) != ERROR_NONE)
      printf("error: segment_rel()\n");
 
    segment_dump();
 
-   if (segment_flush(kas) != 0)
+   if (segment_flush(kas) != ERROR_NONE)
      printf("error: segment_flush()\n");
  }
 #endif
 
-  return (0);
+  return (ERROR_NONE);
 }
 
 /*
@@ -637,40 +628,47 @@ int			segment_init(t_fit			fit)
  *
  * steps:
  *
- * 1) releases the segment container.
- * 2) destroys the id object.
- * 3) frees the segment manager structure's memory.
+ * 1) releases the stats object.
+ * 2) releases the segment container.
+ * 3) destroys the id object.
+ * 4) frees the segment manager structure's memory.
  */
 
-int			segment_clean(void)
+t_error			segment_clean(void)
 {
   /*
    * 1)
    */
 
-  if (set_rel(segment->container) != 0)
-    {
-      cons_msg('!', "segment: unable to release the segment container\n");
-
-      return (-1);
-    }
+  STATS_REL(segment->stats);
 
   /*
    * 2)
    */
 
-  if (id_destroy(&segment->id) != 0)
+  if (set_rel(segment->container) != ERROR_NONE)
     {
-      cons_msg('!', "segment: unable to destroy the identifier object\n");
+      cons_msg('!', "segment: unable to release the segment container\n");
 
-      return (-1);
+      return (ERROR_UNKNOWN);
     }
 
   /*
    * 3)
    */
 
+  if (id_destroy(&segment->id) != ERROR_NONE)
+    {
+      cons_msg('!', "segment: unable to destroy the identifier object\n");
+
+      return (ERROR_UNKNOWN);
+    }
+
+  /*
+   * 4)
+   */
+
   free(segment);
 
-  return (0);
+  return (ERROR_NONE);
 }

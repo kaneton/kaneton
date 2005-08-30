@@ -56,57 +56,57 @@ typedef struct
  * ../../kaneton/set/set_ll.c
  */
 
-int			set_dump_ll(t_setid			setid);
+t_error			set_dump_ll(t_setid			setid);
 
-int			set_head_ll(t_setid			setid,
+t_error			set_head_ll(t_setid			setid,
 				    t_iterator*			iterator);
 
-int			set_tail_ll(t_setid			setid,
+t_error			set_tail_ll(t_setid			setid,
 				    t_iterator*			iterator);
 
-int			set_prev_ll(t_setid			setid,
+t_error			set_prev_ll(t_setid			setid,
 				    t_iterator			current,
 				    t_iterator*			previous);
 
-int			set_next_ll(t_setid			setid,
+t_error			set_next_ll(t_setid			setid,
 				    t_iterator			current,
 				    t_iterator*			next);
 
-int			set_insert_head_ll(t_setid		setid,
+t_error			set_insert_head_ll(t_setid		setid,
 					   void*		data);
 
-int			set_insert_tail_ll(t_setid		setid,
+t_error			set_insert_tail_ll(t_setid		setid,
 					   void*		data);
 
-int			set_insert_before_ll(t_setid		setid,
+t_error			set_insert_before_ll(t_setid		setid,
 					     t_iterator		iterator,
 					     void*		data);
 
-int			set_insert_after_ll(t_setid		setid,
+t_error			set_insert_after_ll(t_setid		setid,
 					    t_iterator		iterator,
 					    void*		data);
 
-int			set_add_ll(t_setid			setid,
+t_error			set_add_ll(t_setid			setid,
 				   void*			data);
 
-int			set_remove_ll(t_setid			setid,
+t_error			set_remove_ll(t_setid			setid,
 				      t_id			id);
 
-int			set_flush_ll(t_setid			setid);
+t_error			set_flush_ll(t_setid			setid);
 
-int			set_locate_ll(t_setid			setid,
+t_error			set_locate_ll(t_setid			setid,
 				      t_id			id,
 				      t_iterator*		iterator);
 
-int			set_object_ll(t_setid			setid,
+t_error			set_object_ll(t_setid			setid,
 				      t_iterator		iterator,
 				      void**			data);
 
-int			set_rsv_ll(t_opts			opts,
+t_error			set_rsv_ll(t_opts			opts,
 				   t_size			datasz,
 				   t_setid*			setid);
 
-int			set_rel_ll(t_setid			setid);
+t_error			set_rel_ll(t_setid			setid);
 
 
 /*

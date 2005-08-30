@@ -5,13 +5,13 @@
  * 
  * conf.h
  * 
- * path          /home/mycure/kaneton/conf/mycure
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Aug 28 16:23:31 2005   mycure
- * last update   Sun Aug 28 19:59:22 2005   mycure
+ * last update   Mon Aug 29 17:05:32 2005   mycure
  */
 
 #ifndef KANETON_CONF_H

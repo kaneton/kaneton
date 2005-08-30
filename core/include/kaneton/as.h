@@ -5,13 +5,13 @@
  * 
  * as.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Aug 28 19:48:41 2005   mycure
+ * last update   Tue Aug 30 13:12:37 2005   mycure
  */
 
 #ifndef KANETON_AS_H
@@ -73,10 +73,32 @@ typedef struct
  * check
  */
 
-#define as_check(_as_)							\
+#define AS_CHECK(_as_)							\
   {									\
     if ((_as_) == NULL)							\
-      return (-1);							\
+      return (ERROR_UNKNOWN);						\
+  }
+
+/*
+ * enter
+ */
+
+#define AS_ENTER(_as_)							\
+  {									\
+    AS_CHECK((_as_));							\
+									\
+    STATS_BEGIN((_as_)->stats);						\
+  }
+
+/*
+ * leave
+ */
+
+#define AS_LEAVE(_as_, _error_)						\
+  {									\
+    STATS_END((_as_)->stats, (_error_));				\
+									\
+    return (_error_);							\
   }
 
 /*
@@ -89,18 +111,18 @@ typedef struct
  * ../../kaneton/as/as.c
  */
 
-int			as_dump(void);
+t_error			as_dump(void);
 
-int			as_rsv(t_asid*				asid);
+t_error			as_rsv(t_asid*				asid);
 
-int			as_rel(t_asid				asid);
+t_error			as_rel(t_asid				asid);
 
-int			as_get(t_asid				asid,
+t_error			as_get(t_asid				asid,
 			       o_as**				o);
 
-int			as_init(void);
+t_error			as_init(void);
 
-int			as_clean(void);
+t_error			as_clean(void);
 
 
 /*

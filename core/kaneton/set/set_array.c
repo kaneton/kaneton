@@ -5,13 +5,13 @@
  * 
  * set_array.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/stats
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Aug 28 14:03:20 2005   mycure
+ * last update   Tue Aug 30 13:02:56 2005   mycure
  */
 
 /*
@@ -58,32 +58,27 @@
  *
  * steps:
  *
- * 1) checks if the set manager was previously initialised.
- * 2) gets the set descriptor from its identifier.
- * 3) prints each objects' identifier.
+ * 1) gets the set descriptor from its identifier.
+ * 2) prints each objects' identifier.
  */
 
-int			set_dump_array(t_setid			setid)
+t_error			set_dump_array(t_setid			setid)
 {
   o_set*		data;
   o_set*		o;
   t_iterator		i;
 
+  SET_ENTER(set);
+
   /*
    * 1)
    */
 
-  set_check(set);
+  if (set_descriptor(setid, &o) != 0)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 2)
-   */
-
-  if (set_descriptor(setid, &o) != 0)
-    return (-1);
-
-  /*
-   * 3)
    */
 
   cons_msg('#', "dumping %qu node(s) from the array set %qu:\n",
@@ -92,27 +87,29 @@ int			set_dump_array(t_setid			setid)
 
   set_foreach(SET_OPT_FORWARD, setid, &i)
     {
-      if (set_object(setid, i, (void**)&data) != 0)
+      if (set_object(setid, i, (void**)&data) != ERROR_NONE)
 	{
 	  cons_msg('!', "set: cannot find the object "
 		   "corresponding to its identifier\n");
 
-	  return (-1);
+	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
 
       cons_msg('#', "  %qd\n", *data);
     }
 
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-int			set_expand_array(o_set*			o)
+t_error			set_expand_array(o_set*			o)
 {
   t_sint32		i;
+
+  SET_ENTER(set);
 
   if (o->size == o->u.array.arraysz)
     {
@@ -122,7 +119,7 @@ int			set_expand_array(o_set*			o)
 	{
 	  cons_msg('!', "set: not enough memory to expand the array\n");
 
-	  return (-1);
+	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
 
       for (i = o->u.array.arraysz; i < (o->u.array.arraysz * 2); i++)
@@ -131,48 +128,48 @@ int			set_expand_array(o_set*			o)
       o->u.array.arraysz *= 2;
     }
 
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-int			set_insert_array(o_set*			o,
+t_error			set_insert_array(o_set*			o,
 					 t_sint32		position)
 {
-  /* XXX */
+  SET_ENTER(set);
 
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
  * this function returns an iterator on the first entry on the array.
  *
- * if there is no node in the list, the function returns -1.
+ * if there is no node in the list, the function returns ERROR_UNKNOWN.
  */
 
-int			set_head_array(t_setid			setid,
+t_error			set_head_array(t_setid			setid,
 				       t_iterator*		iterator)
 {
   o_set*		o;
   t_sint32		i;
 
-  set_check(set);
+  SET_ENTER(set);
 
   memset(iterator, 0x0, sizeof(t_iterator));
 
-  if (set_descriptor(setid, &o) != 0)
-    return (-1);
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   if (o->size == 0)
-    return (-1);
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   if (o->u.array.opts & SET_OPT_ORGANISE)
     {
       *iterator = o->u.array.array;
 
-      return (0);
+      SET_LEAVE(set, ERROR_NONE);
     }
   else
     {
@@ -182,40 +179,40 @@ int			set_head_array(t_setid			setid,
 	  {
 	    *iterator = o->u.array.array + (i * o->u.array.datasz);
 
-	    return (0);
+	    SET_LEAVE(set, ERROR_NONE);
 	  }
     }
 
-  return (-1);
+  SET_LEAVE(set, ERROR_UNKNOWN);
 }
 
 /*
  * this function returns an iterator on the last entry of the array.
  *
- * if there is no node in the list, the function returns -1.
+ * if there is no node in the list, the function returns ERROR_UNKNOWN.
  */
 
-int			set_tail_array(t_setid			setid,
+t_error			set_tail_array(t_setid			setid,
 				       t_iterator*		iterator)
 {
   o_set*		o;
   t_sint32		i;
 
-  set_check(set);
+  SET_ENTER(set);
 
   memset(iterator, 0x0, sizeof(t_iterator));
 
-  if (set_descriptor(setid, &o) != 0)
-    return (-1);
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   if (o->size == 0)
-    return (-1);
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   if (o->u.array.opts & SET_OPT_ORGANISE)
     {
       *iterator = o->u.array.array + ((o->size - 1) * o->u.array.datasz);
 
-      return (0);
+      SET_LEAVE(set, ERROR_NONE);
     }
   else
     {
@@ -225,30 +222,30 @@ int			set_tail_array(t_setid			setid,
 	  {
 	    *iterator = o->u.array.array + (i * o->u.array.datasz);
 
-	    return (0);
+	    SET_LEAVE(set, ERROR_NONE);
 	  }
     }
 
-  return (-1);
+  SET_LEAVE(set, ERROR_UNKNOWN);
 }
 
 /*
  * this function returns an iterator on the previous entry.
  */
 
-int			set_prev_array(t_setid			setid,
+t_error			set_prev_array(t_setid			setid,
 				       t_iterator		current,
 				       t_iterator*		previous)
 {
   o_set*		o;
   t_sint32		i;
 
-  set_check(set);
+  SET_ENTER(set);
 
   memset(previous, 0x0, sizeof(t_iterator));
 
-  if (set_descriptor(setid, &o) != 0)
-    return (-1);
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   i = (((t_uint8*)current - o->u.array.array) / o->u.array.datasz) - 1;
 
@@ -258,7 +255,7 @@ int			set_prev_array(t_setid			setid,
 	{
 	  *previous = o->u.array.array + (i * o->u.array.datasz);
 
-	  return (0);
+	  SET_LEAVE(set, ERROR_NONE);
 	}
     }
   else
@@ -269,30 +266,30 @@ int			set_prev_array(t_setid			setid,
 	  {
 	    *previous = o->u.array.array + (i * o->u.array.datasz);
 
-	    return (0);
+	    SET_LEAVE(set, ERROR_NONE);
 	  }
     }
 
-  return (-1);
+  SET_LEAVE(set, ERROR_UNKNOWN);
 }
 
 /*
  * this function returns an iterator on the next entry of the array.
  */
 
-int			set_next_array(t_setid			setid,
+t_error			set_next_array(t_setid			setid,
 				       t_iterator		current,
 				       t_iterator*		next)
 {
   o_set*		o;
   t_sint32		i;
 
-  set_check(set);
+  SET_ENTER(set);
 
   memset(next, 0x0, sizeof(t_iterator));
 
-  if (set_descriptor(setid, &o) != 0)
-    return (-1);
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   i = (((t_uint8*)current - o->u.array.array) / o->u.array.datasz) + 1;
 
@@ -302,7 +299,7 @@ int			set_next_array(t_setid			setid,
 	{
 	  *next = o->u.array.array + (i * o->u.array.datasz);
 
-	  return (0);
+	  SET_LEAVE(set, ERROR_NONE);
 	}
     }
   else
@@ -313,11 +310,11 @@ int			set_next_array(t_setid			setid,
 	  {
 	    *next = o->u.array.array + (i * o->u.array.datasz);
 
-	    return (0);
+	    SET_LEAVE(set, ERROR_NONE);
 	  }
     }
 
-  return (-1);
+  SET_LEAVE(set, ERROR_UNKNOWN);
 }
 
 /*
@@ -328,60 +325,56 @@ int			set_next_array(t_setid			setid,
  * 1) XXX
  */
 
-int			set_insert_head_array(t_setid		setid,
+t_error			set_insert_head_array(t_setid		setid,
 					      void*		data)
 {
   o_set*		o;
   t_sint32		i;
 
+  SET_ENTER(set);
+
   /*
    * 1)
    */
 
-  set_check(set);
+  if (*((t_id*)data) == ID_UNUSED)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (*((t_id*)data) == ID_UNUSED)
-    return (-1);
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (set_descriptor(setid, &o) != 0)
-    return (-1);
+  if (o->u.array.opts & SET_OPT_SORT)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (o->u.array.opts & SET_OPT_SORT)
-    return (-1);
+  if (set_expand_array(o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 5)
    */
 
-  if (set_expand_array(o) != 0)
-    return (-1);
+  if (set_insert_array(o, 0) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 6)
    */
 
-  if (set_insert_array(o, 0) != 0)
-    return (-1);
-
-  /*
-   * 8)
-   */
-
   o->size++;
 
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
@@ -392,48 +385,44 @@ int			set_insert_head_array(t_setid		setid,
  * 1) XXX
  */
 
-int			set_insert_tail_array(t_setid		setid,
+t_error			set_insert_tail_array(t_setid		setid,
 					      void*		data)
 {
   o_set*		o;
   t_sint32		i;
 
+  SET_ENTER(set);
+
   /*
    * 1)
    */
 
-  set_check(set);
+  if (*((t_id*)data) == ID_UNUSED)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (*((t_id*)data) == ID_UNUSED)
-    return (-1);
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (set_descriptor(setid, &o) != 0)
-    return (-1);
+  if (o->u.array.opts & SET_OPT_SORT)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (o->u.array.opts & SET_OPT_SORT)
-    return (-1);
+  if (set_expand_array(o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 5)
-   */
-
-  if (set_expand_array(o) != 0)
-    return (-1);
-
-  /*
-   * 6)
    */
 
   if (o->u.array.opts & SET_OPT_ORGANISE)
@@ -442,75 +431,71 @@ int			set_insert_tail_array(t_setid		setid,
     i = o->u.array.arraysz - 1;
 
   /*
-   * 7)
+   * 6)
    */
 
-  if (set_insert_array(o, i) != 0)
-    return (-1);
+  if (set_insert_array(o, i) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
-   * 8)
+   * 7)
    */
 
   o->size++;
 
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-int			set_insert_before_array(t_setid		setid,
+t_error			set_insert_before_array(t_setid		setid,
 						t_iterator	iterator,
 						void*		data)
 {
   o_set*		o;
   t_sint32		i;
 
+  SET_ENTER(set);
+
   /*
    * 1)
    */
 
-  set_check(set);
+  if (*((t_id*)data) == ID_UNUSED)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (*((t_id*)data) == ID_UNUSED)
-    return (-1);
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (set_descriptor(setid, &o) != 0)
-    return (-1);
-
-  /*
-   * 4)
-   */
-
   if (o->u.array.opts & SET_OPT_SORT)
-    return (-1);
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /* XXX */
 
   /*
-   * 8)
+   * 6)
    */
 
   o->size++;
 
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-int			set_insert_after_array(t_setid		setid,
+t_error			set_insert_after_array(t_setid		setid,
 					       t_iterator	iterator,
 					       void*		data)
 {
@@ -519,48 +504,44 @@ int			set_insert_after_array(t_setid		setid,
   t_sint32		i;
   t_sint32		j;
 
+  SET_ENTER(set);
+
   /*
    * 1)
    */
 
-  set_check(set);
- 
+  if (*((t_id*)data) == ID_UNUSED)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
   /*
    * 2)
    */
 
-  if (*((t_id*)data) == ID_UNUSED)
-    return (-1);
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
- /*
+  /*
    * 3)
    */
 
-  if (set_descriptor(setid, &o) != 0)
-    return (-1);
+  if (o->u.array.opts & SET_OPT_SORT)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (o->u.array.opts & SET_OPT_SORT)
-    return (-1);
+  if (set_expand_array(o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 5)
    */
 
-  if (set_expand_array(o) != 0)
-    return (-1);
-
-  /*
-   * 6)
-   */
-
   n = (t_uint8*)iterator + o->u.array.datasz;
 
   /*
-   * 7)
+   * 6)
    */
 
   if (*((t_id*)n) == ID_UNUSED)
@@ -616,12 +597,12 @@ int			set_insert_after_array(t_setid		setid,
     }
 
   /*
-   * 8)
+   * 7)
    */
 
   o->size++;
 
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
@@ -633,35 +614,31 @@ int			set_insert_after_array(t_setid		setid,
  * 6) increments the number of nodes in the list.
  */
 
-int			set_add_array(t_setid			setid,
+t_error			set_add_array(t_setid			setid,
 				      void*			data)
 {
   o_set*		o;
   t_sint32		i;
   t_sint32		j;
 
+  SET_ENTER(set);
+
   /*
    * 1)
    */
 
-  set_check(set);
+  if (*((t_id*)data) == ID_UNUSED)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (*((t_id*)data) == ID_UNUSED)
-    return (-1);
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 3)
-   */
-
-  if (set_descriptor(setid, &o) != 0)
-    return (-1);
-
-  /*
-   * 4)
    */
 
   if (o->size == o->u.array.arraysz)
@@ -672,7 +649,7 @@ int			set_add_array(t_setid			setid,
 	{
 	  cons_msg('!', "set: not enough memory to expand the array\n");
 
-	  return (-1);
+	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
 
       for (i = o->u.array.arraysz; i < (o->u.array.arraysz * 2); i++)
@@ -682,7 +659,7 @@ int			set_add_array(t_setid			setid,
     }
 
   /*
-   * 5)
+   * 4)
    */
 
   if (o->u.array.opts & SET_OPT_SORT)
@@ -737,18 +714,18 @@ int			set_add_array(t_setid			setid,
 	    {
 	      cons_msg('!', "set: unreachable code reached\n");
 
-	      return (-1);
+	      SET_LEAVE(set, ERROR_UNKNOWN);
 	    }
 	}
     }
 
   /*
-   * 6)
+   * 5)
    */
 
   o->size++;
 
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
@@ -760,23 +737,27 @@ int			set_add_array(t_setid			setid,
  * 1) XXX
  */
 
-int			set_remove_array(t_setid		setid,
+t_error			set_remove_array(t_setid		setid,
 					 t_id			id)
 {
+  SET_ENTER(set);
+
   /* XXX */
 
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
  * XXX
  */
 
-int			set_flush_array(t_setid			setid)
+t_error			set_flush_array(t_setid			setid)
 {
+  SET_ENTER(set);
+
   /* XXX */
 
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
@@ -788,28 +769,30 @@ int			set_flush_array(t_setid			setid)
  * 1) XXX
  */
 
-int			set_locate_array(t_setid		setid,
+t_error			set_locate_array(t_setid		setid,
 					 t_id			id,
 					 t_iterator*		iterator)
 {
+  SET_ENTER(set);
+
   /* XXX */
 
-  return (-1);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
  * this function returns an object given its iterator.
  */
 
-int			set_object_array(t_setid		setid,
+t_error			set_object_array(t_setid		setid,
 					 t_iterator		iterator,
 					 void**			data)
 {
-  set_check(set);
+  SET_ENTER(set);
 
   *data = iterator;
 
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
@@ -817,15 +800,14 @@ int			set_object_array(t_setid		setid,
  *
  * steps:
  *
- * 1) checks whether the set manager was previously initialised.
- * 2) the array sets only works with the option alloc.
- * 3) initialises the set descriptor.
- * 4) if necessary, reserves an unused identifier for this new set.
- * 5) initialises the set fields allocating the array.
- * 6) adds the set descriptor in the set container.
+ * 1) the array sets only works with the option alloc.
+ * 2) initialises the set descriptor.
+ * 3) if necessary, reserves an unused identifier for this new set.
+ * 4) initialises the set fields allocating the array.
+ * 5) adds the set descriptor in the set container.
  */
 
-int			set_rsv_array(t_opts			opts,
+t_error			set_rsv_array(t_opts			opts,
 				      t_setsz			initsz,
 				      t_size			datasz,
 				      t_setid*			setid)
@@ -833,27 +815,23 @@ int			set_rsv_array(t_opts			opts,
   o_set			o;
   t_setsz		i;
 
+  SET_ENTER(set);
+
   /*
    * 1)
    */
 
-  set_check(set);
+  if (!(opts & SET_OPT_ALLOC))
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (!(opts & SET_OPT_ALLOC))
-    return (-1);
-
-  /*
-   * 3)
-   */
-
   memset(&o, 0x0, sizeof(o_set));
 
   /*
-   * 4)
+   * 3)
    */
 
   if (opts & SET_OPT_CONTAINER)
@@ -862,12 +840,12 @@ int			set_rsv_array(t_opts			opts,
     }
   else
     {
-      if (id_rsv(&set->id, setid) != 0)
-	return (-1);
+      if (id_rsv(&set->id, setid) != ERROR_NONE)
+	SET_LEAVE(set, ERROR_UNKNOWN);
     }
 
   /*
-   * 5)
+   * 4)
    */
 
   o.id = *setid;
@@ -883,7 +861,7 @@ int			set_rsv_array(t_opts			opts,
       if (!(opts & SET_OPT_CONTAINER))
 	id_rel(&set->id, o.id);
 
-      return (-1);
+      SET_LEAVE(set, ERROR_UNKNOWN);
     }
 
   memset(o.u.array.array, 0x0, o.u.array.arraysz * o.u.array.datasz);
@@ -892,20 +870,20 @@ int			set_rsv_array(t_opts			opts,
     *((t_id*)(o.u.array.array + (i * o.u.array.datasz))) = ID_UNUSED;
 
   /*
-   * 6)
+   * 5)
    */
 
-  if (set_new(&o) != 0)
+  if (set_new(&o) != ERROR_NONE)
     {
       free(o.u.array.array);
 
       if (!(opts & SET_OPT_CONTAINER))
 	id_rel(&set->id, o.id);
 
-      return (-1);
+      SET_LEAVE(set, ERROR_UNKNOWN);
     }
 
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
@@ -913,70 +891,65 @@ int			set_rsv_array(t_opts			opts,
  *
  * steps:
  *
- * 1) checks whether the set manager was previously initialised.
- * 2) gets the set given its set identifier.
- * 3) flushs the set.
- * 4) cannot release the set container.
- * 5) if needed, releases the set identifier.
- * 6) frees the array allocated at the set reservation.
- * 7) then, removes the set from the set container.
+ * 1) gets the set given its set identifier.
+ * 2) flushs the set.
+ * 3) cannot release the set container.
+ * 4) if needed, releases the set identifier.
+ * 5) frees the array allocated at the set reservation.
+ * 6) then, removes the set from the set container.
  */
 
-int			set_rel_array(t_setid			setid)
+t_error			set_rel_array(t_setid			setid)
 {
   o_set			*o;
+
+  SET_ENTER(set);
 
   /*
    * 1)
    */
 
-  set_check(set);
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (set_descriptor(setid, &o) != 0)
-    return (-1);
+  if (set_flush(setid) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 3)
-   */
-
-  if (set_flush(setid) != 0)
-    return (-1);
-
-  /*
-   * 4)
    */
 
   if (setid == set->setid)
     {
       cons_msg('!', "set: cannot release the set container\n");
 
-      return (-1);
+      SET_LEAVE(set, ERROR_UNKNOWN);
     }
+
+  /*
+   * 4)
+   */
+
+  if (!(o->u.array.opts & SET_OPT_CONTAINER))
+    if (id_rel(&set->id, o->id) != ERROR_NONE)
+      SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 5)
    */
 
-  if (!(o->u.array.opts & SET_OPT_CONTAINER))
-    if (id_rel(&set->id, o->id) != 0)
-      return (-1);
+  free(o->u.array.array);
 
   /*
    * 6)
    */
 
-  free(o->u.array.array);
+  if (set_delete(o->id) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
-  /*
-   * 7)
-   */
-
-  if (set_delete(o->id) != 0)
-    return (-1);
-
-  return (0);
+  SET_LEAVE(set, ERROR_NONE);
 }

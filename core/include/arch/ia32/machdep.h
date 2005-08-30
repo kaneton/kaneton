@@ -5,13 +5,13 @@
  * 
  * machdep.h
  * 
- * path          /home/mycure/kaneton/core
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Sun Jun 19 22:07:24 2005   mycure
+ * last update   Tue Aug 30 13:35:43 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
@@ -42,26 +42,5 @@
 
 #define		machdep_include(_object_)				\
   machdep_include_##_object_()
-
-/*
- * ---------- prototypes ------------------------------------------------------
- *
- *      ../../../kaneton/arch/ia32/as.c
- *      ../../../kaneton/arch/ia32/segment.c
- */
-
-/*
- * ../../../kaneton/arch/ia32/as.c
- */
-
-
-/*
- * ../../../kaneton/arch/ia32/segment.c
- */
-
-
-/*
- * eop
- */
 
 #endif

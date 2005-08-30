@@ -5,13 +5,13 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32/kaneton
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Sun Jun 19 20:35:27 2005   mycure
+ * last update   Tue Aug 30 13:54:03 2005   mycure
  */
 
 #ifndef IA32_KANETON_H
@@ -33,5 +33,26 @@
 #include <arch/ia32/kaneton/bootloader.h>
 #include <arch/ia32/kaneton/debug.h>
 #include <arch/ia32/kaneton/init.h>
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../../../../kaneton/arch/ia32/kaneton/as.c
+ *      ../../../../kaneton/arch/ia32/kaneton/segment.c
+ */
+
+/*
+ * ../../../../kaneton/arch/ia32/kaneton/as.c
+ */
+
+
+/*
+ * ../../../../kaneton/arch/ia32/kaneton/segment.c
+ */
+
+
+/*
+ * eop
+ */
 
 #endif

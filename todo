@@ -3,15 +3,7 @@
  qu on a pas perdu de memoire, comme ca on verra si les ensembles sont bons
 
 --
- conf/
- stats/
-
---
- faire un truc mieux que -DSTATS_MODE, il faudrait un fichier de conf
- kernel, pour que ce soit bon.
-
---
- faire le set de hash
+ faire le set de hash et tableau par jacob au pire
 
 --
  faire des tests sur les ensembles et sur les segments: jacob_s
@@ -45,9 +37,6 @@
  printf_init() rajouter un fit
 
 --
- set_type(bpt)
-
---
  clarifier le segment manager et eviter le redondance de code
 
  tester le segment manager
@@ -58,6 +47,10 @@
 
 --
  coder les fonctions clone: as_clone(), set_clone(), id_clone() etc..
+
+ ca va etre vachement chiant de faire un set_clone(). pourtant tous les
+ autres clone() vont forcement y faire appel.
+ d'un autre cote une fois code ce sera trop simple de faire les autre
 
 --
  http://perso.wanadoo.fr/philippe.michel/qnx/

@@ -3,13 +3,13 @@
  *
  * init.c
  *
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Fri Jul 22 14:45:44 2005   mycure
+ * last update   Tue Aug 30 13:55:54 2005   mycure
  */
 
 /*
@@ -18,6 +18,8 @@
 
 #include <libc.h>
 #include <kaneton.h>
+
+#include "bootloader.h"
 
 /*
  * ---------- globals ---------------------------------------------------------

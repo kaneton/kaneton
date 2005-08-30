@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/stats
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Aug 28 19:59:37 2005   mycure
+ * last update   Tue Aug 30 12:33:27 2005   mycure
  */
 
 /*
@@ -73,7 +73,7 @@ void			kaneton(t_init*				bootloader)
    * 2)
    */
 
-  if (cons_init() != 0)
+  if (cons_init() != ERROR_NONE)
     kaneton_error("cannot initialise the console manager\n");
 
   /*
@@ -102,37 +102,34 @@ void			kaneton(t_init*				bootloader)
    * 6)
    */
 
-  if (id_init() != 0)
+  if (id_init() != ERROR_NONE)
     kaneton_error("cannot initialise the id manager\n");
 
   /*
    * 7)
    */
 
-  if (set_init() != 0)
+  if (set_init() != ERROR_NONE)
     kaneton_error("cannot initialise the set manager\n");
 
   /*
    * 8)
    */
 
-#ifdef CONF_STATS
-  if (stats_init() != 0)
-    kaneton_error("cannot initialise the stats manager\n");
-#endif
+  STATS_INIT();
 
   /*
    * 8)
    */
 
-  if (as_init() != 0)
+  if (as_init() != ERROR_NONE)
     kaneton_error("cannot initialise the address space manager\n");
 
   /*
    * 9)
    */
 
-  if (segment_init(SEGMENT_FIT_FIRST) != 0)
+  if (segment_init(SEGMENT_FIT_FIRST) != ERROR_NONE)
     kaneton_error("cannot initialise the segment manager\n");
 
 #ifdef KANETON_SERIAL
@@ -143,6 +140,8 @@ void			kaneton(t_init*				bootloader)
   /*
    * XXX)
    */
+
+  STATS_DUMP();
 
   while (1)
     ;

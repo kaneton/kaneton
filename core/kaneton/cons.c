@@ -5,13 +5,13 @@
  * 
  * cons.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/segment
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Wed Aug 24 15:53:12 2005   mycure
+ * last update   Tue Aug 30 12:53:37 2005   mycure
  */
 
 /*
@@ -199,13 +199,13 @@ void			cons_msg(char				indicator,
  * console.
  */
 
-int			cons_init(void)
+t_error			cons_init(void)
 {
   memcpy(&cons, &init->machdep.cons, sizeof(t_cons));
 
   printf_init(cons_print_char, cons_attr);
 
-  return (0);
+  return (ERROR_NONE);
 }
 
 /*
@@ -214,9 +214,9 @@ int			cons_init(void)
  * there is nothing special to do.
  */
 
-int			cons_clean(void)
+t_error			cons_clean(void)
 {
-  return (0);
+  return (ERROR_NONE);
 }
 
 /*

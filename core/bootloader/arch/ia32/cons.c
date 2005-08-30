@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Fri Jan 29 05:11:15 1999   mycure
+ * last update   Tue Aug 30 13:55:46 2005   mycure
  */
 
 /*
@@ -20,6 +20,8 @@
 
 #include <libc.h>
 #include <kaneton.h>
+
+#include "bootloader.h"
 
 /*
  * ---------- globals ---------------------------------------------------------

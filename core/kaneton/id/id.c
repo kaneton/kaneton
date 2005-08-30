@@ -5,13 +5,13 @@
  * 
  * id.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/stats
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Aug 28 19:47:56 2005   mycure
+ * last update   Tue Aug 30 12:56:53 2005   mycure
  */
 
 /*
@@ -34,6 +34,16 @@
 #include <kaneton.h>
 
 /*
+ * ---------- globals ---------------------------------------------------------
+ */
+
+/*
+ * the id manager structure.
+ */
+
+m_id*			id;
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -41,73 +51,89 @@
  * this function dumps the id object's state.
  */
 
-void			id_dump(o_id*				o)
+t_error			id_dump(o_id*				o)
 {
+  ID_ENTER(id);
+
   cons_msg('#', "id object's state: %qu\n", o->id);
+
+  ID_LEAVE(id, ERROR_NONE);
 }
 
 /*
  * this function reserves an identifier in an identifier object
  */
 
-int			id_rsv(o_id*				o,
+t_error			id_rsv(o_id*				o,
 			       t_id*				id)
 {
+  ID_ENTER(id);
+
   *id = o->id++;
 
-  return (0);
+  ID_LEAVE(id, ERROR_NONE);
 }
 
 /*
  * this function releases an identifier from an identifier object.
  */
 
-int			id_rel(o_id*				o,
+t_error			id_rel(o_id*				o,
 			       t_id				id)
 {
-  return (0);
+  ID_ENTER(id);
+
+  ID_LEAVE(id, ERROR_NONE);
 }
 
 /*
  * this function initialises an id object.
  */
 
-int			id_build(o_id*				o)
+t_error			id_build(o_id*				o)
 {
+  ID_ENTER(id);
+
   memset(o, 0x0, sizeof(o_id));
 
-  return (0);
+  ID_LEAVE(id, ERROR_NONE);
 }
 
 /*
  * this function cleans an id object.
  */
 
-int			id_destroy(o_id*			o)
+t_error			id_destroy(o_id*			o)
 {
+  ID_ENTER(id);
+
   memset(o, 0x0, sizeof(o_id));
 
-  return (0);
+  ID_LEAVE(id, ERROR_NONE);
 }
 
 /*
  * this function must initialise the id manager.
- *
- * nothing to do here but return.
  */
 
-int			id_init(void)
+t_error			id_init(void)
 {
-  return (0);
+  if ((id = malloc(sizeof(m_id))) == NULL)
+    {
+      cons_msg('!', "id: cannot allocate memory for the identifier manager "
+	       "structure\n");
+
+      return (ERROR_UNKNOWN);
+    }
+
+  return (ERROR_NONE);
 }
 
 /*
  * this function cleans the id manager.
- *
- * nothing to do here but return.
  */
 
-int			id_clean(void)
+t_error			id_clean(void)
 {
-  return (0);
+  return (ERROR_NONE);
 }

@@ -5,13 +5,13 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Aug 28 18:15:15 2005   mycure
+ * last update   Tue Aug 30 12:04:10 2005   mycure
  */
 
 #ifndef KANETON_KANETON_H
@@ -77,7 +77,10 @@
 
 #include <kaneton/as.h>
 #include <kaneton/debug.h>
+#include <kaneton/error.h>
+
 #include <kaneton/types.h>
+
 #include <kaneton/id.h>
 #include <kaneton/init.h>
 #include <kaneton/segment.h>
@@ -119,9 +122,9 @@ void			cons_msg(char				indicator,
 				 char*				fmt,
 				 ...);
 
-int			cons_init(void);
+t_error			cons_init(void);
 
-int			cons_clean(void);
+t_error			cons_clean(void);
 
 
 /*

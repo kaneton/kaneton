@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton/core/kaneton/stats
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Sun Aug 28 15:24:40 2005   mycure
+ * last update   Tue Aug 30 13:16:44 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -133,10 +133,28 @@ extern m_set*		set;
  * check
  */
 
-#define set_check(_set_)						\
+#define SET_CHECK(_set_)						\
   {									\
     if ((_set_) == NULL)						\
-      return (-1);							\
+      return (ERROR_UNKNOWN);						\
+  }
+
+/*
+ * enter
+ */
+
+#define SET_ENTER(_set_)						\
+  {									\
+    SET_CHECK((_set_));							\
+  }
+
+/*
+ * leave
+ */
+
+#define SET_LEAVE(_set_, _error_)					\
+  {									\
+    return (_error_);							\
   }
 
 /*
@@ -146,10 +164,10 @@ extern m_set*		set;
 #define set_trap(_func_, _setid_, _args_...)				\
   (									\
     {									\
-      int		_r_ = -1;					\
+      int		_r_ = ERROR_UNKNOWN;				\
       o_set*		_set_;						\
 									\
-      if (set_descriptor((_setid_), &_set_) == 0)			\
+      if (set_descriptor((_setid_), &_set_) == ERROR_NONE)		\
         {								\
           switch (_set_->type)						\
             {								\
@@ -224,11 +242,13 @@ extern m_set*		set;
   for (*(_iterator_) = NULL;						\
         ((*(_iterator_) == NULL) ?					\
           ((_opt_) == SET_OPT_FORWARD ?					\
-            set_head((_setid_), (_iterator_)) == 0 :			\
-            set_tail((_setid_), (_iterator_)) == 0) :			\
+            set_head((_setid_), (_iterator_)) == ERROR_NONE :		\
+            set_tail((_setid_), (_iterator_)) == ERROR_NONE) :		\
           ((_opt_) == SET_OPT_FORWARD ?					\
-            set_next((_setid_), *(_iterator_), (_iterator_)) == 0 :	\
-            set_prev((_setid_), *(_iterator_), (_iterator_)) == 0));	\
+            set_next((_setid_), *(_iterator_), (_iterator_)) ==		\
+              ERROR_NONE :						\
+            set_prev((_setid_), *(_iterator_), (_iterator_)) ==		\
+              ERROR_NONE));						\
        )
 
 /*
@@ -241,25 +261,28 @@ extern m_set*		set;
  * ../../kaneton/set/set.c
  */
 
-int			set_size(t_setid			setid,
+t_error			set_type(t_setid			setid,
+				 t_type*			type);
+
+t_error			set_size(t_setid			setid,
 				 t_setsz*			size);
 
-int			set_new(o_set*				o);
+t_error			set_new(o_set*				o);
 
-int			set_delete(t_setid			setid);
+t_error			set_delete(t_setid			setid);
 
-int			set_descriptor(t_setid			setid,
+t_error			set_descriptor(t_setid			setid,
 				       o_set**			o);
 
-int			set_get(t_setid				setid,
+t_error			set_get(t_setid				setid,
 				t_id				id,
 				void**				o);
 
-int			set_init(void);
+t_error			set_init(void);
 
-int			set_clean(void);
+t_error			set_clean(void);
 
-int			set_test(t_type				type);
+t_error			set_test(t_type				type);
 
 
 /*

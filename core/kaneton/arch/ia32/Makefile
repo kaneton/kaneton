@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton/core/kaneton/arch/ia32
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Jun 20 17:10:39 2005   mycure
+## last update   Tue Aug 30 13:46:41 2005   mycure
 ##
 
 #
@@ -30,14 +30,12 @@ include			../../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-MACHDEP			:=		machdep.a
+SUBDIRS			:=		ia32 kaneton
 
-MACHDEP_C		:=		as.c				\
-					segment.c			
+MACHDEP_A		:=		machdep.a
 
-MACHDEP_O		:=		$(MACHDEP_C:.c=.o)
-
-MACHDEP_INCLUDE		:=		$(_MACHDEP_INCLUDE_DIR_)/machdep.h
+KANETON_A		:=		kaneton/kaneton.a
+IA32_A			:=		ia32/ia32.a
 
 CFLAGS			+=		-D___kernel
 
@@ -45,30 +43,21 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(MACHDEP):		$(MACHDEP_O)
-	$(call remove,$(MACHDEP),)
+$(MACHDEP_A):		libs
+	$(call archives,$(MACHDEP_A),$(KANETON_A) $(IA32_A),)
 
-	$(call archive,$(MACHDEP),$(MACHDEP_O),)
-
-	$(call static-linker,$(MACHDEP),)
+libs:
+	$(call make,$(SUBDIRS),)
 
 clear:
-	$(call remove,$(MACHDEP_O),)
+	$(call make,$(SUBDIRS),clear)
 
-	$(call remove,$(MACHDEP),)
+	$(call remove,$(MACHDEP_A),)
 
 	$(call purge,)
 
 proto:
-	$(call prototypes,$(MACHDEP_INCLUDE),)
+	$(call make,$(SUBDIRS),proto)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
-
-	$(call dependencies,$(MACHDEP_C),$(_MAKEFILE_MK_),)
-
-#
-# ---------- dependencies -----------------------------------------------------
-#
-
-include			./$(_MAKEFILE_MK_)
+	$(call make,$(SUBDIRS),dep)
