@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/libs/klibc
+## path          /home/mycure/kaneton/libs/klibc/libdata
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:05:40 2005   mycure
-## last update   Mon Jul  4 12:59:16 2005   mycure
+## last update   Wed Aug 31 16:00:57 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-LIBDATA			:=		libdata.a
+LIBDATA_LO		:=		libdata.lo
 
 LIBDATA_C		:=		dump.c				\
 					alloc.c				\
@@ -44,17 +44,15 @@ LIBDATA_INCLUDE		:=		$(_LIBS_DIR_)/klibc/include/libdata/libdata.h
 # ---------- rules ------------------------------------------------------------
 #
 
-$(LIBDATA):		$(LIBDATA_O)
-	$(call remove,$(LIBDATA),)
+$(LIBDATA_LO):		$(LIBDATA_O)
+	$(call remove,$(LIBDATA_LO),)
 
-	$(call archive,$(LIBDATA),$(LIBDATA_O),)
-
-	$(call static-library,$(LIBDATA),)
+	$(call archive,$(LIBDATA_LO),$(LIBDATA_O),)
 
 clear:
 	$(call remove,$(LIBDATA_O),)
 
-	$(call remove,$(LIBDATA),)
+	$(call remove,$(LIBDATA_LO),)
 
 	$(call purge,)
 

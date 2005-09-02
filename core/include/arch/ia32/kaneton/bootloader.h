@@ -5,13 +5,13 @@
  * 
  * bootloader.h
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Tue Aug 30 13:55:00 2005   mycure
+ * last update   Tue Aug 30 15:41:25 2005   mycure
  */
 
 #ifndef IA32_KANETON_BOOTLOADER_H
@@ -45,7 +45,7 @@ typedef struct
  * machdep traps
  */
 
-#define		machdep_include_init()					\
+#define		machdep_data_init()					\
   d_init			machdep
 
 #endif

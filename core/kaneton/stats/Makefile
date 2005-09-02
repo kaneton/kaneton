@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Aug 28 13:43:05 2005   mycure
+## last update   Wed Aug 31 16:56:38 2005   mycure
 ##
 
 #
@@ -30,9 +30,9 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-STATS			:=		stats.a
+STATS_LO		:=		stats.lo
 
-STATS_C			:=		stats.c			
+STATS_C			:=		stats.c				
 
 STATS_O			:=		$(STATS_C:.c=.o)
 
@@ -44,17 +44,15 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(STATS):		$(STATS_O)
-	$(call remove,$(STATS),)
+$(STATS_LO):		$(STATS_O)
+	$(call remove,$(STATS_LO),)
 
-	$(call archive,$(STATS),$(STATS_O),)
-
-	$(call static-linker,$(STATS),)
+	$(call archive,$(STATS_LO),$(STATS_O),)
 
 clear:
 	$(call remove,$(STATS_O),)
 
-	$(call remove,$(STATS),)
+	$(call remove,$(STATS_LO),)
 
 	$(call purge,)
 

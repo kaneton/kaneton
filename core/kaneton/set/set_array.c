@@ -5,13 +5,13 @@
  * 
  * set_array.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Aug 30 13:02:56 2005   mycure
+ * last update   Fri Sep  2 16:52:02 2005   mycure
  */
 
 /*
@@ -40,6 +40,8 @@
  * XXX SET_OPT_ALLOC ?
  *
  * XXX set_insert_array(set, position)
+ *
+ * t_sint32 -> t_setsz
  */
 
 /*
@@ -48,6 +50,12 @@
 
 #include <libc.h>
 #include <kaneton.h>
+
+/*
+ * ---------- extern ---------------------------------------------------------
+ */
+
+extern m_set*		set;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -81,7 +89,7 @@ t_error			set_dump_array(t_setid			setid)
    * 2)
    */
 
-  cons_msg('#', "dumping %qu node(s) from the array set %qu:\n",
+  cons_msg('#', "dumping %qd node(s) from the array set %qu:\n",
 	   o->size,
 	   setid);
 
@@ -152,6 +160,7 @@ t_error			set_insert_array(o_set*			o,
 t_error			set_head_array(t_setid			setid,
 				       t_iterator*		iterator)
 {
+  /* XXX
   o_set*		o;
   t_sint32		i;
 
@@ -184,6 +193,7 @@ t_error			set_head_array(t_setid			setid,
     }
 
   SET_LEAVE(set, ERROR_UNKNOWN);
+  */
 }
 
 /*
@@ -195,6 +205,7 @@ t_error			set_head_array(t_setid			setid,
 t_error			set_tail_array(t_setid			setid,
 				       t_iterator*		iterator)
 {
+  /* XXX
   o_set*		o;
   t_sint32		i;
 
@@ -227,6 +238,7 @@ t_error			set_tail_array(t_setid			setid,
     }
 
   SET_LEAVE(set, ERROR_UNKNOWN);
+  */
 }
 
 /*
@@ -237,6 +249,7 @@ t_error			set_prev_array(t_setid			setid,
 				       t_iterator		current,
 				       t_iterator*		previous)
 {
+  /* XXX
   o_set*		o;
   t_sint32		i;
 
@@ -271,6 +284,7 @@ t_error			set_prev_array(t_setid			setid,
     }
 
   SET_LEAVE(set, ERROR_UNKNOWN);
+  */
 }
 
 /*
@@ -281,6 +295,7 @@ t_error			set_next_array(t_setid			setid,
 				       t_iterator		current,
 				       t_iterator*		next)
 {
+  /* XXX
   o_set*		o;
   t_sint32		i;
 
@@ -315,6 +330,7 @@ t_error			set_next_array(t_setid			setid,
     }
 
   SET_LEAVE(set, ERROR_UNKNOWN);
+  */
 }
 
 /*
@@ -454,41 +470,25 @@ t_error			set_insert_before_array(t_setid		setid,
 						t_iterator	iterator,
 						void*		data)
 {
+  /* XXX
   o_set*		o;
   t_sint32		i;
 
   SET_ENTER(set);
 
-  /*
-   * 1)
-   */
-
   if (*((t_id*)data) == ID_UNUSED)
     SET_LEAVE(set, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
 
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
-  /*
-   * 3)
-   */
-
   if (o->u.array.opts & SET_OPT_SORT)
     SET_LEAVE(set, ERROR_UNKNOWN);
-
-  /* XXX */
-
-  /*
-   * 6)
-   */
 
   o->size++;
 
   SET_LEAVE(set, ERROR_NONE);
+  */
 }
 
 /*
@@ -499,6 +499,7 @@ t_error			set_insert_after_array(t_setid		setid,
 					       t_iterator	iterator,
 					       void*		data)
 {
+  /* XXX
   t_uint8*		n;
   o_set*		o;
   t_sint32		i;
@@ -506,43 +507,19 @@ t_error			set_insert_after_array(t_setid		setid,
 
   SET_ENTER(set);
 
-  /*
-   * 1)
-   */
-
   if (*((t_id*)data) == ID_UNUSED)
     SET_LEAVE(set, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
 
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
-  /*
-   * 3)
-   */
-
   if (o->u.array.opts & SET_OPT_SORT)
     SET_LEAVE(set, ERROR_UNKNOWN);
-
-  /*
-   * 4)
-   */
 
   if (set_expand_array(o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
-  /*
-   * 5)
-   */
-
   n = (t_uint8*)iterator + o->u.array.datasz;
-
-  /*
-   * 6)
-   */
 
   if (*((t_id*)n) == ID_UNUSED)
     {
@@ -554,7 +531,7 @@ t_error			set_insert_after_array(t_setid		setid,
 	{
 	  i = o->size;
 
-	  /* XXX decalage droite >> */
+	  // XXX decalage droite >>
 	}
       else
 	{
@@ -596,13 +573,10 @@ t_error			set_insert_after_array(t_setid		setid,
 	}
     }
 
-  /*
-   * 7)
-   */
-
   o->size++;
 
   SET_LEAVE(set, ERROR_NONE);
+  */
 }
 
 /*
@@ -790,7 +764,9 @@ t_error			set_object_array(t_setid		setid,
 {
   SET_ENTER(set);
 
+  /* XXX
   *data = iterator;
+  */
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -848,7 +824,7 @@ t_error			set_rsv_array(t_opts			opts,
    * 4)
    */
 
-  o.id = *setid;
+  o.setid = *setid;
   o.size = 0;
   o.type = SET_TYPE_ARRAY;
 
@@ -859,7 +835,7 @@ t_error			set_rsv_array(t_opts			opts,
   if ((o.u.array.array = malloc(o.u.array.arraysz * o.u.array.datasz)) == NULL)
     {
       if (!(opts & SET_OPT_CONTAINER))
-	id_rel(&set->id, o.id);
+	id_rel(&set->id, o.setid);
 
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -878,7 +854,7 @@ t_error			set_rsv_array(t_opts			opts,
       free(o.u.array.array);
 
       if (!(opts & SET_OPT_CONTAINER))
-	id_rel(&set->id, o.id);
+	id_rel(&set->id, o.setid);
 
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -935,7 +911,7 @@ t_error			set_rel_array(t_setid			setid)
    */
 
   if (!(o->u.array.opts & SET_OPT_CONTAINER))
-    if (id_rel(&set->id, o->id) != ERROR_NONE)
+    if (id_rel(&set->id, o->setid) != ERROR_NONE)
       SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
@@ -948,7 +924,7 @@ t_error			set_rel_array(t_setid			setid)
    * 6)
    */
 
-  if (set_delete(o->id) != ERROR_NONE)
+  if (set_delete(o->setid) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   SET_LEAVE(set, ERROR_NONE);

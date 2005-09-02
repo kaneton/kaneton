@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Mon Jul  4 11:47:30 2005   mycure
+## last update   Wed Aug 31 16:29:42 2005   mycure
 ##
 
 #
@@ -27,12 +27,6 @@ include			../../.kaneton.mk
 .PHONY:		all clear proto dep
 
 #
-# ---------- variables --------------------------------------------------------
-#
-
-BOOTSTRAP		=		bootstrap
-
-#
 # ---------- rules ------------------------------------------------------------
 #
 
@@ -41,8 +35,6 @@ all:
 
 clear:
 	$(call make,arch,clear)
-
-	$(call remove,$(BOOTSTRAP),)
 
 	$(call purge,)
 

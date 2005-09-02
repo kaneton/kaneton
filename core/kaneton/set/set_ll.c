@@ -5,13 +5,13 @@
  * 
  * set_ll.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Aug 30 13:16:04 2005   mycure
+ * last update   Fri Sep  2 17:36:38 2005   mycure
  */
 
 /*
@@ -38,6 +38,12 @@
 
 #include <libc.h>
 #include <kaneton.h>
+
+/*
+ * ---------- extern ---------------------------------------------------------
+ */
+
+extern m_set*		set;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -70,13 +76,13 @@ t_error			set_dump_ll(t_setid			setid)
    * 2)
    */
 
-  cons_msg('#', "dumping %qu node(s) from the linked-list set %qu:\n",
+  cons_msg('#', "dumping %qd node(s) from the linked-list set %qu:\n",
 	   o->size,
 	   setid);
 
   set_foreach(SET_OPT_FORWARD, setid, &i)
     {
-      t_set_ll_node*	n = (t_set_ll_node*)i;
+      t_set_ll_node*	n = i.u.ll.node;
 
       cons_msg('#', "  %qd <0x%x, 0x%x, 0x%x>\n",
 	       *((t_id*)n->data), n->prv, n, n->nxt);
@@ -106,7 +112,7 @@ t_error			set_head_ll(t_setid			setid,
   if (o->size == 0)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
-  *iterator = o->u.ll.head;
+  iterator->u.ll.node = o->u.ll.head;
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -132,7 +138,7 @@ t_error			set_tail_ll(t_setid			setid,
   if (o->size == 0)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
-  *iterator = o->u.ll.tail;
+  iterator->u.ll.node = o->u.ll.tail;
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -145,7 +151,7 @@ t_error			set_prev_ll(t_setid			setid,
 				    t_iterator			current,
 				    t_iterator*			previous)
 {
-  t_set_ll_node*	c = current;
+  t_set_ll_node*	c = current.u.ll.node;
   o_set*		o;
 
   SET_ENTER(set);
@@ -158,7 +164,7 @@ t_error			set_prev_ll(t_setid			setid,
   if (c->prv == NULL)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
-  *previous = c->prv;
+  previous->u.ll.node = c->prv;
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -171,7 +177,7 @@ t_error			set_next_ll(t_setid			setid,
 				    t_iterator			current,
 				    t_iterator*			next)
 {
-  t_set_ll_node*	c = current;
+  t_set_ll_node*	c = current.u.ll.node;
   o_set*		o;
 
   SET_ENTER(set);
@@ -184,7 +190,7 @@ t_error			set_next_ll(t_setid			setid,
   if (c->nxt == NULL)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
-  *next = c->nxt;
+  next->u.ll.node = c->nxt;
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -399,7 +405,7 @@ t_error			set_insert_before_ll(t_setid		setid,
 					     t_iterator		iterator,
 					     void*		data)
 {
-  t_set_ll_node		*i = iterator;
+  t_set_ll_node		*i = iterator.u.ll.node;
   t_set_ll_node		*n;
   o_set*		o;
 
@@ -497,7 +503,7 @@ t_error			set_insert_after_ll(t_setid		setid,
 					    t_iterator		iterator,
 					    void*		data)
 {
-  t_set_ll_node		*i = iterator;
+  t_set_ll_node		*i = iterator.u.ll.node;
   t_set_ll_node		*n;
   o_set*		o;
 
@@ -676,7 +682,7 @@ t_error			set_add_ll(t_setid			setid,
 
 		  cons_msg('!', "set: identifier collision detected "
 			   "in the set %qu on the object identifier %qu\n",
-			   o->id,
+			   o->setid,
 			   *((t_id*)n->data));
 
 		  if (o->u.ll.opts & SET_OPT_ALLOC)
@@ -803,7 +809,7 @@ t_error			set_remove_ll(t_setid			setid,
   if (set_locate(setid, id, &i) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
-  tmp = (t_set_ll_node*)i;
+  tmp = i.u.ll.node;
 
   /*
    * 3)
@@ -940,7 +946,7 @@ t_error			set_locate_ll(t_setid			setid,
     {
       if (*((t_id*)tmp->data) == id)
 	{
-	  memcpy(iterator, &tmp, sizeof(t_iterator));
+	  iterator->u.ll.node = tmp;
 
 	  SET_LEAVE(set, ERROR_NONE);
 	}
@@ -957,7 +963,7 @@ t_error			set_object_ll(t_setid			setid,
 				      t_iterator		iterator,
 				      void**			data)
 {
-  t_set_ll_node*	n = iterator;
+  t_set_ll_node*	n = iterator.u.ll.node;
 
   SET_ENTER(set);
 
@@ -1009,7 +1015,7 @@ t_error			set_rsv_ll(t_opts			opts,
    * 3)
    */
 
-  o.id = *setid;
+  o.setid = *setid;
   o.size = 0;
   o.type = SET_TYPE_LL;
 
@@ -1025,7 +1031,7 @@ t_error			set_rsv_ll(t_opts			opts,
   if (set_new(&o) != ERROR_NONE)
     {
       if (!(opts & SET_OPT_CONTAINER))
-	id_rel(&set->id, o.id);
+	id_rel(&set->id, o.setid);
 
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -1081,14 +1087,14 @@ t_error			set_rel_ll(t_setid			setid)
    */
 
   if (!(o->u.ll.opts & SET_OPT_CONTAINER))
-    if (id_rel(&set->id, o->id) != ERROR_NONE)
+    if (id_rel(&set->id, o->setid) != ERROR_NONE)
       SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 5)
    */
 
-  if (set_delete(o->id) != ERROR_NONE)
+  if (set_delete(o->setid) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   SET_LEAVE(set, ERROR_NONE);

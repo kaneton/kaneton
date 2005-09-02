@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Sun Jun 19 20:56:21 2005   mycure
+## last update   Thu Sep  1 14:41:46 2005   mycure
 ##
 
 #
@@ -44,7 +44,7 @@ MOD_INCLUDE		:=
 #
 
 $(MOD):			$(MOD_O)
-	$(call dynamic-linker,$(MOD),$(MOD_O) $(_LIBC_A_),		\
+	$(call executable,$(MOD),$(MOD_O) $(_LIBC_A_),			\
 	  -T $(_LDS_DIR_)/service.lds)
 
 clear:

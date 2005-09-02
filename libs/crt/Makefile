@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Jun 19 20:57:42 2005   mycure
+## last update   Thu Sep  1 14:42:47 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-CRT			:=		crt.a
+CRT_A			:=		crt.a
 
 CRT_C			:=		crt.c				
 
@@ -42,14 +42,13 @@ CRT_INCLUDE		:=
 # ---------- rules ------------------------------------------------------------
 #
 
-$(CRT):			$(CRT_O)
-	$(call archive,$(CRT),$(CRT_O),)
-
-	$(call static-library,$(CRT),)
+$(CRT_A):		$(CRT_O)
+	$(call dynamic-library,$(CRT_A),$(CRT_O),)
 
 clear:
 	$(call remove,$(CRT_O),)
-	$(call remove,$(CRT),)
+
+	$(call remove,$(CRT_A),)
 
 	$(call purge,)
 

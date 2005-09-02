@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Aug 30 12:33:27 2005   mycure
+ * last update   Tue Aug 30 22:52:26 2005   mycure
  */
 
 /*
@@ -128,7 +128,7 @@ void			kaneton(t_init*				bootloader)
   /*
    * 9)
    */
-
+  /*
   if (segment_init(SEGMENT_FIT_FIRST) != ERROR_NONE)
     kaneton_error("cannot initialise the segment manager\n");
 
@@ -136,20 +136,20 @@ void			kaneton(t_init*				bootloader)
   printf("serial init\n");
   serial_init();
 #endif
-
+  */
   /*
    * XXX)
    */
-
+  /*
   STATS_DUMP();
-
+  */
   while (1)
     ;
 
   /*
    * XXX)
    */
-
+  /*
   segment_clean();
 
   as_clean();
@@ -157,6 +157,7 @@ void			kaneton(t_init*				bootloader)
   set_clean();
 
   id_clean();
+  */
 }
 
 /*

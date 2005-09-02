@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton/arch/ia32/ia32
+## path          /home/mycure/kaneton/core/kaneton/arch/ia32/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Tue Aug 30 13:40:49 2005   mycure
+## last update   Wed Aug 31 16:43:48 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-KANETON			:=		kaneton.a
+KANETON_LO		:=		kaneton.lo
 
 KANETON_C		:=		as.c				\
 					segment.c			
@@ -45,17 +45,15 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(KANETON):		$(KANETON_O)
-	$(call remove,$(KANETON),)
+$(KANETON_LO):		$(KANETON_O)
+	$(call remove,$(KANETON_LO),)
 
-	$(call archive,$(KANETON),$(KANETON_O),)
-
-	$(call static-linker,$(KANETON),)
+	$(call archive,$(KANETON_LO),$(KANETON_O),)
 
 clear:
 	$(call remove,$(KANETON_O),)
 
-	$(call remove,$(KANETON),)
+	$(call remove,$(KANETON_LO),)
 
 	$(call purge,)
 

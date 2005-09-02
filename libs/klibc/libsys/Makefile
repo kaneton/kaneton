@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/libs/klibc
+## path          /home/mycure/kaneton/libs/klibc/libsys
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:05:40 2005   mycure
-## last update   Mon Jul  4 12:58:08 2005   mycure
+## last update   Wed Aug 31 16:16:34 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-LIBSYS			:=		libsys.a
+LIBSYS_LO		:=		libsys.lo
 
 LIBSYS_C		:=		perror.c			\
 					quad.c				
@@ -43,17 +43,15 @@ LIBSYS_INCLUDE		:=		$(_LIBS_DIR_)/klibc/include/libsys/libsys.h
 # ---------- rules ------------------------------------------------------------
 #
 
-$(LIBSYS):		$(LIBSYS_O)
-	$(call remove,$(LIBSYS),)
+$(LIBSYS_LO):		$(LIBSYS_O)
+	$(call remove,$(LIBSYS_LO),)
 
-	$(call archive,$(LIBSYS),$(LIBSYS_O),)
-
-	$(call static-library,$(LIBSYS),)
+	$(call archive,$(LIBSYS_LO),$(LIBSYS_O),)
 
 clear:
 	$(call remove,$(LIBSYS_O),)
 
-	$(call remove,$(LIBSYS),)
+	$(call remove,$(LIBSYS_LO),)
 
 	$(call purge,)
 

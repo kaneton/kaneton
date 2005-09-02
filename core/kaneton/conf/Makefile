@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Aug 28 16:01:08 2005   mycure
+## last update   Wed Aug 31 16:45:34 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
  
-CONF			:=		conf.a
+CONF_LO			:=		conf.lo
 
 CONF_C			:=		conf.c			
 
@@ -44,17 +44,15 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(CONF):		$(CONF_O)
-	$(call remove,$(CONF),)
+$(CONF_LO):		$(CONF_O)
+	$(call remove,$(CONF_LO),)
 
-	$(call archive,$(CONF),$(CONF_O),)
-
-	$(call static-linker,$(CONF),)
+	$(call archive,$(CONF_LO),$(CONF_O),)
 
 clear:
 	$(call remove,$(CONF_O),)
 
-	$(call remove,$(CONF),)
+	$(call remove,$(CONF_LO),)
 
 	$(call purge,)
 

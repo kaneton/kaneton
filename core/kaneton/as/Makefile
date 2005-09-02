@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton/core/kaneton/as
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Jun 20 17:10:14 2005   mycure
+## last update   Wed Aug 31 16:44:39 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-AS			:=		as.a
+AS_LO			:=		as.lo
 
 AS_C			:=		as.c				
 
@@ -44,17 +44,15 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(AS):			$(AS_O)
-	$(call remove,$(AS),)
+$(AS_LO):		$(AS_O)
+	$(call remove,$(AS_LO),)
 
-	$(call archive,$(AS),$(AS_O),)
-
-	$(call static-linker,$(AS),)
+	$(call archive,$(AS_LO),$(AS_O),)
 
 clear:
 	$(call remove,$(AS_O),)
 
-	$(call remove,$(AS),)
+	$(call remove,$(AS_LO),)
 
 	$(call purge,)
 

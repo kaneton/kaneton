@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/as
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Aug 30 12:25:17 2005   mycure
+ * last update   Wed Aug 31 21:38:21 2005   mycure
  */
 
 /*
@@ -47,6 +47,8 @@
 
 #include <libc.h>
 #include <kaneton.h>
+
+machdep_include(as);
 
 /*
  * ---------- globals ---------------------------------------------------------

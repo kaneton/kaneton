@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Aug 30 13:28:38 2005   mycure
+ * last update   Fri Sep  2 18:10:06 2005   mycure
  */
 
 /*
@@ -212,7 +212,7 @@ t_error			set_new(o_set*				o)
    * 1)
    */
 
-  if (o->id == set->setid)
+  if (o->setid == set->setid)
     {
       if ((set->container = malloc(sizeof(o_set))) == NULL)
 	SET_LEAVE(set, ERROR_UNKNOWN);
@@ -226,7 +226,7 @@ t_error			set_new(o_set*				o)
    * 2)
    */
 
-  if (set_add(set->container->id, o) != ERROR_NONE)
+  if (set_add(set->setid, o) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to add this set descriptor "
 	       "to the set container\n");
@@ -265,7 +265,7 @@ t_error			set_delete(t_setid			setid)
    * 2)
    */
 
-  if (set_remove(set->container->id, setid) != ERROR_NONE)
+  if (set_remove(set->setid, setid) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to remove this descriptor "
 	       "from the set container\n");
@@ -420,7 +420,7 @@ t_error			set_init(void)
    */
 
 #if (DEBUG & DEBUG_SET)
-  set_dump(set->container->id);
+  set_dump(set->setid);
 
   // XXX-OK set_test(SET_TYPE_LL);
   // XXX set_test(SET_TYPE_ARRAY);
@@ -516,13 +516,33 @@ t_error			set_test(t_type				type)
       }
     case SET_TYPE_BPT:
       {
+	t_id		data;
 	t_setid		id;
 
 	cons_msg('#', "testing SET_TYPE_BPT\n");
 
 	if (set_rsv(bpt, SET_OPT_ALLOC | SET_OPT_SORT,
-		    sizeof(t_uint64), &id) != ERROR_NONE)
+		    sizeof(t_uint64), 64, &id) != ERROR_NONE)
 	  printf("error: set_rsv()\n");
+
+	data = 98LL;
+	if (set_add(id, &data) != ERROR_NONE)
+	  printf("error: set_add()\n");
+
+	// XXX-bug alloc_dump();
+	while (1);
+
+	data = 843536LL;
+	if (set_add(id, &data) != ERROR_NONE)
+	  printf("error: set_add()\n");
+
+	/*
+	data = 23987LL;
+	if (set_add(id, &data) != ERROR_NONE)
+	  printf("error: set_add()\n");
+	*/
+
+	set_dump(id);
 
 	while (1);
 

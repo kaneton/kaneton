@@ -1,3 +1,11 @@
+-- bug
+ set_bpt.c ne passe pas dans le truc a pwipwi
+
+ penser a rajouter set_bpt.c dans core/include/kaneton/set.h
+
+-- bug
+ malloc(100000) plante, devrait renvoyer une erreur
+
 --
  un bon test: on initialise tout, ensuite on detruit tout et on verifie
  qu on a pas perdu de memoire, comme ca on verra si les ensembles sont bons

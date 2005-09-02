@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:56:59 2005   mycure
-## last update   Sun Aug 28 14:42:30 2005   mycure
+## last update   Fri Sep  2 18:13:01 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-LIBSTRING		:=		libstring.a
+LIBSTRING_LO		:=		libstring.lo
 
 LIBSTRING_C		:=		ctype.c				\
 					bcmp.c				\
@@ -62,17 +62,15 @@ LIBSTRING_INCLUDE	:=		$(_LIBS_DIR_)/klibc/include/libstring/libstring.h
 # ---------- rules ------------------------------------------------------------
 #
 
-$(LIBSTRING):		$(LIBSTRING_O)
-	$(call remove,$(LIBSTRING),)
+$(LIBSTRING_LO):	$(LIBSTRING_O)
+	$(call remove,$(LIBSTRING_LO),)
 
-	$(call archive,$(LIBSTRING),$(LIBSTRING_O),)
-
-	$(call static-linker,$(LIBSTRING),)
+	$(call archive,$(LIBSTRING_LO),$(LIBSTRING_O),)
 
 clear:
 	$(call remove,$(LIBSTRING_O),)
 
-	$(call remove,$(LIBSTRING),)
+	$(call remove,$(LIBSTRING_LO),)
 
 	$(call purge,)
 

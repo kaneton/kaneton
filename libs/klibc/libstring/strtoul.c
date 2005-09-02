@@ -5,13 +5,13 @@
  * 
  * strtoul.c
  * 
- * path          /home/mycure/kaneton/libs/klibc/libc
+ * path          /home/mycure/kaneton/libs/klibc/libstring
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:56:28 2005   mycure
- * last update   Sun Jun 19 22:29:32 2005   mycure
+ * last update   Wed Aug 31 16:34:50 2005   mycure
  */
 
 /*
@@ -91,8 +91,10 @@ unsigned long		strtoul(const char*			nptr,
 	  any = -1;
 	  acc = ULONG_MAX;
 
+	  /* XXX
 	  errno = E2BIG;
 	  suberrno = ERANGE;
+	  */
 	}
       else
 	{

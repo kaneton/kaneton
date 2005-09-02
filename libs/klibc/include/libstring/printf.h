@@ -5,13 +5,13 @@
  * 
  * printf.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include/libstring
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Sun Jul  3 14:38:18 2005   mycure
+ * last update   Thu Sep  1 17:28:58 2005   mycure
  */
 
 #ifndef LIBSTRING_PRINTF_H
@@ -43,6 +43,10 @@
     (_i1_) = (_i2_);							\
     (_i2_) = _tmp_;							\
   }
+
+/* XXX */
+#define fprintf(_stream_, _args_...) printf(_args_)
+/* XXX */
 
 /*
  * ---------- types -----------------------------------------------------------

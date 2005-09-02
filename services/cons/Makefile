@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Sun Jun 19 20:53:46 2005   mycure
+## last update   Thu Sep  1 14:41:26 2005   mycure
 ##
 
 #
@@ -43,7 +43,7 @@ CONS_INCLUDE		:=
 #
 
 $(CONS):		$(CONS_O)
-	$(call dynamic-linker,$(CONS),$(CONS_O) $(_LIBC_A_),		\
+	$(call executable,$(CONS),$(CONS_O) $(_LIBC_A_),		\
 	  -T $(_LDS_DIR_)/service.lds)
 
 clear:

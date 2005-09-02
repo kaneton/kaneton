@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/services/dsh
+## path          /home/mycure/kaneton/services
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Sun Aug 28 18:01:41 2005   mycure
+## last update   Thu Sep  1 14:41:32 2005   mycure
 ##
 
 #
@@ -43,7 +43,7 @@ DSH_INCLUDE		=
 #
 
 $(DSH):			$(DSH_O)
-	$(call dynamic-linker,$(DSH),$(DSH_O) $(_LIBC_A_),		\
+	$(call executable,$(DSH),$(DSH_O) $(_LIBC_A_),			\
 	  -T $(_LDS_DIR_)/service.lds)
 
 clear:

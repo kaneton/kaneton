@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-ID			:=		id.a
+ID_LO			:=		id.lo
 
 ID_C			:=		id.c				
 
@@ -44,17 +44,15 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(ID):			$(ID_O)
-	$(call remove,$(ID),)
+$(ID_LO):		$(ID_O)
+	$(call remove,$(ID_LO),)
 
-	$(call archive,$(ID),$(ID_O),)
-
-	$(call static-linker,$(ID),)
+	$(call archive,$(ID_LO),$(ID_O),)
 
 clear:
 	$(call remove,$(ID_O),)
 
-	$(call remove,$(ID),)
+	$(call remove,$(ID_LO),)
 
 	$(call purge,)
 

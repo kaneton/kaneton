@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Tue Aug 30 13:16:44 2005   mycure
+ * last update   Fri Sep  2 18:11:41 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -28,6 +28,13 @@
 /*
  * ---------- defines ---------------------------------------------------------
  */
+
+/*
+ * iterator's state
+ */
+
+#define ITERATOR_STATE_USED	0x01
+#define ITERATOR_STATE_UNUSED	0x02
 
 /*
  * types
@@ -54,19 +61,19 @@
  */
 
 /*
- * iterator
+ * iterator's forward declaration
  */
 
-typedef void*			t_iterator;
+typedef struct s_iterator	t_iterator;
 
 /*
  * set size
  */
 
-typedef t_uint64		t_setsz;
+typedef t_sint64		t_setsz;
 
 /*
- * set object forward declaration
+ * set object's forward declaration
  */
 
 typedef struct s_set		o_set;
@@ -84,6 +91,22 @@ typedef struct s_set		o_set;
  */
 
 /*
+ * iterator
+ */
+
+struct				s_iterator
+{
+  t_state			state;
+
+  union
+  {
+    t_iterator_array		array;
+    t_iterator_bpt		bpt;
+    t_iterator_ll		ll;
+  }				u;
+};
+
+/*
  * set object
  *
  * the setid field represent the set identifier used to retrieve the set
@@ -93,7 +116,7 @@ typedef struct s_set		o_set;
 
 struct				s_set
 {
-  t_setid			id;
+  t_setid			setid;
 
   t_setsz			size;
 
@@ -118,12 +141,6 @@ typedef struct
   t_id				setid;
   o_set*			container;
 }				m_set;
-
-/*
- * ---------- extern ----------------------------------------------------------
- */
-
-extern m_set*		set;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -164,7 +181,7 @@ extern m_set*		set;
 #define set_trap(_func_, _setid_, _args_...)				\
   (									\
     {									\
-      int		_r_ = ERROR_UNKNOWN;				\
+      t_error		_r_ = ERROR_UNKNOWN;				\
       o_set*		_set_;						\
 									\
       if (set_descriptor((_setid_), &_set_) == ERROR_NONE)		\
@@ -239,8 +256,8 @@ extern m_set*		set;
  */
 
 #define set_foreach(_opt_, _setid_, _iterator_)				\
-  for (*(_iterator_) = NULL;						\
-        ((*(_iterator_) == NULL) ?					\
+  for ((_iterator_)->state = ITERATOR_STATE_UNUSED;			\
+        (((_iterator_)->state == ITERATOR_STATE_UNUSED) ?		\
           ((_opt_) == SET_OPT_FORWARD ?					\
             set_head((_setid_), (_iterator_)) == ERROR_NONE :		\
             set_tail((_setid_), (_iterator_)) == ERROR_NONE) :		\
@@ -249,12 +266,15 @@ extern m_set*		set;
               ERROR_NONE :						\
             set_prev((_setid_), *(_iterator_), (_iterator_)) ==		\
               ERROR_NONE));						\
+	 (_iterator_)->state = ITERATOR_STATE_USED			\
        )
 
 /*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../kaneton/set/set.c
+ *      ../../kaneton/set/set_array.c
+ *      ../../kaneton/set/set_ll.c
  */
 
 /*
@@ -283,6 +303,126 @@ t_error			set_init(void);
 t_error			set_clean(void);
 
 t_error			set_test(t_type				type);
+
+
+/*
+ * ../../kaneton/set/set_array.c
+ */
+
+t_error			set_dump_array(t_setid			setid);
+
+t_error			set_expand_array(o_set*			o);
+
+t_error			set_insert_array(o_set*			o,
+					 t_sint32		position);
+
+t_error			set_head_array(t_setid			setid,
+				       t_iterator*		iterator);
+
+t_error			set_tail_array(t_setid			setid,
+				       t_iterator*		iterator);
+
+t_error			set_prev_array(t_setid			setid,
+				       t_iterator		current,
+				       t_iterator*		previous);
+
+t_error			set_next_array(t_setid			setid,
+				       t_iterator		current,
+				       t_iterator*		next);
+
+t_error			set_insert_head_array(t_setid		setid,
+					      void*		data);
+
+t_error			set_insert_tail_array(t_setid		setid,
+					      void*		data);
+
+t_error			set_insert_before_array(t_setid		setid,
+						t_iterator	iterator,
+						void*		data);
+
+t_error			set_insert_after_array(t_setid		setid,
+					       t_iterator	iterator,
+					       void*		data);
+
+t_error			set_add_array(t_setid			setid,
+				      void*			data);
+
+t_error			set_remove_array(t_setid		setid,
+					 t_id			id);
+
+t_error			set_flush_array(t_setid			setid);
+
+t_error			set_locate_array(t_setid		setid,
+					 t_id			id,
+					 t_iterator*		iterator);
+
+t_error			set_object_array(t_setid		setid,
+					 t_iterator		iterator,
+					 void**			data);
+
+t_error			set_rsv_array(t_opts			opts,
+				      t_setsz			initsz,
+				      t_size			datasz,
+				      t_setid*			setid);
+
+t_error			set_rel_array(t_setid			setid);
+
+
+/*
+ * ../../kaneton/set/set_ll.c
+ */
+
+t_error			set_dump_ll(t_setid			setid);
+
+t_error			set_head_ll(t_setid			setid,
+				    t_iterator*			iterator);
+
+t_error			set_tail_ll(t_setid			setid,
+				    t_iterator*			iterator);
+
+t_error			set_prev_ll(t_setid			setid,
+				    t_iterator			current,
+				    t_iterator*			previous);
+
+t_error			set_next_ll(t_setid			setid,
+				    t_iterator			current,
+				    t_iterator*			next);
+
+t_error			set_insert_head_ll(t_setid		setid,
+					   void*		data);
+
+t_error			set_insert_tail_ll(t_setid		setid,
+					   void*		data);
+
+t_error			set_insert_before_ll(t_setid		setid,
+					     t_iterator		iterator,
+					     void*		data);
+
+t_error			set_insert_after_ll(t_setid		setid,
+					    t_iterator		iterator,
+					    void*		data);
+
+t_error			set_add_ll(t_setid			setid,
+				   void*			data);
+
+t_error			set_remove_ll(t_setid			setid,
+				      t_id			id);
+
+t_error			set_flush_ll(t_setid			setid);
+
+t_error			set_locate_ll(t_setid			setid,
+				      t_id			id,
+				      t_iterator*		iterator);
+
+t_error			set_object_ll(t_setid			setid,
+				      t_iterator		iterator,
+				      void**			data);
+
+t_error			set_rsv_ll(t_opts			opts,
+				   t_size			datasz,
+				   t_setid*			setid);
+
+t_error			set_rel_ll(t_setid			setid);
 
 
 /*

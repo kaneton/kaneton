@@ -5,17 +5,17 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Tue Aug 30 13:54:03 2005   mycure
+ * last update   Tue Aug 30 15:12:31 2005   mycure
  */
 
-#ifndef IA32_KANETON_H
-#define IA32_KANETON_H		1
+#ifndef IA32_KANETON_KANETON_H
+#define IA32_KANETON_KANETON_H	1
 
 /*
  * ---------- defines ---------------------------------------------------------
@@ -30,6 +30,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
+#include <arch/ia32/kaneton/as.h>
 #include <arch/ia32/kaneton/bootloader.h>
 #include <arch/ia32/kaneton/debug.h>
 #include <arch/ia32/kaneton/init.h>
@@ -44,6 +45,10 @@
 /*
  * ../../../../kaneton/arch/ia32/kaneton/as.c
  */
+
+t_error			ia32_as_rsv(t_asid*			asid);
+
+t_error			ia32_as_rel(t_asid			asid);
 
 
 /*

@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton/set
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Thu Aug 25 19:06:07 2005   mycure
+## last update   Fri Sep  2 18:09:51 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SET			:=		set.a
+SET_LO			:=		set.lo
 
 SET_C			:=		set.c				\
 					set_array.c			\
@@ -39,9 +39,7 @@ SET_C			:=		set.c				\
 
 SET_O			:=		$(SET_C:.c=.o)
 
-SET_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/set.h \
-					$(_CORE_INCLUDE_DIR_)/kaneton/set_array.h \
-					$(_CORE_INCLUDE_DIR_)/kaneton/set_ll.h
+SET_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/set.h
 
 CFLAGS			+=		-D___kernel
 
@@ -49,17 +47,15 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(SET):			$(SET_O)
-	$(call remove,$(SET),)
+$(SET_LO):		$(SET_O)
+	$(call remove,$(SET_LO),)
 
-	$(call archive,$(SET),$(SET_O),)
-
-	$(call static-linker,$(SET),)
+	$(call archive,$(SET_LO),$(SET_O),)
 
 clear:
 	$(call remove,$(SET_O),)
 
-	$(call remove,$(SET),)
+	$(call remove,$(SET_LO),)
 
 	$(call purge,)
 

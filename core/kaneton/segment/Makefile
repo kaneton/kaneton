@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton/core/kaneton/segment
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Jun 20 17:10:24 2005   mycure
+## last update   Wed Aug 31 16:53:38 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SEGMENT			:=		segment.a
+SEGMENT_LO		:=		segment.lo
 
 SEGMENT_C		:=		segment.c			
 
@@ -44,17 +44,15 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(SEGMENT):		$(SEGMENT_O)
-	$(call remove,$(SEGMENT),)
+$(SEGMENT_LO):		$(SEGMENT_O)
+	$(call remove,$(SEGMENT_LO),)
 
-	$(call archive,$(SEGMENT),$(SEGMENT_O),)
-
-	$(call static-linker,$(SEGMENT),)
+	$(call archive,$(SEGMENT_LO),$(SEGMENT_O),)
 
 clear:
 	$(call remove,$(SEGMENT_O),)
 
-	$(call remove,$(SEGMENT),)
+	$(call remove,$(SEGMENT_LO),)
 
 	$(call purge,)
 

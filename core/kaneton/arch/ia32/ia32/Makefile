@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Tue Aug 30 13:39:47 2005   mycure
+## last update   Wed Aug 31 16:42:53 2005   mycure
 ##
 
 #
@@ -30,9 +30,9 @@ include			../../../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-IA32			:=		ia32.a
+IA32_LO			:=		ia32.lo
 
-IA32_C			:=		
+IA32_C			:=		paging.c			\
 
 IA32_O			:=		$(IA32_C:.c=.o)
 
@@ -44,17 +44,15 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(IA32):		$(IA32_O)
-	$(call remove,$(IA32),)
+$(IA32_LO):		$(IA32_O)
+	$(call remove,$(IA32_LO),)
 
-	$(call archive,$(IA32),$(IA32_O),)
-
-	$(call static-linker,$(IA32),)
+	$(call archive,$(IA32_LO),$(IA32_O),)
 
 clear:
 	$(call remove,$(IA32_O),)
 
-	$(call remove,$(IA32),)
+	$(call remove,$(IA32_LO),)
 
 	$(call purge,)
 

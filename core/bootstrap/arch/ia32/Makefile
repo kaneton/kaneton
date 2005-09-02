@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core
+## path          /home/mycure/kaneton/core/bootstrap/arch/ia32
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Sun Jun 19 21:02:45 2005   mycure
+## last update   Wed Aug 31 16:28:06 2005   mycure
 ##
 
 #
@@ -51,10 +51,8 @@ BOOTLOADER_O		=		$(BOOTLOADER_C:.c=.o)
 $(BOOTSTRAP):		$(BOOTLOADER)
 	$(call compile-asm,$(BOOTSTRAP),$(BOOTSTRAP_ASM),-f bin)
 
-$(BOOTLOADER):
-	$(call compile-c,$(BOOTLOADER_O),$(BOOTLOADER_C),)
-
-	$(call dynamic-linker,$(BOOTLOADER),$(BOOTLOADER_O),		\
+$(BOOTLOADER):		$(BOOTLOADER_O)
+	$(call executable,$(BOOTLOADER),$(BOOTLOADER_O),		\
 	  -T $(_LDS_DIR_)/bootstrap.lds)
 
 clear:

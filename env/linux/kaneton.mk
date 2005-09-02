@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Tue Aug 30 12:36:08 2005   mycure
+## last update   Thu Sep  1 14:41:16 2005   mycure
 ##
 
 #
@@ -95,12 +95,12 @@ _LIBC_H_		:=		$(_LIBS_DIR_)/libc.h
 
 _CRT_A_			:=		$(_LIBS_DIR_)/crt.a
 
-_MACHDEP_A_		:=		$(_MACHDEP_KANETON_DIR_)/machdep.a
-_AS_A_			:=		$(_CORE_KANETON_DIR_)/as/as.a
-_ID_A_			:=		$(_CORE_KANETON_DIR_)/id/id.a
-_SEGMENT_A_		:=		$(_CORE_KANETON_DIR_)/segment/segment.a
-_SET_A_			:=		$(_CORE_KANETON_DIR_)/set/set.a
-_STATS_A_		:=		$(_CORE_KANETON_DIR_)/stats/stats.a
+_MACHDEP_LO_		:=		$(_MACHDEP_KANETON_DIR_)/machdep.lo
+_AS_LO_			:=		$(_CORE_KANETON_DIR_)/as/as.lo
+_ID_LO_			:=		$(_CORE_KANETON_DIR_)/id/id.lo
+_SEGMENT_LO_		:=		$(_CORE_KANETON_DIR_)/segment/segment.lo
+_SET_LO_		:=		$(_CORE_KANETON_DIR_)/set/set.lo
+_STATS_LO_		:=		$(_CORE_KANETON_DIR_)/stats/stats.lo
 
 #
 # ---------- user configuration addons ----------------------------------------
@@ -143,7 +143,7 @@ MAKEFLAGS		:=		$(_MAKEFLAGS_)
 _MAKE_			:=		make
 _RM_			:=		rm -f
 _PURGE_			:=		$(RM) *~ .*~ \#* .\#*
-_AR_			:=		ar
+_AR_			:=		ar cq
 _RANLIB_		:=		ranlib
 _CD_			:=		cd
 _LD_			:=		ld
@@ -293,59 +293,59 @@ define compile-asm
 endef
 
 #
-# from object files to archive
+# create a static library from object files
 #
-# $(1):		archive file
+# $(1):		static library file name
 # $(2):		object files
+# $(3):		advanced options
+#
+
+define static-library
+  @$(call pretty-printer,magenta,STATIC-LIBRARY,$(1),	)		; \
+  $(_AR_) $(3) $(1) $(2)
+  $(_RANLIB_) $(3) $(1)
+endef
+
+#
+# create a dynamic library from object files and/or static libraries
+# and/or dynamic libraries
+#
+# $(1):		dynamic library file name
+# $(2):		objects files and/or libraries
+# $(3):		advanced options
+#
+
+define dynamic-library
+  @$(call pretty-printer,magenta,DYNAMIC-LIBRARY,$(1),	)		; \
+  $(_LD_) $(LDFLAGS) --shared $(3) -o $(1) $(2)
+endef
+
+#
+# create an executable file from object file and/or library files
+#
+# $(1):		executable file name
+# $(2):		objects files and/or libraries
+# $(3):		advanced options
+#
+
+define executable
+  @$(call pretty-printer,magenta,EXECUTABLE,$(1),		)	; \
+  $(_LD_) $(LDFLAGS) $(3) -o $(1) $(2)
+endef
+
+#
+# create an archive file from multiple object files
+#
+# note that the archive file is also an object file
+#
+# $(1):		archive file name
+# $(2):		objects files and/or libraries
 # $(3):		advanced options
 #
 
 define archive
   @$(call pretty-printer,magenta,ARCHIVE,$(1),		)		; \
-  $(_AR_) cq $(3) $(1) $(2)
-endef
-
-#
-# from archives to archive
-#
-# $(1):		archive
-# $(2):		archive files
-# $(3):		advanced options
-#
-
-define archives
-  @$(call pretty-printer,magenta,ARCHIVES,$(1),		)		; \
-  (echo "CREATE $(1)"							; \
-   for i in $(2) ; do							\
-     echo "ADDLIB $$i"							; \
-   done									; \
-   echo "SAVE"								; \
-   echo "END") | $(_AR_) -M $(3)
-endef
-
-#
-# create a static library with index from an archive
-#
-# $(1):		archive file
-# $(2):		advanced options
-#
-
-define static-linker
-  @$(call pretty-printer,magenta,STATIC-LINKER,$(1),		)	; \
-  $(_RANLIB_) $(2) $(1)
-endef
-
-#
-# from objects files and/or archives and/or libraries to library
-#
-# $(1):		library file
-# $(2):		objects files and/or archives and/or libraries
-# $(3):		advanced options
-#
-
-define dynamic-linker
-  @$(call pretty-printer,magenta,DYNAMIC-LINKER,$(1),	)		; \
-  $(_LD_) $(LDFLAGS) $(3) -o $(1) $(2)
+  $(_LD_) $(LDFLAGS) -r $(3) -o $(1) $(2)
 endef
 
 #

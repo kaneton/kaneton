@@ -5,17 +5,17 @@
  * 
  * ia32.h
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Tue Aug 30 13:37:56 2005   mycure
+ * last update   Tue Aug 30 15:06:58 2005   mycure
  */
 
-#ifndef IA32_IA32_SERVICES_H
-#define IA32_IA32_SERVICES_H	1
+#ifndef IA32_IA32_IA32_H
+#define IA32_IA32_IA32_H	1
 
 /*
  * ---------- includes --------------------------------------------------------

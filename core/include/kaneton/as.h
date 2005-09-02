@@ -5,13 +5,13 @@
  * 
  * as.h
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Tue Aug 30 13:12:37 2005   mycure
+ * last update   Tue Aug 30 15:31:26 2005   mycure
  */
 
 #ifndef KANETON_AS_H

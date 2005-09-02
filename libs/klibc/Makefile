@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:29:19 2005   mycure
-## last update   Mon Jul  4 11:52:21 2005   mycure
+## last update   Thu Sep  1 14:42:26 2005   mycure
 ##
 
 #
@@ -35,16 +35,17 @@ SUBDIRS			:=		libdata libstring libsys
 LIBC_A			:=		klibc.a
 LIBC_H			:=		include/klibc.h
 
-LIBDATA			:=		libdata/libdata.a
-LIBSTRING		:=		libstring/libstring.a
-LIBSYS			:=		libsys/libsys.a
+LIBDATA_LO		:=		libdata/libdata.lo
+LIBSTRING_LO		:=		libstring/libstring.lo
+LIBSYS_LO		:=		libsys/libsys.lo
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
 $(LIBC_A):		libs
-	$(call archives,$(LIBC_A),$(LIBDATA) $(LIBSTRING) $(LIBSYS),)
+	$(call static-library,$(LIBC_A),$(LIBDATA_LO) $(LIBSTRING_LO)	\
+          $(LIBSYS_LO),)
 
 	$(call link,$(_LIBC_A_),klibc/$(LIBC_A),)
 	$(call link,$(_LIBC_H_),klibc/$(LIBC_H),)
