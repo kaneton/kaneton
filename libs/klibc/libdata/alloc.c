@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 02:50:21 2005   mycure
-** Last update Tue Sep  6 00:23:48 2005 Reboot Universe
+** Last update Tue Sep  6 00:59:02 2005 Reboot Universe
  */
 
 /*
@@ -249,7 +249,7 @@ void*			realloc(void 				*ptr,
  */
 int			alloc_init(t_vaddr			addr,
 				   t_size			size,
-				   t_fit                        fit)
+				   t_fit			fit)
 {
   memset(&alloc, 0x0, sizeof(t_alloc));
 

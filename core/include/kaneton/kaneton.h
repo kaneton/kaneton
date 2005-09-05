@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 02:19:44 2005   mycure
-** Last update Tue Sep  6 00:16:19 2005 Reboot Universe
+** Last update Tue Sep  6 00:57:59 2005 Reboot Universe
  */
 
 #ifndef KANETON_KANETON_H
@@ -54,7 +54,11 @@
  * fits
  */
 
-#define ALLOC_FIRST_FIT         (1 << 0)
+#define FIT_FIRST		(1 << 0)
+#define FIT_BEST		(1 << 1)
+#define FIT_NEXT		(1 << 2)
+#define FIT_WORST		(1 << 3)
+
 
 /*
  * ---------- macros ----------------------------------------------------------
