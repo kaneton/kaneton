@@ -89,11 +89,6 @@ void			bzero(void*				dst,
 
 
 /*
- * ../../libstring/fprintf.c
- */
-
-
-/*
  * ../../libstring/index.c
  */
 

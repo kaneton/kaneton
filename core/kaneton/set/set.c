@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/data/research/projects/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Sep  2 18:10:06 2005   mycure
+ * last update   Sat Sep  3 15:31:55 2005   mycure
  */
 
 /*
@@ -552,6 +552,7 @@ t_error			set_test(t_type				type)
       {
 	t_iterator	iterator;
 	t_id		data;
+
 	t_id		*o;
 	t_setid		id;
 

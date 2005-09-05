@@ -5,13 +5,13 @@
  * 
  * as.h
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/data/research/projects/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Tue Aug 30 15:31:26 2005   mycure
+ * last update   Sat Sep  3 15:37:35 2005   mycure
  */
 
 #ifndef KANETON_AS_H
@@ -50,6 +50,8 @@ typedef struct
 
   t_setid			segments;
   t_setid			regions;
+
+  /* XXX machdep_data(as); */
 }				o_as;
 
 /*

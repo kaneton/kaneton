@@ -5,7 +5,7 @@
  *
  * malloc.c
  *
- * path          /home/mycure/kaneton/libs/klibc/libdata
+ * path          /home/mycure/data/research/projects/kaneton/libs/klibc/libdata
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
@@ -27,7 +27,7 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- *
+ * XXX
  */
 
 /*

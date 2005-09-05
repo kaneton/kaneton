@@ -5,13 +5,13 @@
 %% 
 %% advanced-makefiles.tex
 %% 
-%% path          /home/mycure/data/research/projects/kaneton/lectures/advanced-makefiles
+%% path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Mon Jul 11 14:04:43 2005   mycure
+%% last update   Fri Sep  2 18:45:54 2005   mycure
 %%
 
 %
@@ -294,9 +294,19 @@
 \begin{frame}
   \frametitle{Directives Example}
 
-  \begin{Example}
-    \verbatiminput{examples/directives.li}
-  \end{Example}
+  \begin{columns}
+
+    \column{5cm}
+      \begin{Example}
+        \verbatiminput{examples/makefile-directives-1.li}
+      \end{Example}
+
+    \column{5cm}
+      \begin{Example}
+        \verbatiminput{examples/makefile-directives-2.li}
+      \end{Example}
+
+  \end{columns}
 
 \end{frame}
 
@@ -311,10 +321,13 @@
         \textit{include} is used to include another makefile. This feature
         is very useful to centralize the macros.
       \item
-        \textit{-include} can be used to ignore unexisting makefiles.
+        \textit{-include} can be used to ignore unexisting file.
       \item
         conditional parts are used to set makefile conditions:
         \textit{ifeq}, \textit{ifdef} etc..
+      \item
+        \textit{-\textbf{command}} is used to avoid errors if the
+        \textbf{command} is not found.
     \end{itemize}
   \end{block}
 
@@ -506,3 +519,19 @@
 
 - functions
 
+-----
+objects = main.o kbd.o command.o display.o \
+          insert.o search.o files.o utils.o
+
+edit : $(objects)
+        cc -o edit $(objects)
+
+$(objects) : defs.h
+kbd.o command.o files.o : command.h
+display.o insert.o search.o files.o : buffer.h
+
+cool mais si bcp d includes inclus dans d autres includes, c est complique
+de faire en sorte de tous les mettre
+
+-> generation de dep
+-----

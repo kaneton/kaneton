@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Aug 30 13:55:28 2005   mycure
+ * last update   Mon Sep  5 17:44:26 2005   mycure
  */
 
 /*
@@ -140,13 +140,13 @@ int			bootloader(t_uint32			magic,
    * 8)
    */
 
-  asm volatile ("movl %%ebp, %0\n"
-		"movl %%esp, %1\n"
+  asm volatile ("movl %%ebp, %0\n\t"
+		"movl %%esp, %1\n\t"
 		: "=m" (ebp), "=m" (esp)
 		:);
 
-  asm volatile ("movl %0, %%ebp\n"
-		"movl %0, %%esp\n"
+  asm volatile ("movl %0, %%ebp\n\t"
+		"movl %0, %%esp\n\t"
 		"pushl %1\n"
 		:
 		: "g" (init->kstack + init->kstacksz - 1),
@@ -158,8 +158,8 @@ int			bootloader(t_uint32			magic,
 
   kernel(init);
 
-  asm volatile ("movl %0, %%ebp\n"
-		"movl %1, %%esp\n"
+  asm volatile ("movl %0, %%ebp\n\t"
+		"movl %1, %%esp\n\t"
 		:
 		: "g" (ebp), "g" (esp));
 

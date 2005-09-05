@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Tue Aug 30 13:56:08 2005   mycure
+ * last update   Mon Sep  5 17:44:54 2005   mycure
  */
 
 /*
@@ -139,16 +139,16 @@ void			bootloader_pmode_update_registers(t_uint16	kcs,
   t_reg16		cs = (kcs << 3) | PMODE_TI_GDT | 0;
   t_reg16		ds = (kds << 3) | PMODE_TI_GDT | 0;
 
-  asm volatile ("pushl %0\n"
-		"pushl $pmode_update_registers_label\n"
-		"lret\n"
-		"pmode_update_registers_label:\n"
-		"movl %1, %%eax\n"
-		"movw %%ax, %%ds\n"
-		"movw %%ax, %%ss\n"
-		"movw %%ax, %%es\n"
-		"movw %%ax, %%fs\n"
-		"movw %%ax, %%gs\n"
+  asm volatile ("pushl %0\n\t"
+		"pushl $pmode_update_registers_label\n\t"
+		"lret\n\t"
+		"pmode_update_registers_label:\n\t"
+		"movl %1, %%eax\n\t"
+		"movw %%ax, %%ds\n\t"
+		"movw %%ax, %%ss\n\t"
+		"movw %%ax, %%es\n\t"
+		"movw %%ax, %%fs\n\t"
+		"movw %%ax, %%gs\n\t"
 		:
 		: "g" (cs), "g" (ds));
 }
@@ -159,9 +159,9 @@ void			bootloader_pmode_update_registers(t_uint16	kcs,
 
 void			bootloader_pmode_enable(void)
 {
-  asm volatile ("movl %%cr0, %%eax\n"
-		"orw %%ax, 1\n"
-		"movl %%eax, %%cr0\n"
+  asm volatile ("movl %%cr0, %%eax\n\t"
+		"orw %%ax, 1\n\t"
+		"movl %%eax, %%cr0\n\t"
 		::);
 }
 

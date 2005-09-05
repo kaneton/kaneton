@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/data/research/projects/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Aug 30 16:12:25 2005   mycure
+ * last update   Sat Sep  3 15:32:11 2005   mycure
  */
 
 /*
@@ -30,8 +30,6 @@ extern m_as*		as;
 /*
  * ---------- globals ---------------------------------------------------------
  */
-
-int BANDE = 42;
 
 /*
  * the address space manager interface.

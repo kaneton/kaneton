@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Jul  4 12:07:17 2005   mycure
+## last update   Mon Sep  5 21:28:07 2005   mycure
 ##
 
 # INFORMATIONS
@@ -72,7 +72,7 @@ clean()
 
   # makefile dependencies
   print "   cleaning makefile dependencies" "+"
-  echo -n "" > $KANETON_MK
+  rm -f $KANETON_MK
 
   # remove the links to machine-dependent directories
   print "   removing links to machine-dependent directories" "+"

@@ -5,13 +5,13 @@
  * 
  * set_bpt.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/data/research/projects/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Sep  2 18:07:37 2005   mycure
+ * last update   Sat Sep  3 15:25:19 2005   mycure
  */
 
 /*

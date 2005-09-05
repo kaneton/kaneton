@@ -1,3 +1,7 @@
+-- cpp
+ 1) evaluation ( { r; } )
+ 2) macro(, args...) second(suce, ##args)
+
 -- bug
  set_bpt.c ne passe pas dans le truc a pwipwi
 

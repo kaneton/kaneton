@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Tue Aug 30 12:47:05 2005   mycure
+## last update   Mon Sep  5 21:25:21 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			./.kaneton.mk
+-include		./.kaneton.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -145,6 +145,10 @@ info:
 	@echo ""
 	@echo -e "     \033[1mchristophe eymard - eymard_c@epita.fr\033[0m"
 	@echo -e "     \033[1msolal jacob - jacob_s@epitech.net\033[0m"
+	@echo ""
+	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mwebsite:\033[0m"
+	@echo ""
+	@echo -e "     \033[1mhttp://www.lse.epita.fr/\033[0m"
 	@echo ""
 	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mnews-group:\033[0m"
 	@echo ""

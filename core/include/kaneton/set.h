@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/data/research/projects/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Fri Sep  2 18:11:41 2005   mycure
+ * last update   Sat Sep  3 15:39:00 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -303,6 +303,83 @@ t_error			set_init(void);
 t_error			set_clean(void);
 
 t_error			set_test(t_type				type);
+
+
+/*
+ * ../../kaneton/set/set_bpt.c
+ */
+
+void			set_load_bpt(t_bpt(set)*		bpt,;
+
+void			set_unload_bpt(t_bpt(set)*		bpt,;
+
+int			set_addrcmp_bpt(t_bpt(set)*		bpt,;
+
+int			set_keycmp_bpt(t_bpt(set)*		bpt,;
+
+int			set_valcmp_bpt(t_bpt(set)*		bpt,;
+
+t_error			set_dump_unused_bpt(o_set*		o);
+
+t_error			set_build_bpt(o_set*			o,
+				      BPT_NODESZ_T		nodesz);
+
+t_error			set_adjust_bpt(o_set*			o,
+				       t_bpt_uni(set)		size,;
+
+t_error			set_destroy_bpt(o_set*			o);
+
+t_error			set_dump_bpt(t_setid			setid);
+
+t_error			set_head_bpt(t_setid			setid,
+				     t_iterator*		iterator);
+
+t_error			set_tail_bpt(t_setid			setid,
+				     t_iterator*		iterator);
+
+t_error			set_prev_bpt(t_setid			setid,
+				     t_iterator			current,
+				     t_iterator*		previous);
+
+t_error			set_next_bpt(t_setid			setid,
+				     t_iterator			current,
+				     t_iterator*		next);
+
+t_error			set_insert_head_bpt(t_setid		setid,
+					    void*		data);
+
+t_error			set_insert_tail_bpt(t_setid		setid,
+					    void*		data);
+
+t_error			set_insert_before_bpt(t_setid		setid,
+					      t_iterator	iterator,
+					      void*		data);
+
+t_error			set_insert_after_bpt(t_setid		setid,
+					     t_iterator		iterator,
+					     void*		data);
+
+t_error			set_add_bpt(t_setid			setid,
+				    void*			data);
+
+t_error			set_remove_bpt(t_setid			setid,
+				       t_id			id);
+
+t_error			set_flush_bpt(t_setid			setid);
+
+t_error			set_locate_bpt(t_setid			setid,
+				       t_id			id,
+				       t_iterator*		iterator);
+
+t_error			set_object_bpt(t_setid			setid,
+				       t_iterator		iterator,
+				       void**			data);
+
+t_error			set_rsv_bpt(t_opts			opts,
+				    t_size			datasz,
+				    t_bpt_nodesz(set)		nodesz,;
+
+t_error			set_rel_bpt(t_setid			setid);
 
 
 /*
