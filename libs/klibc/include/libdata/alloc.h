@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 02:32:39 2005   mycure
-** Last update Tue Sep  6 00:21:54 2005 Reboot Universe
+** Last update Tue Sep  6 01:03:18 2005 Reboot Universe
  */
 
 #ifndef LIBDATA_ALLOC_H
@@ -31,9 +31,6 @@
 /*
  * chunck
  */
-
-/*# define ALLOC_FIRST_FIT
-  # ifdef ALLOC_FIRST_FIT*/
 
 # define ALLOC_FREE		0x1
 # define ALLOC_LAST		0x2
@@ -63,5 +60,4 @@ typedef struct
   t_vaddr			addr;
 }				t_alloc;
 
-/*# endif*/
 #endif
