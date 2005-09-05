@@ -1,17 +1,17 @@
 /*
  * copyright quintard julien
- * 
+ *
  * kaneton
- * 
+ *
  * kaneton.h
- * 
+ *
  * path          /home/mycure/kaneton/core/kaneton
- * 
+ *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
- * 
+ *
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Tue Aug 30 12:04:10 2005   mycure
+** Last update Tue Sep  6 00:16:19 2005 Reboot Universe
  */
 
 #ifndef KANETON_KANETON_H
@@ -46,9 +46,15 @@
  * perms
  */
 
-#define PERM_READ		0x1
-#define PERM_WRITE		0x2
-#define PERM_EXEC		0x4
+#define PERM_READ		(1 << 0)
+#define PERM_WRITE		(1 << 1)
+#define PERM_EXEC		(1 << 2)
+
+/*
+ * fits
+ */
+
+#define ALLOC_FIRST_FIT         (1 << 0)
 
 /*
  * ---------- macros ----------------------------------------------------------

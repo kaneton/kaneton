@@ -1,17 +1,17 @@
 /*
  * copyright quintard julien
- * 
+ *
  * kaneton
- * 
+ *
  * kaneton.c
- * 
+ *
  * path          /home/mycure/kaneton
- * 
+ *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
- * 
+ *
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Sep  6 00:07:50 2005   mycure
+** Last update Tue Sep  6 00:52:13 2005 Reboot Universe
  */
 
 /*
@@ -96,8 +96,12 @@ void			kaneton(t_init*				bootloader)
    * 5)
    */
 
-  alloc_init(init->alloc, init->allocsz);
+  alloc_init(init->alloc, init->allocsz, ALLOC_FIRST_FIT);
 
+#ifdef ALLOC_DEBUG
+  alloc_test();
+  /*  while (1);*/
+#endif
   /*
    * 6)
    */

@@ -1,0 +1,39 @@
+##
+## copyright quintard julien
+##
+## .bochsrc
+##
+## .bochsrc
+##
+## path          /home/mycure/kaneton/dist
+##
+## made by mycure
+##         quintard julien   [quinta_j@epita.fr]
+##
+## started on    Fri Feb 11 01:49:25 2005   mycure
+## Last update Mon Sep  5 01:27:50 2005 Reboot Universe
+##
+
+#
+# sample bochsrc file
+#
+
+romimage: file=/usr/local/share/bochs/BIOS-bochs-2-processors, address=0xf0000
+
+## normal case
+vgaromimage: /usr/local/share/bochs/VGABIOS-elpin-2.40
+
+## for vbe
+#vgaromimage: /home/mycure/VGABIOS-lgpl-latest.bin
+
+ips: 500000
+megs: 32
+
+floppya: 1_44=/home/ultima/ultima.img, status=inserted
+#floppya: 1_44=/dev/fd0
+
+boot: floppy
+
+i440fxsupport: enabled=1
+
+boot: a

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 02:50:21 2005   mycure
- * Last update Sun Jul  3 23:35:23 2005 Christophe Eymard
+** Last update Tue Sep  6 00:23:48 2005 Reboot Universe
  */
 
 /*
@@ -20,6 +20,12 @@
  * to fetch the adress.
  * This macro shall be used in both implementations.
  */
+
+/*
+ * XXX : virer define FF, 3ième arg pour alloc_init (t_fit dans
+ * includes/kaneton/types.h)
+ */
+
 
 #define __align(Addr)  (Addr % sizeof (t_vaddr) ? ((Addr) + sizeof (t_vaddr) -\
     (((t_vaddr) Addr + 1) % sizeof (t_vaddr) - 1)) : Addr)
@@ -46,8 +52,6 @@ t_alloc			alloc;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-#ifdef ALLOC_FIRST_FIT
 
 /*
  * Here follows a really basic implementation of the first fit algorithm, known
@@ -209,7 +213,7 @@ void			alloc_dump()
  */
 
 void*			realloc(void 				*ptr,
-				 size_t				size)
+				size_t				size)
 {
   void			*new = NULL;
   size_t		i = 0;
@@ -244,7 +248,8 @@ void*			realloc(void 				*ptr,
  * 		went smooth.
  */
 int			alloc_init(t_vaddr			addr,
-				   t_size			size)
+				   t_size			size,
+				   t_fit                        fit)
 {
   memset(&alloc, 0x0, sizeof(t_alloc));
 
@@ -264,27 +269,25 @@ int			alloc_init(t_vaddr			addr,
   alloc.first_blk->flags = ALLOC_FREE | ALLOC_LAST;
   alloc.first_blk->prv = NULL;
 
-
-  /* test block follows */
-  /*{
-    void		*test, *toto, *tata, *titi;
-
-    test = malloc(100);
-    toto = malloc(200);
-    tata = malloc(300);
-    titi = malloc(400);
-    alloc_dump();
-    free(toto);
-    free(titi);
-    free(tata);
-    alloc_dump();
-    free(test);
-    alloc_dump();
-    while (1)
-      ;
-  }*/
-
   return 0;
 }
 
-#endif
+/* test block follows */
+void alloc_test(void)
+{
+  void		*test, *toto, *tata, *titi;
+
+  test = malloc(100);
+  toto = malloc(200);
+  tata = malloc(300);
+  titi = malloc(400);
+  alloc_dump();
+  free(toto);
+  free(titi);
+  free(tata);
+  alloc_dump();
+  free(test);
+  alloc_dump();
+  /*while (1)
+    ;*/
+}
