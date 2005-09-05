@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:14:03 2005   mycure
-## last update   Sun Aug 28 16:10:07 2005   mycure
+## last update   Mon Sep  5 21:29:51 2005   mycure
 ##
 
 # INFORMATIONS
@@ -139,8 +139,13 @@ conf()
 {
   print " unlinking kernel configuration files" "+"
 
-  rm core/kaneton/conf/conf.c
-  rm core/include/kaneton/conf.h
+  if [ -e core/kaneton/conf/conf.c ] ; then
+    rm core/kaneton/conf/conf.c
+  fi
+
+  if [ -e core/include/kaneton/conf.h ] ; then
+    rm core/include/kaneton/conf.h
+  fi
 }
 
 

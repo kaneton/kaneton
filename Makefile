@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Sep  5 21:25:21 2005   mycure
+## last update   Tue Sep  6 00:12:47 2005   mycure
 ##
 
 #
@@ -37,8 +37,6 @@ SHELL			:=		/bin/sh
 
 SUBDIRS			:=		libs core services
 
-KANETON_MK_SIZE		:=		$(shell stat -c "%s" .kaneton.mk)
-
 #
 # ---------- default rule -----------------------------------------------------
 #
@@ -50,7 +48,7 @@ all:			kaneton
 #
 
 kaneton.mk:
-	@if [ $(KANETON_MK_SIZE) -eq 0 ] ; then				\
+	if [ ! -e .kaneton.mk ] ; then					\
 	  cd env							; \
 	  $(SHELL) init							; \
 	  cd ..								; \

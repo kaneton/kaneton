@@ -5,13 +5,13 @@
  * 
  * kaneton.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Aug 30 22:52:26 2005   mycure
+ * last update   Tue Sep  6 00:07:50 2005   mycure
  */
 
 /*
@@ -129,7 +129,7 @@ void			kaneton(t_init*				bootloader)
    * 9)
    */
   /*
-  if (segment_init(SEGMENT_FIT_FIRST) != ERROR_NONE)
+  if (segment_init(FIT_FIRST) != ERROR_NONE)
     kaneton_error("cannot initialise the segment manager\n");
 
 #ifdef KANETON_SERIAL

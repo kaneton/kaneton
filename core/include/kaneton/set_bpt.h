@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Fri Sep  2 15:51:59 2005   mycure
+ * last update   Tue Sep  6 00:04:50 2005   mycure
  */
 
 #ifndef KANETON_SET_BPT_H
@@ -103,10 +103,6 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- */
-
-/*
- * eop
  */
 
 /*

@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Aug 30 12:33:19 2005   mycure
+ * last update   Tue Sep  6 00:07:42 2005   mycure
  */
 
 /*
@@ -176,7 +176,7 @@ t_error			segment_rsv(t_asid			asid,
 
   switch (segment->fit)
     {
-    case SEGMENT_FIT_FIRST:
+    case FIT_FIRST:
       {
 	/*
 	 * A)
