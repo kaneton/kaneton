@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Mon Sep  5 17:44:35 2005   mycure
+ * last update   Tue Sep  6 11:46:14 2005   mycure
  */
 
 /*
@@ -139,10 +139,13 @@ void			bootloader_paging_dump_directory(t_pde*	directory,
 
 void			bootloader_paging_enable(void)
 {
-  asm volatile ("movl %%cr0, %%eax\n\t"
-		"orl $0x80000000, %%eax\n\t"
-		"movl %%eax, %%cr0\n\t"
-		::);
+  asm ("movl %%cr0, %%eax\n\t"
+       "orl $0x80000000, %%eax\n\t"
+       "movl %%eax, %%cr0\n\t"
+       :
+       :
+       : "%eax"
+       );
 }
 
 /*

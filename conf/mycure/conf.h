@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Aug 28 16:23:31 2005   mycure
- * last update   Thu Sep  1 15:00:14 2005   mycure
+ * last update   Tue Sep  6 12:43:01 2005   mycure
  */
 
 #ifndef KANETON_CONF_H
@@ -64,7 +64,7 @@
  */
 
 #define CONF_DEBUG							\
-  (DEBUG_SET)
+  (0)
 
 /*
  * ---------- prototypes ------------------------------------------------------
