@@ -1,0 +1,19 @@
+$ cat Makefile
+.PHONY:         chiche
+
+chiche:
+        cd chiche ; make all ; cd ..
+$ ls
+Makefile chiche/
+$ ls chiche/
+Makefile
+$ cat chiche/Makefile
+all:
+        @echo "Chiche Fan Club"
+$ make chiche
+make[1]: Entering directory `/chiche'
+Chiche Fan Club
+make[1]: Leaving directory `/chiche'
+$ make -s
+Chiche Fan Club
+$ 
