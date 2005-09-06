@@ -5,13 +5,13 @@
  * 
  * set_bpt.c
  * 
- * path          /home/mycure/data/research/projects/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sat Sep  3 15:25:19 2005   mycure
+ * last update   Tue Sep  6 11:18:38 2005   mycure
  */
 
 /*
@@ -525,7 +525,10 @@ t_error			set_rsv_bpt(t_opts			opts,
    * XXX
    */
 
-  if (!(opts & SET_OPT_SORT) || (opts & SET_OPT_ORGANISE))
+  if (!(opts & SET_OPT_SORT))
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  if (opts & SET_OPT_ORGANISE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*

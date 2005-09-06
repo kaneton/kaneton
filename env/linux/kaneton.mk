@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Thu Sep  1 14:41:16 2005   mycure
+## last update   Tue Sep  6 11:13:59 2005   mycure
 ##
 
 #
@@ -241,7 +241,7 @@ endef
 #
 
 define make
-  @for i in $(1) ; do							\
+  for i in $(1) ; do							\
     $(_CD_) $$i								; \
     $(_MAKE_) $(2)							; \
     return=$$?								; \
@@ -262,7 +262,7 @@ endef
 #
 
 define compile-c
-  @$(call pretty-printer,green,COMPILE-C,$(2),		)		; \
+  $(call pretty-printer,green,COMPILE-C,$(2),		)		; \
   $(CC) $(CFLAGS) $(3) -c $(2) -o $(1)
 endef
 
@@ -275,7 +275,7 @@ endef
 #
 
 define compile-S
-  @$(call pretty-printer,green,COMPILE-S,$(2),		)		; \
+  $(call pretty-printer,green,COMPILE-S,$(2),		)		; \
   $(CC) $(CFLAGS) $(3) -c $(2) -o $(1)
 endef
 
@@ -288,7 +288,7 @@ endef
 #
 
 define compile-asm
-  @$(call pretty-printer,green,COMPILE-ASM,$(2),		)	; \
+  $(call pretty-printer,green,COMPILE-ASM,$(2),		)		; \
   $(_NASM_) $(3) $(2) -o $(1)
 endef
 
@@ -301,7 +301,7 @@ endef
 #
 
 define static-library
-  @$(call pretty-printer,magenta,STATIC-LIBRARY,$(1),	)		; \
+  $(call pretty-printer,magenta,STATIC-LIBRARY,$(1),	)		; \
   $(_AR_) $(3) $(1) $(2)
   $(_RANLIB_) $(3) $(1)
 endef
@@ -316,7 +316,7 @@ endef
 #
 
 define dynamic-library
-  @$(call pretty-printer,magenta,DYNAMIC-LIBRARY,$(1),	)		; \
+  $(call pretty-printer,magenta,DYNAMIC-LIBRARY,$(1),	)		; \
   $(_LD_) $(LDFLAGS) --shared $(3) -o $(1) $(2)
 endef
 
@@ -329,7 +329,7 @@ endef
 #
 
 define executable
-  @$(call pretty-printer,magenta,EXECUTABLE,$(1),		)	; \
+  $(call pretty-printer,magenta,EXECUTABLE,$(1),		)	; \
   $(_LD_) $(LDFLAGS) $(3) -o $(1) $(2)
 endef
 
@@ -344,7 +344,7 @@ endef
 #
 
 define archive
-  @$(call pretty-printer,magenta,ARCHIVE,$(1),		)		; \
+  $(call pretty-printer,magenta,ARCHIVE,$(1),		)		; \
   $(_LD_) $(LDFLAGS) -r $(3) -o $(1) $(2)
 endef
 
@@ -356,7 +356,7 @@ endef
 #
 
 define remove
-  @for i in $(1) ; do							\
+  for i in $(1) ; do							\
     if [ -e $$i ] ; then						\
       $(call pretty-printer,red,REMOVE,$$i,		)		; \
     fi									; \
@@ -369,7 +369,7 @@ endef
 #
 
 define purge
-  @$(call pretty-printer,red,PURGE,,)					; \
+  $(call pretty-printer,red,PURGE,,)					; \
   $(_PURGE_)
 endef
 
@@ -381,7 +381,7 @@ endef
 #
 
 define prototypes
-  @for i in $(1) ; do							\
+  for i in $(1) ; do							\
     if [ -e $$i ] ; then						\
       $(call pretty-printer,yellow,PROTOTYPES,$$i,		)	; \
       $(_PROTO_) $(2) $(1)						; \
@@ -398,7 +398,7 @@ endef
 #
 
 define dependencies
-  @$(_TOUCH_) $(2)							; \
+  $(_TOUCH_) $(2)							; \
   for i in $(1) ; do							\
     if [ -e $$i ] ; then						\
       $(call pretty-printer,yellow,DEPENDENCIES,$$i,		)	; \
@@ -414,7 +414,7 @@ endef
 #
 
 define version
-  @$(call pretty-printer,yellow,VERSION,$(1),		)		; \
+  $(call pretty-printer,yellow,VERSION,$(1),		)		; \
   echo -n "" > $(1)							; \
   echo "#include <libc.h>" >> $(1)					; \
   echo "#include <kaneton.h>" >> $(1)					; \
@@ -432,7 +432,7 @@ endef
 #
 
 define link
-  @$(call pretty-printer,cyan,LINK,$(1),			)	; \
+  $(call pretty-printer,cyan,LINK,$(1),			)		; \
   $(_LN_) $(3) $(2) $(1)
 endef
 
@@ -441,7 +441,7 @@ endef
 #
 
 define dist
-  @echo ""								; \
+  echo ""								; \
   echo -e '\E[;34m'"\033[1m---\033[0m \033[1mbuilding kaneton..\033[0m"	; \
   $(_TAR_) -czf /tmp/kaneton.tar.gz .					; \
   $(_MV_) /tmp/kaneton.tar.gz .						; \

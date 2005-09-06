@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Tue Sep  6 00:12:47 2005   mycure
+## last update   Tue Sep  6 11:13:10 2005   mycure
 ##
 
 #
@@ -60,16 +60,16 @@ kaneton.mk:
 	fi
 
 init:
-	@cd env								; \
+	cd env								; \
 	$(SHELL) init							; \
 	cd ..
 
 clean:
-	@cd env								; \
+	cd env								; \
 	$(SHELL) clean							; \
 	cd ..
 
-	@rm -f *~
+	rm -f *~
 
 #
 # ---------- development ------------------------------------------------------
@@ -103,12 +103,12 @@ dep:			kaneton.mk
 #
 
 build:			kaneton.mk
-	@cd utils							; \
+	cd utils/							; \
 	$(SHELL) $(_MULTIBOOTLOADER_) build				; \
 	cd ..
 
 install:		kaneton.mk kaneton
-	@cd utils/							; \
+	cd utils/							; \
 	$(SHELL) $(_MULTIBOOTLOADER_) install				; \
 	cd ..
 
@@ -125,37 +125,37 @@ check:
 #
 
 info:
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton\033[0m"
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mauthors:\033[0m"
-	@echo ""
-	@echo -e "     \033[1mquintard julien - quinta_j@epita.fr\033[0m"
-	@echo -e "     \033[1mbillaud jean-pascal - billau_j@epita.fr\033[0m"
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1massistants:\033[0m"
-	@echo ""
-	@echo -e "     \033[1mcedric aubouy - aubouy_c@epita.fr\033[0m"
-	@echo -e "     \033[1mfabien le-mentec - le-men_f@epita.fr\033[0m"
-	@echo -e "     \033[1mrenaud lienhart - lienha_r@epita.fr\033[0m"
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mcontributors:\033[0m"
-	@echo ""
-	@echo -e "     \033[1mchristophe eymard - eymard_c@epita.fr\033[0m"
-	@echo -e "     \033[1msolal jacob - jacob_s@epitech.net\033[0m"
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mwebsite:\033[0m"
-	@echo ""
-	@echo -e "     \033[1mhttp://www.lse.epita.fr/\033[0m"
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mnews-group:\033[0m"
-	@echo ""
-	@echo -e "     \033[1mepita.cours.kaneton\033[0m"
-	@echo ""
-	@echo -e '\E[;34m'"\033[1m#\033[0m \033[1mmailing-list:\033[0m"
-	@echo ""
-	@echo -e "     \033[1mkaneton@lse.epita.fr\033[0m"
-	@echo ""
+	echo ""
+	echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton\033[0m"
+	echo ""
+	echo -e '\E[;34m'"\033[1m#\033[0m \033[1mauthors:\033[0m"
+	echo ""
+	echo -e "     \033[1mquintard julien - quinta_j@epita.fr\033[0m"
+	echo -e "     \033[1mbillaud jean-pascal - billau_j@epita.fr\033[0m"
+	echo ""
+	echo -e '\E[;34m'"\033[1m#\033[0m \033[1massistants:\033[0m"
+	echo ""
+	echo -e "     \033[1mcedric aubouy - aubouy_c@epita.fr\033[0m"
+	echo -e "     \033[1mfabien le-mentec - le-men_f@epita.fr\033[0m"
+	echo -e "     \033[1mrenaud lienhart - lienha_r@epita.fr\033[0m"
+	echo ""
+	echo -e '\E[;34m'"\033[1m#\033[0m \033[1mcontributors:\033[0m"
+	echo ""
+	echo -e "     \033[1mchristophe eymard - eymard_c@epita.fr\033[0m"
+	echo -e "     \033[1msolal jacob - jacob_s@epitech.net\033[0m"
+	echo ""
+	echo -e '\E[;34m'"\033[1m#\033[0m \033[1mwebsite:\033[0m"
+	echo ""
+	echo -e "     \033[1mhttp://www.lse.epita.fr/\033[0m"
+	echo ""
+	echo -e '\E[;34m'"\033[1m#\033[0m \033[1mnews-group:\033[0m"
+	echo ""
+	echo -e "     \033[1mepita.cours.kaneton\033[0m"
+	echo ""
+	echo -e '\E[;34m'"\033[1m#\033[0m \033[1mmailing-list:\033[0m"
+	echo ""
+	echo -e "     \033[1mkaneton@lse.epita.fr\033[0m"
+	echo ""
 
 #
 # ---------- distribution -----------------------------------------------------

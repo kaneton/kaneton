@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Sep  2 17:36:38 2005   mycure
+ * last update   Tue Sep  6 11:17:02 2005   mycure
  */
 
 /*
@@ -978,9 +978,10 @@ t_error			set_object_ll(t_setid			setid,
  * steps:
  *
  * 1) initialises the set descriptor.
- * 2) if necessary, reserves an unused identifier for this new set.
- * 3) initialises the set descriptor fields.
- * 4) adds the set descriptor to the set container.
+ * 2) avoids bad options.
+ * 3) if necessary, reserves an unused identifier for this new set.
+ * 4) initialises the set descriptor fields.
+ * 5) adds the set descriptor to the set container.
  */
 
 t_error			set_rsv_ll(t_opts			opts,
@@ -1001,6 +1002,13 @@ t_error			set_rsv_ll(t_opts			opts,
    * 2)
    */
 
+  if (opts & SET_OPT_ORGANISE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
   if (opts & SET_OPT_CONTAINER)
     {
       *setid = set->setid;
@@ -1012,7 +1020,7 @@ t_error			set_rsv_ll(t_opts			opts,
     }
 
   /*
-   * 3)
+   * 4)
    */
 
   o.setid = *setid;
@@ -1025,7 +1033,7 @@ t_error			set_rsv_ll(t_opts			opts,
   o.u.ll.tail = NULL;
 
   /*
-   * 4)
+   * 5)
    */
 
   if (set_new(&o) != ERROR_NONE)

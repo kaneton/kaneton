@@ -2,6 +2,11 @@
  1) evaluation ( { r; } )
  2) macro(, args...) second(suce, ##args)
 
+--
+ retoucher la libc pour qu'elle utilise les types systeme: t_uint32 etc..
+
+ notamment dans printf avec les stdarg
+
 -- bug
  set_bpt.c ne passe pas dans le truc a pwipwi
 

@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Thu Sep  1 14:42:58 2005   mycure
+## last update   Tue Sep  6 11:05:09 2005   mycure
 ##
 
 #
@@ -75,4 +75,4 @@ dep:
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			./$(_MAKEFILE_MK_)
+-include		./$(_MAKEFILE_MK_)

@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/services
+## path          /home/mycure/kaneton/services/cons
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Thu Sep  1 14:41:26 2005   mycure
+## last update   Tue Sep  6 11:00:35 2005   mycure
 ##
 
 #
@@ -63,4 +63,4 @@ dep:
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			./$(_MAKEFILE_MK_)
+-include		./$(_MAKEFILE_MK_)

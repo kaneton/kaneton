@@ -68,4 +68,4 @@ dep:
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			./$(_MAKEFILE_MK_)
+-include		./$(_MAKEFILE_MK_)
