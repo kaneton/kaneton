@@ -3,13 +3,13 @@
  *
  * pmode.c
  *
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Tue Sep  6 12:42:02 2005   mycure
+ * last update   Tue Sep  6 16:55:37 2005   mycure
  */
 
 /*
@@ -151,7 +151,7 @@ void			bootloader_pmode_update_registers(t_uint16	kcs,
        "movw %%ax, %%gs\n\t"
        :
        : "g" (cs), "g" (ds)
-       : "%eax"
+       : "memory", "%eax"
        );
 }
 

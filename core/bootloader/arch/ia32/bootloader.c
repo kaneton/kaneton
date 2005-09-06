@@ -5,13 +5,13 @@
  * 
  * bootloader.c
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Sep  6 12:56:38 2005   mycure
+ * last update   Tue Sep  6 16:47:10 2005   mycure
  */
 
 /*
@@ -144,6 +144,7 @@ int			bootloader(t_uint32			magic,
        "movl %%esp, %1\n\t"
        : "=m" (ebp), "=m" (esp)
        :
+       : "memory"
        );
 
   asm volatile ("movl %0, %%ebp\n\t"
