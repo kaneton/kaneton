@@ -29,6 +29,11 @@
  * ---------- defines ---------------------------------------------------------
  */
 
+/* XXX */
+#define stderr NULL
+#define BPT_DEBUG
+/* XXX */
+
 /*
  * iterator's state
  */
@@ -175,6 +180,24 @@ typedef struct
   }
 
 /*
+ * debug
+ */
+
+#if (DEBUG & DEBUG_SET)
+
+#define set_debug(_func_, _setid_, _args_...)				\
+  fprintf(stderr, "[setd] trap: %s(%qu, %s)\n",				\
+          #_func_,							\
+          _setid_,							\
+          #_args_);
+
+#else
+
+#define set_debug(_func_, _setid_, _args...)
+
+#endif
+
+/*
  * traps
  */
 
@@ -183,6 +206,8 @@ typedef struct
     {									\
       t_error		_r_ = ERROR_UNKNOWN;				\
       o_set*		_set_;						\
+									\
+      set_debug(_func_, _setid_, _args_);				\
 									\
       if (set_descriptor((_setid_), &_set_) == ERROR_NONE)		\
         {								\

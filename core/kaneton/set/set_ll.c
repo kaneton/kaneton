@@ -906,7 +906,7 @@ t_error			set_flush_ll(t_setid			setid)
 
 /*
  * this function tries to find an object with its identifier and build
- * a corresponding identifier.
+ * a corresponding iterator.
  *
  * steps:
  *

@@ -28,11 +28,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-/* XXX */
-#define stderr NULL
-#define BPT_DEBUG
-/* XXX */
-
 #include <kaneton/bpt.h>
 
 /*

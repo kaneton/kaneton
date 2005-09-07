@@ -157,8 +157,8 @@ t_error			set_build_bpt(o_set*			o,
  */
 
 t_error			set_adjust_bpt(o_set*			o,
-				       t_bpt_uni(set)		size,
-				       t_bpt_uni(set)		alloc)
+				       t_bpt_uni(set)		alloc,
+				       t_bpt_uni(set)		size)
 {
   t_bpt_uni(set)	i;
 
@@ -419,7 +419,7 @@ t_error			set_add_bpt(t_setid			setid,
 
   SET_ENTER(set);
 
-  if (setid == ID_UNUSED)
+  if (*(t_id*)data == ID_UNUSED)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   if (set_descriptor(setid, &o) != ERROR_NONE)
@@ -427,14 +427,22 @@ t_error			set_add_bpt(t_setid			setid,
 
   memset(&lfentry, 0x0, sizeof(t_bpt_lfentry(set)));
 
-  if ((lfentry.data = malloc(o->u.bpt.datasz)) == NULL)
-    SET_LEAVE(set, ERROR_UNKNOWN);
-
   lfentry.id = *((t_id*)data);
-  memcpy(lfentry.data, data, o->u.bpt.datasz);
 
-  if (set_adjust_bpt(o, BPT_ADD_SIZE(&o->u.bpt.bpt),
-		     BPT_ADD_ALLOC(&o->u.bpt.bpt)) != ERROR_NONE)
+  if (o->u.bpt.opts & SET_OPT_ALLOC)
+    {
+      if ((lfentry.data = malloc(o->u.bpt.datasz)) == NULL)
+	SET_LEAVE(set, ERROR_UNKNOWN);
+
+      memcpy(lfentry.data, data, o->u.bpt.datasz);
+    }
+  else
+    {
+      lfentry.data = data;
+    }
+
+  if (set_adjust_bpt(o, BPT_ADD_ALLOC(&o->u.bpt.bpt),
+		     BPT_ADD_SIZE(&o->u.bpt.bpt)) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   if (bpt_add(set, &o->u.bpt.bpt, &lfentry, &o->u.bpt.unused) != 0)
@@ -452,9 +460,38 @@ t_error			set_add_bpt(t_setid			setid,
 t_error			set_remove_bpt(t_setid			setid,
 				       t_id			id)
 {
+  t_bpt_entry(set)	entry;
+  t_bpt_imm(set)	node;
+  o_set*		o;
+
   SET_ENTER(set);
 
-  /* XXX */
+  if (id == ID_UNUSED)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  if (o->u.bpt.opts & SET_OPT_ALLOC)
+    {
+      if (bpt_search(set, &o->u.bpt.bpt, id, &entry) != 0)
+	SET_LEAVE(set, ERROR_UNKNOWN);
+
+      BPT_LOAD(&o->u.bpt.bpt, &node, entry.node);
+
+      free(BPT_GET_LFENTRY(set, &node, entry.ndi, data));
+
+      BPT_UNLOAD(&o->u.bpt.bpt, &node);
+    }
+
+  if (set_adjust_bpt(o, BPT_REMOVE_ALLOC(&o->u.bpt.bpt),
+		     BPT_REMOVE_SIZE(&o->u.bpt.bpt)) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  if (bpt_remove(set, &o->u.bpt.bpt, id, &o->u.bpt.unused) != 0)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  o->size--;
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -467,7 +504,7 @@ t_error			set_flush_bpt(t_setid			setid)
 {
   SET_ENTER(set);
 
-  /* XXX */
+  /* XXX foreach: free(data) remove(id) */
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -480,11 +517,35 @@ t_error			set_locate_bpt(t_setid			setid,
 				       t_id			id,
 				       t_iterator*		iterator)
 {
+  t_bpt_entry(set)	entry;
+  o_set*		o;
+
   SET_ENTER(set);
 
-  /* XXX */
+  /*
+   * 1)
+   */
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  if (id == ID_UNUSED)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (bpt_search(set, &o->u.bpt.bpt, id, &entry) != 0)
+    SET_LEAVE(set, ERROR_NONE);
+
+  memcpy(iterator, &entry, sizeof(t_bpt_entry(set)));
+
+  SET_LEAVE(set, ERROR_NONE);
 }
 
 /*
@@ -495,9 +556,19 @@ t_error			set_object_bpt(t_setid			setid,
 				       t_iterator		iterator,
 				       void**			data)
 {
+  t_bpt_imm(set)	node;
+  o_set*		o;
+
   SET_ENTER(set);
 
-  /* XXX */
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  BPT_LOAD(&o->u.bpt.bpt, &node, iterator.u.bpt.entry.node);
+
+  *data = BPT_GET_LFENTRY(set, &node, iterator.u.bpt.entry.ndi, data);
+
+  BPT_UNLOAD(&o->u.bpt.bpt, &node);
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -592,8 +663,8 @@ t_error			set_rsv_bpt(t_opts			opts,
 
   if (set_new(&o) != ERROR_NONE)
     {
-      set_adjust_bpt(&o, BPT_CLEAN_SIZE(&o.u.bpt.bpt),
-		     BPT_CLEAN_ALLOC(&o.u.bpt.bpt));
+      set_adjust_bpt(&o, BPT_CLEAN_ALLOC(&o.u.bpt.bpt),
+		     BPT_CLEAN_SIZE(&o.u.bpt.bpt));
 
       bpt_clean(set, &o.u.bpt.bpt, &o.u.bpt.unused);
 
@@ -616,7 +687,7 @@ t_error			set_rel_bpt(t_setid			setid)
 {
   SET_ENTER(set);
 
-  /* XXX */
+  /* XXX flush() + ... */
 
   SET_LEAVE(set, ERROR_NONE);
 }

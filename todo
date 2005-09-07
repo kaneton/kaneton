@@ -1,4 +1,10 @@
 --
+ set_type() => set_type(bpt), set_type(ll)
+
+ car ne sont pas censes connaitre SET_TYPE_ARRAY etc.. sinon on aurait fait
+ ca: set_rsv(SET_TYPE_LL, ...);
+
+--
  retoucher la libc pour qu'elle utilise les types systeme: t_uint32 etc..
 
  notamment dans printf avec les stdarg

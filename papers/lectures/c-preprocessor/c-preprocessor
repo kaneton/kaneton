@@ -215,7 +215,14 @@ calling: bande(suce, avale)
 
 6) concatenation
 
-XXX
+the concatenation means joining two words into one.
+
+when you define a macro, you request concatenation using the special
+operator '##' in the macro body.
+
+this often takes place with one constraint word and one of the macro
+argument but it is also possible to apply concatenation between two
+macro arguments:
 
 #include <stdio.h>
 
@@ -234,8 +241,90 @@ int main()
 $ ./main
 => bandesuce
 
+now let's take a look to the most popular problem requesting concatenation:
 
+typedef struct
+{
+  char *name,
+  void (*function)(void);
+} command;
 
+command commands[] =
+{
+  { "quit", quit_command },
+  { "help", help_command },
+  ...
+};
+
+this array declaration can be simplified using a macro with concatenation:
+
+#define NEW_COMMAND(name) { #name, name##_command }
+
+command commands[] = 
+{
+  NEW_COMMAND(quit),
+  NEW_COMMAND(help),
+  ...
+};
+
+in kaneton the concatenation is widely used, first in the set manager
+and then in the machine dependent interface.
+
+let's take a look to the set manager and its interface using a trap system
+to forward function calls to specific set manager: linked-list, array etc..
+
+#define set_trap(_func_, _setid_, _args_...) \
+  ...
+  switch (_set_->type)
+    {
+      case SET_TYPE_ARRAY:
+        _r_ = _func_##_array((_setid_), (_args_));
+        break;
+      case ...
+    }
+  ...
+
+#define set_rsv(_type_, _args_...) \
+  set_rsv_##_type_(_args_)
+
+7) undefining macros
+
+this is used to cancel a definition.
+
+the directive used is '#undef' which is followed by the macro name to
+be undefined.
+
+#define FOO 4
+x = FOO;
+#undef FOO
+x = FF
+
+expands to:
+
+x = 4;
+
+x = FOO;
+
+this code will not compile because FOO is now an undefined symbol.
+
+the macro undefinition works for simple macros as for function-like macros.
+
+8) redefining macros
+
+redefining a macro means defining a name that is already in use as a macro.
+
+if the macro redefined matchs the previous declaration (this case is possible
+with multiple inclusions) the redefinition is simply ignored.
+
+a macro redefinition is considered identical to its previous if every is
+exactly identical excepts whitespaces which are ignored lexical symbols.
+
+to avoid c-preprocessor warnings, prefer undefined the previous declaration
+with the '#undef' directive before the macro redefinition.
+
+9) Pitfalls
+
+XXX
 
 
 
