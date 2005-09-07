@@ -1,0 +1,246 @@
+1) syntax
+
+c preprocessor directives are of the form:
+
+ . the character '#' for specifying a preprocessor operations
+ . a directive name for the precise operation
+
+we cannot define new directives, the directive set is fixed.
+
+some directives require arguments.
+
+for example the #define directive is followed by a whitespace and
+requires a macro name.
+
+2) header files
+
+a)
+
+header files contain c declarations and macro definitions to be used
+by several source files.
+
+you can request the use of a header file using the c preprocessor
+directive #include.
+
+note that requesting a header file to be included produced the same
+result than to copy it into the c source file.
+
+with a header file, the related declarations appear in only one place.
+
+so the changes will only have to be made on a single header file
+instead of on each source file.
+
+b)
+
+syntax of the include directive:
+
+#include <file>: search the header file in a list of directories then
+                 in a standard list of directories (for system headers).
+
+  -I for the directory list
+  -nostdinc for not searching in the system list
+
+  <...> cannot contain neither wildcards nor comments.
+  <...> cannot contain the > character but can contain the < character.
+
+#include "file": search for the header file in the current working directory
+                 then in system directories.
+
+  "..." cannot contain the " character
+  "..." does not accept the backslash escaped character, so:
+        "chiche\n\tpresident\n" is a file containing three backslahes.
+
+#include anythingelse: looks for a macro named anythingelse, resolve
+                       the macro expansion. after all, checks if the
+                       directive now matchs one of the two previous
+                       syntaxes.
+
+  #if defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__)
+    #define INCLUDE_FILE		"bsd/include.h"
+  #else
+    #define INCLUDE_FILE		"linux/include.h"
+  #endif
+
+  #include INCLUDE_FILE
+
+c)
+
+one-only included files
+
+it often happens that a makefile includes another makefiles resulting
+that a certain header is included more than once.
+
+this fact leads to errors if the header files define structures, types etc..
+
+but there's a way to prevent this.
+
+the standard way to do this is:
+
+#ifndef CHICHE_SEEN_WITH_THE_POPE
+#define CHICHE_SEEN_WITH_THE_POPE
+
+#endif /* CHICHE_SEEN_WITH_THE_POPE */
+
+Be careful, user defines may not begin with the character _ because these
+are reserved for system defines.
+
+To avoid conflicts, the system makefiles generally begin with __.
+
+Moreover, and still to avoid conflicts, these macros are suffixed with
+some text. Indeed, otherwise, the two file generic/chiche.h and bsd/chiche.h
+will generate conflicts.
+
+The kaneton project uses a slightly different style:
+ . no underscore before names
+ . no suffixes
+ . but instead use the relative path from the include directory as the name
+
+for example:
+
+  file core/include/kaneton/set.h where core/kaneton is the include dir:
+
+    #ifndef KANETON_SET_H
+      ...
+    #endif
+
+  file core/include/arch/ia32/kaneton/set.h where core/include/arch/machdep
+  is the include directory:
+
+    #ifndef IA32_KANETON_SET_H
+      ...
+    #endif
+
+3) macros
+
+a)
+
+a macros is a sort of abbreviation which you define and then use later.
+
+the standard convention for macro names is to use upper case.
+
+Nevertheless, in few cases it is better to use lower case, especially
+when trying to develop a kind of proxy as in the kaneton's set manager.
+
+#define PAGESZ		4096
+
+#define SET_SZ		PAGESZ
+
+will result in: #define SET_SZ		4096
+
+b)
+
+macros with arguments are called: function-like macros.
+
+be careful, the preprocessor only understand comma for separating arguments
+so this call:
+
+macro (array[x = y, x + 1])
+
+result in a macro named 'macro' which takes two arguments, in this case,
+'array[x = y' and 'x + 1]'.
+
+moreover if a function-like macro takes one argument and the user
+wants to pass an empty argument, he has to specify it using a
+whitespace between the parenthesis: foo( )
+
+it is also possible to use function-like macros which take zero argument
+even if there is no advantage over classical macros.
+
+think about function-like macros declarations which names must be
+followed by an open parenthesis without any whitespace.
+
+indeed if a whitespace appear between the name and the open parenthesis
+the macros will be considered as a simple macros and the open parenthesis
+will be the expansion:
+
+  #define chiche(x) - 1
+
+    chiche(3) => 3 - 1
+
+  #define chiche (x) - 1
+
+    chiche(3) => invalid use of macros because the macro takes no argument
+    chiche => (x) - 1
+
+4) predefined macros
+
+the predefined macros fall into two categories: standard macros and
+system macros.
+
+a)
+
+some interesting standard predefined macros which are very useful.
+
+__FILE__
+  the current file name: string
+
+__LINE__
+  the current line number: integer
+
+these macros are very useful for debugging:
+
+  fprintf(stderr, "%s:%u message here\n", __FILE__, __LINE__);
+
+__DATE__
+  the date the file was preprocessed: string `"Feb 1 1996"'
+
+__TIME__
+  same thing for the time: string `"23:59:01"'
+
+b)
+
+system predefined macros:
+
+linux: for the linux system
+
+__OpenBSD__: for the OpenBSD OS
+
+5) stringification
+
+the action means turning a code fragment into a string constant.
+
+for example stringifying 'chiche(42)' results in '"chiche(42)"'
+
+#define forward(function, args...) \
+  fprintf(stderr, "calling: %s(%s)\n", #function, #args); \
+  function(args);
+
+int main()
+{
+  forward(bande, suce, avale);
+}
+
+$ ./main
+calling: bande(suce, avale)
+
+6) concatenation
+
+XXX
+
+#include <stdio.h>
+
+#define str(x) #x
+
+#define forward(function, arg) \
+  str( function##arg )
+
+int main()
+{
+  int bandesuce;
+
+  printf("=> %s\n", forward(bande, suce));
+}
+
+$ ./main
+=> bandesuce
+
+
+
+
+
+
+
+-- cpp
+ 1) evaluation ( { r; } )
+ 2) macro(, args...) second(suce, ##args)
+
