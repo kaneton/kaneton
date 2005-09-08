@@ -324,9 +324,98 @@ with the '#undef' directive before the macro redefinition.
 
 9) Pitfalls
 
+a) grouping macros arguments
+
+think about grouping macros arguments to avoid non-wanted operations.
+
+#define m(x, y) x + y
+
+m(8 & 4, 5)
+
+will be expanded to:
+
+8 & 4 + 5 which is equal to (8 & (4 + 5))
+
+but the result is not the one intended.
+
+in fact, we wanted the macro to do: (8 & 4) + 5
+
+for this we have to group the macro arguments to avoid these problems:
+
+#define m(x, y) (x) + (y)
+
+b) swallowing the semicolon
+
+sometimes, it is useful to write macros which are a sequence of instructions
+like this one:
+
+#define function(f, a) \
+ { \
+  if (f != NULL) \
+    f(a); \
+ }
+
+the strict use of this macro is:
+
+function(listen, 42)
+
+note that there is no semicolon at the end of the macro call.
+
+nevertheless, users want to consider calling a macro as calling a
+typical C function. for this reason, many programmers put semicolon
+at the end of macro calls.
+
+another reason is the identation which will not be correct if the
+programmer do not put the semicolon.
+
+in many cases, putting a semicolon at the end of a macro call
+just result with an empty instruction and the compiler just ignore
+this instruction, but think about this example:
+
+if (opts == blabla)
+  function(listen, 42);
+else
+  function(send, 42);
+
+this example is not correct because it will be expanded to:
+
+if (opts == blabla)
+  {
+    if (listen != NULL)
+      listen(42);
+  };
+else
+  {
+    if (send != NULL)
+      send(42);
+  };
+
+the problem here is the semicolon before the 'else'.
+
+the only way to solve this problem is:
+
+#define function(f, a) \
+ do \
+  { \
+   if (f != NULL) \
+     f(a); \
+  } while (0)
+
+so
+
+  function(listen, 42);
+
+will be expanded to:
+
+  do
+   {
+     if (listen != NULL)
+       listen(42);
+   } while (0);
+
+c) side effects
+
 XXX
-
-
 
 
 -- cpp
