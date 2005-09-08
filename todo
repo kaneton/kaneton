@@ -1,4 +1,7 @@
 --
+ set_foreach : iterator->state il faudrait le virer
+
+--
  set_type() => set_type(bpt), set_type(ll)
 
  car ne sont pas censes connaitre SET_TYPE_ARRAY etc.. sinon on aurait fait

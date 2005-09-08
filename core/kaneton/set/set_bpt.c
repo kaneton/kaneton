@@ -502,9 +502,69 @@ t_error			set_remove_bpt(t_setid			setid,
 
 t_error			set_flush_bpt(t_setid			setid)
 {
+  t_bpt_nodesz(set)	nodesz;
+  t_iterator		i;
+  o_set*		o;
+
   SET_ENTER(set);
 
-  /* XXX foreach: free(data) remove(id) */
+  /*
+   * 1)
+   */
+
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  nodesz = o->u.bpt.bpt.nodesz;
+
+  /*
+   * 2)
+   */
+
+  set_foreach(SET_OPT_FORWARD, setid, &i)
+    {
+      t_bpt_imm(set)		node;
+      t_bpt_lfentry(set)*	leaf;
+
+      BPT_LOAD(&o->u.bpt.bpt, &node, i.u.bpt.entry.node);
+
+      leaf = BPT_LFENTRY(set, &node, i.u.bpt.entry.ndi);
+
+      free(leaf->data);
+      leaf->data = SET_BPT_UADDR;
+    }
+
+  /*
+   * 3)
+   */
+
+  if (set_adjust_bpt(o, BPT_CLEAN_ALLOC(&o->u.bpt.bpt),
+		     BPT_CLEAN_SIZE(&o->u.bpt.bpt)) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  if (bpt_clean(set, &o->u.bpt.bpt, &o->u.bpt.unused) != 0)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * XXX
+   */
+
+  if (set_adjust_bpt(o, BPT_INIT_ALLOC(),
+		     BPT_INIT_SIZE()) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  if (bpt_init(set, &o->u.bpt.bpt, nodesz,
+	       SET_BPT_UADDR, SET_BPT_UKEY, SET_BPT_UVALUE,
+	       BPT_FLAG_ZERO, set_load_bpt, set_unload_bpt,
+	       set_addrcmp_bpt, set_keycmp_bpt, set_valcmp_bpt,
+	       NULL, NULL, &o->u.bpt.unused) != 0)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  o->size = 0;
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -685,9 +745,60 @@ t_error			set_rsv_bpt(t_opts			opts,
 
 t_error			set_rel_bpt(t_setid			setid)
 {
+  o_set			*o;
+
   SET_ENTER(set);
 
-  /* XXX flush() + ... */
+  /*
+   * 1)
+   */
+
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (set_flush(setid) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (setid == set->setid)
+    {
+      cons_msg('!', "set: cannot release the set container\n");
+
+      SET_LEAVE(set, ERROR_UNKNOWN);
+    }
+
+  /*
+   * XXX
+   */
+
+  if (set_adjust_bpt(o, BPT_CLEAN_ALLOC(&o->u.bpt.bpt),
+		     BPT_CLEAN_SIZE(&o->u.bpt.bpt)) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  if (bpt_clean(set, &o->u.bpt.bpt, &o->u.bpt.unused) != 0)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (!(o->u.bpt.opts & SET_OPT_CONTAINER))
+    if (id_rel(&set->id, o->setid) != ERROR_NONE)
+      SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
+  if (set_delete(o->setid) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   SET_LEAVE(set, ERROR_NONE);
 }

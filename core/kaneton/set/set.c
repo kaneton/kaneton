@@ -446,6 +446,8 @@ t_error			set_clean(void)
    * 1)
    */
 
+  /* XXX set_rel() */
+
   if (set_flush(set->setid) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to flush the set container\n");
