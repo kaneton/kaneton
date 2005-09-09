@@ -607,3 +607,7 @@ the work if encountered.
 -- cpp
  2) macro(, args...) second(suce, ##args)
 
+-- case study
+
+1) set
+2) machdep interface

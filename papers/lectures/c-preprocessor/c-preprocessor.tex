@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Fri Sep  9 20:35:06 2005   mycure
+%% last update   Sat Sep 10 01:20:16 2005   mycure
 %%
 
 %
@@ -24,13 +24,15 @@
 % packages
 %
 
-\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
-\usepackage{amsmath,amssymb}
-\usepackage[latin1]{inputenc}
-\usepackage{colortbl}
+%\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+%\usepackage{amsmath,amssymb}
+%\usepackage[latin1]{inputenc}
+%\usepackage{colortbl}
 \usepackage[english]{babel}
-\usepackage{verbatim}
-\usepackage{times}
+%\usepackage{verbatim}
+%\usepackage{times}
+
+% XXX \usepackage{semiverbatim}
 
 %
 % style
@@ -115,7 +117,54 @@
 
 \section{Overview}
 
+%
+% 1)
+%
+
+\begin{frame}
+  \frametitle{Description}
+
+  The C preprocessor, often known as cpp, is a macro processor that
+  is used automatically by the C compiler to transform your program
+  before compilation.
+
+
+  It is called a macro processor because it allows you to define macros,
+  which are brief abbreviations for longer constructs.
+\end{frame}
+
+%
+% 2)
+%
+
+\begin{frame}[fragile]
+  \frametitle{Syntax}
+
+  The C preprocessor's directives are of the form:
+
+  \begin{itemize}
+    \item
+      the character \textbf{\#} for specifying a preprocessor operation
+    \item
+      a directive name for the precise operation
+  \end{itemize}
+
+\end{frame}
+
 \subsection{Introduction}
+
+\begin{frame}[fragile]
+  \frametitle{An Algorithm For Finding Primes Numbers.}
+
+  \begin{semiverbatim}
+    text
+  \end{semiverbatim}
+
+  \begin{uncoverenv}<2>
+    Note the use of \verb|std::|.
+  \end{uncoverenv}
+
+\end{frame}
 
 \subsection{Syntax}
 
@@ -130,11 +179,5 @@
 \section{Pitfalls}
 
 \section{Diagnostics}
-
-\begin{frame}
-  \frametitle{}
-
-  bande
-\end{frame}
 
 \end{document}

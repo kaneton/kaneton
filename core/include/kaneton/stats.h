@@ -5,13 +5,13 @@
  * 
  * stats.h
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Tue Aug 30 13:15:16 2005   mycure
+ * last update   Thu Sep  8 23:57:18 2005   mycure
  */
 
 #ifndef KANETON_STATS_H
@@ -108,44 +108,40 @@ typedef struct
  */
 
 #ifdef CONF_STATS
-
-#define STATS_DUMP()							\
+# define STATS_DUMP()							\
   stats_dump()
 
-#define STATS_BEGIN(_stats_)						\
+# define STATS_BEGIN(_stats_)						\
   stats_begin((_stats_), (char*)__FUNCTION__)
 
-#define STATS_END(_stats_, _error_)					\
+# define STATS_END(_stats_, _error_)					\
   stats_end((_stats_), (char*)__FUNCTION__, (_error_))
 
-#define STATS_RSV(_name_, _staid_)					\
+# define STATS_RSV(_name_, _staid_)					\
   stats_rsv((_name_), (_staid_))
 
-#define STATS_REL(_staid_)						\
+# define STATS_REL(_staid_)						\
   stats_rel((_staid_))
 
-#define STATS_INIT()							\
+# define STATS_INIT()							\
   stats_init()
 
-#define STATS_CLEAN()							\
+# define STATS_CLEAN()							\
   stats_clean()
-
 #else
+# define STATS_DUMP()
 
-#define STATS_DUMP()
+# define STATS_BEGIN(_stats_)
 
-#define STATS_BEGIN(_stats_)
+# define STATS_END(_stats_, _error_)
 
-#define STATS_END(_stats_, _error_)
+# define STATS_RSV(_name_, _staid_)
 
-#define STATS_RSV(_name_, _staid_)
+# define STATS_REL(_staid_)
 
-#define STATS_REL(_staid_)
+# define STATS_INIT()
 
-#define STATS_INIT()
-
-#define STATS_CLEAN()
-
+# define STATS_CLEAN()
 #endif
 
 /*

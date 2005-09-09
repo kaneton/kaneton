@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/data/research/projects/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Sat Sep  3 15:39:00 2005   mycure
+ * last update   Thu Sep  8 23:56:37 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -184,17 +184,13 @@ typedef struct
  */
 
 #if (DEBUG & DEBUG_SET)
-
-#define set_debug(_func_, _setid_, _args_...)				\
+# define set_debug(_func_, _setid_, _args_...)				\
   fprintf(stderr, "[setd] trap: %s(%qu, %s)\n",				\
           #_func_,							\
           _setid_,							\
           #_args_);
-
 #else
-
-#define set_debug(_func_, _setid_, _args...)
-
+# define set_debug(_func_, _setid_, _args...)
 #endif
 
 /*
