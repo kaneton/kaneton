@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Fri Sep  9 18:48:52 2005   mycure
+## last update   Fri Sep  9 18:54:06 2005   mycure
 ##
 
 #
@@ -50,14 +50,20 @@ PAPER_GARBAGE		:=		$(PAPER).aux			\
 
 all:			pdf
 
-dvi $(PAPER_DVI):	$(PAPER_TEX)
+$(PAPER_DVI):		$(PAPER_TEX)
 	$(call dvi,$(PAPER_DVI),$(PAPER_TEX),$(PAPER_TEX),)
 
-ps $(PAPER_PS):		$(PAPER_DVI)
+$(PAPER_PS):		$(PAPER_DVI)
 	$(call ps,$(PAPER_PS),$(PAPER_DVI),$(PAPER_TEX),)
 
-pdf $(PAPER_PDF):	$(PAPER_PS)
+$(PAPER_PDF):		$(PAPER_PS)
 	$(call pdf,$(PAPER_PDF),$(PAPER_PS),$(PAPER_TEX),)
+
+dvi:			$(PAPER_DVI)
+
+ps:			$(PAPER_PS)
+
+pdf:			$(PAPER_PDF)
 
 clear:
 	$(call remove,$(PAPER_GARBAGE),)
