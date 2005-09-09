@@ -1,4 +1,15 @@
 --
+ faire un make view:bande et ca lance un script dans papers qui liste les trucs a voir si aucune
+ argument ou faux arg
+
+--
+ permettre de release le set container pour pouvoir vraiment liberer
+ la memoire.
+
+ faire des tests, il faut qu une fois set_clean fait on est la meme memoire
+ qu avant set_init
+
+--
  set_foreach : iterator->state il faudrait le virer
 
 --

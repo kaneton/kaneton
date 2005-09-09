@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Fri Sep  9 18:46:05 2005   mycure
+## last update   Fri Sep  9 18:45:33 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		inline-assembly
+PAPER			:=		asm-x86
 
 PAPER_TEX		:=		$(PAPER).tex
 PAPER_DVI		:=		$(PAPER).dvi

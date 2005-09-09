@@ -1,25 +1,65 @@
 ##
+## copyright quintard julien
+## 
 ## kaneton
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/data/research/projects/kaneton/papers/kaneton
+## path          /home/mycure/kaneton/papers/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
-## started on    Sun Nov 21 14:13:54 2004   mycure
-## last update   Thu Jul 21 20:33:56 2005   mycure
+## started on    Fri Feb 11 02:59:20 2005   mycure
+## last update   Fri Sep  9 18:42:00 2005   mycure
 ##
 
 #
-# file
+# ---------- dependencies -----------------------------------------------------
 #
 
-_FILE_			:=		kaneton
+include			../../.kaneton.mk
 
 #
-# dependency
+# ---------- directives -------------------------------------------------------
 #
 
-include			../makefile.mk
+.PHONY:		all dvi ps pdf clear
+
+#
+# ---------- variables --------------------------------------------------------
+#
+
+PAPER			:=		kaneton
+
+PAPER_TEX		:=		$(PAPER).tex
+PAPER_DVI		:=		$(PAPER).dvi
+PAPER_PS		:=		$(PAPER).ps
+PAPER_PDF		:=		$(PAPER).pdf
+
+PAPER_GARBAGE		:=		$(PAPER).aux			\
+					$(PAPER).log			
+
+#
+# ---------- rules ------------------------------------------------------------
+#
+
+all:			pdf
+
+dvi $(PAPER_DVI):	$(PAPER_TEX)
+	$(call dvi,$(PAPER_DVI),$(PAPER_TEX),$(PAPER_TEX),)
+
+ps $(PAPER_PS):		$(PAPER_DVI)
+	$(call ps,$(PAPER_PS),$(PAPER_DVI),$(PAPER_TEX),)
+
+pdf $(PAPER_PDF):	$(PAPER_PS)
+	$(call pdf,$(PAPER_PDF),$(PAPER_PS),$(PAPER_TEX),)
+
+clear:
+	$(call remove,$(PAPER_GARBAGE),)
+
+	$(call remove,$(PAPER_PDF),)
+	$(call remove,$(PAPER_PS),)
+	$(call remove,$(PAPER_DVI),)
+
+	$(call purge)

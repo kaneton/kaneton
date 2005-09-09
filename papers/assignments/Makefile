@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/papers/lectures
+## path          /home/mycure/kaneton/papers/assignments
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Fri Sep  9 18:46:05 2005   mycure
+## last update   Fri Sep  9 18:41:43 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../.kaneton.mk
+include			../../.kaneton.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		inline-assembly
+PAPER			:=		assignments
 
 PAPER_TEX		:=		$(PAPER).tex
 PAPER_DVI		:=		$(PAPER).dvi

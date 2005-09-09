@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Tue Sep  6 11:13:10 2005   mycure
+## last update   Fri Sep  9 18:28:45 2005   mycure
 ##
 
 #
@@ -35,7 +35,9 @@
 
 SHELL			:=		/bin/sh
 
-SUBDIRS			:=		libs core services
+_SHELL_			?=		true
+
+SUBDIRS			:=		libs core services papers
 
 #
 # ---------- default rule -----------------------------------------------------
@@ -104,12 +106,12 @@ dep:			kaneton.mk
 
 build:			kaneton.mk
 	cd utils/							; \
-	$(SHELL) $(_MULTIBOOTLOADER_) build				; \
+	$(_SHELL_) $(_MULTIBOOTLOADER_) build				; \
 	cd ..
 
 install:		kaneton.mk kaneton
 	cd utils/							; \
-	$(SHELL) $(_MULTIBOOTLOADER_) install				; \
+	$(_SHELL_) $(_MULTIBOOTLOADER_) install				; \
 	cd ..
 
 #
@@ -119,6 +121,25 @@ install:		kaneton.mk kaneton
 #
 
 check:
+
+#
+# ---------- view -------------------------------------------------------------
+#
+
+view-%:
+	if [ $* == ".o" ] ; then					\
+	  ARG=""							; \
+	else								\
+	  ARG=$*							; \
+	fi								; \
+									\
+	cd papers/							; \
+	$(_SHELL_) $(_VIEWER_) $$ARG					; \
+	cd ..								; \
+									\
+	if [ $* == ".o" ] ; then					\
+	  exit 2							; \
+	fi
 
 #
 # ---------- information ------------------------------------------------------

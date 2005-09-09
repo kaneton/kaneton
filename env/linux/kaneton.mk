@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Tue Sep  6 11:13:59 2005   mycure
+## last update   Fri Sep  9 18:27:45 2005   mycure
 ##
 
 #
@@ -39,6 +39,8 @@
 
 SHELL			:=		/bin/sh
 
+_SHELL_			:=		$(SHELL)
+
 #
 # ---------- kaneton directories ----------------------------------------------
 #
@@ -59,6 +61,7 @@ _ENV_DIR_		:=		$(_SRC_DIR_)/env
 _LDS_DIR_		:=		$(_SRC_DIR_)/lds/arch/machdep
 _CONF_DIR_		:=		$(_SRC_DIR_)/conf
 _UTILS_DIR_		:=		$(_SRC_DIR_)/utils
+_PAPERS_DIR_		:=		$(_SRC_DIR_)/papers
 
 _LIBS_DIR_		:=		$(_SRC_DIR_)/libs
 _LIBS_INCLUDE_DIR_	:=		$(_LIBS_DIR_)
@@ -77,6 +80,7 @@ _MAKEFILE_MK_		:=		.makefile.mk
 #
 
 _PROTO_			:=		$(_UTILS_DIR_)/mkp.py
+_VIEWER_		:=		$(_PAPERS_DIR_)/viewer.sh
 
 #
 # ---------- kaneton binaries -------------------------------------------------
@@ -153,6 +157,9 @@ _TOUCH_			:=		touch
 _WC_			:=		wc
 _TAIL_			:=		tail
 _TAR_			:=		tar
+_LATEX_			:=		latex
+_DVIPS_			:=		dvips
+_PDFLATEX_		:=		pdflatex
 
 #
 # ---------- traps ------------------------------------------------------------
@@ -234,7 +241,7 @@ define pretty-printer
 endef
 
 #
-# make
+# call make in each directory of the list
 #
 # $(1):		the directory list
 # $(2):		advanced options
@@ -349,7 +356,7 @@ define archive
 endef
 
 #
-# remove
+# remove the files
 #
 # $(1):		files
 # $(2):		advanced options
@@ -365,7 +372,7 @@ define remove
 endef
 
 #
-# purge
+# purge i.e clean the directory from unwanted files
 #
 
 define purge
@@ -374,7 +381,7 @@ define purge
 endef
 
 #
-# prototypes
+# generate prototypes from a source file
 #
 # $(1):		file list
 # $(2):		advanced options
@@ -390,7 +397,7 @@ define prototypes
 endef
 
 #
-# dependencies
+# genereate dependencies
 #
 # $(1):		the files for which the dependencies are generated
 # $(2):		the output file
@@ -408,7 +415,7 @@ define dependencies
 endef
 
 #
-# version
+# generate a version file
 #
 # $(1):		the version file to generate
 #
@@ -424,7 +431,7 @@ define version
 endef
 
 #
-# link
+# create a link between two files
 #
 # $(1):		link created
 # $(2):		destination
@@ -437,15 +444,54 @@ define link
 endef
 
 #
-# dist
+# create a distribution tarball
 #
 
 define dist
-  echo ""								; \
-  echo -e '\E[;34m'"\033[1m---\033[0m \033[1mbuilding kaneton..\033[0m"	; \
+  $(call pretty-printer,yellow,DIST,kaneton,			)	; \
   $(_TAR_) -czf /tmp/kaneton.tar.gz .					; \
-  $(_MV_) /tmp/kaneton.tar.gz .						; \
-  echo ""								; \
-  echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton built\033[0m"	; \
-  echo ""
+  $(_MV_) /tmp/kaneton.tar.gz .
 endef
+
+# 
+# create a dvi file from a tex one
+#
+# $(1):		the output file name
+# $(2):		the logical previous latex file
+# $(3):		the orginial latex file
+# $(4):		advanced options
+#
+
+define dvi
+  $(call pretty-printer,yellow,DVI,$(1),			)	; \
+  $(_LATEX_) $(4) $(2) -o $(1)
+endef
+
+# 
+# create a ps file from a dvi one
+#
+# $(1):		the output file name
+# $(2):		the logical previous dvi file
+# $(3):		the orginial latex file
+# $(4):		advanced options
+#
+
+define ps
+  $(call pretty-printer,yellow,PS,$(1),			)		; \
+  $(_DVIPS_) $(4) $(2) -o $(1) 2> /dev/null > /dev/null
+endef
+
+# 
+# create a pdf file
+#
+# $(1):		the output file name
+# $(2):		the logical previous latex file
+# $(3):		the orginial latex file
+# $(4):		advanced options
+#
+
+define pdf
+  $(call pretty-printer,yellow,PDF,$(1),			)	; \
+  $(_PDFLATEX_) $(4) $(3) -o $(1) 2> /dev/null > /dev/null
+endef
+

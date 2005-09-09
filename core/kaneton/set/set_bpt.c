@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Sep  6 11:18:38 2005   mycure
+ * last update   Fri Sep  9 04:34:23 2005   mycure
  */
 
 /*
@@ -44,7 +44,7 @@ extern m_set*		set;
 bpt_make_functions(set, id, data);
 
 /*
- * XXX
+ * this function loads a node from main memory to main memory.
  */
 
 void			set_load_bpt(t_bpt(set)*		bpt,
@@ -56,7 +56,9 @@ void			set_load_bpt(t_bpt(set)*		bpt,
 }
 
 /*
- * XXX
+ * this function unloads a node.
+ *
+ * using node storing in main memory, this function finally does nothing.
  */
 
 void			set_unload_bpt(t_bpt(set)*		bpt,
@@ -68,7 +70,7 @@ void			set_unload_bpt(t_bpt(set)*		bpt,
 }
 
 /*
- * XXX
+ * this function compares two addresses.
  */
 
 int			set_addrcmp_bpt(t_bpt(set)*		bpt,
@@ -79,7 +81,7 @@ int			set_addrcmp_bpt(t_bpt(set)*		bpt,
 }
 
 /*
- * XXX
+ * this function compares two keys.
  */
 
 int			set_keycmp_bpt(t_bpt(set)*		bpt,
@@ -90,7 +92,7 @@ int			set_keycmp_bpt(t_bpt(set)*		bpt,
 }
 
 /*
- * XXX
+ * this function compares two values.
  */
 
 int			set_valcmp_bpt(t_bpt(set)*		bpt,
@@ -101,7 +103,8 @@ int			set_valcmp_bpt(t_bpt(set)*		bpt,
 }
 
 /*
- * XXX
+ * this function dumps the state of the unused object, in other
+ * words the unused nodes contained in the unused object.
  */
 
 t_error			set_dump_unused_bpt(o_set*		o)
@@ -121,7 +124,12 @@ t_error			set_dump_unused_bpt(o_set*		o)
 }
 
 /*
- * XXX
+ * this function builds an unused object.
+ *
+ * steps:
+ *
+ * 1) allocates and initialises the unused object.
+ * 3) builds the needed number of elements.
  */
 
 t_error			set_build_bpt(o_set*			o,
@@ -133,18 +141,22 @@ t_error			set_build_bpt(o_set*			o,
 
   o->u.bpt.unusedsz = BPT_INIT_SIZE();
 
+  /*
+   * 1)
+   */
+
   if ((o->u.bpt.unused.array = malloc(o->u.bpt.unusedsz *
 				      sizeof(t_bpt_addr(set)))) == NULL)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
-  o->u.bpt.unused.index = BPT_INIT_ALLOC() - 1;
+  o->u.bpt.unused.index = -1;
 
-  for (i = 0; i < o->u.bpt.unusedsz; i++)
-    o->u.bpt.unused.array[i] = SET_BPT_UADDR;
+  /*
+   * 2)
+   */
 
-  for (i = 0; i <= o->u.bpt.unused.index; i++)
-    if ((o->u.bpt.unused.array[i] = (t_bpt_addr(set))malloc(nodesz)) == NULL)
-      SET_LEAVE(set, ERROR_UNKNOWN);
+  if (set_adjust_bpt(o, BPT_INIT_ALLOC(), BPT_INIT_SIZE()) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -194,7 +206,12 @@ t_error			set_adjust_bpt(o_set*			o,
 }
 
 /*
- * XXX
+ * this function destroys the unused object.
+ *
+ * steps:
+ *
+ * 1) frees each unused element of the unused object.
+ * 2) frees the unused object itself.
  */
 
 t_error			set_destroy_bpt(o_set*			o)
@@ -203,8 +220,16 @@ t_error			set_destroy_bpt(o_set*			o)
 
   SET_ENTER(set);
 
+  /*
+   * 1)
+   */
+
   for (i = 0; i <= o->u.bpt.unused.index; i++)
     free(o->u.bpt.unused.array[i]);
+
+  /*
+   * 2)
+   */
 
   free(o->u.bpt.unused.array);
 
@@ -212,7 +237,12 @@ t_error			set_destroy_bpt(o_set*			o)
 }
 
 /*
- * XXX
+ * this function dumps the set objects.
+ *
+ * steps:
+ *
+ * 1) gets the descriptor from its set identifier.
+ * 2) prints a message for each objects of the set.
  */
 
 t_error			set_dump_bpt(t_setid			setid)
@@ -254,7 +284,8 @@ t_error			set_dump_bpt(t_setid			setid)
 }
 
 /*
- * XXX
+ * this function gets the first object of the set using the bpt_list()
+ * function with the BPT_OPT_HEAD option.
  */
 
 t_error			set_head_bpt(t_setid			setid,
@@ -284,7 +315,8 @@ t_error			set_head_bpt(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function gets the last object of the set using the bpt_list()
+ * function with the BPT_OPT_TAIL option.
  */
 
 t_error			set_tail_bpt(t_setid			setid,
@@ -314,7 +346,7 @@ t_error			set_tail_bpt(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function returns the previous node of the current iterator.
  */
 
 t_error			set_prev_bpt(t_setid			setid,
@@ -336,7 +368,7 @@ t_error			set_prev_bpt(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function returns the next node of the current iterator.
  */
 
 t_error			set_next_bpt(t_setid			setid,
@@ -358,7 +390,8 @@ t_error			set_next_bpt(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function just returns an error because the bpt set only
+ * works with the sort option.
  */
 
 t_error			set_insert_head_bpt(t_setid		setid,
@@ -370,7 +403,8 @@ t_error			set_insert_head_bpt(t_setid		setid,
 }
 
 /*
- * XXX
+ * this function just returns an error because the bpt set only
+ * works with the sort option.
  */
 
 t_error			set_insert_tail_bpt(t_setid		setid,
@@ -382,7 +416,8 @@ t_error			set_insert_tail_bpt(t_setid		setid,
 }
 
 /*
- * XXX
+ * this function just returns an error because the bpt set only
+ * works with the sort option.
  */
 
 t_error			set_insert_before_bpt(t_setid		setid,
@@ -395,7 +430,8 @@ t_error			set_insert_before_bpt(t_setid		setid,
 }
 
 /*
- * XXX
+ * this function just returns an error because the bpt set only
+ * works with the sort option.
  */
 
 t_error			set_insert_after_bpt(t_setid		setid,
@@ -408,7 +444,17 @@ t_error			set_insert_after_bpt(t_setid		setid,
 }
 
 /*
- * XXX
+ * this function builds a leaf entry to add the user object.
+ *
+ * steps:
+ *
+ * 1) checks for non-valid identifiers.
+ * 2) gets the set descriptor object from its identifier.
+ * 3) initialises the leaf entry.
+ * 4) handles the options: allocate or not the object.
+ * 5) adjusts the bpt unused object to perform the next operation.
+ * 6) adds the built leaf entry to the tree.
+ * 7) updates the set counter.
  */
 
 t_error			set_add_bpt(t_setid			setid,
@@ -419,15 +465,31 @@ t_error			set_add_bpt(t_setid			setid,
 
   SET_ENTER(set);
 
+  /*
+   * 1)
+   */
+
   if (*(t_id*)data == ID_UNUSED)
     SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
 
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
+  /*
+   * 3)
+   */
+
   memset(&lfentry, 0x0, sizeof(t_bpt_lfentry(set)));
 
   lfentry.id = *((t_id*)data);
+
+  /*
+   * 4)
+   */
 
   if (o->u.bpt.opts & SET_OPT_ALLOC)
     {
@@ -441,12 +503,24 @@ t_error			set_add_bpt(t_setid			setid,
       lfentry.data = data;
     }
 
+  /*
+   * 5)
+   */
+
   if (set_adjust_bpt(o, BPT_ADD_ALLOC(&o->u.bpt.bpt),
 		     BPT_ADD_SIZE(&o->u.bpt.bpt)) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
+  /*
+   * 6)
+   */
+
   if (bpt_add(set, &o->u.bpt.bpt, &lfentry, &o->u.bpt.unused) != 0)
     SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 7)
+   */
 
   o->size++;
 
@@ -454,7 +528,20 @@ t_error			set_add_bpt(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function removes an object from the tree.
+ *
+ * the leaf entry has to be retrieved before to release it because
+ * the data may be need to be freed.
+ *
+ * steps:
+ *
+ * 1) checks for bad identifiers.
+ * 2) gets the set descriptor.
+ * 3) if the alloc option was set, locates the leaf entry holding
+ *    the object and frees the object.
+ * 4) adjusts the bpt unused object.
+ * 5) removes the leaf entry given the identifier.
+ * 6) updates the set counter.
  */
 
 t_error			set_remove_bpt(t_setid			setid,
@@ -466,11 +553,23 @@ t_error			set_remove_bpt(t_setid			setid,
 
   SET_ENTER(set);
 
+  /*
+   * 1)
+   */
+
   if (id == ID_UNUSED)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
+  /*
+   * 2)
+   */
+
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
 
   if (o->u.bpt.opts & SET_OPT_ALLOC)
     {
@@ -484,12 +583,24 @@ t_error			set_remove_bpt(t_setid			setid,
       BPT_UNLOAD(&o->u.bpt.bpt, &node);
     }
 
+  /*
+   * 4)
+   */
+
   if (set_adjust_bpt(o, BPT_REMOVE_ALLOC(&o->u.bpt.bpt),
 		     BPT_REMOVE_SIZE(&o->u.bpt.bpt)) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
+  /*
+   * 5)
+   */
+
   if (bpt_remove(set, &o->u.bpt.bpt, id, &o->u.bpt.unused) != 0)
     SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 6)
+   */
 
   o->size--;
 
@@ -570,7 +681,8 @@ t_error			set_flush_bpt(t_setid			setid)
 }
 
 /*
- * XXX
+ * this function locates the leaf entry corresponding to the given
+ * identifier, then builds an iterator for it.
  */
 
 t_error			set_locate_bpt(t_setid			setid,
@@ -582,23 +694,11 @@ t_error			set_locate_bpt(t_setid			setid,
 
   SET_ENTER(set);
 
-  /*
-   * 1)
-   */
-
   if (id == ID_UNUSED)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
-  /*
-   * 2)
-   */
-
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
 
   if (bpt_search(set, &o->u.bpt.bpt, id, &entry) != 0)
     SET_LEAVE(set, ERROR_NONE);
@@ -609,7 +709,7 @@ t_error			set_locate_bpt(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function returns the object from its iterator.
  */
 
 t_error			set_object_bpt(t_setid			setid,
