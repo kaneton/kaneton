@@ -1,4 +1,8 @@
 --
+ retoucher le README car nouvelles regles makefile, nouvelles functions
+ dans kaneton.mk
+
+--
  faire un make view:bande et ca lance un script dans papers qui liste les trucs a voir si aucune
  argument ou faux arg
 
