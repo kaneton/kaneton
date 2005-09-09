@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Wed Sep  7 11:07:40 2005   mycure
+%% last update   Fri Sep  9 20:35:06 2005   mycure
 %%
 
 %
@@ -36,11 +36,7 @@
 % style
 %
 
-\setbeamertemplate{background canvas}[vertical shading][bottom=red!10,top=blue!10]
-\usetheme{Ilmenau}
-\usefonttheme[onlysmall]{structurebold}
-
-\setbeamercovered{dynamic}
+\usepackage{beamerthemesplit}
 
 %
 % verbatim font
@@ -55,19 +51,19 @@
 % title
 %
 
-\title[The~C~Preprocessor]{The~C~Preprocessor}
+\title{The C Preprocessor}
 
 %
 % authors
 %
 
-\author[Julien~Quintard]
+\author
 {
   Julien~Quintard\inst{1} \\
   {\tiny quinta\_j@lse.epita.fr}
 }
 
-\institute[EPITA Computer System Laboratory]
+\institute
 {
   \inst{1} EPITA Computer System Laboratory
 }
@@ -76,13 +72,7 @@
 % date
 %
 
-\date[\today]{\today}
-
-%
-% subject
-%
-
-\subject{The C Preprocessor}
+\date{\today}
 
 %
 % table of contents at the beginning of each section
@@ -91,7 +81,7 @@
 \AtBeginSubsection[]
 {
   \begin{frame}<beamer>
-    \frametitle{Outline}
+   \frametitle{Outline}
     \tableofcontents[current,currentsubsection]
   \end{frame}
 }
@@ -125,18 +115,26 @@
 
 \section{Overview}
 
-% 1)
+\subsection{Introduction}
+
+\subsection{Syntax}
+
+\section{Directives}
+
+\subsection{Header Files}
+
+\subsection{Macros}
+
+\subsection{Conditionals}
+
+\section{Pitfalls}
+
+\section{Diagnostics}
 
 \begin{frame}
-  \frametitle{What is it?}
+  \frametitle{}
 
-  \begin{block}{Good Characteristics}
-    \begin{itemize}
-      \item
-	chiche
-    \end{itemize}
-  \end{block}
-
+  bande
 \end{frame}
 
 \end{document}

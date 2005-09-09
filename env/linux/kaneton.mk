@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Fri Sep  9 19:06:09 2005   mycure
+## last update   Fri Sep  9 20:02:22 2005   mycure
 ##
 
 #
@@ -464,6 +464,7 @@ endef
 
 define dvi
   $(call pretty-printer,yellow,DVI,$(1),			)	; \
+  $(_LATEX_) $(4) $(2) -o $(1) $(_VIEW_DEBUG_)				; \
   $(_LATEX_) $(4) $(2) -o $(1) $(_VIEW_DEBUG_)
 endef
 
@@ -492,6 +493,7 @@ endef
 
 define pdf
   $(call pretty-printer,yellow,PDF,$(1),			)	; \
+  $(_PDFLATEX_) $(4) $(3) -o $(1) $(_VIEW_DEBUG_)			; \
   $(_PDFLATEX_) $(4) $(3) -o $(1) $(_VIEW_DEBUG_)
 endef
 

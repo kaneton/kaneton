@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Fri Sep  9 17:55:02 2005   mycure
+## last update   Fri Sep  9 19:20:13 2005   mycure
 ##
 
 # INFORMATIONS
@@ -76,6 +76,7 @@ read_kaneton_conf()
 usage()
 {
   print " papers:" "+"
+  print ""
 
   for i in $PAPERS ; do
     name=`basename $i`
@@ -140,7 +141,7 @@ find()
 # this function builds the paper
 build()
 {
-  make -C $path $VIEW_FORMAT
+  make -s -C $path $VIEW_FORMAT
 }
 
 

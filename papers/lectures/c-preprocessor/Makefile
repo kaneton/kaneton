@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/papers/lectures
+## path          /home/mycure/kaneton/papers
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Fri Sep  9 18:56:57 2005   mycure
+## last update   Fri Sep  9 19:17:59 2005   mycure
 ##
 
 #
@@ -56,7 +56,7 @@ $(PAPER_DVI):		$(PAPER_TEX)
 $(PAPER_PS):		$(PAPER_DVI)
 	$(call ps,$(PAPER_PS),$(PAPER_DVI),$(PAPER_TEX),)
 
-$(PAPER_PDF):		$(PAPER_PS)
+$(PAPER_PDF):	$(PAPER_TEX) # XXX	$(PAPER_PS)
 	$(call pdf,$(PAPER_PDF),$(PAPER_PS),$(PAPER_TEX),)
 
 dvi:			$(PAPER_DVI)
