@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Fri Sep  9 20:02:22 2005   mycure
+## last update   Sat Sep 10 18:00:01 2005   mycure
 ##
 
 #
@@ -270,7 +270,7 @@ endef
 
 define compile-c
   $(call pretty-printer,green,COMPILE-C,$(2),		)		; \
-  $(CC) $(CFLAGS) $(3) -c $(2) -o $(1)
+  $(CC) $(CFLAGS) $(3) -c $(2) -o $(1) $(_VERBOSE_)
 endef
 
 #
@@ -283,7 +283,7 @@ endef
 
 define compile-S
   $(call pretty-printer,green,COMPILE-S,$(2),		)		; \
-  $(CC) $(CFLAGS) $(3) -c $(2) -o $(1)
+  $(CC) $(CFLAGS) $(3) -c $(2) -o $(1) $(_VERBOSE_)
 endef
 
 #
@@ -296,7 +296,7 @@ endef
 
 define compile-asm
   $(call pretty-printer,green,COMPILE-ASM,$(2),		)		; \
-  $(_NASM_) $(3) $(2) -o $(1)
+  $(_NASM_) $(3) $(2) -o $(1) $(_VERBOSE_)
 endef
 
 #
@@ -309,8 +309,8 @@ endef
 
 define static-library
   $(call pretty-printer,magenta,STATIC-LIBRARY,$(1),	)		; \
-  $(_AR_) $(3) $(1) $(2)
-  $(_RANLIB_) $(3) $(1)
+  $(_AR_) $(3) $(1) $(2) $(_VERBOSE_)
+  $(_RANLIB_) $(3) $(1) $(_VERBOSE_)
 endef
 
 #
@@ -324,7 +324,7 @@ endef
 
 define dynamic-library
   $(call pretty-printer,magenta,DYNAMIC-LIBRARY,$(1),	)		; \
-  $(_LD_) $(LDFLAGS) --shared $(3) -o $(1) $(2)
+  $(_LD_) $(LDFLAGS) --shared $(3) -o $(1) $(2) $(_VERBOSE_)
 endef
 
 #
@@ -337,7 +337,7 @@ endef
 
 define executable
   $(call pretty-printer,magenta,EXECUTABLE,$(1),		)	; \
-  $(_LD_) $(LDFLAGS) $(3) -o $(1) $(2)
+  $(_LD_) $(LDFLAGS) $(3) -o $(1) $(2) $(_VERBOSE_)
 endef
 
 #
@@ -352,7 +352,7 @@ endef
 
 define archive
   $(call pretty-printer,magenta,ARCHIVE,$(1),		)		; \
-  $(_LD_) $(LDFLAGS) -r $(3) -o $(1) $(2)
+  $(_LD_) $(LDFLAGS) -r $(3) -o $(1) $(2) $(_VERBOSE_)
 endef
 
 #
@@ -440,7 +440,7 @@ endef
 
 define link
   $(call pretty-printer,cyan,LINK,$(1),			)		; \
-  $(_LN_) $(3) $(2) $(1)
+  $(_LN_) $(3) $(2) $(1) $(_VERBOSE_)
 endef
 
 #
@@ -464,8 +464,8 @@ endef
 
 define dvi
   $(call pretty-printer,yellow,DVI,$(1),			)	; \
-  $(_LATEX_) $(4) $(2) -o $(1) $(_VIEW_DEBUG_)				; \
-  $(_LATEX_) $(4) $(2) -o $(1) $(_VIEW_DEBUG_)
+  $(_LATEX_) $(4) $(2) -o $(1) $(_VIEW_DEBUG_) $(_VERBOSE_)		; \
+  $(_LATEX_) $(4) $(2) -o $(1) $(_VIEW_DEBUG_) $(_VERBOSE_)
 endef
 
 # 
@@ -479,7 +479,7 @@ endef
 
 define ps
   $(call pretty-printer,yellow,PS,$(1),			)		; \
-  $(_DVIPS_) $(4) $(2) -o $(1) $(_VIEW_DEBUG_)
+  $(_DVIPS_) $(4) $(2) -o $(1) $(_VERBOSE_)
 endef
 
 # 
@@ -493,7 +493,6 @@ endef
 
 define pdf
   $(call pretty-printer,yellow,PDF,$(1),			)	; \
-  $(_PDFLATEX_) $(4) $(3) -o $(1) $(_VIEW_DEBUG_)			; \
-  $(_PDFLATEX_) $(4) $(3) -o $(1) $(_VIEW_DEBUG_)
+  $(_PDFLATEX_) $(4) $(3) -o $(1) $(_VERBOSE_)				; \
+  $(_PDFLATEX_) $(4) $(3) -o $(1) $(_VERBOSE_)
 endef
-

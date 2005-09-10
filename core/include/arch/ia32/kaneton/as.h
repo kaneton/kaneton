@@ -5,13 +5,13 @@
  * 
  * as.h
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/include/arch/ia32/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Tue Aug 30 16:10:28 2005   mycure
+ * last update   Sat Sep 10 15:17:55 2005   mycure
  */
 
 #ifndef IA32_KANETON_AS_H
@@ -60,7 +60,7 @@ typedef struct
 #define		machdep_call_as(_function_, _args_...)			\
   (									\
     {									\
-      t_error	_r_ = ERROR_UNKNOWN;					\
+      t_error	_r_ = ERROR_NONE;					\
 									\
       if (as_interface._function_ != NULL)				\
         _r_ = as_interface._function_((_args_));			\

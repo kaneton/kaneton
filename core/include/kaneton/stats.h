@@ -5,13 +5,13 @@
  * 
  * stats.h
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Thu Sep  8 23:57:18 2005   mycure
+ * last update   Sat Sep 10 20:28:49 2005   mycure
  */
 
 #ifndef KANETON_STATS_H
@@ -98,8 +98,12 @@ typedef struct
  * leave
  */
 
-#define STATS_LEAVE(_stats_, _error_)					\
+#define STATS_LEAVE(_stats_, _error_, _args_...)			\
   {									\
+    if ((_error_) == ERROR_UNKNOWN)					\
+      if (machdep_call(stats, __FUNCTION__, ##_args_) != ERROR_NONE)	\
+        return (ERROR_UNKNOWN);						\
+									\
     return (_error_);							\
   }
 

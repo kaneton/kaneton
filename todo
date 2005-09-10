@@ -1,4 +1,30 @@
 --
+ il faut pouvoir appeller la partie dependante a l init et au clean
+ donc un LEAVE: virer le check de la var globale car inutile
+
+ il faut lancer la partie dep:
+
+  1) apres une construction d object MAIS
+  2) avant sa destruction
+
+ de plus lorsqu un objet est cree, il est preferable de passe l objet
+ ou bien au moins son identifiant a la partie dependante pour qu elle puisse
+ effectuee des operations dessus:
+
+   lors d une reservation d as (un as a un pd en partie dep): la partie
+   dep va reserver une page et la set dans l as: pd
+
+   pour ca il faudrait connaitre l id de l as juste cree.
+
+ bref il y a un certains nombre de problemes grave dans la gestion de la
+ partie dep: soit interface generique soit ultra generique on appel sans savoir
+
+ revoir stats car j ai passer les args des fonctions dans STATS_LEAVE
+
+--
+ VIEWER_DEBUG -> DEBUG et le mettre a toutes les cmds
+
+--
  retoucher le README car nouvelles regles makefile, nouvelles functions
  dans kaneton.mk
 

@@ -5,13 +5,13 @@
  * 
  * stats.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton/stats
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Aug 30 13:21:10 2005   mycure
+ * last update   Sat Sep 10 15:16:05 2005   mycure
  */
 
 /*
@@ -63,7 +63,7 @@ t_error			stats_begin(t_staid			staid,
   STATS_ENTER(stats);
 
   if (set_get(stats->container, staid, (void**)&o) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN);
+    STATS_LEAVE(stats, ERROR_UNKNOWN, staid, function);
 
   id = (t_id)sum2(function, strlen(function));
 
@@ -84,7 +84,7 @@ t_error			stats_begin(t_staid			staid,
 	{
 	  printf("XXX: begin: error\n");
 
-	  STATS_LEAVE(stats, ERROR_UNKNOWN);
+	  STATS_LEAVE(stats, ERROR_UNKNOWN, staid, function);
 	}
     }
   else
@@ -92,7 +92,7 @@ t_error			stats_begin(t_staid			staid,
       f->calls++;
     }
 
-  STATS_LEAVE(stats, ERROR_NONE);
+  STATS_LEAVE(stats, ERROR_NONE, staid, function);
 }
 
 /*
@@ -110,17 +110,17 @@ t_error			stats_end(t_staid			staid,
   STATS_ENTER(stats);
 
   if (set_get(stats->container, staid, (void**)&o) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN);
+    STATS_LEAVE(stats, ERROR_UNKNOWN, staid, function, error);
 
   id = (t_id)sum2(function, strlen(function));
 
   if (set_get(o->functions, id, (void**)&f) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN);
+    STATS_LEAVE(stats, ERROR_UNKNOWN, staid, function, error);
 
   if (error != ERROR_NONE)
     f->errors++;
 
-  STATS_LEAVE(stats, ERROR_NONE);
+  STATS_LEAVE(stats, ERROR_NONE, staid, function, error);
 }
 
 /*
@@ -193,10 +193,10 @@ t_error			stats_rsv(char*				name,
   memset(&o, 0x0, sizeof(o_stats));
 
   if ((o.name = strdup(name)) == NULL)
-    STATS_LEAVE(stats, ERROR_UNKNOWN);
+    STATS_LEAVE(stats, ERROR_UNKNOWN, name, staid);
 
   if (id_rsv(&stats->id, staid) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN);
+    STATS_LEAVE(stats, ERROR_UNKNOWN, name, staid);
 
   o.staid = *staid;
 
@@ -207,7 +207,7 @@ t_error			stats_rsv(char*				name,
     {
       free(o.name);
 
-      STATS_LEAVE(stats, ERROR_UNKNOWN);
+      STATS_LEAVE(stats, ERROR_UNKNOWN, name, staid);
     }
 
   if (set_add(stats->container, &o) != ERROR_NONE)
@@ -216,10 +216,10 @@ t_error			stats_rsv(char*				name,
 
       set_rel(o.functions);
 
-      STATS_LEAVE(stats, ERROR_UNKNOWN);
+      STATS_LEAVE(stats, ERROR_UNKNOWN, name, staid);
     }
 
-  STATS_LEAVE(stats, ERROR_NONE);
+  STATS_LEAVE(stats, ERROR_NONE, name, staid);
 }
 
 /*
@@ -233,18 +233,18 @@ t_error			stats_rel(t_staid			staid)
   STATS_ENTER(stats);
 
   if (set_get(stats->container, staid, (void**)&o) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN);
+    STATS_LEAVE(stats, ERROR_UNKNOWN, staid);
 
   /* XXX foreach pour pouvoir liberer chaque chaine NAME */
   if (set_rel(o->functions) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN);
+    STATS_LEAVE(stats, ERROR_UNKNOWN, staid);
 
   free(o->name);
 
   if (set_remove(stats->container, o->staid) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN);
+    STATS_LEAVE(stats, ERROR_UNKNOWN, staid);
 
-  STATS_LEAVE(stats, ERROR_NONE);
+  STATS_LEAVE(stats, ERROR_NONE, staid);
 }
 
 /*

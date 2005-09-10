@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/data/research/projects/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/set
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sat Sep  3 15:31:55 2005   mycure
+ * last update   Sat Sep 10 15:34:57 2005   mycure
  */
 
 /*
