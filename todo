@@ -22,7 +22,7 @@
  revoir stats car j ai passer les args des fonctions dans STATS_LEAVE
 
 --
- VIEWER_DEBUG -> DEBUG et le mettre a toutes les cmds
+ mettre en place une norme de commit
 
 --
  retoucher le README car nouvelles regles makefile, nouvelles functions
