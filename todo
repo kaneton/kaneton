@@ -1,4 +1,14 @@
 --
+ lister les trucs qui reste a faire
+
+--
+ PXE a installer
+
+--
+ AS_LEAVE, pourtouit car plus de check de la var globale, d ailleurs la
+ virer pour qu elle soit globale et non allouee
+
+--
  il faut pouvoir appeller la partie dependante a l init et au clean
  donc un LEAVE: virer le check de la var globale car inutile
 

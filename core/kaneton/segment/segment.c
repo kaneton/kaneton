@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Sep  6 00:07:42 2005   mycure
+ * last update   Mon Sep 12 03:54:41 2005   mycure
  */
 
 /*
@@ -427,7 +427,7 @@ t_error			segment_perms(t_asid			asid,
 }
 
 /*
- * XXX
+ * XXX peut etre a changer pour la clarete du design + machdep calls
  */
 
 t_error			segment_flush(t_asid			asid)
