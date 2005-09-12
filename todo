@@ -1,5 +1,20 @@
 --
- lister les trucs qui reste a faire
+ lister les trucs qui reste a faire:
+  1) moulinette de tests
+  2) des tests pour set, as, segment, regions
+  3) finir intra
+  4) integrer la moulinette dans l intra: PXE, tftp etc..
+  5) slides presentations kaneton
+  6) slides presentation lse
+  7) cours: cpp, inline assembly, gnu make
+  8) presentation kaneton, tarball etc..
+  9) cours noyaux
+  10) retoucher cours intel, avec beamer bien etc.. images au bon format
+  11) cours OS distribues
+  12) finir le code de kaneton jusqu'aux regions
+  13) moulinette de decoupage de code
+
+  il va falloir trouver du monde genre tristan
 
 --
  PXE a installer
