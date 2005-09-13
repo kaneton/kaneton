@@ -98,10 +98,74 @@ void			kaneton(t_init*				bootloader)
 
   alloc_init(init->alloc, init->allocsz, FIT_FIRST);
 
-#ifdef ALLOC_DEBUG
-  alloc_test();
-  /*  while (1);*/
-#endif
+  /* -- Here begins allocation test */
+  printf("starting allocation tests\n");
+  {
+    void* ptr;
+
+    ptr = malloc(7);
+    if (!ptr)
+      {
+	kaneton_error("Cannot allocate memory: 7\n");
+	for (;;);
+      }
+
+    ptr = malloc(100);
+    if (!ptr)
+      {
+	kaneton_error("Cannot allocate memory: 100\n");
+	for (;;);
+      }
+
+    ptr = malloc(200);
+    if (!ptr)
+      {
+	kaneton_error("Cannot allocate memory: 200\n");
+	for (;;);
+      }
+
+    ptr = malloc(300);
+    if (!ptr)
+      {
+	kaneton_error("Cannot allocate memory: 300\n");
+	for (;;);
+      }
+
+    ptr = malloc(300);
+    if (!ptr)
+      {
+	kaneton_error("Cannot allocate memory: 300\n");
+	for (;;);
+      }
+
+    ptr = malloc(300);
+    if (!ptr)
+      {
+	kaneton_error("Cannot allocate memory: 300\n");
+	for (;;);
+      }
+
+    ptr = malloc(300);
+    if (!ptr)
+      {
+	kaneton_error("Cannot allocate memory: 300\n");
+	for (;;);
+      }
+
+    ptr = malloc(100000);
+    if (!ptr)
+      {
+	kaneton_error("Cannot allocate memory: 100000\n");
+	for (;;);
+      }
+    alloc_dump();
+  }
+  printf("ending allocation tests\n");
+  for (;;);
+  /* Here ends allocation test */
+
+
+
   /*
    * 6)
    */
@@ -147,6 +211,7 @@ void			kaneton(t_init*				bootloader)
   /*
   STATS_DUMP();
   */
+  printf("ici c'est une boucle\n");
   while (1)
     ;
 
