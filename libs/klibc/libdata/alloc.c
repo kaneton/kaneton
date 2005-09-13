@@ -26,9 +26,18 @@
  * includes/kaneton/types.h)
  */
 
-
-#define __align(Addr)  (Addr % sizeof (t_vaddr) ? ((Addr) + sizeof (t_vaddr) -\
-    (((t_vaddr) Addr + 1) % sizeof (t_vaddr) - 1)) : Addr)
+/* Round up to a power of 2, branch free (@hacker's deligth book) */
+#define __align(n)				\
+({						\
+  int __res = n - 1;				\
+  __res = __res | (__res >> 1);			\
+  __res = __res | (__res >> 2);			\
+  __res = __res | (__res >> 4);			\
+  __res = __res | (__res >> 8);			\
+  __res = __res | (__res >>16);			\
+  ++__res;					\
+  __res;					\
+})
 
 /*
  * ---------- information -----------------------------------------------------
@@ -80,7 +89,7 @@ t_alloc			alloc;
  *   chunk right after it. It is the contrary of merge.
  *
  * @param chunk		The chunk we want to fragment
- * @param size		The size we want it to be
+ * @param size		The size we want it to be, must be aligned
  *
  * @return 0 if all went smoothly, 1 otherwise.
  */
@@ -89,9 +98,7 @@ static int		fragment(t_chunk *chunk, size_t size)
   t_chunk		*new = NULL;
   size_t		size_save = chunk->size;
 
-  /*if (!(chunk->flags & ALLOC_FREE))
-    return 1;*/
-  chunk->size = __align(size);
+  chunk->size = size;
   new = __next_chunk(chunk);
   new->size = size_save - sizeof (t_chunk) - size;
   new->flags = ALLOC_FREE;
@@ -160,15 +167,18 @@ void*			malloc(size_t				size)
 {
   t_chunk		*runner = NULL;
 
+  size = __align(size);
+
+  /* Walk until a correct chunk size is found */
   for (runner = alloc.first_blk;
-      !(runner->flags & ALLOC_FREE) || __align(size) > runner->size ||
-      !(runner->flags & ALLOC_LAST);
-      runner = __next_chunk(runner))
-    ;
-  if (runner->flags & ALLOC_LAST && !(runner->flags & ALLOC_FREE))
-    return NULL; /* ENOMEM */
-  if (runner->size - __align(size) > __TOLERANCE)
-    fragment(runner, __align(size));
+       (runner->size < size) || !(runner->flags & ALLOC_FREE);
+       runner = __next_chunk(runner))
+    if ((runner->flags & ALLOC_LAST))
+      return NULL;
+
+  /* Here, we found a correct chunk */
+  if ((runner->size - size) > __TOLERANCE)
+    fragment(runner, size);
   runner->flags &= ~ALLOC_FREE;
   return __chunk_ptr(runner);
 }
@@ -257,7 +267,7 @@ int			alloc_init(t_vaddr			addr,
    * 1)
    */
   alloc.addr = addr;
-  alloc.first_blk = (t_chunk *) __align(addr);
+  alloc.first_blk = (t_chunk *)addr;
   alloc.size = size;
   alloc.heap = addr + sizeof (t_chunk);
 
@@ -270,24 +280,4 @@ int			alloc_init(t_vaddr			addr,
   alloc.first_blk->prv = NULL;
 
   return 0;
-}
-
-/* test block follows */
-void alloc_test(void)
-{
-  void		*test, *toto, *tata, *titi;
-
-  test = malloc(100);
-  toto = malloc(200);
-  tata = malloc(300);
-  titi = malloc(400);
-  alloc_dump();
-  free(toto);
-  free(titi);
-  free(tata);
-  alloc_dump();
-  free(test);
-  alloc_dump();
-  /*while (1)
-    ;*/
 }
