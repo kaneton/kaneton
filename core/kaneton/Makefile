@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Tue Sep  6 11:05:20 2005   mycure
+## last update   Wed Sep 14 12:29:52 2005   mycure
 ##
 
 #
@@ -43,6 +43,7 @@ SUBDIRS			:=		arch				\
 KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 					$(_AS_LO_)			\
 					$(_CONF_LO_)			\
+					$(_DEBUG_LO_)			\
 					$(_ID_LO_)			\
 					$(_SEGMENT_LO_)			\
 					$(_SET_LO_)			\
@@ -52,9 +53,7 @@ KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 
 KANETON			:=		kaneton
 
-KANETON_C		:=		kaneton.c			\
-					cons.c				\
-					serial.c			
+KANETON_C		:=		kaneton.c			
 
 KANETON_O		:=		$(KANETON_C:.c=.o)
 
