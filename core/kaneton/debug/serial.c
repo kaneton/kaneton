@@ -5,13 +5,13 @@
  * 
  * serial.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Tue Aug 23 23:08:19 2005   mycure
+ * last update   Wed Sep 14 12:36:59 2005   mycure
  */
 
 /*
@@ -40,6 +40,10 @@ t_uint32	chk_sum(void	*data, unsigned int size)
 
 	return (crc);
 }
+
+/*
+ * XXX
+ */
 
 int			serial_send(t_uint32 		    com_port,
 				    t_uint8*			data,
