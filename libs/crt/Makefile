@@ -43,7 +43,7 @@ CRT_INCLUDE		:=
 #
 
 $(CRT_A):		$(CRT_O)
-	$(call dynamic-library,$(CRT_A),$(CRT_O),)
+	$(call static-library,$(CRT_A),$(CRT_O),)
 
 clear:
 	$(call remove,$(CRT_O),)
