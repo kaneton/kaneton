@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Sat Sep 10 17:51:21 2005   mycure
+## last update   Wed Sep 14 12:38:10 2005   mycure
 ##
 
 #
@@ -37,7 +37,7 @@ SHELL			:=		/bin/sh
 
 _SHELL_			?=		true
 
-SUBDIRS			:=		libs core services papers
+SUBDIRS			:=		libs core services
 
 #
 # ---------- default rule -----------------------------------------------------
