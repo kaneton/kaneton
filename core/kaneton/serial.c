@@ -21,16 +21,6 @@
 #include <libc.h>
 #include <kaneton.h>
 
-#define COM1 	0x3f8
-
-/*
- * ---------- globals ---------------------------------------------------------
- */
-
-/*
- * XXX
- */
-
 /*
  * ---------- functions -------------------------------------------------------
  */
@@ -39,95 +29,142 @@
  * this function reads on the serial device.
  */
 
-int			serial_read(t_uint8*			data, int size, int* n)
+t_uint32	chk_sum(void	*data, unsigned int size)
 {
-  /*
-   * XXX
-   */
-	*n = 0;
+	t_uint32 crc = 0;
+	t_uint8 *cdata;
+
+	cdata = data;	
+	while (size--)
+	crc ^= *cdata++;
+
+	return (crc);
+}
+
+int			serial_send(t_uint32 		    com_port,
+				    t_uint8*			data,
+				    t_uint32			size)
+{
+	t_data		sdata;
+	t_uint32	crc;
+	t_uint8		status[7];
 	
+	sdata.crc = chk_sum(data, size);
+	sdata.size = size;	
+        sdata.data = data;	
+	sdata.magic = 0xF4859632;
+		
+	serial_write(com_port, (t_uint8 *) &sdata, sizeof(sdata));
+	serial_write(com_port, sdata.data, sdata.size);
+	serial_read(com_port, status, 6);
+	status[6] = '\0';
+	 if (!strcmp(status, "crc-ok"))
+	  {
+		  printf("good send\n");
+		  return (0);
+	  }
+	  else
+	  {
+	    printf("bad send\n");
+	    printf("crc: 0x%d\n", sdata.crc);
+	    return (-1);
+	  }
+	  return (-1);
+}
+
+int			serial_receiv(t_uint32 com_port, t_data *rdata)
+{
+	t_uint32	crc;
+	int 		i;
+	
+       	serial_read(com_port, (t_uint8 *)rdata, sizeof(*rdata));
+	if (rdata->magic == 0xF4859632)
+	rdata->data = malloc(rdata->size * sizeof(t_uint8));
+	else
+	{
+	   printf("bad_header\n");
+	   serial_write(com_port, "badcrc", 6);
+	   return (-1);
+	}
+	serial_read(com_port, rdata->data, rdata->size);
+	  if (rdata->crc == chk_sum(rdata->data, rdata->size))
+	     {
+	      printf("Good receive\n");
+	      serial_write(com_port, "crc-ok", 6);
+	      return (0);
+	     }
+	  else
+	     {
+	      printf("Bad receiv\n");
+	      serial_write(com_port, "badcrc", 6);
+	      free (rdata->data);
+	      return (-1);
+	     }
+	      
+}
+
+void			serial_read(t_uint32			com_port,
+				    t_uint8*			data,
+				    t_uint32 			size)
+{
 	while (size) 
 	{
-	INB(COM1 + 5, *data); 
+	INB(com_port + 5, *data); 
 	  if (*data & 1)
 	     {
-		INB(COM1, *data);
-		if (!*data)
-		   return (*n);	
-		data++;
+		INB(com_port, *data++);
 		size--;
-		*n++;
 	     }
+	  printf("\rReading %d more Byte", size);
 	}
-  *data = '\0';
-
-  return (0);
+	printf("\n");
 }
 
 /*
  * this function writes on the serial device
  */
 
-int			serial_write(t_uint8*			data,	int		size, int* n)
+void			serial_write(t_uint32			com_port,
+				     t_uint8*			data,
+				     t_uint32			size)
 {
-  /*
-   * XXX
-   */
-  *n = 0;
-	
-  while(size--)
+  char 	ch;
+	 
+  while(size)
   {
-  OUTB(COM1, *data++);
-  *n++;
+  INB(com_port + 5, ch);
+    if (ch & 0x20)
+	 {
+  	    OUTB(com_port, *data++);
+	    size--;
+	 }
+    printf("\rSending %d Byte", size);
   }
-  
-  return (0);
+  printf("\n");
 }
 
 /*
  * this function just initialises the serial driver.
  */
 
-int			serial_init(void)
+void			serial_init(	t_uint32 com_port, 
+					t_uint8 baud_rate, 
+				    	t_uint8 bit_type, 
+					t_uint8 fifo_type)
 {
   /*
-   * XXX
+   * 1) Turn off interupt on choosen port 
+   * 2) Set dlab on
+   * 3) Set baud rate for choosen port
+   * 4) Set connection type
+   * 5) Set fifo type
+   * 6) DTR, RTS, OUT2 : on
    */
-	char buff[1024];
-	
-	printf("init rs-232\n");
-	int n;	
-	/* POLL MODE TEST */
-
-	int i = 0;
-
-	OUTB(COM1 + 1, 0x00); /*turn of interupts port 1 */
-	OUTB(COM1 + 3, 0x80); /*set dlab on*/
-	OUTB(COM1 + 0, 0x0C); /*set divisor = 12  == 9.3 kbps*/
-	OUTB(COM1 + 1, 0x00); /* set divisor high byte */	
-	OUTB(COM1 + 3, 0x03); /* 8 bits no paritry 1 stop bit == 8N1 */ 
-	OUTB(COM1 + 2, 0x87); /* FIFO controle register  8*/
-	OUTB(COM1 + 4, 0x08); /* on : DTR RTS OUT2*/
-
-/*	serial_write("Test\n", 5, &n);*/
-	while (1)
-	{
-	serial_read(buff, 10, &n);
-	printf("%s", buff);
-	}
-
-	return (0);
-}
-
-/*
- * this function reinitialises the serial driver.
- */
-
-int			serial_clean(void)
-{
-  /*
-   * XXX
-   */
-
-  return (0);
+	OUTB(com_port + 1, 0x00); /* 1) */
+	OUTB(com_port + 3, 0x80); /* 2) */
+	OUTB(com_port + 0, baud_rate); /* 3) */
+	OUTB(com_port + 1, 0x00);
+	OUTB(com_port + 3, bit_type); /* 4) */
+	OUTB(com_port + 2, fifo_type); /* 5) */
+	OUTB(com_port + 4, 0x08); /* 6) */ 
 }
