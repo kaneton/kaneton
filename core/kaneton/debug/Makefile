@@ -37,8 +37,8 @@ DEBUG_C			:=		cons.c				\
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)
 
-DEBUG_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/as.h
-
+DEBUG_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/serial.h
+					
 CFLAGS			+=		-D___kernel
 
 #
