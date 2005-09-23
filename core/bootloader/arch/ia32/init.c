@@ -3,13 +3,13 @@
  *
  * init.c
  *
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/kaneton/set
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Tue Aug 30 13:55:54 2005   mycure
+ * last update   Thu Sep 15 17:04:56 2005   mycure
  */
 
 /*
@@ -477,7 +477,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * XXX temporary, pre-allocate four pages
    */
 
-  init->alloc = bootloader_init_alloc(4 * PAGESZ, &allocsz);
+  init->alloc = bootloader_init_alloc(8 * PAGESZ, &allocsz);
   init->allocsz = allocsz;
 
   return (khdr->e_entry);

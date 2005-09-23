@@ -11,8 +11,6 @@ bigoutput littleoutput : text.g
 
 is equivalent to
 
- 	
-
 bigoutput : text.g
         generate text.g -big > bigoutput
 littleoutput : text.g
@@ -40,8 +38,6 @@ The prerequisite names for each target are made by substituting the stem for the
 `%' characters in pattern rules can be quoted with preceding backslashes (`\'). Backslashes that would otherwise quote `%' characters can be quoted with more backslashes. Backslashes that quote `%' characters or other backslashes are removed from the pattern before it is compared to file names or has a stem substituted into it. Backslashes that are not in danger of quoting `%' characters go unmolested. For example, the pattern `the\%weird\\%pattern\\' has `the%weird\' preceding the operative `%' character, and `pattern\\' following it. The final two backslashes are left alone because they cannot affect any `%' character.
 
 Here is an example, which compiles each of `foo.o' and `bar.o' from the corresponding `.c' file:
-
- 	
 
 objects = foo.o bar.o
 
@@ -165,8 +161,6 @@ will create every file in prerequisites which doesnt match any rule.
 
 `$?' is useful even in explicit rules when you wish to operate on only the prerequisites that have changed. For example, suppose that an archive named `lib' is supposed to contain copies of several object files. This rule copies just the changed object files into the archive:
 
- 	
-
 lib: foo.o bar.o lose.o win.o
         ar r lib $?
 
@@ -219,8 +213,6 @@ Normally, this is exactly what you want: if a target's prerequisite is updated, 
 
 Occasionally, however, you have a situation where you want to impose a specific ordering on the rules to be invoked without forcing the target to be updated if one of those rules is executed. In that case, you want to define order-only prerequisites. Order-only prerequisites can be specified by placing a pipe symbol (|) in the prerequisites list: any prerequisites to the left of the pipe symbol are normal; any prerequisites to the right are order-only:
 
- 	
-
 targets : normal-prerequisites | order-only-prerequisites
 
 The normal prerequisites section may of course be empty. Also, you may still declare multiple lines of prerequisites for the same target: they are appended appropriately. Note that if you declare the same file to be both a normal and an order-only prerequisite, the normal prerequisite takes precedence (since they are a strict superset of the behavior of an order-only prerequisite). 
@@ -247,8 +239,6 @@ objects := $(wildcard *.o)
 
 Now here is an example of a naive way of using wildcard expansion, that does not do what you would intend. Suppose you would like to say that the executable file `foo' is made from all the object files in the directory, and you write this:
 
- 	
-
 objects = *.o
 
 foo : $(objects)
@@ -261,8 +251,6 @@ But what if you delete all the `.o' files? When a wildcard matches no files, it 
 Actually it is possible to obtain the desired result with wildcard expansion, but you need more sophisticated techniques, including the wildcard function and string substitution. See section The Function wildcard.
 
 Microsoft operating systems (MS-DOS and MS-Windows) use backslashes to separate directories in pathnames, like so:
-
- 	
 
   c:\foo\bar\baz.c
 
@@ -360,8 +348,6 @@ X) Command Execution
 When it is time to execute commands to update a target, they are executed by making a new subshell for each line. (In practice, make may take shortcuts that do not affect the results.)
 
 Please note: this implies that shell commands such as cd that set variables local to each process will not affect the following command lines. (2) If you want to use cd to affect the next command, put the two on a single line with a semicolon between them. Then make will consider them a single command and pass them, together, to a shell which will execute them in sequence. For example:
-
- 	
 
 foo : bar/lose
         cd bar; gobble lose > ../foo
@@ -475,8 +461,6 @@ bar
 endef
 
 X) Target-Specific Variable Values
-
- 	
 
 target ... : variable-assignment
 
@@ -793,6 +777,9 @@ LFLAGS
 
 YFLAGS
     Extra flags to give to Yacc. 
+
+X) Defining and Redining Pattern Rules
+
 
 
 

@@ -5,7 +5,7 @@
  *
  * kaneton.c
  *
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
@@ -98,6 +98,7 @@ void			kaneton(t_init*				bootloader)
 
   alloc_init(init->alloc, init->allocsz, FIT_FIRST);
 
+#if 0 /* XXX abuse de mettre ca ici!!! */
   /* -- Here begins allocation test */
   printf("starting allocation tests\n");
   {
@@ -163,8 +164,7 @@ void			kaneton(t_init*				bootloader)
   printf("ending allocation tests\n");
   for (;;);
   /* Here ends allocation test */
-
-
+#endif
 
   /*
    * 6)

@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sat Sep 10 18:00:01 2005   mycure
+## last update   Thu Sep 15 16:58:31 2005   mycure
 ##
 
 #
@@ -99,9 +99,10 @@ _LIBC_H_		:=		$(_LIBS_DIR_)/libc.h
 
 _CRT_A_			:=		$(_LIBS_DIR_)/crt.a
 
-_MACHDEP_LO_		:=		$(_MACHDEP_KANETON_DIR_)/machdep.lo
 _AS_LO_			:=		$(_CORE_KANETON_DIR_)/as/as.lo
+_DEBUG_LO_		:=		$(_CORE_KANETON_DIR_)/debug/debug.lo
 _ID_LO_			:=		$(_CORE_KANETON_DIR_)/id/id.lo
+_MACHDEP_LO_		:=		$(_MACHDEP_KANETON_DIR_)/machdep.lo
 _SEGMENT_LO_		:=		$(_CORE_KANETON_DIR_)/segment/segment.lo
 _SET_LO_		:=		$(_CORE_KANETON_DIR_)/set/set.lo
 _STATS_LO_		:=		$(_CORE_KANETON_DIR_)/stats/stats.lo

@@ -113,42 +113,6 @@ void			kaneton_dump(void);
 
 
 /*
- * ../../kaneton/cons.c
- */
-
-void			cons_clear(void);
-
-void			cons_scroll(t_uint16			lines);
-
-void			cons_attr(t_uint8			attr);
-
-int			cons_print_char(char			c);
-
-void			cons_print_string(char*			string);
-
-void			cons_msg(char				indicator,
-				 char*				fmt,
-				 ...);
-
-t_error			cons_init(void);
-
-t_error			cons_clean(void);
-
-
-/*
- * ../../kaneton/serial.c
- */
-
-int			serial_read(t_uint8*			data, int size, int* n);
-
-int			serial_write(t_uint8*			data,	int		size, int* n);
-
-int			serial_init(void);
-
-int			serial_clean(void);
-
-
-/*
  * eop
  */
 

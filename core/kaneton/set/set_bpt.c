@@ -5,13 +5,13 @@
  * 
  * set_bpt.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Sep  9 04:34:23 2005   mycure
+ * last update   Thu Sep 15 18:18:55 2005   mycure
  */
 
 /*
@@ -135,8 +135,6 @@ t_error			set_dump_unused_bpt(o_set*		o)
 t_error			set_build_bpt(o_set*			o,
 				      BPT_NODESZ_T		nodesz)
 {
-  t_bpt_uni(set)	i;
-
   SET_ENTER(set);
 
   o->u.bpt.unusedsz = BPT_INIT_SIZE();
@@ -145,9 +143,12 @@ t_error			set_build_bpt(o_set*			o,
    * 1)
    */
 
-  if ((o->u.bpt.unused.array = malloc(o->u.bpt.unusedsz *
+  if ((o->u.bpt.unused.array = malloc(o->u.bpt.unusedsz * /* XXX */ 10 *
 				      sizeof(t_bpt_addr(set)))) == NULL)
     SET_LEAVE(set, ERROR_UNKNOWN);
+
+  memset(o->u.bpt.unused.array, 0x0,
+	 o->u.bpt.unusedsz * sizeof(t_bpt_addr(set)));
 
   o->u.bpt.unused.index = -1;
 
@@ -155,8 +156,14 @@ t_error			set_build_bpt(o_set*			o,
    * 2)
    */
 
-  if (set_adjust_bpt(o, BPT_INIT_ALLOC(), BPT_INIT_SIZE()) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  for (;
+       (o->u.bpt.unused.index + 1) < o->u.bpt.unusedsz;
+       o->u.bpt.unused.index++)
+    {
+      if ((o->u.bpt.unused.array[(o->u.bpt.unused.index + 1)] =
+	   (t_bpt_addr(set))malloc(nodesz)) == NULL)
+	SET_LEAVE(set, ERROR_UNKNOWN);
+    }
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -176,6 +183,10 @@ t_error			set_adjust_bpt(o_set*			o,
 
   SET_ENTER(set);
 
+  printf("index: %d, unusedsz: %u, alloc: %u, size: %u\n",
+	 o->u.bpt.unused.index, o->u.bpt.unusedsz,
+	 alloc, size);
+
   if (o->u.bpt.unusedsz < size)
     {
       if ((o->u.bpt.unused.array =
@@ -185,12 +196,37 @@ t_error			set_adjust_bpt(o_set*			o,
       o->u.bpt.unusedsz = size;
     }
 
+  printf("nodesz: %u\n", o->u.bpt.bpt.nodesz);
+
+  printf("index: %d, unusedsz: %u, alloc: %u, size: %u\n",
+	 o->u.bpt.unused.index, o->u.bpt.unusedsz,
+	 alloc, size);
+
+  /*
   for (; (o->u.bpt.unused.index + 1) < alloc; o->u.bpt.unused.index++)
     {
       if ((o->u.bpt.unused.array[(o->u.bpt.unused.index + 1)] =
 	   (t_bpt_addr(set))malloc(o->u.bpt.bpt.nodesz)) == NULL)
 	SET_LEAVE(set, ERROR_UNKNOWN);
     }
+  */
+
+  printf("array: 0x%x\n", o->u.bpt.unused.array);
+
+  /* XXX on ecrase ici */
+  o->u.bpt.unused.array[0] = 9;
+
+  alloc_dump();
+  while (1);
+
+  if (malloc(o->u.bpt.bpt.nodesz) == NULL)
+    {
+      printf("BANDE\n");
+      while (1);
+    }
+
+  alloc_dump();
+  while (1);
 
   if ((o->u.bpt.unusedsz - (o->u.bpt.unused.index + 1)) < (size - alloc))
     {

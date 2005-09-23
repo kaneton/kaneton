@@ -5,13 +5,13 @@
  * 
  * id.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Aug 30 12:56:53 2005   mycure
+ * last update   Thu Sep 15 17:39:35 2005   mycure
  */
 
 /*
@@ -118,6 +118,9 @@ t_error			id_destroy(o_id*			o)
 
 t_error			id_init(void)
 {
+  printf("HERE\n");
+  alloc_dump();
+
   if ((id = malloc(sizeof(m_id))) == NULL)
     {
       cons_msg('!', "id: cannot allocate memory for the identifier manager "
@@ -125,6 +128,9 @@ t_error			id_init(void)
 
       return (ERROR_UNKNOWN);
     }
+
+  printf("HERE\n");
+  alloc_dump();
 
   return (ERROR_NONE);
 }

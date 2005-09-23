@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Wed Sep 14 12:30:36 2005   mycure
+## last update   Thu Sep 15 16:56:37 2005   mycure
 ##
 
 #
@@ -32,8 +32,8 @@ include			../../../.kaneton.mk
 
 DEBUG_LO		:=		debug.lo
 
-DEBUG_C			:=		cons.c				\
-					serial.c			
+DEBUG_C			:=		cons.c				
+#					serial.c			
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)
 

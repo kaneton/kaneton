@@ -1,1 +1,439 @@
-here
+--- introduction
+
+the inline assembly is used to insert assembly code into C source code.
+
+the inline assembly reduces the function-call overhead while reducing
+the number of little assembly source files.
+
+moreover, the inline assembly source code can evoluate into the C
+source one, using C variables etc..
+
+the inline assembly is commonly used to improve performances. Neverthless
+system programmers appreciate the inline assembly.
+
+gcc uses the keyword "asm" to introduce inline assembly.
+
+--- syntax
+
+the gcc inline assembly uses AT&T assembly syntax which is different
+from the Intel one.
+
+the major differences between the AT&T syntax and the Intel one are:
+
+1) Source-Destination Ordering
+
+Intel: opcode dst src
+AT&T: opcode src dst
+
+2) Register Naming
+
+register names are prefixed by % for example %eax.
+
+with C input arguments, the registers are prefixed by %% like %%eax
+
+3) Immediate Operand
+
+immediate operands are prefixed by $
+
+in Intel syntax, hexadecimal numbers are suffixed by h. instead the
+AT&T syntax uses 0x as prefix.
+
+4) Operand Size
+
+Intel syntax uses keywords byte, word, dword to specify the operand
+size while AT&T syntax uses a suffix to the opcode.
+
+Intel: mov al, byte ptr foo
+AT&T: movb foo, %al
+
+5) Memory Operands
+
+The Intel syntax uses '[' and ']' for specifying base register
+while AT&T uses '(' ')'.
+
+moreover, the Intel syntax for shifts is more complex than the
+AT&T one.
+
+AT&T:  immed32(basepointer,indexpointer,indexscale)
+Intel: [basepointer + indexpointer*indexscale + immed32]
+
+You could think of the formula to calculate the address as:
+
+  immed32 + basepointer + indexpointer * indexscale
+
+example:
+
+C code: *(p+1) where p is a char *
+
+AT&T:  1(%eax) where eax has the value of p
+
+Intel: [eax + 1]
+
+Addressing a value in an array of integers (scaling up by 4):
+
+AT&T:  _array(,%eax,4)
+Intel: [eax*4 + array]
+
++------------------------------+------------------------------------+
+|       Intel Code             |      AT&T Code                     |
++------------------------------+------------------------------------+
+| mov     eax,1                |  movl    $1,%eax                   |   
+| mov     ebx,0ffh             |  movl    $0xff,%ebx                |   
+| int     80h                  |  int     $0x80                     |   
+| mov     ebx, eax             |  movl    %eax, %ebx                |
+| mov     eax,[ecx]            |  movl    (%ecx),%eax               |
+| mov     eax,[ebx&plus;3]     |  movl    3(%ebx),%eax              | 
+| mov     eax,[ebx+20h]        |  movl    0x20(%ebx),%eax           |
+| add     eax,[ebx+ecx*2h]     |  addl    (%ebx,%ecx,0x2),%eax      |
+| lea     eax,[ebx+ecx]        |  leal    (%ebx,%ecx),%eax          |
+| sub     eax,[ebx+ecx*4h-20h] |  subl    -0x20(%ebx,%ecx,0x4),%eax |
++------------------------------+------------------------------------+
+
+--- basic use
+
+the format of the gcc inline assembly is the following:
+
+asm("assembly code");
+
+example:
+
+asm("movl %eax, %ecx"); /* move the contents of eax in ecx */
+
+you can also use the keyword __asm__ in the case of a name conflict
+with your previous source code.
+
+you can use multi-lines source code thinking to insert a \n\t suffix
+at each line.
+
+example:
+
+asm("movl %cr0, %eax\n\t"
+    "orl %eax, 1\n\t"
+    "movl %eax, %cr0");
+
+you can notice in this example that we overwrite the register %eax.
+
+gcc does not know anything about the inline assembly. overwritting
+the eax register could result with an error because gcc maybe used
+this register before the inline assembly to hold a variable or
+anything else.
+
+so this example is in fact a very bad example. we have to specify
+gcc the names of the registers we overwrote.
+
+--- extended asm
+
+in the basic use, we has only instructions. in the extended one
+we can specify more options like the input C operands, the
+output C operands and the clobbered registers i.e the
+modified registers.
+
+asm ( assembler template 
+           : output operands                  /* optional */
+           : input operands                   /* optional */
+           : list of clobbered registers      /* optional */
+           );
+
+be careful with this syntax:
+
+  first, the outputs are located before the inputs
+  second, think to use colons
+  third, do not specify an empty clobbered registers. in fact the
+   last list provided must always contain at least one element
+
+error:
+  asm("..."
+      :
+      : "..."
+      :
+      );
+
+correct:
+  asm("..."
+      :
+      : "..."
+      );
+
+come back to our example which is a famous one in the low-level system
+programming field:
+
+asm("movl %cr0, %eax\n\t"
+    "orl %eax, 1\n\t"
+    "movl %eax, %cr0");
+
+you can notice that eax is overwritten, so we have to tell gcc to restore
+the contents of eax, here come the clobbered registers list:
+
+asm("movl %cr0, %eax\n\t"
+    "orl %eax, 1\n\t"
+    "movl %eax, %cr0"
+    :
+    :
+    : "%eax"
+    );
+
+now, another example. we have to C variables A and B and we want to
+move the contents of A into B but using inline assembly for an unknown
+reason:
+
+asm("movl %1, %%eax\n\t"
+    "movl %%eax, %0"
+    : "=r" (b)
+    : "r" (a)
+    : "%eax"
+    );
+
+1) the operands %0-9 specify the input and outputs. note that the first
+   value is used for the first output. if no output is present, then
+   %0 will specify the first input.
+
+   in this case %0 is the first and only output and %1 is the first and
+   only input.
+
+2) the constraint "r" is used to precise the nature of the operand. be
+   careful with it. in this case, it tells gcc to use the operand as
+   a register. the constraint "=" is for the output operands also specifying
+   a write-only operand.
+
+3) the double prefix %% is used when using input and/or output operands
+   to avoid problems.
+
+4) finally, the clobbered register eax is indicated to tell gcc to restore
+   this register's contents.
+
+Now we will look at each field in details.
+
+XXX dire qu on ne fait pas de "memory" clobbered car on utilise la
+    constraint "r" qui force a utiliser les registres
+
+--- template
+
+there are only two rules for the template
+
+1) finish each line with \n\t
+2) use %0, .. to use C operands
+
+--- operands
+
+the syntax used for operands is:
+
+  "constraint" (operand)
+
+note that for the output operands a special modifier is needed.
+
+the constraints are primarily used to decide to addressing mode for
+operands: register, memory, etc..
+
+the operands are separated by commas inside a list.
+
+operands are numbered from 0 to n-1
+
+output operands must be lvalues but this is obvious.
+input operands are not restricted.
+
+gcc will assume that the values in the output operands before the
+instruction are dead and need not be generated.
+gcc inline assembly also allows read-write outputs operands.
+
+asm("orl %0, %0"
+    : "=r" (x)
+    : "0" (x)
+   );
+
+in this example, we specify gcc to use the C variable x as the output
+operand.
+
+for the input operand, we use the constraint "0" to tell gcc to use
+the same register for the input operand as the operand numbered 0 do.
+
+so in this case, the input and output operand will be stored in the same
+register which is not precise, so gcc will decide.
+
+so, in this example we have a read-write operand x.
+
+
+
+note that we can also explicitly tell gcc which register to use for
+storing an operand:
+
+asm("orl %0, %0"
+    : "=c" (x)
+    : "c" (x)
+   );
+
+in this case, we tell gcc to use the ecx register
+
+
+you can notice that in the two previous examples, we put nothing into
+the clobbered list.
+
+in the first example, we told gcc to decide the register to use so gcc
+knows which register to restore.
+
+in the second one, we specify gcc to use the ecx register. once again,
+gcc perfectly knows which register to restore.
+
+--- clobber list
+
+some instructions clobber the hardware registers.
+
+for this reason, the inline assembly user has to specify gcc the names
+of the registers to restore.
+
+note that gcc already knows the clobbered registers used via the
+constraints of the input and output operands.
+
+be careful with instructions which implicitly use some registers.
+
+the user can also specify two other elements in the clobber list:
+
+  1) "cc" meaning that the condition code was modified i.e the bits of
+          the eflags registers was modified: jnz, je etc..
+
+  2) "memory" when a variable is set as output operand. this is
+              very useful because gcc maybe holds this variable in a
+              register. this constraint tells gcc to update its registers
+              if needed.
+              this constraint is equivalent to set all the registers
+              in the clobber list
+
+just an example:
+
+asm ("movl %0,%%eax;
+              movl %1,%%ecx;
+              call _foo"
+             : /* no outputs */
+             : "g" (from), "g" (to)
+             : "eax", "ecx"
+             );
+
+--- Volatile
+
+first the keyword volatile is used between the asm one and the first
+parenthesis.
+
+you can also use the keyword __volatile__ to avoid conflicts.
+
+the keyword volatile is useful in few cases:
+
+  1) when the user wants to tell gcc to avoid optimizations.
+     for example if your assembly code is located inside a loop, gcc
+     will certainly move your assembly code out of the loop.
+
+     using volatile avoid this optimization.
+
+     be careful, if your assembly code doest not have any side effect,
+     it is better not to put the volatile keyword to allow gcc
+     optimizations.
+
+  2) with the clobber list element "cc" when your assembly code
+     modifies some memory not listed neither as input nor as output.
+     why? XXX
+
+--- Constraints
+
+You probably noticed within this course that the constraints have got
+a lot to do with inline assembly.
+
+Indeed, with them it is possible to specify the location of
+operands: memory, registers etc..
+
+We will now list the different types of operands:
+
+1) Register Operand Constraint (r)
+
+When operand is specified with a register operand constraint,
+gcc stores the operand in a GPR (General Purpose Register).
+
+The user can also explicitly tell gcc the register to use. For this
+he has to use specific constraints listed below:
+
++---+--------------------+
+| r |    Register(s)     |
++---+--------------------+
+| a |   %eax, %ax, %al   |
+| b |   %ebx, %bx, %bl   |
+| c |   %ecx, %cx, %cl   |
+| d |   %edx, %dx, %dl   |
+| S |   %esi, %si        |
+| D |   %edi, %di        |
++---+--------------------+
+
+2) Memory Operand Constraint (m)
+
+When the operands are in the memory, any operations performed on them
+will occur directly in the memory location, as opposed to register constraints.
+
+Register constraints are usually used with instructions which only accept
+registers as operands. Another case is to speed up the process, for example
+if a variable is needed for three consecutive instructions.
+
+The memory constraint can be used most effeciently in cases where a C
+variable needs to be updated inside inline assembly.
+
+For example:
+
+	asm("sidt %0\n" : :"m"(idtr)); 
+
+3) Matching Digit Constraint
+
+As seen before, in some cases the programmer wants to use an operand
+both in input and in output.
+
+	asm ("incl %0" :"=a"(var):"0"(var));
+
+In this example the register eax is used as output operand. Then the input
+operand var uses the constraint "0" specifying gcc to use the same constraint
+than the 0th operand.
+
+After all, this inline assembly source code will use the eax register
+both as input and as output.
+
+4) Other Constraints
+
+ "i" an immediate integer operand (one with constant value) is allowed.
+
+ this includes symbolic constants whose values will be known only at
+ assembly time.
+
+ "n" an immediate integer operand with a known numeric value is allowed.
+
+ "g" any register, memory or immediate integer operand is allowed,
+     except for registers that are not general purpose registers.
+
+5) x86 Specific Constraints
+
+ "q" registers a, b, c or d
+
+ "I" constant in range 0 to 31 (for 32-bit shifts)
+
+ "J" constant in range 0 to 63 (for 64-bit shifts)
+
+ "K" 0xff
+
+ "L" 0xffff
+
+ "M" 0, 1, 2, 4 (shifts for lea instruction)
+
+ "N" constant in range 0 to 255 (for out instruction)
+
+6) Modifiers
+
+There are also constraint modifiers for more precision over the effects
+of constraints.
+
+The common constraints modifiers are:
+
+ "=" means that this operand is write-only for this instruction,
+     the previous value is discarded and replaced by output data
+
+ "&" means that this operand is an earlyclobber operand, which is
+     modified before the instruction is finished using the input
+     operands. Therefore, this operand may not lie in a register
+     that is used as an input operand or as part of any memory address.
+     An input operand can be tied to an earlyclobber operand if its
+     only use as an input occurs before the early result is written.
+
+--- Cases Study
+
+[kaneton]

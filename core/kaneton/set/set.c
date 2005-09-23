@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sat Sep 10 15:34:57 2005   mycure
+ * last update   Thu Sep 15 18:01:40 2005   mycure
  */
 
 /*
@@ -531,7 +531,7 @@ t_error			set_test(t_type				type)
 	if (set_add(id, &data) != ERROR_NONE)
 	  printf("error: set_add()\n");
 
-	// XXX-bug alloc_dump();
+	alloc_dump();
 	while (1);
 
 	data = 843536LL;

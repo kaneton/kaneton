@@ -1,4 +1,17 @@
 --
+ passer les macros asm inline en volatile.
+ si ce sont des fonctions inline il faut le faire aussi on ne sait jamais
+
+-- bug
+ c'est finalement le realloc qui fait planter set, j ai passer 2 heures
+ a chercher ca fait chier. reste plus qu'a le corriger
+
+ j'ai matter putain pwipwi c'est une merde meme un inge1 en piscine il
+ fait pas l erreur. il copie new-size bytes dans le new-chunk donc forcement
+ ca chie. il faut regarder quel est le plus petit entre le old et le new
+ et copier ca.
+
+--
  rajouter des binaires dans env/linux/init pour le check
 
 --
