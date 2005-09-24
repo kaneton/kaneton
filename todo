@@ -1,4 +1,7 @@
 --
+ alloc: mettre a la norme, utiliser le fit
+
+--
  passer les macros asm inline en volatile.
  si ce sont des fonctions inline il faut le faire aussi on ne sait jamais
 
