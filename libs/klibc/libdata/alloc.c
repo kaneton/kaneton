@@ -1,17 +1,17 @@
 /*
- * copyright quintard julien
+ * copyright Cedric Aubouy
  *
  * kaneton
  *
- * malloc.c
+ * alloc.c
  *
- * path          /home/mycure/data/research/projects/kaneton/libs/klibc/libdata
+ * path          /home/ultima/dev/25-09-05-kaneton/libs/klibc/libdata
  *
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
+ * made by cedric
+ *         Cedric Aubouy   [cedric.aubouy@gmail.com]
  *
- * started on    Fri Feb 11 02:50:21 2005   mycure
-** Last update Tue Sep  6 00:59:02 2005 Reboot Universe
+ * started on    Sun Sep 25 19:57:33 2005   cedric
+ * last update   Sun Sep 25 19:57:56 2005   cedric
  */
 
 /*
@@ -74,6 +74,7 @@ t_alloc			alloc;
 # define __prev_chunk(Chunk) (void *) (Chunk->prv)
 # define __chunk_size(Chunk) (Chunk->size + sizeof (t_chunk))
 # define __chunk_ptr(Chunk) ((void *) ((t_vaddr) Chunk + sizeof (t_chunk)))
+# define __chunk_head(Chunk) ((void *) ((t_vaddr) Chunk - sizeof (t_chunk)))
 
 /*
  * This value is used to specify when we agree to fragment a chunk :
@@ -218,19 +219,22 @@ void			alloc_dump()
   dump_chunk(runner);
 }
 
-/*
- * Warning : this is highly bugged.
- */
-
 void*			realloc(void 				*ptr,
 				size_t				size)
 {
   void			*new = NULL;
   size_t		i = 0;
+  size_t		min;
+  t_chunk		*chunk;
 
+  if (!ptr)
+    return malloc(size);
+  if (0 == size)
+    return ptr;
   new = malloc(size);
-  for (i = 0; i < size; i++)
-    ((char*) new)[i] = ((char*) ptr)[i];
+  chunk = __chunk_head(ptr);
+  min = chunk->size > size ? size : chunk->size;
+  memcpy(new, ptr, min);
   free(ptr);
   return new;
 }
