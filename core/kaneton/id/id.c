@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Sep 15 17:39:35 2005   mycure
+ * last update   Wed Sep 28 19:09:42 2005   mycure
  */
 
 /*
@@ -41,7 +41,7 @@
  * the id manager structure.
  */
 
-m_id*			id;
+m_id*			id = NULL;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -118,9 +118,6 @@ t_error			id_destroy(o_id*			o)
 
 t_error			id_init(void)
 {
-  printf("HERE\n");
-  alloc_dump();
-
   if ((id = malloc(sizeof(m_id))) == NULL)
     {
       cons_msg('!', "id: cannot allocate memory for the identifier manager "
@@ -128,9 +125,6 @@ t_error			id_init(void)
 
       return (ERROR_UNKNOWN);
     }
-
-  printf("HERE\n");
-  alloc_dump();
 
   return (ERROR_NONE);
 }

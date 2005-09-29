@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Sep 12 03:54:41 2005   mycure
+ * last update   Wed Sep 28 19:42:08 2005   mycure
  */
 
 /*
@@ -78,6 +78,7 @@ m_segment*		segment;
 
 t_error			segment_dump(void)
 {
+  t_state		state;
   o_segment*		data;
   t_setsz		size;
   t_iterator		i;
@@ -101,7 +102,7 @@ t_error			segment_dump(void)
    * 3)
    */
 
-  set_foreach(SET_OPT_FORWARD, segment->container, &i)
+  set_foreach(SET_OPT_FORWARD, segment->container, &i, state)
     {
       char		perms[4];
 
@@ -155,9 +156,10 @@ t_error			segment_rsv(t_asid			asid,
 				    t_perms			perms,
 				    t_segid*			segid)
 {
+  o_segment*		current;
+  t_state		state;
   o_segment*		head;
   o_segment*		tail;
-  o_segment*		current;
   t_iterator		i;
   o_as*			as;
 
@@ -228,7 +230,7 @@ t_error			segment_rsv(t_asid			asid,
 	 * C)
 	 */
 
-	set_foreach(SET_OPT_FORWARD, segment->container, &i)
+	set_foreach(SET_OPT_FORWARD, segment->container, &i, state)
 	  {
 	    o_segment*	next;
 	    t_iterator	j;
@@ -432,6 +434,7 @@ t_error			segment_perms(t_asid			asid,
 
 t_error			segment_flush(t_asid			asid)
 {
+  t_state		state;
   o_segment*		data;
   o_as*			as;
   t_iterator		i;
@@ -449,7 +452,7 @@ t_error			segment_flush(t_asid			asid)
    * 2)
    */
 
-  set_foreach(SET_OPT_FORWARD, as->segments, &i)
+  set_foreach(SET_OPT_FORWARD, as->segments, &i, state)
     {
       if (set_object(as->segments, i, (void**)&data) != ERROR_NONE)
 	{

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:40:57 2005   mycure
- * last update   Sun Jun 19 22:19:47 2005   mycure
+ * last update   Sun Sep 25 22:35:22 2005   mycure
  */
 
 #ifndef LIBSYS_TYPES_H

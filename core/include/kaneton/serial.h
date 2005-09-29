@@ -5,13 +5,13 @@
  *
  * kaneton.h
  *
- * path          /home/vertrex/kaneton/core/kaneton/debug
+ * path          /home/mycure/kaneton/core/include/kaneton
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Wed Sep 14 14:30:35 2005   
+ * last update   Wed Sep 28 19:28:08 2005   mycure
  */
 
 #ifndef	KANETON_SERIAL_H

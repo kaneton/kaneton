@@ -5,13 +5,13 @@
  * 
  * stats.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/libs/klibc/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Sat Sep 10 20:28:49 2005   mycure
+ * last update   Sat Sep 24 09:54:36 2005   mycure
  */
 
 #ifndef KANETON_STATS_H
@@ -112,6 +112,7 @@ typedef struct
  */
 
 #ifdef CONF_STATS
+
 # define STATS_DUMP()							\
   stats_dump()
 
@@ -132,7 +133,9 @@ typedef struct
 
 # define STATS_CLEAN()							\
   stats_clean()
+
 #else
+
 # define STATS_DUMP()
 
 # define STATS_BEGIN(_stats_)
@@ -146,6 +149,7 @@ typedef struct
 # define STATS_INIT()
 
 # define STATS_CLEAN()
+
 #endif
 
 /*

@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Wed Sep 14 12:36:06 2005   mycure
+ * last update   Wed Sep 28 19:47:24 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -101,8 +101,6 @@ typedef struct s_set		o_set;
 
 struct				s_iterator
 {
-  t_state			state;
-
   union
   {
     t_iterator_array		array;
@@ -184,13 +182,17 @@ typedef struct
  */
 
 #if (DEBUG & DEBUG_SET)
+
 # define set_debug(_func_, _setid_, _args_...)				\
   fprintf(stderr, "[setd] trap: %s(%qu, %s)\n",				\
           #_func_,							\
           _setid_,							\
           #_args_);
+
 #else
+
 # define set_debug(_func_, _setid_, _args...)
+
 #endif
 
 /*
@@ -276,9 +278,9 @@ typedef struct
  * foreach
  */
 
-#define set_foreach(_opt_, _setid_, _iterator_)				\
-  for ((_iterator_)->state = ITERATOR_STATE_UNUSED;			\
-        (((_iterator_)->state == ITERATOR_STATE_UNUSED) ?		\
+#define set_foreach(_opt_, _setid_, _iterator_, _state_)		\
+  for ((_state_) = ITERATOR_STATE_UNUSED;				\
+        (((_state_) == ITERATOR_STATE_UNUSED) ?				\
           ((_opt_) == SET_OPT_FORWARD ?					\
             set_head((_setid_), (_iterator_)) == ERROR_NONE :		\
             set_tail((_setid_), (_iterator_)) == ERROR_NONE) :		\
@@ -287,7 +289,7 @@ typedef struct
               ERROR_NONE :						\
             set_prev((_setid_), *(_iterator_), (_iterator_)) ==		\
               ERROR_NONE));						\
-	 (_iterator_)->state = ITERATOR_STATE_USED			\
+	 (_state_) = ITERATOR_STATE_USED				\
        )
 
 /*

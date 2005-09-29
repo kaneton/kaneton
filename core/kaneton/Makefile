@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Wed Sep 14 12:29:52 2005   mycure
+## last update   Sun Sep 25 23:10:34 2005   mycure
 ##
 
 #
@@ -35,6 +35,7 @@ include			../../.kaneton.mk
 SUBDIRS			:=		arch				\
 					as				\
 					conf				\
+					debug				\
 					id				\
 					segment				\
 					set				\

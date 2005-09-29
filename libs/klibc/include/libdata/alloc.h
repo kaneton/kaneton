@@ -5,7 +5,7 @@
  *
  * malloc.h
  *
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
@@ -15,14 +15,14 @@
  */
 
 #ifndef LIBDATA_ALLOC_H
-# define LIBDATA_ALLOC_H       	1
+#define LIBDATA_ALLOC_H       	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-# include <klibc/include/libsys/types.h>
-# include <arch/machdep/machdep.h>
+#include <klibc/include/libsys/types.h>
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -32,22 +32,20 @@
  * chunck
  */
 
-# define ALLOC_FREE		0x1
-# define ALLOC_LAST		0x2
+#define ALLOC_FREE		0x1
+#define ALLOC_LAST		0x2
 
 /*
 ** The big, ugly and apparently useless "align" field is actually necessary to
 ** ensure that the size of the s_chunk structure is a multiple of the size of a
 ** pointer.
 */
-struct				s_chunk
+typedef struct			s_chunk
 {
   size_t			size;
   unsigned int			flags;
-  struct s_chunck*		prv;
-} __attribute__ ((__packed__));
-
-typedef struct s_chunk t_chunk;
+  struct s_chunk*		prv;
+}				__attribute__ ((packed)) t_chunk;
 
 /*
  * alloc global information

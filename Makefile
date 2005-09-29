@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Wed Sep 14 12:38:10 2005   mycure
+## last update   Mon Sep 26 05:16:08 2005   mycure
 ##
 
 #
@@ -82,6 +82,8 @@ kaneton:		kaneton.mk
 
 clear:			kaneton.mk
 	$(call make,$(SUBDIRS),clear)
+
+	$(call make,papers/,clear)
 
 purge:			kaneton.mk
 	$(call purge,)

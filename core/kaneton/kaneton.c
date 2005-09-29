@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 03:04:40 2005   mycure
-** Last update Tue Sep  6 00:59:34 2005 Reboot Universe
+ * last update   Wed Sep 28 19:10:32 2005   mycure
  */
 
 /*
@@ -98,7 +98,7 @@ void			kaneton(t_init*				bootloader)
 
   alloc_init(init->alloc, init->allocsz, FIT_FIRST);
 
-#if 0 /* XXX abuse de mettre ca ici!!! */
+#if 0 /* XXX abuse de mettre ca ici!!! => alloc_test() */
   /* -- Here begins allocation test */
   printf("starting allocation tests\n");
   {
@@ -208,9 +208,9 @@ void			kaneton(t_init*				bootloader)
   /*
    * XXX)
    */
-  /*
+
   STATS_DUMP();
-  */
+
   printf("ici c'est une boucle\n");
   while (1)
     ;

@@ -5,13 +5,13 @@
  * 
  * stats.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/stats
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sat Sep 10 15:16:05 2005   mycure
+ * last update   Wed Sep 28 19:43:40 2005   mycure
  */
 
 /*
@@ -129,6 +129,8 @@ t_error			stats_end(t_staid			staid,
 
 t_error			stats_dump(void)
 {
+  t_state		outter;
+  t_state		inner;
   t_setsz		size;
   o_stats*		o;
   o_stats_func*		f;
@@ -143,7 +145,7 @@ t_error			stats_dump(void)
   cons_msg('#', "dumping %qu statistic(s):\n",
 	   size);
 
-  set_foreach(SET_OPT_FORWARD, stats->container, &i)
+  set_foreach(SET_OPT_FORWARD, stats->container, &i, outter)
     {
       if (set_object(stats->container, i, (void**)&o) != ERROR_NONE)
 	{
@@ -157,7 +159,7 @@ t_error			stats_dump(void)
 	       o->staid,
 	       o->name);
 
-      set_foreach(SET_OPT_FORWARD, o->functions, &j)
+      set_foreach(SET_OPT_FORWARD, o->functions, &j, inner)
 	{
 	  if (set_object(o->functions, j, (void**)&f) != ERROR_NONE)
 	    {

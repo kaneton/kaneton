@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Sep 15 18:18:55 2005   mycure
+ * last update   Wed Sep 28 19:44:42 2005   mycure
  */
 
 /*
@@ -283,6 +283,7 @@ t_error			set_destroy_bpt(o_set*			o)
 
 t_error			set_dump_bpt(t_setid			setid)
 {
+  t_state		state;
   o_set*		o;
   t_iterator		i;
 
@@ -303,7 +304,7 @@ t_error			set_dump_bpt(t_setid			setid)
 	   o->size,
 	   setid);
 
-  set_foreach(SET_OPT_FORWARD, setid, &i)
+  set_foreach(SET_OPT_FORWARD, setid, &i, state)
     {
       t_bpt_imm(set)		node;
       t_bpt_lfentry(set)*	leaf;
@@ -650,6 +651,7 @@ t_error			set_remove_bpt(t_setid			setid,
 t_error			set_flush_bpt(t_setid			setid)
 {
   t_bpt_nodesz(set)	nodesz;
+  t_state		state;
   t_iterator		i;
   o_set*		o;
 
@@ -668,7 +670,7 @@ t_error			set_flush_bpt(t_setid			setid)
    * 2)
    */
 
-  set_foreach(SET_OPT_FORWARD, setid, &i)
+  set_foreach(SET_OPT_FORWARD, setid, &i, state)
     {
       t_bpt_imm(set)		node;
       t_bpt_lfentry(set)*	leaf;

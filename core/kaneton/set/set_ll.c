@@ -5,13 +5,13 @@
  * 
  * set_ll.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Sep  6 11:17:02 2005   mycure
+ * last update   Wed Sep 28 19:44:00 2005   mycure
  */
 
 /*
@@ -60,6 +60,7 @@ extern m_set*		set;
 
 t_error			set_dump_ll(t_setid			setid)
 {
+  t_state		state;
   o_set*		o;
   t_iterator		i;
 
@@ -80,7 +81,7 @@ t_error			set_dump_ll(t_setid			setid)
 	   o->size,
 	   setid);
 
-  set_foreach(SET_OPT_FORWARD, setid, &i)
+  set_foreach(SET_OPT_FORWARD, setid, &i, state)
     {
       t_set_ll_node*	n = i.u.ll.node;
 

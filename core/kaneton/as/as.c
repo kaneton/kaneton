@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Sep 12 03:48:55 2005   mycure
+ * last update   Wed Sep 28 19:42:34 2005   mycure
  */
 
 /*
@@ -82,6 +82,7 @@ t_asid			kas = ID_UNUSED;
 
 t_error			as_dump(void)
 {
+  t_state		state;
   o_as*			data;
   t_setsz		size;
   o_set*		o;
@@ -102,7 +103,7 @@ t_error			as_dump(void)
 
   cons_msg('#', "dumping %qu address space(s):\n", size);
 
-  set_foreach(SET_OPT_FORWARD, as->container, &i)
+  set_foreach(SET_OPT_FORWARD, as->container, &i, state)
     {
       if (set_object(as->container, i, (void**)&data) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);

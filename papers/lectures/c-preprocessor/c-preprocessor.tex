@@ -11,28 +11,23 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Sat Sep 10 01:20:16 2005   mycure
+%% last update   Thu Sep 29 22:33:03 2005   mycure
 %%
 
 %
 % class
 %
 
-\documentclass{beamer}
+\documentclass[9pt]{beamer}
 
 %
 % packages
 %
 
-%\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
-%\usepackage{amsmath,amssymb}
-%\usepackage[latin1]{inputenc}
-%\usepackage{colortbl}
+\usepackage{amsmath,amssymb,color}
 \usepackage[english]{babel}
-%\usepackage{verbatim}
-%\usepackage{times}
-
-% XXX \usepackage{semiverbatim}
+\usepackage{enumerate}
+\usepackage[latin1]{inputenc}
 
 %
 % style
@@ -44,10 +39,12 @@
 % verbatim font
 %
 
-\makeatletter
-\renewcommand{\verbatim@font}
-  {\ttfamily\tiny\selectfont}
-\makeatother
+% XXX
+
+%\makeatletter
+%\renewcommand{\verbatim@font}
+%  {\ttfamily\small\selectfont}
+%\makeatother
 
 %
 % title
@@ -89,6 +86,12 @@
 }
 
 %
+% new line
+%
+
+\newcommand{\nl}[0]{\vspace{0.4cm}}
+
+%
 % document
 %
 
@@ -117,9 +120,7 @@
 
 \section{Overview}
 
-%
 % 1)
-%
 
 \begin{frame}
   \frametitle{Description}
@@ -128,16 +129,16 @@
   is used automatically by the C compiler to transform your program
   before compilation.
 
+  \nl
 
   It is called a macro processor because it allows you to define macros,
   which are brief abbreviations for longer constructs.
+
 \end{frame}
 
-%
 % 2)
-%
 
-\begin{frame}[fragile]
+\begin{frame}
   \frametitle{Syntax}
 
   The C preprocessor's directives are of the form:
@@ -151,26 +152,204 @@
 
 \end{frame}
 
-\subsection{Introduction}
+% 3)
 
-\begin{frame}[fragile]
-  \frametitle{An Algorithm For Finding Primes Numbers.}
+\begin{frame}
+  \frametitle{General Rules}
 
-  \begin{semiverbatim}
-    text
-  \end{semiverbatim}
-
-  \begin{uncoverenv}<2>
-    Note the use of \verb|std::|.
-  \end{uncoverenv}
+  \begin{itemize}
+    \item
+      we \alert{cannot} define new directives, the directive set is fixed
+    \item
+      some directives require arguments: \textit{\#define argument(s)}
+  \end{itemize}
 
 \end{frame}
 
-\subsection{Syntax}
+%
+% directives
+%
 
 \section{Directives}
 
+%
+% header files
+%
+
 \subsection{Header Files}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  Header files contain c declarations and macro definitions to be used
+  by several source files.
+
+  \nl
+
+  You can request the use of a header file using the c preprocessor
+  directive \textit{\#include}.
+
+  \nl
+
+  With a header file, the related declarations appear in only one place.
+
+  \nl
+
+  So the changes will only have to be made on a single header file
+  instead of on each source file.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Syntax}
+
+  \begin{itemize}
+    \item
+      \textit{\#include <file>}: in the system header directories
+
+      \begin{itemize}
+	\item
+	  \textbf{-I} for the directory list
+	\item
+	  \textbf{-nostdinc} for not searching in the system list
+	\item
+	  \textit{<...>} cannot contain neither wildcards nor comments
+	\item
+	  \textit{<...>} cannot contain the \textbf{>} character but
+	  can contain the \textbf{<} character.
+      \end{itemize}
+
+    \item
+      \textit{\#include ``file''}: in the current working directory
+
+      \begin{itemize}
+	\item
+	  \textit{``...''} cannot contain the \textbf{``} character
+	\item
+	  \textit{``...''} does not accept the backslash escaped character,
+	  so: ``chiche\\n\\tpresident\\n'' is a file containing
+	  three backslahes
+      \end{itemize}
+
+    \item
+      \textit{\#include anythingelse}: looks for a macro named
+      \textbf{anythingelse}.
+  \end{itemize}
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  \begin{verbatim}
+    #if defined(__NetBSD__) || defined(__OpenBSD__) ||          \
+        defined(__FreeBSD__)
+      #define INCLUDE_FILE                ``bsd/include.h''
+    #else
+      #define INCLUDE_FILE                ``linux/include.h''
+    #endif
+
+    #include INCLUDE_FILE
+  \end{verbatim}
+\end{frame}
+
+%
+% one-only included files
+%
+
+\subsection{One-only Included Files}
+
+% 1)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Overview}
+
+  It often happens that a header file includes another header file resulting in
+  that a certain header is included more than once.
+
+  \nl
+
+  This fact leads to errors if the header files define structures, types etc..
+
+  \nl
+
+  The standard way to prevent these errors is:
+
+  \begin{verbatim}
+    #ifndef CHICHE_SEEN_WITH_THE_POPE
+    #define CHICHE_SEEN_WITH_THE_POPE
+
+    #endif /* CHICHE_SEEN_WITH_THE_POPE */
+  \end{verbatim}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Macro Naming}
+
+  Be careful, user defines may not begin with the character \textbf{\_}
+  because these are reserved for system defines.
+
+  \nl
+
+  To avoid conflicts, the system defines generally begin with \textbf{\_\_}.
+
+  \nl
+
+  The macros for one-only inclusion are name based on the header file name.
+
+  \nl
+
+  Moreover, and still to avoid conflicts, these macros are suffixed with
+  some text. Otherwise, the two file generic/chiche.h and bsd/chiche.h
+  will had generated conflicts.
+
+  \nl
+
+  The kaneton project uses a slightly different style:
+
+  \begin{itemize}
+    \item
+      no underscore before names
+    \item
+      no suffixes
+    \item
+      but instead uses the relative path from the include directory
+      as the name
+  \end{itemize}
+
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  Let's take a look at a kaneton example:
+
+  The file \textit{core/include/kaneton/set.h} where \textit{core/kaneton}
+  is the include dir:
+
+  \begin{verbatim}
+    #ifndef KANETON_SET_H
+      ...
+    #endif
+  \end{verbatim}
+
+  The file \textit{core/include/arch/ia32/kaneton/set.h} where
+  \textit{core/include/arch/machdep} is the include directory:
+
+  \begin{verbatim}
+    #ifndef IA32_KANETON_SET_H
+      ...
+    #endif
+  \end{verbatim}
+\end{frame}
 
 \subsection{Macros}
 
@@ -180,4 +359,57 @@
 
 \section{Diagnostics}
 
+%
+% bibliography
+%
+
+\begin{thebibliography}{10}
+
+  \bibitem{Test}[Test, 42]
+    Test Bande
+    \newblock Bande tout dans le kignon
+    \newblock Dechire toi le teton sur une rape a fromage
+
+\end{thebibliography}
+
 \end{document}
+
+XXX
+
+\alert
+
+\logo{---kaneton---}
+
+\insertlogo
+
+\textbf<2>{test}
+\only<2>{test}
+
+\onslide<1>{bande}
++*
+\uncover
+\visible
+\only
+
+\item<+->
+\item<+->
+\item<+->
+plutot que 1 2 3, ca incremente
+
+\begin{itemize}[<+->]
+incremente chaque item
+
+\part{bande tout} permet de decouper les longues pres genre cours
+
+\lecture{bande}{week 1}
+...
+\lecture{suce}{week 2}
+
+\enumerate[(i)]
+\enumerate[ball] [triangle] [circle] [square]
+ item
+
+\note[item]<2>{Tell a joke about plants}
+
+---
+

@@ -1,3 +1,36 @@
+-- solal
+ mettre a la norme ton code
+ faire compiler ton code
+ prefixer ton par le nom du module t_serial_... serial_...()
+ coder core/debug/debug.c core/include/debug.h
+ chaque fonction retourn un t_error
+
+-- messages
+ faire un msg_build(size) qui va creer un segment partage et renvoyer
+ un segid cache dans un msgid. ensuite on fait msg_send(msgid). quand
+ de l'autre cote il fait un msg_receive(*msgid) il recoit le msgid
+ donc le segid pour le segment partage, il fait un truc style msg_pack()
+ et ca lui mappe le segment partage et hop il accede au message qui peut
+ donc a la fois etre de taille indeterminee, et le kernel ne manipule que
+ des identifiants de message, rien d'autre donc facile a passer.
+
+-- swap
+ faire du swap sur le reseau et sur le disque mais experimenter
+ le reseau
+
+-- dma
+ faire une liste de segments (init->dma) pour le dma, qui gerera
+ une zone speciale, ou alors que le gestionnaire de segments
+ gere des zones de differents type, a revoir.
+
+-- norme commit
+  [core/kaneton/set/set_bpt.c]
+    1) init function updated to properly handle set options.
+    2) ...
+
+  [core/kaneton/kaneton.c]
+    1) ...
+
 --
  alloc: mettre a la norme, utiliser le fit
 
@@ -16,6 +49,11 @@
 
 --
  rajouter des binaires dans env/linux/init pour le check
+
+ mtools, gmake etc..
+
+--
+ essayer de faire compiler kaneton sur netbsd a l ecole
 
 --
  lister les trucs qui reste a faire:
@@ -40,42 +78,15 @@
  PXE a installer
 
 --
- AS_LEAVE, pourtouit car plus de check de la var globale, d ailleurs la
- virer pour qu elle soit globale et non allouee
+ cours:
 
---
- il faut pouvoir appeller la partie dependante a l init et au clean
- donc un LEAVE: virer le check de la var globale car inutile
-
- il faut lancer la partie dep:
-
-  1) apres une construction d object MAIS
-  2) avant sa destruction
-
- de plus lorsqu un objet est cree, il est preferable de passe l objet
- ou bien au moins son identifiant a la partie dependante pour qu elle puisse
- effectuee des operations dessus:
-
-   lors d une reservation d as (un as a un pd en partie dep): la partie
-   dep va reserver une page et la set dans l as: pd
-
-   pour ca il faudrait connaitre l id de l as juste cree.
-
- bref il y a un certains nombre de problemes grave dans la gestion de la
- partie dep: soit interface generique soit ultra generique on appel sans savoir
-
- revoir stats car j ai passer les args des fonctions dans STATS_LEAVE
-
---
- mettre en place une norme de commit
+  . os distribues
+  . linkers
+  . archi
 
 --
  retoucher le README car nouvelles regles makefile, nouvelles functions
  dans kaneton.mk
-
---
- faire un make view:bande et ca lance un script dans papers qui liste les trucs a voir si aucune
- argument ou faux arg
 
 --
  permettre de release le set container pour pouvoir vraiment liberer
@@ -85,33 +96,22 @@
  qu avant set_init
 
 --
- set_foreach : iterator->state il faudrait le virer
-
---
  set_type() => set_type(bpt), set_type(ll)
 
  car ne sont pas censes connaitre SET_TYPE_ARRAY etc.. sinon on aurait fait
  ca: set_rsv(SET_TYPE_LL, ...);
-
---
- retoucher la libc pour qu'elle utilise les types systeme: t_uint32 etc..
-
- notamment dans printf avec les stdarg
 
 -- bug
  set_bpt.c ne passe pas dans le truc a pwipwi
 
  penser a rajouter set_bpt.c dans core/include/kaneton/set.h
 
--- bug
- malloc(100000) plante, devrait renvoyer une erreur
-
 --
  un bon test: on initialise tout, ensuite on detruit tout et on verifie
  qu on a pas perdu de memoire, comme ca on verra si les ensembles sont bons
 
 --
- faire le set de hash et tableau par jacob au pire
+ faire le set de hash et tableau par solal au pire ou un inge1
 
 --
  faire des tests sur les ensembles et sur les segments: jacob_s
@@ -140,9 +140,6 @@
 
 --
  expliquer dans le readme comment generer les dep
-
---
- printf_init() rajouter un fit
 
 --
  clarifier le segment manager et eviter le redondance de code

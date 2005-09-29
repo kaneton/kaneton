@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton/core/kaneton/debug
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Thu Sep 15 16:56:37 2005   mycure
+## last update   Wed Sep 28 19:12:35 2005   mycure
 ##
 
 #
@@ -32,13 +32,15 @@ include			../../../.kaneton.mk
 
 DEBUG_LO		:=		debug.lo
 
-DEBUG_C			:=		cons.c				
+DEBUG_C			:=		cons.c				\
+					debug.c				
 #					serial.c			
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)
 
-DEBUG_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/serial.h
-					
+DEBUG_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/serial.h \
+					$(_CORE_INCLUDE_DIR_)/kaneton/debug.h
+
 CFLAGS			+=		-D___kernel
 
 #

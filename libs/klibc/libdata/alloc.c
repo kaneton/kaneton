@@ -5,13 +5,13 @@
  *
  * alloc.c
  *
- * path          /home/ultima/dev/25-09-05-kaneton/libs/klibc/libdata
+ * path          /home/mycure/kaneton/core/include/kaneton
  *
  * made by cedric
  *         Cedric Aubouy   [cedric.aubouy@gmail.com]
  *
  * started on    Sun Sep 25 19:57:33 2005   cedric
- * last update   Sun Sep 25 19:57:56 2005   cedric
+ * last update   Wed Sep 28 19:30:20 2005   mycure
  */
 
 /*

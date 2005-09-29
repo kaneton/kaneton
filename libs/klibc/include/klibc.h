@@ -5,13 +5,13 @@
  * 
  * klibc.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/libdata
+ * path          /home/mycure/kaneton/libs/klibc/include
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 13:53:34 2005   mycure
- * last update   Sun Jul  3 15:00:26 2005   mycure
+ * last update   Sun Sep 25 22:20:35 2005   mycure
  */
 
 #ifndef KLIBC_H
@@ -21,7 +21,7 @@
  * ---------- defines ---------------------------------------------------------
  */
 
-#define NULL			((void *)0)
+#define NULL			((void*)0)
 
 #ifndef FALSE
 #define FALSE			(0 == 1)
@@ -45,7 +45,9 @@
  * ---------- extern ----------------------------------------------------------
  */
 
+/* XXX
 extern int	errno;
 extern int	suberrno;
+*/
 
 #endif
