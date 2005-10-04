@@ -5,13 +5,13 @@
 %% 
 %% inline-assembly.tex
 %% 
-%% path          /home/mycure/kaneton/papers/lectures/inline-assembly
+%% path          /home/mycure/kaneton
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Tue Oct  4 10:25:29 2005   mycure
+%% last update   Tue Oct  4 14:16:25 2005   mycure
 %%
 
 %
@@ -27,14 +27,11 @@
 \usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
 \usepackage{colortbl}
 \usepackage{times}
-
 \usepackage{amsmath,amssymb}
-
 \usepackage{graphics}
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{xcolor}
-
 \usepackage[english]{babel}
 \usepackage{enumerate}
 \usepackage[latin1]{inputenc}
@@ -85,6 +82,12 @@
 }
 
 %
+% date
+%
+
+\date{\today}
+
+%
 % logos
 %
 
@@ -96,15 +99,6 @@
 		{epita}{../../logos/epita}
 \pgfdeclareimage[interpolate=true,width=25pt,height=18pt]
 		{lse}{../../logos/lse}
-
-\logo{\pgfuseimage{upmc} \hspace{0.1cm} \pgfuseimage{lip6} \hspace{0.1cm}
-      \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{lse} \hspace{0.1cm}}
-
-%
-% date
-%
-
-\date{\today}
 
 %
 % table of contents at the beginning of each section
@@ -142,6 +136,11 @@
 
 \begin{frame}
   \titlepage
+
+  \begin{center}
+    \pgfuseimage{upmc} \hspace{0.1cm} \pgfuseimage{lip6} \hspace{0.1cm}
+    \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{lse} \hspace{0.1cm}
+  \end{center}
 \end{frame}
 
 %
@@ -1013,7 +1012,7 @@
 
 \section{Bibliography}
 
-\begin{thebibliography}{10}
+\begin{thebibliography}{3}
   \bibitem{Howto}
     GCC Inline Assembly Howto
 

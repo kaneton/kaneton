@@ -5,21 +5,18 @@
 %% 
 %% inline-assembly.tex
 %% 
-%% path          /home/mycure/kaneton/papers/lectures/inline-assembly
+%% path          /home/mycure/kaneton/papers/lectures/c-preprocessor
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Mon Oct  3 04:54:03 2005   mycure
+%% last update   Tue Oct  4 15:09:47 2005   mycure
 %%
 
 %% XXX todo
-%% couleur pour examples: mieux \example -> verbatim colore taille reduite
 %% cases study
-%% finir variadic arguments
 %% corriger les fautes, IL Y EN A
-%% bibliography: GNU c-preprocessor info, queue.h, bpt.h
 
 %
 % class
@@ -31,31 +28,41 @@
 % packages
 %
 
-\usepackage{amsmath,amssymb,color}
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{colortbl}
+\usepackage{times}
+\usepackage{amsmath,amssymb}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
 \usepackage[english]{babel}
 \usepackage{enumerate}
 \usepackage[latin1]{inputenc}
-
-%%\usepackage{verbatim}
 
 %
 % style
 %
 
 \usepackage{beamerthemesplit}
-
 \setbeamercovered{dynamic}
 
 %
 % verbatim font
 %
 
-% XXX mettre de la couleur, genre vert quand c'est un exemple
+\definecolor{verbatimcolor}{rgb}{0,0.4,0}
 
-%\makeatletter
-%\renewcommand{\verbatim@font}
-%  {\ttfamily\small\selectfont}
-%\makeatother
+\makeatletter
+\renewcommand{\verbatim@font}
+  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
+\makeatother
+
+%
+% new line
+%
+
+\newcommand{\nl}[0]{\vspace{0.4cm}}
 
 %
 % title
@@ -85,6 +92,19 @@
 \date{\today}
 
 %
+% logos
+%
+
+\pgfdeclareimage[interpolate=true,width=49pt,height=18pt]
+                {upmc}{../../logos/upmc}
+\pgfdeclareimage[interpolate=true,width=18pt,height=18pt]
+                {lip6}{../../logos/lip6}
+\pgfdeclareimage[interpolate=true,width=34pt,height=18pt]
+                {epita}{../../logos/epita}
+\pgfdeclareimage[interpolate=true,width=25pt,height=18pt]
+                {lse}{../../logos/lse}
+
+%
 % table of contents at the beginning of each section
 %
 
@@ -109,12 +129,6 @@
 }
 
 %
-% new line
-%
-
-\newcommand{\nl}[0]{\vspace{0.4cm}}
-
-%
 % document
 %
 
@@ -126,6 +140,11 @@
 
 \begin{frame}
   \titlepage
+
+  \begin{center}
+    \pgfuseimage{upmc} \hspace{0.1cm} \pgfuseimage{lip6} \hspace{0.1cm}
+    \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{lse} \hspace{0.1cm}
+  \end{center}
 \end{frame}
 
 %
@@ -148,15 +167,14 @@
 \begin{frame}
   \frametitle{Description}
 
-  The C preprocessor, often known as cpp, is a macro processor that
-  is used automatically by the C compiler to transform your program
+  The C preprocessor, often known as cpp, is a macro processor
+  automatically used by the C compiler to transform your program
   before compilation.
 
   \nl
 
   It is called a macro processor because it allows you to define macros,
   which are brief abbreviations for longer constructs.
-
 \end{frame}
 
 % 2)
@@ -172,7 +190,6 @@
     \item
       a directive name for the precise operation
   \end{itemize}
-
 \end{frame}
 
 % 3)
@@ -186,7 +203,6 @@
     \item
       some directives require arguments: \textit{\#define argument(s)}
   \end{itemize}
-
 \end{frame}
 
 %
@@ -206,17 +222,18 @@
 \begin{frame}
   \frametitle{Overview}
 
-  Header files contain c declarations and macro definitions to be used
+  Header files contain C declarations and macro definitions to be used
   by several source files.
 
   \nl
 
-  You can request the use of a header file using the c preprocessor
+  You can request the use of a header file using the C preprocessor
   directive \textit{\#include}.
 
   \nl
 
-  With a header file, the related declarations appear in only one place.
+  With a header file, the related declarations appear in only one place,
+  each C source file including the header file.
 
   \nl
 
@@ -226,46 +243,63 @@
 
 % 2)
 
-% XXX < > qui chie
+\begin{frame}[containsverbatim]
+  \frametitle{First Syntax}
 
-\begin{frame}
-  \frametitle{Syntax}
+  \textbf{\#include $<$file$>$}
+
+  \nl
+
+  This include looks for the file in the system header directories.
 
   \begin{itemize}
-    \item<1->
-      \textit{\#include <file>}: in the system header directories
-
-      \begin{itemize}
-	\item
-	  \textbf{-I} for the directory list
-	\item
-	  \textbf{-nostdinc} for not searching in the system list
-	\item
-	  \textit{<...>} cannot contain neither wildcards nor comments
-	\item
-	  \textit{<...>} cannot contain the \textbf{>} character but
-	  can contain the \textbf{<} character.
-      \end{itemize}
-
-    \item<2->
-      \textit{\#include ``file''}: in the current working directory
-
-      \begin{itemize}
-	\item
-	  \textit{``...''} cannot contain the \textbf{``} character
-	\item
-	  \textit{``...''} does not accept the backslash escaped character,
-	  so: ``chiche\\n\\tpresident\\n'' is a file containing
-	  three backslahes
-      \end{itemize}
-
-    \item<3->
-      \textit{\#include anythingelse}: looks for a macro named
-      \textbf{anythingelse}.
+  \item
+    \textbf{-I} for the directory list
+  \item
+    \textbf{-nostdinc} for not searching in the system list
+  \item
+    \textit{$<$...$>$} cannot contain neither wildcards nor comments
+  \item
+    \textit{$<$...$>$} cannot contain the \textbf{$>$} character but
+    can contain the \textbf{$<$} character.
   \end{itemize}
 \end{frame}
 
 % 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Second Syntax}
+
+  \textbf{\#include ``file''}
+
+  \nl
+
+  This include looks for the file in the current working directory.
+
+  \begin{itemize}
+  \item
+    \textit{``...''} cannot contain the \textbf{``} character
+  \item
+    \textit{``...''} does not accept the backslash escaped character,
+    so: \verb|''chiche\n\tpresident\n''| is a file containing
+    three backslahes
+  \end{itemize}
+\end{frame}
+
+% 4)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Third Syntax}
+
+  \textbf{\#include anythingelse}
+
+  \nl
+
+  This include looks for a macro named \textbf{anythingelse}; then resolve
+  it and reinterpret the current argument with the two previous syntaxes.
+\end{frame}
+
+% 5)
 
 \begin{frame}[containsverbatim]
   \frametitle{Example}
@@ -293,8 +327,8 @@
 \begin{frame}[containsverbatim]
   \frametitle{Overview}
 
-  It often happens that a header file includes another header file resulting in
-  that a certain header is included more than once.
+  It often happens that a header file includes another header file resulting
+  in header files included more than once.
 
   \nl
 
@@ -317,7 +351,7 @@
 \begin{frame}
   \frametitle{Macro Naming}
 
-  Be careful, user defines may not begin with the character \textbf{\_}
+  Be careful, user's defines may not begin with the character \textbf{\_}
   because these are reserved for system defines.
 
   \nl
@@ -357,8 +391,10 @@
 
   Let's take a look at a kaneton example:
 
-  The file \textit{core/include/kaneton/set.h} where \textit{core/kaneton}
-  is the include dir:
+  \nl
+
+  The file \textit{core/include/kaneton/set.h} where \textit{core/include}
+  is the include directory:
 
   \begin{verbatim}
     #ifndef KANETON_SET_H
@@ -367,7 +403,7 @@
   \end{verbatim}
 
   The file \textit{core/include/arch/ia32/kaneton/set.h} where
-  \textit{core/include/arch/machdep} is the include directory:
+  \textit{core/include/arch/ia32} is the include directory:
 
   \begin{verbatim}
     #ifndef IA32_KANETON_SET_H
@@ -387,7 +423,7 @@
 \begin{frame}
   \frametitle{Overview}
 
-  A macros is a sort of abbreviation which you define and then use later.
+  A macros is a kind of abbreviation which you define and then use later.
 
   \nl
 
@@ -396,8 +432,13 @@
   \nl
 
   Nevertheless, in few cases it is better to use lower case, especially
-  when trying to develop a kind of proxy as in the kaneton's set manager
-  which we will study later in this course.
+  when trying to develop a kind of proxy design pattern or interface as
+  in the kaneton's set manager which we will study later in this course.
+
+  \nl
+
+  Indeed, in these few cases the designer especially wants macro calls
+  to looks like function calls the user not being aware of the implementation.
 \end{frame}
 
 % 2)
@@ -407,8 +448,10 @@
 
   \begin{verbatim}
     #define PAGESZ          4096
-
     #define SETSZ           PAGESZ
+
+    #define open_readonly(filename)                                     \
+      open(filename, O_RDONLY)
 
     int                 main(void)
     {
@@ -422,6 +465,7 @@
     int                 main(void)
     {
       int               size = 4096;
+      int               fd = open_readonly(``/etc/passwd'');
     }
   \end{verbatim}
 \end{frame}
@@ -443,7 +487,9 @@
   \end{verbatim}
 
   results in a macro named \textbf{foo} which takes two arguments,
-  in this case: \textit{array[x = y} and \textit{x + 1]}.
+  in this case: \textbf{array[x = y} and \textbf{x + 1]}.
+
+  \nl
 
   Moreover if a function-like macro takes one argument and the user
   wants to pass an empty argument, he has to specify it using a
@@ -466,9 +512,8 @@
   \nl
 
   Indeed if a whitespace appear between the name and the open parenthesis
-  the macro will be considered as a simple macros and the open parenthesis
-  will be the expansion.
-
+  the macro will be considered as a simple macro and the open parenthesis
+  will be part of the expansion.
 \end{frame}
 
 % 5)
@@ -492,6 +537,14 @@
 
   will lead to an invalid use of the macro because this macro takes no
   argument.
+
+  \nl
+
+  The result will be:
+
+  \begin{verbatim}
+    (x) -1(3)
+  \end{verbatim}
 \end{frame}
 
 % 6)
@@ -542,7 +595,7 @@
   \frametitle{System Predefined Macros}
 
   These macros are set by the system for example to distinguish the
-  running system.
+  running operating system.
 
   \begin{itemize}[<+->]
     \item
@@ -596,7 +649,7 @@
     }
   \end{verbatim}
 
-  This example is a bit complex before it uses a feature we have not seen
+  This example is a bit complex because it uses a feature we have not seen
   yet.
 
   \begin{verbatim}
@@ -631,10 +684,9 @@
   \frametitle{Example}
 
   \begin{verbatim}
-    #define mystring(x)         #x
-
-    #define myconcat(function, arg)                                     \
-      mystring( function##arg )
+    #define mystring(s)         #s
+    #define myconcat(name1, name2)                                      \
+      mystring( name1##name2 )
 
     int                 main(void)
     {
@@ -760,8 +812,9 @@
 
   \nl
 
-  To avoid c-preprocessor warnings, prefer undefined the previous declaration
-  with the \textbf{\#undef} directive before the macro redefinition.
+  For the other cases and to avoid c-preprocessor errors, prefer
+  undefined the previous declaration with the \textbf{\#undef} directive
+  before the macro redefinition.
 \end{frame}
 
 %
@@ -913,7 +966,7 @@
   \begin{verbatim}
     #if defined(__NetBSD__)
       printf(``NetBSD\n'');
-    #elif defined(__FreeBSD__) || (__OpenBSD__)
+    #elif defined(__FreeBSD__) || defined(__OpenBSD__)
       printf(``other BSD\n'');
     #else
       printf(``Non-BSD\n'');
@@ -1018,7 +1071,7 @@
 
 % 2)
 
-\begin{frame}
+\begin{frame}[containsverbatim]
   \frametitle{Problem}
 
   But let's discuss about the following example:
@@ -1033,7 +1086,47 @@
     printf(``very bad idea\n'', );
   \end{verbatim}
 
-  Note that XXX
+  Note that the comma is followed by the closing parenthesis. When coming
+  the compiling time, gcc will warn an error because this is an syntax
+  error.
+
+  \nl
+
+  Indeed, a variadic argument is a list of one or more arguments, but at
+  least one.
+
+  \nl
+
+  Nevertheless, some programs need variadic arguments to become an empty
+  argument and not leading to a syntax error.
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Solution}
+
+  There is absolutely no solution with the common C preprocessor.
+
+  \nl
+
+  Nevertheless, the GNU C pre-processor introduced an extension for
+  this common problem.
+
+  \nl
+
+  Let's see the solution:
+
+  \begin{verbatim}
+    #define dprintf(fmt, args...)                                       \
+      printf(fmt, ##args)
+
+    dprintf(``%s %d\n'', mystring, 42);
+  \end{verbatim}
+
+  The GNU C preprocessor specify in its documentation that if a variadic
+  argument is empty and preceded by a comma; then the GNU C preprocessos will
+  remove the comma to make the syntax correct.
 \end{frame}
 
 %
@@ -1402,53 +1495,24 @@
 % bibliography
 %
 
-\begin{thebibliography}{10}
+\section{Bibliography}
 
-  \bibitem{Test}[Test, 42]
-    Test Bande
-    \newblock Bande tout dans le kignon
-    \newblock Dechire toi le teton sur une rape a fromage
+\begin{thebibliography}{3}
 
+%% bibliography: GNU c-preprocessor info, queue.h, bpt.h
+
+  \bibitem{Howto}
+    GNU C Preprocessor Howto
+
+  \bibitem{Queue}
+    Queue.h
+    \newblock /usr/include/sys/queue.h
+    \newblock A linked-list manager using macros
+
+  \bibitem{Bpt}
+    Bpt.h
+    \newblock http://www.lse.epita.fr/
+    \newblock A balanced+ tree manager using macros
 \end{thebibliography}
 
 \end{document}
-
-XXX
-
-\alert
-
-\logo{---kaneton---}
-
-\insertlogo
-
-\textbf<2>{test}
-\only<2>{test}
-
-\onslide<1>{bande}
-+*
-\uncover
-\visible
-\only
-
-\item<+->
-\item<+->
-\item<+->
-plutot que 1 2 3, ca incremente
-
-\begin{itemize}[<+->]
-incremente chaque item
-
-\part{bande tout} permet de decouper les longues pres genre cours
-
-\lecture{bande}{week 1}
-...
-\lecture{suce}{week 2}
-
-\enumerate[(i)]
-\enumerate[ball] [triangle] [circle] [square]
- item
-
-\note[item]<2>{Tell a joke about plants}
-
----
-
