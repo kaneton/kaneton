@@ -14,6 +14,16 @@
  donc a la fois etre de taille indeterminee, et le kernel ne manipule que
  des identifiants de message, rien d'autre donc facile a passer.
 
+ pour les message, soit mettre aucune protection cad tout le monde peut
+ communiquer avec tlm soit le mec qui recoit cree des filtres sur les
+ emmeteurs et transmet ces filtres au kernel. comme ca il n'y aura verification
+ que si le recepteur veut limiter les emmeteurs.
+
+ on peut aussi considerer le cas avec une capability sur les messages mais
+ ca ca risque de prendre du temps a verifier a chaque fois + problemes
+ car serveur d'auth detient ces infos et doit les partager avec le kernel
+ donc probleme.
+
 -- swap
  faire du swap sur le reseau et sur le disque mais experimenter
  le reseau

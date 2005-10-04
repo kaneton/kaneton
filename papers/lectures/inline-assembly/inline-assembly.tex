@@ -11,87 +11,121 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Tue Sep  6 16:10:44 2005   mycure
+%% last update   Tue Oct  4 09:23:26 2005   mycure
 %%
 
 %
 % class
 %
 
-\documentclass{beamer}
+\documentclass[9pt]{beamer}
 
 %
 % packages
 %
 
 \usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
-\usepackage{amsmath,amssymb}
-\usepackage[latin1]{inputenc}
 \usepackage{colortbl}
-\usepackage[english]{babel}
-\usepackage{verbatim}
 \usepackage{times}
+
+\usepackage{amsmath,amssymb}
+
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+
+\usepackage[english]{babel}
+\usepackage{enumerate}
+\usepackage[latin1]{inputenc}
 
 %
 % style
 %
 
-\setbeamertemplate{background canvas}[vertical shading][bottom=red!10,top=blue!10]
-\usetheme{Ilmenau}
-\usefonttheme[onlysmall]{structurebold}
-
+\usepackage{beamerthemesplit}
 \setbeamercovered{dynamic}
 
 %
 % verbatim font
 %
 
+\definecolor{verbatimcolor}{rgb}{0,0.4,0}
+
 \makeatletter
 \renewcommand{\verbatim@font}
-  {\ttfamily\tiny\selectfont}
+  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
 \makeatother
+
+%
+% new line
+%
+
+\newcommand{\nl}[0]{\vspace{0.4cm}}
 
 %
 % title
 %
 
-\title[Inline~Assembly]{Inline~Assembly}
+\title{The Inline Assembly}
 
 %
 % authors
 %
 
-\author[Julien~Quintard]
+\author
 {
   Julien~Quintard\inst{1} \\
-  {\tiny quinta\_j@lse.epita.fr}
+  {\tiny julien.quintard@gmail.com}
 }
 
-\institute[EPITA Computer System Laboratory]
+\institute
 {
-  \inst{1} EPITA Computer System Laboratory
+  \inst{1} kaneton distributed operating system project
 }
+
+%
+% logos
+%
+
+\pgfdeclareimage[interpolate=true,width=49pt,height=18pt]
+		{upmc}{../../logos/upmc}
+\pgfdeclareimage[interpolate=true,width=18pt,height=18pt]
+		{lip6}{pictures/lip6}
+\pgfdeclareimage[interpolate=true,width=34pt,height=18pt]
+		{epita}{pictures/epita}
+\pgfdeclareimage[interpolate=true,width=25pt,height=18pt]
+		{lse}{pictures/lse}
+
+\logo{\pgfuseimage{upmc} \hspace{0.1cm} \pgfuseimage{lip6} \hspace{0.1cm}
+      \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{lse} \hspace{0.1cm}}
 
 %
 % date
 %
 
-\date[\today]{\today}
-
-%
-% subject
-%
-
-\subject{Inline Assembly}
+\date{\today}
 
 %
 % table of contents at the beginning of each section
 %
 
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+   \frametitle{Outline}
+    \tableofcontents[current]
+  \end{frame}
+}
+
+%
+% table of contents at the beginning of each subsection
+%
+
 \AtBeginSubsection[]
 {
   \begin{frame}<beamer>
-    \frametitle{Outline}
+   \frametitle{Outline}
     \tableofcontents[current,currentsubsection]
   \end{frame}
 }
@@ -128,15 +162,870 @@
 % 1)
 
 \begin{frame}
-  \frametitle{What is it?}
+  \frametitle{Description}
 
-  \begin{block}{Good Characteristics}
-    \begin{itemize}
-      \item
-	chiche
-    \end{itemize}
-  \end{block}
+  The inline assembly is used to insert assembly code into C source code.
 
+  \nl
+
+  The inline assembly reduces the function-call overhead while reducing
+  the number of little assembly source files.
+
+  \nl
+
+  Moreover, the inline assembly source code can evolve into the C
+  source one, using C variables, C constants etc..
+
+  \nl
+
+  The inline assembly is commonly used to improve performances. Neverthless
+  system programmers appreciate the inline assembly because some
+  processor instructions are only available in assembly.
+
+  \nl
+
+  gcc uses the keyword \textbf{asm} to introduce inline assembly.
 \end{frame}
+
+%
+% syntax
+%
+
+\section{Syntax}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The gcc inline assembly uses AT\&T assembly syntax which is
+  different from the Intel one.
+
+  \nl
+
+  We will study the major differences between the AT\&T syntax and the
+  Intel one.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Source-Destination Ordering}
+
+  \begin{itemize}
+    \item
+      \textbf{Intel}: \textit{opcode dst src}
+    \item
+      \textbf{AT\&T}: \textit{opcode src dst}
+  \end{itemize}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Register Naming}
+
+  Register names are prefixed by \textbf{\%} for example \textit{\%eax}.
+
+  \nl
+
+  With C input arguments, the registers are prefixed by \textbf{\%\%}
+  like \textit{\%\%eax}.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Immediate Operand}
+
+  Immediate operands are prefixed by \textbf{\$}.
+
+  \nl
+
+  In Intel syntax, hexadecimal numbers are suffixed by \textbf{h}.
+  Instead the AT\&T syntax uses \textbf{0x} as prefix.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Operand Size}
+
+  Intel syntax uses keywords \textbf{byte}, \textbf{word} and
+  \textbf{dword} to specify the operand size while AT\&T syntax uses
+  a suffix to the opcode: \textbf{b}, \textbf{w}, \textbf{l}.
+
+  \begin{itemize}
+    \item
+      \textbf{Intel}: \textit{mov al, byte ptr foo}
+    \item
+      \textbf{AT\&T}: \textit{movb foo, \%al}
+  \end{itemize}
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Memory Operands}
+
+  The Intel syntax uses \textbf{[} and \textbf{]} to specify the
+  base register while AT\&T uses \textbf{(} and \textbf{)}.
+
+  \nl
+
+  Moreover, the syntaxes for the shifts are also different:
+
+  \begin{itemize}
+    \item
+      \textbf{Intel}:
+      \textit{[basepointer + indexpointer * indexscale + immed32]}
+    \item
+      \textbf{AT\&T}: \textit{immed32(basepointer,indexpointer,indexscale)}
+  \end{itemize}
+
+  You could think of the formula to calculate the address as:
+
+  \nl
+
+  \textbf{immed32 + basepointer + indexpointer * indexscale}
+\end{frame}
+
+% 7)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  The equivalent C source code:
+
+  \begin{verbatim}
+    *(p + 1)
+  \end{verbatim}
+
+  where \textbf{p} is a \textit{char*}.
+
+  \nl
+
+  The AT\&T assembly code:
+
+  \begin{verbatim}
+    1(%eax)
+  \end{verbatim}
+
+  where \textbf{\%eax} has the value of \textbf{p}.
+
+  \nl
+
+  The Intel assembly code:
+
+  \begin{verbatim}
+    [eax + 1]
+  \end{verbatim}
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Major Differencies}
+
+  \begin{center}
+
+  \begin{tabular}{|p{4.9cm}|p{4.9cm}|}
+    \hline
+    \textbf{Intel Code} & \textbf{AT\&T Code} \\
+    \hline
+    mov eax, 1 & movl \$1, \%eax \\
+    \hline
+    mov ebx, 0ffh & movl \$0xff, \%ebx \\
+    \hline
+    int 80h & int \$0x80 \\
+    \hline
+    mov ebx, eax & movl \%eax, \%ebx \\
+    \hline
+    mov eax, [ecx] & movl (\%ecx), \%eax \\
+    \hline
+    mov eax, [ebx + 3] & movl 3(\%ebx), \%eax \\
+    \hline
+    mov eax, [ebx + 20h] & movl 0x20(\%ebx), \%eax \\
+    \hline
+    add eax, [ebx + ecx * 2h] & addl (\%ebx, \%ecx, 0x2), \%eax \\
+    \hline
+    lea eax, [ebx + ecx] & leal (\%ebx, \%ecx), \%eax \\
+    \hline
+    sub eax, [ebx + ecx * 4h - 20h] & subl -0x20(\%ebx, \%ecx, 0x4), \%eax \\
+    \hline
+  \end{tabular}
+
+  \end{center}
+\end{frame}
+
+%
+% basic use
+%
+
+\section{Basic Use}
+
+% 1)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Overview}
+
+  The format of the gcc inline assembly is the following:
+
+  \begin{verbatim}
+    asm(``assembly code'');
+  \end{verbatim}
+
+  Example:
+
+  \begin{verbatim}
+    asm(``movl %eax, %ecx'');
+  \end{verbatim}
+
+  You can also use the keyword \textbf{\_\_asm\_\_} in the case of a
+  name conflict with your previous source code.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Registers}
+
+  You can use multi-lines source code thinking to insert the sequence
+  \verb|\n\t| at the end of each line.
+
+  \nl
+
+  Example:
+
+  \begin{verbatim}
+    asm(``movl %cr0, %eax\n\t''
+        ``orl %eax, $1\n\t''
+        ``movl %eax, %cr0'');
+  \end{verbatim}
+
+  You can notice in this example that we overwrite the register %eax.
+
+  \nl
+
+  \alert{*} gcc does not know anything about the inline assembly.
+  Overwritting the \textbf{eax} register could result with an error because
+  gcc maybe used this register to hold a variable or anything else.
+\end{frame}
+
+%
+% extended use
+%
+
+\section{Extended Use}
+
+% 1)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Overview}
+
+  In the basic use, we had only instructions. In the extended one
+  we can specify more options like the input C operands, the
+  output C operands and the clobbered registers i.e the
+  modified registers.
+
+  \nl
+
+  The syntax of the inline assembly becomes:
+
+  \begin{verbatim}
+    asm(assembler template
+        : output operands                  /* optional */
+        : input operands                   /* optional */
+        : list of clobbered registers      /* optional */
+       );
+  \end{verbatim}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Rules}
+
+  Be careful with this syntax:
+
+  \begin{itemize}[<+->]
+    \item
+      the outputs are located before the inputs
+    \item
+      think to use colons to separate sections: inputs, outputs etc..
+    \item
+      do not specify an empty clobbered registers. In fact the
+      last list provided must always contain at least one element
+  \end{itemize}
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  Let's study some examples:
+
+  \nl
+
+  The following one is \alert{incorrect}:
+
+  \begin{verbatim}
+    asm(``...''
+        :
+        : ``...''
+        :
+       );
+  \end{verbatim}
+
+  Neverthless, this one is correct:
+
+  \begin{verbatim}
+    asm(``...''
+        :
+        : ``...''
+       );
+  \end{verbatim}
+\end{frame}
+
+% 4)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Problem}
+
+  Come back to our example which is a famous one in the low-level system
+  programming field:
+
+  \begin{verbatim}
+    asm(``movl %cr0, %eax\n\t''
+        ``orl %eax, $1\n\t''
+        ``movl %eax, %cr0'');
+  \end{verbatim}
+
+  You can notice that the \textbf{eax} register is overwritten, so
+  we have to tell gcc to restore the contents of the \textbf{eax} register,
+  here come the clobbered register list.
+\end{frame}
+
+% 5)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Solution}
+
+  The clobber list contains the name of the registers modified by the
+  inline assembly source code.
+
+  \nl
+
+  Let's see how to use it to resolve our problem:
+
+  \begin{verbatim}
+    asm(``movl %cr0, %eax\n\t''
+        ``orl %eax, $1\n\t''
+        ``movl %eax, %cr0''
+        :
+        :
+        : ``%eax''
+       );
+  \end{verbatim}
+\end{frame}
+
+% 6)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  Now, another example.
+
+  \nl
+
+  We have two C variables \textbf{A} and \textbf{B} and we want to
+  move the contents of \textbf{A} into \textbf{B} but using inline
+  assembly for an unknown reason:
+
+  \begin{verbatim}
+    asm(``movl %1, %%eax\n\t''
+        ``movl %%eax, %0''
+        : ``=r'' (b)
+        : ``r'' (a)
+        : ``%eax''
+       );
+    \end{verbatim}
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Explanations}
+
+  \begin{enumerate}[<+->]
+    \item
+      the operands \%0-9 specify the input and outputs. Note that the first
+      value is used for the first output. If no output is present, then
+      \%0 will specify the first input.
+    \item
+      the constraint \textbf{``r''} is used to precise the nature of
+      the operand. Be careful with it. In this case, it tells gcc to use
+      the operand as a register. The constraint \textbf{``=''} is used for
+      the output operands specifying a write-only operand.
+    \item
+      the double prefix \textbf{\%\%} is used when using input and/or
+      output operands to avoid conflicts with registers.
+    \item
+      finally, the clobbered register \textbf{eax} is indicated to tell
+      gcc to restore this register's contents.
+  \end{enumerate}
+
+  Now we will look at each field in details.
+
+  \nl
+
+  Note that we do not have to tell gcc the memory was modified because
+  we used the constraints \textbf{``r''} so the registers were used.
+\end{frame}
+
+%
+% template
+%
+
+\subsection{Template}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  There are only two rules for the template:
+
+  \begin{enumerate}[<+->]
+    \item
+      finish each line with the sequence \verb|\n\t|
+    \item
+      use \textbf{\%0, ...} to use C operands.
+  \end{enumerate}
+\end{frame}
+
+%
+% operands
+%
+
+\subsection{Operands}
+
+% 1)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Overview}
+
+  The syntax used for the operands is:
+
+  \begin{verbatim}
+    ``constraint'' (operand)
+  \end{verbatim}
+
+  The constraints are primarily used to decide the addressing mode for
+  operands: register, memory, etc..
+
+  \nl
+
+  The operands are separated by commas inside a list.
+
+  \nl
+
+  Operands are numbered from 0 to n-1.
+
+  \nl
+
+  Output operands must be lvalues but this is obvious. Input operands
+  are not restricted.
+
+  \nl
+
+  gcc will assume that the values in the output operands are dead
+  and can be overwritten.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Read-Write Outputs}
+
+  gcc inline assembly also allows read-write outputs operands.
+
+  \begin{verbatim}
+    asm(``orl %0, %0''
+        : ``=r'' (x)
+        : ``0'' (x)
+       );
+  \end{verbatim}
+
+  In this example, we specify gcc to use the C variable \textbf{x}
+  as the output operand.
+
+  \nl
+
+  For the input operand, we use the constraint \textbf{``0''} to
+  tell gcc to use the same register for the input operand as the
+  operand numbered \textbf{0} do.
+
+  \nl
+
+  So in this case, the input and output operand will be stored in the same
+  register which is not precised, so gcc will decide.
+
+  \nl
+
+  So, in this example we have a read-write operand \textbf{x}.
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Specify the Registers}
+
+  Note that we can also explicitly tell gcc which register to use for
+  storing an operand:
+
+  \begin{verbatim}
+    asm(``orl %0, %0''
+        : ``=c'' (x)
+        : ``c'' (x)
+       );
+  \end{verbatim}
+
+  In this case, we tell gcc to use the \textbf{ecx} register.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Notices}
+
+  You can notice that in the two previous examples, we put nothing into
+  the clobbered list.
+
+  \nl
+
+  In the first example, we told gcc to decide the register to use so gcc
+  knows which register to restore.
+
+  \nl
+
+  In the second one, we specify gcc to use the \textbf{ecx} register.
+  Once again, gcc perfectly knows which register to restore.
+\end{frame}
+
+%
+% clobber list
+%
+
+\subsection{Clobber List}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  Some instructions clobber the hardware registers.
+
+  \nl
+
+  For this reason, the inline assembly user has to indicate gcc the names
+  of the registers to restore.
+
+  \nl
+
+  Note that gcc already knows the clobbered registers used via the
+  constraints of the input and output operands.
+
+  \nl
+
+  Be careful with instructions which implicitly use some registers.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  Let's see an example:
+
+  \begin{verbatim}
+    asm(``movl %0, %%ebx\n\t''
+        ``movl %1, %%ecx\n\t''
+        ``call foo''
+        :
+        : ``g'' (from), ``g'' (to)
+        : ``%ebx'', ``%ecx''
+       );
+  \end{verbatim}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Condition Code and Memory}
+
+  The user can also specify two other elements in the clobber list:
+
+  \begin{enumerate}
+    \item
+      \textbf{``cc''} meaning that the condition code was modified i.e
+      for example the bits of the \textbf{eflags} register was modified:
+      \textit{jnz}, \textit{je} etc..
+    \item
+      \textbf{``memory''} when a variable is set as output operand. This is
+      very useful because gcc maybe holds this variable in a register.
+      This constraint tells gcc to update its registers if needed.
+      This constraint is equivalent to set all the registers in the
+      clobber list.
+  \end{enumerate}
+\end{frame}
+
+%
+% volatile
+%
+
+\section{Volatile}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  First, the keyword \textbf{volatile} is used between the \textbf{asm}
+  one and the first parenthesis.
+
+  \nl
+
+  You can also use the keyword \textbf{\_\_volatile\_\_} to avoid conflicts.
+
+  \nl
+
+  The keyword \textbf{volatile} is useful in one precise case:
+
+  \nl
+
+  When the user wants to tell gcc to avoid optimizations.
+  For example if your assembly code is located inside a loop, gcc
+  will certainly move your assembly code out of the loop.
+  Using volatile avoid this optimization.
+
+  \nl
+
+  Be careful, if your assembly code does not have any side effect,
+  it is better not to put the \textbf{volatile} keyword to allow gcc
+  optimizations.
+\end{frame}
+
+%
+% constraints
+%
+
+\section{Constraints}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  You probably noticed within this course that the constraints have got
+  a lot to do with inline assembly.
+
+  \nl
+
+  Indeed, with them it is possible to specify the location of
+  operands: memory, registers etc..
+
+  \nl
+
+  We will now list the different types of operands.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Register Operand Constraint: \textbf{``r''}}
+
+  When an operand is specified with a register operand constraint,
+  gcc stores the operand in a GPR (General Purpose Register).
+
+  \nl
+
+  The user can also explicitly tell gcc the register to use. For this,
+  he has to use specific constraints listed below:
+
+  \begin{center}
+
+  \begin{tabular}{|p{2cm}|p{4cm}|}
+    \hline
+    \textbf{Constraint} & \textbf{Register(s)} \\
+    \hline
+    r & any General Purpose Register \\
+    \hline
+    a & \%eax, \%ax, \%al \\
+    \hline
+    b & \%ebx, \%bx, \%bl \\
+    \hline
+    c & \%ecx, \%cx, \%cl \\
+    \hline
+    d & \%edx, \%dx, \%dl \\
+    \hline
+    S & \%esi, \%si \\
+    \hline
+    D & \%edi, \%di \\
+    \hline
+  \end{tabular}
+
+  \end{center}
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Memory Operand Constraint: \textbf{``m''}}
+
+  When the operands are in the memory, any operation performed on them
+  will occur directly in the memory location, as opposed to register
+  constraints.
+
+  \nl
+
+  Register constraints are usually used with instructions which only accept
+  registers as operands. Another case is to speed up the process, for example
+  if a variable is needed for three consecutive instructions.
+
+  \nl
+
+  The memory constraint can be used most effeciently in cases where a C
+  variable needs to be updated inside inline assembly.
+
+  \nl
+
+  For example:
+
+  \begin{verbatim}
+    asm(``sidt %0\n''
+        : ''=m''(idtr)
+       );
+  \end{verbatim}
+\end{frame}
+
+% 4)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Matching Digit Constraint}
+
+  As seen before, in some cases the programmer wants to use an operand
+  both in input and in output.
+
+  \begin{verbatim}
+    asm(``incl %0''
+        : ''=a'' (var)
+        : ''0'' (var)
+       );
+  \end{verbatim}
+
+  In this example the register \textbf{eax} is used as output operand.
+  Then the input operand \textbf{var} uses the constraint \textbf{``0''}
+  specifying gcc to use the same constraint than the \textbf{0th} operand.
+
+  \nl
+
+  After all, this inline assembly source code will use the \textbf{eax}
+  register both as input and as output.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Other Constraints}
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{``i''}: an immediate integer operand (one with constant
+      value) is allowed.
+
+      \nl
+
+      this includes symbolic constants whose values will be known only at
+      assembly time.
+    \item
+      \textbf{``n''}: an immediate integer operand with a known numeric
+      value is allowed.
+    \item
+      \textbf{``g''}: any register, memory or immediate integer operand
+      is allowed, except for registers that are not general purpose registers.
+  \end{itemize}
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{x86 Specific Constraints}
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{``q''}: registers a, b, c or d
+    \item
+      \textbf{``I''}: constant in range 0 to 31 (for 32-bit shifts)
+    \item
+      \textbf{``J''}: constant in range 0 to 63 (for 64-bit shifts)
+    \item
+      \textbf{``K''}: 0xff
+    \item
+      \textbf{``L''}: 0xffff
+    \item
+      \textbf{``M''}: 0, 1, 2, 4 (shifts for lea instruction)
+    \item
+      \textbf{``N''}: constant in range 0 to 255 (for out instruction)
+  \end{itemize}
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Modifiers}
+
+  There are also constraint modifiers for more precision over the effects
+  of constraints.
+
+  \nl
+
+  The common constraints modifiers are:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{``=''}: means that this operand is write-only, the previous
+      value is discarded and replaced by output data.
+    \item
+      \textbf{``\&''}: means that this operand is an earlyclobber operand,
+      which is modified before the instruction is finished using the input
+      operands. Therefore, this operand may not lie in a register
+      that is used as an input operand or as part of any memory address.
+      An input operand can be tied to an earlyclobber operand if its
+      only use as an input occurs before the early result is written.
+  \end{itemize}
+\end{frame}
+
+%
+% bibliography
+%
+
+\section{Bibliography}
+
+\begin{thebibliography}{10}
+  \bibitem{Howto}
+    GCC Inline Assembly Howto
+
+  \bibitem{Intel-2A}
+    IA-32 Intel Architecture
+    \newblock Software Developer's Manual
+    \newblock Volume 2A: Instruction Set Reference, A-M
+
+  \bibitem{Intel-2B}
+    IA-32 Intel Architecture
+    \newblock Software Developer's Manual
+    \newblock Volume 2B: Instruction Set Reference, N-Z
+\end{thebibliography}
 
 \end{document}

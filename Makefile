@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Sep 26 05:16:08 2005   mycure
+## last update   Sat Oct  1 10:32:10 2005   mycure
 ##
 
 #
@@ -128,7 +128,7 @@ check:
 # ---------- view -------------------------------------------------------------
 #
 
-view-%:
+view-%:			kaneton.mk
 	if [ $* == ".o" ] ; then					\
 	  ARG=""							; \
 	else								\

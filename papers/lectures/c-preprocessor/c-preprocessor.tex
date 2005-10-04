@@ -5,14 +5,21 @@
 %% 
 %% inline-assembly.tex
 %% 
-%% path          /home/mycure/kaneton/papers/lectures/c-preprocessor
+%% path          /home/mycure/kaneton/papers/lectures/inline-assembly
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Thu Sep 29 22:33:03 2005   mycure
+%% last update   Mon Oct  3 04:54:03 2005   mycure
 %%
+
+%% XXX todo
+%% couleur pour examples: mieux \example -> verbatim colore taille reduite
+%% cases study
+%% finir variadic arguments
+%% corriger les fautes, IL Y EN A
+%% bibliography: GNU c-preprocessor info, queue.h, bpt.h
 
 %
 % class
@@ -29,17 +36,21 @@
 \usepackage{enumerate}
 \usepackage[latin1]{inputenc}
 
+%%\usepackage{verbatim}
+
 %
 % style
 %
 
 \usepackage{beamerthemesplit}
 
+\setbeamercovered{dynamic}
+
 %
 % verbatim font
 %
 
-% XXX
+% XXX mettre de la couleur, genre vert quand c'est un exemple
 
 %\makeatletter
 %\renewcommand{\verbatim@font}
@@ -59,12 +70,12 @@
 \author
 {
   Julien~Quintard\inst{1} \\
-  {\tiny quinta\_j@lse.epita.fr}
+  {\tiny julien.quintard@gmail.com}
 }
 
 \institute
 {
-  \inst{1} EPITA Computer System Laboratory
+  \inst{1} kaneton distributed operating system project
 }
 
 %
@@ -75,6 +86,18 @@
 
 %
 % table of contents at the beginning of each section
+%
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+   \frametitle{Outline}
+    \tableofcontents[current]
+  \end{frame}
+}
+
+%
+% table of contents at the beginning of each subsection
 %
 
 \AtBeginSubsection[]
@@ -143,7 +166,7 @@
 
   The C preprocessor's directives are of the form:
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \item
       the character \textbf{\#} for specifying a preprocessor operation
     \item
@@ -157,7 +180,7 @@
 \begin{frame}
   \frametitle{General Rules}
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \item
       we \alert{cannot} define new directives, the directive set is fixed
     \item
@@ -203,11 +226,13 @@
 
 % 2)
 
+% XXX < > qui chie
+
 \begin{frame}
   \frametitle{Syntax}
 
   \begin{itemize}
-    \item
+    \item<1->
       \textit{\#include <file>}: in the system header directories
 
       \begin{itemize}
@@ -222,7 +247,7 @@
 	  can contain the \textbf{<} character.
       \end{itemize}
 
-    \item
+    \item<2->
       \textit{\#include ``file''}: in the current working directory
 
       \begin{itemize}
@@ -234,7 +259,7 @@
 	  three backslahes
       \end{itemize}
 
-    \item
+    \item<3->
       \textit{\#include anythingelse}: looks for a macro named
       \textbf{anythingelse}.
   \end{itemize}
@@ -313,7 +338,7 @@
 
   The kaneton project uses a slightly different style:
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \item
       no underscore before names
     \item
@@ -351,13 +376,1027 @@
   \end{verbatim}
 \end{frame}
 
+%
+% macros
+%
+
 \subsection{Macros}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  A macros is a sort of abbreviation which you define and then use later.
+
+  \nl
+
+  The standard convention for macro names is to use upper case.
+
+  \nl
+
+  Nevertheless, in few cases it is better to use lower case, especially
+  when trying to develop a kind of proxy as in the kaneton's set manager
+  which we will study later in this course.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  \begin{verbatim}
+    #define PAGESZ          4096
+
+    #define SETSZ           PAGESZ
+
+    int                 main(void)
+    {
+      int               size = SETSZ;
+    }
+  \end{verbatim}
+
+  will result in:
+
+  \begin{verbatim}
+    int                 main(void)
+    {
+      int               size = 4096;
+    }
+  \end{verbatim}
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Function-like Macros}
+
+  Macros with arguments are called: \textbf{function-like macros}.
+
+  \nl
+
+  Be careful, the preprocessor only understand comma for separating arguments,
+  so this call:
+
+  \begin{verbatim}
+    foo(array[x = y, x + 1])
+  \end{verbatim}
+
+  results in a macro named \textbf{foo} which takes two arguments,
+  in this case: \textit{array[x = y} and \textit{x + 1]}.
+
+  Moreover if a function-like macro takes one argument and the user
+  wants to pass an empty argument, he has to specify it using a
+  whitespace between the parenthesis: foo( )
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Function-like Macros Use}
+
+  It is also possible to use function-like macros which take zero argument
+  even if there is no advantage over classical macros.
+
+  \nl
+
+  Think about function-like macro declarations which names \alert{must} be
+  followed by an open parenthesis without any whitespace.
+
+  \nl
+
+  Indeed if a whitespace appear between the name and the open parenthesis
+  the macro will be considered as a simple macros and the open parenthesis
+  will be the expansion.
+
+\end{frame}
+
+% 5)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  \begin{verbatim}
+    #define chiche(x) - 1
+
+    chiche(3)
+  \end{verbatim}
+
+  will be expanded to: \textbf{3 - 1}.
+
+  \begin{verbatim}
+    #define chiche (x) - 1
+
+    chiche(3)
+  \end{verbatim}
+
+  will lead to an invalid use of the macro because this macro takes no
+  argument.
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Predefined Macros}
+
+  The predefined macros fall into two categories:
+
+  \begin{enumerate}
+    \item
+      standard macros
+    \item
+      system macros
+  \end{enumerate}
+\end{frame}
+
+% 7)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Standard Prefefined Macros}
+
+  Some interesting standard predefined macros which are very useful.
+
+  \begin{itemize}
+    \item
+      \textbf{\_\_FILE\_\_}: the current file name, \textit{``foo.c''}
+    \item
+      \textbf{\_\_LINE\_\_}: the current line number, \textit{42}
+    \item
+      \textbf{\_\_DATE\_\_}: the date the file was preprocessed,
+      \textit{``Feb 1 1996''}
+    \item
+      \textbf{\_\_TIME\_\_}: same thing for the time, \textit{``23:59:01''}
+  \end{itemize}
+
+  These macros are very very useful for debugging:
+
+  \begin{verbatim}
+    fprintf(stderr, ``[%s %s] %s:%u message here\n'', 
+            __DATE__, __TIME__, __FILE__, __LINE__);
+  \end{verbatim}
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{System Predefined Macros}
+
+  These macros are set by the system for example to distinguish the
+  running system.
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{linux}: for the linux operating system
+    \item
+      \textbf{\_\_OpenBSD\_\_}: for the OpenBSD operating system
+  \end{itemize}
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{Stringification}
+
+  The stringification action means turning a code fragment into
+  a string constant.
+
+  \nl
+
+  For example stringifying \textit{chiche(42)} results in
+  \textit{``chiche(42)''}.
+
+  \nl
+
+  The preprocessor operator used for stringification is the simple sharp:
+  \textbf{\#} which has to be placed before a name.
+
+  \nl
+
+  This preprocessor feature is very useful for debugging.
+
+  \nl
+
+  It is so possible to print useful information like the macro arguments.
+\end{frame}
+
+% 10)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  Let's take an example:
+
+  \begin{verbatim}
+    #define forward(function, args...)                                  \
+      fprintf(stderr, ``calling: %s(%s)\n'', #function, #args)
+
+    int                 main(void)
+    {
+      forward(foo, arg1, arg2);
+    }
+  \end{verbatim}
+
+  This example is a bit complex before it uses a feature we have not seen
+  yet.
+
+  \begin{verbatim}
+    $ ./example
+    calling: foo(arg1, arg2)
+    $ 
+  \end{verbatim}
+\end{frame}
+
+% 11)
+
+\begin{frame}
+  \frametitle{Concatenation}
+
+  The concatenation means joining two words into one.
+
+  \nl
+
+  When you define a macro, you request concatenation using the special
+  operator \textbf{\#\#} in the macro body.
+
+  \nl
+
+  This often takes place with one constraint word and one of the macro
+  argument but it is also possible to apply concatenation between two
+  macro arguments
+\end{frame}
+
+% 12)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  \begin{verbatim}
+    #define mystring(x)         #x
+
+    #define myconcat(function, arg)                                     \
+      mystring( function##arg )
+
+    int                 main(void)
+    {
+      printf(``string: %s\n'', myconcat(glen, benton));
+    }
+  \end{verbatim}
+
+  When launching this simple program:
+
+  \begin{verbatim}
+    $ ./example
+    glenbenton
+    $ 
+  \end{verbatim}
+\end{frame}
+
+% 13)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Problem}
+
+  Now let's take a look to the most popular problem requesting concatenation:
+
+  \begin{verbatim}
+    typedef struct
+    {
+      char              *name;
+      void              (*function)(void);
+    }                   t_command;
+
+    t_command           commands[] =
+    {
+      { ``quit'', quit_command },
+      { ``help'', help_command },
+    };
+  \end{verbatim}
+\end{frame}
+
+% 14)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Solution}
+
+  This is a common example because this construction is a well-known one,
+  used for example when reading a command and launching a corresponding
+  function.
+
+  \nl
+
+  You could notice that there were many repetitions in the previous
+  array declaration.
+
+  \nl
+
+  This array declaration can be simplified using a macro with concatenation:
+
+  \begin{verbatim}
+    #define NEW_COMMAND(name)   { #name, name##_command }
+
+    t_command           commands[] =
+    {
+      NEW_COMMAND(quit),
+      NEW_COMMAND(help),
+    };
+  \end{verbatim}
+\end{frame}
+
+% 15)
+
+\begin{frame}
+  \frametitle{Undefining Macros}
+
+  This action is used to cancel a definition.
+
+  \nl
+
+  The directive used is \textbf{\#undef} which is followed by the macro
+  name to undefined.
+\end{frame}
+
+% 16)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  \begin{verbatim}
+    #define FOO         4
+    x = FOO;
+    #undef FOO
+    x = FOO
+  \end{verbatim}
+
+  expands to:
+
+  \begin{verbatim}
+    x = 4;
+    x = FOO;
+  \end{verbatim}
+
+  This code will not compile because FOO is now an undefined symbol.
+
+  \nl
+
+  The macro undefinition works for simple macros as for function-like macros.
+\end{frame}
+
+% 17)
+
+\begin{frame}
+  \frametitle{Redefining Macros}
+
+  Redefining a macro means defining a name that is already in use as a macro.
+
+  \nl
+
+  If the macro redefined matchs the previous declaration (this case is possible
+  with multiple inclusions) the redefinition is simply ignored.
+
+  \nl
+
+  A macro redefinition is considered identical to its previous if everything is
+  exactly identical excepts whitespaces which are ignored lexical symbols.
+
+  \nl
+
+  To avoid c-preprocessor warnings, prefer undefined the previous declaration
+  with the \textbf{\#undef} directive before the macro redefinition.
+\end{frame}
+
+%
+% conditionals
+%
 
 \subsection{Conditionals}
 
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  A conditional is a directive which permits to ignore some code for the
+  compilation.
+
+  \begin{enumerate}
+    \item
+      this feature is very used dealing with architectures, to enable
+      parts of code for a special architecture. this is also true for
+      different operating systems.
+    \item
+      another reason is to permit this source code to be used for
+      two different programs compilation.
+    \item
+      the last reason is for excluding whole parts of code using the
+      directive \textbf{\#if 0} which is always false.
+  \end{enumerate}
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{\textbf{\#if}}
+
+  This directive tests a condition and includes the appropriate source code.
+
+  \nl
+
+  The syntax is:
+
+  \begin{verbatim}
+    #if condition
+      controlled-text
+    #endif
+  \end{verbatim}
+
+  The condition can be composed of:
+
+  \begin{enumerate}
+    \item
+      numbers
+    \item
+      macro calls
+    \item
+      characters
+    \item
+      arithmetic operators: \textit{XXX}, \textit{XXX}
+  \end{enumerate}
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  \begin{verbatim}
+    #if 1
+      printf(``always true\n'');
+    #endif
+
+    #if (DEBUG & DEBUG_MALLOC)
+      malloc_dump();
+    #endif
+
+    #if defined(__NetBSD__) || defined(__OpenBSD__) ||          \
+        defined(__FreeBSD__)
+      printf(``BSD code here\n'');
+    #endif
+  \end{verbatim}
+\end{frame}
+
+% 4)
+
+\begin{frame}[containsverbatim]
+  \frametitle{\textbf{\#ifdef}}
+
+  This directive just test the definition of the macro \textit{macro}.
+
+  \nl
+
+  The syntax is:
+
+  \begin{verbatim}
+    #ifdef macro
+      controlled-text
+    #endif
+  \end{verbatim}
+\end{frame}
+
+% 5)
+
+\begin{frame}[containsverbatim]
+  \frametitle{\textbf{\#else}}
+
+  This directive provides alternative text to be used if the condition
+  is false.
+
+  \nl
+
+  The syntax is:
+
+  \begin{verbatim}
+    #if condition
+      controlled-text
+    #else
+      controlled-text
+    #endif
+  \end{verbatim}
+\end{frame}
+
+% 6)
+
+\begin{frame}[containsverbatim]
+  \frametitle{\textbf{\#elif}}
+
+  This directive provides an alternative including a new conditional part.
+
+  \nl
+
+  The syntax is:
+
+  \begin{verbatim}
+    #if condition
+      controlled-text
+    #elif condition
+      controlled-text
+    #else
+      controlled-text
+    #endif
+  \end{verbatim}
+\end{frame}
+
+% 7)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  \begin{verbatim}
+    #if defined(__NetBSD__)
+      printf(``NetBSD\n'');
+    #elif defined(__FreeBSD__) || (__OpenBSD__)
+      printf(``other BSD\n'');
+    #else
+      printf(``Non-BSD\n'');
+    #endif
+  \end{verbatim}
+\end{frame}
+
+% 8)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Others}
+
+  Note that the directive \textbf{defined} returns 1 if the macro is
+  defined and 0 otherwise.
+
+  Moreover:
+
+  \begin{verbatim}
+    #if defined(foo)
+  \end{verbatim}
+
+  is equivalent to:
+
+  \begin{verbatim}
+    #ifdef macro
+  \end{verbatim}
+
+  Also note that the \textbf{\#ifndef} directive just test that a macro
+  is not defined.
+\end{frame}
+
+%
+% preprocessor controls
+%
+
+\subsection{Preprocessor Controls}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The preprocessor control directives are used to modify the behaviour
+  of the preprocessor in certain cases.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{\textbf{\#error}}
+
+  The directive \textbf{\#error} causes the preprocessor to report a
+  fatal error.
+
+  \nl
+
+  The directive \textbf{\#error} is usually used inside of a conditional.
+
+  \begin{verbatim}
+    #ifndef ___kaneton
+      #error ``not the kaneton kernel''
+    #endif
+  \end{verbatim}
+
+  When the error directive is encoutered, the preprocessor exits.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{\textbf{\#warning}}
+
+    The directive \textbf{\#warning} is identical to the error one
+    without stopping the work if encountered.
+\end{frame}
+
+%
+% variadic arguments
+%
+
+\subsection{Variadic Arguments}
+
+% 1)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Overview}
+
+  The variadic arguments are used to not explicitly specify the number
+  of arguments the macro needs.
+
+  \nl
+
+  Let's take an example:
+
+  \begin{verbatim}
+    #define dprintf(fmt, args...)                                       \
+      printf(fmt, args)
+
+    dprintf(``%s %d\n'', mystring, 42);
+  \end{verbatim}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Problem}
+
+  But let's discuss about the following example:
+
+  \begin{verbatim}
+    dprintf(``very bad idea\n'');
+  \end{verbatim}
+
+  This last example will be expanded to:
+
+  \begin{verbatim}
+    printf(``very bad idea\n'', );
+  \end{verbatim}
+
+  Note that XXX
+\end{frame}
+
+%
+% pitfalls
+%
+
 \section{Pitfalls}
 
-\section{Diagnostics}
+%
+% grouping macro arguments
+%
+
+\subsection{Grouping Macro Arguments}
+
+% 1)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Overview}
+
+  Grouping arguments means placing parenthesis around macro arguments
+  to avoid misunderstandings.
+
+  \nl
+
+  Think about grouping macros arguments to avoid non-wanted operations.
+
+  \nl
+
+  Let's show an example:
+
+  \begin{verbatim}
+    #define bar(x, y)     x + y
+  \end{verbatim}
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Problem}
+
+  Consider the following use:
+
+  \begin{verbatim}
+    bar(8 & 4, 5)
+  \end{verbatim}
+
+  will be expanded to:
+
+  \begin{verbatim}
+    8 & 4 + 5
+  \end{verbatim}
+
+  which is equal to:
+
+  \begin{verbatim}
+    (8 & (4 + 5))
+  \end{verbatim}
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Solution}
+
+  Note that the result is not the one intended.
+
+  \nl
+
+  In fact, we wanted the macro to do:
+
+  \begin{verbatim}
+    (8 & 4) + 5
+  \end{verbatim}
+
+  For this, we have to group the macro arguments to avoid these king of
+  problems:
+
+  \begin{verbatim}
+    #define m(x, y)     (x) + (y)
+  \end{verbatim}
+\end{frame}
+
+%
+% macro to expression
+%
+
+\subsection{Macro to Expression}
+
+% 1)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Overview}
+
+  Sometimes it is useful to return a value from a macro, in other words
+  to evaluate a macro call.
+
+  \nl
+
+  The user only has to use the parenthesis to convert a compound statement
+  into an expression.
+
+  \begin{verbatim}
+    #define call(function, argument)                                    \
+      (                                                                 \
+        {                                                               \
+          int           _r_ = -1;                                       \
+                                                                        \
+          if (function)                                                 \
+            _r_ = function(argument);                                   \
+                                                                        \
+          _r_;                                                          \
+        }                                                               \
+      )
+  \end{verbatim}
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Explanations}
+
+  The last value being the \textbf{\_r\_} variable, it will also be
+  the expression's value which will be evaluated.
+
+  \nl
+
+  We can now use the macro expecting a return value:
+
+  \begin{verbatim}
+    if (call(printf, ``chiche\n'') == -1)
+      return (-1);
+  \end{verbatim}
+\end{frame}
+
+%
+% swallowing the semicolon
+%
+
+\subsection{Swallowing The Semicolon}
+
+% 1)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Overview}
+
+  Sometimes, it is useful to write macros which are a sequence of
+  instructions like this one:
+
+  \begin{verbatim}
+    #define call(function, argument)                                    \
+      {                                                                 \
+        if (function != NULL)                                           \
+          function(argument);                                           \
+      }
+  \end{verbatim}
+
+  The strict use of this macro is:
+
+  \begin{verbatim}
+    function(listen, 42)
+  \end{verbatim}
+
+  Note that there is no semicolon at the end of the macro call.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Problem}
+
+  Nevertheless, users want to consider calling a macro as calling a
+  typical C function. For this reason, many programmers put a semicolon
+  at the end of macro calls.
+
+  \nl
+
+  Another reason is the identation which will not be correct if the
+  programmer do not put the semicolon in some text editors.
+
+  \nl
+
+  In many cases, putting a semicolon at the end of a macro call
+  just result with an empty instruction and the compiler just ignore
+  this instruction, but think about this example:
+
+  \begin{verbatim}
+    if (opts == 1)
+      call(listen, 42);
+    else
+      call(send, 42);
+  \end{verbatim}
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Explanations}
+
+  This example is not correct because it will be expanded to:
+
+  \begin{verbatim}
+    if (opts == 1)
+      {
+        if (listen != NULL)
+          listen(42);
+      };
+    else
+      {
+        if (send != NULL)
+          send(42);
+      };
+  \end{verbatim}
+
+  The problem here is the semicolon before the \textbf{else}.
+\end{frame}
+
+% 4)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Solution}
+
+  The only way to solve this problem is to used the \textbf{do while()}.
+
+  \begin{verbatim}
+    #define call(function, argument)                                    \
+      do                                                                \
+      {                                                                 \
+        if (function != NULL)                                           \
+          function(argument);                                           \
+      } while (0)
+  \end{verbatim}
+
+  will be expanded to with the previous example:
+
+  \begin{verbatim}
+    if (opts == 1)
+      do
+      {
+        if (listen != NULL)
+          listen(42);
+      } while (0);
+    else
+      do
+      {
+        if (send != NULL)
+          send(42);
+      } while (0);
+  \end{verbatim}
+\end{frame}
+
+%
+% side effects
+%
+
+\subsection{Side Effects}
+
+% 1)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Problem}
+
+  A side effect is an execution which produces a non-direct modification
+  or which produces an non-wanted effect.
+
+  \nl
+
+  Consider this macro:
+
+  \begin{verbatim}
+    #define MIN(x, y)           (x) < (y) ? (x) : (y)
+
+    MIN(fibo(12345678987654321), 4)
+  \end{verbatim}
+
+  will be expanded to:
+
+  \begin{verbatim}
+    (fibo(12345678987654321)) < (4) ? (fibo(12345678987654321)) : (4)
+  \end{verbatim}
+
+  You can see the double call to the function which will certainly take
+  much time to compute.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Solution}
+
+  Think about this and prefer a more complex form:
+
+  \begin{verbatim}
+    #define MIN(x, y)                                                   \
+      (                                                                 \
+        {                                                               \
+          typeof(x)     _x = (x);                                       \
+          typeof(y)     _y = (y);                                       \
+                                                                        \
+          (x) < (y) ? (x) : (y);                                        \
+        }                                                               \
+      )
+  \end{verbatim}
+\end{frame}
+
+%
+% self-referenced macros
+%
+
+\subsection{Self-referenced Macros}
+
+% 1)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Overview}
+
+  The macros expansion is made to avoid infinite expansion.
+
+  \nl
+
+  This fact seems to be a limitation (and it is) but also provides
+  some interesting features.
+
+  \begin{verbatim}
+    #define foo(x, y)   foo(y, x)
+  \end{verbatim}
+
+  will be expanded to:
+
+  \begin{verbatim}
+    foo(y, x)
+  \end{verbatim}
+
+  and nothing more.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  Thanks to this, because it permits to overload code fragments, the most
+  common overload handling function calls:
+
+  \begin{verbatim}
+    #define free(buf)                                                   \
+      if ((buf))                                                        \
+        free((buf));
+
+    #define malloc(size)                                                \
+      (                                                                 \
+        {                                                               \
+          void*         buf;                                            \
+                                                                        \
+          if ((buf = malloc((size))) == NULL)                           \
+            perror(``malloc'');                                         \
+        }                                                               \
+      )
+  \end{verbatim}
+\end{frame}
+
+\section{Cases Study}
+
+% XXX
 
 %
 % bibliography
