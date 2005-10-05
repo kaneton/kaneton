@@ -11,12 +11,8 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Tue Oct  4 15:09:47 2005   mycure
+%% last update   Wed Oct  5 23:23:33 2005   mycure
 %%
-
-%% XXX todo
-%% cases study
-%% corriger les fautes, IL Y EN A
 
 %
 % class
@@ -68,7 +64,7 @@
 % title
 %
 
-\title{The C Preprocessor}
+\title{C Preprocessor}
 
 %
 % authors
@@ -95,12 +91,10 @@
 % logos
 %
 
-\pgfdeclareimage[interpolate=true,width=49pt,height=18pt]
-                {upmc}{../../logos/upmc}
-\pgfdeclareimage[interpolate=true,width=18pt,height=18pt]
-                {lip6}{../../logos/lip6}
 \pgfdeclareimage[interpolate=true,width=34pt,height=18pt]
                 {epita}{../../logos/epita}
+\pgfdeclareimage[interpolate=true,width=34pt,height=18pt]
+                {upmc}{../../logos/upmc}
 \pgfdeclareimage[interpolate=true,width=25pt,height=18pt]
                 {lse}{../../logos/lse}
 
@@ -142,8 +136,8 @@
   \titlepage
 
   \begin{center}
-    \pgfuseimage{upmc} \hspace{0.1cm} \pgfuseimage{lip6} \hspace{0.1cm}
-    \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{lse} \hspace{0.1cm}
+    \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{upmc} \hspace{0.1cm}
+    \pgfuseimage{lse} \hspace{0.1cm}
   \end{center}
 \end{frame}
 
@@ -834,11 +828,11 @@
   \begin{enumerate}
     \item
       this feature is very used dealing with architectures, to enable
-      parts of code for a special architecture. this is also true for
+      parts of code for a special architecture. This is also true for
       different operating systems.
     \item
       another reason is to permit this source code to be used for
-      two different programs compilation.
+      two different program compilations.
     \item
       the last reason is for excluding whole parts of code using the
       directive \textbf{\#if 0} which is always false.
@@ -872,7 +866,7 @@
     \item
       characters
     \item
-      arithmetic operators: \textit{XXX}, \textit{XXX}
+      arithmetic operators: $||$, \&\&
   \end{enumerate}
 \end{frame}
 
@@ -902,14 +896,14 @@
 \begin{frame}[containsverbatim]
   \frametitle{\textbf{\#ifdef}}
 
-  This directive just test the definition of the macro \textit{macro}.
+  This directive just tests the definition of the macro \textit{foo}.
 
   \nl
 
   The syntax is:
 
   \begin{verbatim}
-    #ifdef macro
+    #ifdef foo
       controlled-text
     #endif
   \end{verbatim}
@@ -982,6 +976,8 @@
   Note that the directive \textbf{defined} returns 1 if the macro is
   defined and 0 otherwise.
 
+  \nl
+
   Moreover:
 
   \begin{verbatim}
@@ -991,10 +987,10 @@
   is equivalent to:
 
   \begin{verbatim}
-    #ifdef macro
+    #ifdef foo
   \end{verbatim}
 
-  Also note that the \textbf{\#ifndef} directive just test that a macro
+  Also note that the \textbf{\#ifndef} directive just tests whether a macro
   is not defined.
 \end{frame}
 
@@ -1027,7 +1023,7 @@
 
   \begin{verbatim}
     #ifndef ___kaneton
-      #error ``not the kaneton kernel''
+      #error ``this software can only compile on the kaneton kernel''
     #endif
   \end{verbatim}
 
@@ -1087,7 +1083,7 @@
   \end{verbatim}
 
   Note that the comma is followed by the closing parenthesis. When coming
-  the compiling time, gcc will warn an error because this is an syntax
+  the compiling time, gcc will warn an error because this is a syntax
   error.
 
   \nl
@@ -1110,7 +1106,7 @@
 
   \nl
 
-  Nevertheless, the GNU C pre-processor introduced an extension for
+  Nevertheless, the GNU C preprocessor introduced an extension for
   this common problem.
 
   \nl
@@ -1125,8 +1121,8 @@
   \end{verbatim}
 
   The GNU C preprocessor specify in its documentation that if a variadic
-  argument is empty and preceded by a comma; then the GNU C preprocessos will
-  remove the comma to make the syntax correct.
+  argument is empty and preceded by a comma; then the GNU C preprocessor will
+  automatically remove the comma to make the syntax correct.
 \end{frame}
 
 %
@@ -1151,11 +1147,11 @@
 
   \nl
 
-  Think about grouping macros arguments to avoid non-wanted operations.
+  Think about grouping macro arguments to avoid non-wanted operations.
 
   \nl
 
-  Let's show an example:
+  Let's show a very very simple example:
 
   \begin{verbatim}
     #define bar(x, y)     x + y
@@ -1182,7 +1178,7 @@
   which is equal to:
 
   \begin{verbatim}
-    (8 & (4 + 5))
+    8 & (4 + 5)
   \end{verbatim}
 \end{frame}
 
@@ -1201,12 +1197,14 @@
     (8 & 4) + 5
   \end{verbatim}
 
-  For this, we have to group the macro arguments to avoid these king of
+  For this, we have to group the macro arguments to avoid these kind of
   problems:
 
   \begin{verbatim}
-    #define m(x, y)     (x) + (y)
+    #define m(x, y)     ((x) + (y))
   \end{verbatim}
+
+  Another grouping over the entire macro is not a bad idea...
 \end{frame}
 
 %
@@ -1286,7 +1284,7 @@
   The strict use of this macro is:
 
   \begin{verbatim}
-    function(listen, 42)
+    call(listen, 42)
   \end{verbatim}
 
   Note that there is no semicolon at the end of the macro call.
@@ -1309,8 +1307,8 @@
   \nl
 
   In many cases, putting a semicolon at the end of a macro call
-  just result with an empty instruction and the compiler just ignore
-  this instruction, but think about this example:
+  just result with an empty instruction and the compiler just ignore it,
+  but think about this example:
 
   \begin{verbatim}
     if (opts == 1)
@@ -1325,7 +1323,7 @@
 \begin{frame}[containsverbatim]
   \frametitle{Explanations}
 
-  This example is not correct because it will be expanded to:
+  This example is \alert{not} correct because it will be expanded to:
 
   \begin{verbatim}
     if (opts == 1)
@@ -1348,7 +1346,8 @@
 \begin{frame}[containsverbatim]
   \frametitle{Solution}
 
-  The only way to solve this problem is to used the \textbf{do while()}.
+  The only way to solve this problem is to used the famous
+  \textbf{do while()}.
 
   \begin{verbatim}
     #define call(function, argument)                                    \
@@ -1358,8 +1357,14 @@
           function(argument);                                           \
       } while (0)
   \end{verbatim}
+\end{frame}
 
-  will be expanded to with the previous example:
+% 5)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  Our example now will be expanded to:
 
   \begin{verbatim}
     if (opts == 1)
@@ -1398,13 +1403,13 @@
   \begin{verbatim}
     #define MIN(x, y)           (x) < (y) ? (x) : (y)
 
-    MIN(fibo(12345678987654321), 4)
+    MIN(fibonacci(12345678987654321), 4)
   \end{verbatim}
 
   will be expanded to:
 
   \begin{verbatim}
-    (fibo(12345678987654321)) < (4) ? (fibo(12345678987654321)) : (4)
+    (fibonacci(12345678987654321)) < (4) ? (fibonacci(12345678987654321)) : (4)
   \end{verbatim}
 
   You can see the double call to the function which will certainly take
@@ -1422,13 +1427,49 @@
     #define MIN(x, y)                                                   \
       (                                                                 \
         {                                                               \
-          typeof(x)     _x = (x);                                       \
-          typeof(y)     _y = (y);                                       \
+          typeof(x)     _x_ = (x);                                      \
+          typeof(y)     _y_ = (y);                                      \
                                                                         \
-          (x) < (y) ? (x) : (y);                                        \
+          (_x_) < (_y_) ? (_x_) : (_y_);                                \
         }                                                               \
       )
   \end{verbatim}
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Problem}
+
+  Let's see the most popular example of side effects to be sure
+  you understood this kind of problems and the fact the preprocessor just copy
+  and paste portions of code.
+
+  \nl
+
+  With the first non-corrected macro MIN():
+
+  \begin{verbatim}
+    int         a = 4;
+    int	        b = 2;
+
+    MIN(a++, b);
+  \end{verbatim}
+
+  This example seems correct, but let's see its expansion:
+
+  \begin{verbatim}
+    (a++) < (b) ? (a++) : (b);
+  \end{verbatim}
+
+  Once again, you can notice the problem, the \textbf{a} varible is finally
+  incremented two times while the programmer just wanted to post-increment
+  the \textbf{a} variable one time.
+
+  \nl
+
+  The second corrected macro also correct this problem ensuring the arguments
+  to be evaluated only one time.
 \end{frame}
 
 %
@@ -1442,7 +1483,7 @@
 \begin{frame}[containsverbatim]
   \frametitle{Overview}
 
-  The macros expansion is made to avoid infinite expansion.
+  The macros expansion was made to avoid infinite expansion.
 
   \nl
 
@@ -1451,12 +1492,14 @@
 
   \begin{verbatim}
     #define foo(x, y)   foo(y, x)
+
+    foo(4, 3)
   \end{verbatim}
 
   will be expanded to:
 
   \begin{verbatim}
-    foo(y, x)
+    foo(3, 4)
   \end{verbatim}
 
   and nothing more.
@@ -1482,14 +1525,195 @@
                                                                         \
           if ((buf = malloc((size))) == NULL)                           \
             perror(``malloc'');                                         \
+                                                                        \
+          buf;                                                          \
         }                                                               \
       )
   \end{verbatim}
 \end{frame}
 
-\section{Cases Study}
+%
+% case studies
+%
 
-% XXX
+\section{Case Studies}
+
+% 1)
+
+\begin{frame}
+  \frametitle{kaneton set system}
+
+  The kaneton set system is used to simulate functions overloading and
+  functions forwarding.
+
+  \nl
+
+  The main problems are inherent to the language used: the C and the C
+  preprocessor.
+
+  \nl
+
+  We wanted a generic interface used by the programmer and we wanted our
+  system to distribute, forward the function calls to more specific
+  functions.
+
+  \nl
+
+  The set manager is used to manage complex data structures. Then the
+  programmer just call the set manager to ask it to build a precise data
+  structure and to manage it: elements and memory.
+
+  \nl
+
+  The goal of the kaneton set system was to provide this very special
+  interface using macros.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Interface}
+
+  The kaneton set system is composed of an interface.
+
+  \nl
+
+  The \textbf{set\_rsv()} function reserves a set specifying the desired
+  data structure to use. This function returns a set identifier.
+
+  \nl
+
+  Then the user also use the identifier to manipulate its set. From this
+  identifier the kaneton set system will be able to retrieve the correct
+  data structure type so the correct functions to forward to.
+
+  \begin{verbatim}
+    #define set_rsv(_type_, _args_...)                                      \
+      set_rsv_##_type_(_args_)
+
+    #define set_add(_setid_, _args_...)                                     \
+      set_trap(set_add, _setid_, ##_args_)
+
+    #define set_head(_setid_, _args_...)                                    \
+      set_trap(set_head, _setid_, ##_args_)
+  \end{verbatim}
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Implementation}
+
+  The concatenation was widely used for solving problems related to
+  the kaneton set system. Let's take a look to the set manager and its
+  interface using a trap system to forward function calls to specific
+  set manager: linked-list, array etc..
+
+  \nl
+
+  \begin{verbatim}
+    #define set_trap(_func_, _setid_, _args_...)                            \
+      {                                                                     \
+        o_set*            _set_;                                            \
+                                                                            \
+        if (set_descriptor((_setid_), &_set_) == ERROR_NONE)                \
+          {                                                                 \
+            switch (_set_->type)                                            \
+              {                                                             \
+                case SET_TYPE_ARRAY:                                        \
+                  _r_ = _func_##_array((_setid_), ##_args_);                \
+                  break;                                                    \
+                ...                                                         \
+              }                                                             \
+          }                                                                 \
+      }
+  \end{verbatim}
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Templates}
+
+  The C preprocessor can also be used to generate C functions.
+
+  \nl
+
+  The most common use of this technique is to generate a function given
+  its types. Then we will be able to generate kind of overloaded
+  functions.
+
+  \nl
+
+  Consider a function template which is common but the types used inside
+  it change. The programmer has the choice: either program the N functions
+  with the same code but with different types or generate the functions
+  with macros.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Functions Generation}
+
+  Let's take an example, with a function which finds the highest value in
+  the array and then swaps it with the first, so places the highest value
+  as first. The programmer has to write a function for arrays of:
+  characters, shorts and integers.
+
+  \nl
+
+  We will generate a function called \textbf{dump\_array} suffixed with
+  its type to easily retrieve the function name and to avoid conflicts.
+\end{frame}
+
+% 6)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  \begin{verbatim}
+    #define make_dump_array(T)                                          \
+      void              dump_array_##T(T*               array,          \
+                                       unsigned int     size)           \
+        {                                                               \
+          unsigned int  max;                                            \
+          T             tmp;                                            \
+          unsigned int  i;                                              \
+                                                                        \
+          for (max = 0, i = 0; i < size; i++)                           \
+            if (array[i] > array[max])                                  \
+              max = i;                                                  \
+                                                                        \
+          tmp = array[0];                                               \
+          array[0] = array[max];                                        \
+          array[max] = tmp;                                             \
+        }
+
+    #define dump_array(T, array, size)                                  \
+      dump_array_##T(array, size)
+  \end{verbatim}
+\end{frame}
+
+% 7)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  \begin{verbatim}
+    make_dump_array(int)
+    make_dump_array(char)
+
+    int                 main(void)
+    {
+      int               iarray[5] = { 1, 2, 3, 4, 5 };
+      char              carray[2] = { 'o', 'k' };
+
+      dump_array(int, iarray, 5);
+      dump_array(char, carray, 2);
+    }
+  \end{verbatim}
+\end{frame}
 
 %
 % bibliography

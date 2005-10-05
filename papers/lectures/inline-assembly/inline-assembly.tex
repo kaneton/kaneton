@@ -5,13 +5,13 @@
 %% 
 %% inline-assembly.tex
 %% 
-%% path          /home/mycure/kaneton
+%% path          /home/mycure/kaneton/papers/lectures/c-preprocessor
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Tue Oct  4 14:16:25 2005   mycure
+%% last update   Wed Oct  5 23:24:08 2005   mycure
 %%
 
 %
@@ -64,7 +64,7 @@
 % title
 %
 
-\title{The Inline Assembly}
+\title{Inline Assembly}
 
 %
 % authors
@@ -91,12 +91,10 @@
 % logos
 %
 
-\pgfdeclareimage[interpolate=true,width=49pt,height=18pt]
-		{upmc}{../../logos/upmc}
-\pgfdeclareimage[interpolate=true,width=18pt,height=18pt]
-		{lip6}{../../logos/lip6}
 \pgfdeclareimage[interpolate=true,width=34pt,height=18pt]
 		{epita}{../../logos/epita}
+\pgfdeclareimage[interpolate=true,width=34pt,height=18pt]
+		{upmc}{../../logos/upmc}
 \pgfdeclareimage[interpolate=true,width=25pt,height=18pt]
 		{lse}{../../logos/lse}
 
@@ -138,8 +136,8 @@
   \titlepage
 
   \begin{center}
-    \pgfuseimage{upmc} \hspace{0.1cm} \pgfuseimage{lip6} \hspace{0.1cm}
-    \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{lse} \hspace{0.1cm}
+    \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{upmc} \hspace{0.1cm}
+    \pgfuseimage{lse} \hspace{0.1cm}
   \end{center}
 \end{frame}
 
@@ -163,11 +161,11 @@
 \begin{frame}
   \frametitle{Description}
 
-  The inline assembly is used to insert assembly code into C source code.
+  Inline assembly is used to insert assembly code into C source code.
 
   \nl
 
-  The inline assembly reduces the function-call overhead while reducing
+  Inline assembly reduces the function-call overhead while reducing
   the number of little assembly source files.
 
   \nl
@@ -177,7 +175,7 @@
 
   \nl
 
-  The inline assembly is commonly used to improve performances. Neverthless
+  Inline assembly is commonly used to improve performances. Neverthless
   system programmers appreciate the inline assembly because some
   processor instructions are only available in assembly.
 
@@ -197,7 +195,7 @@
 \begin{frame}
   \frametitle{Overview}
 
-  The gcc inline assembly uses AT\&T assembly syntax which is
+  gcc inline assembly uses AT\&T assembly syntax which is
   different from the Intel one.
 
   \nl
