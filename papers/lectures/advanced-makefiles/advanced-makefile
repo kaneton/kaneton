@@ -780,7 +780,50 @@ YFLAGS
 
 X) Defining and Redining Pattern Rules
 
+A pattern rule looks like an ordinary rule except that a pattern rule is composed
+of the character '%'.
 
+in this case, the target is not a finite name but a pattern so it can match with
+many different targets.
+
+the prerequisites can also use a pattern.
+
+thus, a pattern rule `%.o : %.c' says how to make any file `stem.o' from another file `stem.c'
+
+the % matches any nonempty substring.
+
+The substring that the `%' matches is called the stem.
+
+`%' in a prerequisite of a pattern rule stands for the same stem that was matched by the `%' in the target.
+
+%.o : %.c
+        $(CC) -c $(CFLAGS) $(CPPFLAGS) $< -o $@
+
+% :: RCS/%,v
+        $(CO) $(COFLAGS) $<
+
+X) The Match-anything rule
+
+the target "%:" is called the match-anything rule.
+
+X) Overriding Implicit Rules
+
+You can override implicit rules just writing a rule with a identical target but
+with different commands.
+
+X) Last Resort Default Rule
+
+There are two ways for writing a default rule.
+
+the first one is to use the .DEFAULT directive which specify the commands to launch when
+there were no matching rules.
+
+we can also use the match-anything rule to launch default commands.
+
+%::
+	commands
+
+the double colon makes the rule terminal, which means that its prerequisite may not be an intermediate file.
 
 
 
