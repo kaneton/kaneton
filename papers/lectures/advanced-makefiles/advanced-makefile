@@ -1,9 +1,4 @@
-1) Non-Advanced Makefiles
-  deja fait, genre norme EPTIA blabla les problemes que ca implique etc..
-
-  rules, variables, dependences pour lancer d autres rules, surcharge gauche
-  -command, implicit rules
-
+X) Multiple Targets
   . multiple targets in a rule: $@ recoit la target matched" 	
 
 bigoutput littleoutput : text.g
@@ -16,6 +11,7 @@ bigoutput : text.g
 littleoutput : text.g
         generate text.g -little > littleoutput
 
+X) Multiples Rules
   . multiples rules for one target
 
 objects = foo.o bar.o
@@ -23,6 +19,7 @@ foo.o : defs.h
 bar.o : defs.h test.h
 $(objects) : config.h
 
+X)
 . advanced rules using phase one AND prerequisites chain
 
 
@@ -58,7 +55,7 @@ or another one:
 bigoutput littleoutput : %output : text.g
         generate text.g -$* > $@
 
-2) ...
+2) Directives
 
   directives:
 
@@ -112,6 +109,8 @@ Using `.PHONY' is more explicit and more efficient. However, other versions of m
 
 The `-r' or `--no-builtin-rules' flag causes the default list of suffixes to be empty. 
 
+X) Default Rule
+
 . DEFAULT RULE
 
 %::
@@ -151,6 +150,8 @@ bande:  suce.o
 
 ET SUR LES CD
 
+X) Automatic Variables
+
 will create every file in prerequisites which doesnt match any rule.
 
   generic rules:
@@ -180,6 +181,8 @@ automatic other variables:
 
   includes,
 
+X) Assignment
+
   assignment:
     = deferred
     ?= deferred (conditional assignment: si non definie alors set)
@@ -192,6 +195,8 @@ recursive (`='), static (`:='), appending (`+='), or conditional (`?=')
       deferred
     endef
 For the append operator, `+=', the right-hand side is considered immediate if the variable was previously set as a simple variable (`:='), and deferred otherwise.
+
+X) Condiionals
 
   ifdef, ifeq, ifndef, and ifneq
 
@@ -256,18 +261,7 @@ Microsoft operating systems (MS-DOS and MS-Windows) use backslashes to separate 
 
 This is equivalent to the Unix-style `c:/foo/bar/baz.c' (the `c:' part is the so-called drive letter). When make runs on these systems, it supports backslashes as well as the Unix-style forward slashes in pathnames. However, this support does not include the wildcard expansion, where backslash is a quote character. Therefore, you must use Unix-style slashes in these cases. 
 
-5) advanced features
-
-  target: foo.o -lcurses
-    ...
-
-  ca va chercher dans VPATH et rep courant la lib curses
-
-Although the default set of files to be searched for is `libname.so' and `libname.a', this is customizable via the .LIBPATTERNS variable. Each word in the value of this variable is a pattern string. When a prerequisite like `-lname' is seen, make will replace the percent in each pattern in the list with name and perform the above directory searches using that library filename. If no library is found, the next word in the list will be used.
-
-The default value for .LIBPATTERNS is "`lib%.so lib%.a'", which provides the default behavior described above.
-
-You can turn off link library expansion completely by setting this variable to an empty value. 
+X) Double-colon Rules
 
 . double-colon rules
 
@@ -291,7 +285,7 @@ include deguste.d
 deguste.d:
         echo CA BANDE
 
-. generating dependencies
+X) generating dependencies
 
 1) generer toutes les dependences dans un fichier, methode classique
    mais qui neanmoins prend du temps pour rien lorsque seulement
@@ -315,7 +309,7 @@ include $(sources:.c=.d)
         sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
         rm -f $@.$$$$
 
-. echoing
+X) echoing
 
 @ vs .SILENT
 
@@ -342,37 +336,6 @@ BONJOUR
 /bin/sh: line 1: @echo: command not found
 make: *** [all] Error 127
 $ 
-
-X) Command Execution
-
-When it is time to execute commands to update a target, they are executed by making a new subshell for each line. (In practice, make may take shortcuts that do not affect the results.)
-
-Please note: this implies that shell commands such as cd that set variables local to each process will not affect the following command lines. (2) If you want to use cd to affect the next command, put the two on a single line with a semicolon between them. Then make will consider them a single command and pass them, together, to a shell which will execute them in sequence. For example:
-
-foo : bar/lose
-        cd bar; gobble lose > ../foo
-
-X) errors in commands
-
-pour tester si un rep existe (ok il y a mieux mais c est un exemple)
-
-all:
-	mkdir chiche/
-
-ca va stopper le makefile
-
-all:
-	-mkdir chiche/
-
-X) Recursive use of make
-
-cd dir ; make ; cd ..
-
-cd /dir ; make ; cd -
-
-make -C dir
-
-make -C /dir
 
 X) Canned Command Sequence
 
@@ -694,14 +657,6 @@ err: ; $(ERR)
 
 warning: print a warning
 
-X)
-
-options:
-
-make:
-	printf = affiche les fichiers modifies
-
-
 X) implicit rules
 
 montrer, lister expliquer
@@ -719,64 +674,6 @@ the old fashion was:
 .c.o:	foo.h
 	...
 
-
-X) Default Variables, Used by Implicit Rules
-
-AR
-    Archive-maintaining program; default `ar'.
-
-AS
-    Program for doing assembly; default `as'.
-
-CC
-    Program for compiling C programs; default `cc'.
-
-CXX
-    Program for compiling C++ programs; default `g++'.
-
-CPP
-    Program for running the C preprocessor, with results to standard output; default `$(CC) -E'.
-
-LEX
-    Program to use to turn Lex grammars into C programs or Ratfor programs; default `lex'.
-
-YACC
-    Program to use to turn Yacc grammars into C programs; default `yacc'.
-
-TEX
-    Program to make TeX DVI files from TeX source; default `tex'.
-
-TEXI2DVI
-    Program to make TeX DVI files from Texinfo source; default `texi2dvi'.
-
-RM
-    Command to remove a file; default `rm -f'. 
-
-Here is a table of variables whose values are additional arguments for the programs above. The default values for all of these is the empty string, unless otherwise noted.
-
-ARFLAGS
-    Flags to give the archive-maintaining program; default `rv'.
-
-ASFLAGS
-    Extra flags to give to the assembler (when explicitly invoked on a `.s' or `.S' file).
-
-CFLAGS
-    Extra flags to give to the C compiler.
-
-CXXFLAGS
-    Extra flags to give to the C++ compiler.
-
-CPPFLAGS
-    Extra flags to give to the C preprocessor and programs that use it (the C and Fortran compilers).
-
-LDFLAGS
-    Extra flags to give to compilers when they are supposed to invoke the linker, `ld'.
-
-LFLAGS
-    Extra flags to give to Lex.
-
-YFLAGS
-    Extra flags to give to Yacc. 
 
 X) Defining and Redining Pattern Rules
 
@@ -806,11 +703,6 @@ X) The Match-anything rule
 
 the target "%:" is called the match-anything rule.
 
-X) Overriding Implicit Rules
-
-You can override implicit rules just writing a rule with a identical target but
-with different commands.
-
 X) Last Resort Default Rule
 
 There are two ways for writing a default rule.
@@ -832,13 +724,7 @@ the double colon makes the rule terminal, which means that its prerequisite may 
 
 
 
---- 1) explications des techniques
---- 2) mettre des cas concret
-
 orthographe: prerequisite, prerequisites
-
---- others) parallel execution, errors handling
-
 
 XXX ----------------------------------------------------------------------- XXX
 
@@ -848,7 +734,7 @@ soit la fonction C(B) qui exprime un choix en fonction d'un bagage
 ou background.
 
 le background etant considere comme le bagage au sens general: intellectuel,
-environnemental, experimental etc..
+environnemental, experimental etc.. mais egalement genetique.
 
 soit la fonction I(x1, x2) exprimant l'interaction de deux individus.
 cette fonction modifiant le bagage de chacun des deux individus en interaction

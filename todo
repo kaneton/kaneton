@@ -1,3 +1,7 @@
+--
+ prevoir TP de remise a niveau: C (decalage, mask etc..), assembleur
+ exos en assembleur nasm puis en asm inline etc..
+
 -- solal
  mettre a la norme ton code
  faire compiler ton code
@@ -72,9 +76,9 @@
   2) des tests pour set, as, segment, regions
   3) finir intra
   4) integrer la moulinette dans l intra: PXE, tftp etc..
-  5) slides presentations kaneton
+  5) slides presentations kaneton [*]
   6) slides presentation lse
-  7) cours: cpp, inline assembly, gnu make
+  7) cours: cpp [*], inline assembly [*], gnu make
   8) presentation kaneton, tarball etc..
   9) cours noyaux
   10) retoucher cours intel, avec beamer bien etc.. images au bon format

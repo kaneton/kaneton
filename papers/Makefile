@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Fri Sep  9 18:39:12 2005   mycure
+## last update   Sun Oct  9 14:05:17 2005   mycure
 ##
 
 #
@@ -33,6 +33,7 @@ include			../.kaneton.mk
 SUBDIRS			:=		design				\
 					kaneton				\
 					assignments			\
+					seminar				\
 					lectures			
 
 #

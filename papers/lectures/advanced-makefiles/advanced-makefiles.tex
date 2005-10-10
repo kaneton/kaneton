@@ -11,87 +11,114 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Tue Sep  6 16:11:07 2005   mycure
+%% last update   Mon Oct 10 06:08:08 2005   mycure
 %%
 
 %
 % class
 %
 
-\documentclass{beamer}
+\documentclass[8pt]{beamer}
 
 %
 % packages
 %
 
 \usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
-\usepackage{amsmath,amssymb}
-\usepackage[latin1]{inputenc}
 \usepackage{colortbl}
-\usepackage[english]{babel}
-\usepackage{verbatim}
 \usepackage{times}
+\usepackage{amsmath,amssymb}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage[english]{babel}
+\usepackage{enumerate}
+\usepackage[latin1]{inputenc}
+\usepackage{multicol}
 
 %
 % style
 %
 
-\setbeamertemplate{background canvas}[vertical shading][bottom=red!10,top=blue!10]
-\usetheme{Ilmenau}
-\usefonttheme[onlysmall]{structurebold}
-
+\usepackage{beamerthemesplit}
 \setbeamercovered{dynamic}
 
 %
 % verbatim font
 %
 
+\definecolor{verbatimcolor}{rgb}{0,0.4,0}
+
 \makeatletter
 \renewcommand{\verbatim@font}
-  {\ttfamily\tiny\selectfont}
+  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
 \makeatother
+
+%
+% new line
+%
+
+\newcommand{\nl}[0]{\vspace{0.4cm}}
 
 %
 % title
 %
 
-\title[Advanced~Makefiles]{Advanced~Makefiles}
+\title{Advanced Makefiles}
 
 %
 % authors
 %
 
-\author[Julien~Quintard]
+\author
 {
   Julien~Quintard\inst{1} \\
-  {\tiny quinta\_j@lse.epita.fr}
+  {\tiny julien.quintard@gmail.com}
 }
 
-\institute[EPITA Computer System Laboratory]
+\institute
 {
-  \inst{1} EPITA Computer System Laboratory
+  \inst{1} kaneton distributed operating system project
 }
 
 %
 % date
 %
 
-\date[\today]{\today}
+\date{\today}
 
 %
-% subject
+% logos
 %
 
-\subject{Advanced Makefiles}
+\pgfdeclareimage[interpolate=true,width=34pt,height=18pt]
+		{epita}{../../logos/epita}
+\pgfdeclareimage[interpolate=true,width=49pt,height=18pt]
+		{upmc}{../../logos/upmc}
+\pgfdeclareimage[interpolate=true,width=25pt,height=18pt]
+		{lse}{../../logos/lse}
 
 %
 % table of contents at the beginning of each section
 %
 
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+   \frametitle{Outline}
+    \tableofcontents[current]
+  \end{frame}
+}
+
+%
+% table of contents at the beginning of each subsection
+%
+
 \AtBeginSubsection[]
 {
   \begin{frame}<beamer>
-    \frametitle{Outline}
+   \frametitle{Outline}
     \tableofcontents[current,currentsubsection]
   \end{frame}
 }
@@ -108,6 +135,11 @@
 
 \begin{frame}
   \titlepage
+
+  \begin{center}
+    \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{upmc} \hspace{0.1cm}
+    \pgfuseimage{lse} \hspace{0.1cm}
+  \end{center}
 \end{frame}
 
 %
@@ -128,410 +160,576 @@
 % 1)
 
 \begin{frame}
-  \frametitle{Common Makefiles}
+  \frametitle{Definition}
 
-  \begin{block}{Good Characteristics}
-    \begin{itemize}
-      \item
-        use object dependencies to, automatically, generate object files.
-      \item
-        generate object file names from source file names.
-      \item
-        use macro \alert{as well as possible}.
-    \end{itemize}
-  \end{block}
+  The \textbf{makefiles} are used to always compile only the files
+  that need to be compiled, in other words, only the source files which
+  have changed.
 
+  \nl
+
+  So a makefile defines \textbf{rules} which indicates \textbf{make}
+  which file to compile, in which case a file must be rebuilt etc..
+\end{frame}
+
+%
+% basic makefiles
+%
+
+\section{Basic Makefiles}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  We will se in this section how to build a basic makefile, what is the
+  makefile syntax etc..
+
+  \nl
+
+  Then we will briefly introduce some tips.
+
+  \nl
+
+  Finally we will analyse the limitations of these basic makefiles to
+  introduce new techniques in the next sections.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Syntax}
+
+  As an introduction, let's take a look to the makefile syntax:
+
+  \begin{verbatim}
+    target1:        dependency11 dependency21
+            command11
+            command21
+
+    target2:        dependency21 dependency22 dependency23 dependency24
+            command21
+  \end{verbatim}
+\end{frame}
+
+%
+% introduction
+%
+
+\subsection{Introduction}
+
+% 1)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  The best way to introduce makefile is to take an example:
+
+  \begin{columns}
+
+    \begin{column}{6cm}
+      \begin{verbatim}
+        all:    chiche.o main.o
+                gcc -o binary chiche.o main.o
+
+        clean:
+                rm -f binary chiche.o main.o
+      \end{verbatim}
+    \end{column}
+
+    \begin{column}{6cm}
+
+      \begin{verbatim}
+        $ make
+        cc    -c -o chiche.o chiche.c
+        cc    -c -o main.o main.c
+        gcc -o binary chiche.o main.o
+        $ make clean
+        rm -f binary chiche.o main.o
+        $ 
+      \end{verbatim}
+    \end{column}
+
+  \end{columns}
 \end{frame}
 
 % 2)
 
 \begin{frame}
-  \frametitle{Common Makefiles}
+  \frametitle{Questions}
 
-  \begin{alertblock}{Bad Characteristics}
-    \begin{itemize}
-      \item<1->
-        do not use full dependencies like header file dependencies.
-      \item<1->
-        are never parameterizable.
-      \item<1->
-        are too specific to the current environment, inclusions,
-        multi-developers etc..
-      \item<2->
-        work well, so, do not change for the next three decades...
-    \end{itemize}
-  \end{alertblock}
-
+  \begin{enumerate}
+    \item
+      what does this makefile do?
+    \item
+      why do not just writing a shell script by hand?
+    \item
+      what are the problems of this makefile: redundancy, extensibility etc..
+  \end{enumerate}
 \end{frame}
 
 % 3)
 
-\begin{frame}
-  \frametitle{An Example of Common Makefiles}
+\begin{frame}[containsverbatim]
+  \frametitle{Variables}
 
-  \begin{Example}
-    \verbatiminput{examples/makefile-common.li}
-  \end{Example}
+  You previously noticed the redundancy present in our example.
 
+  \nl
+
+  The best and only way to resolve this design problem is to use variables.
+
+  \nl
+
+  \begin{verbatim}
+    BIN         =       binary
+    OBJS        =       chiche.o main.o
+
+    all:    $(OBJS)
+            gcc -o $(BIN) $(OBJS)
+
+    clean:
+            rm -f $(BIN) $(OBJS)
+  \end{verbatim}
 \end{frame}
 
 % 4)
 
 \begin{frame}
-  \frametitle{More Complete Makefiles}
+  \frametitle{Default Variables}
 
-  \begin{block}{Characteristics}
-    \begin{itemize}
-      \item
-        handle header file dependencies, generally using dependency generation.
-      \item
-        use macros for every file name, binary, etc..
-    \end{itemize}
-  \end{block}
+  The make system uses default variables to define for example the C compiler,
+  the remove binary, the assembly compiler etc..
 
+  \nl
+
+  Let's take a look to this non-exhaustive list:
+
+  \begin{itemize}
+    \item
+      \textbf{AR}: archive-maintaining program, default \textit{ar}
+    \item
+      \textbf{AS}: program for doing assembly, default \textit{as}
+    \item
+      \textbf{CC}: program for compiling C programs, default \textit{cc}
+    \item
+      \textbf{CXX}: program for comping C++ programs, default \textit{g++}
+    \item
+      \textbf{CPP}: program for running C preprocessor, default
+      \textit{\$(CC) -E}
+    \item
+      \textbf{LEX}: program to use to turn Lex grammars into C programs,
+      default \textit{lex}
+    \item
+      \textbf{YACC}: program to use to turn Yacc grammars into C programs,
+      default \textit{yacc}
+    \item
+      \textbf{TEX}: program to make TeX DVI files from TeX source, default
+      \textit{tex}.
+    \item
+      \textbf{TEXI2DVI}: program to make TeX DVI files from Texinfo source,
+      default \textit{texi2dvi}
+    \item
+      \textbf{RM}: command to remove a file, default \textit{rm -f}
+    \item
+      etc..
+  \end{itemize}
 \end{frame}
 
 % 5)
 
 \begin{frame}
-  \frametitle{An Example of More Complete Makefiles}
+  \frametitle{Default Variables}
 
-  \begin{Example}
-    \verbatiminput{examples/makefile-complete.li}
-  \end{Example}
+  Now the list of the flags variables:
 
+  \begin{itemize}
+    \item
+      \textbf{ARFLAGS}: flags to give the archive-maintaining program,
+      default \textit{rv}
+    \item
+      \textbf{ASFLAGS}: extra flags to give to the assembler
+    \item
+      \textbf{CFLAGS}: extra flags to give to the C compiler
+    \item
+      \textbf{CXXFLAGS}: extra flags to give to the C++ compiler
+    \item
+      \textbf{CPPFLAGS}: extra flags to give to the C preprocessor
+    \item
+      \textbf{LDFLAGS}: extra flags to give to compilers when they are
+      supposed to invoke the linker
+    \item
+      \textbf{LFLAGS}: extra flags to give to Lex
+    \item
+      \textbf{YFLAGS}: extra flags to give to Yacc
+    \item
+      etc..
+  \end{itemize}
 \end{frame}
 
 % 6)
 
-\begin{frame}
-  \frametitle{Notes}
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
 
-  \begin{block}{Characteristics}
-    \begin{itemize}
-      \item
-        note that this makefile is correct but seems very \alert{ugly}.
-      \item
-        indeed, for a project with 1000 source files, it will be hard to
-        write every header file dependencies, for each file...
-      \item
-        nevertheless, this makefile will recompile the two source files
-        every time the header file is modified.
-    \end{itemize}
-  \end{block}
+  Finally, our example can now be written like this:
 
+  \begin{verbatim}
+    BIN         =       binary
+    OBJS        =       chiche.o main.o
+
+    all:    $(OBJS)
+            $(CC) $(CFLAGS) -o $(BIN) $(OBJS)
+
+    clean:
+            $(RM) $(BIN) $(OBJS)
+  \end{verbatim}
+\end{frame}
+
+% 7)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Limitations}
+
+  Let's analyse the limitations of this makefile.
+
+  \begin{verbatim}
+    $ cat main.c
+    #include ``chiche.h''
+
+    [...]
+    $ 
+  \end{verbatim}
+
+  Then is the programmer modifies the header file, the \textbf{main} object
+  file will not be rebuilt; this is a serious limitation.
+
+  \nl
+
+  The solution is to build a rule for each object file which depends of
+  the header file, if needed.
+
+  \nl
+
+  There are many limitations we will explore during this lecture:
+  redundancy, header file dependencies, phony targets, echoing etc..
+\end{frame}
+
+% 8)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  \begin{verbatim}
+    BIN         =       binary
+    OBJS        =       chiche.o main.o
+
+    all:    $(OBJS)
+            $(CC) $(CFLAGS) -o $(BIN) $(OBJS)
+
+    clean:
+            $(RM) $(BIN) $(OBJS)
+
+    main.o: main.c chiche.h
+            $(CC) $(CFLAGS) -c main.c -o main.o
+  \end{verbatim}
+
+  Are there some other limitations now?
 \end{frame}
 
 %
-% features
+% first tips
 %
 
-\section{Features}
+\subsection{First Tips}
+
+% 1)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Command Execution}
+
+  Each command in a rule is launched as a new subshell.
+
+  \nl
+
+  Of cours make internals try to optimise.
+
+  \nl
+
+  This detail implies that shell commands such as \textit{cd} that set
+  variables local to each process will not affect the following makefile
+  commands.
+
+  \nl
+
+  If the programmer wants to use commands which affect the following one, he
+  has to put these commands on the same line.
+
+  \begin{verbatim}
+    foo:    bar
+            cd bar ; echo 1 > log ; cd ..
+
+    bar:
+            cd bar ;    \
+            make ;      \
+            cd ..
+  \end{verbatim}
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Errors in Commands}
+
+  Let's analyse how make handles the errors in commands.
+
+  \nl
+
+  Let's take a rule:
+
+  \begin{columns}
+
+    \begin{column}{6cm}
+      \begin{verbatim}
+        [...]
+
+        build:
+          mywc -l log
+
+          echo OK
+      \end{verbatim}
+    \end{column}
+
+    \begin{column}{6cm}
+      \begin{verbatim}
+        $ make build
+        mywc -l log
+        make: mywc: Command not found
+        make: *** [build] Error 127
+        $ 
+      \end{verbatim}
+    \end{column}
+
+  \end{columns}
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Solution}
+
+  The solution of this problem is to use a special operator: \textbf{-}.
+
+  \begin{columns}
+
+    \begin{column}{6cm}
+      \begin{verbatim}
+        [...]
+
+        build:
+          -mywc -l log
+
+          echo OK
+      \end{verbatim}
+    \end{column}
+
+    \begin{column}{6cm}
+      \begin{verbatim}
+        $ make build
+        mywc -l log
+        make: mywc: Command not found
+        make: [build] Error 127 (ignored)
+        echo OK
+        OK
+        $ 
+      \end{verbatim}
+    \end{column}
+
+  \end{columns}
+
+  \nl
+
+  This feature is especially useful with the \textbf{include} directive
+  for example to not generate errors because the file to include will
+  be \textbf{generated} soon.
+\end{frame}
+
+% 4)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Recursive Use of Make}
+
+  Sometimes its is useful to ask another makefile to compile the sources.
+
+  \nl
+
+  Indeed, the correct convention is to compile the source located in
+  the current working directory: first because its sounds good and then
+  to avoid name conflicts.
+
+  \nl
+
+  Otherwise, for example, \textit{src/chiche.c} and \textit{generic/chiche.c}
+  will generate a file called \textit{obj/chiche.o}.
+
+  \nl
+
+  As briefly seen before, it is better to explore the hierarchy calling
+  make in each subdirectory, then each makefile either build a binary, library
+  or anything else or recursively calls the makefiles of its subdirectories.
+
+  \nl
+
+  There are two ways to use make recursively:
+
+  \begin{columns}
+
+    \begin{column}{6cm}
+      \begin{verbatim}
+        all:
+                cd src ;    \
+                make ;      \
+                cd ..
+      \end{verbatim}
+    \end{column}
+
+    \begin{column}{6cm}
+      \begin{verbatim}
+        all:
+                make -C src
+      \end{verbatim}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%
+% complete makefiles
+%
+
+\section{Complete Makefiles}
 
 % 1)
 
 \begin{frame}
-  \frametitle{Advanced Makefiles Features}
+  \frametitle{Overview}
 
-  \begin{block}{Characteristics}
-    \begin{itemize}
-      \item<1->
-        use makefile inclusions.
-      \item<1->
-        centralize the macros to be used by every makefile using
-        macros and functions.
-      \item<1->
-        know all about default makefile rules.
-      \item<1->
-        use makefile directives and flags.
-      \item<1->
-        avoid hard-coded path and relative path like: -I../../libs/mylib.a
-      \item<1->
-        finally, handle header files dependencies.
-      \item<2->
-        be careful, these feature are mainly implemented by \alert{gmake},
-        so will not be supported by portable make.
-    \end{itemize}
-  \end{block}
+  We saw earlier that basic makefiles as the examples taken had
+  many limitations.
 
+  \nl
+
+  In this section, we will try to fix these problems to build powerful
+  makefiles.
 \end{frame}
 
 %
 % directives
 %
 
-\section{Directives}
+\subsection{Directives}
 
 % 1)
 
-\begin{frame}
-  \frametitle{Directives}
+%%%\frame{Overview}
+%%%\frame{.PHONY}
+%%%\frame{etc..}
 
-  \begin{block}{Characteristics}
-    \begin{itemize}
-      \item
-        used to parameter makefiles.
-      \item
-        \textit{.PHONY} contains the targets for which the makefile system
-        runs commands unconditionally.
-      \item
-        \textit{.SUFFIXES} contains the suffix list to check for.
-      \item
-        \textit{.DEFAULT} contains commands which are used for any target
-        for which no rule are found.
-      \item
-        \textit{.IGNORE} contains rules for which the makefile system
-        will ignore errors.
-      \item
-        \textit{.SILENT} is used to not print make actions.
-    \end{itemize}
-  \end{block}
+\subsection{Default Rule}
 
-\end{frame}
+%%%\frame{Overview}
+%%%\frame{.PHONY}
+%%%\frame{%: ou %::}
 
-% 2)
+\subsection{Automatic Variables}
 
-\begin{frame}
-  \frametitle{Directives Example}
+%%%\frame{Overview}
+%%%\frame{$^}
+%%%\frame{etc..}
 
-  \begin{columns}
+\subsection{Assignments}
 
-    \column{5cm}
-      \begin{Example}
-        \verbatiminput{examples/makefile-directives-1.li}
-      \end{Example}
+%%%\frame{Overview}
+%%%\frame{=}
+%%%\frame{?=}
+%%%\frame{etc..}
 
-    \column{5cm}
-      \begin{Example}
-        \verbatiminput{examples/makefile-directives-2.li}
-      \end{Example}
+\subsection{Conditionals}
 
-  \end{columns}
+%%%\frame{Overview}
+%%%\frame{ifeq}
+%%%\frame{etc..}
 
-\end{frame}
+\subsection{Wildcard}
 
-% 3)
-
-\begin{frame}
-  \frametitle{Other Directives}
-
-  \begin{block}{Characteristics}
-    \begin{itemize}
-      \item
-        \textit{include} is used to include another makefile. This feature
-        is very useful to centralize the macros.
-      \item
-        \textit{-include} can be used to ignore unexisting file.
-      \item
-        conditional parts are used to set makefile conditions:
-        \textit{ifeq}, \textit{ifdef} etc..
-      \item
-        \textit{-\textbf{command}} is used to avoid errors if the
-        \textbf{command} is not found.
-    \end{itemize}
-  \end{block}
-
-\end{frame}
-
-% 4)
-
-\begin{frame}
-  \frametitle{Other Directives Examples}
-
-  \begin{Example}
-    \verbatiminput{examples/makefile-conditional-parts.li}
-  \end{Example}
-
-\end{frame}
+%%%\frame{Overview}
+%%%\frame{etc..}
 
 %
-% rules
+% complex makefiles
 %
 
-\section{Rules}
+\section{Advanced Makefiles}
 
-% 1)
+\subsection{Double-colon Rules}
 
-\begin{frame}
-  \frametitle{Implicit Rules}
+%%%\frame{Overview}
+%%%\frame{etc..}
 
-  \begin{block}{Characteristics}
-    \begin{itemize}
-      \item<1->
-        the makefile system is based on implicit rules which make the
-        programmer's life easier.
-      \item<1->
-        the command \textit{make -p} lists the entire list of rules including
-        default ones.
-      \item<1->
-        the best example is the object generation which is done by an implicit
-        rule.
-    \end{itemize}
-  \end{block}
+\subsection{Generating Dependencies}
 
-\end{frame}
+%%%\frame{Overview}
+%%%\frame{etc..}
 
-% 2)
+\subsection{Echoing}
 
-\begin{frame}
-  \frametitle{Implicit Rule Example - {\small make -p}}
+%%%\frame{Overview}
+%%%\frame{etc..}
 
-  \begin{Example}
-    \verbatiminput{examples/implicit-rules-1.li}
-  \end{Example}
+\subsection{Defining Variables}
 
-  \begin{Example}
-    \verbatiminput{examples/implicit-rules-2.li}
-  \end{Example}
+%%%\frame{Canned Command Sequence}
+%%%\frame{Variables Verbatim}
+%%%\frame{Variable Evaluation}
+%%%\frame{Override Directive}
 
-\end{frame}
+\subsection{Target-Specific Variable Values}
 
-% 3)
+%%%\frame{Overview}
 
-\begin{frame}
-  \frametitle{Implicit Rule Example}
+\subsection{Functions}
 
-  \begin{Example}
-    \verbatiminput{examples/makefile-implicit-rules.li}
-  \end{Example}
+%%%\frame{Overview}
 
-\end{frame}
+\section{Advanced Topics}
 
-% 4)
+\section{Case Study}
 
-\begin{frame}
-  \frametitle{Target Grouping}
+%
+% bibliography
+%
 
-  \begin{block}{Characteristics}
-    \begin{itemize}
-      \item
-        the last example seemed ugly because there was duplication.
-      \item
-        moreover, the two source files had the same dependencies. This
-        fact leading too many duplications.
-      \item
-        the solution is to use target grouping.
-    \end{itemize}
-  \end{block}
+\section{Bibliography}
 
-\end{frame}
+\begin{thebibliography}{3}
+  \bibitem{Howto}
+    GNU Make Documentation
 
-% 5)
-
-\begin{frame}
-  \frametitle{Target Grouping Example}
-
-  \begin{Example}
-    \verbatiminput{examples/makefile-target-grouping.li}
-  \end{Example}
-
-\end{frame}
-
-% 6)
-
-\begin{frame}
-  \frametitle{Implicit Rules Redefinition}
-
-  \begin{block}{Characteristics}
-    \begin{itemize}
-      \item
-        the implicit rules make the programmer's life easier, but what
-        for crazy makefile programmers?
-      \item
-        the implicit rules can be redefined.
-      \item
-        this feature is very useful because it permits to centralize
-        many operations like compiling, linking etc..
-    \end{itemize}
-  \end{block}
-
-\end{frame}
-
-% 7)
-
-\begin{frame}
-  \frametitle{Implicit Rules Redefinition Example}
-
-  \begin{columns}
-
-    \column{7cm}
-      \begin{Example}
-        \verbatiminput{examples/makefile-implicit-rules-redefinition.li}
-      \end{Example}
-
-    \column{4cm}
-      \begin{Example}
-        \verbatiminput{examples/implicit-rules-redefinition.li}
-      \end{Example}
-
-  \end{columns}
-
-\end{frame}
-
+  \bibitem{Kaneton}
+    kaneton make system
+    \newblock http://www.lse.epita.fr/
+    \newblock The kaneton distributed operating system project's make system
+\end{thebibliography}
 
 \end{document}
 
+--
 
-
-
-% ----------------------------------------------
-
-
-
-\subsection<presentation>*{Further Reading}
-
-\begin{frame}
-  \frametitle<presentation>{For Further Reading}
-  
-  \beamertemplatebookbibitems
-  
-  \begin{thebibliography}{10}
-    
-  \bibitem{sal:b:formal-languages}
-    A.~Salomaa.
-    \newblock {\em Formal Languages}.
-    \newblock Academic Press, 1973.
-    \pause
-
-  \beamertemplatearticlebibitems
-  \bibitem{dij:j:smoothsort}
-    E.~Dijkstra.
-    \newblock Smoothsort, an alternative for sorting in situ.
-    \newblock {\em Science of Computer Programming}, 1(3):223--233,
-    1982.
-    \pause
-
-  \bibitem{FeldmanO1973}
-    E.~Feldman and J.~Owings, Jr.
-    \newblock A class of universal linear bounded automata.
-    \newblock {\em Information Sciences}, 6:187--190, 1973.
-    \pause
-
-  \bibitem{JancarMPV1995}
-    P.~Jan{\v c}ar, F.~Mr{\'a}z, M.~Pl{\'a}tek, and J.~Vogel.
-    \newblock Restarting automata.
-    \newblock {\em FCT Conference 1995}, LNCS 985, pages
-    282--292. 1995.
-  \end{thebibliography}
-\end{frame}
+\subsection{Multiples Targets}
+\subsection{Multiples Rules}
+\subsection{Chain of Compilation}
+\subsection{Prerequisites} *
 
 --
 
-- functions
-
------
-objects = main.o kbd.o command.o display.o \
-          insert.o search.o files.o utils.o
-
-edit : $(objects)
-        cc -o edit $(objects)
-
-$(objects) : defs.h
-kbd.o command.o files.o : command.h
-display.o insert.o search.o files.o : buffer.h
-
-cool mais si bcp d includes inclus dans d autres includes, c est complique
-de faire en sorte de tous les mettre
-
--> generation de dep
------
+%%%\frame{Implicit Rules}

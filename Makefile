@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Sat Oct  1 10:32:10 2005   mycure
+## last update   Sun Oct  9 14:06:17 2005   mycure
 ##
 
 #
@@ -66,7 +66,7 @@ init:
 	$(SHELL) init							; \
 	cd ..
 
-clean:
+clean:			kaneton.mk
 	cd env								; \
 	$(SHELL) clean							; \
 	cd ..

@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Fri Sep  9 19:20:13 2005   mycure
+## last update   Sun Oct  9 10:23:59 2005   mycure
 ##
 
 # INFORMATIONS
@@ -24,7 +24,7 @@
 #
 # global values
 PAPERS="								\
-  design kaneton assignments						\
+  design kaneton assignments seminar					\
   lectures/advanced-makefiles lectures/arch-ia32 lectures/asm-x86	\
   lectures/c lectures/c-preprocessor					\
   lectures/distributed-operating-systems lectures/inline-assembly	\
@@ -141,6 +141,9 @@ find()
 # this function builds the paper
 build()
 {
+  print " building the paper: $path" "+"
+  print ""
+
   make -s -C $path $VIEW_FORMAT
 }
 
