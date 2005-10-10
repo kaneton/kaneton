@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:14:03 2005   mycure
-## last update   Tue Sep  6 11:03:27 2005   mycure
+## last update   Mon Oct 10 18:19:11 2005   mycure
 ##
 
 # INFORMATIONS
@@ -31,6 +31,7 @@ CONF="../conf/"$USER"/"$USER".conf"
 # CONFIGURATION FILE VARIABLES
 #
 # default globals
+DISPLAY="unknown"
 ENVIRONMENT="unknown"
 ARCHITECTURE="unknown"
 
@@ -42,6 +43,9 @@ ARCHITECTURE="unknown"
 # important variables
 read_kaneton_conf()
 {
+  # display
+  DISPLAY=`cat $CONF | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
+
   # environment
   ENVIRONMENT=`cat $CONF | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
 
@@ -56,7 +60,7 @@ read_kaneton_conf()
 # this function displays the usage but does not exit
 usage()
 {
-  print " usage: clean" "!"
+  display " usage: clean" "!"
 }
 
 
@@ -67,11 +71,11 @@ usage()
 warning()
 {
   # display information and ask the user to continue or cancel
-  print " your current configuration:" "+"
-  print "   environment:              $ENVIRONMENT" "+"
-  print "   architecture:             $ARCHITECTURE" "+"
-  print ""
-  print " to cancel press CTRL^C, otherwise press enter" "?"
+  display " your current configuration:" "+"
+  display "   environment:              $ENVIRONMENT" "+"
+  display "   architecture:             $ARCHITECTURE" "+"
+  display ""
+  display " to cancel press CTRL^C, otherwise press enter" "?"
 
   NEEDLESS=""
   read NEEDLESS
@@ -94,7 +98,7 @@ environments()
     fi
   done
 
-  print " supported environments are:$list" "!"
+  display " supported environments are:$list" "!"
 }
 
 
@@ -106,23 +110,23 @@ environments()
 clean()
 {
   if [ ! -d env/$ENVIRONMENT ] ; then
-    print " unknown system: $ENVIRONMENT" "!"
-    print ""
-    print " please check your ENVIRONMENT variable in $CONF" "!"
-    print ""
+    display " unknown system: $ENVIRONMENT" "!"
+    display ""
+    display " please check your ENVIRONMENT variable in $CONF" "!"
+    display ""
     environments
-    print ""
+    display ""
     usage
     exit
   fi
 
   if [ ! -e env/$ENVIRONMENT/clean ] ; then
-    print " unknown system: $ENVIRONMENT" "!"
-    print ""
-    print " please check your ENVIRONMENT variable in $CONF" "!"
-    print ""
+    display " unknown system: $ENVIRONMENT" "!"
+    display ""
+    display " please check your ENVIRONMENT variable in $CONF" "!"
+    display ""
     environments
-    print ""
+    display ""
     usage
     exit
   fi
@@ -137,7 +141,7 @@ clean()
 # this function unlinks the kernel configuration files.
 conf()
 {
-  print " unlinking kernel configuration files" "+"
+  display " unlinking kernel configuration files" "+"
 
   if [ -e core/kaneton/conf/conf.c ] ; then
     rm core/kaneton/conf/conf.c
@@ -155,7 +159,7 @@ conf()
 # this function cleans C files dependencies.
 dep()
 {
-  print " cleaning of makefile dependencies" "+"
+  display " cleaning of makefile dependencies" "+"
 
   makefiles=`find ./ -name .makefile.mk`
 
@@ -168,37 +172,81 @@ dep()
 
 # PRINT A MESSAGE
 #
-# print a message with a header
+# prints a message using the user variable DISPLAY
 print()
+{
+  color=$1
+  message=$2
+  options=$3
+
+  if [ $DISPLAY = "color" ] ; then
+
+    case "$color" in
+      "red")
+        echo -e $options '\E[;31m'"\033[1m$message\033[0m"
+	;;
+
+      "green")
+        echo -e $options '\E[;32m'"\033[1m$message\033[0m"
+	;;
+
+      "yellow")
+        echo -e $options '\E[;33m'"\033[1m$message\033[0m"
+	;;
+
+      "blue")
+        echo -e $options '\E[;34m'"\033[1m$message\033[0m"
+	;;
+
+      "white")
+        echo -e $options '\E[;37m'"\033[1m$message\033[0m"
+	;;
+
+      *)
+	;;
+    esac
+
+  else
+
+    echo $options "$message"
+
+  fi
+}
+
+
+
+# DISPLAY A MESSAGE
+#
+# displays a message with a header
+display()
 {
   msg=$1
   header=$2
 
   case "$header" in
     "+")
-      echo -n -e '\E[;34m'"\033[1m[\033[0m"
-      echo -n -e '\E[;32m'"\033[1m+\033[0m"
-      echo -n -e '\E[;34m'"\033[1m]\033[0m"
+      print "blue" "[" "-n"
+      print "green" "+" "-n"
+      print "blue" "]" "-n"
       ;;
 
     "!")
-      echo -n -e '\E[;34m'"\033[1m[\033[0m"
-      echo -n -e '\E[;31m'"\033[1m!\033[0m"
-      echo -n -e '\E[;34m'"\033[1m]\033[0m"
+      print "blue" "[" "-n"
+      print "red" "!" "-n"
+      print "blue" "]" "-n"
       ;;
 
     "?")
-      echo -n -e '\E[;34m'"\033[1m[\033[0m"
-      echo -n -e '\E[;33m'"\033[1m\033[5m?\033[0m\033[0m"
-      echo -n -e '\E[;34m'"\033[1m]\033[0m"
+      print "blue" "[" "-n"
+      print "yellow" "?" "-n"
+      print "blue" "]" "-n"
       ;;
 
     *)
       ;;
   esac
 
-  echo -e "\033[1m$msg\033[0m"
-  tput sgr0
+  print "white" "$msg" ""
 }
 
 
@@ -208,11 +256,12 @@ print()
 # entry point of this script
 
 # start of clean
-print " cleaning environment" "+"
-print ""
 
 # call the read_kaneton_conf function
 read_kaneton_conf
+
+display " cleaning environment" "+"
+display ""
 
 # call the warning function
 warning
@@ -233,4 +282,4 @@ dep
 cd env
 
 # end of clean
-print " environment cleaned successfully" "+"
+display " environment cleaned successfully" "+"

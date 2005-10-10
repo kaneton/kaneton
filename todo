@@ -48,10 +48,6 @@
 --
  alloc: mettre a la norme, utiliser le fit
 
---
- passer les macros asm inline en volatile.
- si ce sont des fonctions inline il faut le faire aussi on ne sait jamais
-
 -- bug
  c'est finalement le realloc qui fait planter set, j ai passer 2 heures
  a chercher ca fait chier. reste plus qu'a le corriger
@@ -67,7 +63,11 @@
  mtools, gmake etc..
 
 --
- essayer de faire compiler kaneton sur netbsd a l ecole
+ essayer de faire compiler kaneton sur netbsd a l ecole:
+
+ il faudrait avoir une variable DISPLAY: color, non-color
+
+ qui serait utilise par les scripts et makefiles et aussi le Makefile racine
 
 --
  lister les trucs qui reste a faire:
@@ -99,8 +99,7 @@
   . archi
 
 --
- retoucher le README car nouvelles regles makefile, nouvelles functions
- dans kaneton.mk
+ mettre toutes les regles de -old-/README dans kaneton.tex
 
 --
  permettre de release le set container pour pouvoir vraiment liberer

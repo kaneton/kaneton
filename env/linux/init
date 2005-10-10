@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Aug 28 16:09:12 2005   mycure
+## last update   Mon Oct 10 18:14:42 2005   mycure
 ##
 
 # INFORMATIONS
@@ -32,6 +32,7 @@ CONF="conf/"$USER"/"$USER".conf"
 # CONFIGURATION FILE VARIABLES
 #
 # default globals
+DISPLAY="unknown"
 ENVIRONMENT="unknown"
 ARCHITECTURE="unknwon"
 
@@ -58,6 +59,9 @@ BINARIES="gcc make rm ar ranlib ld nasm ln touch tail wc tar"
 # important variables
 read_kaneton_conf()
 {
+  # display
+  DISPLAY=`cat $CONF | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
+
   # environment
   ENVIRONMENT=`cat $CONF | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
 
@@ -73,12 +77,12 @@ read_kaneton_conf()
 # present on the system.
 check()
 {
-  print "   checking binaries" "+"
+  display "   checking binaries" "+"
 
   for i in $BINARIES ; do
     which $i 2> /dev/null > /dev/null
     if [ $? -ne 0 ] ; then
-      print "    binary '$i' not present on your system" "!"
+      display "    binary '$i' not present on your system" "!"
     fi
   done
 }
@@ -94,7 +98,7 @@ init()
   GENERIC_KANETON_MK="env/"$ENVIRONMENT"/kaneton.mk"
 
   # sed
-  print "   generating makefile dependencies" "+"
+  display "   generating makefile dependencies" "+"
 
   rm -f $KANETON_MK
 
@@ -102,7 +106,7 @@ init()
       > $KANETON_MK
 
   # create the symbolic link for architecture dependencies
-  print "   installing links to machine-dependent directories" "+"
+  display "   installing links to machine-dependent directories" "+"
 
   rm -f core/bootstrap/arch/machdep
   rm -f core/bootloader/arch/machdep
@@ -121,37 +125,81 @@ init()
 
 # PRINT A MESSAGE
 #
-# print a message with a header
+# prints a message using the user variable DISPLAY
 print()
+{
+  color=$1
+  message=$2
+  options=$3
+
+  if [ $DISPLAY = "color" ] ; then
+
+    case "$color" in
+      "red")
+        echo -e $options '\E[;31m'"\033[1m$message\033[0m"
+	;;
+
+      "green")
+        echo -e $options '\E[;32m'"\033[1m$message\033[0m"
+	;;
+
+      "yellow")
+        echo -e $options '\E[;33m'"\033[1m$message\033[0m"
+	;;
+
+      "blue")
+        echo -e $options '\E[;34m'"\033[1m$message\033[0m"
+	;;
+
+      "white")
+        echo -e $options '\E[;37m'"\033[1m$message\033[0m"
+	;;
+
+      *)
+	;;
+    esac
+
+  else
+
+    echo $options "$message"
+
+  fi
+}
+
+
+
+# DISPLAY A MESSAGE
+#
+# displays a message with a header
+display()
 {
   msg=$1
   header=$2
 
   case "$header" in
     "+")
-      echo -n -e '\E[;34m'"\033[1m[\033[0m"
-      echo -n -e '\E[;32m'"\033[1m+\033[0m"
-      echo -n -e '\E[;34m'"\033[1m]\033[0m"
+      print "blue" "[" "-n"
+      print "green" "+" "-n"
+      print "blue" "]" "-n"
       ;;
 
     "!")
-      echo -n -e '\E[;34m'"\033[1m[\033[0m"
-      echo -n -e '\E[;31m'"\033[1m!\033[0m"
-      echo -n -e '\E[;34m'"\033[1m]\033[0m"
+      print "blue" "[" "-n"
+      print "red" "!" "-n"
+      print "blue" "]" "-n"
       ;;
 
     "?")
-      echo -n -e '\E[;34m'"\033[1m[\033[0m"
-      echo -n -e '\E[;33m'"\033[1m\033[5m?\033[0m\033[0m"
-      echo -n -e '\E[;34m'"\033[1m]\033[0m"
+      print "blue" "[" "-n"
+      print "yellow" "?" "-n"
+      print "blue" "]" "-n"
       ;;
 
     *)
       ;;
   esac
 
-  echo -e "\033[1m$msg\033[0m"
-  tput sgr0
+  print "white" "$msg" ""
 }
 
 

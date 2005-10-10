@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sat Sep 24 08:43:52 2005   mycure
+## last update   Mon Oct 10 09:14:28 2005   mycure
 ## last update   Thu Sep 15 16:58:31 2005   mycure
 ##
 
@@ -181,46 +181,112 @@ _PDFLATEX_		:=		pdflatex
 #
 
 #
-# pretty-printer defines
+# print functions
+#
+# 1:		text
+# 2:		advanced options
+#
+
+define print-black
+  echo -e $(2) '\E[;30m'"\033[1m$(1)\033[0m"
+endef
+
+define print-red
+  echo -e $(2) '\E[;31m'"\033[1m$(1)\033[0m"
+endef
+
+define print-green
+  echo -e $(2) '\E[;32m'"\033[1m$(1)\033[0m"
+endef
+
+define print-yellow
+  echo -e $(2) '\E[;33m'"\033[1m$(1)\033[0m"
+endef
+
+define print-blue
+  echo -e $(2) '\E[;34m'"\033[1m$(1)\033[0m"
+endef
+
+define print-magenta
+  echo -e $(2) '\E[;35m'"\033[1m$(1)\033[0m"
+endef
+
+define print-cyan
+  echo -e $(2) '\E[;36m'"\033[1m$(1)\033[0m"
+endef
+
+define print-white
+  echo -e $(2) '\E[;37m'"\033[1m$(1)\033[0m"
+endef
+
+define print-non-color
+  echo $(2) "$(1)"
+endef
+
+#
+# print wrapper functions
+#
+# 1:		color
+# 2:		text
+# 3:		advanced options
+#
+
+ifeq ($(_DISPLAY_),color)			# if the user wants to display
+						# the text with color
+
+define print
+  $(call print-$(1),$(2),$(3))
+endef
+
+else						# if not ...
+
+define print
+  $(call print-non-color,$(2),$(3))
+endef
+
+endif
+
+#
+# pretty-printer functions
 #
 # 1:		action
 # 2:		file
 # 3:		identation
 #
 
-define pretty-printer-green
-  echo -n -e '\E[;34m'"\033[1m[\033[0m"					; \
-  echo -n -e '\E[;32m'"\033[1m$(1)\033[0m"				; \
-  echo -n -e '\E[;34m'"\033[1m]\033[0m"					; \
-  echo -e "$(3)\033[1m$(2)\033[0m"
+define pretty-printer-red
+  $(call print,blue,[,-n)						; \
+  $(call print,red,$(1),-n)						; \
+  $(call print,blue,],-n)						; \
+  $(call print,white,$(3)$(2),)
 endef
 
-define pretty-printer-red
-  echo -n -e '\E[;34m'"\033[1m[\033[0m"					; \
-  echo -n -e '\E[;31m'"\033[1m$(1)\033[0m"				; \
-  echo -n -e '\E[;34m'"\033[1m]\033[0m"					; \
-  echo -e "$(3)\033[1m$(2)\033[0m"
+define pretty-printer-green
+  $(call print,blue,[,-n)						; \
+  $(call print,green,$(1),-n)						; \
+  $(call print,blue,],-n)						; \
+  $(call print,white,$(3)$(2),)
 endef
 
 define pretty-printer-yellow
-  echo -n -e '\E[;34m'"\033[1m[\033[0m"					; \
-  echo -n -e '\E[;33m'"\033[1m$(1)\033[0m"				; \
-  echo -n -e '\E[;34m'"\033[1m]\033[0m"					; \
-  echo -e "$(3)\033[1m$(2)\033[0m"
+  $(call print,blue,[,-n)						; \
+  $(call print,yellow,$(1),-n)						; \
+  $(call print,blue,],-n)						; \
+  $(call print,white,$(3)$(2),)
 endef
 
 define pretty-printer-magenta
-  echo -n -e '\E[;34m'"\033[1m[\033[0m"					; \
-  echo -n -e '\E[;35m'"\033[1m$(1)\033[0m"				; \
-  echo -n -e '\E[;34m'"\033[1m]\033[0m"					; \
-  echo -e "$(3)\033[1m$(2)\033[0m"
+  $(call print,blue,[,-n)						; \
+  $(call print,magenta,$(1),-n)						; \
+  $(call print,blue,],-n)						; \
+  $(call print,white,$(3)$(2),)
 endef
 
 define pretty-printer-cyan
-  echo -n -e '\E[;34m'"\033[1m[\033[0m"					; \
-  echo -n -e '\E[;36m'"\033[1m$(1)\033[0m"				; \
-  echo -n -e '\E[;34m'"\033[1m]\033[0m"					; \
-  echo -e "$(3)\033[1m$(2)\033[0m"
+  $(call print,blue,[,-n)						; \
+  $(call print,cyan,$(1),-n)						; \
+  $(call print,blue,],-n)						; \
+  $(call print,white,$(3)$(2),)
 endef
 
 #

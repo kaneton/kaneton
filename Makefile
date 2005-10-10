@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Sun Oct  9 14:06:17 2005   mycure
+## last update   Mon Oct 10 18:17:56 2005   mycure
 ##
 
 #
@@ -56,8 +56,7 @@ kaneton.mk:
 	  cd ..								; \
 									\
 	  echo ""							; \
-	  echo -n -e '\E[;31m'"\033[1m  -----\033[0m "			; \
-	  echo -e "\033[1myou can now run your command...\033[0m"	; \
+	  echo "   ----- you can now run your command..."		; \
 	  echo ""							; \
 	fi
 
@@ -147,38 +146,59 @@ view-%:			kaneton.mk
 # ---------- information ------------------------------------------------------
 #
 
-info:
-	echo ""
-	echo -e '\E[;34m'"\033[1m---\033[0m \033[1mkaneton\033[0m"
-	echo ""
-	echo -e '\E[;34m'"\033[1m#\033[0m \033[1mauthors:\033[0m"
-	echo ""
-	echo -e "     \033[1mquintard julien - quinta_j@epita.fr\033[0m"
-	echo -e "     \033[1mbillaud jean-pascal - billau_j@epita.fr\033[0m"
-	echo ""
-	echo -e '\E[;34m'"\033[1m#\033[0m \033[1massistants:\033[0m"
-	echo ""
-	echo -e "     \033[1mcedric aubouy - aubouy_c@epita.fr\033[0m"
-	echo -e "     \033[1mfabien le-mentec - le-men_f@epita.fr\033[0m"
-	echo -e "     \033[1mrenaud lienhart - lienha_r@epita.fr\033[0m"
-	echo ""
-	echo -e '\E[;34m'"\033[1m#\033[0m \033[1mcontributors:\033[0m"
-	echo ""
-	echo -e "     \033[1mchristophe eymard - eymard_c@epita.fr\033[0m"
-	echo -e "     \033[1msolal jacob - jacob_s@epitech.net\033[0m"
-	echo ""
-	echo -e '\E[;34m'"\033[1m#\033[0m \033[1mwebsite:\033[0m"
-	echo ""
-	echo -e "     \033[1mhttp://www.lse.epita.fr/\033[0m"
-	echo ""
-	echo -e '\E[;34m'"\033[1m#\033[0m \033[1mnews-group:\033[0m"
-	echo ""
-	echo -e "     \033[1mepita.cours.kaneton\033[0m"
-	echo ""
-	echo -e '\E[;34m'"\033[1m#\033[0m \033[1mmailing-list:\033[0m"
-	echo ""
-	echo -e "     \033[1mkaneton@lse.epita.fr\033[0m"
-	echo ""
+info:			kaneton.mk
+	$(call print,white,,)
+
+	$(call print,blue,--- ,-n)
+	$(call print,white,kaneton,)
+
+	$(call print,white,,)
+
+	$(call print,blue,# ,-n)
+	$(call print,white,authors:,)
+	$(call print,white,,)
+	$(call print,white,     julien quintard - quinta_j@epita.fr,)
+	$(call print,white,     jean-pascal billaud - billau_j@epita.fr,)
+
+	$(call print,white,,)
+
+	$(call print,blue,# ,-n)
+	$(call print,white,assistants:,)
+	$(call print,white,,)
+	$(call print,white,     cedric aubouy - aubouy_c@epita.fr,)
+	$(call print,white,     fabien le-mentec - le-men_f@epita.fr,)
+	$(call print,white,     renaud lienhart - lienha_r@epita.fr,)
+
+	$(call print,white,,)
+
+	$(call print,blue,# ,-n)
+	$(call print,white,contributors:,)
+	$(call print,white,,)
+	$(call print,white,     christophe eymard - eymard_c@epita.fr,)
+	$(call print,white,     solal jacob - jacob_s@epitech.net,)
+
+	$(call print,white,,)
+
+	$(call print,blue,# ,-n)
+	$(call print,white,website:,)
+	$(call print,white,,)
+	$(call print,white,     http://www.lse.epita.fr/,)
+
+	$(call print,white,,)
+
+	$(call print,blue,# ,-n)
+	$(call print,white,news-group:,)
+	$(call print,white,,)
+	$(call print,white,     epita.cours.kaneton,)
+
+	$(call print,white,,)
+
+	$(call print,blue,# ,-n)
+	$(call print,white,mailing-list:,)
+	$(call print,white,,)
+	$(call print,white,     kaneton@lse.epita.fr,)
+
+	$(call print,white,,)
 
 #
 # ---------- distribution -----------------------------------------------------
