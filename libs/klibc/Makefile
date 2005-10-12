@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/libs/klibc
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:29:19 2005   mycure
-## last update   Thu Sep  1 14:42:26 2005   mycure
+## last update   Mon Oct 10 22:33:58 2005   mycure
 ##
 
 #
@@ -44,6 +44,8 @@ LIBSYS_LO		:=		libsys/libsys.lo
 #
 
 $(LIBC_A):		libs
+	$(call remove,$(LIBC_A),)
+
 	$(call static-library,$(LIBC_A),$(LIBDATA_LO) $(LIBSTRING_LO)	\
           $(LIBSYS_LO),)
 

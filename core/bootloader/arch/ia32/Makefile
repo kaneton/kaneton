@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/bootloader/arch/ia32
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Tue Sep  6 11:05:09 2005   mycure
+## last update   Tue Oct 11 14:19:20 2005   mycure
 ##
 
 #
@@ -24,7 +24,7 @@ include			../../../../.kaneton.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		libs clear proto dep
 
 #
 # ---------- variables --------------------------------------------------------
@@ -50,11 +50,14 @@ CFLAGS			+=		-D___bootloader
 # ---------- rules ------------------------------------------------------------
 #
 
-$(BOOTLOADER):		$(BOOTLOADER_O)
+$(BOOTLOADER):		libs $(BOOTLOADER_O)
 	$(call executable,$(BOOTLOADER),$(BOOTLOADER_O)			\
 	  $(_LIBC_A_), -T $(_LDS_DIR_)/bootloader.lds)
 
 	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
+
+libs:
+	$(call make,$(_LIBS_DIR_),)
 
 clear:
 	$(call remove,$(BOOTLOADER_O),)

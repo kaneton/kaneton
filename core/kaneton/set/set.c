@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Sep 15 18:01:40 2005   mycure
+ * last update   Thu Oct 13 00:23:23 2005   mycure
  */
 
 /*
@@ -422,7 +422,7 @@ t_error			set_init(void)
 #if (DEBUG & DEBUG_SET)
   set_dump(set->setid);
 
-  // XXX-OK set_test(SET_TYPE_LL);
+  // XXX-OK set_test(SET_TYPE_LL); // tester fuite memoire
   // XXX set_test(SET_TYPE_ARRAY);
   set_test(SET_TYPE_BPT);
 #endif
@@ -518,8 +518,10 @@ t_error			set_test(t_type				type)
       }
     case SET_TYPE_BPT:
       {
+	t_iterator	iterator;
 	t_id		data;
 	t_setid		id;
+	t_id		*o;
 
 	cons_msg('#', "testing SET_TYPE_BPT\n");
 
@@ -531,30 +533,94 @@ t_error			set_test(t_type				type)
 	if (set_add(id, &data) != ERROR_NONE)
 	  printf("error: set_add()\n");
 
-	alloc_dump();
-	while (1);
-
 	data = 843536LL;
 	if (set_add(id, &data) != ERROR_NONE)
 	  printf("error: set_add()\n");
 
-	/*
 	data = 23987LL;
 	if (set_add(id, &data) != ERROR_NONE)
 	  printf("error: set_add()\n");
-	*/
 
 	set_dump(id);
+
+	if (set_locate(id, 98LL, &iterator) != ERROR_NONE)
+	  printf("error: set_locate()\n");
+
+	if (set_object(id, iterator, (void**)&o) != ERROR_NONE)
+	  printf("error: set_object()\n");
+
+	printf("locate(): 0x%x:%u object(): %qu\n",
+	       iterator.u.bpt.entry.node, iterator.u.bpt.entry.ndi, *o);
+
+	if (set_get(id, 320498523LL, (void**)&o) == ERROR_NONE)
+	  printf("error: set_get(), found a unexisting object\n");
+
+	if (set_get(id, 843536LL, (void**)&o) != ERROR_NONE)
+	  printf("error: set_get()\n");
+
+	printf("get(): %qu\n", *o);
+
+	if (set_remove(id, 23987LL) != ERROR_NONE)
+	  printf("error: set_remove()\n");
+
+	data = 6354LL;
+	if (set_add(id, &data) != ERROR_NONE)
+	  printf("error: set_add()\n");
+
+	data = 45897634543LL;
+	if (set_add(id, &data) != ERROR_NONE)
+	  printf("error: set_add()\n");
+
+	data = 0LL;
+	if (set_add(id, &data) != ERROR_NONE)
+	  printf("error: set_add()\n");
+
+	if (set_remove(id, 0LL) != ERROR_NONE)
+	  printf("error: set_remove()\n");
+
+	set_dump(id);
+
+	data = 234LL;
+	if (set_add(id, &data) != ERROR_NONE)
+	  printf("error: set_add()\n");
+
+	if (set_remove(id, 45897634543LL) != ERROR_NONE)
+	  printf("error: set_remove()\n");
+
+	if (set_remove(id, 234LL) != ERROR_NONE)
+	  printf("error: set_remove()\n");
+
+	set_dump(id);
+
+	set_flush(id);
+
+	set_dump(id);
+
+	printf("id: %qu\n", id);
+
+	set_dump(set->setid);
+
+	if (set_rel(id) != ERROR_NONE)
+	  printf("error: set_rel()\n");
+
+	set_dump(set->setid);
+
+	alloc_dump();
 
 	while (1);
 
 	break;
+
+	/*
+	 * XXX
+	 *
+	 * chaque operation fut validee, memoire???
+	 */
       }
     case SET_TYPE_LL:
       {
 	t_iterator	iterator;
 	t_id		data;
-
 	t_id		*o;
 	t_setid		id;
 
@@ -583,7 +649,7 @@ t_error			set_test(t_type				type)
 	if (set_object(id, iterator, (void**)&o) != ERROR_NONE)
 	  printf("error: set_object()\n");
 
-	printf("locate(): 0x%x object(): %qu\n", iterator, *o);
+	printf("locate(): 0x%x object(): %qu\n", iterator.u.ll.node, *o);
 
 	if (set_get(id, 320498523LL, (void**)&o) == ERROR_NONE)
 	  printf("error: set_get(), found a unexisting object\n");
@@ -610,6 +676,8 @@ t_error			set_test(t_type				type)
 
 	if (set_remove(id, 0LL) != ERROR_NONE)
 	  printf("error: set_remove()\n");
+
+	set_dump(id);
 
 	data = 234LL;
 	if (set_add(id, &data) != ERROR_NONE)
@@ -683,7 +751,7 @@ t_error			set_test(t_type				type)
 	/*
 	 * XXX
 	 *
-	 * chaque operation fut validee, aucune perte de memoire
+	 * chaque operation fut validee, memoire???
 	 */
       }
     }

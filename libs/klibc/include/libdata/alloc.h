@@ -5,13 +5,13 @@
  *
  * malloc.h
  *
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/libs/klibc/libdata
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 02:32:39 2005   mycure
-** Last update Tue Sep  6 01:03:18 2005 Reboot Universe
+ * last update   Wed Oct 12 22:04:29 2005   mycure
  */
 
 #ifndef LIBDATA_ALLOC_H
@@ -25,6 +25,31 @@
 #include <arch/machdep/machdep.h>
 
 /*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+/*
+ * debug
+ */
+
+/* XXX not very beautiful */
+#undef ALLOC_DEBUG
+
+/*
+ * states
+ */
+
+#define ALLOC_STATE_FREE	0x0
+#define ALLOC_STATE_USE		0x1
+
+/*
+ * alignment
+ */
+
+#define ALLOC_MINSZ		sizeof(t_chunck)
+#define ALLOC_ALIGN_MASK	(ALLOC_MINSZ - 1)
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -32,30 +57,27 @@
  * chunck
  */
 
-#define ALLOC_FREE		0x1
-#define ALLOC_LAST		0x2
-
-/*
-** The big, ugly and apparently useless "align" field is actually necessary to
-** ensure that the size of the s_chunk structure is a multiple of the size of a
-** pointer.
-*/
-typedef struct			s_chunk
+typedef struct			s_chunck
 {
+  t_uint8			state;
+
   size_t			size;
-  unsigned int			flags;
-  struct s_chunk*		prv;
-}				__attribute__ ((packed)) t_chunk;
+
+  struct s_chunck*		prv;
+  struct s_chunck*		nxt;
+}				t_chunck;
 
 /*
  * alloc global information
  */
+
 typedef struct
 {
-  size_t			size;
-  size_t			heap; /* Limit of the heap */
-  t_chunk*			first_blk;
-  t_vaddr			addr;
+  t_chunck*			use;
+  t_chunck*			free;
+
+  t_uint32			nalloc;
+  t_uint32			nfree;
 }				t_alloc;
 
 #endif

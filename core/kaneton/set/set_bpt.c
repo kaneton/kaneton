@@ -5,21 +5,19 @@
  * 
  * set_bpt.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Sep 28 19:44:42 2005   mycure
+ * last update   Thu Oct 13 00:25:29 2005   mycure
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * XXX
- *
- * XXX SET_OPT_ALLOC
  *
  * XXX datasz juste utilise pour OPT_ALLOC
  */
@@ -77,7 +75,13 @@ int			set_addrcmp_bpt(t_bpt(set)*		bpt,
 					t_bpt_addr(set)		addr1,
 					t_bpt_addr(set)		addr2)
 {
-  return (addr1 - addr2);
+  if (addr1 < addr2)
+    return (-1);
+
+  if (addr1 > addr2)
+    return (1);
+
+  return (0);
 }
 
 /*
@@ -88,7 +92,13 @@ int			set_keycmp_bpt(t_bpt(set)*		bpt,
 				       t_bpt_key(set)		key1,
 				       t_bpt_key(set)		key2)
 {
-  return (key1 - key2);
+  if (key1 < key2)
+    return (-1);
+
+  if (key1 > key2)
+    return (1);
+
+  return (0);
 }
 
 /*
@@ -99,7 +109,13 @@ int			set_valcmp_bpt(t_bpt(set)*		bpt,
 				       t_bpt_value(set)		value1,
 				       t_bpt_value(set)		value2)
 {
-  return (value1 - value2);
+  if (value1 < value2)
+    return (-1);
+
+  if (value1 > value2)
+    return (1);
+
+  return (0);
 }
 
 /*
@@ -129,7 +145,7 @@ t_error			set_dump_unused_bpt(o_set*		o)
  * steps:
  *
  * 1) allocates and initialises the unused object.
- * 3) builds the needed number of elements.
+ * 2) builds the needed number of elements.
  */
 
 t_error			set_build_bpt(o_set*			o,
@@ -143,7 +159,7 @@ t_error			set_build_bpt(o_set*			o,
    * 1)
    */
 
-  if ((o->u.bpt.unused.array = malloc(o->u.bpt.unusedsz * /* XXX */ 10 *
+  if ((o->u.bpt.unused.array = malloc(o->u.bpt.unusedsz *
 				      sizeof(t_bpt_addr(set)))) == NULL)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
@@ -160,9 +176,9 @@ t_error			set_build_bpt(o_set*			o,
        (o->u.bpt.unused.index + 1) < o->u.bpt.unusedsz;
        o->u.bpt.unused.index++)
     {
-      if ((o->u.bpt.unused.array[(o->u.bpt.unused.index + 1)] =
-	   (t_bpt_addr(set))malloc(nodesz)) == NULL)
-	SET_LEAVE(set, ERROR_UNKNOWN);
+      if ((o->u.bpt.unused.array[(o->u.bpt.unused.index + 1)] = 
+	   malloc(nodesz)) == NULL)
+	SET_LEAVE(set, ERROR_NONE);
     }
 
   SET_LEAVE(set, ERROR_NONE);
@@ -171,8 +187,11 @@ t_error			set_build_bpt(o_set*			o,
 /*
  * XXX
  *
- * XXX le faire mieux, on peut tres bien envisager dans cette fonction
- *     de liberer de l espace plutot que d agrandir size
+ * XXX si size trop grand on laisse, donc ce cas est ignore et le suivant traite
+ * XXX si size trop petit on l agrandit comme il faut 
+ *
+ * XXX si alloc trop grand on free
+ * XXX si alloc trop petit on malloc
  */
 
 t_error			set_adjust_bpt(o_set*			o,
@@ -183,60 +202,47 @@ t_error			set_adjust_bpt(o_set*			o,
 
   SET_ENTER(set);
 
+  /* XXX
   printf("index: %d, unusedsz: %u, alloc: %u, size: %u\n",
 	 o->u.bpt.unused.index, o->u.bpt.unusedsz,
 	 alloc, size);
+  */
 
   if (o->u.bpt.unusedsz < size)
     {
       if ((o->u.bpt.unused.array =
-	   realloc(o->u.bpt.unused.array, size)) == NULL)
+	   realloc(o->u.bpt.unused.array, size *
+		   sizeof(t_bpt_addr(set)))) == NULL)
 	SET_LEAVE(set, ERROR_UNKNOWN);
 
       o->u.bpt.unusedsz = size;
     }
 
-  printf("nodesz: %u\n", o->u.bpt.bpt.nodesz);
-
+  /* XXX
   printf("index: %d, unusedsz: %u, alloc: %u, size: %u\n",
 	 o->u.bpt.unused.index, o->u.bpt.unusedsz,
 	 alloc, size);
-
-  /*
-  for (; (o->u.bpt.unused.index + 1) < alloc; o->u.bpt.unused.index++)
-    {
-      if ((o->u.bpt.unused.array[(o->u.bpt.unused.index + 1)] =
-	   (t_bpt_addr(set))malloc(o->u.bpt.bpt.nodesz)) == NULL)
-	SET_LEAVE(set, ERROR_UNKNOWN);
-    }
   */
 
-  printf("array: 0x%x\n", o->u.bpt.unused.array);
-
-  /* XXX on ecrase ici */
-  o->u.bpt.unused.array[0] = 9;
-
-  alloc_dump();
-  while (1);
-
-  if (malloc(o->u.bpt.bpt.nodesz) == NULL)
+  if ((o->u.bpt.unused.index + 1) > alloc)
     {
-      printf("BANDE\n");
-      while (1);
+      for (; (o->u.bpt.unused.index + 1) > alloc; o->u.bpt.unused.index--)
+	{
+	  free(o->u.bpt.unused.array[o->u.bpt.unused.index]);
+	  o->u.bpt.unused.array[o->u.bpt.unused.index] = SET_BPT_UADDR;
+	}
+    }
+  else
+    {
+      for (; (o->u.bpt.unused.index + 1) < alloc; o->u.bpt.unused.index++)
+	{
+	  if ((o->u.bpt.unused.array[(o->u.bpt.unused.index + 1)] =
+	       malloc(o->u.bpt.bpt.nodesz)) == NULL)
+	    SET_LEAVE(set, ERROR_NONE);
+	}
     }
 
-  alloc_dump();
-  while (1);
-
-  if ((o->u.bpt.unusedsz - (o->u.bpt.unused.index + 1)) < (size - alloc))
-    {
-      o->u.bpt.unusedsz += (size - alloc) -
-	(o->u.bpt.unusedsz - (o->u.bpt.unused.index + 1));
-
-      if ((o->u.bpt.unused.array =
-	   realloc(o->u.bpt.unused.array, o->u.bpt.unusedsz)) == NULL)
-	SET_LEAVE(set, ERROR_UNKNOWN);
-    }
+  // XXX set_dump_unused_bpt(o);
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -313,8 +319,9 @@ t_error			set_dump_bpt(t_setid			setid)
 
       leaf = BPT_LFENTRY(set, &node, i.u.bpt.entry.ndi);
 
-      cons_msg('#', "  %qu <%qu 0x%x>\n",
-	       leaf->id, *((t_id*)leaf->data), leaf->data);
+      cons_msg('#', "  %qu <%qu 0x%x> [0x%x:%u]\n",
+	       leaf->id, *((t_id*)leaf->data), leaf->data,
+	       i.u.bpt.entry.node, i.u.bpt.entry.ndi);
     }
 
   SET_LEAVE(set, ERROR_NONE);
@@ -739,7 +746,7 @@ t_error			set_locate_bpt(t_setid			setid,
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   if (bpt_search(set, &o->u.bpt.bpt, id, &entry) != 0)
-    SET_LEAVE(set, ERROR_NONE);
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   memcpy(iterator, &entry, sizeof(t_bpt_entry(set)));
 

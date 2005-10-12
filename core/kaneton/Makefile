@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Sun Sep 25 23:10:34 2005   mycure
+## last update   Tue Oct 11 14:17:56 2005   mycure
 ##
 
 #
@@ -89,6 +89,8 @@ $(KANETON):		libs $(KANETON_O)
 
 libs:
 	$(call make,$(SUBDIRS),)
+
+	$(call make,$(_LIBS_DIR_),)
 
 clear:
 	$(call make,$(SUBDIRS),clear)

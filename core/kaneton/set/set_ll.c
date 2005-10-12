@@ -5,13 +5,13 @@
  * 
  * set_ll.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/libs/klibc/libdata
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Sep 28 19:44:00 2005   mycure
+ * last update   Wed Oct 12 22:23:01 2005   mycure
  */
 
 /*
@@ -647,6 +647,8 @@ t_error			set_add_ll(t_setid			setid,
 
 	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
+
+      printf("OKI\n");
 
       memcpy(n->data, data, o->u.ll.datasz);
     }

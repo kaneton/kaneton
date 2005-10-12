@@ -44,16 +44,18 @@
 
 void*			malloc(size_t				size);
 
-void			free(void				*ptr);
+void			free(void*				ptr);
 
-void			alloc_dump();
+void			alloc_dump(void);
 
-void*			realloc(void 				*ptr,
+void*			realloc(void* 				ptr,
 				size_t				size);
 
 int			alloc_init(t_vaddr			addr,
 				   t_size			size,
 				   t_fit			fit);
+
+void			alloc_test(void);
 
 
 /*

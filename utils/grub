@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Mon Oct 10 18:20:33 2005   mycure
+## last update   Mon Oct 10 21:55:15 2005   mycure
 ##
 
 # INFORMATIONS
@@ -31,6 +31,7 @@ MODULES=`sed "s/#.*//g" ../conf/"$USER"/modules.conf | grep -v "^$"`
 # CONFIGURATION FILE VARIABLES
 #
 # default globals
+DISPLAY="unknown"
 ADDRESS="unknown"
 TFTP_ADDRESS="unknown"
 TFTP_DIRECTOR="unknown"
@@ -50,6 +51,9 @@ MENU="/tmp/menu.lst"
 # important variables
 read_kaneton_conf()
 {
+  # address
+  DISPLAY=`cat $CONF | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
+
   # address
   ADDRESS=`cat $CONF | grep -E "^_ADDRESS_ = .*$" | cut -b 13-`
 

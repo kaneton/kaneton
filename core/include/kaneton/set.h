@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/libs/klibc/libdata
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Wed Sep 28 19:47:24 2005   mycure
+ * last update   Wed Oct 12 22:03:55 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -60,6 +60,12 @@
 #define SET_OPT_ALLOC		0x08
 #define SET_OPT_SORT		0x10
 #define SET_OPT_ORGANISE	0x20
+
+/*
+ * trap debug
+ */
+
+#undef SET_DEBUG_TRAP
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -181,7 +187,7 @@ typedef struct
  * debug
  */
 
-#if (DEBUG & DEBUG_SET)
+#if (DEBUG & DEBUG_SET) && defined(SET_DEBUG_TRAP)
 
 # define set_debug(_func_, _setid_, _args_...)				\
   fprintf(stderr, "[setd] trap: %s(%qu, %s)\n",				\

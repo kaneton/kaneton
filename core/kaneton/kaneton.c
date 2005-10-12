@@ -5,13 +5,13 @@
  *
  * kaneton.c
  *
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/libs/klibc/libdata
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Sep 28 19:10:32 2005   mycure
+ * last update   Wed Oct 12 22:01:46 2005   mycure
  */
 
 /*
@@ -98,74 +98,6 @@ void			kaneton(t_init*				bootloader)
 
   alloc_init(init->alloc, init->allocsz, FIT_FIRST);
 
-#if 0 /* XXX abuse de mettre ca ici!!! => alloc_test() */
-  /* -- Here begins allocation test */
-  printf("starting allocation tests\n");
-  {
-    void* ptr;
-
-    ptr = malloc(7);
-    if (!ptr)
-      {
-	kaneton_error("Cannot allocate memory: 7\n");
-	for (;;);
-      }
-
-    ptr = malloc(100);
-    if (!ptr)
-      {
-	kaneton_error("Cannot allocate memory: 100\n");
-	for (;;);
-      }
-
-    ptr = malloc(200);
-    if (!ptr)
-      {
-	kaneton_error("Cannot allocate memory: 200\n");
-	for (;;);
-      }
-
-    ptr = malloc(300);
-    if (!ptr)
-      {
-	kaneton_error("Cannot allocate memory: 300\n");
-	for (;;);
-      }
-
-    ptr = malloc(300);
-    if (!ptr)
-      {
-	kaneton_error("Cannot allocate memory: 300\n");
-	for (;;);
-      }
-
-    ptr = malloc(300);
-    if (!ptr)
-      {
-	kaneton_error("Cannot allocate memory: 300\n");
-	for (;;);
-      }
-
-    ptr = malloc(300);
-    if (!ptr)
-      {
-	kaneton_error("Cannot allocate memory: 300\n");
-	for (;;);
-      }
-
-    ptr = malloc(100000);
-    if (!ptr)
-      {
-	kaneton_error("Cannot allocate memory: 100000\n");
-	for (;;);
-      }
-    alloc_dump();
-  }
-  printf("ending allocation tests\n");
-  for (;;);
-  /* Here ends allocation test */
-#endif
-
   /*
    * 6)
    */
@@ -179,6 +111,10 @@ void			kaneton(t_init*				bootloader)
 
   if (set_init() != ERROR_NONE)
     kaneton_error("cannot initialise the set manager\n");
+
+  printf("HERE\n");
+  while (1)
+    ;
 
   /*
    * 8)
