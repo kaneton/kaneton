@@ -11,7 +11,7 @@
  *         Cedric Aubouy   [cedric.aubouy@gmail.com]
  *
  * started on    Sun Sep 25 19:57:33 2005   cedric
- * last update   Wed Oct 12 22:57:37 2005   mycure
+ * last update   Thu Oct 13 09:46:05 2005   mycure
  */
 
 /*
@@ -298,6 +298,24 @@ void			free(void*				ptr)
    */
 
   alloc.nfree++;
+}
+
+/*
+ * this function returns the number of allocation calls.
+ */
+
+u_int32_t		alloc_nalloc(void)
+{
+  return (alloc.nalloc);
+}
+
+/*
+ * this function returns the number of release calls.
+ */
+
+u_int32_t		alloc_nfree(void)
+{
+  return (alloc.nfree);
 }
 
 /*

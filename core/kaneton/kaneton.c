@@ -5,13 +5,13 @@
  *
  * kaneton.c
  *
- * path          /home/mycure/kaneton/libs/klibc/libdata
+ * path          /home/mycure/kaneton
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Oct 12 22:01:46 2005   mycure
+ * last update   Thu Oct 13 21:41:27 2005   mycure
  */
 
 /*
@@ -112,10 +112,6 @@ void			kaneton(t_init*				bootloader)
   if (set_init() != ERROR_NONE)
     kaneton_error("cannot initialise the set manager\n");
 
-  printf("HERE\n");
-  while (1)
-    ;
-
   /*
    * 8)
    */
@@ -132,37 +128,37 @@ void			kaneton(t_init*				bootloader)
   /*
    * 9)
    */
+
+  //if (segment_init(FIT_FIRST) != ERROR_NONE)
+  //kaneton_error("cannot initialise the segment manager\n");
+
   /*
-  if (segment_init(FIT_FIRST) != ERROR_NONE)
-    kaneton_error("cannot initialise the segment manager\n");
+   * XXX debug start
+   */
 
 #ifdef KANETON_SERIAL
   printf("serial init\n");
   serial_init();
 #endif
-  */
+
   /*
    * XXX)
    */
 
   STATS_DUMP();
 
-  printf("ici c'est une boucle\n");
-  while (1)
-    ;
-
-  /*
-   * XXX)
-   */
-  /*
-  segment_clean();
+  //segment_clean();
 
   as_clean();
+
+  STATS_CLEAN();
 
   set_clean();
 
   id_clean();
-  */
+
+  while (1)
+    ;
 }
 
 /*

@@ -5,13 +5,13 @@
  * 
  * set_ll.c
  * 
- * path          /home/mycure/kaneton/libs/klibc/libdata
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Oct 12 22:23:01 2005   mycure
+ * last update   Thu Oct 13 21:56:52 2005   mycure
  */
 
 /*
@@ -29,7 +29,7 @@
  * moreover, the linked-list data structure can be used either with the
  * sort option or without.
  *
- * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ALLOC
+ * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ALLOC, SET_OPT_FREE
  */
 
 /*
@@ -48,6 +48,25 @@ extern m_set*		set;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * this function tells if the set object is a linked-list set.
+ */
+
+t_error			set_type_ll(t_setid			setid)
+{
+  o_set*		o;
+
+  SET_ENTER(set);
+
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  if (o->type == SET_TYPE_LL)
+    SET_LEAVE(set, ERROR_NONE);
+
+  SET_LEAVE(set, ERROR_UNKNOWN);
+}
 
 /*
  * this function dumps set objects contained in a set.
@@ -648,8 +667,6 @@ t_error			set_add_ll(t_setid			setid,
 	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
 
-      printf("OKI\n");
-
       memcpy(n->data, data, o->u.ll.datasz);
     }
   else
@@ -688,7 +705,8 @@ t_error			set_add_ll(t_setid			setid,
 			   o->setid,
 			   *((t_id*)n->data));
 
-		  if (o->u.ll.opts & SET_OPT_ALLOC)
+		  if ((o->u.ll.opts & SET_OPT_ALLOC) ||
+		      (o->u.ll.opts & SET_OPT_FREE))
 		    free(n->data);
 
 		  free(n);
@@ -832,7 +850,8 @@ t_error			set_remove_ll(t_setid			setid,
    * 4)
    */
 
-  if (o->u.ll.opts & SET_OPT_ALLOC)
+  if ((o->u.ll.opts & SET_OPT_ALLOC) ||
+      (o->u.ll.opts & SET_OPT_FREE))
     free(tmp->data);
 
   /*
@@ -883,7 +902,8 @@ t_error			set_flush_ll(t_setid			setid)
     {
       t_set_ll_node*	t = tmp->prv;
 
-      if (o->u.ll.opts & SET_OPT_ALLOC)
+      if ((o->u.ll.opts & SET_OPT_ALLOC) ||
+	  (o->u.ll.opts & SET_OPT_FREE))
 	free(tmp->data);
 
       free(tmp);
@@ -1008,6 +1028,9 @@ t_error			set_rsv_ll(t_opts			opts,
   if (opts & SET_OPT_ORGANISE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
+  if ((opts & SET_OPT_ALLOC) && (opts & SET_OPT_FREE))
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
   /*
    * 3)
    */
@@ -1057,9 +1080,8 @@ t_error			set_rsv_ll(t_opts			opts,
  *
  * 1) gets the set given its set identifier.
  * 2) flushs the set to release every objects contained in it.
- * 3) cannot release the set container.
- * 4) if needed, releases the set identifier.
- * 5) then, removes the set from the set container.
+ * 3) releases the set identifier.
+ * 4) then, removes the set from the set container, if possible.
  */
 
 t_error			set_rel_ll(t_setid			setid)
@@ -1086,27 +1108,16 @@ t_error			set_rel_ll(t_setid			setid)
    * 3)
    */
 
-  if (setid == set->setid)
-    {
-      cons_msg('!', "set: cannot release the set container\n");
-
-      SET_LEAVE(set, ERROR_UNKNOWN);
-    }
+  if (id_rel(&set->id, o->setid) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
   if (!(o->u.ll.opts & SET_OPT_CONTAINER))
-    if (id_rel(&set->id, o->setid) != ERROR_NONE)
+    if (set_delete(o->setid) != ERROR_NONE)
       SET_LEAVE(set, ERROR_UNKNOWN);
-
-  /*
-   * 5)
-   */
-
-  if (set_delete(o->setid) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
 
   SET_LEAVE(set, ERROR_NONE);
 }

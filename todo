@@ -1,4 +1,10 @@
 --
+ implementer des fonction *_print|show|view(id) qui affiche un element
+ contrairement a dump() qui affiche tout
+
+ ca pourrait etre utile pour le debug
+
+--
  bien sur on pourrait ameliorer les set en faisant qu'a la creation
  on passe une fonction de comparaison ca nous permettrait d'avoir
  des ensembles de n'importe quel type
@@ -6,9 +12,6 @@
 --
  mkp: gerer t_bpt_addr(set), les fonctions statiques, les fonctions
  qui sont dans un commentaire etc..
-
---
- commenter malloc
 
 --
  ne pas mapper la premiere page pour ameliorer la detection d'erreurs
@@ -106,28 +109,6 @@
  mettre toutes les regles de -old-/README dans kaneton.tex
 
 --
- permettre de release le set container pour pouvoir vraiment liberer
- la memoire.
-
- faire des tests, il faut qu une fois set_clean fait on est la meme memoire
- qu avant set_init
-
---
- set_type() => set_type(bpt), set_type(ll)
-
- car ne sont pas censes connaitre SET_TYPE_ARRAY etc.. sinon on aurait fait
- ca: set_rsv(SET_TYPE_LL, ...);
-
--- bug
- set_bpt.c ne passe pas dans le truc a pwipwi
-
- penser a rajouter set_bpt.c dans core/include/kaneton/set.h
-
---
- un bon test: on initialise tout, ensuite on detruit tout et on verifie
- qu on a pas perdu de memoire, comme ca on verra si les ensembles sont bons
-
---
  faire le set de hash et tableau par solal au pire ou un inge1
 
 --
@@ -159,15 +140,6 @@
  expliquer dans le readme comment generer les dep
 
 --
- clarifier le segment manager et eviter le redondance de code
-
- tester le segment manager
-
---
- prendre les infos sur les news, en faire un FAQ, mais aussi prendre
- certains posts de sites, books etc.. et les mettre dans KanetonDocumentation
-
---
  coder les fonctions clone: as_clone(), set_clone(), id_clone() etc..
 
  ca va etre vachement chiant de faire un set_clone(). pourtant tous les
@@ -178,10 +150,6 @@
  http://perso.wanadoo.fr/philippe.michel/qnx/
 
  http://xos.freezee.org/index.php?page=video
-
---
- faire un module debug qui utilise le driver serial pour afficher
- ou un autre genre bochs etc..
 
 --
  assert() a coder
@@ -195,16 +163,6 @@
 
 --
  faire la moulinette de decoupage en foncion de balises
-
---
- lors des affichages, decouper la chaine pour que ca ne depasse pas
- les 80 colonnes:
-
- A LA LIMITE faire une variable qui donne le nombre de colonnes dans
- le USER.conf
-
-	[LINK]		libc.a
-	[LINK]		...hdep/set/set.a
 
 -- vbe
 

@@ -5,13 +5,13 @@
  * 
  * id.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Sep 28 19:09:42 2005   mycure
+ * last update   Thu Oct 13 21:25:11 2005   mycure
  */
 
 /*
@@ -135,5 +135,7 @@ t_error			id_init(void)
 
 t_error			id_clean(void)
 {
+  free(id);
+
   return (ERROR_NONE);
 }

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Oct 13 00:25:29 2005   mycure
+ * last update   Thu Oct 13 21:57:22 2005   mycure
  */
 
 /*
@@ -20,6 +20,8 @@
  * XXX
  *
  * XXX datasz juste utilise pour OPT_ALLOC
+ *
+ * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ALLOC, SET_OPT_FREE
  */
 
 /*
@@ -140,6 +142,25 @@ t_error			set_dump_unused_bpt(o_set*		o)
 }
 
 /*
+ * this function tells if the set object is a bpt set.
+ */
+
+t_error			set_type_bpt(t_setid			setid)
+{
+  o_set*		o;
+
+  SET_ENTER(set);
+
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  if (o->type == SET_TYPE_BPT)
+    SET_LEAVE(set, ERROR_NONE);
+
+  SET_LEAVE(set, ERROR_UNKNOWN);
+}
+
+/*
  * this function builds an unused object.
  *
  * steps:
@@ -185,13 +206,15 @@ t_error			set_build_bpt(o_set*			o,
 }
 
 /*
- * XXX
+ * this function adjust the size and contents of the unused object, allocating
+ * or freeing some elements.
  *
- * XXX si size trop grand on laisse, donc ce cas est ignore et le suivant traite
- * XXX si size trop petit on l agrandit comme il faut 
+ * steps:
  *
- * XXX si alloc trop grand on free
- * XXX si alloc trop petit on malloc
+ * 1) if the size of the current unused object is not large enough, resize
+ *    it to be able to contain the desired elements.
+ * 2) if there is not enough elements in the array, fills in with
+ *    new ones calling the malloc() function.
  */
 
 t_error			set_adjust_bpt(o_set*			o,
@@ -202,11 +225,9 @@ t_error			set_adjust_bpt(o_set*			o,
 
   SET_ENTER(set);
 
-  /* XXX
-  printf("index: %d, unusedsz: %u, alloc: %u, size: %u\n",
-	 o->u.bpt.unused.index, o->u.bpt.unusedsz,
-	 alloc, size);
-  */
+  /*
+   * 1)
+   */
 
   if (o->u.bpt.unusedsz < size)
     {
@@ -218,11 +239,9 @@ t_error			set_adjust_bpt(o_set*			o,
       o->u.bpt.unusedsz = size;
     }
 
-  /* XXX
-  printf("index: %d, unusedsz: %u, alloc: %u, size: %u\n",
-	 o->u.bpt.unused.index, o->u.bpt.unusedsz,
-	 alloc, size);
-  */
+  /*
+   * 2)
+   */
 
   if ((o->u.bpt.unused.index + 1) > alloc)
     {
@@ -241,8 +260,6 @@ t_error			set_adjust_bpt(o_set*			o,
 	    SET_LEAVE(set, ERROR_NONE);
 	}
     }
-
-  // XXX set_dump_unused_bpt(o);
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -615,7 +632,8 @@ t_error			set_remove_bpt(t_setid			setid,
    * 3)
    */
 
-  if (o->u.bpt.opts & SET_OPT_ALLOC)
+  if ((o->u.bpt.opts & SET_OPT_ALLOC) ||
+      (o->u.bpt.opts & SET_OPT_FREE))
     {
       if (bpt_search(set, &o->u.bpt.bpt, id, &entry) != 0)
 	SET_LEAVE(set, ERROR_UNKNOWN);
@@ -652,7 +670,21 @@ t_error			set_remove_bpt(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function flushs the contents of the bpt set.
+ *
+ * this action results in the destruction of the bpt internal data structure,
+ * so we have to call bpt_init() to rebuild the tree data structure.
+ *
+ * steps:
+ *
+ * 1) gets the set descriptor from the given identifier.
+ * 2) for each elements of the tree, frees the data and resets the
+ *    element.
+ * 3) adjusts the unused object to be usable with the bpt functions.
+ *    then, calls the bpt_clean() function to destroy the tree.
+ * 4) adjusts the unused object and calls the bpt_init() function to
+ *    rebuild the tree data structure.
+ * 5) resets the size of the data structure.
  */
 
 t_error			set_flush_bpt(t_setid			setid)
@@ -677,17 +709,22 @@ t_error			set_flush_bpt(t_setid			setid)
    * 2)
    */
 
-  set_foreach(SET_OPT_FORWARD, setid, &i, state)
+  if ((o->u.bpt.opts & SET_OPT_ALLOC) ||
+      (o->u.bpt.opts & SET_OPT_FREE))
     {
-      t_bpt_imm(set)		node;
-      t_bpt_lfentry(set)*	leaf;
+      set_foreach(SET_OPT_FORWARD, setid, &i, state)
+	{
+	  t_bpt_imm(set)	node;
+	  t_bpt_lfentry(set)*	leaf;
 
-      BPT_LOAD(&o->u.bpt.bpt, &node, i.u.bpt.entry.node);
+	  BPT_LOAD(&o->u.bpt.bpt, &node, i.u.bpt.entry.node);
 
-      leaf = BPT_LFENTRY(set, &node, i.u.bpt.entry.ndi);
+	  leaf = BPT_LFENTRY(set, &node, i.u.bpt.entry.ndi);
 
-      free(leaf->data);
-      leaf->data = SET_BPT_UADDR;
+	  free(leaf->data);
+
+	  leaf->data = SET_BPT_UADDR;
+	}
     }
 
   /*
@@ -702,7 +739,7 @@ t_error			set_flush_bpt(t_setid			setid)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
-   * XXX
+   * 4)
    */
 
   if (set_adjust_bpt(o, BPT_INIT_ALLOC(),
@@ -717,7 +754,7 @@ t_error			set_flush_bpt(t_setid			setid)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
-   * 4)
+   * 5)
    */
 
   o->size = 0;
@@ -779,7 +816,17 @@ t_error			set_object_bpt(t_setid			setid,
 }
 
 /*
- * XXX
+ * this function reserves a set.
+ *
+ * steps:
+ *
+ * 1) initialises the set object.
+ * 2) checks for the options.
+ * 3) reserves a identifier for the new set.
+ * 4) initialises the set object.
+ * 5) builds the unused object for the bpt calls.
+ * 6) calls the bpt_init() function which initialises the tree data structure.
+ * 7) adds the new set object to the set container.
  */
 
 t_error			set_rsv_bpt(t_opts			opts,
@@ -798,7 +845,7 @@ t_error			set_rsv_bpt(t_opts			opts,
   memset(&o, 0x0, sizeof(o_set));
 
   /*
-   * XXX
+   * 2)
    */
 
   if (!(opts & SET_OPT_SORT))
@@ -807,8 +854,11 @@ t_error			set_rsv_bpt(t_opts			opts,
   if (opts & SET_OPT_ORGANISE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
+  if ((opts & SET_OPT_ALLOC) && (opts & SET_OPT_FREE))
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
   /*
-   * 2)
+   * 3)
    */
 
   if (opts & SET_OPT_CONTAINER)
@@ -822,7 +872,7 @@ t_error			set_rsv_bpt(t_opts			opts,
     }
 
   /*
-   * 3)
+   * 4)
    */
 
   o.setid = *setid;
@@ -833,7 +883,7 @@ t_error			set_rsv_bpt(t_opts			opts,
   o.u.bpt.datasz = datasz;
 
   /*
-   * 4)
+   * 5)
    */
 
   if (set_build_bpt(&o, nodesz) != ERROR_NONE)
@@ -847,7 +897,7 @@ t_error			set_rsv_bpt(t_opts			opts,
     }
 
   /*
-   * 4)
+   * 6)
    */
 
   if (bpt_init(set, &o.u.bpt.bpt, nodesz,
@@ -863,7 +913,7 @@ t_error			set_rsv_bpt(t_opts			opts,
     }
 
   /*
-   * 5)
+   * 7)
    */
 
   if (set_new(&o) != ERROR_NONE)
@@ -885,7 +935,19 @@ t_error			set_rsv_bpt(t_opts			opts,
 }
 
 /*
- * XXX
+ * this function releases the bpt set.
+ *
+ * steps:
+ *
+ * 1) gets the set descriptor from the given identifier.
+ * 2) flushs the set's contents.
+ * 3) builds a unused object to be able to call the bpt_clean() function.
+ *    in fact we call the bpt_clean() function even after calling the
+ *    set_flush() function because after the flush the tree still contains
+ *    an allocated node so this one has to be released with the bpt_clean()
+ *    call.
+ * 4) releases the set identifier.
+ * 5) removes the set object from the set container.
  */
 
 t_error			set_rel_bpt(t_setid			setid)
@@ -912,17 +974,6 @@ t_error			set_rel_bpt(t_setid			setid)
    * 3)
    */
 
-  if (setid == set->setid)
-    {
-      cons_msg('!', "set: cannot release the set container\n");
-
-      SET_LEAVE(set, ERROR_UNKNOWN);
-    }
-
-  /*
-   * XXX
-   */
-
   if (set_adjust_bpt(o, BPT_CLEAN_ALLOC(&o->u.bpt.bpt),
 		     BPT_CLEAN_SIZE(&o->u.bpt.bpt)) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
@@ -930,20 +981,22 @@ t_error			set_rel_bpt(t_setid			setid)
   if (bpt_clean(set, &o->u.bpt.bpt, &o->u.bpt.unused) != 0)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
+  set_destroy_bpt(o);
+
   /*
    * 4)
    */
 
-  if (!(o->u.bpt.opts & SET_OPT_CONTAINER))
-    if (id_rel(&set->id, o->setid) != ERROR_NONE)
-      SET_LEAVE(set, ERROR_UNKNOWN);
+  if (id_rel(&set->id, o->setid) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 5)
    */
 
-  if (set_delete(o->setid) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (!(o->u.bpt.opts & SET_OPT_CONTAINER))
+    if (set_delete(o->setid) != ERROR_NONE)
+      SET_LEAVE(set, ERROR_UNKNOWN);
 
   SET_LEAVE(set, ERROR_NONE);
 }

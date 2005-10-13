@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Aug 28 16:23:31 2005   mycure
- * last update   Wed Oct 12 22:05:37 2005   mycure
+ * last update   Thu Oct 13 21:29:57 2005   mycure
  */
 
 #ifndef KANETON_CONF_H
@@ -57,14 +57,14 @@
  * this define activates the statistics
  */
 
-#define CONF_STATS		1
+#define CONF_STATS
 
 /*
  * the configuration debug
  */
 
 #define CONF_DEBUG							\
-  (DEBUG_SET)
+  (0)
 
 /*
  * ---------- prototypes ------------------------------------------------------

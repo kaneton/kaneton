@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Oct 13 00:23:23 2005   mycure
+ * last update   Thu Oct 13 21:52:36 2005   mycure
  */
 
 /*
@@ -36,7 +36,8 @@
  * the malloc() function is not provided yet. to bypass this restriction
  * the kaneton kernel uses an initial malloc() version which is based on
  * a little amount of memory provided by the bootloader, via the fields
- * alloc and allocsz of the init structure.
+ * alloc and allocsz of the init structure: this area is called the survey
+ * memory area.
  *
  * using this initial malloc() function, the set manager is able to build
  * sets for every kernel managers: segment manager, address space manager,
@@ -92,7 +93,7 @@
  * which contain the objects provided by the set manager user.
  *
  * note that in the kaneton terms, the set manager is composed of objects.
- * indeed, the container, each descriptor are in fact set objects (o_set)
+ * indeed, in the container, each descriptor are in fact set objects (o_set)
  * so kaneton objects.
  *
  * moreover, the objects the user provides to the set manager to be stored
@@ -100,7 +101,7 @@
  *
  * remember that, in the kaneton terms, an object structure always begins
  * with an identifier and is manipulated by a capability on the distributed
- * system.
+ * operating system.
  *
  * the implementation uses macros to provide different data structures
  * manipulation with different number of arguments and different
@@ -109,21 +110,44 @@
  * note the specific use of the ## in the set header located
  * in core/include/kaneton/.
  *
- * using the ## with variadic macros allow the use of a variable arguments
+ * using the ## with variadic macros allows the use of a variable arguments
  * parameter to be empty, deleting the previous comma if needed.
  *
  * note that this advanced feature is only implemented by the gnu
- * c preprocessor.
+ * c-preprocessor.
  *
  * each data structure allows some options to parameterise the data structure
- * wanted. the common ones are: allocate, sort etc..
+ * wanted. the common ones are: ALLOCATE, SORT etc..
  *
- * the allocate option may be disabled for certain data structures because
+ * the ALLOCATE option may be disabled for certain data structures because
  * of its meaningless for this data structure.
  *
- * note that the sort option may becomes very inefficient for some data
+ * note that the SORT option may become very inefficient for some data
  * structures. moreover the identifier collision detection may only
- * takes place if the sort option is enabled.
+ * takes place if the SORT option is enabled.
+ *
+ * be careful with the ALLOCATE option. this option tells the set manager
+ * to always allocate memory and to copy into this memory the contents
+ * of the given object. think about that, for example, the set_flush()
+ * will clear the data structure contents. if the ALLOCATE option is
+ * set, the elements will be freed, but if not, the elements will be lost.
+ *
+ * for this common problem, a new option was introduced, the FREE option
+ * which tells the set manager to call the free() function every time an
+ * element is released, for example into the functions set_remove(),
+ * set_flush(), set_rel() etc..
+ *
+ * be careful to never set the FREE option with the ALLOCATE option. the
+ * FREE option tells the set manager that the user is using preallocated
+ * objects which is the contrary to the allocate option.
+ *
+ * the option CONTAINER is only used by the set manager to build the very
+ * first set which is the set container.
+ *
+ * the ORGANISE option is used for example by the array data structure. it
+ * tells the subpart of the set manager to always organise data in the
+ * best way. for the array data structure, this option means that the
+ * elements will always be left shifted to fulfill the array by the left.
  *
  * the two macros SET_ENTER and SET_LEAVE are used to launch operations
  * entering and leaving each set manager functions excluding the set_init()
@@ -154,26 +178,6 @@ m_set*			set = NULL;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * this function fills the variable type with the type of the set
- * corresponding to the given set identifier.
- */
-
-t_error			set_type(t_setid			setid,
-				 t_type*			type)
-{
-  o_set*		o;
-
-  SET_ENTER(set);
-
-  if (set_descriptor(setid, &o) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
-
-  *type = o->type;
-
-  SET_LEAVE(set, ERROR_NONE);
-}
 
 /*
  * this function fills the variable size with the set size.
@@ -422,9 +426,10 @@ t_error			set_init(void)
 #if (DEBUG & DEBUG_SET)
   set_dump(set->setid);
 
-  // XXX-OK set_test(SET_TYPE_LL); // tester fuite memoire
+  // XXX-OK set_test(SET_TYPE_LL);
+  // XXX-OK set_test(SET_TYPE_BPT);
+
   // XXX set_test(SET_TYPE_ARRAY);
-  set_test(SET_TYPE_BPT);
 #endif
 
   return (ERROR_NONE);
@@ -435,28 +440,61 @@ t_error			set_init(void)
  *
  * steps:
  *
- * 1) flush the set container.
- * 2) destroys the id object.
- * 3) frees the set manager structure's memory.
+ * 1) releases each set object the set container still contains.
+ * 2) releases the set container.
+ * 3) frees the set container object.
+ * 4) destroys the id object.
+ * 5) frees the set manager structure's memory.
  */
 
 t_error			set_clean(void)
 {
+  t_iterator		iterator;
+
   /*
    * 1)
    */
 
-  /* XXX set_rel() */
-
-  if (set_flush(set->setid) != ERROR_NONE)
+  while (set_head(set->setid, &iterator) == ERROR_NONE)
     {
-      cons_msg('!', "set: unable to flush the set container\n");
+      o_set*		o;
+
+      if (set_object(set->setid, iterator, (void**)&o) != ERROR_NONE)
+	{
+	  cons_msg('!', "set: cannot find the set object "
+		   "corresponding to its identifier\n");
+
+	  SET_LEAVE(set, ERROR_UNKNOWN);
+	}
+
+      if (set_rel(o->setid) != ERROR_NONE)
+	{
+	  cons_msg('!', "set: cannot releases a set object located in the "
+		   "set container\n");
+
+	  SET_LEAVE(set, ERROR_UNKNOWN);
+	}
+    }
+
+  /*
+   * 2)
+   */
+
+  if (set_rel(set->setid) != ERROR_NONE)
+    {
+      cons_msg('!', "set: unable to release the set container\n");
 
       return (ERROR_UNKNOWN);
     }
 
   /*
-   * 2)
+   * 3)
+   */
+
+  free(set->container);
+
+  /*
+   * 4)
    */
 
   if (id_destroy(&set->id) != ERROR_NONE)
@@ -467,7 +505,7 @@ t_error			set_clean(void)
     }
 
   /*
-   * 3)
+   * 5)
    */
 
   free(set);
@@ -518,6 +556,8 @@ t_error			set_test(t_type				type)
       }
     case SET_TYPE_BPT:
       {
+	t_uint32	nalloc = alloc_nalloc();
+	t_uint32	nfree = alloc_nfree();
 	t_iterator	iterator;
 	t_id		data;
 	t_setid		id;
@@ -607,6 +647,12 @@ t_error			set_test(t_type				type)
 
 	alloc_dump();
 
+	if ((nalloc - nfree) != (alloc_nalloc() - alloc_nfree()))
+	  printf("error: memory leaks detected: %u/%u -> %u/%u\n",
+		 nalloc, nfree, alloc_nalloc(), alloc_nfree());
+	else
+	  printf("no memory leak detected\n");
+
 	while (1);
 
 	break;
@@ -614,11 +660,13 @@ t_error			set_test(t_type				type)
 	/*
 	 * XXX
 	 *
-	 * chaque operation fut validee, memoire???
+	 * chaque operation fut validee, et aucune fuite memoire dans set_bpt
 	 */
       }
     case SET_TYPE_LL:
       {
+	t_uint32	nalloc = alloc_nalloc();
+	t_uint32	nfree = alloc_nfree();
 	t_iterator	iterator;
 	t_id		data;
 	t_id		*o;
@@ -744,6 +792,12 @@ t_error			set_test(t_type				type)
 
 	alloc_dump();
 
+	if ((nalloc - nfree) != (alloc_nalloc() - alloc_nfree()))
+	  printf("error: memory leaks detected: %u/%u -> %u/%u\n",
+		 nalloc, nfree, alloc_nalloc(), alloc_nfree());
+	else
+	  printf("no memory leak detected\n");
+
 	while (1);
 
 	break;
@@ -751,7 +805,7 @@ t_error			set_test(t_type				type)
 	/*
 	 * XXX
 	 *
-	 * chaque operation fut validee, memoire???
+	 * chaque operation fut validee, pas de fuites de memoire
 	 */
       }
     }

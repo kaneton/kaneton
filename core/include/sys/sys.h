@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Jun 19 20:08:33 2005   mycure
+ * last update   Thu Oct 13 09:39:16 2005   mycure
  */
 
 #ifndef SYS_SYS_H
@@ -21,6 +21,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
+#include <sys/bpt.h>
 #include <sys/elf.h>
 
 #endif

@@ -5,13 +5,13 @@
  * 
  * stats.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Sat Sep 24 09:54:36 2005   mycure
+ * last update   Thu Oct 13 21:36:51 2005   mycure
  */
 
 #ifndef KANETON_STATS_H
@@ -24,6 +24,7 @@
 #include <arch/machdep/machdep.h>
 #include <kaneton/id.h>
 #include <kaneton/types.h>
+#include <kaneton/conf.h>
 
 /*
  * ---------- types -----------------------------------------------------------

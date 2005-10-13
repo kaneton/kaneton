@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/libdata
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Wed Oct 12 22:03:55 2005   mycure
+ * last update   Thu Oct 13 21:53:33 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -53,13 +53,14 @@
  * options
  */
 
-#define SET_OPT_NONE		0x00
-#define SET_OPT_FORWARD		0x01
-#define SET_OPT_BACKWARD	0x02
-#define SET_OPT_CONTAINER	0x04
-#define SET_OPT_ALLOC		0x08
-#define SET_OPT_SORT		0x10
-#define SET_OPT_ORGANISE	0x20
+#define SET_OPT_NONE		(0 << 0)
+#define SET_OPT_FORWARD		(1 << 0)
+#define SET_OPT_BACKWARD	(1 << 1)
+#define SET_OPT_CONTAINER	(1 << 2)
+#define SET_OPT_ALLOC		(1 << 3)
+#define SET_OPT_FREE		(1 << 4)
+#define SET_OPT_SORT		(1 << 5)
+#define SET_OPT_ORGANISE	(1 << 6)
 
 /*
  * trap debug
@@ -231,6 +232,9 @@ typedef struct
       _r_;								\
     }									\
   )
+
+#define set_type(_type_, _setid_)					\
+  set_type_##_type_(_setid_)
 
 #define set_rsv(_type_, _args_...)					\
   set_rsv_##_type_(_args_)

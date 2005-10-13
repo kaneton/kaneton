@@ -5,13 +5,13 @@
  * 
  * set_array.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Sep 28 19:44:11 2005   mycure
+ * last update   Thu Oct 13 10:19:04 2005   mycure
  */
 
 /*
@@ -870,10 +870,9 @@ t_error			set_rsv_array(t_opts			opts,
  *
  * 1) gets the set given its set identifier.
  * 2) flushs the set.
- * 3) cannot release the set container.
- * 4) if needed, releases the set identifier.
- * 5) frees the array allocated at the set reservation.
- * 6) then, removes the set from the set container.
+ * 3) releases the set identifier.
+ * 4) frees the array allocated at the set reservation.
+ * 5) then, removes the set from the set container.
  */
 
 t_error			set_rel_array(t_setid			setid)
@@ -900,33 +899,22 @@ t_error			set_rel_array(t_setid			setid)
    * 3)
    */
 
-  if (setid == set->setid)
-    {
-      cons_msg('!', "set: cannot release the set container\n");
-
-      SET_LEAVE(set, ERROR_UNKNOWN);
-    }
+  if (id_rel(&set->id, o->setid) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (!(o->u.array.opts & SET_OPT_CONTAINER))
-    if (id_rel(&set->id, o->setid) != ERROR_NONE)
-      SET_LEAVE(set, ERROR_UNKNOWN);
+  free(o->u.array.array);
 
   /*
    * 5)
    */
 
-  free(o->u.array.array);
-
-  /*
-   * 6)
-   */
-
-  if (set_delete(o->setid) != ERROR_NONE)
-    SET_LEAVE(set, ERROR_UNKNOWN);
+  if (!(o->u.array.opts & SET_OPT_CONTAINER))
+    if (set_delete(o->setid) != ERROR_NONE)
+      SET_LEAVE(set, ERROR_UNKNOWN);
 
   SET_LEAVE(set, ERROR_NONE);
 }
