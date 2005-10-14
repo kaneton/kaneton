@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Mon May 30 14:10:03 2005   mycure
- * last update   Tue Aug 30 15:08:45 2005   mycure
+ * last update   Thu Oct 13 22:16:43 2005   mycure
  */
 
 #ifndef IA32_KANETON_INIT_H
@@ -42,7 +42,7 @@
  * and the page directory.
  */
 
-#define INIT_SEGMENTS		10
+#define INIT_SEGMENTS		11
 
 /*
  * the regions represent the physical memory to be mapped by the kernel.
@@ -60,5 +60,12 @@
  */
 
 #define INIT_REGIONS		7
+
+/*
+ * defines the ISA area.
+ */
+
+#define INIT_ISA_ADDR		0x00000000
+#define INIT_ISA_SIZE		0x00100000
 
 #endif
