@@ -11,15 +11,24 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Oct 13 21:57:22 2005   mycure
+ * last update   Fri Oct 14 10:32:09 2005   mycure
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX
+ * this subpart of the set manager is used to build balanced+ tree data
+ * structures.
  *
- * XXX datasz juste utilise pour OPT_ALLOC
+ * this set type is build over the header file bpt.h developed by julien
+ * quintard. this header file was develop to provide an easy way to build
+ * specific balanced+ trees.
+ *
+ * note that the sort option must be provided because a non-sorted tree
+ * is not conceivable.
+ *
+ * the datasz argument of the set_rsv() function is needed only if the
+ * allocate option is set.
  *
  * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ALLOC, SET_OPT_FREE
  */

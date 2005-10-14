@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Oct 13 21:56:52 2005   mycure
+ * last update   Fri Oct 14 10:31:32 2005   mycure
  */
 
 /*
@@ -26,8 +26,16 @@
  * set manager to allocate and copy each object to add while the second
  * way tells the set manager to simply include the objects in the set.
  *
+ * moreover the option free can be used to tell the set manager to call
+ * the free() function each time an object is released. this option
+ * means that objects passed to the set manager was previously allocated
+ * with the malloc() functions suite.
+ *
  * moreover, the linked-list data structure can be used either with the
  * sort option or without.
+ *
+ * the datasz argument of the set_rsv() function is meaningfull only in the
+ * case the allocate option is set.
  *
  * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ALLOC, SET_OPT_FREE
  */

@@ -46,6 +46,10 @@ void*			malloc(size_t				size);
 
 void			free(void*				ptr);
 
+u_int32_t		alloc_nalloc(void);
+
+u_int32_t		alloc_nfree(void);
+
 void			alloc_dump(void);
 
 void*			realloc(void* 				ptr,

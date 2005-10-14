@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/services
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Mon Jul  4 11:53:16 2005   mycure
+## last update   Thu Oct 13 22:18:44 2005   mycure
 ##
 
 #
@@ -31,6 +31,7 @@ include			../.kaneton.mk
 #
 
 SUBDIRS			:=		cons				\
+					dma				\
 					dsh				\
 					kbd				\
 					mod

@@ -314,9 +314,6 @@ typedef struct
  * ../../kaneton/set/set.c
  */
 
-t_error			set_type(t_setid			setid,
-				 t_type*			type);
-
 t_error			set_size(t_setid			setid,
 				 t_setsz*			size);
 
@@ -404,6 +401,8 @@ t_error			set_rel_array(t_setid			setid);
 /*
  * ../../kaneton/set/set_ll.c
  */
+
+t_error			set_type_ll(t_setid			setid);
 
 t_error			set_dump_ll(t_setid			setid);
 

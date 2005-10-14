@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Oct 13 21:52:36 2005   mycure
+ * last update   Fri Oct 14 08:17:23 2005   mycure
  */
 
 /*
@@ -116,7 +116,7 @@
  * note that this advanced feature is only implemented by the gnu
  * c-preprocessor.
  *
- * each data structure allows some options to parameterise the data structure
+ * each data structure allows some options to parameter the data structure
  * wanted. the common ones are: ALLOCATE, SORT etc..
  *
  * the ALLOCATE option may be disabled for certain data structures because

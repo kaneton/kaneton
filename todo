@@ -14,10 +14,6 @@
  qui sont dans un commentaire etc..
 
 --
- ne pas mapper la premiere page pour ameliorer la detection d'erreurs
- de programmation
-
---
  prevoir TP de remise a niveau: C (decalage, mask etc..), assembleur
  exos en assembleur nasm puis en asm inline etc..
 

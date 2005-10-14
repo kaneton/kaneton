@@ -3,13 +3,13 @@
  *
  * init.c
  *
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Thu Sep 15 17:04:56 2005   mycure
+ * last update   Thu Oct 13 22:16:30 2005   mycure
  */
 
 /*
@@ -148,81 +148,85 @@ void			bootloader_init_segments(void)
    * 1)
    */
 
-  init->segments[0].address = 0x0;
-  init->segments[0].size = 0x00100000;
-  init->segments[0].perms = PERM_READ | PERM_WRITE;
+  init->segments[0].address = INIT_ISA_ADDR;
+  init->segments[0].size = 0x1000;
+  init->segments[0].perms = PERM_READ;
+
+  init->segments[1].address = INIT_ISA_ADDR + 0x1000;
+  init->segments[1].size = INIT_ISA_SIZE - 0x1000;
+  init->segments[1].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 2)
    */
 
-  init->segments[1].address = init->kcode;
-  init->segments[1].size = init->kcodesz;
-  init->segments[1].perms = PERM_READ | PERM_EXEC;
+  init->segments[2].address = init->kcode;
+  init->segments[2].size = init->kcodesz;
+  init->segments[2].perms = PERM_READ | PERM_EXEC;
 
   /*
    * 3)
    */
 
-  init->segments[2].address = init->init;
-  init->segments[2].size = init->initsz;
-  init->segments[2].perms = PERM_READ | PERM_WRITE;
+  init->segments[3].address = init->init;
+  init->segments[3].size = init->initsz;
+  init->segments[3].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 4)
    */
 
-  init->segments[3].address = (t_paddr)init->modules;
-  init->segments[3].size = init->modulessz;
-  init->segments[3].perms = PERM_READ | PERM_EXEC;
+  init->segments[4].address = (t_paddr)init->modules;
+  init->segments[4].size = init->modulessz;
+  init->segments[4].perms = PERM_READ | PERM_EXEC;
 
   /*
    * 5)
    */
 
-  init->segments[4].address = (t_paddr)init->segments;
-  init->segments[4].size = init->segmentssz;
-  init->segments[4].perms = PERM_READ | PERM_WRITE;
+  init->segments[5].address = (t_paddr)init->segments;
+  init->segments[5].size = init->segmentssz;
+  init->segments[5].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 6)
    */
 
-  init->segments[5].address = (t_paddr)init->regions;
-  init->segments[5].size = init->regionssz;
-  init->segments[5].perms = PERM_READ | PERM_WRITE;
+  init->segments[6].address = (t_paddr)init->regions;
+  init->segments[6].size = init->regionssz;
+  init->segments[6].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 7)
    */
 
-  init->segments[6].address = init->kstack;
-  init->segments[6].size = init->kstacksz;
-  init->segments[6].perms = PERM_READ | PERM_WRITE;
+  init->segments[7].address = init->kstack;
+  init->segments[7].size = init->kstacksz;
+  init->segments[7].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 8)
    */
 
-  init->segments[7].address = init->alloc;
-  init->segments[7].size = init->allocsz;
-  init->segments[7].perms = PERM_READ | PERM_WRITE;
+  init->segments[8].address = init->alloc;
+  init->segments[8].size = init->allocsz;
+  init->segments[8].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 9)
    */
 
-  init->segments[8].address = (t_paddr)init->machdep.gdt;
-  init->segments[8].size = PAGESZ;
-  init->segments[8].perms = PERM_READ | PERM_WRITE;
+  init->segments[9].address = (t_paddr)init->machdep.gdt;
+  init->segments[9].size = PAGESZ;
+  init->segments[9].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 10)
    */
 
-  init->segments[9].address = (t_paddr)init->machdep.pd;
-  init->segments[9].size = PAGESZ;
-  init->segments[9].perms = PERM_READ | PERM_WRITE;
+  init->segments[10].address = (t_paddr)init->machdep.pd;
+  init->segments[10].size = PAGESZ;
+  init->segments[10].perms = PERM_READ | PERM_WRITE;
 }
 
 /*
@@ -245,43 +249,43 @@ void			bootloader_init_regions(void)
    * 1)
    */
 
-  init->regions[0].address = init->segments[0].address;
+  init->regions[0].address = init->segments[1].address;
 
   /*
    * 2)
    */
 
-  init->regions[1].address = init->segments[1].address;
+  init->regions[1].address = init->segments[2].address;
 
   /*
    * 3)
    */
 
-  init->regions[2].address = init->segments[2].address;
+  init->regions[2].address = init->segments[3].address;
 
   /*
    * 4)
    */
 
-  init->regions[3].address = init->segments[6].address;
+  init->regions[3].address = init->segments[4].address;
 
   /*
    * 5)
    */
 
-  init->regions[4].address = init->segments[7].address;
+  init->regions[4].address = init->segments[5].address;
 
   /*
    * 6)
    */
 
-  init->regions[5].address = init->segments[8].address;
+  init->regions[5].address = init->segments[6].address;
 
   /*
    * 7)
    */
 
-  init->regions[6].address = init->segments[9].address;
+  init->regions[6].address = init->segments[7].address;
 }
 
 /*

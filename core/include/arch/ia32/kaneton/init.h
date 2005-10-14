@@ -5,13 +5,13 @@
  * 
  * init.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/include/arch/ia32/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Mon May 30 14:10:03 2005   mycure
- * last update   Thu Oct 13 22:16:43 2005   mycure
+ * last update   Fri Oct 14 10:34:36 2005   mycure
  */
 
 #ifndef IA32_KANETON_INIT_H
@@ -60,12 +60,5 @@
  */
 
 #define INIT_REGIONS		7
-
-/*
- * defines the ISA area.
- */
-
-#define INIT_ISA_ADDR		0x00000000
-#define INIT_ISA_SIZE		0x00100000
 
 #endif
