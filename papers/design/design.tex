@@ -1,17 +1,17 @@
 %%
 %% copyright quintard julien
-%% 
+%%
 %% kaneton
-%% 
+%%
 %% design.tex
-%% 
-%% path          /home/mycure/data/research/projects/kaneton/papers/kaneton
-%% 
+%%
+%% path          /home/ultima/g/kaneton/papers/design
+%%
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
-%% 
+%%
 %% started on    Fri Feb  4 15:10:05 2005   mycure
-%% last update   Thu Jul 21 20:34:45 2005   mycure
+%% last update   Sat Oct 15 02:53:01 2005   cedric
 %%
 
 %%
@@ -78,16 +78,17 @@ the latter describing the distributed operating system algorithms.
 \section{The kaneton history}
 
 kaneton originated at the EPITA Computer System Laboratory as a pedagogic
-project in operating systems. The project was primainly designed by two students
+project in operating systems. The project was primarily designed by two students
 Julien Quintard and Jean-Pascal Billaud although many other people also
 contributed to the design and will especially contribute to the implementation.
 
-Having recently developed an micro-kernel base operating system called LSE/OS,
+Having recently developed a micro-kernel base operating system called LSE/OS,
 the two students decided to begin the design and development of an operating
 system with a more powerful design and able to share resources on a large
 network. Nevertheless, the goal of this project remains to be a pedagogic
 one. For this reason special interest was made on the design and on the
-implementation to be as simple as possible
+implementation to be as simple as possible.
+
 
 
 
@@ -97,7 +98,7 @@ Many research projects in distributed systems started with an existing system.
 For the kaneton distributed operating system, we decided to totally design a
 new system. Indeed, the previous EPITA Computer System Laboratory projects in
 operating systems were not portable enough, so we decided to totally design
-this new kernel from scratch with a special intereset for the portability.
+this new kernel from scratch with a special interest for the portability.
 
 The primary goal of the kaneton operating system was to design a distributed
 operating system but to be totally transparent from the user point of view.
@@ -109,7 +110,7 @@ communications in the distributed system. In addition, the kaneton distributed
 operating system will provide a transparent and easy way to migrate processes
 on the network, to manage distributed memory while being fault tolerant.
 
-The kaneton operating system was first developed to looks like a typical
+The kaneton operating system was first developed to look like a typical
 timesharing system to the user. Nevertheless, kaneton was also designed to
 become a very scalable system and to provide a powerful system for
 parallel and distributed programming.
@@ -355,7 +356,7 @@ to easily and quickly go through sets.
 \subsection{Process}
 
 The kaneton microkernel uses a specific nomenclature which is different
-from other oeprating systems.
+from other operating systems.
 
 The system is composed of five different entities in relation with execution.
 
@@ -366,7 +367,7 @@ necessary. For example a very used program like \textit{/bin/ls} certainly
 becomes an important module due of its use. Fundamental system's drivers
 and services are persistent modules because they will be used in the case
 of a crash to restart the crashed service without any dependency.
-A module is identified by an unique identifier and manipulated with a
+A module is identified by a unique identifier and manipulated with a
 capability.
 
 A \textbf{user} task is the lowest privileged task on the system.
