@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Oct 13 22:23:15 2005   mycure
+ * last update   Fri Oct 14 10:42:05 2005   mycure
  */
 
 /*
@@ -55,8 +55,9 @@ t_init*			init;
  * 5) initialises the fine grained allocator.
  * 6) initialises the id manager.
  * 7) initialises the set manager.
- * 8) initialises the address space manager.
- * 9) initialises the segment manager.
+ * 8) if needed, initialises the stats manager.
+ * 9) initialises the address space manager.
+ * 10) initialises the segment manager.
  *
  * XXX
  */
@@ -119,21 +120,21 @@ void			kaneton(t_init*				bootloader)
   STATS_INIT();
 
   /*
-   * 8)
+   * 9)
    */
 
   if (as_init() != ERROR_NONE)
     kaneton_error("cannot initialise the address space manager\n");
 
   /*
-   * 9)
+   * 10)
    */
 
-  //if (segment_init(FIT_FIRST) != ERROR_NONE)
-  //kaneton_error("cannot initialise the segment manager\n");
+  if (segment_init(FIT_FIRST) != ERROR_NONE)
+    kaneton_error("cannot initialise the segment manager\n");
 
   /*
-   * XXX debug start
+   * XXX debug_init()
    */
 
 #ifdef KANETON_SERIAL
@@ -147,7 +148,11 @@ void			kaneton(t_init*				bootloader)
 
   STATS_DUMP();
 
-  //segment_clean();
+  /*
+   * XXX
+   */
+
+  segment_clean();
 
   as_clean();
 

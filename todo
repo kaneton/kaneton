@@ -1,4 +1,10 @@
 --
+ dma service
+
+--
+ segments: address -> id et tester avec bpt
+
+--
  implementer des fonction *_print|show|view(id) qui affiche un element
  contrairement a dump() qui affiche tout
 

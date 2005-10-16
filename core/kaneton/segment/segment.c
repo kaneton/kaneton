@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Oct 13 21:18:28 2005   mycure
+ * last update   Fri Oct 14 10:47:52 2005   mycure
  */
 
 /*
@@ -601,26 +601,8 @@ t_error			segment_init(t_fit			fit)
 
 #if (DEBUG & DEBUG_SEGMENT)
   segment_dump();
-#endif
 
-#if 0
- {
-   t_segid	segid;
-
-   if (segment_rsv(kas, PAGESZ, PERM_EXEC, &segid) != ERROR_NONE)
-     printf("error: segment_rsv()\n");
-
-   if (segment_rel(kas, 01) != ERROR_NONE)
-     printf("error: segment_rel()\n");
-
-   if (segment_rel(kas, 03) != ERROR_NONE)
-     printf("error: segment_rel()\n");
-
-   segment_dump();
-
-   if (segment_flush(kas) != ERROR_NONE)
-     printf("error: segment_flush()\n");
- }
+  segment_test();
 #endif
 
   return (ERROR_NONE);
@@ -674,4 +656,31 @@ t_error			segment_clean(void)
   free(segment);
 
   return (ERROR_NONE);
+}
+
+/*
+ * XXX
+ */
+
+t_error			segment_test(void)
+{
+  t_segid		segid;
+
+  if (segment_rsv(kas, PAGESZ, PERM_EXEC, &segid) != ERROR_NONE)
+    printf("error: segment_rsv()\n");
+
+  if (segment_rel(kas, 01) != ERROR_NONE)
+    printf("error: segment_rel()\n");
+
+  if (segment_rel(kas, 03) != ERROR_NONE)
+    printf("error: segment_rel()\n");
+
+  /*
+   * XXX continue tests
+   */
+
+  segment_dump();
+
+  if (segment_flush(kas) != ERROR_NONE)
+    printf("error: segment_flush()\n");
 }

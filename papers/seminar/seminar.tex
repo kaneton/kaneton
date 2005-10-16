@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Sun Oct  9 14:02:21 2005   mycure
+%% last update   Sun Oct 16 21:23:53 2005   mycure
 %%
 
 %
@@ -97,6 +97,31 @@
                 {upmc}{../logos/upmc}
 \pgfdeclareimage[interpolate=true,width=25pt,height=18pt]
                 {lse}{../logos/lse}
+
+%
+% figures
+%
+
+\pgfdeclareimage[interpolate=true,width=233pt,height=170pt]
+                {distributed-operating-system}
+		{../figures/distributed-operating-system}
+\pgfdeclareimage[interpolate=true,width=226pt,height=170pt]
+                {servers}
+		{../figures/servers}
+\pgfdeclareimage[interpolate=true,width=170pt,height=170pt]
+                {microkernel}
+		{../figures/microkernel}
+
+\pgfdeclareimage[interpolate=true,width=150pt,height=25pt]
+                {generic-capabilities}
+		{../figures/generic-capabilities}
+\pgfdeclareimage[interpolate=true,width=150pt,height=75pt]
+                {specific-capabilities}
+		{../figures/specific-capabilities}
+
+\pgfdeclareimage[interpolate=true,width=188pt,height=170pt]
+                {sets}
+		{../figures/sets}
 
 %
 % table of contents at the beginning of each section
@@ -200,33 +225,77 @@
   \begin{itemize}
     \item
       Christophe Eymard
+    \item
+      Solal Jacob
   \end{itemize}
 \end{frame}
 
 % 3)
 
 \begin{frame}
-  \frametitle{Tools}
+  \frametitle{Concepts}
 
-  The tools used to develop the kaneton distributed operating systems
-  are UNIX classical tools:
+  The concepts used by the kaneton project are:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
-      gcc
+      Little objects linked to build more complex objects:
+      as, task etc..
     \item
-      cpp
+      Let's programs manage objects themselves
     \item
-      gmake
+      More parallelism: the kernel is able to create a dozen
+      of address spaces and then to insert segments and regions
+      into them or to migrate segments to another address space
     \item
-      ld
-    \item
-      etc..
+      Easier data structure recycling
   \end{itemize}
 
-  \nl
+  These concepts are mainly based on two things:
 
-  Of course the language used is the C language.
+  \begin{itemize}
+    \item
+      Every object is identified by an 64-bit identifier and manipulated
+      through the distributed system with a capability
+    \item
+      Every kernel manager uses a set to store data
+  \end{itemize}
+\end{frame}
+
+%
+% views
+%
+
+\section{Views}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Distributed Operating System}
+
+  \begin{center}
+    \pgfuseimage{distributed-operating-system}
+  \end{center}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Servers}
+
+  \begin{center}
+    \pgfuseimage{servers}
+  \end{center}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Microkernel}
+
+  \begin{center}
+    \pgfuseimage{microkernel}
+  \end{center}
 \end{frame}
 
 %
@@ -236,6 +305,28 @@
 \section{Goals}
 
 % 1)
+
+\begin{frame}
+  \frametitle{Project Goals}
+
+  The goals of the kaneton project were:
+
+  \begin{itemize}[<+->]
+    \item
+      To build a pedagogical project
+    \item
+      With the clearest possible design
+    \item
+      Using distributed features
+    \item
+      Dealing with portability
+    \item
+      Finally, an \textbf{all easy to understand}:
+      source code, design, microkernel, etc..
+  \end{itemize}
+\end{frame}
+
+% 2)
 
 \begin{frame}
   \frametitle{The Distributed Operating System Goals}
@@ -254,16 +345,14 @@
     \item
       Location transparent
     \item
-      Able to provide parallel programming facilities
+      Able to provide parallel and distributed programming facilities
     \item
       Neither totally centralised nor totally distributed ...
       scalable groups
-    \item
-      ... And maybe able to handle bizantine faults
   \end{itemize}
 \end{frame}
 
-% 2)
+% 3)
 
 \begin{frame}
   \frametitle{The Microkernel Goals}
@@ -276,8 +365,6 @@
     \item
       Able to run UNIX{\scriptsize \copyright} programs via
       an emulation library
-    \item
-      Never rewrite code already written before: LSE/OS
     \item
       Built for the distributed operating system requirements
   \end{itemize}
@@ -325,15 +412,23 @@
 \begin{frame}
   \frametitle{Communication}
 
-  \begin{itemize}[<+->]
-    \item
-      The communication abstraction used in kaneton is the messages
-    \item
-      Every event becomes a message including system calls, interrupts,
-      signals etc..
-    \item
-      No group communication is provided by the microkernel
-  \end{itemize}
+  The communication abstraction used in kaneton is the messages.
+
+  \nl
+
+  Every event becomes a message including system calls, interrupts,
+  signals etc..
+
+  \nl
+
+  No group communication is provided by the microkernel but by the distributed
+  operating system.
+
+  \nl
+
+  This communication scheme is used to communicate with the servers
+  of the machine as with the servers of the other machines, of
+  the distributed system.
 \end{frame}
 
 %
@@ -347,36 +442,21 @@
 \begin{frame}
   \frametitle{Memory}
 
-  \begin{itemize}[<+->]
-    \item
-      An address space is composed of segments and regions
-    \item
-      Segments are physical memory areas while regions are virtual memory
-      ones
-    \item
-      Segments can be accessed directly or via regions
-    \item
-      The use of regions does not constraint the programs to map
-      segments
-  \end{itemize}
+  An address space is composed of segments and regions.
 
   \nl
 
-  Concepts:
+  Segments are physical memory areas while regions are virtual memory
+  ones.
 
-  \begin{itemize}[<+->]
-    \item
-      Little objects linked to build more complex objects:
-      as, task etc..
-    \item
-      Let's programs manage objects themselves
-    \item
-      More parallelism: the kernel is now able to create a dozen
-      of address spaces and then to insert segments and regions
-      into them or to migrate segments to another address space
-    \item
-      Easier data structure recycling
-  \end{itemize}
+  \nl
+
+  The address space object is just a container for the segment and
+  the regions.
+
+  \nl
+
+  Segments can be accessed directly or via regions.
 \end{frame}
 
 %
@@ -396,7 +476,12 @@
   \nl
 
   Indeed, it is not conceivable to allow a process on a machine
-  to allow memory on another one without security.
+  to reserve an object and to manipulate it over the distributed
+  system without security.
+
+  \nl
+
+  We needed a very ligth authentication system.
 
   \nl
 
@@ -407,34 +492,62 @@
 % 2)
 
 \begin{frame}
-  \frametitle{Objects And Protections}
+  \frametitle{Capabilities}
 
-  \begin{itemize}[<+->]
-    \item
-      Capabitlites are used to protect objects. Permit tasks to generate
-      less privileged capabilities and to give them to other tasks
+  Capabitlites are used to protect objects. Permit tasks to generate
+  less privileged capabilities and to give them to other tasks.
 
-      \nl
+  \nl
 
-      Examples: \textit{segments manipulation and address spaces manipulation}
-    \item
-      A capability is composed of: object identifier, permissions,
-      security check, and optional fields including location, lifetime
-      etc..
-    \item
-      Generic capabilities versus \alert{specific} capabilities
+  Example: \textit{address spaces manipulation}
 
-      \nl
+  \nl
 
-      Examples: \textit{file system and printers server: identifiers
-        and operations}
-    \item
-      So, the kaneton microkernel will use specific and specialised
-      capabilities
-  \end{itemize}
+  A capability is composed of: object identifier, permissions,
+  security check, and optional fields including location, lifetime
+  etc..
+
+  \nl
+
+  There exist two types of capabilities: generic capabilities versus
+  \alert{specific} capabilities.
+
+  \nl
+
+  Examples: \textit{file system and printers server: identifiers
+    and operations}
+
+  \nl
+
+  The kaneton microkernel will use specific and specialised capabilities.
 \end{frame}
 
 % 3)
+
+\begin{frame}
+  \frametitle{Generic Capabilities}
+
+  An example of generic capabilities from the Amoeba distributed operating
+  system.
+
+  \begin{center}
+    \pgfuseimage{generic-capabilities}
+  \end{center}
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Specific Capabilities}
+
+  Examples of specific capabilities used in kaneton.
+
+  \begin{center}
+    \pgfuseimage{specific-capabilities}
+  \end{center}
+\end{frame}
+
+% 5)
 
 \begin{frame}
   \frametitle{Specific Capabilities' Inherent Problems}
@@ -448,9 +561,11 @@
     \item
       So a slower mechanism for capability generation
   \end{itemize}
+
+  \nl
 \end{frame}
 
-% 4)
+% 6)
 
 \begin{frame}
   \frametitle{But...}
@@ -461,7 +576,7 @@
       capability format: without object identifier, with extended
       permissions etc..
     \item
-      Moreover, capability generation is rare and generally used
+      Moreover, capability generation is seldom and generally used
       to restrict permissions
     \item
       The mechanism is performant in a normal use but can become
@@ -469,12 +584,13 @@
   \end{itemize}
 \end{frame}
 
-% 5)
+% 7)
 
 \begin{frame}
   \frametitle{Security Policies}
 
-  The capability security check field does not garantee objects security.
+  The capability security check field does not garantee objects security on
+  the entire distributed system.
 
   \nl
 
@@ -501,31 +617,110 @@
 % 1)
 
 \begin{frame}
+  \frametitle{Overview}
+
+  The current systems like linux, BSD, solaris etc.. generally use
+  doubly linked-list data structures to organise internals data like
+  tasks structures, cache structures, memory allocators etc..
+
+  \nl
+
+  Finally, with many pointers, the structures become very hard to understand
+  and to manipulate leading to many programming errors so to kernel
+  crashes.
+
+  \nl
+
+  We decided to adopt another way.
+
+  \nl
+
+  In kaneton, all the data structures are managed by the set manager.
+
+  \nl
+
+  Using a very simple and generic interface, the entire microkernel source
+  code become very elegant, so more understandable by the students.
+\end{frame}
+
+% 2)
+
+\begin{frame}
   \frametitle{Set}
 
-  \begin{itemize}[<+->]
-    \item
-      The set manager is used to organise data
-    \item
-      Every kernel manager use it
+  The set manager is used to organise data.
 
-      \nl
+  \nl
 
-      Example: \textit{Segment, Regions, Address Spaces, Tasks etc..}
-    \item
-      Leads to a very elegant and maintenable source code
-    \item
-      Optimisations are possible in the set manager and not in every
-      manager using such a data structure
-    \item
-      Comparison with other systems: pointers. Leads to many
-      programming confusions and errors
-    \item
-      Many different data structures provided: linked list, circular
-      queue, pipe, stack, binary tree, array, b+-tree etc..
-    \item
-      Tools are also provided to improve performances: iterators etc..
-  \end{itemize}
+  Every kernel manager use it to store its data rather than doing it
+  by itself.
+
+  \nl
+
+  Examples: \textit{Segment, Regions, Address Spaces, Tasks etc..}
+
+  \nl
+
+  This organisation leads to a very elegant and maintenable source code.
+
+  \nl
+
+  Optimisations are possible in the set manager and not in every
+  manager using such a data structure like other systems do.
+
+  \nl
+
+  Many different data structures are provided: linked list, circular
+  queue, pipe, stack, hash tables, binary tree, array, b+-tree etc..
+
+  \nl
+
+  Some tools are also provided to improve performances: iterators etc..
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Implementation}
+
+  The set manager needs to allocate memory. Indeed, the set manager
+  is build over the malloc() function.
+
+  \nl
+
+  Neverthless, the malloc() function needs to allocate physical and
+  virtual memory so to use the segments and regions managers.
+
+  \nl
+
+  But, the segments and regions managers use the set manager to store data.
+
+  \nl
+
+  To resolve this major problem, the malloc() function uses a survey area
+  of memory used to provide fine-grained memory areas for the boot time
+  of the kernel.
+
+  \nl
+
+  Then, the set manager uses the malloc() function to store data and all
+  the kernel managers use the set manager. The kernel boot source code
+  is so very beautiful contrary to other systems.
+
+  \nl
+
+  Moreover, the set manager has a set container to hold the set objects. This
+  container is, in fact, also a set object.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Figure}
+
+  \begin{center}
+    \pgfuseimage{sets}
+  \end{center}
 \end{frame}
 
 %
@@ -539,9 +734,9 @@
 \begin{frame}
   \frametitle{Process}
 
-  The kaneton kernel is composed of different entities:
+  The kaneton microkernel is composed of different entities:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{Module}: avoid dependencies after a crash
     \item
@@ -561,15 +756,11 @@
 
   \nl
 
-  A task has an address space and one or more threads.
+  A task is composed of an address space and one or more threads.
 
   \nl
 
-  The thread is the active entity because it is scheduled.
-
-  \nl
-
-  ... Once again, easy data structure recycling and more parallelism.
+  The thread is the active scheduled entity.
 \end{frame}
 
 % 2)
@@ -579,7 +770,7 @@
 
   Each task has:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       A \textbf{class} specifying its system privileges
     \item
@@ -592,7 +783,7 @@
 
   Each thread has:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       A \textbf{priority} specifying its current priority
   \end{itemize}
@@ -614,7 +805,7 @@
 \begin{frame}
   \frametitle{Processor}
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Each thread can choose its processors
     \item
@@ -623,6 +814,12 @@
       This feature increases the parallelism allowing very
       specific threads with more interactive ones
   \end{itemize}
+
+  In kaneton, a task will be configured to run with X processors.
+
+  \nl
+
+  Then, each thread will be able to choose its processors.
 \end{frame}
 
 %
@@ -635,6 +832,8 @@
 
 \begin{frame}
   \frametitle{Servers}
+
+  Some examples of servers in kaneton:
 
   \begin{enumerate}
     \item
@@ -655,9 +854,9 @@
     \item
       Composed of two subparts: \textbf{mod} and \textbf{modfs}
     \item
-      mod keeps track of most used modules
+      \textbf{mod} keeps track of most used modules
     \item
-      modfs is a main memory file system
+      \textbf{modfs} is a main memory file system
     \item
       Each module has a \textbf{lifetime}. The fundamental drivers
       and services modules have infinite lifetimes while user applications
@@ -705,7 +904,8 @@
     \item
       The distributed shared memory part can become a member of the
       distributed shared memory group, but this point will not be
-      explained here.
+      explained here but in the distributed operating system section of
+      this document.
   \end{itemize}
 \end{frame}
 
@@ -721,6 +921,38 @@
   \begin{itemize}[<+->]
     \item ... comming soon ...
   \end{itemize}
+\end{frame}
+
+%
+% tools
+%
+
+\section{Tools}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Tools}
+
+  The tools used to develop the kaneton distributed operating systems
+  are UNIX classical tools:
+
+  \begin{itemize}
+    \item
+      gcc
+    \item
+      cpp
+    \item
+      gmake
+    \item
+      ld
+    \item
+      etc..
+  \end{itemize}
+
+  \nl
+
+  The language used to develop kaneton is the C language.
 \end{frame}
 
 \end{document}

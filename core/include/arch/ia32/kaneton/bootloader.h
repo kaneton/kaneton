@@ -5,13 +5,13 @@
  * 
  * bootloader.h
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Tue Aug 30 15:41:25 2005   mycure
+ * last update   Fri Oct 14 10:45:14 2005   mycure
  */
 
 #ifndef IA32_KANETON_BOOTLOADER_H
@@ -21,10 +21,11 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
+#include <arch/ia32/ia32/types.h>
 #include <arch/ia32/ia32/pmode.h>
 #include <arch/ia32/ia32/paging.h>
+
 #include <arch/ia32/services/cons.h>
-#include <arch/ia32/ia32/types.h>
 
 /*
  * ---------- types -----------------------------------------------------------
