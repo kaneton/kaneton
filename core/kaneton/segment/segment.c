@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Oct 14 10:47:52 2005   mycure
+ * last update   Mon Oct 17 10:26:45 2005   mycure
  */
 
 /*
