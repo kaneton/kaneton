@@ -3,7 +3,7 @@
 ## 
 ## kaneton
 ## 
-## viewer.sh
+## exporter.sh
 ## 
 ## path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
 ## 
@@ -11,26 +11,21 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Tue Oct 18 23:46:01 2005   mycure
+## last update   Wed Oct 19 00:04:50 2005   mycure
 ##
 
 # INFORMATIONS
 #
-# this script has to be run in the directory src/papers
+# this script has to be run in the directory src/export
 
 
 
 # GLOBAL VALUES
 #
 # global values
-_PAPERS_="								\
-  design kaneton assignments seminar					\
-  lectures/advanced-makefiles lectures/arch-ia32 lectures/asm-x86	\
-  lectures/c lectures/c-preprocessor					\
-  lectures/distributed-operating-systems lectures/inline-assembly	\
-  lectures/kernels"
-_PATH_=""
-_PAPER_=""
+_STAGES_="k1 k2 k3 k4 k5 k6 k7 k8 k9"
+_STAGE_=""
+_INPUT_=""
 
 
 
@@ -40,14 +35,12 @@ _PAPER_=""
 _CONF_="../conf/"$USER"/"$USER".conf"
 
 
+
 # CONFIGURATION FILE VARIABLES
 #
 # default globals
+_KANETON_EXPORT_="unknown"
 _DISPLAY_="unknown"
-_DVI_VIEWER_="unknown"
-_PS_VIEWER_="unknown"
-_PDF_VIEWER_="unknown"
-_VIEW_FORMAT_="unknown"
 
 
 
@@ -60,17 +53,9 @@ read_kaneton_conf()
   # display
   _DISPLAY_=`cat $_CONF_ | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
 
-  # dvi viewer
-  _DVI_VIEWER_=`cat $_CONF_ | grep -E "^_DVI_VIEWER_ = .*$" | cut -b 16-`
-
-  # ps viewer
-  _PS_VIEWER_=`cat $_CONF_ | grep -E "^_PS_VIEWER_ = .*$" | cut -b 15-`
-
-  # pdf viewer
-  _PDF_VIEWER_=`cat $_CONF_ | grep -E "^_PDF_VIEWER_ = .*$" | cut -b 16-`
-
-  # view format
-  _VIEW_FORMAT_=`cat $_CONF_ | grep -E "^_VIEW_FORMAT_ = .*$" | cut -b 17-`
+  # kaneton export
+  _KANETON_EXPORT_=`cat $_CONF_ | grep -E "^_KANETON_EXPORT_ = .*$" |	\
+                    cut -b 20-`
 }
 
 
@@ -80,17 +65,9 @@ read_kaneton_conf()
 # this function displays the usage but does not exit
 usage()
 {
-  display " papers:" "+"
+  display " usage: exporter.sh [stage]" "!"
   display ""
-
-  for i in $_PAPERS_ ; do
-    name=`basename $i`
-    display "   $name" "+"
-  done
-
-  display ""
-
-  display " usage: viewer.sh [paper]" "!"
+  display " available stages: $_STAGES_"
 }
 
 
@@ -102,12 +79,7 @@ warning()
 {
   # display information and ask the user to continue or cancel
   display " your current configuration" "+"
-  display "   dvi viewer:               $_DVI_VIEWER_" "+"
-  display "   ps viewer:                $_PS_VIEWER_" "+"
-  display "   pdf viewer:               $_PDF_VIEWER_" "+"
-  display "   view format:              $_VIEW_FORMAT_" "+"
-  display ""
-  display "   paper:                    $_PATH_" "+"
+  display "   stage:                    $_STAGE_" "+"
   display ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
@@ -119,20 +91,19 @@ warning()
 
 # LOCATE
 #
-# this functions locates the paper
+# this functions locates the stage
 locate()
 {
-  for i in $_PAPERS_ ; do
-    name=`basename $i`
-    echo $name | grep $_PAPER_ 2> /dev/null > /dev/null
+  for s in $_STAGES_ ; do
+    echo $s | grep $_INPUT_ 2> /dev/null > /dev/null
 
     if [ $? -eq 0 ] ; then
-      _PATH_=$i
+      _STAGE_=$s
     fi
   done
 
-  if [ -z $_PATH_ ] ; then
-    display " unknown paper \"$_PAPER_\"" "!"
+  if [ -z $_STAGE_ ] ; then
+    display " unknown stage \"$_INPUT_\"" "!"
     display ""
     usage
     exit -1
@@ -143,51 +114,66 @@ locate()
 
 # BUILD
 #
-# this function builds the paper
+# this function builds an exported distribution given the stage
 build()
 {
-  display " building the paper: $_PATH_" "+"
-  display ""
+  # removes the old directory for this stage
 
-  make -s -C $_PATH_ $_VIEW_FORMAT_
+  rm -f $_STAGE_.tar.gz
+  rm -Rf $_STAGE_
+
+  # creates a tarball from the current working development tree
+
+  cd ../
+  tar -czf /tmp/kaneton.tar.gz .
+  cd export
+
+  # cleans the copy of the current working development tree
+
+  mkdir $_STAGE_
+  tar -xzf /tmp/kaneton.tar.gz -C $_STAGE_
+
+  cd $_STAGE_
+  rm -Rf `find ./ -type d -name .svn`
+  cd ..
+
+  # cleans every unwanted source code given the stage
+
+  cd $_STAGE_
+
+  c_files=`find ./ -type f -name "*.c"`
+  h_files=`find ./ -type f -name "*.h"`
+  asm_files=`find ./ -type f -name "*.asm"`
+  S_files=`find ./ -type f -name "*.S"`
+
+  files="$c_files $h_files $asm_files $S_files"
+
+  for f in $files ; do
+    cat $f | sed "/^.*<<<.*$_STAGE_.*$/,/^.*>>>.*$_STAGE_.*$/ d" >	\
+      /tmp/$_STAGE_
+    cp /tmp/$_STAGE_ $f
+  done
+
+  cd ..
 }
 
 
 
-# VIEW
+# DIST
 #
-# this function displays the paper
-view()
+# this function makes a distribution from the exported version
+dist()
 {
-  name=`basename $_PATH_`
+  tar -czf $_STAGE_.tar.gz $_STAGE_
 
-  case "$_VIEW_FORMAT_" in
-    "dvi")
-      $_DVI_VIEWER_ $_PATH_/$name.dvi
-      ;;
-
-    "ps")
-      $_PS_VIEWER_ $_PATH_/$name.ps
-      ;;
-
-    "pdf")
-      $_PDF_VIEWER_ $_PATH_/$name.pdf
-      ;;
-
-    *)
-      display " unknown view format: \"$_VIEW_FORMAT_\"" "!"
-      display ""
-      usage
-      exit -1
-      ;;
-  esac
+  rm -Rf $_STAGE_
 }
 
 
 
 # PRINT A MESSAGE
 #
-# prints a message using the user variable _DISPLAY_
+# prints a message using the user variable DISPLAY
 print()
 {
   color=$1
@@ -279,11 +265,11 @@ if [ $# -lt 1 ] ; then
     exit -1
 fi
 
-_PAPER_="$1"
+_INPUT_="$1"
 shift
 
-# preparing the paper
-display " preparing the paper" "+"
+# preparing to export
+display " preparing to export" "+"
 display ""
 
 # call the locate function
@@ -295,5 +281,8 @@ warning
 # call the build function
 build
 
-# call the view function
-view
+# call the dist function
+dist
+
+# end of export
+display " $stage exported successfully" "+"

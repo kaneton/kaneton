@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Tue Oct 18 22:25:17 2005   mycure
+## last update   Tue Oct 18 23:09:31 2005   mycure
 ##
 
 #
@@ -30,21 +30,18 @@ include			../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		design				\
-					kaneton				\
-					assignments			\
-					seminar				\
-					lectures			
+STAGES			:=		k1 k2 k3 k4 k5 k6 k7 k8 k9
+DISTS			:=		$(patsubst %,%.tar.gz,$(STAGES))
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
 all:
-	$(call make,$(SUBDIRS),)
 
 clear:
-	$(call make,$(SUBDIRS),clear)
+	$(call remove,$(STAGES),-R)
+	$(call remove,$(DISTS),)
 
 	$(call purge)
 

@@ -5,13 +5,13 @@
 ## 
 ## clean
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Oct 10 18:15:05 2005   mycure
+## last update   Tue Oct 18 23:58:03 2005   mycure
 ##
 
 # INFORMATIONS
@@ -25,23 +25,23 @@
 # CONFIGURATION FILE PATH
 #
 # the configuration file
-CONF="conf/"$USER"/"$USER".conf"
+_CONF_="conf/"$USER"/"$USER".conf"
 
 
 
 # CONFIGURATION FILE VARIABLES
 #
 # default globals
-DISPLAY="unknown"
-ENVIRONMENT="unknown"
-ARCHITECTURE="unknwon"
+_DISPLAY_="unknown"
+_ENVIRONMENT_="unknown"
+_ARCHITECTURE_="unknwon"
 
 
 
 # INSTALL SPECIFIC VARIABLES
 #
 # generic names for this script
-KANETON_MK=".kaneton.mk"
+_KANETON_MK_=".kaneton.mk"
 
 
 
@@ -52,13 +52,13 @@ KANETON_MK=".kaneton.mk"
 read_kaneton_conf()
 {
   # display
-  DISPLAY=`cat $CONF | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
+  _DISPLAY_=`cat $_CONF_ | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
 
   # environment
-  ENVIRONMENT=`cat $CONF | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
+  _ENVIRONMENT_=`cat $_CONF_ | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
 
   # architecture
-  ARCHITECTURE=`cat $CONF | grep -E "^_ARCHITECTURE_ = .*$" | cut -b 18-`
+  _ARCHITECTURE_=`cat $_CONF_ | grep -E "^_ARCHITECTURE_ = .*$" | cut -b 18-`
 }
 
 
@@ -69,14 +69,14 @@ read_kaneton_conf()
 clean()
 {
   # cleaning dev tree
-  if [ -e $KANETON_MK ] ; then
+  if [ -e $_KANETON_MK_ ] ; then
     display "   cleaning development tree" "+"
     make clear 1>&2 > /dev/null
   fi
 
   # makefile dependencies
   display "   cleaning makefile dependencies" "+"
-  rm -f $KANETON_MK
+  rm -f $_KANETON_MK_
 
   # remove the links to machine-dependent directories
   display "   removing links to machine-dependent directories" "+"
@@ -99,7 +99,7 @@ print()
   message=$2
   options=$3
 
-  if [ $DISPLAY = "color" ] ; then
+  if [ $_DISPLAY_ = "color" ] ; then
 
     case "$color" in
       "red")

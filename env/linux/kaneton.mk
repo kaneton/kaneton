@@ -5,13 +5,13 @@
 ## 
 ## .kaneton.mk
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/export
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Mon Oct 10 21:21:06 2005   mycure
+## last update   Tue Oct 18 22:28:23 2005   mycure
 ## last update   Thu Sep 15 16:58:31 2005   mycure
 ##
 
@@ -19,7 +19,7 @@
 # ---------- informations -----------------------------------------------------
 #
 # you generally do not need to modify the kaneton directories,
-# makefiles dependency, kaneton utils, kaneton binaries, kaneton
+# makefiles dependency, kaneton tools, kaneton binaries, kaneton
 # libraries and user configuration addons.
 #
 # nevertheless, you can change the c compiler, compiler and linker
@@ -57,12 +57,12 @@ _CORE_KANETON_DIR_	:=		$(_SRC_DIR_)/core/kaneton
 _MACHDEP_KANETON_DIR_	:=		$(_CORE_KANETON_DIR_)/arch/machdep
 _MACHDEP_INCLUDE_DIR_	:=		$(_CORE_INCLUDE_DIR_)/arch/machdep
 
-_DIST_DIR_		:=		$(_SRC_DIR_)/dist
 _ENV_DIR_		:=		$(_SRC_DIR_)/env
 _LDS_DIR_		:=		$(_SRC_DIR_)/lds/arch/machdep
 _CONF_DIR_		:=		$(_SRC_DIR_)/conf
-_UTILS_DIR_		:=		$(_SRC_DIR_)/utils
+_TOOLS_DIR_		:=		$(_SRC_DIR_)/tools
 _PAPERS_DIR_		:=		$(_SRC_DIR_)/papers
+_EXPORT_DIR_		:=		$(_SRC_DIR_)/export
 
 _LIBS_DIR_		:=		$(_SRC_DIR_)/libs
 _LIBS_INCLUDE_DIR_	:=		$(_LIBS_DIR_)
@@ -77,11 +77,12 @@ _INCLUDES_		:=		-I$(_CORE_INCLUDE_DIR_)		\
 _MAKEFILE_MK_		:=		.makefile.mk
 
 #
-# ---------- kaneton utils ----------------------------------------------------
+# ---------- kaneton tools ----------------------------------------------------
 #
 
-_PROTO_			:=		$(_UTILS_DIR_)/mkp.py
+_PROTO_			:=		$(_TOOLS_DIR_)/mkp.py
 _VIEWER_		:=		$(_PAPERS_DIR_)/viewer.sh
+_EXPORTER_		:=		$(_EXPORT_DIR_)/exporter.sh
 
 #
 # ---------- kaneton binaries -------------------------------------------------
@@ -148,7 +149,7 @@ MAKEFLAGS		:=		$(_MAKEFLAGS_)
 
 _MAKE_			:=		make
 _RM_			:=		rm -f
-_PURGE_			:=		$(RM) *~ .*~ \#* .\#*
+_PURGE_			:=		$(_RM_) *~ .*~ \#* .\#*
 _AR_			:=		ar cq
 _RANLIB_		:=		ranlib
 _CD_			:=		cd
@@ -162,6 +163,7 @@ _TAR_			:=		tar
 _LATEX_			:=		latex
 _DVIPS_			:=		dvips
 _PDFLATEX_		:=		pdflatex
+_CP_			:=		cp
 
 #
 # ---------- traps ------------------------------------------------------------
@@ -509,16 +511,6 @@ endef
 define link
   $(call pretty-printer,cyan,LINK,$(1),			)		; \
   $(_LN_) $(3) $(2) $(1) $(_VERBOSE_)
-endef
-
-#
-# create a distribution tarball
-#
-
-define dist
-  $(call pretty-printer,yellow,DIST,kaneton,			)	; \
-  $(_TAR_) -czf /tmp/kaneton.tar.gz .					; \
-  $(_MV_) /tmp/kaneton.tar.gz .
 endef
 
 # 

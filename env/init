@@ -5,37 +5,36 @@
 ## 
 ## init
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Oct 10 22:38:09 2005   mycure
+## last update   Tue Oct 18 23:47:26 2005   mycure
 ##
 
 # INFORMATIONS
 #
 # this script has to be run in its directory: src/env/
-# or with "make init" in the src/ directory
 
 
 
 # CONFIGURATION FILE PATH
 #
 # the configuration file
-CONF="../conf/"$USER"/"$USER".conf"
+_CONF_="../conf/"$USER"/"$USER".conf"
 
 
 
 # CONFIGURATION FILE VARIABLES
 #
 # default globals
-DISPLAY="unknown"
-LIBC="unknown"
-ENVIRONMENT="unknown"
-ARCHITECTURE="unknwon"
-MULTIBOOTLOADER="unknown"
+_DISPLAY_="unknown"
+_LIBC_="unknown"
+_ENVIRONMENT_="unknown"
+_ARCHITECTURE_="unknwon"
+_MULTIBOOTLOADER_="unknown"
 
 
 
@@ -46,19 +45,20 @@ MULTIBOOTLOADER="unknown"
 read_kaneton_conf()
 {
   # display
-  DISPLAY=`cat $CONF | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
+  _DISPLAY_=`cat $_CONF_ | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
 
   # libc
-  LIBC=`cat $CONF | grep -E "^_LIBC_ = .*$" | cut -b 10-`
+  _LIBC_=`cat $_CONF_ | grep -E "^_LIBC_ = .*$" | cut -b 10-`
 
   # environment
-  ENVIRONMENT=`cat $CONF | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
+  _ENVIRONMENT_=`cat $_CONF_ | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
 
   # architecture
-  ARCHITECTURE=`cat $CONF | grep -E "^_ARCHITECTURE_ = .*$" | cut -b 18-`
+  _ARCHITECTURE_=`cat $_CONF_ | grep -E "^_ARCHITECTURE_ = .*$" | cut -b 18-`
 
   # multibootloader
-  MULTIBOOTLOADER=`cat $CONF | grep -E "^_MULTIBOOTLOADER_ = .*$" | cut -b 21-`
+  _MULTIBOOTLOADER_=`cat $_CONF_ | grep -E "^_MULTIBOOTLOADER_ = .*$" |	\
+                     cut -b 21-`
 }
 
 
@@ -80,10 +80,10 @@ warning()
 {
   # display information and ask the user to continue or cancel
   display " your current configuration:" "+"
-  display "   libc:                     $LIBC" "+"
-  display "   environment:              $ENVIRONMENT" "+"
-  display "   architecture:             $ARCHITECTURE" "+"
-  display "   multibootloader:          $MULTIBOOTLOADER" "+"
+  display "   libc:                     $_LIBC_" "+"
+  display "   environment:              $_ENVIRONMENT_" "+"
+  display "   architecture:             $_ARCHITECTURE_" "+"
+  display "   multibootloader:          $_MULTIBOOTLOADER_" "+"
   display ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
@@ -119,21 +119,10 @@ environments()
 # of your operating system
 init()
 {
-  if [ ! -d env/$ENVIRONMENT ] ; then
-    display " unknown system: $ENVIRONMENT" "!"
+  if [ ! -d env/$_ENVIRONMENT_ ] ; then
+    display " unknown system: $_ENVIRONMENT_" "!"
     display ""
-    display " please check your ENVIRONMENT variable in $CONF" "!"
-    display ""
-    environments
-    display ""
-    usage
-    exit
-  fi
-
-  if [ ! -e env/$ENVIRONMENT/init ] ; then
-    display " unknown system: $ENVIRONMENT" "!"
-    display ""
-    display " please check your ENVIRONMENT variable in $CONF" "!"
+    display " please check your ENVIRONMENT variable in $_CONF_" "!"
     display ""
     environments
     display ""
@@ -141,7 +130,18 @@ init()
     exit
   fi
 
-  ./env/$ENVIRONMENT/init
+  if [ ! -e env/$_ENVIRONMENT_/init ] ; then
+    display " unknown system: $_ENVIRONMENT_" "!"
+    display ""
+    display " please check your ENVIRONMENT variable in $_CONF_" "!"
+    display ""
+    environments
+    display ""
+    usage
+    exit
+  fi
+
+  ./env/$_ENVIRONMENT_/init
 }
 
 
@@ -180,14 +180,14 @@ dep()
 
 # PRINT A MESSAGE
 #
-# prints a message using the user variable DISPLAY
+# prints a message using the user variable _DISPLAY_
 print()
 {
   color=$1
   message=$2
   options=$3
 
-  if [ $DISPLAY = "color" ] ; then
+  if [ $_DISPLAY_ = "color" ] ; then
 
     case "$color" in
       "red")

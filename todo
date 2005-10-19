@@ -1,10 +1,15 @@
 --
+ systeme de reboot automatique avec le protocole SNMP snmp-tools
+
+--
   moulinette de decoupage:
     1) soit un systeme de diff pour encadrer la zone de decoupage dans
        un fichier de conf de decoupage
     2) soit un systeme de balises directement dans le code:
          /* <k2 k3 k4> */
          /* </k2 k3 k4> */
+    3) systeme de patchs pur et simple pour delete du code dans certains
+       fichiers avec systeme de liens sur les patchs de k precedents.
 
 --
  dma service

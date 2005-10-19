@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Mon Oct 10 06:08:08 2005   mycure
+%% last update   Mon Oct 17 21:51:48 2005   mycure
 %%
 
 %
@@ -402,7 +402,7 @@
     $ 
   \end{verbatim}
 
-  Then is the programmer modifies the header file, the \textbf{main} object
+  Then if the programmer modifies the header file, the \textbf{main} object
   file will not be rebuilt; this is a serious limitation.
 
   \nl
@@ -631,9 +631,39 @@
 
 % 1)
 
-%%%\frame{Overview}
-%%%\frame{.PHONY}
-%%%\frame{etc..}
+\begin{frame}
+  \frametitle{Overview}
+
+  The directives are used to parameter the entire makefile.
+
+  \nl
+
+  Let's see the most powerful directives.
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{.PHONY}
+    \item
+      \textbf{export}
+    \item
+      \textbf{.SUFFIXES}
+    \item
+      \textbf{.DEFAULT}
+    \item
+      \textbf{.IGNORE}
+    \item
+      \textbf{.SILENT}
+    \item
+      others..
+  \end{itemize}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{}
+
+\end{frame}
 
 \subsection{Default Rule}
 

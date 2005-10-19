@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Oct 10 18:17:56 2005   mycure
+## last update   Wed Oct 19 00:21:08 2005   mycure
 ##
 
 #
@@ -27,7 +27,8 @@
 .SILENT:
 
 .PHONY:		all init clean kaneton clear purge proto		\
-		dep build install check info dist kaneton.mk
+		dep build install check info export			\
+		view view- export export- kaneton.mk
 
 #
 # ---------- variables --------------------------------------------------------
@@ -83,6 +84,7 @@ clear:			kaneton.mk
 	$(call make,$(SUBDIRS),clear)
 
 	$(call make,papers/,clear)
+	$(call make,export/,clear)
 
 purge:			kaneton.mk
 	$(call purge,)
@@ -106,12 +108,12 @@ dep:			kaneton.mk
 #
 
 build:			kaneton.mk
-	cd utils/							; \
+	cd $(_TOOLS_DIR_)						; \
 	$(_SHELL_) $(_MULTIBOOTLOADER_) build				; \
 	cd ..
 
 install:		kaneton.mk kaneton
-	cd utils/							; \
+	cd $(_TOOLS_DIR_)						; \
 	$(_SHELL_) $(_MULTIBOOTLOADER_) install				; \
 	cd ..
 
@@ -127,20 +129,15 @@ check:
 # ---------- view -------------------------------------------------------------
 #
 
+view- view:		kaneton.mk
+	cd $(_PAPERS_DIR_)						; \
+	$(_SHELL_) $(_VIEWER_)						; \
+	cd ..
+
 view-%:			kaneton.mk
-	if [ $* == ".o" ] ; then					\
-	  ARG=""							; \
-	else								\
-	  ARG=$*							; \
-	fi								; \
-									\
-	cd papers/							; \
-	$(_SHELL_) $(_VIEWER_) $$ARG					; \
-	cd ..								; \
-									\
-	if [ $* == ".o" ] ; then					\
-	  exit 2							; \
-	fi
+	cd $(_PAPERS_DIR_) 						; \
+	$(_SHELL_) $(_VIEWER_) $*					; \
+	cd ..
 
 #
 # ---------- information ------------------------------------------------------
@@ -201,8 +198,15 @@ info:			kaneton.mk
 	$(call print,white,,)
 
 #
-# ---------- distribution -----------------------------------------------------
+# ---------- export -----------------------------------------------------------
 #
 
-dist:			kaneton.mk kaneton
-	$(call dist)
+export- export:		kaneton.mk clear
+	cd $(_EXPORT_DIR_)						; \
+	$(_SHELL_) $(_EXPORTER_)					; \
+	cd ..
+
+export-%:		kaneton.mk clear
+	cd $(_EXPORT_DIR_)						; \
+	$(_SHELL_) $(_EXPORTER_) $*					; \
+	cd ..

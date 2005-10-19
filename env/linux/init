@@ -5,43 +5,41 @@
 ## 
 ## init
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Oct 10 18:14:42 2005   mycure
+## last update   Tue Oct 18 23:50:54 2005   mycure
 ##
 
 # INFORMATIONS
 #
 # this script has to be run in the directory src/
-#
-# this script must always be run by the script src/env/init
 
 
 
 # CONFIGURATION FILE PATH
 #
 # the configuration file
-CONF="conf/"$USER"/"$USER".conf"
+_CONF_="conf/"$USER"/"$USER".conf"
 
 
 
 # CONFIGURATION FILE VARIABLES
 #
 # default globals
-DISPLAY="unknown"
-ENVIRONMENT="unknown"
-ARCHITECTURE="unknwon"
+_DISPLAY_="unknown"
+_ENVIRONMENT_="unknown"
+_ARCHITECTURE_="unknwon"
 
 
 
 # INSTALL SPECIFIC VARIABLES
 #
 # generic names for this script
-KANETON_MK=".kaneton.mk"
+_KANETON_MK_=".kaneton.mk"
 
 
 
@@ -49,7 +47,7 @@ KANETON_MK=".kaneton.mk"
 #
 # the list of binaries used to compile the kaneton kernel on
 # linux operating systems.
-BINARIES="gcc make rm ar ranlib ld nasm ln touch tail wc tar"
+_BINARIES_="gcc make rm ar ranlib ld nasm ln touch tail wc tar sed mtools"
 
 
 
@@ -60,13 +58,13 @@ BINARIES="gcc make rm ar ranlib ld nasm ln touch tail wc tar"
 read_kaneton_conf()
 {
   # display
-  DISPLAY=`cat $CONF | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
+  _DISPLAY_=`cat $_CONF_ | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
 
   # environment
-  ENVIRONMENT=`cat $CONF | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
+  _ENVIRONMENT_=`cat $_CONF_ | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
 
   # architecture
-  ARCHITECTURE=`cat $CONF | grep -E "^_ARCHITECTURE_ = .*$" | cut -b 18-`
+  _ARCHITECTURE_=`cat $_CONF_ | grep -E "^_ARCHITECTURE_ = .*$" | cut -b 18-`
 }
 
 
@@ -79,7 +77,7 @@ check()
 {
   display "   checking binaries" "+"
 
-  for i in $BINARIES ; do
+  for i in $_BINARIES_ ; do
     which $i 2> /dev/null > /dev/null
     if [ $? -ne 0 ] ; then
       display "    binary '$i' not present on your system" "!"
@@ -95,15 +93,15 @@ check()
 init()
 {
   # makefile dependencies
-  GENERIC_KANETON_MK="env/"$ENVIRONMENT"/kaneton.mk"
+  generic_kaneton_mk="env/"$_ENVIRONMENT_"/kaneton.mk"
 
   # sed
   display "   generating makefile dependencies" "+"
 
-  rm -f $KANETON_MK
+  rm -f $_KANETON_MK_
 
-  sed s/___kaneton_sed___/$(pwd | sed 's/\//\\\//g')/g $GENERIC_KANETON_MK \
-      > $KANETON_MK
+  sed s/___kaneton_sed___/$(pwd | sed 's/\//\\\//g')/g $generic_kaneton_mk \
+      > $_KANETON_MK_
 
   # create the symbolic link for architecture dependencies
   display "   installing links to machine-dependent directories" "+"
@@ -114,11 +112,11 @@ init()
   rm -f core/kaneton/arch/machdep
   rm -f lds/arch/machdep
 
-  ln -s $ARCHITECTURE core/bootstrap/arch/machdep
-  ln -s $ARCHITECTURE core/bootloader/arch/machdep
-  ln -s $ARCHITECTURE core/include/arch/machdep
-  ln -s $ARCHITECTURE core/kaneton/arch/machdep
-  ln -s $ARCHITECTURE lds/arch/machdep
+  ln -s $_ARCHITECTURE_ core/bootstrap/arch/machdep
+  ln -s $_ARCHITECTURE_ core/bootloader/arch/machdep
+  ln -s $_ARCHITECTURE_ core/include/arch/machdep
+  ln -s $_ARCHITECTURE_ core/kaneton/arch/machdep
+  ln -s $_ARCHITECTURE_ lds/arch/machdep
 }
 
 
@@ -132,7 +130,7 @@ print()
   message=$2
   options=$3
 
-  if [ $DISPLAY = "color" ] ; then
+  if [ $_DISPLAY_ = "color" ] ; then
 
     case "$color" in
       "red")

@@ -5,13 +5,13 @@
  * 
  * stats.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Oct 13 21:34:34 2005   mycure
+ * last update   Wed Oct 19 00:18:29 2005   mycure
  */
 
 /*
@@ -171,10 +171,10 @@ t_error			stats_dump(void)
 
 	  /* XXX timer */
 
-	  cons_msg('#', "    %s: %u error(s) on %u call(s)\n",
+	  cons_msg('#', "    %s: %u call(s) [%u errors]\n",
 		   f->name,
-		   f->errors,
-		   f->calls);
+		   f->calls,
+		   f->errors);
 	}
     }
 
