@@ -5,13 +5,13 @@
 ## 
 ## init
 ## 
-## path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Tue Oct 18 23:50:54 2005   mycure
+## last update   Thu Oct 20 23:04:32 2005   mycure
 ##
 
 # INFORMATIONS
@@ -110,13 +110,13 @@ init()
   rm -f core/bootloader/arch/machdep
   rm -f core/include/arch/machdep
   rm -f core/kaneton/arch/machdep
-  rm -f lds/arch/machdep
+  rm -f tools/lds/arch/machdep
 
   ln -s $_ARCHITECTURE_ core/bootstrap/arch/machdep
   ln -s $_ARCHITECTURE_ core/bootloader/arch/machdep
   ln -s $_ARCHITECTURE_ core/include/arch/machdep
   ln -s $_ARCHITECTURE_ core/kaneton/arch/machdep
-  ln -s $_ARCHITECTURE_ lds/arch/machdep
+  ln -s $_ARCHITECTURE_ tools/lds/arch/machdep
 }
 
 

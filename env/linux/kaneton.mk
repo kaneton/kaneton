@@ -5,13 +5,13 @@
 ## 
 ## .kaneton.mk
 ## 
-## path          /home/mycure/kaneton/export
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Tue Oct 18 22:28:23 2005   mycure
+## last update   Thu Oct 20 23:05:57 2005   mycure
 ## last update   Thu Sep 15 16:58:31 2005   mycure
 ##
 
@@ -58,9 +58,9 @@ _MACHDEP_KANETON_DIR_	:=		$(_CORE_KANETON_DIR_)/arch/machdep
 _MACHDEP_INCLUDE_DIR_	:=		$(_CORE_INCLUDE_DIR_)/arch/machdep
 
 _ENV_DIR_		:=		$(_SRC_DIR_)/env
-_LDS_DIR_		:=		$(_SRC_DIR_)/lds/arch/machdep
 _CONF_DIR_		:=		$(_SRC_DIR_)/conf
 _TOOLS_DIR_		:=		$(_SRC_DIR_)/tools
+_LDS_DIR_		:=		$(_TOOLS_DIR_)/lds/arch/machdep
 _PAPERS_DIR_		:=		$(_SRC_DIR_)/papers
 _EXPORT_DIR_		:=		$(_SRC_DIR_)/export
 

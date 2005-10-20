@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/papers
+## path          /home/mycure/kaneton/papers/lectures
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Fri Sep  9 18:58:14 2005   mycure
+## last update   Thu Oct 20 23:18:06 2005   mycure
 ##
 
 #
@@ -32,9 +32,11 @@ include			../../.kaneton.mk
 
 SUBDIRS			:=		advanced-makefiles		\
 					c-preprocessor			\
+					development-tree		\
 					distributed-operating-systems	\
 					inline-assembly			\
-					kernels				
+					kernels				\
+					requirements			
 
 #
 # ---------- rules ------------------------------------------------------------

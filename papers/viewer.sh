@@ -5,13 +5,13 @@
 ## 
 ## viewer.sh
 ## 
-## path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
+## path          /home/mycure/kaneton/papers
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Tue Oct 18 23:46:01 2005   mycure
+## last update   Thu Oct 20 22:53:34 2005   mycure
 ##
 
 # INFORMATIONS
@@ -24,11 +24,11 @@
 #
 # global values
 _PAPERS_="								\
-  design kaneton assignments seminar					\
-  lectures/advanced-makefiles lectures/arch-ia32 lectures/asm-x86	\
-  lectures/c lectures/c-preprocessor					\
-  lectures/distributed-operating-systems lectures/inline-assembly	\
-  lectures/kernels"
+  assignments design kaneton seminar					\
+  lectures/advanced-makefiles lectures/arch-ia32			\
+  lectures/c-preprocessor lectures/distributed-operating-systems	\
+  lectures/requirements lectures/inline-assembly lectures/kernels	\
+  lectures/development-tree"
 _PATH_=""
 _PAPER_=""
 

@@ -1,0 +1,207 @@
+%%
+%% copyright quintard julien
+%% 
+%% kaneton
+%% 
+%% development-tree.tex
+%% 
+%% path          /data/kaneton/papers/lectures/development-tree
+%% 
+%% made by mycure
+%%         quintard julien   [quinta_j@epita.fr]
+%% 
+%% started on    Tue Jul  5 12:23:08 2005   mycure
+%% last update   Thu Oct 20 23:21:13 2005   mycure
+%%
+
+%
+% class
+%
+
+\documentclass[8pt]{beamer}
+
+%
+% packages
+%
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{colortbl}
+\usepackage{times}
+\usepackage{amsmath,amssymb}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage[english]{babel}
+\usepackage{enumerate}
+\usepackage[latin1]{inputenc}
+
+%
+% style
+%
+
+\usepackage{beamerthemesplit}
+\setbeamercovered{dynamic}
+
+%
+% verbatim font
+%
+
+\definecolor{verbatimcolor}{rgb}{0,0.4,0}
+
+\makeatletter
+\renewcommand{\verbatim@font}
+  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
+\makeatother
+
+%
+% new line
+%
+
+\newcommand{\nl}[0]{\vspace{0.4cm}}
+
+%
+% title
+%
+
+\title{Development Tree}
+
+%
+% authors
+%
+
+\author
+{
+  Julien~Quintard\inst{1} \\
+  {\tiny julien.quintard@gmail.com}
+}
+
+\institute
+{
+  \inst{1} kaneton distributed operating system project
+}
+
+%
+% date
+%
+
+\date{\today}
+
+%
+% logos
+%
+
+\pgfdeclareimage[interpolate=true,width=34pt,height=18pt]
+                {epita}{../../logos/epita}
+\pgfdeclareimage[interpolate=true,width=49pt,height=18pt]
+                {upmc}{../../logos/upmc}
+\pgfdeclareimage[interpolate=true,width=25pt,height=18pt]
+                {lse}{../../logos/lse}
+
+%
+% table of contents at the beginning of each section
+%
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+   \frametitle{Outline}
+    \tableofcontents[current]
+  \end{frame}
+}
+
+%
+% table of contents at the beginning of each subsection
+%
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>
+   \frametitle{Outline}
+    \tableofcontents[current,currentsubsection]
+  \end{frame}
+}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+
+  \begin{center}
+    \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{upmc} \hspace{0.1cm}
+    \pgfuseimage{lse} \hspace{0.1cm}
+  \end{center}
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+  \tableofcontents
+\end{frame}
+
+%
+% overview
+%
+
+\section{Overview}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Introduction}
+
+  Is using such a development tree a good idea?
+
+  \nl
+
+  Why?
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Explanations}
+
+  \begin{itemize}[<+->]
+    \item
+      d
+    \item
+      d
+  \end{itemize}
+\end{frame}
+
+%% choices: faire un truc complexe comme ca, dans le temps, multicoders
+%% gere les archis, gere les OS etc..
+
+\section{conf}
+
+\section{env}
+
+\section{tools}
+
+\section{libs}
+
+\section{core}
+
+\section{services}
+
+\section{programs}
+
+\section{export}
+
+\section{papers}
+
+\section{doc}
+
+\end{document}
