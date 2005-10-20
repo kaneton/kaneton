@@ -11,7 +11,33 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Sep  6 16:47:10 2005   mycure
+ * last update   Thu Oct 20 13:30:32 2005   mycure
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * the goal of the bootloader is to install a correct environment for
+ * the kernel.
+ *
+ * the first thing to do is to relocate the different kaneton data structure
+ * in order to build the t_init structure. this structure must contain
+ * everything the kernel will need.
+ *
+ * for more information on the relocating, take a look to the kaneton
+ * paper which describes the entire kaneton reference.
+ *
+ * once the init structure was built, the kernel has to be launched.
+ *
+ * nevertheless, the kernel needs to evolve with the protected mode and
+ * paging mode activated, so the bootloader first has to install these.
+ *
+ * printing some messages is interesting showing the protected mode and
+ * paging mode are correctly installed.
+ *
+ * after all, the bootloader has launch the kernel binary.
+ *
+ * look at the ld scripts to know where the kernel has to be loaded.
  */
 
 /*
@@ -51,6 +77,8 @@ t_reg32			esp;
  * ---------- functions -------------------------------------------------------
  */
 
+/*                                                                  [cut] k1 */
+
 /*
  * a funny function which do nothing.
  *
@@ -80,9 +108,13 @@ void			bootloader_error(void)
  * 10) this part is only reached if the kernel exit.
  */
 
+/*                                                                 [cut] /k1 */
+
 int			bootloader(t_uint32			magic,
 				   multiboot_info_t*		mbi)
 {
+
+/*                                                                  [cut] k1 */
 
   /*
    * 1)
@@ -140,20 +172,20 @@ int			bootloader(t_uint32			magic,
    * 8)
    */
 
-  asm ("movl %%ebp, %0\n\t"
-       "movl %%esp, %1\n\t"
-       : "=m" (ebp), "=m" (esp)
-       :
-       : "memory"
-       );
+  asm("movl %%ebp, %0\n\t"
+      "movl %%esp, %1\n\t"
+      : "=m" (ebp), "=m" (esp)
+      :
+      : "memory"
+     );
 
-  asm volatile ("movl %0, %%ebp\n\t"
-		"movl %0, %%esp\n\t"
-		"pushl %1\n"
-		:
-		: "g" (init->kstack + init->kstacksz - 1),
-		  "g" (init)
-		);
+  asm("movl %0, %%ebp\n\t"
+      "movl %0, %%esp\n\t"
+      "pushl %1\n"
+      :
+      : "g" (init->kstack + init->kstacksz - 1),
+        "g" (init)
+     );
 
   /*
    * 9)
@@ -161,11 +193,11 @@ int			bootloader(t_uint32			magic,
 
   kernel(init);
 
-  asm volatile ("movl %0, %%ebp\n\t"
-		"movl %1, %%esp\n\t"
-		:
-		: "g" (ebp), "g" (esp)
-		);
+  asm("movl %0, %%ebp\n\t"
+      "movl %1, %%esp\n\t"
+      :
+      : "g" (ebp), "g" (esp)
+     );
 
   /*
    * 10)
@@ -173,4 +205,7 @@ int			bootloader(t_uint32			magic,
 
   bootloader_cons_msg('!', "error: kernel exited\n");
   bootloader_error();
+
+/*                                                                 [cut] /k1 */
+
 }

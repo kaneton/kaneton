@@ -9,7 +9,16 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Tue Sep  6 16:55:37 2005   mycure
+ * last update   Thu Oct 20 13:28:59 2005   mycure
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * the student just has to setup the protected mode in this file,
+ * nothing more.
+ *
+ * of course, it will be better to provide some debug functions etc..
  */
 
 /*
@@ -41,6 +50,8 @@ t_gdtr			gdtr;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k1 */
 
 /*
  * this function dumps the global offset table in a human readable form
@@ -299,3 +310,5 @@ void			bootloader_pmode_init(void)
   bootloader_pmode_gdt_dump();
 #endif
 }
+
+/*                                                                 [cut] /k1 */

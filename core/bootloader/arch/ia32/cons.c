@@ -5,13 +5,20 @@
  * 
  * cons.c
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/bootstrap/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Tue Aug 30 13:55:46 2005   mycure
+ * last update   Thu Oct 20 13:05:26 2005   mycure
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * the student has to fill in this file just to be able to print some
+ * debug messages.
  */
 
 /*
@@ -42,6 +49,8 @@ t_cons			cons;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k1 */
 
 /*
  * this function just clears the console.
@@ -220,3 +229,5 @@ int			bootloader_cons_init(void)
 
   return (0);
 }
+
+/*                                                                 [cut] /k1 */

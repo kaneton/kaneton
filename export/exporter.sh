@@ -5,28 +5,31 @@
 ## 
 ## exporter.sh
 ## 
-## path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Wed Oct 19 00:04:50 2005   mycure
+## last update   Thu Oct 20 14:14:59 2005   mycure
 ##
 
 # INFORMATIONS
 #
 # this script has to be run in the directory src/export
-
-
+#
+# the argument 'kaneton' makes a valid distribution, meaning that
+# there will be no cut line in the distribution
+#
+# the argument 'dist' makes a backup of the current development tree
+# including the cut lines
 
 # GLOBAL VALUES
 #
 # global values
-_STAGES_="k1 k2 k3 k4 k5 k6 k7 k8 k9"
+_STAGES_="k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 kaneton dist"
 _STAGE_=""
 _INPUT_=""
-
 
 
 # CONFIGURATION FILE PATH
@@ -39,8 +42,8 @@ _CONF_="../conf/"$USER"/"$USER".conf"
 # CONFIGURATION FILE VARIABLES
 #
 # default globals
-_KANETON_EXPORT_="unknown"
 _DISPLAY_="unknown"
+_EXPORT_="unknown"
 
 
 
@@ -53,9 +56,8 @@ read_kaneton_conf()
   # display
   _DISPLAY_=`cat $_CONF_ | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
 
-  # kaneton export
-  _KANETON_EXPORT_=`cat $_CONF_ | grep -E "^_KANETON_EXPORT_ = .*$" |	\
-                    cut -b 20-`
+  # export
+  _EXPORT_=`cat $_CONF_ | grep -E "^_EXPORT_ = .*$" | cut -b 12-`
 }
 
 
@@ -119,40 +121,77 @@ build()
 {
   # removes the old directory for this stage
 
-  rm -f $_STAGE_.tar.gz
-  rm -Rf $_STAGE_
+  rm -f $_EXPORT_-*-$_STAGE_.tar.gz
+  rm -f /tmp/$_EXPORT_.tar.gz
 
   # creates a tarball from the current working development tree
 
   cd ../
-  tar -czf /tmp/kaneton.tar.gz .
+  tar -czf /tmp/$_EXPORT_.tar.gz .
   cd export
 
   # cleans the copy of the current working development tree
 
-  mkdir $_STAGE_
-  tar -xzf /tmp/kaneton.tar.gz -C $_STAGE_
+  mkdir $_EXPORT_
+  tar -xzf /tmp/$_EXPORT_.tar.gz -C $_EXPORT_
 
-  cd $_STAGE_
+  cd $_EXPORT_
   rm -Rf `find ./ -type d -name .svn`
   cd ..
 
   # cleans every unwanted source code given the stage
 
-  cd $_STAGE_
+  if [ $_STAGE_ != "dist" ] ; then
 
-  c_files=`find ./ -type f -name "*.c"`
-  h_files=`find ./ -type f -name "*.h"`
-  asm_files=`find ./ -type f -name "*.asm"`
-  S_files=`find ./ -type f -name "*.S"`
+    cd $_EXPORT_
 
-  files="$c_files $h_files $asm_files $S_files"
+    c_files=`find core/ -type f -name "*.c"`
+    h_files=`find core/ -type f -name "*.h"`
+    asm_files=`find core/ -type f -name "*.asm"`
+    S_files=`find core/ -type f -name "*.S"`
 
-  for f in $files ; do
-    cat $f | sed "/^.*<<<.*$_STAGE_.*$/,/^.*>>>.*$_STAGE_.*$/ d" >	\
-      /tmp/$_STAGE_
-    cp /tmp/$_STAGE_ $f
-  done
+    files="$c_files $h_files $asm_files $S_files"
+
+    # for each file, cut the unwanted source code
+
+    flag=0
+    for s in $_STAGES_; do
+      if [ $s = $_STAGE_ ] ; then
+        flag=1
+      fi
+
+      if [ $flag = "1" ] ; then
+        for f in $files ; do
+          cat $f | sed "/^.*\[cut\].*$s.*$/,/^.*\[cut\].*\/$s.*$/	\
+                        { /^.*\[cut\].*$s.*$/ !d }" > /tmp/$_EXPORT_
+          cp /tmp/$_EXPORT_ $f
+        done
+      fi
+    done
+
+    # finally cleans the file from the cut tags
+
+    for f in $files ; do
+      cat $f | sed "/^.*\[cut\].*$/ d" > /tmp/$_EXPORT_
+      cp /tmp/$_EXPORT_ $f
+    done
+
+    cd ..
+
+  fi
+
+  # we have to re-generate prototypes because the header files
+  # still contain our prototypes
+
+  cd $_EXPORT_
+
+  echo "
+" | make init > /dev/null 2> /dev/null
+
+  make proto > /dev/null 2> /dev/null
+
+  echo "
+" | make clean > /dev/null 2> /dev/null
 
   cd ..
 }
@@ -164,9 +203,11 @@ build()
 # this function makes a distribution from the exported version
 dist()
 {
-  tar -czf $_STAGE_.tar.gz $_STAGE_
+  d=`date +"%Y%m%d"`
 
-  rm -Rf $_STAGE_
+  tar -czf $_EXPORT_-$d-$_STAGE_.tar.gz $_EXPORT_
+
+  rm -Rf $_EXPORT_
 }
 
 
@@ -285,4 +326,4 @@ build
 dist
 
 # end of export
-display " $stage exported successfully" "+"
+display " $_STAGE_ exported successfully" "+"

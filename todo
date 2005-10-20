@@ -1,18 +1,17 @@
 --
- systeme de reboot automatique avec le protocole SNMP snmp-tools
+ etendre le find des fichiers dans exporter.sh a core/ libs/ services/
+
+ faire un make proto avant de faire le tar comme ca ca clean nos proto
 
 --
-  moulinette de decoupage:
-    1) soit un systeme de diff pour encadrer la zone de decoupage dans
-       un fichier de conf de decoupage
-    2) soit un systeme de balises directement dans le code:
-         /* <k2 k3 k4> */
-         /* </k2 k3 k4> */
-    3) systeme de patchs pur et simple pour delete du code dans certains
-       fichiers avec systeme de liens sur les patchs de k precedents.
+ expliquer le systeme de decoupage: hierarchique inclusif
 
 --
- dma service
+ bien commenter les fichiers car quand ce sera decoupe il faut que
+ les etudiants sachent quoi faire
+
+--
+ systeme de reboot automatique
 
 --
  segments: address -> id et tester avec bpt
@@ -24,24 +23,12 @@
  ca pourrait etre utile pour le debug
 
 --
- bien sur on pourrait ameliorer les set en faisant qu'a la creation
- on passe une fonction de comparaison ca nous permettrait d'avoir
- des ensembles de n'importe quel type
-
---
  mkp: gerer t_bpt_addr(set), les fonctions statiques, les fonctions
  qui sont dans un commentaire etc..
 
 --
  prevoir TP de remise a niveau: C (decalage, mask etc..), assembleur
  exos en assembleur nasm puis en asm inline etc..
-
--- solal
- mettre a la norme ton code
- faire compiler ton code
- prefixer ton par le nom du module t_serial_... serial_...()
- coder core/debug/debug.c core/include/debug.h
- chaque fonction retourn un t_error
 
 -- messages
  faire un msg_build(size) qui va creer un segment partage et renvoyer
@@ -66,11 +53,6 @@
  faire du swap sur le reseau et sur le disque mais experimenter
  le reseau
 
--- dma
- faire une liste de segments (init->dma) pour le dma, qui gerera
- une zone speciale, ou alors que le gestionnaire de segments
- gere des zones de differents type, a revoir.
-
 -- norme commit
   [core/kaneton/set/set_bpt.c]
     1) init function updated to properly handle set options.
@@ -87,31 +69,25 @@
 --
  essayer de faire compiler kaneton sur netbsd a l ecole:
 
- il faudrait avoir une variable DISPLAY: color, non-color
-
- qui serait utilise par les scripts et makefiles et aussi le Makefile racine
-
 --
  lister les trucs qui reste a faire:
 
   1) moulinette de tests
   2) des tests pour set, as, segment, regions
   3) finir intra
-  4) integrer la moulinette dans l intra: PXE, tftp etc..
+  4) integrer la moulinette dans l intra: boot automatique, tftp etc..
   5) slides presentations kaneton [*]
-  6) slides presentation lse
+  6) slides presentation lse (rien a foutre)[*]
   7) cours: cpp [*], inline assembly [*], gnu make
   8) presentation kaneton, tarball etc..
   9) cours noyaux
   10) retoucher cours intel, avec beamer bien etc.. images au bon format
   11) cours OS distribues
   12) finir le code de kaneton jusqu'aux regions
-  13) moulinette de decoupage de code
-
-  il va falloir trouver du monde genre tristan
-
---
- PXE a installer
+  13) moulinette de decoupage de code [*]
+  14) decouper le code: make export-0 et commenter chaque partie pour que
+      les etudiants sachent quoi coder environ juste avec les commentaires
+    . bootstrap, bootloader: OK
 
 --
  cours:
@@ -128,22 +104,6 @@
 
 --
  faire des tests sur les ensembles et sur les segments: jacob_s
-
---
- segment_init(2, 0, 1M, FIRST_FIT,
-                 1M, 4G, WORST_FIT)
-  or
-
- segment_init();
- segment_range();
- segment_range();
-
- a faire dans la partie dependante car le dma peut ne pas exister ou
- etre a un autre endroit. attention, il faudra donc specifier le type
- de memoire que l on desire reserver:
-
- segment_rsv(SEGMENT_TYPE_DMA, ...
- segment_rsv(SEGMENT_TYPE_MEMORY, ...
 
 --
  array: recherche dichotomique lorsqu il est trie
@@ -490,11 +450,6 @@ void show_character(char *font, unsigned long *VRAM,
 /* /code here -> reboot ---- ----------------------------------------------- */
 
 --
- 500 heures -> 10 000 euros
+ 500 heures -> 12 500 euros (budget ~10 000 euros)
 
  tarif: 25 euros de l heure
-
---
- prend bcp de temps a checker sur la capability est correct donc il faudrait ajouter un cache disant:
-   A a le droit d envoye a B
- et ce cache serait invalide si besoin est

@@ -3,13 +3,30 @@
  *
  * init.c
  *
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/bootstrap/arch/ia32
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Thu Oct 13 22:16:30 2005   mycure
+ * last update   Thu Oct 20 13:09:21 2005   mycure
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * this file contains the functions intended to do the relocation.
+ *
+ * this file is very important because it does the most important things
+ * of the bootloader: computes segments and regions, relocates data, creates
+ * the init structure etc..
+ *
+ * the relocation is based on dynamic allocation. nevertheless, no dynamic
+ * allocation is provided. the student so has to setup a very simple dynamic
+ * memory allocation algorithm to be able to build the init structure.
+ *
+ * think about it because some components cannot have a dynamic address. there
+ * are some crazy problems to resolve in this context.
  */
 
 /*
@@ -38,6 +55,8 @@ t_init*			init;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k1 */
 
 /*
  * this function dumps the init structure
@@ -486,3 +505,5 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
 
   return (khdr->e_entry);
 }
+
+/*                                                                 [cut] /k1 */

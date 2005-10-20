@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/bootstrap/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Oct 14 10:43:35 2005   mycure
+ * last update   Wed Oct 19 22:40:27 2005   mycure
  */
 
 /*

@@ -5,13 +5,23 @@
  * 
  * paging.c
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/core/bootstrap/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Tue Sep  6 11:46:14 2005   mycure
+ * last update   Thu Oct 20 13:11:59 2005   mycure
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * these function just install the paging mode to enable virtual memory
+ * which is required by the kaneton kernel.
+ *
+ * think about mapping everything needed: kernel code, kernel stack, init
+ * structure etc..
  */
 
 /*
@@ -33,6 +43,8 @@
 
 extern t_init*			init;
 
+/*                                                                  [cut] k1 */
+
 /*
  * the kernel page directory and page tables.
  *
@@ -46,9 +58,13 @@ t_pte*			pt0;
 
 t_pte*			pt;
 
+/*                                                                 [cut] /k1 */
+
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k1 */
 
 /*
  * this function dumps a page table in a human readable form which
@@ -228,3 +244,5 @@ void			bootloader_paging_init(void)
 
   bootloader_paging_enable();
 }
+
+/*                                                                 [cut] /k1 */

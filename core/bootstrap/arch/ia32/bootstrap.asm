@@ -1,3 +1,26 @@
+;;
+;; ---------- assignments -----------------------------------------------------
+;;
+;; this boostrap just reads a sector from the floppy drive to load the
+;; bootloader.
+;;
+;; then the boostrap installs the protected mode because the bootloader
+;; needs it.
+;;
+;; finally, the boostrap jumps on the bootloader startup function. then
+;; the bootloader is running.
+;;
+;; think about printing a message in real mode.
+;;
+;; look at the ld scripts to know where the bootloader has to be loaded.
+;;
+
+;;
+;; ---------- functions -------------------------------------------------------
+;;
+
+;;                                                                     [cut] k0
+
 [BITS 16]			; 16-bit
 
 [ORG 0x7c00]			; tells the compiler where to start the code
@@ -129,6 +152,8 @@ pmode_main:
 
 				; after all the ELF is launched
 
+;;                                                                    [cut] /k0
+
 ;;
 ;; DATA
 ;;
@@ -137,7 +162,7 @@ newline		db	10, 0
 
 rmode_message	db	'[+] real mode', 13, 10, 0
 
-pmode_message	db	'[+] protected mode', 13, 10, 0
+;;                                                                     [cut] k0
 
 gdt:
 gdt_null:
@@ -158,3 +183,5 @@ gdtr:
 
 times 510-($-$$) db 0		; fill the rest of the sector with zeros
 dw 0xAA55			; add the bootloader signature to the end
+
+;;                                                                    [cut] /k0

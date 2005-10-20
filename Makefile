@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Wed Oct 19 00:21:08 2005   mycure
+## last update   Thu Oct 20 13:56:55 2005   mycure
 ##
 
 #
@@ -163,7 +163,6 @@ info:			kaneton.mk
 	$(call print,white,assistants:,)
 	$(call print,white,,)
 	$(call print,white,     cedric aubouy - aubouy_c@epita.fr,)
-	$(call print,white,     fabien le-mentec - le-men_f@epita.fr,)
 	$(call print,white,     renaud lienhart - lienha_r@epita.fr,)
 
 	$(call print,white,,)
@@ -173,6 +172,7 @@ info:			kaneton.mk
 	$(call print,white,,)
 	$(call print,white,     christophe eymard - eymard_c@epita.fr,)
 	$(call print,white,     solal jacob - jacob_s@epitech.net,)
+	$(call print,white,     fabien le-mentec - le-men_f@epita.fr,)
 
 	$(call print,white,,)
 
@@ -201,12 +201,12 @@ info:			kaneton.mk
 # ---------- export -----------------------------------------------------------
 #
 
-export- export:		kaneton.mk clear
+export- export:		kaneton.mk
 	cd $(_EXPORT_DIR_)						; \
 	$(_SHELL_) $(_EXPORTER_)					; \
 	cd ..
 
-export-%:		kaneton.mk clear
+export-%:		kaneton.mk
 	cd $(_EXPORT_DIR_)						; \
 	$(_SHELL_) $(_EXPORTER_) $*					; \
 	cd ..

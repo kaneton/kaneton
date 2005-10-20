@@ -1,3 +1,35 @@
+/*
+ * copyright quintard julien
+ * 
+ * kaneton
+ * 
+ * bootloader.c
+ * 
+ * path          /home/mycure/kaneton/core/bootstrap/arch/ia32
+ * 
+ * made by mycure
+ *         quintard julien   [quinta_j@epita.fr]
+ * 
+ * started on    Fri Feb 11 03:04:40 2005   mycure
+ * last update   Thu Oct 20 12:55:08 2005   mycure
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * this bootloader is very simple. its only goal is to show the boostrap
+ * correctly installed the protected mode.
+ *
+ * in this bootloader, the student has to write a very light source code
+ * which print a message.
+ */
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+/*                                                                  [cut] k0 */
+
 #define CONS_ADDR		0xb8000
 #define CONS_COLUMNS		80
 #define CONS_LINES		25
@@ -48,3 +80,5 @@ int			bootloader_entry(void)
   while (1)
     ;
 }
+
+/*                                                                 [cut] /k0 */
