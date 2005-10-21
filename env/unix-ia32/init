@@ -5,13 +5,13 @@
 ## 
 ## init
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/env/unix-ia32
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Thu Oct 20 23:04:32 2005   mycure
+## last update   Fri Oct 21 11:48:51 2005   mycure
 ##
 
 # INFORMATIONS
@@ -46,7 +46,7 @@ _KANETON_MK_=".kaneton.mk"
 # BINARIES
 #
 # the list of binaries used to compile the kaneton kernel on
-# linux operating systems.
+# unix operating systems.
 _BINARIES_="gcc make rm ar ranlib ld nasm ln touch tail wc tar sed mtools"
 
 
@@ -89,7 +89,7 @@ check()
 
 # INIT
 #
-# installs the environment for linux operating system
+# installs the environment for unix operating system
 init()
 {
   # makefile dependencies

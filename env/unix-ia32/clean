@@ -5,13 +5,13 @@
 ## 
 ## clean
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/env/unix-ia32
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Thu Oct 20 23:04:38 2005   mycure
+## last update   Fri Oct 21 11:49:12 2005   mycure
 ##
 
 # INFORMATIONS
@@ -65,7 +65,7 @@ read_kaneton_conf()
 
 # clean
 #
-# clean the environment for linux operating system
+# clean the environment for unix operating system
 clean()
 {
   # cleaning dev tree
