@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /data/kaneton/papers/lectures/development-environment
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Thu Oct 20 13:56:55 2005   mycure
+## last update   Fri Oct 21 09:50:53 2005   mycure
 ##
 
 #
@@ -196,6 +196,12 @@ info:			kaneton.mk
 	$(call print,white,     kaneton@lse.epita.fr,)
 
 	$(call print,white,,)
+
+#
+# ---------- dist -------------------------------------------------------------
+#
+
+dist:			export-dist
 
 #
 # ---------- export -----------------------------------------------------------

@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Thu Oct 20 23:05:57 2005   mycure
+## last update   Fri Oct 21 18:59:16 2005   mycure
 ## last update   Thu Sep 15 16:58:31 2005   mycure
 ##
 
@@ -67,9 +67,6 @@ _EXPORT_DIR_		:=		$(_SRC_DIR_)/export
 _LIBS_DIR_		:=		$(_SRC_DIR_)/libs
 _LIBS_INCLUDE_DIR_	:=		$(_LIBS_DIR_)
 
-_INCLUDES_		:=		-I$(_CORE_INCLUDE_DIR_)		\
-					-I$(_LIBS_INCLUDE_DIR_)
-
 #
 # ---------- makefiles dependency ---------------------------------------------
 #
@@ -80,7 +77,7 @@ _MAKEFILE_MK_		:=		.makefile.mk
 # ---------- kaneton tools ----------------------------------------------------
 #
 
-_PROTO_			:=		$(_TOOLS_DIR_)/mkp.py
+_PROTO_			:=		$(_TOOLS_DIR_)/scripts/prototypes/mkp.py
 _VIEWER_		:=		$(_PAPERS_DIR_)/viewer.sh
 _EXPORTER_		:=		$(_EXPORT_DIR_)/exporter.sh
 
@@ -96,10 +93,7 @@ _KANETON_		:=		$(_CORE_KANETON_DIR_)/kaneton
 # ---------- kaneton libraries ------------------------------------------------
 #
 
-_LIBC_A_		:=		$(_LIBS_DIR_)/libc.a
-_LIBC_H_		:=		$(_LIBS_DIR_)/libc.h
-
-_CRT_A_			:=		$(_LIBS_DIR_)/crt.a
+_CRT_A_			:=		$(_LIBS_DIR_)/crt/crt.a
 
 _AS_LO_			:=		$(_CORE_KANETON_DIR_)/as/as.lo
 _DEBUG_LO_		:=		$(_CORE_KANETON_DIR_)/debug/debug.lo
@@ -124,6 +118,9 @@ CC			:=		gcc
 #
 # ---------- compiler and linker flags ----------------------------------------
 #
+
+_INCLUDES_		:=		-I$(_CORE_INCLUDE_DIR_)		\
+					-I$(_LIBS_INCLUDE_DIR_)
 
 CFLAGS			:=		-D___kaneton			\
 					-nostdinc			\

@@ -130,6 +130,8 @@ t_error			segment_init(t_fit			fit);
 
 t_error			segment_clean(void);
 
+t_error			segment_test(void);
+
 
 /*
  * eop

@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /data/kaneton/papers/lectures/development-tree
+## path          /data/kaneton/papers/lectures/development-environment
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Thu Oct 20 22:53:52 2005   mycure
+## last update   Fri Oct 21 09:13:52 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		development-tree
+PAPER			:=		development-environment
 
 PAPER_TEX		:=		$(PAPER).tex
 PAPER_DVI		:=		$(PAPER).dvi

@@ -5,13 +5,13 @@
 ## 
 ## viewer.sh
 ## 
-## path          /home/mycure/kaneton/papers
+## path          /data/kaneton/papers/lectures
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Thu Oct 20 22:53:34 2005   mycure
+## last update   Fri Oct 21 09:11:58 2005   mycure
 ##
 
 # INFORMATIONS
@@ -28,7 +28,7 @@ _PAPERS_="								\
   lectures/advanced-makefiles lectures/arch-ia32			\
   lectures/c-preprocessor lectures/distributed-operating-systems	\
   lectures/requirements lectures/inline-assembly lectures/kernels	\
-  lectures/development-tree"
+  lectures/development-environment"
 _PATH_=""
 _PAPER_=""
 

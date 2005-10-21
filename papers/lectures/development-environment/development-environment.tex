@@ -1,0 +1,658 @@
+%%
+%% copyright quintard julien
+%% 
+%% kaneton
+%% 
+%% development-environment.tex
+%% 
+%% path          /data/kaneton/papers/lectures/development-environment
+%% 
+%% made by mycure
+%%         quintard julien   [quinta_j@epita.fr]
+%% 
+%% started on    Tue Jul  5 12:23:08 2005   mycure
+%% last update   Fri Oct 21 12:20:44 2005   mycure
+%%
+
+%
+% class
+%
+
+\documentclass[8pt]{beamer}
+
+%
+% packages
+%
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{colortbl}
+\usepackage{times}
+\usepackage{amsmath,amssymb}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage[english]{babel}
+\usepackage{enumerate}
+\usepackage[latin1]{inputenc}
+
+%
+% style
+%
+
+\usepackage{beamerthemesplit}
+\setbeamercovered{dynamic}
+
+%
+% verbatim font
+%
+
+\definecolor{verbatimcolor}{rgb}{0,0.4,0}
+
+\makeatletter
+\renewcommand{\verbatim@font}
+  {\ttfamily\color{verbatimcolor}\selectfont}
+\makeatother
+
+%
+% new line
+%
+
+\newcommand{\nl}[0]{\vspace{0.4cm}}
+
+%
+% title
+%
+
+\title{Development Environment}
+
+%
+% authors
+%
+
+\author
+{
+  Julien~Quintard\inst{1} \\
+  {\tiny julien.quintard@gmail.com}
+}
+
+\institute
+{
+  \inst{1} kaneton distributed operating system project
+}
+
+%
+% date
+%
+
+\date{\today}
+
+%
+% logos
+%
+
+\pgfdeclareimage[interpolate=true,width=34pt,height=18pt]
+                {epita}{../../logos/epita}
+\pgfdeclareimage[interpolate=true,width=49pt,height=18pt]
+                {upmc}{../../logos/upmc}
+\pgfdeclareimage[interpolate=true,width=25pt,height=18pt]
+                {lse}{../../logos/lse}
+
+%
+% table of contents at the beginning of each section
+%
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+   \frametitle{Outline}
+    \tableofcontents[current]
+  \end{frame}
+}
+
+%
+% table of contents at the beginning of each subsection
+%
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>
+   \frametitle{Outline}
+    \tableofcontents[current,currentsubsection]
+  \end{frame}
+}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+
+  \begin{center}
+    \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{upmc} \hspace{0.1cm}
+    \pgfuseimage{lse} \hspace{0.1cm}
+  \end{center}
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+  \tableofcontents
+\end{frame}
+
+%
+% overview
+%
+
+\section{Overview}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Introduction}
+
+  From the previous years, a development environment was introduced
+  for the kaneton project.
+
+  \nl
+
+  The questions are:
+
+  \begin{enumerate}
+    \item
+      Why?
+    \item
+      What are the advantages and disadvantages of such a
+      development environment?
+    \item
+      How did the other promotions do?
+  \end{enumerate}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Explanations}
+
+  Over the years, the kaneton project evolved, starting with a very
+  simple introduction to low-level programming, to microkernel
+  development and finally to a distributed operating system project.
+
+  \nl
+
+  Going always further implies many modifications in the project
+  including:
+
+  \begin{itemize}[<+->]
+    \item
+      The courses given which now go from the Intel processor to
+      the distributed operating system concepts
+    \item
+      The assignments which always evolve to study advanced topics
+    \item
+      The context because we now have to provide parts of the microkernel
+      to avoid students a development from scratch
+    \item
+      .. and so the requirements
+  \end{itemize}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{The Courses}
+
+  The kaneton project now comes with four courses:
+
+  \begin{enumerate}
+    \item
+      The design of the kaneton distributed operating system including
+      the microkernel
+    \item
+      The Intel processor
+    \item
+      The kernel concepts
+    \item
+      The distributed operating system concepts
+  \end{enumerate}
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{The Assignments}
+
+  Due to the constant evolution of the project, the students will have
+  to lead the operating system further and furter. Nevertheless, the same
+  time is allocated for the project January to November.
+
+  \nl
+
+  For example, during the year 2005, the students develop a poor microkernel
+  from scratch with few functionalities, a driver and finally a baby
+  file system.
+
+  \nl
+
+  We cannot ask the students of the year 2006 to develop the same project
+  but to go further to study advanced topics like distributed algorithms.
+
+  \nl
+
+  So, we cannot ask the students to develop every parts of the microkernel
+  because this takes much time and implies to not study advanced
+  topics.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{The Context}
+
+  Providing students parts of the microkernel is not enough.
+
+  \nl
+
+  Indeed, we decided to provide a complete development environment
+  including:
+
+  \begin{itemize}
+    \item
+      Makefiles
+    \item
+      Shell scripts
+    \item
+      Papers
+    \item
+      Tools
+    \item
+      .. everything you need to start microkernel development
+  \end{itemize}
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Why?}
+
+  The remaining question is:
+
+  \nl
+
+  \textbf{Why providing such a development environment and not letting us
+    develop one ourself?}
+
+  \nl
+
+  The answers simply are:
+
+  \begin{itemize}
+    \item
+      Developing such a development environment takes much time and
+      need experience
+    \item
+      This development environment include very powerful features:
+      multiusers cooperation, different operating systems etc..
+    \item
+      Finally, students will not be able to create such a complicated
+      development tree so it is provided to not waste time.
+  \end{itemize}
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{The Requirements}
+
+  The students starting the kaneton project should think that they
+  will learn many many things during the year.
+
+  \nl
+
+  This year, we are trying to lead students to a distributed operating
+  system.
+
+  \nl
+
+  This implies more concepts, algorithms and techniques to learn.
+
+  \nl
+
+  To do this we introduced more courses but the students will have
+  to work hard to be able to success.
+\end{frame}
+
+% 8)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Tree}
+
+  \begin{center}
+
+  \begin{verbatim}
+    /
+      conf/
+      core/
+      doc/
+      env/
+      export/
+      libs/
+      papers/
+      programs/
+      services/
+      tools/
+  \end{verbatim}
+
+  \end{center}
+\end{frame}
+
+%
+% conf
+%
+
+\section{conf}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The \textbf{conf} directory contains user variables used to parameterise:
+
+  \begin{itemize}
+    \item
+      the development environment: makefiles, scripts etc..
+    \item
+      the kernel
+  \end{itemize}
+
+  \nl
+
+  This configuration system is very interesting coupled with versionning
+  system.
+
+  \nl
+
+  Indeed, you can develop using special compilation flags, specific kernel
+  configuration without conflicts with other developers.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Tree}
+
+  \begin{verbatim}
+    conf/
+      mycure/
+        conf.c
+        conf.h
+        kaneton.conf
+        modules.conf
+        mycure.conf
+      ultima/
+      debug/
+  \end{verbatim}
+
+  This configuration system uses the shell variable \$USER to find
+  the main configuration file: \textbf{conf/\$USER/\$USER.conf}.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{conf.c}
+
+  This file is not used yet.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{conf.h}
+
+  This file contains macros to configure the kernel:
+
+  \begin{itemize}
+    \item
+      \textbf{CONF\_TITLE}
+    \item
+      \textbf{CONF\_VERSION}
+    \item
+      \textbf{CONF\_DEBUG}
+    \item
+      etc..
+  \end{itemize}
+
+  \nl
+
+  This file is included by the kernel code.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{kaneton.conf}
+
+  This configuration file is used to pass arguments at the runtime to the
+  services.
+
+  \nl
+
+  This file is also used to configure kernel and services input variables.
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{modules.conf}
+
+  This file contains the list of the modules to be loaded by the
+  multibootloader.
+
+  \nl
+
+  These modules will be passed to the kernel at the boot time.
+
+  \nl
+
+  Be careful, a module here is not a module in the Linux or BSD terms.
+
+  \nl
+
+  A module is simply a file to load.
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{\$USER.conf}
+
+  Finally the main configuration file contains the configuration
+  variables for the development environment.
+
+  \nl
+
+  This file uses the syntax of the make files.
+
+  \nl
+
+  Every variable defined in this file will be used by the makefiles
+  and the scripts.
+\end{frame}
+
+%
+% env
+%
+
+\section{env}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The \textbf{env} directory contains the different development environments.
+
+  \nl
+
+  This directory is the heart of the kaneton development system.
+
+  \nl
+
+  Indeed, a user can develop the kaneton project on a Mac machine using
+  cross compiling ('cause PowerPC processor) while another one is using
+  a FreeBSD operating system on an Intel processor.
+
+  \nl
+
+  So, the development environment has to deal with these different operating
+  systems and architectures just for the development.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Our System}
+
+  To do this we introduced a environment system.
+
+  \nl
+
+  Every time a user gets the kaneton development tarball, he has to first
+  create the environment given a couple operating system and architecture
+  which lead to an environment.
+
+  \nl
+
+  Once the environment installed, the user can develop, compile the kernel
+  etc.. without problems because everything (makefiles, scripts etc..) use
+  the binaries, variables etc.. for its environment.
+
+  \nl
+
+  The environment is specified in the user configuration file.
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbastim]
+  \frametitle{Tree}
+
+  \begin{verbatim}
+    env/
+      clean
+      init
+      unix-ia32.ia32/
+        clean
+        init
+        kaneton.mk
+      macos-powerpc.ia32/
+  \end{verbatim}
+
+  \nl
+
+  Here the \textbf{unix-ia32.ia32} is considered as the generic unix
+  environment but everyone can add a specific linux, FreeBSD, Solaris etc..
+  environment.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{init}
+
+  The \textbf{init} shell script is used to install the development
+  environment.
+
+  \nl
+
+  This script first gets the configuration variables from the user
+  configuration file, then calls the specific \textbf{init} script
+  of the given environment.
+
+  \nl
+
+  Finally the script installs some links and initialises the makefile
+  dependencies.
+
+  \nl
+
+  The \textbf{\[environment\]/init} shell script is used to install
+  specific stuff.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{clean}
+
+  The \textbf{clean} shell script just cleans the environment.
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{kaneton.mk}
+
+\end{frame}
+
+%
+% tools
+%
+
+\section{tools}
+
+%
+% libs
+%
+
+\section{libs}
+
+%
+% core
+%
+
+\section{core}
+
+%
+% services
+%
+
+\section{services}
+
+%
+% programs
+%
+
+\section{programs}
+
+%
+% export
+%
+
+\section{export}
+
+%
+% papers
+%
+
+\section{papers}
+
+%
+% doc
+%
+
+\section{doc}
+
+\end{document}

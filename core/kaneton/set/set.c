@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton/core/bootstrap/arch/ia32
+ * path          /data/kaneton/papers/lectures/development-environment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Wed Oct 19 22:40:27 2005   mycure
+ * last update   Fri Oct 21 09:51:23 2005   mycure
  */
 
 /*
@@ -116,7 +116,7 @@
  * note that this advanced feature is only implemented by the gnu
  * c-preprocessor.
  *
- * each data structure allows some options to parameter the data structure
+ * each data structure allows some options to parameterise the data structure
  * wanted. the common ones are: ALLOCATE, SORT etc..
  *
  * the ALLOCATE option may be disabled for certain data structures because

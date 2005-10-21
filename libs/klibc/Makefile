@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:29:19 2005   mycure
-## last update   Mon Oct 10 22:33:58 2005   mycure
+## last update   Fri Oct 21 12:17:15 2005   mycure
 ##
 
 #
@@ -32,9 +32,6 @@ include			../../.kaneton.mk
 
 SUBDIRS			:=		libdata libstring libsys
 
-LIBC_A			:=		klibc.a
-LIBC_H			:=		include/klibc.h
-
 LIBDATA_LO		:=		libdata/libdata.lo
 LIBSTRING_LO		:=		libstring/libstring.lo
 LIBSYS_LO		:=		libsys/libsys.lo
@@ -44,13 +41,10 @@ LIBSYS_LO		:=		libsys/libsys.lo
 #
 
 $(LIBC_A):		libs
-	$(call remove,$(LIBC_A),)
+	$(call remove,$(_LIBC_A_),)
 
-	$(call static-library,$(LIBC_A),$(LIBDATA_LO) $(LIBSTRING_LO)	\
+	$(call static-library,$(_LIBC_A_),$(LIBDATA_LO) $(LIBSTRING_LO)	\
           $(LIBSYS_LO),)
-
-	$(call link,$(_LIBC_A_),klibc/$(LIBC_A),)
-	$(call link,$(_LIBC_H_),klibc/$(LIBC_H),)
 
 libs:
 	$(call make,$(SUBDIRS),)
@@ -58,10 +52,7 @@ libs:
 clear:
 	$(call make,$(SUBDIRS),clear)
 
-	$(call remove,$(LIBC_A),)
-
 	$(call remove,$(_LIBC_A_),)
-	$(call remove,$(_LIBC_H_),)
 
 	$(call purge,)
 
