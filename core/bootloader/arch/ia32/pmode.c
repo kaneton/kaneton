@@ -3,13 +3,13 @@
  *
  * pmode.c
  *
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Thu Oct 20 13:28:59 2005   mycure
+ * last update   Fri Oct 21 20:06:04 2005   mycure
  */
 
 /*
@@ -25,7 +25,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <klibc.h>
 #include <kaneton.h>
 
 #include "bootloader.h"

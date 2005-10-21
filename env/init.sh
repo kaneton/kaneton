@@ -5,13 +5,13 @@
 ## 
 ## init
 ## 
-## path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Tue Oct 18 23:47:26 2005   mycure
+## last update   Fri Oct 21 19:17:56 2005   mycure
 ##
 
 # INFORMATIONS
@@ -31,7 +31,6 @@ _CONF_="../conf/"$USER"/"$USER".conf"
 #
 # default globals
 _DISPLAY_="unknown"
-_LIBC_="unknown"
 _ENVIRONMENT_="unknown"
 _ARCHITECTURE_="unknwon"
 _MULTIBOOTLOADER_="unknown"
@@ -46,9 +45,6 @@ read_kaneton_conf()
 {
   # display
   _DISPLAY_=`cat $_CONF_ | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
-
-  # libc
-  _LIBC_=`cat $_CONF_ | grep -E "^_LIBC_ = .*$" | cut -b 10-`
 
   # environment
   _ENVIRONMENT_=`cat $_CONF_ | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
@@ -80,7 +76,6 @@ warning()
 {
   # display information and ask the user to continue or cancel
   display " your current configuration:" "+"
-  display "   libc:                     $_LIBC_" "+"
   display "   environment:              $_ENVIRONMENT_" "+"
   display "   architecture:             $_ARCHITECTURE_" "+"
   display "   multibootloader:          $_MULTIBOOTLOADER_" "+"

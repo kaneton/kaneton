@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:29:19 2005   mycure
-## last update   Fri Oct 21 12:17:15 2005   mycure
+## last update   Fri Oct 21 19:18:57 2005   mycure
 ##
 
 #
@@ -40,10 +40,10 @@ LIBSYS_LO		:=		libsys/libsys.lo
 # ---------- rules ------------------------------------------------------------
 #
 
-$(LIBC_A):		libs
-	$(call remove,$(_LIBC_A_),)
+$(_KLIBC_A_):		libs
+	$(call remove,$(_KLIBC_A_),)
 
-	$(call static-library,$(_LIBC_A_),$(LIBDATA_LO) $(LIBSTRING_LO)	\
+	$(call static-library,$(_KLIBC_A_),$(LIBDATA_LO) $(LIBSTRING_LO) \
           $(LIBSYS_LO),)
 
 libs:
@@ -52,7 +52,7 @@ libs:
 clear:
 	$(call make,$(SUBDIRS),clear)
 
-	$(call remove,$(_LIBC_A_),)
+	$(call remove,$(_KLIBC_A_),)
 
 	$(call purge,)
 

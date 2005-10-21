@@ -5,20 +5,20 @@
  * 
  * cons.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/set
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Tue Aug 30 12:53:37 2005   mycure
+ * last update   Fri Oct 21 19:56:18 2005   mycure
  */
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <klibc.h>
 #include <kaneton.h>
 
 /*

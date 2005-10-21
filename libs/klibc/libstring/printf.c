@@ -17,7 +17,7 @@
  */
 
 #include <arch/machdep/machdep.h>
-#include <klibc/include/klibc.h>
+#include <klibc.h>
 
 /*
  * ---------- globals ---------------------------------------------------------

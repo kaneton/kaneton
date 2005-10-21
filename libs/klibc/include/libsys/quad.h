@@ -5,13 +5,13 @@
  * 
  * quad.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include
+ * path          /home/mycure/kaneton/libs/klibc/libdata
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:40:57 2005   mycure
- * last update   Sun Jun 19 22:20:58 2005   mycure
+ * last update   Fri Oct 21 19:42:39 2005   mycure
  */
 
 #ifndef LIBSYS_QUAD_H
@@ -21,7 +21,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <klibc/include/libsys/types.h>
+#include <libsys/types.h>
 #include <arch/machdep/machdep.h>
 
 /*

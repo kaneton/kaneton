@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Tue Oct 11 14:17:56 2005   mycure
+## last update   Fri Oct 21 19:19:41 2005   mycure
 ##
 
 #
@@ -84,13 +84,13 @@ $(KANETON):		libs $(KANETON_O)
 	$(call executable,$(KANETON),	$(KANETON_O)			\
 					$(VERSION_O)			\
 					$(KANETON_LIBS)			\
-					$(_LIBC_A_),			\
+					$(_KLIBC_A_),			\
 	  -T $(_LDS_DIR_)/kaneton.lds)
 
 libs:
 	$(call make,$(SUBDIRS),)
 
-	$(call make,$(_LIBS_DIR_),)
+	$(call make,$(_KLIBC_DIR_),)
 
 clear:
 	$(call make,$(SUBDIRS),clear)

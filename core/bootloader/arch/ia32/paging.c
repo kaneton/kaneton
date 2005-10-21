@@ -5,13 +5,13 @@
  * 
  * paging.c
  * 
- * path          /home/mycure/kaneton/core/bootstrap/arch/ia32
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Thu Oct 20 13:11:59 2005   mycure
+ * last update   Fri Oct 21 20:06:00 2005   mycure
  */
 
 /*
@@ -28,7 +28,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <klibc.h>
 #include <kaneton.h>
 
 #include "bootloader.h"

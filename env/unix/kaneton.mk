@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Fri Oct 21 18:59:16 2005   mycure
+## last update   Fri Oct 21 23:07:02 2005   mycure
 ## last update   Thu Sep 15 16:58:31 2005   mycure
 ##
 
@@ -60,12 +60,15 @@ _MACHDEP_INCLUDE_DIR_	:=		$(_CORE_INCLUDE_DIR_)/arch/machdep
 _ENV_DIR_		:=		$(_SRC_DIR_)/env
 _CONF_DIR_		:=		$(_SRC_DIR_)/conf
 _TOOLS_DIR_		:=		$(_SRC_DIR_)/tools
-_LDS_DIR_		:=		$(_TOOLS_DIR_)/lds/arch/machdep
+_LDS_DIR_		:=		$(_TOOLS_DIR_)/scripts/ld/arch/machdep
+_MULTIBOOTLOADERS_DIR_	:=		$(_TOOLS_DIR_)/scripts/multi-bootloaders
 _PAPERS_DIR_		:=		$(_SRC_DIR_)/papers
 _EXPORT_DIR_		:=		$(_SRC_DIR_)/export
 
 _LIBS_DIR_		:=		$(_SRC_DIR_)/libs
-_LIBS_INCLUDE_DIR_	:=		$(_LIBS_DIR_)
+
+_KLIBC_DIR_		:=		$(_LIBS_DIR_)/klibc
+_KLIBC_INCLUDE_DIR_	:=		$(_KLIBC_DIR_)/include
 
 #
 # ---------- makefiles dependency ---------------------------------------------
@@ -93,6 +96,7 @@ _KANETON_		:=		$(_CORE_KANETON_DIR_)/kaneton
 # ---------- kaneton libraries ------------------------------------------------
 #
 
+_KLIBC_A_		:=		$(_KLIBC_DIR_)/klibc.a
 _CRT_A_			:=		$(_LIBS_DIR_)/crt/crt.a
 
 _AS_LO_			:=		$(_CORE_KANETON_DIR_)/as/as.lo
@@ -120,7 +124,7 @@ CC			:=		gcc
 #
 
 _INCLUDES_		:=		-I$(_CORE_INCLUDE_DIR_)		\
-					-I$(_LIBS_INCLUDE_DIR_)
+					-I$(_KLIBC_INCLUDE_DIR_)
 
 CFLAGS			:=		-D___kaneton			\
 					-nostdinc			\
@@ -490,7 +494,7 @@ endef
 define version
   $(call pretty-printer,yellow,VERSION,$(1),		)		; \
   echo -n "" > $(1)							; \
-  echo "#include <libc.h>" >> $(1)					; \
+  echo "#include <klibc.h>" >> $(1)					; \
   echo "#include <kaneton.h>" >> $(1)					; \
   echo "" >> $(1)							; \
   echo -n "const char version[] = CONF_TITLE\"-\"CONF_VERSION" >> $(1)	; \

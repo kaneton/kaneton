@@ -1,7 +1,4 @@
 --
- modifier dans libc <klibc/include/klibc.h> <libc.h>
-
---
  etendre le find des fichiers dans exporter.sh a core/ libs/ services/
 
  faire un make proto avant de faire le tar comme ca ca clean nos proto

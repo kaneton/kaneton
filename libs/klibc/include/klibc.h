@@ -5,13 +5,13 @@
  * 
  * klibc.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/include
+ * path          /home/mycure/kaneton/libs/klibc/libdata
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 13:53:34 2005   mycure
- * last update   Sun Sep 25 22:20:35 2005   mycure
+ * last update   Fri Oct 21 19:35:51 2005   mycure
  */
 
 #ifndef KLIBC_H
@@ -37,9 +37,9 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc/include/libdata/libdata.h>
-#include <klibc/include/libstring/libstring.h>
-#include <klibc/include/libsys/libsys.h>
+#include <libdata/libdata.h>
+#include <libstring/libstring.h>
+#include <libsys/libsys.h>
 
 /*
  * ---------- extern ----------------------------------------------------------

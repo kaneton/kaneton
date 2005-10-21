@@ -5,13 +5,13 @@
  * 
  * cons.c
  * 
- * path          /home/mycure/kaneton/core/bootstrap/arch/ia32
+ * path          /home/mycure/kaneton/core/bootloader/arch/ia32
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Thu Oct 20 13:05:26 2005   mycure
+ * last update   Fri Oct 21 20:05:44 2005   mycure
  */
 
 /*
@@ -25,7 +25,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <klibc.h>
 #include <kaneton.h>
 
 #include "bootloader.h"

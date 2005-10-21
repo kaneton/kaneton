@@ -5,20 +5,20 @@
  * 
  * serial.c
  * 
- * path          /home/vertrex/kaneton/core/kaneton/debug
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Wed Sep 14 14:23:36 2005   
+ * last update   Fri Oct 21 19:56:38 2005   mycure
  */
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <klibc.h>
 #include <kaneton.h>
 
 /*

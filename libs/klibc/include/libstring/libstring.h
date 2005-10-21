@@ -5,13 +5,13 @@
  * 
  * libstring.h
  * 
- * path          /home/mycure/kaneton/libs/klibc
+ * path          /home/mycure/kaneton/libs/klibc/libdata
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Fri Sep  2 18:13:09 2005   mycure
+ * last update   Fri Oct 21 19:39:20 2005   mycure
  */
 
 #ifndef LIBSTRING_LIBSTRING_H
@@ -21,15 +21,15 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <klibc/include/libsys/types.h>
+#include <libsys/types.h>
 #include <arch/machdep/machdep.h>
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc/include/libstring/ctype.h>
-#include <klibc/include/libstring/printf.h>
+#include <libstring/ctype.h>
+#include <libstring/printf.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

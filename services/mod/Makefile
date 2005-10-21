@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/services/mod
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Tue Sep  6 11:02:09 2005   mycure
+## last update   Fri Oct 21 19:20:02 2005   mycure
 ##
 
 #
@@ -24,7 +24,7 @@ include			../../.kaneton.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		libs clear proto dep
 
 #
 # ---------- variables --------------------------------------------------------
@@ -43,9 +43,14 @@ MOD_INCLUDE		:=
 # ---------- rules ------------------------------------------------------------
 #
 
-$(MOD):			$(MOD_O)
-	$(call executable,$(MOD),$(MOD_O) $(_LIBC_A_),			\
+$(MOD):			libs $(MOD_O)
+	$(call executable,$(MOD),$(MOD_O) $(_KLIBC_A_),			\
 	  -T $(_LDS_DIR_)/service.lds)
+
+libs:
+	$(call make,$(SUBDIRS),)
+
+	$(call make,$(_KLIBC_DIR_),)
 
 clear:
 	$(call remove,$(MOD_O),)

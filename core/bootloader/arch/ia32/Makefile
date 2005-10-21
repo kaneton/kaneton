@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Tue Oct 11 14:19:20 2005   mycure
+## last update   Fri Oct 21 19:16:44 2005   mycure
 ##
 
 #
@@ -52,12 +52,12 @@ CFLAGS			+=		-D___bootloader
 
 $(BOOTLOADER):		libs $(BOOTLOADER_O)
 	$(call executable,$(BOOTLOADER),$(BOOTLOADER_O)			\
-	  $(_LIBC_A_), -T $(_LDS_DIR_)/bootloader.lds)
+	  $(_KLIBC_A_), -T $(_LDS_DIR_)/bootloader.lds)
 
 	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
 
 libs:
-	$(call make,$(_LIBS_DIR_),)
+	$(call make,$(_KLIBC_DIR_),)
 
 clear:
 	$(call remove,$(BOOTLOADER_O),)

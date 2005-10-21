@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Sat Jul 23 14:50:31 2005   mycure
+ * last update   Fri Oct 21 19:36:14 2005   mycure
  */
 
 #ifndef LIBDATA_LIBDATA_H
@@ -21,14 +21,14 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <klibc/include/libsys/types.h>
+#include <libsys/types.h>
 #include <arch/machdep/machdep.h>
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc/include/libdata/alloc.h>
+#include <libdata/alloc.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

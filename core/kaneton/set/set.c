@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /data/kaneton/papers/lectures/development-environment
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Oct 21 09:51:23 2005   mycure
+ * last update   Fri Oct 21 19:57:14 2005   mycure
  */
 
 /*
@@ -162,7 +162,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <klibc.h>
 #include <kaneton.h>
 
 /*

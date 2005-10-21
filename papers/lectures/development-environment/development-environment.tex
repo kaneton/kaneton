@@ -5,13 +5,13 @@
 %% 
 %% development-environment.tex
 %% 
-%% path          /data/kaneton/papers/lectures/development-environment
+%% path          /home/mycure/kaneton/papers/lectures/development-environment
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Fri Oct 21 12:20:44 2005   mycure
+%% last update   Fri Oct 21 23:04:56 2005   mycure
 %%
 
 %
@@ -51,7 +51,7 @@
 
 \makeatletter
 \renewcommand{\verbatim@font}
-  {\ttfamily\color{verbatimcolor}\selectfont}
+  {\ttfamily\small\color{verbatimcolor}\selectfont}
 \makeatother
 
 %
@@ -546,7 +546,7 @@
 
 % 3)
 
-\begin{frame}[containsverbastim]
+\begin{frame}[containsverbatim]
   \frametitle{Tree}
 
   \begin{verbatim}
@@ -605,6 +605,24 @@
 \begin{frame}
   \frametitle{kaneton.mk}
 
+  The \textbf{kaneton.mk} makefile dependency is the heart of the
+  kaneton compilation system.
+
+  \nl
+
+  Indeed, every makefile is composed of calls to special routines
+  which are implemented by the makefile dependency depending on the
+  environment: operating system plus architecture source and destination.
+
+  \nl
+
+  Moreover the \textbf{kaneton.mk} makefile dependency includes the
+  user configuration file so each makefile of the system is able to
+  use user defined variables.
+
+  \nl
+
+  This file used a very special gmake feature: the function \textbf{call}.
 \end{frame}
 
 %
@@ -612,6 +630,19 @@
 %
 
 \section{tools}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The \textbf{tools} directory contains programs, scripts, special
+  files used by the kaneton project.
+
+  \nl
+
+  For example the initial image
+\end{frame}
 
 %
 % libs

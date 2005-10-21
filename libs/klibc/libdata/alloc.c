@@ -5,13 +5,13 @@
  *
  * alloc.c
  *
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/libs/klibc/libdata
  *
  * made by cedric
  *         Cedric Aubouy   [cedric.aubouy@gmail.com]
  *
  * started on    Sun Sep 25 19:57:33 2005   cedric
- * last update   Thu Oct 13 09:46:05 2005   mycure
+ * last update   Fri Oct 21 19:44:43 2005   mycure
  */
 
 /*
@@ -32,8 +32,8 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc/include/klibc.h>
-#include <klibc/include/libdata/alloc.h>
+#include <klibc.h>
+#include <libdata/alloc.h>
 #include <kaneton.h>
 
 /*

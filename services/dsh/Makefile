@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/services/dsh
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Tue Sep  6 11:01:42 2005   mycure
+## last update   Fri Oct 21 19:21:05 2005   mycure
 ##
 
 #
@@ -24,7 +24,7 @@ include			../../.kaneton.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		libs clear proto dep
 
 #
 # ---------- variables --------------------------------------------------------
@@ -43,8 +43,13 @@ DSH_INCLUDE		=
 #
 
 $(DSH):			$(DSH_O)
-	$(call executable,$(DSH),$(DSH_O) $(_LIBC_A_),			\
+	$(call executable,$(DSH),$(DSH_O) $(_KLIBC_A_),			\
 	  -T $(_LDS_DIR_)/service.lds)
+
+libs:
+	$(call make,$(SUBDIRS),)
+
+	$(call make,$(_KLIBC_DIR_),)
 
 clear:
 	$(call remove,$(DSH_O),)

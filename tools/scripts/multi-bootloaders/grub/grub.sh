@@ -5,18 +5,19 @@
 ## 
 ## grub.sh
 ## 
-## path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
+## path          /home/mycure/kaneton/tools/scripts/multi-bootloaders/grub
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Wed Oct 19 00:15:46 2005   mycure
+## last update   Fri Oct 21 23:10:13 2005   mycure
 ##
 
 # INFORMATIONS
 #
-# this script has to be run in the directory src/tools
+# this script has to be run in the directory
+# src/tools/scripts/multi-bootloaders/grub/
 
 
 
