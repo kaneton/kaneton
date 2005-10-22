@@ -3,13 +3,13 @@
  *
  * pmode.c
  *
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton/papers/lectures/development-environment
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Fri Oct 21 20:06:04 2005   mycure
+ * last update   Sat Oct 22 21:07:13 2005   mycure
  */
 
 /*
@@ -205,7 +205,7 @@ void			bootloader_pmode_gdt_set(t_uint16	entry,
 
 /*
  * this function initialises the global offset table inserting
- * height entries for the kernel, drivers, services and user tasks.
+ * height entries for the kernel, drivers, services and programs.
  *
  * each segment has the same size with different rights: read/execution,
  * read/write etc..
@@ -214,7 +214,7 @@ void			bootloader_pmode_gdt_set(t_uint16	entry,
  *
  * 1) allocates and initialises the memory for the global offset table.
  * 2) sets the global offset table address in the init variable.
- * 3) sets the height segments for the kernel, driver, service and user.
+ * 3) sets the height segments for the kernel, driver, service and program.
  * 4) loads the GDT.
  * 5) updates the segments registers.
  * 6) finally installs the protected mode.
@@ -271,12 +271,12 @@ void			bootloader_pmode_init(void)
 			   PMODE_GDT_DATA, PMODE_GDT_GRANULAR |
 			   PMODE_GDT_USE32);
 
-  bootloader_pmode_gdt_set(PMODE_GDT_USER_CS, 0x0, 0xffffffff,
+  bootloader_pmode_gdt_set(PMODE_GDT_PROGRAM_CS, 0x0, 0xffffffff,
 			   PMODE_GDT_PRESENT | PMODE_GDT_DPL3 | PMODE_GDT_S |
 			   PMODE_GDT_CODE, PMODE_GDT_GRANULAR |
 			   PMODE_GDT_USE32);
 
-  bootloader_pmode_gdt_set(PMODE_GDT_USER_DS, 0x0, 0xffffffff,
+  bootloader_pmode_gdt_set(PMODE_GDT_PROGRAM_DS, 0x0, 0xffffffff,
 			   PMODE_GDT_PRESENT | PMODE_GDT_DPL3 | PMODE_GDT_S |
 			   PMODE_GDT_DATA, PMODE_GDT_GRANULAR |
 			   PMODE_GDT_USE32);

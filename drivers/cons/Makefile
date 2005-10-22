@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Fri Oct 21 19:21:02 2005   mycure
+## last update   Sat Oct 22 21:09:06 2005   mycure
 ##
 
 #
@@ -42,9 +42,9 @@ CONS_INCLUDE		:=
 # ---------- rules ------------------------------------------------------------
 #
 
-$(CONS):		$(CONS_O)
+$(CONS):		libs $(CONS_O)
 	$(call executable,$(CONS),$(CONS_O) $(_KLIBC_A_),		\
-	  -T $(_LDS_DIR_)/service.lds)
+	  -T $(_LDS_DIR_)/driver.lds)
 
 libs:
 	$(call make,$(SUBDIRS),)

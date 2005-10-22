@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Fri Oct 21 19:21:23 2005   mycure
+## last update   Sat Oct 22 21:09:16 2005   mycure
 ##
 
 #
@@ -42,9 +42,9 @@ DMA_INCLUDE		:=
 # ---------- rules ------------------------------------------------------------
 #
 
-$(DMA):			$(DMA_O)
+$(DMA):			libs $(DMA_O)
 	$(call executable,$(DMA),$(DMA_O) $(_KLIBC_A_),			\
-	  -T $(_LDS_DIR_)/service.lds)
+	  -T $(_LDS_DIR_)/driver.lds)
 
 libs:
 	$(call make,$(SUBDIRS),)

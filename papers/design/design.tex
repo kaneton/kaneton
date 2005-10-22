@@ -5,13 +5,13 @@
 %%
 %% design.tex
 %%
-%% path          /home/ultima/g/kaneton/papers/design
+%% path          /home/mycure/kaneton
 %%
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %%
 %% started on    Fri Feb  4 15:10:05 2005   mycure
-%% last update   Sat Oct 15 02:53:01 2005   cedric
+%% last update   Sat Oct 22 20:56:32 2005   mycure
 %%
 
 %%
@@ -370,10 +370,10 @@ of a crash to restart the crashed service without any dependency.
 A module is identified by a unique identifier and manipulated with a
 capability.
 
-A \textbf{user} task is the lowest privileged task on the system.
+A \textbf{program} is the lowest privileged task on the system.
 The common user programs are the well-known UNIX{\scriptsize \copyright}
 programs like \textit{/bin/ls}, \textit{/bin/wc}, \textit{/usr/bin/cc} etc..
-A user task is a task with no privilege. All it can do is compute some things,
+A program is a task with no privilege. All it can do is compute some things,
 manage data and send messages to more privileged processes.
 
 A \textbf{service} is a server which provides a so-called service. A service
@@ -434,7 +434,7 @@ The \textbf{class} is chosen at the task creation time. This property
 informs the kernel about the nature of the task, its role on the system.
 In addition, this class will implicitly determine the rights of the task
 on the system. The different classes are \textit{kernel}, \textit{driver},
-\textit{service}, \textit{user}. On many architectures, the kernel, driver
+\textit{service}, \textit{program}. On many architectures, the kernel, driver
 and service classes will have the same hardware system priority.
 Nevertheless few architectures provides different hardware system privileges
 like Intel Architecture.
@@ -447,7 +447,8 @@ task.
 
 The \textbf{priority} is a value included in the range defined by the
 task behaviour. Any thread of a task can update the priority of its
-task in this range modifying the task priority from the scheduler point of view.
+task in this range modifying the task priority from the scheduler
+point of view.
 
 With these properties, a user can create a task very reactive setting an
 appropriate behaviour and then update its priority to adjust its quantum.

@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/services
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Fri Oct 21 19:21:05 2005   mycure
+## last update   Sat Oct 22 15:15:04 2005   mycure
 ##
 
 #
@@ -42,7 +42,7 @@ DSH_INCLUDE		=
 # ---------- rules ------------------------------------------------------------
 #
 
-$(DSH):			$(DSH_O)
+$(DSH):			libs $(DSH_O)
 	$(call executable,$(DSH),$(DSH_O) $(_KLIBC_A_),			\
 	  -T $(_LDS_DIR_)/service.lds)
 

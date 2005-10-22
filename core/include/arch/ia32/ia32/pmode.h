@@ -5,13 +5,13 @@
  * 
  * pmode.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32/ia32
+ * path          /home/mycure/kaneton/papers/lectures/development-environment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sat May 28 18:55:06 2005   mycure
- * last update   Sun Jun 19 20:38:06 2005   mycure
+ * last update   Sat Oct 22 21:05:58 2005   mycure
  */
 
 #ifndef IA32_IA32_PMODE_H
@@ -46,8 +46,8 @@
 #define PMODE_GDT_DRIVER_DS	0x4
 #define PMODE_GDT_SERVICE_CS	0x5
 #define PMODE_GDT_SERVICE_DS	0x6
-#define PMODE_GDT_USER_CS	0x7
-#define PMODE_GDT_USER_DS	0x8
+#define PMODE_GDT_PROGRAM_CS	0x7
+#define PMODE_GDT_PROGRAM_DS	0x8
 
 /*
  * gdt flags

@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Sat Oct 22 14:44:12 2005   mycure
+%% last update   Sat Oct 22 20:40:59 2005   mycure
 %%
 
 %
@@ -511,7 +511,7 @@
   \nl
 
   Indeed, a user can develop the kaneton project on a Mac machine using
-  cross compiling ('cause PowerPC processor) while another one is using
+  cross compilation ('cause PowerPC processor) while another one is using
   a FreeBSD operating system on an Intel processor.
 
   \nl
@@ -525,19 +525,19 @@
 \begin{frame}
   \frametitle{Our System}
 
-  To do this we introduced a environment system.
+  To do this, we decided to introduce an environment system.
 
   \nl
 
-  Every time a user gets the kaneton development tarball, he has to first
-  create the environment given a couple operating system and architecture
-  which lead to an environment.
+  Every time a user gets the kaneton development tarball, he first has to
+  create his development environment given a couple operating system and
+  architecture which leads to an environment.
 
   \nl
 
-  Once the environment installed, the user can develop, compile the kernel
+  Once the environment is installed, the user can develop, compile the kernel
   etc.. without problems because everything (makefiles, scripts etc..) use
-  the binaries, variables etc.. for its environment.
+  the binaries, variables etc.. for his environment.
 
   \nl
 
@@ -553,7 +553,7 @@
     env/
       clean
       init
-      unix-ia32.ia32/
+      unix/
         clean
         init
         kaneton.mk
@@ -562,7 +562,7 @@
 
   \nl
 
-  Here the \textbf{unix-ia32.ia32} is considered as the generic unix
+  Here the \textbf{unix} is considered as the generic unix
   environment but everyone can add a specific linux, FreeBSD, Solaris etc..
   environment.
 \end{frame}
@@ -570,15 +570,15 @@
 % 4)
 
 \begin{frame}
-  \frametitle{init}
+  \frametitle{init.sh}
 
-  The \textbf{init} shell script is used to install the development
+  The \textbf{init.sh} shell script is used to install the development
   environment.
 
   \nl
 
   This script first gets the configuration variables from the user
-  configuration file, then calls the specific \textbf{init} script
+  configuration file, then calls the specific \textbf{init.sh} script
   of the given environment.
 
   \nl
@@ -588,16 +588,16 @@
 
   \nl
 
-  The \textbf{\[environment\]/init} shell script is used to install
+  The \textit{[environment]}/init.sh shell script is used to install
   specific stuff.
 \end{frame}
 
 % 5)
 
 \begin{frame}
-  \frametitle{clean}
+  \frametitle{clean.sh}
 
-  The \textbf{clean} shell script just cleans the environment.
+  The \textbf{clean.sh} shell script just cleans the environment.
 \end{frame}
 
 % 6)
@@ -622,7 +622,8 @@
 
   \nl
 
-  This file used a very special gmake feature: the function \textbf{call}.
+  The kaneton compilation system used a very special gmake feature:
+  the makefile \textbf{call} function.
 \end{frame}
 
 %
@@ -648,8 +649,8 @@
   \nl
 
   The \textbf{tools} directory also contains the ld scripts used
-  to correctly compile the bootstrap, the bootloader, the kernel
-  and the services.
+  to correctly compile the bootstrap, the bootloader, the kernel, the
+  drivers and the services.
 \end{frame}
 
 % 2)
@@ -661,6 +662,14 @@
     tools/
       scripts/
         ld/
+          arch/
+            ia32/
+              bootstrap.lds
+              bootloader.lds
+              kaneton.lds
+              driver.lds
+              service.lds
+              user.lds
         multi-bootloaders/
           grub/
           lilo/
@@ -680,7 +689,7 @@
 \begin{frame}
   \frametitle{Overview}
 
-  The \textbf{libs} directory contains the library used by the kaneton
+  The \textbf{libs} directory contains the libraries used by the kaneton
   project like:
 
   \begin{itemize}
@@ -722,8 +731,8 @@
     core/
       bootstrap/
         arch/
-          ia32/
-          machdep ->
+          ia32/ <---;
+          machdep --'
       bootloader/
         arch/
       kaneton/
@@ -749,7 +758,29 @@
 \begin{frame}
   \frametitle{Overview}
 
-  XXX
+  The \textbf{drivers} directory contains the drivers of the kaneton
+  microkernel.
+
+  \nl
+
+  A driver, in the kaneton terms, is a microkernel server which is allowed
+  to communicate with hardware devices.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Tree}
+
+  \begin{verbatim}
+    drivers/
+      cons/
+        Makefile
+        cons.c
+      dma/
+      kbd/
+      ide/
+  \end{verbatim}
 \end{frame}
 
 %
@@ -763,7 +794,28 @@
 \begin{frame}
   \frametitle{Overview}
 
-  The \textbf{services} directory contains the services
+  The \textbf{services} directory contains the services of the kaneton
+  microkernel.
+
+  \nl
+
+  A service, in the kaneton terms, in simply a server which does not
+  communicate with the hardware.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Tree}
+
+  \begin{verbatim}
+    services/
+      dsh/
+      mod/
+        Makefile
+        mod.c
+        modfs.c
+  \end{verbatim}
 \end{frame}
 
 %
@@ -772,11 +824,50 @@
 
 \section{programs}
 
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The \textbf{programs} directory contains the sources of common
+  programs.
+
+  \nl
+
+  A program in the kaneton terms is just a non-privilegied
+  process.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Tree}
+
+  \begin{verbatim}
+    programs/
+      ls/
+      wc/
+      cat/
+      mount/
+      umount/
+      gcc/
+      emacs/
+  \end{verbatim}
+\end{frame}
+
 %
 % export
 %
 
 \section{export}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  XXX
+\end{frame}
 
 %
 % papers

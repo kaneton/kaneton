@@ -1,4 +1,18 @@
 --
+ comment faire en sorte que le bootstrap/bootloader/kernel/drivers/services
+ dependent de la libc sans a chaque fois refaire le processus de linking
+ de la libc ??? je ne vois pas comment faire autrement car la c'est laid
+
+--
+ un bon exercice pour preparer la releve de kaneton serait de faire
+ developer une nouvelle archi pour kaneton mais basee sur intel
+ en n'utilisant que les segments et pas la pagination.
+
+ ca lui apprendrait le proc intel et ca prouverait que notre systeme
+ d'archi marche bien et qu'on peut par exemple se passe de la pagination
+ (alors que pour l'instant dans design/ je dis que c'est un prerequis)
+
+--
  retoucher mkp.py pour qu'il marche: t_bpt_addr() addr
  -> et rajouter le chemin relatif de set_bpt.c dans
     core/include/kaneton/set.h
