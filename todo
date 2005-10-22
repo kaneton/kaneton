@@ -1,4 +1,9 @@
 --
+ retoucher mkp.py pour qu'il marche: t_bpt_addr() addr
+ -> et rajouter le chemin relatif de set_bpt.c dans
+    core/include/kaneton/set.h
+
+--
  etendre le find des fichiers dans exporter.sh a core/ libs/ services/
 
  faire un make proto avant de faire le tar comme ca ca clean nos proto
@@ -111,9 +116,6 @@
 
 --
  expliquer les design patterns: factory (id, segment, set etc..)
-
---
- expliquer dans le readme comment generer les dep
 
 --
  coder les fonctions clone: as_clone(), set_clone(), id_clone() etc..

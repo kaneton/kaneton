@@ -3,15 +3,15 @@
 ## 
 ## kaneton
 ## 
-## init
+## init.sh
 ## 
-## path          /home/mycure/kaneton/env/unix-ia32
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Fri Oct 21 11:48:51 2005   mycure
+## last update   Fri Oct 21 23:27:34 2005   mycure
 ##
 
 # INFORMATIONS
@@ -116,7 +116,7 @@ init()
   ln -s $_ARCHITECTURE_ core/bootloader/arch/machdep
   ln -s $_ARCHITECTURE_ core/include/arch/machdep
   ln -s $_ARCHITECTURE_ core/kaneton/arch/machdep
-  ln -s $_ARCHITECTURE_ tools/lds/arch/machdep
+  ln -s $_ARCHITECTURE_ tools/scripts/ld/arch/machdep
 }
 
 

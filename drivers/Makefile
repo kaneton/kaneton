@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Sat Oct 22 14:43:33 2005   mycure
+## last update   Sat Oct 22 14:43:21 2005   mycure
 ##
 
 #
@@ -30,8 +30,9 @@ include			../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		dsh				\
-					mod
+SUBDIRS			:=		cons				\
+					dma				\
+					kbd				
 
 #
 # ---------- rules ------------------------------------------------------------

@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Fri Oct 21 23:04:56 2005   mycure
+%% last update   Sat Oct 22 14:44:12 2005   mycure
 %%
 
 %
@@ -641,7 +641,32 @@
 
   \nl
 
-  For example the initial image
+  For example a script to initialise and install modules on a grub
+  bootloader boot device is provided in the subdirectory
+  \textit{scripts/multi-bootloaders/grub/}.
+
+  \nl
+
+  The \textbf{tools} directory also contains the ld scripts used
+  to correctly compile the bootstrap, the bootloader, the kernel
+  and the services.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Tree}
+
+  \begin{verbatim}
+    tools/
+      scripts/
+        ld/
+        multi-bootloaders/
+          grub/
+          lilo/
+        prototypes/
+          mkp.py
+  \end{verbatim}
 \end{frame}
 
 %
@@ -650,17 +675,96 @@
 
 \section{libs}
 
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The \textbf{libs} directory contains the library used by the kaneton
+  project like:
+
+  \begin{itemize}
+    \item
+      libc
+    \item
+      crt
+    \item
+      libposix
+  \end{itemize}
+\end{frame}
+
 %
 % core
 %
 
 \section{core}
 
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The \textbf{core} directory contains the source code for the microkernel
+  including the bootstrap, the bootloader and the kernel itsef.
+
+  \nl
+
+  Each part contains an \textbf{arch} directory used for architecture
+  dependent soure code.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Tree}
+
+  \begin{verbatim}
+    core/
+      bootstrap/
+        arch/
+          ia32/
+          machdep ->
+      bootloader/
+        arch/
+      kaneton/
+        arch/
+        as/
+        conf/
+        debug/
+        id/
+        segment/
+        set/
+        stats/
+  \end{verbatim}
+\end{frame}
+
+%
+% drivers
+%
+
+\section{drivers}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  XXX
+\end{frame}
+
 %
 % services
 %
 
 \section{services}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The \textbf{services} directory contains the services
+\end{frame}
 
 %
 % programs

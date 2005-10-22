@@ -3,22 +3,22 @@
 ## 
 ## kaneton
 ## 
-## clean
+## clean.sh
 ## 
-## path          /home/mycure/kaneton/env/unix-ia32
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Fri Oct 21 11:49:12 2005   mycure
+## last update   Fri Oct 21 23:27:43 2005   mycure
 ##
 
 # INFORMATIONS
 #
 # this script has to be run in the directory src/
 #
-# this script must always be run by the script src/env/clean
+# this script must always be run by the script src/env/clean.sh
 
 
 
@@ -85,7 +85,7 @@ clean()
   rm -f core/bootloader/arch/machdep
   rm -f core/include/arch/machdep
   rm -f core/kaneton/arch/machdep
-  rm -f tools/lds/arch/machdep
+  rm -f tools/scripts/ld/arch/machdep
 }
 
 

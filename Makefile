@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/papers/lectures/development-environment
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Fri Oct 21 23:06:22 2005   mycure
+## last update   Sat Oct 22 14:41:24 2005   mycure
 ##
 
 #
@@ -38,7 +38,7 @@ SHELL			:=		/bin/sh
 
 _SHELL_			?=		true
 
-SUBDIRS			:=		libs core services
+SUBDIRS			:=		libs core drivers services
 
 #
 # ---------- default rule -----------------------------------------------------
@@ -53,7 +53,7 @@ all:			kaneton
 kaneton.mk:
 	if [ ! -e .kaneton.mk ] ; then					\
 	  cd env							; \
-	  $(SHELL) init							; \
+	  $(SHELL) init.sh						; \
 	  cd ..								; \
 									\
 	  echo ""							; \
@@ -63,12 +63,12 @@ kaneton.mk:
 
 init:
 	cd env								; \
-	$(SHELL) init							; \
+	$(SHELL) init.sh						; \
 	cd ..
 
-clean:			kaneton.mk
+clean:
 	cd env								; \
-	$(SHELL) clean							; \
+	$(SHELL) clean.sh						; \
 	cd ..
 
 	rm -f *~
@@ -108,13 +108,13 @@ dep:			kaneton.mk
 #
 
 build:			kaneton.mk
-	cd $(_MULTIBOOTLOADERS_DIR_)					; \
-	$(_SHELL_) $(_MULTIBOOTLOADER_) build				; \
+	cd $(_MULTIBOOTLOADERS_DIR_)/$(_MULTIBOOTLOADER_)		; \
+	$(_SHELL_) $(_MULTIBOOTLOADER_).sh build			; \
 	cd ..
 
 install:		kaneton.mk kaneton
-	cd $(_MULTIBOOTLOADERS_DIR_)					; \
-	$(_SHELL_) $(_MULTIBOOTLOADER_) install				; \
+	cd $(_MULTIBOOTLOADERS_DIR_)/$(_MULTIBOOTLOADER_)		; \
+	$(_SHELL_) $(_MULTIBOOTLOADER_).sh install			; \
 	cd ..
 
 #

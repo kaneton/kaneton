@@ -3,15 +3,15 @@
 ## 
 ## kaneton
 ## 
-## clean
+## clean.sh
 ## 
-## path          /home/mycure/kaneton/papers/lectures/advanced-makefiles
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:14:03 2005   mycure
-## last update   Tue Oct 18 23:57:44 2005   mycure
+## last update   Fri Oct 21 23:14:34 2005   mycure
 ##
 
 # INFORMATIONS
@@ -59,7 +59,7 @@ read_kaneton_conf()
 # this function displays the usage but does not exit
 usage()
 {
-  display " usage: clean" "!"
+  display " usage: clean.sh" "!"
 }
 
 
@@ -119,7 +119,7 @@ clean()
     exit
   fi
 
-  if [ ! -e env/$_ENVIRONMENT_/clean ] ; then
+  if [ ! -e env/$_ENVIRONMENT_/clean.sh ] ; then
     display " unknown system: $_ENVIRONMENT_" "!"
     display ""
     display " please check your ENVIRONMENT variable in $_CONF_" "!"
@@ -130,7 +130,7 @@ clean()
     exit
   fi
 
-  ./env/$_ENVIRONMENT_/clean
+  ./env/$_ENVIRONMENT_/clean.sh
 }
 
 

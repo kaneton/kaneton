@@ -3,7 +3,7 @@
 ## 
 ## kaneton
 ## 
-## init
+## init.sh
 ## 
 ## path          /home/mycure/kaneton
 ## 
@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Fri Oct 21 19:17:56 2005   mycure
+## last update   Fri Oct 21 23:23:15 2005   mycure
 ##
 
 # INFORMATIONS
@@ -64,7 +64,7 @@ read_kaneton_conf()
 # this function displays the usage but does not exit
 usage()
 {
-  display " usage: init" "!"
+  display " usage: init.sh" "!"
 }
 
 
@@ -78,7 +78,7 @@ warning()
   display " your current configuration:" "+"
   display "   environment:              $_ENVIRONMENT_" "+"
   display "   architecture:             $_ARCHITECTURE_" "+"
-  display "   multibootloader:          $_MULTIBOOTLOADER_" "+"
+  display "   multi-bootloader:         $_MULTIBOOTLOADER_" "+"
   display ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
@@ -125,7 +125,7 @@ init()
     exit
   fi
 
-  if [ ! -e env/$_ENVIRONMENT_/init ] ; then
+  if [ ! -e env/$_ENVIRONMENT_/init.sh ] ; then
     display " unknown system: $_ENVIRONMENT_" "!"
     display ""
     display " please check your ENVIRONMENT variable in $_CONF_" "!"
@@ -136,7 +136,7 @@ init()
     exit
   fi
 
-  ./env/$_ENVIRONMENT_/init
+  ./env/$_ENVIRONMENT_/init.sh
 }
 
 
@@ -157,18 +157,22 @@ conf()
 
 
 
-# DEPENDENCIES
+# PROTO
 #
-# this function generates C files dependencies
+# this function generates the prototypes
+proto()
+{
+  make proto 2> /dev/null > /dev/null
+}
+
+
+
+# DEP
+#
+# this function generates the dependencies
 dep()
 {
-  display " reinitialising of makefile dependencies" "+"
-
-  makefiles=`find ./ -name .makefile.mk`
-
-  for m in $makefiles ; do
-    echo -n "" > $m
-  done
+  make dep 2> /dev/null > /dev/null
 }
 
 
@@ -278,7 +282,10 @@ init
 # link kernel configuration
 conf
 
-# generate the files dependencies
+# generate prototypes
+proto
+
+# generate dependencies
 dep
 
 # return into the env/ directory

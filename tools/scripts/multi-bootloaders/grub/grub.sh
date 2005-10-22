@@ -5,13 +5,13 @@
 ## 
 ## grub.sh
 ## 
-## path          /home/mycure/kaneton/tools/scripts/multi-bootloaders/grub
+## path          /home/mycure/kaneton/papers/lectures/development-environment
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Fri Oct 21 23:10:13 2005   mycure
+## last update   Fri Oct 21 23:39:53 2005   mycure
 ##
 
 # INFORMATIONS
@@ -24,8 +24,8 @@
 # CONFIGURATION FILE PATH
 #
 # configuration file
-_CONF_="../conf/"$USER"/"$USER".conf"
-_MODULES_=`sed "s/#.*//g" ../conf/"$USER"/modules.conf | grep -v "^$"`
+_CONF_="../../../../conf/"$USER"/"$USER".conf"
+_MODULES_=`sed "s/#.*//g" ../../../../conf/"$USER"/modules.conf | grep -v "^$"`
 
 
 
@@ -222,10 +222,10 @@ install()
       fi
 
       for module in $_MODULES_ ; do
-        if [ ! -f ../$module ] ; then
+        if [ ! -f ../../../../$module ] ; then
           display " $module" "!"
         else
-          mcopy -n -o ../$module $_MDEVICE_/modules/
+          mcopy -n -o ../../../../$module $_MDEVICE_/modules/
           display " $module" "+"
         fi
       done
@@ -241,10 +241,10 @@ install()
       fi
 
       for module in $_MODULES_ ; do
-        if [ ! -f ../$module ] ; then
+        if [ ! -f ../../../../$module ] ; then
           display " $module" "!"
         else
-          cp ../$module $_TFTP_DIRECTORY_
+          cp ../../../../$module $_TFTP_DIRECTORY_
           display " $module" "+"
         fi
       done
@@ -260,10 +260,10 @@ install()
       fi
 
       for module in $_MODULES_ ; do
-        if [ ! -f ../$module ] ; then
+        if [ ! -f ../../../../$module ] ; then
           display " $module" "!"
         else
-          mcopy -n -o ../$module -i $_IMAGE_ ::/modules/
+          mcopy -n -o ../../../../$module -i $_IMAGE_ ::/modules/
           display " $module" "+"
         fi
       done
