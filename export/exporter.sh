@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Thu Oct 20 14:14:59 2005   mycure
+## last update   Sun Oct 23 03:35:26 2005   mycure
 ##
 
 # INFORMATIONS
@@ -19,10 +19,11 @@
 # this script has to be run in the directory src/export
 #
 # the argument 'kaneton' makes a valid distribution, meaning that
-# there will be no cut line in the distribution
+# there will be no cut line in the distribution. this distribution
+# includes all the kaneton levels, all the source code
 #
 # the argument 'dist' makes a backup of the current development tree
-# including the cut lines
+# including the cut lines but still without the subversion control directories
 
 # GLOBAL VALUES
 #
@@ -30,6 +31,8 @@
 _STAGES_="k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 kaneton dist"
 _STAGE_=""
 _INPUT_=""
+_FILES_=""
+
 
 
 # CONFIGURATION FILE PATH
@@ -114,76 +117,93 @@ locate()
 
 
 
+# TAGS
+#
+# this function removes tags from the source code files
+tags()
+{
+  # finally cleans the file from the cut tags
+  for f in $_FILES_ ; do
+    cat $f | sed "/^.*\[cut\].*$/ d" > /tmp/$_EXPORT_
+    cp /tmp/$_EXPORT_ $f
+  done
+}
+
+
+
+# clean
+#
+# this function cuts the unwanted source code
+clean()
+{
+  # for each file, cut the unwanted source code
+  flag=0
+  for s in $_STAGES_; do
+    if [ $s = $_STAGE_ ] ; then
+      flag=1
+    fi
+
+    if [ $flag = "1" ] ; then
+      for f in $_FILES_ ; do
+        cat $f | sed "/^.*\[cut\].*$s.*$/,/^.*\[cut\].*\/$s.*$/	\
+                      { /^.*\[cut\].*$s.*$/ !d }" > /tmp/$_EXPORT_
+        cp /tmp/$_EXPORT_ $f
+      done
+    fi
+  done
+}
+
+
+
 # BUILD
 #
 # this function builds an exported distribution given the stage
 build()
 {
   # removes the old directory for this stage
-
   rm -f $_EXPORT_-*-$_STAGE_.tar.gz
   rm -f /tmp/$_EXPORT_.tar.gz
 
   # creates a tarball from the current working development tree
-
   cd ../
   tar -czf /tmp/$_EXPORT_.tar.gz .
   cd export
 
   # cleans the copy of the current working development tree
-
   mkdir $_EXPORT_
   tar -xzf /tmp/$_EXPORT_.tar.gz -C $_EXPORT_
 
+  # enter directory
   cd $_EXPORT_
+
+  # remove svn control directories
   rm -Rf `find ./ -type d -name .svn`
-  cd ..
 
-  # cleans every unwanted source code given the stage
+  # gets the list of the files
+  c_files=`find core/ -type f -name "*.c"`
+  h_files=`find core/ -type f -name "*.h"`
+  asm_files=`find core/ -type f -name "*.asm"`
+  S_files=`find core/ -type f -name "*.S"`
 
-  if [ $_STAGE_ != "dist" ] ; then
+  _FILES_="$c_files $h_files $asm_files $S_files"
 
-    cd $_EXPORT_
+  # make a choice from $_STAGE_
+  case $_STAGE_ in
+    "dist")
+      ;;
 
-    c_files=`find core/ -type f -name "*.c"`
-    h_files=`find core/ -type f -name "*.h"`
-    asm_files=`find core/ -type f -name "*.asm"`
-    S_files=`find core/ -type f -name "*.S"`
+    "kaneton")
+      tags
+      ;;
 
-    files="$c_files $h_files $asm_files $S_files"
-
-    # for each file, cut the unwanted source code
-
-    flag=0
-    for s in $_STAGES_; do
-      if [ $s = $_STAGE_ ] ; then
-        flag=1
-      fi
-
-      if [ $flag = "1" ] ; then
-        for f in $files ; do
-          cat $f | sed "/^.*\[cut\].*$s.*$/,/^.*\[cut\].*\/$s.*$/	\
-                        { /^.*\[cut\].*$s.*$/ !d }" > /tmp/$_EXPORT_
-          cp /tmp/$_EXPORT_ $f
-        done
-      fi
-    done
-
-    # finally cleans the file from the cut tags
-
-    for f in $files ; do
-      cat $f | sed "/^.*\[cut\].*$/ d" > /tmp/$_EXPORT_
-      cp /tmp/$_EXPORT_ $f
-    done
-
-    cd ..
-
-  fi
+    *)
+      clean
+      tags
+      ;;
+  esac
 
   # we have to re-generate prototypes because the header files
   # still contain our prototypes
-
-  cd $_EXPORT_
 
   echo "
 " | make init > /dev/null 2> /dev/null
@@ -193,6 +213,7 @@ build()
   echo "
 " | make clean > /dev/null 2> /dev/null
 
+  # leave directory
   cd ..
 }
 
@@ -205,8 +226,10 @@ dist()
 {
   d=`date +"%Y%m%d"`
 
+  # make the distribution
   tar -czf $_EXPORT_-$d-$_STAGE_.tar.gz $_EXPORT_
 
+  # remove the working directory
   rm -Rf $_EXPORT_
 }
 

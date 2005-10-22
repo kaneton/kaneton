@@ -5,13 +5,13 @@
 %% 
 %% development-environment.tex
 %% 
-%% path          /home/mycure/kaneton/papers/lectures/development-environment
+%% path          /home/mycure/kaneton
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Sat Oct 22 20:40:59 2005   mycure
+%% last update   Sun Oct 23 02:55:45 2005   mycure
 %%
 
 %
@@ -51,7 +51,7 @@
 
 \makeatletter
 \renewcommand{\verbatim@font}
-  {\ttfamily\small\color{verbatimcolor}\selectfont}
+  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
 \makeatother
 
 %
@@ -161,14 +161,13 @@
 \begin{frame}
   \frametitle{Introduction}
 
-  From the previous years, a development environment was introduced
-  for the kaneton project.
+  From the previous years, a development environment was introduced.
 
   \nl
 
   The questions are:
 
-  \begin{enumerate}
+  \begin{enumerate}[<+->]
     \item
       Why?
     \item
@@ -232,13 +231,7 @@
 \begin{frame}
   \frametitle{The Assignments}
 
-  Due to the constant evolution of the project, the students will have
-  to lead the operating system further and furter. Nevertheless, the same
-  time is allocated for the project January to November.
-
-  \nl
-
-  For example, during the year 2005, the students develop a poor microkernel
+  During the year 2005, the students develop a poor microkernel
   from scratch with few functionalities, a driver and finally a baby
   file system.
 
@@ -344,6 +337,7 @@
       conf/
       core/
       doc/
+      drivers/
       env/
       export/
       libs/
@@ -400,8 +394,8 @@
         kaneton.conf
         modules.conf
         mycure.conf
-      ultima/
-      debug/
+      pwipwi/
+      chiche/
   \end{verbatim}
 
   This configuration system uses the shell variable \$USER to find
@@ -445,11 +439,11 @@
   \frametitle{kaneton.conf}
 
   This configuration file is used to pass arguments at the runtime to the
-  services.
+  servers.
 
   \nl
 
-  This file is also used to configure kernel and services input variables.
+  This file is also used to configure kernel and servers input variables.
 \end{frame}
 
 % 6)
@@ -458,7 +452,7 @@
   \frametitle{modules.conf}
 
   This file contains the list of the modules to be loaded by the
-  multibootloader.
+  multi-bootloader.
 
   \nl
 
@@ -511,8 +505,8 @@
   \nl
 
   Indeed, a user can develop the kaneton project on a Mac machine using
-  cross compilation ('cause PowerPC processor) while another one is using
-  a FreeBSD operating system on an Intel processor.
+  cross compilation for Intel processors ('cause PowerPC processor)
+  while another one is using a FreeBSD operating system on an Intel processor.
 
   \nl
 
@@ -551,11 +545,11 @@
 
   \begin{verbatim}
     env/
-      clean
-      init
+      clean.sh
+      init.sh
       unix/
-        clean
-        init
+        clean.sh
+        init.sh
         kaneton.mk
       macos-powerpc.ia32/
   \end{verbatim}
@@ -598,6 +592,10 @@
   \frametitle{clean.sh}
 
   The \textbf{clean.sh} shell script just cleans the environment.
+
+  \nl
+
+  This shell script also call the environment specific clean.sh script.
 \end{frame}
 
 % 6)
@@ -622,8 +620,33 @@
 
   \nl
 
-  The kaneton compilation system used a very special gmake feature:
+  The kaneton compilation system uses a very special gmake feature:
   the makefile \textbf{call} function.
+\end{frame}
+
+% 7)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Use}
+
+  \begin{verbatim}
+    $ make init
+    [+] installing environment
+
+    [+] your current configuration:
+    [+]   environment:              unix
+    [+]   architecture:             ia32
+    [+]   multi-bootloader:         grub
+
+    [...]
+
+    $ make clean
+    [+] cleaning environment
+
+    [...]
+
+    $ 
+  \end{verbatim}
 \end{frame}
 
 %
@@ -650,7 +673,7 @@
 
   The \textbf{tools} directory also contains the ld scripts used
   to correctly compile the bootstrap, the bootloader, the kernel, the
-  drivers and the services.
+  drivers, the services and the programs.
 \end{frame}
 
 % 2)
@@ -678,6 +701,106 @@
   \end{verbatim}
 \end{frame}
 
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Use}
+
+  \begin{verbatim}
+    $ make build
+    [+] initialising boot system
+
+    [+] boot system initialised successfully
+    $ make install
+    [+] initialising boot system
+
+    [+] /tmp/menu.lst
+    [+] core/bootloader/bootloader
+    [+] core/kaneton/kaneton
+    [+] conf/mycure/kaneton.conf
+    [+] drivers/cons/cons
+    [+] services/dsh/dsh
+
+    [+] boot system initialised successfully
+    $ 
+  \end{verbatim}
+\end{frame}
+
+% 4)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Prototypes}
+
+  The compilation system permits to generate the prototypes in a very easy
+  and elegant way.
+
+  \begin{verbatim}
+    $ make proto
+    [PROTOTYPES]            libdata.h
+    [PROTOTYPES]            libstring.h
+    [PROTOTYPES]            libsys.h
+    [PROTOTYPES]            bootloader.h
+    [PROTOTYPES]            ia32.h
+    [PROTOTYPES]            kaneton.h
+    [PROTOTYPES]            as.h
+    [PROTOTYPES]            conf.h
+    [PROTOTYPES]            serial.h
+
+    [...]
+
+    $ 
+  \end{verbatim}
+\end{frame}
+
+% 5)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Explanations}
+
+  This system is based on tags in the header files which specify
+  from which files to extract prototypes.
+
+  \nl
+
+  The tags are of the form:
+
+  \begin{verbatim}
+    /*
+     * ---------- prototypes -------------------------------------------------
+     *
+     *      ../../kaneton/set/set.c
+     *      ../../kaneton/set/set_array.c
+     *      ../../kaneton/set/set_ll.c
+     *      ../../kaneton/set/set_bpt.c
+     */
+  \end{verbatim}
+\end{frame}
+
+% 5)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Dependencies}
+
+  The compilation system uses full dependencies between files.
+
+  \nl
+
+  To regenerate the dependencies, for example when adding a
+  \textit{\#include} c-preprocessor directive in a source file:
+
+  \begin{verbatim}
+    $ make dep
+    [REMOVE]                .makefile.mk
+    [DEPENDENCIES]          dump.c
+    [DEPENDENCIES]          alloc.c
+    [DEPENDENCIES]          sum2.c
+
+    [...]
+
+    $ 
+  \end{verbatim}
+\end{frame}
+
 %
 % libs
 %
@@ -699,6 +822,8 @@
       crt
     \item
       libposix
+    \item
+      etc..
   \end{itemize}
 \end{frame}
 
@@ -732,7 +857,7 @@
       bootstrap/
         arch/
           ia32/ <---;
-          machdep --'
+          machdep --+
       bootloader/
         arch/
       kaneton/
@@ -866,7 +991,41 @@
 \begin{frame}
   \frametitle{Overview}
 
-  XXX
+  The \textbf{export} directory is used to create kaneton distribution.
+
+  \nl
+
+  This feature is especially used by the maintainers of the kaneton
+  project which create very special kaneton distribution for
+  the students.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Use}
+
+  The only way to export kaneton is to do like this:
+
+  \begin{verbatim}
+    $ make export
+    [!] usage: exporter.sh [stage]
+
+    available stages: k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 kaneton dist
+    $ make export-k3
+  \end{verbatim}
+
+  \begin{itemize}
+    \item
+      \textbf{k[0-9]}: create a special kaneton version for the k[0-9]
+      subproject
+    \item
+      \textbf{kaneton}: create an entire kaneton version for the lastest
+      subproject
+    \item
+      \textbf{dist}: create an entire backup of the kaneton development
+      project
+  \end{itemize}
 \end{frame}
 
 %
@@ -875,10 +1034,81 @@
 
 \section{papers}
 
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The \textbf{papers} directory contains the papers and lectures
+  in relation with the kaneton project.
+
+  \nl
+
+  We prefered set the papers directly into the tarball so every student
+  can easily read them.
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Tree}
+
+  \begin{verbatim}
+    papers/
+      assignments/
+      design/
+      kaneton/
+      seminar/
+      lectures/
+        kernels/
+        inline-assembly/
+        c-preprocessor/
+        distributed-operating-systems/
+        arch-ia32/
+  \end{verbatim}
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Use}
+
+  \begin{verbatim}
+    $ make view
+    [+] papers:
+
+    [+]   assignments
+    [+]   design
+    [+]   arch-ia32
+    [+]   c-preprocessor
+    [+]   distributed-operating-systems
+    [+]   inline-assembly
+    [+]   kernels
+    [+]   development-environment
+
+    [!] usage: viewer.sh [paper]
+    $ make view-design
+  \end{verbatim}
+\end{frame}
+
 %
 % doc
 %
 
 \section{doc}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The \textbf{doc} directory contains every document useful for
+  the development of the kaneton project.
+
+  \nl
+
+  This directory will theorically contain documents on the different
+  architectures, documents on some hardware devices like ide, usb etc..
+\end{frame}
 
 \end{document}
