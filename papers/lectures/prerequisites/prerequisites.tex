@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Sun Oct 23 20:37:31 2005   mycure
+%% last update   Sun Oct 23 23:11:33 2005   mycure
 %%
 
 %
@@ -170,6 +170,38 @@
   able to success.
 \end{frame}
 
+% 2)
+
+\begin{frame}
+  \frametitle{List}
+
+  The different prerequisites for the kaneton project are:
+
+  \begin{itemize}[<+->]
+    \item
+      Advanced makefiles because the kaneton compiling system uses special
+      gmake features.
+    \item
+      C-preprocessor because the kaneton kernel uses it in a very powerful
+      and elegant way.
+    \item
+      Inline assembly because it is widely used in low-level programming.
+    \item
+      C language because without, needless to start the project.
+    \item
+      Assembly language because low-level programming needs it.
+  \end{itemize}
+
+  \nl
+
+  The first three prerequisites will be coverded by dedicated courses.
+
+  \nl
+
+  For the two languages C and assembly, we assume you already well know these
+  languages.
+\end{frame}
+
 %
 % c
 %
@@ -181,16 +213,102 @@
 \begin{frame}
   \frametitle{Overview}
 
-  XXX
+  To be sure the C language is not a problem for every student we
+  will view in this section some fundamental uses:
+
+  \begin{itemize}
+    \item
+      Shifts.
+    \item
+      Bit masks.
+    \item
+      And more generally arithmetic and logic operators.
+  \end{itemize}
 \end{frame}
 
-%
-% address space
-%
+% 2)
 
-\section{Address Space}
+\begin{frame}
+  \frametitle{Shift Operators}
 
-% XXX
+  \begin{itemize}[<+->]
+    \item
+      $<<$: shift left
+    \item
+      $>>$: shift right
+  \end{itemize}
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  The best examples of shift uses are either to quickly compute power of two:
+
+  \begin{verbatim}
+    int         v = 42
+
+    v <<= 2;    /* now v is equal to 168 */
+  \end{verbatim}
+
+  or to quickly set a bit from its position without any calculation:
+
+  \begin{verbatim}
+    #define FLAG_USER           0x1
+    #define FLAG_SYSTEM         0x2
+    #define FLAG_DRIVER         0x4
+    #define FLAG_SERVICE        0x8
+  \end{verbatim}
+
+  instead we can do:
+
+  \begin{verbatim}
+    #define FLAG_USER           (1 << 0)
+    #define FLAG_SYSTEM         (1 << 1)
+    #define FLAG_DRIVER         (1 << 2)
+    #define FLAG_SERVICE        (1 << 3)
+  \end{verbatim}
+
+  The result is a clearer output: we directly know which bit is set.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Logic Operators}
+
+  \begin{itemize}[<+->]
+    \item
+      $|$: or operator.
+    \item
+      \&: and operator.
+    \item
+      \^~: xor operator.
+    \item
+      \~~: not operator.
+  \end{itemize}
+\end{frame}
+
+% 5)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  \begin{verbatim}
+    unsigned int        set(unsigned int        mask,
+                            unsigned char       bit)
+    {
+      return (mask | (1 << bit));
+    }
+
+    unsigned int      unset(unsigned int        mask,
+                            unsigned char       bit)
+    {
+      return (mask & ~(1 << bit));
+    }
+  \end{verbatim}
+\end{frame}
 
 %
 % assembly
@@ -198,22 +316,103 @@
 
 \section{Assembly}
 
-% XXX
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The assembly language is absolutely fundamental in low-level programming.
+
+  \nl
+
+  The kaneton project is essentially developed using the C language but
+  small parts must be written in assembly either to optimise the source
+  code but this is obviously useless and unwanted; or to develop very
+  special parts in relation with the processor.
+
+  \nl
+
+  These architecture source code parts are essential and very difficult.
+
+  \nl
+
+  For these reasons the language must not be a difficulty.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Language}
+
+  The assembly language will not be presented here because it depends
+  of the architecture.
+
+  \nl
+
+  Please refer to the dedicated course on the architectures.
+\end{frame}
 
 %
-% bibliography
+% execution context
 %
 
-\section{Bibliography}
+\section{Execution Context}
 
-\begin{thebibliography}{3}
+% 1)
 
-%% XXX
+\begin{frame}
+  \frametitle{Overview}
 
-  \bibitem{Queue}
-    Queue.h
-    \newblock /usr/include/sys/queue.h
-    \newblock A linked-list manager using macros
-\end{thebibliography}
+  A thing students should understand is that in low-level programming
+  there is no execution context.
+
+  \nl
+
+  This is very important because the students will so have to create for
+  example their own stack, to parse the ELF binary etc..
+
+  \nl
+
+  To do so, every student has to perfectly understand how an address
+  space is composed.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Layout}
+
+  \begin{enumerate}
+    \item
+      \textbf{code}: .text
+    \item
+      \textbf{data}: .data .rodata .bss
+    \item
+      \textbf{heap}
+    \item
+      \textbf{stack}
+    \item
+      \textbf{kernel}
+  \end{enumerate}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Stack Frames}
+
+  Let's discuss about the stack internals and the stack frames.
+
+  \nl
+
+  The questions are:
+
+  \begin{itemize}
+    \item
+      What does the compiler/programmer do?
+    \item
+      What does the processor do?
+  \end{itemize}
+\end{frame}
 
 \end{document}

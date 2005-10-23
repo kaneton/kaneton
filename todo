@@ -1,4 +1,14 @@
 --
+ en introduction du cours sur l'archi intel mettre une partie sur
+ l'assembleur. un truc cours genre ca:
+    http://www.ccntech.com/code/x86asm.txt
+
+--
+ essayer de recuperer la ligne de commande lors d'un appel a make
+ comme ca lorsqu'on fait le init on en profite pour faire un make -f Makefile
+ [rules] et hop le tour est joue
+
+--
  comment faire en sorte que le bootstrap/bootloader/kernel/drivers/services
  dependent de la libc sans a chaque fois refaire le processus de linking
  de la libc ??? je ne vois pas comment faire autrement car la c'est laid
@@ -11,6 +21,9 @@
  ca lui apprendrait le proc intel et ca prouverait que notre systeme
  d'archi marche bien et qu'on peut par exemple se passe de la pagination
  (alors que pour l'instant dans design/ je dis que c'est un prerequis)
+
+ on peut aussi lui proposer une autre archi, soit proche de intel genre
+ amd64 soit totalement differente sparc
 
 --
  retoucher mkp.py pour qu'il marche: t_bpt_addr() addr
