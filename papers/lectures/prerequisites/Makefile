@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/papers/lectures/requirements
+## path          /home/mycure/kaneton/papers/lectures/prerequisites
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Sun Oct 23 13:12:10 2005   mycure
+## last update   Sun Oct 23 13:24:44 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		requirements
+PAPER			:=		prerequisites
 
 PAPER_TEX		:=		$(PAPER).tex
 PAPER_DVI		:=		$(PAPER).dvi
