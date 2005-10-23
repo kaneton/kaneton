@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Thu Oct 20 23:19:34 2005   mycure
+## last update   Sun Oct 23 13:12:10 2005   mycure
 ##
 
 #
@@ -30,7 +30,7 @@ include			../../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		requierements
+PAPER			:=		requirements
 
 PAPER_TEX		:=		$(PAPER).tex
 PAPER_DVI		:=		$(PAPER).dvi
