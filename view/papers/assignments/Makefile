@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/papers
+## path          /home/mycure/kaneton/view/papers
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Fri Sep  9 19:02:06 2005   mycure
+## last update   Tue Oct 25 22:31:12 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../.kaneton.mk
+include			../../../.kaneton.mk
 
 #
 # ---------- directives -------------------------------------------------------
