@@ -1,4 +1,19 @@
 --
+ il faudra rajouter dans le bootloader init.c un segment correspondant
+ au dma.
+
+--
+ une fois le gestionnaire de regions installe, essayer de faire un
+ acces a l'adresse 0, normalement ca fait planter.
+
+--
+ ecrire une grammaire pour le fichier de configuration
+ et ecrire le parser
+
+--
+ continuer le cours sur loaders linkers de fab: linker.iecc.com
+
+--
  en introduction du cours sur l'archi intel mettre une partie sur
  l'assembleur. un truc cours genre ca:
     http://www.ccntech.com/code/x86asm.txt
@@ -29,14 +44,8 @@
  retoucher mkp.py pour qu'il marche: t_bpt_addr() addr
  -> et rajouter le chemin relatif de set_bpt.c dans
     core/include/kaneton/set.h
-
---
- etendre le find des fichiers dans exporter.sh a core/ libs/ services/
-
- faire un make proto avant de faire le tar comme ca ca clean nos proto
-
---
- expliquer le systeme de decoupage: hierarchique inclusif
+ mkp: gerer t_bpt_addr(set), les fonctions statiques, les fonctions
+ qui sont dans un commentaire etc..
 
 --
  bien commenter les fichiers car quand ce sera decoupe il faut que
@@ -49,18 +58,13 @@
  segments: address -> id et tester avec bpt
 
 --
+ fonction de segments et regions pour faire p->v v->p
+
+--
  implementer des fonction *_print|show|view(id) qui affiche un element
  contrairement a dump() qui affiche tout
 
  ca pourrait etre utile pour le debug
-
---
- mkp: gerer t_bpt_addr(set), les fonctions statiques, les fonctions
- qui sont dans un commentaire etc..
-
---
- prevoir TP de remise a niveau: C (decalage, mask etc..), assembleur
- exos en assembleur nasm puis en asm inline etc..
 
 -- messages
  faire un msg_build(size) qui va creer un segment partage et renvoyer
@@ -109,10 +113,9 @@
   3) finir intra
   4) integrer la moulinette dans l intra: boot automatique, tftp etc..
   5) slides presentations kaneton [*]
-  6) slides presentation lse (rien a foutre)[*]
   7) cours: cpp [*], inline assembly [*], gnu make
   8) presentation kaneton, tarball etc.. -> develpment-tree
-     cours revisions: C, asm, etc.. faire quelques slides
+     cours revisions: C, asm, etc.. faire quelques slides [*]
   9) cours noyaux
   10) retoucher cours intel, avec beamer bien etc.. images au bon format
   11) cours OS distribues
@@ -120,7 +123,7 @@
   13) moulinette de decoupage de code [*]
   14) decouper le code: make export-0 et commenter chaque partie pour que
       les etudiants sachent quoi coder environ juste avec les commentaires
-    . bootstrap, bootloader: OK
+    . bootstrap, bootloader: [*]
 
 --
  cours:
@@ -136,13 +139,7 @@
  faire le set de hash et tableau par solal au pire ou un inge1
 
 --
- faire des tests sur les ensembles et sur les segments: jacob_s
-
---
  array: recherche dichotomique lorsqu il est trie
-
---
- expliquer les design patterns: factory (id, segment, set etc..)
 
 --
  coder les fonctions clone: as_clone(), set_clone(), id_clone() etc..
@@ -165,9 +162,6 @@
 --
  rajouter la compression dans grub.sh et le stripping aussi
  avec option
-
---
- faire la moulinette de decoupage en foncion de balises
 
 -- vbe
 

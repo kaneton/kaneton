@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Sun Oct 23 03:35:26 2005   mycure
+## last update   Tue Oct 25 04:01:17 2005   mycure
 ##
 
 # INFORMATIONS
@@ -180,10 +180,14 @@ build()
   rm -Rf `find ./ -type d -name .svn`
 
   # gets the list of the files
-  c_files=`find core/ -type f -name "*.c"`
-  h_files=`find core/ -type f -name "*.h"`
-  asm_files=`find core/ -type f -name "*.asm"`
-  S_files=`find core/ -type f -name "*.S"`
+  c_files=`find libs/ core/ drivers/ services/ programs/		\
+           -type f -name "*.c"`
+  h_files=`find libs/ core/ drivers/ services/ programs/		\
+           -type f -name "*.h"`
+  asm_files=`find libs/ core/ drivers/ services/ programs/		\
+             -type f -name "*.asm"`
+  S_files=`find libs/ core/ drivers/ services/ programs/		\
+           -type f -name "*.S"`
 
   _FILES_="$c_files $h_files $asm_files $S_files"
 

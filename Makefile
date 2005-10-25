@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Sun Oct 23 12:30:05 2005   mycure
+## last update   Tue Oct 25 13:07:24 2005   mycure
 ##
 
 #
@@ -27,7 +27,7 @@
 .SILENT:
 
 .PHONY:		all init clean kaneton clear purge proto		\
-		dep build install check info export			\
+		dep conf build install check info export		\
 		view view- export export- kaneton.mk
 
 #
@@ -38,7 +38,9 @@ SHELL			:=		/bin/sh
 
 _SHELL_			?=		true
 
-SUBDIRS			:=		libs core drivers services
+SUBDIRS			:=		libs core drivers services programs
+
+CLEARDIRS		:=		view export conf
 
 #
 # ---------- default rule -----------------------------------------------------
@@ -83,8 +85,7 @@ kaneton:		kaneton.mk
 clear:			kaneton.mk
 	$(call make,$(SUBDIRS),clear)
 
-	$(call make,papers/,clear)
-	$(call make,export/,clear)
+	$(call make,$(CLEARDIRS),clear)
 
 purge:			kaneton.mk
 	$(call purge,)
@@ -104,6 +105,15 @@ dep:			kaneton.mk
 	$(call make,$(SUBDIRS),dep)
 
 #
+# ---------- conf -------------------------------------------------------------
+#
+
+conf:			kaneton.mk
+	cd $(_CONF_DIR_)						; \
+	$(_SHELL_) $(_CONFER_)						; \
+	cd ..
+
+#
 # ---------- boot -------------------------------------------------------------
 #
 
@@ -112,7 +122,7 @@ build:			kaneton.mk
 	$(_SHELL_) $(_MULTIBOOTLOADER_).sh build			; \
 	cd ..
 
-install:		kaneton.mk kaneton
+install:		kaneton.mk kaneton conf
 	cd $(_MULTIBOOTLOADERS_DIR_)/$(_MULTIBOOTLOADER_)		; \
 	$(_SHELL_) $(_MULTIBOOTLOADER_).sh install			; \
 	cd ..
@@ -130,12 +140,12 @@ check:
 #
 
 view- view:		kaneton.mk
-	cd $(_PAPERS_DIR_)						; \
+	cd $(_VIEW_DIR_)						; \
 	$(_SHELL_) $(_VIEWER_)						; \
 	cd ..
 
 view-%:			kaneton.mk
-	cd $(_PAPERS_DIR_) 						; \
+	cd $(_VIEW_DIR_) 						; \
 	$(_SHELL_) $(_VIEWER_) $*					; \
 	cd ..
 

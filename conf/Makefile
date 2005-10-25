@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Tue Oct 25 03:47:58 2005   mycure
+## last update   Tue Oct 25 03:48:23 2005   mycure
 ##
 
 #
@@ -30,23 +30,19 @@ include			../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		dsh				\
-					mod
+KANETON_CONF		:=		kaneton.conf
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
 all:
-	$(call make,$(SUBDIRS),)
 
 clear:
-	$(call make,$(SUBDIRS),clear)
+	$(call remove,$(KANETON_CONF),)
 
-	$(call purge,)
+	$(call purge)
 
 proto:
-	$(call make,$(SUBDIRS),proto)
 
 dep:
-	$(call make,$(SUBDIRS),dep)

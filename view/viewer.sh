@@ -11,20 +11,20 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Sun Oct 23 13:24:56 2005   mycure
+## last update   Tue Oct 25 03:29:04 2005   mycure
 ##
 
 # INFORMATIONS
 #
-# this script has to be run in the directory src/papers
+# this script has to be run in the directory src/view
 
 
 
 # GLOBAL VALUES
 #
 # global values
-_PAPERS_="								\
-  assignments design kaneton seminar					\
+_LIST_="								\
+  papers/assignments papers/design papers/kaneton papers/seminar	\
   lectures/advanced-makefiles lectures/arch-ia32			\
   lectures/c-preprocessor lectures/distributed-operating-systems	\
   lectures/prerequisites lectures/inline-assembly lectures/kernels	\
@@ -83,7 +83,7 @@ usage()
   display " papers:" "+"
   display ""
 
-  for i in $_PAPERS_ ; do
+  for i in $_LIST_ ; do
     name=`basename $i`
     display "   $name" "+"
   done
@@ -122,7 +122,7 @@ warning()
 # this functions locates the paper
 locate()
 {
-  for i in $_PAPERS_ ; do
+  for i in $_LIST_ ; do
     name=`basename $i`
     echo $name | grep $_PAPER_ 2> /dev/null > /dev/null
 

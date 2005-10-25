@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Fri Oct 21 23:07:02 2005   mycure
+## last update   Tue Oct 25 03:28:28 2005   mycure
 ## last update   Thu Sep 15 16:58:31 2005   mycure
 ##
 
@@ -62,7 +62,7 @@ _CONF_DIR_		:=		$(_SRC_DIR_)/conf
 _TOOLS_DIR_		:=		$(_SRC_DIR_)/tools
 _LDS_DIR_		:=		$(_TOOLS_DIR_)/scripts/ld/arch/machdep
 _MULTIBOOTLOADERS_DIR_	:=		$(_TOOLS_DIR_)/scripts/multi-bootloaders
-_PAPERS_DIR_		:=		$(_SRC_DIR_)/papers
+_VIEW_DIR_		:=		$(_SRC_DIR_)/view
 _EXPORT_DIR_		:=		$(_SRC_DIR_)/export
 
 _LIBS_DIR_		:=		$(_SRC_DIR_)/libs
@@ -81,7 +81,8 @@ _MAKEFILE_MK_		:=		.makefile.mk
 #
 
 _PROTO_			:=		$(_TOOLS_DIR_)/scripts/prototypes/mkp.py
-_VIEWER_		:=		$(_PAPERS_DIR_)/viewer.sh
+_CONFER_		:=		$(_CONF_DIR_)/confer.sh
+_VIEWER_		:=		$(_VIEW_DIR_)/viewer.sh
 _EXPORTER_		:=		$(_EXPORT_DIR_)/exporter.sh
 
 #

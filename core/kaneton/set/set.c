@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Oct 21 19:57:14 2005   mycure
+ * last update   Tue Oct 25 14:01:40 2005   mycure
  */
 
 /*
@@ -363,7 +363,8 @@ t_error			set_get(t_setid				setid,
  * 2) builds the identifier object used to generate set identifiers.
  * 3) reserves an identifier for the container.
  * 4) reserves the set container which will contain the set descriptors
- *    reserved later.
+ *    reserved later. obviously, it will be better to take a powerful
+ *    data structure because it will contains millions of objects.
  * 5) if necessary, dumps the set container.
  */
 
@@ -411,8 +412,8 @@ t_error			set_init(void)
    * 4)
    */
 
-  if (set_rsv(ll, SET_OPT_CONTAINER | SET_OPT_ALLOC | SET_OPT_SORT,
-	      sizeof(o_set), &needless) != ERROR_NONE)
+  if (set_rsv(bpt, SET_OPT_CONTAINER | SET_OPT_ALLOC | SET_OPT_SORT,
+	      sizeof(o_set), PAGESZ, &needless) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to reserve the set container\n");
 

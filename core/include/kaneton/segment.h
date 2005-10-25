@@ -5,13 +5,13 @@
  * 
  * segment.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Tue Sep  6 00:07:23 2005   mycure
+ * last update   Tue Oct 25 13:41:48 2005   mycure
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -26,6 +26,23 @@
 #include <kaneton/types.h>
 
 /*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+/*
+ * container parameters
+ */
+
+#define SEGMENT_BPT_NODESZ	4096
+
+/*
+ * segment types
+ */
+
+#define SEGMENT_TYPE_MEMORY	(1 << 0)
+#define SEGMENT_TYPE_CATCH	(1 << 1)
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -36,6 +53,8 @@
 typedef struct
 {
   t_segid			segid;
+
+  t_type			type;
 
   t_paddr			address;
   t_psize			size;
@@ -109,6 +128,11 @@ typedef struct
 
 t_error			segment_dump(void);
 
+t_error			segment_first_fit(o_as*			as,
+					  t_psize		size,
+					  t_perms		perms,
+					  t_segid*		segid);
+
 t_error			segment_rsv(t_asid			asid,
 				    t_psize			size,
 				    t_perms			perms,
@@ -117,9 +141,16 @@ t_error			segment_rsv(t_asid			asid,
 t_error			segment_rel(t_asid			asid,
 				    t_segid			segid);
 
+t_error			segment_catch(t_asid			asid,
+				      t_segid			segid);
+
 t_error			segment_perms(t_asid			asid,
 				      t_segid			segid,
 				      t_perms			perms);
+
+t_error			segment_type(t_asid			asid,
+				     t_segid			segid,
+				     t_type			type);
 
 t_error			segment_flush(t_asid			asid);
 
