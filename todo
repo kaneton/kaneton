@@ -1,4 +1,15 @@
 --
+ parser: params et options
+
+--
+ lors du lancement d'un driver/service on aura un prototype different:
+
+ int		main(int argc, char** argv, char** opts);
+
+ opts[n] = option name
+ opts[n + 1] = option value
+
+--
  il faudra rajouter dans le bootloader init.c un segment correspondant
  au dma.
 

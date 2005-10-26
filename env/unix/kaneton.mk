@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Tue Oct 25 03:28:28 2005   mycure
+## last update   Wed Oct 26 01:22:05 2005   mycure
 ## last update   Thu Sep 15 16:58:31 2005   mycure
 ##
 
@@ -81,9 +81,9 @@ _MAKEFILE_MK_		:=		.makefile.mk
 #
 
 _PROTO_			:=		$(_TOOLS_DIR_)/scripts/prototypes/mkp.py
-_CONFER_		:=		$(_CONF_DIR_)/confer.sh
-_VIEWER_		:=		$(_VIEW_DIR_)/viewer.sh
-_EXPORTER_		:=		$(_EXPORT_DIR_)/exporter.sh
+_CONF_			:=		$(_CONF_DIR_)/conf.sh
+_VIEW_			:=		$(_VIEW_DIR_)/view.sh
+_EXPORT_		:=		$(_EXPORT_DIR_)/export.sh
 
 #
 # ---------- kaneton binaries -------------------------------------------------

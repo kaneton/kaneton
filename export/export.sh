@@ -11,14 +11,14 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Tue Oct 25 04:01:17 2005   mycure
+## last update   Wed Oct 26 01:21:06 2005   mycure
 ##
 
 # INFORMATIONS
 #
 # this script has to be run in the directory src/export
 #
-# the argument 'kaneton' makes a valid distribution, meaning that
+# the argument 'kn' makes a valid distribution, meaning that
 # there will be no cut line in the distribution. this distribution
 # includes all the kaneton levels, all the source code
 #
@@ -28,7 +28,7 @@
 # GLOBAL VALUES
 #
 # global values
-_STAGES_="k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 kaneton dist"
+_STAGES_="k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 kn dist"
 _STAGE_=""
 _INPUT_=""
 _FILES_=""

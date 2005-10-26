@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Tue Oct 25 12:43:40 2005   mycure
+%% last update   Wed Oct 26 17:14:20 2005   mycure
 %%
 
 %
@@ -663,8 +663,43 @@
 % 2)
 
 \begin{frame}
-  \frametitle{}
+  \frametitle{\textbf{.PHONY}}
 
+  The \textbf{.PHONY} directive is used to specify gmake the list of the
+  rules to force.
+
+  \nl
+
+  In other words, these rules will always be remade.
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  \begin{columns}
+
+    \begin{column}{6cm}
+      \begin{verbatim}
+        chiche:
+                @echo ``chiche''
+
+        clean:
+                rm *~
+      \end{verbatim}
+    \end{column}
+
+    \begin{column}
+      \begin{verbatim}
+	$ make chiche
+        chiche
+        $ touch chiche
+        $ make
+        XXX
+        $ 
+      \end{verbatim}
+    \end{column}
 \end{frame}
 
 \subsection{Default Rule}

@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Tue Oct 25 13:07:24 2005   mycure
+## last update   Wed Oct 26 01:23:46 2005   mycure
 ##
 
 #
@@ -110,7 +110,7 @@ dep:			kaneton.mk
 
 conf:			kaneton.mk
 	cd $(_CONF_DIR_)						; \
-	$(_SHELL_) $(_CONFER_)						; \
+	$(_SHELL_) $(_CONF_)						; \
 	cd ..
 
 #
@@ -141,12 +141,12 @@ check:
 
 view- view:		kaneton.mk
 	cd $(_VIEW_DIR_)						; \
-	$(_SHELL_) $(_VIEWER_)						; \
+	$(_SHELL_) $(_VIEW_)						; \
 	cd ..
 
 view-%:			kaneton.mk
 	cd $(_VIEW_DIR_) 						; \
-	$(_SHELL_) $(_VIEWER_) $*					; \
+	$(_SHELL_) $(_VIEW_) $*						; \
 	cd ..
 
 #
@@ -219,10 +219,10 @@ dist:			export-dist
 
 export- export:		kaneton.mk
 	cd $(_EXPORT_DIR_)						; \
-	$(_SHELL_) $(_EXPORTER_)					; \
+	$(_SHELL_) $(_EXPORT_)						; \
 	cd ..
 
 export-%:		kaneton.mk
 	cd $(_EXPORT_DIR_)						; \
-	$(_SHELL_) $(_EXPORTER_) $*					; \
+	$(_SHELL_) $(_EXPORT_) $*					; \
 	cd ..
