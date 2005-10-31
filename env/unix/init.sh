@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Fri Oct 21 23:27:34 2005   mycure
+## last update   Mon Oct 31 12:14:34 2005   mycure
 ##
 
 # INFORMATIONS
@@ -47,7 +47,9 @@ _KANETON_MK_=".kaneton.mk"
 #
 # the list of binaries used to compile the kaneton kernel on
 # unix operating systems.
-_BINARIES_="gcc make rm ar ranlib ld nasm ln touch tail wc tar sed mtools"
+_BINARIES_="gcc rm ar ranlib ld nasm ln touch tail wc tar sed		\
+            mtools cat cut which gmake latex dvips pdflatex cp		\
+            grep basename mkdir date cpp"
 
 
 
@@ -58,13 +60,13 @@ _BINARIES_="gcc make rm ar ranlib ld nasm ln touch tail wc tar sed mtools"
 read_kaneton_conf()
 {
   # display
-  _DISPLAY_=`cat $_CONF_ | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
+  _DISPLAY_=`cat $_CONF_ | sed -n "s/^_DISPLAY_ = \(.*\)$/\1/p"`
 
   # environment
-  _ENVIRONMENT_=`cat $_CONF_ | grep -E "^_ENVIRONMENT_ = .*$" | cut -b 17-`
+  _ENVIRONMENT_=`cat $_CONF_ | sed -n "s/^_ENVIRONMENT_ = \(.*\)$/\1/p"`
 
   # architecture
-  _ARCHITECTURE_=`cat $_CONF_ | grep -E "^_ARCHITECTURE_ = .*$" | cut -b 18-`
+  _ARCHITECTURE_=`cat $_CONF_ | sed -n "s/^_ARCHITECTURE_ = \(.*\)$/\1/p"`
 }
 
 
@@ -110,7 +112,7 @@ init()
   rm -f core/bootloader/arch/machdep
   rm -f core/include/arch/machdep
   rm -f core/kaneton/arch/machdep
-  rm -f tools/lds/arch/machdep
+  rm -f tools/scripts/ld/arch/machdep
 
   ln -s $_ARCHITECTURE_ core/bootstrap/arch/machdep
   ln -s $_ARCHITECTURE_ core/bootloader/arch/machdep

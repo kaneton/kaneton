@@ -5,13 +5,13 @@
  *
  * alloc.c
  *
- * path          /home/mycure/kaneton/libs/klibc/libdata
+ * path          /home/mycure/kaneton/core/kaneton
  *
  * made by cedric
  *         Cedric Aubouy   [cedric.aubouy@gmail.com]
  *
  * started on    Sun Sep 25 19:57:33 2005   cedric
- * last update   Fri Oct 21 19:44:43 2005   mycure
+ * last update   Sun Oct 30 16:45:24 2005   mycure
  */
 
 /*
@@ -353,10 +353,11 @@ void			alloc_dump(void)
  *
  * steps:
  *
- * 1) checks if the chunck is well used.
- * 2) reallocates memory.
- * 3) copies the data from the old area to the new one.
- * 4) releases the previous area.
+ * 1) calls malloc() if the pointer is null.
+ * 2) checks if the chunck is well used.
+ * 3) reallocates memory.
+ * 4) copies the data from the old area to the new one.
+ * 5) releases the previous area.
  */
 
 void*			realloc(void* 				ptr,
@@ -370,18 +371,25 @@ void*			realloc(void* 				ptr,
    * 1)
    */
 
+  if (ptr == NULL)
+    return (malloc(size));
+
+  /*
+   * 2)
+   */
+
   if (chunck->state != ALLOC_STATE_USE)
     return (NULL);
 
   /*
-   * 2)
+   * 3)
    */
 
   if ((new = malloc(size)) == NULL)
     return (NULL);
 
   /*
-   * 3)
+   * 4)
    */
 
   s = size < chunck->size ? size : chunck->size;
@@ -389,7 +397,7 @@ void*			realloc(void* 				ptr,
   memcpy(new, ptr, s);
 
   /*
-   * 4)
+   * 5)
    */
 
   free(ptr);

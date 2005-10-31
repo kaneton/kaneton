@@ -5,13 +5,13 @@
 ## 
 ## .kaneton.mk
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/export
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Wed Oct 26 01:22:05 2005   mycure
+## last update   Mon Oct 31 11:55:52 2005   mycure
 ## last update   Thu Sep 15 16:58:31 2005   mycure
 ##
 
@@ -35,12 +35,16 @@
 .SILENT:
 
 #
+# ---------- signature 0-------------------------------------------------------
+#
+
+_SIGNATURE_		:=		kaneton
+
+#
 # ---------- shell ------------------------------------------------------------
 #
 
 SHELL			:=		/bin/sh
-
-_SHELL_			:=		$(SHELL)
 
 #
 # ---------- kaneton directories ----------------------------------------------
@@ -81,9 +85,9 @@ _MAKEFILE_MK_		:=		.makefile.mk
 #
 
 _PROTO_			:=		$(_TOOLS_DIR_)/scripts/prototypes/mkp.py
-_CONF_			:=		$(_CONF_DIR_)/conf.sh
-_VIEW_			:=		$(_VIEW_DIR_)/view.sh
-_EXPORT_		:=		$(_EXPORT_DIR_)/export.sh
+_CONF_SH_		:=		$(_CONF_DIR_)/conf.sh
+_VIEW_SH_		:=		$(_VIEW_DIR_)/view.sh
+_EXPORT_SH_		:=		$(_EXPORT_DIR_)/export.sh
 
 #
 # ---------- kaneton binaries -------------------------------------------------
@@ -149,7 +153,7 @@ MAKEFLAGS		:=		$(_MAKEFLAGS_)
 # ---------- binaries ---------------------------------------------------------
 #
 
-_MAKE_			:=		make
+_MAKE_			:=		gmake
 _RM_			:=		rm -f
 _PURGE_			:=		$(_RM_) *~ .*~ \#* .\#*
 _AR_			:=		ar cq
@@ -166,6 +170,8 @@ _LATEX_			:=		latex
 _DVIPS_			:=		dvips
 _PDFLATEX_		:=		pdflatex
 _CP_			:=		cp
+_CAT_			:=		cat
+_SED_			:=		sed
 
 #
 # ---------- traps ------------------------------------------------------------
@@ -354,7 +360,7 @@ endef
 #
 
 define compile-S
-  $(call pretty-printer,green,COMPILE-S,$(2),		)		; \
+  $(call pretty-printer,green,ASSEMBLE-S,$(2),		)		; \
   $(CC) $(CFLAGS) $(3) -c $(2) -o $(1) $(_VERBOSE_)
 endef
 
@@ -367,7 +373,7 @@ endef
 #
 
 define compile-asm
-  $(call pretty-printer,green,COMPILE-ASM,$(2),		)		; \
+  $(call pretty-printer,green,ASSEMBLE-ASM,$(2),		)	; \
   $(_NASM_) $(3) $(2) -o $(1) $(_VERBOSE_)
 endef
 

@@ -5,13 +5,13 @@
 %% 
 %% seminar.tex
 %% 
-%% path          /home/mycure/kaneton/view/papers
+%% path          /home/mycure/kaneton/view/papers/seminar
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Tue Oct 25 22:33:42 2005   mycure
+%% last update   Fri Oct 29 14:19:04 2004   mycure
 %%
 
 %
@@ -104,24 +104,24 @@
 
 \pgfdeclareimage[interpolate=true,width=233pt,height=170pt]
                 {distributed-operating-system}
-		{../figures/distributed-operating-system}
+		{../../figures/distributed-operating-system}
 \pgfdeclareimage[interpolate=true,width=226pt,height=170pt]
                 {servers}
-		{../figures/servers}
+		{../../figures/servers}
 \pgfdeclareimage[interpolate=true,width=170pt,height=170pt]
                 {microkernel}
-		{../figures/microkernel}
+		{../../figures/microkernel}
 
 \pgfdeclareimage[interpolate=true,width=150pt,height=25pt]
                 {generic-capabilities}
-		{../figures/generic-capabilities}
+		{../../figures/generic-capabilities}
 \pgfdeclareimage[interpolate=true,width=150pt,height=75pt]
                 {specific-capabilities}
-		{../figures/specific-capabilities}
+		{../../figures/specific-capabilities}
 
 \pgfdeclareimage[interpolate=true,width=188pt,height=170pt]
                 {sets}
-		{../figures/sets}
+		{../../figures/sets}
 
 %
 % table of contents at the beginning of each section
@@ -361,7 +361,7 @@
     \item
       Easily portable
     \item
-      Easily maintenable
+      Easily maintainable
     \item
       Able to run UNIX{\scriptsize \copyright} programs via
       an emulation library
@@ -661,7 +661,7 @@
 
   \nl
 
-  This organisation leads to a very elegant and maintenable source code.
+  This organisation leads to a very elegant and maintainable source code.
 
   \nl
 
@@ -905,7 +905,7 @@
       The distributed shared memory part can become a member of the
       distributed shared memory group, but this point will not be
       explained here but in the distributed operating system section of
-      this document.
+      this document
   \end{itemize}
 \end{frame}
 
@@ -953,6 +953,134 @@
   \nl
 
   The language used to develop kaneton is the C language.
+\end{frame}
+
+%
+% state
+%
+
+\section{State}
+
+% 1)
+
+\begin{frame}
+  \frametitle{State: \textbf{\today}}
+
+  The development of the microkernel is far from being finished.
+
+  \nl
+
+  Indeed, the goal was to design a powerful portable microkernel, and this
+  takes time.
+
+  \nl
+
+  The parts developed are listed below:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{bootstrap}: ia32
+    \item
+      \textbf{bootloader}: ia32
+    \item
+      \textbf{id manager}
+    \item
+      \textbf{set manager}: linked-list, array, balanced+ tree
+    \item
+      \textbf{as manager}: +ia32
+    \item
+      \textbf{segment manager}
+    \item
+      \textbf{region manager}: +ia32 \textit{[30\%]}
+    \item
+      \textbf{stats manager} \textit{[60\%]}
+    \item
+      \textbf{debug manager} \textit{[50\%]}
+  \end{itemize}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Recruitment}
+
+  The first goal of the kaneton project is to permit students to
+  learn complex low-level programming and operating system concepts.
+
+  \nl
+
+  Recruiting futur maintainers is important first to give courses
+  and then to develop the project.
+
+  \nl
+
+  The students wanting to work on the kaneton project should be aware
+  that this project takes much time. Moreover, the selected students
+  must work on this project during about two years.
+
+  \nl
+
+  The first year, the students will learn the basis of the low-level
+  programming, kernel development, kaneton design etc.. and participate
+  to the kaneton design and development through the different subprojects
+  listed below.
+
+  \nl
+
+  The second year, the students will have to give courses and develop
+  some important parts of the kaneton reference while maintaining the
+  different tools around the project.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Futur Works}
+
+  The maintainers of the kaneton project want to build a stable version
+  of the microkernel before developing anything else.
+
+  \nl
+
+  So the futur works are:
+
+  \begin{itemize}[<+->]
+    \item
+      To validate the portability system
+    \item
+      To increase the set types
+    \item
+      To design a powerful intra node naming scheme allowing concurrent
+      servers executions.
+    \item
+      To design a complete device manager
+    \item
+      ... to prepare and give courses
+  \end{itemize}
+
+  \nl
+
+  For these subprojects we need \textbf{two} students.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Subprojects}
+
+  The list of the subprojects:
+
+  \begin{itemize}[<+->]
+    \item
+      New architecture: amd64
+    \item
+      New architecture: sparc64
+    \item
+      New architecture: ia32-without-paging
+  \end{itemize}
+
+  These subprojects will be very useful to validate the portability
+  system.
 \end{frame}
 
 \end{document}

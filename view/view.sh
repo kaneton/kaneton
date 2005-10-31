@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Tue Oct 25 03:29:04 2005   mycure
+## last update   Mon Oct 31 12:10:30 2005   mycure
 ##
 
 # INFORMATIONS
@@ -58,19 +58,19 @@ _VIEW_FORMAT_="unknown"
 read_kaneton_conf()
 {
   # display
-  _DISPLAY_=`cat $_CONF_ | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
+  _DISPLAY_=`cat $_CONF_ | sed -n "s/^_DISPLAY_ = \(.*\)$/\1/p"`
 
   # dvi viewer
-  _DVI_VIEWER_=`cat $_CONF_ | grep -E "^_DVI_VIEWER_ = .*$" | cut -b 16-`
+  _DVI_VIEWER_=`cat $_CONF_ | sed -n "s/^_DVI_VIEWER_ = \(.*\)$/\1/p"`
 
   # ps viewer
-  _PS_VIEWER_=`cat $_CONF_ | grep -E "^_PS_VIEWER_ = .*$" | cut -b 15-`
+  _PS_VIEWER_=`cat $_CONF_ | sed -n "s/^_PS_VIEWER_ = \(.*\)$/\1/p"`
 
   # pdf viewer
-  _PDF_VIEWER_=`cat $_CONF_ | grep -E "^_PDF_VIEWER_ = .*$" | cut -b 16-`
+  _PDF_VIEWER_=`cat $_CONF_ | sed -n "s/^_PDF_VIEWER_ = \(.*\)$/\1/p"`
 
   # view format
-  _VIEW_FORMAT_=`cat $_CONF_ | grep -E "^_VIEW_FORMAT_ = .*$" | cut -b 17-`
+  _VIEW_FORMAT_=`cat $_CONF_ | sed -n "s/^_VIEW_FORMAT_ = \(.*\)$/\1/p"`
 }
 
 
@@ -149,7 +149,7 @@ build()
   display " building the paper: $_PATH_" "+"
   display ""
 
-  make -s -C $_PATH_ $_VIEW_FORMAT_
+  gmake -s -C $_PATH_ $_VIEW_FORMAT_
 }
 
 

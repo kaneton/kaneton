@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Tue Aug 30 15:41:06 2005   mycure
+ * last update   Sun Oct 30 23:07:06 2005   mycure
  */
 
 #ifndef KANETON_INIT_H
@@ -23,6 +23,7 @@
 
 #include <arch/machdep/machdep.h>
 #include <kaneton/segment.h>
+#include <kaneton/region.h>
 
 /*
  * ---------- defines ---------------------------------------------------------
@@ -48,16 +49,6 @@ typedef struct
 {
   t_uint32			nmodules;
 }				t_modules;
-
-/*
- * regions
- */
-
-typedef struct			/* XXX to move the region.h */
-{
-  t_vaddr			address;
-  t_segid			segid;
-}				o_region;
 
 /*
  * the init structure

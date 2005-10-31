@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/papers/lectures/development-environment
+## path          /home/mycure/kaneton/core
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Sat Oct 22 14:43:21 2005   mycure
+## last update   Mon Oct 31 10:12:59 2005   mycure
 ##
 
 #
@@ -30,9 +30,9 @@ include			../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		cons				\
-					dma				\
-					kbd				
+SUBDIRS			:=						\
+  $(shell $(_CAT_) $(_CONF_DIR_)/$(USER)/modules.conf |			\
+          $(_SED_) -n "s/^drivers\/\([[:alpha:]_-]*\)\/.*$$/\1/p")
 
 #
 # ---------- rules ------------------------------------------------------------

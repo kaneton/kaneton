@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Oct 21 19:57:18 2005   mycure
+ * last update   Sun Oct 30 14:13:44 2005   mycure
  */
 
 /*
@@ -34,10 +34,17 @@
  * moreover, the linked-list data structure can be used either with the
  * sort option or without.
  *
- * the datasz argument of the set_rsv() function is meaningfull only in the
- * case the allocate option is set.
+ * the datasz argument of the set_rsv() function is meaningful only in the
+ * case the allocate or free options are set.
  *
  * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ALLOC, SET_OPT_FREE
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * the students must develop the entire linked-list data structure, nothing
+ * less, nothing more.
  */
 
 /*
@@ -56,6 +63,8 @@ extern m_set*		set;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k2 */
 
 /*
  * this function tells if the set object is a linked-list set.
@@ -77,7 +86,7 @@ t_error			set_type_ll(t_setid			setid)
 }
 
 /*
- * this function dumps set objects contained in a set.
+ * this function shows set objects contained in a set.
  *
  * steps:
  *
@@ -85,7 +94,7 @@ t_error			set_type_ll(t_setid			setid)
  * 2) prints each objects' identifier.
  */
 
-t_error			set_dump_ll(t_setid			setid)
+t_error			set_show_ll(t_setid			setid)
 {
   t_state		state;
   o_set*		o;
@@ -104,7 +113,7 @@ t_error			set_dump_ll(t_setid			setid)
    * 2)
    */
 
-  cons_msg('#', "dumping %qd node(s) from the linked-list set %qu:\n",
+  cons_msg('#', "showing %qd node(s) from the linked-list set %qu:\n",
 	   o->size,
 	   setid);
 
@@ -1004,6 +1013,72 @@ t_error			set_object_ll(t_setid			setid,
 }
 
 /*
+ * this function clones a set object.
+ *
+ * if the allocate option is set in the old set object,
+ * there will be no problems.
+ *
+ * if the free option is set in the old set object, every element will
+ * be duplicated implying allocation.
+ *
+ * otherwise, using this function is very dangerous because every element
+ * in the old and new set objects will reference the same memory location.
+ *
+ * steps:
+ *
+ * 1) gets the set object corresponding to the set identifier.
+ * 2) reserves the new cloned set.
+ * 3) clones each element of the source set.
+ */
+
+t_error			set_clone_ll(t_setid			old,
+				     t_setid*			new)
+{
+  t_set_ll_node*	tmp;
+  o_set*		o;
+
+  SET_ENTER(set);
+
+  /*
+   * 1)
+   */
+
+  if (set_descriptor(old, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (set_rsv_ll(o->u.ll.opts, o->u.ll.datasz, new) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  for (tmp = o->u.ll.tail; tmp != NULL; tmp = tmp->prv)
+    {
+      void*		data;
+
+      if (o->u.ll.opts & SET_OPT_FREE)
+	{
+	  if ((data = malloc(o->u.ll.datasz)) == NULL)
+	    SET_LEAVE(set, ERROR_UNKNOWN);
+
+	  memcpy(data, tmp->data, o->u.ll.datasz);
+	}
+      else
+	data = tmp->data;
+
+      if (set_insert_head_ll(*new, data) != ERROR_NONE)
+	SET_LEAVE(set, ERROR_UNKNOWN);
+    }
+
+  SET_LEAVE(set, ERROR_UNKNOWN);
+}
+
+/*
  * this function reserves a set.
  *
  * steps:
@@ -1045,7 +1120,7 @@ t_error			set_rsv_ll(t_opts			opts,
 
   if (opts & SET_OPT_CONTAINER)
     {
-      *setid = set->setid;
+      *setid = set->container;
     }
   else
     {
@@ -1129,3 +1204,5 @@ t_error			set_rel_ll(t_setid			setid)
 
   SET_LEAVE(set, ERROR_NONE);
 }
+
+/*                                                                 [cut] /k2 */

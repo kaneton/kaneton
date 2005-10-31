@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Fri Oct 21 23:53:42 2005   mycure
+ * last update   Sun Oct 30 16:13:00 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -28,11 +28,6 @@
 /*
  * ---------- defines ---------------------------------------------------------
  */
-
-/* XXX */
-#define stderr NULL
-#define BPT_DEBUG
-/* XXX */
 
 /*
  * iterator's state
@@ -148,8 +143,10 @@ typedef struct
 {
   o_id				id;
 
-  t_id				setid;
-  o_set*			container;
+  t_staid			stats;
+
+  t_id				container;
+  o_set*			co;
 }				m_set;
 
 /*
@@ -173,6 +170,8 @@ typedef struct
 #define SET_ENTER(_set_)						\
   {									\
     SET_CHECK((_set_));							\
+									\
+    STATS_BEGIN((_set_)->stats);					\
   }
 
 /*
@@ -181,6 +180,8 @@ typedef struct
 
 #define SET_LEAVE(_set_, _error_)					\
   {									\
+    STATS_END((_set_)->stats, (_error_));				\
+									\
     return (_error_);							\
   }
 
@@ -242,6 +243,9 @@ typedef struct
 #define set_rel(_setid_, _args_...)					\
   set_trap(set_rel, _setid_, ##_args_)
 
+#define set_clone(_setid_, _args_...)					\
+  set_trap(set_clone, _setid_, ##_args_)
+
 #define set_head(_setid_, _args_...)					\
   set_trap(set_head, _setid_, ##_args_)
 
@@ -281,8 +285,8 @@ typedef struct
 #define set_object(_setid_, _args_...)					\
   set_trap(set_object, _setid_, ##_args_)
 
-#define set_dump(_setid_, _args_...)					\
-  set_trap(set_dump, _setid_, ##_args_)
+#define set_show(_setid_, _args_...)					\
+  set_trap(set_show, _setid_, ##_args_)
 
 /*
  * foreach
@@ -314,6 +318,8 @@ typedef struct
  * ../../kaneton/set/set.c
  */
 
+t_error			set_dump(void);
+
 t_error			set_size(t_setid			setid,
 				 t_setsz*			size);
 
@@ -339,7 +345,7 @@ t_error			set_test(t_type				type);
  * ../../kaneton/set/set_array.c
  */
 
-t_error			set_dump_array(t_setid			setid);
+t_error			set_show_array(t_setid			setid);
 
 t_error			set_expand_array(o_set*			o);
 
@@ -390,6 +396,9 @@ t_error			set_object_array(t_setid		setid,
 					 t_iterator		iterator,
 					 void**			data);
 
+t_error			set_clone_array(t_setid			old,
+					t_setid*		new);
+
 t_error			set_rsv_array(t_opts			opts,
 				      t_setsz			initsz,
 				      t_size			datasz,
@@ -404,7 +413,7 @@ t_error			set_rel_array(t_setid			setid);
 
 t_error			set_type_ll(t_setid			setid);
 
-t_error			set_dump_ll(t_setid			setid);
+t_error			set_show_ll(t_setid			setid);
 
 t_error			set_head_ll(t_setid			setid,
 				    t_iterator*			iterator);
@@ -449,6 +458,9 @@ t_error			set_locate_ll(t_setid			setid,
 t_error			set_object_ll(t_setid			setid,
 				      t_iterator		iterator,
 				      void**			data);
+
+t_error			set_clone_ll(t_setid			old,
+				     t_setid*			new);
 
 t_error			set_rsv_ll(t_opts			opts,
 				   t_size			datasz,

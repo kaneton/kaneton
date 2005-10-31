@@ -5,13 +5,13 @@
  * 
  * stats.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Thu Oct 13 21:36:51 2005   mycure
+ * last update   Sun Oct 30 16:33:05 2005   mycure
  */
 
 #ifndef KANETON_STATS_H
@@ -27,26 +27,29 @@
 #include <kaneton/conf.h>
 
 /*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+#define STATS_CONTAINER_INITSZ	0x8
+#define STATS_FUNCTIONS_INITSZ	0x1
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
 /*
  * stats function
- *
- * the identifier is an hash of the name.
  */
 
 typedef struct
 {
-  t_id				id;
-
   char*				name;
 
-  t_uint32			calls;
-  t_uint32			errors;
+  t_uint64			calls;
+  t_uint64			errors;
 
   /* XXX timer */
-}				o_stats_func;
+}				t_stats_func;
 
 /*
  * stats object
@@ -54,12 +57,11 @@ typedef struct
 
 typedef struct
 {
-  t_staid			staid;
-
   char*				name;
 
-  t_setid			functions;
-}				o_stats;
+  t_stats_func*			functions;
+  t_sint64			functionssz;
+}				t_stats;
 
 /*
  * stats manager
@@ -67,9 +69,8 @@ typedef struct
 
 typedef struct
 {
-  o_id				id;
-
-  t_setid			container;
+  t_stats*			container;
+  t_sint64			containersz;
 }				m_stats;
 
 /*
@@ -99,12 +100,8 @@ typedef struct
  * leave
  */
 
-#define STATS_LEAVE(_stats_, _error_, _args_...)			\
+#define STATS_LEAVE(_stats_, _error_)					\
   {									\
-    if ((_error_) == ERROR_UNKNOWN)					\
-      if (machdep_call(stats, __FUNCTION__, ##_args_) != ERROR_NONE)	\
-        return (ERROR_UNKNOWN);						\
-									\
     return (_error_);							\
   }
 
@@ -163,12 +160,18 @@ typedef struct
  * ../../kaneton/stats/stats.c
  */
 
+t_error			stats_function(t_staid			staid,
+				       char*			function,
+				       t_stats_func**		f);
+
 t_error			stats_begin(t_staid			staid,
 				    char*			function);
 
 t_error			stats_end(t_staid			staid,
 				  char*				function,
 				  t_error			error);
+
+t_error			stats_show(t_staid			staid);
 
 t_error			stats_dump(void);
 

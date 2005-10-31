@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Oct 21 19:57:28 2005   mycure
+ * last update   Sun Oct 30 14:14:00 2005   mycure
  */
 
 /*
@@ -34,6 +34,20 @@
  */
 
 /*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * the students should not develop anything here.
+ *
+ * this data structure is reserved to the reference kaneton project.
+ *
+ * nevertheless if the students really want to include a powerful data
+ * structure into their kaneton implementation, take a look to the
+ * bpt.h header file develop by myself:
+ *
+ *      core/include/sys/bpt.h
+ */
+
+/*
  * ---------- includes --------------------------------------------------------
  */
 
@@ -48,6 +62,12 @@ extern m_set*		set;
 
 /*
  * ---------- functions -------------------------------------------------------
+ */
+
+/*                                                                  [cut] k2 */
+
+/*
+ * this macro call builds the bpt specific functions.
  */
 
 bpt_make_functions(set, id, data);
@@ -130,17 +150,17 @@ int			set_valcmp_bpt(t_bpt(set)*		bpt,
 }
 
 /*
- * this function dumps the state of the unused object, in other
+ * this function shows the state of the unused object, in other
  * words the unused nodes contained in the unused object.
  */
 
-t_error			set_dump_unused_bpt(o_set*		o)
+t_error			set_show_unused_bpt(o_set*		o)
 {
   t_bpt_uni(set)	i;
 
   SET_ENTER(set);
 
-  cons_msg('#', "dumping the unused nodes: %u / %u\n",
+  cons_msg('#', "showing the unused nodes: %u / %u\n",
 	   o->u.bpt.unused.index + 1,
 	   o->u.bpt.unusedsz);
 
@@ -305,7 +325,7 @@ t_error			set_destroy_bpt(o_set*			o)
 }
 
 /*
- * this function dumps the set objects.
+ * this function shows the set objects.
  *
  * steps:
  *
@@ -313,7 +333,7 @@ t_error			set_destroy_bpt(o_set*			o)
  * 2) prints a message for each objects of the set.
  */
 
-t_error			set_dump_bpt(t_setid			setid)
+t_error			set_show_bpt(t_setid			setid)
 {
   t_state		state;
   o_set*		o;
@@ -332,7 +352,7 @@ t_error			set_dump_bpt(t_setid			setid)
    * 2)
    */
 
-  cons_msg('#', "dumping %qd node(s) from the balanced+ tree set %qu:\n",
+  cons_msg('#', "showing %qd node(s) from the balanced+ tree set %qu:\n",
 	   o->size,
 	   setid);
 
@@ -348,6 +368,8 @@ t_error			set_dump_bpt(t_setid			setid)
       cons_msg('#', "  %qu <%qu 0x%x> [0x%x:%u]\n",
 	       leaf->id, *((t_id*)leaf->data), leaf->data,
 	       i.u.bpt.entry.node, i.u.bpt.entry.ndi);
+
+      BPT_UNLOAD(&o->u.bpt.bpt, &node);
     }
 
   SET_LEAVE(set, ERROR_NONE);
@@ -733,6 +755,8 @@ t_error			set_flush_bpt(t_setid			setid)
 	  free(leaf->data);
 
 	  leaf->data = SET_BPT_UADDR;
+
+	  BPT_UNLOAD(&o->u.bpt.bpt, &node);
 	}
     }
 
@@ -825,6 +849,89 @@ t_error			set_object_bpt(t_setid			setid,
 }
 
 /*
+ * this function clones a set.
+ *
+ * if the allocate option is set in the old set object,
+ * there will be no problems.
+ *
+ * if the free option is set in the old set object, every element will
+ * be duplicated implying allocation.
+ *
+ * otherwise, using this function is very dangerous because every element
+ * in the old and new set objects will reference the same memory location.
+ *
+ * steps:
+ *
+ * 1) gets the set object corresponding to the set identifier.
+ * 2) reserves the new cloned set.
+ * 3) clones each element of the source set.
+ */
+
+t_error			set_clone_bpt(t_setid			old,
+				      t_setid*			new)
+{
+  t_state		state;
+  o_set*		o;
+  t_iterator		i;
+
+  SET_ENTER(set);
+
+  /*
+   * 1)
+   */
+
+  if (set_descriptor(old, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (set_rsv_bpt(o->u.bpt.opts, o->u.bpt.datasz,
+		  o->u.bpt.bpt.nodesz, new) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  set_foreach(SET_OPT_FORWARD, old, &i, state)
+    {
+      t_bpt_imm(set)		node;
+      t_bpt_lfentry(set)*	leaf;
+      void*			data;
+
+      BPT_LOAD(&o->u.bpt.bpt, &node, i.u.bpt.entry.node);
+      leaf = BPT_LFENTRY(set, &node, i.u.bpt.entry.ndi);
+
+      if (o->u.bpt.opts & SET_OPT_FREE)
+	{
+	  if ((data = malloc(o->u.bpt.datasz)) == NULL)
+	    {
+	      BPT_UNLOAD(&o->u.bpt.bpt, &node);
+
+	      SET_LEAVE(set, ERROR_UNKNOWN);
+	    }
+
+	  memcpy(data, leaf->data, o->u.bpt.datasz);
+	}
+      else
+	data = leaf->data;
+
+      if (set_add_bpt(*new, data) != ERROR_NONE)
+	{
+	  BPT_UNLOAD(&o->u.bpt.bpt, &node);
+
+	  SET_LEAVE(set, ERROR_UNKNOWN);
+	}
+
+      BPT_UNLOAD(&o->u.bpt.bpt, &node);
+    }
+
+  SET_LEAVE(set, ERROR_NONE);
+}
+
+/*
  * this function reserves a set.
  *
  * steps:
@@ -872,7 +979,7 @@ t_error			set_rsv_bpt(t_opts			opts,
 
   if (opts & SET_OPT_CONTAINER)
     {
-      *setid = set->setid;
+      *setid = set->container;
     }
   else
     {
@@ -1009,3 +1116,5 @@ t_error			set_rel_bpt(t_setid			setid)
 
   SET_LEAVE(set, ERROR_NONE);
 }
+
+/*                                                                 [cut] /k2 */

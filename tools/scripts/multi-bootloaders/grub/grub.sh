@@ -5,13 +5,13 @@
 ## 
 ## grub.sh
 ## 
-## path          /home/mycure/kaneton/papers/lectures/development-environment
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Fri Oct 21 23:39:53 2005   mycure
+## last update   Mon Oct 31 12:12:06 2005   mycure
 ##
 
 # INFORMATIONS
@@ -53,29 +53,28 @@ _MENU_="/tmp/menu.lst"
 read_kaneton_conf()
 {
   # address
-  _DISPLAY_=`cat $_CONF_ | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
+  _DISPLAY_=`cat $_CONF_ | sed -n "s/^_DISPLAY_ = \(.*\)$/\1/p"`
 
   # address
-  _ADDRESS_=`cat $_CONF_ | grep -E "^_ADDRESS_ = .*$" | cut -b 13-`
+  _ADDRESS_=`cat $_CONF_ | sed -n "s/^_ADDRESS_ = \(.*\)$/\1/p"`
 
   # tftp address
-  _TFTP_ADDRESS_=`cat $_CONF_ | grep -E "^_TFTP_ADDRESS_ = .*$" | cut -b 18-`
+  _TFTP_ADDRESS_=`cat $_CONF_ | sed -n "s/^_TFTP_ADDRESS_ = \(.*\)$/\1/p"`
 
   # tftp directory
-  _TFTP_DIRECTORY_=`cat $_CONF_ | grep -E "^_TFTP_DIRECTORY_ = .*$" |	\
-                    cut -b 20-`
+  _TFTP_DIRECTORY_=`cat $_CONF_ | sed -n "s/^_TFTP_DIRECTORY_ = \(.*\)$/\1/p"`
 
   # bootmode
-  _BOOTMODE_=`cat $_CONF_ | grep -E "^_BOOTMODE_ = .*$" | cut -b 14-`
+  _BOOTMODE_=`cat $_CONF_ | sed -n "s/^_BOOTMODE_ = \(.*\)$/\1/p"`
 
   # unix device
-  _UDEVICE_=`cat $_CONF_ | grep -E "^_UDEVICE_ = .*$" | cut -b 13-`
+  _UDEVICE_=`cat $_CONF_ | sed -n "s/^_UDEVICE_ = \(.*\)$/\1/p"`
 
   # mtools device
-  _MDEVICE_=`cat $_CONF_ | grep -E "^_MDEVICE_ = .*$" | cut -b 13-`
+  _MDEVICE_=`cat $_CONF_ | sed -n "s/^_MDEVICE_ = \(.*\)$/\1/p"`
 
   # image
-  _IMAGE_=`cat $_CONF_ | grep -E "^_IMAGE_ = .*$" | cut -b 11-`
+  _IMAGE_=`cat $_CONF_ | sed -n "s/^_IMAGE_ = \(.*\)$/\1/p"`
 }
 
 

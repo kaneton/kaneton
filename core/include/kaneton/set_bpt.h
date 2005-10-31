@@ -5,13 +5,13 @@
  * 
  * set_bpt.h
  * 
- * path          /home/mycure/kaneton/core/include
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Thu Oct 13 09:39:03 2005   mycure
+ * last update   Fri Oct 29 21:38:14 2004   mycure
  */
 
 #ifndef KANETON_SET_BPT_H
@@ -27,6 +27,8 @@
 /*
  * ---------- includes --------------------------------------------------------
  */
+
+#undef BPT_DEBUG
 
 #include <sys/bpt.h>
 

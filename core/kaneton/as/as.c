@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Oct 21 19:56:01 2005   mycure
+ * last update   Sun Oct 30 23:09:23 2005   mycure
  */
 
 /*
@@ -27,7 +27,7 @@
  * an address space describes process' useable memory. each address space
  * is composed of two set.
  *
- * the first describes the segments hold by this address space, in other
+ * the first describes the segments held by this address space, in other
  * words the physical memory.
  *
  * the latter describes the regions, the virtual areas which reference
@@ -39,6 +39,28 @@
  *
  * we wanted to be able to dump the memory used by the kernel so we
  * decided to create a static kernel address space.
+ *
+ * moreover, this will be useful for creating kernel threads.
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * the address space manager builds address space objects.
+ *
+ * every address space object is essentially composed of two sets: a
+ * set of segments which list the segments held by this address space and
+ * a set of regions which describes the useable virtual address ranges.
+ *
+ * the student just has to write the functions to reserve, release, find etc..
+ * an address space.
+ *
+ * note that the address space does nothing more. indeed, the segment
+ * manager and the region manager will add and/or remove the segments/regions
+ * to/from the address space by their own.
+ *
+ * the address space manager also builds a very special address space object
+ * for the kernel.
  */
 
 /*
@@ -69,6 +91,68 @@ t_asid			kas = ID_UNUSED;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k2 */
+
+/*
+ * this function shows a precise address space.
+ *
+ * steps:
+ *
+ * 1) gets the address space object from its identifier.
+ * 2) displays the segments held by the address space.
+ * 3) displays the regions held by the address space.
+ */
+
+t_error			as_show(t_asid				asid)
+{
+  t_state		state;
+  t_segid		seg;
+  t_regid		reg;
+  t_iterator		i;
+  o_as*			o;
+
+  AS_ENTER(as);
+
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  cons_msg('#', "showing address space %qd:\n", asid);
+
+  /*
+   * 2)
+   */
+
+  cons_msg('#', "  segments %qd:\n", o->segments);
+
+  set_foreach(SET_OPT_FORWARD, o->segments, &i, state)
+    {
+      if (set_object(o->segments, i, (void**)&seg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      cons_msg('#', "    %qd\n", seg);
+    }
+
+  /*
+   * 3)
+   */
+
+  cons_msg('#', "  regions %qd:\n", o->regions);
+
+  set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
+    {
+      if (set_object(o->regions, i, (void**)&reg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      cons_msg('#', "    %qd\n", reg);
+    }
+
+  AS_LEAVE(as, ERROR_NONE);
+}
 
 /*
  * this function dumps the address spaces managed by the kernel.
@@ -108,8 +192,78 @@ t_error			as_dump(void)
       if (set_object(as->container, i, (void**)&data) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      cons_msg('#', "  %qu\n", data->asid);
+      cons_msg('#', "  %qd [%qd, %qd]\n",
+	       data->asid,
+	       data->segments,
+	       data->regions);
     }
+
+  AS_LEAVE(as, ERROR_NONE);
+}
+
+/*
+ * this function clones an address space.
+ *
+ * steps:
+ *
+ * 1) gets the source address space object given its identifier.
+ * 2) reserves the cloned address space object.
+ * 3) gets the destination address space object previously reserved.
+ * 4) releases the prereserved segment and region sets because we will
+ *    clone these sets from the source address space object so we have to
+ *    release them before.
+ * 5) clones the segment and region sets from the source address space
+ *    object.
+ */
+
+t_error			as_clone(t_asid				old,
+				 t_asid*			new)
+{
+  o_as*			from;
+  o_as*			to;
+
+  AS_ENTER(as);
+
+  /*
+   * 1)
+   */
+
+  if (as_get(old, &from) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (as_rsv(new) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (as_get(*new, &to) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (set_rel(to->segments) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (set_rel(to->regions) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
+  if (set_clone(from->segments, &to->segments) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (set_clone(from->regions, &to->regions) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
 }
@@ -164,7 +318,7 @@ t_error			as_rsv(t_asid*				asid)
    */
 
   if (set_rsv(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_REGIONS_INITSZ,
-	      sizeof(o_region), &o.regions) != ERROR_NONE)
+	      sizeof(t_regid), &o.regions) != ERROR_NONE)
     {
       id_rel(&as->id, o.asid);
 
@@ -418,3 +572,5 @@ t_error			as_clean(void)
 
   return (ERROR_NONE);
 }
+
+/*                                                                 [cut] /k2 */

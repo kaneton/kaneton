@@ -11,7 +11,25 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Oct 21 19:56:57 2005   mycure
+ * last update   Sun Oct 30 22:25:03 2005   mycure
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file is the entry point of the kaneton microkernel.
+ *
+ * from the kaneton() function, every managers will be called to initialise
+ * them.
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * the students just have to write some code to initialise and clean
+ * the different managers.
+ *
+ * finally some critical services will be launched.
  */
 
 /*
@@ -53,9 +71,9 @@ t_init*			init;
  * 3) displays the current kaneton version.
  * 4) if needed, displays the kernel parameters.
  * 5) initialises the fine grained allocator.
- * 6) initialises the id manager.
- * 7) initialises the set manager.
- * 8) if needed, initialises the stats manager.
+ * 6) if needed, initialises the stats manager.
+ * 7) initialises the id manager.
+ * 8) initialises the set manager.
  * 9) initialises the address space manager.
  * 10) initialises the segment manager.
  *
@@ -64,6 +82,9 @@ t_init*			init;
 
 void			kaneton(t_init*				bootloader)
 {
+
+/*                                                                  [cut] k2 */
+
   /*
    * 1)
    */
@@ -103,21 +124,21 @@ void			kaneton(t_init*				bootloader)
    * 6)
    */
 
-  if (id_init() != ERROR_NONE)
-    kaneton_error("cannot initialise the id manager\n");
+  STATS_INIT();
 
   /*
    * 7)
    */
 
-  if (set_init() != ERROR_NONE)
-    kaneton_error("cannot initialise the set manager\n");
+  if (id_init() != ERROR_NONE)
+    kaneton_error("cannot initialise the id manager\n");
 
   /*
    * 8)
    */
 
-  STATS_INIT();
+  if (set_init() != ERROR_NONE)
+    kaneton_error("cannot initialise the set manager\n");
 
   /*
    * 9)
@@ -133,17 +154,12 @@ void			kaneton(t_init*				bootloader)
   if (segment_init(FIT_FIRST) != ERROR_NONE)
     kaneton_error("cannot initialise the segment manager\n");
 
-  /*
-   * XXX debug_init()
-   */
+/*                                                                 [cut] /k2 */
 
-#ifdef KANETON_SERIAL
-  printf("serial init\n");
-  serial_init();
-#endif
+/*                                                                  [cut] k2 */
 
   /*
-   * XXX)
+   * XXX
    */
 
   STATS_DUMP();
@@ -156,15 +172,19 @@ void			kaneton(t_init*				bootloader)
 
   as_clean();
 
-  STATS_CLEAN();
-
   set_clean();
 
   id_clean();
 
+  STATS_CLEAN();
+
+/*                                                                 [cut] /k2 */
+
   while (1)
     ;
 }
+
+/*                                                                  [cut] k2 */
 
 /*
  * this function displays the kaneton parameters.
@@ -208,3 +228,5 @@ void			kaneton_dump(void)
   kaneton_error("no endian defined\n");
 #endif
 }
+
+/*                                                                 [cut] /k2 */

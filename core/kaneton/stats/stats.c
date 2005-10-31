@@ -11,21 +11,28 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Oct 21 19:57:34 2005   mycure
+ * last update   Sun Oct 30 22:18:17 2005   mycure
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX dire que id et set ne peuvent pas etre benche car stats depend
- *     d eux.
+ * this manager is used to make statistics on managers and more precisely
+ * on manager functions use: number of calls, number of errors, time past
+ * in each function etc..
  *
- * XXX on peut egalement etendre le concept et faire en sorte d'etre
- *     independent pour pouvoir bencher id, et surtout set qui doit etre
- *     benche car c est la qu on va passer bcp de temps.
- *     genre faire un pauvre tableau car il n'y aura que de l'ajout quasiment.
+ * with this manager we will be able to evaluate critical managers
+ * like the set manager and especially critical functions which could
+ * be optimised in a near futur.
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
  *
- * XXX greper STATS_BEGIN et STATS_END
+ * the students have nothing to do here.
+ *
+ * nevetheless they can use the stats manager if they want to evaluate
+ * their kernel implementation.
  */
 
 /*
@@ -50,131 +57,247 @@ m_stats*		stats;
  */
 
 /*
- * XXX
+ * this function tries to find a free slot in the functions array
+ * of a statistics object.
+ *
+ * steps:
+ *
+ * 1) tries to find the correct function. if not found, tries to find
+ *    a free slot.
+ * 2) if there is not free slot, expands the functions array.
+ * 3) returns a correct pointer on the correct slot or on a free slot.
+ */
+
+t_error			stats_function(t_staid			staid,
+				       char*			function,
+				       t_stats_func**		f)
+{
+  t_sint64		slot = -1;
+  t_sint64		i;
+
+  STATS_ENTER(stats);
+
+  /*
+   * 1)
+   */
+
+  for (i = 0; i < stats->container[staid].functionssz; i++)
+    {
+      if (stats->container[staid].functions[i].name == NULL)
+	{
+	  if (slot == -1)
+	    slot = i;
+
+	  continue;
+	}
+
+      if (strcmp(function, stats->container[staid].functions[i].name) == 0)
+	{
+	  slot = i;
+	  break;
+	}
+    }
+
+  /*
+   * 2)
+   */
+
+  if ((i == stats->container[staid].functionssz) && (slot == -1))
+    {
+      slot = stats->container[staid].functionssz;
+
+      if ((stats->container[staid].functions =
+	   realloc(stats->container[staid].functions,
+		   (stats->container[staid].functionssz * 2) *
+		   sizeof(t_stats_func))) == NULL)
+	STATS_LEAVE(stats, ERROR_UNKNOWN);
+
+      stats->container[staid].functionssz *= 2;
+
+      memset(stats->container[staid].functions + slot * sizeof(t_stats_func),
+	     0x0, (stats->container[staid].functionssz - slot) *
+	     sizeof(t_stats_func));
+    }
+
+  /*
+   * 3)
+   */
+
+  *f = &stats->container[staid].functions[slot];
+
+  STATS_LEAVE(stats, ERROR_NONE);
+}
+
+/*
+ * this function annonces a new function call.
+ *
+ * steps:
+ *
+ * 1) checks if the stats object is correct.
+ * 2) gets the function slot from the function name.
+ * 3) if the function slot does not exist, creates it.
+ * 4) increases the number of function calls.
  */
 
 t_error			stats_begin(t_staid			staid,
 				    char*			function)
 {
-  t_id			id;
-  o_stats*		o;
-  o_stats_func*		f;
+  t_stats_func*		f;
 
   STATS_ENTER(stats);
 
-  if (set_get(stats->container, staid, (void**)&o) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN, staid, function);
+  /*
+   * 1)
+   */
 
-  id = (t_id)sum2(function, strlen(function));
+  if (stats->container[staid].name == NULL)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
 
-  if (set_get(o->functions, id, (void**)&f) != ERROR_NONE)
+  /*
+   * 2)
+   */
+
+  if (stats_function(staid, function, &f) != ERROR_NONE)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (f->name == NULL)
     {
-      o_stats_func	n;
+      if ((f->name = strdup(function)) == NULL)
+	STATS_LEAVE(stats, ERROR_UNKNOWN);
 
-      memset(&n, 0x0, sizeof(o_stats_func));
+      f->calls = 0;
+      f->errors = 0;
 
-      n.id = id;
-      n.name = strdup(function);
-      n.calls = 1;
-      n.errors = 0;
-
-      /* XXX timer */
-
-      if (set_add(o->functions, &n) != ERROR_NONE)
-	{
-	  printf("XXX: begin: error\n");
-
-	  STATS_LEAVE(stats, ERROR_UNKNOWN, staid, function);
-	}
-    }
-  else
-    {
-      f->calls++;
+      /*
+       * XXX start the timer here
+       */
     }
 
-  STATS_LEAVE(stats, ERROR_NONE, staid, function);
+  /*
+   * 4)
+   */
+
+  f->calls++;
+
+  STATS_LEAVE(stats, ERROR_NONE);
 }
 
 /*
- * XXX
+ * this function annonces the end of a function.
+ *
+ * steps:
+ *
+ * 1) checks if the stats object is correct.
+ * 2) gets the function slot.
+ * 3) if an error occured, increases the number of errors in this function.
  */
 
 t_error			stats_end(t_staid			staid,
 				  char*				function,
 				  t_error			error)
 {
-  t_id			id;
-  o_stats*		o;
-  o_stats_func*		f;
+  t_stats_func*		f;
 
   STATS_ENTER(stats);
 
-  if (set_get(stats->container, staid, (void**)&o) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN, staid, function, error);
+  /*
+   * 1)
+   */
 
-  id = (t_id)sum2(function, strlen(function));
+  if (stats->container[staid].name == NULL)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
 
-  if (set_get(o->functions, id, (void**)&f) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN, staid, function, error);
+  /*
+   * 2)
+   */
+
+  if (stats_function(staid, function, &f) != ERROR_NONE)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
+
+  if (f->name == NULL)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
 
   if (error != ERROR_NONE)
     f->errors++;
 
-  STATS_LEAVE(stats, ERROR_NONE, staid, function, error);
+  STATS_LEAVE(stats, ERROR_NONE);
 }
 
 /*
- * XXX
+ * this function shows a stats object.
+ */
+
+t_error			stats_show(t_staid			staid)
+{
+  t_sint64		i;
+
+  STATS_ENTER(stats);
+
+  cons_msg('#', "showing statistics object %qd: %s\n",
+	   staid,
+	   stats->container[staid].name);
+
+  for (i = 0; i < stats->container[staid].functionssz; i++)
+    {
+      if (stats->container[staid].functions[i].name == NULL)
+	continue;
+
+      cons_msg('#', "    %s: %u call(s) [%u errors]\n",
+	       stats->container[staid].functions[i].name,
+	       stats->container[staid].functions[i].calls,
+	       stats->container[staid].functions[i].errors);
+
+      /*
+       * XXX dump the timer here
+       */
+    }
+
+  STATS_LEAVE(stats, ERROR_NONE);
+}
+
+/*
+ * this function dumps the statistics.
  */
 
 t_error			stats_dump(void)
 {
-  t_state		outter;
-  t_state		inner;
-  t_setsz		size;
-  o_stats*		o;
-  o_stats_func*		f;
-  t_iterator		i;
-  t_iterator		j;
+  t_staid		staid;
+  t_sint64		i;
 
   STATS_ENTER(stats);
 
-  if (set_size(stats->container, &size) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN);
+  cons_msg('#', "dumping statistics:\n");
 
-  cons_msg('#', "dumping %qu statistic(s):\n",
-	   size);
-
-  set_foreach(SET_OPT_FORWARD, stats->container, &i, outter)
+  for (staid = 0; staid < stats->containersz; staid++)
     {
-      if (set_object(stats->container, i, (void**)&o) != ERROR_NONE)
-	{
-	  cons_msg('!', "stats: cannot find the stats object "
-		   "corresponding to its identifier\n");
-
-	  STATS_LEAVE(stats, ERROR_UNKNOWN);
-	}
+      if (stats->container[staid].name == NULL)
+	continue;
 
       cons_msg('#', "  [%qu] %s\n",
-	       o->staid,
-	       o->name);
+	       staid,
+	       stats->container[staid].name);
 
-      set_foreach(SET_OPT_FORWARD, o->functions, &j, inner)
+      for (i = 0; i < stats->container[staid].functionssz; i++)
 	{
-	  if (set_object(o->functions, j, (void**)&f) != ERROR_NONE)
-	    {
-	      cons_msg('!', "stats: cannot find the stats object "
-		       "corresponding to its identifier\n");
-
-	      STATS_LEAVE(stats, ERROR_UNKNOWN);
-	    }
-
-	  /* XXX timer */
+	  if (stats->container[staid].functions[i].name == NULL)
+	    continue;
 
 	  cons_msg('#', "    %s: %u call(s) [%u errors]\n",
-		   f->name,
-		   f->calls,
-		   f->errors);
+		   stats->container[staid].functions[i].name,
+		   stats->container[staid].functions[i].calls,
+		   stats->container[staid].functions[i].errors);
+
+	  /*
+	   * XXX dump the timer here
+	   */
 	}
     }
 
@@ -182,75 +305,125 @@ t_error			stats_dump(void)
 }
 
 /*
- * XXX
+ * this function reserves a statistics object.
+ *
+ * steps:
+ *
+ * 1) tries to find a free slot.
+ * 2) if none, expands the array.
+ * 3) then, initialises the name statistics object, and its functions
+ *    data structure.
  */
 
 t_error			stats_rsv(char*				name,
 				  t_staid*			staid)
 {
-  o_stats		o;
-
   STATS_ENTER(stats);
 
-  memset(&o, 0x0, sizeof(o_stats));
+  /*
+   * 1)
+   */
 
-  if ((o.name = strdup(name)) == NULL)
-    STATS_LEAVE(stats, ERROR_UNKNOWN, name, staid);
+  for (*staid = 0; *staid < stats->containersz; (*staid)++)
+    if (stats->container[*staid].name == NULL)
+      break;
 
-  if (id_rsv(&stats->id, staid) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN, name, staid);
+  /*
+   * 2)
+   */
 
-  o.staid = *staid;
-
-  /* XXX array */
-
-  if (set_rsv(ll, SET_OPT_ALLOC | SET_OPT_SORT,
-	      sizeof(o_stats_func), &o.functions) != ERROR_NONE)
+  if (*staid == stats->containersz)
     {
-      free(o.name);
+      if ((stats->container = realloc(stats->container,
+				      stats->containersz * 2)) == NULL)
+	STATS_LEAVE(stats, ERROR_UNKNOWN);
 
-      STATS_LEAVE(stats, ERROR_UNKNOWN, name, staid);
+      *staid = stats->containersz;
+
+      stats->containersz *= 2;
     }
 
-  if (set_add(stats->container, &o) != ERROR_NONE)
+  /*
+   * 3)
+   */
+
+  if ((stats->container[*staid].name = strdup(name)) == NULL)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
+
+  if ((stats->container[*staid].functions =
+       malloc(STATS_FUNCTIONS_INITSZ * sizeof(t_stats_func))) == NULL)
     {
-      free(o.name);
+      memset(&stats->container[*staid], 0x0, sizeof(t_stats));
 
-      set_rel(o.functions);
-
-      STATS_LEAVE(stats, ERROR_UNKNOWN, name, staid);
+      STATS_LEAVE(stats, ERROR_UNKNOWN);
     }
 
-  STATS_LEAVE(stats, ERROR_NONE, name, staid);
+  stats->container[*staid].functionssz = STATS_FUNCTIONS_INITSZ;
+
+  memset(stats->container[*staid].functions, 0x0,
+	 STATS_FUNCTIONS_INITSZ * sizeof(t_stats_func));
+
+  STATS_LEAVE(stats, ERROR_NONE);
 }
 
 /*
- * XXX
+ * this function releases a previously reserved statistics object.
+ *
+ * steps:
+ *
+ * 1) checks the statistics object validity.
+ * 2) free the statistics object and its contents.
+ * 3) reinitialises the slot.
  */
 
 t_error			stats_rel(t_staid			staid)
 {
-  o_stats*		o;
+  t_sint64		i;
 
   STATS_ENTER(stats);
 
-  if (set_get(stats->container, staid, (void**)&o) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN, staid);
+  /*
+   * 1)
+   */
 
-  /* XXX foreach pour pouvoir liberer chaque chaine NAME */
-  if (set_rel(o->functions) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN, staid);
+  if (stats->container[staid].name == NULL)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
 
-  free(o->name);
+  /*
+   * 2)
+   */
 
-  if (set_remove(stats->container, o->staid) != ERROR_NONE)
-    STATS_LEAVE(stats, ERROR_UNKNOWN, staid);
+  free(stats->container[staid].name);
 
-  STATS_LEAVE(stats, ERROR_NONE, staid);
+  for (i = 0; i < stats->container[staid].functionssz; i++)
+    {
+      if (stats->container[staid].functions[i].name != NULL)
+	free(stats->container[staid].functions[i].name);
+    }
+
+  /*
+   * XXX release the timers here
+   */
+
+  free(stats->container[staid].functions);
+
+  /*
+   * 3)
+   */
+
+  memset(&stats->container[staid], 0x0, sizeof(t_stats));
+
+  STATS_LEAVE(stats, ERROR_NONE);
 }
 
 /*
- * XXX
+ * this function initialises the statistics manager.
+ *
+ * steps:
+ *
+ * 1) allocates and initialises the statistics manager main structure.
+ * 2) allocates and initialises the statistics object data structure.
+ * 3) if needed, dumps the statistics.
  */
 
 t_error			stats_init(void)
@@ -273,26 +446,21 @@ t_error			stats_init(void)
    * 2)
    */
 
-  if (id_build(&stats->id) != ERROR_NONE)
+  if ((stats->container = malloc(STATS_CONTAINER_INITSZ *
+				 sizeof(t_stats))) == NULL)
     {
-      cons_msg('!', "stats: unable to initialise the identifier object\n");
+      cons_msg('!', "stats: unable to allocate the stats container\n");
 
       return (ERROR_UNKNOWN);
     }
+
+  stats->containersz = STATS_CONTAINER_INITSZ;
+
+  memset(stats->container, 0x0, stats->containersz * sizeof(t_stats));
 
   /*
    * 3)
    */
-
-  /* XXX array */
-
-  if (set_rsv(ll, SET_OPT_ALLOC | SET_OPT_SORT,
-	      sizeof(o_stats), &stats->container) != ERROR_NONE)
-    {
-      cons_msg('!', "stats: unable to reserve the stats container\n");
-
-      return (ERROR_UNKNOWN);
-    }
 
 #if (DEBUG & DEBUG_STATS)
   stats_dump(void);
@@ -302,35 +470,30 @@ t_error			stats_init(void)
 }
 
 /*
- * XXX
+ * this function cleans the statistics manager.
+ *
+ * steps:
+ *
+ * 1) releases every statistics object contained.
+ * 2) frees the statistics main structure.
  */
 
 t_error			stats_clean(void)
 {
+  t_staid		staid;
+  t_sint64		i;
+
   /*
    * 1)
    */
 
-  if (set_rel(stats->container) != ERROR_NONE)
-    {
-      cons_msg('!', "stats: unable to release the stats container\n");
+  for (staid = 0; staid < stats->containersz; staid++)
+    stats_rel(staid);
 
-      return (ERROR_UNKNOWN);
-    }
+  free(stats->container);
 
   /*
    * 2)
-   */
-
-  if (id_destroy(&stats->id) != ERROR_NONE)
-    {
-      cons_msg('!', "stats: unable to destroy the identifier object\n");
-
-      return (ERROR_UNKNOWN);
-    }
-
-  /*
-   * 3)
    */
 
   free(stats);

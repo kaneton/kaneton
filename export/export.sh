@@ -5,13 +5,13 @@
 ## 
 ## exporter.sh
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/export
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Wed Oct 26 01:21:06 2005   mycure
+## last update   Mon Oct 31 11:56:47 2005   mycure
 ##
 
 # INFORMATIONS
@@ -24,6 +24,13 @@
 #
 # the argument 'dist' makes a backup of the current development tree
 # including the cut lines but still without the subversion control directories
+#
+# kn is used to always hide source code parts from the distribution
+#
+# the hidden variable contains the list of directories to not include in
+# exported distributions
+
+
 
 # GLOBAL VALUES
 #
@@ -47,6 +54,7 @@ _CONF_="../conf/"$USER"/"$USER".conf"
 # default globals
 _DISPLAY_="unknown"
 _EXPORT_="unknown"
+_HIDDEN_="unknown"
 
 
 
@@ -57,10 +65,13 @@ _EXPORT_="unknown"
 read_kaneton_conf()
 {
   # display
-  _DISPLAY_=`cat $_CONF_ | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
+  _DISPLAY_=`cat $_CONF_ | sed -n "s/^_DISPLAY_ = \(.*\)$/\1/p"`
 
   # export
-  _EXPORT_=`cat $_CONF_ | grep -E "^_EXPORT_ = .*$" | cut -b 12-`
+  _EXPORT_=`cat $_CONF_ | sed -n "s/^_EXPORT_ = \(.*\)$/\1/p"`
+
+  # hidden
+  _HIDDEN_=`cat $_CONF_ | sed -n "s/^_HIDDEN_ = \(.*\)$/\1/p"`
 }
 
 
@@ -84,6 +95,9 @@ warning()
 {
   # display information and ask the user to continue or cancel
   display " your current configuration" "+"
+  display "   export:                   $_EXPORT_" "+"
+  display "   hidden:                   $_HIDDEN_" "+"
+  display ""
   display "   stage:                    $_STAGE_" "+"
   display ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
@@ -179,6 +193,9 @@ build()
   # remove svn control directories
   rm -Rf `find ./ -type d -name .svn`
 
+  # remove the hidden directories
+  rm -Rf $_HIDDEN_
+
   # gets the list of the files
   c_files=`find libs/ core/ drivers/ services/ programs/		\
            -type f -name "*.c"`
@@ -210,12 +227,12 @@ build()
   # still contain our prototypes
 
   echo "
-" | make init > /dev/null 2> /dev/null
+" | gmake init > /dev/null 2> /dev/null
 
-  make proto > /dev/null 2> /dev/null
+  gmake proto > /dev/null 2> /dev/null
 
   echo "
-" | make clean > /dev/null 2> /dev/null
+" | gmake clean > /dev/null 2> /dev/null
 
   # leave directory
   cd ..

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Oct 21 19:57:23 2005   mycure
+ * last update   Sun Oct 30 14:13:29 2005   mycure
  */
 
 /*
@@ -45,6 +45,17 @@
  */
 
 /*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * the students must develop the entire array data structure.
+ *
+ * this data structure is very useful to contain very little objects like
+ * identifiers.
+ *
+ * the address space objects, the task objects etc.. use it widely.
+ */
+
+/*
  * ---------- includes --------------------------------------------------------
  */
 
@@ -61,8 +72,10 @@ extern m_set*		set;
  * ---------- functions -------------------------------------------------------
  */
 
+/*                                                                  [cut] k2 */
+
 /*
- * this function dumps set objects contained in a set.
+ * this function shows set objects contained in a set.
  *
  * steps:
  *
@@ -70,7 +83,7 @@ extern m_set*		set;
  * 2) prints each objects' identifier.
  */
 
-t_error			set_dump_array(t_setid			setid)
+t_error			set_show_array(t_setid			setid)
 {
   t_state		state;
   o_set*		data;
@@ -90,7 +103,7 @@ t_error			set_dump_array(t_setid			setid)
    * 2)
    */
 
-  cons_msg('#', "dumping %qd node(s) from the array set %qu:\n",
+  cons_msg('#', "showing %qd node(s) from the array set %qu:\n",
 	   o->size,
 	   setid);
 
@@ -773,6 +786,20 @@ t_error			set_object_array(t_setid		setid,
 }
 
 /*
+ * this function clones a set.
+ *
+ * steps:
+ *
+ * 1) XXX
+ */
+
+t_error			set_clone_array(t_setid			old,
+					t_setid*		new)
+{
+  /* XXX */
+}
+
+/*
  * this function reserves a set.
  *
  * steps:
@@ -813,7 +840,7 @@ t_error			set_rsv_array(t_opts			opts,
 
   if (opts & SET_OPT_CONTAINER)
     {
-      *setid = set->setid;
+      *setid = set->container;
     }
   else
     {
@@ -918,3 +945,5 @@ t_error			set_rel_array(t_setid			setid)
 
   SET_LEAVE(set, ERROR_NONE);
 }
+
+/*                                                                 [cut] /k2 */

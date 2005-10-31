@@ -1,55 +1,68 @@
 --
+ segments: code complet + dump + show + partie dep (on refait)
+
+ il faudra rajouter dans le bootloader init.c un segment correspondant
+ au dma: SEGMENT_TYPE_CATCH
+
+--
+ faire le cursus: planning
+
+--
+ penser a appeller la partie dep lors d'un clone. on ne sait jamais.
+ a priori on ne devrait pas en avoir besoin car on appelle rsv() avant
+ donc la partie dep fait son boulot mais bon on sait jamais.
+
+ enfin a reflechir
+
+--
+ mieux decouper les drivers et modules en fonctions de leur types:
+
+   drivers/
+     block/
+     char/
+     ...
+
+   services/
+     ...
+
+--
+ dans le document assignments, explicite tout genre reprendre les commentaires
+ des fonctions. enfin le truc c'est que l'etudiant se fasse pas nique
+ parcequ on avait pas precise le role de la fonction set_clone() et des
+ comportements en fonction des options: opts
+
+--
+ forme d'une presentation de k:
+  . pourquoi une telle modelisation: pour/contre, autres systemes
+  . que doit faire l'etudiant
+  . comment
+  . rendu?
+
+--
  parser: params et options
 
 --
  lors du lancement d'un driver/service on aura un prototype different:
 
- int		main(int argc, char** argv, char** opts);
+ t_opts
+ {
+   char* name;
+   char* value;
+ };
 
- opts[n] = option name
- opts[n + 1] = option value
-
---
- il faudra rajouter dans le bootloader init.c un segment correspondant
- au dma.
+ int		main(int argc, char** argv, t_opts opts);
 
 --
  une fois le gestionnaire de regions installe, essayer de faire un
  acces a l'adresse 0, normalement ca fait planter.
 
 --
- ecrire une grammaire pour le fichier de configuration
- et ecrire le parser
-
---
  continuer le cours sur loaders linkers de fab: linker.iecc.com
-
---
- en introduction du cours sur l'archi intel mettre une partie sur
- l'assembleur. un truc cours genre ca:
-    http://www.ccntech.com/code/x86asm.txt
-
---
- essayer de recuperer la ligne de commande lors d'un appel a make
- comme ca lorsqu'on fait le init on en profite pour faire un make -f Makefile
- [rules] et hop le tour est joue
 
 --
  comment faire en sorte que le bootstrap/bootloader/kernel/drivers/services
  dependent de la libc sans a chaque fois refaire le processus de linking
  de la libc ??? je ne vois pas comment faire autrement car la c'est laid
-
---
- un bon exercice pour preparer la releve de kaneton serait de faire
- developer une nouvelle archi pour kaneton mais basee sur intel
- en n'utilisant que les segments et pas la pagination.
-
- ca lui apprendrait le proc intel et ca prouverait que notre systeme
- d'archi marche bien et qu'on peut par exemple se passe de la pagination
- (alors que pour l'instant dans design/ je dis que c'est un prerequis)
-
- on peut aussi lui proposer une autre archi, soit proche de intel genre
- amd64 soit totalement differente sparc
 
 --
  retoucher mkp.py pour qu'il marche: t_bpt_addr() addr
@@ -59,23 +72,10 @@
  qui sont dans un commentaire etc..
 
 --
- bien commenter les fichiers car quand ce sera decoupe il faut que
- les etudiants sachent quoi faire
-
---
  systeme de reboot automatique
 
 --
- segments: address -> id et tester avec bpt
-
---
  fonction de segments et regions pour faire p->v v->p
-
---
- implementer des fonction *_print|show|view(id) qui affiche un element
- contrairement a dump() qui affiche tout
-
- ca pourrait etre utile pour le debug
 
 -- messages
  faire un msg_build(size) qui va creer un segment partage et renvoyer
@@ -98,7 +98,7 @@
 
 -- swap
  faire du swap sur le reseau et sur le disque mais experimenter
- le reseau
+ le reseau.
 
 -- norme commit
   [core/kaneton/set/set_bpt.c]
@@ -108,10 +108,7 @@
   [core/kaneton/kaneton.c]
     1) ...
 
---
- rajouter des binaires dans env/linux/init pour le check
-
- mtools, gmake etc..
+  -> les points 1,2,3 etc.. sont pas ordre d'importance
 
 --
  essayer de faire compiler kaneton sur netbsd a l ecole:
@@ -134,7 +131,9 @@
   13) moulinette de decoupage de code [*]
   14) decouper le code: make export-0 et commenter chaque partie pour que
       les etudiants sachent quoi coder environ juste avec les commentaires
-    . bootstrap, bootloader: [*]
+    . k0: bootstrap [*]
+    . k1: bootloader [*]
+    . k2: id, set, as, segment
 
 --
  cours:
@@ -147,28 +146,15 @@
  mettre toutes les regles de -old-/README dans kaneton.tex
 
 --
- faire le set de hash et tableau par solal au pire ou un inge1
+ faire le set de hash et tableau
 
 --
  array: recherche dichotomique lorsqu il est trie
 
 --
- coder les fonctions clone: as_clone(), set_clone(), id_clone() etc..
-
- ca va etre vachement chiant de faire un set_clone(). pourtant tous les
- autres clone() vont forcement y faire appel.
- d'un autre cote une fois code ce sera trop simple de faire les autre
-
---
  http://perso.wanadoo.fr/philippe.michel/qnx/
 
  http://xos.freezee.org/index.php?page=video
-
---
- assert() a coder
-
---
- repartir les prototypes dans arch/ia32/machdep.h dans les autres fichiers.
 
 --
  rajouter la compression dans grub.sh et le stripping aussi

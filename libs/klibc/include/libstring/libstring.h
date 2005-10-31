@@ -5,13 +5,13 @@
  * 
  * libstring.h
  * 
- * path          /home/mycure/kaneton/libs/klibc/libdata
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Fri Oct 21 19:39:20 2005   mycure
+ * last update   Fri Oct 29 21:34:42 2004   mycure
  */
 
 #ifndef LIBSTRING_LIBSTRING_H

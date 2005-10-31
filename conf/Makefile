@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/conf
+## path          /home/mycure/kaneton/export
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Tue Oct 25 03:48:23 2005   mycure
+## last update   Mon Oct 31 11:56:05 2005   mycure
 ##
 
 #
@@ -37,6 +37,7 @@ KANETON_CONF		:=		kaneton.conf
 #
 
 all:
+	$(_SHELL_) $(_CONF_SH_)
 
 clear:
 	$(call remove,$(KANETON_CONF),)

@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Oct 25 14:01:40 2005   mycure
+ * last update   Sun Oct 30 21:30:47 2005   mycure
  */
 
 /*
@@ -137,6 +137,9 @@
  * element is released, for example into the functions set_remove(),
  * set_flush(), set_rel() etc..
  *
+ * moreover the FREE option is used in the set_clone() function to
+ * duplicate every element.
+ *
  * be careful to never set the FREE option with the ALLOCATE option. the
  * FREE option tells the set manager that the user is using preallocated
  * objects which is the contrary to the allocate option.
@@ -159,6 +162,17 @@
  */
 
 /*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * the student should understand the whole set manager, first to be able
+ * to develop into the kaneton project and to add set data structures, then
+ * because it uses very special c preprocessor interesting features.
+ *
+ * take a look to the subparts of the set manager. indeed the real assignments
+ * are in relation with these subparts.
+ */
+
+/*
  * ---------- includes --------------------------------------------------------
  */
 
@@ -178,6 +192,54 @@ m_set*			set = NULL;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * this function dumps the set manager state.
+ *
+ * the set container will be displayed with each set object contained.
+ */
+
+t_error			set_dump(void)
+{
+  t_state		state;
+  o_set*		data;
+  o_set*		o;
+  t_iterator		i;
+
+  SET_ENTER(set);
+
+  /*
+   * 1)
+   */
+
+  if (set_descriptor(set->container, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  cons_msg('#', "dumping the set container %qd with %qd node(s)\n",
+	   set->container,
+	   o->size);
+
+  set_foreach(SET_OPT_FORWARD, set->container, &i, state)
+    {
+      if (set_object(set->container, i, (void**)&data) != ERROR_NONE)
+	{
+	  cons_msg('!', "set: cannot find the set object "
+		   "corresponding to its identifier\n");
+
+	  SET_LEAVE(set, ERROR_UNKNOWN);
+	}
+
+      cons_msg('#', "  [%qd] %qd object contained\n",
+	       data->setid,
+	       data->size);
+    }
+
+  SET_LEAVE(set, ERROR_NONE);
+}
 
 /*
  * this function fills the variable size with the set size.
@@ -216,12 +278,12 @@ t_error			set_new(o_set*				o)
    * 1)
    */
 
-  if (o->setid == set->setid)
+  if (o->setid == set->container)
     {
-      if ((set->container = malloc(sizeof(o_set))) == NULL)
+      if ((set->co = malloc(sizeof(o_set))) == NULL)
 	SET_LEAVE(set, ERROR_UNKNOWN);
 
-      memcpy(set->container, o, sizeof(o_set));
+      memcpy(set->co, o, sizeof(o_set));
 
       SET_LEAVE(set, ERROR_NONE);
     }
@@ -230,7 +292,7 @@ t_error			set_new(o_set*				o)
    * 2)
    */
 
-  if (set_add(set->setid, o) != ERROR_NONE)
+  if (set_add(set->container, o) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to add this set descriptor "
 	       "to the set container\n");
@@ -258,7 +320,7 @@ t_error			set_delete(t_setid			setid)
    * 1)
    */
 
-  if (setid == set->setid)
+  if (setid == set->container)
     {
       cons_msg('!', "set: cannot remove the set container\n");
 
@@ -269,7 +331,7 @@ t_error			set_delete(t_setid			setid)
    * 2)
    */
 
-  if (set_remove(set->setid, setid) != ERROR_NONE)
+  if (set_remove(set->container, setid) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to remove this descriptor "
 	       "from the set container\n");
@@ -298,9 +360,9 @@ t_error			set_descriptor(t_setid			setid,
    * 1)
    */
 
-  if (setid == set->setid)
+  if (setid == set->container)
     {
-      *o = set->container;
+      *o = set->co;
 
       SET_LEAVE(set, ERROR_NONE);
     }
@@ -309,7 +371,7 @@ t_error			set_descriptor(t_setid			setid,
    * 2)
    */
 
-  if (set_get(set->setid, setid, (void**)o) != ERROR_NONE)
+  if (set_get(set->container, setid, (void**)o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   SET_LEAVE(set, ERROR_NONE);
@@ -362,10 +424,11 @@ t_error			set_get(t_setid				setid,
  * 1) allocates and initialises the set manager structure.
  * 2) builds the identifier object used to generate set identifiers.
  * 3) reserves an identifier for the container.
- * 4) reserves the set container which will contain the set descriptors
+ * 4) if needed, reserves a statistics object.
+ * 5) reserves the set container which will contain the set descriptors
  *    reserved later. obviously, it will be better to take a powerful
  *    data structure because it will contains millions of objects.
- * 5) if necessary, dumps the set container.
+ * 6) if necessary, dumps the set container.
  */
 
 t_error			set_init(void)
@@ -401,7 +464,7 @@ t_error			set_init(void)
    * 3)
    */
 
-  if (id_rsv(&set->id, &set->setid) != ERROR_NONE)
+  if (id_rsv(&set->id, &set->container) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to reserve an identifier\n");
 
@@ -410,6 +473,12 @@ t_error			set_init(void)
 
   /*
    * 4)
+   */
+
+  STATS_RSV("set", &set->stats);
+
+  /*
+   * 5)
    */
 
   if (set_rsv(bpt, SET_OPT_CONTAINER | SET_OPT_ALLOC | SET_OPT_SORT,
@@ -421,13 +490,13 @@ t_error			set_init(void)
     }
 
   /*
-   * 5)
+   * 6)
    */
 
 #if (DEBUG & DEBUG_SET)
-  set_dump(set->setid);
+  set_dump();
 
-  // XXX-OK set_test(SET_TYPE_LL);
+  set_test(SET_TYPE_LL);
   // XXX-OK set_test(SET_TYPE_BPT);
 
   // XXX set_test(SET_TYPE_ARRAY);
@@ -443,9 +512,10 @@ t_error			set_init(void)
  *
  * 1) releases each set object the set container still contains.
  * 2) releases the set container.
- * 3) frees the set container object.
- * 4) destroys the id object.
- * 5) frees the set manager structure's memory.
+ * 3) if needed, releases the stats object.
+ * 4) frees the set container object.
+ * 5) destroys the id object.
+ * 6) frees the set manager structure's memory.
  */
 
 t_error			set_clean(void)
@@ -456,11 +526,11 @@ t_error			set_clean(void)
    * 1)
    */
 
-  while (set_head(set->setid, &iterator) == ERROR_NONE)
+  while (set_head(set->container, &iterator) == ERROR_NONE)
     {
       o_set*		o;
 
-      if (set_object(set->setid, iterator, (void**)&o) != ERROR_NONE)
+      if (set_object(set->container, iterator, (void**)&o) != ERROR_NONE)
 	{
 	  cons_msg('!', "set: cannot find the set object "
 		   "corresponding to its identifier\n");
@@ -481,7 +551,7 @@ t_error			set_clean(void)
    * 2)
    */
 
-  if (set_rel(set->setid) != ERROR_NONE)
+  if (set_rel(set->container) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to release the set container\n");
 
@@ -492,10 +562,16 @@ t_error			set_clean(void)
    * 3)
    */
 
-  free(set->container);
+  STATS_REL(set->stats);
 
   /*
    * 4)
+   */
+
+  free(set->co);
+
+  /*
+   * 5)
    */
 
   if (id_destroy(&set->id) != ERROR_NONE)
@@ -506,7 +582,7 @@ t_error			set_clean(void)
     }
 
   /*
-   * 5)
+   * 6)
    */
 
   free(set);
@@ -549,7 +625,7 @@ t_error			set_test(t_type				type)
 
 	/* XXX continue the tests */
 
-	set_dump(id);
+	set_show(id);
 
 	while (1);
 
@@ -582,7 +658,7 @@ t_error			set_test(t_type				type)
 	if (set_add(id, &data) != ERROR_NONE)
 	  printf("error: set_add()\n");
 
-	set_dump(id);
+	set_show(id);
 
 	if (set_locate(id, 98LL, &iterator) != ERROR_NONE)
 	  printf("error: set_locate()\n");
@@ -619,7 +695,7 @@ t_error			set_test(t_type				type)
 	if (set_remove(id, 0LL) != ERROR_NONE)
 	  printf("error: set_remove()\n");
 
-	set_dump(id);
+	set_show(id);
 
 	data = 234LL;
 	if (set_add(id, &data) != ERROR_NONE)
@@ -631,20 +707,28 @@ t_error			set_test(t_type				type)
 	if (set_remove(id, 234LL) != ERROR_NONE)
 	  printf("error: set_remove()\n");
 
-	set_dump(id);
+	{
+	  t_setid new;
+
+	  set_clone(id, &new);
+
+	  set_rel(new);
+	}
+
+	set_show(id);
 
 	set_flush(id);
 
-	set_dump(id);
+	set_show(id);
 
 	printf("id: %qu\n", id);
 
-	set_dump(set->setid);
+	set_dump();
 
 	if (set_rel(id) != ERROR_NONE)
 	  printf("error: set_rel()\n");
 
-	set_dump(set->setid);
+	set_dump();
 
 	alloc_dump();
 
@@ -690,7 +774,7 @@ t_error			set_test(t_type				type)
 	if (set_add(id, &data) != ERROR_NONE)
 	  printf("error: set_add()\n");
 
-	set_dump(id);
+	set_show(id);
 
 	if (set_locate(id, 98LL, &iterator) != ERROR_NONE)
 	  printf("error: set_locate()\n");
@@ -726,7 +810,7 @@ t_error			set_test(t_type				type)
 	if (set_remove(id, 0LL) != ERROR_NONE)
 	  printf("error: set_remove()\n");
 
-	set_dump(id);
+	set_show(id);
 
 	data = 234LL;
 	if (set_add(id, &data) != ERROR_NONE)
@@ -760,7 +844,7 @@ t_error			set_test(t_type				type)
 	if (set_insert_before(id, iterator, &data) != ERROR_NONE)
 	  printf("error: set_insert_before()\n");
 
-	set_dump(id);
+	set_show(id);
 
 	if (set_locate(id, 42LL, &iterator) != ERROR_NONE)
 	  printf("error: set_locate()\n");
@@ -776,20 +860,30 @@ t_error			set_test(t_type				type)
 	if (set_insert_after(id, iterator, &data) != ERROR_NONE)
 	  printf("error: set_insert_after()\n");
 
-	set_dump(id);
+	set_show(id);
+
+	{
+	  t_setid new;
+
+	  set_clone(id, &new);
+
+	  set_show(new);
+
+	  set_rel(new);
+	}
 
 	set_flush(id);
 
-	set_dump(id);
+	set_show(id);
 
 	printf("id: %qu\n", id);
 
-	set_dump(set->setid);
+	set_dump();
 
 	if (set_rel(id) != ERROR_NONE)
 	  printf("error: set_rel()\n");
 
-	set_dump(set->setid);
+	set_dump();
 
 	alloc_dump();
 

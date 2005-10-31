@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Oct 25 15:01:52 2005   mycure
+ * last update   Sun Oct 30 22:35:32 2005   mycure
  */
 
 /*
@@ -25,6 +25,12 @@
  *     nous meme afin qu'il soit trier selon les adresses physiques.
  *
  * XXX split coalesce (join) etc..
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * XXX
  */
 
 /*
@@ -108,7 +114,7 @@ t_error			segment_dump(void)
 
       if (set_object(segment->container, i, (void**)&data) != ERROR_NONE)
 	{
-	  cons_msg('!', "set: cannot find the segment object "
+	  cons_msg('!', "segment: cannot find the segment object "
 		   "corresponding to its identifier\n");
 
 	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
@@ -614,12 +620,12 @@ t_error			segment_get(t_segid			segid,
  * 2) initialises the segment manager structure fields from the init
  *    structure.
  * 3) reserves the segment set which will contain the system's segments.
- * 4) for each pre-reserved segment, inserts it into the segment container.
+ * 4) tries to reserve a statistics object.
+ * 5) for each pre-reserved segment, inserts it into the segment container.
  *    note that we use the address as the identifier. this is not very
  *    elegant but we have no choice to be able to use every sorted set.
  *    moreover we could use the set without the SET_ALLOC option but
  *    we prefered use it to be more coherent.
- * 5) tries to reserve a statistics object.
  * 6) if needed, dumps the segments.
  */
 
@@ -665,6 +671,12 @@ t_error			segment_init(t_fit			fit)
    * 4)
    */
 
+  STATS_RSV("segment", &segment->stats);
+
+  /*
+   * 5)
+   */
+
   for (i = 0; i < init->nsegments; i++)
     {
       init->segments[i].segid = (t_segid)init->segments[i].address;
@@ -677,12 +689,6 @@ t_error			segment_init(t_fit			fit)
 	  return (ERROR_UNKNOWN);
 	}
     }
-
-  /*
-   * 5)
-   */
-
-  STATS_RSV("segment", &segment->stats);
 
   /*
    * 6)
@@ -713,18 +719,18 @@ t_error			segment_clean(void)
    * 1)
    */
 
-  STATS_REL(segment->stats);
-
-  /*
-   * 2)
-   */
-
   if (set_rel(segment->container) != ERROR_NONE)
     {
       cons_msg('!', "segment: unable to release the segment container\n");
 
       return (ERROR_UNKNOWN);
     }
+
+  /*
+   * 2)
+   */
+
+  STATS_REL(segment->stats);
 
   /*
    * 3)

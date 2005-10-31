@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/export
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Wed Oct 26 01:23:46 2005   mycure
+## last update   Mon Oct 31 11:55:22 2005   mycure
 ##
 
 #
@@ -27,7 +27,7 @@
 .SILENT:
 
 .PHONY:		all init clean kaneton clear purge proto		\
-		dep conf build install check info export		\
+		dep build install check info 				\
 		view view- export export- kaneton.mk
 
 #
@@ -36,17 +36,23 @@
 
 SHELL			:=		/bin/sh
 
-_SHELL_			?=		true
-
-SUBDIRS			:=		libs core drivers services programs
-
-CLEARDIRS		:=		view export conf
-
 #
 # ---------- default rule -----------------------------------------------------
 #
 
-all:			kaneton
+ifeq ($(_SIGNATURE_),kaneton)
+  all:			kaneton
+else
+  all kaneton								\
+  clear purge								\
+  proto dep								\
+  build install								\
+  check info								\
+  view view-								\
+  export export-							\
+  view-% export-%:	init
+	$(MAKE) -f Makefile $@
+endif
 
 #
 # ---------- environment ------------------------------------------------------
@@ -57,10 +63,6 @@ kaneton.mk:
 	  cd env							; \
 	  $(SHELL) init.sh						; \
 	  cd ..								; \
-									\
-	  echo ""							; \
-	  echo "   ----- you can now run your command..."		; \
-	  echo ""							; \
 	fi
 
 init:
@@ -73,7 +75,22 @@ clean:
 	$(SHELL) clean.sh						; \
 	cd ..
 
-	rm -f *~
+#
+# ---------- conditional ------------------------------------------------------
+#
+
+ifeq ($(_SIGNATURE_),kaneton)
+
+#
+# ---------- variables --------------------------------------------------------
+#
+
+SUBDIRS			:=						\
+  $(sort								\
+      $(shell $(_CAT_) $(_CONF_DIR_)/$(USER)/modules.conf |		\
+              $(_SED_) -n "s/^\([[:alpha:]_-]*\)\/.*$$/\1/p"))
+
+CLEARDIRS		:=		libs view export
 
 #
 # ---------- development ------------------------------------------------------
@@ -105,26 +122,17 @@ dep:			kaneton.mk
 	$(call make,$(SUBDIRS),dep)
 
 #
-# ---------- conf -------------------------------------------------------------
-#
-
-conf:			kaneton.mk
-	cd $(_CONF_DIR_)						; \
-	$(_SHELL_) $(_CONF_)						; \
-	cd ..
-
-#
 # ---------- boot -------------------------------------------------------------
 #
 
 build:			kaneton.mk
 	cd $(_MULTIBOOTLOADERS_DIR_)/$(_MULTIBOOTLOADER_)		; \
-	$(_SHELL_) $(_MULTIBOOTLOADER_).sh build			; \
+	$(SHELL) $(_MULTIBOOTLOADER_).sh build				; \
 	cd ..
 
-install:		kaneton.mk kaneton conf
+install:		kaneton.mk kaneton
 	cd $(_MULTIBOOTLOADERS_DIR_)/$(_MULTIBOOTLOADER_)		; \
-	$(_SHELL_) $(_MULTIBOOTLOADER_).sh install			; \
+	$(SHELL) $(_MULTIBOOTLOADER_).sh install			; \
 	cd ..
 
 #
@@ -141,12 +149,12 @@ check:
 
 view- view:		kaneton.mk
 	cd $(_VIEW_DIR_)						; \
-	$(_SHELL_) $(_VIEW_)						; \
+	$(SHELL) $(_VIEW_SH_)						; \
 	cd ..
 
 view-%:			kaneton.mk
 	cd $(_VIEW_DIR_) 						; \
-	$(_SHELL_) $(_VIEW_) $*						; \
+	$(SHELL) $(_VIEW_SH_) $*					; \
 	cd ..
 
 #
@@ -219,10 +227,16 @@ dist:			export-dist
 
 export- export:		kaneton.mk
 	cd $(_EXPORT_DIR_)						; \
-	$(_SHELL_) $(_EXPORT_)						; \
+	$(SHELL) $(_EXPORT_SH_)						; \
 	cd ..
 
 export-%:		kaneton.mk
 	cd $(_EXPORT_DIR_)						; \
-	$(_SHELL_) $(_EXPORT_) $*					; \
+	$(SHELL) $(_EXPORT_SH_)						; \
 	cd ..
+
+#
+# ---------- /conditional -----------------------------------------------------
+#
+
+endif

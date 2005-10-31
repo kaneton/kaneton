@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Tue Oct 25 13:10:51 2005   mycure
+## last update   Mon Oct 31 12:15:32 2005   mycure
 ##
 
 # INFORMATIONS
@@ -51,13 +51,13 @@ _KFLAGS_="unknown"
 read_kaneton_conf()
 {
   # display
-  _DISPLAY_=`cat $_CONF_ | grep -E "^_DISPLAY_ = .*$" | cut -b 13-`
+  _DISPLAY_=`cat $_CONF_ | sed -n "s/^_DISPLAY_ = \(.*\)$/\1/p"`
 
   # cflags
-  _CFLAGS_=`cat $_CONF_ | grep -E "^_CFLAGS_ = .*$" | cut -b 12-`
+  _CFLAGS_=`cat $_CONF_ | sed -n "s/^_CFLAGS_ = \(.*\)$/\1/p"`
 
   # display
-  _KFLAGS_=`cat $_CONF_ | grep -E "^_KFLAGS_ = .*$" | cut -b 12-`
+  _KFLAGS_=`cat $_CONF_ | sed -n "s/^_KFLAGS_ = \(.*\)$/\1/p"`
 }
 
 
