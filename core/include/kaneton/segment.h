@@ -126,6 +126,8 @@ typedef struct
  * ../../kaneton/segment/segment.c
  */
 
+t_error			segment_dump(t_segid			segid);
+
 t_error			segment_dump(void);
 
 t_error			segment_first_fit(o_as*			as,
@@ -133,13 +135,13 @@ t_error			segment_first_fit(o_as*			as,
 					  t_perms		perms,
 					  t_segid*		segid);
 
-t_error			segment_rsv(t_asid			asid,
-				    t_psize			size,
-				    t_perms			perms,
-				    t_segid*			segid);
+t_error			segment_reserve(t_asid			asid,
+					t_psize			size,
+					t_perms			perms,
+					t_segid*		segid);
 
-t_error			segment_rel(t_asid			asid,
-				    t_segid			segid);
+t_error			segment_release(t_asid			asid,
+					t_segid			segid);
 
 t_error			segment_catch(t_asid			asid,
 				      t_segid			segid);

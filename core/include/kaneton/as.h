@@ -120,9 +120,9 @@ t_error			as_dump(void);
 t_error			as_clone(t_asid				old,
 				 t_asid*			new);
 
-t_error			as_rsv(t_asid*				asid);
+t_error			as_reserve(t_asid*			asid);
 
-t_error			as_rel(t_asid				asid);
+t_error			as_release(t_asid			asid);
 
 t_error			as_get(t_asid				asid,
 			       o_as**				o);

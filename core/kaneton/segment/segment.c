@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/segment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Oct 30 22:35:32 2005   mycure
+ * last update   Tue Nov  1 16:05:19 2005   mycure
  */
 
 /*
@@ -24,7 +24,10 @@
  *     pouvoir les retrouver mais on va creer un set qu'on va organiser
  *     nous meme afin qu'il soit trier selon les adresses physiques.
  *
- * XXX split coalesce (join) etc..
+ * XXX resize, split, coalesce, read, write, copy, get, perms, type
+ *     flush, seg->paddr (addr), asid
+ *
+ * XXX give (as, segment)
  */
 
 /*
@@ -72,6 +75,81 @@ m_segment*		segment;
  */
 
 /*
+ * this function shows a segment.
+ *
+ * steps:
+ *
+ * 1) gets the segment object.
+ * 2) computes the type string.
+ * 3) computes the perms string.
+ * 4) displays the entry.
+ */
+
+t_error			segment_dump(t_segid			segid)
+{
+  char			perms[4];
+  char*			type;
+  o_segment*		o;
+
+  SEGMENT_ENTER(segment);
+
+  /*
+   * 1)
+   */
+
+  if (segment_get(segid, &o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  cons_msg('#', "  segment %qd:\n", segid);
+
+  /*
+   * 2)
+   */
+
+  switch (o->type)
+    {
+    case SEGMENT_TYPE_MEMORY:
+      type = "memory";
+      break;
+    case SEGMENT_TYPE_CATCH:
+      type = "catch";
+      break;
+    default:
+      type = "(unknown)";
+      break;
+    }
+
+  /*
+   * 3)
+   */
+
+  memset(perms, '.', 3);
+  perms[3] = 0;
+
+  if (o->perms & PERM_READ)
+    perms[0] = 'r';
+
+  if (o->perms & PERM_WRITE)
+    perms[1] = 'w';
+
+  if (o->perms & PERM_EXEC)
+    perms[2] = 'x';
+
+  /*
+   * 4)
+   */
+
+  cons_msg('#', "    [%s] 0x%08x - 0x%08x %s (%u bytes)\n",
+	   type,
+	   o->address,
+	   o->address + o->size,
+	   perms,
+	   o->size);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
+}
+
+/*
  * this function dumps the segments.
  *
  * steps:
@@ -110,8 +188,6 @@ t_error			segment_dump(void)
 
   set_foreach(SET_OPT_FORWARD, segment->container, &i, state)
     {
-      char		perms[4];
-
       if (set_object(segment->container, i, (void**)&data) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot find the segment object "
@@ -120,30 +196,16 @@ t_error			segment_dump(void)
 	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 	}
 
-      memset(perms, '.', 3);
-      perms[3] = 0;
-
-      if (data->perms & PERM_READ)
-	perms[0] = 'r';
-
-      if (data->perms & PERM_WRITE)
-	perms[1] = 'w';
-
-      if (data->perms & PERM_EXEC)
-	perms[2] = 'x';
-
-      cons_msg('#', "  0x%08x - 0x%08x %s (%u bytes)\n",
-	       data->address,
-	       data->address + data->size,
-	       perms,
-	       data->size);
+      if (set_show(data->segid) != ERROR_NONE)
+	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
     }
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
 /*
- * XXX first fit
+ * this function tries to find free space in the segment set via the
+ * first fit algorithm.
  *
  * steps:
  *
@@ -308,10 +370,10 @@ t_error			segment_first_fit(o_as*			as,
  * 2) chooses the correct fit.
  */
 
-t_error			segment_rsv(t_asid			asid,
-				    t_psize			size,
-				    t_perms			perms,
-				    t_segid*			segid)
+t_error			segment_reserve(t_asid			asid,
+					t_psize			size,
+					t_perms			perms,
+					t_segid*		segid)
 {
   o_as*			as;
 
@@ -353,8 +415,8 @@ t_error			segment_rsv(t_asid			asid,
  * 3) removes the segment from the segment container.
  */
 
-t_error			segment_rel(t_asid			asid,
-				    t_segid			segid)
+t_error			segment_release(t_asid			asid,
+					t_segid			segid)
 {
   o_as*			as;
 
@@ -368,14 +430,14 @@ t_error			segment_rel(t_asid			asid,
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
-   * 3)
+   * 2)
    */
 
   if (set_remove(as->segments, segid) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
-   * 4)
+   * 3)
    */
 
   if (set_remove(segment->container, segid) != ERROR_NONE)
@@ -388,9 +450,16 @@ t_error			segment_rel(t_asid			asid,
  * this function permits to get entire possession of a memory
  * area.
  *
+ * the segments with the catch type are very special and generally used
+ * for architecture specific use.
+ *
  * steps:
  *
- * 1) XXX
+ * 1) gets the address space object.
+ * 2) gets the segment object.
+ * 3) checks the segment type.
+ * 4) finally adds the segment into the address space object
+ * 5) and marks the segment as classical memory segment.
  */
 
 t_error			segment_catch(t_asid			asid,
@@ -428,6 +497,12 @@ t_error			segment_catch(t_asid			asid,
 
   if (set_add(as->segments, &o->segid) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
+  o->type = SEGMENT_TYPE_MEMORY;
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
@@ -659,8 +734,8 @@ t_error			segment_init(t_fit			fit)
    * 3)
    */
 
-  if (set_rsv(bpt, SET_OPT_ALLOC | SET_OPT_SORT, sizeof(o_segment),
-	      SEGMENT_BPT_NODESZ, &segment->container) != ERROR_NONE)
+  if (set_reserve(bpt, SET_OPT_ALLOC | SET_OPT_SORT, sizeof(o_segment),
+		  SEGMENT_BPT_NODESZ, &segment->container) != ERROR_NONE)
     {
       cons_msg('!', "segment: unable to reserve the segment container\n");
 
@@ -671,7 +746,7 @@ t_error			segment_init(t_fit			fit)
    * 4)
    */
 
-  STATS_RSV("segment", &segment->stats);
+  STATS_RESERVE("segment", &segment->stats);
 
   /*
    * 5)
@@ -719,7 +794,7 @@ t_error			segment_clean(void)
    * 1)
    */
 
-  if (set_rel(segment->container) != ERROR_NONE)
+  if (set_release(segment->container) != ERROR_NONE)
     {
       cons_msg('!', "segment: unable to release the segment container\n");
 
@@ -730,7 +805,7 @@ t_error			segment_clean(void)
    * 2)
    */
 
-  STATS_REL(segment->stats);
+  STATS_RELEASE(segment->stats);
 
   /*
    * 3)
@@ -749,8 +824,8 @@ t_error			segment_test(void)
 {
   t_segid		segid;
 
-  if (segment_rsv(kas, 42, PERM_EXEC, &segid) != ERROR_NONE)
-    printf("error: segment_rsv()\n");
+  if (segment_reserve(kas, 42, PERM_EXEC, &segid) != ERROR_NONE)
+    printf("error: segment_reserve()\n");
 
   /*
    * XXX continue tests

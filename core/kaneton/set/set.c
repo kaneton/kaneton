@@ -5,13 +5,13 @@
  * 
  * set.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Oct 30 21:30:47 2005   mycure
+ * last update   Tue Nov  1 15:56:21 2005   mycure
  */
 
 /*
@@ -47,7 +47,7 @@
  *
  * moreover, the set manager will provide a very very simple way to compare
  * different algorithms in different cases just by modifying the
- * call to set_rsv() in the desired manager.
+ * call to set_reserve() in the desired manager.
  *
  * to add a data structure to the set manager you have to complete
  * the following steps:
@@ -135,7 +135,7 @@
  * for this common problem, a new option was introduced, the FREE option
  * which tells the set manager to call the free() function every time an
  * element is released, for example into the functions set_remove(),
- * set_flush(), set_rel() etc..
+ * set_flush(), set_release() etc..
  *
  * moreover the FREE option is used in the set_clone() function to
  * duplicate every element.
@@ -233,9 +233,8 @@ t_error			set_dump(void)
 	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
 
-      cons_msg('#', "  [%qd] %qd object contained\n",
-	       data->setid,
-	       data->size);
+      if (set_show(data->setid) != ERROR_NONE)
+	SET_LEAVE(set, ERROR_UNKNOWN);
     }
 
   SET_LEAVE(set, ERROR_NONE);
@@ -464,7 +463,7 @@ t_error			set_init(void)
    * 3)
    */
 
-  if (id_rsv(&set->id, &set->container) != ERROR_NONE)
+  if (id_reserve(&set->id, &set->container) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to reserve an identifier\n");
 
@@ -475,14 +474,14 @@ t_error			set_init(void)
    * 4)
    */
 
-  STATS_RSV("set", &set->stats);
+  STATS_RESERVE("set", &set->stats);
 
   /*
    * 5)
    */
 
-  if (set_rsv(bpt, SET_OPT_CONTAINER | SET_OPT_ALLOC | SET_OPT_SORT,
-	      sizeof(o_set), PAGESZ, &needless) != ERROR_NONE)
+  if (set_reserve(bpt, SET_OPT_CONTAINER | SET_OPT_ALLOC | SET_OPT_SORT,
+		  sizeof(o_set), PAGESZ, &needless) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to reserve the set container\n");
 
@@ -538,7 +537,7 @@ t_error			set_clean(void)
 	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
 
-      if (set_rel(o->setid) != ERROR_NONE)
+      if (set_release(o->setid) != ERROR_NONE)
 	{
 	  cons_msg('!', "set: cannot releases a set object located in the "
 		   "set container\n");
@@ -551,7 +550,7 @@ t_error			set_clean(void)
    * 2)
    */
 
-  if (set_rel(set->container) != ERROR_NONE)
+  if (set_release(set->container) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to release the set container\n");
 
@@ -562,7 +561,7 @@ t_error			set_clean(void)
    * 3)
    */
 
-  STATS_REL(set->stats);
+  STATS_RELEASE(set->stats);
 
   /*
    * 4)
@@ -607,9 +606,9 @@ t_error			set_test(t_type				type)
 
 	cons_msg('#', "testing SET_TYPE_ARRAY\n");
 
-	if (set_rsv(array, SET_OPT_ALLOC | SET_OPT_SORT, 10,
-		    sizeof(t_uint64), &id) != ERROR_NONE)
-	  printf("error: set_rsv()\n");
+	if (set_reserve(array, SET_OPT_ALLOC | SET_OPT_SORT, 10,
+			sizeof(t_uint64), &id) != ERROR_NONE)
+	  printf("error: set_reserve()\n");
 
 	data = 98LL;
 	if (set_add(id, &data) != ERROR_NONE)
@@ -642,9 +641,9 @@ t_error			set_test(t_type				type)
 
 	cons_msg('#', "testing SET_TYPE_BPT\n");
 
-	if (set_rsv(bpt, SET_OPT_ALLOC | SET_OPT_SORT,
-		    sizeof(t_uint64), 64, &id) != ERROR_NONE)
-	  printf("error: set_rsv()\n");
+	if (set_reserve(bpt, SET_OPT_ALLOC | SET_OPT_SORT,
+			sizeof(t_uint64), 64, &id) != ERROR_NONE)
+	  printf("error: set_reserve()\n");
 
 	data = 98LL;
 	if (set_add(id, &data) != ERROR_NONE)
@@ -712,7 +711,7 @@ t_error			set_test(t_type				type)
 
 	  set_clone(id, &new);
 
-	  set_rel(new);
+	  set_release(new);
 	}
 
 	set_show(id);
@@ -725,8 +724,8 @@ t_error			set_test(t_type				type)
 
 	set_dump();
 
-	if (set_rel(id) != ERROR_NONE)
-	  printf("error: set_rel()\n");
+	if (set_release(id) != ERROR_NONE)
+	  printf("error: set_release()\n");
 
 	set_dump();
 
@@ -759,8 +758,9 @@ t_error			set_test(t_type				type)
 
 	cons_msg('#', "testing SET_TYPE_LL\n");
 
-	if (set_rsv(ll, SET_OPT_ALLOC, sizeof(t_uint64), &id) != ERROR_NONE)
-	  printf("error: set_rsv()\n");
+	if (set_reserve(ll, SET_OPT_ALLOC,
+			sizeof(t_uint64), &id) != ERROR_NONE)
+	  printf("error: set_reserve()\n");
 
 	data = 98LL;
 	if (set_add(id, &data) != ERROR_NONE)
@@ -869,7 +869,7 @@ t_error			set_test(t_type				type)
 
 	  set_show(new);
 
-	  set_rel(new);
+	  set_release(new);
 	}
 
 	set_flush(id);
@@ -880,8 +880,8 @@ t_error			set_test(t_type				type)
 
 	set_dump();
 
-	if (set_rel(id) != ERROR_NONE)
-	  printf("error: set_rel()\n");
+	if (set_release(id) != ERROR_NONE)
+	  printf("error: set_release()\n");
 
 	set_dump();
 

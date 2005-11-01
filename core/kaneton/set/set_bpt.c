@@ -5,13 +5,13 @@
  * 
  * set_bpt.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Oct 30 14:14:00 2005   mycure
+ * last update   Tue Nov  1 15:54:20 2005   mycure
  */
 
 /*
@@ -27,7 +27,7 @@
  * note that the sort option must be provided because a non-sorted tree
  * is not conceivable.
  *
- * the datasz argument of the set_rsv() function is needed only if the
+ * the datasz argument of the set_reserve() function is needed only if the
  * allocate option is set.
  *
  * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ALLOC, SET_OPT_FREE
@@ -352,7 +352,7 @@ t_error			set_show_bpt(t_setid			setid)
    * 2)
    */
 
-  cons_msg('#', "showing %qd node(s) from the balanced+ tree set %qu:\n",
+  cons_msg('#', "  %qd node(s) from the balanced+ tree set %qu:\n",
 	   o->size,
 	   setid);
 
@@ -365,7 +365,7 @@ t_error			set_show_bpt(t_setid			setid)
 
       leaf = BPT_LFENTRY(set, &node, i.u.bpt.entry.ndi);
 
-      cons_msg('#', "  %qu <%qu 0x%x> [0x%x:%u]\n",
+      cons_msg('#', "    %qu <%qu 0x%x> [0x%x:%u]\n",
 	       leaf->id, *((t_id*)leaf->data), leaf->data,
 	       i.u.bpt.entry.node, i.u.bpt.entry.ndi);
 
@@ -887,8 +887,8 @@ t_error			set_clone_bpt(t_setid			old,
    * 2)
    */
 
-  if (set_rsv_bpt(o->u.bpt.opts, o->u.bpt.datasz,
-		  o->u.bpt.bpt.nodesz, new) != ERROR_NONE)
+  if (set_reserve_bpt(o->u.bpt.opts, o->u.bpt.datasz,
+		      o->u.bpt.bpt.nodesz, new) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
@@ -945,10 +945,10 @@ t_error			set_clone_bpt(t_setid			old,
  * 7) adds the new set object to the set container.
  */
 
-t_error			set_rsv_bpt(t_opts			opts,
-				    t_size			datasz,
-				    t_bpt_nodesz(set)		nodesz,
-				    t_setid*			setid)
+t_error			set_reserve_bpt(t_opts			opts,
+					t_size			datasz,
+					t_bpt_nodesz(set)	nodesz,
+					t_setid*		setid)
 {
   o_set			o;
 
@@ -983,7 +983,7 @@ t_error			set_rsv_bpt(t_opts			opts,
     }
   else
     {
-      if (id_rsv(&set->id, setid) != ERROR_NONE)
+      if (id_reserve(&set->id, setid) != ERROR_NONE)
 	SET_LEAVE(set, ERROR_UNKNOWN);
     }
 
@@ -1007,7 +1007,7 @@ t_error			set_rsv_bpt(t_opts			opts,
       set_destroy_bpt(&o);
 
       if (!(opts & SET_OPT_CONTAINER))
-	id_rel(&set->id, o.setid);
+	id_release(&set->id, o.setid);
 
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -1023,7 +1023,7 @@ t_error			set_rsv_bpt(t_opts			opts,
 	       NULL, NULL, &o.u.bpt.unused) != 0)
     {
       if (!(opts & SET_OPT_CONTAINER))
-	id_rel(&set->id, o.setid);
+	id_release(&set->id, o.setid);
 
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -1042,7 +1042,7 @@ t_error			set_rsv_bpt(t_opts			opts,
       set_destroy_bpt(&o);
 
       if (!(opts & SET_OPT_CONTAINER))
-	id_rel(&set->id, o.setid);
+	id_release(&set->id, o.setid);
 
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -1066,7 +1066,7 @@ t_error			set_rsv_bpt(t_opts			opts,
  * 5) removes the set object from the set container.
  */
 
-t_error			set_rel_bpt(t_setid			setid)
+t_error			set_release_bpt(t_setid			setid)
 {
   o_set			*o;
 
@@ -1103,7 +1103,7 @@ t_error			set_rel_bpt(t_setid			setid)
    * 4)
    */
 
-  if (id_rel(&set->id, o->setid) != ERROR_NONE)
+  if (id_release(&set->id, o->setid) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*

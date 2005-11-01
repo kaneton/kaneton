@@ -5,13 +5,13 @@
  * 
  * as.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Fri Oct 29 21:29:26 2004   mycure
+ * last update   Tue Nov  1 15:50:30 2005   mycure
  */
 
 #ifndef IA32_KANETON_AS_H
@@ -42,6 +42,7 @@ typedef struct
 
 typedef struct
 {
+  /* XXX a simplifier, rsv->reserve et rel->release */
   t_error			(*as_dump)(void);
   t_error			(*as_rsv)(t_asid*);
   t_error			(*as_rel)(t_asid);

@@ -5,13 +5,13 @@
  * 
  * set_array.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Oct 30 14:13:29 2005   mycure
+ * last update   Tue Nov  1 15:55:01 2005   mycure
  */
 
 /*
@@ -103,7 +103,7 @@ t_error			set_show_array(t_setid			setid)
    * 2)
    */
 
-  cons_msg('#', "showing %qd node(s) from the array set %qu:\n",
+  cons_msg('#', "  %qd node(s) from the array set %qu:\n",
 	   o->size,
 	   setid);
 
@@ -117,7 +117,7 @@ t_error			set_show_array(t_setid			setid)
 	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
 
-      cons_msg('#', "  %qd\n", *data);
+      cons_msg('#', "    %qd\n", *data);
     }
 
   SET_LEAVE(set, ERROR_NONE);
@@ -811,10 +811,10 @@ t_error			set_clone_array(t_setid			old,
  * 5) adds the set descriptor in the set container.
  */
 
-t_error			set_rsv_array(t_opts			opts,
-				      t_setsz			initsz,
-				      t_size			datasz,
-				      t_setid*			setid)
+t_error			set_reserve_array(t_opts		opts,
+					  t_setsz		initsz,
+					  t_size		datasz,
+					  t_setid*		setid)
 {
   o_set			o;
   t_setsz		i;
@@ -844,7 +844,7 @@ t_error			set_rsv_array(t_opts			opts,
     }
   else
     {
-      if (id_rsv(&set->id, setid) != ERROR_NONE)
+      if (id_reserve(&set->id, setid) != ERROR_NONE)
 	SET_LEAVE(set, ERROR_UNKNOWN);
     }
 
@@ -863,7 +863,7 @@ t_error			set_rsv_array(t_opts			opts,
   if ((o.u.array.array = malloc(o.u.array.arraysz * o.u.array.datasz)) == NULL)
     {
       if (!(opts & SET_OPT_CONTAINER))
-	id_rel(&set->id, o.setid);
+	id_release(&set->id, o.setid);
 
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -882,7 +882,7 @@ t_error			set_rsv_array(t_opts			opts,
       free(o.u.array.array);
 
       if (!(opts & SET_OPT_CONTAINER))
-	id_rel(&set->id, o.setid);
+	id_release(&set->id, o.setid);
 
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -902,7 +902,7 @@ t_error			set_rsv_array(t_opts			opts,
  * 5) then, removes the set from the set container.
  */
 
-t_error			set_rel_array(t_setid			setid)
+t_error			set_release_array(t_setid		setid)
 {
   o_set			*o;
 
@@ -926,7 +926,7 @@ t_error			set_rel_array(t_setid			setid)
    * 3)
    */
 
-  if (id_rel(&set->id, o->setid) != ERROR_NONE)
+  if (id_release(&set->id, o->setid) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*

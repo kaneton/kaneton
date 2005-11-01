@@ -5,13 +5,13 @@
  * 
  * id.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Oct 30 22:22:26 2005   mycure
+ * last update   Tue Nov  1 15:57:07 2005   mycure
  */
 
 /*
@@ -21,9 +21,9 @@
  *
  * from this fact, we do not care about identifier recycling.
  *
- * the best example of this fact is located in the id_rel() function. indeed
- * the function does nothing, meaning that the identifier released will not
- * be recycled.
+ * the best example of this fact is located in the id_release()
+ * function. indeed the function does nothing, meaning that the
+ * identifier released will not be recycled.
  */
 
 /*
@@ -65,7 +65,7 @@ t_error			id_show(o_id*				o)
 {
   ID_ENTER(id);
 
-  cons_msg('#', "id object's state: %qu\n", o->id);
+  cons_msg('#', "    id object's state: %qu\n", o->id);
 
   ID_LEAVE(id, ERROR_NONE);
 }
@@ -82,7 +82,7 @@ t_error			id_clone(o_id*				o,
 
   ID_ENTER(id);
 
-  r = id_rsv(o, new);
+  r = id_reserve(o, new);
 
   ID_LEAVE(id, r);
 }
@@ -91,8 +91,8 @@ t_error			id_clone(o_id*				o,
  * this function reserves an identifier in an identifier object
  */
 
-t_error			id_rsv(o_id*				o,
-			       t_id*				i)
+t_error			id_reserve(o_id*			o,
+				   t_id*			i)
 {
   ID_ENTER(id);
 
@@ -105,8 +105,8 @@ t_error			id_rsv(o_id*				o,
  * this function releases an identifier from an identifier object.
  */
 
-t_error			id_rel(o_id*				o,
-			       t_id				i)
+t_error			id_release(o_id*			o,
+				   t_id				i)
 {
   ID_ENTER(id);
 
@@ -153,7 +153,7 @@ t_error			id_init(void)
       return (ERROR_UNKNOWN);
     }
 
-  STATS_RSV("id", &id->stats);
+  STATS_RESERVE("id", &id->stats);
 
   return (ERROR_NONE);
 }
@@ -164,7 +164,7 @@ t_error			id_init(void)
 
 t_error			id_clean(void)
 {
-  STATS_REL(id->stats);
+  STATS_RELEASE(id->stats);
 
   free(id);
 

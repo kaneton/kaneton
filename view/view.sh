@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Mon Oct 31 12:10:30 2005   mycure
+## last update   Mon Oct 31 22:21:36 2005   mycure
 ##
 
 # INFORMATIONS
@@ -28,7 +28,8 @@ _LIST_="								\
   lectures/advanced-makefiles lectures/arch-ia32			\
   lectures/c-preprocessor lectures/distributed-operating-systems	\
   lectures/prerequisites lectures/inline-assembly lectures/kernels	\
-  lectures/development-environment"
+  lectures/development-environment					\
+  cursus/schedule"
 _PATH_=""
 _PAPER_=""
 

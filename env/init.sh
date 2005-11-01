@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Oct 31 12:13:16 2005   mycure
+## last update   Mon Oct 31 22:22:23 2005   mycure
 ##
 
 # INFORMATIONS
@@ -54,7 +54,7 @@ read_kaneton_conf()
 
   # multibootloader
   _MULTIBOOTLOADER_=`cat $_CONF_ |					\
-                     sed -n "s/^_MUTLIBOOTLOADER_ = \(.*\)$/\1/p"`
+                     sed -n "s/^_MULTIBOOTLOADER_ = \(.*\)$/\1/p"`
 }
 
 

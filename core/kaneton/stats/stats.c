@@ -5,13 +5,13 @@
  * 
  * stats.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Oct 30 22:18:17 2005   mycure
+ * last update   Tue Nov  1 15:57:44 2005   mycure
  */
 
 /*
@@ -241,7 +241,10 @@ t_error			stats_show(t_staid			staid)
 
   STATS_ENTER(stats);
 
-  cons_msg('#', "showing statistics object %qd: %s\n",
+  if (stats_container[staid].name == NULL)
+    STATS_LEAVE(stats, ERROR_UNKNOWN);
+
+  cons_msg('#', "  [%qu] %s\n",
 	   staid,
 	   stats->container[staid].name);
 
@@ -281,24 +284,8 @@ t_error			stats_dump(void)
       if (stats->container[staid].name == NULL)
 	continue;
 
-      cons_msg('#', "  [%qu] %s\n",
-	       staid,
-	       stats->container[staid].name);
-
-      for (i = 0; i < stats->container[staid].functionssz; i++)
-	{
-	  if (stats->container[staid].functions[i].name == NULL)
-	    continue;
-
-	  cons_msg('#', "    %s: %u call(s) [%u errors]\n",
-		   stats->container[staid].functions[i].name,
-		   stats->container[staid].functions[i].calls,
-		   stats->container[staid].functions[i].errors);
-
-	  /*
-	   * XXX dump the timer here
-	   */
-	}
+      if (stats_show(staid) != ERROR_NONE)
+	STATS_LEAVE(stats, ERROR_UNKNOWN);
     }
 
   STATS_LEAVE(stats, ERROR_NONE);
@@ -315,8 +302,8 @@ t_error			stats_dump(void)
  *    data structure.
  */
 
-t_error			stats_rsv(char*				name,
-				  t_staid*			staid)
+t_error			stats_reserve(char*			name,
+				      t_staid*			staid)
 {
   STATS_ENTER(stats);
 
@@ -376,7 +363,7 @@ t_error			stats_rsv(char*				name,
  * 3) reinitialises the slot.
  */
 
-t_error			stats_rel(t_staid			staid)
+t_error			stats_release(t_staid			staid)
 {
   t_sint64		i;
 
@@ -488,7 +475,7 @@ t_error			stats_clean(void)
    */
 
   for (staid = 0; staid < stats->containersz; staid++)
-    stats_rel(staid);
+    stats_release(staid);
 
   free(stats->container);
 

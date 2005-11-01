@@ -104,11 +104,11 @@ t_error			id_clone(o_id*				o,
 				 t_id				old,
 				 t_id*				new);
 
-t_error			id_rsv(o_id*				o,
-			       t_id*				i);
+t_error			id_reserve(o_id*			o,
+				   t_id*			i);
 
-t_error			id_rel(o_id*				o,
-			       t_id				i);
+t_error			id_release(o_id*			o,
+				   t_id				i);
 
 t_error			id_build(o_id*				o);
 

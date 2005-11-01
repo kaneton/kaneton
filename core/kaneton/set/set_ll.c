@@ -5,13 +5,13 @@
  * 
  * set_ll.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Oct 30 14:13:44 2005   mycure
+ * last update   Tue Nov  1 15:53:35 2005   mycure
  */
 
 /*
@@ -34,7 +34,7 @@
  * moreover, the linked-list data structure can be used either with the
  * sort option or without.
  *
- * the datasz argument of the set_rsv() function is meaningful only in the
+ * the datasz argument of the set_reserve() function is meaningful only in the
  * case the allocate or free options are set.
  *
  * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ALLOC, SET_OPT_FREE
@@ -113,7 +113,7 @@ t_error			set_show_ll(t_setid			setid)
    * 2)
    */
 
-  cons_msg('#', "showing %qd node(s) from the linked-list set %qu:\n",
+  cons_msg('#', "  %qd node(s) from the linked-list set %qd\n",
 	   o->size,
 	   setid);
 
@@ -121,7 +121,7 @@ t_error			set_show_ll(t_setid			setid)
     {
       t_set_ll_node*	n = i.u.ll.node;
 
-      cons_msg('#', "  %qd <0x%x, 0x%x, 0x%x>\n",
+      cons_msg('#', "    %qd <0x%x, 0x%x, 0x%x>\n",
 	       *((t_id*)n->data), n->prv, n, n->nxt);
     }
 
@@ -1050,7 +1050,7 @@ t_error			set_clone_ll(t_setid			old,
    * 2)
    */
 
-  if (set_rsv_ll(o->u.ll.opts, o->u.ll.datasz, new) != ERROR_NONE)
+  if (set_reserve_ll(o->u.ll.opts, o->u.ll.datasz, new) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
@@ -1090,9 +1090,9 @@ t_error			set_clone_ll(t_setid			old,
  * 5) adds the set descriptor to the set container.
  */
 
-t_error			set_rsv_ll(t_opts			opts,
-				   t_size			datasz,
-				   t_setid*			setid)
+t_error			set_reserve_ll(t_opts			opts,
+				       t_size			datasz,
+				       t_setid*			setid)
 {
   o_set			o;
 
@@ -1124,7 +1124,7 @@ t_error			set_rsv_ll(t_opts			opts,
     }
   else
     {
-      if (id_rsv(&set->id, setid) != ERROR_NONE)
+      if (id_reserve(&set->id, setid) != ERROR_NONE)
 	SET_LEAVE(set, ERROR_UNKNOWN);
     }
 
@@ -1148,7 +1148,7 @@ t_error			set_rsv_ll(t_opts			opts,
   if (set_new(&o) != ERROR_NONE)
     {
       if (!(opts & SET_OPT_CONTAINER))
-	id_rel(&set->id, o.setid);
+	id_release(&set->id, o.setid);
 
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -1167,7 +1167,7 @@ t_error			set_rsv_ll(t_opts			opts,
  * 4) then, removes the set from the set container, if possible.
  */
 
-t_error			set_rel_ll(t_setid			setid)
+t_error			set_release_ll(t_setid			setid)
 {
   o_set			*o;
 
@@ -1191,7 +1191,7 @@ t_error			set_rel_ll(t_setid			setid)
    * 3)
    */
 
-  if (id_rel(&set->id, o->setid) != ERROR_NONE)
+  if (id_release(&set->id, o->setid) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*

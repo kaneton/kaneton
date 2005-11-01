@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Oct 30 23:09:23 2005   mycure
+ * last update   Tue Nov  1 15:52:53 2005   mycure
  */
 
 /*
@@ -121,34 +121,34 @@ t_error			as_show(t_asid				asid)
   if (as_get(asid, &o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  cons_msg('#', "showing address space %qd:\n", asid);
+  cons_msg('#', "  address space %qd:\n", asid);
 
   /*
    * 2)
    */
 
-  cons_msg('#', "  segments %qd:\n", o->segments);
+  cons_msg('#', "    segments %qd:\n", o->segments);
 
   set_foreach(SET_OPT_FORWARD, o->segments, &i, state)
     {
       if (set_object(o->segments, i, (void**)&seg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      cons_msg('#', "    %qd\n", seg);
+      cons_msg('#', "      %qd\n", seg);
     }
 
   /*
    * 3)
    */
 
-  cons_msg('#', "  regions %qd:\n", o->regions);
+  cons_msg('#', "    regions %qd:\n", o->regions);
 
   set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
     {
       if (set_object(o->regions, i, (void**)&reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      cons_msg('#', "    %qd\n", reg);
+      cons_msg('#', "      %qd\n", reg);
     }
 
   AS_LEAVE(as, ERROR_NONE);
@@ -192,10 +192,8 @@ t_error			as_dump(void)
       if (set_object(as->container, i, (void**)&data) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      cons_msg('#', "  %qd [%qd, %qd]\n",
-	       data->asid,
-	       data->segments,
-	       data->regions);
+      if (as_show(data->asid) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
   AS_LEAVE(as, ERROR_NONE);
@@ -235,7 +233,7 @@ t_error			as_clone(t_asid				old,
    * 2)
    */
 
-  if (as_rsv(new) != ERROR_NONE)
+  if (as_reserve(new) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
@@ -249,10 +247,10 @@ t_error			as_clone(t_asid				old,
    * 4)
    */
 
-  if (set_rel(to->segments) != ERROR_NONE)
+  if (set_release(to->segments) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  if (set_rel(to->regions) != ERROR_NONE)
+  if (set_release(to->regions) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
@@ -280,7 +278,7 @@ t_error			as_clone(t_asid				old,
  * 5) adds the new address space object in the address space container.
  */
 
-t_error			as_rsv(t_asid*				asid)
+t_error			as_reserve(t_asid*			asid)
 {
   o_as			o;
 
@@ -296,7 +294,7 @@ t_error			as_rsv(t_asid*				asid)
    * 2)
    */
 
-  if (id_rsv(&as->id, asid) != ERROR_NONE)
+  if (id_reserve(&as->id, asid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   o.asid = *asid;
@@ -305,10 +303,10 @@ t_error			as_rsv(t_asid*				asid)
    * 3)
    */
 
-  if (set_rsv(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_SEGMENTS_INITSZ,
-	      sizeof(t_segid), &o.segments) != ERROR_NONE)
+  if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_SEGMENTS_INITSZ,
+		  sizeof(t_segid), &o.segments) != ERROR_NONE)
     {
-      id_rel(&as->id, o.asid);
+      id_release(&as->id, o.asid);
 
       AS_LEAVE(as, ERROR_UNKNOWN);
     }
@@ -317,12 +315,12 @@ t_error			as_rsv(t_asid*				asid)
    * 4)
    */
 
-  if (set_rsv(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_REGIONS_INITSZ,
-	      sizeof(t_regid), &o.regions) != ERROR_NONE)
+  if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_REGIONS_INITSZ,
+		  sizeof(t_regid), &o.regions) != ERROR_NONE)
     {
-      id_rel(&as->id, o.asid);
+      id_release(&as->id, o.asid);
 
-      set_rel(o.segments);
+      set_release(o.segments);
 
       AS_LEAVE(as, ERROR_UNKNOWN);
     }
@@ -333,10 +331,10 @@ t_error			as_rsv(t_asid*				asid)
 
   if (set_add(as->container, &o) != ERROR_NONE)
     {
-      id_rel(&as->id, o.asid);
+      id_release(&as->id, o.asid);
 
-      set_rel(o.segments);
-      set_rel(o.regions);
+      set_release(o.segments);
+      set_release(o.regions);
 
       AS_LEAVE(as, ERROR_UNKNOWN);
     }
@@ -356,7 +354,7 @@ t_error			as_rsv(t_asid*				asid)
  * 5) removes the address space object from the address space container.
  */
 
-t_error			as_rel(t_asid				asid)
+t_error			as_release(t_asid			asid)
 {
   t_iterator		iterator;
   o_as			*o;
@@ -374,21 +372,21 @@ t_error			as_rel(t_asid				asid)
    * 2)
    */
 
-  if (id_rel(&as->id, o->asid) != ERROR_NONE)
+  if (id_release(&as->id, o->asid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (set_rel(o->segments) != ERROR_NONE)
+  if (set_release(o->segments) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (set_rel(o->regions) != ERROR_NONE)
+  if (set_release(o->regions) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
@@ -475,8 +473,8 @@ t_error			as_init(void)
    * 3)
    */
 
-  if (set_rsv(ll, SET_OPT_ALLOC | SET_OPT_SORT,
-	      sizeof(o_as), &as->container) != ERROR_NONE)
+  if (set_reserve(ll, SET_OPT_ALLOC | SET_OPT_SORT,
+		  sizeof(o_as), &as->container) != ERROR_NONE)
     {
       cons_msg('!', "as: unable to reserve the address space container\n");
 
@@ -487,13 +485,13 @@ t_error			as_init(void)
    * 4)
    */
 
-  STATS_RSV("as", &as->stats);
+  STATS_RESERVE("as", &as->stats);
 
   /*
    * 5)
    */
 
-  if (as_rsv(&kas) != ERROR_NONE)
+  if (as_reserve(&kas) != ERROR_NONE)
     {
       cons_msg('!', "as: unable to reserve the kernel address space\n");
 
@@ -529,7 +527,7 @@ t_error			as_clean(void)
    * 1)
    */
 
-  if (as_rel(kas) != ERROR_NONE)
+  if (as_release(kas) != ERROR_NONE)
     {
       cons_msg('!', "as: unable to release the kernel address space\n");
 
@@ -540,13 +538,13 @@ t_error			as_clean(void)
    * 2)
    */
 
-  STATS_REL(as->stats);
+  STATS_RELEASE(as->stats);
 
   /*
    * 3)
    */
 
-  if (set_rel(as->container) != ERROR_NONE)
+  if (set_release(as->container) != ERROR_NONE)
     {
       cons_msg('!', "as: unable to release the as' container\n");
 

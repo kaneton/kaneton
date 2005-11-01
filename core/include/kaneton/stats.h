@@ -5,13 +5,13 @@
  * 
  * stats.h
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Sun Oct 30 16:33:05 2005   mycure
+ * last update   Tue Nov  1 15:49:19 2005   mycure
  */
 
 #ifndef KANETON_STATS_H
@@ -120,11 +120,11 @@ typedef struct
 # define STATS_END(_stats_, _error_)					\
   stats_end((_stats_), (char*)__FUNCTION__, (_error_))
 
-# define STATS_RSV(_name_, _staid_)					\
-  stats_rsv((_name_), (_staid_))
+# define STATS_RESERVE(_name_, _staid_)					\
+  stats_reserve((_name_), (_staid_))
 
-# define STATS_REL(_staid_)						\
-  stats_rel((_staid_))
+# define STATS_RELEASE(_staid_)						\
+  stats_release((_staid_))
 
 # define STATS_INIT()							\
   stats_init()
@@ -175,10 +175,10 @@ t_error			stats_show(t_staid			staid);
 
 t_error			stats_dump(void);
 
-t_error			stats_rsv(char*				name,
-				  t_staid*			staid);
+t_error			stats_reserve(char*			name,
+				      t_staid*			staid);
 
-t_error			stats_rel(t_staid			staid);
+t_error			stats_release(t_staid			staid);
 
 t_error			stats_init(void);
 

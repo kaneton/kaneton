@@ -5,13 +5,13 @@
 %% 
 %% inline-assembly.tex
 %% 
-%% path          /home/mycure/kaneton/papers/lectures/requirements
+%% path          /home/mycure/kaneton/core/include/kaneton
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Sun Oct 23 12:32:52 2005   mycure
+%% last update   Tue Nov  1 16:01:16 2005   mycure
 %%
 
 %
@@ -1578,7 +1578,7 @@
 
   \nl
 
-  The \textbf{set\_rsv()} function reserves a set specifying the desired
+  The \textbf{set\_reserve()} function reserves a set specifying the desired
   data structure to use. This function returns a set identifier.
 
   \nl
@@ -1588,8 +1588,8 @@
   data structure type so the correct functions to forward to.
 
   \begin{verbatim}
-    #define set_rsv(_type_, _args_...)                                      \
-      set_rsv_##_type_(_args_)
+    #define set_reserve(_type_, _args_...)                                  \
+      set_reserve_##_type_(_args_)
 
     #define set_add(_setid_, _args_...)                                     \
       set_trap(set_add, _setid_, ##_args_)

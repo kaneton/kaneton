@@ -5,13 +5,13 @@
  * 
  * set.h
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core/include/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Sun Oct 30 16:13:00 2005   mycure
+ * last update   Tue Nov  1 15:49:26 2005   mycure
  */
 
 #ifndef KANETON_SET_H
@@ -237,11 +237,11 @@ typedef struct
 #define set_type(_type_, _setid_)					\
   set_type_##_type_(_setid_)
 
-#define set_rsv(_type_, _args_...)					\
-  set_rsv_##_type_(_args_)
+#define set_reserve(_type_, _args_...)					\
+  set_reserve_##_type_(_args_)
 
-#define set_rel(_setid_, _args_...)					\
-  set_trap(set_rel, _setid_, ##_args_)
+#define set_release(_setid_, _args_...)					\
+  set_trap(set_release, _setid_, ##_args_)
 
 #define set_clone(_setid_, _args_...)					\
   set_trap(set_clone, _setid_, ##_args_)
@@ -252,8 +252,8 @@ typedef struct
 #define set_tail(_setid_, _args_...)					\
   set_trap(set_tail, _setid_, ##_args_)
 
-#define set_prev(_setid_, _args_...)					\
-  set_trap(set_prev, _setid_, ##_args_)
+#define set_previous(_setid_, _args_...)				\
+  set_trap(set_previous, _setid_, ##_args_)
 
 #define set_next(_setid_, _args_...)					\
   set_trap(set_next, _setid_, ##_args_)
@@ -301,7 +301,7 @@ typedef struct
           ((_opt_) == SET_OPT_FORWARD ?					\
             set_next((_setid_), *(_iterator_), (_iterator_)) ==		\
               ERROR_NONE :						\
-            set_prev((_setid_), *(_iterator_), (_iterator_)) ==		\
+            set_previous((_setid_), *(_iterator_), (_iterator_)) ==	\
               ERROR_NONE));						\
 	 (_state_) = ITERATOR_STATE_USED				\
        )
@@ -399,12 +399,12 @@ t_error			set_object_array(t_setid		setid,
 t_error			set_clone_array(t_setid			old,
 					t_setid*		new);
 
-t_error			set_rsv_array(t_opts			opts,
-				      t_setsz			initsz,
-				      t_size			datasz,
-				      t_setid*			setid);
+t_error			set_reserve_array(t_opts		opts,
+					  t_setsz		initsz,
+					  t_size		datasz,
+					  t_setid*		setid);
 
-t_error			set_rel_array(t_setid			setid);
+t_error			set_release_array(t_setid		setid);
 
 
 /*
@@ -462,11 +462,11 @@ t_error			set_object_ll(t_setid			setid,
 t_error			set_clone_ll(t_setid			old,
 				     t_setid*			new);
 
-t_error			set_rsv_ll(t_opts			opts,
-				   t_size			datasz,
-				   t_setid*			setid);
+t_error			set_reserve_ll(t_opts			opts,
+				       t_size			datasz,
+				       t_setid*			setid);
 
-t_error			set_rel_ll(t_setid			setid);
+t_error			set_release_ll(t_setid			setid);
 
 
 /*

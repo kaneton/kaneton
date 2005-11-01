@@ -1,11 +1,16 @@
 --
+ systeme qui prend: kaneton.mk + $USER.conf
+
+ et qui genere un fichier de conf au format makefile mais sans doublons
+
+--
  segments: code complet + dump + show + partie dep (on refait)
 
  il faudra rajouter dans le bootloader init.c un segment correspondant
  au dma: SEGMENT_TYPE_CATCH
 
 --
- faire le cursus: planning
+ faire le le schema pour cursus/schedule
 
 --
  penser a appeller la partie dep lors d'un clone. on ne sait jamais.
@@ -60,11 +65,6 @@
  continuer le cours sur loaders linkers de fab: linker.iecc.com
 
 --
- comment faire en sorte que le bootstrap/bootloader/kernel/drivers/services
- dependent de la libc sans a chaque fois refaire le processus de linking
- de la libc ??? je ne vois pas comment faire autrement car la c'est laid
-
---
  retoucher mkp.py pour qu'il marche: t_bpt_addr() addr
  -> et rajouter le chemin relatif de set_bpt.c dans
     core/include/kaneton/set.h
@@ -99,6 +99,77 @@
 -- swap
  faire du swap sur le reseau et sur le disque mais experimenter
  le reseau.
+
+ <reflexion>
+ le swapper (reseau ou disk) sera un service sinon c'est laid de base.
+
+ le swapper doit obtenir des infos sur l'utilisation de zones memoire.
+
+ habituellement il recupere les infos sur des pages mais dans kaneton
+ tout se base sur des segments, les seuls objets memoire identifiables.
+
+ donc deja de base on swappera des segments.
+
+ ensuite sur intel par exemple on recupere les infos via la memoire
+ virtuelle car c'est la MMU qui est capable de connaitre les acces memoire
+
+ or si on se base d'un point de vue logique c est la memoire choses que les
+ permissions. c'est implemente par la memoire virtuelle mais ca concerne
+ des zones physiques.
+
+ donc en realite on va dire, comme pour les perms, que les infos d'utilisation
+ se trouve en relation avec des segments.
+
+ donc, le swapper demandera au gestionnaire de segment son etat (taux
+ d'utilisation de la memoire physique) toutes les N secondes. si ce taux
+ est trop eleve il faut swapper des segments. il va donc demande au
+ gestionnaire de segments de lui donner l'identifiant du segment le moins
+ utilise. il va ensuite prendre le segment et le mettre sur disque.
+
+ de plus il faudra marque le segment comme non-present mais egalement la
+ region pour que la partie dep fasse ce qu il faut.
+
+ attention: ok pour le mettre sur disque mais ensuite lorsqu il y aura un
+ acces comment le recuperer? un systeme de pagger doit etre mis en place.
+
+ attention: pour que le swapper puisse acceder comme il veut aux segment
+ il faut qu il ait une capability pour chaque, ou alors une capability generale
+ sur le gestionnaire de segment. il faut regler ce probleme pour pouvoir
+ fournir des cap generic.
+
+ attention: comment donner cette cap generique, a quel moment etc.. :(((
+
+ attention: rajouter un type de segment: swap ou non-present
+
+ attention: dans le cas d'un swapper reseau et disk ils vont se marcher dessus
+   D: etat
+   R: etat
+   D: zone moins utilisee
+   R: zone moins utilisee
+   D: je prends cette zone pour la swappee
+   R: je prends cette zone pour la swappee: ERROR zone inexistante
+   etc.. tout le temps
+
+ donc soit faire les deux en uns, soit faire des timer qui se chevauchent soit
+ faire en sorte qu ils communiquent ou je sais pas.
+
+ !!! bcp de problemes, ca sent le cul.
+ </reflexion>
+
+ <reflexion>
+ autre solution, le crt cree un thread qui va checker tous les N l'etat
+ de la memoire et demande un segment lui appartenant et peu utilise sur
+ il faut swapper.
+
+ bref que le user le fasse et qu il transmette les cap a un service swap
+ a la limite.
+
+ mais ca aussi pas terrible.
+
+ ARFFFFFFFFFFF!
+ </reflexion>
+
+ bon on verra plus tard sinon j'avancerai jamais le code!
 
 -- norme commit
   [core/kaneton/set/set_bpt.c]
