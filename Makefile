@@ -1,17 +1,17 @@
 ##
 ## copyright quintard julien
-## 
+##
 ## kaneton
-## 
+##
 ## Makefile
-## 
-## path          /home/mycure/kaneton/export
-## 
+##
+## path          /home/ultima/g/kaneton/env
+##
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
-## 
+##
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Oct 31 11:55:22 2005   mycure
+## last update   Tue Nov  1 17:06:58 2005   cedric
 ##
 
 #
@@ -28,7 +28,7 @@
 
 .PHONY:		all init clean kaneton clear purge proto		\
 		dep build install check info 				\
-		view view- export export- kaneton.mk
+		view view- export export-
 
 #
 # ---------- variables --------------------------------------------------------
@@ -57,13 +57,6 @@ endif
 #
 # ---------- environment ------------------------------------------------------
 #
-
-kaneton.mk:
-	if [ ! -e .kaneton.mk ] ; then					\
-	  cd env							; \
-	  $(SHELL) init.sh						; \
-	  cd ..								; \
-	fi
 
 init:
 	cd env								; \
@@ -96,41 +89,41 @@ CLEARDIRS		:=		libs view export
 # ---------- development ------------------------------------------------------
 #
 
-kaneton:		kaneton.mk
+kaneton:
 	$(call make,$(SUBDIRS),)
 
-clear:			kaneton.mk
+clear:
 	$(call make,$(SUBDIRS),clear)
 
 	$(call make,$(CLEARDIRS),clear)
 
-purge:			kaneton.mk
+purge:
 	$(call purge,)
 
 #
 # ---------- prototypes -------------------------------------------------------
 #
 
-proto:			kaneton.mk
+proto:
 	$(call make,$(SUBDIRS),proto)
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-dep:			kaneton.mk
+dep:
 	$(call make,$(SUBDIRS),dep)
 
 #
 # ---------- boot -------------------------------------------------------------
 #
 
-build:			kaneton.mk
+build:
 	cd $(_MULTIBOOTLOADERS_DIR_)/$(_MULTIBOOTLOADER_)		; \
 	$(SHELL) $(_MULTIBOOTLOADER_).sh build				; \
 	cd ..
 
-install:		kaneton.mk kaneton
+install:		kaneton
 	cd $(_MULTIBOOTLOADERS_DIR_)/$(_MULTIBOOTLOADER_)		; \
 	$(SHELL) $(_MULTIBOOTLOADER_).sh install			; \
 	cd ..
@@ -147,12 +140,12 @@ check:
 # ---------- view -------------------------------------------------------------
 #
 
-view- view:		kaneton.mk
+view- view:
 	cd $(_VIEW_DIR_)						; \
 	$(SHELL) $(_VIEW_SH_)						; \
 	cd ..
 
-view-%:			kaneton.mk
+view-%:
 	cd $(_VIEW_DIR_) 						; \
 	$(SHELL) $(_VIEW_SH_) $*					; \
 	cd ..
@@ -161,7 +154,7 @@ view-%:			kaneton.mk
 # ---------- information ------------------------------------------------------
 #
 
-info:			kaneton.mk
+info:
 	$(call print,white,,)
 
 	$(call print,blue,--- ,-n)
@@ -225,12 +218,12 @@ dist:			export-dist
 # ---------- export -----------------------------------------------------------
 #
 
-export- export:		kaneton.mk
+export- export:
 	cd $(_EXPORT_DIR_)						; \
 	$(SHELL) $(_EXPORT_SH_)						; \
 	cd ..
 
-export-%:		kaneton.mk
+export-%:
 	cd $(_EXPORT_DIR_)						; \
 	$(SHELL) $(_EXPORT_SH_)						; \
 	cd ..
