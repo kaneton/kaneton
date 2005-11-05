@@ -5,13 +5,13 @@
 ## 
 ## grub.sh
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/env
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Mon Oct 31 12:12:06 2005   mycure
+## last update   Thu Nov  3 09:15:02 2005   mycure
 ##
 
 # INFORMATIONS
