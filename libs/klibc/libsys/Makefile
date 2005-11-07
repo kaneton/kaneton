@@ -11,14 +11,14 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:05:40 2005   mycure
-## last update   Tue Sep  6 11:04:17 2005   mycure
+## last update   Mon Nov  7 15:50:38 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../.kaneton.mk
+include			../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -37,7 +37,7 @@ LIBSYS_C		:=		perror.c			\
 
 LIBSYS_O		:=		$(LIBSYS_C:.c=.o)
 
-LIBSYS_INCLUDE		:=		$(_LIBS_DIR_)/klibc/include/libsys/libsys.h
+LIBSYS_INCLUDE		:=		$(_KLIBC_INCLUDE_DIR_)/libsys/libsys.h
 
 #
 # ---------- rules ------------------------------------------------------------

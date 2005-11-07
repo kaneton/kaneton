@@ -11,14 +11,14 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Wed Aug 31 16:29:42 2005   mycure
+## last update   Mon Nov  7 16:30:30 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../.kaneton.mk
+include			../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -31,15 +31,15 @@ include			../../.kaneton.mk
 #
 
 all:
-	$(call make,arch,)
+	$(call makefile,arch,)
 
 clear:
-	$(call make,arch,clear)
+	$(call makefile,arch,clear)
 
 	$(call purge,)
 
 proto:
-	$(call make,arch,proto)
+	$(call makefile,arch,proto)
 
 dep:
-	$(call make,arch,dep)
+	$(call makefile,arch,dep)

@@ -1,295 +1,345 @@
-#!/bin/sh
+#! /bin/sh
+
 ## copyright quintard julien
 ## 
 ## kaneton
 ## 
 ## init.sh
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/env
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Oct 31 22:22:23 2005   mycure
+## last update   Mon Nov  7 18:23:32 2005   mycure
 ##
 
-# INFORMATIONS
+#
+# ---------- information ------------------------------------------------------
 #
 # this script has to be run in its directory: src/env/
-
-
-
-# CONFIGURATION FILE PATH
 #
-# the configuration file
-_CONF_="../conf/"$USER"/"$USER".conf"
 
-
-
-# CONFIGURATION FILE VARIABLES
 #
-# default globals
-_DISPLAY_="unknown"
-_ENVIRONMENT_="unknown"
-_ARCHITECTURE_="unknwon"
-_MULTIBOOTLOADER_="unknown"
-
-
-
-# READ CONFIGURATION FILE
+# ---------- globals ----------------------------------------------------------
 #
-# function used to read the configuration file and to load
-# important variables
-read_kaneton_conf()
+
+MACHINE_CONF=""
+USER_CONF="users/$KANETON_USER/user.conf"
+
+MACHINE_MK=""
+USER_MK=""
+
+MACHINE_SH=""
+USER_SH=""
+
+ENV_MK=".env.mk"
+ENV_SH=".env.sh"
+
+SRC_DIR=""
+
+
+
+#
+# ---------- functions --------------------------------------------------------
+#
+
+#
+# PROTO
+#
+# this function generates the prototypes.
+#
+proto()
 {
-  # display
-  _DISPLAY_=`cat $_CONF_ | sed -n "s/^_DISPLAY_ = \(.*\)$/\1/p"`
-
-  # environment
-  _ENVIRONMENT_=`cat $_CONF_ | sed -n "s/^_ENVIRONMENT_ = \(.*\)$/\1/p"`
-
-  # architecture
-  _ARCHITECTURE_=`cat $_CONF_ | sed -n "s/^_ARCHITECTURE_ = \(.*\)$/\1/p"`
-
-  # multibootloader
-  _MULTIBOOTLOADER_=`cat $_CONF_ |					\
-                     sed -n "s/^_MULTIBOOTLOADER_ = \(.*\)$/\1/p"`
+  directory $_SRC_DIR_
+  makefile proto 2>&- 1>&-
+  directory $_ENV_DIR_
 }
 
 
 
-# USAGE
 #
-# this function displays the usage but does not exit
-usage()
+# DEP
+#
+# this function generates the dependencies.
+#
+dep()
 {
-  display " usage: init.sh" "!"
+  directory $_SRC_DIR_
+  makefile dep 2>&- 1>&-
+  directory $_ENV_DIR_
 }
 
 
 
-# WARNING
 #
-# this function alerts the user, displaying information and asking to continue
-warning()
-{
-  # display information and ask the user to continue or cancel
-  display " your current configuration:" "+"
-  display "   environment:              $_ENVIRONMENT_" "+"
-  display "   architecture:             $_ARCHITECTURE_" "+"
-  display "   multi-bootloader:         $_MULTIBOOTLOADER_" "+"
-  display ""
-  display " to cancel press CTRL^C, otherwise press enter" "?"
-
-  NEEDLESS=""
-  read NEEDLESS
-}
-
-
-
-# ENVIRONMENTS
+# MACHINES
 #
-# this function displays the supported environments
-environments()
+# this function displays the supported machines.
+#
+machines()
 {
-  list=""
+  l=""
 
-  directory=`ls env`
+  machines=$(list $_MACHINES_DIR_)
 
-  for i in env/$directory ; do
-    if [ -d env/$i ] ; then
-      list="$list $i"
+  for m in $machines ; do
+    if [ -d $_MACHINES_DIR_/$m ] ; then
+      l="$l $m"
     fi
   done
 
-  display " supported environments are:$list" "!"
+  display " supported machines are:$l" "!"
 }
 
 
 
-# INIT
 #
-# this function installs the environment, calling the script depending
-# of your operating system
-init()
-{
-  if [ ! -d env/$_ENVIRONMENT_ ] ; then
-    display " unknown system: $_ENVIRONMENT_" "!"
-    display ""
-    display " please check your ENVIRONMENT variable in $_CONF_" "!"
-    display ""
-    environments
-    display ""
-    usage
-    exit
-  fi
-
-  if [ ! -e env/$_ENVIRONMENT_/init.sh ] ; then
-    display " unknown system: $_ENVIRONMENT_" "!"
-    display ""
-    display " please check your ENVIRONMENT variable in $_CONF_" "!"
-    display ""
-    environments
-    display ""
-    usage
-    exit
-  fi
-
-  ./env/$_ENVIRONMENT_/init.sh
-}
-
-
-
-# CONFIGURATION
+# LINKS
 #
-# this function links the kernel configuration files
-conf()
+# this function links the kernel configuration files.
+#
+links()
 {
   display " linking kernel configuration files" "+"
 
-  rm -f core/kaneton/conf/conf.c
-  rm -f core/include/kaneton/conf.h
+  remove $_CORE_CONF_DIR_/conf.c
+  link $_CORE_CONF_DIR_/conf.c $_USER_DIR_/conf.c
 
-  ln -s ../../../conf/$USER/conf.c core/kaneton/conf/conf.c
-  ln -s ../../../conf/$USER/conf.h core/include/kaneton/conf.h
+  remove $_CORE_INCLUDE_DIR_/kaneton/conf.h
+  link $_CORE_INCLUDE_DIR_/kaneton/conf.h $_USER_DIR_/conf.h
 }
 
 
 
-# PROTO
 #
-# this function generates the prototypes
-proto()
-{
-  make proto 2> /dev/null > /dev/null
-}
-
-
-
-# DEP
+# INIT
 #
-# this function generates the dependencies
-dep()
-{
-  make dep 2> /dev/null > /dev/null
-}
-
-
-
-# PRINT A MESSAGE
+# this function installs the environment, calling the script depending
+# of your operating system.
 #
-# prints a message using the user variable _DISPLAY_
-print()
+init()
 {
-  color=$1
-  message=$2
-  options=$3
+  if [ ! -d $_MACHINE_DIR_ ] ; then
+    display " unknown system: '$_MACHINE_'" "!"
+    display ""
+    display " please check your _MACHINE_ variable into '$_USER_CONF_'" "!"
+    display ""
+    machines
+    display ""
+    usage
+    display ""
+    exit
+  fi
 
-  if [ $_DISPLAY_ = "color" ] ; then
-
-    case "$color" in
-      "red")
-        echo -e $options '\E[;31m'"\033[1m$message\033[0m"
-	;;
-
-      "green")
-        echo -e $options '\E[;32m'"\033[1m$message\033[0m"
-	;;
-
-      "yellow")
-        echo -e $options '\E[;33m'"\033[1m$message\033[0m"
-	;;
-
-      "blue")
-        echo -e $options '\E[;34m'"\033[1m$message\033[0m"
-	;;
-
-      "white")
-        echo -e $options '\E[;37m'"\033[1m$message\033[0m"
-	;;
-
-      *)
-	;;
-    esac
-
+  if [ ! -e $_MACHINE_DIR_/init.sh ] ; then
+    display " '$_MACHINE_' machine-specific init script not present" "!"
+    display ""
+    display " please check your _MACHINE_ variable into '$_USER_CONF_'" "!"
+    display ""
+    machines
+    display ""
+    usage
+    display ""
+    exit
   else
+    launch $_MACHINE_DIR_/init.sh
+  fi
 
-    echo $options "$message"
-
+  if [ -e $_USER_DIR_/init.sh ] ; then
+    launch $_USER_DIR_/init.sh
   fi
 }
 
 
 
-# DISPLAY A MESSAGE
 #
-# displays a message with a header
-display()
+# WARNING
+#
+# this function alerts the user, displaying information and asking to continue.
+#
+warning()
 {
-  msg=$1
-  header=$2
+  # displays information and asks the user to continue or cancel.
+  display " your current configuration:" "+"
+  display "   user:                     $_USER_" "+"
+  display "   machine:                  $_MACHINE_" "+"
+  display "   architecture:             $_ARCHITECTURE_" "+"
+  display "   multi-bootloader:         $_MBI_" "+"
+  display ""
+  display " to cancel press CTRL^C, otherwise press enter" "?"
 
-  case "$header" in
-    "+")
-      print "blue" "[" "-n"
-      print "green" "+" "-n"
-      print "blue" "]" "-n"
-      ;;
-
-    "!")
-      print "blue" "[" "-n"
-      print "red" "!" "-n"
-      print "blue" "]" "-n"
-      ;;
-
-    "?")
-      print "blue" "[" "-n"
-      print "yellow" "?" "-n"
-      print "blue" "]" "-n"
-      ;;
-
-    *)
-      ;;
-  esac
-
-  print "white" "$msg" ""
+  waitkey
 }
 
 
 
-# ENTRY POINT
 #
-# entry point of this script
+# USER_CONF
+#
+# this function reads the user configuration file to get the machine
+# variable.
+#
+user_conf()
+{
+  # gets the _MACHINE_ variable.
+  machine=$(sed -n							\
+            "s/^_MACHINE_[[:space:]]*\(=\|:=\)[[:space:]]*\(.*\)$/\2/p"	\
+            $USER_CONF)
 
-# start of installation
+  # sets the configuration variables.
+  MACHINE_CONF="machines/$machine/machine.conf"
 
-# call the read_kaneton_conf function
-read_kaneton_conf
+  MACHINE_MK="machines/$machine/machine.mk"
+  USER_MK="users/$KANETON_USER/user.mk"
 
-display " installing environment" "+"
+  MACHINE_SH="machines/$machine/machine.sh"
+  USER_SH="users/$KANETON_USER/user.sh"
+}
+
+
+
+#
+# ENV_MK
+#
+# this function generates the env.mk makefile dependency.
+#
+env_mk()
+{
+  # removes the previous env.mk version.
+  rm -f $ENV_MK
+
+  # sets the source directory path.
+  echo "_SRC_DIR_		:=		$SRC_DIR" >> $ENV_MK
+
+  # copy the machine.conf contents into the env.mk makefile dependency.
+  cat $MACHINE_CONF >> $ENV_MK
+
+  # copy the user.conf contents into the env.mk makefile dependency.
+  cat $USER_CONF >> $ENV_MK
+
+  # copy the machine.mk contents into the env.mk makefile dependency.
+  cat $MACHINE_MK >> $ENV_MK
+
+  # copy the user.mk contents into the env.mk makefile dependency.
+  cat $USER_MK >> $ENV_MK
+}
+
+
+
+#
+# ENV_SH
+#
+# this function generates the env.sh file.
+#
+env_sh()
+{
+  # removes the previous env.conf version.
+  rm -f $ENV_SH
+
+  # creates an empty temporary file.
+  makefile=$(mktemp)
+
+  # generates the temporary makefile.
+  echo "_SRC_DIR_		:=		$SRC_DIR" >> $makefile
+  echo "include			$MACHINE_CONF" >> $makefile
+  echo "include			$USER_CONF" >> $makefile
+  echo "all:" >> $makefile
+
+  # generates the env.sh shell script dependency.
+  regexp="^\(_[[:alpha:]_]\+_\)[[:space:]]*\(=\|:=\)[[:space:]]*\(.*\)$"
+  replacement="\1=\"\3\""
+
+  make -p -f $makefile |						\
+      sed -n "s/$regexp/$replacement/p" > $ENV_SH
+
+  # appends the env.sh file the machine shell script specific code.
+  cat $MACHINE_SH >> $ENV_SH
+
+  # appends the env.sh file the user shell script specific code.
+  cat $USER_SH >> $ENV_SH
+}
+
+
+
+#
+# CHECK
+#
+# checks whether the user and machine directories are present to avoid
+# problems.
+#
+check()
+{
+  # tries to find the user configuration file located in the user directory.
+  if [ ! -e $USER_CONF ] ; then
+    echo ""
+    echo "[!] user configuration file '$USER_CONF' unreachable"
+    echo ""
+    echo "[!] please check your KANETON_USER environment variable"
+    echo ""
+    exit -1
+  fi
+
+  # read user configuration file.
+  user_conf
+
+  # tries to find the machine configuration file.
+  if [ ! -e $MACHINE_CONF ] ; then
+    echo ""
+    echo "[!] machine configuration file '$MACHINE_CONF' unreachable"
+    echo ""
+    echo "[!] please check your _MACHINE_ variable into the '$USER_CONF' file"
+    echo ""
+    exit -1
+  fi
+}
+
+#
+# ---------- entry point ------------------------------------------------------
+#
+
+# checks the user and machine directory.
+check
+
+# gets the source directory path.
+cd ..
+SRC_DIR=$(pwd)
+cd env
+
+# generates the env.sh file.
+env_sh
+
+# generates the env.mk file.
+env_mk
+
+# from here include the env.sh to get access to every kaneton shell script
+# functionalities.
+source $ENV_SH
+
+# displays some stuff.
 display ""
 
-# call the warning function
+display " environment files generated successfully" "+"
+display ""
+
+# asks the user to continue.
 warning
 
-# go into the src/ directory
-cd ../
+# installs some links.
+links
 
-# install environment
+# calls the init function which will install machine-specific stuff.
 init
 
-# link kernel configuration
-conf
-
-# generate prototypes
+# generates the prototypes.
 proto
 
-# generate dependencies
+# generates the dependencies.
 dep
 
-# return into the env/ directory
-cd env/
-
-# end of installation
+# end.
 display " environment installed successfully" "+"
+
+# displays some stuff.
+display ""

@@ -3,29 +3,24 @@
 ## 
 ## kaneton
 ## 
-## .kaneton.mk
+## machine.mk
 ## 
-## path          /home/mycure/kaneton/export
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Mon Oct 31 11:55:52 2005   mycure
-## last update   Thu Sep 15 16:58:31 2005   mycure
+## last update   Mon Nov  7 18:17:53 2005   mycure
 ##
 
 #
-# ---------- informations -----------------------------------------------------
+# ---------- information ------------------------------------------------------
 #
-# you generally do not need to modify the kaneton directories,
-# makefiles dependency, kaneton tools, kaneton binaries, kaneton
-# libraries and user configuration addons.
+# this file contains everything needed by the kaneton make system.
 #
-# nevertheless, you can change the c compiler, compiler and linker
-# flags and the binaries.
-#
-# if needed also modify the makefile functions to match with your binaries.
+# the main part of this file is the functions part which is composed
+# of the functions used to compile everything on this operating system.
 #
 
 #
@@ -35,153 +30,14 @@
 .SILENT:
 
 #
-# ---------- signature 0-------------------------------------------------------
-#
-
-_SIGNATURE_		:=		kaneton
-
-#
-# ---------- shell ------------------------------------------------------------
-#
-
-SHELL			:=		/bin/sh
-
-#
-# ---------- kaneton directories ----------------------------------------------
-#
-
-_SRC_DIR_		:=		___kaneton_sed___
-
-_CORE_DIR_		:=		$(_SRC_DIR_)/core
-_CORE_BOOTSTRAP_DIR_	:=		$(_SRC_DIR_)/core/bootstrap
-_CORE_BOOTLOADER_DIR_	:=		$(_SRC_DIR_)/core/bootloader
-_CORE_INCLUDE_DIR_	:=		$(_SRC_DIR_)/core/include
-_CORE_KANETON_DIR_	:=		$(_SRC_DIR_)/core/kaneton
-
-_MACHDEP_KANETON_DIR_	:=		$(_CORE_KANETON_DIR_)/arch/machdep
-_MACHDEP_INCLUDE_DIR_	:=		$(_CORE_INCLUDE_DIR_)/arch/machdep
-
-_ENV_DIR_		:=		$(_SRC_DIR_)/env
-_CONF_DIR_		:=		$(_SRC_DIR_)/conf
-_TOOLS_DIR_		:=		$(_SRC_DIR_)/tools
-_LDS_DIR_		:=		$(_TOOLS_DIR_)/scripts/ld/arch/machdep
-_MULTIBOOTLOADERS_DIR_	:=		$(_TOOLS_DIR_)/scripts/multi-bootloaders
-_VIEW_DIR_		:=		$(_SRC_DIR_)/view
-_EXPORT_DIR_		:=		$(_SRC_DIR_)/export
-
-_LIBS_DIR_		:=		$(_SRC_DIR_)/libs
-
-_KLIBC_DIR_		:=		$(_LIBS_DIR_)/klibc
-_KLIBC_INCLUDE_DIR_	:=		$(_KLIBC_DIR_)/include
-
-#
-# ---------- makefiles dependency ---------------------------------------------
-#
-
-_MAKEFILE_MK_		:=		.makefile.mk
-
-#
-# ---------- kaneton tools ----------------------------------------------------
-#
-
-_PROTO_			:=		$(_TOOLS_DIR_)/scripts/prototypes/mkp.py
-_CONF_SH_		:=		$(_CONF_DIR_)/conf.sh
-_VIEW_SH_		:=		$(_VIEW_DIR_)/view.sh
-_EXPORT_SH_		:=		$(_EXPORT_DIR_)/export.sh
-
-#
-# ---------- kaneton binaries -------------------------------------------------
-#
-
-_BOOTSTRAP_		:=		$(_CORE_BOOTSTRAP_DIR_)/bootstrap
-_BOOTLOADER_		:=		$(_CORE_BOOTLOADER_DIR_)/bootloader
-_KANETON_		:=		$(_CORE_KANETON_DIR_)/kaneton
-
-#
-# ---------- kaneton libraries ------------------------------------------------
-#
-
-_KLIBC_A_		:=		$(_KLIBC_DIR_)/klibc.a
-_CRT_A_			:=		$(_LIBS_DIR_)/crt/crt.a
-
-_AS_LO_			:=		$(_CORE_KANETON_DIR_)/as/as.lo
-_DEBUG_LO_		:=		$(_CORE_KANETON_DIR_)/debug/debug.lo
-_ID_LO_			:=		$(_CORE_KANETON_DIR_)/id/id.lo
-_MACHDEP_LO_		:=		$(_MACHDEP_KANETON_DIR_)/machdep.lo
-_SEGMENT_LO_		:=		$(_CORE_KANETON_DIR_)/segment/segment.lo
-_SET_LO_		:=		$(_CORE_KANETON_DIR_)/set/set.lo
-_STATS_LO_		:=		$(_CORE_KANETON_DIR_)/stats/stats.lo
-
-#
-# ---------- user configuration addons ----------------------------------------
-#
-
-include			$(_CONF_DIR_)/$(USER)/$(USER).conf
-
-#
-# ---------- c compiler -------------------------------------------------------
-#
-
-CC			:=		gcc
-
-#
-# ---------- compiler and linker flags ----------------------------------------
-#
-
-_INCLUDES_		:=		-I$(_CORE_INCLUDE_DIR_)		\
-					-I$(_KLIBC_INCLUDE_DIR_)
-
-CFLAGS			:=		-D___kaneton			\
-					-nostdinc			\
-					-nostdlib			\
-					-fno-builtin			\
-					-O0				\
-					$(_INCLUDES_)			\
-					$(_CFLAGS_)			\
-					$(_KFLAGS_)			
-
-LDFLAGS			:=		-nostdinc			\
-					-nostdlib			\
-					$(_INCLUDES_)			\
-					$(_LDFLAGS_)			
-
-CPPFLAGS		:=		$(_CPPFLAGS_)			
-
-MAKEFLAGS		:=		$(_MAKEFLAGS_)			
-
-#
-# ---------- binaries ---------------------------------------------------------
-#
-
-_MAKE_			:=		gmake
-_RM_			:=		rm -f
-_PURGE_			:=		$(_RM_) *~ .*~ \#* .\#*
-_AR_			:=		ar cq
-_RANLIB_		:=		ranlib
-_CD_			:=		cd
-_LD_			:=		ld
-_NASM_			:=		nasm
-_LN_			:=		ln -s -f
-_TOUCH_			:=		touch
-_WC_			:=		wc
-_TAIL_			:=		tail
-_TAR_			:=		tar
-_LATEX_			:=		latex
-_DVIPS_			:=		dvips
-_PDFLATEX_		:=		pdflatex
-_CP_			:=		cp
-_CAT_			:=		cat
-_SED_			:=		sed
-
-#
 # ---------- traps ------------------------------------------------------------
 #
 
 %.o:			%.asm
-	$(call compile-asm,$@,$<,-f elf)
+	$(call assemble-asm,$@,$<,-f elf)
 
 %.o:			%.S
-	$(call compile-S,$@,$<,)
+	$(call assemble-S,$@,$<,)
 
 %.o:			%.c
 	$(call compile-c,$@,$<,)
@@ -234,7 +90,7 @@ define print-non-color
 endef
 
 #
-# print wrapper functions
+# print functions wrapper
 #
 # 1:		color
 # 2:		text
@@ -309,13 +165,18 @@ endef
 #
 
 define pretty-printer
-  length=`echo $(3) | $(_WC_) -c`					; \
-  if [ $$length -gt 56 ] ; then						\
-    name="..."`echo $(3) | $(_TAIL_) -c 53`				; \
-  else									\
-    name=$(3)								; \
-  fi									; \
-  $(call pretty-printer-$(1),$(2),$$name,$(4))
+  $(call pretty-printer-$(1),$(2),$(3),$(4))
+endef
+
+#
+# change the current working directory
+#
+# $(1):		directory
+# $(2):		advanced options
+#
+
+define directory
+  $(_CD_) $(2) $(1)
 endef
 
 #
@@ -325,10 +186,10 @@ endef
 # $(2):		advanced options
 #
 
-define make
+define makefile
   for i in $(1) ; do							\
     $(_CD_) $$i								; \
-    $(_MAKE_) $(2)							; \
+    $(_MAKE_) $(_MAKEFLAGS_) $(2)					; \
     return=$$?								; \
     if [ $$return -ne 0 ] ; then					\
       $(call pretty-printer,red,ERROR,$$i,			)	; \
@@ -348,7 +209,7 @@ endef
 
 define compile-c
   $(call pretty-printer,green,COMPILE-C,$(2),		)		; \
-  $(CC) $(CFLAGS) $(3) -c $(2) -o $(1) $(_VERBOSE_)
+  $(_CC_) $(_CFLAGS_) $(3) -c $(2) -o $(1) $(_VERBOSE_)
 endef
 
 #
@@ -359,9 +220,9 @@ endef
 # $(3):		advanced options
 #
 
-define compile-S
+define assemble-S
   $(call pretty-printer,green,ASSEMBLE-S,$(2),		)		; \
-  $(CC) $(CFLAGS) $(3) -c $(2) -o $(1) $(_VERBOSE_)
+  $(_CC_) $(_CFLAGS_) $(3) -c $(2) -o $(1) $(_VERBOSE_)
 endef
 
 #
@@ -372,7 +233,7 @@ endef
 # $(3):		advanced options
 #
 
-define compile-asm
+define assemble-asm
   $(call pretty-printer,green,ASSEMBLE-ASM,$(2),		)	; \
   $(_NASM_) $(3) $(2) -o $(1) $(_VERBOSE_)
 endef
@@ -402,7 +263,7 @@ endef
 
 define dynamic-library
   $(call pretty-printer,magenta,DYNAMIC-LIBRARY,$(1),	)		; \
-  $(_LD_) $(LDFLAGS) --shared $(3) -o $(1) $(2) $(_VERBOSE_)
+  $(_LD_) $(_LDFLAGS_) --shared $(3) -o $(1) $(2) $(_VERBOSE_)
 endef
 
 #
@@ -415,7 +276,7 @@ endef
 
 define executable
   $(call pretty-printer,magenta,EXECUTABLE,$(1),		)	; \
-  $(_LD_) $(LDFLAGS) $(3) -o $(1) $(2) $(_VERBOSE_)
+  $(_LD_) $(_LDFLAGS_) $(3) -o $(1) $(2) $(_VERBOSE_)
 endef
 
 #
@@ -430,7 +291,7 @@ endef
 
 define archive
   $(call pretty-printer,magenta,ARCHIVE,$(1),		)		; \
-  $(_LD_) $(LDFLAGS) -r $(3) -o $(1) $(2) $(_VERBOSE_)
+  $(_LD_) $(_LDFLAGS_) -r $(3) -o $(1) $(2) $(_VERBOSE_)
 endef
 
 #
@@ -487,7 +348,7 @@ define dependencies
   for i in $(1) ; do							\
     if [ -e $$i ] ; then						\
       $(call pretty-printer,yellow,DEPENDENCIES,$$i,		)	; \
-      $(CC) $(CFLAGS) -M -MG $(3) $$i >> $(2)				; \
+      $(_CC_) $(_CFLAGS_) -M -MG $(3) $$i >> $(2)			; \
     fi									; \
   done
 endef
@@ -505,7 +366,7 @@ define version
   echo "#include <kaneton.h>" >> $(1)					; \
   echo "" >> $(1)							; \
   echo -n "const char version[] = CONF_TITLE\"-\"CONF_VERSION" >> $(1)	; \
-  echo "\" $(DATE) $(USER)@$(HOSTNAME)\";" >> $(1)
+  echo "\" $(4) $(2)@$(3)\";" >> $(1)
 endef
 
 #
@@ -563,4 +424,12 @@ define pdf
   $(call pretty-printer,yellow,PDF,$(1),			)	; \
   $(_PDFLATEX_) $(4) $(3) -o $(1) $(_VERBOSE_)				; \
   $(_PDFLATEX_) $(4) $(3) -o $(1) $(_VERBOSE_)
+endef
+
+#
+# returns the current data
+#
+
+define date
+  $(_DATE_)
 endef

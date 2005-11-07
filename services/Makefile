@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core
+## path          /home/mycure/kaneton/services
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Mon Oct 31 10:12:40 2005   mycure
+## last update   Mon Nov  7 16:07:05 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../.kaneton.mk
+include			../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -30,24 +30,22 @@ include			../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=						\
-  $(shell $(_CAT_) $(_CONF_DIR_)/$(USER)/modules.conf |			\
-          $(_SED_) -n "s/^services\/\([[:alpha:]_-]*\)\/.*$$/\1/p")
+SUBDIRS			:=		$(_SERVICES_DEP_)
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
 all:
-	$(call make,$(SUBDIRS),)
+	$(call makefile,$(SUBDIRS),)
 
 clear:
-	$(call make,$(SUBDIRS),clear)
+	$(call makefile,$(SUBDIRS),clear)
 
 	$(call purge,)
 
 proto:
-	$(call make,$(SUBDIRS),proto)
+	$(call makefile,$(SUBDIRS),proto)
 
 dep:
-	$(call make,$(SUBDIRS),dep)
+	$(call makefile,$(SUBDIRS),dep)

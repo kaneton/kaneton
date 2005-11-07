@@ -11,14 +11,14 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Wed Aug 31 16:28:06 2005   mycure
+## last update   Mon Nov  7 16:32:34 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../.kaneton.mk
+include			../../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -49,11 +49,11 @@ BOOTLOADER_O		=		$(BOOTLOADER_C:.c=.o)
 #
 
 $(BOOTSTRAP):		$(BOOTLOADER)
-	$(call compile-asm,$(BOOTSTRAP),$(BOOTSTRAP_ASM),-f bin)
+	$(call assemble-asm,$(BOOTSTRAP),$(BOOTSTRAP_ASM),-f bin)
 
 $(BOOTLOADER):		$(BOOTLOADER_O)
 	$(call executable,$(BOOTLOADER),$(BOOTLOADER_O),		\
-	  -T $(_LDS_DIR_)/bootstrap.lds)
+	  -T $(_MACHDEP_LDS_DIR_)/bootstrap.lds)
 
 clear:
 	$(call remove,$(BOOTLOADER_O),)

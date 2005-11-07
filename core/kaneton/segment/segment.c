@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/segment
+ * path          /home/mycure/kaneton/core/include/arch/ia32/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Nov  1 16:05:19 2005   mycure
+ * last update   Mon Nov  7 15:35:27 2005   mycure
  */
 
 /*
@@ -85,7 +85,7 @@ m_segment*		segment;
  * 4) displays the entry.
  */
 
-t_error			segment_dump(t_segid			segid)
+t_error			segment_show(t_segid			segid)
 {
   char			perms[4];
   char*			type;

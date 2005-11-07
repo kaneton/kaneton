@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/core/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Fri Oct 21 19:19:41 2005   mycure
+## last update   Mon Nov  7 16:43:12 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../.kaneton.mk
+include			../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -30,8 +30,6 @@ include			../../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-# kaneton libraries
-
 SUBDIRS			:=		arch				\
 					as				\
 					conf				\
@@ -40,6 +38,8 @@ SUBDIRS			:=		arch				\
 					segment				\
 					set				\
 					stats				
+
+# kaneton libraries
 
 KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 					$(_AS_LO_)			\
@@ -70,14 +70,14 @@ VERSION_O		:=		$(VERSION_C:.c=.o)
 
 VERSION_H		:=		$(_CORE_INCLUDE_DIR_)/version.h
 
-DATE			:=		$(shell date)
+DATE			:=		$(call date)
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
 $(KANETON):		libs $(KANETON_O)
-	$(call version,$(VERSION_C))
+	$(call version,$(VERSION_C),$(USER),$(HOSTNAME),$(DATA))
 
 	$(call compile-c,$(VERSION_O),$(VERSION_C),)
 
@@ -85,15 +85,15 @@ $(KANETON):		libs $(KANETON_O)
 					$(VERSION_O)			\
 					$(KANETON_LIBS)			\
 					$(_KLIBC_A_),			\
-	  -T $(_LDS_DIR_)/kaneton.lds)
+	  -T $(_MACHDEP_LDS_DIR_)/kaneton.lds)
 
 libs:
-	$(call make,$(SUBDIRS),)
+	$(call makefile,$(SUBDIRS),)
 
-	$(call make,$(_KLIBC_DIR_),)
+	$(call makefile,$(_KLIBC_DIR_),)
 
 clear:
-	$(call make,$(SUBDIRS),clear)
+	$(call makefile,$(SUBDIRS),clear)
 
 	$(call remove,$(VERSION_O),)
 	$(call remove,$(VERSION_C),)
@@ -105,12 +105,12 @@ clear:
 	$(call purge,)
 
 proto:
-	$(call make,$(SUBDIRS),proto)
+	$(call makefile,$(SUBDIRS),proto)
 
 	$(call prototypes,$(KANETON_INCLUDE),)
 
 dep:
-	$(call make,$(SUBDIRS),dep)
+	$(call makefile,$(SUBDIRS),dep)
 
 	$(call remove,$(_MAKEFILE_MK_),)
 

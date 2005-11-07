@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /data/kaneton/papers/lectures/development-environment
+## path          /home/mycure/kaneton/view/lectures/development-environment
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Fri Oct 21 09:13:52 2005   mycure
+## last update   Mon Nov  7 16:20:08 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../.kaneton.mk
+include			../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------

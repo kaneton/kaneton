@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/drivers/kbd
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Sat Oct 22 21:08:52 2005   mycure
+## last update   Mon Nov  7 16:10:48 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../.kaneton.mk
+include			../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -44,11 +44,9 @@ KBD_INCLUDE		:=
 
 $(KBD):			libs $(KBD_O)
 	$(call executable,$(KBD),$(KBD_O) $(_KLIBC_A_),			\
-	  -T $(_LDS_DIR_)/driver.lds)
+	  -T $(_MACHDEP_LDS_DIR_)/driver.lds)
 
 libs:
-	$(call make,$(SUBDIRS),)
-
 	$(call make,$(_KLIBC_DIR_),)
 
 clear:

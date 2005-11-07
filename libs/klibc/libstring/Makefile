@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/libs/klibc/libstring
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:56:59 2005   mycure
-## last update   Fri Oct 29 21:30:57 2004   mycure
+## last update   Mon Nov  7 15:49:47 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../.kaneton.mk
+include			../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -56,7 +56,7 @@ LIBSTRING_C		:=		ctype.c				\
 
 LIBSTRING_O		:=		$(LIBSTRING_C:.c=.o)
 
-LIBSTRING_INCLUDE	:=		$(_LIBS_DIR_)/klibc/include/libstring/libstring.h
+LIBSTRING_INCLUDE	:=		$(_KLIBC_INCLUDE_DIR_)/libstring/libstring.h
 
 #
 # ---------- rules ------------------------------------------------------------

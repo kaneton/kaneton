@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/drivers/cons
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Sat Oct 22 21:09:06 2005   mycure
+## last update   Mon Nov  7 16:11:18 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../.kaneton.mk
+include			../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -44,11 +44,9 @@ CONS_INCLUDE		:=
 
 $(CONS):		libs $(CONS_O)
 	$(call executable,$(CONS),$(CONS_O) $(_KLIBC_A_),		\
-	  -T $(_LDS_DIR_)/driver.lds)
+	  -T $(_MACHDEP_LDS_DIR_)/driver.lds)
 
 libs:
-	$(call make,$(SUBDIRS),)
-
 	$(call make,$(_KLIBC_DIR_),)
 
 clear:

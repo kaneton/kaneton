@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/libs/klibc
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:29:19 2005   mycure
-## last update   Fri Oct 21 19:18:57 2005   mycure
+## last update   Mon Nov  7 15:46:48 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../.kaneton.mk
+include			../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -47,17 +47,17 @@ $(_KLIBC_A_):		libs
           $(LIBSYS_LO),)
 
 libs:
-	$(call make,$(SUBDIRS),)
+	$(call makefile,$(SUBDIRS),)
 
 clear:
-	$(call make,$(SUBDIRS),clear)
+	$(call makefile,$(SUBDIRS),clear)
 
 	$(call remove,$(_KLIBC_A_),)
 
 	$(call purge,)
 
 proto:
-	$(call make,$(SUBDIRS),proto)
+	$(call makefile,$(SUBDIRS),proto)
 
 dep:
-	$(call make,$(SUBDIRS),dep)
+	$(call makefile,$(SUBDIRS),dep)

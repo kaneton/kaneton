@@ -5,20 +5,20 @@
 ##
 ## Makefile
 ##
-## path          /home/ultima/g/kaneton/env
+## path          /home/mycure/kaneton
 ##
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ##
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Tue Nov  1 17:06:58 2005   cedric
+## last update   Mon Nov  7 18:24:16 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
--include		./.kaneton.mk
+-include		env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -34,7 +34,8 @@
 # ---------- variables --------------------------------------------------------
 #
 
-SHELL			:=		/bin/sh
+_SHELL_			?=		/bin/bash
+_MAKE_			?=		$(MAKE)
 
 #
 # ---------- default rule -----------------------------------------------------
@@ -51,7 +52,7 @@ else
   view view-								\
   export export-							\
   view-% export-%:	init
-	$(MAKE) -f Makefile $@
+	$(_MAKE_) -f Makefile $@
 endif
 
 #
@@ -60,12 +61,7 @@ endif
 
 init:
 	cd env								; \
-	$(SHELL) init.sh						; \
-	cd ..
-
-clean:
-	cd env								; \
-	$(SHELL) clean.sh						; \
+	$(_SHELL_) init.sh						; \
 	cd ..
 
 #
@@ -75,13 +71,19 @@ clean:
 ifeq ($(_SIGNATURE_),kaneton)
 
 #
+# ---------- environment ------------------------------------------------------
+#
+
+clean:
+	$(call directory,$(_ENV_DIR_),)					; \
+	$(_SHELL_) clean.sh						; \
+	$(call directory,$(_SRC_DIR_),)
+
+#
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=						\
-  $(sort								\
-      $(shell $(_CAT_) $(_CONF_DIR_)/$(USER)/modules.conf |		\
-              $(_SED_) -n "s/^\([[:alpha:]_-]*\)\/.*$$/\1/p"))
+SUBDIRS			:=		libs $(_SRC_DEP_)
 
 CLEARDIRS		:=		libs view export
 
@@ -90,12 +92,12 @@ CLEARDIRS		:=		libs view export
 #
 
 kaneton:
-	$(call make,$(SUBDIRS),)
+	$(call makefile,$(SUBDIRS),)
 
 clear:
-	$(call make,$(SUBDIRS),clear)
+	$(call makefile,$(SUBDIRS),clear)
 
-	$(call make,$(CLEARDIRS),clear)
+	$(call makefile,$(CLEARDIRS),clear)
 
 purge:
 	$(call purge,)
@@ -105,28 +107,28 @@ purge:
 #
 
 proto:
-	$(call make,$(SUBDIRS),proto)
+	$(call makefile,$(SUBDIRS),proto)
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
 dep:
-	$(call make,$(SUBDIRS),dep)
+	$(call makefile,$(SUBDIRS),dep)
 
 #
 # ---------- boot -------------------------------------------------------------
 #
 
 build:
-	cd $(_MULTIBOOTLOADERS_DIR_)/$(_MULTIBOOTLOADER_)		; \
-	$(SHELL) $(_MULTIBOOTLOADER_).sh build				; \
-	cd ..
+	$(call directory,$(_MBI_DIR_)/$(_MBI_),)			; \
+	$(_SHELL_) $(_MBI_).sh build					; \
+	$(call directory,$(_SRC_DIR_),)
 
 install:		kaneton
-	cd $(_MULTIBOOTLOADERS_DIR_)/$(_MULTIBOOTLOADER_)		; \
-	$(SHELL) $(_MULTIBOOTLOADER_).sh install			; \
-	cd ..
+	$(call directory,$(_MBI_DIR_)/$(_MBI_),)			; \
+	$(_SHELL_) $(_MBI_).sh install					; \
+	$(call directory,$(_SRC_DIR_),)
 
 #
 # ---------- check ------------------------------------------------------------
@@ -141,14 +143,14 @@ check:
 #
 
 view- view:
-	cd $(_VIEW_DIR_)						; \
-	$(SHELL) $(_VIEW_SH_)						; \
-	cd ..
+	$(call directory,$(_VIEW_DIR_),)				; \
+	$(_SHELL_) $(_VIEW_SH_)						; \
+	$(call directory,$(_SRC_DIR_),)
 
 view-%:
-	cd $(_VIEW_DIR_) 						; \
-	$(SHELL) $(_VIEW_SH_) $*					; \
-	cd ..
+	$(call directory,$(_VIEW_DIR_),)				; \
+	$(_SHELL_) $(_VIEW_SH_) $*					; \
+	$(call directory,$(_SRC_DIR_),)
 
 #
 # ---------- information ------------------------------------------------------
@@ -219,14 +221,14 @@ dist:			export-dist
 #
 
 export- export:
-	cd $(_EXPORT_DIR_)						; \
-	$(SHELL) $(_EXPORT_SH_)						; \
-	cd ..
+	$(call directory,$(_EXPORT_DIR_),)				; \
+	$(_SHELL_) $(_EXPORT_SH_)					; \
+	$(call directory,$(_SRC_DIR_),)
 
 export-%:
-	cd $(_EXPORT_DIR_)						; \
-	$(SHELL) $(_EXPORT_SH_)						; \
-	cd ..
+	$(call directory,$(_EXPORT_DIR_),)				; \
+	$(_SHELL_) $(_EXPORT_SH_)					; \
+	$(call directory,$(_SRC_DIR_),)
 
 #
 # ---------- /conditional -----------------------------------------------------

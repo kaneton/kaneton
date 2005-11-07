@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/core/bootloader/arch/ia32
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:05:35 2005   mycure
-## last update   Fri Oct 21 19:16:44 2005   mycure
+## last update   Mon Nov  7 16:37:33 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../.kaneton.mk
+include			../../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -34,13 +34,17 @@ BOOTLOADER		:=		bootloader
 
 BOOTLOADER_C		:=		bootloader.c			\
 					cons.c				\
-					entry.c				\
 					init.c				\
-					multiboot.c			\
 					paging.c			\
 					pmode.c				
 
-BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)
+BOOTLOADER_ASM		:=		multiboot.asm			
+
+BOOTLOADER_S		:=		entry.S				
+
+BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
+					$(BOOTLOADER_ASM:.asm=.o)	\
+					$(BOOTLOADER_S:.S=.o)		
 
 BOOTLOADER_INCLUDE	:=		bootloader.h
 
@@ -52,12 +56,12 @@ CFLAGS			+=		-D___bootloader
 
 $(BOOTLOADER):		libs $(BOOTLOADER_O)
 	$(call executable,$(BOOTLOADER),$(BOOTLOADER_O)			\
-	  $(_KLIBC_A_), -T $(_LDS_DIR_)/bootloader.lds)
+	  $(_KLIBC_A_), -T $(_MACHDEP_LDS_DIR_)/bootloader.lds)
 
 	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
 
 libs:
-	$(call make,$(_KLIBC_DIR_),)
+	$(call makefile,$(_KLIBC_DIR_),)
 
 clear:
 	$(call remove,$(BOOTLOADER_O),)

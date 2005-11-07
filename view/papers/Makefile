@@ -11,14 +11,14 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Tue Oct 25 22:29:32 2005   mycure
+## last update   Mon Nov  7 16:22:06 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../.kaneton.mk
+include			../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -40,10 +40,10 @@ SUBDIRS			:=		assignments			\
 #
 
 all:
-	$(call make,$(SUBDIRS),)
+	$(call makefile,$(SUBDIRS),)
 
 clear:
-	$(call make,$(SUBDIRS),clear)
+	$(call makefile,$(SUBDIRS),clear)
 
 	$(call purge)
 

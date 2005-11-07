@@ -11,14 +11,14 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Wed Aug 31 16:41:15 2005   mycure
+## last update   Mon Nov  7 17:22:41 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../.kaneton.mk
+include			../../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -49,17 +49,17 @@ $(MACHDEP_LO):		libs
 	$(call archive,$(MACHDEP_LO),$(KANETON_LO) $(IA32_LO),)
 
 libs:
-	$(call make,$(SUBDIRS),)
+	$(call makefile,$(SUBDIRS),)
 
 clear:
-	$(call make,$(SUBDIRS),clear)
+	$(call makefile,$(SUBDIRS),clear)
 
 	$(call remove,$(MACHDEP_LO),)
 
 	$(call purge,)
 
 proto:
-	$(call make,$(SUBDIRS),proto)
+	$(call makefile,$(SUBDIRS),proto)
 
 dep:
-	$(call make,$(SUBDIRS),dep)
+	$(call makefile,$(SUBDIRS),dep)

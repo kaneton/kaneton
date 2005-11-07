@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/services
+## path          /home/mycure/kaneton/services/dsh
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Sat Oct 22 15:15:04 2005   mycure
+## last update   Mon Nov  7 16:04:56 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../.kaneton.mk
+include			../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -44,12 +44,10 @@ DSH_INCLUDE		=
 
 $(DSH):			libs $(DSH_O)
 	$(call executable,$(DSH),$(DSH_O) $(_KLIBC_A_),			\
-	  -T $(_LDS_DIR_)/service.lds)
+	  -T $(_MACHDEP_LDS_DIR_)/service.lds)
 
 libs:
-	$(call make,$(SUBDIRS),)
-
-	$(call make,$(_KLIBC_DIR_),)
+	$(call makefile,$(_KLIBC_DIR_),)
 
 clear:
 	$(call remove,$(DSH_O),)

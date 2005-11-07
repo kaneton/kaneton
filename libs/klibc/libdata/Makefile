@@ -11,14 +11,14 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:05:40 2005   mycure
-## last update   Tue Sep  6 11:03:59 2005   mycure
+## last update   Mon Nov  7 15:48:40 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../.kaneton.mk
+include			../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -38,7 +38,7 @@ LIBDATA_C		:=		dump.c				\
 
 LIBDATA_O		:=		$(LIBDATA_C:.c=.o)
 
-LIBDATA_INCLUDE		:=		$(_LIBS_DIR_)/klibc/include/libdata/libdata.h
+LIBDATA_INCLUDE		:=		$(_KLIBC_INCLUDE_DIR_)/libdata/libdata.h
 
 #
 # ---------- rules ------------------------------------------------------------

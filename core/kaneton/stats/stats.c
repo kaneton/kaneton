@@ -5,13 +5,13 @@
  * 
  * stats.c
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/stats
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Nov  1 15:57:44 2005   mycure
+ * last update   Mon Nov  7 17:39:45 2005   mycure
  */
 
 /*
@@ -241,7 +241,7 @@ t_error			stats_show(t_staid			staid)
 
   STATS_ENTER(stats);
 
-  if (stats_container[staid].name == NULL)
+  if (stats->container[staid].name == NULL)
     STATS_LEAVE(stats, ERROR_UNKNOWN);
 
   cons_msg('#', "  [%qu] %s\n",

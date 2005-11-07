@@ -1,4 +1,63 @@
 --
+ sujets pour etudiants:
+   - integration du smp dans kaneton: pour, contre? modifications?
+
+--
+ pour par exemple un driver, il faudra qu il soit capable de communiquer
+ avec le hard autrement dit de se rajouter une trap.
+
+ pour cela il faudra dans mod lui filer soit une cap precise sur l'evenement
+ precise, soit une cap sur le gestionnaire d'evenements.
+
+--
+ utiliser les meme noms de fonctions pour make et shell
+
+--
+ remplacer partout /bin/sh par /bin/bash
+
+--
+ changer les 2>/dev/null en 2>&-
+ meme chose pour 1>
+
+--
+ dans la doc sur le env-dev: machine = os+couple archi s-d
+ env = machine + user
+
+--
+ rajouter une regle dans le makefile de base:
+
+ env.sh: env/machines/$_MACHINE_/machine.sh env/users/$KANETON_USER/user.sh
+ 	regenerer le fichier sh
+
+ env.mk: env/machines/$_MACHINE_/machine.mk env/users/$KANETON_USER/user.mk
+
+ rajouter comme dependances aussi les .conf: machine.conf et user.conf
+
+--
+ faire des users:
+
+  1) check: pour lancer la moulinette
+  2) release: pour faire une demo ca nous aidera a noter et a voir ce qu ils
+              ont fait en plus
+
+--
+ revoir conf.c et conf.h dans la partie user. le conf.h a la limite
+ par contre le conf.c est un peu particulier.
+
+--
+ lire la doc de sh pour voir tout ce que l on peut faire avec.
+
+--
+ TOUT D ABORD, isoler les parties importantes pour en faire des fonctions,
+ grub.sh, init.sh, clean.sh, view.sh, export.sh, conf.sh etc..
+
+--
+ retoucher le cours dev-env car on a gravement refait le systeme d'env
+
+--
+ faire les logos: kaneton + kayou
+
+--
  systeme qui prend: kaneton.mk + $USER.conf
 
  et qui genere un fichier de conf au format makefile mais sans doublons
@@ -44,18 +103,19 @@
   . rendu?
 
 --
- parser: params et options
+ changer kaneton distributed -> kayou
 
 --
- lors du lancement d'un driver/service on aura un prototype different:
+ parser: params et args
 
- t_opts
- {
-   char* name;
-   char* value;
- };
+ int		main(int argc, char** argv);
 
- int		main(int argc, char** argv, t_opts opts);
+ ce sera conforme a un truc classique avec la forme:
+
+   --verbose		1
+
+ concernant les params, ce sont juste des arguments interpretes par le
+ gestionnaire de modules.
 
 --
  une fois le gestionnaire de regions installe, essayer de faire un

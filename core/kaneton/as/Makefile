@@ -11,14 +11,14 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Tue Sep  6 11:09:08 2005   mycure
+## last update   Mon Nov  7 17:34:11 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
  
-include			../../../.kaneton.mk
+include			../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------

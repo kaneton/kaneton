@@ -1,284 +1,164 @@
-#!/bin/sh
+#! /bin/sh
+
 ## copyright quintard julien
 ## 
 ## kaneton
 ## 
 ## clean.sh
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/env
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
-## started on    Fri Feb 11 02:14:03 2005   mycure
-## last update   Mon Oct 31 12:13:59 2005   mycure
+## started on    Fri Feb 11 02:58:21 2005   mycure
+## last update   Mon Nov  7 18:33:44 2005   mycure
 ##
 
-# INFORMATIONS
 #
-# this script has to be run in its directory: src/env/
-
-
-
-# CONFIGURATION FILE PATH
+# ---------- information ------------------------------------------------------
 #
-# the configuration file
-_CONF_="../conf/"$USER"/"$USER".conf"
-
-
-
-# CONFIGURATION FILE VARIABLES
+# this script has to be run in its directory: src/env/machines/$_MACHINE_/
 #
-# default globals
-_DISPLAY="unknown"
-_ENVIRONMENT="unknown"
-_ARCHITECTURE_="unknown"
 
-
-
-# READ CONFIGURATION FILE
 #
-# function used to read the configuration file and to load
-# important variables
-read_kaneton_conf()
+# ---------- dependencies -----------------------------------------------------
+#
+
+source			.env.sh
+
+#
+# ---------- globals ----------------------------------------------------------
+#
+
+ENV_MK=".env.mk"
+ENV_SH=".env.sh"
+
+
+
+#
+# ---------- functions --------------------------------------------------------
+#
+
+#
+# MACHINES
+#
+# this function displays the supported machines.
+#
+machines()
 {
-  # display
-  _DISPLAY_=`cat $_CONF_ | sed -n "s/^_DISPLAY_ = \(.*\)$/\1/p"`
+  l=""
 
-  # environment
-  _ENVIRONMENT_=`cat $_CONF_ | sed -n "s/^_ENVIRONMENT_ = \(.*\)$/\1/p"`
+  machines=$(list $_MACHINES_DIR_)
 
-  # architecture
-  _ARCHITECTURE_=`cat $_CONF_ | sed -n "s/^_ARCHITECTURE_ = \(.*\)$/\1/p"`
-}
-
-
-
-# USAGE
-#
-# this function displays the usage but does not exit
-usage()
-{
-  display " usage: clean.sh" "!"
-}
-
-
-
-# WARNING
-#
-# this function alerts the user, displaying information and asking to continue
-warning()
-{
-  # display information and ask the user to continue or cancel
-  display " your current configuration:" "+"
-  display "   environment:              $_ENVIRONMENT_" "+"
-  display "   architecture:             $_ARCHITECTURE_" "+"
-  display ""
-  display " to cancel press CTRL^C, otherwise press enter" "?"
-
-  NEEDLESS=""
-  read NEEDLESS
-}
-
-
-
-# ENVIRONMENTS
-#
-# this function displays the supported environments
-environments()
-{
-  list=""
-
-  directory=`ls env`
-
-  for i in env/$directory ; do
-    if [ -d env/$i ] ; then
-      list="$list $i"
+  for m in $machines ; do
+    if [ -d $_MACHINES_DIR_/$m ] ; then
+      l="$l $m"
     fi
   done
 
-  display " supported environments are:$list" "!"
+  display " supported machines are:$l" "!"
 }
 
 
 
-# CLEAN
 #
-# this function installs the environment, calling the function(s) depending
-# of your operating system
-clean()
-{
-  if [ ! -d env/$_ENVIRONMENT_ ] ; then
-    display " unknown system: $_ENVIRONMENT_" "!"
-    display ""
-    display " please check your ENVIRONMENT variable in $_CONF_" "!"
-    display ""
-    environments
-    display ""
-    usage
-    exit
-  fi
-
-  if [ ! -e env/$_ENVIRONMENT_/clean.sh ] ; then
-    display " unknown system: $_ENVIRONMENT_" "!"
-    display ""
-    display " please check your ENVIRONMENT variable in $_CONF_" "!"
-    display ""
-    environments
-    display ""
-    usage
-    exit
-  fi
-
-  ./env/$_ENVIRONMENT_/clean.sh
-}
-
-
-
-# CONFIGURATION
+# LINKS
 #
-# this function unlinks the kernel configuration files.
-conf()
+# this function links the kernel configuration files.
+#
+links()
 {
   display " unlinking kernel configuration files" "+"
 
-  if [ -e core/kaneton/conf/conf.c ] ; then
-    rm core/kaneton/conf/conf.c
-  fi
-
-  if [ -e core/include/kaneton/conf.h ] ; then
-    rm core/include/kaneton/conf.h
-  fi
+  remove $_CORE_CONF_DIR_/conf.c
+  remove $_CORE_INCLUDE_DIR_/kaneton/conf.h
 }
 
 
 
-# DEPENDENCIES
 #
-# this function cleans C files dependencies.
+# DEP
+#
+# this function cleans dependency files.
+#
 dep()
 {
-  display " cleaning of makefile dependencies" "+"
+  display " cleaning makefile dependencies" "+"
 
-  makefiles=`find ./ -name .makefile.mk`
+  makefiles=$(find $_SRC_DIR_/ -name .makefile.mk)
 
   for m in $makefiles ; do
-    rm -f $m
+    remove $m
   done
 }
 
 
 
-# PRINT A MESSAGE
 #
-# prints a message using the user variable DISPLAY
-print()
+# CLEAN
+#
+# this function cleans the environment, calling the script depending
+# of your operating system.
+#
+clean()
 {
-  color=$1
-  message=$2
-  options=$3
-
-  if [ $_DISPLAY_ = "color" ] ; then
-
-    case "$color" in
-      "red")
-        echo -e $options '\E[;31m'"\033[1m$message\033[0m"
-	;;
-
-      "green")
-        echo -e $options '\E[;32m'"\033[1m$message\033[0m"
-	;;
-
-      "yellow")
-        echo -e $options '\E[;33m'"\033[1m$message\033[0m"
-	;;
-
-      "blue")
-        echo -e $options '\E[;34m'"\033[1m$message\033[0m"
-	;;
-
-      "white")
-        echo -e $options '\E[;37m'"\033[1m$message\033[0m"
-	;;
-
-      *)
-	;;
-    esac
-
-  else
-
-    echo $options "$message"
-
+  if [ ! -d $_MACHINE_DIR_ ] ; then
+    display " unknown system: '$_MACHINE_'" "!"
+    display ""
+    display " please check your _MACHINE_ variable into '$_USER_CONF_'" "!"
+    display ""
+    machines
+    display ""
+    usage
+    display ""
+    exit
   fi
+
+  if [ ! -e $_MACHINE_DIR_/clean.sh ] ; then
+    display " '$_MACHINE_' machine-specific init script not present" "!"
+    display ""
+    display " please check your _MACHINE_ variable into '$_USER_CONF_'" "!"
+    display ""
+    machines
+    display ""
+    usage
+    display ""
+    exit
+  else
+    launch $_MACHINE_DIR_/clean.sh
+  fi
+
+  if [ -e $_USER_DIR_/clean.sh ] ; then
+    launch $_USER_DIR_/clean.sh
+  fi
+
+  # finally removes the env.mk and env.sh files.
+  remove $ENV_MK
+  remove $ENV_SH
 }
 
-
-
-# DISPLAY A MESSAGE
 #
-# displays a message with a header
-display()
-{
-  msg=$1
-  header=$2
-
-  case "$header" in
-    "+")
-      print "blue" "[" "-n"
-      print "green" "+" "-n"
-      print "blue" "]" "-n"
-      ;;
-
-    "!")
-      print "blue" "[" "-n"
-      print "red" "!" "-n"
-      print "blue" "]" "-n"
-      ;;
-
-    "?")
-      print "blue" "[" "-n"
-      print "yellow" "?" "-n"
-      print "blue" "]" "-n"
-      ;;
-
-    *)
-      ;;
-  esac
-
-  print "white" "$msg" ""
-}
-
-
-
-# ENTRY POINT
+# ---------- entry point ------------------------------------------------------
 #
-# entry point of this script
 
-# start of clean
-
-# call the read_kaneton_conf function
-read_kaneton_conf
-
-display " cleaning environment" "+"
+# displays some stuff.
 display ""
 
-# call the warning function
-warning
+display " cleaning the environment" "+"
+display ""
 
-# go into the src/ directory
-cd ..
+# removes some links.
+links
 
-# clean environment
-clean
-
-# unlink the configuration files
-conf
-
-# clean the files dependencies
+# cleans the dependency files
 dep
 
-# return into the env/ directory
-cd env
+# calls the clean function which will perform machine-specific stuff.
+clean
 
-# end of clean
-display " environment cleaned successfully" "+"
+# end.
+display " environment installed successfully" "+"
+
+# displays some stuff.
+display ""

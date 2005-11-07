@@ -11,14 +11,14 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 03:24:11 2005   mycure
-## last update   Mon Oct 31 10:13:48 2005   mycure
+## last update   Mon Nov  7 16:25:49 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../.kaneton.mk
+include			../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -30,24 +30,22 @@ include			../.kaneton.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=						\
-  $(shell $(_CAT_) $(_CONF_DIR_)/$(USER)/modules.conf |			\
-          sed -n "s/core\/\([[:alpha:]_-]*\).*$$/\1/p")
+SUBDIRS			:=		$(_CORE_DEP_)
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
 all:
-	$(call make,$(SUBDIRS),)
+	$(call makefile,$(SUBDIRS),)
 
 clear:
-	$(call make,$(SUBDIRS),clear)
+	$(call makefile,$(SUBDIRS),clear)
 
 	$(call purge,)
 
 proto:
-	$(call make,$(SUBDIRS),proto)
+	$(call makefile,$(SUBDIRS),proto)
 
 dep:
-	$(call make,$(SUBDIRS),dep)
+	$(call makefile,$(SUBDIRS),dep)

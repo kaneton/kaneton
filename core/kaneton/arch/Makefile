@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton
+## path          /home/mycure/kaneton/core/kaneton/arch
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Jul  4 11:44:52 2005   mycure
+## last update   Mon Nov  7 17:20:15 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../.kaneton.mk
+include			../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -31,15 +31,15 @@ include			../../../.kaneton.mk
 #
 
 all:
-	$(call make,machdep,)
+	$(call makefile,machdep,)
 
 clear:
-	$(call make,machdep,clear)
+	$(call makefile,machdep,clear)
 
 	$(call purge,)
 
 proto:
-	$(call make,machdep,proto)
+	$(call makefile,machdep,proto)
 
 dep:
-	$(call make,machdep,dep)
+	$(call makefile,machdep,dep)
