@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 ## copyright quintard julien
 ## 
@@ -6,13 +6,13 @@
 ## 
 ## init.sh
 ## 
-## path          /home/mycure/kaneton/env
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Nov  7 16:42:22 2005   mycure
+## last update   Mon Nov  7 18:43:48 2005   mycure
 ##
 
 #

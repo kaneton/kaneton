@@ -5,13 +5,13 @@
 ## 
 ## viewer.sh
 ## 
-## path          /home/mycure/kaneton/env
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Thu Nov  3 09:15:17 2005   mycure
+## last update   Mon Nov  7 18:42:06 2005   mycure
 ##
 
 # INFORMATIONS
@@ -125,7 +125,7 @@ locate()
 {
   for i in $_LIST_ ; do
     name=`basename $i`
-    echo $name | grep $_PAPER_ 2> /dev/null > /dev/null
+    echo $name | grep $_PAPER_ 1>&- 2>&-
 
     if [ $? -eq 0 ] ; then
       _PATH_=$i

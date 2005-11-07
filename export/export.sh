@@ -5,13 +5,13 @@
 ## 
 ## exporter.sh
 ## 
-## path          /home/mycure/kaneton/export
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Mon Oct 31 11:56:47 2005   mycure
+## last update   Mon Nov  7 18:41:50 2005   mycure
 ##
 
 # INFORMATIONS
@@ -114,7 +114,7 @@ warning()
 locate()
 {
   for s in $_STAGES_ ; do
-    echo $s | grep $_INPUT_ 2> /dev/null > /dev/null
+    echo $s | grep $_INPUT_ 2>&- 1>&-
 
     if [ $? -eq 0 ] ; then
       _STAGE_=$s
@@ -227,12 +227,12 @@ build()
   # still contain our prototypes
 
   echo "
-" | gmake init > /dev/null 2> /dev/null
+" | gmake init 1>&-  2>&-
 
-  gmake proto > /dev/null 2> /dev/null
+  gmake proto 1>&- 2>&-
 
   echo "
-" | gmake clean > /dev/null 2> /dev/null
+" | gmake clean 1>&- 2>&-
 
   # leave directory
   cd ..

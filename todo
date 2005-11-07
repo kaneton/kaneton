@@ -1,4 +1,7 @@
 --
+ remettre le script conf.sh qui genere le fichier de conf
+
+--
  sujets pour etudiants:
    - integration du smp dans kaneton: pour, contre? modifications?
 
@@ -13,25 +16,16 @@
  utiliser les meme noms de fonctions pour make et shell
 
 --
- remplacer partout /bin/sh par /bin/bash
+ modifier tout: seminar, design etc.. pour ne pas parler du distributed
 
 --
- changer les 2>/dev/null en 2>&-
- meme chose pour 1>
+ retoucher tous les scripts shell pour qu ils utilisent .env.sh
 
 --
  dans la doc sur le env-dev: machine = os+couple archi s-d
  env = machine + user
 
---
- rajouter une regle dans le makefile de base:
-
- env.sh: env/machines/$_MACHINE_/machine.sh env/users/$KANETON_USER/user.sh
- 	regenerer le fichier sh
-
- env.mk: env/machines/$_MACHINE_/machine.mk env/users/$KANETON_USER/user.mk
-
- rajouter comme dependances aussi les .conf: machine.conf et user.conf
+ retoucher le cours dev-env car on a gravement refait le systeme d'env
 
 --
  faire des users:
@@ -43,16 +37,6 @@
 --
  revoir conf.c et conf.h dans la partie user. le conf.h a la limite
  par contre le conf.c est un peu particulier.
-
---
- lire la doc de sh pour voir tout ce que l on peut faire avec.
-
---
- TOUT D ABORD, isoler les parties importantes pour en faire des fonctions,
- grub.sh, init.sh, clean.sh, view.sh, export.sh, conf.sh etc..
-
---
- retoucher le cours dev-env car on a gravement refait le systeme d'env
 
 --
  faire les logos: kaneton + kayou
