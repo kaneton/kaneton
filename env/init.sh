@@ -1,4 +1,4 @@
-#! /bin/bassh
+#! /bin/bash
 
 ## copyright quintard julien
 ## 
@@ -6,13 +6,13 @@
 ## 
 ## init.sh
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/view
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Nov  7 18:43:43 2005   mycure
+## last update   Tue Nov  8 14:10:06 2005   mycure
 ##
 
 #
@@ -34,6 +34,7 @@ USER_MK=""
 MACHINE_SH=""
 USER_SH=""
 
+ENV_CONF=".env.conf"
 ENV_MK=".env.mk"
 ENV_SH=".env.sh"
 
@@ -53,7 +54,7 @@ SRC_DIR=""
 proto()
 {
   directory $_SRC_DIR_
-  makefile proto 2>&- 1>&-
+  makefile proto 2>/dev/null 1>/dev/null
   directory $_ENV_DIR_
 }
 
@@ -67,8 +68,22 @@ proto()
 dep()
 {
   directory $_SRC_DIR_
-  makefile dep 2>&- 1>&-
+  makefile dep 2>/dev/null 1>/dev/null
   directory $_ENV_DIR_
+}
+
+
+
+#
+# CONF
+#
+# this function generates the runtime kaneton configuration file from
+# the user one.
+conf()
+{
+  display " generating kaneton runtime configuration file" "+"
+
+  runtime_configuration $_USER_KANETON_CONF_ $_KANETON_CONF_
 }
 
 
@@ -166,7 +181,7 @@ warning()
   display "   user:                     $_USER_" "+"
   display "   machine:                  $_MACHINE_" "+"
   display "   architecture:             $_ARCHITECTURE_" "+"
-  display "   multi-bootloader:         $_MBI_" "+"
+  display "   multi-bootloader:         $_MBL_" "+"
   display ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
@@ -213,6 +228,9 @@ env_mk()
   # sets the source directory path.
   echo "_SRC_DIR_		:=		$SRC_DIR" >> $ENV_MK
 
+  # copy the env.conf contents into the env.mk makefile dependency.
+  cat $ENV_CONF >> $ENV_MK
+
   # copy the machine.conf contents into the env.mk makefile dependency.
   cat $MACHINE_CONF >> $ENV_MK
 
@@ -243,6 +261,7 @@ env_sh()
 
   # generates the temporary makefile.
   echo "_SRC_DIR_		:=		$SRC_DIR" >> $makefile
+  echo "include			$ENV_CONF" >> $makefile
   echo "include			$MACHINE_CONF" >> $makefile
   echo "include			$USER_CONF" >> $makefile
   echo "all:" >> $makefile
@@ -337,6 +356,9 @@ proto
 
 # generates the dependencies.
 dep
+
+# generates the runtime kaneton configuration file.
+conf
 
 # end.
 display " environment installed successfully" "+"

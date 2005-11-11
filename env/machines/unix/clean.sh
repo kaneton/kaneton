@@ -6,13 +6,13 @@
 ## 
 ## init.sh
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/view
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Nov  7 18:43:50 2005   mycure
+## last update   Tue Nov  8 14:15:54 2005   mycure
 ##
 
 #
@@ -42,7 +42,7 @@ clean()
   display "   cleaning development tree" "+"
 
   directory $_SRC_DIR_
-  makefile clear 2>&- 1>&-
+  makefile clear 2>/dev/null 1>/dev/null
   directory $_ENV_DIR_
 
   # destroys the architecture dependent links.

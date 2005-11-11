@@ -6,13 +6,13 @@
 ## 
 ## clean.sh
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/env
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Nov  7 18:43:26 2005   mycure
+## last update   Tue Nov  8 08:46:43 2005   mycure
 ##
 
 #
@@ -26,15 +26,6 @@
 #
 
 source			.env.sh
-
-#
-# ---------- globals ----------------------------------------------------------
-#
-
-ENV_MK=".env.mk"
-ENV_SH=".env.sh"
-
-
 
 #
 # ---------- functions --------------------------------------------------------
@@ -134,8 +125,11 @@ clean()
   fi
 
   # finally removes the env.mk and env.sh files.
-  remove $ENV_MK
-  remove $ENV_SH
+  remove $_ENV_MK_
+  remove $_ENV_SH_
+
+  # also removes the kaneton runtime configuration file
+  remove $_KANETON_CONF_
 }
 
 #

@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/segment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Nov  7 15:35:27 2005   mycure
+ * last update   Thu Nov 10 22:11:50 2005   mycure
  */
 
 /*
@@ -42,6 +42,8 @@
 
 #include <klibc.h>
 #include <kaneton.h>
+
+machdep_include(segment);
 
 /*
  * ---------- extern ----------------------------------------------------------
@@ -402,6 +404,8 @@ t_error			segment_reserve(t_asid			asid,
       }
     }
 
+  machdep_call(segment, segment_reserve, asid, size, perms, segid);
+
   SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 }
 
@@ -512,7 +516,11 @@ t_error			segment_catch(t_asid			asid,
  *
  * steps:
  *
- * 1) XXX
+ * 1) gets the address space object.
+ * 2) verifies that the segment is held by an address space.
+ * 3) gets the segment object.
+ * 4) checks the perms argument.
+ * 5) finally, sets the new permissions.
  */
 
 t_error			segment_perms(t_asid			asid,
@@ -567,7 +575,11 @@ t_error			segment_perms(t_asid			asid,
  *
  * steps:
  *
- * 1) XXX
+ * 1) gets the address space object.
+ * 2) verifies that the segment is held by an address space.
+ * 3) gets the segment object.
+ * 4) checks the type argument.
+ * 5) finally, sets the new type.
  */
 
 t_error			segment_type(t_asid			asid,
@@ -618,7 +630,15 @@ t_error			segment_type(t_asid			asid,
 }
 
 /*
- * XXX peut etre a changer pour la clarete du design + machdep calls
+ * this function removes every segment that belongs to the address space
+ * specified.
+ *
+ * steps:
+ *
+ * 1) gets the address space object.
+ * 2) for every segment in the address space, removes the segment from
+ *    the segment container to destroy it.
+ * 3) then, flushes the address space's segment set.
  */
 
 t_error			segment_flush(t_asid			asid)
@@ -671,7 +691,7 @@ t_error			segment_flush(t_asid			asid)
 }
 
 /*
- * XXX
+ * this function returns a segment object.
  */
 
 t_error			segment_get(t_segid			segid,
@@ -770,9 +790,9 @@ t_error			segment_init(t_fit			fit)
    */
 
 #if (DEBUG & DEBUG_SEGMENT)
-  // XXX segment_dump();
+  segment_dump();
 
-  // XXX segment_test();
+  segment_test();
 #endif
 
   return (ERROR_NONE);
@@ -817,7 +837,7 @@ t_error			segment_clean(void)
 }
 
 /*
- * XXX
+ * this function tests the segment manager.
  */
 
 t_error			segment_test(void)

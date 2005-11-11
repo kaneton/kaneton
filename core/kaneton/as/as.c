@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton/core/kaneton/segment
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Nov  1 15:52:53 2005   mycure
+ * last update   Thu Nov 10 21:58:33 2005   mycure
  */
 
 /*

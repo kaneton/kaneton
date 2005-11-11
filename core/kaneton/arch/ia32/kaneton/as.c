@@ -5,13 +5,13 @@
  * 
  * as.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/arch/ia32/kaneton
+ * path          /home/mycure/kaneton/core
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Fri Oct 21 19:54:39 2005   mycure
+ * last update   Thu Nov 10 22:12:49 2005   mycure
  */
 
 /*

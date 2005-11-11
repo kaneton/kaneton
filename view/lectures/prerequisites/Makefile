@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Mon Nov  7 16:21:32 2005   mycure
+## last update   Tue Nov  8 13:23:18 2005   mycure
 ##
 
 #
@@ -32,44 +32,29 @@ include			../../../env/.env.mk
 
 PAPER			:=		prerequisites
 
-PAPER_TEX		:=		$(PAPER).tex
-PAPER_DVI		:=		$(PAPER).dvi
-PAPER_PS		:=		$(PAPER).ps
-PAPER_PDF		:=		$(PAPER).pdf
-
-PAPER_GARBAGE		:=		$(PAPER).aux			\
+GARBAGE			:=		$(PAPER).aux			\
 					$(PAPER).log			\
 					$(PAPER).nav			\
 					$(PAPER).out			\
 					$(PAPER).snm			\
-					$(PAPER).toc			
+					$(PAPER).toc			\
+					$(PAPER).dvi			\
+					$(PAPER).ps			\
+					$(PAPER).pdf			
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			pdf
+all:			view
 
-$(PAPER_DVI):		$(PAPER_TEX)
-	$(call dvi,$(PAPER_DVI),$(PAPER_TEX),$(PAPER_TEX),)
+view:			build
+	$(call view,$(PAPER),)
 
-$(PAPER_PS):		$(PAPER_DVI)
-	$(call ps,$(PAPER_PS),$(PAPER_DVI),$(PAPER_TEX),)
-
-$(PAPER_PDF):		$(PAPER_PS)
-	$(call pdf,$(PAPER_PDF),$(PAPER_PS),$(PAPER_TEX),)
-
-dvi:			$(PAPER_DVI)
-
-ps:			$(PAPER_PS)
-
-pdf:			$(PAPER_PDF)
+build:
+	$(call compile-tex,$(PAPER))
 
 clear:
-	$(call remove,$(PAPER_GARBAGE),)
-
-	$(call remove,$(PAPER_PDF),)
-	$(call remove,$(PAPER_PS),)
-	$(call remove,$(PAPER_DVI),)
+	$(call remove,$(GARBAGE),)
 
 	$(call purge)

@@ -5,13 +5,13 @@
 ## 
 ## machine.sh
 ## 
-## path          /home/mycure/kaneton/env
+## path          /home/mycure/kaneton/view
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Mon Nov  7 14:41:19 2005   mycure
+## last update   Tue Nov  8 14:13:04 2005   mycure
 ##
 
 #
@@ -208,4 +208,60 @@ makefile()
   args=$*
 
   $_MAKE_ $args
+}
+
+
+
+#
+# RUNTIME CONFIGURATION
+#
+# this function generates the kaneton runtime configuration file.
+#
+runtime_configuration()
+{
+  source=$1
+  destination=$2
+
+  directory $_SRC_DIR_
+
+  # makes a temporary file
+  kaneton_conf=$(mktemp)
+
+  # removes the previous version.
+  remove $destination
+
+  # creates the temporary file.
+  echo "! kaneton.conf" >> $kaneton_conf
+  cat $source >> $kaneton_conf
+  echo "! /kaneton.conf" >> $kaneton_conf
+
+  # preprocess the temporary file to generate a correct runtime
+  # configuration file.
+  $_CPP_ $_INCLUDES_ -P -include kaneton.h $kaneton_conf |		\
+    $_SED_ -n '/^! kaneton.conf$/,/^! \/kaneton.conf$/ p' |		\
+    $_SED_ '/^!.*$/ d' > $destination
+
+  directory $_ENV_DIR_
+}
+
+
+
+#
+# LOCATE
+#
+# this function tries to locate an element in a list of elements.
+#
+locate()
+{
+  element=$1
+  list=$2
+
+  for l in $list ; do
+    echo $l | grep $element 2>/dev/null 1>/dev/null
+
+    if [ $? -eq 0 ] ; then
+      echo $l
+      return 0
+    fi
+  done
 }

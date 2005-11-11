@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Mon Nov  7 18:17:53 2005   mycure
+## last update   Tue Nov  8 13:01:44 2005   mycure
 ##
 
 #
@@ -306,7 +306,7 @@ define remove
     if [ -e $$i ] ; then						\
       $(call pretty-printer,red,REMOVE,$$i,		)		; \
     fi									; \
-    $(_RM_) $(2) $$i							; \
+    $(_RM_) $(2) $$i $(_VERBOSE_)					; \
   done
 endef
 
@@ -316,7 +316,7 @@ endef
 
 define purge
   $(call pretty-printer,red,PURGE,,)					; \
-  $(_PURGE_)
+  $(_PURGE_) $(_VERBOSE_)
 endef
 
 #
@@ -330,7 +330,7 @@ define prototypes
   for i in $(1) ; do							\
     if [ -e $$i ] ; then						\
       $(call pretty-printer,yellow,PROTOTYPES,$$i,		)	; \
-      $(_PROTO_) $(2) $(1)						; \
+      $(_PROTO_TOOL_) $(2) $(1)	$(_VERBOSE_)				; \
     fi									; \
   done
 endef
@@ -382,48 +382,50 @@ define link
   $(_LN_) $(3) $(2) $(1) $(_VERBOSE_)
 endef
 
-# 
-# create a dvi file from a tex one
 #
-# $(1):		the output file name
-# $(2):		the logical previous latex file
-# $(3):		the orginial latex file
-# $(4):		advanced options
+# compile a tex document
+#
+# $(1):		the file name without extension
 #
 
-define dvi
-  $(call pretty-printer,yellow,DVI,$(1),			)	; \
-  $(_LATEX_) $(4) $(2) -o $(1) $(_VIEW_DEBUG_) $(_VERBOSE_)		; \
-  $(_LATEX_) $(4) $(2) -o $(1) $(_VIEW_DEBUG_) $(_VERBOSE_)
+define compile-tex
+  $(call pretty-printer,green,COMPILE-TEX,$(1),			)	; \
+  case $(_FORMAT_) in							\
+    dvi)								\
+      $(_LATEX_) $(1).tex -o $(1).dvi $(_VERBOSE_)			; \
+      $(_LATEX_) $(1).tex -o $(1).dvi $(_VERBOSE_)			; \
+      ;;								\
+    ps)									\
+      $(_LATEX_) $(1).tex -o $(1).dvi $(_VERBOSE_)			; \
+      $(_LATEX_) $(1).tex -o $(1).dvi $(_VERBOSE_)			; \
+      $(_DVIPS_) $(1).dvi -o $(1).ps $(_VERBOSE_)			; \
+      ;;								\
+    pdf)								\
+      $(_PDFLATEX_) $(1).tex -o $(1).pdf $(_VERBOSE_)			; \
+      $(_PDFLATEX_) $(1).tex -o $(1).pdf $(_VERBOSE_)			; \
+      ;;								\
+  esac
 endef
 
-# 
-# create a ps file from a dvi one
 #
-# $(1):		the output file name
-# $(2):		the logical previous dvi file
-# $(3):		the orginial latex file
-# $(4):		advanced options
+# launch a document viewer
+#
+# $(1):		the file name without extension
 #
 
-define ps
-  $(call pretty-printer,yellow,PS,$(1),			)		; \
-  $(_DVIPS_) $(4) $(2) -o $(1) $(_VERBOSE_)
-endef
-
-# 
-# create a pdf file
-#
-# $(1):		the output file name
-# $(2):		the logical previous latex file
-# $(3):		the orginial latex file
-# $(4):		advanced options
-#
-
-define pdf
-  $(call pretty-printer,yellow,PDF,$(1),			)	; \
-  $(_PDFLATEX_) $(4) $(3) -o $(1) $(_VERBOSE_)				; \
-  $(_PDFLATEX_) $(4) $(3) -o $(1) $(_VERBOSE_)
+define view
+  $(call pretty-printer,yellow,VIEW,$(1),			)	; \
+  case $(_FORMAT_) in							\
+    dvi)								\
+      $(_VIEWER_DVI_) $(1).dvi $(_VERBOSE_)				; \
+      ;;								\
+    ps)									\
+      $(_VIEWER_PS_) $(1).ps $(_VERBOSE_)				; \
+      ;;								\
+    pdf)								\
+      $(_VIEWER_PDF_) $(1).pdf $(_VERBOSE_)				; \
+      ;;								\
+  esac
 endef
 
 #

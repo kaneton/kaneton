@@ -5,13 +5,13 @@
  * 
  * machdep.h
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Tue Aug 30 15:43:06 2005   mycure
+ * last update   Thu Nov 10 23:03:46 2005   mycure
  */
 
 #ifndef IA32_MACHDEP_H
@@ -40,7 +40,7 @@
 #define		machdep_call(_mng_, _function_, _args_...)		\
   machdep_call_##_mng_(_function_, ##_args_)
 
-#define		machdep_data(_object_)				\
+#define		machdep_data(_object_)					\
   machdep_data_##_object_()
 
 #endif

@@ -1,20 +1,22 @@
-#!/bin/sh
+#! /bin/bash
+
 ## copyright quintard julien
 ## 
 ## kaneton
 ## 
-## exporter.sh
+## clean.sh
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/export
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
-## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Mon Nov  7 18:41:50 2005   mycure
+## started on    Fri Feb 11 02:58:21 2005   mycure
+## last update   Tue Nov  8 05:56:23 2005   mycure
 ##
 
-# INFORMATIONS
+#
+# ---------- information ------------------------------------------------------
 #
 # this script has to be run in the directory src/export
 #
@@ -29,12 +31,18 @@
 #
 # the hidden variable contains the list of directories to not include in
 # exported distributions
-
-
-
-# GLOBAL VALUES
 #
-# global values
+
+#
+# ---------- dependencies -----------------------------------------------------
+#
+
+source			../env/.env.sh
+
+#
+# ---------- globals ----------------------------------------------------------
+#
+
 _STAGES_="k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 kn dist"
 _STAGE_=""
 _INPUT_=""
@@ -42,61 +50,37 @@ _FILES_=""
 
 
 
-# CONFIGURATION FILE PATH
 #
-# configuration file
-_CONF_="../conf/"$USER"/"$USER".conf"
-
-
-
-# CONFIGURATION FILE VARIABLES
+# ---------- functions --------------------------------------------------------
 #
-# default globals
-_DISPLAY_="unknown"
-_EXPORT_="unknown"
-_HIDDEN_="unknown"
 
-
-
-# READ CONFIGURATION FILE
 #
-# function used to read the configuration file and to load
-# important variables
-read_kaneton_conf()
-{
-  # display
-  _DISPLAY_=`cat $_CONF_ | sed -n "s/^_DISPLAY_ = \(.*\)$/\1/p"`
-
-  # export
-  _EXPORT_=`cat $_CONF_ | sed -n "s/^_EXPORT_ = \(.*\)$/\1/p"`
-
-  # hidden
-  _HIDDEN_=`cat $_CONF_ | sed -n "s/^_HIDDEN_ = \(.*\)$/\1/p"`
-}
-
-
-
 # USAGE
 #
-# this function displays the usage but does not exit
+# this function displays the usage but does not exit.
+#
 usage()
 {
-  display " usage: exporter.sh [stage]" "!"
+  display " usage: export.sh [stage]" "!"
   display ""
   display " available stages: $_STAGES_"
 }
 
 
 
+#
 # WARNING
 #
-# this function alerts the user, displaying information and asking to continue
+# this function alerts the user, displaying information and asking to continue.
+#
 warning()
 {
   # display information and ask the user to continue or cancel
   display " your current configuration" "+"
   display "   export:                   $_EXPORT_" "+"
   display "   hidden:                   $_HIDDEN_" "+"
+  display "   view format:		$_VIEW_FORMAT_" "+"
+  display "   viewer:                   $_VIEWER_" "+"
   display ""
   display "   stage:                    $_STAGE_" "+"
   display ""
@@ -108,13 +92,15 @@ warning()
 
 
 
-# LOCATE
 #
-# this functions locates the stage
-locate()
+# CHECK
+#
+# this functions checks the stage.
+#
+check()
 {
   for s in $_STAGES_ ; do
-    echo $s | grep $_INPUT_ 2>&- 1>&-
+    echo $s | grep $_INPUT_ 2> /dev/null > /dev/null
 
     if [ $? -eq 0 ] ; then
       _STAGE_=$s
@@ -131,9 +117,11 @@ locate()
 
 
 
+#
 # TAGS
 #
-# this function removes tags from the source code files
+# this function removes tags from the source code files.
+#
 tags()
 {
   # finally cleans the file from the cut tags
@@ -145,10 +133,12 @@ tags()
 
 
 
-# clean
 #
-# this function cuts the unwanted source code
-clean()
+# EXTRACT
+#
+# this function cuts the unwanted source code.
+#
+extract()
 {
   # for each file, cut the unwanted source code
   flag=0
@@ -159,15 +149,13 @@ clean()
 
     if [ $flag = "1" ] ; then
       for f in $_FILES_ ; do
-        cat $f | sed "/^.*\[cut\].*$s.*$/,/^.*\[cut\].*\/$s.*$/	\
+        cat $f | sed "/^.*\[cut\].*$s.*$/,/^.*\[cut\].*\/$s.*$/ \
                       { /^.*\[cut\].*$s.*$/ !d }" > /tmp/$_EXPORT_
         cp /tmp/$_EXPORT_ $f
       done
     fi
   done
 }
-
-
 
 # BUILD
 #
@@ -197,13 +185,13 @@ build()
   rm -Rf $_HIDDEN_
 
   # gets the list of the files
-  c_files=`find libs/ core/ drivers/ services/ programs/		\
+  c_files=`find libs/ core/ drivers/ services/ programs/                \
            -type f -name "*.c"`
-  h_files=`find libs/ core/ drivers/ services/ programs/		\
+  h_files=`find libs/ core/ drivers/ services/ programs/                \
            -type f -name "*.h"`
-  asm_files=`find libs/ core/ drivers/ services/ programs/		\
+  asm_files=`find libs/ core/ drivers/ services/ programs/              \
              -type f -name "*.asm"`
-  S_files=`find libs/ core/ drivers/ services/ programs/		\
+  S_files=`find libs/ core/ drivers/ services/ programs/                \
            -type f -name "*.S"`
 
   _FILES_="$c_files $h_files $asm_files $S_files"
@@ -218,7 +206,7 @@ build()
       ;;
 
     *)
-      clean
+      extract
       tags
       ;;
   esac
@@ -227,18 +215,16 @@ build()
   # still contain our prototypes
 
   echo "
-" | gmake init 1>&-  2>&-
+" | gmake init > /dev/null 2> /dev/null
 
-  gmake proto 1>&- 2>&-
+  gmake proto > /dev/null 2> /dev/null
 
   echo "
-" | gmake clean 1>&- 2>&-
+" | gmake clean > /dev/null 2> /dev/null
 
   # leave directory
   cd ..
 }
-
-
 
 # DIST
 #
@@ -254,120 +240,38 @@ dist()
   rm -Rf $_EXPORT_
 }
 
-
-
-# PRINT A MESSAGE
 #
-# prints a message using the user variable DISPLAY
-print()
-{
-  color=$1
-  message=$2
-  options=$3
-
-  if [ $_DISPLAY_ = "color" ] ; then
-
-    case "$color" in
-      "red")
-        echo -e $options '\E[;31m'"\033[1m$message\033[0m"
-	;;
-
-      "green")
-        echo -e $options '\E[;32m'"\033[1m$message\033[0m"
-	;;
-
-      "yellow")
-        echo -e $options '\E[;33m'"\033[1m$message\033[0m"
-	;;
-
-      "blue")
-        echo -e $options '\E[;34m'"\033[1m$message\033[0m"
-	;;
-
-      "white")
-        echo -e $options '\E[;37m'"\033[1m$message\033[0m"
-	;;
-
-      *)
-	;;
-    esac
-
-  else
-
-    echo $options "$message"
-
-  fi
-}
-
-
-
-# DISPLAY A MESSAGE
+# ---------- entry point ------------------------------------------------------
 #
-# displays a message with a header
-display()
-{
-  msg=$1
-  header=$2
 
-  case "$header" in
-    "+")
-      print "blue" "[" "-n"
-      print "green" "+" "-n"
-      print "blue" "]" "-n"
-      ;;
+# displays some stuff.
+display ""
 
-    "!")
-      print "blue" "[" "-n"
-      print "red" "!" "-n"
-      print "blue" "]" "-n"
-      ;;
-
-    "?")
-      print "blue" "[" "-n"
-      print "yellow" "?" "-n"
-      print "blue" "]" "-n"
-      ;;
-
-    *)
-      ;;
-  esac
-
-  print "white" "$msg" ""
-}
-
-
-
-# ENTRY POINT
-#
-# entry point of this script
-
-# call the read_kaneton_conf function
-read_kaneton_conf
-
-# check the number of arguments
+# check the number of arguments.
 if [ $# -lt 1 ] ; then
     usage
     exit -1
 fi
 
 _INPUT_="$1"
-shift
 
-# preparing to export
+# preparing to export.
 display " preparing to export" "+"
-display ""
 
-# call the locate function
-locate
+# checks the input argument.
+check
 
-# call the warning function
+# warns the user.
 warning
 
-# call the build function
+# build the exported subtree.
 build
 
-# call the dist function
+# build a distribution from the subtree created.
 dist
 
 # end of export
 display " $_STAGE_ exported successfully" "+"
+
+# displays some stuff.
+display ""

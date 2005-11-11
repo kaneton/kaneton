@@ -6,13 +6,13 @@
 ## 
 ## init.sh
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/view
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Nov  7 18:43:48 2005   mycure
+## last update   Tue Nov  8 14:08:50 2005   mycure
 ##
 
 #
@@ -35,7 +35,7 @@ source			.env.sh
 #
 
 _BINARIES_="bash gcc gmake rm ar ranlib ld nasm ln touch wc date	\
-            tail tar latex dvips pdflatex cp cat sed echo ls"
+            tail tar latex dvips pdflatex cp cat sed echo ls cpp"
 
 #
 # ---------- functions --------------------------------------------------------
@@ -52,7 +52,7 @@ check()
   display "   checking binaries" "+"
 
   for b in $_BINARIES_ ; do
-    which $b 2>&- 1>&-
+    which $b 2>/dev/null 1>/dev/null
     if [ $? -ne 0 ] ; then
       display "   binary '$b' not present on your system" "!"
     fi

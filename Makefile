@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ##
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Nov  7 18:24:16 2005   mycure
+## last update   Tue Nov  8 09:35:39 2005   mycure
 ##
 
 #
@@ -121,13 +121,13 @@ dep:
 #
 
 build:
-	$(call directory,$(_MBI_DIR_)/$(_MBI_),)			; \
-	$(_SHELL_) $(_MBI_).sh build					; \
+	$(call directory,$(_MBL_DIR_)/$(_MBL_),)			; \
+	$(_SHELL_) $(_MBL_).sh build					; \
 	$(call directory,$(_SRC_DIR_),)
 
 install:		kaneton
-	$(call directory,$(_MBI_DIR_)/$(_MBI_),)			; \
-	$(_SHELL_) $(_MBI_).sh install					; \
+	$(call directory,$(_MBL_DIR_)/$(_MBL_),)			; \
+	$(_SHELL_) $(_MBL_).sh install					; \
 	$(call directory,$(_SRC_DIR_),)
 
 #
@@ -144,12 +144,12 @@ check:
 
 view- view:
 	$(call directory,$(_VIEW_DIR_),)				; \
-	$(_SHELL_) $(_VIEW_SH_)						; \
+	$(_SHELL_) $(_VIEW_SCRIPT_)					; \
 	$(call directory,$(_SRC_DIR_),)
 
 view-%:
 	$(call directory,$(_VIEW_DIR_),)				; \
-	$(_SHELL_) $(_VIEW_SH_) $*					; \
+	$(_SHELL_) $(_VIEW_SCRIPT_) $*					; \
 	$(call directory,$(_SRC_DIR_),)
 
 #
@@ -222,12 +222,12 @@ dist:			export-dist
 
 export- export:
 	$(call directory,$(_EXPORT_DIR_),)				; \
-	$(_SHELL_) $(_EXPORT_SH_)					; \
+	$(_SHELL_) $(_EXPORT_SCRIPT_)					; \
 	$(call directory,$(_SRC_DIR_),)
 
 export-%:
 	$(call directory,$(_EXPORT_DIR_),)				; \
-	$(_SHELL_) $(_EXPORT_SH_)					; \
+	$(_SHELL_) $(_EXPORT_SCRIPT_)					; \
 	$(call directory,$(_SRC_DIR_),)
 
 #

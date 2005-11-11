@@ -5,13 +5,13 @@
  * 
  * id.h
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton/core
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Oct 30 16:12:53 2005   mycure
+ * last update   Thu Nov 10 22:49:38 2005   mycure
  */
 
 #ifndef KANETON_ID_H

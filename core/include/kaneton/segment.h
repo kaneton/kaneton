@@ -5,13 +5,13 @@
  * 
  * segment.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32/kaneton
+ * path          /home/mycure/kaneton/core
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Mon Nov  7 15:35:03 2005   mycure
+ * last update   Thu Nov 10 23:05:38 2005   mycure
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -60,6 +60,8 @@ typedef struct
   t_psize			size;
 
   t_perms			perms;
+
+  machdep_data(o_segment);
 }				o_segment;
 
 /*
@@ -78,6 +80,8 @@ typedef struct
   t_fit				fit;
 
   t_setid			container;
+
+  machdep_data(m_segment);
 }				m_segment;
 
 /*
@@ -125,6 +129,10 @@ typedef struct
 /*
  * ../../kaneton/segment/segment.c
  */
+
+t_error			segment_show(t_segid			segid);
+
+t_error			segment_dump(void);
 
 t_error			segment_first_fit(o_as*			as,
 					  t_psize		size,

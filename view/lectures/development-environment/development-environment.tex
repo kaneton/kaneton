@@ -5,13 +5,13 @@
 %% 
 %% development-environment.tex
 %% 
-%% path          /home/mycure/kaneton
+%% path          /home/mycure/kaneton/view/lectures/development-environment
 %% 
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %% 
 %% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Sun Oct 23 02:55:45 2005   mycure
+%% last update   Tue Nov  8 09:47:42 2005   mycure
 %%
 
 %
@@ -78,7 +78,7 @@
 
 \institute
 {
-  \inst{1} kaneton distributed operating system project
+  \inst{1} kaneton microkernel project
 }
 
 %
@@ -184,8 +184,8 @@
   \frametitle{Explanations}
 
   Over the years, the kaneton project evolved, starting with a very
-  simple introduction to low-level programming, to microkernel
-  development and finally to a distributed operating system project.
+  simple introduction to low-level programming and finally
+  to microkernel development.
 
   \nl
 
@@ -195,14 +195,14 @@
   \begin{itemize}[<+->]
     \item
       The courses given which now go from the Intel processor to
-      the distributed operating system concepts
+      the distributed operating system concepts.
     \item
-      The assignments which always evolve to study advanced topics
+      The assignments which always evolve to study advanced topics.
     \item
       The context because we now have to provide parts of the microkernel
-      to avoid students a development from scratch
+      to avoid students a development from scratch.
     \item
-      .. and so the requirements
+      .. and so the prerequisites.
   \end{itemize}
 \end{frame}
 
@@ -216,13 +216,13 @@
   \begin{enumerate}
     \item
       The design of the kaneton distributed operating system including
-      the microkernel
+      the microkernel.
     \item
-      The Intel processor
+      The Intel processor.
     \item
-      The kernel concepts
+      The kernel concepts.
     \item
-      The distributed operating system concepts
+      The distributed operating system concepts.
   \end{enumerate}
 \end{frame}
 
@@ -261,15 +261,15 @@
 
   \begin{itemize}
     \item
-      Makefiles
+      Makefiles.
     \item
-      Shell scripts
+      Shell scripts.
     \item
-      Papers
+      Papers.
     \item
-      Tools
+      Tools.
     \item
-      .. everything you need to start microkernel development
+      .. everything you need to start microkernel development.
   \end{itemize}
 \end{frame}
 
@@ -292,7 +292,7 @@
   \begin{itemize}
     \item
       Developing such a development environment takes much time and
-      need experience
+      need experience.
     \item
       This development environment include very powerful features:
       multiusers cooperation, different operating systems etc..
@@ -305,7 +305,7 @@
 % 7)
 
 \begin{frame}
-  \frametitle{The Requirements}
+  \frametitle{The Prerequisites}
 
   The students starting the kaneton project should think that they
   will learn many many things during the year.
@@ -334,34 +334,318 @@
 
   \begin{verbatim}
     /
-      conf/
       core/
       doc/
       drivers/
       env/
       export/
       libs/
-      papers/
       programs/
       services/
       tools/
+      view/
   \end{verbatim}
 
   \end{center}
 \end{frame}
 
 %
-% conf
+% env
 %
 
-\section{conf}
+\section{env}
 
 % 1)
 
 \begin{frame}
   \frametitle{Overview}
 
-  The \textbf{conf} directory contains user variables used to parameterise:
+  The \textbf{env} directory contains the different development environments.
+
+  \nl
+
+  This directory is the heart of the kaneton development system.
+
+  \nl
+
+  Indeed, a user can develop the kaneton project on a Mac machine using
+  cross compilation for Intel processors ('cause PowerPC processor)
+  while another one is using a FreeBSD operating system on an Intel processor.
+
+  \nl
+
+  So, the development environment has to deal with these different operating
+  systems and architectures just for the development.
+
+  \nl
+
+  The entire kaneton compiling system is based on two programs:
+  \textbf{gmake} for the makefiles and \textbf{bash} for the shell scripts.
+
+  \nl
+
+  If an operating system has these two programs, it will be able to run
+  and develop the kaneton microkernel.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Our System}
+
+  To do this, we decided to introduce an environment system.
+
+  \nl
+
+  Every time a user gets the kaneton development tarball, he first has to
+  create his development environment given a couple machine and user.
+
+  \nl
+
+  Once the environment is installed, the user can develop, compile the kernel
+  etc.. without problems because everything (makefiles, scripts etc..) use
+  the binaries, variables etc.. for his environment.
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Tree}
+
+  \begin{verbatim}
+    env/
+      .env.conf
+      clean.sh
+      init.sh
+      machines/
+      users/
+  \end{verbatim}
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{init.sh}
+
+  The \textbf{init.sh} shell script is used to install the development
+  environment.
+
+  \nl
+
+  This script calls the specific \textbf{init.sh} scripts of the given
+  machine and user.
+
+  \nl
+
+  Finally the script installs some links and initialises the makefile
+  dependencies.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{clean.sh}
+
+  The \textbf{clean.sh} shell script just cleans the environment.
+
+  \nl
+
+  This shell script also calls the machine and user specific clean.sh scripts.
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{.env.conf}
+
+  This file is the main environment configuration file.
+
+  \nl
+
+  This file defines the directories, the scripts etc..
+
+  \nl
+
+  This file is always included first.
+\end{frame}
+
+% 7)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Use}
+
+  \begin{verbatim}
+    $ make init
+    [+] installing environment
+
+    [+] your current configuration:
+    [+]   user:                     julien.quintard
+    [+]   machine:                  unix
+    [+]   architecture:             ia32
+    [+]   multi-bootloader:         grub
+
+    [...]
+
+    $ make clean
+    [+] cleaning environment
+
+    [...]
+
+    $ 
+  \end{verbatim}
+\end{frame}
+
+%
+% machines
+%
+
+\subsection{machines}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The \textbf{machines} directory, located in the \textbf{env} directory,
+  contains the different machines.
+
+  \nl
+
+  A \textbf{machine} is a couple operating system, architecture.
+
+  \nl
+
+  More precisely a machine is composed of:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{an operating system}: on which the user will develop,
+      use kaneton.
+    \item
+      \textbf{an architecture}: on which the operating system
+      is running.
+    \item
+      \textbf{a target architecture}: which is the architecture used
+      to compile the kaneton microkernel.
+  \end{itemize}
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Tree}
+
+  \begin{verbatim}
+    machines/
+      unix/
+        clean.sh
+        init.sh
+        machine.conf
+        machine.mk
+        machine.sh
+      macos-powerpc.sparc64/
+    users/
+  \end{verbatim}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{init.sh}
+
+  This is the machine-dependent init script.
+
+  \nl
+
+  This script can be used by the machine to, for example, install some
+  architecture links or to detect the binaries used by this machine.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{clean.sh}
+
+  This script is called by the clean.sh script of the \textbf{env}
+  directory.
+
+  \nl
+
+  This script just cleans machine-dependent stuff.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{machine.conf}
+
+  This file is the main machine-specific configuration file.
+
+  \nl
+
+  This file defines the binaries used by this machine.
+
+  \nl
+
+  This file will always be included after the \textbf{.env.conf}
+  file so a machine is able to redefine kaneton variables if needed.
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{machine.mk}
+
+  The \textbf{machine.mk} makefile dependency defines machine-dependent
+  makefile functions.
+
+  \nl
+
+  Indeed, every makefile is composed of calls to special routines
+  which are implemented by the makefile dependency depending on the
+  machine: operating system plus architecture source and destination.
+
+  \nl
+
+  The kaneton compilation system uses a very special gmake feature:
+  the makefile \textbf{call} function.
+
+  \nl
+
+  Each machine has to provide a set of make functions to be able to run
+  the kaneton compilation system.
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{machine.sh}
+
+  This file contains every shell functions used by the machine.
+
+  \nl
+
+  In the same way than makefiles, the kaneton shell scripts call
+  machine-specific routines.
+
+  \nl
+
+  So every machine has to provide these routines to be able to run
+  kaneton shell scripts.
+\end{frame}
+
+%
+% users
+%
+
+\subsection{users}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The \textbf{users} directory contains user variables used to parameterise:
 
   \begin{itemize}
     \item
@@ -373,7 +657,7 @@
   \nl
 
   This configuration system is very interesting coupled with versionning
-  system.
+  systems.
 
   \nl
 
@@ -387,19 +671,21 @@
   \frametitle{Tree}
 
   \begin{verbatim}
-    conf/
-      mycure/
+    users/
+      julien.quintard/
         conf.c
         conf.h
         kaneton.conf
         modules.conf
-        mycure.conf
-      pwipwi/
-      chiche/
+        user.conf
+        user.mk
+        user.sh
+      check/
+      release/
   \end{verbatim}
 
-  This configuration system uses the shell variable \$USER to find
-  the main configuration file: \textbf{conf/\$USER/\$USER.conf}.
+  This configuration system uses the shell variable \$KANETON\_USER to find
+  the main configuration file: \textbf{env/users/\$KANETON\_USER/user.conf}.
 \end{frame}
 
 % 3)
@@ -465,12 +751,17 @@
   \nl
 
   A module is simply a file to load.
+
+  \nl
+
+  Moreover, only the files present in these files will be compiled by
+  the kaneton compiling system.
 \end{frame}
 
 % 7)
 
 \begin{frame}
-  \frametitle{\$USER.conf}
+  \frametitle{user.conf}
 
   Finally the main configuration file contains the configuration
   variables for the development environment.
@@ -485,168 +776,28 @@
   and the scripts.
 \end{frame}
 
-%
-% env
-%
-
-\section{env}
-
-% 1)
+% 8)
 
 \begin{frame}
-  \frametitle{Overview}
+  \frametitle{user.mk}
 
-  The \textbf{env} directory contains the different development environments.
-
-  \nl
-
-  This directory is the heart of the kaneton development system.
+  This file defines user-specific make stuff.
 
   \nl
 
-  Indeed, a user can develop the kaneton project on a Mac machine using
-  cross compilation for Intel processors ('cause PowerPC processor)
-  while another one is using a FreeBSD operating system on an Intel processor.
-
-  \nl
-
-  So, the development environment has to deal with these different operating
-  systems and architectures just for the development.
+  This file is included by the kaneton makefiles.
 \end{frame}
 
-% 2)
+% 9)
 
 \begin{frame}
-  \frametitle{Our System}
+  \frametitle{user.sh}
 
-  To do this, we decided to introduce an environment system.
-
-  \nl
-
-  Every time a user gets the kaneton development tarball, he first has to
-  create his development environment given a couple operating system and
-  architecture which leads to an environment.
+  This file defines user-specific shell variables or shell functions.
 
   \nl
 
-  Once the environment is installed, the user can develop, compile the kernel
-  etc.. without problems because everything (makefiles, scripts etc..) use
-  the binaries, variables etc.. for his environment.
-
-  \nl
-
-  The environment is specified in the user configuration file.
-\end{frame}
-
-% 3)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Tree}
-
-  \begin{verbatim}
-    env/
-      clean.sh
-      init.sh
-      unix/
-        clean.sh
-        init.sh
-        kaneton.mk
-      macos-powerpc.ia32/
-  \end{verbatim}
-
-  \nl
-
-  Here the \textbf{unix} is considered as the generic unix
-  environment but everyone can add a specific linux, FreeBSD, Solaris etc..
-  environment.
-\end{frame}
-
-% 4)
-
-\begin{frame}
-  \frametitle{init.sh}
-
-  The \textbf{init.sh} shell script is used to install the development
-  environment.
-
-  \nl
-
-  This script first gets the configuration variables from the user
-  configuration file, then calls the specific \textbf{init.sh} script
-  of the given environment.
-
-  \nl
-
-  Finally the script installs some links and initialises the makefile
-  dependencies.
-
-  \nl
-
-  The \textit{[environment]}/init.sh shell script is used to install
-  specific stuff.
-\end{frame}
-
-% 5)
-
-\begin{frame}
-  \frametitle{clean.sh}
-
-  The \textbf{clean.sh} shell script just cleans the environment.
-
-  \nl
-
-  This shell script also call the environment specific clean.sh script.
-\end{frame}
-
-% 6)
-
-\begin{frame}
-  \frametitle{kaneton.mk}
-
-  The \textbf{kaneton.mk} makefile dependency is the heart of the
-  kaneton compilation system.
-
-  \nl
-
-  Indeed, every makefile is composed of calls to special routines
-  which are implemented by the makefile dependency depending on the
-  environment: operating system plus architecture source and destination.
-
-  \nl
-
-  Moreover the \textbf{kaneton.mk} makefile dependency includes the
-  user configuration file so each makefile of the system is able to
-  use user defined variables.
-
-  \nl
-
-  The kaneton compilation system uses a very special gmake feature:
-  the makefile \textbf{call} function.
-\end{frame}
-
-% 7)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Use}
-
-  \begin{verbatim}
-    $ make init
-    [+] installing environment
-
-    [+] your current configuration:
-    [+]   environment:              unix
-    [+]   architecture:             ia32
-    [+]   multi-bootloader:         grub
-
-    [...]
-
-    $ make clean
-    [+] cleaning environment
-
-    [...]
-
-    $ 
-  \end{verbatim}
+  This file will always be included by the kaneton shell scripts.
 \end{frame}
 
 %
@@ -667,7 +818,7 @@
 
   For example a script to initialise and install modules on a grub
   bootloader boot device is provided in the subdirectory
-  \textit{scripts/multi-bootloaders/grub/}.
+  \textit{mbl/grub/}.
 
   \nl
 
@@ -683,21 +834,20 @@
 
   \begin{verbatim}
     tools/
-      scripts/
-        ld/
-          arch/
-            ia32/
-              bootstrap.lds
-              bootloader.lds
-              kaneton.lds
-              driver.lds
-              service.lds
-              user.lds
-        multi-bootloaders/
-          grub/
-          lilo/
-        prototypes/
-          mkp.py
+      ld/
+        arch/
+          ia32/
+            bootstrap.lds
+            bootloader.lds
+            kaneton.lds
+            driver.lds
+            service.lds
+            program.lds
+      mbl/
+        grub/
+        lilo/
+      proto/
+        mkp.py
   \end{verbatim}
 \end{frame}
 
@@ -717,7 +867,7 @@
     [+] /tmp/menu.lst
     [+] core/bootloader/bootloader
     [+] core/kaneton/kaneton
-    [+] conf/mycure/kaneton.conf
+    [+] env/.kaneton.conf
     [+] drivers/cons/cons
     [+] services/dsh/dsh
 
@@ -817,7 +967,7 @@
 
   \begin{itemize}
     \item
-      libc
+      klibc
     \item
       crt
     \item
@@ -1009,37 +1159,37 @@
 
   \begin{verbatim}
     $ make export
-    [!] usage: exporter.sh [stage]
+    [!] usage: export.sh [stage]
 
-    available stages: k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 kaneton dist
+    available stages: k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 kn dist
     $ make export-k3
   \end{verbatim}
 
   \begin{itemize}
     \item
       \textbf{k[0-9]}: create a special kaneton version for the k[0-9]
-      subproject
+      subproject.
     \item
-      \textbf{kaneton}: create an entire kaneton version for the lastest
-      subproject
+      \textbf{kn}: create an entire kaneton version for the lastest
+      subproject.
     \item
       \textbf{dist}: create an entire backup of the kaneton development
-      project
+      project.
   \end{itemize}
 \end{frame}
 
 %
-% papers
+% view
 %
 
-\section{papers}
+\section{view}
 
 % 1)
 
 \begin{frame}
   \frametitle{Overview}
 
-  The \textbf{papers} directory contains the papers and lectures
+  The \textbf{view} directory contains the papers and lectures
   in relation with the kaneton project.
 
   \nl
@@ -1054,17 +1204,18 @@
   \frametitle{Tree}
 
   \begin{verbatim}
-    papers/
-      assignments/
-      design/
-      kaneton/
-      seminar/
+    view/
       lectures/
         kernels/
         inline-assembly/
         c-preprocessor/
-        distributed-operating-systems/
         arch-ia32/
+        prerequisites/
+      papers/
+        assignments/
+        design/
+        kaneton/
+        seminar/
   \end{verbatim}
 \end{frame}
 
@@ -1081,12 +1232,12 @@
     [+]   design
     [+]   arch-ia32
     [+]   c-preprocessor
-    [+]   distributed-operating-systems
+    [+]   prerequisites
     [+]   inline-assembly
     [+]   kernels
     [+]   development-environment
 
-    [!] usage: viewer.sh [paper]
+    [!] usage: view.sh [paper]
     $ make view-design
   \end{verbatim}
 \end{frame}

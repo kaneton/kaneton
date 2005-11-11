@@ -5,13 +5,13 @@
  * 
  * as.h
  * 
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/mycure/kaneton/core
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Tue Nov  1 15:50:30 2005   mycure
+ * last update   Thu Nov 10 23:24:12 2005   mycure
  */
 
 #ifndef IA32_KANETON_AS_H
@@ -64,7 +64,7 @@ typedef struct
       t_error	_r_ = ERROR_NONE;					\
 									\
       if (as_interface._function_ != NULL)				\
-        _r_ = as_interface._function_((_args_));			\
+        _r_ = as_interface._function_(_args_);				\
 									\
       _r_;								\
     }									\

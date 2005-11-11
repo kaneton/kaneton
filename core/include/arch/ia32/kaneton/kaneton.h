@@ -5,13 +5,13 @@
  * 
  * kaneton.h
  * 
- * path          /home/mycure/kaneton
+ * path          /home/mycure/kaneton/core
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Mon Oct 31 10:16:27 2005   mycure
+ * last update   Thu Nov 10 22:55:34 2005   mycure
  */
 
 #ifndef IA32_KANETON_KANETON_H
@@ -57,6 +57,11 @@ t_error			ia32_as_rel(t_asid			asid);
 /*
  * ../../../../kaneton/arch/ia32/kaneton/segment.c
  */
+
+t_error			ia32_segment_reserve(t_asid		asid,
+					     t_psize		size,
+					     t_perms		perms,
+					     t_segid*		segid);
 
 
 /*

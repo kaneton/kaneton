@@ -5,13 +5,13 @@
 %%
 %% design.tex
 %%
-%% path          /home/mycure/kaneton/view/cursus/schedule
+%% path          /home/mycure/kaneton/view/papers/design
 %%
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %%
 %% started on    Fri Feb  4 15:10:05 2005   mycure
-%% last update   Mon Oct 31 20:53:11 2005   mycure
+%% last update   Tue Nov  8 05:20:55 2005   mycure
 %%
 
 %%
@@ -35,11 +35,11 @@
 %% --------- header -----------------------------------------------------------
 %%
 
-\lhead{\scriptsize{The kaneton distributed operating system}}
+\lhead{\scriptsize{The kaneton microkernel project}}
 \rhead{\scriptsize{The kaneton design concepts}}
 \rfoot{\scriptsize{EPITA Computer System Laboratory - www.lse.epita.fr}}
 
-\title{The kaneton distributed operating system}
+\title{The kaneton microkernel project}
 
 \author{\small{Julien Quintard} \\
         \scriptsize{EPITA Computer System Laboratory, Paris, France}}
@@ -56,14 +56,12 @@
 
 \begin{abstract}
 
-This paper describes the design of the kaneton distributed operating system.
+This paper describes the design of the kaneton microkernel.
 This system was designed to be ported on many architectures without being
 intrusive. Moreover, the main goal of this system was to design a powerful
 system able to adapt itself on a network constantly in evolution and to
 provide a transparent and easy way to migrate processes, communicate
-with system's entities and to be fault tolerant. This paper is composed of
-two parts, the first describing the microkernel concepts and components,
-the latter describing the distributed operating system algorithms.
+with system's entities and to be fault tolerant.
 
 \end{abstract}
 
@@ -94,8 +92,8 @@ implementation to be as simple as possible.
 
 \section{The kaneton goals}
 
-Many research projects in distributed systems started with an existing system.
-For the kaneton distributed operating system, we decided to totally design a
+Many research projects in operating systems started with an existing system.
+For the kaneton microkernel project, we decided to totally design a
 new system. Indeed, the previous EPITA Computer System Laboratory projects in
 operating systems were not portable enough, so we decided to totally design
 this new kernel from scratch with a special interest for the portability.

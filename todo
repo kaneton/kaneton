@@ -1,9 +1,61 @@
 --
- remettre le script conf.sh qui genere le fichier de conf
+ proposer deux sujets sur le vrai kaneton par exemple aux deux meilleurs
+ groupes: integration du SMP, nommage, new archi etc..
+
+--
+ isoler le code critique qui creer les fichiers de conf: env.sh
+
+--
+ modifier le script export.sh
+
+--
+ dans design, il y a bcp trop de relations au distribue. il faut le splitter
+ et mettre une partie dans kayou. une fois retouche et la partie microkernel
+ isolee on pourra le mettre sur le site.
+
+ revoir egalement seminar
+
+--
+ bouger le cours distributed-operating-systems dans kayou
+
+--
+ le fait de filer des params dans un fichier de conf implique qu on
+ soit capable aussi de lancer ce meme service une fois le kernel boote.
+
+ il faudra donc fournir un moyen de passer les meme params, capabilities
+ inclues. il faudra ptet un filesystem pour mod assez complet.
 
 --
  sujets pour etudiants:
    - integration du smp dans kaneton: pour, contre? modifications?
+   - complete naming scheme: objects
+
+ mettre tous ces trucs dans seminars avec petite explication.
+
+--
+ systeme de nommage style: machine::service::subpart::object
+
+ exemples:
+
+    mybox::core::segment::1  // segment 1 du core
+    yourbox::mod::*          // tous les modules de mod
+
+ on pourrait imaginer un systeme de regexp :)
+
+ ensuite si une tache comme une tache root demande une capability sur
+ son espace d'adressage, c'est mod qui demandera a core la cap de l'as
+ et qui la retournera.
+
+ on pourrait imaginer encore plus loin
+
+    mybox::core::task:: taskid == 1
+    mybox::core::segment:: size >= 100 && size <= 200
+
+--
+ il faudrait resoudre ce probleme de user. le kernel ne doit pas gerer
+ les users. comment faire ???
+
+ peut etre sommes nous obliges de rajouter un ownid?
 
 --
  pour par exemple un driver, il faudra qu il soit capable de communiquer
@@ -14,18 +66,6 @@
 
 --
  utiliser les meme noms de fonctions pour make et shell
-
---
- modifier tout: seminar, design etc.. pour ne pas parler du distributed
-
---
- retoucher tous les scripts shell pour qu ils utilisent .env.sh
-
---
- dans la doc sur le env-dev: machine = os+couple archi s-d
- env = machine + user
-
- retoucher le cours dev-env car on a gravement refait le systeme d'env
 
 --
  faire des users:
@@ -42,9 +82,12 @@
  faire les logos: kaneton + kayou
 
 --
- systeme qui prend: kaneton.mk + $USER.conf
+ developer un kfs, un systeme de fichiers qui pourrait lister les objets
+ du kernel: comme ca on pourrait acceder aux objects et ca resoudrait le
+ lancement des services.
 
- et qui genere un fichier de conf au format makefile mais sans doublons
+ ou mieux etudier Sprite et voir comment ils font eux avec leurs systeme
+ de nommage.
 
 --
  segments: code complet + dump + show + partie dep (on refait)
