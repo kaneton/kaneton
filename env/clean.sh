@@ -6,19 +6,19 @@
 ## 
 ## clean.sh
 ## 
-## path          /home/mycure/kaneton/env
+## path          /home/mycure/kaneton/tools/mbl/grub
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Tue Nov  8 08:46:43 2005   mycure
+## last update   Sun Nov 13 00:57:15 2005   mycure
 ##
 
 #
 # ---------- information ------------------------------------------------------
 #
-# this script has to be run in its directory: src/env/machines/$_MACHINE_/
+# this script has to be run in its directory: src/env/
 #
 
 #
@@ -38,17 +38,20 @@ source			.env.sh
 #
 machines()
 {
+  local l
+  local m
+
   l=""
 
-  machines=$(list $_MACHINES_DIR_)
+  machines=$(list ${_MACHINES_DIR_})
 
-  for m in $machines ; do
-    if [ -d $_MACHINES_DIR_/$m ] ; then
-      l="$l $m"
+  for m in ${machines} ; do
+    if [ -d ${_MACHINES_DIR_}/${m} ] ; then
+      l="${l} ${m}"
     fi
   done
 
-  display " supported machines are:$l" "!"
+  display " supported machines are:${l}" "!"
 }
 
 
@@ -62,8 +65,8 @@ links()
 {
   display " unlinking kernel configuration files" "+"
 
-  remove $_CORE_CONF_DIR_/conf.c
-  remove $_CORE_INCLUDE_DIR_/kaneton/conf.h
+  remove ${_CORE_CONF_DIR_}/conf.c
+  remove ${_CORE_INCLUDE_DIR_}/kaneton/conf.h
 }
 
 
@@ -75,12 +78,14 @@ links()
 #
 dep()
 {
+  local m
+
   display " cleaning makefile dependencies" "+"
 
-  makefiles=$(find $_SRC_DIR_/ -name .makefile.mk)
+  makefiles=$(find ${_SRC_DIR_}/ -name .makefile.mk)
 
-  for m in $makefiles ; do
-    remove $m
+  for m in ${makefiles} ; do
+    remove ${m}
   done
 }
 
@@ -94,10 +99,10 @@ dep()
 #
 clean()
 {
-  if [ ! -d $_MACHINE_DIR_ ] ; then
-    display " unknown system: '$_MACHINE_'" "!"
+  if [ ! -d ${_MACHINE_DIR_} ] ; then
+    display " unknown system: '${_MACHINE_}'" "!"
     display ""
-    display " please check your _MACHINE_ variable into '$_USER_CONF_'" "!"
+    display " please check your _MACHINE_ variable into '${_USER_CONF_}'" "!"
     display ""
     machines
     display ""
@@ -106,10 +111,10 @@ clean()
     exit
   fi
 
-  if [ ! -e $_MACHINE_DIR_/clean.sh ] ; then
-    display " '$_MACHINE_' machine-specific init script not present" "!"
+  if [ ! -e ${_MACHINE_DIR_}/clean.sh ] ; then
+    display " '${_MACHINE_}' machine-specific init script not present" "!"
     display ""
-    display " please check your _MACHINE_ variable into '$_USER_CONF_'" "!"
+    display " please check your _MACHINE_ variable into '${_USER_CONF_}'" "!"
     display ""
     machines
     display ""
@@ -117,19 +122,19 @@ clean()
     display ""
     exit
   else
-    launch $_MACHINE_DIR_/clean.sh
+    launch ${_MACHINE_DIR_}/clean.sh
   fi
 
-  if [ -e $_USER_DIR_/clean.sh ] ; then
-    launch $_USER_DIR_/clean.sh
+  if [ -e ${_USER_DIR_}/clean.sh ] ; then
+    launch ${_USER_DIR_}/clean.sh
   fi
 
   # finally removes the env.mk and env.sh files.
-  remove $_ENV_MK_
-  remove $_ENV_SH_
+  remove ${_ENV_MK_}
+  remove ${_ENV_SH_}
 
   # also removes the kaneton runtime configuration file
-  remove $_KANETON_CONF_
+  remove ${_KANETON_CONF_}
 }
 
 #

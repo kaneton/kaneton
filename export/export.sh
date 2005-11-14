@@ -12,7 +12,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Tue Nov  8 05:56:23 2005   mycure
+## last update   Sun Nov 13 17:17:32 2005   mycure
 ##
 
 #
@@ -43,10 +43,10 @@ source			../env/.env.sh
 # ---------- globals ----------------------------------------------------------
 #
 
-_STAGES_="k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 kn dist"
-_STAGE_=""
-_INPUT_=""
-_FILES_=""
+STAGES="k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 kn dist"
+STAGE=""
+INPUT=""
+FILES=""
 
 
 

@@ -5,13 +5,13 @@
 ## 
 ## machine.mk
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/tools/mbl/grub
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Tue Nov  8 13:01:44 2005   mycure
+## last update   Sat Nov 12 17:10:35 2005   mycure
 ##
 
 #
@@ -177,6 +177,27 @@ endef
 
 define directory
   $(_CD_) $(2) $(1)
+endef
+
+#
+# launch a new program, script, makefile etc..
+#
+# $(1):		the file to launch
+# $(2):		arguments
+# $(3):		advanced options
+#
+
+define launch
+  case "$(1)" in							\
+    Makefile)								\
+      $(_MAKE_) $(_MAKEFLAGS_) $(3) $(1) $(2)				; \
+      ;;								\
+    *.sh)								\
+      $(_SHELL_) $(3) $(1) $(2)						; \
+      ;;								\
+    *)									\
+      ;;								\
+  esac
 endef
 
 #

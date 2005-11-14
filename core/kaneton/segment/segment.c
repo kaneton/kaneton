@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton/segment
+ * path          /home/mycure/kaneton/core/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Nov 10 22:11:50 2005   mycure
+ * last update   Sun Nov 13 13:45:22 2005   mycure
  */
 
 /*
@@ -198,7 +198,7 @@ t_error			segment_dump(void)
 	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 	}
 
-      if (set_show(data->segid) != ERROR_NONE)
+      if (segment_show(data->segid) != ERROR_NONE)
 	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
     }
 
@@ -396,7 +396,10 @@ t_error			segment_reserve(t_asid			asid,
     {
     case FIT_FIRST:
       {
-	return (segment_first_fit(as, size, perms, segid));
+	if (segment_first_fit(as, size, perms, segid) != ERROR_NONE)
+	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+	break;
       }
     default:
       {
@@ -406,7 +409,7 @@ t_error			segment_reserve(t_asid			asid,
 
   machdep_call(segment, segment_reserve, asid, size, perms, segid);
 
-  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
 /*
@@ -795,6 +798,8 @@ t_error			segment_init(t_fit			fit)
   segment_test();
 #endif
 
+  segment_test(); // XXX
+
   return (ERROR_NONE);
 }
 
@@ -846,6 +851,8 @@ t_error			segment_test(void)
 
   if (segment_reserve(kas, 42, PERM_EXEC, &segid) != ERROR_NONE)
     printf("error: segment_reserve()\n");
+
+  return ; // XXX to-remove
 
   /*
    * XXX continue tests

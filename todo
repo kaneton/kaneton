@@ -1,4 +1,16 @@
 --
+ bugs dans stats car quand je l'active ca plante. faudrait revoir ca.
+
+--
+ revoir la generation de version.c
+
+--
+ retoucher les scripts shell pour en faire de bons scripts bash
+
+--
+ trouver du matos a acheter avec le budget
+
+--
  proposer deux sujets sur le vrai kaneton par exemple aux deux meilleurs
  groupes: integration du SMP, nommage, new archi etc..
 

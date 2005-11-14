@@ -1,4 +1,5 @@
-#!/bin/sh
+#! /bin/bash
+
 ## copyright quintard julien
 ## 
 ## kaneton
@@ -10,78 +11,40 @@
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
-## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Thu Nov  3 09:15:02 2005   mycure
+## started on    Fri Feb 11 02:58:21 2005   mycure
+## last update   Sun Nov 13 13:18:48 2005   mycure
 ##
 
-# INFORMATIONS
 #
-# this script has to be run in the directory
-# src/tools/scripts/multi-bootloaders/grub/
-
-
-
-# CONFIGURATION FILE PATH
+# ---------- information ------------------------------------------------------
 #
-# configuration file
-_CONF_="../../../../conf/"$USER"/"$USER".conf"
-_MODULES_=`sed "s/#.*//g" ../../../../conf/"$USER"/modules.conf | grep -v "^$"`
-
-
-
-# CONFIGURATION FILE VARIABLES
+# this script has to be run in its directory: tools/mbl/grub/
 #
-# default globals
-_DISPLAY__="unknown"
-_ADDRESS_="unknown"
-_TFTP_ADDRESS_="unknown"
-_TFTP_DIRECTOR_="unknown"
-_BOOTMODE_="unknown"
-_UDEVICE_="unknown"
-_MDEVICE_="unknown"
-_IMAGE_="unknown"
 
-_KANETON_IMAGE_="data/kaneton.img"
-_MENU_="/tmp/menu.lst"
-
-
-
-# READ CONFIGURATION FILE
 #
-# function used to read the configuration file and to load
-# important variables
-read_kaneton_conf()
-{
-  # address
-  _DISPLAY_=`cat $_CONF_ | sed -n "s/^_DISPLAY_ = \(.*\)$/\1/p"`
+# ---------- dependencies -----------------------------------------------------
+#
 
-  # address
-  _ADDRESS_=`cat $_CONF_ | sed -n "s/^_ADDRESS_ = \(.*\)$/\1/p"`
+source			../../../env/.env.sh
 
-  # tftp address
-  _TFTP_ADDRESS_=`cat $_CONF_ | sed -n "s/^_TFTP_ADDRESS_ = \(.*\)$/\1/p"`
+#
+# ---------- globals ----------------------------------------------------------
+#
 
-  # tftp directory
-  _TFTP_DIRECTORY_=`cat $_CONF_ | sed -n "s/^_TFTP_DIRECTORY_ = \(.*\)$/\1/p"`
+KANETON_IMAGE="data/kaneton.img"
 
-  # bootmode
-  _BOOTMODE_=`cat $_CONF_ | sed -n "s/^_BOOTMODE_ = \(.*\)$/\1/p"`
+MENU=""
+ACTION=""
 
-  # unix device
-  _UDEVICE_=`cat $_CONF_ | sed -n "s/^_UDEVICE_ = \(.*\)$/\1/p"`
+#
+# ---------- functions --------------------------------------------------------
+#
 
-  # mtools device
-  _MDEVICE_=`cat $_CONF_ | sed -n "s/^_MDEVICE_ = \(.*\)$/\1/p"`
-
-  # image
-  _IMAGE_=`cat $_CONF_ | sed -n "s/^_IMAGE_ = \(.*\)$/\1/p"`
-}
-
-
-
+#
 # USAGE
 #
-# this function displays the usage but does not exit
+# this function displays the usage but does not exit.
+#
 usage()
 {
   display " usage: grub.sh [build|install]" "!"
@@ -89,9 +52,93 @@ usage()
 
 
 
+#
+# BUILD
+#
+# this function builds the grub boot device.
+#
+build()
+{
+  # builds the grub boot device.
+  grub-build "${_BOOTMODE_}" "${KANETON_IMAGE}" "${_UDEVICE_}" "${_IMAGE_}"
+
+  if [ ${?} -ne 0 ] ; then
+    display " unknown mode \"${_BOOTMODE_}\"" "!"
+    display ""
+    display " please check your BOOTMODE variable in ${_USER_CONF_}" "!"
+    display ""
+    usage
+    display " current supported boot modes for grub are:" "!" 
+    display "      floppy-image" "!"
+    display "      floppy" "!"
+    display "      tftp" "!"
+    exit
+  fi
+}
+
+
+
+#
+# MENU
+#
+# this function generates the grub menu file.
+#
+menu()
+{
+  # creates the grub menu file.
+  grub-menu "${MENU}" "${_BOOTMODE_}" "${_ADDRESS_}"			\
+            "${_TFTP_ADDRESS_}" "${_MODULES_}"
+
+  if [ $? -ne 0 ] ; then
+    display " unknown mode \"${_BOOTMODE_}\"" "!"
+    display ""
+    display " please check your BOOTMODE variable in ${_USER_CONF_}" "!"
+    display ""
+    usage
+    display " supported boot modes for grub are:" "!"
+    display "      floppy-image" "!"
+    display "      floppy" "!"
+    display "      tftp" "!"
+    display ""
+    exit -1
+  fi
+}
+
+
+
+#
+# INSTALL
+#
+# this function installs the kaneton binaries on the boot device.
+#
+install()
+{
+  # installs the grub modules on the boot device.
+  grub-install "${_BOOTMODE_}" "${MENU}" "${_MDEVICE_}"			\
+               "${_TFTP_DIRECTORY_}" "${_IMAGE_}" "${_MODULES_}"
+
+  if [ $? -ne 0 ] ; then
+    display " unknown mode \"${_BOOTMODE_}\"" "!"
+    display ""
+    display " please check your BOOTMODE variable in ${_USER_CONF_}" "!"
+    display ""
+    usage
+    display " supported boot modes for grub are:" "!"
+    display "      floppy-image" "!"
+    display "      floppy" "!"
+    display "      tftp" "!"
+    display ""
+    exit -1
+  fi
+}
+
+
+
+#
 # WARNING
 #
-# this function alerts the user, displaying information and asking to continue
+# this function alerts the user, displaying information and asking to continue.
+#
 warning()
 {
   # display information and ask the user to continue or cancel
@@ -106,326 +153,72 @@ warning()
   display ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
-  NEEDLESS=""
-  read NEEDLESS
+  waitkey
 }
 
-
-
-# MENU
 #
-# this function creates the grub menu file
-menu()
-{
-  # remove old version
-  rm -f $_MENU_ 2>&1 > /dev/null
-
-  # create new version
-  echo "title kaneton" >> $_MENU_
-  echo "" >> $_MENU_
-
-  # insert each module in menu
-
-  case "$_BOOTMODE_" in
-    "floppy"|"floppy-image")
-      echo "root (fd0)" >> $_MENU_
-      echo "" >> $_MENU_
-      ;;
-
-    "tftp")
-      echo "ifconfig --address=$_ADDRESS_ --server=$_TFTP_ADDRESS_" >> $_MENU_
-      echo "" >> $_MENU_
-      echo "root (nd)" >> $_MENU_
-      echo "" >> $_MENU_
-      ;;
-
-    *)
-      display " unknown mode \"$_BOOTMODE_\"" "!"
-      display ""
-      display " please check your BOOTMODE variable in $_CONF_" "!"
-      display ""
-      usage
-      display " supported boot modes for grub are:" "!"
-      display "      floppy-image" "!"
-      display "      floppy" "!"
-      display "      tftp" "!"
-      exit
-      ;;
-  esac
-
-  i=0
-  for module in $_MODULES_ ; do
-    if [ $i = 0 ] ; then
-      kernel=$module
-    else
-      modules="$modules $module"
-    fi
-    i=1
-  done
-
-  echo $kernel | sed "s/^.*\/\(.*\)$/kernel \/modules\/\1/g" >> $_MENU_
-
-  echo "" >> $_MENU_
-
-  for module in $modules
-  do
-      echo $module | sed "s/^.*\/\(.*\)$/module \/modules\/\1/g" >> $_MENU_
-  done
-}
-
-
-
-# BUILD
+# ---------- entry point ------------------------------------------------------
 #
-# initialise the boot device
-build()
-{
-  case "$_BOOTMODE_" in
-    "floppy"|"tftp")
-      cat $_KANETON_IMAGE_ > $_UDEVICE_
-      ;;
 
-    "floppy-image")
-      cp $_KANETON_IMAGE_ $_IMAGE_
-      ;;
+# displays some stuff.
+display ""
 
-    *)
-      display " unknown mode \"$_BOOTMODE_\"" "!"
-      display ""
-      display " please check your BOOTMODE variable in $_CONF_" "!"
-      display ""
-      usage
-      display " current supported boot modes for grub are:" "!" 
-      display "      floppy-image" "!"
-      display "      floppy" "!"
-      display "      tftp" "!"
-      exit
-      ;;
-  esac
-}
-
-
-
-# INSTALL
-#
-# installs the distribution on the boot device
-install()
-{
-  case "$_BOOTMODE_" in
-    "floppy")
-      if [ ! -f $_MENU_ ] ; then
-        display " $_MENU_" "!"
-      else
-        mcopy -n -o $_MENU_ $_MDEVICE_/boot/grub/
-        display " $_MENU_" "+"
-      fi
-
-      for module in $_MODULES_ ; do
-        if [ ! -f ../../../../$module ] ; then
-          display " $module" "!"
-        else
-          mcopy -n -o ../../../../$module $_MDEVICE_/modules/
-          display " $module" "+"
-        fi
-      done
-      display ""
-      ;;
-
-    "tftp")
-      if [ ! -f $_MENU_ ] ; then
-        display " $_MENU_" "!"
-      else
-        mcopy -n -o $_MENU_ $_MDEVICE_/boot/grub/
-        display " $_MENU_" "+"
-      fi
-
-      for module in $_MODULES_ ; do
-        if [ ! -f ../../../../$module ] ; then
-          display " $module" "!"
-        else
-          cp ../../../../$module $_TFTP_DIRECTORY_
-          display " $module" "+"
-        fi
-      done
-      display ""
-      ;;
-
-    "floppy-image")
-      if [ ! -f $_MENU_ ] ; then
-        display " $_MENU_" "!"
-      else
-        mcopy -n -o $_MENU_ -i $_IMAGE_ ::/boot/grub/
-        display " $_MENU_" "+"
-      fi
-
-      for module in $_MODULES_ ; do
-        if [ ! -f ../../../../$module ] ; then
-          display " $module" "!"
-        else
-          mcopy -n -o ../../../../$module -i $_IMAGE_ ::/modules/
-          display " $module" "+"
-        fi
-      done
-      display ""
-      ;;
-
-    *)
-      display " unknown mode \"$_BOOTMODE_\"" "!"
-      display ""
-      display " please check your BOOTMODE variable in $_CONF_" "!"
-      display ""
-      usage
-      display " current supported boot modes for grub are:" "!"
-      display "      floppy-image" "!"
-      display "      floppy" "!"
-      display "      tftp" "!"
-      exit
-      ;;
-  esac
-}
-
-
-
-# PRINT A MESSAGE
-#
-# prints a message using the user variable DISPLAY
-print()
-{
-  color=$1
-  message=$2
-  options=$3
-
-  if [ $_DISPLAY_ = "color" ] ; then
-
-    case "$color" in
-      "red")
-        echo -e $options '\E[;31m'"\033[1m$message\033[0m"
-	;;
-
-      "green")
-        echo -e $options '\E[;32m'"\033[1m$message\033[0m"
-	;;
-
-      "yellow")
-        echo -e $options '\E[;33m'"\033[1m$message\033[0m"
-	;;
-
-      "blue")
-        echo -e $options '\E[;34m'"\033[1m$message\033[0m"
-	;;
-
-      "white")
-        echo -e $options '\E[;37m'"\033[1m$message\033[0m"
-	;;
-
-      *)
-	;;
-    esac
-
-  else
-
-    echo $options "$message"
-
-  fi
-}
-
-
-
-# DISPLAY A MESSAGE
-#
-# displays a message with a header
-display()
-{
-  msg=$1
-  header=$2
-
-  case "$header" in
-    "+")
-      print "blue" "[" "-n"
-      print "green" "+" "-n"
-      print "blue" "]" "-n"
-      ;;
-
-    "!")
-      print "blue" "[" "-n"
-      print "red" "!" "-n"
-      print "blue" "]" "-n"
-      ;;
-
-    "?")
-      print "blue" "[" "-n"
-      print "yellow" "?" "-n"
-      print "blue" "]" "-n"
-      ;;
-
-    *)
-      ;;
-  esac
-
-  print "white" "$msg" ""
-}
-
-
-
-# ENTRY POINT
-#
-# entry point of this script
-
-# check the number of arguments
+# checks the number of arguments.
 if [ $# -lt 1 ] ; then
-    usage
-    exit -1
+  usage
+  exit -1
 fi
 
-action="$1"
-shift
+# gets the argument.
+ACTION=$1
 
-case "$action" in
+# choose what to do.
+case $ACTION in
   "build")
-    # initialising boot system
-
-    # call the read_kaneton_conf function
-    read_kaneton_conf
-
-    display " initialising boot system" "+"
+    # initialising the boot system.
+    display " initialising the boot system" "+"
     display ""
 
-    # call the warning function
+    # calls the warning function.
     warning
 
-    # call the init function
+    # calls the build function.
     build
 
-    # boot system initialised
-    display " boot system initialised successfully" "+"
     ;;
 
   "install")
-    # initialising boot system
-
-    # call the read_kaneton_conf function
-    read_kaneton_conf
-
-    display " initialising boot system" "+"
+    # initialising the boot system.
+    display " initialising the boot system" "+"
     display ""
 
-    # call the warning function
+    # calls the warning function.
     warning
 
-    # call the menu function
+    # generates a temporary file for the grub menu file.
+    MENU=$(mktemp)
+
+    # calls the menu function to generate the grub menu file.
     menu
 
-    # call the install function
+    # calls the install function
     install
 
-    # boot system initialised
-    display " boot system initialised successfully" "+"
+    # display some stuff.
+    display ""
+
     ;;
 
   *)
     display " unknown action \"$action\"" "!"
     display ""
     usage
-    exit
+    exit -1
     ;;
 esac
+
+# boot system initialised.
+display " boot system initialised successfully" "+"
+
+# displays some stuff.
+display ""
