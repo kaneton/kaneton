@@ -6,13 +6,13 @@
 ## 
 ## init.sh
 ## 
-## path          /home/mycure/kaneton/tools/mbl/grub
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Nov 13 00:58:13 2005   mycure
+## last update   Wed Nov 16 22:41:39 2005   mycure
 ##
 
 #
@@ -61,8 +61,8 @@ user_conf()
   local machine
 
   # gets the _MACHINE_ variable.
-  machine=$(sed -n							\
-            "s/^_MACHINE_[[:space:]]*\(=\|:=\)[[:space:]]*\(.*\)$/\2/p"	\
+  machine=$(sed -E -n							\
+            "s/^_MACHINE_[[:space:]]+(=|:=)[[:space:]]+(.*)$/\2/p"	\
             ${USER_CONF})
 
   # sets the configuration variables.
@@ -133,11 +133,11 @@ env_sh()
   echo "all:" >> ${makefile}
 
   # generates the env.sh shell script dependency.
-  regexp="^\(_[[:alpha:]_]\+_\)[[:space:]]*\(=\|:=\)[[:space:]]*\(.*\)$"
+  regexp="^(_[[:alpha:]_]+_)[[:space:]]+(=|:=)[[:space:]]+(.*)$"
   replacement="\1=\"\3\""
 
   make -p -f ${makefile} |						\
-      sed -n "s/${regexp}/${replacement}/p" > ${ENV_SH}
+      sed -E -n "s/${regexp}/${replacement}/p" > ${ENV_SH}
 
   # appends the env.sh file the machine shell script specific code.
   cat ${MACHINE_SH} >> ${ENV_SH}

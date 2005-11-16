@@ -6,13 +6,13 @@
 ## 
 ## clean.sh
 ## 
-## path          /home/mycure/kaneton/export
+## path          /home/mycure/kaneton/env
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Nov 13 17:17:32 2005   mycure
+## last update   Mon Nov 14 22:34:06 2005   mycure
 ##
 
 #
@@ -45,10 +45,9 @@ source			../env/.env.sh
 
 STAGES="k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 kn dist"
 STAGE=""
-INPUT=""
+LOCATION=""
 FILES=""
-
-
+TEMP=""
 
 #
 # ---------- functions --------------------------------------------------------
@@ -63,7 +62,7 @@ usage()
 {
   display " usage: export.sh [stage]" "!"
   display ""
-  display " available stages: $_STAGES_"
+  display " available stages: ${STAGES}"
 }
 
 
@@ -77,58 +76,14 @@ warning()
 {
   # display information and ask the user to continue or cancel
   display " your current configuration" "+"
-  display "   export:                   $_EXPORT_" "+"
-  display "   hidden:                   $_HIDDEN_" "+"
-  display "   view format:		$_VIEW_FORMAT_" "+"
-  display "   viewer:                   $_VIEWER_" "+"
+  display "   export:                   ${_EXPORT_}" "+"
+  display "   hidden:                   ${_HIDDEN_}" "+"
   display ""
-  display "   stage:                    $_STAGE_" "+"
+  display "   stage:                    ${STAGE}" "+"
   display ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
-  NEEDLESS=""
-  read NEEDLESS
-}
-
-
-
-#
-# CHECK
-#
-# this functions checks the stage.
-#
-check()
-{
-  for s in $_STAGES_ ; do
-    echo $s | grep $_INPUT_ 2> /dev/null > /dev/null
-
-    if [ $? -eq 0 ] ; then
-      _STAGE_=$s
-    fi
-  done
-
-  if [ -z $_STAGE_ ] ; then
-    display " unknown stage \"$_INPUT_\"" "!"
-    display ""
-    usage
-    exit -1
-  fi
-}
-
-
-
-#
-# TAGS
-#
-# this function removes tags from the source code files.
-#
-tags()
-{
-  # finally cleans the file from the cut tags
-  for f in $_FILES_ ; do
-    cat $f | sed "/^.*\[cut\].*$/ d" > /tmp/$_EXPORT_
-    cp /tmp/$_EXPORT_ $f
-  done
+  wait-key
 }
 
 
@@ -157,32 +112,40 @@ extract()
   done
 }
 
+
+
+#
 # BUILD
 #
-# this function builds an exported distribution given the stage
+# this function builds an exported distribution given the stage.
+#
 build()
 {
-  # removes the old directory for this stage
-  rm -f $_EXPORT_-*-$_STAGE_.tar.gz
-  rm -f /tmp/$_EXPORT_.tar.gz
+  # removes the old directory for this stage.
+  remove "${_EXPORT_}-*-${STAGE}.tar.gz"
+  remove "${_EXPORT_}"
 
-  # creates a tarball from the current working development tree
-  cd ../
-  tar -czf /tmp/$_EXPORT_.tar.gz .
-  cd export
+  # creates a tarball from the current working development tree.
+  change-directory "${_SRC_DIR_}"
+  pack "." "${TEMP}"
+  change-directory "${_EXPORT_DIR_}"
 
-  # cleans the copy of the current working development tree
-  mkdir $_EXPORT_
-  tar -xzf /tmp/$_EXPORT_.tar.gz -C $_EXPORT_
+  # cleans the copy of the current working development tree.
+  make-directory "${_EXPORT_}"
+  unpack "${_EXPORT_}" "${TEMP}"
 
-  # enter directory
-  cd $_EXPORT_
+  # enters directory.
+  change-directory "${_EXPORT_}"
 
-  # remove svn control directories
-  rm -Rf `find ./ -type d -name .svn`
+  # removes svn control directories.
+  svn-clean "${_EXPORT_}"
 
   # remove the hidden directories
-  rm -Rf $_HIDDEN_
+  remove "${_HIDDEN_}"
+
+XXX
+
+exit -1
 
   # gets the list of the files
   c_files=`find libs/ core/ drivers/ services/ programs/                \
@@ -202,12 +165,12 @@ build()
       ;;
 
     "kaneton")
-      tags
+      tags-clean "${FILES}"
       ;;
 
     *)
       extract
-      tags
+      tags-clean "${FILES}"
       ;;
   esac
 
@@ -248,21 +211,34 @@ dist()
 display ""
 
 # check the number of arguments.
-if [ $# -lt 1 ] ; then
-    usage
-    exit -1
+if [ ${#} -lt 1 ] ; then
+  usage
+  exit -1
 fi
 
-_INPUT_="$1"
+# gets the argument.
+STAGE="${1}"
 
 # preparing to export.
 display " preparing to export" "+"
 
-# checks the input argument.
-check
+# locate the stage.
+LOCATION=$(locate "${STAGES}" "${STAGE}")
+
+# checks the result
+if [ ${?} -ne 0 ] ; then
+  display " unknown stage \"${STAGE}\"" "!"
+  display ""
+  usage
+  display ""
+  exit -1
+fi
 
 # warns the user.
 warning
+
+# generates a temporary file.
+TEMP=$(mktemp)
 
 # build the exported subtree.
 build
@@ -271,7 +247,7 @@ build
 dist
 
 # end of export
-display " $_STAGE_ exported successfully" "+"
+display " ${STAGE} exported successfully" "+"
 
 # displays some stuff.
 display ""

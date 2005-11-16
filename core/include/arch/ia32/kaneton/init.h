@@ -5,17 +5,27 @@
  * 
  * init.h
  * 
- * path          /home/mycure/kaneton/core/include/arch/ia32/ia32
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Mon May 30 14:10:03 2005   mycure
- * last update   Fri Oct 14 10:34:36 2005   mycure
+ * last update   Tue Nov 15 19:42:49 2005   mycure
  */
 
 #ifndef IA32_KANETON_INIT_H
 #define IA32_KANETON_INIT_H	1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/ia32/ia32/types.h>
+#include <arch/ia32/ia32/pmode.h>
+#include <arch/ia32/ia32/paging.h>
+
+#include <arch/ia32/services/cons.h>
 
 /*
  * ---------- defines ---------------------------------------------------------
@@ -60,5 +70,28 @@
  */
 
 #define INIT_REGIONS		7
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct
+{
+  t_gdtr			gdtr;
+  t_pde*			pd;
+
+  t_cons			cons; /* XXX */
+}				d_init;
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+/*
+ * machdep traps
+ */
+
+#define		machdep_data_init()					\
+  d_init			machdep
 
 #endif

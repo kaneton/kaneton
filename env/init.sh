@@ -6,13 +6,13 @@
 ## 
 ## init.sh
 ## 
-## path          /home/mycure/kaneton/tools/mbl/grub
+## path          /home/mycure/kaneton/env
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Nov 13 00:56:34 2005   mycure
+## last update   Mon Nov 14 21:26:29 2005   mycure
 ##
 
 #
@@ -38,9 +38,9 @@ CRITICAL_SH="critical.sh"
 #
 proto()
 {
-  directory "${_SRC_DIR_}"
+  change-directory "${_SRC_DIR_}"
   makefile "proto" 2>/dev/null >/dev/null
-  directory "${_ENV_DIR_}"
+  change-directory "${_ENV_DIR_}"
 }
 
 
@@ -52,9 +52,9 @@ proto()
 #
 dep()
 {
-  directory "${_SRC_DIR_}"
+  change-directory "${_SRC_DIR_}"
   makefile "dep" 2>/dev/null 1>/dev/null
-  directory "${_ENV_DIR_}"
+  change-directory "${_ENV_DIR_}"
 }
 
 
@@ -174,7 +174,7 @@ warning()
   display ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
-  waitkey
+  wait-key
 }
 
 #

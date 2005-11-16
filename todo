@@ -1,4 +1,22 @@
 --
+ revoir la console car ca deconne. faire des tests avec la moulinette tiens.
+
+--
+ detecter taille de fenetre -> [PROTO] .../chiche/
+
+--
+ virer les references au LSE ou a epita dans les documents.
+
+ design.tex: entete et pied de page
+
+--
+ oceansize premiere partie de porcupine tree
+
+--
+ retoucher les fonctions shell pour que ca fonctionne bien avec des bons
+ noms
+
+--
  bugs dans stats car quand je l'active ca plante. faudrait revoir ca.
 
 --

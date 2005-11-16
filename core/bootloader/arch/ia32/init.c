@@ -3,13 +3,13 @@
  *
  * init.c
  *
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Fri Oct 21 20:05:54 2005   mycure
+ * last update   Tue Nov 15 19:44:23 2005   mycure
  */
 
 /*
@@ -128,12 +128,13 @@ void			bootloader_init_dump(void)
 		      init->alloc,
 		      init->allocsz);
 
-  bootloader_cons_msg('#', " %#~ia32%# global offset table: 0x%x\n",
+  bootloader_cons_msg('#', " %#~ia32%# global offset table: 0x%x (%u bytes)\n",
 		      CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) |
 		      CONS_INT,
 		      CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) |
 		      CONS_INT,
-		      init->machdep.gdt);
+		      init->machdep.gdt.addr,
+		      init->machdep.gdt.size);
 
   bootloader_cons_msg('#', " %#~ia32%# page directory: 0x%x\n",
 		      CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) |
@@ -235,7 +236,7 @@ void			bootloader_init_segments(void)
    * 9)
    */
 
-  init->segments[9].address = (t_paddr)init->machdep.gdt;
+  init->segments[9].address = (t_paddr)init->machdep.gdtr.address;
   init->segments[9].size = PAGESZ;
   init->segments[9].perms = PERM_READ | PERM_WRITE;
 

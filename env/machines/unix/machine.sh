@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sun Nov 13 13:16:35 2005   mycure
+## last update   Mon Nov 14 22:22:28 2005   mycure
 ##
 
 #
@@ -120,11 +120,11 @@ display()
 
 
 #
-# WAITKEY
+# WAIT KEY
 #
 # this function just waits for a key.
 #
-waitkey()
+wait-key()
 {
   local needless
 
@@ -154,7 +154,11 @@ launch()
 
   case "${file}" in
     Makefile)
-      ${_MAKE_} ${options} ${file} ${arguments}
+      if [ -n ${file} ] ; then
+        ${_MAKE_} ${_MAKEFLAGS_} ${options} -f ${file} ${arguments}
+      else
+	${_MAKE_} ${_MAKEFLAGS_} ${options} -f ${file} ${arguments}
+      fi
       ;;
     *.sh)
       ${_SHELL_} ${options} ${file} ${arguments}
@@ -210,18 +214,26 @@ link()
 #
 # this function just removes a file.
 #
-# ${1}:		file
+# ${1}:		files
 # ${2}:		options
 #
 remove()
 {
-  local file
+  local files
   local options
 
-  file="${1}"
+  local f
+
+  files="${1}"
   options="${2}"
 
-  ${_RM_} ${options} ${file}
+  for f in ${files} ; do
+    if [ -d ${f} ] ; then
+      ${_RM_} ${options} -Rf ${f}
+    else
+      ${_RM_} ${options} -f ${f}
+    fi
+  done
 }
 
 
@@ -245,13 +257,13 @@ list()
 
 
 #
-# DIRECTORY
+# CHANGE DIRECTORY
 #
 # this function just changes the current working directory.
 #
 # ${1}:		directory
 #
-directory()
+change-directory()
 {
   local directory
 
@@ -279,7 +291,7 @@ runtime-configuration()
   destination="${2}"
 
   # changes the directory.
-  directory ${_SRC_DIR_}
+  change-directory ${_SRC_DIR_}
 
   # makes a temporary file.
   kaneton_conf=$(mktemp)
@@ -299,7 +311,7 @@ runtime-configuration()
     ${_SED_} '/^!.*$/ d' > ${destination}
 
   # returns in the env directory.
-  directory ${_ENV_DIR_}
+  change-directory ${_ENV_DIR_}
 }
 
 
@@ -546,3 +558,105 @@ grub-install()
   esac
 }
 
+
+
+#
+# TAGS CLEAN
+#
+# this function removes tags from the source code files.
+#
+# ${1}:		files
+#
+tags-clean()
+{
+  local files
+  local temp
+  local f
+
+  files="${1}"
+
+  temp=$(mktemp)
+
+  for f in ${files} ; do
+    ${_CAT_} ${f} | ${_SED_} "/^.*\[cut\].*$/ d" > ${temp}
+    ${_CP_} ${temp} ${f}
+  done
+}
+
+
+
+#
+# PACK
+#
+# this function creates a package from a source directory.
+#
+# ${1}:		directory
+# ${2}:		destination file
+#
+pack()
+{
+  local directory
+  local file
+
+  directory="${1}"
+  file="${2}"
+
+  ${_TAR_} -czf ${file} ${directory}
+}
+
+
+
+#
+# UNPACK
+#
+# this function unpackages a file.
+#
+# ${1}:		directory
+# ${2}:		destination file
+#
+unpack()
+{
+  local directory
+  local file
+
+  directory="${1}"
+  file="${2}"
+
+  if [ -n ${directory} ] ; then
+    ${_TAR_} -xzf ${file} -C ${directory}
+  else
+    ${_TAR_} -xzf ${file}
+  fi
+}
+
+
+
+#
+# MAKE DIRECTORY
+#
+# this function creates a directory.
+#
+# ${1}:		directory
+#
+make-directory()
+{
+  local directory
+
+  directory="${1}"
+
+  ${_MKDIR_} ${directory}
+}
+
+
+
+#
+# SVN CLEAN
+#
+# this function cleans the svn contol directories.
+#
+# ${1}:		directory
+#
+svn-clean()
+{
+  ${_RM_} -Rf `${_FIND_} ./ -type d -name .svn`
+}

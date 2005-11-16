@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 14:05:03 2005   mycure
-## last update   Fri Jan 29 05:05:13 1999   mycure
+## last update   Tue Nov 15 22:08:54 2005   mycure
 ##
 
 
@@ -390,7 +390,7 @@ very easy to know what a variable is with its type.
 
 ---[ machine-dependent
 
-  the machine-dependent types use the prefix 'd_'.
+  the machine-dependent types use the prefix 'dX_'.
 
 
 

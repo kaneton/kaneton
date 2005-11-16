@@ -5,13 +5,13 @@
  * 
  * segment.c
  * 
- * path          /home/mycure/kaneton/core/kaneton
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Nov 13 13:45:22 2005   mycure
+ * last update   Tue Nov 15 20:06:58 2005   mycure
  */
 
 /*
@@ -370,6 +370,7 @@ t_error			segment_first_fit(o_as*			as,
  *
  * 1) gets the address space object given its identifier.
  * 2) chooses the correct fit.
+ * 3) calls the machine dependent code.
  */
 
 t_error			segment_reserve(t_asid			asid,
@@ -417,9 +418,10 @@ t_error			segment_reserve(t_asid			asid,
  *
  * steps:
  *
- * 1) gets the as object from its identifier.
- * 2) removes the segment from the address space.
- * 3) removes the segment from the segment container.
+ * 1) calls the machine dependent code.
+ * 2) gets the as object from its identifier.
+ * 3) removes the segment from the address space.
+ * 4) removes the segment from the segment container.
  */
 
 t_error			segment_release(t_asid			asid,
@@ -433,18 +435,24 @@ t_error			segment_release(t_asid			asid,
    * 1)
    */
 
+  machdep_call(segment, segment_release, asid, segid);
+
+  /*
+   * 2)
+   */
+
   if (as_get(asid, &as) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
-   * 2)
+   * 3)
    */
 
   if (set_remove(as->segments, segid) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
-   * 3)
+   * 4)
    */
 
   if (set_remove(segment->container, segid) != ERROR_NONE)
@@ -467,6 +475,7 @@ t_error			segment_release(t_asid			asid,
  * 3) checks the segment type.
  * 4) finally adds the segment into the address space object
  * 5) and marks the segment as classical memory segment.
+ * 6) calls the machine-dependent code.
  */
 
 t_error			segment_catch(t_asid			asid,
@@ -511,6 +520,12 @@ t_error			segment_catch(t_asid			asid,
 
   o->type = SEGMENT_TYPE_MEMORY;
 
+  /*
+   * 6)
+   */
+
+  machdep_call(segment, segment_catch, asid, segid);
+
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
@@ -524,6 +539,7 @@ t_error			segment_catch(t_asid			asid,
  * 3) gets the segment object.
  * 4) checks the perms argument.
  * 5) finally, sets the new permissions.
+ * 6) calls the machine-dependent code.
  */
 
 t_error			segment_perms(t_asid			asid,
@@ -570,6 +586,12 @@ t_error			segment_perms(t_asid			asid,
 
   o->perms = perms;
 
+  /*
+   * 6)
+   */
+
+  machdep_call(segment, segment_perms, asid, segid, perms);
+
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
@@ -583,6 +605,7 @@ t_error			segment_perms(t_asid			asid,
  * 3) gets the segment object.
  * 4) checks the type argument.
  * 5) finally, sets the new type.
+ * 6) calls the machine-dependent code.
  */
 
 t_error			segment_type(t_asid			asid,
@@ -629,6 +652,12 @@ t_error			segment_type(t_asid			asid,
 
   o->type = type;
 
+  /*
+   * 6)
+   */
+
+  machdep_call(segment, segment_type, asid, segid, type);
+
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
@@ -638,10 +667,11 @@ t_error			segment_type(t_asid			asid,
  *
  * steps:
  *
- * 1) gets the address space object.
- * 2) for every segment in the address space, removes the segment from
+ * 1) calls the machine-dependent code.
+ * 2) gets the address space object.
+ * 3) for every segment in the address space, removes the segment from
  *    the segment container to destroy it.
- * 3) then, flushes the address space's segment set.
+ * 4) then, flushes the address space's segment set.
  */
 
 t_error			segment_flush(t_asid			asid)
@@ -657,11 +687,17 @@ t_error			segment_flush(t_asid			asid)
    * 1)
    */
 
+  machdep_call(segment, segment_flush, asid);
+
+  /*
+   * 2)
+   */
+
   if (as_get(asid, &as) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
-   * 2)
+   * 3)
    */
 
   set_foreach(SET_OPT_FORWARD, as->segments, &i, state)
@@ -684,7 +720,7 @@ t_error			segment_flush(t_asid			asid)
     }
 
   /*
-   * 3)
+   * 4)
    */
 
   if (set_flush(as->segments) != ERROR_NONE)
@@ -724,7 +760,8 @@ t_error			segment_get(t_segid			segid,
  *    elegant but we have no choice to be able to use every sorted set.
  *    moreover we could use the set without the SET_ALLOC option but
  *    we prefered use it to be more coherent.
- * 6) if needed, dumps the segments.
+ * 6) calls the machine-dependent code.
+ * 7) if needed, dumps the segments.
  */
 
 t_error			segment_init(t_fit			fit)
@@ -792,13 +829,17 @@ t_error			segment_init(t_fit			fit)
    * 6)
    */
 
+  machdep_call(segment, segment_init, fit);
+
+  /*
+   * 7)
+   */
+
 #if (DEBUG & DEBUG_SEGMENT)
   segment_dump();
 
   segment_test();
 #endif
-
-  segment_test(); // XXX
 
   return (ERROR_NONE);
 }
@@ -808,15 +849,22 @@ t_error			segment_init(t_fit			fit)
  *
  * steps:
  *
- * 1) releases the stats object.
- * 2) releases the segment container.
- * 3) frees the segment manager structure's memory.
+ * 1) calls the machine-dependent code.
+ * 2) releases the stats object.
+ * 3) releases the segment container.
+ * 4) frees the segment manager structure's memory.
  */
 
 t_error			segment_clean(void)
 {
   /*
    * 1)
+   */
+
+  machdep_call(segment, segment_clean);
+
+  /*
+   * 2)
    */
 
   if (set_release(segment->container) != ERROR_NONE)
@@ -827,13 +875,13 @@ t_error			segment_clean(void)
     }
 
   /*
-   * 2)
+   * 3)
    */
 
   STATS_RELEASE(segment->stats);
 
   /*
-   * 3)
+   * 4)
    */
 
   free(segment);

@@ -5,13 +5,13 @@
  * 
  * segment.h
  * 
- * path          /home/mycure/kaneton/core
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Thu Nov 10 23:24:03 2005   mycure
+ * last update   Tue Nov 15 19:37:54 2005   mycure
  */
 
 #ifndef IA32_KANETON_SEGMENT_H
@@ -26,15 +26,6 @@
 /*
  * ---------- types -----------------------------------------------------------
  */
-
-/*
- * the architecture-dependent data for the segment manager
- */
-
-typedef struct
-{
-  t_gdte			gdt[PMODE_GDT_ENTRIES];
-}				d_m_segment;
 
 /*
  * the segment architecture-dependent interface
@@ -57,7 +48,7 @@ typedef struct
 						t_segid,
 						t_type);
   t_error			(*segment_flush)(t_asid);
-  t_error			(*segment_init)(void);
+  t_error			(*segment_init)(t_fit);
   t_error			(*segment_clean)(void);
 }				i_segment;
 
@@ -80,8 +71,7 @@ typedef struct
     }									\
   )
 
-#define		machdep_data_m_segment()				\
-  d_m_segment		machdep
+#define		machdep_data_m_segment()
 
 #define		machdep_data_o_segment()
 

@@ -12,7 +12,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Nov 13 13:18:48 2005   mycure
+## last update   Mon Nov 14 21:38:41 2005   mycure
 ##
 
 #
@@ -143,17 +143,17 @@ warning()
 {
   # display information and ask the user to continue or cancel
   display " your current configuration" "+"
-  display "   address:                  $_ADDRESS_" "+"
-  display "   tftp address:             $_TFTP_ADDRESS_" "+"
-  display "   tftp directory:           $_TFTP_DIRECTORY_" "+"
-  display "   bootmode:                 $_BOOTMODE_" "+"
-  display "   udevice:                  $_UDEVICE_" "+"
-  display "   mdevice:                  $_MDEVICE_" "+"
-  display "   image:                    $_IMAGE_" "+"
+  display "   address:                  ${_ADDRESS_}" "+"
+  display "   tftp address:             ${_TFTP_ADDRESS_}" "+"
+  display "   tftp directory:           ${_TFTP_DIRECTORY_}" "+"
+  display "   bootmode:                 ${_BOOTMODE_}" "+"
+  display "   udevice:                  ${_UDEVICE_}" "+"
+  display "   mdevice:                  ${_MDEVICE_}" "+"
+  display "   image:                    ${_IMAGE_}" "+"
   display ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
-  waitkey
+  wait-key
 }
 
 #
@@ -164,16 +164,16 @@ warning()
 display ""
 
 # checks the number of arguments.
-if [ $# -lt 1 ] ; then
+if [ ${#} -lt 1 ] ; then
   usage
   exit -1
 fi
 
 # gets the argument.
-ACTION=$1
+ACTION="${1}"
 
 # choose what to do.
-case $ACTION in
+case ${ACTION} in
   "build")
     # initialising the boot system.
     display " initialising the boot system" "+"
@@ -210,7 +210,7 @@ case $ACTION in
     ;;
 
   *)
-    display " unknown action \"$action\"" "!"
+    display " unknown action \"${ACTION}\"" "!"
     display ""
     usage
     exit -1

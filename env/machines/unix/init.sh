@@ -12,7 +12,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Nov 13 12:39:53 2005   mycure
+## last update   Mon Nov 14 22:17:11 2005   mycure
 ##
 
 #
@@ -36,7 +36,7 @@ source			.env.sh
 
 BINARIES="bash gcc gmake rm ar ranlib ld nasm ln touch wc date	\
           tail tar latex dvips pdflatex cp cat sed echo ls date	\
-          cpp mtools mcopy"
+          cpp mtools mcopy mkdir find"
 
 #
 # ---------- functions --------------------------------------------------------

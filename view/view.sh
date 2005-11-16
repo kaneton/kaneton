@@ -6,13 +6,13 @@
 ## 
 ## view.sh
 ## 
-## path          /home/mycure/kaneton/tools/mbl/grub
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Nov 13 00:59:08 2005   mycure
+## last update   Mon Nov 14 22:48:28 2005   mycure
 ##
 
 #
@@ -54,9 +54,9 @@ PAPER=""
 #
 view()
 {
-  directory "${LOCATION}"
+  change-directory "${LOCATION}"
   makefile "view"
-  directory "${_VIEW_DIR_}"
+  change-directory "${_VIEW_DIR_}"
 }
 
 
@@ -79,7 +79,7 @@ warning()
   display ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
-  waitkey
+  wait-key
 }
 
 

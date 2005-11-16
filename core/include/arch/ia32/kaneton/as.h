@@ -5,13 +5,13 @@
  * 
  * as.h
  * 
- * path          /home/mycure/kaneton/core
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Thu Nov 10 23:24:12 2005   mycure
+ * last update   Tue Nov 15 22:11:30 2005   mycure
  */
 
 #ifndef IA32_KANETON_AS_H
@@ -34,7 +34,7 @@
 typedef struct
 {
   t_paddr			pd;
-}				d_as;
+}				do_as;
 
 /*
  * the as architecture dependent interface
@@ -42,11 +42,10 @@ typedef struct
 
 typedef struct
 {
-  /* XXX a simplifier, rsv->reserve et rel->release */
-  t_error			(*as_dump)(void);
-  t_error			(*as_rsv)(t_asid*);
-  t_error			(*as_rel)(t_asid);
-  t_error			(*as_get)(t_asid, o_as**);
+  t_error			(*as_clone)(t_asid,
+					    t_asid);
+  t_error			(*as_reserve)(t_asid*);
+  t_error			(*as_release)(t_asid);
   t_error			(*as_init)(void);
   t_error			(*as_clean)(void);
 }				i_as;
@@ -70,7 +69,9 @@ typedef struct
     }									\
   )
 
-#define		machdep_data_as()					\
-  d_as				machdep
+#define		machdep_data_m_as()
+
+#define		machdep_data_o_as()					\
+  do_as				machdep
 
 #endif

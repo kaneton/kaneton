@@ -5,13 +5,13 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/core/kaneton/arch/ia32/ia32
+## path          /home/mycure/kaneton
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Nov  7 17:25:01 2005   mycure
+## last update   Tue Nov 15 19:18:18 2005   mycure
 ##
 
 #
@@ -33,6 +33,7 @@ include			../../../../../env/.env.mk
 IA32_LO			:=		ia32.lo
 
 IA32_C			:=		paging.c			\
+					pmode.c				
 
 IA32_O			:=		$(IA32_C:.c=.o)
 

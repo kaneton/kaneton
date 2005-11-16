@@ -6,13 +6,13 @@
 ## 
 ## init.sh
 ## 
-## path          /home/mycure/kaneton/tools/mbl/grub
+## path          /home/mycure/kaneton/env
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sat Nov 12 18:03:44 2005   mycure
+## last update   Mon Nov 14 21:12:12 2005   mycure
 ##
 
 #
@@ -41,9 +41,9 @@ clean()
   # cleaning development tree.
   display "   cleaning development tree" "+"
 
-  directory ${_SRC_DIR_}
+  change-directory ${_SRC_DIR_}
   makefile "clear" 2>/dev/null 1>/dev/null
-  directory ${_ENV_DIR_}
+  change-directory ${_ENV_DIR_}
 
   # destroys the architecture dependent links.
   display "   removing links to machine-dependent directories" "+"

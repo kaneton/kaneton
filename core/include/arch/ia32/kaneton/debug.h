@@ -5,13 +5,13 @@
  * 
  * debug.h
  * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
+ * path          /home/mycure/kaneton
  * 
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Tue Jun 21 13:06:15 2005   mycure
+ * last update   Tue Nov 15 19:22:27 2005   mycure
  */
 
 #ifndef IA32_KANETON_DEBUG_H
@@ -26,6 +26,6 @@
 #define IA32_DEBUG_PAGING	(1 << 2)
 
 #define IA32_DEBUG							\
-  (0)
+  (CONF_MACHDEP_DEBUG)
 
 #endif

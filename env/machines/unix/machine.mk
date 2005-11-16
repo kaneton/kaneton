@@ -5,13 +5,13 @@
 ## 
 ## machine.mk
 ## 
-## path          /home/mycure/kaneton/tools/mbl/grub
+## path          /home/mycure/kaneton/export
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Sat Nov 12 17:10:35 2005   mycure
+## last update   Mon Nov 14 20:26:17 2005   mycure
 ##
 
 #
@@ -175,7 +175,7 @@ endef
 # $(2):		advanced options
 #
 
-define directory
+define change-directory
   $(_CD_) $(2) $(1)
 endef
 
