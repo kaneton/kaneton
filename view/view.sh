@@ -6,13 +6,13 @@
 ## 
 ## view.sh
 ## 
-## path          /home/mycure/kaneton
+## path          /home/mycure/kaneton/view/lectures
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Nov 14 22:48:28 2005   mycure
+## last update   Fri Nov 18 20:47:01 2005   mycure
 ##
 
 #
@@ -34,7 +34,7 @@ source			../env/.env.sh
 PAPERS="								\
   papers/assignments papers/design papers/kaneton			\
   papers/seminar							\
-  lectures/advanced-makefiles lectures/arch-ia32			\
+  lectures/advanced-makefiles lectures/arch-mips lectures/arch-ia32	\
   lectures/c-preprocessor lectures/distributed-operating-systems	\
   lectures/prerequisites lectures/inline-assembly			\
   lectures/kernels lectures/development-environment			\

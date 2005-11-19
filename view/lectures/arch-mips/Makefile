@@ -5,52 +5,56 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/view/lectures
+## path          /home/mycure/kaneton/view/lectures/arch-mips
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Fri Nov 18 20:46:19 2005   mycure
+## last update   Fri Nov 18 20:47:51 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		all dvi ps pdf clear
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		advanced-makefiles		\
-					archi-mips			\
-					c-preprocessor			\
-					development-environment		\
-					distributed-operating-systems	\
-					inline-assembly			\
-					kernels				\
-					prerequisites
+PAPER			:=		arch-mips
+
+GARBAGE			:=		$(PAPER).aux			\
+					$(PAPER).log			\
+					$(PAPER).nav			\
+					$(PAPER).out			\
+					$(PAPER).snm			\
+					$(PAPER).toc			\
+					$(PAPER).dvi			\
+					$(PAPER).ps			\
+					$(PAPER).pdf			
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
-	$(call makefile,$(SUBDIRS),)
+all:			view
+
+view:			build
+	$(call view,$(PAPER),)
+
+build:
+	$(call compile-tex,$(PAPER))
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call remove,$(GARBAGE),)
 
 	$(call purge)
-
-proto:
-
-dep:

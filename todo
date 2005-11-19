@@ -1,13 +1,25 @@
 --
+ faire des templates: lecture et paper avec en-tete etc.. pour ne pas
+ tjs avoir a tout changer
+
+--
+ un seul swapper et on active ou non des options: network, hard drive etc..
+ car un swapper ca stocke de la memoire sur un support secondaire qui peut
+ etre n'importe quoi, une disquette, une clef usb etc..
+
+--
+ permettre aux etudiants de choisir leur archi: mips, intel, amd, sparc ...
+
+--
+ revoir interface de makefile car pas super performante. $(call version) chie.
+
+ ignorer les options pour l'instant car plus tard: --no-newline etc..
+
+--
  revoir la console car ca deconne. faire des tests avec la moulinette tiens.
 
 --
  detecter taille de fenetre -> [PROTO] .../chiche/
-
---
- virer les references au LSE ou a epita dans les documents.
-
- design.tex: entete et pied de page
 
 --
  oceansize premiere partie de porcupine tree
@@ -23,17 +35,11 @@
  revoir la generation de version.c
 
 --
- retoucher les scripts shell pour en faire de bons scripts bash
-
---
  trouver du matos a acheter avec le budget
 
 --
  proposer deux sujets sur le vrai kaneton par exemple aux deux meilleurs
  groupes: integration du SMP, nommage, new archi etc..
-
---
- isoler le code critique qui creer les fichiers de conf: env.sh
 
 --
  modifier le script export.sh

@@ -5,13 +5,13 @@
 %%
 %% design.tex
 %%
-%% path          /home/mycure/kaneton
+%% path          /home/mycure/kaneton/view/papers
 %%
 %% made by mycure
 %%         quintard julien   [quinta_j@epita.fr]
 %%
 %% started on    Fri Feb  4 15:10:05 2005   mycure
-%% last update   Mon Nov 14 22:49:55 2005   mycure
+%% last update   Sat Nov 19 12:51:59 2005   mycure
 %%
 
 %%
@@ -37,12 +37,12 @@
 
 \lhead{\scriptsize{The kaneton microkernel project}}
 \rhead{\scriptsize{The kaneton design concepts}}
-\rfoot{\scriptsize{EPITA Computer System Laboratory - www.lse.epita.fr}}
+\rfoot{\scriptsize{kaneton microkernel project}}
 
 \title{The kaneton microkernel project}
 
 \author{\small{Julien Quintard} \\
-        \scriptsize{EPITA Computer System Laboratory, Paris, France}}
+        \scriptsize{julien.quintard@gmail.com}}
 
 \date{\scriptsize{\today}}
 
@@ -411,7 +411,7 @@ another task.
 The \textbf{thread} is the active entity because it is this one which is
 scheduled. Such a thread has a single address space, belongs to a single
 task, has a set of registers, a program counter and finally a stack.
-Needless to say that the Spargo microkernel handles threads as kernel threads.
+Needless to say that the kaneton microkernel handles threads as kernel threads.
 Each thread has an unique identifier and is manipulated by a capability.
 
 Like address spaces and many other parts of the system, a more complex
@@ -565,7 +565,7 @@ memory group will be explained later in this paper.
 
 \paragraph{}
 
-The Spargo microkernel uses a simple paradigm which allow programmers to
+The kaneton microkernel uses a simple paradigm which allow programmers to
 manage memory and execution context as they wanted to. A special interest
 was ported on the parallel and distributed programming providing complete
 primitives to manage priorities on many levels: thread, task and processor.

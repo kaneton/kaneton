@@ -11,7 +11,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ##
 ## started on    Fri Feb 11 02:04:24 2005   mycure
-## last update   Mon Nov 14 22:10:08 2005   mycure
+## last update   Sat Nov 19 12:46:30 2005   mycure
 ##
 
 #
@@ -167,7 +167,7 @@ info:
 	$(call print,blue,# ,-n)
 	$(call print,white,authors:,)
 	$(call print,white,,)
-	$(call print,white,     julien quintard - quinta_j@epita.fr,)
+	$(call print,white,     julien quintard - quinta_j@gmail.com,)
 	$(call print,white,     jean-pascal billaud - billau_j@epita.fr,)
 
 	$(call print,white,,)
@@ -186,27 +186,6 @@ info:
 	$(call print,white,     christophe eymard - eymard_c@epita.fr,)
 	$(call print,white,     solal jacob - jacob_s@epitech.net,)
 	$(call print,white,     fabien le-mentec - le-men_f@epita.fr,)
-
-	$(call print,white,,)
-
-	$(call print,blue,# ,-n)
-	$(call print,white,website:,)
-	$(call print,white,,)
-	$(call print,white,     http://www.lse.epita.fr/,)
-
-	$(call print,white,,)
-
-	$(call print,blue,# ,-n)
-	$(call print,white,news-group:,)
-	$(call print,white,,)
-	$(call print,white,     epita.cours.kaneton,)
-
-	$(call print,white,,)
-
-	$(call print,blue,# ,-n)
-	$(call print,white,mailing-list:,)
-	$(call print,white,,)
-	$(call print,white,     kaneton@lse.epita.fr,)
 
 	$(call print,white,,)
 
