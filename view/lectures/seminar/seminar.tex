@@ -1,64 +1,19 @@
 %%
-%% copyright quintard julien
-%% 
-%% kaneton
-%% 
-%% seminar.tex
-%% 
-%% path          /home/mycure/kaneton/env
-%% 
-%% made by mycure
-%%         quintard julien   [quinta_j@epita.fr]
-%% 
-%% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Mon Nov 14 20:42:56 2005   mycure
+%% copyright     (c) julien quintard
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/lectures/seminar/seminar.tex
+%%
+%% created       julien quintard   [sat nov 19 17:55:33 2005]
+%% updated       julien quintard   [sat nov 19 17:56:47 2005]
 %%
 
 %
-% class
+% template
 %
 
-\documentclass[8pt]{beamer}
-
-%
-% packages
-%
-
-\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
-\usepackage{colortbl}
-\usepackage{times}
-\usepackage{amsmath,amssymb}
-\usepackage{graphics}
-\usepackage{graphicx}
-\usepackage{color}
-\usepackage{xcolor}
-\usepackage[english]{babel}
-\usepackage{enumerate}
-\usepackage[latin1]{inputenc}
-
-%
-% style
-%
-
-\usepackage{beamerthemesplit}
-\setbeamercovered{dynamic}
-
-%
-% verbatim font
-%
-
-\definecolor{verbatimcolor}{rgb}{0,0.4,0}
-
-\makeatletter
-\renewcommand{\verbatim@font}
-  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
-\makeatother
-
-%
-% new line
-%
-
-\newcommand{\nl}[0]{\vspace{0.4cm}}
+\input{../../templates/lecture.tex}
 
 %
 % title
@@ -72,79 +27,7 @@
 
 \author
 {
-  Julien~Quintard\inst{1} \\
-  {\tiny julien.quintard@gmail.com}
-}
-
-\institute
-{
-  \inst{1} kaneton microkernel project
-}
-
-%
-% date
-%
-
-\date{\today}
-
-%
-% logos
-%
-
-\pgfdeclareimage[interpolate=true,width=34pt,height=18pt]
-                {epita}{../../logos/epita}
-\pgfdeclareimage[interpolate=true,width=49pt,height=18pt]
-                {upmc}{../../logos/upmc}
-\pgfdeclareimage[interpolate=true,width=25pt,height=18pt]
-                {lse}{../../logos/lse}
-
-%
-% figures
-%
-
-\pgfdeclareimage[interpolate=true,width=233pt,height=170pt]
-                {distributed-operating-system}
-		{../../figures/distributed-operating-system}
-\pgfdeclareimage[interpolate=true,width=226pt,height=170pt]
-                {servers}
-		{../../figures/servers}
-\pgfdeclareimage[interpolate=true,width=170pt,height=170pt]
-                {microkernel}
-		{../../figures/microkernel}
-
-\pgfdeclareimage[interpolate=true,width=150pt,height=25pt]
-                {generic-capabilities}
-		{../../figures/generic-capabilities}
-\pgfdeclareimage[interpolate=true,width=150pt,height=75pt]
-                {specific-capabilities}
-		{../../figures/specific-capabilities}
-
-\pgfdeclareimage[interpolate=true,width=188pt,height=170pt]
-                {sets}
-		{../../figures/sets}
-
-%
-% table of contents at the beginning of each section
-%
-
-\AtBeginSection[]
-{
-  \begin{frame}<beamer>
-   \frametitle{Outline}
-    \tableofcontents[current]
-  \end{frame}
-}
-
-%
-% table of contents at the beginning of each subsection
-%
-
-\AtBeginSubsection[]
-{
-  \begin{frame}<beamer>
-   \frametitle{Outline}
-    \tableofcontents[current,currentsubsection]
-  \end{frame}
+  Julien~Quintard\inst{1}
 }
 
 %
@@ -161,8 +44,7 @@
   \titlepage
 
   \begin{center}
-    \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{upmc} \hspace{0.1cm}
-    \pgfuseimage{lse} \hspace{0.1cm}
+    \logos
   \end{center}
 \end{frame}
 

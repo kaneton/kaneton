@@ -1,64 +1,19 @@
 %%
-%% copyright quintard julien
-%% 
-%% kaneton
-%% 
-%% inline-assembly.tex
-%% 
-%% path          /home/mycure/kaneton/view/lectures/c-preprocessor
-%% 
-%% made by mycure
-%%         quintard julien   [quinta_j@epita.fr]
-%% 
-%% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Tue Nov  8 05:03:41 2005   mycure
+%% copyright     (c) julien quintard
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/lectures/c-preprocessor/c-preprocessor.tex
+%%
+%% created       julien quintard   [sat nov 19 17:16:14 2005]
+%% updated       julien quintard   [sat nov 19 17:41:44 2005]
 %%
 
 %
-% class
+% template
 %
 
-\documentclass[8pt]{beamer}
-
-%
-% packages
-%
-
-\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
-\usepackage{colortbl}
-\usepackage{times}
-\usepackage{amsmath,amssymb}
-\usepackage{graphics}
-\usepackage{graphicx}
-\usepackage{color}
-\usepackage{xcolor}
-\usepackage[english]{babel}
-\usepackage{enumerate}
-\usepackage[latin1]{inputenc}
-
-%
-% style
-%
-
-\usepackage{beamerthemesplit}
-\setbeamercovered{dynamic}
-
-%
-% verbatim font
-%
-
-\definecolor{verbatimcolor}{rgb}{0,0.4,0}
-
-\makeatletter
-\renewcommand{\verbatim@font}
-  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
-\makeatother
-
-%
-% new line
-%
-
-\newcommand{\nl}[0]{\vspace{0.4cm}}
+\input{../../templates/lecture.tex}
 
 %
 % title
@@ -72,54 +27,7 @@
 
 \author
 {
-  Julien~Quintard\inst{1} \\
-  {\tiny julien.quintard@gmail.com}
-}
-
-\institute
-{
-  \inst{1} kaneton microkernel project
-}
-
-%
-% date
-%
-
-\date{\today}
-
-%
-% logos
-%
-
-\pgfdeclareimage[interpolate=true,width=34pt,height=18pt]
-                {epita}{../../logos/epita}
-\pgfdeclareimage[interpolate=true,width=49pt,height=18pt]
-                {upmc}{../../logos/upmc}
-\pgfdeclareimage[interpolate=true,width=25pt,height=18pt]
-                {lse}{../../logos/lse}
-
-%
-% table of contents at the beginning of each section
-%
-
-\AtBeginSection[]
-{
-  \begin{frame}<beamer>
-   \frametitle{Outline}
-    \tableofcontents[current]
-  \end{frame}
-}
-
-%
-% table of contents at the beginning of each subsection
-%
-
-\AtBeginSubsection[]
-{
-  \begin{frame}<beamer>
-   \frametitle{Outline}
-    \tableofcontents[current,currentsubsection]
-  \end{frame}
+  Julien~Quintard\inst{1}
 }
 
 %
@@ -136,8 +44,7 @@
   \titlepage
 
   \begin{center}
-    \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{upmc} \hspace{0.1cm}
-    \pgfuseimage{lse} \hspace{0.1cm}
+    \logos
   \end{center}
 \end{frame}
 

@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/view/lectures
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Fri Nov 18 20:46:19 2005   mycure
+## copyright     (c) julien quintard
+##
+## project       kaneton
+##
+## file          /home/mycure/kaneton/view/lectures/Makefile
+##
+## created       julien quintard   [sat nov 19 18:06:43 2005]
+## updated       julien quintard   [sat nov 19 18:10:02 2005]
 ##
 
 #
@@ -31,13 +26,15 @@ include			../../env/.env.mk
 #
 
 SUBDIRS			:=		advanced-makefiles		\
-					archi-mips			\
+					arch-ia32			\
+					arch-mips			\
 					c-preprocessor			\
 					development-environment		\
 					distributed-operating-systems	\
 					inline-assembly			\
 					kernels				\
-					prerequisites
+					prerequisites			\
+					seminar				
 
 #
 # ---------- rules ------------------------------------------------------------

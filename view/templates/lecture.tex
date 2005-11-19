@@ -1,0 +1,138 @@
+%%
+%% copyright     (c) julien quintard
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/templates/lecture.tex
+%%
+%% created       julien quintard   [sat nov 19 17:13:03 2005]
+%% updated       julien quintard   [sat nov 19 18:03:36 2005]
+%%
+
+%
+% class
+%
+
+\documentclass[8pt]{beamer}
+
+%
+% packages
+%
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
+\usepackage{colortbl}
+\usepackage{times}
+\usepackage{amsmath,amssymb}
+\usepackage{graphics}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage[english]{babel}
+\usepackage{enumerate}
+\usepackage[latin1]{inputenc}
+
+%
+% style
+%
+
+\usepackage{beamerthemesplit}
+\setbeamercovered{dynamic}
+
+%
+% verbatim font
+%
+
+\definecolor{verbatimcolor}{rgb}{0,0.4,0}
+
+\makeatletter
+\renewcommand{\verbatim@font}
+  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
+\makeatother
+
+%
+% new line
+%
+
+\newcommand{\nl}[0]{\vspace{0.4cm}}
+
+%
+% date
+%
+
+\date{\today}
+
+%
+% figures
+%
+
+\pgfdeclareimage[interpolate=true,width=233pt,height=170pt]
+                {distributed-operating-system}
+		{../../figures/distributed-operating-system}
+\pgfdeclareimage[interpolate=true,width=226pt,height=170pt]
+                {servers}
+		{../../figures/servers}
+\pgfdeclareimage[interpolate=true,width=170pt,height=170pt]
+                {microkernel}
+		{../../figures/microkernel}
+
+\pgfdeclareimage[interpolate=true,width=150pt,height=25pt]
+                {generic-capabilities}
+		{../../figures/generic-capabilities}
+\pgfdeclareimage[interpolate=true,width=150pt,height=75pt]
+                {specific-capabilities}
+		{../../figures/specific-capabilities}
+
+\pgfdeclareimage[interpolate=true,width=188pt,height=170pt]
+                {sets}
+		{../../figures/sets}
+
+%
+% logos
+%
+
+\pgfdeclareimage[interpolate=true,width=34pt,height=18pt]
+                {epita}{../../logos/epita}
+\pgfdeclareimage[interpolate=true,width=49pt,height=18pt]
+                {upmc}{../../logos/upmc}
+\pgfdeclareimage[interpolate=true,width=25pt,height=18pt]
+                {lse}{../../logos/lse}
+
+
+\newcommand{\logos}
+  {
+    \pgfuseimage{epita} \hspace{0.1cm} \pgfuseimage{upmc} \hspace{0.1cm}
+    \pgfuseimage{lse} \hspace{0.1cm}
+  }
+
+%
+% institute
+%
+
+\institute
+{
+  \inst{1} kaneton microkernel project
+}
+
+%
+% table of contents at the beginning of each section
+%
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+   \frametitle{Outline}
+    \tableofcontents[current]
+  \end{frame}
+}
+
+%
+% table of contents at the beginning of each subsection
+%
+
+\AtBeginSubsection[]
+{
+  \begin{frame}<beamer>
+   \frametitle{Outline}
+    \tableofcontents[current,currentsubsection]
+  \end{frame}
+}

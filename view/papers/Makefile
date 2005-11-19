@@ -32,8 +32,7 @@ include			../../env/.env.mk
 
 SUBDIRS			:=		assignments			\
 					design				\
-					kaneton				\
-					seminar				
+					kaneton				
 
 #
 # ---------- rules ------------------------------------------------------------
