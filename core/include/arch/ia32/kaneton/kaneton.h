@@ -48,10 +48,6 @@
  * ../../../../kaneton/arch/ia32/kaneton/as.c
  */
 
-t_error			ia32_as_rsv(t_asid*			asid);
-
-t_error			ia32_as_rel(t_asid			asid);
-
 
 /*
  * ../../../../kaneton/arch/ia32/kaneton/segment.c

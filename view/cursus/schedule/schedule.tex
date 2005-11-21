@@ -14,39 +14,39 @@
 %% last update   Sat Nov 19 12:47:49 2005   mycure
 %%
 
-%%
-%% --------- packages ---------------------------------------------------------
-%%
+%
+% template
+%
 
-\documentclass[10pt,a4wide]{article}
-\usepackage[english]{babel}
-\usepackage{a4wide}
-\usepackage{graphicx}
-\usepackage{fancyheadings}
-\usepackage{multicol}
-\usepackage{indentfirst}
-\pagestyle{fancy}
+\input{../../templates/paper.tex}
 
-\setlength{\footrulewidth}{0.3pt}
-\setlength{\parindent}{0.3cm}
-\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+%
+% header
+%
 
-%%
-%% --------- header -----------------------------------------------------------
-%%
+\lhead{\scriptsize{The kaneton project scheduling}}
 
-\lhead{\scriptsize{The kaneton microkernel project}}
-\rhead{\scriptsize{The kaneton scheduling}}
-\rfoot{\scriptsize{kaneton microkernel project}}
+%
+% title
+%
 
-\title{The kaneton scheduling}
+\title{The kaneton microkernel project}
 
-\author{\small{Julien Quintard} \\
-        \scriptsize{julien.quintard@gmail.com}}
+%
+% authors
+%
 
-\date{\scriptsize{\today}}
+\author{\small{Julien Quintard}}
+
+%
+% document
+%
 
 \begin{document}
+
+%
+% title
+%
 
 \maketitle
 
@@ -58,13 +58,15 @@
 
 
 
+\section{Overview}
+
 \textbf{kaneton} is a project of the EPITA specialisation year in system,
 network and security.
 
 The goal of the project is to give students a complete view of an operating
 system.
 
-Every group, composed of about four students, has to develop many parts
+Every group, composed of about four students, has to develop parts
 of the kaneton microkernel.
 
 To do so, the professors give students a development environment containing
@@ -73,7 +75,7 @@ everything needed to start the project.
 The whole project is divided into parts, each part must be validated by
 the students.
 
-The project comes with three courses:
+The project comes with four, maybe five, courses:
 
 \begin{itemize}
   \item
@@ -84,9 +86,15 @@ The project comes with three courses:
     internals including microkernels, memory management, processes and threads,
     synchronisation, communications, and complete case studies.
   \item
-    \textbf{Intel architecture}: this course will explain the Intel
+    \textbf{mips architecture}: this course is dedicated to the mips internal
+    architecture including the pipeline, the bus etc..
+  \item
+    \textbf{intel 32-bit architecture}: this course will explain the Intel
     architecture including the instructions sets to the memory management
     and finally to the task management.
+  \item
+    \textbf{distributed operating system}: this course is intented to
+    give students a simple approach of the distributed inherent problems.
 \end{itemize}
 
 Let's see the year scheduling:
@@ -94,12 +102,12 @@ Let's see the year scheduling:
 \begin{itemize}
   \item
     \textbf{k0}: the students will have to learn low-level programming to
-    understand the processor programming interface and the different
-    memory management modes. This part is called the bootstrap.
+    understand the external architecture programming interface and the
+    different memory management models. This part is called the bootstrap.
   \item
     \textbf{k1}: the students will develop a bootloader. Its role is to
     build an memory environment for the futur kernel execution. In this
-    project, the students will learn to deal with a new memory model
+    project, the students will learn to deal with the virtual memory
     and to develop in a very strict environment, from scratch.
   \item
     \textbf{k2}: this project will lead the students to an higher abstraction
@@ -108,32 +116,130 @@ Let's see the year scheduling:
     manager to be able to manage physical memory.
   \item
     \textbf{k3}: this project introduces the development of some drivers
-    and a the development of the region manager to provide virtual memory
+    and the development of the region manager to provide virtual memory
     operations.
   \item
     \textbf{k4}: the students will have to develop the task manager, the
     thread manager and the scheduler to provide the kaneton microkernel
     the possibility to create execution contexts.
   \item
-    \textbf{k5}: this project leads the students to the communications
-    into the microkernel and to the development of some microkernel servers.
+    \textbf{k5}: this project introduces the communication into the
+    microkernel and some microkernel servers.
   \item
     \textbf{kn}: this project is a free one. Each group has to choose the
     subject of this project, to design, to implement and to document
     the project. The themes for this project are: distributed aspects and/or
-    security ones.
+    security ones. Some subjects will be proposed to the best groups.
 \end{itemize}
+
+\end{multicols}
+
+\begin{figure}[h]
+\centerline{\includegraphics[angle=-90,scale=0.3]{figures/schedule.jpg}}
+\end{figure}
+
+\begin{multicols}{2}
+
+
+
+\section{arch-mips}
+
+Course Name: \textbf{MIA}
+
+This course is intended to give students a complete view of how a RISC
+processor works and what choices the designers made to build the futur
+processors.
+
+\begin{itemize}
+  \item
+    external architecture: we will study the instructions set,
+    the memory management model etc..
+  \item
+    pipeline: we will see the MIPS pipeline which is composed of five
+    stages.
+  \item
+    compiler optimisations: we will study the different direct assembly
+    source code optimisations: rescheduling, software pipeline etc..
+  \item
+    memory: we will study the bus used on the MIPS processor and the
+    more generally  the memory management.
+\end{itemize}
+
+The list below details the different sessions for the mips architecture
+course:
+
+\begin{enumerate}
+  \item
+    XXX
+\end{enumerate}
+
+
+
+\section{kaneton}
+
+Course Name: \textbf{KAN}
+
+This course will provide students a complete view of an operating system.
+Moreover this courses is coupled with a project which consists in the
+development of parts of a microkernel.
+
+\begin{itemize}
+  \item
+    XXX
+\end{itemize}
+
+The list below details the different sessions for the kaneton course.
+
+\begin{enumerate}
+  \item
+    XXX
+\end{enumerate}
+
+
+
+\section{arch-ia32}
+
+Course Name: \textbf{INA}
+
+This course will explain how the intel 32-bit architecture works including
+the memory management, the task management, the instructions set, the
+interruption and exception management etc..
+
+\begin{itemize}
+  \item
+    XXX
+\end{itemize}
+
+The list below details the different sessions for the intel 32-bit
+architecture course.
+
+\begin{enumerate}
+  \item
+    XXX
+\end{enumerate}
+
+
+
+\section{noyau}
+
+Course Name: \textbf{NOY}
+
+XXX
+
+\begin{itemize}
+  \item
+    XXX
+\end{itemize}
+
+The list below details the different sessions for the kernel course.
+
+\begin{enumerate}
+  \item
+    XXX
+\end{enumerate}
 
 
 
 \end{multicols}
-
-
-
-\begin{figure}[h]
-\centerline{\includegraphics{figures/schedule.eps}}
-\end{figure}
-
-
 
 \end{document}

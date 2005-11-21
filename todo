@@ -1,6 +1,25 @@
 --
- faire des templates: lecture et paper avec en-tete etc.. pour ne pas
- tjs avoir a tout changer
+ rajouter buckman au svn
+
+--
+ -VIEWER car viewer de base pour l'archi
+
+--
+ mettre une licence sur le code
+
+ mettre a jour tous les headers pour pointer sur la licence.
+
+--
+ buckman: cours makefile, fin cours dev-env avec explication du
+  systeme de compil kaneton + seminaire.
+
+ gollum: faire compiler en sm netbsd
+
+ dujardin: +cous archi-mips, budget?
+
+--
+ if (machdep...)
+   LEAVE
 
 --
  un seul swapper et on active ou non des options: network, hard drive etc..
@@ -125,6 +144,8 @@
  ou mieux etudier Sprite et voir comment ils font eux avec leurs systeme
  de nommage.
 
+ ca a eviter si systeme de nommage.
+
 --
  segments: code complet + dump + show + partie dep (on refait)
 
@@ -133,13 +154,6 @@
 
 --
  faire le le schema pour cursus/schedule
-
---
- penser a appeller la partie dep lors d'un clone. on ne sait jamais.
- a priori on ne devrait pas en avoir besoin car on appelle rsv() avant
- donc la partie dep fait son boulot mais bon on sait jamais.
-
- enfin a reflechir
 
 --
  mieux decouper les drivers et modules en fonctions de leur types:
@@ -164,9 +178,6 @@
   . que doit faire l'etudiant
   . comment
   . rendu?
-
---
- changer kaneton distributed -> kayou
 
 --
  parser: params et args
@@ -218,6 +229,8 @@
  ca ca risque de prendre du temps a verifier a chaque fois + problemes
  car serveur d'auth detient ces infos et doit les partager avec le kernel
  donc probleme.
+
+ voir ca avec cedric.
 
 -- swap
  faire du swap sur le reseau et sur le disque mais experimenter
@@ -320,7 +333,6 @@
      cours revisions: C, asm, etc.. faire quelques slides [*]
   9) cours noyaux
   10) retoucher cours intel, avec beamer bien etc.. images au bon format
-  11) cours OS distribues
   12) finir le code de kaneton jusqu'aux regions
   13) moulinette de decoupage de code [*]
   14) decouper le code: make export-0 et commenter chaque partie pour que

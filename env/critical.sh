@@ -61,7 +61,7 @@ user_conf()
   local machine
 
   # gets the _MACHINE_ variable.
-  machine=$(sed -E -n							\
+  machine=$(sed -r -n							\
             "s/^_MACHINE_[[:space:]]+(=|:=)[[:space:]]+(.*)$/\2/p"	\
             ${USER_CONF})
 
@@ -137,7 +137,7 @@ env_sh()
   replacement="\1=\"\3\""
 
   make -p -f ${makefile} |						\
-      sed -E -n "s/${regexp}/${replacement}/p" > ${ENV_SH}
+      sed -r -n "s/${regexp}/${replacement}/p" > ${ENV_SH}
 
   # appends the env.sh file the machine shell script specific code.
   cat ${MACHINE_SH} >> ${ENV_SH}

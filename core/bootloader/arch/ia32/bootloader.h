@@ -95,8 +95,6 @@ void			bootloader_paging_init(void);
  * pmode.c
  */
 
-void			bootloader_pmode_gdt_dump(void);
-
 void			bootloader_pmode_update_registers(t_uint16	kcs,
 							  t_uint16	kds);
 
