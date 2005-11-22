@@ -51,7 +51,7 @@ typedef struct
   t_setid			segments;
   t_setid			regions;
 
-  machdep_data(o_as);
+  /* XXX machdep_data(o_as); */
 }				o_as;
 
 /*
@@ -66,7 +66,7 @@ typedef struct
 
   t_setid			container;
 
-  machdep_data(m_as);
+  /* XXX machdep_data(m_as); */
 }				m_as;
 
 /*
