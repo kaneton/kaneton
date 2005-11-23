@@ -36,7 +36,7 @@ source			.env.sh
 
 BINARIES="bash gcc gmake rm ar ranlib ld nasm ln touch wc date	\
           tail tar latex dvips pdflatex cp cat sed echo ls date	\
-          cpp mtools mcopy mkdir find"
+          cpp mtools mcopy mkdir find xdvi gv xpdf"
 
 #
 # ---------- functions --------------------------------------------------------

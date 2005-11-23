@@ -48,6 +48,17 @@
  * ../../../../kaneton/arch/ia32/kaneton/as.c
  */
 
+t_error			ia32_as_clone(t_asid			old,
+				      t_asid*			new);
+
+t_error			ia32_as_reserve(t_asid*			asid);
+
+t_error			ia32_as_release(t_asid			asid);
+
+t_error			ia32_as_init(void);
+
+t_error			ia32_as_clean(void);
+
 
 /*
  * ../../../../kaneton/arch/ia32/kaneton/segment.c

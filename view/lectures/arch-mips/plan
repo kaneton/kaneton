@@ -53,6 +53,8 @@ ou par octet.
 le processeur respecte la convention little endian (bits de poids faibles
 en premier dans la memoire).
 
+[schema]
+
 de plus les adresses doivent etre alignees: ex si on accede a un demi
 mot, son adresse doit etre multiple de 2.
 
@@ -120,6 +122,8 @@ RISC (comme MIPS):
 XXX exemples d'instructions avec overflow et immediats
 XXX shifts etc.. (page 1 cours croc) + mes cours
 
+XXX exemples logiques arithmetiques comme dans mon cours
+
 f) exceptions et interruptions
 
 il existe 4 types d'evenements qui peuvent interrompre l'execution
@@ -177,3 +181,32 @@ Le but d'un concepteur de processeur est de choisir le jeu d'instruction.
 Ce jeu d'instruction n'est pas choisi a la legere surtout dans le cas
 d'un processeur RISC. Souvenez vous que les opcodes coutent chers.
 
+XXX loi d amhdal RISC Reject->Compiler etc..
+
+3) Schema d'execution
+=====================
+
+Voyons desormais l'execution de plusieurs instructions sont une forme
+simplifiee.
+
+Add, Lw, Sw, Jr
+
+Le boulot de l'architecte est de choisir les instructions en fonction des
+MIX et de trouver un schema d'execution.
+
+lire, decoder, executer, calculer adresse suivante, operation, acces
+memoire, resultat.
+
+RISC = 1980
+IBM invente le pipeline en 1975
+
+faire l'analogie avec l hydrocarbure bouchon de boue.
+
+Le but de tout processeur RISC etait d'arriver, pour concurrencer les
+processeurs CISC et les depasser, a executer toutes les instructions en
+un cycle.
+
+[schema frond montant]
+
+A chaque coup d'horloge les registres sont transferes vers l'operation suivante
+et les operations transferent vers les registres destinations.

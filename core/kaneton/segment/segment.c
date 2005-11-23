@@ -408,7 +408,9 @@ t_error			segment_reserve(t_asid			asid,
       }
     }
 
-  machdep_call(segment, segment_reserve, asid, size, perms, segid);
+  if (machdep_call(segment, segment_reserve, asid, size, perms, segid) !=
+      ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
@@ -435,7 +437,8 @@ t_error			segment_release(t_asid			asid,
    * 1)
    */
 
-  machdep_call(segment, segment_release, asid, segid);
+  if (machdep_call(segment, segment_release, asid, segid) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
@@ -524,7 +527,8 @@ t_error			segment_catch(t_asid			asid,
    * 6)
    */
 
-  machdep_call(segment, segment_catch, asid, segid);
+  if (machdep_call(segment, segment_catch, asid, segid) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
@@ -590,7 +594,8 @@ t_error			segment_perms(t_asid			asid,
    * 6)
    */
 
-  machdep_call(segment, segment_perms, asid, segid, perms);
+  if (machdep_call(segment, segment_perms, asid, segid, perms) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
@@ -656,7 +661,8 @@ t_error			segment_type(t_asid			asid,
    * 6)
    */
 
-  machdep_call(segment, segment_type, asid, segid, type);
+  if (machdep_call(segment, segment_type, asid, segid, type) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
@@ -687,7 +693,8 @@ t_error			segment_flush(t_asid			asid)
    * 1)
    */
 
-  machdep_call(segment, segment_flush, asid);
+  if (machdep_call(segment, segment_flush, asid) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
@@ -829,7 +836,8 @@ t_error			segment_init(t_fit			fit)
    * 6)
    */
 
-  machdep_call(segment, segment_init, fit);
+  if (machdep_call(segment, segment_init, fit) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 7)
@@ -861,7 +869,8 @@ t_error			segment_clean(void)
    * 1)
    */
 
-  machdep_call(segment, segment_clean);
+  if (machdep_call(segment, segment_clean) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)

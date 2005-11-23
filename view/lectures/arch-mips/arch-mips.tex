@@ -36,6 +36,27 @@
 }
 
 %
+% figures
+%
+
+\pgfdeclareimage[interpolate=true,width=166pt,height=26pt]
+                {r-format}
+		{figures/r-format}
+\pgfdeclareimage[interpolate=true,width=166pt,height=26pt]
+                {i-format}
+		{figures/i-format}
+\pgfdeclareimage[interpolate=true,width=166pt,height=26pt]
+                {j-format}
+		{figures/j-format}
+
+\pgfdeclareimage[interpolate=true,width=166pt,height=46pt]
+                {overflow-handling}
+		{figures/overflow-handling}
+\pgfdeclareimage[interpolate=true,width=166pt,height=46pt]
+                {overflow-avoiding}
+		{figures/overflow-avoiding}
+
+%
 % document
 %
 
@@ -63,6 +84,42 @@
 \end{frame}
 
 %
+% introduction
+%
+
+\section{Introduction}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Description}
+
+  \begin{itemize}[<+->]
+    \item
+      About \textbf{thirty} course hours.
+    \item
+      Concluded by an exam.
+  \end{itemize}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Contents}
+
+  \begin{itemize}[<+->]
+    \item
+      External architecture.
+    \item
+      Pipeline.
+    \item
+      Compiler optimisations.
+    \item
+      Memory.
+  \end{itemize}
+\end{frame}
+
+%
 % overview
 %
 
@@ -71,1559 +128,427 @@
 % 1)
 
 \begin{frame}
+  \frametitle{Introduction}
+
+  An architecture is composed of:
+
+  \begin{itemize}[<+->]
+    \item
+      Visible registers.
+    \item
+      Instructions set.
+    \item
+      Addressing.
+    \item
+      Interrupts/exceptions system.
+  \end{itemize}
+\end{frame}
+
+% 2)
+
+\begin{frame}
   \frametitle{Description}
 
-  The C preprocessor, often known as cpp, is a macro processor
-  automatically used by the C compiler to transform your program
-  before compilation.
+  The MIPS processor is a 32-bit little-endian processor.
 
   \nl
 
-  It is called a macro processor because it allows you to define macros,
-  which are brief abbreviations for longer constructs.
-\end{frame}
+  This processor provides \textbf{32 integer registers}, from R0 to R31.
 
-% 2)
+  \nl
 
-\begin{frame}
-  \frametitle{Syntax}
-
-  The C preprocessor's directives are of the form:
+  Nevertheless two registers have special meaning:
 
   \begin{itemize}[<+->]
     \item
-      the character \textbf{\#} for specifying a preprocessor operation
+      \textbf{R0}: Trash Register: this register when read returns zero and
+      writtings are ignored.
     \item
-      a directive name for the precise operation
+      \textbf{R31}: Link Register: this register holds the return address
+      of a subprogram.
   \end{itemize}
 \end{frame}
 
 % 3)
 
 \begin{frame}
-  \frametitle{General Rules}
+  \frametitle{Special Registers}
+
+  There are other special registers:
 
   \begin{itemize}[<+->]
     \item
-      we \alert{cannot} define new directives, the directive set is fixed
+      \textbf{HI and LO} are used for multiplications and division.
+  \end{itemize}
+
+  The MIPS precessor has four registers very interesting for system
+  programming:
+
+  \begin{itemize}[<+->]
     \item
-      some directives require arguments: \textit{\#define argument(s)}
+      \textbf{SR}: Status Register: used to distinguish the two context
+      modes: user and supervisor.
+    \item
+      \textbf{CAUSE}: holds the cause of the interrupt/exception.
+    \item
+      \textbf{EPC}: Exception Program Counter: holds the program counter
+      of the instruction that caused the exception.
+    \item
+      \textbf{BAR}: Bad Address Register: holds the address that cause
+      the memory error.
   \end{itemize}
 \end{frame}
 
 %
-% directives
+% instruction formats
 %
 
-\section{Directives}
-
-%
-% header files
-%
-
-\subsection{Header Files}
+\section{Instruction Formats}
 
 % 1)
 
 \begin{frame}
   \frametitle{Overview}
 
-  Header files contain C declarations and macro definitions to be used
-  by several source files.
+  The MIPS processor classifies its 57 instructions into three groups.
 
-  \nl
+  \begin{enumerate}[<+->]
+    \item
+      \textbf{R}: Register to register instructions: Register-Type.
+    \item
+      \textbf{I}: Memory and Branch instructions: Immediate-Type.
+    \item
+      \textbf{J}: Jump instructions: Jump-Type
+  \end{enumerate}
 
-  You can request the use of a header file using the C preprocessor
-  directive \textit{\#include}.
-
-  \nl
-
-  With a header file, the related declarations appear in only one place,
-  each C source file including the header file.
-
-  \nl
-
-  So the changes will only have to be made on a single header file
-  instead of on each source file.
+  Note that a branch instruction is a conditional jump while a jump
+  instruction is an uncontional jump.
 \end{frame}
 
 % 2)
 
-\begin{frame}[containsverbatim]
-  \frametitle{First Syntax}
+\begin{frame}
+  \frametitle{Register Format}
 
-  \textbf{\#include $<$file$>$}
+  \begin{center}
+    \pgfuseimage{r-format}
+  \end{center}
 
-  \nl
-
-  This include looks for the file in the system header directories.
-
-  \begin{itemize}
-  \item
-    \textbf{-I} for the directory list
-  \item
-    \textbf{-nostdinc} for not searching in the system list
-  \item
-    \textit{$<$...$>$} cannot contain neither wildcards nor comments
-  \item
-    \textit{$<$...$>$} cannot contain the \textbf{$>$} character but
-    can contain the \textbf{$<$} character.
+  \begin{itemize}[<+->]
+    \item
+      \textbf{OPCODE}: the operation code.
+    \item
+      \textbf{RS}: the source register.
+    \item
+      \textbf{RT}: the alternative register: source/destination.
+    \item
+      \textbf{RD}: the destination register.
+    \item
+      \textbf{SHAM}: \textbf{SH}ift \textbf{AM}ount: used by
+      shift instructions.
+    \item
+      \textbf{FUNC}: this function field is used to extend the number
+      of available opcodes. Remember that opcode is an expensive resource.
   \end{itemize}
 \end{frame}
 
 % 3)
 
 \begin{frame}[containsverbatim]
-  \frametitle{Second Syntax}
+  \frametitle{Examples}
 
-  \textbf{\#include ``file''}
+  Let's see some examples of register to register instructions.
 
-  \nl
-
-  This include looks for the file in the current working directory.
-
-  \begin{itemize}
-  \item
-    \textit{``...''} cannot contain the \textbf{``} character
-  \item
-    \textit{``...''} does not accept the backslash escaped character,
-    so: \verb|''chiche\n\tpresident\n''| is a file containing
-    three backslahes
+  \begin{itemize}[<+->]
+    \item
+      Add Rd, Rs, Rt
+    \item
+      Addu Rd, Rs, Rt
+    \item
+      Sllv Rd, Rt, Rs
+    \item
+      Srl Rd, Rt, sham
   \end{itemize}
 \end{frame}
 
 % 4)
 
-\begin{frame}[containsverbatim]
-  \frametitle{Third Syntax}
-
-  \textbf{\#include anythingelse}
-
-  \nl
-
-  This include looks for a macro named \textbf{anythingelse}; then resolve
-  it and reinterpret the current argument with the two previous syntaxes.
-\end{frame}
-
-% 5)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Example}
-
-  \begin{verbatim}
-    #if defined(__NetBSD__) || defined(__OpenBSD__) ||          \
-        defined(__FreeBSD__)
-      #define INCLUDE_FILE                ``bsd/include.h''
-    #else
-      #define INCLUDE_FILE                ``linux/include.h''
-    #endif
-
-    #include INCLUDE_FILE
-  \end{verbatim}
-\end{frame}
-
-%
-% one-only included files
-%
-
-\subsection{One-only Included Files}
-
-% 1)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Overview}
-
-  It often happens that a header file includes another header file resulting
-  in header files included more than once.
-
-  \nl
-
-  This fact leads to errors if the header files define structures, types etc..
-
-  \nl
-
-  The standard way to prevent these errors is:
-
-  \begin{verbatim}
-    #ifndef CHICHE_SEEN_WITH_THE_POPE
-    #define CHICHE_SEEN_WITH_THE_POPE
-
-    #endif /* CHICHE_SEEN_WITH_THE_POPE */
-  \end{verbatim}
-\end{frame}
-
-% 2)
-
 \begin{frame}
-  \frametitle{Macro Naming}
+  \frametitle{Immediate Format}
 
-  Be careful, user's defines may not begin with the character \textbf{\_}
-  because these are reserved for system defines.
-
-  \nl
-
-  To avoid conflicts, the system defines generally begin with \textbf{\_\_}.
-
-  \nl
-
-  The macros for one-only inclusion are name based on the header file name.
-
-  \nl
-
-  Moreover, and still to avoid conflicts, these macros are suffixed with
-  some text. Otherwise, the two file generic/chiche.h and bsd/chiche.h
-  will had generated conflicts.
-
-  \nl
-
-  The kaneton project uses a slightly different style:
+  \begin{center}
+    \pgfuseimage{i-format}
+  \end{center}
 
   \begin{itemize}[<+->]
     \item
-      no underscore before names
+      \textbf{OPCODE}: the operation code.
     \item
-      no suffixes
+      \textbf{RS}: the source register.
     \item
-      but instead uses the relative path from the include directory
-      as the name
+      \textbf{RT}: the alternative register: source/destination.
+    \item
+      \textbf{IMMED}: an immediate value.
   \end{itemize}
-
-\end{frame}
-
-% 3)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Example}
-
-  Let's take a look at a kaneton example:
-
-  \nl
-
-  The file \textit{core/include/kaneton/set.h} where \textit{core/include}
-  is the include directory:
-
-  \begin{verbatim}
-    #ifndef KANETON_SET_H
-      ...
-    #endif
-  \end{verbatim}
-
-  The file \textit{core/include/arch/ia32/kaneton/set.h} where
-  \textit{core/include/arch/ia32} is the include directory:
-
-  \begin{verbatim}
-    #ifndef IA32_KANETON_SET_H
-      ...
-    #endif
-  \end{verbatim}
-\end{frame}
-
-%
-% macros
-%
-
-\subsection{Macros}
-
-% 1)
-
-\begin{frame}
-  \frametitle{Overview}
-
-  A macros is a kind of abbreviation which you define and then use later.
-
-  \nl
-
-  The standard convention for macro names is to use upper case.
-
-  \nl
-
-  Nevertheless, in few cases it is better to use lower case, especially
-  when trying to develop a kind of proxy design pattern or interface as
-  in the kaneton's set manager which we will study later in this course.
-
-  \nl
-
-  Indeed, in these few cases the designer especially wants macro calls
-  to looks like function calls the user not being aware of the implementation.
-\end{frame}
-
-% 2)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Example}
-
-  \begin{verbatim}
-    #define PAGESZ          4096
-    #define SETSZ           PAGESZ
-
-    #define open_readonly(filename)                                     \
-      open(filename, O_RDONLY)
-
-    int                 main(void)
-    {
-      int               size = SETSZ;
-    }
-  \end{verbatim}
-
-  will result in:
-
-  \begin{verbatim}
-    int                 main(void)
-    {
-      int               size = 4096;
-      int               fd = open_readonly(``/etc/passwd'');
-    }
-  \end{verbatim}
-\end{frame}
-
-% 3)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Function-like Macros}
-
-  Macros with arguments are called: \textbf{function-like macros}.
-
-  \nl
-
-  Be careful, the preprocessor only understand comma for separating arguments,
-  so this call:
-
-  \begin{verbatim}
-    foo(array[x = y, x + 1])
-  \end{verbatim}
-
-  results in a macro named \textbf{foo} which takes two arguments,
-  in this case: \textbf{array[x = y} and \textbf{x + 1]}.
-
-  \nl
-
-  Moreover if a function-like macro takes one argument and the user
-  wants to pass an empty argument, he has to specify it using a
-  whitespace between the parenthesis: foo( )
-\end{frame}
-
-% 4)
-
-\begin{frame}
-  \frametitle{Function-like Macros Use}
-
-  It is also possible to use function-like macros which take zero argument
-  even if there is no advantage over classical macros.
-
-  \nl
-
-  Think about function-like macro declarations which names \alert{must} be
-  followed by an open parenthesis without any whitespace.
-
-  \nl
-
-  Indeed if a whitespace appear between the name and the open parenthesis
-  the macro will be considered as a simple macro and the open parenthesis
-  will be part of the expansion.
 \end{frame}
 
 % 5)
 
 \begin{frame}[containsverbatim]
-  \frametitle{Example}
+  \frametitle{Examples}
 
-  \begin{verbatim}
-    #define chiche(x) - 1
+  Let's see some examples of immediate instructions.
 
-    chiche(3)
-  \end{verbatim}
-
-  will be expanded to: \textbf{3 - 1}.
-
-  \begin{verbatim}
-    #define chiche (x) - 1
-
-    chiche(3)
-  \end{verbatim}
-
-  will lead to an invalid use of the macro because this macro takes no
-  argument.
-
-  \nl
-
-  The result will be:
-
-  \begin{verbatim}
-    (x) -1(3)
-  \end{verbatim}
+  \begin{itemize}[<+->]
+    \item
+      Addi Rd, Rs, Immed
+    \item
+      Addiu Rd, Rs, Immed
+    \item
+      Andi Rd, Rs, Immed
+    \item
+      Ori Rd, Rs, Immed
+  \end{itemize}
 \end{frame}
 
 % 6)
 
 \begin{frame}
-  \frametitle{Predefined Macros}
+  \frametitle{Jump Format}
 
-  The predefined macros fall into two categories:
+  \begin{center}
+    \pgfuseimage{j-format}
+  \end{center}
 
-  \begin{enumerate}
+  \begin{itemize}[<+->]
     \item
-      standard macros
+      \textbf{OPCODE}: the operation code.
     \item
-      system macros
-  \end{enumerate}
+      \textbf{IMMED}: immediate value.
+  \end{itemize}
 \end{frame}
 
 % 7)
 
 \begin{frame}[containsverbatim]
-  \frametitle{Standard Prefefined Macros}
+  \frametitle{Examples}
 
-  Some interesting standard predefined macros which are very useful.
+  Let's see some examples of jump instructions.
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
     \item
-      \textbf{\_\_FILE\_\_}: the current file name, \textit{``foo.c''}
-    \item
-      \textbf{\_\_LINE\_\_}: the current line number, \textit{42}
-    \item
-      \textbf{\_\_DATE\_\_}: the date the file was preprocessed,
-      \textit{``Feb 1 1996''}
-    \item
-      \textbf{\_\_TIME\_\_}: same thing for the time, \textit{``23:59:01''}
+      J Immed
   \end{itemize}
-
-  These macros are very very useful for debugging:
-
-  \begin{verbatim}
-    fprintf(stderr, ``[%s %s] %s:%u message here\n'', 
-            __DATE__, __TIME__, __FILE__, __LINE__);
-  \end{verbatim}
 \end{frame}
 
 % 8)
 
-\begin{frame}
-  \frametitle{System Predefined Macros}
+\begin{frame}[containsverbatim]
+  \frametitle{Opcodes}
 
-  These macros are set by the system for example to distinguish the
-  running operating system.
+  We saw that the opcode field took 6 bits.
 
-  \begin{itemize}[<+->]
-    \item
-      \textbf{linux}: for the linux operating system
-    \item
-      \textbf{\_\_OpenBSD\_\_}: for the OpenBSD operating system
-  \end{itemize}
+  \nl
+
+  We also saw that the register-type instructions had a function field
+  to extend the number of opcodes. So a value for the opcode field is
+  dedicated to the use of the function extended field.
+
+  \nl
+
+  This specific opcode value is zerp: \textbf{000 000}
+
+  \nl
+
+  So the number of opcode available on the MIPS is:
+
+  \begin{verbatim}
+    opcodes =   opcode field - 1   +   function field
+            =    (2 ^ 6) - 1       +     (2 ^ 6)
+            =        63            +       64
+
+            =   127
+  \end{verbatim}
 \end{frame}
 
 % 9)
 
 \begin{frame}
-  \frametitle{Stringification}
-
-  The stringification action means turning a code fragment into
-  a string constant.
-
-  \nl
-
-  For example stringifying \textit{chiche(42)} results in
-  \textit{``chiche(42)''}.
-
-  \nl
-
-  The preprocessor operator used for stringification is the simple sharp:
-  \textbf{\#} which has to be placed before a name.
-
-  \nl
-
-  This preprocessor feature is very useful for debugging.
-
-  \nl
-
-  It is so possible to print useful information like the macro arguments.
-\end{frame}
-
-% 10)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Example}
-
-  Let's take an example:
-
-  \begin{verbatim}
-    #define forward(function, args...)                                  \
-      fprintf(stderr, ``calling: %s(%s)\n'', #function, #args)
-
-    int                 main(void)
-    {
-      forward(foo, arg1, arg2);
-    }
-  \end{verbatim}
-
-  This example is a bit complex because it uses a feature we have not seen
-  yet.
-
-  \begin{verbatim}
-    $ ./example
-    calling: foo(arg1, arg2)
-    $ 
-  \end{verbatim}
-\end{frame}
-
-% 11)
-
-\begin{frame}
-  \frametitle{Concatenation}
-
-  The concatenation means joining two words into one.
-
-  \nl
-
-  When you define a macro, you request concatenation using the special
-  operator \textbf{\#\#} in the macro body.
-
-  \nl
-
-  This often takes place with one constraint word and one of the macro
-  argument but it is also possible to apply concatenation between two
-  macro arguments
-\end{frame}
-
-% 12)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Example}
-
-  \begin{verbatim}
-    #define mystring(s)         #s
-    #define myconcat(name1, name2)                                      \
-      mystring( name1##name2 )
-
-    int                 main(void)
-    {
-      printf(``string: %s\n'', myconcat(glen, benton));
-    }
-  \end{verbatim}
-
-  When launching this simple program:
-
-  \begin{verbatim}
-    $ ./example
-    glenbenton
-    $ 
-  \end{verbatim}
-\end{frame}
-
-% 13)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Problem}
-
-  Now let's take a look to the most popular problem requesting concatenation:
-
-  \begin{verbatim}
-    typedef struct
-    {
-      char              *name;
-      void              (*function)(void);
-    }                   t_command;
-
-    t_command           commands[] =
-    {
-      { ``quit'', quit_command },
-      { ``help'', help_command },
-    };
-  \end{verbatim}
-\end{frame}
-
-% 14)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Solution}
-
-  This is a common example because this construction is a well-known one,
-  used for example when reading a command and launching a corresponding
-  function.
-
-  \nl
-
-  You could notice that there were many repetitions in the previous
-  array declaration.
-
-  \nl
-
-  This array declaration can be simplified using a macro with concatenation:
-
-  \begin{verbatim}
-    #define NEW_COMMAND(name)   { #name, name##_command }
-
-    t_command           commands[] =
-    {
-      NEW_COMMAND(quit),
-      NEW_COMMAND(help),
-    };
-  \end{verbatim}
-\end{frame}
-
-% 15)
-
-\begin{frame}
-  \frametitle{Undefining Macros}
-
-  This action is used to cancel a definition.
-
-  \nl
-
-  The directive used is \textbf{\#undef} which is followed by the macro
-  name to undefined.
-\end{frame}
-
-% 16)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Example}
-
-  \begin{verbatim}
-    #define FOO         4
-    x = FOO;
-    #undef FOO
-    x = FOO
-  \end{verbatim}
-
-  expands to:
-
-  \begin{verbatim}
-    x = 4;
-    x = FOO;
-  \end{verbatim}
-
-  This code will not compile because FOO is now an undefined symbol.
-
-  \nl
-
-  The macro undefinition works for simple macros as for function-like macros.
-\end{frame}
-
-% 17)
-
-\begin{frame}
-  \frametitle{Redefining Macros}
-
-  Redefining a macro means defining a name that is already in use as a macro.
-
-  \nl
-
-  If the macro redefined matchs the previous declaration (this case is possible
-  with multiple inclusions) the redefinition is simply ignored.
-
-  \nl
-
-  A macro redefinition is considered identical to its previous if everything is
-  exactly identical excepts whitespaces which are ignored lexical symbols.
-
-  \nl
-
-  For the other cases and to avoid c-preprocessor errors, prefer
-  undefined the previous declaration with the \textbf{\#undef} directive
-  before the macro redefinition.
+  \frametitle{Questions}
+
+  Any question?
+
+  \begin{itemize}[<+->]
+    \item
+      Why the \textbf{Subi} instruction does not exist?
+    \item
+      Why the \textbf{Jr} instruction is a register-type instruction
+      while its goal is to perform a jump?
+    \item
+      Why the \textbf{Nori} instruction does not exist?
+    \item
+      Why the \textbf{Sll} instruction is a register-type instruction
+      while it uses an immediate?
+  \end{itemize}
+
+  The answers are:
+
+  \begin{itemize}[<+->]
+    \item
+      Opcode is a very expensive resource.
+    \item
+      Most instructions are useless because the designed operation can be
+      made with another instruction.
+    \item
+      \textbf{MIXs} are used to design the instruction set with these
+      two rules.
+  \end{itemize}
 \end{frame}
 
 %
-% conditionals
+% instructions
 %
 
-\subsection{Conditionals}
+\section{Instructions}
 
 % 1)
 
 \begin{frame}
-  \frametitle{Overview}
+  \frametitle{Arithmetic and Logic instructions}
 
-  A conditional is a directive which permits to ignore some code for the
-  compilation.
+  We will see how the processor interprets different instructions.
 
-  \begin{enumerate}
-    \item
-      this feature is very used dealing with architectures, to enable
-      parts of code for a special architecture. This is also true for
-      different operating systems.
-    \item
-      another reason is to permit this source code to be used for
-      two different program compilations.
-    \item
-      the last reason is for excluding whole parts of code using the
-      directive \textbf{\#if 0} which is always false.
-  \end{enumerate}
+  \nl
+
+  The processor also divides the instructions into two subcategories:
+  the arithmetic instructions and the logic instructions.
+
+  \nl
+
+  Briefly, the arithmetic instructions handles overflow while logic
+  one do not.
 \end{frame}
 
 % 2)
 
-\begin{frame}[containsverbatim]
-  \frametitle{\textbf{\#if}}
+\begin{frame}
+  \frametitle{Overflow Avoiding}
 
-  This directive tests a condition and includes the appropriate source code.
+  Let's take the \textbf{Andi Rt, Rs, Immed} immediate-type
+  instruction as example.
 
   \nl
 
-  The syntax is:
+  Not that overflow is ignored with logic instructions and with
+  specific unsigned instructions (\textbf{u} suffixed) like:
+  Addiu, Srl, Subu etc..
 
-  \begin{verbatim}
-    #if condition
-      controlled-text
-    #endif
-  \end{verbatim}
+  \nl
 
-  The condition can be composed of:
+  So in the case of the \textbf{Andi} instruction which is a logic instruction,
+  the immediate will be interpreted as an unsigned value.
 
-  \begin{enumerate}
-    \item
-      numbers
-    \item
-      macro calls
-    \item
-      characters
-    \item
-      arithmetic operators: $||$, \&\&
-  \end{enumerate}
+  \nl
+
+  The 16-bit immediate value will be expanded to a 32-bit one just
+  filling the 16 higher bits with zeros.
+
+  \nl
+
+  \begin{center}
+    \pgfuseimage{overflow-avoiding}
+  \end{center}
 \end{frame}
 
 % 3)
 
-\begin{frame}[containsverbatim]
-  \frametitle{Example}
+\begin{frame}
+  \frametitle{Overflow Handling}
 
-  \begin{verbatim}
-    #if 1
-      printf(``always true\n'');
-    #endif
+  Let's take the \textbf{Addi Rt, Rs, Immed} immediate-type
+  instruction as an example of a arithmetic one.
 
-    #if (DEBUG & DEBUG_MALLOC)
-      malloc_dump();
-    #endif
+  \nl
 
-    #if defined(__NetBSD__) || defined(__OpenBSD__) ||          \
-        defined(__FreeBSD__)
-      printf(``BSD code here\n'');
-    #endif
-  \end{verbatim}
+  The non-presence of the \textbf{u} suffix introduces the overflow
+  handling. This means that the immediate value will be considered
+  as a signed value.
+
+  \nl
+
+  So, the signed value will be expanded as a 32-bit value taking care
+  to report the sign bit.
+
+  \nl
+
+  \begin{center}
+    \pgfuseimage{overflow-handling}
+  \end{center}
 \end{frame}
 
 % 4)
 
 \begin{frame}[containsverbatim]
-  \frametitle{\textbf{\#ifdef}}
+  \frametitle{Immediate Limitations}
 
-  This directive just tests the definition of the macro \textit{foo}.
-
-  \nl
-
-  The syntax is:
-
-  \begin{verbatim}
-    #ifdef foo
-      controlled-text
-    #endif
-  \end{verbatim}
-\end{frame}
-
-% 5)
-
-\begin{frame}[containsverbatim]
-  \frametitle{\textbf{\#else}}
-
-  This directive provides alternative text to be used if the condition
-  is false.
+  Let's see a common problem due to the immediate field limitations.
 
   \nl
 
-  The syntax is:
+  How to move the 32-bit value \textbf{0x87654321} into the R1 register.
 
   \begin{verbatim}
-    #if condition
-      controlled-text
-    #else
-      controlled-text
-    #endif
-  \end{verbatim}
-\end{frame}
-
-% 6)
-
-\begin{frame}[containsverbatim]
-  \frametitle{\textbf{\#elif}}
-
-  This directive provides an alternative including a new conditional part.
-
-  \nl
-
-  The syntax is:
-
-  \begin{verbatim}
-    #if condition
-      controlled-text
-    #elif condition
-      controlled-text
-    #else
-      controlled-text
-    #endif
-  \end{verbatim}
-\end{frame}
-
-% 7)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Example}
-
-  \begin{verbatim}
-    #if defined(__NetBSD__)
-      printf(``NetBSD\n'');
-    #elif defined(__FreeBSD__) || defined(__OpenBSD__)
-      printf(``other BSD\n'');
-    #else
-      printf(``Non-BSD\n'');
-    #endif
-  \end{verbatim}
-\end{frame}
-
-% 8)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Others}
-
-  Note that the directive \textbf{defined} returns 1 if the macro is
-  defined and 0 otherwise.
-
-  \nl
-
-  Moreover:
-
-  \begin{verbatim}
-    #if defined(foo)
+    Addi R1, R0, 0x8765
+    Sll R1, R1, 16
+    Addi R1, R1, 0x4321
   \end{verbatim}
 
-  is equivalent to:
-
-  \begin{verbatim}
-    #ifdef foo
-  \end{verbatim}
-
-  Also note that the \textbf{\#ifndef} directive just tests whether a macro
-  is not defined.
-\end{frame}
-
-%
-% preprocessor controls
-%
-
-\subsection{Preprocessor Controls}
-
-% 1)
-
-\begin{frame}
-  \frametitle{Overview}
-
-  The preprocessor control directives are used to modify the behaviour
-  of the preprocessor in certain cases.
-\end{frame}
-
-% 2)
-
-\begin{frame}[containsverbatim]
-  \frametitle{\textbf{\#error}}
-
-  The directive \textbf{\#error} causes the preprocessor to report a
-  fatal error.
-
-  \nl
-
-  The directive \textbf{\#error} is usually used inside of a conditional.
-
-  \begin{verbatim}
-    #ifndef ___kaneton
-      #error ``this software can only compile on the kaneton kernel''
-    #endif
-  \end{verbatim}
-
-  When the error directive is encoutered, the preprocessor exits.
-\end{frame}
-
-% 3)
-
-\begin{frame}
-  \frametitle{\textbf{\#warning}}
-
-    The directive \textbf{\#warning} is identical to the error one
-    without stopping the work if encountered.
-\end{frame}
-
-%
-% variadic arguments
-%
-
-\subsection{Variadic Arguments}
-
-% 1)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Overview}
-
-  The variadic arguments are used to not explicitly specify the number
-  of arguments the macro needs.
-
-  \nl
-
-  Let's take an example:
-
-  \begin{verbatim}
-    #define dprintf(fmt, args...)                                       \
-      printf(fmt, args)
-
-    dprintf(``%s %d\n'', mystring, 42);
-  \end{verbatim}
-\end{frame}
-
-% 2)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Problem}
-
-  But let's discuss about the following example:
-
-  \begin{verbatim}
-    dprintf(``very bad idea\n'');
-  \end{verbatim}
-
-  This last example will be expanded to:
-
-  \begin{verbatim}
-    printf(``very bad idea\n'', );
-  \end{verbatim}
-
-  Note that the comma is followed by the closing parenthesis. When coming
-  the compiling time, gcc will warn an error because this is a syntax
-  error.
-
-  \nl
-
-  Indeed, a variadic argument is a list of one or more arguments, but at
-  least one.
-
-  \nl
-
-  Nevertheless, some programs need variadic arguments to become an empty
-  argument and not leading to a syntax error.
-\end{frame}
-
-% 3)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Solution}
-
-  There is absolutely no solution with the common C preprocessor.
-
-  \nl
-
-  Nevertheless, the GNU C preprocessor introduced an extension for
-  this common problem.
-
-  \nl
-
-  Let's see the solution:
-
-  \begin{verbatim}
-    #define dprintf(fmt, args...)                                       \
-      printf(fmt, ##args)
-
-    dprintf(``%s %d\n'', mystring, 42);
-  \end{verbatim}
-
-  The GNU C preprocessor specify in its documentation that if a variadic
-  argument is empty and preceded by a comma; then the GNU C preprocessor will
-  automatically remove the comma to make the syntax correct.
-\end{frame}
-
-%
-% pitfalls
-%
-
-\section{Pitfalls}
-
-%
-% grouping macro arguments
-%
-
-\subsection{Grouping Macro Arguments}
-
-% 1)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Overview}
-
-  Grouping arguments means placing parenthesis around macro arguments
-  to avoid misunderstandings.
-
-  \nl
-
-  Think about grouping macro arguments to avoid non-wanted operations.
-
-  \nl
-
-  Let's show a very very simple example:
-
-  \begin{verbatim}
-    #define bar(x, y)     x + y
-  \end{verbatim}
-\end{frame}
-
-% 2)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Problem}
-
-  Consider the following use:
-
-  \begin{verbatim}
-    bar(8 & 4, 5)
-  \end{verbatim}
-
-  will be expanded to:
-
-  \begin{verbatim}
-    8 & 4 + 5
-  \end{verbatim}
-
-  which is equal to:
-
-  \begin{verbatim}
-    8 & (4 + 5)
-  \end{verbatim}
-\end{frame}
-
-% 3)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Solution}
-
-  Note that the result is not the one intended.
-
-  \nl
-
-  In fact, we wanted the macro to do:
-
-  \begin{verbatim}
-    (8 & 4) + 5
-  \end{verbatim}
-
-  For this, we have to group the macro arguments to avoid these kind of
-  problems:
-
-  \begin{verbatim}
-    #define m(x, y)     ((x) + (y))
-  \end{verbatim}
-
-  Another grouping over the entire macro is not a bad idea...
-\end{frame}
-
-%
-% macro to expression
-%
-
-\subsection{Macro to Expression}
-
-% 1)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Overview}
-
-  Sometimes it is useful to return a value from a macro, in other words
-  to evaluate a macro call.
-
-  \nl
-
-  The user only has to use the parenthesis to convert a compound statement
-  into an expression.
-
-  \begin{verbatim}
-    #define call(function, argument)                                    \
-      (                                                                 \
-        {                                                               \
-          int           _r_ = -1;                                       \
-                                                                        \
-          if (function)                                                 \
-            _r_ = function(argument);                                   \
-                                                                        \
-          _r_;                                                          \
-        }                                                               \
-      )
-  \end{verbatim}
-\end{frame}
-
-% 2)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Explanations}
-
-  The last value being the \textbf{\_r\_} variable, it will also be
-  the expression's value which will be evaluated.
-
-  \nl
-
-  We can now use the macro expecting a return value:
-
-  \begin{verbatim}
-    if (call(printf, ``chiche\n'') == -1)
-      return (-1);
-  \end{verbatim}
-\end{frame}
-
-%
-% swallowing the semicolon
-%
-
-\subsection{Swallowing The Semicolon}
-
-% 1)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Overview}
-
-  Sometimes, it is useful to write macros which are a sequence of
-  instructions like this one:
-
-  \begin{verbatim}
-    #define call(function, argument)                                    \
-      {                                                                 \
-        if (function != NULL)                                           \
-          function(argument);                                           \
-      }
-  \end{verbatim}
-
-  The strict use of this macro is:
-
-  \begin{verbatim}
-    call(listen, 42)
-  \end{verbatim}
-
-  Note that there is no semicolon at the end of the macro call.
-\end{frame}
-
-% 2)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Problem}
-
-  Nevertheless, users want to consider calling a macro as calling a
-  typical C function. For this reason, many programmers put a semicolon
-  at the end of macro calls.
-
-  \nl
-
-  Another reason is the identation which will not be correct if the
-  programmer do not put the semicolon in some text editors.
-
-  \nl
-
-  In many cases, putting a semicolon at the end of a macro call
-  just result with an empty instruction and the compiler just ignore it,
-  but think about this example:
-
-  \begin{verbatim}
-    if (opts == 1)
-      call(listen, 42);
-    else
-      call(send, 42);
-  \end{verbatim}
-\end{frame}
-
-% 3)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Explanations}
-
-  This example is \alert{not} correct because it will be expanded to:
-
-  \begin{verbatim}
-    if (opts == 1)
-      {
-        if (listen != NULL)
-          listen(42);
-      };
-    else
-      {
-        if (send != NULL)
-          send(42);
-      };
-  \end{verbatim}
-
-  The problem here is the semicolon before the \textbf{else}.
-\end{frame}
-
-% 4)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Solution}
-
-  The only way to solve this problem is to used the famous
-  \textbf{do while()}.
-
-  \begin{verbatim}
-    #define call(function, argument)                                    \
-      do                                                                \
-      {                                                                 \
-        if (function != NULL)                                           \
-          function(argument);                                           \
-      } while (0)
-  \end{verbatim}
-\end{frame}
-
-% 5)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Example}
-
-  Our example now will be expanded to:
-
-  \begin{verbatim}
-    if (opts == 1)
-      do
-      {
-        if (listen != NULL)
-          listen(42);
-      } while (0);
-    else
-      do
-      {
-        if (send != NULL)
-          send(42);
-      } while (0);
-  \end{verbatim}
-\end{frame}
-
-%
-% side effects
-%
-
-\subsection{Side Effects}
-
-% 1)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Problem}
-
-  A side effect is an execution which produces a non-direct modification
-  or which produces an non-wanted effect.
-
-  \nl
-
-  Consider this macro:
-
-  \begin{verbatim}
-    #define MIN(x, y)           (x) < (y) ? (x) : (y)
-
-    MIN(fibonacci(12345678987654321), 4)
-  \end{verbatim}
-
-  will be expanded to:
-
-  \begin{verbatim}
-    (fibonacci(12345678987654321)) < (4) ? (fibonacci(12345678987654321)) : (4)
-  \end{verbatim}
-
-  You can see the double call to the function which will certainly take
-  much time to compute.
-\end{frame}
-
-% 2)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Solution}
-
-  Think about this and prefer a more complex form:
-
-  \begin{verbatim}
-    #define MIN(x, y)                                                   \
-      (                                                                 \
-        {                                                               \
-          typeof(x)     _x_ = (x);                                      \
-          typeof(y)     _y_ = (y);                                      \
-                                                                        \
-          (_x_) < (_y_) ? (_x_) : (_y_);                                \
-        }                                                               \
-      )
-  \end{verbatim}
-\end{frame}
-
-% 3)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Problem}
-
-  Let's see the most popular example of side effects to be sure
-  you understood this kind of problems and the fact the preprocessor just copy
-  and paste portions of code.
-
-  \nl
-
-  With the first non-corrected macro MIN():
-
-  \begin{verbatim}
-    int         a = 4;
-    int	        b = 2;
-
-    MIN(a++, b);
-  \end{verbatim}
-
-  This example seems correct, but let's see its expansion:
-
-  \begin{verbatim}
-    (a++) < (b) ? (a++) : (b);
-  \end{verbatim}
-
-  Once again, you can notice the problem, the \textbf{a} varible is finally
-  incremented two times while the programmer just wanted to post-increment
-  the \textbf{a} variable one time.
-
-  \nl
-
-  The second corrected macro also correct this problem ensuring the arguments
-  to be evaluated only one time.
-\end{frame}
-
-%
-% self-referenced macros
-%
-
-\subsection{Self-referenced Macros}
-
-% 1)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Overview}
-
-  The macros expansion was made to avoid infinite expansion.
-
-  \nl
-
-  This fact seems to be a limitation (and it is) but also provides
-  some interesting features.
-
-  \begin{verbatim}
-    #define foo(x, y)   foo(y, x)
-
-    foo(4, 3)
-  \end{verbatim}
-
-  will be expanded to:
-
-  \begin{verbatim}
-    foo(3, 4)
-  \end{verbatim}
-
-  and nothing more.
-\end{frame}
-
-% 2)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Example}
-
-  Thanks to this, because it permits to overload code fragments, the most
-  common overload handling function calls:
-
-  \begin{verbatim}
-    #define free(buf)                                                   \
-      if ((buf))                                                        \
-        free((buf));
-
-    #define malloc(size)                                                \
-      (                                                                 \
-        {                                                               \
-          void*         buf;                                            \
-                                                                        \
-          if ((buf = malloc((size))) == NULL)                           \
-            perror(``malloc'');                                         \
-                                                                        \
-          buf;                                                          \
-        }                                                               \
-      )
-  \end{verbatim}
-\end{frame}
-
-%
-% case studies
-%
-
-\section{Case Studies}
-
-% 1)
-
-\begin{frame}
-  \frametitle{kaneton set system}
-
-  The kaneton set system is used to simulate functions overloading and
-  functions forwarding.
-
-  \nl
-
-  The main problems are inherent to the language used: the C and the C
-  preprocessor.
-
-  \nl
-
-  We wanted a generic interface used by the programmer and we wanted our
-  system to distribute, forward the function calls to more specific
-  functions.
-
-  \nl
-
-  The set manager is used to manage complex data structures. Then the
-  programmer just call the set manager to ask it to build a precise data
-  structure and to manage it: elements and memory.
-
-  \nl
-
-  The goal of the kaneton set system was to provide this very special
-  interface using macros.
-\end{frame}
-
-% 2)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Interface}
-
-  The kaneton set system is composed of an interface.
-
-  \nl
-
-  The \textbf{set\_reserve()} function reserves a set specifying the desired
-  data structure to use. This function returns a set identifier.
-
-  \nl
-
-  Then the user also use the identifier to manipulate its set. From this
-  identifier the kaneton set system will be able to retrieve the correct
-  data structure type so the correct functions to forward to.
-
-  \begin{verbatim}
-    #define set_reserve(_type_, _args_...)                                  \
-      set_reserve_##_type_(_args_)
-
-    #define set_add(_setid_, _args_...)                                     \
-      set_trap(set_add, _setid_, ##_args_)
-
-    #define set_head(_setid_, _args_...)                                    \
-      set_trap(set_head, _setid_, ##_args_)
-  \end{verbatim}
-\end{frame}
-
-% 3)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Implementation}
-
-  The concatenation was widely used for solving problems related to
-  the kaneton set system. Let's take a look to the set manager and its
-  interface using a trap system to forward function calls to specific
-  set manager: linked-list, array etc..
-
-  \nl
-
-  \begin{verbatim}
-    #define set_trap(_func_, _setid_, _args_...)                            \
-      {                                                                     \
-        o_set*            _set_;                                            \
-                                                                            \
-        if (set_descriptor((_setid_), &_set_) == ERROR_NONE)                \
-          {                                                                 \
-            switch (_set_->type)                                            \
-              {                                                             \
-                case SET_TYPE_ARRAY:                                        \
-                  _r_ = _func_##_array((_setid_), ##_args_);                \
-                  break;                                                    \
-                ...                                                         \
-              }                                                             \
-          }                                                                 \
-      }
-  \end{verbatim}
-\end{frame}
-
-% 4)
-
-\begin{frame}
-  \frametitle{Templates}
-
-  The C preprocessor can also be used to generate C functions.
-
-  \nl
-
-  The most common use of this technique is to generate a function given
-  its types. Then we will be able to generate kind of overloaded
-  functions.
-
-  \nl
-
-  Consider a function template which is common but the types used inside
-  it change. The programmer has the choice: either program the N functions
-  with the same code but with different types or generate the functions
-  with macros.
+  This operation being very useful, the designers of the MIPS processor
+  decided to add a new instruction named \textbf{Lui} which do
+  exactly the:
+
+  \begin{itemize}
+    \item
+      Add Rn, R0, Immed
+      Sll Rn, Rn, 16
+  \end{itemize}
 \end{frame}
 
 % 5)
 
 \begin{frame}
-  \frametitle{Functions Generation}
+  \frametitle{Another Problem}
 
-  Let's take an example, with a function which finds the highest value in
-  the array and then swaps it with the first, so places the highest value
-  as first. The programmer has to write a function for arrays of:
-  characters, shorts and integers.
+  Let's take a closer look to the sequence of these three instructions:
+
+  \begin{verbatim}
+    Addi R1, R0, 0x4567
+    Sll R1, R1, 16
+    Addi R1, R1, 0x89ab
+  \end{verbatim}
+
+  This sequence seems correct but it is not. Remember that the arithmetic
+  operations handle the overflow. In other terms, the operands of
+  arithmetic operations are considered as signed integers.
 
   \nl
 
-  We will generate a function called \textbf{dump\_array} suffixed with
-  its type to easily retrieve the function name and to avoid conflicts.
-\end{frame}
+  The value \textbf{0x89ab} is equivalent to the binary value:
+  \textbf{1000100110101011}.
 
-% 6)
+  \nl
 
-\begin{frame}[containsverbatim]
-  \frametitle{Example}
+  You can notive that the higher bit is set so this number will be considered
+  as a signed integer.
 
-  \begin{verbatim}
-    #define make_dump_array(T)                                          \
-      void              dump_array_##T(T*               array,          \
-                                       unsigned int     size)           \
-        {                                                               \
-          unsigned int  max;                                            \
-          T             tmp;                                            \
-          unsigned int  i;                                              \
-                                                                        \
-          for (max = 0, i = 0; i < size; i++)                           \
-            if (array[i] > array[max])                                  \
-              max = i;                                                  \
-                                                                        \
-          tmp = array[0];                                               \
-          array[0] = array[max];                                        \
-          array[max] = tmp;                                             \
-        }
+  \nl
 
-    #define dump_array(T, array, size)                                  \
-      dump_array_##T(array, size)
-  \end{verbatim}
-\end{frame}
-
-% 7)
-
-\begin{frame}[containsverbatim]
-  \frametitle{Example}
+  The solution is simply to prefere a logic operation:
 
   \begin{verbatim}
-    make_dump_array(int)
-    make_dump_array(char)
-
-    int                 main(void)
-    {
-      int               iarray[5] = { 1, 2, 3, 4, 5 };
-      char              carray[2] = { 'o', 'k' };
-
-      dump_array(int, iarray, 5);
-      dump_array(char, carray, 2);
-    }
+    Addi R1, R0, 0x4567
+    Sll R1, R1, 16
+    Ori R1, R1, 0x89ab
   \end{verbatim}
 \end{frame}
 

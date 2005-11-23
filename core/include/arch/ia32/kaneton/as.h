@@ -21,7 +21,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <kaneton/as.h>
+// XXX #include <kaneton/as.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -43,7 +43,7 @@ typedef struct
 typedef struct
 {
   t_error			(*as_clone)(t_asid,
-					    t_asid);
+					    t_asid*);
   t_error			(*as_reserve)(t_asid*);
   t_error			(*as_release)(t_asid);
   t_error			(*as_init)(void);

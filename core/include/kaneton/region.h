@@ -102,6 +102,11 @@ typedef struct
  */
 
 /*
+ * ../../kaneton/region/region.c
+ */
+
+
+/*
  * eop
  */
 

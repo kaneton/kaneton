@@ -1,5 +1,18 @@
 --
- rajouter buckman au svn
+ tests reeb/ski pour printf/malloc + moulinette de triche.
+
+--
+ revoir si on peut resoudre le systeme d inclusion recursive du preproc:
+  peut etre en ne mettant que les types et prototypes entre les guards.
+
+--
+ buckman: mkp.py, interface d'events
+
+ un service demande au service dev de lui donner un acces sur tel ressource
+ lui le fait avec le kernel car il a la capability. ensuite il sais dialoguer
+ plus precisement soit car machdep soit "faut trouver comment nommer"
+ et comme ca aucun service ne va se faire chier a nommer les periph a part
+ dev.
 
 --
  -VIEWER car viewer de base pour l'archi

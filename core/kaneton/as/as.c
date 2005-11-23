@@ -212,6 +212,7 @@ t_error			as_dump(void)
  *    release them before.
  * 5) clones the segment and region sets from the source address space
  *    object.
+ * 6) calls the machine-dependent code.
  */
 
 t_error			as_clone(t_asid				old,
@@ -263,6 +264,13 @@ t_error			as_clone(t_asid				old,
   if (set_clone(from->regions, &to->regions) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
+  /*
+   * 6)
+   */
+
+  if (machdep_call(as, as_clone, old, new) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
   AS_LEAVE(as, ERROR_NONE);
 }
 
@@ -276,6 +284,7 @@ t_error			as_clone(t_asid				old,
  * 3) reserves the set of segments for the new address space object.
  * 4) reserves the set of regions for the new address space object.
  * 5) adds the new address space object in the address space container.
+ * 6) calls the machine-dependent code.
  */
 
 t_error			as_reserve(t_asid*			asid)
@@ -339,6 +348,13 @@ t_error			as_reserve(t_asid*			asid)
       AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
+  /*
+   * 6)
+   */
+
+  if (machdep_call(as, as_reserve, asid) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
   AS_LEAVE(as, ERROR_NONE);
 }
 
@@ -347,11 +363,12 @@ t_error			as_reserve(t_asid*			asid)
  *
  * steps:
  *
- * 1) gets the address space object given its identifier.
- * 2) releases the address space object identifier.
- * 3) releases the address space object's set of segments.
- * 4) releases the address space object's set of regions.
- * 5) removes the address space object from the address space container.
+ * 1) calls the machine-dependent code.
+ * 2) gets the address space object given its identifier.
+ * 3) releases the address space object identifier.
+ * 4) releases the address space object's set of segments.
+ * 5) releases the address space object's set of regions.
+ * 6) removes the address space object from the address space container.
  */
 
 t_error			as_release(t_asid			asid)
@@ -365,32 +382,39 @@ t_error			as_release(t_asid			asid)
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (machdep_call(as, as_release, asid) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (id_release(&as->id, o->asid) != ERROR_NONE)
+  if (as_get(asid, &o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (set_release(o->segments) != ERROR_NONE)
+  if (id_release(&as->id, o->asid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (set_release(o->regions) != ERROR_NONE)
+  if (set_release(o->segments) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 5)
+   */
+
+  if (set_release(o->regions) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 6)
    */
 
   if (set_remove(as->container, o->asid) != ERROR_NONE)
@@ -439,7 +463,8 @@ t_error			as_get(t_asid				asid,
  *    the address space build later.
  * 4) tries to reserve a statistics object.
  * 5) reserves the kernel address space.
- * 6) if asked, dumps the address space manager.
+ * 6) calls the machine-dependent code.
+ * 7) if asked, dumps the address space manager.
  */
 
 t_error			as_init(void)
@@ -502,6 +527,13 @@ t_error			as_init(void)
    * 6)
    */
 
+  if (machdep_call(as, as_init) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 7)
+   */
+
 #if (DEBUG & DEBUG_AS)
   as_dump();
 #endif
@@ -514,17 +546,25 @@ t_error			as_init(void)
  *
  * steps:
  *
- * 1) releases the kernel address space.
- * 2) releases the statistics object.
- * 3) releases the address space's container.
- * 4) destroys the id object.
- * 5) frees the address space manager structure's memory.
+ * 1) calls the machine-dependent code.
+ * 2) releases the kernel address space.
+ * 3) releases the statistics object.
+ * 4) releases the address space's container.
+ * 5) destroys the id object.
+ * 6) frees the address space manager structure's memory.
  */
 
 t_error			as_clean(void)
 {
   /*
    * 1)
+   */
+
+  if (machdep_call(as, as_clean) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
    */
 
   if (as_release(kas) != ERROR_NONE)
@@ -535,13 +575,13 @@ t_error			as_clean(void)
     }
 
   /*
-   * 2)
+   * 3)
    */
 
   STATS_RELEASE(as->stats);
 
   /*
-   * 3)
+   * 4)
    */
 
   if (set_release(as->container) != ERROR_NONE)
@@ -552,7 +592,7 @@ t_error			as_clean(void)
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if (id_destroy(&as->id) != ERROR_NONE)
@@ -563,7 +603,7 @@ t_error			as_clean(void)
     }
 
   /*
-   * 5)
+   * 6)
    */
 
   free(as);

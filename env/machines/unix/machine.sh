@@ -447,14 +447,14 @@ grub-menu()
 
   # sets the kernel into the grub menu file.
   ${_ECHO_} ${array[0]} |						\
-    ${_SED_} "s/^.*\/\(.*\)$/kernel \/modules\/\1/g" >> ${menu}
+    ${_SED_} "s/^.*\/(.*)$/kernel \/modules\/\1/g" >> ${menu}
 
   ${_ECHO_} "" >> ${menu}
 
   i=1
   while [ ${i} -lt ${#array[*]} ] ; do
     ${_ECHO_} ${array[${i}]} |						\
-      ${_SED_} "s/^.*\/\(.*\)$/module \/modules\/\1/g" >> ${menu}
+      ${_SED_} "s/^.*\/(.*)$/module \/modules\/\1/g" >> ${menu}
 
     let "i += 1"
   done

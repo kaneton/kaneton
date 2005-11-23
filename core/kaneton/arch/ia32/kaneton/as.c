@@ -35,7 +35,6 @@ extern m_as*		as;
  * the address space manager interface.
  */
 
-/* XXX
 i_as			as_interface =
   {
     ia32_as_clone,
@@ -44,8 +43,73 @@ i_as			as_interface =
     ia32_as_init,
     ia32_as_clean
   };
-*/
 
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * XXX
+ */
+
+t_error			ia32_as_clone(t_asid			old,
+				      t_asid*			new)
+{
+  AS_ENTER(as);
+
+  /* XXX */
+
+  AS_LEAVE(as, ERROR_NONE);
+}
+
+/*
+ * XXX
+ */
+
+t_error			ia32_as_reserve(t_asid*			asid)
+{
+  AS_ENTER(as);
+
+  /* XXX */
+
+  AS_LEAVE(as, ERROR_NONE);
+}
+
+/*
+ * XXX
+ */
+
+t_error			ia32_as_release(t_asid			asid)
+{
+  AS_ENTER(as);
+
+  /* XXX */
+
+  AS_LEAVE(as, ERROR_NONE);
+}
+
+/*
+ * XXX
+ */
+
+t_error			ia32_as_init(void)
+{
+  AS_ENTER(as);
+
+  /* XXX */
+
+  AS_LEAVE(as, ERROR_NONE);
+}
+
+/*
+ * XXX
+ */
+
+t_error			ia32_as_clean(void)
+{
+  AS_ENTER(as);
+
+  /* XXX */
+
+  AS_LEAVE(as, ERROR_NONE);
+}

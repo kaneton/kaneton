@@ -35,6 +35,7 @@ SUBDIRS			:=		arch				\
 					conf				\
 					debug				\
 					id				\
+					region				\
 					segment				\
 					set				\
 					stats				
@@ -46,6 +47,7 @@ KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 					$(_CONF_LO_)			\
 					$(_DEBUG_LO_)			\
 					$(_ID_LO_)			\
+					$(_REGION_LO_)			\
 					$(_SEGMENT_LO_)			\
 					$(_SET_LO_)			\
 					$(_STATS_LO_)			
