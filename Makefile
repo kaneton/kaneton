@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       julien quintard   [sun nov 20 14:06:34 2005]
+## updated       julien quintard   [thu nov 24 19:28:22 2005]
 ##
 
 #
@@ -46,6 +46,7 @@ else
   check info								\
   view view-								\
   export export-							\
+  clean									\
   view-% export-%:	init
 	$(_MAKE_) -f Makefile $@
 endif

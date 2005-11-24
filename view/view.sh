@@ -70,9 +70,6 @@ warning()
 {
   # display information and ask the user to continue or cancel
   display " your current configuration" "+"
-  display "   dvi viewer:               ${_VIEWER_DVI_}" "+"
-  display "   ps viewer:                ${_VIEWER_PS_}" "+"
-  display "   pdf viewer:               ${_VIEWER_PDF_}" "+"
   display "   format:                   ${_FORMAT_}" "+"
   display ""
   display "   paper:                    ${LOCATION}" "+"

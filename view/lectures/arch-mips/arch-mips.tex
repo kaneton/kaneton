@@ -1,17 +1,12 @@
 %%
-%% copyright quintard julien
-%% 
-%% kaneton
-%% 
-%% arch-mips.tex
-%% 
-%% path          /home/mycure/kaneton/view/lectures
-%% 
-%% made by mycure
-%%         quintard julien   [quinta_j@epita.fr]
-%% 
-%% started on    Tue Jul  5 12:23:08 2005   mycure
-%% last update   Sat Nov 19 12:48:45 2005   mycure
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
+%%
+%% created       julien quintard   [wed nov 23 22:07:25 2005]
+%% updated       julien quintard   [thu nov 24 19:26:24 2005]
 %%
 
 %
@@ -39,6 +34,10 @@
 % figures
 %
 
+\pgfdeclareimage[interpolate=true,width=188pt,height=97pt]
+                {philosophies}
+		{figures/philosophies}
+
 \pgfdeclareimage[interpolate=true,width=166pt,height=26pt]
                 {r-format}
 		{figures/r-format}
@@ -55,6 +54,24 @@
 \pgfdeclareimage[interpolate=true,width=166pt,height=46pt]
                 {overflow-avoiding}
 		{figures/overflow-avoiding}
+
+\pgfdeclareimage[interpolate=true,width=270pt,height=129pt]
+                {endianness}
+		{figures/endianness}
+\pgfdeclareimage[interpolate=true,width=82pt,height=129pt]
+                {memory-layout}
+		{figures/memory-layout}
+\pgfdeclareimage[interpolate=true,width=270pt,height=129pt]
+                {memory-access}
+		{figures/memory-access}
+
+\pgfdeclareimage[interpolate=true,width=178pt,height=79pt]
+                {jump-instruction}
+		{figures/jump-instruction}
+
+\pgfdeclareimage[interpolate=true,width=163pt,height=45pt]
+                {amdhal-rule}
+		{figures/amdhal-rule}
 
 %
 % document
@@ -199,6 +216,100 @@
   \end{itemize}
 \end{frame}
 
+% 3)
+
+\begin{frame}
+  \frametitle{RISC}
+
+  While inventors of RISC said:
+
+  \nl
+
+  \textbf{``Reduced Instruction Set Computer''}
+
+  \nl
+
+  Other people said that was false and that the true definition was:
+
+  \nl
+
+  \textbf{``Reject Important Stuff into Compiler''}
+
+  \nl
+
+  These notices tend to explain the real goal of this processor.
+\end{frame}
+
+% 4)
+
+\begin{frame}[containsverbatim]
+  \frametitle{RISC vs CISC}
+
+  Let's take an example to compare the assembly language of CISC and RISC
+  processors.
+
+  \nl
+
+  We want to perform the operation below:
+
+  \begin{verbatim}
+    int         res;
+    int         a = 21;
+    int         b = 42;
+
+    res = a + b;
+  \end{verbatim}
+
+  On CISC processors:
+
+  \begin{verbatim}
+    add [res], [a], [b]
+  \end{verbatim}
+
+  On RISC processors:
+
+  \begin{verbatim}
+    Lw R4, [a]
+    Lw R5, [b]
+    Add R6, R4, R5
+    Sw R6, [res]
+  \end{verbatim}
+
+  You can easily notice that CISC processors have only one instruction while
+  RISC processors have four instructions.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Brief History}
+
+  During fifty's, CISC processors do not stop trying to provide
+  more and more complex instructions to fit the high levels programming
+  languages requirements.
+
+  \nl
+
+  RISC designers tried to do the exact opposite thing, to always stay
+  near the hardware language.
+
+  \nl
+
+  Indeed, RISC designers thought that while a CISC instruction ran in
+  for example 4 cycles, a RISC processor would be able to run the
+  equivalent three instruction each taking 1 cycle.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Philosophies}
+
+  \begin{center}
+    \pgfuseimage{philosophies}
+  \end{center}
+\end{frame}
+
 %
 % instruction formats
 %
@@ -254,7 +365,7 @@
 
 % 3)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Examples}
 
   Let's see some examples of register to register instructions.
@@ -294,7 +405,7 @@
 
 % 5)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Examples}
 
   Let's see some examples of immediate instructions.
@@ -330,7 +441,7 @@
 
 % 7)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Examples}
 
   Let's see some examples of jump instructions.
@@ -371,40 +482,6 @@
   \end{verbatim}
 \end{frame}
 
-% 9)
-
-\begin{frame}
-  \frametitle{Questions}
-
-  Any question?
-
-  \begin{itemize}[<+->]
-    \item
-      Why the \textbf{Subi} instruction does not exist?
-    \item
-      Why the \textbf{Jr} instruction is a register-type instruction
-      while its goal is to perform a jump?
-    \item
-      Why the \textbf{Nori} instruction does not exist?
-    \item
-      Why the \textbf{Sll} instruction is a register-type instruction
-      while it uses an immediate?
-  \end{itemize}
-
-  The answers are:
-
-  \begin{itemize}[<+->]
-    \item
-      Opcode is a very expensive resource.
-    \item
-      Most instructions are useless because the designed operation can be
-      made with another instruction.
-    \item
-      \textbf{MIXs} are used to design the instruction set with these
-      two rules.
-  \end{itemize}
-\end{frame}
-
 %
 % instructions
 %
@@ -427,6 +504,25 @@
 
   Briefly, the arithmetic instructions handles overflow while logic
   one do not.
+
+  \nl
+
+  The MIPS processor is composed of \textbf{57 instructions}:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{33} arithmetic and logic register-type instructions.
+    \item
+      \textbf{12} branch instructions.
+    \item
+      \textbf{7} memory access instructions.
+    \item
+      \textbf{5} system instructions.
+  \end{itemize}
+
+  \nl
+
+  MIPS instructions are coded on 32-bit.
 \end{frame}
 
 % 2)
@@ -453,8 +549,6 @@
   The 16-bit immediate value will be expanded to a 32-bit one just
   filling the 16 higher bits with zeros.
 
-  \nl
-
   \begin{center}
     \pgfuseimage{overflow-avoiding}
   \end{center}
@@ -478,8 +572,6 @@
 
   So, the signed value will be expanded as a 32-bit value taking care
   to report the sign bit.
-
-  \nl
 
   \begin{center}
     \pgfuseimage{overflow-handling}
@@ -516,7 +608,7 @@
 
 % 5)
 
-\begin{frame}
+\begin{frame}[containsverbatim]
   \frametitle{Another Problem}
 
   Let's take a closer look to the sequence of these three instructions:
@@ -550,6 +642,445 @@
     Sll R1, R1, 16
     Ori R1, R1, 0x89ab
   \end{verbatim}
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Memory Access}
+
+  Memory accesses can be made for bytes, half-words and words.
+
+  \nl
+
+  The MIPS processor always aligns the data to the right of the registers.
+
+  \begin{center}
+    \pgfuseimage{memory-access}
+  \end{center}
+\end{frame}
+
+% 7)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Examples}
+
+  These are other examples of memory instructions.
+
+  \begin{verbatim}
+    Lh Rt, Immed(Rs)
+    Lhu Rt, Immed(Rs)
+    Lw Rt, Immed(Rs)
+    Sbu Rt, Immed(Rs)
+    Sw Rt, Immed(Rs)
+  \end{verbatim}
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Jump Instructions}
+
+  Remember that we call branch instructions the conditional jumps
+  and the jump instructions the unconditional ones.
+
+  \nl
+
+  Let's take the example of the \textbf{J} instruction. Remember that
+  this instruction is of jump-type so is composed of 6 bits of opcode
+  and 26 bits of immediate value.
+
+  \begin{center}
+    \pgfuseimage{jump-instruction}
+  \end{center}
+
+  This alignment system permit to access 256 Mb while each memory segment
+  has a 256 Mb size.
+\end{frame}
+
+% 9)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Examples}
+
+  Let's see other jump instructions:
+
+  \begin{verbatim}
+    Jr Rs
+    Jal Immed
+    Jalr Rs
+  \end{verbatim}
+
+  To return from a subprogram we just has to do:
+
+  \begin{verbatim}
+    Jr R31
+  \end{verbatim}
+\end{frame}
+
+% 10)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Branch Instructions}
+
+  Let's take as example the instruction: \textbf{Beq Rs, Rt, Label}.
+
+  \begin{enumerate}
+    \item
+      \textbf{Rs == Rt}: the next instruction address will be the label.
+    \item
+      \textbf{Rs != Rt}: the next instruction address is simply the following
+      so the current instruction address plus four bytes.
+  \end{enumerate}
+
+  In the case of a successful branch, the new instruction address calculated
+  like this:
+
+  \begin{verbatim}
+    address = branch address + 4 + (Immediate >> 2)
+  \end{verbatim}
+
+  You can notice that the immediate will be interpreted as a signed value.
+
+  \nl
+
+  This is useful to permit forward an backward jumps.
+\end{frame}
+
+% 11)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Examples}
+
+  Let's see some examples of branch instructions.
+
+  \begin{verbatim}
+    Bne Rs, Rt, Immed
+    Bltz Rs, Immed
+    Blez Rs, Immed
+    Bgtz Rs, Immed
+    Bgez Rs, Immed
+  \end{verbatim}
+\end{frame}
+
+% 12)
+
+\begin{frame}
+  \frametitle{Designers Choices}
+
+  We saw the different type and instructions of the MIPS processor. But
+  why the designers decided to provide this instruction but not this one?
+
+  \nl
+
+  First of all, the instructions set is not build without reflexion
+  but on statistics, rules and logic:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{MIX}
+    \item
+      \textbf{Amdhal Rule}
+  \end{itemize}
+\end{frame}
+
+% 13)
+
+\begin{frame}[containsverbatim]
+  \frametitle{MIX}
+
+  The MIXs are kind of statistics made by researchers and companies.
+
+  \nl
+
+  The MIXs classify, sort the instructions by their use frequency.
+
+  \nl
+
+  For example the instruction \textbf{Strlen Rd, Rs} which computes
+  the length of the string located at \textbf{Rs} and store the result
+  into \textbf{Rd} may be used for example 1 percent of the execution
+  time of a process.
+
+  \nl
+
+  In this case, if the designers decide to not implement this instruction
+  what will they lose?
+
+  \nl
+
+  Consider that this instruction running in two one cycle can be replaced
+  by for example two other instructions each running in one cycle.
+
+  \begin{verbatim}
+    loss =   cycles loss   *   use frequency
+         =      50%       *       1%
+
+         =   0.005
+
+         =   0.5%
+  \end{verbatim}
+
+  The MIXs can help to detect instructions with very low use frequencies, so
+  the designers can decide not to include these instructions in the
+  processor's instructions set.
+\end{frame}
+
+% 14)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Amdhal Rule}
+
+  The Amdhal Rule says:
+
+  \nl
+
+  \textbf{``The real benefit depends on the cost.''}
+
+  \nl
+
+  Let's take a well-known analogy:
+
+  \begin{center}
+    \pgfuseimage{amdhal-rule}
+  \end{center}
+
+  To conclude:
+
+  \begin{verbatim}
+    real earning = earning * use frequency
+  \end{verbatim}
+\end{frame}
+
+% 15)
+
+\begin{frame}[containsverbatim]
+  \frametitle{RISC Performance Rules}
+
+  The two characteristics which make a processor performant are:
+
+  \begin{itemize}[<+->]
+    \item
+      number of cycles per instruction
+    \item
+      clock frequency
+  \end{itemize}
+
+  So the processor performance can be computed as below:
+
+  \begin{verbatim}
+    performance =   frequency   /   number of cyles per instruction
+
+                =      F        /        CPI
+  \end{verbatim}
+
+  We will try to build a CPI equals to 1 leading to a coherent and peformant
+  RISC processor.
+\end{frame}
+
+% 16)
+
+\begin{frame}
+  \frametitle{Questions}
+
+  Any question?
+
+  \begin{itemize}[<+->]
+    \item
+      Why the \textbf{Subi} instruction does not exist?
+    \item
+      Why the \textbf{Jr} instruction is a register-type instruction
+      while its goal is to perform a jump?
+    \item
+      Why the \textbf{Nori} instruction does not exist?
+    \item
+      Why the \textbf{Sll} instruction is a register-type instruction
+      while it uses an immediate?
+  \end{itemize}
+
+  The answers are:
+
+  \begin{itemize}[<+->]
+    \item
+      Opcode is a very expensive resource.
+    \item
+      Most instructions are useless because the designed operation can be
+      made with another instruction.
+    \item
+      \textbf{MIXs} are used to design the instruction set with these
+      two rules.
+  \end{itemize}
+\end{frame}
+
+%
+% addressing
+%
+
+\section{Addressing}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  The MIPS processor does not have any virtual memory in its basic
+  realisation.
+
+  \nl
+
+  More complex versions do have but we will only study basic ones to
+  avoid complex pipelines.
+
+  \nl
+
+  Addresses are represented by 32-bit integers.
+
+  \nl
+
+  The memory accesses must be aligned, meaning that the object's address
+  (byte, half-word, word) must always be a multiple of the object size.
+
+  \nl
+
+  For example an half-word must always be accessed on an address multiple
+  of two.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Endianness}
+
+  The MIPS RISC processor uses the little-endian memory organisation.
+
+  \begin{center}
+    \pgfuseimage{endianness}
+  \end{center}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Memory Layout}
+
+  The memory is segmented to divise the address space into two segments.
+
+  \begin{center}
+    \pgfuseimage{memory-layout}
+  \end{center}
+\end{frame}
+
+%
+% pipeline
+%
+
+\section{Pipeline}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Execution Context}
+
+  We will study in the section the different instructions from another
+  point of view to extract a generic execution context.
+
+  \nl
+
+  Then, having an execution context, we will be able to study the pipeline
+  and each instruction in it.
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Add Rd, Rs, Rt}
+
+  \begin{enumerate}[<+->]
+    \item
+      Reads the instruction.
+    \item
+      Decodes the operands.
+    \item
+      Extracts the operands: \textbf{Rs}, \textbf{Rt}
+    \item
+      Performs the operation: \textbf{+}.
+    \item
+      
+    \item
+      Writes the result: \textbf{Rd}
+    \item
+      Computes the next instruction address.
+  \end{enumerate}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Lw Rt, Immed(Rs)}
+
+  \begin{enumerate}[<+->]
+    \item
+      Reads the instruction.
+    \item
+      Decodes the operands.
+    \item
+      Extracts the operands: \textbf{Immed}, \textbf{Rt}
+    \item
+      Performs the operation: \textbf{+}.
+    \item
+      Memory access: read.
+    \item
+      Writes the result: \textbf{Rd}
+    \item
+      Computes the next instruction address.
+  \end{enumerate}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Sw Rt, I(Rs)}
+
+  \begin{enumerate}[<+->]
+    \item
+      Reads the instruction.
+    \item
+      Decodes the operands.
+    \item
+      Extracts the operands: \textbf{Immed}, \textbf{Rt}
+    \item
+      Performs the operation: \textbf{+}.
+    \item
+      Memory access: write.
+    \item
+
+    \item
+      Computes the next instruction address.
+  \end{enumerate}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Jr Rs}
+
+  \begin{enumerate}[<+->]
+    \item
+      Reads the instruction.
+    \item
+      Decodes the operands.
+    \item
+      Extracts the operands: \textbf{Rs}
+    \item
+
+    \item
+      
+    \item
+
+    \item
+      Computes the next instruction address.
+  \end{enumerate}
 \end{frame}
 
 %
