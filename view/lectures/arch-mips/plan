@@ -1,6 +1,22 @@
 mipsr3000
 ---------
 
+MIPS = Microprocessor without Interlocked Pipeline Stages
+
+architecture etudiee: MIPS R3000
+
+nomenclature de registres:
+
+2: valeur de retour
+
+5 -> 26: user registers
+
+27, 28: kernel reserved registers
+
+29: frame pointer
+30: pointeurs var globales
+31: address retour
+
 1) Overview
 ===========
 
@@ -11,6 +27,8 @@ a) intro
 - jeu d'inst de type RISC.
 
 - plusieurs realisation indus: SIEMENS, NEC, LSI LOGIC, SILICON GRAPHICS ...
+
+- IBM invente le pipeline en 1975
 
 - archi suffisamment simple pour etre etudier et suffisamment puissante
   pour supporter un systeme multi-tache tel qu UNIX.

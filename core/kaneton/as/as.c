@@ -269,7 +269,7 @@ t_error			as_clone(t_asid				old,
    */
 
   if (machdep_call(as, as_clone, old, new) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
 }
@@ -353,7 +353,7 @@ t_error			as_reserve(t_asid*			asid)
    */
 
   if (machdep_call(as, as_reserve, asid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
 }
@@ -383,7 +383,7 @@ t_error			as_release(t_asid			asid)
    */
 
   if (machdep_call(as, as_release, asid) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 2)
@@ -528,7 +528,7 @@ t_error			as_init(void)
    */
 
   if (machdep_call(as, as_init) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 7)
@@ -561,7 +561,7 @@ t_error			as_clean(void)
    */
 
   if (machdep_call(as, as_clean) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 2)

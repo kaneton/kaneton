@@ -15,9 +15,6 @@
  dev.
 
 --
- -VIEWER car viewer de base pour l'archi
-
---
  mettre une licence sur le code
 
  mettre a jour tous les headers pour pointer sur la licence.
@@ -29,10 +26,6 @@
  gollum: faire compiler en sm netbsd
 
  dujardin: +cous archi-mips, budget?
-
---
- if (machdep...)
-   LEAVE
 
 --
  un seul swapper et on active ou non des options: network, hard drive etc..

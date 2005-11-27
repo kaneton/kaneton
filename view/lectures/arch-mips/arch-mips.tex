@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
 %%
 %% created       julien quintard   [wed nov 23 22:07:25 2005]
-%% updated       julien quintard   [thu nov 24 19:26:24 2005]
+%% updated       julien quintard   [sat nov 26 22:09:41 2005]
 %%
 
 %
@@ -73,6 +73,43 @@
                 {amdhal-rule}
 		{figures/amdhal-rule}
 
+\pgfdeclareimage[interpolate=true,width=163pt,height=92pt]
+                {pipeline-overview}
+		{figures/pipeline-overview}
+\pgfdeclareimage[interpolate=true,width=196pt,height=90pt]
+                {pipeline-balancing}
+		{figures/pipeline-balancing}
+\pgfdeclareimage[interpolate=true,width=172pt,height=105pt]
+                {moore-law}
+		{figures/moore-law}
+\pgfdeclareimage[interpolate=true,width=224pt,height=135pt]
+                {pipeline-views}
+		{figures/pipeline-views}
+\pgfdeclareimage[interpolate=true,width=156pt,height=180pt]
+                {detailed-pipeline}
+		{figures/detailed-pipeline}
+\pgfdeclareimage[interpolate=true,width=56pt,height=68pt]
+                {next-instruction-stream}
+		{figures/next-instruction-stream}
+\pgfdeclareimage[interpolate=true,width=75pt,height=144pt]
+                {decode-branch}
+		{figures/decode-branch}
+\pgfdeclareimage[interpolate=true,width=247pt,height=91pt]
+                {decode-multiplexer}
+		{figures/decode-multiplexer}
+\pgfdeclareimage[interpolate=true,width=157pt,height=86pt]
+                {comparison-decode-execute-1}
+		{figures/comparison-decode-execute-1}
+\pgfdeclareimage[interpolate=true,width=139pt,height=116pt]
+                {comparison-decode-execute-2}
+		{figures/comparison-decode-execute-2}
+\pgfdeclareimage[interpolate=true,width=103pt,height=121pt]
+                {comparison-decode-execute-3}
+		{figures/comparison-decode-execute-3}
+\pgfdeclareimage[interpolate=true,width=75pt,height=144pt]
+                {decode-stage}
+		{figures/decode-stage}
+
 %
 % document
 %
@@ -135,6 +172,12 @@
       Memory.
   \end{itemize}
 \end{frame}
+
+%
+% history
+%
+
+XXX
 
 %
 % overview
@@ -282,7 +325,7 @@
 % 4)
 
 \begin{frame}
-  \frametitle{Brief History}
+  \frametitle{Position of Assembly from High Level Languages}
 
   During fifty's, CISC processors do not stop trying to provide
   more and more complex instructions to fit the high levels programming
@@ -483,6 +526,30 @@
 \end{frame}
 
 %
+% 9)
+%
+
+\begin{frame}[containsverbatim]
+  \frametitle{int \textbf{strlen}(const char* string);}
+
+  \begin{verbatim}
+          Lw R5, 0(R29)                 ; R5 <- string
+
+          Addi R3, R5, 1                ; R3 <- string + 1
+
+    Loop: Lb R4, 0(R5)                  ; R4 <- *string
+          Addiu R5, R5, 1               ; R5 <- string++
+          Bne R4, R0, loop              ; while (*string != 0)
+
+          Sub R2, R5, R3                ; R2 <- R5 - R3
+
+          Jr R31                        ; return
+  \end{verbatim}
+
+  \textbf{Result}: 2 + N * 3 + 3 + 2 cycles
+\end{frame}
+
+%
 % instructions
 %
 
@@ -602,6 +669,7 @@
   \begin{itemize}
     \item
       Add Rn, R0, Immed
+    \item
       Sll Rn, Rn, 16
   \end{itemize}
 \end{frame}
@@ -620,8 +688,7 @@
   \end{verbatim}
 
   This sequence seems correct but it is not. Remember that the arithmetic
-  operations handle the overflow. In other terms, the operands of
-  arithmetic operations are considered as signed integers.
+  operations handle the overflow.
 
   \nl
 
@@ -817,7 +884,6 @@
          =      50%       *       1%
 
          =   0.005
-
          =   0.5%
   \end{verbatim}
 
@@ -913,6 +979,43 @@
 \end{frame}
 
 %
+% 17)
+%
+
+\begin{frame}[containsverbatim]
+  \frametitle{void \textbf{vector}(int* a, int* b, int *c, unsigned int size);}
+
+  \begin{verbatim}
+          Lw R3, 0(R29)                 ; R3 <- a
+          Lw R4, 4(R29)                 ; R4 <- b
+          Lw R5, 8(R29)                 ; R5 <- c
+          Lw R6, 12(R29)                ; R6 <- size
+
+          Sll R6, R6, 2                 ; R6 <- size * 4
+          Add R7, R5, R6                ; R7 <- R5 + size * 4
+
+    Loop: Lw R13, 0(R3)                 ; R13 <- *a
+          Lw R14, 0(R4)                 ; R14 <- *b
+
+          Add R15, R13, R14             ; R15 <- *a + *b
+          Sll R15, R15, 1               ; R15 <- (*a + *b) * 2
+          Add R15, R15, R14             ; R15 <- (*a + *b) * 2 + *b
+
+          Sw R15, 0(R5)                 ; *c <- R15
+
+          Addi R3, R3, 4                ; a <- a + 1
+          Addi R4, R4, 4                ; b <- b + 1
+          Addi R5, R5, 4                ; c <- c + 1
+
+          Bne R5, R7, loop              ; while (R5 != R7)
+
+          Jr R31                        ; return
+  \end{verbatim}
+
+  \textbf{Result}: 6 + N * 10 + 10 + 1 cycles
+\end{frame}
+
+%
 % addressing
 %
 
@@ -987,8 +1090,7 @@
   \nl
 
   Then, having an execution context, we will be able to study the pipeline
-  and each instruction in it.
-
+  and each instruction in it to find and solve some problems.
 \end{frame}
 
 % 2)
@@ -1037,7 +1139,7 @@
   \end{enumerate}
 \end{frame}
 
-% 2)
+% 4)
 
 \begin{frame}
   \frametitle{Sw Rt, I(Rs)}
@@ -1060,7 +1162,7 @@
   \end{enumerate}
 \end{frame}
 
-% 2)
+% 5)
 
 \begin{frame}
   \frametitle{Jr Rs}
@@ -1082,6 +1184,598 @@
       Computes the next instruction address.
   \end{enumerate}
 \end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Goal}
+
+  The goal of a processor designer is to choose:
+
+  \begin{itemize}[<+->]
+    \item
+      the instructions set.
+    \item
+      the execution context.
+  \end{itemize}
+
+  We saw that any MIPS instruction could be described with a simple
+  seven stages execution context.
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Pipeline Overview}
+
+  Let's see the stages dependencies to try to build a pipeline.
+
+  \nl
+
+  Pipeline technique was directly imported from hydrocarbure industry,
+  using tops to separate stages.
+
+  \begin{center}
+    \pgfuseimage{pipeline-overview}
+  \end{center}
+
+  \nl
+
+  We successfully built a pipeline with a CPI equals to 1 but
+  limiting the frequency so this is not a good solution because the
+  performance will not be good enough.
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Example}
+
+  Let's take an example of pipeline which execute an instruction per 100 ns:
+  \textbf{1 instruction / 100 ns = 10 Mhz}.
+
+  \nl
+
+  If we introduce in this pipeline a top to cut the pipeline in two stages,
+  the instruction will be executed for example in 105 ns due to the overhead:
+  \textbf{2 instruction / 105 ns = 20 Mhz}.
+
+  \nl
+
+  This is the beauty of the pipeline processors. More stages, more frequency
+  but with more problems we will see later.
+
+  \begin{itemize}
+    \item
+      \textbf{Latency}: 105 ns = 2 cycles
+    \item
+      \textbf{Frequency}: 1 instruction / 50 ns = 20 Mhz
+    \item
+      \textbf{CPI}: 1
+  \end{itemize}
+
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{Explanations}
+
+  Rather than making one cyle for the entire pipeline, we will
+  calibrate the clock on stages to be able to get out an instruction
+  of the pipeline per cycle.
+
+  \nl
+
+  The tops used by the processor pipelines are registers.
+
+  \nl
+
+  At each clock, each register pushs its contents into the pipeline,
+  to the right.
+
+  \nl
+
+  The stages of the pipeline \alert{must} be balanced to not slow
+  down the entire pipeline.
+
+  \nl
+
+  Moreover a bad balancing may lead to loss of data because when the clock
+  will occur the data will not be stored into the destination register yet.
+\end{frame}
+
+% 10)
+
+\begin{frame}
+  \frametitle{Balancing}
+
+  Let's take a look to a bad balancing and it consequencies.
+
+  \begin{center}
+    \pgfuseimage{pipeline-balancing}
+  \end{center}
+
+  Be careful, tops cutting has nothing to do with execution context.
+
+  \nl
+
+  The rules are:
+
+  \begin{itemize}[<+->]
+    \item
+      The pipeline stages must be balanced.
+    \item
+      The frequency must always be balanced on the largest stage.
+  \end{itemize}
+\end{frame}
+
+% 11)
+
+\begin{frame}
+  \frametitle{Pipeline}
+
+  The designers of the MIPS processor decided to cut the pipeline as
+  shown below.
+
+  \nl
+
+  This is the real MIPS pipeline from 1980.
+
+  \begin{enumerate}
+    \item
+      \textbf{IFC}: Instruction Fetch: the instruction is read from the
+      memory
+    \item
+      \textbf{DEC}: Instruction Decode: the operands are decoded and
+      extracted while the next instruction address is computed.
+    \item
+      \textbf{EXE}: Execute: an operation is performed.
+    \item
+      \textbf{MEM}: Memory: a data memory access is made.
+    \item
+      \textbf{WBK}: Write Back: the result is stored into a destination
+      register.
+  \end{enumerate}
+\end{frame}
+
+% 12)
+
+\begin{frame}
+  \frametitle{Moore Law}
+
+  The remaining question is: what is the largest stage in this pipeline.
+
+  \nl
+
+  The Moore Law shows that processors frequency will grow exponentially,
+  but what is the memory evolution?
+
+  \begin{center}
+    \pgfuseimage{moore-law}
+  \end{center}
+\end{frame}
+
+% 13)
+
+\begin{frame}
+  \frametitle{Largest Stage}
+
+  So the largest pipeline stages will be IFC and MEM which do memory
+  accesses.
+
+  \nl
+
+  Note that such a pipeline will not be possible nowadays because of the
+  Moore law. The difference between the processor and memory speed
+  is constantly inscreasing.
+
+  \nl
+
+  For example, a good idea for a modern processor would be to cut the
+  MEM stage into three sub-stages.
+\end{frame}
+
+% 14)
+
+\begin{frame}
+  \frametitle{Pipeline Views}
+
+  We can watch a pipeline from to different views:
+
+  \begin{center}
+    \pgfuseimage{pipeline-views}
+  \end{center}
+
+  \begin{itemize}
+    \item
+      The first describes an instruction state.
+    \item
+      The second describes the pipeline state.
+  \end{itemize}
+\end{frame}
+
+% 15)
+
+\begin{frame}
+  \frametitle{Hardware}
+
+  We saw that the pipeline technique leads to very good performances because
+  an instruction gets out every cycle.
+
+  \nl
+
+  Nevertheless this performance does not come without problems.
+
+  \nl
+
+  First of all, the hardware must be duplicated because a hardware must
+  be specific to a stage to avoid overwrittings.
+
+  \nl
+
+  In other words stages are composed of inputs and outputs registers.
+
+  \nl
+
+  This is for the same reason that there are two distinct memory threads
+  to access memory instructions and memory data because the IFC and MEM
+  stages have to access memory at the same time:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{Instruction-Access}: location of the memory instruction.
+    \item
+      \textbf{Instruction}: instruction.
+    \item
+      \textbf{Data-Access}: location of the memory object.
+    \item
+      \textbf{Data}: object.
+  \end{itemize}
+\end{frame}
+
+% 16)
+
+\begin{frame}
+  \frametitle{Pipeline Rules}
+
+  These are the rules to follow to build a correct pipeline:
+
+  \begin{enumerate}[<+->]
+    \item
+      Stages must be balanced.
+    \item
+      Stages must be separated by registers.
+    \item
+      Hardware must be specificly used by a stage and never by another.
+  \end{enumerate}
+
+  \nl
+
+  Notice that registers largely compose a processor.
+\end{frame}
+
+% 17)
+
+\begin{frame}
+  \frametitle{Detailed Pipeline}
+
+  \begin{center}
+    \pgfuseimage{detailed-pipeline}
+  \end{center}
+\end{frame}
+
+% 18)
+
+\begin{frame}
+  \frametitle{Exercices}
+
+  Make the detailed pipeline for these instructions:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{Sllv Rd, Rs, Rt}: nothing special
+    \item
+      \textbf{Lw Rd, Immed(Rs)}: multiplexer: RES or memory data into DATA.
+  \end{itemize}
+\end{frame}
+
+% 19)
+
+\begin{frame}
+  \frametitle{Next Instruction Address}
+
+  Let's take a closer look to the next instruction address computation.
+
+  \nl
+
+  The next instruction is computed in the DEC stage. So between
+  the time the instruction gets in the pipeline and its next instruction
+  address computation, one instruction was added to the pipeline.
+
+  \begin{center}
+    \pgfuseimage{next-instruction-stream}
+  \end{center}
+
+  \nl
+
+  When performing a branch the pipeline will contain an unwanted
+  instruction.
+
+  \nl
+
+  This unwanted instruction is called \textbf{delay slot}.
+\end{frame}
+
+% 20)
+
+\begin{frame}
+  \frametitle{Delay Slot}
+
+  There are two solutions to solve the delay slot problem:
+
+  \begin{itemize}[<+->]
+    \item
+      Just do not touch to this instruction which will be executed
+      in the pipeline.
+    \item
+      Cancel, remove this instruction from the pipeline.
+  \end{itemize}
+\end{frame}
+
+% 21)
+
+\begin{frame}
+  \frametitle{Solution}
+
+  The solution is to reject important stuff into the compiler.
+
+  \nl
+
+  Researchs made showed that the compiler is able to fill one delay
+  slot in 75 percent of cases and to fill two delay slots in only
+  5 percent of cases. After that there is no chance to fill the delay
+  slots.
+
+  \nl
+
+  After that, if a compiler is not able to fill the delay slots
+  with useful instructions it will inserts a NOP instruction to avoid
+  problems.
+
+  \nl
+
+  Question: \textbf{What are the consequences if we put the next
+    instruction address computation into the EXE stage?}
+\end{frame}
+
+% 22)
+
+\begin{frame}
+  \frametitle{Next Instruction Address Computation}
+
+  Let's review the next instruction address formula:
+
+  \nl
+
+  There are two cases:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{Rs == Rt}: target address = branch address + 4 + Immed * 4
+    \item
+      \textbf{Rs != Rt}: target address = next instruction address
+  \end{itemize}
+
+  \nl
+
+  First of all, the part of the formula: \textbf{branch address + 4}
+  was already computed between the IFC stage and the DEC stage because
+  the previous instruction computed the next instruction address.
+\end{frame}
+
+% 23)
+
+\begin{frame}
+  \frametitle{DEC stage}
+
+  We saw that the DEC stage had to decode and extract operands while
+  computing the next instruction address.
+
+  \begin{center}
+    \pgfuseimage{decode-branch}
+  \end{center}
+\end{frame}
+
+% 24)
+
+\begin{frame}
+  \frametitle{Very Bad Balancing}
+
+  We can notice that the stages balancing is absolutly not respected.
+
+  \nl
+
+  Indeed, while the EXE stage performs an addition, the DEC stage performs:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{Multiplication}: Immed * 4
+    \item
+      \textbf{Comparison}
+    \item
+      \textbf{Multiplexer}
+    \item
+      \textbf{Addition}: Multiplixer result + instruction address
+  \end{itemize}
+
+  \nl
+
+  So we have to find solutions to balance this stage with others.
+\end{frame}
+
+% 25)
+
+\begin{frame}
+  \frametitle{Multiplication Solution}
+
+  First of all, we can handle the multiplication \textbf{Immed * 4}
+  in a more quickly way.
+
+  \nl
+
+  In fact, this muliplication operation will takes exactly zero time
+  to compute.
+
+  \nl
+
+  This solution is to add an hardware just to perform a multiplexing
+  between a multiplication by four and the number four.
+
+  \begin{center}
+    \pgfuseimage{decode-multiplexer}
+  \end{center}
+\end{frame}
+
+% 26)
+
+\begin{frame}
+  \frametitle{Still Problem}
+
+  We success to optimise the multiplication so let's now compare the
+  two stages DEC and EXE.
+
+  \begin{center}
+    \pgfuseimage{comparison-decode-execute-1}
+  \end{center}
+\end{frame}
+
+% 27)
+
+\begin{frame}
+  \frametitle{Parallel Computations}
+
+  We could parallelise the computations for the addition and the
+  other stuff and then perform the multiplexing.
+
+  \begin{center}
+    \pgfuseimage{comparison-decode-execute-2}
+  \end{center}
+\end{frame}
+
+% 28)
+
+\begin{frame}
+  \frametitle{Instruction Formats' Beauty}
+
+  You must had noticed that the different instruction formats all placed
+  the source register and the alternative register at the same offsets.
+
+  \nl
+
+  The result effect is that we are not longer forced to wait the decode
+  operations because the can directly extract the operands to perform
+  the comparison.
+
+  \begin{center}
+    \pgfuseimage{comparison-decode-execute-3}
+  \end{center}
+
+  The result is almost perfect.
+\end{frame}
+
+% 29)
+
+\begin{frame}
+  \frametitle{Strutural Problem Resolved}
+
+  Let's see the DEC stage in its final state.
+
+  \begin{center}
+    \pgfuseimage{decode-stage}
+  \end{center}
+\end{frame}
+
+% 30)
+
+\begin{frame}[containsverbatim]
+  \frametitle{But...}
+
+  Is there any other problem?
+
+  \nl
+
+  Think about this sequence of instructions:
+
+  \begin{verbatim}
+          Beq R0, R0, here
+
+    here: Beq R1, R1, anywhere
+  \end{verbatim}
+
+  \nl
+
+  MIPS architecture specification tells that two following branchs are
+  not allowed.
+\end{frame}
+
+% 31)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Exercice}
+
+  \textbf{Bltzal Rs, Label}: Branch if Less Than Zero And Link
+
+  \nl
+
+  This instruction computes the next instruction address and stores
+  the \textbf{current address + 4} into the R31 register.
+
+  \nl
+
+  Note that the caller must save the R31 register on the stack before
+  making any call to subprograms.
+
+  \nl
+
+  \begin{verbatim}
+    Sw R31, X(R29)
+    Branch
+    Lw R31, X(29)
+  \end{verbatim}
+\end{frame}
+
+%
+% dependencies
+%
+
+\section{Dependencies}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  We will see in this section that there are other inherent pipeline
+  problems.
+
+  \nl
+
+  We will try to solve them while respecting the RISC spirit but
+  this will not be always possible.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{XXX}
+
+  XXX
+\end{frame}
+
+%
+% optimisations
+%
 
 %
 % bibliography

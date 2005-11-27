@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/c-preprocessor/c-preprocessor.tex
 %%
 %% created       julien quintard   [sat nov 19 17:16:14 2005]
-%% updated       julien quintard   [sat nov 19 17:41:44 2005]
+%% updated       julien quintard   [sat nov 26 10:48:58 2005]
 %%
 
 %
@@ -102,7 +102,7 @@
     \item
       we \alert{cannot} define new directives, the directive set is fixed
     \item
-      some directives require arguments: \textit{\#define argument(s)}
+      some directives require parameters: \textit{\#define argument(s)}
   \end{itemize}
 \end{frame}
 
@@ -376,18 +376,18 @@
 \begin{frame}[containsverbatim]
   \frametitle{Function-like Macros}
 
-  Macros with arguments are called: \textbf{function-like macros}.
+  Macros with parameters are called: \textbf{function-like macros}.
 
   \nl
 
-  Be careful, the preprocessor only understand comma for separating arguments,
+  Be careful, the preprocessor only understand comma for separating parameters,
   so this call:
 
   \begin{verbatim}
     foo(array[x = y, x + 1])
   \end{verbatim}
 
-  results in a macro named \textbf{foo} which takes two arguments,
+  results in a macro named \textbf{foo} which takes two parameters,
   in this case: \textbf{array[x = y} and \textbf{x + 1]}.
 
   \nl
@@ -530,7 +530,7 @@
 
   \nl
 
-  It is so possible to print useful information like the macro arguments.
+  It is so possible to print useful information like the macro parameters.
 \end{frame}
 
 % 10)
@@ -576,7 +576,7 @@
 
   This often takes place with one constraint word and one of the macro
   argument but it is also possible to apply concatenation between two
-  macro arguments
+  macro parameters
 \end{frame}
 
 % 12)
@@ -947,18 +947,18 @@
 \end{frame}
 
 %
-% variadic arguments
+% variadic parameters
 %
 
-\subsection{Variadic Arguments}
+\subsection{Variadic Parameters}
 
 % 1)
 
 \begin{frame}[containsverbatim]
   \frametitle{Overview}
 
-  The variadic arguments are used to not explicitly specify the number
-  of arguments the macro needs.
+  The variadic parameters are used to not explicitly specify the number
+  of parameters the macro needs.
 
   \nl
 
@@ -995,12 +995,12 @@
 
   \nl
 
-  Indeed, a variadic argument is a list of one or more arguments, but at
+  Indeed, a variadic argument is a list of one or more parameters, but at
   least one.
 
   \nl
 
-  Nevertheless, some programs need variadic arguments to become an empty
+  Nevertheless, some programs need variadic parameters to become an empty
   argument and not leading to a syntax error.
 \end{frame}
 
@@ -1039,22 +1039,22 @@
 \section{Pitfalls}
 
 %
-% grouping macro arguments
+% grouping macro parameters
 %
 
-\subsection{Grouping Macro Arguments}
+\subsection{Grouping Macro Parameters}
 
 % 1)
 
 \begin{frame}[containsverbatim]
   \frametitle{Overview}
 
-  Grouping arguments means placing parenthesis around macro arguments
+  Grouping parameters means placing parenthesis around macro parameters
   to avoid misunderstandings.
 
   \nl
 
-  Think about grouping macro arguments to avoid non-wanted operations.
+  Think about grouping macro parameters to avoid non-wanted operations.
 
   \nl
 
@@ -1104,7 +1104,7 @@
     (8 & 4) + 5
   \end{verbatim}
 
-  For this, we have to group the macro arguments to avoid these kind of
+  For this, we have to group the macro parameters to avoid these kind of
   problems:
 
   \begin{verbatim}
@@ -1375,7 +1375,7 @@
 
   \nl
 
-  The second corrected macro also correct this problem ensuring the arguments
+  The second corrected macro also correct this problem ensuring the parameters
   to be evaluated only one time.
 \end{frame}
 
