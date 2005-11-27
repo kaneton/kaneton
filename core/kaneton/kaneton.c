@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sun Nov 13 13:39:30 2005   mycure
+** Last update Mon Nov 28 00:08:08 2005 matthieu bucchianeri
  */
 
 /*
@@ -163,6 +163,9 @@ void			kaneton(t_init*				bootloader)
    */
 
   STATS_DUMP();
+#if (DEBUG & DEBUG_STATS)
+  stats_test();
+#endif
 
   printf("=> %016b %d %u\n", 0x89ab, 0x89ab, 0x89ab);
 

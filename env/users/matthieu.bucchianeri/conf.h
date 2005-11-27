@@ -1,17 +1,17 @@
 /*
  * copyright quintard julien
- * 
+ *
  * kaneton
- * 
+ *
  * conf.h
- * 
+ *
  * path          /home/mycure/kaneton
- * 
+ *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
- * 
+ *
  * started on    Sun Aug 28 16:23:31 2005   mycure
- * last update   Tue Nov 15 20:08:46 2005   mycure
+** Last update Mon Nov 28 00:04:54 2005 matthieu bucchianeri
  */
 
 #ifndef KANETON_CONF_H
@@ -57,14 +57,14 @@
  * this define activates the statistics
  */
 
-#undef CONF_STATS
+#define CONF_STATS
 
 /*
  * the configuration debug
  */
 
 #define CONF_DEBUG							\
-  (0)
+  (DEBUG_STATS)
 
 /*
  * the machine-dependent configuration debug

@@ -1,15 +1,15 @@
 /*
  * copyright quintard julien
- * 
+ *
  * kaneton
- * 
+ *
  * init.h
- * 
+ *
  * path          /home/mycure/kaneton/core/include/kaneton
- * 
+ *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
- * 
+ *
  * started on    Fri Feb 11 02:19:11 2005   mycure
  * last update   Wed Sep 28 19:28:35 2005   mycure
  */
@@ -31,6 +31,7 @@
 #define DEBUG_AS		(1 << 1)
 #define DEBUG_SEGMENT		(1 << 2)
 #define DEBUG_SET		(1 << 3)
+#define DEBUG_STATS		(1 << 4)
 
 #define DEBUG								\
   (CONF_DEBUG)

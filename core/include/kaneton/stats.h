@@ -1,17 +1,17 @@
 /*
  * copyright quintard julien
- * 
+ *
  * kaneton
- * 
+ *
  * stats.h
- * 
+ *
  * path          /home/mycure/kaneton/core/kaneton
- * 
+ *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
- * 
+ *
  * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Sun Nov 13 13:33:44 2005   mycure
+** Last update Sun Nov 27 22:57:34 2005 matthieu bucchianeri
  */
 
 #ifndef KANETON_STATS_H
@@ -183,6 +183,8 @@ t_error			stats_release(t_staid			staid);
 t_error			stats_init(void);
 
 t_error			stats_clean(void);
+
+t_error			stats_test(void);
 
 
 /*
