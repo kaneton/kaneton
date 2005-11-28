@@ -156,8 +156,10 @@ void			kaneton(t_init*				bootloader)
 
 /*                                                                 [cut] /k2 */
 
+#ifdef KANETON_SERIAL
+   debug_init();	 
+#endif
 /*                                                                  [cut] k2 */
-
   /*
    * XXX
    */

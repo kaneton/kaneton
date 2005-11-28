@@ -33,8 +33,8 @@ include			../../../env/.env.mk
 DEBUG_LO		:=		debug.lo
 
 DEBUG_C			:=		cons.c				\
-					debug.c				
-#					serial.c			
+					debug.c				\
+					serial.c			
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)
 

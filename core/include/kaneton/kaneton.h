@@ -86,6 +86,7 @@
 #include <kaneton/conf.h>
 
 #include <kaneton/as.h>
+#include <kaneton/serial.h>
 #include <kaneton/debug.h>
 #include <kaneton/error.h>
 

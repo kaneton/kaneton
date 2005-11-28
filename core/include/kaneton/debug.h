@@ -5,13 +5,13 @@
  *
  * init.h
  *
- * path          /home/mycure/kaneton/core/include/kaneton
+ * path          /home/vertrex/kaneton/libs/klibc/libdata
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Mon Nov 28 12:58:25 2005   buckman
+ * last update   Mon Nov 28 16:32:00 2005   
  */
 
 #ifndef KANETON_DEBUG_H
@@ -40,20 +40,19 @@
  * ---------- types -----------------------------------------------------------
  */
 
+typedef	struct		s_debug_function
+{
+	char		*f_name;
+	int		(*f)(char *str);
+}			debug_function_t;
+
+
+
 /*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../kaneton/debug/debug.c
  */
-
-/*
- * ../../kaneton/debug/debug.c
- */
-
-t_error			debug_init(void);
-
-t_error			debug_clean(void);
-
 
 /*
  * eop

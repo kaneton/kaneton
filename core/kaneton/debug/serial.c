@@ -135,6 +135,40 @@ int			serial_recv(t_uint32			com_port,
  * this function just initialises the serial driver.
  */
 
+int	serial_put(char c)
+{
+	static int n = 0;
+	static char buffer[512];
+
+/*	if (c != '\n' && n < 512)
+	    buffer[n++] = c;
+	else
+	{
+*/	  serial_send(SERIAL_COM1, "printf", 6);
+	  serial_send(SERIAL_COM1, &c, 1);
+/*	  n = 0;
+	}*/
+}
+
+unsigned int		debug_printf(char *fmt, ...)
+{
+	unsigned int	written;
+	va_list		args;
+
+
+	printf_init(serial_put, 0); /* virer sa mettre au debut */
+	printf("%s", args);	
+	va_start(args, fmt);		 /* permet de bufferiser  */
+	written = printf(fmt, args); 	/*			 */
+	va_end(args);		       /*			*/
+	
+	serial_put(-1); /* flush*/
+	
+	cons_init(); /* virer sa car pas de console */
+
+	return (written);
+}
+
 void			serial_init(t_uint32			com_port, 
 				    t_uint8			baud_rate, 
 				    t_uint8			bit_type, 

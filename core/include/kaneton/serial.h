@@ -88,6 +88,10 @@ int			serial_send(t_uint32			com_port,
 int			serial_recv(t_uint32			com_port, 
 				    t_serial_data		*rdata);
 
+int			serial_put(char c);
+
+unsigned int		debug_printf(char *fmt, ...);
+
 void			serial_init(t_uint32			com_port, 
 				    t_uint8			baud_rate, 
 				    t_uint8			bit_type, 
