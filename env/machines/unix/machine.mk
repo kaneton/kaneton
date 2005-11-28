@@ -410,7 +410,7 @@ endef
 #
 
 define compile-tex
-  $(call pretty-printer,green,COMPILE-TEX,$(1),			)	; \
+  $(call pretty-printer,green,COMPILE-TEX,$(1),		)		; \
   case $(_FORMAT_) in							\
     dvi)								\
       $(_LATEX_) $(1).tex -o $(1).dvi $(_VERBOSE_)			; \
@@ -447,6 +447,20 @@ define view
       $(_VIEWER_PDF_) $(1).pdf $(_VERBOSE_)				; \
       ;;								\
   esac
+endef
+
+#
+# gets a file contents
+#
+# this function should never be used outside static environments:
+# variable initialisations.
+#
+# $(1):		the file
+# $(2):		advanced options
+#
+
+define contents
+  $(shell $(_CAT_) $(2) $(1))
 endef
 
 #

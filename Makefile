@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       julien quintard   [thu nov 24 19:28:22 2005]
+## updated       julien quintard   [mon nov 28 19:04:55 2005]
 ##
 
 #
@@ -129,10 +129,9 @@ install:		kaneton
 #
 # ---------- check ------------------------------------------------------------
 #
-# XXX
-#
 
 check:
+	$(call makefile,$(_CHECK_DIR_),)
 
 #
 # ---------- view -------------------------------------------------------------

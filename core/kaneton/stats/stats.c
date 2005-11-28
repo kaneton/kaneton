@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
+ * licence       kaneton licence
  *
- * kaneton
+ * project       kaneton
  *
- * stats.c
+ * file          /home/mycure/kaneton/core/kaneton/stats/stats.c
  *
- * path          /home/mycure/kaneton/core/kaneton/stats
- *
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- *
- * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Mon Nov 28 12:50:15 2005   buckman
+ * created       julien quintard   [mon nov 28 07:15:10 2005]
+ * updated       julien quintard   [mon nov 28 19:33:13 2005]
  */
 
 /*
@@ -495,31 +490,6 @@ t_error			stats_clean(void)
   return (ERROR_NONE);
 }
 
-
-#if (DEBUG & DEBUG_STATS)
-/*
- * this function is used by stats_test to test stats in functions.
- *
- */
-
-static void	stats_test_fun(t_staid st)
-{
-  int		i;
-
-  for (i = 0; i < 5; ++i)
-    {
-      if (STATS_BEGIN(st) != ERROR_NONE)
-	cons_msg('!', "error beginning stats (st_fun)\n");
-      if (i % 2)
-	if (STATS_END(st, ERROR_NONE) != ERROR_NONE)
-	  cons_msg('!', "error ending stats (st_fun)\n");
-      else
-	if (STATS_END(st, ERROR_UNKNOWN) != ERROR_NONE)
-	  cons_msg('!', "error ending stats (st_fun)\n");
-    }
-}
-#endif
-
 /*
  * this function tests the stat manager.
  *
@@ -550,6 +520,7 @@ t_error			stats_test(void)
   int			i;
 
   STATS_ENTER(stats);
+
 #if (DEBUG & DEBUG_STATS)
   cons_msg('#', "testing the stats manager\n");
 
@@ -687,4 +658,25 @@ t_error			stats_test(void)
     cons_msg('!', "error releasing stats objects\n");
 #endif
   STATS_LEAVE(stats, ERROR_NONE);
+}
+
+/*
+ * this function is used by stats_test to test stats in functions.
+ */
+
+static void	stats_test_fun(t_staid st)
+{
+  int		i;
+
+  for (i = 0; i < 5; ++i)
+    {
+      if (STATS_BEGIN(st) != ERROR_NONE)
+	cons_msg('!', "error beginning stats (st_fun)\n");
+      if (i % 2)
+	if (STATS_END(st, ERROR_NONE) != ERROR_NONE)
+	  cons_msg('!', "error ending stats (st_fun)\n");
+      else
+	if (STATS_END(st, ERROR_UNKNOWN) != ERROR_NONE)
+	  cons_msg('!', "error ending stats (st_fun)\n");
+    }
 }

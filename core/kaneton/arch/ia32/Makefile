@@ -24,7 +24,7 @@ include			../../../../env/.env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		libs clear proto dep
 
 #
 # ---------- variables --------------------------------------------------------

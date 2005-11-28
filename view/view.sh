@@ -140,8 +140,5 @@ warning
 # launchs the viewer.
 view
 
-# end.
-display " environment installed successfully" "+"
-
 # displays some stuff.
 display ""

@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
+ * licence       kaneton licence
  *
- * kaneton
+ * project       kaneton
  *
- * init.h
+ * file          /home/mycure/kaneton/core/include/kaneton/debug.h
  *
- * path          /home/vertrex/kaneton/libs/klibc/libdata
- *
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- *
- * started on    Fri Feb 11 02:19:11 2005   mycure
- * last update   Mon Nov 28 16:32:00 2005   
+ * created       julien quintard   [mon nov 28 19:37:01 2005]
+ * updated       julien quintard   [mon nov 28 19:37:14 2005]
  */
 
 #ifndef KANETON_DEBUG_H
@@ -53,19 +48,6 @@ typedef	struct		s_debug_function
  *
  *      ../../kaneton/debug/debug.c
  */
-
-/*
- * ../../kaneton/debug/debug.c
- */
-
-t_error			debug_init(void);
-
-t_error			debug_recv();
-
-t_error			debug_recv_cmd();
-
-t_error			debug_clean(void);
-
 
 /*
  * eop

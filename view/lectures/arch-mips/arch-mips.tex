@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
 %%
 %% created       julien quintard   [wed nov 23 22:07:25 2005]
-%% updated       julien quintard   [sat nov 26 22:09:41 2005]
+%% updated       julien quintard   [sun nov 27 21:15:12 2005]
 %%
 
 %
@@ -109,6 +109,16 @@
 \pgfdeclareimage[interpolate=true,width=75pt,height=144pt]
                 {decode-stage}
 		{figures/decode-stage}
+
+\pgfdeclareimage[interpolate=true,width=133pt,height=61pt]
+                {dependency-problem-overview}
+		{figures/dependency-problem-overview}
+\pgfdeclareimage[interpolate=true,width=121pt,height=61pt]
+                {dependency-solution-overview}
+		{figures/dependency-solution-overview}
+\pgfdeclareimage[interpolate=true,width=175pt,height=171pt]
+                {dependency-detailed-pipeline}
+		{figures/dependency-detailed-pipeline}
 
 %
 % document
@@ -1767,12 +1777,130 @@ XXX
 
 % 2)
 
-\begin{frame}
-  \frametitle{XXX}
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
 
-  XXX
+  Let's get a simple example and study it in the pipeline:
+
+  \begin{verbatim}
+    Add R3, R1, R2
+    Add R5, R3, R4
+  \end{verbatim}
+
+  \begin{center}
+    \pgfuseimage{dependency-problem-overview}
+  \end{center}
+
+  You can notice that the pipeline cannot work with instruction dependencies.
 \end{frame}
 
+% 3)
+
+\begin{frame}
+  \frametitle{Solutions}
+
+  So, there are two solutions:
+
+  \begin{itemize}[<+->]
+    \item
+      To respect the RISC spirit and reject the important stuff into the
+      compiler.
+    \item
+      Or to handle these situations directly into the processor.
+  \end{itemize}
+
+  \nl
+
+  Needless to say, the compiler will handle it.
+
+  \nl
+
+  The compiler will have to handle three slots between two instructions
+  because every instruction needs the operands in the DEC stage and the
+  destination registers are always generated into the WBK stage.
+
+  \nl
+
+  We saw earlier that the compiler was not correctly able to fill more than
+  one slot meaning that in 95 percent of cases two slots will be filled
+  with no operation instructions.
+
+  \nl
+
+  This solution is absolutely unacceptable.
+
+  \nl
+
+  So the processor has to handle dependencies by itself.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{The Solution}
+
+  We will try to handle dependencies into the pipeline.
+
+  \nl
+
+  First, in the case of computation instruction like addition, substraction
+  etc.., it is absolutely useless to extract operands into the DEC stage.
+
+  \nl
+
+  Indeed, the operands are only used in the EXE stage.
+
+  \nl
+
+  Moreover, in the same context, the destination register is ready
+  at the end of the EXE stage, so needless to wait the end of the
+  WBK stage to get it.
+
+  \begin{center}
+    \pgfuseimage{dependency-solution-overview}
+  \end{center}
+
+  This system works but needs additional hardware.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Detailed Pipeline}
+
+  \begin{center}
+    \pgfuseimage{dependency-detailed-pipeline}
+  \end{center}
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Bypasses Overview}
+
+  The additional hardware is composed of two components:
+
+  \begin{enumerate}[<+->]
+    \item
+      Multiplexers.
+    \item
+      Dependencies Detectors.
+  \end{enumerate}
+
+  These hardwares composed what we called \textbf{bypasses}.
+
+  \nl
+
+  The dependencies detectors will check if two consecutive instructions
+  are dependent.
+
+  \nl
+
+  The result will activate or not the multiplexer which will select
+  the correct input register: \textbf{RES\_RE} or \textbf{SOPER\_RD}
+  in our example.
+\end{frame}
+    
 %
 % optimisations
 %
