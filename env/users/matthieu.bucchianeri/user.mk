@@ -19,3 +19,6 @@
 # this file contains specific user makefile dependencies, rules, variables
 # etc..
 #
+
+# for using gdb with qemu
+_CFLAGS_	+= -ggdb

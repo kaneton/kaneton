@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
+ * copyright     quintard julien
  *
- * kaneton
+ * project       kaneton
  *
- * stats.h
+ * file          /home/buckman/kaneton/kaneton/core/include/kaneton/stats.h
  *
- * path          /home/mycure/kaneton/core/kaneton
- *
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- *
- * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Mon Nov 28 12:43:46 2005   buckman
+ * created       mycure    [sun jan 19 14:51:33 2005]
+ * updated       buckman   [mon nov 28 19:33:28 2005]
  */
 
 #ifndef KANETON_STATS_H
@@ -134,19 +129,26 @@ typedef struct
 
 #else
 
-# define STATS_DUMP()
+# define STATS_DUMP()							\
+  ERROR_NONE
 
-# define STATS_BEGIN(_stats_)
+# define STATS_BEGIN(_stats_)						\
+  ERROR_NONE
 
-# define STATS_END(_stats_, _error_)
+# define STATS_END(_stats_, _error_)					\
+  ERROR_NONE
 
-# define STATS_RESERVE(_name_, _staid_)
+# define STATS_RESERVE(_name_, _staid_)					\
+  ERROR_NONE
 
-# define STATS_RELEASE(_staid_)
+# define STATS_RELEASE(_staid_)						\
+  ERROR_NONE
 
-# define STATS_INIT()
+# define STATS_INIT()							\
+  ERROR_NONE
 
-# define STATS_CLEAN()
+# define STATS_CLEAN()							\
+  ERROR_NONE
 
 #endif
 
