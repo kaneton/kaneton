@@ -1,6 +1,7 @@
 #!/usr/bin/python
-""" moulin.py  serial test 
-This program is for testing kaneton serial driver
+"""
+check.py 
+This program is for testing kaneton
 """
 
 
@@ -51,7 +52,8 @@ def 	SendCommand(parsed_cmd):
 			print result
 			result_buff += [result]
 		i += 1
-
+	# parsed_result =  parse_result (result_buff)
+	# return parsed_result
 	return result_buff
 
 def	OpenFile(file_path):
@@ -74,19 +76,27 @@ def	ListTest(test_path):
 	checksubdir and list sub-test
 	"""
 
-	dir_list = OpenFile(test_path + "testlist").split()
+	dir_list = OpenFile(test_path + "list").split()
 #	reg = search('^[^#]*', test_list) #virer les ocmmentaires
 #	if reg:	test_list =  reg.group()
 	i = 0
 	test_list = []
 	while i < len(dir_list):
-		test_file_path = test_path + dir_list[i] + "testlist"
-		file_path = OpenFile(test_path + dir_list[i] + "testlist").split()
+		test_file_path = test_path + dir_list[i] + "list"
+		file_path = OpenFile(test_path + dir_list[i] + "list").split()
 		c = 0
+#peut que c mieux de garder un tableau avec nom fichier de test/ nom fichier de result
+#et pas directement ce que contienne c fichier pour que ca soit moins lourd si les fichier de res
+#sont enorme 
+#c la fonction check result qui ouvrira le fichier de result et le comparera au resulta parser
+
 		while c < len(file_path):
-			test_list += [("new_test " + dir_list[i] + file_path[c]).split()]
+			test_list += [("new_test " + dir_list[i] + file_path[c]).split()] 
+			#new_test + printf_01  == new_test + ../ printf_01 
 			test_list += [OpenFile(test_path + dir_list[i] + file_path[c]).split("\n")]
+			#testlist += printf_01 nom de la fonction a appeller
 			test_list += [OpenFile(test_path + dir_list[i] + file_path[c] + ".res").split()]
+			#charge le fichier de resulat  01.res
 			c += 1
 		i += 1
 	
@@ -100,7 +110,7 @@ if __name__ == "__main__":
 	import os, array
 
 	serial_init("/dev/ttyS0")
-	test_list = ListTest("Test/")
+	test_list = ListTest("")
 	total_ok = 0
 	total_failed = 0
 	i = 0
@@ -112,6 +122,8 @@ if __name__ == "__main__":
 		else:
 			if len(test_list[i]) > 0:
 				result = SendCommand(test_list[i])
+				parsed_result = parse_result(result)
+				#pb viens de comment trouver la bonne fonction parse_result
 				i += 1 
 				if check_result(test_list[i], result):
 					print "[OK]"

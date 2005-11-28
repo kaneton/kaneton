@@ -55,6 +55,19 @@ typedef	struct		s_debug_function
  */
 
 /*
+ * ../../kaneton/debug/debug.c
+ */
+
+t_error			debug_init(void);
+
+t_error			debug_recv();
+
+t_error			debug_recv_cmd();
+
+t_error			debug_clean(void);
+
+
+/*
  * eop
  */
 
