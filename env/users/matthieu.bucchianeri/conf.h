@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Sun Aug 28 16:23:31 2005   mycure
-** Last update Mon Nov 28 00:04:54 2005 matthieu bucchianeri
+ * last update   Mon Nov 28 13:00:04 2005   buckman
  */
 
 #ifndef KANETON_CONF_H

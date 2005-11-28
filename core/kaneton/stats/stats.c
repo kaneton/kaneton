@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Fri Feb 11 03:04:40 2005   mycure
-** Last update Mon Nov 28 00:02:16 2005 matthieu bucchianeri
+ * last update   Mon Nov 28 12:50:15 2005   buckman
  */
 
 /*
@@ -104,8 +104,6 @@ t_error			stats_function(t_staid			staid,
 
   if ((i == stats->container[staid].functionssz) && (slot == -1))
     {
-      t_stats_func *tmp;
-
       slot = stats->container[staid].functionssz;
 
       if ((stats->container[staid].functions =
@@ -116,7 +114,7 @@ t_error			stats_function(t_staid			staid,
 
       stats->container[staid].functionssz *= 2;
 
-      memset(stats->container[staid].functions + slot * sizeof(t_stats_func),
+      memset(stats->container[staid].functions + slot,
 	     0x0, (stats->container[staid].functionssz - slot) *
 	     sizeof(t_stats_func));
     }
@@ -333,6 +331,9 @@ t_error			stats_reserve(char*			name,
       *staid = stats->containersz;
 
       stats->containersz *= 2;
+
+      memset(stats->container + *staid, 0x0,
+	     (stats->containersz - *staid) * sizeof (t_stats));
     }
 
   /*
@@ -416,6 +417,7 @@ t_error			stats_release(t_staid			staid)
  *
  * 1) allocates and initialises the statistics manager main structure.
  * 2) allocates and initialises the statistics object data structure.
+ * 3) runs tests if necessary
  */
 
 t_error			stats_init(void)
@@ -449,6 +451,14 @@ t_error			stats_init(void)
   stats->containersz = STATS_CONTAINER_INITSZ;
 
   memset(stats->container, 0x0, stats->containersz * sizeof(t_stats));
+
+  /*
+   * 3)
+   */
+
+#if (DEBUG & DEBUG_STATS)
+  stats_test();
+#endif
 
   return (ERROR_NONE);
 }
@@ -485,21 +495,45 @@ t_error			stats_clean(void)
   return (ERROR_NONE);
 }
 
-static void	stats_test_fun(t_staid st);
+
+#if (DEBUG & DEBUG_STATS)
+/*
+ * this function is used by stats_test to test stats in functions.
+ *
+ */
+
+static void	stats_test_fun(t_staid st)
+{
+  int		i;
+
+  for (i = 0; i < 5; ++i)
+    {
+      if (STATS_BEGIN(st) != ERROR_NONE)
+	cons_msg('!', "error beginning stats (st_fun)\n");
+      if (i % 2)
+	if (STATS_END(st, ERROR_NONE) != ERROR_NONE)
+	  cons_msg('!', "error ending stats (st_fun)\n");
+      else
+	if (STATS_END(st, ERROR_UNKNOWN) != ERROR_NONE)
+	  cons_msg('!', "error ending stats (st_fun)\n");
+    }
+}
+#endif
 
 /*
  * this function tests the stat manager.
  *
  * steps:
  *
- * 1) reserve some stats objects.
- * 2) simulate some calls with or without errors.
+ * 1) reserves some stats objects.
+ * 2) simulates some calls with or without errors.
  *   a) basic operations (calls / errors).
  *   b) a fast solution to simulate plenty of calls.
  *   c) programming errors and unwanted behaviors (must not segfault !).
- * 3) display the stats.
- * 4) release the stats objects.
+ * 3) displays the stats.
+ * 4) releases the stats objects.
  */
+
 t_error			stats_test(void)
 {
   t_staid		st1;
@@ -516,7 +550,7 @@ t_error			stats_test(void)
   int			i;
 
   STATS_ENTER(stats);
-
+#if (DEBUG & DEBUG_STATS)
   cons_msg('#', "testing the stats manager\n");
 
   /*
@@ -651,27 +685,6 @@ t_error			stats_test(void)
       STATS_RELEASE(stuseless3) != ERROR_NONE ||
       STATS_RELEASE(stuseless4) != ERROR_NONE)
     cons_msg('!', "error releasing stats objects\n");
-
+#endif
   STATS_LEAVE(stats, ERROR_NONE);
-}
-
-/*
- * this function is used by stats_test to test stats in functions.
- *
- */
-static void	stats_test_fun(t_staid st)
-{
-  int		i;
-
-  for (i = 0; i < 5; ++i)
-    {
-      if (STATS_BEGIN(st) != ERROR_NONE)
-	cons_msg('!', "error beginning stats (st_fun)\n");
-      if (i % 2)
-	if (STATS_END(st, ERROR_NONE) != ERROR_NONE)
-	  cons_msg('!', "error ending stats (st_fun)\n");
-      else
-	if (STATS_END(st, ERROR_UNKNOWN) != ERROR_NONE)
-	  cons_msg('!', "error ending stats (st_fun)\n");
-    }
 }
