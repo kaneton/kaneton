@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
 %%
 %% created       julien quintard   [wed nov 23 22:07:25 2005]
-%% updated       julien quintard   [sun nov 27 21:15:12 2005]
+%% updated       julien quintard   [tue nov 29 12:25:49 2005]
 %%
 
 %
@@ -119,6 +119,24 @@
 \pgfdeclareimage[interpolate=true,width=175pt,height=171pt]
                 {dependency-detailed-pipeline}
 		{figures/dependency-detailed-pipeline}
+\pgfdeclareimage[interpolate=true,width=161pt,height=81pt]
+                {bypasses}
+		{figures/bypasses}
+\pgfdeclareimage[interpolate=true,width=298pt,height=141pt]
+                {example-pipeline}
+		{figures/example-pipeline}
+\pgfdeclareimage[interpolate=true,width=298pt,height=178pt]
+                {strlen-part-1}
+		{figures/strlen-part-1}
+\pgfdeclareimage[interpolate=true,width=218pt,height=149pt]
+                {strlen-part-2}
+		{figures/strlen-part-2}
+\pgfdeclareimage[interpolate=true,width=218pt,height=128pt]
+                {strlen-part-3}
+		{figures/strlen-part-3}
+\pgfdeclareimage[interpolate=true,width=218pt,height=108pt]
+                {strlen-part-4}
+		{figures/strlen-part-4}
 
 %
 % document
@@ -1753,6 +1771,10 @@ XXX
     Branch
     Lw R31, X(29)
   \end{verbatim}
+
+  \nl
+
+  Let's make the detailed pipeline of this instruction.
 \end{frame}
 
 %
@@ -1887,7 +1909,7 @@ XXX
       Dependencies Detectors.
   \end{enumerate}
 
-  These hardwares composed what we called \textbf{bypasses}.
+  These hardwares composed what we call \textbf{bypasses}.
 
   \nl
 
@@ -1900,10 +1922,279 @@ XXX
   the correct input register: \textbf{RES\_RE} or \textbf{SOPER\_RD}
   in our example.
 \end{frame}
-    
+
+% 7)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Dependencies}
+
+  Let's enumerate some instruction sequence to isolate dependency
+  cases.
+
+  \begin{verbatim}
+    Add R3, R2, R1
+    Jr R3
+  \end{verbatim}
+
+  \begin{verbatim}
+    Add R3, R2, R1
+    Add R5, R4, R3
+  \end{verbatim}
+
+  \begin{verbatim}
+    Lw R3, 0(R5)
+    Add R5, R4, R3
+  \end{verbatim}
+
+  \begin{verbatim}
+    Lw R3, 0(R5)
+    Beq R3, R0, label
+  \end{verbatim}
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Bypasses}
+
+  The MIPS with a five stage pipeline only needs four bypasses to
+  handle every possible dependency.
+
+  \nl
+
+  There are dependencies of order: \textbf{1}, \textbf{2}, \textbf{3}.
+
+  \begin{center}
+    \pgfuseimage{bypasses}
+  \end{center}
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{Worst Case}
+
+  Of course the worst case happens when a branch instruction depends on
+  a memory instruction.
+
+  \nl
+
+  This case automatically leads to two stalls.
+\end{frame}
+
+% 10)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example - Source Code}
+
+  Let's see an example.
+
+  \begin{verbatim}
+    int         array[size];
+    int         i;
+
+    for (i = 0; i != size; i++)
+      array[i] = array[i] * 2;
+  \end{verbatim}
+
+  In assembly:
+
+  \begin{verbatim}
+    loop: Lw R3, 0(R5)
+          Sll R3, R3, 1
+          Sw R3, 0(R5)
+          Addiu R5, R5, 4
+          Addiu R8, R8, 1
+          Bne R8, R9, loop
+          Nop
+  \end{verbatim}
+\end{frame}
+
+% 11)
+
+\begin{frame}
+  \frametitle{Example - Pipeline}
+
+  Let's see the pipeline for this instructions sequence.
+
+  \begin{center}
+    \pgfuseimage{example-pipeline}
+  \end{center}
+\end{frame}
+
+% 12)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example - Rescheduling}
+
+  The performances for our examples were:
+
+  \nl
+
+  \textbf{CPI = 9 / 7}
+
+  \textbf{CPIu = 9 / 6}
+
+  \nl
+
+  Let's try to reorganise the instructions sequence:
+
+  \begin{verbatim}
+    loop: Lw R3, 0(R5)
+          Addiu R8, R8, 1
+          Sll R3, R3, 1
+          Sw R3, 0(R5)
+          Bne R8, R9, loop
+          Addiu R5, R5, 4
+  \end{verbatim}
+
+  \nl
+
+  \textbf{CPI = 6 / 6}
+
+  \textbf{CPIu = 6 / 6} \alert{= 1}
+\end{frame}
+
+% 13)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Trash Register Dependencies}
+
+  Let's take another example:
+
+  \begin{verbatim}
+    Lw R0, 0(R5)
+    Beq R1, R0, label
+  \end{verbatim}
+
+  This dependency should produces two stalls.
+
+  \nl
+
+  But it is obvious that this dependency, in fact, does not exist.
+
+  \nl
+
+  The trash register must be handled as a never-dependent register.
+\end{frame}
+
+% 14)
+
+\begin{frame}
+  \frametitle{Exercice - Strlen Part One}
+
+  \begin{center}
+    \pgfuseimage{strlen-part-1}
+  \end{center}
+\end{frame}
+
+% 15)
+
+\begin{frame}
+  \frametitle{Exercice - Strlen Part Two}
+
+  Let's produce a better assembly code.
+
+  \begin{center}
+    \pgfuseimage{strlen-part-2}
+  \end{center}
+\end{frame}
+
+% 16)
+
+\begin{frame}
+  \frametitle{Exercice - Strlen Part Three}
+
+  Another optimised code.
+
+  \begin{center}
+    \pgfuseimage{strlen-part-3}
+  \end{center}
+\end{frame}
+
+% 17)
+
+\begin{frame}
+  \frametitle{Exercice - Strlen Part Four}
+
+  Let's now reschedule instructions.
+
+  \begin{center}
+    \pgfuseimage{strlen-part-4}
+  \end{center}
+\end{frame}
+
+% 18)
+
+\begin{frame}
+  \frametitle{Conclusion}
+
+  You could notice that the CPI increases while we try to
+  optimize the assembly code.
+
+  \nl
+
+  Indeed, the CPI is not interesting in our example.
+
+  \nl
+
+  We simply tried to reduce the number of instructions in the loop
+  to reduce the cycles so the CPI but this was not possible.
+\end{frame}
+
+% 19)
+
+\begin{frame}
+  \frametitle{Questions}
+
+  \textbf{Why not putting a bypass into the MEM stage?}
+
+  \nl
+
+  The MEM stage is the largest of the pipeline, the processor cycle
+  is based on this stage.
+
+  \nl
+
+  If we put a bypass into it, we introduce a multiplexer, so the MEM
+  stage will take much time and the processor frequency will be slow down.
+
+  \nl
+
+  Let's see the critical stages:
+
+  \begin{enumerate}
+    \item
+      \textbf{IFC} and \textbf{MEM}
+    \item
+      \textbf{DEC}
+    \item
+      \textbf{EXE}
+    \item
+      \textbf{WBK}
+  \end{enumerate}
+\end{frame}
+
 %
 % optimisations
 %
+
+\section{Optimisations}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+\end{frame}
+
+% nous avons vu que le reordonnancement permettait deja d'optimiser
+
+
+%% exo: pipeline 7: trouver bypasses avec instruction associe a chaque
+%%      lw dans un detailed pipeline
+%% exemple compare entre 5 et 7 etages + reordonnancement optimisation
+%% + deroulement boucle + software pipeline
 
 %
 % bibliography
@@ -1911,15 +2202,17 @@ XXX
 
 \section{Bibliography}
 
-\begin{thebibliography}{3}
+\begin{thebibliography}{2}
 
-  \bibitem{Howto}
-    GNU C Preprocessor Howto
+  \bibitem{R2000-R3000}
+    MIPS RISC Architecture
+    \newblock Including R2000/R2010 and R3000/R3010
+    \newblock By Gerry Kane
 
-  \bibitem{Queue}
-    Queue.h
-    \newblock /usr/include/sys/queue.h
-    \newblock A linked-list manager using macros
+  \bibitem{R4000}
+    MIPS RISC Architecture
+    \newblock Including the R2000, R3000, R6000 ad the new R4000
+    \newblock By Gerry Kane and Joe Heinrich
 \end{thebibliography}
 
 \end{document}

@@ -5,7 +5,7 @@
 ;; configuration.
 ;;
 ;; this header file generator is based on two environment variables:
-;;   EC_COPYRIGHT:   the copyright string
+;;   EC_LICENCE:     the licence name
 ;;   EC_DEVELOPER:   the developer name
 ;;
 
@@ -46,9 +46,9 @@
    ("CSS"                . ec-c-list)
    ("C++"                . ec-cpp-list)
    ("java"               . ec-java-list)
-   ("TeX"                . ec-latex-list)
    ("LaTeX"              . ec-latex-list)
    ("latex"              . ec-latex-list)
+   ("TeX"                . ec-latex-list)
    ("Lisp"               . ec-lisp-list)
    ("Lisp Interaction"   . ec-lisp-list)
    ("Emacs-Lisp"         . ec-lisp-list)
@@ -89,8 +89,8 @@
     (newline)
     (insert-string (concat
                     (ec-comment 'i)
-                    " copyright     "
-                    (getenv "EC_COPYRIGHT")
+                    " licence       "
+                    (getenv "EC_LICENCE")
                    )
     )
     (newline)
@@ -151,6 +151,25 @@
     (if (buffer-modified-p)
      (progn
       (goto-char (point-min))
+      (if (search-forward
+           (concat
+            (ec-comment 'i)
+            " licence       "
+           )
+          nil t)
+       (progn
+        (delete-region
+         (progn (beginning-of-line) (point))
+         (progn (end-of-line) (point))
+        )
+        (insert-string (concat
+                        (ec-comment 'i)
+                        " licence       "
+                        (getenv "EC_LICENCE")
+                       )
+        )
+       )
+      )
       (if (search-forward
            (concat
             (ec-comment 'i)
@@ -280,3 +299,10 @@
 
 (global-set-key [home] 'beginning-of-buffer)
 (global-set-key [end] 'end-of-buffer)
+
+;;
+;; 80 columns alignment [XXX]
+;;
+;; (setq tefault-major-mode 'text-mode)
+;; (setq text-mode-hook 'turn-on-auto-fill)
+;; (setq fill-column 80)

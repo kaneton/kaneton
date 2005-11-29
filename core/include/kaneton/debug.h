@@ -50,6 +50,21 @@ typedef	struct		s_debug_function
  */
 
 /*
+ * ../../kaneton/debug/debug.c
+ */
+
+t_error			debug_init(void);
+
+t_error			debug_recv();
+
+t_error			debug_recv_cmd();
+
+t_error			debug_exec_cmd_tab(t_serial_data *cmd_tab);
+
+t_error			debug_clean(void);
+
+
+/*
  * eop
  */
 
