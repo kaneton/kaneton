@@ -155,11 +155,7 @@ void			kaneton(t_init*				bootloader)
     kaneton_error("cannot initialise the segment manager\n");
 
 /*                                                                 [cut] /k2 */
-
-#ifdef KANETON_SERIAL
-   debug_init();	 
-#endif
-/*                                                                  [cut] k2 */
+  
   /*
    * XXX
    */

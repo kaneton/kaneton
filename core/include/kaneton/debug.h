@@ -42,6 +42,14 @@ typedef	struct		s_debug_function
 }			debug_function_t;
 
 
+typedef struct			s_serial_data
+{
+  t_uint32			size;
+  t_uint32			magic;
+  t_uint32			crc;
+  t_uint8*			data;
+}				t_serial_data;
+
 
 /*
  * ---------- prototypes ------------------------------------------------------
