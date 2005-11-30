@@ -89,10 +89,9 @@ t_error			debug_exec_cmd_tab(t_serial_data *cmd_tab)
   int i , ret;
   static debug_function_t	function_list[] = 
 	{
-		{"printf", printf},/*debug printf*/
-		{"alloc_test", alloc_test},
+	/*	{"alloc_test", alloc_test},
 		{"set_test", set_test},
-		{0, 0}
+	*/	{0, 0}
 	};
 
    for (i = 0; function_list[i].f_name; i++)
