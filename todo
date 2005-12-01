@@ -1,5 +1,14 @@
 --
- tests reeb/ski pour printf/malloc + moulinette de triche.
+ mycure todo:
+  - mips architecture
+  - mettre a jour schedule une fois le cours mips termine
+  - kaneton.tex et assignments.tex a ecrire
+  - cours os distribue?
+  - cours linker loader
+  - cours gmake + systeme compile kaneton (dev-env)
+
+--
+ tests printf/malloc + moulinette de triche: tristan carel s'en occupe.
 
 --
  revoir si on peut resoudre le systeme d inclusion recursive du preproc:
@@ -346,13 +355,6 @@
     . k0: bootstrap [*]
     . k1: bootloader [*]
     . k2: id, set, as, segment
-
---
- cours:
-
-  . os distribues
-  . linkers
-  . archi
 
 --
  mettre toutes les regles de -old-/README dans kaneton.tex

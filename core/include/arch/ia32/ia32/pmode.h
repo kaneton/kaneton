@@ -40,8 +40,8 @@
  * gdt entries
  */
 
-#define PMODE_GDT_KERNEL_CS	0x1
-#define PMODE_GDT_KERNEL_DS	0x2
+#define PMODE_GDT_CORE_CS	0x1
+#define PMODE_GDT_CORE_DS	0x2
 #define PMODE_GDT_DRIVER_CS	0x3
 #define PMODE_GDT_DRIVER_DS	0x4
 #define PMODE_GDT_SERVICE_CS	0x5

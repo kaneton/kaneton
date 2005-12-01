@@ -57,6 +57,9 @@ typedef t_uint32		t_perms;
 typedef t_uint32		t_type;
 typedef t_uint32		t_fit;
 typedef t_uint32		t_state;
+typedef t_uint32		t_class;
+typedef t_uint32		t_prior;
+typedef t_uint32		t_behav;
 
 /*
  * identifier types
@@ -69,6 +72,7 @@ typedef t_id			t_setid;
 typedef t_id			t_asid;
 typedef t_id			t_segid;
 typedef t_id			t_regid;
+typedef t_id			t_tskid;
 
 /*
  * error type

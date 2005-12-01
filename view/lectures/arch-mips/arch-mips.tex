@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
 %%
 %% created       julien quintard   [wed nov 23 22:07:25 2005]
-%% updated       julien quintard   [thu dec  1 18:58:12 2005]
+%% updated       julien quintard   [thu dec  1 21:42:15 2005]
 %%
 
 %
@@ -85,13 +85,13 @@
 \pgfdeclareimage[interpolate=true,width=224pt,height=135pt]
                 {pipeline-views}
 		{figures/pipeline-views}
-\pgfdeclareimage[interpolate=true,width=156pt,height=180pt]
+\pgfdeclareimage[interpolate=true,width=128pt,height=150pt]
                 {detailed-pipeline}
 		{figures/detailed-pipeline}
 \pgfdeclareimage[interpolate=true,width=56pt,height=68pt]
                 {next-instruction-stream}
 		{figures/next-instruction-stream}
-\pgfdeclareimage[interpolate=true,width=75pt,height=144pt]
+\pgfdeclareimage[interpolate=true,width=66pt,height=134pt]
                 {decode-branch}
 		{figures/decode-branch}
 \pgfdeclareimage[interpolate=true,width=247pt,height=91pt]
@@ -103,7 +103,7 @@
 \pgfdeclareimage[interpolate=true,width=139pt,height=116pt]
                 {comparison-decode-execute-2}
 		{figures/comparison-decode-execute-2}
-\pgfdeclareimage[interpolate=true,width=103pt,height=121pt]
+\pgfdeclareimage[interpolate=true,width=90pt,height=101pt]
                 {comparison-decode-execute-3}
 		{figures/comparison-decode-execute-3}
 \pgfdeclareimage[interpolate=true,width=75pt,height=144pt]
@@ -116,7 +116,7 @@
 \pgfdeclareimage[interpolate=true,width=121pt,height=61pt]
                 {dependency-solution-overview}
 		{figures/dependency-solution-overview}
-\pgfdeclareimage[interpolate=true,width=175pt,height=171pt]
+\pgfdeclareimage[interpolate=true,width=155pt,height=151pt]
                 {dependency-detailed-pipeline}
 		{figures/dependency-detailed-pipeline}
 \pgfdeclareimage[interpolate=true,width=161pt,height=81pt]
@@ -125,10 +125,10 @@
 \pgfdeclareimage[interpolate=true,width=298pt,height=141pt]
                 {example-pipeline}
 		{figures/example-pipeline}
-\pgfdeclareimage[interpolate=true,width=298pt,height=178pt]
+\pgfdeclareimage[interpolate=true,width=258pt,height=150pt]
                 {strlen-part-1}
 		{figures/strlen-part-1}
-\pgfdeclareimage[interpolate=true,width=218pt,height=149pt]
+\pgfdeclareimage[interpolate=true,width=208pt,height=139pt]
                 {strlen-part-2}
 		{figures/strlen-part-2}
 \pgfdeclareimage[interpolate=true,width=218pt,height=128pt]
@@ -138,7 +138,7 @@
                 {strlen-part-4}
 		{figures/strlen-part-4}
 
-\pgfdeclareimage[interpolate=true,width=143pt,height=103pt]
+\pgfdeclareimage[interpolate=true,width=175pt,height=103pt]
                 {software-pipeline}
 		{figures/software-pipeline}
 
@@ -1352,6 +1352,8 @@
       the execution context.
   \end{itemize}
 
+  \nl
+
   We saw that any MIPS instruction could be described with a simple
   seven stages execution context.
 \end{frame}
@@ -1360,10 +1362,6 @@
 
 \begin{frame}
   \frametitle{Pipeline Overview}
-
-  Let's see the stages dependencies to try to build a pipeline.
-
-  \nl
 
   Pipeline technique was directly imported from hydrocarbure industry,
   using tops to separate stages.
@@ -1375,8 +1373,8 @@
   \nl
 
   We successfully built a pipeline with a CPI equals to 1 but
-  limiting the frequency so this is not a good solution because the
-  performance will not be good enough.
+  limiting the frequency. This is not a good solution because the
+  performances will not be good enough.
 \end{frame}
 
 % 8)
@@ -1416,7 +1414,7 @@
 
   Rather than making one cyle for the entire pipeline, we will
   calibrate the clock on stages to be able to get out an instruction
-  of the pipeline per cycle.
+  of the pipeline every cycle.
 
   \nl
 
@@ -1450,20 +1448,24 @@
   \end{center}
 
   Be careful, tops cutting has nothing to do with execution context.
+\end{frame}
 
-  \nl
+% 11)
 
-  The rules are:
+\begin{frame}
+  \frametitle{Rules}
+
+  The pipelining rules are:
 
   \begin{itemize}[<+->]
     \item
       The pipeline stages must be balanced.
     \item
-      The frequency must always be balanced on the largest stage.
+      The frequency must always be calibrated on the longest stage.
   \end{itemize}
 \end{frame}
 
-% 11)
+% 12)
 
 \begin{frame}
   \frametitle{Pipeline}
@@ -1487,12 +1489,12 @@
     \item
       \textbf{MEM}: Memory: a data memory access is made.
     \item
-      \textbf{WBK}: Write Back: the result is stored into a destination
+      \textbf{WBK}: Write Back: the result is stored into the destination
       register.
   \end{enumerate}
 \end{frame}
 
-% 12)
+% 13)
 
 \begin{frame}
   \frametitle{Moore Law}
@@ -1509,7 +1511,7 @@
   \end{center}
 \end{frame}
 
-% 13)
+% 14)
 
 \begin{frame}
   \frametitle{Largest Stage}
@@ -1520,7 +1522,7 @@
   \nl
 
   Note that such a pipeline will not be possible nowadays because of the
-  Moore law. The difference between the processor and memory speed
+  Moore law. The difference between the processor speed and the memory speed
   is constantly inscreasing.
 
   \nl
@@ -1529,12 +1531,12 @@
   MEM stage into three sub-stages.
 \end{frame}
 
-% 14)
+% 15)
 
 \begin{frame}
   \frametitle{Pipeline Views}
 
-  We can watch a pipeline from to different views:
+  We can watch a pipeline from two different views:
 
   \begin{center}
     \pgfuseimage{pipeline-views}
@@ -1548,7 +1550,7 @@
   \end{itemize}
 \end{frame}
 
-% 15)
+% 16)
 
 \begin{frame}
   \frametitle{Hardware}
@@ -1568,10 +1570,14 @@
   \nl
 
   In other words stages are composed of inputs and outputs registers.
+\end{frame}
 
-  \nl
+% 17)
 
-  This is for the same reason that there are two distinct memory threads
+\begin{frame}
+  \frametitle{Memory}
+
+  This is for the same reason that there are two distinct memory buses
   to access memory instructions and memory data because the IFC and MEM
   stages have to access memory at the same time:
 
@@ -1587,7 +1593,7 @@
   \end{itemize}
 \end{frame}
 
-% 16)
+% 18)
 
 \begin{frame}
   \frametitle{Pipeline Rules}
@@ -1608,7 +1614,7 @@
   Notice that registers largely compose a processor.
 \end{frame}
 
-% 17)
+% 19)
 
 \begin{frame}
   \frametitle{Detailed Pipeline}
@@ -1618,7 +1624,7 @@
   \end{center}
 \end{frame}
 
-% 18)
+% 20)
 
 \begin{frame}
   \frametitle{Exercises}
@@ -1629,11 +1635,12 @@
     \item
       \textbf{Sllv Rd, Rs, Rt}: nothing special
     \item
-      \textbf{Lw Rd, Immed(Rs)}: multiplexer: RES or memory data into DATA.
+      \textbf{Lw Rd, Immed(Rs)}: \alert{multiplexer}:
+      RES or memory data into DATA.
   \end{itemize}
 \end{frame}
 
-% 19)
+% 21)
 
 \begin{frame}
   \frametitle{Next Instruction Address}
@@ -1654,16 +1661,16 @@
 
   When performing a branch the pipeline will contain an unwanted
   instruction.
-
-  \nl
-
-  This unwanted instruction is called \textbf{delay slot}.
 \end{frame}
 
-% 20)
+% 22)
 
 \begin{frame}
   \frametitle{Delay Slot}
+
+  This unwanted instruction is called \textbf{delay slot}.
+
+  \nl
 
   There are two solutions to solve the delay slot problem:
 
@@ -1676,7 +1683,7 @@
   \end{itemize}
 \end{frame}
 
-% 21)
+% 23)
 
 \begin{frame}
   \frametitle{Solution}
@@ -1702,7 +1709,7 @@
     instruction address computation into the EXE stage?}
 \end{frame}
 
-% 22)
+% 24)
 
 \begin{frame}
   \frametitle{Next Instruction Address Computation}
@@ -1727,7 +1734,7 @@
   the previous instruction computed the next instruction address.
 \end{frame}
 
-% 23)
+% 25)
 
 \begin{frame}
   \frametitle{DEC stage}
@@ -1740,7 +1747,7 @@
   \end{center}
 \end{frame}
 
-% 24)
+% 26)
 
 \begin{frame}
   \frametitle{Very Bad Balancing}
@@ -1767,7 +1774,7 @@
   So we have to find solutions to balance this stage with others.
 \end{frame}
 
-% 25)
+% 27)
 
 \begin{frame}
   \frametitle{Multiplication Solution}
@@ -1790,7 +1797,7 @@
   \end{center}
 \end{frame}
 
-% 26)
+% 28)
 
 \begin{frame}
   \frametitle{Still Problem}
@@ -1803,7 +1810,7 @@
   \end{center}
 \end{frame}
 
-% 27)
+% 29)
 
 \begin{frame}
   \frametitle{Parallel Computations}
@@ -1816,7 +1823,7 @@
   \end{center}
 \end{frame}
 
-% 28)
+% 30)
 
 \begin{frame}
   \frametitle{Instruction Formats' Beauty}
@@ -1837,7 +1844,7 @@
   The result is almost perfect.
 \end{frame}
 
-% 29)
+% 31)
 
 \begin{frame}
   \frametitle{Strutural Problem Resolved}
@@ -1849,7 +1856,7 @@
   \end{center}
 \end{frame}
 
-% 30)
+% 32)
 
 \begin{frame}[containsverbatim]
   \frametitle{But...}
@@ -1861,9 +1868,8 @@
   Think about this sequence of instructions:
 
   \begin{verbatim}
-          Beq R0, R0, here
-
-    here: Beq R1, R1, anywhere
+    Beq R1, R2, somewhere
+    Beq R3, R4, anywhere
   \end{verbatim}
 
   \nl
@@ -1872,7 +1878,7 @@
   not allowed.
 \end{frame}
 
-% 31)
+% 33)
 
 \begin{frame}[containsverbatim]
   \frametitle{Exercise}
@@ -1888,8 +1894,6 @@
 
   Note that the caller must save the R31 register on the stack before
   making any call to subprograms.
-
-  \nl
 
   \begin{verbatim}
     Sw R31, X(R29)
@@ -2034,11 +2038,13 @@
       Dependencies Detectors.
   \end{enumerate}
 
+  \nl
+
   These hardwares composed what we call \textbf{bypasses}.
 
   \nl
 
-  The dependencies detectors will check if two consecutive instructions
+  The dependencies detectors will check if consecutive instructions
   are dependent.
 
   \nl
@@ -2053,7 +2059,7 @@
 \begin{frame}[containsverbatim]
   \frametitle{Dependencies}
 
-  Let's enumerate some instruction sequence to isolate dependency
+  Let's enumerate some instruction sequences to isolate dependency
   cases.
 
   \begin{verbatim}
@@ -2087,7 +2093,7 @@
 
   \nl
 
-  There are dependencies of order: \textbf{1}, \textbf{2}, \textbf{3}.
+  There are dependencies of order: \textbf{1}, \textbf{2} and \textbf{3}.
 
   \begin{center}
     \pgfuseimage{bypasses}
@@ -2172,8 +2178,6 @@
           Bne R8, R9, loop
           Addiu R5, R5, 4
   \end{verbatim}
-
-  \nl
 
   \textbf{CPI = 6 / 6}
 
@@ -2265,6 +2269,11 @@
 
   We simply tried to reduce the number of instructions in the loop
   to reduce the cycles so the CPI but this was not possible.
+
+  \nl
+
+  Indeed, in the last examples, the loop will takes exactly five cycles
+  and we showed this was not optimisable.
 \end{frame}
 
 % 19)
@@ -2327,8 +2336,6 @@
 
   We will take an example to show optimisations through this section.
 
-  \nl
-
   \begin{verbatim}
     for (i = 0; i != size; i++)
       v[i] = 2 * v[i];
@@ -2383,7 +2390,7 @@
   \frametitle{Better Assembly Code}
 
   First, we will try to optimise the assembly source code because
-  some instructions are totally needless.
+  some instructions are needless.
 
   \begin{itemize}
     \item
@@ -2480,7 +2487,7 @@
 \begin{frame}
   \frametitle{Software Pipeline Views}
 
-  We can view the pipeline from two different points of view:
+  We can view the loop body execution from two different points of view:
 
   \begin{center}
     \pgfuseimage{software-pipeline}
@@ -2538,6 +2545,11 @@
   \textbf{CPI = 5 / 5}
 
   \textbf{CPUu = 5 / 5} \alert{= 1}
+
+  \nl
+
+  Note that the \textbf{Sw}, \textbf{Sll} and \textbf{Lw} instructions
+  are no long dependent because they handle different array elements.
 \end{frame}
 
 % 11)
@@ -2547,7 +2559,7 @@
 
   \textbf{Analogy}: When you take your car to go to school you move
   about 1000 kg metal for a 80 kg body. So the ratio is 80/1000. But
-  if you take the bus, the ratio is about: 30/3000.
+  if you take the bus, the ratio is about: 2000/5000.
 
   \nl
 
@@ -2560,6 +2572,9 @@
     \item
       Bne R5, R7, loop
   \end{itemize}
+
+  The idea behing the loop unrolling is the handle for exemple two
+  iterations per loop to pay the overhead only once.
 \end{frame}
 
 % 12)

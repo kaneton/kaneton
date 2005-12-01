@@ -59,7 +59,6 @@
 #define FIT_NEXT		(1 << 2)
 #define FIT_WORST		(1 << 3)
 
-
 /*
  * ---------- macros ----------------------------------------------------------
  */
@@ -99,6 +98,8 @@
 #include <kaneton/segment.h>
 #include <kaneton/set.h>
 #include <kaneton/stats.h>
+
+// XXX #include <kaneton/task.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

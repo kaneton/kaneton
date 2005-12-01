@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/include/kaneton/debug.h
  *
  * created       julien quintard   [mon nov 28 19:37:01 2005]
- * updated       julien quintard   [mon nov 28 19:37:14 2005]
+ * updated       julien quintard   [wed nov 30 14:54:42 2005]
  */
 
 #ifndef KANETON_DEBUG_H

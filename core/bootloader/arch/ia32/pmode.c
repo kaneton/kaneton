@@ -119,7 +119,7 @@ void			bootloader_pmode_gdt_set(t_uint16	entry,
 
 /*
  * this function initialises the global offset table inserting
- * height entries for the kernel, drivers, services and programs.
+ * height entries for the core, drivers, services and programs.
  *
  * each segment has the same size with different rights: read/execution,
  * read/write etc..
@@ -127,7 +127,7 @@ void			bootloader_pmode_gdt_set(t_uint16	entry,
  * steps:
  *
  * 1) allocates and initialises the memory for the global offset table.
- * 2) sets the height segments for the kernel, driver, service and program.
+ * 2) sets the height segments for the core, driver, service and program.
  * 3) loads the GDT.
  * 4) updates the segments registers.
  * 5) finally installs the protected mode.
@@ -148,12 +148,12 @@ void			bootloader_pmode_init(void)
    * 2)
    */
 
-  bootloader_pmode_gdt_set(PMODE_GDT_KERNEL_CS, 0x0, 0xffffffff,
+  bootloader_pmode_gdt_set(PMODE_GDT_CORE_CS, 0x0, 0xffffffff,
 			   PMODE_GDT_PRESENT | PMODE_GDT_DPL0 | PMODE_GDT_S |
 			   PMODE_GDT_CODE, PMODE_GDT_GRANULAR |
 			   PMODE_GDT_USE32);
 
-  bootloader_pmode_gdt_set(PMODE_GDT_KERNEL_DS, 0x0, 0xffffffff,
+  bootloader_pmode_gdt_set(PMODE_GDT_CORE_DS, 0x0, 0xffffffff,
 			   PMODE_GDT_PRESENT | PMODE_GDT_DPL0 | PMODE_GDT_S |
 			   PMODE_GDT_DATA, PMODE_GDT_GRANULAR |
 			   PMODE_GDT_USE32);
@@ -201,7 +201,7 @@ void			bootloader_pmode_init(void)
    * 4)
    */
 
-  bootloader_pmode_update_registers(PMODE_GDT_KERNEL_CS, PMODE_GDT_KERNEL_DS);
+  bootloader_pmode_update_registers(PMODE_GDT_CORE_CS, PMODE_GDT_CORE_DS);
 
   /*
    * 5)
