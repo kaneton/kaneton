@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
 %%
 %% created       julien quintard   [wed nov 23 22:07:25 2005]
-%% updated       julien quintard   [tue nov 29 12:25:49 2005]
+%% updated       julien quintard   [thu dec  1 18:58:12 2005]
 %%
 
 %
@@ -19,7 +19,7 @@
 % title
 %
 
-\title{MIPS Architectures}
+\title{MIPS Architecture}
 
 %
 % authors
@@ -138,6 +138,10 @@
                 {strlen-part-4}
 		{figures/strlen-part-4}
 
+\pgfdeclareimage[interpolate=true,width=143pt,height=103pt]
+                {software-pipeline}
+		{figures/software-pipeline}
+
 %
 % document
 %
@@ -202,18 +206,76 @@
 \end{frame}
 
 %
-% history
-%
-
-XXX
-
-%
 % overview
 %
 
 \section{Overview}
 
 % 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  MIPS, for \textbf{M}icroprocessor without \textbf{I}nterlocked
+  \textbf{P}ipeline \textbf{S}tages is a RISC microprocessor
+  architecture developed by MIPS Computer Systems Inc.
+
+  \nl
+
+  The MIPS architecture studied in this course is the MIPS R3000.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{History}
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{1975}: IBM invented the pipelining technique but seemed
+      difficult to implement due to interlocks for complex instructions like
+      multiplication and division.
+    \item
+      \textbf{1981}: a team led by John L. Hennessy at Stanford University
+      started to build a RISC processor without interlocks.
+    \item
+      \textbf{1984}: John L. Hennessy left Stanford University to form
+      the MIPS Computer Systems.
+    \item
+      \textbf{1985}: The first MIPS processor, the R2000, was released.
+    \item
+      \textbf{1988}: The R3000 is released and widely used by companies like
+      Silicon Graphics.
+  \end{itemize}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{History}
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{1991}: The R4000 is released, a 64-bit microprocessor.
+    \item
+      \textbf{1992}: SGI decided to buy the MIPS company outright in order
+      to guarantee the design would not be lost given the financial
+      difficulties MIPS had while bringing it to market. The company became
+      known as MIPS Technologies.
+    \item
+      \textbf{1994}: The R8000 is released, the first superscalar
+      MIPS microprocessor.
+    \item
+      \textbf{1997}: 48-millionth MIPS-based CPU shipped, making it the
+      first RISC CPU to ouship the famous Motorola 68000 family.
+    \item
+      \textbf{1999}: MIPS formalised their licensing system around two
+      basic designs, the 32-bit MIPS32 and 64-bit MIPS64. Soon, NEC, Toshiba,
+      Philips, LSI etc.. obtained licenses for the MIPS64.
+  \end{itemize}
+\end{frame}
+
+% 4)
 
 \begin{frame}
   \frametitle{Introduction}
@@ -232,7 +294,7 @@ XXX
   \end{itemize}
 \end{frame}
 
-% 2)
+% 5)
 
 \begin{frame}
   \frametitle{Description}
@@ -255,9 +317,21 @@ XXX
       \textbf{R31}: Link Register: this register holds the return address
       of a subprogram.
   \end{itemize}
+
+  Some other registers have special meanings from the compiler view, but
+  this is just a basic MIPS rule:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{R2}: return value.
+    \item
+      \textbf{29}: frame pointer.
+    \item
+      \textbf{30}: global variables area pointer.
+  \end{itemize}
 \end{frame}
 
-% 3)
+% 6)
 
 \begin{frame}
   \frametitle{Special Registers}
@@ -282,12 +356,12 @@ XXX
       \textbf{EPC}: Exception Program Counter: holds the program counter
       of the instruction that caused the exception.
     \item
-      \textbf{BAR}: Bad Address Register: holds the address that cause
+      \textbf{BAR}: Bad Address Register: holds the address that caused
       the memory error.
   \end{itemize}
 \end{frame}
 
-% 3)
+% 7)
 
 \begin{frame}
   \frametitle{RISC}
@@ -308,10 +382,11 @@ XXX
 
   \nl
 
-  These notices tend to explain the real goal of this processor.
+  These notices tend to explain the real goal of this processor because
+  we will see that the MIPS processor respect this second statement.
 \end{frame}
 
-% 4)
+% 8)
 
 \begin{frame}[containsverbatim]
   \frametitle{RISC vs CISC}
@@ -330,6 +405,12 @@ XXX
 
     res = a + b;
   \end{verbatim}
+\end{frame}
+
+% 9)
+
+\begin{frame}[containsverbatim]
+  \frametitle{RISC vs CISC}
 
   On CISC processors:
 
@@ -347,15 +428,15 @@ XXX
   \end{verbatim}
 
   You can easily notice that CISC processors have only one instruction while
-  RISC processors have four instructions.
+  RISC processors have four instructions to perform the same operation.
 \end{frame}
 
-% 4)
+% 10)
 
 \begin{frame}
   \frametitle{Position of Assembly from High Level Languages}
 
-  During fifty's, CISC processors do not stop trying to provide
+  During the fifty's, CISC processors do not stop trying to provide
   more and more complex instructions to fit the high levels programming
   languages requirements.
 
@@ -366,12 +447,12 @@ XXX
 
   \nl
 
-  Indeed, RISC designers thought that while a CISC instruction ran in
-  for example 4 cycles, a RISC processor would be able to run the
-  equivalent three instruction each taking 1 cycle.
+  Indeed, MIPS designers thought that while a CISC instruction ran in
+  for example 4 cycles, the MIPS RISC microprocessor would be able to
+  run the equivalent three instruction each taking 1 cycle.
 \end{frame}
 
-% 5)
+% 11)
 
 \begin{frame}
   \frametitle{Philosophies}
@@ -403,6 +484,8 @@ XXX
       \textbf{J}: Jump instructions: Jump-Type
   \end{enumerate}
 
+  \nl
+
   Note that a branch instruction is a conditional jump while a jump
   instruction is an uncontional jump.
 \end{frame}
@@ -422,7 +505,7 @@ XXX
     \item
       \textbf{RS}: the source register.
     \item
-      \textbf{RT}: the alternative register: source/destination.
+      \textbf{RT}: the alternative register: source register.
     \item
       \textbf{RD}: the destination register.
     \item
@@ -483,13 +566,13 @@ XXX
 
   \begin{itemize}[<+->]
     \item
-      Addi Rd, Rs, Immed
+      Addi Rt, Rs, Immed
     \item
-      Addiu Rd, Rs, Immed
+      Addiu Rt, Rs, Immed
     \item
-      Andi Rd, Rs, Immed
+      Andi Rt, Rs, Immed
     \item
-      Ori Rd, Rs, Immed
+      Ori Rt, Rs, Immed
   \end{itemize}
 \end{frame}
 
@@ -533,22 +616,23 @@ XXX
   \nl
 
   We also saw that the register-type instructions had a function field
-  to extend the number of opcodes. So a value for the opcode field is
-  dedicated to the use of the function extended field.
+  to extend the number of opcodes. So one opcode field value is
+  dedicated to the use of the extendef function field.
 
   \nl
 
-  This specific opcode value is zerp: \textbf{000 000}
+  This specific opcode value is zero: \textbf{000 000}. Whenever this
+  opcode is used, the processor knows that the real opcode is located
+  in the function field.
 
   \nl
 
-  So the number of opcode available on the MIPS is:
+  So the number of opcodes available on the MIPS is:
 
   \begin{verbatim}
     opcodes =   opcode field - 1   +   function field
             =    (2 ^ 6) - 1       +     (2 ^ 6)
             =        63            +       64
-
             =   127
   \end{verbatim}
 \end{frame}
@@ -558,7 +642,14 @@ XXX
 %
 
 \begin{frame}[containsverbatim]
-  \frametitle{int \textbf{strlen}(const char* string);}
+  \frametitle{Exercise}
+
+  Let's write an optimised assembly code for the strlen function and
+  calculate its number of cycles.
+
+  \nl
+
+  int \textbf{strlen}(const char* string);
 
   \begin{verbatim}
           Lw R5, 0(R29)                 ; R5 <- string
@@ -606,7 +697,7 @@ XXX
 
   \begin{itemize}[<+->]
     \item
-      \textbf{33} arithmetic and logic register-type instructions.
+      \textbf{33} arithmetic and logic instructions.
     \item
       \textbf{12} branch instructions.
     \item
@@ -632,12 +723,12 @@ XXX
 
   Not that overflow is ignored with logic instructions and with
   specific unsigned instructions (\textbf{u} suffixed) like:
-  Addiu, Srl, Subu etc..
+  Addiu, Subu etc..
 
   \nl
 
-  So in the case of the \textbf{Andi} instruction which is a logic instruction,
-  the immediate will be interpreted as an unsigned value.
+  So in the case of the \textbf{Andi} instruction which is a logic
+  instruction, the immediate will be interpreted as an unsigned value.
 
   \nl
 
@@ -655,7 +746,7 @@ XXX
   \frametitle{Overflow Handling}
 
   Let's take the \textbf{Addi Rt, Rs, Immed} immediate-type
-  instruction as an example of a arithmetic one.
+  instruction as an example of an arithmetic one.
 
   \nl
 
@@ -725,12 +816,16 @@ XXX
 
   \nl
 
-  You can notive that the higher bit is set so this number will be considered
-  as a signed integer.
+  You can notice that the higher bit is set so this number will be considered
+  as a negative integer.
+\end{frame}
 
-  \nl
+% 6)
 
-  The solution is simply to prefere a logic operation:
+\begin{frame}[containsverbatim]
+  \frametitle{Solution}
+
+  The solution is simply to prefer a logic operation:
 
   \begin{verbatim}
     Addi R1, R0, 0x4567
@@ -739,7 +834,7 @@ XXX
   \end{verbatim}
 \end{frame}
 
-% 6)
+% 7)
 
 \begin{frame}
   \frametitle{Memory Access}
@@ -755,7 +850,7 @@ XXX
   \end{center}
 \end{frame}
 
-% 7)
+% 8)
 
 \begin{frame}[containsverbatim]
   \frametitle{Examples}
@@ -771,7 +866,7 @@ XXX
   \end{verbatim}
 \end{frame}
 
-% 8)
+% 9)
 
 \begin{frame}
   \frametitle{Jump Instructions}
@@ -793,7 +888,7 @@ XXX
   has a 256 Mb size.
 \end{frame}
 
-% 9)
+% 10)
 
 \begin{frame}[containsverbatim]
   \frametitle{Examples}
@@ -813,7 +908,7 @@ XXX
   \end{verbatim}
 \end{frame}
 
-% 10)
+% 11)
 
 \begin{frame}[containsverbatim]
   \frametitle{Branch Instructions}
@@ -828,8 +923,10 @@ XXX
       so the current instruction address plus four bytes.
   \end{enumerate}
 
-  In the case of a successful branch, the new instruction address calculated
-  like this:
+  \nl
+
+  In the case of a successful branch, the new instruction address is
+  calculated like this:
 
   \begin{verbatim}
     address = branch address + 4 + (Immediate >> 2)
@@ -842,7 +939,7 @@ XXX
   This is useful to permit forward an backward jumps.
 \end{frame}
 
-% 11)
+% 12)
 
 \begin{frame}[containsverbatim]
   \frametitle{Examples}
@@ -858,7 +955,7 @@ XXX
   \end{verbatim}
 \end{frame}
 
-% 12)
+% 13)
 
 \begin{frame}
   \frametitle{Designers Choices}
@@ -879,9 +976,9 @@ XXX
   \end{itemize}
 \end{frame}
 
-% 13)
+% 14)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{MIX}
 
   The MIXs are kind of statistics made by researchers and companies.
@@ -900,12 +997,20 @@ XXX
   \nl
 
   In this case, if the designers decide to not implement this instruction
-  what will they lose?
+  what will be the performance loss?
+\end{frame}
+
+% 15)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Performances}
+
+  Consider that this instruction running in one cycle can be replaced
+  by for example two other instructions each running in one cycle.
 
   \nl
 
-  Consider that this instruction running in two one cycle can be replaced
-  by for example two other instructions each running in one cycle.
+  What will be the real performance loss?
 
   \begin{verbatim}
     loss =   cycles loss   *   use frequency
@@ -920,7 +1025,7 @@ XXX
   processor's instructions set.
 \end{frame}
 
-% 14)
+% 16)
 
 \begin{frame}[containsverbatim]
   \frametitle{Amdhal Rule}
@@ -942,22 +1047,22 @@ XXX
   To conclude:
 
   \begin{verbatim}
-    real earning = earning * use frequency
+    real earning = earning * use
   \end{verbatim}
 \end{frame}
 
-% 15)
+% 17)
 
 \begin{frame}[containsverbatim]
   \frametitle{RISC Performance Rules}
 
   The two characteristics which make a processor performant are:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
-      number of cycles per instruction
+      Number of cycles per instruction.
     \item
-      clock frequency
+      Clock frequency.
   \end{itemize}
 
   So the processor performance can be computed as below:
@@ -972,7 +1077,7 @@ XXX
   RISC processor.
 \end{frame}
 
-% 16)
+% 18)
 
 \begin{frame}
   \frametitle{Questions}
@@ -1001,17 +1106,37 @@ XXX
       Most instructions are useless because the designed operation can be
       made with another instruction.
     \item
-      \textbf{MIXs} are used to design the instruction set with these
-      two rules.
+      \textbf{MIXs} and the \textbf{Amdhal Rule} are used to decide which
+      instruction to insert into the instructions set.
   \end{itemize}
 \end{frame}
 
 %
-% 17)
+% 19)
+%
+
+\begin{frame}
+  \frametitle{Exercise}
+
+  Let's try to write the assembly source code for the vector function
+  which computes an addition between the elements of two arrays and stores
+  the result in another one.
+
+  \nl
+
+  The assembly code must be optimised and runnable on MIPS microprocessors.
+
+  \nl
+
+  void \textbf{vector}(int* a, int* b, int *c, unsigned int size);
+\end{frame}
+
+%
+% 20)
 %
 
 \begin{frame}[containsverbatim]
-  \frametitle{void \textbf{vector}(int* a, int* b, int *c, unsigned int size);}
+  \frametitle{Correction}
 
   \begin{verbatim}
           Lw R3, 0(R29)                 ; R3 <- a
@@ -1054,7 +1179,7 @@ XXX
 \begin{frame}
   \frametitle{Overview}
 
-  The MIPS processor does not have any virtual memory in its basic
+  The MIPS processor studied does not have any virtual memory in its basic
   realisation.
 
   \nl
@@ -1094,7 +1219,7 @@ XXX
 \begin{frame}
   \frametitle{Memory Layout}
 
-  The memory is segmented to divise the address space into two segments.
+  The memory is segmented to divide the address space into two segments.
 
   \begin{center}
     \pgfuseimage{memory-layout}
@@ -1496,7 +1621,7 @@ XXX
 % 18)
 
 \begin{frame}
-  \frametitle{Exercices}
+  \frametitle{Exercises}
 
   Make the detailed pipeline for these instructions:
 
@@ -1750,7 +1875,7 @@ XXX
 % 31)
 
 \begin{frame}[containsverbatim]
-  \frametitle{Exercice}
+  \frametitle{Exercise}
 
   \textbf{Bltzal Rs, Label}: Branch if Less Than Zero And Link
 
@@ -2081,7 +2206,7 @@ XXX
 % 14)
 
 \begin{frame}
-  \frametitle{Exercice - Strlen Part One}
+  \frametitle{Exercise - Strlen Part One}
 
   \begin{center}
     \pgfuseimage{strlen-part-1}
@@ -2091,7 +2216,7 @@ XXX
 % 15)
 
 \begin{frame}
-  \frametitle{Exercice - Strlen Part Two}
+  \frametitle{Exercise - Strlen Part Two}
 
   Let's produce a better assembly code.
 
@@ -2103,7 +2228,7 @@ XXX
 % 16)
 
 \begin{frame}
-  \frametitle{Exercice - Strlen Part Three}
+  \frametitle{Exercise - Strlen Part Three}
 
   Another optimised code.
 
@@ -2115,7 +2240,7 @@ XXX
 % 17)
 
 \begin{frame}
-  \frametitle{Exercice - Strlen Part Four}
+  \frametitle{Exercise - Strlen Part Four}
 
   Let's now reschedule instructions.
 
@@ -2186,15 +2311,344 @@ XXX
 \begin{frame}
   \frametitle{Overview}
 
+  We will see in this section different optimisations which can be
+  used either by the assembly programmer or by the compiler.
+
+  \nl
+
+  We already saw an optimisation consisting in the reorganisation
+  of instructions to avoid instruction dependencies.
 \end{frame}
 
-% nous avons vu que le reordonnancement permettait deja d'optimiser
+% 2)
 
+\begin{frame}[containsverbatim]
+  \frametitle{Assembly Code}
 
-%% exo: pipeline 7: trouver bypasses avec instruction associe a chaque
-%%      lw dans un detailed pipeline
-%% exemple compare entre 5 et 7 etages + reordonnancement optimisation
-%% + deroulement boucle + software pipeline
+  We will take an example to show optimisations through this section.
+
+  \nl
+
+  \begin{verbatim}
+    for (i = 0; i != size; i++)
+      v[i] = 2 * v[i];
+  \end{verbatim}
+
+  \begin{itemize}
+    \item
+      \textbf{R5}: the vector \textbf{v} address.
+    \item
+      \textbf{R6}: the vector size \textbf{size}.
+    \item
+      \textbf{R7}: the increment \textbf{i}.
+  \end{itemize}
+
+  \begin{verbatim}
+    loop: Lw R8, 0(R5)
+          Sll R8, R8, 1
+          Sw R8, 0(R5)
+          Addiu R5, R5, 4
+          Addi R7, R7, 1
+          Bne R7, R6, loop
+          Nop
+  \end{verbatim}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Performances}
+
+  There are currently two stalls:
+
+  \begin{itemize}[<+->]
+    \item
+      Between \textbf{Lw} and \textbf{Sll}.
+    \item
+      Between \textbf{Addi} and \textbf{Bne}.
+  \end{itemize}
+
+  and the performances are:
+
+  \nl
+
+  \textbf{CPI = 9 / 7}
+
+  \textbf{CPIu = 9 / 6}
+\end{frame}
+
+% 4)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Better Assembly Code}
+
+  First, we will try to optimise the assembly source code because
+  some instructions are totally needless.
+
+  \begin{itemize}
+    \item
+      \textbf{R7}: the vector end address.
+  \end{itemize}
+
+  \begin{verbatim}
+    loop: Lw R8, 0(R5)
+          Sll R8, R8, 1
+          Sw R8, 0(R5)
+          Addiu R5, R5, 4
+          Bne R5, R7, loop
+          Nop
+  \end{verbatim}
+
+  \textbf{CPI = 8 / 6}
+
+  \textbf{CPUu = 8 / 5}
+\end{frame}
+
+% 5)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Rescheduling}
+
+  The \textbf{Addiu} instruction is independent so we can use it to
+  avoid other instruction dependencies while keeping this instruction
+  far away from the \textbf{Bne} instruction which depends on it.
+
+  \begin{verbatim}
+    loop: Lw R8, 0(R5)
+          Addiu R5, R5, 4
+          Sll R8, R8, 1
+          Sw R8, -4(R5)
+          Bne R5, R7, loop
+          Nop
+  \end{verbatim}
+
+  \textbf{CPI = 6 / 6}
+
+  \textbf{CPUu = 6 / 5}
+\end{frame}
+
+% 6)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Eliminating The Delay Slot}
+
+  Let's try to fill the delay slot with a useful instruction to
+  increase the CPI.
+
+  \begin{verbatim}
+    loop: Lw R8, 0(R5)
+          Addiu R5, R5, 4
+          Sll R8, R8, 1
+          Bne R5, R7, loop
+          Sw R8, -4(R5)
+  \end{verbatim}
+
+  \textbf{CPI = 5 / 5}
+
+  \textbf{CPUu = 5 / 5} \alert{= 1}
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Software Pipeline Theory}
+
+  Compilers use another optimisation named \textbf{Software Pipeline}.
+
+  \nl
+
+  This technique is very useful with little sequence of instructions into
+  a loop because each instruction depends on the previous one.
+
+  \nl
+
+  We could analyse loop's bodies instructions like this:
+
+  \begin{enumerate}[<+->]
+    \item
+      \textbf{L}oad: first, an element of an array for example is read from
+      the memory.
+    \item
+      \textbf{O}peration: then, an operation is performed on this element.
+    \item
+      \textbf{S}tore: finally, the computed value is stored in memory.
+  \end{enumerate}
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Software Pipeline Views}
+
+  We can view the pipeline from two different points of view:
+
+  \begin{center}
+    \pgfuseimage{software-pipeline}
+  \end{center}
+\end{frame}
+
+% 9)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Software Pipelining}
+
+  So, rather than handling on element per iteration, we will handle
+  three elements per iteration to increase the number of instructions
+  between dependences.
+
+  \nl
+
+  But, finally, an element will be treated during three consecutive
+  iterations, to perform the three steps: Load, Operation and Store.
+
+  \begin{verbatim}
+    loop: Sw R10, -8(R5)
+          Sll R10, R9, 1
+          Lw R9, 0(R5)
+          Addiu R5, R5, 4
+          Bne R5, R7, loop
+          Nop
+  \end{verbatim}
+
+  Of course, the first and last elements will be handled outside the loop.
+
+  \nl
+
+  \textbf{CPI = 8 / 6}
+
+  \textbf{CPUu = 8 / 5}
+\end{frame}
+
+% 10)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Optimisation}
+
+  Of course, stalls remain but we can easily optimise this source code
+  using instructions rescheduling:
+
+  \begin{verbatim}
+    loop: Sw R10, -8(R5)
+          Sll R10, R9, 1
+          Addiu R5, R5, 4
+          Bne R5, R7, loop
+          Lw R9, -4(R5)
+  \end{verbatim}
+
+  \textbf{CPI = 5 / 5}
+
+  \textbf{CPUu = 5 / 5} \alert{= 1}
+\end{frame}
+
+% 11)
+
+\begin{frame}
+  \frametitle{Loop Unroll Theory}
+
+  \textbf{Analogy}: When you take your car to go to school you move
+  about 1000 kg metal for a 80 kg body. So the ratio is 80/1000. But
+  if you take the bus, the ratio is about: 30/3000.
+
+  \nl
+
+  For our example, the loop body is composed of five instructions, but
+  two of them are used to manage the loop:
+
+  \begin{itemize}[<+->]
+    \item
+      Addiu R5, R5, 4
+    \item
+      Bne R5, R7, loop
+  \end{itemize}
+\end{frame}
+
+% 12)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Loop Unrolling}
+
+  \begin{verbatim}
+    loop: Lw R8, O(R5)
+          Lw R10, 4(R5)
+          Sll R8, R8, 1
+          Sll R18, R18, 1
+          Sw R8, 0(R5)
+          Sw R18, 4(R5)
+          Addiu R5, R5, 4
+          Bne R5, R7, loop
+          Nop
+  \end{verbatim}
+
+  When optimised we have:
+
+  \nl
+
+  \textbf{Performances: 8 cycles / iteration}
+
+  \textbf{Performances: 4 cycles / element}
+\end{frame}
+
+% 13
+
+\begin{frame}
+  \frametitle{Conclusion}
+
+  This technique can be widely used to increase the unrolling ratio.
+
+  \nl
+
+  In fact this technique tends to remove the cost of the loop management
+  instructions.
+
+  \nl
+
+  Moreover, this technique increase the number of instructions into the
+  loop body so this makes more possibilities to avoid dependencies
+  between instructions.
+\end{frame}
+
+% 14)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Exercises}
+
+  Let's take the following source code which compute the absolute value
+  on every element of an array:
+
+  \begin{verbatim}
+    for (i = 0; i != size; i++)
+      v[i] = abs(v[i]);
+  \end{verbatim}
+
+  The equivalent non-optimised assembly code is:
+
+  \begin{verbatim}
+     loop: Lw R8, 0(R5)
+           Begz R8, endif
+           Nop
+           Sub R8, R0, R8
+           Sw R8, 0(R5)
+    endif: Addiu R5, R5, 4
+           Bne R5, R7, loop
+  \end{verbatim}
+
+  Let's optimise this assembly code: source code, instructions rescheduling,
+  software pipelining and finally loop unrolling.
+\end{frame}
+
+%
+% advanced pipelines
+%
+
+\section{Advanced Pipelines}
+
+% XXX superpipelines(7), multiplication, superscalar
+
+%
+% memory
+%
+
+\section{Memory}
 
 %
 % bibliography
@@ -2202,17 +2656,38 @@ XXX
 
 \section{Bibliography}
 
-\begin{thebibliography}{2}
+\begin{thebibliography}{4}
 
   \bibitem{R2000-R3000}
     MIPS RISC Architecture
-    \newblock Including R2000/R2010 and R3000/R3010
+    \newblock This book includes R2000/R2010 and R3000/R3010
     \newblock By Gerry Kane
 
   \bibitem{R4000}
     MIPS RISC Architecture
-    \newblock Including the R2000, R3000, R6000 ad the new R4000
+    \newblock This book includes the R2000, R3000, R6000 ad the new R4000
     \newblock By Gerry Kane and Joe Heinrich
+
+  \bibitem{Computer Organization}
+    Computer Organization and Design. The Hardware/Software Interface
+    \newblock This book about computer design in general, and RISC
+    in particular, takes its examples directly from the MIPS architecture
+    \newblock Patterson and Hennessy
+
+  \bibitem{MIPS Run}
+    See Mips Run
+    \newblock The definitive book on the MIPS architecture
+    \newblock Dominic Sweetman
+
 \end{thebibliography}
 
 \end{document}
+
+XXX une fois ce cours termine, remplir schedule.tex pour chaque seance.
+
+exo: pipeline 7: trouver bypasses avec instruction associe a chaque
+     lw dans un detailed pipeline
+exemple compare entre 5 et 7 etages + reordonnancement optimisation
++ deroulement boucle + software pipeline
+
+super pipeline but now called deep-pipeline
