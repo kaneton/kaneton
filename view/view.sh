@@ -36,8 +36,8 @@ PAPERS="								\
   lectures/advanced-makefiles lectures/arch-mips lectures/arch-ia32	\
   lectures/c-preprocessor lectures/distributed-operating-systems	\
   lectures/prerequisites lectures/inline-assembly			\
-  lectures/kernels lectures/development-environment lecture/seminar	\
-  lecture/arch-mips							\
+  lectures/kernels lectures/development-environment lectures/seminar	\
+  lectures/arch-mips							\
   cursus/schedule"
 
 LOCATION=""
