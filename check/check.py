@@ -10,15 +10,31 @@ __version__ 	= "0.0.1"
 __date__ 	= ""
 
 
+#def	parse_result(result):
+#	print "parsing_result:"
+#	print result
+#	parsed_result = result
+#	return parsed_result[1]
+
 def 	check_result(result_file, result_2_check):
 	print "result:"
 	
 	result = OpenFile(result_file)
+	print "real_result: "  + result
+	print "test_result: " + result_2_check
 	if result == result_2_check:
 		return 1
-	
 
-def 	SendCommand(parsed_cmd):
+def	get_function_addr(cmd):
+	print "seek for function: " + cmd + " addr"
+	
+ 	obj = os.popen("nm ../core/kaneton/kaneton | grep " + cmd +  " | cut -d ' ' -f 1")
+	addr = obj.read()
+	addr = addr.strip("\n")
+	print "addr found at: "  + addr
+	return addr
+
+def 	SendCommand(cmd):
 	"""
 	Send Command to execute on kaneton and receive the result, for sending
 	it to the result checker
@@ -32,22 +48,24 @@ def 	SendCommand(parsed_cmd):
 	tosend_size = 8
 	serial_send(tosend, tosend_size) #j'envoie que c des command qui vont suivre
 	
-	
-	tosend = (parsed_cmd)
-	tosend_size = (len(parsed_cmd[c]) + 1)
+
+	cmd = get_function_addr(cmd)	
+	tosend = (cmd)
+	tosend_size = (len(cmd) + 1)
 	serial_send(tosend, tosend_size)
 			
 	tmp = serial_recv()
+	result = [0,""]
+	
 	print tmp
 	while tmp[1] == "printf":
-		result += serial_recv()
 		tmp = serial_recv()
-			#result = serial_recv()
+		result[0] += tmp[0]
+		result[1] += tmp[1]
+		tmp = serial_recv()
 		print result
-		result_buff += [result]
-	i += 1
 	
-	return result_buff
+	return result
 
 def	OpenFile(file_path):
 	"""
@@ -85,6 +103,7 @@ def	ListTest():
 			current_path = dir_list[i] + file_path[c]
 			test_list += [("new_test " + get_function_name(dir_list[i], file_path[c])).split()]	
 			test_list += [get_function_name(dir_list[i], file_path[c])]
+			test_list += [dir_list[i]]
 			test_list += [get_res_file_name(dir_list[i], file_path[c])]
 			c += 1
 		i += 1
@@ -98,7 +117,7 @@ if __name__ == "__main__":
 	from kserial import *
 	from struct  import *
 	from re      import *
-	import os, array
+	import os, array, sys
 
 	serial_init("/dev/ttyS0")
 	test_list = ListTest()
@@ -111,12 +130,15 @@ if __name__ == "__main__":
 			print test_list[i][1]
 		else:
 			if len(test_list[i]) > 0:
-				print "send_command:" + test_list[i]
+				print "Launching test: " + test_list[i]
 				result = SendCommand(test_list[i])
-#				parsed_result = parse_result(result)
+				i += 1
+				sys.path.append(test_list[i])
+				from parse_res import *
+				parsed_result = parse_result(result)
 				#pb viens de comment trouver la bonne fonction parse_result
 				i += 1 
-				if check_result(test_list[i], result):
+				if check_result(test_list[i], parsed_result):
 					print "[OK]"
 					total_ok += 1
 				else:
