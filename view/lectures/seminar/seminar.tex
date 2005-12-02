@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/lectures/seminar/seminar.tex
+%% file          /home/buckman/kaneton/kaneton/view/lectures/seminar/seminar.tex
 %%
 %% created       julien quintard   [fri dec  2 07:53:59 2005]
-%% updated       julien quintard   [fri dec  2 16:22:29 2005]
+%% updated       buckman   [fri dec  2 17:42:48 2005]
 %%
 
 %
@@ -99,7 +99,7 @@
   \nl
 
   The goal of this microkernel is to be understandable by everyone
-  interesting by operating systems internals.
+  interested in operating systems internals.
 \end{frame}
 
 % 2)
@@ -367,7 +367,7 @@
 
   \nl
 
-  We needed a very ligth authentication system.
+  We needed a very light authentication system.
 
   \nl
 
@@ -442,7 +442,7 @@
 
   \begin{itemize}[<+->]
     \item
-      Capabilities built by the servers contrary to other systems:
+      Capabilities are built by the servers contrary to other systems:
       Amoeba etc..
     \item
       No capability unification.
@@ -506,14 +506,14 @@
   \frametitle{Overview}
 
   The current systems like linux, BSD, solaris etc.. generally use
-  doubly linked-list , hash tables, trees etc.. data structures to
+  double linked-list, hash tables, trees etc.. data structures to
   organise internals data like tasks structures, cache structures,
   memory allocators etc..
 
   \nl
 
   Finally, with many pointers, the structures become very hard to understand
-  and to manipulate leading to many programming errors so to kernel
+  and to manipulate leading to many programming errors and then to kernel
   crashes.
 
   \nl
@@ -725,7 +725,7 @@
   \frametitle{Statistics}
 
   The kaneton kernel includes a stats manager which performs statistics
-  one different managers.
+  on different managers.
 
   \nl
 
@@ -890,7 +890,7 @@
   \begin{itemize}[<+->]
     \item
       Let the machine dependent source code define for example the memory
-      manager for its architecture so it can optimise every data structure
+      manager for its architecture so it can optimise every data structures
       for this architecture.
 
       \nl
@@ -898,7 +898,7 @@
       The major problem is the non-dependent code redundancy
       in each architecture.
     \item
-      Define a generic interface in which each architecture must fill into.
+      Define a generic interface in which each architecture must fill in.
       Then, the kernel code just calls machine-dependent source code
       to perform some specific operations like: flush\_tlb(),
       new\_page\_directory() etc..
@@ -906,15 +906,15 @@
       \nl
 
       This system seems ugly but is better than the previous. Nevertheless
-      it may exist an architecture does not fitting in this interface.
+      some architectures may not fit in this interface.
     \item
-      The last consists in calling the machine dependent code everytime
+      The last consists in calling the machine-dependent code everytime
       it may be needed by the architecture to perform modifications on
       architecture data structures etc..
 
       \nl
 
-      The problem is that it may be some problems where the architecture
+      The problem is that some problems may occur when the architecture
       needs to perform operations and is not allowed to.
   \end{itemize}
 \end{frame}
@@ -938,7 +938,7 @@
 
   For example, when an address space object is created, the machine
   dependent code is called. Then the architecture performs the operations
-  needed like building a new page directory and linking it the the
+  needed like building a new page directory and linking it to the
   new address space just created etc..
 
   \nl
@@ -949,7 +949,7 @@
   \nl
 
   Theoritically, this system is the best because there is no redundancy
-  and there are no constraints for the machine dependent code.
+  and there are no constraints for the machine-dependent code.
 \end{frame}
 
 %
@@ -963,7 +963,7 @@
 \begin{frame}
   \frametitle{Overview}
 
-  Every developer can validate his modifications running unitary/regression
+  Each  developer can validate his modifications running unitary/regression
   tests on the kaneton microkernel.
 
   \nl
