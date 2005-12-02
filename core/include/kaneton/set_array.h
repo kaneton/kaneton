@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * set_array.h
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Fri Sep  2 15:51:39 2005   mycure
+ * licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/include/kaneton/set_array.h
+ *
+ * created       mycure    [sun jun 19 14:51:33 2005]
+ * updated       buckman   [thu dec  1 19:54:34 2005]
  */
 
 #ifndef KANETON_SET_ARRAY_H
@@ -37,8 +32,13 @@ typedef struct
   t_opts			opts;
 
   t_size			datasz;
+  t_size			initsz;
 
-  t_uint8*			array;
+  union
+  {
+    t_uint8**			pdata;
+    t_id*			id;
+  }				array;
   t_setsz			arraysz;
 }				t_set_array;
 

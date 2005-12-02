@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * set.c
- * 
- * path          /home/mycure/kaneton/core/include/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Nov  1 15:56:21 2005   mycure
+ * licence
+ *
+ * project
+ *
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set.c
+ *
+ * created       mycure    [fri feb 11 03:04:40 2005]
+ * updated       buckman   [thu dec  1 18:53:21 2005]
  */
 
 /*
@@ -495,10 +490,11 @@ t_error			set_init(void)
 #if (DEBUG & DEBUG_SET)
   set_dump();
 
-  set_test(SET_TYPE_LL);
+/*  set_test(SET_TYPE_LL);*/
   // XXX-OK set_test(SET_TYPE_BPT);
 
-  // XXX set_test(SET_TYPE_ARRAY);
+  set_test(SET_TYPE_ARRAY);
+  set_dump();
 #endif
 
   return (ERROR_NONE);
@@ -599,33 +595,7 @@ t_error			set_test(t_type				type)
     {
     case SET_TYPE_ARRAY:
       {
-	t_iterator	iterator;
-	t_id		data;
-	t_id		*o;
-	t_setid		id;
-
-	cons_msg('#', "testing SET_TYPE_ARRAY\n");
-
-	if (set_reserve(array, SET_OPT_ALLOC | SET_OPT_SORT, 10,
-			sizeof(t_uint64), &id) != ERROR_NONE)
-	  printf("error: set_reserve()\n");
-
-	data = 98LL;
-	if (set_add(id, &data) != ERROR_NONE)
-	  printf("error: set_add()\n");
-
-	data = 843536LL;
-	if (set_add(id, &data) != ERROR_NONE)
-	  printf("error: set_add()\n");
-
-	data = 100LL;
-	if (set_add(id, &data) != ERROR_NONE)
-	  printf("error: set_add()\n");
-
-	/* XXX continue the tests */
-
-	set_show(id);
-
+	set_test_array();
 	while (1);
 
 	break;

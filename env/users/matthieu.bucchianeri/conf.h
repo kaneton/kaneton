@@ -11,7 +11,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Sun Aug 28 16:23:31 2005   mycure
- * last update   Mon Nov 28 13:00:04 2005   buckman
+** Last update Thu Dec  1 17:31:25 2005 matthieu bucchianeri
  */
 
 #ifndef KANETON_CONF_H
@@ -64,7 +64,7 @@
  */
 
 #define CONF_DEBUG							\
-  (DEBUG_STATS)
+  (DEBUG_SET)
 
 /*
  * the machine-dependent configuration debug

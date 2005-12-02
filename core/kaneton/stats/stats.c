@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/stats/stats.c.mine
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/stats/stats.c
  *
  * created       mycure    [fri feb 11 03:04:40 2005]
- * updated       buckman   [mon nov 28 20:38:26 2005]
+ * updated       buckman   [mon nov 28 20:58:39 2005]
  */
 
 /*
@@ -145,8 +145,7 @@ t_error			stats_begin(t_staid			staid,
    * 1)
    */
 
-  if (staid < 0 || staid >= stats->containersz ||
-      stats->container[staid].name == NULL)
+  if (staid >= stats->containersz || stats->container[staid].name == NULL)
     STATS_LEAVE(stats, ERROR_UNKNOWN);
 
   /*
@@ -204,8 +203,7 @@ t_error			stats_end(t_staid			staid,
    * 1)
    */
 
-  if (staid < 0 || staid >= stats->containersz ||
-      stats->container[staid].name == NULL)
+  if (staid >= stats->containersz || stats->container[staid].name == NULL)
     STATS_LEAVE(stats, ERROR_UNKNOWN);
 
   /*
@@ -238,8 +236,7 @@ t_error			stats_show(t_staid			staid)
 
   STATS_ENTER(stats);
 
-  if (staid < 0 || staid >= stats->containersz ||
-      stats->container[staid].name == NULL)
+  if (staid >= stats->containersz || stats->container[staid].name == NULL)
     STATS_LEAVE(stats, ERROR_UNKNOWN);
 
   cons_msg('#', "  [%qu] %s\n",
@@ -374,8 +371,7 @@ t_error			stats_release(t_staid			staid)
    * 1)
    */
 
-  if (staid < 0 || staid >= stats->containersz ||
-      stats->container[staid].name == NULL)
+  if (staid >= stats->containersz || stats->container[staid].name == NULL)
     STATS_LEAVE(stats, ERROR_UNKNOWN);
 
   /*
@@ -640,7 +636,7 @@ t_error			stats_test(void)
   stats_begin(sterr, "foo");
   stats_end(sterr, "foo", ERROR_UNKNOWN);
   STATS_RELEASE(-4);
-  STATS_RELEASE((t_staid)-100);
+  STATS_RELEASE(-100);
 
   /*
    * 3)

@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * set.h
- * 
- * path          /home/mycure/kaneton/core/include/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Tue Nov  1 15:49:26 2005   mycure
+ * licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/include/kaneton/set.h
+ *
+ * created       mycure    [sun jun 19 14:51:33 2005]
+ * updated       buckman   [thu dec  1 18:51:11 2005]
  */
 
 #ifndef KANETON_SET_H
@@ -253,7 +248,7 @@ typedef struct
   set_trap(set_tail, _setid_, ##_args_)
 
 #define set_previous(_setid_, _args_...)				\
-  set_trap(set_previous, _setid_, ##_args_)
+  set_trap(set_prev, _setid_, ##_args_)
 
 #define set_next(_setid_, _args_...)					\
   set_trap(set_next, _setid_, ##_args_)
@@ -345,12 +340,9 @@ t_error			set_test(t_type				type);
  * ../../kaneton/set/set_array.c
  */
 
+t_error			set_type_array(t_setid			setid);
+
 t_error			set_show_array(t_setid			setid);
-
-t_error			set_expand_array(o_set*			o);
-
-t_error			set_insert_array(o_set*			o,
-					 t_sint32		position);
 
 t_error			set_head_array(t_setid			setid,
 				       t_iterator*		iterator);
@@ -405,6 +397,8 @@ t_error			set_reserve_array(t_opts		opts,
 					  t_setid*		setid);
 
 t_error			set_release_array(t_setid		setid);
+
+void		set_test_array(void);
 
 
 /*
