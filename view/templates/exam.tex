@@ -1,0 +1,54 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/templates/exam.tex
+%%
+%% created       julien quintard   [fri dec  2 22:20:57 2005]
+%% updated       julien quintard   [sat dec  3 13:54:18 2005]
+%%
+
+%
+% class
+%
+
+\documentclass[10pt,a4wide]{article}
+
+%
+% packages
+%
+
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{graphicx}
+\usepackage{fancyheadings}
+\usepackage{multicol}
+\usepackage{indentfirst}
+\usepackage{color}
+
+\pagestyle{fancy}
+
+\setlength{\footrulewidth}{0.3pt}
+\setlength{\parindent}{0.3cm}
+\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+
+%
+% correction environment
+%
+
+\newenvironment{correction}[0]
+  {
+    \textbf{\color{red}{ ----- correction}}
+  }
+  {
+    \textbf{\color{red}{ ----- /correction}}
+  }
+
+%
+% header
+%
+
+\rfoot{\scriptsize{Exam}}
+
+\date{\scriptsize{\today}}

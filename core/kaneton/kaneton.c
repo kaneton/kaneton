@@ -162,8 +162,6 @@ void			kaneton(t_init*				bootloader)
 
   STATS_DUMP();
 
-  printf("=> %016b %d %u\n", 0x89ab, 0x89ab, 0x89ab);
-
   /*
    * XXX
    */

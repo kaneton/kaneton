@@ -1,12 +1,12 @@
 /*
- * licence
+ * licence       kaneton licence
  *
- * project
+ * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set.c
+ * file          /home/mycure/kaneton/core/kaneton/set/set.c
  *
- * created       mycure    [fri feb 11 03:04:40 2005]
- * updated       buckman   [thu dec  1 18:53:21 2005]
+ * created       julien quintard   [fri dec  2 19:55:19 2005]
+ * updated       julien quintard   [fri dec  2 19:55:22 2005]
  */
 
 /*
