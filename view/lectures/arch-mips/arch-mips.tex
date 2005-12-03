@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
+%% file          /home/buckman/kaneton/kaneton/view/lectures/arch-mips/arch-mips.tex
 %%
 %% created       julien quintard   [wed nov 23 22:07:25 2005]
-%% updated       julien quintard   [sat dec  3 14:03:15 2005]
+%% updated       matthieu bucchianeri   [sat dec  3 20:04:19 2005]
 %%
 
 %
@@ -182,7 +182,7 @@
 
   \begin{itemize}[<+->]
     \item
-      About \textbf{thirty} course hours.
+      About \textbf{thirty} hours course.
     \item
       Concluded by an exam.
   \end{itemize}
@@ -311,8 +311,8 @@
 
   \begin{itemize}[<+->]
     \item
-      \textbf{R0}: Trash Register: this register when read returns zero and
-      writtings are ignored.
+      \textbf{R0}: Trash Register: this register returns zero on read and
+      write operations are ignored.
     \item
       \textbf{R31}: Link Register: this register holds the return address
       of a subprogram.
@@ -325,9 +325,9 @@
     \item
       \textbf{R2}: return value.
     \item
-      \textbf{29}: frame pointer.
+      \textbf{R29}: frame pointer.
     \item
-      \textbf{30}: global variables area pointer.
+      \textbf{R30}: global variables area pointer.
   \end{itemize}
 \end{frame}
 
@@ -340,10 +340,10 @@
 
   \begin{itemize}[<+->]
     \item
-      \textbf{HI and LO} are used for multiplications and division.
+      \textbf{HI and LO} are used for multiplications and divisions.
   \end{itemize}
 
-  The MIPS precessor has four registers very interesting for system
+  The MIPS processor has four registers very interesting for system
   programming:
 
   \begin{itemize}[<+->]
@@ -617,7 +617,7 @@
 
   We also saw that the register-type instructions had a function field
   to extend the number of opcodes. So one opcode field value is
-  dedicated to the use of the extendef function field.
+  dedicated to the use of the extended function field.
 
   \nl
 
@@ -721,7 +721,7 @@
 
   \nl
 
-  Not that overflow is ignored with logic instructions and with
+  Note that overflow is ignored with logic instructions and with
   specific unsigned instructions (\textbf{u} suffixed) like:
   Addiu, Subu etc..
 
@@ -782,7 +782,7 @@
   \end{verbatim}
 
   This operation being very useful, the designers of the MIPS processor
-  decided to add a new instruction named \textbf{Lui} which do
+  decided to add a new instruction named \textbf{Lui} which does
   exactly the:
 
   \begin{itemize}
@@ -901,7 +901,7 @@
     Jalr Rs
   \end{verbatim}
 
-  To return from a subprogram we just has to do:
+  To return from a subprogram we just have to do:
 
   \begin{verbatim}
     Jr R31
@@ -1056,7 +1056,7 @@
 \begin{frame}[containsverbatim]
   \frametitle{RISC Performance Rules}
 
-  The two characteristics which make a processor performant are:
+  The two caracteristics which make a processor performant are:
 
   \begin{itemize}
     \item
@@ -1261,7 +1261,7 @@
     \item
       Performs the operation: \textbf{+}.
     \item
-      
+
     \item
       Writes the result: \textbf{Rd}
     \item
@@ -1280,13 +1280,13 @@
     \item
       Decodes the operands.
     \item
-      Extracts the operands: \textbf{Immed}, \textbf{Rt}
+      Extracts the operands: \textbf{Immed}, \textbf{Rs}
     \item
       Performs the operation: \textbf{+}.
     \item
       Memory access: read.
     \item
-      Writes the result: \textbf{Rd}
+      Writes the result: \textbf{Rt}
     \item
       Computes the next instruction address.
   \end{enumerate}
@@ -1303,7 +1303,7 @@
     \item
       Decodes the operands.
     \item
-      Extracts the operands: \textbf{Immed}, \textbf{Rt}
+      Extracts the operands: \textbf{Immed}, \textbf{Rs}
     \item
       Performs the operation: \textbf{+}.
     \item
@@ -1330,7 +1330,7 @@
     \item
 
     \item
-      
+
     \item
 
     \item
@@ -1382,7 +1382,7 @@
 \begin{frame}
   \frametitle{Example}
 
-  Let's take an example of pipeline which execute an instruction per 100 ns:
+  Let's take an example of pipeline which execute one instruction per 100 ns:
   \textbf{1 instruction / 100 ns = 10 Mhz}.
 
   \nl
@@ -1523,7 +1523,7 @@
 
   Note that such a pipeline will not be possible nowadays because of the
   Moore law. The difference between the processor speed and the memory speed
-  is constantly inscreasing.
+  is constantly increasing.
 
   \nl
 
@@ -1898,7 +1898,7 @@
   \begin{verbatim}
     Sw R31, X(R29)
     Branch
-    Lw R31, X(29)
+    Lw R31, X(R29)
   \end{verbatim}
 
   \nl
@@ -2040,7 +2040,7 @@
 
   \nl
 
-  These hardwares composed what we call \textbf{bypasses}.
+  These components compose what we call \textbf{bypasses}.
 
   \nl
 
@@ -2272,7 +2272,7 @@
 
   \nl
 
-  Indeed, in the last examples, the loop will takes exactly five cycles
+  Indeed, in the last examples, the loop will take exactly five cycles
   and we showed this was not optimisable.
 \end{frame}
 
@@ -2549,7 +2549,7 @@
   \nl
 
   Note that the \textbf{Sw}, \textbf{Sll} and \textbf{Lw} instructions
-  are no long dependent because they handle different array elements.
+  are no longer dependent because they handle different array elements.
 \end{frame}
 
 % 11)
@@ -2573,7 +2573,7 @@
       Bne R5, R7, loop
   \end{itemize}
 
-  The idea behing the loop unrolling is the handle for exemple two
+  The idea behing the loop unrolling is to handle for exemple two
   iterations per loop to pay the overhead only once.
 \end{frame}
 
