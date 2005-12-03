@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/lectures/arch-mips/exams/arch-mips-2006.tex
+%% file          /home/mycure/kaneton/view/exams/arch-mips/2006/arch-mips-2006.tex
 %%
 %% created       julien quintard   [fri dec  2 22:25:51 2005]
-%% updated       julien quintard   [sat dec  3 20:06:00 2005]
+%% updated       julien quintard   [sat dec  3 22:19:42 2005]
 %%
 
 %
@@ -14,6 +14,13 @@
 %
 
 \input{../../../templates/exam.tex}
+
+%
+% correction mode
+%
+
+\newboolean{cmode}
+\setboolean{cmode}{false}
 
 %
 % header
@@ -122,7 +129,8 @@ et \textit{size}.
 Vous expliquerez ensuite l'algorithme utilis\'e en assembleur, c'est-\`a-dire
 les diff\'erentes \'etapes assembleur.
 
-#ifdef CORRECTION
+%\verbatimboxed{Makefile}
+
 \begin{correction}
 
   Il faut ajouter les \textit{delay slots} apr\`es chaque branchement.
@@ -202,7 +210,6 @@ les diff\'erentes \'etapes assembleur.
   \end{enumerate}
 
 \end{correction}
-#endif
 
 %
 % analyse simplifiee
@@ -220,7 +227,6 @@ Calculer ensuite le nombre moyen de cycles n\'ecessaires \`a
 l'ex\'ecution d'une it\'eration de la boucle. Calculer le CPI utile
 (en consid\'erant qu'un NOP n'est pas une instruction utile).
 
-#ifdef CORRECTION
 \begin{correction}
 
   \begin{center}
@@ -228,7 +234,6 @@ l'ex\'ecution d'une it\'eration de la boucle. Calculer le CPI utile
   \end{center}
 
 \end{correction}
-#endif
 
 %
 % reordonnancement
@@ -242,7 +247,6 @@ au maximum les cycles de gel et les cycles perdus dans les \textit{delay slots}.
 Combien de cycles sont d\'esormais n\'ecessaires \`a l'ex\'ecution d'une
 it\'eration?
 
-#ifdef CORRECTION
 \begin{correction}
 
   \begin{verbatim}
@@ -263,7 +267,6 @@ it\'eration?
   \textit{delay slot} non utilis\'e.
 
 \end{correction}
-#endif
 
 %
 % analyse detaillee
@@ -279,7 +282,6 @@ Lw R3, 0(R5)
 Add R5, R1, R3
 \end{verbatim}
 
-#ifdef CORRECTION
 \begin{correction}
 
   \begin{center}
@@ -287,7 +289,6 @@ Add R5, R1, R3
   \end{center}
 
 \end{correction}
-#endif
 
 %
 % pipeline
@@ -316,7 +317,6 @@ Representer ces bypasses sur un schema simplfi\'e?
 
 Donner un exemple de code mettant en \'evidence chacun de ces bypasses.
 
-#ifdef CORRECTION
 \begin{correction}
 
   Il y a exactement \textbf{5} bypasses.
@@ -372,7 +372,6 @@ Donner un exemple de code mettant en \'evidence chacun de ces bypasses.
   utilise le bypass num\'ero \textbf{4}.
 
 \end{correction}
-#endif
 
 %
 % optimisations
@@ -396,7 +395,6 @@ pr\'ec\'edemment obtenu:
 Pour chacune de ces optimisations, vous devrez calculer le nombre de cycles
 n\'ecessaire au traitement d'un \'el\'ement de la cha\^ine.
 
-#ifdef CORRECTION
 \begin{correction}
 
   Voici le code modifi\'e de mani\`ere \`a \^etre ex\'ecutable sur le
@@ -480,6 +478,5 @@ n\'ecessaire au traitement d'un \'el\'ement de la cha\^ine.
   \textbf{4.5} cycles.
 
 \end{correction}
-#endif
 
 \end{document}

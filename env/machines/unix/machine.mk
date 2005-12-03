@@ -221,6 +221,19 @@ define makefile
 endef
 
 #
+# from c file to preprocessed c file
+#
+# $(1):		preprocessed file
+# $(2):		c file
+# $(3):		advanced options
+#
+
+define preprocess
+  $(call pretty-printer,green,PREPROCESS,$(2),		)		; \
+  $(_CPP_) -P $(_CPPFLAGS_) $(3) $(2) -o $(1) $(_VERBOSE_)
+endef
+
+#
 # from c file to object file
 #
 # $(1):		object file

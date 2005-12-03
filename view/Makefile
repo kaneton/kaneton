@@ -32,7 +32,9 @@ include			../env/.env.mk
 
 SUBDIRS			:=		cursus				\
 					lectures			\
-					papers				
+					papers				\
+					exams				\
+					templates			
 
 #
 # ---------- rules ------------------------------------------------------------

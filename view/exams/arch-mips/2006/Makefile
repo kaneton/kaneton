@@ -24,13 +24,13 @@ include			../../../../env/.env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all view exam correction clear
+.PHONY:		all view build clear
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		arch-mips-2006
+PAPER			:=		2006
 
 GARBAGE			:=		$(PAPER).aux			\
 					$(PAPER).log			\
@@ -48,13 +48,10 @@ GARBAGE			:=		$(PAPER).aux			\
 
 all:			view
 
-view:			correction
+view:			build
 	$(call view,$(PAPER),)
 
-exam:
-	$(call compile-tex,$(PAPER))
-
-correction:
+build:
 	$(call compile-tex,$(PAPER))
 
 clear:

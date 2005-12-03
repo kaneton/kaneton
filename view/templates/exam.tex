@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/templates/exam.tex
 %%
 %% created       julien quintard   [fri dec  2 22:20:57 2005]
-%% updated       julien quintard   [sat dec  3 13:54:18 2005]
+%% updated       julien quintard   [sat dec  3 22:15:57 2005]
 %%
 
 %
@@ -26,6 +26,10 @@
 \usepackage{multicol}
 \usepackage{indentfirst}
 \usepackage{color}
+\usepackage{ifthen}
+\usepackage{comment}
+
+\usepackage{verbatim}
 
 \pagestyle{fancy}
 
@@ -37,13 +41,42 @@
 % correction environment
 %
 
-\newenvironment{correction}[0]
-  {
-    \textbf{\color{red}{ ----- correction}}
-  }
-  {
-    \textbf{\color{red}{ ----- /correction}}
-  }
+\newenvironment{correction}%
+   {
+     \ifthenelse
+	 {
+	   \not\boolean{cmode}
+	 }
+	 {
+	   \comment
+	 }
+	 {
+	   \textbf{\color{red}{ ----- correction}}
+	 }
+   }%
+   {
+     \ifthenelse
+	 {
+	   \not\boolean{cmode}
+	 }
+	 {\endcomment}
+	 {
+	   \textbf{\color{red}{ ----- /correction}}
+	 }
+   }
+
+
+% XXX
+
+\def\verbatimboxed#1{\begingroup
+  \def\verbatim@processline{%
+    {\setbox0=\hbox{\the\verbatim@line}%
+      \hsize=\wd0
+      \the\verbatim@line\par}}%
+  \setbox0=\vbox{\parskip=0pt\topsep=0pt\partopsep=0pt
+    \verbatiminput{#1}}%
+  \begin{center}\fbox{\box0}\end{center}%
+  \endgroup}
 
 %
 % header

@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/buckman/kaneton/kaneton/view/lectures/arch-mips/arch-mips.tex
+%% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
 %%
 %% created       julien quintard   [wed nov 23 22:07:25 2005]
-%% updated       matthieu bucchianeri   [sat dec  3 20:04:19 2005]
+%% updated       julien quintard   [sat dec  3 21:29:10 2005]
 %%
 
 %
@@ -1115,7 +1115,7 @@
 % 19)
 %
 
-\begin{frame}
+\begin{frame}[containsverbatim]
   \frametitle{Exercise}
 
   Let's try to write the assembly source code for the vector function
@@ -1129,6 +1129,11 @@
   \nl
 
   void \textbf{vector}(int* a, int* b, int *c, unsigned int size);
+
+  \begin{verbatim}
+    for (i = 0; i < size; i++)
+      c[i] = 2 * a[i] + 3 * b[i];
+  \end{verbatim}
 \end{frame}
 
 %
@@ -1143,25 +1148,18 @@
           Lw R4, 4(R29)                 ; R4 <- b
           Lw R5, 8(R29)                 ; R5 <- c
           Lw R6, 12(R29)                ; R6 <- size
-
           Sll R6, R6, 2                 ; R6 <- size * 4
           Add R7, R5, R6                ; R7 <- R5 + size * 4
-
     Loop: Lw R13, 0(R3)                 ; R13 <- *a
           Lw R14, 0(R4)                 ; R14 <- *b
-
           Add R15, R13, R14             ; R15 <- *a + *b
           Sll R15, R15, 1               ; R15 <- (*a + *b) * 2
           Add R15, R15, R14             ; R15 <- (*a + *b) * 2 + *b
-
           Sw R15, 0(R5)                 ; *c <- R15
-
           Addi R3, R3, 4                ; a <- a + 1
           Addi R4, R4, 4                ; b <- b + 1
           Addi R5, R5, 4                ; c <- c + 1
-
           Bne R5, R7, loop              ; while (R5 != R7)
-
           Jr R31                        ; return
   \end{verbatim}
 
@@ -1295,7 +1293,7 @@
 % 4)
 
 \begin{frame}
-  \frametitle{Sw Rt, I(Rs)}
+  \frametitle{Sw Rt, Immed(Rs)}
 
   \begin{enumerate}[<+->]
     \item
@@ -1303,7 +1301,7 @@
     \item
       Decodes the operands.
     \item
-      Extracts the operands: \textbf{Immed}, \textbf{Rs}
+      Extracts the operands: \textbf{Immed}, \textbf{Rs}, \textbf{Rt}
     \item
       Performs the operation: \textbf{+}.
     \item

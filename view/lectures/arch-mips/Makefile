@@ -24,7 +24,7 @@ include			../../../env/.env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all dvi ps pdf clear
+.PHONY:		all view build clear
 
 #
 # ---------- variables --------------------------------------------------------

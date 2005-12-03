@@ -33,11 +33,15 @@ source			../env/.env.sh
 
 PAPERS="								\
   papers/assignments papers/design papers/kaneton			\
+									\
   lectures/advanced-makefiles lectures/arch-mips lectures/arch-ia32	\
   lectures/c-preprocessor lectures/distributed-operating-systems	\
   lectures/prerequisites lectures/inline-assembly			\
   lectures/kernels lectures/development-environment lectures/seminar	\
   lectures/arch-mips							\
+									\
+  exams/arch-mips/2006							\
+									\
   cursus/schedule"
 
 LOCATION=""
