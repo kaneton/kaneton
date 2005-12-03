@@ -1,0 +1,485 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/lectures/arch-mips/exams/arch-mips-2006.tex
+%%
+%% created       julien quintard   [fri dec  2 22:25:51 2005]
+%% updated       julien quintard   [sat dec  3 20:06:00 2005]
+%%
+
+%
+% template
+%
+
+\input{../../../templates/exam.tex}
+
+%
+% header
+%
+
+\lhead{\scriptsize{2006}}
+
+%
+% title
+%
+
+\title{Examen d'Architecture MIPS}
+
+%
+% authors
+%
+
+\author{\small{Julien Quintard}}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% --------- information -------------------------------------------------------
+%
+
+\begin{center}
+
+\textbf{Documents Autoris\'es}
+
+\textbf{Dur\'ee 3 heures}
+
+\scriptsize{Une copie bien pr\'esent\'ee avec des sch\'emas propres et
+	    lisibles sera toujours mieux not\'ee qu'une autre.}
+\end{center}
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+On consid\`ere la fonction \textbf{strncpy} d\'ecrite ci-dessous
+en langage C.
+
+\begin{verbatim}
+char*           strncpy(char* dst, const char* src, unsigned int size)
+{
+  int           i;
+
+  for (i = 0; i < size && src[i]; i++)
+    dst[i] = src[i];
+  dst[i] = 0;
+
+  return (dst);
+}
+\end{verbatim}
+
+Ce code f\^ut ensuite compil\'e pour une r\'ealisation \textbf{non pipeline}
+du processeur MIPS. Le code assembleur produit est le suivant:
+
+\begin{verbatim}
+         Lw R5, 0(R29)
+         Lw R6, 4(R29)
+         Lw R7, 8(R29)
+
+         Add R2, R5, R0
+
+         Add R16, R6, R7
+
+Loop:    Lb R10, 0(R6)
+         Beq R10, R0, EndLoop
+
+         Sb R10, 0(R5)
+
+         Addiu R5, R5, 1
+         Addiu R6, R6, 1
+
+         Bne R6, R16, Loop
+
+EndLoop: Sb R0, 0(R5)
+
+         Jr R31
+\end{verbatim}
+
+%
+% fonctionnement
+%
+
+\section{Fonctionnement}
+
+Modifier ce code de telle mani\`ere qu'il soit ex\'ecutable par le processeur
+pipeline 5 \'etages MIPS etudi\'e en cours.
+
+Faites le lien entre les registres et le programme C. Notamment,
+nous attendrons l'identification des variables \textit{dst}, \textit{src}
+et \textit{size}.
+
+Vous expliquerez ensuite l'algorithme utilis\'e en assembleur, c'est-\`a-dire
+les diff\'erentes \'etapes assembleur.
+
+#ifdef CORRECTION
+\begin{correction}
+
+  Il faut ajouter les \textit{delay slots} apr\`es chaque branchement.
+
+  \begin{verbatim}
+           Lw R5, 0(R29)
+           Lw R6, 4(R29)
+           Lw R7, 8(R29)
+
+           Add R2, R5, R0
+
+           Add R16, R6, R7
+
+  Loop:    Lb R10, 0(R6)
+           Beq R10, R0, EndLoop
+           Nop
+
+           Sb R10, 0(R5)
+
+           Addiu R5, R5, 1
+           Addiu R6, R6, 1
+
+           Bne R6, R16, Loop
+           Nop
+
+  EndLoop: Sb R0, 0(R5)
+
+           Jr R31
+           Nop
+  \end{verbatim}
+
+  Voici les liens entre le code assembleur et le code C:
+
+  \begin{itemize}
+    \item
+      \textit{R5}: dst.
+    \item
+      \textit{R6}: src.
+    \item
+      \textit{R7}: size.
+    \item
+      \textit{R16}: src + size.
+    \item
+      \textit{R10}: src[i].
+  \end{itemize}
+
+  L'algorithme utilis\'e est le suivant:
+
+  \begin{enumerate}
+    \item
+      R\'ecup\'eration des arguments de la fonction: \textit{R5}, \textit{R6},
+      \textit{R7}.
+    \item
+      Affectation \`a la valeur de retour la valeur du pointeur \textit{dst}:
+      \textit{R2}.
+    \item
+      Calcul de l'adresse de fin de la cha\^ine de caract\`eres source:
+      \textit{R16}.
+    \item
+      Tant que le pointeur de la chaine source est diff\'erent de \textit{R16}.
+    \item
+      Lecture du caract\`ere courant: \textit{R10}.
+    \item
+      Si le caract\`ere courant est le caract\`ere z\'ero, sortir de la boucle.
+    \item
+      \'Ecriture du caract\`ere dans la cha\^ine destination: \textit{R5}.
+    \item
+      Incr\'ementer les pointeurs des cha\^ines source et destination:
+      \textit{R5}, \textit{R6}.
+    \item
+      Si on est arriv\'e \`a la fin de la boucle, en sortir.
+    \item
+      \'Ecriture du caract\`ere z\'ero dans la cha\^ine destination:
+      \textit{R5}.
+    \item
+      Retour du au programme appelant.
+  \end{enumerate}
+
+\end{correction}
+#endif
+
+%
+% analyse simplifiee
+%
+
+\section{Analyse Simplif\'ee}
+
+On consid\`ere le processeur pipeline MIPS \'etudi\'e en cours, compos\'e
+de cinq \'etages.
+
+Analyser l'ex\'ecution d'une it\'eration de boucle \`a l'aide d'un
+sch\'ema simplifi\'e.
+
+Calculer ensuite le nombre moyen de cycles n\'ecessaires \`a
+l'ex\'ecution d'une it\'eration de la boucle. Calculer le CPI utile
+(en consid\'erant qu'un NOP n'est pas une instruction utile).
+
+#ifdef CORRECTION
+\begin{correction}
+
+  \begin{center}
+    \includegraphics[scale=0.7]{figures/correction-analyse-simplifiee.jpg}
+  \end{center}
+
+\end{correction}
+#endif
+
+%
+% reordonnancement
+%
+
+\section{R\'eordonnancement}
+
+R\'eordonner le code assembleur de la boucle de mani\`ere \`a \'eviter
+au maximum les cycles de gel et les cycles perdus dans les \textit{delay slots}.
+
+Combien de cycles sont d\'esormais n\'ecessaires \`a l'ex\'ecution d'une
+it\'eration?
+
+#ifdef CORRECTION
+\begin{correction}
+
+  \begin{verbatim}
+  Loop:    Lb R10, 0(R6)
+
+           Addiu R5, R5, 1
+           Addiu R6, R6, 1
+
+           Beq R10, R0, EndLoop
+           Nop
+
+           Bne R6, R16, Loop
+           Sb R10, -1(R5)
+  \end{verbatim}
+
+  Il faut d\'esormais \textbf{7} cycles pour l'ex\'ecution d'une it\'eration.
+  Il ne reste plus de cycles de gel, n\'eanmoins il subsiste un
+  \textit{delay slot} non utilis\'e.
+
+\end{correction}
+#endif
+
+%
+% analyse detaillee
+%
+
+\section{Analyse Detaill\'ee}
+
+Donner un sch\'ema detaill\'e de l'ex\'ecution de la s\'equence d'instructions
+suivante dans le pipeline classique MIPS 5 \'etages:
+
+\begin{verbatim}
+Lw R3, 0(R5)
+Add R5, R1, R3
+\end{verbatim}
+
+#ifdef CORRECTION
+\begin{correction}
+
+  \begin{center}
+    \includegraphics[scale=0.7]{figures/correction-analyse-detaillee.jpg}
+  \end{center}
+
+\end{correction}
+#endif
+
+%
+% pipeline
+%
+
+\section{Pipeline}
+
+On consid\`ere le processeur pipeline P construit autour d'un pipeline
+\`a 7 \'etages.
+
+En effet, l'\'etage IFC a \'et\'e d\'ecoup\'e: l'acc\`es m\'emoire commence
+en IFC-1 et se termine en IFC-2.
+
+De plus l'\'etage DEC a \'egalement \'et\'e d\'ecoup\'e. L'\'etage
+DEC-1 d\'ecode et extrait les op\'erandes alors que l\'etage DEC-2 calcule
+l'adresse de l'instruction suivante incluant bien entendu la comparaison
+des op\'erandes dans le cas d'un branchement conditionnel.
+
+\begin{center}
+  \includegraphics[scale=0.7]{figures/pipeline.jpg}
+\end{center}
+
+Combien de bypasses existent-ils sur ce processeur?
+
+Representer ces bypasses sur un schema simplfi\'e?
+
+Donner un exemple de code mettant en \'evidence chacun de ces bypasses.
+
+#ifdef CORRECTION
+\begin{correction}
+
+  Il y a exactement \textbf{5} bypasses.
+
+  \begin{center}
+    \includegraphics[scale=0.7]{figures/correction-pipeline.jpg}
+  \end{center}
+
+  \begin{enumerate}
+    \item
+      \begin{verbatim}
+	Add R3, R2, R1
+	Add R5, R4, R3
+      \end{verbatim}
+    \item
+      \begin{verbatim}
+	Add R3, R2, R1
+	Nop
+	Beq R3, R0, Loop
+      \end{verbatim}
+    \item
+      \begin{verbatim}
+	Lw R3, 0(R5)
+	Nop
+	Add R5, R4, R3
+      \end{verbatim}
+    \item
+      \begin{verbatim}
+	Lw R3, 0(R5)
+	Nop
+	Nop
+	Beq R3, R0, Loop
+      \end{verbatim}
+    \item
+      \begin{verbatim}
+	Lw R3, 0(R5)
+	Nop
+	Nop
+	Nop
+	Beq R3, R0, Loop
+      \end{verbatim}
+  \end{enumerate}
+
+  \`A noter que la s\'equence:
+
+  \begin{verbatim}
+    Add R3, R2, R1
+    Nop
+    Nop
+    Beq R3, R0, Loop  
+  \end{verbatim}
+
+  utilise le bypass num\'ero \textbf{4}.
+
+\end{correction}
+#endif
+
+%
+% optimisations
+%
+
+\section{Optimisations}
+
+Modifier le code assembleur originel de la fonction \textbf{strncpy} de
+mani\`ere \`a ce qu'il soit ex\'ecutable sur le processeur P.
+
+Puis effectuer les optimisations suivantes sur la boucle du code
+pr\'ec\'edemment obtenu:
+
+\begin{itemize}
+  \item
+    R\'eordonnancement.
+  \item
+    Loop Unrolling.
+\end{itemize}
+
+Pour chacune de ces optimisations, vous devrez calculer le nombre de cycles
+n\'ecessaire au traitement d'un \'el\'ement de la cha\^ine.
+
+#ifdef CORRECTION
+\begin{correction}
+
+  Voici le code modifi\'e de mani\`ere \`a \^etre ex\'ecutable sur le
+  processeur P.
+
+  Il faut tout simplement prendre en compte les \textit{delay slots}.
+
+  \begin{verbatim}
+           Lw R5, 0(R29)
+           Lw R6, 4(R29)
+           Lw R7, 8(R29)
+
+           Add R2, R5, R0
+
+           Add R16, R6, R7
+
+  Loop:    Lb R10, 0(R6)
+           Beq R10, R0, EndLoop
+           Nop
+           Nop
+
+           Sb R10, 0(R5)
+
+           Addiu R5, R5, 1
+           Addiu R6, R6, 1
+
+           Bne R6, R16, Loop
+           Nop
+           Nop
+
+  EndLoop: Sb R0, 0(R5)
+
+           Jr R31
+           Nop
+           Nop
+  \end{verbatim}
+
+  \textbf{R\'eordonnancement}
+
+  \begin{verbatim}
+  Loop:    Lb R10, 0(R6)
+
+           Addiu R5, R5, 1
+           Addiu R6, R6, 1
+
+           Beq R10, R0, EndLoop
+           Nop
+           Nop
+
+           Bne R6, R16, Loop
+           Sb R10, -1(R5)
+           Nop
+  \end{verbatim}
+
+  \textbf{9} cycles sont n\'ecessaires \`a l'ex\'ecution de cette boucle et
+  donc au traitement d'un \'el\'ement.
+
+  \textbf{Loop Unrolling}
+
+  \begin{verbatim}
+  Loop:    Lb R10, 0(R6)
+           Lb R11, 1(R6)
+
+           Addiu R5, R5, 2
+
+           Beq R10, R0, EndLoop
+           Addiu R6, R6, 2
+           Nop
+
+           Bne R6, R16, Loop
+           Sb R10, -2(R5)
+	   Sb R11, -1(R5)
+  \end{verbatim}
+
+  \textbf{9} cycles sont n\'ecessaires \`a l'ex\'ecution de cette boucle.
+  N\'eanmoins, le nombre de \textit{delay slots} a nettement diminu\'e de
+  3 \`a 1.
+
+  \'Etant donn\'e que deux caract\`eres de la cha\^ne sont trait\'es tous
+  les \textbf{9} cycles, un caract\`ere est en moyenne trait\'e tous les
+  \textbf{4.5} cycles.
+
+\end{correction}
+#endif
+
+\end{document}
