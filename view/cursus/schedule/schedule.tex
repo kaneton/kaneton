@@ -57,6 +57,9 @@
 \begin{multicols}{2}
 
 
+%
+% overview
+%
 
 \section{Overview}
 
@@ -90,8 +93,8 @@ The project comes with four, maybe five, courses:
     architecture including the pipeline, the bus etc..
   \item
     \textbf{intel 32-bit architecture}: this course will explain the Intel
-    architecture including the instructions sets to the memory management
-    and finally to the task management.
+    external architecture including the instructions sets, the
+    memory management and finally to the task management.
   \item
     \textbf{distributed operating system}: this course is intented to
     give students a simple approach of the distributed inherent problems.
@@ -106,7 +109,7 @@ Let's see the year scheduling:
     different memory management models. This part is called the bootstrap.
   \item
     \textbf{k1}: the students will develop a bootloader. Its role is to
-    build an memory environment for the futur kernel execution. In this
+    build a memory environment for the futur kernel execution. In this
     project, the students will learn to deal with the virtual memory
     and to develop in a very strict environment, from scratch.
   \item
@@ -128,23 +131,23 @@ Let's see the year scheduling:
   \item
     \textbf{kn}: this project is a free one. Each group has to choose the
     subject of this project, to design, to implement and to document
-    the project. The themes for this project are: distributed aspects and/or
-    security ones. Some subjects will be proposed to the best groups.
+    the project. The themes for this project are: distributed aspects,
+    security or network. Some subjects will be proposed to the best groups.
 \end{itemize}
 
-\end{multicols}
-
-\begin{figure}[h]
-\centerline{\includegraphics[angle=-90,scale=0.3]{figures/schedule.jpg}}
-\end{figure}
-
-\begin{multicols}{2}
 
 
+%
+% arch-mips
+%
 
 \section{arch-mips}
 
-Course Name: \textbf{MIA}
+\textit{Name}: \textbf{MIA}
+
+\textit{Hours}: \textbf{30 hours} divided into \textbf{10 sessions}
+
+\textit{Professor}: \textbf{Julien Quintard}
 
 This course is intended to give students a complete view of how a RISC
 processor works and what choices the designers made to build the futur
@@ -155,14 +158,14 @@ processors.
     External architecture: we will study the instructions set,
     the memory management model etc..
   \item
-    Pipeline: we will see the MIPS pipeline and pipeline inherent problems
+    Pipeline: we will study the MIPS pipeline, its inherent problems
     and limitations.
   \item
     Compiler optimisations: we will study the different direct assembly
-    source code optimisations: rescheduling, software pipeline etc..
+    source code optimisations: rescheduling, software pipelining etc..
   \item
     Memory: we will study the bus used on the MIPS processor and
-    cache management.
+    the different cache management techniques.
 \end{itemize}
 
 The list below details the different sessions for the mips architecture
@@ -172,34 +175,58 @@ course:
   \item
     Course presentation, MIPS history, introduction to MIPS external
     architecture: registers and instructions set. Introduction to
-    instruction formats and to inherent limitations.
+    instruction formats and to inherent limitations. (3 hours)
   \item
     End of instruction formats introduction, explanations of architecture
     designers choices: MIXs and Amdhal Rule. Some exercises to practice.
     Introduction to MIPS architecture addressing and to MIPS pipeline.
+    (3 hours)
   \item
     Introduction to MIPS spirit and to its pipeline. Moore Law and
     pipeline rules. Introduction to different pipeline representations:
     simplified and detailed. Some exercises to pratice these representations.
+    (3 hours)
   \item
-    The next instruction address computation problem and the delay slot.
-    Then, study of branch instruction and their problems and limitations.
-    Some exercises to pratice.
+    We will study in this session the next instruction address computation
+    problem and the delay slot. Then, study of branch instruction and their
+    problems and limitations. Some exercises to pratice. (3 hours)
   \item
-    Introduction to instruction dependencies.
+    Complete study of instruction dependencies. Some exercise to practice.
+    Introduction to optimisations. (3 hours)
+  \item
+    Study of different optimisations used by compilers. Study of
+    advanced pipelines: superpipeline, superscalar etc.. (3 hours)
+  \item
+    Introduction to the Pi Bus used by MIPS microprocessor. Then complete
+    study of memory including cache management. (3 hours)
+  \item
+    End of memory course. Some exercises to practice. (3 hours)
+  \item
+    Revisions. (3 hours)
+  \item
+    Padding course. (3 hours)
 \end{enumerate}
 
 
 
+%
+% kaneton
+%
+
 \section{kaneton}
 
-Course Name: \textbf{KAN}
+\textit{Name}: \textbf{KAN}
+
+\textit{Hours}: \textbf{35 hours}
+
+\textit{Professor}: \textbf{Julien Quintard}
+
+\textit{Assistants Professor}: \textbf{Cedric Aubouy},
+                               \textbf{Renaud Lienhart}
 
 This course will provide students a complete view of an operating system.
 Moreover this courses is coupled with a project which consists in the
 development of parts of a microkernel.
-
-This course is composed of \textbf{35 hours}.
 
 \begin{itemize}
   \item
@@ -210,8 +237,8 @@ The list below details the different sessions for the kaneton course.
 
 \begin{enumerate}
   \item
-    Project presentation: time, professors, projects,
-    schedule etc.. using the seminar paper. (2 hours)
+    Project presentation: professors, projects, schedule, design overview
+    etc.. (2 hours)
   \item
     Languages prerequisites for the kaneton project. (2 hours)
   \item
@@ -219,7 +246,7 @@ The list below details the different sessions for the kaneton course.
     each group \textbf{two weeks} after the publication of the
     subject. (1 hour)
   \item
-    TP for the k0 project after \textbf{three days} after the publication of
+    TP for the k0 project about \textbf{three days} after the publication of
     the subject. (3 hours)
   \item
     \textbf{k1} project presentation. This project must be delivered
@@ -232,8 +259,8 @@ The list below details the different sessions for the kaneton course.
     TP for the k1 project during the first week of the project so about
     \textbf{three days} after the subject's publication. (2 hours)
   \item
-    TP for the k1 project during the second week of the project so in the
-    middle of the second week. (3 hours)
+    TP for the k1 project during the second week of the project so
+    \textbf{in the middle of the second week}. (3 hours)
   \item
     Advanced makefiles presentation to lead students to a better
     comprehension of the kaneton building system. (3 hours)
@@ -250,8 +277,8 @@ The list below details the different sessions for the kaneton course.
     \textbf{k3} project presentation. This project must be delivered
     \textbf{two weeks} after the subject's publication. (2 hours)
   \item
-    TP for the k3 project during the second week so in the middle of this
-    week. (2 hours)
+    TP for the k3 project \textbf{during the second week} so in the
+    middle of this week. (2 hours)
   \item
     \textbf{k4} project presentation. This project must be delivered
     \textbf{XXX weeks} after the publication of the project. (2 hours)
@@ -262,13 +289,19 @@ The list below details the different sessions for the kaneton course.
     \textbf{kn} XXX
 \end{enumerate}
 
-Profesors: XXX
 
 
+%
+% arch-ia32
+%
 
 \section{arch-ia32}
 
-Course Name: \textbf{INA}
+\textit{Name}: \textbf{INA}
+
+\textit{Hours}: \textbf{16 hours}
+
+\textit{Professor}: \textbf{Renaud Lienhart}
 
 This course will explain how the intel 32-bit architecture works including
 the memory management, the task management, the instructions set, the
@@ -289,11 +322,17 @@ architecture course.
 
 
 
+%
+% noyau
+%
+
 \section{noyau}
 
-Course Name: \textbf{NOY}
+\textit{Name}: \textbf{NOY}
 
-XXX
+\textit{Hours}: \textbf{20 hours} divided into \textbf{10 sessions}
+
+\textit{Professor}: \textbf{Cedric Aubouy}
 
 \begin{itemize}
   \item
@@ -311,6 +350,8 @@ The list below details the different sessions for the kernel course.
 
 \end{multicols}
 
-\end{document}
+\begin{figure}[h]
+\centerline{\includegraphics[angle=-90,scale=0.3]{figures/schedule.jpg}}
+\end{figure}
 
-XXX reporter clairement les trucs a coder dans Overview opur chaque proj
+\end{document}

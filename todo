@@ -1,5 +1,34 @@
 --
- cadre autour verbatim: templates/exam.tex
+ completer schedule avec les ECTS par cours et le nombre de semaines.
+
+--
+ pour donner un objet a une autre entite on utilise la hierarchie d'objets:
+
+
+                  task
+
+         as                  thread
+
+ segment    regions
+
+
+ ainsi on a:
+
+   segment_give(t_asid, t_asid)
+   as_give(t_tskid, t_tskid)
+   thread_give(t_tskid, t_tskid)
+
+--
+ mettre en place des soirees de permanence ou alors carrement de sorte
+ de rush kaneton. en semaine plutot car le w-e les etudiants s en branle.
+
+ de plus ca ils seront obliges de nous payer.
+
+ ca doit etre pour ca que les acus/yakas font tant de perms qui servent
+ pas a grand chose.
+
+--
+ cadre autour verbatim: templates/exam.tex: environment example
 
 --
  mycure todo:
