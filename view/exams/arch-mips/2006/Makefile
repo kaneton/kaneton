@@ -24,7 +24,7 @@ include			../../../../env/.env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all view build clear
+.PHONY:		all view build subject correction clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -46,15 +46,22 @@ GARBAGE			:=		$(PAPER).aux			\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			view
+all:			build view
 
-view:			build
+view:
 	$(call view,$(PAPER),)
 
-build:
-	$(call compile-tex,$(PAPER))
+build:			correction
+
+subject:
+	$(call subject,$(PAPER),)
+
+correction:
+	$(call correction,$(PAPER),)
 
 clear:
 	$(call remove,$(GARBAGE),)
+
+	$(call remove,$(_CMODE_TEX_),)
 
 	$(call purge)

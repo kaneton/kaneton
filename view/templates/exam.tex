@@ -6,8 +6,14 @@
 %% file          /home/mycure/kaneton/view/templates/exam.tex
 %%
 %% created       julien quintard   [fri dec  2 22:20:57 2005]
-%% updated       julien quintard   [sat dec  3 22:15:57 2005]
+%% updated       julien quintard   [sun dec  4 13:36:32 2005]
 %%
+
+%
+% compile mode
+%
+
+\input{.cmode.tex}
 
 %
 % class
@@ -45,7 +51,7 @@
    {
      \ifthenelse
 	 {
-	   \not\boolean{cmode}
+	   \equal{\cmode}{subject}
 	 }
 	 {
 	   \comment
@@ -57,9 +63,11 @@
    {
      \ifthenelse
 	 {
-	   \not\boolean{cmode}
+	   \equal{\cmode}{subject}
 	 }
-	 {\endcomment}
+	 {
+	   \endcomment
+	 }
 	 {
 	   \textbf{\color{red}{ ----- /correction}}
 	 }

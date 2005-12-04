@@ -24,7 +24,7 @@ include			../../../env/.env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all dvi ps pdf clear
+.PHONY:		all view build clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -42,13 +42,13 @@ GARBAGE			:=		$(PAPER).aux			\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			view
+all:			build view
 
-view:			build
+view:
 	$(call view,$(PAPER),)
 
 build:
-	$(call compile-tex,$(PAPER))
+	$(call paper,$(PAPER),)
 
 clear:
 	$(call remove,$(GARBAGE),)

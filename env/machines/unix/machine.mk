@@ -408,7 +408,7 @@ endef
 #
 # $(1):		link created
 # $(2):		destination
-# $(3):		advances options
+# $(3):		advanced options
 #
 
 define link
@@ -420,25 +420,59 @@ endef
 # compile a tex document
 #
 # $(1):		the file name without extension
+# $(2):		advanced options
 #
 
 define compile-tex
   $(call pretty-printer,green,COMPILE-TEX,$(1),		)		; \
-  case $(_FORMAT_) in							\
-    dvi)								\
-      $(_LATEX_) $(1).tex -o $(1).dvi $(_VERBOSE_)			; \
-      $(_LATEX_) $(1).tex -o $(1).dvi $(_VERBOSE_)			; \
-      ;;								\
-    ps)									\
-      $(_LATEX_) $(1).tex -o $(1).dvi $(_VERBOSE_)			; \
-      $(_LATEX_) $(1).tex -o $(1).dvi $(_VERBOSE_)			; \
-      $(_DVIPS_) $(1).dvi -o $(1).ps $(_VERBOSE_)			; \
-      ;;								\
-    pdf)								\
-      $(_PDFLATEX_) $(1).tex -o $(1).pdf $(_VERBOSE_)			; \
-      $(_PDFLATEX_) $(1).tex -o $(1).pdf $(_VERBOSE_)			; \
-      ;;								\
-  esac
+  $(_PDFLATEX_) $(1).tex -o $(1).pdf $(_VERBOSE_)			; \
+  $(_PDFLATEX_) $(1).tex -o $(1).pdf $(_VERBOSE_)
+endef
+
+#
+# build a paper
+#
+# $(1):		the file name without extension
+# $(2):		advanced options
+#
+
+define paper
+  $(call compile-tex,$(1),$(2))
+endef
+
+#
+# build a lecture
+#
+# $(1):		the file name without extension
+# $(2):		advanced options
+#
+
+define lecture
+  $(call compile-tex,$(1),$(2))
+endef
+
+#
+# build a subject
+#
+# $(1):		the file name without extension
+# $(2):		advanced options
+#
+
+define subject
+  $(_ECHO_) '\def\cmode{subject}' > $(_CMODE_TEX_)			; \
+  $(call compile-tex,$(1),$(2))
+endef
+
+#
+# build a correction
+#
+# $(1):		the file name without extension
+# $(2):		advanced options
+#
+
+define correction
+  $(_ECHO_) '\def\cmode{correction}' > $(_CMODE_TEX_)			; \
+  $(call compile-tex,$(1),$(2))
 endef
 
 #
@@ -449,24 +483,11 @@ endef
 
 define view
   $(call pretty-printer,yellow,VIEW,$(1),			)	; \
-  case $(_FORMAT_) in							\
-    dvi)								\
-      $(_VIEWER_DVI_) $(1).dvi $(_VERBOSE_)				; \
-      ;;								\
-    ps)									\
-      $(_VIEWER_PS_) $(1).ps $(_VERBOSE_)				; \
-      ;;								\
-    pdf)								\
-      $(_VIEWER_PDF_) $(1).pdf $(_VERBOSE_)				; \
-      ;;								\
-  esac
+  $(_PDFVIEWER_) $(1).pdf $(_VERBOSE_)
 endef
 
 #
 # gets a file contents
-#
-# this function should never be used outside static environments:
-# variable initialisations.
 #
 # $(1):		the file
 # $(2):		advanced options
@@ -481,5 +502,5 @@ endef
 #
 
 define date
-  $(_DATE_)
+  $(shell $(_DATE_))
 endef

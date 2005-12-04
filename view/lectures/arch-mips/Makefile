@@ -46,9 +46,9 @@ GARBAGE			:=		$(PAPER).aux			\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			view
+all:			build view
 
-view:			build
+view:
 	$(call view,$(PAPER),)
 
 build:

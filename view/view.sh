@@ -52,9 +52,23 @@ PAPER=""
 #
 
 #
+# BUILD
+#
+# this function builds the file calling the makefile.
+#
+build()
+{
+  change-directory "${LOCATION}"
+  makefile "build"
+  change-directory "${_VIEW_DIR_}"
+}
+
+
+
+#
 # VIEW
 #
-# this function launch the viewer calling the makefile.
+# this function launchs the viewer calling the makefile.
 #
 view()
 {
@@ -140,6 +154,9 @@ fi
 
 # warns the user.
 warning
+
+# builds the file.
+build
 
 # launchs the viewer.
 view
