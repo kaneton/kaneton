@@ -18,6 +18,16 @@
    as_give(t_tskid, t_tskid)
    thread_give(t_tskid, t_tskid)
 
+ meme chose pour recuperer les capabilities:
+
+   task_capility(&c_task);
+
+   as_capility(c_task, c_as);
+   thread_capability(c_task, c_thread);
+
+ il faudrait dans le crt faire en sorte que c_task soit deja recuperee
+ comme ca c'est plus simple.
+
 --
  mettre en place des soirees de permanence ou alors carrement de sorte
  de rush kaneton. en semaine plutot car le w-e les etudiants s en branle.
@@ -28,12 +38,9 @@
  pas a grand chose.
 
 --
- cadre autour verbatim: templates/exam.tex: environment example
-
---
  mycure todo:
   - mips architecture
-  - mettre a jour schedule une fois le cours mips termine
+  - lectures/kaneton a faire
   - kaneton.tex et assignments.tex a ecrire
   - cours os distribue?
   - cours linker loader
@@ -66,8 +73,6 @@
 
  gollum: faire compiler en sm netbsd
 
- dujardin: +cous archi-mips, budget?
-
 --
  un seul swapper et on active ou non des options: network, hard drive etc..
  car un swapper ca stocke de la memoire sur un support secondaire qui peut
@@ -77,7 +82,7 @@
  permettre aux etudiants de choisir leur archi: mips, intel, amd, sparc ...
 
 --
- revoir interface de makefile car pas super performante. $(call version) chie.
+ revoir interface de makefile car pas super performante.
 
  ignorer les options pour l'instant car plus tard: --no-newline etc..
 
@@ -92,13 +97,7 @@
 
 --
  retoucher les fonctions shell pour que ca fonctionne bien avec des bons
- noms
-
---
- bugs dans stats car quand je l'active ca plante. faudrait revoir ca.
-
---
- revoir la generation de version.c
+ noms: gollum est dessus.
 
 --
  trouver du matos a acheter avec le budget
@@ -115,8 +114,6 @@
  et mettre une partie dans kayou. une fois retouche et la partie microkernel
  isolee on pourra le mettre sur le site.
 
- revoir egalement seminar
-
 --
  bouger le cours distributed-operating-systems dans kayou
 
@@ -126,6 +123,11 @@
 
  il faudra donc fournir un moyen de passer les meme params, capabilities
  inclues. il faudra ptet un filesystem pour mod assez complet.
+
+--
+ coder un programme C qui permettra de rajouter des options dans un ELF
+ genre le nombre de processeurs etc.. ou des params kaneton: options,
+ capabilities.
 
 --
  sujets pour etudiants:
@@ -159,6 +161,9 @@
 
  peut etre sommes nous obliges de rajouter un ownid?
 
+ solution: le kernel ne gere que des taches, et le user ne sera qu un truc
+ au dessus gere surement par un service enfin on verra on s'en branle.
+
 --
  pour par exemple un driver, il faudra qu il soit capable de communiquer
  avec le hard autrement dit de se rajouter une trap.
@@ -166,15 +171,11 @@
  pour cela il faudra dans mod lui filer soit une cap precise sur l'evenement
  precise, soit une cap sur le gestionnaire d'evenements.
 
+ soit il passera par le gestionnaire de dev qui lui saura si telle personne
+ a le droit de se rajouter. (comment?)
+
 --
  utiliser les meme noms de fonctions pour make et shell
-
---
- faire des users:
-
-  1) check: pour lancer la moulinette
-  2) release: pour faire une demo ca nous aidera a noter et a voir ce qu ils
-              ont fait en plus
 
 --
  revoir conf.c et conf.h dans la partie user. le conf.h a la limite
@@ -191,16 +192,15 @@
  ou mieux etudier Sprite et voir comment ils font eux avec leurs systeme
  de nommage.
 
- ca a eviter si systeme de nommage.
-
 --
- segments: code complet + dump + show + partie dep (on refait)
+ segment:
 
  il faudra rajouter dans le bootloader init.c un segment correspondant
  au dma: SEGMENT_TYPE_CATCH
 
---
- faire le le schema pour cursus/schedule
+ on pourrait imaginer dans le fichier de conf dire que telle zone
+ est en mode catch et qu elle est catchable que par telle tache (avec
+ tel nom par exemple)
 
 --
  mieux decouper les drivers et modules en fonctions de leur types:
@@ -238,12 +238,16 @@
  concernant les params, ce sont juste des arguments interpretes par le
  gestionnaire de modules.
 
+ A REVOIR.
+
 --
  une fois le gestionnaire de regions installe, essayer de faire un
  acces a l'adresse 0, normalement ca fait planter.
 
 --
  continuer le cours sur loaders linkers de fab: linker.iecc.com
+
+ un nouveau pourrait le faire.
 
 --
  retoucher mkp.py pour qu'il marche: t_bpt_addr() addr
@@ -352,7 +356,7 @@
  ARFFFFFFFFFFF!
  </reflexion>
 
- bon on verra plus tard sinon j'avancerai jamais le code!
+ bon on verra plus tard.
 
 -- norme commit
   [core/kaneton/set/set_bpt.c]
@@ -365,7 +369,7 @@
   -> les points 1,2,3 etc.. sont pas ordre d'importance
 
 --
- essayer de faire compiler kaneton sur netbsd a l ecole:
+ essayer de faire compiler kaneton sur netbsd a l ecole
 
 --
  lister les trucs qui reste a faire:
@@ -390,12 +394,6 @@
 
 --
  mettre toutes les regles de -old-/README dans kaneton.tex
-
---
- faire le set de hash et tableau
-
---
- array: recherche dichotomique lorsqu il est trie
 
 --
  http://perso.wanadoo.fr/philippe.michel/qnx/
@@ -715,8 +713,3 @@ void show_character(char *font, unsigned long *VRAM,
 }
 
 /* /code here -> reboot ---- ----------------------------------------------- */
-
---
- 500 heures -> 12 500 euros (budget ~10 000 euros)
-
- tarif: 25 euros de l heure

@@ -79,7 +79,7 @@ DATE			:=		$(call date)
 #
 
 $(KANETON):		libs $(KANETON_O)
-	$(call version,$(VERSION_C),$(USER),$(HOSTNAME),$(DATA))
+	$(call version,$(VERSION_C),$(USER),$(HOSTNAME),$(DATE))
 
 	$(call compile-c,$(VERSION_O),$(VERSION_C),)
 

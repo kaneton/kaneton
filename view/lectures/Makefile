@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/view/lectures/Makefile
 ##
 ## created       julien quintard   [sat nov 19 18:06:43 2005]
-## updated       julien quintard   [sat nov 19 18:10:02 2005]
+## updated       julien quintard   [sun dec  4 17:00:31 2005]
 ##
 
 #
@@ -34,7 +34,8 @@ SUBDIRS			:=		advanced-makefiles		\
 					inline-assembly			\
 					kernels				\
 					prerequisites			\
-					seminar				
+					seminar				\
+					kaneton				
 
 #
 # ---------- rules ------------------------------------------------------------

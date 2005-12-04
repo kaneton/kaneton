@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/templates/exam.tex
 %%
 %% created       julien quintard   [fri dec  2 22:20:57 2005]
-%% updated       julien quintard   [sun dec  4 13:36:32 2005]
+%% updated       julien quintard   [sun dec  4 15:50:32 2005]
 %%
 
 %
@@ -72,19 +72,6 @@
 	   \textbf{\color{red}{ ----- /correction}}
 	 }
    }
-
-
-% XXX
-
-\def\verbatimboxed#1{\begingroup
-  \def\verbatim@processline{%
-    {\setbox0=\hbox{\the\verbatim@line}%
-      \hsize=\wd0
-      \the\verbatim@line\par}}%
-  \setbox0=\vbox{\parskip=0pt\topsep=0pt\partopsep=0pt
-    \verbatiminput{#1}}%
-  \begin{center}\fbox{\box0}\end{center}%
-  \endgroup}
 
 %
 % header
