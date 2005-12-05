@@ -1,12 +1,12 @@
 /*
- * licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
  * file          /home/buckman/kaneton/kaneton/core/include/kaneton/set.h
  *
- * created       mycure    [sun jun 19 14:51:33 2005]
- * updated       buckman   [thu dec  1 18:51:11 2005]
+ * created       julien quintard   [sun jun 19 14:51:33 2005]
+ * updated       matthieu bucchianeri   [sun dec  4 17:24:05 2005]
  */
 
 #ifndef KANETON_SET_H

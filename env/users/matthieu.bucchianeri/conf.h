@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
+ * licence
  *
- * kaneton
+ * project       kaneton
  *
- * conf.h
+ * file          /home/buckman/kaneton/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
- * path          /home/mycure/kaneton
- *
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- *
- * started on    Sun Aug 28 16:23:31 2005   mycure
-** Last update Thu Dec  1 17:31:25 2005 matthieu bucchianeri
+ * created       buckman   [fri dec  2 18:50:46 2005]
+ * updated       matthieu bucchianeri   [sat dec  3 11:11:53 2005]
  */
 
 #ifndef KANETON_CONF_H
@@ -57,7 +52,7 @@
  * this define activates the statistics
  */
 
-#define CONF_STATS
+#undef CONF_STATS
 
 /*
  * the configuration debug

@@ -1,12 +1,12 @@
 /*
- * licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
  * file          /home/buckman/kaneton/kaneton/core/include/kaneton/set_array.h
  *
- * created       mycure    [sun jun 19 14:51:33 2005]
- * updated       buckman   [thu dec  1 19:54:34 2005]
+ * created       julien quintard   [sun jun 19 14:51:33 2005]
+ * updated       matthieu bucchianeri   [sun dec  4 17:23:40 2005]
  */
 
 #ifndef KANETON_SET_ARRAY_H

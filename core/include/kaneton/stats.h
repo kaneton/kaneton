@@ -1,12 +1,12 @@
 /*
- * copyright     quintard julien
+ * licence       kaneton licence
  *
  * project       kaneton
  *
  * file          /home/buckman/kaneton/kaneton/core/include/kaneton/stats.h
  *
- * created       mycure    [sun jan 19 14:51:33 2005]
- * updated       buckman   [mon nov 28 19:33:28 2005]
+ * created       julien quintard   [sun jan 19 14:51:33 2005]
+ * updated       matthieu bucchianeri   [tue dec  6 00:48:18 2005]
  */
 
 #ifndef KANETON_STATS_H
