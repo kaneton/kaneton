@@ -35,12 +35,6 @@
  * ---------- types -----------------------------------------------------------
  */
 
-typedef	struct		s_debug_function
-{
-	char		*f_name;
-	int		(*f)(char *str);
-}			debug_function_t;
-
 
 typedef struct			s_serial_data
 {
@@ -67,7 +61,7 @@ t_error			debug_recv();
 
 t_error			debug_recv_cmd();
 
-t_error			debug_exec_cmd_tab(t_serial_data *cmd_tab);
+t_error			debug_exec_cmd_tab(t_serial_data *cmd);
 
 t_error			debug_clean(void);
 

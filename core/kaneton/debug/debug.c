@@ -62,44 +62,21 @@ t_error			debug_recv()
 
 t_error			debug_recv_cmd()
 {
+  t_serial_data		cmd;	
   t_serial_data 	cmd_tab_len;
-  t_serial_data		*cmd_tab;
-  t_serial_data		*cmd_tab_tmp;
-  int 			len, i;
 
-  serial_recv(SERIAL_COM1, &cmd_tab_len);	
-  len = strtol(cmd_tab_len.data, 0, 10);
-  cmd_tab = malloc((len + 1) * sizeof(t_serial_data));
- 
-  for (i = 0; i < len; i++)
-   serial_recv(SERIAL_COM1,(t_serial_data *) (cmd_tab + i));
-    
-  debug_exec_cmd_tab(cmd_tab);
+  serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
+  debug_exec_cmd_tab(&cmd);
+  serial_put(-1); 
   serial_send(SERIAL_COM1, "endprintf", 9);
-
-  
-  for (i = 0; (cmd_tab + i)->data; i++)
-	  free ((cmd_tab + i)->data);
-  free(cmd_tab);
 }
 
-
-t_error			debug_exec_cmd_tab(t_serial_data *cmd_tab)
+t_error			debug_exec_cmd_tab(t_serial_data *cmd)
 { 
-  int i , ret;
-  static debug_function_t	function_list[] = 
-	{
-	/*	{"alloc_test", alloc_test},
-		{"set_test", set_test},
-	*/	{0, 0}
-	};
-
-   for (i = 0; function_list[i].f_name; i++)
-	if (!strcmp(function_list[i].f_name, (char *) (cmd_tab + 0)->data))	
-   	  return (function_list[i].f((char *)(cmd_tab + 1)->data));
-
-  printf("Bad function called");
-  /*   printf("\n"); Mystique printf*/
+  int (*func)(void);
+ 
+  func = (int (*)(void)) strtol(cmd->data, 0, 16);
+  func();
 }
 
 

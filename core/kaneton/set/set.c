@@ -726,9 +726,9 @@ t_error			set_test(t_type				type)
 	t_id		*o;
 	t_setid		id;
 
-	cons_msg('#', "testing SET_TYPE_LL\n");
-
-	if (set_reserve(ll, SET_OPT_ALLOC,
+	/*cons_msg('#', "testing SET_TYPE_LL\n");
+*/
+	  if (set_reserve(ll, SET_OPT_ALLOC,
 			sizeof(t_uint64), &id) != ERROR_NONE)
 	  printf("error: set_reserve()\n");
 
@@ -863,8 +863,8 @@ t_error			set_test(t_type				type)
 	else
 	  printf("no memory leak detected\n");
 
-	while (1);
-
+/*	while (1);
+*/
 	break;
 
 	/*
