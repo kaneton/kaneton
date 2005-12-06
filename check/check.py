@@ -9,29 +9,19 @@ __author__	= "jacob_s@lse.epitech.net"
 __version__ 	= "0.0.1"
 __date__ 	= ""
 
-
-#def	parse_result(result):
-#	print "parsing_result:"
-#	print result
-#	parsed_result = result
-#	return parsed_result[1]
-
 def 	check_result(result_file, result_2_check):
-	print "result:"
+	tmp = result_file.split('/')
+	result = OpenFile(result_file + tmp[-2]  +  ".res")
+	#print "result: " + result
+	#print "result2check: " + result_2_check
 	
-	result = OpenFile(result_file)
-	print "real_result: "  + result
-	print "test_result: " + result_2_check
 	if result == result_2_check:
 		return 1
 
 def	get_function_addr(cmd):
-	print "seek for function: " + cmd + " addr"
-	
  	obj = os.popen("nm ../core/kaneton/kaneton | grep " + cmd +  " | cut -d ' ' -f 1")
 	addr = obj.read()
 	addr = addr.strip("\n")
-	print "addr found at: "  + addr
 	return addr
 
 def 	SendCommand(cmd):
@@ -46,7 +36,7 @@ def 	SendCommand(cmd):
 	data = ("command")
 	tosend = (data)
 	tosend_size = 8
-	serial_send(tosend, tosend_size) #j'envoie que c des command qui vont suivre
+	serial_send(tosend, tosend_size) 
 	
 
 	cmd = get_function_addr(cmd)	
@@ -57,61 +47,97 @@ def 	SendCommand(cmd):
 	tmp = serial_recv()
 	result = [0,""]
 	
-	print tmp
 	while tmp[1] == "printf":
 		tmp = serial_recv()
 		result[0] += tmp[0]
 		result[1] += tmp[1]
 		tmp = serial_recv()
-		print result
 	
 	return result
 
-def	OpenFile(file_path):
+def	OpenFile(file_path, p = 1):
 	"""
 	Openfile and return its content
 	"""
 	try:
 		testfile = open(file_path, "rb")
 	except IOError:
-		print "The file " + file_path + " doesn't exist"
-		return
+		if p == 1:
+			print "The file " + file_path + " doesn't exist"
+		return  0
 	file_content = testfile.read()
 	testfile.close()
 	return file_content
 	
-def	get_function_name(path, dir):
-	return os.path.basename(path.rstrip("/") + "_" + dir.rstrip("/"))
+def	get_path(test_list):
+	"""
+	Add to test_list all subdir dir with a 'list' file.
+	Return the numbre of 'list' file found
+	"""
+	i = 0
+	nb = 0
 
-def	get_res_file_name(path, dir):
-	return path + dir + dir.rstrip("/") + ".res"
+	while i < len(test_list):
+		new_list = OpenFile(test_list[i] + "list", 0) 
+		if new_list == 0:
+			i += 1
+		else:
+			new_list = new_list.split()
+			nb += len(new_list)
+			c = 0
+			while c < len(new_list):
+				test_list.insert(i + c  + 1, test_list[i] + new_list[c] + '/')
+				c += 1
+			test_list.remove(test_list[i])
+			i += nb 
+	return	nb
+
+
+def	get_functions_name(test_list):
+	"""
+	Get path name and after it function name in the list
+	"""
+
+	i = 0
 	
+	while i < len(test_list):
+		tmp_list = test_list[i].split('/')
+		test_list.insert(i + 1, "check_" +  tmp_list[-3] + '_' + tmp_list[-2])
+		i += 2
+
+	
+	return
+
+
 def	ListTest():
 	"""
 	ListTest : get Dir/testlist and scan testlist for all test 
 	checksubdir and list sub-test
 	"""
-
-	dir_list = OpenFile("list").split()
+	
 	i = 0
-	test_list = []
-	while i < len(dir_list):
-		file_path = OpenFile(dir_list[i] + "list").split()
-		c = 0
-
-		while c < len(file_path):
-			current_path = dir_list[i] + file_path[c]
-			test_list += [("new_test " + get_function_name(dir_list[i], file_path[c])).split()]	
-			test_list += [get_function_name(dir_list[i], file_path[c])]
-			test_list += [dir_list[i]]
-			test_list += [get_res_file_name(dir_list[i], file_path[c])]
-			c += 1
-		i += 1
-	print "test_list: " 
-	print test_list
+	test_list = [''] 
+	nb_path_found = 1
+	
+	while nb_path_found: 
+		nb_path_found = get_path(test_list) 
+			
+	get_functions_name(test_list)
 
 	return test_list
 
+def	set_and_parse_result(test_list, result):
+	"""
+	Add current path to path list and reload parse file
+	Parse result
+	Return parsed result
+	"""
+	tmp = test_list.split('/')
+	sys.path[-1] = test_list.rstrip(tmp[-2] + '/'); #enlever  le 01/ 02/
+	import parse_res
+	reload(parse_res)
+	parsed_result = parse_res.parse_result(result)
+	return parsed_result
 
 if __name__ == "__main__":
 	from kserial import *
@@ -119,33 +145,23 @@ if __name__ == "__main__":
 	from re      import *
 	import os, array, sys
 
-	serial_init("/dev/ttyS0")
-	test_list = ListTest()
+	i = 0
 	total_ok = 0
 	total_failed = 0
-	i = 0
+	serial_init("/dev/ttyS0")
+	test_list = ListTest()
 
 	while i < len(test_list):
-		if test_list[i][0] == "new_test":
-			print test_list[i][1]
+		print "Launching test: " + test_list[i + 1]
+		result = SendCommand(test_list[i + 1])
+		parsed_result = set_and_parse_result(test_list[i], result)		
+		if check_result(test_list[i], parsed_result):
+			print "[OK]"
+			total_ok += 1
 		else:
-			if len(test_list[i]) > 0:
-				print "Launching test: " + test_list[i]
-				result = SendCommand(test_list[i])
-				i += 1
-				sys.path.append(test_list[i])
-				from parse_res import *
-				parsed_result = parse_result(result)
-				#pb viens de comment trouver la bonne fonction parse_result
-				i += 1 
-				if check_result(test_list[i], parsed_result):
-					print "[OK]"
-					total_ok += 1
-				else:
-					print "[FAILED]"
-					total_failed += 1
-
-		i += 1
+			print "[FAILED]"
+			total_failed += 1
+		i += 2 
 	
 	print "Passed: " + str(total_ok)
 	print "Failed: " + str(total_failed)

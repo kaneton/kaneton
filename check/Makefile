@@ -29,7 +29,7 @@ LIST			:=		list
 
 SUBDIRS			:=		$(call contents,$(LIST),)
 
-MODULES			:=		$(patsubst %,%.lo,$(SUBDIRS))
+MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -42,7 +42,7 @@ build:			$(_CHECK_LO_)
 $(_CHECK_LO_):		libs
 	$(call remove,$(_CHECK_LO_),)
 
-	$(call archive,$(_CHECK_LO_),)
+	$(call archive,$(_CHECK_LO_),$(MODULES),)
 
 libs:
 	$(call makefile,$(SUBDIRS),)
@@ -50,6 +50,10 @@ libs:
 run:
 
 clear:
+	$(call makefile,$(SUBDIRS),clear)
+
+	$(call remove,$(_CHECK_LO_),)
+
 	$(call purge,)
 
 proto:
