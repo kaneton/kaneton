@@ -68,7 +68,7 @@ class cl_functions:
   def purge(self):
     self.di_files = {}
 
-    
+
 
 ## --------- functions ---------------------------------------------------------
 
@@ -153,7 +153,7 @@ def fn_processfile(filename, functions):
       inside_funcion = 1
     if inside_funcion:
       static_match = staticre.search(line)
-      if re.search('\)', line) and not static_match:
+      if re.search('\)\n', line) and not static_match:
 	line = re.match("(.*)$", line).group(0)
 	line = line + ';\n'
 	currentlist.append(line)
@@ -168,8 +168,8 @@ def fn_processfile(filename, functions):
 	  inside_funcion = 0
 	continue
   fp.close()
-  
-  
+
+
 ##
 ##
 ##
@@ -208,7 +208,7 @@ def fn_mkprotos(path):
   currentpwd = os.getcwd()
   filename = ''
 
-  if (path.count('/') >= 1): # is it 
+  if (path.count('/') >= 1): # is it
     filename = re.sub('.*/', '', path) # splits the filename from the path
     dirname = re.sub('/[^/]*$', '', path) # splits the directory name from the path
     try:
@@ -229,11 +229,11 @@ def fn_mkprotos(path):
   fn_write_header(functions, filename)
   os.chdir(currentpwd)
   return functions
-  
+
 
 ##
 ## \o/ Main function \o/
-## 
+##
 args = sys.argv[1:]
 if len(args) == 0:
   fn_error('Give at least 1 argument, you silly man !', 3)

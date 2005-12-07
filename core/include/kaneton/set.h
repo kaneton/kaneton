@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/kaneton/set.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       matthieu bucchianeri   [sun dec  4 17:24:05 2005]
+ * updated       matthieu bucchianeri   [thu dec  8 00:04:59 2005]
  */
 
 #ifndef KANETON_SET_H
@@ -307,6 +307,7 @@ typedef struct
  *      ../../kaneton/set/set.c
  *      ../../kaneton/set/set_array.c
  *      ../../kaneton/set/set_ll.c
+ *	../../kaneton/set/set_bpt.c
  */
 
 /*
@@ -461,6 +462,99 @@ t_error			set_reserve_ll(t_opts			opts,
 				       t_setid*			setid);
 
 t_error			set_release_ll(t_setid			setid);
+
+
+/*
+ * ../../kaneton/set/set_bpt.c
+ */
+
+void			set_load_bpt(t_bpt(set)*		bpt,
+				     t_bpt_imm(set)*		node,
+				     t_bpt_node(set)		addr);
+
+void			set_unload_bpt(t_bpt(set)*		bpt,
+				       t_bpt_imm(set)*		node);
+
+int			set_addrcmp_bpt(t_bpt(set)*		bpt,
+					t_bpt_addr(set)		addr1,
+					t_bpt_addr(set)		addr2);
+
+int			set_keycmp_bpt(t_bpt(set)*		bpt,
+				       t_bpt_key(set)		key1,
+				       t_bpt_key(set)		key2);
+
+int			set_valcmp_bpt(t_bpt(set)*		bpt,
+				       t_bpt_value(set)		value1,
+				       t_bpt_value(set)		value2);
+
+t_error			set_show_unused_bpt(o_set*		o);
+
+t_error			set_type_bpt(t_setid			setid);
+
+t_error			set_build_bpt(o_set*			o,
+				      BPT_NODESZ_T		nodesz);
+
+t_error			set_adjust_bpt(o_set*			o,
+				       t_bpt_uni(set)		alloc,
+				       t_bpt_uni(set)		size);
+
+t_error			set_destroy_bpt(o_set*			o);
+
+t_error			set_show_bpt(t_setid			setid);
+
+t_error			set_head_bpt(t_setid			setid,
+				     t_iterator*		iterator);
+
+t_error			set_tail_bpt(t_setid			setid,
+				     t_iterator*		iterator);
+
+t_error			set_prev_bpt(t_setid			setid,
+				     t_iterator			current,
+				     t_iterator*		previous);
+
+t_error			set_next_bpt(t_setid			setid,
+				     t_iterator			current,
+				     t_iterator*		next);
+
+t_error			set_insert_head_bpt(t_setid		setid,
+					    void*		data);
+
+t_error			set_insert_tail_bpt(t_setid		setid,
+					    void*		data);
+
+t_error			set_insert_before_bpt(t_setid		setid,
+					      t_iterator	iterator,
+					      void*		data);
+
+t_error			set_insert_after_bpt(t_setid		setid,
+					     t_iterator		iterator,
+					     void*		data);
+
+t_error			set_add_bpt(t_setid			setid,
+				    void*			data);
+
+t_error			set_remove_bpt(t_setid			setid,
+				       t_id			id);
+
+t_error			set_flush_bpt(t_setid			setid);
+
+t_error			set_locate_bpt(t_setid			setid,
+				       t_id			id,
+				       t_iterator*		iterator);
+
+t_error			set_object_bpt(t_setid			setid,
+				       t_iterator		iterator,
+				       void**			data);
+
+t_error			set_clone_bpt(t_setid			old,
+				      t_setid*			new);
+
+t_error			set_reserve_bpt(t_opts			opts,
+					t_size			datasz,
+					t_bpt_nodesz(set)	nodesz,
+					t_setid*		setid);
+
+t_error			set_release_bpt(t_setid			setid);
 
 
 /*
