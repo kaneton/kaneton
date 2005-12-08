@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/seminar/seminar.tex
 %%
 %% created       julien quintard   [fri dec  2 07:53:59 2005]
-%% updated       julien quintard   [fri dec  2 19:42:57 2005]
+%% updated       julien quintard   [thu dec  8 00:21:55 2005]
 %%
 
 %
@@ -55,6 +55,9 @@
                 {sets}
 		{figures/sets}
 
+\pgfdeclareimage[interpolate=true,width=79pt,height=116pt]
+                {hierarchy}
+		{figures/hierarchy}
 
 % 10 frames for a microkernel example
 
@@ -986,6 +989,16 @@
   \end{itemize}
 \end{frame}
 
+% 2)
+
+\begin{frame}
+  \frametitle{Hierarchy}
+
+  \begin{center}
+    \pgfuseimage{hierarchy}
+  \end{center}
+\end{frame}
+
 %
 % machine dependent
 %
@@ -1246,21 +1259,25 @@
     \item
       To validate the portability system through other architectures:
       sparc, mips, powerpc, intel etc..
+
+      \nl
+
+      Also develop very special architecture to explore different ways
+      like optimisations: ia32-virtual, ia32-segment, ia32-optimised etc..
     \item
       To increase the set types.
+    \item
+      To design the event interface.
+    \item
+      To design and maintain the kaneton building system with the
+      makefile and shell interfaces.
     \item
       To design a powerful naming scheme allowing concurrent
       servers executions while permitting to name every system object:
       segment, as, task, id etc.. like the research distributed operating
       system Sprite from Berkeley did.
-
-      \nl
-
-      \textit{kaneton::core::task::threads::2}
     \item
       To design a complete device manager.
-    \item
-      ... to prepare and give courses.
   \end{itemize}
 \end{frame}
 

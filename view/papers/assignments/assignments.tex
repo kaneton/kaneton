@@ -1,69 +1,111 @@
 %%
-%% copyright quintard julien
-%% 
-%% kaneton
-%% 
-%% assignments.tex
-%% 
-%% path          /home/mycure/kaneton/view/papers
-%% 
-%% made by mycure
-%%         quintard julien   [quinta_j@epita.fr]
-%% 
-%% started on    Fri Feb  4 15:10:05 2005   mycure
-%% last update   Sat Nov 19 12:51:21 2005   mycure
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/papers/assignments/assignments.tex
+%%
+%% created       julien quintard   [wed dec  7 16:53:52 2005]
+%% updated       julien quintard   [wed dec  7 17:20:14 2005]
 %%
 
-%%
-%% --------- packages ---------------------------------------------------------
-%%
+%
+% template
+%
 
-\documentclass[10pt,a4wide]{article}
-\usepackage[english]{babel}
-\usepackage{a4wide}
-\usepackage{graphicx}
-\usepackage{fancyheadings}
-\usepackage{multicol}
-\usepackage{indentfirst}
-\pagestyle{fancy}
+\input{../../templates/paper.tex}
 
-\setlength{\footrulewidth}{0.3pt}
-\setlength{\parindent}{0.3cm}
-\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+%
+% header
+%
 
-%%
-%% --------- header -----------------------------------------------------------
-%%
+\lhead{\scriptsize{The kaneton microkernel project assignments}}
 
-\lhead{\scriptsize{the kaneton microkernel project}}
-\rhead{\scriptsize{the kaneton implementation}}
-\rfoot{\scriptsize{kaneton microkernel project}}
+%
+% title
+%
 
-\title{The kaneton microkernel project}
+\title{The kaneton microkernel project assignments}
 
-\author{\small{Julien Quintard} \\
-        \scriptsize{julien.quintard@gmail.com}}
+%
+% authors
+%
 
-\date{\scriptsize{\today}}
+\author{\small{Julien Quintard}}
+
+%
+% document
+%
 
 \begin{document}
 
+%
+% title
+%
+
 \maketitle
-
-%%
-%% --------- abstract ---------------------------------------------------------
-%%
-
-\begin{abstract}
-
-\end{abstract}
 
 %
 % --------- text --------------------------------------------------------------
 %
 
-
+%
+% the project
+%
 
 \section{The Project}
+
+%
+% k0
+%
+
+\section{k0}
+
+%
+% k1
+%
+
+\section{k1}
+
+The \textbf{k0} project consists in the development of the bootloader.
+
+This bootloader just relocates the stuff needed by the futur kernel
+execution.
+
+The relocation is not really necessary but we wanted the students
+to understand low-level programming and more especially programming
+in a very strict environment with no fine-grained allocator provided.
+
+So in this project, the student has to write the entire code of the
+bootloader. The only requirement is to be compliant with the structure
+passed to the kernel.
+
+This structure called \textbf{t\_init} is defined in the
+file: \textit{core/include/kaneton/init.h}.
+
+The code provided must be located in the directory
+\textit{core/bootloader/arch/[architecture]/}.
+
+%
+% k2
+%
+
+%
+% k3
+%
+
+%
+% k4
+%
+
+%
+% k5
+%
+
+%
+% kn
+%
+
+
 
 \end{document}

@@ -1,62 +1,49 @@
 %%
-%% copyright quintard julien
-%% 
-%% kaneton
-%% 
-%% kaneton.tex
-%% 
-%% path          /home/mycure/kaneton/view/papers
-%% 
-%% made by mycure
-%%         quintard julien   [quinta_j@epita.fr]
-%% 
-%% started on    Fri Feb  4 15:10:05 2005   mycure
-%% last update   Sat Nov 19 12:53:34 2005   mycure
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/papers/kaneton/kaneton.tex
+%%
+%% created       julien quintard   [thu dec  8 00:26:00 2005]
+%% updated       julien quintard   [thu dec  8 00:37:00 2005]
 %%
 
-%%
-%% --------- packages ---------------------------------------------------------
-%%
+%
+% template
+%
 
-\documentclass[10pt,a4wide]{article}
-\usepackage[english]{babel}
-\usepackage{a4wide}
-\usepackage{graphicx}
-\usepackage{fancyheadings}
-\usepackage{multicol}
-\usepackage{indentfirst}
-\pagestyle{fancy}
+\input{../../templates/paper.tex}
 
-\setlength{\footrulewidth}{0.3pt}
-\setlength{\parindent}{0.3cm}
-\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+%
+% header
+%
 
-%%
-%% --------- header -----------------------------------------------------------
-%%
+\lhead{\scriptsize{The kaneton microkernel reference}}
 
-\lhead{\scriptsize{The kaneton microkernel project}}
-\rhead{\scriptsize{The kaneton Implementation}}
-\rfoot{\scriptsize{kaneton microkernel project}}
+%
+% title
+%
 
-\title{The kaneton microkernel project}
+\title{The kaneton microkernel reference}
 
-\author{\small{Julien Quintard} \\
-        \scriptsize{julien.quintard@gmail.com}}
+%
+% authors
+%
 
-\date{\scriptsize{\today}}
+\author{\small{Julien Quintard}}
+
+%
+% document
+%
 
 \begin{document}
 
+%
+% title
+%
+
 \maketitle
-
-%%
-%% --------- abstract ---------------------------------------------------------
-%%
-
-\begin{abstract}
-
-\end{abstract}
 
 %
 % --------- text --------------------------------------------------------------
@@ -64,41 +51,40 @@
 
 
 
+%
+% the project
+%
+
 \section{The Project}
 
-This document describes the kaneton project.
+This document describes the kaneton microkernel reference.
 
 kaneton is a pedagogic microkernel developed by EPITA students during
-their specialisation year.
+their specialisation year in System, Network and Security.
 
 This project consists in the design and development of parts of an
 operating system including the micro-kernel and the servers.
 
 The kaneton operating system, especially the kaneton micro-kernel was
-designed in a very specific way to keep the design the simpler as possible
+designed in a very specific way to keep the design the simplest as possible
 to be understable by the students.
 
 Nevertheless, the kaneton project and especially the kaneton reference
 operating system was implementing using modern tools and modern
 programming techniques.
 
-The kaneton micro-kernel is divided into managers which perform very
+The kaneton microkernel is divided into managers which perform very
 specific tasks and make the design simpler to understand.
 
-We decided to develop a micro-kernel because this type of kernel is very
+We decided to develop a microkernel because this type of kernel is very
 modular, secure, strong and clear.
 
-All these characteristics make the micro-kernel a perfect development
+All these characteristics make the microkernel a perfect development
 project for students.
 
-We also decided to develop a distributed operating system, because these
-operating systems are modern, very interesting from the design and
-implementation point of view. Moreover, the students have to know about
-these operating systems.
-
 The goals of the project are to lead the student to understand one or more
-processors, an entire micro-kernel design and implementation and finally
-the principles and paradigms of a distributed operating system.
+processor architectures, an entire microkernel design and implementation
+and finally the principles and paradigms of a distributed systems.
 
 The kaneton project was introduced at EPITA by two students
 	Julien Quintard
@@ -110,9 +96,29 @@ This document especially describes the kaneton reference microkernel
 developed by
 	Julien Quintard,
 	C\'edric Aubouy
-	  \footnote{aubouy\_c@epita.fr}.
+	  \footnote{aubouy\_c@epita.fr},
+	Matthieu Bucchianeri
+	  \footnote{bucchi\_m@epita.fr}.
+
+But many people contributed to this project and we thank them.
 
 
+
+%
+% the development environment
+%
+
+\section{The Development Environment}
+
+XXX
+
+%
+% XXX
+%
+
+%
+% the bootstrap
+%
 
 \section{The Bootstrap}
 
@@ -122,7 +128,7 @@ Its role is to launch the bootloader. To do this, it has to read the
 bootloader on a device which can be the floppy, the hard drive,
 the network etc..
 
-\subsection{Intel Architecture 32-bit}
+\subsection{Intel 32-bit Architecture}
 
 For the Intel Architecture 32-bit (IA32), we decided to use the
 	GRUB MultiBoot boot loader
@@ -159,7 +165,7 @@ the kernel when started.
 So, the bootloader has to fill in these requirements to be able
 to correctly laucnh the kernel.
 
-\subsection{Intel Architecture 32-bit}
+\subsection{Intel 32-bit Architecture}
 
 \end{document}
 \label{}
@@ -167,3 +173,6 @@ to correctly laucnh the kernel.
 \pageref{}
 
 XXX machdep a la fin car depend de la partie generale contrairement a l autre
+
+XXX header, commit norme, coding style, dev-env: makefiles/shell, moulinette,
+    etc..
