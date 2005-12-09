@@ -6,14 +6,14 @@
 ## file          /home/mycure/kaneton/check/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       julien quintard   [wed dec  7 12:52:12 2005]
+## updated       julien quintard   [mon nov 28 19:24:49 2005]
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../env/.env.mk
+include			../../../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -25,11 +25,11 @@ include			../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-LIST			:=		list
+TEST_LO			:=		01.lo
 
-SUBDIRS			:=		$(call contents,$(LIST),)
+TEST_C			:=		01.c
 
-MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
+TEST_O			:=		$(TEST_C:.c=.o)
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -37,22 +37,19 @@ MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 
 all:			build run
 
-build:			$(_CHECK_LO_)
+build:			$(TEST_LO)
 
-$(_CHECK_LO_):		libs
-	$(call remove,$(_CHECK_LO_),)
+$(TEST_LO):		$(TEST_O)
+	$(call remove,$(TEST_LO),)
 
-	$(call archive,$(_CHECK_LO_),$(MODULES),)
-
-libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call archive,$(TEST_LO),$(TEST_O),)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call remove,$(TEST_LO),)
 
-	$(call remove,$(_CHECK_LO_),)
+	$(call remove,$(TEST_O),)
 
 	$(call purge,)
 
