@@ -10,6 +10,11 @@ __version__ 	= "0.0.1"
 __date__ 	= ""
 
 def 	check_result(result_file, result_2_check):
+	"""
+	This function simply check if parsed result and 
+	result file are the same
+	"""
+	
 	tmp = result_file.split('/')
 	result = OpenFile(result_file + tmp[-2]  +  ".res")
 	#print "result: " + result
@@ -19,7 +24,11 @@ def 	check_result(result_file, result_2_check):
 		return 1
 
 def	get_function_addr(cmd):
- 	obj = os.popen("nm ../core/kaneton/kaneton | grep " + cmd +  " | cut -d ' ' -f 1")
+ 	"""
+	Return addr of function named cmd in kaneton
+	"""
+	
+	obj = os.popen("nm ../core/kaneton/kaneton | grep " + cmd +  " | cut -d ' ' -f 1")
 	addr = obj.read()
 	addr = addr.strip("\n")
 	return addr
@@ -38,7 +47,6 @@ def 	SendCommand(cmd):
 	tosend_size = 8
 	serial_send(tosend, tosend_size) 
 	
-
 	cmd = get_function_addr(cmd)	
 	tosend = (cmd)
 	tosend_size = (len(cmd) + 1)
@@ -83,9 +91,9 @@ def	get_path(test_list):
 			i += 1
 		else:
 			new_list = new_list.split()
-			nb += len(new_list)
+			nb = len(new_list)
 			c = 0
-			while c < len(new_list):
+			while c < nb:
 				test_list.insert(i + c  + 1, test_list[i] + new_list[c] + '/')
 				c += 1
 			test_list.remove(test_list[i])
@@ -114,14 +122,22 @@ def	ListTest():
 	ListTest : get Dir/testlist and scan testlist for all test 
 	checksubdir and list sub-test
 	"""
-	
 	i = 0
 	test_list = [''] 
 	nb_path_found = 1
 	
 	while nb_path_found: 
 		nb_path_found = get_path(test_list) 
-			
+	# on a le path avec 01/ split le 01/ 
+	# check for load file 
+	# cree un load ident avant le nom de cette fonction 
+	# dupe tout les doublons 
+	# reste juste ququ ident 
+	# load d apres l ident 
+	# function ou file 
+	# attention il peut y avoir plusieur load il faut overwrite les pointeur 
+	# coter kaneton est free
+
 	get_functions_name(test_list)
 
 	return test_list
@@ -133,7 +149,7 @@ def	set_and_parse_result(test_list, result):
 	Return parsed result
 	"""
 	tmp = test_list.split('/')
-	sys.path[-1] = test_list.rstrip(tmp[-2] + '/'); #enlever  le 01/ 02/
+	sys.path[-1] = test_list.rstrip(tmp[-2] + '/'); 
 	import parse_res
 	reload(parse_res)
 	parsed_result = parse_res.parse_result(result)
@@ -145,16 +161,27 @@ if __name__ == "__main__":
 	from re      import *
 	import os, array, sys
 
-	i = 0
+	i = 0			#on peut donner l'index de demarrage pour qu il se relance ou sa couille 
+				#il faut donc avant l afficher en cas de deco ou le sauvegarder
+				#ne pas oublier de reload les files du test ds ce cas
+				# if i != 0 
+				# loadfile de la section courrante
+				# donc peut etre plus d indication
+				# i num de seq de test et c num de test c[-1] == load file 
+				# if i != 0 && c[1].strip(' ') == "loadfile  " ...
 	total_ok = 0
 	total_failed = 0
+
 	serial_init("/dev/ttyS0")
 	test_list = ListTest()
 
 	while i < len(test_list):
+		#if test_list[i] == "loadfile":
+#			load_file(test_list[i]) [i + 1] ?
+		#if test_list[i] == "command":
 		print "Launching test: " + test_list[i + 1]
 		result = SendCommand(test_list[i + 1])
-		parsed_result = set_and_parse_result(test_list[i], result)		
+		parsed_result = set_and_parse_result(test_list[i], result)
 		if check_result(test_list[i], parsed_result):
 			print "[OK]"
 			total_ok += 1
@@ -162,7 +189,6 @@ if __name__ == "__main__":
 			print "[FAILED]"
 			total_failed += 1
 		i += 2 
-	
+
 	print "Passed: " + str(total_ok)
 	print "Failed: " + str(total_failed)
-
