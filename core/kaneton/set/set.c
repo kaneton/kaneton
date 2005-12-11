@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/set/set.c
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set.c
  *
  * created       julien quintard   [fri dec  2 19:55:19 2005]
- * updated       julien quintard   [fri dec  2 19:55:22 2005]
+ * updated       matthieu bucchianeri   [mon dec 12 00:27:05 2005]
  */
 
 /*
@@ -595,8 +595,7 @@ t_error			set_test(t_type				type)
     {
     case SET_TYPE_ARRAY:
       {
-	set_test_array();
-	while (1);
+	set_test_array(-1);
 
 	break;
       }

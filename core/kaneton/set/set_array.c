@@ -6,17 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set_array.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue dec  6 00:44:59 2005]
- */
-
-/*
- *             /!\ THIS  CODE  IS  IN  TESTING  PHASE /!\
- *
- * my TODO:
- *  - improve set_locate_array on sorted array (something like dichotomy)
- *  - add more tests
- *  - take a look at the comments and check them
- *  ? realloc in remove when ORGANISE ??
+ * updated       matthieu bucchianeri   [mon dec 12 00:25:51 2005]
  */
 
 /*
@@ -27,9 +17,10 @@
  *
  * there are two way to use the  arrays : with id or with objects. the
  * first method is  the default one (without SET_OPT_ALLOC)  : it only
- * stores id refering to objects in the array. The second method (used
- * with  SET_OPT_ALLOC) makes  copies  of objects  in  the set,  using
- * memcpy.
+ * stores  id  refering  to  objects.  The second  method  (used  with
+ * SET_OPT_ALLOC)  makes   copies  of   objects  in  the   set,  using
+ * memcpy. with SET_OPT_ALLOC, objects are freed when they are removed
+ * from the array or when the array is flushed/released.
  *
  * the option ORGANISE is used to keep the array as small as possible,
  * but  some operation  requires to  shift entire  parts of  the array
@@ -75,6 +66,11 @@ extern m_set*		set;
 
 /*
  * this function tells if the set object is an array set.
+ *
+ * steps:
+ *
+ * 1) gets the descriptor associated with the id.
+ * 2) checks the type field.
  */
 
 t_error			set_type_array(t_setid			setid)
@@ -83,8 +79,16 @@ t_error			set_type_array(t_setid			setid)
 
   SET_ENTER(set);
 
+  /*
+   * 1)
+   */
+
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
 
   if (o->type != SET_TYPE_ARRAY)
     SET_LEAVE(set, ERROR_UNKNOWN);
@@ -98,7 +102,7 @@ t_error			set_type_array(t_setid			setid)
  * steps:
  *
  * 1) retrieves the set associated with the setid.
- * 2) loop throught the slots and displays elements.
+ * 2) loops through the slots and displays elements.
  */
 
 t_error			set_show_array(t_setid			setid)
@@ -476,9 +480,10 @@ static t_error		set_expand_array(o_set		*o,
  *
  * steps:
  *
- * 1) inserts in its place if this one is empty.
- * 2) inserts just before if possible.
- * 3) shifts right to make some room and inserts.
+ * 1) expands the array if necessary.
+ * 2) inserts in its place if this one is empty.
+ * 3) inserts just before if possible.
+ * 4) shifts right to make some room and inserts.
  */
 
 static t_error		set_insert_at(o_set		*o,
@@ -496,6 +501,10 @@ static t_error		set_insert_at(o_set		*o,
     {
       return set_expand_array(o, data);
     }
+
+  /*
+   * 2)
+   */
 
   if (o->u.array.opts & SET_OPT_ALLOC)
     {
@@ -515,7 +524,7 @@ static t_error		set_insert_at(o_set		*o,
     }
 
   /*
-   * 2)
+   * 3)
    */
 
   if (pos > 0 && !(o->u.array.opts & SET_OPT_ORGANISE))
@@ -539,7 +548,7 @@ static t_error		set_insert_at(o_set		*o,
     }
 
   /*
-   * 3)
+   * 4)
    */
 
   if (o->u.array.opts & SET_OPT_ALLOC)
@@ -592,6 +601,7 @@ static t_error		set_insert_at(o_set		*o,
  * 2) checks options.
  * 3) copies the element if necessary.
  * 4) inserts the element in its place.
+ * 5) updates count.
  */
 
 t_error			set_insert_head_array(t_setid		setid,
@@ -639,6 +649,10 @@ t_error			set_insert_head_array(t_setid		setid,
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
 
+  /*
+   * 5)
+   */
+
   ++o->size;
 
   SET_LEAVE(set, ERROR_NONE);
@@ -652,6 +666,7 @@ t_error			set_insert_head_array(t_setid		setid,
  * 2) checks options.
  * 3) copies the element if necessary.
  * 4) inserts the element in its place.
+ * 5) updates count.
  */
 
 t_error			set_insert_tail_array(t_setid		setid,
@@ -681,6 +696,18 @@ t_error			set_insert_tail_array(t_setid		setid,
    * 3)
    */
 
+  if (o->u.array.opts & SET_OPT_ALLOC)
+    {
+      if (!(cpy = malloc(o->u.array.datasz)))
+	SET_LEAVE(set, ERROR_UNKNOWN);
+      memcpy(cpy, data, o->u.array.datasz);
+      data = cpy;
+    }
+
+  /*
+   * 4)
+   */
+
   if (o->size)
     {
       if (o->u.array.opts & SET_OPT_ALLOC)
@@ -703,24 +730,16 @@ t_error			set_insert_tail_array(t_setid		setid,
   else
     i = 0;
 
-  if (o->u.array.opts & SET_OPT_ALLOC)
-    {
-      if (!(cpy = malloc(o->u.array.datasz)))
-	SET_LEAVE(set, ERROR_UNKNOWN);
-      memcpy(cpy, data, o->u.array.datasz);
-      data = cpy;
-    }
-
-  /*
-   * 4)
-   */
-
   if (set_insert_at(o, i, data) != ERROR_NONE)
     {
       if (o->u.array.opts & SET_OPT_ALLOC)
 	free(data);
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
+
+  /*
+   * 5)
+   */
 
   ++o->size;
 
@@ -735,6 +754,7 @@ t_error			set_insert_tail_array(t_setid		setid,
  * 2) checks options.
  * 3) copies the element if necessary.
  * 4) inserts the element in its place.
+ * 5) updates item count.
  */
 
 t_error			set_insert_before_array(t_setid		setid,
@@ -789,6 +809,10 @@ t_error			set_insert_before_array(t_setid		setid,
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
 
+  /*
+   * 5)
+   */
+
   ++o->size;
 
   SET_LEAVE(set, ERROR_NONE);
@@ -803,6 +827,7 @@ t_error			set_insert_before_array(t_setid		setid,
  * 2) checks options.
  * 3) copies the element if necessary.
  * 4) inserts the element in its place.
+ * 5) updates count.
  */
 
 t_error			set_insert_after_array(t_setid		setid,
@@ -857,6 +882,10 @@ t_error			set_insert_after_array(t_setid		setid,
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
 
+  /*
+   * 5)
+   */
+
   ++o->size;
 
   SET_LEAVE(set, ERROR_NONE);
@@ -869,6 +898,8 @@ t_error			set_insert_after_array(t_setid		setid,
  *
  * 1) checks the data.
  * 2) get the object associated with the id.
+ * 3) copies the object if required.
+ * 4) inserts the element.
  *   A) (sorted array)
  *    i) finds the place of the new element.
  *    ii) copies in the right place.
@@ -876,6 +907,7 @@ t_error			set_insert_after_array(t_setid		setid,
  *   B) (unsorted array)
  *    i) tries to find a free place.
  *    ii) expands the array if necessary.
+ * 5) updates size.
  */
 
 t_error			set_add_array(t_setid			setid,
@@ -917,6 +949,10 @@ t_error			set_add_array(t_setid			setid,
       data = cpy;
     }
 
+  /*
+   * 4)
+   */
+
   if (o->u.array.opts & SET_OPT_SORT)
     {
       /*
@@ -937,9 +973,7 @@ t_error			set_add_array(t_setid			setid,
 	      if (o->u.array.array.pdata[i] != NULL)
 		{
 		  current = *((t_id *)o->u.array.array.pdata[i]);
-		  empty &= (current == ID_UNUSED);
-		  if (current == ID_UNUSED)
-		    continue;
+		  empty = 0;
 		  if (current == id)
 		    {
 		      cons_msg('!', "set: identifier collision detected "
@@ -962,9 +996,9 @@ t_error			set_add_array(t_setid			setid,
 	  for (i = 0; i < o->u.array.arraysz; ++i)
 	    {
 	      current = o->u.array.array.id[i];
-	      empty &= (current == ID_UNUSED);
 	      if (current == ID_UNUSED)
 		continue;
+	      empty = 0;
 	      if (current == id)
 		{
 		  cons_msg('!', "set: identifier collision detected "
@@ -1062,6 +1096,10 @@ t_error			set_add_array(t_setid			setid,
 	}
     }
 
+  /*
+   * 5)
+   */
+
   ++o->size;
 
   SET_LEAVE(set, ERROR_NONE);
@@ -1077,6 +1115,7 @@ t_error			set_add_array(t_setid			setid,
  * 2) gets object associated to setid.
  * 3) looks for the element, then delete it.
  * 4) re-organises the set if needed.
+ * 5) decrements counter.
  */
 
 t_error			set_remove_array(t_setid		setid,
@@ -1113,16 +1152,19 @@ t_error			set_remove_array(t_setid		setid,
     {
       for (i = 0; i < o->u.array.arraysz; ++i)
 	{
-	  current = *((t_id *)(o->u.array.array.pdata[i]));
-
-	  if ((o->u.array.opts & SET_OPT_SORT) && current > id)
-	    SET_LEAVE(set, ERROR_UNKNOWN);
-
-	  if (current == id)
+	  if (o->u.array.array.pdata[i])
 	    {
-	      free(o->u.array.array.pdata[i]);
-	      o->u.array.array.pdata[i] = NULL;
-	      break;
+	      current = *((t_id *)(o->u.array.array.pdata[i]));
+
+	      if ((o->u.array.opts & SET_OPT_SORT) && current > id)
+		SET_LEAVE(set, ERROR_UNKNOWN);
+
+	      if (current == id)
+		{
+		  free(o->u.array.array.pdata[i]);
+		  o->u.array.array.pdata[i] = NULL;
+		  break;
+		}
 	    }
 	}
     }
@@ -1131,6 +1173,9 @@ t_error			set_remove_array(t_setid		setid,
       for (i = 0; i < o->u.array.arraysz; ++i)
 	{
 	  current = o->u.array.array.id[i];
+
+	  if (current == ID_UNUSED)
+	    continue;
 
 	  if ((o->u.array.opts & SET_OPT_SORT) && current > id)
 	    SET_LEAVE(set, ERROR_UNKNOWN);
@@ -1177,6 +1222,10 @@ t_error			set_remove_array(t_setid		setid,
 					sizeof (t_id));
 	}
     }
+
+  /*
+   * 5)
+   */
 
   --o->size;
 
@@ -1266,8 +1315,8 @@ t_error			set_flush_array(t_setid			setid)
  * 1) checks the given id.
  * 2) gets the descriptor.
  * 3) search for the element.
- * A) TODO: dichotomy lookup (on sorted array)
- * B) sequentially searchs for the needed element. (unsorted)
+ *   A) dichotomy lookup. (on sorted array)
+ *   B) sequentially searchs for the needed element. (unsorted)
  */
 
 t_error			set_locate_array(t_setid		setid,
@@ -1277,6 +1326,9 @@ t_error			set_locate_array(t_setid		setid,
   o_set			*o;
   t_setid		i;
   t_id			current;
+  t_setsz		left;
+  t_setsz		right;
+  t_setsz		dicho;
 
   SET_ENTER(set);
 
@@ -1300,41 +1352,61 @@ t_error			set_locate_array(t_setid		setid,
 
   if ((o->u.array.opts & SET_OPT_SORT))
     {
+
       /*
        * A)
        */
 
+      left = 0;
+      right = o->u.array.arraysz - 1;
+
       if (o->u.array.opts & SET_OPT_ALLOC)
 	{
-	  for (i = 0; i < o->u.array.arraysz; ++i)
+	  while (left <= right)
 	    {
-	      if (!o->u.array.array.pdata[i])
-		continue;
-	      current = *((t_id *)(o->u.array.array.pdata[i]));
-	      if (current == id)
-		{
-		  iterator->u.array.i = i;
-		  SET_LEAVE(set, ERROR_NONE);
-		}
-	      if (current > id)
+	      dicho = left + (right - left) / 2;
+	      for (i = dicho; i < right; ++i)
+		if (o->u.array.array.pdata[i])
+		  break;
+	      if (*((t_id *)(o->u.array.array.pdata[i])) == id)
 		break;
+	      if (i == right || *((t_id *)(o->u.array.array.pdata[i])) > id)
+		{
+		  right = dicho - 1;
+		}
+	      else
+		{
+		  left = dicho + 1;
+		}
 	    }
 	}
       else
 	{
-	  for (i = 0; i < o->u.array.arraysz; ++i)
+	  while (left <= right)
 	    {
-	      if (o->u.array.array.id[i] == ID_UNUSED)
-		continue;
+	      dicho = left + (right - left) / 2;
+	      for (i = dicho; i < right; ++i)
+		if (o->u.array.array.id[i] != ID_UNUSED)
+		  break;
 	      if (o->u.array.array.id[i] == id)
-		{
-		  iterator->u.array.i = i;
-		  SET_LEAVE(set, ERROR_NONE);
-		}
-	      if (o->u.array.array.id[i] > id)
 		break;
+	      if (i == right || o->u.array.array.id[i] > id)
+		{
+		  right = dicho - 1;
+		}
+	      else
+		{
+		  left = dicho + 1;
+		}
 	    }
 	}
+
+      if (left <= right)
+	{
+	  iterator->u.array.i = i;
+	  SET_LEAVE(set, ERROR_NONE);
+	}
+
     }
   else
     {
@@ -1379,7 +1451,6 @@ t_error			set_locate_array(t_setid		setid,
  * 1) gets the set object.
  * 2) checks bounds.
  * 3) gets data for given position.
- * 4) checks for validity.
  */
 
 t_error			set_object_array(t_setid		setid,
@@ -1387,7 +1458,6 @@ t_error			set_object_array(t_setid		setid,
 					 void**			data)
 {
   o_set			*o;
-  t_id			*id;
 
   SET_ENTER(set);
 
@@ -1412,21 +1482,16 @@ t_error			set_object_array(t_setid		setid,
   if (o->u.array.opts & SET_OPT_ALLOC)
     {
       if (o->u.array.array.pdata[iterator.u.array.i])
-	id = ((t_id *)(o->u.array.array.pdata[iterator.u.array.i]));
+	*data = o->u.array.array.pdata[iterator.u.array.i];
       else
-	id = NULL;
+	SET_LEAVE(set, ERROR_UNKNOWN);
     }
   else
-    id = &o->u.array.array.id[iterator.u.array.i];
-
-  /*
-   * 4)
-   */
-
-  if (id == NULL || *id == ID_UNUSED)
-    SET_LEAVE(set, ERROR_UNKNOWN);
-
-  *data = id;
+    {
+      if (o->u.array.array.id[iterator.u.array.i] == ID_UNUSED)
+	SET_LEAVE(set, ERROR_UNKNOWN);
+      *data = &o->u.array.array.id[iterator.u.array.i];
+    }
 
   SET_LEAVE(set, ERROR_NONE);
 }
@@ -1463,7 +1528,7 @@ t_error			set_clone_array(t_setid			old,
    * 2)
    */
 
-  if (set_reserve_array(o->u.array.opts, o->size, o->u.array.datasz,
+  if (set_reserve(array, o->u.array.opts, o->size, o->u.array.datasz,
 			&clone) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
@@ -1473,8 +1538,12 @@ t_error			set_clone_array(t_setid			old,
 
   set_foreach(SET_OPT_FORWARD, old, &it, state)
     {
-      set_object(old, it, (void **)&pdata);
-      set_add(clone, pdata);
+      if (set_object(old, it, (void **)&pdata) != ERROR_NONE ||
+	  set_add(clone, pdata) != ERROR_NONE)
+	{
+	  set_release(clone);
+	  SET_LEAVE(set, ERROR_UNKNOWN);
+	}
     }
 
   *new = clone;
@@ -1701,138 +1770,252 @@ static void	many_remove(t_setid setid, int nb, ...)
  *
  *
  */
-void		set_test_array(void)
+void		set_test_array(int test_set)
 {
   t_uint32	nalloc = alloc_nalloc();
   t_uint32	nfree = alloc_nfree();
   t_setid	id;
   t_setid	cloned;
   t_id		data;
-  t_id		objs[4];
+  t_id		objs[64];
   t_id		*pdata;
   t_iterator	it;
   t_state	state;
+  int		i;
 
   cons_msg('#', "testing SET_TYPE_ARRAY\n");
 
-  cons_msg('#', "testing with no options\n");
-
-  if (set_reserve(array, 0, 4, 0, &id) != ERROR_NONE)
-    cons_msg('!', "error: set_reserve()\n");
-
-  set_show(id);
-
-  many_add(id, 4, 80LL, 98654LL, 42LL, 122LL);
-
-  many_remove(id, 1, 42LL);
-
-  many_add(id, 2, 45LL, 64LL);
-
-  set_show(id);
-
-  set_release(id);
-
-  cons_msg('#', "testing with SET_OPT_ALLOC\n");
-
-
-  if (set_reserve(array, SET_OPT_ALLOC, 4, sizeof (t_id), &id) != ERROR_NONE)
-    cons_msg('!', "error: set_reserve()\n");
-
-  many_add(id, 4, 80LL, 98654LL, 42LL, 122LL);
-
-  many_remove(id, 1, 42LL);
-
-  many_add(id, 2, 45LL, 64LL);
-
-  set_show(id);
-
-  set_release(id);
-
-  cons_msg('#', "testing with SET_OPT_ORGANISE | SET_OPT_ALLOC\n");
-
-
-  if (set_reserve(array, SET_OPT_ORGANISE | SET_OPT_ALLOC, 1, sizeof (t_id),
-		  &id) != ERROR_NONE)
-    cons_msg('!', "error: set_reserve()\n");
-
-  many_add(id, 4, 80LL, 98654LL, 42LL, 122LL);
-
-  many_remove(id, 1, 42LL);
-
-  many_add(id, 2, 45LL, 64LL);
-
-  set_show(id);
-
-  cons_msg('#', "testing iterators\n");
-
-  printf("--> ");
-  set_foreach(SET_OPT_FORWARD, id, &it, state)
+  if (test_set == -1 || test_set == 0)
     {
-      set_object(id, it, (void **)&pdata);
-      printf("%qd ", *pdata);
-    }
-  printf("\n");
+      cons_msg('#', "testing with no options\n");
 
-  printf("<-- ");
-  set_foreach(SET_OPT_BACKWARD, id, &it, state)
+      if (set_reserve(array, 0, 4, 0, &id) != ERROR_NONE)
+	cons_msg('!', "error: set_reserve()\n");
+
+      set_show(id);
+
+      many_add(id, 4, 80LL, 98654LL, 42LL, 122LL);
+
+      many_remove(id, 1, 42LL);
+
+      many_add(id, 2, 45LL, 64LL);
+
+      set_show(id);
+
+      set_release(id);
+    }
+
+  if (test_set == -1 || test_set == 1)
     {
-      set_object(id, it, (void **)&pdata);
-      printf("%qd ", *pdata);
+      cons_msg('#', "testing with SET_OPT_ALLOC\n");
+
+      if (set_reserve(array, SET_OPT_ALLOC, 4, sizeof (t_id), &id) !=
+	  ERROR_NONE)
+	cons_msg('!', "error: set_reserve()\n");
+
+      many_add(id, 4, 80LL, 98654LL, 42LL, 122LL);
+
+      many_remove(id, 1, 42LL);
+
+      many_add(id, 2, 45LL, 64LL);
+
+      set_show(id);
+
+      set_release(id);
     }
-  printf("\n");
 
-  cons_msg('#', "testing insert_*\n");
+  if (test_set == -1 || test_set == 2 || test_set == 3 || test_set == 4 ||
+      test_set == 5 || test_set == 6)
+    {
+      cons_msg('#', "testing with SET_OPT_ORGANISE | SET_OPT_ALLOC\n");
 
-  objs[0] = 4LL;
-  if (set_insert_head(id, &objs[0]) != ERROR_NONE)
-    cons_msg('!', "error in insert_head\n");
+      if (set_reserve(array, SET_OPT_ORGANISE | SET_OPT_ALLOC, 1,
+		      sizeof (t_id), &id) != ERROR_NONE)
+	cons_msg('!', "error: set_reserve()\n");
 
-  objs[1] = 123456LL;
-  if (set_insert_tail(id, &objs[1]) != ERROR_NONE)
-    cons_msg('!', "error in insert_tail\n");
+      many_add(id, 4, 80LL, 98654LL, 42LL, 122LL);
 
-  set_head_array(id, &it);
-  set_next_array(id, it, &it);
-  objs[2] = 456LL;
-  if (set_insert_after(id, it, &objs[2]) != ERROR_NONE)
-    cons_msg('!', "error in insert_after\n");
+      many_remove(id, 1, 42LL);
 
-  objs[3] = 454LL;
-  if (set_insert_before(id, it, &objs[3]) != ERROR_NONE)
-    cons_msg('!', "error in insert_before\n");
+      many_add(id, 2, 45LL, 64LL);
 
-  set_show(id);
+      set_show(id);
 
-  cons_msg('#', "testing flush\n");
+      if (test_set == 2)
+	set_release(id);
+    }
 
-  set_flush(id);
+  if (test_set == -1 || test_set == 3)
+    {
+      cons_msg('#', "testing iterators\n");
 
-  set_show(id);
+      printf("--> ");
+      set_foreach(SET_OPT_FORWARD, id, &it, state)
+	{
+	  if (set_object(id, it, (void **)&pdata) != ERROR_NONE)
+	    cons_msg('!', "error set_object\n");
+	  printf("%qd ", *pdata);
+	}
+      printf("\n");
 
-  set_release(id);
+      printf("<-- ");
+      set_foreach(SET_OPT_BACKWARD, id, &it, state)
+	{
+	  if (set_object(id, it, (void **)&pdata) != ERROR_NONE)
+	    cons_msg('!', "error set_object\n");
+	  printf("%qd ", *pdata);
+	}
+      printf("\n");
 
-  cons_msg('#', "testing with SET_OPT_SORT\n");
+      if (test_set == 3)
+	set_release(id);
+    }
 
-  if (set_reserve(array, SET_OPT_SORT, 1, sizeof (t_id), &id) != ERROR_NONE)
-    cons_msg('!', "error: set_reserve()\n");
+  if (test_set == -1 || test_set == 4)
+    {
+      cons_msg('#', "testing insert_*\n");
 
-  many_add(id, 4, 80LL, 98654LL, 42LL, 122LL);
+      objs[0] = 4LL;
+      if (set_insert_head(id, &objs[0]) != ERROR_NONE)
+	cons_msg('!', "error in insert_head\n");
 
-  many_remove(id, 1, 42LL);
+      objs[1] = 123456LL;
+      if (set_insert_tail(id, &objs[1]) != ERROR_NONE)
+	cons_msg('!', "error in insert_tail\n");
 
-  many_add(id, 2, 45LL, 64LL);
+      set_head_array(id, &it);
+      set_next_array(id, it, &it);
+      objs[2] = 456LL;
+      if (set_insert_after(id, it, &objs[2]) != ERROR_NONE)
+	cons_msg('!', "error in insert_after\n");
 
-  set_show(id);
+      objs[3] = 454LL;
+      if (set_insert_before(id, it, &objs[3]) != ERROR_NONE)
+	cons_msg('!', "error in insert_before\n");
 
-  cons_msg('#', "testing clone function\n");
+      set_show(id);
 
-  set_clone(id, &cloned);
+      if (test_set == 4)
+	set_release(id);
+    }
 
-  set_release(id);
+  if (test_set == -1 || test_set == 5)
+    {
+      cons_msg('#', "testing locate\n");
 
-  set_show(cloned);
+      if (set_locate(id, 42LL, &it) == ERROR_NONE)
+	cons_msg('!', "error with locate: found a non-existent element !\n");
 
-  set_release(cloned);
+      if (set_locate(id, 122LL, &it) != ERROR_NONE)
+	cons_msg('!', "error with locate\n");
+      else
+	{
+	  if (set_object(id, it, (void **)&pdata) != ERROR_NONE)
+	    cons_msg('!', "error set_object\n");
+	  printf("%qd found\n", *pdata, it.u.array.i);
+	}
+
+      if (set_locate(id, 98654LL, &it) != ERROR_NONE)
+	cons_msg('!', "error with locate\n");
+      else
+	{
+	  if (set_object(id, it, (void **)&pdata) != ERROR_NONE)
+	    cons_msg('!', "error set_object\n");
+	  printf("%qd found\n", *pdata, it.u.array.i);
+	}
+
+      if (test_set == 5)
+	set_release(id);
+    }
+
+  if (test_set == -1 || test_set == 6)
+    {
+      cons_msg('#', "testing flush\n");
+
+      set_flush(id);
+
+      set_show(id);
+
+      set_release(id);
+    }
+
+  if (test_set == -1 || test_set == 7 || test_set == 8)
+    {
+      cons_msg('#', "testing with SET_OPT_SORT\n");
+
+      if (set_reserve(array, SET_OPT_SORT, 1, sizeof (t_id), &id) != ERROR_NONE)
+	cons_msg('!', "error: set_reserve()\n");
+
+      many_add(id, 4, 80LL, 98654LL, 42LL, 122LL);
+
+      many_remove(id, 1, 42LL);
+
+      many_add(id, 2, 45LL, 64LL);
+
+      set_show(id);
+
+      if (test_set == 7)
+	set_release(id);
+    }
+
+  if (test_set == -1 || test_set == 8)
+    {
+      cons_msg('#', "testing clone function\n");
+
+      if (set_clone(id, &cloned) != ERROR_NONE)
+	cons_msg('!', "error in set_clone\n");
+
+      set_release(id);
+
+      many_add(cloned, 1, 89LL);
+
+      set_show(cloned);
+
+      set_release(cloned);
+    }
+
+  if (test_set == -1 || test_set == 9)
+    {
+      cons_msg('#', "testing with a longer list & sorting\n");
+
+      if (set_reserve(array, SET_OPT_SORT, 4, sizeof (t_id), &id) != ERROR_NONE)
+	cons_msg('!', "error set_reserve()\n");
+
+      for (i = 0; i < 64; ++i)
+	{
+	  objs[i] = (i * 234) % 6578;
+	  if (set_add(id, &objs[i]) != ERROR_NONE)
+	    cons_msg('!', "error set_add()\n");
+	}
+
+      printf("--> ");
+      set_foreach(SET_OPT_FORWARD, id, &it, state)
+	{
+	  if (set_object(id, it, (void **)&pdata) != ERROR_NONE)
+	    cons_msg('!', "error set_object\n");
+	  printf("%qd ", *pdata);
+	}
+      printf("\n");
+
+      for (i = 0; i < 64; ++i)
+	{
+	  if (set_locate(id, objs[i], &it) != ERROR_NONE)
+	    cons_msg('!', "error with locate %qd\n", objs[i]);
+	  else
+	    {
+	      if (set_object(id, it, (void **)&pdata) != ERROR_NONE)
+		cons_msg('!', "error set_object\n");
+	      if (*pdata != objs[i])
+		cons_msg('!', "error in returned object %qd\n", objs[i]);
+	    }
+	}
+
+      data = objs[5] - 1;
+      if (set_locate(id, data, &it) == ERROR_NONE)
+	cons_msg('!', "found a non-existent value !\n");
+
+      set_release(id);
+    }
 
   if ((nalloc - nfree) != (alloc_nalloc() - alloc_nfree()))
     cons_msg('!', "error: memory leaks detected: %u/%u -> %u/%u\n",

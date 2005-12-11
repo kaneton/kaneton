@@ -399,7 +399,7 @@ t_error			set_reserve_array(t_opts		opts,
 
 t_error			set_release_array(t_setid		setid);
 
-void		set_test_array(void);
+void		set_test_array(int test_set);
 
 
 /*
