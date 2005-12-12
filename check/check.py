@@ -17,8 +17,8 @@ def 	check_result(result_file, result_2_check):
 	
 	tmp = result_file.split('/')
 	result = OpenFile(result_file + tmp[-2]  +  ".res")
-	#print "result: " + result
-	#print "result2check: " + result_2_check
+	print "result: " + result
+	print "result2check: " + result_2_check
 	
 	if result == result_2_check:
 		return 1
