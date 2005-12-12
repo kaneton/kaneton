@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/kaneton/set_array.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       matthieu bucchianeri   [sun dec  4 17:23:40 2005]
+ * updated       matthieu bucchianeri   [mon dec 12 11:38:04 2005]
  */
 
 #ifndef KANETON_SET_ARRAY_H
@@ -34,11 +34,7 @@ typedef struct
   t_size			datasz;
   t_size			initsz;
 
-  union
-  {
-    t_uint8**			pdata;
-    t_id*			id;
-  }				array;
+  void**			array;
   t_setsz			arraysz;
 }				t_set_array;
 

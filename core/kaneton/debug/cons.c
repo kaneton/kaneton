@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * cons.c
- * 
- * path          /home/mycure/kaneton/core/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Fri Oct 21 19:56:18 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/debug/cons.c
+ *
+ * created       quintard julien   [sat may 28 18:23:13 2005]
+ * updated       matthieu bucchianeri   [mon dec 12 14:16:44 2005]
  */
 
 /*
@@ -102,9 +97,10 @@ void			cons_attr(t_uint8			attr)
 
 int			cons_print_char(char			c)
 {
-  t_uint16		pos = cons.line * CONS_COLUMNS * CONS_BPC +
-    cons.column * CONS_BPC;
+  t_uint16		pos;
 
+  if (cons.line >= CONS_LINES)
+    cons_scroll(1);
   if (c == '\n')
     {
       cons.line++;
@@ -112,20 +108,23 @@ int			cons_print_char(char			c)
 
       return ;
     }
-  
+
   if (c == '\r')
     {
       cons.column = 0;
 
       return ;
     }
-  
-  if (pos >= CONS_SIZE)
-    {
-      cons_scroll(1);
 
-      pos = cons.line * CONS_COLUMNS * CONS_BPC + cons.column * CONS_BPC;
+  if (cons.column >= CONS_COLUMNS)
+    {
+      cons.column = 0;
+      ++cons.line;
+      if (cons.line >= CONS_LINES)
+	cons_scroll(1);
     }
+
+  pos = cons.line * CONS_COLUMNS * CONS_BPC + cons.column * CONS_BPC;
 
   cons.vga[pos] = c;
   cons.vga[pos + 1] = cons.attr;

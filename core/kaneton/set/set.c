@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set.c
  *
  * created       julien quintard   [fri dec  2 19:55:19 2005]
- * updated       matthieu bucchianeri   [mon dec 12 00:27:05 2005]
+ * updated       matthieu bucchianeri   [mon dec 12 14:48:36 2005]
  */
 
 /*
