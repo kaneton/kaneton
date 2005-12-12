@@ -44,6 +44,11 @@ typedef struct			s_serial_data
   t_uint8*			data;
 }				t_serial_data;
 
+typedef	struct			s_serial_buffer
+{
+ char*				name;
+ void*				data;
+}				t_serial_buffer;
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -58,6 +63,10 @@ typedef struct			s_serial_data
 t_error			debug_init(void);
 
 t_error			debug_recv();
+
+t_error			load_data();
+
+char*		get_data(char *name);
 
 t_error			debug_recv_cmd();
 

@@ -25,6 +25,13 @@
  * ---------- functions -------------------------------------------------------
  */
 
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
+
+t_setid			buffers;
+
 /*
  * this function just initialises the debug manager.
  */
@@ -36,7 +43,8 @@ t_error			debug_init(void)
    */
   serial_init(SERIAL_COM1, SERIAL_BR57600, SERIAL_8N1, SERIAL_FIFO_8);
   printf("serial port initialized\n");	
-  printf_init(serial_put, 0); /* pb du flush !  */
+  printf_init(serial_put, 0); 
+  set_reserve(ll, SET_OPT_ALLOC, sizeof(t_serial_buffer), &buffers);
   
   while(1) 	debug_recv();
   
@@ -55,18 +63,58 @@ t_error			debug_recv()
   serial_recv(SERIAL_COM1, &recv_type);
   
   if (!strcmp(recv_type.data, "command"))
-	  debug_recv_cmd();
+	debug_recv_cmd();
+  else if (!strcmp(recv_type.data, "loadfile"))
+  	load_data();  
   else	  
 	printf("debug receive unknown type\n");
+  free(recv_type.data);
+}
+
+
+t_error			load_data()
+{
+  t_serial_data		cmd;
+  t_serial_buffer	buffer;
+  
+  serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
+  buffer.name = cmd.data;
+  free(cmd.data);
+  serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
+  buffer.data = cmd.data;
+  set_add(buffers, &buffer);
+  free(cmd.data);
+}
+
+char*		get_data(char *name)
+{
+	/* set fonction par le id de set et cherche le bon data et le renvoei */
+	/* voir segment/segment_dump*/	
+  t_state		state;
+  t_iterator		i;
+  t_serial_buffer	buffer;
+  t_id			id;
+  
+  set_foreach(SET_OPT_FORWARD, buffers, &i, state)
+  {
+	set_object(buffers, i,(void**)&buffer);
+	printf("%s %s", buffer.name, name, strcmp(buffer.name, name));
+  	if (!strcmp(buffer.name, name))
+	{
+		printf("here again\n");
+		return buffer.data;
+	}
+  }
+ return 0;
 }
 
 t_error			debug_recv_cmd()
 {
   t_serial_data		cmd;	
-  t_serial_data 	cmd_tab_len;
 
   serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
   debug_exec_cmd_tab(&cmd);
+  free(cmd.data);
   serial_put(-1); 
   serial_send(SERIAL_COM1, "endprintf", 9);
 }
