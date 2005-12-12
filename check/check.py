@@ -76,7 +76,7 @@ def	OpenFile(file_path, p = 1):
 	file_content = testfile.read()
 	testfile.close()
 	return file_content
-	
+
 def	get_path(test_list):
 	"""
 	Add to test_list all subdir dir with a 'list' file.
@@ -110,35 +110,44 @@ def	get_functions_name(test_list):
 	
 	while i < len(test_list):
 		tmp_list = test_list[i].split('/')
-		test_list.insert(i + 1, "check_" +  tmp_list[-3] + '_' + tmp_list[-2])
+		test_list.insert(i + 1,["function", "check_" +  tmp_list[-3] + '_' + tmp_list[-2]])
 		i += 2
 
 	
 	return
 
+def	get_file_list(test_list):
+	"""
+	list all file in modules/ to load 
+	"""
+	i = 0
+	while i < len(test_list):
+		if type(test_list[i]) == type(""):
+			tmp = test_list[i].split('/')
+			path = "/".join(tmp[0:-2]) + "/modules/"
+			if os.path.isdir(path):
+				try:
+					test_list.index(["loadfile", path])
+				except ValueError:
+					test_list.insert(i,["loadfile", path])
+		i += 1
 
+	return test_list
+	
 def	ListTest():
 	"""
 	ListTest : get Dir/testlist and scan testlist for all test 
 	checksubdir and list sub-test
 	"""
 	i = 0
-	test_list = [''] 
+	test_list = [""] 
 	nb_path_found = 1
 	
 	while nb_path_found: 
 		nb_path_found = get_path(test_list) 
-	# on a le path avec 01/ split le 01/ 
-	# check for load file 
-	# cree un load ident avant le nom de cette fonction 
-	# dupe tout les doublons 
-	# reste juste ququ ident 
-	# load d apres l ident 
-	# function ou file 
-	# attention il peut y avoir plusieur load il faut overwrite les pointeur 
-	# coter kaneton est free
-
+	
 	get_functions_name(test_list)
+	get_file_list(test_list)
 
 	return test_list
 
@@ -174,21 +183,25 @@ if __name__ == "__main__":
 
 	serial_init("/dev/ttyS0")
 	test_list = ListTest()
+	
 
 	while i < len(test_list):
-		#if test_list[i] == "loadfile":
-#			load_file(test_list[i]) [i + 1] ?
-		#if test_list[i] == "command":
-		print "Launching test: " + test_list[i + 1]
-		result = SendCommand(test_list[i + 1])
-		parsed_result = set_and_parse_result(test_list[i], result)
-		if check_result(test_list[i], parsed_result):
-			print "[OK]"
-			total_ok += 1
+		if test_list[i][0] == "loadfile":
+			print "file loading"
+			i += 1
+		elif test_list[i][0] == "function":	
+			print "Launching test: " + test_list[i - 1]
+			result = SendCommand(test_list[i][1])
+			parsed_result = set_and_parse_result(test_list[i - 1], result)
+			if check_result(test_list[i - 1], parsed_result):
+				print "[OK]"
+				total_ok += 1
+			else:
+				print "[FAILED]"
+				total_failed += 1
+			i += 1 
 		else:
-			print "[FAILED]"
-			total_failed += 1
-		i += 2 
+			i += 1
 
 	print "Passed: " + str(total_ok)
 	print "Failed: " + str(total_failed)
