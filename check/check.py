@@ -164,6 +164,25 @@ def	set_and_parse_result(test_list, result):
 	parsed_result = parse_res.parse_result(result)
 	return parsed_result
 
+def	load_file(test_list):
+	file_list =  os.listdir(test_list)
+	
+	i = 0
+	
+	while i < len(file_list):
+		file_content = OpenFile(test_list + file_list[i], 0)
+		if file_content > 0:
+			print "loading file: " + test_list + file_list[i]
+			data = ("loadfile")
+			tosend = (data)
+			tosend_size = 8
+			serial_send(tosend, tosend_size) 
+			
+			serial_send(file_list[i], len(file_list[i]) + 1) 
+			serial_send(file_content, len(file_content) + 1)	
+		i += 1
+
+
 if __name__ == "__main__":
 	from kserial import *
 	from struct  import *
@@ -187,7 +206,8 @@ if __name__ == "__main__":
 
 	while i < len(test_list):
 		if test_list[i][0] == "loadfile":
-			print "file loading"
+			print "file loading ..."
+			load_file(test_list[i][1])
 			i += 1
 		elif test_list[i][0] == "function":	
 			print "Launching test: " + test_list[i - 1]
