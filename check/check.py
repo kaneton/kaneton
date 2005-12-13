@@ -170,20 +170,19 @@ def	load_file(test_list):
 	i = 0
 	
 	while i < len(file_list):
-		file_content = OpenFile(test_list + file_list[i], 0)
+		objs = os.popen("base64 -e " + test_list + file_list[i] + " tmp")
+		file_content = OpenFile("tmp", 0)
+		#delete tmp
 		if file_content > 0:
 			print "loading file: " + test_list + file_list[i]
 			data = ("loadfile")
 			tosend = (data)
 			tosend_size = 8
 			serial_send(tosend, tosend_size) 	
-			serial_send(file_list[i], len(file_list[i]) + 1) 
+			serial_send(file_list[i], len(file_list[i])) 
 
-			serial_send(file_content, len(file_content) + 1)	
+			serial_send(file_content, len(file_content))	
 			
-		#	t = serial_recv()
-		#	print "send_filename" + file_list[i] 
-		#	print "receveid" + t[1] + "size:" + str(t[0])
 		i += 1
 
 
