@@ -176,10 +176,14 @@ def	load_file(test_list):
 			data = ("loadfile")
 			tosend = (data)
 			tosend_size = 8
-			serial_send(tosend, tosend_size) 
-			
+			serial_send(tosend, tosend_size) 	
 			serial_send(file_list[i], len(file_list[i]) + 1) 
+
 			serial_send(file_content, len(file_content) + 1)	
+			
+		#	t = serial_recv()
+		#	print "send_filename" + file_list[i] 
+		#	print "receveid" + t[1] + "size:" + str(t[0])
 		i += 1
 
 
