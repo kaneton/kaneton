@@ -68,6 +68,7 @@ t_error			debug_recv()
   	load_data();  
   else	  
 	printf("debug receive unknown type\n");
+  /* rajouter un unload file pour cleaner ! */
   free(recv_type.data);
 }
 
@@ -79,33 +80,29 @@ t_error			load_data()
   
   serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
   buffer.name = cmd.data;
-  free(cmd.data);
+/*  free(cmd.data);
+*/
+  
   serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
-  buffer.data = cmd.data;
+  buffer.data = cmd.data; 
   set_add(buffers, &buffer);
-  free(cmd.data);
+  
+  /*free(cmd.data);*/
 }
 
 char*		get_data(char *name)
 {
-	/* set fonction par le id de set et cherche le bon data et le renvoei */
-	/* voir segment/segment_dump*/	
   t_state		state;
   t_iterator		i;
-  t_serial_buffer	buffer;
-  t_id			id;
+  t_serial_buffer*	buffer;
   
   set_foreach(SET_OPT_FORWARD, buffers, &i, state)
   {
 	set_object(buffers, i,(void**)&buffer);
-	printf("%s %s", buffer.name, name, strcmp(buffer.name, name));
-  	if (!strcmp(buffer.name, name))
-	{
-		printf("here again\n");
-		return buffer.data;
-	}
+  	if (!strcmp(buffer->name, name))
+		return (buffer->data);
   }
- return 0;
+ return (0);
 }
 
 t_error			debug_recv_cmd()
