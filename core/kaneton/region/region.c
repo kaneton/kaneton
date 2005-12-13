@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       julien quintard   [wed nov 23 09:21:47 2005]
+ * updated       julien quintard   [sat dec 10 19:20:00 2005]
  */
 
 /*
@@ -40,12 +40,6 @@
  */
 
 extern t_init*		init;
-
-/*
- * the kernel address space identifier.
- */
-
-extern t_asid		kas;
 
 /*
  * ---------- globals ---------------------------------------------------------

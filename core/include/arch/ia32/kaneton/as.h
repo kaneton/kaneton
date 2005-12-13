@@ -42,9 +42,13 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*as_clone)(t_asid,
+  t_error			(*as_give)(t_asid,
+					   t_tskid);
+  t_error			(*as_clone)(t_tskid,
+					    t_asid,
 					    t_asid*);
-  t_error			(*as_reserve)(t_asid*);
+  t_error			(*as_reserve)(t_tskid,
+					      t_asid*);
   t_error			(*as_release)(t_asid);
   t_error			(*as_init)(void);
   t_error			(*as_clean)(void);

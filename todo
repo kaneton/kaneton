@@ -1,4 +1,182 @@
 --
+ ajouter la fonctino set_delete(setid, iterator); pour accelerer
+
+ et aussi set_pop set_push etc..
+
+--
+ ajouter des cflags pour avoir le maximum d'infos.
+
+--
+ bien redire: le header emacs doit etre utilise. la licence doit etre
+ kaneton, et le developeur doit etre le meme nom que KANETON_USER.
+
+ les headers ne doivent pas contenir de pseudo.
+
+--
+ hevea -exec xxdate.exe kaneton.tex pour generer du html
+
+ latex -> html: HeVeA
+
+ ca aurait ete bien un make web mais bon c'est mort.
+
+--
+ as + thread => domain (sprite)
+
+--
+ definir une interface pour les drivers de sorte qu'ils soient portable
+ tres facilement, qu'ils ne fassent que des entree sorties. dans l'interface
+ on fournira le systeme de communication + gestion des structures de donnees.
+
+ a etudier!
+
+--
+ le systeme pue. si on fait un systeme hierarchique alors on pourra
+ JAMAIS allouer un segment, une tache ou autre chose sur une autre machine
+ sauf en passant pas un service supplementaire migrate par exemple.
+
+ de plus il faut trouver un systeme pour liberer les objets allouer:
+
+  1) systeme de time to live
+       il faudrait checker tout le temps si un objet n'est plus utilise
+       donc on aura 1 timer par objet. ce n'est donc pas envisageable.
+       trop lourd, complique, lent.
+  2) systeme de garbage collecting
+       un peu dans le meme principe donc pas possible non plus.
+  3) listing des objets alloues dans le kernel/server pour la desallocation
+  4) listing des objets alloues dans le processus
+
+ exemple:
+   une tache alloue de la memoire partagee au groupe de memoire partagee
+   donc la memoire est peut etre allouee sur une autre machine. si la
+   tache meurt, elle DOIT prevenir les servers/groupes qui lui ont filer
+   des objets dans notre cas on doit prevenir le groupe de memoire partagee
+   de liberer la memoire.
+
+   comment faire?
+
+ 1) on broadcast le fait qu'on est mort
+ 2) on envoie un message a chaque server a qui on a reserver un objet
+    donc ca necessite de maintenir une liste de ces servers.
+
+ attention: probleme de securite, il ne faut pas que quelqu'un se fasse
+            passer pour nous et broadcast ce message.
+
+ il reste deux solutions.
+
+ 1) on broadcast le fait qu'on est mort: systeme securise pour garantir
+    l'authenticite du message
+ 2) avant de mourir le processus (ou son watchdog) appelle chaque server
+    avec les capabilities pour liberer les donnees.
+
+ la premiere est lourde mais finalement surement la plus simple a implementer.
+ il suffit de trouver un moyen pour garantir l'authenticite.
+
+ la seconde est plus clean au niveau de la notification mais par contre
+ il faut garder une trace des objets reserves.
+
+ ok c'est bon j'ai trouve :)
+
+ faut pas le voir comme ca. ca ne peut pas etre automatique et etre elegant
+ en meme temps. en fait jcrois que vianney faisait comme ca, il avait raison.
+
+ lorsque qu'une tache reserve un objet, il le fait un point c'est tout.
+   -> points positifs: interface de code simple puisque aucune gestion du
+      cote client (c'etait une des contraintes)
+ par contre le server qui a fournit lui demande au groupe notify d'enregistrer
+ le couple: server/client pour que lorsque le client meurt il en soit
+ averti. bien sur il sera plus pratique de s'enregistrer aupres de notify
+ avant de repondre au client, au cas ou le client meurt entre la reponse
+ et l'enregistrement.
+ de plus on pourrait imaginer que le groupe notify avertisse egalement le
+ client que le server est mort. ce serait pratique genre, il recoit le
+ message, il stoppe tous ses threads, il s'endort pour quelque secondes,
+ le temps que le server redemarre ou qu'un autre prenne le relai, puis
+ il redemande les objets. (ca implique de partager les objets entre les
+ threads, enfin ca c'est un detail du client).
+   -> points positifs: pas de broadcast, systeme de capability entre le server
+      et notify (faudra trouver), pas de liste crades dans le client, ni
+      dans le server.
+ ensuite quand la tache meurt, le service notify de sa machine le saura
+ (comment? polling, message du kernel, message du client a notify avant de
+ mourrir, bref!) et celui ci enverra un message au groupe notify pour
+ le signaler.
+
+ cette methode est je pense la plus elegante car ca passe pas ou groupe
+ distribue, en plus c'est leger du cote client, du cote serveur il a le
+ choix d'etre notifie ou non. bon son interface se complexifie un peu mais bon.
+ il faut qu il gere un message de notify pour liberer un objet.
+
+ !!! dans le cas du kernel cela n'arrange rien.
+ il faut pouvoir faire en sorte que le kernel sache pour chaque objet quand
+ est ce que son proprietaire est mort opur pouvoir les liberer. cela serait
+ trop complique.
+
+ 3 solutions:
+
+ 1) systeme hierarchique de sorte qu'on ne puisse liberer qu'un objet
+    qui libere en chaine tous les autres. dans ce cas on peut se demander
+    a quoi ca sert de diviser les objets en une hierarchie. mais ca sert
+    quand meme notammenet pour l'emulation, de fork par exemple.
+
+ 2) champ ownid dans chaque objet et on scanne tout le kernel des qu un
+    process meurt pour liberer les objets appartenant au process
+
+ 3) objet object qui contiendrait un ensemble de sous objets genre segments,
+    set, task, threads etc.. et libererait tout.
+
+ une solution a tout ce merdier serait une systeme generique pour le kernel
+ comme pour les servers/groups. la solution sera qu'apres chaque appel systeme
+ (message de reservation d'objets) ca envoie un message au notifier pour lui
+ dire d'avertir le mec qui gere l'objet quand on meurt. comme ca ca marche
+ avec le kernel et avec les servers.
+
+ finalement il faudrait revoir l'entite kernel peut etre pour annihiler
+ cette idee de hierarchie de communication et faire que le kernel comme les
+ autre peut communiquer. il faut juste trouver un moyen de l'implementer
+ correctement car c'est sur qu'un message bloquant n'est pas possible
+ dans les meme termes que les processus. de plus le kernel peut avoir
+ envoye plusieurs message "bloquant", donc en quelque sorte le kernel ne
+ peut faire que de l'asynchrone.
+
+ cette question venait du fait que ca faisait chier de pas pouvoir reserver
+ deux as comme ca separement sans avoir encore de tache a qui les assigner.
+ le probleme etant qu il fallait pouvoir savoir quand detruire les objets
+ car ces objets la n'avaient pas de liens avec la tache qui meurt.
+
+ maintenant qu on a une solution, la question est, est ce que ca vaut le
+ coup car ca va couter tres cher de faire de segment_reserve() puis
+ segment_attach().
+
+ solutions:
+
+ 1) abandonner cette idee et garder la hierarchie.
+ 2) on fournit une autre fonction qui fait les deux d'un coup pour
+    que ce soit plus rapide dans la majeure partie des cas
+
+ a noter que sur une machine, sur le microkernel, la communication est sure.
+ on peut donc tout a fait se permettre des envois de messages sans
+ acquittements.
+
+ pour moi il faut garder le systeme hierarchique sinon ca fout tout par
+ terre. on ne pourra plus recuperer une capability car ca se joue sur
+ la hierarchy et ca fera bcp trop de suscribe aupres de notify (pour chaque
+ objet reserve!!!).
+
+ de plus penser a faire une capability core, qui sera notamment donnee
+ a mod pour lui donner tous les droits. faire des capability sur les managers
+ comme sur segment qui sera donne au service swap.
+
+--
+ changer les protos de as_reserve(t_tskid, t_asid*)
+
+--
+ trouver un moyen de gerer un systeme d'evenements intra kernel. soit
+ comme unix soit on fait differemment. sleep/wakeup
+
+--
+ rajouter un asid dans segments
+
+--
  retoucher design.tex en fonction de seminar.tex
 
 --
@@ -68,11 +246,6 @@
  plus precisement soit car machdep soit "faut trouver comment nommer"
  et comme ca aucun service ne va se faire chier a nommer les periph a part
  dev.
-
---
- mettre une licence sur le code
-
- mettre a jour tous les headers pour pointer sur la licence.
 
 --
  buckman: cours makefile, fin cours dev-env avec explication du
@@ -255,13 +428,6 @@
  continuer le cours sur loaders linkers de fab: linker.iecc.com
 
  un nouveau pourrait le faire.
-
---
- retoucher mkp.py pour qu'il marche: t_bpt_addr() addr
- -> et rajouter le chemin relatif de set_bpt.c dans
-    core/include/kaneton/set.h
- mkp: gerer t_bpt_addr(set), les fonctions statiques, les fonctions
- qui sont dans un commentaire etc..
 
 --
  systeme de reboot automatique

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/debug/cons.c
+ * file          /home/mycure/kaneton/core/kaneton/debug/cons.c
  *
  * created       quintard julien   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [mon dec 12 14:16:44 2005]
+ * updated       julien quintard   [tue dec 13 13:24:10 2005]
  */
 
 /*
@@ -162,7 +162,7 @@ void			cons_msg(char				indicator,
   va_list		args;
 
   cons.attr = CONS_FRONT(CONS_BLUE) | CONS_BACK(CONS_BLACK) | CONS_INT;
-  cons_print_char('[');
+  printf("[");
 
   switch (indicator)
     {
@@ -177,10 +177,10 @@ void			cons_msg(char				indicator,
       break;
     }
 
-  cons_print_char(indicator);
+  printf("%c", indicator);
 
   cons.attr = CONS_FRONT(CONS_BLUE) | CONS_BACK(CONS_BLACK) | CONS_INT;
-  cons_print_string("] ");
+  printf("] ");
 
   cons.attr = attr;
 

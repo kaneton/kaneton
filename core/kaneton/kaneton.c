@@ -154,6 +154,13 @@ void			kaneton(t_init*				bootloader)
   if (segment_init(FIT_FIRST) != ERROR_NONE)
     kaneton_error("cannot initialise the segment manager\n");
 
+  /*
+   * 12)
+   */
+
+  if (task_init() != ERROR_NONE)
+    kaneton_error("cannot initialise the task manager\n");
+
 /*                                                                 [cut] /k2 */
 
 #ifdef SERIAL

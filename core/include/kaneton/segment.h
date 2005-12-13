@@ -54,6 +54,8 @@ typedef struct
 {
   t_segid			segid;
 
+  t_asid			asid;
+
   t_type			type;
 
   t_paddr			address;
@@ -134,6 +136,10 @@ t_error			segment_show(t_segid			segid);
 
 t_error			segment_dump(void);
 
+t_error			segment_clone(t_asid			asid,
+				      t_segid			old,
+				      t_segid*			new);
+
 t_error			segment_first_fit(o_as*			as,
 					  t_psize		size,
 					  t_perms		perms,
@@ -144,18 +150,15 @@ t_error			segment_reserve(t_asid			asid,
 					t_perms			perms,
 					t_segid*		segid);
 
-t_error			segment_release(t_asid			asid,
-					t_segid			segid);
+t_error			segment_release(t_segid			segid);
 
 t_error			segment_catch(t_asid			asid,
 				      t_segid			segid);
 
-t_error			segment_perms(t_asid			asid,
-				      t_segid			segid,
+t_error			segment_perms(t_segid			segid,
 				      t_perms			perms);
 
-t_error			segment_type(t_asid			asid,
-				     t_segid			segid,
+t_error			segment_type(t_segid			segid,
 				     t_type			type);
 
 t_error			segment_flush(t_asid			asid);
@@ -166,8 +169,6 @@ t_error			segment_get(t_segid			segid,
 t_error			segment_init(t_fit			fit);
 
 t_error			segment_clean(void);
-
-t_error			segment_test(void);
 
 
 /*

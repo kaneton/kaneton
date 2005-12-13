@@ -64,7 +64,7 @@
  */
 
 #define CONF_DEBUG							\
-  (0)
+  (DEBUG_TASK)
 
 /*
  * the machine-dependent configuration debug

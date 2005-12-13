@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/include/kaneton/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       julien quintard   [wed nov 30 14:53:57 2005]
+ * updated       julien quintard   [sat dec 10 19:11:42 2005]
  */
 
 #ifndef KANETON_TASK_H
@@ -69,6 +69,13 @@
 #define TASK_LPRIOR_BACKGROUND	10
 
 /*
+ * init sizes for the array data structure set
+ */
+
+#define TASK_THREADS_INITSZ	0x1
+#define TASK_WAITS_INITSZ	0x1
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -80,6 +87,8 @@ typedef struct
 {
   t_tskid			tskid;
 
+  t_tskid			parent;
+
   t_class			class;
   t_behav			behav;
   t_prior			prior;
@@ -87,14 +96,13 @@ typedef struct
   t_asid			asid;
   t_setid			threads;
 
-  t_setid			children;
-
   t_state			sched;
 
-  /* XXX t_wait			wait; */
-  t_setid			waitlist;
+  /* XXX t_wait			status; */
 
-  /* XXX machdep_data(o_task); */
+  t_setid			waits;
+
+  machdep_data(o_task);
 }				o_task;
 
 /*
@@ -109,7 +117,7 @@ typedef struct
 
   t_setid			container;
 
-  /* XXX machdep_data(m_task); */
+  machdep_data(m_task);
 }				m_task;
 
 /*
@@ -153,6 +161,32 @@ typedef struct
  *
  *      ../../kaneton/task/task.c
  */
+
+/*
+ * ../../kaneton/task/task.c
+ */
+
+t_error			task_show(t_tskid			tskid);
+
+t_error			task_dump(void);
+
+t_error			task_clone(t_tskid			old,
+				   t_tskid*			new);
+
+t_error			task_reserve(t_class			class,
+				     t_behav			behav,
+				     t_prior			prior,
+				     t_tskid*			tskid);
+
+t_error			task_release(t_tskid			tskid);
+
+t_error			task_get(t_tskid				tskid,
+				 o_task**				o);
+
+t_error			task_init(void);
+
+t_error			task_clean(void);
+
 
 /*
  * eop

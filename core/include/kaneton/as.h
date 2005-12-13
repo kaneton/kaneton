@@ -48,6 +48,8 @@ typedef struct
 {
   t_asid			asid;
 
+  t_tskid			tskid;
+
   t_setid			segments;
   t_setid			regions;
 
@@ -119,10 +121,15 @@ t_error			as_show(t_asid				asid);
 
 t_error			as_dump(void);
 
-t_error			as_clone(t_asid				old,
+t_error			as_give(t_asid			asid,
+				t_tskid			tskid);
+
+t_error			as_clone(t_tskid			tskid,
+				 t_asid				old,
 				 t_asid*			new);
 
-t_error			as_reserve(t_asid*			asid);
+t_error			as_reserve(t_tskid			tskid,
+				   t_asid*			asid);
 
 t_error			as_release(t_asid			asid);
 

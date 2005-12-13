@@ -33,7 +33,8 @@ include			../../../../../env/.env.mk
 KANETON_LO		:=		kaneton.lo
 
 KANETON_C		:=		as.c				\
-					segment.c			
+					segment.c			\
+					task.c				
 
 KANETON_O		:=		$(KANETON_C:.c=.o)
 

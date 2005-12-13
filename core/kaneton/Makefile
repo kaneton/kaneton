@@ -39,6 +39,7 @@ SUBDIRS			:=		arch				\
 					segment				\
 					set				\
 					stats				\
+					task				\
 					$(_CHECK_DIR_)			
 
 # kaneton libraries
@@ -52,6 +53,7 @@ KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 					$(_SEGMENT_LO_)			\
 					$(_SET_LO_)			\
 					$(_STATS_LO_)			\
+					$(_TASK_LO_)			\
 					$(_CHECK_LO_)			
 
 # kaneton binary

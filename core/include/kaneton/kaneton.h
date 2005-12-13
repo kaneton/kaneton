@@ -98,8 +98,7 @@
 #include <kaneton/segment.h>
 #include <kaneton/set.h>
 #include <kaneton/stats.h>
-
-// XXX #include <kaneton/task.h>
+#include <kaneton/task.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       julien quintard   [sun dec  4 17:04:20 2005]
+## updated       julien quintard   [sat dec 10 13:53:38 2005]
 ##
 
 #
@@ -81,7 +81,8 @@ clean:
 
 SUBDIRS			:=		libs $(_SRC_DEP_)
 
-CLEARDIRS		:=		libs view export
+CLEARDIRS		:=		libs view export check		\
+					internship cheat
 
 #
 # ---------- development ------------------------------------------------------

@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/include/kaneton/debug.h
  *
  * created       julien quintard   [mon nov 28 19:37:01 2005]
- * updated       julien quintard   [wed nov 30 14:54:42 2005]
+ * updated       julien quintard   [sat dec 10 15:47:24 2005]
  */
 
 #ifndef KANETON_DEBUG_H
@@ -27,6 +27,10 @@
 #define DEBUG_SEGMENT		(1 << 2)
 #define DEBUG_SET		(1 << 3)
 #define DEBUG_STATS		(1 << 4)
+#define DEBUG_REGION		(1 << 5)
+#define DEBUG_TASK		(1 << 6)
+#define DEBUG_THREAD		(1 << 7)
+#define DEBUG_SCHEDULE		(1 << 8)
 
 #define DEBUG								\
   (CONF_DEBUG)

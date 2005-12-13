@@ -33,19 +33,19 @@
 
 typedef struct
 {
+  t_error			(*segment_clone)(t_asid,
+						 t_segid,
+						 t_segid*);
   t_error			(*segment_reserve)(t_asid,
 						   t_psize,
 						   t_perms,
 						   t_segid*);
-  t_error			(*segment_release)(t_asid,
-						   t_segid);
+  t_error			(*segment_release)(t_segid);
   t_error			(*segment_catch)(t_asid,
 						 t_segid);
-  t_error			(*segment_perms)(t_asid,
-						 t_segid,
+  t_error			(*segment_perms)(t_segid,
 						 t_perms);
-  t_error			(*segment_type)(t_asid,
-						t_segid,
+  t_error			(*segment_type)(t_segid,
 						t_type);
   t_error			(*segment_flush)(t_asid);
   t_error			(*segment_init)(t_fit);

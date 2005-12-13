@@ -57,12 +57,6 @@ machdep_include(segment);
 extern t_init*		init;
 
 /*
- * the kernel address space identifier.
- */
-
-extern t_asid		kas;
-
-/*
  * ---------- globals ---------------------------------------------------------
  */
 
@@ -102,7 +96,9 @@ t_error			segment_show(t_segid			segid)
   if (segment_get(segid, &o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  cons_msg('#', "  segment %qd:\n", segid);
+  cons_msg('#', "  segment %qd in address space %qd:\n",
+	   segid,
+	   o->asid);
 
   /*
    * 2)
@@ -206,6 +202,53 @@ t_error			segment_dump(void)
 }
 
 /*
+ * this function clones a segment.
+ *
+ * steps:
+ *
+ * 1) gets the address space object given its identifier.
+ * 2) chooses the correct fit.
+ * 3) calls the machine dependent code.
+ */
+
+t_error			segment_clone(t_asid			asid,
+				      t_segid			old,
+				      t_segid*			new)
+{
+  o_segment*		from;
+  o_segment*		to;
+  o_as*			as;
+
+  SEGMENT_ENTER(segment);
+
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &as) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (segment_get(old, &from) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (segment_reserve(asid, from->size, from->perms, new) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (machdep_call(segment, segment_clone, asid, old, new) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
+}
+
+/*
  * this function tries to find free space in the segment set via the
  * first fit algorithm.
  *
@@ -251,6 +294,7 @@ t_error			segment_first_fit(o_as*			as,
 
       memset(&o, 0x0, sizeof(o_segment));
 
+      o.asid = as->asid;
       o.address = head->address + head->size;
       o.size = size;
       o.perms = perms;
@@ -300,6 +344,7 @@ t_error			segment_first_fit(o_as*			as,
 
 	  memset(&o, 0x0, sizeof(o_segment));
 
+	  o.asid = as->asid;
 	  o.address = current->address + current->size;
 	  o.size = size;
 	  o.perms = perms;
@@ -341,6 +386,7 @@ t_error			segment_first_fit(o_as*			as,
 
       memset(&o, 0x0, sizeof(o_segment));
 
+      o.asid = as->asid;
       o.address = tail->address + tail->size;
       o.size = size;
       o.perms = perms;
@@ -421,15 +467,16 @@ t_error			segment_reserve(t_asid			asid,
  * steps:
  *
  * 1) calls the machine dependent code.
- * 2) gets the as object from its identifier.
- * 3) removes the segment from the address space.
- * 4) removes the segment from the segment container.
+ * 2) gets the segment object.
+ * 3) gets the as object from its identifier.
+ * 4) removes the segment from the address space.
+ * 5) removes the segment from the segment container.
  */
 
-t_error			segment_release(t_asid			asid,
-					t_segid			segid)
+t_error			segment_release(t_segid			segid)
 {
   o_as*			as;
+  o_segment*		o;
 
   SEGMENT_ENTER(segment);
 
@@ -437,25 +484,32 @@ t_error			segment_release(t_asid			asid,
    * 1)
    */
 
-  if (machdep_call(segment, segment_release, asid, segid) != ERROR_NONE)
+  if (machdep_call(segment, segment_release, segid) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
+  if (segment_get(segid, &o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (set_remove(as->segments, segid) != ERROR_NONE)
+  if (as_get(o->asid, &as) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 4)
+   */
+
+  if (set_remove(as->segments, segid) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 5)
    */
 
   if (set_remove(segment->container, segid) != ERROR_NONE)
@@ -514,6 +568,9 @@ t_error			segment_catch(t_asid			asid,
    * 4)
    */
 
+  /* XXX d'abord l'enlever de l'ancien asid si present, ensuite le rajouter
+   mais egalement mettre l'asid correctement */
+
   if (set_add(as->segments, &o->segid) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
@@ -538,20 +595,15 @@ t_error			segment_catch(t_asid			asid,
  *
  * steps:
  *
- * 1) gets the address space object.
- * 2) verifies that the segment is held by an address space.
- * 3) gets the segment object.
- * 4) checks the perms argument.
- * 5) finally, sets the new permissions.
- * 6) calls the machine-dependent code.
+ * 1) gets the segment object.
+ * 2) checks the perms argument.
+ * 3) finally, sets the new permissions.
+ * 4) calls the machine-dependent code.
  */
 
-t_error			segment_perms(t_asid			asid,
-				      t_segid			segid,
+t_error			segment_perms(t_segid			segid,
 				      t_perms			perms)
 {
-  o_as*			as;
-  t_iterator		i;
   o_segment*		o;
 
   SEGMENT_ENTER(segment);
@@ -560,41 +612,27 @@ t_error			segment_perms(t_asid			asid,
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
+  if (segment_get(segid, &o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (set_locate(as->segments, segid, &i) != ERROR_NONE)
+  if (!(perms & PERM_EXEC) && !(perms & PERM_READ) & !(perms & PERM_WRITE))
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  o->perms = perms;
 
   /*
    * 4)
    */
 
-  if (!(perms & PERM_EXEC) && !(perms & PERM_READ) & !(perms & PERM_WRITE))
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 5)
-   */
-
-  o->perms = perms;
-
-  /*
-   * 6)
-   */
-
-  if (machdep_call(segment, segment_perms, asid, segid, perms) != ERROR_NONE)
+  if (machdep_call(segment, segment_perms, segid, perms) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
@@ -605,20 +643,15 @@ t_error			segment_perms(t_asid			asid,
  *
  * steps:
  *
- * 1) gets the address space object.
- * 2) verifies that the segment is held by an address space.
- * 3) gets the segment object.
- * 4) checks the type argument.
- * 5) finally, sets the new type.
- * 6) calls the machine-dependent code.
+ * 1) gets the segment object.
+ * 2) checks the type argument.
+ * 3) finally, sets the new type.
+ * 4) calls the machine-dependent code.
  */
 
-t_error			segment_type(t_asid			asid,
-				     t_segid			segid,
+t_error			segment_type(t_segid			segid,
 				     t_type			type)
 {
-  o_as*			as;
-  t_iterator		i;
   o_segment*		o;
 
   SEGMENT_ENTER(segment);
@@ -627,41 +660,27 @@ t_error			segment_type(t_asid			asid,
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
+  if (segment_get(segid, &o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (set_locate(as->segments, segid, &i) != ERROR_NONE)
+  if ((type != SEGMENT_TYPE_MEMORY) && (type != SEGMENT_TYPE_CATCH))
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  o->type = type;
 
   /*
    * 4)
    */
 
-  if ((type != SEGMENT_TYPE_MEMORY) && (type != SEGMENT_TYPE_CATCH))
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 5)
-   */
-
-  o->type = type;
-
-  /*
-   * 6)
-   */
-
-  if (machdep_call(segment, segment_type, asid, segid, type) != ERROR_NONE)
+  if (machdep_call(segment, segment_type, segid, type) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
@@ -677,13 +696,12 @@ t_error			segment_type(t_asid			asid,
  * 2) gets the address space object.
  * 3) for every segment in the address space, removes the segment from
  *    the segment container to destroy it.
- * 4) then, flushes the address space's segment set.
  */
 
 t_error			segment_flush(t_asid			asid)
 {
   t_state		state;
-  o_segment*		data;
+  t_segid*		data;
   o_as*			as;
   t_iterator		i;
 
@@ -706,7 +724,7 @@ t_error			segment_flush(t_asid			asid)
   /*
    * 3)
    */
-
+ 
   set_foreach(SET_OPT_FORWARD, as->segments, &i, state)
     {
       if (set_object(as->segments, i, (void**)&data) != ERROR_NONE)
@@ -717,23 +735,11 @@ t_error			segment_flush(t_asid			asid)
 	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 	}
 
-      if (set_remove(segment->container, data->segid) != ERROR_NONE)
-	{
-	  cons_msg('!', "segment: cannot remove the previously found "
-		   "object\n");
-
-	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-	}
+      if (segment_release(*data) != ERROR_NONE)
+	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
     }
 
-  /*
-   * 4)
-   */
-
-  if (set_flush(as->segments) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+ SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
 /*
@@ -762,13 +768,8 @@ t_error			segment_get(t_segid			segid,
  *    structure.
  * 3) reserves the segment set which will contain the system's segments.
  * 4) tries to reserve a statistics object.
- * 5) for each pre-reserved segment, inserts it into the segment container.
- *    note that we use the address as the identifier. this is not very
- *    elegant but we have no choice to be able to use every sorted set.
- *    moreover we could use the set without the SET_ALLOC option but
- *    we prefered use it to be more coherent.
- * 6) calls the machine-dependent code.
- * 7) if needed, dumps the segments.
+ * 5) calls the machine-dependent code.
+ * 6) if needed, dumps the segments.
  */
 
 t_error			segment_init(t_fit			fit)
@@ -819,34 +820,15 @@ t_error			segment_init(t_fit			fit)
    * 5)
    */
 
-  for (i = 0; i < init->nsegments; i++)
-    {
-      init->segments[i].segid = (t_segid)init->segments[i].address;
-
-      if (set_add(segment->container, &init->segments[i]) != ERROR_NONE)
-	{
-	  cons_msg('!', "segment: cannot add a pre-reserved segment in "
-		   "the segment container\n");
-
-	  return (ERROR_UNKNOWN);
-	}
-    }
+  if (machdep_call(segment, segment_init, fit) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 6)
    */
 
-  if (machdep_call(segment, segment_init, fit) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 7)
-   */
-
 #if (DEBUG & DEBUG_SEGMENT)
   segment_dump();
-
-  segment_test();
 #endif
 
   return (ERROR_NONE);
@@ -865,6 +847,10 @@ t_error			segment_init(t_fit			fit)
 
 t_error			segment_clean(void)
 {
+  t_state		state;
+  o_segment*		data;
+  t_iterator		i;
+
   /*
    * 1)
    */
@@ -875,6 +861,20 @@ t_error			segment_clean(void)
   /*
    * 2)
    */
+
+  set_foreach(SET_OPT_FORWARD, segment->container, &i, state)
+    {
+      if (set_object(segment->container, i, (void**)&data) != ERROR_NONE)
+	{
+	  cons_msg('!', "segment: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	}
+
+      if (segment_release(data->segid) != ERROR_NONE)
+	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    }
 
   if (set_release(segment->container) != ERROR_NONE)
     {
@@ -896,27 +896,4 @@ t_error			segment_clean(void)
   free(segment);
 
   return (ERROR_NONE);
-}
-
-/*
- * this function tests the segment manager.
- */
-
-t_error			segment_test(void)
-{
-  t_segid		segid;
-
-  if (segment_reserve(kas, 42, PERM_EXEC, &segid) != ERROR_NONE)
-    printf("error: segment_reserve()\n");
-
-  return ; // XXX to-remove
-
-  /*
-   * XXX continue tests
-   */
-
-  segment_dump();
-
-  if (segment_flush(kas) != ERROR_NONE)
-    printf("error: segment_flush()\n");
 }

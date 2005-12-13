@@ -37,6 +37,7 @@ extern m_as*		as;
 
 i_as			as_interface =
   {
+    ia32_as_give,
     ia32_as_clone,
     ia32_as_reserve,
     ia32_as_release,
@@ -52,7 +53,22 @@ i_as			as_interface =
  * XXX
  */
 
-t_error			ia32_as_clone(t_asid			old,
+t_error			ia32_as_give(t_asid			asid,
+				     t_tskid			tskid)
+{
+  AS_ENTER(as);
+
+  /* XXX */
+
+  AS_LEAVE(as, ERROR_NONE);
+}
+
+/*
+ * XXX
+ */
+
+t_error			ia32_as_clone(t_tskid			tskid,
+				      t_asid			old,
 				      t_asid*			new)
 {
   AS_ENTER(as);
@@ -66,7 +82,8 @@ t_error			ia32_as_clone(t_asid			old,
  * XXX
  */
 
-t_error			ia32_as_reserve(t_asid*			asid)
+t_error			ia32_as_reserve(t_tskid			tskid,
+					t_asid*			asid)
 {
   AS_ENTER(as);
 

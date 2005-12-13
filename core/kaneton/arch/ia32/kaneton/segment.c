@@ -43,6 +43,7 @@ i_segment		segment_interface =
     NULL,
     NULL,
     NULL,
+    NULL,
     ia32_segment_init,
     ia32_segment_clean
   };

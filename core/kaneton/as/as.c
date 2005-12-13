@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * as.c
- * 
- * path          /home/mycure/kaneton/core/kaneton/segment
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Nov 10 21:58:33 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/mycure/kaneton/core/kaneton/as/as.c
+ *
+ * created       julien quintard   [tue dec 13 03:05:27 2005]
+ * updated       julien quintard   [tue dec 13 13:33:21 2005]
  */
 
 /*
@@ -19,13 +14,8 @@
  *
  * the address space manager manages address spaces.
  *
- * in kaneton, the address spaces are not directly linked to processes.
- *
- * in fact, an address space has to be reserved to, then, be attached
- * to a task.
- *
  * an address space describes process' useable memory. each address space
- * is composed of two set.
+ * is composed of two sets.
  *
  * the first describes the segments held by this address space, in other
  * words the physical memory.
@@ -33,14 +23,7 @@
  * the latter describes the regions, the virtual areas which reference
  * some segments.
  *
- * note the the address space manager specifically manages the kernel
- * address space because there is no task object for the kernel so
- * no address space linked to it.
- *
- * we wanted to be able to dump the memory used by the kernel so we
- * decided to create a static kernel address space.
- *
- * moreover, this will be useful for creating kernel threads.
+ * XXX give()
  */
 
 /*
@@ -52,15 +35,12 @@
  * set of segments which list the segments held by this address space and
  * a set of regions which describes the useable virtual address ranges.
  *
- * the student just has to write the functions to reserve, release, find etc..
+ * the student just has to write the functions to reserve, release, get etc..
  * an address space.
  *
  * note that the address space does nothing more. indeed, the segment
  * manager and the region manager will add and/or remove the segments/regions
  * to/from the address space by their own.
- *
- * the address space manager also builds a very special address space object
- * for the kernel.
  */
 
 /*
@@ -81,12 +61,6 @@ machdep_include(as);
  */
 
 m_as*			as = NULL;
-
-/*
- * the kernel address space.
- */
-
-t_asid			kas = ID_UNUSED;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -121,7 +95,9 @@ t_error			as_show(t_asid				asid)
   if (as_get(asid, &o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  cons_msg('#', "  address space %qd:\n", asid);
+  cons_msg('#', "  address space %qd in task %qd:\n",
+	   asid,
+	   o->tskid);
 
   /*
    * 2)
@@ -160,7 +136,7 @@ t_error			as_show(t_asid				asid)
  * steps:
  *
  * 1) gets the set's size.
- * 2) for each addres space hold by the address space container, dumps
+ * 2) for each address space hold by the address space container, dumps
  *    the address space identifier.
  */
 
@@ -200,26 +176,90 @@ t_error			as_dump(void)
 }
 
 /*
+ * this function gives an address space from a task to another.
+ *
+ * steps:
+ *
+ * 1) gets the address space object given its identifier.
+ * 2) gets the source task object.
+ * 3) gets the destination task object.
+ * 4) swaps the address space identifier.
+ * 5) calls the machine-dependent code.
+ */
+
+t_error			as_give(t_asid			asid,
+				t_tskid			tskid)
+{
+  o_task*		from;
+  o_task*		to;
+  o_as*			o;
+
+  AS_ENTER(as);
+
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (task_get(o->tskid, &from) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (task_get(tskid, &to) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (to->asid != ID_UNUSED)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  from->asid = ID_UNUSED;
+  to->asid = asid;
+
+  /*
+   * 5)
+   */
+
+  if (machdep_call(as, as_give, asid, tskid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  AS_LEAVE(as, ERROR_NONE);
+}
+
+/*
  * this function clones an address space.
  *
  * steps:
  *
  * 1) gets the source address space object given its identifier.
- * 2) reserves the cloned address space object.
- * 3) gets the destination address space object previously reserved.
- * 4) releases the prereserved segment and region sets because we will
- *    clone these sets from the source address space object so we have to
- *    release them before.
- * 5) clones the segment and region sets from the source address space
- *    object.
- * 6) calls the machine-dependent code.
+ * 2) gets the task object.
+ * 3) reserves the cloned address space object.
+ * 4) gets the destination address space object previously reserved.
+ * 6) clones the segment set from the source address space object.
+ * 7) clones the region set from the source address space object.
+ * 8) calls the machine-dependent code.
  */
 
-t_error			as_clone(t_asid				old,
+t_error			as_clone(t_tskid			tskid,
+				 t_asid				old,
 				 t_asid*			new)
 {
+  t_state		state;
+  o_task*		task;
   o_as*			from;
   o_as*			to;
+  t_iterator		i;
 
   AS_ENTER(as);
 
@@ -234,41 +274,75 @@ t_error			as_clone(t_asid				old,
    * 2)
    */
 
-  if (as_reserve(new) != ERROR_NONE)
+  if (task_get(tskid, &task) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (task->asid != ID_UNUSED)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (as_get(*new, &to) != ERROR_NONE)
+  if (as_reserve(tskid, new) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (set_release(to->segments) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  if (set_release(to->regions) != ERROR_NONE)
+  if (as_get(*new, &to) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 5)
    */
 
-  if (set_clone(from->segments, &to->segments) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  set_foreach(SET_OPT_FORWARD, from->segments, &i, state)
+    {
+      t_segid		needless;
+      t_segid*		data;
 
-  if (set_clone(from->regions, &to->regions) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+      if (set_object(from->segments, i, (void**)&data) != ERROR_NONE)
+	{
+	  cons_msg('!', "as: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  AS_LEAVE(as, ERROR_UNKNOWN);
+	}
+
+      if (segment_clone(to->segments, *data, &needless) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+    }
 
   /*
    * 6)
    */
 
-  if (machdep_call(as, as_clone, old, new) != ERROR_NONE)
+  set_foreach(SET_OPT_FORWARD, from->regions, &i, state)
+    {
+      t_regid		needless;
+      t_regid*		data;
+
+      if (set_object(from->regions, i, (void**)&data) != ERROR_NONE)
+	{
+	  cons_msg('!', "as: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  AS_LEAVE(as, ERROR_UNKNOWN);
+	}
+
+      /* XXX
+      if (region_clone(to->regions, *data, &needless) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+      */
+    }
+
+  /*
+   * 7)
+   */
+
+  if (machdep_call(as, as_clone, tskid, old, new) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
@@ -279,16 +353,20 @@ t_error			as_clone(t_asid				old,
  *
  * steps:
  *
- * 1) initialises the address space object.
- * 2) reserves an identifier for the address space object.
- * 3) reserves the set of segments for the new address space object.
- * 4) reserves the set of regions for the new address space object.
- * 5) adds the new address space object in the address space container.
- * 6) calls the machine-dependent code.
+ * 1) gets the task object.
+ * 2) initialises the address space object.
+ * 3) reserves an identifier for the address space object.
+ * 4) reserves the set of segments for the new address space object.
+ * 5) reserves the set of regions for the new address space object.
+ * 6) adds the new address space object in the address space container.
+ * 7) sets the address space into the task object.
+ * 8) calls the machine-dependent code.
  */
 
-t_error			as_reserve(t_asid*			asid)
+t_error			as_reserve(t_tskid			tskid,
+				   t_asid*			asid)
 {
+  o_task*		task;
   o_as			o;
 
   AS_ENTER(as);
@@ -297,10 +375,25 @@ t_error			as_reserve(t_asid*			asid)
    * 1)
    */
 
-  memset(&o, 0x0, sizeof(o_as));
+  if (task_get(tskid, &task) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (task->asid != ID_UNUSED)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 2)
+   */
+
+  memset(&o, 0x0, sizeof(o_as));
+
+  o.tskid = tskid;
+
+  o.segments = ID_UNUSED;
+  o.regions = ID_UNUSED;
+
+  /*
+   * 3)
    */
 
   if (id_reserve(&as->id, asid) != ERROR_NONE)
@@ -309,7 +402,7 @@ t_error			as_reserve(t_asid*			asid)
   o.asid = *asid;
 
   /*
-   * 3)
+   * 4)
    */
 
   if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_SEGMENTS_INITSZ,
@@ -321,7 +414,7 @@ t_error			as_reserve(t_asid*			asid)
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_REGIONS_INITSZ,
@@ -335,7 +428,7 @@ t_error			as_reserve(t_asid*			asid)
     }
 
   /*
-   * 5)
+   * 6)
    */
 
   if (set_add(as->container, &o) != ERROR_NONE)
@@ -349,10 +442,16 @@ t_error			as_reserve(t_asid*			asid)
     }
 
   /*
-   * 6)
+   * 7)
    */
 
-  if (machdep_call(as, as_reserve, asid) != ERROR_NONE)
+  task->asid = *asid;
+
+  /*
+   * 8)
+   */
+
+  if (machdep_call(as, as_reserve, tskid, asid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
@@ -365,16 +464,17 @@ t_error			as_reserve(t_asid*			asid)
  *
  * 1) calls the machine-dependent code.
  * 2) gets the address space object given its identifier.
- * 3) releases the address space object identifier.
- * 4) releases the address space object's set of segments.
- * 5) releases the address space object's set of regions.
- * 6) removes the address space object from the address space container.
+ * 3) gets the task object and removes the address space from it.
+ * 4) releases the address space object identifier.
+ * 5) releases the address space object's set of segments.
+ * 6) releases the address space object's set of regions.
+ * 7) removes the address space object from the address space container.
  */
 
 t_error			as_release(t_asid			asid)
 {
-  t_iterator		iterator;
-  o_as			*o;
+  o_task*		task;
+  o_as*			o;
 
   AS_ENTER(as);
 
@@ -396,25 +496,42 @@ t_error			as_release(t_asid			asid)
    * 3)
    */
 
-  if (id_release(&as->id, o->asid) != ERROR_NONE)
+  if (task_get(o->tskid, &task) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
+
+  task->asid = ID_UNUSED;
 
   /*
    * 4)
    */
 
-  if (set_release(o->segments) != ERROR_NONE)
+  if (id_release(&as->id, o->asid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 5)
    */
 
-  if (set_release(o->regions) != ERROR_NONE)
+  if (segment_flush(o->asid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (set_release(o->segments) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 6)
+   */
+
+  /* XXX
+     if (region_flush(o->asid) != ERROR_NONE)
+     AS_LEAVE(as, ERROR_UNKNOWN);
+  */
+
+  if (set_release(o->regions) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 7)
    */
 
   if (set_remove(as->container, o->asid) != ERROR_NONE)
@@ -426,20 +543,12 @@ t_error			as_release(t_asid			asid)
 /*
  * this function gets an address space object from the address space
  * container from its identifier.
- *
- * steps:
- *
- * 1) gets the address space object in the address space container.
  */
 
 t_error			as_get(t_asid				asid,
 			       o_as**				o)
 {
   AS_ENTER(as);
-
-  /*
-   * 1)
-   */
 
   if (set_get(as->container, asid, (void**)o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
@@ -448,8 +557,7 @@ t_error			as_get(t_asid				asid,
 }
 
 /*
- * this functions initialises the address space manager from the init
- * variable.
+ * this function initialises the address space manager.
  *
  * this function takes care of initialising and builing the kernel
  * address space.
@@ -462,9 +570,8 @@ t_error			as_get(t_asid				asid,
  * 3) reserves the addres space container set which will contain
  *    the address space build later.
  * 4) tries to reserve a statistics object.
- * 5) reserves the kernel address space.
- * 6) calls the machine-dependent code.
- * 7) if asked, dumps the address space manager.
+ * 5) calls the machine-dependent code.
+ * 6) if asked, dumps the address space manager.
  */
 
 t_error			as_init(void)
@@ -516,22 +623,11 @@ t_error			as_init(void)
    * 5)
    */
 
-  if (as_reserve(&kas) != ERROR_NONE)
-    {
-      cons_msg('!', "as: unable to reserve the kernel address space\n");
-
-      return (ERROR_UNKNOWN);
-    }
-
-  /*
-   * 6)
-   */
-
   if (machdep_call(as, as_init) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
-   * 7)
+   * 6)
    */
 
 #if (DEBUG & DEBUG_AS)
@@ -547,15 +643,18 @@ t_error			as_init(void)
  * steps:
  *
  * 1) calls the machine-dependent code.
- * 2) releases the kernel address space.
- * 3) releases the statistics object.
- * 4) releases the address space's container.
- * 5) destroys the id object.
- * 6) frees the address space manager structure's memory.
+ * 2) releases the statistics object.
+ * 3) releases the address space's container.
+ * 4) destroys the id object.
+ * 5) frees the address space manager structure's memory.
  */
 
 t_error			as_clean(void)
 {
+  t_state		state;
+  o_as*			data;
+  t_iterator		i;
+
   /*
    * 1)
    */
@@ -567,22 +666,25 @@ t_error			as_clean(void)
    * 2)
    */
 
-  if (as_release(kas) != ERROR_NONE)
-    {
-      cons_msg('!', "as: unable to release the kernel address space\n");
-
-      return (ERROR_UNKNOWN);
-    }
+  STATS_RELEASE(as->stats);
 
   /*
    * 3)
    */
 
-  STATS_RELEASE(as->stats);
+  set_foreach(SET_OPT_FORWARD, as->container, &i, state)
+    {
+      if (set_object(as->container, i, (void**)&data) != ERROR_NONE)
+	{
+	  cons_msg('!', "as: cannot find the address space object "
+		   "corresponding to its identifier\n");
 
-  /*
-   * 4)
-   */
+	  AS_LEAVE(as, ERROR_UNKNOWN);
+	}
+
+      if (as_release(data->asid) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+    }
 
   if (set_release(as->container) != ERROR_NONE)
     {
@@ -592,7 +694,7 @@ t_error			as_clean(void)
     }
 
   /*
-   * 5)
+   * 4)
    */
 
   if (id_destroy(&as->id) != ERROR_NONE)
@@ -603,7 +705,7 @@ t_error			as_clean(void)
     }
 
   /*
-   * 6)
+   * 5)
    */
 
   free(as);
