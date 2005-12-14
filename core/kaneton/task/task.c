@@ -6,14 +6,13 @@
  * file          /home/mycure/kaneton/core/kaneton/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [tue dec 13 13:41:34 2005]
+ * updated       julien quintard   [tue dec 13 19:07:30 2005]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX lors d un as_rel il faut liberer les seg et reg
- * XXX lors d un task_rel il faut liberer l as et chaque thread
+ * XXX
  */
 
 /*
@@ -243,12 +242,13 @@ t_error			task_clone(t_tskid			old,
  *
  * steps:
  *
- * 1) initialises the task object.
- * 2) reserves an identifier for the task object.
- * 3) reserves the set of threads for the new task object.
- * 4) reserves the set of waits for the new task object.
- * 5) adds the new task object in the task container.
- * 6) calls the machine-dependent code.
+ * 1) checks the validity of arguments.
+ * 2) initialises the task object.
+ * 3) reserves an identifier for the task object.
+ * 4) reserves the set of threads for the new task object.
+ * 5) reserves the set of waits for the new task object.
+ * 6) adds the new task object in the task container.
+ * 7) calls the machine-dependent code.
  */
 
 t_error			task_reserve(t_class			class,
@@ -264,14 +264,36 @@ t_error			task_reserve(t_class			class,
    * 1)
    */
 
+  if ((class != TASK_CLASS_CORE) &&
+      (class != TASK_CLASS_DRIVER) &&
+      (class != TASK_CLASS_SERVICE) &&
+      (class != TASK_CLASS_PROGRAM))
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  if ((behav != TASK_BEHAV_CORE) &&
+      (behav != TASK_BEHAV_REALTIME) &&
+      (behav != TASK_BEHAV_INTERACTIVE) &&
+      (behav != TASK_BEHAV_TIMESHARING) &&
+      (behav != TASK_BEHAV_BACKGROUND))
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  if ((prior != TASK_PRIOR_CORE) &&
+      (prior != TASK_PRIOR_REALTIME) &&
+      (prior != TASK_PRIOR_INTERACTIVE) &&
+      (prior != TASK_PRIOR_TIMESHARING) &&
+      (prior != TASK_PRIOR_BACKGROUND))
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
   memset(&o, 0x0, sizeof(o_task));
 
   o.parent = 0; /* XXX */
   o.class = class;
   o.behav = behav;
   o.prior = prior;
-
-  /* XXX must perform checks on arguments class, behav and prior */
 
   o.asid = ID_UNUSED;
   o.threads = ID_UNUSED;
@@ -283,7 +305,7 @@ t_error			task_reserve(t_class			class,
   o.waits = ID_UNUSED;
 
   /*
-   * 2)
+   * 3)
    */
 
   if (id_reserve(&task->id, tskid) != ERROR_NONE)
@@ -292,7 +314,7 @@ t_error			task_reserve(t_class			class,
   o.tskid = *tskid;
 
   /*
-   * 3)
+   * 4)
    */
 
   if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, TASK_THREADS_INITSZ,
@@ -304,7 +326,7 @@ t_error			task_reserve(t_class			class,
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, TASK_WAITS_INITSZ,
@@ -318,7 +340,7 @@ t_error			task_reserve(t_class			class,
     }
 
   /*
-   * 5)
+   * 6)
    */
 
   if (set_add(task->container, &o) != ERROR_NONE)
@@ -332,7 +354,7 @@ t_error			task_reserve(t_class			class,
     }
 
   /*
-   * 6)
+   * 7)
    */
 
   if (machdep_call(task, task_reserve, class,
@@ -645,16 +667,3 @@ t_error			task_clean(void)
 
   return (ERROR_NONE);
 }
-
-/* XXX
-
- * 5) for each pre-reserved segment, inserts it into the segment container.
- *    note that we use the address as the identifier. this is not very
- *    elegant but we have no choice to be able to use every sorted set.
- *    moreover we could use the set without the SET_ALLOC option but
- *    we prefered use it to be more coherent.
-
-
-
-
-*/

@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       julien quintard   [sat dec 10 13:53:38 2005]
+## updated       julien quintard   [wed dec 14 06:24:56 2005]
 ##
 
 #
@@ -29,7 +29,7 @@
 # ---------- variables --------------------------------------------------------
 #
 
-_SHELL_			?=		/bin/bash
+_SHELL_			?=		$(KANETON_SHELL)
 _MAKE_			?=		$(MAKE)
 
 #
