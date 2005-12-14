@@ -1,4 +1,14 @@
 --
+ heures:
+   renaud: slides (20), intra (20)
+   cedric: cours (16?)
+   julien: ?
+
+--
+ pifi: 18
+ les autres: 13
+
+--
  ajouter la fonctino set_delete(setid, iterator); pour accelerer
 
  et aussi set_pop set_push etc..

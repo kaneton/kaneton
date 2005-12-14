@@ -33,6 +33,7 @@
 #include <arch/ia32/kaneton/as.h>
 #include <arch/ia32/kaneton/debug.h>
 #include <arch/ia32/kaneton/init.h>
+#include <arch/ia32/kaneton/region.h>
 #include <arch/ia32/kaneton/segment.h>
 #include <arch/ia32/kaneton/stats.h>
 #include <arch/ia32/kaneton/task.h>
@@ -41,6 +42,7 @@
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../../../kaneton/arch/ia32/kaneton/as.c
+ *      ../../../../kaneton/arch/ia32/kaneton/region.c
  *      ../../../../kaneton/arch/ia32/kaneton/segment.c
  *      ../../../../kaneton/arch/ia32/kaneton/task.c
  */
@@ -64,6 +66,15 @@ t_error			ia32_as_release(t_asid			asid);
 t_error			ia32_as_init(void);
 
 t_error			ia32_as_clean(void);
+
+
+/*
+ * ../../../../kaneton/arch/ia32/kaneton/region.c
+ */
+
+t_error			ia32_region_init(t_fit			fit);
+
+t_error			ia32_region_clean(void);
 
 
 /*

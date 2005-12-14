@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       julien quintard   [sat dec 10 19:20:00 2005]
+ * updated       julien quintard   [wed dec 14 07:02:22 2005]
  */
 
 /*
@@ -28,7 +28,7 @@
 #include <klibc.h>
 #include <kaneton.h>
 
-// XXX machdep_include(region);
+machdep_include(region);
 
 /*
  * ---------- extern ----------------------------------------------------------
