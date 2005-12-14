@@ -1,18 +1,12 @@
-#! /bin/bash
-
-## copyright quintard julien
-## 
-## kaneton
-## 
-## clean.sh
-## 
-## path          /home/mycure/kaneton/env
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Mon Nov 14 22:34:06 2005   mycure
+#!/bin/bash
+## licence       kaneton licence
+##
+## project
+##
+## file          /home/buckman/kaneton/kaneton/export/export.sh
+##
+## created       julien quintard   [fri feb 11 02:58:21 2005]
+## updated       matthieu bucchianeri   [tue dec 13 22:30:12 2005]
 ##
 
 #
@@ -238,7 +232,7 @@ fi
 warning
 
 # generates a temporary file.
-TEMP=$(mktemp)
+TEMP=$(tempfile)
 
 # build the exported subtree.
 build

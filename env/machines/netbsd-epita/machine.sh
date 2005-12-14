@@ -3,10 +3,10 @@
 ##
 ## project
 ##
-## file          /home/buckman/kaneton/kaneton/env/machines/unix/machine.sh
+## file          /home/buckman/kaneton/kaneton/env/machines/netbsd-epita/machine.sh
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       matthieu bucchianeri   [wed dec 14 12:04:14 2005]
+## updated       matthieu bucchianeri   [wed dec 14 12:11:17 2005]
 ##
 
 #
@@ -81,7 +81,7 @@ print()
 
 
 #
-# CONTENTS
+# CONTENT
 #
 # gets the contents of a file.
 #

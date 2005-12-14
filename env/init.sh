@@ -1,18 +1,12 @@
-#! /bin/bash
-
-## copyright quintard julien
-## 
-## kaneton
-## 
-## init.sh
-## 
-## path          /home/mycure/kaneton
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Thu Nov 17 09:53:24 2005   mycure
+#!/bin/bash
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/kaneton/env/init.sh
+##
+## created       julien quintard   [fri feb 11 02:58:21 2005]
+## updated       matthieu bucchianeri   [wed dec 14 12:04:56 2005]
 ##
 
 #
@@ -57,6 +51,46 @@ dep()
   change-directory "${_ENV_DIR_}"
 }
 
+
+#
+# RUNTIME CONFIGURATION
+#
+# this function generates the kaneton runtime configuration file.
+#
+# ${1}:		source file
+# ${2}:		destination file
+#
+runtime-configuration()
+{
+  local source
+  local destination
+
+  source="${1}"
+  destination="${2}"
+
+  # changes the directory.
+  change-directory ${_SRC_DIR_}
+
+  # makes a temporary file.
+  kaneton_conf=$(tempfile)
+
+  # removes the previous version.
+  remove ${destination}
+
+  # creates the temporary file.
+  print "" "! kaneton.conf" "" >> ${kaneton_conf}
+  contents "${source}" >> ${kaneton_conf}
+  print "" "! /kaneton.conf" "" >> ${kaneton_conf}
+
+  # preprocess the temporary file to generate a correct runtime
+  # configuration file.
+  ${_CPP_} ${_INCLUDES_} -P -include kaneton.h ${kaneton_conf} |	\
+    ${_SED_} -n '/^! kaneton.conf$/,/^! \/kaneton.conf$/ p' |		\
+    ${_SED_} '/^!.*$/ d' > ${destination}
+
+  # returns in the env directory.
+  change-directory ${_ENV_DIR_}
+}
 
 
 #
@@ -128,7 +162,7 @@ init()
   if [ ! -d ${_MACHINE_DIR_} ] ; then
     display " unknown system: '${_MACHINE_}'" "!"
     display ""
-    display " please check your _MACHINE_ variable into '${_USER_CONF_}'" "!"
+    display " please check your KANETON_MACHINE environment variable" "!"
     display ""
     machines
     display ""
@@ -140,7 +174,7 @@ init()
   if [ ! -e ${_MACHINE_DIR_}/init.sh ] ; then
     display " '${_MACHINE_}' machine-specific init script not present" "!"
     display ""
-    display " please check your _MACHINE_ variable into '${_USER_CONF_}'" "!"
+    display " please check your KANETON_MACHINE environment variable" "!"
     display ""
     machines
     display ""

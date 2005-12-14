@@ -1,16 +1,12 @@
-## copyright quintard julien
+#!/bin/sh
+## licence       kaneton licence
 ##
-## kaneton
+## project       kaneton
 ##
-## user.sh
+## file          /home/buckman/kaneton/kaneton/env/users/matthieu.bucchianeri/user.sh
 ##
-## path          /home/mycure/kaneton/env
-##
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-##
-## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Tue Nov  8 12:03:39 2005   mycure
+## created       matthieu bucchianeri   [tue dec 13 21:02:30 2005]
+## updated       matthieu bucchianeri   [tue dec 13 21:02:35 2005]
 ##
 
 #
@@ -28,5 +24,5 @@ view()
 {
   document=$1
 
-  xpdf $document
+  evince $document
 }
