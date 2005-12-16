@@ -73,7 +73,7 @@ t_error			ia32_as_clean(void);
  */
 
 t_error			ia32_region_init(t_fit			fit,
-					 t_vaddr		address,
+					 t_vaddr		start,
 					 t_vsize		size);
 
 t_error			ia32_region_clean(void);

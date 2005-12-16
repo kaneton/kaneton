@@ -143,7 +143,7 @@ t_error			region_get(t_asid			asid,
 				   o_region**			o);
 
 t_error			region_init(t_fit			fit,
-				    t_vaddr			address,
+				    t_vaddr			start,
 				    t_vsize			size);
 
 t_error			region_clean(void);
