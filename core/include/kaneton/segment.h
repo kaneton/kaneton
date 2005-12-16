@@ -142,8 +142,7 @@ t_error			segment_clone(t_asid			asid,
 
 t_error			segment_first_fit(o_as*			as,
 					  t_psize		size,
-					  t_perms		perms,
-					  t_segid*		segid);
+					  t_paddr*		address);
 
 t_error			segment_reserve(t_asid			asid,
 					t_psize			size,

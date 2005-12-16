@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/env/machines/netbsd-epita/critical.sh
+## file          /home/mycure/kaneton/env/machines/netbsd-epita/critical.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       matthieu bucchianeri   [wed dec 14 11:39:19 2005]
+## updated       julien quintard   [wed dec 14 12:36:18 2005]
 ##
 
 #
@@ -21,14 +21,14 @@
 # ---------- globals ----------------------------------------------------------
 #
 
-_MAKE_=gmake
+_MAKE_="gmake"
 _SED_="/u/a1/bucchi_m/pub/kaneton/sed -r"
-_MKTEMP_=/u/a1/bucchi_m/pub/kaneton/mktemp
+_MKTEMP_="/u/a1/bucchi_m/pub/kaneton/mktemp"
 _RM_="rm -f"
-_CD_=cd
-_PWD_=pwd
-_CAT_=cat
-_ECHO_=echo
+_CD_="cd"
+_PWD_="pwd"
+_CAT_="cat"
+_ECHO_="echo"
 
 MACHINE_CONF=""
 USER_CONF="users/${KANETON_USER}/user.conf"

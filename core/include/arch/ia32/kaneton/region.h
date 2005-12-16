@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/include/arch/ia32/kaneton/region.h
  *
  * created       julien quintard   [wed dec 14 07:04:32 2005]
- * updated       julien quintard   [wed dec 14 07:32:07 2005]
+ * updated       julien quintard   [thu dec 15 11:49:06 2005]
  */
 
 #ifndef IA32_KANETON_REGION_H
@@ -28,15 +28,17 @@
 
 typedef struct
 {
-  t_error			(*region_clone)(t_asid,
-						t_regid,
-						t_regid*);
   t_error			(*region_reserve)(t_asid,
 						  t_segid,
+						  t_opts,
+						  t_vaddr,
 						  t_regid*);
-  t_error			(*region_release)(t_regid);
+  t_error			(*region_release)(t_asid,
+						  t_regid);
   t_error			(*region_flush)(t_asid);
-  t_error			(*region_init)(void);
+  t_error			(*region_init)(t_fit,
+					       t_vaddr,
+					       t_vsize);
   t_error			(*region_clean)(void);
 }				i_region;
 

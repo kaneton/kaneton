@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/kaneton/arch/ia32/kaneton/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [wed dec 14 07:08:46 2005]
+ * updated       julien quintard   [thu dec 15 11:50:39 2005]
  */
 
 /*
@@ -35,7 +35,6 @@ i_region		region_interface =
     NULL,
     NULL,
     NULL,
-    NULL,
     ia32_region_init,
     ia32_region_clean
   };
@@ -50,7 +49,9 @@ i_region		region_interface =
  * for the intel 32-bit architecture we just initialise the paging mode.
  */
 
-t_error			ia32_region_init(t_fit			fit)
+t_error			ia32_region_init(t_fit			fit,
+					 t_vaddr		start,
+					 t_vsize		size)
 {
   REGION_ENTER(region);
 

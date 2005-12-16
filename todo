@@ -1,4 +1,33 @@
 --
+ peut etre devrait on penser les regions un peu plus pour tout faire avec:
+  swap/paging etc..
+
+--
+ dans segment et surement dans d'autres: as, task, region
+
+ on fait dans clean() un foreach ( segment_release ) c'est tres
+ dangereux car l'iterator n'est pas sur d'etre correct. il faudrait
+ changer ca et faire plutot un while (set_head) { segment_release }
+
+--
+ make view-paper.kaneton : . -> /
+ make view-ship.sol
+
+--
+ dans doc papers diviser par categories et faire que chaque personne
+ qui lit ecrit un resume
+
+--
+ peut etre passer en enum si on a le temps et l'envie:
+
+ enum error
+  {
+    ERROR_NONE
+    ERROR_UNKNOWN
+    -> error specifique pour chaque gestionnaire
+  }
+
+--
  heures:
    renaud: slides (20), intra (20)
    cedric: cours (16?)
@@ -31,6 +60,8 @@
 
 --
  as + thread => domain (sprite)
+
+ machines proches forment des villages
 
 --
  definir une interface pour les drivers de sorte qu'ils soient portable

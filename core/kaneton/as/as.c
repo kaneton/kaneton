@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/kaneton/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       julien quintard   [tue dec 13 13:33:21 2005]
+ * updated       julien quintard   [thu dec 15 12:21:49 2005]
  */
 
 /*
@@ -322,7 +322,7 @@ t_error			as_clone(t_tskid			tskid,
   set_foreach(SET_OPT_FORWARD, from->regions, &i, state)
     {
       t_regid		needless;
-      t_regid*		data;
+      o_region*		data;
 
       if (set_object(from->regions, i, (void**)&data) != ERROR_NONE)
 	{
@@ -332,8 +332,14 @@ t_error			as_clone(t_tskid			tskid,
 	  AS_LEAVE(as, ERROR_UNKNOWN);
 	}
 
-      /* XXX
-      if (region_clone(to->regions, *data, &needless) != ERROR_NONE)
+      /* XXX attention ici on va faire deux mapping sur un segment
+	 sans aucun controle... en fait il faut creer une region pas sur
+	 le data->segid mais sur le segid qu on a duplique a la boucle
+	 precedente
+
+	 il faudrait se faire une table de correspondance
+
+      if (region_reserve(to->asid, data->segid, XXX, &needless) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
       */
     }
@@ -418,7 +424,7 @@ t_error			as_reserve(t_tskid			tskid,
    */
 
   if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_REGIONS_INITSZ,
-		  sizeof(t_regid), &o.regions) != ERROR_NONE)
+		  sizeof(o_region), &o.regions) != ERROR_NONE)
     {
       id_release(&as->id, o.asid);
 
@@ -522,10 +528,8 @@ t_error			as_release(t_asid			asid)
    * 6)
    */
 
-  /* XXX
-     if (region_flush(o->asid) != ERROR_NONE)
-     AS_LEAVE(as, ERROR_UNKNOWN);
-  */
+  if (region_flush(o->asid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   if (set_release(o->regions) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);

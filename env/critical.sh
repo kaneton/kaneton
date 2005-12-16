@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/env/critical.sh
+## file          /home/mycure/kaneton/env/critical.sh
 ##
 ## created       matthieu bucchianeri   [tue dec 13 19:31:03 2005]
-## updated       matthieu bucchianeri   [wed dec 14 11:36:38 2005]
+## updated       julien quintard   [wed dec 14 12:28:36 2005]
 ##
 
 #
@@ -23,7 +23,7 @@
 #
 
 MACHINE_CONF="machines/${KANETON_MACHINE}"
-_ECHO_=echo
+_ECHO_="echo"
 
 #
 # ---------- functions --------------------------------------------------------
@@ -40,7 +40,8 @@ check()
   # tries to find the machine configuration file.
   if [ ! -e ${MACHINE_CONF}/machine.sh ] ; then
     ${_ECHO_} ""
-    ${_ECHO_} "[!] machine configuration file for '${KANETON_MACHINE}' unreachable"
+    ${_ECHO_} "[!] machine configuration file for '${KANETON_MACHINE}' "
+              "unreachable"
     ${_ECHO_} ""
     ${_ECHO_} "[!] please check your KANETON_MACHINE environment variable"
     ${_ECHO_} ""
@@ -54,4 +55,4 @@ check()
 
 check
 
-${SHELL} ${MACHINE_CONF}/critical.sh
+${KANETON_SHELL} ${MACHINE_CONF}/critical.sh

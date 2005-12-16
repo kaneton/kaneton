@@ -263,8 +263,7 @@ t_error			segment_clone(t_asid			asid,
 
 t_error			segment_first_fit(o_as*			as,
 					  t_psize		size,
-					  t_perms		perms,
-					  t_segid*		segid)
+					  t_paddr*		address)
 {
   o_segment*		current;
   t_state		state;
@@ -290,26 +289,7 @@ t_error			segment_first_fit(o_as*			as,
 
   if ((head->address - segment->start) >= size)
     {
-      o_segment	o;
-
-      memset(&o, 0x0, sizeof(o_segment));
-
-      o.asid = as->asid;
-      o.address = head->address + head->size;
-      o.size = size;
-      o.perms = perms;
-
-      o.segid = (t_segid)o.address;
-
-      if (set_add(segment->container, &o) != ERROR_NONE)
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-      if (set_add(as->segments, &o.segid) != ERROR_NONE)
-	{
-	  set_remove(segment->container, o.segid);
-
-	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-	}
+      *address = head->address + head->size;
 
       SEGMENT_LEAVE(segment, ERROR_NONE);
     }
@@ -326,7 +306,7 @@ t_error			segment_first_fit(o_as*			as,
       if (set_object(segment->container, i, (void**)&current) !=
 	  ERROR_NONE)
 	{
-	  cons_msg('!', "set: cannot find the segment object "
+	  cons_msg('!', "segment: cannot find the segment object "
 		   "corresponding to its identifier\n");
 
 	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
@@ -340,26 +320,7 @@ t_error			segment_first_fit(o_as*			as,
 
       if ((next->address - (current->address + current->size)) >= size)
 	{
-	  o_segment o;
-
-	  memset(&o, 0x0, sizeof(o_segment));
-
-	  o.asid = as->asid;
-	  o.address = current->address + current->size;
-	  o.size = size;
-	  o.perms = perms;
-
-	  o.segid = (t_segid)o.address;
-
-	  if (set_add(segment->container, &o) != ERROR_NONE)
-	    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-	  if (set_add(as->segments, &o.segid) != ERROR_NONE)
-	    {
-	      set_remove(segment->container, o.segid);
-
-	      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-	    }
+	  *address = current->address + current->size;
 
 	  SEGMENT_LEAVE(segment, ERROR_NONE);
 	}
@@ -382,31 +343,12 @@ t_error			segment_first_fit(o_as*			as,
   if (((segment->start + segment->size) -
        (tail->address + tail->size)) >= size)
     {
-      o_segment	o;
-
-      memset(&o, 0x0, sizeof(o_segment));
-
-      o.asid = as->asid;
-      o.address = tail->address + tail->size;
-      o.size = size;
-      o.perms = perms;
-
-      o.segid = (t_segid)o.address;
-
-      if (set_add(segment->container, &o) != ERROR_NONE)
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-      if (set_add(as->segments, &o.segid) != ERROR_NONE)
-	{
-	  set_remove(segment->container, o.segid);
-
-	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-	}
+      *address = tail->address + tail->size;
 
       SEGMENT_LEAVE(segment, ERROR_NONE);
     }
 
-  SEGMENT_LEAVE(segment, ERROR_NONE);
+  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 }
 
 /*
@@ -416,7 +358,8 @@ t_error			segment_first_fit(o_as*			as,
  *
  * 1) gets the address space object given its identifier.
  * 2) chooses the correct fit.
- * 3) calls the machine dependent code.
+ * 3) builds the segment.
+ * 4) calls the machine dependent code.
  */
 
 t_error			segment_reserve(t_asid			asid,
@@ -425,6 +368,7 @@ t_error			segment_reserve(t_asid			asid,
 					t_segid*		segid)
 {
   o_as*			as;
+  o_segment		o;
 
   SEGMENT_ENTER(segment);
 
@@ -443,7 +387,7 @@ t_error			segment_reserve(t_asid			asid,
     {
     case FIT_FIRST:
       {
-	if (segment_first_fit(as, size, perms, segid) != ERROR_NONE)
+	if (segment_first_fit(as, size, &o.address) != ERROR_NONE)
 	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 	break;
@@ -453,6 +397,30 @@ t_error			segment_reserve(t_asid			asid,
 	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
       }
     }
+
+  /*
+   * 3)
+   */
+
+  o.asid = as->asid;
+  o.size = size;
+  o.perms = perms;
+
+  o.segid = (t_segid)o.address;
+
+  if (set_add(segment->container, &o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (set_add(as->segments, &o.segid) != ERROR_NONE)
+    {
+      set_remove(segment->container, o.segid);
+
+      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 4)
+   */
 
   if (machdep_call(segment, segment_reserve, asid, size, perms, segid) !=
       ERROR_NONE)
@@ -774,8 +742,6 @@ t_error			segment_get(t_segid			segid,
 
 t_error			segment_init(t_fit			fit)
 {
-  t_uint32		i;
-
   /*
    * 1)
    */

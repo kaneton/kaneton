@@ -30,8 +30,11 @@
  */
 
 /*
- * XXX
+ * flags
  */
+
+#define REGION_OPT_NONE		(1 << 0)
+#define REGION_OPT_FORCE	(1 << 1)
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -39,13 +42,20 @@
 
 /*
  * region object
+ *
+ * a region object is identified by a regid.
+ *
+ * the identifier is in fact identical to the virtual address of the region.
  */
 
 typedef struct
 {
-  t_vaddr			address;
+  t_regid			regid;
 
   t_segid			segid;
+
+  t_vaddr			address;
+  t_vsize			size;
 }				o_region;
 
 /*
@@ -55,6 +65,11 @@ typedef struct
 typedef struct
 {
   o_id				id;
+
+  t_fit				fit;
+
+  t_vaddr			start;
+  t_vsize			size;
 
   t_staid			stats;
 }				m_region;
@@ -104,6 +119,34 @@ typedef struct
 /*
  * ../../kaneton/region/region.c
  */
+
+t_error			region_show(t_asid			asid,
+				    t_regid			regid);
+
+t_error			region_first_fit(o_as*			as,
+					 t_vsize		size,
+					 t_vaddr*		address);
+
+t_error			region_reserve(t_asid			asid,
+				       t_segid			segid,
+				       t_opts			opts,
+				       t_vaddr			address,
+				       t_regid*			regid);
+
+t_error			region_release(t_asid			asid,
+				       t_regid			regid);
+
+t_error			region_flush(t_asid			asid);
+
+t_error			region_get(t_asid			asid,
+				   t_regid			regid,
+				   o_region**			o);
+
+t_error			region_init(t_fit			fit,
+				    t_vaddr			address,
+				    t_vsize			size);
+
+t_error			region_clean(void);
 
 
 /*

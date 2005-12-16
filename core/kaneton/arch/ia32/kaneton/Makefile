@@ -33,6 +33,7 @@ include			../../../../../env/.env.mk
 KANETON_LO		:=		kaneton.lo
 
 KANETON_C		:=		as.c				\
+					region.c			\
 					segment.c			\
 					task.c				
 

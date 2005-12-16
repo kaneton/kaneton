@@ -6,12 +6,13 @@
  * file          /home/mycure/kaneton/core/kaneton/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [tue dec 13 19:07:30 2005]
+ * updated       julien quintard   [thu dec 15 11:16:12 2005]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
+ * XXX revoir commentaires: description + steps
  * XXX
  */
 
