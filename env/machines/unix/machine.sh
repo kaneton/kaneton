@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/env/machines/unix/machine.sh
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       matthieu bucchianeri   [wed dec 14 12:04:14 2005]
+## updated       matthieu bucchianeri   [sat dec 17 12:48:33 2005]
 ##
 
 #
@@ -36,16 +36,18 @@ print()
 
   color="${1}"
   text="${2}"
-  case "${3}" in
-      "--no-newline")
-	  options="${options} -n"
-	  ;;
-      "")
-	  ;;
-      *)
-	  print "red" "error in options !" ""
-	  ;;
-  esac
+  for opt in ${3}; do
+      case "${opt}" in
+	  "--no-newline")
+	      options="${options} -n"
+	      ;;
+	  "--flickering")
+	      text="\E[5m${text}"
+	      ;;
+	  *)
+	      ;;
+      esac
+  done
 
   if [ "${_DISPLAY_}" = "color" ] ; then
     case "$color" in
@@ -86,12 +88,19 @@ print()
 # gets the contents of a file.
 #
 # ${1}:         file
+# ${2}:		options
 #
 contents()
 {
   local file
 
   file="${1}"
+  for opt in ${2}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
 
   ${_CAT_} ${file}
 }
@@ -103,9 +112,17 @@ contents()
 #
 # gives an unique temporary file name.
 #
+# ${1}:		options
 #
 tempfile()
 {
+  for opt in ${1}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
   ${_MKTEMP_}
 }
 
@@ -116,8 +133,17 @@ tempfile()
 #
 # prints working directory
 #
+# ${1}:		options
+#
 working-directory()
 {
+  for opt in ${1}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
   ${_PWD_}
 }
 
@@ -129,14 +155,55 @@ working-directory()
 # locates a program on the system.
 #
 # ${1}:         program
+# ${2}:		options
 #
 locate-prog()
 {
   local program
 
   program=${1}
+  for opt in ${2}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
 
   ${_WHICH_} ${program}
+}
+
+
+
+#
+# SUBSTITUTE
+#
+# substitute matches with another one (like sed 's').
+#
+# ${1}:		to substitute
+# ${2}:		substitute string
+# ${3}:		options
+#
+substitute()
+{
+  local old
+  local new
+
+  old="${1}"
+  new="${2}"
+
+  case "${3}" in
+      "all")
+	  opt="g"
+	  ;;
+      "[1-9]+")
+	  opt="${3}"
+	  ;;
+      *)
+	  opt=""
+	  ;;
+  esac
+
+  ${_SED_} "s/${old}/${new}/${opt}"
 }
 
 
@@ -172,7 +239,7 @@ display()
 
     "?")
       print "blue" "[" "--no-newline"
-      print "yellow" "?" "--no-newline"
+      print "yellow" "?" "--no-newline --flickering"
       print "blue" "]" "--no-newline"
       ;;
 
@@ -190,9 +257,18 @@ display()
 #
 # this function just waits for a key.
 #
+# ${1}:		options
+#
 wait-key()
 {
   local needless
+
+  for opt in ${1}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
 
   ${_READ_} needless
 }
@@ -218,20 +294,7 @@ launch()
   arguments="${2}"
   options="${3}"
 
-  case "${file}" in
-    Makefile)
-      if [ -n ${file} ] ; then
-        ${_MAKE_} ${_MAKEFLAGS_} ${options} -f ${file} ${arguments}
-      else
-	${_MAKE_} ${_MAKEFLAGS_} ${options} -f ${file} ${arguments}
-      fi
-      ;;
-    *.sh)
-      ${_SHELL_} ${options} ${file} ${arguments}
-      ;;
-    *)
-      ;;
-  esac
+  ${_SHELL_} ${options} ${file} ${arguments}
 }
 
 
@@ -261,6 +324,7 @@ makefile()
 #
 # ${1}:		source file
 # ${2}:		destination file
+# ${3}:		options
 #
 copy()
 {
@@ -269,6 +333,12 @@ copy()
 
   source="${1}"
   destination="${2}"
+  for opt in ${3}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
 
   ${_CP_} ${source} ${destination}
 }
@@ -282,6 +352,7 @@ copy()
 #
 # ${1}:		source file
 # ${2}:		destination file
+# ${3}:		options
 #
 link()
 {
@@ -290,6 +361,12 @@ link()
 
   source="${1}"
   destination="${2}"
+  for opt in ${3}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
 
   ${_LN_} ${destination} ${source}
 }
@@ -313,6 +390,12 @@ remove()
 
   files="${1}"
   options="${2}"
+  for opt in ${2}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
 
   for f in ${files} ; do
     if [ -d ${f} ] ; then
@@ -331,12 +414,19 @@ remove()
 # this function returns the list of the directory entries.
 #
 # ${1}:		directory
+# ${2}:		options
 #
 list()
 {
   local directory
 
   directory="${1}"
+  for opt in ${2}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
 
   ${_LS_} ${directory}
 }
@@ -349,12 +439,19 @@ list()
 # this function just changes the current working directory.
 #
 # ${1}:		directory
+# ${2}:		options
 #
 change-directory()
 {
   local directory
 
   directory="${1}"
+  for opt in ${2}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
 
   ${_CD_} ${directory}
 }
@@ -368,11 +465,18 @@ change-directory()
 #
 # ${1}:		the array
 # ${2}:		the element looked for
+# ${3}:		options
 #
 locate()
 {
   array="${1}"
   element="${2}"
+  for opt in ${3}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
 
   for e in ${array} ; do
     ${_ECHO_} ${e} | ${_GREP_} ${element} 2>/dev/null 1>/dev/null
@@ -384,6 +488,50 @@ locate()
   done
 
   return -1
+}
+
+
+
+#
+# PREPROCESS
+#
+# this function preprocess a file
+#
+# ${1}:		file to process
+# ${2}:		additional include
+# ${3}:		tag start
+# ${4}:		tag end
+# ${5}:		options
+#
+preprocess()
+{
+  local source
+  local options
+  local includes
+  local tags
+  local tage
+
+  source="${1}"
+  tags="${3}"
+  tage="${4}"
+  for opt in ${5}; do
+      case "${opt}" in
+	  "--no-markers")
+	      options="${options} -P"
+	      ;;
+	  *)
+	      ;;
+      esac
+  done
+
+  for inc in ${2}; do
+      includes="${includes} -include ${inc}"
+  done
+
+  ${_CPP_} ${_INCLUDES_} ${options} ${includes} ${source} |		\
+    ${_SED_} -n "/^${tags}$/,/^${tage}$/p" |				\
+    ${_SED_} '/^!.*$/d'
+
 }
 
 

@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/env/init.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       matthieu bucchianeri   [wed dec 14 12:04:56 2005]
+## updated       matthieu bucchianeri   [sat dec 17 12:49:21 2005]
 ##
 
 #
@@ -84,9 +84,8 @@ runtime-configuration()
 
   # preprocess the temporary file to generate a correct runtime
   # configuration file.
-  ${_CPP_} ${_INCLUDES_} -P -include kaneton.h ${kaneton_conf} |	\
-    ${_SED_} -n '/^! kaneton.conf$/,/^! \/kaneton.conf$/ p' |		\
-    ${_SED_} '/^!.*$/ d' > ${destination}
+  preprocess ${kaneton_conf} "kaneton.h" "! kaneton.conf"		\
+	"! \/kaneton.conf" "--no-markers" > ${destination}
 
   # returns in the env directory.
   change-directory ${_ENV_DIR_}

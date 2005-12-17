@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/tools/mbl/grub/grub.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       matthieu bucchianeri   [wed dec 14 12:06:30 2005]
+## updated       matthieu bucchianeri   [wed dec 14 12:46:13 2005]
 ##
 
 #
@@ -148,14 +148,14 @@ grub-menu()
 
   # sets the kernel into the grub menu file.
   print "" "${array[0]}" "" |						\
-    ${_SED_} "s/^.*\/(.*)$/kernel \/modules\/\1/g" >> ${menu}
+    substitute "^.*\/(.*)$" "kernel \/modules\/\1" "all" >> ${menu}
 
   print "" "" "" >> ${menu}
 
   i=1
   while [ ${i} -lt ${#array[*]} ] ; do
     print "" "${array[${i}]}" "" |					\
-      ${_SED_} "s/^.*\/(.*)$/module \/modules\/\1/g" >> ${menu}
+      substitute "^.*\/(.*)$" "module \/modules\/\1" "all" >> ${menu}
 
     let "i += 1"
   done

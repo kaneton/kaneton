@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## machine.mk
-## 
-## path          /home/mycure/kaneton/export
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:08:31 2005   mycure
-## last update   Mon Nov 14 20:26:17 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/kaneton/env/machines/netbsd-epita/machine.mk
+##
+## created       matthieu bucchianeri   [fri feb 11 02:08:31 2005]
+## updated       matthieu bucchianeri   [wed dec 14 15:02:36 2005]
 ##
 
 #
@@ -180,7 +175,7 @@ define change-directory
 endef
 
 #
-# launch a new program, script, makefile etc..
+# launch a new program, script etc..
 #
 # $(1):		the file to launch
 # $(2):		arguments
@@ -188,16 +183,7 @@ endef
 #
 
 define launch
-  case "$(1)" in							\
-    Makefile)								\
-      $(_MAKE_) $(_MAKEFLAGS_) $(3) $(1) $(2)				; \
-      ;;								\
-    *.sh)								\
-      $(_SHELL_) $(3) $(1) $(2)						; \
-      ;;								\
-    *)									\
-      ;;								\
-  esac
+  $(_SHELL_) $(3) $(1) $(2)
 endef
 
 #

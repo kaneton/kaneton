@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       matthieu bucchianeri   [wed dec 14 12:03:20 2005]
+## updated       matthieu bucchianeri   [sat dec 17 12:57:31 2005]
 ##
 
 #
@@ -156,12 +156,12 @@ view-%:
 info:
 	$(call print,white,,)
 
-	$(call print,blue,--- ,-n)
+	$(call print,blue,--- ,--no-newline)
 	$(call print,white,kaneton,)
 
 	$(call print,white,,)
 
-	$(call print,blue,# ,-n)
+	$(call print,blue,# ,--no-newline)
 	$(call print,white,authors:,)
 	$(call print,white,,)
 	$(call print,white,     julien quintard - quinta_j@gmail.com,)
@@ -169,7 +169,7 @@ info:
 
 	$(call print,white,,)
 
-	$(call print,blue,# ,-n)
+	$(call print,blue,# ,--no-newline)
 	$(call print,white,assistants:,)
 	$(call print,white,,)
 	$(call print,white,     cedric aubouy - aubouy_c@epita.fr,)
@@ -177,7 +177,7 @@ info:
 
 	$(call print,white,,)
 
-	$(call print,blue,# ,-n)
+	$(call print,blue,# ,--no-newline)
 	$(call print,white,contributors:,)
 	$(call print,white,,)
 	$(call print,white,     christophe eymard - eymard_c@epita.fr,)
