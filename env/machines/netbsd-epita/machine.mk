@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/env/machines/netbsd-epita/machine.mk
+## file          /home/mycure/kaneton/env/machines/netbsd-epita/machine.mk
 ##
 ## created       matthieu bucchianeri   [fri feb 11 02:08:31 2005]
-## updated       matthieu bucchianeri   [wed dec 14 15:02:36 2005]
+## updated       julien quintard   [sat dec 17 17:32:26 2005]
 ##
 
 #
@@ -385,8 +385,8 @@ define version
   echo "#include <klibc.h>" >> $(1)					; \
   echo "#include <kaneton.h>" >> $(1)					; \
   echo "" >> $(1)							; \
-  echo -n "const char version[] = CONF_TITLE\"-\"CONF_VERSION" >> $(1)	; \
-  echo "\" $(4) $(2)@$(3)\";" >> $(1)
+  echo -n "const char version[] = \"$(_TITLE_)-$(_VERSION_)" >> $(1)	; \
+  echo " $(4) $(2)@$(3)\";" >> $(1)
 endef
 
 #

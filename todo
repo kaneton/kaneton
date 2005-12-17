@@ -1,4 +1,16 @@
 --
+ factoriser du code pour ia32 car on va avoir bcp de ressemblance entre
+ ia32-virtual, ia32-segments et ia32-optimised. le mieux
+ serait sans doute de rajouter dans libs/ une lib libia32 ou on
+ fournirait toutes les fonctionnalites d'ia32.
+
+ a noter que phix a fait comme ca.
+
+--
+ nettoyer conf.h, debug.h, check.h rendre tout ca coherent car la c'est
+ un peu le bordel.
+
+--
  peut etre devrait on penser les regions un peu plus pour tout faire avec:
   swap/paging etc..
 
@@ -36,6 +48,8 @@
 --
  pifi: 18
  les autres: 13
+
+ donner les notes a l'adm
 
 --
  ajouter la fonctino set_delete(setid, iterator); pour accelerer

@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * init.h
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Mon May 30 14:10:03 2005   mycure
- * last update   Tue Nov 15 19:42:49 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/init.h
+ *
+ * created       julien quintard   [sat dec 17 17:15:29 2005]
+ * updated       julien quintard   [sat dec 17 17:15:32 2005]
  */
 
 #ifndef IA32_KANETON_INIT_H
@@ -21,11 +16,11 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <arch/ia32/ia32/types.h>
-#include <arch/ia32/ia32/pmode.h>
-#include <arch/ia32/ia32/paging.h>
+#include <arch/machdep/ia32/types.h>
+#include <arch/machdep/ia32/pmode.h>
+#include <arch/machdep/ia32/paging.h>
 
-#include <arch/ia32/services/cons.h>
+#include <arch/machdep/services/cons.h>
 
 /*
  * ---------- defines ---------------------------------------------------------

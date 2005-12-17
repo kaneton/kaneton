@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * cons.h
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:24:13 2005   mycure
- * last update   Sun Jul  3 19:44:31 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/services/cons.h
+ *
+ * created       julien quintard   [sat dec 17 17:16:27 2005]
+ * updated       julien quintard   [sat dec 17 17:16:38 2005]
  */
 
 /*
@@ -34,7 +29,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <arch/ia32/ia32/types.h>
+#include <arch/machdep/ia32/types.h>
 
 /*
  * ---------- defines ---------------------------------------------------------

@@ -21,10 +21,10 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <arch/ia32/ia32/ia32.h>
-#include <arch/ia32/kaneton/kaneton.h>
-#include <arch/ia32/services/services.h>
-#include <arch/ia32/sys/sys.h>
+#include <arch/machdep/ia32/ia32.h>
+#include <arch/machdep/kaneton/kaneton.h>
+#include <arch/machdep/services/services.h>
+#include <arch/machdep/sys/sys.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * kaneton.h
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Tue Nov 15 19:15:34 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/kaneton.h
+ *
+ * created       julien quintard   [sat dec 17 17:13:18 2005]
+ * updated       julien quintard   [sat dec 17 17:13:20 2005]
  */
 
 #ifndef IA32_KANETON_KANETON_H
@@ -30,25 +25,25 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <arch/ia32/kaneton/as.h>
-#include <arch/ia32/kaneton/debug.h>
-#include <arch/ia32/kaneton/init.h>
-#include <arch/ia32/kaneton/region.h>
-#include <arch/ia32/kaneton/segment.h>
-#include <arch/ia32/kaneton/stats.h>
-#include <arch/ia32/kaneton/task.h>
+#include <arch/machdep/kaneton/as.h>
+#include <arch/machdep/kaneton/debug.h>
+#include <arch/machdep/kaneton/init.h>
+#include <arch/machdep/kaneton/region.h>
+#include <arch/machdep/kaneton/segment.h>
+#include <arch/machdep/kaneton/stats.h>
+#include <arch/machdep/kaneton/task.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../../../kaneton/arch/ia32/kaneton/as.c
- *      ../../../../kaneton/arch/ia32/kaneton/region.c
- *      ../../../../kaneton/arch/ia32/kaneton/segment.c
- *      ../../../../kaneton/arch/ia32/kaneton/task.c
+ *      ../../../../kaneton/arch/machdep/kaneton/as.c
+ *      ../../../../kaneton/arch/machdep/kaneton/region.c
+ *      ../../../../kaneton/arch/machdep/kaneton/segment.c
+ *      ../../../../kaneton/arch/machdep/kaneton/task.c
  */
 
 /*
- * ../../../../kaneton/arch/ia32/kaneton/as.c
+ * ../../../../kaneton/arch/machdep/kaneton/as.c
  */
 
 t_error			ia32_as_give(t_asid			asid,
@@ -69,7 +64,7 @@ t_error			ia32_as_clean(void);
 
 
 /*
- * ../../../../kaneton/arch/ia32/kaneton/region.c
+ * ../../../../kaneton/arch/machdep/kaneton/region.c
  */
 
 t_error			ia32_region_init(t_fit			fit,
@@ -80,7 +75,7 @@ t_error			ia32_region_clean(void);
 
 
 /*
- * ../../../../kaneton/arch/ia32/kaneton/segment.c
+ * ../../../../kaneton/arch/machdep/kaneton/segment.c
  */
 
 t_error			ia32_segment_init(t_fit			fit);
@@ -89,7 +84,7 @@ t_error			ia32_segment_clean(void);
 
 
 /*
- * ../../../../kaneton/arch/ia32/kaneton/task.c
+ * ../../../../kaneton/arch/machdep/kaneton/task.c
  */
 
 t_error			ia32_task_clone(t_tskid		old,
