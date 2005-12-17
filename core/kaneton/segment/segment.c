@@ -28,6 +28,9 @@
  *     flush, seg->paddr (addr), asid
  *
  * XXX give (as, segment)
+ *
+ * XXX segment_inject qui sera utilisee par task.c pour rajouter en
+ *     dur des segments.
  */
 
 /*
