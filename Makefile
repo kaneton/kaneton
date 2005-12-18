@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/Makefile
+## file          /home/mycure/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       matthieu bucchianeri   [sat dec 17 19:49:36 2005]
+## updated       julien quintard   [sun dec 18 18:42:31 2005]
 ##
 
 #
@@ -30,6 +30,7 @@
 #
 
 KANETON_SHELL		?=		/bin/bash
+
 _SHELL_			?=		$(KANETON_SHELL)
 _MAKE_			?=		$(MAKE)
 

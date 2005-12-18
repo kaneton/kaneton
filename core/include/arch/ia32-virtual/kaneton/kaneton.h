@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/kaneton.h
  *
  * created       julien quintard   [sat dec 17 17:13:18 2005]
- * updated       julien quintard   [sat dec 17 17:13:20 2005]
+ * updated       julien quintard   [sun dec 18 18:55:21 2005]
  */
 
 #ifndef IA32_KANETON_KANETON_H

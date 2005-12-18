@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/kaneton/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       julien quintard   [thu dec 15 12:21:49 2005]
+ * updated       julien quintard   [sun dec 18 19:05:04 2005]
  */
 
 /*
@@ -145,7 +145,6 @@ t_error			as_dump(void)
   t_state		state;
   o_as*			data;
   t_setsz		size;
-  o_set*		o;
   t_iterator		i;
 
   AS_ENTER(as);
@@ -321,7 +320,7 @@ t_error			as_clone(t_tskid			tskid,
 
   set_foreach(SET_OPT_FORWARD, from->regions, &i, state)
     {
-      t_regid		needless;
+      /* XXX t_regid		needless; */
       o_region*		data;
 
       if (set_object(from->regions, i, (void**)&data) != ERROR_NONE)

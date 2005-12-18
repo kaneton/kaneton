@@ -250,8 +250,6 @@ t_error			set_adjust_bpt(o_set*			o,
 				       t_bpt_uni(set)		alloc,
 				       t_bpt_uni(set)		size)
 {
-  t_bpt_uni(set)	i;
-
   SET_ENTER(set);
 
   /*

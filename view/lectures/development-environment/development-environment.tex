@@ -1,12 +1,12 @@
 %%
-%% copyright     (c) julien quintard
+%% licence       kaneton licence
 %%
 %% project       kaneton
 %%
-%% file          /home/buckman/kaneton/kaneton/view/lectures/development-environment/development-environment.tex
+%% file          /home/mycure/kaneton/view/lectures/development-environment/development-environment.tex
 %%
-%% created       julien quintard   [sat nov 19 17:49:20 2005]
-%% updated       matthieu bucchianeri   [sat dec 17 17:21:21 2005]
+%% created       julien quintard   [sun dec 18 18:39:23 2005]
+%% updated       julien quintard   [sun dec 18 18:45:28 2005]
 %%
 
 %
@@ -241,12 +241,16 @@
 
   \begin{verbatim}
     /
+      cheat/
+      check/
       core/
       doc/
       drivers/
       env/
       export/
+      internship/
       libs/
+      licences/
       programs/
       services/
       tools/
@@ -323,6 +327,7 @@
     env/
       .env.conf
       clean.sh
+      critical.sh
       init.sh
       machines/
       users/
@@ -446,6 +451,7 @@
     machines/
       unix/
         clean.sh
+        critical.sh
         init.sh
         machine.conf
         machine.mk
@@ -621,10 +627,6 @@
 
   \begin{itemize}
     \item
-      \textbf{CONF\_TITLE}
-    \item
-      \textbf{CONF\_VERSION}
-    \item
       \textbf{CONF\_DEBUG}
     \item
       etc..
@@ -752,7 +754,7 @@
     tools/
       ld/
         arch/
-          ia32/
+          ia32-virtual/
             bootstrap.lds
             bootloader.lds
             kaneton.lds
@@ -922,8 +924,8 @@
     core/
       bootstrap/
         arch/
-          ia32/ <---;
-          machdep --+
+          ia32-virtual/   <---;
+          machdep ------------+
       bootloader/
         arch/
       kaneton/

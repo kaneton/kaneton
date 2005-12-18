@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/kaneton/debug/cons.c
  *
  * created       quintard julien   [sat may 28 18:23:13 2005]
- * updated       julien quintard   [tue dec 13 13:24:10 2005]
+ * updated       julien quintard   [sun dec 18 19:03:33 2005]
  */
 
 /*
@@ -106,14 +106,14 @@ int			cons_print_char(char			c)
       cons.line++;
       cons.column = 0;
 
-      return ;
+      return (0);
     }
 
   if (c == '\r')
     {
       cons.column = 0;
 
-      return ;
+      return (0);
     }
 
   if (cons.column >= CONS_COLUMNS)

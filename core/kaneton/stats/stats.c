@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/stats/stats.c
+ * file          /home/mycure/kaneton/core/kaneton/stats/stats.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue dec  6 00:47:27 2005]
+ * updated       julien quintard   [sun dec 18 19:12:18 2005]
  */
 
 /*
@@ -267,7 +267,6 @@ t_error			stats_show(t_staid			staid)
 t_error			stats_dump(void)
 {
   t_staid		staid;
-  t_sint64		i;
 
   STATS_ENTER(stats);
 
@@ -466,7 +465,6 @@ t_error			stats_init(void)
 t_error			stats_clean(void)
 {
   t_staid		staid;
-  t_sint64		i;
 
   /*
    * 1)
@@ -499,12 +497,17 @@ static void	stats_test_fun(t_staid st)
     {
       if (STATS_BEGIN(st) != ERROR_NONE)
 	cons_msg('!', "error beginning stats (st_fun)\n");
+
       if (i % 2)
-	if (STATS_END(st, ERROR_NONE) != ERROR_NONE)
-	  cons_msg('!', "error ending stats (st_fun)\n");
+	{
+	  if (STATS_END(st, ERROR_NONE) != ERROR_NONE)
+	    cons_msg('!', "error ending stats (st_fun)\n");
+	}
       else
-	if (STATS_END(st, ERROR_UNKNOWN) != ERROR_NONE)
-	  cons_msg('!', "error ending stats (st_fun)\n");
+	{
+	  if (STATS_END(st, ERROR_UNKNOWN) != ERROR_NONE)
+	    cons_msg('!', "error ending stats (st_fun)\n");
+	}
     }
 }
 
@@ -584,26 +587,35 @@ t_error			stats_test(void)
     {
       if (STATS_BEGIN(st4) != ERROR_NONE)
 	cons_msg('!', "error beginning stats (st4)\n");
+
       if (i % 2)
-	if (STATS_END(st4, ERROR_NONE) != ERROR_NONE)
-	  cons_msg('!', "error ending stats (st4)\n");
+	{
+	  if (STATS_END(st4, ERROR_NONE) != ERROR_NONE)
+	    cons_msg('!', "error ending stats (st4)\n");
+	}
       else
-	if (STATS_END(st4, ERROR_UNKNOWN) != ERROR_NONE)
-	  cons_msg('!', "error ending stats (st4)\n");
+	{
+	  if (STATS_END(st4, ERROR_UNKNOWN) != ERROR_NONE)
+	    cons_msg('!', "error ending stats (st4)\n");
+	}
     }
   for (i = 0; i < 10; ++i)
     {
       if (STATS_BEGIN(st5) != ERROR_NONE)
 	cons_msg('!', "error beginning stats (st5)\n");
+
       if (i % 2)
 	{
 	  if (STATS_END(st5, ERROR_NONE) != ERROR_NONE)
 	    cons_msg('!', "error ending stats (st5)\n");
+
 	  stats_test_fun(st5);
 	}
       else
-	if (STATS_END(st5, ERROR_UNKNOWN) != ERROR_NONE)
-	  cons_msg('!', "error ending stats (st5)\n");
+	{
+	  if (STATS_END(st5, ERROR_UNKNOWN) != ERROR_NONE)
+	    cons_msg('!', "error ending stats (st5)\n");
+	}
     }
 
   /*

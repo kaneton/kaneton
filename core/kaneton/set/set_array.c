@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set_array.c
+ * file          /home/mycure/kaneton/core/kaneton/set/set_array.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon dec 12 14:48:13 2005]
+ * updated       julien quintard   [sun dec 18 19:06:24 2005]
  */
 
 /*
@@ -407,7 +407,6 @@ static t_error		set_insert_at(o_set		*o,
 				      t_setsz		pos,
 				      void		*data)
 {
-  t_setsz		i;
   t_setsz		limit;
 
   /*
@@ -1098,7 +1097,6 @@ t_error			set_locate_array(t_setid		setid,
 {
   o_set*       		o;
   t_setid		i;
-  t_id			current;
   t_setsz		left;
   t_setsz		right;
   t_setsz		dicho;

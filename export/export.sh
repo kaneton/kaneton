@@ -3,10 +3,10 @@
 ##
 ## project
 ##
-## file          /home/buckman/kaneton/kaneton/export/export.sh
+## file          /home/mycure/kaneton/export/export.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       matthieu bucchianeri   [sun dec 18 15:55:13 2005]
+## updated       julien quintard   [sun dec 18 18:32:52 2005]
 ##
 
 #
@@ -73,7 +73,7 @@ warning()
   display "   export:                   ${_EXPORT_}" "+"
   display "   hidden:                   ${_HIDDEN_}" "+"
   display ""
-  display "   stage:                    ${STAGE}" "+"
+  display "   stage:                    ${LOCATION}" "+"
   display ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
@@ -94,15 +94,15 @@ extract()
   cutted=$(tempfile)
   # for each file, cut the unwanted source code
   flag=0
-  for s in $STAGES; do
-    if [ $s = $STAGE ] ; then
+  for s in ${STAGES}; do
+    if [ $s = ${LOCATION} ] ; then
       flag=1
     fi
 
-    if [ $flag = "1" ] ; then
-      for f in $FILES ; do
-        contents $f | cut-code "$s" > $cutted
-        copy $cutted $f
+    if [ ${flag} = "1" ] ; then
+      for f in ${FILES} ; do
+        contents "${f}" | cut-code "${s}" > ${cutted}
+        copy "${cutted}" "${f}"
       done
     fi
   done
@@ -118,7 +118,7 @@ extract()
 build()
 {
   # removes the old directory for this stage.
-  remove "${_EXPORT_}-*-${STAGE}.tar.gz"
+  remove "${_EXPORT_}-*-${LOCATION}.tar.gz"
   remove "${_EXPORT_}"
 
   # creates a tarball from the current working development tree.
@@ -136,9 +136,6 @@ build()
   # removes svn control directories.
   svn-clean "${_EXPORT_}"
 
-  # remove the hidden directories
-  remove "${_HIDDEN_}"
-
   # gets the list of the files
   c_files=$(find-files "libs/ core/ drivers/ services/ programs/" "*.c"	\
 	"--file")
@@ -149,10 +146,10 @@ build()
   S_files=$(find-files "libs/ core/ drivers/ services/ programs/" "*.S"	\
 	"--file")
 
-  FILES="$c_files $h_files $asm_files $S_files"
+  FILES="${c_files} ${h_files} ${asm_files} ${S_files}"
 
-  # make a choice from $STAGE
-  case $STAGE in
+  # make a choice from ${LOCATION}
+  case ${LOCATION} in
     "dist")
       ;;
     "kaneton")
@@ -173,6 +170,12 @@ build()
 
   print "" "" "" | makefile "clean" > /dev/null 2> /dev/null
 
+  # remove the hidden directories
+
+echo ${_HIDDEN_}
+
+  remove "${_HIDDEN_}"
+
   # leave directory
   change-directory ".."
 }
@@ -185,10 +188,10 @@ dist()
   d=$(format-date "%Y%m%d")
 
   # make the distribution
-  pack "$_EXPORT_" "$_EXPORT_-$d-$STAGE.tar.gz"
+  pack "${_EXPORT_}" "${_EXPORT_}-${d}-${LOCATION}.tar.gz"
 
   # remove the working directory
-  remove "$_EXPORT_"
+  remove "${_EXPORT_}"
 }
 
 #
@@ -235,7 +238,7 @@ build
 dist
 
 # end of export
-display " ${STAGE} exported successfully" "+"
+display " ${LOCATION} exported successfully" "+"
 
 # displays some stuff.
 display ""

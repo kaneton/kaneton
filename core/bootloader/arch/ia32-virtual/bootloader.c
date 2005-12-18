@@ -208,4 +208,5 @@ int			bootloader(t_uint32			magic,
 
 /*                                                                 [cut] /k1 */
 
+  return (0);
 }

@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/include/kaneton/debug.h
  *
  * created       julien quintard   [mon nov 28 19:37:01 2005]
- * updated       julien quintard   [sat dec 10 15:47:24 2005]
+ * updated       julien quintard   [sun dec 18 18:57:15 2005]
  */
 
 #ifndef KANETON_DEBUG_H
@@ -58,6 +58,7 @@ typedef	struct			s_serial_buffer
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../kaneton/debug/debug.c
+ *      ../../kaneton/debug/cons.c
  */
 
 /*
@@ -77,6 +78,29 @@ t_error			debug_recv_cmd();
 t_error			debug_exec_cmd_tab(t_serial_data *cmd);
 
 t_error			debug_clean(void);
+
+
+/*
+ * ../../kaneton/debug/cons.c
+ */
+
+void			cons_clear(void);
+
+void			cons_scroll(t_uint16			lines);
+
+void			cons_attr(t_uint8			attr);
+
+int			cons_print_char(char			c);
+
+void			cons_print_string(char*			string);
+
+void			cons_msg(char				indicator,
+				 char*				fmt,
+				 ...);
+
+t_error			cons_init(void);
+
+t_error			cons_clean(void);
 
 
 /*

@@ -219,7 +219,6 @@ t_error			segment_clone(t_asid			asid,
 				      t_segid*			new)
 {
   o_segment*		from;
-  o_segment*		to;
   o_as*			as;
 
   SEGMENT_ENTER(segment);

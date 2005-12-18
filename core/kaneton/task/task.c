@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/kaneton/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [thu dec 15 11:16:12 2005]
+ * updated       julien quintard   [sun dec 18 19:13:30 2005]
  */
 
 /*
@@ -79,9 +79,9 @@ t_tskid			ktask = ID_UNUSED;
 
 t_error			task_show(t_tskid			tskid)
 {
-  t_state		state;
-  t_iterator		i;
-  o_task*		o;
+  /* XXX t_state		state; */
+  /* XXX t_iterator		i; */
+  /* XXX o_task*		o; */
 
   TASK_ENTER(task);
 
@@ -89,8 +89,10 @@ t_error			task_show(t_tskid			tskid)
    * 1)
    */
 
+  /* XXX
   if (task_get(tskid, &o) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
+  */
 
   cons_msg('#', "  task %qd:\n", tskid);
 
@@ -117,7 +119,6 @@ t_error			task_dump(void)
   t_state		state;
   o_task*		data;
   t_setsz		size;
-  o_set*		o;
   t_iterator		i;
 
   TASK_ENTER(task);
@@ -211,7 +212,7 @@ t_error			task_clone(t_tskid			old,
 
   set_foreach(SET_OPT_FORWARD, from->threads, &i, state)
     {
-      t_thrid		needless;
+      /* XXX t_thrid		needless; */
       t_thrid*		data;
 
       if (set_object(from->threads, i, (void**)&data) != ERROR_NONE)

@@ -471,8 +471,6 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
        i < init->modules->nmodules;
        i++)
     {
-      t_uint32		length = strlen((char*)mod[i].string);
-
       modsz = mod[i].mod_end - mod[i].mod_start;
 
       module->name = (char*)((t_uint32)module + sizeof(t_module) + modsz);

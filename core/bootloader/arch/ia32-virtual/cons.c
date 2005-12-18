@@ -121,7 +121,7 @@ int			bootloader_cons_print_char(char		c)
       cons.line++;
       cons.column = 0;
 
-      return ;
+      return (0);
     }
 
   if (pos >= CONS_SIZE)
