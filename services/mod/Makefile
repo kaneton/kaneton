@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/services/mod
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Mon Nov  7 16:06:15 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/kaneton/services/mod/Makefile
+##
+## created       julien quintard   [fri feb 11 03:00:09 2005]
+## updated       matthieu bucchianeri   [sun dec 18 12:04:51 2005]
 ##
 
 #
@@ -33,11 +28,11 @@ include			../../env/.env.mk
 MOD			:=		mod
 
 MOD_C			:=		mod.c				\
-					modfs.c				
+					modfs.c
 
 MOD_O			:=		$(MOD_C:.c=.o)
 
-MOD_INCLUDE		:=		
+MOD_INCLUDE		:=
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -45,7 +40,7 @@ MOD_INCLUDE		:=
 
 $(MOD):			libs $(MOD_O)
 	$(call executable,$(MOD),$(MOD_O) $(_KLIBC_A_),			\
-	  -T $(_MACHDEP_LDS_DIR_)/service.lds)
+	  "--lds $(_MACHDEP_LDS_DIR_)/service.lds")
 
 libs:
 	$(call make,$(_KLIBC_DIR_),)

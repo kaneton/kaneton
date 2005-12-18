@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/drivers/dma
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Mon Nov  7 16:08:58 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/kaneton/drivers/dma/Makefile
+##
+## created       julien quintard   [fri feb 11 03:00:09 2005]
+## updated       matthieu bucchianeri   [sun dec 18 12:02:35 2005]
 ##
 
 #
@@ -36,7 +31,7 @@ DMA_C			:=		dma.c
 
 DMA_O			:=		$(DMA_C:.c=.o)
 
-DMA_INCLUDE		:=		
+DMA_INCLUDE		:=
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -44,7 +39,7 @@ DMA_INCLUDE		:=
 
 $(DMA):			libs $(DMA_O)
 	$(call executable,$(DMA),$(DMA_O) $(_KLIBC_A_),			\
-	  -T $(_MACHDEP_LDS_DIR_)/driver.lds)
+	  "--lds $(_MACHDEP_LDS_DIR_)/driver.lds")
 
 libs:
 	$(call makefile,$(_KLIBC_DIR_),)

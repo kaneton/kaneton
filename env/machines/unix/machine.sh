@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/env/machines/unix/machine.sh
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       matthieu bucchianeri   [sat dec 17 12:48:33 2005]
+## updated       matthieu bucchianeri   [sun dec 18 15:54:37 2005]
 ##
 
 #
@@ -42,7 +42,7 @@ print()
 	      options="${options} -n"
 	      ;;
 	  "--flickering")
-	      text="\E[5m${text}"
+	      text="\E[5m${text}\033[0m"
 	      ;;
 	  *)
 	      ;;
@@ -72,11 +72,11 @@ print()
         ;;
 
       *)
-        ${_ECHO_} ${options} "${text}"
+        ${_ECHO_} -e ${options} "${text}"
         ;;
     esac
   else
-    ${_ECHO_} ${options} "${text}"
+    ${_ECHO_} -e ${options} "${text}"
   fi
 }
 
@@ -537,6 +537,38 @@ preprocess()
 
 
 #
+# FIND-FILES
+#
+# find files given a pattern
+#
+# ${1}:		place to search for
+# ${2}:		files to match
+# ${3}:		options
+#
+find-files()
+{
+  local source
+  local pattern
+  local options
+
+  source="${1}"
+  pattern="${2}"
+  for opt in ${3}; do
+      case "${opt}" in
+	  "--file")
+	      options="${options} -type f"
+	      ;;
+	  *)
+	      ;;
+      esac
+  done
+
+  ${_FIND_} ${source} -name "${pattern}" ${options}
+}
+
+
+
+#
 # TAGS CLEAN
 #
 # this function removes tags from the source code files.
@@ -655,6 +687,48 @@ device-copy()
   esac
 }
 
+
+
+#
+# FORMAT-DATE
+#
+# this function return current date formatted
+#
+# ${1}:		format
+# ${2}:		options
+#
+format-date()
+{
+  local format
+
+  format="${1}"
+  for opt in ${2}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
+  ${_DATE_} +${format}
+}
+
+
+
+#
+# CUT-CODE
+#
+# cut code for exporting.
+#
+# ${1}:		stage
+#
+cut-code()
+{
+  local stage
+
+  stage="${1}"
+  ${_SED_} -e "/^.*\[cut\].*${stage}.*$/,/^.*\[cut\].*\/${stage}.*$/ \
+                      { /^.*\[cut\].*${stage}.*$/ !d }"
+}
 
 
 

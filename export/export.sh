@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/export/export.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       matthieu bucchianeri   [tue dec 13 22:30:12 2005]
+## updated       matthieu bucchianeri   [sun dec 18 15:55:13 2005]
 ##
 
 #
@@ -89,18 +89,20 @@ warning()
 #
 extract()
 {
+  local cutted
+
+  cutted=$(tempfile)
   # for each file, cut the unwanted source code
   flag=0
-  for s in $_STAGES_; do
-    if [ $s = $_STAGE_ ] ; then
+  for s in $STAGES; do
+    if [ $s = $STAGE ] ; then
       flag=1
     fi
 
     if [ $flag = "1" ] ; then
-      for f in $_FILES_ ; do
-        cat $f | sed "/^.*\[cut\].*$s.*$/,/^.*\[cut\].*\/$s.*$/ \
-                      { /^.*\[cut\].*$s.*$/ !d }" > /tmp/$_EXPORT_
-        cp /tmp/$_EXPORT_ $f
+      for f in $FILES ; do
+        contents $f | cut-code "$s" > $cutted
+        copy $cutted $f
       done
     fi
   done
@@ -137,31 +139,25 @@ build()
   # remove the hidden directories
   remove "${_HIDDEN_}"
 
-XXX
-
-exit -1
-
   # gets the list of the files
-  c_files=`find libs/ core/ drivers/ services/ programs/                \
-           -type f -name "*.c"`
-  h_files=`find libs/ core/ drivers/ services/ programs/                \
-           -type f -name "*.h"`
-  asm_files=`find libs/ core/ drivers/ services/ programs/              \
-             -type f -name "*.asm"`
-  S_files=`find libs/ core/ drivers/ services/ programs/                \
-           -type f -name "*.S"`
+  c_files=$(find-files "libs/ core/ drivers/ services/ programs/" "*.c"	\
+	"--file")
+  h_files=$(find-files "libs/ core/ drivers/ services/ programs/" "*.h"	\
+	"--file")
+  asm_files=$(find-files "libs/ core/ drivers/ services/ programs/"	\
+	"*.asm" "--file")
+  S_files=$(find-files "libs/ core/ drivers/ services/ programs/" "*.S"	\
+	"--file")
 
-  _FILES_="$c_files $h_files $asm_files $S_files"
+  FILES="$c_files $h_files $asm_files $S_files"
 
-  # make a choice from $_STAGE_
-  case $_STAGE_ in
+  # make a choice from $STAGE
+  case $STAGE in
     "dist")
       ;;
-
     "kaneton")
       tags-clean "${FILES}"
       ;;
-
     *)
       extract
       tags-clean "${FILES}"
@@ -171,16 +167,14 @@ exit -1
   # we have to re-generate prototypes because the header files
   # still contain our prototypes
 
-  echo "
-" | gmake init > /dev/null 2> /dev/null
+  print "" "" "" | makefile "init" > /dev/null 2> /dev/null
 
-  gmake proto > /dev/null 2> /dev/null
+  makefile "proto" > /dev/null 2> /dev/null
 
-  echo "
-" | gmake clean > /dev/null 2> /dev/null
+  print "" "" "" | makefile "clean" > /dev/null 2> /dev/null
 
   # leave directory
-  cd ..
+  change-directory ".."
 }
 
 # DIST
@@ -188,13 +182,13 @@ exit -1
 # this function makes a distribution from the exported version
 dist()
 {
-  d=`date +"%Y%m%d"`
+  d=$(format-date "%Y%m%d")
 
   # make the distribution
-  tar -czf $_EXPORT_-$d-$_STAGE_.tar.gz $_EXPORT_
+  pack "$_EXPORT_" "$_EXPORT_-$d-$STAGE.tar.gz"
 
   # remove the working directory
-  rm -Rf $_EXPORT_
+  remove "$_EXPORT_"
 }
 
 #

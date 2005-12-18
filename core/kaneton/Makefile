@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/core/kaneton
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Nov  7 16:43:12 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/kaneton/core/kaneton/Makefile
+##
+## created       julien quintard   [fri feb 11 02:57:24 2005]
+## updated       matthieu bucchianeri   [sat dec 17 20:22:55 2005]
 ##
 
 #
@@ -40,7 +35,7 @@ SUBDIRS			:=		arch				\
 					set				\
 					stats				\
 					task				\
-					$(_CHECK_DIR_)			
+					$(_CHECK_DIR_)
 
 # kaneton libraries
 
@@ -54,13 +49,13 @@ KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 					$(_SET_LO_)			\
 					$(_STATS_LO_)			\
 					$(_TASK_LO_)			\
-					$(_CHECK_LO_)			
+					$(_CHECK_LO_)
 
 # kaneton binary
 
 KANETON			:=		kaneton
 
-KANETON_C		:=		kaneton.c			
+KANETON_C		:=		kaneton.c
 
 KANETON_O		:=		$(KANETON_C:.c=.o)
 
@@ -91,7 +86,7 @@ $(KANETON):		libs $(KANETON_O)
 					$(VERSION_O)			\
 					$(KANETON_LIBS)			\
 					$(_KLIBC_A_),			\
-	  -T $(_MACHDEP_LDS_DIR_)/kaneton.lds)
+			  "--lds $(_MACHDEP_LDS_DIR_)/kaneton.lds")
 
 libs:
 	$(call makefile,$(SUBDIRS),)

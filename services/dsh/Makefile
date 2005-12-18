@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/services/dsh
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Mon Nov  7 16:04:56 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/kaneton/services/dsh/Makefile
+##
+## created       julien quintard   [fri feb 11 03:00:09 2005]
+## updated       matthieu bucchianeri   [sun dec 18 12:04:14 2005]
 ##
 
 #
@@ -36,7 +31,7 @@ DSH_C			:=		dsh.c
 
 DSH_O			:=		$(DSH_C:.c=.o)
 
-DSH_INCLUDE		=		
+DSH_INCLUDE		=
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -44,7 +39,7 @@ DSH_INCLUDE		=
 
 $(DSH):			libs $(DSH_O)
 	$(call executable,$(DSH),$(DSH_O) $(_KLIBC_A_),			\
-	  -T $(_MACHDEP_LDS_DIR_)/service.lds)
+	  "--lds $(_MACHDEP_LDS_DIR_)/service.lds")
 
 libs:
 	$(call makefile,$(_KLIBC_DIR_),)

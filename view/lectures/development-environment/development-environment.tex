@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/lectures/development-environment/development-environment.tex
+%% file          /home/buckman/kaneton/kaneton/view/lectures/development-environment/development-environment.tex
 %%
 %% created       julien quintard   [sat nov 19 17:49:20 2005]
-%% updated       julien quintard   [sat nov 19 17:49:55 2005]
+%% updated       matthieu bucchianeri   [sat dec 17 17:21:21 2005]
 %%
 
 %
@@ -398,7 +398,7 @@
 
     [...]
 
-    $ 
+    $
   \end{verbatim}
 \end{frame}
 
@@ -453,8 +453,17 @@
       macos-powerpc.sparc64/
     users/
   \end{verbatim}
-\end{frame}
 
+  The configuration system uses the shell variable \$KANETON\_MACHINE to
+  use the good scripts and files in \textbf{env/machines/\$KANETON\_MACHINE/}.
+
+  \nl
+
+  But to install the machine environment, \textbf{bash} is used. And its
+  path is specified in the machine environment. So it is possible to override
+  default path to bash with shell variable \textbf{\$KANETON\_SHELL} (default
+  is \textbf{/bin/bash}).
+\end{frame}
 % 3)
 
 \begin{frame}
@@ -779,7 +788,7 @@
     [+] services/dsh/dsh
 
     [+] boot system initialised successfully
-    $ 
+    $
   \end{verbatim}
 \end{frame}
 
@@ -805,7 +814,7 @@
 
     [...]
 
-    $ 
+    $
   \end{verbatim}
 \end{frame}
 
@@ -854,7 +863,7 @@
 
     [...]
 
-    $ 
+    $
   \end{verbatim}
 \end{frame}
 

@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/check/Makefile
+## file          /home/buckman/kaneton/kaneton/check/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       julien quintard   [sat dec 10 06:14:46 2005]
+## updated       matthieu bucchianeri   [sun dec 18 16:10:06 2005]
 ##
 
 #

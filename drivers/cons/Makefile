@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/drivers/cons
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 03:00:09 2005   mycure
-## last update   Mon Nov  7 16:11:18 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/kaneton/drivers/cons/Makefile
+##
+## created       julien quintard   [fri feb 11 03:00:09 2005]
+## updated       matthieu bucchianeri   [sun dec 18 12:01:38 2005]
 ##
 
 #
@@ -36,7 +31,7 @@ CONS_C			:=		cons.c
 
 CONS_O			:=		$(CONS_C:.c=.o)
 
-CONS_INCLUDE		:=		
+CONS_INCLUDE		:=
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -44,7 +39,7 @@ CONS_INCLUDE		:=
 
 $(CONS):		libs $(CONS_O)
 	$(call executable,$(CONS),$(CONS_O) $(_KLIBC_A_),		\
-	  -T $(_MACHDEP_LDS_DIR_)/driver.lds)
+	  "--lds $(_MACHDEP_LDS_DIR_)/driver.lds")
 
 libs:
 	$(call make,$(_KLIBC_DIR_),)
