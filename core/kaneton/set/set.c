@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set.c
  *
  * created       julien quintard   [fri dec  2 19:55:19 2005]
- * updated       matthieu bucchianeri   [mon dec 12 14:48:36 2005]
+ * updated       matthieu bucchianeri   [mon dec 19 18:34:33 2005]
  */
 
 /*
@@ -595,8 +595,10 @@ t_error			set_test(t_type				type)
     {
     case SET_TYPE_ARRAY:
       {
-	set_test_array(-1);
-
+//	set_test_array(-1);
+	check_set_array_init();
+	check_set_array_01();
+	check_set_array_02();
 	break;
       }
     case SET_TYPE_BPT:

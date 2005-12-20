@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/kaneton/set.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       matthieu bucchianeri   [thu dec  8 00:04:59 2005]
+ * updated       matthieu bucchianeri   [mon dec 19 17:42:28 2005]
  */
 
 #ifndef KANETON_SET_H
@@ -259,6 +259,9 @@ typedef struct
 #define set_remove(_setid_, _args_...)					\
   set_trap(set_remove, _setid_, ##_args_)
 
+/*#define set_delete(_setid_, _args_...)					\
+  set_trap(set_delete, _setid_, ##_args_)*/
+
 #define set_flush(_setid_, _args_...)					\
   set_trap(set_flush, _setid_, ##_args_)
 
@@ -379,6 +382,9 @@ t_error			set_add_array(t_setid			setid,
 t_error			set_remove_array(t_setid		setid,
 					 t_id			id);
 
+t_error			set_delete_array(t_setid		setid,
+					 t_iterator		iterator);
+
 t_error			set_flush_array(t_setid			setid);
 
 t_error			set_locate_array(t_setid		setid,
@@ -398,8 +404,6 @@ t_error			set_reserve_array(t_opts		opts,
 					  t_setid*		setid);
 
 t_error			set_release_array(t_setid		setid);
-
-void		set_test_array(int test_set);
 
 
 /*
@@ -443,6 +447,9 @@ t_error			set_add_ll(t_setid			setid,
 
 t_error			set_remove_ll(t_setid			setid,
 				      t_id			id);
+
+t_error			set_delete_ll(t_setid			setid,
+				      t_iterator		iterator);
 
 t_error			set_flush_ll(t_setid			setid);
 
@@ -535,6 +542,9 @@ t_error			set_add_bpt(t_setid			setid,
 
 t_error			set_remove_bpt(t_setid			setid,
 				       t_id			id);
+
+t_error			set_delete_bpt(t_setid			setid,
+				       t_iterator		iterator);
 
 t_error			set_flush_bpt(t_setid			setid);
 

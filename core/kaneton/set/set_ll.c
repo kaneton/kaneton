@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * set_ll.c
- * 
- * path          /home/mycure/kaneton/core/include/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Nov  1 15:53:35 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set_ll.c
+ *
+ * created       julien quintard   [fri feb 11 03:04:40 2005]
+ * updated       matthieu bucchianeri   [mon dec 19 17:25:13 2005]
  */
 
 /*
@@ -876,6 +871,79 @@ t_error			set_remove_ll(t_setid			setid,
    */
 
   free(tmp);
+
+  /*
+   * 6)
+   */
+
+  o->size--;
+
+  SET_LEAVE(set, ERROR_NONE);
+}
+
+/*
+ * this function deletes an element given an iterator.
+ *
+ * steps:
+ *
+ * 1) gets the descriptor by its identifier.
+ * 2) checks the iterator.
+ * 3) updates the links.
+ * 4) frees data if necessary.
+ * 5) frees node.
+ * 6) updates counter.
+ */
+
+t_error			set_delete_ll(t_setid			setid,
+				      t_iterator		iterator)
+{
+  t_set_ll_node*	n;
+  o_set*		o;
+
+  SET_ENTER(set);
+
+  /*
+   * 1)
+   */
+
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  n = iterator.u.ll.node;
+  if (n == NULL)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (n->prv)
+    n->prv->nxt = n->nxt;
+  else
+    o->u.ll.head = n->nxt;
+
+  if (n->nxt)
+    n->nxt->prv = n->prv;
+  else
+    o->u.ll.tail = n->prv;
+
+  /*
+   * 4)
+   */
+
+  if (o->u.ll.opts & SET_OPT_FREE ||
+      o->u.ll.opts & SET_OPT_ALLOC)
+    free(n->data);
+
+  /*
+   * 5)
+   */
+
+  free(n);
 
   /*
    * 6)

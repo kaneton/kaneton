@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * set_bpt.c
- * 
- * path          /home/mycure/kaneton/core/include/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Nov  1 15:54:20 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set_bpt.c
+ *
+ * created       julien quintard   [fri feb 11 03:04:40 2005]
+ * updated       matthieu bucchianeri   [mon dec 19 17:44:07 2005]
  */
 
 /*
@@ -226,7 +221,7 @@ t_error			set_build_bpt(o_set*			o,
        (o->u.bpt.unused.index + 1) < o->u.bpt.unusedsz;
        o->u.bpt.unused.index++)
     {
-      if ((o->u.bpt.unused.array[(o->u.bpt.unused.index + 1)] = 
+      if ((o->u.bpt.unused.array[(o->u.bpt.unused.index + 1)] =
 	   malloc(nodesz)) == NULL)
 	SET_LEAVE(set, ERROR_NONE);
     }
@@ -696,6 +691,72 @@ t_error			set_remove_bpt(t_setid			setid,
   o->size--;
 
   SET_LEAVE(set, ERROR_NONE);
+}
+
+/*
+ * this function deletes an element given an iterator.
+ *
+ * steps:
+ *
+ * 1) gets the set descriptor.
+ * 2) loads the entry.
+ * 3) frees element if necessary
+ * 4) unloads the entry.
+ * n) decrements the number of elements in the set.
+ */
+
+t_error			set_delete_bpt(t_setid			setid,
+				       t_iterator		iterator)
+{
+  t_bpt_entry(set)	entry;
+  t_bpt_imm(set)	node;
+  o_set*		o;
+  void*			obj;
+
+  SET_ENTER(set);
+
+  /*
+   * 1)
+   */
+
+  if (set_descriptor(setid, &o) != ERROR_NONE)
+    SET_LEAVE(set, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  entry = iterator.u.bpt.entry;
+
+  BPT_LOAD(&o->u.bpt.bpt, &node, entry.node);
+
+  obj = BPT_GET_LFENTRY(set, &node, entry.ndi, data);
+
+  /*
+   * 3)
+   */
+
+  if (o->u.bpt.opts & SET_OPT_ALLOC ||
+      o->u.bpt.opts & SET_OPT_FREE)
+    free(obj);
+
+  /*
+   * 4)
+   */
+
+  BPT_UNLOAD(&o->u.bpt.bpt, &node);
+
+  /*
+   * 5)
+   */
+
+  /*
+   * n)
+   */
+
+  o->size--;
+
+  SET_LEAVE(set, ERROR_UNKNOWN);
 }
 
 /*
