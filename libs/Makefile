@@ -1,17 +1,17 @@
 ##
 ## copyright quintard julien
-## 
+##
 ## kaneton
-## 
+##
 ## Makefile
-## 
+##
 ## path          /home/mycure/kaneton/libs
-## 
+##
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
-## 
+##
 ## started on    Fri Feb 11 02:28:05 2005   mycure
-## last update   Mon Nov  7 15:44:24 2005   mycure
+## Last update Tue Dec 20 13:45:56 2005 matthieu bucchianeri
 ##
 
 #
@@ -30,7 +30,7 @@ include			../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		klibc crt
+SUBDIRS			:=		klibc crt libia32
 
 #
 # ---------- rules ------------------------------------------------------------

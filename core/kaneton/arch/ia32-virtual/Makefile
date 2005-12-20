@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/core/kaneton/arch/ia32
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Nov  7 17:22:41 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/kaneton/core/kaneton/arch/machdep/Makefile
+##
+## created       julien quintard   [fri feb 11 02:57:24 2005]
+## updated       matthieu bucchianeri   [tue dec 20 14:34:20 2005]
 ##
 
 #
@@ -30,12 +25,11 @@ include			../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		ia32 kaneton
+SUBDIRS			:=		kaneton
 
 MACHDEP_LO		:=		machdep.lo
 
 KANETON_LO		:=		kaneton/kaneton.lo
-IA32_LO			:=		ia32/ia32.lo
 
 CFLAGS			+=		-D___kernel
 
@@ -46,7 +40,7 @@ CFLAGS			+=		-D___kernel
 $(MACHDEP_LO):		libs
 	$(call remove,$(MACHDEP_LO),)
 
-	$(call archive,$(MACHDEP_LO),$(KANETON_LO) $(IA32_LO),)
+	$(call archive,$(MACHDEP_LO),$(KANETON_LO) $(_LIBIA32_A_),)
 
 libs:
 	$(call makefile,$(SUBDIRS),)

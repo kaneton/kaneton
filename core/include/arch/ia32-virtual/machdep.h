@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * machdep.h
- * 
- * path          /home/mycure/kaneton/core
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Thu Nov 10 23:03:46 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/include/arch/machdep/machdep.h
+ *
+ * created       julien quintard   [fri feb 11 02:23:53 2005]
+ * updated       matthieu bucchianeri   [tue dec 20 14:26:39 2005]
  */
 
 #ifndef IA32_MACHDEP_H
@@ -21,7 +16,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <arch/machdep/ia32/ia32.h>
+#include <arch/libia32/libia32.h>
 #include <arch/machdep/kaneton/kaneton.h>
 #include <arch/machdep/services/services.h>
 #include <arch/machdep/sys/sys.h>

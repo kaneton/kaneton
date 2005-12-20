@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * segment.c
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Nov 15 20:09:58 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/kaneton/segment.c
+ *
+ * created       julien quintard   [fri feb 11 03:04:40 2005]
+ * updated       matthieu bucchianeri   [tue dec 20 14:40:48 2005]
  */
 
 /*
@@ -63,7 +58,7 @@ t_error			ia32_segment_init(t_fit			fit)
   SEGMENT_ENTER(segment);
 
   if (pmode_init() != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_NONE);
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
@@ -77,7 +72,7 @@ t_error			ia32_segment_clean(void)
   SEGMENT_ENTER(segment);
 
   if (pmode_clean() != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_NONE);
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
