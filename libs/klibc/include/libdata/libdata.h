@@ -59,8 +59,6 @@ int			alloc_init(t_vaddr			addr,
 				   t_size			size,
 				   t_fit			fit);
 
-void			alloc_test(void);
-
 
 /*
  * ../../libdata/dump.c

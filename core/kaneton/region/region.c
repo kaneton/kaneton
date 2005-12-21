@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/region/region.c
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       julien quintard   [thu dec 15 11:50:21 2005]
+ * updated       matthieu bucchianeri   [tue dec 20 22:43:25 2005]
  */
 
 /*
@@ -258,7 +258,7 @@ t_error			region_reserve(t_asid			asid,
 	    {
 	      if (segment_first_fit(as, segment->size,
 				    &o.address) != ERROR_NONE)
-		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+		REGION_LEAVE(region, ERROR_UNKNOWN);
 
 	      break;
 	    }

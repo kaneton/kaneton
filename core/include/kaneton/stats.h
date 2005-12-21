@@ -186,8 +186,6 @@ t_error			stats_init(void);
 
 t_error			stats_clean(void);
 
-t_error			stats_test(void);
-
 
 /*
  * eop

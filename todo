@@ -1,4 +1,11 @@
 --
+ julien: penser a finir set_delete pour bpt
+
+ matthieu: encore une question avec clone sur les sets : je clone mon
+      set qui a SET_OPT_FREE, ensuite je flush le premier set, donc
+      les pointeurs du set clone sont pas valides... c'est l'echec clone
+
+--
  factoriser du code pour ia32 car on va avoir bcp de ressemblance entre
  ia32-virtual, ia32-segments et ia32-optimised. le mieux
  serait sans doute de rajouter dans libs/ une lib libia32 ou on

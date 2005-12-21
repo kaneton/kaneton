@@ -1,0 +1,50 @@
+/*
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/check/core/kaneton/stats/03/03.c
+ *
+ * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
+ * updated       matthieu bucchianeri   [tue dec 20 23:10:07 2005]
+ */
+
+#include <klibc.h>
+#include <kaneton.h>
+#include "../../../../init/init.h"
+
+void		check_stats_03(void);
+
+/*
+ * errors tests
+ */
+
+void		check_stats_03(void)
+{
+  t_staid	sterr;
+
+  TEST_ENTER(check_stats_03);
+
+  if (STATS_RESERVE("stats_test_lotoffun", &sterr) != ERROR_NONE)
+    cons_msg('!', "error reserving stats objects\n");
+
+  stats_end(sterr, "foo", ERROR_UNKNOWN);
+  stats_begin(sterr, "foo");
+  stats_end(sterr, "foo", ERROR_UNKNOWN);
+  stats_end(sterr, "foo", ERROR_UNKNOWN);
+  stats_begin(sterr, "foo");
+  stats_begin(sterr, "foo");
+  stats_begin(sterr, "foo");
+  stats_end(sterr, "foo", ERROR_UNKNOWN);
+  STATS_RELEASE(-4);
+  STATS_RELEASE(-100);
+
+  STATS_DUMP();
+
+  if (STATS_RELEASE(sterr) != ERROR_NONE)
+    cons_msg('!', "error releasing stats objects\n");
+
+  sterr = sterr;
+
+  TEST_LEAVE(check_stats_03);
+}

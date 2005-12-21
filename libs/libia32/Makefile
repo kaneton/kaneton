@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/libs/libia32/Makefile
 ##
 ## created       matthieu bucchianeri   [tue dec 20 13:40:52 2005]
-## updated       matthieu bucchianeri   [tue dec 20 13:57:21 2005]
+## updated       matthieu bucchianeri   [tue dec 20 20:23:43 2005]
 ##
 
 #
@@ -26,8 +26,14 @@ include			../../env/.env.mk
 #
 
 LIBIA32_C		:=		pmode.c				\
+					gdt.c				\
+					ldt.c				\
 					paging.c			\
-					interrupt.c
+					pde.c				\
+					pte.c				\
+					tlb.c				\
+					interrupt.c			\
+					idt.c
 
 LIBIA32_O		:=		$(LIBIA32_C:.c=.o)
 

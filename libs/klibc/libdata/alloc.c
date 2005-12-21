@@ -1,17 +1,12 @@
 /*
- * copyright aubouy cedric
+ * licence       kaneton licence
  *
- * kaneton
+ * project       kaneton
  *
- * alloc.c
+ * file          /home/buckman/kaneton/kaneton/libs/klibc/libdata/alloc.c
  *
- * path          /home/mycure/kaneton/core/kaneton
- *
- * made by cedric
- *         Cedric Aubouy   [cedric.aubouy@gmail.com]
- *
- * started on    Sun Sep 25 19:57:33 2005   cedric
- * last update   Sun Oct 30 16:45:24 2005   mycure
+ * created       cedric aubouy   [sun sep 25 19:57:33 2005]
+ * updated       matthieu bucchianeri   [tue dec 20 22:31:16 2005]
  */
 
 /*
@@ -175,8 +170,7 @@ void*			malloc(size_t				size)
     {
       printf("malloc: fatal error during malloc(%u)\n", size);
 
-      while (1)
-	;
+      return NULL;
 
       /* XXX */
     }
@@ -421,7 +415,7 @@ void*			realloc(void* 				ptr,
  * 1) checks for the given algorithm.
  * 2) initialises the very first static area, the survey area.
  * 3) initialises the global allocator information.
- * 4) if needed, performs the allocator tests.
+ * 4) if needed, dumps the allocator state.
  */
 
 int			alloc_init(t_vaddr			addr,
@@ -466,56 +460,8 @@ int			alloc_init(t_vaddr			addr,
    */
 
 #ifdef ALLOC_DEBUG
-  alloc_test();
+  alloc_dump();
 #endif
 
   return 0;
-}
-
-/*
- * this function performs some tests.
- */
-
-void			alloc_test(void)
-{
-  void*			ptr;
-
-  if ((ptr = malloc(7)) == NULL)
-    printf("error: malloc()\n");
-
-  if ((ptr = malloc(0)) == NULL)
-    printf("error: malloc()\n");
-
-  if ((ptr = malloc(1)) == NULL)
-    printf("error: malloc()\n");
-
-  if ((ptr = malloc(70)) == NULL)
-    printf("error: malloc()\n");
-
-  if ((ptr = malloc(200)) == NULL)
-    printf("error: malloc()\n");
-
-  if ((ptr = malloc(2)) == NULL)
-    printf("error: malloc()\n");
-
-  if ((ptr = malloc(1000)) == NULL)
-    printf("error: malloc()\n");
-
-  free(ptr);
-
-  if ((ptr = malloc(3)) == NULL)
-    printf("error: malloc()\n");
-
-  free(ptr);
-
-  if ((ptr = malloc(2000)) == NULL)
-    printf("error: malloc()\n");
-
-  if ((ptr = realloc(ptr, 15)) == NULL)
-    printf("error: malloc()\n");
-
-  alloc_dump();
-
-  while (1)
-    ;
 }

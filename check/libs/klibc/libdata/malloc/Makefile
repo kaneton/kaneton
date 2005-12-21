@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/check/Makefile
+## file          /home/buckman/kaneton/kaneton/check/libs/klibc/libdata/malloc/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       julien quintard   [mon nov 28 19:24:49 2005]
+## updated       matthieu bucchianeri   [tue dec 20 15:10:23 2005]
 ##
 
 #
@@ -25,11 +25,13 @@ include			../../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TEST_LO			:=		01.lo
+LIST			:=		list
 
-TEST_C			:=		01.c
+SUBDIRS			:=		$(call contents,$(LIST),)
 
-TEST_O			:=		$(TEST_C:.c=.o)
+MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
+
+MALLOC_LO		:=		malloc.lo
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -37,19 +39,22 @@ TEST_O			:=		$(TEST_C:.c=.o)
 
 all:			build run
 
-build:			$(TEST_LO)
+build:			$(MALLOC_LO)
 
-$(TEST_LO):		$(TEST_O)
-	$(call remove,$(TEST_LO),)
+$(MALLOC_LO):		libs
+	$(call remove,$(MALLOC_LO),)
 
-	$(call archive,$(TEST_LO),$(TEST_O),)
+	$(call archive,$(MALLOC_LO),$(MODULES),)
+
+libs:
+	$(call makefile,$(SUBDIRS),)
 
 run:
 
 clear:
-	$(call remove,$(TEST_LO),)
+	$(call makefile,$(SUBDIRS),clear)
 
-	$(call remove,$(TEST_O),)
+	$(call remove,$(MALLOC_LO),)
 
 	$(call purge,)
 

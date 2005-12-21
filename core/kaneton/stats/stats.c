@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/stats/stats.c
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/stats/stats.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun dec 18 19:12:18 2005]
+ * updated       matthieu bucchianeri   [tue dec 20 23:07:59 2005]
  */
 
 /*
@@ -407,7 +407,7 @@ t_error			stats_release(t_staid			staid)
  *
  * 1) allocates and initialises the statistics manager main structure.
  * 2) allocates and initialises the statistics object data structure.
- * 3) runs tests if necessary
+ * 3) dumps state if necessary.
  */
 
 t_error			stats_init(void)
@@ -447,7 +447,7 @@ t_error			stats_init(void)
    */
 
 #if (DEBUG & DEBUG_STATS)
-  stats_test();
+  stats_dump();
 #endif
 
   return (ERROR_NONE);
@@ -482,209 +482,4 @@ t_error			stats_clean(void)
   free(stats);
 
   return (ERROR_NONE);
-}
-
-/*
- * this function is used by stats_test to test stats in functions.
- *
- */
-
-static void	stats_test_fun(t_staid st)
-{
-  int		i;
-
-  for (i = 0; i < 5; ++i)
-    {
-      if (STATS_BEGIN(st) != ERROR_NONE)
-	cons_msg('!', "error beginning stats (st_fun)\n");
-
-      if (i % 2)
-	{
-	  if (STATS_END(st, ERROR_NONE) != ERROR_NONE)
-	    cons_msg('!', "error ending stats (st_fun)\n");
-	}
-      else
-	{
-	  if (STATS_END(st, ERROR_UNKNOWN) != ERROR_NONE)
-	    cons_msg('!', "error ending stats (st_fun)\n");
-	}
-    }
-}
-
-/*
- * this function tests the stat manager.
- *
- * steps:
- *
- * 1) reserves some stats objects.
- * 2) simulates some calls with or without errors.
- *   a) basic operations (calls / errors).
- *   b) a fast solution to simulate plenty of calls.
- *   c) programming errors and unwanted behaviors (must not segfault !).
- * 3) displays the stats.
- * 4) releases the stats objects.
- */
-
-t_error			stats_test(void)
-{
-  t_staid		st1;
-  t_staid		st2;
-  t_staid		st3;
-  t_staid		st4;
-  t_staid		st5;
-  t_staid		st6;
-  t_staid		sterr;
-  t_staid		stuseless1;
-  t_staid		stuseless2;
-  t_staid		stuseless3;
-  t_staid		stuseless4;
-  int			i;
-
-  STATS_ENTER(stats);
-
-  cons_msg('#', "testing the stats manager\n");
-
-  /*
-   * 1)
-   */
-
-  if (STATS_RESERVE("stats_test_nocall", &st1) != ERROR_NONE ||
-      STATS_RESERVE("stats_test_manycalls", &st2) != ERROR_NONE ||
-      STATS_RESERVE("stats_test_manyerrors", &st3) != ERROR_NONE ||
-      STATS_RESERVE("stats_test_mixed", &st4) != ERROR_NONE ||
-      STATS_RESERVE("stats_test_subfun", &st5) != ERROR_NONE ||
-      STATS_RESERVE("stats_test_lotoffun", &st6) != ERROR_NONE ||
-      STATS_RESERVE("stats_test_err", &sterr) != ERROR_NONE ||
-      STATS_RESERVE("stats_useless1", &stuseless1) != ERROR_NONE ||
-      STATS_RESERVE("stats_useless2", &stuseless2) != ERROR_NONE ||
-      STATS_RESERVE("stats_useless3", &stuseless3) != ERROR_NONE ||
-      STATS_RESERVE("stats_useless4", &stuseless4) != ERROR_NONE)
-    cons_msg('!', "error reserving stats objects\n");
-
-  /*
-   * 2)
-   */
-
-  /*
-   * a)
-   */
-
-  for (i = 0; i < 1234; ++i)
-    {
-      if (STATS_BEGIN(st2) != ERROR_NONE)
-	cons_msg('!', "error beginning stats (st2)\n");
-      if (STATS_END(st2, ERROR_NONE) != ERROR_NONE)
-	cons_msg('!', "error ending stats (st2)\n");
-    }
-  for (i = 0; i < 567; ++i)
-    {
-      if (STATS_BEGIN(st3) != ERROR_NONE)
-	cons_msg('!', "error beginning stats (st3)\n");
-      if (STATS_END(st3, ERROR_UNKNOWN) != ERROR_NONE)
-	cons_msg('!', "error ending stats (st3)\n");
-    }
-  for (i = 0; i < 200; ++i)
-    {
-      if (STATS_BEGIN(st4) != ERROR_NONE)
-	cons_msg('!', "error beginning stats (st4)\n");
-
-      if (i % 2)
-	{
-	  if (STATS_END(st4, ERROR_NONE) != ERROR_NONE)
-	    cons_msg('!', "error ending stats (st4)\n");
-	}
-      else
-	{
-	  if (STATS_END(st4, ERROR_UNKNOWN) != ERROR_NONE)
-	    cons_msg('!', "error ending stats (st4)\n");
-	}
-    }
-  for (i = 0; i < 10; ++i)
-    {
-      if (STATS_BEGIN(st5) != ERROR_NONE)
-	cons_msg('!', "error beginning stats (st5)\n");
-
-      if (i % 2)
-	{
-	  if (STATS_END(st5, ERROR_NONE) != ERROR_NONE)
-	    cons_msg('!', "error ending stats (st5)\n");
-
-	  stats_test_fun(st5);
-	}
-      else
-	{
-	  if (STATS_END(st5, ERROR_UNKNOWN) != ERROR_NONE)
-	    cons_msg('!', "error ending stats (st5)\n");
-	}
-    }
-
-  /*
-   * b)
-   */
-
-  stats_begin(st6, "fun1");
-  stats_begin(st6, "fun2");
-  stats_begin(st6, "fun3");
-  stats_begin(st6, "fun4");
-  stats_begin(st6, "fun5");
-  stats_begin(st6, "fun6");
-  stats_end(st6, "fun1", ERROR_NONE);
-  stats_end(st6, "fun2", ERROR_NONE);
-  stats_end(st6, "fun3", ERROR_UNKNOWN);
-  stats_end(st6, "fun4", ERROR_NONE);
-  stats_end(st6, "fun5", ERROR_UNKNOWN);
-  stats_end(st6, "fun6", ERROR_NONE);
-
-  /*
-   * c)
-   */
-
-  stats_end(sterr, "foo", ERROR_UNKNOWN);
-  stats_begin(sterr, "foo");
-  stats_end(sterr, "foo", ERROR_UNKNOWN);
-  stats_end(sterr, "foo", ERROR_UNKNOWN);
-  stats_begin(sterr, "foo");
-  stats_begin(sterr, "foo");
-  stats_begin(sterr, "foo");
-  stats_end(sterr, "foo", ERROR_UNKNOWN);
-  STATS_RELEASE(-4);
-  STATS_RELEASE(-100);
-
-  /*
-   * 3)
-   */
-
-  if (stats_show(st1) != ERROR_NONE)
-    cons_msg('!', "error displaying stats (st1)\n");
-  if (stats_show(st2) != ERROR_NONE)
-    cons_msg('!', "error displaying stats (st2)\n");
-  if (stats_show(st3) != ERROR_NONE)
-    cons_msg('!', "error displaying stats (st3)\n");
-  if (stats_show(st4) != ERROR_NONE)
-    cons_msg('!', "error displaying stats (st4)\n");
-  if (stats_show(st5) != ERROR_NONE)
-    cons_msg('!', "error displaying stats (st5)\n");
-  if (stats_show(st6) != ERROR_NONE)
-    cons_msg('!', "error displaying stats (st6)\n");
-  if (stats_show(sterr) != ERROR_NONE)
-    cons_msg('!', "error displaying stats (sterr)\n");
-
-  /*
-   * 4)
-   */
-
-  if (STATS_RELEASE(st1) != ERROR_NONE ||
-      STATS_RELEASE(st2) != ERROR_NONE ||
-      STATS_RELEASE(st3) != ERROR_NONE ||
-      STATS_RELEASE(st4) != ERROR_NONE ||
-      STATS_RELEASE(st5) != ERROR_NONE ||
-      STATS_RELEASE(st6) != ERROR_NONE ||
-      STATS_RELEASE(sterr) != ERROR_NONE ||
-      STATS_RELEASE(stuseless1) != ERROR_NONE ||
-      STATS_RELEASE(stuseless2) != ERROR_NONE ||
-      STATS_RELEASE(stuseless3) != ERROR_NONE ||
-      STATS_RELEASE(stuseless4) != ERROR_NONE)
-    cons_msg('!', "error releasing stats objects\n");
-
-  STATS_LEAVE(stats, ERROR_NONE);
 }

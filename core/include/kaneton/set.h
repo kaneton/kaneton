@@ -337,8 +337,6 @@ t_error			set_init(void);
 
 t_error			set_clean(void);
 
-t_error			set_test(t_type				type);
-
 
 /*
  * ../../kaneton/set/set_array.c

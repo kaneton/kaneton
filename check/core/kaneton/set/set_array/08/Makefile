@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/init/Makefile
+## file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/08/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [mon dec 19 18:13:08 2005]
+## updated       matthieu bucchianeri   [tue dec 20 21:27:31 2005]
 ##
 
 #
@@ -25,9 +25,9 @@ include			../../../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TEST_LO			:=		init.lo
+TEST_LO			:=		08.lo
 
-TEST_C			:=		init.c
+TEST_C			:=		08.c
 
 TEST_O			:=		$(TEST_C:.c=.o)
 

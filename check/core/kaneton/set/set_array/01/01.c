@@ -1,12 +1,29 @@
+/*
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/01/01.c
+ *
+ * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
+ * updated       matthieu bucchianeri   [tue dec 20 16:04:43 2005]
+ */
+
 #include <klibc.h>
 #include <kaneton.h>
-#include "../init/init.h"
+#include "../../init/init.h"
+
+void		check_set_array_01(void);
+
+/*
+ * creates an array set with no options and release it. nothing more.
+ */
 
 void		check_set_array_01(void)
 {
   t_setid	id;
 
-  TEST_ENTER;
+  TEST_ENTER(check_set_array_01);
 
   if (set_reserve(array, SET_OPT_NONE, 4, sizeof(t_id), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -17,5 +34,5 @@ void		check_set_array_01(void)
 		  sizeof(t_id), &id) == ERROR_NONE)
     printf("error: set_reserve() accepted bad arguments\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE(check_set_array_01);
 }

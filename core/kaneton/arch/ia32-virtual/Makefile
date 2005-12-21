@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/core/kaneton/arch/machdep/Makefile
+## file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue dec 20 14:34:20 2005]
+## updated       matthieu bucchianeri   [tue dec 20 20:28:48 2005]
 ##
 
 #
