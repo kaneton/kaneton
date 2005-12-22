@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * conf.h
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Sun Aug 28 16:23:31 2005   mycure
- * last update   Tue Nov 15 20:08:46 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/mycure/kaneton/env/users/julien.quintard/conf.h
+ *
+ * created       julien quintard   [sat dec 17 17:24:46 2005]
+ * updated       julien quintard   [sat dec 17 17:25:09 2005]
  */
 
 #ifndef KANETON_CONF_H
@@ -26,19 +21,6 @@
 /*
  * ---------- defines ---------------------------------------------------------
  */
-
-/*
- * the title of your kernel which will be displayed by the grub
- * bootloader and by your kernel during its bootstrap.
- */
-
-#define CONF_TITLE		"kaneton"
-
-/*
- * the current release version.
- */
-
-#define CONF_VERSION		"0.0.1"
 
 /*
  * the current kernel mode, release, development.
@@ -64,7 +46,7 @@
  */
 
 #define CONF_DEBUG							\
-  (0)
+  (DEBUG_TASK)
 
 /*
  * the machine-dependent configuration debug
