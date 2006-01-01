@@ -1,10 +1,18 @@
 --
  julien: penser a finir set_delete pour bpt
 
- matthieu: encore une question avec clone sur les sets : je clone mon
+ matthieu:
+   - voir pkoi la maj des registre segments fout la merde (dans le bootloader)
+   - void pkoi cli/sti fout la merde
+   - revoir les noms des typedef dans libia32. prefixer t_ia32_ ?
+   - corriger printf pour gerer les trucs style %8.5d
+   - faire le python pour les tests de stats
+   - encore une question avec clone sur les sets : je clone mon set
       set qui a SET_OPT_FREE, ensuite je flush le premier set, donc
       les pointeurs du set clone sont pas valides... c'est l'echec clone
 
+ pour tester la moulette avec un seul pc : QEMU, avec l'option "-serial pty"
+ et changer en dur le device dans check.py.
 --
  factoriser du code pour ia32 car on va avoir bcp de ressemblance entre
  ia32-virtual, ia32-segments et ia32-optimised. le mieux

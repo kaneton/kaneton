@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * as.h
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Tue Nov 15 22:11:30 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/include/arch/ia32-virtual/kaneton/as.h
+ *
+ * created       julien quintard   [fri feb 11 02:23:41 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 18:17:06 2005]
  */
 
 #ifndef IA32_KANETON_AS_H
@@ -34,6 +29,7 @@
 typedef struct
 {
   t_paddr			pd;
+  t_ldt				ldt;
 }				do_as;
 
 /*

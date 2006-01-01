@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/06/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [tue dec 20 19:11:21 2005]
+## updated       matthieu bucchianeri   [thu dec 29 19:08:19 2005]
 ##
 
 #
@@ -50,6 +50,8 @@ clear:
 	$(call remove,$(TEST_LO),)
 
 	$(call remove,$(TEST_O),)
+
+	$(call remove,parse_res.pyc,)
 
 	$(call purge,)
 

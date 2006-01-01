@@ -1,15 +1,12 @@
 /*
- * kaneton
+ * licence       kaneton licence
  *
- * printf.c
+ * project       kaneton
  *
- * path          /home/mycure/kaneton/libs/klibc/libc
+ * file          /home/buckman/kaneton/kaneton/libs/klibc/libstring/printf.c
  *
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- *
- * started on    Thu May  6 14:37:44 2004   mycure
- * last update   Sun Jun 19 22:26:53 2005   mycure
+ * created       julien quintard   [thu may  6 14:37:44 2004]
+ * updated       matthieu bucchianeri   [thu dec 29 17:49:07 2005]
  */
 
 /*
@@ -18,6 +15,29 @@
 
 #include <arch/machdep/machdep.h>
 #include <klibc.h>
+
+/*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+#define GET_VAL(Sign)							\
+  if (quadflag)								\
+    quadvalue = va_arg(args, quad_t);					\
+  else									\
+    {									\
+      if ((Sign))							\
+	{								\
+	  if (longflag)							\
+	    quadvalue = (u_quad_t) va_arg(args, long);			\
+	  else								\
+	    quadvalue = (u_quad_t) va_arg(args, int);			\
+	}								\
+      else								\
+	if (longflag)							\
+	  quadvalue = (u_quad_t) va_arg(args, unsigned long);		\
+	else								\
+	  quadvalue = (u_quad_t) va_arg(args, unsigned int);		\
+    }
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -42,7 +62,7 @@ int			printf_string(char*			string,
   written = 0;
 
   if (string == NULL)
-    return (printf_string("(null)", 0, 0, 0));
+    return (printf_string("(null)", flags, len1, len2));
 
   for (i = 0; string[i]; i++)
     ;
@@ -100,10 +120,10 @@ int			printf_quad(quad_t			value,
   v = value;
 
   if (hdl_sign)
-    if (v < 0)
+    if (value < 0)
       {
 	sign = '-';
-	v = -v;
+	v = -value;
       }
 
   if (base < 0)
@@ -146,8 +166,9 @@ int			printf_quad(quad_t			value,
 
   if (padlen > 0)
     {
-      if (printf_char != NULL)
-	written += printf_char(' ');
+      for (; padlen > 0; padlen--)
+	if (printf_char != NULL)
+	  written += printf_char(' ');
     }
 
   if (sign)
@@ -270,13 +291,7 @@ int			vprintf(const char*			fmt,
 		}
 	      case 'b':
 		{
-		  if (quadflag)
-		    quadvalue = va_arg(args, quad_t);
-		  else if (longflag)
-		    quadvalue = (u_quad_t) va_arg(args, long);
-		  else
-		    quadvalue = (u_quad_t) va_arg(args, int);
-
+		  GET_VAL(0);
 		  written += printf_quad(quadvalue, 2, 0, flags,
 					 len1, len2);
 
@@ -284,13 +299,7 @@ int			vprintf(const char*			fmt,
 		}
 	      case 'd': case 'i': case 'D':
 		{
-		  if (quadflag)
-		    quadvalue = va_arg(args, quad_t);
-		  else if (longflag)
-		    quadvalue = (quad_t) va_arg(args, long);
-		  else
-		    quadvalue = (quad_t) va_arg(args, int);
-
+		  GET_VAL(1);
 		  written += printf_quad(quadvalue, 10, 1, flags,
 					 len1, len2);
 
@@ -298,13 +307,7 @@ int			vprintf(const char*			fmt,
 		}
 	      case 'u': case 'U':
 		{
-		  if (quadflag)
-		    quadvalue = va_arg(args, quad_t);
-		  else if (longflag)
-		    quadvalue = (u_quad_t) va_arg(args, long);
-		  else
-		    quadvalue = (u_quad_t) va_arg(args, int);
-
+		  GET_VAL(0);
 		  written += printf_quad(quadvalue, 10, 0, flags,
 					 len1, len2);
 
@@ -312,13 +315,7 @@ int			vprintf(const char*			fmt,
 		}
 	      case 'o': case 'O':
 		{
-		  if (quadflag)
-		    quadvalue = va_arg(args, quad_t);
-		  else if (longflag)
-		    quadvalue = (u_quad_t) va_arg(args, long);
-		  else
-		    quadvalue = (u_quad_t) va_arg(args, int);
-
+		  GET_VAL(0);
 		  written += printf_quad(quadvalue, 8, 0, flags,
 					 len1, len2);
 
@@ -326,13 +323,7 @@ int			vprintf(const char*			fmt,
 		}
 	      case 'p': case 'x':
 		{
-		  if (quadflag)
-		    quadvalue = va_arg(args, quad_t);
-		  else if (longflag)
-		    quadvalue = (u_quad_t) va_arg(args, long);
-		  else
-		    quadvalue = (u_quad_t) va_arg(args, int);
-
+		  GET_VAL(0);
 		  written += printf_quad(quadvalue, 16, 0, flags,
 					 len1, len2);
 
@@ -340,13 +331,7 @@ int			vprintf(const char*			fmt,
 		}
 	      case 'X':
 		{
-		  if (quadflag)
-		    quadvalue = va_arg(args, quad_t);
-		  else if (longflag)
-		    quadvalue = (u_quad_t) va_arg(args, long);
-		  else
-		    quadvalue = (u_quad_t) va_arg(args, int);
-
+		  GET_VAL(0);
 		  written += printf_quad(quadvalue, -16, 0, flags,
 					 len1, len2);
 
@@ -379,7 +364,11 @@ int			vprintf(const char*			fmt,
 		}
 	      default:
 		{
-		  return (written);
+		  if (printf_char != NULL)
+		    {
+		      written += printf_char('%');
+		      written += printf_char(fmt[i]);
+		    }
 		}
 	      }
 

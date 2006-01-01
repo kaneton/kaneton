@@ -6,14 +6,12 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/stats/02/02.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [tue dec 20 23:04:41 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 17:20:43 2005]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
-#include "../../../../init/init.h"
-
-void		check_stats_02(void);
+#include "../init/init.h"
 
 /*
  * many nested calls
@@ -23,7 +21,7 @@ void		check_stats_02(void)
 {
   t_staid	st6;
 
-  TEST_ENTER(check_stats_02);
+  TEST_ENTER;
 
   if (STATS_RESERVE("stats_test_lotoffun", &st6) != ERROR_NONE)
     cons_msg('!', "error reserving stats objects\n");
@@ -48,5 +46,5 @@ void		check_stats_02(void)
 
   st6 = st6;
 
-  TEST_LEAVE(check_stats_02);
+  TEST_LEAVE;
 }

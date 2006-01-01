@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/03/03.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [tue dec 20 18:52:24 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 17:22:02 2005]
  */
 
 #include <klibc.h>
@@ -21,7 +21,6 @@ typedef struct
 
 }		t_obj;
 
-void		check_set_array_03(void);
 static void	display_t_obj(void* data);
 
 /*
@@ -35,7 +34,7 @@ void		check_set_array_03(void)
   t_obj		obj1;
   t_obj*	obj2;
 
-  TEST_ENTER(check_set_array_03);
+  TEST_ENTER;
 
   if (set_reserve(array, SET_OPT_ALLOC, 4, sizeof(t_obj), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -68,7 +67,7 @@ void		check_set_array_03(void)
 
   set_release(id);
 
-  TEST_LEAVE(check_set_array_03);
+  TEST_LEAVE;
 }
 
 static void	display_t_obj(void* data)

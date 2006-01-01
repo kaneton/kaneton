@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [tue dec 20 22:41:10 2005]
+ * updated       matthieu bucchianeri   [fri dec 30 17:18:16 2005]
  */
 
 #ifndef KANETON_CONF_H
@@ -52,13 +52,13 @@
  * this define activates the statistics
  */
 
-#define CONF_STATS
+#undef CONF_STATS
 
 /*
  * this define starts the tests by hand.
  */
 
-#define CONF_ENABLE_CHECK
+//#define CONF_ENABLE_CHECK
 
 /*
  * the configuration debug
@@ -72,13 +72,13 @@
  */
 
 #define CONF_MACHDEP_DEBUG						\
-  (0)
+  (IA32_DEBUG_PMODE | IA32_DEBUG_PAGING)
 
 /*
  * serial port debug
  */
 
-#undef SERIAL
+//#define SERIAL
 
 /*
  * ---------- prototypes ------------------------------------------------------

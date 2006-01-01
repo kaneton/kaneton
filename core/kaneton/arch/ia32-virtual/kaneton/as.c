@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * as.c
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Sat Nov 19 12:48:27 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/kaneton/as.c
+ *
+ * created       julien quintard   [fri feb 11 03:04:40 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 18:50:27 2005]
  */
 
 /*
@@ -79,28 +74,84 @@ t_error			ia32_as_clone(t_tskid			tskid,
 }
 
 /*
- * XXX
+ * this function reserves an address space.
+ *
+ * steps:
+ *
+ * 1) gets the as object.
+ * 2) builds a new ldt for the as.
  */
 
 t_error			ia32_as_reserve(t_tskid			tskid,
 					t_asid*			asid)
 {
+  o_as*			o;
+  t_uint16		nb = 10; /* XXX */
+
   AS_ENTER(as);
 
-  /* XXX */
+  /*
+   * 1)
+   */
+
+  if (as_get(*asid, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (ldt_build(nb, (t_paddr)malloc(nb * sizeof(t_ldte)),
+		&o->machdep.ldt, 1) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_NONE);
 
   AS_LEAVE(as, ERROR_NONE);
 }
 
 /*
- * XXX
+ * this function releases an address space.
+ *
+ * steps:
+ *
+ * 1) gets address space object.
+ * 2) gets the base of the ldt.
+ * 3) destroys the ldt.
+ * 4) frees the allocated table.
  */
 
 t_error			ia32_as_release(t_asid			asid)
 {
+  o_as*			o;
+  t_paddr		base;
+
   AS_ENTER(as);
 
-  /* XXX */
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (ldt_base(&o->machdep.ldt, &base) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (ldt_destroy(&o->machdep.ldt) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  free((void*)base);
 
   AS_LEAVE(as, ERROR_NONE);
 }

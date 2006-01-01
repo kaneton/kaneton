@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/libs/libia32/Makefile
 ##
 ## created       matthieu bucchianeri   [tue dec 20 13:40:52 2005]
-## updated       matthieu bucchianeri   [tue dec 20 20:23:43 2005]
+## updated       matthieu bucchianeri   [thu dec 22 18:14:35 2005]
 ##
 
 #
@@ -44,6 +44,8 @@ LIBIA32_INCLUDE		:=		$(_LIBIA32_INCLUDE_DIR_)/libia32.h
 #
 
 $(_LIBIA32_A_):		$(LIBIA32_O)
+	$(call remove,$(_LIBIA32_A_),)
+
 	$(call static-library,$(_LIBIA32_A_),$(LIBIA32_O),)
 
 clear:

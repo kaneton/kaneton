@@ -1,0 +1,4 @@
+01 malloc, lecture/ecriture, free
+02 une centaine de malloc + free
+03 realloc
+04 reutilisation et fragmentation

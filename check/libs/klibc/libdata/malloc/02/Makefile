@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/check/libs/klibc/libdata/malloc/02/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [tue dec 20 15:38:17 2005]
+## updated       matthieu bucchianeri   [thu dec 29 19:10:44 2005]
 ##
 
 #
@@ -51,6 +51,8 @@ clear:
 	$(call remove,$(TEST_LO),)
 
 	$(call remove,$(TEST_O),)
+
+	$(call remove,parse_res.pyc,)
 
 	$(call purge,)
 

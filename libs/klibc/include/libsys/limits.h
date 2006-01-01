@@ -1,17 +1,17 @@
 /*
  * copyright quintard julien
- * 
+ *
  * kaneton
- * 
+ *
  * limits.h
- * 
+ *
  * path          /home/mycure/kaneton/libs/klibc/include
- * 
+ *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
- * 
+ *
  * started on    Fri Feb 11 02:38:13 2005   mycure
- * last update   Sun Jun 19 22:19:15 2005   mycure
+** Last update Mon Dec 26 19:11:26 2005 matthieu bucchianeri
  */
 
 #ifndef LIBSYS_LIMITS_H
@@ -66,19 +66,19 @@
  */
 
 #define LLONG_BITS		64
-#define SLLONG_MIN		(-0x7fffffffffffffffL - 1)
-#define SLLONG_MAX		0x7fffffffffffffffL
-#define ULLONG_MIN		0x0000000000000000UL
-#define ULLONG_MAX		0xffffffffffffffffUL
+#define SLLONG_MIN		(-0x7fffffffffffffffLL - 1)
+#define SLLONG_MAX		0x7fffffffffffffffLL
+#define ULLONG_MIN		0x0000000000000000ULL
+#define ULLONG_MAX		0xffffffffffffffffULL
 
 /*
  * quad size
  */
 
 #define QUAD_BITS		64
-#define SQUAD_MIN		(-0x7fffffffffffffffL - 1)
-#define SQUAD_MAX		0x7fffffffffffffffL
-#define UQUAD_MIN		0x0000000000000000UL
-#define UQUAD_MAX		0xffffffffffffffffUL
+#define SQUAD_MIN		(-0x7fffffffffffffffLL - 1)
+#define SQUAD_MAX		0x7fffffffffffffffLL
+#define UQUAD_MIN		0x0000000000000000ULL
+#define UQUAD_MAX		0xffffffffffffffffULL
 
 #endif

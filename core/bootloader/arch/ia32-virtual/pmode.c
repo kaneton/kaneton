@@ -1,15 +1,12 @@
 /*
- * kaneton
+ * licence       kaneton licence
  *
- * pmode.c
+ * project       kaneton
  *
- * path          /home/mycure/kaneton
+ * file          /home/buckman/kaneton/kaneton/core/bootloader/arch/ia32-virtual/pmode.c
  *
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- *
- * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Tue Nov 15 19:53:54 2005   mycure
+ * created       julien quintard   [mon jul 19 20:43:14 2004]
+ * updated       matthieu bucchianeri   [fri dec 30 17:47:23 2005]
  */
 
 /*
@@ -31,6 +28,21 @@
 #include "bootloader.h"
 
 /*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+#define PMODE_GDT_ENTRIES	256
+
+#define PMODE_GDT_CORE_CS	0x1
+#define PMODE_GDT_CORE_DS	0x2
+#define PMODE_GDT_DRIVER_CS	0x3
+#define PMODE_GDT_DRIVER_DS	0x4
+#define PMODE_GDT_SERVICE_CS	0x5
+#define PMODE_GDT_SERVICE_DS	0x6
+#define PMODE_GDT_PROGRAM_CS	0x7
+#define PMODE_GDT_PROGRAM_DS	0x8
+
+/*
  * ---------- globals ---------------------------------------------------------
  */
 
@@ -41,81 +53,10 @@
 extern t_init*		init;
 
 /*
- * the system's global offset table.
- */
-
-t_gdte*			gdt;
-t_gdtr			gdtr;
-
-/*
  * ---------- functions -------------------------------------------------------
  */
 
 /*                                                                  [cut] k1 */
-
-/*
- * this function updates the segment registers to work with the new
- * global offset table.
- */
-
-void			bootloader_pmode_update_registers(t_uint16	kcs,
-							  t_uint16	kds)
-{
-  t_reg16		cs = (kcs << 3) | PMODE_TI_GDT | 0;
-  t_reg16		ds = (kds << 3) | PMODE_TI_GDT | 0;
-
-  asm ("pushl %0\n\t"
-       "pushl $pmode_update_registers_label\n\t"
-       "lret\n\t"
-       "pmode_update_registers_label:\n\t"
-       "movl %1, %%eax\n\t"
-       "movw %%ax, %%ds\n\t"
-       "movw %%ax, %%ss\n\t"
-       "movw %%ax, %%es\n\t"
-       "movw %%ax, %%fs\n\t"
-       "movw %%ax, %%gs\n\t"
-       :
-       : "g" (cs), "g" (ds)
-       : "memory", "%eax"
-       );
-}
-
-/*
- * this function installs the protected mode setting the first bit of cr0.
- */
-
-void			bootloader_pmode_enable(void)
-{
-  asm ("movl %%cr0, %%eax\n\t"
-       "orw %%ax, 1\n\t"
-       "movl %%eax, %%cr0\n\t"
-       :
-       :
-       : "%eax"
-       );
-}
-
-/*
- * this function sets a new entry in the current global offset table.
- */
-
-void			bootloader_pmode_gdt_set(t_uint16	entry,
-						 t_paddr	base,
-						 t_psize	limit,
-						 t_uint8	type,
-						 t_uint8	flags)
-{
-  if (entry >= PMODE_GDT_ENTRIES)
-    bootloader_error();
-
-  gdt[entry].limit_00_15 = limit & 0x0000ffff;
-  gdt[entry].base_00_15 = (t_uint32)base & 0x0000ffff;
-  gdt[entry].base_16_23 = ((t_uint32)base >> 16) & 0x000000ff;
-  gdt[entry].type = type;
-  gdt[entry].limit_16_19 = (limit >> 16) & 0x0000000f;
-  gdt[entry].flags = flags;
-  gdt[entry].base_24_31 = ((t_uint32)base >> 24) & 0x0000000f;
-}
 
 /*
  * this function initialises the global offset table inserting
@@ -126,93 +67,110 @@ void			bootloader_pmode_gdt_set(t_uint16	entry,
  *
  * steps:
  *
- * 1) allocates and initialises the memory for the global offset table.
+ * 1) creates a new table and enable it.
  * 2) sets the height segments for the core, driver, service and program.
- * 3) loads the GDT.
- * 4) updates the segments registers.
- * 5) finally installs the protected mode.
- * 6) sets the global offset table address in the init variable.
+ * 3) updates the segments registers.
+ * 4) finally installs the protected mode.
+ * 5) sets the global offset table address in the init variable.
  */
 
 void			bootloader_pmode_init(void)
 {
+  t_gdt			gdt;
+  t_gdtr		gdtr;
+  t_segment		seg;
+  t_uint16		kcs;
+  t_uint16		kds;
+
   /*
    * 1)
    */
 
-  gdt = (t_gdte*)bootloader_init_alloc(PMODE_GDT_ENTRIES * sizeof(t_gdte),
-				       NULL);
-  memset(gdt, 0x0, PMODE_GDT_ENTRIES * sizeof(t_gdte));
+  gdt_build(PMODE_GDT_ENTRIES, bootloader_init_alloc(PMODE_GDT_ENTRIES *
+						     sizeof(t_gdte), NULL),
+	    &gdt, 1);
+
+  gdt_activate(gdt);
 
   /*
    * 2)
    */
 
-  bootloader_pmode_gdt_set(PMODE_GDT_CORE_CS, 0x0, 0xffffffff,
-			   PMODE_GDT_PRESENT | PMODE_GDT_DPL0 | PMODE_GDT_S |
-			   PMODE_GDT_CODE, PMODE_GDT_GRANULAR |
-			   PMODE_GDT_USE32);
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_supervisor;
+  seg.is_system = 0;
+  seg.type.usr = type_code;
+  gdt_add_segment(NULL, PMODE_GDT_CORE_CS, seg);
 
-  bootloader_pmode_gdt_set(PMODE_GDT_CORE_DS, 0x0, 0xffffffff,
-			   PMODE_GDT_PRESENT | PMODE_GDT_DPL0 | PMODE_GDT_S |
-			   PMODE_GDT_DATA, PMODE_GDT_GRANULAR |
-			   PMODE_GDT_USE32);
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_supervisor;
+  seg.is_system = 0;
+  seg.type.usr = type_data;
+  gdt_add_segment(NULL, PMODE_GDT_CORE_DS, seg);
 
-  bootloader_pmode_gdt_set(PMODE_GDT_DRIVER_CS, 0x0, 0xffffffff,
-			   PMODE_GDT_PRESENT | PMODE_GDT_DPL1 | PMODE_GDT_S |
-			   PMODE_GDT_CODE, PMODE_GDT_GRANULAR |
-			   PMODE_GDT_USE32);
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_supervisor;
+  seg.is_system = 0;
+  seg.type.usr = type_code;
+  gdt_add_segment(NULL, PMODE_GDT_DRIVER_CS, seg);
 
-  bootloader_pmode_gdt_set(PMODE_GDT_DRIVER_DS, 0x0, 0xffffffff,
-			   PMODE_GDT_PRESENT | PMODE_GDT_DPL1 | PMODE_GDT_S |
-			   PMODE_GDT_DATA, PMODE_GDT_GRANULAR |
-			   PMODE_GDT_USE32);
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_supervisor;
+  seg.is_system = 0;
+  seg.type.usr = type_data;
+  gdt_add_segment(NULL, PMODE_GDT_DRIVER_DS, seg);
 
-  bootloader_pmode_gdt_set(PMODE_GDT_SERVICE_CS, 0x0, 0xffffffff,
-			   PMODE_GDT_PRESENT | PMODE_GDT_DPL2 | PMODE_GDT_S |
-			   PMODE_GDT_CODE, PMODE_GDT_GRANULAR |
-			   PMODE_GDT_USE32);
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_supervisor;
+  seg.is_system = 0;
+  seg.type.usr = type_code;
+  gdt_add_segment(NULL, PMODE_GDT_SERVICE_CS, seg);
 
-  bootloader_pmode_gdt_set(PMODE_GDT_SERVICE_DS, 0x0, 0xffffffff,
-			   PMODE_GDT_PRESENT | PMODE_GDT_DPL2 | PMODE_GDT_S |
-			   PMODE_GDT_DATA, PMODE_GDT_GRANULAR |
-			   PMODE_GDT_USE32);
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_supervisor;
+  seg.is_system = 0;
+  seg.type.usr = type_data;
+  gdt_add_segment(NULL, PMODE_GDT_SERVICE_DS, seg);
 
-  bootloader_pmode_gdt_set(PMODE_GDT_PROGRAM_CS, 0x0, 0xffffffff,
-			   PMODE_GDT_PRESENT | PMODE_GDT_DPL3 | PMODE_GDT_S |
-			   PMODE_GDT_CODE, PMODE_GDT_GRANULAR |
-			   PMODE_GDT_USE32);
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_supervisor;
+  seg.is_system = 0;
+  seg.type.usr = type_code;
+  gdt_add_segment(NULL, PMODE_GDT_PROGRAM_CS, seg);
 
-  bootloader_pmode_gdt_set(PMODE_GDT_PROGRAM_DS, 0x0, 0xffffffff,
-			   PMODE_GDT_PRESENT | PMODE_GDT_DPL3 | PMODE_GDT_S |
-			   PMODE_GDT_DATA, PMODE_GDT_GRANULAR |
-			   PMODE_GDT_USE32);
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_supervisor;
+  seg.is_system = 0;
+  seg.type.usr = type_data;
+  gdt_add_segment(NULL, PMODE_GDT_PROGRAM_DS, seg);
 
   /*
    * 3)
    */
 
-  gdtr.address = (t_uint32)gdt;
-  gdtr.size = (t_uint16)(PMODE_GDT_ENTRIES * sizeof(t_gdte));
-
-  LGDT(gdtr);
+  gdt_build_selector(PMODE_GDT_CORE_CS, prvl_supervisor, &kcs);
+  gdt_build_selector(PMODE_GDT_CORE_DS, prvl_supervisor, &kds);
+// XXX  pmode_set_segment_registers(kcs, kds);
 
   /*
    * 4)
    */
 
-  bootloader_pmode_update_registers(PMODE_GDT_CORE_CS, PMODE_GDT_CORE_DS);
+  pmode_enable();
 
   /*
    * 5)
    */
 
-  bootloader_pmode_enable();
-
-  /*
-   * 6)
-   */
-
+  SGDT(gdtr);
   memcpy(&init->machdep.gdtr, &gdtr, sizeof(t_gdtr));
 }
 

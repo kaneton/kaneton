@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/arch/ia32/kaneton/region.c
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/machdep/kaneton/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [thu dec 15 11:50:39 2005]
+ * updated       matthieu bucchianeri   [tue dec 27 17:01:49 2005]
  */
 
 /*
@@ -55,10 +55,8 @@ t_error			ia32_region_init(t_fit			fit,
 {
   REGION_ENTER(region);
 
-  /* XXX ia32_paging_init ?
   if (paging_init() != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_NONE);
-  */
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
 }
@@ -71,10 +69,8 @@ t_error			ia32_region_clean(void)
 {
   REGION_ENTER(region);
 
-  /* XXX
   if (paging_clean() != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_NONE);
-  */
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
 }

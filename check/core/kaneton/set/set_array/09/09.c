@@ -6,14 +6,12 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/09/09.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [tue dec 20 21:50:25 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 17:21:42 2005]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../../init/init.h"
-
-void		check_set_array_09(void);
 
 /*
  * tests SORT option and locate
@@ -28,7 +26,7 @@ void		check_set_array_09(void)
   t_id*		pdata;
   t_id		data;
 
-  TEST_ENTER(check_set_array_09);
+  TEST_ENTER;
 
   if (set_reserve(array, SET_OPT_SORT, 4, sizeof(t_id), &id) != ERROR_NONE)
     printf("error set_reserve()\n");
@@ -71,5 +69,5 @@ void		check_set_array_09(void)
 
   set_release(id);
 
-  TEST_LEAVE(check_set_array_09);
+  TEST_LEAVE;
 }

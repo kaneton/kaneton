@@ -95,17 +95,6 @@ void			bootloader_paging_init(void);
  * pmode.c
  */
 
-void			bootloader_pmode_update_registers(t_uint16	kcs,
-							  t_uint16	kds);
-
-void			bootloader_pmode_enable(void);
-
-void			bootloader_pmode_gdt_set(t_uint16	entry,
-						 t_paddr	base,
-						 t_psize	limit,
-						 t_uint8	type,
-						 t_uint8	flags);
-
 void			bootloader_pmode_init(void);
 
 

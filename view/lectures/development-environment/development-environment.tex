@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/lectures/development-environment/development-environment.tex
+%% file          /home/buckman/kaneton/kaneton/view/lectures/development-environment/development-environment.tex
 %%
 %% created       julien quintard   [sun dec 18 18:39:23 2005]
-%% updated       julien quintard   [sun dec 18 18:45:28 2005]
+%% updated       matthieu bucchianeri   [thu dec 29 17:41:51 2005]
 %%
 
 %
@@ -337,6 +337,21 @@
 % 4)
 
 \begin{frame}
+  \frametitle{critical.sh}
+
+  The \textbf{critical.sh} shell script is used to set critical variables and
+  functions for the next steps of kaneton development environment.
+
+  \nl
+
+  This script calls the specific \textbf{critical.sh} script for the given
+  machine (explained later in this document).
+
+\end{frame}
+
+% 5)
+
+\begin{frame}
   \frametitle{init.sh}
 
   The \textbf{init.sh} shell script is used to install the development
@@ -353,7 +368,7 @@
   dependencies.
 \end{frame}
 
-% 5)
+% 6)
 
 \begin{frame}
   \frametitle{clean.sh}
@@ -365,7 +380,7 @@
   This shell script also calls the machine and user specific clean.sh scripts.
 \end{frame}
 
-% 6)
+% 7)
 
 \begin{frame}
   \frametitle{.env.conf}
@@ -381,7 +396,7 @@
   This file is always included first.
 \end{frame}
 
-% 7)
+% 8)
 
 \begin{frame}[containsverbatim]
   \frametitle{Use}
@@ -470,7 +485,31 @@
   default path to bash with shell variable \textbf{\$KANETON\_SHELL} (default
   is \textbf{/bin/bash}).
 \end{frame}
+
 % 3)
+
+\begin{frame}
+  \frametitle{critical.sh}
+
+  This is the very first called script. It creates two files: \textbf{.env.sh}
+  and \textbf{.env.mk}.
+
+  \nl
+
+  These files contains development environment's high level functions for using
+  in makefiles and other scripts. With this feature, developers are able to
+  create makefiles and scripts without calling any external program.
+
+  \nl
+
+  For example, you will no longer write things like
+  \textbf{sed -r 's/arch/ia32/g'} in you shell scripts, but instead you will
+  use the \textbf{substitute} function to which you can pass
+  machine-independent options. Above line becomes
+  \textbf{substitute arch ia32 all} (which is a bit more elegant).
+\end{frame}
+
+% 4)
 
 \begin{frame}
   \frametitle{init.sh}
@@ -483,7 +522,7 @@
   architecture links or to detect the binaries used by this machine.
 \end{frame}
 
-% 4)
+% 5)
 
 \begin{frame}
   \frametitle{clean.sh}
@@ -496,7 +535,7 @@
   This script just cleans machine-dependent stuff.
 \end{frame}
 
-% 5)
+% 6)
 
 \begin{frame}
   \frametitle{machine.conf}
@@ -513,7 +552,7 @@
   file so a machine is able to redefine kaneton variables if needed.
 \end{frame}
 
-% 6)
+% 7)
 
 \begin{frame}
   \frametitle{machine.mk}
@@ -538,7 +577,7 @@
   the kaneton compilation system.
 \end{frame}
 
-% 7)
+% 8)
 
 \begin{frame}
   \frametitle{machine.sh}

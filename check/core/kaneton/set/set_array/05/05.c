@@ -6,14 +6,12 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/05/05.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [tue dec 20 19:07:06 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 17:21:54 2005]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../../init/init.h"
-
-void		check_set_array_05(void);
 
 /*
  * tests the iterators option.
@@ -26,7 +24,7 @@ void		check_set_array_05(void)
   t_state	state;
   t_id*		pdata;
 
-  TEST_ENTER(check_set_array_05);
+  TEST_ENTER;
 
   if (set_reserve(array, SET_OPT_ALLOC, 4, sizeof(t_id), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -52,5 +50,5 @@ void		check_set_array_05(void)
 
   set_release(id);
 
-  TEST_LEAVE(check_set_array_05);
+  TEST_LEAVE;
 }

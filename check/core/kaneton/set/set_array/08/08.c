@@ -6,14 +6,12 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/08/08.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [tue dec 20 21:32:14 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 17:21:45 2005]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../../init/init.h"
-
-void		check_set_array_08(void);
 
 /*
  * tests flush with all options mode
@@ -26,7 +24,7 @@ void		check_set_array_08(void)
   t_id		*obj;
   int		i;
 
-  TEST_ENTER(check_set_array_08);
+  TEST_ENTER;
 
   if (set_reserve(array, SET_OPT_ALLOC, 4, sizeof(t_id), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -74,5 +72,5 @@ void		check_set_array_08(void)
 
   set_release(id);
 
-  TEST_LEAVE(check_set_array_08);
+  TEST_LEAVE;
 }

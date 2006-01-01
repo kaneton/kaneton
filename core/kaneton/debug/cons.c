@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/debug/cons.c
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/debug/cons.c
  *
  * created       quintard julien   [sat may 28 18:23:13 2005]
- * updated       julien quintard   [sun dec 18 19:03:33 2005]
+ * updated       matthieu bucchianeri   [mon dec 26 18:10:47 2005]
  */
 
 /*
@@ -106,14 +106,14 @@ int			cons_print_char(char			c)
       cons.line++;
       cons.column = 0;
 
-      return (0);
+      return (1);
     }
 
   if (c == '\r')
     {
       cons.column = 0;
 
-      return (0);
+      return (1);
     }
 
   if (cons.column >= CONS_COLUMNS)

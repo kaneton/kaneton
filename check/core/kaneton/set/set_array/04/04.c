@@ -6,14 +6,12 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/04/04.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [tue dec 20 19:04:07 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 17:21:59 2005]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../../init/init.h"
-
-void		check_set_array_04(void);
 
 /*
  * tests the ORGANISE option.
@@ -23,7 +21,7 @@ void		check_set_array_04(void)
 {
   t_setid	id;
 
-  TEST_ENTER(check_set_array_04);
+  TEST_ENTER;
 
   if (set_reserve(array, SET_OPT_ORGANISE | SET_OPT_ALLOC, 4,
 		  sizeof(t_id), &id) != ERROR_NONE)
@@ -47,5 +45,5 @@ void		check_set_array_04(void)
 
   set_release(id);
 
-  TEST_LEAVE(check_set_array_04);
+  TEST_LEAVE;
 }

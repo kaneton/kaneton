@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * paging.c
- * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Sun May 29 00:38:50 2005   mycure
- * last update   Fri Oct 21 20:06:00 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/bootloader/arch/ia32-virtual/paging.c
+ *
+ * created       julien quintard   [sun may 29 00:38:50 2005]
+ * updated       matthieu bucchianeri   [fri dec 30 18:49:04 2005]
  */
 
 /*
@@ -53,10 +48,10 @@ extern t_init*			init;
  * 16 Mb to ... approximately 20 Mb.
  */
 
-t_pde*			pd;
-t_pte*			pt0;
+t_pdeold*			pd;
+t_pteold*			pt0;
 
-t_pte*			pt;
+t_pteold*			pt;
 
 /*                                                                 [cut] /k1 */
 
@@ -71,8 +66,8 @@ t_pte*			pt;
  * is very useful for debugging.
  */
 
-#if (IA32_DEBUG & IA32_DEBUG_PAGING)
-void			bootloader_paging_dump_table(t_pte*	table,
+#if 0 && (IA32_DEBUG & IA32_DEBUG_PAGING)
+void			bootloader_paging_dump_table(t_pteold*	table,
 						     t_opts	opts)
 {
   t_uint16		i;
@@ -141,11 +136,11 @@ void			bootloader_paging_dump_table(t_pte*	table,
  * this function dumps a page directory.
  */
 
-#if (IA32_DEBUG & IA32_DEBUG_PAGING)
-void			bootloader_paging_dump_directory(t_pde*	directory,
+#if 0 && (IA32_DEBUG & IA32_DEBUG_PAGING)
+void			bootloader_paging_dump_directory(t_pdeold*	directory,
 							 t_opts	opts)
 {
-  bootloader_paging_dump_table((t_pte*)directory, opts);
+  bootloader_paging_dump_table((t_pteold*)directory, opts);
 }
 #endif
 
@@ -188,8 +183,8 @@ void			bootloader_paging_init(void)
    * 1)
    */
 
-  pd = (t_pde*)bootloader_init_alloc(PAGING_NPDE * sizeof(t_pde), NULL);
-  memset(pd, 0x0, PAGING_NPDE * sizeof(t_pde));
+  pd = (t_pdeold*)bootloader_init_alloc(PAGING_NPDE * sizeof(t_pdeold), NULL);
+  memset(pd, 0x0, PAGING_NPDE * sizeof(t_pdeold));
 
   /*
    * 2)
@@ -201,8 +196,8 @@ void			bootloader_paging_init(void)
    * 3)
    */
 
-  pt0 = (t_pte*)bootloader_init_alloc(PAGING_NPTE * sizeof(t_pte), NULL);
-  memset(pt0, 0x0, PAGING_NPTE * sizeof(t_pte));
+  pt0 = (t_pteold*)bootloader_init_alloc(PAGING_NPTE * sizeof(t_pteold), NULL);
+  memset(pt0, 0x0, PAGING_NPTE * sizeof(t_pteold));
 
   pd[0] = (t_uint32)pt0 | PAGING_P | PAGING_RW | PAGING_S;
 
@@ -219,15 +214,15 @@ void			bootloader_paging_init(void)
     {
       if ((pd[PAGING_PDE(addr)] & PAGING_ADDRESS) == 0)
 	{
-	  pt = (t_pte*)bootloader_init_alloc(PAGING_NPTE * sizeof(t_pte),
+	  pt = (t_pteold*)bootloader_init_alloc(PAGING_NPTE * sizeof(t_pteold),
 					     NULL);
-	  memset(pt, 0x0, PAGING_NPTE * sizeof(t_pte));
+	  memset(pt, 0x0, PAGING_NPTE * sizeof(t_pteold));
 
 	  pd[PAGING_PDE(addr)] = (t_uint32)pt | PAGING_P |
 	    PAGING_RW | PAGING_S;
 	}
       else
-	pt = (t_pte*)(pd[PAGING_PDE(addr)] & PAGING_ADDRESS);
+	pt = (t_pteold*)(pd[PAGING_PDE(addr)] & PAGING_ADDRESS);
 
       pt[PAGING_PTE(addr)] = addr | PAGING_P | PAGING_RW | PAGING_S;
     }

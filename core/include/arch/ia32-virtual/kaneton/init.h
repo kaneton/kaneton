@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/init.h
+ * file          /home/buckman/kaneton/kaneton/core/include/arch/machdep/kaneton/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       julien quintard   [sat dec 17 17:15:32 2005]
+ * updated       matthieu bucchianeri   [tue dec 27 18:42:26 2005]
  */
 
 #ifndef IA32_KANETON_INIT_H
@@ -16,9 +16,9 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <arch/machdep/ia32/types.h>
-#include <arch/machdep/ia32/pmode.h>
-#include <arch/machdep/ia32/paging.h>
+#include <arch/libia32/types.h>
+#include <arch/libia32/pmode.h>
+#include <arch/libia32/paging.h>
 
 #include <arch/machdep/services/cons.h>
 

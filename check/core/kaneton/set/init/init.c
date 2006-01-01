@@ -6,28 +6,12 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/init/init.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [tue dec 20 23:12:07 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 17:21:09 2005]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "init.h"
-
-void	check_set_init(void);
-void	check_set_tests(void);
-void	check_set_array_01(void);
-void	check_set_array_02(void);
-void	check_set_array_03(void);
-void	check_set_array_04(void);
-void	check_set_array_05(void);
-void	check_set_array_06(void);
-void	check_set_array_07(void);
-void	check_set_array_08(void);
-void	check_set_array_09(void);
-void	check_set_array_10(void);
-void	check_set_array_11(void);
-void	check_set_array_12(void);
-void	check_set_ll_01(void);
 
 void	check_set_init(void)
 {
@@ -58,6 +42,8 @@ void	check_set_tests(void)
   check_set_array_11();
   check_set_array_12();
   check_set_ll_01();
+  check_set_ll_02();
+  check_set_ll_03();
   /* XXX continue tests */
 }
 

@@ -6,16 +6,11 @@
  * file          /home/buckman/kaneton/kaneton/check/libs/klibc/libdata/malloc/init/init.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:17:39 2005]
- * updated       matthieu bucchianeri   [tue dec 20 23:13:41 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 17:23:29 2005]
  */
 
 #include <klibc.h>
 #include "init.h"
-
-void	check_malloc_init(void);
-void	check_malloc_tests(void);
-void	check_malloc_01(void);
-void	check_malloc_02(void);
 
 void	check_malloc_init(void)
 {
@@ -34,6 +29,8 @@ void	check_malloc_tests(void)
   check_malloc_init();
   check_malloc_01();
   check_malloc_02();
+  check_malloc_03();
+  check_malloc_04();
   /* XXX */
 }
 

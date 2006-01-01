@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/check/core/kaneton/stats/03/Makefile
 ##
 ## created       matthieu bucchianeri   [tue dec 20 15:05:01 2005]
-## updated       matthieu bucchianeri   [tue dec 20 23:05:44 2005]
+## updated       matthieu bucchianeri   [thu dec 29 19:09:42 2005]
 ##
 
 #
@@ -50,6 +50,8 @@ clear:
 	$(call remove,$(TEST_LO),)
 
 	$(call remove,$(TEST_O),)
+
+	$(call remove,parse_res.pyc,)
 
 	$(call purge,)
 

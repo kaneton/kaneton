@@ -6,14 +6,12 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/07/07.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [tue dec 20 21:22:12 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 17:21:48 2005]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../../init/init.h"
-
-void		check_set_array_07(void);
 
 /*
  * tests remove and delete
@@ -26,7 +24,7 @@ void		check_set_array_07(void)
   t_state	state;
   int		i;
 
-  TEST_ENTER(check_set_array_07);
+  TEST_ENTER;
 
   if (set_reserve(array, SET_OPT_ALLOC, 4, sizeof(t_id), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -56,5 +54,5 @@ void		check_set_array_07(void)
 
   set_release(id);
 
-  TEST_LEAVE(check_set_array_07);
+  TEST_LEAVE;
 }

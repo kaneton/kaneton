@@ -6,14 +6,12 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/11/11.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [tue dec 20 22:06:46 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 17:21:35 2005]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../../init/init.h"
-
-void		check_set_array_11(void);
 
 /*
  * tests with empty lists
@@ -26,7 +24,7 @@ void		check_set_array_11(void)
   t_state	state;
   t_id		obj;
 
-  TEST_ENTER(check_set_array_11);
+  TEST_ENTER;
 
   if (set_reserve(array, SET_OPT_NONE, 4, sizeof(t_id), &id) != ERROR_NONE)
     printf("error set_reserve()\n");
@@ -50,5 +48,5 @@ void		check_set_array_11(void)
 
   set_release(id);
 
-  TEST_LEAVE(check_set_array_11);
+  TEST_LEAVE;
 }

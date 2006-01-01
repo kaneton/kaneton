@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * serial.c
- * 
- * path          /home/mycure/kaneton/core/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Fri Oct 21 19:56:38 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/debug/serial.c
+ *
+ * created       julien quintard   [sat may 28 18:23:13 2005]
+ * updated       matthieu bucchianeri   [thu dec 29 18:41:53 2005]
  */
 
 /*
@@ -31,11 +26,11 @@ t_uint32		chk_sum(void				*data,
 {
   t_uint32		crc = 0;
   t_uint8		*cdata;
-  
-  cdata = data;	
+
+  cdata = data;
   while (size--)
     crc ^= *cdata++;
-  
+
   return (crc);
 }
 
@@ -47,9 +42,9 @@ void			serial_read(t_uint32			com_port,
 				    t_uint8*			data,
 				    t_uint32 			size)
 {
-  while (size) 
+  while (size)
     {
-      INB(com_port + 5, *data); 
+      INB(com_port + 5, *data);
       if (*data & 1)
 	{
 	  INB(com_port, *data++);
@@ -67,7 +62,7 @@ void			serial_write(t_uint32			com_port,
 				     t_uint32			size)
 {
   char			ch;
-  
+
   while(size)
     {
       INB(com_port + 5, ch);
@@ -86,12 +81,12 @@ int			serial_send(t_uint32			com_port,
   t_serial_data		sdata;
   t_uint32		crc;
   t_uint8		status[7];
-  
+
   sdata.crc = chk_sum(data, size);
-  sdata.size = size;	
-  sdata.data = data;	
+  sdata.size = size;
+  sdata.data = data;
   sdata.magic = 0xF4859632;
-  
+
   serial_write(com_port, (t_uint8 *) &sdata, sizeof(sdata));
   serial_write(com_port, sdata.data, sdata.size);
   serial_read(com_port, status, 6);
@@ -103,12 +98,12 @@ int			serial_send(t_uint32			com_port,
 }
 
 
-int			serial_recv(t_uint32			com_port, 
+int			serial_recv(t_uint32			com_port,
 				    t_serial_data		*rdata)
 {
   t_uint32		crc;
   int			i;
-  
+
   serial_read(com_port, (t_uint8 *)rdata, sizeof(*rdata));
   if (rdata->magic == 0xF4859632)
     rdata->data = malloc(rdata->size * sizeof(t_uint8));
@@ -151,22 +146,23 @@ int	serial_put(char c)
 	  serial_send(SERIAL_COM1, buffer, n);
 	  n = 0;
 	}
+	return 1;
 }
 
-void			serial_init(t_uint32			com_port, 
-				    t_uint8			baud_rate, 
-				    t_uint8			bit_type, 
+void			serial_init(t_uint32			com_port,
+				    t_uint8			baud_rate,
+				    t_uint8			bit_type,
 				    t_uint8			fifo_type)
 {
   /*
-   * 1) Turn off interupt on choosen port 
+   * 1) Turn off interupt on choosen port
    * 2) Set dlab on
    * 3) Set baud rate for choosen port
    * 4) Set connection type
    * 5) Set fifo type
    * 6) DTR, RTS, OUT2 : on
    */
- 
+
   /* 1) */
   OUTB(com_port + 1, 0x00);
   /* 2) */
@@ -179,5 +175,5 @@ void			serial_init(t_uint32			com_port,
   /* 5) */
   OUTB(com_port + 2, fifo_type);
   /* 6) */
-  OUTB(com_port + 4, 0x08); 
+  OUTB(com_port + 4, 0x08);
 }

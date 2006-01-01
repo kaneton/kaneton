@@ -82,6 +82,13 @@ t_error			ia32_segment_init(t_fit			fit);
 
 t_error			ia32_segment_clean(void);
 
+t_error			ia32_segment_reserve(t_asid		asid,
+					     t_psize		size,
+					     t_perms		perms,
+					     t_segid*		segid);
+
+t_error			ia32_segment_release(t_segid			segid);
+
 
 /*
  * ../../../../kaneton/arch/machdep/kaneton/task.c

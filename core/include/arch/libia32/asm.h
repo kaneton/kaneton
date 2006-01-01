@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/arch/libia32/asm.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue dec 20 14:09:19 2005]
+ * updated       matthieu bucchianeri   [thu dec 22 18:37:51 2005]
  */
 
 #ifndef IA32_IA32_ASM_H
@@ -35,6 +35,16 @@
 
 #define		SGDT(_var_)						\
   asm volatile("sgdt %0\n"						\
+	       : "=m" (_var_)						\
+	       :)
+
+#define		LLDT(_var_)						\
+  asm volatile("lldt %0\n"						\
+	       :							\
+	       : "m" (_var_))
+
+#define		SLDT(_var_)						\
+  asm volatile("sldt %0\n"						\
 	       : "=m" (_var_)						\
 	       :)
 

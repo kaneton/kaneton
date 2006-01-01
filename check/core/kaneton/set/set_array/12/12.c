@@ -6,14 +6,12 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/12/12.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [tue dec 20 22:16:00 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 17:21:33 2005]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../../init/init.h"
-
-void		check_set_array_12(void);
 
 /*
  * tests with big list
@@ -27,7 +25,7 @@ void		check_set_array_12(void)
   t_setsz	i;
   t_id*		pdata;
 
-  TEST_ENTER(check_set_array_12);
+  TEST_ENTER;
 
   if (set_reserve(array, SET_OPT_ALLOC, 10, sizeof(t_id), &id) != ERROR_NONE)
     printf("error set_reserve()\n");
@@ -53,5 +51,5 @@ void		check_set_array_12(void)
 
   set_release(id);
 
-  TEST_LEAVE(check_set_array_12);
+  TEST_LEAVE;
 }

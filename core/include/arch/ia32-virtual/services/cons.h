@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/services/cons.h
+ * file          /home/buckman/kaneton/kaneton/core/include/arch/machdep/services/cons.h
  *
  * created       julien quintard   [sat dec 17 17:16:27 2005]
- * updated       julien quintard   [sat dec 17 17:16:38 2005]
+ * updated       matthieu bucchianeri   [tue dec 27 18:43:39 2005]
  */
 
 /*
@@ -29,7 +29,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <arch/machdep/ia32/types.h>
+#include <arch/libia32/types.h>
 
 /*
  * ---------- defines ---------------------------------------------------------

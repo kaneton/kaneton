@@ -6,14 +6,13 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/stats/01/01.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [tue dec 20 22:50:57 2005]
+ * updated       matthieu bucchianeri   [wed dec 28 17:20:48 2005]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
-#include "../../../../init/init.h"
+#include "../init/init.h"
 
-void		check_stats_01(void);
 static void	stats_test_fun(t_staid st);
 
 /*
@@ -29,7 +28,7 @@ void		check_stats_01(void)
   t_staid	st5;
   int		i;
 
-  TEST_ENTER(check_stats_01);
+  TEST_ENTER;
 
   if (STATS_RESERVE("stats_test_nocall", &st1) != ERROR_NONE ||
       STATS_RESERVE("stats_test_manycalls", &st2) != ERROR_NONE ||
@@ -101,7 +100,7 @@ void		check_stats_01(void)
   st3 = st3;
   st4 = st4;
 
-  TEST_LEAVE(check_stats_01);
+  TEST_LEAVE;
 }
 
 static void	stats_test_fun(t_staid st)
