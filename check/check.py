@@ -204,7 +204,7 @@ if __name__ == "__main__":
 	total_ok = 0
 	total_failed = 0
 
-	serial_init("/dev/pts/3")
+	serial_init("/dev/ttyS0")
 	test_list = ListTest()
 
 
