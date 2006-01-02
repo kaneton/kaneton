@@ -259,8 +259,8 @@ typedef struct
 #define set_remove(_setid_, _args_...)					\
   set_trap(set_remove, _setid_, ##_args_)
 
-/*#define set_delete(_setid_, _args_...)					\
-  set_trap(set_delete, _setid_, ##_args_)*/
+#define set_delete(_setid_, _args_...)					\
+  set_trap(set_delete, _setid_, ##_args_)
 
 #define set_flush(_setid_, _args_...)					\
   set_trap(set_flush, _setid_, ##_args_)
@@ -324,7 +324,7 @@ t_error			set_size(t_setid			setid,
 
 t_error			set_new(o_set*				o);
 
-t_error			set_delete(t_setid			setid);
+t_error			set_destroy(t_setid			setid);
 
 t_error			set_descriptor(t_setid			setid,
 				       o_set**			o);

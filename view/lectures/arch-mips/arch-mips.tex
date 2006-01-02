@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
 %%
 %% created       julien quintard   [wed nov 23 22:07:25 2005]
-%% updated       julien quintard   [tue dec  6 13:41:55 2005]
+%% updated       julien quintard   [mon jan  2 09:22:10 2006]
 %%
 
 %
@@ -141,6 +141,86 @@
 \pgfdeclareimage[interpolate=true,width=175pt,height=103pt]
                 {software-pipeline}
 		{figures/software-pipeline}
+
+\pgfdeclareimage[interpolate=true,width=267pt,height=135pt]
+                {superpipeline-views}
+		{figures/superpipeline-views}
+\pgfdeclareimage[interpolate=true,width=205pt,height=173pt]
+                {detailed-superpipeline}
+		{figures/detailed-superpipeline}
+\pgfdeclareimage[interpolate=true,width=221pt,height=101pt]
+                {superpipeline-bypasses}
+		{figures/superpipeline-bypasses}
+\pgfdeclareimage[interpolate=true,width=101pt,height=41pt]
+                {multiplication-pipeline}
+		{figures/multiplication-pipeline}
+\pgfdeclareimage[interpolate=true,width=210pt,height=46pt]
+                {multiplication-dependency}
+		{figures/multiplication-dependency}
+\pgfdeclareimage[interpolate=true,width=101pt,height=41pt]
+                {superscalar-pipeline}
+		{figures/superscalar-pipeline}
+\pgfdeclareimage[interpolate=true,width=163pt,height=137pt]
+                {superscalar-example}
+		{figures/superscalar-example}
+\pgfdeclareimage[interpolate=true,width=157pt,height=152pt]
+                {superscalar-correction}
+		{figures/superscalar-correction}
+
+\pgfdeclareimage[interpolate=true,width=101pt,height=61pt]
+                {pibus-overview}
+		{figures/pibus-overview}
+\pgfdeclareimage[interpolate=true,width=218pt,height=121pt]
+                {pibus-communication}
+		{figures/pibus-communication}
+\pgfdeclareimage[interpolate=true,width=185pt,height=130pt]
+                {pibus-example}
+		{figures/pibus-example}
+\pgfdeclareimage[interpolate=true,width=251pt,height=125pt]
+                {memory-organisation}
+		{figures/memory-organisation}
+\pgfdeclareimage[interpolate=true,width=60pt,height=60pt]
+                {memory-access-time}
+		{figures/memory-access-time}
+\pgfdeclareimage[interpolate=true,width=120pt,height=102pt]
+                {spatial-locality}
+		{figures/spatial-locality}
+\pgfdeclareimage[interpolate=true,width=251pt,height=121pt]
+                {cache-hierarchy}
+		{figures/cache-hierarchy}
+\pgfdeclareimage[interpolate=true,width=98pt,height=112pt]
+                {cache-overview}
+		{figures/cache-overview}
+\pgfdeclareimage[interpolate=true,width=208pt,height=111pt]
+                {pibus-cache}
+		{figures/pibus-cache}
+\pgfdeclareimage[interpolate=true,width=128pt,height=93pt]
+                {natural-partitionning}
+		{figures/natural-partitionning}
+\pgfdeclareimage[interpolate=true,width=147pt,height=111pt]
+                {cache-example}
+		{figures/cache-example}
+\pgfdeclareimage[interpolate=true,width=162pt,height=127pt]
+                {cache-internals}
+		{figures/cache-internals}
+\pgfdeclareimage[interpolate=true,width=185pt,height=124pt]
+                {set-associative-overview}
+		{figures/set-associative-overview}
+\pgfdeclareimage[interpolate=true,width=152pt,height=147pt]
+                {set-associative-internals}
+		{figures/set-associative-internals}
+\pgfdeclareimage[interpolate=true,width=121pt,height=80pt]
+                {temporal-locality}
+		{figures/temporal-locality}
+\pgfdeclareimage[interpolate=true,width=221pt,height=151pt]
+                {snoopy}
+		{figures/snoopy}
+\pgfdeclareimage[interpolate=true,width=173pt,height=148pt]
+                {cache-automata}
+		{figures/cache-automata}
+\pgfdeclareimage[interpolate=true,width=141pt,height=30pt]
+                {exercise-bus}
+		{figures/exercise-bus}
 
 %
 % document
@@ -1703,7 +1783,7 @@
 
   \nl
 
-  Question: \textbf{What are the consequences if we put the next
+  Question: \textit{What are the consequences if we put the next
     instruction address computation into the EXE stage?}
 \end{frame}
 
@@ -2279,7 +2359,7 @@
 \begin{frame}
   \frametitle{Questions}
 
-  \textbf{Why not putting a bypass into the MEM stage?}
+  \textit{Why not putting a bypass into the MEM stage?}
 
   \nl
 
@@ -2655,13 +2735,2112 @@
 
 \section{Advanced Pipelines}
 
-% XXX superpipelines(7), multiplication, superscalar
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  In this section we will study advanced pipelines including superpipelines,
+  pipelines handling complex instructions like multiplication, division
+  and finally superscalar microprocessors.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Superpipelines}
+
+  We called superpipelines or deep pipelines, extended pipelines which
+  raise very huge sizes.
+
+  \nl
+
+  For examples, modern Intel processors like Pentium ones were superpipelines
+  processors with about \textbf{twenty} stages.
+
+  \nl
+
+  Of course, such pipelines are so complicated to study so we will concentrate
+  on superpipelines with only \textbf{seven} stages.
+
+  \nl
+
+  This example is derived from the previously studied MIPS pipeline.
+
+  \nl
+
+  In this pipeline, we decided to divide the longest stages, of course
+  the memory accesses.
+
+  \nl
+
+  We will try to compare the classical pipelines with deep pipelines.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Stages}
+
+  Let's see the pipeline used by this processor:
+
+  \begin{center}
+    \pgfuseimage{superpipeline-views}
+  \end{center}
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Exercise}
+
+  Let's draw the detailed superpipeline for the \textbf{Lw Rt, Immed(Rs)}
+  instruction.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Correction}
+
+  \begin{center}
+    \pgfuseimage{detailed-superpipeline}
+  \end{center}
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Notices}
+
+  \begin{itemize}[<+->]
+    \item
+      There may be memory accesses in the IFC1 and IFC2 stage. From this
+      fact, the memory should be pipelined.
+
+      \nl
+
+      The same problem arises for the MEM1 and MEM2 stages.
+    \item
+      The next instruction address being computed in the DEC stage, there
+      will be exactly \textbf{two} delay slots.
+  \end{itemize}
+
+  To conclude:
+
+  \begin{itemize}[<+->]
+    \item
+      More time to perform memory access.
+    \item
+      Better balancing for the pipeline stages.
+    \item
+      But, we must pay these benefits: two delay slots and more stalls.
+  \end{itemize}
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Exercise}
+
+  Let's study the superpipeline and more precisely execution dependencies.
+
+  \nl
+
+  Try to find the superpipeline bypasses with an example for each bypass.
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Correction}
+
+  The superpipeline is only composed of one additional bypass between
+  the MEM1 and DEC stages.
+
+  \begin{center}
+    \pgfuseimage{superpipeline-bypasses}
+  \end{center}
+\end{frame}
+
+% 9)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Comparison}
+
+  Let's compare the classical MIPS pipeline with the superpipeline.
+
+  \nl
+
+  We will call MIPS5 the classical pipeline and MIPS7 the superpipeline.
+
+  \begin{verbatim}
+    for (i = 0; i != size; i++)
+      a[i] = a[i] + b
+  \end{verbatim}
+
+  In MIPS assembly:
+
+  \begin{columns}
+
+    \begin{column}{6cm}
+      \begin{verbatim}
+        Loop: Lw R6, 0(R5)
+              Add R6, R6, R7
+              Sw R6, 0(R5)
+              Addi R5, R5, 4
+              Bne R5, R8, Loop
+              Nop
+      \end{verbatim}
+    \end{column}
+
+    \begin{column}{6cm}
+      \begin{verbatim}
+        Loop: Lw R6, 0(R5)
+              Add R6, R6, R7
+              Sw R6, 0(R5)
+              Addi R5, R5, 4
+              Bne R5, R8, Loop
+              Nop
+              Nop
+      \end{verbatim}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% 10)
+
+\begin{frame}
+  \frametitle{Exercise}
+
+  Let's study the loop execution on the two processors considering that:
+
+  \begin{itemize}
+    \item
+      The processor MIPS5 runs at 100 Mhz.
+    \item
+      The processor MIPS7 runs at 150 Mhz
+  \end{itemize}
+\end{frame}
+
+% 11)
+
+\begin{frame}
+  \frametitle{Without Optimisation}
+
+  One iteration takes:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{MIPS5}: 8 cycles / 100 Mhz = 8 / 100 . 10\^6 = 80 ns
+    \item
+      \textbf{MIPS7}: 10 cycles / 150 Mhz = 10 / 150 . 10\^6 = 66 ns
+  \end{itemize}
+\end{frame}
+
+% 12)
+
+\begin{frame}
+  \frametitle{With Rescheduling Optimisation}
+
+  One iteration takes:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{MIPS5}: 5 cycles / 100 Mhz = 5 / 100 . 10\^6 = 50 ns
+    \item
+      \textbf{MIPS7}: 6 cycles / 150 Mhz = 6 / 150 . 10\^6 = 40 ns
+  \end{itemize}
+\end{frame}
+
+% 13)
+
+\begin{frame}
+  \frametitle{With Software Pipelining Optimisation}
+
+  One iteration takes:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{MIPS5}: 5 cycles / 100 Mhz = 5 / 100 . 10\^6 = 50 ns
+    \item
+      \textbf{MIPS7}: 5 cycles / 150 Mhz = 5 / 150 . 10\^6 = 33 ns
+  \end{itemize}
+\end{frame}
+
+% 13)
+
+\begin{frame}
+  \frametitle{With Loop Unrolling Optimisation}
+
+  One \textbf{element} takes:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{MIPS5}: 4 cycles / 100 Mhz = 4 / 100 . 10\^6 = 40 ns
+    \item
+      \textbf{MIPS7}: 4 cycles / 150 Mhz = 4 / 150 . 10\^6 = 26 ns
+  \end{itemize}
+\end{frame}
+
+% 14)
+
+\begin{frame}
+  \frametitle{Complex Instructions}
+
+  We studied in this course the MIPS pipeline without taking care of the
+  complex instructions like the multiplication and division.
+
+  \nl
+
+  We will now try to understand how these instructions are handled by the
+  microprocessor and especially by the pipeline.
+\end{frame}
+
+% 15)
+
+\begin{frame}
+  \frametitle{New Strange Pipeline}
+
+  The multiplication instruction is a very complex instruction. This type
+  of instruction is about three times longer than a addition. In our example
+  we will consider that the multiplication instruction takes exactly three
+  cycles.
+
+  \nl
+
+  In the case of such an instruction the pipeline becomes strange because
+  the last three stages are reserved to the multiplication.
+\end{frame}
+
+% 16)
+
+\begin{frame}
+  \frametitle{Complex Pipeline}
+
+  Remember that the multiplication instruction stores the result in the
+  two registers \textbf{HI} and \textbf{LO}.
+
+  \nl
+
+  Then, the programmer/compiler needs to use the instructions to access
+  the result:
+
+  \begin{itemize}
+    \item
+      \textbf{MFHI}: Move From HI.
+    \item
+      \textbf{MHLO}: Move From LO.
+  \end{itemize}
+
+  \begin{center}
+    \pgfuseimage{multiplication-pipeline}
+  \end{center}
+\end{frame}
+
+% 17)
+
+\begin{frame}
+  \frametitle{Multiplication Dependency}
+
+  \begin{center}
+    \pgfuseimage{multiplication-dependency}
+  \end{center}
+\end{frame}
+
+% 18)
+
+\begin{frame}
+  \frametitle{Futur Works}
+
+  \textbf{P = F / CPIu}
+
+  \nl
+
+  The pipeline technique permit us to multiply by N the frequency to build
+  powerful microprocessors.
+
+  \nl
+
+  Then, we introduced the superpipelines with inherent properties:
+
+  \begin{itemize}[<+->]
+    \item
+      More stalls.
+    \item
+      More delay slots.
+    \item
+      More bypasses cause more dependencies.
+    \item
+      Moreover, the multiplixers used to handle bypasses become complex
+      and so the stage become longer.
+  \end{itemize}
+
+  At the end of the \textbf{90's}, researchers tried to reduce the CPI to
+  reach: \textbf{CPI = 0.5 instr/cycle}
+\end{frame}
+
+% 19)
+
+\begin{frame}
+  \frametitle{Superscalar}
+
+  Researchers tried to reach a lower CPI so to build microprocessors able
+  to produce for example two instructions per cycle.
+
+  \nl
+
+  Moreover, this was not so complicated since this technique was almost
+  used with complex instructions, for the multiplication for example.
+
+  \nl
+
+  These pipelines called \textbf{superscalar pipelines} will so look like:
+
+  \begin{center}
+    \pgfuseimage{superscalar-pipeline}
+  \end{center}
+
+  Nowadays, microprocessors have about four or six pipelines in parallel.
+\end{frame}
+
+% 20)
+
+\begin{frame}
+  \frametitle{Notices}
+
+  You can notice some differencies or problems inherent to this new pipeline
+  organisation:
+
+  \begin{itemize}[<+->]
+    \item
+      The memory stage is critical since the memory is not able to handle
+      two memory accesses in parallel.
+
+      \nl
+
+      The compiler will so have to avoid memory accesses in parallel.
+    \item
+      Moreover, the dependent instructions could not be executed at the
+      same time.
+  \end{itemize}
+\end{frame}
+
+% 21)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example}
+
+  Let's take an example to understand this new pipeline.
+
+  \begin{verbatim}
+    for (i = 0; i != size; i++)
+      v[i] = 2 * v[i];
+  \end{verbatim}
+
+  In MIPS assembly:
+
+  \begin{verbatim}
+    Loop: Lw R6, 0(R5)
+          Sll R6, R6, 1
+          Sw R6, 0(R5)
+          Addiu R5, R5, 4
+          Bne R5, R7, Loop
+          Nop
+          x
+          y
+  \end{verbatim}
+\end{frame}
+
+% 22)
+
+\begin{frame}
+  \frametitle{Pipelines}
+
+  \begin{center}
+    \pgfuseimage{superscalar-example}
+  \end{center}
+\end{frame}
+
+% 22)
+
+\begin{frame}
+  \frametitle{Notices}
+
+  This superscalar microprocessor is called:
+
+  \nl
+
+  \textbf{Superscalar Microprocessor With Ordered Execution}
+
+  \nl
+
+  meaning that an instruction can never be executed before a
+  younger instruction.
+
+  \nl
+
+  Note that modern microprocessors like Intel ones are superscalar
+  microprocessors with non ordered execution, with about four pipelines.
+
+  \nl
+
+  You can also notice that a \textbf{Prefetch Buffer} is used to store
+  the next instructions to execute.
+
+  \nl
+
+  Moreover, the DEC stage now performs a \textit{+8} operation to compute
+  the next instruction address.
+\end{frame}
+
+% 23)
+
+\begin{frame}
+  \frametitle{Problems}
+
+  The IFC stage is a problem since the processor always has to access
+  memory using aligned addresses.
+
+  \nl
+
+  The solution to this problem is to use an instruction buffer with in our
+  case four slots.
+
+  \nl
+
+  Then the rule to fill in the instruction buffer is to wait for at least
+  two unused slots. So memory accesses will always be aligned.
+\end{frame}
+
+% 24)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Optimisation}
+
+  Let's optimise the MIPS assembly code:
+
+  \begin{verbatim}
+    Loop: Lw R6, 0(R5)
+          Addiu R5, R5, 4
+          Sll R6, R6, 1
+          Bne R5, R7, Loop
+          Sw R6, 0(R5)
+          x
+          y
+          z
+  \end{verbatim}
+
+  Be careful, a branch or jump instruction cannot be executed since its delay
+  slots are not loaded in the instruction buffer.
+\end{frame}
+
+% 25)
+
+\begin{frame}
+  \frametitle{Correction}
+
+  \begin{center}
+    \pgfuseimage{superscalar-correction}
+  \end{center}
+\end{frame}
+
+% 26)
+
+\begin{frame}
+  \frametitle{Conclusion}
+
+  We can notice that the superscalar microprocessor is not better here
+  than the classical MIPS pipeline since this loop takes \textbf{five}
+  cycles.
+
+  \nl
+
+  Nevertheless, if we use the loop unrolling optimisation, this loop
+  only takes \textbf{six} cycles for two iterations but memory access
+  conflicts happen.
+\end{frame}
+
+% 27)
+
+\begin{frame}
+  \frametitle{Branch Prediction Overview}
+
+  You can easily notice that branchs are cumbersome since everytime
+  the prefetch instruction buffer is flushed so a cycle is lost.
+
+  \nl
+
+  To bypass this restriction researchers tried to find a way to predict
+  branchs so to preload either the following instructions or the
+  branched instructions.
+
+  \nl
+
+  There exists about three techniques to do so:
+
+  \begin{enumerate}[<+->]
+    \item
+      \textbf{Fifty-Fifty}: a simple and stupid way consisting in a
+      50\% choice: either the next instructions or the branched instructions.
+    \item
+      \textbf{Dynamic Branch Prediction}: this technique consists in
+      memorising the last choice made. This binary information is stored
+      with each instruction in a local memory called the \textbf{scory-board}.
+    \item
+      \textbf{Static Branch Prediction}: this technique uses the same
+      method than the Dynamic Branch Prediction but in static. In other words,
+      the information bit is set by the compiler or the programmer.
+  \end{enumerate}
+\end{frame}
+
+% 28)
+
+\begin{frame}
+  \frametitle{Rules}
+
+  Let's summerise the superscalar microprocessor rules:
+
+  \begin{itemize}[<+->]
+    \item
+      Only one memory access at a time in the MEM stage.
+    \item
+      The instructions are launched in the DEC stage only if independent.
+    \item
+      The instructions are read by couple and at aligned addresses.
+    \item
+      A branch can be executed only if the delay slots are present in the
+      instruction buffer.
+  \end{itemize}
+\end{frame}
+
+% 29)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Exercise}
+
+  Let's take a little stupid subroutine:
+
+  \begin{verbatim}
+    for (i = 0; i != N; i++)
+      {
+        if (a[i] == b[i])
+          c = 2 * a[i];
+        else
+          c = a[i] + b[i];
+
+        s = s + c;
+      }
+  \end{verbatim}
+\end{frame}
+
+% 30)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Assembly}
+
+  The corresponding assembly code is:
+
+  \begin{verbatim}
+     Loop: Lw R7, 0(R5)
+           Lw R8, 0(R6)
+           Bne R7, R8, Else
+           Sll R9, R7, 1
+           Beq R0, R0, EndIf
+     Else: Add R9, R7, R8
+    EndIf: Add R2, R2, R9
+           Addiu R5, R5, 4
+           Addiu R6, R6, 4
+           Addi R10, R10, -1
+           Bne R10, R0, loop
+  \end{verbatim}
+\end{frame}
+
+% 31)
+
+\begin{frame}
+  \frametitle{Work}
+
+  \begin{enumerate}[<+->]
+    \item
+      Make this assembly code run on MIPS processors.
+    \item
+      Optimise this assembly code via rescheduling for superscalar
+      microprocessors.
+    \item
+      Make the detailed pipelines for the \textit{If} case and then for
+      the \textit{Else} case.
+  \end{enumerate}
+\end{frame}
 
 %
 % memory
 %
 
 \section{Memory}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  We will study the Pi-Bus to understand how different entities can
+  access memory sequentially.
+
+  \nl
+
+  Then we will concentrate on the memory and especially the different
+  cache and policies used by the microprocessors.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Pi-Bus}
+
+  There are three types of objects:
+
+  \begin{center}
+    \pgfuseimage{pibus-overview}
+  \end{center}
+
+  \begin{enumerate}[<+->]
+    \item
+      \textbf{Masters}: microprocessors.
+    \item
+      \textbf{Slaves}: memory.
+    \item
+      \textbf{A referee}: BCU.
+  \end{enumerate}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Steps}
+
+  The Pi-Bus steps are explained below:
+
+  \begin{enumerate}[<+->]
+    \item
+      First, every master interested in acquiring the bus has to set
+      its REQi bit.
+    \item
+      At the end of the cycle, the Bus Controller Unit chooses a master
+      and set the appropriate GNTi bit.
+    \item
+      Then, the master sends the memory address on ADR with the desired
+      memory size wanted: bytes, half-word, word on OPC.
+    \item
+      The referee then locates the slave corresponding the the desired
+      memory location and notifies the slave to handle to request with
+      SELj.
+    \item
+      Then the request is acknowleged on ACK and the data is transfered
+      from the slave to the master DAT.
+  \end{enumerate}
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Pi-Bus Communication}
+
+  \begin{center}
+    \pgfuseimage{pibus-communication}
+  \end{center}
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{\textbf{Sw} Instruction Example}
+
+  \begin{center}
+    \pgfuseimage{pibus-example}
+  \end{center}
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Notices}
+
+  Notice that the data cannot be transfered like this.
+
+  \nl
+
+  Before each transfer, the address must be specified to the slave.
+
+  \nl
+
+  Indeed, the Pi-Bus is in fact pipelined since it handles memory location
+  while transfering the previous data.
+
+  \nl
+
+  You certainly also noticed that the refeering cycle was not used to
+  transfer data, then the referee cycle is lost.
+
+  \nl
+
+  To bypass this limitation a default master is always chosen and a GRANT
+  is sent to this master, so:
+
+  \begin{itemize}[<+->]
+    \item
+      Either this master asks for the bus in this cycle so it already
+      holds the bus and we won one cycle using a default master.
+    \item
+      Or it is not the case and in this case we \textit{lose} one
+      cycle like before.
+  \end{itemize}
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Bus Allocation Strategies}
+
+  \textit{What is the algorithm used to acquire the bus?}
+  \textit{How to avoid famine?}
+
+  \begin{enumerate}[<+->]
+    \item
+      \textbf{Static Strategy}: an identifier is assigned to each master.
+      This strategy is very dangerous introducing famine.
+    \item
+      \textbf{Dynamic Strategy}: give the bus in relation with the asking
+      time. This strategy is hard to implement since the last master must
+      keep a timestamp.
+    \item
+      \textbf{Dynamic Priorities Strategy}: first, a number is assigned
+      to each master. Then the master just acquiring the bus, gets the
+      lowest priority.
+
+      \nl
+
+      If two masters ask for the bus, the BCU just chooses the one with
+      the highest priority.
+
+      \nl
+
+      Note that the default master in this strategy is simply the first
+      in the list, the one with the highest priority.
+  \end{enumerate}
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Memory}
+
+  We will now study the memory components especially the different caches
+  and cache policies.
+
+  \nl
+
+  Through this course we studied the MIPS microprocessor based on few
+  requirements:
+
+  \begin{enumerate}[<+->]
+    \item
+      The memory must provide:
+
+      \begin{itemize}
+	\item
+	  one instruction per cycle.
+	\item
+	  one data per cycle.
+      \end{itemize}
+    \item
+      A memory cycle will have to be as fast as the processor cycle.
+    \item
+      The memory address space must be 4 Gb.
+    \item
+      The memory must not be expensive.
+  \end{enumerate}
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{Memory Types}
+
+  There exists different memory types or storage types:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{Static Memory}: This memory is very fast with an access time
+      equal to the processor's one. But this type of memory is very
+      expensive because built with silicium.
+
+      \textit{Properties}: about Kb with an access time of 1 cycle.
+    \item
+      \textbf{Dynamic Memory}: This memory is seven times denser than
+      the Static Memory. This memory is also built with silicium but it
+      access time is about five to six times slower than the processor's
+      one.
+
+      \textit{Properties}: about Mb with an access time of 10 cycles.
+    \item
+      \textbf{Hard Drive}: This type of storage is mecanic so hard drives
+      are about 10\^6 times slower than the processor.
+
+      \textit{Properties}: about Gb with an access time of 10\^6 cycles.
+    \item
+      \textbf{Magnetic Tape}: Cheaper than hard drives because built with
+      plastic.
+
+      \textit{Properties}: about Tb with an access time of minutes.
+  \end{itemize}
+\end{frame}
+
+% 10)
+
+\begin{frame}
+  \frametitle{Caches}
+
+  You can notice that each memory type fulfills in a MIPS requirement but never
+  all.
+
+  \nl
+
+  In fact, to fulfill the MIPS requirements MIPS designers had no choice than
+  to use different memory types for different work.
+
+  \nl
+
+  The MIPS memories are organised hierarchically from the fastest to the
+  slowest.
+\end{frame}
+
+% 11)
+
+\begin{frame}
+  \frametitle{Organisation}
+
+  \begin{center}
+    \pgfuseimage{memory-organisation}
+  \end{center}
+\end{frame}
+
+% 12)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Access Time}
+
+  Let's try to evaluate the number of cycles that takes a memory access.
+
+  \begin{center}
+    \pgfuseimage{memory-access-time}
+  \end{center}
+
+  \begin{verbatim}
+    cycles per access = 1 x (4 Kb / 4 Gb) +
+                        10 x ((4 Mb - 4 Kb) / 4Gb) +
+                        10^6 x ((4 Gb - 4 Mb) / 4Gb)
+                     ~= 10^-6 +
+                        10^-3 - 10^-6 +
+                        1 - 10^-3
+                     ~= 999 000
+  \end{verbatim}
+\end{frame}
+
+% 13)
+
+\begin{frame}
+  \frametitle{Spatial Locality}
+
+  The previous result is theorically correct but we need to take care
+  of the spatial locality.
+
+  \nl
+
+  Indeed, computer sciences programs respect the spatial locality meaning
+  that memory accesses are never far from the previous one.
+
+  \begin{center}
+    \pgfuseimage{spatial-locality}
+  \end{center}
+\end{frame}
+
+% 14)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Access Time}
+
+  Let's recompute the access time with these assumptions:
+
+  \begin{itemize}
+    \item
+      Let's assume that 90\% of memory accesses are in cache and
+      99.99999\% of memory accesses are in main memory.
+    \item
+      The Static Memory is loaded by 32 bytes (8 words) from the
+      Dynamic Memory.
+    \item
+      The Dynamic Memory is loaded by 4 Kbytes from the Hard Drive.
+  \end{itemize}
+
+  \begin{verbatim}
+    cycles per access = 1 x 0.90 +
+                        8 x 10 x 0.10 x (1 - 10^-5) +
+                        1024 x 10^6 x 10^-5
+                     ~= 10200
+  \end{verbatim}
+\end{frame}
+
+% 15)
+
+\begin{frame}
+  \frametitle{Review}
+
+  Let's review for example an hard drive access.
+
+  \nl
+
+  We could decomposed an hard drive access into two very distinctive steps:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{A}: Move the reading head over the correct sector to
+      perform the reading.
+    \item
+      \textbf{B}: Perform the reading.
+  \end{itemize}
+
+  The longest step is of course the move of the reading head because an hard
+  drive is composed of mecanic components.
+
+  \nl
+
+  So to perform an hard drive reading of \textbf{one} word, the access time
+  is: \textbf{A + B}.
+
+  \nl
+
+  Moreover, to perform an hard drive reading of \textbf{N} consecutive
+  words, the access time is in fact: \textbf{A + N x B}.
+\end{frame}
+
+% 16)
+
+\begin{frame}
+  \frametitle{Reconsideration}
+
+  Indeed, it is better to perform a huge amount of transfer to make reading
+  head moves profitables.
+
+  \nl
+
+  This rule takes place for every memory which uses a bus because acquiring
+  the bus takes time. For example for the Dynamic Memory, acquiring the
+  bus takes \textbf{nine} cycles while transfering a data only takes
+  \textbf{one} cycle.
+
+  \nl
+
+  So previous computations were false because we used a bad formula:
+  \textbf{N x (A + B)}.
+
+  \nl
+
+  Moreover, the exact concrete probability that a data would be in cache
+  is in fact \textbf{97\%} and more than \textbf{99.99999\%} for the main
+  memory.
+\end{frame}
+
+% 17)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Access Time}
+
+  Let's consider that the bus is acquired in nine cycles, a data
+  transfered via the bus in one cycle and the hard drive reading head is
+  placed in about 999900 cycles while a data is transfered in about
+  100 cycles.
+
+  \begin{verbatim}
+    cycles per access = 1 x 0.97 +
+                        (9 + (8 x 1)) x 0.03 x (1 - 10^-5) +
+                        (999900 + (1024 x 100)) x 10^-5
+                     ~= 10
+  \end{verbatim}
+\end{frame}
+
+% 18)
+
+\begin{frame}
+  \frametitle{Real World}
+
+  \begin{center}
+    \pgfuseimage{cache-hierarchy}
+  \end{center}
+
+  \begin{itemize}
+    \item
+      Spatial Locality.
+    \item
+      Transfers optimised for data packets.
+  \end{itemize}
+\end{frame}
+
+% 19)
+
+\begin{frame}
+  \frametitle{Caches Overview}
+
+  There exists two different cache types:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{Unified Caches}.
+    \item
+      \textbf{Specific Caches}.
+  \end{itemize}
+\end{frame}
+
+% 20)
+
+\begin{frame}
+  \frametitle{Unified Caches}
+
+  These types of caches managed instruction like data in the same cache.
+
+  \nl
+
+  The properties are:
+
+  \begin{itemize}[<+->]
+    \item
+      Complex because must respond to multiple requests: instruction and data
+      because there are two memory accesses per cycles, in the IFC and MEM
+      stages.
+    \item
+      Must be very fast to manage two requests.
+    \item
+      But, these caches can optimise the space management since it may be
+      few instructions and many data, the cache can be filled in with
+      90\% of data.
+  \end{itemize}
+
+  We will not study these caches because too complex.
+\end{frame}
+
+% 21)
+
+\begin{frame}
+  \frametitle{Specific Caches}
+
+  These types of cache are simpler to build than Unified Caches.
+
+  \nl
+
+  The only problem with these caches is the space management which
+  can be extremely limited in a special memory use: for example many
+  instruction with few data.
+
+  \nl
+
+  But, in this type of caches, the two different subcaches can use
+  a specific Cache Policy.
+
+  \nl
+
+  These caches simply distinguish the instruction from the data and are
+  in fact composed of two caches:
+
+  \begin{itemize}[<+->]
+    \item
+      Instruction Cache.
+    \item
+      Data Cache.
+  \end{itemize}
+\end{frame}
+
+% 22)
+
+\begin{frame}
+  \frametitle{Cache Overview}
+
+  Let's first study the simplest cache, the Instruction Cache because
+  instructions are never overwritten.
+
+  \begin{center}
+    \pgfuseimage{cache-overview}
+  \end{center}
+\end{frame}
+
+% 23)
+
+\begin{frame}
+  \frametitle{Cache Manager}
+
+  We will call the Cache Manager the Master on the Pi-Bus which communicates
+  with the memories.
+
+  \begin{center}
+    \pgfuseimage{pibus-cache}
+  \end{center}
+\end{frame}
+
+% 24)
+
+\begin{frame}
+  \frametitle{Cache Policies}
+
+  The question is: \textit{Where is the block located in the cache?}
+
+  \nl
+
+  There exists three different cache policies:
+
+  \begin{enumerate}[<+->]
+    \item
+      \textbf{Direct Mapping}: one block can only be located in one
+      slot in the cache at a time.
+    \item
+      \textbf{Set Associative}: one block can be located in a set of
+      slots.
+    \item
+      \textbf{Full Associative}: one block can be located everywhere
+      in the cache.
+  \end{enumerate}
+\end{frame}
+
+% 25)
+
+\begin{frame}
+  \frametitle{Direct Mapping Overview}
+
+  The main memory is divided in partitions. Then a cache slot is
+  logically assigned to each partition.
+
+  \nl
+
+  A block can only be stored in the cache slot of its partition.
+\end{frame}
+
+% 26)
+
+\begin{frame}
+  \frametitle{Natural Partitionning}
+
+  \begin{center}
+    \pgfuseimage{natural-partitionning}
+  \end{center}
+\end{frame}
+
+% 27)
+
+\begin{frame}
+  \frametitle{Notices}
+
+  This partitionning is absolutely critical since it does not respect
+  the Spatial Locality Rule.
+
+  \nl
+
+  The best partitionning would be in columns to keep away blocks with
+  Spatial Locality.
+
+  \nl
+
+  With it, it would be possible to keep in cache sequential blocks.
+\end{frame}
+
+% 28)
+
+\begin{frame}
+  \frametitle{Example}
+
+  An example with \textbf{64} blocks of \textbf{16} bytes each. We want
+  to access the \textbf{fourth} byte of the block \textbf{9}.
+
+  \begin{center}
+    \pgfuseimage{cache-example}
+  \end{center}
+\end{frame}
+
+% 29)
+
+\begin{frame}
+  \frametitle{Cache Internals}
+
+  \begin{center}
+    \pgfuseimage{cache-internals}
+  \end{center}
+\end{frame}
+
+% 30)
+
+\begin{frame}
+  \frametitle{Notices}
+
+  Let's notice that a directory entry like a data entry can takes exactly
+  \textbf{nine} values, in the case of our example.
+
+  \begin{itemize}[<+->]
+    \item
+      The eight different possible blocks.
+    \item
+      Or an empty entry meaning that this entry is not used, yet.
+  \end{itemize}
+
+  So, the Block Tag is not enough.
+
+  \nl
+
+  The cache needs another information to know if the entry is used.
+\end{frame}
+
+% 31)
+
+\begin{frame}
+  \frametitle{Present Bit}
+
+  We will so add a \textbf{Present Bit} in every Cache Directory Entry.
+
+  \nl
+
+  Moreover, another test has to be done to check the present bit.
+\end{frame}
+
+% 32)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Performances}
+
+  Researchers perform benchmarks on microprocessor's caches
+  computing the Miss Rate.
+
+  \begin{verbatim}
+    Miss Rate = Number of Misses / Number of Accesses
+  \end{verbatim}
+
+  The Miss Rate reflects the cache performances.
+
+  \nl
+
+  Reloading the cache takes time, about \textbf{50} cycles.
+
+  \nl
+
+  Conclusion, the Direct Mapping Policy is powerful, but not enough because
+  too restrictive on the block placement in cache. If data operations
+  are made on blocks of a same set, the cache will always load then unload
+  a block of the cache.
+\end{frame}
+
+% 33)
+
+\begin{frame}
+  \frametitle{Set Associative Overview}
+
+  The Set Associative Policy is used to merge, associate cache entries.
+
+  \begin{center}
+    \pgfuseimage{set-associative-overview}
+  \end{center}
+\end{frame}
+
+% 34)
+
+\begin{frame}
+  \frametitle{Cache Internals}
+
+  \begin{center}
+    \pgfuseimage{set-associative-internals}
+  \end{center}
+\end{frame}
+
+% 35)
+
+\begin{frame}
+  \frametitle{Cache Replacement Policies}
+
+  The remaining question is: \textit{What block to be replaced by?}
+
+  \nl
+
+  There exists three interesting algorithms:
+
+  \begin{itemize}[<+->]
+    \item
+      FIFO.
+    \item
+      LIFO.
+    \item
+      LRU.
+  \end{itemize}
+\end{frame}
+
+% 36)
+
+\begin{frame}
+  \frametitle{Temporal Locality}
+
+  Of course, the algorithm used in the cache is a pseudo LRU.
+
+  \nl
+
+  Indeed, the Temporal Locality is a fact and the microprocessor needs
+  an algorithm which keeps in cache the blocks which will be used in a near
+  futur.
+
+  \nl
+
+  Be careful, the Temporal Locality is less important than the Spatial
+  Locality so cache implementations should not based everything on
+  Temporal Locality.
+
+  \begin{center}
+    \pgfuseimage{temporal-locality}
+  \end{center}
+\end{frame}
+
+% 37)
+
+\begin{frame}
+  \frametitle{Pseudo LRU}
+
+  The pseudo LRU is a lightweigth LRU implemented through only one bit
+  per block depending on the associative degree.
+
+  \nl
+
+  Let's study this algorithm. At the beginning, every LRU bit is set to zero.
+
+  \begin{enumerate}
+    \item
+      If an access is made to a block, in reading or writing,
+      its LRU bit is set to one.
+    \item
+      If every LRU bits of a set are set to one, then the LRU bits are
+      reinitialised to zero.
+  \end{enumerate}
+
+  Then, the pseudo LRU algorithm just iteratively looks for an entry with
+  a LRU bit not set.
+
+  \nl
+
+  We called this algorithm pseudo LRU because nothing permit the cache
+  manager to distinguish two block with the LRU bit not set.
+\end{frame}
+
+% 38)
+
+\begin{frame}
+  \frametitle{Full Associative Overview}
+
+  The Full Associative Cache Policy is in fact a Set Associative Policy
+  with the maximum degree.
+
+  \nl
+
+  Moreover, the Direct Mapping Policy was simply a Set Associative of
+  Degree One.
+
+  \nl
+
+  In our example, a Full Associative Cache would be the same cache than a
+  Set Associative Cache with a Degree Eight.
+
+  \nl
+
+  Of courses these types of cache are theoritical since it takes much
+  time to perform an iterative lookup in the entire cache and the
+  hardware become too complex with many multiplexers.
+\end{frame}
+
+% 39)
+
+\begin{frame}
+  \frametitle{Implementations}
+
+  The caches are in fact implemented through the three different policies
+  below:
+
+  \begin{itemize}[<+->]
+    \item
+      Direct Mapping.
+    \item
+      Set Associative Degree Two.
+    \item
+      Set Associative Degree Four.
+  \end{itemize}
+
+  Then every cache with a more complex implementation is usually avoided
+  since the multiplexers become too complex.
+
+  \nl
+
+  Of course the Full Associative Policy is never implemented.
+\end{frame}
+
+% 40)
+
+\begin{frame}
+  \frametitle{Data Caches Overview}
+
+  We just studied the different cache policies on the simplest caches:
+  the instruction caches.
+
+  \nl
+
+  These caches are simpler to understand because the instructions are
+  never overwritten.
+
+  \nl
+
+  We will now look at the data caches and the different Write Policies
+  which describe the way to update the data in cache, in main memory etc..
+\end{frame}
+
+% 41)
+
+\begin{frame}
+  \frametitle{Write Policies Overview}
+
+  There exists two different Write Policies:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{Write Through}: Simpler caches. Every writing goes to the
+      memory with taking care of updating the cache.
+
+      \textit{Properties}: Slow writings.
+    \item
+      \textbf{Write Back}: More complex caches. Every writing just updates
+      the cache entry if any. Otherwise, the memory is updated.
+
+      \textit{Properties}: Inconsistent data between the cache and the memory.
+      This property is very cumbersome for Multiprocessors. Nevertheless this
+      Write Policy is faster than the other.
+  \end{itemize}
+\end{frame}
+
+% 42)
+
+\begin{frame}
+  \frametitle{Dirty Bit}
+
+  In the Write Back Policy, a block in cache is updated each time this
+  block is overwritten.
+
+  \nl
+
+  Nevertheless, this block can be replaced by another. In this case, the
+  block should be rewrite into memory.
+
+  \nl
+
+  To know if a block has to be rewrite into memory a \textbf{Dirty Bit} is
+  added to every cache directory entry.
+
+  \nl
+
+  Every time a block is replaced, the cache manager looks at the Dirty Bit.
+  If set, the block is rewritten into memory.
+\end{frame}
+
+% 43)
+
+\begin{frame}
+  \frametitle{Multiprocessors}
+
+  Let's talk about multiprocessors inherent problems and solutions.
+
+  \nl
+
+  Consider two microprocessors \textbf{P0} and \textbf{P1} and a Write
+  Back Cache Policy.
+
+  \nl
+
+  P0 and P1 read a block \textbf{B}, so this block is loaded in their
+  own cache.
+
+  \nl
+
+  Then, P0 writes into this block updating the cache entry corresponding to
+  the block B.
+
+  \nl
+
+  At this point, the two microprocessors P0 and P1 have different
+  views of the block B.
+\end{frame}
+
+% 44)
+
+\begin{frame}
+  \frametitle{Automata}
+
+  To bypass this problem an automata was introduced to probe the bus
+  waiting for Invalidation Signals.
+
+  \nl
+
+  This automata is called the \textbf{Snoopy}, from the famous dog.
+\end{frame}
+
+% 45)
+
+\begin{frame}
+  \frametitle{Snoopy}
+
+  \begin{center}
+    \pgfuseimage{snoopy}
+  \end{center}
+\end{frame}
+
+% 46)
+
+\begin{frame}
+  \frametitle{Modified Bit}
+
+  Of course, sending a Invalidation Signal takes time because the bus needs
+  to be acquired first.
+
+  \nl
+
+  To minimise the number of Invalidation Signals sent a \textbf{Modified Bit}
+  was added to every cache directory entry.
+
+  \nl
+
+  Then the following automata is used for every writing:
+
+  \begin{enumerate}[<+->]
+    \item
+      If M is equal to zero, then an Invalidation Signal is sent and the
+      Modified Bit M is set to one.
+    \item
+      If M is equal to one, then nothing is done because every processor
+      already know that this block is dirty.
+  \end{enumerate}
+\end{frame}
+
+% 47)
+
+\begin{frame}
+  \frametitle{Synchronisation}
+
+  The remaining question is: \textit{How to make processors synchronised?}
+
+  \nl
+
+  When P1 will want to access the block B, it will be from the main memory.
+
+  \nl
+
+  Of course, when a microprocessor receive a Invalidation Signal, it
+  invalidates, if necessary, the cache entry corresponding to the block.
+
+  \nl
+
+  Then the following steps take place:
+
+  \begin{enumerate}[<+->]
+    \item
+      The bus access will be refused. A \textit{RETRACT} signal is sent
+      to the master.
+    \item
+      The P0 snoopy detects this access and then updates memory with
+      its cache entry taking care of reinitialising the Dirty Bit and Modified
+      Bit.
+    \item
+      Then P1 can retry its reading because the block in memory is now
+      consistent.
+  \end{enumerate}
+\end{frame}
+
+% 48)
+
+\begin{frame}
+  \frametitle{Comparison}
+
+  The Write Back Policy is a powerful solution but is very expensive
+  due to the Snoopy and the inconsistent memory.
+
+  \nl
+
+  Then researchers decided to try to optimise the Write Through Policy
+  since it was simpler.
+\end{frame}
+
+% 49)
+
+\begin{frame}
+  \frametitle{Delay Buffer}
+
+  The Write Through Policy main problem is the time it takes to write
+  data into memory.
+
+  \nl
+
+  Indeed, during the memory writing the processor waits for the end of this
+  operation, all this time is wasted introducing stalls into the pipeline.
+
+  \nl
+
+  So a Delay Buffer was introduced to optimise the writings.
+
+  \nl
+
+  Everytime a block is overwritten, the block is pushed in the Delay Buffer.
+
+  \nl
+
+  Then the cache automata's role is now to get a block from the Delay Buffer
+  and to write it into memory.
+\end{frame}
+
+% 50)
+
+\begin{frame}
+  \frametitle{Cache Automata}
+
+  \begin{center}
+    \pgfuseimage{cache-automata}
+  \end{center}
+\end{frame}
+
+% 51)
+
+\begin{frame}
+  \frametitle{Conclusion}
+
+  The different Cache Policies can be easily summarise:
+
+  \begin{itemize}[<+->]
+    \item
+      Write Through.
+
+      \begin{itemize}
+	\item
+	  With Delay Buffer.
+	\item
+	  Without Delay Buffer. The microprocessor is blocked until the
+	  block is written back into memory.
+      \end{itemize}
+
+    \item
+      Write Back.
+
+      \begin{itemize}
+	\item
+	  Miss. The block is loaded in cache then the block is overwritten
+	  in cache.
+	\item
+	  Hit.
+      \end{itemize}
+  \end{itemize}
+\end{frame}
+
+% 52)
+
+\begin{frame}
+  \frametitle{Exercise}
+
+  Consider a MIPS microprocessor with a five stages pipeline. We want to
+  study to memory performances influence on the entire microprocessor
+  performances.
+
+  \nl
+
+  With a perfect memory system (readings and writings in one cycle),
+  the CPI is equal to \textbf{1.1} cycle per instruction.
+
+  \nl
+
+  Load instructions represent \textbf{20\%} of the executed instructions.
+  The store instructions represent \textbf{10\%} of them.
+
+  \nl
+
+  The physical memory is composed of \textbf{64} Mbytes. The memory
+  is addressed by byte. The memory bus has a \textbf{4} bytes bandwith.
+
+  \nl
+
+  The bus cycle time is equal to \textbf{4} microprocessor cycles.
+
+  \nl
+
+  In the concrete system, a memory reading needs \textbf{10} cycles while
+  a writing needs \textbf{4} cycles.
+\end{frame}
+
+% 53)
+
+\begin{frame}
+  \frametitle{Question}
+
+  \textit{From the perfect system, what is the increase of the
+    CPI called RP due to writings?}
+
+  \nl
+
+  \textit{From the perfect system, what is the increase of the
+    CPI called WP due to writings?}
+\end{frame}
+
+% 54)
+
+\begin{frame}
+  \frametitle{Reading Properties}
+
+  On a perfect system a reading takes one cycle while in a concrete system
+  a reading takes 10 cycles. The reading penalty is so \textbf{9} cycles
+  per instruction.
+
+  \nl
+
+  Note that we can classify instructions into three categories:
+
+  \begin{itemize}[<+->]
+    \item
+      \textbf{Load Instructions}
+    \item
+      \textbf{Store Instructions}
+    \item
+      \textbf{Others}
+  \end{itemize}
+
+  Moreover, we can easily compute the number of reading instructions and
+  their probabilities:
+
+  \begin{tabular}{|p{3cm}|p{3cm}|p{3cm}|}
+    \hline
+
+    \textbf{Instruction Type} & \textbf{Probability} &
+    \textbf{Reading Occurences} \\
+
+    \hline
+
+    Load Instructions & 0.2 & IFC and MEM \\
+
+    \hline
+
+    Store Instructions & 0.1 & IFC \\
+
+    \hline
+
+    Others & 0.7 & IFC \\
+
+    \hline
+  \end{tabular}
+\end{frame}
+
+% 55)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Reading Penalty}
+
+  Finally, the reading penalty is equal to:
+
+  \begin{verbatim}
+    RP = penalty / reading   x   reading number / instruction
+       =        9            x  (0.2 x 2  +  0.1 x 1  +  0.7 x 1)
+       =        9            x               1.2
+       =                 10.8
+  \end{verbatim}
+\end{frame}
+
+% 56)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Write Penalty}
+
+  The same calculations come for writings.
+
+  \nl
+
+  On a perfect system a writing takes one cycle while in a concrete system
+  a writing takes 4 cycles.
+
+  \nl
+
+  The writing penalty is so \textbf{3} cycles per instruction.
+
+  \begin{tabular}{|p{3cm}|p{3cm}|p{3cm}|}
+    \hline
+
+    \textbf{Instruction Type} & \textbf{Probability} &
+    \textbf{Writing Occurences} \\
+
+    \hline
+
+    Load Instructions & 0.2 & \\
+
+    \hline
+
+    Store Instructions & 0.1 & MEM \\
+
+    \hline
+
+    Others & 0.7 & \\
+
+    \hline
+  \end{tabular}
+
+  Finally, the writing penalty is equal to:
+
+  \begin{verbatim}
+    WP = penalty / writing   x   writing number / instruction
+       =        3            x  (0.2 x 0  +  0.1 x 1  +  0.7 x 0)
+       =        3            x               0.1
+       =                 0.3
+  \end{verbatim}
+\end{frame}
+
+% 57)
+
+\begin{frame}
+  \frametitle{Question}
+
+  \textit{What is the average number of cycles per instruction?}
+\end{frame}
+
+% 58)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Solution}
+
+  The average CPI is now equal to:
+
+  \begin{verbatim}
+    CPI = 1.1   +   10.8   +   0.3
+        = 12.2
+  \end{verbatim}
+\end{frame}
+
+% 59)
+
+\begin{frame}
+  \frametitle{Exercise}
+
+  To optimise memory accesses, we introduce a two levels cache. The
+  cache policy used is set associative degree two. The cache is a
+  unified cache of 16 Kbytes size.
+
+  \nl
+
+  The access time is one cycle. The block size is 16 bytes.
+
+  \nl
+
+  The write strategy is Write Through without updating the cache whether
+  the data is not loaded in cache. There is no delay buffer for writings.
+\end{frame}
+
+% 60)
+
+\begin{frame}
+  \frametitle{Question}
+
+  \textit{Describe the physical address from the cache point of view,
+    precising every field's size?}
+\end{frame}
+
+% 61)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Solution}
+
+  The number of sets in the cache is:
+
+  \begin{verbatim}
+    sets = cache size / block size / associative degree
+         = 16 Kb / 16 b / 2
+         = 512
+  \end{verbatim}
+
+  Note that with a 64 Mbytes memory composed of blocks of 16 bytes size,
+  there are exactly 4 Mblocks or 2\^22 blocks of physical memory.
+
+  \nl
+
+  So, the physical address format from the cache point of view is:
+
+  \begin{enumerate}
+    \item
+      \textbf{Tag}: 15 bits (22 - 9) because there are 4 Mblocks of
+      physical memory.
+    \item
+      \textbf{Set}: 9 bits because there are 512 sets.
+    \item
+      \textbf{Offset}: 4 bits because a block has a 16 bytes size.
+  \end{enumerate}
+\end{frame}
+
+% 62)
+
+\begin{frame}
+  \frametitle{Question}
+
+  \textit{Describe the cache internals?}
+\end{frame}
+
+% 63)
+
+\begin{frame}
+  \frametitle{Question}
+
+  \textit{What is the usefulness of the set associative cache policy
+    of degree two?}
+\end{frame}
+
+% 64)
+
+\begin{frame}
+  \frametitle{Solution}
+
+  To respect to Temporal Locality.
+\end{frame}
+
+% 65)
+
+\begin{frame}
+  \frametitle{Exercise}
+
+  Consider that the Miss Rate is about \textbf{5\%}.
+
+  \nl
+
+  For every Miss, the microprocessor waits the end of the block
+  load in the cache.
+
+  \nl
+
+  We want to compute the average number of cycles per instruction.
+
+  \nl
+
+  Remember that a reading takes \textbf{10} cycles. In these 10 cycles,
+  \textbf{4} cycles are reserved for the address transfer and \textbf{4}
+  cycles are reserved for the data transfer. Each of these transfer is
+  a 4 bytes transfer.
+
+  \nl
+
+  Then the \textbf{2} remaining cycles are reserved by the bus and the memory
+  to perform internal operations.
+\end{frame}
+
+% 66)
+
+\begin{frame}
+  \frametitle{Question}
+
+  \textit{From the microprocessor point of view, what is the length of
+    a memory reading in the case of a cache hit?}
+
+  \nl
+
+  \textit{From the microprocessor point of view, what is the length of
+    a memory reading in the case of a cache miss?}
+\end{frame}
+
+% 67)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Solution}
+
+  In the case of a hit, the reading length is one cycle.
+
+  \nl
+
+  In the case of a miss, the block must be loaded in cache. Once the block
+  entirely loaded the microprocessor can continue. This policy is not
+  optimised since the microprocessor could only wait for the desired byte
+  or bytes.
+
+  \nl
+
+  Remember that the bus is pipelined. The transfer will look like that:
+
+  \begin{center}
+    \pgfuseimage{exercise-bus}
+  \end{center}
+
+  The reading length in a miss case is so:
+
+  \begin{verbatim}
+    1 + (4 + (2 + 4) x 4) + 1 = 30 cycles
+  \end{verbatim}
+\end{frame}
+
+% 68)
+
+\begin{frame}
+  \frametitle{Question}
+
+  \textit{From the perfect system, what are the CPI increase for
+    readings and writings?}
+\end{frame}
+
+% 69)
+
+\begin{frame}
+  \frametitle{Write Penalty}
+
+  The Write Penalty is the same than before since there is no delay
+  buffer for writings.
+
+  \nl
+
+  The Write Penalty is so the same than if there is no delay buffer:
+  \textbf{0.3} cycles per writing.
+\end{frame}
+
+% 70)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Read Penalty}
+
+  There are two cases:
+
+  \begin{itemize}
+    \item
+      \textbf{Hit}: 0 cycles because the data is in cache so the access time
+      is one cycle so no penalty.
+    \item
+      \textbf{Miss}: (30 - 1) x 1.2 = 34.8 penalty cycles
+  \end{itemize}
+
+  To conclude the reading penalty is equal to:
+
+  \begin{verbatim}
+    RP = 0 x 0.95   +   34.8 x 0.05
+       = 1.740 cycles per instruction
+  \end{verbatim}
+\end{frame}
+
+% 71)
+
+\begin{frame}
+  \frametitle{Question}
+
+  \textit{What is the average number of cycles per instruction?}
+\end{frame}
+
+% 72)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Solution}
+
+  The CPI is now:
+
+  \begin{verbatim}
+    CPI = 1.1 + 0.3 + 1.740
+        = 3.140
+  \end{verbatim}
+\end{frame}
 
 %
 % bibliography
@@ -2696,19 +4875,9 @@
 
 \end{document}
 
-XXX une fois ce cours termine, remplir schedule.tex pour chaque seance.
-
-exo: pipeline 7: trouver bypasses avec instruction associe a chaque
-     lw dans un detailed pipeline
-exemple compare entre 5 et 7 etages + reordonnancement optimisation
-+ deroulement boucle + software pipeline
-
-super pipeline but now called deep-pipeline
-
-XXX courses: from architecture through high level applications
-
-XXX expliquer comment sont gerer les cycles de gel dans le pipeline
-detaille: au lieu de remonter ca stagne
-
 XXX dernier cours revenir sur les notions avancees d arch ext
     comme mem virtuelle mais du point de vue du proc mips: arch interne
+
+XXX changer les ^6 en \exp{6}
+
+XXX transformer les formules en utilisant les notations de maths.

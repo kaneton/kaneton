@@ -80,10 +80,10 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi);
  * paging.c
  */
 
-void			bootloader_paging_dump_table(t_pte*	table,
+void			bootloader_paging_dump_table(t_pteold*	table,
 						     t_opts	opts);
 
-void			bootloader_paging_dump_directory(t_pde*	directory,
+void			bootloader_paging_dump_directory(t_pdeold*	directory,
 							 t_opts	opts);
 
 void			bootloader_paging_enable(void);

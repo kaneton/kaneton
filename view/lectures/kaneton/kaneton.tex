@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/kaneton/kaneton.tex
 %%
 %% created       julien quintard   [sun dec  4 16:40:51 2005]
-%% updated       julien quintard   [tue dec  6 12:09:07 2005]
+%% updated       julien quintard   [mon dec 26 21:43:46 2005]
 %%
 
 %
@@ -109,7 +109,7 @@
 \begin{frame}
   \frametitle{Architectures}
 
-  This project should be develop on every architecture, the students group
+  This project should be develop on any architecture, the students group
   choosing its architecture.
 
   \nl
@@ -180,7 +180,77 @@
 \begin{frame}
   \frametitle{Overview}
 
-  
+  The goal of the \textbf{k1} project is to develop a bootloader.
+
+  \nl
+
+  The bootloader's role is to install an execution environment for the
+  kernel's futur execution.
+
+  \nl
+
+  In other terms, it is for example better to install the virtual memory
+  and then to launch the kernel. Then the kernel will be executed with the
+  virtual memory available.
+
+  \nl
+
+  In fact, the bootloader deals with low level programming and generally
+  installs everything needed by the kernel. Then the kernel can be launched
+  and can run without taking care of low-level stuff.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Info Structure}
+
+  We decided to create a gate between the bootloader and the kernel as
+  multibootloaders like grub and lilo already do.
+
+  \nl
+
+  Indeed, such multibootloaders provide a multiboot info structure containing
+  every low-level information like the amount of physical memory, the type
+  of the kernel binary, the list of the modules etc..
+
+  \nl
+
+  We wanted the students to understand the programming in a very strict
+  environment where no memory allocator is present, where we can read and
+  write the entire memory while this must be done very carefully.
+
+  \nl
+
+  To introduce this, we decided to build an information structure provided
+  by the bootloader to the kernel. Then, everyone can write a new
+  bootloader of course being compliant with this structure.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Assignments}
+
+  The students will have to deal with very low-level programming:
+
+  \begin{itemize}[<+->]
+    \item
+      Install the protected mode.
+    \item
+      Install the virtual memory.
+    \item
+      Deal with the stack.
+  \end{itemize}
+
+  and to develop in a very strict environment.
+
+  \nl
+
+  Indeed, the information structure is extremely compact. So each group
+  will have to build this structure which contains specific substructures
+  like segments, regions which are dynamic data structure and modules
+  which have to be located in a specific place.
 \end{frame}
 
 \end{document}

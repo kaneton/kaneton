@@ -1,4 +1,7 @@
 --
+ reiterer le coup du sondage sur les cours, le projet etc..
+
+--
  julien: penser a finir set_delete pour bpt
 
  matthieu:
@@ -18,8 +21,6 @@
  ia32-virtual, ia32-segments et ia32-optimised. le mieux
  serait sans doute de rajouter dans libs/ une lib libia32 ou on
  fournirait toutes les fonctionnalites d'ia32.
-
- a noter que phix a fait comme ca.
 
 --
  nettoyer conf.h, debug.h, check.h rendre tout ca coherent car la c'est
@@ -55,24 +56,13 @@
   }
 
 --
- heures:
-   renaud: slides (20), intra (20)
-   cedric: cours (16?)
-   julien: ?
-
---
  pifi: 18
  les autres: 13
 
  donner les notes a l'adm
 
 --
- ajouter la fonctino set_delete(setid, iterator); pour accelerer
-
- et aussi set_pop set_push etc..
-
---
- ajouter des cflags pour avoir le maximum d'infos.
+ ajouter set_pop set_push etc..
 
 --
  bien redire: le header emacs doit etre utilise. la licence doit etre
@@ -237,17 +227,8 @@
  comme sur segment qui sera donne au service swap.
 
 --
- changer les protos de as_reserve(t_tskid, t_asid*)
-
---
  trouver un moyen de gerer un systeme d'evenements intra kernel. soit
  comme unix soit on fait differemment. sleep/wakeup
-
---
- rajouter un asid dans segments
-
---
- retoucher design.tex en fonction de seminar.tex
 
 --
  faire un truc bien opur le fichier de conf, systeme de commentaires etc..
@@ -284,15 +265,6 @@
  comme ca c'est plus simple.
 
 --
- mettre en place des soirees de permanence ou alors carrement de sorte
- de rush kaneton. en semaine plutot car le w-e les etudiants s en branle.
-
- de plus ca ils seront obliges de nous payer.
-
- ca doit etre pour ca que les acus/yakas font tant de perms qui servent
- pas a grand chose.
-
---
  mycure todo:
   - mips architecture
   - lectures/kaneton a faire
@@ -302,15 +274,10 @@
   - cours gmake + systeme compile kaneton (dev-env)
 
 --
- tests printf/malloc + moulinette de triche: tristan carel s'en occupe.
-
---
  revoir si on peut resoudre le systeme d inclusion recursive du preproc:
   peut etre en ne mettant que les types et prototypes entre les guards.
 
 --
- buckman: mkp.py, interface d'events
-
  un service demande au service dev de lui donner un acces sur tel ressource
  lui le fait avec le kernel car il a la capability. ensuite il sais dialoguer
  plus precisement soit car machdep soit "faut trouver comment nommer"
@@ -321,8 +288,6 @@
  buckman: cours makefile, fin cours dev-env avec explication du
   systeme de compil kaneton + seminaire.
 
- gollum: faire compiler en sm netbsd
-
 --
  un seul swapper et on active ou non des options: network, hard drive etc..
  car un swapper ca stocke de la memoire sur un support secondaire qui peut
@@ -330,11 +295,6 @@
 
 --
  permettre aux etudiants de choisir leur archi: mips, intel, amd, sparc ...
-
---
- revoir interface de makefile car pas super performante.
-
- ignorer les options pour l'instant car plus tard: --no-newline etc..
 
 --
  revoir la console car ca deconne. faire des tests avec la moulinette tiens.
@@ -346,23 +306,8 @@
  oceansize premiere partie de porcupine tree
 
 --
- retoucher les fonctions shell pour que ca fonctionne bien avec des bons
- noms: gollum est dessus.
-
---
- trouver du matos a acheter avec le budget
-
---
  proposer deux sujets sur le vrai kaneton par exemple aux deux meilleurs
  groupes: integration du SMP, nommage, new archi etc..
-
---
- modifier le script export.sh
-
---
- dans design, il y a bcp trop de relations au distribue. il faut le splitter
- et mettre une partie dans kayou. une fois retouche et la partie microkernel
- isolee on pourra le mettre sur le site.
 
 --
  bouger le cours distributed-operating-systems dans kayou
@@ -423,9 +368,6 @@
 
  soit il passera par le gestionnaire de dev qui lui saura si telle personne
  a le droit de se rajouter. (comment?)
-
---
- utiliser les meme noms de fonctions pour make et shell
 
 --
  revoir conf.c et conf.h dans la partie user. le conf.h a la limite
@@ -610,9 +552,6 @@
     1) ...
 
   -> les points 1,2,3 etc.. sont pas ordre d'importance
-
---
- essayer de faire compiler kaneton sur netbsd a l ecole
 
 --
  lister les trucs qui reste a faire:

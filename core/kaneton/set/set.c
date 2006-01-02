@@ -306,7 +306,7 @@ t_error			set_new(o_set*				o)
  * 2) removes the set descriptor from the set container.
  */
 
-t_error			set_delete(t_setid			setid)
+t_error			set_destroy(t_setid			setid)
 {
   SET_ENTER(set);
 

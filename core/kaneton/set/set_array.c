@@ -1494,7 +1494,7 @@ t_error			set_release_array(t_setid		setid)
    */
 
   if (!(o->u.array.opts & SET_OPT_CONTAINER))
-    if (set_delete(o->setid) != ERROR_NONE)
+    if (set_destroy(o->setid) != ERROR_NONE)
       SET_LEAVE(set, ERROR_UNKNOWN);
 
   SET_LEAVE(set, ERROR_NONE);
