@@ -10,3 +10,4 @@
 10 clone
 11 operations sur des listes vides
 12 une liste un peu grande
+13 des algos de tris

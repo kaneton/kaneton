@@ -67,6 +67,12 @@ t_error			ia32_as_clean(void);
  * ../../../../kaneton/arch/machdep/kaneton/region.c
  */
 
+t_error			ia32_region_reserve(t_asid		asid,
+					    t_segid		segid,
+					    t_opts		opts,
+					    t_vaddr		address,
+					    t_regid*		regid);
+
 t_error			ia32_region_init(t_fit			fit,
 					 t_vaddr		start,
 					 t_vsize		size);

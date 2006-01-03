@@ -1,8 +1,11 @@
+ a noter qu'on pourrait ptet ameliorer le systeme de region pour pouvoir mapper
+ des parties de segments. c'est pas tres propre mais bon c'est surement
+ faisable. a reflechir!
 --
  tristan: box pour kaneton
 
 --
- prendre les tests de printf de vianney dans lseos
+ prendre les tests de printf de vianney dans lseos     << c'est fait
 
 --
  reiterer le coup du sondage sur les cours, le projet etc..

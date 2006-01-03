@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/libs/libia32/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       matthieu bucchianeri   [fri dec 30 20:07:05 2005]
+ * updated       matthieu bucchianeri   [tue jan  3 22:25:13 2006]
  */
 
 /*
@@ -113,8 +113,8 @@ void			paging_test(void)
   vaddr0 = ENTRY_ADDR(42, 0);
   vaddr1 = ENTRY_ADDR(42, 1);
 
-  flush_tlb((t_vaddr)vaddr0);
-  flush_tlb((t_vaddr)vaddr1);
+  tlb_invalidate((t_vaddr)vaddr0);
+  tlb_invalidate((t_vaddr)vaddr1);
 
   printf("%p mapped to %p\n", vaddr0, paddr);
   printf("%p mapped to %p\n", vaddr1, paddr);
@@ -130,7 +130,7 @@ void			paging_test(void)
 
   pd_delete_table(NULL, 42);
 
-  flush_tlbs();
+  tlb_flush();
 
   free(tmp);
 }

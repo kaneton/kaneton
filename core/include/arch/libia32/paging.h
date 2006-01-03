@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/arch/libia32/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri dec 30 19:35:45 2005]
+ * updated       matthieu bucchianeri   [mon jan  2 22:24:50 2006]
  */
 
 #ifndef IA32_IA32_PAGING_H
@@ -86,6 +86,7 @@ typedef t_uint32		t_pteold;
 
 #define PD_MAX_ENTRIES		1024
 #define PT_MAX_ENTRIES		1024
+#define PAGE_SIZE		4096
 
 /*
  * page directory entry flags

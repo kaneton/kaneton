@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/arch/libia32/libia32.h
  *
  * created       matthieu bucchianeri   [tue dec 20 13:58:56 2005]
- * updated       matthieu bucchianeri   [tue dec 20 21:06:53 2005]
+ * updated       matthieu bucchianeri   [tue jan  3 22:21:18 2006]
  */
 
 #ifndef LIBIA32_H
@@ -31,11 +31,12 @@
  *      ../../../../libs/libia32/gdt.c
  *      ../../../../libs/libia32/ldt.c
  *      ../../../../libs/libia32/paging.c
- *      ../../../../libs/libia32/pde.c
- *      ../../../../libs/libia32/pte.c
+ *      ../../../../libs/libia32/pd.c
+ *      ../../../../libs/libia32/pt.c
  *      ../../../../libs/libia32/tlb.c
  *      ../../../../libs/libia32/interrupt.c
  *      ../../../../libs/libia32/idt.c
+ *      ../../../../libs/libia32/page.c
  */
 
 /*
@@ -150,7 +151,7 @@ void			paging_test(void);
 
 
 /*
- * ../../../../libs/libia32/pde.c
+ * ../../../../libs/libia32/pd.c
  */
 
 t_error			pd_refresh(void);
@@ -176,7 +177,7 @@ t_error			pd_delete_table(t_directory*	dir,
 
 
 /*
- * ../../../../libs/libia32/pte.c
+ * ../../../../libs/libia32/pt.c
  */
 
 t_error			pt_dump(t_pte*	tab);
@@ -201,9 +202,9 @@ t_error			pt_delete_page(t_table*	tab,
  * ../../../../libs/libia32/tlb.c
  */
 
-t_error			flush_tlb(t_vaddr	page);
+t_error			tlb_invalidate(t_vaddr	page);
 
-t_error			flush_tlbs(void);
+t_error			tlb_flush(void);
 
 
 /*
@@ -214,6 +215,13 @@ t_error			flush_tlbs(void);
 /*
  * ../../../../libs/libia32/idt.c
  */
+
+
+/*
+ * ../../../../libs/libia32/page.c
+ */
+
+t_error		page_reserve(t_page*	page);
 
 
 /*

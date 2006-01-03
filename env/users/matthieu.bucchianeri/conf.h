@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [fri dec 30 17:18:16 2005]
+ * updated       matthieu bucchianeri   [wed jan  4 00:24:01 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -72,13 +72,13 @@
  */
 
 #define CONF_MACHDEP_DEBUG						\
-  (IA32_DEBUG_PMODE | IA32_DEBUG_PAGING)
+  (0/*IA32_DEBUG_PMODE | IA32_DEBUG_PAGING*/)
 
 /*
  * serial port debug
  */
 
-//#define SERIAL
+#define SERIAL
 
 /*
  * ---------- prototypes ------------------------------------------------------

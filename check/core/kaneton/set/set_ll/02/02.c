@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_ll/02/02.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:22:39 2005]
+ * updated       matthieu bucchianeri   [wed jan  4 00:04:06 2006]
  */
 
 #include <klibc.h>
@@ -14,7 +14,7 @@
 #include "../../init/init.h"
 
 /*
- * creates an array then adds some data.
+ * creates an ll then adds some data.
  */
 
 void		check_set_ll_02(void)

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/kaneton/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed dec 28 18:50:27 2005]
+ * updated       matthieu bucchianeri   [mon jan  2 22:16:29 2006]
  */
 
 /*
@@ -80,6 +80,7 @@ t_error			ia32_as_clone(t_tskid			tskid,
  *
  * 1) gets the as object.
  * 2) builds a new ldt for the as.
+ * 3) builds a new page directory for the as.
  */
 
 t_error			ia32_as_reserve(t_tskid			tskid,
@@ -87,6 +88,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 {
   o_as*			o;
   t_uint16		nb = 10; /* XXX */
+  void*			p;
 
   AS_ENTER(as);
 
@@ -101,9 +103,19 @@ t_error			ia32_as_reserve(t_tskid			tskid,
    * 2)
    */
 
-  if (ldt_build(nb, (t_paddr)malloc(nb * sizeof(t_ldte)),
+  if (ldt_build(nb, (t_paddr)(p = malloc(nb * sizeof(t_ldte))),
 		&o->machdep.ldt, 1) != ERROR_NONE)
     AS_LEAVE(as, ERROR_NONE);
+
+  /*
+   * 3)
+   */
+/*
+  if (pd_build(???, &o->machdep.pd, 1) != ERROR_NONE)
+    {
+      free(p);
+      AS_LEAVE(as, ERROR_NONE);
+    }*/
 
   AS_LEAVE(as, ERROR_NONE);
 }
@@ -117,12 +129,18 @@ t_error			ia32_as_reserve(t_tskid			tskid,
  * 2) gets the base of the ldt.
  * 3) destroys the ldt.
  * 4) frees the allocated table.
+ * 5) frees the allocated pages.
+ * 6) frees page tables and directory.
  */
 
 t_error			ia32_as_release(t_asid			asid)
 {
   o_as*			o;
   t_paddr		base;
+  t_table		tab;
+  t_page		page;
+  t_uint16		i;
+  t_uint16		j;
 
   AS_ENTER(as);
 
@@ -152,6 +170,36 @@ t_error			ia32_as_release(t_asid			asid)
    */
 
   free((void*)base);
+
+  /*
+   * 5)
+   */
+
+  for (i = 0; i < PD_MAX_ENTRIES; i++)
+    {
+      if (pd_get_table(&o->machdep.pd, i, &tab) != ERROR_NONE)
+	continue;
+
+      for (j = 0; j < PT_MAX_ENTRIES; j++)
+	{
+	  if (pt_get_page(&tab, j, &page) != ERROR_NONE)
+	    continue;
+
+	  /* XXX release page */
+	}
+    }
+
+  /*
+   * 6)
+   */
+
+  for (i = 0; i < PD_MAX_ENTRIES; i++)
+    {
+      if (pd_get_table(&o->machdep.pd, i, &tab) != ERROR_NONE)
+	continue;
+
+      /* XXX free table */
+    }
 
   AS_LEAVE(as, ERROR_NONE);
 }

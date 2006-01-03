@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/init/init.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:21:09 2005]
+ * updated       matthieu bucchianeri   [wed jan  4 00:23:34 2006]
  */
 
 #include <klibc.h>
@@ -41,9 +41,19 @@ void	check_set_tests(void)
   check_set_array_10();
   check_set_array_11();
   check_set_array_12();
+  check_set_array_13();
   check_set_ll_01();
   check_set_ll_02();
   check_set_ll_03();
+  check_set_ll_04();
+  check_set_ll_05();
+  check_set_ll_06();
+  check_set_ll_07();
+  check_set_ll_08();
+  check_set_ll_09();
+  check_set_ll_10();
+  check_set_ll_11();
+  check_set_ll_12();
   /* XXX continue tests */
 }
 

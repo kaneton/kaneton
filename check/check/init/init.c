@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/check/check/init/init.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [thu dec 29 18:59:13 2005]
+ * updated       matthieu bucchianeri   [tue jan  3 22:48:02 2006]
  */
 
 #include <klibc.h>
@@ -28,9 +28,9 @@ void	check_check_init(void)
 void	check_tests(void)
 {
   check_check_init();
-//  check_set_tests();
+  check_set_tests();
 //  check_malloc_tests();
-  check_printf_tests();
+//  check_printf_tests();
 //  check_stats_tests();
 //  check_id_tests();
   /* XXX continue tests */

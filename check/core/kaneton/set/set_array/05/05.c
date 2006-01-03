@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/05/05.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:21:54 2005]
+ * updated       matthieu bucchianeri   [wed jan  4 00:30:29 2006]
  */
 
 #include <klibc.h>
@@ -23,6 +23,7 @@ void		check_set_array_05(void)
   t_iterator	it;
   t_state	state;
   t_id*		pdata;
+  int		f = 0;
 
   TEST_ENTER;
 
@@ -36,15 +37,18 @@ void		check_set_array_05(void)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_NONE)
 	printf("error set_object\n");
-      printf("%qd ", *pdata);
+      printf("%s%qd", (f ? " " : ""), *pdata);
+      f = 1;
     }
   printf("\n");
 
+  f = 0;
   set_foreach(SET_OPT_BACKWARD, id, &it, state)
     {
       if (set_object(id, it, (void**)&pdata) != ERROR_NONE)
 	printf("error set_object\n");
-      printf("%qd ", *pdata);
+      printf("%s%qd", (f ? " " : ""), *pdata);
+      f = 1;
     }
   printf("\n");
 

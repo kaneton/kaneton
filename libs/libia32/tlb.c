@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/libs/libia32/tlb.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:57:00 2005]
- * updated       matthieu bucchianeri   [fri dec 30 19:54:44 2005]
+ * updated       matthieu bucchianeri   [tue jan  3 22:24:07 2006]
  */
 
 /*
@@ -33,7 +33,7 @@
  * flushes a single pte cache given a page address.
  */
 
-t_error			flush_tlb(t_vaddr	page)
+t_error			tlb_invalidate(t_vaddr	page)
 {
   asm volatile("invlpg %0"
 	       :
@@ -46,7 +46,7 @@ t_error			flush_tlb(t_vaddr	page)
  * flushes the whole pd and pt caches.
  */
 
-t_error			flush_tlbs(void)
+t_error			tlb_flush(void)
 {
   asm volatile("movl %%cr0, %%eax\n\t"
 	       "movl %%eax, %%cr0"
