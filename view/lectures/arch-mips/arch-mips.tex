@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
 %%
 %% created       julien quintard   [wed nov 23 22:07:25 2005]
-%% updated       julien quintard   [mon jan  2 09:22:10 2006]
+%% updated       julien quintard   [tue jan  3 14:04:30 2006]
 %%
 
 %
@@ -3978,7 +3978,7 @@
 \begin{frame}
   \frametitle{Notices}
 
-  Let's notice that a directory entry like a data entry can takes exactly
+  Let's notice that a directory entry like a data entry can take exactly
   \textbf{nine} values, in the case of our example.
 
   \begin{itemize}[<+->]
@@ -4150,9 +4150,9 @@
 
   \nl
 
-  Of courses these types of cache are theoritical since it takes much
-  time to perform an iterative lookup in the entire cache and the
-  hardware become too complex with many multiplexers.
+  Of courses these types of cache are theoritical since the
+  hardware become too complex with many multiplexers slowing down
+  the microprocessor CPI so the frequency.
 \end{frame}
 
 % 39)
@@ -4217,7 +4217,7 @@
       the cache entry if any. Otherwise, the memory is updated.
 
       \textit{Properties}: Inconsistent data between the cache and the memory.
-      This property is very cumbersome for Multiprocessors. Nevertheless this
+      This property is very cumbersome for multiprocessors. Nevertheless this
       Write Policy is faster than the other.
   \end{itemize}
 \end{frame}
@@ -4285,6 +4285,10 @@
   \nl
 
   This automata is called the \textbf{Snoopy}, from the famous dog.
+
+  \nl
+
+  Invalidation Signals are sent on the Snoopy Bus.
 \end{frame}
 
 % 45)
@@ -4302,7 +4306,7 @@
 \begin{frame}
   \frametitle{Modified Bit}
 
-  Of course, sending a Invalidation Signal takes time because the bus needs
+  Of course, sending an Invalidation Signal takes time because the bus needs
   to be acquired first.
 
   \nl
@@ -4333,11 +4337,11 @@
 
   \nl
 
-  When P1 will want to access the block B, it will be from the main memory.
+  When P1 will want to access the block B, this will be from the main memory.
 
   \nl
 
-  Of course, when a microprocessor receive a Invalidation Signal, it
+  Of course, when a microprocessor receive an Invalidation Signal, it
   invalidates, if necessary, the cache entry corresponding to the block.
 
   \nl
@@ -4397,6 +4401,10 @@
 
   Then the cache automata's role is now to get a block from the Delay Buffer
   and to write it into memory.
+
+  \nl
+
+  During this time, the microprocessor can return to its work.
 \end{frame}
 
 % 50)
@@ -4700,7 +4708,7 @@
 \begin{frame}
   \frametitle{Solution}
 
-  To respect to Temporal Locality.
+  To respect the Temporal Locality.
 \end{frame}
 
 % 65)
@@ -4780,7 +4788,7 @@
 \begin{frame}
   \frametitle{Question}
 
-  \textit{From the perfect system, what are the CPI increase for
+  \textit{From the perfect system, what are the CPI increases for
     readings and writings?}
 \end{frame}
 
@@ -4810,10 +4818,10 @@
       \textbf{Hit}: 0 cycles because the data is in cache so the access time
       is one cycle so no penalty.
     \item
-      \textbf{Miss}: (30 - 1) x 1.2 = 34.8 penalty cycles
+      \textbf{Miss}: (30 - 1) x 1.2 = 34.8 penalty cycles.
   \end{itemize}
 
-  To conclude the reading penalty is equal to:
+  To conclude, the reading penalty is equal to:
 
   \begin{verbatim}
     RP = 0 x 0.95   +   34.8 x 0.05
