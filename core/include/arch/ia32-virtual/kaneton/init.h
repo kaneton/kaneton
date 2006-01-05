@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/arch/machdep/kaneton/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       matthieu bucchianeri   [tue dec 27 18:42:26 2005]
+ * updated       matthieu bucchianeri   [thu jan  5 10:59:36 2006]
  */
 
 #ifndef IA32_KANETON_INIT_H
@@ -16,9 +16,9 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <arch/libia32/types.h>
-#include <arch/libia32/pmode.h>
-#include <arch/libia32/paging.h>
+#include <libs/libia32/include/types.h>
+#include <libs/libia32/include/pmode.h>
+#include <libs/libia32/include/paging.h>
 
 #include <arch/machdep/services/cons.h>
 

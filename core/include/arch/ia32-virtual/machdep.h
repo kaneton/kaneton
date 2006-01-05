@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/arch/machdep/machdep.h
  *
  * created       julien quintard   [fri feb 11 02:23:53 2005]
- * updated       matthieu bucchianeri   [tue dec 20 14:26:39 2005]
+ * updated       matthieu bucchianeri   [thu jan  5 10:59:10 2006]
  */
 
 #ifndef IA32_MACHDEP_H
@@ -16,7 +16,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <arch/libia32/libia32.h>
+#include <libs/libia32/include/libia32.h>
 #include <arch/machdep/kaneton/kaneton.h>
 #include <arch/machdep/services/services.h>
 #include <arch/machdep/sys/sys.h>
