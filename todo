@@ -14,7 +14,7 @@
  include/arch/ia32-virtual/kaneton/init.h
 
 --
- enlever les includes libia32 et les mettre dans libs/libia32
+ enlever les includes libia32 et les mettre dans libs/libia32     << fait
 
  par contre laisser un repertoire core/include/arch/ia32-virtual pour les
  includes specifiques.

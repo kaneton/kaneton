@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/pde.c
+ * file          /home/buckman/kaneton/kaneton/libs/libia32/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [fri dec 30 19:39:26 2005]
+ * updated       matthieu bucchianeri   [thu jan  5 11:51:52 2006]
  */
 
 /*
@@ -142,6 +142,8 @@ t_error			pd_add_table(t_directory*	dir,
 
   opts |= (table.user ? PDE_FLAG_USER : PDE_FLAG_SUPERVISOR);
 
+  opts |= PDE_FLAG_USED;
+
   d[entry] = MK_BASE(table.entries) | opts;
 
   return ERROR_NONE;
@@ -155,7 +157,22 @@ t_error			pd_get_table(t_directory*	dir,
 				     t_uint16		entry,
 				     t_table*		table)
 {
-  return ERROR_UNKNOWN;
+  t_directory		d;
+
+  if (dir)
+    d = *dir;
+  else
+    d = pd;
+
+  if (!(d[entry] & PDE_FLAG_USED))
+    return ERROR_UNKNOWN;
+
+  table->rw = (d[entry] & PDE_FLAG_RW);
+  table->present = (d[entry] & PDE_FLAG_P);
+  table->user = (d[entry] & PDE_FLAG_USER);
+  table->entries = (void*)MK_BASE(d[entry]);
+
+  return ERROR_NONE;
 }
 
 /*
