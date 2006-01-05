@@ -1,6 +1,28 @@
+--
  a noter qu'on pourrait ptet ameliorer le systeme de region pour pouvoir mapper
  des parties de segments. c'est pas tres propre mais bon c'est surement
  faisable. a reflechir!
+
+--
+ renaud: expliquer comment booter d'une disquette etc.. tout le bas
+ niveau PC/Intel
+
+--
+ virer tout affichage autre que warning et erreur dans le bootloader
+ de sorte qu'on n'ait plus de structure t_cons dependante a passer
+
+ include/arch/ia32-virtual/kaneton/init.h
+
+--
+ enlever les includes libia32 et les mettre dans libs/libia32
+
+ par contre laisser un repertoire core/include/arch/ia32-virtual pour les
+ includes specifiques.
+
+--
+ ecrire des tests pour le bootloader ou on teste seulement la structure
+ init recue.
+
 --
  tristan: box pour kaneton
 
@@ -25,6 +47,7 @@
 
  pour tester la moulette avec un seul pc : QEMU, avec l'option "-serial pty"
  et changer en dur le device dans check.py.
+
 --
  factoriser du code pour ia32 car on va avoir bcp de ressemblance entre
  ia32-virtual, ia32-segments et ia32-optimised. le mieux
