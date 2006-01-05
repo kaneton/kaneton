@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/arch/libia32/libia32.h
+ * file          /home/buckman/kaneton/kaneton/libs/libia32/include/libia32.h
  *
  * created       matthieu bucchianeri   [tue dec 20 13:58:56 2005]
- * updated       matthieu bucchianeri   [tue jan  3 22:21:18 2006]
+ * updated       matthieu bucchianeri   [thu jan  5 11:11:24 2006]
  */
 
 #ifndef LIBIA32_H
@@ -16,31 +16,31 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <arch/libia32/asm.h>
-#include <arch/libia32/isa.h>
-#include <arch/libia32/multiboot.h>
-#include <arch/libia32/paging.h>
-#include <arch/libia32/pmode.h>
-#include <arch/libia32/stdarg.h>
-#include <arch/libia32/types.h>
+#include "asm.h"
+#include "isa.h"
+#include "multiboot.h"
+#include "paging.h"
+#include "pmode.h"
+#include "stdarg.h"
+#include "types.h"
 
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../../../libs/libia32/pmode.c
- *      ../../../../libs/libia32/gdt.c
- *      ../../../../libs/libia32/ldt.c
- *      ../../../../libs/libia32/paging.c
- *      ../../../../libs/libia32/pd.c
- *      ../../../../libs/libia32/pt.c
- *      ../../../../libs/libia32/tlb.c
- *      ../../../../libs/libia32/interrupt.c
- *      ../../../../libs/libia32/idt.c
- *      ../../../../libs/libia32/page.c
+ *      ../pmode.c
+ *      ../gdt.c
+ *      ../ldt.c
+ *      ../paging.c
+ *      ../pd.c
+ *      ../pt.c
+ *      ../tlb.c
+ *      ../interrupt.c
+ *      ../idt.c
+ *      ../page.c
  */
 
 /*
- * ../../../../libs/libia32/pmode.c
+ * ../pmode.c
  */
 
 t_error			pmode_init(void);
@@ -56,7 +56,7 @@ void			pmode_test(void);
 
 
 /*
- * ../../../../libs/libia32/gdt.c
+ * ../gdt.c
  */
 
 t_error			gdt_refresh(void);
@@ -96,7 +96,7 @@ t_error			gdt_build_selector(t_uint16	segment,
 
 
 /*
- * ../../../../libs/libia32/ldt.c
+ * ../ldt.c
  */
 
 t_error			ldt_base(t_ldt*		table,
@@ -138,7 +138,7 @@ t_error			ldt_build_selector(t_ldt*	table,
 
 
 /*
- * ../../../../libs/libia32/paging.c
+ * ../paging.c
  */
 
 t_error			paging_init(void);
@@ -151,7 +151,7 @@ void			paging_test(void);
 
 
 /*
- * ../../../../libs/libia32/pd.c
+ * ../pd.c
  */
 
 t_error			pd_refresh(void);
@@ -177,7 +177,7 @@ t_error			pd_delete_table(t_directory*	dir,
 
 
 /*
- * ../../../../libs/libia32/pt.c
+ * ../pt.c
  */
 
 t_error			pt_dump(t_pte*	tab);
@@ -199,7 +199,7 @@ t_error			pt_delete_page(t_table*	tab,
 
 
 /*
- * ../../../../libs/libia32/tlb.c
+ * ../tlb.c
  */
 
 t_error			tlb_invalidate(t_vaddr	page);
@@ -208,17 +208,17 @@ t_error			tlb_flush(void);
 
 
 /*
- * ../../../../libs/libia32/interrupt.c
+ * ../interrupt.c
  */
 
 
 /*
- * ../../../../libs/libia32/idt.c
+ * ../idt.c
  */
 
 
 /*
- * ../../../../libs/libia32/page.c
+ * ../page.c
  */
 
 t_error		page_reserve(t_page*	page);

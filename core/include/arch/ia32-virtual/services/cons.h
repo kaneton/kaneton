@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/arch/machdep/services/cons.h
  *
  * created       julien quintard   [sat dec 17 17:16:27 2005]
- * updated       matthieu bucchianeri   [tue dec 27 18:43:39 2005]
+ * updated       matthieu bucchianeri   [thu jan  5 11:08:23 2006]
  */
 
 /*
@@ -29,7 +29,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <arch/libia32/types.h>
+#include <libia32.h>
 
 /*
  * ---------- defines ---------------------------------------------------------

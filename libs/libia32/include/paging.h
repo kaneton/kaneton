@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/arch/libia32/paging.h
+ * file          /home/buckman/kaneton/kaneton/libs/libia32/include/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon jan  2 22:24:50 2006]
+ * updated       matthieu bucchianeri   [thu jan  5 11:07:17 2006]
  */
 
 #ifndef IA32_IA32_PAGING_H
@@ -16,7 +16,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <arch/libia32/types.h>
+#include "types.h"
 
 /*
  * ---------- defines ---------------------------------------------------------
