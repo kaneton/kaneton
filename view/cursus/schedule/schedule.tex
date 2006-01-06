@@ -11,7 +11,7 @@
 %%         quintard julien   [quinta_j@epita.fr]
 %%
 %% started on    Fri Feb  4 15:10:05 2005   mycure
-%% last update   Sun Dec 11 02:27:59 2005   cedric
+%% last update   Fri Jan  6 02:45:24 2006   cedric
 %%
 
 %
@@ -359,35 +359,52 @@ architecture course.
 \textit{Professor}: \textbf{Cedric Aubouy}
 
 This course is intended to give the students a general overview of
-kernel internals and its problematics. It will end with an examination to
-evaluate their understanding of the courses and their ability to
-conceive and argue coherent system solutions of their own.
+kernel internals and its problematics.
 
-The projected planning of the different sessions for the kernel
-course is (currently not enough detailed, will be completed later):
+\begin{itemize}
+  \item
+    Understand how kernel developpement evolves and why, receive a
+    minimal general culture on kernel internals and history
+  \item
+    We will see how to manage and share common resources (memory,
+    execution time) with increasing constraints and needs
+  \item
+    In each aspect of the kernel studies, students will learn the
+    common security issues and how to solve them
+  \item
+    The common kernel design issues will be totally understood by the
+    students and they will be able to build their own design
+  \item
+    The course aim at giving the students a precise idea of how it
+    works inside, thus giving them the ability to fully understand
+    the kaneton project
+\end{itemize}
+
+The list below details the different sessions for the kernel course.\\
 
 \begin{enumerate}
   \item
     \textbf{micro-kernel}: quick introduction to the courses. Overview
     of kernel history and trends. Birth and evolution of micro-kernels, their
-    fundamentals.
+    fundamentals. (2 hours)
   \item
     \textbf{memory management}: hardware base of memory management. What
-    kind of resulting constraints? Physcical and virtual memory management.
+    kind of resulting constraints ? Physcical and virtual memory
+    management. (2 hours)
   \item
     \textbf{processes \& threads}: current kernels manage simultaneous
-    executions. What kind of solutions to handle them?
+    executions. What kind of solutions to handle them ? (2 hours)
   \item
     \textbf{synchronisation}: concurrent access to shared resources is a
     common problem in all levels of multithreaded kernels. How to resolve it,
-    famous case studies.
+    famous case studies. (2 hours)
   \item
     \textbf{communication (IPC)}: quick overview of communications forms
     from signals to message passing. New problems in the security and shape of
-    IPC, introduced by the micro-kernel design.
+    IPC, introduced by the micro-kernel design. (2 hours)
   \item
-    \textbf{case studies}: projected studies on Hurd, L4 and Mach, but still
-    to confirm.
+    \textbf{case studies}: studies on L4, Mach, Hurd and Chorus (still
+    to confirm). (4 x 2 hours)
 \end{enumerate}
 
 
