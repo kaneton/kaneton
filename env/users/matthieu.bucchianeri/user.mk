@@ -10,7 +10,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ##
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Sat Nov  5 17:17:32 2005   mycure
+## Last update Fri Jan  6 12:02:35 2006 matthieu bucchianeri
 ##
 
 #

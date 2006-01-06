@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/paging.c
+ * file          /home/buckman/kaneton/kaneton/libs/libia32/paging/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       matthieu bucchianeri   [tue jan  3 22:25:13 2006]
+ * updated       matthieu bucchianeri   [fri jan  6 14:20:45 2006]
  */
 
 /*
@@ -25,6 +25,22 @@
 #include <kaneton.h>
 
 /*
+ * ---------- globals ---------------------------------------------------------
+ */
+
+/*
+ * the init variable.
+ */
+
+extern t_init*		init;
+
+/*
+ * the page directory.
+ */
+
+extern t_directory	pd;
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -32,13 +48,32 @@
 
 /*
  * initialise paging.
+ *
+ * steps:
+ *
+ * 1) copies the directory structure from the init variable.
+ * 2) enables paging.
+ * 3) runs tests if necessary.
  */
 
 t_error			paging_init(void)
 {
-  pd_refresh();
+
+  /*
+   * 1)
+   */
+
+  pd = init->machdep.pd;
+
+  /*
+   * 2)
+   */
 
   paging_enable();
+
+  /*
+   * 3)
+   */
 
 #if (IA32_DEBUG & IA32_DEBUG_PAGING)
   paging_test();
@@ -48,7 +83,7 @@ t_error			paging_init(void)
 }
 
 /*
- * enable paging.
+ * enable paging by setting the higher order bit of CR0.
  */
 
 t_error			paging_enable(void)

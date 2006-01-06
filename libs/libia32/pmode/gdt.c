@@ -3,19 +3,16 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/gdt.c
+ * file          /home/buckman/kaneton/kaneton/libs/libia32/pmode/gdt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:45:19 2005]
- * updated       matthieu bucchianeri   [fri dec 30 19:15:36 2005]
+ * updated       matthieu bucchianeri   [fri jan  6 14:14:04 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * manage global descriptor table.
- *
- * gdt_refresh is used to updates local data with the content of the current
- * gdtr. XXX peut etre renommer en gdt_init.
  *
  * gdt_import copies segment descriptors from the active gdt to a new one.
  * this is useful to create a new gdt not discarding old descriptors (for
@@ -32,6 +29,8 @@
  * XXX lorsque un t_gdt* est passé en argument, la valeur NULL indique
  *     d'utiliser la GDT active. c'est un peu chiant mais ca permet d'utiliser
  *     les fonctions avant de switcher le gdtr pour preparer une nouvelle gdt.
+ *
+ * XXX checker le coup de l'aligmenent. si on malloc, ca va chier du coup.
  *
  */
 
@@ -57,35 +56,6 @@ t_gdt		gdt;
  */
 
 /*                                                                  [cut] k2 */
-
-/*
- * refreshes the current gdt pointer
- *
- * steps:
- *
- * 1) stores the gdtr.
- * 2) fills the global gdt structure.
- */
-
-t_error			gdt_refresh(void)
-{
-  t_gdtr		gdtr;
-
-  /*
-   * 1)
-   */
-
-  SGDT(gdtr);
-
-  /*
-   * 2)
-   */
-
-  gdt.descriptor = (t_gdte*)gdtr.address;
-  gdt.count = gdtr.size / sizeof(t_gdte);
-
-  return ERROR_NONE;
-}
 
 /*
  * dumps a gdt.

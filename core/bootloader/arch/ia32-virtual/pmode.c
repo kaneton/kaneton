@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/bootloader/arch/ia32-virtual/pmode.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [fri dec 30 17:47:23 2005]
+ * updated       matthieu bucchianeri   [fri jan  6 14:00:51 2006]
  */
 
 /*
@@ -72,6 +72,7 @@ extern t_init*		init;
  * 3) updates the segments registers.
  * 4) finally installs the protected mode.
  * 5) sets the global offset table address in the init variable.
+ * 6) updates the init structure.
  */
 
 void			bootloader_pmode_init(void)
@@ -171,7 +172,12 @@ void			bootloader_pmode_init(void)
    */
 
   SGDT(gdtr);
-  memcpy(&init->machdep.gdtr, &gdtr, sizeof(t_gdtr));
+
+  /*
+   * 6)
+   */
+
+  memcpy(&init->machdep.gdt, &gdt, sizeof (t_gdt));
 }
 
 /*                                                                 [cut] /k1 */

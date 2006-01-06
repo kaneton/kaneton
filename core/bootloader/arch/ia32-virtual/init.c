@@ -9,7 +9,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  *
  * started on    Mon Jul 19 20:43:14 2004   mycure
- * last update   Tue Nov 15 19:44:23 2005   mycure
+** Last update Fri Jan  6 14:04:33 2006 matthieu bucchianeri
  */
 
 /*
@@ -236,8 +236,8 @@ void			bootloader_init_segments(void)
    * 9)
    */
 
-  init->segments[9].address = (t_paddr)init->machdep.gdtr.address;
-  init->segments[9].size = PAGESZ;
+  init->segments[9].address = (t_paddr)init->machdep.gdt.descriptor;
+  init->segments[9].size = init->machdep.gdt.count * sizeof (t_gdte);
   init->segments[9].perms = PERM_READ | PERM_WRITE;
 
   /*

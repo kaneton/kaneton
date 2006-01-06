@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/pd.c
+ * file          /home/buckman/kaneton/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [thu jan  5 12:32:23 2006]
+ * updated       matthieu bucchianeri   [fri jan  6 14:15:40 2006]
  */
 
 /*
@@ -15,6 +15,9 @@
  * manage page directory.
  *
  * XXX modifier pour gerer les pages de 4M ?
+ *
+ * when  a t_directory*  is provided  as argument  (in  functions like
+ * pd_add_table), NULL value means to use the active page directory.
  */
 
 /*
@@ -32,28 +35,17 @@
  * ---------- globals ---------------------------------------------------------
  */
 
-t_pde*	pd;
+/*
+ * active page directory.
+ */
+
+t_directory		pd;
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
 /*                                                                  [cut] k2 */
-
-/*
- * reads the current pdbr and refresh the global variable pd.
- */
-
-t_error			pd_refresh(void)
-{
-  t_uint32		pdbr;
-
-  SCR3(pdbr);
-
-  pd = (t_pde*)(MK_BASE(pdbr));
-
-  return ERROR_NONE;
-}
 
 /*
  * dumps a page directory and its tables.
@@ -83,16 +75,35 @@ t_error			pd_dump(t_directory*	dir)
 
 /*
  * builds a new page directory.
+ *
+ * steps:
+ *
+ * 1) checks address alignement.
+ * 2) fills the record.
+ * 3) clears the directory if needed.
  */
 
 t_error			pd_build(t_paddr	base,
 				 t_directory*	directory,
 				 t_uint8	clear)
 {
+
+  /*
+   * 1)
+   */
+
   if (MK_BASE(base) != base)
     return ERROR_UNKNOWN;
 
+  /*
+   * 2)
+   */
+
   *directory = (t_directory)base;
+
+  /*
+   * 3)
+   */
 
   if (clear)
     {
@@ -104,15 +115,33 @@ t_error			pd_build(t_paddr	base,
 
 /*
  * activates a directory.
+ *
+ * steps:
+ *
+ * 1) computes the pdbr value.
+ * 2) loads the pdbr.
+ * 3) sets the global variable.
  */
 
 t_error			pd_activate(t_directory		dir)
 {
   t_uint32		pdbr;
 
+  /*
+   * 1)
+   */
+
   pdbr = ((t_uint32)dir & 0xfffffc18);
 
+  /*
+   * 2)
+   */
+
   LCR3(pdbr);
+
+  /*
+   * 3)
+   */
 
   pd = dir;
 
@@ -120,7 +149,13 @@ t_error			pd_activate(t_directory		dir)
 }
 
 /*
- * XXX
+ * adds a table to a directory.
+ *
+ * steps:
+ *
+ * 1) gets the directory address.
+ * 2) setups the entry.
+ * 3) adds the entry.
  */
 
 t_error			pd_add_table(t_directory*	dir,
@@ -130,10 +165,18 @@ t_error			pd_add_table(t_directory*	dir,
   t_pde*		d;
   t_uint32		opts = 0;
 
+  /*
+   * 1)
+   */
+
   if (dir)
     d = *dir;
   else
     d = pd;
+
+  /*
+   * 2)
+   */
 
   if (table.present)
     opts |= PDE_FLAG_P;
@@ -144,13 +187,23 @@ t_error			pd_add_table(t_directory*	dir,
 
   opts |= PDE_FLAG_USED;
 
+  /*
+   * 3)
+   */
+
   d[entry] = MK_BASE(table.entries) | opts;
 
   return ERROR_NONE;
 }
 
 /*
- * XXX
+ * gets a table entry from a directory.
+ *
+ * steps:
+ *
+ * 1) gets the directory address.
+ * 2) checks entry validity.
+ * 3) fills the page record.
  */
 
 t_error			pd_get_table(t_directory*	dir,
@@ -159,13 +212,25 @@ t_error			pd_get_table(t_directory*	dir,
 {
   t_directory		d;
 
+  /*
+   * 1)
+   */
+
   if (dir)
     d = *dir;
   else
     d = pd;
 
+  /*
+   * 2)
+   */
+
   if (!(d[entry] & PDE_FLAG_USED))
     return ERROR_UNKNOWN;
+
+  /*
+   * 3)
+   */
 
   table->rw = (d[entry] & PDE_FLAG_RW);
   table->present = (d[entry] & PDE_FLAG_P);
@@ -176,7 +241,13 @@ t_error			pd_get_table(t_directory*	dir,
 }
 
 /*
- * XXX
+ * deletes an entry.
+ *
+ * steps:
+ *
+ * 1) gets the directory pointer.
+ * 2) checks if the entry is a valid one.
+ * 3) resets the entry.
  */
 
 t_error			pd_delete_table(t_directory*	dir,
@@ -184,13 +255,25 @@ t_error			pd_delete_table(t_directory*	dir,
 {
   t_directory		d;
 
+  /*
+   * 1)
+   */
+
   if (dir)
     d = *dir;
   else
     d = pd;
 
+  /*
+   * 2)
+   */
+
   if (!(d[entry] & PDE_FLAG_USED))
     return ERROR_UNKNOWN;
+
+  /*
+   * 3)
+   */
 
   d[entry] = 0;
 

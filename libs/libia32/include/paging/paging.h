@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/libs/libia32/include/paging/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri jan  6 11:53:59 2006]
+ * updated       matthieu bucchianeri   [fri jan  6 12:05:35 2006]
  */
 
 #ifndef IA32_IA32_PAGING_H
@@ -47,6 +47,7 @@
  * the following flags are not arch-managed. they are "available" bits of the
  * entry descriptor.
  */
+
 #define PDE_FLAG_USED		(1 << 9)
 
 /*
@@ -62,6 +63,13 @@
 #define PTE_FLAG_RO		(0 << 1)
 #define PTE_FLAG_RW		(1 << 1)
 #define PTE_FLAG_P		(1 << 0)
+
+/*
+ * the following flags are not arch-managed. they are "available" bits of the
+ * entry descriptor.
+ */
+
+#define PTE_FLAG_USED		(1 << 9)
 
 /*
  * ---------- macros ----------------------------------------------------------

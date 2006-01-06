@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/pmode.c
+ * file          /home/buckman/kaneton/kaneton/libs/libia32/pmode/pmode.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:15 2005]
- * updated       matthieu bucchianeri   [fri dec 30 18:51:24 2005]
+ * updated       matthieu bucchianeri   [fri jan  6 15:05:16 2006]
  */
 
 /*
@@ -20,7 +20,6 @@
  *
  * XXX de meme il faudrait reloader les registres de segments.
  *
- * XXX plutot que de passer par gdt_refresh qui lit gdtr, p-e utiliser t_init?
  */
 
 /*
@@ -29,6 +28,22 @@
 
 #include <klibc.h>
 #include <kaneton.h>
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
+
+/*
+ * the init variable.
+ */
+
+extern t_init*		init;
+
+/*
+ * global offset table.
+ */
+
+extern t_gdt		gdt;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -41,14 +56,29 @@
  *
  * steps:
  *
- * XXX
+ * 1) copies gdt from the init variable.
+ * 2) enable protected mode.
+ * 3) runs some tests if needed.
  */
 
 t_error			pmode_init(void)
 {
-  gdt_refresh();
+
+  /*
+   * 1)
+   */
+
+  memcpy(&gdt, &init->machdep.gdt, sizeof (t_gdt));
+
+  /*
+   * 2)
+   */
 
   pmode_enable();
+
+  /*
+   * 3)
+   */
 
 #if (IA32_DEBUG & IA32_DEBUG_PMODE)
   pmode_test();
@@ -82,20 +112,20 @@ t_error			pmode_enable(void)
 t_error			pmode_set_segment_registers(t_uint16	seg_code,
 						    t_uint16	seg_data)
 {
-  asm ("pushl %0\n\t"
-       "pushl $pmode_update_registers_label\n\t"
-       "lret\n\t"
-       "pmode_update_registers_label:\n\t"
-       "movl %1, %%eax\n\t"
-       "movw %%ax, %%ds\n\t"
-       "movw %%ax, %%ss\n\t"
-       "movw %%ax, %%es\n\t"
-       "movw %%ax, %%fs\n\t"
-       "movw %%ax, %%gs\n\t"
-       :
-       : "g" (seg_code), "g" (seg_data)
-       : "memory", "%eax"
-       );
+  asm volatile ("pushl %0\n\t"
+		"pushl $pmode_update_registers_label\n\t"
+		"lret\n\t"
+		"pmode_update_registers_label:\n\t"
+		"movl %1, %%eax\n\t"
+		"movw %%ax, %%ds\n\t"
+		"movw %%ax, %%ss\n\t"
+		"movw %%ax, %%es\n\t"
+		"movw %%ax, %%fs\n\t"
+		"movw %%ax, %%gs\n\t"
+		:
+		: "g" (seg_code), "g" (seg_data)
+		: "memory", "%eax"
+		);
 
   return ERROR_NONE;
 }
@@ -118,6 +148,9 @@ void			pmode_test(void)
   t_uint16		seg1;
   t_uint16		seg2;
   t_segment		seg1des;
+  void			*ptr;
+  int			r;
+  t_uint16		es, fs;
 
   gdt_size(NULL, &seg1);
 
@@ -159,6 +192,42 @@ void			pmode_test(void)
 
   gdt_delete_segment(NULL, 42);
   gdt_delete_segment(NULL, seg1);
+
+  ptr = malloc(8);
+
+  seg1des.base = (t_paddr)ptr;
+  seg1des.limit = 8;
+  seg1des.is_system = 0;
+  seg1des.type.usr = type_data;
+
+  gdt_reserve_segment(NULL, seg1des, &seg1);
+
+  seg1des.base += 4;
+  seg1des.limit = 4;
+
+  gdt_reserve_segment(NULL, seg1des, &seg2);
+
+  gdt_build_selector(seg1, prvl_supervisor, &es);
+  gdt_build_selector(seg2, prvl_supervisor, &fs);
+
+  asm volatile("movw %1, %%ax\t\n"
+	       "movw %%ax, %%es\t\n"
+	       "movl $41424344, %%es:(4)\t\n"
+	       "movw %2, %%ax\t\n"
+	       "movw %%ax, %%fs\t\n"
+	       "movl %%fs:(0), %0\t\n"
+	       : "=r" (r)
+	       : "g" (es), "g" (fs)
+	       : "%eax");
+
+  if (r != 41424344)
+    printf("error in segments !\n");
+  printf("r = %d\n", r);
+
+  free(ptr);
+
+  gdt_delete_segment(NULL, seg1);
+  gdt_delete_segment(NULL, seg2);
 }
 
 /*                                                                 [cut] /k2 */
