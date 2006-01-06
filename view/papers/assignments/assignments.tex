@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/assignments/assignments.tex
 %%
 %% created       julien quintard   [wed dec  7 16:53:52 2005]
-%% updated       julien quintard   [thu jan  5 08:50:11 2006]
+%% updated       julien quintard   [thu jan  5 23:13:20 2006]
 %%
 
 %
@@ -34,6 +34,12 @@
 \author{\small{Julien Quintard}}
 
 %
+% prototype
+%
+
+\newcommand\prototype[1]{\hspace{1.5cm}#1}
+
+%
 % document
 %
 
@@ -54,6 +60,9 @@
 %
 
 \section{The Project}
+
+To get more information about the kaneton project and the kaneton
+microkernel reference, please take a look at the kaneton document.
 
 %
 % k0
@@ -192,6 +201,256 @@ to retrieve the structures in main memory.
 %
 % k2
 %
+
+\section{k2}
+
+The \textbf{k2} project consists in the development of parts of
+the microkernel:
+
+\begin{itemize}
+  \item
+    The id manager.
+  \item
+    The set manager.
+  \item
+    The address space manager.
+  \item
+    The segment manager.
+\end{itemize}
+
+%
+% id manager
+%
+
+\subsubsection{id manager}
+
+The id manager is used to generate identifiers from an identifier object.
+
+Once the identifier object initialised, the identifiers can be generated.
+
+Let's take a look at the id manager functions:
+
+\prototype{t\_error \textbf{id\_show}(o\_id* \textbf{o});}
+
+This function just displays the id object's state.
+
+\prototype{t\_error \textbf{id\_clone}(o\_id* \textbf{o},
+                                       t\_id \textbf{old},
+                                       t\_id* \textbf{new});}
+
+This function duplicates an id object using the \textbf{o} identifier
+object.
+
+\prototype{t\_error \textbf{id\_reserve}(o\_id* \textbf{o},
+                                         t\_id* \textbf{i});}
+
+This function reserves an identifier \textbf{i} using the identifier
+object \textbf{o}.
+
+\prototype{t\_error \textbf{id\_release}(o\_id* \textbf{o},
+                                         t\_id \textbf{i});}
+
+This function releases an identifier.
+
+\prototype{t\_error \textbf{id\_build}(o\_id* \textbf{o});}
+
+This function initialises an identifier object.
+
+\prototype{t\_error \textbf{id\_destroy}(o\_id* \textbf{o});}
+
+This function destroys an identifier object.
+
+\prototype{t\_error \textbf{id\_init}(void);}
+
+This function just initialises the id manager.
+
+\prototype{t\_error \textbf{id\_clean}(void);}
+
+This function just cleans the id manager.
+
+%
+% set manager
+%
+
+\subsubsection{set manager}
+
+The set manager is used to store data. Every kernel managers use it
+instead of building data structures by their own.
+
+The student will have to write the entire code for the \textbf{array} and
+\textbf{ll} data structures.
+
+The functions below are explained independently of the data structure.
+
+\prototype{t\_error \textbf{set\_type\_[x]}(t\_setid \textbf{setid});}
+
+This function just returns an error if the set corresponding to
+\textbf{setid} is not of the type \textbf{[x]}.
+
+\prototype{t\_error \textbf{set\_show\_[x]}(t\_setid \textbf{setid});}
+
+This function displays a entire set.
+
+\prototype{t\_error \textbf{set\_head\_[x]}(t\_setid \textbf{setid},
+                                            t\_iterator* \textbf{iterator});}
+
+This function returns an iterator on the first element of the set.
+
+\prototype{t\_error \textbf{set\_tail\_[x]}(t\_setid \textbf{setid},
+                                            t\_iterator* \textbf{iterator});}
+
+This function returns an iterator on the last element of the set.
+
+\prototype{t\_error \textbf{set\_prev\_[x]}(t\_setid \textbf{setid},
+                                            t\_iterator \textbf{current},
+                                            t\_iterator* \textbf{previous});}
+
+This function returns an iterator on the previous element of the set.
+
+\prototype{t\_error \textbf{set\_next\_[x]}(t\_setid \textbf{setid},
+                                            t\_iterator \textbf{current},
+                                            t\_iterator* \textbf{previous});}
+
+This function returns an iterator on the next element of the set.
+
+\prototype{t\_error \textbf{set\_insert\_head\_[x]}(t\_setid \textbf{setid},
+                                                    void* \textbf{data});}
+
+This function inserts an object at the head of the set.
+
+\prototype{t\_error \textbf{set\_insert\_tail\_[x]}(t\_setid \textbf{setid},
+                                                    void* \textbf{data});}
+
+This function inserts an object at the tail of the set.
+
+\prototype{t\_error \textbf{set\_insert\_before\_[x]}(t\_setid \textbf{setid},
+                                                      t\_iterator \textbf{iterator},
+                                                      void* \textbf{data});}
+
+This function inserts an object before the one specified by the iterator.
+
+\prototype{t\_error \textbf{set\_insert\_after\_[x]}(t\_setid \textbf{setid},
+                                                     t\_iterator \textbf{iterator},
+                                                     void* \textbf{data});}
+
+This function inserts an object after the one specified by the iterator.
+
+\prototype{t\_error \textbf{set\_add\_[x]}(t\_setid \textbf{setid},
+                                           void* \textbf{data});}
+
+This function adds an object in the set.
+
+\prototype{t\_error \textbf{set\_remove\_[x]}(t\_setid \textbf{setid},
+                                              t\_id \textbf{id});}
+
+This function removes an object identified by \textbf{id} from the
+set \textbf{setid}.
+
+\prototype{t\_error \textbf{set\_delete\_[x]}(t\_setid \textbf{setid},
+                                              t\_iterator \textbf{iterator});}
+
+This function deletes the object corresponding to the iterator.
+
+\prototype{t\_error \textbf{set\_flush\_[x]}(t\_setid \textbf{setid});}
+
+This function removes every object stored in the set.
+
+\prototype{t\_error \textbf{set\_locate\_[x]}(t\_setid \textbf{setid},
+                                              t\_id \textbf{id},
+                                              t\_iterator* \textbf{iterator});}
+
+This function returns an iterator on the element corresponding to the
+identifier \textbf{id}.
+
+\prototype{t\_error \textbf{set\_object\_[x]}(t\_setid \textbf{setid},
+                                              t\_iterator \textbf{iterator},
+                                              void** \textbf{data});}
+
+This function returns the object's data corresponding to the iterator.
+
+\prototype{t\_error \textbf{set\_reserve\_ll}(t\_opts \textbf{opts},
+                                              t\_size \textbf{datasz},
+                                              t\_setid* \textbf{setid});}
+
+This function reserves a ll set with options \textbf{opts} which will contain
+object of \textbf{datasz} size.
+
+\prototype{t\_error \textbf{set\_reserve\_array}(t\_opts \textbf{opts},
+                                                 t\_setsz \textbf{initsz},
+                                                 t\_size \textbf{datasz},
+                                                 t\_setid* \textbf{setid});}
+
+This function reserves an array set with options \textbf{opts}. This
+set will contain objects of \textbf{datasz} size and will initialy
+be composed of \textbf{initsz} unused elements.
+
+\prototype{t\_error \textbf{set\_release\_[x]}(t\_setid \textbf{setid});}
+
+This function releases a set.
+
+%
+% address space manager
+%
+
+\subsubsection{address space manager}
+
+The address space manager just manages the address spaces. An address
+space is a container describing the addressable memory.
+
+An address space is composed of a set of segments and a set of regions.
+
+\prototype{t\_error \textbf{as\_show}(t\_asid \textbf{asid});}
+
+This function shows a precise address space displaying information
+on it.
+
+\prototype{t\_error \textbf{as\_dump}(void);}
+
+This function dumps all the address space managed by the address
+space manager.
+
+\prototype{t\_error \textbf{as\_give}(t\_asid \textbf{asid},
+                                      t\_tskid \textbf{tskid});}
+
+This function gives an address space to another task.
+
+\prototype{t\_error \textbf{as\_clone}(t\_tskid \textbf{tskid},
+                                       t\_asid \textbf{old},
+                                       t\_asid* \textbf{new});}
+
+This function clones an address space taking care of cloning everything
+necessary.
+
+\prototype{t\_error \textbf{as\_reserve}(t\_tskid \textbf{tskid},
+                                         t\_asid* \textbf{asid});}
+
+This function reserves an address space object for the task \textbf{tskid}.
+
+\prototype{t\_error \textbf{as\_release}(t\_asid \textbf{asid});}
+
+This function just releases an address space.
+
+\prototype{t\_error \textbf{as_get}(t\_asid \textbf{asid},
+                                    o\_as** \textbf{o});}
+
+This function should only be used by the segment and region managers.
+
+This function just returns the address space object corresponding to
+the address space identifier.
+
+\prototype{t\_error \textbf{as\_init}(void);}
+
+This function initialises the address space manager.
+
+\prototype{t\_error \textbf{as\_clean}(void);}
+
+This function cleans the address space manager.
+
+%
+% segment manager.
+%
+
+The segment manager is used XXX
 
 %
 % k3
