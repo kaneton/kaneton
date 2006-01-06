@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/libs/libia32/include/libia32.h
  *
  * created       matthieu bucchianeri   [tue dec 20 13:58:56 2005]
- * updated       matthieu bucchianeri   [thu jan  5 11:11:24 2006]
+ * updated       matthieu bucchianeri   [fri jan  6 11:52:59 2006]
  */
 
 #ifndef LIBIA32_H
@@ -16,31 +16,31 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include "asm.h"
-#include "isa.h"
-#include "multiboot.h"
-#include "paging.h"
-#include "pmode.h"
-#include "stdarg.h"
-#include "types.h"
+#include "misc/asm.h"
+#include "misc/isa.h"
+#include "misc/multiboot.h"
+#include "misc/stdarg.h"
+#include "misc/types.h"
+#include "paging/paging.h"
+#include "pmode/pmode.h"
 
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../pmode.c
- *      ../gdt.c
- *      ../ldt.c
- *      ../paging.c
- *      ../pd.c
- *      ../pt.c
- *      ../tlb.c
- *      ../interrupt.c
- *      ../idt.c
- *      ../page.c
+ *      ../pmode/pmode.c
+ *      ../pmode/gdt.c
+ *      ../pmode/ldt.c
+ *      ../paging/paging.c
+ *      ../paging/pd.c
+ *      ../paging/pt.c
+ *      ../paging/tlb.c
+ *      ../paging/page.c
+ *      ../interrupt/interrupt.c
+ *      ../interrupt/idt.c
  */
 
 /*
- * ../pmode.c
+ * ../pmode/pmode.c
  */
 
 t_error			pmode_init(void);
@@ -56,7 +56,7 @@ void			pmode_test(void);
 
 
 /*
- * ../gdt.c
+ * ../pmode/gdt.c
  */
 
 t_error			gdt_refresh(void);
@@ -96,7 +96,7 @@ t_error			gdt_build_selector(t_uint16	segment,
 
 
 /*
- * ../ldt.c
+ * ../pmode/ldt.c
  */
 
 t_error			ldt_base(t_ldt*		table,
@@ -138,7 +138,7 @@ t_error			ldt_build_selector(t_ldt*	table,
 
 
 /*
- * ../paging.c
+ * ../paging/paging.c
  */
 
 t_error			paging_init(void);
@@ -151,7 +151,7 @@ void			paging_test(void);
 
 
 /*
- * ../pd.c
+ * ../paging/pd.c
  */
 
 t_error			pd_refresh(void);
@@ -177,7 +177,7 @@ t_error			pd_delete_table(t_directory*	dir,
 
 
 /*
- * ../pt.c
+ * ../paging/pt.c
  */
 
 t_error			pt_dump(t_pte*	tab);
@@ -199,7 +199,7 @@ t_error			pt_delete_page(t_table*	tab,
 
 
 /*
- * ../tlb.c
+ * ../paging/tlb.c
  */
 
 t_error			tlb_invalidate(t_vaddr	page);
@@ -208,20 +208,20 @@ t_error			tlb_flush(void);
 
 
 /*
- * ../interrupt.c
- */
-
-
-/*
- * ../idt.c
- */
-
-
-/*
- * ../page.c
+ * ../paging/page.c
  */
 
 t_error		page_reserve(t_page*	page);
+
+
+/*
+ * ../interrupt/interrupt.c
+ */
+
+
+/*
+ * ../interrupt/idt.c
+ */
 
 
 /*

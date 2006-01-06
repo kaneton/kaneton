@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/include/pmode.h
+ * file          /home/buckman/kaneton/kaneton/libs/libia32/include/pmode/pmode.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu jan  5 11:07:36 2006]
+ * updated       matthieu bucchianeri   [fri jan  6 11:53:47 2006]
  */
 
 #ifndef IA32_IA32_PMODE_H
@@ -16,7 +16,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include "types.h"
+#include "../misc/types.h"
 
 /*
  * ---------- defines ---------------------------------------------------------

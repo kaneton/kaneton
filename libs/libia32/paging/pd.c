@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/libs/libia32/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [thu jan  5 11:51:52 2006]
+ * updated       matthieu bucchianeri   [thu jan  5 12:32:23 2006]
  */
 
 /*
@@ -56,7 +56,7 @@ t_error			pd_refresh(void)
 }
 
 /*
- * XXX
+ * dumps a page directory and its tables.
  */
 
 t_error			pd_dump(t_directory*	dir)
@@ -103,7 +103,7 @@ t_error			pd_build(t_paddr	base,
 }
 
 /*
- * XXX
+ * activates a directory.
  */
 
 t_error			pd_activate(t_directory		dir)
@@ -182,7 +182,19 @@ t_error			pd_get_table(t_directory*	dir,
 t_error			pd_delete_table(t_directory*	dir,
 					t_uint16	entry)
 {
-  return ERROR_UNKNOWN;
+  t_directory		d;
+
+  if (dir)
+    d = *dir;
+  else
+    d = pd;
+
+  if (!(d[entry] & PDE_FLAG_USED))
+    return ERROR_UNKNOWN;
+
+  d[entry] = 0;
+
+  return ERROR_NONE;
 }
 
 /*                                                                 [cut] /k2 */
