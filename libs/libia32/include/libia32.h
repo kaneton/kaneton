@@ -59,8 +59,6 @@ void			pmode_test(void);
  * ../pmode/gdt.c
  */
 
-t_error			gdt_refresh(void);
-
 t_error			gdt_dump(t_gdt*       	dump_gdt);
 
 t_error			gdt_size(t_gdt*		table,
@@ -153,8 +151,6 @@ void			paging_test(void);
 /*
  * ../paging/pd.c
  */
-
-t_error			pd_refresh(void);
 
 t_error			pd_dump(t_directory*	dir);
 

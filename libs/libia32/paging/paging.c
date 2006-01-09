@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/libs/libia32/paging/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       matthieu bucchianeri   [fri jan  6 14:20:45 2006]
+ * updated       matthieu bucchianeri   [mon jan  9 11:16:16 2006]
  */
 
 /*
@@ -14,7 +14,6 @@
  *
  * manage paging.
  *
- * XXX idem que pmode: utiliser t_init plutot qu'un SCR3 ?
  */
 
 /*
@@ -53,7 +52,6 @@ extern t_directory	pd;
  *
  * 1) copies the directory structure from the init variable.
  * 2) enables paging.
- * 3) runs tests if necessary.
  */
 
 t_error			paging_init(void)
@@ -70,14 +68,6 @@ t_error			paging_init(void)
    */
 
   paging_enable();
-
-  /*
-   * 3)
-   */
-
-#if (IA32_DEBUG & IA32_DEBUG_PAGING)
-  paging_test();
-#endif
 
  return ERROR_NONE;
 }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/kaneton/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon jan  2 22:16:29 2006]
+ * updated       matthieu bucchianeri   [mon jan  9 11:35:18 2006]
  */
 
 /*
@@ -171,6 +171,7 @@ t_error			ia32_as_release(t_asid			asid)
 
   free((void*)base);
 
+  return; //XXX
   /*
    * 5)
    */

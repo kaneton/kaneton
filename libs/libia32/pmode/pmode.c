@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/libs/libia32/pmode/pmode.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:15 2005]
- * updated       matthieu bucchianeri   [fri jan  6 15:05:16 2006]
+ * updated       matthieu bucchianeri   [mon jan  9 11:16:58 2006]
  */
 
 /*
@@ -58,7 +58,6 @@ extern t_gdt		gdt;
  *
  * 1) copies gdt from the init variable.
  * 2) enable protected mode.
- * 3) runs some tests if needed.
  */
 
 t_error			pmode_init(void)
@@ -76,16 +75,6 @@ t_error			pmode_init(void)
 
   pmode_enable();
 
-  /*
-   * 3)
-   */
-
-#if (IA32_DEBUG & IA32_DEBUG_PMODE)
-  pmode_test();
-#endif
-
-  paging_init(); // XXX remove me !
-
   return ERROR_NONE;
 }
 
@@ -95,12 +84,28 @@ t_error			pmode_init(void)
 
 t_error			pmode_enable(void)
 {
+  t_uint16		kcs;
+  t_uint16		kds;
+
+  //CLI();
+
   asm volatile("movl %%cr0, %%eax\n\t"
 	       "orw $1, %%ax\n\t"
 	       "movl %%eax, %%cr0\n\t"
 	       :
 	       :
 	       : "%eax");
+
+  asm volatile("jmp pmode_enable_next\t\n"
+	       "pmode_enable_next:"
+	       );
+
+  gdt_build_selector(1, prvl_supervisor, &kcs);
+  gdt_build_selector(2, prvl_supervisor, &kds);
+
+  //pmode_set_segment_registers(kcs, kds);
+
+  //STI();
 
   return ERROR_NONE;
 }
@@ -192,7 +197,7 @@ void			pmode_test(void)
 
   gdt_delete_segment(NULL, 42);
   gdt_delete_segment(NULL, seg1);
-
+/*
   ptr = malloc(8);
 
   seg1des.base = (t_paddr)ptr;
@@ -228,6 +233,7 @@ void			pmode_test(void)
 
   gdt_delete_segment(NULL, seg1);
   gdt_delete_segment(NULL, seg2);
+*/
 }
 
 /*                                                                 [cut] /k2 */
