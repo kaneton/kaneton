@@ -7,8 +7,6 @@
  segment:
   * faire des fichiers segment differents selon le fit (segment_first.c)
   * inject: a l'init de la task kernel => mettre les segments prealloues
- arch:
-  * bouger les ia32/kaneton dans ia32 (kaneton.lo => machdep.lo)
  tests:
   * changer les tests des sets pour plus considerer l'ordre
 

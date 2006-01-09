@@ -52,8 +52,6 @@ t_error			pmode_set_segment_registers(t_uint16	seg_code,
 
 t_error			pmode_clean(void);
 
-void			pmode_test(void);
-
 
 /*
  * ../pmode/gdt.c
@@ -144,8 +142,6 @@ t_error			paging_init(void);
 t_error			paging_enable(void);
 
 t_error			paging_clean(void);
-
-void			paging_test(void);
 
 
 /*
