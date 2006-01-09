@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/check/check/init/init.h
  *
  * created       matthieu bucchianeri   [tue dec 20 15:04:37 2005]
- * updated       matthieu bucchianeri   [mon jan  9 11:29:51 2006]
+ * updated       matthieu bucchianeri   [mon jan  9 12:35:20 2006]
  */
 
 #ifndef CHECK_INIT_H_
@@ -41,7 +41,6 @@ void	check_stats_tests(void);
 void	check_malloc_tests(void);
 void	check_printf_tests(void);
 void	check_id_tests(void);
-void	check_pmode_tests(void);
-void	check_paging_tests();
+void	check_libia32_tests(void);
 
 #endif /* !CHECK_INIT_H_ */

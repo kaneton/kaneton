@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/check/libs/libia32/pmode/init/init.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:17:39 2005]
- * updated       matthieu bucchianeri   [mon jan  9 11:12:22 2006]
+ * updated       matthieu bucchianeri   [mon jan  9 12:01:54 2006]
  */
 
 #include <klibc.h>
@@ -28,5 +28,7 @@ void	check_pmode_tests(void)
 {
   check_pmode_init();
   check_pmode_01();
+  check_pmode_02();
+  check_pmode_03();
   /* XXX */
 }

@@ -1,7 +1,23 @@
 --
+ region:
+  * pouvoir mapper des parties de segment. revoir le proto de reserve.
+   * region_init => limites vmem => #define dans env/machines
+   * voir pr l'union adresse / i
+   * vtop et ptov
+ segment:
+  * faire des fichiers segment differents selon le fit (segment_first.c)
+  * inject: a l'init de la task kernel => mettre les segments prealloues
+ arch:
+  * bouger les ia32/kaneton dans ia32 (kaneton.lo => machdep.lo)
+ tests:
+  * changer les tests des sets pour plus considerer l'ordre
+
+--
  a noter qu'on pourrait ptet ameliorer le systeme de region pour pouvoir mapper
  des parties de segments. c'est pas tres propre mais bon c'est surement
  faisable. a reflechir!
+
+ ^-> ouais il faut pouvoir le faire.
 
 --
  renaud: expliquer comment booter d'une disquette etc.. tout le bas

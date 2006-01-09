@@ -1,0 +1,5 @@
+01 checks cr0
+
+TODO:
+- test directory & table
+- mapper deux adresses virtuelles a la meme page pour

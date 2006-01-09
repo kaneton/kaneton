@@ -1,0 +1,9 @@
+01 checks cr0
+02 import a gdt and activate it
+03 segment selectors (gdt)
+
+TODO:
+- segment add/reserve/delete
+- meme choses avec ldt : build/activate/add/reserve/delete/import/selector
+- tests de segments qui se recoupent pour verifier que ca marche bien
+- mettre en place un handler de #GP pour la suite (quand on aura idt)

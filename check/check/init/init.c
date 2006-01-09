@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/check/check/init/init.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [mon jan  9 11:30:02 2006]
+ * updated       matthieu bucchianeri   [mon jan  9 18:24:48 2006]
  */
 
 #include <klibc.h>
@@ -33,8 +33,7 @@ void	check_tests(void)
 //  check_printf_tests();
 //  check_stats_tests();
 //  check_id_tests();
-  check_pmode_tests();
-  check_paging_tests();
+  //check_libia32_tests();
   /* XXX continue tests */
 }
 
