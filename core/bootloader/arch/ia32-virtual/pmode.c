@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/bootloader/arch/ia32-virtual/pmode.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [mon jan  9 18:23:21 2006]
+ * updated       matthieu bucchianeri   [tue jan 10 01:38:50 2006]
  */
 
 /*
@@ -159,7 +159,7 @@ void			bootloader_pmode_init(void)
 
   gdt_build_selector(PMODE_GDT_CORE_CS, prvl_supervisor, &kcs);
   gdt_build_selector(PMODE_GDT_CORE_DS, prvl_supervisor, &kds);
-  pmode_set_segment_registers(kcs, kds);
+//  pmode_set_segment_registers(kcs, kds);
 
   /*
    * 4)

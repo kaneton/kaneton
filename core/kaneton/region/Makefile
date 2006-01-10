@@ -3,16 +3,16 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/core/kaneton/region/Makefile
+## file          /home/buckman/kaneton/kaneton/core/kaneton/region/Makefile
 ##
 ## created       julien quintard   [wed nov 23 09:19:13 2005]
-## updated       julien quintard   [wed nov 23 09:19:27 2005]
+## updated       matthieu bucchianeri   [tue jan 10 01:27:17 2006]
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
- 
+
 include			../../../env/.env.mk
 
 #
@@ -27,7 +27,8 @@ include			../../../env/.env.mk
 
 REGION_LO		:=		region.lo
 
-REGION_C		:=		region.c			
+REGION_C		:=		region.c		\
+					$(_REGION_FILE_)
 
 REGION_O		:=		$(REGION_C:.c=.o)
 

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/kaneton/as.c
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon jan  9 11:35:18 2006]
+ * updated       matthieu bucchianeri   [tue jan 10 00:28:25 2006]
  */
 
 /*
@@ -79,8 +79,7 @@ t_error			ia32_as_clone(t_tskid			tskid,
  * steps:
  *
  * 1) gets the as object.
- * 2) builds a new ldt for the as.
- * 3) builds a new page directory for the as.
+ * 2) builds a new page directory for the as.
  */
 
 t_error			ia32_as_reserve(t_tskid			tskid,
@@ -103,13 +102,6 @@ t_error			ia32_as_reserve(t_tskid			tskid,
    * 2)
    */
 
-  if (ldt_build(nb, (t_paddr)(p = malloc(nb * sizeof(t_ldte))),
-		&o->machdep.ldt, 1) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_NONE);
-
-  /*
-   * 3)
-   */
 /*
   if (pd_build(???, &o->machdep.pd, 1) != ERROR_NONE)
     {
@@ -154,28 +146,7 @@ t_error			ia32_as_release(t_asid			asid)
   /*
    * 2)
    */
-
-  if (ldt_base(&o->machdep.ldt, &base) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
-  if (ldt_destroy(&o->machdep.ldt) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  /*
-   * 4)
-   */
-
-  free((void*)base);
-
-  return; //XXX
-  /*
-   * 5)
-   */
-
+#if 0
   for (i = 0; i < PD_MAX_ENTRIES; i++)
     {
       if (pd_get_table(&o->machdep.pd, i, &tab) != ERROR_NONE)
@@ -191,7 +162,7 @@ t_error			ia32_as_release(t_asid			asid)
     }
 
   /*
-   * 6)
+   * 3)
    */
 
   for (i = 0; i < PD_MAX_ENTRIES; i++)
@@ -201,7 +172,7 @@ t_error			ia32_as_release(t_asid			asid)
 
       /* XXX free table */
     }
-
+#endif
   AS_LEAVE(as, ERROR_NONE);
 }
 

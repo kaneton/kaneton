@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/kaneton/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [tue dec 20 22:42:51 2005]
+ * updated       matthieu bucchianeri   [tue jan 10 01:31:52 2006]
  */
 
 #ifndef KANETON_REGION_H
@@ -109,6 +109,7 @@ typedef struct
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../kaneton/region/region.c
+ *      ../../kaneton/region/region-fit.c
  */
 
 /*
@@ -117,10 +118,6 @@ typedef struct
 
 t_error			region_show(t_asid			asid,
 				    t_regid			regid);
-
-t_error			region_first_fit(o_as*			as,
-					 t_vsize		size,
-					 t_vaddr*		address);
 
 t_error			region_reserve(t_asid			asid,
 				       t_segid			segid,
@@ -137,11 +134,23 @@ t_error			region_get(t_asid			asid,
 				   t_regid			regid,
 				   o_region**			o);
 
-t_error			region_init(t_fit			fit,
-				    t_vaddr			start,
+t_error			region_init(t_vaddr			start,
 				    t_vsize			size);
 
 t_error			region_clean(void);
+
+
+/*
+ * ../../kaneton/region/region-fit.c
+ */
+
+t_error			region_fit(o_as*		as,
+				   t_vsize		size,
+				   t_vaddr*		address);
+
+t_error			region_first_fit(o_as*			as,
+					 t_vsize		size,
+					 t_vaddr*		address);
 
 
 /*

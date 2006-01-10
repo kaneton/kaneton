@@ -99,7 +99,7 @@ def fn_readprotosfiles(fp, functions):
   # iterate until the end of the prototypes section
   endre = re.compile('.*\*/')
   filere = re.compile('\s*\*+\s+[./_a-zA-Z0-9]+')
-  filenamere = re.compile('[./_a-zA-Z0-9]+')
+  filenamere = re.compile('[-./_a-zA-Z0-9]+')
   eopre = re.compile('\s*\*+\s+eop')
   while line <> '' and not endre.match(line):
     functions.beginning.append(line)

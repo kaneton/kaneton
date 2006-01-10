@@ -1,17 +1,17 @@
 /*
  * copyright quintard julien
- * 
+ *
  * kaneton
- * 
+ *
  * segment.h
- * 
+ *
  * path          /home/mycure/kaneton/core
- * 
+ *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
- * 
+ *
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Thu Nov 10 23:05:38 2005   mycure
+** Last update Tue Jan 10 01:19:08 2006 matthieu bucchianeri
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -126,6 +126,7 @@ typedef struct
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../kaneton/segment/segment.c
+ *      ../../kaneton/segment/segment-fit.c
  */
 
 /*
@@ -139,10 +140,6 @@ t_error			segment_dump(void);
 t_error			segment_clone(t_asid			asid,
 				      t_segid			old,
 				      t_segid*			new);
-
-t_error			segment_first_fit(o_as*			as,
-					  t_psize		size,
-					  t_paddr*		address);
 
 t_error			segment_reserve(t_asid			asid,
 					t_psize			size,
@@ -165,9 +162,22 @@ t_error			segment_flush(t_asid			asid);
 t_error			segment_get(t_segid			segid,
 				    o_segment**			o);
 
-t_error			segment_init(t_fit			fit);
+t_error			segment_init(void);
 
 t_error			segment_clean(void);
+
+
+/*
+ * ../../kaneton/segment/segment-fit.c
+ */
+
+t_error			segment_fit(o_as*		as,
+				    t_psize		size,
+				    t_paddr*		address);
+
+t_error			segment_first_fit(o_as*			as,
+					  t_psize		size,
+					  t_paddr*		address);
 
 
 /*

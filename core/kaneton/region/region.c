@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [tue dec 20 22:43:25 2005]
+ * updated       matthieu bucchianeri   [tue jan 10 01:30:19 2006]
  */
 
 /*
@@ -101,109 +101,6 @@ t_error			region_show(t_asid			asid,
 }
 
 /*
- * this function tries to find free space in the region set via the
- * first fit algorithm.
- *
- * steps:
- *
- * 1) gets the first region.
- * 2) tries to find space before the first region.
- * 3) for each region, tries to find space after it.
- * 4) gets the last region.
- * 5) tries to find space after the last region.
- */
-
-t_error			region_first_fit(o_as*			as,
-					 t_vsize		size,
-					 t_vaddr*		address)
-{
-  o_region*		current;
-  t_state		state;
-  o_region*		head;
-  o_region*		tail;
-  t_iterator		i;
-
-  REGION_ENTER(region);
-
-  /*
-   * 1)
-   */
-
-  if (set_head(as->regions, &i) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  if (set_object(as->regions, i, (void**)&head) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if ((head->address - region->start) >= size)
-    {
-      *address = head->address + head->size;
-
-      REGION_LEAVE(region, ERROR_NONE);
-    }
-
-  /*
-   * 3)
-   */
-
-  set_foreach(SET_OPT_FORWARD, as->regions, &i, state)
-    {
-      o_region*	next;
-      t_iterator	j;
-
-      if (set_object(as->regions, i, (void**)&current) !=
-	  ERROR_NONE)
-	{
-	  cons_msg('!', "region: cannot find the region object "
-		   "corresponding to its identifier\n");
-
-	  REGION_LEAVE(region, ERROR_UNKNOWN);
-	}
-
-      if (set_next(as->regions, i, &j) != ERROR_NONE)
-	break;
-
-      if (set_object(as->regions, j, (void**)&next) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      if ((next->address - (current->address + current->size)) >= size)
-	{
-	  *address = current->address + current->size;
-
-	  REGION_LEAVE(region, ERROR_NONE);
-	}
-    }
-
-  /*
-   * 4)
-   */
-
-  if (set_tail(as->regions, &i) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  if (set_object(as->regions, i, (void**)&tail) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 5)
-   */
-
-  if (((region->start + region->size) -
-       (tail->address + tail->size)) >= size)
-    {
-      *address = tail->address + tail->size;
-
-      REGION_LEAVE(region, ERROR_NONE);
-    }
-
-  REGION_LEAVE(region, ERROR_UNKNOWN);
-}
-
-/*
  * this function reserves a region given the desired segment.
  *
  * steps:
@@ -252,22 +149,9 @@ t_error			region_reserve(t_asid			asid,
       }
     case REGION_OPT_NONE:
       {
-	switch (region->fit)
-	  {
-	  case FIT_FIRST:
-	    {
-	      if (segment_first_fit(as, segment->size,
-				    &o.address) != ERROR_NONE)
-		REGION_LEAVE(region, ERROR_UNKNOWN);
-
-	      break;
-	    }
-
-	  default:
-	    {
-	      REGION_LEAVE(region, ERROR_UNKNOWN);
-	    }
-	  }
+	if (region_fit(as, segment->size,
+		       &o.address) != ERROR_NONE)
+	  REGION_LEAVE(region, ERROR_UNKNOWN);
 
 	break;
       }
@@ -401,8 +285,7 @@ t_error			region_get(t_asid			asid,
  * 6) if needed, dumps the regions.
  */
 
-t_error			region_init(t_fit			fit,
-				    t_vaddr			start,
+t_error			region_init(t_vaddr			start,
 				    t_vsize			size)
 {
   /*
@@ -423,7 +306,7 @@ t_error			region_init(t_fit			fit,
    * 2)
    */
 
-  region->fit = fit;
+  region->fit = REGION_FIT;
   region->start = start;
   region->size = size;
 
@@ -437,7 +320,7 @@ t_error			region_init(t_fit			fit,
    * 4)
    */
 
-  if (machdep_call(region, region_init, fit, start, size) != ERROR_NONE)
+  if (machdep_call(region, region_init, REGION_FIT, start, size) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   return (ERROR_NONE);

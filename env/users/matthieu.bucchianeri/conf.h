@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [mon jan  9 11:35:55 2006]
+ * updated       matthieu bucchianeri   [tue jan 10 01:23:13 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -47,6 +47,24 @@
 #define CONF_MODE_RELEASE	(1 << 1)
 
 #define CONF_MODE		MODE_DEVELOPMENT
+
+/*
+ * which fit method to used in segment
+ */
+
+#define SEGMENT_FIT	FIT_FIRST
+
+/*
+ * which fit method to used in region
+ */
+
+#define REGION_FIT	FIT_FIRST
+
+/*
+ * which fit method to used in alloc
+ */
+
+#define ALLOC_FIT	FIT_FIRST
 
 /*
  * this define activates the statistics

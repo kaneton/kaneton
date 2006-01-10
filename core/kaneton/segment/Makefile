@@ -1,23 +1,23 @@
 ##
 ## copyright quintard julien
-## 
+##
 ## kaneton
-## 
+##
 ## Makefile
-## 
+##
 ## path          /home/mycure/kaneton/core/kaneton/segment
-## 
+##
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
-## 
+##
 ## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Nov  7 17:37:46 2005   mycure
+## Last update Tue Jan 10 01:13:38 2006 matthieu bucchianeri
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
- 
+
 include			../../../env/.env.mk
 
 #
@@ -32,7 +32,8 @@ include			../../../env/.env.mk
 
 SEGMENT_LO		:=		segment.lo
 
-SEGMENT_C		:=		segment.c			
+SEGMENT_C		:=		segment.c		\
+					$(_SEGMENT_FILE_)
 
 SEGMENT_O		:=		$(SEGMENT_C:.c=.o)
 

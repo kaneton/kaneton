@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * segment.c
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Nov 15 20:06:58 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/segment/segment.c
+ *
+ * created       julien quintard   [fri feb 11 03:04:40 2005]
+ * updated       matthieu bucchianeri   [tue jan 10 01:17:26 2006]
  */
 
 /*
@@ -251,109 +246,6 @@ t_error			segment_clone(t_asid			asid,
 }
 
 /*
- * this function tries to find free space in the segment set via the
- * first fit algorithm.
- *
- * steps:
- *
- * 1) gets the first segment.
- * 2) tries to find space before the first segment.
- * 3) for each segment, tries to find space after it.
- * 4) gets the last segment.
- * 5) tries to find space after the last segment.
- */
-
-t_error			segment_first_fit(o_as*			as,
-					  t_psize		size,
-					  t_paddr*		address)
-{
-  o_segment*		current;
-  t_state		state;
-  o_segment*		head;
-  o_segment*		tail;
-  t_iterator		i;
-
-  SEGMENT_ENTER(segment);
-
-  /*
-   * 1)
-   */
-
-  if (set_head(segment->container, &i) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  if (set_object(segment->container, i, (void**)&head) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if ((head->address - segment->start) >= size)
-    {
-      *address = head->address + head->size;
-
-      SEGMENT_LEAVE(segment, ERROR_NONE);
-    }
-
-  /*
-   * 3)
-   */
-
-  set_foreach(SET_OPT_FORWARD, segment->container, &i, state)
-    {
-      o_segment*	next;
-      t_iterator	j;
-
-      if (set_object(segment->container, i, (void**)&current) !=
-	  ERROR_NONE)
-	{
-	  cons_msg('!', "segment: cannot find the segment object "
-		   "corresponding to its identifier\n");
-
-	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-	}
-
-      if (set_next(segment->container, i, &j) != ERROR_NONE)
-	break;
-
-      if (set_object(segment->container, j, (void**)&next) != ERROR_NONE)
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-      if ((next->address - (current->address + current->size)) >= size)
-	{
-	  *address = current->address + current->size;
-
-	  SEGMENT_LEAVE(segment, ERROR_NONE);
-	}
-    }
-
-  /*
-   * 4)
-   */
-
-  if (set_tail(segment->container, &i) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  if (set_object(segment->container, i, (void**)&tail) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 5)
-   */
-
-  if (((segment->start + segment->size) -
-       (tail->address + tail->size)) >= size)
-    {
-      *address = tail->address + tail->size;
-
-      SEGMENT_LEAVE(segment, ERROR_NONE);
-    }
-
-  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-}
-
-/*
  * this function reserves a segment given the desired size.
  *
  * steps:
@@ -385,20 +277,8 @@ t_error			segment_reserve(t_asid			asid,
    * 2)
    */
 
-  switch (segment->fit)
-    {
-    case FIT_FIRST:
-      {
-	if (segment_first_fit(as, size, &o.address) != ERROR_NONE)
-	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-	break;
-      }
-    default:
-      {
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-      }
-    }
+  if (segment_fit(as, size, &o.address) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 3)
@@ -694,7 +574,7 @@ t_error			segment_flush(t_asid			asid)
   /*
    * 3)
    */
- 
+
   set_foreach(SET_OPT_FORWARD, as->segments, &i, state)
     {
       if (set_object(as->segments, i, (void**)&data) != ERROR_NONE)
@@ -742,7 +622,7 @@ t_error			segment_get(t_segid			segid,
  * 6) if needed, dumps the segments.
  */
 
-t_error			segment_init(t_fit			fit)
+t_error			segment_init(void)
 {
   /*
    * 1)
@@ -764,7 +644,7 @@ t_error			segment_init(t_fit			fit)
 
   segment->start = init->mem;
   segment->size = init->memsz;
-  segment->fit = fit;
+  segment->fit = SEGMENT_FIT;
 
   /*
    * 3)
@@ -788,7 +668,7 @@ t_error			segment_init(t_fit			fit)
    * 5)
    */
 
-  if (machdep_call(segment, segment_init, fit) != ERROR_NONE)
+  if (machdep_call(segment, segment_init, SEGMENT_FIT) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*

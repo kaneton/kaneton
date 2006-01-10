@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/kaneton.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon jan  9 11:19:22 2006]
+ * updated       matthieu bucchianeri   [tue jan 10 00:40:39 2006]
  */
 
 /*
@@ -146,14 +146,14 @@ void			kaneton(t_init*				bootloader)
    * 10)
    */
 
-  if (segment_init(FIT_FIRST) != ERROR_NONE)
+  if (segment_init() != ERROR_NONE)
     kaneton_error("cannot initialise the segment manager\n");
 
   /*
    * 11)
    */
 
-  if (region_init(FIT_FIRST, init->mem, init->memsz) != ERROR_NONE)
+  if (region_init(0, REGION_VMEM_MAX) != ERROR_NONE)
     kaneton_error("cannot initialise the region manager\n");
 
   /*
