@@ -1,4 +1,58 @@
 --
+ promo 2007:
+
+   groupe 1:
+
+     - Enguerrand Raymond
+     - David Lorin
+     - Stephane Roissard
+
+  groupe 2:
+
+--
+ je crois qu il y a une solution pour l'auth de messages.
+
+ un client A demande le droit d'envoye un msg a un autre B. le server
+ auth accepte. celui ci demande au kernel (via une capability que seul lui
+ detient) une capability de message pour A vers B. le kernel l'envoie donc
+ au server auth. et ce dernier retransmet cette cap au client qui l'utilisera
+ pour communiquer.
+
+ au final il n y a pas de duplication de cap puisque seul les kernels les
+ a. de plus le serveur auth peut tjs faire tourner des algos de detections
+ d'abus, blacklist etc.. puisqu il sait quand meme qui a le droit de
+ communiquer avec qui.
+
+ ca bande!
+
+ les cap ca defonce tout...
+
+ a noter que Mach fournit la primitive send_one() utilise pour les RPC
+ pour autoriser l envoi d'un seul message. a etudier!
+
+ Mach est bcp d'autres utilise un systeme de port mais aussi un ensemble
+ de ports. comme ca un serveur attend que sur un port et recoie une categorie
+ de messages.
+
+ pour kaneton on peut imaginer un truc similaire mais d'une autre maniere.
+
+--
+ definitivement:
+
+  Amoeba: n'utilise pas de memoire virtuelle.
+  V distributed system (Stanford Cheriton): toute communication par RPC
+    (ca doit etre vachement lourd) de plus pas de notion de port mais
+    on nomme le processus destination
+
+  kaneton: toute communication par message meme sur le systeme distribue.
+    on nomme egalement le process/groupe destination
+
+--
+ groupes de 3/4. chef de groupe c'est lui qui doit uploader.
+
+ k0: projet personnel
+
+--
  region:
   * pouvoir mapper des parties de segment. revoir le proto de reserve.
    * region_init => limites vmem => #define dans env/machines
@@ -39,9 +93,6 @@
 
 --
  tristan: box pour kaneton
-
---
- prendre les tests de printf de vianney dans lseos     << c'est fait
 
 --
  reiterer le coup du sondage sur les cours, le projet etc..
@@ -276,6 +327,9 @@
  trouver un moyen de gerer un systeme d'evenements intra kernel. soit
  comme unix soit on fait differemment. sleep/wakeup
 
+ en fait le systeme des pthreads est vraiment pas mal avec les condition
+ variables ayant un mutex associe.
+
 --
  faire un truc bien opur le fichier de conf, systeme de commentaires etc..
  revoir la grammaire ...
@@ -302,7 +356,7 @@
 
  meme chose pour recuperer les capabilities:
 
-   task_capility(&c_task);
+   task_capility(&c_task); ou plutot task_self(&c_task);
 
    as_capility(c_task, c_as);
    thread_capability(c_task, c_thread);
