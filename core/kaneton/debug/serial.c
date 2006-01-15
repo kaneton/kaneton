@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/debug/serial.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [thu dec 29 18:41:53 2005]
+ * updated       matthieu bucchianeri   [sun jan 15 18:28:50 2006]
  */
 
 /*
@@ -15,6 +15,7 @@
 
 #include <klibc.h>
 #include <kaneton.h>
+#include <kaneton/debug.h>
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -79,7 +80,6 @@ int			serial_send(t_uint32			com_port,
 				    t_uint32			size)
 {
   t_serial_data		sdata;
-  t_uint32		crc;
   t_uint8		status[7];
 
   sdata.crc = chk_sum(data, size);
@@ -91,7 +91,7 @@ int			serial_send(t_uint32			com_port,
   serial_write(com_port, sdata.data, sdata.size);
   serial_read(com_port, status, 6);
   status[6] = '\0';
-  if (!strcmp(status, "crc-ok"))
+  if (!strcmp((char*)status, "crc-ok"))
     return (0);
   else
     return (-1);
@@ -101,26 +101,23 @@ int			serial_send(t_uint32			com_port,
 int			serial_recv(t_uint32			com_port,
 				    t_serial_data		*rdata)
 {
-  t_uint32		crc;
-  int			i;
-
   serial_read(com_port, (t_uint8 *)rdata, sizeof(*rdata));
   if (rdata->magic == 0xF4859632)
     rdata->data = malloc(rdata->size * sizeof(t_uint8));
   else
     {
-      serial_write(com_port, "badcrc", 6);
+      serial_write(com_port, (t_uint8*)"badcrc", 6);
       return (-1);
     }
   serial_read(com_port, rdata->data, rdata->size);
   if (rdata->crc == chk_sum(rdata->data, rdata->size))
     {
-      serial_write(com_port, "crc-ok", 6);
+      serial_write(com_port, (t_uint8*)"crc-ok", 6);
       return (0);
     }
   else
     {
-      serial_write(com_port, "badcrc", 6);
+      serial_write(com_port, (t_uint8*)"badcrc", 6);
       free (rdata->data);
       return (-1);
     }
@@ -142,8 +139,8 @@ int	serial_put(char c)
 	 if (c != -1)
 	  buffer[n++] = c;
 	  buffer[n] = 0;
-          serial_send(SERIAL_COM1, "printf", 6);
-	  serial_send(SERIAL_COM1, buffer, n);
+          serial_send(SERIAL_COM1, (t_uint8*)"printf", 6);
+	  serial_send(SERIAL_COM1, (t_uint8*)buffer, n);
 	  n = 0;
 	}
 	return 1;

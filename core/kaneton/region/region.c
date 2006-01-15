@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [tue jan 10 01:30:19 2006]
+ * updated       matthieu bucchianeri   [sun jan 15 19:53:06 2006]
  */
 
 /*
@@ -101,6 +101,93 @@ t_error			region_show(t_asid			asid,
 }
 
 /*
+ * this function dumps the regions.
+ *
+ * steps:
+ *
+ * 1) gets the size of the region set.
+ * 2) prints the header message.
+ * 3) for each entry in the region set, calls the region_show function.
+ */
+
+t_error			region_dump(t_asid		asid)
+{
+  t_state		state;
+  o_as*			o;
+  o_region*		data;
+  t_setsz		size;
+  t_iterator		i;
+
+  REGION_ENTER(region);
+
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &o) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (set_size(o->regions, &size) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  cons_msg('#', "dumping %qu regions(s) from the region container:\n", size);
+
+  /*
+   * 4)
+   */
+
+  set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
+    {
+      if (set_object(o->regions, i, (void**)&data) != ERROR_NONE)
+	{
+	  cons_msg('!', "region: cannot find the region object "
+		   "corresponding to its identifier\n");
+
+	  REGION_LEAVE(region, ERROR_UNKNOWN);
+	}
+
+      if (region_show(asid, data->regid) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+    }
+
+  REGION_LEAVE(region, ERROR_NONE);
+}
+
+/*
+ * this function returns the physical address of a region.
+ *
+ * steps:
+ *
+ * 1) calls dependent code.
+ */
+
+t_error			region_paddr(t_asid		asid,
+				     t_regid		regid,
+				     t_vaddr		virtual,
+				     t_paddr		*physical)
+{
+  REGION_ENTER(region);
+
+  /*
+   * 1)
+   */
+
+  if (machdep_call(region, region_paddr, asid, regid, virtual, physical) !=
+      ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  REGION_LEAVE(region, ERROR_NONE);
+}
+
+/*
  * this function reserves a region given the desired segment.
  *
  * steps:
@@ -165,7 +252,7 @@ t_error			region_reserve(t_asid			asid,
    * 3)
    */
 
-  o.regid = (t_regid)o.address;
+  *regid = o.regid = (t_regid)o.address;
   o.segid = segid;
   o.size = segment->size;
 

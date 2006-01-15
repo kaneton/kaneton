@@ -55,11 +55,9 @@
 --
  region:
   * pouvoir mapper des parties de segment. revoir le proto de reserve.
-   * region_init => limites vmem => #define dans env/machines
    * voir pr l'union adresse / i
    * vtop et ptov
  segment:
-  * faire des fichiers segment differents selon le fit (segment_first.c)
   * inject: a l'init de la task kernel => mettre les segments prealloues
  tests:
   * changer les tests des sets pour plus considerer l'ordre

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/arch/ia32-virtual/kaneton/as.h
  *
  * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       matthieu bucchianeri   [tue jan 10 00:24:22 2006]
+ * updated       matthieu bucchianeri   [sun jan 15 18:17:52 2006]
  */
 
 #ifndef IA32_KANETON_AS_H
@@ -30,24 +30,6 @@ typedef struct
 {
   t_directory			pd;
 }				do_as;
-
-/*
- * the as architecture dependent interface
- */
-
-typedef struct
-{
-  t_error			(*as_give)(t_asid,
-					   t_tskid);
-  t_error			(*as_clone)(t_tskid,
-					    t_asid,
-					    t_asid*);
-  t_error			(*as_reserve)(t_tskid,
-					      t_asid*);
-  t_error			(*as_release)(t_asid);
-  t_error			(*as_init)(void);
-  t_error			(*as_clean)(void);
-}				i_as;
 
 /*
  * ---------- macros ----------------------------------------------------------

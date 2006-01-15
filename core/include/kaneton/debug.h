@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/debug.h
+ * file          /home/buckman/kaneton/kaneton/core/include/kaneton/debug.h
  *
  * created       julien quintard   [mon nov 28 19:37:01 2005]
- * updated       julien quintard   [sun dec 18 18:57:15 2005]
+ * updated       matthieu bucchianeri   [sun jan 15 18:24:02 2006]
  */
 
 #ifndef KANETON_DEBUG_H
@@ -59,6 +59,7 @@ typedef	struct			s_serial_buffer
  *
  *      ../../kaneton/debug/debug.c
  *      ../../kaneton/debug/cons.c
+ *      ../../kaneton/debug/serial.c
  */
 
 /*
@@ -67,13 +68,13 @@ typedef	struct			s_serial_buffer
 
 t_error			debug_init(void);
 
-t_error			debug_recv();
+t_error			debug_recv(void);
 
-t_error			load_data();
+t_error			load_data(void);
 
 char*		get_data(char *name);
 
-t_error			debug_recv_cmd();
+t_error			debug_recv_cmd(void);
 
 t_error			debug_exec_cmd_tab(t_serial_data *cmd);
 
@@ -101,6 +102,36 @@ void			cons_msg(char				indicator,
 t_error			cons_init(void);
 
 t_error			cons_clean(void);
+
+
+/*
+ * ../../kaneton/debug/serial.c
+ */
+
+t_uint32		chk_sum(void				*data,
+				unsigned int			size);
+
+void			serial_read(t_uint32			com_port,
+				    t_uint8*			data,
+				    t_uint32 			size);
+
+void			serial_write(t_uint32			com_port,
+				     t_uint8*			data,
+				     t_uint32			size);
+
+int			serial_send(t_uint32			com_port,
+				    t_uint8*			data,
+				    t_uint32			size);
+
+int			serial_recv(t_uint32			com_port,
+				    t_serial_data		*rdata);
+
+int	serial_put(char c);
+
+void			serial_init(t_uint32			com_port,
+				    t_uint8			baud_rate,
+				    t_uint8			bit_type,
+				    t_uint8			fifo_type);
 
 
 /*

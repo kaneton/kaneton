@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32/kaneton/task.h
+ * file          /home/buckman/kaneton/kaneton/core/include/arch/ia32-virtual/kaneton/task.h
  *
  * created       julien quintard   [sat dec 10 15:24:34 2005]
- * updated       julien quintard   [sat dec 10 19:07:52 2005]
+ * updated       matthieu bucchianeri   [sun jan 15 18:20:32 2006]
  */
 
 #ifndef IA32_KANETON_TASK_H
@@ -17,27 +17,6 @@
  */
 
 // XXX #include <kaneton/task.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * the task architecture dependent interface
- */
-
-typedef struct
-{
-  t_error			(*task_clone)(t_tskid,
-					      t_tskid*);
-  t_error			(*task_reserve)(t_class,
-						t_behav,
-						t_prior,
-						t_tskid*);
-  t_error			(*task_release)(t_tskid);
-  t_error			(*task_init)(void);
-  t_error			(*task_clean)(void);
-}				i_task;
 
 /*
  * ---------- macros ----------------------------------------------------------

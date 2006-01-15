@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * segment.h
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Tue Nov 15 19:37:54 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/include/arch/ia32-virtual/kaneton/segment.h
+ *
+ * created       julien quintard   [fri feb 11 02:23:41 2005]
+ * updated       matthieu bucchianeri   [sun jan 15 18:18:41 2006]
  */
 
 #ifndef IA32_KANETON_SEGMENT_H
@@ -21,36 +16,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX #include <kaneton/segment.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * the segment architecture-dependent interface
- */
-
-typedef struct
-{
-  t_error			(*segment_clone)(t_asid,
-						 t_segid,
-						 t_segid*);
-  t_error			(*segment_reserve)(t_asid,
-						   t_psize,
-						   t_perms,
-						   t_segid*);
-  t_error			(*segment_release)(t_segid);
-  t_error			(*segment_catch)(t_asid,
-						 t_segid);
-  t_error			(*segment_perms)(t_segid,
-						 t_perms);
-  t_error			(*segment_type)(t_segid,
-						t_type);
-  t_error			(*segment_flush)(t_asid);
-  t_error			(*segment_init)(t_fit);
-  t_error			(*segment_clean)(void);
-}				i_segment;
+/* XXX #include <kaneton/segment.h>*/
 
 /*
  * ---------- macros ----------------------------------------------------------

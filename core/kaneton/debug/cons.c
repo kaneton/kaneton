@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/debug/cons.c
  *
  * created       quintard julien   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [mon dec 26 18:10:47 2005]
+ * updated       matthieu bucchianeri   [sun jan 15 18:23:40 2006]
  */
 
 /*

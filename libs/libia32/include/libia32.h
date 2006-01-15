@@ -154,6 +154,9 @@ t_error			pd_build(t_paddr	base,
 				 t_directory*	directory,
 				 t_uint8	clear);
 
+t_error			pd_base(t_directory*		dir,
+				t_paddr*		base);
+
 t_error			pd_activate(t_directory		dir);
 
 t_error			pd_add_table(t_directory*	dir,
@@ -194,7 +197,7 @@ t_error			pt_delete_page(t_table*	tab,
  * ../paging/tlb.c
  */
 
-t_error			tlb_invalidate(t_vaddr	page);
+t_error			tlb_invalidate(t_paddr	page);
 
 t_error			tlb_flush(void);
 

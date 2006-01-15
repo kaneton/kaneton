@@ -46,26 +46,20 @@
  * ../../../../kaneton/arch/machdep/as.c
  */
 
-t_error			ia32_as_give(t_asid			asid,
-				     t_tskid			tskid);
-
-t_error			ia32_as_clone(t_tskid			tskid,
-				      t_asid			old,
-				      t_asid*			new);
-
 t_error			ia32_as_reserve(t_tskid			tskid,
 					t_asid*			asid);
 
-t_error			ia32_as_release(t_asid			asid);
-
-t_error			ia32_as_init(void);
-
-t_error			ia32_as_clean(void);
+t_error			ia32_as_release(t_asid		asid);
 
 
 /*
  * ../../../../kaneton/arch/machdep/region.c
  */
+
+t_error			ia32_region_paddr(t_asid		asid,
+					  t_regid		regid,
+					  t_vaddr		virtual,
+					  t_paddr		*physical);
 
 t_error			ia32_region_reserve(t_asid		asid,
 					    t_segid		segid,
@@ -87,13 +81,6 @@ t_error			ia32_region_clean(void);
 t_error			ia32_segment_init(t_fit			fit);
 
 t_error			ia32_segment_clean(void);
-
-t_error			ia32_segment_reserve(t_asid		asid,
-					     t_psize		size,
-					     t_perms		perms,
-					     t_segid*		segid);
-
-t_error			ia32_segment_release(t_segid			segid);
 
 
 /*

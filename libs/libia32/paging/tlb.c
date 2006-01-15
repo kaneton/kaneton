@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/tlb.c
+ * file          /home/buckman/kaneton/kaneton/libs/libia32/paging/tlb.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:57:00 2005]
- * updated       matthieu bucchianeri   [tue jan  3 22:24:07 2006]
+ * updated       matthieu bucchianeri   [sun jan 15 13:00:28 2006]
  */
 
 /*
@@ -33,7 +33,7 @@
  * flushes a single pte cache given a page address.
  */
 
-t_error			tlb_invalidate(t_vaddr	page)
+t_error			tlb_invalidate(t_paddr	page)
 {
   asm volatile("invlpg %0"
 	       :

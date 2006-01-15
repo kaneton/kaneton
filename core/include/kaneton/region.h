@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/kaneton/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [tue jan 10 01:31:52 2006]
+ * updated       matthieu bucchianeri   [sun jan 15 18:56:21 2006]
  */
 
 #ifndef KANETON_REGION_H
@@ -70,6 +70,30 @@ typedef struct
 }				m_region;
 
 /*
+ * the region architecture-dependent interface
+ */
+
+typedef struct
+{
+  t_error			(*region_paddr)(t_asid,
+						t_regid,
+						t_vaddr,
+						t_paddr*);
+  t_error			(*region_reserve)(t_asid,
+						  t_segid,
+						  t_opts,
+						  t_vaddr,
+						  t_regid*);
+  t_error			(*region_release)(t_asid,
+						  t_regid);
+  t_error			(*region_flush)(t_asid);
+  t_error			(*region_init)(t_fit,
+					       t_vaddr,
+					       t_vsize);
+  t_error			(*region_clean)(void);
+}				i_region;
+
+/*
  * ---------- macros ----------------------------------------------------------
  */
 
@@ -118,6 +142,13 @@ typedef struct
 
 t_error			region_show(t_asid			asid,
 				    t_regid			regid);
+
+t_error			region_dump(t_asid		asid);
+
+t_error			region_paddr(t_asid		asid,
+				     t_regid		regid,
+				     t_vaddr		virtual,
+				     t_paddr		*physical);
 
 t_error			region_reserve(t_asid			asid,
 				       t_segid			segid,

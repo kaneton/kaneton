@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 10 00:30:50 2006]
+ * updated       matthieu bucchianeri   [sat jan 14 20:04:45 2006]
  */
 
 /*
@@ -33,8 +33,17 @@ extern m_segment*	segment;
 i_segment		segment_interface =
   {
     NULL,
-    ia32_segment_reserve,
-    ia32_segment_release,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
     NULL,
     NULL,
     NULL,
@@ -75,33 +84,4 @@ t_error			ia32_segment_clean(void)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
-}
-
-/*
- * this function reserves a segment given the desired size.
- */
-
-t_error			ia32_segment_reserve(t_asid		asid,
-					     t_psize		size,
-					     t_perms		perms,
-					     t_segid*		segid)
-{
-  SEGMENT_ENTER(segment);
-
-  /* XXX */
-
-  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-}
-
-/*
- * this function releases a segment.
- */
-
-t_error			ia32_segment_release(t_segid			segid)
-{
-  SEGMENT_ENTER(segment);
-
-  /* XXX */
-
-  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 }

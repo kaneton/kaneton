@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/kaneton.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 10 00:40:39 2006]
+ * updated       matthieu bucchianeri   [sun jan 15 19:57:51 2006]
  */
 
 /*
@@ -113,7 +113,7 @@ void			kaneton(t_init*				bootloader)
    * 5)
    */
 
-  alloc_init(init->alloc, init->allocsz, FIT_FIRST);
+  alloc_init(init->alloc, init->allocsz, ALLOC_FIT);
 
   /*
    * 6)
@@ -174,17 +174,36 @@ void			kaneton(t_init*				bootloader)
  debug_init();
 #endif
 
+ t_segid s;
+ t_regid r;
+ t_paddr p;
+
+ segment_reserve(0, 4096, PERM_READ | PERM_WRITE, &s);
+ region_reserve(0, s, REGION_OPT_FORCE, 48000000, &r);
+ region_paddr(0, r, 48000000, &p);
+ segment_show(s);
+ region_show(0, r);
+ printf("seg: %qu, reg: %qu : %u\n", s, r, p);
+ tlb_flush();
+ int *a = (int *)48000000;
+ *a = 0x41424344;
+ printf("r/w test: %x\n", *a);
+/* segment_dump();
+ region_dump(0);*/
+
   /*
    * XXX
    */
 
 //  STATS_DUMP();
 
-  /*
-   * XXX
-   */
+ /*
+  * XXX
+  */
 
- region_clean();
+//  task_clean();
+
+  region_clean();
 
   segment_clean();
 

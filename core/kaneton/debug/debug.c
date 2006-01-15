@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * debug.c
- * 
- * path          /home/mycure/kaneton/core/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Fri Oct 21 19:56:27 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/debug/debug.c
+ *
+ * created       julien quintard   [sat may 28 18:23:13 2005]
+ * updated       matthieu bucchianeri   [sun jan 15 18:29:27 2006]
  */
 
 /*
@@ -20,17 +15,17 @@
 
 #include <klibc.h>
 #include <kaneton.h>
-
-/*
- * ---------- functions -------------------------------------------------------
- */
-
+#include <kaneton/debug.h>
 
 /*
  * ---------- globals ---------------------------------------------------------
  */
 
 t_setid			buffers;
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
 
 /*
  * this function just initialises the debug manager.
@@ -42,12 +37,12 @@ t_error			debug_init(void)
    * XXX
    */
   serial_init(SERIAL_COM1, SERIAL_BR57600, SERIAL_8N1, SERIAL_FIFO_8);
-  printf("serial port initialized\n");	
-  printf_init(serial_put, 0); 
+  printf("serial port initialized\n");
+  printf_init(serial_put, 0);
   set_reserve(ll, SET_OPT_ALLOC, sizeof(t_serial_buffer), &buffers);
-  
+
   while(1) 	debug_recv();
-  
+
   return (ERROR_NONE);
 }
 
@@ -55,39 +50,42 @@ t_error			debug_init(void)
  * this function cleans the debug manager.
  */
 
-t_error			debug_recv()
+t_error			debug_recv(void)
 {
   t_serial_data		recv_type;
-  int i;
 
   serial_recv(SERIAL_COM1, &recv_type);
-  
-  if (!strcmp(recv_type.data, "command"))
+
+  if (!strcmp((char*)recv_type.data, "command"))
 	debug_recv_cmd();
-  else if (!strcmp(recv_type.data, "loadfile"))
-  	load_data();  
-  else	  
+  else if (!strcmp((char*)recv_type.data, "loadfile"))
+  	load_data();
+  else
 	printf("debug receive unknown type\n");
   /* rajouter un unload file pour cleaner ! */
   free(recv_type.data);
+
+  return (ERROR_NONE);
 }
 
 
-t_error			load_data()
+t_error			load_data(void)
 {
   t_serial_data		cmd;
   t_serial_buffer	buffer;
-  
+
   serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
-  buffer.name = cmd.data;
+  buffer.name = (char*)cmd.data;
 /*  free(cmd.data);
 */
-  
+
   serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
-  buffer.data = cmd.data; 
+  buffer.data = cmd.data;
   set_add(buffers, &buffer);
-  
+
   /*free(cmd.data);*/
+
+  return (ERROR_NONE);
 }
 
 char*		get_data(char *name)
@@ -95,7 +93,7 @@ char*		get_data(char *name)
   t_state		state;
   t_iterator		i;
   t_serial_buffer*	buffer;
-  
+
   set_foreach(SET_OPT_FORWARD, buffers, &i, state)
   {
 	set_object(buffers, i,(void**)&buffer);
@@ -105,23 +103,26 @@ char*		get_data(char *name)
  return (0);
 }
 
-t_error			debug_recv_cmd()
+t_error			debug_recv_cmd(void)
 {
-  t_serial_data		cmd;	
+  t_serial_data		cmd;
 
   serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
   debug_exec_cmd_tab(&cmd);
   free(cmd.data);
-  serial_put(-1); 
-  serial_send(SERIAL_COM1, "endprintf", 9);
+  serial_put(-1);
+  serial_send(SERIAL_COM1, (t_uint8*)"endprintf", 9);
+
+  return (ERROR_NONE);
 }
 
 t_error			debug_exec_cmd_tab(t_serial_data *cmd)
-{ 
+{
   int (*func)(void);
- 
-  func = (int (*)(void)) strtol(cmd->data, 0, 16);
+
+  func = (int (*)(void)) strtol((char*)cmd->data, 0, 16);
   func();
+  return (ERROR_NONE);
 }
 
 

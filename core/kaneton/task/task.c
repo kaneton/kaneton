@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/task/task.c
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [sun dec 18 19:13:30 2005]
+ * updated       matthieu bucchianeri   [sun jan 15 19:42:42 2006]
  */
 
 /*
@@ -41,13 +41,6 @@ machdep_include(task);
  */
 
 extern t_init*		init;
-
-/*
- * the segment manager variable to be able to directly add the
- * bootloader's prereserved segments.
- */
-
-extern m_segment*	segment;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -481,6 +474,7 @@ t_error			task_get(t_tskid				tskid,
 
 t_error			task_init(void)
 {
+  t_asid		asid;
   t_id			needless;
   t_uint32		i;
 
@@ -539,7 +533,7 @@ t_error			task_init(void)
       return (ERROR_UNKNOWN);
     }
 
-  if (as_reserve(ktask, &needless) != ERROR_NONE)
+  if (as_reserve(ktask, &asid) != ERROR_NONE)
     {
       cons_msg('!', "task: unable to reserve the kernel address space\n");
 
@@ -552,9 +546,7 @@ t_error			task_init(void)
 
   for (i = 0; i < init->nsegments; i++)
     {
-      init->segments[i].segid = (t_segid)init->segments[i].address;
-
-      if (set_add(segment->container, &init->segments[i]) != ERROR_NONE)
+      if (segment_inject(&init->segments[i], asid) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot add a pre-reserved segment in "
 		   "the segment container\n");
@@ -567,21 +559,20 @@ t_error			task_init(void)
    * 7)
    */
 
-  /* XXX
+/* XXX
   for (i = 0; i < init->nregions; i++)
     {
-      init->segments[i].segid = (t_segid)init->segments[i].address;
-
-      if (set_add(segment->container, &init->segments[i]) != ERROR_NONE)
+      if (region_reserve(asid, (t_segid)init->regions[i].address,
+			 REGION_OPT_FORCE, init->regions[i].address,
+			 &needless) != ERROR_NONE)
 	{
-	  cons_msg('!', "segment: cannot add a pre-reserved segment in "
-		   "the segment container\n");
+	  cons_msg('!', "region: cannot map a region to a pre-reserved "
+		   "segment\n");
 
 	  return (ERROR_UNKNOWN);
 	}
     }
-  */
-
+*/
   /*
    * 8)
    */

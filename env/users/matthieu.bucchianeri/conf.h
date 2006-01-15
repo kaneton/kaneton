@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [tue jan 10 01:23:13 2006]
+ * updated       matthieu bucchianeri   [tue jan 10 01:55:50 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -49,19 +49,19 @@
 #define CONF_MODE		MODE_DEVELOPMENT
 
 /*
- * which fit method to used in segment
+ * which fit method to use in segment
  */
 
 #define SEGMENT_FIT	FIT_FIRST
 
 /*
- * which fit method to used in region
+ * which fit method to use in region
  */
 
 #define REGION_FIT	FIT_FIRST
 
 /*
- * which fit method to used in alloc
+ * which fit method to use in alloc
  */
 
 #define ALLOC_FIT	FIT_FIRST
@@ -76,7 +76,7 @@
  * this define starts the tests by hand.
  */
 
-#define CONF_ENABLE_CHECK
+//#define CONF_ENABLE_CHECK
 
 /*
  * the configuration debug

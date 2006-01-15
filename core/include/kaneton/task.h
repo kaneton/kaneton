@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/task.h
+ * file          /home/buckman/kaneton/kaneton/core/include/kaneton/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       julien quintard   [sat dec 10 19:11:42 2005]
+ * updated       matthieu bucchianeri   [sun jan 15 18:20:29 2006]
  */
 
 #ifndef KANETON_TASK_H
@@ -119,6 +119,23 @@ typedef struct
 
   machdep_data(m_task);
 }				m_task;
+
+/*
+ * the task architecture dependent interface
+ */
+
+typedef struct
+{
+  t_error			(*task_clone)(t_tskid,
+					      t_tskid*);
+  t_error			(*task_reserve)(t_class,
+						t_behav,
+						t_prior,
+						t_tskid*);
+  t_error			(*task_release)(t_tskid);
+  t_error			(*task_init)(void);
+  t_error			(*task_clean)(void);
+}				i_task;
 
 /*
  * ---------- macros ----------------------------------------------------------

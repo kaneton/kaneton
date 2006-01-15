@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/segment/segment-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:03:46 2006]
- * updated       matthieu bucchianeri   [tue jan 10 01:34:34 2006]
+ * updated       matthieu bucchianeri   [sun jan 15 19:18:54 2006]
  */
 
 /*
@@ -82,7 +82,14 @@ t_error			segment_first_fit(o_as*			as,
    */
 
   if (set_head(segment->container, &i) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    {
+      if (segment->size < size)
+	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+      *address = segment->start;
+
+      SEGMENT_LEAVE(segment, ERROR_NONE);
+    }
 
   if (set_object(segment->container, i, (void**)&head) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);

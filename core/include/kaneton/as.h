@@ -1,17 +1,17 @@
 /*
  * copyright quintard julien
- * 
+ *
  * kaneton
- * 
+ *
  * as.h
- * 
+ *
  * path          /home/mycure/kaneton
- * 
+ *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
- * 
+ *
  * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Tue Nov 15 22:09:54 2005   mycure
+** Last update Sun Jan 15 18:17:50 2006 matthieu bucchianeri
  */
 
 #ifndef KANETON_AS_H
@@ -70,6 +70,24 @@ typedef struct
 
   machdep_data(m_as);
 }				m_as;
+
+/*
+ * the as architecture dependent interface
+ */
+
+typedef struct
+{
+  t_error			(*as_give)(t_asid,
+					   t_tskid);
+  t_error			(*as_clone)(t_tskid,
+					    t_asid,
+					    t_asid*);
+  t_error			(*as_reserve)(t_tskid,
+					      t_asid*);
+  t_error			(*as_release)(t_asid);
+  t_error			(*as_init)(void);
+  t_error			(*as_clean)(void);
+}				i_as;
 
 /*
  * ---------- macros ----------------------------------------------------------

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 10 01:17:26 2006]
+ * updated       matthieu bucchianeri   [sun jan 15 19:23:18 2006]
  */
 
 /*
@@ -18,14 +18,6 @@
  *     de la memoire physique. on va donc generer des identifiants pour
  *     pouvoir les retrouver mais on va creer un set qu'on va organiser
  *     nous meme afin qu'il soit trier selon les adresses physiques.
- *
- * XXX resize, split, coalesce, read, write, copy, get, perms, type
- *     flush, seg->paddr (addr), asid
- *
- * XXX give (as, segment)
- *
- * XXX segment_inject qui sera utilisee par task.c pour rajouter en
- *     dur des segments.
  */
 
 /*
@@ -246,6 +238,198 @@ t_error			segment_clone(t_asid			asid,
 }
 
 /*
+ * this function injects a pre-allocated segment in an address space.
+ *
+ * steps:
+ *
+ * 1) gets the address space object.
+ * 2) fills the segment.
+ * 3) adds the segment.
+ * 4) calls dependent code.
+ */
+
+t_error			segment_inject(o_segment*	seg,
+				       t_asid		asid)
+{
+  o_as			*o;
+
+  SEGMENT_ENTER(segment);
+
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  seg->segid = (t_segid)seg->address;
+  seg->asid = asid;
+
+  /*
+   * 3)
+   */
+
+  if (set_add(segment->container, seg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (set_add(o->segments, &seg->segid) != ERROR_NONE)
+    {
+      set_remove(segment->container, seg->segid);
+
+      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 4)
+   */
+
+  if (machdep_call(segment, segment_inject, seg, asid) !=
+      ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
+}
+
+/*
+ * this function gives a segment to an address space.
+ *
+ * steps:
+ *
+ * 1) gets the segment object.
+ * 2) finds the destination address space.
+ * 3) finds the source address space.
+ * 4) removes from the source address space.
+ * 5) adds into the destination one.
+ * 6) calls dependant code.
+ */
+
+t_error			segment_give(t_asid		asid,
+				     t_segid		segid)
+{
+  o_segment*		o;
+  o_as*			dest;
+  o_as*			src;
+
+  SEGMENT_ENTER(segment);
+
+  /*
+   * 1)
+   */
+
+  if (segment_get(segid, &o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (as_get(asid, &dest) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (as_get(o->asid, &src) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (set_remove(src->segments, segid) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
+  o->asid = asid;
+  if (set_add(dest->segments, &segid) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 6)
+   */
+
+  if (machdep_call(segment, segment_give, asid, segid) !=
+      ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
+}
+
+t_error			segment_resize(t_segid		segid,
+				       t_psize		new_size)
+{
+  SEGMENT_ENTER(segment);
+
+  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+}
+
+t_error			segment_split(t_segid		segid,
+				      t_psize		sz1,
+				      t_segid*		s1,
+				      t_segid*		s2)
+{
+  SEGMENT_ENTER(segment);
+
+  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+}
+
+t_error			segment_coalesce(t_segid	s1,
+					 t_segid	s2,
+					 t_segid*	new_seg)
+{
+  SEGMENT_ENTER(segment);
+
+  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+}
+
+t_error			segment_read(t_segid		segid,
+				     t_paddr		offs,
+				     const void*	buff,
+				     t_psize		sz)
+{
+  SEGMENT_ENTER(segment);
+
+  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+}
+
+t_error			segment_write(t_segid		segid,
+				      t_paddr		offs,
+				      void*		buff,
+				      t_psize		sz)
+{
+  SEGMENT_ENTER(segment);
+
+  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+}
+
+t_error			segment_copy(t_segid		dst,
+				     t_paddr		offsd,
+				     t_segid		src,
+				     t_paddr		offss,
+				     t_psize		sz)
+{
+  SEGMENT_ENTER(segment);
+
+  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+}
+
+t_error			segment_vaddr(t_segid		segid,
+				      t_vaddr*		address)
+{
+  SEGMENT_ENTER(segment);
+
+  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+}
+
+/*
  * this function reserves a segment given the desired size.
  *
  * steps:
@@ -288,7 +472,7 @@ t_error			segment_reserve(t_asid			asid,
   o.size = size;
   o.perms = perms;
 
-  o.segid = (t_segid)o.address;
+  *segid = o.segid = (t_segid)o.address;
 
   if (set_add(segment->container, &o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);

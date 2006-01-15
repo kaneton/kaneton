@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [fri jan  6 14:15:40 2006]
+ * updated       matthieu bucchianeri   [sun jan 15 18:43:14 2006]
  */
 
 /*
@@ -109,6 +109,34 @@ t_error			pd_build(t_paddr	base,
     {
       memset((void*)base, 0, PD_MAX_ENTRIES * sizeof(t_pde));
     }
+
+  return ERROR_NONE;
+}
+
+/*
+ * gets the base of a pd.
+ *
+ */
+
+t_error			pd_base(t_directory*		dir,
+				t_paddr*		base)
+{
+  t_pde*		d;
+
+  /*
+   * 1)
+   */
+
+  if (dir)
+    d = *dir;
+  else
+    d = pd;
+
+  /*
+   * 2)
+   */
+
+  *base = MK_BASE(d);
 
   return ERROR_NONE;
 }

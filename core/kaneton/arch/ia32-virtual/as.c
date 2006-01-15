@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 10 00:28:25 2006]
+ * updated       matthieu bucchianeri   [sun jan 15 19:28:57 2006]
  */
 
 /*
@@ -21,6 +21,8 @@
  */
 
 extern m_as*		as;
+extern t_tskid		ktask;
+extern t_init*		init;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -32,12 +34,12 @@ extern m_as*		as;
 
 i_as			as_interface =
   {
-    ia32_as_give,
-    ia32_as_clone,
+    NULL,
+    NULL,
     ia32_as_reserve,
     ia32_as_release,
-    ia32_as_init,
-    ia32_as_clean
+    NULL,
+    NULL
   };
 
 /*
@@ -45,49 +47,22 @@ i_as			as_interface =
  */
 
 /*
- * XXX
- */
-
-t_error			ia32_as_give(t_asid			asid,
-				     t_tskid			tskid)
-{
-  AS_ENTER(as);
-
-  /* XXX */
-
-  AS_LEAVE(as, ERROR_NONE);
-}
-
-/*
- * XXX
- */
-
-t_error			ia32_as_clone(t_tskid			tskid,
-				      t_asid			old,
-				      t_asid*			new)
-{
-  AS_ENTER(as);
-
-  /* XXX */
-
-  AS_LEAVE(as, ERROR_NONE);
-}
-
-/*
  * this function reserves an address space.
  *
  * steps:
  *
  * 1) gets the as object.
- * 2) builds a new page directory for the as.
+ * 2) reserves a segment for the directory or get the current one if kernel
+ *    task
+ * 3) builds a new page directory for the as.
  */
 
 t_error			ia32_as_reserve(t_tskid			tskid,
 					t_asid*			asid)
 {
   o_as*			o;
-  t_uint16		nb = 10; /* XXX */
-  void*			p;
+  t_id			seg;
+  o_segment*		oseg;
 
   AS_ENTER(as);
 
@@ -102,12 +77,35 @@ t_error			ia32_as_reserve(t_tskid			tskid,
    * 2)
    */
 
-/*
-  if (pd_build(???, &o->machdep.pd, 1) != ERROR_NONE)
+  if (tskid == ktask)
     {
-      free(p);
-      AS_LEAVE(as, ERROR_NONE);
-    }*/
+      o->machdep.pd = init->machdep.pd;
+    }
+  else
+    {
+      if (segment_reserve(*asid, PAGE_SIZE,
+			  PERM_READ | PERM_WRITE, &seg) != ERROR_NONE)
+	{
+	  cons_msg('!', "as: cannot reserve a segment for page-directory.\n");
+	  AS_LEAVE(as, ERROR_UNKNOWN);
+	}
+
+      if (segment_get(seg, &oseg) != ERROR_NONE)
+	{
+	  cons_msg('!', "as: cannot get a segment for page-directory.\n");
+	  AS_LEAVE(as, ERROR_UNKNOWN);
+	}
+
+      /*
+       * 3)
+       */
+
+      if (pd_build(oseg->address, &o->machdep.pd, 1) != ERROR_NONE)
+	{
+	  cons_msg('!', "as: cannot build a page-directory.\n");
+	  AS_LEAVE(as, ERROR_UNKNOWN);
+	}
+    }
 
   AS_LEAVE(as, ERROR_NONE);
 }
@@ -117,22 +115,14 @@ t_error			ia32_as_reserve(t_tskid			tskid,
  *
  * steps:
  *
- * 1) gets address space object.
- * 2) gets the base of the ldt.
- * 3) destroys the ldt.
- * 4) frees the allocated table.
- * 5) frees the allocated pages.
- * 6) frees page tables and directory.
+ * 1) gets the as object.
+ * 2) releases the page directory.
  */
 
-t_error			ia32_as_release(t_asid			asid)
+t_error			ia32_as_release(t_asid		asid)
 {
   o_as*			o;
   t_paddr		base;
-  t_table		tab;
-  t_page		page;
-  t_uint16		i;
-  t_uint16		j;
 
   AS_ENTER(as);
 
@@ -146,58 +136,14 @@ t_error			ia32_as_release(t_asid			asid)
   /*
    * 2)
    */
-#if 0
-  for (i = 0; i < PD_MAX_ENTRIES; i++)
-    {
-      if (pd_get_table(&o->machdep.pd, i, &tab) != ERROR_NONE)
-	continue;
-
-      for (j = 0; j < PT_MAX_ENTRIES; j++)
-	{
-	  if (pt_get_page(&tab, j, &page) != ERROR_NONE)
-	    continue;
-
-	  /* XXX release page */
-	}
-    }
-
-  /*
-   * 3)
-   */
-
-  for (i = 0; i < PD_MAX_ENTRIES; i++)
-    {
-      if (pd_get_table(&o->machdep.pd, i, &tab) != ERROR_NONE)
-	continue;
-
-      /* XXX free table */
-    }
-#endif
-  AS_LEAVE(as, ERROR_NONE);
-}
-
 /*
- * XXX
- */
+  XXX merdique: on release la pd avant les pt !
 
-t_error			ia32_as_init(void)
-{
-  AS_ENTER(as);
+  if (pd_base(&o->machdep.pd, &base) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
-  /* XXX */
-
-  AS_LEAVE(as, ERROR_NONE);
-}
-
-/*
- * XXX
- */
-
-t_error			ia32_as_clean(void)
-{
-  AS_ENTER(as);
-
-  /* XXX */
-
+  if (segment_release((t_segid)base) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+*/
   AS_LEAVE(as, ERROR_NONE);
 }

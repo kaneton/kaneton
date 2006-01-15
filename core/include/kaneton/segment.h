@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
+ * licence       kaneton licence
  *
- * kaneton
+ * project       kaneton
  *
- * segment.h
+ * file          /home/buckman/kaneton/kaneton/core/include/kaneton/segment.h
  *
- * path          /home/mycure/kaneton/core
- *
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- *
- * started on    Fri Feb 11 02:19:44 2005   mycure
-** Last update Tue Jan 10 01:19:08 2006 matthieu bucchianeri
+ * created       julien quintard   [fri feb 11 02:19:44 2005]
+ * updated       matthieu bucchianeri   [sun jan 15 18:18:35 2006]
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -87,6 +82,59 @@ typedef struct
 }				m_segment;
 
 /*
+ * the segment architecture-dependent interface
+ */
+
+typedef struct
+{
+  t_error			(*segment_clone)(t_asid,
+						 t_segid,
+						 t_segid*);
+  t_error			(*segment_inject)(o_segment*,
+						  t_asid);
+  t_error			(*segment_give)(t_asid,
+						t_segid);
+  t_error			(*segment_resize)(t_segid,
+						  t_psize);
+  t_error			(*segment_split)(t_segid,
+						 t_psize,
+						 t_segid*,
+						 t_segid*);
+  t_error			(*segment_coalesce)(t_segid,
+						    t_segid,
+						    t_segid*);
+  t_error			(*segment_read)(t_segid,
+						t_paddr,
+						const void*,
+						t_psize);
+  t_error			(*segment_write)(t_segid,
+						 t_paddr,
+						 void*,
+						 t_psize);
+  t_error			(*segment_copy)(t_segid,
+						t_paddr,
+						t_segid,
+						t_paddr,
+						t_psize);
+  t_error			(*segment_vaddr)(t_segid,
+						 t_vaddr*);
+  t_error			(*segment_reserve)(t_asid,
+						   t_psize,
+						   t_perms,
+						   t_segid*);
+  t_error			(*segment_release)(t_segid);
+  t_error			(*segment_catch)(t_asid,
+						 t_segid);
+  t_error			(*segment_perms)(t_segid,
+						 t_perms);
+  t_error			(*segment_type)(t_segid,
+						t_type);
+  t_error			(*segment_flush)(t_asid);
+  t_error			(*segment_init)(t_fit);
+  t_error			(*segment_clean)(void);
+}				i_segment;
+
+/*
  * ---------- macros ----------------------------------------------------------
  */
 
@@ -140,6 +188,43 @@ t_error			segment_dump(void);
 t_error			segment_clone(t_asid			asid,
 				      t_segid			old,
 				      t_segid*			new);
+
+t_error			segment_inject(o_segment*	seg,
+				       t_asid		asid);
+
+t_error			segment_give(t_asid		asid,
+				     t_segid		segid);
+
+t_error			segment_resize(t_segid		segid,
+				       t_psize		new_size);
+
+t_error			segment_split(t_segid		segid,
+				      t_psize		sz1,
+				      t_segid*		s1,
+				      t_segid*		s2);
+
+t_error			segment_coalesce(t_segid	s1,
+					 t_segid	s2,
+					 t_segid*	new_seg);
+
+t_error			segment_read(t_segid		segid,
+				     t_paddr		offs,
+				     const void*	buff,
+				     t_psize		sz);
+
+t_error			segment_write(t_segid		segid,
+				      t_paddr		offs,
+				      void*		buff,
+				      t_psize		sz);
+
+t_error			segment_copy(t_segid		dst,
+				     t_paddr		offsd,
+				     t_segid		src,
+				     t_paddr		offss,
+				     t_psize		sz);
+
+t_error			segment_vaddr(t_segid		segid,
+				      t_vaddr*		address);
 
 t_error			segment_reserve(t_asid			asid,
 					t_psize			size,
