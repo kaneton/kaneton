@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun jan 15 19:23:18 2006]
+ * updated       matthieu bucchianeri   [mon jan 16 23:47:28 2006]
  */
 
 /*

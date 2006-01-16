@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/bootloader/arch/ia32-virtual/paging.c
  *
  * created       julien quintard   [sun may 29 00:38:50 2005]
- * updated       matthieu bucchianeri   [thu jan  5 11:54:00 2006]
+ * updated       matthieu bucchianeri   [mon jan 16 23:58:59 2006]
  */
 
 /*
@@ -110,7 +110,7 @@ void			bootloader_paging_init(void)
   pg.present = 1;
   pg.rw = 1;
   pg.user = 0;
-  for (i = 0, addr = 0;  i < PT_MAX_ENTRIES; i++, addr += PAGE_SIZE)
+  for (i = 0, addr = 0;  i < PT_MAX_ENTRIES; i++, addr += PAGESZ)
     {
       pg.addr = (void*)addr;
       pt_add_page(&pt0, PTE_ENTRY(addr), pg);
@@ -122,7 +122,7 @@ void			bootloader_paging_init(void)
 
   limit = bootloader_init_alloc(0, NULL);
 
-  for (addr = INIT_RELOCATE; addr < limit; addr += PAGE_SIZE)
+  for (addr = INIT_RELOCATE; addr < limit; addr += PAGESZ)
     {
       if (pd_get_table(&pd, PDE_ENTRY(addr), &pt) != ERROR_NONE)
 	{

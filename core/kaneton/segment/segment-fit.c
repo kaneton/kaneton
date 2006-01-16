@@ -6,7 +6,26 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/segment/segment-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:03:46 2006]
- * updated       matthieu bucchianeri   [sun jan 15 19:18:54 2006]
+ * updated       matthieu bucchianeri   [mon jan 16 23:40:26 2006]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file implements simple  fitting algorithms for physical memory
+ * management.
+ *
+ * you can define which algorithm to use with the macro SEGMENT_FIT.
+ *
+ *  - FIT_FIRST: first fit algorithm - the first large enough space is taken
+ *  - FIT_BEST: best fit algorithm - the smaller space is taken
+ *  - ...
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * XXX
  */
 
 /*

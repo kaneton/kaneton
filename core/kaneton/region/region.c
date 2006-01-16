@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [sun jan 15 19:53:06 2006]
+ * updated       matthieu bucchianeri   [tue jan 17 00:23:29 2006]
  */
 
 /*
@@ -20,6 +20,13 @@
  * a chaque address space. donc dans l'objet as, il y a un ensemble region
  * qui n'est pas un ensemble d'identifiants comme l'est l'ensemble
  * segment de l'objet as mais bon un ensemble d'objet region.
+ *
+ * pour region_paddr, tout est dans le  code dep. en fait, vu qu'on va
+ * mapper des parties de segments, on  peut plus juste se baser sur le
+ * segid
+ *
+ * XXX pr flush: on set_release !? donc on peut pas reutiliser ?
+ *
  */
 
 /*
@@ -36,17 +43,6 @@
 #include <kaneton.h>
 
 machdep_include(region);
-
-/*
- * ---------- extern ----------------------------------------------------------
- */
-
-/*
- * the init variable, filled by the bootloader, containing in this case
- * the list of segments to mark used.
- */
-
-extern t_init*		init;
 
 /*
  * ---------- globals ---------------------------------------------------------

@@ -6,7 +6,16 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun jan 15 19:28:57 2006]
+ * updated       matthieu bucchianeri   [tue jan 17 00:11:17 2006]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * XXX plutot  que de recup  la pd dans  le t_init pr la  task kernel,
+ * mieux  vaudrai  en faire  une  autre  afin  de nettoyer  les  trucs
+ * bourrins qu'on a fait au bootloader.
+ *
  */
 
 /*
@@ -37,7 +46,7 @@ i_as			as_interface =
     NULL,
     NULL,
     ia32_as_reserve,
-    ia32_as_release,
+    NULL,
     NULL,
     NULL
   };
@@ -83,7 +92,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
     }
   else
     {
-      if (segment_reserve(*asid, PAGE_SIZE,
+      if (segment_reserve(*asid, PAGESZ,
 			  PERM_READ | PERM_WRITE, &seg) != ERROR_NONE)
 	{
 	  cons_msg('!', "as: cannot reserve a segment for page-directory.\n");
@@ -107,43 +116,5 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 	}
     }
 
-  AS_LEAVE(as, ERROR_NONE);
-}
-
-/*
- * this function releases an address space.
- *
- * steps:
- *
- * 1) gets the as object.
- * 2) releases the page directory.
- */
-
-t_error			ia32_as_release(t_asid		asid)
-{
-  o_as*			o;
-  t_paddr		base;
-
-  AS_ENTER(as);
-
-  /*
-   * 1)
-   */
-
-  if (as_get(asid, &o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-/*
-  XXX merdique: on release la pd avant les pt !
-
-  if (pd_base(&o->machdep.pd, &base) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  if (segment_release((t_segid)base) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-*/
   AS_LEAVE(as, ERROR_NONE);
 }

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/as/as.c
+ * file          /home/buckman/kaneton/kaneton/core/kaneton/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       julien quintard   [sun dec 18 19:05:04 2005]
+ * updated       matthieu bucchianeri   [mon jan 16 23:36:38 2006]
  */
 
 /*
@@ -23,7 +23,8 @@
  * the latter describes the regions, the virtual areas which reference
  * some segments.
  *
- * XXX give()
+ * a task can give its address space to another with as_give.
+ *
  */
 
 /*

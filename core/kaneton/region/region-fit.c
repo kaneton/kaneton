@@ -6,7 +6,26 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/region/region-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:28:36 2006]
- * updated       matthieu bucchianeri   [tue jan 10 01:36:26 2006]
+ * updated       matthieu bucchianeri   [mon jan 16 23:56:23 2006]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file implements simple  fitting algorithms for virtual memory
+ * management.
+ *
+ * you can define which algorithm to use with the macro REGION_FIT.
+ *
+ *  - FIT_FIRST: first fit algorithm - the first large enough space is taken
+ *  - FIT_BEST: best fit algorithm - the smaller space is taken
+ *  - ...
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * XXX
  */
 
 /*
@@ -78,7 +97,14 @@ t_error			region_first_fit(o_as*			as,
    */
 
   if (set_head(as->regions, &i) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+    {
+      if (region->size < size)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      *address = region->start;
+
+      REGION_LEAVE(region, ERROR_NONE);
+    }
 
   if (set_object(as->regions, i, (void**)&head) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [sun jan 15 19:36:36 2006]
+ * updated       matthieu bucchianeri   [tue jan 17 00:31:32 2006]
  */
 
 /*
@@ -34,8 +34,8 @@ i_region		region_interface =
   {
     ia32_region_paddr,
     ia32_region_reserve,
-    NULL,
-    NULL,
+    ia32_region_release,
+    ia32_region_flush,
     ia32_region_init,
     ia32_region_clean
   };
@@ -192,7 +192,7 @@ t_error			ia32_region_reserve(t_asid		asid,
 
   for (vaddr = address, paddr = oseg->address;
        vaddr < address + oseg->size;
-       vaddr += PAGE_SIZE, paddr += PAGE_SIZE)
+       vaddr += PAGESZ, paddr += PAGESZ)
     {
 
       /*
@@ -217,7 +217,7 @@ t_error			ia32_region_reserve(t_asid		asid,
 	       * b)
 	       */
 
-	      if (segment_reserve(asid, PAGE_SIZE, PERM_READ | PERM_WRITE,
+	      if (segment_reserve(asid, PAGESZ, PERM_READ | PERM_WRITE,
 				  &segtbl) != ERROR_NONE)
 		{
 		  cons_msg('!', "region: unable to reserve segment for "
@@ -267,6 +267,66 @@ t_error			ia32_region_reserve(t_asid		asid,
   printf("\n\n");
 
   REGION_LEAVE(region, ERROR_NONE);
+}
+
+/*
+ * this function  releases a region.  we unmap the region  and release
+ * page tables.
+ *
+ */
+
+t_error			ia32_region_release(t_asid		asid,
+					    t_regid		regid)
+{
+  o_as*			o;
+  o_region*		oreg;
+  t_vaddr		vaddr;
+
+  REGION_ENTER(region);
+
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &o) != ERROR_NONE)
+    {
+      cons_msg('!', "region: unable to get as object\n");
+      REGION_LEAVE(region, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 2)
+   */
+
+  if (region_get(asid, regid, &oreg) != ERROR_NONE)
+    {
+      cons_msg('!', "region: unable to get region object\n");
+      REGION_LEAVE(region, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 3)
+   */
+
+  for (vaddr = oreg->address; vaddr < oreg->address + oreg->size;
+       vaddr += PAGESZ)
+    {
+      /* XXX */
+    }
+
+  REGION_LEAVE(region, ERROR_UNKNOWN);
+}
+
+/*
+ * this function flushes all the regions, free page tables.
+ *
+ */
+
+t_error			ia32_region_flush(t_asid		asid)
+{
+  REGION_ENTER(region);
+
+  REGION_LEAVE(region, ERROR_UNKNOWN);
 }
 
 /*
