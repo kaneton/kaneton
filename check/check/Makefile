@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/check/check/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [thu dec 29 18:50:48 2005]
+## updated       matthieu bucchianeri   [wed jan 18 19:20:53 2006]
 ##
 
 #
@@ -59,5 +59,6 @@ clear:
 	$(call purge,)
 
 proto:
+	$(call prototypes,"common/common.h",)
 
 dep:

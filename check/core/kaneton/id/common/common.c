@@ -3,23 +3,22 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/core/kaneton/id/init/init.c
+ * file          /home/buckman/kaneton/kaneton/check/core/kaneton/id/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:17:32 2005]
+ * updated       matthieu bucchianeri   [wed jan 18 18:53:18 2006]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
-#include "init.h"
+#include "common.h"
 
-void	check_id_init(void)
+void	check_id_common(void)
 {
   /*
    * nothing to do here since this tests is only used to include code
    * for next steps
    */
-  printf("init done.\n");
 }
 
 /*
@@ -28,7 +27,7 @@ void	check_id_init(void)
 
 void	check_id_tests(void)
 {
-  check_id_init();
+  check_id_common();
   check_id_01();
   check_id_02();
   check_id_03();

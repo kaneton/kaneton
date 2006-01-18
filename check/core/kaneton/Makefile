@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/check/Makefile
+## file          /home/buckman/kaneton/kaneton/check/core/kaneton/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       julien quintard   [mon nov 28 19:24:49 2005]
+## updated       matthieu bucchianeri   [wed jan 18 19:03:08 2006]
 ##
 
 #
@@ -59,5 +59,6 @@ clear:
 	$(call purge,)
 
 proto:
+	$(call makefile,$(SUBDIRS),proto)
 
 dep:

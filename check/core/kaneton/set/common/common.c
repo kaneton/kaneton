@@ -3,23 +3,22 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/init/init.c
+ * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [wed jan  4 00:23:34 2006]
+ * updated       matthieu bucchianeri   [wed jan 18 19:04:57 2006]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
-#include "init.h"
+#include "common.h"
 
-void	check_set_init(void)
+void	check_set_common(void)
 {
   /*
    * nothing to do here since this tests is only used to include code
    * for next steps
    */
-  printf("init done.\n");
 }
 
 /*
@@ -28,7 +27,7 @@ void	check_set_init(void)
 
 void	check_set_tests(void)
 {
-  check_set_init();
+  check_set_common();
   check_set_array_01();
   check_set_array_02();
   check_set_array_03();

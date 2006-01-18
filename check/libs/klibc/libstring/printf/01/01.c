@@ -10,7 +10,7 @@
  */
 
 #include <klibc.h>
-#include "../init/init.h"
+#include "../common/common.h"
 
 /*
  * simple printf with no substitutions.

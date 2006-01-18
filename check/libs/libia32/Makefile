@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/check/libs/libia32/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [mon jan  9 11:07:21 2006]
+## updated       matthieu bucchianeri   [wed jan 18 19:20:02 2006]
 ##
 
 #
@@ -59,5 +59,6 @@ clear:
 	$(call purge,)
 
 proto:
+	$(call makefile,$(SUBDIRS),proto)
 
 dep:

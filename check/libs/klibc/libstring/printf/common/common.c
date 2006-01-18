@@ -3,21 +3,20 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/libs/klibc/libstring/printf/init/init.c
+ * file          /home/buckman/kaneton/kaneton/check/libs/klibc/libstring/printf/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:17:39 2005]
- * updated       matthieu bucchianeri   [thu dec 29 17:45:46 2005]
+ * updated       matthieu bucchianeri   [wed jan 18 19:19:29 2006]
  */
 
 #include <klibc.h>
-#include "init.h"
+#include "common.h"
 
-void	check_printf_init(void)
+void	check_printf_common(void)
 {
   /*
    * nothing here since this test is only for injecting code for next tests.
    */
-  printf("init done.\n");
 }
 
 /*
@@ -26,7 +25,7 @@ void	check_printf_init(void)
 
 void	check_printf_tests(void)
 {
-  check_printf_init();
+  check_printf_common();
   check_printf_01();
   check_printf_02();
   check_printf_03();

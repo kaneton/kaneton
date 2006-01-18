@@ -6,12 +6,12 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/stats/01/01.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:20:48 2005]
+ * updated       matthieu bucchianeri   [wed jan 18 18:57:05 2006]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
-#include "../init/init.h"
+#include "../common/common.h"
 
 static void	stats_test_fun(t_staid st);
 

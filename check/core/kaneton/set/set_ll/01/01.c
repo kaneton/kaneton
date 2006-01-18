@@ -11,7 +11,7 @@
 
 #include <klibc.h>
 #include <kaneton.h>
-#include "../../init/init.h"
+#include "../../common/common.h"
 
 /*
  * creates a linked list set with no options and release it. nothing more.

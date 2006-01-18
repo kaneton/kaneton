@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/check/init/Makefile
+## file          /home/buckman/kaneton/kaneton/check/check/common/Makefile
 ##
 ## created       matthieu bucchianeri   [tue dec 20 15:05:01 2005]
-## updated       matthieu bucchianeri   [thu dec 29 19:10:11 2005]
+## updated       matthieu bucchianeri   [wed jan 18 18:49:26 2006]
 ##
 
 #
@@ -25,9 +25,9 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TEST_LO			:=		init.lo
+TEST_LO			:=		common.lo
 
-TEST_C			:=		init.c
+TEST_C			:=		common.c
 
 TEST_O			:=		$(TEST_C:.c=.o)
 

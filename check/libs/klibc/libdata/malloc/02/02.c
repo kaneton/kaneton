@@ -10,7 +10,7 @@
  */
 
 #include <klibc.h>
-#include "../init/init.h"
+#include "../common/common.h"
 
 /*
  * many calls to malloc with different size.

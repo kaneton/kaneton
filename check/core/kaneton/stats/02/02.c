@@ -6,12 +6,12 @@
  * file          /home/buckman/kaneton/kaneton/check/core/kaneton/stats/02/02.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:20:43 2005]
+ * updated       matthieu bucchianeri   [wed jan 18 18:57:20 2006]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
-#include "../init/init.h"
+#include "../common/common.h"
 
 /*
  * many nested calls

@@ -3,21 +3,20 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/libs/klibc/libdata/malloc/init/init.c
+ * file          /home/buckman/kaneton/kaneton/check/libs/klibc/libdata/malloc/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:17:39 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:23:29 2005]
+ * updated       matthieu bucchianeri   [wed jan 18 19:13:51 2006]
  */
 
 #include <klibc.h>
-#include "init.h"
+#include "common.h"
 
-void	check_malloc_init(void)
+void	check_malloc_common(void)
 {
   /*
    * nothing here since this test is only for injecting code for next tests.
    */
-  printf("init done.\n");
 }
 
 /*
@@ -26,7 +25,7 @@ void	check_malloc_init(void)
 
 void	check_malloc_tests(void)
 {
-  check_malloc_init();
+  check_malloc_common();
   check_malloc_01();
   check_malloc_02();
   check_malloc_03();

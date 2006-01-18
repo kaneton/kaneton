@@ -10,7 +10,7 @@
  */
 
 #include <klibc.h>
-#include "../init/init.h"
+#include "../common/common.h"
 
 #define RESIZE(Array,Sz)						\
   (Array) = realloc((Array), (Sz) * sizeof(int))

@@ -11,7 +11,7 @@
 
 #include <klibc.h>
 #include <kaneton.h>
-#include "../../init/init.h"
+#include "../../common/common.h"
 
 static t_id	get_min(t_setid id);
 

@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/check/init/init.h
+ * file          /home/buckman/kaneton/kaneton/check/check/common/common.h
  *
  * created       matthieu bucchianeri   [tue dec 20 15:04:37 2005]
- * updated       matthieu bucchianeri   [mon jan  9 12:35:20 2006]
+ * updated       matthieu bucchianeri   [wed jan 18 19:21:50 2006]
  */
 
-#ifndef CHECK_INIT_H_
-# define CHECK_INIT_H_
+#ifndef CHECK_COMMON_H_
+# define CHECK_COMMON_H_
 
 # include <klibc.h>
 
@@ -31,11 +31,6 @@ typedef struct
 
 }		t_leaks;
 
-void	check_leaks_init(t_leaks*	l);
-void	check_leaks_display(t_leaks*	l);
-
-void	check_check_init(void);
-void	check_tests(void);
 void	check_set_tests(void);
 void	check_stats_tests(void);
 void	check_malloc_tests(void);
@@ -43,4 +38,27 @@ void	check_printf_tests(void);
 void	check_id_tests(void);
 void	check_libia32_tests(void);
 
-#endif /* !CHECK_INIT_H_ */
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      common.c
+ */
+
+/*
+ * common.c
+ */
+
+void	check_check_common(void);
+
+void	check_tests(void);
+
+void	check_leaks_init(t_leaks*	l);
+
+void	check_leaks_display(t_leaks*	l);
+
+
+/*
+ * eop
+ */
+
+#endif /* !CHECK_COMMON_H_ */
