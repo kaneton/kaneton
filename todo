@@ -1,13 +1,49 @@
 --
+ matthieu: check/ -init +common
+
+--
+ remarques sur le cours:
+
+   le tout premier cours de remise a niveau devrait a lui seul durer presque
+   3h tellement il faut tout revoir, espace d'adressage, adresses memoire,
+   stack etc..: vraiment aborder, memoire physique, memoire virtuelle,
+   mapping, bien insister mask bits, decalage, set, unset, align etc..
+   aborder egalement brievement l adressage, le ELF: bss, data, rodata etc..
+
+--
+ Antoine Castaing, Nicolas Clermont et Damien Laniel.
+
+ Nicolas Clermont a ete pris en stage de fin d'annee chez EADS
+ dans un departement de developement de micronoyau embarque.
+
+ leur demander leurs bookmarks, et dire que quand meme kaneton
+ ca peut servir pour les gens que ca interesse vraiment.
+
+--
+ se synchroniser avec le svn de la box kaneton. enfin le faire un jour quoi :)
+
+--
  promo 2007:
 
    groupe 1:
-
      - Enguerrand Raymond
      - David Lorin
      - Stephane Roissard
 
   groupe 2:
+     - Emeric Laroche: laroch_e
+     - Frederick Meyer: meyer_f
+     - Jerome Francillon: franci_j
+
+  groupe 3:
+     - Matthieu Michaud: michau_m
+     - Germain Bauvin: bauvin_g
+     - Pierre-Yves Rofes: rofes-_p
+
+  groupe 4:
+     - Mathieu Selaries: selari_m
+     - Jerome Herbault: herbau_j
+     - Igal Cohen-Hadria: cohen-_i
 
 --
  je crois qu il y a une solution pour l'auth de messages.
