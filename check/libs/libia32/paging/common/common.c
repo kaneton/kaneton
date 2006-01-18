@@ -3,21 +3,20 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/libs/libia32/paging/init/init.c
+ * file          /home/buckman/kaneton/kaneton/check/libs/libia32/paging/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:17:39 2005]
- * updated       matthieu bucchianeri   [mon jan  9 11:25:01 2006]
+ * updated       matthieu bucchianeri   [wed jan 18 19:49:43 2006]
  */
 
 #include <klibc.h>
-#include "init.h"
+#include "common.h"
 
-void	check_paging_init(void)
+void	check_paging_common(void)
 {
   /*
    * nothing here since this test is only for injecting code for next tests.
    */
-  printf("init done.\n");
 }
 
 /*
@@ -26,7 +25,7 @@ void	check_paging_init(void)
 
 void	check_paging_tests(void)
 {
-  check_paging_init();
+  check_paging_common();
   check_paging_01();
   /* XXX */
 }

@@ -3,21 +3,20 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/libs/libia32/init/init.c
+ * file          /home/buckman/kaneton/kaneton/check/libs/libia32/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:17:39 2005]
- * updated       matthieu bucchianeri   [mon jan  9 12:38:47 2006]
+ * updated       matthieu bucchianeri   [wed jan 18 19:43:46 2006]
  */
 
 #include <klibc.h>
-#include "init.h"
+#include "common.h"
 
-void	check_libia32_init(void)
+void	check_libia32_common(void)
 {
   /*
    * nothing here since this test is only for injecting code for next tests.
    */
-  printf("init done.\n");
 }
 
 /*
@@ -26,6 +25,7 @@ void	check_libia32_init(void)
 
 void	check_libia32_tests(void)
 {
+  check_libia32_common();
   check_pmode_tests();
   check_paging_tests();
   /* XXX */
@@ -35,9 +35,10 @@ void	check_libia32_tests(void)
  * #gp exception handler
  */
 
-void	fault_handler()
+void	fault_handler(void)
 {
   printf("SYSTEM THROWN GENERAL PROTECTION FAULT\n");
+  while (1);
 }
 
 /*

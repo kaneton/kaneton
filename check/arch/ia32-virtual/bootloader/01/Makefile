@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/libs/libia32/pmode/common/Makefile
+## file          /home/buckman/kaneton/kaneton/check/arch/ia32-virtual/bootloader/01/Makefile
 ##
-## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [wed jan 18 19:44:40 2006]
+## created       matthieu bucchianeri   [tue dec 20 15:05:01 2005]
+## updated       matthieu bucchianeri   [wed jan 18 20:01:20 2006]
 ##
 
 #
@@ -14,7 +14,6 @@
 #
 
 include			../../../../../env/.env.mk
-
 
 #
 # ---------- directives -------------------------------------------------------
@@ -26,9 +25,9 @@ include			../../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TEST_LO			:=		common.lo
+TEST_LO			:=		01.lo
 
-TEST_C			:=		common.c
+TEST_C			:=		01.c
 
 TEST_O			:=		$(TEST_C:.c=.o)
 

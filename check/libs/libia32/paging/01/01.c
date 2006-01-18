@@ -6,11 +6,11 @@
  * file          /home/buckman/kaneton/kaneton/check/libs/libia32/paging/01/01.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:12:15 2005]
- * updated       matthieu bucchianeri   [mon jan  9 12:40:28 2006]
+ * updated       matthieu bucchianeri   [wed jan 18 19:49:05 2006]
  */
 
 #include <klibc.h>
-#include "../init/init.h"
+#include "../common/common.h"
 
 /*
  * checks the cr0 register.

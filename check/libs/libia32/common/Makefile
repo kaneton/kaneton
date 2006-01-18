@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/libs/libia32/init/Makefile
+## file          /home/buckman/kaneton/kaneton/check/libs/libia32/common/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [mon jan  9 12:33:08 2006]
+## updated       matthieu bucchianeri   [wed jan 18 19:31:36 2006]
 ##
 
 #
@@ -26,9 +26,9 @@ include			../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TEST_LO			:=		init.lo
+TEST_LO			:=		common.lo
 
-TEST_C			:=		init.c
+TEST_C			:=		common.c
 
 TEST_O			:=		$(TEST_C:.c=.o)
 

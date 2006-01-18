@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/libs/libia32/paging/Makefile
+## file          /home/buckman/kaneton/kaneton/check/arch/ia32-virtual/bootloader/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [wed jan 18 19:47:38 2006]
+## updated       matthieu bucchianeri   [wed jan 18 20:00:38 2006]
 ##
 
 #
@@ -31,7 +31,7 @@ SUBDIRS			:=		$(call contents,$(LIST),)
 
 MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 
-PAGING_LO		:=		paging.lo
+BOOTLOADER_LO		:=		bootloader.lo
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -39,12 +39,12 @@ PAGING_LO		:=		paging.lo
 
 all:			build run
 
-build:			$(PAGING_LO)
+build:			$(BOOTLOADER_LO)
 
-$(PAGING_LO):		libs
-	$(call remove,$(PAGING_LO),)
+$(BOOTLOADER_LO):		libs
+	$(call remove,$(BOOTLOADER_LO),)
 
-	$(call archive,$(PAGING_LO),$(MODULES),)
+	$(call archive,$(BOOTLOADER_LO),$(MODULES),)
 
 libs:
 	$(call makefile,$(SUBDIRS),)
@@ -54,11 +54,10 @@ run:
 clear:
 	$(call makefile,$(SUBDIRS),clear)
 
-	$(call remove,$(PAGING_LO),)
+	$(call remove,$(BOOTLOADER_LO),)
 
 	$(call purge,)
 
 proto:
-	$(call prototypes,"common/common.h",)
 
 dep:
