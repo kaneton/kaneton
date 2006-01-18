@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/bootloader/arch/ia32-virtual/paging.c
  *
  * created       julien quintard   [sun may 29 00:38:50 2005]
- * updated       matthieu bucchianeri   [mon jan 16 23:58:59 2006]
+ * updated       matthieu bucchianeri   [wed jan 18 00:37:31 2006]
  */
 
 /*
@@ -85,8 +85,12 @@ void			bootloader_paging_init(void)
    * 1)
    */
 
-  pd_build(bootloader_init_alloc(PD_MAX_ENTRIES * sizeof(t_pde), NULL),
-	   &pd, 1);
+  if (pd_build(bootloader_init_alloc(PD_MAX_ENTRIES * sizeof(t_pde), NULL),
+	       &pd, 1) != ERROR_NONE)
+    {
+      printf("cannot build a page-directory\n");
+      bootloader_error();
+    }
 
   /*
    * 2)
@@ -98,8 +102,12 @@ void			bootloader_paging_init(void)
    * 3)
    */
 
-  pt_build(bootloader_init_alloc(PT_MAX_ENTRIES * sizeof(t_pte), NULL),
-	   &pt0, 1);
+  if (pt_build(bootloader_init_alloc(PT_MAX_ENTRIES * sizeof(t_pte), NULL),
+	       &pt0, 1) != ERROR_NONE)
+    {
+      printf("cannot build a page-table\n");
+      bootloader_error();
+    }
 
   pt0.present = 1;
   pt0.rw = 1;
@@ -126,8 +134,13 @@ void			bootloader_paging_init(void)
     {
       if (pd_get_table(&pd, PDE_ENTRY(addr), &pt) != ERROR_NONE)
 	{
-	  pt_build(bootloader_init_alloc(PT_MAX_ENTRIES * sizeof(t_pte), NULL),
-		   &pt, 1);
+	  if (pt_build(bootloader_init_alloc(PT_MAX_ENTRIES * sizeof(t_pte),
+					     NULL),
+		       &pt, 1) != ERROR_NONE)
+	  {
+	    printf("cannot build a page-table\n");
+	    bootloader_error();
+	  }
 
 	  pt.present = 1;
 	  pt.rw = 1;

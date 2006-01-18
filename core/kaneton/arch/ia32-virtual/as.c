@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 17 00:11:17 2006]
+ * updated       matthieu bucchianeri   [tue jan 17 23:38:40 2006]
  */
 
 /*
@@ -61,9 +61,12 @@ i_as			as_interface =
  * steps:
  *
  * 1) gets the as object.
- * 2) reserves a segment for the directory or get the current one if kernel
- *    task
- * 3) builds a new page directory for the as.
+ * 2) kernel task case:
+ *  a) gets the page directory from the init variable.
+ *  b) inject current page tables.
+ * 3) normal address space:
+ *  a) reserves a segment for the directory.
+ *  b) builds a new page directory for the as.
  */
 
 t_error			ia32_as_reserve(t_tskid			tskid,
@@ -72,6 +75,8 @@ t_error			ia32_as_reserve(t_tskid			tskid,
   o_as*			o;
   t_id			seg;
   o_segment*		oseg;
+  t_uint32		pde;
+  t_table		table;
 
   AS_ENTER(as);
 
@@ -82,16 +87,49 @@ t_error			ia32_as_reserve(t_tskid			tskid,
   if (as_get(*asid, &o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  /*
-   * 2)
-   */
-
   if (tskid == ktask)
     {
-      o->machdep.pd = init->machdep.pd;
+      /*
+       * 2)
+       */
+
+      /*
+       * a)
+       */
+
+      memcpy(&o->machdep.pd, &init->machdep.pd, sizeof (t_directory));
+
+      /*
+       * b)
+       */
+
+      o_segment		seg;
+
+      for (pde = 0; pde < PD_MAX_ENTRIES; pde++)
+	{
+	  if (pd_get_table(&o->machdep.pd, pde, &table) == ERROR_NONE)
+	    {
+	      seg.address = (t_paddr)table.entries;
+	      seg.size = PAGESZ;
+	      seg.perms = PERM_READ | PERM_WRITE;
+
+	      printf("injecting segment %p for pde %d\n", seg.address, pde);
+
+	      if (segment_inject(&seg, *asid) != ERROR_NONE)
+		REGION_LEAVE(region, ERROR_UNKNOWN);
+	    }
+	}
     }
   else
     {
+      /*
+       * 3)
+       */
+
+      /*
+       * a)
+       */
+
       if (segment_reserve(*asid, PAGESZ,
 			  PERM_READ | PERM_WRITE, &seg) != ERROR_NONE)
 	{
@@ -106,7 +144,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 	}
 
       /*
-       * 3)
+       * b)
        */
 
       if (pd_build(oseg->address, &o->machdep.pd, 1) != ERROR_NONE)

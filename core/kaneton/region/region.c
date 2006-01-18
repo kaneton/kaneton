@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [tue jan 17 00:23:29 2006]
+ * updated       matthieu bucchianeri   [tue jan 17 22:38:49 2006]
  */
 
 /*
@@ -317,6 +317,9 @@ t_error			region_release(t_asid			asid,
 t_error			region_flush(t_asid			asid)
 {
   o_as*			as;
+  t_state		state;
+  t_iterator		it;
+  t_regid*		obj;
 
   REGION_ENTER(region);
 
@@ -326,8 +329,25 @@ t_error			region_flush(t_asid			asid)
   if (as_get(asid, &as) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  if (set_release(as->regions) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+/*  if (set_release(as->regions) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);*/
+
+  set_foreach(SET_OPT_FORWARD, as->regions, &it, state)
+    {
+      if (set_object(as->regions, it, (void**)&obj) != ERROR_NONE)
+	{
+	  cons_msg('!', "region: cannot get region to release.\n");
+
+	  REGION_LEAVE(region, ERROR_UNKNOWN);
+	}
+
+      if (region_release(asid, *obj) != ERROR_NONE)
+	{
+	  cons_msg('!', "region: cannot release a region.\n");
+
+	  REGION_LEAVE(region, ERROR_UNKNOWN);
+	}
+    }
 
   REGION_LEAVE(region, ERROR_NONE);
 }

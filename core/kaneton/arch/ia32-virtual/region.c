@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [tue jan 17 00:31:32 2006]
+ * updated       matthieu bucchianeri   [wed jan 18 00:13:27 2006]
  */
 
 /*
@@ -35,7 +35,7 @@ i_region		region_interface =
     ia32_region_paddr,
     ia32_region_reserve,
     ia32_region_release,
-    ia32_region_flush,
+    NULL,
     ia32_region_init,
     ia32_region_clean
   };
@@ -264,6 +264,8 @@ t_error			ia32_region_reserve(t_asid		asid,
 
     }
 
+  tlb_flush();
+
   printf("\n\n");
 
   REGION_LEAVE(region, ERROR_NONE);
@@ -313,18 +315,6 @@ t_error			ia32_region_release(t_asid		asid,
     {
       /* XXX */
     }
-
-  REGION_LEAVE(region, ERROR_UNKNOWN);
-}
-
-/*
- * this function flushes all the regions, free page tables.
- *
- */
-
-t_error			ia32_region_flush(t_asid		asid)
-{
-  REGION_ENTER(region);
 
   REGION_LEAVE(region, ERROR_UNKNOWN);
 }

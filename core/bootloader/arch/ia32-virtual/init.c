@@ -1,15 +1,12 @@
 /*
- * kaneton
+ * licence       kaneton licence
  *
- * init.c
+ * project       kaneton
  *
- * path          /home/mycure/kaneton
+ * file          /home/buckman/kaneton/kaneton/core/bootloader/arch/ia32-virtual/init.c
  *
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- *
- * started on    Mon Jul 19 20:43:14 2004   mycure
-** Last update Fri Jan  6 14:04:33 2006 matthieu bucchianeri
+ * created       julien quintard   [mon jul 19 20:43:14 2004]
+ * updated       matthieu bucchianeri   [tue jan 17 22:24:35 2006]
  */
 
 /*

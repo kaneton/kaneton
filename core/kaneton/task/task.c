@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [sun jan 15 19:42:42 2006]
+ * updated       matthieu bucchianeri   [tue jan 17 23:30:48 2006]
  */
 
 /*
@@ -559,7 +559,6 @@ t_error			task_init(void)
    * 7)
    */
 
-/* XXX
   for (i = 0; i < init->nregions; i++)
     {
       if (region_reserve(asid, (t_segid)init->regions[i].address,
@@ -572,7 +571,7 @@ t_error			task_init(void)
 	  return (ERROR_UNKNOWN);
 	}
     }
-*/
+
   /*
    * 8)
    */

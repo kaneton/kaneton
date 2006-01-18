@@ -68,8 +68,6 @@ t_error			ia32_region_reserve(t_asid		asid,
 t_error			ia32_region_release(t_asid		asid,
 					    t_regid		regid);
 
-t_error			ia32_region_flush(t_asid		asid);
-
 t_error			ia32_region_init(t_fit			fit,
 					 t_vaddr		start,
 					 t_vsize		size);
