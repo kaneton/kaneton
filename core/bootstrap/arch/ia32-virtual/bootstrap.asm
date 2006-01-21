@@ -23,7 +23,7 @@
 
 [BITS 16]			; 16-bit
 
-[ORG 0x7c00]			; tells the compiler where to start the code
+[ORG 0x7c00]			; tells the assembler where to start the code
 
 jmp main			; jump to the main program
 

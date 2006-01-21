@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/design/design.tex
 %%
 %% created       julien quintard   [sat nov 19 19:02:11 2005]
-%% updated       julien quintard   [sun dec 25 17:52:46 2005]
+%% updated       julien quintard   [sat jan 21 16:19:58 2006]
 %%
 
 %
@@ -110,7 +110,7 @@ five:
 \begin{enumerate}
   \item
     \textbf{MIPS Architecture}: to study an internal architecture and
-    more generally piplined microprocessors.
+    more generally pipelined microprocessors.
   \item
     \textbf{Intel Architecture}: to study an external architecture, generally
     used to implement the kaneton microkernel.
@@ -214,8 +214,8 @@ We will see later that the term \textbf{server} is not used in the kaneton
 documentation. Instead the terms: driver, service etc.. will be used.
 
 The kaneton microkernel runs on every machine of the system including
-workstations, the pool processors, specialised servers etc.. The microkernel
-has four primary functionalities to provide:
+workstations, specialised servers etc.. The microkernel has four primary
+functionalities to provide:
 
 \begin{enumerate}
   \item
@@ -262,7 +262,7 @@ The group communication will not be explained in this paper.
 The memory model of the kaneton microkernel is very simple. Each address space
 of the system is composed of segments and regions.
 
-A \textbf{segment} consists of a linear sequence of physical addresses.
+A \textbf{segment} consists in a linear sequence of physical addresses.
 A segment describes one area of physical memory including the
 first address, the last but also some properties like the owner of this
 segment, the permissions: execution, read, write etc.. and some
@@ -270,7 +270,7 @@ extra attributes. Segments can be accessed via mappings or directly via
 the segment interface provided by the kaneton microkernel. Each segment
 is identified by an unique identifier and manipulated with a capability.
 
-A \textbf{region} consists of a linear sequence of virtual addresses.
+A \textbf{region} consists in a linear sequence of virtual addresses.
 A region has no properties and is only used to map a valid segment.
 Using a region in the virtual memory will reference the segment's data
 it maps.

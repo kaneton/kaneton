@@ -1,4 +1,50 @@
 --
+ faire la moulinette de triche + filtre sur les fichiers identiques etc..
+
+--
+ retoucher la moulinette et virer le script parse_res.py. revoir
+ aussi pour le systeme de loading de modules.
+
+ peut etre meme revoir en general la moulinette.
+
+--
+ demande a solal d'ecrire sa doc dans internships
+
+--
+ creer un service monitor lance en premier apres mod qui recevra des
+ messages du kernel comme par exemple: les messages de debug du kernel
+ et des dumps etc..
+
+--
+ plutot que de faire un systeme de errno, et puisque toute la communication
+ se fait par messages on pourrait imaginer que le message d'erreur (s'il
+ existe se trouve dans la reponse) comme ca quand on fait un appel a une
+ fonctinnalite d une autre machine sans trop savoir ce que le service
+ de cette machine fournit on peut avoir des infos sur les erreurs.
+
+--
+ il faut prevoir que tout le demarrage des services via fichier de conf
+ doit pouvoir etre fait en dynamique. par exemple si mod reserve un
+ segment special (CATCH) pour le service tty (console) et bien il faut
+ imaginer que si on lance ce meme serveur a la main une fois le systeme
+ boote, soit le systeme de lui meme (via un fichier de conf) sait quels
+ sont les objets dont il herite ou alors il faut prevoir des messages style
+ segment_acquire() pour acquerir un segment specifique: la memoire video.
+
+--
+ envoye un message shutdown pour killer proprement une task.
+
+--
+ on pourrait imaginer que chaque service/driver accepte un message de type
+ UPDATE et envoie sa capability task si jamais l'appellant est de confiance.
+
+ de cette maniere on pourrait imaginer un service update qui enverrai
+ UPDATE des qu une nouvell version d'un programme tournant existe. ainsi
+ le service update stoppe la tache en question temporairement a un endroit
+ precis et par exemple met a jour le code dynamiquement. c est complique
+ mais ce serait pas mal.
+
+--
  matthieu: check/ -init +common
 
 --
@@ -44,6 +90,16 @@
      - Mathieu Selaries: selari_m
      - Jerome Herbault: herbau_j
      - Igal Cohen-Hadria: cohen-_i
+
+  groupe 5:
+     - Jean-Christophe Gonnard: gonnar_j
+     - Emmanuel Reynaud: reynau_e
+     - Mahn Nguyen: nguyen_g
+
+  groupe 6:
+     - Etienne Gaschet: gasche_e
+     - Minh XXX: nguyen_s
+     - Pouya Mohtacham: mohtac_p
 
 --
  je crois qu il y a une solution pour l'auth de messages.
