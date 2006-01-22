@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [tue jan 17 22:38:49 2006]
+ * updated       matthieu bucchianeri   [sat jan 21 02:57:15 2006]
  */
 
 /*
@@ -24,8 +24,6 @@
  * pour region_paddr, tout est dans le  code dep. en fait, vu qu'on va
  * mapper des parties de segments, on  peut plus juste se baser sur le
  * segid
- *
- * XXX pr flush: on set_release !? donc on peut pas reutiliser ?
  *
  */
 
@@ -135,10 +133,6 @@ t_error			region_dump(t_asid		asid)
    */
 
   cons_msg('#', "dumping %qu regions(s) from the region container:\n", size);
-
-  /*
-   * 4)
-   */
 
   set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
     {
@@ -312,6 +306,12 @@ t_error			region_release(t_asid			asid,
 /*
  * this function removes every region that belongs to the address space
  * specified.
+ *
+ * steps:
+ *
+ * 1) calls the machine dependent code.
+ * 2) gets the address space object.
+ * 3) releases each region in the set.
  */
 
 t_error			region_flush(t_asid			asid)
@@ -323,14 +323,23 @@ t_error			region_flush(t_asid			asid)
 
   REGION_ENTER(region);
 
+  /*
+   * 1)
+   */
+
   if (machdep_call(region, region_flush, asid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
 
   if (as_get(asid, &as) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
-/*  if (set_release(as->regions) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);*/
+  /*
+   * 3)
+   */
 
   set_foreach(SET_OPT_FORWARD, as->regions, &it, state)
     {
@@ -382,10 +391,8 @@ t_error			region_get(t_asid			asid,
  * 1) allocates and initialises the region manager structure.
  * 2) initialises the region manager structure fields from the init
  *    structure.
- * 3) reserves the region set which will contain the system's regions.
- * 4) tries to reserve a statistics object.
- * 5) calls the machine-dependent code.
- * 6) if needed, dumps the regions.
+ * 3) tries to reserve a statistics object.
+ * 4) calls the machine-dependent code.
  */
 
 t_error			region_init(t_vaddr			start,
@@ -437,7 +444,6 @@ t_error			region_init(t_vaddr			start,
  * 1) calls the machine-dependent code.
  * 2) releases the stats object.
  * 3) releases the region container.
- * 4) frees the region manager structure's memory.
  */
 
 t_error			region_clean(void)

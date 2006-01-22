@@ -1,4 +1,5 @@
 --
+=======
  ca va etre a vous: matthieu/renaud d'ecrire le document kaneton
  expliquant la reference. a discuter!
 
@@ -47,9 +48,6 @@
  le service update stoppe la tache en question temporairement a un endroit
  precis et par exemple met a jour le code dynamiquement. c est complique
  mais ce serait pas mal.
-
---
- matthieu: check/ -init +common
 
 --
  remarques sur le cours:
@@ -153,17 +151,8 @@
   * pouvoir mapper des parties de segment. revoir le proto de reserve.
    * voir pr l'union adresse / i
    * vtop et ptov
- segment:
-  * inject: a l'init de la task kernel => mettre les segments prealloues
  tests:
   * changer les tests des sets pour plus considerer l'ordre
-
---
- a noter qu'on pourrait ptet ameliorer le systeme de region pour pouvoir mapper
- des parties de segments. c'est pas tres propre mais bon c'est surement
- faisable. a reflechir!
-
- ^-> ouais il faut pouvoir le faire.
 
 --
  renaud: expliquer comment booter d'une disquette etc.. tout le bas
@@ -174,12 +163,6 @@
  de sorte qu'on n'ait plus de structure t_cons dependante a passer
 
  include/arch/ia32-virtual/kaneton/init.h
-
---
- enlever les includes libia32 et les mettre dans libs/libia32     << fait
-
- par contre laisser un repertoire core/include/arch/ia32-virtual pour les
- includes specifiques.
 
 --
  ecrire des tests pour le bootloader ou on teste seulement la structure
@@ -200,9 +183,6 @@
    - revoir les noms des typedef dans libia32. prefixer t_ia32_ ?
    - corriger printf pour gerer les trucs style %8.5d
    - faire le python pour les tests de stats
-   - encore une question avec clone sur les sets : je clone mon set
-      set qui a SET_OPT_FREE, ensuite je flush le premier set, donc
-      les pointeurs du set clone sont pas valides... c'est l'echec clone
 
  pour tester la moulette avec un seul pc : QEMU, avec l'option "-serial pty"
  et changer en dur le device dans check.py.
