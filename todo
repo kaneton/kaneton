@@ -1,5 +1,9 @@
 --
-=======
+ pour eviter les deadlocks on autorisera uniquement les messages
+ asynchrone partant du kernel. ca va bien avec ce que je pensais et de
+ toute facon c'est seulement ce dont on a besoin donc ca bande.
+
+--
  ca va etre a vous: matthieu/renaud d'ecrire le document kaneton
  expliquant la reference. a discuter!
 
@@ -74,14 +78,16 @@
  promo 2007:
 
    groupe 1:
-     - Enguerrand Raymond
-     - David Lorin
-     - Stephane Roissard
+     - Enguerrand Raymond: raymon_e
+     - David Lorin: lorin_d
+     - Stephane Roissard: roissa_s
 
   groupe 2:
+
      - Emeric Laroche: laroch_e
      - Frederick Meyer: meyer_f
      - Jerome Francillon: franci_j
+     - Sebastien Petapermal: petape_s
 
   groupe 3:
      - Matthieu Michaud: michau_m
