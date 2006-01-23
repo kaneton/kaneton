@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/tools/mbl/grub/grub.sh
+## file          /home/buckman/kaneton/tools/mbl/grub/grub.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat dec 17 16:47:37 2005]
+## updated       matthieu bucchianeri   [mon jan 23 20:14:29 2006]
 ##
 
 #
@@ -247,8 +247,6 @@ ACTION="${1}"
 # choose what to do.
 case ${ACTION} in
   "build")
-
-echo BUILD
 
     # initialising the boot system.
     display " initialising the boot system" "+"
