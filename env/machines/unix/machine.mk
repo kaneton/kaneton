@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/env/machines/unix/machine.mk
+## file          /home/buckman/kaneton/env/machines/unix/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       matthieu bucchianeri   [sun dec 18 16:11:58 2005]
+## updated       matthieu bucchianeri   [mon jan 23 23:27:41 2006]
 ##
 
 #
@@ -306,7 +306,8 @@ define assemble-asm
   for opt in $(3); do							\
     case "$$opt" in							\
       "--format"*)							\
-	options_aa="$$options_aa `$(_ECHO_) $$opt | $(_SED_) -e 's/--format/-f/1'`"\
+	options_aa="$$options_aa `$(_ECHO_) $$opt | $(_SED_) -e		\
+			's/--format/-f/1'`"				\
         ;;								\
       *)								\
         ;;								\
@@ -371,7 +372,8 @@ define executable
   for opt in $(3); do							\
     case "$$opt" in							\
       "--lds"*)								\
-	options_e="$$options_e `$(_ECHO_) $$opt | $(_SED_) -e 's/--lds/-T/1'`"\
+	options_e="$$options_e `$(_ECHO_) $$opt | $(_SED_) -e		\
+		's/--lds/-T/1'`"					\
         ;;								\
       *)								\
         ;;								\

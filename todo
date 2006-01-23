@@ -1,4 +1,12 @@
 --
+ bootloader: virer les segments  dans pmode.c, mettre juste 2 segments
+ et deplacer ceux pour les services & co dans ia32_segment_init.
+
+ modifier region pour mapper des parties de segments.
+
+ voir le probleme de segment_resize, split & co : quand on a mappé une region,
+ si on la resize que doit il se passer ?
+--
  pour eviter les deadlocks on autorisera uniquement les messages
  asynchrone partant du kernel. ca va bien avec ce que je pensais et de
  toute facon c'est seulement ce dont on a besoin donc ca bande.

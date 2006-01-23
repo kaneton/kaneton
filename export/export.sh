@@ -3,10 +3,10 @@
 ##
 ## project
 ##
-## file          /home/mycure/kaneton/export/export.sh
+## file          /home/buckman/kaneton/export/export.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sun dec 18 18:32:52 2005]
+## updated       matthieu bucchianeri   [mon jan 23 23:15:21 2006]
 ##
 
 #
@@ -171,9 +171,6 @@ build()
   print "" "" "" | makefile "clean" > /dev/null 2> /dev/null
 
   # remove the hidden directories
-
-echo ${_HIDDEN_}
-
   remove "${_HIDDEN_}"
 
   # leave directory
