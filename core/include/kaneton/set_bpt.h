@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * set_bpt.h
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Fri Oct 29 21:38:14 2004   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/core/include/kaneton/set_bpt.h
+ *
+ * created       julien quintard   [sun jun 19 14:51:33 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:28:49 2006]
  */
 
 #ifndef KANETON_SET_BPT_H

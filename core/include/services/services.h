@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * services.h
- * 
- * path          /home/mycure/kaneton/core/include/arch/ia32
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Jun 19 14:06:22 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/core/include/services/services.h
+ *
+ * created       matthieu bucchianeri   [tue jan 24 11:33:29 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 11:33:32 2006]
  */
 
 #ifndef SERVICES_SERVICES_H

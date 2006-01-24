@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * types.h
- * 
- * path          /home/mycure/kaneton/core/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:19:44 2005   mycure
- * last update   Sun Oct 30 23:08:13 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/core/include/kaneton/types.h
+ *
+ * created       julien quintard   [fri feb 11 02:19:44 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:27:45 2006]
  */
 
 #ifndef KANETON_TYPES_H

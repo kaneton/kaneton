@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * _ctype.c
- * 
- * path          /home/mycure/kaneton/libs/klibc/libc
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:49:35 2005   mycure
- * last update   Sun Jun 19 22:24:27 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/libstring/ctype.c
+ *
+ * created       julien quintard   [fri feb 11 02:56:44 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:57:43 2006]
  */
 
 /*
@@ -24,7 +19,7 @@
  * ---------- globals ---------------------------------------------------------
  */
 
-const u_char		_ctype[(1 << CHAR_BITS) + 1] = 
+const u_char		_ctype[(1 << CHAR_BITS) + 1] =
 {
   0,
   _C,     _C,     _C,     _C,     _C,     _C,     _C,     _C,
@@ -45,7 +40,7 @@ const u_char		_ctype[(1 << CHAR_BITS) + 1] =
   _L,     _L,     _L,     _P,     _P,     _P,     _P,     _C
 };
 
-const short		_ctype_toupper[(1 << CHAR_BITS) + 1] = 
+const short		_ctype_toupper[(1 << CHAR_BITS) + 1] =
 {
   EOF,
   0x00,   0x01,   0x02,   0x03,   0x04,   0x05,   0x06,   0x07,
@@ -82,7 +77,7 @@ const short		_ctype_toupper[(1 << CHAR_BITS) + 1] =
   0xf8,   0xf9,   0xfa,   0xfb,   0xfc,   0xfd,   0xfe,   0xff
 };
 
-const short		_ctype_tolower[(1 << CHAR_BITS) + 1] = 
+const short		_ctype_tolower[(1 << CHAR_BITS) + 1] =
 {
   EOF,
   0x00,   0x01,   0x02,   0x03,   0x04,   0x05,   0x06,   0x07,

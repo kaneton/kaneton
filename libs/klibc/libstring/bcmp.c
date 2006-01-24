@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * bcmp.c
- * 
- * path          /home/mycure/kaneton/libs/klibc/libc
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:49:47 2005   mycure
- * last update   Sun Jun 19 22:23:19 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/libstring/bcmp.c
+ *
+ * created       julien quintard   [fri feb 11 02:56:44 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:57:56 2006]
  */
 
 /*
@@ -39,6 +34,6 @@ int			bcmp(const void*			b1,
       if (*p1++ != *p2++)
 	break;
     } while (--length);
-  
+
   return (length);
 }

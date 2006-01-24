@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * quad.c
- * 
- * path          /home/mycure/kaneton/libs/klibc/libsys
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 03:08:53 2005   mycure
- * last update   Sun Jun 19 22:30:39 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/libsys/quad.c
+ *
+ * created       julien quintard   [fri feb 11 03:08:53 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:59:03 2006]
  */
 
 /*
@@ -311,7 +306,7 @@ quad_t			__moddi3(quad_t				a,
  *
  * u = 2^n u1  *  u0(n = number of bits in `u_long', usu. 32)
  *
- * and 
+ * and
  *
  * v = 2^n v1  *  v0
  *
@@ -800,7 +795,7 @@ u_quad_t		__qdivrem(u_quad_t			uq,
       digit		uj0;
       digit		uj1;
       digit		uj2;
-    
+
       /*
        * D3: calculate qhat (\^q, in TeX notation).
        * let qhat = min((u[j]*B + u[j+1])/v[1], B-1), and
@@ -867,7 +862,7 @@ u_quad_t		__qdivrem(u_quad_t			uq,
 	  qhat--;
 
 	  for (t = 0, i = n; i > 0; i--)	/* D6: add back. */
-	    { 
+	    {
 	      t += u[i + j] + v[i];
 	      u[i + j] = (digit)QUAD_LHALF(t);
 	      t = QUAD_HHALF(t);

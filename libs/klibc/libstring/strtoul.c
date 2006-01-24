@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * strtoul.c
- * 
- * path          /home/mycure/kaneton/libs/klibc/libstring
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:56:28 2005   mycure
- * last update   Wed Aug 31 16:34:50 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/libstring/strtoul.c
+ *
+ * created       julien quintard   [fri feb 11 02:56:44 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:56:20 2006]
  */
 
 /*

@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * types.h
- * 
- * path          /home/mycure/kaneton/libs/klibc/include
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:40:57 2005   mycure
- * last update   Sun Sep 25 22:35:22 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/include/libsys/types.h
+ *
+ * created       julien quintard   [fri feb 11 02:40:57 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:52:35 2006]
  */
 
 #ifndef LIBSYS_TYPES_H

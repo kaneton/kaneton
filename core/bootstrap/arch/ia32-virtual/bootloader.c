@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * bootloader.c
- * 
- * path          /home/mycure/kaneton/core/bootstrap/arch/ia32
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Thu Oct 20 12:55:08 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/core/bootstrap/arch/ia32-virtual/bootloader.c
+ *
+ * created       julien quintard   [fri feb 11 03:04:40 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:02:04 2006]
  */
 
 /*

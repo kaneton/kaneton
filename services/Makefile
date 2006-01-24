@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/services
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Mon Nov  7 16:07:05 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/services/Makefile
+##
+## created       julien quintard   [fri feb 11 02:59:20 2005]
+## updated       matthieu bucchianeri   [tue jan 24 11:45:53 2006]
 ##
 
 #

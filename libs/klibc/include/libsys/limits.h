@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
+ * licence kaneton licence
  *
- * kaneton
+ * project       kaneton
  *
- * limits.h
+ * file          /home/buckman/kaneton/libs/klibc/include/libsys/limits.h
  *
- * path          /home/mycure/kaneton/libs/klibc/include
- *
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- *
- * started on    Fri Feb 11 02:38:13 2005   mycure
-** Last update Mon Dec 26 19:11:26 2005 matthieu bucchianeri
+ * created       julien quintard   [fri feb 11 02:40:57 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:53:04 2006]
  */
 
 #ifndef LIBSYS_LIMITS_H

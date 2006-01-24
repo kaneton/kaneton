@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/libs/klibc/libdata
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 03:05:40 2005   mycure
-## last update   Mon Nov  7 15:48:40 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/libs/klibc/libdata/Makefile
+##
+## created       julien quintard   [fri feb 11 03:05:40 2005]
+## updated       matthieu bucchianeri   [tue jan 24 11:54:42 2006]
 ##
 
 #
@@ -34,7 +29,7 @@ LIBDATA_LO		:=		libdata.lo
 
 LIBDATA_C		:=		dump.c				\
 					alloc.c				\
-					sum2.c				
+					sum2.c
 
 LIBDATA_O		:=		$(LIBDATA_C:.c=.o)
 

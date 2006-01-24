@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
+ * licence kaneton licence
  *
- * kaneton
+ * project       kaneton
  *
- * malloc.h
+ * file          /home/buckman/kaneton/libs/klibc/include/libdata/alloc.h
  *
- * path          /home/mycure/kaneton/libs/klibc/libdata
- *
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- *
- * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Fri Oct 21 19:36:28 2005   mycure
+ * created       julien quintard   [fri feb 11 02:40:57 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:53:47 2006]
  */
 
 #ifndef LIBDATA_ALLOC_H

@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * libstring.h
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Fri Oct 29 21:34:42 2004   mycure
+ * licence kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/include/libstring/libstring.h
+ *
+ * created       julien quintard   [fri feb 11 02:40:57 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:53:27 2006]
  */
 
 #ifndef LIBSTRING_LIBSTRING_H

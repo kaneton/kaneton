@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * libsys.h
- * 
- * path          /home/mycure/kaneton/libs/klibc/libdata
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:36:32 2005   mycure
- * last update   Fri Oct 21 19:42:18 2005   mycure
+ * licence kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/include/libsys/libsys.h
+ *
+ * created       julien quintard   [fri feb 11 02:40:57 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:53:10 2006]
  */
 
 #ifndef LIBSYS_LIBSYS_H

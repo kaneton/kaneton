@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * rindex.c
- * 
- * path          /home/mycure/kaneton/libs/klibc/libc
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:53:05 2005   mycure
- * last update   Sun Jun 19 22:27:09 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/libstring/rindex.c
+ *
+ * created       julien quintard   [fri feb 11 02:56:44 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:57:09 2006]
  */
 
 /*

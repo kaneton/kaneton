@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * strchr.c
- * 
- * path          /home/mycure/kaneton/libs/klibc/libc
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:53:36 2005   mycure
- * last update   Sun Jun 19 22:27:34 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/libstring/strchr.c
+ *
+ * created       julien quintard   [fri feb 11 02:56:44 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:57:00 2006]
  */
 
 /*

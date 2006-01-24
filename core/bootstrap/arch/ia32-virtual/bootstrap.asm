@@ -55,6 +55,7 @@ print_string_done:
 
 floppy_read:
 	xor ax, ax		; to reinitialise the floppy controller
+	mov dl, [bootdrive]	; the drive we are booting from
 
 floppy_read_init:
 	int 0x13		; ask the BIOS to perform the task
@@ -69,7 +70,7 @@ floppy_read_init:
 	mov ch, 0x0		; the track to read
 	mov cl, 0x2		; the sector to read
 	mov dh, 0x0		; the head to read
-	mov dl, 0x0		; the drive to read
+	mov dl, [bootdrive]	; the drive to read
 
 floppy_read_retry:
 	int 0x13
@@ -112,6 +113,7 @@ pmode_enable:
 ;;
 
 main:
+	mov [bootdrive], dl	; save the bootdrive identifier
 	xor ax, ax		; initialise ax
 	mov ds, ax		; initialise ds
 
@@ -161,6 +163,8 @@ pmode_main:
 newline		db	10, 0
 
 rmode_message	db	'[+] real mode', 13, 10, 0
+
+bootdrive	db	0
 
 ;;                                                                     [cut] k0
 

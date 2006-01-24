@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
+ * licence       kaneton licence
  *
- * kaneton
+ * project       kaneton
  *
- * as.h
+ * file          /home/buckman/kaneton/core/include/kaneton/as.h
  *
- * path          /home/mycure/kaneton
- *
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- *
- * started on    Fri Feb 11 02:19:44 2005   mycure
-** Last update Sun Jan 15 18:17:50 2006 matthieu bucchianeri
+ * created       julien quintard   [fri feb 11 02:19:44 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:33:12 2006]
  */
 
 #ifndef KANETON_AS_H

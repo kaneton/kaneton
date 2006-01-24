@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * errno.h
- * 
- * path          /home/mycure/kaneton/libs/klibc/include
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:33:38 2005   mycure
- * last update   Sun Jun 19 22:19:06 2005   mycure
+ * licence kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/include/libsys/errno.h
+ *
+ * created       julien quintard   [fri feb 11 02:40:57 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:53:16 2006]
  */
 
 #ifndef LIBSYS_ERRNO_H

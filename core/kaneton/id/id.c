@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * id.c
- * 
- * path          /home/mycure/kaneton/core/include/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 03:04:40 2005   mycure
- * last update   Tue Nov  1 15:57:07 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/core/kaneton/id/id.c
+ *
+ * created       julien quintard   [fri feb 11 03:04:40 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:36:26 2006]
  */
 
 /*

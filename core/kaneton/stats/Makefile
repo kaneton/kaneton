@@ -1,23 +1,18 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/core/kaneton/stats
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Nov  7 17:39:03 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/core/kaneton/stats/Makefile
+##
+## created       julien quintard   [fri feb 11 02:57:24 2005]
+## updated       matthieu bucchianeri   [tue jan 24 11:37:04 2006]
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
- 
+
 include			../../../env/.env.mk
 
 #
@@ -32,7 +27,7 @@ include			../../../env/.env.mk
 
 STATS_LO		:=		stats.lo
 
-STATS_C			:=		stats.c				
+STATS_C			:=		stats.c
 
 STATS_O			:=		$(STATS_C:.c=.o)
 

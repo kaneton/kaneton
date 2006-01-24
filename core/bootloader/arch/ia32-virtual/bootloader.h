@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * bootloader.h
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:23:53 2005   mycure
- * last update   Tue Aug 30 14:02:52 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/bootloader.h
+ *
+ * created       julien quintard   [fri feb 11 02:23:53 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:20:27 2006]
  */
 
 #ifndef BOOTLOADER_H

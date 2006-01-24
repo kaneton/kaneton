@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * set_ll.h
- * 
- * path          /home/mycure/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Sun Jun 19 14:51:33 2005   mycure
- * last update   Fri Sep  2 15:51:32 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/core/include/kaneton/set_ll.h
+ *
+ * created       julien quintard   [sun jun 19 14:51:33 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:28:19 2006]
  */
 
 #ifndef KANETON_SET_LL_H

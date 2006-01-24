@@ -1,23 +1,18 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/core/kaneton/as
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Nov  7 17:34:11 2005   mycure
+## licence       kaneton licence
+##
+## project       knaeton
+##
+## file          /home/buckman/kaneton/core/kaneton/as/Makefile
+##
+## created       julien quintard   [fri feb 11 02:57:24 2005]
+## updated       matthieu bucchianeri   [tue jan 24 11:39:52 2006]
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
- 
+
 include			../../../env/.env.mk
 
 #
@@ -32,7 +27,7 @@ include			../../../env/.env.mk
 
 AS_LO			:=		as.lo
 
-AS_C			:=		as.c				
+AS_C			:=		as.c
 
 AS_O			:=		$(AS_C:.c=.o)
 

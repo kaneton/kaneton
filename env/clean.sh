@@ -1,18 +1,12 @@
-#! /bin/bash
-
-## copyright quintard julien
-## 
-## kaneton
-## 
-## clean.sh
-## 
-## path          /home/mycure/kaneton/tools/mbl/grub
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Sun Nov 13 00:57:15 2005   mycure
+#!/bin/sh
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/env/clean.sh
+##
+## created       julien quintard   [fri feb 11 02:58:21 2005]
+## updated       matthieu bucchianeri   [tue jan 24 11:43:11 2006]
 ##
 
 #

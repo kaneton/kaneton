@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
+## licence       kaneton licence
 ##
-## kaneton
+## project       kaneton
 ##
-## Makefile
+## file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/Makefile
 ##
-## path          /home/mycure/kaneton/core/kaneton/arch/ia32/kaneton
-##
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-##
-## started on    Fri Feb 11 02:57:24 2005   mycure
-## Last update Tue Jan 10 00:02:10 2006 matthieu bucchianeri
+## created       julien quintard   [fri feb 11 02:57:24 2005]
+## updated       matthieu bucchianeri   [tue jan 24 11:40:45 2006]
 ##
 
 #

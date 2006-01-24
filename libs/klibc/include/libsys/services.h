@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * services.h
- * 
- * path          /home/mycure/kaneton/libs/klibc/include
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:34:07 2005   mycure
- * last update   Sun Jun 19 22:19:21 2005   mycure
+ * licence kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/include/libsys/services.h
+ *
+ * created       julien quintard   [fri feb 11 02:40:57 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:52:53 2006]
  */
 
 #ifndef LIBSYS_SERVICES_H

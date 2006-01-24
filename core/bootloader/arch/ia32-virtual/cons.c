@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * cons.c
- * 
- * path          /home/mycure/kaneton/core/bootloader/arch/ia32
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Sat May 28 18:23:13 2005   mycure
- * last update   Fri Oct 21 20:05:44 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/cons.c
+ *
+ * created       julien quintard   [sat may 28 18:23:13 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:22:46 2006]
  */
 
 /*

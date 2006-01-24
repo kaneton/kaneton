@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/libs/crt
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:57:24 2005   mycure
-## last update   Mon Nov  7 15:40:19 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/libs/crt/Makefile
+##
+## created       julien quintard   [fri feb 11 02:57:24 2005]
+## updated       matthieu bucchianeri   [tue jan 24 11:47:55 2006]
 ##
 
 #
@@ -30,11 +25,11 @@ include			../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-CRT_C			:=		crt.c				
+CRT_C			:=		crt.c
 
 CRT_O			:=		$(CRT_C:.c=.o)
 
-CRT_INCLUDE		:=		
+CRT_INCLUDE		:=
 
 #
 # ---------- rules ------------------------------------------------------------

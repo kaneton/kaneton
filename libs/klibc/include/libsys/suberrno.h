@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * suberrno.h
- * 
- * path          /home/mycure/kaneton/libs/klibc/include
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:40:07 2005   mycure
- * last update   Sun Jun 19 22:19:29 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/include/libsys/suberrno.h
+ *
+ * created       julien quintard   [fri feb 11 02:40:57 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:52:43 2006]
  */
 
 #ifndef LIBSYS_SUBERRNO_H

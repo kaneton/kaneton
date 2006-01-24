@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/papers/kaneton/kaneton.tex
+%% file          /home/buckman/kaneton/view/papers/kaneton/kaneton.tex
 %%
 %% created       julien quintard   [thu dec  8 00:26:00 2005]
-%% updated       julien quintard   [fri dec  9 12:10:31 2005]
+%% updated       matthieu bucchianeri   [tue jan 24 11:09:02 2006]
 %%
 
 %
@@ -19,19 +19,19 @@
 % header
 %
 
-\lhead{\scriptsize{The kaneton microkernel reference}}
+\lhead{\scriptsize{The kaneton micro-kernel reference}}
 
 %
 % title
 %
 
-\title{The kaneton microkernel reference}
+\title{The kaneton micro-kernel reference}
 
 %
 % authors
 %
 
-\author{\small{Julien Quintard}}
+\author{\small{Julien Quintard}, \small{Matthieu Bucchianeri}, \small{Renaud Voltz}}
 
 %
 % document
@@ -57,9 +57,9 @@
 
 \section{The Project}
 
-This document describes the kaneton microkernel reference.
+This document describes the kaneton micro-kernel reference.
 
-kaneton is a pedagogic microkernel developed by EPITA students during
+kaneton is a pedagogic micro-kernel developed by EPITA students during
 their specialisation year in System, Network and Security.
 
 This project consists in the design and development of parts of an
@@ -70,20 +70,20 @@ designed in a very specific way to keep the design the simplest as possible
 to be understable by the students.
 
 Nevertheless, the kaneton project and especially the kaneton reference
-operating system was implementing using modern tools and modern
+operating system was implemented using modern tools and modern
 programming techniques.
 
-The kaneton microkernel is divided into managers which perform very
+The kaneton micro-kernel is divided into managers which perform very
 specific tasks and make the design simpler to understand.
 
-We decided to develop a microkernel because this type of kernel is very
+We decided to develop a micro-kernel because this type of kernel is very
 modular, secure, strong and clear.
 
-All these characteristics make the microkernel a perfect development
+All these characteristics make the micro-kernel a perfect development
 project for students.
 
 The goals of the project are to lead the student to understand one or more
-processor architectures, an entire microkernel design and implementation
+processor architectures, an entire micro-kernel design and implementation
 and finally the principles and paradigms of a distributed systems.
 
 The kaneton project was introduced at EPITA by two students
@@ -92,13 +92,15 @@ The kaneton project was introduced at EPITA by two students
 	Jean-Pascal Billaud
 	  \footnote{billau\_j@epita.fr}.
 
-This document especially describes the kaneton reference microkernel
+This document especially describes the kaneton reference micro-kernel
 developed by
 	Julien Quintard,
 	C\'edric Aubouy
 	  \footnote{aubouy\_c@epita.fr},
 	Matthieu Bucchianeri
 	  \footnote{bucchi\_m@epita.fr}.
+	Renaud Voltz
+	  \footnote{voltz\_r@epita.fr}.
 
 But many people contributed to this project and we thank them.
 
@@ -122,7 +124,7 @@ XXX
 
 \section{The Bootstrap}
 
-The bootstrap is a little code which is launch by the BIOS.
+The bootstrap is a little code launched by the BIOS.
 
 Its role is to launch the bootloader. To do this, it has to read the
 bootloader on a device which can be the floppy, the hard drive,
@@ -146,7 +148,7 @@ The EPITA Computer System Laboratory currently develop an Intel Architecture
 32-bit bootstrap. For more information, take a look to the Laboratory
 website: \textbf{http://www.lse.epita.fr}.
 
-In technical terms, the bootstrap just load and lanch the bootloader
+In technical terms, the bootstrap just loads and launches the bootloader
 which will be able to initialise the kernel.
 
 
@@ -163,7 +165,7 @@ information structure called \textbf{init} has to be provided to
 the kernel when started.
 
 So, the bootloader has to fill in these requirements to be able
-to correctly laucnh the kernel.
+to correctly launch the kernel.
 
 \subsection{Intel 32-bit Architecture}
 

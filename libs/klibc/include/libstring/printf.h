@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * printf.h
- * 
- * path          /home/mycure/kaneton/libs/klibc/libdata
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:32:39 2005   mycure
- * last update   Fri Oct 21 19:39:39 2005   mycure
+ * licence kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/include/libstring/printf.h
+ *
+ * created       julien quintard   [fri feb 11 02:40:57 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:53:20 2006]
  */
 
 #ifndef LIBSTRING_PRINTF_H

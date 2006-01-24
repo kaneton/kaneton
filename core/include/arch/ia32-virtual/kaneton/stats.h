@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * stats.h
- * 
- * path          /home/mycure/kaneton/core/include/arch/ia32/kaneton
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 02:23:41 2005   mycure
- * last update   Sat Sep 10 15:16:31 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/core/include/arch/ia32-virtual/kaneton/stats.h
+ *
+ * created       julien quintard   [fri feb 11 02:23:41 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:25:29 2006]
  */
 
 #ifndef IA32_KANETON_STATS_H

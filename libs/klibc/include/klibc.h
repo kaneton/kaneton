@@ -1,17 +1,12 @@
 /*
- * copyright quintard julien
- * 
- * kaneton
- * 
- * klibc.h
- * 
- * path          /home/mycure/kaneton/libs/klibc/libdata
- * 
- * made by mycure
- *         quintard julien   [quinta_j@epita.fr]
- * 
- * started on    Fri Feb 11 13:53:34 2005   mycure
- * last update   Fri Oct 21 19:35:51 2005   mycure
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/buckman/kaneton/libs/klibc/include/klibc.h
+ *
+ * created       julien quintard   [fri feb 11 13:53:34 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 11:51:37 2006]
  */
 
 #ifndef KLIBC_H
