@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/cons.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:22:46 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 12:44:22 2006]
  */
 
 /*
@@ -108,23 +108,34 @@ void			bootloader_cons_attr(t_uint8		attr)
 
 int			bootloader_cons_print_char(char		c)
 {
-  t_uint16		pos = cons.line * CONS_COLUMNS * CONS_BPC +
-    cons.column * CONS_BPC;
+  t_uint16		pos;
 
+  if (cons.line >= CONS_LINES)
+    bootloader_cons_scroll(1);
   if (c == '\n')
     {
       cons.line++;
       cons.column = 0;
 
-      return (0);
+      return (1);
     }
 
-  if (pos >= CONS_SIZE)
+  if (c == '\r')
     {
-      bootloader_cons_scroll(1);
+      cons.column = 0;
 
-      pos = cons.line * CONS_COLUMNS * CONS_BPC + cons.column * CONS_BPC;
+      return (1);
     }
+
+  if (cons.column >= CONS_COLUMNS)
+    {
+      cons.column = 0;
+      ++cons.line;
+      if (cons.line >= CONS_LINES)
+	bootloader_cons_scroll(1);
+    }
+
+  pos = cons.line * CONS_COLUMNS * CONS_BPC + cons.column * CONS_BPC;
 
   cons.vga[pos] = c;
   cons.vga[pos + 1] = cons.attr;

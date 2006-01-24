@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/pmode/gdt.c
+ * file          /home/buckman/kaneton/libs/libia32/pmode/gdt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:45:19 2005]
- * updated       matthieu bucchianeri   [fri jan  6 14:14:04 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 15:41:03 2006]
  */
 
 /*
@@ -69,7 +69,8 @@ t_error			gdt_dump(t_gdt*       	dump_gdt)
 {
   t_uint16		i;
   t_gdte*		entries;
-  t_uint64		limit;
+  t_segment		seg;
+  const char*		type;
 
   /*
    * 1)
@@ -90,45 +91,35 @@ t_error			gdt_dump(t_gdt*       	dump_gdt)
 
   for (i = 1; i < dump_gdt->count; i++)
     {
-      if ((entries[i].type & GDT_TYPE_PRESENT))
+      if (gdt_get_segment(dump_gdt, i, &seg) != ERROR_NONE)
+	continue;
+
+      type = NULL;
+      if (seg.is_system)
 	{
-	  printf("entry %d ", i);
-	  if ((entries[i].flags & GDT_FLAG_GRANULAR))
-	    limit = (t_uint64)((entries[i].limit_00_15 |
-		      (entries[i].limit_16_19 << 16)) + 1) * 4096;
-	  else
-	    limit = entries[i].limit_00_15 | (entries[i].limit_16_19 << 16);
-	  printf("base %u, limit = %qu",
-		 (t_uint32)(entries[i].base_00_15 |
-			    (entries[i].base_16_23 << 16) |
-			    (entries[i].base_24_31 << 24)),
-		 limit);
-	  if (entries[i].flags & GDT_FLAG_GRANULAR)
-	    printf(" G");
-	  if (!(entries[i].type & GDT_TYPE_S))
-	    {
-	      if (GDT_TYPE_SYS(entries[i].type) == GDT_TYPE_LDT)
-		printf(" LDT");
-	      else if (GDT_TYPE_SYS(entries[i].type) == GDT_TYPE_TSS)
-		printf(" TSS");
-	      else if (GDT_TYPE_SYS(entries[i].type) == GDT_GATE_CALL)
-		printf(" Call Gate");
-	      else if (GDT_TYPE_SYS(entries[i].type) == GDT_GATE_TRAP)
-		printf(" Trap Gate");
-	      else if (GDT_TYPE_SYS(entries[i].type) == GDT_GATE_INTERRUPT)
-		printf(" Int. Gate");
-	      else
-		printf(" Oth.");
-	    }
-	  else
-	    {
-	      if (GDT_TYPE_SEG(entries[i].type) == GDT_TYPE_DATA)
-		printf(" Data");
-	      else
-		printf(" Code");
-	    }
-	  printf("\n");
+	  if (seg.type.sys == type_ldt)
+	    type = "LDT";
+	  if (seg.type.sys == type_tss)
+	    type = "TSS";
+	  if (seg.type.sys == type_call_gate)
+	    type = "Call Gate";
+	  if (seg.type.sys == type_int_gate)
+	    type = "Interrupt Gate";
+	  if (seg.type.sys == type_trap_gate)
+	    type = "Trap Gate";
 	}
+      else
+	{
+	  if (seg.type.usr == type_code)
+	    type = "Code";
+	  if (seg.type.usr == type_data)
+	    type = "Data";
+	}
+      if (!type)
+	type = "Other";
+
+      printf("segment %d, base = 0x%x limit = 0x%x, type = %s\n",
+	     i, seg.base, seg.limit, type);
     }
 
   return ERROR_NONE;
@@ -415,7 +406,49 @@ t_error			gdt_get_segment(t_gdt*		table,
 					t_uint16	index,
 					t_segment*	segment)
 {
-  return ERROR_UNKNOWN;
+  /*
+   * 1)
+   */
+
+  if (!table)
+    table = &gdt;
+
+  /*
+   * 2)
+   */
+
+  if (index >= table->count ||
+      !(table->descriptor[index].type & GDT_TYPE_PRESENT))
+    return ERROR_UNKNOWN;
+
+  /*
+   * 3)
+   */
+
+  segment->base = table->descriptor[index].base_00_15 |
+    (table->descriptor[index].base_16_23 << 16) |
+    (table->descriptor[index].base_24_31 << 24);
+
+  segment->limit = table->descriptor[index].limit_00_15 |
+    (table->descriptor[index].limit_16_19 << 16);
+
+  if (table->descriptor[index].flags & GDT_FLAG_GRANULAR)
+    segment->limit *= 4096;
+
+  segment->privilege = GDT_TYPE_GET_DPL(table->descriptor[index].type);
+
+  segment->is_system = !(table->descriptor[index].type & GDT_TYPE_S);
+
+  if (segment->is_system)
+    {
+      segment->type.sys = table->descriptor[index].type & 0xF;
+    }
+  else
+    {
+      segment->type.usr = table->descriptor[index].type & 0xF;
+    }
+
+  return ERROR_NONE;
 }
 
 /*

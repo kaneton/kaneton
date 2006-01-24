@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/bootloader/arch/ia32-virtual/pmode.c
+ * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/pmode.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [tue jan 17 00:20:35 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 13:58:48 2006]
  */
 
 /*
@@ -33,14 +33,8 @@
 
 #define PMODE_GDT_ENTRIES	256
 
-#define PMODE_GDT_CORE_CS	0x1
-#define PMODE_GDT_CORE_DS	0x2
-#define PMODE_GDT_DRIVER_CS	0x3
-#define PMODE_GDT_DRIVER_DS	0x4
-#define PMODE_GDT_SERVICE_CS	0x5
-#define PMODE_GDT_SERVICE_DS	0x6
-#define PMODE_GDT_PROGRAM_CS	0x7
-#define PMODE_GDT_PROGRAM_DS	0x8
+#define PMODE_BOOTLOADER_CS	0x1
+#define PMODE_BOOTLOADER_DS	0x2
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -59,19 +53,19 @@ extern t_init*		init;
 /*                                                                  [cut] k1 */
 
 /*
- * this function initialises the global offset table inserting
- * height entries for the core, drivers, services and programs.
+ * this  function initialises  the global  offset table  inserting two
+ * default segements for the bootloader and kernel initialisation.
  *
  * each segment has the same size with different rights: read/execution,
  * read/write etc..
  *
  * steps:
  *
- * 1) creates a new table and enable it.
- * 2) sets the height segments for the core, driver, service and program.
- * 3) updates the segments registers.
- * 4) finally installs the protected mode.
- * 5) updates the init structure.
+ * 1) create a new table and enable it.
+ * 2) set two segments for the rest of the operations.
+ * 3) update the segments registers.
+ * 4) finally install the protected mode.
+ * 5) update the init structure.
  */
 
 void			bootloader_pmode_init(void)
@@ -85,11 +79,20 @@ void			bootloader_pmode_init(void)
    * 1)
    */
 
-  gdt_build(PMODE_GDT_ENTRIES, bootloader_init_alloc(PMODE_GDT_ENTRIES *
-						     sizeof(t_gdte), NULL),
-	    &gdt, 1);
+  if (gdt_build(PMODE_GDT_ENTRIES,
+		bootloader_init_alloc(PMODE_GDT_ENTRIES *
+				      sizeof(t_gdte), NULL),
+		&gdt, 1) != ERROR_NONE)
+    {
+      bootloader_cons_msg('!', "pmode: error creating gdt.\n");
+      bootloader_error();
+    }
 
-  gdt_activate(gdt);
+  if (gdt_activate(gdt) != ERROR_NONE)
+    {
+      bootloader_cons_msg('!', "pmode: error activating gdt.\n");
+      bootloader_error();
+    }
 
   /*
    * 2)
@@ -100,64 +103,30 @@ void			bootloader_pmode_init(void)
   seg.privilege = prvl_supervisor;
   seg.is_system = 0;
   seg.type.usr = type_code;
-  gdt_add_segment(NULL, PMODE_GDT_CORE_CS, seg);
+  if (gdt_add_segment(NULL, PMODE_BOOTLOADER_CS, seg) != ERROR_NONE)
+    {
+      bootloader_cons_msg('!', "pmode: error creating main code segment.\n");
+      bootloader_error();
+    }
 
   seg.base = 0;
   seg.limit = 0xffffffff;
   seg.privilege = prvl_supervisor;
   seg.is_system = 0;
   seg.type.usr = type_data;
-  gdt_add_segment(NULL, PMODE_GDT_CORE_DS, seg);
-
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = prvl_supervisor;
-  seg.is_system = 0;
-  seg.type.usr = type_code;
-  gdt_add_segment(NULL, PMODE_GDT_DRIVER_CS, seg);
-
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = prvl_supervisor;
-  seg.is_system = 0;
-  seg.type.usr = type_data;
-  gdt_add_segment(NULL, PMODE_GDT_DRIVER_DS, seg);
-
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = prvl_supervisor;
-  seg.is_system = 0;
-  seg.type.usr = type_code;
-  gdt_add_segment(NULL, PMODE_GDT_SERVICE_CS, seg);
-
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = prvl_supervisor;
-  seg.is_system = 0;
-  seg.type.usr = type_data;
-  gdt_add_segment(NULL, PMODE_GDT_SERVICE_DS, seg);
-
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = prvl_supervisor;
-  seg.is_system = 0;
-  seg.type.usr = type_code;
-  gdt_add_segment(NULL, PMODE_GDT_PROGRAM_CS, seg);
-
-  seg.base = 0;
-  seg.limit = 0xffffffff;
-  seg.privilege = prvl_supervisor;
-  seg.is_system = 0;
-  seg.type.usr = type_data;
-  gdt_add_segment(NULL, PMODE_GDT_PROGRAM_DS, seg);
+  if (gdt_add_segment(NULL, PMODE_BOOTLOADER_DS, seg) != ERROR_NONE)
+    {
+      bootloader_cons_msg('!', "pmode: error creating main data segment.\n");
+      bootloader_error();
+    }
 
   /*
    * 3)
    */
 
-  gdt_build_selector(PMODE_GDT_CORE_CS, prvl_supervisor, &kcs);
-  gdt_build_selector(PMODE_GDT_CORE_DS, prvl_supervisor, &kds);
-//  pmode_set_segment_registers(kcs, kds);
+  gdt_build_selector(PMODE_BOOTLOADER_CS, prvl_supervisor, &kcs);
+  gdt_build_selector(PMODE_BOOTLOADER_DS, prvl_supervisor, &kds);
+  pmode_set_segment_registers(kcs, kds);
 
   /*
    * 4)

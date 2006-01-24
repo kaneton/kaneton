@@ -1,4 +1,17 @@
 --
+ inventaire des fonctions a terminer : (celles ou il y a des XXX en tout cas)
+  - as_clone
+  - set_delete_bpt   << julien !
+  - ia32_region_release
+  - segment_catch
+  - region_reserve + revoir son prototype
+  - gdt_import (eventuellement la virer)
+  - gdt_get_segment / ldt_get_segment
+
+ revoir aussi core/kaneton/debug/*, c'est un peu crade.
+
+ revoir la klibc il y a beaucoup de XXX dedans.
+--
  bootloader: virer les segments  dans pmode.c, mettre juste 2 segments
  et deplacer ceux pour les services & co dans ia32_segment_init.
 
@@ -189,15 +202,6 @@
  reiterer le coup du sondage sur les cours, le projet etc..
 
 --
- julien: penser a finir set_delete pour bpt
-
- matthieu:
-   - voir pkoi la maj des registre segments fout la merde (dans le bootloader)
-   - void pkoi cli/sti fout la merde
-   - revoir les noms des typedef dans libia32. prefixer t_ia32_ ?
-   - corriger printf pour gerer les trucs style %8.5d
-   - faire le python pour les tests de stats
-
  pour tester la moulette avec un seul pc : QEMU, avec l'option "-serial pty"
  et changer en dur le device dans check.py.
 

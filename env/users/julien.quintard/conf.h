@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/env/users/julien.quintard/conf.h
+ * file          /home/buckman/kaneton/env/users/julien.quintard/conf.h
  *
  * created       julien quintard   [sat dec 17 17:24:46 2005]
- * updated       julien quintard   [sat dec 17 17:25:09 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 15:54:24 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -34,6 +34,24 @@
 #define CONF_MODE_RELEASE	(1 << 1)
 
 #define CONF_MODE		MODE_DEVELOPMENT
+
+/*
+ * which fit method to use in segment
+ */
+
+#define SEGMENT_FIT	FIT_FIRST
+
+/*
+ * which fit method to use in region
+ */
+
+#define REGION_FIT	FIT_FIRST
+
+/*
+ * which fit method to use in alloc
+ */
+
+#define ALLOC_FIT	FIT_FIRST
 
 /*
  * this define activates the statistics

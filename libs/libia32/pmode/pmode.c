@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/pmode/pmode.c
+ * file          /home/buckman/kaneton/libs/libia32/pmode/pmode.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:15 2005]
- * updated       matthieu bucchianeri   [mon jan  9 12:13:11 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 14:02:30 2006]
  */
 
 /*
@@ -84,10 +84,7 @@ t_error			pmode_init(void)
 
 t_error			pmode_enable(void)
 {
-  t_uint16		kcs;
-  t_uint16		kds;
-
-  //CLI();
+  CLI();
 
   asm volatile("movl %%cr0, %%eax\n\t"
 	       "orw $1, %%ax\n\t"
@@ -100,12 +97,7 @@ t_error			pmode_enable(void)
 	       "pmode_enable_next:"
 	       );
 
-  gdt_build_selector(1, prvl_supervisor, &kcs);
-  gdt_build_selector(2, prvl_supervisor, &kds);
-
-  //pmode_set_segment_registers(kcs, kds);
-
-  //STI();
+  /* XXX STI(); */
 
   return ERROR_NONE;
 }

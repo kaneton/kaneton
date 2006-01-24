@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/include/pmode/pmode.h
+ * file          /home/buckman/kaneton/libs/libia32/include/pmode/pmode.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri jan  6 11:53:47 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 15:02:46 2006]
  */
 
 #ifndef IA32_IA32_PMODE_H
@@ -89,7 +89,7 @@
 #define GDT_TYPE_S		(1 << 4)
 
 #define GDT_TYPE_CODE		((1 << 3) | (1 << 1))
-#define GDT_TYPE_DATA		(0 << 3)
+#define GDT_TYPE_DATA		(1 << 1)
 #define GDT_TYPE_LDT		(1 << 1)
 #define GDT_TYPE_TSS		((1 << 3) | (1 << 0))
 
@@ -108,6 +108,9 @@
 #define GDT_TYPE_MK_DPL(Priv)						\
   ((Priv) << 5)
 
+#define GDT_TYPE_GET_DPL(Type)						\
+  (((Type) >> 5) & 0x3)
+
 /*
  * ---------- types -----------------------------------------------------------
  */
@@ -119,7 +122,7 @@
 typedef enum
   {
 	prvl_supervisor = PRIV_RING0,
-	prvl_service = PRIV_RING1,
+	prvl_privileged = PRIV_RING1,
 	prvl_user = PRIV_RING3,
   }	t_prvl;
 

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/segment.c
+ * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat jan 14 20:04:45 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 14:49:12 2006]
  */
 
 /*
@@ -59,15 +59,120 @@ i_segment		segment_interface =
 /*
  * this function just initialises the machine-dependent segment manager.
  *
- * for the intel 32-bit architecture we just initialise the protected mode.
+ * steps:
+ *
+ * 1) initialise protected-mode.
+ * 2) insert code and data segments for kernel task.
+ * 3) insert code and data segments for drivers.
+ * 4) insert code and data segments for services.
+ * 5) insert code and data segments for userland programs.
+ * 6) update segment selector registers.
  */
 
 t_error			ia32_segment_init(t_fit			fit)
 {
+  t_segment		seg;
+  t_uint16		kcs;
+  t_uint16		kds;
+
   SEGMENT_ENTER(segment);
+
+  /*
+   * 1)
+   */
 
   if (pmode_init() != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_supervisor;
+  seg.is_system = 0;
+  seg.type.usr = type_code;
+  if (gdt_add_segment(NULL, PMODE_GDT_CORE_CS, seg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_supervisor;
+  seg.is_system = 0;
+  seg.type.usr = type_data;
+  if (gdt_add_segment(NULL, PMODE_GDT_CORE_DS, seg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_privileged;
+  seg.is_system = 0;
+  seg.type.usr = type_code;
+  if (gdt_add_segment(NULL, PMODE_GDT_DRIVER_CS, seg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_privileged;
+  seg.is_system = 0;
+  seg.type.usr = type_data;
+  if (gdt_add_segment(NULL, PMODE_GDT_DRIVER_DS, seg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_privileged;
+  seg.is_system = 0;
+  seg.type.usr = type_code;
+  if (gdt_add_segment(NULL, PMODE_GDT_SERVICE_CS, seg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_privileged;
+  seg.is_system = 0;
+  seg.type.usr = type_data;
+  if (gdt_add_segment(NULL, PMODE_GDT_SERVICE_DS, seg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_user;
+  seg.is_system = 0;
+  seg.type.usr = type_code;
+  if (gdt_add_segment(NULL, PMODE_GDT_PROGRAM_CS, seg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = prvl_user;
+  seg.is_system = 0;
+  seg.type.usr = type_data;
+  if (gdt_add_segment(NULL, PMODE_GDT_PROGRAM_DS, seg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 6)
+   */
+
+  gdt_build_selector(PMODE_GDT_CORE_CS, prvl_supervisor, &kcs);
+  gdt_build_selector(PMODE_GDT_CORE_DS, prvl_supervisor, &kds);
+  pmode_set_segment_registers(kcs, kds);
+
+  gdt_dump(NULL);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }

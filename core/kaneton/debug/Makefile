@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/core/kaneton/debug/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:39:09 2006]
+## updated       matthieu bucchianeri   [tue jan 24 15:48:22 2006]
 ##
 
 #
@@ -27,7 +27,7 @@ include			../../../env/.env.mk
 
 DEBUG_LO		:=		debug.lo
 
-DEBUG_C			:=		cons.c				\
+DEBUG_C			:=		$(_CONSOLE_FILE_)		\
 					debug.c				\
 					serial.c
 
