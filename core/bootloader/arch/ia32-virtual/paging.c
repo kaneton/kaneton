@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/bootloader/arch/ia32-virtual/paging.c
+ * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/paging.c
  *
  * created       julien quintard   [sun may 29 00:38:50 2005]
- * updated       matthieu bucchianeri   [sun jan 22 19:23:18 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 18:12:26 2006]
  */
 
 /*
@@ -147,6 +147,7 @@ void			bootloader_paging_init(void)
 	  pt.user = 0;
 
 	  pd_add_table(&pd, PDE_ENTRY(addr), pt);
+	  limit += PAGESZ;
 	}
       pg.addr = (void*)addr;
       pt_add_page(&pt, PTE_ENTRY(addr), pg);

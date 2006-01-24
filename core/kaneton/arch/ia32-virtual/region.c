@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/region.c
+ * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [sun jan 22 18:11:07 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 18:42:53 2006]
  */
 
 /*
@@ -32,7 +32,7 @@ extern m_region*	region;
 
 i_region		region_interface =
   {
-    ia32_region_paddr,
+    NULL,
     ia32_region_reserve,
     ia32_region_release,
     NULL,
@@ -43,74 +43,6 @@ i_region		region_interface =
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * this  function  computes  the  physical  address  given  a  virtual
- * address.
- *
- * 1) gets the region object.
- * 2) checks the offset.
- * 3) gets the segment object.
- * 4) gets the page table for given virtual address.
- * 5) gets the entry for the given virtual address.
- * 6) computes the offset.
- */
-
-t_error			ia32_region_paddr(t_asid		asid,
-					  t_regid		regid,
-					  t_vaddr		virtual,
-					  t_paddr		*physical)
-{
-  o_as*			o;
-  o_region*		reg;
-  t_table		tab;
-  t_page		pg;
-
-  REGION_ENTER(region);
-
-  /*
-   * 1)
-   */
-
-  if (region_get(asid, regid, &reg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (virtual < reg->address || virtual >= reg->address + reg->size)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
-  if (as_get(asid, &o) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 4)
-   */
-
-  if (pd_get_table(&o->machdep.pd, PDE_ENTRY(virtual), &tab) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 5)
-   */
-
-  if (pt_get_page(&tab, PTE_ENTRY(virtual), &pg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 6)
-   */
-
-  *physical = (t_paddr)pg.addr + MK_OFFSET(virtual);
-
-  REGION_LEAVE(region, ERROR_NONE);
-}
 
 /*
  * reserves a region.
@@ -131,8 +63,10 @@ t_error			ia32_region_paddr(t_asid		asid,
 
 t_error			ia32_region_reserve(t_asid		asid,
 					    t_segid		segid,
+					    t_paddr		offset,
 					    t_opts		opts,
 					    t_vaddr		address,
+					    t_vsize		size,
 					    t_regid*		regid)
 {
   o_as*			o;
@@ -190,8 +124,8 @@ t_error			ia32_region_reserve(t_asid		asid,
    * 5)
    */
 
-  for (vaddr = address, paddr = oseg->address;
-       vaddr < address + oseg->size;
+  for (vaddr = address, paddr = oseg->address + offset;
+       vaddr < address + size;
        vaddr += PAGESZ, paddr += PAGESZ)
     {
 
@@ -255,8 +189,8 @@ t_error			ia32_region_reserve(t_asid		asid,
 
       pg.addr = (void*)paddr;
 
-      cons_msg('#', "%u:%u (v = %u) mapped to %u\n", pde, PTE_ENTRY(vaddr),
-	       vaddr, paddr);
+/*      cons_msg('#', "%u:%u (v = %u) mapped to %u\n", pde, PTE_ENTRY(vaddr),
+	       vaddr, paddr);*/
 
       if (pt_add_page(&pt, PTE_ENTRY(vaddr), pg) != ERROR_NONE)
 	{
@@ -266,8 +200,6 @@ t_error			ia32_region_reserve(t_asid		asid,
 
       tlb_invalidate(vaddr);
     }
-
-  printf("\n\n");
 
   REGION_LEAVE(region, ERROR_NONE);
 }

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/kaneton/debug.h
+ * file          /home/buckman/kaneton/core/include/kaneton/debug.h
  *
  * created       julien quintard   [mon nov 28 19:37:01 2005]
- * updated       matthieu bucchianeri   [sun jan 15 18:24:02 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 16:55:42 2006]
  */
 
 #ifndef KANETON_DEBUG_H
@@ -58,7 +58,7 @@ typedef	struct			s_serial_buffer
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../kaneton/debug/debug.c
- *      ../../kaneton/debug/cons.c
+ *      ../../kaneton/debug/cons-text.c
  *      ../../kaneton/debug/serial.c
  */
 
@@ -82,7 +82,7 @@ t_error			debug_clean(void);
 
 
 /*
- * ../../kaneton/debug/cons.c
+ * ../../kaneton/debug/cons-text.c
  */
 
 void			cons_clear(void);

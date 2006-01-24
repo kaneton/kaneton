@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/region/region.c
+ * file          /home/buckman/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [sat jan 21 02:57:15 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 17:18:39 2006]
  */
 
 /*
@@ -156,7 +156,10 @@ t_error			region_dump(t_asid		asid)
  *
  * steps:
  *
- * 1) calls dependent code.
+ * 1) get the region object.
+ * 2) check boudaries.
+ * 3) compute the physical address.
+ * 4) call dependent code.
  */
 
 t_error			region_paddr(t_asid		asid,
@@ -164,10 +167,32 @@ t_error			region_paddr(t_asid		asid,
 				     t_vaddr		virtual,
 				     t_paddr		*physical)
 {
+  o_region*		o;
+
   REGION_ENTER(region);
 
   /*
    * 1)
+   */
+
+  if (region_get(asid, regid, &o) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (virtual < o->address || virtual >= o->address + o->size)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  *physical = (t_paddr)o->segid + o->offset + (virtual - o->address);
+
+  /*
+   * 4)
    */
 
   if (machdep_call(region, region_paddr, asid, regid, virtual, physical) !=
@@ -190,8 +215,10 @@ t_error			region_paddr(t_asid		asid,
 
 t_error			region_reserve(t_asid			asid,
 				       t_segid			segid,
+				       t_paddr			offset,
 				       t_opts			opts,
 				       t_vaddr			address,
+				       t_vsize			size,
 				       t_regid*			regid)
 {
   o_segment*		segment;
@@ -210,6 +237,13 @@ t_error			region_reserve(t_asid			asid,
   if (segment_get(segid, &segment) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  if (opts & REGION_OPT_MAPALL)
+    {
+      offset = 0;
+      size = segment->size;
+      opts &= ~REGION_OPT_MAPALL;
+    }
+
   /*
    * 2)
    */
@@ -226,8 +260,7 @@ t_error			region_reserve(t_asid			asid,
       }
     case REGION_OPT_NONE:
       {
-	if (region_fit(as, segment->size,
-		       &o.address) != ERROR_NONE)
+	if (region_fit(as, size, &o.address) != ERROR_NONE)
 	  REGION_LEAVE(region, ERROR_UNKNOWN);
 
 	break;
@@ -244,7 +277,8 @@ t_error			region_reserve(t_asid			asid,
 
   *regid = o.regid = (t_regid)o.address;
   o.segid = segid;
-  o.size = segment->size;
+  o.size = size;
+  o.offset = offset;
 
   if (set_add(as->regions, &o) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
@@ -253,8 +287,8 @@ t_error			region_reserve(t_asid			asid,
    * 4)
    */
 
-  if (machdep_call(region, region_reserve, asid, segid,
-		   opts, address, regid) != ERROR_NONE)
+  if (machdep_call(region, region_reserve, asid, segid, offset,
+		   opts, address, size, regid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);

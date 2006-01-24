@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [tue jan 24 15:34:16 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 18:14:15 2006]
  */
 
 /*
@@ -559,10 +559,11 @@ t_error			task_init(void)
    * 7)
    */
 
-  for (i = 0; 0 && i < init->nregions; i++)
+  for (i = 0; i < init->nregions; i++)
     {
-      if (region_reserve(asid, (t_segid)init->regions[i].address,
-			 REGION_OPT_FORCE, init->regions[i].address,
+      if (region_reserve(asid, (t_segid)init->regions[i].address, 0,
+			 REGION_OPT_FORCE | REGION_OPT_MAPALL,
+			 init->regions[i].address, 0,
 			 &needless) != ERROR_NONE)
 	{
 	  cons_msg('!', "region: cannot map a region to a pre-reserved "

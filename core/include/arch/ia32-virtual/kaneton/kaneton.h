@@ -54,15 +54,12 @@ t_error			ia32_as_reserve(t_tskid			tskid,
  * ../../../../kaneton/arch/machdep/region.c
  */
 
-t_error			ia32_region_paddr(t_asid		asid,
-					  t_regid		regid,
-					  t_vaddr		virtual,
-					  t_paddr		*physical);
-
 t_error			ia32_region_reserve(t_asid		asid,
 					    t_segid		segid,
+					    t_paddr		offset,
 					    t_opts		opts,
 					    t_vaddr		address,
+					    t_vsize		size,
 					    t_regid*		regid);
 
 t_error			ia32_region_release(t_asid		asid,

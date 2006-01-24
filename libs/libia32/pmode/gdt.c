@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/pmode/gdt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:45:19 2005]
- * updated       matthieu bucchianeri   [tue jan 24 15:41:03 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 16:40:29 2006]
  */
 
 /*
@@ -441,11 +441,11 @@ t_error			gdt_get_segment(t_gdt*		table,
 
   if (segment->is_system)
     {
-      segment->type.sys = table->descriptor[index].type & 0xF;
+      segment->type.sys = GDT_TYPE_SYS(table->descriptor[index].type);
     }
   else
     {
-      segment->type.usr = table->descriptor[index].type & 0xF;
+      segment->type.usr = GDT_TYPE_SEG(table->descriptor[index].type);
     }
 
   return ERROR_NONE;

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/kaneton.c
+ * file          /home/buckman/kaneton/core/kaneton/kaneton.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 17 23:24:03 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 19:51:49 2006]
  */
 
 /*
@@ -175,17 +175,21 @@ void			kaneton(t_init*				bootloader)
 #endif
 
  t_segid s;
- t_regid r;
+ t_regid r, r2;
  t_paddr p;
 
- segment_reserve(0, 4096, PERM_READ | PERM_WRITE, &s);
- region_reserve(0, s, REGION_OPT_FORCE, 48000000, &r);
- region_paddr(0, r, 48000000, &p);
+ segment_reserve(0, 2 * 4096, PERM_READ | PERM_WRITE, &s);
+ region_reserve(0, s, 0, REGION_OPT_FORCE, 0xffff0000, 4096, &r);
+ region_reserve(0, s, 4096, REGION_OPT_FORCE, 0xffff2000, 4096, &r2);
  segment_show(s);
  region_show(0, r);
- printf("seg: %qu, reg: %qu : %u\n", s, r, p);
+ region_show(0, r2);
+ region_paddr(0, r, 0xffff0100, &p);
+ printf("seg: %qu, reg: %qu : %x ", s, r, p);
+ region_paddr(0, r2, 0xffff2300, &p);
+ printf(", %x\n", p);
  tlb_flush();
- int *a = (int *)48000000;
+ int *a = (int *)0xffff0004;
  *a = 0x41424344;
  printf("r/w test: %x\n", *a);
  segment_dump();

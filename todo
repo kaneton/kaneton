@@ -1,22 +1,19 @@
 --
+ il faut revoir set_locate_array pour les tableaux tries. il y a un bug.
+--
  inventaire des fonctions a terminer : (celles ou il y a des XXX en tout cas)
   - as_clone
   - set_delete_bpt   << julien !
   - ia32_region_release
   - segment_catch
-  - region_reserve + revoir son prototype
+  - region_reserve
   - gdt_import (eventuellement la virer)
-  - gdt_get_segment / ldt_get_segment
+  - ldt_get_segment
 
  revoir aussi core/kaneton/debug/*, c'est un peu crade.
 
  revoir la klibc il y a beaucoup de XXX dedans.
 --
- bootloader: virer les segments  dans pmode.c, mettre juste 2 segments
- et deplacer ceux pour les services & co dans ia32_segment_init.
-
- modifier region pour mapper des parties de segments.
-
  voir le probleme de segment_resize, split & co : quand on a mappé une region,
  si on la resize que doit il se passer ?
 --

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/kaneton/region.h
+ * file          /home/buckman/kaneton/core/include/kaneton/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sun jan 15 18:56:21 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 17:01:12 2006]
  */
 
 #ifndef KANETON_REGION_H
@@ -30,6 +30,7 @@
 
 #define REGION_OPT_NONE		(1 << 0)
 #define REGION_OPT_FORCE	(1 << 1)
+#define REGION_OPT_MAPALL	(1 << 2)
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -50,6 +51,7 @@ typedef struct
   t_segid			segid;
 
   t_vaddr			address;
+  t_paddr			offset;
   t_vsize			size;
 }				o_region;
 
@@ -81,8 +83,10 @@ typedef struct
 						t_paddr*);
   t_error			(*region_reserve)(t_asid,
 						  t_segid,
+						  t_paddr,
 						  t_opts,
 						  t_vaddr,
+						  t_vsize,
 						  t_regid*);
   t_error			(*region_release)(t_asid,
 						  t_regid);
@@ -152,8 +156,10 @@ t_error			region_paddr(t_asid		asid,
 
 t_error			region_reserve(t_asid			asid,
 				       t_segid			segid,
+				       t_paddr			offset,
 				       t_opts			opts,
 				       t_vaddr			address,
+				       t_vsize			size,
 				       t_regid*			regid);
 
 t_error			region_release(t_asid			asid,

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set_array.c
+ * file          /home/buckman/kaneton/core/kaneton/set/set_array.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon dec 19 17:53:58 2005]
+ * updated       matthieu bucchianeri   [tue jan 24 19:50:54 2006]
  */
 
 /*
@@ -1198,8 +1198,8 @@ t_error			set_locate_array(t_setid		setid,
   /*
    * 3)
    */
-
-  if ((o->u.array.opts & SET_OPT_SORT))
+/* XXX la dicho marche mal */
+  if (0 && (o->u.array.opts & SET_OPT_SORT))
     {
 
       /*

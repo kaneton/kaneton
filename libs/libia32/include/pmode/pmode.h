@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/pmode/pmode.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 24 15:02:46 2006]
+ * updated       matthieu bucchianeri   [tue jan 24 16:41:08 2006]
  */
 
 #ifndef IA32_IA32_PMODE_H
@@ -83,7 +83,7 @@
   ((Type) & ((1 << 3) | (1 << 2) | (1 << 1) | (1 << 0)))
 
 #define GDT_TYPE_SEG(Type)						\
-  ((Type) & (1 << 3))
+  ((Type) & ((1 << 3) | (1 << 1)))
 
 #define GDT_TYPE_PRESENT	(1 << 7)
 #define GDT_TYPE_S		(1 << 4)
