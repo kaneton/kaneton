@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/kaneton.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 24 19:51:49 2006]
+ * updated       matthieu bucchianeri   [wed jan 25 12:05:35 2006]
  */
 
 /*
@@ -174,6 +174,7 @@ void			kaneton(t_init*				bootloader)
  debug_init();
 #endif
 
+#if (DEBUG & DEBUG_AS)
  t_segid s;
  t_regid r, r2;
  t_paddr p;
@@ -194,6 +195,7 @@ void			kaneton(t_init*				bootloader)
  printf("r/w test: %x\n", *a);
  segment_dump();
  region_dump(0);
+#endif
 
   /*
    * XXX
