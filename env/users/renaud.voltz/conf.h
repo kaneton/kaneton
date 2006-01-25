@@ -83,7 +83,7 @@
  */
 
 #define CONF_DEBUG							\
-  (0)
+  (DEBUG_SET)
 
 /*
  * the machine-dependent configuration debug

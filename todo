@@ -1,4 +1,6 @@
 --
+checker la champ datasz dans les set_reserve.
+--
  il faut revoir set_locate_array pour les tableaux tries. il y a un bug.
 --
  inventaire des fonctions a terminer : (celles ou il y a des XXX en tout cas)

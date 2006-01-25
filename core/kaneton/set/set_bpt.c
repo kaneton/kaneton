@@ -1178,4 +1178,42 @@ t_error			set_release_bpt(t_setid			setid)
   SET_LEAVE(set, ERROR_NONE);
 }
 
+/*
+ * this function just returns an error because the bpt set only
+ * works with the sort option.
+ */
+
+t_error			set_push_bpt(t_setid			setid,
+				     void*			data)
+{
+  SET_ENTER(set);
+
+  SET_LEAVE(set, ERROR_UNKNOWN);
+}
+
+/*
+ * this function just returns an error because the bpt set only
+ * works with the sort option.
+ */
+
+t_error			set_pop_bpt(t_setid			setid)
+{
+  SET_ENTER(set);
+
+  SET_LEAVE(set, ERROR_UNKNOWN);
+}
+
+/*
+ * this function just returns an error because the bpt set only
+ * works with the sort option.
+ */
+
+t_error			set_pick_bpt(t_setid			setid,
+				     void**			data)
+{
+  SET_ENTER(set);
+
+  SET_LEAVE(set, ERROR_UNKNOWN);
+}
+
 /*                                                                 [cut] /k2 */

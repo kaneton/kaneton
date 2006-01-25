@@ -30,7 +30,9 @@ SET_LO			:=		set.lo
 SET_C			:=		set.c				\
 					set_array.c			\
 					set_bpt.c			\
-					set_ll.c
+					set_ll.c			\
+					set_pipe.c			\
+					set_stack.c			
 
 SET_O			:=		$(SET_C:.c=.o)
 
