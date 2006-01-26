@@ -47,6 +47,9 @@ typedef void (*t_dispdata)(void *data);
  *      ../set_ll/10/10.c
  *      ../set_ll/11/11.c
  *      ../set_ll/12/12.c
+ *	../set_pipe/01/01.c
+ *	../set_pipe/02/02.c
+ *	../set_pipe/03/03.c
  */
 
 /*
@@ -237,6 +240,27 @@ void		check_set_ll_11(void);
  */
 
 void		check_set_ll_12(void);
+
+
+/*
+ * ../set_pipe/01/01.c
+ */
+
+void		check_set_pipe_01(void);
+
+
+/*
+ * ../set_pipe/02/02.c
+ */
+
+void		check_set_pipe_02(void);
+
+
+/*
+ * ../set_pipe/03/03.c
+ */
+
+void		check_set_pipe_03(void);
 
 
 /*

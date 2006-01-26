@@ -27,7 +27,7 @@ void	check_set_common(void)
 
 void	check_set_tests(void)
 {
-  check_set_common();
+  /*  check_set_common();
   check_set_array_01();
   check_set_array_02();
   check_set_array_03();
@@ -52,7 +52,10 @@ void	check_set_tests(void)
   check_set_ll_09();
   check_set_ll_10();
   check_set_ll_11();
-  check_set_ll_12();
+  check_set_ll_12();*/
+  check_set_pipe_01();
+  check_set_pipe_02();
+  check_set_pipe_03();
   /* XXX continue tests */
 }
 

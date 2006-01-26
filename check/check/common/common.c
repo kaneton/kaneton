@@ -27,7 +27,7 @@ void	check_check_common(void)
 void	check_tests(void)
 {
   check_check_common();
-//  check_set_tests();
+  check_set_tests();
 //  check_malloc_tests();
 //  check_printf_tests();
 //  check_stats_tests();
