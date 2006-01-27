@@ -6,32 +6,76 @@
 %% file          /home/buckman/kaneton/view/papers/kaneton/kaneton.tex
 %%
 %% created       julien quintard   [thu dec  8 00:26:00 2005]
-%% updated       matthieu bucchianeri   [tue jan 24 11:09:02 2006]
+%% updated       matthieu bucchianeri   [wed jan 25 17:19:47 2006]
 %%
 
 %
-% template
+% class
 %
 
-\input{../../templates/paper.tex}
+\documentclass[12pt,a4wide]{report}
+
+%
+% packages
+%
+
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage[Lenny]{fncychap}
+\usepackage{fancyheadings}
+\usepackage{multicol}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{xspace}
+
+\pagestyle{fancy}
+
+\setlength{\footrulewidth}{0.3pt}
+\setlength{\parindent}{0.3cm}
+\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+
+%
+% verbatim font
+%
+
+\definecolor{verbatimcolor}{rgb}{0,0.4,0}
+
+\makeatletter
+\renewcommand{\verbatim@font}
+  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
+\makeatother
+
+%
+% kaneton
+%
+
+\newcommand{\kaneton}{kaneton\xspace}
 
 %
 % header
 %
 
-\lhead{\scriptsize{The kaneton micro-kernel reference}}
+\rfoot{\scriptsize{The kaneton microkernel project}}
+\lhead{\scriptsize{The kaneton microkernel project}}
+
+\date{\scriptsize{\today}}
 
 %
 % title
 %
 
-\title{The kaneton micro-kernel reference}
+\title{\huge{The kaneton micro-kernel reference}
+\\\vspace{2cm}\includegraphics{logo.jpg}}
 
 %
 % authors
 %
 
-\author{\small{Julien Quintard}, \small{Matthieu Bucchianeri}, \small{Renaud Voltz}}
+\author{\small{Julien Quintard}, \small{Matthieu Bucchianeri},
+\small{Renaud Voltz}\vspace{2cm}}
 
 %
 % document
@@ -49,134 +93,133 @@
 % --------- text --------------------------------------------------------------
 %
 
-
-
 %
-% the project
+% authors
 %
 
-\section{The Project}
+\newpage
 
-This document describes the kaneton micro-kernel reference.
+\paragraph{}
+The \kaneton project was introduced at EPITA by two students:
 
-kaneton is a pedagogic micro-kernel developed by EPITA students during
-their specialisation year in System, Network and Security.
+\begin{itemize}
+\item Julien Quintard \footnote{quinta\_j@epita.fr}
+\item Jean-Pascal Billaud \footnote{billau\_j@epita.fr}
+\end{itemize}
 
-This project consists in the design and development of parts of an
-operating system including the micro-kernel and the servers.
-
-The kaneton operating system, especially the kaneton micro-kernel was
-designed in a very specific way to keep the design the simplest as possible
-to be understable by the students.
-
-Nevertheless, the kaneton project and especially the kaneton reference
-operating system was implemented using modern tools and modern
-programming techniques.
-
-The kaneton micro-kernel is divided into managers which perform very
-specific tasks and make the design simpler to understand.
-
-We decided to develop a micro-kernel because this type of kernel is very
-modular, secure, strong and clear.
-
-All these characteristics make the micro-kernel a perfect development
-project for students.
-
-The goals of the project are to lead the student to understand one or more
-processor architectures, an entire micro-kernel design and implementation
-and finally the principles and paradigms of a distributed systems.
-
-The kaneton project was introduced at EPITA by two students
-	Julien Quintard
-	  \footnote{quinta\_j@epita.fr} and
-	Jean-Pascal Billaud
-	  \footnote{billau\_j@epita.fr}.
-
+\paragraph{}
 This document especially describes the kaneton reference micro-kernel
-developed by
-	Julien Quintard,
-	C\'edric Aubouy
-	  \footnote{aubouy\_c@epita.fr},
-	Matthieu Bucchianeri
-	  \footnote{bucchi\_m@epita.fr}.
-	Renaud Voltz
-	  \footnote{voltz\_r@epita.fr}.
+developed by:
 
+\begin{itemize}
+\item Julien Quintard
+\item C\'edric Aubouy \footnote{aubouy\_c@epita.fr}
+\item Matthieu Bucchianeri \footnote{bucchi\_m@epita.fr}
+\item Renaud Voltz \footnote{voltz\_r@epita.fr}
+\end{itemize}
+
+\paragraph{}
 But many people contributed to this project and we thank them.
 
-
-
 %
-% the development environment
+% toc
 %
 
-\section{The Development Environment}
-
-XXX
+\tableofcontents
 
 %
-% XXX
+% goals of the kaneton project
 %
 
+\chapter{Goals of the \kaneton project}
+
+\newpage
+
+\paragraph{}
+This   document   describes   the  \kaneton   micro-kernel   reference
+implementation.
+
+\paragraph{}
+The \kaneton micro-kernel is  studied during the EPITA System, Network
+and  Security specialization.   The  project comes  with many  courses
+leading student to learn about architectures and kernels and to design
+and develop important parts of a micro-kernel.
+
+\paragraph{}
+From this fact, \kaneton has been designed in a very particular way to
+keep the  design as  simpler as possible  to be understandable  by the
+students.
+
+\paragraph{}
+\kaneton is not based on any previous kernel code: it is written from
+nothing. As we  wanted the kernel to be  portable on any architecture,
+we paid  particular attention  in dividing the  code into  two precise
+sections: the independent code and the architecture-dependent code.
+
+\paragraph{}
+Designing this portability  system, we intended to port  the kernel on
+many architectures, so we  had to keep the architecture-dependent code
+as  small  as possible.   Moreover,  the  only  requirement about  the
+hardware is  the minimal amount of  memory, which must be  at least 32
+megabytes.
+
+\paragraph{}
+As we wanted the project to be very pedagogic, \kaneton source code is
+clear  and heavily  commented. Each  manager  or service  has its  own
+directory and  headers. Function name  and prototypes are  unified and
+explicit. Each function is preceded by a header explaining the task it
+performs and detailing the different steps.
+
 %
-% the bootstrap
+% overview of the kernel
 %
 
-\section{The Bootstrap}
+\chapter{Overview of the kernel}
 
-The bootstrap is a little code launched by the BIOS.
+%
+% development environment
+%
 
-Its role is to launch the bootloader. To do this, it has to read the
-bootloader on a device which can be the floppy, the hard drive,
-the network etc..
+\chapter{Development environment}
 
-\subsection{Intel 32-bit Architecture}
+%
+% description of the source tree
+%
 
-For the Intel Architecture 32-bit (IA32), we decided to use the
-	GRUB MultiBoot boot loader
-	  \footnote{http://www.gnu.org/software/grub/}.
+\chapter{Description of the source tree}
 
-Indeed, the GRUB bootloader handles many different boot devices with
-many different hardware devices: floppy, hard drive, network etc..
+%
+% coding style
+%
 
-Moreover, the GRUB bootloader provide the possibility to load
-modules in main memory. This feature is very intersting for a micro-kernel
-because we can now tell GRUB to load every micro-kernel's servers into
-main memory.
+\chapter{Coding style}
 
-The EPITA Computer System Laboratory currently develop an Intel Architecture
-32-bit bootstrap. For more information, take a look to the Laboratory
-website: \textbf{http://www.lse.epita.fr}.
+%
+% architecture-independant code
+%
 
-In technical terms, the bootstrap just loads and launches the bootloader
-which will be able to initialise the kernel.
+\chapter{Architecture-independant code}
 
+%
+% tools
+%
 
+\chapter{Tools}
 
-\section{The Bootloader}
+%
+% test suite
+%
 
-The bootloader's goal is to initialise the kernel environment.
+\chapter{Test suite}
 
-In kaneton, the kernel, when launched, has to run in a very specific
-environment.
+%
+% glossary
+%
 
-First, the virtual memory has to be initialised. Second, a special
-information structure called \textbf{init} has to be provided to
-the kernel when started.
+\chapter{Glossary}
 
-So, the bootloader has to fill in these requirements to be able
-to correctly launch the kernel.
-
-\subsection{Intel 32-bit Architecture}
 
 \end{document}
 \label{}
 \ref{}
 \pageref{}
-
-XXX machdep a la fin car depend de la partie generale contrairement a l autre
-
-XXX header, commit norme, coding style, dev-env: makefiles/shell, moulinette,
-    etc..
-
-XXX virer les parties d'archi et les mettre dans des documents a part.

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 19:56:00 2006]
+ * updated       matthieu bucchianeri   [thu jan 26 11:48:00 2006]
  */
 
 /*
@@ -32,7 +32,6 @@ extern m_region*	region;
 
 i_region		region_interface =
   {
-    NULL,
     ia32_region_reserve,
     ia32_region_release,
     NULL,

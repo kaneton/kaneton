@@ -49,6 +49,8 @@
 t_error			ia32_as_reserve(t_tskid			tskid,
 					t_asid*			asid);
 
+t_error			ia32_as_release(t_asid			asid);
+
 
 /*
  * ../../../../kaneton/arch/machdep/region.c

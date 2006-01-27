@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/arch/ia32-virtual/as.c
+ * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 17 23:38:40 2006]
+ * updated       matthieu bucchianeri   [fri jan 27 17:26:11 2006]
  */
 
 /*
@@ -37,6 +37,8 @@ extern t_init*		init;
  * ---------- globals ---------------------------------------------------------
  */
 
+t_asid			kasid = ID_UNUSED;
+
 /*
  * the address space manager interface.
  */
@@ -45,8 +47,10 @@ i_as			as_interface =
   {
     NULL,
     NULL,
-    ia32_as_reserve,
     NULL,
+    NULL,
+    ia32_as_reserve,
+    ia32_as_release,
     NULL,
     NULL
   };
@@ -60,20 +64,22 @@ i_as			as_interface =
  *
  * steps:
  *
- * 1) gets the as object.
+ * 1) get the as object.
  * 2) kernel task case:
- *  a) gets the page directory from the init variable.
- *  b) inject current page tables.
+ *  a) get the page directory from the init variable.
+ *  b) inject current page tables and map them so the kernel can access them.
  * 3) normal address space:
- *  a) reserves a segment for the directory.
- *  b) builds a new page directory for the as.
+ *  a) reserve a segment for the directory.
+ *  b) reserve a region for the directory in the kernel address space.
+ *  c) build a new page directory for the as.
  */
 
 t_error			ia32_as_reserve(t_tskid			tskid,
 					t_asid*			asid)
 {
   o_as*			o;
-  t_id			seg;
+  t_segid	        seg;
+  t_regid		reg;
   o_segment*		oseg;
   t_uint32		pde;
   t_table		table;
@@ -98,6 +104,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
        */
 
       memcpy(&o->machdep.pd, &init->machdep.pd, sizeof (t_directory));
+      kasid = *asid;
 
       /*
        * b)
@@ -113,7 +120,9 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 	      seg.size = PAGESZ;
 	      seg.perms = PERM_READ | PERM_WRITE;
 
+#if (DEBUG & DEBUG_AS)
 	      printf("injecting segment %p for pde %d\n", seg.address, pde);
+#endif
 
 	      if (segment_inject(&seg, *asid) != ERROR_NONE)
 		REGION_LEAVE(region, ERROR_UNKNOWN);
@@ -147,12 +156,63 @@ t_error			ia32_as_reserve(t_tskid			tskid,
        * b)
        */
 
+      if (region_reserve(kasid, seg, 0, REGION_OPT_FORCE, seg, PAGESZ, &reg) !=
+	  ERROR_NONE)
+	{
+	  cons_msg('!', "as: cannot reserve a region for page-directory.\n");
+	  AS_LEAVE(as, ERROR_UNKNOWN);
+	}
+
+      /*
+       * c)
+       */
+
       if (pd_build(oseg->address, &o->machdep.pd, 1) != ERROR_NONE)
 	{
 	  cons_msg('!', "as: cannot build a page-directory.\n");
 	  AS_LEAVE(as, ERROR_UNKNOWN);
 	}
     }
+
+  AS_LEAVE(as, ERROR_NONE);
+}
+
+/*
+ * this function releases an address space.
+ *
+ * steps:
+ *
+ * 1) get the as object.
+ * 2) release page-directory segment and region.
+ */
+
+t_error			ia32_as_release(t_asid			asid)
+{
+  o_as*			o;
+  t_segid		seg;
+  t_regid		reg;
+
+  AS_ENTER(as);
+
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  seg = (t_segid)(t_uint32)(o->machdep.pd);
+  reg = seg;
+
+  if (region_release(reg, asid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (segment_release(seg) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
 }

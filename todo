@@ -1,23 +1,24 @@
 --
-checker la champ datasz dans les set_reserve.
---
  il faut revoir set_locate_array pour les tableaux tries. il y a un bug.
 --
- inventaire des fonctions a terminer : (celles ou il y a des XXX en tout cas)
+ inventaire des fonctions a terminer :
   - as_clone
-  - set_delete_bpt   << julien !
+  - as_vaddr
+  - segment_clone
+  - segment_read / write / copy
+  - segment_split / coalesce / resize
   - ia32_region_release
   - segment_catch
-  - region_reserve
-  - gdt_import (eventuellement la virer)
+  - region_reserve	<< verifier  l'adresse pour le OPT_FORCE
+  - gdt_import 		<< eventuellement la virer
   - ldt_get_segment
+  - set_delete_bpt	<< julien !
 
  revoir aussi core/kaneton/debug/*, c'est un peu crade.
 
+ peut etre changer les noms dans libia32 : t_segment -> o_ia32_segment
+
  revoir la klibc il y a beaucoup de XXX dedans.
---
- voir le probleme de segment_resize, split & co : quand on a mappé une region,
- si on la resize que doit il se passer ?
 --
  pour eviter les deadlocks on autorisera uniquement les messages
  asynchrone partant du kernel. ca va bien avec ce que je pensais et de

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/as/as.c
+ * file          /home/buckman/kaneton/core/kaneton/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [mon jan 16 23:36:38 2006]
+ * updated       matthieu bucchianeri   [fri jan 27 18:11:14 2006]
  */
 
 /*
@@ -232,6 +232,71 @@ t_error			as_give(t_asid			asid,
    */
 
   if (machdep_call(as, as_give, asid, tskid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  AS_LEAVE(as, ERROR_NONE);
+}
+
+/*
+ * this function translate a physical address to its virtual address.
+ */
+
+t_error			as_vaddr(t_asid			as,
+				 t_segid		segid,
+				 t_paddr		physical,
+				 t_vaddr*		virtual)
+{
+  AS_ENTER(as);
+
+  AS_LEAVE(as, ERROR_UNKNOWN);
+}
+
+/*
+ * this function translate a virtual address to its physical one.
+ *
+ * steps:
+ *
+ * 1) get the region object.
+ * 2) check boudaries.
+ * 3) compute the physical address.
+ * 4) call dependent code.
+ */
+
+t_error			as_paddr(t_asid		asid,
+				 t_regid	regid,
+				 t_vaddr	virtual,
+				 t_paddr*	physical)
+{
+  o_region*		o;
+
+  AS_ENTER(as);
+
+  /*
+   * 1)
+   */
+
+  if (region_get(asid, regid, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (virtual < o->address || virtual >= o->address + o->size)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  *physical = (t_paddr)o->segid + o->offset + (virtual - o->address);
+
+  /*
+   * 4)
+   */
+
+  if (machdep_call(as, as_paddr, asid, regid, virtual, physical) !=
+      ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);

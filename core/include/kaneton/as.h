@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/include/kaneton/as.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:33:12 2006]
+ * updated       matthieu bucchianeri   [thu jan 26 11:46:54 2006]
  */
 
 #ifndef KANETON_AS_H
@@ -74,6 +74,14 @@ typedef struct
 {
   t_error			(*as_give)(t_asid,
 					   t_tskid);
+  t_error			(*as_vaddr)(t_asid,
+					    t_segid,
+					    t_paddr,
+					    t_vaddr*);
+  t_error			(*as_paddr)(t_asid,
+					    t_regid,
+					    t_vaddr,
+					    t_paddr*);
   t_error			(*as_clone)(t_tskid,
 					    t_asid,
 					    t_asid*);
@@ -136,6 +144,16 @@ t_error			as_dump(void);
 
 t_error			as_give(t_asid			asid,
 				t_tskid			tskid);
+
+t_error			as_vaddr(t_asid			as,
+				 t_segid		segid,
+				 t_paddr		physical,
+				 t_vaddr*		virtual);
+
+t_error			as_paddr(t_asid		asid,
+				 t_regid	regid,
+				 t_vaddr	virtual,
+				 t_paddr*	physical);
 
 t_error			as_clone(t_tskid			tskid,
 				 t_asid				old,

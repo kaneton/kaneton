@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/check/common/common.c
+ * file          /home/buckman/kaneton/check/check/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [wed jan 18 18:50:45 2006]
+ * updated       matthieu bucchianeri   [thu jan 26 11:52:22 2006]
  */
 
 #include <klibc.h>
@@ -27,7 +27,7 @@ void	check_check_common(void)
 void	check_tests(void)
 {
   check_check_common();
-  check_set_tests();
+//  check_set_tests();
 //  check_malloc_tests();
 //  check_printf_tests();
 //  check_stats_tests();

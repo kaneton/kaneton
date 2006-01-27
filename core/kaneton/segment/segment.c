@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/segment/segment.c
+ * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat jan 21 02:58:32 2006]
+ * updated       matthieu bucchianeri   [thu jan 26 11:42:11 2006]
  */
 
 /*
@@ -415,14 +415,6 @@ t_error			segment_copy(t_segid		dst,
 				     t_segid		src,
 				     t_paddr		offss,
 				     t_psize		sz)
-{
-  SEGMENT_ENTER(segment);
-
-  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-}
-
-t_error			segment_vaddr(t_segid		segid,
-				      t_vaddr*		address)
 {
   SEGMENT_ENTER(segment);
 

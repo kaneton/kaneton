@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 24 14:49:12 2006]
+ * updated       matthieu bucchianeri   [thu jan 26 11:48:32 2006]
  */
 
 /*
@@ -32,7 +32,6 @@ extern m_segment*	segment;
 
 i_segment		segment_interface =
   {
-    NULL,
     NULL,
     NULL,
     NULL,
@@ -172,7 +171,9 @@ t_error			ia32_segment_init(t_fit			fit)
   gdt_build_selector(PMODE_GDT_CORE_DS, prvl_supervisor, &kds);
   pmode_set_segment_registers(kcs, kds);
 
+#if (DEBUG & DEBUG_AS)
   gdt_dump(NULL);
+#endif
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }

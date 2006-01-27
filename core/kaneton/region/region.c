@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [tue jan 24 17:18:39 2006]
+ * updated       matthieu bucchianeri   [thu jan 26 11:43:32 2006]
  */
 
 /*
@@ -147,57 +147,6 @@ t_error			region_dump(t_asid		asid)
       if (region_show(asid, data->regid) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
     }
-
-  REGION_LEAVE(region, ERROR_NONE);
-}
-
-/*
- * this function returns the physical address of a region.
- *
- * steps:
- *
- * 1) get the region object.
- * 2) check boudaries.
- * 3) compute the physical address.
- * 4) call dependent code.
- */
-
-t_error			region_paddr(t_asid		asid,
-				     t_regid		regid,
-				     t_vaddr		virtual,
-				     t_paddr		*physical)
-{
-  o_region*		o;
-
-  REGION_ENTER(region);
-
-  /*
-   * 1)
-   */
-
-  if (region_get(asid, regid, &o) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (virtual < o->address || virtual >= o->address + o->size)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
-  *physical = (t_paddr)o->segid + o->offset + (virtual - o->address);
-
-  /*
-   * 4)
-   */
-
-  if (machdep_call(region, region_paddr, asid, regid, virtual, physical) !=
-      ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
 }

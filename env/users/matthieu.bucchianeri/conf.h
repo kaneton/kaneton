@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [wed jan 25 12:06:03 2006]
+ * updated       matthieu bucchianeri   [wed jan 25 12:39:17 2006]
  */
 
 #ifndef KANETON_CONF_H

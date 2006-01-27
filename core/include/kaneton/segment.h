@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/kaneton/segment.h
+ * file          /home/buckman/kaneton/core/include/kaneton/segment.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sun jan 15 18:18:35 2006]
+ * updated       matthieu bucchianeri   [thu jan 26 11:48:16 2006]
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -116,8 +116,6 @@ typedef struct
 						t_segid,
 						t_paddr,
 						t_psize);
-  t_error			(*segment_vaddr)(t_segid,
-						 t_vaddr*);
   t_error			(*segment_reserve)(t_asid,
 						   t_psize,
 						   t_perms,
@@ -222,9 +220,6 @@ t_error			segment_copy(t_segid		dst,
 				     t_segid		src,
 				     t_paddr		offss,
 				     t_psize		sz);
-
-t_error			segment_vaddr(t_segid		segid,
-				      t_vaddr*		address);
 
 t_error			segment_reserve(t_asid			asid,
 					t_psize			size,
