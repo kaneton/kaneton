@@ -1,0 +1,55 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/buckman/kaneton/view/papers/kaneton/1-goals.tex
+%%
+%% created       matthieu bucchianeri   [mon jan 30 17:09:17 2006]
+%% updated       matthieu bucchianeri   [mon jan 30 17:09:51 2006]
+%%
+
+%
+% goals of the kaneton project
+%
+
+\chapter{Goals of the \kaneton project}
+
+\newpage
+
+\paragraph{}
+This   document   describes   the  \kaneton   micro-kernel   reference
+implementation.
+
+\paragraph{}
+The \kaneton micro-kernel is  studied during the EPITA System, Network
+and  Security specialization.   The  project comes  with many  courses
+leading student to learn about architectures and kernels and to design
+and develop important parts of a micro-kernel.
+
+\paragraph{}
+From this fact, \kaneton has been designed in a very particular way to
+keep the  design as  simpler as possible  to be understandable  by the
+students.
+
+\paragraph{}
+\kaneton is not based on any previous kernel code: it is written from
+nothing. As we  wanted the kernel to be  portable on any architecture,
+we paid  particular attention  in dividing the  code into  two precise
+sections: the independent code and the architecture-dependent code.
+
+\paragraph{}
+Designing this portability  system, we intended to port  the kernel on
+many architectures, so we  had to keep the architecture-dependent code
+as  small  as possible.   Moreover,  the  only  requirement about  the
+hardware is  the minimal amount of  memory, which must be  at least 32
+megabytes.
+
+\paragraph{}
+As we wanted the project to be very pedagogic, \kaneton source code is
+clear  and heavily  commented. Each  manager  or service  has its  own
+directory and  headers. Function name  and prototypes are  unified and
+explicit. Each function is preceded by a header explaining the task it
+performs and detailing the different steps.
+
+% end of include file
