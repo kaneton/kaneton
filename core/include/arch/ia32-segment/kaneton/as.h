@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/export_kaneton/kaneton/core/include/arch/ia32-virtual/kaneton/as.h
+ * file          /home/buckman/export_kaneton/kaneton/core/include/arch/ia32-segment/kaneton/as.h
  *
  * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       matthieu bucchianeri   [mon jan 30 20:30:57 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 20:30:30 2006]
  */
 
 #ifndef IA32_KANETON_AS_H
@@ -29,8 +29,6 @@
 typedef struct
 {
 /*                                                                [cut] k2   */
-
-  t_directory			pd;
 
 /*                                                               [cut] /k2   */
 }				do_as;

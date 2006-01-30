@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/init.h
+ * file          /home/buckman/export_kaneton/kaneton/core/include/kaneton/init.h
  *
  * created       julien quintard   [fri feb 11 02:19:11 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:30:28 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 20:40:11 2006]
  */
 
 #ifndef KANETON_INIT_H
@@ -19,12 +19,6 @@
 #include <arch/machdep/machdep.h>
 #include <kaneton/segment.h>
 #include <kaneton/region.h>
-
-/*
- * ---------- defines ---------------------------------------------------------
- */
-
-#define INIT_KSTACKSZ		(2 * PAGESZ)
 
 /*
  * ---------- types -----------------------------------------------------------

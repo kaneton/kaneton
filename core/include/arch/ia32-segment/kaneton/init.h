@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/export_kaneton/kaneton/core/include/arch/ia32-virtual/kaneton/init.h
+ * file          /home/buckman/export_kaneton/kaneton/core/include/arch/ia32-segment/kaneton/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       matthieu bucchianeri   [mon jan 30 20:39:33 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 20:39:56 2006]
  */
 
 #ifndef IA32_KANETON_INIT_H
@@ -26,7 +26,7 @@
 /*
  * this address defines the 16Mb. the kernel will be relocates at this
  * address followed by many data structures: modules, segments, regions,
- * global offset tables, page directory etc..
+ * global offset tables etc..
  */
 
 #define INIT_RELOCATE		0x1000000
@@ -40,11 +40,10 @@
  *
  * the segments are composed of ISA, kernel code, the init structure, the
  * module structures, the segment structures, the region structures, the
- * kernel stack, the malloc preallocated pages, the global offset table
- * and the page directory.
+ * kernel stack, the malloc preallocated area and the global offset table
  */
 
-#define INIT_SEGMENTS		11
+#define INIT_SEGMENTS		10
 
 /*
  * the regions represent the physical memory to be mapped by the kernel.
@@ -55,19 +54,15 @@
  * indeed, some segments do not need to be accessed by the kernel after
  * the kernel initialisation like the module structures, the segment
  * structures and the region structures.
- *
- * moreover, the kernel will rebuild a page directory so the page tables
- * are now needless explaining why they are neither present in the segments
- * nor in the regions.
  */
 
 #define INIT_REGIONS		7
 
 /*
- * the kernel stack size is set to two pages.
+ * the kernel stack size is set to 8 kilo-bytes.
  */
 
-#define INIT_KSTACKSZ		(2 * PAGESZ)
+#define INIT_KSTACKSZ		8192
 
 /*
  * ---------- types -----------------------------------------------------------
