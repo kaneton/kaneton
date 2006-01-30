@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/paging/paging.c
+ * file          /home/buckman/kaneton/libs/libia32/paging/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       matthieu bucchianeri   [mon jan  9 12:14:05 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 23:01:13 2006]
  */
 
 /*
@@ -22,6 +22,8 @@
 
 #include <klibc.h>
 #include <kaneton.h>
+
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -42,8 +44,6 @@ extern t_directory	pd;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * initialise paging.

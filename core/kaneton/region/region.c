@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [thu jan 26 11:43:32 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:49:10 2006]
  */
 
 /*
@@ -55,6 +55,8 @@ m_region*		region;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k2 */
 
 /*
  * this function shows a region.
@@ -452,3 +454,5 @@ t_error			region_clean(void)
 
   return (ERROR_NONE);
 }
+
+/*                                                                 [cut] /k2 */

@@ -6,11 +6,20 @@
  * file          /home/buckman/kaneton/libs/libia32/include/pmode/pmode.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 24 16:41:08 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:31:13 2006]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * protected mode structures and defines.
+ *
  */
 
 #ifndef IA32_IA32_PMODE_H
 #define IA32_IA32_PMODE_H	1
+
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -237,5 +246,7 @@ typedef struct
   t_uint16			size;
   t_uint32			address;
 }				__attribute__ ((packed)) t_ldtr;
+
+/*                                                                 [cut] /k2 */
 
 #endif

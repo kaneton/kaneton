@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
+ * file          /home/buckman/export_kaneton/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri jan 27 17:26:11 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 20:44:37 2006]
  */
 
 /*
@@ -37,7 +37,12 @@ extern t_init*		init;
  * ---------- globals ---------------------------------------------------------
  */
 
+
+/*                                                                  [cut] k2 */
+
 t_asid			kasid = ID_UNUSED;
+
+/*                                                                 [cut] /k2 */
 
 /*
  * the address space manager interface.
@@ -45,6 +50,9 @@ t_asid			kasid = ID_UNUSED;
 
 i_as			as_interface =
   {
+
+/*                                                                  [cut] k2 */
+
     NULL,
     NULL,
     NULL,
@@ -53,11 +61,16 @@ i_as			as_interface =
     ia32_as_release,
     NULL,
     NULL
+
+/*                                                                 [cut] /k2 */
+
   };
 
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k2 */
 
 /*
  * this function reserves an address space.
@@ -216,3 +229,5 @@ t_error			ia32_as_release(t_asid			asid)
 
   AS_LEAVE(as, ERROR_NONE);
 }
+
+/*                                                                 [cut] /k2 */

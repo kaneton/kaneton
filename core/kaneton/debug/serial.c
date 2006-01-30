@@ -3,11 +3,13 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/debug/serial.c
+ * file          /home/buckman/kaneton/core/kaneton/debug/serial.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [sun jan 15 18:28:50 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:44:22 2006]
  */
+
+/*                                                                  [cut] k1 */
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -174,3 +176,5 @@ void			serial_init(t_uint32			com_port,
   /* 6) */
   OUTB(com_port + 4, 0x08);
 }
+
+/*                                                                 [cut] /k1 */

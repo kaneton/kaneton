@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/libs/libia32/paging/Makefile
+## file          /home/buckman/kaneton/libs/libia32/paging/Makefile
 ##
 ## created       matthieu bucchianeri   [fri jan  6 11:45:56 2006]
-## updated       matthieu bucchianeri   [fri jan  6 11:49:12 2006]
+## updated       matthieu bucchianeri   [mon jan 30 22:33:12 2006]
 ##
 
 #
@@ -30,8 +30,7 @@ PAGING_LO		:=		paging.lo
 PAGING_C		:=		paging.c			\
 					pd.c				\
 					pt.c				\
-					tlb.c				\
-					page.c
+					tlb.c
 
 PAGING_O		:=		$(PAGING_C:.c=.o)
 

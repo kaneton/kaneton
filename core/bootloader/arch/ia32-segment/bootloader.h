@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/bootloader.h
+ * file          /home/buckman/kaneton/core/bootloader/arch/ia32-segment/bootloader.h
  *
  * created       julien quintard   [fri feb 11 02:23:53 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:20:27 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:35:20 2006]
  */
 
 #ifndef BOOTLOADER_H
@@ -18,7 +18,6 @@
  *      bootloader.c
  *      cons.c
  *      init.c
- *      paging.c
  *      pmode.c
  */
 

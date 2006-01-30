@@ -6,19 +6,13 @@
  * file          /home/buckman/kaneton/libs/libia32/pmode/pmode.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:15 2005]
- * updated       matthieu bucchianeri   [tue jan 24 14:02:30 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 23:02:26 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * manage protected mode.
- *
- * XXX d'apres le man intel, faudrait masquer les interruptions le temps du
- *     passage en mode protege (avec cli et sti). a regarder car ca foire
- *     quand je le fais.
- *
- * XXX de meme il faudrait reloader les registres de segments.
  *
  */
 
@@ -39,6 +33,8 @@
 
 extern t_init*		init;
 
+/*                                                                  [cut] k2 */
+
 /*
  * global offset table.
  */
@@ -48,8 +44,6 @@ extern t_gdt		gdt;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * initialises protected mode.

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/paging/pt.c
+ * file          /home/buckman/kaneton/libs/libia32/paging/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       matthieu bucchianeri   [sun jan 22 18:40:49 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 23:01:36 2006]
  */
 
 /*
@@ -30,6 +30,8 @@
 #include <klibc.h>
 #include <kaneton.h>
 
+/*                                                                  [cut] k2 */
+
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -37,8 +39,6 @@
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * dumps a page table.

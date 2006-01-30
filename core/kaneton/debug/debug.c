@@ -3,11 +3,13 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/debug/debug.c
+ * file          /home/buckman/kaneton/core/kaneton/debug/debug.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [sun jan 15 18:29:27 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:43:56 2006]
  */
+
+/*                                                                  [cut] k1 */
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -134,3 +136,5 @@ t_error			debug_clean(void)
 
   return (ERROR_NONE);
 }
+
+/*                                                                 [cut] /k1 */

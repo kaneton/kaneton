@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/pmode/gdt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:45:19 2005]
- * updated       matthieu bucchianeri   [tue jan 24 16:40:29 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 23:02:12 2006]
  */
 
 /*
@@ -41,6 +41,8 @@
 #include <klibc.h>
 #include <kaneton.h>
 
+/*                                                                  [cut] k2 */
+
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -54,8 +56,6 @@ t_gdt		gdt;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * dumps a gdt.

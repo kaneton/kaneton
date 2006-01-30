@@ -3,14 +3,23 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/arch/libia32/asm.h
+ * file          /home/buckman/kaneton/libs/libia32/include/misc/asm.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu dec 22 18:37:51 2005]
+ * updated       matthieu bucchianeri   [mon jan 30 22:28:58 2006]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this is the place to put inline assembly macro-functions.
+ *
  */
 
 #ifndef IA32_IA32_ASM_H
 #define IA32_IA32_ASM_H		1
+
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -93,5 +102,8 @@
   asm volatile("inl %%dx, %%eax\n"					\
 	       : "=a" (_data_)						\
 	       : "d" (_port_))
+
+/*                                                                 [cut] /k2 */
+
 
 #endif

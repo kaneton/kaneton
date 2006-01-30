@@ -3,14 +3,23 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/include/paging/paging.h
+ * file          /home/buckman/kaneton/libs/libia32/include/paging/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon jan 16 23:57:02 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:30:31 2006]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * declares paging structures, defines, etc.
+ *
  */
 
 #ifndef IA32_IA32_PAGING_H
 #define IA32_IA32_PAGING_H	1
+
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -125,5 +134,7 @@ typedef t_uint32		t_pte;
  */
 
 typedef t_pde* t_directory;
+
+/*                                                                 [cut] /k2 */
 
 #endif

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/include/kaneton/kaneton.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:30:04 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:41:22 2006]
  */
 
 #ifndef KANETON_KANETON_H
@@ -80,11 +80,13 @@
 #include <kaneton/conf.h>
 
 #include <kaneton/as.h>
+
+/*                                                                [cut] k1   */
 #include <kaneton/serial.h>
 #include <kaneton/debug.h>
-#include <kaneton/serial.h>
-#include <kaneton/error.h>
+/*                                                               [cut] /k1   */
 
+#include <kaneton/error.h>
 #include <kaneton/types.h>
 
 #include <kaneton/id.h>

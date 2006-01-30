@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/segment/segment-fit.c
+ * file          /home/buckman/kaneton/core/kaneton/segment/segment-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:03:46 2006]
- * updated       matthieu bucchianeri   [mon jan 16 23:40:26 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:51:00 2006]
  */
 
 /*
@@ -50,6 +50,8 @@ extern m_segment*	segment;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k2 */
 
 /*
  * this function dispatchs to the good fitting method.
@@ -180,3 +182,5 @@ t_error			segment_first_fit(o_as*			as,
 
   SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 }
+
+/*                                                                 [cut] /k2 */

@@ -3,12 +3,11 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/interrupt.c
+ * file          /home/buckman/kaneton/libs/libia32/interrupt/interrupt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:44:58 2005]
- * updated       matthieu bucchianeri   [tue dec 20 19:47:51 2005]
+ * updated       matthieu bucchianeri   [mon jan 30 22:32:26 2006]
  */
-
 
 /*
  * ---------- information -----------------------------------------------------
@@ -16,6 +15,8 @@
  * manage interrupt controller.
  *
  */
+
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- assignments -----------------------------------------------------
@@ -35,7 +36,5 @@
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*                                                                 [cut] /k2 */

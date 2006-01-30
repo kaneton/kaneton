@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/export_kaneton/kaneton/core/include/arch/ia32-segment/kaneton/init.h
+ * file          /home/buckman/kaneton/core/include/arch/ia32-segment/kaneton/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       matthieu bucchianeri   [mon jan 30 20:39:56 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:37:00 2006]
  */
 
 #ifndef IA32_KANETON_INIT_H
@@ -71,9 +71,6 @@
 typedef struct
 {
 /*                                                                [cut] k1   */
-
-  t_gdt				gdt;
-  t_directory			pd;
 
 /*                                                               [cut] /k1   */
 

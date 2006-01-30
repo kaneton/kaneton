@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/debug/cons.c
+ * file          /home/buckman/kaneton/core/kaneton/debug/cons-text.c
  *
  * created       quintard julien   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [sun jan 15 18:23:40 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:44:56 2006]
  */
 
 /*
@@ -35,6 +35,8 @@ t_cons			cons;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k1 */
 
 /*
  * this function just clears the console.
@@ -217,6 +219,9 @@ t_error			cons_clean(void)
 {
   return (ERROR_NONE);
 }
+
+/*                                                                 [cut] /k1 */
+
 
 /*
  * XXX

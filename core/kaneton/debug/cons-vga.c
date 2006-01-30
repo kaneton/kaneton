@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/debug/cons-vga.c
  *
  * created       matthieu bucchianeri   [fri dec  2 20:14:33 2005]
- * updated       matthieu bucchianeri   [tue jan 24 15:49:34 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:45:38 2006]
  */
 
 /*
@@ -16,7 +16,7 @@
  */
 
 /*
- * mode selection
+ * mode selection (MODE2 is not working)
  */
 #define MODE1		// 1: 640x480x2, 2: 640x480x16, 3: 320x200x256
 

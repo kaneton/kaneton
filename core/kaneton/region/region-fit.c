@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/region/region-fit.c
+ * file          /home/buckman/kaneton/core/kaneton/region/region-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:28:36 2006]
- * updated       matthieu bucchianeri   [mon jan 16 23:56:23 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:51:15 2006]
  */
 
 /*
@@ -50,6 +50,8 @@ extern m_region*       region;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k2 */
 
 t_error			region_fit(o_as*		as,
 				   t_vsize		size,
@@ -176,3 +178,5 @@ t_error			region_first_fit(o_as*			as,
 
   REGION_LEAVE(region, ERROR_UNKNOWN);
 }
+
+/*                                                                 [cut] /k2 */

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/paging/pd.c
+ * file          /home/buckman/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [sun jan 22 18:40:39 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 23:01:24 2006]
  */
 
 /*
@@ -31,6 +31,8 @@
 #include <klibc.h>
 #include <kaneton.h>
 
+/*                                                                  [cut] k2 */
+
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -44,8 +46,6 @@ t_directory		pd;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * dumps a page directory and its tables.

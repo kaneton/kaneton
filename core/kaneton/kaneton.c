@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/kaneton.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu jan 26 11:52:08 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:48:24 2006]
  */
 
 /*
@@ -56,6 +56,7 @@ t_init*			init;
  * ---------- functions -------------------------------------------------------
  */
 
+/*                                                                  [cut] k2 */
 
 /*
  * this function simply initialises each manager.
@@ -75,6 +76,8 @@ t_init*			init;
  *
  * XXX
  */
+
+/*                                                                 [cut] /k2 */
 
 void			kaneton(t_init*				bootloader)
 {
@@ -163,8 +166,6 @@ void			kaneton(t_init*				bootloader)
 
   if (task_init() != ERROR_NONE)
     kaneton_error("cannot initialise the task manager\n");
-
-/*                                                                 [cut] /k2 */
 
 #ifdef CONF_ENABLE_CHECK
   check_tests();

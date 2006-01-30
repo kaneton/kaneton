@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [tue jan 24 18:14:15 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 22:53:05 2006]
  */
 
 /*
@@ -61,6 +61,8 @@ t_tskid			ktask = ID_UNUSED;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k4 */
 
 /*
  * this function shows a precise task.
@@ -660,3 +662,5 @@ t_error			task_clean(void)
 
   return (ERROR_NONE);
 }
+
+/*                                                                  [cut] k4 */
