@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/segment/segment-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:03:46 2006]
- * updated       matthieu bucchianeri   [mon jan 30 22:51:00 2006]
+ * updated       matthieu bucchianeri   [tue jan 31 00:20:33 2006]
  */
 
 /*
@@ -25,7 +25,8 @@
 /*
  * ---------- assignments -----------------------------------------------------
  *
- * XXX
+ * students  have  to develop  at  least  the  first-fit algorithm  to
+ * allocate physical memory.
  */
 
 /*

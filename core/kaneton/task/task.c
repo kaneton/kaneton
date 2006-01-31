@@ -6,13 +6,12 @@
  * file          /home/buckman/kaneton/core/kaneton/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [mon jan 30 22:53:05 2006]
+ * updated       matthieu bucchianeri   [tue jan 31 00:16:37 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX revoir commentaires: description + steps
  * XXX
  */
 

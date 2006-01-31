@@ -6,7 +6,24 @@
  * file          /home/buckman/kaneton/core/kaneton/debug/cons-text.c
  *
  * created       quintard julien   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [mon jan 30 22:44:56 2006]
+ * updated       matthieu bucchianeri   [tue jan 31 00:25:33 2006]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file implements a basic console management for kernel bootup.
+ *
+ * in the  future, the console control  will be passed  to a dedicated
+ * server.
+ *
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * similar to the bootloader one, students will have to develop the
+ * code for console display.
  */
 
 /*
@@ -221,10 +238,3 @@ t_error			cons_clean(void)
 }
 
 /*                                                                 [cut] /k1 */
-
-
-/*
- * XXX
- *
- * [+] ce gestionnaire est provisoire car cela devrait etre un service.
- */

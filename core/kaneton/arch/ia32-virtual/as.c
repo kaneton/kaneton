@@ -3,19 +3,26 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/export_kaneton/kaneton/core/kaneton/arch/ia32-virtual/as.c
+ * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon jan 30 20:44:37 2006]
+ * updated       matthieu bucchianeri   [tue jan 31 00:27:59 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX plutot  que de recup  la pd dans  le t_init pr la  task kernel,
- * mieux  vaudrai  en faire  une  autre  afin  de nettoyer  les  trucs
- * bourrins qu'on a fait au bootloader.
+ * this file  implements dependent  code for as  manager on  ia32 with
+ * paging architecture.
  *
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * students will have to develop this entire part of the project. take
+ * a look at the interface  structure declaration to fill it correctly
+ * and to write needed functions.
  */
 
 /*

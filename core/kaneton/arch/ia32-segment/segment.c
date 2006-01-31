@@ -3,10 +3,26 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/segment.c
+ * file          /home/buckman/kaneton/core/kaneton/arch/ia32-segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon jan 30 22:59:07 2006]
+ * updated       matthieu bucchianeri   [tue jan 31 00:29:58 2006]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this  file implements dependent  code for  segment manager  on ia32
+ * without paging architecture.
+ *
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * students will have to develop this entire part of the project. take
+ * a look at the interface  structure declaration to fill it correctly
+ * and to write needed functions.
  */
 
 /*

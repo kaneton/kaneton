@@ -6,24 +6,33 @@
  * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon jan 30 22:50:33 2006]
+ * updated       matthieu bucchianeri   [tue jan 31 00:39:03 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX les segments ont un identificateur pour etre retrouve facilement
- *     neanmoins ceux ci ne peuvent pas etre tries selon cet identificateur
- *     sinon l ensemble ne serait pas trier en fonction de l agencement
- *     de la memoire physique. on va donc generer des identifiants pour
- *     pouvoir les retrouver mais on va creer un set qu'on va organiser
- *     nous meme afin qu'il soit trier selon les adresses physiques.
+ * the segment manager manages physical memory.
+ *
+ * it  is  able   to  reserve  and  release  memory   areas  (see  the
+ * segment-fit.c for  allocation algorithm)  and to operated  on these
+ * area: resize, split, copy, etc.
+ *
+ * a segment  is identified by  a 64 bits identifier  corresponding to
+ * its physical  address. so  it is easy  to retrieve  this identifier
+ * given the base address of a segment.
+ *
+ * remember  that  segments are  global:  there  is  only one  set  of
+ * segments objects for  the entire kernel. the set  of segments in an
+ * address space is just a set of identifiers.
  */
 
 /*
  * ---------- assignments -----------------------------------------------------
  *
- * XXX
+ * students have  to write the entire manager:  this file implementing
+ * independent code plus  an architecture dependant file (ia32-virtual
+ * or ia32-segment for example).
  */
 
 /*

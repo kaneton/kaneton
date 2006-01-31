@@ -6,7 +6,23 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [mon jan 30 22:59:31 2006]
+ * updated       matthieu bucchianeri   [tue jan 31 00:30:30 2006]
+ */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file implements  dependent code for task manager  on ia32 with
+ * paging architecture.
+ *
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * students will have to develop this entire part of the project. take
+ * a look at the interface  structure declaration to fill it correctly
+ * and to write needed functions.
  */
 
 /*

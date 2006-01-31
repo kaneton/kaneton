@@ -6,31 +6,29 @@
  * file          /home/buckman/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [mon jan 30 22:49:10 2006]
+ * updated       matthieu bucchianeri   [tue jan 31 00:44:09 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX revoir commentaires: description + steps
+ * the region manager manages mapping of segments.
  *
- * il n'existe pas de conteneur d'objets regions pour tout le kernel.
- * en effet nous voulons retrouver les regions par leurs addresses et
- * pour eviter les collisions il nous faut donc creer des ensembles propres
- * a chaque address space. donc dans l'objet as, il y a un ensemble region
- * qui n'est pas un ensemble d'identifiants comme l'est l'ensemble
- * segment de l'objet as mais bon un ensemble d'objet region.
+ * reserving a region means to map virtual addresses to a segment.
  *
- * pour region_paddr, tout est dans le  code dep. en fait, vu qu'on va
- * mapper des parties de segments, on  peut plus juste se baser sur le
- * segid
+ * like for  segment, region identifiers are the  virtual address they
+ * maps.
+ *
+ * unlike segments, regions  are proper to an address  space: there is
+ * one set of region objects for each address space to prevent collisions.
  *
  */
 
 /*
  * ---------- assignments -----------------------------------------------------
  *
- * XXX
+ * students have to develop  entirely this manager, including the code
+ * for one architecture (ia32-virtual or ia32-segment).
  */
 
 /*

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/region/region-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:28:36 2006]
- * updated       matthieu bucchianeri   [mon jan 30 22:51:15 2006]
+ * updated       matthieu bucchianeri   [tue jan 31 00:21:31 2006]
  */
 
 /*
@@ -25,7 +25,7 @@
 /*
  * ---------- assignments -----------------------------------------------------
  *
- * XXX
+ * students will have to develop at least a first-fit algorithm.
  */
 
 /*
