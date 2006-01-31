@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/include/libia32.h
+ * file          /home/buckman/kaneton/libs/libia32/include/libia32.h
  *
  * created       matthieu bucchianeri   [tue dec 20 13:58:56 2005]
- * updated       matthieu bucchianeri   [fri jan  6 11:52:59 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 23:15:42 2006]
  */
 
 #ifndef LIBIA32_H
@@ -34,7 +34,6 @@
  *      ../paging/pd.c
  *      ../paging/pt.c
  *      ../paging/tlb.c
- *      ../paging/page.c
  *      ../interrupt/interrupt.c
  *      ../interrupt/idt.c
  */
@@ -200,13 +199,6 @@ t_error			pt_delete_page(t_table*	tab,
 t_error			tlb_invalidate(t_paddr	page);
 
 t_error			tlb_flush(void);
-
-
-/*
- * ../paging/page.c
- */
-
-t_error		page_reserve(t_page*	page);
 
 
 /*

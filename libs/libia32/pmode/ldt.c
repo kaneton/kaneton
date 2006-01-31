@@ -3,11 +3,20 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/libia32/ldt.c
+ * file          /home/buckman/kaneton/libs/libia32/pmode/ldt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 20:13:58 2005]
- * updated       matthieu bucchianeri   [fri dec 30 18:07:58 2005]
+ * updated       matthieu bucchianeri   [mon jan 30 23:58:02 2006]
  */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * manage global descriptor table.
+ *
+ */
+
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- information -----------------------------------------------------
@@ -25,6 +34,16 @@
  *
  * ldt_activate sets a ldt as the active one.
  */
+
+/*                                                                 [cut] /k2 */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * this is the good place to put code dealing with ldt.
+ *
+ */
+
 
 /*
  * ---------- includes --------------------------------------------------------

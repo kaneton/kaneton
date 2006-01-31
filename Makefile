@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/Makefile
+## file          /home/buckman/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       julien quintard   [sun dec 18 18:42:31 2005]
+## updated       matthieu bucchianeri   [mon jan 30 23:17:47 2006]
 ##
 
 #
@@ -175,6 +175,14 @@ info:
 	$(call print,white,,)
 	$(call print,white,     cedric aubouy - aubouy_c@epita.fr,)
 	$(call print,white,     renaud lienhart - lienha_r@epita.fr,)
+
+	$(call print,white,,)
+
+	$(call print,blue,"# ",--no-newline)
+	$(call print,white,kaneton reference:,)
+	$(call print,white,,)
+	$(call print,white,     matthieu bucchianeri - bucchi_m@epita.fr,)
+	$(call print,white,     renaud voltz - voltz_r@epita.fr,)
 
 	$(call print,white,,)
 

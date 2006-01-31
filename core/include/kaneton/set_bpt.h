@@ -6,11 +6,13 @@
  * file          /home/buckman/kaneton/core/include/kaneton/set_bpt.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:28:49 2006]
+ * updated       matthieu bucchianeri   [tue jan 31 00:11:02 2006]
  */
 
 #ifndef KANETON_SET_BPT_H
 #define KANETON_SET_BPT_H	1
+
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -102,5 +104,7 @@ typedef struct
  */
 
 bpt_make_protos(set)
+
+/*                                                                  [cut] k2 */
 
 #endif

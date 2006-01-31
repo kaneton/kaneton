@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/env/machines/unix/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       matthieu bucchianeri   [mon jan 23 23:27:41 2006]
+## updated       matthieu bucchianeri   [mon jan 30 23:23:03 2006]
 ##
 
 #
@@ -223,6 +223,10 @@ endef
 define makefile
   for i in $(1) ; do							\
     $(_CD_) $$i								; \
+    return=$$?								; \
+    if [ $$return -ne 0 ] ; then					\
+      exit 0								; \
+    fi									; \
     $(_MAKE_) $(_MAKEFLAGS_) $(2)					; \
     return=$$?								; \
     if [ $$return -ne 0 ] ; then					\

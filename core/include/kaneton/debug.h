@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/include/kaneton/debug.h
  *
  * created       julien quintard   [mon nov 28 19:37:01 2005]
- * updated       matthieu bucchianeri   [tue jan 24 16:55:42 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 23:24:17 2006]
  */
 
 #ifndef KANETON_DEBUG_H
@@ -35,6 +35,8 @@
 #define DEBUG								\
   (CONF_DEBUG)
 
+/*                                                                [cut] k1   */
+
 /*
  * ---------- types -----------------------------------------------------------
  */
@@ -53,6 +55,8 @@ typedef	struct			s_serial_buffer
  char*				name;
  void*				data;
 }				t_serial_buffer;
+
+/*                                                               [cut] /k1   */
 
 /*
  * ---------- prototypes ------------------------------------------------------

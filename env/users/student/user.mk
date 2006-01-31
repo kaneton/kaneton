@@ -1,16 +1,12 @@
-## copyright quintard julien
 ##
-## kaneton
+## licence       kaneton licence
 ##
-## user.conf
+## project       kaneton
 ##
-## path          /data/kaneton/env/users/julien.quintard
+## file          /home/buckman/kaneton/env/users/student/user.mk
 ##
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-##
-## started on    Fri Feb 11 02:18:00 2005   mycure
-## Last update Wed Jan 25 12:37:57 2006 matthieu bucchianeri
+## created       matthieu bucchianeri   [mon jan 30 23:32:09 2006]
+## updated       matthieu bucchianeri   [mon jan 30 23:32:10 2006]
 ##
 
 #
@@ -19,6 +15,9 @@
 # this file contains specific user makefile dependencies, rules, variables
 # etc..
 #
+
+# disable checks
+_CHECK_LO_	:=
 
 # for using gdb with qemu
 _CFLAGS_	+=	-ggdb

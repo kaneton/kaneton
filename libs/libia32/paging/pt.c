@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:01:36 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 23:54:23 2006]
  */
 
 /*
@@ -14,13 +14,14 @@
  *
  * manage page tables.
  *
- * XXX voir ce qu'il y a de sympa a optimiser avec le flag global
- *
- * XXX gerer les pages en swap
  */
 
 /*
  * ---------- assignments -----------------------------------------------------
+ *
+ * students have to place here everything dealing with page tables. no
+ * restrictions apply on this file.
+ *
  */
 
 /*
@@ -31,10 +32,6 @@
 #include <kaneton.h>
 
 /*                                                                  [cut] k2 */
-
-/*
- * ---------- globals ---------------------------------------------------------
- */
 
 /*
  * ---------- functions -------------------------------------------------------

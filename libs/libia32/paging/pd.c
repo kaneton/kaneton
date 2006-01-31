@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:01:24 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 23:53:31 2006]
  */
 
 /*
@@ -14,14 +14,15 @@
  *
  * manage page directory.
  *
- * XXX modifier pour gerer les pages de 4M ?
- *
- * when  a t_directory*  is provided  as argument  (in  functions like
- * pd_add_table), NULL value means to use the active page directory.
  */
 
 /*
  * ---------- assignments -----------------------------------------------------
+ *
+ * this    file   is    destinated   to    functions    dealing   with
+ * page-directories. there are no restrictions about function names or
+ * prototype, so feel free.
+ *
  */
 
 /*
@@ -43,9 +44,13 @@
 
 t_directory		pd;
 
+/*                                                                 [cut] /k2 */
+
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k2 */
 
 /*
  * dumps a page directory and its tables.

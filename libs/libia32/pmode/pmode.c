@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/pmode/pmode.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:15 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:02:26 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 23:59:44 2006]
  */
 
 /*
@@ -17,11 +17,24 @@
  */
 
 /*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * students  must  write  here  function related  to  protected  mode:
+ * entering, leaving etc.
+ *
+ * but  be careful: everything  that deals  with gdt  and ldt  must be
+ * placed in the corresponding file, not here.
+ *
+ */
+
+/*
  * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc.h>
 #include <kaneton.h>
+
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -33,17 +46,19 @@
 
 extern t_init*		init;
 
-/*                                                                  [cut] k2 */
-
 /*
  * global offset table.
  */
 
 extern t_gdt		gdt;
 
+/*                                                                 [cut] /k2 */
+
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k2 */
 
 /*
  * initialises protected mode.

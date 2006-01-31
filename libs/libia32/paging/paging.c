@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:01:13 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 23:51:57 2006]
  */
 
 /*
@@ -14,6 +14,17 @@
  *
  * manage paging.
  *
+ */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * students  will have  to fill  this  file with  function related  to
+ * paging mode in the cpu: enable, disabling etc.
+ *
+ * there are no  restrictions about these functions, but  keep in mind
+ * that  page-directory management and  page-tables management  are to
+ * place in pd.c and pt.c.
  */
 
 /*
@@ -41,9 +52,13 @@ extern t_init*		init;
 
 extern t_directory	pd;
 
+/*                                                                 [cut] /k2 */
+
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k2 */
 
 /*
  * initialise paging.

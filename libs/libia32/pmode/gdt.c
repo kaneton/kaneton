@@ -6,8 +6,17 @@
  * file          /home/buckman/kaneton/libs/libia32/pmode/gdt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:45:19 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:02:12 2006]
+ * updated       matthieu bucchianeri   [mon jan 30 23:57:21 2006]
  */
+
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * manage global descriptor table.
+ *
+ */
+
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- information -----------------------------------------------------
@@ -30,7 +39,15 @@
  *     d'utiliser la GDT active. c'est un peu chiant mais ca permet d'utiliser
  *     les fonctions avant de switcher le gdtr pour preparer une nouvelle gdt.
  *
- * XXX checker le coup de l'aligmenent. si on malloc, ca va chier du coup.
+ */
+
+/*                                                                 [cut] /k2 */
+
+/*
+ * ---------- assignments -----------------------------------------------------
+ *
+ * students will have  to place here code to manage  gdt. there are no
+ * restrictions on prototypes, names etc.
  *
  */
 
@@ -53,9 +70,13 @@
 
 t_gdt		gdt;
 
+/*                                                                 [cut] /k2 */
+
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k2 */
 
 /*
  * dumps a gdt.
