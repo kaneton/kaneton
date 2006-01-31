@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/id/id.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:36:26 2006]
+ * updated       matthieu bucchianeri   [tue jan 31 01:10:52 2006]
  */
 
 /*
@@ -82,6 +82,8 @@ t_error			id_clone(o_id*				o,
   ID_LEAVE(id, r);
 }
 
+/*                                                                 [cut] /k2 */
+
 /*
  * this function reserves an identifier in an identifier object
  */
@@ -91,7 +93,11 @@ t_error			id_reserve(o_id*			o,
 {
   ID_ENTER(id);
 
+/*                                                                  [cut] k2 */
+
   *i = o->id++;
+
+/*                                                                 [cut] /k2 */
 
   ID_LEAVE(id, ERROR_NONE);
 }
@@ -116,7 +122,11 @@ t_error			id_build(o_id*				o)
 {
   ID_ENTER(id);
 
+/*                                                                  [cut] k2 */
+
   memset(o, 0x0, sizeof(o_id));
+
+/*                                                                 [cut] /k2 */
 
   ID_LEAVE(id, ERROR_NONE);
 }
@@ -129,10 +139,16 @@ t_error			id_destroy(o_id*			o)
 {
   ID_ENTER(id);
 
+/*                                                                  [cut] k2 */
+
   memset(o, 0x0, sizeof(o_id));
+
+/*                                                                 [cut] /k2 */
 
   ID_LEAVE(id, ERROR_NONE);
 }
+
+/*                                                                  [cut] k2 */
 
 /*
  * this function must initialise the id manager.

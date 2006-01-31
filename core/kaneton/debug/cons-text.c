@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/debug/cons-text.c
  *
  * created       quintard julien   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [tue jan 31 00:25:33 2006]
+ * updated       matthieu bucchianeri   [tue jan 31 01:11:52 2006]
  */
 
 /*
@@ -165,6 +165,8 @@ void			cons_print_string(char*			string)
     cons_print_char(string[i]);
 }
 
+/*                                                                 [cut] /k1 */
+
 /*
  * this function prints a status message.
  *
@@ -177,6 +179,9 @@ void			cons_msg(char				indicator,
 				 char*				fmt,
 				 ...)
 {
+
+/*                                                                  [cut] k1 */
+
   t_uint8		attr = cons.attr;
   va_list		args;
 
@@ -208,7 +213,12 @@ void			cons_msg(char				indicator,
   vprintf(fmt, args);
 
   va_end(args);
+
+/*                                                                 [cut] /k1 */
+
 }
+
+/*                                                                  [cut] k1 */
 
 /*
  * this function just initialises the bootloader console.
