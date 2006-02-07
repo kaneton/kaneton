@@ -1,0 +1,402 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/buckman/kaneton/view/papers/assignments/k2.tex
+%%
+%% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
+%% updated       matthieu bucchianeri   [tue feb  7 11:50:58 2006]
+%%
+
+%
+% k2
+%
+
+\section{k2}
+
+The \textbf{k2} project consists in the development of parts of
+the microkernel:
+
+\begin{itemize}
+  \item
+    The id manager.
+  \item
+    The set manager.
+  \item
+    The address space manager.
+  \item
+    The segment manager.
+\end{itemize}
+
+%
+% id manager
+%
+
+\subsection{id manager}
+
+\subsubsection{Description}
+
+The id manager is used to generate identifiers from an identifier object.
+
+Once  the identifier object  initialised --  you got  a \textbf{o\_id}
+structure -- the identifiers can be generated.
+
+Remember that identifiers only consist in a 64-bits integer.
+
+\subsubsection{Students work}
+
+Let's take a look at the id manager functions you will implement:
+
+\prototype{t\_error \textbf{id\_show}(o\_id* \textbf{o});}
+
+This function just displays the id object's state.
+
+\prototype{t\_error \textbf{id\_clone}(o\_id* \textbf{o},
+                                       t\_id \textbf{old},
+                                       t\_id* \textbf{new});}
+
+This function duplicates an id object using the \textbf{o} identifier
+object.
+
+\prototype{t\_error \textbf{id\_reserve}(o\_id* \textbf{o},
+                                         t\_id* \textbf{i});}
+
+This function reserves an identifier \textbf{i} using the identifier
+object \textbf{o}.
+
+\prototype{t\_error \textbf{id\_release}(o\_id* \textbf{o},
+                                         t\_id \textbf{i});}
+
+This function releases an identifier.
+
+\prototype{t\_error \textbf{id\_build}(o\_id* \textbf{o});}
+
+This function initialises an identifier object.
+
+\prototype{t\_error \textbf{id\_destroy}(o\_id* \textbf{o});}
+
+This function destroys an identifier object.
+
+\prototype{t\_error \textbf{id\_init}(void);}
+
+This function just initialises the id manager.
+
+\prototype{t\_error \textbf{id\_clean}(void);}
+
+This function just cleans the id manager.
+
+Do not forget to take a look  at the header file for the id manager in
+\textit{core/include/kaneton/id.h}, to  learn about the \textbf{o\_id}
+structure.
+
+Like  every  other  managers  in kaneton,  the  \textbf{id\_init}  and
+\textbf{id\_clean}  functions  must  be  called  by  the  kernel  main
+routine on startup and shutdown.
+
+%
+% set manager
+%
+
+\subsection{set manager}
+
+\subsubsection{Description}
+
+The set  manager is used to  store data. Every kernel  managers use it
+instead of building data structures by their own.
+
+The set mecanism is divided in  two parts: the set manager and the set
+implementations.
+
+While the set implementations are specific to each type of set (array,
+linked-list\ldots), the set manager code  is generic and work with all
+sets.
+
+\subsubsection{Students work}
+
+The  manager code  is given,  see  \textit{core/kaneton/set/set.c} and
+\textit{core/include/kaneton.h}. Take a look at the information section
+in the header of the manager code: each steps of the creation of a set
+is described.
+
+The student will have to  write the entire code for the \textbf{array}
+and \textbf{ll} implementations.
+
+The functions below are explained independently of the data structure.
+
+\prototype{t\_error \textbf{set\_type\_[x]}(t\_setid \textbf{setid});}
+
+This function just returns an error if the set corresponding to
+\textbf{setid} is not of the type \textbf{[x]}.
+
+\prototype{t\_error \textbf{set\_show\_[x]}(t\_setid \textbf{setid});}
+
+This function displays a entire set.
+
+\prototype{t\_error \textbf{set\_head\_[x]}(t\_setid \textbf{setid},
+                                            t\_iterator* \textbf{iterator});}
+
+This function returns an iterator on the first element of the set.
+
+\prototype{t\_error \textbf{set\_tail\_[x]}(t\_setid \textbf{setid},
+                                            t\_iterator* \textbf{iterator});}
+
+This function returns an iterator on the last element of the set.
+
+\prototype{t\_error \textbf{set\_prev\_[x]}(t\_setid \textbf{setid},
+                                            t\_iterator \textbf{current},
+                                            t\_iterator* \textbf{previous});}
+
+This function returns an iterator on the previous element of the set.
+
+\prototype{t\_error \textbf{set\_next\_[x]}(t\_setid \textbf{setid},
+                                            t\_iterator \textbf{current},
+                                            t\_iterator* \textbf{previous});}
+
+This function returns an iterator on the next element of the set.
+
+\prototype{t\_error \textbf{set\_insert\_head\_[x]}(t\_setid \textbf{setid},
+                                                    void* \textbf{data});}
+
+This function inserts an object at the head of the set.
+
+\prototype{t\_error \textbf{set\_insert\_tail\_[x]}(t\_setid \textbf{setid},
+                                                    void* \textbf{data});}
+
+This function inserts an object at the tail of the set.
+
+\prototype{t\_error \textbf{set\_insert\_before\_[x]}(t\_setid \textbf{setid},
+                                                      t\_iterator \textbf{iterator},
+                                                      void* \textbf{data});}
+
+This function inserts an object before the one specified by the iterator.
+
+\prototype{t\_error \textbf{set\_insert\_after\_[x]}(t\_setid \textbf{setid},
+                                                     t\_iterator \textbf{iterator},
+                                                     void* \textbf{data});}
+
+This function inserts an object after the one specified by the iterator.
+
+\prototype{t\_error \textbf{set\_add\_[x]}(t\_setid \textbf{setid},
+                                           void* \textbf{data});}
+
+This function adds an object in the set. See at the end of the section
+for more details.
+
+\prototype{t\_error \textbf{set\_remove\_[x]}(t\_setid \textbf{setid},
+                                              t\_id \textbf{id});}
+
+This function removes an object identified by \textbf{id} from the
+set \textbf{setid}.
+
+\prototype{t\_error \textbf{set\_delete\_[x]}(t\_setid \textbf{setid},
+                                              t\_iterator \textbf{iterator});}
+
+This function deletes the object corresponding to the iterator.
+
+\prototype{t\_error \textbf{set\_flush\_[x]}(t\_setid \textbf{setid});}
+
+This function removes every object stored in the set.
+
+\prototype{t\_error \textbf{set\_locate\_[x]}(t\_setid \textbf{setid},
+                                              t\_id \textbf{id},
+                                              t\_iterator* \textbf{iterator});}
+
+This function returns an iterator on the element corresponding to the
+identifier \textbf{id}.
+
+\prototype{t\_error \textbf{set\_object\_[x]}(t\_setid \textbf{setid},
+                                              t\_iterator \textbf{iterator},
+                                              void** \textbf{data});}
+
+This function returns the object's data corresponding to the iterator.
+
+\prototype{t\_error \textbf{set\_push\_array}(t\_setid \textbf{setid},
+                                             void* \textbf{data});}
+
+This function adds an object to a FIFO or LIFO structure.
+
+\prototype{t\_error \textbf{set\_pop\_array}(t\_setid \textbf{setid});}
+
+This function removes the next object of a FIFO or LIFO structure.
+
+\prototype{t\_error \textbf{set\_pick\_array}(t\_setid \textbf{setid},
+                                             void** \textbf{data});}
+
+This  function returns the  next object  of a  FIFO or  LIFO structure
+without deleting it.
+
+\prototype{t\_error \textbf{set\_release\_[x]}(t\_setid \textbf{setid});}
+
+This function releases a set.
+
+The two last functions are  described more specificaly since they have
+different prototypes.
+
+\prototype{t\_error \textbf{set\_reserve\_ll}(t\_opts \textbf{opts},
+                                              t\_size \textbf{datasz},
+                                              t\_setid* \textbf{setid});}
+
+This function reserves a ll set with options \textbf{opts} which will contain
+object of \textbf{datasz} size.
+
+\prototype{t\_error \textbf{set\_reserve\_array}(t\_opts \textbf{opts},
+                                                 t\_setsz \textbf{initsz},
+                                                 t\_size \textbf{datasz},
+                                                 t\_setid* \textbf{setid});}
+
+This function reserves an array set with options \textbf{opts}. This
+set will contain objects of \textbf{datasz} size and will initialy
+be composed of \textbf{initsz} unused elements.
+
+You can notice  that some operations does not make  sense on some data
+structures. For  example, \textbf{push} or \textbf{pop}  will never be
+used on arrays or lists, but  only on stacks or pipes. In these cases,
+the function must be present but will only return an error.
+
+Most   widely,    some   operations   have   no    sense   with   some
+options. Inserting at the beginning  of a sorted array must produce an
+error since it can cancel the sorting property.
+
+\subsubsection{Constraints}
+
+To  keep  sets behavior  unified,  here  are  some rules  applying  to
+\textbf{array} and \textbf{ll}:
+
+\begin{itemize}
+
+\item \textbf{set\_add\_array} must insert the item at the first free place.
+
+\item All deletion functions on arrays must mark the released place as
+free. The only case shifting is made is when the \textbf{organise} option
+is set.
+
+\item When inserting an object in a linked-list with the \textbf{add}
+operation, the item must be placed in the head of the list.
+
+\item As double linked-list are faster than simple one, you have to
+implement this kind of lists.
+
+\end{itemize}
+
+Here are the options your sets must recognize:
+
+\begin{itemize}
+\item SET\_OPT\_CONTAINER
+\item SET\_OPT\_ALLOC and SET\_OPT\_FREE
+\item SET\_OPT\_SORT
+\item SET\_OPT\_ORGANISE (for arrays only)
+\end{itemize}
+
+Do  not  forget to  uncomment  the  step  5 of  \textbf{set\_init}  in
+\textit{core/kaneton/set/set.c}, which creates the set container.
+
+%
+% address space manager
+%
+
+\subsection{address space manager}
+
+\subsubsection{Description}
+
+The address space manager just  manages the address spaces. An address
+space is a container describing the addressable memory.
+
+An address space is composed of a set of segments and a set of regions.
+
+\subsubsection{Students work}
+
+Students have to  write all code of this manager. No  need to say that
+intensive  use  of  sets  (previously described)  is  necessary.  This
+manager will introduce you how to program with the set manager.
+
+\prototype{t\_error \textbf{as\_show}(t\_asid \textbf{asid});}
+
+This function shows a precise address space displaying information
+on it.
+
+\prototype{t\_error \textbf{as\_dump}(void);}
+
+This function dumps all the address space managed by the address
+space manager.
+
+\prototype{t\_error \textbf{as\_give}(t\_asid \textbf{asid},
+                                      t\_tskid \textbf{tskid});}
+
+This function gives an address space to another task.
+
+\prototype{t\_error \textbf{as\_clone}(t\_tskid \textbf{tskid},
+                                       t\_asid \textbf{old},
+                                       t\_asid* \textbf{new});}
+
+This function clones an address space taking care of cloning everything
+necessary.
+
+\prototype{t\_error \textbf{as\_reserve}(t\_tskid \textbf{tskid},
+                                         t\_asid* \textbf{asid});}
+
+This function reserves an address space object for the task \textbf{tskid}.
+
+\prototype{t\_error \textbf{as\_release}(t\_asid \textbf{asid});}
+
+This function just releases an address space.
+
+\prototype{t\_error \textbf{as\_get}(t\_asid \textbf{asid},
+                                    o\_as** \textbf{o});}
+
+This function should only be used by the segment and region managers.
+
+This function just returns the address space object corresponding to
+the address space identifier.
+
+\prototype{t\_error \textbf{as\_paddr}(t\_asid \textbf{asid},
+                                       t\_regid \textbf{regid},
+                                       t\_vaddr	\textbf{virtual},
+                                       t\_paddr* \textbf{physical});}
+
+This function translates a virtual address to a physical address.
+
+\prototype{t\_error \textbf{as\_vaddr}(t\_asid \textbf{as},
+                                       t\_segid \textbf{segid},
+                                       t\_paddr \textbf{physical},
+                                       t\_vaddr* \textbf{virtual});}
+
+This function translates a physical address to a virtual address.
+
+\prototype{t\_error \textbf{as\_init}(void);}
+
+This function initialises the address space manager.
+
+\prototype{t\_error \textbf{as\_clean}(void);}
+
+This function cleans the address space manager.
+
+%
+% ia32
+%
+
+\subsubsection{IA-32 implementation}
+
+Students will  have to develop the architecture-dependent  part of the
+address space manager.
+
+The corresponding file is \textit{core/kaneton/arch/\textbf{arch-name}/as.c}.
+
+Students have  to think about what  is an address space  from the ia32
+point of view.  Next, they will fill the \textbf{do\_as} structure in
+\textit{core/include/arch/\textbf{arch-name}/kaneton/as.h}
+
+To  finish,   they  must   implement  all  dependent   functions  they
+need. Remember that functions in \textit{libia32} should be reused.
+
+%
+% segment manager.
+%
+
+\subsection{segment manager}
+
+\subsubsection{Description}
+
+\subsubsection{Students work}
+
+\subsubsection{IA-32 implementation}

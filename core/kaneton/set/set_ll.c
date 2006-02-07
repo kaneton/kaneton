@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set_ll.c
+ * file          /home/buckman/kaneton/core/kaneton/set/set_ll.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon dec 19 17:25:13 2005]
+ * updated       matthieu bucchianeri   [mon feb  6 18:12:54 2006]
  */
 
 /*
@@ -1274,8 +1274,8 @@ t_error			set_release_ll(t_setid			setid)
 }
 
 /*
- * this function just returns an error because the bpt set only
- * works with the sort option.
+ * this function just returns an error because the ll set does not
+ * support this operation.
  */
 
 t_error			set_push_ll(t_setid			setid,
@@ -1287,8 +1287,8 @@ t_error			set_push_ll(t_setid			setid,
 }
 
 /*
- * this function just returns an error because the bpt set only
- * works with the sort option.
+ * this function just returns an error because the ll set does not
+ * support this operation.
  */
 
 t_error			set_pop_ll(t_setid			setid)
@@ -1299,8 +1299,8 @@ t_error			set_pop_ll(t_setid			setid)
 }
 
 /*
- * this function just returns an error because the bpt set only
- * works with the sort option.
+ * this function just returns an error because the ll set does not
+ * support this operation.
  */
 
 t_error			set_pick_ll(t_setid			setid,

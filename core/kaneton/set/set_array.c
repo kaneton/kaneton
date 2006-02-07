@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/set/set_array.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 24 19:50:54 2006]
+ * updated       matthieu bucchianeri   [mon feb  6 18:12:29 2006]
  */
 
 /*
@@ -1501,8 +1501,8 @@ t_error			set_release_array(t_setid		setid)
 }
 
 /*
- * this function just returns an error because the bpt set only
- * works with the sort option.
+ * this function just returns an error because the array set does not
+ * support this operation.
  */
 
 t_error			set_push_array(t_setid			setid,
@@ -1514,8 +1514,8 @@ t_error			set_push_array(t_setid			setid,
 }
 
 /*
- * this function just returns an error because the bpt set only
- * works with the sort option.
+ * this function just returns an error because the array set does not
+ * support this operation.
  */
 
 t_error			set_pop_array(t_setid			setid)
@@ -1526,8 +1526,8 @@ t_error			set_pop_array(t_setid			setid)
 }
 
 /*
- * this function just returns an error because the bpt set only
- * works with the sort option.
+ * this function just returns an error because the array set does not
+ * support this operation.
  */
 
 t_error			set_pick_array(t_setid			setid,

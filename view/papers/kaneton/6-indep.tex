@@ -6,13 +6,37 @@
 %% file          /home/buckman/kaneton/view/papers/kaneton/6-indep.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:33:29 2006]
-%% updated       matthieu bucchianeri   [mon jan 30 17:33:40 2006]
+%% updated       matthieu bucchianeri   [tue feb  7 15:47:12 2006]
 %%
 
 %
-% architecture-independant code
+% architecture-independent code
 %
 
-\chapter{Architecture-independant code}
+\chapter{Architecture-independent code}
+
+\newpage
+
+\section{The identifier manager: id}
+
+\paragraph{}
+The following rules describes a typical use of id objects in kaneton:
+
+\begin{itemize}
+
+\item The \textbf{init} function of a manager calls \textbf{id\_build}
+to generate a \textbf{o\_id} object.
+
+\item Functions generating new objects will use \textbf{id\_reserve} to
+reserve new identifiers for the created objects.
+
+\item Functions removing objets will call \textbf{id\_destroy} to release
+identifiers of destroyed objets.
+
+\item The \textbf{clean} function of a manager will release the identifier
+generator with \textbf{id\_release}.
+
+\end{itemize}
+
 
 % end of include file
