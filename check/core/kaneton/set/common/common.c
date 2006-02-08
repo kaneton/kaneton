@@ -56,6 +56,22 @@ void	check_set_tests(void)
   check_set_pipe_01();
   check_set_pipe_02();
   check_set_pipe_03();
+  check_set_pipe_04();
+  check_set_pipe_05();
+  check_set_pipe_06();
+  check_set_pipe_07();
+  check_set_pipe_08();
+  check_set_pipe_09();
+
+  check_set_stack_01();
+    check_set_stack_02();
+    check_set_stack_03();
+  check_set_stack_04();
+   check_set_stack_05();
+    check_set_stack_06();
+    check_set_stack_07();
+    check_set_stack_08();
+    check_set_stack_09();
   /* XXX continue tests */
 }
 
@@ -101,6 +117,41 @@ void		check_many_remove(t_setid setid, int nb, ...)
     }
 
   va_end(l);
+}
+
+/*
+ * push many elements at a time
+ */
+
+void		check_many_push(t_setid setid, int nb, ...)
+{
+  va_list	l;
+  int		i;
+  t_id		id;
+
+  va_start(l, nb);
+
+  for (i = 0; i < nb; ++i)
+    {
+      id = va_arg(l, t_id);
+      if (set_push(setid, &id) != ERROR_NONE)
+	printf("error in set_add()\n");
+    }
+
+  va_end(l);
+}
+
+/*
+ * removes many elements at a time
+ */
+
+void		check_many_pop(t_setid setid, int nb)
+{
+  int		i;
+
+  for (i = 0; i < nb; ++i)
+    if (set_pop(setid) != ERROR_NONE)
+      printf("error in set_remove()\n");
 }
 
 /*

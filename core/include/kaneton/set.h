@@ -695,8 +695,8 @@ t_error			set_clone_pipe(t_setid			old,
 
 t_error			set_type_stack(t_setid			setid);
 
-t_error			set_reserve_stack(t_opts			opts,
-					  t_size			datasz,
+t_error			set_reserve_stack(t_opts		opts,
+					  t_size		datasz,
 					  t_setid*		setid);
 
 t_error			set_show_stack(t_setid			setid);

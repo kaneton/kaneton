@@ -317,7 +317,7 @@ security and other specific fields like for example the location of the
 service, a lifetime etc..
 
 Unlike many distributed systems, the kaneton microkernel and the kayou
-distributed operating system use specific and specialized capabilites to
+distributed operating system use specific and specialised capabilites to
 increase scalability.
 
 Consider a modern file system with billions of inodes; this file system
@@ -329,7 +329,7 @@ identifier in its capabilities because there will certainly never be more than
 
 Each service is different so each service needs its own capability's format.
 
-The use of specific and specialized capabilites forces the programs to ask
+The use of specific and specialised capabilites forces the programs to ask
 the services to build new capabilites, unlike other systems. Indeed,
 the other systems generally use generic capabilites to permit programs to
 generate capabilities by themselves. This was not our choice and the result is
@@ -338,7 +338,7 @@ more scalable capabilites but a performance loss in capability generation.
 Note that we could also provide a library for each capability type including
 functions to generate capabilities of this type. This was not our choice.
 
-Moreover, using this scheme permit services to use the cryptographic algorithm
+Moreover, using this scheme permits services to use the cryptographic algorithm
 they want.
 
 Note that the capability generation does not often happen. Moreover,
@@ -356,7 +356,7 @@ for example, without identifier or with extra permission fields.
 
 Note that the use of the check field does not garantee security on a
 distributed system. For this reason, the kaneton distributed operating
-system can evolve with three security policy:
+system can evolve with three security policies:
 
 \begin{enumerate}
   \item
@@ -408,10 +408,10 @@ design possible.
 
 The set manager provides many different data structures like linked-list,
 double linked-list, circular queue, stack, pipe, array, binary tree, b+-tree
-etc.. Moreover the set manager can be extended without affecting the others
+etc.. Moreover the set manager can be extended without affecting the other
 managers using it.
 
-In this way, every kernel manager is now able to use the set manager to
+By this way, every kernel manager is now able to use the set manager to
 store its data. The set manager also provides tools like \textbf{iterators}
 to easily and quickly go through sets.
 
@@ -480,7 +480,7 @@ microkernel handles threads as kernel threads. Each thread has an unique
 identifier and is manipulated by a capability.
 
 Like address spaces and many other parts of the system, a more complex
-object is created by linking simpler one together. The process of task creation
+object is created by linking simpler ones together. The process of task creation
 it listed below:
 
 \begin{enumerate}
@@ -500,7 +500,7 @@ In addition, this class will implicitly determine the rights of the task
 on the system. The different classes are \textit{core}, \textit{driver},
 \textit{service}, \textit{program}. On many architectures, the core, driver
 and service classes will have the same hardware system priority.
-Nevertheless, few architectures provides different hardware system privileges
+Nevertheless, few architectures provide different hardware system privileges
 like Intel Architecture.
 
 The \textbf{behaviour} specifies the kernel the type of the task from the
@@ -524,7 +524,7 @@ The threads also have an important property: a priority.
 Each thread of a task can set its own priority in the range \textbf{[10, 250[}.
 From this fact, a thread can set itself an higher priority than the other
 threads of its task. The resulting effect is a thread having a longer quantum
-so better interactivity. Once again, this mechanism give more liberty to the
+so better interactivity. Once again, this mechanism gives more liberty to the
 programs.
 
 %
@@ -534,7 +534,7 @@ programs.
 \subsection{Processor}
 
 The processor manager also and commonly called cpu manager provides a small
-set of primitives to manage the processors on which a task run.
+set of primitives to manage the processors on which a task runs.
 
 Each thread of the system has the possibility to choose the processors
 on which they want to be run or more precisly the processors which are allowed
@@ -591,7 +591,7 @@ microkernel for different reasons.
 
 The module service keeps track of the current modules.
 
-With each module is associated a \textbf{lifetime} specifying module's
+To each module is associated a \textbf{lifetime} specifying module's
 importance. With it, the module service will be able to release certain
 modules due to their uselessness. Nevertheless, few modules have a
 unlimited lifetime due to their fundamental use. For example the module
@@ -630,7 +630,7 @@ shared memory \textbf{csm} and the distributed shared memory \textbf{dsm}.
 Each one manages shared memory in its context either on the local system
 or on the global distributed system.
 
-Using the shared memory manager ensures that the memory will not be release
+Using the shared memory manager ensures that the memory will not be released
 if one or more programs are still using it.
 
 Indeed this service must be used to share memory rather than giving
@@ -665,7 +665,7 @@ to not fill in this interface. Then the kernel would not be able to be
 ported on this architecture.
 
 The third solution consists in a kind of extension of the second solution
-in what no interface is designed. Rather, every time an \textit{object} is
+in which no interface is designed. Rather, every time an \textit{object} is
 created, modified, destroyed, the pseudo interface is used to call the
 machine-dependent source code to permit it to perform some operations
 on the object or on everything else. This system's interface is better
@@ -689,7 +689,7 @@ prove that optimisations are also possible.
 
 \subsection{Conclusion}
 
-The kaneton microkernel uses a simple paradigm which allow programmers to
+The kaneton microkernel uses a simple paradigm which allows programmers to
 manage memory and execution context as they wanted to. A special interest
 was ported on the parallel and distributed programming providing complete
 primitives to manage priorities on many levels: thread, task and processor.

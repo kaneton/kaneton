@@ -50,6 +50,22 @@ typedef void (*t_dispdata)(void *data);
  *	../set_pipe/01/01.c
  *	../set_pipe/02/02.c
  *	../set_pipe/03/03.c
+ *	../set_pipe/04/04.c
+ *	../set_pipe/05/05.c
+ *	../set_pipe/06/06.c
+ *	../set_pipe/07/07.c
+ *	../set_pipe/08/08.c
+ *	../set_pipe/09/09.c
+ *	../set_stack/01/01.c
+ *	../set_stack/02/02.c
+ *	../set_stack/03/03.c
+ *	../set_stack/04/04.c
+ *	../set_stack/05/05.c
+ *	../set_stack/06/06.c
+ *	../set_stack/07/07.c
+ *	../set_stack/08/08.c
+ *	../set_stack/09/09.c
+
  */
 
 /*
@@ -63,6 +79,10 @@ void	check_set_tests(void);
 void		check_many_add(t_setid setid, int nb, ...);
 
 void		check_many_remove(t_setid setid, int nb, ...);
+
+void		check_many_push(t_setid setid, int nb, ...);
+
+void		check_many_pop(t_setid setid, int nb);
 
 void		check_display_set(t_setid setid, t_dispdata disp);
 
@@ -261,6 +281,111 @@ void		check_set_pipe_02(void);
  */
 
 void		check_set_pipe_03(void);
+
+
+/*
+ * ../set_pipe/04/04.c
+ */
+
+void		check_set_pipe_04(void);
+
+
+/*
+ * ../set_pipe/05/05.c
+ */
+
+void		check_set_pipe_05(void);
+
+
+/*
+ * ../set_pipe/06/06.c
+ */
+
+void		check_set_pipe_06(void);
+
+
+/*
+ * ../set_pipe/07/07.c
+ */
+
+void		check_set_pipe_07(void);
+
+
+/*
+ * ../set_pipe/08/08.c
+ */
+
+void		check_set_pipe_08(void);
+
+
+/*
+ * ../set_pipe/09/09.c
+ */
+
+void		check_set_pipe_09(void);
+
+
+/*
+ * ../set_stack/01/01.c
+ */
+
+void		check_set_stack_01(void);
+
+
+/*
+ * ../set_stack/02/02.c
+ */
+
+void		check_set_stack_02(void);
+
+
+/*
+ * ../set_stack/03/03.c
+ */
+
+void		check_set_stack_03(void);
+
+
+/*
+ * ../set_stack/04/04.c
+ */
+
+void		check_set_stack_04(void);
+
+
+/*
+ * ../set_stack/05/05.c
+ */
+
+void		check_set_stack_05(void);
+
+
+/*
+ * ../set_stack/06/06.c
+ */
+
+void		check_set_stack_06(void);
+
+
+/*
+ * ../set_stack/07/07.c
+ */
+
+void		check_set_stack_07(void);
+
+
+/*
+ * ../set_stack/08/08.c
+ */
+
+void		check_set_stack_08(void);
+
+
+/*
+ * ../set_stack/09/09.c
+ */
+
+void		check_set_stack_09(void);
 
 
 /*

@@ -496,7 +496,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * XXX temporary, pre-allocate four pages
    */
 
-  init->alloc = bootloader_init_alloc(8 * PAGESZ, &allocsz);
+  init->alloc = bootloader_init_alloc(12 * PAGESZ, &allocsz);
   init->allocsz = allocsz;
 
   return (khdr->e_entry);
