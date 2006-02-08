@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/papers/assignments/k2.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       matthieu bucchianeri   [wed feb  8 12:11:39 2006]
+%% updated       matthieu bucchianeri   [wed feb  8 14:27:42 2006]
 %%
 
 %
@@ -407,66 +407,94 @@ Students have to write everything in this manager.
 
 \prototype{t\_error \textbf{segment\_show}(t\_segid \textbf{segid});}
 
+This function displays information on specified segment.
+
 \prototype{t\_error \textbf{segment\_dump}(void);}
+
+This function displays all segments in the segment container.
 
 \prototype{t\_error \textbf{segment\_clone}(t\_asid \textbf{asid},
                                             t\_segid \textbf{old},
                                             t\_segid* \textbf{new});}
 
+This function clones a segment copying its content.
+
 \prototype{t\_error \textbf{segment\_inject}(o\_segment* \textbf{seg},
                                              t\_asid \textbf{asid});}
 
-\prototype{t\_error \textbf{segment\_give}(t\_asid		asid,
-				     t\_segid		segid);}
+This function injects a preallocated segment in the segment container.
 
-\prototype{t\_error \textbf{segment\_resize}(t\_segid		segid,
-				       t\_psize		new_size);}
+\prototype{t\_error \textbf{segment\_give}(t\_asid \textbf{asid},
+                                           t\_segid \textbf{segid});}
 
-\prototype{t\_error \textbf{segment\_split}(t\_segid		segid,
-				      t\_psize		sz1,
-				      t\_segid*		s1,
-				      t\_segid*		s2);}
+This function gives an address space from one process to another.
 
-\prototype{t\_error \textbf{segment\_coalesce}(t\_segid	s1,
-					 t\_segid	s2,
-					 t\_segid*	new_seg);}
+\prototype{t\_error \textbf{segment\_resize}(t\_segid \textbf{segid},
+                                             t\_psize \textbf{new\_size});}
 
-\prototype{t\_error \textbf{segment\_read}(t\_segid		segid,
-				     t\_paddr		offs,
-				     const void*	buff,
-				     t\_psize		sz);}
+This function resizes a segment.
 
-\prototype{t\_error \textbf{segment\_write}(t\_segid		segid,
-				      t\_paddr		offs,
-				      void*		buff,
-				      t\_psize		sz);}
+\prototype{t\_error \textbf{segment\_split}(t\_segid \textbf{segid},
+                                            t\_psize \textbf{sz1},
+                                            t\_segid* \textbf{s1},
+                                            t\_segid* \textbf{s2});}
 
-\prototype{t\_error \textbf{segment\_copy}(t\_segid		dst,
-				     t\_paddr		offsd,
-				     t\_segid		src,
-				     t\_paddr		offss,
-				     t\_psize		sz);}
+This function split a segment into two segments.
 
-\prototype{t\_error \textbf{segment\_reserve}(t\_asid			asid,
-					t\_psize			size,
-					t\_perms			perms,
-					t\_segid*		segid);}
+\prototype{t\_error \textbf{segment\_coalesce}(t\_segid \textbf{s1},
+                                               t\_segid \textbf{s2},
+                                               t\_segid* \textbf{new\_seg});}
 
-\prototype{t\_error \textbf{segment\_release}(t\_segid			segid);}
+This function merges two segments into a single one.
 
-\prototype{t\_error \textbf{segment\_catch}(t\_asid			asid,
-				      t\_segid			segid);}
+\prototype{t\_error \textbf{segment\_read}(t\_segid \textbf{segid},
+                                           t\_paddr \textbf{offs},
+                                           const void* \textbf{buff},
+                                           t\_psize \textbf{sz});}
 
-\prototype{t\_error \textbf{segment\_perms}(t\_segid			segid,
-				      t\_perms			perms);}
+This function reads raw data from a segment into a buffer.
 
-\prototype{t\_error \textbf{segment\_type}(t\_segid			segid,
-				     t\_type			type);}
+\prototype{t\_error \textbf{segment\_write}(t\_segid \textbf{segid},
+                                            t\_paddr \textbf{offs},
+                                            void* \textbf{buff},
+                                            t\_psize \textbf{sz});}
 
-\prototype{t\_error \textbf{segment\_flush}(t\_asid			asid);}
+This function writes data to a segment.
 
-\prototype{t\_error \textbf{segment\_get}(t\_segid			segid,
-				    o_segment**			o);}
+\prototype{t\_error \textbf{segment\_copy}(t\_segid \textbf{dst},
+                                           t\_paddr \textbf{offsd},
+                                           t\_segid \textbf{src},
+                                           t\_paddr \textbf{offss},
+                                           t\_psize \textbf{sz});}
+
+This function copies data from one segment to another.
+
+\prototype{t\_error \textbf{segment\_reserve}(t\_asid \textbf{asid},
+                                              t\_psize \textbf{size},
+                                              t\_perms \textbf{perms},
+                                              t\_segid* \textbf{segid});}
+
+This function reserves a segment of specified size.
+
+\prototype{t\_error \textbf{segment\_release}(t\_segid \textbf{segid});}
+
+This function releases a segment.
+
+\prototype{t\_error \textbf{segment\_catch}(t\_asid \textbf{asid},
+                                            t\_segid \textbf{segid});}
+
+
+
+\prototype{t\_error \textbf{segment\_perms}(t\_segid \textbf{segid},
+                                            t\_perms \textbf{perms});}
+
+\prototype{t\_error \textbf{segment\_type}(t\_segid \textbf{segid},
+                                           t\_type \textbf{type});}
+
+\prototype{t\_error \textbf{segment\_flush}(t\_asid \textbf{asid});}
+
+\prototype{t\_error \textbf{segment\_get}(t\_segid \textbf{segid},
+                                          o\_segment** \textbf{o});}
 
 \prototype{t\_error \textbf{segment\_init}(void);}
 
