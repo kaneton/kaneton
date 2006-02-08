@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/set/set_ll.c
+ * file          /home/mycure/kaneton/core/kaneton/set/set_ll.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon feb  6 18:12:54 2006]
+ * updated       julien quintard   [wed feb  8 04:41:52 2006]
  */
 
 /*

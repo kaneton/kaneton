@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/core/kaneton/set/set_stack.c
+ * file          /home/mycure/kaneton/core/kaneton/set/set_stack.c
  *
  * created       renaud voltz   [wed jan 25 17:11:05 2006]
- * updated       renaud voltz   [wed jan 25 17:11:05 2006]
+ * updated       julien quintard   [wed feb  8 04:40:33 2006]
  */
 
 /*
@@ -73,8 +73,8 @@ t_error			set_type_stack(t_setid			setid)
  * 5) adds the set descriptor to the set container.
  */
 
-t_error			set_reserve_stack(t_opts			opts,
-					  t_size			datasz,
+t_error			set_reserve_stack(t_opts		opts,
+					  t_size		datasz,
 					  t_setid*		setid)
 {
   o_set			o;
