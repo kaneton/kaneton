@@ -19,6 +19,64 @@
  peut etre changer les noms dans libia32 : t_segment -> o_ia32_segment
 
  revoir la klibc il y a beaucoup de XXX dedans.
+
+--
+ enlever l'option de faire kaneton sur mips
+
+ par contre proposer aux etudiants de coder intel soit avec la
+ pagination, soit sans, et ils peuvent optimiser comme ils veulent
+ du moment que l'interface est respectee.
+
+--
+ vraiment reflechir a un systeme de nommage. genre open(path) va en realite
+ appeler vfs. lui il sait qu'il gere des FS donc il va demander au service
+ de nom de chercher l'objet fs::path. l objet peut se trouver n importe
+ ou peut etre sur une autre machine dans un fs distribue bref.
+
+ et donc ensuite vfs recupere le chemin vers cet objet et fait une
+ ouverture en envoyant un message au service/groupe qui gere cet objet.
+
+ de plus grace a ce systeme il sera inutile de fournir une lib par
+ service pour que le caller sache comment utiliser le service.
+
+ la le caller demande juste au name server: "je cherche un service
+ qui s'appelle surement comme ca, qui a telle version et qui fournit
+ ca".
+
+ de plus preciser que les capabilities sont generees par les servers
+ de par leurs natures specifiques a chaque serveur mais que l'on
+ pourrait egalement fournir une lib de gestion de capability par
+ serveur. mais cette solution est trop inelegante pour etre utilisee
+ dans kaneton. neanmoins elle fournirait de meilleur performance
+ mais la frequence de generation de capability n'en vaut pas
+ la chandelle.
+
+--
+ utiliser le programme sloccount pour compter le nombre de LOC
+ de kaneton:
+
+   MINIX 2.0.4: 20 000
+   MINIX 3.0.0: 7 500
+   MACH 3.0: 75 000
+
+--
+ permanences:
+
+  jeudi 26 janvier: tp: julien & renaud (1h)
+  jeudi 26 janvier: perm: julien (2h)
+  vendredi 27 janvier: perm: julien (4h)
+  samedi 28 janvier: renaud (5h)
+
+--
+ fournir les meme fonctionalites que sleep/wakeup d'unix mais pour des
+ process. ce serait utile genre un thread fait une operation et s'endort
+ car elle attend de timeout. l autre thread recoit le message de timeout
+ et reveille l autre thread.
+
+--
+ prevoir une surcouche au dessus de segment et region pour simplifier
+ la vie de tout le monde genre: map_reserve(size) -> {segment,region}_reserve()
+
 --
  pour eviter les deadlocks on autorisera uniquement les messages
  asynchrone partant du kernel. ca va bien avec ce que je pensais et de
