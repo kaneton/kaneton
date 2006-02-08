@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/papers/assignments/k2.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       matthieu bucchianeri   [tue feb  7 11:50:58 2006]
+%% updated       matthieu bucchianeri   [wed feb  8 12:11:39 2006]
 %%
 
 %
@@ -397,6 +397,94 @@ need. Remember that functions in \textit{libia32} should be reused.
 
 \subsubsection{Description}
 
+The segment manager manages physical  memory. Its goals are to reserve
+and release physical pages, merge or split allocated pages and finally
+to read or write directly into physical memory.
+
 \subsubsection{Students work}
 
+Students have to write everything in this manager.
+
+\prototype{t\_error \textbf{segment\_show}(t\_segid \textbf{segid});}
+
+\prototype{t\_error \textbf{segment\_dump}(void);}
+
+\prototype{t\_error \textbf{segment\_clone}(t\_asid \textbf{asid},
+                                            t\_segid \textbf{old},
+                                            t\_segid* \textbf{new});}
+
+\prototype{t\_error \textbf{segment\_inject}(o\_segment* \textbf{seg},
+                                             t\_asid \textbf{asid});}
+
+\prototype{t\_error \textbf{segment\_give}(t\_asid		asid,
+				     t\_segid		segid);}
+
+\prototype{t\_error \textbf{segment\_resize}(t\_segid		segid,
+				       t\_psize		new_size);}
+
+\prototype{t\_error \textbf{segment\_split}(t\_segid		segid,
+				      t\_psize		sz1,
+				      t\_segid*		s1,
+				      t\_segid*		s2);}
+
+\prototype{t\_error \textbf{segment\_coalesce}(t\_segid	s1,
+					 t\_segid	s2,
+					 t\_segid*	new_seg);}
+
+\prototype{t\_error \textbf{segment\_read}(t\_segid		segid,
+				     t\_paddr		offs,
+				     const void*	buff,
+				     t\_psize		sz);}
+
+\prototype{t\_error \textbf{segment\_write}(t\_segid		segid,
+				      t\_paddr		offs,
+				      void*		buff,
+				      t\_psize		sz);}
+
+\prototype{t\_error \textbf{segment\_copy}(t\_segid		dst,
+				     t\_paddr		offsd,
+				     t\_segid		src,
+				     t\_paddr		offss,
+				     t\_psize		sz);}
+
+\prototype{t\_error \textbf{segment\_reserve}(t\_asid			asid,
+					t\_psize			size,
+					t\_perms			perms,
+					t\_segid*		segid);}
+
+\prototype{t\_error \textbf{segment\_release}(t\_segid			segid);}
+
+\prototype{t\_error \textbf{segment\_catch}(t\_asid			asid,
+				      t\_segid			segid);}
+
+\prototype{t\_error \textbf{segment\_perms}(t\_segid			segid,
+				      t\_perms			perms);}
+
+\prototype{t\_error \textbf{segment\_type}(t\_segid			segid,
+				     t\_type			type);}
+
+\prototype{t\_error \textbf{segment\_flush}(t\_asid			asid);}
+
+\prototype{t\_error \textbf{segment\_get}(t\_segid			segid,
+				    o_segment**			o);}
+
+\prototype{t\_error \textbf{segment\_init}(void);}
+
+\prototype{t\_error \textbf{segment\_clean}(void);}
+
+
 \subsubsection{IA-32 implementation}
+
+%
+% modification to kernel main
+%
+
+\subsection{kernel main procedure}
+
+%
+% bonus
+%
+
+\subsection{k2 bonus}
+
+Faire un allocateur meilleur qu'un first fit.
