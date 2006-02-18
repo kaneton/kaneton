@@ -1,5 +1,9 @@
 --
+ passer toutes les images de jpg -> pdf
+
+--
  il faut revoir set_locate_array pour les tableaux tries. il y a un bug.
+
 --
  inventaire des fonctions a terminer :
   - as_clone
@@ -14,13 +18,6 @@
  peut etre changer les noms dans libia32 : t_segment -> o_ia32_segment
 
  revoir la klibc il y a beaucoup de XXX dedans.
-
---
- enlever l'option de faire kaneton sur mips
-
- par contre proposer aux etudiants de coder intel soit avec la
- pagination, soit sans, et ils peuvent optimiser comme ils veulent
- du moment que l'interface est respectee.
 
 --
  vraiment reflechir a un systeme de nommage. genre open(path) va en realite
@@ -53,14 +50,6 @@
    MINIX 2.0.4: 20 000
    MINIX 3.0.0: 7 500
    MACH 3.0: 75 000
-
---
- permanences:
-
-  jeudi 26 janvier: tp: julien & renaud (1h)
-  jeudi 26 janvier: perm: julien (2h)
-  vendredi 27 janvier: perm: julien (4h)
-  samedi 28 janvier: renaud (5h)
 
 --
  fournir les meme fonctionalites que sleep/wakeup d'unix mais pour des
