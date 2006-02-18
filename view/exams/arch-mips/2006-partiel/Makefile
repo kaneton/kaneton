@@ -30,7 +30,7 @@ include			../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		2006-exam
+PAPER			:=		2006-partiel
 
 GARBAGE			:=		$(PAPER).aux			\
 					$(PAPER).log			\
