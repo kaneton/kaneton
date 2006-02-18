@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/libs/libia32/interrupt/Makefile
+## file          /home/mycure/kaneton/core/kaneton/task/Makefile
 ##
-## created       matthieu bucchianeri   [fri jan  6 11:45:56 2006]
-## updated       matthieu bucchianeri   [fri jan  6 11:50:10 2006]
+## created       julien quintard   [sat dec 10 13:50:17 2005]
+## updated       julien quintard   [sat dec 10 13:50:26 2005]
 ##
 
 #
@@ -25,34 +25,39 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-INTERRUPT_LO		:=		interrupt.lo
+EVENT_LO		:=		event.lo
 
-INTERRUPT_C		:=		pic.c			\
-					exception.c		\
-					irq.c
+EVENT_C			:=		event.c				
 
-INTERRUPT_O		:=		$(INTERRUPT_C:.c=.o)
+EVENT_O			:=		$(EVENT_C:.c=.o)
+
+EVENT_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/event.h
+
+CFLAGS			+=		-D___kernel
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(INTERRUPT_LO):		$(INTERRUPT_O)
-	$(call remove,$(INTERRUPT_LO),)
+$(EVENT_LO):		$(EVENT_O)
+	$(call remove,$(EVENT_LO),)
 
-	$(call archive,$(INTERRUPT_LO),$(INTERRUPT_O),)
+	$(call archive,$(EVENT_LO),$(EVENT_O),)
 
 clear:
-	$(call remove,$(INTERRUPT_O),)
+	$(call remove,$(EVENT_O),)
 
-	$(call remove,$(INTERRUPT_LO),)
+	$(call remove,$(EVENT_LO),)
 
 	$(call purge,)
+
+proto:
+	$(call prototypes,$(EVENT_INCLUDE),)
 
 dep:
 	$(call remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(INTERRUPT_C),$(_MAKEFILE_MK_),)
+	$(call dependencies,$(EVENT_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

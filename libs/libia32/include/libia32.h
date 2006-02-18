@@ -25,7 +25,7 @@
 #include "pmode/pmode.h"
 #include "pmode/gdt.h"
 #include "pmode/idt.h"
-
+#include "interrupt/interrupt.h"
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -38,7 +38,9 @@
  *      ../paging/pd.c
  *      ../paging/pt.c
  *      ../paging/tlb.c
- *      ../interrupt/interrupt.c
+ *      ../interrupt/pic.c
+ *      ../interrupt/exception.c
+ *      ../interrupt/irq.c
  */
 
 /*
@@ -235,7 +237,7 @@ t_error			tlb_flush(void);
 
 
 /*
- * ../interrupt/interrupt.c
+ * ../interrupt/pic.c
  */
 
 t_error			interrupt_init(void);
@@ -243,6 +245,128 @@ t_error			interrupt_init(void);
 t_error			interrupt_enable(t_uint8			irq);
 
 t_error			interrupt_disable(t_uint8			irq);
+
+
+/*
+ * ../interrupt/exception.c
+ */
+
+t_error			exception_add(t_uint8			nr);
+
+t_error			exception_init(void);
+
+void			exception_generic_handler(t_uint8	nr);
+
+void			exception_handler_default(void);
+
+void			handler_exception0(void);
+
+void			handler_exception1(void);
+
+void			handler_exception2(void);
+
+void			handler_exception3(void);
+
+void			handler_exception4(void);
+
+void			handler_exception5(void);
+
+void			handler_exception6(void);
+
+void			handler_exception7(void);
+
+void			handler_exception8(void);
+
+void			handler_exception9(void);
+
+void			handler_exception10(void);
+
+void			handler_exception11(void);
+
+void			handler_exception12(void);
+
+void			handler_exception13(void);
+
+void			handler_exception14(void);
+
+void			handler_exception15(void);
+
+void			handler_exception16(void);
+
+void			handler_exception17(void);
+
+void			handler_exception18(void);
+
+void			handler_exception19(void);
+
+void			handler_exception20(void);
+
+void			handler_exception21(void);
+
+void			handler_exception22(void);
+
+void			handler_exception23(void);
+
+void			handler_exception24(void);
+
+void			handler_exception25(void);
+
+void			handler_exception26(void);
+
+void			handler_exception27(void);
+
+void			handler_exception28(void);
+
+void			handler_exception29(void);
+
+void			handler_exception30(void);
+
+void			handler_exception31(void);
+
+
+/*
+ * ../interrupt/irq.c
+ */
+
+t_error			irq_add(t_uint8			nr);
+
+t_error		irq_init(void);
+
+void		irq_generic_handler(t_uint8	irq);
+
+void	irq_handler_default(void);
+
+void	handler_irq0(void);
+
+void	handler_irq1(void);
+
+void	handler_irq2(void);
+
+void	handler_irq3(void);
+
+void	handler_irq4(void);
+
+void	handler_irq5(void);
+
+void	handler_irq6(void);
+
+void	handler_irq7(void);
+
+void	handler_irq8(void);
+
+void	handler_irq9(void);
+
+void	handler_irq10(void);
+
+void	handler_irq11(void);
+
+void	handler_irq12(void);
+
+void	handler_irq13(void);
+
+void	handler_irq14(void);
+
+void	handler_irq15(void);
 
 
 /*

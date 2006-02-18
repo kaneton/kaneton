@@ -91,13 +91,11 @@ t_error			ia32_segment_clean(void);
 
 t_error                 exception_generic(void);
 
-t_error                 interrupt_generic(void);
-
 t_error			ia32_event_init(void);
 
-t_error         ia32_event_add(t_uint16			id,
-			       t_prvl			privilege,
-			       t_uint32			handler);
+t_error			ia32_event_add(t_uint16			id,
+				       t_prvl			privilege,
+				       t_uint32			handler);
 
 
 /*
