@@ -56,10 +56,11 @@ t_idt           idt;
  *
  * steps:
  *
+ * 1) retrieve the global pointer if needed
  * XXX
  */
 
-t_error			idt_dump(t_idt*			dump_idt)
+t_error			idt_dump(t_idt*				dump_idt)
 {
   t_uint16		i;
   t_idte*		entries;
@@ -108,8 +109,8 @@ t_error			idt_dump(t_idt*			dump_idt)
  * return the size of an idt
  */
 
-t_error			idt_size(t_idt*			table,
-				 t_uint16		*size)
+t_error			idt_size(t_idt*				table,
+				 t_uint16			*size)
 {
   if (!table)
     table = &idt;
@@ -130,10 +131,10 @@ t_error			idt_size(t_idt*			table,
  * 4) clear the table if necessary
  */
 
-t_error			idt_build(t_uint16		entries,
-				  t_paddr		base,
-				  t_idt*		idt,
-				  t_uint8		clear)
+t_error			idt_build(t_uint16			entries,
+				  t_paddr			base,
+				  t_idt*			idt,
+				  t_uint8			clear)
 {
   /*
    * 1)
@@ -175,7 +176,7 @@ t_error			idt_build(t_uint16		entries,
  * 2) upate idt record.
  */
 
-t_error			idt_activate(t_idt		new_idt)
+t_error			idt_activate(t_idt			new_idt)
 {
   t_idtr		idtr;
 
@@ -207,7 +208,7 @@ t_error			idt_activate(t_idt		new_idt)
  * 3) copy to new idt address.
  */
 
-t_error			idt_import(t_idt*		idt)
+t_error			idt_import(t_idt*			idt)
 {
   t_idtr		sidtr;
   t_idte*		source;
@@ -249,9 +250,9 @@ t_error			idt_import(t_idt*		idt)
  * 6) set the reserved field.
  */
 
-t_error			idt_add_gate(t_idt*		table,
-				     t_uint16		index,
-				     t_gate		gate)
+t_error			idt_add_gate(t_idt*			table,
+				     t_uint16			index,
+				     t_gate			gate)
 {
   /*
    * 1)
@@ -310,9 +311,9 @@ t_error			idt_add_gate(t_idt*		table,
  * 6) get the privileges.
  */
 
-t_error			idt_get_gate(t_idt*		table,
-				     t_uint16		index,
-				     t_gate*		gate)
+t_error			idt_get_gate(t_idt*			table,
+				     t_uint16			index,
+				     t_gate*			gate)
 {
   /*
    * 1)
@@ -367,8 +368,8 @@ t_error			idt_get_gate(t_idt*		table,
  * 3) mark the gate as non-present.
  */
 
-t_error			idt_delete_gate(t_idt*		table,
-					t_uint16	gate_id)
+t_error			idt_delete_gate(t_idt*			table,
+					t_uint16		gate_id)
 {
   /*
    * 1)

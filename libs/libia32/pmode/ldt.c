@@ -62,8 +62,8 @@
  * returns the base pointer of a ldt.
  */
 
-t_error			ldt_base(t_ldt*		table,
-				 t_paddr*	addr)
+t_error			ldt_base(t_ldt*				table,
+				 t_paddr*			addr)
 {
   *addr = (t_paddr)table->descriptor;
 
@@ -74,8 +74,8 @@ t_error			ldt_base(t_ldt*		table,
  * returns size of a ldt.
  */
 
-t_error			ldt_size(t_ldt*		table,
-				 t_uint16	*size)
+t_error			ldt_size(t_ldt*				table,
+				 t_uint16			*size)
 {
   *size = table->count;
 
@@ -86,7 +86,7 @@ t_error			ldt_size(t_ldt*		table,
  * dumps a ldt
  */
 
-t_error			ldt_dump(t_ldt*		table)
+t_error			ldt_dump(t_ldt*				table)
 {
   t_gdt			n;
 
@@ -100,7 +100,7 @@ t_error			ldt_dump(t_ldt*		table)
  * activates a ldt.
  */
 
-t_error			ldt_activate(t_ldt	table)
+t_error			ldt_activate(t_ldt			table)
 {
   LLDT(table.gdt_entry);
 
@@ -119,10 +119,10 @@ t_error			ldt_activate(t_ldt	table)
  * 5) clears the table if necessary.
  */
 
-t_error			ldt_build(t_uint16	entries,
-				  t_paddr	base,
-				  t_ldt*	ldt,
-				  t_uint8	clear)
+t_error			ldt_build(t_uint16			entries,
+				  t_paddr			base,
+				  t_ldt*			ldt,
+				  t_uint8			clear)
 {
   t_segment		seg;
 
@@ -181,7 +181,7 @@ t_error			ldt_build(t_uint16	entries,
  * destoys a ldt
  */
 
-t_error			ldt_destroy(t_ldt	*ldt)
+t_error			ldt_destroy(t_ldt			*ldt)
 {
   return gdt_delete_segment(NULL, ldt->gdt_entry);
 }
@@ -198,9 +198,9 @@ t_error			ldt_destroy(t_ldt	*ldt)
  * 5) sets the limit field.
  */
 
-t_error			ldt_add_segment(t_ldt*		table,
-					t_uint16	segment,
-					t_segment	descriptor)
+t_error			ldt_add_segment(t_ldt*			table,
+					t_uint16		segment,
+					t_segment		descriptor)
 {
   t_uint32		size;
 
@@ -263,9 +263,9 @@ t_error			ldt_add_segment(t_ldt*		table,
  * 3) sets the reserved index.
  */
 
-t_error			ldt_reserve_segment(t_ldt*	table,
-					    t_segment	descriptor,
-					    t_uint16*	segment)
+t_error			ldt_reserve_segment(t_ldt*		table,
+					    t_segment		descriptor,
+					    t_uint16*		segment)
 {
   t_uint16		look;
 
@@ -303,9 +303,9 @@ t_error			ldt_reserve_segment(t_ldt*	table,
  * XXX
  */
 
-t_error			ldt_get_segment(t_ldt*		table,
-					t_uint16	index,
-					t_segment*	segment)
+t_error			ldt_get_segment(t_ldt*			table,
+					t_uint16		index,
+					t_segment*		segment)
 {
   return ERROR_UNKNOWN;
 }
@@ -319,8 +319,8 @@ t_error			ldt_get_segment(t_ldt*		table,
  * 2) mark the segment as non-present.
  */
 
-t_error			ldt_delete_segment(t_ldt*	table,
-					   t_uint16	segment)
+t_error			ldt_delete_segment(t_ldt*		table,
+					   t_uint16		segment)
 {
 
   /*
@@ -348,10 +348,10 @@ t_error			ldt_delete_segment(t_ldt*	table,
  * 2) builds the selector.
  */
 
-t_error			ldt_build_selector(t_ldt*	table,
-					   t_uint16	segment,
-					   t_prvl	privilege,
-					   t_uint16*	selector)
+t_error			ldt_build_selector(t_ldt*		table,
+					   t_uint16		segment,
+					   t_prvl		privilege,
+					   t_uint16*		selector)
 {
 
   /*

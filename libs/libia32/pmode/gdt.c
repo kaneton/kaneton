@@ -86,7 +86,7 @@ t_gdt		gdt;
  * XXX
  */
 
-t_error			gdt_dump(t_gdt*       	dump_gdt)
+t_error			gdt_dump(t_gdt*				dump_gdt)
 {
   t_uint16		i;
   t_gdte*		entries;
@@ -150,8 +150,8 @@ t_error			gdt_dump(t_gdt*       	dump_gdt)
  * returns size of a gdt.
  */
 
-t_error			gdt_size(t_gdt*		table,
-				 t_uint16	*size)
+t_error			gdt_size(t_gdt*				table,
+				 t_uint16			*size)
 {
   if (!table)
     table = &gdt;
@@ -172,10 +172,10 @@ t_error			gdt_size(t_gdt*		table,
  * 4) clears the table if necessary.
  */
 
-t_error			gdt_build(t_uint16	entries,
-				  t_paddr	base,
-				  t_gdt*	gdt,
-				  t_uint8	clear)
+t_error			gdt_build(t_uint16			entries,
+				  t_paddr			base,
+				  t_gdt*			gdt,
+				  t_uint8			clear)
 {
 
   /*
@@ -222,7 +222,7 @@ t_error			gdt_build(t_uint16	entries,
  * 2) updates global gdt record.
  */
 
-t_error			gdt_activate(t_gdt	new_gdt)
+t_error			gdt_activate(t_gdt			new_gdt)
 {
   t_gdtr		gdtr;
 
@@ -256,7 +256,7 @@ t_error			gdt_activate(t_gdt	new_gdt)
  * 3) copies to new gdt address.
  */
 
-t_error			gdt_import(t_gdt*	gdt)
+t_error			gdt_import(t_gdt*			gdt)
 {
   t_gdtr		sgdtr;
   t_gdte*		source;
@@ -300,9 +300,9 @@ t_error			gdt_import(t_gdt*	gdt)
  * 6) sets the limit field.
  */
 
-t_error			gdt_add_segment(t_gdt*		table,
-					t_uint16	segment,
-					t_segment	descriptor)
+t_error			gdt_add_segment(t_gdt*			table,
+					t_uint16		segment,
+					t_segment		descriptor)
 {
   t_uint32		size;
 
@@ -376,9 +376,9 @@ t_error			gdt_add_segment(t_gdt*		table,
  * 4) sets the reserved index.
  */
 
-t_error			gdt_reserve_segment(t_gdt*	table,
-					    t_segment	descriptor,
-					    t_uint16*	segment)
+t_error			gdt_reserve_segment(t_gdt*		table,
+					    t_segment		descriptor,
+					    t_uint16*		segment)
 {
   t_uint16		look;
 
@@ -423,9 +423,9 @@ t_error			gdt_reserve_segment(t_gdt*	table,
  * XXX
  */
 
-t_error			gdt_get_segment(t_gdt*		table,
-					t_uint16	index,
-					t_segment*	segment)
+t_error			gdt_get_segment(t_gdt*			table,
+					t_uint16		index,
+					t_segment*		segment)
 {
   /*
    * 1)
@@ -482,8 +482,8 @@ t_error			gdt_get_segment(t_gdt*		table,
  * 3) mark the segment as non-present.
  */
 
-t_error			gdt_delete_segment(t_gdt*	table,
-					   t_uint16	segment)
+t_error			gdt_delete_segment(t_gdt*		table,
+					   t_uint16		segment)
 {
 
   /*
@@ -518,9 +518,9 @@ t_error			gdt_delete_segment(t_gdt*	table,
  * 2) builds the selector.
  */
 
-t_error			gdt_build_selector(t_uint16	segment,
-					   t_prvl	privilege,
-					   t_uint16*	selector)
+t_error			gdt_build_selector(t_uint16		segment,
+					   t_prvl		privilege,
+					   t_uint16*		selector)
 {
 
   /*

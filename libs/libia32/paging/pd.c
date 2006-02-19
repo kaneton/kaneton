@@ -56,7 +56,7 @@ t_directory		pd;
  * dumps a page directory and its tables.
  */
 
-t_error			pd_dump(t_directory*	dir)
+t_error			pd_dump(t_directory*			dir)
 {
   t_uint32		i;
   t_pde*		d;
@@ -88,9 +88,9 @@ t_error			pd_dump(t_directory*	dir)
  * 3) clears the directory if needed.
  */
 
-t_error			pd_build(t_paddr	base,
-				 t_directory*	directory,
-				 t_uint8	clear)
+t_error			pd_build(t_paddr			base,
+				 t_directory*			directory,
+				 t_uint8			clear)
 {
 
   /*
@@ -123,8 +123,8 @@ t_error			pd_build(t_paddr	base,
  *
  */
 
-t_error			pd_base(t_directory*		dir,
-				t_paddr*		base)
+t_error			pd_base(t_directory*			dir,
+				t_paddr*			base)
 {
   t_pde*		d;
 
@@ -156,7 +156,7 @@ t_error			pd_base(t_directory*		dir,
  * 3) sets the global variable.
  */
 
-t_error			pd_activate(t_directory		dir)
+t_error			pd_activate(t_directory			dir)
 {
   t_uint32		pdbr;
 
@@ -191,9 +191,9 @@ t_error			pd_activate(t_directory		dir)
  * 3) adds the entry.
  */
 
-t_error			pd_add_table(t_directory*	dir,
-				     t_uint16		entry,
-				     t_table		table)
+t_error			pd_add_table(t_directory*		dir,
+				     t_uint16			entry,
+				     t_table			table)
 {
   t_pde*		d;
   t_uint32		opts = 0;
@@ -239,9 +239,9 @@ t_error			pd_add_table(t_directory*	dir,
  * 3) fills the page record.
  */
 
-t_error			pd_get_table(t_directory*	dir,
-				     t_uint16		entry,
-				     t_table*		table)
+t_error			pd_get_table(t_directory*		dir,
+				     t_uint16			entry,
+				     t_table*			table)
 {
   t_directory		d;
 
@@ -283,8 +283,8 @@ t_error			pd_get_table(t_directory*	dir,
  * 3) resets the entry.
  */
 
-t_error			pd_delete_table(t_directory*	dir,
-					t_uint16	entry)
+t_error			pd_delete_table(t_directory*		dir,
+					t_uint16		entry)
 {
   t_directory		d;
 

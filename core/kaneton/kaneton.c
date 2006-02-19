@@ -170,14 +170,14 @@ void			kaneton(t_init*				bootloader)
    * XXX EVENT
    */
 
-  /*  if (event_init() != ERROR_NONE)
+  if (event_init() != ERROR_NONE)
     kaneton_error("cannot initialize events\n");
 
   STI();
 
   while (1)
     ;
-  */
+
 #ifdef CONF_ENABLE_CHECK
   check_tests();
   while(1);

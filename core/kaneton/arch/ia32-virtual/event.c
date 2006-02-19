@@ -34,7 +34,10 @@
  * ---------- extern ----------------------------------------------------------
  */
 
-extern m_event*          event;
+extern m_event*			event;
+extern t_interrupt_handler      exception_handlers[16];
+extern t_interrupt_handler      irq_handlers[16];
+
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -86,6 +89,8 @@ t_error			ia32_event_init(void)
   if (irq_init() != ERROR_NONE)
     return ERROR_UNKNOWN;
 
+  ia32_event_add(33, 0, XXX);
+
   return ERROR_NONE;
 }
 
@@ -102,7 +107,7 @@ t_error			ia32_event_init(void)
 
 t_error			ia32_event_add(t_uint16			id,
 				       t_prvl			privilege,
-				       t_uint32			handler)
+				       t_interrupt_handler	handler)
 {
   t_gate		gate;
 
@@ -116,20 +121,29 @@ t_error			ia32_event_add(t_uint16			id,
   /*
    * 2)
    */
-
+  /*
   gate.offset = handler;
   gate.segsel = 1 << 3;
   gate.privilege = privilege;
   gate.type = type_gate_interrupt;
 
   idt_add_gate(NULL, id, gate);
+  */
 
   /*
    * 3)
    */
 
   if (id >= IDT_IRQ_BASE)
-    interrupt_enable(id - IDT_IRQ_BASE);
+    {
+      irq_handlers[id - IDT_IRQ_BASE] = handler;
+      interrupt_enable(id - IDT_IRQ_BASE);
+    }
 
   return ERROR_NONE;
+}
+
+void	XXX(void)
+{
+  printf("kbd interrupt\n");
 }

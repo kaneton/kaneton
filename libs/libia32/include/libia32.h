@@ -61,110 +61,110 @@ t_error			pmode_clean(void);
  * ../pmode/gdt.c
  */
 
-t_error			gdt_dump(t_gdt*       	dump_gdt);
+t_error			gdt_dump(t_gdt*				dump_gdt);
 
-t_error			gdt_size(t_gdt*		table,
-				 t_uint16	*size);
+t_error			gdt_size(t_gdt*				table,
+				 t_uint16			*size);
 
-t_error			gdt_build(t_uint16	entries,
-				  t_paddr	base,
-				  t_gdt*	gdt,
-				  t_uint8	clear);
+t_error			gdt_build(t_uint16			entries,
+				  t_paddr			base,
+				  t_gdt*			gdt,
+				  t_uint8			clear);
 
-t_error			gdt_activate(t_gdt	new_gdt);
+t_error			gdt_activate(t_gdt			new_gdt);
 
-t_error			gdt_import(t_gdt*	gdt);
+t_error			gdt_import(t_gdt*			gdt);
 
-t_error			gdt_add_segment(t_gdt*		table,
-					t_uint16	segment,
-					t_segment	descriptor);
+t_error			gdt_add_segment(t_gdt*			table,
+					t_uint16		segment,
+					t_segment		descriptor);
 
-t_error			gdt_reserve_segment(t_gdt*	table,
-					    t_segment	descriptor,
-					    t_uint16*	segment);
+t_error			gdt_reserve_segment(t_gdt*		table,
+					    t_segment		descriptor,
+					    t_uint16*		segment);
 
-t_error			gdt_get_segment(t_gdt*		table,
-					t_uint16	index,
-					t_segment*	segment);
+t_error			gdt_get_segment(t_gdt*			table,
+					t_uint16		index,
+					t_segment*		segment);
 
-t_error			gdt_delete_segment(t_gdt*	table,
-					   t_uint16	segment);
+t_error			gdt_delete_segment(t_gdt*		table,
+					   t_uint16		segment);
 
-t_error			gdt_build_selector(t_uint16	segment,
-					   t_prvl	privilege,
-					   t_uint16*	selector);
+t_error			gdt_build_selector(t_uint16		segment,
+					   t_prvl		privilege,
+					   t_uint16*		selector);
 
 
 /*
  * ../pmode/ldt.c
  */
 
-t_error			ldt_base(t_ldt*		table,
-				 t_paddr*	addr);
+t_error			ldt_base(t_ldt*				table,
+				 t_paddr*			addr);
 
-t_error			ldt_size(t_ldt*		table,
-				 t_uint16	*size);
+t_error			ldt_size(t_ldt*				table,
+				 t_uint16			*size);
 
-t_error			ldt_dump(t_ldt*		table);
+t_error			ldt_dump(t_ldt*				table);
 
-t_error			ldt_activate(t_ldt	table);
+t_error			ldt_activate(t_ldt			table);
 
-t_error			ldt_build(t_uint16	entries,
-				  t_paddr	base,
-				  t_ldt*	ldt,
-				  t_uint8	clear);
+t_error			ldt_build(t_uint16			entries,
+				  t_paddr			base,
+				  t_ldt*			ldt,
+				  t_uint8			clear);
 
-t_error			ldt_destroy(t_ldt	*ldt);
+t_error			ldt_destroy(t_ldt			*ldt);
 
-t_error			ldt_add_segment(t_ldt*		table,
-					t_uint16	segment,
-					t_segment	descriptor);
+t_error			ldt_add_segment(t_ldt*			table,
+					t_uint16		segment,
+					t_segment		descriptor);
 
-t_error			ldt_reserve_segment(t_ldt*	table,
-					    t_segment	descriptor,
-					    t_uint16*	segment);
+t_error			ldt_reserve_segment(t_ldt*		table,
+					    t_segment		descriptor,
+					    t_uint16*		segment);
 
-t_error			ldt_get_segment(t_ldt*		table,
-					t_uint16	index,
-					t_segment*	segment);
+t_error			ldt_get_segment(t_ldt*			table,
+					t_uint16		index,
+					t_segment*		segment);
 
-t_error			ldt_delete_segment(t_ldt*	table,
-					   t_uint16	segment);
+t_error			ldt_delete_segment(t_ldt*		table,
+					   t_uint16		segment);
 
-t_error			ldt_build_selector(t_ldt*	table,
-					   t_uint16	segment,
-					   t_prvl	privilege,
-					   t_uint16*	selector);
+t_error			ldt_build_selector(t_ldt*		table,
+					   t_uint16		segment,
+					   t_prvl		privilege,
+					   t_uint16*		selector);
 
 
 /*
  * ../pmode/idt.c
  */
 
-t_error			idt_dump(t_idt*			dump_idt);
+t_error			idt_dump(t_idt*				dump_idt);
 
-t_error			idt_size(t_idt*			table,
-				 t_uint16		*size);
+t_error			idt_size(t_idt*				table,
+				 t_uint16			*size);
 
-t_error			idt_build(t_uint16		entries,
-				  t_paddr		base,
-				  t_idt*		idt,
-				  t_uint8		clear);
+t_error			idt_build(t_uint16			entries,
+				  t_paddr			base,
+				  t_idt*			idt,
+				  t_uint8			clear);
 
-t_error			idt_activate(t_idt		new_idt);
+t_error			idt_activate(t_idt			new_idt);
 
-t_error			idt_import(t_idt*		idt);
+t_error			idt_import(t_idt*			idt);
 
-t_error			idt_add_gate(t_idt*		table,
-				     t_uint16		index,
-				     t_gate		gate);
+t_error			idt_add_gate(t_idt*			table,
+				     t_uint16			index,
+				     t_gate			gate);
 
-t_error			idt_get_gate(t_idt*		table,
-				     t_uint16		index,
-				     t_gate*		gate);
+t_error			idt_get_gate(t_idt*			table,
+				     t_uint16			index,
+				     t_gate*			gate);
 
-t_error			idt_delete_gate(t_idt*		table,
-					t_uint16	gate_id);
+t_error			idt_delete_gate(t_idt*			table,
+					t_uint16		gate_id);
 
 
 /*
@@ -182,56 +182,56 @@ t_error			paging_clean(void);
  * ../paging/pd.c
  */
 
-t_error			pd_dump(t_directory*	dir);
+t_error			pd_dump(t_directory*			dir);
 
-t_error			pd_build(t_paddr	base,
-				 t_directory*	directory,
-				 t_uint8	clear);
+t_error			pd_build(t_paddr			base,
+				 t_directory*			directory,
+				 t_uint8			clear);
 
-t_error			pd_base(t_directory*		dir,
-				t_paddr*		base);
+t_error			pd_base(t_directory*			dir,
+				t_paddr*			base);
 
-t_error			pd_activate(t_directory		dir);
+t_error			pd_activate(t_directory			dir);
 
-t_error			pd_add_table(t_directory*	dir,
-				     t_uint16		entry,
-				     t_table		table);
+t_error			pd_add_table(t_directory*		dir,
+				     t_uint16			entry,
+				     t_table			table);
 
-t_error			pd_get_table(t_directory*	dir,
-				     t_uint16		entry,
-				     t_table*		table);
+t_error			pd_get_table(t_directory*		dir,
+				     t_uint16			entry,
+				     t_table*			table);
 
-t_error			pd_delete_table(t_directory*	dir,
-					t_uint16	entry);
+t_error			pd_delete_table(t_directory*		dir,
+					t_uint16		entry);
 
 
 /*
  * ../paging/pt.c
  */
 
-t_error			pt_dump(t_pte*	tab);
+t_error			pt_dump(t_pte*				tab);
 
-t_error			pt_build(t_paddr	base,
-				 t_table*	table,
-				 t_uint8	clear);
+t_error			pt_build(t_paddr			base,
+				 t_table*			table,
+				 t_uint8			clear);
 
-t_error			pt_add_page(t_table*	tab,
-				    t_uint16	entry,
-				    t_page	page);
+t_error			pt_add_page(t_table*			tab,
+				    t_uint16			entry,
+				    t_page			page);
 
-t_error			pt_get_page(t_table*	tab,
-				    t_uint16	entry,
-				    t_page*	page);
+t_error			pt_get_page(t_table*			tab,
+				    t_uint16			entry,
+				    t_page*			page);
 
-t_error			pt_delete_page(t_table*	tab,
-				       t_uint16	entry);
+t_error			pt_delete_page(t_table*			tab,
+				       t_uint16			entry);
 
 
 /*
  * ../paging/tlb.c
  */
 
-t_error			tlb_invalidate(t_paddr	page);
+t_error			tlb_invalidate(t_paddr			page);
 
 t_error			tlb_flush(void);
 
@@ -242,9 +242,9 @@ t_error			tlb_flush(void);
 
 t_error			interrupt_init(void);
 
-t_error			interrupt_enable(t_uint8			irq);
+t_error			interrupt_enable(t_uint8		irq);
 
-t_error			interrupt_disable(t_uint8			irq);
+t_error			interrupt_disable(t_uint8		irq);
 
 
 /*
@@ -255,118 +255,22 @@ t_error			exception_add(t_uint8			nr);
 
 t_error			exception_init(void);
 
-void			exception_generic_handler(t_uint8	nr);
+void			exception_wrapper(t_uint32		nr);
 
 void			exception_handler_default(void);
-
-void			handler_exception0(void);
-
-void			handler_exception1(void);
-
-void			handler_exception2(void);
-
-void			handler_exception3(void);
-
-void			handler_exception4(void);
-
-void			handler_exception5(void);
-
-void			handler_exception6(void);
-
-void			handler_exception7(void);
-
-void			handler_exception8(void);
-
-void			handler_exception9(void);
-
-void			handler_exception10(void);
-
-void			handler_exception11(void);
-
-void			handler_exception12(void);
-
-void			handler_exception13(void);
-
-void			handler_exception14(void);
-
-void			handler_exception15(void);
-
-void			handler_exception16(void);
-
-void			handler_exception17(void);
-
-void			handler_exception18(void);
-
-void			handler_exception19(void);
-
-void			handler_exception20(void);
-
-void			handler_exception21(void);
-
-void			handler_exception22(void);
-
-void			handler_exception23(void);
-
-void			handler_exception24(void);
-
-void			handler_exception25(void);
-
-void			handler_exception26(void);
-
-void			handler_exception27(void);
-
-void			handler_exception28(void);
-
-void			handler_exception29(void);
-
-void			handler_exception30(void);
-
-void			handler_exception31(void);
 
 
 /*
  * ../interrupt/irq.c
  */
 
-t_error			irq_add(t_uint8			nr);
+t_error			irq_add(t_uint8				nr);
 
-t_error		irq_init(void);
+t_error			irq_init(void);
 
-void		irq_generic_handler(t_uint8	irq);
+void			irq_wrapper(t_uint32			nr);
 
-void	irq_handler_default(void);
-
-void	handler_irq0(void);
-
-void	handler_irq1(void);
-
-void	handler_irq2(void);
-
-void	handler_irq3(void);
-
-void	handler_irq4(void);
-
-void	handler_irq5(void);
-
-void	handler_irq6(void);
-
-void	handler_irq7(void);
-
-void	handler_irq8(void);
-
-void	handler_irq9(void);
-
-void	handler_irq10(void);
-
-void	handler_irq11(void);
-
-void	handler_irq12(void);
-
-void	handler_irq13(void);
-
-void	handler_irq14(void);
-
-void	handler_irq15(void);
+void			irq_handler_default(void);
 
 
 /*

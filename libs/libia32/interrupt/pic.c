@@ -126,7 +126,7 @@ t_error			interrupt_init(void)
  * turn on a given interrupt enabling its flag
  */
 
-t_error			interrupt_enable(t_uint8			irq)
+t_error			interrupt_enable(t_uint8		irq)
 {
   t_uint8		mask;
 
@@ -148,7 +148,7 @@ t_error			interrupt_enable(t_uint8			irq)
  * turn off a given interrupt
  */
 
-t_error			interrupt_disable(t_uint8			irq)
+t_error			interrupt_disable(t_uint8		irq)
 {
   t_uint8		mask;
 

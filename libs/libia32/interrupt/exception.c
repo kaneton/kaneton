@@ -12,7 +12,7 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- *
+ * exception handling
  */
 
 /*
@@ -29,9 +29,21 @@
 #include <klibc.h>
 #include <kaneton.h>
 
-t_exception_handler	exception_handlers[32];
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
 
-static t_exception_handler	exception[32] =
+/*
+ * global exception handler table
+ */
+
+t_interrupt_handler		exception_handlers[32];
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+static t_interrupt_handler	exception[32] =
   {
     handler_exception0,
     handler_exception1,
@@ -67,17 +79,29 @@ static t_exception_handler	exception[32] =
     handler_exception31
   };
 
-
 /*
- * ---------- functions -------------------------------------------------------
+ * add an idt entry
+ *
+ * steps:
+ *
+ * 1) check exception identifier
+ * 2) set interrupt gate and add it into the idt
  */
 
 t_error			exception_add(t_uint8			nr)
 {
   t_gate		gate;
 
+  /*
+   * 1)
+   */
+
   if (nr > 31)
     return ERROR_UNKNOWN;
+
+  /*
+   * 2)
+   */
 
   gate.offset = exception[nr];
   gate.segsel = 1 << 3;
@@ -87,13 +111,33 @@ t_error			exception_add(t_uint8			nr)
   return ERROR_NONE;
 }
 
+/*
+ * init exceptions
+ *
+ * steps:
+ *
+ * for each exception:
+ * 1) assign default handler
+ * 2) fill appropriate idt entry
+ */
+
 t_error			exception_init(void)
 {
   int			i;
 
   for (i = 0; i < 32; i++)
     {
+
+      /*
+       * 1)
+       */
+
       exception_handlers[i] = exception_handler_default;
+
+      /*
+       * 2)
+       */
+
       if (exception_add(i) != ERROR_NONE)
 	return ERROR_UNKNOWN;
     }
@@ -101,178 +145,57 @@ t_error			exception_init(void)
   return ERROR_NONE;
 }
 
-void			exception_generic_handler(t_uint8	nr)
+/*
+ * call exception handler
+ */
+
+void			exception_wrapper(t_uint32		nr)
 {
-  EXCEPTION_ENTER();
-
   exception_handlers[nr]();
-
-  EXCEPTION_LEAVE();
 }
 
+/*
+ * do nothing
+ */
 
 void			exception_handler_default(void)
 {
-  printf("default exception handler");
+  return;
 }
 
+/*
+ * exception pre-handlers definitions
+ */
 
-void			handler_exception0(void)
-{
-  exception_generic_handler(0);
-}
-
-void			handler_exception1(void)
-{
-  exception_generic_handler(1);
-}
-
-void			handler_exception2(void)
-{
-  exception_generic_handler(2);
-}
-
-void			handler_exception3(void)
-{
-  exception_generic_handler(3);
-}
-
-void			handler_exception4(void)
-{
-  exception_generic_handler(4);
-}
-
-void			handler_exception5(void)
-{
-  exception_generic_handler(5);
-}
-
-void			handler_exception6(void)
-{
-  exception_generic_handler(6);
-}
-
-void			handler_exception7(void)
-{
-  exception_generic_handler(7);
-}
-
-void			handler_exception8(void)
-{
-  exception_generic_handler(8);
-}
-
-void			handler_exception9(void)
-{
-  exception_generic_handler(9);
-}
-
-void			handler_exception10(void)
-{
-  exception_generic_handler(10);
-}
-
-void			handler_exception11(void)
-{
-  exception_generic_handler(11);
-}
-
-void			handler_exception12(void)
-{
-  exception_generic_handler(12);
-}
-
-void			handler_exception13(void)
-{
-  exception_generic_handler(13);
-}
-
-void			handler_exception14(void)
-{
-  exception_generic_handler(14);
-}
-
-void			handler_exception15(void)
-{
-  exception_generic_handler(15);
-}
-
-void			handler_exception16(void)
-{
-  exception_generic_handler(16);
-}
-
-void			handler_exception17(void)
-{
-  exception_generic_handler(17);
-}
-
-void			handler_exception18(void)
-{
-  exception_generic_handler(18);
-}
-
-void			handler_exception19(void)
-{
-  exception_generic_handler(19);
-}
-
-void			handler_exception20(void)
-{
-  exception_generic_handler(20);
-}
-
-void			handler_exception21(void)
-{
-  exception_generic_handler(21);
-}
-
-void			handler_exception22(void)
-{
-  exception_generic_handler(22);
-}
-
-void			handler_exception23(void)
-{
-  exception_generic_handler(23);
-}
-
-void			handler_exception24(void)
-{
-  exception_generic_handler(24);
-}
-
-void			handler_exception25(void)
-{
-  exception_generic_handler(25);
-}
-
-void			handler_exception26(void)
-{
-  exception_generic_handler(26);
-}
-
-void			handler_exception27(void)
-{
-  exception_generic_handler(27);
-}
-
-void			handler_exception28(void)
-{
-  exception_generic_handler(28);
-}
-
-void			handler_exception29(void)
-{
-  exception_generic_handler(29);
-}
-
-void			handler_exception30(void)
-{
-  exception_generic_handler(30);
-}
-
-void			handler_exception31(void)
-{
-  exception_generic_handler(31);
-}
+EXCEPTION_PREHANDLER(0)
+EXCEPTION_PREHANDLER(1)
+EXCEPTION_PREHANDLER(2)
+EXCEPTION_PREHANDLER(3)
+EXCEPTION_PREHANDLER(4)
+EXCEPTION_PREHANDLER(5)
+EXCEPTION_PREHANDLER(6)
+EXCEPTION_PREHANDLER(7)
+EXCEPTION_PREHANDLER(8)
+EXCEPTION_PREHANDLER(9)
+EXCEPTION_PREHANDLER(10)
+EXCEPTION_PREHANDLER(11)
+EXCEPTION_PREHANDLER(12)
+EXCEPTION_PREHANDLER(13)
+EXCEPTION_PREHANDLER(14)
+EXCEPTION_PREHANDLER(15)
+EXCEPTION_PREHANDLER(16)
+EXCEPTION_PREHANDLER(17)
+EXCEPTION_PREHANDLER(18)
+EXCEPTION_PREHANDLER(19)
+EXCEPTION_PREHANDLER(20)
+EXCEPTION_PREHANDLER(21)
+EXCEPTION_PREHANDLER(22)
+EXCEPTION_PREHANDLER(23)
+EXCEPTION_PREHANDLER(24)
+EXCEPTION_PREHANDLER(25)
+EXCEPTION_PREHANDLER(26)
+EXCEPTION_PREHANDLER(27)
+EXCEPTION_PREHANDLER(28)
+EXCEPTION_PREHANDLER(29)
+EXCEPTION_PREHANDLER(30)
+EXCEPTION_PREHANDLER(31)

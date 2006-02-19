@@ -12,7 +12,7 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- *
+ * irq handling
  */
 
 /*
@@ -29,10 +29,21 @@
 #include <klibc.h>
 #include <kaneton.h>
 
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
 
-t_irq_handler	irq_handlers[16];
+/*
+ * global irq handler table
+ */
 
-t_irq_handler	irq[16] =
+t_interrupt_handler		irq_handlers[16];
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+static t_interrupt_handler	irq[16] =
   {
     handler_irq0,
     handler_irq1,
@@ -53,31 +64,66 @@ t_irq_handler	irq[16] =
   };
 
 /*
- * ---------- functions -------------------------------------------------------
+ * add an idt entry
+ *
+ * steps:
+ *
+ * 1) check irq identifier
+ * 2) set interrupt gate and add it into the idt
  */
 
-t_error			irq_add(t_uint8			nr)
+t_error			irq_add(t_uint8				nr)
 {
   t_gate		gate;
 
+  /*
+   * 1)
+   */
+
   if (nr > 15)
     return ERROR_UNKNOWN;
+
+  /*
+   * 2)
+   */
 
   gate.offset = irq[nr];
   gate.segsel = 1 << 3;
   gate.privilege = 0;
   gate.type = type_gate_interrupt;
 
+  idt_add_gate(NULL, IDT_IRQ_BASE + nr, gate);
+
   return ERROR_NONE;
 }
 
-t_error		irq_init(void)
+/*
+ * init irq
+ *
+ * steps:
+ *
+ * for each irq:
+ * 1) assign default handler
+ * 2) fill appropriate idt entry
+ */
+
+t_error			irq_init(void)
 {
-  int		i;
+  int			i;
 
   for (i = 0; i < 16; i++)
     {
+
+      /*
+       * 1)
+       */
+
       irq_handlers[i] = irq_handler_default;
+
+      /*
+       * 2)
+       */
+
       if (irq_add(i) != ERROR_NONE)
 	return ERROR_UNKNOWN;
     }
@@ -85,98 +131,59 @@ t_error		irq_init(void)
   return ERROR_NONE;
 }
 
-void		irq_generic_handler(t_uint8	irq)
+/*
+ * handle an irq
+ *
+ * steps:
+ *
+ * 1) disable maskable interrupts
+ * 2) acknowledge the pic
+ * 3) call interrupt handler
+ * 4) enable maskable interrupts
+ *
+ */
+
+void			irq_wrapper(t_uint32			nr)
 {
-  IRQ_ENTER();
+  CLI();
 
-  irq_handlers[irq]();
+  /*
+   * 2)
+   * XXX TODO
+   */
 
-  IRQ_LEAVE();
+  irq_handlers[nr]();
+
+  STI();
 }
 
+/*
+ * do nothing
+ */
 
-void	irq_handler_default(void)
+void			irq_handler_default(void)
 {
   printf("default irq handler\n");
 }
 
+/*
+ * irq pre-handlers definitions
+ */
 
-void	handler_irq0(void)
-{
-  irq_generic_handler(0);
-}
+IRQ_PREHANDLER(0)
+IRQ_PREHANDLER(1)
+IRQ_PREHANDLER(2)
+IRQ_PREHANDLER(3)
+IRQ_PREHANDLER(4)
+IRQ_PREHANDLER(5)
+IRQ_PREHANDLER(6)
+IRQ_PREHANDLER(7)
+IRQ_PREHANDLER(8)
+IRQ_PREHANDLER(9)
+IRQ_PREHANDLER(10)
+IRQ_PREHANDLER(11)
+IRQ_PREHANDLER(12)
+IRQ_PREHANDLER(13)
+IRQ_PREHANDLER(14)
+IRQ_PREHANDLER(15)
 
-void	handler_irq1(void)
-{
-  irq_generic_handler(1);
-}
-
-void	handler_irq2(void)
-{
-  irq_generic_handler(2);
-}
-
-void	handler_irq3(void)
-{
-  irq_generic_handler(3);
-}
-
-void	handler_irq4(void)
-{
-  irq_generic_handler(4);
-}
-
-void	handler_irq5(void)
-{
-  irq_generic_handler(5);
-}
-
-void	handler_irq6(void)
-{
-  irq_generic_handler(6);
-}
-
-void	handler_irq7(void)
-{
-  irq_generic_handler(7);
-}
-
-void	handler_irq8(void)
-{
-  irq_generic_handler(8);
-}
-
-void	handler_irq9(void)
-{
-  irq_generic_handler(9);
-}
-
-void	handler_irq10(void)
-{
-  irq_generic_handler(10);
-}
-
-void	handler_irq11(void)
-{
-  irq_generic_handler(11);
-}
-
-void	handler_irq12(void)
-{
-  irq_generic_handler(12);
-}
-
-void	handler_irq13(void)
-{
-  irq_generic_handler(13);
-}
-
-void	handler_irq14(void)
-{
-  irq_generic_handler(14);
-}
-
-void	handler_irq15(void)
-{
-  irq_generic_handler(15);
-}

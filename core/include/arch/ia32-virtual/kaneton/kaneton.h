@@ -95,7 +95,9 @@ t_error			ia32_event_init(void);
 
 t_error			ia32_event_add(t_uint16			id,
 				       t_prvl			privilege,
-				       t_uint32			handler);
+				       t_interrupt_handler	handler);
+
+void	XXX(void);
 
 
 /*

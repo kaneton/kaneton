@@ -20,6 +20,7 @@
 
 /*                                                                  [cut] k2 */
 
+
 /*
  * ---------- dependencies ----------------------------------------------------
  */
@@ -35,32 +36,32 @@
  */
 
 #define SAVE_REG							\
-  "pushl %eax\n"							\
-  "pushl %ebx\n"							\
-  "pushl %ecx\n"							\
-  "pushl %edx\n"							\
-  "pushl %edi\n"							\
-  "pushl %esi\n"							\
-  "pushl %ebp\n"							\
-  "push %ds\n"								\
-  "push %es\n"								\
-  "push %fs\n"
+  asm volatile("pushl %eax\n\t"						\
+	       "pushl %ebx\n\t"						\
+	       "pushl %ecx\n\t"						\
+	       "pushl %edx\n\t"						\
+	       "pushl %edi\n\t"						\
+	       "pushl %esi\n\t"						\
+	       "pushl %ebp\n\t"						\
+	       "pushl %ds\n\t"						\
+	       "pushl %es\n\t"						\
+	       "pushl %fs\n\t");
 
 /*
  *
  */
 
 #define RESTORE_REG							\
-  "pop %fs\n"								\
-  "pop %es\n"								\
-  "pop %ds\n"								\
-  "popl %ebp\n"								\
-  "popl %esi\n"								\
-  "popl %edi\n"								\
-  "popl %edx\n"								\
-  "popl %ecx\n"								\
-  "popl %ebx\n"								\
-  "popl %eax\n"
+  asm volatile("popl %fs\n\t"						\
+	       "popl %es\n\t"						\
+	       "popl %ds\n\t"						\
+	       "popl %ebp\n\t"						\
+	       "popl %esi\n\t"						\
+	       "popl %edi\n\t"						\
+	       "popl %edx\n\t"						\
+	       "popl %ecx\n\t"						\
+	       "popl %ebx\n\t"						\
+	       "popl %eax\n\t");
 
 /*
  *
@@ -72,27 +73,22 @@
   "mov %dx,%es\n"							\
   "mov %dx,%fs\n"
 
-#define EXCEPTION_HANDLER(_nr_)						\
-  handler_exception#_nr_
+#define EXCEPTION_PREHANDLER(_nr_)					\
+  void	handler_exception##_nr_(void)					\
+    {									\
+      SAVE_REG								\
+      exception_wrapper(_nr_);						\
+      RESTORE_REG      							\
+    }
 
-#define IRQ_HANDLER(_nr_)						\
-  handler_irq_##_nr_
+#define IRQ_PREHANDLER(_nr_)						\
+  void	handler_irq##_nr_(void)						\
+    {									\
+      SAVE_REG								\
+      irq_wrapper(_nr_);						\
+      RESTORE_REG							\
+    }
 
-
-#define EXCEPTION_ENTER(_nr_)						\
-  asm volatile(SAVE_REG							\
-	       LOAD_SEG_REG);
-
-#define EXCEPTION_LEAVE()						\
-  asm volatile(RESTORE_REG);
-
-
-#define IRQ_ENTER(_nr_)							\
-  asm volatile(SAVE_REG							\
-	       LOAD_SEG_REG);
-
-#define IRQ_LEAVE()							\
-  asm volatile(RESTORE_REG);
 
 
 /*
@@ -101,8 +97,58 @@
 
 typedef void			(*t_interrupt_handler)(void);
 
-typedef t_interrupt_handler	t_exception_handler;
 
-typedef t_interrupt_handler	t_irq_handler;
+void	handler_exception0(void);
+void	handler_exception1(void);
+void	handler_exception2(void);
+void	handler_exception3(void);
+void	handler_exception4(void);
+void	handler_exception5(void);
+void	handler_exception6(void);
+void	handler_exception7(void);
+void	handler_exception8(void);
+void	handler_exception9(void);
+void	handler_exception10(void);
+void	handler_exception11(void);
+void	handler_exception12(void);
+void	handler_exception13(void);
+void	handler_exception14(void);
+void	handler_exception15(void);
+void	handler_exception16(void);
+void	handler_exception17(void);
+void	handler_exception18(void);
+void	handler_exception19(void);
+void	handler_exception20(void);
+void	handler_exception21(void);
+void	handler_exception22(void);
+void	handler_exception23(void);
+void	handler_exception24(void);
+void	handler_exception25(void);
+void	handler_exception26(void);
+void	handler_exception27(void);
+void	handler_exception28(void);
+void	handler_exception29(void);
+void	handler_exception30(void);
+void	handler_exception31(void);
+
+void    handler_irq0(void);
+void    handler_irq1(void);
+void    handler_irq2(void);
+void    handler_irq3(void);
+void    handler_irq4(void);
+void    handler_irq5(void);
+void    handler_irq6(void);
+void    handler_irq7(void);
+void    handler_irq8(void);
+void    handler_irq9(void);
+void    handler_irq10(void);
+void    handler_irq11(void);
+void    handler_irq12(void);
+void    handler_irq13(void);
+void    handler_irq14(void);
+void    handler_irq15(void);
+
+
+
 
 #endif

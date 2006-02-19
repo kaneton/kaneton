@@ -41,7 +41,7 @@
  * flushes a single pte cache given a page address.
  */
 
-t_error			tlb_invalidate(t_paddr	page)
+t_error			tlb_invalidate(t_paddr			page)
 {
   asm volatile("invlpg %0"
 	       :
