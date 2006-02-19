@@ -126,22 +126,22 @@ t_error			pic_init(void)
  * turn on a given interrupt enabling its flag
  */
 
-t_error			pic_enable_irq(t_uint8			nr)
+t_error			pic_enable_irq(t_uint8			irq)
 {
   t_uint8		mask;
 
-  if (nr > 15)
+  if (irq > 15)
     return ERROR_UNKNOWN;
 
-  if (nr < 8)
+  if (irq < 8)
     {
       INB(MASTER_PORT_B, mask);
-      OUTB(MASTER_PORT_B, mask & ~(1 << nr));
+      OUTB(MASTER_PORT_B, mask & ~(1 << irq));
     }
   else
     {
       INB(SLAVE_PORT_B, mask);
-      OUTB(SLAVE_PORT_B, mask & ~(1 << (nr - 8)));
+      OUTB(SLAVE_PORT_B, mask & ~(1 << (irq - 8)));
     }
 
   return ERROR_NONE;
@@ -151,31 +151,64 @@ t_error			pic_enable_irq(t_uint8			nr)
  * turn off a given interrupt
  */
 
-t_error			pic_disable_irq(t_uint8			nr)
+t_error			pic_disable_irq(t_uint8			irq)
 {
   t_uint8		mask;
 
-  if (nr > 15)
+  if (irq > 15)
     return ERROR_UNKNOWN;
 
-  if (nr < 8)
+  if (irq < 8)
     {
       INB(MASTER_PORT_B, mask);
-      OUTB(MASTER_PORT_B, mask | (1 << nr));
+      OUTB(MASTER_PORT_B, mask | (1 << irq));
     }
   else
     {
       INB(SLAVE_PORT_B, mask);
-      OUTB(SLAVE_PORT_B, mask | (1 << (nr - 8)));
+      OUTB(SLAVE_PORT_B, mask | (1 << (irq - 8)));
     }
 
   return ERROR_NONE;
 }
 
-t_error			pic_acknowledge(t_uint8			nr)
+/*
+ * acknowlegde the pics
+ *
+ * steps:
+ *
+ * 1) check irq bounds
+ * 2) send normal EOI
+ */
+
+t_error			pic_acknowledge(t_uint8			irq)
 {
-  if (nr > 15)
+  t_uint8		mask;
+
+  /*
+   * 1)
+   */
+
+  if (irq > 15)
     return ERROR_UNKNOWN;
+
+  /*
+   * 2)
+   */
+
+  if (irq < 8)
+    {
+      INB(MASTER_PORT_B, mask);
+      OUTB(MASTER_PORT_B, mask);
+      OUTB(MASTER_PORT_A, 0x60 + irq);
+    }
+  else
+    {
+      INB(SLAVE_PORT_B, mask);
+      OUTB(SLAVE_PORT_B, mask);
+      OUTB(SLAVE_PORT_A, 0x60 + (irq & 0x7));
+      OUTB(MASTER_PORT_A, 0x60 + 2);
+    }
 
   return ERROR_NONE;
 }

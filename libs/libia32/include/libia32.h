@@ -242,11 +242,11 @@ t_error			tlb_flush(void);
 
 t_error			pic_init(void);
 
-t_error			pic_enable_irq(t_uint8			nr);
+t_error			pic_enable_irq(t_uint8			irq);
 
-t_error			pic_disable_irq(t_uint8			nr);
+t_error			pic_disable_irq(t_uint8			irq);
 
-t_error			pic_acknowledge(t_uint8			nr);
+t_error			pic_acknowledge(t_uint8			irq);
 
 
 /*
