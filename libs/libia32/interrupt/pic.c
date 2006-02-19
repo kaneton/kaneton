@@ -82,7 +82,7 @@
  *
  */
 
-t_error			interrupt_init(void)
+t_error			pic_init(void)
 {
   /*
    * 1)
@@ -126,19 +126,22 @@ t_error			interrupt_init(void)
  * turn on a given interrupt enabling its flag
  */
 
-t_error			interrupt_enable(t_uint8		irq)
+t_error			pic_enable_irq(t_uint8			nr)
 {
   t_uint8		mask;
 
-  if (irq < 8)
+  if (nr > 15)
+    return ERROR_UNKNOWN;
+
+  if (nr < 8)
     {
       INB(MASTER_PORT_B, mask);
-      OUTB(MASTER_PORT_B, mask & ~(1 << irq));
+      OUTB(MASTER_PORT_B, mask & ~(1 << nr));
     }
   else
     {
       INB(SLAVE_PORT_B, mask);
-      OUTB(SLAVE_PORT_B, mask & ~(1 << (irq - 8)));
+      OUTB(SLAVE_PORT_B, mask & ~(1 << (nr - 8)));
     }
 
   return ERROR_NONE;
@@ -148,20 +151,31 @@ t_error			interrupt_enable(t_uint8		irq)
  * turn off a given interrupt
  */
 
-t_error			interrupt_disable(t_uint8		irq)
+t_error			pic_disable_irq(t_uint8			nr)
 {
   t_uint8		mask;
 
-  if (irq < 8)
+  if (nr > 15)
+    return ERROR_UNKNOWN;
+
+  if (nr < 8)
     {
       INB(MASTER_PORT_B, mask);
-      OUTB(MASTER_PORT_B, mask | (1 << irq));
+      OUTB(MASTER_PORT_B, mask | (1 << nr));
     }
   else
     {
       INB(SLAVE_PORT_B, mask);
-      OUTB(SLAVE_PORT_B, mask | (1 << (irq - 8)));
+      OUTB(SLAVE_PORT_B, mask | (1 << (nr - 8)));
     }
+
+  return ERROR_NONE;
+}
+
+t_error			pic_acknowledge(t_uint8			nr)
+{
+  if (nr > 15)
+    return ERROR_UNKNOWN;
 
   return ERROR_NONE;
 }

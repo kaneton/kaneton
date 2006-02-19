@@ -240,18 +240,22 @@ t_error			tlb_flush(void);
  * ../interrupt/pic.c
  */
 
-t_error			interrupt_init(void);
+t_error			pic_init(void);
 
-t_error			interrupt_enable(t_uint8		irq);
+t_error			pic_enable_irq(t_uint8			nr);
 
-t_error			interrupt_disable(t_uint8		irq);
+t_error			pic_disable_irq(t_uint8			nr);
+
+t_error			pic_acknowledge(t_uint8			nr);
 
 
 /*
  * ../interrupt/exception.c
  */
 
-t_error			exception_add(t_uint8			nr);
+t_error			exception_add(t_uint8			nr,
+				      t_prvl			privilege,
+				      t_interrupt_handler	handler);
 
 t_error			exception_init(void);
 
@@ -264,13 +268,15 @@ void			exception_handler_default(void);
  * ../interrupt/irq.c
  */
 
-t_error			irq_add(t_uint8				nr);
+t_error			irq_add(t_uint8				nr,
+				t_prvl				privilege,
+				t_interrupt_handler		handler);
 
 t_error			irq_init(void);
 
 void			irq_wrapper(t_uint32			nr);
 
-void			irq_handler_default(void);
+void			irq_default_handler(void);
 
 
 /*

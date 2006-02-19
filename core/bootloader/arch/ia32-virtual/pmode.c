@@ -170,7 +170,7 @@ void			bootloader_pmode_init(void)
    * 5)
    */
 
-  interrupt_init();
+  pic_init();
 /*                                                                  [cut] /k3 */
 /*                                                                  [cut] k1 */
 

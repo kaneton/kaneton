@@ -15,11 +15,10 @@
  *
  */
 
-#ifndef IA32_IA32_INTERRUPT_H
-#define IA32_IA32_INTERRUPT_H       1
+#ifndef IA32_INTERRUPT_INTERRUPT_H
+#define IA32_INTERRUPT_INTERRUPT_H       1
 
-/*                                                                  [cut] k2 */
-
+/*                                                                  [cut] k3 */
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -32,7 +31,7 @@
  */
 
 /*
- *
+ * save cpu register on the stack
  */
 
 #define SAVE_REG							\
@@ -48,7 +47,7 @@
 	       "pushl %fs\n\t");
 
 /*
- *
+ * restore cpu register from the stack
  */
 
 #define RESTORE_REG							\
@@ -64,7 +63,7 @@
 	       "popl %eax\n\t");
 
 /*
- *
+ * load segment registers
  */
 
 #define LOAD_SEG_REG							\
@@ -72,6 +71,10 @@
   "mov %dx,%ds\n"							\
   "mov %dx,%es\n"							\
   "mov %dx,%fs\n"
+
+/*
+ * pre-handler for exceptions
+ */
 
 #define EXCEPTION_PREHANDLER(_nr_)					\
   void	handler_exception##_nr_(void)					\
@@ -81,6 +84,10 @@
       RESTORE_REG      							\
     }
 
+/*
+ * pre-handler for irq's
+ */
+
 #define IRQ_PREHANDLER(_nr_)						\
   void	handler_irq##_nr_(void)						\
     {									\
@@ -89,14 +96,19 @@
       RESTORE_REG							\
     }
 
-
-
 /*
  * ---------- types -----------------------------------------------------------
  */
 
 typedef void			(*t_interrupt_handler)(void);
 
+/*
+ * ---------- prototypes ------------------------------------------------------
+ */
+
+/*
+ * ../interrupt/exception.c
+ */
 
 void	handler_exception0(void);
 void	handler_exception1(void);
@@ -131,6 +143,10 @@ void	handler_exception29(void);
 void	handler_exception30(void);
 void	handler_exception31(void);
 
+/*
+ * ../interrupt/irq.c
+ */
+
 void    handler_irq0(void);
 void    handler_irq1(void);
 void    handler_irq2(void);
@@ -148,7 +164,10 @@ void    handler_irq13(void);
 void    handler_irq14(void);
 void    handler_irq15(void);
 
+/*
+ * eop
+ */
 
-
+/*                                                                  [cut] /k3 */
 
 #endif

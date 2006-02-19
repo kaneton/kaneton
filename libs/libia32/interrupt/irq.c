@@ -72,7 +72,9 @@ static t_interrupt_handler	irq[16] =
  * 2) set interrupt gate and add it into the idt
  */
 
-t_error			irq_add(t_uint8				nr)
+t_error			irq_add(t_uint8				nr,
+				t_prvl				privilege,
+				t_interrupt_handler		handler)
 {
   t_gate		gate;
 
@@ -87,9 +89,9 @@ t_error			irq_add(t_uint8				nr)
    * 2)
    */
 
-  gate.offset = irq[nr];
+  gate.offset = (t_uint32)irq[nr];
   gate.segsel = 1 << 3;
-  gate.privilege = 0;
+  gate.privilege = privilege;
   gate.type = type_gate_interrupt;
 
   idt_add_gate(NULL, IDT_IRQ_BASE + nr, gate);
@@ -98,7 +100,7 @@ t_error			irq_add(t_uint8				nr)
 }
 
 /*
- * init irq
+ * init irq with default handler
  *
  * steps:
  *
@@ -118,13 +120,13 @@ t_error			irq_init(void)
        * 1)
        */
 
-      irq_handlers[i] = irq_handler_default;
+      irq_handlers[i] = irq_default_handler;
 
       /*
        * 2)
        */
 
-      if (irq_add(i) != ERROR_NONE)
+      if (irq_add(i, 0, irq[i]) != ERROR_NONE)
 	return ERROR_UNKNOWN;
     }
 
@@ -140,17 +142,13 @@ t_error			irq_init(void)
  * 2) acknowledge the pic
  * 3) call interrupt handler
  * 4) enable maskable interrupts
- *
  */
 
 void			irq_wrapper(t_uint32			nr)
 {
   CLI();
 
-  /*
-   * 2)
-   * XXX TODO
-   */
+  pic_acknowledge(nr);
 
   irq_handlers[nr]();
 
@@ -161,7 +159,7 @@ void			irq_wrapper(t_uint32			nr)
  * do nothing
  */
 
-void			irq_handler_default(void)
+void			irq_default_handler(void)
 {
   printf("default irq handler\n");
 }

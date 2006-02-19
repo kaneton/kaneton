@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef IA32_INTERRUPT_IDT_H
-#define IA32_INTERRUPT_IDT_H	1
+#ifndef IA32_PMODE_IDT_H
+#define IA32_PMODE_IDT_H	1
 
 /*                                                                  [cut] k3 */
 

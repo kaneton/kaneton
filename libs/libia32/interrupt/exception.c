@@ -88,7 +88,9 @@ static t_interrupt_handler	exception[32] =
  * 2) set interrupt gate and add it into the idt
  */
 
-t_error			exception_add(t_uint8			nr)
+t_error			exception_add(t_uint8			nr,
+				      t_prvl			privilege,
+				      t_interrupt_handler	handler)
 {
   t_gate		gate;
 
@@ -103,9 +105,9 @@ t_error			exception_add(t_uint8			nr)
    * 2)
    */
 
-  gate.offset = exception[nr];
+  gate.offset = (t_uint32)exception[nr];
   gate.segsel = 1 << 3;
-  gate.privilege = 0;
+  gate.privilege = privilege;
   gate.type = type_gate_interrupt;
 
   return ERROR_NONE;
@@ -138,7 +140,7 @@ t_error			exception_init(void)
        * 2)
        */
 
-      if (exception_add(i) != ERROR_NONE)
+      if (exception_add(i, 0, exception[i]) != ERROR_NONE)
 	return ERROR_UNKNOWN;
     }
 
