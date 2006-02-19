@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed feb 15 23:44:25 2006]
+ * updated       matthieu bucchianeri   [sun feb 19 18:58:49 2006]
  */
 
 /*
@@ -76,10 +76,11 @@ m_segment*		segment;
  *
  * steps:
  *
- * 1) gets the segment object.
- * 2) computes the type string.
- * 3) computes the perms string.
- * 4) displays the entry.
+ * 1) get the segment object.
+ * 2) compute the type string.
+ * 3) compute the perms string.
+ * 4) display the entry.
+ * 5) call machine dependent code.
  */
 
 t_error			segment_show(t_segid			segid)
@@ -144,6 +145,13 @@ t_error			segment_show(t_segid			segid)
 	   o->address + o->size,
 	   perms,
 	   o->size);
+
+  /*
+   * 5)
+   */
+
+  if (machdep_call(segment, segment_show, segid) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
@@ -523,15 +531,8 @@ t_error			segment_split(t_segid		segid,
 
   *s2 = n.segid = (t_segid)n.address;
 
-  if (set_add(segment->container, &n) != ERROR_NONE)
+  if (segment_inject(&n, o->asid) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  if (set_add(as->segments, &n.segid) != ERROR_NONE)
-    {
-      set_remove(segment->container, n.segid);
-
-      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-    }
 
   /*
    * 4)

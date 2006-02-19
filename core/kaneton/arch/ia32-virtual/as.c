@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed feb 15 22:16:08 2006]
+ * updated       matthieu bucchianeri   [sun feb 19 19:12:36 2006]
  */
 
 /*
@@ -60,6 +60,7 @@ i_as			as_interface =
 
 /*                                                                  [cut] k2 */
 
+    ia32_as_show,
     NULL,
     NULL,
     NULL,
@@ -78,6 +79,37 @@ i_as			as_interface =
  */
 
 /*                                                                  [cut] k2 */
+
+/*
+ * this function displays architecture dependent data.
+ *
+ * steps:
+ *
+ * 1) get the address space object.
+ * 2) display machdep data.
+ */
+
+t_error			ia32_as_show(t_asid			asid)
+{
+  o_as*			o;
+
+  AS_ENTER(as);
+
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  cons_msg('#', "  page directory base: 0x%x\n", *o->machdep.pd);
+
+  AS_LEAVE(as, ERROR_NONE);
+}
 
 /*
  * this function reserves an address space.
@@ -166,16 +198,10 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 
       if (segment_reserve(*asid, PAGESZ,
 			  PERM_READ | PERM_WRITE, &seg) != ERROR_NONE)
-	{
-	  cons_msg('!', "as: cannot reserve a segment for page-directory.\n");
-	  AS_LEAVE(as, ERROR_UNKNOWN);
-	}
+	AS_LEAVE(as, ERROR_UNKNOWN);
 
       if (segment_get(seg, &oseg) != ERROR_NONE)
-	{
-	  cons_msg('!', "as: cannot get a segment for page-directory.\n");
-	  AS_LEAVE(as, ERROR_UNKNOWN);
-	}
+	AS_LEAVE(as, ERROR_UNKNOWN);
 
       /*
        * b)
@@ -183,20 +209,14 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 
       if (region_reserve(kasid, seg, 0, REGION_OPT_FORCE, seg, PAGESZ, &reg) !=
 	  ERROR_NONE)
-	{
-	  cons_msg('!', "as: cannot reserve a region for page-directory.\n");
-	  AS_LEAVE(as, ERROR_UNKNOWN);
-	}
+	AS_LEAVE(as, ERROR_UNKNOWN);
 
       /*
        * c)
        */
 
       if (pd_build(oseg->address, &o->machdep.pd, 1) != ERROR_NONE)
-	{
-	  cons_msg('!', "as: cannot build a page-directory.\n");
-	  AS_LEAVE(as, ERROR_UNKNOWN);
-	}
+	AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
   AS_LEAVE(as, ERROR_NONE);
@@ -233,7 +253,7 @@ t_error			ia32_as_release(t_asid			asid)
   seg = (t_segid)(t_uint32)(o->machdep.pd);
   reg = seg;
 
-  if (region_release(reg, asid) != ERROR_NONE)
+  if (region_release(reg, kasid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   if (segment_release(seg) != ERROR_NONE)

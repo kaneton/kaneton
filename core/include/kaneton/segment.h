@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/include/kaneton/segment.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [wed feb 15 23:24:45 2006]
+ * updated       matthieu bucchianeri   [sat feb 18 18:55:43 2006]
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -87,6 +87,7 @@ typedef struct
 
 typedef struct
 {
+  t_error			(*segment_show)(t_segid);
   t_error			(*segment_clone)(t_asid,
 						 t_segid,
 						 t_segid*);

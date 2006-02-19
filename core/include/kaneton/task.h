@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/kaneton/task.h
+ * file          /home/buckman/kaneton/core/include/kaneton/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       matthieu bucchianeri   [sun jan 15 18:20:29 2006]
+ * updated       matthieu bucchianeri   [sat feb 18 18:56:15 2006]
  */
 
 #ifndef KANETON_TASK_H
@@ -126,6 +126,7 @@ typedef struct
 
 typedef struct
 {
+  t_error			(*task_show)(t_tskid);
   t_error			(*task_clone)(t_tskid,
 					      t_tskid*);
   t_error			(*task_reserve)(t_class,

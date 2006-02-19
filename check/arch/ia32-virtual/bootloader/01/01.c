@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/arch/ia32-virtual/bootloader/01/01.c
+ * file          /home/buckman/kaneton/check/arch/ia32-virtual/bootloader/01/01.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [sat jan 21 02:44:44 2006]
+ * updated       matthieu bucchianeri   [fri feb 17 14:56:44 2006]
  */
 
 #include <klibc.h>
@@ -16,7 +16,7 @@
 extern t_init*	init;
 
 /*
- * t_init test XXX to be continued !
+ * t_init test
  */
 
 void		check_bootloader_01(void)
@@ -25,17 +25,24 @@ void		check_bootloader_01(void)
 
   TEST_ENTER;
 
-  if (!init->memsz)
+  if (init->mem)
+    printf("bad mem field\n");
+  if (!init->memsz || init->memsz % 1024)
     printf("bad memsz field\n");
+
+  if (init->kcode % PAGESZ || init->kcode > (t_paddr)check_bootloader_01)
+    printf("bad kcode field\n");
+  if (!init->kcodesz || init->kcodesz % PAGESZ)
+    printf("bad kcodesz field\n");
 
   if (init->initsz != PAGESZ)
     printf("bad initsz field\n");
-  if (init->init != (t_paddr)init)
+  if (init->init != (t_paddr)init || init->init % PAGESZ)
     printf("bad init field\n");
 
   if (init->segmentssz < init->nsegments * sizeof(o_segment) ||
       init->segmentssz % PAGESZ ||
-      !init->nsegments)
+      !init->nsegments || (t_paddr)init->segments % PAGESZ)
     printf("bad segments fields\n");
   for (i = 1; i < init->nsegments; i++)
     {
@@ -45,13 +52,23 @@ void		check_bootloader_01(void)
 
   if (init->regionssz < init->nregions * sizeof(o_region) ||
       init->regionssz % PAGESZ ||
-      !init->nregions)
+      !init->nregions || (t_paddr)init->regions % PAGESZ)
     printf("bad regions fields\n");
   for (i = 1; i < init->nregions; i++)
     {
       if (init->regions[i - 1].address > init->regions[i].address)
 	printf("badly sorted regions\n");
     }
+
+  if (!init->kstack || init->kstack % PAGESZ)
+    printf("bad kstack field\n");
+  if (!init->kstacksz || init->kstacksz % PAGESZ)
+    printf("bad kstacksz field\n");
+
+  if (!init->alloc || init->alloc % PAGESZ)
+    printf("bad alloc field\n");
+  if (!init->allocsz || init->allocsz % PAGESZ || init->allocsz < 8 * PAGESZ)
+    printf("bad allocsz field\n");
 
   TEST_LEAVE;
 }

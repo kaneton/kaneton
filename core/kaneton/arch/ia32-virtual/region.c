@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [tue jan 31 00:44:47 2006]
+ * updated       matthieu bucchianeri   [sun feb 19 19:02:11 2006]
  */
 
 /*
@@ -51,6 +51,7 @@ i_region		region_interface =
 
 /*                                                                  [cut] k2 */
 
+    NULL,
     ia32_region_reserve,
     ia32_region_release,
     NULL,
@@ -110,20 +111,14 @@ t_error			ia32_region_reserve(t_asid		asid,
    */
 
   if (as_get(asid, &o) != ERROR_NONE)
-    {
-      cons_msg('!', "region: unable to get as object\n");
-      REGION_LEAVE(region, ERROR_UNKNOWN);
-    }
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
   if (task_get(o->tskid, &otsk) != ERROR_NONE)
-    {
-      cons_msg('!', "region: unable to get task object\n");
-      REGION_LEAVE(region, ERROR_UNKNOWN);
-    }
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
    * 3)
@@ -138,10 +133,7 @@ t_error			ia32_region_reserve(t_asid		asid,
    */
 
   if (segment_get(segid, &oseg) != ERROR_NONE)
-    {
-      cons_msg('!', "region: unable to get segment object\n");
-      REGION_LEAVE(region, ERROR_UNKNOWN);
-    }
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
    * 5)
@@ -176,18 +168,10 @@ t_error			ia32_region_reserve(t_asid		asid,
 
 	      if (segment_reserve(asid, PAGESZ, PERM_READ | PERM_WRITE,
 				  &segtbl) != ERROR_NONE)
-		{
-		  cons_msg('!', "region: unable to reserve segment for "
-			   "page table\n");
-		  REGION_LEAVE(region, ERROR_UNKNOWN);
-		}
+		REGION_LEAVE(region, ERROR_UNKNOWN);
 
 	      if (segment_get(segtbl, &otbl) != ERROR_NONE)
-		{
-		  cons_msg('!', "region: unable to get segment for "
-			   "page table\n");
-		  REGION_LEAVE(region, ERROR_UNKNOWN);
-		}
+		REGION_LEAVE(region, ERROR_UNKNOWN);
 
 	      /*
 	       * c)
@@ -196,11 +180,7 @@ t_error			ia32_region_reserve(t_asid		asid,
 	      pt.entries = (void*)otbl->address;
 
 	      if (pd_add_table(&o->machdep.pd, pde, pt) != ERROR_NONE)
-		{
-		  cons_msg('!', "region: unable to add table to the "
-			   "directory\n");
-		  REGION_LEAVE(region, ERROR_UNKNOWN);
-		}
+		REGION_LEAVE(region, ERROR_UNKNOWN);
 
 	      tlb_invalidate((t_vaddr)pt.entries);
 	    }
@@ -216,10 +196,7 @@ t_error			ia32_region_reserve(t_asid		asid,
 	       vaddr, paddr);*/
 
       if (pt_add_page(&pt, PTE_ENTRY(vaddr), pg) != ERROR_NONE)
-	{
-	  cons_msg('!', "region: unable to add page to a table\n");
-	  REGION_LEAVE(region, ERROR_UNKNOWN);
-	}
+	REGION_LEAVE(region, ERROR_UNKNOWN);
 
       tlb_invalidate(vaddr);
     }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [tue jan 31 00:30:30 2006]
+ * updated       matthieu bucchianeri   [sat feb 18 18:53:57 2006]
  */
 
 /*
@@ -51,6 +51,7 @@ i_task			task_interface =
 
 /*                                                                  [cut] k2 */
 
+    NULL,
     ia32_task_clone,
     ia32_task_reserve,
     ia32_task_release,

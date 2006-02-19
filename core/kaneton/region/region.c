@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [wed feb 15 23:47:25 2006]
+ * updated       matthieu bucchianeri   [sat feb 18 18:54:34 2006]
  */
 
 /*
@@ -61,8 +61,9 @@ m_region*		region;
  *
  * steps:
  *
- * 1) gets the region object.
- * 2) displays the entry.
+ * 1) get the region object.
+ * 2) display the entry.
+ * 3) call machine dependent code.
  */
 
 t_error			region_show(t_asid			asid,
@@ -90,6 +91,13 @@ t_error			region_show(t_asid			asid,
   cons_msg('#', "    0x%08x [%qd]\n",
 	   o->address,
 	   o->segid);
+
+  /*
+   * 3)
+   */
+
+  if (machdep_call(region, region_show, asid, regid) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
 }

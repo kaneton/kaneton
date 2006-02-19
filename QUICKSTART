@@ -97,6 +97,10 @@ To compile the kernel and bootloader, just type:
 
 $ make
 
+The first time, you have to build the floppy image:
+
+$ make build
+
 To install the kernel on a disk image of disk drive, type:
 
 $ make install

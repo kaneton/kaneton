@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/include/kaneton/as.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [thu jan 26 11:46:54 2006]
+ * updated       matthieu bucchianeri   [sat feb 18 18:48:43 2006]
  */
 
 #ifndef KANETON_AS_H
@@ -72,6 +72,7 @@ typedef struct
 
 typedef struct
 {
+  t_error			(*as_show)(t_asid);
   t_error			(*as_give)(t_asid,
 					   t_tskid);
   t_error			(*as_vaddr)(t_asid,

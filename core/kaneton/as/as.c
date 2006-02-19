@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [fri jan 27 18:11:14 2006]
+ * updated       matthieu bucchianeri   [sat feb 18 18:50:12 2006]
  */
 
 /*
@@ -74,9 +74,10 @@ m_as*			as = NULL;
  *
  * steps:
  *
- * 1) gets the address space object from its identifier.
- * 2) displays the segments held by the address space.
- * 3) displays the regions held by the address space.
+ * 1) get the address space object from its identifier.
+ * 2) display the segments held by the address space.
+ * 3) display the regions held by the address space.
+ * 4) call machine dependent code.
  */
 
 t_error			as_show(t_asid				asid)
@@ -127,6 +128,13 @@ t_error			as_show(t_asid				asid)
 
       cons_msg('#', "      %qd\n", reg);
     }
+
+  /*
+   * 4)
+   */
+
+  if (machdep_call(as, as_show, asid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
 }

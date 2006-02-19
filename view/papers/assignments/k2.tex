@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/papers/assignments/k2.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       matthieu bucchianeri   [wed feb 15 23:33:37 2006]
+%% updated       matthieu bucchianeri   [fri feb 17 14:14:44 2006]
 %%
 
 %
@@ -342,11 +342,6 @@ on it.
 This function dumps all the address space managed by the address
 space manager.
 
-\prototype{t\_error \textbf{as\_give}(t\_asid \textbf{asid},
-                                      t\_tskid \textbf{tskid});}
-
-This function gives an address space to another task.
-
 \prototype{t\_error \textbf{as\_clone}(t\_tskid \textbf{tskid},
                                        t\_asid \textbf{old},
                                        t\_asid* \textbf{new});}
@@ -357,11 +352,13 @@ necessary.
 \prototype{t\_error \textbf{as\_reserve}(t\_tskid \textbf{tskid},
                                          t\_asid* \textbf{asid});}
 
-This function reserves an address space object for the task \textbf{tskid}.
+This  function   reserves  an  address  space  object   for  the  task
+\textbf{tskid}. For k2, you don't have to deal with tasks, so you must
+ignore \textbf{tskid}.
 
 \prototype{t\_error \textbf{as\_release}(t\_asid \textbf{asid});}
 
-This function just releases an address space.
+This function just  releases an address space.
 
 \prototype{t\_error \textbf{as\_get}(t\_asid \textbf{asid},
                                     o\_as** \textbf{o});}
@@ -633,6 +630,9 @@ early initial stages  (until as, segment and region  are running, this
 will  be  possible  in  k3).  You must  use  the  \textbf{alloc\_init}
 function,  passing  the  survey   area  pre-allocated  in  k1  (fields
 \textbf{alloc} and \textbf{allocsz} of \textbf{t\_init}).
+
+To finish, you  have to create the kernel address  space and to inject
+the pre-allocated segments in.
 
 Finally, all  managers must be destroyed  calling the \textbf{\_clean}
 functions for each one (in the good order !).

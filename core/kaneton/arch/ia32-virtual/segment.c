@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 31 00:29:40 2006]
+ * updated       matthieu bucchianeri   [sat feb 18 18:53:45 2006]
  */
 
 /*
@@ -51,6 +51,7 @@ i_segment		segment_interface =
 
 /*                                                                  [cut] k2 */
 
+    NULL,
     NULL,
     NULL,
     NULL,
