@@ -106,7 +106,7 @@ t_error			exception_add(t_uint8			nr,
    */
 
   gate.offset = (t_uint32)exception[nr];
-  gate.segsel = 1 << 3;
+  gate.segsel = PMODE_GDT_CORE_CS << 3;
   gate.privilege = privilege;
   gate.type = type_gate_interrupt;
 

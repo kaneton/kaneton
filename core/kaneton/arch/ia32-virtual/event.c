@@ -111,6 +111,8 @@ t_error			ia32_event_init(void)
   if (irq_init() != ERROR_NONE)
     return ERROR_UNKNOWN;
 
+  ia32_event_add(33, 0, XXX);
+
   return ERROR_NONE;
 }
 

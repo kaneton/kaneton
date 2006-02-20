@@ -35,42 +35,48 @@
  */
 
 #define SAVE_REG							\
-  asm volatile("pushl %eax\n\t"						\
-	       "pushl %ebx\n\t"						\
-	       "pushl %ecx\n\t"						\
-	       "pushl %edx\n\t"						\
-	       "pushl %edi\n\t"						\
-	       "pushl %esi\n\t"						\
-	       "pushl %ebp\n\t"						\
-	       "pushl %ds\n\t"						\
-	       "pushl %es\n\t"						\
-	       "pushl %fs\n\t");
+  "pushl %eax\n\t"							\
+  "pushl %ebx\n\t"							\
+  "pushl %ecx\n\t"							\
+  "pushl %edx\n\t"							\
+  "pushl %edi\n\t"							\
+  "pushl %esi\n\t"							\
+  "pushl %ds\n\t"							\
+  "pushl %es\n\t"							\
+  "pushl %fs\n\t"
 
 /*
  * restore cpu register from the stack
  */
 
 #define RESTORE_REG							\
-  asm volatile("popl %fs\n\t"						\
-	       "popl %es\n\t"						\
-	       "popl %ds\n\t"						\
-	       "popl %ebp\n\t"						\
-	       "popl %esi\n\t"						\
-	       "popl %edi\n\t"						\
-	       "popl %edx\n\t"						\
-	       "popl %ecx\n\t"						\
-	       "popl %ebx\n\t"						\
-	       "popl %eax\n\t");
+  "popl %fs\n\t"							\
+  "popl %es\n\t"							\
+  "popl %ds\n\t"							\
+  "popl %esi\n\t"							\
+  "popl %edi\n\t"							\
+  "popl %edx\n\t"							\
+  "popl %ecx\n\t"							\
+  "popl %ebx\n\t"							\
+  "popl %eax\n\t"
 
 /*
  * load segment registers
  */
 
 #define LOAD_SEG_REG							\
-  "movl $0x10,%edx\n"							\
-  "mov %dx,%ds\n"							\
-  "mov %dx,%es\n"							\
-  "mov %dx,%fs\n"
+  "movl $0x10,%edx\n\t"							\
+  "mov %dx,%ds\n\t"							\
+  "mov %dx,%es\n\t"							\
+  "mov %dx,%fs\n\t"
+
+/*
+ * simulate a return from function
+ */
+
+#define ADJUST_STACK							\
+  "movl %ebp,%esp\n\t"							\
+  "popl %ebp\n\t"
 
 /*
  * pre-handler for exceptions
@@ -79,9 +85,12 @@
 #define EXCEPTION_PREHANDLER(_nr_)					\
   void	handler_exception##_nr_(void)					\
     {									\
-      SAVE_REG								\
+      asm volatile(SAVE_REG						\
+		   LOAD_SEG_REG);					\
       exception_wrapper(_nr_);						\
-      RESTORE_REG      							\
+      asm volatile(RESTORE_REG						\
+		   ADJUST_STACK						\
+		   "iret\n\t");						\
     }
 
 /*
@@ -91,9 +100,12 @@
 #define IRQ_PREHANDLER(_nr_)						\
   void	handler_irq##_nr_(void)						\
     {									\
-      SAVE_REG								\
+      asm volatile(SAVE_REG						\
+		   LOAD_SEG_REG);					\
       irq_wrapper(_nr_);						\
-      RESTORE_REG							\
+      asm volatile(RESTORE_REG						\
+		   ADJUST_STACK						\
+		   "iret\n\t");						\
     }
 
 /*

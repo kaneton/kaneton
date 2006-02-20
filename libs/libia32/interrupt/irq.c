@@ -90,7 +90,7 @@ t_error			irq_add(t_uint8				nr,
    */
 
   gate.offset = (t_uint32)irq[nr];
-  gate.segsel = 1 << 3;
+  gate.segsel = PMODE_GDT_CORE_CS << 3;
   gate.privilege = privilege;
   gate.type = type_gate_interrupt;
 

@@ -119,7 +119,7 @@ t_error			event_subscribe(t_eventid		evenid,
 					t_tskid			tskid);
 
 t_error			event_unsubscribe(t_eventid		evenid,
-					t_tskid			taskid);
+					  t_tskid		taskid);
 
 t_error			event_init(void);
 
