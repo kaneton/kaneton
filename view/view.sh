@@ -40,7 +40,7 @@ PAPERS="								\
   lectures/kernels lectures/development-environment lectures/seminar	\
   lectures/arch-mips lectures/kaneton					\
 									\
-  exams/arch-mips/2006							\
+  exams/arch-mips/2006-partiel exams/arch-mips/2006-exam		\
 									\
   cursus/schedule"
 

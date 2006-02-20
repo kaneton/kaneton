@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/env/machines/netbsd-epita/machine.mk
+## file          /home/mycure/kaneton/env/machines/unix/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [sat feb 18 19:05:25 2006]
+## updated       julien quintard   [mon feb 20 23:03:53 2006]
 ##
 
 #
@@ -575,7 +575,7 @@ endef
 #
 
 define subject
-  $(_ECHO_) '\def\cmode{subject}' > $(_LATEX_MODE_)			; \
+  $(_ECHO_) '\def\kaneton-latex{subject}' > $(_KANETON_LATEX_)		; \
   $(call compile-tex,$(1),$(2))
 endef
 
@@ -587,7 +587,7 @@ endef
 #
 
 define correction
-  $(_ECHO_) '\def\cmode{correction}' > $(_LATEX_MODE_)			; \
+  $(_ECHO_) '\def\kaneton-latex{correction}' > $(_KANETON_LATEX_)	; \
   $(call compile-tex,$(1),$(2))
 endef
 

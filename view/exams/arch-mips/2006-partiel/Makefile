@@ -62,6 +62,6 @@ correction:
 clear:
 	$(call remove,$(GARBAGE),)
 
-	$(call remove,$(_LATEX_MODE_),)
+	$(call remove,$(_KANETON_LATEX_),)
 
 	$(call purge)

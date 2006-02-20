@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/view/exams/arch-mips/Makefile
 ##
 ## created       julien quintard   [sat dec  3 22:53:10 2005]
-## updated       julien quintard   [sat dec  3 22:54:00 2005]
+## updated       julien quintard   [mon feb 20 23:00:00 2006]
 ##
 
 #
@@ -25,7 +25,8 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		2006				
+SUBDIRS			:=		2006-partiel			\
+					2006-exam			
 
 #
 # ---------- rules ------------------------------------------------------------
