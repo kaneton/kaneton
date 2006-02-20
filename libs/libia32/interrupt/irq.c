@@ -12,7 +12,7 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * irq handling
+ * this file implements irq handling on ia32 architecture.
  */
 
 /*

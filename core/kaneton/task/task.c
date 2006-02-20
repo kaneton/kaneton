@@ -637,7 +637,7 @@ t_error			task_clean(void)
 
   if (set_release(task->container) != ERROR_NONE)
     {
-      cons_msg('!', "task: unable to release the task' container\n");
+      cons_msg('!', "task: unable to release the task container\n");
 
       return (ERROR_UNKNOWN);
     }

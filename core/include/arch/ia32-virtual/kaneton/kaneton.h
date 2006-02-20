@@ -91,8 +91,6 @@ t_error			ia32_segment_clean(void);
  * ../../../../kaneton/arch/machdep/event.c
  */
 
-t_error                 exception_generic(void);
-
 t_error			ia32_event_init(void);
 
 t_error			ia32_event_add(t_uint16			id,

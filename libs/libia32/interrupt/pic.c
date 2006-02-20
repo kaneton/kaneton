@@ -12,7 +12,8 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * manage interrupt controller.
+ * this  file  implements   the  management  of  the   programmable  interrupt
+ * controller  (PIC 8259A)  on  ia32  architecture.
  *
  */
 

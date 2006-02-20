@@ -19,7 +19,7 @@
 /*
  * ---------- assignments -----------------------------------------------------
  *
- *
+ * XXX EVENT
  */
 
 /*
@@ -29,13 +29,14 @@
 #include <klibc.h>
 #include <kaneton.h>
 
-
 /*
  * ---------- extern ----------------------------------------------------------
  */
 
 extern m_event*			event;
-extern t_interrupt_handler      exception_handlers[16];
+
+extern t_interrupt_handler      exception_handlers[32];
+
 extern t_interrupt_handler      irq_handlers[16];
 
 
@@ -50,13 +51,14 @@ extern t_interrupt_handler      irq_handlers[16];
 i_event                  event_interface =
   {
 
-    /*                                                                  [cut] k2 */
+    /*								[cut] k3 */
 
-    NULL,
+    ia32_event_subscribe,
+    ia32_event_unsubscribe,
     ia32_event_init,
-    NULL
+    ia32_event_clean
 
-    /*                                                                 [cut] /k2 */
+    /*								[cut] /k3 */
 
   };
 
@@ -64,44 +66,70 @@ i_event                  event_interface =
  * ---------- functions -------------------------------------------------------
  */
 
-t_error                 exception_generic(void)
-{
-  printf("generic exception handler\n");
+/*
+ * XXX EVENT
+ */
 
-  while (1);
+t_error			ia32_event_subscribe(void)
+{
 
   return ERROR_NONE;
 }
 
 /*
+ * XXX EVENT
+ */
+
+t_error			ia32_event_unsubscribe(void)
+{
+
+  return ERROR_NONE;
+}
+
+/*
+ * XXX EVENT
  *
+ * steps:
  *
- *
- *
- *
+ * 1) init exceptions
+ * 2) init irq
  */
 
 t_error			ia32_event_init(void)
 {
+  /*
+   * 1)
+   */
+
   if (exception_init() != ERROR_NONE)
     return ERROR_UNKNOWN;
+
+  /*
+   * 2)
+   */
 
   if (irq_init() != ERROR_NONE)
     return ERROR_UNKNOWN;
 
-  ia32_event_add(33, 0, XXX);
+  return ERROR_NONE;
+}
+
+t_error			ia32_event_clean(void)
+{
 
   return ERROR_NONE;
 }
 
+
 /*
- * XXX
+ * XXX EVENT
  *
  * steps:
  *
  * 1) check id bounds
- * 2)
- *
+ * 2) add an exception handler
+ * 3) add an irq handler
+ * 4) XXX just for debug
  */
 
 t_error			ia32_event_add(t_uint16			id,
@@ -119,18 +147,37 @@ t_error			ia32_event_add(t_uint16			id,
    * 2)
    */
 
-  if (id >= IDT_IRQ_BASE)
+  if ((id >= IDT_EXCEPTION_BASE) && (id < IDT_EXCEPTION_BASE + 32))
+    {
+      exception_handlers[id] = handler;
+
+      return ERROR_NONE;
+    }
+
+  /*
+   * 3)
+   */
+
+  if ((id >= IDT_IRQ_BASE) && (id < IDT_IRQ_BASE + 16))
     {
       irq_handlers[id - IDT_IRQ_BASE] = handler;
 
       pic_enable_irq(id - IDT_IRQ_BASE);
+
+      return ERROR_NONE;
     }
 
-  return ERROR_NONE;
+  /*
+   * 4)
+   */
+
+  printf("ia32_event: id does not match neither an exception or an irq\n");
+
+  return ERROR_UNKNOWN;
 }
 
-
 /*
+ * XXX EVENT (remove me)
  * fake handler, just for testing ...
  */
 

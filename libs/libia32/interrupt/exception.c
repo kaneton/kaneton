@@ -12,7 +12,7 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * exception handling
+ * this file implements exception handling on ia32 architecture.
  */
 
 /*
