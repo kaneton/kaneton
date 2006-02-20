@@ -3,10 +3,10 @@
 ##
 ## project
 ##
-## file          /home/buckman/kaneton/kaneton/env/machines/unix/machine.sh
+## file          /home/mycure/kaneton/env/machines/unix/machine.sh
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       matthieu bucchianeri   [sun dec 18 15:54:37 2005]
+## updated       julien quintard   [sat feb 18 20:58:00 2006]
 ##
 
 #
@@ -124,6 +124,27 @@ tempfile()
   done
 
   ${_MKTEMP_}
+}
+
+
+
+#
+# TEMPDIRECTORY
+#
+# gives an unique temporary directory name.
+#
+# ${1}:		options
+#
+tempdirectory()
+{
+  for opt in ${1}; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
+  ${_MKTEMP_} -d
 }
 
 

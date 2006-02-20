@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/env/machines/unix/machine.mk
+## file          /home/mycure/kaneton/env/machines/macos-ppc.ia32/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       matthieu bucchianeri   [mon jan 30 23:23:03 2006]
+## updated       julien quintard   [sat feb 18 19:05:05 2006]
 ##
 
 #
@@ -575,7 +575,7 @@ endef
 #
 
 define subject
-  $(_ECHO_) '\def\cmode{subject}' > $(_CMODE_TEX_)			; \
+  $(_ECHO_) '\def\cmode{subject}' > $(_LATEX_MODE_)			; \
   $(call compile-tex,$(1),$(2))
 endef
 
@@ -587,7 +587,7 @@ endef
 #
 
 define correction
-  $(_ECHO_) '\def\cmode{correction}' > $(_CMODE_TEX_)			; \
+  $(_ECHO_) '\def\cmode{correction}' > $(_LATEX_MODE_)			; \
   $(call compile-tex,$(1),$(2))
 endef
 

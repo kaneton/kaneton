@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/Makefile
+## file          /home/mycure/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       matthieu bucchianeri   [mon jan 30 23:17:47 2006]
+## updated       julien quintard   [mon feb 20 22:55:39 2006]
 ##
 
 #
@@ -23,7 +23,7 @@
 
 .PHONY:		all init clean kaneton clear purge proto		\
 		dep build install check info 				\
-		view view- export export-
+		view view- export export- cheat cheat-
 
 #
 # ---------- variables --------------------------------------------------------
@@ -48,8 +48,9 @@ else
   check info								\
   view view-								\
   export export-							\
+  cheat cheat-								\
   clean									\
-  view-% export-%:	init
+  view-% export-% cheat-%:	init
 	$(_MAKE_) -f Makefile $@
 endif
 
@@ -213,6 +214,24 @@ export- export:
 export-%:
 	$(call change-directory,$(_EXPORT_DIR_),)			; \
 	$(call launch,$(_EXPORT_SCRIPT_),$*,)				; \
+	$(call change-directory,$(_SRC_DIR_),)
+
+#
+# ---------- cheat ------------------------------------------------------------
+#
+
+cheat- cheat:
+	$(call makefile,$(_CTCOMPARE_DIR_),)
+
+	$(call change-directory,$(_CHEAT_DIR_),)			; \
+	$(call launch,$(_CHEAT_SCRIPT_),,)				; \
+	$(call change-directory,$(_SRC_DIR_),)
+
+cheat-%:
+	$(call makefile,$(_CTCOMPARE_DIR_),)
+
+	$(call change-directory,$(_CHEAT_DIR_),)			; \
+	$(call launch,$(_CHEAT_SCRIPT_),$*,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 #

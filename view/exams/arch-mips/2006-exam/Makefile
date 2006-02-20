@@ -62,6 +62,6 @@ correction:
 clear:
 	$(call remove,$(GARBAGE),)
 
-	$(call remove,$(_CMODE_TEX_),)
+	$(call remove,$(_LATEX_MODE_),)
 
 	$(call purge)

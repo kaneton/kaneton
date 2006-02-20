@@ -3,10 +3,10 @@
 ##
 ## project
 ##
-## file          /home/buckman/kaneton/export/export.sh
+## file          /home/mycure/kaneton/export/export.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       matthieu bucchianeri   [mon jan 23 23:15:21 2006]
+## updated       julien quintard   [sat feb 18 22:58:34 2006]
 ##
 
 #

@@ -7,7 +7,7 @@
 ## file          /home/mycure/kaneton/cheat/cheat.sh
 ##
 ## created       julien quintard   [sat feb 18 19:09:32 2006]
-## updated       julien quintard   [mon feb 20 22:37:39 2006]
+## updated       julien quintard   [mon feb 20 22:48:23 2006]
 ##
 
 #
@@ -126,7 +126,7 @@ cheat()
 
   groups=$(contents ${YEAR}/${GFILE})
 
-  for g in "${groups}" ; do
+  for g in ${groups} ; do
     display "   ${g}" "+"
 
     for y in ${YEARS} ; do
@@ -149,11 +149,12 @@ cheat()
               "${_CHEAT_DIR_}/${YEAR}/${g}/cheats/${STAGE}.${y}-${c}"
           fi
         fi
-
-        if [ ${y} = ${YEAR} ] ; then
-          break;
-        fi
       done
+
+      if [ ${y} = ${YEAR} ] ; then
+        break;
+      fi
+
     done
   done
 }
