@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/export/export.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat feb 18 22:58:34 2006]
+## updated       julien quintard   [tue feb 21 22:55:17 2006]
 ##
 
 #
@@ -56,7 +56,7 @@ usage()
 {
   display " usage: export.sh [stage]" "!"
   display ""
-  display " available stages: ${STAGES}"
+  display " available stages: ${STAGES}" "+"
 }
 
 
@@ -201,6 +201,7 @@ display ""
 # check the number of arguments.
 if [ ${#} -lt 1 ] ; then
   usage
+  display ""
   exit -1
 fi
 

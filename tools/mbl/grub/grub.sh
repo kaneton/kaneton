@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/tools/mbl/grub/grub.sh
+## file          /home/mycure/kaneton/tools/mbl/grub/grub.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       matthieu bucchianeri   [mon jan 23 20:14:29 2006]
+## updated       julien quintard   [tue feb 21 22:55:27 2006]
 ##
 
 #
@@ -238,6 +238,7 @@ display ""
 # checks the number of arguments.
 if [ ${#} -lt 1 ] ; then
   usage
+  display ""
   exit -1
 fi
 

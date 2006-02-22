@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set_bpt.c
+ * file          /home/mycure/kaneton/core/kaneton/set/set_bpt.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon dec 19 17:44:07 2005]
+ * updated       julien quintard   [wed feb 22 14:15:00 2006]
  */
 
 /*
@@ -699,19 +699,17 @@ t_error			set_remove_bpt(t_setid			setid,
  * steps:
  *
  * 1) gets the set descriptor.
- * 2) loads the entry.
- * 3) frees element if necessary
- * 4) unloads the entry.
- * n) decrements the number of elements in the set.
+ * 2) frees element if necessary
+ * 3) adjusts the bpt unused object.
+ * 4) removes the leaf entry given the bpt entry.
+ * 5) decrements the number of elements in the set.
  */
 
 t_error			set_delete_bpt(t_setid			setid,
 				       t_iterator		iterator)
 {
-  t_bpt_entry(set)	entry;
   t_bpt_imm(set)	node;
   o_set*		o;
-  void*			obj;
 
   SET_ENTER(set);
 
@@ -726,34 +724,34 @@ t_error			set_delete_bpt(t_setid			setid,
    * 2)
    */
 
-  entry = iterator.u.bpt.entry;
+  if (o->u.bpt.opts & SET_OPT_ALLOC ||
+      o->u.bpt.opts & SET_OPT_FREE)
+    {
+      BPT_LOAD(&o->u.bpt.bpt, &node, iterator.u.bpt.entry.node);
 
-  BPT_LOAD(&o->u.bpt.bpt, &node, entry.node);
+      free(BPT_GET_LFENTRY(set, &node, iterator.u.bpt.entry.ndi, data));
 
-  obj = BPT_GET_LFENTRY(set, &node, entry.ndi, data);
+      BPT_UNLOAD(&o->u.bpt.bpt, &node);
+    }
 
   /*
    * 3)
    */
 
-  if (o->u.bpt.opts & SET_OPT_ALLOC ||
-      o->u.bpt.opts & SET_OPT_FREE)
-    free(obj);
+ if (set_adjust_bpt(o, BPT_REMOVE_ALLOC(&o->u.bpt.bpt),
+		    BPT_REMOVE_SIZE(&o->u.bpt.bpt)) != ERROR_NONE)
+   SET_LEAVE(set, ERROR_UNKNOWN);
 
-  /*
-   * 4)
-   */
+ /*                                                                            
+  * 4)                                                                         
+  */
 
-  BPT_UNLOAD(&o->u.bpt.bpt, &node);
+ if (bpt_collide_remove(set, &o->u.bpt.bpt, iterator.u.bpt.entry,
+			&o->u.bpt.unused) != 0)
+   SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 5)
-   */
-
-  /* XXX */
-
-  /*
-   * n)
    */
 
   o->size--;

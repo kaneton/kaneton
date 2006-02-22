@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/machines/unix/machine.sh
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [sat feb 18 20:58:00 2006]
+## updated       julien quintard   [tue feb 21 22:27:27 2006]
 ##
 
 #
@@ -440,6 +440,7 @@ remove()
 list()
 {
   local directory
+  local opt
 
   directory="${1}"
   for opt in ${2}; do
@@ -449,7 +450,19 @@ list()
       esac
   done
 
-  ${_LS_} ${directory}
+  output=$(${_LS_} ${directory})
+
+  for opt in ${2}; do
+      case "${opt}" in
+	  "--directories")
+            for e in ${output} ; do
+	      if [ -d "${directory}/${e}" ] ; then
+                echo ${e}
+              fi
+            done
+	    ;;
+      esac
+  done
 }
 
 

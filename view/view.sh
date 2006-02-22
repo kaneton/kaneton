@@ -31,18 +31,7 @@ source			../env/.env.sh
 # ---------- globalss =--------------------------------------------------------
 #
 
-PAPERS="								\
-  papers/assignments papers/design papers/kaneton			\
-									\
-  lectures/advanced-makefiles lectures/arch-mips lectures/arch-ia32	\
-  lectures/c-preprocessor lectures/distributed-operating-systems	\
-  lectures/prerequisites lectures/inline-assembly			\
-  lectures/kernels lectures/development-environment lectures/seminar	\
-  lectures/arch-mips lectures/kaneton					\
-									\
-  exams/arch-mips/2006-partiel exams/arch-mips/2006-exam		\
-									\
-  cursus/schedule"
+PAPERS=""
 
 LOCATION=""
 PAPER=""
@@ -108,16 +97,16 @@ usage()
 {
   local p
 
+  display " usage: viewer.sh [paper]" "!"
+
+  display ""
+
   display " papers:" "+"
   display ""
 
   for p in ${PAPERS} ; do
     display "   ${p}" "+"
   done
-
-  display ""
-
-  display " usage: viewer.sh [paper]" "!"
 }
 
 #
@@ -127,21 +116,46 @@ usage()
 # displays some stuff.
 display ""
 
-# check the number of arguments
-if [ ${#} -lt 1 ] ; then
+# gets the papers list.
+curriculum=$(list "${_CURRICULUM_DIR_}" "--directories")
+for e in ${curriculum} ; do
+  PAPERS="${PAPERS} curriculum::${e}"
+done
+
+exams=$(list "${_EXAMS_DIR_}" "--directories")
+for e in ${exams} ; do
+  archives=$(list "exams/${e}" "--directories")
+  for a in ${archives} ; do
+    PAPERS="${PAPERS} exams::${e}::${a}"
+  done
+done
+
+lectures=$(list "${_LECTURES_DIR_}" "--directories")
+for e in ${lectures} ; do
+  PAPERS="${PAPERS} lectures::${e}"
+done
+
+papers=$(list "${_PAPERS_DIR_}" "--directories")
+for e in ${papers} ; do
+  PAPERS="${PAPERS} papers::${e}"
+done
+
+# check the number of arguments.
+if [ ${#} -ne 1 ] ; then
   usage
+  display ""
   exit -1
 fi
 
 # gets the argument.
-PAPER="${1}"
+PAPER=${1}
 
 # prints some stuff.
 display " preparing the paper" "+"
 display ""
 
 # locate the paper.
-LOCATION=$(locate "${PAPERS}" "${PAPER}")
+LOCATION=$(locate "${PAPERS}" "${PAPER}" | substitute "::" "\/" "all")
 
 # checks the result
 if [ ${?} -ne 0 ] ; then

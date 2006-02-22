@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/libs/klibc/Makefile
+## file          /home/mycure/kaneton/libs/klibc/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:29:19 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:51:00 2006]
+## updated       julien quintard   [tue feb 21 23:01:56 2006]
 ##
 
 #

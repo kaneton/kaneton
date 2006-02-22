@@ -7,7 +7,7 @@
 ## file          /home/mycure/kaneton/cheat/cheat.sh
 ##
 ## created       julien quintard   [sat feb 18 19:09:32 2006]
-## updated       julien quintard   [mon feb 20 22:48:23 2006]
+## updated       julien quintard   [tue feb 21 22:54:42 2006]
 ##
 
 #
@@ -47,10 +47,10 @@ GFILE="groups"
 #
 usage()
 {
-  display " usage: cheat.sh [year] [stage]" "!"
+  display " usage: cheat.sh [year].[stage]" "!"
   display ""
-  display " available years: ${YEARS}"
-  display " available stages: ${STAGES}"
+  display " available years: ${YEARS}" "+"
+  display " available stages: ${STAGES}" "+"
 }
 
 #
@@ -62,6 +62,8 @@ warning()
 {
   # display information and ask the user to continue or cancel
   display " your current configuration" "+"
+  display "   ignore level:             ${_CHEAT_IGNORE_}" "+"
+  display ""
   display "   year:                     ${YEAR}" "+"
   display "   stage:                    ${STAGE}" "+"
   display ""
@@ -83,7 +85,7 @@ generate()
   for y in ${YEARS} ; do
     display "   ${y}" "+"
 
-    check=$(contents ${y}/${GFILE})
+    check=$(list "${y}" "--directories")
 
     for g in ${check} ; do
       if [ ! -e "${y}/${g}/fingerprints/${STAGE}.ctf" ] ; then
@@ -124,13 +126,13 @@ cheat()
   local g
   local c
 
-  groups=$(contents ${YEAR}/${GFILE})
+  groups=$(list "${YEAR}" "--directories")
 
   for g in ${groups} ; do
     display "   ${g}" "+"
 
     for y in ${YEARS} ; do
-      check=$(contents ${_CHEAT_DIR_}/${y}/${GFILE})
+      check=$(list "${_CHEAT_DIR_}/${y}/" "--directories")
 
       for c in ${check} ; do
         if [ -e "${_CHEAT_DIR_}/${YEAR}/${g}/fingerprints/${STAGE}.ctf" ] &&
@@ -167,14 +169,31 @@ cheat()
 display ""
 
 # check the number of arguments.
-if [ ${#} -lt 2 ] ; then
+if [ ${#} -ne 1 ] ; then
   usage
+  display ""
   exit -1
 fi
 
-# gets the arguments.
-year="${1}"
-stage="${2}"
+# relocates and gets the arguments
+args=$(print "" "${1}" "" | substitute "\." " " "all")
+declare -a in
+i=0
+for a in ${args} ; do
+  in[${i}]=${a}
+
+  let "i += 1"
+done
+
+# XXX
+# check the number of arguments.
+#if [ ${#in} -ne 3 ] ; then
+#  usage
+#  exit -1
+#fi
+
+year=${in[0]}
+stage=${in[1]}
 
 # locate the year.
 YEAR=$(locate "${YEARS}" "${year}")

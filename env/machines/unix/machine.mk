@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/machines/unix/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [mon feb 20 23:03:53 2006]
+## updated       julien quintard   [tue feb 21 23:27:56 2006]
 ##
 
 #
@@ -36,6 +36,9 @@
 
 %.o:			%.c
 	$(call compile-c,$@,$<,)
+
+%.c:			%.l
+	$(call lex-l,$@,$<,)
 
 #
 # ---------- functions --------------------------------------------------------
@@ -275,6 +278,26 @@ define compile-c
   done;									\
   $(call pretty-printer,green,COMPILE-C,$(2),		)		; \
   $(_CC_) $(_CFLAGS_) $$options_cc -c $(2) -o $(1) $(_VERBOSE_)
+endef
+
+#
+# from lex file to c file
+#
+# $(1):		object file
+# $(2):		lex file
+# $(3):		advanced options
+#
+
+define lex-l
+  options_ll='';							\
+  for opt in $(3); do							\
+    case "$$opt" in							\
+      *)								\
+        ;;								\
+    esac;								\
+  done;									\
+  $(call pretty-printer,green,LEX-L,$(2),			)	; \
+  $(_LEX_) $(2) > $(1)
 endef
 
 #

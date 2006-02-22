@@ -30,7 +30,7 @@ include			../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		cursus				\
+SUBDIRS			:=		curriculum			\
 					lectures			\
 					papers				\
 					exams				\

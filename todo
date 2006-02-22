@@ -1,4 +1,12 @@
 --
+ ne pas mettre les logos dans des rep particuliers mais dans view/logos.
+
+ par exemple buckman pour le logo de kaneton.pdf
+
+ de plus pour kaneton.pdf utiliser la template paper.tex OU en faire
+ une nouvelle genre book.
+
+--
  checker le bootloader, les regions puent du cul j'ai du me planter.
  revoir aussi la gestion des pt en interne. coder la surcouche map_reserve,
  ca pourra clarifier le code. *chiche*
@@ -16,7 +24,22 @@
  revoir segment : acces direct (read/write) et resize + split (regions).
 
 --
- passer toutes les images de jpg -> pdf
+ passer toutes les images de jpg -> pdf: il reste kaneton, assignments et
+ quelques de seminar: donc buckman et cedric a vous de jouer.
+
+ xfig: export en eps
+   puis
+ epstopdf
+
+ comme ca on a des images propres.
+
+ de plus les images microkernel_examples_* dans seminar a passer au format xfig
+
+--
+ le cours intel a integrer a la tarball
+
+--
+ a la limite integrer l'option k des inge1 a la tarball kaneton
 
 --
  il faut revoir set_locate_array pour les tableaux tries. il y a un bug.
@@ -29,7 +52,6 @@
   - ia32_as_release/flush  <<	pas sur qu'on libere les page tables
   - gdt_import 		<< eventuellement la virer
   - ldt_get_segment
-  - set_delete_bpt	<< julien !
 
  revoir aussi core/kaneton/debug/*, c'est un peu crade.
 
@@ -85,20 +107,10 @@
  toute facon c'est seulement ce dont on a besoin donc ca bande.
 
 --
- ca va etre a vous: matthieu/renaud d'ecrire le document kaneton
- expliquant la reference. a discuter!
-
---
- faire la moulinette de triche + filtre sur les fichiers identiques etc..
-
---
  retoucher la moulinette et virer le script parse_res.py. revoir
  aussi pour le systeme de loading de modules.
 
  peut etre meme revoir en general la moulinette.
-
---
- demande a solal d'ecrire sa doc dans internships
 
 --
  creer un service monitor lance en premier apres mod qui recevra des
@@ -153,44 +165,6 @@
  ca peut servir pour les gens que ca interesse vraiment.
 
 --
- se synchroniser avec le svn de la box kaneton. enfin le faire un jour quoi :)
-
---
- promo 2007:
-
-   groupe 1:
-     - Enguerrand Raymond: raymon_e
-     - David Lorin: lorin_d
-     - Stephane Roissard: roissa_s
-
-  groupe 2:
-
-     - Emeric Laroche: laroch_e
-     - Frederick Meyer: meyer_f
-     - Jerome Francillon: franci_j
-     - Sebastien Petapermal: petape_s
-
-  groupe 3:
-     - Matthieu Michaud: michau_m
-     - Germain Bauvin: bauvin_g
-     - Pierre-Yves Rofes: rofes-_p
-
-  groupe 4:
-     - Mathieu Selaries: selari_m
-     - Jerome Herbault: herbau_j
-     - Igal Cohen-Hadria: cohen-_i
-
-  groupe 5:
-     - Jean-Christophe Gonnard: gonnar_j
-     - Emmanuel Reynaud: reynau_e
-     - Mahn Nguyen: nguyen_g
-
-  groupe 6:
-     - Etienne Gaschet: gasche_e
-     - Minh XXX: nguyen_s
-     - Pouya Mohtacham: mohtac_p
-
---
  je crois qu il y a une solution pour l'auth de messages.
 
  un client A demande le droit d'envoye un msg a un autre B. le server
@@ -228,10 +202,8 @@
   kaneton: toute communication par message meme sur le systeme distribue.
     on nomme egalement le process/groupe destination
 
---
- groupes de 3/4. chef de groupe c'est lui qui doit uploader.
-
- k0: projet personnel
+ pour kaneton on utilisera une communication style MPI soit direct une
+ lib existante soit on en refait une.
 
 --
  region:
@@ -242,21 +214,10 @@
   * changer les tests des sets pour plus considerer l'ordre
 
 --
- renaud: expliquer comment booter d'une disquette etc.. tout le bas
- niveau PC/Intel
-
---
  virer tout affichage autre que warning et erreur dans le bootloader
  de sorte qu'on n'ait plus de structure t_cons dependante a passer
 
  include/arch/ia32-virtual/kaneton/init.h
-
---
- ecrire des tests pour le bootloader ou on teste seulement la structure
- init recue.
-
---
- tristan: box pour kaneton
 
 --
  reiterer le coup du sondage sur les cours, le projet etc..
@@ -264,12 +225,6 @@
 --
  pour tester la moulette avec un seul pc : QEMU, avec l'option "-serial pty"
  et changer en dur le device dans check.py.
-
---
- factoriser du code pour ia32 car on va avoir bcp de ressemblance entre
- ia32-virtual, ia32-segments et ia32-optimised. le mieux
- serait sans doute de rajouter dans libs/ une lib libia32 ou on
- fournirait toutes les fonctionnalites d'ia32.
 
 --
  nettoyer conf.h, debug.h, check.h rendre tout ca coherent car la c'est
@@ -287,37 +242,8 @@
  changer ca et faire plutot un while (set_head) { segment_release }
 
 --
- make view-paper.kaneton : . -> /
- make view-ship.sol
-
---
  dans doc papers diviser par categories et faire que chaque personne
  qui lit ecrit un resume
-
---
- peut etre passer en enum si on a le temps et l'envie:
-
- enum error
-  {
-    ERROR_NONE
-    ERROR_UNKNOWN
-    -> error specifique pour chaque gestionnaire
-  }
-
---
- pifi: 18
- les autres: 13
-
- donner les notes a l'adm
-
---
- ajouter set_pop set_push etc..
-
---
- bien redire: le header emacs doit etre utilise. la licence doit etre
- kaneton, et le developeur doit etre le meme nom que KANETON_USER.
-
- les headers ne doivent pas contenir de pseudo.
 
 --
  hevea -exec xxdate.exe kaneton.tex pour generer du html
@@ -518,12 +444,10 @@
 
 --
  mycure todo:
-  - mips architecture
   - lectures/kaneton a faire
-  - kaneton.tex et assignments.tex a ecrire
   - cours os distribue?
   - cours linker loader
-  - cours gmake + systeme compile kaneton (dev-env)
+  - cours gmake
 
 --
  revoir si on peut resoudre le systeme d inclusion recursive du preproc:
@@ -537,25 +461,9 @@
  dev.
 
 --
- buckman: cours makefile, fin cours dev-env avec explication du
-  systeme de compil kaneton + seminaire.
-
---
  un seul swapper et on active ou non des options: network, hard drive etc..
  car un swapper ca stocke de la memoire sur un support secondaire qui peut
  etre n'importe quoi, une disquette, une clef usb etc..
-
---
- permettre aux etudiants de choisir leur archi: mips, intel, amd, sparc ...
-
---
- revoir la console car ca deconne. faire des tests avec la moulinette tiens.
-
---
- detecter taille de fenetre -> [PROTO] .../chiche/
-
---
- oceansize premiere partie de porcupine tree
 
 --
  proposer deux sujets sur le vrai kaneton par exemple aux deux meilleurs
@@ -601,15 +509,6 @@
 
     mybox::core::task:: taskid == 1
     mybox::core::segment:: size >= 100 && size <= 200
-
---
- il faudrait resoudre ce probleme de user. le kernel ne doit pas gerer
- les users. comment faire ???
-
- peut etre sommes nous obliges de rajouter un ownid?
-
- solution: le kernel ne gere que des taches, et le user ne sera qu un truc
- au dessus gere surement par un service enfin on verra on s'en branle.
 
 --
  pour par exemple un driver, il faudra qu il soit capable de communiquer
@@ -808,23 +707,8 @@
 --
  lister les trucs qui reste a faire:
 
-  1) moulinette de tests
-  2) des tests pour set, as, segment, regions
-  3) finir intra
   4) integrer la moulinette dans l intra: boot automatique, tftp etc..
-  5) slides presentations kaneton [*]
-  7) cours: cpp [*], inline assembly [*], gnu make
-  8) presentation kaneton, tarball etc.. -> develpment-tree
-     cours revisions: C, asm, etc.. faire quelques slides [*]
-  9) cours noyaux
   10) retoucher cours intel, avec beamer bien etc.. images au bon format
-  12) finir le code de kaneton jusqu'aux regions
-  13) moulinette de decoupage de code [*]
-  14) decouper le code: make export-0 et commenter chaque partie pour que
-      les etudiants sachent quoi coder environ juste avec les commentaires
-    . k0: bootstrap [*]
-    . k1: bootloader [*]
-    . k2: id, set, as, segment
 
 --
  mettre toutes les regles de -old-/README dans kaneton.tex
