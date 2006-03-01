@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [tue feb 28 16:30:16 2006]
+ * updated       matthieu bucchianeri   [wed mar  1 14:21:21 2006]
  */
 
 /*
@@ -195,7 +195,8 @@ t_error			ia32_region_reserve(t_asid		asid,
 /*      cons_msg('#', "%u:%u (v = %u) mapped to %u\n", pde, PTE_ENTRY(vaddr),
 	       vaddr, paddr);*/
 
-      pt_add_page2(
+      if (o->machdep.mirror != 0)
+	pt.entries = ENTRY_ADDR(o->machdep.mirror, PDE_ENTRY(vaddr));
 
       if (pt_add_page(&pt, PTE_ENTRY(vaddr), pg) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);

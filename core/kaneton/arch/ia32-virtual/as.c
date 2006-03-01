@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue feb 28 16:06:40 2006]
+ * updated       matthieu bucchianeri   [wed mar  1 15:59:19 2006]
  */
 
 /*
@@ -158,6 +158,8 @@ t_error			ia32_as_reserve(t_tskid			tskid,
       kpd->size = PAGESZ;
       kpd->perms = PERM_READ | PERM_WRITE;
 
+      /* XXX plutot modifier le t_init */
+
       if (segment_inject(kpd, *asid) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
     }
@@ -192,13 +194,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
   if (pd_build(base, &o->machdep.pd, 1) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  t_table pt;
-  pt.present = 1;
-  pt.rw = 1;
-  pt.user = 0;
-  pt.entries = (void*)base;
-
-  pd_add_table(&o->machdep.pd, PDE_ENTRY((t_vaddr)o->machdep.pd), pt);
+  o->machdep.mirror = 0;
 
   AS_LEAVE(as, ERROR_NONE);
 }

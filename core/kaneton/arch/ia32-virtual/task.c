@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [mon feb 20 11:11:26 2006]
+ * updated       matthieu bucchianeri   [wed mar  1 15:23:28 2006]
  */
 
 /*
@@ -137,6 +137,19 @@ t_error			ia32_task_init(void)
   /*
    * 2)
    */
+
+  /* XXX trouver un endroit mieux pour ca ...
+     reserver de la place dans l'as pour l'entree mirror
+  */
+
+  t_table pt;
+  pt.present = 1;
+  pt.rw = 1;
+  pt.user = 0;
+  pt.entries = (void*)o->machdep.pd;
+
+  o->machdep.mirror = 42;
+  pd_add_table(&o->machdep.pd, o->machdep.mirror, pt);
 
   if (pd_activate(o->machdep.pd) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);

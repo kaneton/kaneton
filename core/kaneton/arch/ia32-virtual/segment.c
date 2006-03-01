@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon feb 20 12:00:34 2006]
+ * updated       matthieu bucchianeri   [wed mar  1 15:30:41 2006]
  */
 
 /*
@@ -37,6 +37,7 @@
  */
 
 extern m_segment*	segment;
+extern t_asid		kasid;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -120,7 +121,7 @@ t_error			ia32_segment_read(t_segid		segid,
    * 3)
    */
 
-  if (region_reserve(o->asid, segid, offs, REGION_OPT_NONE, 0, sz, &reg) !=
+  if (region_reserve(kasid, segid, offs, REGION_OPT_NONE, 0, sz, &reg) !=
       ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
@@ -134,7 +135,7 @@ t_error			ia32_segment_read(t_segid		segid,
    * 5)
    */
 
-  if (region_release(o->asid, reg) != ERROR_NONE)
+  if (region_release(kasid, reg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
@@ -180,7 +181,7 @@ t_error			ia32_segment_write(t_segid		segid,
    * 3)
    */
 
-  if (region_reserve(o->asid, segid, offs, REGION_OPT_NONE, 0, sz, &reg) !=
+  if (region_reserve(kasid, segid, offs, REGION_OPT_NONE, 0, sz, &reg) !=
       ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
@@ -194,7 +195,7 @@ t_error			ia32_segment_write(t_segid		segid,
    * 5)
    */
 
-  if (region_release(o->asid, reg) != ERROR_NONE)
+  if (region_release(kasid, reg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
@@ -244,10 +245,10 @@ t_error			ia32_segment_copy(t_segid		dst,
    * 3)
    */
 
-  if (region_reserve(segs->asid, src, offss, REGION_OPT_NONE, 0, sz, &regs) !=
+  if (region_reserve(kasid, src, offss, REGION_OPT_NONE, 0, sz, &regs) !=
       ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-  if (region_reserve(segd->asid, dst, offsd, REGION_OPT_NONE, 0, sz, &regd) !=
+  if (region_reserve(kasid, dst, offsd, REGION_OPT_NONE, 0, sz, &regd) !=
       ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
@@ -261,8 +262,8 @@ t_error			ia32_segment_copy(t_segid		dst,
    * 5)
    */
 
-  if (region_release(segs->asid, regs) != ERROR_NONE ||
-      region_release(segd->asid, regd) != ERROR_NONE)
+  if (region_release(kasid, regs) != ERROR_NONE ||
+      region_release(kasid, regd) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
