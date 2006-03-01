@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon feb 20 12:20:52 2006]
+ * updated       matthieu bucchianeri   [tue feb 28 16:06:40 2006]
  */
 
 /*
@@ -117,9 +117,12 @@ t_error			ia32_as_show(t_asid			asid)
  * steps:
  *
  * 1) get the as object.
- * 2) reserve a segment for the directory.
- * 3) reserve a region for the directory in the kernel address space.
- * 4) build a new page directory for the as.
+ *   kernel task:
+ *  a)
+ *   normal task:
+ *  a) reserve a segment for the directory.
+ *  b) reserve a region for the directory in the kernel address space.
+ * 2) build a new page directory for the as.
  */
 
 t_error			ia32_as_reserve(t_tskid			tskid,
@@ -129,8 +132,8 @@ t_error			ia32_as_reserve(t_tskid			tskid,
   t_segid	        seg;
   t_regid		reg;
   o_segment*		oseg;
-  t_uint32		pde;
-  t_table		table;
+  t_paddr		base;
+  o_segment*		kpd;
 
   AS_ENTER(as);
 
@@ -141,44 +144,61 @@ t_error			ia32_as_reserve(t_tskid			tskid,
   if (as_get(*asid, &o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  /*
-   * 2)
-   */
-
-  if (segment_reserve(*asid, PAGESZ,
-		      PERM_READ | PERM_WRITE, &seg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  if (segment_get(seg, &oseg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
   if (tskid == ktask)
     {
-      /*
-       * XXX we have to do the mapping by hand since the kernel pd is
-       * not initialized.
-       */
+      kasid = *asid;
 
+      /* XXX changer ca c'est crade */
 
+      base = (t_paddr) malloc(2 * PAGESZ);
+      base = base + (PAGESZ - base % PAGESZ);
 
+      kpd = malloc (sizeof(o_segment));
+      kpd->address = base;
+      kpd->size = PAGESZ;
+      kpd->perms = PERM_READ | PERM_WRITE;
+
+      if (segment_inject(kpd, *asid) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
     }
   else
     {
+      /*
+       * a)
+       */
+
+      if (segment_reserve(*asid, PAGESZ,
+			  PERM_READ | PERM_WRITE, &seg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (segment_get(seg, &oseg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      base = oseg->address;
+
+      /*
+       * b)
+       */
+
       if (region_reserve(kasid, seg, 0, REGION_OPT_FORCE, seg, PAGESZ, &reg) !=
 	  ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
   /*
-   * 4)
+   * 2)
    */
 
-  if (pd_build(oseg->address, &o->machdep.pd, 1) != ERROR_NONE)
+  if (pd_build(base, &o->machdep.pd, 1) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
+
+  t_table pt;
+  pt.present = 1;
+  pt.rw = 1;
+  pt.user = 0;
+  pt.entries = (void*)base;
+
+  pd_add_table(&o->machdep.pd, PDE_ENTRY((t_vaddr)o->machdep.pd), pt);
 
   AS_LEAVE(as, ERROR_NONE);
 }
@@ -214,11 +234,18 @@ t_error			ia32_as_release(t_asid			asid)
   seg = (t_segid)(t_uint32)(o->machdep.pd);
   reg = seg;
 
-  if (region_release(reg, kasid) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  if (asid == kasid)
+    {
+      /* XXX*/
+    }
+  else
+    {
+      if (region_release(reg, kasid) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
 
-  if (segment_release(seg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+      if (segment_release(seg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+    }
 
   AS_LEAVE(as, ERROR_NONE);
 }

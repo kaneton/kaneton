@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [mon feb 20 10:59:57 2006]
+ * updated       matthieu bucchianeri   [tue feb 28 14:41:15 2006]
  */
 
 /*

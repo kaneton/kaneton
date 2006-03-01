@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/kaneton.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun feb 26 13:12:29 2006]
+ * updated       matthieu bucchianeri   [tue feb 28 14:47:28 2006]
  */
 
 /*
@@ -178,17 +178,15 @@ void			kaneton(t_init*				bootloader)
    * 13)
    */
 
-  if (event_init() != ERROR_NONE)
+  if (0 && event_init() != ERROR_NONE)
     kaneton_error("cannot initialize events\n");
 
 
   STI();
 
-  event_subscribe(33, 3);
-  event_subscribe(33, 8);
+  //event_subscribe(33, 3);
+  //event_subscribe(33, 8);
 
-  while (1)
-    ;
 
 #ifdef CONF_ENABLE_CHECK
   check_tests();

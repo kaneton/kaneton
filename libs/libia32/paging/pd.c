@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:53:31 2006]
+ * updated       matthieu bucchianeri   [tue feb 28 14:42:14 2006]
  */
 
 /*
@@ -178,7 +178,7 @@ t_error			pd_activate(t_directory			dir)
 
   pd = dir;
 
-  return ERROR_UNKNOWN;
+  return ERROR_NONE;
 }
 
 /*
