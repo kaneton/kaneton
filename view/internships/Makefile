@@ -1,19 +1,19 @@
 ##
-## licence       Kaneton licence
+## licence       kaneton licence
 ##
 ## project       kaneton
 ##
-## file          /home/rhino/kaneton/internship/Makefile
+## file          /home/mycure/kaneton/view/internships/Makefile
 ##
 ## created       renaud voltz   [thu feb  9 02:37:29 2006]
-## updated       renaud voltz   [thu feb  9 02:37:29 2006]
+## updated       julien quintard   [mon feb 27 20:36:06 2006]
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../env/.env.mk
+include			../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------

@@ -32,19 +32,19 @@ include			../../../env/.env.mk
 
 PAPER			:=		assignments
 
-SRC			:=		k0.tex				\
+SOURCES			:=		assignments.tex			\
+					k0.tex				\
 					k1.tex				\
 					k2.tex				\
 					k3.tex				\
-					k4.tex				\
-					assignments.tex
+					k4.tex				
 
-GARBAGE			:=		$(SRC:.tex=.aux)		\
-					$(SRC:.tex=.log)		\
-					$(SRC:.tex=.toc)		\
-					$(SRC:.tex=.dvi)		\
-					$(SRC:.tex=.ps)			\
-					$(SRC:.tex=.pdf)
+GARBAGE			:=		$(SOURCES:.tex=.aux)		\
+					$(SOURCES:.tex=.log)		\
+					$(SOURCES:.tex=.toc)		\
+					$(SOURCES:.tex=.dvi)		\
+					$(SOURCES:.tex=.ps)		\
+					$(SOURCES:.tex=.pdf)
 
 #
 # ---------- rules ------------------------------------------------------------

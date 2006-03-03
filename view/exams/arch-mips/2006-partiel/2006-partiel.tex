@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/exams/arch-mips/2006-partiel/2006-partiel.tex
 %%
 %% created       julien quintard   [fri dec  2 22:25:51 2005]
-%% updated       julien quintard   [sun feb 26 13:18:30 2006]
+%% updated       julien quintard   [thu mar  2 19:06:00 2006]
 %%
 
 %
@@ -398,6 +398,14 @@ Un sch\'ema clair sera appr\'eci\'e surtout pour l'\'etage \textbf{DEC}.
       loi d'Amdhal se sont rendus compte que cette instruction n'\'etait
       pas rentable et ne l'ont donc pas inclus dans le jeu d'instructions
       du microprocesseur.
+
+      A noter que l'instruction \textit{Nori Rt, Rs, I} peut
+      \^etre effectu\'ee via les instructions suivantes:
+
+      \begin{verbatim}
+	Addui Rd, R0, I
+	Nor Rd, Rs, Rt
+      \end{verbatim}
 
     \end{correction}
 

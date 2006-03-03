@@ -1,5 +1,42 @@
 --
- faire une template pour internship
+ dire que kaneton est implemente en C dans kaneton.pdf
+
+ inclure la license dans kaneton.pdf
+
+--
+ c'est le fait de decouper en sous-fichiers qui fout la merde sur
+ le verbatim quand c'est a cheval sur deux pages.
+
+--
+ ce serait pas mal dans le bootloader de faire comme grub, cad chercher
+ dans le ELF et en retirer l'adresse ou il faut le mettre.
+
+ pour l'instant on le fait en dur c'est a dire que l'adresse dans le
+ ld script et l'adresse du define dans le bootloader doivent etre identiques.
+
+ c'est pas terrible il faudrait le changer.
+
+--
+ pourquoi le champ region->segid n'est pas rempli dans le bootloader?
+
+--
+ ameliorer le parcourt des modules en rajoutant un champ next.
+
+--
+ c'est quoi ce fichier fncychap.sty dans kaneton/
+
+ j'imagine que c'est pour afficher un chapitre mais bon c'est abuse.
+
+--
+  faire un programme qui rajoute une section kaneton/kayou a un ELF.
+
+  les informations ajoutees peuvent etre:
+    - memoire requise ou memoire habituellement utilisee
+    - programme a distribue ou a parallelise (machines vs processeurs)
+    - type cpu du binaire
+
+ toutes ces informations pourraient permettre a kayou de trouver l'endroit
+ ideal ou lance le binaire, quel binaire lance, comme le repartir etc..
 
 --
  expliquez les choix de design (tout ce que j explique a l oral a l etudiant)
@@ -12,7 +49,7 @@
  une fois que ca ce sera fait je pourrais ecrire lectures::kaneton.pdf
 
 --
- questions k1, kaneton:
+ questions kaneton:
    - a quoi sert machdep_data()
    - comment fonctionne le systeme d'appel de la partie dependante
    -

@@ -34,7 +34,8 @@ SUBDIRS			:=		curriculum			\
 					lectures			\
 					papers				\
 					exams				\
-					templates			
+					templates			\
+					internships			
 
 #
 # ---------- rules ------------------------------------------------------------

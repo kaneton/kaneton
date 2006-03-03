@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/buckman/kaneton/view/papers/assignments/k2.tex
+%% file          /home/mycure/kaneton/view/papers/assignments/k2.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       matthieu bucchianeri   [mon feb 27 12:02:56 2006]
+%% updated       julien quintard   [fri mar  3 10:27:57 2006]
 %%
 
 %
@@ -15,27 +15,130 @@
 
 \section{k2}
 
+%
+% informations
+%
+
+\subsection{Informations}
+
+\begin{tabular}{p{7cm}l}
+Deadline: & XXX, 23h42 \\
+Duration: & two weeks \\
+File name: & k1.tar.gz \\
+In charge of: & Julien Quintard - \small{quinta\_j@epita.fr} \\
+Newsgroups: & epita.kaneton \\
+Languages: & Assembly and C \\
+Architectures: & Intel Architecture 32-bit \\
+Students per group: & three \\
+\end{tabular}
+
+%
+% overview
+%
+
+\subsection{Overview}
+
 The \textbf{k2} project consists in the development of parts of
-the microkernel:
+the kaneton core including:
 
 \begin{itemize}
   \item
-    The id manager
+    The id manager.
   \item
-    The set manager
+    The set manager.
   \item
-    The address space manager
+    The address space manager.
   \item
-    The segment manager
-  \item
-    A  simple  console manager  (should  be  copy  \& paste  from  your
-    bootloader's code)
+    The segment manager.
 \end{itemize}
 
-The id  manager is very important  because it is very  simple and will
-introduce you how managers  are implemented in kaneton. Every students
-should be able  to understand it before starting  other managers (sets
-and memory).
+XXX
+
+%
+% assignments
+%
+
+\subsection{Assignments}
+
+%
+% id manager
+%
+
+\subsubsection{id manager}
+
+The id manager is very important because it is very simple and will
+introduce you how managers are implemented in kaneton.
+
+Every student should be able to understand it before starting other
+managers.
+
+The id manager is used to generate unique identifiers from an identifier
+object.
+
+Once the identifier object initialised, you can use your
+identifier object \textbf{o\_id} to generate unique identifiers.
+
+Remember that, in the current kaneton implementation, identifiers only
+consist in 64-bit integers. Therefore, the id manager does not take care
+of identifiers recycling.
+
+Now, let's take a look at the id manager functions you will implement:
+
+\prototype{t\_error \textbf{id\_show}(o\_id* \textit{o});}
+
+This function just displays an id object's state.
+
+\prototype{t\_error \textbf{id\_clone}(o\_id* \textit{o},
+                                       t\_id \textit{old},
+                                       t\_id* \textit{new});}
+
+This function duplicates an id object using the \textit{o} identifier
+object.
+
+\prototype{t\_error \textbf{id\_reserve}(o\_id* \textit{o},
+                                         t\_id* \textit{u});}
+
+This function reserves an identifier \textit{u} using the identifier
+object \textit{o}.
+
+\prototype{t\_error \textbf{id\_release}(o\_id* \textit{o},
+                                         t\_id \textit{u});}
+
+This function releases the identifier \textit{u}.
+
+\prototype{t\_error \textbf{id\_build}(o\_id* \textit{o});}
+
+This function initializes an identifier object.
+
+\prototype{t\_error \textbf{id\_destroy}(o\_id* \textit{o});}
+
+This function destroys an identifier object.
+
+\prototype{t\_error \textbf{id\_init}(void);}
+
+This function just initializes the id manager.
+
+\prototype{t\_error \textbf{id\_clean}(void);}
+
+This function just cleans the id manager.
+
+Like every other managers in kaneton, the \textbf{id\_init()} and
+\textbf{id\_clean()} functions must be called by the kernel main
+routine on startup and shutdown.
+
+%
+% set manager
+%
+
+\subsubsection{set manager}
+
+
+
+
+
+
+
+----------------------------------------------------------------------
 
 as  and  segment  introduce  calls  to  machine-dependent  code,  this
 mecanism  must be well  understood by  every students.  Moreover, many
@@ -54,67 +157,6 @@ driver is not clean and will be changed in future kaneton projects.
 %
 % id manager
 %
-
-\subsection{id manager}
-
-\subsubsection{Description}
-
-The id manager is used to generate identifiers from an identifier object.
-
-Once the  identifier object initialised  -- you got  an \textbf{o\_id}
-structure -- the identifiers can be generated.
-
-Remember that identifiers only consist in a 64-bits integer.
-
-\subsubsection{Students work}
-
-Let's take a look at the id manager functions you will implement:
-
-\prototype{t\_error \textbf{id\_show}(o\_id* \textbf{o});}
-
-This function just displays the id object's state.
-
-\prototype{t\_error \textbf{id\_clone}(o\_id* \textbf{o},
-                                       t\_id \textbf{old},
-                                       t\_id* \textbf{new});}
-
-This function duplicates an id object using the \textbf{o} identifier
-object.
-
-\prototype{t\_error \textbf{id\_reserve}(o\_id* \textbf{o},
-                                         t\_id* \textbf{i});}
-
-This function reserves an identifier \textbf{i} using the identifier
-object \textbf{o}.
-
-\prototype{t\_error \textbf{id\_release}(o\_id* \textbf{o},
-                                         t\_id \textbf{i});}
-
-This function releases an identifier.
-
-\prototype{t\_error \textbf{id\_build}(o\_id* \textbf{o});}
-
-This function initialises an identifier object.
-
-\prototype{t\_error \textbf{id\_destroy}(o\_id* \textbf{o});}
-
-This function destroys an identifier object.
-
-\prototype{t\_error \textbf{id\_init}(void);}
-
-This function just initialises the id manager.
-
-\prototype{t\_error \textbf{id\_clean}(void);}
-
-This function just cleans the id manager.
-
-Do not forget to take a look  at the header file for the id manager in
-\textit{core/include/kaneton/id.h}, to  learn about the \textbf{o\_id}
-structure.
-
-Like  every  other  managers  in kaneton,  the  \textbf{id\_init}  and
-\textbf{id\_clean}  functions  must  be  called  by  the  kernel  main
-routine on startup and shutdown.
 
 %
 % set manager
@@ -628,7 +670,7 @@ console  manager functions to  \textbf{print\_init}. In  addition, you
 must initialize the kernel  \textbf{malloc} function which is used for
 early initial stages  (until as, segment and region  are running, this
 will  be  possible  in  k3).  You must  use  the  \textbf{alloc\_init}
-function,  passing  the  survey   area  pre-allocated  in  k1  (fields
+function,  passing  the  survival   area  pre-allocated  in  k1  (fields
 \textbf{alloc} and \textbf{allocsz} of \textbf{t\_init}).
 
 To finish, you  have to create the kernel address  space and to inject
@@ -648,3 +690,7 @@ forget to disable it for the final tarball.
 
 Students can implement a better allocation algorithm for
 segments, like Buddy systems.
+
+
+XXX expliquer lorsqu'on aborde les sets que vu que ca se base sur
+XXX malloc il fallait trouver une solution

@@ -1,0 +1,108 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/papers/kaneton/overview.tex
+%%
+%% created       matthieu bucchianeri   [mon jan 30 17:09:45 2006]
+%% updated       julien quintard   [thu mar  2 13:12:22 2006]
+%%
+
+%
+% overview
+%
+
+\chapter{Overview}
+
+XXX ce chapitre va vous aider a reconnaitre les fonctionnalites principale
+XXX d'un kernel dans kaneton.
+
+The kaneton microkernel is only the core of an operating system.
+Main tasks like hardware drivers or user services are implemented as
+\textbf{servers}. So the microkernel only has a few functionalities to
+provide:
+
+\begin{itemize}
+  \item
+    Memory management.
+  \item
+    Process management.
+  \item
+    Communication.
+  \item
+    Events.
+\end{itemize}
+
+In this chapter we will describe briefly these tasks and all the
+associated managers.
+
+%
+% memory management
+%
+
+\section{Memory Management}
+
+Handling the memory -- from virtual address space to physical
+addressing -- is done by three major managers, the \textbf{as},
+\textbf{segment} and \textbf{region} managers.
+
+%
+% as
+%
+
+\subsection{as}
+
+The address space manager just manages the different address spaces
+used by the kaneton tasks.
+
+In kaneton, we call an \textbf{as - address space} a list of memory
+locations referenced by a task. Each task has its own address space.
+
+%
+% segment
+%
+
+\subsection{segment}
+
+The segment manager just manages the segments reserved by
+the different kaneton entities including the kernel, the drivers etc..
+
+In kaneton terms a \textbf{segment} is a contiguous area of reserved
+physical memory.
+
+%
+% region
+%
+
+\subsection{region}
+
+The region manager keeps track of regions used to map segments for
+each address space reserved on the system.
+
+In kaneton, a \textbf{region} is contiguous area of virtual memory
+mapping a segment's part.
+
+%
+% process management
+%
+
+\section{Process Management}
+
+XXX
+
+%
+% communication
+%
+
+\section{Communication}
+
+XXX
+
+%
+% events
+%
+
+\section{Events}
+
+XXX

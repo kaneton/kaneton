@@ -36,7 +36,7 @@
  * the malloc() function is not provided yet. to bypass this restriction
  * the kaneton kernel uses an initial malloc() version which is based on
  * a little amount of memory provided by the bootloader, via the fields
- * alloc and allocsz of the init structure: this area is called the survey
+ * alloc and allocsz of the init structure: this area is called the survival
  * memory area.
  *
  * using this initial malloc() function, the set manager is able to build

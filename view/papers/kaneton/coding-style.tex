@@ -1,0 +1,445 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/papers/kaneton/coding-style.tex
+%%
+%% created       matthieu bucchianeri   [mon jan 30 17:32:57 2006]
+%% updated       julien quintard   [thu mar  2 13:57:17 2006]
+%%
+
+%
+% coding style
+%
+
+\chapter{Coding style}
+
+The kaneton project developers try to follow a coding style. This
+coding style was introduced to normalize the source code, leading to a
+more readable source code.
+
+Nevertheless, you can adapt this coding style to your own but try to
+follow the rules.
+
+%
+% case
+%
+
+\section{Case}
+
+The whole kaneton source code is written using lower case letters.
+
+Moreover, every text including comments etc.. must be written using
+lower case letters
+
+%
+% headers
+%
+
+\section{Headers}
+
+Each file must start with an header formatted as shown below:
+
+\begin{verbatim}
+/*
+ * licence       kaneton licence
+ *
+ * project       kaneton
+ *
+ * file          /home/mycure/kaneton/core/kaneton/as/as.c
+ *
+ * created       julien quintard   [fri feb 11 02:23:41 2005]
+ * updated       matthieu bucchianeri   [mon jan 30 20:30:57 2006]
+ */
+\end{verbatim}
+
+An emacs configuration file for automatically generating and updating
+this header can be found in \textit{tools/emacs}.
+
+Additionally, you need to set two environment variables to generate
+a correct kaneton header:
+
+\begin{itemize}
+  \item
+    \textbf{EC\_LICENCE} must be set to ``kaneton licence''.
+  \item
+    \textbf{EC\_DEVELOPER} must be set to your first name and last name.
+\end{itemize}
+
+Please, do not use nicknames in headers.
+
+%
+% naming convention
+%
+
+\section{Naming Convenions}
+
+To keep the code as clear as possible, there are several conventions on
+types, functions and variables naming.
+
+%
+% variables
+%
+
+\subsection{Variables}
+
+Here are a few rules you are encouraged to follow:
+
+\begin{itemize}
+  \item
+    \textbf{sz} suffix for variables representing a size.
+
+    \begin{verbatim}
+      #define PAGESZ          4096
+
+      int                     modsz;
+    \end{verbatim}
+  \item
+    \textbf{n} prefix for variables representing a number of objects.
+
+    \begin{verbatim}
+      int                     nclusters;
+    \end{verbatim}
+  \item
+    etc..
+\end{itemize}
+
+Moreover, the types are used as pre-names:
+
+\begin{verbatim}
+t_vaddr                 video_vaddr;
+\end{verbatim}
+
+This example is not correct, instead prefer:
+
+\begin{verbatim}
+t_vaddr                 video;
+\end{verbatim}
+
+%
+% functions
+%
+
+\subsection{Functions}
+
+Function names must be prefixed by the file name, context name they are
+implemented in.
+
+For example, a function part of the address space manager must be prefixed
+by \textit{as\_}.
+
+These names must be chosen carefully: they must explicitely define
+what the function does without being too long.
+
+%
+% types
+%
+
+\subsection{Types}
+
+As variables and functions, type names must be expressed in english
+with lower case letters.
+
+Here are the prefixes you must use when writing your own types:
+
+\begin{itemize}
+  \item
+    \textbf{m\_} for managers main structures.
+  \item
+    \textbf{o\_} for kaneton objects.
+  \item
+    \textbf{i\_} for interfaces.
+  \item
+    \textbf{d\_} for architecture-dependent structures.
+  \item
+    \textbf{s\_} for general purpose structures.
+  \item
+    \textbf{t\_} for basic and general purpose typedefs.
+  \item
+    \textbf{c\_} for kaneton capabilities.
+  \item
+    \textbf{u\_} for kaneton unique identifiers.
+\end{itemize}
+
+Notice that \textbf{d\_} can be combined with other prefixes, for
+example \textbf{do\_} for a dependent object.
+
+%
+% includes
+%
+
+\section{Includes}
+
+To keep the code clear and compact, developers only need to include a
+minimal number of header files:
+
+\begin{itemize}
+  \item
+    \textbf{kaneton.h} for the microkernel declarations.
+  \item
+    \textbf{klibc.h} for the kaneton specific C library.
+\end{itemize}
+
+These files are located in the include path, so do not use relative include
+path.
+
+\begin{verbatim}
+#include <libc.h>
+#include <kaneton.h>
+
+int             main(int                argc,
+                     char**             argv)
+{
+  [...]
+
+  return (0);
+}
+\end{verbatim}
+
+All include files must be protected against multiple inclusions. The
+guard macro to use must be named using the directory name, one underscore,
+the file name, one underscore and a capital ``H''.
+
+For example, the file \textit{core/include/kaneton/segment.h} will be
+guarded as follow:
+
+\begin{verbatim}
+#ifndef KANETON_SEGMENT_H
+#define KANETON_SEGMENT_H	1
+
+[...]
+
+#endif
+\end{verbatim}
+
+In addition, for architecture-dependent files, the guard macro must begin
+with the architecture name; for example for the Intel architecture:
+\textit{IA32\_KANETON\_SEGMENT\_H}.
+
+%
+% types
+%
+
+\section{Types}
+
+You may use as soon as possible standard types: \textbf{t\_uint8},
+\textbf{t\_sint32}, \textbf{t\_uint64} etc..
+
+This nomenclature is more understandable than
+\textbf{unsigned long long int}.
+
+%
+% return values
+%
+
+\section{Return Values}
+
+Every function must report whether it successed or failed.
+
+In kaneton, functions' return type must be \textbf{t\_error}.
+
+A function will return \textbf{ERROR\_NONE} on success and anything
+else on error, for example \textbf{ERROR\_UNKNOWN} to indicate a non-specific
+error.
+
+%
+% indentation
+%
+
+\section{Indentation}
+
+There are several indentation rules in kaneton.
+
+\begin{enumerate}
+  \item
+    Field names of structures and unions must be aligned with the
+    structure or union name.
+
+    \begin{verbatim}
+      struct       s_set
+      {
+        u_set      id;
+        t_setsz    size;
+        t_type     type;
+      };
+    \end{verbatim}
+
+    or
+
+    \begin{verbatim}
+      typedef struct
+      {
+        o_id       id;
+        u_stats    stats;
+        u_set      container;
+      }            m_as;
+    \end{verbatim}
+  \item
+    Macros and variables must be aligned as shown below:
+
+    \begin{verbatim}
+      #define TASK_PRIOR_CORE     230
+      #define TASK_HPRIOR_CORE    250
+      #define TASK_LPRIOR_CORE    210
+
+      m_task*                     task;
+      u_task                      ktask = ID_UNUSED;
+    \end{verbatim}
+
+    This rule also applies for variables declarations in functions.
+  \item
+    Function prototypes and bodies should look like this:
+
+    \begin{verbatim}
+      t_error             stats_function(u_stats          id,
+                                         char*            function,
+                                         t_stats_func**   f)
+      {
+        t_sint64          slot = -1;
+        t_sint64          i;
+
+        [...]
+      }
+    \end{verbatim}
+
+    Notice that argument names are aligned between each other,
+    and variable names are aligned with function name and between
+    each other.
+
+    Try to respect this alignment between functions in a single file:
+    function names may be all aligned and argument names also.
+\end{enumerate}
+
+%
+% comments
+%
+
+\section{Comments}
+
+As kaneton is intended to be a pedagogical project with clear and
+understandable source code; no need to say that comments take a very
+important part of this objective.
+
+Every file must begin with a comment describing what is done in this
+code via the \textit{information} section.
+
+Moreover, every function must be preceded by a comment defining its
+behavior.
+
+For complex functions and yo prevent direct comments in the source code,
+we used \textbf{steps}:
+
+\begin{itemize}
+  \item
+    Each critical code section in a function is preceded by a step
+    number.
+  \item
+    The function header comment contains steps descriptions.
+\end{itemize}
+
+An example is present below:
+
+\begin{verbatim}
+/*
+ * this function shows the usage of comments and steps.
+ *
+ * steps:
+ *
+ * 1) compute the index.
+ * 2) make the operation.
+ * 3) check the result.
+ */
+
+t_error         test_foobar(int      a,
+                            int      b,
+                            int*     c)
+{
+  int           index;
+
+  /*
+   * 1)
+   */
+
+  index = text_make_index(a, b);
+
+  /*
+   * 2)
+   */
+
+  index = index * a + b;
+
+  /*
+   * 3)
+   */
+
+  if (index < 0)
+    return (ERROR_UNKNOWN);
+
+  *c = index;
+
+  return (ERROR_NONE);
+}
+\end{verbatim}
+
+%
+% sections
+%
+
+\section{Sections}
+
+kaneton files are divided in multiple sections.
+
+Section are delimited as shown below:
+
+\begin{verbatim}
+/*
+ * ---------- includes ------------------------------------------------
+ */
+\end{verbatim}
+
+Possible sections in a file are:
+
+\begin{itemize}
+  \item
+    \textbf{header files}: information, dependencies, defines, types,
+    prototypes, macros, etc..
+  \item
+    \textbf{source files}: information, extern, globals, includes,
+    functions, etc..
+  \item
+    \textbf{make files}: dependencies, directives, variables, rules, etc..
+\end{itemize}
+
+Moreover, every important file, for example the main file of each
+kaneton manager, have to contain a section \textit{information} describing
+the whole manager.
+
+In addition, a section named \textit{assignments} is generally necessary
+for manager will be filled in by the students. This section briefly describes
+the work to be done by the students.
+
+%
+% macros
+%
+
+\section{Macros}
+
+The kaneton microkernel uses few fundamental macros lited below:
+
+\begin{itemize}
+  \item
+    \textbf{\_\_\_bootloader} indicates that this source code belongs to
+    the bootloader.
+  \item
+    \textbf{\_\_\_kernel} indicates that this source code belongs to the
+    microkernel.
+  \item
+    \textbf{\_\_\_kaneton} indicates that this kernel is the kaneton
+    microkernel.
+  \item
+    \textbf{\_\_\_wordsz} indicates the word size: 16-bit, 32-bit,
+    64-bit etc..
+  \item
+    \textbf{\_\_\_endian} indicates the endianness.
+\end{itemize}

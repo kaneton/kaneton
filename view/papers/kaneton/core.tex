@@ -1,0 +1,63 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/papers/kaneton/core.tex
+%%
+%% created       matthieu bucchianeri   [mon jan 30 17:33:29 2006]
+%% updated       julien quintard   [thu mar  2 13:04:39 2006]
+%%
+
+%
+% core
+%
+
+\chapter{Core}
+
+%
+% bootstrap
+%
+
+\section{Bootstrap}
+
+XXX
+
+%
+% bootloader
+%
+
+\section{Bootloader}
+
+XXX
+
+%
+% kaneton
+%
+
+\section{kaneton}
+
+XXX
+
+%
+% id
+%
+
+\section{id}
+
+The following rules describes a typical use of id objects in kaneton:
+
+\begin{itemize}
+  \item
+    The \textbf{init} function of a manager calls \textbf{id\_build}
+    to generate a \textbf{o\_id} object.
+  \item
+    Functions generating new objects will use \textbf{id\_reserve} to
+    reserve new identifiers for the created objects.
+  \item
+    Functions removing objets will call \textbf{id\_destroy} to release
+    identifiers of destroyed objets.
+  \item
+    The \textbf{clean} function of a manager will release the identifier
+    generator with \textbf{id\_release}.
+\end{itemize}

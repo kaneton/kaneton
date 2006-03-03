@@ -6,76 +6,36 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/kaneton.tex
 %%
 %% created       julien quintard   [thu dec  8 00:26:00 2005]
-%% updated       julien quintard   [thu feb 23 07:35:20 2006]
+%% updated       julien quintard   [thu mar  2 13:59:43 2006]
 %%
 
 %
-% class
+% template
 %
 
-\documentclass[12pt,a4wide]{report}
-
-%
-% packages
-%
-
-\usepackage[english]{babel}
-\usepackage{a4wide}
-\usepackage[Lenny]{fncychap}
-\usepackage{fancyheadings}
-\usepackage{multicol}
-\usepackage{indentfirst}
-\usepackage{graphicx}
-\usepackage{color}
-\usepackage{xcolor}
-\usepackage{verbatim}
-\usepackage{xspace}
-
-\pagestyle{fancy}
-
-\setlength{\footrulewidth}{0.3pt}
-\setlength{\parindent}{0.3cm}
-\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
-
-%
-% verbatim font
-%
-
-\definecolor{verbatimcolor}{rgb}{0,0.4,0}
-
-\makeatletter
-\renewcommand{\verbatim@font}
-  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
-\makeatother
-
-%
-% kaneton
-%
-
-\newcommand{\kaneton}{kaneton\xspace}
+\input{../../templates/book.tex}
 
 %
 % header
 %
 
-\rfoot{\scriptsize{The kaneton microkernel project}}
-\lhead{\scriptsize{The kaneton microkernel project}}
-
-\date{\scriptsize{\today}}
+\lhead{\scriptsize{The kaneton microkernel project reference}}
+\rhead{}
 
 %
 % title
 %
 
-\title{\huge{The kaneton micro-kernel reference}
-\\\vspace{2cm}\includegraphics{../../logos/logo.jpg}}
+\title{The kaneton microkernel reference
+       \logos}
 
 %
 % authors
 %
 
-\author{\small{Julien Quintard}, \small{Matthieu Bucchianeri},
-\small{Renaud Voltz}\vspace{2cm}}
+\author{\small{Julien Quintard},
+        \small{Matthieu Bucchianeri},
+        \small{Renaud Voltz}}
 
 %
 % document
@@ -97,28 +57,43 @@
 % authors
 %
 
+This document describes the kaneton microkernel reference project.
+
+This document should be used by every student willing implement the
+kaneton microkernel.
+
+All the kaneton documents are available on the official website:
+\textbf{http://www.kaneton.org}.
+
+This document is under the \textbf{kaneton license}.
+
+This document will reference the kaneton people by the word \textit{we}.
+
 \newpage
 
-
-The \kaneton project was introduced at EPITA by two students:
+The kaneton project was introduced at EPITA by two computer science
+students:
 
 \begin{itemize}
-\item Julien Quintard \footnote{quinta\_j@epita.fr}
-\item Jean-Pascal Billaud \footnote{billau\_j@epita.fr}
+  \item
+    Julien Quintard \footnote{quinta\_j@epita.fr}
+  \item
+    Jean-Pascal Billaud \footnote{billau\_j@epita.fr}
 \end{itemize}
 
-
-This document especially describes the kaneton reference micro-kernel
+This document especially describes the kaneton reference microkernel
 developed by:
 
 \begin{itemize}
-\item Julien Quintard
-\item Matthieu Bucchianeri \footnote{bucchi\_m@epita.fr}
-\item Renaud Voltz \footnote{voltz\_r@epita.fr}
+  \item
+    Julien Quintard
+  \item
+    Matthieu Bucchianeri \footnote{bucchi\_m@epita.fr}
+  \item
+    Renaud Voltz \footnote{voltz\_r@epita.fr}
 \end{itemize}
 
-
-But many people contributed to this project and we thank them.
+Nevertheless, many people contributed to this project and we thank them.
 
 %
 % toc
@@ -130,21 +105,22 @@ But many people contributed to this project and we thank them.
 % chapters
 %
 
-\include{1-goals}
-\include{2-overview}
-\include{3-devenv}
-\include{4-source}
-\include{5-coding}
-\include{6-indep}
-\include{7-tools}
-\include{8-tests}
-\include{9-glossary}
+XXX revoir ordre pour mieux introduire kaneton: design.pdf
+
+\include{goals}
+\include{overview}
+\include{development-environment}
+\include{source-tree}
+\include{coding-style}
+\include{core}
+\include{tools}
+\include{check}
+\include{glossary}
 
 %
 % epilogue
 %
 
+XXX ?
+
 \end{document}
-\label{}
-\ref{}
-\pageref{}

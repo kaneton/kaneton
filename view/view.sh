@@ -140,6 +140,11 @@ for e in ${papers} ; do
   PAPERS="${PAPERS} papers::${e}"
 done
 
+internships=$(list "${_INTERNSHIPS_DIR_}" "--directories")
+for e in ${internships} ; do
+  PAPERS="${PAPERS} internships::${e}"
+done
+
 # check the number of arguments.
 if [ ${#} -ne 1 ] ; then
   usage

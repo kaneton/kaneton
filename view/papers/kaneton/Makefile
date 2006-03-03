@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/view/papers/kaneton/Makefile
+## file          /home/mycure/kaneton/view/papers/kaneton/Makefile
 ##
 ## created       matthieu bucchianeri   [mon jan 30 22:05:58 2006]
-## updated       matthieu bucchianeri   [mon jan 30 22:05:59 2006]
+## updated       julien quintard   [thu mar  2 13:13:50 2006]
 ##
 
 #
@@ -27,23 +27,24 @@ include			../../../env/.env.mk
 
 PAPER			:=		kaneton
 
-SRC			:=		1-goals.tex			\
-					2-overview.tex			\
-					3-devenv.tex			\
-					4-source.tex			\
-					5-coding.tex			\
-					6-indep.tex			\
-					7-tools.tex			\
-					8-tests.tex			\
-					9-glossary.tex			\
+SOURCES			:=		kaneton.tex			\
+					goals.tex			\
+					overview.tex			\
+					development-environment.tex	\
+					source-tree.tex			\
+					coding-style.tex		\
+					core.tex			\
+					tools.tex			\
+					check.tex			\
+					glossary.tex			\
 					kaneton.tex
 
-GARBAGE			:=		$(SRC:.tex=.aux)		\
-					$(SRC:.tex=.log)		\
-					$(SRC:.tex=.dvi)		\
-					$(SRC:.tex=.ps)			\
-					$(SRC:.tex=.pdf)		\
-					$(SRC:.tex=.toc)
+GARBAGE			:=		$(SOURCES:.tex=.aux)		\
+					$(SOURCES:.tex=.log)		\
+					$(SOURCES:.tex=.dvi)		\
+					$(SOURCES:.tex=.ps)		\
+					$(SOURCES:.tex=.pdf)		\
+					$(SOURCES:.tex=.toc)
 
 #
 # ---------- rules ------------------------------------------------------------

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/klibc/libdata/alloc.c
+ * file          /home/mycure/kaneton/libs/klibc/libdata/alloc.c
  *
  * created       cedric aubouy   [sun sep 25 19:57:33 2005]
- * updated       matthieu bucchianeri   [tue dec 20 22:31:16 2005]
+ * updated       julien quintard   [wed mar  1 17:29:42 2006]
  */
 
 /*
@@ -402,7 +402,7 @@ void*			realloc(void* 				ptr,
 /*
  * this function initialises the allocator.
  *
- * the arguments addr and size specify a kind of survey area. the kernel
+ * the arguments addr and size specify a kind of survival area. the kernel
  * will call this allocator to dynamically reserve memory while no
  * kernel memory manager is installed yet. so this area will be used in a
  * very special way.
@@ -413,7 +413,7 @@ void*			realloc(void* 				ptr,
  * steps:
  *
  * 1) checks for the given algorithm.
- * 2) initialises the very first static area, the survey area.
+ * 2) initialises the very first static area, the survival area.
  * 3) initialises the global allocator information.
  * 4) if needed, dumps the allocator state.
  */

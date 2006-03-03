@@ -1,0 +1,138 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/papers/kaneton/source-tree.tex
+%%
+%% created       matthieu bucchianeri   [mon jan 30 17:32:40 2006]
+%% updated       julien quintard   [thu mar  2 01:24:03 2006]
+%%
+
+%
+% source tree
+%
+
+\chapter{Source Tree}
+
+This section describes the kaneton source tree in details:
+
+\begin{verbatim}
+check/
+core/
+drivers/
+env/
+export/
+libs/
+programs/
+services/
+tools/
+\end{verbatim}
+
+%
+% check/
+%
+
+\section{check/}
+
+The \textbf{check/} subdirectory contains kaneton test suite.
+
+%
+% core/
+%
+
+\section{core/}
+
+This subdirectory is the most important of the project. It contains
+all the microkernel code, the bootloader and the bootstrap.
+
+%
+% core/bootstrap/
+%
+
+\subsection{core/bootstrap/}
+
+This directory contains bootstraps for all supported architectures.
+
+\begin{verbatim}
+core/bootstrap/arch/
+                    ia32-virtual
+                    ultrasparc
+                    [...]
+\end{verbatim}
+
+%
+% core/bootloader/
+%
+
+\subsection{core/bootloader/}
+
+This directory contains bootloaders for all supported architectures.
+
+\begin{verbatim}
+core/bootloader/arch/
+                     ia32-virtual
+                     ultrasparc
+                     [...]
+\end{verbatim}
+
+%
+% core/kaneton/
+%
+
+\subsection{core/kaneton/}
+
+This directory contains kaneton source code. It is divided as shown below:
+
+\begin{verbatim}
+core/kaneton/
+             arch/
+             as/
+             conf/
+             debug/
+             id/
+             region/
+             schedule/
+             segment/
+             set/
+             stats/
+             task/
+             thread/
+             [...]
+\end{verbatim}
+
+Notice that there is one subdirectory per manager.
+
+All architecture dependent code is placed in \textbf{arch}. This
+directory contains subdirectories for each architecture.
+
+\begin{verbatim}
+core/kaneton/arch/
+                  ia32-virtual
+                  ultrasparc
+                  [...]
+\end{verbatim}
+
+Each of these subdirectories contains files implementing
+architecture-dependent code for each manager.
+
+%
+% drivers/
+%
+
+\section{drivers/}
+
+This directory contains the different drivers source code.
+
+A \textbf{driver} in the kaneton terms is a microkernel's server which
+interacts with one or more hardware devices.
+
+%
+% env/
+%
+
+\section{env/}
+
+XXX lectures::development-environment
+
+etc..

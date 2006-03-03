@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/set/set.c
+ * file          /home/mycure/kaneton/core/kaneton/set/set.c
  *
  * created       julien quintard   [fri dec  2 19:55:19 2005]
- * updated       matthieu bucchianeri   [tue dec 20 15:48:08 2005]
+ * updated       julien quintard   [wed mar  1 17:29:06 2006]
  */
 
 /*
@@ -31,7 +31,7 @@
  * the malloc() function is not provided yet. to bypass this restriction
  * the kaneton kernel uses an initial malloc() version which is based on
  * a little amount of memory provided by the bootloader, via the fields
- * alloc and allocsz of the init structure: this area is called the survey
+ * alloc and allocsz of the init structure: this area is called the survival
  * memory area.
  *
  * using this initial malloc() function, the set manager is able to build
