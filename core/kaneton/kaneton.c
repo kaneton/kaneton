@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/kaneton.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue feb 28 14:47:28 2006]
+ * updated       matthieu bucchianeri   [fri mar  3 14:15:10 2006]
  */
 
 /*
@@ -203,17 +203,17 @@ void			kaneton(t_init*				bootloader)
  t_paddr p;
 
  segment_reserve(0, 2 * 4096, PERM_READ | PERM_WRITE, &s);
- region_reserve(0, s, 0, REGION_OPT_FORCE, 0xffff0000, 4096, &r);
- region_reserve(0, s, 4096, REGION_OPT_FORCE, 0xffff2000, 4096, &r2);
+ region_reserve(0, s, 0, REGION_OPT_FORCE, 0x1fff0000, 4096, &r);
+ region_reserve(0, s, 4096, REGION_OPT_FORCE, 0x1fff2000, 4096, &r2);
  segment_show(s);
  region_show(0, r);
  region_show(0, r2);
- as_paddr(0, r, 0xffff0100, &p);
+ as_paddr(0, r, 0x1fff0100, &p);
  printf("seg: %qu, reg: %qu : %x ", s, r, p);
- as_paddr(0, r2, 0xffff2300, &p);
+ as_paddr(0, r2, 0x1fff2300, &p);
  printf(", %x\n", p);
  tlb_flush();
- int *a = (int *)0xffff0004;
+ int *a = (int *)0x1fff0004;
  *a = 0x41424344;
  printf("r/w test: %x\n", *a);
  segment_dump();

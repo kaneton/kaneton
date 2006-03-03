@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [wed mar  1 14:21:21 2006]
+ * updated       matthieu bucchianeri   [fri mar  3 16:08:26 2006]
  */
 
 /*
@@ -37,6 +37,7 @@
  */
 
 extern m_region*	region;
+extern t_asid		kasid;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -103,6 +104,8 @@ t_error			ia32_region_reserve(t_asid		asid,
   t_table		pt;
   t_page		pg;
   t_segid		segtbl;
+
+  t_directory kpd;
 
   REGION_ENTER(region);
 
@@ -182,8 +185,38 @@ t_error			ia32_region_reserve(t_asid		asid,
 	      if (pd_add_table(&o->machdep.pd, pde, pt) != ERROR_NONE)
 		REGION_LEAVE(region, ERROR_UNKNOWN);
 
-	      tlb_invalidate((t_vaddr)pt.entries);
+	      if (asid !=  kasid)
+		{
+
+		  pg.addr = (void*)pt.entries;
+
+		  if (pd_get_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), &pt) != ERROR_NONE)
+		    {
+		      if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
+					  &segtbl) != ERROR_NONE)
+			REGION_LEAVE(region, ERROR_UNKNOWN);
+
+		      if (segment_get(segtbl, &otbl) != ERROR_NONE)
+			REGION_LEAVE(region, ERROR_UNKNOWN);
+
+		      pt.entries = (void*)otbl->address;
+
+		      if (pd_add_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), pt) != ERROR_NONE)
+			REGION_LEAVE(region, ERROR_UNKNOWN);
+
+		    }
+
+		  pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY((t_paddr)pg.addr));
+
+		  if (pt_add_page(&pt, PTE_ENTRY((t_paddr)pg.addr), pg) != ERROR_NONE)
+		    REGION_LEAVE(region, ERROR_UNKNOWN);
+		}
+
 	    }
+
+		      tlb_flush();
+
+	  pd_get_table(&o->machdep.pd, pde, &pt);
 	}
 
       /*
@@ -192,16 +225,8 @@ t_error			ia32_region_reserve(t_asid		asid,
 
       pg.addr = (void*)paddr;
 
-/*      cons_msg('#', "%u:%u (v = %u) mapped to %u\n", pde, PTE_ENTRY(vaddr),
-	       vaddr, paddr);*/
-
-      if (o->machdep.mirror != 0)
-	pt.entries = ENTRY_ADDR(o->machdep.mirror, PDE_ENTRY(vaddr));
-
       if (pt_add_page(&pt, PTE_ENTRY(vaddr), pg) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      tlb_invalidate(vaddr);
     }
 
   REGION_LEAVE(region, ERROR_NONE);

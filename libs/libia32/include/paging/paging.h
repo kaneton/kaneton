@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/paging/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon jan 30 22:30:31 2006]
+ * updated       matthieu bucchianeri   [fri mar  3 13:27:37 2006]
  */
 
 /*
@@ -78,6 +78,12 @@
  */
 
 #define PTE_FLAG_USED		(1 << 9)
+
+/*
+ * the following value is the mirror entry in the page directory.
+ */
+
+#define PD_MIRROR		1023
 
 /*
  * ---------- macros ----------------------------------------------------------

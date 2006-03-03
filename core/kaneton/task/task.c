@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [tue feb 28 14:41:15 2006]
+ * updated       matthieu bucchianeri   [fri mar  3 15:20:13 2006]
  */
 
 /*
@@ -547,7 +547,7 @@ t_error			task_init(void)
 
   for (i = 0; i < init->nsegments; i++)
     {
-      if (segment_inject(&init->segments[i], asid) != ERROR_NONE)
+      if (segment_inject(asid, &init->segments[i]) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot add a pre-reserved segment in "
 		   "the segment container\n");

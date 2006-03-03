@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon feb 20 11:59:34 2006]
+ * updated       matthieu bucchianeri   [fri mar  3 15:31:07 2006]
  */
 
 /*
@@ -267,10 +267,10 @@ t_error			segment_clone(t_asid			asid,
  * 4) calls dependent code.
  */
 
-t_error			segment_inject(o_segment*	seg,
-				       t_asid		asid)
+t_error			segment_inject(t_asid		asid,
+				       o_segment*	o)
 {
-  o_as			*o;
+  o_as			*oas;
 
   SEGMENT_ENTER(segment);
 
@@ -278,26 +278,26 @@ t_error			segment_inject(o_segment*	seg,
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
+  if (as_get(asid, &oas) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  seg->segid = (t_segid)seg->address;
-  seg->asid = asid;
+  o->segid = (t_segid)o->address;
+  o->asid = asid;
 
   /*
    * 3)
    */
 
-  if (set_add(segment->container, seg) != ERROR_NONE)
+  if (set_add(segment->container, o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (set_add(o->segments, &seg->segid) != ERROR_NONE)
+  if (set_add(oas->segments, &o->segid) != ERROR_NONE)
     {
-      set_remove(segment->container, seg->segid);
+      set_remove(segment->container, o->segid);
 
       SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
     }
@@ -306,7 +306,7 @@ t_error			segment_inject(o_segment*	seg,
    * 4)
    */
 
-  if (machdep_call(segment, segment_inject, seg, asid) !=
+  if (machdep_call(segment, segment_inject, asid, o) !=
       ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
@@ -398,9 +398,9 @@ t_error			segment_give(t_asid		asid,
  * 4) call machine dependent code.
  */
 
-t_error			segment_resize(t_segid		segid,
-				       t_psize		new_size,
-				       t_segid*		new_seg)
+t_error			segment_resize(t_segid		old,
+				       t_psize		size,
+				       t_segid*		new)
 {
   o_segment*		o;
   o_segment*		onext;
@@ -414,7 +414,7 @@ t_error			segment_resize(t_segid		segid,
    * 1)
    */
 
-  if (set_locate(segment->container, segid, &it) != ERROR_NONE)
+  if (set_locate(segment->container, old, &it) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   if (set_object(segment->container, it, (void**)&o) != ERROR_NONE)
@@ -424,7 +424,7 @@ t_error			segment_resize(t_segid		segid,
    * 2)
    */
 
-  if (new_size > o->size)
+  if (size > o->size)
     {
 
       /*
@@ -441,16 +441,16 @@ t_error			segment_resize(t_segid		segid,
 	   * b)
 	   */
 
-	  if (o->address + new_size >= onext->address)
+	  if (o->address + size >= onext->address)
 	    {
-	      if (segment_reserve(o->asid, new_size, o->perms, new_seg) !=
+	      if (segment_reserve(o->asid, size, o->perms, new) !=
 		  ERROR_NONE)
 		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-	      if (segment_copy(*new_seg, 0, segid, 0, o->size) != ERROR_NONE)
+	      if (segment_copy(*new, 0, old, 0, o->size) != ERROR_NONE)
 		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-	      if (segment_release(segid) != ERROR_NONE)
+	      if (segment_release(old) != ERROR_NONE)
 		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 	      changed = 1;
@@ -464,15 +464,15 @@ t_error			segment_resize(t_segid		segid,
 
   if (!changed)
     {
-      o->size = new_size;
-      *new_seg = segid;
+      o->size = size;
+      *new = old;
     }
 
   /*
    * 4)
    */
 
-  if (machdep_call(segment, segment_resize, segid, new_size) != ERROR_NONE)
+  if (machdep_call(segment, segment_resize, old, size, new) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
@@ -489,10 +489,10 @@ t_error			segment_resize(t_segid		segid,
  * 4) call machine-dependent code.
  */
 
-t_error			segment_split(t_segid		segid,
-				      t_psize		sz1,
-				      t_segid*		s1,
-				      t_segid*		s2)
+t_error			segment_split(t_segid		old,
+				      t_psize		size,
+				      t_segid*		new1,
+				      t_segid*		new2)
 {
   o_as*			as;
   o_segment*		o;
@@ -504,7 +504,7 @@ t_error			segment_split(t_segid		segid,
    * 1)
    */
 
-  if (segment_get(segid, &o) != ERROR_NONE)
+  if (segment_get(old, &o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   if (as_get(o->asid, &as) != ERROR_NONE)
@@ -514,31 +514,32 @@ t_error			segment_split(t_segid		segid,
    * 2)
    */
 
-  if (sz1 >= o->size)
+  if (size >= o->size)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  o->size = sz1;
-  *s1 = segid;
+  o->size = size;
+  *new1 = old;
 
   /*
    * 3)
    */
 
   n.asid = o->asid;
-  n.size = o->size - sz1;
+  n.size = o->size - size;
   n.perms = o->perms;
-  n.address = o->address + sz1;
+  n.address = o->address + size;
 
-  *s2 = n.segid = (t_segid)n.address;
+  *new2 = n.segid = (t_segid)n.address;
 
-  if (segment_inject(&n, o->asid) != ERROR_NONE)
+  if (segment_inject(o->asid, &n) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (machdep_call(segment, segment_split, segid, sz1, s1, s2) != ERROR_NONE)
+  if (machdep_call(segment, segment_split, old, size, new1, new2) !=
+      ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
@@ -557,9 +558,9 @@ t_error			segment_split(t_segid		segid,
  * 6) call machine-dependent code.
  */
 
-t_error			segment_coalesce(t_segid	s1,
-					 t_segid	s2,
-					 t_segid*	new_seg)
+t_error			segment_coalesce(t_segid	old1,
+					 t_segid	old2,
+					 t_segid*	new)
 {
   o_segment*		seg1;
   o_segment*		seg2;
@@ -571,19 +572,19 @@ t_error			segment_coalesce(t_segid	s1,
    * 1)
    */
 
-  if (s2 < s1)
+  if (old2 < old1)
     {
-      tmp = s1;
-      s1 = s2;
-      s2 = tmp;
+      tmp = old1;
+      old1 = old2;
+      old2 = tmp;
     }
 
   /*
    * 2)
    */
 
-  if (segment_get(s1, &seg1) != ERROR_NONE ||
-      segment_get(s2, &seg1) != ERROR_NONE)
+  if (segment_get(old1, &seg1) != ERROR_NONE ||
+      segment_get(old2, &seg1) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -598,19 +599,20 @@ t_error			segment_coalesce(t_segid	s1,
    */
 
   seg1->size += seg2->size;
+  *new = seg1;
 
   /*
    * 5)
    */
 
-  if (segment_release(s2) != ERROR_NONE)
+  if (segment_release(old2) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 6)
    */
 
-  if (machdep_call(segment, segment_coalesce, s1, s2, new_seg) != ERROR_NONE)
+  if (machdep_call(segment, segment_coalesce, old1, old2, new) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/include/kaneton/segment.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sat feb 18 18:55:43 2006]
+ * updated       matthieu bucchianeri   [fri mar  3 15:27:39 2006]
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -91,12 +91,13 @@ typedef struct
   t_error			(*segment_clone)(t_asid,
 						 t_segid,
 						 t_segid*);
-  t_error			(*segment_inject)(o_segment*,
-						  t_asid);
+  t_error			(*segment_inject)(t_asid,
+						  o_segment*);
   t_error			(*segment_give)(t_asid,
 						t_segid);
   t_error			(*segment_resize)(t_segid,
-						  t_psize);
+						  t_psize,
+						  t_segid*);
   t_error			(*segment_split)(t_segid,
 						 t_psize,
 						 t_segid*,
@@ -188,20 +189,20 @@ t_error			segment_clone(t_asid			asid,
 				      t_segid			old,
 				      t_segid*			new);
 
-t_error			segment_inject(o_segment*	seg,
-				       t_asid		asid);
+t_error			segment_inject(t_asid		asid,
+				       o_segment*	o);
 
 t_error			segment_give(t_asid		asid,
 				     t_segid		segid);
 
-t_error			segment_resize(t_segid		segid,
-				       t_psize		new_size,
-				       t_segid*		new_seg);
+t_error			segment_resize(t_segid		old,
+				       t_psize		size,
+				       t_segid*		new);
 
-t_error			segment_split(t_segid		segid,
-				      t_psize		sz1,
-				      t_segid*		s1,
-				      t_segid*		s2);
+t_error			segment_split(t_segid		old,
+				      t_psize		size,
+				      t_segid*		new1,
+				      t_segid*		new2);
 
 t_error			segment_coalesce(t_segid	s1,
 					 t_segid	s2,

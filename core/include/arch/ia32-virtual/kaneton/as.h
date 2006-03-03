@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/include/arch/ia32-virtual/kaneton/as.h
  *
  * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       matthieu bucchianeri   [wed mar  1 14:23:13 2006]
+ * updated       matthieu bucchianeri   [fri mar  3 13:24:54 2006]
  */
 
 #ifndef IA32_KANETON_AS_H
@@ -31,7 +31,6 @@ typedef struct
 /*                                                                [cut] k2   */
 
   t_directory			pd;
-  t_uint32			mirror;
 
 /*                                                               [cut] /k2   */
 }				do_as;

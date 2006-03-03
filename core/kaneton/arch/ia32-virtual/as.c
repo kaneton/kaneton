@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed mar  1 15:59:19 2006]
+ * updated       matthieu bucchianeri   [fri mar  3 15:20:53 2006]
  */
 
 /*
@@ -123,6 +123,7 @@ t_error			ia32_as_show(t_asid			asid)
  *  a) reserve a segment for the directory.
  *  b) reserve a region for the directory in the kernel address space.
  * 2) build a new page directory for the as.
+ * 3) on the kernel as, create the mirroring entry.
  */
 
 t_error			ia32_as_reserve(t_tskid			tskid,
@@ -132,8 +133,10 @@ t_error			ia32_as_reserve(t_tskid			tskid,
   t_segid	        seg;
   t_regid		reg;
   o_segment*		oseg;
+  o_region		oreg;
   t_paddr		base;
   o_segment*		kpd;
+  t_table		pt;
 
   AS_ENTER(as);
 
@@ -160,7 +163,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 
       /* XXX plutot modifier le t_init */
 
-      if (segment_inject(kpd, *asid) != ERROR_NONE)
+      if (segment_inject(*asid, kpd) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
     }
   else
@@ -194,7 +197,29 @@ t_error			ia32_as_reserve(t_tskid			tskid,
   if (pd_build(base, &o->machdep.pd, 1) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  o->machdep.mirror = 0;
+  /*
+   * 3)
+   */
+
+  if (*asid == kasid)
+    {
+      pt.present = 1;
+      pt.rw = 1;
+      pt.user = 0;
+      pt.entries = (void*)o->machdep.pd;
+
+      if (pd_add_table(&o->machdep.pd, PD_MIRROR, pt) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      oreg.address = (t_vaddr)ENTRY_ADDR(PD_MIRROR, 0);
+      oreg.regid = (t_regid)oreg.address;
+      oreg.segid = (t_segid)o->machdep.pd;
+      oreg.offset = 0;
+      oreg.size = PT_MAX_ENTRIES * PAGESZ;
+
+      if (set_add(o->regions, &oreg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+    }
 
   AS_LEAVE(as, ERROR_NONE);
 }
