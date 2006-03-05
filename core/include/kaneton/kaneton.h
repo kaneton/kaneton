@@ -96,8 +96,9 @@
 #include <kaneton/map.h>
 #include <kaneton/set.h>
 #include <kaneton/stats.h>
-#include <kaneton/task.h>
 #include <kaneton/event.h>
+#include <kaneton/timer.h>
+#include <kaneton/task.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

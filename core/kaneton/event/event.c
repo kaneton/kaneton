@@ -153,7 +153,11 @@ t_error			event_notify(t_eventid			eventid)
    */
 
   if (eventid == 32)
-    EVENT_LEAVE(event, ERROR_NONE);
+    {
+      /*      printf("timer\n");*/
+      timer_handler();
+      EVENT_LEAVE(event, ERROR_NONE);
+    }
 
   /*
    * 2)
@@ -301,7 +305,7 @@ t_error			event_release(t_eventid			eventid)
 t_error			event_subscribe(t_eventid		eventid,
 					t_tskid			tskid)
 {
-  o_event		*o;
+  o_event*		o;
 
   EVENT_ENTER(event);
 
@@ -334,7 +338,7 @@ t_error			event_subscribe(t_eventid		eventid,
 t_error			event_unsubscribe(t_eventid		eventid,
 					  t_tskid		tskid)
 {
-  o_event		*o;
+  o_event*		o;
 
   EVENT_ENTER(event);
 

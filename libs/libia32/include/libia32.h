@@ -40,6 +40,7 @@
  *      ../paging/tlb.c
  *      ../interrupt/pic.c
  *      ../interrupt/interrupt.c
+ *	../time/timer.c
  */
 
 /*
@@ -263,6 +264,13 @@ t_error			interrupt_init(void);
 void			interrupt_wrapper(t_uint32		nr);
 
 void			interrupt_default_handler(t_uint32	nr);
+
+
+/*
+ * ../time/timer.c
+ */
+
+t_error			pit_init(t_uint32			frequency);
 
 
 /*

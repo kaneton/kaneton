@@ -68,6 +68,7 @@ typedef t_id			t_asid;
 typedef t_id			t_segid;
 typedef t_id			t_regid;
 typedef t_id			t_eventid;
+typedef t_id			t_timerid;
 typedef t_id			t_tskid;
 typedef t_id			t_thrid;
 

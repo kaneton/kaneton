@@ -34,7 +34,7 @@
  */
 
 /*
- * the address space manager interface.
+ * the event manager interface.
  */
 
 i_event				event_interface =

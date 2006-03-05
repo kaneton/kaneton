@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/core/kaneton/task/Makefile
+## file          /home/buckman/kaneton/kaneton/libs/libia32/timer/Makefile
 ##
-## created       julien quintard   [sat dec 10 13:50:17 2005]
-## updated       julien quintard   [sat dec 10 13:50:26 2005]
+## created       matthieu bucchianeri   [fri jan  6 11:45:56 2006]
+## updated       matthieu bucchianeri   [fri jan  6 11:50:10 2006]
 ##
 
 #
@@ -31,10 +31,6 @@ TIME_C			:=		timer.c
 
 TIME_O			:=		$(TIME_C:.c=.o)
 
-TIME_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/timer.h
-
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
@@ -50,9 +46,6 @@ clear:
 	$(call remove,$(TIME_LO),)
 
 	$(call purge,)
-
-proto:
-	$(call prototypes,$(TIME_INCLUDE),)
 
 dep:
 	$(call remove,$(_MAKEFILE_MK_),)

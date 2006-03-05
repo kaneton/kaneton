@@ -178,15 +178,18 @@ void			kaneton(t_init*				bootloader)
    * 13)
    */
 
-  if (0 && event_init() != ERROR_NONE)
-    kaneton_error("cannot initialize events\n");
+  if (event_init() != ERROR_NONE)
+    kaneton_error("cannot initialise the event manager\n");
+
+  /*
+   * 14)
+   */
+
+  if (timer_init() != ERROR_NONE)
+    kaneton_error("cannot initialise the timer manager\n");
 
 
   STI();
-
-  //event_subscribe(33, 3);
-  //event_subscribe(33, 8);
-
 
 #ifdef CONF_ENABLE_CHECK
   check_tests();

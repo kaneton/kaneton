@@ -32,6 +32,7 @@
 #include <arch/machdep/kaneton/segment.h>
 #include <arch/machdep/kaneton/stats.h>
 #include <arch/machdep/kaneton/event.h>
+#include <arch/machdep/kaneton/timer.h>
 #include <arch/machdep/kaneton/task.h>
 
 /*
@@ -41,6 +42,7 @@
  *      ../../../../kaneton/arch/machdep/region.c
  *      ../../../../kaneton/arch/machdep/segment.c
  *      ../../../../kaneton/arch/machdep/event.c
+ *	../../../../kaneton/arch/machdep/timer.c
  *      ../../../../kaneton/arch/machdep/task.c
  */
 
@@ -116,6 +118,15 @@ t_error			ia32_event_init(void);
 t_error			ia32_event_clean(void);
 
 void			ia32_generic_handler(t_uint32		nr);
+
+
+/*
+ * ../../../../kaneton/arch/machdep/timer.c
+ */
+
+t_error			ia32_timer_init(void);
+
+t_error			ia32_timer_clean(void);
 
 
 /*

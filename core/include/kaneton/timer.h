@@ -32,7 +32,11 @@ typedef struct
 {
   t_timerid			timerid;
 
-  t_setid			tasks;
+  t_uint32			delay;
+
+  t_uint32			repeat;
+
+  t_tskid			taskid;
 
   machdep_data(o_timer);
 }				o_timer;
@@ -48,6 +52,8 @@ typedef struct
 
   t_staid			stats;
 
+  t_uint32			timeref;
+
   t_setid			container;
 
   machdep_data(m_timer);
@@ -59,8 +65,6 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*timer_reserve)(t_timerid);
-  t_error			(*timer_release)(t_timerid);
   t_error			(*timer_init)(void);
   t_error			(*timer_clean)(void);
 }				i_timer;
@@ -104,11 +108,11 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/timer/timer.c
+ *      ../../kaneton/time/timer.c
  */
 
 /*
- * ../../kaneton/timer/timer.c
+ * ../../kaneton/time/timer.c
  */
 
 t_error			timer_show(t_timerid			timerid);
@@ -117,15 +121,21 @@ t_error			timer_dump(void);
 
 t_error			timer_notify(t_timerid			timerid);
 
-t_error			timer_reserve(t_timerid			timerid);
+t_error			timer_insert(o_timer*			t);
+
+t_error			timer_reserve(t_tskid			taskid,
+				      t_uint32			delay,
+				      t_uint32			repeat,
+				      t_timerid*		timerid);
 
 t_error			timer_release(t_timerid			timerid);
 
-t_error			timer_subscribe(t_timerid		timerid,
-					t_tskid			tskid);
+t_error			timer_check(t_timerid			timerid,
+				   t_uint32*			delay);
 
-t_error			timer_unsubscribe(t_timerid		timerid,
-					  t_tskid		tskid);
+t_error			timer_modify(t_timerid			timerid,
+				    t_uint32			delay,
+				    t_uint32			repeat);
 
 t_error			timer_get(t_timerid			timerid,
 				  o_timer**			o);
@@ -133,6 +143,10 @@ t_error			timer_get(t_timerid			timerid,
 t_error			timer_init(void);
 
 t_error			timer_clean(void);
+
+t_error			timer_update(void);
+
+t_error			timer_handler(void);
 
 
 /*

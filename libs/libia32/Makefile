@@ -27,12 +27,14 @@ include			../../env/.env.mk
 
 SUBDIRS			:=		pmode				\
 					paging				\
-					interrupt			#\
+					interrupt			\
+					time				#\
 #					#tss
 
 PMODE_LO		:=		pmode/pmode.lo
 PAGING_LO		:=		paging/paging.lo
 INTERRUPT_LO		:=		interrupt/interrupt.lo
+TIME_LO			:=		time/time.lo
 TSS_LO			:=		#tss/tss.lo
 
 LIBIA32_INCLUDE		:=		$(_LIBIA32_INCLUDE_DIR_)/libia32.h
@@ -45,7 +47,7 @@ $(_LIBIA32_A_):		libs
 	$(call remove,$(_LIBIA32_A_),)
 
 	$(call static-library,$(_LIBIA32_A_),$(PMODE_LO) $(PAGING_LO)	\
-				$(INTERRUPT_LO) $(TSS_LO),)
+				$(INTERRUPT_LO) $(TIME_LO) $(TSS_LO),)
 
 libs:
 	$(call makefile,$(SUBDIRS),)
