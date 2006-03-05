@@ -204,9 +204,9 @@ t_error			segment_split(t_segid		old,
 				      t_segid*		new1,
 				      t_segid*		new2);
 
-t_error			segment_coalesce(t_segid	s1,
-					 t_segid	s2,
-					 t_segid*	new_seg);
+t_error			segment_coalesce(t_segid	old1,
+					 t_segid	old2,
+					 t_segid*	new);
 
 t_error			segment_read(t_segid		segid,
 				     t_paddr		offs,

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [fri mar  3 16:08:26 2006]
+ * updated       matthieu bucchianeri   [sat mar  4 17:39:12 2006]
  */
 
 /*
@@ -116,6 +116,8 @@ t_error			ia32_region_reserve(t_asid		asid,
   if (as_get(asid, &o) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  kpd = o->machdep.pd;		/* XXX */
+
   /*
    * 2)
    */
@@ -185,36 +187,36 @@ t_error			ia32_region_reserve(t_asid		asid,
 	      if (pd_add_table(&o->machdep.pd, pde, pt) != ERROR_NONE)
 		REGION_LEAVE(region, ERROR_UNKNOWN);
 
-	      if (asid !=  kasid)
+	      ///////////
+
+	      pg.addr = (void*)pt.entries;
+
+	      if (pd_get_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), &pt) != ERROR_NONE)
 		{
-
-		  pg.addr = (void*)pt.entries;
-
-		  if (pd_get_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), &pt) != ERROR_NONE)
-		    {
-		      if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
-					  &segtbl) != ERROR_NONE)
-			REGION_LEAVE(region, ERROR_UNKNOWN);
-
-		      if (segment_get(segtbl, &otbl) != ERROR_NONE)
-			REGION_LEAVE(region, ERROR_UNKNOWN);
-
-		      pt.entries = (void*)otbl->address;
-
-		      if (pd_add_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), pt) != ERROR_NONE)
-			REGION_LEAVE(region, ERROR_UNKNOWN);
-
-		    }
-
-		  pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY((t_paddr)pg.addr));
-
-		  if (pt_add_page(&pt, PTE_ENTRY((t_paddr)pg.addr), pg) != ERROR_NONE)
+		  if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
+				      &segtbl) != ERROR_NONE)
 		    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+		  if (segment_get(segtbl, &otbl) != ERROR_NONE)
+		    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+		  pt.entries = (void*)otbl->address;
+
+		  if (pd_add_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), pt) != ERROR_NONE)
+		    REGION_LEAVE(region, ERROR_UNKNOWN);
+
 		}
+
+	      pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY((t_paddr)pg.addr));
+
+	      if (pt_add_page(&pt, PTE_ENTRY((t_paddr)pg.addr), pg) != ERROR_NONE)
+		REGION_LEAVE(region, ERROR_UNKNOWN);
+
+	      ///////////
 
 	    }
 
-		      tlb_flush();
+	  tlb_flush();
 
 	  pd_get_table(&o->machdep.pd, pde, &pt);
 	}

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri mar  3 15:20:53 2006]
+ * updated       matthieu bucchianeri   [sat mar  4 17:28:39 2006]
  */
 
 /*
@@ -118,12 +118,14 @@ t_error			ia32_as_show(t_asid			asid)
  *
  * 1) get the as object.
  *   kernel task:
- *  a)
+ *  a) get the page directory from the init structure.
+ *  b) add the mirroring entry.
+ *  c) manually reserve a region for the mirror entry.
+ *  d) clean the page directory.
  *   normal task:
  *  a) reserve a segment for the directory.
  *  b) reserve a region for the directory in the kernel address space.
- * 2) build a new page directory for the as.
- * 3) on the kernel as, create the mirroring entry.
+ *  c) build a new page directory for the as.
  */
 
 t_error			ia32_as_reserve(t_tskid			tskid,
@@ -135,7 +137,6 @@ t_error			ia32_as_reserve(t_tskid			tskid,
   o_segment*		oseg;
   o_region		oreg;
   t_paddr		base;
-  o_segment*		kpd;
   t_table		pt;
 
   AS_ENTER(as);
@@ -151,20 +152,42 @@ t_error			ia32_as_reserve(t_tskid			tskid,
     {
       kasid = *asid;
 
-      /* XXX changer ca c'est crade */
+      /*
+       * a)
+       */
 
-      base = (t_paddr) malloc(2 * PAGESZ);
-      base = base + (PAGESZ - base % PAGESZ);
+      o->machdep.pd = (t_directory)init->segments[10].address;
 
-      kpd = malloc (sizeof(o_segment));
-      kpd->address = base;
-      kpd->size = PAGESZ;
-      kpd->perms = PERM_READ | PERM_WRITE;
+      /*
+       * b)
+       */
 
-      /* XXX plutot modifier le t_init */
+      pt.present = 1;
+      pt.rw = 1;
+      pt.user = 0;
+      pt.entries = (void*)o->machdep.pd;
 
-      if (segment_inject(*asid, kpd) != ERROR_NONE)
+      if (pd_add_table(&o->machdep.pd, PD_MIRROR, pt) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      /*
+       * c)
+       */
+
+      oreg.address = (t_vaddr)ENTRY_ADDR(PD_MIRROR, 0);
+      oreg.regid = (t_regid)oreg.address;
+      oreg.segid = (t_segid)o->machdep.pd;
+      oreg.offset = 0;
+      oreg.size = PT_MAX_ENTRIES * PAGESZ;
+
+      if (set_add(o->regions, &oreg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      /*
+       * d)
+       */
+
+      /* XXX */
     }
   else
     {
@@ -188,37 +211,14 @@ t_error			ia32_as_reserve(t_tskid			tskid,
       if (region_reserve(kasid, seg, 0, REGION_OPT_FORCE, seg, PAGESZ, &reg) !=
 	  ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
-    }
 
-  /*
-   * 2)
-   */
+      /*
+       * c)
+       */
 
-  if (pd_build(base, &o->machdep.pd, 1) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
-  if (*asid == kasid)
-    {
-      pt.present = 1;
-      pt.rw = 1;
-      pt.user = 0;
-      pt.entries = (void*)o->machdep.pd;
-
-      if (pd_add_table(&o->machdep.pd, PD_MIRROR, pt) != ERROR_NONE)
+      if (pd_build(base, &o->machdep.pd, 1) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      oreg.address = (t_vaddr)ENTRY_ADDR(PD_MIRROR, 0);
-      oreg.regid = (t_regid)oreg.address;
-      oreg.segid = (t_segid)o->machdep.pd;
-      oreg.offset = 0;
-      oreg.size = PT_MAX_ENTRIES * PAGESZ;
-
-      if (set_add(o->regions, &oreg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
   AS_LEAVE(as, ERROR_NONE);
@@ -255,18 +255,11 @@ t_error			ia32_as_release(t_asid			asid)
   seg = (t_segid)(t_uint32)(o->machdep.pd);
   reg = seg;
 
-  if (asid == kasid)
-    {
-      /* XXX*/
-    }
-  else
-    {
-      if (region_release(reg, kasid) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+  if (region_release(reg, kasid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
-      if (segment_release(seg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-    }
+  if (segment_release(seg) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
 }
