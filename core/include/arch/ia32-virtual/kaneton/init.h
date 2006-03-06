@@ -24,14 +24,6 @@
  */
 
 /*
- * this address defines the 16Mb. the kernel will be relocates at this
- * address followed by many data structures: modules, segments, regions,
- * global offset tables, page directory etc..
- */
-
-#define INIT_RELOCATE		0x1000000
-
-/*
  * the segments represent the physical memory areas to keep safe.
  * once the kernel will be launched, it will initialise its segment manager,
  * in other words, its physical memory manager. the segments listed in the

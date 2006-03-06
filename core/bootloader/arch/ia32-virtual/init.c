@@ -50,6 +50,12 @@
 t_init*			init;
 
 /*
+ * XXX
+ */
+
+static t_paddr		relocate;
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -347,7 +353,6 @@ void			bootloader_init_regions(void)
 t_paddr			bootloader_init_alloc(t_psize		size,
 					      t_psize*		psize)
 {
-  static t_paddr	relocate = INIT_RELOCATE;
   t_paddr		allocated = relocate;
   t_psize		padded;
 
@@ -375,7 +380,7 @@ t_paddr			bootloader_init_alloc(t_psize		size,
  * steps:
  *
  * 1) allocates space for the kernel code. this memory is very special
- *    because it always be located at the address INIT_RELOCATE.
+ *    because it always be located at the address init_relocate.
  *    indeed, the kernel is especially compiled to run at this address.
  * 2) allocates and initialise memory for the init structure
  *    which will be passed to the kernel.
@@ -397,6 +402,8 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
 {
   module_t*		mod = (module_t*)mbi->mods_addr;
   Elf32_Ehdr*		khdr = (Elf32_Ehdr*)mod->mod_start;
+  Elf32_Phdr*		phdr;
+  t_paddr		init_relocate;
   t_uint32		nmodules = mbi->mods_count;
   t_uint32		nsegments = INIT_SEGMENTS;
   t_uint32		nregions = INIT_REGIONS;
@@ -417,9 +424,13 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 1)
    */
 
+  phdr = (Elf32_Phdr*)((char*)khdr + khdr->e_phoff);
+
+  relocate = init_relocate = phdr->p_paddr;
+
   kcode = bootloader_init_alloc(mod->mod_end - mod->mod_start, &kcodesz);
 
-  if (kcode != INIT_RELOCATE)
+  if (kcode != init_relocate)
     {
       bootloader_cons_msg('!', "error: kernel exited\n");
       bootloader_error();

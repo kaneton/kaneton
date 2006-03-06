@@ -5,7 +5,7 @@ ENTRY(kaneton)
 SECTIONS
 {
 	. = 0x01000000 + SIZEOF_HEADERS;
-	
+
 	.text :
 	{
 		*(.text)
@@ -14,7 +14,7 @@ SECTIONS
 	.rodata :
 	{
 		*(.rodata)
-	}	
+	}
 
 	.data :
 	{

@@ -5,7 +5,7 @@ ENTRY(bootloader_entry)
 SECTIONS
 {
 	. = 0x200000 + SIZEOF_HEADERS;
-	
+
 	.text :
 	{
 		*(.text)
@@ -14,7 +14,7 @@ SECTIONS
 	.rodata :
 	{
 		*(.rodata)
-	}	
+	}
 
 	.data :
 	{

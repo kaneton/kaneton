@@ -130,7 +130,7 @@ void			bootloader_paging_init(void)
 
   limit = bootloader_init_alloc(0, NULL);
 
-  for (addr = INIT_RELOCATE; addr < limit; addr += PAGESZ)
+  for (addr = init->kcode; addr < limit; addr += PAGESZ)
     {
       if (pd_get_table(&pd, PDE_ENTRY(addr), &pt) != ERROR_NONE)
 	{

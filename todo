@@ -8,15 +8,6 @@
  le verbatim quand c'est a cheval sur deux pages.
 
 --
- ce serait pas mal dans le bootloader de faire comme grub, cad chercher
- dans le ELF et en retirer l'adresse ou il faut le mettre.
-
- pour l'instant on le fait en dur c'est a dire que l'adresse dans le
- ld script et l'adresse du define dans le bootloader doivent etre identiques.
-
- c'est pas terrible il faudrait le changer.
-
---
  pourquoi le champ region->segid n'est pas rempli dans le bootloader?
 
 --
