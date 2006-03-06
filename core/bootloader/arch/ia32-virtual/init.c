@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [mon feb 20 10:48:49 2006]
+ * updated       matthieu bucchianeri   [mon mar  6 17:56:00 2006]
  */
 
 /*
@@ -157,6 +157,7 @@ void			bootloader_init_dump(void)
  * 8) adds the alloc segment.
  * 9) adds the global offset table segment.
  * 10) adds the page directory segment.
+ * 11) add the idt segment.
  */
 
 void			bootloader_init_segments(void)
@@ -244,6 +245,14 @@ void			bootloader_init_segments(void)
   init->segments[10].address = (t_paddr)init->machdep.pd;
   init->segments[10].size = PAGESZ;
   init->segments[10].perms = PERM_READ | PERM_WRITE;
+
+  /*
+   * 11)
+   */
+
+  init->segments[11].address = (t_paddr)init->machdep.idt.descriptor;
+  init->segments[11].size = init->machdep.idt.count * sizeof (t_idte);
+  init->segments[11].perms = PERM_READ | PERM_WRITE;
 }
 
 /*
@@ -258,6 +267,7 @@ void			bootloader_init_segments(void)
  * 5) adds the alloc region.
  * 6) adds the global offset table region.
  * 7) adds the page directory region.
+ * 8) add the idt region.
  */
 
 void			bootloader_init_regions(void)
@@ -317,6 +327,14 @@ void			bootloader_init_regions(void)
   init->regions[6].address = init->segments[10].address;
   init->regions[6].size = init->segments[10].size;
   init->regions[6].offset = 0;
+
+  /*
+   * 8)
+   */
+
+  init->regions[7].address = init->segments[11].address;
+  init->regions[7].size = init->segments[11].size;
+  init->regions[7].offset = 0;
 }
 
 /*

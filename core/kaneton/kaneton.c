@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/kaneton.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon mar  6 15:55:25 2006]
+ * updated       matthieu bucchianeri   [mon mar  6 17:56:58 2006]
  */
 
 /*
@@ -178,7 +178,7 @@ void			kaneton(t_init*				bootloader)
    * 13)
    */
 
-  if (0 && event_init() != ERROR_NONE)
+  if (event_init() != ERROR_NONE)
     kaneton_error("cannot initialise the event manager\n");
 
   /*

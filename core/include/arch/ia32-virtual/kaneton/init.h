@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/export_kaneton/kaneton/core/include/arch/ia32-virtual/kaneton/init.h
+ * file          /home/buckman/kaneton/core/include/arch/ia32-virtual/kaneton/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       matthieu bucchianeri   [mon jan 30 20:39:33 2006]
+ * updated       matthieu bucchianeri   [mon mar  6 17:56:24 2006]
  */
 
 #ifndef IA32_KANETON_INIT_H
@@ -44,7 +44,7 @@
  * and the page directory.
  */
 
-#define INIT_SEGMENTS		11
+#define INIT_SEGMENTS		12
 
 /*
  * the regions represent the physical memory to be mapped by the kernel.
@@ -61,7 +61,7 @@
  * nor in the regions.
  */
 
-#define INIT_REGIONS		7
+#define INIT_REGIONS		8
 
 /*
  * the kernel stack size is set to two pages.
