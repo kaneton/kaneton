@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/include/kaneton/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sat feb 18 18:53:20 2006]
+ * updated       matthieu bucchianeri   [mon mar  6 14:18:37 2006]
  */
 
 #ifndef KANETON_REGION_H
@@ -79,7 +79,9 @@ typedef struct
 {
   t_error			(*region_show)(t_asid,
 					       t_regid);
-    t_error			(*region_reserve)(t_asid,
+  t_error			(*region_inject)(t_asid,
+						 o_region*);
+  t_error			(*region_reserve)(t_asid,
 						  t_segid,
 						  t_paddr,
 						  t_opts,
@@ -146,6 +148,9 @@ t_error			region_show(t_asid			asid,
 				    t_regid			regid);
 
 t_error			region_dump(t_asid		asid);
+
+t_error			region_inject(t_asid		asid,
+				      o_region*		o);
 
 t_error			region_reserve(t_asid			asid,
 				       t_segid			segid,

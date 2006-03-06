@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat mar  4 17:28:39 2006]
+ * updated       matthieu bucchianeri   [mon mar  6 16:01:19 2006]
  */
 
 /*
@@ -138,6 +138,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
   o_region		oreg;
   t_paddr		base;
   t_table		pt;
+  t_uint32		i;
 
   AS_ENTER(as);
 
@@ -175,19 +176,59 @@ t_error			ia32_as_reserve(t_tskid			tskid,
        */
 
       oreg.address = (t_vaddr)ENTRY_ADDR(PD_MIRROR, 0);
-      oreg.regid = (t_regid)oreg.address;
       oreg.segid = (t_segid)o->machdep.pd;
       oreg.offset = 0;
       oreg.size = PT_MAX_ENTRIES * PAGESZ;
 
-      if (set_add(o->regions, &oreg) != ERROR_NONE)
+      if (region_inject(*asid, &oreg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
       /*
        * d)
        */
 
-      /* XXX */
+      t_uint32 pde_start, pde_end;
+      t_uint32 pte_start, pte_end;
+      t_uint32 pde, pte;
+
+      pde_start = 0;
+      pte_start = 0;
+
+      for (i = 0; i < init->nregions + 1; i++)
+	{
+	  if (i != init->nregions)
+	    {
+	      pde_end = PDE_ENTRY(init->regions[i].address);
+	      pte_end = PTE_ENTRY(init->regions[i].address);
+	    }
+	  else
+	    {
+	      pde_end = PD_MAX_ENTRIES;
+	      pte_end = PT_MAX_ENTRIES;
+	    }
+
+	  for (pde = pde_start; pde <= pde_end; pde++)
+	    {
+	      if (pde != PD_MIRROR &&
+		  pd_get_table(&o->machdep.pd, pde, &pt) == ERROR_NONE)
+		{
+		  for (pte = (pde == pde_start ? pte_start : 0);
+		       pte < (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
+		       pte++)
+		    {
+		      pt_delete_page(&pt, pte);
+		    }
+		}
+	    }
+
+	  if (i != init->nregions)
+	    {
+	      pde_start = PDE_ENTRY(init->regions[i].address +
+				    init->regions[i].size);
+	      pte_start = PTE_ENTRY(init->regions[i].address +
+				    init->regions[i].size);
+	    }
+	}
     }
   else
     {

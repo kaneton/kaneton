@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/kaneton.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri mar  3 14:15:10 2006]
+ * updated       matthieu bucchianeri   [mon mar  6 15:55:25 2006]
  */
 
 /*
@@ -178,7 +178,7 @@ void			kaneton(t_init*				bootloader)
    * 13)
    */
 
-  if (event_init() != ERROR_NONE)
+  if (0 && event_init() != ERROR_NONE)
     kaneton_error("cannot initialise the event manager\n");
 
   /*
@@ -205,9 +205,12 @@ void			kaneton(t_init*				bootloader)
  t_regid r, r2;
  t_paddr p;
 
- segment_reserve(0, 2 * 4096, PERM_READ | PERM_WRITE, &s);
- region_reserve(0, s, 0, REGION_OPT_FORCE, 0x1fff0000, 4096, &r);
- region_reserve(0, s, 4096, REGION_OPT_FORCE, 0x1fff2000, 4096, &r2);
+ if (segment_reserve(0, 2 * 4096, PERM_READ | PERM_WRITE, &s) != ERROR_NONE)
+   printf ("err1\n");
+ if (region_reserve(0, s, 0, REGION_OPT_FORCE, 0x1fff0000, 4096, &r) != ERROR_NONE)
+   printf ("err2\n");
+ if (region_reserve(0, s, 4096, REGION_OPT_FORCE, 0x1fff2000, 4096, &r2) != ERROR_NONE)
+   printf ("err3\n");
  segment_show(s);
  region_show(0, r);
  region_show(0, r2);

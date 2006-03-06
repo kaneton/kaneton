@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [sat feb 18 18:54:34 2006]
+ * updated       matthieu bucchianeri   [mon mar  6 14:21:56 2006]
  */
 
 /*
@@ -155,6 +155,54 @@ t_error			region_dump(t_asid		asid)
       if (region_show(asid, data->regid) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
     }
+
+  REGION_LEAVE(region, ERROR_NONE);
+}
+
+/*
+ * this function injects a region into an address space.
+ *
+ * steps:
+ *
+ * 1) get the as object.
+ * 2) fill the region id field.
+ * 3) add the region to the container.
+ * 4) call machdep code.
+ */
+
+t_error			region_inject(t_asid		asid,
+				      o_region*		o)
+{
+  o_as*			as;
+
+  REGION_ENTER(region);
+
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &as) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  o->regid = (t_regid)o->address;
+
+  /*
+   * 3)
+   */
+
+  if (set_add(as->regions, o) != ERROR_NONE)
+    REGION_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (machdep_call(region, region_inject, asid, o) != ERROR_NONE)
+    REGION_LEAVE(as, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
 }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [sat mar  4 17:39:12 2006]
+ * updated       matthieu bucchianeri   [mon mar  6 16:31:53 2006]
  */
 
 /*
@@ -53,6 +53,7 @@ i_region		region_interface =
 /*                                                                  [cut] k2 */
 
     NULL,
+    NULL,
     ia32_region_reserve,
     ia32_region_release,
     NULL,
@@ -69,7 +70,7 @@ i_region		region_interface =
 
 /*                                                                  [cut] k2 */
 
-/*
+/* XXX revoir les commentaires un peu louches
  * reserves a region.
  *
  * steps:
@@ -83,6 +84,11 @@ i_region		region_interface =
  *  a) checks if the table already exists.
  *  b) reserves a segment for a new table.
  *  c) adds the new table.
+ *  d) now we map the table in the kernel, first check if there is a pt
+ *  e) reserve a segment for the new kernel pt
+ *  f) add the table
+ *  g) inject the corresponding region
+ *  h) finally, via the mirror entry, map the pt
  * 7) adds the page.
  */
 
@@ -104,8 +110,8 @@ t_error			ia32_region_reserve(t_asid		asid,
   t_table		pt;
   t_page		pg;
   t_segid		segtbl;
-
-  t_directory kpd;
+  t_directory		kpd;
+  o_region		optreg;
 
   REGION_ENTER(region);
 
@@ -113,10 +119,14 @@ t_error			ia32_region_reserve(t_asid		asid,
    * 1)
    */
 
-  if (as_get(asid, &o) != ERROR_NONE)
+  if (as_get(kasid, &o) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  kpd = o->machdep.pd;		/* XXX */
+  kpd = o->machdep.pd;
+
+  if (asid != kasid)
+    if (as_get(asid, &o) != ERROR_NONE)
+      REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
    * 2)
@@ -187,12 +197,19 @@ t_error			ia32_region_reserve(t_asid		asid,
 	      if (pd_add_table(&o->machdep.pd, pde, pt) != ERROR_NONE)
 		REGION_LEAVE(region, ERROR_UNKNOWN);
 
-	      ///////////
+	      /*
+	       * d)
+	       */
 
 	      pg.addr = (void*)pt.entries;
 
-	      if (pd_get_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), &pt) != ERROR_NONE)
+	      if (pd_get_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), &pt) !=
+		  ERROR_NONE)
 		{
+		  /*
+		   * e)
+		   */
+
 		  if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
 				      &segtbl) != ERROR_NONE)
 		    REGION_LEAVE(region, ERROR_UNKNOWN);
@@ -202,21 +219,40 @@ t_error			ia32_region_reserve(t_asid		asid,
 
 		  pt.entries = (void*)otbl->address;
 
-		  if (pd_add_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), pt) != ERROR_NONE)
+		  /*
+		   * f)
+		   */
+
+		  if (pd_add_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), pt) !=
+		      ERROR_NONE)
 		    REGION_LEAVE(region, ERROR_UNKNOWN);
 
+		  optreg.address = pg.addr;
+		  optreg.segid = (t_segid)optreg.address;
+		  optreg.offset = 0;
+		  optreg.size = PAGESZ;
+
+		  /*
+		   * g)
+		   */
+
+		  if (region_inject(kasid, &optreg) != ERROR_NONE)
+		    REGION_LEAVE(region, ERROR_UNKNOWN);
 		}
+
+	      /*
+	       * h)
+	       */
 
 	      pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY((t_paddr)pg.addr));
 
-	      if (pt_add_page(&pt, PTE_ENTRY((t_paddr)pg.addr), pg) != ERROR_NONE)
+	      if (pt_add_page(&pt, PTE_ENTRY((t_paddr)pg.addr), pg) !=
+		  ERROR_NONE)
 		REGION_LEAVE(region, ERROR_UNKNOWN);
-
-	      ///////////
 
 	    }
 
-	  tlb_flush();
+	  tlb_flush();		/* XXX invalidate */
 
 	  pd_get_table(&o->machdep.pd, pde, &pt);
 	}
