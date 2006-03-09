@@ -61,11 +61,16 @@ i_event				event_interface =
  * steps:
  *
  * 1) check id bounds.
- * 2) unmask hardware interrupt if id is an irq.
+ * 2) associate the handler to the given eventid.
+ * 3) unmask hardware interrupt if eventid is an irq.
  */
 
-t_error			ia32_event_reserve(t_eventid		id)
+t_error			ia32_event_reserve(t_eventid		eventid,
+					   e_event_type		type,
+					   u_event_handler	handler)
 {
+  t_uint32		id = eventid;
+
   /*
    * 1)
    */
@@ -77,8 +82,24 @@ t_error			ia32_event_reserve(t_eventid		id)
    * 2)
    */
 
+  if (type == E_NOTIFY)
+    {
+      if (interrupt_set_handler(id, (t_event_hdl)event_notify) != ERROR_NONE)
+	return ERROR_UNKNOWN;
+    }
+  else
+    {
+      if (interrupt_set_handler(id, handler.function) != ERROR_NONE)
+	return ERROR_UNKNOWN;
+    }
+
+  /*
+   * 3)
+   */
+
   if ((id >= IDT_IRQ_BASE) && (id < IDT_IRQ_BASE + IRQ_NR))
-    pic_enable_irq(id - IDT_IRQ_BASE);
+    if (pic_enable_irq(id - IDT_IRQ_BASE) != ERROR_NONE)
+      return ERROR_UNKNOWN;
 
   return ERROR_NONE;
 }
@@ -89,11 +110,14 @@ t_error			ia32_event_reserve(t_eventid		id)
  * steps:
  *
  * 1) check id bounds.
- * 2) mask hardware interrupt if needed.
+ * 2) clear the eventid handler.
+ * 3) mask hardware interrupt if needed.
  */
 
-t_error			ia32_event_release(t_eventid		id)
+t_error			ia32_event_release(t_eventid		eventid)
 {
+  t_uint32		id = eventid;
+
   /*
    * 1)
    */
@@ -105,8 +129,16 @@ t_error			ia32_event_release(t_eventid		id)
    * 2)
    */
 
+  if (interrupt_set_handler(id, ia32_event_handler) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  /*
+   * 3)
+   */
+
   if ((id >= IDT_IRQ_BASE) && (id < IDT_IRQ_BASE + IRQ_NR))
-    pic_disable_irq(id - IDT_IRQ_BASE);
+    if (pic_disable_irq(id - IDT_IRQ_BASE) != ERROR_NONE)
+      return ERROR_UNKNOWN;
 
   return ERROR_NONE;
 }
@@ -117,12 +149,14 @@ t_error			ia32_event_release(t_eventid		id)
  * steps:
  *
  * 1) init interrupts.
- * 3) set default handler for every event.
+ * 2) set default handler for every exception.
+ * 3) set default handler for every irq.
+ * 4) XXX
  */
 
 t_error			ia32_event_init(void)
 {
-  int			i;
+  int			id;
 
   /*
    * 1)
@@ -131,40 +165,79 @@ t_error			ia32_event_init(void)
   if (interrupt_init() != ERROR_NONE)
     return ERROR_UNKNOWN;
 
-  if (interrupt_set_handler(ia32_generic_handler) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  /*
+   * 2)
+   */
+
+  for (id = IDT_EXCEPTION_BASE; id < IDT_EXCEPTION_BASE + EXCEPTION_NR; id++)
+    if (interrupt_set_handler(id, ia32_event_handler) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+
+  /*
+   * 3)
+   */
+
+  for (id = IDT_IRQ_BASE; id < IDT_IRQ_BASE + IRQ_NR; id++)
+    if (interrupt_set_handler(id, ia32_event_handler) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+
+  /*
+   * 4)
+   */
+
+  STI();
+
+  return ERROR_NONE;
+}
+
+/*
+ * this function cleans interrupts on ia32 architecture.
+ *
+ * 1) XXX
+ * 2) disable exceptions.
+ * 3) disable irq's.
+ */
+
+t_error			ia32_event_clean(void)
+{
+  int			id;
+
+  /*
+   * 1)
+   */
+
+  CLI();
 
   /*
    * 2)
    */
 
-  for (i = 0; i < EXCEPTION_NR + IRQ_NR; i++)
-    event_reserve(i);
+  for (id = IDT_EXCEPTION_BASE; id < IDT_EXCEPTION_BASE + EXCEPTION_NR; id++)
+    if (event_release(id) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+
+  /*
+   * 3)
+   */
+
+  for (id = IDT_IRQ_BASE; id < IDT_IRQ_BASE + IRQ_NR; id++)
+    if (event_release(id) != ERROR_NONE)
+      return ERROR_UNKNOWN;
 
   return ERROR_NONE;
 }
 
-/*
- * this function cleans the machine-dependent event manager.
- */
-
-t_error			ia32_event_clean(void)
-{
-  int			i;
-
-  for (i = 0; i < EXCEPTION_NR + IRQ_NR; i++)
-    event_release(i);
-
-  return ERROR_NONE;
-}
 
 /*
- * generic handler for ia32 architecture events.
+ * the default handler for ia32 architecture.
+ *
+ * do nothing.
+ * used before the event has been reserved,
+ * or after the event has been released.
  */
 
-void			ia32_generic_handler(t_uint32		nr)
+void			ia32_event_handler(t_uint32		id)
 {
-  t_eventid		eventid = nr;
 
-  event_notify(eventid);
+
 }

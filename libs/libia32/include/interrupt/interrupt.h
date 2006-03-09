@@ -121,6 +121,7 @@
 
 typedef void			(*t_interrupt_pre_hdl)(void);
 typedef void			(*t_interrupt_hdl)(t_uint32);
+
 /*
  * ---------- prototypes ------------------------------------------------------
  */

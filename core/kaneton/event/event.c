@@ -55,9 +55,6 @@ m_event*                 event = NULL;
 
 t_error			event_show(t_eventid			eventid)
 {
-  t_state		state;
-  t_tskid		tsk;
-  t_iterator		i;
   o_event*		o;
 
   EVENT_ENTER(event);
@@ -75,15 +72,7 @@ t_error			event_show(t_eventid			eventid)
    * 2)
    */
 
-  cons_msg('#', "    tasks %qd:\n", o->tasks);
 
-  set_foreach(SET_OPT_FORWARD, o->tasks, &i, state)
-    {
-      if (set_object(o->tasks, i, (void**)&tsk) != ERROR_NONE)
-        EVENT_LEAVE(event, ERROR_UNKNOWN);
-
-      cons_msg('#', "      %qd\n", tsk);
-    }
 
   EVENT_LEAVE(event, ERROR_NONE);
 }
@@ -141,33 +130,9 @@ t_error			event_dump(void)
 
 t_error			event_notify(t_eventid			eventid)
 {
-  t_state               state;
-  t_tskid               tsk;
-  t_iterator            i;
   o_event*              o;
 
   EVENT_ENTER(event);
-
-  /*
-   * 1)
-   */
-
-  if (eventid == 32)
-    {
-      /*      printf("timer\n");*/
-      timer_handler();
-      EVENT_LEAVE(event, ERROR_NONE);
-    }
-
-  /*
-   * 2)
-   */
-
-  if (eventid == 33)
-    {
-      printf("keyboard event\n");
-      EVENT_LEAVE(event, ERROR_NONE);
-    }
 
   /*
    * 3)
@@ -176,15 +141,6 @@ t_error			event_notify(t_eventid			eventid)
   if (event_get(eventid, &o) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
-  set_foreach(SET_OPT_FORWARD, o->tasks, &i, state)
-    {
-      if (set_object(o->tasks, i, (void**)&tsk) != ERROR_NONE)
-        EVENT_LEAVE(event, ERROR_UNKNOWN);
-
-      /* XXX EVENT
-       * send a msg instead of printing it ... */
-      printf("event_notify: eventid =%u , tskid=%u\n", eventid, tsk);
-    }
 
   EVENT_LEAVE(event, ERROR_NONE);
 }
@@ -200,7 +156,9 @@ t_error			event_notify(t_eventid			eventid)
  * 4) call the machine dependent code.
  */
 
-t_error			event_reserve(t_eventid			eventid)
+t_error			event_reserve(t_eventid			eventid,
+				      e_event_type		type,
+				      u_event_handler		handler)
 {
   o_event		o;
 
@@ -214,32 +172,26 @@ t_error			event_reserve(t_eventid			eventid)
 
   o.eventid = eventid;
 
+  o.type = type;
+
+  o.handler = handler;
+
   /*
    * 2
    */
-
-  if (set_reserve(ll, SET_OPT_SORT | SET_OPT_ALLOC, sizeof(t_tskid), &o.tasks)
-      != ERROR_NONE)
-    {
-      EVENT_LEAVE(event, ERROR_UNKNOWN);
-    }
 
   /*
    * 3)
    */
 
   if (set_add(event->container, &o) != ERROR_NONE)
-    {
-      set_release(o.tasks);
-
-      EVENT_LEAVE(event, ERROR_UNKNOWN);
-    }
+    EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (machdep_call(event, event_reserve, eventid) != ERROR_NONE)
+  if (machdep_call(event, event_reserve, eventid, type, handler) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   EVENT_LEAVE(event, ERROR_NONE);
@@ -280,80 +232,11 @@ t_error			event_release(t_eventid			eventid)
    * 3)
    */
 
-  if (set_release(o->tasks) != ERROR_NONE)
-    EVENT_LEAVE(event, ERROR_UNKNOWN);
-
   /*
    * 4)
    */
 
   if (set_remove(event->container, o->eventid) != ERROR_NONE)
-    EVENT_LEAVE(event, ERROR_UNKNOWN);
-
-  EVENT_LEAVE(event, ERROR_NONE);
-}
-
-/*
- * assign a task to an event.
- *
- * steps:
- *
- * 1) get the event object.
- * 2) add a task to this object.
- */
-
-t_error			event_subscribe(t_eventid		eventid,
-					t_tskid			tskid)
-{
-  o_event*		o;
-
-  EVENT_ENTER(event);
-
-  /*
-   * 1)
-   */
-
-  if (event_get(eventid, &o) != ERROR_NONE)
-    EVENT_LEAVE(event, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (set_add(o->tasks, &tskid) != ERROR_NONE)
-    EVENT_LEAVE(event, ERROR_UNKNOWN);
-
-  EVENT_LEAVE(event, ERROR_NONE);
-}
-
-/*
- * unassociate a task from an event.
- *
- * steps:
- *
- * 1) get the event object.
- * 2) remove the task from this object.
- */
-
-t_error			event_unsubscribe(t_eventid		eventid,
-					  t_tskid		tskid)
-{
-  o_event*		o;
-
-  EVENT_ENTER(event);
-
-  /*
-   * 1)
-   */
-
-  if (event_get(eventid, &o) != ERROR_NONE)
-    EVENT_LEAVE(event, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (set_remove(o->tasks, tskid) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   EVENT_LEAVE(event, ERROR_NONE);
@@ -497,5 +380,30 @@ t_error			event_clean(void)
 
   return ERROR_NONE;
 }
+
+
+void			kbd_handler(t_uint32			id)
+{
+  printf("keyboard event\n");
+}
+
+t_error			check_event(void)
+{
+  u_event_handler handler;
+
+  handler.function = timer_handler;
+
+  if (event_reserve(32, E_HANDLE, handler) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  handler.function = kbd_handler;
+
+  if (event_reserve(33, E_HANDLE, handler) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  return ERROR_UNKNOWN;
+}
+
+
 
 /*                                                                  [cut] k3 */

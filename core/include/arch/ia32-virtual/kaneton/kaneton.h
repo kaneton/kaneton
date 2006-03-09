@@ -109,15 +109,17 @@ t_error			ia32_segment_clean(void);
  * ../../../../kaneton/arch/machdep/event.c
  */
 
-t_error			ia32_event_reserve(t_eventid		id);
+t_error			ia32_event_reserve(t_eventid		eventid,
+					   e_event_type		type,
+					   u_event_handler	handler);
 
-t_error			ia32_event_release(t_eventid		id);
+t_error			ia32_event_release(t_eventid		eventid);
 
 t_error			ia32_event_init(void);
 
 t_error			ia32_event_clean(void);
 
-void			ia32_generic_handler(t_uint32		nr);
+void			ia32_event_handler(t_uint32		id);
 
 
 /*

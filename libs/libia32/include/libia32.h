@@ -253,17 +253,16 @@ t_error			pic_acknowledge(t_uint8			irq);
  * ../interrupt/interrupt.c
  */
 
-t_error			interrupt_add(t_uint8			nr,
+t_error			interrupt_add(t_uint32			nr,
 				      t_prvl			privilege,
-				      t_interrupt_pre_hdl	handler);
+				      t_interrupt_pre_hdl	prehandler);
 
-t_error			interrupt_set_handler(t_interrupt_hdl	handler);
+t_error			interrupt_set_handler(t_uint32		nr,
+					      t_interrupt_hdl	handler);
 
 t_error			interrupt_init(void);
 
 void			interrupt_wrapper(t_uint32		nr);
-
-void			interrupt_default_handler(t_uint32	nr);
 
 
 /*

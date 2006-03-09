@@ -38,7 +38,7 @@
  * global interrupt handler table
  */
 
-t_interrupt_hdl			interrupt_handler;
+t_interrupt_hdl			interrupt_handlers[EXCEPTION_NR + IRQ_NR];
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -102,12 +102,12 @@ static t_interrupt_pre_hdl	prehandlers[EXCEPTION_NR + IRQ_NR] =
  * steps:
  *
  * 1) check interrupt identifier.
- * 2) set interrupt gate and add it into the idt.
+ * 3) build an interrupt gate and add it into the idt.
  */
 
-t_error			interrupt_add(t_uint8			nr,
+t_error			interrupt_add(t_uint32			nr,
 				      t_prvl			privilege,
-				      t_interrupt_pre_hdl	handler)
+				      t_interrupt_pre_hdl	prehandler)
 {
   t_gate		gate;
 
@@ -122,7 +122,7 @@ t_error			interrupt_add(t_uint8			nr,
    * 2)
    */
 
-  gate.offset = (t_uint32)prehandlers[nr];
+  gate.offset = (t_uint32)prehandler;
   gate.segsel = PMODE_GDT_CORE_CS << 3;
   gate.privilege = privilege;
   gate.type = type_gate_interrupt;
@@ -136,9 +136,10 @@ t_error			interrupt_add(t_uint8			nr,
  * set the interrupt generic handler.
  */
 
-t_error			interrupt_set_handler(t_interrupt_hdl	handler)
+t_error			interrupt_set_handler(t_uint32		nr,
+					      t_interrupt_hdl	handler)
 {
-  interrupt_handler = handler;
+  interrupt_handlers[nr] = handler;
 
   return ERROR_NONE;
 }
@@ -148,10 +149,9 @@ t_error			interrupt_set_handler(t_interrupt_hdl	handler)
  *
  * steps:
  *
- * 1) set default generic handler.
- * 2) add an interrupt gate descriptor in the idt for each exception.
- * 3) add an interrupt gate descriptor in the idt for each irq.
- * 4) initialize the pic 8259A.
+ * 1) add an interrupt gate descriptor in the idt for each exception.
+ * 2) add an interrupt gate descriptor in the idt for each irq.
+ * 3) initialize the pic 8259A.
  */
 
 t_error			interrupt_init(void)
@@ -162,31 +162,24 @@ t_error			interrupt_init(void)
    * 1)
    */
 
-  interrupt_set_handler(interrupt_default_handler);
+  for (i = IDT_EXCEPTION_BASE; i < IDT_EXCEPTION_BASE + EXCEPTION_NR; i++)
+    if (interrupt_add(i, 0, prehandlers[i]) != ERROR_NONE)
+      return ERROR_UNKNOWN;
 
   /*
    * 2)
    */
 
-  for (i = 0; i < EXCEPTION_NR; i++)
-    if (interrupt_add(IDT_EXCEPTION_BASE + i, 0,
-		      prehandlers[IDT_EXCEPTION_BASE + i]) != ERROR_NONE)
+  for (i = IDT_IRQ_BASE; i < IDT_IRQ_BASE + IRQ_NR; i++)
+    if (interrupt_add(i, 0, prehandlers[i]) != ERROR_NONE)
       return ERROR_UNKNOWN;
 
   /*
    * 3)
    */
 
-  for (i = 0; i < IRQ_NR; i++)
-    if (interrupt_add(IDT_IRQ_BASE + i, 0,
-		      prehandlers[IDT_IRQ_BASE + i]) != ERROR_NONE)
-      return ERROR_UNKNOWN;
-
-  /*
-   * 4)
-   */
-
-  pic_init();
+  if (pic_init() != ERROR_NONE)
+    return ERROR_UNKNOWN;
 
   return ERROR_NONE;
 }
@@ -210,7 +203,7 @@ void			interrupt_wrapper(t_uint32		nr)
 {
   if (nr < EXCEPTION_NR)
     {
-      interrupt_handler(nr);
+      interrupt_handlers[nr](nr);
     }
   else
     {
@@ -218,19 +211,10 @@ void			interrupt_wrapper(t_uint32		nr)
 
       pic_acknowledge(nr - IDT_IRQ_BASE);
 
-      interrupt_handler(nr);
+      interrupt_handlers[nr](nr);
 
       STI();
     }
-}
-
-/*
- * do nothing.
- */
-
-void			interrupt_default_handler(t_uint32	nr)
-{
-
 }
 
 /*
@@ -290,4 +274,3 @@ IRQ_PREHANDLER(12)
 IRQ_PREHANDLER(13)
 IRQ_PREHANDLER(14)
 IRQ_PREHANDLER(15)
-
