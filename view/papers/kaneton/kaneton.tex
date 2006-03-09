@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/kaneton.tex
 %%
 %% created       julien quintard   [thu dec  8 00:26:00 2005]
-%% updated       julien quintard   [thu mar  2 13:59:43 2006]
+%% updated       julien quintard   [thu mar  9 14:04:46 2006]
 %%
 
 %
@@ -60,40 +60,12 @@
 This document describes the kaneton microkernel reference project.
 
 This document should be used by every student willing implement the
-kaneton microkernel.
+kaneton microkernel as people looking for more details on the kaneton
+microkernel design and implementation.
 
-All the kaneton documents are available on the official website:
-\textbf{http://www.kaneton.org}.
-
-This document is under the \textbf{kaneton license}.
-
-This document will reference the kaneton people by the word \textit{we}.
-
-\newpage
-
-The kaneton project was introduced at EPITA by two computer science
-students:
-
-\begin{itemize}
-  \item
-    Julien Quintard \footnote{quinta\_j@epita.fr}
-  \item
-    Jean-Pascal Billaud \footnote{billau\_j@epita.fr}
-\end{itemize}
-
-This document especially describes the kaneton reference microkernel
-developed by:
-
-\begin{itemize}
-  \item
-    Julien Quintard
-  \item
-    Matthieu Bucchianeri \footnote{bucchi\_m@epita.fr}
-  \item
-    Renaud Voltz \footnote{voltz\_r@epita.fr}
-\end{itemize}
-
-Nevertheless, many people contributed to this project and we thank them.
+All the kaneton documents are available on
+the official website
+  \footnote{http://www.kaneton.org}.
 
 %
 % toc
@@ -105,22 +77,58 @@ Nevertheless, many people contributed to this project and we thank them.
 % chapters
 %
 
-XXX revoir ordre pour mieux introduire kaneton: design.pdf
-
 \include{goals}
+\include{history}
 \include{overview}
-\include{development-environment}
 \include{source-tree}
-\include{coding-style}
-\include{core}
-\include{tools}
-\include{check}
-\include{glossary}
+\include{development-environment}
 
-%
-% epilogue
-%
+\include{nomenclature}
 
-XXX ?
+%\include{coding-style}
+
+%\include{core}
+%\include{tools}
+%\include{check}
+%\include{glossary}
 
 \end{document}
+
+---
+
+XXX expliquer lorsqu'on aborde les sets que vu que ca se base sur
+XXX malloc il fallait trouver une solution
+
+XXX expliquer dans set de kaneton.pdf que set gere des objet kaneton.
+XXX un object kaneton est une structure qui a son premier champ de type t\_id
+XXX schema a l appui
+
+XXX expliquer l interface unifiee des set sans entrer dans le detail
+XXX d impl
+
+XXX le container, expliquer comment il est construit, le fait que ce soit
+XXX egalement un object
+
+XXX expliquer mieux les roles des fonctions pour que chaque etudient puisse
+XXX l implementer
+
+XXX segment\_fit alors segment\_init different
+
+XXX parler de la klibc
+
+---
+
+faire un chapter sur le systeme de portabilite
+
+---
+
+segment, region, address space a expliquer dans nomenclature
+meme chose pour core, drivers, services, programs
+
+etc.. enfin passer chaque chapitre et rajouter les mots dans glossaire
+et nomenclature
+
+---
+
+rajouter a un endroit un truc qui explique les commandes make principales,
+un mix en old/README et quickstart

@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/development-environment.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:31:26 2006]
-%% updated       julien quintard   [thu mar  2 13:54:38 2006]
+%% updated       julien quintard   [thu mar  9 13:21:13 2006]
 %%
 
 %
@@ -14,6 +14,16 @@
 %
 
 \chapter{Development Environment}
+
+In this chapter we will study the kaneton development environment
+to understand how it works and how to extend it with new users and
+machines profiles.
+
+\newpage
+
+%
+% text
+%
 
 Over the years, the kaneton microkernel evolved, starting with a
 very simple introduction to low-level programming and finally
@@ -27,25 +37,23 @@ We wanted to lead students to a complete microkernel development and then
 to introduce the parallel and distributed programming. This would not
 be possible if they had to develop an entire development environment.
 
-The kaneton development environment in composed of makefiles, shell
+So kaneton people decided to give the students a complete development
+environment.
+
+The kaneton development environment is composed of makefiles, shell
 scripts and configuration files and together provide multi-users cooperation,
-many operating systems, many architectures etc..
+with many operating systems on many architectures.
 
-%
-% makefile interface
-%
+A development environment describes binaries, compiling options, linking
+options etc.. to use for the kaneton microkernel project.
 
-\section{Makefile Interface}
+The whole kaneton development environment needs exactly two
+fundamental tools to work. The first one is GNU make, used to build
+powerful makefiles, and the second one is GNU bash, used to write
+shell scripts.
 
-XXX
-
-%
-% shell interface
-%
-
-\section{Shell Interface}
-
-XXX
+If an operating system has these two tools, then kaneton can be developed
+on it.
 
 %
 % profiles
@@ -53,4 +61,435 @@ XXX
 
 \section{Profiles}
 
-XXX machine - user
+The kaneton development environment permit different users, with different
+development parameters and configuration files, running different operating
+systems on different architecture, to develop together on the same
+microkernel project.
+
+To offer these functionalities, the kaneton development environment is
+composed of profiles, machine profiles which describe operating systems
+behaviours and user profiles which describe users configurations.
+
+From these profiles, the kaneton development environment will generate
+development environment files containing the whole kaneton environment
+stuff including variables, shell functions, make functions etc..
+
+The three kaneton development environment files are located in the
+\textit{env/} directory.
+
+The first one contains static kaneton development environment information
+and is called \textit{.env.conf}. This file contains absolute paths
+to different kaneton directories and kaneton general information.
+
+The two others called \textit{.env.mk} and \textit{.env.sh} will be generated
+by the kaneton development environment system. These files contain
+everything necessary to kaneton makefiles and kaneton shell scripts
+including variables and functions.
+
+The kaneton development environment system uses shell environment variables
+the user has to set before using the system:
+
+\begin{itemize}
+  \item
+    \textit{\$KANETON\_USER} holds the user profile name.
+
+    This shell environment variable will be used by the kaneton development
+    environment system to retrieve the user profile.
+  \item
+    \textit{\$KANETON\_MACHINE} holds the machine profile name.
+
+    This value will be used to retrieve the machine profile.
+  \item
+    \textit{\$KANETON\_SHELL} holds the GNU bash binary path.
+
+    This path will be used to launch very first shell script used to
+    generate the current development environment.
+\end{itemize}
+
+%
+% machines
+%
+
+\subsection{Machines}
+
+kaneton people wanted a powerful system to provide users an easy way
+to use kaneton on any operating system and any microprocessor architecture.
+
+Indeed, many students and developers use Apple's MacOS running on PowerPC
+microprocessors while other use Solaris running on UltraSparc microprocessors
+and finally the others generally use Linux or BSD operating systems on
+Intel microprocessors.
+
+kaneton people wanted all the developers to contribute to the same
+kaneton implementation without difficulties.
+
+To make it possible, the kaneton microkernel had to compile on
+every operating systems. To do so, machine profiles were introduced to
+describe operating systems behaviour.
+
+A machine profile is precisly a couple operating system, running
+microprocessor architecture and kaneton target microprocessor architecture.
+
+The naming scheme used for machine profiles is the operating system name,
+a dash, the running on microprocessor, a dot and the target microprocessor
+architecture for which kaneton is built.
+
+Note that in the case of a same running on microprocessor and target
+microprocessor, only the first naming part is necessary.
+
+For example, a correct machine profile name would be
+\textit{macos-ppc.ia32} describing the machine profile composed of the MacOS
+operating system running on PowerPC microprocessor architecture and generating
+kaneton binary object files for the Intel Architecture 32-bit. Another correct
+machine profile name would be \textit{freebsd} describing the behaviour of
+the FreeBSD operating system running on any microprocessor and generating
+kaneton binary object files for the same microprocessor's architecture.
+
+The machine profiles are located in the \textit{env/machines/} directory.
+A subdirectory is used for every machine profiles.
+
+Notice that the kaneton development environment will use the shell
+environement variable \textit{\$KANETON\_MACHINE} to locate the
+machine profile to use.
+
+Then the current machine profile's files are always located in the
+\textit{env/machines/\$KANETON\_MACHINE/} directory.
+
+A machine profile describes the operating system behaviour for very
+generic operations like compiling a file, assembling a file, building
+a link between two files, removing a file, changing the current directory,
+displaying a message etc..
+
+As seen earlier, the kaneton development environment describes two
+behaviours, one for the makefiles, and another for the shell scripts.
+
+The files located in each machine profile are listed below. Note that
+machine profiles may add any necessary file in their directory.
+
+\begin{verbatim}
+clean.sh
+critical.sh
+init.sh
+machine.conf
+machine.mk
+machine.sh
+\end{verbatim}
+
+The files \textit{critical.sh}, \textit{init.sh} and \textit{clean.sh} are
+used to install and uninstall the development environment for this
+machine profile.
+
+More precisly, the \textit{critical.sh} shell script must generate
+the development environment fundamental files \textit{.env.mk} and
+\textit{.env.sh} located in the \textit{env/} directory.
+
+Then, the \textit{init.sh} is called to install machine specific stuff
+like links to machine dependent directories. This shell script should also
+check for the presence of binaries used by the machine profile.
+
+Finally, the \textit{clean.sh} is called to uninstall the machine
+specific stuff.
+
+The \textit{machine.conf} file describes the machine profile configuration
+including general variables, general flags etc.. for the machine profile.
+
+The file \textit{machine.mk} describes the machine behaviour for
+make operations. This file must implement the whole kaneton make interface.
+
+The file \textit{machine.sh} describes the machine behaviour for
+shell operations. This file must implement the whole kaneton shell
+interface.
+
+Note that it might exist partial behaviours while the user willing use
+this machine profile must implement the other part.
+
+Then, with all these files, an operating system can be described to
+perform very basic make and shell operations generating binary object
+files for the current microprocessor architecture or for another specific
+one.
+
+%
+% users
+%
+
+\subsection{Users}
+
+Each kaneton developer has his own profile located in the kaneton
+hierarchy \textit{env/users/\$KANETON\_USER/}.
+
+Note that this shell environment variable must be composed of a
+first name, a dot and a last name; using nickname is not allowed.
+
+For example, a correct user name would be \textit{julien.quintard} and
+a bad one would be \textit{ChIcHe}.
+
+The user profile directory contains configuration files used to parameter
+the developement environment and the kaneton microkernel. Since every
+users has his own profile, the current developer will use his own user
+profile configuration and will not interfer with other developers.
+
+The files located in each user profile directory are listed below.
+
+\begin{verbatim}
+  conf.c
+  conf.h
+  kaneton.conf
+  modules.conf
+  user.conf
+  user.mk
+  user.sh
+
+suce
+avale
+deguste
+ingurgite
+\end{verbatim}
+
+The file \textit{conf.c} is not used in the current development environment
+implementation.
+
+The file \textit{conf.h} parameterizes the kaneton microkernel specifying
+for example the algorithm to use in the segment and region managers,
+but is also used to activate for example the debug modes etc..
+
+The file \textit{kaneton.conf} is the runtime kaneton microkernel
+configuration file. This file describes the kaneton servers to launch
+at the operating system startup. Moreover this file is used to parameter
+the kaneton microkernel and servers in a dynamic way.
+
+The file \textit{modules.conf} contains the module files to pass to
+kaneton. Note that the first module in this file will be considered as
+the kaneton bootloader and the second one as the kaneton core.
+
+The file \textit{user.conf} is the most important since it is used
+to configure the whole kaneton development environment. This file uses
+the GNU make syntax. Via this file, the developer can parameter the compiling
+flags, the boot device modes, the display options, the microkernel
+files to use etc..
+
+The \textit{user.mk} makefile is used to redefine or complete the machine
+makefile behaviour.
+
+Indeed, a developer could want not to use the general machine behaviour but
+instead, prefer redefine parts of it. Then the user can override parts of
+the machine profile's makefile behaviour using this file to redefine makefile
+functions.
+
+The \textit{user.sh} shell file is used, as the \textit{user.mk}, to
+redefine shell functions.
+
+With all these files a kaneton developer can parameterize the whole
+kaneton project.
+
+%
+% interfaces
+%
+
+\section{Interfaces}
+
+%
+% make
+%
+
+\subsection{Make}
+
+In this section we will detail the make interface that every machine
+profile must implement.
+
+The reader should look closer to the machine profiles already implemented.
+
+Moreover, the list of options for each function will not be detailed here.
+
+The current machine reference profile is the \textit{unix} one.
+
+\function{print}{(\argument{color},
+                  \argument{text},
+                  \argument{options})}
+         {This function display the \argument{text} in the specified
+	   \argument{color}.}
+
+\function{change-directory}{(\argument{directory},
+                             \argument{options})}
+         {This function changes the current working directory.}
+
+\function{shell-script}{(\argument{shell script},
+                         \argument{arguments},
+                         \argument{options})}
+         {This function launches a new shell script with its arguments.}
+
+\function{makefile}{(\argument{directory list},
+                     \argument{options})}
+         {This function launches the make command in each directory of
+	   the list.}
+
+\function{preprocess}{(\argument{preprocessed file},
+                       \argument{c file},
+                       \argument{options})}
+         {This function launches a C preprocessor.}
+
+\function{compile-c}{(\argument{object file},
+                      \argument{c file},
+                      \argument{options})}
+         {This function compile a C file generating an object file.}
+
+\function{lex-l}{(\argument{c file},
+                  \argument{lex file},
+                  \argument{options})}
+         {This function generates a C source file from a lex file.}
+
+\function{assemble-s}{(\argument{object file},
+                       \argument{S file},
+                       \argument{options})}
+         {This function assemble a S file.}
+
+\function{assemble-asm}{(\argument{object file},
+                         \argument{asm file},
+                         \argument{options})}
+         {This function assemble an asm file.}
+
+\function{static-library}{(\argument{static library file name},
+                           \argument{object files},
+                           \argument{options})}
+         {This function builds a static library from object files.}
+
+\function{dynamic-library}{(\argument{dynamic library file name},
+                            \argument{object files and/or libraries},
+                            \argument{options})}
+         {This function builds a dynamic library from object files and/or
+	   libraries.}
+
+\function{executable}{(\argument{executable file name},
+                       \argument{object files and/or libraries},
+                       \argument{options})}
+         {This function builds a executable from object files and/or
+	   libraries.}
+
+\function{archive}{(\argument{archive file name},
+                    \argument{object files},
+                    \argument{options})}
+         {This function builds an archive of object files from multiple
+	   object files.}
+
+\function{remove}{(\argument{files},
+                   \argument{options})}
+         {This function removes the files in the list.}
+
+\function{purge}{()}
+         {This function just cleans the current working directory from
+	   unecessary files.}
+
+\function{prototypes}{(\argument{files},
+                       \argument{options})}
+         {This function will generate the prototypes in relation with
+	   the files in the list.}
+
+\function{dependencies}{(\argument{files},
+                         \argument{output},
+                         \argument{options})}
+         {This function will generate the dependencies for the
+	   \argument{files} and build a makefile dependency
+	   \argument{output}.}
+
+\function{version}{(\argument{file},
+                    \argument{user name},
+                    \argument{host name},
+                    \argument{date})}
+         {This function will generate a version file.}
+
+\function{link}{(\argument{link},
+                 \argument{file},
+                 \argument{options})}
+         {This function creates a link \argument{link} for the file
+	   \argument{file}.}
+
+\function{compile-tex}{(\argument{file},
+                        \argument{options})}
+         {This function compiles the file \argument{file}.tex and
+	   will generate a readable document.}
+
+\function{paper}{(\argument{file},
+                  \argument{options})}
+         {This function builds a paper.}
+
+\function{lecture}{(\argument{file},
+                    \argument{options})}
+         {This function builds a lecture.}
+
+\function{subject}{(\argument{file},
+                    \argument{options})}
+         {This function builds a subject.}
+
+\function{correction}{(\argument{file},
+                       \argument{options})}
+         {This function builds a correction.}
+
+\function{view}{(\argument{file})}
+         {This function will launches a viewer for the readable document
+	   generated by \textbf{compile-tex()}.}
+
+\function{contents}{(\argument{file},
+                     \argument{options})}
+         {This function returns the contents of \argument{file}.}
+
+\function{date}{()}
+         {This function returns the current date.}
+
+%
+% shell
+%
+
+\subsection{Shell}
+
+The shell interface is not well defined yet.
+
+%
+% actions
+%
+
+\section{Actions}
+
+Many different actions can be triggered from the kaneton root directory.
+
+\command{make init}
+        {This action will initialize the kaneton development environment.}
+
+\command{make clean}
+	{This action will clean the kaneton development environment.}
+
+\command{make kaneton}
+	{This action will build the kaneton microkernel.}
+
+\command{make clear}
+	{This action will removing every compiled files.}
+
+\command{make purge}
+	{This action will clean directories from unecessary files.}
+
+\command{make dep}
+	{This action will generate makefiles dependencies.}
+
+\command{make proto}
+	{This action will generate C prototypes.}
+
+\command{make check}
+	{This action will be used to run the test suite used to validate
+	  the kaneton whole behaviour.}
+
+\command{make cheat}
+	{This action will launch the cheat tests on students kaneton
+	  implementations.}
+
+\command{make build}
+	{This action will build the boot device.}
+
+\command{make install}
+	{This action will install the kaneton stuff on the boot device.}
+
+\command{make export}
+	{This action will build a kaneton package.}
+
+\command{make view}
+	{This action will generate and display a kaneton document.}
+
+\command{make info}
+	{This action will display general kaneton information.}

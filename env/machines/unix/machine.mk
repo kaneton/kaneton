@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/machines/unix/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [sat feb 25 15:55:22 2006]
+## updated       julien quintard   [wed mar  8 06:13:45 2006]
 ##
 
 #
@@ -23,22 +23,6 @@
 #
 
 .SILENT:
-
-#
-# ---------- traps ------------------------------------------------------------
-#
-
-%.o:			%.asm
-	$(call assemble-asm,$@,$<,"--output-format elf")
-
-%.o:			%.S
-	$(call assemble-S,$@,$<,)
-
-%.o:			%.c
-	$(call compile-c,$@,$<,)
-
-%.c:			%.l
-	$(call lex-l,$@,$<,)
 
 #
 # ---------- functions --------------------------------------------------------
@@ -301,7 +285,7 @@ endef
 #
 # from lex file to c file
 #
-# $(1):		object file
+# $(1):		c file
 # $(2):		lex file
 # $(3):		advanced options
 #

@@ -1,4 +1,8 @@
 --
+ dans env/machine/XXX mettre un fichier qui decrit le profile machine
+ genre les binaires utilises, si le user doit definir des choses etc..
+
+--
  dire que kaneton est implemente en C dans kaneton.pdf
 
  inclure la license dans kaneton.pdf

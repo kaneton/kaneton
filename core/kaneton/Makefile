@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/core/kaneton/Makefile
+## file          /home/mycure/kaneton/core/kaneton/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [mon feb 27 15:07:54 2006]
+## updated       julien quintard   [thu mar  9 16:21:11 2006]
 ##
 
 #
@@ -36,7 +36,7 @@ SUBDIRS			:=		arch				\
 					set				\
 					stats				\
 					event				\
-					time				\
+					timer				\
 					task				\
 					$(_CHECK_DIR_)
 
@@ -53,7 +53,7 @@ KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 					$(_SET_LO_)			\
 					$(_STATS_LO_)			\
 					$(_EVENT_LO_)			\
-					$(_TIME_LO_)			\
+					$(_TIMER_LO_)			\
 					$(_TASK_LO_)			\
 					$(_CHECK_LO_)
 

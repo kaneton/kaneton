@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/templates/book.tex
 %%
 %% created       julien quintard   [wed mar  1 23:45:22 2006]
-%% updated       julien quintard   [thu mar  2 01:27:52 2006]
+%% updated       julien quintard   [thu mar  9 12:40:05 2006]
 %%
 
 %
@@ -29,6 +29,9 @@
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{verbatim}
+
+\usepackage{moreverb}
+
 \usepackage{aeguill}
 
 \usepackage[Lenny]{../../../tools/latex/fncychap}
@@ -51,14 +54,56 @@
   }
 
 %
-% verbatim font
+% colors
 %
 
+\definecolor{functioncolor}{rgb}{0.4,0,0}
+\definecolor{commandcolor}{rgb}{0,0,0.4}
 \definecolor{verbatimcolor}{rgb}{0,0.4,0}
 
+%
+% function
+%
+
+\newcommand\function[3]{
+  \begin{tabular}{p{0.2cm}p{13.8cm}}
+  & {\color{functioncolor}\textbf{#1}}#2
+  \end{tabular}
+
+  \begin{tabular}{p{1cm}p{13cm}}
+  & #3
+  \end{tabular}}
+
+%
+% argument
+%
+
+\newcommand\argument[1]{\textit{#1}}
+
+%
+% command
+%
+
+\newcommand\command[2]{
+  \begin{tabular}{p{0.2cm}p{13.8cm}}
+  & {\color{commandcolor}\textbf{#1}}
+  \end{tabular}
+
+  \begin{tabular}{p{1cm}p{13cm}}
+  & #2
+  \end{tabular}}
+
+%
+% verbatim stuff
+%
+
 \makeatletter
+
 \renewcommand{\verbatim@font}
   {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
+
+\def\verbatim@processline{\hskip15ex\the\verbatim@line\par}
+
 \makeatother
 
 %

@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/assignments/k2.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       julien quintard   [fri mar  3 10:27:57 2006]
+%% updated       julien quintard   [fri mar  3 22:30:57 2006]
 %%
 
 %
@@ -23,13 +23,13 @@
 
 \begin{tabular}{p{7cm}l}
 Deadline: & XXX, 23h42 \\
-Duration: & two weeks \\
+Duration: & Two weeks \\
 File name: & k1.tar.gz \\
 In charge of: & Julien Quintard - \small{quinta\_j@epita.fr} \\
-Newsgroups: & epita.kaneton \\
+Newsgroups: & epita.cours.kaneton \\
 Languages: & Assembly and C \\
 Architectures: & Intel Architecture 32-bit \\
-Students per group: & three \\
+Students per group: & Three \\
 \end{tabular}
 
 %
@@ -52,7 +52,21 @@ the kaneton core including:
     The segment manager.
 \end{itemize}
 
-XXX
+The id manager is very important because it is very simple and will
+introduce you how managers are implemented in kaneton. Every student
+should be able to understand it before starting other managers.
+
+Moreover, many parts of the kernel will lead student to use the sets,
+so the sets interface must be clearly understood.
+
+The as and segment managers introduce calls to machine-dependent code, this
+mecanism must be well understood by every students.
+
+For the two first managers, you have to follow precisely the bevavior
+as described in the kaneton reference documentation. For the memory
+management, you must be totally compliant with the given interface and
+the described behavior, but algorithm, especially for the machine-dependent
+code, are design-free.
 
 %
 % assignments
@@ -60,17 +74,13 @@ XXX
 
 \subsection{Assignments}
 
+In this section, we will detail each manager.
+
 %
 % id manager
 %
 
 \subsubsection{id manager}
-
-The id manager is very important because it is very simple and will
-introduce you how managers are implemented in kaneton.
-
-Every student should be able to understand it before starting other
-managers.
 
 The id manager is used to generate unique identifiers from an identifier
 object.
@@ -78,49 +88,46 @@ object.
 Once the identifier object initialised, you can use your
 identifier object \textbf{o\_id} to generate unique identifiers.
 
+---
 Remember that, in the current kaneton implementation, identifiers only
 consist in 64-bit integers. Therefore, the id manager does not take care
 of identifiers recycling.
 
-Now, let's take a look at the id manager functions you will implement:
+Moreover, the identifier manager interface was designed to permit
+identifiers recycling.
+---
+
+Now, let's take a look at the id manager functions you will implement.
 
 \prototype{t\_error \textbf{id\_show}(o\_id* \textit{o});}
-
-This function just displays an id object's state.
+	  {This function just displays an id object's state.}
 
 \prototype{t\_error \textbf{id\_clone}(o\_id* \textit{o},
                                        t\_id \textit{old},
                                        t\_id* \textit{new});}
-
-This function duplicates an id object using the \textit{o} identifier
-object.
+	  {This function duplicates an id object using the \textit{o}
+	    identifier object.}
 
 \prototype{t\_error \textbf{id\_reserve}(o\_id* \textit{o},
                                          t\_id* \textit{u});}
-
-This function reserves an identifier \textit{u} using the identifier
-object \textit{o}.
+	  {This function reserves an identifier \textit{u} using the
+	    identifier object \textit{o}.}
 
 \prototype{t\_error \textbf{id\_release}(o\_id* \textit{o},
                                          t\_id \textit{u});}
-
-This function releases the identifier \textit{u}.
+	  {This function releases the identifier \textit{u}.}
 
 \prototype{t\_error \textbf{id\_build}(o\_id* \textit{o});}
-
-This function initializes an identifier object.
+	  {This function initializes an identifier object.}
 
 \prototype{t\_error \textbf{id\_destroy}(o\_id* \textit{o});}
-
-This function destroys an identifier object.
+	  {This function destroys an identifier object.}
 
 \prototype{t\_error \textbf{id\_init}(void);}
-
-This function just initializes the id manager.
+	  {This function just initializes the id manager.}
 
 \prototype{t\_error \textbf{id\_clean}(void);}
-
-This function just cleans the id manager.
+	  {This function just cleans the id manager.}
 
 Like every other managers in kaneton, the \textbf{id\_init()} and
 \textbf{id\_clean()} functions must be called by the kernel main
@@ -132,565 +139,470 @@ routine on startup and shutdown.
 
 \subsubsection{set manager}
 
-
-
-
-
-
-
-----------------------------------------------------------------------
-
-as  and  segment  introduce  calls  to  machine-dependent  code,  this
-mecanism  must be well  understood by  every students.  Moreover, many
-parts of  the kernel will  lead student to  use the sets, so  the sets
-interface must be clearly understood.
-
-For the two first managers,  you have to follow precisely the bevavior
-as described  in the kaneton  reference documentation. For  the memory
-management, you must be totally compliant with the given interface and
-the   described   behavior,   but   algorithm  (especially   for   the
-machine-dependent code) are design-free.
-
-To  finish, notice  that  the current  implementation  of the  console
-driver is not clean and will be changed in future kaneton projects.
-
-%
-% id manager
-%
-
-%
-% set manager
-%
-
-\subsection{set manager}
-
-\subsubsection{Description}
-
-The set  manager is used to  store data. Every kernel  managers use it
+The set  manager is used to store data. Every kernel managers use it
 instead of building data structures by their own.
 
-The set mecanism is divided in  two parts: the set manager and the set
+The set mecanism is divided in two parts: the set manager and the set
 implementations.
 
-While the set implementations are specific to each type of set (array,
-linked-list\ldots), the set manager code  is generic and work with all
+While the set implementations are specific to each type of set: array,
+linked-list, etc.., the set manager code is generic and work with all
 sets.
 
-\subsubsection{Students work}
-
-The  manager code  is given,  see  \textit{core/kaneton/set/set.c} and
-\textit{core/include/kaneton/set.h}.  Take a  look at  the information
-section in the header of the  manager code: each steps of the creation
+The manager's code is given, see \textit{core/kaneton/set/set.c} and
+\textit{core/include/kaneton/set.h}. Take a look at the information
+section in the header of the manager's code: each steps of the creation
 of a set is described.
 
-The student will have to  write the entire code for the \textbf{array}
+The student will have to write the entire code for the \textbf{array}
 and \textbf{ll} implementations.
 
-The functions below are explained independently of the data structure.
+The functions below are explained independently of the data structure
+which is noted \textbf{<I>}.
 
-\prototype{t\_error \textbf{set\_type\_[x]}(t\_setid \textbf{setid});}
+\prototype{t\_error \textbf{set\_type\_<I>}(u\_set \textit{u});}
+	  {This function just returns an error if the set corresponding
+	    to \textit{u} is not of the type \textbf{<I>}.}
 
-This function just returns an error if the set corresponding to
-\textbf{setid} is not of the type \textbf{[x]}.
+\prototype{t\_error \textbf{set\_show\_<I>}(u\_set \textit{u});}
+	  {This function displays an entire set.}
 
-\prototype{t\_error \textbf{set\_show\_[x]}(t\_setid \textbf{setid});}
+\prototype{t\_error \textbf{set\_head\_<I>}(u\_set \textit{u},
+                                            t\_iterator* \textit{iterator});}
+	  {This function returns an iterator on the first element
+	    of the set.}
 
-This function displays a entire set.
+\prototype{t\_error \textbf{set\_tail\_<I>}(u\_set \textit{u},
+                                            t\_iterator* \textit{iterator});}
+	  {This function returns an iterator on the last element of
+	    the set.}
 
-\prototype{t\_error \textbf{set\_head\_[x]}(t\_setid \textbf{setid},
-                                            t\_iterator* \textbf{iterator});}
+\prototype{t\_error \textbf{set\_prev\_<I>}(u\_set \textit{u},
+                                            t\_iterator \textit{current},
+                                            t\_iterator* \textit{previous});}
+	  {This function returns an iterator on the previous element
+	    of the set.}
 
-This function returns an iterator on the first element of the set.
+\prototype{t\_error \textbf{set\_next\_<I>}(u\_set \textit{u},
+                                            t\_iterator \textit{current},
+                                            t\_iterator* \textit{previous});}
+	  {This function returns an iterator on the next element
+	    of the set.}
 
-\prototype{t\_error \textbf{set\_tail\_[x]}(t\_setid \textbf{setid},
-                                            t\_iterator* \textbf{iterator});}
+\prototype{t\_error \textbf{set\_insert\_head\_<I>}(u\_set \textit{u},
+                                                    void* \textit{data});}
+	  {This function inserts an object at the head of the set.}
 
-This function returns an iterator on the last element of the set.
+\prototype{t\_error \textbf{set\_insert\_tail\_<I>}(u\_set \textit{u},
+                                                    void* \textit{data});}
+	  {This function inserts an object at the tail of the set.}
 
-\prototype{t\_error \textbf{set\_prev\_[x]}(t\_setid \textbf{setid},
-                                            t\_iterator \textbf{current},
-                                            t\_iterator* \textbf{previous});}
+\prototype{t\_error \textbf{set\_insert\_before\_<I>}(u\_set \textit{u},
+                                                      t\_iterator
+                                                        \textit{iterator},
+                                                      void* \textit{data});}
+	  {This function inserts an object before the one specified
+	    by the iterator.}
 
-This function returns an iterator on the previous element of the set.
+\prototype{t\_error \textbf{set\_insert\_after\_<I>}(u\_set \textit{u},
+                                                     t\_iterator
+                                                       \textit{iterator},
+                                                     void* \textit{data});}
+	  {This function inserts an object after the one specified
+	    by the iterator.}
 
-\prototype{t\_error \textbf{set\_next\_[x]}(t\_setid \textbf{setid},
-                                            t\_iterator \textbf{current},
-                                            t\_iterator* \textbf{previous});}
+\prototype{t\_error \textbf{set\_add\_<I>}(u\_set \textit{u},
+                                           void* \textit{data});}
+	  {This function adds a data object in the set.}
 
-This function returns an iterator on the next element of the set.
+\prototype{t\_error \textbf{set\_remove\_<I>}(u\_set \textit{u},
+                                              t\_id \textit{id});}
+	  {This function removes an object identified by \textit{id}
+	    from the set \textit{u}.}
 
-\prototype{t\_error \textbf{set\_insert\_head\_[x]}(t\_setid \textbf{setid},
-                                                    void* \textbf{data});}
+\prototype{t\_error \textbf{set\_delete\_<I>}(u\_set \textit{u},
+                                              t\_iterator \textit{iterator});}
+	  {This function deletes the object corresponding to the iterator.}
 
-This function inserts an object at the head of the set.
+\prototype{t\_error \textbf{set\_flush\_<I>}(u\_set \textit{u});}
+	  {This function removes every object stored in the set.}
 
-\prototype{t\_error \textbf{set\_insert\_tail\_[x]}(t\_setid \textbf{setid},
-                                                    void* \textbf{data});}
+\prototype{t\_error \textbf{set\_locate\_<I>}(u\_set \textit{u},
+                                              t\_id \textit{id},
+                                              t\_iterator* \textit{iterator});}
+	  {This function returns an iterator on the element corresponding
+	    to the identifier \textit{id}.}
 
-This function inserts an object at the tail of the set.
+\prototype{t\_error \textbf{set\_object\_<I>}(u\_set \textit{u},
+                                              t\_iterator \textit{iterator},
+                                              void** \textit{data});}
+	  {This function returns the data object corresponding to
+	    the iterator.}
 
-\prototype{t\_error \textbf{set\_insert\_before\_[x]}(t\_setid \textbf{setid},
-                                                      t\_iterator \textbf{iterator},
-                                                      void* \textbf{data});}
+\prototype{t\_error \textbf{set\_push\_<I>}(u\_set \textit{u},
+                                            void* \textit{data});}
+	  {This function adds an object to a FIFO or LIFO structure.}
 
-This function inserts an object before the one specified by the iterator.
+\prototype{t\_error \textbf{set\_pop\_<I>}(u\_set \textit{u});}
+	  {This function removes the next object of a FIFO or LIFO structure.}
 
-\prototype{t\_error \textbf{set\_insert\_after\_[x]}(t\_setid \textbf{setid},
-                                                     t\_iterator \textbf{iterator},
-                                                     void* \textbf{data});}
+\prototype{t\_error \textbf{set\_pick\_<I>}(u\_set \textit{u},
+                                            void** \textit{data});}
+	  {This function returns the next object of a FIFO or LIFO structure
+	    without deleting it.}
 
-This function inserts an object after the one specified by the iterator.
-
-\prototype{t\_error \textbf{set\_add\_[x]}(t\_setid \textbf{setid},
-                                           void* \textbf{data});}
-
-This function adds an object in the set. See at the end of the section
-for more details.
-
-\prototype{t\_error \textbf{set\_remove\_[x]}(t\_setid \textbf{setid},
-                                              t\_id \textbf{id});}
-
-This function removes an object identified by \textbf{id} from the
-set \textbf{setid}.
-
-\prototype{t\_error \textbf{set\_delete\_[x]}(t\_setid \textbf{setid},
-                                              t\_iterator \textbf{iterator});}
-
-This function deletes the object corresponding to the iterator.
-
-\prototype{t\_error \textbf{set\_flush\_[x]}(t\_setid \textbf{setid});}
-
-This function removes every object stored in the set.
-
-\prototype{t\_error \textbf{set\_locate\_[x]}(t\_setid \textbf{setid},
-                                              t\_id \textbf{id},
-                                              t\_iterator* \textbf{iterator});}
-
-This function returns an iterator on the element corresponding to the
-identifier \textbf{id}.
-
-\prototype{t\_error \textbf{set\_object\_[x]}(t\_setid \textbf{setid},
-                                              t\_iterator \textbf{iterator},
-                                              void** \textbf{data});}
-
-This function returns the object's data corresponding to the iterator.
-
-\prototype{t\_error \textbf{set\_push\_array}(t\_setid \textbf{setid},
-                                             void* \textbf{data});}
-
-This function adds an object to a FIFO or LIFO structure.
-
-\prototype{t\_error \textbf{set\_pop\_array}(t\_setid \textbf{setid});}
-
-This function removes the next object of a FIFO or LIFO structure.
-
-\prototype{t\_error \textbf{set\_pick\_array}(t\_setid \textbf{setid},
-                                             void** \textbf{data});}
-
-This  function returns the  next object  of a  FIFO or  LIFO structure
-without deleting it.
-
-\prototype{t\_error \textbf{set\_release\_[x]}(t\_setid \textbf{setid});}
-
-This function releases a set.
+\prototype{t\_error \textbf{set\_release\_<I>}(u\_set \textit{u});}
+	  {This function releases a set.}
 
 The two last functions are  described more specificaly since they have
 different prototypes.
 
-\prototype{t\_error \textbf{set\_reserve\_ll}(t\_opts \textbf{opts},
-                                              t\_size \textbf{datasz},
-                                              t\_setid* \textbf{setid});}
+\prototype{t\_error \textbf{set\_reserve\_ll}(t\_opts \textit{opts},
+                                              t\_size \textit{datasz},
+                                              u\_set* \textit{u});}
+	  {This function reserves a \textbf{ll} set with options
+	    \textit{opts} which will contain object of \textit{datasz} size.}
 
-This function reserves a ll set with options \textbf{opts} which will contain
-object of \textbf{datasz} size.
+\prototype{t\_error \textbf{set\_reserve\_array}(t\_opts \textit{opts},
+                                                 t\_setsz \textit{initsz},
+                                                 t\_size \textit{datasz},
+                                                 u\_set* \textit{u});}
+	  {This function reserves an \textbf{array} set with options
+	    \textit{opts}. This set will contain objects of \textit{datasz}
+	    size and will initialy be composed of \textit{initsz} unused
+	    elements.}
 
-\prototype{t\_error \textbf{set\_reserve\_array}(t\_opts \textbf{opts},
-                                                 t\_setsz \textbf{initsz},
-                                                 t\_size \textbf{datasz},
-                                                 t\_setid* \textbf{setid});}
+You can notice that some operations does not make sense on some data
+structures. For example, \textbf{set\_push()} or \textbf{set\_pop()}
+will never be used on arrays or lists, but only on stacks or pipes.
 
-This function reserves an array set with options \textbf{opts}. This
-set will contain objects of \textbf{datasz} size and will initialy
-be composed of \textbf{initsz} unused elements.
+In these cases, the function must be present but will only return an error.
 
-You can notice  that some operations does not make  sense on some data
-structures. For  example, \textbf{push} or \textbf{pop}  will never be
-used on arrays or lists, but  only on stacks or pipes. In these cases,
-the function must be present but will only return an error.
+Most widely, some operations have no sense with some options.
 
-Most   widely,    some   operations   have   no    sense   with   some
-options. Inserting at the beginning  of a sorted array must produce an
-error since it can cancel the sorting property.
+Inserting at the beginning of a sorted array must produce an error
+since it can cancel the sorting property.
 
-\subsubsection{Constraints}
-
-To  keep  sets behavior  unified,  here  are  some rules  applying  to
+To keep sets behavior unified, here are some rules applying to
 \textbf{array} and \textbf{ll}:
 
 \begin{itemize}
+  \item
+    \textbf{set\_add\_array()} must insert the item at the first free place.
+  \item
+    All deletion functions on arrays must mark the released place as
+    free.
 
-\item \textbf{set\_add\_array} must insert the item at the first free place.
+    The only case shifting is made is when the \textit{organise} option
+    is set. Then, each time a deletion function is called, the data structure
+    is re-organized to become simpler.
+  \item
+    When inserting an object in a linked-list with the \textbf{set\_add()}
+    operation, the item must be placed in the head of the list.
+  \item
+    As double linked-list are faster than simple one, you have to
+    implement this kind of lists.
 
-\item All deletion functions on arrays must mark the released place as
-free. The only case shifting is made is when the \textbf{organise} option
-is set.
-
-\item When inserting an object in a linked-list with the \textbf{add}
-operation, the item must be placed in the head of the list.
-
-\item As double linked-list are faster than simple one, you have to
-implement this kind of lists.
-
+    So, the \textbf{ll} data structure is in fact a double linked-list.
 \end{itemize}
 
 Here are the options your sets must recognize:
 
 \begin{itemize}
-\item SET\_OPT\_CONTAINER
-\item SET\_OPT\_ALLOC and SET\_OPT\_FREE
-\item SET\_OPT\_SORT
-\item SET\_OPT\_ORGANISE (for arrays only)
-\end{itemize}
+  \item
+    The \textit{SET\_OPT\_CONTAINER} option is only used by the set
+    manager to build the very first set which then becomes the set
+    container.
+  \item
+    The \textit{SET\_OPT\_ALLOC} tells the set manager to always allocate
+    memory and to copy into this memory the content of the given object.
+  \item
+    The \textit{SET\_OPT\_FREE} tells the set manager to think about
+    releasing the objects.
 
-Do  not  forget to  uncomment  the  step  5 of  \textbf{set\_init}  in
-\textit{core/kaneton/set/set.c}, which creates the set container.
+    This option is mutually exclusive with the \textit{alloc} option.
+  \item
+    The \textit{SET\_OPT\_SORT} tells the set manager to always keep
+    the set sorted by identifiers.
+  \item
+    The \textit{SET\_OPT\_ORGANISE} option is only used to re-organize
+    the data structure to keep it as simple as possible.
+
+    This option may have no sens with certain data structures.
+\end{itemize}
 
 %
 % address space manager
 %
 
-\subsection{address space manager}
+\subsubsection{address space manager}
 
-\subsubsection{Description}
-
-The address space manager just  manages the address spaces. An address
+The address space manager just manages the address spaces. An address
 space is a container describing the addressable memory.
 
 An address space is composed of a set of segments and a set of regions.
 
-\subsubsection{Students work}
+Students have to write the whole code of this manager. No need to say
+that intensive use of  sets is necessary. This manager will introduce
+you how to program with the set manager.
 
-Students have to write the whole  code of this manager. No need to say
-that intensive use of  sets (previously described) is necessary.  This
-manager will introduce you how to program with the set manager.
-
-\prototype{t\_error \textbf{as\_show}(t\_asid \textbf{asid});}
-
-This function shows a precise address space displaying information
-on it.
+\prototype{t\_error \textbf{as\_show}(u\_as \textit{u});}
+	  {This function shows a precise address space displaying information
+	    on it.}
 
 \prototype{t\_error \textbf{as\_dump}(void);}
+	  {This function dumps all the address space managed by the address
+	    space manager.}
 
-This function dumps all the address space managed by the address
-space manager.
+\prototype{t\_error \textbf{as\_clone}(u\_task \textit{task},
+                                       u\_as \textit{old},
+                                       u\_as* \textit{new});}
+	  {This function clones an address space taking care of cloning
+	    everything necessary.
 
-\prototype{t\_error \textbf{as\_clone}(t\_tskid \textbf{tskid},
-                                       t\_asid \textbf{old},
-                                       t\_asid* \textbf{new});}
+	    ---
+	    For \textbf{k2}, you don't have to deal with tasks, so you must
+	    ignore the \textit{task} arguments.
+	    ---}
 
-This function clones an address space taking care of cloning everything
-necessary.
+\prototype{t\_error \textbf{as\_reserve}(u\_task \textit{task},
+                                         u\_as* \textit{u});}
+	  {This function reserves an address space object for the
+	    task \textit{task}.}
 
-\prototype{t\_error \textbf{as\_reserve}(t\_tskid \textbf{tskid},
-                                         t\_asid* \textbf{asid});}
+\prototype{t\_error \textbf{as\_release}(u\_as \textit{u});}
+	  {This function just releases an address space.}
 
-This  function   reserves  an  address  space  object   for  the  task
-\textbf{tskid}. For k2, you don't have to deal with tasks, so you must
-ignore \textbf{tskid}.
+\prototype{t\_error \textbf{as\_get}(u\_as \textit{u},
+                                     o\_as** \textit{o});}
+	  {This function should only be used by the segment and region
+	    managers.
 
-\prototype{t\_error \textbf{as\_release}(t\_asid \textbf{asid});}
-
-This function just  releases an address space.
-
-\prototype{t\_error \textbf{as\_get}(t\_asid \textbf{asid},
-                                    o\_as** \textbf{o});}
-
-This function should only be used by the segment and region managers.
-
-This function just returns the address space object corresponding to
-the address space identifier.
+	    This function just returns the address space object
+	    corresponding to the address space identifier.}
 
 \prototype{t\_error \textbf{as\_init}(void);}
-
-This function initialises the address space manager.
+	  {This function initializes the address space manager.}
 
 \prototype{t\_error \textbf{as\_clean}(void);}
-
-This function cleans the address space manager.
-
-%
-% ia32
-%
-
-\subsubsection{IA-32 implementation}
-
-Students will  have to develop the architecture-dependent  part of the
-address space manager.
-
-The corresponding file is \textit{core/kaneton/arch/\textbf{arch-name}/as.c}.
-
-Students have  to think about what  is an address space  from the ia32
-point of view.  Next, they will fill the \textbf{do\_as} structure in
-\textit{core/include/arch/\textbf{arch-name}/kaneton/as.h}
-
-To  finish,   they  must   implement  all  dependent   functions  they
-need. Remember that functions in \textit{libia32} should be reused.
-
-Take a look at the  kaneton reference paper for more information about
-machine-dependent calls.
+	  {This function cleans the address space manager.}
 
 %
 % segment manager.
 %
 
-\subsection{segment manager}
+\subsubsection{segment manager}
 
-\subsubsection{Description}
-
-The segment manager manages physical  memory. Its goals are to reserve
-and release physical pages, merge or split allocated pages and finally
+The segment manager manages physical memory. Its goals are to reserve
+and release physical memory areas, merge or split allocated areas and finally
 to read or write directly into physical memory.
 
-\subsubsection{Students work}
+Students have to write everything in this manager.
 
-Students have to write everything in this manager. Some functions will
-be added in k3.
+---
+Some functions will be added in \textbf{k3}.
+---
 
-\prototype{t\_error \textbf{segment\_show}(t\_segid \textbf{segid});}
-
-This function displays information on specified segment.
+\prototype{t\_error \textbf{segment\_show}(u\_segment \textit{u});}
+	  {This function displays information on specified segment.}
 
 \prototype{t\_error \textbf{segment\_dump}(void);}
+	  {This function displays all segments in the segment container.}
 
-This function displays all segments in the segment container.
+\prototype{t\_error \textbf{segment\_clone}(u\_as \textit{as},
+                                            u\_segment \textit{old},
+                                            u\_segment* \textit{new});}
+	  {This function clones a segment copying its content.}
 
-\prototype{t\_error \textbf{segment\_clone}(t\_asid \textbf{asid},
-                                            t\_segid \textbf{old},
-                                            t\_segid* \textbf{new});}
+\prototype{t\_error \textbf{segment\_inject}(u\_as \textit{as},
+                                             o\_segment* \textit{o});}
+	  {This function injects a pre-allocated segment in the segment
+	    container.
 
-This function clones a segment copying its content.
+	    ---
+	    This function concerns \textbf{k1} pre-reserved segments.
+	    All of these must be passed to the inject function at kernel
+	    boot time.
+	    ---}
 
-\prototype{t\_error \textbf{segment\_inject}(o\_segment* \textbf{seg},
-                                             t\_asid \textbf{asid});}
+\prototype{t\_error \textbf{segment\_give}(u\_segment \textit{u},
+                                           u\_as \textit{as});}
+	  {This function gives a segment from one address space to another.}
 
-This  function   injects  a  pre-allocated  segment   in  the  segment
-container.  This function  concerns k1  pre-reserved segments.  All of
-these must be passed to the inject function at kernel boot time.
+\prototype{t\_error \textbf{segment\_resize}(u\_segment \textit{u},
+                                             t\_psize \textit{size},
+                                             u\_segment* \textit{new});}
+	  {This function resizes a segment.}
 
-\prototype{t\_error \textbf{segment\_give}(t\_asid \textbf{asid},
-                                           t\_segid \textbf{segid});}
+\prototype{t\_error \textbf{segment\_split}(u\_segment \textit{u},
+                                            t\_psize \textit{size},
+                                            u\_segment* \textit{left},
+                                            u\_segment* \textit{rigth});}
+	  {This function split a segment into two segments.}
 
-This function gives an address space from one process to another.
+\prototype{t\_error \textbf{segment\_coalesce}(u\_segment \textit{left},
+                                               u\_segment \textit{right},
+                                               u\_segment* \textit{u});}
+	  {This function merges two segments into a single one.}
 
-\prototype{t\_error \textbf{segment\_resize}(t\_segid \textbf{segid},
-                                             t\_psize \textbf{new\_size},
-                                             t\_segid \textbf{new\_seg});}
+\prototype{t\_error \textbf{segment\_reserve}(u\_as \textit{as},
+                                              t\_psize \textit{size},
+                                              t\_perms \textit{perms},
+                                              u\_segment* \textit{u});}
+	  {This function reserves a segment of specified size.}
 
-This function resizes a segment.
+\prototype{t\_error \textbf{segment\_release}(u\_segment \textit{u});}
+	  {This function releases a segment.}
 
-\prototype{t\_error \textbf{segment\_split}(t\_segid \textbf{segid},
-                                            t\_psize \textbf{sz1},
-                                            t\_segid* \textbf{s1},
-                                            t\_segid* \textbf{s2});}
+\prototype{t\_error \textbf{segment\_catch}(u\_as \textit{as},
+                                            u\_segment \textit{u});}
+	  {This function is used to force a segment to be given to an address
+	    space. \textbf{catcheable} segments are reserved by the module
+	    service for architecture specific servers. Catcheable segments
+	    are defined in the \textit{kaneton.conf} file.}
 
-This function split a segment into two segments.
+\prototype{t\_error \textbf{segment\_perms}(u\_segment \textit{u},
+                                            t\_perms \textit{perms});}
+	  {This function changes permissions for a segment.}
 
-\prototype{t\_error \textbf{segment\_coalesce}(t\_segid \textbf{s1},
-                                               t\_segid \textbf{s2},
-                                               t\_segid* \textbf{new\_seg});}
+\prototype{t\_error \textbf{segment\_type}(u\_segment \textit{u},
+                                           t\_type \textit{type});}
+	  {This function changes the type of a segment.}
 
-This function merges two segments into a single one.
+\prototype{t\_error \textbf{segment\_flush}(u\_as \textit{as});}
+	  {This function removes every segment that belongs to the
+	    address space specified.}
 
-\prototype{t\_error \textbf{segment\_reserve}(t\_asid \textbf{asid},
-                                              t\_psize \textbf{size},
-                                              t\_perms \textbf{perms},
-                                              t\_segid* \textbf{segid});}
-
-This function reserves a segment of specified size.
-
-\prototype{t\_error \textbf{segment\_release}(t\_segid \textbf{segid});}
-
-This function releases a segment.
-
-\prototype{t\_error \textbf{segment\_catch}(t\_asid \textbf{asid},
-                                            t\_segid \textbf{segid});}
-
-This function  is used to  force a segment  to be given to  an address
-space.  ``catcheable''  segments  are   reserved  by  the  kernel  for
-architecture specific managers. Catcheable segments are defined in the
-\textit{kaneton.conf} file.
-
-\prototype{t\_error \textbf{segment\_perms}(t\_segid \textbf{segid},
-                                            t\_perms \textbf{perms});}
-
-This function changes permissions for a segment.
-
-\prototype{t\_error \textbf{segment\_type}(t\_segid \textbf{segid},
-                                           t\_type \textbf{type});}
-
-This function retrieves the type of a segment.
-
-\prototype{t\_error \textbf{segment\_flush}(t\_asid \textbf{asid});}
-
-This function  flushes the  segment container, releasing  all segments
-for all address spaces.
-
-\prototype{t\_error \textbf{segment\_get}(t\_segid \textbf{segid},
-                                          o\_segment** \textbf{o});}
-
-This  function  gets  the  segment  object  associated  to  a  segment
-identifier.
+\prototype{t\_error \textbf{segment\_get}(u\_segment \textit{u},
+                                          o\_segment** \textit{o});}
+	  {This function gets the segment object associated to a segment
+	    identifier.}
 
 \prototype{t\_error \textbf{segment\_init}(void);}
-
-This function initialises the segment manager.
+	  {This function initializes the segment manager.}
 
 \prototype{t\_error \textbf{segment\_clean}(void);}
+	  {This function cleans the segment manager.}
 
-This function cleans the segment manager.
-
-In  addition,  students  have  to  implement  a  first-fit  allocation
+---
+In addition, students have to implement a first-fit allocation
 algorithm for physical pages.
 
 \prototype{t\_error \textbf{segment\_fit}(o\_as* \textbf{as},
                                           t\_psize \textbf{size},
                                           t\_paddr* \textbf{address});}
+	  {This function searchs the given address space for a segment
+	    of given size.
 
-This function searchs  the given address space for  a segment of given
-size.
+	    This function must be placed in a separated file: take a look
+	    at the \textit{\_SEGMENT\_FILE\_} variable in you
+	    \textit{user.conf} file.
 
-This function must  be placed in a separated file: take  a look at the
-\textbf{\_SEGMENT\_FILE\_} variable in you \textit{user.conf} file.
+	    As there can be more than one algorithm available, do not forget
+	    to use the \textit{SEGMENT\_FIT} define in your \textit{conf.h}
+	    file.
 
-As there  can be more than  one algorithm available, do  not forget to
-use  the  \textbf{SEGMENT\_FIT} define  in  your \textit{conf.h}  file
-(default  value is \textbf{FIT\_FIRST}.  More values  can be  added in
-\textit{core/include/kaneton/kaneton.h}
+	    More values can be added in
+	    \textit{core/include/kaneton/kaneton.h}}
 
-\subsubsection{IA-32 implementation}
-
-Students  have to  implement all  the architecture-dependent  code for
-Intel.
-
-Depending  on the  chosen variation  around IA-32,  there  are several
-rules to follow:
-
-\begin{itemize}
-
-\item ia32-virtual:
-\begin{itemize}
-
-\item Segment  sizes are  aligned on page  size. Assuming you  are not
-using PSE  (4 Mbyte pages), this  value will be 4096.  Remember to use
-the \textbf{PAGESZ} define.
-
-\item You must create two segments  (one for code, the other for data)
-per task class:  kernel, driver, service, and user  program.  Each one
-must have the appropriate privilege level and permissions.
-
-\end{itemize}
-
-\item ia32-segment:
-\begin{itemize}
-
-\item Obi-Wan Kenobi
-
-\end{itemize}
-\end{itemize}
-
-%
-% console manager
-%
-
-\subsection{console manager}
-
-\subsubsection{Students work}
-
-In fact only two functions are required for the console driver.
-
-\prototype{void \textbf{cons\_attr}(t\_uint8 \textbf{attr});}
-
-This is  the first \textbf{required} function.  This function modifies
-display attributes for next characters printing.
-
-\prototype{int \textbf{cons\_print\_char}(char \textbf{c});}
-
-This  is  the second  \textbf{required}  function.  It  adds a  single
-character with the currently defined attribute.
-
-Next  functions   are  not  necessary,  but  you   must  provide  some
-equivalent.
-
-\prototype{void \textbf{cons\_clear}(void);}
-
-This function clears the console.
-
-\prototype{void \textbf{cons\_scroll}(t\_uint16 \textbf{lines});}
-
-This function scrolls by given number of lines.
-
-\prototype{void \textbf{cons\_print\_string}(char* \textbf{string});}
-
-This function prints a string.
-
-\prototype{void \textbf{cons\_msg}(char \textbf{indicator},
-                                   char* \textbf{fmt},
-                                   ...);}
-
-This function is used to display formatted and coloured messages.
-
-\prototype{t\_error \textbf{cons\_init}(void);}
-
-\prototype{t\_error \textbf{cons\_clean}(void);}
-
-%
-% klibc introduction
-%
-
-\subsection{klibc introduction}
-
-%
-% modification to kernel main
-%
-
-\subsection{kernel main procedure}
-
-As the first managers are now  working, it is time to write the kernel
-main procedure.
-
-This  one is  contained  in \textit{core/kaneton/kaneton.c}.  Students
-must first initialize the \textbf{init} variable from the one given by
-the bootloader. Then, they  must initialize the differents manager. Do
-not forget that  it is better to initialize the  set manager before as
-and segment, since these managers rely on sets !
-
-Do not  forget to  initialize the kernel  standard library.   You must
-initialize  the  \textbf{printf}  function  passing  pointers  to  the
-console  manager functions to  \textbf{print\_init}. In  addition, you
-must initialize the kernel  \textbf{malloc} function which is used for
-early initial stages  (until as, segment and region  are running, this
-will  be  possible  in  k3).  You must  use  the  \textbf{alloc\_init}
-function,  passing  the  survival   area  pre-allocated  in  k1  (fields
-\textbf{alloc} and \textbf{allocsz} of \textbf{t\_init}).
-
-To finish, you  have to create the kernel address  space and to inject
-the pre-allocated segments in.
-
-Finally, all  managers must be destroyed  calling the \textbf{\_clean}
-functions for each one (in the good order !).
-
-You might place  code for your tests between these  two phases. Do not
-forget to disable it for the final tarball.
+---
 
 %
 % bonus
 %
 
-\subsection{k2 bonus}
+\subsubsection{Bonus}
 
-Students can implement a better allocation algorithm for
-segments, like Buddy systems.
+Students can implement a better allocation algorithm for segments,
+like Buddy Systems.
 
+%
+% ia32
+%
 
-XXX expliquer lorsqu'on aborde les sets que vu que ca se base sur
-XXX malloc il fallait trouver une solution
+\subsection{Intel Architecture 32-bit Implementation}
+
+Students will have to develop the architecture-dependent part of the
+address space manager and segment manager.
+
+For the segment manager, the only work of the architecture-dependent source
+code is to get control over the protected mode so to rebuild the Global
+Descriptor Table for the kaneton needs.
+
+For the address space manager, the only work the architecture do is to
+manager Page Directories, allocating and releasing them each time an
+address space object is created, destroyed, modified etc..
+
+The corresponding source files are:
+
+\begin{itemize}
+  \item
+    \textit{core/kaneton/arch/[architecture]/segment.c}.
+  \item
+    \textit{core/kaneton/arch/[architecture]/as.c}.
+\end{itemize}
+
+The corresponding include files are:
+
+\begin{itemize}
+  \item
+    \textit{core/include/arch/[architecture]/kaneton/segment.h}.
+  \item
+    \textit{core/include/arch/[architecture]/kaneton/as.h}.
+\end{itemize}
+
+Students must implement all dependent functions they need. Remember that
+functions in \textit{libia32} should be reused.
+
+Take a look at the kaneton reference paper for more information about
+machine-dependent calls.
+
+\subsubsection{Tips}
+
+\begin{itemize}
+  \item
+    Segment sizes are aligned on page size. Assuming you are not using
+    four megabytes pages, this value will be 4096.
+
+    Remember to use the \textbf{PAGESZ} define.
+  \item
+    You must create two segments, one for code, the other for data
+    per task class: core, driver, service, and user program.
+
+    Each one must have the appropriate privilege level and permissions.
+\end{itemize}
+
+%
+% main procedure
+%
+
+\subsection{Main Procedure}
+
+As the first managers are now working, it is time to write the kernel
+main procedure.
+
+This  one is  contained in \textit{core/kaneton/kaneton.c}. Students
+must first initialize the \textbf{init} variable from the one given by
+the bootloader.
+
+Then, they  must initialize the differents manager. Do not forget that
+it is better to initialize the set manager before as and segment,
+since these managers rely on sets!
+
+Do not forget to initialize the kernel standard library.
+
+You must initialize the \textbf{printf} function passing pointers to the
+console manager functions to \textbf{printf\_init()}.
+
+In addition, you must initialize the kernel \textbf{malloc} function which
+is used for early initial stages, until as, segment and region are running.
+You must use the \textbf{alloc\_init()} function, passing the survival area.
+
+To finish, you  have to create the kernel address space and to inject
+the pre-allocated segments in.
+
+Finally, all managers must be destroyed calling the clean() functions for
+each one.
+
+You might place code for your tests between these two phases. Do not
+forget to disable it for the final tarball.

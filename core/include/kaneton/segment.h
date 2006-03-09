@@ -192,8 +192,8 @@ t_error			segment_clone(t_asid			asid,
 t_error			segment_inject(t_asid		asid,
 				       o_segment*	o);
 
-t_error			segment_give(t_asid		asid,
-				     t_segid		segid);
+t_error			segment_give(t_segid		segid,
+				     t_asid		asid);
 
 t_error			segment_resize(t_segid		old,
 				       t_psize		size,

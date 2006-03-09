@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
+ * file          /home/mycure/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri mar  3 15:31:07 2006]
+ * updated       julien quintard   [thu mar  9 16:20:25 2006]
  */
 
 /*
@@ -270,7 +270,7 @@ t_error			segment_clone(t_asid			asid,
 t_error			segment_inject(t_asid		asid,
 				       o_segment*	o)
 {
-  o_as			*oas;
+  o_as			*as;
 
   SEGMENT_ENTER(segment);
 
@@ -278,7 +278,7 @@ t_error			segment_inject(t_asid		asid,
    * 1)
    */
 
-  if (as_get(asid, &oas) != ERROR_NONE)
+  if (as_get(asid, &as) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -295,7 +295,7 @@ t_error			segment_inject(t_asid		asid,
   if (set_add(segment->container, o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (set_add(oas->segments, &o->segid) != ERROR_NONE)
+  if (set_add(as->segments, &o->segid) != ERROR_NONE)
     {
       set_remove(segment->container, o->segid);
 
@@ -306,8 +306,7 @@ t_error			segment_inject(t_asid		asid,
    * 4)
    */
 
-  if (machdep_call(segment, segment_inject, asid, o) !=
-      ERROR_NONE)
+  if (machdep_call(segment, segment_inject, asid, o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
@@ -326,8 +325,8 @@ t_error			segment_inject(t_asid		asid,
  * 6) calls dependent code.
  */
 
-t_error			segment_give(t_asid		asid,
-				     t_segid		segid)
+t_error			segment_give(t_segid		segid,
+				     t_asid		asid)
 {
   o_segment*		o;
   o_as*			dest;

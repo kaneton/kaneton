@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/goals.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:09:17 2006]
-%% updated       julien quintard   [thu mar  2 01:21:16 2006]
+%% updated       julien quintard   [mon mar  6 02:12:33 2006]
 %%
 
 %
@@ -15,72 +15,72 @@
 
 \chapter{Goals}
 
-The kaneton microkernel is studied during the EPITA System, Network
-and  Security specialization. The project comes with many courses
-leading student to learn about architectures and kernels and to design
-and develop important parts of a microkernel.
+In this chapter we will briefly introduce the kaneton microkernel
+through the kaneton microkernel goals.
 
-From this fact, kaneton has been designed in a very particular way to
-keep the design as simple as possible to be understandable by the
-students.
-
-kaneton is not based on any previous kernel code: it is written from
-scratch. As we wanted the kernel to be portable on any architecture,
-we paid particular attention in dividing the code into two precise
-sections: the architecture-independent code and the
-architecture-dependent code.
-
----
-
-We also use terms to design these two different pieces of code, the
-\textbf{core} and the \textbf{arch} respectively. These terms are not
-quite defined and are not very clear and expressive but we chose them.
-
----
-
-Designing this portability system, we intended to port the kernel on
-many architectures, so we had to keep the architecture-dependent code
-as small as possible. Moreover, the only requirement about the
-hardware is the minimal amount of memory, which must be at least 32
-megabytes.
-
-As we wanted the project to be very pedagogic, kaneton source code is
-clear and heavily commented. Each manager has its own directory and
-headers. Function names and prototypes are unified and explicit.
-Each function is preceded by a header explaining the task it performs
-and detailing the different steps.
+\newpage
 
 %
-% history
+% text
 %
 
-\section{History}
+The project was primarily designed by two students in computer science,
+Julien Quintard and Jean-Pascal Billaud.
 
-%
-% year 2006
-%
+These two students previously actively contributed to the development
+of a laboratory's microkernel based operating system project. This system
+was not powerful enough from the design point of view.
 
-\subsection{Year 2006}
+Therefore, the two students started the design of a new microkernel
+by their own, called \textbf{kaneton}, for a pedagogical use.
 
-The kaneton project comes with a development environment. Then the
-students have to write parts of the microkernel without having to
-build a development environment from scratch which takes much time.
+The design was based on five fundamental guidelines.
 
-Moreover, courses were added to the EPITA specialization curriculum
-including microprocessor's architectures, kernels history etc..
+First, the kaneton project was built to become a pedagogical project.
+Therefore, kaneton must be understandable be everyone willing learn
+operating systems internals.
 
-%
-% year 2005
-%
+A pedagogical project needs to be understandable by every student. So
+the kaneton design must be as clear as possible and by the way the
+kaneton microkernel implementation source code should also use
+special techniques to be easily comprehensible and generic.
 
-\subsection{Year 2005}
+Second, the microkernel was particularly designed to be portable on every
+architectures. The designers tried to develop a portability system powerful
+enough to port kaneton on any, existing or not, architectures.
 
-The first complete kaneton project was scheduled from January to December.
+The third point is the maintainability. In fact, microkernel based
+operating systems use a modular design, but kaneton designers
+also wanted the microkernel itself to be modular and maintainable.
 
-%
-% year 2004
-%
+Fourth, the kaneton microkernel had to be designed to fit in distributed
+operating systems requirements. Indeed, the kaneton microkernel was
+developed in order to design and implement a distributed operating
+system called \textbf{kayou}.
 
-\subsection{Year 2004}
+This point led to many specific choices in the kaneton microkernel design.
 
-The project was introduced by students willing learn kernel architectures.
+Fifth, kaneton people would like to break some well-known kinds of
+computer science rules. Indeed, for example, many computer scientists
+consider that a project documentation is its source code itself.
+Another example is, for many low-level programmers, the kernel boot source
+code and more generally the kernel source code cannot be understandable by
+everybody because too messy.
+
+kaneton people paid particular attention in microkernel source code to be
+easily understandable, maintainable and extendable. Moreover, kaneton
+people tried to write documentation for every part of the project.
+
+Notice that building a pedagogical microkernel project is nothing innovative.
+Indeed few other projects already exist; the most popular being MINIX, Xinu
+and NachOS.
+
+kaneton people tried to design and implement a more modern microkernel
+since, the MINIX microkernel for example, do not use modern development tools.
+Moreover, the kaneton source code is heavily commented and use modern
+languages techniques.
+
+Finally, the kaneton microkernel was first designed to fit in the
+kayou requirements. The kaneton project itself is just a step
+leading to the kayou distributed operating system which will
+be used as a pedagogical material for distributed courses.
