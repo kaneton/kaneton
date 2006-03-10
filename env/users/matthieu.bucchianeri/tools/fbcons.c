@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/debug/fbcons.c
+ * file          /home/mycure/kaneton/env/users/matthieu.bucchianeri/tools/fbcons.c
  *
  * created       matthieu bucchianeri   [fri dec  2 20:14:33 2005]
- * updated       matthieu bucchianeri   [sun dec  4 17:02:04 2005]
+ * updated       julien quintard   [fri mar 10 03:58:05 2006]
  */
 
 /*
@@ -29,7 +29,7 @@
 
 
 /*
- * ---------- defines --------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*

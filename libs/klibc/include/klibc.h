@@ -3,17 +3,17 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/include/klibc.h
+ * file          /home/mycure/kaneton/libs/klibc/include/klibc.h
  *
  * created       julien quintard   [fri feb 11 13:53:34 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:51:37 2006]
+ * updated       julien quintard   [fri mar 10 03:48:43 2006]
  */
 
 #ifndef KLIBC_H
 #define KLIBC_H			1
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define NULL			((void*)0)

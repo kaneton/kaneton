@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/set.h
+ * file          /home/mycure/kaneton/core/include/kaneton/set.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       matthieu bucchianeri   [tue jan 31 01:07:31 2006]
+ * updated       julien quintard   [fri mar 10 04:00:08 2006]
  */
 
 #ifndef KANETON_SET_H
@@ -21,7 +21,7 @@
 #include <kaneton/types.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*
@@ -151,7 +151,7 @@ typedef struct
 }				m_set;
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*

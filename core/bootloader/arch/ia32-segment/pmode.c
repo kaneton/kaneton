@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/export_kaneton/kaneton/core/bootloader/arch/ia32-segment/pmode.c
+ * file          /home/mycure/kaneton/core/bootloader/arch/ia32-segment/pmode.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [mon jan 30 20:22:12 2006]
+ * updated       julien quintard   [fri mar 10 03:58:09 2006]
  */
 
 /*
@@ -30,7 +30,7 @@
 /*                                                                  [cut] k1 */
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define PMODE_GDT_ENTRIES	256

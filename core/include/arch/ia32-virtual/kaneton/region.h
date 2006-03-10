@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/arch/ia32-virtual/kaneton/region.h
+ * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/region.h
  *
  * created       julien quintard   [wed dec 14 07:04:32 2005]
- * updated       matthieu bucchianeri   [sun jan 15 18:19:14 2006]
+ * updated       julien quintard   [fri mar 10 04:03:10 2006]
  */
 
 #ifndef IA32_KANETON_REGION_H
@@ -20,13 +20,13 @@
 #include <klibc.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define REGION_VMEM_MAX		UINT_MAX
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 #define		machdep_include_region()				\

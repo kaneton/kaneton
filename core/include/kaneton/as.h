@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/as.h
+ * file          /home/mycure/kaneton/core/include/kaneton/as.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sat feb 18 18:48:43 2006]
+ * updated       julien quintard   [fri mar 10 04:01:52 2006]
  */
 
 #ifndef KANETON_AS_H
@@ -21,7 +21,7 @@
 #include <kaneton/types.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*
@@ -94,7 +94,7 @@ typedef struct
 }				i_as;
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*

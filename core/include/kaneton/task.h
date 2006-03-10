@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/task.h
+ * file          /home/mycure/kaneton/core/include/kaneton/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       matthieu bucchianeri   [sat feb 18 18:56:15 2006]
+ * updated       julien quintard   [fri mar 10 04:01:44 2006]
  */
 
 #ifndef KANETON_TASK_H
@@ -22,7 +22,7 @@
 #include <kaneton/types.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*
@@ -139,7 +139,7 @@ typedef struct
 }				i_task;
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*

@@ -1,18 +1,18 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/libs/libia32/include/interrupt/idt.h
+ * file          /home/mycure/kaneton/libs/libia32/include/pmode/idt.h
  *
  * created       renaud voltz   [fri feb 10 16:36:20 2006]
- * updated       renaud voltz   [fri feb 10 16:36:20 2006]
+ * updated       julien quintard   [fri mar 10 03:53:28 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * protected mode structures and defines.
+ * protected mode structures and macros.
  *
  */
 
@@ -28,7 +28,7 @@
 #include "../misc/types.h"
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*

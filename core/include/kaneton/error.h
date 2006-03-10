@@ -3,17 +3,17 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/error.h
+ * file          /home/mycure/kaneton/core/include/kaneton/error.h
  *
  * created       julien quintard   [fri feb 11 02:19:11 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:32:44 2006]
+ * updated       julien quintard   [fri mar 10 03:37:50 2006]
  */
 
 #ifndef KANETON_ERROR_H
 #define KANETON_ERROR_H		1
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define ERROR_NONE		(1 << 0)

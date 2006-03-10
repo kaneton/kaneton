@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/id.h
+ * file          /home/mycure/kaneton/core/include/kaneton/id.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:32:18 2006]
+ * updated       julien quintard   [fri mar 10 04:00:17 2006]
  */
 
 #ifndef KANETON_ID_H
@@ -42,13 +42,13 @@ typedef struct
 }				m_id;
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define ID_UNUSED		((t_id)-1)
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*

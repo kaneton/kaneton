@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/debug/cons-vga.c
+ * file          /home/mycure/kaneton/core/kaneton/debug/cons-vga.c
  *
  * created       matthieu bucchianeri   [fri dec  2 20:14:33 2005]
- * updated       matthieu bucchianeri   [mon jan 30 22:45:38 2006]
+ * updated       julien quintard   [fri mar 10 03:36:46 2006]
  */
 
 /*
@@ -29,7 +29,7 @@
 
 
 /*
- * ---------- defines --------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*

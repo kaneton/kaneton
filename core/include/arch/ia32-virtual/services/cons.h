@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/arch/machdep/services/cons.h
+ * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/services/cons.h
  *
  * created       julien quintard   [sat dec 17 17:16:27 2005]
- * updated       matthieu bucchianeri   [thu jan  5 11:08:23 2006]
+ * updated       julien quintard   [fri mar 10 04:04:05 2006]
  */
 
 /*
@@ -32,7 +32,7 @@
 #include <libia32.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define CONS_ADDR		0xb8000
@@ -55,7 +55,7 @@
 #define CONS_WHITE		0x7
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 #define CONS_FRONT(_color_)	(_color_)

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/kaneton/stats.h
+ * file          /home/mycure/kaneton/core/include/kaneton/stats.h
  *
  * created       julien quintard   [sun jan 19 14:51:33 2005]
- * updated       matthieu bucchianeri   [tue dec  6 00:48:18 2005]
+ * updated       julien quintard   [fri mar 10 04:00:26 2006]
  */
 
 #ifndef KANETON_STATS_H
@@ -22,7 +22,7 @@
 #include <kaneton/conf.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define STATS_CONTAINER_INITSZ	0x8
@@ -69,7 +69,7 @@ typedef struct
 }				m_stats;
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*

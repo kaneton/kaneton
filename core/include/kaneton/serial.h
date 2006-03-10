@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/serial.h
+ * file          /home/mycure/kaneton/core/include/kaneton/serial.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:29:21 2006]
+ * updated       julien quintard   [fri mar 10 03:40:49 2006]
  */
 
 #ifndef	KANETON_SERIAL_H
@@ -19,7 +19,7 @@
 #include <arch/machdep/machdep.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define SERIAL_COM1		0x3f8

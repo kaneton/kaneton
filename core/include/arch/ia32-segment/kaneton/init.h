@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/arch/ia32-segment/kaneton/init.h
+ * file          /home/mycure/kaneton/core/include/arch/ia32-segment/kaneton/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       matthieu bucchianeri   [mon jan 30 22:37:00 2006]
+ * updated       julien quintard   [fri mar 10 04:04:56 2006]
  */
 
 #ifndef IA32_KANETON_INIT_H
@@ -20,16 +20,8 @@
 #include <arch/machdep/services/cons.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
-
-/*
- * this address defines the 16Mb. the kernel will be relocates at this
- * address followed by many data structures: modules, segments, regions,
- * global offset tables etc..
- */
-
-#define INIT_RELOCATE		0x1000000
 
 /*
  * the segments represent the physical memory areas to keep safe.
@@ -78,7 +70,7 @@ typedef struct
 }				d_init;
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*

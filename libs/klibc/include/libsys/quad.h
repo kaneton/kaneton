@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/include/libsys/quad.h
+ * file          /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
  *
  * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:52:59 2006]
+ * updated       julien quintard   [fri mar 10 04:08:59 2006]
  */
 
 #ifndef LIBSYS_QUAD_H
@@ -39,7 +39,7 @@ union		uu
 typedef unsigned int		qshift_t;
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*
@@ -68,7 +68,7 @@ typedef unsigned int		qshift_t;
 #define QUAD_HALF_BITS		(sizeof(long) * CHAR_BITS / 2)
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*

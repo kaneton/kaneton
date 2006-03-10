@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/export_kaneton/kaneton/core/include/arch/ia32-segment/kaneton/segment.h
+ * file          /home/mycure/kaneton/core/include/arch/ia32-segment/kaneton/segment.h
  *
  * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       matthieu bucchianeri   [mon jan 30 20:38:01 2006]
+ * updated       julien quintard   [fri mar 10 04:04:36 2006]
  */
 
 #ifndef IA32_KANETON_SEGMENT_H
@@ -21,7 +21,7 @@
 /*                                                                [cut] k2   */
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define PMODE_GDT_CORE_CS	0x1
@@ -36,7 +36,7 @@
 /*                                                               [cut] /k2   */
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 #define		machdep_include_segment()				\

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/region.h
+ * file          /home/mycure/kaneton/core/include/kaneton/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [mon mar  6 14:18:37 2006]
+ * updated       julien quintard   [fri mar 10 04:02:01 2006]
  */
 
 #ifndef KANETON_REGION_H
@@ -21,7 +21,7 @@
 #include <kaneton/types.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*
@@ -98,7 +98,7 @@ typedef struct
 }				i_region;
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*

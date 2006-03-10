@@ -3,17 +3,17 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/include/libsys/limits.h
+ * file          /home/mycure/kaneton/libs/klibc/include/libsys/limits.h
  *
  * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:53:04 2006]
+ * updated       julien quintard   [fri mar 10 03:47:22 2006]
  */
 
 #ifndef LIBSYS_LIMITS_H
 #define LIBSYS_LIMITS_H		1
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*

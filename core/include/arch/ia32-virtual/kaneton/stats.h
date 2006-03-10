@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/arch/ia32-virtual/kaneton/stats.h
+ * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/stats.h
  *
  * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:25:29 2006]
+ * updated       julien quintard   [fri mar 10 04:02:45 2006]
  */
 
 #ifndef IA32_KANETON_STATS_H
@@ -19,7 +19,7 @@
 #include <kaneton/stats.h>
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 #define		machdep_include_stats()

@@ -3,17 +3,17 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/arch/ia32-segment/kaneton/kaneton.h
+ * file          /home/mycure/kaneton/core/include/arch/ia32-segment/kaneton/kaneton.h
  *
  * created       julien quintard   [sat dec 17 17:13:18 2005]
- * updated       matthieu bucchianeri   [tue jan 31 01:38:05 2006]
+ * updated       julien quintard   [fri mar 10 03:56:44 2006]
  */
 
 #ifndef IA32_KANETON_KANETON_H
 #define IA32_KANETON_KANETON_H	1
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define ___endian		ENDIAN_LITTLE

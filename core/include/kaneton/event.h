@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/core/include/kaneton/event.h
+ * file          /home/mycure/kaneton/core/include/kaneton/event.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       renaud voltz   [sun feb 12 22:26:04 2006]
+ * updated       julien quintard   [fri mar 10 04:02:12 2006]
  */
 
 #ifndef KANETON_EVENT_H
@@ -68,7 +68,7 @@ typedef struct
 }				i_event;
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*

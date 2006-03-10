@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/libs/libia32/time/timer.c
+ * file          /home/mycure/kaneton/libs/libia32/time/timer.c
  *
  * created       renaud voltz   [mon feb 27 04:20:33 2006]
- * updated       renaud voltz   [mon feb 27 04:20:33 2006]
+ * updated       julien quintard   [fri mar 10 03:56:11 2006]
  */
 
 /*
@@ -36,7 +36,7 @@
 /*                                                                  [cut] k3 */
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*

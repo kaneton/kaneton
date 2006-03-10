@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/segment.h
+ * file          /home/mycure/kaneton/core/include/kaneton/segment.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [fri mar  3 15:27:39 2006]
+ * updated       julien quintard   [fri mar 10 04:00:47 2006]
  */
 
 #ifndef KANETON_SEGMENT_H
@@ -21,7 +21,7 @@
 #include <kaneton/types.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*
@@ -135,7 +135,7 @@ typedef struct
 }				i_segment;
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*

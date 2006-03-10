@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/debug.h
+ * file          /home/mycure/kaneton/core/include/kaneton/debug.h
  *
  * created       julien quintard   [mon nov 28 19:37:01 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:24:17 2006]
+ * updated       julien quintard   [fri mar 10 03:41:10 2006]
  */
 
 #ifndef KANETON_DEBUG_H
@@ -19,7 +19,7 @@
 #include <arch/machdep/machdep.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define DEBUG_PARAMS		(1 << 0)

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/arch/ia32-virtual/kaneton/task.h
+ * file          /home/mycure/kaneton/core/include/arch/ia32-segment/kaneton/task.h
  *
  * created       julien quintard   [sat dec 10 15:24:34 2005]
- * updated       matthieu bucchianeri   [sun jan 15 18:20:32 2006]
+ * updated       julien quintard   [fri mar 10 04:04:45 2006]
  */
 
 #ifndef IA32_KANETON_TASK_H
@@ -19,7 +19,7 @@
 // XXX #include <kaneton/task.h>
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 #define		machdep_include_task()					\

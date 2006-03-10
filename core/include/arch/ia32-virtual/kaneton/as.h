@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/arch/ia32-virtual/kaneton/as.h
+ * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/as.h
  *
  * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       matthieu bucchianeri   [fri mar  3 13:24:54 2006]
+ * updated       julien quintard   [fri mar 10 04:03:20 2006]
  */
 
 #ifndef IA32_KANETON_AS_H
@@ -36,7 +36,7 @@ typedef struct
 }				do_as;
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 #define		machdep_include_as()					\

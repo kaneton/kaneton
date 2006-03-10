@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/export_kaneton/kaneton/env/users/student/conf.h
+ * file          /home/mycure/kaneton/env/users/student/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [mon jan 30 20:03:41 2006]
+ * updated       julien quintard   [fri mar 10 03:44:55 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -19,7 +19,7 @@
 #include <kaneton/debug.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*

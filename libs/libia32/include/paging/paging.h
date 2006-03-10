@@ -3,16 +3,16 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/include/paging/paging.h
+ * file          /home/mycure/kaneton/libs/libia32/include/paging/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri mar  3 13:27:37 2006]
+ * updated       julien quintard   [fri mar 10 04:09:39 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * declares paging structures, defines, etc.
+ * declares paging structures, macros, etc.
  *
  */
 
@@ -28,7 +28,7 @@
 #include "../misc/types.h"
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*
@@ -86,7 +86,7 @@
 #define PD_MIRROR		1023
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 #define PDE_ENTRY(Paddr)						\

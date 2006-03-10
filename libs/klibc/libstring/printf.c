@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libs/klibc/libstring/printf.c
+ * file          /home/mycure/kaneton/libs/klibc/libstring/printf.c
  *
  * created       julien quintard   [thu may  6 14:37:44 2004]
- * updated       matthieu bucchianeri   [thu dec 29 17:49:07 2005]
+ * updated       julien quintard   [fri mar 10 03:49:08 2006]
  */
 
 /*
@@ -17,7 +17,7 @@
 #include <klibc.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define GET_VAL(Sign)							\

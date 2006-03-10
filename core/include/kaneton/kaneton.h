@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/kaneton.h
+ * file          /home/mycure/kaneton/core/include/kaneton/kaneton.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sun feb 26 13:05:00 2006]
+ * updated       julien quintard   [fri mar 10 04:00:37 2006]
  */
 
 #ifndef KANETON_KANETON_H
@@ -19,7 +19,7 @@
 #include <arch/machdep/machdep.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*
@@ -55,7 +55,7 @@
 #define FIT_WORST		(1 << 3)
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 #define kaneton_error(_fmt_...)						\

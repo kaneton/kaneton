@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/include/libstring/ctype.h
+ * file          /home/mycure/kaneton/libs/klibc/include/libstring/ctype.h
  *
  * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:53:34 2006]
+ * updated       julien quintard   [fri mar 10 03:48:32 2006]
  */
 
 #ifndef LIBSTRING_CTYPE_H
@@ -19,7 +19,7 @@
 #include <libsys/types.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define _U			0x01
@@ -40,7 +40,7 @@ extern const short	_ctype_toupper[];
 extern const short	_ctype_tolower[];
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 #define isdigit(c)	((int) ((_ctype + 1)[(int) (c)] & _N))

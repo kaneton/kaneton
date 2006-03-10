@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/arch/machdep/machdep.h
+ * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/machdep.h
  *
  * created       julien quintard   [fri feb 11 02:23:53 2005]
- * updated       matthieu bucchianeri   [thu jan  5 11:06:48 2006]
+ * updated       julien quintard   [fri mar 10 04:04:17 2006]
  */
 
 #ifndef IA32_MACHDEP_H
@@ -22,7 +22,7 @@
 #include <arch/machdep/sys/sys.h>
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*

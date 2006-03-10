@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/include/libstring/printf.h
+ * file          /home/mycure/kaneton/libs/klibc/include/libstring/printf.h
  *
  * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:53:20 2006]
+ * updated       julien quintard   [fri mar 10 03:47:57 2006]
  */
 
 #ifndef LIBSTRING_PRINTF_H
@@ -19,7 +19,7 @@
 #include <libsys/types.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define PRINTF_LADJUST		0x1
@@ -27,7 +27,7 @@
 #define PRINTF_DOT		0x4
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 #define PRINTF_SWAP(_i1_, _i2_)						\

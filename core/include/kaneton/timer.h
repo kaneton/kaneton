@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/core/include/kaneton/timer.h
+ * file          /home/mycure/kaneton/core/include/kaneton/timer.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       renaud voltz   [sun feb 12 22:26:04 2006]
+ * updated       julien quintard   [fri mar 10 04:02:19 2006]
  */
 
 #ifndef KANETON_TIMER_H
@@ -70,7 +70,7 @@ typedef struct
 }				i_timer;
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*

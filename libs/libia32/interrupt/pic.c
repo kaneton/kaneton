@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/interrupt/interrupt.c
+ * file          /home/mycure/kaneton/libs/libia32/interrupt/pic.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:44:58 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:49:40 2006]
+ * updated       julien quintard   [fri mar 10 03:54:59 2006]
  */
 
 /*
@@ -37,7 +37,7 @@
 /*                                                                  [cut] k3 */
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*

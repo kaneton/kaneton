@@ -3,17 +3,17 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/arch/libia32/isa.h
+ * file          /home/mycure/kaneton/libs/libia32/include/misc/isa.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue dec 20 14:09:40 2005]
+ * updated       julien quintard   [fri mar 10 03:54:19 2006]
  */
 
 #ifndef IA32_IA32_ISA_H
 #define IA32_IA32_ISA_H		1
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*

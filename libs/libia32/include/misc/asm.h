@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/include/misc/asm.h
+ * file          /home/mycure/kaneton/libs/libia32/include/misc/asm.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon jan 30 22:28:58 2006]
+ * updated       julien quintard   [fri mar 10 04:13:15 2006]
  */
 
 /*
@@ -22,11 +22,11 @@
 /*                                                                  [cut] k2 */
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*
- * asm macros
+ * asm macro functions
  */
 
 #define		CLI()							\
@@ -80,7 +80,7 @@
 	       :)
 
 /*
- * pio macros
+ * pio macro functions
  */
 
 #define		OUTB(_port_, _data_)					\

@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/core/include/arch/ia32-virtual/kaneton/event.h
+ * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/event.h
  *
  * created       renaud voltz   [mon feb 13 00:56:13 2006]
- * updated       renaud voltz   [mon feb 13 00:56:13 2006]
+ * updated       julien quintard   [fri mar 10 04:03:40 2006]
  */
 
 #ifndef IA32_KANETON_EVENT_H
@@ -19,7 +19,7 @@
 /* #include <kaneton/event.h> */
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 #define		machdep_include_event()					\

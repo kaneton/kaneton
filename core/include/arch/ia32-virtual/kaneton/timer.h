@@ -1,19 +1,19 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/core/include/arch/ia32-virtual/kaneton/timer.h
+ * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/timer.h
  *
  * created       renaud voltz   [mon feb 13 00:56:13 2006]
- * updated       renaud voltz   [mon feb 13 00:56:13 2006]
+ * updated       julien quintard   [fri mar 10 04:03:50 2006]
  */
 
 #ifndef IA32_KANETON_TIMER_H
 #define IA32_KANETON_TIMER_H	1
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 #define		machdep_include_timer()					\

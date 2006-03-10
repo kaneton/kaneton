@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/env/users/julien.quintard/conf.h
+ * file          /home/mycure/kaneton/env/users/cedric.aubouy/conf.h
  *
  * created       julien quintard   [sat dec 17 17:24:46 2005]
- * updated       julien quintard   [sat dec 17 17:25:09 2005]
+ * updated       julien quintard   [fri mar 10 03:46:21 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -19,7 +19,7 @@
 #include <kaneton/debug.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*

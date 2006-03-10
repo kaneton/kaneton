@@ -3,17 +3,17 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/include/libsys/suberrno.h
+ * file          /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h
  *
  * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:52:43 2006]
+ * updated       julien quintard   [fri mar 10 03:46:54 2006]
  */
 
 #ifndef LIBSYS_SUBERRNO_H
 #define LIBSYS_SUBERRNO_H	1
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*

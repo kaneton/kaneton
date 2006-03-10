@@ -3,17 +3,17 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/arch/libia32/multiboot.h
+ * file          /home/mycure/kaneton/libs/libia32/include/misc/multiboot.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue dec 20 14:09:52 2005]
+ * updated       julien quintard   [fri mar 10 03:54:06 2006]
  */
 
 #ifndef IA32_IA32_MULTIBOOT_H
 #define IA32_IA32_MULTIBOOT_H	1
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 #define MULTIBOOT_BOOTLOADER_MAGIC	0x2BADB002

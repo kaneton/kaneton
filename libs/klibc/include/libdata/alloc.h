@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/include/libdata/alloc.h
+ * file          /home/mycure/kaneton/libs/klibc/include/libdata/alloc.h
  *
  * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:53:47 2006]
+ * updated       julien quintard   [fri mar 10 03:46:43 2006]
  */
 
 #ifndef LIBDATA_ALLOC_H
@@ -20,7 +20,7 @@
 #include <arch/machdep/machdep.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*

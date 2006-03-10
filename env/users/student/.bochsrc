@@ -1,27 +1,35 @@
 ##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/env/users/student/.bochsrc
-##
-## created       matthieu bucchianeri   [mon jan 30 21:31:13 2006]
-## updated       matthieu bucchianeri   [mon jan 30 21:32:17 2006]
+## copyright quintard julien
+## 
+## .bochsrc
+## 
+## .bochsrc
+## 
+## path          /home/mycure/kaneton/dist
+## 
+## made by mycure
+##         quintard julien   [quinta_j@epita.fr]
+## 
+## started on    Fri Feb 11 01:49:25 2005   mycure
+## last update   Sat Jun  4 22:30:50 2005   mycure
 ##
 
 #
 # sample bochsrc file
 #
 
-romimage: file=$BXSHARE/BIOS-bochs-2-processors, address=0xf0000
+romimage: file=/usr/local/share/bochs/BIOS-bochs-2-processors, address=0xf0000
 
 ## normal case
-vgaromimage: $BXSHARE/VGABIOS-elpin-2.40
+vgaromimage: /usr/local/share/bochs/VGABIOS-elpin-2.40
+
+## for vbe
+#vgaromimage: /home/student/VGABIOS-lgpl-latest.bin
 
 ips: 500000
 megs: 32
 
-floppya: 1_44=kaneton.img, status=inserted
+floppya: 1_44=/home/student/kaneton.img, status=inserted
 #floppya: 1_44=/dev/fd0
 
 boot: floppy

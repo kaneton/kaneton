@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/libs/libia32/include/interrupt/interrupt.h
+ * file          /home/mycure/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       renaud voltz   [fri feb 17 16:48:22 2006]
+ * updated       julien quintard   [fri mar 10 03:54:30 2006]
  */
 
 /*
@@ -27,7 +27,7 @@
 #include "../misc/types.h"
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*

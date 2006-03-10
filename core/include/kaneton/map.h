@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/map.h
+ * file          /home/mycure/kaneton/core/include/kaneton/map.h
  *
  * created       matthieu bucchianeri   [sun feb 26 12:23:01 2006]
- * updated       matthieu bucchianeri   [mon feb 27 12:09:20 2006]
+ * updated       julien quintard   [fri mar 10 04:02:29 2006]
  */
 
 #ifndef KANETON_MAP_H
@@ -21,7 +21,7 @@
 #include <kaneton/types.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*
@@ -45,7 +45,7 @@ typedef struct
 }		m_map;
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*
