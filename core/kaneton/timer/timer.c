@@ -71,7 +71,7 @@ t_error			timer_show(t_timerid			timerid)
    * 2)
    */
 
-  cons_msg('#', "  timer %qd: delay = %u\n", o->timerid, o->delay);
+  cons_msg('#', "  timer %qd: delay = %u\n", o->timerid, o->delay - timer->timeref);
 
   TIMER_LEAVE(timer, ERROR_NONE);
 }
@@ -120,7 +120,7 @@ t_error			timer_dump(void)
 }
 
 /*
- * notify a task that a timer expired.
+ * notify a task that one of its timers expired.
  */
 
 t_error			timer_notify(t_timerid			timerid)
@@ -470,7 +470,8 @@ t_error			timer_clean(void)
    * 1)
    */
 
-  machdep_call(timer, timer_clean);
+  if (machdep_call(timer, timer_clean) != ERROR_NONE)
+    return ERROR_UNKNOWN;
 
   /*
    * 2)
@@ -534,41 +535,43 @@ t_error			timer_update(void)
        */
 
       if (set_head(timer->container, &iterator) != ERROR_NONE)
-	TIMER_LEAVE(timer, ERROR_UNKNOWN);
+        TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
 
       if (set_object(timer->container, iterator, (void**)&o) != ERROR_NONE)
-	TIMER_LEAVE(timer, ERROR_UNKNOWN);
+        TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
       /*
        * 2)
        */
 
       if (timer->timeref < o->delay)
-	break;
+        break;
 
       /*
        * 3)
        */
 
       if (timer_notify(o->timerid) != ERROR_NONE)
-	TIMER_LEAVE(timer, ERROR_UNKNOWN);
+        TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
       /*
        * 4)
        */
 
       if (o->repeat)
-	{
-	  if (timer_modify(o->timerid, o->repeat, 1) != ERROR_NONE)
-	    TIMER_LEAVE(timer, ERROR_UNKNOWN);
-	}
+        {
+          if (timer_modify(o->timerid, o->repeat, 1) != ERROR_NONE)
+            TIMER_LEAVE(timer, ERROR_UNKNOWN);
+        }
       else
-	{
-	  if (timer_release(o->timerid) != ERROR_NONE)
-	    TIMER_LEAVE(timer, ERROR_UNKNOWN);
-	}
+        {
+          if (timer_release(o->timerid) != ERROR_NONE)
+            TIMER_LEAVE(timer, ERROR_UNKNOWN);
+        }
     }
+
+
 
   TIMER_LEAVE(timer, ERROR_NONE);
 }
@@ -583,9 +586,8 @@ t_error			timer_update(void)
  * 3) call the scheduler.
  */
 
-t_error			timer_handler(void)
+void			timer_handler(t_uint32		id)
 {
-
   /*
    * 1)
    */
@@ -596,14 +598,31 @@ t_error			timer_handler(void)
    * 2)
    */
 
-  if (timer_update() != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  timer_update();
 
   /*
    * 3)
    */
 
   /* XXX should call the scheduler */
+}
+
+/*
+ * XXX TIMERS: remove me !
+ */
+
+t_error			check_timer(void)
+{
+  t_timerid		timerid;
+
+  if (timer_reserve(23, 500, 1, &timerid) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (timer_reserve(42, 100, 1, &timerid) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (timer_dump() != ERROR_NONE)
+    return ERROR_UNKNOWN;
 
   return ERROR_NONE;
 }

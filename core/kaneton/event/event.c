@@ -389,7 +389,7 @@ void			kbd_handler(t_uint32			id)
 
 t_error			check_event(void)
 {
-  u_event_handler handler;
+  u_event_handler	handler;
 
   handler.function = timer_handler;
 

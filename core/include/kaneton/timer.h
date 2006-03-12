@@ -108,11 +108,11 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/time/timer.c
+ *      ../../kaneton/timer/timer.c
  */
 
 /*
- * ../../kaneton/time/timer.c
+ * ../../kaneton/timer/timer.c
  */
 
 t_error			timer_show(t_timerid			timerid);
@@ -146,7 +146,9 @@ t_error			timer_clean(void);
 
 t_error			timer_update(void);
 
-t_error			timer_handler(void);
+void			timer_handler(t_uint32		id);
+
+t_error			check_timer(void);
 
 
 /*

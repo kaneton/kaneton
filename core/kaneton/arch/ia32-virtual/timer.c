@@ -34,7 +34,7 @@
  */
 
 /*
- * the timer manager interface.
+ * the ia32 timer manager interface.
  */
 
 i_timer				timer_interface =
@@ -44,6 +44,7 @@ i_timer				timer_interface =
 
     ia32_timer_init,
     ia32_timer_clean
+
     /*								[cut] /k3 */
 
   };
@@ -62,6 +63,12 @@ t_error			ia32_timer_init(void)
 {
   return pit_init(100);
 }
+
+/*
+ * clean the timer.
+ *
+ * nothing to do on the ia32 architecture.
+ */
 
 t_error			ia32_timer_clean(void)
 {
