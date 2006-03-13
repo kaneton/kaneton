@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/kaneton.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon mar  6 17:56:58 2006]
+ * updated       matthieu bucchianeri   [mon mar  6 18:34:54 2006]
  */
 
 /*
@@ -198,33 +198,7 @@ void			kaneton(t_init*				bootloader)
 #endif
 
 #ifdef SERIAL
- debug_init();
-#endif
-
-#if (DEBUG & DEBUG_AS)
- t_segid s;
- t_regid r, r2;
- t_paddr p;
-
- if (segment_reserve(0, 2 * 4096, PERM_READ | PERM_WRITE, &s) != ERROR_NONE)
-   printf ("err1\n");
- if (region_reserve(0, s, 0, REGION_OPT_FORCE, 0x1fff0000, 4096, &r) != ERROR_NONE)
-   printf ("err2\n");
- if (region_reserve(0, s, 4096, REGION_OPT_FORCE, 0x1fff2000, 4096, &r2) != ERROR_NONE)
-   printf ("err3\n");
- segment_show(s);
- region_show(0, r);
- region_show(0, r2);
- as_paddr(0, r, 0x1fff0100, &p);
- printf("seg: %qu, reg: %qu : %x ", s, r, p);
- as_paddr(0, r2, 0x1fff2300, &p);
- printf(", %x\n", p);
- tlb_flush();
- int *a = (int *)0x1fff0004;
- *a = 0x41424344;
- printf("r/w test: %x\n", *a);
- segment_dump();
- region_dump(0);
+  debug_init();
 #endif
 
   /*
@@ -239,7 +213,7 @@ void			kaneton(t_init*				bootloader)
 
 //  task_clean();
 
- map_clean();
+  map_clean();
 
   region_clean();
 

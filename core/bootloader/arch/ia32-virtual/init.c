@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [mon mar  6 17:56:00 2006]
+ * updated       matthieu bucchianeri   [mon mar 13 16:41:53 2006]
  */
 
 /*

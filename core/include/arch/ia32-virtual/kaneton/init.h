@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/init.h
+ * file          /home/buckman/kaneton/core/include/arch/ia32-virtual/kaneton/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       julien quintard   [fri mar 10 04:03:33 2006]
+ * updated       matthieu bucchianeri   [mon mar 13 16:42:17 2006]
  */
 
 #ifndef IA32_KANETON_INIT_H

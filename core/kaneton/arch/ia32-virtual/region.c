@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [mon mar  6 16:31:53 2006]
+ * updated       matthieu bucchianeri   [mon mar 13 17:21:12 2006]
  */
 
 /*
@@ -70,12 +70,95 @@ i_region		region_interface =
 
 /*                                                                  [cut] k2 */
 
+static t_error		ia32_region_create_page_table(o_as*		o,
+						      t_uint16		pde,
+						      t_directory	kpd,
+						      void*		address)
+{
+  t_page		pg;
+  t_table		pt;
+  o_region		optreg;
+  o_segment*		otbl;
+  t_segid		segtbl;
+
+  REGION_ENTER(region);
+
+  pt.rw = 1;
+  pt.present = 1;
+  pt.user = 0;
+  pt.entries = address;
+
+  pg.rw = 1;
+  pg.present = 1;
+  pg.user = 0;
+
+  if (pd_add_table(&o->machdep.pd, pde, pt) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * d)
+   */
+
+  pg.addr = (void*)pt.entries;
+
+  if (pd_get_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), &pt) !=
+      ERROR_NONE)
+    {
+      /*
+       * e)
+       */
+
+      if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
+			  &segtbl) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      if (segment_get(segtbl, &otbl) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      pt.entries = (void*)otbl->address;
+
+      /*
+       * f)
+       */
+
+      if (pd_add_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), pt) !=
+	  ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      optreg.address = (t_paddr)pg.addr;
+      optreg.segid = (t_segid)optreg.address;
+      optreg.offset = 0;
+      optreg.size = PAGESZ;
+
+      /*
+       * g)
+       */
+
+      if (region_inject(kasid, &optreg) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+    }
+
+  /*
+   * h)
+   */
+
+  pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY((t_paddr)pg.addr));
+
+  if (pt_add_page(&pt, PTE_ENTRY((t_paddr)pg.addr), pg) !=
+      ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  tlb_invalidate(pg.addr);
+
+  REGION_LEAVE(region, ERROR_NONE);
+}
+
 /* XXX revoir les commentaires un peu louches
  * reserves a region.
  *
  * steps:
  *
- * 1) gets the as object.
+ * 1) gets the as object and the kernel page directory.
  * 2) gets the task object (used to check privilege level).
  * 3) fills the t_page structure.
  * 4) gets the segment object.
@@ -110,8 +193,8 @@ t_error			ia32_region_reserve(t_asid		asid,
   t_table		pt;
   t_page		pg;
   t_segid		segtbl;
-  t_directory		kpd;
   o_region		optreg;
+  t_directory		kpd;
 
   REGION_ENTER(region);
 
@@ -192,67 +275,9 @@ t_error			ia32_region_reserve(t_asid		asid,
 	       * c)
 	       */
 
-	      pt.entries = (void*)otbl->address;
 
-	      if (pd_add_table(&o->machdep.pd, pde, pt) != ERROR_NONE)
-		REGION_LEAVE(region, ERROR_UNKNOWN);
-
-	      /*
-	       * d)
-	       */
-
-	      pg.addr = (void*)pt.entries;
-
-	      if (pd_get_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), &pt) !=
-		  ERROR_NONE)
-		{
-		  /*
-		   * e)
-		   */
-
-		  if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
-				      &segtbl) != ERROR_NONE)
-		    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-		  if (segment_get(segtbl, &otbl) != ERROR_NONE)
-		    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-		  pt.entries = (void*)otbl->address;
-
-		  /*
-		   * f)
-		   */
-
-		  if (pd_add_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), pt) !=
-		      ERROR_NONE)
-		    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-		  optreg.address = pg.addr;
-		  optreg.segid = (t_segid)optreg.address;
-		  optreg.offset = 0;
-		  optreg.size = PAGESZ;
-
-		  /*
-		   * g)
-		   */
-
-		  if (region_inject(kasid, &optreg) != ERROR_NONE)
-		    REGION_LEAVE(region, ERROR_UNKNOWN);
-		}
-
-	      /*
-	       * h)
-	       */
-
-	      pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY((t_paddr)pg.addr));
-
-	      if (pt_add_page(&pt, PTE_ENTRY((t_paddr)pg.addr), pg) !=
-		  ERROR_NONE)
-		REGION_LEAVE(region, ERROR_UNKNOWN);
-
+	      ia32_region_create_page_table(o, pde, kpd, otbl->address);
 	    }
-
-	  tlb_flush();		/* XXX invalidate */
 
 	  pd_get_table(&o->machdep.pd, pde, &pt);
 	}

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/paging.c
  *
  * created       julien quintard   [sun may 29 00:38:50 2005]
- * updated       matthieu bucchianeri   [tue jan 24 18:12:26 2006]
+ * updated       matthieu bucchianeri   [mon mar 13 16:41:19 2006]
  */
 
 /*
@@ -137,10 +137,10 @@ void			bootloader_paging_init(void)
 	  if (pt_build(bootloader_init_alloc(PT_MAX_ENTRIES * sizeof(t_pte),
 					     NULL),
 		       &pt, 1) != ERROR_NONE)
-	  {
-	    printf("cannot build a page-table\n");
-	    bootloader_error();
-	  }
+	    {
+	      printf("cannot build a page-table\n");
+	      bootloader_error();
+	    }
 
 	  pt.present = 1;
 	  pt.rw = 1;

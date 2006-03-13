@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/env/users/matthieu.bucchianeri/conf.h
+ * file          /home/buckman/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       julien quintard   [fri mar 10 03:46:08 2006]
+ * updated       matthieu bucchianeri   [mon mar 13 19:53:48 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -76,14 +76,14 @@
  * this define starts the tests by hand.
  */
 
-#undef CONF_ENABLE_CHECK
+#define CONF_ENABLE_CHECK
 
 /*
  * the configuration debug
  */
 
 #define CONF_DEBUG							\
-  (DEBUG_AS)
+  (0)
 
 /*
  * the machine-dependent configuration debug
