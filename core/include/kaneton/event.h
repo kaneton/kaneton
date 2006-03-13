@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/include/kaneton/event.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       julien quintard   [fri mar 10 04:02:12 2006]
+ * updated       julien quintard   [mon mar 13 08:38:43 2006]
  */
 
 #ifndef KANETON_EVENT_H
@@ -61,7 +61,9 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*event_reserve)(t_eventid, e_event_type, u_event_handler);
+  t_error			(*event_reserve)(t_eventid,
+						 e_event_type,
+						 u_event_handler);
   t_error			(*event_release)(t_eventid);
   t_error			(*event_init)(void);
   t_error			(*event_clean)(void);
