@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/02/02.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [mon mar 13 19:37:56 2006]
+ * updated       matthieu bucchianeri   [tue mar 14 16:16:11 2006]
  */
 
 #include <klibc.h>
@@ -43,14 +43,14 @@ void		check_as_02(void)
       TEST_LEAVE;
     }
 
-  if (region_reserve(as, seg, 0, REGION_OPT_NONE, 1024 * PAGESZ,
+  if (region_reserve(as, seg, 0, REGION_OPT_NONE, 0,
 		     1024 * PAGESZ, &reg) != ERROR_NONE)
     {
       printf("error reserving region\n");
       TEST_LEAVE;
     }
 
-  as_show(as);
+//  as_show(as);
 
   if (region_release(as, reg) != ERROR_NONE)
     printf("failed to release region");

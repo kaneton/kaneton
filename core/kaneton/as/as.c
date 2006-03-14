@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [sat feb 18 18:50:12 2006]
+ * updated       matthieu bucchianeri   [tue mar 14 19:02:50 2006]
  */
 
 /*
@@ -255,6 +255,8 @@ t_error			as_vaddr(t_asid			as,
 				 t_vaddr*		virtual)
 {
   AS_ENTER(as);
+
+  /* XXX */
 
   AS_LEAVE(as, ERROR_UNKNOWN);
 }
@@ -541,12 +543,12 @@ t_error			as_reserve(t_tskid			tskid,
  *
  * steps:
  *
- * 1) calls the machine-dependent code.
- * 2) gets the address space object given its identifier.
- * 3) gets the task object and removes the address space from it.
- * 4) releases the address space object identifier.
+ * 1) gets the address space object given its identifier.
+ * 2) gets the task object and removes the address space from it.
+ * 3) releases the address space object identifier.
+ * 4) releases the address space object's set of regions.
  * 5) releases the address space object's set of segments.
- * 6) releases the address space object's set of regions.
+ * 6) calls the machine-dependent code.
  * 7) removes the address space object from the address space container.
  */
 
@@ -561,18 +563,11 @@ t_error			as_release(t_asid			asid)
    * 1)
    */
 
-  if (machdep_call(as, as_release, asid) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
   if (as_get(asid, &o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
-   * 3)
+   * 2)
    */
 
   if (task_get(o->tskid, &task) != ERROR_NONE)
@@ -581,10 +576,20 @@ t_error			as_release(t_asid			asid)
   task->asid = ID_UNUSED;
 
   /*
-   * 4)
+   * 3)
    */
 
   if (id_release(&as->id, o->asid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (region_flush(o->asid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (set_release(o->regions) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
@@ -601,12 +606,8 @@ t_error			as_release(t_asid			asid)
    * 6)
    */
 
-  if (region_flush(o->asid) != ERROR_NONE)
+  if (machdep_call(as, as_release, asid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
-
-  if (set_release(o->regions) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
   /*
    * 7)
    */

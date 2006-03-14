@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [mon mar 13 17:21:12 2006]
+ * updated       matthieu bucchianeri   [tue mar 14 18:00:57 2006]
  */
 
 /*
@@ -148,7 +148,7 @@ static t_error		ia32_region_create_page_table(o_as*		o,
       ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  tlb_invalidate(pg.addr);
+  tlb_invalidate((t_vaddr)pg.addr);
 
   REGION_LEAVE(region, ERROR_NONE);
 }
@@ -193,7 +193,6 @@ t_error			ia32_region_reserve(t_asid		asid,
   t_table		pt;
   t_page		pg;
   t_segid		segtbl;
-  o_region		optreg;
   t_directory		kpd;
 
   REGION_ENTER(region);
@@ -276,7 +275,7 @@ t_error			ia32_region_reserve(t_asid		asid,
 	       */
 
 
-	      ia32_region_create_page_table(o, pde, kpd, otbl->address);
+	      ia32_region_create_page_table(o, pde, kpd, (void*)otbl->address);
 	    }
 
 	  pd_get_table(&o->machdep.pd, pde, &pt);
@@ -306,7 +305,13 @@ t_error			ia32_region_release(t_asid		asid,
 {
   o_as*			o;
   o_region*		oreg;
-  t_vaddr		vaddr;
+  t_table		pt;
+  t_uint32		pde_start;
+  t_uint32		pde_end;
+  t_uint32		pte_start;
+  t_uint32		pte_end;
+  t_uint32		pde;
+  t_uint32		pte;
 
   REGION_ENTER(region);
 
@@ -334,13 +339,31 @@ t_error			ia32_region_release(t_asid		asid,
    * 3)
    */
 
-  for (vaddr = oreg->address; vaddr < oreg->address + oreg->size;
-       vaddr += PAGESZ)
+  pde_start = PDE_ENTRY(oreg->address);
+  pte_start = PTE_ENTRY(oreg->address);
+  pde_end = PDE_ENTRY(oreg->address + oreg->size);
+  pte_end = PTE_ENTRY(oreg->address + oreg->size);
+
+  for (pde = pde_start; pde <= pde_end; pde++)
     {
-      /* XXX */
+      if (pd_get_table(&o->machdep.pd, pde, &pt) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      for (pte = (pde == pde_start ? pte_start : 0);
+	   pte < (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
+	   pte++)
+	{
+	  if (pt_delete_page(&pt, pte) != ERROR_NONE)
+	    REGION_LEAVE(region, ERROR_UNKNOWN);
+	}
+
+      if (pde != pde_start && pde != pde_end)
+	{
+	  /* release pt */
+	}
     }
 
-  REGION_LEAVE(region, ERROR_UNKNOWN);
+  REGION_LEAVE(region, ERROR_NONE);
 }
 
 /*

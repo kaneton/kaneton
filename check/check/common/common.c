@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/check/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [mon mar  6 18:39:08 2006]
+ * updated       matthieu bucchianeri   [tue mar 14 14:31:22 2006]
  */
 
 #include <klibc.h>
@@ -36,6 +36,7 @@ void	check_tests(void)
   /* XXX continue tests */
   check_as_01();
   check_as_02();
+  check_as_03();
 }
 
 /*

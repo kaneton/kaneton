@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/check/common/common.h
+ * file          /home/buckman/kaneton/check/check/common/common.h
  *
  * created       matthieu bucchianeri   [tue dec 20 15:04:37 2005]
- * updated       matthieu bucchianeri   [wed jan 18 19:21:50 2006]
+ * updated       matthieu bucchianeri   [tue mar 14 15:45:01 2006]
  */
 
 #ifndef CHECK_COMMON_H_
@@ -21,7 +21,8 @@
 
 # define TEST_LEAVE							\
   check_leaks_display(&__memory_leaks);					\
-  printf("%s done.\n", __FUNCTION__)
+  printf("%s done.\n", __FUNCTION__);					\
+  return
 
 typedef struct
 {

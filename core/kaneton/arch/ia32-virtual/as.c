@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon mar 13 19:17:01 2006]
+ * updated       matthieu bucchianeri   [tue mar 14 18:40:13 2006]
  */
 
 /*
@@ -159,7 +159,7 @@ static t_error		ia32_as_create_page_table(o_as*		o,
       ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  tlb_invalidate(pg.addr);
+  tlb_invalidate((t_vaddr)pg.addr);
 
   AS_LEAVE(as, ERROR_NONE);
 }
@@ -207,6 +207,7 @@ t_error			ia32_as_show(t_asid			asid)
  *  b) add the mirroring entry.
  *  c) manually reserve a region for the mirror entry.
  *  d) clean the page directory.
+ *  e) reinject the page tables in the kernel as.
  *   normal task:
  *  a) reserve a segment for the directory.
  *  b) reserve a region for the directory in the kernel address space.
@@ -267,8 +268,8 @@ t_error			ia32_as_reserve(t_tskid			tskid,
        * c)
        */
 
-      oreg.address = (t_vaddr)ENTRY_ADDR(PD_MIRROR, 0);
-      oreg.segid = (t_segid)o->machdep.pd;
+      oreg.address = (t_segid)(t_uint32)ENTRY_ADDR(PD_MIRROR, 0);
+      oreg.segid = (t_segid)(t_uint32)o->machdep.pd;
       oreg.offset = 0;
       oreg.size = PT_MAX_ENTRIES * PAGESZ;
 
@@ -334,9 +335,9 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 		{
 		  seg = (t_segid)(t_uint32)pt.entries;
 
-		  if (segment_get(*asid, seg) != ERROR_NONE)
+		  if (segment_get(seg, &oseg) != ERROR_NONE)
 		    {
-		      pt_seg.address = pt.entries;
+		      pt_seg.address = (t_paddr)pt.entries;
 		      pt_seg.size = PAGESZ;
 		      pt_seg.perms = PERM_READ | PERM_WRITE;
 
@@ -416,11 +417,13 @@ t_error			ia32_as_release(t_asid			asid)
   seg = (t_segid)(t_uint32)(o->machdep.pd);
   reg = seg;
 
-  if (region_release(reg, kasid) != ERROR_NONE)
+  if (region_release(kasid, reg) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
+/* XXX pas necessaire, on a fait un segment flush
+
   if (segment_release(seg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+    AS_LEAVE(as, ERROR_UNKNOWN);*/
 
   AS_LEAVE(as, ERROR_NONE);
 }
