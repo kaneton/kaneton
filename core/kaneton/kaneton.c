@@ -170,10 +170,10 @@ void			kaneton(t_init*				bootloader)
   /*
    * 12)
    */
-
+  /*
   if (task_init() != ERROR_NONE)
     kaneton_error("cannot initialise the task manager\n");
-
+  */
   /*
    * 13)
    */

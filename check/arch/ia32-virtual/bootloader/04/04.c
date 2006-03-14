@@ -33,9 +33,9 @@ void		check_bootloader_04(void)
 	       : "=r" (cr0));
 
   if (!(cr0 & 0x1))
-    printf("not in pmode !\n");
+    printf("protected mode is not enabled !\n");
   if (!(cr0 & 0x80000000))
-    printf("no paging !\n");
+    printf("paging is not enabled !\n");
 
   asm volatile("movw %%cs, %0\n\t"
 	       "movw %%ds, %1\n\t"

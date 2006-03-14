@@ -25,6 +25,8 @@
 
 void	check_pmode_tests(void);
 void	check_paging_tests(void);
+void	check_interrupt_tests(void);
+void	check_time_tests(void);
 
 /*
  * ---------- prototypes ------------------------------------------------------

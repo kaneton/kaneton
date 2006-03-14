@@ -26,8 +26,10 @@ void	check_libia32_common(void)
 void	check_libia32_tests(void)
 {
   check_libia32_common();
-  check_pmode_tests();
-  check_paging_tests();
+  /*  check_pmode_tests();
+      check_paging_tests();*/
+  check_interrupt_tests();
+  check_time_tests();
   /* XXX */
 }
 
