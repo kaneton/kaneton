@@ -3,21 +3,20 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/01/01.c
+ * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/05/05.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri mar  3 16:54:25 2006]
+ * updated       matthieu bucchianeri   [wed mar 15 23:06:29 2006]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
-#include "../common/common.h"
+#include "../../../../../check/common/common.h"
 
-void		check_as_01(void)
+void		check_segment_05(void)
 {
   t_tskid	task;
   t_asid	as;
-  o_as*		o;
 
   TEST_ENTER;
 
@@ -34,8 +33,7 @@ void		check_as_01(void)
       TEST_LEAVE;
     }
 
-  if (as_get(as, &o) != ERROR_NONE)
-    printf("unable to get as\n");
+  /* XXX */
 
   if (as_release(as) != ERROR_NONE)
     printf("failed to release as\n");

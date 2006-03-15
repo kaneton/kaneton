@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/Makefile
+## file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [wed mar 15 23:27:07 2006]
+## updated       matthieu bucchianeri   [wed mar 15 22:36:26 2006]
 ##
 
 #
@@ -31,7 +31,7 @@ SUBDIRS			:=		$(call contents,$(LIST),)
 
 MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 
-AS_LO			:=		as.lo
+SEGMENT_LO		:=		segment.lo
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -39,12 +39,12 @@ AS_LO			:=		as.lo
 
 all:			build run
 
-build:			$(AS_LO)
+build:			$(SEGMENT_LO)
 
-$(AS_LO):		libs
-	$(call remove,$(AS_LO),)
+$(SEGMENT_LO):		libs
+	$(call remove,$(SEGMENT_LO),)
 
-	$(call archive,$(AS_LO),$(MODULES),)
+	$(call archive,$(SEGMENT_LO),$(MODULES),)
 
 libs:
 	$(call makefile,$(SUBDIRS),)
@@ -54,12 +54,11 @@ run:
 clear:
 	$(call makefile,$(SUBDIRS),clear)
 
-	$(call remove,$(AS_LO),)
+	$(call remove,$(SEGMENT_LO),)
 
 	$(call purge,)
 
 proto:
-	$(call prototypes,"common/common.h",)
-
+	$(call makefile,$(SUBDIRS),proto)
 
 dep:

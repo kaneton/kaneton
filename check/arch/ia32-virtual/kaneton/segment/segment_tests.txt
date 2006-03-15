@@ -1,0 +1,9 @@
+01 basic operations: reserve, get, release
+02 flushing segments of an as
+03 type & permissions on segments
+04 giving a segment to another address space
+05 injecting segments directly into an address space
+06 catch of segments
+07 direct read/write/copy from segment to buffers/segments
+08 cloning a segment
+09 resize/coalesce/split

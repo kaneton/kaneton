@@ -3,22 +3,21 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/02/02.c
+ * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/05/05.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [wed mar 15 23:34:49 2006]
+ * updated       matthieu bucchianeri   [wed mar 15 22:27:43 2006]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../common/common.h"
 
-void		check_as_02(void)
+void		check_as_05(void)
 {
   t_tskid	task;
   t_asid	as;
-  t_segid	seg;
-  t_regid	reg;
+  o_as*		o;
 
   TEST_ENTER;
 
@@ -35,27 +34,8 @@ void		check_as_02(void)
       TEST_LEAVE;
     }
 
-  if (segment_reserve(as, 1024 * PAGESZ, PERM_READ | PERM_WRITE, &seg) !=
-      ERROR_NONE)
-    {
-      printf("error reserving segment\n");
-      TEST_LEAVE;
-    }
-
-  if (region_reserve(as, seg, 0, REGION_OPT_NONE, 0,
-		     1024 * PAGESZ, &reg) != ERROR_NONE)
-    {
-      printf("error reserving region\n");
-      TEST_LEAVE;
-    }
-
-//  as_show(as);
-
-  if (region_release(as, reg) != ERROR_NONE)
-    printf("failed to release region");
-
-  if (segment_release(seg) != ERROR_NONE)
-    printf("failed to release segment");
+  if (as_get(as, &o) != ERROR_NONE)
+    printf("unable to get as\n");
 
   if (as_release(as) != ERROR_NONE)
     printf("failed to release as\n");

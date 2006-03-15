@@ -11,7 +11,7 @@
 
 #include <klibc.h>
 #include <kaneton.h>
-#include "../../../../../check/common/common.h"
+#include "../common/common.h"
 
 extern t_asid	kasid;
 extern t_init*	init;

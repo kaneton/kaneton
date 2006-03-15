@@ -1,0 +1,7 @@
+01 as basics: reserve, get and release
+02 reserving segments and regions in an as
+03 as switching
+04 giving an as from one task to another
+05 virtual-to-physical and physical-to-virtual translations
+06 cloning an as
+07 combo
