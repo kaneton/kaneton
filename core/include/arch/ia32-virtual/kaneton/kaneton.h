@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/arch/machdep/kaneton/kaneton.h
+ * file          /home/buckman/kaneton/core/include/arch/ia32-virtual/kaneton/kaneton.h
  *
  * created       julien quintard   [sat dec 17 17:13:18 2005]
- * updated       matthieu bucchianeri   [mon mar 13 17:15:39 2006]
+ * updated       matthieu bucchianeri   [wed mar 15 17:17:09 2006]
  */
 
 #ifndef IA32_KANETON_KANETON_H
@@ -61,6 +61,11 @@ t_error			ia32_as_release(t_asid			asid);
 /*
  * ../../../../kaneton/arch/machdep/region.c
  */
+
+t_error		ia32_region_map_table(void*		v,
+				      t_uint16		pde,
+				      t_directory	kpd,
+				      void*		address);
 
 t_error			ia32_region_reserve(t_asid		asid,
 					    t_segid		segid,

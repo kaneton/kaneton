@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [mon mar  6 14:21:56 2006]
+ * updated       matthieu bucchianeri   [wed mar 15 17:59:37 2006]
  */
 
 /*
@@ -253,29 +253,21 @@ t_error			region_reserve(t_asid			asid,
    * 2)
    */
 
-  switch (opts)
+  if (opts & REGION_OPT_FORCE)
     {
-    case REGION_OPT_FORCE:
-      {
-	if (address < region->start || address >= region->start + region->size)
-	  REGION_LEAVE(region, ERROR_UNKNOWN);
+      if (address < region->start || address >= region->start + region->size)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
 
-	o.address = address;
-
-	break;
-      }
-    case REGION_OPT_NONE:
+      o.address = address;
+    }
+  else
+    if (opts & REGION_OPT_NONE)
       {
 	if (region_fit(as, size, &o.address) != ERROR_NONE)
 	  REGION_LEAVE(region, ERROR_UNKNOWN);
-
-	break;
       }
-    default:
-      {
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-      }
-    }
+    else
+      REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
    * 3)

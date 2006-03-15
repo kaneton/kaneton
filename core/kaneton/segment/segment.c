@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/segment/segment.c
+ * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [thu mar  9 16:20:25 2006]
+ * updated       matthieu bucchianeri   [wed mar 15 14:42:43 2006]
  */
 
 /*
@@ -268,7 +268,8 @@ t_error			segment_clone(t_asid			asid,
  */
 
 t_error			segment_inject(t_asid		asid,
-				       o_segment*	o)
+				       o_segment*	o,
+				       t_segid*		segid)
 {
   o_as			*as;
 
@@ -287,6 +288,7 @@ t_error			segment_inject(t_asid		asid,
 
   o->segid = (t_segid)o->address;
   o->asid = asid;
+  *segid = o->segid;
 
   /*
    * 3)
@@ -496,6 +498,7 @@ t_error			segment_split(t_segid		old,
   o_as*			as;
   o_segment*		o;
   o_segment		n;
+  t_segid		useless;
 
   SEGMENT_ENTER(segment);
 
@@ -530,7 +533,7 @@ t_error			segment_split(t_segid		old,
 
   *new2 = n.segid = (t_segid)n.address;
 
-  if (segment_inject(o->asid, &n) != ERROR_NONE)
+  if (segment_inject(o->asid, &n, &useless) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*

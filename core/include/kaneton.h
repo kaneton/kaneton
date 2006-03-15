@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/include/kaneton.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:24:30 2006]
+ * updated       matthieu bucchianeri   [wed mar 15 17:29:52 2006]
  */
 
 #ifndef KANETON_H

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue mar 14 18:40:13 2006]
+ * updated       matthieu bucchianeri   [wed mar 15 17:10:03 2006]
  */
 
 /*
@@ -79,91 +79,6 @@ i_as			as_interface =
  */
 
 /*                                                                  [cut] k2 */
-
-/** XXX  bouger ca ailleurs, que ce soit commun a region et as */
-static t_error		ia32_as_create_page_table(o_as*		o,
-						  t_uint16	pde,
-						  t_directory	kpd,
-						  void*		address)
-{
-  t_page		pg;
-  t_table		pt;
-  o_region		optreg;
-  o_segment*		otbl;
-  t_segid		segtbl;
-
-  AS_ENTER(as);
-
-  pt.rw = 1;
-  pt.present = 1;
-  pt.user = 0;
-  pt.entries = address;
-
-  pg.rw = 1;
-  pg.present = 1;
-  pg.user = 0;
-
-  if (pd_add_table(&o->machdep.pd, pde, pt) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  /*
-   * d)
-   */
-
-  pg.addr = (void*)pt.entries;
-
-  if (pd_get_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), &pt) !=
-      ERROR_NONE)
-    {
-      /*
-       * e)
-       */
-
-      if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
-			  &segtbl) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      if (segment_get(segtbl, &otbl) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      pt.entries = (void*)otbl->address;
-
-      /*
-       * f)
-       */
-
-      if (pd_add_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), pt) !=
-	  ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      optreg.address = (t_paddr)pg.addr;
-      optreg.segid = (t_segid)optreg.address;
-      optreg.offset = 0;
-      optreg.size = PAGESZ;
-
-      /*
-       * g)
-       */
-
-      if (region_inject(kasid, &optreg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-    }
-
-  /*
-   * h)
-   */
-
-  pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY((t_paddr)pg.addr));
-
-  if (pt_add_page(&pt, PTE_ENTRY((t_paddr)pg.addr), pg) !=
-      ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  tlb_invalidate((t_vaddr)pg.addr);
-
-  AS_LEAVE(as, ERROR_NONE);
-}
-
 
 /*
  * this function displays architecture dependent data.
@@ -341,11 +256,12 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 		      pt_seg.size = PAGESZ;
 		      pt_seg.perms = PERM_READ | PERM_WRITE;
 
-		      if (segment_inject(*asid, &pt_seg) != ERROR_NONE)
+		      if (segment_inject(*asid, &pt_seg, &seg) != ERROR_NONE)
 			AS_LEAVE(as, ERROR_UNKNOWN);
 
-		      ia32_as_create_page_table(o, pde, o->machdep.pd,
-						pt.entries);
+		      if (ia32_region_map_table(o, pde, o->machdep.pd,
+						pt.entries) != ERROR_NONE)
+			AS_LEAVE(as, ERROR_UNKNOWN);
 		    }
 		}
 	    }

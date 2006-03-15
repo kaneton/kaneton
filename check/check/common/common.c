@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/check/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [tue mar 14 14:31:22 2006]
+ * updated       matthieu bucchianeri   [wed mar 15 14:47:57 2006]
  */
 
 #include <klibc.h>
@@ -32,10 +32,10 @@ void	check_tests(void)
 //  check_printf_tests();
 //  check_stats_tests();
 //  check_id_tests();
-  check_libia32_tests();
+//  check_libia32_tests();
   /* XXX continue tests */
-  //  check_as_01();
-  //check_as_02();
+    check_as_01();
+  check_as_02();
   check_as_03();
 }
 

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [tue mar 14 18:00:57 2006]
+ * updated       matthieu bucchianeri   [wed mar 15 18:22:11 2006]
  */
 
 /*
@@ -70,11 +70,25 @@ i_region		region_interface =
 
 /*                                                                  [cut] k2 */
 
-static t_error		ia32_region_create_page_table(o_as*		o,
-						      t_uint16		pde,
-						      t_directory	kpd,
-						      void*		address)
+/*
+ * this function map a page table into the kernel.
+ *
+ * steps:
+ *
+ *  1) add the new table.
+ *  2) now we map the table in the kernel, first check if there is a pt
+ *  3) reserve a segment for the new kernel pt
+ *  4) add the table
+ *  5) inject the corresponding region
+ *  6) finally, via the mirror entry, map the pt
+ */
+
+t_error		ia32_region_map_table(void*		v,
+				      t_uint16		pde,
+				      t_directory	kpd,
+				      void*		address)
 {
+  o_as*			o = v;
   t_page		pg;
   t_table		pt;
   o_region		optreg;
@@ -82,6 +96,10 @@ static t_error		ia32_region_create_page_table(o_as*		o,
   t_segid		segtbl;
 
   REGION_ENTER(region);
+
+  /*
+   * 1)
+   */
 
   pt.rw = 1;
   pt.present = 1;
@@ -96,7 +114,7 @@ static t_error		ia32_region_create_page_table(o_as*		o,
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
-   * d)
+   * 2)
    */
 
   pg.addr = (void*)pt.entries;
@@ -105,7 +123,7 @@ static t_error		ia32_region_create_page_table(o_as*		o,
       ERROR_NONE)
     {
       /*
-       * e)
+       * 2)
        */
 
       if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
@@ -118,7 +136,7 @@ static t_error		ia32_region_create_page_table(o_as*		o,
       pt.entries = (void*)otbl->address;
 
       /*
-       * f)
+       * 3)
        */
 
       if (pd_add_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), pt) !=
@@ -131,7 +149,7 @@ static t_error		ia32_region_create_page_table(o_as*		o,
       optreg.size = PAGESZ;
 
       /*
-       * g)
+       * 4)
        */
 
       if (region_inject(kasid, &optreg) != ERROR_NONE)
@@ -139,7 +157,7 @@ static t_error		ia32_region_create_page_table(o_as*		o,
     }
 
   /*
-   * h)
+   * 5)
    */
 
   pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY((t_paddr)pg.addr));
@@ -148,12 +166,16 @@ static t_error		ia32_region_create_page_table(o_as*		o,
       ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  /*
+   * 6)
+   */
+
   tlb_invalidate((t_vaddr)pg.addr);
 
   REGION_LEAVE(region, ERROR_NONE);
 }
 
-/* XXX revoir les commentaires un peu louches
+/*
  * reserves a region.
  *
  * steps:
@@ -166,12 +188,6 @@ static t_error		ia32_region_create_page_table(o_as*		o,
  * 6) checks if we changed of page table.
  *  a) checks if the table already exists.
  *  b) reserves a segment for a new table.
- *  c) adds the new table.
- *  d) now we map the table in the kernel, first check if there is a pt
- *  e) reserve a segment for the new kernel pt
- *  f) add the table
- *  g) inject the corresponding region
- *  h) finally, via the mirror entry, map the pt
  * 7) adds the page.
  */
 
@@ -247,6 +263,13 @@ t_error			ia32_region_reserve(t_asid		asid,
 
       if (PDE_ENTRY(vaddr) != pde)
 	{
+	  if (!(opts & REGION_OPT_PERSISTENT) && pde != (t_uint16)-1)
+	    {
+/*	      if (ia32_region_unmap_table(o, pde, kpd, pt.entries) !=
+		  ERROR_NONE)
+		REGION_LEAVE(region, ERROR_UNKNOWN);
+	*/    }
+
 	  pde = PDE_ENTRY(vaddr);
 
 	  /*
@@ -275,7 +298,9 @@ t_error			ia32_region_reserve(t_asid		asid,
 	       */
 
 
-	      ia32_region_create_page_table(o, pde, kpd, (void*)otbl->address);
+	      if (ia32_region_map_table(o, pde, kpd, (void*)otbl->address) !=
+		  ERROR_NONE)
+		REGION_LEAVE(region, ERROR_UNKNOWN);
 	    }
 
 	  pd_get_table(&o->machdep.pd, pde, &pt);

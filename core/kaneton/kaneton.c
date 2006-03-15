@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/kaneton.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon mar  6 18:34:54 2006]
+ * updated       matthieu bucchianeri   [wed mar 15 14:50:03 2006]
  */
 
 /*
@@ -170,10 +170,10 @@ void			kaneton(t_init*				bootloader)
   /*
    * 12)
    */
-  /*
+
   if (task_init() != ERROR_NONE)
     kaneton_error("cannot initialise the task manager\n");
-  */
+
   /*
    * 13)
    */

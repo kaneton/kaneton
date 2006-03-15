@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/region.h
+ * file          /home/buckman/kaneton/core/include/kaneton/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [fri mar 10 04:02:01 2006]
+ * updated       matthieu bucchianeri   [wed mar 15 17:43:53 2006]
  */
 
 #ifndef KANETON_REGION_H
@@ -31,6 +31,7 @@
 #define REGION_OPT_NONE		(1 << 0)
 #define REGION_OPT_FORCE	(1 << 1)
 #define REGION_OPT_MAPALL	(1 << 2)
+#define REGION_OPT_PERSISTENT	(1 << 3)
 
 /*
  * ---------- types -----------------------------------------------------------

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [mon mar 13 16:41:53 2006]
+ * updated       matthieu bucchianeri   [wed mar 15 09:41:24 2006]
  */
 
 /*
@@ -285,6 +285,7 @@ void			bootloader_init_regions(void)
   init->regions[0].address = init->segments[1].address;
   init->regions[0].size = init->segments[1].size;
   init->regions[0].offset = 0;
+  init->regions[0].segid = 1;
 
   /*
    * 2)
@@ -293,6 +294,7 @@ void			bootloader_init_regions(void)
   init->regions[1].address = init->segments[2].address;
   init->regions[1].size = init->segments[2].size;
   init->regions[1].offset = 0;
+  init->regions[1].segid = 2;
 
   /*
    * 3)
@@ -301,6 +303,7 @@ void			bootloader_init_regions(void)
   init->regions[2].address = init->segments[3].address;
   init->regions[2].size = init->segments[3].size;
   init->regions[2].offset = 0;
+  init->regions[2].segid = 3;
 
   /*
    * 4)
@@ -309,6 +312,7 @@ void			bootloader_init_regions(void)
   init->regions[3].address = init->segments[7].address;
   init->regions[3].size = init->segments[7].size;
   init->regions[3].offset = 0;
+  init->regions[3].segid = 7;
 
   /*
    * 5)
@@ -317,6 +321,7 @@ void			bootloader_init_regions(void)
   init->regions[4].address = init->segments[8].address;
   init->regions[4].size = init->segments[8].size;
   init->regions[4].offset = 0;
+  init->regions[4].segid = 8;
 
   /*
    * 6)
@@ -325,6 +330,7 @@ void			bootloader_init_regions(void)
   init->regions[5].address = init->segments[9].address;
   init->regions[5].size = init->segments[9].size;
   init->regions[5].offset = 0;
+  init->regions[5].segid = 9;
 
   /*
    * 7)
@@ -333,6 +339,7 @@ void			bootloader_init_regions(void)
   init->regions[6].address = init->segments[10].address;
   init->regions[6].size = init->segments[10].size;
   init->regions[6].offset = 0;
+  init->regions[6].segid = 10;
 
   /*
    * 8)
@@ -341,6 +348,8 @@ void			bootloader_init_regions(void)
   init->regions[7].address = init->segments[11].address;
   init->regions[7].size = init->segments[11].size;
   init->regions[7].offset = 0;
+  init->regions[7].segid = 11;
+
 }
 
 /*
