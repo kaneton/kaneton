@@ -1,1 +1,0 @@
-../../ia32-virtual/sys/elf.h

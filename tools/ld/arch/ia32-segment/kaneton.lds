@@ -1,1 +1,0 @@
-../ia32-virtual/kaneton.lds
