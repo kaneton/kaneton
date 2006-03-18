@@ -29,6 +29,8 @@
 #include <klibc.h>
 #include <kaneton.h>
 
+/*								[cut] k3 */
+
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -40,18 +42,79 @@
 i_timer				timer_interface =
   {
 
-    /*								[cut] k3 */
-
+    ia32_timer_notify,
+    ia32_timer_check,
+    ia32_timer_modify,
+    ia32_timer_reserve,
+    ia32_timer_release,
     ia32_timer_init,
     ia32_timer_clean
-
-    /*								[cut] /k3 */
 
   };
 
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * clean the timer.
+ *
+ * nothing to do on the ia32 architecture.
+ */
+
+t_error			ia32_timer_notify(t_timerid		timerid)
+{
+  return ERROR_NONE;
+}
+/*
+ * clean the timer.
+ *
+ * nothing to do on the ia32 architecture.
+ */
+
+t_error			ia32_timer_check(t_timerid		timerid,
+					 t_uint32*		delay)
+{
+  return ERROR_NONE;
+}
+
+/*
+ * clean the timer.
+ *
+ * nothing to do on the ia32 architecture.
+ */
+
+t_error			ia32_timer_modify(t_timerid		timerid,
+					  t_uint32		delay,
+					  t_uint32		repeat)
+{
+  return ERROR_NONE;
+}
+
+/*
+ * clean the timer.
+ *
+ * nothing to do on the ia32 architecture.
+ */
+
+t_error			ia32_timer_reserve(t_tskid		taskid,
+					   t_uint32		delay,
+					   t_uint32		repeat,
+					   t_timerid*		timerid)
+{
+  return ERROR_NONE;
+}
+
+/*
+ * clean the timer.
+ *
+ * nothing to do on the ia32 architecture.
+ */
+
+t_error			ia32_timer_release(t_timerid		timerid)
+{
+  return ERROR_NONE;
+}
 
 /*
  * initialize the timer on the ia32 architecture.
@@ -74,3 +137,5 @@ t_error			ia32_timer_clean(void)
 {
   return ERROR_NONE;
 }
+
+/*								[cut] /k3 */

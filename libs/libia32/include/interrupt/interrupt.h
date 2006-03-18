@@ -31,11 +31,18 @@
  */
 
 /*
- * misc
+ * interrupts number.
  */
 
 #define EXCEPTION_NR	32
 #define IRQ_NR		16
+
+/*
+ * exception error code.
+ */
+
+#define ERROR_CODE	1
+#define NO_ERROR_CODE	0
 
 /*
  * save cpu register on the stack
@@ -89,15 +96,23 @@
  * pre-handler for exceptions
  */
 
-#define EXCEPTION_PREHANDLER(_nr_)					\
+#define EXCEPTION_PREHANDLER(_nr_, __error_code__)	       		\
   void	prehandler_exception##_nr_(void)				\
     {									\
+      t_uint32	code = 0;						\
+									\
       asm volatile(SAVE_REG						\
 		   LOAD_SEG_REG);					\
-      interrupt_wrapper(IDT_EXCEPTION_BASE + _nr_);			\
+      if (__error_code__)				       		\
+        asm volatile("movl 4(%%ebp),%%eax\n\t"				\
+		     : "=a" (code)					\
+		     :);						\
+      exception_wrapper(IDT_EXCEPTION_BASE + _nr_, code);		\
       asm volatile(RESTORE_REG						\
-		   ADJUST_STACK						\
-		   "iret\n\t");						\
+		   ADJUST_STACK);					\
+      if (__error_code__)						\
+        asm volatile("addl $4,%esp\n\t");				\
+      asm volatile("iret\n\t");						\
     }
 
 /*
@@ -109,7 +124,7 @@
     {									\
       asm volatile(SAVE_REG						\
 		   LOAD_SEG_REG);					\
-      interrupt_wrapper(IDT_IRQ_BASE + _nr_);				\
+      irq_wrapper(IDT_IRQ_BASE + _nr_);					\
       asm volatile(RESTORE_REG						\
 		   ADJUST_STACK						\
 		   "iret\n\t");						\
@@ -119,8 +134,8 @@
  * ---------- types -----------------------------------------------------------
  */
 
-typedef void			(*t_interrupt_pre_hdl)(void);
-typedef void			(*t_interrupt_hdl)(t_uint32);
+typedef void			(*t_interrupt_prehandler)(void);
+typedef void			(*t_interrupt_handler)(t_uint32);
 
 /*
  * ---------- prototypes ------------------------------------------------------

@@ -21,7 +21,6 @@
  *      common.c
  *      ../01/01.c
  *	../02/02.c
- *	../03/03.c
  */
 
 /*
@@ -45,21 +44,6 @@ void			check_interrupt_01(void);
  */
 
 void			check_interrupt_02(void);
-
-
-/*
- * ../03/03.c
- */
-
-void			restore(void);
-
-/*
- * XXX EVENT
- */
-
-void			check_interrupt_03(void);
-
-void			restore(void);
 
 
 /*

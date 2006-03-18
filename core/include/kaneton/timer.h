@@ -65,6 +65,17 @@ typedef struct
 
 typedef struct
 {
+  t_error			(*timer_notify)(t_timerid);
+  t_error			(*timer_check)(t_timerid	timerid,
+					       t_uint32*	delay);
+  t_error			(*timer_modify)(t_timerid	timerid,
+						t_uint32	delay,
+						t_uint32	repeat);
+  t_error			(*timer_reserve)(t_tskid	taskid,
+						 t_uint32	delay,
+						 t_uint32	repeat,
+						 t_timerid*	timerid);
+  t_error			(*timer_release)(t_timerid	timerid);
   t_error			(*timer_init)(void);
   t_error			(*timer_clean)(void);
 }				i_timer;
@@ -121,7 +132,7 @@ t_error			timer_dump(void);
 
 t_error			timer_notify(t_timerid			timerid);
 
-t_error			timer_insert(o_timer*			t);
+t_error			timer_insert(o_timer*			o);
 
 t_error			timer_reserve(t_tskid			taskid,
 				      t_uint32			delay,
@@ -148,7 +159,7 @@ t_error			timer_update(void);
 
 void			timer_handler(t_uint32		id);
 
-t_error			check_timer(void);
+t_error			timer_test(void);
 
 
 /*

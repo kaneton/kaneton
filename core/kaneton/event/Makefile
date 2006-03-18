@@ -27,7 +27,7 @@ include			../../../env/.env.mk
 
 EVENT_LO		:=		event.lo
 
-EVENT_C			:=		event.c				
+EVENT_C			:=		event.c
 
 EVENT_O			:=		$(EVENT_C:.c=.o)
 

@@ -29,6 +29,8 @@
 #include <klibc.h>
 #include <kaneton.h>
 
+/*								[cut] k3 */
+
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -40,14 +42,10 @@
 i_event				event_interface =
   {
 
-    /*								[cut] k3 */
-
     ia32_event_reserve,
     ia32_event_release,
     ia32_event_init,
     ia32_event_clean
-
-    /*								[cut] /k3 */
 
   };
 
@@ -62,7 +60,7 @@ i_event				event_interface =
  *
  * 1) check id bounds.
  * 2) associate the handler to the given eventid.
- * 3) unmask hardware interrupt if eventid is an irq.
+ * 3) unmask event if eventid is an irq.
  */
 
 t_error			ia32_event_reserve(t_eventid		eventid,
@@ -82,9 +80,10 @@ t_error			ia32_event_reserve(t_eventid		eventid,
    * 2)
    */
 
-  if (type == E_NOTIFY)
+  if (type == EVENT_MESSAGE)
     {
-      if (interrupt_set_handler(id, (t_event_hdl)event_notify) != ERROR_NONE)
+      if (interrupt_set_handler(id, (t_event_handler)event_notify)
+	  != ERROR_NONE)
 	return ERROR_UNKNOWN;
     }
   else
@@ -111,7 +110,7 @@ t_error			ia32_event_reserve(t_eventid		eventid,
  *
  * 1) check id bounds.
  * 2) clear the eventid handler.
- * 3) mask hardware interrupt if needed.
+ * 3) mask event if eventid is an irq.
  */
 
 t_error			ia32_event_release(t_eventid		eventid)
@@ -148,7 +147,7 @@ t_error			ia32_event_release(t_eventid		eventid)
  *
  * steps:
  *
- * 1) init interrupts.
+ * 1) init events.
  * 2) set default handler for every exception.
  * 3) set default handler for every irq.
  * 4) XXX
@@ -191,7 +190,7 @@ t_error			ia32_event_init(void)
 }
 
 /*
- * this function cleans interrupts on ia32 architecture.
+ * this function cleans events on ia32 architecture.
  *
  * 1) XXX
  * 2) disable exceptions.
@@ -241,3 +240,5 @@ void			ia32_event_handler(t_uint32		id)
 
 
 }
+
+/*								[cut] /k3 */

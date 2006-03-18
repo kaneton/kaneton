@@ -137,6 +137,9 @@ t_error			timer_notify(t_timerid			timerid)
 
   printf("timer_notify: timerid = %qd, taskid = %qd\n", timerid, o->taskid);
 
+  if (machdep_call(timer, timer_notify, timerid) != ERROR_NONE)
+    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+
   TIMER_LEAVE(timer, ERROR_NONE);
 }
 
@@ -151,9 +154,9 @@ t_error			timer_notify(t_timerid			timerid)
  * 4) add the new timer in the timer container.
  */
 
-t_error			timer_insert(o_timer*			t)
+t_error			timer_insert(o_timer*			o)
 {
-  o_timer*		o;
+  o_timer*		o_tmp;
   t_setsz		size;
   t_setsz		count = 0;
   t_iterator		iterator;
@@ -173,7 +176,7 @@ t_error			timer_insert(o_timer*			t)
 
   if (size == 0)
     {
-      if (set_add(timer->container, t) != ERROR_NONE)
+      if (set_add(timer->container, o) != ERROR_NONE)
 	TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
       TIMER_LEAVE(timer, ERROR_NONE);
@@ -196,23 +199,23 @@ t_error			timer_insert(o_timer*			t)
 	    TIMER_LEAVE(timer, ERROR_UNKNOWN);
 	}
 
-      if (set_object(timer->container, iterator, (void**)&o) != ERROR_NONE)
+      if (set_object(timer->container, iterator, (void**)&o_tmp) != ERROR_NONE)
 	TIMER_LEAVE(timer, ERROR_UNKNOWN);
     }
-  while ((++count != size) && (o->delay < t->delay));
+  while ((++count != size) && (o_tmp->delay < o->delay));
 
   /*
    * 4)
    */
 
-  if (o->delay < t->delay)
+  if (o_tmp->delay < o->delay)
     {
-      if (set_insert_after(timer->container, iterator, t) != ERROR_NONE)
+      if (set_insert_after(timer->container, iterator, o) != ERROR_NONE)
 	TIMER_LEAVE(timer, ERROR_UNKNOWN);
     }
   else
     {
-      if (set_insert_before(timer->container, iterator, t) != ERROR_NONE)
+      if (set_insert_before(timer->container, iterator, o) != ERROR_NONE)
 	TIMER_LEAVE(timer, ERROR_UNKNOWN);
     }
 
@@ -267,14 +270,25 @@ t_error			timer_reserve(t_tskid			taskid,
   if (timer_insert(&o) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
+  /*
+   * 4)
+   */
+
+  if (machdep_call(timer, timer_reserve, taskid, delay, repeat, timerid)
+      != ERROR_NONE)
+    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+
   TIMER_LEAVE(timer, ERROR_NONE);
 }
 
 /*
  * this function releases a timer.
  *
- * 1) destroy the identifier object.
- * 2) remove the timer object from the timer container.
+ * steps:
+ *
+ * 1) call the machine dependant code.
+ * 2) destroy the identifier object.
+ * 3) remove the timer object from the timer container.
  */
 
 t_error			timer_release(t_timerid			timerid)
@@ -285,11 +299,18 @@ t_error			timer_release(t_timerid			timerid)
    * 1)
    */
 
-  if (id_release(&timer->id, timerid) != ERROR_NONE)
+  if (machdep_call(timer, timer_release, timerid) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   /*
    * 2)
+   */
+
+  if (id_release(&timer->id, timerid) != ERROR_NONE)
+    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+
+  /*
+   * 3)
    */
 
   if (set_remove(timer->container, timerid) != ERROR_NONE)
@@ -300,6 +321,11 @@ t_error			timer_release(t_timerid			timerid)
 
 /*
  * Get the remaining time before expiration date.
+ *
+ * steps:
+ *
+ * 1) call the machdep code.
+ * 2) get the timer object and return its delay.
  */
 
 t_error			timer_check(t_timerid			timerid,
@@ -308,6 +334,17 @@ t_error			timer_check(t_timerid			timerid,
   o_timer*		o;
 
   TIMER_ENTER(timer);
+
+  /*
+   * 1)
+   */
+
+  if (machdep_call(timer, timer_check, timerid, delay) != ERROR_NONE)
+    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
 
   if (timer_get(timerid, &o) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
@@ -325,6 +362,7 @@ t_error			timer_check(t_timerid			timerid,
  * 1) check if the timer exists and get it.
  * 2) clone the timer and update its delay and repeat mode.
  * 3) reorganize the timer position within the container.
+ * 4) call the machdep code.
  */
 
 t_error			timer_modify(t_timerid			timerid,
@@ -362,6 +400,13 @@ t_error			timer_modify(t_timerid			timerid,
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   if (timer_insert(&t) != ERROR_NONE)
+    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (machdep_call(timer, timer_modify, timerid, delay, repeat) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   TIMER_LEAVE(timer, ERROR_NONE);
@@ -571,8 +616,6 @@ t_error			timer_update(void)
         }
     }
 
-
-
   TIMER_LEAVE(timer, ERROR_NONE);
 }
 
@@ -609,9 +652,10 @@ void			timer_handler(t_uint32		id)
 
 /*
  * XXX TIMERS: remove me !
+ * just for testing
  */
 
-t_error			check_timer(void)
+t_error			timer_test(void)
 {
   t_timerid		timerid;
 

@@ -66,13 +66,11 @@ t_error			event_show(t_eventid			eventid)
   if (event_get(eventid, &o) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
-  cons_msg('#', "  event %qd:\n", eventid);
-
   /*
    * 2)
    */
 
-
+  cons_msg('#', "  event %qd: task %qd\n", eventid, o->handler.taskid);
 
   EVENT_LEAVE(event, ERROR_NONE);
 }
@@ -121,11 +119,7 @@ t_error			event_dump(void)
 }
 
 /*
- * notify every subscribed task that an event occured.
- *
- * 1) XXX EVENT timer interrupt : call the timer.
- * 2) XXX EVENT keyboard interrupt : call the keyboard driver.
- * 3) otherwise, message every task.
+ * notify task that an event occured.
  */
 
 t_error			event_notify(t_eventid			eventid)
@@ -134,13 +128,13 @@ t_error			event_notify(t_eventid			eventid)
 
   EVENT_ENTER(event);
 
-  /*
-   * 3)
-   */
-
   if (event_get(eventid, &o) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
+  /*
+   * XXX EVENT
+   * message the task !
+   */
 
   EVENT_LEAVE(event, ERROR_NONE);
 }
@@ -151,9 +145,8 @@ t_error			event_notify(t_eventid			eventid)
  * steps:
  *
  * 1) create a new event object and give it its arch dependent eventid.
- * 2) reserve the set of tskid's.
- * 3) add the new event to the event manager.
- * 4) call the machine dependent code.
+ * 2) add the new event to the event manager.
+ * 3) call the machine dependent code.
  */
 
 t_error			event_reserve(t_eventid			eventid,
@@ -177,18 +170,14 @@ t_error			event_reserve(t_eventid			eventid,
   o.handler = handler;
 
   /*
-   * 2
-   */
-
-  /*
-   * 3)
+   * 2)
    */
 
   if (set_add(event->container, &o) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   /*
-   * 4)
+   * 3)
    */
 
   if (machdep_call(event, event_reserve, eventid, type, handler) != ERROR_NONE)
@@ -204,8 +193,7 @@ t_error			event_reserve(t_eventid			eventid,
  *
  * 1) call the machine dependent code.
  * 2) get the event object from its identifier.
- * 3) release the set of tskid.
- * 4) remove the object from the event container.
+ * 3) remove the object from the event container.
  */
 
 t_error			event_release(t_eventid			eventid)
@@ -230,10 +218,6 @@ t_error			event_release(t_eventid			eventid)
 
   /*
    * 3)
-   */
-
-  /*
-   * 4)
    */
 
   if (set_remove(event->container, o->eventid) != ERROR_NONE)
@@ -381,29 +365,66 @@ t_error			event_clean(void)
   return ERROR_NONE;
 }
 
+/*
+ * XXX EVENT remove me !
+ * just for testing.
+ */
 
-void			kbd_handler(t_uint32			id)
+
+static const char       scancodes[] =
+  {
+    0, 0, '1', '2', '3', '4', '5', '6', '7', '8',
+    '9', '0', '-', '=', 0, 0, 'q', 'w', 'e', 'r',
+    't', 'y', 'u', 'i', 'o', 'p', '[', ']', 0, 0,
+    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l' , ';',
+    '\'', '`', '-', '\\', 'z', 'x', 'c', 'v', 'b', 'n',
+    'm', ',', '.', '/', 0, 0, 0, ' ', 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  };
+
+
+void                    kbd_handler(t_uint32                    id)
 {
-  printf("keyboard event\n");
+  t_uint8               scancode;
+
+  INB(0x60, scancode);
+
+  if (scancode < 70)
+    printf("%c", scancodes[scancode]);
 }
 
-t_error			check_event(void)
+void			pf_handler(t_uint32			error_code)
+{
+  printf ("error_code = %u\n", error_code);
+
+  printf("PAGE FAULT: trying to %s a %s page\n",
+	 (error_code & 2) ? "write on" : "read on",
+	 (error_code & 1) ? "non authorized" : "non present");
+
+  while (1);
+}
+
+
+t_error			event_test(void)
 {
   u_event_handler	handler;
 
   handler.function = timer_handler;
 
-  if (event_reserve(32, E_HANDLE, handler) != ERROR_NONE)
+  if (event_reserve(32, EVENT_FUNCTION, handler) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   handler.function = kbd_handler;
 
-  if (event_reserve(33, E_HANDLE, handler) != ERROR_NONE)
+  if (event_reserve(33, EVENT_FUNCTION, handler) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  handler.function = pf_handler;
+
+  if (event_reserve(14, EVENT_FUNCTION, handler) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   return ERROR_UNKNOWN;
 }
-
-
 
 /*                                                                  [cut] k3 */

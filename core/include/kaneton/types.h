@@ -78,32 +78,4 @@ typedef t_id			t_thrid;
 
 typedef t_sint32		t_error;
 
-
-/*
- * XXX EVENT: move me !
- */
-
-typedef void                    (*t_event_hdl)(t_uint32);
-
-/*
- * XXX EVENT: move me !
- */
-
-typedef enum
-  {
-    E_HANDLE,
-    E_NOTIFY
-  } e_event_type;
-
-/*
- * XXX EVENT: move me !
- */
-
-typedef union
-{
-  t_event_hdl                   function;
-  t_tskid                       taskid;
-}                               u_event_handler;
-
-
 #endif

@@ -37,37 +37,6 @@
 /*                                                                  [cut] k3 */
 
 /*
- * ---------- macros ----------------------------------------------------------
- */
-
-/*
- * pics addresses
- */
-
-#define MASTER_PORT_A		0x20
-#define MASTER_PORT_B		0x21
-#define SLAVE_PORT_A		0xa0
-#define SLAVE_PORT_B		0xa1
-
-/*
- * master icw's
- */
-
-#define MASTER_ICW1		0x11
-#define MASTER_ICW2		0x20
-#define MASTER_ICW3		0x04
-#define MASTER_ICW4		0x01
-
-/*
- * slave icw's
- */
-
-#define SLAVE_ICW1		0x11
-#define SLAVE_ICW2		0x28
-#define SLAVE_ICW3		0x02
-#define SLAVE_ICW4		0x01
-
-/*
  * ---------- functions -------------------------------------------------------
  */
 

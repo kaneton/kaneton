@@ -109,6 +109,7 @@ typedef struct
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../kaneton/event/event.c
+ *	../../kaneton/event/kbd.c
  */
 
 /*
@@ -134,9 +135,18 @@ t_error			event_init(void);
 
 t_error			event_clean(void);
 
-void			kbd_handler(t_uint32			id);
+void                    kbd_handler(t_uint32                    id);
 
-t_error			check_event(void);
+void			pf_handler(t_uint32			error_code);
+
+t_error			event_test(void);
+
+
+/*
+ * ../../kaneton/event/kbd.c
+ */
+
+void			kbd_handler(t_uint32			id);
 
 
 /*

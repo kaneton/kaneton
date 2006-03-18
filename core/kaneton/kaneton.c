@@ -187,10 +187,10 @@ void			kaneton(t_init*				bootloader)
 
   if (timer_init() != ERROR_NONE)
     kaneton_error("cannot initialise the timer manager\n");
-  /*
-  check_event();
 
-  check_timer();
+  event_test();
+  /*
+  timer_test();
   */
 #ifdef CONF_ENABLE_CHECK
   check_tests();

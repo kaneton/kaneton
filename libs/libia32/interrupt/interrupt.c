@@ -38,13 +38,13 @@
  * global interrupt handler table
  */
 
-t_interrupt_hdl			interrupt_handlers[EXCEPTION_NR + IRQ_NR];
+t_interrupt_handler		interrupt_handlers[EXCEPTION_NR + IRQ_NR];
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
-static t_interrupt_pre_hdl	prehandlers[EXCEPTION_NR + IRQ_NR] =
+static t_interrupt_prehandler	prehandlers[EXCEPTION_NR + IRQ_NR] =
   {
     prehandler_exception0,
     prehandler_exception1,
@@ -107,7 +107,7 @@ static t_interrupt_pre_hdl	prehandlers[EXCEPTION_NR + IRQ_NR] =
 
 t_error			interrupt_add(t_uint32			nr,
 				      t_prvl			privilege,
-				      t_interrupt_pre_hdl	prehandler)
+				      t_interrupt_prehandler	prehandler)
 {
   t_gate		gate;
 
@@ -136,8 +136,8 @@ t_error			interrupt_add(t_uint32			nr,
  * set the interrupt generic handler.
  */
 
-t_error			interrupt_set_handler(t_uint32		nr,
-					      t_interrupt_hdl	handler)
+t_error			interrupt_set_handler(t_uint32			nr,
+					      t_interrupt_handler	handler)
 {
   interrupt_handlers[nr] = handler;
 
@@ -185,74 +185,76 @@ t_error			interrupt_init(void)
 }
 
 /*
- * handle an interrupt.
+ * handle an exception.
+ *
+ * just pass the error_code to the appropriate handler.
+ *
+ */
+
+void			exception_wrapper(t_uint32		nr,
+					  t_uint32		error_code)
+{
+  interrupt_handlers[nr](error_code);
+}
+
+/*
+ * handle an irq.
  *
  * steps:
  *
- * for an exception:
- * 1) just call the generic handler
- *
- * for an irq:
  * 1) disable maskable interrupts.
  * 2) acknowledge the pic.
- * 3) call the generic handler.
+ * 3) call the appropriate handler.
  * 4) enable maskable interrupts.
  */
 
-void			interrupt_wrapper(t_uint32		nr)
+void			irq_wrapper(t_uint32			nr)
 {
-  if (nr < EXCEPTION_NR)
-    {
-      interrupt_handlers[nr](nr);
-    }
-  else
-    {
-      CLI();
+  CLI();
 
-      pic_acknowledge(nr - IDT_IRQ_BASE);
+  pic_acknowledge(nr - IDT_IRQ_BASE);
 
-      interrupt_handlers[nr](nr);
+  interrupt_handlers[nr](nr);
 
-      STI();
-    }
+  STI();
 }
 
 /*
  * exception pre-handlers definitions
  */
 
-EXCEPTION_PREHANDLER(0)
-EXCEPTION_PREHANDLER(1)
-EXCEPTION_PREHANDLER(2)
-EXCEPTION_PREHANDLER(3)
-EXCEPTION_PREHANDLER(4)
-EXCEPTION_PREHANDLER(5)
-EXCEPTION_PREHANDLER(6)
-EXCEPTION_PREHANDLER(7)
-EXCEPTION_PREHANDLER(8)
-EXCEPTION_PREHANDLER(9)
-EXCEPTION_PREHANDLER(10)
-EXCEPTION_PREHANDLER(11)
-EXCEPTION_PREHANDLER(12)
-EXCEPTION_PREHANDLER(13)
-EXCEPTION_PREHANDLER(14)
-EXCEPTION_PREHANDLER(15)
-EXCEPTION_PREHANDLER(16)
-EXCEPTION_PREHANDLER(17)
-EXCEPTION_PREHANDLER(18)
-EXCEPTION_PREHANDLER(19)
-EXCEPTION_PREHANDLER(20)
-EXCEPTION_PREHANDLER(21)
-EXCEPTION_PREHANDLER(22)
-EXCEPTION_PREHANDLER(23)
-EXCEPTION_PREHANDLER(24)
-EXCEPTION_PREHANDLER(25)
-EXCEPTION_PREHANDLER(26)
-EXCEPTION_PREHANDLER(27)
-EXCEPTION_PREHANDLER(28)
-EXCEPTION_PREHANDLER(29)
-EXCEPTION_PREHANDLER(30)
-EXCEPTION_PREHANDLER(31)
+EXCEPTION_PREHANDLER(0, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(1, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(2, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(3, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(4, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(5, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(6, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(7, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(8, ERROR_CODE)
+EXCEPTION_PREHANDLER(9, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(10, ERROR_CODE)
+EXCEPTION_PREHANDLER(11, ERROR_CODE)
+EXCEPTION_PREHANDLER(12, ERROR_CODE)
+EXCEPTION_PREHANDLER(13, ERROR_CODE)
+EXCEPTION_PREHANDLER(14, ERROR_CODE)
+EXCEPTION_PREHANDLER(15, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(16, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(17, ERROR_CODE)
+EXCEPTION_PREHANDLER(18, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(19, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(20, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(21, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(22, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(23, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(24, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(25, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(26, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(27, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(28, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(29, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(30, NO_ERROR_CODE)
+EXCEPTION_PREHANDLER(31, NO_ERROR_CODE)
 
 /*
  * irq pre-handlers definitions

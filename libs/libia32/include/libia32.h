@@ -26,6 +26,8 @@
 #include "pmode/gdt.h"
 #include "pmode/idt.h"
 #include "interrupt/interrupt.h"
+#include "interrupt/pic.h"
+#include "time/pit.h"
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -255,14 +257,17 @@ t_error			pic_acknowledge(t_uint8			irq);
 
 t_error			interrupt_add(t_uint32			nr,
 				      t_prvl			privilege,
-				      t_interrupt_pre_hdl	prehandler);
+				      t_interrupt_prehandler	prehandler);
 
-t_error			interrupt_set_handler(t_uint32		nr,
-					      t_interrupt_hdl	handler);
+t_error			interrupt_set_handler(t_uint32			nr,
+					      t_interrupt_handler	handler);
 
 t_error			interrupt_init(void);
 
-void			interrupt_wrapper(t_uint32		nr);
+void			exception_wrapper(t_uint32		nr,
+					  t_uint32		error_code);
+
+void			irq_wrapper(t_uint32			nr);
 
 
 /*
