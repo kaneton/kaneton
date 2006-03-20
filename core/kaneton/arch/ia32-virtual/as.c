@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed mar 15 17:10:03 2006]
+ * updated       matthieu bucchianeri   [mon mar 20 16:31:44 2006]
  */
 
 /*
@@ -127,6 +127,7 @@ t_error			ia32_as_show(t_asid			asid)
  *  a) reserve a segment for the directory.
  *  b) reserve a region for the directory in the kernel address space.
  *  c) build a new page directory for the as.
+ *  d) release the kernel-side region mapping the directory.
  */
 
 t_error			ia32_as_reserve(t_tskid			tskid,
@@ -259,8 +260,9 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 		      if (segment_inject(*asid, &pt_seg, &seg) != ERROR_NONE)
 			AS_LEAVE(as, ERROR_UNKNOWN);
 
-		      if (ia32_region_map_table(o, pde, o->machdep.pd,
-						pt.entries) != ERROR_NONE)
+		      if (region_reserve(*asid, seg, 0,
+					 REGION_OPT_FORCE,
+					 seg, PAGESZ, &reg) != ERROR_NONE)
 			AS_LEAVE(as, ERROR_UNKNOWN);
 		    }
 		}
@@ -273,20 +275,18 @@ t_error			ia32_as_reserve(t_tskid			tskid,
        * a)
        */
 
-      if (segment_reserve(*asid, PAGESZ,
+      if (segment_reserve(kasid, PAGESZ,
 			  PERM_READ | PERM_WRITE, &seg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
       if (segment_get(seg, &oseg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      base = oseg->address;
-
       /*
        * b)
        */
 
-      if (region_reserve(kasid, seg, 0, REGION_OPT_FORCE, seg, PAGESZ, &reg) !=
+      if (region_reserve(kasid, seg, 0, REGION_OPT_NONE, 0, PAGESZ, &reg) !=
 	  ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
@@ -294,9 +294,21 @@ t_error			ia32_as_reserve(t_tskid			tskid,
        * c)
        */
 
+      base = (void*)(t_uint32)reg;
+
+      /* XXX pas tres malin le proto de pd_build ... */
+
       if (pd_build(base, &o->machdep.pd, 1) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
+      o->machdep.pd = (t_directory)(t_uint32)seg;
+
+      /*
+       * d)
+       */
+
+      if (region_release(kasid, reg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
   AS_LEAVE(as, ERROR_NONE);
@@ -308,14 +320,13 @@ t_error			ia32_as_reserve(t_tskid			tskid,
  * steps:
  *
  * 1) get the as object.
- * 2) release page-directory segment and region.
+ * 2) release page-directory segment.
  */
 
 t_error			ia32_as_release(t_asid			asid)
 {
   o_as*			o;
   t_segid		seg;
-  t_regid		reg;
 
   AS_ENTER(as);
 
@@ -331,15 +342,9 @@ t_error			ia32_as_release(t_asid			asid)
    */
 
   seg = (t_segid)(t_uint32)(o->machdep.pd);
-  reg = seg;
-
-  if (region_release(kasid, reg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-/* XXX pas necessaire, on a fait un segment flush
 
   if (segment_release(seg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);*/
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
 }

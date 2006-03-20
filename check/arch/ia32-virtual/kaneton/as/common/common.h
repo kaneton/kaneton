@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/common/common.h
  *
  * created       matthieu bucchianeri   [wed mar 15 23:12:48 2006]
- * updated       matthieu bucchianeri   [wed mar 15 23:34:26 2006]
+ * updated       matthieu bucchianeri   [fri mar 17 14:10:50 2006]
  */
 
 #ifndef CHECK_AS_COMMON_H_
@@ -15,6 +15,13 @@
 # include <klibc.h>
 # include <kaneton.h>
 # include "../../../../../check/common/common.h"
+
+#define MY_ASSERT(Test,Error)						\
+  if (!(Test))								\
+    {									\
+      printf(Error);							\
+      TEST_LEAVE;							\
+    }
 
 /*
  * ---------- prototypes ------------------------------------------------------

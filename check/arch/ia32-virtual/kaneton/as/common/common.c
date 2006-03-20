@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/common/common.c
  *
  * created       matthieu bucchianeri   [wed mar 15 23:11:33 2006]
- * updated       matthieu bucchianeri   [wed mar 15 23:12:35 2006]
+ * updated       matthieu bucchianeri   [fri mar 17 15:37:28 2006]
  */
 
 #include <klibc.h>

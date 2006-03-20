@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [wed mar 15 22:36:26 2006]
+## updated       matthieu bucchianeri   [fri mar 17 13:50:26 2006]
 ##
 
 #
@@ -59,6 +59,6 @@ clear:
 	$(call purge,)
 
 proto:
-	$(call makefile,$(SUBDIRS),proto)
+	$(call prototypes,"common/common.h",)
 
 dep:

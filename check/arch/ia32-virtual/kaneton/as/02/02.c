@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/02/02.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [wed mar 15 23:34:49 2006]
+ * updated       matthieu bucchianeri   [fri mar 17 14:24:36 2006]
  */
 
 #include <klibc.h>
@@ -19,49 +19,57 @@ void		check_as_02(void)
   t_asid	as;
   t_segid	seg;
   t_regid	reg;
+  o_segment*	oseg;
+  o_region*	oreg;
 
   TEST_ENTER;
 
-  if (task_reserve(TASK_CLASS_PROGRAM, TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE, &task) != ERROR_NONE)
-    {
-      printf("error creating task\n");
-      TEST_LEAVE;
-    }
+  MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+			 TASK_BEHAV_INTERACTIVE,
+			 TASK_PRIOR_INTERACTIVE,
+			 &task) == ERROR_NONE,
+	   "error creating task\n");
 
-  if (as_reserve(task, &as) != ERROR_NONE)
-    {
-      printf("error creating as\n");
-      TEST_LEAVE;
-    }
+  MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
-  if (segment_reserve(as, 1024 * PAGESZ, PERM_READ | PERM_WRITE, &seg) !=
-      ERROR_NONE)
-    {
-      printf("error reserving segment\n");
-      TEST_LEAVE;
-    }
+  MY_ASSERT(segment_reserve(as,
+			    1024 * PAGESZ,
+			    PERM_READ | PERM_WRITE,
+			    &seg) == ERROR_NONE,
+	    "error reserving segment\n");
 
-  if (region_reserve(as, seg, 0, REGION_OPT_NONE, 0,
-		     1024 * PAGESZ, &reg) != ERROR_NONE)
-    {
-      printf("error reserving region\n");
-      TEST_LEAVE;
-    }
+  MY_ASSERT(region_reserve(as,
+			   seg,
+			   0,
+			   REGION_OPT_NONE,
+			   0,
+			   1024 * PAGESZ,
+			   &reg) == ERROR_NONE,
+	    "error reserving region\n");
 
-//  as_show(as);
+  MY_ASSERT(segment_get(seg, &oseg) == ERROR_NONE,
+	    "error getting segment\n");
 
-  if (region_release(as, reg) != ERROR_NONE)
-    printf("failed to release region");
+  MY_ASSERT(oseg->segid == seg, "Bad segid field in segment\n");
+  MY_ASSERT(oseg->asid == as, "Bad asid field in segment\n");
 
-  if (segment_release(seg) != ERROR_NONE)
-    printf("failed to release segment");
+  MY_ASSERT(region_get(as, reg, &oreg) == ERROR_NONE,
+	    "error getting region\n");
 
-  if (as_release(as) != ERROR_NONE)
-    printf("failed to release as\n");
+  MY_ASSERT(oreg->regid == reg, "Bad regid field in region\n");
+  MY_ASSERT(oreg->segid == seg, "Bad segid field in region\n");
 
-  if (task_release(task) != ERROR_NONE)
-    printf("failed to release task\n");
+  MY_ASSERT(region_release(as, reg) == ERROR_NONE,
+	    "failed to release region");
+
+  MY_ASSERT(segment_release(seg) == ERROR_NONE,
+	    "failed to release segment");
+
+  MY_ASSERT(as_release(as) == ERROR_NONE,
+	    "failed to release as\n");
+
+  MY_ASSERT(task_release(task) == ERROR_NONE,
+	    "failed to release task\n");
 
   TEST_LEAVE;
 }

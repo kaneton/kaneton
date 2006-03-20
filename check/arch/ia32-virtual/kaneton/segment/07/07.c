@@ -11,7 +11,7 @@
 
 #include <klibc.h>
 #include <kaneton.h>
-#include "../../../../../check/common/common.h"
+#include "../common/common.h"
 
 void		check_segment_07(void)
 {

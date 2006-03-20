@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/07/07.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [wed mar 15 22:29:28 2006]
+ * updated       matthieu bucchianeri   [fri mar 17 15:37:44 2006]
  */
 
 #include <klibc.h>
@@ -21,27 +21,22 @@ void		check_as_07(void)
 
   TEST_ENTER;
 
-  if (task_reserve(TASK_CLASS_PROGRAM, TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE, &task) != ERROR_NONE)
-    {
-      printf("error creating task\n");
-      TEST_LEAVE;
-    }
+  MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+			 TASK_BEHAV_INTERACTIVE,
+			 TASK_PRIOR_INTERACTIVE,
+			 &task) == ERROR_NONE,
+	   "error creating task\n");
 
-  if (as_reserve(task, &as) != ERROR_NONE)
-    {
-      printf("error creating as\n");
-      TEST_LEAVE;
-    }
+  MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
-  if (as_get(as, &o) != ERROR_NONE)
-    printf("unable to get as\n");
+  MY_ASSERT(as_get(as, &o) == ERROR_NONE,
+	    "unable to get as\n");
 
-  if (as_release(as) != ERROR_NONE)
-    printf("failed to release as\n");
+  MY_ASSERT(as_release(as) == ERROR_NONE,
+	    "failed to release as\n");
 
-  if (task_release(task) != ERROR_NONE)
-    printf("failed to release task\n");
+  MY_ASSERT(task_release(task) == ERROR_NONE,
+	    "failed to release task\n");
 
   TEST_LEAVE;
 }

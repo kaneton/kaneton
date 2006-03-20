@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [wed mar 15 18:22:11 2006]
+ * updated       matthieu bucchianeri   [mon mar 20 16:29:12 2006]
  */
 
 /*
@@ -71,106 +71,109 @@ i_region		region_interface =
 /*                                                                  [cut] k2 */
 
 /*
- * this function map a page table into the kernel.
+ * this function directly maps a chunk of memory.
  *
  * steps:
  *
- *  1) add the new table.
- *  2) now we map the table in the kernel, first check if there is a pt
- *  3) reserve a segment for the new kernel pt
- *  4) add the table
- *  5) inject the corresponding region
- *  6) finally, via the mirror entry, map the pt
+ * XXX
  */
 
-t_error		ia32_region_map_table(void*		v,
-				      t_uint16		pde,
-				      t_directory	kpd,
-				      void*		address)
+static t_error		ia32_region_map_chunk(o_as*		o,
+					      t_vaddr		v,
+					      t_paddr		p)
 {
-  o_as*			o = v;
-  t_page		pg;
+  o_region		oreg;
   t_table		pt;
-  o_region		optreg;
-  o_segment*		otbl;
-  t_segid		segtbl;
+  t_page		pg;
+/*  t_segid		seg;
+  t_vaddr		chunk;
+*/
 
   REGION_ENTER(region);
+
+  printf("map_chunk %p to %p\n", v, p);
 
   /*
    * 1)
    */
 
-  pt.rw = 1;
-  pt.present = 1;
-  pt.user = 0;
-  pt.entries = address;
+  if (pd_get_table(NULL, PDE_ENTRY(v), &pt) != ERROR_NONE)
+    {
+/*      if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
+			  &seg) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  pg.rw = 1;
-  pg.present = 1;
-  pg.user = 0;
+      pt.rw = 1;
+      pt.present = 1;
+      pt.user = 0;
 
-  if (pd_add_table(&o->machdep.pd, pde, pt) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+      if (region_fit(o, PAGESZ, &chunk) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      pt.entries = chunk;
+*/
+      printf("RETENTE TA CHANCE !\n");
+      while (1);
+    }
 
   /*
    * 2)
    */
 
-  pg.addr = (void*)pt.entries;
+  pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(v));
 
-  if (pd_get_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), &pt) !=
-      ERROR_NONE)
-    {
-      /*
-       * 2)
-       */
+  pg.rw = 1;
+  pg.present = 1;
+  pg.user = 0;
+  pg.addr = (void*)p;
 
-      if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
-			  &segtbl) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      if (segment_get(segtbl, &otbl) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      pt.entries = (void*)otbl->address;
-
-      /*
-       * 3)
-       */
-
-      if (pd_add_table(&kpd, PDE_ENTRY((t_paddr)pg.addr), pt) !=
-	  ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      optreg.address = (t_paddr)pg.addr;
-      optreg.segid = (t_segid)optreg.address;
-      optreg.offset = 0;
-      optreg.size = PAGESZ;
-
-      /*
-       * 4)
-       */
-
-      if (region_inject(kasid, &optreg) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-    }
-
-  /*
-   * 5)
-   */
-
-  pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY((t_paddr)pg.addr));
-
-  if (pt_add_page(&pt, PTE_ENTRY((t_paddr)pg.addr), pg) !=
-      ERROR_NONE)
+  if (pt_add_page(&pt, PTE_ENTRY(v), pg) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
-   * 6)
+   * x)
    */
 
-  tlb_invalidate((t_vaddr)pg.addr);
+  oreg.segid = (t_segid)p;
+  oreg.address = v;
+  oreg.offset = 0;
+  oreg.size = PAGESZ;
+
+  if (region_inject(kasid, &oreg) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  REGION_LEAVE(region, ERROR_NONE);
+}
+
+/*
+ * XXX
+ */
+
+static t_error		ia32_region_unmap_chunk(o_as*		o,
+						t_vaddr		v)
+{
+  t_table		pt;
+
+  REGION_ENTER(region);
+
+  printf("unmap_chunk %p\n", v);
+
+  if (pd_get_table(NULL, PDE_ENTRY(v), &pt) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(v));
+
+  if (pt_delete_page(&pt, PTE_ENTRY(v)) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  o_as* as;
+
+  if (as_get(kasid, &as) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  if (set_remove(as->regions, v) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
 
   REGION_LEAVE(region, ERROR_NONE);
 }
@@ -180,15 +183,12 @@ t_error		ia32_region_map_table(void*		v,
  *
  * steps:
  *
- * 1) gets the as object and the kernel page directory.
- * 2) gets the task object (used to check privilege level).
- * 3) fills the t_page structure.
- * 4) gets the segment object.
- * 5) loops throught the virtual memory to map.
- * 6) checks if we changed of page table.
- *  a) checks if the table already exists.
- *  b) reserves a segment for a new table.
- * 7) adds the page.
+ * 1) get the as object and the kernel page directory.
+ * 2) get the task object (used to check privilege level).
+ * 3) get the segment object.
+ * 4) fill the t_page structure.
+ * 5) map the as page directory in the kernel.
+ * 6) loop throught the virtual memory to map.
  */
 
 t_error			ia32_region_reserve(t_asid		asid,
@@ -201,17 +201,26 @@ t_error			ia32_region_reserve(t_asid		asid,
 {
   o_as*			o;
   o_segment*		oseg;
-  o_segment*		otbl;
   o_task*		otsk;
   t_vaddr		vaddr;
   t_paddr		paddr;
-  t_uint16		pde = (t_uint16)-1;
+  t_directory		pd;
   t_table		pt;
   t_page		pg;
-  t_segid		segtbl;
   t_directory		kpd;
+  t_uint32		pde_start;
+  t_uint32		pde_end;
+  t_uint32		pte_start;
+  t_uint32		pte_end;
+  t_uint32		pde;
+  t_uint32		pte;
+  t_vaddr		chunk;
+  t_segid		ptseg;
+  void*			chiche;
 
   REGION_ENTER(region);
+
+  printf("region_reserve %p -> %p\n", address, address + size);
 
   /*
    * 1)
@@ -237,84 +246,115 @@ t_error			ia32_region_reserve(t_asid		asid,
    * 3)
    */
 
-  pg.rw = 1;
-  pg.present = 1;
-  pg.user = (otsk->class == TASK_CLASS_PROGRAM);
+  if (segment_get(segid, &oseg) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (segment_get(segid, &oseg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  pg.rw = oseg->perms & PERM_WRITE;
+  pg.present = 1;
+  pg.user = (otsk->class == TASK_CLASS_PROGRAM);
 
   /*
    * 5)
    */
 
-  for (vaddr = address, paddr = oseg->address + offset;
-       vaddr < address + size;
-       vaddr += PAGESZ, paddr += PAGESZ)
-    {
+  if (region_fit(o, PAGESZ, &chunk) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  pd = (t_directory)(t_uint32)chunk;
+
+  if (ia32_region_map_chunk(o, (t_vaddr)pd,
+			    (t_paddr)o->machdep.pd) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 6)
+   */
+
+  paddr = oseg->address + offset;
+  vaddr = address + offset;
+
+  pde_start = PDE_ENTRY(vaddr);
+  pte_start = PTE_ENTRY(vaddr);
+  pde_end = PDE_ENTRY(vaddr + size);
+  pte_end = PTE_ENTRY(vaddr + size);
+
+  for (pde = pde_start; pde <= pde_end; pde++)
+    {
       /*
-       * 6)
+       * a)
        */
 
-      if (PDE_ENTRY(vaddr) != pde)
+      if (pd_get_table(&pd, pde, &pt) != ERROR_NONE)
 	{
-	  if (!(opts & REGION_OPT_PERSISTENT) && pde != (t_uint16)-1)
-	    {
-/*	      if (ia32_region_unmap_table(o, pde, kpd, pt.entries) !=
-		  ERROR_NONE)
-		REGION_LEAVE(region, ERROR_UNKNOWN);
-	*/    }
+	  pt.rw = 1;
+	  pt.present = 1;
+	  pt.user = 0;
 
-	  pde = PDE_ENTRY(vaddr);
+	  if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
+			      &ptseg) != ERROR_NONE)
+	    REGION_LEAVE(region, ERROR_UNKNOWN);
 
-	  /*
-	   * a)
-	   */
+	  pt.entries = (void*)(t_uint32)ptseg;
 
-	  if (pd_get_table(&o->machdep.pd, pde, &pt) != ERROR_NONE)
-	    {
-	      pt.rw = 1;
-	      pt.present = 1;
-	      pt.user = 0;
-
-	      /*
-	       * b)
-	       */
-
-	      if (segment_reserve(asid, PAGESZ, PERM_READ | PERM_WRITE,
-				  &segtbl) != ERROR_NONE)
-		REGION_LEAVE(region, ERROR_UNKNOWN);
-
-	      if (segment_get(segtbl, &otbl) != ERROR_NONE)
-		REGION_LEAVE(region, ERROR_UNKNOWN);
-
-	      /*
-	       * c)
-	       */
-
-
-	      if (ia32_region_map_table(o, pde, kpd, (void*)otbl->address) !=
-		  ERROR_NONE)
-		REGION_LEAVE(region, ERROR_UNKNOWN);
-	    }
-
-	  pd_get_table(&o->machdep.pd, pde, &pt);
+	  if (pd_add_table(&pd, pde, pt) != ERROR_NONE)
+	    REGION_LEAVE(region, ERROR_UNKNOWN);
 	}
 
       /*
-       * 7)
+       * b)
        */
 
-      pg.addr = (void*)paddr;
+      if (region_fit(o, PAGESZ, &chunk) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
 
-      if (pt_add_page(&pt, PTE_ENTRY(vaddr), pg) != ERROR_NONE)
+      chiche = (void*)(t_uint32)chunk;
+
+      if (ia32_region_map_chunk(o, (t_vaddr)chiche,
+				(t_paddr)pt.entries) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      pt.entries = chiche;
+
+      /*
+       * c)
+       */
+
+      for (pte = (pde == pde_start ? pte_start : 0);
+	   pte < (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
+	   pte++)
+	{
+	  /*
+	   * d)
+	   */
+
+	  if (pt_add_page(&pt, pte, pg) != ERROR_NONE)
+	    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+	  /*
+	   * e)
+	   */
+
+	  tlb_invalidate((t_vaddr)ENTRY_ADDR(pde, pte));
+	}
+
+      /*
+       * f)
+       */
+
+      if (ia32_region_unmap_chunk(o, (t_vaddr)pt.entries) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
     }
+
+  /*
+   * 7)
+   */
+
+  if (ia32_region_unmap_chunk(o, (t_vaddr)pd) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
 }
@@ -338,6 +378,7 @@ t_error			ia32_region_release(t_asid		asid,
   t_uint32		pde;
   t_uint32		pte;
 
+  return ERROR_UNKNOWN;
   REGION_ENTER(region);
 
   /*
@@ -364,6 +405,8 @@ t_error			ia32_region_release(t_asid		asid,
    * 3)
    */
 
+  /* map pd into kernel */
+
   pde_start = PDE_ENTRY(oreg->address);
   pte_start = PTE_ENTRY(oreg->address);
   pde_end = PDE_ENTRY(oreg->address + oreg->size);
@@ -374,13 +417,19 @@ t_error			ia32_region_release(t_asid		asid,
       if (pd_get_table(&o->machdep.pd, pde, &pt) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
+      /* map pt in the kernel */
+
       for (pte = (pde == pde_start ? pte_start : 0);
 	   pte < (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
 	   pte++)
 	{
 	  if (pt_delete_page(&pt, pte) != ERROR_NONE)
 	    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+	  /* invalidate tlb */
 	}
+
+      /* unmap pt */
 
       if (pde != pde_start && pde != pde_end)
 	{

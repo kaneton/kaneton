@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/region/region-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:28:36 2006]
- * updated       matthieu bucchianeri   [tue jan 31 00:21:31 2006]
+ * updated       matthieu bucchianeri   [mon mar 20 16:23:56 2006]
  */
 
 /*
@@ -62,8 +62,12 @@ t_error			region_fit(o_as*		as,
   switch (region->fit)
     {
       case FIT_FIRST:
-	REGION_LEAVE(region, region_first_fit(as, size, address));
-	break;
+	{
+	  t_error r = region_first_fit(as, size, address);
+	  printf("region_fit %p\n", *address);
+	  REGION_LEAVE(region, r);
+	  break;
+	}
       default:
 	REGION_LEAVE(region, ERROR_UNKNOWN);
     }
@@ -117,7 +121,7 @@ t_error			region_first_fit(o_as*			as,
 
   if ((head->address - region->start) >= size)
     {
-      *address = head->address + head->size;
+      *address = region->start;
 
       REGION_LEAVE(region, ERROR_NONE);
     }
