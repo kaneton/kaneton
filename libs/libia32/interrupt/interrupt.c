@@ -13,13 +13,14 @@
  * ---------- information -----------------------------------------------------
  *
  * this file implements exception and irq handling on ia32 architecture.
- * both exceptions and irq's are called interrupts in kaneton.
+ * both exceptions and irq's are called interrupts in the machine-dependent
+ * code of kaneton.
  */
 
 /*
  * ---------- assignments -----------------------------------------------------
  *
- * XXX EVENT
+ * XXX EVENT assigments have to be written.
  */
 
 
@@ -145,7 +146,7 @@ t_error			interrupt_set_handler(t_uint32			nr,
 }
 
 /*
- * init interrupts..
+ * init interrupts.
  *
  * steps:
  *

@@ -1,12 +1,12 @@
 ##
-## licence       kaneton licence
+## licence       Kaneton licence
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/libs/libia32/timer/Makefile
+## file          /home/rhino/kaneton/libs/libia32/time/Makefile
 ##
-## created       matthieu bucchianeri   [fri jan  6 11:45:56 2006]
-## updated       matthieu bucchianeri   [fri jan  6 11:50:10 2006]
+## created       renaud voltz   [mon mar 20 06:24:36 2006]
+## updated       renaud voltz   [mon mar 20 06:24:36 2006]
 ##
 
 #

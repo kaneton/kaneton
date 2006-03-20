@@ -20,13 +20,13 @@
 
 
 /*
- * XXX EVENT
+ * generic event handler type.
  */
 
 typedef void                    (*t_event_handler)(t_uint32);
 
 /*
- * XXX EVENT: move me !
+ * XXX EVENT move me ! (should be in /core/include/kaneton/event.h)
  */
 
 typedef enum
@@ -36,7 +36,7 @@ typedef enum
   } e_event_type;
 
 /*
- * XXX EVENT: move me !
+ * XXX EVENT move me ! (should be in /core/include/kaneton/event.h)
  */
 
 typedef union

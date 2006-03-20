@@ -61,6 +61,8 @@ typedef struct
 
 typedef struct
 {
+  t_error			(*event_show)(t_eventid);
+  t_error			(*event_notify)(t_eventid);
   t_error			(*event_reserve)(t_eventid,
 						 e_event_type,
 						 u_event_handler);
@@ -109,7 +111,6 @@ typedef struct
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../kaneton/event/event.c
- *	../../kaneton/event/kbd.c
  */
 
 /*
@@ -140,13 +141,6 @@ void                    kbd_handler(t_uint32                    id);
 void			pf_handler(t_uint32			error_code);
 
 t_error			event_test(void);
-
-
-/*
- * ../../kaneton/event/kbd.c
- */
-
-void			kbd_handler(t_uint32			id);
 
 
 /*

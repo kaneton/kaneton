@@ -57,7 +57,7 @@ t_idt           idt;
  * steps:
  *
  * 1) retrieve the global pointer if needed.
- * XXX EVENT
+ * 2) dump every idt entry.
  */
 
 t_error			idt_dump(t_idt*				dump_idt)

@@ -38,6 +38,7 @@ void	check_malloc_tests(void);
 void	check_printf_tests(void);
 void	check_id_tests(void);
 void	check_libia32_tests(void);
+void	check_event_tests(void);
 
 /*
  * ---------- prototypes ------------------------------------------------------

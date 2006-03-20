@@ -131,25 +131,7 @@ void			ia32_event_handler(t_uint32		id);
  * ../../../../kaneton/arch/machdep/timer.c
  */
 
-t_error			ia32_timer_notify(t_timerid		timerid);
-
-t_error			ia32_timer_check(t_timerid		timerid,
-					 t_uint32*		delay);
-
-t_error			ia32_timer_modify(t_timerid		timerid,
-					  t_uint32		delay,
-					  t_uint32		repeat);
-
-t_error			ia32_timer_reserve(t_tskid		taskid,
-					   t_uint32		delay,
-					   t_uint32		repeat,
-					   t_timerid*		timerid);
-
-t_error			ia32_timer_release(t_timerid		timerid);
-
 t_error			ia32_timer_init(void);
-
-t_error			ia32_timer_clean(void);
 
 
 /*

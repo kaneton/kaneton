@@ -27,12 +27,13 @@ void	check_check_common(void)
 void	check_tests(void)
 {
   check_check_common();
-//  check_set_tests();
-//  check_malloc_tests();
-//  check_printf_tests();
-//  check_stats_tests();
-//  check_id_tests();
-//  check_libia32_tests();
+  /*  check_set_tests();
+  check_malloc_tests();
+  check_printf_tests();
+  check_stats_tests();
+  check_id_tests();
+  check_libia32_tests();
+  check_event_tests();*/
   /* XXX continue tests */
   check_as_tests ();
 }

@@ -3,7 +3,7 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/core/kaneton/timer/Makefile
+## file          /home/mycure/kaneton/core/kaneton/time/Makefile
 ##
 ## created       julien quintard   [sat dec 10 13:50:17 2005]
 ## updated       julien quintard   [fri mar 10 04:22:54 2006]
@@ -25,13 +25,13 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TIMER_LO		:=		timer.lo
+TIME_LO			:=		time.lo
 
-TIMER_C			:=		timer.c
+TIME_C			:=		timer.c
 
-TIMER_O			:=		$(TIMER_C:.c=.o)
+TIME_O			:=		$(TIME_C:.c=.o)
 
-TIMER_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/timer.h
+TIME_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/timer.h
 
 CFLAGS			+=		-D___kernel
 
@@ -39,25 +39,25 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(TIMER_LO):		$(TIMER_O)
-	$(call remove,$(TIMER_LO),)
+$(TIME_LO):		$(TIME_O)
+	$(call remove,$(TIME_LO),)
 
-	$(call archive,$(TIMER_LO),$(TIMER_O),)
+	$(call archive,$(TIME_LO),$(TIME_O),)
 
 clear:
-	$(call remove,$(TIMER_O),)
+	$(call remove,$(TIME_O),)
 
-	$(call remove,$(TIMER_LO),)
+	$(call remove,$(TIME_LO),)
 
 	$(call purge,)
 
 proto:
-	$(call prototypes,$(TIMER_INCLUDE),)
+	$(call prototypes,$(TIME_INCLUDE),)
 
 dep:
 	$(call remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(TIMER_C),$(_MAKEFILE_MK_),)
+	$(call dependencies,$(TIME_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

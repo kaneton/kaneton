@@ -12,14 +12,14 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file implements dependant code for the events on ia32 with paging
+ * this file implements dependent code for the events on ia32 with paging
  * architecture.
  */
 
 /*
  * ---------- assignments -----------------------------------------------------
  *
- * XXX EVENT
+ * XXX EVENT assignments have to be written.
  */
 
 /*
@@ -29,7 +29,7 @@
 #include <klibc.h>
 #include <kaneton.h>
 
-/*								[cut] k3 */
+/*								    [cut] k3 */
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -41,12 +41,12 @@
 
 i_event				event_interface =
   {
-
+    NULL,
+    NULL,
     ia32_event_reserve,
     ia32_event_release,
     ia32_event_init,
     ia32_event_clean
-
   };
 
 /*
@@ -150,7 +150,7 @@ t_error			ia32_event_release(t_eventid		eventid)
  * 1) init events.
  * 2) set default handler for every exception.
  * 3) set default handler for every irq.
- * 4) XXX
+ * 4) enable external interrupts.
  */
 
 t_error			ia32_event_init(void)
@@ -192,7 +192,7 @@ t_error			ia32_event_init(void)
 /*
  * this function cleans events on ia32 architecture.
  *
- * 1) XXX
+ * 1) ignore external interrupts.
  * 2) disable exceptions.
  * 3) disable irq's.
  */
