@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [mon mar 20 16:29:12 2006]
+ * updated       matthieu bucchianeri   [mon mar 20 19:46:54 2006]
  */
 
 /*
@@ -131,7 +131,7 @@ static t_error		ia32_region_map_chunk(o_as*		o,
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
-   * x)
+   * 3)
    */
 
   oreg.segid = (t_segid)p;
@@ -141,6 +141,12 @@ static t_error		ia32_region_map_chunk(o_as*		o,
 
   if (region_inject(kasid, &oreg) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  tlb_invalidate(v);
 
   REGION_LEAVE(region, ERROR_NONE);
 }
@@ -158,13 +164,25 @@ static t_error		ia32_region_unmap_chunk(o_as*		o,
 
   printf("unmap_chunk %p\n", v);
 
+  /*
+   * 1)
+   */
+
   if (pd_get_table(NULL, PDE_ENTRY(v), &pt) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
 
   pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(v));
 
   if (pt_delete_page(&pt, PTE_ENTRY(v)) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
 
   o_as* as;
 
@@ -174,6 +192,11 @@ static t_error		ia32_region_unmap_chunk(o_as*		o,
   if (set_remove(as->regions, v) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  /*
+   * 4)
+   */
+
+  tlb_invalidate(v);
 
   REGION_LEAVE(region, ERROR_NONE);
 }
