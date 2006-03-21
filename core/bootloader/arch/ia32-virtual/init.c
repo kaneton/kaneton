@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [tue mar 21 11:51:39 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 13:33:41 2006]
  */
 
 /*
@@ -240,8 +240,9 @@ void			bootloader_init_segments(void)
    * 9)
    */
 
+  /* XXX */
   init->segments[9].address = (t_paddr)init->machdep.gdt.descriptor;
-  init->segments[9].size = init->machdep.gdt.count * sizeof (t_gdte);
+  init->segments[9].size = PAGESZ/*init->machdep.gdt.count * sizeof (t_gdte)*/;
   init->segments[9].perms = PERM_READ | PERM_WRITE;
 
   /*
@@ -257,7 +258,7 @@ void			bootloader_init_segments(void)
    */
 
   init->segments[11].address = (t_paddr)init->machdep.idt.descriptor;
-  init->segments[11].size = init->machdep.idt.count * sizeof (t_idte);
+  init->segments[11].size = PAGESZ/*init->machdep.idt.count * sizeof (t_idte)*/;
   init->segments[11].perms = PERM_READ | PERM_WRITE;
 }
 

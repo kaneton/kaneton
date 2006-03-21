@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/include/pmode/idt.h
+ * file          /home/buckman/kaneton/libs/libia32/include/pmode/idt.h
  *
  * created       renaud voltz   [fri feb 10 16:36:20 2006]
- * updated       julien quintard   [fri mar 10 03:53:28 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 13:30:31 2006]
  */
 
 /*
