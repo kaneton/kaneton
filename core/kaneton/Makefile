@@ -36,7 +36,7 @@ SUBDIRS			:=		arch				\
 					set				\
 					stats				\
 					event				\
-					timer				\
+					time				\
 					task				\
 					$(_CHECK_DIR_)
 

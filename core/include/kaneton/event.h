@@ -136,10 +136,6 @@ t_error			event_init(void);
 
 t_error			event_clean(void);
 
-void                    kbd_handler(t_uint32                    id);
-
-void			pf_handler(t_uint32			error_code);
-
 t_error			event_test(void);
 
 

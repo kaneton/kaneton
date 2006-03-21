@@ -79,6 +79,12 @@
 	       : "=m" (_var_)						\
 	       :)
 
+#define		SCR2(_var_)						\
+  asm volatile("movl %%cr2, %%eax\n"					\
+	       "movl %%eax, %0\n"					\
+	       : "=m" (_var_)						\
+	       :)
+
 /*
  * pio macro functions
  */

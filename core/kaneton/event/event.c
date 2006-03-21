@@ -391,50 +391,17 @@ t_error			event_clean(void)
  * just for testing.
  */
 
-
-static const char       scancodes[] =
-  {
-    0, 0, '1', '2', '3', '4', '5', '6', '7', '8',
-    '9', '0', '-', '=', 0, 0, 'q', 'w', 'e', 'r',
-    't', 'y', 'u', 'i', 'o', 'p', '[', ']', 0, 0,
-    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l' , ';',
-    '\'', '`', '-', '\\', 'z', 'x', 'c', 'v', 'b', 'n',
-    'm', ',', '.', '/', 0, 0, 0, ' ', 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  };
-
-
-void                    kbd_handler(t_uint32                    id)
-{
-  t_uint8               scancode;
-
-  INB(0x60, scancode);
-
-  if (scancode < 70)
-    printf("%c", scancodes[scancode]);
-}
-
-void			pf_handler(t_uint32			error_code)
-{
-  printf("PAGE FAULT: trying to %s a %s page (error code: %x)\n",
-	 (error_code & 2) ? "write on" : "read on",
-	 (error_code & 1) ? "non authorized" : "non present",
-	 error_code);
-
-  while (1);
-}
-
 t_error			event_test(void)
 {
   if (event_reserve(32, EVENT_FUNCTION, (u_event_handler)timer_handler)
       != ERROR_NONE)
     return ERROR_UNKNOWN;
 
-  if (event_reserve(33, EVENT_FUNCTION, (u_event_handler)kbd_handler)
+  if (event_reserve(33, EVENT_FUNCTION, (u_event_handler)ia32_kbd_handler)
       != ERROR_NONE)
     return ERROR_UNKNOWN;
 
-  if (event_reserve(14, EVENT_FUNCTION, (u_event_handler)pf_handler)
+  if (event_reserve(14, EVENT_FUNCTION, (u_event_handler)ia32_pf_handler)
       != ERROR_NONE)
     return ERROR_UNKNOWN;
 

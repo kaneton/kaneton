@@ -35,7 +35,7 @@ void	check_tests(void)
   check_libia32_tests();
   check_event_tests();*/
   /* XXX continue tests */
-  check_as_tests ();
+  /*  check_as_tests ();*/
 }
 
 /*

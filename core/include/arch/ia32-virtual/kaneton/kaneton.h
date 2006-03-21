@@ -62,11 +62,6 @@ t_error			ia32_as_release(t_asid			asid);
  * ../../../../kaneton/arch/machdep/region.c
  */
 
-t_error		ia32_region_map_table(void*		v,
-				      t_uint16		pde,
-				      t_directory	kpd,
-				      void*		address);
-
 t_error			ia32_region_reserve(t_asid		asid,
 					    t_segid		segid,
 					    t_paddr		offset,
@@ -125,6 +120,10 @@ t_error			ia32_event_init(void);
 t_error			ia32_event_clean(void);
 
 void			ia32_event_handler(t_uint32		id);
+
+void                    ia32_kbd_handler(t_uint32                    id);
+
+void                    ia32_pf_handler(t_uint32                     error_code);
 
 
 /*

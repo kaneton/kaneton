@@ -124,7 +124,7 @@ typedef struct
  */
 
 /*
- * ../../kaneton/timer/timer.c
+ * ../../kaneton/time/timer.c
  */
 
 t_error			timer_show(t_timerid			timerid);

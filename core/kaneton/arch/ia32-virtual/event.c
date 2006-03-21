@@ -241,4 +241,46 @@ void			ia32_event_handler(t_uint32		id)
 
 }
 
+/*
+ * XXX EVENT remove me !
+ * just for testing.
+ */
+
+static const char       scancodes[] =
+  {
+    0, 0, '1', '2', '3', '4', '5', '6', '7', '8',
+    '9', '0', '-', '=', 0, 0, 'q', 'w', 'e', 'r',
+    't', 'y', 'u', 'i', 'o', 'p', '[', ']', 0, 0,
+    'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l' , ';',
+    '\'', '`', '-', '\\', 'z', 'x', 'c', 'v', 'b', 'n',
+    'm', ',', '.', '/', 0, 0, 0, ' ', 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  };
+
+
+void                    ia32_kbd_handler(t_uint32                    id)
+{
+  t_uint8               scancode;
+
+  INB(0x60, scancode);
+
+  if (scancode < 70)
+    printf("%c", scancodes[scancode]);
+}
+
+void                    ia32_pf_handler(t_uint32                     error_code)
+{
+  t_uint32              addr;
+
+  SCR2(addr);
+
+  printf("error: page fault !\n"
+         "  trying to %s at the address 0x%x requires %s\n",
+         (error_code & 2) ? "write" : "read",
+         addr,
+         (error_code & 1) ? "a lower DPL" : "the page to be present");
+
+  while (1);
+}
+
 /*								[cut] /k3 */
