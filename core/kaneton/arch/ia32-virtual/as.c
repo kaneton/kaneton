@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue mar 21 12:27:42 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 18:26:43 2006]
  */
 
 /*
@@ -66,7 +66,7 @@ i_as			as_interface =
     NULL,
     NULL,
     ia32_as_reserve,
-    ia32_as_release,
+    NULL,
     NULL,
     NULL
 
@@ -275,7 +275,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
        * a)
        */
 
-      if (segment_reserve(kasid, PAGESZ,
+      if (segment_reserve(*asid, PAGESZ,
 			  PERM_READ | PERM_WRITE, &seg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
@@ -310,41 +310,6 @@ t_error			ia32_as_reserve(t_tskid			tskid,
       if (region_release(kasid, reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
     }
-
-  AS_LEAVE(as, ERROR_NONE);
-}
-
-/*
- * this function releases an address space.
- *
- * steps:
- *
- * 1) get the as object.
- * 2) release page-directory segment.
- */
-
-t_error			ia32_as_release(t_asid			asid)
-{
-  o_as*			o;
-  t_segid		seg;
-
-  AS_ENTER(as);
-
-  /*
-   * 1)
-   */
-
-  if (as_get(asid, &o) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  seg = (t_segid)o->machdep.pd;
-
-  if (segment_release(seg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
 }

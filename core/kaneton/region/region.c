@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [tue mar 21 12:02:07 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 16:34:51 2006]
  */
 
 /*
@@ -342,9 +342,9 @@ t_error			region_release(t_asid			asid,
  *
  * steps:
  *
- * 1) calls the machine dependent code.
- * 2) gets the address space object.
- * 3) releases each region in the set.
+ * 1) gets the address space object.
+ * 2) releases each region in the set.
+ * 3) calls the machine dependent code.
  */
 
 t_error			region_flush(t_asid			asid)
@@ -360,18 +360,11 @@ t_error			region_flush(t_asid			asid)
    * 1)
    */
 
-  if (machdep_call(region, region_flush, asid) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
   if (as_get(asid, &as) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
-   * 3)
+   * 2)
    */
 
   set_foreach(SET_OPT_FORWARD, as->regions, &it, state)
@@ -390,6 +383,13 @@ t_error			region_flush(t_asid			asid)
 	  REGION_LEAVE(region, ERROR_UNKNOWN);
 	}
     }
+
+  /*
+   * 3)
+   */
+
+  if (machdep_call(region, region_flush, asid) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
 }

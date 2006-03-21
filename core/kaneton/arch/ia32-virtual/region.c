@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/arch/machdep/region.c
+ * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [tue mar 21 16:13:43 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 17:46:33 2006]
  */
 
 /*
@@ -216,6 +216,12 @@ static t_error		ia32_region_unmap_chunk(t_vaddr		v)
  * 4) fill the t_page structure.
  * 5) map the as page-directory into the kernel.
  * 6) loop throught the virtual memory to map.
+ *  a) get the needed page-table. if not present, the create it.
+ *  b) temporarily map the page-table in the kernel as.
+ *  c) loop throught the page-table.
+ *  d) fill corresponding entries.
+ *  e) invalidate translation lookaside buffers.
+ *  f) unmap the temporarily mapped table.
  * 7) unmap the page-directory.
  */
 
@@ -318,7 +324,7 @@ t_error			ia32_region_reserve(t_asid		asid,
 	  pt.present = 1;
 	  pt.user = 0;
 
-	  if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
+	  if (segment_reserve(asid, PAGESZ, PERM_READ | PERM_WRITE,
 			      &ptseg) != ERROR_NONE)
 	    REGION_LEAVE(region, ERROR_UNKNOWN);
 
@@ -388,6 +394,18 @@ t_error			ia32_region_reserve(t_asid		asid,
  * this function  releases a region.  we unmap the region  and release
  * page tables.
  *
+ * steps:
+ *
+ * 1) get the kernel as object and the as proper object.
+ * 2) get the region object.
+ * 3) map the as page-directory temporarily.
+ * 4) loop throught the page-directory and page-table entries.
+ *  a) get the page-table.
+ *  b) map it temporarily.
+ *  c) delete the entries and flush the tlb entries.
+ *  d) unmap the page-table.
+ *  e) if the resulting page-table is empty, release it.
+ * 5) unmap the as page-directory.
  */
 
 t_error			ia32_region_release(t_asid		asid,
@@ -496,7 +514,7 @@ t_error			ia32_region_release(t_asid		asid,
 
       if (pde != pde_start && pde != pde_end)
 	{
-	  /* release pt */
+	  /* XXX release pt */
 	}
     }
 
