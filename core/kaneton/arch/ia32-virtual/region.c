@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [mon mar 20 19:46:54 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 12:21:39 2006]
  */
 
 /*
@@ -91,8 +91,6 @@ static t_error		ia32_region_map_chunk(o_as*		o,
 
   REGION_ENTER(region);
 
-  printf("map_chunk %p to %p\n", v, p);
-
   /*
    * 1)
    */
@@ -125,7 +123,7 @@ static t_error		ia32_region_map_chunk(o_as*		o,
   pg.rw = 1;
   pg.present = 1;
   pg.user = 0;
-  pg.addr = (void*)p;
+  pg.addr = p;
 
   if (pt_add_page(&pt, PTE_ENTRY(v), pg) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
@@ -134,7 +132,7 @@ static t_error		ia32_region_map_chunk(o_as*		o,
    * 3)
    */
 
-  oreg.segid = (t_segid)p;
+  oreg.segid = p;
   oreg.address = v;
   oreg.offset = 0;
   oreg.size = PAGESZ;
@@ -161,8 +159,6 @@ static t_error		ia32_region_unmap_chunk(o_as*		o,
   t_table		pt;
 
   REGION_ENTER(region);
-
-  printf("unmap_chunk %p\n", v);
 
   /*
    * 1)
@@ -239,11 +235,9 @@ t_error			ia32_region_reserve(t_asid		asid,
   t_uint32		pte;
   t_vaddr		chunk;
   t_segid		ptseg;
-  void*			chiche;
+  t_paddr		chiche;
 
   REGION_ENTER(region);
-
-  printf("region_reserve %p -> %p\n", address, address + size);
 
   /*
    * 1)
@@ -321,7 +315,7 @@ t_error			ia32_region_reserve(t_asid		asid,
 			      &ptseg) != ERROR_NONE)
 	    REGION_LEAVE(region, ERROR_UNKNOWN);
 
-	  pt.entries = (void*)(t_uint32)ptseg;
+	  pt.entries = ptseg;
 
 	  if (pd_add_table(&pd, pde, pt) != ERROR_NONE)
 	    REGION_LEAVE(region, ERROR_UNKNOWN);
@@ -334,7 +328,7 @@ t_error			ia32_region_reserve(t_asid		asid,
       if (region_fit(o, PAGESZ, &chunk) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
-      chiche = (void*)(t_uint32)chunk;
+      chiche = chunk;
 
       if (ia32_region_map_chunk(o, (t_vaddr)chiche,
 				(t_paddr)pt.entries) != ERROR_NONE)
@@ -347,12 +341,15 @@ t_error			ia32_region_reserve(t_asid		asid,
        */
 
       for (pte = (pde == pde_start ? pte_start : 0);
-	   pte < (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
+	   pte <= (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
 	   pte++)
 	{
 	  /*
 	   * d)
 	   */
+
+	  pg.addr = paddr;
+	  paddr += PAGESZ;
 
 	  if (pt_add_page(&pt, pte, pg) != ERROR_NONE)
 	    REGION_LEAVE(region, ERROR_UNKNOWN);

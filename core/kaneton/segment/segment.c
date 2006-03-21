@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed mar 15 14:42:43 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 12:25:26 2006]
  */
 
 /*
@@ -601,7 +601,7 @@ t_error			segment_coalesce(t_segid	old1,
    */
 
   seg1->size += seg2->size;
-  *new = seg1;
+  *new = seg1->segid;
 
   /*
    * 5)

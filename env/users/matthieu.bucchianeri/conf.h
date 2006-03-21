@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [mon mar 13 19:53:48 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 11:56:45 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -83,7 +83,7 @@
  */
 
 #define CONF_DEBUG							\
-  (0)
+  (DEBUG_AS)
 
 /*
  * the machine-dependent configuration debug

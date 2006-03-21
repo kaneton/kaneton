@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/include/paging/paging.h
+ * file          /home/buckman/kaneton/libs/libia32/include/paging/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri mar 10 04:09:39 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 12:20:08 2006]
  */
 
 /*
@@ -96,7 +96,7 @@
   (((Paddr) >> 12) & 0x3ff)
 
 #define ENTRY_ADDR(D,T)							\
-  ((void*)(((D) << 22) | ((T) << 12)))
+  ((((D) << 22) | ((T) << 12)))
 
 #define MK_BASE(V)							\
   (((t_uint32)(V)) & 0xfffffc00)
@@ -114,7 +114,7 @@
 
 typedef struct
 {
-  void*		addr;
+  t_paddr	addr;
   t_uint8	present;
   t_uint8	rw;
   t_uint8	user;
@@ -126,7 +126,7 @@ typedef struct
 
 typedef struct
 {
-  void*		entries;
+  t_paddr	entries;
   t_uint8	present;
   t_uint8	rw;
   t_uint8	user;

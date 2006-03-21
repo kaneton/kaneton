@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon mar 20 16:31:44 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 12:27:42 2006]
  */
 
 /*
@@ -175,7 +175,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
       pt.present = 1;
       pt.rw = 1;
       pt.user = 0;
-      pt.entries = (void*)o->machdep.pd;
+      pt.entries = (t_paddr)o->machdep.pd;
 
       if (pd_add_table(&o->machdep.pd, PD_MIRROR, pt) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
@@ -184,8 +184,8 @@ t_error			ia32_as_reserve(t_tskid			tskid,
        * c)
        */
 
-      oreg.address = (t_segid)(t_uint32)ENTRY_ADDR(PD_MIRROR, 0);
-      oreg.segid = (t_segid)(t_uint32)o->machdep.pd;
+      oreg.address = ENTRY_ADDR(PD_MIRROR, 0);
+      oreg.segid = (t_segid)o->machdep.pd;
       oreg.offset = 0;
       oreg.size = PT_MAX_ENTRIES * PAGESZ;
 
@@ -249,7 +249,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 	    {
 	      if (pd_get_table(&o->machdep.pd, pde, &pt) == ERROR_NONE)
 		{
-		  seg = (t_segid)(t_uint32)pt.entries;
+		  seg = pt.entries;
 
 		  if (segment_get(seg, &oseg) != ERROR_NONE)
 		    {
@@ -294,7 +294,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
        * c)
        */
 
-      base = (void*)(t_uint32)reg;
+      base = reg;
 
       /* XXX pas tres malin le proto de pd_build ... */
 
@@ -341,7 +341,7 @@ t_error			ia32_as_release(t_asid			asid)
    * 2)
    */
 
-  seg = (t_segid)(t_uint32)(o->machdep.pd);
+  seg = (t_segid)o->machdep.pd;
 
   if (segment_release(seg) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);

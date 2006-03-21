@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:54:23 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 12:16:33 2006]
  */
 
 /*
@@ -85,7 +85,7 @@ t_error			pt_build(t_paddr			base,
    * 2)
    */
 
-  table->entries = (void*)base;
+  table->entries = base;
 
   /*
    * 3)
@@ -127,7 +127,7 @@ t_error			pt_add_page(t_table*			tab,
    * 2)
    */
 
-  t = tab->entries;
+  t = (t_pte*)tab->entries;
 
   /*
    * 3)
@@ -163,13 +163,13 @@ t_error			pt_get_page(t_table*			tab,
 				    t_uint16			entry,
 				    t_page*			page)
 {
-  t_pte			*t;
+  t_pte*		t;
 
   /*
    * 1)
    */
 
-  t = tab->entries;
+  t = (t_pte*)tab->entries;
 
   /*
    * 2)
@@ -185,7 +185,7 @@ t_error			pt_get_page(t_table*			tab,
   page->rw = !!(t[entry] & PTE_FLAG_RW);
   page->present = !!(t[entry] & PTE_FLAG_P);
   page->user = !!(t[entry] & PTE_FLAG_USER);
-  page->addr = (void*)MK_BASE(t[entry]);
+  page->addr = MK_BASE(t[entry]);
 
   return ERROR_NONE;
 }
@@ -203,13 +203,13 @@ t_error			pt_get_page(t_table*			tab,
 t_error			pt_delete_page(t_table*			tab,
 				       t_uint16			entry)
 {
-  t_pte			*t;
+  t_pte*		t;
 
   /*
    * 1)
    */
 
-  t = tab->entries;
+  t = (t_pte*)tab->entries;
 
   /*
    * 2)

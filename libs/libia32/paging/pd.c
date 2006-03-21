@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [tue feb 28 14:42:14 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 12:10:20 2006]
  */
 
 /*
@@ -268,7 +268,7 @@ t_error			pd_get_table(t_directory*		dir,
   table->rw = !!(d[entry] & PDE_FLAG_RW);
   table->present = !!(d[entry] & PDE_FLAG_P);
   table->user = !!(d[entry] & PDE_FLAG_USER);
-  table->entries = (void*)MK_BASE(d[entry]);
+  table->entries = MK_BASE(d[entry]);
 
   return ERROR_NONE;
 }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/bootloader.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:23:13 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 11:23:30 2006]
  */
 
 /*
@@ -178,7 +178,7 @@ int			bootloader(t_uint32			magic,
       "movl %0, %%esp\n\t"
       "pushl %1\n"
       :
-      : "g" (init->kstack + init->kstacksz - 1),
+      : "g" (init->kstack + init->kstacksz - 4),
         "g" (init)
      );
 

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [mon mar 20 16:10:37 2006]
+ * updated       matthieu bucchianeri   [tue mar 21 12:02:07 2006]
  */
 
 /*
@@ -88,9 +88,10 @@ t_error			region_show(t_asid			asid,
    * 2)
    */
 
-  cons_msg('#', "    0x%08x [%qd]\n",
+  cons_msg('#', "    0x%08x [%qd] (%u)\n",
 	   o->address,
-	   o->segid);
+	   o->segid,
+	   o->size);
 
   /*
    * 3)
@@ -189,8 +190,6 @@ t_error			region_inject(t_asid		asid,
    */
 
   o->regid = (t_regid)o->address;
-
-  printf("region_inject %p\n", o->address);
 
   /*
    * 3)

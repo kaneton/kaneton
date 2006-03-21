@@ -1,4 +1,6 @@
 --
+ moulette bootloader: checker l'alignement de esp & co
+--
  dans env/machine/XXX mettre un fichier qui decrit le profile machine
  genre les binaires utilises, si le user doit definir des choses etc..
 
