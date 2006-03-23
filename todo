@@ -1,5 +1,14 @@
 --
+ changer le foreach en ce qu'a dit emeric. head/tail dans l init de la
+ boucle.
+
+--
+ expliquer dans la doc kaneton.pdf comment fonctionne machdep.
+ et quand il faut appeler machdep: creation, modification et destruction
+
+--
  moulette bootloader: checker l'alignement de esp & co
+
 --
  dans env/machine/XXX mettre un fichier qui decrit le profile machine
  genre les binaires utilises, si le user doit definir des choses etc..

@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/machines/unix/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [wed mar  8 06:13:45 2006]
+## updated       julien quintard   [mon mar 13 08:47:12 2006]
 ##
 
 #
@@ -641,7 +641,7 @@ endef
 
 define view
   $(call pretty-printer,yellow,VIEW,$(1),			)	; \
-  $(_PDFVIEWER_) $(1).pdf $(_VERBOSE_)
+  $(_VIEWER_) $(1).pdf $(_VERBOSE_)
 endef
 
 #

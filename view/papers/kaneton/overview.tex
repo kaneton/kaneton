@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/overview.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:09:45 2006]
-%% updated       julien quintard   [mon mar  6 02:11:21 2006]
+%% updated       julien quintard   [wed mar 15 00:07:09 2006]
 %%
 
 %
@@ -56,18 +56,18 @@ Then, while the processes generally communicate with each other on the same
 machine, on a distributed operating system, they also communicate with the
 other processes of other machines.
 
-The Figure \ref{overview_distributed-operating-system} illustrates
+The Figure \ref{figure:overview_distributed-operating-system} illustrates
 these communications.
 
 \begin{figure}[h]
-  \label{overview_distributed-operating-system}
   \begin{center}
     \includegraphics[scale=0.5]{figures/overview_distributed-operating-system.pdf}
     \caption{Communications in a distributed operating system.}
+    \label{figure:overview_distributed-operating-system}
   \end{center}
 \end{figure}
 
-On the Figure \ref{overview_distributed-operating-system}, the machine
+On the Figure \ref{figure:overview_distributed-operating-system}, the machine
 named \textbf{E} is running three processes. One is just running some
 calculations performing no communication, another is receiving a message
 from the latter which is also sending two messages to processes over the
@@ -102,14 +102,14 @@ communicate with other node's processes to organize the whole distributed
 system resources. These processes would be the servers in the microkernel
 case while it would be the kernel itself in a monolithic kernel organization.
 
-The Figure \ref{overview_microkernel} illustrates a microkernel
+The Figure \ref{figure:overview_microkernel} illustrates a microkernel
 view with different layers.
 
 \begin{figure}[h]
-  \label{overview_microkernel}
   \begin{center}
     \includegraphics[scale=0.5]{figures/overview_microkernel.pdf}
     \caption{Communications in a microkernel's hierarchy.}
+    \label{figure:overview_microkernel}
   \end{center}
 \end{figure}
 
@@ -124,7 +124,7 @@ To avoid complications and deadlocks the microkernels follow a fundamental
 rule which restrict communication from clients only to more or equal
 privileged tasks.
 
-On the Figure \ref{overview_microkernel}, the \textit{vfs} server can
+On the Figure \ref{figure:overview_microkernel}, the \textit{vfs} server can
 ask the \textit{ata} server and the \textit{kernel} to peform a task but
 the kernel cannot ask a less privileged server to do something.
 
@@ -282,13 +282,13 @@ Then, the \textbf{event manager} manages the events in a very simple way.
 
 \subsection{Internal View}
 
-To conclude, the Figure \ref{overview_kaneton} illustrates the kaneton
+To conclude, the Figure \ref{figure:overview_kaneton} illustrates the kaneton
 microkernel internal managers.
 
 \begin{figure}[h]
-  \label{overview_kaneton}
   \begin{center}
     \includegraphics[scale=0.5]{figures/overview_kaneton.pdf}
     \caption{kaneton internal managers.}
+    \label{figure:overview_kaneton}
   \end{center}
 \end{figure}
