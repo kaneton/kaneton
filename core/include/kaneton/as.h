@@ -144,7 +144,7 @@ t_error			as_dump(void);
 t_error			as_give(t_asid			asid,
 				t_tskid			tskid);
 
-t_error			as_vaddr(t_asid			as,
+t_error			as_vaddr(t_asid			asid,
 				 t_paddr		physical,
 				 t_vaddr*		virtual);
 

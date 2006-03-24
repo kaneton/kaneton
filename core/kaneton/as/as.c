@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [fri mar 24 17:42:58 2006]
+ * updated       matthieu bucchianeri   [fri mar 24 17:50:42 2006]
  */
 
 /*
@@ -457,7 +457,7 @@ t_error			as_clone(t_tskid			tskid,
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   if (set_reserve(array, SET_OPT_ALLOC, nb_segments,
-		  sizeof (map), &mapping) != ERROR_NONE)
+		  sizeof (foo), &mapping) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -493,6 +493,8 @@ t_error			as_clone(t_tskid			tskid,
    * 7)
    */
 
+  set_show_array(mapping);
+
   set_foreach(SET_OPT_FORWARD, from->regions, &i, state)
     {
       t_regid		needless;
@@ -506,7 +508,7 @@ t_error			as_clone(t_tskid			tskid,
 	  AS_LEAVE(as, ERROR_UNKNOWN);
 	}
 
-      if (set_get(mapping, data->segid, (void**)map) != ERROR_NONE)
+      if (set_get(mapping, data->segid, (void**)&map) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
       printf ("map = %qd -> %qd\n", map[0], map[1]);

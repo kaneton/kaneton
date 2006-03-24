@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/common/common.c
  *
  * created       matthieu bucchianeri   [wed mar 15 23:11:33 2006]
- * updated       matthieu bucchianeri   [fri mar 17 13:50:56 2006]
+ * updated       matthieu bucchianeri   [fri mar 24 19:04:07 2006]
  */
 
 #include <klibc.h>
@@ -33,9 +33,9 @@ void	check_segment_tests(void)
   check_segment_03();
   check_segment_04();
   check_segment_05();
-  check_segment_06();
+/*  check_segment_06();
   check_segment_07();
   check_segment_08();
-  check_segment_09();
+  check_segment_09();*/
   /* XXX continue tests */
 }

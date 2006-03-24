@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/common/common.h
  *
  * created       matthieu bucchianeri   [wed mar 15 23:12:48 2006]
- * updated       matthieu bucchianeri   [fri mar 17 13:50:01 2006]
+ * updated       matthieu bucchianeri   [fri mar 24 18:00:17 2006]
  */
 
 #ifndef CHECK_SEGMENT_COMMON_H_
@@ -15,6 +15,17 @@
 # include <klibc.h>
 # include <kaneton.h>
 # include "../../../../../check/common/common.h"
+
+# undef TEST_ENTER
+
+# define TEST_ENTER							\
+  printf("Test %s\n", __FUNCTION__);
+
+# undef TEST_LEAVE
+
+# define TEST_LEAVE							\
+  printf("%s done.\n", __FUNCTION__);					\
+  return
 
 /*
  * ---------- prototypes ------------------------------------------------------

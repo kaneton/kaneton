@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri mar 24 15:54:20 2006]
+ * updated       matthieu bucchianeri   [fri mar 24 18:13:31 2006]
  */
 
 /*
@@ -292,6 +292,7 @@ t_error			segment_inject(t_asid		asid,
 
   o->segid = (t_segid)o->address;
   o->asid = asid;
+  o->type = SEGMENT_TYPE_MEMORY;
   *segid = o->segid;
 
   /*
@@ -744,6 +745,7 @@ t_error			segment_reserve(t_asid			asid,
   o.asid = as->asid;
   o.size = size;
   o.perms = perms;
+  o.type = SEGMENT_TYPE_MEMORY;
 
   *segid = o.segid = (t_segid)o.address;
 

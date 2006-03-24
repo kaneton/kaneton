@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/check/common/common.h
  *
  * created       matthieu bucchianeri   [tue dec 20 15:04:37 2005]
- * updated       matthieu bucchianeri   [tue mar 14 15:45:01 2006]
+ * updated       matthieu bucchianeri   [fri mar 24 18:12:10 2006]
  */
 
 #ifndef CHECK_COMMON_H_
@@ -23,6 +23,13 @@
   check_leaks_display(&__memory_leaks);					\
   printf("%s done.\n", __FUNCTION__);					\
   return
+
+#define MY_ASSERT(Test,Error)						\
+  if (!(Test))								\
+    {									\
+      printf(Error);							\
+      TEST_LEAVE;							\
+    }
 
 typedef struct
 {

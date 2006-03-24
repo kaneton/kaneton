@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/02/02.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [wed mar 15 23:05:30 2006]
+ * updated       matthieu bucchianeri   [fri mar 24 18:57:28 2006]
  */
 
 #include <klibc.h>
@@ -15,31 +15,45 @@
 
 void		check_segment_02(void)
 {
+  o_as*		o;
   t_tskid	task;
   t_asid	as;
+  t_segid	seg;
+  t_uint32	i;
+  t_setsz	sz;
 
   TEST_ENTER;
+  MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 
-  if (task_reserve(TASK_CLASS_PROGRAM, TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE, &task) != ERROR_NONE)
+			 TASK_BEHAV_INTERACTIVE,
+			 TASK_PRIOR_INTERACTIVE,
+			 &task) == ERROR_NONE,
+	   "error creating task\n");
+
+  MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
+
+  MY_ASSERT(as_get(as, &o) == ERROR_NONE, "error getting as\n");
+
+  for (i = 0; i < 10; i++)
     {
-      printf("error creating task\n");
-      TEST_LEAVE;
+      MY_ASSERT(segment_reserve(as,
+				2 * (i + 1) * PAGESZ,
+				PERM_READ | PERM_WRITE,
+				&seg) == ERROR_NONE,
+		"error reserving segment\n");
     }
 
-  if (as_reserve(task, &as) != ERROR_NONE)
-    {
-      printf("error creating as\n");
-      TEST_LEAVE;
-    }
+  MY_ASSERT(segment_flush(as) == ERROR_NONE, "error flushing segments\n");
 
-  /* XXX */
+  MY_ASSERT(set_size(o->segments, &sz) == ERROR_NONE, "error in get size\n");
 
-  if (as_release(as) != ERROR_NONE)
-    printf("failed to release as\n");
+  MY_ASSERT(sz == 0, "wrong size\n");
 
-  if (task_release(task) != ERROR_NONE)
-    printf("failed to release task\n");
+  MY_ASSERT(as_release(as) == ERROR_NONE,
+	    "failed to release as\n");
+
+  MY_ASSERT(task_release(task) == ERROR_NONE,
+	    "failed to release task\n");
 
   TEST_LEAVE;
 }

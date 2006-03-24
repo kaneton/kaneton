@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/01/01.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri mar 17 15:25:23 2006]
+ * updated       matthieu bucchianeri   [fri mar 24 18:07:59 2006]
  */
 
 #include <klibc.h>
@@ -32,6 +32,7 @@ void		check_as_01(void)
   MY_ASSERT(as_get(as, &o) == ERROR_NONE,
 	    "unable to get as\n");
 
+  MY_ASSERT(o->asid == as, "Bad asid field\n");
   MY_ASSERT(o->tskid == task, "Bad tskid field\n");
 
   MY_ASSERT(as_release(as) == ERROR_NONE,
