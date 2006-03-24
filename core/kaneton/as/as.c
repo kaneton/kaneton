@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [tue mar 14 19:02:50 2006]
+ * updated       matthieu bucchianeri   [fri mar 24 17:42:58 2006]
  */
 
 /*
@@ -234,6 +234,7 @@ t_error			as_give(t_asid			asid,
 
   from->asid = ID_UNUSED;
   to->asid = asid;
+  o->tskid = tskid;
 
   /*
    * 5)
@@ -249,16 +250,68 @@ t_error			as_give(t_asid			asid,
  * this function translate a physical address to its virtual address.
  */
 
-t_error			as_vaddr(t_asid			as,
-				 t_segid		segid,
+t_error			as_vaddr(t_asid			asid,
 				 t_paddr		physical,
 				 t_vaddr*		virtual)
 {
+  o_as*			o;
+  o_region*		oreg;
+  o_segment*		oseg;
+  t_iterator		i;
+  t_state		state;
+  t_uint32		found = 0;
+
   AS_ENTER(as);
 
-  /* XXX */
+  /*
+   * 1)
+   */
 
-  AS_LEAVE(as, ERROR_UNKNOWN);
+  if (as_get(asid, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
+    {
+      if (set_object(o->regions, i, (void**)&oreg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (segment_get(oreg->segid, &oseg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (oseg->address + oreg->offset <= physical &&
+	  physical < oseg->address + oreg->offset + oreg->size)
+	{
+	  found = 1;
+	  break;
+	}
+    }
+
+  /*
+   * 3)
+   */
+
+  if (!found)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  *virtual = oreg->address - oreg->offset + (physical - oseg->address);
+
+  /*
+   * 5)
+   */
+
+  if (machdep_call(as, as_vaddr, asid, physical, virtual) !=
+      ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  AS_LEAVE(as, ERROR_NONE);
 }
 
 /*
@@ -267,17 +320,21 @@ t_error			as_vaddr(t_asid			as,
  * steps:
  *
  * 1) get the region object.
- * 2) check boudaries.
- * 3) compute the physical address.
- * 4) call dependent code.
+ * 2) look for the good region.
+ * 3) check if the region was found.
+ * 4) compute the physical address.
+ * 5) call dependent code.
  */
 
 t_error			as_paddr(t_asid		asid,
-				 t_regid	regid,
 				 t_vaddr	virtual,
 				 t_paddr*	physical)
 {
-  o_region*		o;
+  o_as*			o;
+  o_region*		oreg;
+  t_iterator		i;
+  t_state		state;
+  t_uint32		found = 0;
 
   AS_ENTER(as);
 
@@ -285,27 +342,45 @@ t_error			as_paddr(t_asid		asid,
    * 1)
    */
 
-  if (region_get(asid, regid, &o) != ERROR_NONE)
+  if (as_get(asid, &o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (virtual < o->address || virtual >= o->address + o->size)
-    AS_LEAVE(as, ERROR_UNKNOWN);
+  set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
+    {
+      if (set_object(o->regions, i, (void**)&oreg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (oreg->address <= virtual && virtual < oreg->address + oreg->size)
+	{
+	  found = 1;
+	  break;
+	}
+      if (oreg->address > virtual)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+    }
 
   /*
    * 3)
    */
 
-  *physical = (t_paddr)o->segid + o->offset + (virtual - o->address);
+  if (!found)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (machdep_call(as, as_paddr, asid, regid, virtual, physical) !=
+  *physical = (t_paddr)oreg->segid + oreg->offset + (virtual - oreg->address);
+
+  /*
+   * 5)
+   */
+
+  if (machdep_call(as, as_paddr, asid, virtual, physical) !=
       ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
@@ -321,6 +396,7 @@ t_error			as_paddr(t_asid		asid,
  * 2) gets the task object.
  * 3) reserves the cloned address space object.
  * 4) gets the destination address space object previously reserved.
+ * 5) prepare a temporary set for the mapping between segments and regions.
  * 6) clones the segment set from the source address space object.
  * 7) clones the region set from the source address space object.
  * 8) calls the machine-dependent code.
@@ -335,6 +411,10 @@ t_error			as_clone(t_tskid			tskid,
   o_as*			from;
   o_as*			to;
   t_iterator		i;
+  t_setsz		nb_segments;
+  t_setid		mapping;
+  t_segid		foo[2];
+  t_segid*		map = foo;
 
   AS_ENTER(as);
 
@@ -373,6 +453,17 @@ t_error			as_clone(t_tskid			tskid,
    * 5)
    */
 
+  if (set_size (from->segments, &nb_segments) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (set_reserve(array, SET_OPT_ALLOC, nb_segments,
+		  sizeof (map), &mapping) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 6)
+   */
+
   set_foreach(SET_OPT_FORWARD, from->segments, &i, state)
     {
       t_segid		needless;
@@ -386,17 +477,25 @@ t_error			as_clone(t_tskid			tskid,
 	  AS_LEAVE(as, ERROR_UNKNOWN);
 	}
 
-      if (segment_clone(to->segments, *data, &needless) != ERROR_NONE)
+      if (segment_clone(to->asid, *data, &needless) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      map[0] = *data;
+      map[1] = needless;
+
+      printf ("cloning segment %qd -> %qd\n", *data, needless);
+
+      if (set_add(mapping, map) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
   /*
-   * 6)
+   * 7)
    */
 
   set_foreach(SET_OPT_FORWARD, from->regions, &i, state)
     {
-      /* XXX t_regid		needless; */
+      t_regid		needless;
       o_region*		data;
 
       if (set_object(from->regions, i, (void**)&data) != ERROR_NONE)
@@ -407,16 +506,15 @@ t_error			as_clone(t_tskid			tskid,
 	  AS_LEAVE(as, ERROR_UNKNOWN);
 	}
 
-      /* XXX attention ici on va faire deux mapping sur un segment
-	 sans aucun controle... en fait il faut creer une region pas sur
-	 le data->segid mais sur le segid qu on a duplique a la boucle
-	 precedente
-
-	 il faudrait se faire une table de correspondance
-
-      if (region_reserve(to->asid, data->segid, XXX, &needless) != ERROR_NONE)
+      if (set_get(mapping, data->segid, (void**)map) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
-      */
+
+      printf ("map = %qd -> %qd\n", map[0], map[1]);
+      printf ("mapping region to segment %qd (prev. %qd)\n", map[1], data->segid);
+
+      if (region_reserve(to->asid, map[1], data->offset, REGION_OPT_FORCE,
+			 data->address, data->size, &needless) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
   /*
@@ -649,7 +747,6 @@ t_error			as_get(t_asid				asid,
  *    the address space build later.
  * 4) tries to reserve a statistics object.
  * 5) calls the machine-dependent code.
- * 6) if asked, dumps the address space manager.
  */
 
 t_error			as_init(void)
@@ -703,14 +800,6 @@ t_error			as_init(void)
 
   if (machdep_call(as, as_init) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
-
-  /*
-   * 6)
-   */
-
-#if (DEBUG & DEBUG_AS)
-  as_dump();
-#endif
 
   return (ERROR_NONE);
 }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [tue mar 21 16:34:51 2006]
+ * updated       matthieu bucchianeri   [fri mar 24 17:15:35 2006]
  */
 
 /*
@@ -243,6 +243,9 @@ t_error			region_reserve(t_asid			asid,
   if (segment_get(segid, &segment) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  if (segment->size < size - offset)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
   if (opts & REGION_OPT_MAPALL)
     {
       offset = 0;
@@ -274,6 +277,7 @@ t_error			region_reserve(t_asid			asid,
    * 3)
    */
 
+  address = o.address;
   *regid = o.regid = (t_regid)o.address;
   o.segid = segid;
   o.size = size;

@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/libs/libia32/interrupt/interrupt.c
+ * file          /home/buckman/kaneton/libs/libia32/interrupt/interrupt.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       renaud voltz   [thu feb 23 10:49:43 2006]
+ * updated       matthieu bucchianeri   [thu mar 23 12:02:56 2006]
  */
 
 /*

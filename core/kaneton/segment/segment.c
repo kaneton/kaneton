@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue mar 21 12:25:26 2006]
+ * updated       matthieu bucchianeri   [fri mar 24 15:54:20 2006]
  */
 
 /*
@@ -215,9 +215,10 @@ t_error			segment_dump(void)
  *
  * steps:
  *
- * 1) gets the address space object given its identifier.
- * 2) chooses the correct fit.
- * 3) calls the machine dependent code.
+ * 1) get the original segment object.
+ * 2) reserve a new segment of same size with same permissions.
+ * 3) copy the data from the old segment.
+ * 4) call machine-dependent code.
  */
 
 t_error			segment_clone(t_asid			asid,
@@ -225,7 +226,6 @@ t_error			segment_clone(t_asid			asid,
 				      t_segid*			new)
 {
   o_segment*		from;
-  o_as*			as;
 
   SEGMENT_ENTER(segment);
 
@@ -233,22 +233,26 @@ t_error			segment_clone(t_asid			asid,
    * 1)
    */
 
-  if (as_get(asid, &as) != ERROR_NONE)
+  if (segment_get(old, &from) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (segment_get(old, &from) != ERROR_NONE)
+  if (segment_reserve(asid, from->size, from->perms, new) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (segment_reserve(asid, from->size, from->perms, new) != ERROR_NONE)
+  if (segment_copy(old, 0, *new, 0, from->size) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
 
   if (machdep_call(segment, segment_clone, asid, old, new) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [tue mar 21 17:46:33 2006]
+ * updated       matthieu bucchianeri   [fri mar 24 17:32:31 2006]
  */
 
 /*
@@ -305,7 +305,7 @@ t_error			ia32_region_reserve(t_asid		asid,
    */
 
   paddr = oseg->address + offset;
-  vaddr = address + offset;
+  vaddr = address;
 
   pde_start = PDE_ENTRY(vaddr);
   pte_start = PTE_ENTRY(vaddr);

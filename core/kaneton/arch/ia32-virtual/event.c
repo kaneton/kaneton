@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/core/kaneton/arch/ia32-virtual/event.c
+ * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       renaud voltz   [mon feb 13 01:05:52 2006]
+ * updated       matthieu bucchianeri   [thu mar 23 12:01:41 2006]
  */
 
 /*

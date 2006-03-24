@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/03/03.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri mar 17 14:41:53 2006]
+ * updated       matthieu bucchianeri   [thu mar 23 10:37:48 2006]
  */
 
 #include <klibc.h>
@@ -85,7 +85,7 @@ void		check_as_03(void)
 			   &reg) == ERROR_NONE,
 	    "error reserving region\n");
 
-  ptr = (int*)reg;
+  ptr = (int*)(t_uint32)reg;
 
   MY_ASSERT(as_get(kasid, &o) == ERROR_NONE,
 	    "cannot get kernel as\n");

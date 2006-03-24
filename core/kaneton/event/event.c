@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/core/kaneton/event/event.c
+ * file          /home/buckman/kaneton/core/kaneton/event/event.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       renaud voltz   [sun feb 12 23:04:54 2006]
+ * updated       matthieu bucchianeri   [thu mar 23 11:58:40 2006]
  */
 
 /*
@@ -324,7 +324,8 @@ t_error			event_init(void)
    * 5)
    */
 
-  machdep_call(event, event_init);
+  if (machdep_call(event, event_init) != ERROR_NONE)
+    return ERROR_UNKNOWN;
 
   return ERROR_NONE;
 }
@@ -347,7 +348,8 @@ t_error			event_clean(void)
    * 1)
    */
 
-  machdep_call(event, event_clean);
+  if (machdep_call(event, event_clean) != ERROR_NONE)
+    return ERROR_UNKNOWN;
 
   /*
    * 2)
