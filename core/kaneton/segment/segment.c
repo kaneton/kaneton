@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri mar 24 18:13:31 2006]
+ * updated       matthieu bucchianeri   [sat mar 25 17:35:54 2006]
  */
 
 /*
@@ -292,7 +292,6 @@ t_error			segment_inject(t_asid		asid,
 
   o->segid = (t_segid)o->address;
   o->asid = asid;
-  o->type = SEGMENT_TYPE_MEMORY;
   *segid = o->segid;
 
   /*
@@ -630,7 +629,9 @@ t_error			segment_coalesce(t_segid	old1,
  *
  * steps:
  *
- * 1) call machine dependent code.
+ * 1) get segment object.
+ * 2) check permissions and boundaries.
+ * 3) call machine dependent code.
  */
 
 t_error			segment_read(t_segid		segid,
@@ -638,10 +639,29 @@ t_error			segment_read(t_segid		segid,
 				     void*		buff,
 				     t_psize		sz)
 {
+  o_segment*		o;
+
   SEGMENT_ENTER(segment);
 
   /*
    * 1)
+   */
+
+  if (segment_get(segid, &o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (!(o->perms & PERM_READ))
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (offs + sz >= o->size)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
    */
 
   if (machdep_call(segment, segment_read, segid, offs, buff, sz) != ERROR_NONE)
@@ -655,7 +675,9 @@ t_error			segment_read(t_segid		segid,
  *
  * steps:
  *
- * 1) call the dependent code.
+ * 1) get segment object.
+ * 2) check permissions and boundaries.
+ * 3) call the dependent code.
  */
 
 t_error			segment_write(t_segid		segid,
@@ -663,10 +685,29 @@ t_error			segment_write(t_segid		segid,
 				      const void*	buff,
 				      t_psize		sz)
 {
+  o_segment*		o;
+
   SEGMENT_ENTER(segment);
 
   /*
    * 1)
+   */
+
+  if (segment_get(segid, &o) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (!(o->perms & PERM_WRITE))
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (offs + sz >= o->size)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
    */
 
   if (machdep_call(segment, segment_write, segid, offs, buff, sz) !=
@@ -681,7 +722,9 @@ t_error			segment_write(t_segid		segid,
  *
  * steps:
  *
- * 1) call machine dependent code.
+ * 1) get segment objects.
+ * 2) check permissions and boundaries.
+ * 3) call machine dependent code.
  */
 
 t_error			segment_copy(t_segid		dst,
@@ -690,10 +733,36 @@ t_error			segment_copy(t_segid		dst,
 				     t_paddr		offss,
 				     t_psize		sz)
 {
+  o_segment*		o1;
+  o_segment*		o2;
+
   SEGMENT_ENTER(segment);
 
   /*
    * 1)
+   */
+
+  if (segment_get(dst, &o1) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (segment_get(src, &o2) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (!((o1->perms & PERM_WRITE) && (o2->perms & PERM_READ)))
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (offsd + sz >= o1->size)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (offss + sz >= o2->size)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
    */
 
   if (machdep_call(segment, segment_copy, dst, offsd, src, offss, sz) !=

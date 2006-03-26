@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [fri mar 24 17:32:31 2006]
+ * updated       matthieu bucchianeri   [mon mar 27 00:22:12 2006]
  */
 
 /*
@@ -284,7 +284,7 @@ t_error			ia32_region_reserve(t_asid		asid,
    * 4)
    */
 
-  pg.rw = oseg->perms & PERM_WRITE;
+  pg.rw = 1; //oseg->perms & PERM_WRITE;
   pg.present = 1;
   pg.user = (otsk->class == TASK_CLASS_PROGRAM);
 
@@ -370,6 +370,16 @@ t_error			ia32_region_reserve(t_asid		asid,
 	   */
 
 	  tlb_invalidate((t_vaddr)ENTRY_ADDR(pde, pte));
+	  tlb_flush( );
+
+	  if (ENTRY_ADDR(pde, pte) < address || ENTRY_ADDR(pde, pte) >= address + size)
+	    printf("out of bound !\n");
+	  printf("r/w test @ %p\n", ENTRY_ADDR(pde, pte));
+	  int iiii;
+	  for ( iiii = 0; iiii < 100000; iiii++)
+	    ;
+	  int * p = (int*)ENTRY_ADDR(pde, pte) + 80;
+	  *p = 0x41424344;
 	}
 
       /*

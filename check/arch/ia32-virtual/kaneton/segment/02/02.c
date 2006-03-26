@@ -6,12 +6,16 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/02/02.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri mar 24 18:57:28 2006]
+ * updated       matthieu bucchianeri   [sat mar 25 16:29:39 2006]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../common/common.h"
+
+/*
+ * segment_flush
+ */
 
 void		check_segment_02(void)
 {

@@ -6,12 +6,16 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/03/03.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri mar 24 19:12:18 2006]
+ * updated       matthieu bucchianeri   [sat mar 25 16:29:52 2006]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../common/common.h"
+
+/*
+ * type & perms of segments.
+ */
 
 void		check_segment_03(void)
 {

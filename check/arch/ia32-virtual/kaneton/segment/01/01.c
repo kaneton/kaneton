@@ -6,12 +6,16 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/01/01.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri mar 24 18:11:17 2006]
+ * updated       matthieu bucchianeri   [sat mar 25 16:31:18 2006]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../common/common.h"
+
+/*
+ * basic operations: reserve, get and release.
+ */
 
 void		check_segment_01(void)
 {
@@ -22,7 +26,6 @@ void		check_segment_01(void)
 
   TEST_ENTER;
   MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
-
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task) == ERROR_NONE,

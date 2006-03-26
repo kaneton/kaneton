@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [tue mar 21 13:33:41 2006]
+ * updated       matthieu bucchianeri   [sat mar 25 16:21:38 2006]
  */
 
 /*
@@ -175,10 +175,12 @@ void			bootloader_init_segments(void)
   init->segments[0].address = INIT_ISA_ADDR;
   init->segments[0].size = 0x1000;
   init->segments[0].perms = PERM_READ;
+  init->segments[0].type = SEGMENT_TYPE_MEMORY;
 
   init->segments[1].address = INIT_ISA_ADDR + 0x1000;
   init->segments[1].size = INIT_ISA_SIZE - 0x1000;
   init->segments[1].perms = PERM_READ | PERM_WRITE;
+  init->segments[1].type = SEGMENT_TYPE_MEMORY;
 
   /*
    * 2)
@@ -187,6 +189,7 @@ void			bootloader_init_segments(void)
   init->segments[2].address = init->kcode;
   init->segments[2].size = init->kcodesz;
   init->segments[2].perms = PERM_READ | PERM_EXEC;
+  init->segments[2].type = SEGMENT_TYPE_MEMORY;
 
   /*
    * 3)
@@ -195,6 +198,7 @@ void			bootloader_init_segments(void)
   init->segments[3].address = init->init;
   init->segments[3].size = init->initsz;
   init->segments[3].perms = PERM_READ | PERM_WRITE;
+  init->segments[3].type = SEGMENT_TYPE_MEMORY;
 
   /*
    * 4)
@@ -203,6 +207,7 @@ void			bootloader_init_segments(void)
   init->segments[4].address = (t_paddr)init->modules;
   init->segments[4].size = init->modulessz;
   init->segments[4].perms = PERM_READ | PERM_EXEC;
+  init->segments[4].type = SEGMENT_TYPE_MEMORY;
 
   /*
    * 5)
@@ -211,6 +216,7 @@ void			bootloader_init_segments(void)
   init->segments[5].address = (t_paddr)init->segments;
   init->segments[5].size = init->segmentssz;
   init->segments[5].perms = PERM_READ | PERM_WRITE;
+  init->segments[5].type = SEGMENT_TYPE_MEMORY;
 
   /*
    * 6)
@@ -219,6 +225,7 @@ void			bootloader_init_segments(void)
   init->segments[6].address = (t_paddr)init->regions;
   init->segments[6].size = init->regionssz;
   init->segments[6].perms = PERM_READ | PERM_WRITE;
+  init->segments[6].type = SEGMENT_TYPE_MEMORY;
 
   /*
    * 7)
@@ -227,6 +234,7 @@ void			bootloader_init_segments(void)
   init->segments[7].address = init->kstack;
   init->segments[7].size = init->kstacksz;
   init->segments[7].perms = PERM_READ | PERM_WRITE;
+  init->segments[7].type = SEGMENT_TYPE_MEMORY;
 
   /*
    * 8)
@@ -235,6 +243,7 @@ void			bootloader_init_segments(void)
   init->segments[8].address = init->alloc;
   init->segments[8].size = init->allocsz;
   init->segments[8].perms = PERM_READ | PERM_WRITE;
+  init->segments[8].type = SEGMENT_TYPE_MEMORY;
 
   /*
    * 9)
@@ -244,6 +253,7 @@ void			bootloader_init_segments(void)
   init->segments[9].address = (t_paddr)init->machdep.gdt.descriptor;
   init->segments[9].size = PAGESZ/*init->machdep.gdt.count * sizeof (t_gdte)*/;
   init->segments[9].perms = PERM_READ | PERM_WRITE;
+  init->segments[9].type = SEGMENT_TYPE_MEMORY;
 
   /*
    * 10)
@@ -252,6 +262,7 @@ void			bootloader_init_segments(void)
   init->segments[10].address = (t_paddr)init->machdep.pd;
   init->segments[10].size = PAGESZ;
   init->segments[10].perms = PERM_READ | PERM_WRITE;
+  init->segments[10].type = SEGMENT_TYPE_MEMORY;
 
   /*
    * 11)
@@ -260,6 +271,7 @@ void			bootloader_init_segments(void)
   init->segments[11].address = (t_paddr)init->machdep.idt.descriptor;
   init->segments[11].size = PAGESZ/*init->machdep.idt.count * sizeof (t_idte)*/;
   init->segments[11].perms = PERM_READ | PERM_WRITE;
+  init->segments[11].type = SEGMENT_TYPE_MEMORY;
 }
 
 /*
