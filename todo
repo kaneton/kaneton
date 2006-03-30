@@ -1,6 +1,5 @@
 --
- changer le foreach en ce qu'a dit emeric. head/tail dans l init de la
- boucle.
+ revoir la moulinette de triche, a la limite retoucher le code de ctcompare
 
 --
  expliquer dans la doc kaneton.pdf comment fonctionne machdep.

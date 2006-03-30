@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/exams/arch-mips/2006-exam/2006-exam.tex
 %%
 %% created       julien quintard   [fri dec  2 22:25:51 2005]
-%% updated       julien quintard   [wed feb 22 11:07:44 2006]
+%% updated       julien quintard   [wed mar 29 22:22:23 2006]
 %%
 
 %
@@ -119,11 +119,6 @@ Faites le lien entre les registres et le programme C. Notamment,
 nous attendrons l'identification des variables \textit{dst}, \textit{src}
 et \textit{size}.
 
-Vous expliquerez ensuite l'algorithme utilis\'e en assembleur, c'est-\`a-dire
-les diff\'erentes \'etapes assembleur.
-
-%\verbatimboxed{Makefile}
-
 \begin{correction}
 
   Il faut ajouter les \textit{delay slots} apr\`es chaque branchement.
@@ -170,38 +165,6 @@ les diff\'erentes \'etapes assembleur.
       \textit{R10}: src[i].
   \end{itemize}
 
-  L'algorithme utilis\'e est le suivant:
-
-  \begin{enumerate}
-    \item
-      R\'ecup\'eration des arguments de la fonction: \textit{R5}, \textit{R6},
-      \textit{R7}.
-    \item
-      Affectation \`a la valeur de retour la valeur du pointeur \textit{dst}:
-      \textit{R2}.
-    \item
-      Calcul de l'adresse de fin de la cha\^ine de caract\`eres source:
-      \textit{R16}.
-    \item
-      Tant que le pointeur de la chaine source est diff\'erent de \textit{R16}.
-    \item
-      Lecture du caract\`ere courant: \textit{R10}.
-    \item
-      Si le caract\`ere courant est le caract\`ere z\'ero, sortir de la boucle.
-    \item
-      \'Ecriture du caract\`ere dans la cha\^ine destination: \textit{R5}.
-    \item
-      Incr\'ementer les pointeurs des cha\^ines source et destination:
-      \textit{R5}, \textit{R6}.
-    \item
-      Si on est arriv\'e \`a la fin de la boucle, en sortir.
-    \item
-      \'Ecriture du caract\`ere z\'ero dans la cha\^ine destination:
-      \textit{R5}.
-    \item
-      Retour du au programme appelant.
-  \end{enumerate}
-
 \end{correction}
 
 %
@@ -235,10 +198,14 @@ l'ex\'ecution d'une it\'eration de la boucle. Calculer le CPI utile
 \section{R\'eordonnancement}
 
 R\'eordonner le code assembleur de la boucle de mani\`ere \`a \'eviter
-au maximum les cycles de gel et les cycles perdus dans les \textit{delay slots}.
+au maximum les cycles de gel et les cycles perdus dans les
+\textit{delay slots}.
 
 Combien de cycles sont d\'esormais n\'ecessaires \`a l'ex\'ecution d'une
 it\'eration?
+
+Veuillez inscrire le nombre de cycles de gels perdus entre deux instructions
+d\'ependantes, s'il y en a.
 
 \begin{correction}
 
@@ -275,6 +242,9 @@ Lw R3, 0(R5)
 Add R5, R1, R3
 \end{verbatim}
 
+L'utilisation de couleurs pour diff\'erencier les deux instructions
+sera appr\'eci\'ee.
+
 \begin{correction}
 
   \begin{center}
@@ -290,7 +260,7 @@ Add R5, R1, R3
 \section{Pipeline}
 
 On consid\`ere le processeur pipeline P construit autour d'un pipeline
-\`a 7 \'etages.
+\`a 9 \'etages.
 
 En effet, l'\'etage IFC a \'et\'e d\'ecoup\'e: l'acc\`es m\'emoire commence
 en IFC-1 et se termine en IFC-2.
