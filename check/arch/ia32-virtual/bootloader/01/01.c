@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/bootloader/01/01.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [fri feb 17 14:56:44 2006]
+ * updated       matthieu bucchianeri   [thu mar 30 23:07:55 2006]
  */
 
 #include <klibc.h>
@@ -22,6 +22,8 @@ extern t_init*	init;
 void		check_bootloader_01(void)
 {
   t_uint32	i;
+  t_reg32	ebp;
+  t_reg32	esp;
 
   TEST_ENTER;
 
@@ -64,6 +66,13 @@ void		check_bootloader_01(void)
     printf("bad kstack field\n");
   if (!init->kstacksz || init->kstacksz % PAGESZ)
     printf("bad kstacksz field\n");
+
+  asm volatile("movl %%esp, %0\n\t"
+	       "movl %%ebp, %1\n\t"
+	       : "=m" (esp), "=m" (ebp));
+
+  if (esp % 4 || ebp % 4)
+    printf("bad esp or ebp alignment\n");
 
   if (!init->alloc || init->alloc % PAGESZ)
     printf("bad alloc field\n");
