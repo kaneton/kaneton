@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/exams/arch-mips/2006-exam/2006-exam.tex
 %%
 %% created       julien quintard   [fri dec  2 22:25:51 2005]
-%% updated       julien quintard   [wed mar 29 22:22:23 2006]
+%% updated       julien quintard   [sat apr  1 17:34:48 2006]
 %%
 
 %
@@ -63,229 +63,113 @@
 % --------- text --------------------------------------------------------------
 %
 
-On consid\`ere la fonction \textbf{strncpy} d\'ecrite ci-dessous
-en langage C.
+On consid\`ere la fonction \textbf{vatican}() suivante qui effectue
+l'op\'eration de \textbf{Gauss} sur une ligne \textit{j} par rapport \`a
+la ligne \textit{k}.
+
+La matrice est une matrice carr\'ee de taille \textit{size}.
 
 \begin{verbatim}
-char*           strncpy(char* dst, const char* src, unsigned int size)
+int*            vatican(int* m,
+                        unsigned int j,
+                        unsigned int k,
+                        unsigned int size,
+                        int e)
 {
   int           i;
 
-  for (i = 0; i < size && src[i]; i++)
-    dst[i] = src[i];
-  dst[i] = 0;
+  for (i = 0; i < size; i++)
+    m[(j * size) + i] = m[(j * size) + i] - m[(k * size) + i] * e;
 
-  return (dst);
+  return (m);
 }
 \end{verbatim}
 
 Ce code f\^ut ensuite compil\'e pour une r\'ealisation \textbf{non pipeline}
-du processeur MIPS. Le code assembleur produit est le suivant:
+du processeur MIPS. Le code assembleur produit est le suivant.
+
+\begin{itemize}
+  \item
+    \textit{R5} contient l'adresse de la ligne \textit{j}.
+  \item
+    \textit{R6} contient l'adresse de la ligne \textit{k}.
+  \item
+    \textit{R7} contient l'adresse de la fin de la ligne \textit{j}.
+  \item
+    \textit{R8} contient le coefficient \textit{e}.
+\end{itemize}
 
 \begin{verbatim}
-         Lw R5, 0(R29)
-         Lw R6, 4(R29)
-         Lw R7, 8(R29)
+Loop:    Lw R9, 0(R6)
+         Mul R9, R9, R8
+         Lw R10, 0(R5)
+         Sub R10, R10, R9
+         Sw R10, 0(R5)
 
-         Add R2, R5, R0
-
-         Add R16, R6, R7
-
-Loop:    Lb R10, 0(R6)
-         Beq R10, R0, EndLoop
-
-         Sb R10, 0(R5)
-
-         Addiu R5, R5, 1
-         Addiu R6, R6, 1
-
-         Bne R6, R16, Loop
-
-EndLoop: Sb R0, 0(R5)
-
-         Jr R31
+         Addiu R6, R6, 4
+         Addiu R5, R5, 4
+         Bne R5, R7, Loop
 \end{verbatim}
+
+Le processeur MIPS-9 \'etudi\'e est le suivant:
+
+\begin{center}
+  \includegraphics[scale=0.6]{figures/pipeline.pdf}
+\end{center}
+
+On suppose que ce microprocesseur dispose d'une instruction
+\textit{Mul Rd, Rs, Rt} de format R. Dans cette instruction, les 32 bits
+de poids faibles du r\'esultat sont rang\'es dans le registre \textit{Rd}.
+Pour cette instruction, les quatre \'etage EXE, MEM-1, MEM-2 et MEM-3 sont
+remplac\'es par MX-1, MX-2, MX-3 et MX-4.
 
 %
 % fonctionnement
 %
 
-\section{Fonctionnement}
+\section{Fonctionnement - 2 points}
 
 Modifier ce code de telle mani\`ere qu'il soit ex\'ecutable par le processeur
-pipeline 5 \'etages MIPS etudi\'e en cours.
-
-Faites le lien entre les registres et le programme C. Notamment,
-nous attendrons l'identification des variables \textit{dst}, \textit{src}
-et \textit{size}.
+pipeline MIPS 9 \'etages.
 
 \begin{correction}
 
-  Il faut ajouter les \textit{delay slots} apr\`es chaque branchement.
+  Il faut ajouter \textbf{3} \textit{delay slots} apr\`es chaque
+  branchement.
 
   \begin{verbatim}
-           Lw R5, 0(R29)
-           Lw R6, 4(R29)
-           Lw R7, 8(R29)
+  Loop:    Lw R9, 0(R6)
+           Mul R9, R9, R8
+           Lw R10, 0(R5)
+           Sub R10, R10, R9
+           Sw R10, 0(R5)
 
-           Add R2, R5, R0
-
-           Add R16, R6, R7
-
-  Loop:    Lb R10, 0(R6)
-           Beq R10, R0, EndLoop
+           Addiu R6, R6, 4
+           Addiu R5, R5, 4
+           Bne R5, R7, Loop
            Nop
-
-           Sb R10, 0(R5)
-
-           Addiu R5, R5, 1
-           Addiu R6, R6, 1
-
-           Bne R6, R16, Loop
            Nop
-
-  EndLoop: Sb R0, 0(R5)
-
-           Jr R31
            Nop
   \end{verbatim}
 
-  Voici les liens entre le code assembleur et le code C:
-
-  \begin{itemize}
-    \item
-      \textit{R5}: dst.
-    \item
-      \textit{R6}: src.
-    \item
-      \textit{R7}: size.
-    \item
-      \textit{R16}: src + size.
-    \item
-      \textit{R10}: src[i].
-  \end{itemize}
-
 \end{correction}
 
 %
-% analyse simplifiee
+% bypasses
 %
 
-\section{Analyse Simplif\'ee}
+\section{Bypasses - 4 points}
 
-On consid\`ere le processeur pipeline MIPS \'etudi\'e en cours, compos\'e
-de cinq \'etages.
+Veuillez sp\'ecifier, via une vue simplifi\'ee, les diff\'erents bypasses
+que comportent ce processeur.
 
-Analyser l'ex\'ecution d'une it\'eration de boucle \`a l'aide d'un
-sch\'ema simplifi\'e.
-
-Calculer ensuite le nombre moyen de cycles n\'ecessaires \`a
-l'ex\'ecution d'une it\'eration de la boucle. Calculer le CPI utile
-(en consid\'erant qu'un NOP n'est pas une instruction utile).
+Pour chaque bypass vous devez d\'ecrire une s\'equence d'op\'erations
+mettant en \'evidence l'utilisation d'un tel bypass.
 
 \begin{correction}
 
   \begin{center}
-    \includegraphics[scale=0.7]{figures/correction-analyse-simplifiee.pdf}
-  \end{center}
-
-\end{correction}
-
-%
-% reordonnancement
-%
-
-\section{R\'eordonnancement}
-
-R\'eordonner le code assembleur de la boucle de mani\`ere \`a \'eviter
-au maximum les cycles de gel et les cycles perdus dans les
-\textit{delay slots}.
-
-Combien de cycles sont d\'esormais n\'ecessaires \`a l'ex\'ecution d'une
-it\'eration?
-
-Veuillez inscrire le nombre de cycles de gels perdus entre deux instructions
-d\'ependantes, s'il y en a.
-
-\begin{correction}
-
-  \begin{verbatim}
-  Loop:    Lb R10, 0(R6)
-
-           Addiu R5, R5, 1
-           Addiu R6, R6, 1
-
-           Beq R10, R0, EndLoop
-           Nop
-
-           Bne R6, R16, Loop
-           Sb R10, -1(R5)
-  \end{verbatim}
-
-  Il faut d\'esormais \textbf{7} cycles pour l'ex\'ecution d'une it\'eration.
-  Il ne reste plus de cycles de gel, n\'eanmoins il subsiste un
-  \textit{delay slot} non utilis\'e.
-
-\end{correction}
-
-%
-% analyse detaillee
-%
-
-\section{Analyse Detaill\'ee}
-
-Donner un sch\'ema detaill\'e de l'ex\'ecution de la s\'equence d'instructions
-suivante dans le pipeline classique MIPS 5 \'etages:
-
-\begin{verbatim}
-Lw R3, 0(R5)
-Add R5, R1, R3
-\end{verbatim}
-
-L'utilisation de couleurs pour diff\'erencier les deux instructions
-sera appr\'eci\'ee.
-
-\begin{correction}
-
-  \begin{center}
-    \includegraphics[scale=0.8]{figures/correction-analyse-detaillee.pdf}
-  \end{center}
-
-\end{correction}
-
-%
-% pipeline
-%
-
-\section{Pipeline}
-
-On consid\`ere le processeur pipeline P construit autour d'un pipeline
-\`a 9 \'etages.
-
-En effet, l'\'etage IFC a \'et\'e d\'ecoup\'e: l'acc\`es m\'emoire commence
-en IFC-1 et se termine en IFC-2.
-
-De plus l'\'etage DEC a \'egalement \'et\'e d\'ecoup\'e. L'\'etage
-DEC-1 d\'ecode et extrait les op\'erandes alors que l\'etage DEC-2 calcule
-l'adresse de l'instruction suivante incluant bien entendu la comparaison
-des op\'erandes dans le cas d'un branchement conditionnel.
-
-\begin{center}
-  \includegraphics[scale=0.8]{figures/pipeline.pdf}
-\end{center}
-
-Combien de bypasses existent-ils sur ce processeur?
-
-Representer ces bypasses sur un schema simplfi\'e?
-
-Donner un exemple de code mettant en \'evidence chacun de ces bypasses.
-
-\begin{correction}
-
-  Il y a exactement \textbf{5} bypasses.
-
-  \begin{center}
-    \includegraphics[scale=0.8]{figures/correction-pipeline.pdf}
+    \includegraphics[scale=0.6]{figures/correction-bypasses.pdf}
   \end{center}
 
   \begin{enumerate}
@@ -302,7 +186,24 @@ Donner un exemple de code mettant en \'evidence chacun de ces bypasses.
       \end{verbatim}
     \item
       \begin{verbatim}
+	Add R3, R2, R1
+	Nop
+	Nop
+	Beq R3, R0, Loop
+      \end{verbatim}
+    \item
+      \begin{verbatim}
+	Add R3, R2, R1
+	Nop
+	Nop
+	Nop
+	Beq R3, R0, Loop
+      \end{verbatim}
+    \item
+      \begin{verbatim}
 	Lw R3, 0(R5)
+	Nop
+	Nop
 	Nop
 	Add R5, R4, R3
       \end{verbatim}
@@ -311,135 +212,68 @@ Donner un exemple de code mettant en \'evidence chacun de ces bypasses.
 	Lw R3, 0(R5)
 	Nop
 	Nop
-	Beq R3, R0, Loop
-      \end{verbatim}
-    \item
-      \begin{verbatim}
-	Lw R3, 0(R5)
-	Nop
 	Nop
 	Nop
 	Beq R3, R0, Loop
       \end{verbatim}
   \end{enumerate}
 
-  \`A noter que la s\'equence:
-
-  \begin{verbatim}
-    Add R3, R2, R1
-    Nop
-    Nop
-    Beq R3, R0, Loop  
-  \end{verbatim}
-
-  utilise le bypass num\'ero \textbf{4}.
-
 \end{correction}
 
 %
-% optimisations
+% analyse simplifiee
 %
 
-\section{Optimisations}
+\section{Analyse Simplifi\'ee - 5 points}
 
-Modifier le code assembleur originel de la fonction \textbf{strncpy} de
-mani\`ere \`a ce qu'il soit ex\'ecutable sur le processeur P.
+Veuillez d\'ecrire l'\'execution de la boucle de la fonction \textbf{vatican}()
+\`a l'aide d'une vue simplifi\'ee.
 
-Puis effectuer les optimisations suivantes sur la boucle du code
-pr\'ec\'edemment obtenu:
-
-\begin{itemize}
-  \item
-    R\'eordonnancement.
-  \item
-    Loop Unrolling.
-\end{itemize}
-
-Pour chacune de ces optimisations, vous devrez calculer le nombre de cycles
-n\'ecessaire au traitement d'un \'el\'ement de la cha\^ine.
+Vous devrez ensuite calculer le CPI et CPIu.
 
 \begin{correction}
 
-  Voici le code modifi\'e de mani\`ere \`a \^etre ex\'ecutable sur le
-  processeur P.
-
-  Il faut tout simplement prendre en compte les \textit{delay slots}.
-
-  \begin{verbatim}
-           Lw R5, 0(R29)
-           Lw R6, 4(R29)
-           Lw R7, 8(R29)
-
-           Add R2, R5, R0
-
-           Add R16, R6, R7
-
-  Loop:    Lb R10, 0(R6)
-           Beq R10, R0, EndLoop
-           Nop
-           Nop
-
-           Sb R10, 0(R5)
-
-           Addiu R5, R5, 1
-           Addiu R6, R6, 1
-
-           Bne R6, R16, Loop
-           Nop
-           Nop
-
-  EndLoop: Sb R0, 0(R5)
-
-           Jr R31
-           Nop
-           Nop
-  \end{verbatim}
-
-  \textbf{R\'eordonnancement}
-
-  \begin{verbatim}
-  Loop:    Lb R10, 0(R6)
-
-           Addiu R5, R5, 1
-           Addiu R6, R6, 1
-
-           Beq R10, R0, EndLoop
-           Nop
-           Nop
-
-           Bne R6, R16, Loop
-           Sb R10, -1(R5)
-           Nop
-  \end{verbatim}
-
-  \textbf{9} cycles sont n\'ecessaires \`a l'ex\'ecution de cette boucle et
-  donc au traitement d'un \'el\'ement.
-
-  \textbf{Loop Unrolling}
-
-  \begin{verbatim}
-  Loop:    Lb R10, 0(R6)
-           Lb R11, 1(R6)
-
-           Addiu R5, R5, 2
-
-           Beq R10, R0, EndLoop
-           Addiu R6, R6, 2
-           Nop
-
-           Bne R6, R16, Loop
-           Sb R10, -2(R5)
-	   Sb R11, -1(R5)
-  \end{verbatim}
-
-  \textbf{9} cycles sont n\'ecessaires \`a l'ex\'ecution de cette boucle.
-  N\'eanmoins, le nombre de \textit{delay slots} a nettement diminu\'e de
-  3 \`a 1.
-
-  \'Etant donn\'e que deux caract\`eres de la cha\^ne sont trait\'es tous
-  les \textbf{9} cycles, un caract\`ere est en moyenne trait\'e tous les
-  \textbf{4.5} cycles.
+  \begin{center}
+    \includegraphics[scale=0.33]{figures/correction-analyse-simplifiee.pdf}
+  \end{center}
 
 \end{correction}
+
+%
+% optimisation
+%
+
+\section{Optimisation - 5 points}
+
+Veuillez appliquer l'optimisation \textit{Software Pipeline} sur
+la boucle de la fonction \textbf{vatican}() de mani\`ere \`a obtenir
+les meilleures performances.
+
+\begin{correction}
+
+  \begin{verbatim}
+  Loop:    Sw R11, 0(R5)
+
+           Sub R11, R10, R9
+
+           Lw R9, -8(R6)
+
+           Addiu R5, R5, 4
+
+           Lw R10, -12(R5)
+
+           Bne R5, R7, Loop
+           Mul R9, R9, R8
+           Nop
+           Addiu R6, R6, 4
+  \end{verbatim}
+
+\end{correction}
+
+%
+% memoire
+%
+
+\section{M\'emoire - 4 points}
 
 \end{document}

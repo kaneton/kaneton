@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/env/init.sh
+## file          /home/mycure/kaneton/env/init.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       matthieu bucchianeri   [sat dec 17 12:49:21 2005]
+## updated       julien quintard   [sat apr  1 02:18:19 2006]
 ##
 
 #
@@ -141,11 +141,11 @@ links()
 {
   display " linking kernel configuration files" "+"
 
+  remove "${_KANETON_INCLUDE_DIR_}/kaneton/conf.h"
+  link "${_KANETON_INCLUDE_DIR_}/kaneton/conf.h" "${_USER_DIR_}/conf.h"
+
   remove "${_CORE_CONF_DIR_}/conf.c"
   link "${_CORE_CONF_DIR_}/conf.c" "${_USER_DIR_}/conf.c"
-
-  remove "${_CORE_INCLUDE_DIR_}/kaneton/conf.h"
-  link "${_CORE_INCLUDE_DIR_}/kaneton/conf.h" "${_USER_DIR_}/conf.h"
 }
 
 

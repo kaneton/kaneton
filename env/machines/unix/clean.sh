@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/env/machines/unix/clean.sh
+## file          /home/mycure/kaneton/env/machines/unix/clean.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:44:00 2006]
+## updated       julien quintard   [sat apr  1 02:08:18 2006]
 ##
 
 #
@@ -44,7 +44,7 @@ clean()
 
   remove ${_MACHDEP_BOOTSTRAP_DIR_}
   remove ${_MACHDEP_BOOTLOADER_DIR_}
-  remove ${_MACHDEP_KANETON_DIR_}
+  remove ${_MACHDEP_CORE_DIR_}
   remove ${_MACHDEP_INCLUDE_DIR_}
   remove ${_MACHDEP_LDS_DIR_}
 }

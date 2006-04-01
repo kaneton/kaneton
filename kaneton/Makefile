@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/core/Makefile
+## file          /home/mycure/kaneton/kaneton/Makefile
 ##
 ## created       julien quintard   [fri feb 11 03:24:11 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:14:54 2006]
+## updated       julien quintard   [sat apr  1 02:23:00 2006]
 ##
 
 #
@@ -25,7 +25,7 @@ include			../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		$(_CORE_DEP_)
+SUBDIRS			:=		$(_KANETON_DEP_)
 
 #
 # ---------- rules ------------------------------------------------------------

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/arch/ia32-virtual/kaneton/init.h
+ * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       matthieu bucchianeri   [mon mar 13 16:42:17 2006]
+ * updated       julien quintard   [sat apr  1 01:35:01 2006]
  */
 
 #ifndef IA32_KANETON_INIT_H
@@ -76,7 +76,7 @@ typedef struct
 /*                                                               [cut] /k1   */
 
   t_cons			cons;
-}				d_init;
+}				a_init;
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -87,6 +87,6 @@ typedef struct
  */
 
 #define		machdep_data_init()					\
-  d_init			machdep
+  a_init			machdep
 
 #endif

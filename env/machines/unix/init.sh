@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/env/machines/unix/init.sh
+## file          /home/mycure/kaneton/env/machines/unix/init.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       matthieu bucchianeri   [tue dec 13 20:57:08 2005]
+## updated       julien quintard   [sat apr  1 02:07:57 2006]
 ##
 
 #
@@ -74,8 +74,8 @@ init()
   remove "${_MACHDEP_BOOTLOADER_DIR_}"
   link "${_MACHDEP_BOOTLOADER_DIR_}" "${_ARCHITECTURE_}"
 
-  remove "${_MACHDEP_KANETON_DIR_}"
-  link "${_MACHDEP_KANETON_DIR_}" "${_ARCHITECTURE_}"
+  remove "${_MACHDEP_CORE_DIR_}"
+  link "${_MACHDEP_CORE_DIR_}" "${_ARCHITECTURE_}"
 
   remove "${_MACHDEP_INCLUDE_DIR_}"
   link "${_MACHDEP_INCLUDE_DIR_}" "${_ARCHITECTURE_}"

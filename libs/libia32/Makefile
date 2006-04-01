@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/libs/libia32/Makefile
+## file          /home/mycure/kaneton/libs/libia32/Makefile
 ##
 ## created       matthieu bucchianeri   [tue dec 20 13:40:52 2005]
-## updated       matthieu bucchianeri   [fri jan  6 11:56:35 2006]
+## updated       julien quintard   [sat apr  1 02:24:13 2006]
 ##
 
 #
@@ -53,6 +53,8 @@ libs:
 	$(call makefile,$(SUBDIRS),)
 
 clear:
+	$(call makefile,$(SUBDIRS),clear)
+
 	$(call remove,$(LIBIA32_O),)
 
 	$(call remove,$(_LIBIA32_A_),)
@@ -60,6 +62,8 @@ clear:
 	$(call purge,)
 
 proto:
+	$(call makefile,$(SUBDIRS),proto)
+
 	$(call prototypes,$(LIBIA32_INCLUDE),)
 
 dep:

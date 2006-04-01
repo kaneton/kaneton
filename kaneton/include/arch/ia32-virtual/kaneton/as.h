@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/as.h
  *
  * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       julien quintard   [fri mar 10 04:03:20 2006]
+ * updated       julien quintard   [sat apr  1 01:35:31 2006]
  */
 
 #ifndef IA32_KANETON_AS_H
@@ -33,7 +33,7 @@ typedef struct
   t_directory			pd;
 
 /*                                                               [cut] /k2   */
-}				do_as;
+}				ao_as;
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -57,6 +57,6 @@ typedef struct
 #define		machdep_data_m_as()
 
 #define		machdep_data_o_as()					\
-  do_as				machdep
+  ao_as				machdep
 
 #endif
