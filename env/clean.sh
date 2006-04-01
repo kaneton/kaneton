@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/env/clean.sh
+## file          /home/mycure/kaneton/env/clean.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:43:11 2006]
+## updated       julien quintard   [sat apr  1 22:02:03 2006]
 ##
 
 #
@@ -60,7 +60,7 @@ links()
   display " unlinking kernel configuration files" "+"
 
   remove ${_CORE_CONF_DIR_}/conf.c
-  remove ${_CORE_INCLUDE_DIR_}/kaneton/conf.h
+  remove ${_KERNEL_INCLUDE_DIR_}/kaneton/conf.h
 }
 
 
