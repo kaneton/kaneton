@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/serial.h
+ * file          /home/mycure/kaneton/kaneton/include/core/serial.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [fri mar 10 03:40:49 2006]
+ * updated       julien quintard   [sat apr  1 22:45:42 2006]
  */
 
-#ifndef	KANETON_SERIAL_H
-#define	KANETON_SERIAL_H	1
+#ifndef	CORE_SERIAL_H
+#define	CORE_SERIAL_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -51,7 +51,7 @@
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/debug/serial.c
+ *      ../../core/debug/serial.c
  */
 
 /*

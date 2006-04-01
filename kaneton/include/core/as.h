@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kernel/include/core/as.h
+ * file          /home/mycure/kaneton/kaneton/include/core/as.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sat apr  1 22:16:11 2006]
+ * updated       julien quintard   [sat apr  1 22:42:14 2006]
  */
 
 #ifndef CORE_AS_H
@@ -17,8 +17,8 @@
  */
 
 #include <arch/machdep/machdep.h>
-#include <kaneton/id.h>
-#include <kaneton/types.h>
+#include <core/id.h>
+#include <core/types.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -130,7 +130,7 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/as/as.c
+ *      ../../core/as/as.c
  */
 
 /*

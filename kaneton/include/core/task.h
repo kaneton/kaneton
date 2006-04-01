@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/task.h
+ * file          /home/mycure/kaneton/kaneton/include/core/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       julien quintard   [fri mar 10 04:01:44 2006]
+ * updated       julien quintard   [sat apr  1 22:47:32 2006]
  */
 
-#ifndef KANETON_TASK_H
-#define KANETON_TASK_H		1
+#ifndef CORE_TASK_H
+#define CORE_TASK_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -18,8 +18,8 @@
 
 #include <arch/machdep/machdep.h>
 
-#include <kaneton/id.h>
-#include <kaneton/types.h>
+#include <core/id.h>
+#include <core/types.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -177,7 +177,7 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/task/task.c
+ *      ../../core/task/task.c
  */
 
 /*

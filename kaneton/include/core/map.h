@@ -3,22 +3,22 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/map.h
+ * file          /home/mycure/kaneton/kaneton/include/core/map.h
  *
  * created       matthieu bucchianeri   [sun feb 26 12:23:01 2006]
- * updated       julien quintard   [fri mar 10 04:02:29 2006]
+ * updated       julien quintard   [sat apr  1 22:44:51 2006]
  */
 
-#ifndef KANETON_MAP_H
-#define KANETON_MAP_H	1
+#ifndef CORE_MAP_H
+#define CORE_MAP_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
-#include <kaneton/id.h>
-#include <kaneton/types.h>
+#include <core/id.h>
+#include <core/types.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -83,7 +83,7 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/map/map.c
+ *      ../../core/map/map.c
  */
 
 /*

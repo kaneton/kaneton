@@ -3,22 +3,22 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/export_kaneton/kaneton/core/include/kaneton/init.h
+ * file          /home/mycure/kaneton/kaneton/include/core/init.h
  *
  * created       julien quintard   [fri feb 11 02:19:11 2005]
- * updated       matthieu bucchianeri   [mon jan 30 20:40:11 2006]
+ * updated       julien quintard   [sat apr  1 22:43:39 2006]
  */
 
-#ifndef KANETON_INIT_H
-#define KANETON_INIT_H		1
+#ifndef CORE_INIT_H
+#define CORE_INIT_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
-#include <kaneton/segment.h>
-#include <kaneton/region.h>
+#include <core/segment.h>
+#include <core/region.h>
 
 /*
  * ---------- types -----------------------------------------------------------

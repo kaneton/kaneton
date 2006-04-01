@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/clean.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat apr  1 22:32:07 2006]
+## updated       julien quintard   [sat apr  1 22:38:32 2006]
 ##
 
 #
@@ -60,7 +60,7 @@ links()
   display " unlinking kernel configuration files" "+"
 
   remove ${_CORE_CONF_DIR_}/conf.c
-  remove ${_KANETON_INCLUDE_DIR_}/kaneton/conf.h
+  remove ${_CORE_INCLUDE_DIR_}/conf.h
 }
 
 

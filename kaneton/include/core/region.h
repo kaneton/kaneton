@@ -3,22 +3,22 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/region.h
+ * file          /home/mycure/kaneton/kaneton/include/core/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [wed mar 15 17:43:53 2006]
+ * updated       julien quintard   [sat apr  1 22:45:06 2006]
  */
 
-#ifndef KANETON_REGION_H
-#define KANETON_REGION_H	1
+#ifndef CORE_REGION_H
+#define CORE_REGION_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
-#include <kaneton/id.h>
-#include <kaneton/types.h>
+#include <core/id.h>
+#include <core/types.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -137,8 +137,8 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/region/region.c
- *      ../../kaneton/region/region-fit.c
+ *      ../../core/region/region.c
+ *      ../../core/region/region-fit.c
  */
 
 /*

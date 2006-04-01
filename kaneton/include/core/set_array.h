@@ -3,20 +3,20 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/kaneton/set_array.h
+ * file          /home/mycure/kaneton/kaneton/include/core/set_array.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       matthieu bucchianeri   [mon dec 12 11:38:04 2005]
+ * updated       julien quintard   [sat apr  1 22:46:16 2006]
  */
 
-#ifndef KANETON_SET_ARRAY_H
-#define KANETON_SET_ARRAY_H	1
+#ifndef CORE_SET_ARRAY_H
+#define CORE_SET_ARRAY_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <kaneton/set.h>
+#include <core/set.h>
 #include <arch/machdep/machdep.h>
 
 /*

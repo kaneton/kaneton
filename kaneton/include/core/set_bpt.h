@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/set_bpt.h
+ * file          /home/mycure/kaneton/kaneton/include/core/set_bpt.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       julien quintard   [fri mar 10 03:39:14 2006]
+ * updated       julien quintard   [sat apr  1 22:47:01 2006]
  */
 
-#ifndef KANETON_SET_BPT_H
-#define KANETON_SET_BPT_H	1
+#ifndef CORE_SET_BPT_H
+#define CORE_SET_BPT_H		1
 
 /*                                                                  [cut] k2 */
 
@@ -18,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <kaneton/set.h>
+#include <core/set.h>
 #include <arch/machdep/machdep.h>
 
 /*

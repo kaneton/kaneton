@@ -3,23 +3,23 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/stats.h
+ * file          /home/mycure/kaneton/kaneton/include/core/stats.h
  *
  * created       julien quintard   [sun jan 19 14:51:33 2005]
- * updated       julien quintard   [fri mar 10 04:00:26 2006]
+ * updated       julien quintard   [sat apr  1 22:47:19 2006]
  */
 
-#ifndef KANETON_STATS_H
-#define KANETON_STATS_H		1
+#ifndef CORE_STATS_H
+#define CORE_STATS_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
-#include <kaneton/id.h>
-#include <kaneton/types.h>
-#include <kaneton/conf.h>
+#include <core/id.h>
+#include <core/types.h>
+#include <core/conf.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -155,7 +155,7 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/stats/stats.c
+ *      ../../core/stats/stats.c
  */
 
 /*

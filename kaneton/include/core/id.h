@@ -3,21 +3,21 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/id.h
+ * file          /home/mycure/kaneton/kaneton/include/core/id.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [fri mar 10 04:00:17 2006]
+ * updated       julien quintard   [sat apr  1 22:43:16 2006]
  */
 
-#ifndef KANETON_ID_H
-#define KANETON_ID_H		1
+#ifndef CORE_ID_H
+#define CORE_ID_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
-#include <kaneton/types.h>
+#include <core/types.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -86,7 +86,7 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/id/id.c
+ *      ../../core/id/id.c
  */
 
 /*

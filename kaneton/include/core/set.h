@@ -3,22 +3,22 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/set.h
+ * file          /home/mycure/kaneton/kaneton/include/core/set.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       julien quintard   [fri mar 10 04:00:08 2006]
+ * updated       julien quintard   [sat apr  1 22:46:03 2006]
  */
 
-#ifndef KANETON_SET_H
-#define KANETON_SET_H		1
+#ifndef CORE_SET_H
+#define CORE_SET_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
-#include <kaneton/id.h>
-#include <kaneton/types.h>
+#include <core/id.h>
+#include <core/types.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -86,9 +86,9 @@ typedef struct s_set		o_set;
  * ---------- includes --------------------------------------------------------
  */
 
-#include <kaneton/set_array.h>
-#include <kaneton/set_bpt.h>
-#include <kaneton/set_ll.h>
+#include <core/set_array.h>
+#include <core/set_bpt.h>
+#include <core/set_ll.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -328,12 +328,12 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/set/set.c
- *      ../../kaneton/set/set_array.c
- *      ../../kaneton/set/set_ll.c
- *	../../kaneton/set/set_bpt.c
- *	../../kaneton/set/set_pipe.c
- *	../../kaneton/set/set_stack.c
+ *      ../../core/set/set.c
+ *      ../../core/set/set_array.c
+ *      ../../core/set/set_ll.c
+ *	../../core/set/set_bpt.c
+ *	../../core/set/set_pipe.c
+ *	../../core/set/set_stack.c
 
  */
 

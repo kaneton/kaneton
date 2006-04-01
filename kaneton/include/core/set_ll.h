@@ -3,20 +3,20 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/set_ll.h
+ * file          /home/mycure/kaneton/kaneton/include/core/set_ll.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:28:19 2006]
+ * updated       julien quintard   [sat apr  1 22:46:41 2006]
  */
 
-#ifndef KANETON_SET_LL_H
-#define KANETON_SET_LL_H	1
+#ifndef CORE_SET_LL_H
+#define CORE_SET_LL_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <kaneton/set.h>
+#include <core/set.h>
 #include <arch/machdep/machdep.h>
 
 /*

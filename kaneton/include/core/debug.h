@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/debug.h
+ * file          /home/mycure/kaneton/kaneton/include/core/debug.h
  *
  * created       julien quintard   [mon nov 28 19:37:01 2005]
- * updated       julien quintard   [fri mar 10 03:41:10 2006]
+ * updated       julien quintard   [sat apr  1 22:42:34 2006]
  */
 
-#ifndef KANETON_DEBUG_H
-#define KANETON_DEBUG_H		1
+#ifndef CORE_DEBUG_H
+#define CORE_DEBUG_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -61,9 +61,9 @@ typedef	struct			s_serial_buffer
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/debug/debug.c
- *      ../../kaneton/debug/cons-text.c
- *      ../../kaneton/debug/serial.c
+ *      ../../core/debug/debug.c
+ *      ../../core/debug/cons-text.c
+ *      ../../core/debug/serial.c
  */
 
 /*

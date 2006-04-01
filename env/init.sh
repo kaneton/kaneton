@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/init.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat apr  1 22:32:01 2006]
+## updated       julien quintard   [sat apr  1 22:37:04 2006]
 ##
 
 #
@@ -141,8 +141,8 @@ links()
 {
   display " linking kernel configuration files" "+"
 
-  remove "${_KANETON_INCLUDE_DIR_}/kaneton/conf.h"
-  link "${_KANETON_INCLUDE_DIR_}/kaneton/conf.h" "${_USER_DIR_}/conf.h"
+  remove "${_CORE_INCLUDE_DIR_}/conf.h"
+  link "${_CORE_INCLUDE_DIR_}/conf.h" "${_USER_DIR_}/conf.h"
 
   remove "${_CORE_CONF_DIR_}/conf.c"
   link "${_CORE_CONF_DIR_}/conf.c" "${_USER_DIR_}/conf.c"

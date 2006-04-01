@@ -3,22 +3,22 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/segment.h
+ * file          /home/mycure/kaneton/kaneton/include/core/segment.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [fri mar 10 04:00:47 2006]
+ * updated       julien quintard   [sat apr  1 22:45:25 2006]
  */
 
-#ifndef KANETON_SEGMENT_H
-#define KANETON_SEGMENT_H	1
+#ifndef CORE_SEGMENT_H
+#define CORE_SEGMENT_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
-#include <kaneton/id.h>
-#include <kaneton/types.h>
+#include <core/id.h>
+#include <core/types.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -173,8 +173,8 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/segment/segment.c
- *      ../../kaneton/segment/segment-fit.c
+ *      ../../core/segment/segment.c
+ *      ../../core/segment/segment-fit.c
  */
 
 /*

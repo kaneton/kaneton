@@ -3,22 +3,22 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/timer.h
+ * file          /home/mycure/kaneton/kaneton/include/core/timer.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       julien quintard   [fri mar 10 04:02:19 2006]
+ * updated       julien quintard   [sat apr  1 22:47:51 2006]
  */
 
-#ifndef KANETON_TIMER_H
-#define KANETON_TIMER_H
+#ifndef CORE_TIMER_H
+#define CORE_TIMER_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
-#include <kaneton/id.h>
-#include <kaneton/types.h>
+#include <core/id.h>
+#include <core/types.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -120,7 +120,7 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/timer/timer.c
+ *      ../../core/timer/timer.c
  */
 
 /*

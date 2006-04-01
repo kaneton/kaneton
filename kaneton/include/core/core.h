@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/kaneton.h
+ * file          /home/mycure/kaneton/kaneton/include/core/core.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [fri mar 10 04:00:37 2006]
+ * updated       julien quintard   [sat apr  1 22:44:26 2006]
  */
 
-#ifndef KANETON_KANETON_H
-#define KANETON_KANETON_H	1
+#ifndef CORE_CORE_H
+#define CORE_CORE_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -77,33 +77,33 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <kaneton/conf.h>
+#include <core/conf.h>
 
-#include <kaneton/as.h>
+#include <core/as.h>
 
 /*                                                                [cut] k1   */
-#include <kaneton/serial.h>
+#include <core/serial.h>
 /*                                                               [cut] /k1   */
-#include <kaneton/debug.h>
+#include <core/debug.h>
 
-#include <kaneton/error.h>
-#include <kaneton/types.h>
+#include <core/error.h>
+#include <core/types.h>
 
-#include <kaneton/id.h>
-#include <kaneton/init.h>
-#include <kaneton/region.h>
-#include <kaneton/segment.h>
-#include <kaneton/map.h>
-#include <kaneton/set.h>
-#include <kaneton/stats.h>
-#include <kaneton/event.h>
-#include <kaneton/timer.h>
-#include <kaneton/task.h>
+#include <core/id.h>
+#include <core/init.h>
+#include <core/region.h>
+#include <core/segment.h>
+#include <core/map.h>
+#include <core/set.h>
+#include <core/stats.h>
+#include <core/event.h>
+#include <core/timer.h>
+#include <core/task.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/kaneton.c
+ *      ../../core/kaneton.c
  */
 
 /*

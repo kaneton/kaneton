@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/types.h
+ * file          /home/mycure/kaneton/kaneton/include/core/types.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:27:45 2006]
+ * updated       julien quintard   [sat apr  1 22:48:14 2006]
  */
 
-#ifndef KANETON_TYPES_H
-#define KANETON_TYPES_H		1
+#ifndef CORE_TYPES_H
+#define CORE_TYPES_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------

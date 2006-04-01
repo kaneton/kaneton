@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/error.h
+ * file          /home/mycure/kaneton/kaneton/include/core/error.h
  *
  * created       julien quintard   [fri feb 11 02:19:11 2005]
- * updated       julien quintard   [fri mar 10 03:37:50 2006]
+ * updated       julien quintard   [sat apr  1 22:42:44 2006]
  */
 
-#ifndef KANETON_ERROR_H
-#define KANETON_ERROR_H		1
+#ifndef CORE_ERROR_H
+#define CORE_ERROR_H		1
 
 /*
  * ---------- macros ----------------------------------------------------------

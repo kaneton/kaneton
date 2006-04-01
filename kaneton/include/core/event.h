@@ -3,22 +3,22 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/event.h
+ * file          /home/mycure/kaneton/kaneton/include/core/event.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       julien quintard   [mon mar 13 08:38:43 2006]
+ * updated       julien quintard   [sat apr  1 22:43:02 2006]
  */
 
-#ifndef KANETON_EVENT_H
-#define KANETON_EVENT_H
+#ifndef CORE_EVENT_H
+#define CORE_EVENT_H
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
-#include <kaneton/id.h>
-#include <kaneton/types.h>
+#include <core/id.h>
+#include <core/types.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -110,7 +110,7 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/event/event.c
+ *      ../../core/event/event.c
  */
 
 /*
