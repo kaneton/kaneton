@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/core/kaneton/time/Makefile
+## file          /home/mycure/kaneton/kaneton/core/time/Makefile
 ##
 ## created       julien quintard   [sat dec 10 13:50:17 2005]
-## updated       julien quintard   [fri mar 10 04:22:54 2006]
+## updated       julien quintard   [sat apr  1 23:37:52 2006]
 ##
 
 #
@@ -31,7 +31,7 @@ TIME_C			:=		timer.c
 
 TIME_O			:=		$(TIME_C:.c=.o)
 
-TIME_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/timer.h
+TIME_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/timer.h
 
 CFLAGS			+=		-D___kernel
 

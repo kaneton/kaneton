@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/core/kaneton/task/Makefile
+## file          /home/mycure/kaneton/kaneton/core/task/Makefile
 ##
 ## created       julien quintard   [sat dec 10 13:50:17 2005]
-## updated       julien quintard   [sat dec 10 13:50:26 2005]
+## updated       julien quintard   [sat apr  1 23:39:03 2006]
 ##
 
 #
@@ -31,7 +31,7 @@ TASK_C			:=		task.c
 
 TASK_O			:=		$(TASK_C:.c=.o)
 
-TASK_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/task.h
+TASK_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/task.h
 
 CFLAGS			+=		-D___kernel
 

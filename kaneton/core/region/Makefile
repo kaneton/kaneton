@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/core/kaneton/region/Makefile
+## file          /home/mycure/kaneton/kaneton/core/region/Makefile
 ##
 ## created       julien quintard   [wed nov 23 09:19:13 2005]
-## updated       matthieu bucchianeri   [tue jan 10 01:27:17 2006]
+## updated       julien quintard   [sat apr  1 23:39:45 2006]
 ##
 
 #
@@ -32,7 +32,7 @@ REGION_C		:=		region.c		\
 
 REGION_O		:=		$(REGION_C:.c=.o)
 
-REGION_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/region.h
+REGION_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/region.h
 
 CFLAGS			+=		-D___kernel
 

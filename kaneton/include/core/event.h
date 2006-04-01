@@ -114,7 +114,7 @@ typedef struct
  */
 
 /*
- * ../../kaneton/event/event.c
+ * ../../core/event/event.c
  */
 
 t_error			event_show(t_eventid			eventid);

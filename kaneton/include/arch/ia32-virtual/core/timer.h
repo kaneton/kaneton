@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/timer.h
+ * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/timer.h
  *
  * created       renaud voltz   [mon feb 13 00:56:13 2006]
- * updated       julien quintard   [fri mar 10 04:03:50 2006]
+ * updated       julien quintard   [sat apr  1 22:59:26 2006]
  */
 
-#ifndef IA32_KANETON_TIMER_H
-#define IA32_KANETON_TIMER_H	1
+#ifndef IA32_CORE_TIMER_H
+#define IA32_CORE_TIMER_H	1
 
 /*
  * ---------- macro functions -------------------------------------------------

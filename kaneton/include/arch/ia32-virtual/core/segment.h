@@ -3,20 +3,20 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/segment.h
+ * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/segment.h
  *
  * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       julien quintard   [fri mar 10 04:02:53 2006]
+ * updated       julien quintard   [sat apr  1 22:58:48 2006]
  */
 
-#ifndef IA32_KANETON_SEGMENT_H
-#define IA32_KANETON_SEGMENT_H	1
+#ifndef IA32_CORE_SEGMENT_H
+#define IA32_CORE_SEGMENT_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-/* XXX #include <kaneton/segment.h>*/
+/* XXX #include <core/segment.h>*/
 
 /*                                                                [cut] k2   */
 

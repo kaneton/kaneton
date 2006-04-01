@@ -87,7 +87,7 @@ typedef struct
  */
 
 /*
- * ../../kaneton/map/map.c
+ * ../../core/map/map.c
  */
 
 t_error			map_reserve(t_asid		asid,

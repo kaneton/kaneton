@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/core/kaneton/Makefile
+## file          /home/mycure/kaneton/kaneton/core/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [thu mar  9 16:21:11 2006]
+## updated       julien quintard   [sat apr  1 23:30:43 2006]
 ##
 
 #
@@ -59,13 +59,11 @@ KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 
 # kaneton binary
 
-KANETON			:=		kaneton
+CORE_C			:=		core.c
 
-KANETON_C		:=		kaneton.c
+CORE_O			:=		$(CORE_C:.c=.o)
 
-KANETON_O		:=		$(KANETON_C:.c=.o)
-
-KANETON_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/kaneton.h
+CORE_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/core.h
 
 CFLAGS			+=		-D___kernel
 
@@ -75,20 +73,18 @@ VERSION_C		:=		version.c
 
 VERSION_O		:=		$(VERSION_C:.c=.o)
 
-VERSION_H		:=		$(_CORE_INCLUDE_DIR_)/version.h
-
 DATE			:=		$(call date)
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(KANETON):		libs $(KANETON_O)
+$(_CORE_):		libs $(CORE_O)
 	$(call version,$(VERSION_C),$(USER),$(HOSTNAME),$(DATE))
 
 	$(call compile-c,$(VERSION_O),$(VERSION_C),)
 
-	$(call executable,$(KANETON),	$(KANETON_O)			\
+	$(call executable,$(_CORE_),	$(CORE_O)			\
 					$(VERSION_O)			\
 					$(KANETON_LIBS)			\
 					$(_KLIBC_A_),			\
@@ -107,23 +103,23 @@ clear:
 	$(call remove,$(VERSION_O),)
 	$(call remove,$(VERSION_C),)
 
-	$(call remove,$(KANETON_O),)
+	$(call remove,$(CORE_O),)
 
-	$(call remove,$(KANETON),)
+	$(call remove,$(_CORE_),)
 
 	$(call purge,)
 
 proto:
 	$(call makefile,$(SUBDIRS),proto)
 
-	$(call prototypes,$(KANETON_INCLUDE),)
+	$(call prototypes,$(CORE_INCLUDE),)
 
 dep:
 	$(call makefile,$(SUBDIRS),dep)
 
 	$(call remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(KANETON_C),$(_MAKEFILE_MK_),)
+	$(call dependencies,$(CORE_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/Makefile
+## file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:40:45 2006]
+## updated       julien quintard   [sat apr  1 23:41:42 2006]
 ##
 
 #
@@ -36,7 +36,7 @@ MACHDEP_C		:=		as.c				\
 
 MACHDEP_O		:=		$(MACHDEP_C:.c=.o)
 
-MACHDEP_INCLUDE		:=		$(_MACHDEP_INCLUDE_DIR_)/kaneton/kaneton.h
+MACHDEP_INCLUDE		:=		$(_MACHDEP_INCLUDE_DIR_)/core/core.h
 
 CFLAGS			+=		-D___kernel
 
@@ -44,10 +44,13 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(MACHDEP_LO):		$(MACHDEP_O)
+$(MACHDEP_LO):		libs $(MACHDEP_O)
 	$(call remove,$(MACHDEP_LO),)
 
 	$(call archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBIA32_A_),)
+
+libs:
+	$(call makefile,$(_LIBIA32_DIR_),)
 
 clear:
 	$(call remove,$(MACHDEP_O),)

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/kaneton/conf.h
+ * file          /home/mycure/kaneton/kaneton/include/core/conf.h
  *
  * created       julien quintard   [sat dec 17 17:24:46 2005]
- * updated       julien quintard   [fri mar 10 03:37:23 2006]
+ * updated       julien quintard   [sat apr  1 23:47:25 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -16,7 +16,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <kaneton/debug.h>
+#include <core/debug.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -76,11 +76,11 @@
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/conf/conf.c
+ *      ../../core/conf/conf.c
  */
 
 /*
- * ../../kaneton/conf/conf.c
+ * ../../core/conf/conf.c
  */
 
 

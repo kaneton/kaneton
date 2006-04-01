@@ -3,20 +3,20 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/task.h
+ * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/task.h
  *
  * created       julien quintard   [sat dec 10 15:24:34 2005]
- * updated       julien quintard   [fri mar 10 04:03:02 2006]
+ * updated       julien quintard   [sat apr  1 22:59:15 2006]
  */
 
-#ifndef IA32_KANETON_TASK_H
-#define IA32_KANETON_TASK_H	1
+#ifndef IA32_CORE_TASK_H
+#define IA32_CORE_TASK_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX #include <kaneton/task.h>
+// XXX #include <core/task.h>
 
 /*
  * ---------- macro functions -------------------------------------------------

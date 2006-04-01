@@ -134,7 +134,7 @@ typedef struct
  */
 
 /*
- * ../../kaneton/as/as.c
+ * ../../core/as/as.c
  */
 
 t_error			as_show(t_asid				asid);

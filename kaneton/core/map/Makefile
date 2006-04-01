@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/core/kaneton/map/Makefile
+## file          /home/mycure/kaneton/kaneton/core/map/Makefile
 ##
 ## created       matthieu bucchianeri   [sun feb 26 13:05:52 2006]
-## updated       matthieu bucchianeri   [sun feb 26 13:10:36 2006]
+## updated       julien quintard   [sat apr  1 23:39:52 2006]
 ##
 
 #
@@ -32,7 +32,7 @@ MAP_C			:=		map.c		\
 
 MAP_O			:=		$(MAP_C:.c=.o)
 
-MAP_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/map.h
+MAP_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/map.h
 
 CFLAGS			+=		-D___kernel
 

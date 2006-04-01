@@ -178,7 +178,7 @@ typedef struct
  */
 
 /*
- * ../../kaneton/segment/segment.c
+ * ../../core/segment/segment.c
  */
 
 t_error			segment_show(t_segid			segid);
@@ -252,7 +252,7 @@ t_error			segment_clean(void);
 
 
 /*
- * ../../kaneton/segment/segment-fit.c
+ * ../../core/segment/segment-fit.c
  */
 
 t_error			segment_fit(o_as*		as,

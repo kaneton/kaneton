@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/timer.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       julien quintard   [sat apr  1 22:47:51 2006]
+ * updated       julien quintard   [sat apr  1 23:38:37 2006]
  */
 
 #ifndef CORE_TIMER_H
@@ -120,11 +120,11 @@ typedef struct
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../core/timer/timer.c
+ *      ../../core/time/timer.c
  */
 
 /*
- * ../../kaneton/time/timer.c
+ * ../../core/time/timer.c
  */
 
 t_error			timer_show(t_timerid			timerid);

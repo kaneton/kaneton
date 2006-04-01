@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/debug.h
+ * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/debug.h
  *
  * created       julien quintard   [fri feb 11 02:23:53 2005]
- * updated       julien quintard   [fri mar 10 03:42:18 2006]
+ * updated       julien quintard   [sat apr  1 22:57:01 2006]
  */
 
-#ifndef IA32_KANETON_DEBUG_H
-#define IA32_KANETON_DEBUG_H	1
+#ifndef IA32_CORE_DEBUG_H
+#define IA32_CORE_DEBUG_H	1
 
 /*
  * ---------- macros ----------------------------------------------------------

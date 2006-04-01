@@ -3,20 +3,20 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/region.h
+ * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/region.h
  *
  * created       julien quintard   [wed dec 14 07:04:32 2005]
- * updated       julien quintard   [fri mar 10 04:03:10 2006]
+ * updated       julien quintard   [sat apr  1 22:58:17 2006]
  */
 
-#ifndef IA32_KANETON_REGION_H
-#define IA32_KANETON_REGION_H	1
+#ifndef IA32_CORE_REGION_H
+#define IA32_CORE_REGION_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX #include <kaneton/region.h>
+// XXX #include <core/region.h>
 #include <klibc.h>
 
 /*

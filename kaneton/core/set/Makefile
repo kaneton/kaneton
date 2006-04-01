@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/core/kaneton/set/Makefile
+## file          /home/mycure/kaneton/kaneton/core/set/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:37:32 2006]
+## updated       julien quintard   [sat apr  1 23:39:20 2006]
 ##
 
 #
@@ -36,7 +36,7 @@ SET_C			:=		set.c				\
 
 SET_O			:=		$(SET_C:.c=.o)
 
-SET_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/set.h
+SET_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/set.h
 
 CFLAGS			+=		-D___kernel
 

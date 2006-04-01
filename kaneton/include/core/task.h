@@ -181,7 +181,7 @@ typedef struct
  */
 
 /*
- * ../../kaneton/task/task.c
+ * ../../core/task/task.c
  */
 
 t_error			task_show(t_tskid			tskid);

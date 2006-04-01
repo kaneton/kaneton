@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/core/kaneton/stats/Makefile
+## file          /home/mycure/kaneton/kaneton/core/stats/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:37:04 2006]
+## updated       julien quintard   [sat apr  1 23:39:11 2006]
 ##
 
 #
@@ -31,7 +31,7 @@ STATS_C			:=		stats.c
 
 STATS_O			:=		$(STATS_C:.c=.o)
 
-STATS_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/stats.h
+STATS_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/stats.h
 
 CFLAGS			+=		-D___kernel
 

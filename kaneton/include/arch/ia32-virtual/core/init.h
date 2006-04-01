@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/init.h
+ * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       julien quintard   [sat apr  1 01:35:01 2006]
+ * updated       julien quintard   [sat apr  1 22:57:52 2006]
  */
 
-#ifndef IA32_KANETON_INIT_H
-#define IA32_KANETON_INIT_H	1
+#ifndef IA32_CORE_INIT_H
+#define IA32_CORE_INIT_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------

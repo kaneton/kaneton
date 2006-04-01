@@ -3,10 +3,10 @@
 ##
 ## project       knaeton
 ##
-## file          /home/buckman/kaneton/core/kaneton/conf/Makefile
+## file          /home/mycure/kaneton/kaneton/core/conf/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:39:41 2006]
+## updated       julien quintard   [sat apr  1 23:40:31 2006]
 ##
 
 #
@@ -31,7 +31,7 @@ CONF_C			:=		conf.c
 
 CONF_O			:=		$(CONF_C:.c=.o)
 
-CONF_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/conf.h
+CONF_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/conf.h
 
 CFLAGS			+=		-D___kernel
 

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/debug/serial.c
+ * file          /home/mycure/kaneton/kaneton/core/debug/serial.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [tue jan 31 00:23:40 2006]
+ * updated       julien quintard   [sat apr  1 23:13:33 2006]
  */
 
 /*
@@ -22,7 +22,7 @@
 
 #include <klibc.h>
 #include <kaneton.h>
-#include <kaneton/debug.h>
+#include <core/debug.h>
 
 /*
  * ---------- functions -------------------------------------------------------

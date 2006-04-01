@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/machdep.h
+ * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/machdep.h
  *
  * created       julien quintard   [fri feb 11 02:23:53 2005]
- * updated       julien quintard   [fri mar 10 04:04:17 2006]
+ * updated       julien quintard   [sat apr  1 23:00:17 2006]
  */
 
 #ifndef IA32_MACHDEP_H
@@ -17,7 +17,7 @@
  */
 
 #include <libia32.h>
-#include <arch/machdep/kaneton/kaneton.h>
+#include <arch/machdep/core/core.h>
 #include <arch/machdep/services/services.h>
 #include <arch/machdep/sys/sys.h>
 

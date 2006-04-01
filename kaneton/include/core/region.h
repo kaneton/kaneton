@@ -142,7 +142,7 @@ typedef struct
  */
 
 /*
- * ../../kaneton/region/region.c
+ * ../../core/region/region.c
  */
 
 t_error			region_show(t_asid			asid,
@@ -177,7 +177,7 @@ t_error			region_clean(void);
 
 
 /*
- * ../../kaneton/region/region-fit.c
+ * ../../core/region/region-fit.c
  */
 
 t_error			region_fit(o_as*		as,

@@ -55,7 +55,7 @@
  */
 
 /*
- * ../../kaneton/debug/serial.c
+ * ../../core/debug/serial.c
  */
 
 t_uint32		chk_sum(void				*data,

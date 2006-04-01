@@ -67,7 +67,7 @@ typedef	struct			s_serial_buffer
  */
 
 /*
- * ../../kaneton/debug/debug.c
+ * ../../core/debug/debug.c
  */
 
 t_error			debug_init(void);
@@ -86,7 +86,7 @@ t_error			debug_clean(void);
 
 
 /*
- * ../../kaneton/debug/cons-text.c
+ * ../../core/debug/cons-text.c
  */
 
 void			cons_clear(void);
@@ -109,7 +109,7 @@ t_error			cons_clean(void);
 
 
 /*
- * ../../kaneton/debug/serial.c
+ * ../../core/debug/serial.c
  */
 
 t_uint32		chk_sum(void				*data,

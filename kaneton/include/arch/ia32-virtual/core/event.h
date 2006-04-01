@@ -3,20 +3,20 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/kaneton/event.h
+ * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/event.h
  *
  * created       renaud voltz   [mon feb 13 00:56:13 2006]
- * updated       julien quintard   [fri mar 10 04:03:40 2006]
+ * updated       julien quintard   [sat apr  1 22:57:19 2006]
  */
 
-#ifndef IA32_KANETON_EVENT_H
-#define IA32_KANETON_EVENT_H	1
+#ifndef IA32_CORE_EVENT_H
+#define IA32_CORE_EVENT_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-/* #include <kaneton/event.h> */
+/* #include <core/event.h> */
 
 
 /*
@@ -26,7 +26,7 @@
 typedef void                    (*t_event_handler)(t_uint32);
 
 /*
- * XXX EVENT move me ! (should be in /core/include/kaneton/event.h)
+ * XXX EVENT move me ! (should be in /core/include/core/event.h)
  */
 
 typedef enum
@@ -36,7 +36,7 @@ typedef enum
   } e_event_type;
 
 /*
- * XXX EVENT move me ! (should be in /core/include/kaneton/event.h)
+ * XXX EVENT move me ! (should be in /core/include/core/event.h)
  */
 
 typedef union

@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/core/kaneton/id/Makefile
+## file          /home/mycure/kaneton/kaneton/core/id/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:38:37 2006]
+## updated       julien quintard   [sat apr  1 23:40:00 2006]
 ##
 
 #
@@ -31,7 +31,7 @@ ID_C			:=		id.c
 
 ID_O			:=		$(ID_C:.c=.o)
 
-ID_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/id.h
+ID_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/id.h
 
 CFLAGS			+=		-D___kernel
 

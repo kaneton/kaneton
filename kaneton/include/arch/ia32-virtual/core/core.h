@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/arch/ia32-virtual/kaneton/kaneton.h
+ * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/core.h
  *
  * created       julien quintard   [sat dec 17 17:13:18 2005]
- * updated       matthieu bucchianeri   [wed mar 15 17:17:09 2006]
+ * updated       julien quintard   [sat apr  1 23:00:02 2006]
  */
 
-#ifndef IA32_KANETON_KANETON_H
-#define IA32_KANETON_KANETON_H	1
+#ifndef IA32_CORE_CORE_H
+#define IA32_CORE_CORE_H	1
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -25,29 +25,29 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <arch/machdep/kaneton/as.h>
-#include <arch/machdep/kaneton/debug.h>
-#include <arch/machdep/kaneton/init.h>
-#include <arch/machdep/kaneton/region.h>
-#include <arch/machdep/kaneton/segment.h>
-#include <arch/machdep/kaneton/stats.h>
-#include <arch/machdep/kaneton/event.h>
-#include <arch/machdep/kaneton/timer.h>
-#include <arch/machdep/kaneton/task.h>
+#include <arch/machdep/core/as.h>
+#include <arch/machdep/core/debug.h>
+#include <arch/machdep/core/init.h>
+#include <arch/machdep/core/region.h>
+#include <arch/machdep/core/segment.h>
+#include <arch/machdep/core/stats.h>
+#include <arch/machdep/core/event.h>
+#include <arch/machdep/core/timer.h>
+#include <arch/machdep/core/task.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../../../kaneton/arch/machdep/as.c
- *      ../../../../kaneton/arch/machdep/region.c
- *      ../../../../kaneton/arch/machdep/segment.c
- *      ../../../../kaneton/arch/machdep/event.c
- *	../../../../kaneton/arch/machdep/timer.c
- *      ../../../../kaneton/arch/machdep/task.c
+ *      ../../../../core/arch/machdep/as.c
+ *      ../../../../core/arch/machdep/region.c
+ *      ../../../../core/arch/machdep/segment.c
+ *      ../../../../core/arch/machdep/event.c
+ *	../../../../core/arch/machdep/timer.c
+ *      ../../../../core/arch/machdep/task.c
  */
 
 /*
- * ../../../../kaneton/arch/machdep/as.c
+ * ../../../../core/arch/machdep/as.c
  */
 
 t_error			ia32_as_show(t_asid			asid);
@@ -57,7 +57,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 
 
 /*
- * ../../../../kaneton/arch/machdep/region.c
+ * ../../../../core/arch/machdep/region.c
  */
 
 t_error			ia32_region_reserve(t_asid		asid,
@@ -79,7 +79,7 @@ t_error			ia32_region_clean(void);
 
 
 /*
- * ../../../../kaneton/arch/machdep/segment.c
+ * ../../../../core/arch/machdep/segment.c
  */
 
 t_error			ia32_segment_read(t_segid		segid,
@@ -104,7 +104,7 @@ t_error			ia32_segment_clean(void);
 
 
 /*
- * ../../../../kaneton/arch/machdep/event.c
+ * ../../../../core/arch/machdep/event.c
  */
 
 t_error			ia32_event_reserve(t_eventid		eventid,
@@ -125,14 +125,14 @@ void                    ia32_pf_handler(t_uint32                     error_code)
 
 
 /*
- * ../../../../kaneton/arch/machdep/timer.c
+ * ../../../../core/arch/machdep/timer.c
  */
 
 t_error			ia32_timer_init(void);
 
 
 /*
- * ../../../../kaneton/arch/machdep/task.c
+ * ../../../../core/arch/machdep/task.c
  */
 
 t_error			ia32_task_clone(t_tskid			old,

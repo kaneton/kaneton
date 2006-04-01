@@ -3,10 +3,10 @@
 ##
 ## project       knaeton
 ##
-## file          /home/buckman/kaneton/core/kaneton/as/Makefile
+## file          /home/mycure/kaneton/kaneton/core/as/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:39:52 2006]
+## updated       julien quintard   [sat apr  1 23:40:38 2006]
 ##
 
 #
@@ -31,7 +31,7 @@ AS_C			:=		as.c
 
 AS_O			:=		$(AS_C:.c=.o)
 
-AS_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/as.h
+AS_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/as.h
 
 CFLAGS			+=		-D___kernel
 

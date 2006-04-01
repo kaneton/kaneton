@@ -159,7 +159,7 @@ typedef struct
  */
 
 /*
- * ../../kaneton/stats/stats.c
+ * ../../core/stats/stats.c
  */
 
 t_error			stats_function(t_staid			staid,

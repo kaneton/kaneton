@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/core.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sat apr  1 22:44:26 2006]
+ * updated       julien quintard   [sat apr  1 23:31:22 2006]
  */
 
 #ifndef CORE_CORE_H
@@ -103,11 +103,11 @@
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../core/kaneton.c
+ *      ../../core/core.c
  */
 
 /*
- * ../../kaneton/kaneton.c
+ * ../../core/core.c
  */
 
 void			kaneton(t_init*				bootloader);

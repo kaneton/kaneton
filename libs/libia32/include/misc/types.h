@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/arch/libia32/types.h
+ * file          /home/mycure/kaneton/libs/libia32/include/misc/types.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue dec 20 14:10:14 2005]
+ * updated       julien quintard   [sat apr  1 23:04:03 2006]
  */
 
 #ifndef IA32_IA32_TYPES_H
@@ -33,6 +33,6 @@ typedef signed long long	t_sint64;
  * ---------- includes --------------------------------------------------------
  */
 
-#include <kaneton/types.h>
+#include <core/types.h>
 
 #endif

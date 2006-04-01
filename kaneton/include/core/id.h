@@ -90,7 +90,7 @@ typedef struct
  */
 
 /*
- * ../../kaneton/id/id.c
+ * ../../core/id/id.c
  */
 
 t_error			id_show(o_id*				o);

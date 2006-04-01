@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/debug/debug.c
+ * file          /home/mycure/kaneton/kaneton/core/debug/debug.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [wed mar  1 19:38:06 2006]
+ * updated       julien quintard   [sat apr  1 23:13:25 2006]
  */
 
 /*
@@ -22,7 +22,7 @@
 
 #include <klibc.h>
 #include <kaneton.h>
-#include <kaneton/debug.h>
+#include <core/debug.h>
 
 /*
  * ---------- globals ---------------------------------------------------------

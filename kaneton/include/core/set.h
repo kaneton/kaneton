@@ -338,7 +338,7 @@ typedef struct
  */
 
 /*
- * ../../kaneton/set/set.c
+ * ../../core/set/set.c
  */
 
 t_error			set_dump(void);
@@ -363,7 +363,7 @@ t_error			set_clean(void);
 
 
 /*
- * ../../kaneton/set/set_array.c
+ * ../../core/set/set_array.c
  */
 
 t_error			set_type_array(t_setid			setid);
@@ -434,7 +434,7 @@ t_error			set_pick_array(t_setid			setid,
 
 
 /*
- * ../../kaneton/set/set_ll.c
+ * ../../core/set/set_ll.c
  */
 
 t_error			set_type_ll(t_setid			setid);
@@ -504,7 +504,7 @@ t_error			set_pick_ll(t_setid			setid,
 
 
 /*
- * ../../kaneton/set/set_bpt.c
+ * ../../core/set/set_bpt.c
  */
 
 void			set_load_bpt(t_bpt(set)*		bpt,
@@ -605,7 +605,7 @@ t_error			set_pick_bpt(t_setid			setid,
 
 
 /*
- * ../../kaneton/set/set_pipe.c
+ * ../../core/set/set_pipe.c
  */
 
 t_error			set_type_pipe(t_setid			setid);
@@ -675,7 +675,7 @@ t_error			set_object_pipe(t_setid			setid,
 
 
 /*
- * ../../kaneton/set/set_stack.c
+ * ../../core/set/set_stack.c
  */
 
 t_error			set_type_stack(t_setid			setid);

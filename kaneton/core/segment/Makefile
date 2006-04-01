@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/core/kaneton/segment/Makefile
+## file          /home/mycure/kaneton/kaneton/core/segment/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:38:10 2006]
+## updated       julien quintard   [sat apr  1 23:39:29 2006]
 ##
 
 #
@@ -32,7 +32,7 @@ SEGMENT_C		:=		segment.c		\
 
 SEGMENT_O		:=		$(SEGMENT_C:.c=.o)
 
-SEGMENT_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/segment.h
+SEGMENT_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/segment.h
 
 CFLAGS			+=		-D___kernel
 

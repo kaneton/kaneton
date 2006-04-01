@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/core/kaneton/debug/Makefile
+## file          /home/mycure/kaneton/kaneton/core/debug/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue jan 24 15:48:22 2006]
+## updated       julien quintard   [sat apr  1 23:40:18 2006]
 ##
 
 #
@@ -33,8 +33,8 @@ DEBUG_C			:=		$(_CONSOLE_FILE_)		\
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)
 
-DEBUG_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kaneton/serial.h \
-					$(_CORE_INCLUDE_DIR_)/kaneton/debug.h
+DEBUG_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/serial.h \
+					$(_CORE_INCLUDE_DIR_)/debug.h
 
 CFLAGS			+=		-D___kernel
 
