@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton.h
+ * file          /home/mycure/kaneton/kernel/include/kaneton.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [wed mar 15 17:29:52 2006]
+ * updated       julien quintard   [sat apr  1 22:13:37 2006]
  */
 
 #ifndef KANETON_H
@@ -18,7 +18,7 @@
 
 #include <arch/machdep/machdep.h>
 
-#include <kaneton/kaneton.h>
+#include <core/core.h>
 #include <services/services.h>
 #include <sys/sys.h>
 
