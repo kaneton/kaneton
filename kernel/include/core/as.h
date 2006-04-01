@@ -3,14 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/include/kaneton/as.h
+ * file          /home/mycure/kaneton/kernel/include/core/as.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [fri mar 24 13:53:24 2006]
+ * updated       julien quintard   [sat apr  1 22:16:11 2006]
  */
 
-#ifndef KANETON_AS_H
-#define KANETON_AS_H		1
+#ifndef CORE_AS_H
+#define CORE_AS_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
