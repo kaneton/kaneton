@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/12/12.c
+ * file          /home/buckman/kaneton/check/core/kaneton/set/set_array/11/11.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:21:33 2005]
+ * updated       matthieu bucchianeri   [mon apr  3 00:27:45 2006]
  */
 
 #include <klibc.h>
@@ -17,7 +17,7 @@
  * tests with big list
  */
 
-void		check_set_array_12(void)
+void		check_set_array_11(void)
 {
   t_id		id;
   t_iterator	it;

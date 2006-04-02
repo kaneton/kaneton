@@ -1,3 +1,3 @@
-Test check_set_array_12
+Test check_set_array_11
 130
-check_set_array_12 done.
+check_set_array_11 done.

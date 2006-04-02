@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/13/13.c
+ * file          /home/buckman/kaneton/check/core/kaneton/set/set_array/12/12.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [tue jan  3 23:40:18 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 00:28:02 2006]
  */
 
 #include <klibc.h>
@@ -19,7 +19,7 @@ static t_id	get_min(t_setid id);
  * some sorting algorithms
  */
 
-void		check_set_array_13(void)
+void		check_set_array_12(void)
 {
   t_setid	id;
   t_setid	new;

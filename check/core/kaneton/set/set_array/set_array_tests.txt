@@ -7,7 +7,6 @@
 07 remove et delete
 08 flush
 09 SET_OPT_SORT et locate
-10 clone
-11 operations sur des listes vides
-12 une liste un peu grande
-13 des algos de tris
+10 operations sur des listes vides
+11 une liste un peu grande
+12 des algos de tris

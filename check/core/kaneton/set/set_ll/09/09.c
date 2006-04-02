@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/core/kaneton/set/set_array/10/10.c
+ * file          /home/buckman/kaneton/check/core/kaneton/set/set_ll/09/09.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [mon apr  3 00:27:26 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 00:31:17 2006]
  */
 
 #include <klibc.h>
@@ -17,7 +17,7 @@
  * tests with empty lists
  */
 
-void		check_set_array_10(void)
+void		check_set_ll_09(void)
 {
   t_setid	id;
   t_iterator	it;
@@ -26,7 +26,7 @@ void		check_set_array_10(void)
 
   TEST_ENTER;
 
-  if (set_reserve(array, SET_OPT_NONE, 4, sizeof(t_id), &id) != ERROR_NONE)
+  if (set_reserve(ll, SET_OPT_NONE, sizeof(t_id), &id) != ERROR_NONE)
     printf("error set_reserve()\n");
 
   if (set_locate(id, 42LL, &it) == ERROR_NONE)
