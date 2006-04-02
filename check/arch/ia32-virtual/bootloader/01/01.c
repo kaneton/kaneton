@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/bootloader/01/01.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [thu mar 30 23:07:55 2006]
+ * updated       matthieu bucchianeri   [fri mar 31 16:06:11 2006]
  */
 
 #include <klibc.h>
@@ -44,23 +44,25 @@ void		check_bootloader_01(void)
 
   if (init->segmentssz < init->nsegments * sizeof(o_segment) ||
       init->segmentssz % PAGESZ ||
-      !init->nsegments || (t_paddr)init->segments % PAGESZ)
+      !init->nsegments || init->nsegments != INIT_SEGMENTS || (t_paddr)init->segments % PAGESZ)
     printf("bad segments fields\n");
-  for (i = 1; i < init->nsegments; i++)
-    {
-      if (init->segments[i - 1].address > init->segments[i].address)
-	printf("badly sorted segments\n");
-    }
+  else
+    for (i = 1; i < init->nsegments; i++)
+      {
+	if (init->segments[i - 1].address > init->segments[i].address)
+	  printf("badly sorted segments\n");
+      }
 
   if (init->regionssz < init->nregions * sizeof(o_region) ||
       init->regionssz % PAGESZ ||
-      !init->nregions || (t_paddr)init->regions % PAGESZ)
+      !init->nregions || init->nregions != INIT_REGIONS || (t_paddr)init->regions % PAGESZ)
     printf("bad regions fields\n");
-  for (i = 1; i < init->nregions; i++)
-    {
-      if (init->regions[i - 1].address > init->regions[i].address)
-	printf("badly sorted regions\n");
-    }
+  else
+    for (i = 1; i < init->nregions; i++)
+      {
+	if (init->regions[i - 1].address > init->regions[i].address)
+	  printf("badly sorted regions\n");
+      }
 
   if (!init->kstack || init->kstack % PAGESZ)
     printf("bad kstack field\n");

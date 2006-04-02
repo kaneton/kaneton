@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/bootloader/03/03.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [sun feb 19 18:52:33 2006]
+ * updated       matthieu bucchianeri   [fri mar 31 16:07:25 2006]
  */
 
 #include <klibc.h>
@@ -32,15 +32,18 @@ void		check_bootloader_03(void)
 
   mods = init->modules;
   sz = sizeof (t_modules);
-  for (i = 0; i < mods->nmodules; i++)
-    {
-      mod = (t_module*)((char*)mods + sz);
-      sz += sizeof (t_module);
-      elf = (Elf32_Ehdr*)((char*)mods + sz);
-      sz += mod->size;
-      name = mod->name;
-      sz += strlen(name) + 1;
-    }
+  if (mods->nmodules > 1024)
+    printf("bad number of modules\n");
+  else
+    for (i = 0; i < mods->nmodules; i++)
+      {
+	mod = (t_module*)((char*)mods + sz);
+	sz += sizeof (t_module);
+	elf = (Elf32_Ehdr*)((char*)mods + sz);
+	sz += mod->size;
+	name = mod->name;
+	sz += strlen(name) + 1;
+      }
   sz += sizeof (t_modules);
 
   if (init->modulessz != sz + (PAGESZ - (sz % PAGESZ)))

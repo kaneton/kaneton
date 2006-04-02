@@ -11,8 +11,8 @@
 
 int			fd;
 struct termios		options;
-	
-struct			s_data		
+
+struct			s_data
 {
 	unsigned int 	size;
 	unsigned int 	magic;
@@ -51,7 +51,7 @@ unsigned int		chk_sum(void *data, unsigned int size)
 {
 	unsigned int	crc = 0;
 	unsigned char 	*cdata;
-	
+
 	cdata = data;
 	while(size--)
        	  crc ^= *cdata++;
@@ -64,23 +64,23 @@ static	PyObject	*kserial_serial_recv(PyObject *self, PyObject *args)
 	t_data 	rdata;
 	int	n = 0;
 	PyObject *ret;
-	
+
 	n = allreadwrite(read, fd, (char *) &rdata, sizeof(rdata));
 	if (n == -1 || rdata.magic != 0xF4859632)
 	   return Py_BuildValue("i", -1);
 	rdata.data = malloc((rdata.size + 1) * sizeof(unsigned char));
-	
+
 	n = allreadwrite(read, fd, rdata.data, rdata.size);
 	*(rdata.data + rdata.size)  = 0;  /* met un 0 pour les chaines */
-	if (n == -1) 
+	if (n == -1)
 	{
 	  free(rdata.data);
 	  return Py_BuildValue("i", -1);
 	}
 	if (rdata.crc == chk_sum(rdata.data, rdata.size))
 	  {
-	    allreadwrite(write, fd, "crc-ok" , 6); 
-	    return Py_BuildValue("is", rdata.size, rdata.data); 
+	    allreadwrite(write, fd, "crc-ok" , 6);
+	    return Py_BuildValue("is", rdata.size, rdata.data);
 	  }
 	else
 	 {
@@ -98,16 +98,16 @@ static	PyObject	*kserial_serial_send(PyObject *self, PyObject *args)
 	char		*data;
 	t_data 		sdata;
 
-	if (!PyArg_ParseTuple(args, "si",  &data, &size)) 
+	if (!PyArg_ParseTuple(args, "si",  &data, &size))
 	{
-		printf("serial_send Can't get arg\n");
+		fprintf(stderr, "serial_send Can't get arg\n");
 		exit(0);
 	}
 
 	sdata.crc = chk_sum(data, size);
 	sdata.size = size;
   	sdata.magic = 0xF4859632;
-		
+
 	n = allreadwrite(write, fd,(char *) &sdata, sizeof(sdata));
 	n = allreadwrite(write, fd, data, size);
 	if ((n = allreadwrite(read, fd, status, 6)) == -1)
@@ -119,6 +119,10 @@ static	PyObject	*kserial_serial_send(PyObject *self, PyObject *args)
 	   return Py_BuildValue("i", -1);
 }
 
+static 	PyObject	*kserial_serial_close(PyObject *self, PyObject *args)
+{
+  close(fd);
+}
 
 static 	PyObject	*kserial_serial_init(PyObject *self, PyObject *args)
 {
@@ -126,22 +130,22 @@ static 	PyObject	*kserial_serial_init(PyObject *self, PyObject *args)
 
 
 	if (!PyArg_ParseTuple(args, "s", &device))
-	{ 
-	  printf("Can't get device arg\n");
-	  return Py_BuildValue("i", -1);	
+	{
+	  fprintf(stderr, "Can't get device arg\n");
+	  return Py_BuildValue("i", -1);
 	}
-		
+
 	fd = open(device, O_RDWR | O_NOCTTY | O_NDELAY);
 	if (fd == -1)
-	{	
-	   printf("Couldn't open the port %s\n", device);
+	{
+	   fprintf(stderr, "Couldn't open the port %s\n", device);
 	   return Py_BuildValue("i", -1);
 	}
 	else
 	  fcntl(fd, F_SETFL, 0);
-	
+
 	tcgetattr(fd, &options);
-	
+
 	cfsetispeed(&options, B57600);
 	cfsetospeed(&options, B57600);
 	options.c_cflag &= ~PARENB;
@@ -154,7 +158,7 @@ static 	PyObject	*kserial_serial_init(PyObject *self, PyObject *args)
 	options.c_oflag &= ~OPOST;
 	options.c_iflag = IGNPAR | IXANY;
 	options.c_cc[VTIME] = 100;
-	options.c_cc[VMIN] = 0; 
+	options.c_cc[VMIN] = 0;
 	tcsetattr(fd, TCSANOW, &options);
 
 	return Py_BuildValue("i", -1);
@@ -165,10 +169,11 @@ static PyMethodDef kserialMethods[] =
 	{ "serial_init", (PyCFunction)kserial_serial_init, METH_VARARGS, "init serial connection" },
 	{ "serial_recv", (PyCFunction)kserial_serial_recv, METH_VARARGS, "serial recev"},
 	{ "serial_send", (PyCFunction)kserial_serial_send, METH_VARARGS, "serial send" },
+	{ "serial_close", (PyCFunction)kserial_serial_close, METH_VARARGS, "serial close" },
 	{ NULL, NULL, 0, NULL}
 };
 
-PyMODINIT_FUNC initkserial(void)	
+PyMODINIT_FUNC initkserial(void)
 {
 	 (void) Py_InitModule("kserial", kserialMethods);
 }

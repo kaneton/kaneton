@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/check/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [fri mar 24 17:58:15 2006]
+ * updated       matthieu bucchianeri   [fri mar 31 15:46:27 2006]
  */
 
 #include <klibc.h>
@@ -37,7 +37,7 @@ void	check_tests(void)
   /* XXX continue tests */
 #if DEBUG & DEBUG_AS
 //  check_as_tests ();
-  check_segment_tests();
+//  check_segment_tests();
 #endif
 }
 
@@ -54,6 +54,7 @@ void	check_leaks_init(t_leaks*	l)
 void	check_leaks_display(t_leaks*	l)
 {
   if ((l->nb_alloc - l->nb_free) != (alloc_nalloc() - alloc_nfree()))
-    printf("error: memory leaks detected: %u/%u -> %u/%u\n",
-	   l->nb_alloc, l->nb_free, alloc_nalloc(), alloc_nfree());
+/*    printf("error: memory leaks detected: %u/%u -> %u/%u\n",
+	   l->nb_alloc, l->nb_free, alloc_nalloc(), alloc_nfree());*/
+    printf("-->>LEAK<<--\n");
 }

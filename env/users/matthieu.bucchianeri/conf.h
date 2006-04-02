@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [tue mar 21 11:56:45 2006]
+ * updated       matthieu bucchianeri   [fri mar 31 15:25:23 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -76,7 +76,7 @@
  * this define starts the tests by hand.
  */
 
-#define CONF_ENABLE_CHECK
+#undef CONF_ENABLE_CHECK
 
 /*
  * the configuration debug
@@ -96,7 +96,7 @@
  * serial port debug
  */
 
-#undef SERIAL
+#define SERIAL
 
 /*
  * ---------- prototypes ------------------------------------------------------
