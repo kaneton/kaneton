@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/include/pmode/pmode.h
+ * file          /home/buckman/kaneton/libs/libia32/include/pmode/pmode.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri mar 10 03:53:41 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:31:05 2006]
  */
 
 /*
@@ -93,10 +93,10 @@
 
 typedef enum
   {
-    prvl_supervisor = PRIV_RING0,
-    prvl_privileged = PRIV_RING1,
-    prvl_user = PRIV_RING3,
-  }			t_prvl;
+    ia32_prvl_supervisor	= PRIV_RING0,
+    ia32_prvl_privileged	= PRIV_RING1,
+    ia32_prvl_user		= PRIV_RING3,
+  }				t_ia32_prvl;
 
 /*                                                                 [cut] /k2 */
 

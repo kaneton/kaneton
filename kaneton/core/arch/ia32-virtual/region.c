@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:24:14 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 00:11:57 2006]
  */
 
 /*
@@ -88,8 +88,8 @@ static t_error		ia32_region_map_chunk(t_vaddr		v,
 {
   o_region		oreg;
   o_as*			oas;
-  t_table		pt;
-  t_page		pg;
+  t_ia32_table		pt;
+  t_ia32_page		pg;
   t_segid		seg;
 
   REGION_ENTER(region);
@@ -167,7 +167,7 @@ static t_error		ia32_region_map_chunk(t_vaddr		v,
 
 static t_error		ia32_region_unmap_chunk(t_vaddr		v)
 {
-  t_table		pt;
+  t_ia32_table		pt;
   o_as*			as;
 
   REGION_ENTER(region);
@@ -241,15 +241,15 @@ t_error			ia32_region_reserve(t_asid		asid,
   o_as*			kas;
   t_vaddr		vaddr;
   t_paddr		paddr;
-  t_directory		pd;
-  t_table		pt;
-  t_page		pg;
-  t_uint32		pde_start;
-  t_uint32		pde_end;
-  t_uint32		pte_start;
-  t_uint32		pte_end;
-  t_uint32		pde;
-  t_uint32		pte;
+  t_ia32_directory	pd;
+  t_ia32_table		pt;
+  t_ia32_page		pg;
+  t_ia32_pde		pde_start;
+  t_ia32_pde		pde_end;
+  t_ia32_pte		pte_start;
+  t_ia32_pte		pte_end;
+  t_ia32_pde		pde;
+  t_ia32_pte		pte;
   t_vaddr		chunk;
   t_segid		ptseg;
 
@@ -294,7 +294,7 @@ t_error			ia32_region_reserve(t_asid		asid,
   if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  pd = (t_directory)(t_uint32)chunk;
+  pd = (t_ia32_directory)(t_uint32)chunk;
 
   if (ia32_region_map_chunk((t_vaddr)pd, (t_paddr)o->machdep.pd) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
@@ -425,15 +425,16 @@ t_error			ia32_region_release(t_asid		asid,
   o_as*			o;
   o_as*			kas;
   o_region*		oreg;
-  t_directory		pd;
-  t_table		pt;
-  t_uint32		pde_start;
-  t_uint32		pde_end;
-  t_uint32		pte_start;
-  t_uint32		pte_end;
-  t_uint32		pde;
-  t_uint32		pte;
+  t_ia32_directory	pd;
+  t_ia32_table		pt;
+  t_ia32_pde		pde_start;
+  t_ia32_pde		pde_end;
+  t_ia32_pte		pte_start;
+  t_ia32_pte		pte_end;
+  t_ia32_pde		pde;
+  t_ia32_pte		pte;
   t_vaddr		chunk;
+  t_paddr		table_address;
 
   REGION_ENTER(region);
 
@@ -461,7 +462,7 @@ t_error			ia32_region_release(t_asid		asid,
   if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  pd = (t_directory)(t_uint32)chunk;
+  pd = (t_ia32_directory)(t_uint32)chunk;
 
   if (ia32_region_map_chunk((t_vaddr)pd,
 			    (t_paddr)o->machdep.pd) != ERROR_NONE)
@@ -484,6 +485,8 @@ t_error			ia32_region_release(t_asid		asid,
 
       if (pd_get_table(&pd, pde, &pt) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      table_address = pt.entries;
 
       /*
        * b)
@@ -525,7 +528,11 @@ t_error			ia32_region_release(t_asid		asid,
 
       if (pde != pde_start && pde != pde_end)
 	{
-	  /* XXX release pt */
+	  if (pd_delete_table(&pd, pde) != ERROR_NONE)
+	    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+	  if (segment_release((t_segid)table_address) != ERROR_NONE)
+	    REGION_LEAVE(region, ERROR_UNKNOWN);
 	}
     }
 

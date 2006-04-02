@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/pmode/ldt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 20:13:58 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:58:02 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:49:10 2006]
  */
 
 /*
@@ -62,7 +62,7 @@
  * returns the base pointer of a ldt.
  */
 
-t_error			ldt_base(t_ldt*				table,
+t_error			ldt_base(t_ia32_ldt*			table,
 				 t_paddr*			addr)
 {
   *addr = (t_paddr)table->descriptor;
@@ -74,7 +74,7 @@ t_error			ldt_base(t_ldt*				table,
  * returns size of a ldt.
  */
 
-t_error			ldt_size(t_ldt*				table,
+t_error			ldt_size(t_ia32_ldt*			table,
 				 t_uint16			*size)
 {
   *size = table->count;
@@ -86,12 +86,12 @@ t_error			ldt_size(t_ldt*				table,
  * dumps a ldt
  */
 
-t_error			ldt_dump(t_ldt*				table)
+t_error			ldt_dump(t_ia32_ldt*			table)
 {
-  t_gdt			n;
+  t_ia32_gdt		n;
 
   n.count = table->count;
-  n.descriptor = (t_gdte*)table->descriptor;
+  n.descriptor = (t_ia32_gdte*)table->descriptor;
 
   return gdt_dump(&n);
 }
@@ -100,7 +100,7 @@ t_error			ldt_dump(t_ldt*				table)
  * activates a ldt.
  */
 
-t_error			ldt_activate(t_ldt			table)
+t_error			ldt_activate(t_ia32_ldt			table)
 {
   LLDT(table.gdt_entry);
 
@@ -121,10 +121,10 @@ t_error			ldt_activate(t_ldt			table)
 
 t_error			ldt_build(t_uint16			entries,
 				  t_paddr			base,
-				  t_ldt*			ldt,
+				  t_ia32_ldt*			ldt,
 				  t_uint8			clear)
 {
-  t_segment		seg;
+  t_ia32_segment	seg;
 
   /*
    * 1)
@@ -136,20 +136,16 @@ t_error			ldt_build(t_uint16			entries,
   /*
    * 2)
    */
-/* XXX
-   - on a malloc le pointeur base, donc si on s'amuse a le changer c'est bof
 
-
-  if (base % sizeof(t_ldte))
+  if (base % sizeof(t_ia32_ldte))
     {
-      base += sizeof(t_ldte) - (base % sizeof(t_ldte));
+      base += sizeof(t_ia32_ldte) - (base % sizeof(t_ia32_ldte));
     }
-*/
   /*
    * 3)
    */
 
-  ldt->descriptor = (t_ldte*)base;
+  ldt->descriptor = (t_ia32_ldte*)base;
   ldt->count = entries;
 
   /*
@@ -157,10 +153,10 @@ t_error			ldt_build(t_uint16			entries,
    */
 
   seg.base = base;
-  seg.limit = entries * sizeof(t_ldte);
-  seg.privilege = prvl_supervisor;
+  seg.limit = entries * sizeof(t_ia32_ldte);
+  seg.privilege = ia32_prvl_supervisor;
   seg.is_system = 1;
-  seg.type.sys = type_ldt;
+  seg.type.sys = ia32_type_ldt;
 
   if (gdt_reserve_segment(NULL, seg, &ldt->gdt_entry) != ERROR_NONE)
     return ERROR_UNKNOWN;
@@ -171,7 +167,7 @@ t_error			ldt_build(t_uint16			entries,
 
   if (clear)
     {
-      memset(ldt->descriptor, 0, entries * sizeof(t_ldte));
+      memset(ldt->descriptor, 0, entries * sizeof(t_ia32_ldte));
     }
 
   return ERROR_NONE;
@@ -181,7 +177,7 @@ t_error			ldt_build(t_uint16			entries,
  * destoys a ldt
  */
 
-t_error			ldt_destroy(t_ldt			*ldt)
+t_error			ldt_destroy(t_ia32_ldt			*ldt)
 {
   return gdt_delete_segment(NULL, ldt->gdt_entry);
 }
@@ -198,9 +194,9 @@ t_error			ldt_destroy(t_ldt			*ldt)
  * 5) sets the limit field.
  */
 
-t_error			ldt_add_segment(t_ldt*			table,
+t_error			ldt_add_segment(t_ia32_ldt*		table,
 					t_uint16		segment,
-					t_segment		descriptor)
+					t_ia32_segment		descriptor)
 {
   t_uint32		size;
 
@@ -263,8 +259,8 @@ t_error			ldt_add_segment(t_ldt*			table,
  * 3) sets the reserved index.
  */
 
-t_error			ldt_reserve_segment(t_ldt*		table,
-					    t_segment		descriptor,
+t_error			ldt_reserve_segment(t_ia32_ldt*		table,
+					    t_ia32_segment	descriptor,
 					    t_uint16*		segment)
 {
   t_uint16		look;
@@ -303,9 +299,9 @@ t_error			ldt_reserve_segment(t_ldt*		table,
  * XXX
  */
 
-t_error			ldt_get_segment(t_ldt*			table,
+t_error			ldt_get_segment(t_ia32_ldt*		table,
 					t_uint16		index,
-					t_segment*		segment)
+					t_ia32_segment*		segment)
 {
   return ERROR_UNKNOWN;
 }
@@ -319,7 +315,7 @@ t_error			ldt_get_segment(t_ldt*			table,
  * 2) mark the segment as non-present.
  */
 
-t_error			ldt_delete_segment(t_ldt*		table,
+t_error			ldt_delete_segment(t_ia32_ldt*		table,
 					   t_uint16		segment)
 {
 
@@ -348,9 +344,9 @@ t_error			ldt_delete_segment(t_ldt*		table,
  * 2) builds the selector.
  */
 
-t_error			ldt_build_selector(t_ldt*		table,
+t_error			ldt_build_selector(t_ia32_ldt*		table,
 					   t_uint16		segment,
-					   t_prvl		privilege,
+					   t_ia32_prvl		privilege,
 					   t_uint16*		selector)
 {
 

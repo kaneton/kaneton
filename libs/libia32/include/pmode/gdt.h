@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/include/pmode/gdt.h
+ * file          /home/buckman/kaneton/libs/libia32/include/pmode/gdt.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri mar 10 03:53:18 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:49:55 2006]
  */
 
 /*
@@ -80,27 +80,27 @@
  */
 typedef enum
   {
-	type_code = SEG_TYPE_CODE,
-	type_data = SEG_TYPE_DATA,
-  }	t_usr_segtype;
+	ia32_type_code	= SEG_TYPE_CODE,
+	ia32_type_data	= SEG_TYPE_DATA,
+  }	t_ia32_usr_segtype;
 
 /*
  * system segments types
  */
 typedef enum
   {
-	type_ldt = SEG_TYPE_LDT,
-	type_tss = SEG_TYPE_TSS,
-	type_call_gate = SEG_GATE_CALL,
-	type_trap_gate = SEG_GATE_TRAP,
-	type_int_gate = SEG_GATE_INTERRUPT,
-  }	t_sys_segtype;
+	ia32_type_ldt		= SEG_TYPE_LDT,
+	ia32_type_tss		= SEG_TYPE_TSS,
+	ia32_type_call_gate	= SEG_GATE_CALL,
+	ia32_type_trap_gate	= SEG_GATE_TRAP,
+	ia32_type_int_gate	= SEG_GATE_INTERRUPT,
+  }	t_ia32_sys_segtype;
 
 typedef union
 {
-  t_usr_segtype	usr;
-  t_sys_segtype	sys;
-}		t_segtype;
+  t_ia32_usr_segtype	usr;
+  t_ia32_sys_segtype	sys;
+}			t_ia32_segtype;
 
 /*
  * abstract segment descriptor
@@ -108,12 +108,12 @@ typedef union
 
 typedef struct
 {
-  t_uint32	base;
-  t_uint32	limit;
-  t_prvl	privilege;
-  t_uint8	is_system;
-  t_segtype	type;
-}		t_segment;
+  t_uint32		base;
+  t_uint32		limit;
+  t_ia32_prvl		privilege;
+  t_uint8		is_system;
+  t_ia32_segtype	type;
+}			t_ia32_segment;
 
 /*
  * gdt entry
@@ -128,7 +128,7 @@ typedef struct
   t_uint8			limit_16_19 : 4;
   t_uint8			flags : 4;
   t_uint8			base_24_31;
-}				__attribute__ ((packed)) t_gdte;
+}				__attribute__ ((packed)) t_ia32_gdte;
 
 /*
  * gdt
@@ -136,9 +136,9 @@ typedef struct
 
 typedef struct
 {
-  t_gdte			*descriptor;
+  t_ia32_gdte			*descriptor;
   t_uint16			count;
-}				t_gdt;
+}				t_ia32_gdt;
 
 /*
  * gdt register
@@ -148,7 +148,7 @@ typedef struct
 {
   t_uint16			size;
   t_uint32			address;
-}				__attribute__ ((packed)) t_gdtr;
+}				__attribute__ ((packed)) t_ia32_gdtr;
 
 /*
  * ldt entry
@@ -163,7 +163,7 @@ typedef struct
   t_uint8			limit_16_19 : 4;
   t_uint8			flags : 4;
   t_uint8			base_24_31;
-}				__attribute__ ((packed)) t_ldte;
+}				__attribute__ ((packed)) t_ia32_ldte;
 
 /*
  * ldt
@@ -171,10 +171,10 @@ typedef struct
 
 typedef struct
 {
-  t_ldte			*descriptor;
+  t_ia32_ldte			*descriptor;
   t_uint16			count;
   t_uint16			gdt_entry;
-}				t_ldt;
+}				t_ia32_ldt;
 
 /*
  * ldt register
@@ -185,7 +185,7 @@ typedef struct
   t_uint16			selector;
   t_uint16			size;
   t_uint32			address;
-}				__attribute__ ((packed)) t_ldtr;
+}				__attribute__ ((packed)) t_ia32_ldtr;
 
 /*                                                                 [cut] /k2 */
 

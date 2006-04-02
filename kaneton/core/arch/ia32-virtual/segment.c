@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:23:40 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:54:51 2006]
  */
 
 /*
@@ -278,7 +278,7 @@ t_error			ia32_segment_copy(t_segid		dst,
 
 t_error			ia32_segment_init(void)
 {
-  t_segment		seg;
+  t_ia32_segment	seg;
   t_uint16		kcs;
   t_uint16		kds;
 
@@ -297,17 +297,17 @@ t_error			ia32_segment_init(void)
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = prvl_supervisor;
+  seg.privilege = ia32_prvl_supervisor;
   seg.is_system = 0;
-  seg.type.usr = type_code;
+  seg.type.usr = ia32_type_code;
   if (gdt_add_segment(NULL, PMODE_GDT_CORE_CS, seg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = prvl_supervisor;
+  seg.privilege = ia32_prvl_supervisor;
   seg.is_system = 0;
-  seg.type.usr = type_data;
+  seg.type.usr = ia32_type_data;
   if (gdt_add_segment(NULL, PMODE_GDT_CORE_DS, seg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
@@ -317,17 +317,17 @@ t_error			ia32_segment_init(void)
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = prvl_privileged;
+  seg.privilege = ia32_prvl_privileged;
   seg.is_system = 0;
-  seg.type.usr = type_code;
+  seg.type.usr = ia32_type_code;
   if (gdt_add_segment(NULL, PMODE_GDT_DRIVER_CS, seg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = prvl_privileged;
+  seg.privilege = ia32_prvl_privileged;
   seg.is_system = 0;
-  seg.type.usr = type_data;
+  seg.type.usr = ia32_type_data;
   if (gdt_add_segment(NULL, PMODE_GDT_DRIVER_DS, seg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
@@ -337,17 +337,17 @@ t_error			ia32_segment_init(void)
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = prvl_privileged;
+  seg.privilege = ia32_prvl_privileged;
   seg.is_system = 0;
-  seg.type.usr = type_code;
+  seg.type.usr = ia32_type_code;
   if (gdt_add_segment(NULL, PMODE_GDT_SERVICE_CS, seg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = prvl_privileged;
+  seg.privilege = ia32_prvl_privileged;
   seg.is_system = 0;
-  seg.type.usr = type_data;
+  seg.type.usr = ia32_type_data;
   if (gdt_add_segment(NULL, PMODE_GDT_SERVICE_DS, seg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
@@ -357,17 +357,17 @@ t_error			ia32_segment_init(void)
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = prvl_user;
+  seg.privilege = ia32_prvl_user;
   seg.is_system = 0;
-  seg.type.usr = type_code;
+  seg.type.usr = ia32_type_code;
   if (gdt_add_segment(NULL, PMODE_GDT_PROGRAM_CS, seg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = prvl_user;
+  seg.privilege = ia32_prvl_user;
   seg.is_system = 0;
-  seg.type.usr = type_data;
+  seg.type.usr = ia32_type_data;
   if (gdt_add_segment(NULL, PMODE_GDT_PROGRAM_DS, seg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
@@ -375,8 +375,8 @@ t_error			ia32_segment_init(void)
    * 6)
    */
 
-  gdt_build_selector(PMODE_GDT_CORE_CS, prvl_supervisor, &kcs);
-  gdt_build_selector(PMODE_GDT_CORE_DS, prvl_supervisor, &kds);
+  gdt_build_selector(PMODE_GDT_CORE_CS, ia32_prvl_supervisor, &kcs);
+  gdt_build_selector(PMODE_GDT_CORE_DS, ia32_prvl_supervisor, &kds);
   pmode_set_segment_registers(kcs, kds);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);

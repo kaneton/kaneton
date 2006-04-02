@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [tue mar 21 12:10:20 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 00:00:05 2006]
  */
 
 /*
@@ -42,7 +42,7 @@
  * active page directory.
  */
 
-t_directory		pd;
+t_ia32_directory	pd;
 
 /*                                                                 [cut] /k2 */
 
@@ -56,10 +56,10 @@ t_directory		pd;
  * dumps a page directory and its tables.
  */
 
-t_error			pd_dump(t_directory*			dir)
+t_error			pd_dump(t_ia32_directory*		dir)
 {
   t_uint32		i;
-  t_pde*		d;
+  t_ia32_pde*		d;
 
   if (!dir)
     d = pd;
@@ -71,7 +71,7 @@ t_error			pd_dump(t_directory*			dir)
       if (d[i] & PDE_FLAG_P)
 	{
 	  printf("entry %d\n", i);
-	  pt_dump((t_pte*)(MK_BASE(d[i])));
+	  pt_dump((t_ia32_pte*)(MK_BASE(d[i])));
 	}
     }
 
@@ -89,7 +89,7 @@ t_error			pd_dump(t_directory*			dir)
  */
 
 t_error			pd_build(t_paddr			base,
-				 t_directory*			directory,
+				 t_ia32_directory*		directory,
 				 t_uint8			clear)
 {
 
@@ -104,7 +104,7 @@ t_error			pd_build(t_paddr			base,
    * 2)
    */
 
-  *directory = (t_directory)base;
+  *directory = (t_ia32_directory)base;
 
   /*
    * 3)
@@ -112,7 +112,7 @@ t_error			pd_build(t_paddr			base,
 
   if (clear)
     {
-      memset((void*)base, 0, PD_MAX_ENTRIES * sizeof(t_pde));
+      memset((void*)base, 0, PD_MAX_ENTRIES * sizeof(t_ia32_pde));
     }
 
   return ERROR_NONE;
@@ -123,10 +123,10 @@ t_error			pd_build(t_paddr			base,
  *
  */
 
-t_error			pd_base(t_directory*			dir,
+t_error			pd_base(t_ia32_directory*		dir,
 				t_paddr*			base)
 {
-  t_pde*		d;
+  t_ia32_pde*		d;
 
   /*
    * 1)
@@ -156,7 +156,7 @@ t_error			pd_base(t_directory*			dir,
  * 3) sets the global variable.
  */
 
-t_error			pd_activate(t_directory			dir)
+t_error			pd_activate(t_ia32_directory		dir)
 {
   t_uint32		pdbr;
 
@@ -191,11 +191,11 @@ t_error			pd_activate(t_directory			dir)
  * 3) adds the entry.
  */
 
-t_error			pd_add_table(t_directory*		dir,
+t_error			pd_add_table(t_ia32_directory*		dir,
 				     t_uint16			entry,
-				     t_table			table)
+				     t_ia32_table		table)
 {
-  t_pde*		d;
+  t_ia32_pde*		d;
   t_uint32		opts = 0;
 
   /*
@@ -239,11 +239,11 @@ t_error			pd_add_table(t_directory*		dir,
  * 3) fills the page record.
  */
 
-t_error			pd_get_table(t_directory*		dir,
+t_error			pd_get_table(t_ia32_directory*		dir,
 				     t_uint16			entry,
-				     t_table*			table)
+				     t_ia32_table*		table)
 {
-  t_directory		d;
+  t_ia32_directory	d;
 
   /*
    * 1)
@@ -283,10 +283,10 @@ t_error			pd_get_table(t_directory*		dir,
  * 3) resets the entry.
  */
 
-t_error			pd_delete_table(t_directory*		dir,
+t_error			pd_delete_table(t_ia32_directory*	dir,
 					t_uint16		entry)
 {
-  t_directory		d;
+  t_ia32_directory	d;
 
   /*
    * 1)

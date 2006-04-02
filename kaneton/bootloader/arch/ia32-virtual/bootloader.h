@@ -3,14 +3,29 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/bootloader.h
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/bootloader.h
  *
  * created       julien quintard   [fri feb 11 02:23:53 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:20:27 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:53:42 2006]
  */
 
 #ifndef BOOTLOADER_H
 #define BOOTLOADER_H		1
+
+/*                                                                  [cut] k1 */
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#define PMODE_GDT_ENTRIES	256
+#define PMODE_IDT_ENTRIES	256
+
+#define PMODE_BOOTLOADER_CS	0x1
+#define PMODE_BOOTLOADER_DS	0x2
+
+/*                                                                 [cut] /k1 */
+
 
 /*
  * ---------- prototypes ------------------------------------------------------

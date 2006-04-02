@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/pmode/gdt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:45:19 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:57:21 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:48:53 2006]
  */
 
 /*
@@ -68,7 +68,7 @@
  * gdt table pointer
  */
 
-t_gdt		gdt;
+t_ia32_gdt	gdt;
 
 /*                                                                 [cut] /k2 */
 
@@ -86,11 +86,11 @@ t_gdt		gdt;
  * XXX
  */
 
-t_error			gdt_dump(t_gdt*				dump_gdt)
+t_error			gdt_dump(t_ia32_gdt*			dump_gdt)
 {
   t_uint16		i;
-  t_gdte*		entries;
-  t_segment		seg;
+  t_ia32_gdte*		entries;
+  t_ia32_segment	seg;
   const char*		type;
 
   /*
@@ -118,22 +118,22 @@ t_error			gdt_dump(t_gdt*				dump_gdt)
       type = NULL;
       if (seg.is_system)
 	{
-	  if (seg.type.sys == type_ldt)
+	  if (seg.type.sys == ia32_type_ldt)
 	    type = "LDT";
-	  if (seg.type.sys == type_tss)
+	  if (seg.type.sys == ia32_type_tss)
 	    type = "TSS";
-	  if (seg.type.sys == type_call_gate)
+	  if (seg.type.sys == ia32_type_call_gate)
 	    type = "Call Gate";
-	  if (seg.type.sys == type_int_gate)
+	  if (seg.type.sys == ia32_type_int_gate)
 	    type = "Interrupt Gate";
-	  if (seg.type.sys == type_trap_gate)
+	  if (seg.type.sys == ia32_type_trap_gate)
 	    type = "Trap Gate";
 	}
       else
 	{
-	  if (seg.type.usr == type_code)
+	  if (seg.type.usr == ia32_type_code)
 	    type = "Code";
-	  if (seg.type.usr == type_data)
+	  if (seg.type.usr == ia32_type_data)
 	    type = "Data";
 	}
       if (!type)
@@ -150,7 +150,7 @@ t_error			gdt_dump(t_gdt*				dump_gdt)
  * returns size of a gdt.
  */
 
-t_error			gdt_size(t_gdt*				table,
+t_error			gdt_size(t_ia32_gdt*			table,
 				 t_uint16			*size)
 {
   if (!table)
@@ -174,7 +174,7 @@ t_error			gdt_size(t_gdt*				table,
 
 t_error			gdt_build(t_uint16			entries,
 				  t_paddr			base,
-				  t_gdt*			gdt,
+				  t_ia32_gdt*			gdt,
 				  t_uint8			clear)
 {
 
@@ -189,16 +189,16 @@ t_error			gdt_build(t_uint16			entries,
    * 2)
    */
 
-  if (base % sizeof(t_gdte))
+  if (base % sizeof(t_ia32_gdte))
     {
-      base += sizeof(t_gdte) - (base % sizeof(t_gdte));
+      base += sizeof(t_ia32_gdte) - (base % sizeof(t_ia32_gdte));
     }
 
   /*
    * 3)
    */
 
-  gdt->descriptor = (t_gdte*)base;
+  gdt->descriptor = (t_ia32_gdte*)base;
   gdt->count = entries;
 
   /*
@@ -207,7 +207,7 @@ t_error			gdt_build(t_uint16			entries,
 
   if (clear)
     {
-      memset(gdt->descriptor, 0, entries * sizeof(t_gdte));
+      memset(gdt->descriptor, 0, entries * sizeof(t_ia32_gdte));
     }
 
   return ERROR_NONE;
@@ -222,16 +222,16 @@ t_error			gdt_build(t_uint16			entries,
  * 2) updates global gdt record.
  */
 
-t_error			gdt_activate(t_gdt			new_gdt)
+t_error			gdt_activate(t_ia32_gdt			new_gdt)
 {
-  t_gdtr		gdtr;
+  t_ia32_gdtr		gdtr;
 
   /*
    * 1)
    */
 
   gdtr.address = (t_paddr)new_gdt.descriptor;
-  gdtr.size = new_gdt.count * sizeof(t_gdte);
+  gdtr.size = new_gdt.count * sizeof(t_ia32_gdte);
   LGDT(gdtr);
 
   /*
@@ -256,11 +256,11 @@ t_error			gdt_activate(t_gdt			new_gdt)
  * 3) copies to new gdt address.
  */
 
-t_error			gdt_import(t_gdt*			gdt)
+t_error			gdt_import(t_ia32_gdt*			gdt)
 {
-  t_gdtr		sgdtr;
-  t_gdte*		source;
-  t_gdte*		dest;
+  t_ia32_gdtr		sgdtr;
+  t_ia32_gdte*		source;
+  t_ia32_gdte*		dest;
 
   /*
    * 1)
@@ -272,14 +272,14 @@ t_error			gdt_import(t_gdt*			gdt)
    * 2)
    */
 
-  if (sgdtr.size > gdt->count * sizeof(t_gdte))
+  if (sgdtr.size > gdt->count * sizeof(t_ia32_gdte))
     return ERROR_UNKNOWN;
 
   /*
    * 3)
    */
 
-  source = (t_gdte*)sgdtr.address;
+  source = (t_ia32_gdte*)sgdtr.address;
   dest = gdt->descriptor;
 
   memcpy(dest, source, sgdtr.size);
@@ -300,9 +300,9 @@ t_error			gdt_import(t_gdt*			gdt)
  * 6) sets the limit field.
  */
 
-t_error			gdt_add_segment(t_gdt*			table,
+t_error			gdt_add_segment(t_ia32_gdt*		table,
 					t_uint16		segment,
-					t_segment		descriptor)
+					t_ia32_segment		descriptor)
 {
   t_uint32		size;
 
@@ -376,8 +376,8 @@ t_error			gdt_add_segment(t_gdt*			table,
  * 4) sets the reserved index.
  */
 
-t_error			gdt_reserve_segment(t_gdt*		table,
-					    t_segment		descriptor,
+t_error			gdt_reserve_segment(t_ia32_gdt*		table,
+					    t_ia32_segment	descriptor,
 					    t_uint16*		segment)
 {
   t_uint16		look;
@@ -423,9 +423,9 @@ t_error			gdt_reserve_segment(t_gdt*		table,
  * XXX
  */
 
-t_error			gdt_get_segment(t_gdt*			table,
+t_error			gdt_get_segment(t_ia32_gdt*		table,
 					t_uint16		index,
-					t_segment*		segment)
+					t_ia32_segment*		segment)
 {
   /*
    * 1)
@@ -482,7 +482,7 @@ t_error			gdt_get_segment(t_gdt*			table,
  * 3) mark the segment as non-present.
  */
 
-t_error			gdt_delete_segment(t_gdt*		table,
+t_error			gdt_delete_segment(t_ia32_gdt*		table,
 					   t_uint16		segment)
 {
 
@@ -519,7 +519,7 @@ t_error			gdt_delete_segment(t_gdt*		table,
  */
 
 t_error			gdt_build_selector(t_uint16		segment,
-					   t_prvl		privilege,
+					   t_ia32_prvl		privilege,
 					   t_uint16*		selector)
 {
 

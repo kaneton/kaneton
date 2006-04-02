@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/pmode/pmode.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:15 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:59:44 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:47:55 2006]
  */
 
 /*
@@ -50,7 +50,7 @@ extern t_init*		init;
  * global offset table.
  */
 
-extern t_gdt		gdt;
+extern t_ia32_gdt	gdt;
 
 /*                                                                 [cut] /k2 */
 
@@ -60,7 +60,7 @@ extern t_gdt		gdt;
  * global interrupt descriptor table
  */
 
-extern t_idt		idt;
+extern t_ia32_idt		idt;
 
 /*                                                                 [cut] /k3 */
 
@@ -86,10 +86,10 @@ t_error			pmode_init(void)
    * 1)
    */
 
-  memcpy(&gdt, &init->machdep.gdt, sizeof (t_gdt));
+  memcpy(&gdt, &init->machdep.gdt, sizeof (t_ia32_gdt));
 /*                                                                 [cut] /k2 */
 /*                                                                 [cut] k3 */
-  memcpy(&idt, &init->machdep.idt, sizeof (t_idt));
+  memcpy(&idt, &init->machdep.idt, sizeof (t_ia32_idt));
 /*                                                                 [cut] /k3 */
 /*                                                                 [cut] k2 */
 

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun apr  2 22:18:40 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 00:04:06 2006]
  */
 
 /*
@@ -141,14 +141,14 @@ t_error			ia32_as_reserve(t_tskid			tskid,
   o_segment		pt_seg;
   o_region		oreg;
   t_paddr		base;
-  t_table		pt;
+  t_ia32_table		pt;
   t_uint32		i;
-  t_uint32		pde_start;
-  t_uint32		pde_end;
-  t_uint32		pte_start;
-  t_uint32		pte_end;
-  t_uint32		pde;
-  t_uint32		pte;
+  t_ia32_pde		pde_start;
+  t_ia32_pde		pde_end;
+  t_ia32_pte		pte_start;
+  t_ia32_pte		pte_end;
+  t_ia32_pde		pde;
+  t_ia32_pte		pte;
 
   AS_ENTER(as);
 
@@ -167,7 +167,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
        * a)
        */
 
-      o->machdep.pd = (t_directory)init->segments[10].address;
+      o->machdep.pd = (t_ia32_directory)init->segments[10].address;
 
       /*
        * b)
@@ -308,7 +308,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
       if (pd_build(base, &o->machdep.pd, 1) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      o->machdep.pd = (t_directory)(t_uint32)seg;
+      o->machdep.pd = (t_ia32_directory)(t_uint32)seg;
 
       /*
        * d)

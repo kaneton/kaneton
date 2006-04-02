@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/pmode/idt.h
  *
  * created       renaud voltz   [fri feb 10 16:36:20 2006]
- * updated       matthieu bucchianeri   [tue mar 21 13:30:31 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:50:14 2006]
  */
 
 /*
@@ -64,10 +64,10 @@
  */
 typedef enum
   {
-    type_gate_task = GATE_TYPE_TASK,
-    type_gate_interrupt = GATE_TYPE_INTERRUPT,
-    type_gate_trap = GATE_TYPE_TRAP,
-  }		t_gate_type;
+	ia32_type_gate_task		= GATE_TYPE_TASK,
+	ia32_type_gate_interrupt	= GATE_TYPE_INTERRUPT,
+	ia32_type_gate_trap		= GATE_TYPE_TRAP,
+  }	t_ia32_gate_type;
 
 /*
  * abstract gate descriptor
@@ -77,9 +77,9 @@ typedef struct
 {
   t_uint32			offset;
   t_uint16			segsel;
-  t_prvl			privilege;
-  t_gate_type			type;
-}				t_gate;
+  t_ia32_prvl			privilege;
+  t_ia32_gate_type		type;
+}				t_ia32_gate;
 
 /*
  * idt entry
@@ -92,7 +92,7 @@ typedef struct
   t_uint8			reserved;
   t_uint8			type;
   t_uint16			offset_16_31;
-}				__attribute__ ((packed)) t_idte;
+}				__attribute__ ((packed)) t_ia32_idte;
 
 /*
  * idt
@@ -100,9 +100,9 @@ typedef struct
 
 typedef struct
 {
-  t_idte			*descriptor;
+  t_ia32_idte			*descriptor;
   t_uint16			count;
-}				t_idt;
+}				t_ia32_idt;
 
 /*
  * idt register
@@ -112,7 +112,7 @@ typedef struct
 {
   t_uint16			size;
   t_uint32			address;
-}				__attribute__ ((packed)) t_idtr;
+}				__attribute__ ((packed)) t_ia32_idtr;
 
 /*                                                                 [cut] /k3 */
 

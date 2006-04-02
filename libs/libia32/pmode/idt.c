@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/libs/libia32/interrupt/idt.c
+ * file          /home/buckman/kaneton/libs/libia32/pmode/idt.c
  *
  * created       renaud voltz   [sun feb 12 02:02:19 2006]
- * updated       renaud voltz   [sun feb 12 02:02:19 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:48:42 2006]
  */
 
 /*
@@ -41,7 +41,7 @@
  * idt table pointer
  */
 
-t_idt           idt;
+t_ia32_idt           idt;
 
 /*                                                                  [cut] /k3 */
 
@@ -60,11 +60,11 @@ t_idt           idt;
  * 2) dump every idt entry.
  */
 
-t_error			idt_dump(t_idt*				dump_idt)
+t_error			idt_dump(t_ia32_idt*			dump_idt)
 {
   t_uint16		i;
-  t_idte*		entries;
-  t_gate		gate;
+  t_ia32_idte*		entries;
+  t_ia32_gate		gate;
   const char*		type;
 
   /*
@@ -90,11 +90,11 @@ t_error			idt_dump(t_idt*				dump_idt)
 	continue;
 
       type = NULL;
-      if (gate.type == type_gate_task)
+      if (gate.type == ia32_type_gate_task)
 	type = "Call gate";
-      if (gate.type == type_gate_interrupt)
+      if (gate.type == ia32_type_gate_interrupt)
 	type = "Interrupt gate";
-      if (gate.type == type_gate_trap)
+      if (gate.type == ia32_type_gate_trap)
 	type = "Trap gate";
       if (!type)
 	type = "other";
@@ -110,7 +110,7 @@ t_error			idt_dump(t_idt*				dump_idt)
  * return the size of an idt.
  */
 
-t_error			idt_size(t_idt*				table,
+t_error			idt_size(t_ia32_idt*			table,
 				 t_uint16			*size)
 {
   if (!table)
@@ -134,7 +134,7 @@ t_error			idt_size(t_idt*				table,
 
 t_error			idt_build(t_uint16			entries,
 				  t_paddr			base,
-				  t_idt*			idt,
+				  t_ia32_idt*			idt,
 				  t_uint8			clear)
 {
   /*
@@ -148,14 +148,14 @@ t_error			idt_build(t_uint16			entries,
    * 2)
    */
 
-  if (base % sizeof(t_idte))
-    base += sizeof(t_idte) - (base % sizeof(t_idte));
+  if (base % sizeof(t_ia32_idte))
+    base += sizeof(t_ia32_idte) - (base % sizeof(t_ia32_idte));
 
   /*
    * 3)
    */
 
-  idt->descriptor = (t_idte*)base;
+  idt->descriptor = (t_ia32_idte*)base;
   idt->count = entries;
 
   /*
@@ -163,7 +163,7 @@ t_error			idt_build(t_uint16			entries,
    */
 
   if (clear)
-    memset(idt->descriptor, 0, entries * sizeof(t_idte));
+    memset(idt->descriptor, 0, entries * sizeof(t_ia32_idte));
 
   return ERROR_NONE;
 }
@@ -177,16 +177,16 @@ t_error			idt_build(t_uint16			entries,
  * 2) upate idt record.
  */
 
-t_error			idt_activate(t_idt			new_idt)
+t_error			idt_activate(t_ia32_idt			new_idt)
 {
-  t_idtr		idtr;
+  t_ia32_idtr		idtr;
 
   /*
    * 1)
    */
 
   idtr.address = (t_paddr)new_idt.descriptor;
-  idtr.size = new_idt.count * sizeof(t_idte);
+  idtr.size = new_idt.count * sizeof(t_ia32_idte);
   LIDT(idtr);
 
   /*
@@ -209,11 +209,11 @@ t_error			idt_activate(t_idt			new_idt)
  * 3) copy to new idt address.
  */
 
-t_error			idt_import(t_idt*			idt)
+t_error			idt_import(t_ia32_idt*			idt)
 {
-  t_idtr		sidtr;
-  t_idte*		source;
-  t_idte*		dest;
+  t_ia32_idtr		sidtr;
+  t_ia32_idte*		source;
+  t_ia32_idte*		dest;
 
   /*
    * 1)
@@ -225,14 +225,14 @@ t_error			idt_import(t_idt*			idt)
    * 2
    */
 
-  if (sidtr.size > idt->count * sizeof(t_idte))
+  if (sidtr.size > idt->count * sizeof(t_ia32_idte))
     return ERROR_UNKNOWN;
 
   /*
    * 3
    */
 
-  source = (t_idte*)sidtr.address;
+  source = (t_ia32_idte*)sidtr.address;
   dest = idt->descriptor;
 
   return ERROR_NONE;
@@ -251,9 +251,9 @@ t_error			idt_import(t_idt*			idt)
  * 6) set the reserved field.
  */
 
-t_error			idt_add_gate(t_idt*			table,
+t_error			idt_add_gate(t_ia32_idt*		table,
 				     t_uint16			index,
-				     t_gate			gate)
+				     t_ia32_gate		gate)
 {
   /*
    * 1)
@@ -312,9 +312,9 @@ t_error			idt_add_gate(t_idt*			table,
  * 6) get the privileges.
  */
 
-t_error			idt_get_gate(t_idt*			table,
+t_error			idt_get_gate(t_ia32_idt*		table,
 				     t_uint16			index,
-				     t_gate*			gate)
+				     t_ia32_gate*		gate)
 {
   /*
    * 1)
@@ -369,7 +369,7 @@ t_error			idt_get_gate(t_idt*			table,
  * 3) mark the gate as non-present.
  */
 
-t_error			idt_delete_gate(t_idt*			table,
+t_error			idt_delete_gate(t_ia32_idt*		table,
 					t_uint16		gate_id)
 {
   /*

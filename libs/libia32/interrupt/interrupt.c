@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/interrupt/interrupt.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       matthieu bucchianeri   [thu mar 23 12:02:56 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:51:19 2006]
  */
 
 /*
@@ -39,13 +39,13 @@
  * global interrupt handler table
  */
 
-t_interrupt_handler		interrupt_handlers[EXCEPTION_NR + IRQ_NR];
+t_ia32_interrupt_handler	interrupt_handlers[EXCEPTION_NR + IRQ_NR];
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
-static t_interrupt_prehandler	prehandlers[EXCEPTION_NR + IRQ_NR] =
+static t_ia32_interrupt_prehandler	prehandlers[EXCEPTION_NR + IRQ_NR] =
   {
     prehandler_exception0,
     prehandler_exception1,
@@ -107,10 +107,10 @@ static t_interrupt_prehandler	prehandlers[EXCEPTION_NR + IRQ_NR] =
  */
 
 t_error			interrupt_add(t_uint32			nr,
-				      t_prvl			privilege,
-				      t_interrupt_prehandler	prehandler)
+				      t_ia32_prvl	       	privilege,
+				      t_ia32_interrupt_prehandler prehandler)
 {
-  t_gate		gate;
+  t_ia32_gate		gate;
 
   /*
    * 1)
@@ -126,7 +126,7 @@ t_error			interrupt_add(t_uint32			nr,
   gate.offset = (t_uint32)prehandler;
   gate.segsel = PMODE_GDT_CORE_CS << 3;
   gate.privilege = privilege;
-  gate.type = type_gate_interrupt;
+  gate.type = ia32_type_gate_interrupt;
 
   idt_add_gate(NULL, nr, gate);
 
@@ -138,7 +138,7 @@ t_error			interrupt_add(t_uint32			nr,
  */
 
 t_error			interrupt_set_handler(t_uint32			nr,
-					      t_interrupt_handler	handler)
+					      t_ia32_interrupt_handler	handler)
 {
   interrupt_handlers[nr] = handler;
 

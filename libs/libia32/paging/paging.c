@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:51:57 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:58:48 2006]
  */
 
 /*
@@ -50,7 +50,7 @@ extern t_init*		init;
  * the page directory.
  */
 
-extern t_directory	pd;
+extern t_ia32_directory	pd;
 
 /*                                                                 [cut] /k2 */
 

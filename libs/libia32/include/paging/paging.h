@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/paging/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue mar 21 12:20:08 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:58:13 2006]
  */
 
 /*
@@ -118,7 +118,7 @@ typedef struct
   t_uint8	present;
   t_uint8	rw;
   t_uint8	user;
-}		t_page;
+}		t_ia32_page;
 
 /*
  * abstract record for table
@@ -130,16 +130,16 @@ typedef struct
   t_uint8	present;
   t_uint8	rw;
   t_uint8	user;
-}		t_table;
+}		t_ia32_table;
 
-typedef t_uint32		t_pde;
-typedef t_uint32		t_pte;
+typedef t_uint32		t_ia32_pde;
+typedef t_uint32		t_ia32_pte;
 
 /*
  * abstract record for directory
  */
 
-typedef t_pde* t_directory;
+typedef t_ia32_pde* t_ia32_directory;
 
 /*                                                                 [cut] /k2 */
 

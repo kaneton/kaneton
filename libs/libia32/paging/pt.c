@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       matthieu bucchianeri   [tue mar 21 12:16:33 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 00:02:51 2006]
  */
 
 /*
@@ -41,7 +41,7 @@
  * dumps a page table.
  */
 
-t_error			pt_dump(t_pte*				tab)
+t_error			pt_dump(t_ia32_pte*			tab)
 {
   t_uint32		i;
 
@@ -70,7 +70,7 @@ t_error			pt_dump(t_pte*				tab)
  */
 
 t_error			pt_build(t_paddr			base,
-				 t_table*			table,
+				 t_ia32_table*			table,
 				 t_uint8			clear)
 {
 
@@ -93,7 +93,7 @@ t_error			pt_build(t_paddr			base,
 
   if (clear)
     {
-      memset((void*)base, 0, PT_MAX_ENTRIES * sizeof(t_pte));
+      memset((void*)base, 0, PT_MAX_ENTRIES * sizeof(t_ia32_pte));
     }
 
   return ERROR_NONE;
@@ -109,11 +109,11 @@ t_error			pt_build(t_paddr			base,
  * 3) setups the entry.
  */
 
-t_error			pt_add_page(t_table*			tab,
+t_error			pt_add_page(t_ia32_table*		tab,
 				    t_uint16			entry,
-				    t_page			page)
+				    t_ia32_page			page)
 {
-  t_pte*		t;
+  t_ia32_pte*		t;
   t_uint32		opts = 0;
 
   /*
@@ -127,7 +127,7 @@ t_error			pt_add_page(t_table*			tab,
    * 2)
    */
 
-  t = (t_pte*)tab->entries;
+  t = (t_ia32_pte*)tab->entries;
 
   /*
    * 3)
@@ -159,17 +159,17 @@ t_error			pt_add_page(t_table*			tab,
  * 3) fills the page structure.
  */
 
-t_error			pt_get_page(t_table*			tab,
+t_error			pt_get_page(t_ia32_table*		tab,
 				    t_uint16			entry,
-				    t_page*			page)
+				    t_ia32_page*		page)
 {
-  t_pte*		t;
+  t_ia32_pte*		t;
 
   /*
    * 1)
    */
 
-  t = (t_pte*)tab->entries;
+  t = (t_ia32_pte*)tab->entries;
 
   /*
    * 2)
@@ -200,16 +200,16 @@ t_error			pt_get_page(t_table*			tab,
  * 3) resets the entry.
  */
 
-t_error			pt_delete_page(t_table*			tab,
+t_error			pt_delete_page(t_ia32_table*		tab,
 				       t_uint16			entry)
 {
-  t_pte*		t;
+  t_ia32_pte*		t;
 
   /*
    * 1)
    */
 
-  t = (t_pte*)tab->entries;
+  t = (t_ia32_pte*)tab->entries;
 
   /*
    * 2)

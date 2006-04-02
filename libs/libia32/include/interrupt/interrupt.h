@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/include/interrupt/interrupt.h
+ * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       julien quintard   [fri mar 10 03:54:30 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:45:05 2006]
  */
 
 /*
@@ -134,8 +134,8 @@
  * ---------- types -----------------------------------------------------------
  */
 
-typedef void			(*t_interrupt_prehandler)(void);
-typedef void			(*t_interrupt_handler)(t_uint32);
+typedef void			(*t_ia32_interrupt_prehandler)(void);
+typedef void			(*t_ia32_interrupt_handler)(t_uint32);
 
 /*
  * ---------- prototypes ------------------------------------------------------
