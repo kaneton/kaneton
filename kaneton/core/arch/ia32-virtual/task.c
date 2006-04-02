@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/task.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       julien quintard   [sun apr  2 14:17:30 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 22:21:47 2006]
  */
 
 /*
@@ -114,11 +114,6 @@ t_error			ia32_task_release(t_tskid		tskid)
 
 /*
  * this function initializes the task manager and the kernel task.
- *
- * steps:
- *
- * 1) get the kernel address space.
- * 2) activate the new kernel address space.
  */
 
 t_error			ia32_task_init(void)
@@ -127,19 +122,7 @@ t_error			ia32_task_init(void)
 
   TASK_ENTER(task);
 
-  /*
-   * 1)
-   */
-
-  if (as_get(kasid, &o) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (pd_activate(o->machdep.pd) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  /* XXX */
 
   TASK_LEAVE(task, ERROR_NONE);
 }

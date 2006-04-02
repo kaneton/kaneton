@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/07/07.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri mar 17 15:37:44 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 19:11:32 2006]
  */
 
 #include <klibc.h>
@@ -17,7 +17,6 @@ void		check_as_07(void)
 {
   t_tskid	task;
   t_asid	as;
-  o_as*		o;
 
   TEST_ENTER;
 
@@ -29,8 +28,7 @@ void		check_as_07(void)
 
   MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
-  MY_ASSERT(as_get(as, &o) == ERROR_NONE,
-	    "unable to get as\n");
+  /* XXX */
 
   MY_ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");

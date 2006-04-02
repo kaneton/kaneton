@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/06/06.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri mar 24 16:22:17 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 19:11:20 2006]
  */
 
 #include <klibc.h>
@@ -54,6 +54,8 @@ void		check_as_06(void)
 	    "error reserving region\n");
 
   MY_ASSERT(as_clone(forked, as, &cloned) == ERROR_NONE, "as_clone failed\n");
+
+  /* XXX */
 
   MY_ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");

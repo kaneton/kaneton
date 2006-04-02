@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/as.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun apr  2 14:18:56 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 22:18:40 2006]
  */
 
 /*
@@ -123,6 +123,7 @@ t_error			ia32_as_show(t_asid			asid)
  *  c) manually reserve a region for the mirror entry.
  *  d) clean the page directory.
  *  e) reinject the page tables in the kernel as.
+ *  f) invalidate MMU caches.
  *   normal task:
  *  a) reserve a segment for the directory.
  *  b) reserve a region for the directory in the kernel address space.
@@ -268,6 +269,12 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 		}
 	    }
 	}
+
+      /*
+       * f)
+       */
+
+      tlb_flush();
     }
   else
     {

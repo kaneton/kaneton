@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/01/01.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sat mar 25 16:31:18 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 17:59:59 2006]
  */
 
 #include <klibc.h>
@@ -39,7 +39,7 @@ void		check_segment_01(void)
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
 
-  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting as\n");
+  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment\n");
 
   MY_ASSERT(o->segid == seg, "Bad segid field\n");
   MY_ASSERT(o->asid == as, "Bad asid field\n");

@@ -57,13 +57,15 @@ int		read_file(char*	filename)
   if (stat(filename, &st) == -1)
     return (-1);
 
-  if ((file = malloc(st.st_size)) == NULL)
+  if ((file = malloc(st.st_size + 1)) == NULL)
     return (-1);
 
   if ((fd = open(filename, O_RDONLY)) == -1)
     return (-1);
 
   read(fd, file, st.st_size);
+
+  file[st.st_size] = 0;
 
   filesz = st.st_size;
 }
@@ -76,7 +78,8 @@ char*		get_token(unsigned int*	i)
   if (*i >= filesz)
     return (NULL);
 
-  while (((file[*i] == ' ') || (file[*i] == '\t') || (file[*i] == '\n')) &&
+  while (file[*i] &&
+	 ((file[*i] == ' ') || (file[*i] == '\t') || (file[*i] == '\n')) &&
 	  (*i < filesz))
     (*i)++;
 
@@ -99,7 +102,8 @@ char*		get_token(unsigned int*	i)
       return (token);
     }
 
-  while (((file[*i] != ' ') && (file[*i] != '\t') && (file[*i] != '\n')) &&
+  while (file[*i] &&
+	 ((file[*i] != ' ') && (file[*i] != '\t') && (file[*i] != '\n')) &&
 	 (*i < filesz))
     (*i)++;
 
@@ -107,6 +111,7 @@ char*		get_token(unsigned int*	i)
     return (NULL);
 
   token = malloc(*i - s + 1);
+  memset(token, 0x0, *i - s + 1);
 
   strncpy(token, file + s, *i - s);
 

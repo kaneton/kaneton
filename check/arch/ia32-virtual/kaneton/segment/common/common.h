@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/common/common.h
  *
  * created       matthieu bucchianeri   [wed mar 15 23:12:48 2006]
- * updated       matthieu bucchianeri   [fri mar 24 18:00:17 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 18:13:59 2006]
  */
 
 #ifndef CHECK_SEGMENT_COMMON_H_
@@ -40,6 +40,9 @@
  *      ../07/07.c
  *      ../08/08.c
  *      ../09/09.c
+ *      ../10/10.c
+ *      ../11/11.c
+ *      ../12/12.c
  */
 
 /*
@@ -112,6 +115,27 @@ void		check_segment_08(void);
  */
 
 void		check_segment_09(void);
+
+
+/*
+ * ../10/10.c
+ */
+
+void		check_segment_10(void);
+
+
+/*
+ * ../11/11.c
+ */
+
+void		check_segment_11(void);
+
+
+/*
+ * ../12/12.c
+ */
+
+void		check_segment_12(void);
 
 
 /*

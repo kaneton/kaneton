@@ -6,4 +6,7 @@
 06 catch of segments
 07 direct read/write/copy from segment to buffers/segments
 08 cloning a segment
-09 resize/coalesce/split
+09 split
+10 resize
+11 coalesce
+12 resize (contents check)

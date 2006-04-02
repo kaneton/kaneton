@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/region.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [sun apr  2 14:17:39 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 22:20:39 2006]
  */
 
 /*
@@ -114,6 +114,8 @@ static t_error		ia32_region_map_chunk(t_vaddr		v,
 
       if (pd_add_table(&oas->machdep.pd, PDE_ENTRY(v), pt) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      memset((void*)ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(v)), 0, PAGESZ);
     }
 
   /*
@@ -242,7 +244,6 @@ t_error			ia32_region_reserve(t_asid		asid,
   t_directory		pd;
   t_table		pt;
   t_page		pg;
-  t_directory		kpd;
   t_uint32		pde_start;
   t_uint32		pde_end;
   t_uint32		pte_start;
@@ -260,8 +261,6 @@ t_error			ia32_region_reserve(t_asid		asid,
 
   if (as_get(kasid, &kas) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  kpd = kas->machdep.pd;
 
   if (as_get(asid, &o) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
@@ -284,7 +283,7 @@ t_error			ia32_region_reserve(t_asid		asid,
    * 4)
    */
 
-  pg.rw = 1; //oseg->perms & PERM_WRITE;
+  pg.rw = 1; //!!(oseg->perms & PERM_WRITE);
   pg.present = 1;
   pg.user = (otsk->class == TASK_CLASS_PROGRAM);
 
@@ -332,6 +331,8 @@ t_error			ia32_region_reserve(t_asid		asid,
 
 	  if (pd_add_table(&pd, pde, pt) != ERROR_NONE)
 	    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+	  memset((void*)ENTRY_ADDR(PD_MIRROR, pde), 0, PAGESZ);
 	}
 
       /*
@@ -370,7 +371,7 @@ t_error			ia32_region_reserve(t_asid		asid,
 	   */
 
 	  tlb_invalidate((t_vaddr)ENTRY_ADDR(pde, pte));
-	  tlb_flush( );
+/*	  tlb_flush( );
 
 	  if (ENTRY_ADDR(pde, pte) < address || ENTRY_ADDR(pde, pte) >= address + size)
 	    printf("out of bound !\n");
@@ -379,7 +380,7 @@ t_error			ia32_region_reserve(t_asid		asid,
 	  for ( iiii = 0; iiii < 100000; iiii++)
 	    ;
 	  int * p = (int*)ENTRY_ADDR(pde, pte) + 80;
-	  *p = 0x41424344;
+	  *p = 0x41424344;*/
 	}
 
       /*

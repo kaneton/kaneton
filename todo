@@ -1,12 +1,35 @@
 --
+ * vraiment finir les resize & co des regions. c'est le seul truc qui manque.
+ * revoir les noms des structures de la libia32 (t_page -> o_ia32_page).
+ * revoir les flush & autre clean: les sets sont instable, donc pas de for_each
+   quand on supprime.
+ * finir les tests suivants: as/06, as/07, region/*, map/*
+ * revoir le kmalloc pour qu'il n'utilise plus le survey area une fois tout
+   lancé.
+ * revoir la gestion des chunk de mémoire: interfacage avec fit & co
+
+ une fois les trucs ci-dessus ok, la gestion de la mémoire sera ok+clean+testé.
+
+ a revoir (pas urgent):
+
+ * set_locate_array qui deconne.
+ * modifier la gestion du parse_res.py de la moulinette.
+ * segment R/W/copy ok, mais peut etre encore optimisé (pas urgent).
+ * revoir la moulinette pour injecter le code des tests a la volé plutot qu'a
+   la compile.
+
+ a faire ?
+
+ * gerer kaneton.conf dans le kernel ? (au moins pour les CATCH ?)
+   -> il y a un parser dans _old_ qui semble marcher (j'ai corrigé qq trucs
+      avec valgrind pour qu'il y ait plus d'erreurs)
+
+--
  revoir la moulinette de triche, a la limite retoucher le code de ctcompare
 
 --
  expliquer dans la doc kaneton.pdf comment fonctionne machdep.
  et quand il faut appeler machdep: creation, modification et destruction
-
---
- moulette bootloader: checker l'alignement de esp & co
 
 --
  dans env/machine/XXX mettre un fichier qui decrit le profile machine
@@ -20,9 +43,6 @@
 --
  c'est le fait de decouper en sous-fichiers qui fout la merde sur
  le verbatim quand c'est a cheval sur deux pages.
-
---
- pourquoi le champ region->segid n'est pas rempli dans le bootloader?
 
 --
  ameliorer le parcourt des modules en rajoutant un champ next.
@@ -82,44 +102,10 @@
  car ca rend le code latex illisible.
 
 --
- check as & co: en fait c debile de les mettre dans check/arch, il faudra les
- deplacer dans check/core/kaneton
-
---
- check bootloader: adapter le test 03 : jme suis goure dans l'assignments.
- donc faire un cas special pr cette fois et modifier assignments pour l'an
- prochain
-
---
- revoir segment : acces direct (read/write) a optimiser et resize + split
- (doivent gerer les regions).
-
---
  les images microkernel_examples_* dans seminar sont a passer au format xfig
 
 --
  le cours intel a integrer a la tarball
-
---
- a la limite integrer l'option k des inge1 a la tarball kaneton
-
---
- il faut revoir set_locate_array pour les tableaux tries. il y a un bug.
-
---
- inventaire des fonctions a terminer :
-  - as_clone
-  - as_vaddr
-  - ia32_region_release
-  - ia32_as_release/flush  <<	pas sur qu'on libere les page tables
-  - gdt_import 		<< eventuellement la virer
-  - ldt_get_segment
-
- revoir aussi core/kaneton/debug/*, c'est un peu crade.
-
- peut etre changer les noms dans libia32 : t_segment -> o_ia32_segment
-
- revoir la klibc il y a beaucoup de XXX dedans.
 
 --
  vraiment reflechir a un systeme de nommage. genre open(path) va en realite
@@ -160,19 +146,9 @@
  et reveille l autre thread.
 
 --
- prevoir une surcouche au dessus de segment et region pour simplifier
- la vie de tout le monde genre: map_reserve(size) -> {segment,region}_reserve()
-
---
  pour eviter les deadlocks on autorisera uniquement les messages
  asynchrone partant du kernel. ca va bien avec ce que je pensais et de
  toute facon c'est seulement ce dont on a besoin donc ca bande.
-
---
- retoucher la moulinette et virer le script parse_res.py. revoir
- aussi pour le systeme de loading de modules.
-
- peut etre meme revoir en general la moulinette.
 
 --
  creer un service monitor lance en premier apres mod qui recevra des
@@ -268,14 +244,6 @@
  lib existante soit on en refait une.
 
 --
- region:
-  * pouvoir mapper des parties de segment. revoir le proto de reserve.
-   * voir pr l'union adresse / i
-   * vtop et ptov
- tests:
-  * changer les tests des sets pour plus considerer l'ordre
-
---
  virer tout affichage autre que warning et erreur dans le bootloader
  de sorte qu'on n'ait plus de structure t_cons dependante a passer
 
@@ -295,13 +263,6 @@
 --
  peut etre devrait on penser les regions un peu plus pour tout faire avec:
   swap/paging etc..
-
---
- dans segment et surement dans d'autres: as, task, region
-
- on fait dans clean() un foreach ( segment_release ) c'est tres
- dangereux car l'iterator n'est pas sur d'etre correct. il faudrait
- changer ca et faire plutot un while (set_head) { segment_release }
 
 --
  dans doc papers diviser par categories et faire que chaque personne
@@ -656,9 +617,6 @@
 
 --
  systeme de reboot automatique
-
---
- fonction de segments et regions pour faire p->v v->p
 
 -- messages
  faire un msg_build(size) qui va creer un segment partage et renvoyer

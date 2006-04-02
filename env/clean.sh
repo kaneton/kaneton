@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/env/clean.sh
+## file          /home/buckman/kaneton/env/clean.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat apr  1 22:38:32 2006]
+## updated       matthieu bucchianeri   [sun apr  2 22:15:46 2006]
 ##
 
 #
@@ -76,7 +76,7 @@ dep()
 
   display " cleaning makefile dependencies" "+"
 
-  makefiles=$(find ${_SRC_DIR_}/ -name .makefile.mk)
+  makefiles=$(find-files "${_SRC_DIR_}/" ".makefile.mk")
 
   for m in ${makefiles} ; do
     remove ${m}
