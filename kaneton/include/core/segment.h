@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/segment.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sat apr  1 22:45:25 2006]
+ * updated       julien quintard   [sun apr  2 14:05:49 2006]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -25,7 +25,7 @@
  */
 
 /*
- * container parameters
+ * set parameters
  */
 
 #define SEGMENT_BPT_NODESZ	4096
@@ -76,7 +76,7 @@ typedef struct
 
   t_fit				fit;
 
-  t_setid			container;
+  t_setid			segments;
 
   machdep_data(m_segment);
 }				m_segment;
@@ -132,7 +132,7 @@ typedef struct
   t_error			(*segment_flush)(t_asid);
   t_error			(*segment_init)(t_fit);
   t_error			(*segment_clean)(void);
-}				i_segment;
+}				d_segment;
 
 /*
  * ---------- macro functions -------------------------------------------------

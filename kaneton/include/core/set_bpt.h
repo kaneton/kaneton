@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/set_bpt.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       julien quintard   [sat apr  1 22:47:01 2006]
+ * updated       julien quintard   [sun apr  2 13:51:09 2006]
  */
 
 #ifndef CORE_SET_BPT_H
@@ -75,10 +75,6 @@ bpt_make_types(set, BPT_NODESZ_T, BPT_NDI_T, BPT_UNI_T, BPT_NODES_T,
 
 typedef struct
 {
-  t_opts			opts;
-
-  t_size			datasz;
-
   t_bpt_unused(set)		unused;
   t_bpt_uni(set)		unusedsz;
 

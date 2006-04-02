@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/kaneton/stats/stats.c
+ * file          /home/mycure/kaneton/kaneton/core/stats/stats.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue dec 20 23:07:59 2005]
+ * updated       julien quintard   [sun apr  2 13:04:22 2006]
  */
 
 /*
@@ -76,9 +76,9 @@ t_error			stats_function(t_staid			staid,
    * 1)
    */
 
-  for (i = 0; i < stats->container[staid].functionssz; i++)
+  for (i = 0; i < stats->managers[staid].functionssz; i++)
     {
-      if (stats->container[staid].functions[i].name == NULL)
+      if (stats->managers[staid].functions[i].name == NULL)
 	{
 	  if (slot == -1)
 	    slot = i;
@@ -86,7 +86,7 @@ t_error			stats_function(t_staid			staid,
 	  continue;
 	}
 
-      if (strcmp(function, stats->container[staid].functions[i].name) == 0)
+      if (strcmp(function, stats->managers[staid].functions[i].name) == 0)
 	{
 	  slot = i;
 	  break;
@@ -97,20 +97,20 @@ t_error			stats_function(t_staid			staid,
    * 2)
    */
 
-  if ((i == stats->container[staid].functionssz) && (slot == -1))
+  if ((i == stats->managers[staid].functionssz) && (slot == -1))
     {
-      slot = stats->container[staid].functionssz;
+      slot = stats->managers[staid].functionssz;
 
-      if ((stats->container[staid].functions =
-	   realloc(stats->container[staid].functions,
-		   (stats->container[staid].functionssz * 2) *
+      if ((stats->managers[staid].functions =
+	   realloc(stats->managers[staid].functions,
+		   (stats->managers[staid].functionssz * 2) *
 		   sizeof(t_stats_func))) == NULL)
 	STATS_LEAVE(stats, ERROR_UNKNOWN);
 
-      stats->container[staid].functionssz *= 2;
+      stats->managers[staid].functionssz *= 2;
 
-      memset(stats->container[staid].functions + slot,
-	     0x0, (stats->container[staid].functionssz - slot) *
+      memset(stats->managers[staid].functions + slot,
+	     0x0, (stats->managers[staid].functionssz - slot) *
 	     sizeof(t_stats_func));
     }
 
@@ -118,7 +118,7 @@ t_error			stats_function(t_staid			staid,
    * 3)
    */
 
-  *f = &stats->container[staid].functions[slot];
+  *f = &stats->managers[staid].functions[slot];
 
   STATS_LEAVE(stats, ERROR_NONE);
 }
@@ -145,7 +145,7 @@ t_error			stats_begin(t_staid			staid,
    * 1)
    */
 
-  if (staid >= stats->containersz || stats->container[staid].name == NULL)
+  if (staid >= stats->managerssz || stats->managers[staid].name == NULL)
     STATS_LEAVE(stats, ERROR_UNKNOWN);
 
   /*
@@ -203,7 +203,7 @@ t_error			stats_end(t_staid			staid,
    * 1)
    */
 
-  if (staid >= stats->containersz || stats->container[staid].name == NULL)
+  if (staid >= stats->managerssz || stats->managers[staid].name == NULL)
     STATS_LEAVE(stats, ERROR_UNKNOWN);
 
   /*
@@ -236,21 +236,21 @@ t_error			stats_show(t_staid			staid)
 
   STATS_ENTER(stats);
 
-  if (staid >= stats->containersz || stats->container[staid].name == NULL)
+  if (staid >= stats->managerssz || stats->managers[staid].name == NULL)
     STATS_LEAVE(stats, ERROR_UNKNOWN);
 
   cons_msg('#', "  [%qu] %s\n",
 	   staid,
-	   stats->container[staid].name);
+	   stats->managers[staid].name);
 
-  for (i = 0; i < stats->container[staid].functionssz; i++)
+  for (i = 0; i < stats->managers[staid].functionssz; i++)
     {
-      if (stats->container[staid].functions[i].name == NULL)
+      if (stats->managers[staid].functions[i].name == NULL)
 	continue;
       cons_msg('#', "    %s: %qu call(s) [%qu errors]\n",
-	       stats->container[staid].functions[i].name,
-	       stats->container[staid].functions[i].calls,
-	       stats->container[staid].functions[i].errors);
+	       stats->managers[staid].functions[i].name,
+	       stats->managers[staid].functions[i].calls,
+	       stats->managers[staid].functions[i].errors);
 
       /*
        * XXX dump the timer here
@@ -272,9 +272,9 @@ t_error			stats_dump(void)
 
   cons_msg('#', "dumping statistics:\n");
 
-  for (staid = 0; staid < stats->containersz; staid++)
+  for (staid = 0; staid < stats->managerssz; staid++)
     {
-      if (stats->container[staid].name == NULL)
+      if (stats->managers[staid].name == NULL)
 	continue;
 
       if (stats_show(staid) != ERROR_NONE)
@@ -304,47 +304,47 @@ t_error			stats_reserve(char*			name,
    * 1)
    */
 
-  for (*staid = 0; *staid < stats->containersz; (*staid)++)
-    if (stats->container[*staid].name == NULL)
+  for (*staid = 0; *staid < stats->managerssz; (*staid)++)
+    if (stats->managers[*staid].name == NULL)
       break;
 
   /*
    * 2)
    */
 
-  if (*staid == stats->containersz)
+  if (*staid == stats->managerssz)
     {
-      if ((stats->container = realloc(stats->container,
-				      (stats->containersz * 2) *
+      if ((stats->managers = realloc(stats->managers,
+				      (stats->managerssz * 2) *
 				      sizeof (t_stats))) == NULL)
 	STATS_LEAVE(stats, ERROR_UNKNOWN);
 
-      *staid = stats->containersz;
+      *staid = stats->managerssz;
 
-      stats->containersz *= 2;
+      stats->managerssz *= 2;
 
-      memset(stats->container + *staid, 0x0,
-	     (stats->containersz - *staid) * sizeof (t_stats));
+      memset(stats->managers + *staid, 0x0,
+	     (stats->managerssz - *staid) * sizeof (t_stats));
     }
 
   /*
    * 3)
    */
 
-  if ((stats->container[*staid].name = strdup(name)) == NULL)
+  if ((stats->managers[*staid].name = strdup(name)) == NULL)
     STATS_LEAVE(stats, ERROR_UNKNOWN);
 
-  if ((stats->container[*staid].functions =
+  if ((stats->managers[*staid].functions =
        malloc(STATS_FUNCTIONS_INITSZ * sizeof(t_stats_func))) == NULL)
     {
-      memset(&stats->container[*staid], 0x0, sizeof(t_stats));
+      memset(&stats->managers[*staid], 0x0, sizeof(t_stats));
 
       STATS_LEAVE(stats, ERROR_UNKNOWN);
     }
 
-  stats->container[*staid].functionssz = STATS_FUNCTIONS_INITSZ;
+  stats->managers[*staid].functionssz = STATS_FUNCTIONS_INITSZ;
 
-  memset(stats->container[*staid].functions, 0x0,
+  memset(stats->managers[*staid].functions, 0x0,
 	 STATS_FUNCTIONS_INITSZ * sizeof(t_stats_func));
 
   STATS_LEAVE(stats, ERROR_NONE);
@@ -370,32 +370,32 @@ t_error			stats_release(t_staid			staid)
    * 1)
    */
 
-  if (staid >= stats->containersz || stats->container[staid].name == NULL)
+  if (staid >= stats->managerssz || stats->managers[staid].name == NULL)
     STATS_LEAVE(stats, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  free(stats->container[staid].name);
+  free(stats->managers[staid].name);
 
-  for (i = 0; i < stats->container[staid].functionssz; i++)
+  for (i = 0; i < stats->managers[staid].functionssz; i++)
     {
-      if (stats->container[staid].functions[i].name != NULL)
-	free(stats->container[staid].functions[i].name);
+      if (stats->managers[staid].functions[i].name != NULL)
+	free(stats->managers[staid].functions[i].name);
     }
 
   /*
    * XXX release the timers here
    */
 
-  free(stats->container[staid].functions);
+  free(stats->managers[staid].functions);
 
   /*
    * 3)
    */
 
-  memset(&stats->container[staid], 0x0, sizeof(t_stats));
+  memset(&stats->managers[staid], 0x0, sizeof(t_stats));
 
   STATS_LEAVE(stats, ERROR_NONE);
 }
@@ -430,17 +430,17 @@ t_error			stats_init(void)
    * 2)
    */
 
-  if ((stats->container = malloc(STATS_CONTAINER_INITSZ *
+  if ((stats->managers = malloc(STATS_MANAGERS_INITSZ *
 				 sizeof(t_stats))) == NULL)
     {
-      cons_msg('!', "stats: unable to allocate the stats container\n");
+      cons_msg('!', "stats: unable to allocate the stats managers\n");
 
       return (ERROR_UNKNOWN);
     }
 
-  stats->containersz = STATS_CONTAINER_INITSZ;
+  stats->managerssz = STATS_MANAGERS_INITSZ;
 
-  memset(stats->container, 0x0, stats->containersz * sizeof(t_stats));
+  memset(stats->managers, 0x0, stats->managerssz * sizeof(t_stats));
 
   /*
    * 3)
@@ -470,10 +470,10 @@ t_error			stats_clean(void)
    * 1)
    */
 
-  for (staid = 0; staid < stats->containersz; staid++)
+  for (staid = 0; staid < stats->managerssz; staid++)
     stats_release(staid);
 
-  free(stats->container);
+  free(stats->managers);
 
   /*
    * 2)

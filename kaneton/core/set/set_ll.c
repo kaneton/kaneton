@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/set/set_ll.c
+ * file          /home/mycure/kaneton/kaneton/core/set/set_ll.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [wed feb  8 04:41:52 2006]
+ * updated       julien quintard   [sun apr  2 13:55:02 2006]
  */
 
 /*
@@ -267,7 +267,7 @@ t_error			set_insert_head_ll(t_setid		setid,
    * 3)
    */
 
-  if (o->u.ll.opts & SET_OPT_SORT)
+  if (o->opts & SET_OPT_SORT)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
@@ -283,16 +283,16 @@ t_error			set_insert_head_ll(t_setid		setid,
    * 5)
    */
 
-  if (o->u.ll.opts & SET_OPT_ALLOC)
+  if (o->opts & SET_OPT_ALLOC)
     {
-      if ((n->data = malloc(o->u.ll.datasz)) == NULL)
+      if ((n->data = malloc(o->datasz)) == NULL)
 	{
 	  free(n);
 
 	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
 
-      memcpy(n->data, data, o->u.ll.datasz);
+      memcpy(n->data, data, o->datasz);
     }
   else
     {
@@ -363,7 +363,7 @@ t_error			set_insert_tail_ll(t_setid		setid,
    * 3)
    */
 
-  if (o->u.ll.opts & SET_OPT_SORT)
+  if (o->opts & SET_OPT_SORT)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
@@ -379,16 +379,16 @@ t_error			set_insert_tail_ll(t_setid		setid,
    * 5)
    */
 
-  if (o->u.ll.opts & SET_OPT_ALLOC)
+  if (o->opts & SET_OPT_ALLOC)
     {
-      if ((n->data = malloc(o->u.ll.datasz)) == NULL)
+      if ((n->data = malloc(o->datasz)) == NULL)
 	{
 	  free(n);
 
 	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
 
-      memcpy(n->data, data, o->u.ll.datasz);
+      memcpy(n->data, data, o->datasz);
     }
   else
     {
@@ -461,7 +461,7 @@ t_error			set_insert_before_ll(t_setid		setid,
    * 3)
    */
 
-  if (o->u.ll.opts & SET_OPT_SORT)
+  if (o->opts & SET_OPT_SORT)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
@@ -477,16 +477,16 @@ t_error			set_insert_before_ll(t_setid		setid,
    * 5)
    */
 
-  if (o->u.ll.opts & SET_OPT_ALLOC)
+  if (o->opts & SET_OPT_ALLOC)
     {
-      if ((n->data = malloc(o->u.ll.datasz)) == NULL)
+      if ((n->data = malloc(o->datasz)) == NULL)
 	{
 	  free(n);
 
 	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
 
-      memcpy(n->data, data, o->u.ll.datasz);
+      memcpy(n->data, data, o->datasz);
     }
   else
     {
@@ -559,7 +559,7 @@ t_error			set_insert_after_ll(t_setid		setid,
    * 3)
    */
 
-  if (o->u.ll.opts & SET_OPT_SORT)
+  if (o->opts & SET_OPT_SORT)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
@@ -575,16 +575,16 @@ t_error			set_insert_after_ll(t_setid		setid,
    * 5)
    */
 
-  if (o->u.ll.opts & SET_OPT_ALLOC)
+  if (o->opts & SET_OPT_ALLOC)
     {
-      if ((n->data = malloc(o->u.ll.datasz)) == NULL)
+      if ((n->data = malloc(o->datasz)) == NULL)
 	{
 	  free(n);
 
 	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
 
-      memcpy(n->data, data, o->u.ll.datasz);
+      memcpy(n->data, data, o->datasz);
     }
   else
     {
@@ -670,16 +670,16 @@ t_error			set_add_ll(t_setid			setid,
    * 4)
    */
 
-  if (o->u.ll.opts & SET_OPT_ALLOC)
+  if (o->opts & SET_OPT_ALLOC)
     {
-      if ((n->data = malloc(o->u.ll.datasz)) == NULL)
+      if ((n->data = malloc(o->datasz)) == NULL)
 	{
 	  free(n);
 
 	  SET_LEAVE(set, ERROR_UNKNOWN);
 	}
 
-      memcpy(n->data, data, o->u.ll.datasz);
+      memcpy(n->data, data, o->datasz);
     }
   else
     {
@@ -690,7 +690,7 @@ t_error			set_add_ll(t_setid			setid,
    * 5)
    */
 
-  if (o->u.ll.opts & SET_OPT_SORT)
+  if (o->opts & SET_OPT_SORT)
     {
       /*
        * A)
@@ -717,8 +717,8 @@ t_error			set_add_ll(t_setid			setid,
 			   o->setid,
 			   *((t_id*)n->data));
 
-		  if ((o->u.ll.opts & SET_OPT_ALLOC) ||
-		      (o->u.ll.opts & SET_OPT_FREE))
+		  if ((o->opts & SET_OPT_ALLOC) ||
+		      (o->opts & SET_OPT_FREE))
 		    free(n->data);
 
 		  free(n);
@@ -862,8 +862,8 @@ t_error			set_remove_ll(t_setid			setid,
    * 4)
    */
 
-  if ((o->u.ll.opts & SET_OPT_ALLOC) ||
-      (o->u.ll.opts & SET_OPT_FREE))
+  if ((o->opts & SET_OPT_ALLOC) ||
+      (o->opts & SET_OPT_FREE))
     free(tmp->data);
 
   /*
@@ -935,8 +935,8 @@ t_error			set_delete_ll(t_setid			setid,
    * 4)
    */
 
-  if (o->u.ll.opts & SET_OPT_FREE ||
-      o->u.ll.opts & SET_OPT_ALLOC)
+  if (o->opts & SET_OPT_FREE ||
+      o->opts & SET_OPT_ALLOC)
     free(n->data);
 
   /*
@@ -987,8 +987,8 @@ t_error			set_flush_ll(t_setid			setid)
     {
       t_set_ll_node*	t = tmp->prv;
 
-      if ((o->u.ll.opts & SET_OPT_ALLOC) ||
-	  (o->u.ll.opts & SET_OPT_FREE))
+      if ((o->opts & SET_OPT_ALLOC) ||
+	  (o->opts & SET_OPT_FREE))
 	free(tmp->data);
 
       free(tmp);
@@ -1122,7 +1122,7 @@ t_error			set_reserve_ll(t_opts			opts,
 
   if (opts & SET_OPT_CONTAINER)
     {
-      *setid = set->container;
+      *setid = set->sets;
     }
   else
     {
@@ -1137,9 +1137,9 @@ t_error			set_reserve_ll(t_opts			opts,
   o.setid = *setid;
   o.size = 0;
   o.type = SET_TYPE_LL;
+  o.opts = opts;
+  o.datasz = datasz;
 
-  o.u.ll.opts = opts;
-  o.u.ll.datasz = datasz;
   o.u.ll.head = NULL;
   o.u.ll.tail = NULL;
 
@@ -1200,7 +1200,7 @@ t_error			set_release_ll(t_setid			setid)
    * 4)
    */
 
-  if (!(o->u.ll.opts & SET_OPT_CONTAINER))
+  if (!(o->opts & SET_OPT_CONTAINER))
     if (set_destroy(o->setid) != ERROR_NONE)
       SET_LEAVE(set, ERROR_UNKNOWN);
 

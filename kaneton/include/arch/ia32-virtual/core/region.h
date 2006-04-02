@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/region.h
  *
  * created       julien quintard   [wed dec 14 07:04:32 2005]
- * updated       julien quintard   [sat apr  1 22:58:17 2006]
+ * updated       julien quintard   [sun apr  2 14:10:08 2006]
  */
 
 #ifndef IA32_CORE_REGION_H
@@ -30,15 +30,15 @@
  */
 
 #define		machdep_include_region()				\
-  extern i_region		region_interface
+  extern d_region		region_dispatch
 
 #define		machdep_call_region(_function_, _args_...)		\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
 									\
-      if (region_interface._function_ != NULL)				\
-        _r_ = region_interface._function_(_args_);			\
+      if (region_dispatch._function_ != NULL)				\
+        _r_ = region_dispatch._function_(_args_);			\
 									\
       _r_;								\
     }									\

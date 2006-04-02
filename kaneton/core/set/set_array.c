@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/set/set_array.c
+ * file          /home/mycure/kaneton/kaneton/core/set/set_array.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon feb  6 18:12:29 2006]
+ * updated       julien quintard   [sun apr  2 13:53:26 2006]
  */
 
 /*
@@ -362,7 +362,7 @@ static t_error		set_expand_array(o_set		*o,
    * 1)
    */
 
-  if (o->u.array.opts & SET_OPT_ORGANISE)
+  if (o->opts & SET_OPT_ORGANISE)
     sz = o->u.array.arraysz + 1;
   else
     sz = o->u.array.arraysz * 2;
@@ -428,7 +428,7 @@ static t_error		set_insert_at(o_set		*o,
    * 3)
    */
 
-  if (pos > 0 && !(o->u.array.opts & SET_OPT_ORGANISE))
+  if (pos > 0 && !(o->opts & SET_OPT_ORGANISE))
     {
       if (o->u.array.array[pos - 1] == NULL)
 	{
@@ -491,18 +491,18 @@ t_error			set_insert_head_array(t_setid		setid,
    * 2)
    */
 
-  if (o->u.array.opts & SET_OPT_SORT)
+  if (o->opts & SET_OPT_SORT)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (o->u.array.opts & SET_OPT_ALLOC)
+  if (o->opts & SET_OPT_ALLOC)
     {
-      if (!(cpy = malloc(o->u.array.datasz)))
+      if (!(cpy = malloc(o->datasz)))
 	SET_LEAVE(set, ERROR_UNKNOWN);
-      memcpy(cpy, data, o->u.array.datasz);
+      memcpy(cpy, data, o->datasz);
       data = cpy;
     }
 
@@ -512,7 +512,7 @@ t_error			set_insert_head_array(t_setid		setid,
 
   if (set_insert_at(o, 0, data) != ERROR_NONE)
     {
-      if (o->u.array.opts & SET_OPT_ALLOC)
+      if (o->opts & SET_OPT_ALLOC)
 	free(data);
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -557,18 +557,18 @@ t_error			set_insert_tail_array(t_setid		setid,
    * 2)
    */
 
-  if (o->u.array.opts & SET_OPT_SORT)
+  if (o->opts & SET_OPT_SORT)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (o->u.array.opts & SET_OPT_ALLOC)
+  if (o->opts & SET_OPT_ALLOC)
     {
-      if (!(cpy = malloc(o->u.array.datasz)))
+      if (!(cpy = malloc(o->datasz)))
 	SET_LEAVE(set, ERROR_UNKNOWN);
-      memcpy(cpy, data, o->u.array.datasz);
+      memcpy(cpy, data, o->datasz);
       data = cpy;
     }
 
@@ -589,7 +589,7 @@ t_error			set_insert_tail_array(t_setid		setid,
 
   if (set_insert_at(o, i, data) != ERROR_NONE)
     {
-      if (o->u.array.opts & SET_OPT_ALLOC)
+      if (o->opts & SET_OPT_ALLOC)
 	free(data);
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -635,18 +635,18 @@ t_error			set_insert_before_array(t_setid		setid,
    * 2)
    */
 
-  if (o->u.array.opts & SET_OPT_SORT)
+  if (o->opts & SET_OPT_SORT)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (o->u.array.opts & SET_OPT_ALLOC)
+  if (o->opts & SET_OPT_ALLOC)
     {
-      if (!(cpy = malloc(o->u.array.datasz)))
+      if (!(cpy = malloc(o->datasz)))
 	SET_LEAVE(set, ERROR_UNKNOWN);
-      memcpy(cpy, data, o->u.array.datasz);
+      memcpy(cpy, data, o->datasz);
       data = cpy;
     }
 
@@ -661,7 +661,7 @@ t_error			set_insert_before_array(t_setid		setid,
 
   if (set_insert_at(o, i, data) != ERROR_NONE)
     {
-      if (o->u.array.opts & SET_OPT_ALLOC)
+      if (o->opts & SET_OPT_ALLOC)
 	free(data);
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -708,18 +708,18 @@ t_error			set_insert_after_array(t_setid		setid,
    * 2)
    */
 
-  if (o->u.array.opts & SET_OPT_SORT)
+  if (o->opts & SET_OPT_SORT)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (o->u.array.opts & SET_OPT_ALLOC)
+  if (o->opts & SET_OPT_ALLOC)
     {
-      if (!(cpy = malloc(o->u.array.datasz)))
+      if (!(cpy = malloc(o->datasz)))
 	SET_LEAVE(set, ERROR_UNKNOWN);
-      memcpy(cpy, data, o->u.array.datasz);
+      memcpy(cpy, data, o->datasz);
       data = cpy;
     }
 
@@ -734,7 +734,7 @@ t_error			set_insert_after_array(t_setid		setid,
 
   if (set_insert_at(o, i, data) != ERROR_NONE)
     {
-      if (o->u.array.opts & SET_OPT_ALLOC)
+      if (o->opts & SET_OPT_ALLOC)
 	free(data);
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -798,11 +798,11 @@ t_error			set_add_array(t_setid			setid,
    * 3)
    */
 
-  if (o->u.array.opts & SET_OPT_ALLOC)
+  if (o->opts & SET_OPT_ALLOC)
     {
-      if (!(cpy = malloc(o->u.array.datasz)))
+      if (!(cpy = malloc(o->datasz)))
 	SET_LEAVE(set, ERROR_UNKNOWN);
-      memcpy(cpy, data, o->u.array.datasz);
+      memcpy(cpy, data, o->datasz);
       data = cpy;
     }
 
@@ -810,7 +810,7 @@ t_error			set_add_array(t_setid			setid,
    * 4)
    */
 
-  if (o->u.array.opts & SET_OPT_SORT)
+  if (o->opts & SET_OPT_SORT)
     {
       /*
        * A)
@@ -835,7 +835,7 @@ t_error			set_add_array(t_setid			setid,
 			   "in the set %qu on the object identifier %qu\n",
 			   o->setid, id);
 
-		  if (o->u.array.opts & SET_OPT_ALLOC)
+		  if (o->opts & SET_OPT_ALLOC)
 		    free(data);
 
 		  SET_LEAVE(set, ERROR_UNKNOWN);
@@ -857,7 +857,7 @@ t_error			set_add_array(t_setid			setid,
 	{
 	  if (set_insert_at(o, last, data) != ERROR_NONE)
 	    {
-	      if (o->u.array.opts & SET_OPT_ALLOC)
+	      if (o->opts & SET_OPT_ALLOC)
 		free(data);
 	      SET_LEAVE(set, ERROR_UNKNOWN);
 	    }
@@ -871,7 +871,7 @@ t_error			set_add_array(t_setid			setid,
 	{
 	  if (set_expand_array(o, data) != ERROR_NONE)
 	    {
-	      if (o->u.array.opts & SET_OPT_ALLOC)
+	      if (o->opts & SET_OPT_ALLOC)
 		free(data);
 	      SET_LEAVE(set, ERROR_UNKNOWN);
 	    }
@@ -905,7 +905,7 @@ t_error			set_add_array(t_setid			setid,
 	{
 	  if (set_expand_array(o, data) != ERROR_NONE)
 	    {
-	      if (o->u.array.opts & SET_OPT_ALLOC)
+	      if (o->opts & SET_OPT_ALLOC)
 		free(data);
 	      SET_LEAVE(set, ERROR_UNKNOWN);
 	    }
@@ -970,13 +970,13 @@ t_error			set_remove_array(t_setid		setid,
 	{
 	  current = *((t_id*)(o->u.array.array[i]));
 
-	  if ((o->u.array.opts & SET_OPT_SORT) && current > id)
+	  if ((o->opts & SET_OPT_SORT) && current > id)
 	    SET_LEAVE(set, ERROR_UNKNOWN);
 
 	  if (current == id)
 	    {
-	      if ((o->u.array.opts & SET_OPT_FREE) ||
-		  (o->u.array.opts & SET_OPT_ALLOC))
+	      if ((o->opts & SET_OPT_FREE) ||
+		  (o->opts & SET_OPT_ALLOC))
 		free(o->u.array.array[i]);
 	      o->u.array.array[i] = NULL;
 	      break;
@@ -991,7 +991,7 @@ t_error			set_remove_array(t_setid		setid,
    * 4)
    */
 
-  if (o->u.array.opts & SET_OPT_ORGANISE)
+  if (o->opts & SET_OPT_ORGANISE)
     {
       for (; i < o->u.array.arraysz - 1; ++i)
 	{
@@ -1060,8 +1060,8 @@ t_error			set_delete_array(t_setid		setid,
    * 4)
    */
 
-  if (o->u.array.opts & SET_OPT_ALLOC ||
-      o->u.array.opts & SET_OPT_FREE)
+  if (o->opts & SET_OPT_ALLOC ||
+      o->opts & SET_OPT_FREE)
     free(o->u.array.array[i]);
   o->u.array.array[i] = NULL;
 
@@ -1069,7 +1069,7 @@ t_error			set_delete_array(t_setid		setid,
    * 5)
    */
 
-  if (o->u.array.opts & SET_OPT_ORGANISE)
+  if (o->opts & SET_OPT_ORGANISE)
     {
       for (; i < o->u.array.arraysz - 1; ++i)
 	{
@@ -1119,8 +1119,8 @@ t_error			set_flush_array(t_setid			setid)
    * 2)
    */
 
-  if ((o->u.array.opts & SET_OPT_FREE) ||
-      (o->u.array.opts & SET_OPT_ALLOC))
+  if ((o->opts & SET_OPT_FREE) ||
+      (o->opts & SET_OPT_ALLOC))
     {
       for (i = 0; i < o->u.array.arraysz; ++i)
 	{
@@ -1195,7 +1195,7 @@ t_error			set_locate_array(t_setid		setid,
    * 3)
    */
 /* XXX la dicho marche mal */
-  if (0 && (o->u.array.opts & SET_OPT_SORT))
+  if (0 && (o->opts & SET_OPT_SORT))
     {
 
       /*
@@ -1335,7 +1335,7 @@ t_error			set_reserve_array(t_opts		opts,
 
   if (opts & SET_OPT_CONTAINER)
     {
-      *setid = set->container;
+      *setid = set->sets;
     }
   else
     {
@@ -1350,9 +1350,9 @@ t_error			set_reserve_array(t_opts		opts,
   o.setid = *setid;
   o.size = 0;
   o.type = SET_TYPE_ARRAY;
+  o.opts = opts;
+  o.datasz = datasz;
 
-  o.u.array.opts = opts;
-  o.u.array.datasz = datasz;
   o.u.array.arraysz = initsz == 0 ? 1 : initsz;
   o.u.array.initsz = o.u.array.arraysz;
 
@@ -1434,7 +1434,7 @@ t_error			set_release_array(t_setid		setid)
    * 5)
    */
 
-  if (!(o->u.array.opts & SET_OPT_CONTAINER))
+  if (!(o->opts & SET_OPT_CONTAINER))
     if (set_destroy(o->setid) != ERROR_NONE)
       SET_LEAVE(set, ERROR_UNKNOWN);
 

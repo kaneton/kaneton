@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/core/kaneton/timer/timer.c
+ * file          /home/mycure/kaneton/kaneton/core/time/timer.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       renaud voltz   [sun feb 12 23:04:54 2006]
+ * updated       julien quintard   [sun apr  2 13:25:52 2006]
  */
 
 /*
@@ -84,7 +84,7 @@ t_error			timer_show(t_timerid			timerid)
  *
  * steps:
  *
- * 1) get the size of the timer container.
+ * 1) get the size of the timer set.
  * 2) display information about every timer.
  */
 
@@ -101,7 +101,7 @@ t_error			timer_dump(void)
    * 1)
    */
 
-  if (set_size(timer->container, &size) != ERROR_NONE)
+  if (set_size(timer->timers, &size) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   cons_msg('#', "dumping %qd timer(s):\n", size);
@@ -110,9 +110,9 @@ t_error			timer_dump(void)
    *  2)
    */
 
-  set_foreach(SET_OPT_FORWARD, timer->container, &i, state)
+  set_foreach(SET_OPT_FORWARD, timer->timers, &i, state)
     {
-      if (set_object(timer->container, i, (void**)&data) != ERROR_NONE)
+      if (set_object(timer->timers, i, (void**)&data) != ERROR_NONE)
 	TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
       if (timer_show(data->timerid) != ERROR_NONE)
@@ -127,7 +127,7 @@ t_error			timer_dump(void)
  *
  * steps:
  *
- * 1) get the timer object from the container.
+ * 1) get the timer object from the set.
  * 2) call the machine-dependent code.
  * 3) notify the task for its timer expiration.
  */
@@ -163,7 +163,7 @@ t_error			timer_notify(t_timerid			timerid)
 }
 
 /*
- * insert a timer in the timer container.
+ * insert a timer in the timer set.
  *
  * steps:
  *
@@ -183,14 +183,14 @@ t_error			timer_insert(o_timer*			o)
    * 1)
    */
 
-  set_foreach(SET_OPT_FORWARD, timer->container, &i, state)
+  set_foreach(SET_OPT_FORWARD, timer->timers, &i, state)
     {
-      if (set_object(timer->container, i, (void**)&o_tmp) != ERROR_NONE)
+      if (set_object(timer->timers, i, (void**)&o_tmp) != ERROR_NONE)
 	TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
       if (o_tmp->delay >= o->delay)
 	{
-	  if (set_insert_before(timer->container, i, o) != ERROR_NONE)
+	  if (set_insert_before(timer->timers, i, o) != ERROR_NONE)
 	    TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
 	  TIMER_LEAVE(timer, ERROR_NONE);
@@ -201,7 +201,7 @@ t_error			timer_insert(o_timer*			o)
    * 2)
    */
 
-  if (set_insert_tail(timer->container, o) != ERROR_NONE)
+  if (set_insert_tail(timer->timers, o) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   TIMER_LEAVE(timer, ERROR_NONE);
@@ -275,7 +275,7 @@ t_error			timer_reserve(t_tskid			taskid,
  * 1) check that the timer exists.
  * 2) call the machine dependant code.
  * 3) destroy the identifier object.
- * 4) remove the timer object from the timer container.
+ * 4) remove the timer object from the timer set.
  */
 
 t_error			timer_release(t_timerid			timerid)
@@ -309,7 +309,7 @@ t_error			timer_release(t_timerid			timerid)
    * 4)
    */
 
-  if (set_remove(timer->container, timerid) != ERROR_NONE)
+  if (set_remove(timer->timers, timerid) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   TIMER_LEAVE(timer, ERROR_NONE);
@@ -363,7 +363,7 @@ t_error			timer_check(t_timerid			timerid,
  * 1) check if the timer exists and get it.
  * 2) call the machdep code.
  * 3) clone the timer and update its delay and repeat mode.
- * 4) reorganize the timer position within the container.
+ * 4) reorganize the timer position within the set.
  */
 
 t_error			timer_modify(t_timerid			timerid,
@@ -414,7 +414,7 @@ t_error			timer_modify(t_timerid			timerid,
 }
 
 /*
- * this function finds a timer object in the timer container.
+ * this function finds a timer object in the timer set.
  */
 
 t_error			timer_get(t_timerid			timerid,
@@ -422,7 +422,7 @@ t_error			timer_get(t_timerid			timerid,
 {
   TIMER_ENTER(timer);
 
-  if (set_get(timer->container, timerid, (void**)o) != ERROR_NONE)
+  if (set_get(timer->timers, timerid, (void**)o) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   TIMER_LEAVE(timer, ERROR_NONE);
@@ -435,7 +435,7 @@ t_error			timer_get(t_timerid			timerid,
  *
  * 1) allocate and initialize the timer manager.
  * 2) initialize the object identifier.
- * 3) reserve the timer container.
+ * 3) reserve the timer set.
  * 4) try to reserve a statistic object.
  * 5) call the machine dependent code.
  */
@@ -475,9 +475,9 @@ t_error			timer_init(void)
    */
 
   if (set_reserve(ll, SET_OPT_ALLOC,
-                  sizeof(o_timer), &timer->container) != ERROR_NONE)
+                  sizeof(o_timer), &timer->timers) != ERROR_NONE)
     {
-      cons_msg('!', "timer: unable to reserve the timer container\n");
+      cons_msg('!', "timer: unable to reserve the timer set\n");
 
       return ERROR_UNKNOWN;
     }
@@ -505,7 +505,7 @@ t_error			timer_init(void)
  *
  * 1) call the machine dependent code.
  * 2) release the statistics object.
- * 3) release the timer container.
+ * 3) release the timer set.
  * 4) destroy the identifier object.
  * 5) free the timer manager's structure memory.
  */
@@ -529,9 +529,9 @@ t_error			timer_clean(void)
    * 3)
    */
 
-  if (set_release(timer->container) != ERROR_NONE)
+  if (set_release(timer->timers) != ERROR_NONE)
     {
-      cons_msg('!', "timer: unable to release the timer container\n");
+      cons_msg('!', "timer: unable to release the timer set\n");
 
       return ERROR_UNKNOWN;
     }
@@ -574,13 +574,13 @@ t_error			timer_update(void)
 
   TIMER_ENTER(timer);
 
-  while (set_head(timer->container, &i) == ERROR_NONE)
+  while (set_head(timer->timers, &i) == ERROR_NONE)
     {
       /*
        * 1)
        */
 
-      if (set_object(timer->container, i, (void**)&o) != ERROR_NONE)
+      if (set_object(timer->timers, i, (void**)&o) != ERROR_NONE)
         TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
       /*
@@ -674,7 +674,7 @@ t_error			timer_test(void)
 
   if (timer_dump() != ERROR_NONE)
     {
-      printf("error: dumping timers container !/n");
+      printf("error: dumping timers set !/n");
       return ERROR_UNKNOWN;
     }
 

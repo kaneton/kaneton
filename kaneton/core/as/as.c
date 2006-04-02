@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/as/as.c
+ * file          /home/mycure/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [fri mar 24 17:50:42 2006]
+ * updated       julien quintard   [sun apr  2 13:16:42 2006]
  */
 
 /*
@@ -145,7 +145,7 @@ t_error			as_show(t_asid				asid)
  * steps:
  *
  * 1) gets the set's size.
- * 2) for each address space hold by the address space container, dumps
+ * 2) for each address space hold by the address space set, dumps
  *    the address space identifier.
  */
 
@@ -162,7 +162,7 @@ t_error			as_dump(void)
    * 1)
    */
 
-  if (set_size(as->container, &size) != ERROR_NONE)
+  if (set_size(as->ass, &size) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
@@ -171,9 +171,9 @@ t_error			as_dump(void)
 
   cons_msg('#', "dumping %qu address space(s):\n", size);
 
-  set_foreach(SET_OPT_FORWARD, as->container, &i, state)
+  set_foreach(SET_OPT_FORWARD, as->ass, &i, state)
     {
-      if (set_object(as->container, i, (void**)&data) != ERROR_NONE)
+      if (set_object(as->ass, i, (void**)&data) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
       if (as_show(data->asid) != ERROR_NONE)
@@ -539,7 +539,7 @@ t_error			as_clone(t_tskid			tskid,
  * 3) reserves an identifier for the address space object.
  * 4) reserves the set of segments for the new address space object.
  * 5) reserves the set of regions for the new address space object.
- * 6) adds the new address space object in the address space container.
+ * 6) adds the new address space object in the address space set.
  * 7) sets the address space into the task object.
  * 8) calls the machine-dependent code.
  */
@@ -612,7 +612,7 @@ t_error			as_reserve(t_tskid			tskid,
    * 6)
    */
 
-  if (set_add(as->container, &o) != ERROR_NONE)
+  if (set_add(as->ass, &o) != ERROR_NONE)
     {
       id_release(&as->id, o.asid);
 
@@ -649,7 +649,7 @@ t_error			as_reserve(t_tskid			tskid,
  * 4) releases the address space object's set of regions.
  * 5) releases the address space object's set of segments.
  * 6) calls the machine-dependent code.
- * 7) removes the address space object from the address space container.
+ * 7) removes the address space object from the address space set.
  */
 
 t_error			as_release(t_asid			asid)
@@ -712,7 +712,7 @@ t_error			as_release(t_asid			asid)
    * 7)
    */
 
-  if (set_remove(as->container, o->asid) != ERROR_NONE)
+  if (set_remove(as->ass, o->asid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
@@ -720,7 +720,7 @@ t_error			as_release(t_asid			asid)
 
 /*
  * this function gets an address space object from the address space
- * container from its identifier.
+ * set from its identifier.
  */
 
 t_error			as_get(t_asid				asid,
@@ -728,7 +728,7 @@ t_error			as_get(t_asid				asid,
 {
   AS_ENTER(as);
 
-  if (set_get(as->container, asid, (void**)o) != ERROR_NONE)
+  if (set_get(as->ass, asid, (void**)o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
@@ -745,8 +745,8 @@ t_error			as_get(t_asid				asid,
  * 1) allocates and initialises the address space manager structure.
  * 2) initialises the identifier object to be able to generate
  *    the address space identifiers.
- * 3) reserves the addres space container set which will contain
- *    the address space build later.
+ * 3) reserves the addres space set which will contain the address space
+ *    built later.
  * 4) tries to reserve a statistics object.
  * 5) calls the machine-dependent code.
  */
@@ -783,9 +783,9 @@ t_error			as_init(void)
    */
 
   if (set_reserve(ll, SET_OPT_ALLOC | SET_OPT_SORT,
-		  sizeof(o_as), &as->container) != ERROR_NONE)
+		  sizeof(o_as), &as->ass) != ERROR_NONE)
     {
-      cons_msg('!', "as: unable to reserve the address space container\n");
+      cons_msg('!', "as: unable to reserve the address space set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -813,7 +813,7 @@ t_error			as_init(void)
  *
  * 1) calls the machine-dependent code.
  * 2) releases the statistics object.
- * 3) releases the address space's container.
+ * 3) releases the address space's set.
  * 4) destroys the id object.
  * 5) frees the address space manager structure's memory.
  */
@@ -841,9 +841,9 @@ t_error			as_clean(void)
    * 3)
    */
 
-  set_foreach(SET_OPT_FORWARD, as->container, &i, state)
+  set_foreach(SET_OPT_FORWARD, as->ass, &i, state)
     {
-      if (set_object(as->container, i, (void**)&data) != ERROR_NONE)
+      if (set_object(as->ass, i, (void**)&data) != ERROR_NONE)
 	{
 	  cons_msg('!', "as: cannot find the address space object "
 		   "corresponding to its identifier\n");
@@ -855,9 +855,9 @@ t_error			as_clean(void)
 	AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
-  if (set_release(as->container) != ERROR_NONE)
+  if (set_release(as->ass) != ERROR_NONE)
     {
-      cons_msg('!', "as: unable to release the as' container\n");
+      cons_msg('!', "as: unable to release the as' set\n");
 
       return (ERROR_UNKNOWN);
     }

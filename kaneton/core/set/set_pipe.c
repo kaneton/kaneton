@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/core/kaneton/set/set_pipe.c
+ * file          /home/mycure/kaneton/kaneton/core/set/set_pipe.c
  *
  * created       renaud voltz   [wed jan 25 17:11:05 2006]
- * updated       renaud voltz   [wed jan 25 17:11:05 2006]
+ * updated       julien quintard   [sun apr  2 13:55:36 2006]
  */
 
 /*
@@ -103,7 +103,7 @@ t_error			set_reserve_pipe(t_opts			opts,
 
   if (opts & SET_OPT_CONTAINER)
     {
-      *setid = set->container;
+      *setid = set->sets;
     }
   else
     {
@@ -118,9 +118,9 @@ t_error			set_reserve_pipe(t_opts			opts,
   o.setid = *setid;
   o.size = 0;
   o.type = SET_TYPE_PIPE;
+  o.opts = opts;
+  o.datasz = datasz;
 
-  o.u.ll.opts = opts;
-  o.u.ll.datasz = datasz;
   o.u.ll.head = NULL;
   o.u.ll.tail = NULL;
 

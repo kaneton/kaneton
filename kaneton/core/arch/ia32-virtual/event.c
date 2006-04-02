@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/event.c
+ * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [thu mar 23 12:01:41 2006]
+ * updated       julien quintard   [sun apr  2 14:17:23 2006]
  */
 
 /*
@@ -36,10 +36,10 @@
  */
 
 /*
- * the event manager interface.
+ * the event manager dispatch.
  */
 
-i_event				event_interface =
+d_event				event_dispatch =
   {
     NULL,
     NULL,

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/set/set.c
+ * file          /home/mycure/kaneton/kaneton/core/set/set.c
  *
  * created       julien quintard   [fri dec  2 19:55:19 2005]
- * updated       julien quintard   [wed mar  1 17:29:06 2006]
+ * updated       julien quintard   [sun apr  2 13:00:40 2006]
  */
 
 /*
@@ -204,7 +204,7 @@ t_error			set_dump(void)
    * 1)
    */
 
-  if (set_descriptor(set->container, &o) != ERROR_NONE)
+  if (set_descriptor(set->sets, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   /*
@@ -212,12 +212,12 @@ t_error			set_dump(void)
    */
 
   cons_msg('#', "dumping the set container %qd with %qd node(s)\n",
-	   set->container,
+	   set->sets,
 	   o->size);
 
-  set_foreach(SET_OPT_FORWARD, set->container, &i, state)
+  set_foreach(SET_OPT_FORWARD, set->sets, &i, state)
     {
-      if (set_object(set->container, i, (void**)&data) != ERROR_NONE)
+      if (set_object(set->sets, i, (void**)&data) != ERROR_NONE)
 	{
 	  cons_msg('!', "set: cannot find the set object "
 		   "corresponding to its identifier\n");
@@ -269,12 +269,12 @@ t_error			set_new(o_set*				o)
    * 1)
    */
 
-  if (o->setid == set->container)
+  if (o->setid == set->sets)
     {
-      if ((set->co = malloc(sizeof(o_set))) == NULL)
+      if ((set->container = malloc(sizeof(o_set))) == NULL)
 	SET_LEAVE(set, ERROR_UNKNOWN);
 
-      memcpy(set->co, o, sizeof(o_set));
+      memcpy(set->container, o, sizeof(o_set));
 
       SET_LEAVE(set, ERROR_NONE);
     }
@@ -283,7 +283,7 @@ t_error			set_new(o_set*				o)
    * 2)
    */
 
-  if (set_add(set->container, o) != ERROR_NONE)
+  if (set_add(set->sets, o) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to add this set descriptor "
 	       "to the set container\n");
@@ -299,7 +299,7 @@ t_error			set_new(o_set*				o)
  *
  * steps:
  *
- * 1) removing the container object is not allowed.
+ * 1) removes the set container object.
  * 2) removes the set descriptor from the set container.
  */
 
@@ -311,9 +311,9 @@ t_error			set_destroy(t_setid			setid)
    * 1)
    */
 
-  if (setid == set->container)
+  if (setid == set->sets)
     {
-      cons_msg('!', "set: cannot remove the set container\n");
+      free(set->container);
 
       SET_LEAVE(set, ERROR_UNKNOWN);
     }
@@ -322,7 +322,7 @@ t_error			set_destroy(t_setid			setid)
    * 2)
    */
 
-  if (set_remove(set->container, setid) != ERROR_NONE)
+  if (set_remove(set->sets, setid) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to remove this descriptor "
 	       "from the set container\n");
@@ -351,9 +351,9 @@ t_error			set_descriptor(t_setid			setid,
    * 1)
    */
 
-  if (setid == set->container)
+  if (setid == set->sets)
     {
-      *o = set->co;
+      *o = set->container;
 
       SET_LEAVE(set, ERROR_NONE);
     }
@@ -362,7 +362,7 @@ t_error			set_descriptor(t_setid			setid,
    * 2)
    */
 
-  if (set_get(set->container, setid, (void**)o) != ERROR_NONE)
+  if (set_get(set->sets, setid, (void**)o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
   SET_LEAVE(set, ERROR_NONE);
@@ -455,7 +455,7 @@ t_error			set_init(void)
    * 3)
    */
 
-  if (id_reserve(&set->id, &set->container) != ERROR_NONE)
+  if (id_reserve(&set->id, &set->sets) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to reserve an identifier\n");
 
@@ -499,9 +499,8 @@ t_error			set_init(void)
  * 1) releases each set object the set container still contains.
  * 2) releases the set container.
  * 3) if needed, releases the stats object.
- * 4) frees the set container object.
- * 5) destroys the id object.
- * 6) frees the set manager structure's memory.
+ * 4) destroys the id object.
+ * 5) frees the set manager structure's memory.
  */
 
 t_error			set_clean(void)
@@ -512,11 +511,11 @@ t_error			set_clean(void)
    * 1)
    */
 
-  while (set_head(set->container, &iterator) == ERROR_NONE)
+  while (set_head(set->sets, &iterator) == ERROR_NONE)
     {
       o_set*		o;
 
-      if (set_object(set->container, iterator, (void**)&o) != ERROR_NONE)
+      if (set_object(set->sets, iterator, (void**)&o) != ERROR_NONE)
 	{
 	  cons_msg('!', "set: cannot find the set object "
 		   "corresponding to its identifier\n");
@@ -537,7 +536,7 @@ t_error			set_clean(void)
    * 2)
    */
 
-  if (set_release(set->container) != ERROR_NONE)
+  if (set_release(set->sets) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to release the set container\n");
 
@@ -554,12 +553,6 @@ t_error			set_clean(void)
    * 4)
    */
 
-  free(set->co);
-
-  /*
-   * 5)
-   */
-
   if (id_destroy(&set->id) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to destroy the identifier object\n");
@@ -568,7 +561,7 @@ t_error			set_clean(void)
     }
 
   /*
-   * 6)
+   * 5)
    */
 
   free(set);

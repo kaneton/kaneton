@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/set/set_stack.c
+ * file          /home/mycure/kaneton/kaneton/core/set/set_stack.c
  *
  * created       renaud voltz   [wed jan 25 17:11:05 2006]
- * updated       julien quintard   [wed feb  8 04:40:33 2006]
+ * updated       julien quintard   [sun apr  2 13:55:48 2006]
  */
 
 /*
@@ -103,7 +103,7 @@ t_error			set_reserve_stack(t_opts		opts,
 
   if (opts & SET_OPT_CONTAINER)
     {
-      *setid = set->container;
+      *setid = set->sets;
     }
   else
     {
@@ -118,9 +118,9 @@ t_error			set_reserve_stack(t_opts		opts,
   o.setid = *setid;
   o.size = 0;
   o.type = SET_TYPE_STACK;
+  o.opts = opts;
+  o.datasz = datasz;
 
-  o.u.ll.opts = opts;
-  o.u.ll.datasz = datasz;
   o.u.ll.head = NULL;
   o.u.ll.tail = NULL;
 

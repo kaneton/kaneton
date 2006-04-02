@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/task/task.c
+ * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [mon mar 20 18:58:04 2006]
+ * updated       julien quintard   [sun apr  2 13:11:09 2006]
  */
 
 /*
@@ -121,7 +121,7 @@ t_error			task_dump(void)
    * 1)
    */
 
-  if (set_size(task->container, &size) != ERROR_NONE)
+  if (set_size(task->tasks, &size) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
@@ -130,9 +130,9 @@ t_error			task_dump(void)
 
   cons_msg('#', "dumping %qu task(s):\n", size);
 
-  set_foreach(SET_OPT_FORWARD, task->container, &i, state)
+  set_foreach(SET_OPT_FORWARD, task->tasks, &i, state)
     {
-      if (set_object(task->container, i, (void**)&data) != ERROR_NONE)
+      if (set_object(task->tasks, i, (void**)&data) != ERROR_NONE)
 	TASK_LEAVE(task, ERROR_UNKNOWN);
 
       if (task_show(data->tskid) != ERROR_NONE)
@@ -243,7 +243,7 @@ t_error			task_clone(t_tskid			old,
  * 3) reserves an identifier for the task object.
  * 4) reserves the set of threads for the new task object.
  * 5) reserves the set of waits for the new task object.
- * 6) adds the new task object in the task container.
+ * 6) adds the new task object in the task set.
  * 7) calls the machine-dependent code.
  */
 
@@ -339,7 +339,7 @@ t_error			task_reserve(t_class			class,
    * 6)
    */
 
-  if (set_add(task->container, &o) != ERROR_NONE)
+  if (set_add(task->tasks, &o) != ERROR_NONE)
     {
       id_release(&task->id, o.tskid);
 
@@ -370,7 +370,7 @@ t_error			task_reserve(t_class			class,
  * 3) releases the task's object identifier.
  * 4) releases the task object's set of threads.
  * 5) releases the task object's set of waits.
- * 6) removes the task object from the task container.
+ * 6) removes the task object from the task set.
  */
 
 t_error			task_release(t_tskid			tskid)
@@ -433,14 +433,14 @@ t_error			task_release(t_tskid			tskid)
    * 6)
    */
 
-  if (set_remove(task->container, o->tskid) != ERROR_NONE)
+  if (set_remove(task->tasks, o->tskid) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_NONE);
 }
 
 /*
- * this function gets a task object from the task container.
+ * this function gets a task object from the task set.
  */
 
 t_error			task_get(t_tskid			tskid,
@@ -448,7 +448,7 @@ t_error			task_get(t_tskid			tskid,
 {
   TASK_ENTER(task);
 
-  if (set_get(task->container, tskid, (void**)o) != ERROR_NONE)
+  if (set_get(task->tasks, tskid, (void**)o) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_NONE);
@@ -464,7 +464,7 @@ t_error			task_get(t_tskid			tskid,
  * 1) allocates and initialises the task manager structure.
  * 2) initialises the identifier object to be able to generate
  *    the task identifiers.
- * 3) reserves the task container set which will contain the task built later.
+ * 3) reserves the task set set which will contain the task built later.
  * 4) tries to reserve a statistics object.
  * 5) reserves the kernel task and its address space.
  * 6) adds the segments to the kernel address space.
@@ -510,9 +510,9 @@ t_error			task_init(void)
    */
 
   if (set_reserve(ll, SET_OPT_ALLOC | SET_OPT_SORT,
-		  sizeof(o_task), &task->container) != ERROR_NONE)
+		  sizeof(o_task), &task->tasks) != ERROR_NONE)
     {
-      cons_msg('!', "task: unable to reserve the task container\n");
+      cons_msg('!', "task: unable to reserve the task set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -551,7 +551,7 @@ t_error			task_init(void)
       if (segment_inject(asid, &init->segments[i], &segments[i]) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot add a pre-reserved segment in "
-		   "the segment container\n");
+		   "the segment set\n");
 
 	  return (ERROR_UNKNOWN);
 	}
@@ -607,7 +607,7 @@ t_error			task_init(void)
  * 1) calls the machine-dependent code.
  * 2) releases the kernel task.
  * 3) releases the statistics object.
- * 4) releases the task's container.
+ * 4) releases the task's set.
  * 5) destroys the id object.
  * 6) frees the task manager structure's memory.
  */
@@ -642,9 +642,9 @@ t_error			task_clean(void)
    * 4)
    */
 
-  if (set_release(task->container) != ERROR_NONE)
+  if (set_release(task->tasks) != ERROR_NONE)
     {
-      cons_msg('!', "task: unable to release the task container\n");
+      cons_msg('!', "task: unable to release the task set\n");
 
       return (ERROR_UNKNOWN);
     }

@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/event.h
  *
  * created       renaud voltz   [mon feb 13 00:56:13 2006]
- * updated       julien quintard   [sat apr  1 22:57:19 2006]
+ * updated       julien quintard   [sun apr  2 14:09:53 2006]
  */
 
 #ifndef IA32_CORE_EVENT_H
@@ -50,15 +50,15 @@ typedef union
  */
 
 #define		machdep_include_event()					\
-  extern i_event		event_interface
+  extern d_event		event_dispatch
 
 #define		machdep_call_event(_function_, _args_...)		\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
 									\
-      if (event_interface._function_ != NULL)				\
-        _r_ = event_interface._function_(_args_);			\
+      if (event_dispatch._function_ != NULL)				\
+        _r_ = event_dispatch._function_(_args_);			\
 									\
       _r_;								\
     }									\

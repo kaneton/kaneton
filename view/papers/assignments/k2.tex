@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/assignments/k2.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       julien quintard   [tue mar 28 13:40:33 2006]
+%% updated       julien quintard   [sun apr  2 13:37:02 2006]
 %%
 
 %
@@ -338,7 +338,7 @@ Here are the options your sets must recognize:
 \subsubsection{address space manager}
 
 The address space manager just manages the address spaces. An address
-space is a container describing the addressable memory.
+space is an abstraction describing the addressable memory.
 
 An address space is composed of a set of segments and a set of regions.
 
@@ -407,7 +407,7 @@ Some functions will be added in \textbf{k3}.
 	  {This function displays information on specified segment.}
 
 \prototype{t\_error \textbf{segment\_dump}(void);}
-	  {This function displays all segments in the segment container.}
+	  {This function displays all segments in the set of segments.}
 
 \prototype{t\_error \textbf{segment\_clone}(u\_as \textit{as},
                                             u\_segment \textit{old},
@@ -416,8 +416,8 @@ Some functions will be added in \textbf{k3}.
 
 \prototype{t\_error \textbf{segment\_inject}(u\_as \textit{as},
                                              o\_segment* \textit{o});}
-	  {This function injects a pre-allocated segment in the segment
-	    container.
+	  {This function injects a pre-allocated segment in the set of
+	    segments.
 
 	    ---
 	    This function concerns \textbf{k1} pre-reserved segments.

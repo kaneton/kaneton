@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/segment.c
+ * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat mar 25 17:32:24 2006]
+ * updated       julien quintard   [sun apr  2 14:17:10 2006]
  */
 
 /*
@@ -44,10 +44,10 @@ extern t_asid		kasid;
  */
 
 /*
- * the segment manager interface.
+ * the segment manager dispatch.
  */
 
-i_segment		segment_interface =
+d_segment		segment_dispatch =
   {
 
 /*                                                                  [cut] k2 */

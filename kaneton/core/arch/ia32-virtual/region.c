@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/region.c
+ * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [mon mar 27 00:22:12 2006]
+ * updated       julien quintard   [sun apr  2 14:17:39 2006]
  */
 
 /*
@@ -21,7 +21,7 @@
  * ---------- assignments -----------------------------------------------------
  *
  * students will have to develop this entire part of the project. take
- * a look at the interface  structure declaration to fill it correctly
+ * a look at the dispatch structure declaration to fill it correctly
  * and to write needed functions.
  */
 
@@ -44,10 +44,10 @@ extern t_asid		kasid;
  */
 
 /*
- * the region manager interface.
+ * the region manager dispatch.
  */
 
-i_region		region_interface =
+d_region		region_dispatch =
   {
 
 /*                                                                  [cut] k2 */

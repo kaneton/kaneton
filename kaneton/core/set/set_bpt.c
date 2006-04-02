@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/set/set_bpt.c
+ * file          /home/mycure/kaneton/kaneton/core/set/set_bpt.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [wed feb 22 14:15:00 2006]
+ * updated       julien quintard   [sun apr  2 13:54:09 2006]
  */
 
 /*
@@ -576,12 +576,12 @@ t_error			set_add_bpt(t_setid			setid,
    * 4)
    */
 
-  if (o->u.bpt.opts & SET_OPT_ALLOC)
+  if (o->opts & SET_OPT_ALLOC)
     {
-      if ((lfentry.data = malloc(o->u.bpt.datasz)) == NULL)
+      if ((lfentry.data = malloc(o->datasz)) == NULL)
 	SET_LEAVE(set, ERROR_UNKNOWN);
 
-      memcpy(lfentry.data, data, o->u.bpt.datasz);
+      memcpy(lfentry.data, data, o->datasz);
     }
   else
     {
@@ -656,8 +656,8 @@ t_error			set_remove_bpt(t_setid			setid,
    * 3)
    */
 
-  if ((o->u.bpt.opts & SET_OPT_ALLOC) ||
-      (o->u.bpt.opts & SET_OPT_FREE))
+  if ((o->opts & SET_OPT_ALLOC) ||
+      (o->opts & SET_OPT_FREE))
     {
       if (bpt_search(set, &o->u.bpt.bpt, id, &entry) != 0)
 	SET_LEAVE(set, ERROR_UNKNOWN);
@@ -724,8 +724,8 @@ t_error			set_delete_bpt(t_setid			setid,
    * 2)
    */
 
-  if (o->u.bpt.opts & SET_OPT_ALLOC ||
-      o->u.bpt.opts & SET_OPT_FREE)
+  if (o->opts & SET_OPT_ALLOC ||
+      o->opts & SET_OPT_FREE)
     {
       BPT_LOAD(&o->u.bpt.bpt, &node, iterator.u.bpt.entry.node);
 
@@ -799,8 +799,8 @@ t_error			set_flush_bpt(t_setid			setid)
    * 2)
    */
 
-  if ((o->u.bpt.opts & SET_OPT_ALLOC) ||
-      (o->u.bpt.opts & SET_OPT_FREE))
+  if ((o->opts & SET_OPT_ALLOC) ||
+      (o->opts & SET_OPT_FREE))
     {
       set_foreach(SET_OPT_FORWARD, setid, &i, state)
 	{
@@ -955,7 +955,7 @@ t_error			set_reserve_bpt(t_opts			opts,
 
   if (opts & SET_OPT_CONTAINER)
     {
-      *setid = set->container;
+      *setid = set->sets;
     }
   else
     {
@@ -970,9 +970,8 @@ t_error			set_reserve_bpt(t_opts			opts,
   o.setid = *setid;
   o.size = 0;
   o.type = SET_TYPE_BPT;
-
-  o.u.bpt.opts = opts;
-  o.u.bpt.datasz = datasz;
+  o.opts = opts;
+  o.datasz = datasz;
 
   /*
    * 5)
@@ -1086,7 +1085,7 @@ t_error			set_release_bpt(t_setid			setid)
    * 5)
    */
 
-  if (!(o->u.bpt.opts & SET_OPT_CONTAINER))
+  if (!(o->opts & SET_OPT_CONTAINER))
     if (set_destroy(o->setid) != ERROR_NONE)
       SET_LEAVE(set, ERROR_UNKNOWN);
 

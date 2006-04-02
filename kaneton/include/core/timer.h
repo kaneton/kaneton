@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/timer.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       julien quintard   [sat apr  1 23:38:37 2006]
+ * updated       julien quintard   [sun apr  2 14:05:48 2006]
  */
 
 #ifndef CORE_TIMER_H
@@ -54,7 +54,7 @@ typedef struct
 
   t_uint32			timeref;
 
-  t_setid			container;
+  t_setid			timers;
 
   machdep_data(m_timer);
 }				m_timer;
@@ -79,7 +79,7 @@ typedef struct
   t_error			(*timer_release)(t_timerid);
   t_error			(*timer_init)(void);
   t_error			(*timer_clean)(void);
-}				i_timer;
+}				d_timer;
 
 /*
  * ---------- macro functions -------------------------------------------------

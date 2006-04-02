@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       julien quintard   [sat apr  1 22:47:32 2006]
+ * updated       julien quintard   [sun apr  2 14:05:48 2006]
  */
 
 #ifndef CORE_TASK_H
@@ -115,7 +115,7 @@ typedef struct
 
   t_staid			stats;
 
-  t_setid			container;
+  t_setid			tasks;
 
   machdep_data(m_task);
 }				m_task;
@@ -136,7 +136,7 @@ typedef struct
   t_error			(*task_release)(t_tskid);
   t_error			(*task_init)(void);
   t_error			(*task_clean)(void);
-}				i_task;
+}				d_task;
 
 /*
  * ---------- macro functions -------------------------------------------------

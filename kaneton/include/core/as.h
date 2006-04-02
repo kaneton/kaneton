@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/as.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sat apr  1 22:42:14 2006]
+ * updated       julien quintard   [sun apr  2 14:05:16 2006]
  */
 
 #ifndef CORE_AS_H
@@ -61,7 +61,7 @@ typedef struct
 
   t_staid			stats;
 
-  t_setid			container;
+  t_setid			ass;
 
   machdep_data(m_as);
 }				m_as;
@@ -89,7 +89,7 @@ typedef struct
   t_error			(*as_release)(t_asid);
   t_error			(*as_init)(void);
   t_error			(*as_clean)(void);
-}				i_as;
+}				d_as;
 
 /*
  * ---------- macro functions -------------------------------------------------

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/segment/segment-fit.c
+ * file          /home/mycure/kaneton/kaneton/core/segment/segment-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:03:46 2006]
- * updated       matthieu bucchianeri   [mon mar 20 16:22:37 2006]
+ * updated       julien quintard   [sun apr  2 13:09:02 2006]
  */
 
 /*
@@ -103,7 +103,7 @@ t_error			segment_first_fit(o_as*			as,
    * 1)
    */
 
-  if (set_head(segment->container, &i) != ERROR_NONE)
+  if (set_head(segment->segments, &i) != ERROR_NONE)
     {
       if (segment->size < size)
 	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
@@ -113,7 +113,7 @@ t_error			segment_first_fit(o_as*			as,
       SEGMENT_LEAVE(segment, ERROR_NONE);
     }
 
-  if (set_object(segment->container, i, (void**)&head) != ERROR_NONE)
+  if (set_object(segment->segments, i, (void**)&head) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -131,12 +131,12 @@ t_error			segment_first_fit(o_as*			as,
    * 3)
    */
 
-  set_foreach(SET_OPT_FORWARD, segment->container, &i, state)
+  set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
     {
       o_segment*	next;
       t_iterator	j;
 
-      if (set_object(segment->container, i, (void**)&current) !=
+      if (set_object(segment->segments, i, (void**)&current) !=
 	  ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot find the segment object "
@@ -145,10 +145,10 @@ t_error			segment_first_fit(o_as*			as,
 	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 	}
 
-      if (set_next(segment->container, i, &j) != ERROR_NONE)
+      if (set_next(segment->segments, i, &j) != ERROR_NONE)
 	break;
 
-      if (set_object(segment->container, j, (void**)&next) != ERROR_NONE)
+      if (set_object(segment->segments, j, (void**)&next) != ERROR_NONE)
 	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
       if ((next->address - (current->address + current->size)) >= size)
@@ -163,10 +163,10 @@ t_error			segment_first_fit(o_as*			as,
    * 4)
    */
 
-  if (set_tail(segment->container, &i) != ERROR_NONE)
+  if (set_tail(segment->segments, &i) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (set_object(segment->container, i, (void**)&tail) != ERROR_NONE)
+  if (set_object(segment->segments, i, (void**)&tail) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*

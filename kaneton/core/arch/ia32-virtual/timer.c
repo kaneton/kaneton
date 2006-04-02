@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/core/kaneton/arch/ia32-virtual/timer.c
+ * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/timer.c
  *
  * created       renaud voltz   [tue feb 28 02:24:05 2006]
- * updated       renaud voltz   [tue feb 28 02:24:05 2006]
+ * updated       julien quintard   [sun apr  2 14:17:17 2006]
  */
 
 /*
@@ -36,10 +36,10 @@
  */
 
 /*
- * the ia32 timer manager interface.
+ * the ia32 timer manager dispatch.
  */
 
-i_timer				timer_interface =
+d_timer				timer_dispatch =
   {
     NULL,
     NULL,

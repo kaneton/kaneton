@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/segment.h
  *
  * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       julien quintard   [sat apr  1 22:58:48 2006]
+ * updated       julien quintard   [sun apr  2 14:08:11 2006]
  */
 
 #ifndef IA32_CORE_SEGMENT_H
@@ -40,15 +40,15 @@
  */
 
 #define		machdep_include_segment()				\
-  extern i_segment		segment_interface
+  extern d_segment		segment_dispatch
 
 #define		machdep_call_segment(_function_, _args_...)		\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
 									\
-      if (segment_interface._function_ != NULL)				\
-        _r_ = segment_interface._function_(_args_);			\
+      if (segment_dispatch._function_ != NULL)				\
+        _r_ = segment_dispatch._function_(_args_);			\
 									\
       _r_;								\
     }									\

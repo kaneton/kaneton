@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sat apr  1 22:45:06 2006]
+ * updated       julien quintard   [sun apr  2 14:05:44 2006]
  */
 
 #ifndef CORE_REGION_H
@@ -96,7 +96,7 @@ typedef struct
 					       t_vaddr,
 					       t_vsize);
   t_error			(*region_clean)(void);
-}				i_region;
+}				d_region;
 
 /*
  * ---------- macro functions -------------------------------------------------

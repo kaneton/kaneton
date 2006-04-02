@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/stats.h
  *
  * created       julien quintard   [sun jan 19 14:51:33 2005]
- * updated       julien quintard   [sat apr  1 22:47:19 2006]
+ * updated       julien quintard   [sun apr  2 13:02:58 2006]
  */
 
 #ifndef CORE_STATS_H
@@ -25,8 +25,8 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-#define STATS_CONTAINER_INITSZ	0x8
-#define STATS_FUNCTIONS_INITSZ	0x1
+#define STATS_MANAGERS_INITSZ	0x8
+#define STATS_FUNCTIONS_INITSZ	0x4
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -64,8 +64,8 @@ typedef struct
 
 typedef struct
 {
-  t_stats*			container;
-  t_sint64			containersz;
+  t_stats*			managers;
+  t_sint64			managerssz;
 }				m_stats;
 
 /*

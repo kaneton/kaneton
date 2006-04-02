@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/region/region.c
+ * file          /home/mycure/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [sat mar 25 17:04:25 2006]
+ * updated       julien quintard   [sun apr  2 13:29:00 2006]
  */
 
 /*
@@ -141,7 +141,7 @@ t_error			region_dump(t_asid		asid)
    * 3)
    */
 
-  cons_msg('#', "dumping %qu regions(s) from the region container:\n", size);
+  cons_msg('#', "dumping %qu regions(s) from the region set:\n", size);
 
   set_foreach(SET_OPT_FORWARD, o->regions, &i, state)
     {
@@ -167,7 +167,7 @@ t_error			region_dump(t_asid		asid)
  *
  * 1) get the as object.
  * 2) fill the region id field.
- * 3) add the region to the container.
+ * 3) add the region to the set.
  * 4) call machdep code.
  */
 
@@ -306,7 +306,7 @@ t_error			region_reserve(t_asid			asid,
  * 2) gets the region object.
  * 3) gets the as object from its identifier.
  * 4) removes the region from the address space.
- * 5) removes the region from the region container.
+ * 5) removes the region from the region set.
  */
 
 t_error			region_release(t_asid			asid,
@@ -480,7 +480,7 @@ t_error			region_init(t_vaddr			start,
  *
  * 1) calls the machine-dependent code.
  * 2) releases the stats object.
- * 3) releases the region container.
+ * 3) releases the region set.
  */
 
 t_error			region_clean(void)

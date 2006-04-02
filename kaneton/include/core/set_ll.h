@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/set_ll.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       julien quintard   [sat apr  1 22:46:41 2006]
+ * updated       julien quintard   [sun apr  2 13:50:23 2006]
  */
 
 #ifndef CORE_SET_LL_H
@@ -41,10 +41,6 @@ typedef struct			s_set_ll_node
 
 typedef struct
 {
-  t_opts			opts;
-
-  t_size			datasz;
-
   t_set_ll_node*		head;
   t_set_ll_node*		tail;
 }				t_set_ll;

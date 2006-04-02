@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/arch/ia32-virtual/task.c
+ * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [thu mar 23 12:11:19 2006]
+ * updated       julien quintard   [sun apr  2 14:17:30 2006]
  */
 
 /*
@@ -21,7 +21,7 @@
  * ---------- assignments -----------------------------------------------------
  *
  * students will have to develop this entire part of the project. take
- * a look at the interface  structure declaration to fill it correctly
+ * a look at the dispatch structure declaration to fill it correctly
  * and to write needed functions.
  */
 
@@ -44,10 +44,10 @@ extern t_asid		kasid;
  */
 
 /*
- * the address space manager interface.
+ * the address space manager dispatch.
  */
 
-i_task			task_interface =
+d_task			task_dispatch =
   {
 
 /*                                                                  [cut] k2 */

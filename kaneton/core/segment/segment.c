@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/segment/segment.c
+ * file          /home/mycure/kaneton/kaneton/core/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat mar 25 17:35:54 2006]
+ * updated       julien quintard   [sun apr  2 13:07:42 2006]
  */
 
 /*
@@ -180,22 +180,22 @@ t_error			segment_dump(void)
    * 1)
    */
 
-  if (set_size(segment->container, &size) != ERROR_NONE)
+  if (set_size(segment->segments, &size) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  cons_msg('#', "dumping %qu segment(s) from the segment container:\n", size);
+  cons_msg('#', "dumping %qu segment(s) from the segment set:\n", size);
 
   /*
    * 3)
    */
 
-  set_foreach(SET_OPT_FORWARD, segment->container, &i, state)
+  set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
     {
-      if (set_object(segment->container, i, (void**)&data) != ERROR_NONE)
+      if (set_object(segment->segments, i, (void**)&data) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot find the segment object "
 		   "corresponding to its identifier\n");
@@ -298,12 +298,12 @@ t_error			segment_inject(t_asid		asid,
    * 3)
    */
 
-  if (set_add(segment->container, o) != ERROR_NONE)
+  if (set_add(segment->segments, o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   if (set_add(as->segments, &o->segid) != ERROR_NONE)
     {
-      set_remove(segment->container, o->segid);
+      set_remove(segment->segments, o->segid);
 
       SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
     }
@@ -419,10 +419,10 @@ t_error			segment_resize(t_segid		old,
    * 1)
    */
 
-  if (set_locate(segment->container, old, &it) != ERROR_NONE)
+  if (set_locate(segment->segments, old, &it) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (set_object(segment->container, it, (void**)&o) != ERROR_NONE)
+  if (set_object(segment->segments, it, (void**)&o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -436,9 +436,9 @@ t_error			segment_resize(t_segid		old,
        * a)
        */
 
-      if (set_next(segment->container, it, &next) == ERROR_NONE)
+      if (set_next(segment->segments, it, &next) == ERROR_NONE)
 	{
-	  if (set_object(segment->container, next, (void**)&onext) !=
+	  if (set_object(segment->segments, next, (void**)&onext) !=
 	      ERROR_NONE)
 	    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
@@ -818,12 +818,12 @@ t_error			segment_reserve(t_asid			asid,
 
   *segid = o.segid = (t_segid)o.address;
 
-  if (set_add(segment->container, &o) != ERROR_NONE)
+  if (set_add(segment->segments, &o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   if (set_add(as->segments, &o.segid) != ERROR_NONE)
     {
-      set_remove(segment->container, o.segid);
+      set_remove(segment->segments, o.segid);
 
       SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
     }
@@ -848,7 +848,7 @@ t_error			segment_reserve(t_asid			asid,
  * 2) gets the segment object.
  * 3) gets the as object from its identifier.
  * 4) removes the segment from the address space.
- * 5) removes the segment from the segment container.
+ * 5) removes the segment from the segment set.
  */
 
 t_error			segment_release(t_segid			segid)
@@ -890,7 +890,7 @@ t_error			segment_release(t_segid			segid)
    * 5)
    */
 
-  if (set_remove(segment->container, segid) != ERROR_NONE)
+  if (set_remove(segment->segments, segid) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
@@ -1083,7 +1083,7 @@ t_error			segment_type(t_segid			segid,
  * 1) calls the machine-dependent code.
  * 2) gets the address space object.
  * 3) for every segment in the address space, removes the segment from
- *    the segment container to destroy it.
+ *    the segment set to destroy it.
  */
 
 t_error			segment_flush(t_asid			asid)
@@ -1139,7 +1139,7 @@ t_error			segment_get(t_segid			segid,
 {
   SEGMENT_ENTER(segment);
 
-  if (set_get(segment->container, segid, (void**)o) != ERROR_NONE)
+  if (set_get(segment->segments, segid, (void**)o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
@@ -1189,9 +1189,9 @@ t_error			segment_init(void)
    */
 
   if (set_reserve(bpt, SET_OPT_ALLOC | SET_OPT_SORT, sizeof(o_segment),
-		  SEGMENT_BPT_NODESZ, &segment->container) != ERROR_NONE)
+		  SEGMENT_BPT_NODESZ, &segment->segments) != ERROR_NONE)
     {
-      cons_msg('!', "segment: unable to reserve the segment container\n");
+      cons_msg('!', "segment: unable to reserve the segment set\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -1227,7 +1227,7 @@ t_error			segment_init(void)
  *
  * 1) calls the machine-dependent code.
  * 2) releases the stats object.
- * 3) releases the segment container.
+ * 3) releases the segment set.
  * 4) frees the segment manager structure's memory.
  */
 
@@ -1248,9 +1248,9 @@ t_error			segment_clean(void)
    * 2)
    */
 
-  set_foreach(SET_OPT_FORWARD, segment->container, &i, state)
+  set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
     {
-      if (set_object(segment->container, i, (void**)&data) != ERROR_NONE)
+      if (set_object(segment->segments, i, (void**)&data) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot find the object "
 		   "corresponding to its identifier\n");
@@ -1262,9 +1262,9 @@ t_error			segment_clean(void)
 	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
     }
 
-  if (set_release(segment->container) != ERROR_NONE)
+  if (set_release(segment->segments) != ERROR_NONE)
     {
-      cons_msg('!', "segment: unable to release the segment container\n");
+      cons_msg('!', "segment: unable to release the segment set\n");
 
       return (ERROR_UNKNOWN);
     }

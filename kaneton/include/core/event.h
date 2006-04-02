@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/event.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       julien quintard   [sat apr  1 22:43:02 2006]
+ * updated       julien quintard   [sun apr  2 14:05:47 2006]
  */
 
 #ifndef CORE_EVENT_H
@@ -50,7 +50,7 @@ typedef struct
 
   t_staid			stats;
 
-  t_setid			container;
+  t_setid			events;
 
   machdep_data(m_event);
 }				m_event;
@@ -69,7 +69,7 @@ typedef struct
   t_error			(*event_release)(t_eventid);
   t_error			(*event_init)(void);
   t_error			(*event_clean)(void);
-}				i_event;
+}				d_event;
 
 /*
  * ---------- macro functions -------------------------------------------------

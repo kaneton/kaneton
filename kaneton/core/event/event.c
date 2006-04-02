@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/event/event.c
+ * file          /home/mycure/kaneton/kaneton/core/event/event.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       matthieu bucchianeri   [thu mar 23 11:58:40 2006]
+ * updated       julien quintard   [sun apr  2 13:27:35 2006]
  */
 
 /*
@@ -99,7 +99,7 @@ t_error			event_dump(void)
    * 1)
    */
 
-  if (set_size(event->container, &size) != ERROR_NONE)
+  if (set_size(event->events, &size) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   /*
@@ -108,9 +108,9 @@ t_error			event_dump(void)
 
   cons_msg('#', "dumping %qu event(s):\n", size);
 
-  set_foreach(SET_OPT_FORWARD, event->container, &i, state)
+  set_foreach(SET_OPT_FORWARD, event->events, &i, state)
     {
-      if (set_object(event->container, i, (void**)&data) != ERROR_NONE)
+      if (set_object(event->events, i, (void**)&data) != ERROR_NONE)
 	EVENT_LEAVE(event, ERROR_UNKNOWN);
 
       if (event_show(data->eventid) != ERROR_NONE)
@@ -125,7 +125,7 @@ t_error			event_dump(void)
  *
  * steps:
  *
- * 1) get the event object from the container.
+ * 1) get the event object from the set.
  * 2) notify the task its event has occured.
  */
 
@@ -201,7 +201,7 @@ t_error			event_reserve(t_eventid			eventid,
    * 4)
    */
 
-  if (set_add(event->container, &o) != ERROR_NONE)
+  if (set_add(event->events, &o) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   EVENT_LEAVE(event, ERROR_NONE);
@@ -213,7 +213,7 @@ t_error			event_reserve(t_eventid			eventid,
  * steps:
  *
  * 1) get the event object from its identifier.
- * 2) remove the object from the event container.
+ * 2) remove the object from the event set.
  * 3) call the machine dependent code.
  */
 
@@ -234,7 +234,7 @@ t_error			event_release(t_eventid			eventid)
    * 2)
    */
 
-  if (set_remove(event->container, o->eventid) != ERROR_NONE)
+  if (set_remove(event->events, o->eventid) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   /*
@@ -248,7 +248,7 @@ t_error			event_release(t_eventid			eventid)
 }
 
 /*
- * this function get an event object from the event container.
+ * this function get an event object from the event set.
  */
 
 t_error			event_get(t_eventid			eventid,
@@ -256,7 +256,7 @@ t_error			event_get(t_eventid			eventid,
 {
   EVENT_ENTER(event);
 
-  if (set_get(event->container, eventid, (void**)o) != ERROR_NONE)
+  if (set_get(event->events, eventid, (void**)o) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   EVENT_LEAVE(event, ERROR_NONE);
@@ -269,7 +269,7 @@ t_error			event_get(t_eventid			eventid,
  *
  * 1) allocate and initialize the event manager.
  * 2) initialize the object identifier.
- * 3) reserve the event container.
+ * 3) reserve the event set.
  * 4) try to reserve a statistic object.
  * 5) call the machine dependent code.
  */
@@ -307,9 +307,9 @@ t_error			event_init(void)
    */
 
   if (set_reserve(ll, SET_OPT_ALLOC | SET_OPT_SORT,
-		  sizeof(o_event), &event->container) != ERROR_NONE)
+		  sizeof(o_event), &event->events) != ERROR_NONE)
     {
-      cons_msg('!', "event: unable to reserve the event container\n");
+      cons_msg('!', "event: unable to reserve the event set\n");
 
       return ERROR_UNKNOWN;
     }
@@ -337,7 +337,7 @@ t_error			event_init(void)
  *
  * 1) call the machine-dependent code.
  * 2) release the statistics object.
- * 3) release the event container.
+ * 3) release the event set.
  * 4) destroy the identifier object.
  * 5) free the event manager's structure memory.
  */
@@ -361,9 +361,9 @@ t_error			event_clean(void)
    * 3)
    */
 
-  if (set_release(event->container) != ERROR_NONE)
+  if (set_release(event->events) != ERROR_NONE)
     {
-      cons_msg('!', "event: unable to release the event container\n");
+      cons_msg('!', "event: unable to release the event set\n");
 
       return ERROR_UNKNOWN;
     }
