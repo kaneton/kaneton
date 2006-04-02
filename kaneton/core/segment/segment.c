@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/segment/segment.c
+ * file          /home/buckman/kaneton/kaneton/core/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun apr  2 13:07:42 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:19:09 2006]
  */
 
 /*
@@ -778,7 +778,7 @@ t_error			segment_copy(t_segid		dst,
  * steps:
  *
  * 1) gets the address space object given its identifier.
- * 2) chooses the correct fit.
+ * 2) find some free space.
  * 3) builds the segment.
  * 4) calls the machine dependent code.
  */
@@ -804,7 +804,7 @@ t_error			segment_reserve(t_asid			asid,
    * 2)
    */
 
-  if (segment_fit(as, size, &o.address) != ERROR_NONE)
+  if (segment_space(as, size, &o.address) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -1182,7 +1182,7 @@ t_error			segment_init(void)
 
   segment->start = init->mem;
   segment->size = init->memsz;
-  segment->fit = SEGMENT_FIT;
+  segment->lookup = SEGMENT_LOOKUP_ALGORITHM;
 
   /*
    * 3)
@@ -1206,7 +1206,7 @@ t_error			segment_init(void)
    * 5)
    */
 
-  if (machdep_call(segment, segment_init, SEGMENT_FIT) != ERROR_NONE)
+  if (machdep_call(segment, segment_init) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*

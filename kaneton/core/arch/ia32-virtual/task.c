@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [sun apr  2 22:21:47 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:23:54 2006]
  */
 
 /*
@@ -118,8 +118,6 @@ t_error			ia32_task_release(t_tskid		tskid)
 
 t_error			ia32_task_init(void)
 {
-  o_as*			o;
-
   TASK_ENTER(task);
 
   /* XXX */

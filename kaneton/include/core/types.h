@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/types.h
+ * file          /home/buckman/kaneton/kaneton/include/core/types.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sat apr  1 22:48:14 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:11:00 2006]
  */
 
 #ifndef CORE_TYPES_H
@@ -50,7 +50,7 @@ typedef t_uint32		t_offset;
 typedef t_uint32		t_opts;
 typedef t_uint32		t_perms;
 typedef t_uint32		t_type;
-typedef t_uint32		t_fit;
+typedef t_uint32		t_lookup;
 typedef t_uint32		t_state;
 typedef t_uint32		t_class;
 typedef t_uint32		t_prior;

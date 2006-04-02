@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [sun apr  2 22:20:39 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:24:14 2006]
  */
 
 /*
@@ -291,7 +291,7 @@ t_error			ia32_region_reserve(t_asid		asid,
    * 5)
    */
 
-  if (region_fit(kas, PAGESZ, &chunk) != ERROR_NONE)
+  if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   pd = (t_directory)(t_uint32)chunk;
@@ -339,7 +339,7 @@ t_error			ia32_region_reserve(t_asid		asid,
        * b)
        */
 
-      if (region_fit(kas, PAGESZ, &chunk) != ERROR_NONE)
+      if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
       if (ia32_region_map_chunk((t_vaddr)chunk,
@@ -458,7 +458,7 @@ t_error			ia32_region_release(t_asid		asid,
    * 3)
    */
 
-  if (region_fit(kas, PAGESZ, &chunk) != ERROR_NONE)
+  if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   pd = (t_directory)(t_uint32)chunk;
@@ -489,7 +489,7 @@ t_error			ia32_region_release(t_asid		asid,
        * b)
        */
 
-      if (region_fit(kas, PAGESZ, &chunk) != ERROR_NONE)
+      if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
       if (ia32_region_map_chunk((t_vaddr)chunk,
@@ -545,8 +545,7 @@ t_error			ia32_region_release(t_asid		asid,
  * for the intel 32-bit architecture we just initialise the paging mode.
  */
 
-t_error			ia32_region_init(t_fit			fit,
-					 t_vaddr		start,
+t_error			ia32_region_init(t_vaddr		start,
 					 t_vsize		size)
 {
   REGION_ENTER(region);

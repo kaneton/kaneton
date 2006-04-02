@@ -71,8 +71,7 @@ t_error			ia32_region_reserve(t_asid		asid,
 t_error			ia32_region_release(t_asid		asid,
 					    t_regid		regid);
 
-t_error			ia32_region_init(t_fit			fit,
-					 t_vaddr		start,
+t_error			ia32_region_init(t_vaddr		start,
 					 t_vsize		size);
 
 t_error			ia32_region_clean(void);
@@ -98,7 +97,7 @@ t_error			ia32_segment_copy(t_segid		dst,
 					  t_paddr		offss,
 					  t_psize		sz);
 
-t_error			ia32_segment_init(t_fit			fit);
+t_error			ia32_segment_init(void);
 
 t_error			ia32_segment_clean(void);
 

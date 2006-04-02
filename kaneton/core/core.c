@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/kaneton.c
+ * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu mar 23 12:09:22 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:22:05 2006]
  */
 
 /*
@@ -117,7 +117,7 @@ void			kaneton(t_init*				bootloader)
    * 5)
    */
 
-  alloc_init(init->alloc, init->allocsz, ALLOC_FIT);
+  alloc_init(init->alloc, init->allocsz);
 
   /*
    * 6)

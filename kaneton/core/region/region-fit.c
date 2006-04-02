@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/region/region-fit.c
+ * file          /home/buckman/kaneton/kaneton/core/region/region-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:28:36 2006]
- * updated       matthieu bucchianeri   [tue mar 21 12:01:06 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:23:05 2006]
  */
 
 /*
@@ -53,24 +53,6 @@ extern m_region*       region;
 
 /*                                                                  [cut] k2 */
 
-t_error			region_fit(o_as*		as,
-				   t_vsize		size,
-				   t_vaddr*		address)
-{
-  REGION_ENTER(region);
-
-  switch (region->fit)
-    {
-      case FIT_FIRST:
-	{
-	  REGION_LEAVE(region, region_first_fit(as, size, address));
-	  break;
-	}
-      default:
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-    }
-}
-
 /*
  * this function tries to find free space in the region set via the
  * first fit algorithm.
@@ -84,7 +66,7 @@ t_error			region_fit(o_as*		as,
  * 5) tries to find space after the last region.
  */
 
-t_error			region_first_fit(o_as*			as,
+static t_error		region_first_fit(o_as*			as,
 					 t_vsize		size,
 					 t_vaddr*		address)
 {
@@ -179,6 +161,28 @@ t_error			region_first_fit(o_as*			as,
     }
 
   REGION_LEAVE(region, ERROR_UNKNOWN);
+}
+
+/*
+ * this function calls the good algorithm.
+ */
+
+t_error			region_space(o_as*		as,
+				     t_vsize		size,
+				     t_vaddr*		address)
+{
+  REGION_ENTER(region);
+
+  switch (region->lookup)
+    {
+      case FIT_FIRST:
+	{
+	  REGION_LEAVE(region, region_first_fit(as, size, address));
+	  break;
+	}
+      default:
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+    }
 }
 
 /*                                                                 [cut] /k2 */

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/klibc/libdata/alloc.c
+ * file          /home/buckman/kaneton/libs/klibc/libdata/alloc.c
  *
  * created       cedric aubouy   [sun sep 25 19:57:33 2005]
- * updated       julien quintard   [wed mar  1 17:29:42 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:20:29 2006]
  */
 
 /*
@@ -419,17 +419,9 @@ void*			realloc(void* 				ptr,
  */
 
 int			alloc_init(t_vaddr			addr,
-				   t_size			size,
-				   t_fit			fit)
+				   t_size			size)
 {
   t_chunck*		init;
-
-  /*
-   * 1)
-   */
-
-  if (fit != FIT_FIRST)
-    return (-1);
 
   /*
    * 2)

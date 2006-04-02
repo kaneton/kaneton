@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [sun apr  2 22:33:55 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:18:09 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -49,16 +49,16 @@
 #define CONF_MODE		MODE_DEVELOPMENT
 
 /*
- * which fit method to use in segment
+ * which algorithm to use in segment
  */
 
-#define SEGMENT_FIT	FIT_FIRST
+#define SEGMENT_LOOKUP_ALGORITHM	FIT_FIRST
 
 /*
- * which fit method to use in region
+ * which algorithm to use in region
  */
 
-#define REGION_FIT	FIT_FIRST
+#define REGION_LOOKUP_ALGORITHM		FIT_FIRST
 
 /*
  * which fit method to use in alloc
@@ -101,11 +101,11 @@
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/conf/conf.c
+ *      ../../core/conf/conf.c
  */
 
 /*
- * ../../kaneton/conf/conf.c
+ * ../../core/conf/conf.c
  */
 
 

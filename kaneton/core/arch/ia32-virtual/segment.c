@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/segment.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun apr  2 14:17:10 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:23:40 2006]
  */
 
 /*
@@ -276,7 +276,7 @@ t_error			ia32_segment_copy(t_segid		dst,
  * 6) update segment selector registers.
  */
 
-t_error			ia32_segment_init(t_fit			fit)
+t_error			ia32_segment_init(void)
 {
   t_segment		seg;
   t_uint16		kcs;

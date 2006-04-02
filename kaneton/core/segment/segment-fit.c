@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/segment/segment-fit.c
+ * file          /home/buckman/kaneton/kaneton/core/segment/segment-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:03:46 2006]
- * updated       julien quintard   [sun apr  2 13:09:02 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:22:59 2006]
  */
 
 /*
@@ -55,26 +55,6 @@ extern m_segment*	segment;
 /*                                                                  [cut] k2 */
 
 /*
- * this function dispatchs to the good fitting method.
- */
-
-t_error			segment_fit(o_as*		as,
-				    t_psize		size,
-				    t_paddr*		address)
-{
-  SEGMENT_ENTER(segment);
-
-  switch (segment->fit)
-    {
-      case FIT_FIRST:
-	SEGMENT_LEAVE(segment, segment_first_fit(as, size, address));
-	break;
-      default:
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-    }
-}
-
-/*
  * this function tries to find free space in the segment set via the
  * first fit algorithm.
  *
@@ -87,7 +67,7 @@ t_error			segment_fit(o_as*		as,
  * 5) tries to find space after the last segment.
  */
 
-t_error			segment_first_fit(o_as*			as,
+static t_error		segment_first_fit(o_as*			as,
 					  t_psize		size,
 					  t_paddr*		address)
 {
@@ -182,6 +162,26 @@ t_error			segment_first_fit(o_as*			as,
     }
 
   SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+}
+
+/*
+ * this function dispatchs to the good fitting method.
+ */
+
+t_error			segment_space(o_as*		as,
+				      t_psize		size,
+				      t_paddr*		address)
+{
+  SEGMENT_ENTER(segment);
+
+  switch (segment->lookup)
+    {
+      case FIT_FIRST:
+	SEGMENT_LEAVE(segment, segment_first_fit(as, size, address));
+	break;
+      default:
+	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    }
 }
 
 /*                                                                 [cut] /k2 */

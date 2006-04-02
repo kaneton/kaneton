@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/segment.h
+ * file          /home/buckman/kaneton/kaneton/include/core/segment.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sun apr  2 14:05:49 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:18:56 2006]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -74,7 +74,7 @@ typedef struct
   t_paddr			start;
   t_psize			size;
 
-  t_fit				fit;
+  t_lookup			lookup;
 
   t_setid			segments;
 
@@ -130,7 +130,7 @@ typedef struct
   t_error			(*segment_type)(t_segid,
 						t_type);
   t_error			(*segment_flush)(t_asid);
-  t_error			(*segment_init)(t_fit);
+  t_error			(*segment_init)();
   t_error			(*segment_clean)(void);
 }				d_segment;
 
@@ -171,10 +171,18 @@ typedef struct
   }
 
 /*
+ * ---------- common prototypes -----------------------------------------------
+ */
+
+t_error			segment_space(o_as*		as,
+				      t_psize		size,
+				      t_paddr*		address);
+
+
+/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/segment/segment.c
- *      ../../core/segment/segment-fit.c
  */
 
 /*
@@ -249,19 +257,6 @@ t_error			segment_get(t_segid			segid,
 t_error			segment_init(void);
 
 t_error			segment_clean(void);
-
-
-/*
- * ../../core/segment/segment-fit.c
- */
-
-t_error			segment_fit(o_as*		as,
-				    t_psize		size,
-				    t_paddr*		address);
-
-t_error			segment_first_fit(o_as*			as,
-					  t_psize		size,
-					  t_paddr*		address);
 
 
 /*

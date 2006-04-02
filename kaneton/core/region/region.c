@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/region/region.c
+ * file          /home/buckman/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       julien quintard   [sun apr  2 13:29:00 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:21:20 2006]
  */
 
 /*
@@ -214,7 +214,7 @@ t_error			region_inject(t_asid		asid,
  * steps:
  *
  * 1) gets the address space object given its identifier.
- * 2) chooses the correct fit.
+ * 2) find some place.
  * 3) builds the region.
  * 4) calls the machine dependent code.
  */
@@ -267,7 +267,7 @@ t_error			region_reserve(t_asid			asid,
   else
     if (opts & REGION_OPT_NONE)
       {
-	if (region_fit(as, size, &o.address) != ERROR_NONE)
+	if (region_space(as, size, &o.address) != ERROR_NONE)
 	  REGION_LEAVE(region, ERROR_UNKNOWN);
       }
     else
@@ -453,7 +453,7 @@ t_error			region_init(t_vaddr			start,
    * 2)
    */
 
-  region->fit = REGION_FIT;
+  region->lookup = REGION_LOOKUP_ALGORITHM;
   region->start = start;
   region->size = size;
 
@@ -467,7 +467,8 @@ t_error			region_init(t_vaddr			start,
    * 4)
    */
 
-  if (machdep_call(region, region_init, REGION_FIT, start, size) != ERROR_NONE)
+  if (machdep_call(region, region_init, start, size) !=
+      ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   return (ERROR_NONE);

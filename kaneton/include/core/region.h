@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/region.h
+ * file          /home/buckman/kaneton/kaneton/include/core/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sun apr  2 14:05:44 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 23:17:00 2006]
  */
 
 #ifndef CORE_REGION_H
@@ -64,7 +64,7 @@ typedef struct
 {
   o_id				id;
 
-  t_fit				fit;
+  t_lookup			lookup;
 
   t_vaddr			start;
   t_vsize			size;
@@ -92,8 +92,7 @@ typedef struct
   t_error			(*region_release)(t_asid,
 						  t_regid);
   t_error			(*region_flush)(t_asid);
-  t_error			(*region_init)(t_fit,
-					       t_vaddr,
+  t_error			(*region_init)(t_vaddr,
 					       t_vsize);
   t_error			(*region_clean)(void);
 }				d_region;
@@ -135,10 +134,17 @@ typedef struct
   }
 
 /*
+ * ---------- common prototypes -----------------------------------------------
+ */
+
+t_error			region_space(o_as*		as,
+				     t_vsize		size,
+				     t_vaddr*		address);
+
+/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/region/region.c
- *      ../../core/region/region-fit.c
  */
 
 /*
@@ -174,19 +180,6 @@ t_error			region_init(t_vaddr			start,
 				    t_vsize			size);
 
 t_error			region_clean(void);
-
-
-/*
- * ../../core/region/region-fit.c
- */
-
-t_error			region_fit(o_as*		as,
-				   t_vsize		size,
-				   t_vaddr*		address);
-
-t_error			region_first_fit(o_as*			as,
-					 t_vsize		size,
-					 t_vaddr*		address);
 
 
 /*
