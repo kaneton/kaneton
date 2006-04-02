@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [fri mar 31 15:25:23 2006]
+ * updated       matthieu bucchianeri   [sun apr  2 22:33:55 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -16,7 +16,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <kaneton/debug.h>
+#include <core/debug.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
