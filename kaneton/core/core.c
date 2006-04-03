@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:22:05 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 23:56:41 2006]
  */
 
 /*
@@ -198,6 +198,7 @@ void			kaneton(t_init*				bootloader)
 #endif
 
 #ifdef SERIAL
+  check_region_tests();
   debug_init();
 #endif
 

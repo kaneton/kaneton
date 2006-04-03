@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:54:51 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 23:31:48 2006]
  */
 
 /*
@@ -114,6 +114,12 @@ t_error			ia32_segment_read(t_segid		segid,
    * 2)
    */
 
+  if (offs % PAGESZ)
+    {
+      sz += offs - (offs / PAGESZ * PAGESZ);
+      offs = offs / PAGESZ * PAGESZ;
+    }
+
   if (sz % PAGESZ)
     size = sz + PAGESZ - (sz % PAGESZ);
   else
@@ -171,6 +177,12 @@ t_error			ia32_segment_write(t_segid		segid,
   /*
    * 2)
    */
+
+  if (offs % PAGESZ)
+    {
+      sz += offs - (offs / PAGESZ * PAGESZ);
+      offs = offs / PAGESZ * PAGESZ;
+    }
 
   if (sz % PAGESZ)
     size = sz + PAGESZ - (sz % PAGESZ);

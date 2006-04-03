@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/region/common/common.c
  *
  * created       matthieu bucchianeri   [wed mar 15 23:11:33 2006]
- * updated       matthieu bucchianeri   [sun apr  2 18:56:50 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 23:56:53 2006]
  */
 
 #include <klibc.h>
@@ -28,5 +28,6 @@ void	check_region_common(void)
 void	check_region_tests(void)
 {
   check_region_common();
+  check_region_03();
   /* XXX continue tests */
 }

@@ -16,12 +16,6 @@
  * revoir la moulinette pour injecter le code des tests a la volé plutot qu'a
    la compile.
 
- a faire ?
-
- * gerer kaneton.conf dans le kernel ? (au moins pour les CATCH ?)
-   -> il y a un parser dans _old_ qui semble marcher (j'ai corrigé qq trucs
-      avec valgrind pour qu'il y ait plus d'erreurs)
-
 --
  revoir la moulinette de triche, a la limite retoucher le code de ctcompare
 

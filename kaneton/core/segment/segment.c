@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon apr  3 18:56:02 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 23:11:08 2006]
  */
 
 /*
@@ -446,7 +446,7 @@ t_error			segment_resize(t_segid		old,
 	   * b)
 	   */
 
-	  if (o->address + size >= onext->address)
+	  if (o->address + size > onext->address)
 	    {
 	      if (segment_reserve(o->asid, size, o->perms, new) !=
 		  ERROR_NONE)
@@ -520,7 +520,7 @@ t_error			segment_split(t_segid		old,
    * 2)
    */
 
-  if (size >= o->size)
+  if (size > o->size)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   o->size = size;
@@ -659,7 +659,7 @@ t_error			segment_read(t_segid		segid,
   if (!(o->perms & PERM_READ))
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (offs + sz >= o->size)
+  if (offs + sz > o->size)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -705,7 +705,7 @@ t_error			segment_write(t_segid		segid,
   if (!(o->perms & PERM_WRITE))
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (offs + sz >= o->size)
+  if (offs + sz > o->size)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -757,10 +757,10 @@ t_error			segment_copy(t_segid		dst,
   if (!((o1->perms & PERM_WRITE) && (o2->perms & PERM_READ)))
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (offsd + sz >= o1->size)
+  if (offsd + sz > o1->size)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (offss + sz >= o2->size)
+  if (offss + sz > o2->size)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
