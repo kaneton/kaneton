@@ -36,7 +36,7 @@
  */
 
 /*
- *
+ * the kernel address space.
  */
 
 extern t_asid			kasid;
@@ -157,11 +157,12 @@ t_error			ia32_event_release(t_eventid		eventid)
  *
  * steps:
  *
- * 1)
- * 2) init events.
- * 3) set default handler for every exception.
- * 4) set default handler for every irq.
- * 5) enable external interrupts.
+ * 1) allocate space for the idt.
+ * 2( build the idt and activate it.
+ * 3) init events.
+ * 4) set default handler for every exception.
+ * 5) set default handler for every irq.
+ * 6) enable external interrupts.
  */
 
 t_error			ia32_event_init(void)
@@ -180,6 +181,10 @@ t_error			ia32_event_init(void)
       != ERROR_NONE)
     return ERROR_UNKNOWN;
 
+  /*
+   * 2)
+   */
+
   if (idt_build(IDT_MAX_ENTRIES, vaddr, 1, &new_idt) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
@@ -187,14 +192,14 @@ t_error			ia32_event_init(void)
     return ERROR_UNKNOWN;
 
   /*
-   * 2)
+   * 3)
    */
 
   if (interrupt_init() != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
-   * 3)
+   * 4)
    */
 
   for (id = IDT_EXCEPTION_BASE; id < IDT_EXCEPTION_BASE + EXCEPTION_NR; id++)
@@ -202,7 +207,7 @@ t_error			ia32_event_init(void)
       return ERROR_UNKNOWN;
 
   /*
-   * 4)
+   * 5)
    */
 
   for (id = IDT_IRQ_BASE; id < IDT_IRQ_BASE + IRQ_NR; id++)
@@ -210,7 +215,7 @@ t_error			ia32_event_init(void)
       return ERROR_UNKNOWN;
 
   /*
-   * 5)
+   * 6)
    */
 
   STI();
