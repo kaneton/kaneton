@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/event/event.c
+ * file          /home/buckman/kaneton/kaneton/core/event/event.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       julien quintard   [sun apr  2 13:27:35 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 18:52:15 2006]
  */
 
 /*
@@ -337,13 +337,17 @@ t_error			event_init(void)
  *
  * 1) call the machine-dependent code.
  * 2) release the statistics object.
- * 3) release the event set.
- * 4) destroy the identifier object.
- * 5) free the event manager's structure memory.
+ * 3) release all events objects.
+ * 4) release the event set.
+ * 5) destroy the identifier object.
+ * 6) free the event manager's structure memory.
  */
 
 t_error			event_clean(void)
 {
+  t_iterator		i;
+  o_event*		o;
+
   /*
    * 1)
    */
@@ -361,6 +365,24 @@ t_error			event_clean(void)
    * 3)
    */
 
+  while (set_head(event->events, &i) == ERROR_NONE)
+    {
+      if (set_object(event->events, i, (void**)&o) != ERROR_NONE)
+	{
+	  cons_msg('!', "event: cannot find the event object "
+		   "corresponding to its identifier\n");
+
+	  return (ERROR_UNKNOWN);
+	}
+
+      if (event_release(o->eventid) != ERROR_NONE)
+	return (ERROR_UNKNOWN);
+    }
+
+  /*
+   * 4)
+   */
+
   if (set_release(event->events) != ERROR_NONE)
     {
       cons_msg('!', "event: unable to release the event set\n");
@@ -369,7 +391,7 @@ t_error			event_clean(void)
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if (id_destroy(&event->id) != ERROR_NONE)
@@ -380,7 +402,7 @@ t_error			event_clean(void)
     }
 
   /*
-   * 5)
+   * 6)
    */
 
   free(event);

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon apr  3 17:09:59 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 18:56:02 2006]
  */
 
 /*
@@ -1009,7 +1009,7 @@ t_error			segment_perms(t_segid			segid,
    * 2)
    */
 
-  if (!(perms & PERM_EXEC) && !(perms & PERM_READ) & !(perms & PERM_WRITE))
+  if (!(perms & PERM_EXEC) && !(perms & PERM_READ) && !(perms & PERM_WRITE))
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -1090,7 +1090,6 @@ t_error			segment_type(t_segid			segid,
 
 t_error			segment_flush(t_asid			asid)
 {
-  t_state		state;
   t_segid*		data;
   o_as*			as;
   t_iterator		i;
@@ -1115,7 +1114,7 @@ t_error			segment_flush(t_asid			asid)
    * 3)
    */
 
-  set_foreach(SET_OPT_FORWARD, as->segments, &i, state)
+  while (set_head(as->segments, &i) == ERROR_NONE)
     {
       if (set_object(as->segments, i, (void**)&data) != ERROR_NONE)
 	{
@@ -1228,14 +1227,13 @@ t_error			segment_init(void)
  * steps:
  *
  * 1) calls the machine-dependent code.
- * 2) releases the stats object.
- * 3) releases the segment set.
+ * 2) releases the segment set.
+ * 3) releases the stats object.
  * 4) frees the segment manager structure's memory.
  */
 
 t_error			segment_clean(void)
 {
-  t_state		state;
   o_segment*		data;
   t_iterator		i;
 
@@ -1250,18 +1248,24 @@ t_error			segment_clean(void)
    * 2)
    */
 
-  set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
+  STATS_RELEASE(segment->stats);
+
+  /*
+   * 3)
+   */
+
+  while (set_head(segment->segments, &i) == ERROR_NONE)
     {
       if (set_object(segment->segments, i, (void**)&data) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot find the object "
 		   "corresponding to its identifier\n");
 
-	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	  return (ERROR_UNKNOWN);
 	}
 
       if (segment_release(data->segid) != ERROR_NONE)
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	return (ERROR_UNKNOWN);
     }
 
   if (set_release(segment->segments) != ERROR_NONE)
@@ -1270,12 +1274,6 @@ t_error			segment_clean(void)
 
       return (ERROR_UNKNOWN);
     }
-
-  /*
-   * 3)
-   */
-
-  STATS_RELEASE(segment->stats);
 
   /*
    * 4)

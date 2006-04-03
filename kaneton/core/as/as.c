@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/as/as.c
+ * file          /home/buckman/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       julien quintard   [sun apr  2 13:16:42 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 18:50:44 2006]
  */
 
 /*
@@ -820,7 +820,6 @@ t_error			as_init(void)
 
 t_error			as_clean(void)
 {
-  t_state		state;
   o_as*			data;
   t_iterator		i;
 
@@ -841,18 +840,18 @@ t_error			as_clean(void)
    * 3)
    */
 
-  set_foreach(SET_OPT_FORWARD, as->ass, &i, state)
+  while (set_head(as->ass, &i) == ERROR_NONE)
     {
       if (set_object(as->ass, i, (void**)&data) != ERROR_NONE)
 	{
 	  cons_msg('!', "as: cannot find the address space object "
 		   "corresponding to its identifier\n");
 
-	  AS_LEAVE(as, ERROR_UNKNOWN);
+	  return (ERROR_UNKNOWN);
 	}
 
       if (as_release(data->asid) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+	return (ERROR_UNKNOWN);
     }
 
   if (set_release(as->ass) != ERROR_NONE)

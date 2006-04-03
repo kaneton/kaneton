@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:21:20 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 18:53:07 2006]
  */
 
 /*
@@ -354,7 +354,6 @@ t_error			region_release(t_asid			asid,
 t_error			region_flush(t_asid			asid)
 {
   o_as*			as;
-  t_state		state;
   t_iterator		it;
   t_regid*		obj;
 
@@ -371,7 +370,7 @@ t_error			region_flush(t_asid			asid)
    * 2)
    */
 
-  set_foreach(SET_OPT_FORWARD, as->regions, &it, state)
+  while (set_head(as->regions, &it) == ERROR_NONE)
     {
       if (set_object(as->regions, it, (void**)&obj) != ERROR_NONE)
 	{
