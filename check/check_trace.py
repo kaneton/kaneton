@@ -68,7 +68,7 @@ def	get_function_addr(cmd):
 	Return addr of function named cmd in kaneton
 	"""
 
-	obj = os.popen("nm ../core/kaneton/kaneton | grep " + cmd +  " | cut -d ' ' -f 1")
+	obj = os.popen("nm ../kaneton/core/core | grep " + cmd +  " | cut -d ' ' -f 1")
 	addr = obj.read()
 	addr = addr.strip("\n")
 	return addr

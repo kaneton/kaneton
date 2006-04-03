@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/10/10.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sun apr  2 18:13:46 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 14:53:05 2006]
  */
 
 #include <klibc.h>
@@ -43,7 +43,7 @@ void		check_segment_10(void)
 	    "error reserving segment\n");
 
   MY_ASSERT(segment_resize(seg, PAGESZ, &seg) == ERROR_NONE,
-	    "error splitting\n");
+	    "error resize\n");
 
   MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment\n");
 

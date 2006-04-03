@@ -10,7 +10,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ##
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## Last update Fri Mar 31 15:35:14 2006 matthieu bucchianeri
+## Last update Mon Apr  3 12:46:35 2006 matthieu bucchianeri
 ##
 
 #
@@ -21,4 +21,4 @@
 #
 
 # for using gdb with qemu
-_CFLAGS_	+=	-g
+#_CFLAGS_	+=	-g

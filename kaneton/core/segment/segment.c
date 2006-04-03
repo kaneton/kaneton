@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:19:09 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 17:09:59 2006]
  */
 
 /*
@@ -597,7 +597,9 @@ t_error			segment_coalesce(t_segid	old1,
    * 3)
    */
 
-  if (seg1->address + seg1->size != seg2->address)
+  if (seg1->address + seg1->size != seg2->address ||
+      seg1->asid != seg2->asid ||
+      seg1->perms != seg2->perms)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*

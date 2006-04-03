@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/bootloader/02/02.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [mon feb 20 10:47:25 2006]
+ * updated       matthieu bucchianeri   [mon apr  3 13:39:54 2006]
  */
 
 #include <klibc.h>
