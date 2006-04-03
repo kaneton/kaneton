@@ -143,19 +143,19 @@ t_error			ldt_build_selector(t_ia32_ldt*		table,
  * ../pmode/idt.c
  */
 
-t_error			idt_dump(t_ia32_idt*			dump_idt);
+t_error			idt_dump(t_ia32_idt*			table);
 
 t_error			idt_size(t_ia32_idt*			table,
 				 t_uint16			*size);
 
 t_error			idt_build(t_uint16			entries,
 				  t_paddr			base,
-				  t_ia32_idt*			idt,
-				  t_uint8			clear);
+				  t_uint8			clear,
+				  t_ia32_idt*			table);
 
-t_error			idt_activate(t_ia32_idt			new_idt);
+t_error			idt_activate(t_ia32_idt*		table);
 
-t_error			idt_import(t_ia32_idt*			idt);
+t_error			idt_import(t_ia32_idt*			table);
 
 t_error			idt_add_gate(t_ia32_idt*		table,
 				     t_uint16			index,

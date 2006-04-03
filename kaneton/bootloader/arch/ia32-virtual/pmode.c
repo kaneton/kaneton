@@ -63,11 +63,6 @@ extern t_init*		init;
 void			bootloader_pmode_init(void)
 {
   t_ia32_gdt		gdt;
-/*                                                                 [cut] /k1 */
-/*                                                                  [cut] k3 */
-  t_ia32_idt		idt;
-/*                                                                 [cut] /k3 */
-/*                                                                  [cut] k1 */
   t_ia32_segment	seg;
   t_uint16		kcs;
   t_uint16		kds;
@@ -91,12 +86,10 @@ void			bootloader_pmode_init(void)
       bootloader_error();
     }
 
-/*                                                                 [cut] /k1 */
-/*                                                                  [cut] k3 */
   /*
    * 2)
    */
-  if (idt_build(PMODE_IDT_ENTRIES,
+  /*  if (idt_build(PMODE_IDT_ENTRIES,
 		bootloader_init_alloc(PMODE_IDT_ENTRIES *
 				      sizeof(t_ia32_idte), NULL),
 		&idt, 1) != ERROR_NONE)
@@ -110,10 +103,7 @@ void			bootloader_pmode_init(void)
 	bootloader_cons_msg('!', "pmode: error activating idt.\n");
 	bootloader_error();
       }
-
-/*                                                                 [cut] /k3 */
-/*                                                                  [cut] k1 */
-
+  */
 
   /*
    * 3)
@@ -149,30 +139,15 @@ void			bootloader_pmode_init(void)
   gdt_build_selector(PMODE_BOOTLOADER_DS, ia32_prvl_supervisor, &kds);
   pmode_set_segment_registers(kcs, kds);
 
-/*                                                                 [cut] /k1 */
-/*                                                                  [cut] k3 */
+  pmode_enable();
 
   /*
    * 5)
    */
 
-  pic_init();
-
-/*                                                                 [cut] /k3 */
-/*                                                                  [cut] k1 */
-
-  pmode_enable();
-
-  /*
-   * 6)
-   */
-
   memcpy(&init->machdep.gdt, &gdt, sizeof (t_ia32_gdt));
-/*                                                                 [cut] /k1 */
-/*                                                                  [cut] k3 */
-  memcpy(&init->machdep.idt, &idt, sizeof (t_ia32_idt));
-/*                                                                 [cut] /k3 */
-/*                                                                  [cut] k1 */
+
+  /*  memcpy(&init->machdep.idt, &idt, sizeof (t_ia32_idt));*/
 }
 
 /*                                                                 [cut] /k1 */

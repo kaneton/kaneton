@@ -92,9 +92,9 @@ typedef struct
 
 t_error			map_reserve(t_asid		asid,
 				    t_opts		opts,
-				    t_vaddr*		addr,
 				    t_vsize		size,
-				    t_perms		perms);
+				    t_perms		perms,
+				    t_vaddr*		addr);
 
 t_error			map_release(t_asid		asid,
 				    t_vaddr		addr);

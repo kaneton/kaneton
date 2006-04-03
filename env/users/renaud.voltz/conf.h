@@ -16,7 +16,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <kaneton/debug.h>
+#include <core/debug.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -52,13 +52,13 @@
  * which fit method to use in segment
  */
 
-#define SEGMENT_FIT	FIT_FIRST
+#define SEGMENT_LOOKUP_ALGORITHM	FIT_FIRST
 
 /*
  * which fit method to use in region
  */
 
-#define REGION_FIT	FIT_FIRST
+#define REGION_LOOKUP_ALGORITHM		FIT_FIRST
 
 /*
  * which fit method to use in alloc
@@ -101,11 +101,11 @@
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/conf/conf.c
+ *      ../../core/conf/conf.c
  */
 
 /*
- * ../../kaneton/conf/conf.c
+ * ../../core/conf/conf.c
  */
 
 

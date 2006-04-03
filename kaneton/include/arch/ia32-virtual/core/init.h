@@ -36,7 +36,7 @@
  * and the page directory.
  */
 
-#define INIT_SEGMENTS		12
+#define INIT_SEGMENTS		11
 
 /*
  * the regions represent the physical memory to be mapped by the kernel.
@@ -53,7 +53,7 @@
  * nor in the regions.
  */
 
-#define INIT_REGIONS		8
+#define INIT_REGIONS		7
 
 /*
  * the kernel stack size is set to two pages.
@@ -70,7 +70,6 @@ typedef struct
 /*                                                                [cut] k1   */
 
   t_ia32_gdt			gdt;
-  t_ia32_idt			idt;
   t_ia32_directory		pd;
 
 /*                                                               [cut] /k1   */

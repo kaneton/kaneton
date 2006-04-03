@@ -32,6 +32,16 @@
 /*								    [cut] k3 */
 
 /*
+ * ---------- extern ---------------------------------------------------------
+ */
+
+/*
+ *
+ */
+
+extern t_asid			kasid;
+
+/*
  * ---------- globals ---------------------------------------------------------
  */
 
@@ -147,25 +157,44 @@ t_error			ia32_event_release(t_eventid		eventid)
  *
  * steps:
  *
- * 1) init events.
- * 2) set default handler for every exception.
- * 3) set default handler for every irq.
- * 4) enable external interrupts.
+ * 1)
+ * 2) init events.
+ * 3) set default handler for every exception.
+ * 4) set default handler for every irq.
+ * 5) enable external interrupts.
  */
 
 t_error			ia32_event_init(void)
 {
   int			id;
+  t_vaddr		vaddr;
+  t_ia32_idt		new_idt;
 
   /*
    * 1)
+   */
+  if (map_reserve(kasid, MAP_OPT_NONE,
+		  PAGESZ,
+		  PERM_READ | PERM_WRITE,
+		  &vaddr)
+      != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (idt_build(IDT_MAX_ENTRIES, vaddr, 1, &new_idt) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (idt_activate(&new_idt) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  /*
+   * 2)
    */
 
   if (interrupt_init() != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
-   * 2)
+   * 3)
    */
 
   for (id = IDT_EXCEPTION_BASE; id < IDT_EXCEPTION_BASE + EXCEPTION_NR; id++)
@@ -173,7 +202,7 @@ t_error			ia32_event_init(void)
       return ERROR_UNKNOWN;
 
   /*
-   * 3)
+   * 4)
    */
 
   for (id = IDT_IRQ_BASE; id < IDT_IRQ_BASE + IRQ_NR; id++)
@@ -181,7 +210,7 @@ t_error			ia32_event_init(void)
       return ERROR_UNKNOWN;
 
   /*
-   * 4)
+   * 5)
    */
 
   STI();

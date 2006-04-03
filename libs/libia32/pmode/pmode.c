@@ -87,11 +87,6 @@ t_error			pmode_init(void)
    */
 
   memcpy(&gdt, &init->machdep.gdt, sizeof (t_ia32_gdt));
-/*                                                                 [cut] /k2 */
-/*                                                                 [cut] k3 */
-  memcpy(&idt, &init->machdep.idt, sizeof (t_ia32_idt));
-/*                                                                 [cut] /k3 */
-/*                                                                 [cut] k2 */
 
   /*
    * 2)

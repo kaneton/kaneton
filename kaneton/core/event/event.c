@@ -276,7 +276,6 @@ t_error			event_get(t_eventid			eventid,
 
 t_error			event_init(void)
 {
-
   /*
    * 1)
    */

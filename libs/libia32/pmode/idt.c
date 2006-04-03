@@ -60,7 +60,7 @@ t_ia32_idt           idt;
  * 2) dump every idt entry.
  */
 
-t_error			idt_dump(t_ia32_idt*			dump_idt)
+t_error			idt_dump(t_ia32_idt*			table)
 {
   t_uint16		i;
   t_ia32_idte*		entries;
@@ -71,22 +71,16 @@ t_error			idt_dump(t_ia32_idt*			dump_idt)
    * 1)
    */
 
-  if (!dump_idt)
-    dump_idt = &idt;
-
-  /*
-   * XXX EVENT a quoi sert entries ?! (meme chose dans ../pmode/gdt.h).
-   */
-
-  entries = dump_idt->descriptor;
+  if (!table)
+    table = &idt;
 
   /*
    * 2)
    */
 
-  for (i = 0; i < dump_idt->count; i++)
+  for (i = 0; i < table->count; i++)
     {
-      if (idt_get_gate(dump_idt, i, &gate) != ERROR_NONE)
+      if (idt_get_gate(table, i, &gate) != ERROR_NONE)
 	continue;
 
       type = NULL;
@@ -134,8 +128,8 @@ t_error			idt_size(t_ia32_idt*			table,
 
 t_error			idt_build(t_uint16			entries,
 				  t_paddr			base,
-				  t_ia32_idt*			idt,
-				  t_uint8			clear)
+				  t_uint8			clear,
+				  t_ia32_idt*			table)
 {
   /*
    * 1)
@@ -155,15 +149,15 @@ t_error			idt_build(t_uint16			entries,
    * 3)
    */
 
-  idt->descriptor = (t_ia32_idte*)base;
-  idt->count = entries;
+  table->descriptor = (t_ia32_idte*)base;
+  table->count = entries;
 
   /*
    * 4)
    */
 
   if (clear)
-    memset(idt->descriptor, 0, entries * sizeof(t_ia32_idte));
+    memset(table->descriptor, 0, entries * sizeof(t_ia32_idte));
 
   return ERROR_NONE;
 }
@@ -173,11 +167,11 @@ t_error			idt_build(t_uint16			entries,
  *
  * steps:
  *
- * 1) build and load the new idt register.
- * 2) upate idt record.
+ * 1) upate idt record.
+ * 2) build and load the new idt register.
  */
 
-t_error			idt_activate(t_ia32_idt			new_idt)
+t_error			idt_activate(t_ia32_idt*		table)
 {
   t_ia32_idtr		idtr;
 
@@ -185,16 +179,16 @@ t_error			idt_activate(t_ia32_idt			new_idt)
    * 1)
    */
 
-  idtr.address = (t_paddr)new_idt.descriptor;
-  idtr.size = new_idt.count * sizeof(t_ia32_idte);
-  LIDT(idtr);
+  idt.descriptor = table->descriptor;
+  idt.count = table->count;
 
   /*
    * 2
    */
 
-  idt.descriptor = new_idt.descriptor;
-  idt.count = new_idt.count;
+  idtr.address = (t_paddr)idt.descriptor;
+  idtr.size = idt.count * sizeof(t_ia32_idte);
+  LIDT(idtr);
 
   return ERROR_NONE;
 }
@@ -209,7 +203,7 @@ t_error			idt_activate(t_ia32_idt			new_idt)
  * 3) copy to new idt address.
  */
 
-t_error			idt_import(t_ia32_idt*			idt)
+t_error			idt_import(t_ia32_idt*			table)
 {
   t_ia32_idtr		sidtr;
   t_ia32_idte*		source;
@@ -225,7 +219,7 @@ t_error			idt_import(t_ia32_idt*			idt)
    * 2
    */
 
-  if (sidtr.size > idt->count * sizeof(t_ia32_idte))
+  if (sidtr.size > table->count * sizeof(t_ia32_idte))
     return ERROR_UNKNOWN;
 
   /*
@@ -233,7 +227,7 @@ t_error			idt_import(t_ia32_idt*			idt)
    */
 
   source = (t_ia32_idte*)sidtr.address;
-  dest = idt->descriptor;
+  dest = table->descriptor;
 
   return ERROR_NONE;
 }
