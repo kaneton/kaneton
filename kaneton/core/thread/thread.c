@@ -129,12 +129,23 @@ t_error			thread_dump(void)
 }
 
 /*
+ * suspend a thread from execution.
  *
+ * steps:
+ *
+ * 1)
+ * 2)
  */
 
 t_error			thread_suspend(t_thrid			threadid)
 {
   THREAD_ENTER(thread);
+
+  /*
+   *
+   */
+
+
 
   /*
    *
@@ -147,12 +158,23 @@ t_error			thread_suspend(t_thrid			threadid)
 }
 
 /*
+ * give execution to a thread.
  *
+ * steps:
+ *
+ * 1)
+ * 2)
  */
 
 t_error			thread_execute(t_thrid			threadid)
 {
   THREAD_ENTER(thread);
+
+  /*
+   *
+   */
+
+
 
   /*
    *
@@ -165,12 +187,23 @@ t_error			thread_execute(t_thrid			threadid)
 }
 
 /*
+ * clone a thread.
  *
+ * steps:
+ *
+ * 1)
+ * 2)
  */
 
 t_error			thread_clone(t_thrid			threadid)
 {
   THREAD_ENTER(thread);
+
+  /*
+   *
+   */
+
+
 
   /*
    *

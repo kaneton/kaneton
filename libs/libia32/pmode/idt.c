@@ -63,7 +63,6 @@ t_ia32_idt           idt;
 t_error			idt_dump(t_ia32_idt*			table)
 {
   t_uint16		i;
-  t_ia32_idte*		entries;
   t_ia32_gate		gate;
   const char*		type;
 

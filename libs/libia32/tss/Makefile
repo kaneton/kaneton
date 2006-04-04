@@ -1,13 +1,3 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/kaneton/libs/libia32/tss/Makefile
-##
-## created       matthieu bucchianeri   [fri jan  6 11:45:56 2006]
-## updated       matthieu bucchianeri   [fri jan  6 11:50:35 2006]
-##
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -25,32 +15,32 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TSS_LO			:=		tss.lo
+TASK_LO			:=		task.lo
 
-TSS_C			:=
+TASK_C			:=
 
-TSS_O			:=		$(TSS_C:.c=.o)
+TASK_O			:=		$(TASK_C:.c=.o)
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(TSS_LO):		$(TSS_O)
-	$(call remove,$(TSS_LO),)
+$(TASK_LO):		$(TASK_O)
+	$(call remove,$(TASK_LO),)
 
-	$(call archive,$(TSS_LO),$(TSS_O),)
+	$(call archive,$(TASK_LO),$(TASK_O),)
 
 clear:
-	$(call remove,$(TSS_O),)
+	$(call remove,$(TASK_O),)
 
-	$(call remove,$(TSS_LO),)
+	$(call remove,$(TASK_LO),)
 
 	$(call purge,)
 
 dep:
 	$(call remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(TSS_C),$(_MAKEFILE_MK_),)
+	$(call dependencies,$(TASK_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

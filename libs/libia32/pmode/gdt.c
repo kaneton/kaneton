@@ -89,7 +89,6 @@ t_ia32_gdt	gdt;
 t_error			gdt_dump(t_ia32_gdt*			dump_gdt)
 {
   t_uint16		i;
-  t_ia32_gdte*		entries;
   t_ia32_segment	seg;
   const char*		type;
 
@@ -102,12 +101,6 @@ t_error			gdt_dump(t_ia32_gdt*			dump_gdt)
 
   /*
    * 2)
-   */
-
-  entries = dump_gdt->descriptor;
-
-  /*
-   * 3)
    */
 
   for (i = 1; i < dump_gdt->count; i++)
