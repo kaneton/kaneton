@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/conf.h
+ * file          /home/mycure/kaneton/env/users/julien.quintard/conf.h
  *
  * created       julien quintard   [sat dec 17 17:24:46 2005]
- * updated       julien quintard   [sat apr  1 23:47:25 2006]
+ * updated       julien quintard   [sun apr  2 23:31:28 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -36,16 +36,16 @@
 #define CONF_MODE		MODE_DEVELOPMENT
 
 /*
- * which fit method to use in segment
+ * which algorithm to use in segment
  */
 
-#define SEGMENT_FIT	FIT_FIRST
+#define SEGMENT_LOOKUP_ALGORITHM	FIT_FIRST
 
 /*
- * which fit method to use in region
+ * which algorithm to use in region
  */
 
-#define REGION_FIT	FIT_FIRST
+#define REGION_LOOKUP_ALGORITHM		FIT_FIRST
 
 /*
  * which fit method to use in alloc

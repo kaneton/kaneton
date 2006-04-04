@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/set/set_bpt.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun apr  2 13:54:09 2006]
+ * updated       julien quintard   [sun apr  2 19:29:33 2006]
  */
 
 /*
@@ -434,9 +434,9 @@ t_error			set_tail_bpt(t_setid			setid,
  * this function returns the previous node of the current iterator.
  */
 
-t_error			set_prev_bpt(t_setid			setid,
-				     t_iterator			current,
-				     t_iterator*		previous)
+t_error			set_previous_bpt(t_setid		setid,
+					 t_iterator		current,
+					 t_iterator*		previous)
 {
   o_set*		o;
 
@@ -479,8 +479,8 @@ t_error			set_next_bpt(t_setid			setid,
  * works with the sort option.
  */
 
-t_error			set_insert_head_bpt(t_setid		setid,
-					    void*		data)
+t_error			set_insert_bpt(t_setid			setid,
+				       void*			data)
 {
   SET_ENTER(set);
 
@@ -492,8 +492,8 @@ t_error			set_insert_head_bpt(t_setid		setid,
  * works with the sort option.
  */
 
-t_error			set_insert_tail_bpt(t_setid		setid,
-					    void*		data)
+t_error			set_append_bpt(t_setid			setid,
+				       void*			data)
 {
   SET_ENTER(set);
 
@@ -505,9 +505,9 @@ t_error			set_insert_tail_bpt(t_setid		setid,
  * works with the sort option.
  */
 
-t_error			set_insert_before_bpt(t_setid		setid,
-					      t_iterator	iterator,
-					      void*		data)
+t_error			set_before_bpt(t_setid			setid,
+				       t_iterator		iterator,
+				       void*			data)
 {
   SET_ENTER(set);
 
@@ -519,9 +519,9 @@ t_error			set_insert_before_bpt(t_setid		setid,
  * works with the sort option.
  */
 
-t_error			set_insert_after_bpt(t_setid		setid,
-					     t_iterator		iterator,
-					     void*		data)
+t_error			set_after_bpt(t_setid			setid,
+				      t_iterator		iterator,
+				      void*			data)
 {
   SET_ENTER(set);
 

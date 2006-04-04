@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/set/set.c
  *
  * created       julien quintard   [fri dec  2 19:55:19 2005]
- * updated       julien quintard   [sun apr  2 13:00:40 2006]
+ * updated       julien quintard   [mon apr  3 15:07:07 2006]
  */
 
 /*
@@ -18,38 +18,12 @@
  * set manager to store the data rather than create themselves data structures
  * by their own.
  *
- * notice that the set manager is based on the malloc() suite functions. indeed
- * the set manager maintains a data structure containing the set descriptors:
- * the container. moreover some data structure types required the malloc()
- * suite functions, the simplest example being the array data structure
- * which requires the realloc() function to be able to extend the data
- * structure without effort.
- *
- * due to this requirement, the set manager cannot manage the data structure
- * for the segments of the segment manager, the kernel address space segments
- * and the kernel address space regions of the address space manager because
- * the malloc() function is not provided yet. to bypass this restriction
- * the kaneton kernel uses an initial malloc() version which is based on
- * a little amount of memory provided by the bootloader, via the fields
- * alloc and allocsz of the init structure: this area is called the survival
- * memory area.
- *
- * using this initial malloc() function, the set manager is able to build
- * sets for every kernel managers: segment manager, address space manager,
- * region manager etc..
- *
- * note that the set manager uses itself to store the set descriptors.
- *
- * moreover, the set manager will provide a very very simple way to compare
- * different algorithms in different cases just by modifying the
- * call to set_reserve() in the desired manager.
- *
  * to add a data structure to the set manager you have to complete
  * the following steps:
  *
- *  1) create the core/kaneton/set/set_X.c file and modify the makefile
+ *  1) create the kaneton/core/set/set_X.c file and modify the makefile
  *     to add this new file.
- *  2) create the core/include/kaneton/set_X.h file and modify the
+ *  2) create the kaneton/include/core/set_X.h file and modify the
  *     set.h to include this new file.
  *  3) add the new data structure to the union contained in the
  *     set object: o_set, in the set.h header file.
@@ -58,52 +32,12 @@
  *
  * X represents the new data structure short name.
  *
- * nomenclature:
- *
- *  container
- *
- *    the container is the set which contains all the set descriptors.
- *
- *  descriptor
- *
- *    a set descriptor is the set meta-data. indeed, a set descriptor
- *    contains the set data structure containing the objects, the number
- *    of objects managed, the identifier of the set etc..
- *
- *  node
- *
- *    a node is a data structure element. indeed, each iterator references a
- *    node to be able to locate the previous and next nodes in this
- *    set.
- *
- *    sometimes, the node is also the object as in the array data structure.
- *
- *  object
- *
- *    an object, in the set manager terms, is the data contained in
- *    a set node, the data the "user" wants to store using the set manager.
- *
- * in other words, the container is a set which contains the set descriptors.
- * each set descriptor contains a data structure composed of nodes
- * which contain the objects provided by the set manager user.
- *
- * note that in the kaneton terms, the set manager is composed of objects.
- * indeed, in the container, each descriptor are in fact set objects (o_set)
- * so kaneton objects.
- *
- * moreover, the objects the user provides to the set manager to be stored
- * also are kaneton objects.
- *
- * remember that, in the kaneton terms, an object structure always begins
- * with an identifier and is manipulated by a capability on the distributed
- * operating system.
- *
  * the implementation uses macros to provide different data structures
  * manipulation with different number of arguments and different
  * type of arguments.
  *
  * note the specific use of the ## in the set header located
- * in core/include/kaneton/.
+ * in kaneton/include/core/.
  *
  * using the ## with variadic macros allows the use of a variable arguments
  * parameter to be empty, deleting the previous comma if needed.
@@ -150,7 +84,7 @@
  *
  * if a developer wants to add something at the start of each set manager's
  * function, he simply has to add his lines in the SET_ENTER macro located
- * in the core/include/kaneton/set.h header file.
+ * in the kaneton/include/core/set.h header file.
  */
 
 /*

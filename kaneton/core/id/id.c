@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/id/id.c
+ * file          /home/mycure/kaneton/kaneton/core/id/id.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 31 01:10:52 2006]
+ * updated       julien quintard   [mon apr  3 12:54:17 2006]
  */
 
 /*
@@ -66,7 +66,8 @@ t_error			id_show(o_id*				o)
 }
 
 /*
- * this function clones an identifier.
+ * this function clones an identifier meaning that a new identifier
+ * is reserved with same properties.
  */
 
 t_error			id_clone(o_id*				o,

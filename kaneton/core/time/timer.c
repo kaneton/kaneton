@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/time/timer.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       julien quintard   [sun apr  2 13:25:52 2006]
+ * updated       julien quintard   [sun apr  2 19:32:56 2006]
  */
 
 /*
@@ -190,7 +190,7 @@ t_error			timer_insert(o_timer*			o)
 
       if (o_tmp->delay >= o->delay)
 	{
-	  if (set_insert_before(timer->timers, i, o) != ERROR_NONE)
+	  if (set_before(timer->timers, i, o) != ERROR_NONE)
 	    TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
 	  TIMER_LEAVE(timer, ERROR_NONE);
@@ -201,7 +201,7 @@ t_error			timer_insert(o_timer*			o)
    * 2)
    */
 
-  if (set_insert_tail(timer->timers, o) != ERROR_NONE)
+  if (set_append(timer->timers, o) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   TIMER_LEAVE(timer, ERROR_NONE);

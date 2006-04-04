@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/kaneton.tex
 %%
 %% created       julien quintard   [thu dec  8 00:26:00 2005]
-%% updated       julien quintard   [mon mar 13 09:17:39 2006]
+%% updated       julien quintard   [wed apr  5 00:49:37 2006]
 %%
 
 %
@@ -26,7 +26,7 @@
 % title
 %
 
-\title{The kaneton microkernel reference
+\title{The kaneton microkernel reference $_{beta}$
        \logos}
 
 %
@@ -82,54 +82,32 @@ the official website
 \include{overview}
 \include{source-tree}
 \include{development-environment}
-
 \include{nomenclature}
+\include{coding-style}
 
-%\include{coding-style}
+\include{boot}
 
 %\include{core}
 
+%\include{portability}
+%\includes{architectures} % descriptions des archi supportees et implantees
+
 %\include{tools}
 %\include{check}
-%\include{glossary}
 
 \end{document}
 
 ---
 
-XXX expliquer lorsqu'on aborde les sets que vu que ca se base sur
-XXX malloc il fallait trouver une solution
+XXX parler de la klibc: plutot dire que kaneton utilise les quad
 
-XXX expliquer dans set de kaneton.pdf que set gere des objet kaneton.
-XXX un object kaneton est une structure qui a son premier champ de type t\_id
-XXX schema a l appui
-
-XXX expliquer l interface unifiee des set sans entrer dans le detail
-XXX d impl
-
-XXX le container, expliquer comment il est construit, le fait que ce soit
-XXX egalement un object
-
-XXX expliquer mieux les roles des fonctions pour que chaque etudient puisse
-XXX l implementer
-
-XXX segment\_fit alors segment\_init different
-
-XXX parler de la klibc
+il faudrait dire que c est implante en C
 
 ---
 
-faire un chapter sur le systeme de portabilite
+erreur: module dans bootloader je dis que c est n importe quoi alors
+ que dans la nomenclature c est un binaire passif
 
 ---
 
-segment, region, address space a expliquer dans nomenclature
-meme chose pour core, drivers, services, programs
-
-etc.. enfin passer chaque chapitre et rajouter les mots dans glossaire
-et nomenclature
-
----
-
-rajouter a un endroit un truc qui explique les commandes make principales,
-un mix en old/README et quickstart
+ensuite sections drivers, services

@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/set/set_ll.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun apr  2 13:55:02 2006]
+ * updated       julien quintard   [sun apr  2 19:19:24 2006]
  */
 
 /*
@@ -179,9 +179,9 @@ t_error			set_tail_ll(t_setid			setid,
  * this function returns an iterator on the previous node.
  */
 
-t_error			set_prev_ll(t_setid			setid,
-				    t_iterator			current,
-				    t_iterator*			previous)
+t_error			set_previous_ll(t_setid			setid,
+					t_iterator		current,
+					t_iterator*		previous)
 {
   t_set_ll_node*	c = current.u.ll.node;
   o_set*		o;
@@ -241,8 +241,8 @@ t_error			set_next_ll(t_setid			setid,
  * 7) increments the number of nodes in the list.
  */
 
-t_error			set_insert_head_ll(t_setid		setid,
-					   void*		data)
+t_error			set_insert_ll(t_setid			setid,
+				      void*			data)
 {
   t_set_ll_node		*n;
   o_set*		o;
@@ -337,8 +337,8 @@ t_error			set_insert_head_ll(t_setid		setid,
  * 7) increments the number of nodes in the list.
  */
 
-t_error			set_insert_tail_ll(t_setid		setid,
-					   void*		data)
+t_error			set_append_ll(t_setid			setid,
+				      void*			data)
 {
   t_set_ll_node		*n;
   o_set*		o;
@@ -433,9 +433,9 @@ t_error			set_insert_tail_ll(t_setid		setid,
  * 7) increments the objects counter.
  */
 
-t_error			set_insert_before_ll(t_setid		setid,
-					     t_iterator		iterator,
-					     void*		data)
+t_error			set_before_ll(t_setid			setid,
+				      t_iterator		iterator,
+				      void*			data)
 {
   t_set_ll_node		*i = iterator.u.ll.node;
   t_set_ll_node		*n;
@@ -531,9 +531,9 @@ t_error			set_insert_before_ll(t_setid		setid,
  * 7) increments the objects counter.
  */
 
-t_error			set_insert_after_ll(t_setid		setid,
-					    t_iterator		iterator,
-					    void*		data)
+t_error			set_after_ll(t_setid			setid,
+				     t_iterator			iterator,
+				     void*			data)
 {
   t_set_ll_node		*i = iterator.u.ll.node;
   t_set_ll_node		*n;

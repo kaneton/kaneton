@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/set/set_pipe.c
  *
  * created       renaud voltz   [wed jan 25 17:11:05 2006]
- * updated       julien quintard   [sun apr  2 13:55:36 2006]
+ * updated       julien quintard   [sun apr  2 19:30:15 2006]
  */
 
 /*
@@ -196,7 +196,7 @@ t_error			set_push_pipe(t_setid			setid,
 
   SET_ENTER(set);
 
-  retval = set_insert_head_ll(setid, data);
+  retval = set_insert_ll(setid, data);
 
   SET_LEAVE(set, retval);
 }
@@ -283,15 +283,15 @@ t_error			set_tail_pipe(t_setid			setid,
  * useful for the for_each macro.
  */
 
-t_error			set_prev_pipe(t_setid			setid,
-				      t_iterator		current,
-				      t_iterator*		previous)
+t_error			set_previous_pipe(t_setid		setid,
+					  t_iterator		current,
+					  t_iterator*		previous)
 {
   t_error		retval;
 
   SET_ENTER(set);
 
-  retval = set_prev_ll(setid, current, previous);
+  retval = set_previous_ll(setid, current, previous);
 
   SET_LEAVE(set, retval);
 }
@@ -321,8 +321,8 @@ t_error			set_next_pipe(t_setid			setid,
  * use set_push_pipe instead.
  */
 
-t_error			set_insert_head_pipe(t_setid		setid,
-					     void*		data)
+t_error			set_insert_pipe(t_setid			setid,
+					void*			data)
 {
   SET_ENTER(set);
 
@@ -334,8 +334,8 @@ t_error			set_insert_head_pipe(t_setid		setid,
  * this function just returns an error.
  */
 
-t_error			set_insert_tail_pipe(t_setid		setid,
-					     void*		data)
+t_error			set_append_pipe(t_setid			setid,
+					void*			data)
 {
   SET_ENTER(set);
 
@@ -347,9 +347,9 @@ t_error			set_insert_tail_pipe(t_setid		setid,
  * this function just returns an error.
  */
 
-t_error			set_insert_before_pipe(t_setid		setid,
-					       t_iterator	iterator,
-					       void*		data)
+t_error			set_before_pipe(t_setid			setid,
+					t_iterator		iterator,
+					void*			data)
 {
   SET_ENTER(set);
 
@@ -361,9 +361,9 @@ t_error			set_insert_before_pipe(t_setid		setid,
  * this function just returns an error.
  */
 
-t_error			set_insert_after_pipe(t_setid		setid,
-					      t_iterator	iterator,
-					      void*		data)
+t_error			set_after_pipe(t_setid			setid,
+				       t_iterator		iterator,
+				       void*			data)
 {
   SET_ENTER(set);
 

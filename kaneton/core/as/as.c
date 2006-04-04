@@ -23,8 +23,7 @@
  * the latter describes the regions, the virtual areas which reference
  * some segments.
  *
- * a task can give its address space to another with as_give.
- *
+ * a task can give its address space to another with as_give().
  */
 
 /*

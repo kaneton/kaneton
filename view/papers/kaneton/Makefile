@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/view/papers/kaneton/Makefile
 ##
 ## created       matthieu bucchianeri   [mon jan 30 22:05:58 2006]
-## updated       julien quintard   [thu mar  9 16:23:32 2006]
+## updated       julien quintard   [tue apr  4 12:35:24 2006]
 ##
 
 #
@@ -35,10 +35,10 @@ SOURCES			:=		kaneton.tex			\
 					development-environment.tex	\
 					nomenclature.tex		\
 					coding-style.tex		\
+					boot.tex			\
 					core.tex			\
 					tools.tex			\
-					check.tex			\
-					glossary.tex			
+					check.tex			
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\

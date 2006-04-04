@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/coding-style.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:32:57 2006]
-%% updated       julien quintard   [sun apr  2 13:32:11 2006]
+%% updated       julien quintard   [mon apr  3 01:41:41 2006]
 %%
 
 %
@@ -39,7 +39,7 @@ lower case letters
 
 \section{Headers}
 
-Each file must start with an header formatted as shown below:
+Each file must start with a header formatted as shown below:
 
 \begin{verbatim}
 /*
@@ -47,7 +47,7 @@ Each file must start with an header formatted as shown below:
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/kaneton/as/as.c
+ * file          /home/mycure/core/kaneton/kaneton/as/as.c
  *
  * created       julien quintard   [fri feb 11 02:23:41 2005]
  * updated       matthieu bucchianeri   [mon jan 30 20:30:57 2006]
@@ -62,9 +62,9 @@ a correct kaneton header:
 
 \begin{itemize}
   \item
-    \textbf{EC\_LICENCE} must be set to ``kaneton licence''.
+    \textit{EC\_LICENCE} must be set to ``kaneton licence''.
   \item
-    \textbf{EC\_DEVELOPER} must be set to your first name and last name.
+    \textit{EC\_DEVELOPER} must be set to your first name and last name.
 \end{itemize}
 
 Please, do not use nicknames in headers.
@@ -88,7 +88,7 @@ Here are a few rules you are encouraged to follow:
 
 \begin{itemize}
   \item
-    \textbf{sz} suffix for variables representing a size.
+    \textit{sz} suffix for variables representing a size.
 
     \begin{verbatim}
       #define PAGESZ          4096
@@ -96,7 +96,7 @@ Here are a few rules you are encouraged to follow:
       int                     modsz;
     \end{verbatim}
   \item
-    \textbf{n} prefix for variables representing a number of objects.
+    \textit{n} prefix for variables representing a number of objects.
 
     \begin{verbatim}
       int                     nclusters;
@@ -138,32 +138,29 @@ what the function does without being too long.
 
 \subsection{Types}
 
-As variables and functions, type names must be expressed in english
-with lower case letters.
-
 Here are the prefixes you must use when writing your own types:
 
 \begin{itemize}
   \item
-    \textbf{m\_} for managers main structures.
+    \textit{m\_} for managers main structures.
   \item
-    \textbf{o\_} for kaneton objects.
+    \textit{o\_} for kaneton objects.
   \item
-    \textbf{i\_} for interfaces.
+    \textit{d\_} for machine-dependent dispatch interfaces.
   \item
-    \textbf{d\_} for architecture-dependent structures.
+    \textit{a\_} for architecture-dependent structures.
   \item
-    \textbf{s\_} for general purpose structures.
+    \textit{s\_} for general purpose structures.
   \item
-    \textbf{t\_} for basic and general purpose typedefs.
+    \textit{t\_} for basic and general purpose typedefs.
   \item
-    \textbf{c\_} for kaneton capabilities.
+    \textit{c\_} for kaneton capabilities.
   \item
-    \textbf{u\_} for kaneton unique identifiers.
+    \textit{i\_} for kaneton identifiers.
 \end{itemize}
 
-Notice that \textbf{d\_} can be combined with other prefixes, for
-example \textbf{do\_} for a dependent object.
+Notice that \textit{a\_} can be combined with other prefixes, for
+example \textit{ao\_} for an architecture-dependent object.
 
 %
 % includes
@@ -176,9 +173,9 @@ minimal number of header files:
 
 \begin{itemize}
   \item
-    \textbf{kaneton.h} for the microkernel declarations.
+    \textit{kaneton.h} for the microkernel declarations.
   \item
-    \textbf{klibc.h} for the kaneton specific C library.
+    \textit{klibc.h} for the kaneton specific C library.
 \end{itemize}
 
 These files are located in the include path, so do not use relative include
@@ -201,7 +198,7 @@ All include files must be protected against multiple inclusions. The
 guard macro to use must be named using the directory name, one underscore,
 the file name, one underscore and a capital ``H''.
 
-For example, the file \textit{core/include/kaneton/segment.h} will be
+For example, the file \textit{kaneton/include/kaneton/segment.h} will be
 guarded as follow:
 
 \begin{verbatim}
@@ -223,11 +220,11 @@ with the architecture name; for example for the Intel architecture:
 
 \section{Types}
 
-You may use as soon as possible standard types: \textbf{t\_uint8},
-\textbf{t\_sint32}, \textbf{t\_uint64} etc..
+You may use as soon as possible standard types: \textit{t\_uint8},
+\textit{t\_sint32}, \textit{t\_uint64} etc..
 
 This nomenclature is more understandable than
-\textbf{unsigned long long int}.
+\textit{unsigned long long int}.
 
 %
 % return values
@@ -237,10 +234,10 @@ This nomenclature is more understandable than
 
 Every function must report whether it successed or failed.
 
-In kaneton, functions' return type must be \textbf{t\_error}.
+In kaneton, functions' return type must be \textit{t\_error}.
 
-A function will return \textbf{ERROR\_NONE} on success and anything
-else on error, for example \textbf{ERROR\_UNKNOWN} to indicate a non-specific
+A function will return \textit{ERROR\_NONE} on success and anything
+else on error, for example \textit{ERROR\_UNKNOWN} to indicate a non-specific
 error.
 
 %
@@ -328,7 +325,7 @@ Moreover, every function must be preceded by a comment defining its
 behavior.
 
 For complex functions and yo prevent direct comments in the source code,
-we used \textbf{steps}:
+we used \textit{steps}:
 
 \begin{itemize}
   \item
@@ -402,13 +399,13 @@ Possible sections in a file are:
 
 \begin{itemize}
   \item
-    \textbf{header files}: information, dependencies, defines, types,
+    \textit{header files}: information, dependencies, defines, types,
     prototypes, macros, etc..
   \item
-    \textbf{source files}: information, extern, globals, includes,
+    \textit{source files}: information, extern, globals, includes,
     functions, etc..
   \item
-    \textbf{make files}: dependencies, directives, variables, rules, etc..
+    \textit{make files}: dependencies, directives, variables, rules, etc..
 \end{itemize}
 
 Moreover, every important file, for example the main file of each
@@ -429,17 +426,17 @@ The kaneton microkernel uses few fundamental macros lited below:
 
 \begin{itemize}
   \item
-    \textbf{\_\_\_bootloader} indicates that this source code belongs to
+    \textit{\_\_\_bootloader} indicates that this source code belongs to
     the bootloader.
   \item
-    \textbf{\_\_\_kernel} indicates that this source code belongs to the
+    \textit{\_\_\_kernel} indicates that this source code belongs to the
     microkernel.
   \item
-    \textbf{\_\_\_kaneton} indicates that this kernel is the kaneton
+    \textit{\_\_\_kaneton} indicates that this kernel is the kaneton
     microkernel.
   \item
-    \textbf{\_\_\_wordsz} indicates the word size: 16-bit, 32-bit,
+    \textit{\_\_\_wordsz} indicates the word size: 16-bit, 32-bit,
     64-bit etc..
   \item
-    \textbf{\_\_\_endian} indicates the endianness.
+    \textit{\_\_\_endian} indicates the endianness.
 \end{itemize}

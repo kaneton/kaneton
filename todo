@@ -1,4 +1,12 @@
 --
+ ordre des *_give(). tjs le plus en dans la hierarchie en premier:
+
+ as_give(task, as); segment_give(as, segment) etc..
+
+--
+ mettre a jour dev-env
+
+--
  * vraiment finir les resize & co des regions. c'est le seul truc qui manque.
  * revoir les flush & autre clean: les sets sont instable, donc pas de for_each
    quand on supprime.
@@ -38,11 +46,6 @@
 
 --
  ameliorer le parcourt des modules en rajoutant un champ next.
-
---
- c'est quoi ce fichier fncychap.sty dans kaneton/
-
- j'imagine que c'est pour afficher un chapitre mais bon c'est abuse.
 
 --
   faire un programme qui rajoute une section kaneton/kayou a un ELF.

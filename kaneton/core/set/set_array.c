@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/set/set_array.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun apr  2 13:53:26 2006]
+ * updated       julien quintard   [sun apr  2 19:16:47 2006]
  */
 
 /*
@@ -253,9 +253,9 @@ t_error			set_tail_array(t_setid			setid,
  * 3) updates the iterator.
  */
 
-t_error			set_prev_array(t_setid			setid,
-				       t_iterator		current,
-				       t_iterator*		previous)
+t_error			set_previous_array(t_setid		setid,
+					   t_iterator		current,
+					   t_iterator*		previous)
 {
   o_set*		o;
   t_setsz		i;
@@ -350,8 +350,8 @@ t_error			set_next_array(t_setid			setid,
  * 3) initialises created slots
  */
 
-static t_error		set_expand_array(o_set		*o,
-					 void		*data)
+static t_error		set_expand_array(o_set			*o,
+					 void			*data)
 {
   t_setsz		i;
   t_setsz		sz;
@@ -399,9 +399,9 @@ static t_error		set_expand_array(o_set		*o,
  * 4) shifts right to make some room and inserts.
  */
 
-static t_error		set_insert_at(o_set		*o,
-				      t_setsz		pos,
-				      void		*data)
+static t_error		set_insert_at(o_set			*o,
+				      t_setsz			pos,
+				      void			*data)
 {
   t_setsz		limit;
 
@@ -472,8 +472,8 @@ static t_error		set_insert_at(o_set		*o,
  * 5) updates count.
  */
 
-t_error			set_insert_head_array(t_setid		setid,
-					      void*		data)
+t_error			set_insert_array(t_setid		setid,
+					 void*			data)
 {
   o_set*		o;
   void*			cpy;
@@ -537,8 +537,8 @@ t_error			set_insert_head_array(t_setid		setid,
  * 5) updates count.
  */
 
-t_error			set_insert_tail_array(t_setid		setid,
-					      void*		data)
+t_error			set_append_array(t_setid		setid,
+					 void*			data)
 {
   o_set*		o;
   t_setsz		i;
@@ -614,9 +614,9 @@ t_error			set_insert_tail_array(t_setid		setid,
  * 5) updates item count.
  */
 
-t_error			set_insert_before_array(t_setid		setid,
-						t_iterator	iterator,
-						void*		data)
+t_error			set_before_array(t_setid		setid,
+					 t_iterator		iterator,
+					 void*			data)
 {
   o_set*		o;
   t_setsz		i;
@@ -687,9 +687,9 @@ t_error			set_insert_before_array(t_setid		setid,
  * 5) updates count.
  */
 
-t_error			set_insert_after_array(t_setid		setid,
-					       t_iterator	iterator,
-					       void*		data)
+t_error			set_after_array(t_setid			setid,
+					t_iterator		iterator,
+					void*			data)
 {
   o_set*       		o;
   t_setsz		i;

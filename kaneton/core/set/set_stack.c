@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/set/set_stack.c
  *
  * created       renaud voltz   [wed jan 25 17:11:05 2006]
- * updated       julien quintard   [sun apr  2 13:55:48 2006]
+ * updated       julien quintard   [sun apr  2 19:31:01 2006]
  */
 
 /*
@@ -195,7 +195,7 @@ t_error			set_push_stack(t_setid			setid,
 
   SET_ENTER(set);
 
-  retval = set_insert_head_ll(setid, data);
+  retval = set_insert_ll(setid, data);
 
   SET_LEAVE(set, retval);
 }
@@ -279,18 +279,18 @@ t_error			set_tail_stack(t_setid			setid,
 /*
  * this function returns an iterator on the previous node.
  *
- * useful for the for_each macro.
+ * useful for the foreach macro.
  */
 
-t_error			set_prev_stack(t_setid			setid,
-				       t_iterator		current,
-				       t_iterator*		previous)
+t_error			set_previous_stack(t_setid		setid,
+					   t_iterator		current,
+					   t_iterator*		previous)
 {
   t_error		retval;
 
   SET_ENTER(set);
 
-  retval = set_prev_ll(setid, current, previous);
+  retval = set_previous_ll(setid, current, previous);
 
   SET_LEAVE(set, retval);
 }
@@ -320,8 +320,8 @@ t_error			set_next_stack(t_setid			setid,
  * use set_push_stack instead.
  */
 
-t_error			set_insert_head_stack(t_setid		setid,
-					      void*		data)
+t_error			set_insert_stack(t_setid		setid,
+					 void*			data)
 {
   SET_ENTER(set);
 
@@ -333,8 +333,8 @@ t_error			set_insert_head_stack(t_setid		setid,
  * this function just returns an error.
  */
 
-t_error			set_insert_tail_stack(t_setid		setid,
-					      void*		data)
+t_error			set_append_stack(t_setid		setid,
+					 void*			data)
 {
   SET_ENTER(set);
 
@@ -346,9 +346,9 @@ t_error			set_insert_tail_stack(t_setid		setid,
  * this function just returns an error.
  */
 
-t_error			set_insert_before_stack(t_setid		setid,
-						t_iterator	iterator,
-						void*		data)
+t_error			set_before_stack(t_setid		setid,
+					 t_iterator		iterator,
+					 void*			data)
 {
   SET_ENTER(set);
 
@@ -360,9 +360,9 @@ t_error			set_insert_before_stack(t_setid		setid,
  * this function just returns an error.
  */
 
-t_error			set_insert_after_stack(t_setid		setid,
-					       t_iterator	iterator,
-					       void*		data)
+t_error			set_after_stack(t_setid			setid,
+					t_iterator		iterator,
+					void*			data)
 {
   SET_ENTER(set);
 

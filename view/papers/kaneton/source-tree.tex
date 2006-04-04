@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/source-tree.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:32:40 2006]
-%% updated       julien quintard   [tue mar  7 14:18:17 2006]
+%% updated       julien quintard   [mon apr  3 01:39:29 2006]
 %%
 
 %
@@ -33,11 +33,11 @@ listing:
 \begin{verbatim}
 cheat/
 check/
-core/
 doc/
 drivers/
 env/
 export/
+kaneton/
 libs/
 licenses/
 programs/
@@ -62,7 +62,7 @@ previous years or on other kernel source code available on the internet.
 To avoid the cheating, kaneton people developed a software checking
 for cheating between different source codes.
 
-The \textbf{cheat} kaneton subdirectory contains everything necessary
+The \textit{cheat/} kaneton subdirectory contains everything necessary
 to check for cheating including the software, the different source code
 found on the internet, the kaneton students' implementation from the
 previous years etc..
@@ -84,76 +84,7 @@ current kaneton reference implementation making sure this implementation
 works fine, second, to test the students' implementations and to evaluate
 their microkernels' correctness.
 
-The \textbf{check/} subdirectory so contains the set kaneton tools and tests.
-
-%
-% core/
-%
-
-\section{core/}
-
-This subdirectory is the most important of the project since it contains
-all the microkernel code, the bootloader code and the bootstrap code.
-
-%
-% core/bootstrap/
-%
-
-\subsection{core/bootstrap/}
-
-This directory contains bootstraps for all supported architectures.
-
-Indeed, this subdirectory contains a directory called \textbf{arch} which
-also contains a list of directories, one per architecture. Then each
-architecture directory contains the bootstrap code for this precise
-architecture.
-
-%
-% core/bootloader/
-%
-
-\subsection{core/bootloader/}
-
-This directory contains bootloaders for all supported architectures.
-
-The same bootstrap hierarchy organization goes for the bootloader
-including an \textbf{arch} directory with a list of architecture
-specific directories.
-
-%
-% core/kaneton/
-%
-
-\subsection{core/kaneton/}
-
-This directory contains the kaneton microkernel reference source code.
-
-The directory is divided as shown below:
-
-\begin{verbatim}
-arch/
-as/
-conf/
-debug/
-id/
-region/
-schedule/
-segment/
-set/
-stats/
-task/
-thread/
-[...]
-\end{verbatim}
-
-Notice that there is one subdirectory per manager.
-
-All architecture dependent code is placed in the \textbf{arch} subdirectory.
-As for the bootstrap and the bootloader, this directory contains
-subdirectories for each architecture.
-
-Each of these subdirectories contains files implementing
-architecture-dependent code for each manager.
+The \textit{check/} subdirectory so contains the set kaneton tools and tests.
 
 %
 % doc/
@@ -210,6 +141,75 @@ Moreover some code parts must be removed because the students will
 then have to fill in these parts.
 
 %
+% kaneton/
+%
+
+\section{kaneton/}
+
+This subdirectory is the most important of the project since it contains
+all the microkernel code, the bootloader code and the bootstrap code.
+
+%
+% kaneton/bootstrap/
+%
+
+\subsection{kaneton/bootstrap/}
+
+This directory contains bootstraps for all supported architectures.
+
+Indeed, this subdirectory contains a directory called \textit{arch/} which
+also contains a list of directories, one per architecture. Then each
+architecture directory contains the bootstrap code for this precise
+architecture.
+
+%
+% kaneton/bootloader/
+%
+
+\subsection{kaneton/bootloader/}
+
+This directory contains bootloaders for all supported architectures.
+
+The same bootstrap hierarchy organization goes for the bootloader
+including an \textit{arch/} directory with a list of architecture
+specific directories.
+
+%
+% kaneton/kaneton/
+%
+
+\subsection{kaneton/core/}
+
+This directory contains the kaneton core reference source code.
+
+The directory is divided as shown below:
+
+\begin{verbatim}
+arch/
+as/
+conf/
+debug/
+id/
+region/
+schedule/
+segment/
+set/
+stats/
+task/
+thread/
+[...]
+\end{verbatim}
+
+Notice that there is one subdirectory per manager.
+
+All architecture dependent code is placed in the \textit{arch/} subdirectory.
+As for the bootstrap and the bootloader, this directory contains
+subdirectories for each architecture.
+
+Each of these subdirectories contains files implementing
+architecture-dependent code for each manager.
+
+%
 % libs/
 %
 
@@ -219,7 +219,7 @@ This directory contains the libraries necessary by the kaneton microkernel
 or by the kaneton servers.
 
 Indeed, for example, this directory contains a subdirectory named
-\textit{libia32}; this directory containing the whole source code of
+\textit{libia32/}; this directory containing the whole source code of
 a library for the Intel Architecture 32-bit management.
 
 %

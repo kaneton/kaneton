@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/set.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       julien quintard   [sun apr  2 13:50:41 2006]
+ * updated       julien quintard   [tue apr  4 12:29:07 2006]
  */
 
 #ifndef CORE_SET_H
@@ -113,7 +113,7 @@ struct				s_iterator
 /*
  * set object
  *
- * the setid field represent the set identifier used to retrieve the set
+ * the id field represent the set identifier used to retrieve the set
  * data structure. the union is composed of subparts dependending of the
  * set type.
  */
@@ -195,15 +195,15 @@ typedef struct
 
 #if (DEBUG & DEBUG_SET) && defined(SET_DEBUG_TRAP)
 
-# define set_debug(_func_, _setid_, _args_...)				\
+# define set_debug(_func_, _id_, _args_...)				\
   fprintf(stderr, "[setd] trap: %s(%qu, %s)\n",				\
           #_func_,							\
-          _setid_,							\
+          _id_,								\
           #_args_);
 
 #else
 
-# define set_debug(_func_, _setid_, _args...)
+# define set_debug(_func_, _id_, _args...)
 
 #endif
 
@@ -211,33 +211,33 @@ typedef struct
  * traps
  */
 
-#define set_trap(_func_, _setid_, _args_...)				\
+#define set_trap(_func_, _id_, _args_...)				\
   (									\
     {									\
       t_error		_r_ = ERROR_UNKNOWN;				\
       o_set*		_set_;						\
 									\
-      set_debug(_func_, _setid_, _args_);				\
+      set_debug(_func_, _id_, _args_);					\
 									\
-      if (set_descriptor((_setid_), &_set_) == ERROR_NONE)		\
+      if (set_descriptor((_id_), &_set_) == ERROR_NONE)			\
         {								\
           switch (_set_->type)						\
             {								\
 /*                                                          [cut] k2 */	\
               case SET_TYPE_ARRAY:					\
-                _r_ = _func_##_array((_setid_), ##_args_);		\
+                _r_ = _func_##_array((_id_), ##_args_);			\
                 break;							\
               case SET_TYPE_BPT:					\
-                _r_ = _func_##_bpt((_setid_), ##_args_);		\
+                _r_ = _func_##_bpt((_id_), ##_args_);			\
                 break;							\
               case SET_TYPE_LL:						\
-                _r_ = _func_##_ll((_setid_), ##_args_);			\
+                _r_ = _func_##_ll((_id_), ##_args_);			\
                 break;							\
               case SET_TYPE_PIPE:					\
-                _r_ = _func_##_pipe((_setid_), ##_args_);		\
+                _r_ = _func_##_pipe((_id_), ##_args_);			\
                 break;							\
               case SET_TYPE_STACK:					\
-                _r_ = _func_##_stack((_setid_), ##_args_);		\
+                _r_ = _func_##_stack((_id_), ##_args_);			\
                 break;							\
 /*                                                         [cut] /k2 */	\
             }								\
@@ -246,84 +246,84 @@ typedef struct
     }									\
   )
 
-#define set_type(_type_, _setid_)					\
-  set_type_##_type_(_setid_)
+#define set_type(_type_, _id_)						\
+  set_type_##_type_(_id_)
 
 #define set_reserve(_type_, _args_...)					\
   set_reserve_##_type_(_args_)
 
-#define set_release(_setid_, _args_...)					\
-  set_trap(set_release, _setid_, ##_args_)
+#define set_release(_id_, _args_...)					\
+  set_trap(set_release, _id_, ##_args_)
 
-#define set_head(_setid_, _args_...)					\
-  set_trap(set_head, _setid_, ##_args_)
+#define set_head(_id_, _args_...)					\
+  set_trap(set_head, _id_, ##_args_)
 
-#define set_tail(_setid_, _args_...)					\
-  set_trap(set_tail, _setid_, ##_args_)
+#define set_tail(_id_, _args_...)					\
+  set_trap(set_tail, _id_, ##_args_)
 
-#define set_previous(_setid_, _args_...)				\
-  set_trap(set_prev, _setid_, ##_args_)
+#define set_previous(_id_, _args_...)					\
+  set_trap(set_previous, _id_, ##_args_)
 
-#define set_next(_setid_, _args_...)					\
-  set_trap(set_next, _setid_, ##_args_)
+#define set_next(_id_, _args_...)					\
+  set_trap(set_next, _id_, ##_args_)
 
-#define set_add(_setid_, _args_...)					\
-  set_trap(set_add, _setid_, ##_args_)
+#define set_add(_id_, _args_...)					\
+  set_trap(set_add, _id_, ##_args_)
 
-#define set_remove(_setid_, _args_...)					\
-  set_trap(set_remove, _setid_, ##_args_)
+#define set_remove(_id_, _args_...)					\
+  set_trap(set_remove, _id_, ##_args_)
 
-#define set_delete(_setid_, _args_...)					\
-  set_trap(set_delete, _setid_, ##_args_)
+#define set_delete(_id_, _args_...)					\
+  set_trap(set_delete, _id_, ##_args_)
 
-#define set_flush(_setid_, _args_...)					\
-  set_trap(set_flush, _setid_, ##_args_)
+#define set_flush(_id_, _args_...)					\
+  set_trap(set_flush, _id_, ##_args_)
 
-#define set_insert_head(_setid_, _args_...)				\
-  set_trap(set_insert_head, _setid_, ##_args_)
+#define set_insert(_id_, _args_...)					\
+  set_trap(set_insert, _id_, ##_args_)
 
-#define set_insert_tail(_setid_, _args_...)				\
-  set_trap(set_insert_tail, _setid_, ##_args_)
+#define set_append(_id_, _args_...)					\
+  set_trap(set_append, _id_, ##_args_)
 
-#define set_insert_before(_setid_, _args_...)				\
-  set_trap(set_insert_before, _setid_, ##_args_)
+#define set_before(_id_, _args_...)					\
+  set_trap(set_before, _id_, ##_args_)
 
-#define set_insert_after(_setid_, _args_...)				\
-  set_trap(set_insert_after, _setid_, ##_args_)
+#define set_after(_id_, _args_...)					\
+  set_trap(set_after, _id_, ##_args_)
 
-#define set_locate(_setid_, _args_...)					\
-  set_trap(set_locate, _setid_, ##_args_)
+#define set_locate(_id_, _args_...)					\
+  set_trap(set_locate, _id_, ##_args_)
 
-#define set_object(_setid_, _args_...)					\
-  set_trap(set_object, _setid_, ##_args_)
+#define set_object(_id_, _args_...)					\
+  set_trap(set_object, _id_, ##_args_)
 
-#define set_show(_setid_, _args_...)					\
-  set_trap(set_show, _setid_, ##_args_)
+#define set_show(_id_, _args_...)					\
+  set_trap(set_show, _id_, ##_args_)
 
-#define set_push(_setid_, _args_...)					\
-  set_trap(set_push, _setid_, ##_args_)
+#define set_push(_id_, _args_...)					\
+  set_trap(set_push, _id_, ##_args_)
 
-#define set_pop(_setid_, _args_...)					\
-  set_trap(set_pop, _setid_, ##_args_)
+#define set_pop(_id_, _args_...)					\
+  set_trap(set_pop, _id_, ##_args_)
 
-#define set_pick(_setid_, _args_...)					\
-  set_trap(set_pick, _setid_, ##_args_)
+#define set_pick(_id_, _args_...)					\
+  set_trap(set_pick, _id_, ##_args_)
 
 
 /*
  * foreach
  */
 
-#define set_foreach(_opt_, _setid_, _iterator_, _state_)		\
+#define set_foreach(_opt_, _id_, _iterator_, _state_)			\
   for ((_state_) = ITERATOR_STATE_UNUSED;				\
         (((_state_) == ITERATOR_STATE_UNUSED) ?				\
           ((_opt_) == SET_OPT_FORWARD ?					\
-            set_head((_setid_), (_iterator_)) == ERROR_NONE :		\
-            set_tail((_setid_), (_iterator_)) == ERROR_NONE) :		\
+            set_head((_id_), (_iterator_)) == ERROR_NONE :		\
+            set_tail((_id_), (_iterator_)) == ERROR_NONE) :		\
           ((_opt_) == SET_OPT_FORWARD ?					\
-            set_next((_setid_), *(_iterator_), (_iterator_)) ==		\
+            set_next((_id_), *(_iterator_), (_iterator_)) ==		\
               ERROR_NONE :						\
-            set_previous((_setid_), *(_iterator_), (_iterator_)) ==	\
+            set_previous((_id_), *(_iterator_), (_iterator_)) ==	\
               ERROR_NONE));						\
 	 (_state_) = ITERATOR_STATE_USED				\
        )
@@ -379,27 +379,27 @@ t_error			set_head_array(t_setid			setid,
 t_error			set_tail_array(t_setid			setid,
 				       t_iterator*		iterator);
 
-t_error			set_prev_array(t_setid			setid,
-				       t_iterator		current,
-				       t_iterator*		previous);
+t_error			set_previous_array(t_setid		setid,
+					   t_iterator		current,
+					   t_iterator*		previous);
 
 t_error			set_next_array(t_setid			setid,
 				       t_iterator		current,
 				       t_iterator*		next);
 
-t_error			set_insert_head_array(t_setid		setid,
-					      void*		data);
+t_error			set_insert_array(t_setid		setid,
+					 void*			data);
 
-t_error			set_insert_tail_array(t_setid		setid,
-					      void*		data);
+t_error			set_append_array(t_setid		setid,
+					 void*			data);
 
-t_error			set_insert_before_array(t_setid		setid,
-						t_iterator	iterator,
-						void*		data);
+t_error			set_before_array(t_setid		setid,
+					 t_iterator		iterator,
+					 void*			data);
 
-t_error			set_insert_after_array(t_setid		setid,
-					       t_iterator	iterator,
-					       void*		data);
+t_error			set_after_array(t_setid			setid,
+					t_iterator		iterator,
+					void*			data);
 
 t_error			set_add_array(t_setid			setid,
 				      void*			data);
@@ -450,27 +450,27 @@ t_error			set_head_ll(t_setid			setid,
 t_error			set_tail_ll(t_setid			setid,
 				    t_iterator*			iterator);
 
-t_error			set_prev_ll(t_setid			setid,
-				    t_iterator			current,
-				    t_iterator*			previous);
+t_error			set_previous_ll(t_setid			setid,
+					t_iterator		current,
+					t_iterator*		previous);
 
 t_error			set_next_ll(t_setid			setid,
 				    t_iterator			current,
 				    t_iterator*			next);
 
-t_error			set_insert_head_ll(t_setid		setid,
-					   void*		data);
+t_error			set_insert_ll(t_setid			setid,
+				      void*			data);
 
-t_error			set_insert_tail_ll(t_setid		setid,
-					   void*		data);
+t_error			set_append_ll(t_setid			setid,
+				      void*			data);
 
-t_error			set_insert_before_ll(t_setid		setid,
-					     t_iterator		iterator,
-					     void*		data);
+t_error			set_before_ll(t_setid			setid,
+				      t_iterator		iterator,
+				      void*			data);
 
-t_error			set_insert_after_ll(t_setid		setid,
-					    t_iterator		iterator,
-					    void*		data);
+t_error			set_after_ll(t_setid			setid,
+				     t_iterator			iterator,
+				     void*			data);
 
 t_error			set_add_ll(t_setid			setid,
 				   void*			data);
@@ -550,27 +550,27 @@ t_error			set_head_bpt(t_setid			setid,
 t_error			set_tail_bpt(t_setid			setid,
 				     t_iterator*		iterator);
 
-t_error			set_prev_bpt(t_setid			setid,
-				     t_iterator			current,
-				     t_iterator*		previous);
+t_error			set_previous_bpt(t_setid		setid,
+					 t_iterator		current,
+					 t_iterator*		previous);
 
 t_error			set_next_bpt(t_setid			setid,
 				     t_iterator			current,
 				     t_iterator*		next);
 
-t_error			set_insert_head_bpt(t_setid		setid,
-					    void*		data);
+t_error			set_insert_bpt(t_setid			setid,
+				       void*			data);
 
-t_error			set_insert_tail_bpt(t_setid		setid,
-					    void*		data);
+t_error			set_append_bpt(t_setid			setid,
+				       void*			data);
 
-t_error			set_insert_before_bpt(t_setid		setid,
-					      t_iterator	iterator,
-					      void*		data);
+t_error			set_before_bpt(t_setid			setid,
+				       t_iterator		iterator,
+				       void*			data);
 
-t_error			set_insert_after_bpt(t_setid		setid,
-					     t_iterator		iterator,
-					     void*		data);
+t_error			set_after_bpt(t_setid			setid,
+				      t_iterator		iterator,
+				      void*			data);
 
 t_error			set_add_bpt(t_setid			setid,
 				    void*			data);
@@ -637,27 +637,27 @@ t_error			set_head_pipe(t_setid			setid,
 t_error			set_tail_pipe(t_setid			setid,
 				      t_iterator*		iterator);
 
-t_error			set_prev_pipe(t_setid			setid,
-				      t_iterator		current,
-				      t_iterator*		previous);
+t_error			set_previous_pipe(t_setid		setid,
+					  t_iterator		current,
+					  t_iterator*		previous);
 
 t_error			set_next_pipe(t_setid			setid,
 				      t_iterator		current,
 				      t_iterator*		next);
 
-t_error			set_insert_head_pipe(t_setid		setid,
-					     void*		data);
+t_error			set_insert_pipe(t_setid			setid,
+					void*			data);
 
-t_error			set_insert_tail_pipe(t_setid		setid,
-					     void*		data);
+t_error			set_append_pipe(t_setid			setid,
+					void*			data);
 
-t_error			set_insert_before_pipe(t_setid		setid,
-					       t_iterator	iterator,
-					       void*		data);
+t_error			set_before_pipe(t_setid			setid,
+					t_iterator		iterator,
+					void*			data);
 
-t_error			set_insert_after_pipe(t_setid		setid,
-					      t_iterator	iterator,
-					      void*		data);
+t_error			set_after_pipe(t_setid			setid,
+				       t_iterator		iterator,
+				       void*			data);
 
 t_error			set_add_pipe(t_setid			setid,
 				     void*			data);
@@ -707,27 +707,27 @@ t_error			set_head_stack(t_setid			setid,
 t_error			set_tail_stack(t_setid			setid,
 				       t_iterator*		iterator);
 
-t_error			set_prev_stack(t_setid			setid,
-				       t_iterator		current,
-				       t_iterator*		previous);
+t_error			set_previous_stack(t_setid		setid,
+					   t_iterator		current,
+					   t_iterator*		previous);
 
 t_error			set_next_stack(t_setid			setid,
 				       t_iterator		current,
 				       t_iterator*		next);
 
-t_error			set_insert_head_stack(t_setid		setid,
-					      void*		data);
+t_error			set_insert_stack(t_setid		setid,
+					 void*			data);
 
-t_error			set_insert_tail_stack(t_setid		setid,
-					      void*		data);
+t_error			set_append_stack(t_setid		setid,
+					 void*			data);
 
-t_error			set_insert_before_stack(t_setid		setid,
-						t_iterator	iterator,
-						void*		data);
+t_error			set_before_stack(t_setid		setid,
+					 t_iterator		iterator,
+					 void*			data);
 
-t_error			set_insert_after_stack(t_setid		setid,
-					       t_iterator	iterator,
-					       void*		data);
+t_error			set_after_stack(t_setid			setid,
+					t_iterator		iterator,
+					void*			data);
 
 t_error			set_add_stack(t_setid			setid,
 				      void*			data);

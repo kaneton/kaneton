@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/templates/book.tex
 %%
 %% created       julien quintard   [wed mar  1 23:45:22 2006]
-%% updated       julien quintard   [mon mar 13 09:07:52 2006]
+%% updated       julien quintard   [tue apr  4 15:19:33 2006]
 %%
 
 %
@@ -55,9 +55,10 @@
 % colors
 %
 
-\definecolor{functioncolor}{rgb}{0.4,0,0}
-\definecolor{commandcolor}{rgb}{0,0,0.4}
-\definecolor{verbatimcolor}{rgb}{0,0.4,0}
+\definecolor{functioncolor}{rgb}{0.40,0.00,0.00}
+\definecolor{commandcolor}{rgb}{0.00,0.00,0.40}
+\definecolor{verbatimcolor}{rgb}{0.00,0.40,0.00}
+\definecolor{noticecolor}{rgb}{0.87,0.84,0.02}
 
 %
 % function
@@ -71,6 +72,13 @@
   \begin{tabular}{p{1cm}p{13cm}}
   & #3
   \end{tabular}}
+
+%
+% align
+%
+
+\newcommand\align[1]{
+  \\ & \hspace{#1}}
 
 %
 % argument
@@ -90,6 +98,21 @@
   \begin{tabular}{p{1cm}p{13cm}}
   & #2
   \end{tabular}}
+
+%
+% notice
+%
+
+\newcommand\notice[1]{
+  {\color{noticecolor}\textbf{Notice}}
+
+  \begin{tabular}{p{0.2cm}p{13.8cm}}
+  & #1
+  \end{tabular}}
+
+%
+% warning XXX
+%
 
 %
 % verbatim stuff

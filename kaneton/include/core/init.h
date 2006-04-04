@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/init.h
  *
  * created       julien quintard   [fri feb 11 02:19:11 2005]
- * updated       julien quintard   [sat apr  1 22:43:39 2006]
+ * updated       julien quintard   [mon apr  3 11:29:15 2006]
  */
 
 #ifndef CORE_INIT_H
@@ -45,6 +45,8 @@ typedef struct
  * note that concerning the segments and the regions, the kernel waits
  * for sorted segments and regions the segment[0] being the lowest in
  * memory.
+ *
+ * note that the size fields represent sizes aligned on PAGESZ.
  */
 
 typedef struct
