@@ -98,6 +98,7 @@
 #include <core/stats.h>
 #include <core/event.h>
 #include <core/timer.h>
+#include <core/thread.h>
 #include <core/task.h>
 
 /*

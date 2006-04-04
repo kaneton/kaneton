@@ -438,6 +438,7 @@ t_error			timer_get(t_timerid			timerid,
  * 3) reserve the timer set.
  * 4) try to reserve a statistic object.
  * 5) call the machine dependent code.
+ * 6) dump the timer manager if debug is enabled.
  */
 
 t_error			timer_init(void)
@@ -494,6 +495,15 @@ t_error			timer_init(void)
 
   if (machdep_call(timer, timer_init) != ERROR_NONE)
     return ERROR_UNKNOWN;
+
+  /*
+   * 6)
+   */
+
+#if (DEBUG & DEBUG_TIMER)
+  if (timer_dump() != ERROR_UNKNOWN)
+    return ERROR_UNKNOWN;
+#endif
 
   return ERROR_NONE;
 }

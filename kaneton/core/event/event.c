@@ -53,6 +53,7 @@ m_event*                 event = NULL;
  *
  * 1) get the event object from its identifier.
  * 2) display the tasks which have subscribed to this event.
+ * 3) call the machine0dependent code.
  */
 
 t_error			event_show(t_eventid			eventid)
@@ -74,11 +75,18 @@ t_error			event_show(t_eventid			eventid)
 
   cons_msg('#', "  event %qd: task %qd\n", o->eventid, o->handler.taskid);
 
+  /*
+   * 3)
+   */
+
+  if (machdep_call(event, event_show, eventid) != ERROR_NONE)
+    EVENT_LEAVE(event, ERROR_UNKNOWN);
+
   EVENT_LEAVE(event, ERROR_NONE);
 }
 
 /*
- * this function dumps the events managed by the kernel.
+ * this function dumps the events.
  *
  * steps:
  *
@@ -248,7 +256,7 @@ t_error			event_release(t_eventid			eventid)
 }
 
 /*
- * this function get an event object from the event set.
+ * this function gets an event object from the event set.
  */
 
 t_error			event_get(t_eventid			eventid,
@@ -272,6 +280,7 @@ t_error			event_get(t_eventid			eventid,
  * 3) reserve the event set.
  * 4) try to reserve a statistic object.
  * 5) call the machine dependent code.
+ * 6) dump the event manager if debug is enabled.
  */
 
 t_error			event_init(void)
@@ -326,6 +335,15 @@ t_error			event_init(void)
   if (machdep_call(event, event_init) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
+  /*
+   * 6)
+   */
+
+#if (DEBUG & DEBUG_EVENT)
+  if (event_dump() != ERROR_NONE)
+    return ERROR_UNKNOWN;
+#endif
+
   return ERROR_NONE;
 }
 
@@ -336,7 +354,7 @@ t_error			event_init(void)
  *
  * 1) call the machine-dependent code.
  * 2) release the statistics object.
- * 3) release all events objects.
+ * 3) release every event object.
  * 4) release the event set.
  * 5) destroy the identifier object.
  * 6) free the event manager's structure memory.

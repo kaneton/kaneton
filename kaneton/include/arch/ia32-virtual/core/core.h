@@ -33,6 +33,7 @@
 #include <arch/machdep/core/stats.h>
 #include <arch/machdep/core/event.h>
 #include <arch/machdep/core/timer.h>
+#include <arch/machdep/core/thread.h>
 #include <arch/machdep/core/task.h>
 
 /*
@@ -43,6 +44,7 @@
  *      ../../../../core/arch/machdep/segment.c
  *      ../../../../core/arch/machdep/event.c
  *	../../../../core/arch/machdep/timer.c
+ *      ../../../../core/arch/machdep/thread.c
  *      ../../../../core/arch/machdep/task.c
  */
 
@@ -128,6 +130,17 @@ void                    ia32_pf_handler(t_uint32                     error_code)
  */
 
 t_error			ia32_timer_init(void);
+
+
+/*
+ * ../../../../core/arch/machdep/thread.c
+ */
+
+t_error			ia32_thread_suspend(t_thrid		threadid);
+
+t_error			ia32_thread_execute(t_thrid		threadid);
+
+t_error			ia32_thread_clone(t_thrid		threadid);
 
 
 /*

@@ -32,6 +32,7 @@ MACHDEP_C		:=		as.c				\
 					segment.c			\
 					event.c				\
 					timer.c				\
+					thread.c			\
 					task.c
 
 MACHDEP_O		:=		$(MACHDEP_C:.c=.o)

@@ -37,6 +37,7 @@ SUBDIRS			:=		arch				\
 					stats				\
 					event				\
 					time				\
+					thread				\
 					task				\
 					$(_CHECK_DIR_)
 
@@ -54,6 +55,7 @@ KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 					$(_STATS_LO_)			\
 					$(_EVENT_LO_)			\
 					$(_TIME_LO_)			\
+					$(_THREAD_LO_)			\
 					$(_TASK_LO_)			\
 					$(_CHECK_LO_)
 

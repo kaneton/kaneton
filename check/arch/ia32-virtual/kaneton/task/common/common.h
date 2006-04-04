@@ -38,58 +38,16 @@
  * common.c
  */
 
-void	check_as_common(void);
+void	check_task_common(void);
 
-void	check_as_tests(void);
+void	check_task_tests(void);
 
 
 /*
  * ../01/01.c
  */
 
-void		check_as_01(void);
-
-
-/*
- * ../02/02.c
- */
-
-void		check_as_02(void);
-
-
-/*
- * ../03/03.c
- */
-
-void		check_as_03(void);
-
-
-/*
- * ../04/04.c
- */
-
-void		check_as_04(void);
-
-
-/*
- * ../05/05.c
- */
-
-void		check_as_05(void);
-
-
-/*
- * ../06/06.c
- */
-
-void		check_as_06(void);
-
-
-/*
- * ../07/07.c
- */
-
-void		check_as_07(void);
+void		check_task_01(void);
 
 
 /*

@@ -174,6 +174,7 @@ t_error			ia32_event_init(void)
   /*
    * 1)
    */
+
   if (map_reserve(kasid, MAP_OPT_NONE,
 		  PAGESZ,
 		  PERM_READ | PERM_WRITE,

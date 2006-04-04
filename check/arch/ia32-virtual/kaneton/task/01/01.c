@@ -27,7 +27,7 @@ void		check_task_01(void)
 
   TEST_ENTER;
 
-  for (reg = 0; reg < init->nregions
+  /*  for (reg = 0; reg < init->nregions*/
 
   TEST_LEAVE;
 }
