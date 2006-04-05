@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/03/03.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [thu mar 23 10:37:48 2006]
+ * updated       matthieu bucchianeri   [tue apr  4 14:37:35 2006]
  */
 
 #include <klibc.h>
@@ -16,16 +16,16 @@
 extern t_asid	kasid;
 extern t_init*	init;
 
-void		check_as_03(void)
+void			check_as_03(void)
 {
-  t_tskid	task;
-  t_asid	as;
-  o_as*		o;
-  t_segid	seg;
-  t_regid	reg;
-  t_directory	kdir;
-  int*		ptr;
-  int		i;
+  t_tskid		task;
+  t_asid		as;
+  o_as*			o;
+  t_segid		seg;
+  t_regid		reg;
+  t_ia32_directory	kdir;
+  int*			ptr;
+  int			i;
 
   TEST_ENTER;
 

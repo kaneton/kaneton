@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [mon apr  3 18:50:44 2006]
+ * updated       matthieu bucchianeri   [tue apr  4 14:05:53 2006]
  */
 
 /*

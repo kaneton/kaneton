@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/02/02.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri mar 17 14:24:36 2006]
+ * updated       matthieu bucchianeri   [tue apr  4 19:45:10 2006]
  */
 
 #include <klibc.h>
@@ -60,10 +60,10 @@ void		check_as_02(void)
   MY_ASSERT(oreg->segid == seg, "Bad segid field in region\n");
 
   MY_ASSERT(region_release(as, reg) == ERROR_NONE,
-	    "failed to release region");
+	    "failed to release region\n");
 
   MY_ASSERT(segment_release(seg) == ERROR_NONE,
-	    "failed to release segment");
+	    "failed to release segment\n");
 
   MY_ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");

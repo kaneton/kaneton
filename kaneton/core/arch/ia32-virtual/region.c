@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [mon apr  3 00:11:57 2006]
+ * updated       matthieu bucchianeri   [tue apr  4 20:12:10 2006]
  */
 
 /*
@@ -87,7 +87,6 @@ static t_error		ia32_region_map_chunk(t_vaddr		v,
 					      t_paddr		p)
 {
   o_region		oreg;
-  o_as*			oas;
   t_ia32_table		pt;
   t_ia32_page		pg;
   t_segid		seg;
@@ -100,9 +99,6 @@ static t_error		ia32_region_map_chunk(t_vaddr		v,
 
   if (pd_get_table(NULL, PDE_ENTRY(v), &pt) != ERROR_NONE)
     {
-      if (as_get(kasid, &oas) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
       if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
 			  &seg) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
@@ -112,7 +108,7 @@ static t_error		ia32_region_map_chunk(t_vaddr		v,
       pt.user = 0;
       pt.entries = seg;
 
-      if (pd_add_table(&oas->machdep.pd, PDE_ENTRY(v), pt) != ERROR_NONE)
+      if (pd_add_table(NULL, PDE_ENTRY(v), pt) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
       memset((void*)ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(v)), 0, PAGESZ);
@@ -204,6 +200,8 @@ static t_error		ia32_region_unmap_chunk(t_vaddr		v)
 
   tlb_invalidate(v);
 
+  printf("   unmapped %p\n", v);
+
   REGION_LEAVE(region, ERROR_NONE);
 }
 
@@ -252,6 +250,7 @@ t_error			ia32_region_reserve(t_asid		asid,
   t_ia32_pte		pte;
   t_vaddr		chunk;
   t_segid		ptseg;
+  t_uint32		clear_pt;
 
   REGION_ENTER(region);
 
@@ -291,6 +290,8 @@ t_error			ia32_region_reserve(t_asid		asid,
    * 5)
    */
 
+  printf("reserve %p %p (%u) @ %qd\n", vaddr, paddr, size, asid);
+
   if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
@@ -298,6 +299,8 @@ t_error			ia32_region_reserve(t_asid		asid,
 
   if (ia32_region_map_chunk((t_vaddr)pd, (t_paddr)o->machdep.pd) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  printf("   pd mapped @ %p (p = %p)\n", pd, o->machdep.pd);
 
   /*
    * 6)
@@ -313,6 +316,8 @@ t_error			ia32_region_reserve(t_asid		asid,
 
   for (pde = pde_start; pde <= pde_end; pde++)
     {
+      /* XXX some cases, empty pt is added */
+
       /*
        * a)
        */
@@ -332,8 +337,10 @@ t_error			ia32_region_reserve(t_asid		asid,
 	  if (pd_add_table(&pd, pde, pt) != ERROR_NONE)
 	    REGION_LEAVE(region, ERROR_UNKNOWN);
 
-	  memset((void*)ENTRY_ADDR(PD_MIRROR, pde), 0, PAGESZ);
+	  clear_pt = 1;
 	}
+      else
+	clear_pt = 0;
 
       /*
        * b)
@@ -346,7 +353,12 @@ t_error			ia32_region_reserve(t_asid		asid,
 				(t_paddr)pt.entries) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
+      printf("   pt mapped @ %p (p = %p)\n", chunk, pt.entries);
+
       pt.entries = chunk;
+
+      if (clear_pt)
+	memset((void*)chunk, 0, PAGESZ);
 
       /*
        * c)
@@ -371,16 +383,36 @@ t_error			ia32_region_reserve(t_asid		asid,
 	   */
 
 	  tlb_invalidate((t_vaddr)ENTRY_ADDR(pde, pte));
-/*	  tlb_flush( );
 
-	  if (ENTRY_ADDR(pde, pte) < address || ENTRY_ADDR(pde, pte) >= address + size)
-	    printf("out of bound !\n");
-	  printf("r/w test @ %p\n", ENTRY_ADDR(pde, pte));
-	  int iiii;
-	  for ( iiii = 0; iiii < 100000; iiii++)
-	    ;
-	  int * p = (int*)ENTRY_ADDR(pde, pte) + 80;
-	  *p = 0x41424344;*/
+	  if (!asid)
+	    {
+	      t_uint32* t = (t_uint32*)ENTRY_ADDR(PD_MIRROR, pde);
+	      if ((t[pte] & 0xfffff000) != pg.addr)
+		{
+		  printf("ERROR TON MAPPING SUCE DES CHICHES %p != %p\n",
+			 (t[pte] & 0xfffff000), pg.addr);
+		  if (pt_get_page(&pt, pte, &pg) != ERROR_NONE)
+		    {
+		      printf("VRAIMENT !\n");
+		    }
+		  if (pg.addr == paddr - PAGESZ)
+		    {
+		      printf("POURTANT CA A L AIR BON\n");
+//		      t[pte] = (paddr - PAGESZ) | PTE_FLAG_P | PTE_FLAG_RW;
+		    }
+		  else
+		    {
+		      printf("ADDRESSE DE MERDE\n");
+		    }
+		}
+	    }
+	  if (!asid)
+	    {
+	      int *i = (int*)ENTRY_ADDR(pde, pte);
+	      int ii;
+	      for (ii = 0; ii < 102; ii++, i++)
+		*i = *i;
+	    }
 	}
 
       /*
@@ -397,6 +429,8 @@ t_error			ia32_region_reserve(t_asid		asid,
 
   if (ia32_region_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  printf("ok.\n");
 
   REGION_LEAVE(region, ERROR_NONE);
 }
@@ -526,7 +560,7 @@ t_error			ia32_region_release(t_asid		asid,
        * e)
        */
 
-      if (pde != pde_start && pde != pde_end)
+      if (0 && pde != pde_start && pde != pde_end)		// XXX
 	{
 	  if (pd_delete_table(&pd, pde) != ERROR_NONE)
 	    REGION_LEAVE(region, ERROR_UNKNOWN);

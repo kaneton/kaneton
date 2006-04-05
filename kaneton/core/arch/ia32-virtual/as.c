@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon apr  3 00:04:06 2006]
+ * updated       matthieu bucchianeri   [tue apr  4 19:31:35 2006]
  */
 
 /*
@@ -106,7 +106,7 @@ t_error			ia32_as_show(t_asid			asid)
    * 2)
    */
 
-  cons_msg('#', "  page directory base: 0x%x\n", *o->machdep.pd);
+  cons_msg('#', "  page directory base: 0x%x\n", o->machdep.pd);
 
   AS_LEAVE(as, ERROR_NONE);
 }
@@ -169,6 +169,9 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 
       o->machdep.pd = (t_ia32_directory)init->segments[10].address;
 
+      if (pd_activate(o->machdep.pd) != ERROR_NONE)
+	TASK_LEAVE(task, ERROR_UNKNOWN);
+
       /*
        * b)
        */
@@ -200,7 +203,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
       pde_start = 0;
       pte_start = 0;
 
-      for (i = 0; i < init->nregions + 1; i++)
+      for (i = 0; 0 && i < init->nregions + 1; i++)		// XXX
 	{
 	  if (i != init->nregions)
 	    {
@@ -261,7 +264,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 		      if (segment_inject(*asid, &pt_seg, &seg) != ERROR_NONE)
 			AS_LEAVE(as, ERROR_UNKNOWN);
 
-		      if (region_reserve(*asid, seg, 0,
+		      if (0 && region_reserve(*asid, seg, 0,	// XXX
 					 REGION_OPT_FORCE,
 					 seg, PAGESZ, &reg) != ERROR_NONE)
 			AS_LEAVE(as, ERROR_UNKNOWN);
@@ -284,9 +287,6 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 
       if (segment_reserve(*asid, PAGESZ,
 			  PERM_READ | PERM_WRITE, &seg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      if (segment_get(seg, &oseg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
       /*

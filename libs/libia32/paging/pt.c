@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       matthieu bucchianeri   [mon apr  3 00:02:51 2006]
+ * updated       matthieu bucchianeri   [tue apr  4 15:36:55 2006]
  */
 
 /*
@@ -136,11 +136,11 @@ t_error			pt_add_page(t_ia32_table*		tab,
   if (page.present)
     opts |= PTE_FLAG_P;
 
+  opts |= PTE_FLAG_WT;
+
   opts |= (page.rw ? PTE_FLAG_RW : PTE_FLAG_RO);
 
   opts |= (page.user ? PTE_FLAG_USER : PTE_FLAG_SUPERVISOR);
-
-  // XXX opts |= PTE_FLAG_WT;
 
   opts |= PTE_FLAG_USED;
 

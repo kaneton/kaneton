@@ -8,8 +8,6 @@
 
 --
  * vraiment finir les resize & co des regions. c'est le seul truc qui manque.
- * revoir les flush & autre clean: les sets sont instable, donc pas de for_each
-   quand on supprime.
  * finir les tests suivants: as/06, as/07, region/*, map/*
  * revoir le kmalloc pour qu'il n'utilise plus le survey area une fois tout
    lancé.

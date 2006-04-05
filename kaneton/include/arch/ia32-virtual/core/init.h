@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       matthieu bucchianeri   [mon apr  3 00:02:28 2006]
+ * updated       matthieu bucchianeri   [tue apr  4 14:30:00 2006]
  */
 
 #ifndef IA32_CORE_INIT_H

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/paging/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:58:13 2006]
+ * updated       matthieu bucchianeri   [tue apr  4 16:44:17 2006]
  */
 
 /*
@@ -99,10 +99,10 @@
   ((((D) << 22) | ((T) << 12)))
 
 #define MK_BASE(V)							\
-  (((t_uint32)(V)) & 0xfffffc00)
+  (((t_uint32)(V)) & 0xfffff000)
 
 #define MK_OFFSET(V)							\
-  (((t_uint32)(V)) & ~0xfffffc00)
+  (((t_uint32)(V)) & ~0xfffff000)
 
 /*
  * ---------- types -----------------------------------------------------------

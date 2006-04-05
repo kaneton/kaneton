@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/event.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [sun apr  2 14:17:23 2006]
+ * updated       matthieu bucchianeri   [tue apr  4 19:06:26 2006]
  */
 
 /*
@@ -314,6 +314,27 @@ void                    ia32_pf_handler(t_uint32                     error_code)
          (error_code & 2) ? "write" : "read",
          addr,
          (error_code & 1) ? "a lower DPL" : "the page to be present");
+
+  t_ia32_directory pd;
+  t_ia32_table pt;
+  t_ia32_page pg;
+
+  pd = ENTRY_ADDR(PD_MIRROR, PD_MIRROR);
+
+  if (pd_get_table(&pd, PDE_ENTRY(addr), &pt) != ERROR_NONE)
+    printf("no pde\n");
+  else
+    {
+      printf("pde: %p\n", pt.entries);
+      pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(addr));
+
+      if (pt_get_page(&pt, PTE_ENTRY(addr), &pg) != ERROR_NONE)
+	printf("no pte\n");
+      else
+	{
+	  printf("pte: %p\n", pg.addr);
+	}
+    }
 
   while (1);
 }
