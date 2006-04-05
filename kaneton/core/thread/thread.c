@@ -216,12 +216,14 @@ t_error			thread_clone(t_thrid			threadid)
 }
 
 /*
- * this function reserves a thread.
+ * this function reserves a thread for a given task.
  *
  * steps:
  *
- * 1)
- * 2)
+ * 1) get the task object.
+ * 2) get an id for the new thread and fill its information.
+ * 3) add the new thread in the thread container and in the task threads list.
+ * 4) call the machine-dependent code.
  */
 
 t_error			thread_reserve(t_tskid			taskid,
@@ -274,13 +276,16 @@ t_error			thread_reserve(t_tskid			taskid,
 }
 
 /*
- * this function releases a thread.
+ * this function releases a thread from a given task.
  *
  * steps:
  *
- * 1)
- * 2)
- * 3)
+ * 1) call the machine-dependent code.
+ * 2) get the thread object.
+ * 3) get the task object.
+ * 4) release the thread-s object identifer.
+ * 5) remove the thread from the task threads list.
+ * 6) remove the thread from the threads set.
  */
 
 t_error			thread_release(t_thrid			threadid)
@@ -315,21 +320,21 @@ t_error			thread_release(t_thrid			threadid)
    * 4)
    */
 
-  if (set_remove(task->threads, threadid) != ERROR_NONE)
+  if (id_release(&thread->id, o->threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
    * 5)
    */
 
-  if (set_remove(thread->threads, threadid) != ERROR_NONE)
+  if (set_remove(task->threads, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
    * 6)
    */
 
-  if (id_release(&thread->id, o->threadid) != ERROR_NONE)
+  if (set_remove(thread->threads, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
