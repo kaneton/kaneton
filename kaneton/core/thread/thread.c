@@ -142,7 +142,7 @@ t_error			thread_suspend(t_thrid			threadid)
   THREAD_ENTER(thread);
 
   /*
-   *
+   * 1)
    */
 
 
@@ -171,7 +171,7 @@ t_error			thread_execute(t_thrid			threadid)
   THREAD_ENTER(thread);
 
   /*
-   *
+   * 1)
    */
 
 
@@ -200,7 +200,7 @@ t_error			thread_clone(t_thrid			threadid)
   THREAD_ENTER(thread);
 
   /*
-   *
+   * 1)
    */
 
 
@@ -224,26 +224,50 @@ t_error			thread_clone(t_thrid			threadid)
  * 2)
  */
 
-t_error			thread_reserve(t_thrid*			threadid)
+t_error			thread_reserve(t_tskid			taskid,
+				       t_thrid*			threadid)
 {
+  o_task*		task;
   o_thread		o;
 
   THREAD_ENTER(thread);
 
   /*
-   *
+   * 1)
+   */
+
+  if (task_get(taskid, &task) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 2)
    */
 
   if (id_reserve(&thread->id, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   o.threadid = *threadid;
+  o.taskid = taskid;
 
   /*
-   *
+   * 3)
    */
 
-  if (machdep_call(thread, thread_reserve) != ERROR_NONE)
+  if (set_add(thread->threads, &o) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  if (set_add(task->threads, &o.threadid) != ERROR_NONE)
+    {
+      set_remove(thread->threads, o.threadid);
+
+      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 4)
+   */
+
+  if (machdep_call(thread, thread_reserve, taskid, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -261,6 +285,7 @@ t_error			thread_reserve(t_thrid*			threadid)
 
 t_error			thread_release(t_thrid			threadid)
 {
+  o_task*		task;
   o_thread*		o;
 
   THREAD_ENTER(thread);
@@ -269,7 +294,7 @@ t_error			thread_release(t_thrid			threadid)
    * 1)
    */
 
-  if (machdep_call(thread, thread_release) != ERROR_NONE)
+  if (machdep_call(thread, thread_release, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
@@ -283,10 +308,83 @@ t_error			thread_release(t_thrid			threadid)
    * 3)
    */
 
+  if (task_get(o->taskid, &task) != ERROR_UNKNOWN)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (set_remove(task->threads, threadid) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
+  if (set_remove(thread->threads, threadid) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 6)
+   */
+
   if (id_release(&thread->id, o->threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
+}
+
+/*
+ * this function removes every thread that belongs to the specified task.
+ *
+ * steps:
+ *
+ * 1) call the machine-dependent code.
+ * 2) gets the task object from its identifier.
+ * 3) for every thread belonging to the task, release it.
+ */
+
+t_error			thread_flush(t_tskid			taskid)
+{
+  t_thrid*		data;
+  o_task*		task;
+  t_iterator		i;
+
+  THREAD_ENTER(thread);
+
+  /*
+   * 1)
+   */
+
+  if (machdep_call(thread, thread_flush, taskid) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (task_get(taskid, &task) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  while (set_head(task->threads, &i) == ERROR_NONE)
+    {
+      if (set_object(task->threads, i, (void**)&data) != ERROR_NONE)
+	{
+	  cons_msg('!', "thread: cannot find the object "
+		   "corresponding to ist identifier\n");
+
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	}
+      if (thread_release(*data) != ERROR_NONE)
+	THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    }
+
+  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 }
 
 /*

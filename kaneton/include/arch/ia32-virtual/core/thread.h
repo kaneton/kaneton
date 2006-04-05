@@ -30,18 +30,8 @@ typedef struct
 {
   /*                                                                [cut] k4   */
 
-  t_uint32		eax;
-  t_uint32		ebx;
-  t_uint32		ecx;
-  t_uint32		edx;
-  t_uint32		esi;
-  t_uint32		edi;
-  t_uint32		eip;
+  t_uint16		ss;
   t_uint32		esp;
-  t_uint32		ebp;
-  t_uint16		cs;
-  t_uint16		ds;
-  t_uint32		eflags;
 
   /*                                                               [cut] /k4   */
 }			__attribute__ ((packed)) ao_thread;

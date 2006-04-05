@@ -47,6 +47,7 @@ d_thread                         thread_dispatch =
     NULL,
     NULL,
     NULL,
+    NULL,
     NULL
   };
 

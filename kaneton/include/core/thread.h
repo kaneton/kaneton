@@ -32,7 +32,7 @@ typedef struct
 {
   t_thrid			threadid;
 
-
+  t_tskid			taskid;
 
   machdep_data(o_thread);
 }				o_thread;
@@ -63,10 +63,12 @@ typedef struct
   t_error			(*thread_suspend)(t_thrid);
   t_error			(*thread_execute)(t_thrid);
   t_error			(*thread_clone)(t_thrid);
-  t_error			(*thread_reserve)(void);
-  t_error			(*thread_release)(void);
-  t_error			(*thread_init)();
-  t_error			(*thread_clean)();
+  t_error			(*thread_flush)(t_tskid);
+  t_error			(*thread_reserve)(t_tskid,
+						  t_thrid*);
+  t_error			(*thread_release)(t_thrid);
+  t_error			(*thread_init)(void);
+  t_error			(*thread_clean)(void);
 }				d_thread;
 
 /*
@@ -125,9 +127,12 @@ t_error			thread_execute(t_thrid			threadid);
 
 t_error			thread_clone(t_thrid			threadid);
 
-t_error			thread_reserve(t_thrid*			threadid);
+t_error			thread_reserve(t_tskid			taskid,
+				       t_thrid*			threadid);
 
 t_error			thread_release(t_thrid			threadid);
+
+t_error			thread_flush(t_tskid			taskid);
 
 t_error			thread_get(t_thrid			threadid,
 				   o_thread**			o);

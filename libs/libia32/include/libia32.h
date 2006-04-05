@@ -28,6 +28,7 @@
 #include "interrupt/interrupt.h"
 #include "interrupt/pic.h"
 #include "time/pit.h"
+#include "task/task.h"
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -43,6 +44,7 @@
  *      ../interrupt/pic.c
  *      ../interrupt/interrupt.c
  *	../time/timer.c
+ *	../task/task.c
  */
 
 /*
@@ -275,6 +277,17 @@ void			irq_wrapper(t_uint32			nr);
  */
 
 t_error			pit_init(t_uint32			frequency);
+
+
+/*
+ * ../task/task.c
+ */
+
+t_error			context_save(t_uint16*			ss,
+				     t_uint32*			esp);
+
+t_error			context_restore(t_uint16		ss,
+					t_uint32		esp);
 
 
 /*

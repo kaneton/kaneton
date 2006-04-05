@@ -12,7 +12,7 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- *
+ * XXX TIMER information need to be written.
  */
 
 #ifndef IA32_INTERRUPT_PIT_H
