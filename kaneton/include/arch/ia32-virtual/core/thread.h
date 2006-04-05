@@ -18,6 +18,8 @@
 
 /* #include <core/thread.h> */
 
+/*                                                                [cut] k4   */
+
 /*
  * ---------- types -----------------------------------------------------------
  */
@@ -28,12 +30,10 @@
 
 typedef struct
 {
-  /*                                                                [cut] k4   */
 
   t_uint16		ss;
   t_uint32		esp;
 
-  /*                                                               [cut] /k4   */
 }			__attribute__ ((packed)) ao_thread;
 
 
@@ -60,5 +60,7 @@ typedef struct
 
 #define         machdep_data_o_thread()					\
   ao_thread			machddep
+
+/*                                                               [cut] /k4   */
 
 #endif

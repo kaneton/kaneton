@@ -38,12 +38,12 @@
  * the thread manager dispatch.
  */
 
-d_thread                         thread_dispatch =
+d_thread			thread_dispatch =
   {
     NULL,
-    ia32_thread_suspend,
-    ia32_thread_execute,
-    ia32_thread_clone,
+    NULL,
+    NULL,
+    NULL,
     NULL,
     NULL,
     NULL,

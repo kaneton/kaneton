@@ -44,8 +44,8 @@
  *      ../../../../core/arch/machdep/segment.c
  *      ../../../../core/arch/machdep/event.c
  *	../../../../core/arch/machdep/timer.c
- *      ../../../../core/arch/machdep/thread.c
  *      ../../../../core/arch/machdep/task.c
+ *      ../../../../core/arch/machdep/thread.c
  */
 
 /*
@@ -133,17 +133,6 @@ t_error			ia32_timer_init(void);
 
 
 /*
- * ../../../../core/arch/machdep/thread.c
- */
-
-t_error			ia32_thread_suspend(t_thrid		threadid);
-
-t_error			ia32_thread_execute(t_thrid		threadid);
-
-t_error			ia32_thread_clone(t_thrid		threadid);
-
-
-/*
  * ../../../../core/arch/machdep/task.c
  */
 
@@ -160,6 +149,17 @@ t_error			ia32_task_release(t_tskid		tskid);
 t_error			ia32_task_init(void);
 
 t_error			ia32_task_clean(void);
+
+
+/*
+ * ../../../../core/arch/machdep/thread.c
+ */
+
+t_error			ia32_thread_suspend(t_thrid		threadid);
+
+t_error			ia32_thread_execute(t_thrid		threadid);
+
+t_error			ia32_thread_clone(t_thrid		threadid);
 
 
 /*

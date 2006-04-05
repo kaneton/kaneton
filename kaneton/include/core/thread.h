@@ -10,7 +10,7 @@
  */
 
 #ifndef CORE_THREAD_H
-#define CORE_THREAD_H
+#define CORE_THREAD_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
