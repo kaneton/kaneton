@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:17:00 2006]
+ * updated       matthieu bucchianeri   [thu apr  6 11:58:31 2006]
  */
 
 #ifndef CORE_REGION_H
@@ -31,7 +31,6 @@
 #define REGION_OPT_NONE		(1 << 0)
 #define REGION_OPT_FORCE	(1 << 1)
 #define REGION_OPT_MAPALL	(1 << 2)
-#define REGION_OPT_PERSISTENT	(1 << 3)
 
 /*
  * ---------- types -----------------------------------------------------------
