@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/init.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat apr  1 22:37:04 2006]
+## updated       julien quintard   [wed apr  5 01:13:58 2006]
 ##
 
 #

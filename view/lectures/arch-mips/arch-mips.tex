@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
 %%
 %% created       julien quintard   [wed nov 23 22:07:25 2005]
-%% updated       julien quintard   [wed feb 22 00:13:12 2006]
+%% updated       julien quintard   [thu apr  6 14:00:29 2006]
 %%
 
 %
@@ -4379,7 +4379,7 @@
 % 49)
 
 \begin{frame}
-  \frametitle{Delay Buffer}
+  \frametitle{Store Buffer}
 
   The Write Through Policy main problem is the time it takes to write
   data into memory.
@@ -4391,15 +4391,15 @@
 
   \nl
 
-  So a Delay Buffer was introduced to optimise the writings.
+  So a Store Buffer was introduced to optimise the writings.
 
   \nl
 
-  Everytime a block is overwritten, the block is pushed in the Delay Buffer.
+  Everytime a block is overwritten, the block is pushed in the Store Buffer.
 
   \nl
 
-  Then the cache automata's role is now to get a block from the Delay Buffer
+  Then the cache automata's role is now to get a block from the Store Buffer
   and to write it into memory.
 
   \nl
@@ -4430,9 +4430,9 @@
 
       \begin{itemize}
 	\item
-	  With Delay Buffer.
+	  With Store Buffer.
 	\item
-	  Without Delay Buffer. The microprocessor is blocked until the
+	  Without Store Buffer. The microprocessor is blocked until the
 	  block is written back into memory.
       \end{itemize}
 
@@ -4643,7 +4643,7 @@
   \nl
 
   The write strategy is Write Through without updating the cache whether
-  the data is not loaded in cache. There is no delay buffer for writings.
+  the data is not loaded in cache. There is no Store Buffer for writings.
 \end{frame}
 
 % 60)
@@ -4797,12 +4797,12 @@
 \begin{frame}
   \frametitle{Write Penalty}
 
-  The Write Penalty is the same than before since there is no delay
-  buffer for writings.
+  The Write Penalty is the same than before since there is no Store
+  Buffer for writings.
 
   \nl
 
-  The Write Penalty is so the same than if there is no delay buffer:
+  The Write Penalty is so the same than if there is no Store Buffer:
   \textbf{0.3} cycles per writing.
 \end{frame}
 

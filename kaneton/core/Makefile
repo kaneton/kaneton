@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/kaneton/core/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [sat apr  1 23:30:43 2006]
+## updated       julien quintard   [wed apr  5 01:17:30 2006]
 ##
 
 #
