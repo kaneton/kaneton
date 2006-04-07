@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [tue apr  4 20:12:10 2006]
+ * updated       matthieu bucchianeri   [wed apr  5 17:28:54 2006]
  */
 
 /*
@@ -282,7 +282,7 @@ t_error			ia32_region_reserve(t_asid		asid,
    * 4)
    */
 
-  pg.rw = 1; //!!(oseg->perms & PERM_WRITE);
+  pg.rw = 1; //!!(oseg->perms & PERM_WRITE);			// XXX
   pg.present = 1;
   pg.user = (otsk->class == TASK_CLASS_PROGRAM);
 
@@ -290,15 +290,23 @@ t_error			ia32_region_reserve(t_asid		asid,
    * 5)
    */
 
-  printf("reserve %p %p (%u) @ %qd\n", vaddr, paddr, size, asid);
+  paddr = oseg->address + offset;
+  printf("reserve %p %p (%u) @ %qd\n", address, paddr, size, asid);
 
-  if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (asid == kasid)
+    {
+      pd = o->machdep.pd;
+    }
+  else
+    {
+      if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  pd = (t_ia32_directory)(t_uint32)chunk;
+      pd = (t_ia32_directory)(t_uint32)chunk;
 
-  if (ia32_region_map_chunk((t_vaddr)pd, (t_paddr)o->machdep.pd) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+      if (ia32_region_map_chunk((t_vaddr)pd, (t_paddr)o->machdep.pd) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+    }
 
   printf("   pd mapped @ %p (p = %p)\n", pd, o->machdep.pd);
 
@@ -427,8 +435,9 @@ t_error			ia32_region_reserve(t_asid		asid,
    * 7)
    */
 
-  if (ia32_region_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (asid != kasid)
+    if (ia32_region_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
+      REGION_LEAVE(region, ERROR_UNKNOWN);
 
   printf("ok.\n");
 

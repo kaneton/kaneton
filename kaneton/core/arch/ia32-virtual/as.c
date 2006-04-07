@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue apr  4 19:31:35 2006]
+ * updated       matthieu bucchianeri   [wed apr  5 17:17:00 2006]
  */
 
 /*
@@ -203,7 +203,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
       pde_start = 0;
       pte_start = 0;
 
-      for (i = 0; 0 && i < init->nregions + 1; i++)		// XXX
+      for (i = 0; i < init->nregions + 1; i++)
 	{
 	  if (i != init->nregions)
 	    {

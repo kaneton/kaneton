@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/init.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [sat mar 25 16:21:38 2006]
+ * updated       matthieu bucchianeri   [wed apr  5 17:21:54 2006]
  */
 
 /*
@@ -307,41 +307,53 @@ void			bootloader_init_regions(void)
   init->regions[2].offset = 0;
   init->regions[2].segid = 3;
 
+
+  init->regions[3].address = init->segments[5].address;
+  init->regions[3].size = init->segments[5].size;
+  init->regions[3].offset = 0;
+  init->regions[3].segid = 5;
+
+  init->regions[4].address = init->segments[6].address;
+  init->regions[4].size = init->segments[6].size;
+  init->regions[4].offset = 0;
+  init->regions[4].segid = 6;
+
+
   /*
    * 4)
    */
 
-  init->regions[3].address = init->segments[7].address;
-  init->regions[3].size = init->segments[7].size;
-  init->regions[3].offset = 0;
-  init->regions[3].segid = 7;
+  init->regions[5].address = init->segments[7].address;
+  init->regions[5].size = init->segments[7].size;
+  init->regions[5].offset = 0;
+  init->regions[5].segid = 7;
 
   /*
    * 5)
    */
 
-  init->regions[4].address = init->segments[8].address;
-  init->regions[4].size = init->segments[8].size;
-  init->regions[4].offset = 0;
-  init->regions[4].segid = 8;
+  init->regions[6].address = init->segments[8].address;
+  init->regions[6].size = init->segments[8].size;
+  init->regions[6].offset = 0;
+  init->regions[6].segid = 8;
 
   /*
    * 6)
    */
 
-  init->regions[5].address = init->segments[9].address;
-  init->regions[5].size = init->segments[9].size;
-  init->regions[5].offset = 0;
-  init->regions[5].segid = 9;
+  init->regions[7].address = init->segments[9].address;
+  init->regions[7].size = init->segments[9].size;
+  init->regions[7].offset = 0;
+  init->regions[7].segid = 9;
 
   /*
    * 7)
    */
 
-  init->regions[6].address = init->segments[10].address;
-  init->regions[6].size = init->segments[10].size;
-  init->regions[6].offset = 0;
-  init->regions[6].segid = 10;
+  init->regions[8].address = init->segments[10].address;
+  init->regions[8].size = init->segments[10].size;
+  init->regions[8].offset = 0;
+  init->regions[8].segid = 10;
 }
 
 /*
