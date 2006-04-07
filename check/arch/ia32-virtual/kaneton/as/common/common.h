@@ -67,7 +67,7 @@ void		check_as_02(void);
  * ../03/03.c
  */
 
-void		check_as_03(void);
+void			check_as_03(void);
 
 
 /*

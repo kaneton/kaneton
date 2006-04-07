@@ -274,7 +274,7 @@ def	main():
 				sys.stderr.write("/!\\ PLEASE REBOOT TEST MACHINE /!\\\n")
 				#serial_close()
 				retr = sys.stdin.readline().replace('\n','')
-				if retr == "\n":
+				if retr == "":
 					serial_init(sys.argv[1])
 				else:
 					sys.stderr.write("retrying on different port " + retr + "\n")
