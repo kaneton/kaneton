@@ -3,17 +3,11 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/templates/exam.tex
+%% file          /home/mycure/kaneton/view/templates/feedback.tex
 %%
 %% created       julien quintard   [fri dec  2 22:20:57 2005]
-%% updated       julien quintard   [sat apr  8 13:47:17 2006]
+%% updated       julien quintard   [sat apr  8 13:55:19 2006]
 %%
-
-%
-% kaneton latex
-%
-
-\input{.kaneton.latex}
 
 %
 % class
@@ -45,40 +39,20 @@
 \setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
 
 %
-% correction environment
+% question
 %
 
-\newenvironment{correction}%
-   {
-     \ifthenelse
-	 {
-	   \equal{\kaneton-latex}{subject}
-	 }
-	 {
-	   \comment
-	 }
-	 {
-	   \textbf{\color{red}{ ----- correction}}
-	 }
-   }%
-   {
-     \ifthenelse
-	 {
-	   \equal{\kaneton-latex}{subject}
-	 }
-	 {
-	   \endcomment
-	 }
-	 {
-	   \textbf{\color{red}{ ----- /correction}}
-	 }
-   }
+\newcommand\question[2]{
+  \textbf{#1}
+
+  \vspace{#2}}
+
 
 %
 % header
 %
 
 \rhead{}
-\rfoot{\scriptsize{Exam}}
+\rfoot{\scriptsize{Feedback}}
 
 \date{\scriptsize{\today}}
