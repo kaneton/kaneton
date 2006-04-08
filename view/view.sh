@@ -130,6 +130,11 @@ for e in ${exams} ; do
   done
 done
 
+feedbacks=$(list "${_FEEDBACKS_DIR_}" "--directories")
+for e in ${feedbacks} ; do
+  PAPERS="${PAPERS} feedbacks::${e}"
+done
+
 lectures=$(list "${_LECTURES_DIR_}" "--directories")
 for e in ${lectures} ; do
   PAPERS="${PAPERS} lectures::${e}"
@@ -163,7 +168,7 @@ display ""
 LOCATION=$(locate "${PAPERS}" "${PAPER}" | substitute "::" "\/" "all")
 
 # checks the result
-if [ ${?} -ne 0 ] ; then
+if [ ${?} -ne 0 ] || [ "${LOCATION}" = "" ] ; then
   display " unknown paper \"${PAPER}\"" "!"
   display ""
   usage

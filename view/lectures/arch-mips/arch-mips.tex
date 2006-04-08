@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
 %%
 %% created       julien quintard   [wed nov 23 22:07:25 2005]
-%% updated       julien quintard   [thu apr  6 14:00:29 2006]
+%% updated       julien quintard   [sat apr  8 02:08:38 2006]
 %%
 
 %
@@ -688,7 +688,7 @@
 
 % 8)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Opcodes}
 
   We saw that the opcode field took 6 bits.
@@ -709,12 +709,15 @@
 
   So the number of opcodes available on the MIPS is:
 
-  \begin{verbatim}
-    opcodes =   opcode field - 1   +   function field
-            =    (2 ^ 6) - 1       +     (2 ^ 6)
-            =        63            +       64
-            =   127
-  \end{verbatim}
+  \nl
+
+  \textbf{opcodes}:
+
+  $~~~~~= opcode~field - 1 + function~field$
+
+  $~~~~~= 2^{6} - 1 + 2^{6}$
+
+  $~~~~~= 127$
 \end{frame}
 
 %
@@ -745,7 +748,7 @@
           Jr R31                        ; return
   \end{verbatim}
 
-  \textbf{Result}: 2 + N * 3 + 3 + 2 cycles
+  \textbf{Result}: $2 + N * 3 + 3 + 2$ cycles
 \end{frame}
 
 %
@@ -990,7 +993,7 @@
 
 % 11)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Branch Instructions}
 
   Let's take as example the instruction: \textbf{Beq Rs, Rt, Label}.
@@ -1008,9 +1011,11 @@
   In the case of a successful branch, the new instruction address is
   calculated like this:
 
-  \begin{verbatim}
-    address = branch address + 4 + (Immediate >> 2)
-  \end{verbatim}
+  \nl
+
+  $~~~~~target~address = branch~instruction~address + 4 + (Immediate << 2)$
+
+  \nl
 
   You can notice that the immediate will be interpreted as a signed value.
 
@@ -1082,7 +1087,7 @@
 
 % 15)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Performances}
 
   Consider that this instruction running in one cycle can be replaced
@@ -1092,13 +1097,19 @@
 
   What will be the real performance loss?
 
-  \begin{verbatim}
-    loss =   cycles loss   *   use frequency
-         =      50%       *       1%
+  \nl
 
-         =   0.005
-         =   0.5%
-  \end{verbatim}
+  \textbf{loss}:
+
+  $~~~~~= cycle~loss * frequency$
+
+  $~~~~~= 50\% * 1\%$
+
+  $~~~~~= 0.005$
+
+  $~~~~~= 0.5\%$
+
+  \nl
 
   The MIXs can help to detect instructions with very low use frequencies, so
   the designers can decide not to include these instructions in the
@@ -1107,7 +1118,7 @@
 
 % 16)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Amdhal Rule}
 
   The Amdhal Rule says:
@@ -1126,14 +1137,14 @@
 
   To conclude:
 
-  \begin{verbatim}
-    real earning = earning * use
-  \end{verbatim}
+  \nl
+
+  $~~~~~real~earning = earning * use$
 \end{frame}
 
 % 17)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{RISC Performance Rules}
 
   The two caracteristics which make a processor performant are:
@@ -1147,11 +1158,15 @@
 
   So the processor performance can be computed as below:
 
-  \begin{verbatim}
-    performance =   frequency   /   number of cyles per instruction
+  \nl
 
-                =      F        /        CPI
-  \end{verbatim}
+  \textbf{performance}:
+
+  $~~~~~= frequency / number~of~cyles~per~instruction$
+
+  $~~~~~= F / CPI$
+
+  \nl
 
   We will try to build a CPI equals to 1 leading to a coherent and peformant
   RISC processor.
@@ -1243,7 +1258,7 @@
           Jr R31                        ; return
   \end{verbatim}
 
-  \textbf{Result}: 6 + N * 10 + 10 + 1 cycles
+  \textbf{Result}: $6 + N * 10 + 10 + 1$ cycles
 \end{frame}
 
 %
@@ -1800,9 +1815,11 @@
 
   \begin{itemize}[<+->]
     \item
-      \textbf{Rs == Rt}: target address = branch address + 4 + Immed * 4
+      \textbf{Rs == Rt}:
+        $target~address = branch~instruction~address + 4 + (Immediate * 4)$
     \item
-      \textbf{Rs != Rt}: target address = next instruction address
+      \textbf{Rs != Rt}:
+        $target~address = next~instruction~address$
   \end{itemize}
 
   \nl
@@ -2240,9 +2257,9 @@
 
   \nl
 
-  \textbf{CPI = 9 / 7}
+  $CPI = 9 / 7$
 
-  \textbf{CPIu = 9 / 6}
+  $CPIu = 9 / 6$
 
   \nl
 
@@ -2257,9 +2274,11 @@
           Addiu R5, R5, 4
   \end{verbatim}
 
-  \textbf{CPI = 6 / 6}
+  \nl
 
-  \textbf{CPIu = 6 / 6} \alert{= 1}
+  $CPI = 6 / 6$
+
+  $CPI = 6 / 6$ \alert{= 1}
 \end{frame}
 
 % 13)
@@ -2457,9 +2476,9 @@
 
   \nl
 
-  \textbf{CPI = 9 / 7}
+  $CPI = 9 / 7$
 
-  \textbf{CPIu = 9 / 6}
+  $CPIu = 9 / 6$
 \end{frame}
 
 % 4)
@@ -2484,9 +2503,11 @@
           Nop
   \end{verbatim}
 
-  \textbf{CPI = 8 / 6}
+  \nl
 
-  \textbf{CPUu = 8 / 5}
+  $CPI = 8 / 6$
+
+  $CPIu = 8 / 5$
 \end{frame}
 
 % 5)
@@ -2507,9 +2528,11 @@
           Nop
   \end{verbatim}
 
-  \textbf{CPI = 6 / 6}
+  \nl
 
-  \textbf{CPUu = 6 / 5}
+  $CPI = 6 / 6$
+
+  $CPIu = 6 / 5$
 \end{frame}
 
 % 6)
@@ -2528,9 +2551,11 @@
           Sw R8, -4(R5)
   \end{verbatim}
 
-  \textbf{CPI = 5 / 5}
+  \nl
 
-  \textbf{CPUu = 5 / 5} \alert{= 1}
+  $CPI = 5 / 5$
+
+  $CPIu = 5 / 5$ \alert{= 1}
 \end{frame}
 
 % 7)
@@ -2599,9 +2624,9 @@
 
   \nl
 
-  \textbf{CPI = 8 / 6}
+  $CPI = 8 / 6$
 
-  \textbf{CPUu = 8 / 5}
+  $CPIu = 8 / 5$
 \end{frame}
 
 % 10)
@@ -2620,9 +2645,11 @@
           Lw R9, -4(R5)
   \end{verbatim}
 
-  \textbf{CPI = 5 / 5}
+  \nl
 
-  \textbf{CPUu = 5 / 5} \alert{= 1}
+  $CPI = 5 / 5$
+
+  $CPIu = 5 / 5$ \alert{= 1}
 
   \nl
 
@@ -2664,10 +2691,10 @@
     loop: Lw R8, O(R5)
           Lw R10, 4(R5)
           Sll R8, R8, 1
-          Sll R18, R18, 1
+          Sll R10, R10, 1
           Sw R8, 0(R5)
-          Sw R18, 4(R5)
-          Addiu R5, R5, 4
+          Sw R10, 4(R5)
+          Addiu R5, R5, 8
           Bne R5, R7, loop
           Nop
   \end{verbatim}
@@ -2676,9 +2703,9 @@
 
   \nl
 
-  \textbf{Performances: 8 cycles / iteration}
+  \textbf{Performances}: $8 cycles / iteration$
 
-  \textbf{Performances: 4 cycles / element}
+  \textbf{Performances}: $4 cycles / element$
 \end{frame}
 
 % 13
@@ -2717,12 +2744,13 @@
 
   \begin{verbatim}
      loop: Lw R8, 0(R5)
-           Begz R8, endif
+           Bgez R8, endif
            Nop
            Sub R8, R0, R8
            Sw R8, 0(R5)
     endif: Addiu R5, R5, 4
            Bne R5, R7, loop
+           Nop
   \end{verbatim}
 
   Let's optimise this assembly code: source code, instructions rescheduling,
@@ -2932,9 +2960,9 @@
 
   \begin{itemize}[<+->]
     \item
-      \textbf{MIPS5}: 8 cycles / 100 Mhz = 8 / 100 . 10\^6 = 80 ns
+      \textbf{MIPS5}: $8~cycles / 100~Mhz = 8 / 100 * 10^{6} = 80~ns$
     \item
-      \textbf{MIPS7}: 10 cycles / 150 Mhz = 10 / 150 . 10\^6 = 66 ns
+      \textbf{MIPS7}: $10~cycles / 150~Mhz = 10 / 150 * 10^{6} = 66~ns$
   \end{itemize}
 \end{frame}
 
@@ -2947,9 +2975,9 @@
 
   \begin{itemize}[<+->]
     \item
-      \textbf{MIPS5}: 5 cycles / 100 Mhz = 5 / 100 . 10\^6 = 50 ns
+      \textbf{MIPS5}: $5~cycles / 100~Mhz = 5 / 100 * 10^{6} = 50~ns$
     \item
-      \textbf{MIPS7}: 6 cycles / 150 Mhz = 6 / 150 . 10\^6 = 40 ns
+      \textbf{MIPS7}: $6~cycles / 150 Mhz = 6 / 150 * 10^{6} = 40~ns$
   \end{itemize}
 \end{frame}
 
@@ -2962,9 +2990,9 @@
 
   \begin{itemize}[<+->]
     \item
-      \textbf{MIPS5}: 5 cycles / 100 Mhz = 5 / 100 . 10\^6 = 50 ns
+      \textbf{MIPS5}: $5~cycles / 100~Mhz = 5 / 100 * 10^{6} = 50~ns$
     \item
-      \textbf{MIPS7}: 5 cycles / 150 Mhz = 5 / 150 . 10\^6 = 33 ns
+      \textbf{MIPS7}: $5~cycles / 150~Mhz = 5 / 150 * 10^{6} = 33~ns$
   \end{itemize}
 \end{frame}
 
@@ -2977,9 +3005,9 @@
 
   \begin{itemize}[<+->]
     \item
-      \textbf{MIPS5}: 4 cycles / 100 Mhz = 4 / 100 . 10\^6 = 40 ns
+      \textbf{MIPS5}: $4~cycles / 100~Mhz = 4 / 100 * 10^{6} = 40~ns$
     \item
-      \textbf{MIPS7}: 4 cycles / 150 Mhz = 4 / 150 . 10\^6 = 26 ns
+      \textbf{MIPS7}: $4~cycles / 150~Mhz = 4 / 150 * 10^{6} = 26~ns$
   \end{itemize}
 \end{frame}
 
@@ -3225,7 +3253,7 @@
           Addiu R5, R5, 4
           Sll R6, R6, 1
           Bne R5, R7, Loop
-          Sw R6, 0(R5)
+          Sw R6, -4(R5)
           x
           y
           z
@@ -3410,7 +3438,7 @@
     \item
       \textbf{Slaves}: memory.
     \item
-      \textbf{A referee}: BCU.
+      \textbf{A referee}: BCU: Bus Control Unit
   \end{enumerate}
 \end{frame}
 
@@ -3585,9 +3613,9 @@
       \textit{Properties}: about Mb with an access time of 10 cycles.
     \item
       \textbf{Hard Drive}: This type of storage is mecanic so hard drives
-      are about 10\^6 times slower than the processor.
+      are about $10^{6}$ times slower than the processor.
 
-      \textit{Properties}: about Gb with an access time of 10\^6 cycles.
+      \textit{Properties}: about Gb with an access time of $10^{6}$ cycles.
     \item
       \textbf{Magnetic Tape}: Cheaper than hard drives because built with
       plastic.
@@ -3627,7 +3655,7 @@
 
 % 12)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Access Time}
 
   Let's try to evaluate the number of cycles that takes a memory access.
@@ -3636,15 +3664,17 @@
     \pgfuseimage{memory-access-time}
   \end{center}
 
-  \begin{verbatim}
-    cycles per access = 1 x (4 Kb / 4 Gb) +
-                        10 x ((4 Mb - 4 Kb) / 4Gb) +
-                        10^6 x ((4 Gb - 4 Mb) / 4Gb)
-                     ~= 10^-6 +
-                        10^-3 - 10^-6 +
-                        1 - 10^-3
-                     ~= 999 000
-  \end{verbatim}
+  \nl
+
+  \textbf{cycles per access}:
+
+  $~~~~~= 1 * (4~Kb / 4~Gb) +$
+
+  $~~~~~~~ 10 * ((4~Mb - 4~Kb) / 4~Gb) +$
+
+  $~~~~~~~ 10^{6} * ((4~Gb - 4~Mb) / 4~Gb)$
+
+  $~~~~~= 999 023$ cycles
 \end{frame}
 
 % 13)
@@ -3667,7 +3697,7 @@
 
 % 14)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Access Time}
 
   Let's recompute the access time with these assumptions:
@@ -3683,12 +3713,17 @@
       The Dynamic Memory is loaded by 4 Kbytes from the Hard Drive.
   \end{itemize}
 
-  \begin{verbatim}
-    cycles per access = 1 x 0.90 +
-                        8 x 10 x 0.10 x (1 - 10^-5) +
-                        1024 x 10^6 x 10^-5
-                     ~= 10200
-  \end{verbatim}
+  \nl
+
+  \textbf{cycles per access}:
+
+  $~~~~~ = 1 * 0.90 +$
+
+  $~~~~~~~ 8 * 10 * 0.10 * (1 - 10^{-7}) +$
+
+  $~~~~~~~ 1024 * 10^{6} x 10^{-7}$
+
+  $~~~~~ = 111$ cycles
 \end{frame}
 
 % 15)
@@ -3753,7 +3788,7 @@
 
 % 17)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Access Time}
 
   Let's consider that the bus is acquired in nine cycles, a data
@@ -3761,12 +3796,17 @@
   placed in about 999900 cycles while a data is transfered in about
   100 cycles.
 
-  \begin{verbatim}
-    cycles per access = 1 x 0.97 +
-                        (9 + (8 x 1)) x 0.03 x (1 - 10^-5) +
-                        (999900 + (1024 x 100)) x 10^-5
-                     ~= 10
-  \end{verbatim}
+  \nl
+
+  \textbf{cycles per access}:
+
+  $~~~~~ = 1 x 0.97 +$
+
+  $~~~~~~~ (9 + (8 x 1)) x 0.03 x (1 - 10^-7) +$
+
+  $~~~~~~~ (999900 + (1024 x 100)) x 10^-7$
+
+  $~~~~~ = 1.62$ cycles
 \end{frame}
 
 % 18)
@@ -4015,9 +4055,11 @@
   Researchers perform benchmarks on microprocessor's caches
   computing the Miss Rate.
 
-  \begin{verbatim}
-    Miss Rate = Number of Misses / Number of Accesses
-  \end{verbatim}
+  \nl
+
+  $Miss~Rate = Number~of~Misses / Number~of~Accesses$
+
+  \nl
 
   The Miss Rate reflects the cache performances.
 
@@ -4106,28 +4148,21 @@
   \frametitle{Pseudo LRU}
 
   The pseudo LRU is a lightweigth LRU implemented through only one bit
-  per block depending on the associative degree.
+  per block.
 
   \nl
 
-  Let's study this algorithm. At the beginning, every LRU bit is set to zero.
-
-  \begin{enumerate}
-    \item
-      If an access is made to a block, in reading or writing,
-      its LRU bit is set to one.
-    \item
-      If every LRU bits of a set are set to one, then the LRU bits are
-      reinitialised to zero.
-  \end{enumerate}
-
-  Then, the pseudo LRU algorithm just iteratively looks for an entry with
-  a LRU bit not set.
+  The algorithm works as follows.
 
   \nl
 
-  We called this algorithm pseudo LRU because nothing permit the cache
-  manager to distinguish two block with the LRU bit not set.
+  Consider a binary search tree for the items in question. Each node of
+  the tree has a one-bit flag denoting ``go left to find a pseudo-LRU element''
+  or ``go right to find a pseudo-LRU element''. To find a pseudo-LRU element,
+  traverse the tree according to the values of the flags. To update the
+  tree with an access to an item N, traverse the tree to find N and, during
+  the traversal, set the node flags to denote the direction that is opposite
+  to the direction taken.
 \end{frame}
 
 % 38)
@@ -4214,7 +4249,8 @@
       \textit{Properties}: Slow writings.
     \item
       \textbf{Write Back}: More complex caches. Every writing just updates
-      the cache entry if any. Otherwise, the memory is updated.
+      the cache entry if any. Otherwise, the block is loaded in cache
+      and updated here.
 
       \textit{Properties}: Inconsistent data between the cache and the memory.
       This property is very cumbersome for multiprocessors. Nevertheless this
@@ -4546,22 +4582,27 @@
 
 % 55)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Reading Penalty}
 
   Finally, the reading penalty is equal to:
 
-  \begin{verbatim}
-    RP = penalty / reading   x   reading number / instruction
-       =        9            x  (0.2 x 2  +  0.1 x 1  +  0.7 x 1)
-       =        9            x               1.2
-       =                 10.8
-  \end{verbatim}
+  \nl
+
+  \textbf{RP}:
+
+  $~~~~~= penalty / reading * reading~number / instruction$
+
+  $~~~~~= 9 * (0.2 * 2 + 0.1 * 1 + 0.7 * 1)$
+
+  $~~~~~= 9 * 1.2$
+
+  $~~~~~= 10.8$ cycles
 \end{frame}
 
 % 56)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Write Penalty}
 
   The same calculations come for writings.
@@ -4598,12 +4639,17 @@
 
   Finally, the writing penalty is equal to:
 
-  \begin{verbatim}
-    WP = penalty / writing   x   writing number / instruction
-       =        3            x  (0.2 x 0  +  0.1 x 1  +  0.7 x 0)
-       =        3            x               0.1
-       =                 0.3
-  \end{verbatim}
+  \nl
+
+  \textbf{WP}:
+
+  $~~~~~= penalty / writing * writing~number / instruction$
+
+  $~~~~~= 3 * (0.2 * 0 + 0.1 * 1 + 0.7 * 0)$
+
+  $~~~~~= 3 * 0.1$
+
+  $~~~~~= 0.3$ cycles
 \end{frame}
 
 % 57)
@@ -4616,15 +4662,18 @@
 
 % 58)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Solution}
 
   The average CPI is now equal to:
 
-  \begin{verbatim}
-    CPI = 1.1   +   10.8   +   0.3
-        = 12.2
-  \end{verbatim}
+  \nl
+
+  \textbf{CPI}:
+
+  $~~~~~= 1.1 + 10.8 + 0.3$
+
+  $~~~~~= 12.2$ cycles
 \end{frame}
 
 % 59)
@@ -4657,19 +4706,25 @@
 
 % 61)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Solution}
 
   The number of sets in the cache is:
 
-  \begin{verbatim}
-    sets = cache size / block size / associative degree
-         = 16 Kb / 16 b / 2
-         = 512
-  \end{verbatim}
+  \nl
+
+  \textbf{sets number}:
+
+  $~~~~~= cache~size / block~size / associative~degree$
+
+  $~~~~~= 16~Kb / 16~b / 2$
+
+  $~~~~~= 512$ sets
+
+  \nl
 
   Note that with a 64 Mbytes memory composed of blocks of 16 bytes size,
-  there are exactly 4 Mblocks or 2\^22 blocks of physical memory.
+  there are exactly 4 Mblocks or $2^{22}$ blocks of physical memory.
 
   \nl
 
@@ -4677,7 +4732,7 @@
 
   \begin{enumerate}
     \item
-      \textbf{Tag}: 15 bits (22 - 9) because there are 4 Mblocks of
+      \textbf{Tag}: 15 bits ($22 - 9$) because there are 4 Mblocks of
       physical memory.
     \item
       \textbf{Set}: 9 bits because there are 512 sets.
@@ -4756,7 +4811,7 @@
 
 % 67)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Solution}
 
   In the case of a hit, the reading length is one cycle.
@@ -4778,9 +4833,9 @@
 
   The reading length in a miss case is so:
 
-  \begin{verbatim}
-    1 + (4 + (2 + 4) x 4) + 1 = 30 cycles
-  \end{verbatim}
+  \nl
+
+  $1 + (4 + (2 + 4) x 4) + 1 = 30$ cycles
 \end{frame}
 
 % 68)
@@ -4818,15 +4873,18 @@
       \textbf{Hit}: 0 cycles because the data is in cache so the access time
       is one cycle so no penalty.
     \item
-      \textbf{Miss}: (30 - 1) x 1.2 = 34.8 penalty cycles.
+      \textbf{Miss}: $(30 - 1) x 1.2 = 34.8$ penalty cycles.
   \end{itemize}
 
   To conclude, the reading penalty is equal to:
 
-  \begin{verbatim}
-    RP = 0 x 0.95   +   34.8 x 0.05
-       = 1.740 cycles per instruction
-  \end{verbatim}
+  \nl
+
+  \textbf{RP}:
+
+  $~~~~~= 0 * 0.95 + 34.8 * 0.05$
+
+  $~~~~~= 1.740$ cycles per instruction
 \end{frame}
 
 % 71)
@@ -4839,15 +4897,18 @@
 
 % 72)
 
-\begin{frame}[containsverbatim]
+\begin{frame}
   \frametitle{Solution}
 
   The CPI is now:
 
-  \begin{verbatim}
-    CPI = 1.1 + 0.3 + 1.740
-        = 3.140
-  \end{verbatim}
+  \nl
+
+  \textbf{CPI}:
+
+  $~~~~~= 1.1 + 0.3 + 1.740$
+
+  $~~~~~= 3.140$ cycles
 \end{frame}
 
 %
@@ -4882,10 +4943,3 @@
 \end{thebibliography}
 
 \end{document}
-
-XXX dernier cours revenir sur les notions avancees d arch ext
-    comme mem virtuelle mais du point de vue du proc mips: arch interne
-
-XXX changer les ^6 en \exp{6}
-
-XXX transformer les formules en utilisant les notations de maths.
