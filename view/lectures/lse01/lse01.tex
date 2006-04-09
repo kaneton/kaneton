@@ -1,0 +1,425 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/buckman/kaneton/view/lectures/lse01/lse01.tex
+%%
+%% created       julien quintard   [fri dec  2 07:53:59 2005]
+%% updated       matthieu bucchianeri   [mon apr 10 00:16:13 2006]
+%%
+
+%
+% template
+%
+
+\input{../../templates/lecture.tex}
+
+%
+% title
+%
+
+\title{kaneton LSE internal presentation}
+
+%
+% authors
+%
+
+\author
+{
+  Matthieu~Bucchianeri and Renaud~Voltz\inst{1}
+}
+
+%
+% figures
+%
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+
+  \begin{center}
+    \logos
+  \end{center}
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+  \tableofcontents
+\end{frame}
+
+%
+% recalls
+%
+
+\section{Recalls}
+
+%
+% the bootloader
+%
+
+\subsection{The bootloader}
+
+% 1)
+
+\begin{frame}
+  \frametitle{The bootloader}
+
+  Goals:
+
+  \nl
+
+  \begin{itemize}[<+->]
+  \item Setup a basic runtime environment for the kernel:
+    \begin{itemize}[<+->]
+    \item Relocate the kernel code
+    \item Build the ``init'' record with all necessary information
+    \item Prepare protected mode and paging for the kernel
+    \item Make a basic identity mapping of necessary areas
+    \item Install the kernel stack
+    \item Mark prereserved segments of memory
+    \end{itemize}
+  \item Scheme of memory organization
+  \end{itemize}
+
+\end{frame}
+
+%
+% sets
+%
+
+\subsection{Sets}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Sets}
+\end{frame}
+
+%
+% objects hierarchy
+%
+
+\subsection{Objects hierarchy}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Objects hierarchy}
+\end{frame}
+
+%
+% memory management
+%
+
+\section{Memory management}
+
+%
+% summary
+%
+
+\subsection{Summary}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Summary of memory management}
+
+  Goals:
+
+  \nl
+
+  \begin{itemize}[<+->]
+  \item Allocate physical memory for processes
+  \item Map this physical memory in a process address space
+  \item Manipulate easily address spaces
+  \end{itemize}
+
+  \nl
+
+  Components:
+
+  \nl
+
+  \begin{itemize}[<+->]
+  \item Address space (bound to a task)
+  \item Segments (physical memory chunks)
+  \item Regions (virtual mapping of segments)
+  \end{itemize}
+
+\end{frame}
+
+%
+% address spaces
+%
+
+\subsection{Address spaces}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Description}
+
+  An address space:
+
+  \nl
+
+  \begin{itemize}[<+->]
+  \item Is bound to one task only
+  \item Describe a task's physical and virtual memory
+  \item Is able to make translations between physical and virtual addresses
+  \item Is able to clone itself
+  \end{itemize}
+
+  \nl
+
+  To summarize:
+
+  \nl
+
+  \begin{itemize}[<+->]
+  \item A set of segments
+  \item A set of regions
+  \end{itemize}
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Intel IA32 implementation}
+
+  With Intel architecture, there are two main ways to implement address spaces:
+
+  \nl
+
+  \begin{itemize}
+  \item Segmentation
+  \item Paging
+  \end{itemize}
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Intel IA32 implementation\\Segmentation}
+
+  \begin{itemize}[<+->]
+  \item Implement some kind of ``windows'' of addressable memory (with a base and a limit)
+  \item Selecting a ``window'' is made via segment selector registers
+  \end{itemize}
+
+  \nl
+
+  Pros:
+
+  \begin{itemize}[<+->]
+  \item Quick: translation is done adding the base of a segment to the linear address and checking the limit and privileges
+  \end{itemize}
+
+  Cons:
+
+  \begin{itemize}[<+->]
+  \item Code must be position independent
+  \item Always have to manipulate segment selectors registers
+  \item Address space is not 4 Gb large and limited to real amount of physical memory
+  \item Ares are contiguous
+  \end{itemize}
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Intel IA32 implementation\\Paging}
+
+  \begin{itemize}[<+->]
+  \item A virtual address is divided in three fields: the page directory index, the page table index and the offset
+  \item Translation is done using tables: one page directory and multiple page tables
+  \end{itemize}
+
+  \nl
+
+  Pros:
+
+  \begin{itemize}[<+->]
+  \item 4 Gb of addressable memory
+  \item Only one register to change when switching address space (PDBR)
+  \item Contiguous data in the address space may not be contiguous in physical memory
+  \end{itemize}
+
+  Cons:
+
+  \begin{itemize}[<+->]
+  \item More complex (page directory \& page table manipulation)
+  \item A bit slower: translations need to follow links in page tables (a cache called the Translation Lookaside Buffer is used to minimize memory accesses)
+  \end{itemize}
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Intel IA32 implementation\\Details on the ia32-virtual profile}
+
+  For the moment, the only available solution is using the paging mecanism.
+
+  \nl
+
+  So an address space is represented only by its page-directory base register.
+  Reserving an address space means:
+
+  \begin{itemize}[<+->]
+  \item Reserving a segment for the page directory
+  \item Mapping the created page-directory to clear it
+  \item Filling an internal field holding the PDBR
+  \end{itemize}
+
+  \nl
+
+  Address space switching will be detailed later in this lecture.
+
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{The special case of the kernel address space}
+
+\end{frame}
+
+%
+% segments
+%
+
+\subsection{Segments}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Description}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Operations}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Prereserved segments and catcheable segments}
+\end{frame}
+
+%
+% regions
+%
+
+\subsection{Regions}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Description}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Operations}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Mapping process on IA32}
+\end{frame}
+
+%
+% higher level functionalities
+%
+
+\subsection{Higher-level functionalities}
+
+% 1)
+
+\begin{frame}
+  \frametitle{The map manager}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{kernel malloc function}
+\end{frame}
+
+%
+% integration with tasks
+%
+
+\subsection{Integration with tasks}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Address space switch}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Accessing an address space from the kernel}
+\end{frame}
+
+%
+% events management
+%
+
+\section{Events management}
+
+%
+% test suite
+%
+
+\section{Test suite}
+
+%
+% testing students tarballs
+%
+
+\subsection{Testing students tarballs}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Steps in testing a student tarball}
+\end{frame}
+
+%
+% the test suite
+%
+
+\subsection{The test suite}
+
+% 1)
+
+\begin{frame}
+  \frametitle{The test suite}
+\end{frame}
+
+\end{document}
