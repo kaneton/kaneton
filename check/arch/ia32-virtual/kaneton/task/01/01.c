@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/task/01/01.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [thu apr  6 11:51:03 2006]
+ * updated       matthieu bucchianeri   [sat apr  8 19:31:27 2006]
  */
 
 #include <klibc.h>
@@ -15,6 +15,7 @@
 
 extern t_init*	init;
 extern t_asid	kasid;
+extern m_as*	as;
 
 void		check_task_01(void)
 {
@@ -26,13 +27,19 @@ void		check_task_01(void)
   t_ia32_pte	pte_end;
   t_ia32_pde	pde;
   t_ia32_pte	pte;
+  o_as*		oas;
   o_segment*	oseg;
-  t_segid	seg;
   o_region*	oreg;
-  t_regid	reg;
   t_uint32	i;
   t_uint32	br;
   t_paddr	paddr;
+  t_uint32	total_mapped = 0;
+  t_uint32	total_kernel = 0;
+  t_uint32	total_as = 0;
+  t_iterator	it;
+  t_state	st;
+  t_iterator	it2;
+  t_state	st2;
 
   TEST_ENTER;
 
@@ -65,15 +72,11 @@ void		check_task_01(void)
 
       paddr = (t_paddr)oreg->segid;
 
-      pde_start = PDE_ENTRY(init->regions[i].address +
-			    init->regions[i].offset);
+      pde_start = PDE_ENTRY(init->regions[i].address);
       pde_end = PDE_ENTRY(init->regions[i].address +
-			  init->regions[i].offset +
 			  init->regions[i].size);
-      pte_start = PTE_ENTRY(init->regions[i].address +
-			    init->regions[i].offset);
-      pte_end = PDE_ENTRY(init->regions[i].address +
-			  init->regions[i].offset +
+      pte_start = PTE_ENTRY(init->regions[i].address);
+      pte_end = PTE_ENTRY(init->regions[i].address +
 			  init->regions[i].size);
 
       for (br = 0, pde = pde_start; !br && pde <= pde_end; pde++)
@@ -83,6 +86,8 @@ void		check_task_01(void)
 	      printf("region %d of init badly mapped (no page table)\n");
 	      break;
 	    }
+
+	  pt.entries = ENTRY_ADDR(PD_MIRROR, pde);
 
 	  for (pte = (pde == pde_start ? pte_start : 0);
 	       pte < (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
@@ -104,8 +109,58 @@ void		check_task_01(void)
 		  break;
 		}
 	      paddr += PAGESZ;
+	      total_kernel += 1;
 	    }
 	}
+    }
+
+  for (pde = 0; pde < PD_MAX_ENTRIES; pde++)
+    {
+      if (pde == PD_MIRROR)
+	continue;
+      if (pd_get_table(NULL, pde, &pt) == ERROR_NONE)
+	{
+	  pt.entries = ENTRY_ADDR(PD_MIRROR, pde);
+
+	  for (pte = 0; pte < PT_MAX_ENTRIES; pte++)
+	    if (pt_get_page(&pt, pte, &pg) == ERROR_NONE)
+	      total_mapped += 1;
+	}
+    }
+
+  set_foreach(SET_OPT_FORWARD, as->ass, &it, st)
+    {
+      if (set_object(as->ass, it, (void**)&oas) != ERROR_NONE)
+	{
+	  printf("error set_object\n");
+	  TEST_LEAVE;
+	}
+
+      set_foreach(SET_OPT_FORWARD, oas->regions, &it2, st2)
+	{
+	  if (set_object(oas->regions, it2, (void**)&oreg) != ERROR_NONE)
+	    {
+	      printf("error set_object\n");
+	      TEST_LEAVE;
+	    }
+	  if (oas->asid == kasid)
+	    {
+	      for (i = 0; i < init->nregions; i++)
+		if (init->regions[i].address == oreg->address)
+		  break;
+	      if (i == init->nregions &&
+		  oreg->address != ENTRY_ADDR(PD_MIRROR, 0))
+		total_kernel += oreg->size / PAGESZ;
+	    }
+	  else
+	    total_as += oreg->size / PAGESZ;
+	}
+    }
+
+  if (total_mapped != total_kernel + total_as)
+    {
+      printf("mapped = %d\nkernel = %d\nas = %d\n",
+	     total_mapped, total_kernel, total_as);
     }
 
   TEST_LEAVE;

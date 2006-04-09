@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/02/02.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [tue apr  4 19:45:10 2006]
+ * updated       matthieu bucchianeri   [sun apr  9 17:20:42 2006]
  */
 
 #include <klibc.h>
@@ -33,7 +33,7 @@ void		check_as_02(void)
   MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
   MY_ASSERT(segment_reserve(as,
-			    1024 * PAGESZ,
+			    1200 * PAGESZ,
 			    PERM_READ | PERM_WRITE,
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
@@ -43,7 +43,7 @@ void		check_as_02(void)
 			   0,
 			   REGION_OPT_NONE,
 			   0,
-			   1024 * PAGESZ,
+			   1200 * PAGESZ,
 			   &reg) == ERROR_NONE,
 	    "error reserving region\n");
 

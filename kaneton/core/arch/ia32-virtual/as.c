@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed apr  5 17:17:00 2006]
+ * updated       matthieu bucchianeri   [sun apr  9 17:19:53 2006]
  */
 
 /*
@@ -167,7 +167,7 @@ t_error			ia32_as_reserve(t_tskid			tskid,
        * a)
        */
 
-      o->machdep.pd = (t_ia32_directory)init->segments[10].address;
+      o->machdep.pd = init->machdep.pd;
 
       if (pd_activate(o->machdep.pd) != ERROR_NONE)
 	TASK_LEAVE(task, ERROR_UNKNOWN);
@@ -262,11 +262,6 @@ t_error			ia32_as_reserve(t_tskid			tskid,
 		      pt_seg.perms = PERM_READ | PERM_WRITE;
 
 		      if (segment_inject(*asid, &pt_seg, &seg) != ERROR_NONE)
-			AS_LEAVE(as, ERROR_UNKNOWN);
-
-		      if (0 && region_reserve(*asid, seg, 0,	// XXX
-					 REGION_OPT_FORCE,
-					 seg, PAGESZ, &reg) != ERROR_NONE)
 			AS_LEAVE(as, ERROR_UNKNOWN);
 		    }
 		}

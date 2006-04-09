@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/task/task.c
+ * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [sun apr  2 13:11:09 2006]
+ * updated       matthieu bucchianeri   [sat apr  8 19:37:31 2006]
  */
 
 /*
@@ -563,10 +563,13 @@ t_error			task_init(void)
 
   for (i = 0; i < init->nregions; i++)
     {
-      if (region_reserve(asid, segments[init->regions[i].segid], 0,
+/*      if (region_reserve(asid, segments[init->regions[i].segid], 0,
 			 REGION_OPT_FORCE | REGION_OPT_MAPALL,
 			 init->regions[i].address, 0,
-			 &needless) != ERROR_NONE)
+			 &needless) != ERROR_NONE)*/
+      init->regions[i].segid = segments[init->regions[i].segid];
+
+      if (region_inject(asid, &init->regions[i]) != ERROR_NONE)
 	{
 	  cons_msg('!', "region: cannot map a region to a pre-reserved "
 		   "segment\n");
@@ -574,12 +577,6 @@ t_error			task_init(void)
 	  return (ERROR_UNKNOWN);
 	}
     }
-
-  /*
-   * XXX on vient de regenerer l'as du kernel, il faudrait le switcher
-   * normalement. donc la on le fait en dur dans le machdep_call,
-   * faudra changer.
-   */
 
   /*
    * 8)

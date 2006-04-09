@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/10/10.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [mon apr  3 14:53:05 2006]
+ * updated       matthieu bucchianeri   [sun apr  9 19:25:52 2006]
  */
 
 #include <klibc.h>
@@ -76,7 +76,7 @@ void		check_segment_10(void)
   MY_ASSERT(segment_resize(seg, 10 * PAGESZ, &seg3) == ERROR_NONE,
 	    "error resizing\n");
 
-  MY_ASSERT(seg3 == seg, "some segments are overlapping\n");
+  MY_ASSERT(seg3 != seg, "some segments are overlapping\n");
 
   seg = seg3;
 

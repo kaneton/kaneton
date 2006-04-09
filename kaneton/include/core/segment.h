@@ -208,10 +208,10 @@ t_error			segment_resize(t_segid		old,
 				       t_psize		size,
 				       t_segid*		new);
 
-t_error			segment_split(t_segid		old,
+t_error			segment_split(t_segid		segid,
 				      t_psize		size,
-				      t_segid*		new1,
-				      t_segid*		new2);
+				      t_segid*		left,
+				      t_segid*		right);
 
 t_error			segment_coalesce(t_segid	old1,
 					 t_segid	old2,

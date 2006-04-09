@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/task/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [tue apr  4 01:19:23 2006]
+## updated       matthieu bucchianeri   [sat apr  8 00:46:43 2006]
 ##
 
 #
@@ -31,7 +31,7 @@ SUBDIRS			:=		$(call contents,$(LIST),)
 
 MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 
-TASK_LO			:=		as.lo
+TASK_LO			:=		task.lo
 
 #
 # ---------- rules ------------------------------------------------------------

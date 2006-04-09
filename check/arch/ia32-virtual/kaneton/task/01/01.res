@@ -1,2 +1,2 @@
-Test check_as_01
-check_as_01 done.
+Test check_task_01
+check_task_01 done.

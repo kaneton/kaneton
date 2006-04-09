@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/region/01/01.c
  *
  * created       matthieu bucchianeri   [sun apr  2 19:04:14 2006]
- * updated       matthieu bucchianeri   [thu apr  6 12:05:24 2006]
+ * updated       matthieu bucchianeri   [sun apr  9 17:41:04 2006]
  */
 
 #include <klibc.h>
@@ -71,7 +71,7 @@ void		check_region_01(void)
 
   MY_ASSERT(o->regid == reg, "Bad regid field\n");
   MY_ASSERT(o->segid == seg, "Bad segid field\n");
-  MY_ASSERT(o->address == (t_vaddr)reg + PAGESZ, "Bad address field\n");
+  MY_ASSERT(o->address == (t_vaddr)reg, "Bad address field\n");
   MY_ASSERT(o->offset == PAGESZ, "Bad offset field\n");
   MY_ASSERT(o->size == PAGESZ, "Bad size field\n");
 

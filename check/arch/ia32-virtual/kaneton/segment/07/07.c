@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/07/07.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sat mar 25 17:27:51 2006]
+ * updated       matthieu bucchianeri   [sun apr  9 18:16:18 2006]
  */
 
 #include <klibc.h>
@@ -24,6 +24,7 @@ void		check_segment_07(void)
   t_tskid	task;
   t_asid	as;
   t_segid	seg;
+  t_segid	seg_ref;
   t_regid	reg;
   t_uint32	i;
   t_uint8*	buff;
@@ -40,11 +41,11 @@ void		check_segment_07(void)
   MY_ASSERT(segment_reserve(as,
 			    PAGESZ,
 			    PERM_READ | PERM_WRITE,
-			    &seg) == ERROR_NONE,
+			    &seg_ref) == ERROR_NONE,
 	    "error reserving segment\n");
 
   MY_ASSERT(region_reserve(kasid,
-			   seg,
+			   seg_ref,
 			   0,
 			   REGION_OPT_NONE,
 			   0,
@@ -99,7 +100,7 @@ void		check_segment_07(void)
       buff[i] = (i * 4 - 1) % 256;
     }
 
-  MY_ASSERT(segment_copy(seg, 0, (t_segid)(t_uint32)buff, 0,
+  MY_ASSERT(segment_copy(seg, 0, seg_ref, 0,
 			 PAGESZ) == ERROR_NONE,
 	    "error in copy\n");
 
@@ -124,7 +125,7 @@ void		check_segment_07(void)
   MY_ASSERT(segment_write(seg, 0, buff, sizeof(t_uint32)) != ERROR_NONE,
 	    "error: wrote to ro segment\n");
 
-  MY_ASSERT(segment_copy(seg, 0, (t_segid)(t_uint32)buff, 0,
+  MY_ASSERT(segment_copy(seg, 0, seg_ref, 0,
 			 sizeof(t_uint32)) != ERROR_NONE,
 	    "error: copy to ro segment\n");
 
