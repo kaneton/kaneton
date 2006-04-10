@@ -67,8 +67,8 @@ typedef t_id			t_setid;
 typedef t_id			t_asid;
 typedef t_id			t_segid;
 typedef t_id			t_regid;
-typedef t_id			t_eventid;
-typedef t_id			t_timerid;
+typedef t_id			i_event;
+typedef t_id			i_timer;
 typedef t_id			t_tskid;
 typedef t_id			t_thrid;
 
@@ -77,5 +77,11 @@ typedef t_id			t_thrid;
  */
 
 typedef t_sint32		t_error;
+
+/*
+ * event handler type
+ */
+
+typedef union u_event_handler	u_event_handler;
 
 #endif

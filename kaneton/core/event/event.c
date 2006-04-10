@@ -56,7 +56,7 @@ m_event*                 event = NULL;
  * 3) call the machine0dependent code.
  */
 
-t_error			event_show(t_eventid			eventid)
+t_error			event_show(i_event			id)
 {
   o_event*		o;
 
@@ -66,7 +66,7 @@ t_error			event_show(t_eventid			eventid)
    * 1)
    */
 
-  if (event_get(eventid, &o) != ERROR_NONE)
+  if (event_get(id, &o) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   /*
@@ -79,7 +79,7 @@ t_error			event_show(t_eventid			eventid)
    * 3)
    */
 
-  if (machdep_call(event, event_show, eventid) != ERROR_NONE)
+  if (machdep_call(event, event_show, id) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   EVENT_LEAVE(event, ERROR_NONE);
@@ -137,7 +137,7 @@ t_error			event_dump(void)
  * 2) notify the task its event has occured.
  */
 
-t_error			event_notify(t_eventid			eventid)
+t_error			event_notify(i_event			id)
 {
   o_event*              o;
 
@@ -147,7 +147,7 @@ t_error			event_notify(t_eventid			eventid)
    * 1)
    */
 
-  if (event_get(eventid, &o) != ERROR_NONE)
+  if (event_get(id, &o) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   /*
@@ -170,8 +170,8 @@ t_error			event_notify(t_eventid			eventid)
  * 4) add the new event to the event manager.
  */
 
-t_error			event_reserve(t_eventid			eventid,
-				      e_event_type		type,
+t_error			event_reserve(i_event			id,
+				      t_uint32			type,
 				      u_event_handler		handler)
 {
   o_event*		tmp;
@@ -183,14 +183,14 @@ t_error			event_reserve(t_eventid			eventid,
    * 1)
    */
 
-  if (event_get(eventid, &tmp) == ERROR_NONE)
+  if (event_get(id, &tmp) == ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (machdep_call(event, event_reserve, eventid, type, handler) != ERROR_NONE)
+  if (machdep_call(event, event_reserve, id, type, handler) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   /*
@@ -199,7 +199,7 @@ t_error			event_reserve(t_eventid			eventid,
 
   memset(&o, 0x0, sizeof(o_event));
 
-  o.eventid = eventid;
+  o.eventid = id;
 
   o.type = type;
 
@@ -225,7 +225,7 @@ t_error			event_reserve(t_eventid			eventid,
  * 3) call the machine dependent code.
  */
 
-t_error			event_release(t_eventid			eventid)
+t_error			event_release(i_event			id)
 {
   o_event*		o;
 
@@ -235,7 +235,7 @@ t_error			event_release(t_eventid			eventid)
    * 1)
    */
 
-  if (event_get(eventid, &o) != ERROR_NONE)
+  if (event_get(id, &o) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   /*
@@ -259,12 +259,12 @@ t_error			event_release(t_eventid			eventid)
  * this function gets an event object from the event set.
  */
 
-t_error			event_get(t_eventid			eventid,
+t_error			event_get(i_event			id,
 				  o_event**			o)
 {
   EVENT_ENTER(event);
 
-  if (set_get(event->events, eventid, (void**)o) != ERROR_NONE)
+  if (set_get(event->events, id, (void**)o) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   EVENT_LEAVE(event, ERROR_NONE);

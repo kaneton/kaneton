@@ -283,11 +283,9 @@ t_error			pit_init(t_uint32			frequency);
  * ../task/task.c
  */
 
-t_error			context_save(t_uint16*			ss,
-				     t_uint32*			esp);
+t_error			context_store(t_ia32_context*		context);
 
-t_error			context_restore(t_uint16		ss,
-					t_uint32		esp);
+t_error			context_dump(t_ia32_context*		context);
 
 
 /*

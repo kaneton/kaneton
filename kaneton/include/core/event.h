@@ -21,8 +21,29 @@
 #include <core/types.h>
 
 /*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+/*
+ * event handling way
+ */
+
+#define EVENT_FUNCTION		0
+#define EVENT_MESSAGE		1
+
+/*
  * ---------- types -----------------------------------------------------------
  */
+
+/*
+ * event handler type
+ */
+
+union				u_event_handler
+{
+  t_event_handler               function;
+  t_tskid                       taskid;
+};
 
 /*
  * event object
@@ -30,9 +51,9 @@
 
 typedef struct
 {
-  t_eventid			eventid;
+  i_event			eventid;
 
-  e_event_type			type;
+  t_uint32			type;
 
   u_event_handler		handler;
 
@@ -61,12 +82,12 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*event_show)(t_eventid);
-  t_error			(*event_notify)(t_eventid);
-  t_error			(*event_reserve)(t_eventid,
-						 e_event_type,
+  t_error			(*event_show)(i_event);
+  t_error			(*event_notify)(i_event);
+  t_error			(*event_reserve)(i_event,
+						 t_uint32,
 						 u_event_handler);
-  t_error			(*event_release)(t_eventid);
+  t_error			(*event_release)(i_event);
   t_error			(*event_init)(void);
   t_error			(*event_clean)(void);
 }				d_event;
@@ -117,19 +138,19 @@ typedef struct
  * ../../core/event/event.c
  */
 
-t_error			event_show(t_eventid			eventid);
+t_error			event_show(i_event			id);
 
 t_error			event_dump(void);
 
-t_error			event_notify(t_eventid			eventid);
+t_error			event_notify(i_event			id);
 
-t_error			event_reserve(t_eventid			eventid,
-				      e_event_type		type,
+t_error			event_reserve(i_event			id,
+				      t_uint32			type,
 				      u_event_handler		handler);
 
-t_error			event_release(t_eventid			eventid);
+t_error			event_release(i_event			id);
 
-t_error			event_get(t_eventid			eventid,
+t_error			event_get(i_event			id,
 				  o_event**			o);
 
 t_error			event_init(void);

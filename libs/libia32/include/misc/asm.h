@@ -85,6 +85,11 @@
 	       : "=m" (_var_)						\
 	       :)
 
+#define		LTR(_var_)						\
+  asm volatile("ltr %0\n\t"						\
+	       :							\
+	       : "m" (_var_));
+
 /*
  * pio macro functions
  */

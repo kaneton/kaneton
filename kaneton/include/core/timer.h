@@ -21,6 +21,17 @@
 #include <core/types.h>
 
 /*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+/*
+ * timer repeat mode.
+ */
+
+#define TIMER_REPEAT_DISABLE    0
+#define TIMER_REPEAT_ENABLE     1
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -30,7 +41,7 @@
 
 typedef struct
 {
-  t_timerid			timerid;
+  i_timer			timerid;
 
   t_uint32			delay;
 
@@ -65,18 +76,20 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*timer_show)(t_timerid);
-  t_error			(*timer_notify)(t_timerid);
-  t_error			(*timer_check)(t_timerid,
-					       t_uint32*);
-  t_error			(*timer_modify)(t_timerid,
+  t_error			(*timer_show)(i_timer);
+  t_error			(*timer_delay)(i_timer,
+					       t_uint32);
+  t_error			(*timer_repeat)(i_timer,
+						t_uint32);
+  t_error			(*timer_modify)(i_timer,
 						t_uint32,
 						t_uint32);
+  t_error			(*timer_notify)(i_timer);
   t_error			(*timer_reserve)(t_tskid,
 						 t_uint32,
 						 t_uint32,
-						 t_timerid*);
-  t_error			(*timer_release)(t_timerid);
+						 i_timer*);
+  t_error			(*timer_release)(i_timer);
   t_error			(*timer_init)(void);
   t_error			(*timer_clean)(void);
 }				d_timer;
@@ -127,36 +140,39 @@ typedef struct
  * ../../core/time/timer.c
  */
 
-t_error			timer_show(t_timerid			timerid);
+t_error			timer_show(i_timer			id);
 
 t_error			timer_dump(void);
 
-t_error			timer_notify(t_timerid			timerid);
+t_error			timer_notify(i_timer			id);
 
 t_error			timer_insert(o_timer*			o);
 
 t_error			timer_reserve(t_tskid			taskid,
 				      t_uint32			delay,
 				      t_uint32			repeat,
-				      t_timerid*		timerid);
+				      i_timer*			id);
 
-t_error			timer_release(t_timerid			timerid);
+t_error			timer_release(i_timer			id);
 
-t_error			timer_check(t_timerid			timerid,
-				   t_uint32*			delay);
+t_error			timer_delay(i_timer			id,
+				    t_uint32			delay);
 
-t_error			timer_modify(t_timerid			timerid,
-				    t_uint32			delay,
-				    t_uint32			repeat);
+t_error			timer_repeat(i_timer			id,
+				     t_uint32			repeat);
 
-t_error			timer_get(t_timerid			timerid,
+t_error			timer_modify(i_timer			id,
+				     t_uint32			delay,
+				     t_uint32			repeat);
+
+t_error			timer_get(i_timer			id,
 				  o_timer**			o);
 
 t_error			timer_init(void);
 
 t_error			timer_clean(void);
 
-t_error			timer_update(void);
+t_error			timer_check(void);
 
 void			timer_handler(t_uint32		id);
 

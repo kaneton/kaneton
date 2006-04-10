@@ -57,13 +57,15 @@
   "pushl %esi\n\t"							\
   "pushl %ds\n\t"							\
   "pushl %es\n\t"							\
-  "pushl %fs\n\t"
+  "pushl %fs\n\t"							\
+  "pushl %gs\n\t"
 
 /*
  * restore cpu register from the stack
  */
 
 #define RESTORE_REG							\
+  "popl %gs\n\t"							\
   "popl %fs\n\t"							\
   "popl %es\n\t"							\
   "popl %ds\n\t"							\
@@ -80,9 +82,10 @@
 
 #define LOAD_SEG_REG							\
   "movl $0x10,%edx\n\t"							\
-  "mov %dx,%ds\n\t"							\
-  "mov %dx,%es\n\t"							\
-  "mov %dx,%fs\n\t"
+  "movw %dx,%ds\n\t"							\
+  "movw %dx,%es\n\t"							\
+  "movw %dx,%fs\n\t"							\
+  "movw %dx,%gs\n\t"
 
 /*
  * simulate a return from function

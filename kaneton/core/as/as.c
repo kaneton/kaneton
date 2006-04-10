@@ -544,7 +544,7 @@ t_error			as_clone(t_tskid			tskid,
  */
 
 t_error			as_reserve(t_tskid			tskid,
-				   t_asid			asid)
+				   t_asid*			asid)
 {
   o_task*		task;
   o_as			o;

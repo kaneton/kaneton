@@ -55,6 +55,10 @@ d_timer				timer_dispatch =
  * ---------- functions -------------------------------------------------------
  */
 
+/*
+ * init the timer on the ia32-virtual architecture.
+ */
+
 t_error			ia32_timer_init(void)
 {
   return pit_init(100);

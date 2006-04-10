@@ -157,7 +157,7 @@ t_error			as_clone(t_tskid			tskid,
 				 t_asid*			new);
 
 t_error			as_reserve(t_tskid			tskid,
-				   t_asid			asid);
+				   t_asid*			asid);
 
 t_error			as_release(t_asid			asid);
 

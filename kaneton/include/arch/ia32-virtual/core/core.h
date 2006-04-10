@@ -108,11 +108,11 @@ t_error			ia32_segment_clean(void);
  * ../../../../core/arch/machdep/event.c
  */
 
-t_error			ia32_event_reserve(t_eventid		eventid,
-					   e_event_type		type,
+t_error			ia32_event_reserve(i_event		id,
+					   t_uint32		type,
 					   u_event_handler	handler);
 
-t_error			ia32_event_release(t_eventid		eventid);
+t_error			ia32_event_release(i_event		id);
 
 t_error			ia32_event_init(void);
 

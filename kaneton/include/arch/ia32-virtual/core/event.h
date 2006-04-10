@@ -28,22 +28,13 @@ typedef void                    (*t_event_handler)(t_uint32);
 /*
  * XXX EVENT move me ! (should be in /core/include/core/event.h)
  */
-
-typedef enum
-  {
-    EVENT_FUNCTION,
-    EVENT_MESSAGE
-  } e_event_type;
-
 /*
- * XXX EVENT move me ! (should be in /core/include/core/event.h)
- */
-
-typedef union
+union u_event_handler
 {
   t_event_handler               function;
   t_tskid                       taskid;
-}                               u_event_handler;
+};
+*/
 
 /*
  * ---------- macro functions -------------------------------------------------

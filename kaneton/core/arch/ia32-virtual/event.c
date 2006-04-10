@@ -73,17 +73,17 @@ d_event				event_dispatch =
  * 3) unmask event if eventid is an irq.
  */
 
-t_error			ia32_event_reserve(t_eventid		eventid,
-					   e_event_type		type,
+t_error			ia32_event_reserve(i_event		id,
+					   t_uint32		type,
 					   u_event_handler	handler)
 {
-  t_uint32		id = eventid;
+  t_uint32		eventid = id;
 
   /*
    * 1)
    */
 
-  if (id >= EXCEPTION_NR + IRQ_NR)
+  if (eventid >= EXCEPTION_NR + IRQ_NR)
     return ERROR_UNKNOWN;
 
   /*
@@ -92,13 +92,13 @@ t_error			ia32_event_reserve(t_eventid		eventid,
 
   if (type == EVENT_MESSAGE)
     {
-      if (interrupt_set_handler(id, (t_event_handler)event_notify)
+      if (interrupt_set_handler(eventid, (t_event_handler)event_notify)
 	  != ERROR_NONE)
 	return ERROR_UNKNOWN;
     }
   else
     {
-      if (interrupt_set_handler(id, handler.function) != ERROR_NONE)
+      if (interrupt_set_handler(eventid, handler.function) != ERROR_NONE)
 	return ERROR_UNKNOWN;
     }
 
@@ -106,8 +106,8 @@ t_error			ia32_event_reserve(t_eventid		eventid,
    * 3)
    */
 
-  if ((id >= IDT_IRQ_BASE) && (id < IDT_IRQ_BASE + IRQ_NR))
-    if (pic_enable_irq(id - IDT_IRQ_BASE) != ERROR_NONE)
+  if ((eventid >= IDT_IRQ_BASE) && (eventid < IDT_IRQ_BASE + IRQ_NR))
+    if (pic_enable_irq(eventid - IDT_IRQ_BASE) != ERROR_NONE)
       return ERROR_UNKNOWN;
 
   return ERROR_NONE;
@@ -123,30 +123,30 @@ t_error			ia32_event_reserve(t_eventid		eventid,
  * 3) mask event if eventid is an irq.
  */
 
-t_error			ia32_event_release(t_eventid		eventid)
+t_error			ia32_event_release(i_event		id)
 {
-  t_uint32		id = eventid;
+  t_uint32		eventid = id;
 
   /*
    * 1)
    */
 
-  if (id >= EXCEPTION_NR + IRQ_NR)
+  if (eventid >= EXCEPTION_NR + IRQ_NR)
     return ERROR_UNKNOWN;
 
   /*
    * 2)
    */
 
-  if (interrupt_set_handler(id, ia32_event_handler) != ERROR_NONE)
+  if (interrupt_set_handler(eventid, ia32_event_handler) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
    * 3)
    */
 
-  if ((id >= IDT_IRQ_BASE) && (id < IDT_IRQ_BASE + IRQ_NR))
-    if (pic_disable_irq(id - IDT_IRQ_BASE) != ERROR_NONE)
+  if ((eventid >= IDT_IRQ_BASE) && (eventid < IDT_IRQ_BASE + IRQ_NR))
+    if (pic_disable_irq(eventid - IDT_IRQ_BASE) != ERROR_NONE)
       return ERROR_UNKNOWN;
 
   return ERROR_NONE;
@@ -293,7 +293,7 @@ static const char       scancodes[] =
   };
 
 
-void                    ia32_kbd_handler(t_uint32                    id)
+void                    ia32_kbd_handler(t_uint32		id)
 {
   t_uint8               scancode;
 
@@ -303,7 +303,7 @@ void                    ia32_kbd_handler(t_uint32                    id)
     printf("%c", scancodes[scancode]);
 }
 
-void                    ia32_pf_handler(t_uint32                     error_code)
+void                    ia32_pf_handler(t_uint32		error_code)
 {
   t_uint32              addr;
 
