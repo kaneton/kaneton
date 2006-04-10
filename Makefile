@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       julien quintard   [sat apr  1 02:22:44 2006]
+## updated       julien quintard   [mon apr 10 15:30:34 2006]
 ##
 
 #
@@ -23,7 +23,8 @@
 
 .PHONY:		all init clean kaneton clear purge proto		\
 		dep build install check info 				\
-		view view- export export- cheat cheat-
+		view view- export export- cheat cheat-			\
+		play play- record record-				
 
 #
 # ---------- variables --------------------------------------------------------
@@ -49,8 +50,10 @@ else
   view view-								\
   export export-							\
   cheat cheat-								\
+  play play-								\
+  record record-							\
   clean									\
-  view-% export-% cheat-%:	init
+  view-% export-% cheat-% play-% record-%:	init
 	$(_MAKE_) -f Makefile $@
 endif
 
@@ -150,6 +153,34 @@ view- view:
 view-%:
 	$(call change-directory,$(_VIEW_DIR_),)				; \
 	$(call shell-script,$(_VIEW_SCRIPT_),$*,)			; \
+	$(call change-directory,$(_SRC_DIR_),)
+
+#
+# ---------- play -------------------------------------------------------------
+#
+
+play- play:
+	$(call change-directory,$(_TRANSCRIPTS_DIR_),)			; \
+	$(call shell-script,$(_PLAY_SCRIPT_),$*,)			; \
+	$(call change-directory,$(_SRC_DIR_),)
+
+play-%:
+	$(call change-directory,$(_TRANSCRIPTS_DIR_),)			; \
+	$(call shell-script,$(_PLAY_SCRIPT_),$*,)			; \
+	$(call change-directory,$(_SRC_DIR_),)
+
+#
+# ---------- record -----------------------------------------------------------
+#
+
+record- record:
+	$(call change-directory,$(_TRANSCRIPTS_DIR_),)			; \
+	$(call shell-script,$(_RECORD_SCRIPT_),$*,)			; \
+	$(call change-directory,$(_SRC_DIR_),)
+
+record-%:
+	$(call change-directory,$(_TRANSCRIPTS_DIR_),)			; \
+	$(call shell-script,$(_RECORD_SCRIPT_),$*,)			; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 #

@@ -7,7 +7,7 @@
 ## file          /home/mycure/kaneton/transcripts/play.sh
 ##
 ## created       julien quintard   [mon apr 10 15:02:40 2006]
-## updated       julien quintard   [mon apr 10 15:11:31 2006]
+## updated       julien quintard   [mon apr 10 16:13:20 2006]
 ##
 
 #
@@ -26,7 +26,9 @@ source			../env/.env.sh
 # ---------- globalss =--------------------------------------------------------
 #
 
-FILE=""
+TRANSCRIPTS=""
+
+TRANSCRIPT=""
 
 TEMP=""
 DIRECTORY=""
@@ -37,6 +39,22 @@ TIME=""
 #
 # ---------- functions --------------------------------------------------------
 #
+
+#
+# WARNING
+#
+# this function alerts the user, displaying information and asking to continue.
+#
+warning()
+{
+  # display information and ask the user to continue or cancel
+  display " your current configuration" "+"
+  display "   transcript:               ${LOCATION}" "+"
+  display ""
+  display " to cancel press CTRL^C, otherwise press enter" "?"
+
+  wait-key
+}
 
 #
 # PREPARE
@@ -54,7 +72,7 @@ prepare()
   LOG="${DIRECTORY}/log"
   TIME="${DIRECTORY}/time"
 
-  copy "${FILE}" "${TEMP}/transcript.tar.gz"
+  copy "${LOCATION}" "${TEMP}/transcript.tar.gz"
 
   cwd=$(working-directory)
 
@@ -95,7 +113,18 @@ clean()
 #
 usage()
 {
-  display " usage: play.sh [file]" "!"
+  local t
+
+  display " usage: play.sh [transcript]" "!"
+
+  display ""
+
+  display " transcripts:" "+"
+  display ""
+
+  for t in ${TRANSCRIPTS} ; do
+    display "   ${t}" "+"
+  done
 }
 
 #
@@ -105,6 +134,12 @@ usage()
 # displays some stuff.
 display ""
 
+# gets the transcripts list.
+sessions=$(list "${_SESSIONS_DIR_}" "")
+for e in ${sessions} ; do
+  TRANSCRIPTS="${TRANSCRIPTS} sessions::${e}"
+done
+
 # check the number of arguments.
 if [ ${#} -ne 1 ] ; then
   usage
@@ -113,7 +148,23 @@ if [ ${#} -ne 1 ] ; then
 fi
 
 # gets the argument.
-FILE=${1}
+TRANSCRIPT=${1}
+
+# locate the paper.
+LOCATION=$(locate "${TRANSCRIPTS}" "${TRANSCRIPT}" |
+           substitute "::" "\/" "all")
+
+# checks the result
+if [ ${?} -ne 0 ] || [ "${LOCATION}" = "" ] ; then
+  display " unknown transcript \"${TRANSCRIPT}\"" "!"
+  display ""
+  usage
+  display ""
+  exit -1
+fi
+
+# warns the user.
+warning
 
 # prepares the play.
 prepare
