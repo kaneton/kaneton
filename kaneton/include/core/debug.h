@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/debug.h
+ * file          /home/buckman/kaneton/kaneton/include/core/debug.h
  *
  * created       julien quintard   [mon nov 28 19:37:01 2005]
- * updated       julien quintard   [sat apr  1 22:42:34 2006]
+ * updated       matthieu bucchianeri   [mon apr 10 13:14:45 2006]
  */
 
 #ifndef CORE_DEBUG_H
@@ -64,6 +64,7 @@ typedef	struct			s_serial_buffer
  *      ../../core/debug/debug.c
  *      ../../core/debug/cons-text.c
  *      ../../core/debug/serial.c
+ *      ../../core/debug/gdb.c
  */
 
 /*
@@ -136,6 +137,40 @@ void			serial_init(t_uint32			com_port,
 				    t_uint8			baud_rate,
 				    t_uint8			bit_type,
 				    t_uint8			fifo_type);
+
+
+/*
+ * ../../core/debug/gdb.c
+ */
+
+void			gdb_handler(t_uint32 needless);
+
+t_error		gdb_init(void);
+
+void		gdb_checksum(t_uint8*		packet,
+			     t_uint8*		chksum);
+
+void		gdb_send(t_uint8*		packet);
+
+t_error		gdb_command();
+
+int		gdb_read_reg(t_uint8*		buffer);
+
+int		gdb_write_reg(t_uint8*		buffer);
+
+int		gdb_read_mem(t_uint8*		buffer);
+
+int		gdb_write_mem(t_uint8*		buffer);
+
+int		gdb_step(t_uint8*		buffer);
+
+int		gdb_continue(t_uint8*		buffer);
+
+int		gdb_unset_break(t_uint8*	buffer);
+
+int		gdb_set_break(t_uint8*		buffer);
+
+int		gdb_status(t_uint8*		buffer);
 
 
 /*

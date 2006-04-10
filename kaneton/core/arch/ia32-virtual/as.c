@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun apr  9 17:19:53 2006]
+ * updated       matthieu bucchianeri   [mon apr 10 11:40:40 2006]
  */
 
 /*

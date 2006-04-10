@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/kaneton/core/debug/Makefile
+## file          /home/buckman/kaneton/kaneton/core/debug/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [sat apr  1 23:40:18 2006]
+## updated       matthieu bucchianeri   [mon apr 10 13:04:07 2006]
 ##
 
 #
@@ -29,7 +29,8 @@ DEBUG_LO		:=		debug.lo
 
 DEBUG_C			:=		$(_CONSOLE_FILE_)		\
 					debug.c				\
-					serial.c
+					serial.c			\
+					gdb.c
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)
 

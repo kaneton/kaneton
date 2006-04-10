@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [sun apr  9 19:59:26 2006]
+ * updated       matthieu bucchianeri   [mon apr 10 11:43:42 2006]
  */
 
 /*
