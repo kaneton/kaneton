@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/view/lectures/Makefile
 ##
 ## created       julien quintard   [sat nov 19 18:06:43 2005]
-## updated       julien quintard   [sun dec  4 17:00:31 2005]
+## updated       julien quintard   [mon apr 10 03:16:04 2006]
 ##
 
 #
@@ -35,6 +35,7 @@ SUBDIRS			:=		advanced-makefiles		\
 					kernels				\
 					prerequisites			\
 					seminar				\
+					lse01				\
 					kaneton				
 
 #
