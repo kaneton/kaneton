@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/lectures/lse01/lse01.tex
 %%
 %% created       julien quintard   [fri dec  2 07:53:59 2005]
-%% updated       matthieu bucchianeri   [mon apr 10 00:16:13 2006]
+%% updated       matthieu bucchianeri   [tue apr 11 00:07:37 2006]
 %%
 
 %
@@ -299,6 +299,12 @@
 
 \begin{frame}
   \frametitle{The special case of the kernel address space}
+
+  The case of the kernel address space must be handled in a special way. We must reuse the page-directory created by the bootloader but we must clean everything we've mapped and that is not longer useful.
+
+  Additionally, we must ensure that currently used page-tables (we don't know how many they are since it depends on kernel code and modules size) will not be erased so we must inject them into the kernel address space.
+
+  And to finish, we must add the so called ``mirroring'' entry, used to access page tables.
 
 \end{frame}
 
