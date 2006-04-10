@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/gdb.c
  *
  * created       matthieu bucchianeri   [mon apr 10 12:47:20 2006]
- * updated       matthieu bucchianeri   [mon apr 10 16:14:49 2006]
+ * updated       matthieu bucchianeri   [mon apr 10 20:05:04 2006]
  */
 
 /*
@@ -33,13 +33,13 @@ typedef struct
   t_uint32	eax;
   t_uint8	reserved3[0x18];
   t_uint32	reserved2;
-  t_uint32	reserved1;
+  t_uint32	ebp;
   t_uint32	eip;
   t_uint32	cs;
   t_uint32	eflags;
 }		__attribute__ ((packed)) t_gdb_context;
 
-typedef int (*t_pfngdb)(t_uint8* buf);
+typedef int (*t_pfngdb)();
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -85,18 +85,20 @@ void			gdb_handler(t_uint32 needless)
   ptr -= 60;
   ctx = (t_gdb_context*)ptr;
   if (step)
-    gdb_command();
+    gdb_command(ctx);
 }
 
 t_error		gdb_init(void)
 {
   serial_init(com_port, SERIAL_BR57600, SERIAL_8N1, SERIAL_FIFO_8);
-  printf("gdb server initialized\n");
-  gdb_command();
-
   if (event_reserve(1, EVENT_FUNCTION, (u_event_handler)gdb_handler) !=
       ERROR_NONE)
     printf("cannot setup int1\n");
+
+  printf("gdb server initialized\n");
+
+  step = 1;
+  asm volatile("int $1");
 
   asm volatile("pushf\n\t"
 	       "orw $0x0100, 0(%esp)\n\t"
@@ -133,19 +135,17 @@ void		gdb_send(t_uint8*		packet)
   do
     {
       gdb_checksum(packet, chk);
-//      printf("response: $%s#%c%c\n", packet, chk[0], chk[1]);
       serial_write(com_port, "$", 1);
       if (strlen(packet))
 	serial_write(com_port, packet, strlen(packet));
       serial_write(com_port, "#", 1);
       serial_write(com_port, chk, 2);
       serial_read(com_port, &ack, 1);
-//      printf("ack is %s\n", ack == '+' ? "positive" : "negative");
     }
   while (ack == '-');
 }
 
-t_error		gdb_command(void)
+t_error		gdb_command(void* ctx)
 {
   t_uint8	start;
   t_uint8	cmd;
@@ -186,7 +186,7 @@ t_error		gdb_command(void)
       if (commands[i].cmd)
 	{
 	  printf("command: %s\n", commands[i].desc);
-	  if (commands[i].fun(buffer))
+	  if (commands[i].fun(buffer, ctx))
 	    break;
 	}
       else
@@ -198,12 +198,52 @@ t_error		gdb_command(void)
   return (ERROR_NONE);
 }
 
-int		gdb_read_reg(t_uint8*		buffer)
+void		gdb_fill_reg(t_uint8*		buffer,
+			     t_uint32		value)
 {
-  t_uint8	send[353];
+  t_uint8*	p = buffer;
+
+  for (; p < buffer + 8; p += 2)
+    {
+      p++;
+      *p = (value & 0xF);
+      if (*p >= 10)
+	*p = 'a' + (*p - 10);
+      else
+	*p += '0';
+      value = value >> 4;
+      p--;
+      *p = (value & 0xF);
+      if (*p >= 10)
+	*p = 'a' + (*p - 10);
+      else
+	*p += '0';
+      value = value >> 4;
+    }
+}
+
+int			gdb_read_reg(t_uint8*		buffer,
+				     void*		context)
+{
+  t_uint8		send[353];
+  t_gdb_context*	ctx = context;
 
   memset(send, '0', sizeof(send));
   send[sizeof(send) - 1] = 0;
+  gdb_fill_reg(send + 0, ctx->eax);
+  gdb_fill_reg(send + 8, ctx->ecx);
+  gdb_fill_reg(send + 16, ctx->edx);
+  gdb_fill_reg(send + 24, ctx->ebx);
+  gdb_fill_reg(send + 28, 0 /* ctx->esp*/);
+  gdb_fill_reg(send + 32, ctx->ebp);
+  gdb_fill_reg(send + 36, ctx->esi);
+  gdb_fill_reg(send + 40, ctx->edi);
+  gdb_fill_reg(send + 44, ctx->eip);
+  gdb_fill_reg(send + 48, ctx->eflags);
+  gdb_fill_reg(send + 52, ctx->cs);
+  gdb_fill_reg(send + 56, 0 /* ctx->ss*/);
+  gdb_fill_reg(send + 60, ctx->ds);
+  /* XXX */
   gdb_send(send);
   return 0;
 }

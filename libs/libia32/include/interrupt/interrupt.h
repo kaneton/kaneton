@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [mon apr 10 15:03:17 2006]
+ * updated       matthieu bucchianeri   [mon apr 10 16:20:00 2006]
  */
 
 /*
@@ -102,7 +102,7 @@
 #define EXCEPTION_PREHANDLER(_nr_, __error_code__)	       		\
   void	prehandler_exception##_nr_(void)				\
     {									\
-      t_uint32	code = 0x42424242;						\
+      t_uint32	code = 0;						\
 									\
       asm volatile(SAVE_REG						\
 		   LOAD_SEG_REG);					\

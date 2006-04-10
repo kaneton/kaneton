@@ -152,9 +152,13 @@ void		gdb_checksum(t_uint8*		packet,
 
 void		gdb_send(t_uint8*		packet);
 
-t_error		gdb_command(void);
+t_error		gdb_command(void* ctx);
 
-int		gdb_read_reg(t_uint8*		buffer);
+void		gdb_fill_reg(t_uint8*		buffer,
+			     t_uint32		value);
+
+int			gdb_read_reg(t_uint8*		buffer,
+				     void*		context);
 
 int		gdb_write_reg(t_uint8*		buffer);
 
