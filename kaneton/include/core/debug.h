@@ -145,17 +145,7 @@ void			serial_init(t_uint32			com_port,
 
 void			gdb_handler(t_uint32 needless);
 
-t_error		gdb_init(void);
-
-void		gdb_checksum(t_uint8*		packet,
-			     t_uint8*		chksum);
-
-void		gdb_send(t_uint8*		packet);
-
 t_error		gdb_command(void* ctx);
-
-void		gdb_fill_reg(t_uint8*		buffer,
-			     t_uint32		value);
 
 int			gdb_read_reg(t_uint8*		buffer,
 				     void*		context);
@@ -175,6 +165,10 @@ int		gdb_unset_break(t_uint8*	buffer);
 int		gdb_set_break(t_uint8*		buffer);
 
 int		gdb_status(t_uint8*		buffer);
+
+t_error		gdb_init(void);
+
+t_error		gdb_clean(void);
 
 
 /*
