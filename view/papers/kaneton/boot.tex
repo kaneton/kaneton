@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/boot.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:33:29 2006]
-%% updated       julien quintard   [tue apr  4 12:31:49 2006]
+%% updated       julien quintard   [sun apr  9 22:14:20 2006]
 %%
 
 %
@@ -15,17 +15,12 @@
 
 \chapter{Boot}
 
----
+In this chapter we will describe the kaneton boot system, more precisly
+the kaneton bootloader.
 
-In this chapter we will describe the kaneton core design and implementation.
-
-We will first describe the bootloader before describing the core itself.
-Note that many design choices make the bootloader understanding difficult
-to students. We will try to explain the design choices to make things
-clear.
-
-Then we will describe the core's managers taking care of specifying the
-interface it provides.
+Note that many kaneton core design choices make the bootloader understanding
+difficult to students. We will try to explain the design choices to make
+things clear.
 
 \newpage
 
@@ -33,13 +28,19 @@ interface it provides.
 % text
 %
 
-\begin{comment} % XXX
+%
+% bootstrap
+%
 
-The kaneton core must be launched by a compliant kaneton bootloader.
+\section{Bootstrap}
 
-This kaneton bootloader can be launched by another bootloader like
-well known \textit{GRUB} or \textit{LILO} multi-bootloaders or directly
-by the machine boot system.
+We call \textbf{boostrap} the piece of code which is first launched by the
+machine and then which launchs the bootloader.
+
+The main goal of the bootstrap is to launch the bootloader in better
+circumstances.
+
+In kaneton, another bootloader generally plays the bootstrap role.
 
 %
 % bootloader
@@ -47,7 +48,7 @@ by the machine boot system.
 
 \section{Bootloader}
 
-In kaneton, one of the bootloader's role is to prepare a correct
+In kaneton, one of the \textbf{bootloader}'s role is to prepare a correct
 execution context for the core.
 
 To do so, the bootloader has to install the proper memory addressing model
@@ -56,15 +57,21 @@ the kernel is expecting, depending on the architecture.
 Another bootloader's role is to provide the kernel enough information
 on the current microprocessor's architecture.
 
-To do so, the bootloader has to fill in an initialization structure which
-will be passed to the kernel at its boot time.
+To do so, the bootloader has to fill in an initialization structure
+\textit{t\_init} which then will be passed to the core when launched.
 
-This structure will inform the kernel of the location of some
-fundamental objects like the kernel code, the kernel stack, the initialization
-structure, the modules, the pre-reserved segments, the pre-reserved regions
-and the alloc survival area.
+This structure will inform the core of the location of some
+fundamental objects like the kernel code, the kernel stack, the
+initialization structure, the modules etc..
 
-We will now detail some of these components.
+Moreover, and for design reasons, the bootloader has to specify the
+pre-reserved segments, the pre-reserved regions, the alloc survival area
+and other specific kaneton design components so the core can properly
+and correctly initialize its data structures based on the architecture
+via the initialization structure.
+
+We will now detail these components to better understand the design
+choices and their resulting effects.
 
 %
 % modules
@@ -83,8 +90,8 @@ a kernel module, a dynamic part of code which can be attached to the
 running kernel.
 
 In kaneton, modules are used to pass the kaneton configuration file
-which contains the kaneton parameters and describes the kaneton servers
-to launch as soon as possible. The kaneton servers' binary objects to
+which contains the kaneton parameters and describes the very first
+kaneton servers to launch. The kaneton servers' binary objects to
 launch are also passed as modules.
 
 Of course the bootstrap has to handle kind of modules, otherwise it will
@@ -93,11 +100,13 @@ a multi-bootloader is generally used as kaneton boostrap.
 
 The bootloader must build a special data structure containing everything
 necessary to get access to the modules including: number of modules,
-modules' information, modules' content etc..
+modules' information, modules' content etc.. Then the core will be
+able to use it to retrieve the modules.
 
-In fact, the kernel itself will not use the modules. Indeed, a dedicated
+In fact, the core itself will not use the modules. Indeed, a dedicated
 server will be launched by the kernel and will get access to the modules.
-Then this dedicated server will launch the very first servers.
+Then this dedicated server will launch the very first servers described
+by the kaneton configuration file.
 
 To do so, the kernel will first launch this dedicated server and then
 will explicitly give the area containing the modules to this dedicated
@@ -155,7 +164,7 @@ sizeof(t_module) + module->size + strlen(module->name) + 1
 
 \subsubsection{Segments}
 
-A \textbf{segment} is simply a contiguous area of used physical memory.
+A \textbf{segment} is a contiguous area of used physical memory.
 
 Notice that a segment in the kaneton terms has nothing to do with
 a segment in some architectures terms.
@@ -170,12 +179,12 @@ common segment operation. This operation looks for a contiguous area
 of unused physical memory in its internal data structure and then
 returns an identifier on this area.
 
-Now, consider that, at the microkernel boot time, the segment manager has
+Now, consider that, at the core boot time, the segment manager has
 an empty data structure. Then the segment manager can choose any
-unused area and return an identifier on it. \textit{any unused area} means
-any unused physical memory area including the kernel code area, the kernel
+unused area and return an identifier on it. By \textit{any unused area} we
+mean any unused physical memory area including the kernel code area, the kernel
 stack area, the modules area, the architecture dependent areas like maybe the
-video mapped memory area and the BIOS mapping area etc..
+video mapped memory area and the BIOS mapped memory area etc..
 
 You should understand that the kaneton core needs to know which physical
 memory area should not be reserved or in other terms, are pre-reserved.
@@ -202,7 +211,7 @@ initialized. Indeed, some segment object properties cannot be set
 by the bootloader and will be set by the segment manager.
 
 \notice{Once the segment manager is initialized, the segment array
-  becomes useless so it can be released.}
+  gets useless, so it can be released.}
 
 %
 % regions
@@ -212,7 +221,7 @@ by the bootloader and will be set by the segment manager.
 
 A \textbf{region} is a contiguous area of used virtual memory.
 
-A region maps a segment part, or the whole.
+A region maps the whole or part of a segment.
 
 As for the segments, the bootloader needs a \textit{region array}.
 
@@ -227,7 +236,7 @@ The region array contains region objects which are partially initialized
 as the segments of the segment array.
 
 \notice{Once the regions manager is initialized, the region array
-  becomes useless so it can be released.}
+  gets useless, so it can be released.}
 
 %
 % survival area
@@ -236,12 +245,12 @@ as the segments of the segment array.
 \subsubsection{Survival Area}
 
 Like every program, kernels need memory to build and maintain internal
-data structures. These data structures can be used to keep track of
-the alive processes but also to keep track of the memory state.
+data structures. These data structures can for example be used to keep
+track of the alive processes or to keep track of the memory state.
 
-For example, kernels typically have a kind of manager which keeps track
+As an example, kernels typically have a kind of manager which keeps track
 of the physical memory state. This manager internally uses a data
-structure to know which memory areas are for example unused.
+structure to know which memory areas are for example used.
 
 During operating systems history, different data structures were used for
 this purpose from the most basic one; the bitmap which just tells whether
@@ -256,8 +265,9 @@ area including the base address, the area size, the permissions etc..
 Note that, in kaneton terms, this manager is called the segment manager.
 
 Therefore, to maintain such a data structure this manager needs memory.
-Nevertheless, it seems impossible since this manager is actually initializing
-its internal data structure to provide this functionality.
+Nevertheless, it seems impossible to allocate memory since this manager
+is actually initializing its internal data structure to provide this
+functionality.
 
 You can notice that this manager needs memory while it is its role to provide
 an interface to manage memory.
@@ -268,9 +278,8 @@ Indeed, kernels usually use a very specific data structure to install
 the physical memory manager. Then the other parts of the kernels can allocate
 memory without taking care of anything.
 
-But the price to pay is to, for example, implement a simple static array
-which will be linked with another one when the elements to manage become
-too important.
+But the price to pay is to implement a very specific and restrictive
+data structure to provide the very first functionality: the memory management.
 
 Then, the kernels' physical memory managers are typically ugly for this
 precise reason.
@@ -301,17 +310,17 @@ To break this mutual dependency we decided to give the \textit{malloc}()
 function a pre-reserved area so it can use it to provide fine-grained
 memory until the segment and region managers are initialized.
 
-Once the segment and region managers will be initialized, the
+Once the segment and region managers are initialized, the
 \textit{malloc}() function will just have to reserve physical memory to
 perform the same work than every typical malloc() function do.
 
 Since, at the core boot time, the segment manager is not initialized yet,
 the core itself cannot decide where to put this pre-reserved area.
 
-Therefore, the kernel relies on the bootloader to find out a pre-reserved
+Therefore, the kernel relies on the bootloader to find a pre-reserved
 area of physical memory for the \textit{malloc}() function. This area will
-then be called the \textbf{survival area} or sometimes the
-\textbf{survival segment}.
+then be called the \textit{survival area} or sometimes the
+\textit{survival segment}.
 
 %
 % initialization structure
@@ -326,48 +335,17 @@ fundamental elements in main memory.
 The initialization structure called \textit{t\_init} is defined in the
 file \textit{kaneton/include/core/init.h}.
 
-We will now detail the fundamental fields:
+Note that every size fields in the initialization structure represent
+sizes aligned on an architecture page size \textit{PAGESZ}.
 
-\begin{itemize}
-  \item
-    \textit{mem} and \textit{memsz} indicate the computer's available
-    physical memory.
-  \item
-    \textit{kcode} and \textit{kcodesz} indicate the location and
-    aligned size of the kernel binary object in main memory, after relocation.
-  \item
-    \textit{init} and \textit{initsz} fields indicate the location and
-    aligned size of this initialization structure in main memory.
-  \item
-    \textit{modules} and \textit{modulessz} indicate the location and
-    aligned size of the area used to store the modules.
-  \item
-    \textit{nsegments}, \textit{segments} and \textit{segmentssz}
-    indicate the location and aligned size of the area containing the
-    segment array. This array describes the core's pre-reserved segments.
-  \item
-    \textit{nregions}, \textit{regions} and \textit{regionssz} fields
-    indicate the location and aligned size of the area containing the
-    region array. This array describes the segments to be mapped after
-    the initialization of the core region manager.
-  \item
-    \textit{kstack} and \textit{kstacksz} indicate the kernel stack
-    area location and aligned size.
-  \item
-    \textit{alloc} and \textit{allocsz} fields indicate the location
-    and aligned size of the fine-grain allocator survival area.
-
-    This area will be used by the \textit{malloc}() function to provide
-    fine-grain allocator while nor segment neither region manager are
-    initialized yet.
-
-    The bootloader may allocate about sixteen pages for the survival area.
-\end{itemize}
+The initialization structure contains fields to locate the different
+fundamental objects in main memory like the kernel code,
+the initialization structure itself, the module area, the segment
+array area, the region array area, the kernel stack and the survival
+area.
 
 The initialization structure could also contain machine-dependent fields.
 
 Look at the file \textit{kaneton/include/arch/[architecture]/core/init.h}
 for more information about the structure machine-dependent initialization
 structure called \textit{a\_init}.
-
-\end{comment} % XXX

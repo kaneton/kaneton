@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/nomenclature.tex
 %%
 %% created       julien quintard   [tue mar  7 14:19:17 2006]
-%% updated       julien quintard   [tue apr  4 12:12:30 2006]
+%% updated       julien quintard   [sun apr  9 23:56:13 2006]
 %%
 
 %
@@ -20,6 +20,9 @@ specific to the project.
 
 Then, the reader will be able to understand the next chapters since the
 kaneton documents heavily use the kaneton nomenclature.
+
+Note that certain managers use another nomenclature for their own
+purpose.
 
 \newpage
 
@@ -118,39 +121,47 @@ Each manager provides an interface to manipulate a kaneton object or
 something else. The naming scheme used for these provided functions
 is the explained below.
 
-The function \textit{[manager]}\_\textbf{init}() initializes the whole
-manager and the function \textit{[manager]}\_\textbf{clean}() cleans it.
+The function \textit{manager}\_\textbf{init}() initializes the whole
+manager and the function \textit{manager}\_\textbf{clean}() cleans it.
 
-The function \textit{[manager]}\_\textbf{show}() displays information
-on a precise object while the function \textit{[manager]}\_\textbf{dump}()
+The function \textit{manager}\_\textbf{show}() displays information
+on a precise object while the function \textit{manager}\_\textbf{dump}()
 displays information on every objects managed.
 
-The function \textit{[manager]}\_\textbf{reserve}() reserves an object
-given some properties and the function \textit{[manager]}\_\textbf{release}()
+The function \textit{manager}\_\textbf{reserve}() reserves an object
+given some properties and the function \textit{manager}\_\textbf{release}()
 releases it.
 
-The function \textit{[manager]}\_\textbf{clone}() clones an object. It is
+The function \textit{manager}\_\textbf{clone}() clones an object. It is
 important to understand that cloning an object does not just mean
 generating an identical object. Indeed, cloning an object means creating
 a new object with the same properties. Notice that the fact of creation
 implies a new object so a new identifier.
 
-The function \textit{[manager]}\_\textbf{give}() gives an object to another
+The function \textit{manager}\_\textbf{give}() gives an object to another
 entity.
 
-The function \textit{[manager]}\_\textbf{flush}() cleans every objects
+The function \textit{manager}\_\textbf{flush}() cleans every objects
 previously reserved depending on the implementation.
 
-The \textit{[manager]} must be replaced by the manager name like \textit{as},
+The \textit{manager} must be replaced by the manager name like \textit{as},
 \textit{task}, \textit{segment} etc..
 
 Moreover, the kaneton development environment are organized in a very
 strict way to help students to find the files they are looking for. Indeed,
-given a manager name \textit{[manager]}, the files in relation with this
-manager are: \textit{kaneton/core/[manager]/[manager].c}, 
-\textit{kaneton/core/arch/[architecture]/[manager].c}, 
-\textit{kaneton/include/core/[manager].h}, 
-\textit{kaneton/include/arch/[architecture]/core/[manager].h}.
+given a manager name \textit{manager}, the files in relation with this
+manager are located in the directory listed below:
+
+\begin{itemize}
+  \item
+    \textbf{kaneton/core/}\textit{manager}\textbf{/}\textit{manager}\textbf{.c}
+  \item
+    \textbf{kaneton/core/arch/}\textit{architecture}\textbf{/}\textit{manager}\textbf{.c}
+  \item
+    \textbf{kaneton/include/core/}\textit{manager}\textbf{.h}
+  \item
+    \textbf{kaneton/include/arch/}\textit{architecture}\textbf{/core/}\textit{manager}\textbf{.h}
+\end{itemize}
 
 %
 % operating system
@@ -175,3 +186,9 @@ Finally, a \textbf{core} is a task which is a kind of super-driver in which
 it has full rights on the whole machine.
 
 A \textbf{module} is simply an additional file passed at the boot time.
+
+XXX
+
+The kaneton developers wanted to make things simple to add source code
+at the beginning and/or at the end of the functions of a manager. To do
+so, some macro functions were introduced.

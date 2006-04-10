@@ -1,4 +1,20 @@
 --
+ revoir le bootloader:
+
+  t_modules
+  {
+    + t_module* modules;
+  }
+  t_module
+  {
+    + void* content;
+    + t_module* next;
+  }
+
+ enlever aussi le premier et faire qu il n y a qu un segment
+ pour l ISA.
+
+--
  ordre des *_give(). tjs le plus en dans la hierarchie en premier:
 
  as_give(task, as); segment_give(as, segment) etc..
@@ -26,24 +42,8 @@
  revoir la moulinette de triche, a la limite retoucher le code de ctcompare
 
 --
- expliquer dans la doc kaneton.pdf comment fonctionne machdep.
- et quand il faut appeler machdep: creation, modification et destruction
-
---
  dans env/machine/XXX mettre un fichier qui decrit le profile machine
  genre les binaires utilises, si le user doit definir des choses etc..
-
---
- dire que kaneton est implemente en C dans kaneton.pdf
-
- inclure la license dans kaneton.pdf
-
---
- c'est le fait de decouper en sous-fichiers qui fout la merde sur
- le verbatim quand c'est a cheval sur deux pages.
-
---
- ameliorer le parcourt des modules en rajoutant un champ next.
 
 --
   faire un programme qui rajoute une section kaneton/kayou a un ELF.
@@ -57,28 +57,6 @@
  ideal ou lance le binaire, quel binaire lance, comme le repartir etc..
 
 --
- expliquez les choix de design (tout ce que j explique a l oral a l etudiant)
- dans kaneton plutot quand dans assignments.
-
- sauf pour k1 ou c'est trop specifique.
-
- d ailleurs il n y a pas de section k1 dans kaneton.pdf
-
- une fois que ca ce sera fait je pourrais ecrire lectures::kaneton.pdf
-
---
- questions kaneton:
-   - a quoi sert machdep_data()
-   - comment fonctionne le systeme d'appel de la partie dependante
-   -
-
---
- k3: rapport de modelisation sur les events
-
- ce serait une bonne idee car c'est relativement simple et en meme temps
- ca demande de la reflexion vu que c'est proche de l'archi.
-
---
  pour le probleme de dependance entre segments et malloc() il suffit d'avoir
  un cache d'objets segment dans le manager de segment. et le segment
  manager pioche dedans pour ajouter des segments. donc set_reserve()
@@ -86,13 +64,6 @@
 
  il suffit de calculer la limite d'appels recursifs a segment et d'en
  deduire la taille du cache, par exemple 3, pour etre sur disons 5.
-
---
- Pour kaneton.pdf utiliser la template paper.tex OU en faire
- une nouvelle genre book.
-
- baisser la taille de police et eviter tout ce qui est \\ \vspace \hspace etc..
- car ca rend le code latex illisible.
 
 --
  les images microkernel_examples_* dans seminar sont a passer au format xfig

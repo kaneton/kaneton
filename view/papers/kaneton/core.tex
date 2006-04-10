@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/core.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:33:29 2006]
-%% updated       julien quintard   [tue apr  4 15:20:05 2006]
+%% updated       julien quintard   [mon apr 10 03:10:17 2006]
 %%
 
 %
@@ -17,12 +17,7 @@
 
 In this chapter we will describe the kaneton core design and implementation.
 
-We will first describe the bootloader before describing the core itself.
-Note that many design choices make the bootloader understanding difficult
-to students. We will try to explain the design choices to make things
-clear.
-
-Then we will describe the core's managers taking care of specifying the
+We will precisly describe the core's managers taking care of specifying the
 interface it provides.
 
 \newpage
@@ -129,7 +124,7 @@ the kaneton object's identifier. Then, the set manager uses this identifier
 to retrieve an object in a set.
 
 Notice that to avoid problems, a set must contain objects with unique
-identifiers.
+identifiers. Indeed, identifier collisions in sets are not permitted.
 
 The set manager manages set objects. A \textbf{set object} \textit{o\_set}
 is a kaneton object so is identified by a unique set identifier
@@ -152,24 +147,24 @@ The term \textbf{set descriptor} is equivalent to the term \textit{set object}.
 We use the term \textit{set object} to describe a set outside of the set
 manager while the term \textit{set descriptor} is used inside the set
 manager. A set descriptor contains the set meta-data. Indeed, a set descriptor
-contains the set data structure holding the objects, the number of objects
-managed, the set options, the size of the objects held, the identifier of
-the set etc.. Each set descriptor is also composed of an implementation
-subpart.
+contains the number of objects managed, the set options, the size of the
+objects held, the identifier of the set etc.. Each set descriptor is also
+composed of an implementation subpart containing the data structure holding
+the objects.
 
 A \textbf{node} is a data structure element. Indeed, each iterator
 references a node to be able to locate the previous and next nodes in
 the set. Note that sometimes, the node is also the object.
 
-An \textbf{set iterator} is a pointer on a node of a set. Iterators were
+A \textbf{set iterator} is a pointer on a set node. Iterators were
 introduced to speed up the manipulation of sets. Nevertheless, be carefull
 since no insurance can be made on the coherence of iterators if set
 operations are made.
 
-In other words, the set container is a set \textit{o\_set} which contains
-the set descriptors. Each set descriptor \textit{o\_set} contains a data
-structure composed of nodes which contain the kaneton objects provided by
-the set manager user.
+To conclude on the set nomenclature, the set container is a set object
+\textit{o\_set} which contains the set descriptors. Each set descriptor
+\textit{o\_set} contains a data structure composed of nodes which
+contain the kaneton objects provided by the set manager user.
 
 The Figure \ref{figure:core_sets} illustrates the complex sets organization.
 
@@ -188,19 +183,9 @@ implementation require the \textit{malloc}() suite functions, the simplest
 example being the array data structure which requires the \textit{realloc}()
 function to be able to expand the data structure without effort.
 
-Due to this requirement, the set manager cannot manage the data structure
-for the segments of the segment manager, the kernel address space segments
-and the kernel address space regions of the address space manager because
-the \textit{malloc}() function is not provided yet. To bypass this restriction
-the kaneton microkernel uses an initial \textit{malloc}() version which
-is based on a little amount of memory provided by the bootloader, via the
-fields \textit{alloc} and \textit{allocsz} of the initialization structure.
-This area is called the \textit{survival memory area} as seen in the
-bootloader section.
-
-Using this initial \textit{malloc}() function, the set manager is able to
-build sets for every kernel managers: segment manager, address space manager,
-region manager etc..
+Using this initial \textit{malloc}() function with its survival area,
+the set manager is able to build sets for every kernel managers including
+the segment manager, the address space manager, the region manager etc..
 
 The set manager provides options to parameterize the set reservation.
 
@@ -216,8 +201,9 @@ freed when the set is released.
 To tell the set manager to automatically free the objects stored without
 setting the \textit{SET\_OPT\_ALLOC}, the \textit{SET\_OPT\_FREE} was
 introduced. This option tells the set manager that the user will store
-pre-reserved objects but the user wants them to be freed. This option
-is mutually exclusive with the \textit{SET\_OPT\_ALLOC} option.
+pre-allocated objects but the user wants them to be freed by the set
+manager. This option is mutually exclusive with the
+\textit{SET\_OPT\_ALLOC} option.
 
 The \textit{SET\_OPT\_SORT} tells the set manager to always keep the set
 sorted by identifiers.
@@ -419,7 +405,8 @@ its own interface. Therefore, for example, the \textit{set\_reserve}()
 function could have fifteen arguments for the stack implementation.
 
 To better understand the implementations, take a look at the set
-manager directory \textit{kaneton/core/set/}.
+manager directory \textit{kaneton/core/set/} and its header file
+\textit{kaneton/include/core/set.h}.
 
 %
 % stats manager
@@ -427,7 +414,80 @@ manager directory \textit{kaneton/core/set/}.
 
 \section{stats manager}
 
-XXX ne se base pas sur les sets
+The \textbf{stats manager} was introduced to perform runtime statistics on
+the kaneton managers.
+
+The kaneton object managed by the stats manager is the stats object
+\textit{o\_stats} identified by a unique stats identifier \textit{i\_stats}.
+
+Indeed, if enabled, every time a core function is called in a kaneton
+manager, the stats manager is notified about that and then updates its
+internal data structure.
+
+Then, it is possible to perform statistics on the whole kaneton microkernel
+and then to notice what are the most used managers and more precisly which
+functions are widely called.
+
+Note that the stats manager keeps track of the statistics via an internal
+data structure. The stats manager does not use the set manager to store
+its statistics. Indeed, if the stats manager used the set manager, it
+would not be able to perform statistics on the set manager. In addition,
+the set manager seems to be the most used manager so statistics must be
+performed on it.
+
+For this reason, the stats manager uses a specific data structure.
+
+%
+% interface
+%
+
+\subsubsection{Interface}
+
+\function{stats\_show}{(i\_stats \argument{id})}
+	 {
+	   This function displays information about a stats object.
+	 }
+
+\function{stats\_dump}{(void)}
+	 {
+	   This function displays information on every stats object.
+	 }
+
+\function{stats\_begin}{(i\_stats \argument{id},
+                         char* \argument{function})}
+	 {
+	   This function announces a new call of the function
+	   \argument{function} in the stats object \argument{id}.
+	 }
+
+\function{stats\_end}{(i\_stats \argument{id},
+                       char* \argument{function},
+                       t\_error \argument{error})}
+	 {
+	   This function announces the end of a function call with the
+	   return value \argument{error}.
+	 }
+
+\function{stats\_reserve}{(char* \argument{name},
+                           i\_stats* \argument{id})}
+	 {
+	   This function reserves a stats object given a name \argument{name}.
+	 }
+
+\function{stats\_release}{(i\_stats \argument{id})}
+	 {
+	   This function releases a stats object.
+	 }
+
+\function{stats\_init}{(void)}
+	 {
+	   This function initializes the stats manager.
+	 }
+
+\function{stats\_clean}{(void)}
+	 {
+	   This function cleans the stats manager.
+	 }
 
 %
 % as manager
@@ -546,7 +606,7 @@ The \textbf{segment manager} manages physical memory.
 Its goals is to reserve and release physical memory areas, merge or split
 allocated areas and finally to read or write directly into physical memory.
 
-The kaneton object manages by the segment manager is the segment object.
+The kaneton object managed by the segment manager is the segment object.
 
 A \textbf{segment object} \textit{o\_segment} describes an area of reserved
 physical memory. A segment object has some properties like the base
@@ -790,7 +850,53 @@ As for segments, regions identifiers are set from the region base address.
 
 \section{map manager}
 
-XXX
+It is obvious the programmer does not want to care about segments and
+regions. He does not want to know what it is and why these things were
+designed like that.
+
+The programmer just wants to allocate memory. To make things easier
+to the programmer, a map manager was introduced.
+
+The \textbf{map manager} is just an abstract layer over the segment
+and region manager.
+
+Indeed its main task is to allocate memory so to reserve a segment
+and a region mapping it.
+
+%
+% interface
+%
+
+\subsubsection{Interface}
+
+\function{map\_reserve}{(i\_as \argument{as},
+                         t\_opts \argument{opts},
+                         t\_vsize \argument{size},
+                         t\_perms \argument{perms},
+                         t\_vaddr* \argument{address})}
+	 {
+	   This function reserved a mapping between a segment and a region.
+	   The segment will have the size \argument{size} with the permissions
+	   \argument{perms} while the region will map the whole segment.
+
+	   The virtual address is returned in \argument{address}.
+	 }
+
+\function{map\_release}{(i\_as \argument{as},
+                         t\_vaddr \argument{address})}
+	 {
+	   This function releases a previously reserved map.
+	 }
+
+\function{map\_init}{(void)}
+	 {
+	   This function initializes the map manager.
+	 }
+
+\function{map\_clean}{(void)}
+	 {
+	   This function cleans the map manager.
+	 }
 
 %
 % event manager
@@ -798,13 +904,125 @@ XXX
 
 \section{event manager}
 
-XXX
+The \textbf{event manager} manages such event objects.
+
+An \textbf{event object} \textit{o\_event} is an abstraction over the
+well-known hardware and software interrupts. Each event object is
+identified by a unique event identifier \textit{i\_event}.
+
+The events are used to describe a behaviour and to associate an action
+to them.
+
+Then, every time an hardware or software interrupt is triggered, the
+architecture dependent code will pass on the information to the core
+which will perform the associate action.
+
+The common actions are either to run a specific event handler or to
+send an event message to a specific kaneton task.
+
+%
+% interface
+%
+
+\function{event\_show}{(i\_event \argument{id})}
+	 {
+	   This function displays information on an event object.
+	 }
+
+\function{event\_dump}{(void)}
+	 {
+	   This function displays information on all the event objects.
+	 }
+
+\function{event\_reserve}{(i\_event \argument{id},
+                           e\_event\_type \argument{type},
+                           u\_event\_handler \argument{handler})}
+	 {
+	   This function installs an event object.
+	 }
+
+\function{event\_releases}{(i\_event \argument{id})}
+	 {
+	   This function releases an event object.
+	 }
+
+\function{event\_get}{(i\_event \argument{id},
+                       o\_event** \argument{o})}
+	 {
+	   This function returns in \argument{o} the event object
+	   corresponding to \argument{id}.
+	 }
+
+\function{event\_init}{(void)}
+	 {
+	   This function initializes the event manager.
+	 }
+
+\function{event\_clean}{(void)}
+	 {
+	   This function cleans the event manager.
+	 }
 
 %
 % timer manager
 %
 
 \section{timer manager}
+
+The \textbf{timer manager} manages timer objects.
+
+A \textbf{timer object} \textit{o\_timer} is a timed event that measures
+relative time. Each timer object is identified by a unique timer identifier
+\textit{i\_timer}.
+
+%
+% interface
+%
+
+\function{timer\_show}{(i\_timer \argument{id})}
+	 {
+	   This function displays information on a timer object.
+	 }
+
+\function{timer\_dump}{(void)}
+	 {
+	   This function displays information on all the timers.
+	 }
+
+\function{timer\_reserve}{(i\_task \argument{task},
+                           t\_uint32 \argument{delay},
+                           t\_uint32 \argument{repeat},
+                           i\_timer* \argument{id})}
+	 {
+	   This function reserves a timer which will expire in
+	   \argument{delay} microseconds.
+
+	   The \argument{repeat} argument specifies if the timer
+	   must be re-inserted once expired.
+	 }
+
+\function{timer\_release}{(i\_timer \argument{id})}
+	 {
+	   This function releases a timer object.
+	 }
+
+\function{timer\_check}{(i\_timer \argument{id},
+                         t\_uint32* \argument{delay})}
+	 {
+	   This function returns in \argument{delay} the remaining time
+	   before expiration.
+	 }
+
+XXX
+
+\function{timer\_modify}{(i\_timer \argument{id},
+                          t\_uint32* \argument{delay})}
+	 {
+	   This function returns in \argument{delay} the remaining time
+	   before expiration.
+	 }
+
+
 
 %
 % task manager
@@ -829,5 +1047,13 @@ XXX
 %
 
 \section{scheduler}
+
+XXX
+
+%
+% message manager
+%
+
+\section{message manager}
 
 XXX
