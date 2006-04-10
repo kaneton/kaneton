@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/machines/unix/init.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat apr  1 02:07:57 2006]
+## updated       julien quintard   [mon apr 10 14:33:39 2006]
 ##
 
 #
@@ -30,7 +30,7 @@ source			.env.sh
 
 BINARIES="bash gcc gmake rm ar ranlib ld nasm ln touch wc date	\
           tail tar pdflatex cp cat sed echo ls date cpp mtools	\
-          mcopy mkdir find xpdf mktemp mv"
+          mcopy mkdir find xpdf mktemp mv script"
 
 #
 # ---------- functions --------------------------------------------------------

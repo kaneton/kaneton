@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/core.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:33:29 2006]
-%% updated       julien quintard   [mon apr 10 03:10:17 2006]
+%% updated       julien quintard   [mon apr 10 13:23:24 2006]
 %%
 
 %
@@ -1006,23 +1006,34 @@ relative time. Each timer object is identified by a unique timer identifier
 	   This function releases a timer object.
 	 }
 
-\function{timer\_check}{(i\_timer \argument{id},
-                         t\_uint32* \argument{delay})}
+\function{timer\_delay}{(i\_timer \argument{id},
+                         t\_uint32 \argument{delay})}
 	 {
-	   This function returns in \argument{delay} the remaining time
-	   before expiration.
+	   This function updates the delay.
 	 }
 
-XXX
-
-\function{timer\_modify}{(i\_timer \argument{id},
-                          t\_uint32* \argument{delay})}
+\function{timer\_repeat}{(i\_timer \argument{id},
+                          t\_uint32 \argument{repeat})}
 	 {
-	   This function returns in \argument{delay} the remaining time
-	   before expiration.
+	   This function updates the repeat property.
 	 }
 
+\function{timer\_get}{(i\_timer \argument{id},
+                       o\_timer** \argument{o})}
+	 {
+	   This function returns in \argument{o} the timer object
+	   corresponding to \argument{id}.
+	 }
 
+\function{timer\_init}{(void)}
+	 {
+	   This function initializes the timer manager.
+	 }
+
+\function{timer\_clean}{(void)}
+	 {
+	   This function cleans the timer manager.
+	 }
 
 %
 % task manager

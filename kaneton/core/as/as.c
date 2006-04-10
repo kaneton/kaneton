@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/as/as.c
+ * file          /home/mycure/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [tue apr  4 14:05:53 2006]
+ * updated       julien quintard   [mon apr 10 13:39:44 2006]
  */
 
 /*
@@ -544,7 +544,7 @@ t_error			as_clone(t_tskid			tskid,
  */
 
 t_error			as_reserve(t_tskid			tskid,
-				   t_asid*			asid)
+				   t_asid			asid)
 {
   o_task*		task;
   o_as			o;
