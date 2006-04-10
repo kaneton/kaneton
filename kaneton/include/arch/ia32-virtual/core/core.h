@@ -120,9 +120,9 @@ t_error			ia32_event_clean(void);
 
 void			ia32_event_handler(t_uint32		id);
 
-void                    ia32_kbd_handler(t_uint32                    id);
+void                    ia32_kbd_handler(t_uint32		id);
 
-void                    ia32_pf_handler(t_uint32                     error_code);
+void                    ia32_pf_handler(t_uint32		error_code);
 
 
 /*

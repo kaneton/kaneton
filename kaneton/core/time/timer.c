@@ -328,6 +328,7 @@ t_error			timer_release(i_timer			id)
  *
  * 1) get the timer object.
  * 2) set the delay.
+ # 3) call the machine-dependent code.
  */
 
 t_error			timer_delay(i_timer			id,
@@ -350,6 +351,13 @@ t_error			timer_delay(i_timer			id,
 
   o->delay = delay;
 
+  /*
+   * 3)
+   */
+
+  if (machdep_call(timer, timer_delay, id, delay) != ERROR_NONE)
+    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+
   TIMER_LEAVE(timer, ERROR_NONE);
 }
 
@@ -360,6 +368,7 @@ t_error			timer_delay(i_timer			id,
  *
  * 1) get the timer object.
  * 2) set the repeat mode.
+ * 3) call the machine-dependent code.
  */
 
 t_error			timer_repeat(i_timer			id,
@@ -381,6 +390,13 @@ t_error			timer_repeat(i_timer			id,
    */
 
   o->repeat = repeat;
+
+  /*
+   * 3)
+   */
+
+  if (machdep_call(timer, timer_repeat, id, repeat) != ERROR_NONE)
+    TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   TIMER_LEAVE(timer, ERROR_NONE);
 }
