@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/02/02.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sun apr  9 17:20:42 2006]
+ * updated       matthieu bucchianeri   [tue apr 11 17:27:13 2006]
  */
 
 #include <klibc.h>

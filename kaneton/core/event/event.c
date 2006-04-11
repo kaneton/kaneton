@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/event/event.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       matthieu bucchianeri   [mon apr  3 18:52:15 2006]
+ * updated       matthieu bucchianeri   [tue apr 11 16:58:56 2006]
  */
 
 /*
@@ -434,10 +434,10 @@ t_error			event_clean(void)
 
 t_error			event_test(void)
 {
-  if (event_reserve(32, EVENT_FUNCTION, (u_event_handler)timer_handler)
+/*  if (event_reserve(32, EVENT_FUNCTION, (u_event_handler)timer_handler)
       != ERROR_NONE)
     return ERROR_UNKNOWN;
-
+*/
   if (event_reserve(33, EVENT_FUNCTION, (u_event_handler)ia32_kbd_handler)
       != ERROR_NONE)
     return ERROR_UNKNOWN;

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [mon apr 10 11:43:42 2006]
+ * updated       matthieu bucchianeri   [tue apr 11 17:29:02 2006]
  */
 
 /*
@@ -474,6 +474,8 @@ t_error			ia32_region_release(t_asid		asid,
   t_paddr		table_address;
 
   REGION_ENTER(region);
+
+  REGION_LEAVE(region, ERROR_NONE);				// XXX
 
   /*
    * 1)

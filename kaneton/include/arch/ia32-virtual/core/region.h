@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/region.h
+ * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/region.h
  *
  * created       julien quintard   [wed dec 14 07:04:32 2005]
- * updated       julien quintard   [sun apr  2 14:10:08 2006]
+ * updated       matthieu bucchianeri   [tue apr 11 16:16:58 2006]
  */
 
 #ifndef IA32_CORE_REGION_H
@@ -23,6 +23,7 @@
  * ---------- macros ----------------------------------------------------------
  */
 
+#define REGION_VMEM_MIN		PAGESZ
 #define REGION_VMEM_MAX		UINT_MAX
 
 /*

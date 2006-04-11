@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [tue apr  4 19:06:26 2006]
+ * updated       matthieu bucchianeri   [tue apr 11 16:57:05 2006]
  */
 
 /*
@@ -303,14 +303,59 @@ void                    ia32_kbd_handler(t_uint32		id)
     printf("%c", scancodes[scancode]);
 }
 
+
+
+
+
+typedef struct
+{
+  t_uint32	fs;
+  t_uint32	es;
+  t_uint32	ds;
+  t_uint32	esi;
+  t_uint32	edi;
+  t_uint32	edx;
+  t_uint32	ecx;
+  t_uint32	ebx;
+  t_uint32	eax;
+  t_uint8	reserved3[0x14];
+  t_uint32	reserved2;
+  t_uint32	ebp;
+  t_uint32	eip;
+  t_uint32	cs;
+  t_uint32	eflags;
+}		__attribute__ ((packed)) t_gdb_context;
+
+
+
+
+
 void                    ia32_pf_handler(t_uint32		error_code)
 {
   t_uint32              addr;
 
+  t_gdb_context*	ctx;
+  t_uint8*		ptr;
+
+  /*
+   * 1)
+   */
+
+  asm volatile("movl (%%ebp), %%eax\n\t"
+	       "movl (%%eax), %%ebx\n\t"
+	       "movl %%ebx, %0"
+	       : "=g" (ptr)
+	       :
+	       : "%eax", "%ebx");
+
+  ptr -= 56;
+  ctx = (t_gdb_context*)ptr;
+
   SCR2(addr);
 
   printf("error: page fault !\n"
-         "  trying to %s at the address 0x%x requires %s\n",
+         "  %p trying to %s at the address 0x%x requires %s\n",
+	 ctx->eip,
          (error_code & 2) ? "write" : "read",
          addr,
          (error_code & 1) ? "a lower DPL" : "the page to be present");

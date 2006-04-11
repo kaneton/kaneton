@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/08/08.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sun apr  9 17:37:03 2006]
+ * updated       matthieu bucchianeri   [tue apr 11 17:24:31 2006]
  */
 
 #include <klibc.h>
@@ -16,6 +16,8 @@
 extern t_init*	init;
 extern t_asid	kasid;
 extern m_as*	as;
+
+/* XXX gerer les address space */
 
 static void check_mapping(t_vaddr start, t_vsize size, t_paddr phys)
 {
@@ -30,6 +32,7 @@ static void check_mapping(t_vaddr start, t_vsize size, t_paddr phys)
   t_uint32	br;
   t_paddr	paddr;
   t_uint8*	p = (t_uint8*)start;
+  t_uint32	pages = 0;
 
   paddr = phys;
 
@@ -42,7 +45,7 @@ static void check_mapping(t_vaddr start, t_vsize size, t_paddr phys)
     {
       if (pd_get_table(NULL, pde, &pt) != ERROR_NONE)
 	{
-	  printf("region %d of init badly mapped (no page table)\n");
+	  printf("region @ %d badly mapped (no page table)\n", start);
 	  break;
 	}
 
@@ -54,24 +57,25 @@ static void check_mapping(t_vaddr start, t_vsize size, t_paddr phys)
 	{
 	  if (pt_get_page(&pt, pte, &pg) != ERROR_NONE)
 	    {
-	      printf("region %d of init badly mapped (no pte for %p)\n",
-		     ENTRY_ADDR(pde, pte));
+	      printf("region @ %d badly mapped (no pte for %p)\n",
+		     start, ENTRY_ADDR(pde, pte));
 	      br = 1;
 	      break;
 	    }
 	  if (pg.addr != paddr)
 	    {
-	      printf("region %d of init badly mapped (%p mapped to %p,"
+	      printf("region @ %d badly mapped (%p mapped to %p,"
 		     "awaited address: %p\n",
-		     ENTRY_ADDR(pde, pte), pg.addr, paddr);
+		     start, ENTRY_ADDR(pde, pte), pg.addr, paddr);
 	      br = 1;
 	      break;
 	    }
+	  pages++;
 	  paddr += PAGESZ;
 	}
     }
 
-  if (start < ENTRY_ADDR(PD_MIRROR, 0))
+  if (0 && start < ENTRY_ADDR(PD_MIRROR, 0))
     for (; size > 0; size--, p++)
       *p = *p;
 }
@@ -109,9 +113,9 @@ void		check_as_08(void)
 	      printf("error segment_get\n");
 	      TEST_LEAVE;
 	    }
-/*	  printf("check mapping for region %qd of as %qd\n",
-		 oreg->regid, oas->asid);
-*/	  check_mapping(oreg->address, oreg->size, oseg->address);
+//	  printf("check mapping for region %qd of as %qd\n",
+//		 oreg->regid, oas->asid);
+	  check_mapping(oreg->address, oreg->size, oseg->address);
 	}
     }
 

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/task/01/01.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sat apr  8 19:31:27 2006]
+ * updated       matthieu bucchianeri   [tue apr 11 16:10:00 2006]
  */
 
 #include <klibc.h>
