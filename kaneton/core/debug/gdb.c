@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/gdb.c
  *
  * created       matthieu bucchianeri   [mon apr 10 12:47:20 2006]
- * updated       matthieu bucchianeri   [mon apr 10 23:21:07 2006]
+ * updated       matthieu bucchianeri   [tue apr 11 14:49:56 2006]
  */
 
 /*
@@ -73,6 +73,7 @@ static const t_uint32		com_port = SERIAL_COM1;
  */
 
 static volatile t_uint32	step = 0;
+static volatile t_vaddr		ebp = 0;
 
 /*
  * the breakpoints addresses set.
@@ -139,9 +140,12 @@ void			gdb_handler(t_uint32 needless)
    * 2)
    */
 
-  if (step || set_get(br, ctx->eip, (void**)&id) == ERROR_NONE)
+  if ((step/* && ctx->ebp == ebp*/) ||
+      set_get(br, ctx->eip, (void**)&id) == ERROR_NONE ||
+      ebp == 0)
     {
-      gdb_status(NULL);
+      gdb_status(NULL, ctx);
+      step = 0;
       gdb_command(ctx);
     }
 }
@@ -244,7 +248,7 @@ t_error		gdb_command(void* ctx)
   t_uint8	stop;
   t_uint8	chk[2];
   t_uint8	chkcalc[2];
-  t_uint8	buffer[60];
+  t_uint8	buffer[400];
   t_uint32	i;
 
   while (1)
@@ -280,6 +284,7 @@ t_error		gdb_command(void* ctx)
       gdb_checksum(buffer, chkcalc);
       if (chk[0] != chkcalc[0] || chk[1] != chkcalc[1])
 	{
+	  printf("cmd = %s\n", buffer);
 	  printf("bad checksum (%c%c != %c%c)\n", chk[0], chk[1],
 		 chkcalc[0], chkcalc[1]);
 	  serial_write(com_port, (t_uint8*)"-", 1);
@@ -309,6 +314,7 @@ t_error		gdb_command(void* ctx)
 	  gdb_send((t_uint8*)"");
 	}
     }
+  ebp = ((t_gdb_context*)ctx)->ebp;
   return (ERROR_NONE);
 }
 
@@ -342,6 +348,23 @@ static void	gdb_fill_reg(t_uint8*		buffer,
 }
 
 /*
+ * extract some hex data.
+ */
+
+t_uint32		gdb_extract(t_uint8*	buffer,
+				    t_uint32	sz)
+{
+  t_uint8		c;
+  t_uint32		val;
+
+  c = *(buffer + sz);
+  *(buffer + sz) = 0;
+  val = strtol(buffer, NULL, 16);
+  *(buffer + sz) = c;
+  return val;
+}
+
+/*
  * this function builds a register dump and sends it to the client.
  */
 
@@ -357,14 +380,14 @@ int			gdb_read_reg(t_uint8*		buffer,
   gdb_fill_reg(send + 8, ctx->ecx, 8);
   gdb_fill_reg(send + 16, ctx->edx, 8);
   gdb_fill_reg(send + 24, ctx->ebx, 8);
-  gdb_fill_reg(send + 32, 0 /* ctx->esp*/, 8);
+  gdb_fill_reg(send + 32, ctx->ebp + 12, 8); // esp
   gdb_fill_reg(send + 40, ctx->ebp, 8);
   gdb_fill_reg(send + 48, ctx->esi, 8);
   gdb_fill_reg(send + 56, ctx->edi, 8);
   gdb_fill_reg(send + 64, ctx->eip, 8);
   gdb_fill_reg(send + 72, ctx->eflags, 8);
   gdb_fill_reg(send + 80, ctx->cs, 8);
-  gdb_fill_reg(send + 88, 0 /* ctx->ss*/, 8);
+  gdb_fill_reg(send + 88, ctx->ds, 8); // ss
   gdb_fill_reg(send + 96, ctx->ds, 8);
   gdb_send(send);
   return 0;
@@ -374,9 +397,26 @@ int			gdb_read_reg(t_uint8*		buffer,
  * this function is not supported.
  */
 
-int		gdb_write_reg(t_uint8*		buffer)
+int		gdb_write_reg(t_uint8*		buffer,
+			      void*		context)
 {
-  gdb_send((t_uint8*)"");
+  t_gdb_context*	ctx = context;
+
+  buffer++;
+  ctx->eax = gdb_extract(buffer + 0, 8);
+  ctx->ecx = gdb_extract(buffer + 8, 8);
+  ctx->edx = gdb_extract(buffer + 16, 8);
+  ctx->ebx = gdb_extract(buffer + 24, 8);
+//  ctx->esp = gdb_extract(buffer + 32, 8);
+  ctx->ebp = gdb_extract(buffer + 40, 8);
+  ctx->esi = gdb_extract(buffer + 48, 8);
+  ctx->edi = gdb_extract(buffer + 56, 8);
+  ctx->eip = gdb_extract(buffer + 64, 8);
+  ctx->eflags = gdb_extract(buffer + 72, 8);
+  ctx->cs = gdb_extract(buffer + 80, 8);
+//  ctx->ss = gdb_extract(buffer + 88, 8);
+  ctx->ds = gdb_extract(buffer + 96, 8);
+  gdb_send((t_uint8*)"OK");
   return 0;
 }
 
@@ -419,7 +459,7 @@ int		gdb_read_mem(t_uint8*		buffer)
    */
 
   sz *= 2;
-  if (sz == 8)
+  if (sz == 2)
     {
       u.b = (t_uint8*)addr;
       val = *u.b;
@@ -429,7 +469,7 @@ int		gdb_read_mem(t_uint8*		buffer)
       u.h = (t_uint16*)addr;
       val = *u.h;
     }
-  if (sz == 2)
+  if (sz == 8)
     {
       u.w = (t_uint32*)addr;
       val = *u.w;
@@ -454,8 +494,74 @@ int		gdb_read_mem(t_uint8*		buffer)
 
 int		gdb_write_mem(t_uint8*		buffer)
 {
+  t_uint8*	p;
+  t_uint8*	p2;
+  t_vaddr	addr;
+  t_vsize	sz;
+  union {
+    t_uint8*	b;
+    t_uint16*	h;
+    t_uint32*	w;
+  }		u;
+  t_uint32	val;
+  t_uint32	val2;
 
-  gdb_send((t_uint8*)"");
+  /*
+   * 1)
+   */
+
+  buffer++;
+  for (p = buffer; *p && *p != ','; p++)
+    ;
+  *p = 0;
+  p++;
+  for (p2 = p; *p2 && *p2 != ':'; p2++)
+    ;
+  *p2 = 0;
+  p2++;
+  addr = strtol((char*)buffer, NULL, 16);
+  sz = strtol((char*)p, NULL, 16);
+  if (sz == 8)
+    {
+      t_uint8 c;
+
+      c = *(p2 + 8);
+      *(p2 + 8) = 0;
+      val = strtol((char*)p2, NULL, 16);
+      *(p2 + 8) = c;
+      val2 = strtol((char*)p2 + 8, NULL, 16);
+    }
+  else
+    val = strtol((char*)p2, NULL, 16);
+
+  /*
+   * 2)
+   */
+
+  sz *= 2;
+  if (sz == 2)
+    {
+      u.b = (t_uint8*)addr;
+      *u.b = val;
+    }
+  if (sz == 4)
+    {
+      u.h = (t_uint16*)addr;
+      *u.h = val;
+    }
+  if (sz == 8)
+    {
+      u.w = (t_uint32*)addr;
+      *u.w = val;
+    }
+  if (sz == 16)
+    {
+      u.w = (t_uint32*)addr;
+      *u.w = val;
+      u.w = (t_uint32*)addr + 1;
+      *u.w = val2;
+    }
+  gdb_send((t_uint8*)"OK");
   return 0;
 }
 
@@ -463,8 +569,18 @@ int		gdb_write_mem(t_uint8*		buffer)
  * this function enables single-step mode.
  */
 
-int		gdb_step(t_uint8*		buffer)
+int			gdb_step(t_uint8*		buffer,
+				 void*			context)
 {
+  t_gdb_context*	ctx = context;
+  t_vaddr		addr;
+
+  buffer++;
+  if (*buffer)
+    {
+      addr = strtol((char*)buffer, NULL, 16);
+      ctx->eip = addr;
+    }
   step = 1;
   return 1;
 }
@@ -473,8 +589,18 @@ int		gdb_step(t_uint8*		buffer)
  * this function restarts the execution since next breakpoint.
  */
 
-int		gdb_continue(t_uint8*		buffer)
+int		gdb_continue(t_uint8*		buffer,
+			     void*		context)
 {
+  t_gdb_context*	ctx = context;
+  t_vaddr		addr;
+
+  buffer++;
+  if (*buffer)
+    {
+      addr = strtol((char*)buffer, NULL, 16);
+      ctx->eip = addr;
+    }
   step = 0;
   return 1;
 }
@@ -502,6 +628,7 @@ int		gdb_unset_break(t_uint8*	buffer)
   buffer++;
   if (*buffer != '0')
     {
+      printf("unsupported breakpoint type\n");
       gdb_send((t_uint8*)"");
       return 0;
     }
@@ -571,9 +698,25 @@ int		gdb_set_break(t_uint8*		buffer)
  * this function signales status. we are always in TRAP mode.
  */
 
-int		gdb_status(t_uint8*		buffer)
+int			gdb_status(t_uint8*		buffer,
+				   void*		context)
 {
-  gdb_send((t_uint8*)"S05");
+  t_gdb_context*	ctx = context;
+  t_uint8		buf[60];
+
+  if (ctx)
+    {
+      memset(buf, 0, 60);
+      strcpy((char*)buf, "T05");
+      buf[3] = '8';
+      buf[4] = ':';
+      gdb_fill_reg(buf + 5, ctx->eip, 8);
+      buf[13] = ';';
+      buf[14] = 0;
+      gdb_send(buf);
+    }
+  else
+    gdb_send((t_uint8*)"S05");
   return 0;
 }
 
@@ -594,7 +737,8 @@ t_error		gdb_init(void)
   /*
    * 1)
    */
-  if (set_reserve(array, SET_OPT_SORT, 10, sizeof(t_id), &br) != ERROR_NONE)
+  if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, 10,
+		  sizeof(t_id), &br) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   /*
@@ -664,4 +808,6 @@ t_error		gdb_clean(void)
 
   if (set_release(br) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
 }
