@@ -109,7 +109,7 @@ t_error			ia32_segment_clean(void);
  */
 
 t_error			ia32_event_reserve(i_event		id,
-					   t_uint32		type,
+					   t_type		type,
 					   u_event_handler	handler);
 
 t_error			ia32_event_release(i_event		id);

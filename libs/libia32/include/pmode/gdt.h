@@ -80,21 +80,21 @@
  */
 typedef enum
   {
-	ia32_type_code	= SEG_TYPE_CODE,
-	ia32_type_data	= SEG_TYPE_DATA,
-  }	t_ia32_usr_segtype;
+    ia32_type_code	= SEG_TYPE_CODE,
+    ia32_type_data	= SEG_TYPE_DATA,
+  } t_ia32_usr_segtype;
 
 /*
  * system segments types
  */
 typedef enum
   {
-	ia32_type_ldt		= SEG_TYPE_LDT,
-	ia32_type_tss		= SEG_TYPE_TSS,
-	ia32_type_call_gate	= SEG_GATE_CALL,
-	ia32_type_trap_gate	= SEG_GATE_TRAP,
-	ia32_type_int_gate	= SEG_GATE_INTERRUPT,
-  }	t_ia32_sys_segtype;
+    ia32_type_ldt	= SEG_TYPE_LDT,
+    ia32_type_tss	= SEG_TYPE_TSS,
+    ia32_type_call_gate	= SEG_GATE_CALL,
+    ia32_type_trap_gate	= SEG_GATE_TRAP,
+    ia32_type_int_gate	= SEG_GATE_INTERRUPT,
+  } t_ia32_sys_segtype;
 
 typedef union
 {

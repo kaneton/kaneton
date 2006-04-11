@@ -29,6 +29,7 @@
 #include "interrupt/pic.h"
 #include "time/pit.h"
 #include "task/task.h"
+#include "task/tss.h"
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -45,6 +46,7 @@
  *      ../interrupt/interrupt.c
  *	../time/timer.c
  *	../task/task.c
+ *      ../task/tss.c
  */
 
 /*
@@ -286,6 +288,18 @@ t_error			pit_init(t_uint32			frequency);
 t_error			context_store(t_ia32_context*		context);
 
 t_error			context_dump(t_ia32_context*		context);
+
+
+/*
+ * ../task/tss.c
+ */
+
+t_error			tss_load(t_ia32_tss*			tss_new,
+				 t_uint16			ss,
+				 t_uint32			esp,
+				 t_uint32			io);
+
+t_error			tss_init(t_ia32_tss*			base);
 
 
 /*

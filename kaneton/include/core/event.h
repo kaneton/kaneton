@@ -53,7 +53,7 @@ typedef struct
 {
   i_event			eventid;
 
-  t_uint32			type;
+  t_type			type;
 
   u_event_handler		handler;
 
@@ -145,7 +145,7 @@ t_error			event_dump(void);
 t_error			event_notify(i_event			id);
 
 t_error			event_reserve(i_event			id,
-				      t_uint32			type,
+				      t_type			type,
 				      u_event_handler		handler);
 
 t_error			event_release(i_event			id);

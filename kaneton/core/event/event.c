@@ -171,7 +171,7 @@ t_error			event_notify(i_event			id)
  */
 
 t_error			event_reserve(i_event			id,
-				      t_uint32			type,
+				      t_type			type,
 				      u_event_handler		handler)
 {
   o_event*		tmp;

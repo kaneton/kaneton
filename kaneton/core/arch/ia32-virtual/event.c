@@ -74,7 +74,7 @@ d_event				event_dispatch =
  */
 
 t_error			ia32_event_reserve(i_event		id,
-					   t_uint32		type,
+					   t_type		type,
 					   u_event_handler	handler)
 {
   t_uint32		eventid = id;
