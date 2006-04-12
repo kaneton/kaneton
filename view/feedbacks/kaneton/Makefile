@@ -5,53 +5,56 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/view
+## path          /home/mycure/kaneton/view/lectures/arch-mips
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Mon Nov  7 16:13:01 2005   mycure
+## last update   Fri Nov 18 20:47:51 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../env/.env.mk
+include			../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		all view build clear
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		curriculum			\
-					lectures			\
-					papers				\
-					exams				\
-					templates			\
-					internships			\
-					feedbacks			
+PAPER			:=		kaneton
+
+GARBAGE			:=		$(PAPER).aux			\
+					$(PAPER).log			\
+					$(PAPER).nav			\
+					$(PAPER).out			\
+					$(PAPER).snm			\
+					$(PAPER).toc			\
+					$(PAPER).dvi			\
+					$(PAPER).ps			\
+					$(PAPER).pdf			
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
-	$(call makefile,$(SUBDIRS),)
+all:			build view
+
+view:
+	$(call view,$(PAPER),)
+
+build:
+	$(call compile-tex,$(PAPER),)
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call remove,$(GARBAGE),)
 
-	$(call purge,)
-
-proto:
-	$(call makefile,$(SUBDIRS),proto)
-
-dep:
-	$(call makefile,$(SUBDIRS),dep)
+	$(call purge)
