@@ -244,7 +244,7 @@ t_error			set_dump(void)
  * this function fills the variable size with the set size.
  */
 
-t_error			set_size(t_setid			setid,
+t_error			set_size(i_set			setid,
 				 t_setsz*			size)
 {
   o_set*		o;
@@ -311,7 +311,7 @@ t_error			set_new(o_set*				o)
  * 2) removes the set descriptor from the set container.
  */
 
-t_error			set_delete(t_setid			setid)
+t_error			set_delete(i_set			setid)
 {
   SET_ENTER(set);
 
@@ -350,7 +350,7 @@ t_error			set_delete(t_setid			setid)
  * 2) otherwise, tries to get the set descriptor in the set container.
  */
 
-t_error			set_descriptor(t_setid			setid,
+t_error			set_descriptor(i_set			setid,
 				       o_set**			o)
 {
   SET_ENTER(set);
@@ -386,7 +386,7 @@ t_error			set_descriptor(t_setid			setid,
  * 2) from the iterator, gets the real object.
  */
 
-t_error			set_get(t_setid				setid,
+t_error			set_get(i_set				setid,
 				t_id				id,
 				void**				o)
 {
@@ -432,7 +432,7 @@ t_error			set_get(t_setid				setid,
 
 t_error			set_init(void)
 {
-  t_setid		needless;
+  i_set		needless;
 
   /*
    * 1)
@@ -602,7 +602,7 @@ t_error			set_test(t_type				type)
 	t_iterator	iterator;
 	t_id		data;
 	t_id		*o;
-	t_setid		id;
+	i_set		id;
 
 	cons_msg('#', "testing SET_TYPE_ARRAY\n");
 
@@ -636,7 +636,7 @@ t_error			set_test(t_type				type)
 	t_uint32	nfree = alloc_nfree();
 	t_iterator	iterator;
 	t_id		data;
-	t_setid		id;
+	i_set		id;
 	t_id		*o;
 
 	cons_msg('#', "testing SET_TYPE_BPT\n");
@@ -707,7 +707,7 @@ t_error			set_test(t_type				type)
 	  printf("error: set_remove()\n");
 
 	{
-	  t_setid new;
+	  i_set new;
 
 	  set_clone(id, &new);
 
@@ -754,7 +754,7 @@ t_error			set_test(t_type				type)
 	t_iterator	iterator;
 	t_id		data;
 	t_id		*o;
-	t_setid		id;
+	i_set		id;
 
 	cons_msg('#', "testing SET_TYPE_LL\n");
 
@@ -863,7 +863,7 @@ t_error			set_test(t_type				type)
 	set_show(id);
 
 	{
-	  t_setid new;
+	  i_set new;
 
 	  set_clone(id, &new);
 

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/thread.h
  *
  * created       renaud voltz   [tue apr  4 03:14:51 2006]
- * updated       matthieu bucchianeri   [wed apr 12 11:54:06 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:13:08 2006]
  */
 
 #ifndef CORE_THREAD_H
@@ -61,7 +61,7 @@ typedef struct
 
   t_state			sched;
 
-  t_setid			waits;
+  i_set				waits;
   t_wait			wait;
 
   t_vaddr			stack;
@@ -81,7 +81,7 @@ typedef struct
 
   i_stats			stats;
 
-  t_setid			threads;
+  i_set				threads;
 
   machdep_data(m_thread);
 }				m_thread;

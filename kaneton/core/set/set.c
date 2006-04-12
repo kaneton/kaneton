@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/set/set.c
+ * file          /home/buckman/kaneton/kaneton/core/set/set.c
  *
  * created       julien quintard   [fri dec  2 19:55:19 2005]
- * updated       julien quintard   [mon apr  3 15:07:07 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:06:56 2006]
  */
 
 /*
@@ -170,7 +170,7 @@ t_error			set_dump(void)
  * this function fills the variable size with the set size.
  */
 
-t_error			set_size(t_setid			setid,
+t_error			set_size(i_set				setid,
 				 t_setsz*			size)
 {
   o_set*		o;
@@ -237,7 +237,7 @@ t_error			set_new(o_set*				o)
  * 2) removes the set descriptor from the set container.
  */
 
-t_error			set_destroy(t_setid			setid)
+t_error			set_destroy(i_set			setid)
 {
   SET_ENTER(set);
 
@@ -276,7 +276,7 @@ t_error			set_destroy(t_setid			setid)
  * 2) otherwise, tries to get the set descriptor in the set container.
  */
 
-t_error			set_descriptor(t_setid			setid,
+t_error			set_descriptor(i_set			setid,
 				       o_set**			o)
 {
   SET_ENTER(set);
@@ -312,7 +312,7 @@ t_error			set_descriptor(t_setid			setid,
  * 2) from the iterator, gets the real object.
  */
 
-t_error			set_get(t_setid				setid,
+t_error			set_get(i_set				setid,
 				t_id				id,
 				void**				o)
 {
@@ -358,7 +358,7 @@ t_error			set_get(t_setid				setid,
 
 t_error			set_init(void)
 {
-  t_setid		needless;
+  i_set			needless;
 
   /*
    * 1)

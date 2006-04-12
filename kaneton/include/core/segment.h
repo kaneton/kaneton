@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/segment.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [wed apr 12 11:47:31 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:12:19 2006]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -76,7 +76,7 @@ typedef struct
 
   t_lookup			lookup;
 
-  t_setid			segments;
+  i_set				segments;
 
   machdep_data(m_segment);
 }				m_segment;

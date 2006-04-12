@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       matthieu bucchianeri   [wed apr 12 11:53:52 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:12:56 2006]
  */
 
 #ifndef CORE_TASK_H
@@ -88,18 +88,18 @@ typedef struct
   i_task			tskid;
 
   i_task			parent;
-  t_setid			children;
+  i_set				children;
 
   t_class			class;
   t_behav			behav;
   t_prior			prior;
 
   t_asid			asid;
-  t_setid			threads;
+  i_set				threads;
 
   t_state			sched;
 
-  t_setid			waits;
+  i_set				waits;
   t_wait			wait;
 
   machdep_data(o_task);
@@ -115,7 +115,7 @@ typedef struct
 
   i_stats			stats;
 
-  t_setid			tasks;
+  i_set				tasks;
 
   machdep_data(m_task);
 }				m_task;

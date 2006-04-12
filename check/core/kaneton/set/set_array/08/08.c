@@ -19,7 +19,7 @@
 
 void		check_set_array_08(void)
 {
-  t_setid	id;
+  i_set	id;
   t_id		objs[10];
   t_id		*obj;
   int		i;

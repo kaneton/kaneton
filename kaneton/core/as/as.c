@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [wed apr 12 11:51:14 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:06:25 2006]
  */
 
 /*
@@ -411,7 +411,7 @@ t_error			as_clone(i_task				tskid,
   o_as*			to;
   t_iterator		i;
   t_setsz		nb_segments;
-  t_setid		mapping;
+  i_set			mapping;
   t_segid		foo[2];
   t_segid*		map = foo;
 

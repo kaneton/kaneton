@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/set/set_bpt.c
+ * file          /home/buckman/kaneton/kaneton/core/set/set_bpt.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun apr  2 19:29:33 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:08:27 2006]
  */
 
 /*
@@ -169,7 +169,7 @@ t_error			set_show_unused_bpt(o_set*		o)
  * this function tells if the set object is a bpt set.
  */
 
-t_error			set_type_bpt(t_setid			setid)
+t_error			set_type_bpt(i_set			setid)
 {
   o_set*		o;
 
@@ -326,7 +326,7 @@ t_error			set_destroy_bpt(o_set*			o)
  * 2) prints a message for each objects of the set.
  */
 
-t_error			set_show_bpt(t_setid			setid)
+t_error			set_show_bpt(i_set			setid)
 {
   t_state		state;
   o_set*		o;
@@ -373,7 +373,7 @@ t_error			set_show_bpt(t_setid			setid)
  * function with the BPT_OPT_HEAD option.
  */
 
-t_error			set_head_bpt(t_setid			setid,
+t_error			set_head_bpt(i_set			setid,
 				     t_iterator*		iterator)
 {
   t_bpt_imm(set)	root;
@@ -404,7 +404,7 @@ t_error			set_head_bpt(t_setid			setid,
  * function with the BPT_OPT_TAIL option.
  */
 
-t_error			set_tail_bpt(t_setid			setid,
+t_error			set_tail_bpt(i_set			setid,
 				     t_iterator*		iterator)
 {
   t_bpt_imm(set)	root;
@@ -434,7 +434,7 @@ t_error			set_tail_bpt(t_setid			setid,
  * this function returns the previous node of the current iterator.
  */
 
-t_error			set_previous_bpt(t_setid		setid,
+t_error			set_previous_bpt(i_set			setid,
 					 t_iterator		current,
 					 t_iterator*		previous)
 {
@@ -456,7 +456,7 @@ t_error			set_previous_bpt(t_setid		setid,
  * this function returns the next node of the current iterator.
  */
 
-t_error			set_next_bpt(t_setid			setid,
+t_error			set_next_bpt(i_set			setid,
 				     t_iterator			current,
 				     t_iterator*		next)
 {
@@ -479,7 +479,7 @@ t_error			set_next_bpt(t_setid			setid,
  * works with the sort option.
  */
 
-t_error			set_insert_bpt(t_setid			setid,
+t_error			set_insert_bpt(i_set			setid,
 				       void*			data)
 {
   SET_ENTER(set);
@@ -492,7 +492,7 @@ t_error			set_insert_bpt(t_setid			setid,
  * works with the sort option.
  */
 
-t_error			set_append_bpt(t_setid			setid,
+t_error			set_append_bpt(i_set			setid,
 				       void*			data)
 {
   SET_ENTER(set);
@@ -505,7 +505,7 @@ t_error			set_append_bpt(t_setid			setid,
  * works with the sort option.
  */
 
-t_error			set_before_bpt(t_setid			setid,
+t_error			set_before_bpt(i_set			setid,
 				       t_iterator		iterator,
 				       void*			data)
 {
@@ -519,7 +519,7 @@ t_error			set_before_bpt(t_setid			setid,
  * works with the sort option.
  */
 
-t_error			set_after_bpt(t_setid			setid,
+t_error			set_after_bpt(i_set			setid,
 				      t_iterator		iterator,
 				      void*			data)
 {
@@ -542,7 +542,7 @@ t_error			set_after_bpt(t_setid			setid,
  * 7) updates the set counter.
  */
 
-t_error			set_add_bpt(t_setid			setid,
+t_error			set_add_bpt(i_set			setid,
 				    void*			data)
 {
   t_bpt_lfentry(set)	lfentry;
@@ -629,7 +629,7 @@ t_error			set_add_bpt(t_setid			setid,
  * 6) updates the set counter.
  */
 
-t_error			set_remove_bpt(t_setid			setid,
+t_error			set_remove_bpt(i_set			setid,
 				       t_id			id)
 {
   t_bpt_entry(set)	entry;
@@ -705,7 +705,7 @@ t_error			set_remove_bpt(t_setid			setid,
  * 5) decrements the number of elements in the set.
  */
 
-t_error			set_delete_bpt(t_setid			setid,
+t_error			set_delete_bpt(i_set			setid,
 				       t_iterator		iterator)
 {
   t_bpt_imm(set)	node;
@@ -742,8 +742,8 @@ t_error			set_delete_bpt(t_setid			setid,
 		    BPT_REMOVE_SIZE(&o->u.bpt.bpt)) != ERROR_NONE)
    SET_LEAVE(set, ERROR_UNKNOWN);
 
- /*                                                                            
-  * 4)                                                                         
+ /*
+  * 4)
   */
 
  if (bpt_collide_remove(set, &o->u.bpt.bpt, iterator.u.bpt.entry,
@@ -777,7 +777,7 @@ t_error			set_delete_bpt(t_setid			setid,
  * 5) resets the size of the data structure.
  */
 
-t_error			set_flush_bpt(t_setid			setid)
+t_error			set_flush_bpt(i_set			setid)
 {
   t_bpt_nodesz(set)	nodesz;
   t_state		state;
@@ -859,7 +859,7 @@ t_error			set_flush_bpt(t_setid			setid)
  * identifier, then builds an iterator for it.
  */
 
-t_error			set_locate_bpt(t_setid			setid,
+t_error			set_locate_bpt(i_set			setid,
 				       t_id			id,
 				       t_iterator*		iterator)
 {
@@ -886,7 +886,7 @@ t_error			set_locate_bpt(t_setid			setid,
  * this function returns the object from its iterator.
  */
 
-t_error			set_object_bpt(t_setid			setid,
+t_error			set_object_bpt(i_set			setid,
 				       t_iterator		iterator,
 				       void**			data)
 {
@@ -924,7 +924,7 @@ t_error			set_object_bpt(t_setid			setid,
 t_error			set_reserve_bpt(t_opts			opts,
 					t_size			datasz,
 					t_bpt_nodesz(set)	nodesz,
-					t_setid*		setid)
+					i_set*			setid)
 {
   o_set			o;
 
@@ -1041,7 +1041,7 @@ t_error			set_reserve_bpt(t_opts			opts,
  * 5) removes the set object from the set container.
  */
 
-t_error			set_release_bpt(t_setid			setid)
+t_error			set_release_bpt(i_set			setid)
 {
   o_set			*o;
 
@@ -1097,7 +1097,7 @@ t_error			set_release_bpt(t_setid			setid)
  * works with the sort option.
  */
 
-t_error			set_push_bpt(t_setid			setid,
+t_error			set_push_bpt(i_set			setid,
 				     void*			data)
 {
   SET_ENTER(set);
@@ -1110,7 +1110,7 @@ t_error			set_push_bpt(t_setid			setid,
  * works with the sort option.
  */
 
-t_error			set_pop_bpt(t_setid			setid)
+t_error			set_pop_bpt(i_set			setid)
 {
   SET_ENTER(set);
 
@@ -1122,7 +1122,7 @@ t_error			set_pop_bpt(t_setid			setid)
  * works with the sort option.
  */
 
-t_error			set_pick_bpt(t_setid			setid,
+t_error			set_pick_bpt(i_set			setid,
 				     void**			data)
 {
   SET_ENTER(set);

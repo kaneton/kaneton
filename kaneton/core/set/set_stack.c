@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/set/set_stack.c
+ * file          /home/buckman/kaneton/kaneton/core/set/set_stack.c
  *
  * created       renaud voltz   [wed jan 25 17:11:05 2006]
- * updated       julien quintard   [sun apr  2 19:31:01 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:10:15 2006]
  */
 
 /*
@@ -46,7 +46,7 @@ extern m_set*		set;
  * this function tells if the set object is a stack set.
  */
 
-t_error			set_type_stack(t_setid			setid)
+t_error			set_type_stack(i_set			setid)
 {
   o_set*		o;
 
@@ -75,7 +75,7 @@ t_error			set_type_stack(t_setid			setid)
 
 t_error			set_reserve_stack(t_opts		opts,
 					  t_size		datasz,
-					  t_setid*		setid)
+					  i_set*		setid)
 {
   o_set			o;
 
@@ -144,7 +144,7 @@ t_error			set_reserve_stack(t_opts		opts,
  *
  */
 
-t_error			set_show_stack(t_setid			setid)
+t_error			set_show_stack(i_set			setid)
 {
   t_error		retval;
 
@@ -158,7 +158,7 @@ t_error			set_show_stack(t_setid			setid)
 /*
  * this function releases a set_stack.
  */
-t_error			set_release_stack(t_setid		setid)
+t_error			set_release_stack(i_set			setid)
 {
   t_error		retval;
 
@@ -173,7 +173,7 @@ t_error			set_release_stack(t_setid		setid)
  * this function flushes the set_stack and free every element.
  */
 
-t_error			set_flush_stack(t_setid			setid)
+t_error			set_flush_stack(i_set			setid)
 {
   t_error		retval;
 
@@ -188,7 +188,7 @@ t_error			set_flush_stack(t_setid			setid)
  * this function add an object into the stack.
  */
 
-t_error			set_push_stack(t_setid			setid,
+t_error			set_push_stack(i_set			setid,
 				       void*			data)
 {
   t_error		retval;
@@ -205,7 +205,7 @@ t_error			set_push_stack(t_setid			setid,
  * this function returns current outcomimg object of the stack.
  */
 
-t_error			set_pick_stack(t_setid			setid,
+t_error			set_pick_stack(i_set			setid,
 				       void**			data)
 {
   t_error		retval;
@@ -225,7 +225,7 @@ t_error			set_pick_stack(t_setid			setid,
  * this function deletes and free the current outcoming object of the stack.
  */
 
-t_error			set_pop_stack(t_setid			setid)
+t_error			set_pop_stack(i_set			setid)
 {
   t_error		retval;
   t_iterator		iterator;
@@ -246,7 +246,7 @@ t_error			set_pop_stack(t_setid			setid)
  * useful for the for_each macro.
  */
 
-t_error			set_head_stack(t_setid			setid,
+t_error			set_head_stack(i_set			setid,
 				       t_iterator*		iterator)
 {
   t_error		retval;
@@ -264,7 +264,7 @@ t_error			set_head_stack(t_setid			setid,
  *
  * useful for the for_each macro.
  */
-t_error			set_tail_stack(t_setid			setid,
+t_error			set_tail_stack(i_set			setid,
 				       t_iterator*		iterator)
 {
   t_error		retval;
@@ -282,7 +282,7 @@ t_error			set_tail_stack(t_setid			setid,
  * useful for the foreach macro.
  */
 
-t_error			set_previous_stack(t_setid		setid,
+t_error			set_previous_stack(i_set		setid,
 					   t_iterator		current,
 					   t_iterator*		previous)
 {
@@ -301,7 +301,7 @@ t_error			set_previous_stack(t_setid		setid,
  * useful for the for_each macro
  */
 
-t_error			set_next_stack(t_setid			setid,
+t_error			set_next_stack(i_set			setid,
 				       t_iterator		current,
 				       t_iterator*		next)
 {
@@ -320,7 +320,7 @@ t_error			set_next_stack(t_setid			setid,
  * use set_push_stack instead.
  */
 
-t_error			set_insert_stack(t_setid		setid,
+t_error			set_insert_stack(i_set			setid,
 					 void*			data)
 {
   SET_ENTER(set);
@@ -333,7 +333,7 @@ t_error			set_insert_stack(t_setid		setid,
  * this function just returns an error.
  */
 
-t_error			set_append_stack(t_setid		setid,
+t_error			set_append_stack(i_set			setid,
 					 void*			data)
 {
   SET_ENTER(set);
@@ -346,7 +346,7 @@ t_error			set_append_stack(t_setid		setid,
  * this function just returns an error.
  */
 
-t_error			set_before_stack(t_setid		setid,
+t_error			set_before_stack(i_set			setid,
 					 t_iterator		iterator,
 					 void*			data)
 {
@@ -360,7 +360,7 @@ t_error			set_before_stack(t_setid		setid,
  * this function just returns an error.
  */
 
-t_error			set_after_stack(t_setid			setid,
+t_error			set_after_stack(i_set			setid,
 					t_iterator		iterator,
 					void*			data)
 {
@@ -375,7 +375,7 @@ t_error			set_after_stack(t_setid			setid,
  * use set_push_stack instead.
  */
 
-t_error			set_add_stack(t_setid			setid,
+t_error			set_add_stack(i_set			setid,
 				      void*			data)
 {
   SET_ENTER(set);
@@ -389,7 +389,7 @@ t_error			set_add_stack(t_setid			setid,
  * use set_pop_stack instead.
  */
 
-t_error			set_remove_stack(t_setid		setid,
+t_error			set_remove_stack(i_set			setid,
 					 t_id			id)
 {
   SET_ENTER(set);
@@ -403,7 +403,7 @@ t_error			set_remove_stack(t_setid		setid,
  * use set_pop_stack instead.
  */
 
-t_error			set_delete_stack(t_setid		setid,
+t_error			set_delete_stack(i_set			setid,
 					 t_iterator		iterator)
 {
   SET_ENTER(set);
@@ -416,7 +416,7 @@ t_error			set_delete_stack(t_setid		setid,
  * this function just returns an error.
  */
 
-t_error			set_locate_stack(t_setid		setid,
+t_error			set_locate_stack(i_set			setid,
 					 t_id			id,
 					 t_iterator*		iterator)
 {
@@ -433,7 +433,7 @@ t_error			set_locate_stack(t_setid		setid,
  * this function returns the object of the given iterator.
  */
 
-t_error			set_object_stack(t_setid		setid,
+t_error			set_object_stack(i_set			setid,
 					 t_iterator		iterator,
 					 void**			data)
 {

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/debug.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [mon apr 10 11:43:38 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:05:51 2006]
  */
 
 /*
@@ -28,7 +28,7 @@
  * ---------- globals ---------------------------------------------------------
  */
 
-t_setid			buffers;
+i_set			buffers;
 
 /*
  * ---------- functions -------------------------------------------------------

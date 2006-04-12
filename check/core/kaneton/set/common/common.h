@@ -76,15 +76,15 @@ void	check_set_common(void);
 
 void	check_set_tests(void);
 
-void		check_many_add(t_setid setid, int nb, ...);
+void		check_many_add(i_set setid, int nb, ...);
 
-void		check_many_remove(t_setid setid, int nb, ...);
+void		check_many_remove(i_set setid, int nb, ...);
 
-void		check_many_push(t_setid setid, int nb, ...);
+void		check_many_push(i_set setid, int nb, ...);
 
-void		check_many_pop(t_setid setid, int nb);
+void		check_many_pop(i_set setid, int nb);
 
-void		check_display_set(t_setid setid, t_dispdata disp);
+void		check_display_set(i_set setid, t_dispdata disp);
 
 
 /*

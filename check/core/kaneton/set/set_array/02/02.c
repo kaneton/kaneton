@@ -19,7 +19,7 @@
 
 void		check_set_array_02(void)
 {
-  t_setid	id;
+  i_set	id;
   t_id		objs[64];
   t_setsz	i;
 

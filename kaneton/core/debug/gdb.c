@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/gdb.c
  *
  * created       matthieu bucchianeri   [mon apr 10 12:47:20 2006]
- * updated       matthieu bucchianeri   [tue apr 11 14:49:56 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:06:00 2006]
  */
 
 /*
@@ -79,7 +79,7 @@ static volatile t_vaddr		ebp = 0;
  * the breakpoints addresses set.
  */
 
-static t_setid			br = ID_UNUSED;
+static i_set			br = ID_UNUSED;
 
 /*
  * the commands list.

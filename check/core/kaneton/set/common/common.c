@@ -78,7 +78,7 @@ void	check_set_tests(void)
  * adds many elements at a time
  */
 
-void		check_many_add(t_setid setid, int nb, ...)
+void		check_many_add(i_set setid, int nb, ...)
 {
   va_list	l;
   int		i;
@@ -100,7 +100,7 @@ void		check_many_add(t_setid setid, int nb, ...)
  * removes many elements at a time
  */
 
-void		check_many_remove(t_setid setid, int nb, ...)
+void		check_many_remove(i_set setid, int nb, ...)
 {
   va_list	l;
   int		i;
@@ -122,7 +122,7 @@ void		check_many_remove(t_setid setid, int nb, ...)
  * push many elements at a time
  */
 
-void		check_many_push(t_setid setid, int nb, ...)
+void		check_many_push(i_set setid, int nb, ...)
 {
   va_list	l;
   int		i;
@@ -144,7 +144,7 @@ void		check_many_push(t_setid setid, int nb, ...)
  * removes many elements at a time
  */
 
-void		check_many_pop(t_setid setid, int nb)
+void		check_many_pop(i_set setid, int nb)
 {
   int		i;
 
@@ -160,7 +160,7 @@ void		check_many_pop(t_setid setid, int nb)
  *     pas il passe aucun tests.
  */
 
-void		check_display_set(t_setid setid, t_dispdata disp)
+void		check_display_set(i_set setid, t_dispdata disp)
 {
   t_iterator	it;
   t_state	state;
@@ -177,7 +177,7 @@ void		check_display_set(t_setid setid, t_dispdata disp)
       if (set_object(setid, it, (void**)&pdata) != ERROR_NONE)
 	printf("cannot display set !\n");
       if (!disp)
-	printf("%s%qd", space, *((t_setid*)pdata));
+	printf("%s%qd", space, *((i_set*)pdata));
       else
 	disp(pdata);
       space[0] = ' ';

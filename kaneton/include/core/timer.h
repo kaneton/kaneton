@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/timer.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       matthieu bucchianeri   [wed apr 12 11:55:07 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:13:20 2006]
  */
 
 #ifndef CORE_TIMER_H
@@ -65,7 +65,7 @@ typedef struct
 
   t_uint32			timeref;
 
-  t_setid			timers;
+  i_set				timers;
 
   machdep_data(m_timer);
 }				m_timer;

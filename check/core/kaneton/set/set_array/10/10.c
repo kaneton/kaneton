@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/core/kaneton/set/set_array/10/10.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [mon apr  3 00:27:26 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:20:47 2006]
  */
 
 #include <klibc.h>
@@ -19,7 +19,7 @@
 
 void		check_set_array_10(void)
 {
-  t_setid	id;
+  i_set	id;
   t_iterator	it;
   t_state	state;
   t_id		obj;
@@ -41,7 +41,7 @@ void		check_set_array_10(void)
     }
 
   obj = 42LL;
-  if (set_insert_tail(id, &obj) != ERROR_NONE)
+  if (set_append(id, &obj) != ERROR_NONE)
     printf("error set_insert_tail()\n");
 
   check_display_set(id, NULL);

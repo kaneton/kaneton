@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/as.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [wed apr 12 11:53:19 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:12:02 2006]
  */
 
 #ifndef CORE_AS_H
@@ -45,8 +45,8 @@ typedef struct
 
   i_task			tskid;
 
-  t_setid			segments;
-  t_setid			regions;
+  i_set				segments;
+  i_set				regions;
 
   machdep_data(o_as);
 }				o_as;
@@ -61,7 +61,7 @@ typedef struct
 
   i_stats			stats;
 
-  t_setid			ass;
+  i_set				ass;
 
   machdep_data(m_as);
 }				m_as;

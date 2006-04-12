@@ -19,7 +19,7 @@
 
 void		check_set_stack_09(void)
 {
-  t_setid	id;
+  i_set	id;
   t_id		objs[64];
   t_id*		obj;
   t_setsz	i;
@@ -41,7 +41,7 @@ void		check_set_stack_09(void)
     {
       if (set_pick(id, (void**)&obj) != ERROR_NONE)
 	printf("error set_pick()\n");
-      printf("%s%qd", f ? " " : "", *((t_setid*)obj));
+      printf("%s%qd", f ? " " : "", *((i_set*)obj));
       set_pop(id);
       f = 1;
     }

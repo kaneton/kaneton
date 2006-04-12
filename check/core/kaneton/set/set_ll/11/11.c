@@ -6,14 +6,14 @@
  * file          /home/buckman/kaneton/check/core/kaneton/set/set_ll/11/11.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:43 2005]
- * updated       matthieu bucchianeri   [mon apr  3 00:32:36 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:20:33 2006]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../../common/common.h"
 
-static t_id	get_min(t_setid id);
+static t_id	get_min(i_set id);
 
 /*
  * some sorting algorithms
@@ -21,8 +21,8 @@ static t_id	get_min(t_setid id);
 
 void		check_set_ll_11(void)
 {
-  t_setid	id;
-  t_setid	new;
+  i_set	id;
+  i_set	new;
   t_setsz	i;
   t_id		m;
 
@@ -38,11 +38,11 @@ void		check_set_ll_11(void)
       check_many_add(id, 1, 140 - 2 * i);
     }
 
-  while ((m = get_min(id)) != (t_setid)-1)
+  while ((m = get_min(id)) != (i_set)-1)
     {
       if (set_remove(id, m) != ERROR_NONE)
 	printf("cannot set_remove\n");
-      if (set_insert_tail(new, &m) != ERROR_NONE)
+      if (set_append(new, &m) != ERROR_NONE)
 	printf("error insert_tail\n");
     }
 
@@ -59,12 +59,12 @@ void		check_set_ll_11(void)
   TEST_LEAVE;
 }
 
-static t_id	get_min(t_setid id)
+static t_id	get_min(i_set id)
 {
   t_id*		pdata;
   t_iterator	it;
   t_state	state;
-  t_id		min = (t_setid)-1;
+  t_id		min = (i_set)-1;
 
   set_foreach(SET_OPT_BACKWARD, id, &it, state)
     {

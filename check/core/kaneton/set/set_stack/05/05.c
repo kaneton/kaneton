@@ -19,7 +19,7 @@
 
 void		check_set_stack_05(void)
 {
-  t_setid	id;
+  i_set	id;
   t_iterator	it;
   t_state	state;
   t_id*		pdata;

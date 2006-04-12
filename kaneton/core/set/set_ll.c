@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/set/set_ll.c
+ * file          /home/buckman/kaneton/kaneton/core/set/set_ll.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun apr  2 19:19:24 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:08:54 2006]
  */
 
 /*
@@ -65,7 +65,7 @@ extern m_set*		set;
  * this function tells if the set object is a linked-list set.
  */
 
-t_error			set_type_ll(t_setid			setid)
+t_error			set_type_ll(i_set			setid)
 {
   o_set*		o;
 
@@ -89,7 +89,7 @@ t_error			set_type_ll(t_setid			setid)
  * 2) prints each objects' identifier.
  */
 
-t_error			set_show_ll(t_setid			setid)
+t_error			set_show_ll(i_set			setid)
 {
   t_state		state;
   o_set*		o;
@@ -129,7 +129,7 @@ t_error			set_show_ll(t_setid			setid)
  * if there is no node in the list, the function returns ERROR_UNKNOWN.
  */
 
-t_error			set_head_ll(t_setid			setid,
+t_error			set_head_ll(i_set			setid,
 				    t_iterator*			iterator)
 {
   o_set*		o;
@@ -155,7 +155,7 @@ t_error			set_head_ll(t_setid			setid,
  * if there is no node in the list, the function returns ERROR_UNKNOWN.
  */
 
-t_error			set_tail_ll(t_setid			setid,
+t_error			set_tail_ll(i_set			setid,
 				    t_iterator*			iterator)
 {
   o_set*		o;
@@ -179,7 +179,7 @@ t_error			set_tail_ll(t_setid			setid,
  * this function returns an iterator on the previous node.
  */
 
-t_error			set_previous_ll(t_setid			setid,
+t_error			set_previous_ll(i_set			setid,
 					t_iterator		current,
 					t_iterator*		previous)
 {
@@ -205,7 +205,7 @@ t_error			set_previous_ll(t_setid			setid,
  * this function returns an iterator on the next node of the list.
  */
 
-t_error			set_next_ll(t_setid			setid,
+t_error			set_next_ll(i_set			setid,
 				    t_iterator			current,
 				    t_iterator*			next)
 {
@@ -241,7 +241,7 @@ t_error			set_next_ll(t_setid			setid,
  * 7) increments the number of nodes in the list.
  */
 
-t_error			set_insert_ll(t_setid			setid,
+t_error			set_insert_ll(i_set			setid,
 				      void*			data)
 {
   t_set_ll_node		*n;
@@ -337,7 +337,7 @@ t_error			set_insert_ll(t_setid			setid,
  * 7) increments the number of nodes in the list.
  */
 
-t_error			set_append_ll(t_setid			setid,
+t_error			set_append_ll(i_set			setid,
 				      void*			data)
 {
   t_set_ll_node		*n;
@@ -433,7 +433,7 @@ t_error			set_append_ll(t_setid			setid,
  * 7) increments the objects counter.
  */
 
-t_error			set_before_ll(t_setid			setid,
+t_error			set_before_ll(i_set			setid,
 				      t_iterator		iterator,
 				      void*			data)
 {
@@ -531,7 +531,7 @@ t_error			set_before_ll(t_setid			setid,
  * 7) increments the objects counter.
  */
 
-t_error			set_after_ll(t_setid			setid,
+t_error			set_after_ll(i_set			setid,
 				     t_iterator			iterator,
 				     void*			data)
 {
@@ -635,7 +635,7 @@ t_error			set_after_ll(t_setid			setid,
  * 6) increments the number of nodes in the list.
  */
 
-t_error			set_add_ll(t_setid			setid,
+t_error			set_add_ll(i_set			setid,
 				   void*			data)
 {
   t_set_ll_node*	n;
@@ -819,7 +819,7 @@ t_error			set_add_ll(t_setid			setid,
  * 6) decrements the number of nodes in the linked-list data structure.
  */
 
-t_error			set_remove_ll(t_setid			setid,
+t_error			set_remove_ll(i_set			setid,
 				      t_id			id)
 {
   t_set_ll_node*	tmp;
@@ -894,7 +894,7 @@ t_error			set_remove_ll(t_setid			setid,
  * 6) updates counter.
  */
 
-t_error			set_delete_ll(t_setid			setid,
+t_error			set_delete_ll(i_set			setid,
 				      t_iterator		iterator)
 {
   t_set_ll_node*	n;
@@ -965,7 +965,7 @@ t_error			set_delete_ll(t_setid			setid,
  * 4) resets the linked-list counter.
  */
 
-t_error			set_flush_ll(t_setid			setid)
+t_error			set_flush_ll(i_set			setid)
 {
   t_set_ll_node*	tmp;
   o_set*		o;
@@ -1023,7 +1023,7 @@ t_error			set_flush_ll(t_setid			setid)
  * 3) tries to find the identifier looked for in the set object's elements.
  */
 
-t_error			set_locate_ll(t_setid			setid,
+t_error			set_locate_ll(i_set			setid,
 				      t_id			id,
 				      t_iterator*		iterator)
 {
@@ -1067,7 +1067,7 @@ t_error			set_locate_ll(t_setid			setid,
  * this function returns an object given its iterator.
  */
 
-t_error			set_object_ll(t_setid			setid,
+t_error			set_object_ll(i_set			setid,
 				      t_iterator		iterator,
 				      void**			data)
 {
@@ -1094,7 +1094,7 @@ t_error			set_object_ll(t_setid			setid,
 
 t_error			set_reserve_ll(t_opts			opts,
 				       t_size			datasz,
-				       t_setid*			setid)
+				       i_set*			setid)
 {
   o_set			o;
 
@@ -1169,7 +1169,7 @@ t_error			set_reserve_ll(t_opts			opts,
  * 4) then, removes the set from the set container, if possible.
  */
 
-t_error			set_release_ll(t_setid			setid)
+t_error			set_release_ll(i_set			setid)
 {
   o_set			*o;
 
@@ -1212,7 +1212,7 @@ t_error			set_release_ll(t_setid			setid)
  * support this operation.
  */
 
-t_error			set_push_ll(t_setid			setid,
+t_error			set_push_ll(i_set			setid,
 				    void*			data)
 {
   SET_ENTER(set);
@@ -1225,7 +1225,7 @@ t_error			set_push_ll(t_setid			setid,
  * support this operation.
  */
 
-t_error			set_pop_ll(t_setid			setid)
+t_error			set_pop_ll(i_set			setid)
 {
   SET_ENTER(set);
 
@@ -1237,7 +1237,7 @@ t_error			set_pop_ll(t_setid			setid)
  * support this operation.
  */
 
-t_error			set_pick_ll(t_setid			setid,
+t_error			set_pick_ll(i_set			setid,
 				    void**			data)
 {
   SET_ENTER(set);

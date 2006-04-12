@@ -19,7 +19,7 @@
 
 void		check_set_stack_01(void)
 {
-  t_setid	id;
+  i_set	id;
 
   TEST_ENTER;
 

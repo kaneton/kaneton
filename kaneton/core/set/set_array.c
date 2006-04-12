@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/set/set_array.c
+ * file          /home/buckman/kaneton/kaneton/core/set/set_array.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun apr  2 19:16:47 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:07:50 2006]
  */
 
 /*
@@ -70,7 +70,7 @@ extern m_set*		set;
  * 2) checks the type field.
  */
 
-t_error			set_type_array(t_setid			setid)
+t_error			set_type_array(i_set			setid)
 {
   o_set*		o;
 
@@ -102,7 +102,7 @@ t_error			set_type_array(t_setid			setid)
  * 2) loops through the slots and displays elements.
  */
 
-t_error			set_show_array(t_setid			setid)
+t_error			set_show_array(i_set			setid)
 {
   o_set*		o;
   t_setsz		i;
@@ -154,7 +154,7 @@ t_error			set_show_array(t_setid			setid)
  * 3) updates the iterator.
  */
 
-t_error			set_head_array(t_setid			setid,
+t_error			set_head_array(i_set			setid,
 				       t_iterator*		iterator)
 {
   o_set*		o;
@@ -204,7 +204,7 @@ t_error			set_head_array(t_setid			setid,
  * 3) updates the iterator.
  */
 
-t_error			set_tail_array(t_setid			setid,
+t_error			set_tail_array(i_set			setid,
 				       t_iterator*		iterator)
 {
   o_set*		o;
@@ -253,7 +253,7 @@ t_error			set_tail_array(t_setid			setid,
  * 3) updates the iterator.
  */
 
-t_error			set_previous_array(t_setid		setid,
+t_error			set_previous_array(i_set		setid,
 					   t_iterator		current,
 					   t_iterator*		previous)
 {
@@ -301,7 +301,7 @@ t_error			set_previous_array(t_setid		setid,
  * 3) updates the iterator.
  */
 
-t_error			set_next_array(t_setid			setid,
+t_error			set_next_array(i_set			setid,
 				       t_iterator		current,
 				       t_iterator*		next)
 {
@@ -472,7 +472,7 @@ static t_error		set_insert_at(o_set			*o,
  * 5) updates count.
  */
 
-t_error			set_insert_array(t_setid		setid,
+t_error			set_insert_array(i_set			setid,
 					 void*			data)
 {
   o_set*		o;
@@ -537,7 +537,7 @@ t_error			set_insert_array(t_setid		setid,
  * 5) updates count.
  */
 
-t_error			set_append_array(t_setid		setid,
+t_error			set_append_array(i_set			setid,
 					 void*			data)
 {
   o_set*		o;
@@ -614,7 +614,7 @@ t_error			set_append_array(t_setid		setid,
  * 5) updates item count.
  */
 
-t_error			set_before_array(t_setid		setid,
+t_error			set_before_array(i_set			setid,
 					 t_iterator		iterator,
 					 void*			data)
 {
@@ -687,7 +687,7 @@ t_error			set_before_array(t_setid		setid,
  * 5) updates count.
  */
 
-t_error			set_after_array(t_setid			setid,
+t_error			set_after_array(i_set			setid,
 					t_iterator		iterator,
 					void*			data)
 {
@@ -767,7 +767,7 @@ t_error			set_after_array(t_setid			setid,
  * 5) updates size.
  */
 
-t_error			set_add_array(t_setid			setid,
+t_error			set_add_array(i_set			setid,
 				      void*			data)
 {
   o_set*		o;
@@ -934,7 +934,7 @@ t_error			set_add_array(t_setid			setid,
  * 5) decrements counter.
  */
 
-t_error			set_remove_array(t_setid		setid,
+t_error			set_remove_array(i_set			setid,
 					 t_id			id)
 {
   o_set*       		o;
@@ -1026,7 +1026,7 @@ t_error			set_remove_array(t_setid		setid,
  * 6) updates counter.
  */
 
-t_error			set_delete_array(t_setid		setid,
+t_error			set_delete_array(i_set			setid,
 					 t_iterator		iterator)
 {
   o_set*		o;
@@ -1101,7 +1101,7 @@ t_error			set_delete_array(t_setid		setid,
  * 3) resets the array.
  */
 
-t_error			set_flush_array(t_setid			setid)
+t_error			set_flush_array(i_set			setid)
 {
   o_set*       		o;
   t_setsz		i;
@@ -1165,12 +1165,12 @@ t_error			set_flush_array(t_setid			setid)
  *   B) sequentially searchs for the needed element. (unsorted)
  */
 
-t_error			set_locate_array(t_setid		setid,
+t_error			set_locate_array(i_set			setid,
 					 t_id			id,
 					 t_iterator*		iterator)
 {
   o_set*       		o;
-  t_setid		i;
+  i_set			i;
   t_setsz		left;
   t_setsz		right;
   t_setsz		dicho;
@@ -1260,7 +1260,7 @@ t_error			set_locate_array(t_setid		setid,
  * 3) gets data for given position.
  */
 
-t_error			set_object_array(t_setid		setid,
+t_error			set_object_array(i_set		setid,
 					 t_iterator		iterator,
 					 void**			data)
 {
@@ -1309,7 +1309,7 @@ t_error			set_object_array(t_setid		setid,
 t_error			set_reserve_array(t_opts		opts,
 					  t_setsz		initsz,
 					  t_size		datasz,
-					  t_setid*		setid)
+					  i_set*		setid)
 {
   o_set			o;
   t_setsz		i;
@@ -1397,7 +1397,7 @@ t_error			set_reserve_array(t_opts		opts,
  * 5) then, removes the set from the set container.
  */
 
-t_error			set_release_array(t_setid		setid)
+t_error			set_release_array(i_set		setid)
 {
   o_set*       		o;
 
@@ -1446,7 +1446,7 @@ t_error			set_release_array(t_setid		setid)
  * support this operation.
  */
 
-t_error			set_push_array(t_setid			setid,
+t_error			set_push_array(i_set			setid,
 				       void*			data)
 {
   SET_ENTER(set);
@@ -1459,7 +1459,7 @@ t_error			set_push_array(t_setid			setid,
  * support this operation.
  */
 
-t_error			set_pop_array(t_setid			setid)
+t_error			set_pop_array(i_set			setid)
 {
   SET_ENTER(set);
 
@@ -1471,7 +1471,7 @@ t_error			set_pop_array(t_setid			setid)
  * support this operation.
  */
 
-t_error			set_pick_array(t_setid			setid,
+t_error			set_pick_array(i_set			setid,
 				       void**			data)
 {
   SET_ENTER(set);

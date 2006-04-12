@@ -29,7 +29,7 @@ static void	display_t_obj(void* data);
 
 void		check_set_array_03(void)
 {
-  t_setid	id;
+  i_set	id;
   t_setsz	i;
   t_obj		obj1;
   t_obj*	obj2;

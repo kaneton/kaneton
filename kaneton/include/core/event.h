@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/event.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       matthieu bucchianeri   [wed apr 12 11:55:27 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:12:10 2006]
  */
 
 #ifndef CORE_EVENT_H
@@ -71,7 +71,7 @@ typedef struct
 
   i_stats			stats;
 
-  t_setid			events;
+  i_set				events;
 
   machdep_data(m_event);
 }				m_event;

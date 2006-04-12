@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/set/set_pipe.c
+ * file          /home/buckman/kaneton/kaneton/core/set/set_pipe.c
  *
  * created       renaud voltz   [wed jan 25 17:11:05 2006]
- * updated       julien quintard   [sun apr  2 19:30:15 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:09:26 2006]
  */
 
 /*
@@ -46,7 +46,7 @@ extern m_set*		set;
  * this function tells if the set object is a pipe set.
  */
 
-t_error			set_type_pipe(t_setid			setid)
+t_error			set_type_pipe(i_set			setid)
 {
   o_set*		o;
 
@@ -75,7 +75,7 @@ t_error			set_type_pipe(t_setid			setid)
 
 t_error			set_reserve_pipe(t_opts			opts,
 					 t_size			datasz,
-					 t_setid*		setid)
+					 i_set*			setid)
 {
   o_set			o;
 
@@ -144,7 +144,7 @@ t_error			set_reserve_pipe(t_opts			opts,
  *
  */
 
-t_error			set_show_pipe(t_setid			setid)
+t_error			set_show_pipe(i_set			setid)
 {
   t_error		retval;
 
@@ -159,7 +159,7 @@ t_error			set_show_pipe(t_setid			setid)
  * this function releases a set_pipe.
  */
 
-t_error			set_release_pipe(t_setid		setid)
+t_error			set_release_pipe(i_set		setid)
 {
   t_error		retval;
 
@@ -174,7 +174,7 @@ t_error			set_release_pipe(t_setid		setid)
  * this function flushes the set_pipe and free every element.
  */
 
-t_error			set_flush_pipe(t_setid			setid)
+t_error			set_flush_pipe(i_set			setid)
 {
   t_error		retval;
 
@@ -189,7 +189,7 @@ t_error			set_flush_pipe(t_setid			setid)
  * this function add an object into the pipe.
  */
 
-t_error			set_push_pipe(t_setid			setid,
+t_error			set_push_pipe(i_set			setid,
 				      void*			data)
 {
   t_error		retval;
@@ -206,7 +206,7 @@ t_error			set_push_pipe(t_setid			setid,
  * this function returns current outcomimg object of the pipe.
  */
 
-t_error			set_pick_pipe(t_setid			setid,
+t_error			set_pick_pipe(i_set			setid,
 				      void**			data)
 {
   t_error		retval;
@@ -226,7 +226,7 @@ t_error			set_pick_pipe(t_setid			setid,
  * this function deletes and free the current outcoming object of the pipe.
  */
 
-t_error			set_pop_pipe(t_setid			setid)
+t_error			set_pop_pipe(i_set			setid)
 {
   t_error		retval;
   t_iterator		iterator;
@@ -247,7 +247,7 @@ t_error			set_pop_pipe(t_setid			setid)
  * useful for the for_each macro.
  */
 
-t_error			set_head_pipe(t_setid			setid,
+t_error			set_head_pipe(i_set			setid,
 				      t_iterator*		iterator)
 {
   t_error		retval;
@@ -265,7 +265,7 @@ t_error			set_head_pipe(t_setid			setid,
  *
  * useful for the for_each macro.
  */
-t_error			set_tail_pipe(t_setid			setid,
+t_error			set_tail_pipe(i_set			setid,
 				      t_iterator*		iterator)
 {
   t_error		retval;
@@ -283,7 +283,7 @@ t_error			set_tail_pipe(t_setid			setid,
  * useful for the for_each macro.
  */
 
-t_error			set_previous_pipe(t_setid		setid,
+t_error			set_previous_pipe(i_set			setid,
 					  t_iterator		current,
 					  t_iterator*		previous)
 {
@@ -302,7 +302,7 @@ t_error			set_previous_pipe(t_setid		setid,
  * useful for the for_each macro
  */
 
-t_error			set_next_pipe(t_setid			setid,
+t_error			set_next_pipe(i_set			setid,
 				      t_iterator		current,
 				      t_iterator*		next)
 {
@@ -321,7 +321,7 @@ t_error			set_next_pipe(t_setid			setid,
  * use set_push_pipe instead.
  */
 
-t_error			set_insert_pipe(t_setid			setid,
+t_error			set_insert_pipe(i_set			setid,
 					void*			data)
 {
   SET_ENTER(set);
@@ -334,7 +334,7 @@ t_error			set_insert_pipe(t_setid			setid,
  * this function just returns an error.
  */
 
-t_error			set_append_pipe(t_setid			setid,
+t_error			set_append_pipe(i_set			setid,
 					void*			data)
 {
   SET_ENTER(set);
@@ -347,7 +347,7 @@ t_error			set_append_pipe(t_setid			setid,
  * this function just returns an error.
  */
 
-t_error			set_before_pipe(t_setid			setid,
+t_error			set_before_pipe(i_set			setid,
 					t_iterator		iterator,
 					void*			data)
 {
@@ -361,7 +361,7 @@ t_error			set_before_pipe(t_setid			setid,
  * this function just returns an error.
  */
 
-t_error			set_after_pipe(t_setid			setid,
+t_error			set_after_pipe(i_set			setid,
 				       t_iterator		iterator,
 				       void*			data)
 {
@@ -376,7 +376,7 @@ t_error			set_after_pipe(t_setid			setid,
  * use set_push_pipe instead.
  */
 
-t_error			set_add_pipe(t_setid			setid,
+t_error			set_add_pipe(i_set			setid,
 				     void*			data)
 {
   SET_ENTER(set);
@@ -390,7 +390,7 @@ t_error			set_add_pipe(t_setid			setid,
  * use set_pop_pipe instead.
  */
 
-t_error			set_remove_pipe(t_setid			setid,
+t_error			set_remove_pipe(i_set			setid,
 					t_id			id)
 {
   SET_ENTER(set);
@@ -404,7 +404,7 @@ t_error			set_remove_pipe(t_setid			setid,
  * use set_pop_pipe instead.
  */
 
-t_error			set_delete_pipe(t_setid			setid,
+t_error			set_delete_pipe(i_set			setid,
 					t_iterator		iterator)
 {
   SET_ENTER(set);
@@ -417,7 +417,7 @@ t_error			set_delete_pipe(t_setid			setid,
  * this function just returns an error.
  */
 
-t_error			set_locate_pipe(t_setid			setid,
+t_error			set_locate_pipe(i_set			setid,
 					t_id			id,
 					t_iterator*		iterator)
 {
@@ -434,7 +434,7 @@ t_error			set_locate_pipe(t_setid			setid,
  * this function returns the object of the given iterator.
  */
 
-t_error			set_object_pipe(t_setid			setid,
+t_error			set_object_pipe(i_set			setid,
 					t_iterator		iterator,
 					void**			data)
 {

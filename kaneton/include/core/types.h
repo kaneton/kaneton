@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/types.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [wed apr 12 11:50:44 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 12:04:26 2006]
  */
 
 #ifndef CORE_TYPES_H
@@ -65,7 +65,7 @@ typedef t_uint32		t_quantum;
 typedef t_uint64		t_id;
 
 typedef t_id			i_stats;
-typedef t_id			t_setid;
+typedef t_id			i_set;
 typedef t_id			t_asid;
 typedef t_id			t_segid;
 typedef t_id			t_regid;
