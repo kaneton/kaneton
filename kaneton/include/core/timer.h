@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/timer.h
+ * file          /home/buckman/kaneton/kaneton/include/core/timer.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       julien quintard   [sun apr  2 14:05:48 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:55:07 2006]
  */
 
 #ifndef CORE_TIMER_H
@@ -47,7 +47,7 @@ typedef struct
 
   t_uint32			repeat;
 
-  t_tskid			taskid;
+  i_task			taskid;
 
   machdep_data(o_timer);
 }				o_timer;
@@ -61,7 +61,7 @@ typedef struct
 {
   o_id				id;
 
-  t_staid			stats;
+  i_stats			stats;
 
   t_uint32			timeref;
 
@@ -85,7 +85,7 @@ typedef struct
 						t_uint32,
 						t_uint32);
   t_error			(*timer_notify)(i_timer);
-  t_error			(*timer_reserve)(t_tskid,
+  t_error			(*timer_reserve)(i_task,
 						 t_uint32,
 						 t_uint32,
 						 i_timer*);
@@ -148,7 +148,7 @@ t_error			timer_notify(i_timer			id);
 
 t_error			timer_insert(o_timer*			o);
 
-t_error			timer_reserve(t_tskid			taskid,
+t_error			timer_reserve(i_task			taskid,
 				      t_uint32			delay,
 				      t_uint32			repeat,
 				      i_timer*			id);

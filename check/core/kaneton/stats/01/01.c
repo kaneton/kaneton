@@ -3,17 +3,17 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/core/kaneton/stats/01/01.c
+ * file          /home/buckman/kaneton/check/core/kaneton/stats/01/01.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [wed jan 18 18:57:05 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:49:45 2006]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../common/common.h"
 
-static void	stats_test_fun(t_staid st);
+static void	stats_test_fun(i_stats st);
 
 /*
  * basic tests
@@ -21,11 +21,11 @@ static void	stats_test_fun(t_staid st);
 
 void		check_stats_01(void)
 {
-  t_staid	st1;
-  t_staid	st2;
-  t_staid	st3;
-  t_staid	st4;
-  t_staid	st5;
+  i_stats	st1;
+  i_stats	st2;
+  i_stats	st3;
+  i_stats	st4;
+  i_stats	st5;
   int		i;
 
   TEST_ENTER;
@@ -103,7 +103,7 @@ void		check_stats_01(void)
   TEST_LEAVE;
 }
 
-static void	stats_test_fun(t_staid st)
+static void	stats_test_fun(i_stats st)
 {
   int		i;
 

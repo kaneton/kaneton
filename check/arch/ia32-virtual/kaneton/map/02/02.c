@@ -15,7 +15,7 @@
 
 void		check_map_02(void)
 {
-  t_tskid	task;
+  i_task	task;
   t_asid	as;
 
   TEST_ENTER;

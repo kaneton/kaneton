@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/set.h
+ * file          /home/buckman/kaneton/kaneton/include/core/set.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       julien quintard   [tue apr  4 12:29:07 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:47:42 2006]
  */
 
 #ifndef CORE_SET_H
@@ -147,7 +147,7 @@ typedef struct
 {
   o_id				id;
 
-  t_staid			stats;
+  i_stats			stats;
 
   t_id				sets;
   o_set*			container;

@@ -18,7 +18,7 @@ extern t_init*	init;
 
 void			check_as_03(void)
 {
-  t_tskid		task;
+  i_task		task;
   t_asid		as;
   o_as*			o;
   t_segid		seg;

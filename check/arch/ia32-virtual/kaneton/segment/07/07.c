@@ -21,7 +21,7 @@ extern t_asid kasid;
 
 void		check_segment_07(void)
 {
-  t_tskid	task;
+  i_task	task;
   t_asid	as;
   t_segid	seg;
   t_segid	seg_ref;

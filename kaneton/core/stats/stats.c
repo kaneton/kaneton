@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/stats/stats.c
+ * file          /home/buckman/kaneton/kaneton/core/stats/stats.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sun apr  2 13:04:22 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:48:38 2006]
  */
 
 /*
@@ -63,7 +63,7 @@ m_stats*		stats;
  * 3) returns a correct pointer on the correct slot or on a free slot.
  */
 
-t_error			stats_function(t_staid			staid,
+t_error			stats_function(i_stats			staid,
 				       char*			function,
 				       t_stats_func**		f)
 {
@@ -134,7 +134,7 @@ t_error			stats_function(t_staid			staid,
  * 4) increases the number of function calls.
  */
 
-t_error			stats_begin(t_staid			staid,
+t_error			stats_begin(i_stats			staid,
 				    char*			function)
 {
   t_stats_func*		f;
@@ -191,7 +191,7 @@ t_error			stats_begin(t_staid			staid,
  * 3) if an error occured, increases the number of errors in this function.
  */
 
-t_error			stats_end(t_staid			staid,
+t_error			stats_end(i_stats			staid,
 				  char*				function,
 				  t_error			error)
 {
@@ -230,7 +230,7 @@ t_error			stats_end(t_staid			staid,
  * this function shows a stats object.
  */
 
-t_error			stats_show(t_staid			staid)
+t_error			stats_show(i_stats			staid)
 {
   t_sint64		i;
 
@@ -266,7 +266,7 @@ t_error			stats_show(t_staid			staid)
 
 t_error			stats_dump(void)
 {
-  t_staid		staid;
+  i_stats		staid;
 
   STATS_ENTER(stats);
 
@@ -296,7 +296,7 @@ t_error			stats_dump(void)
  */
 
 t_error			stats_reserve(char*			name,
-				      t_staid*			staid)
+				      i_stats*			staid)
 {
   STATS_ENTER(stats);
 
@@ -360,7 +360,7 @@ t_error			stats_reserve(char*			name,
  * 3) reinitialises the slot.
  */
 
-t_error			stats_release(t_staid			staid)
+t_error			stats_release(i_stats			staid)
 {
   t_sint64		i;
 
@@ -464,7 +464,7 @@ t_error			stats_init(void)
 
 t_error			stats_clean(void)
 {
-  t_staid		staid;
+  i_stats		staid;
 
   /*
    * 1)

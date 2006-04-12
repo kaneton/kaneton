@@ -15,8 +15,8 @@
 
 void		check_as_04(void)
 {
-  t_tskid	task1;
-  t_tskid	task2;
+  i_task	task1;
+  i_task	task2;
   t_asid	as;
   o_as*		o;
 

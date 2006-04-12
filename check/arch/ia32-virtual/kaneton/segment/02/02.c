@@ -20,7 +20,7 @@
 void		check_segment_02(void)
 {
   o_as*		o;
-  t_tskid	task;
+  i_task	task;
   t_asid	as;
   t_segid	seg;
   t_uint32	i;

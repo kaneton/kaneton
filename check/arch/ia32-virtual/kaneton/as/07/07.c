@@ -15,7 +15,7 @@
 
 void		check_as_07(void)
 {
-  t_tskid	task;
+  i_task	task;
   t_asid	as;
 
   TEST_ENTER;

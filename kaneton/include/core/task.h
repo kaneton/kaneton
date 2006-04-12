@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/task.h
+ * file          /home/buckman/kaneton/kaneton/include/core/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       julien quintard   [wed apr 12 06:29:46 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:53:52 2006]
  */
 
 #ifndef CORE_TASK_H
@@ -85,9 +85,9 @@
 
 typedef struct
 {
-  t_tskid			tskid;
+  i_task			tskid;
 
-  t_tskid			parent;
+  i_task			parent;
   t_setid			children;
 
   t_class			class;
@@ -113,7 +113,7 @@ typedef struct
 {
   o_id				id;
 
-  t_staid			stats;
+  i_stats			stats;
 
   t_setid			tasks;
 
@@ -126,14 +126,14 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*task_show)(t_tskid);
-  t_error			(*task_clone)(t_tskid,
-					      t_tskid*);
+  t_error			(*task_show)(i_task);
+  t_error			(*task_clone)(i_task,
+					      i_task*);
   t_error			(*task_reserve)(t_class,
 						t_behav,
 						t_prior,
-						t_tskid*);
-  t_error			(*task_release)(t_tskid);
+						i_task*);
+  t_error			(*task_release)(i_task);
   t_error			(*task_init)(void);
   t_error			(*task_clean)(void);
 }				d_task;
@@ -184,21 +184,34 @@ typedef struct
  * ../../core/task/task.c
  */
 
-t_error			task_show(t_tskid			tskid);
+t_error			task_show(i_task			tskid);
 
 t_error			task_dump(void);
 
-t_error			task_clone(t_tskid			old,
-				   t_tskid*			new);
+t_error			task_clone(i_task			old,
+				   i_task*			new);
 
 t_error			task_reserve(t_class			class,
 				     t_behav			behav,
 				     t_prior			prior,
-				     t_tskid*			tskid);
+				     i_task*			tskid);
 
-t_error			task_release(t_tskid			tskid);
+t_error			task_release(i_task			tskid);
 
-t_error			task_get(t_tskid			tskid,
+t_error			task_priority(i_task			id,
+				      t_prior			prior);
+
+t_error			task_run(i_task				id);
+
+t_error			task_stop(i_task			id);
+
+t_error			task_exit(i_task			id);
+
+t_error			task_wait(i_task			id,
+				  t_opts			opts,
+				  t_wait*			wait);
+
+t_error			task_get(i_task				tskid,
 				 o_task**			o);
 
 t_error			task_init(void);

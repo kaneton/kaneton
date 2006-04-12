@@ -54,7 +54,7 @@
 
 t_error			ia32_as_show(t_asid			asid);
 
-t_error			ia32_as_reserve(t_tskid			tskid,
+t_error			ia32_as_reserve(i_task			tskid,
 					t_asid*			asid);
 
 
@@ -136,15 +136,15 @@ t_error			ia32_timer_init(void);
  * ../../../../core/arch/machdep/task.c
  */
 
-t_error			ia32_task_clone(t_tskid			old,
-					t_tskid*		new);
+t_error			ia32_task_clone(i_task			old,
+					i_task*			new);
 
 t_error			ia32_task_reserve(t_class		class,
 					  t_behav		behav,
 					  t_prior		prior,
-					  t_tskid*		tskid);
+					  i_task*		tskid);
 
-t_error			ia32_task_release(t_tskid		tskid);
+t_error			ia32_task_release(i_task		tskid);
 
 t_error			ia32_task_init(void);
 

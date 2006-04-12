@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/core/kaneton/stats/03/03.c
+ * file          /home/buckman/kaneton/check/core/kaneton/stats/03/03.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [wed jan 18 18:56:52 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:50:01 2006]
  */
 
 #include <klibc.h>
@@ -19,7 +19,7 @@
 
 void		check_stats_03(void)
 {
-  t_staid	sterr;
+  i_stats	sterr;
 
   TEST_ENTER;
 

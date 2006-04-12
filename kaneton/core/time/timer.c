@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/time/timer.c
+ * file          /home/buckman/kaneton/kaneton/core/time/timer.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       julien quintard   [sun apr  2 19:32:56 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:54:56 2006]
  */
 
 /*
@@ -224,7 +224,7 @@ t_error			timer_insert(o_timer*			o)
  * 4) add the new timer to the timer manager.
  */
 
-t_error			timer_reserve(t_tskid			taskid,
+t_error			timer_reserve(i_task			taskid,
 				      t_uint32			delay,
 				      t_uint32			repeat,
 				      i_timer*			id)

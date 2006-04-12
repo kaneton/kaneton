@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [mon apr 10 16:24:34 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:51:14 2006]
  */
 
 /*
@@ -195,7 +195,7 @@ t_error			as_dump(void)
  */
 
 t_error			as_give(t_asid			asid,
-				t_tskid			tskid)
+				i_task			tskid)
 {
   o_task*		from;
   o_task*		to;
@@ -401,7 +401,7 @@ t_error			as_paddr(t_asid		asid,
  * 8) calls the machine-dependent code.
  */
 
-t_error			as_clone(t_tskid			tskid,
+t_error			as_clone(i_task				tskid,
 				 t_asid				old,
 				 t_asid*			new)
 {
@@ -543,7 +543,7 @@ t_error			as_clone(t_tskid			tskid,
  * 8) calls the machine-dependent code.
  */
 
-t_error			as_reserve(t_tskid			tskid,
+t_error			as_reserve(i_task			tskid,
 				   t_asid*			asid)
 {
   o_task*		task;

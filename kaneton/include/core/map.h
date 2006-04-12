@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/map.h
+ * file          /home/buckman/kaneton/kaneton/include/core/map.h
  *
  * created       matthieu bucchianeri   [sun feb 26 12:23:01 2006]
- * updated       julien quintard   [sat apr  1 22:44:51 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:47:17 2006]
  */
 
 #ifndef CORE_MAP_H
@@ -41,7 +41,7 @@
 
 typedef struct
 {
-  t_staid	stats;
+  i_stats	stats;
 }		m_map;
 
 /*

@@ -19,7 +19,7 @@
 
 void		check_segment_09(void)
 {
-  t_tskid	task;
+  i_task	task;
   t_asid	as;
   t_segid	seg;
   t_segid	seg2;

@@ -19,8 +19,8 @@
 
 void		check_segment_06(void)
 {
-  t_tskid	task1;
-  t_tskid	task2;
+  i_task	task1;
+  i_task	task2;
   t_asid	as1;
   t_asid	as2;
   t_segid	seg;

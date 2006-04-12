@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/as.h
+ * file          /home/buckman/kaneton/kaneton/include/core/as.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [wed apr 12 05:18:33 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:53:19 2006]
  */
 
 #ifndef CORE_AS_H
@@ -43,7 +43,7 @@ typedef struct
 {
   t_asid			asid;
 
-  t_tskid			tskid;
+  i_task			tskid;
 
   t_setid			segments;
   t_setid			regions;
@@ -59,7 +59,7 @@ typedef struct
 {
   o_id				id;
 
-  t_staid			stats;
+  i_stats			stats;
 
   t_setid			ass;
 
@@ -74,17 +74,17 @@ typedef struct
 {
   t_error			(*as_show)(t_asid);
   t_error			(*as_give)(t_asid,
-					   t_tskid);
+					   i_task);
   t_error			(*as_vaddr)(t_asid,
 					    t_paddr,
 					    t_vaddr*);
   t_error			(*as_paddr)(t_asid,
 					    t_vaddr,
 					    t_paddr*);
-  t_error			(*as_clone)(t_tskid,
+  t_error			(*as_clone)(i_task,
 					    t_asid,
 					    t_asid*);
-  t_error			(*as_reserve)(t_tskid,
+  t_error			(*as_reserve)(i_task,
 					      t_asid*);
   t_error			(*as_release)(t_asid);
   t_error			(*as_init)(void);
@@ -142,7 +142,7 @@ t_error			as_show(t_asid				asid);
 t_error			as_dump(void);
 
 t_error			as_give(t_asid			asid,
-				t_tskid			tskid);
+				i_task			tskid);
 
 t_error			as_vaddr(t_asid			asid,
 				 t_paddr		physical,
@@ -152,11 +152,11 @@ t_error			as_paddr(t_asid		asid,
 				 t_vaddr	virtual,
 				 t_paddr*	physical);
 
-t_error			as_clone(t_tskid			tskid,
+t_error			as_clone(i_task				tskid,
 				 t_asid				old,
 				 t_asid*			new);
 
-t_error			as_reserve(t_tskid			tskid,
+t_error			as_reserve(i_task			tskid,
 				   t_asid*			asid);
 
 t_error			as_release(t_asid			asid);

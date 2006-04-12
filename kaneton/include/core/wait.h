@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/wait.h
+ * file          /home/buckman/kaneton/kaneton/include/core/wait.h
  *
  * created       julien quintard   [wed apr 12 05:17:42 2006]
- * updated       julien quintard   [wed apr 12 05:28:42 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:53:36 2006]
  */
 
 #ifndef CORE_WAIT_H
@@ -37,7 +37,7 @@ typedef struct
 {
   union
   {
-    t_tskid			task;
+    i_task			task;
     t_thrid			thread;
   }				id;
 

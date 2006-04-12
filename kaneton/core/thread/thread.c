@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/kaneton/core/thread/thread.c
+ * file          /home/buckman/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       renaud voltz   [tue apr  4 03:02:57 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:54:36 2006]
  */
 
 /*
@@ -226,7 +226,7 @@ t_error			thread_clone(t_thrid			threadid)
  * 4) call the machine-dependent code.
  */
 
-t_error			thread_reserve(t_tskid			taskid,
+t_error			thread_reserve(i_task			taskid,
 				       t_thrid*			threadid)
 {
   o_task*		task;
@@ -350,7 +350,7 @@ t_error			thread_release(t_thrid			threadid)
  * 3) for every thread belonging to the task, release it.
  */
 
-t_error			thread_flush(t_tskid			taskid)
+t_error			thread_flush(i_task			taskid)
 {
   t_thrid*		data;
   o_task*		task;

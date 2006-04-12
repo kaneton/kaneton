@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [tue apr  4 13:01:39 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:52:00 2006]
  */
 
 /*
@@ -73,8 +73,8 @@ d_task			task_dispatch =
  * XXX
  */
 
-t_error			ia32_task_clone(t_tskid			old,
-					t_tskid*		new)
+t_error			ia32_task_clone(i_task			old,
+					i_task*			new)
 {
   TASK_ENTER(task);
 
@@ -90,7 +90,7 @@ t_error			ia32_task_clone(t_tskid			old,
 t_error			ia32_task_reserve(t_class		class,
 					  t_behav		behav,
 					  t_prior		prior,
-					  t_tskid*		tskid)
+					  i_task*		tskid)
 {
   TASK_ENTER(task);
 
@@ -103,7 +103,7 @@ t_error			ia32_task_reserve(t_class		class,
  * XXX
  */
 
-t_error			ia32_task_release(t_tskid		tskid)
+t_error			ia32_task_release(i_task		tskid)
 {
   TASK_ENTER(task);
 

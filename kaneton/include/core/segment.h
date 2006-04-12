@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/segment.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:18:56 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:47:31 2006]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -69,7 +69,7 @@ typedef struct
 {
   o_id				id;
 
-  t_staid			stats;
+  i_stats			stats;
 
   t_paddr			start;
   t_psize			size;

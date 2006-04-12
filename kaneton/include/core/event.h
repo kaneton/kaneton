@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/event.h
+ * file          /home/buckman/kaneton/kaneton/include/core/event.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       julien quintard   [sun apr  2 14:05:47 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:55:27 2006]
  */
 
 #ifndef CORE_EVENT_H
@@ -41,8 +41,8 @@
 
 union				u_event_handler
 {
-  t_event_handler               function;
-  t_tskid                       taskid;
+  t_event_handler		function;
+  i_task			taskid;
 };
 
 /*
@@ -69,7 +69,7 @@ typedef struct
 {
   o_id				id;
 
-  t_staid			stats;
+  i_stats			stats;
 
   t_setid			events;
 

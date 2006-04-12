@@ -15,8 +15,8 @@
 
 void		check_as_06(void)
 {
-  t_tskid	task;
-  t_tskid	forked;
+  i_task	task;
+  i_task	forked;
   t_asid	as;
   t_asid	cloned;
   t_segid	seg;

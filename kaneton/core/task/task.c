@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [sat apr  8 19:37:31 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:43:17 2006]
  */
 
 /*
@@ -55,7 +55,7 @@ m_task*			task = NULL;
  * the kernel task.
  */
 
-t_tskid			ktask = ID_UNUSED;
+i_task			ktask = ID_UNUSED;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -71,7 +71,7 @@ t_tskid			ktask = ID_UNUSED;
  * 1) XXX
  */
 
-t_error			task_show(t_tskid			tskid)
+t_error			task_show(i_task			tskid)
 {
   /* XXX t_state		state; */
   /* XXX t_iterator		i; */
@@ -159,8 +159,8 @@ t_error			task_dump(void)
  * 6) calls the machine-dependent code.
  */
 
-t_error			task_clone(t_tskid			old,
-				   t_tskid*			new)
+t_error			task_clone(i_task			old,
+				   i_task*			new)
 {
   t_state		state;
   o_task*		from;
@@ -250,7 +250,7 @@ t_error			task_clone(t_tskid			old,
 t_error			task_reserve(t_class			class,
 				     t_behav			behav,
 				     t_prior			prior,
-				     t_tskid*			tskid)
+				     i_task*			tskid)
 {
   o_task		o;
 
@@ -373,7 +373,7 @@ t_error			task_reserve(t_class			class,
  * 6) removes the task object from the task set.
  */
 
-t_error			task_release(t_tskid			tskid)
+t_error			task_release(i_task			tskid)
 {
   o_task*		o;
 
@@ -440,10 +440,78 @@ t_error			task_release(t_tskid			tskid)
 }
 
 /*
+ * this function updates the task's priority to "prior".
+ */
+
+t_error			task_priority(i_task			id,
+				      t_prior			prior)
+{
+  TASK_ENTER(task);
+
+  /* XXX */
+
+  TASK_LEAVE(task, ERROR_UNKNOWN);
+}
+
+/*
+ * this function marks the task as runnable.
+ */
+
+t_error			task_run(i_task				id)
+{
+  TASK_ENTER(task);
+
+  /* XXX */
+
+  TASK_LEAVE(task, ERROR_UNKNOWN);
+}
+
+/*
+ * this function stops a task.
+ */
+
+t_error			task_stop(i_task			id)
+{
+  TASK_ENTER(task);
+
+  /* XXX */
+
+  TASK_LEAVE(task, ERROR_UNKNOWN);
+}
+
+/*
+ * this function kills a task which is forced to exit.
+ */
+
+t_error			task_exit(i_task			id)
+{
+  TASK_ENTER(task);
+
+  /* XXX */
+
+  TASK_LEAVE(task, ERROR_UNKNOWN);
+}
+
+/*
+ * this function waits for state change.
+ */
+
+t_error			task_wait(i_task			id,
+				  t_opts			opts,
+				  t_wait*			wait)
+{
+  TASK_ENTER(task);
+
+  /* XXX */
+
+  TASK_LEAVE(task, ERROR_UNKNOWN);
+}
+
+/*
  * this function gets a task object from the task set.
  */
 
-t_error			task_get(t_tskid			tskid,
+t_error			task_get(i_task				tskid,
 				 o_task**			o)
 {
   TASK_ENTER(task);

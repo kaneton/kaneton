@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/types.h
+ * file          /home/buckman/kaneton/kaneton/include/core/types.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [wed apr 12 05:25:18 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:50:44 2006]
  */
 
 #ifndef CORE_TYPES_H
@@ -64,14 +64,14 @@ typedef t_uint32		t_quantum;
 
 typedef t_uint64		t_id;
 
-typedef t_id			t_staid;
+typedef t_id			i_stats;
 typedef t_id			t_setid;
 typedef t_id			t_asid;
 typedef t_id			t_segid;
 typedef t_id			t_regid;
 typedef t_id			i_event;
 typedef t_id			i_timer;
-typedef t_id			t_tskid;
+typedef t_id			i_task;
 typedef t_id			t_thrid;
 
 /*

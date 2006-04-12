@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/id.h
+ * file          /home/buckman/kaneton/kaneton/include/core/id.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sat apr  1 22:43:16 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:47:10 2006]
  */
 
 #ifndef CORE_ID_H
@@ -38,7 +38,7 @@ typedef struct
 
 typedef struct
 {
-  t_staid			stats;
+  i_stats			stats;
 }				m_id;
 
 /*

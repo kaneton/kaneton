@@ -15,7 +15,7 @@
 
 void		check_map_01(void)
 {
-  t_tskid	task;
+  i_task	task;
   t_asid	as;
   t_vaddr	addr;
   t_uint32	i;

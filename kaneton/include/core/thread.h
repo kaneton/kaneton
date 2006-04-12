@@ -3,10 +3,10 @@
  *
  * project       thread
  *
- * file          /home/mycure/kaneton/kaneton/include/core/thread.h
+ * file          /home/buckman/kaneton/kaneton/include/core/thread.h
  *
  * created       renaud voltz   [tue apr  4 03:14:51 2006]
- * updated       julien quintard   [wed apr 12 06:29:40 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:54:06 2006]
  */
 
 #ifndef CORE_THREAD_H
@@ -55,7 +55,7 @@ typedef struct
 {
   t_thrid			threadid;
 
-  t_tskid			taskid;
+  i_task			taskid;
 
   t_prior			prior;
 
@@ -79,7 +79,7 @@ typedef struct
 {
   o_id				id;
 
-  t_staid			stats;
+  i_stats			stats;
 
   t_setid			threads;
 
@@ -96,8 +96,8 @@ typedef struct
   t_error			(*thread_suspend)(t_thrid);
   t_error			(*thread_execute)(t_thrid);
   t_error			(*thread_clone)(t_thrid);
-  t_error			(*thread_flush)(t_tskid);
-  t_error			(*thread_reserve)(t_tskid,
+  t_error			(*thread_flush)(i_task);
+  t_error			(*thread_reserve)(i_task,
 						  t_thrid*);
   t_error			(*thread_release)(t_thrid);
   t_error			(*thread_init)(void);
@@ -160,12 +160,12 @@ t_error			thread_execute(t_thrid			threadid);
 
 t_error			thread_clone(t_thrid			threadid);
 
-t_error			thread_reserve(t_tskid			taskid,
+t_error			thread_reserve(i_task			taskid,
 				       t_thrid*			threadid);
 
 t_error			thread_release(t_thrid			threadid);
 
-t_error			thread_flush(t_tskid			taskid);
+t_error			thread_flush(i_task			taskid);
 
 t_error			thread_get(t_thrid			threadid,
 				   o_thread**			o);

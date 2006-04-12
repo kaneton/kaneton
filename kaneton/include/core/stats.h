@@ -162,25 +162,25 @@ typedef struct
  * ../../core/stats/stats.c
  */
 
-t_error			stats_function(t_staid			staid,
+t_error			stats_function(i_stats			staid,
 				       char*			function,
 				       t_stats_func**		f);
 
-t_error			stats_begin(t_staid			staid,
+t_error			stats_begin(i_stats			staid,
 				    char*			function);
 
-t_error			stats_end(t_staid			staid,
+t_error			stats_end(i_stats			staid,
 				  char*				function,
 				  t_error			error);
 
-t_error			stats_show(t_staid			staid);
+t_error			stats_show(i_stats			staid);
 
 t_error			stats_dump(void);
 
 t_error			stats_reserve(char*			name,
-				      t_staid*			staid);
+				      i_stats*			staid);
 
-t_error			stats_release(t_staid			staid);
+t_error			stats_release(i_stats			staid);
 
 t_error			stats_init(void);
 

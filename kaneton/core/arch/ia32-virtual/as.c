@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue apr 11 17:26:35 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 11:52:44 2006]
  */
 
 /*
@@ -37,7 +37,7 @@
  */
 
 extern m_as*		as;
-extern t_tskid		ktask;
+extern i_task		ktask;
 extern t_init*		init;
 
 /*
@@ -131,7 +131,7 @@ t_error			ia32_as_show(t_asid			asid)
  *  d) release the kernel-side region mapping the directory.
  */
 
-t_error			ia32_as_reserve(t_tskid			tskid,
+t_error			ia32_as_reserve(i_task			tskid,
 					t_asid*			asid)
 {
   o_as*			o;
