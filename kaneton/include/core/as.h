@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/as.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sun apr  2 14:05:16 2006]
+ * updated       julien quintard   [wed apr 12 05:18:33 2006]
  */
 
 #ifndef CORE_AS_H

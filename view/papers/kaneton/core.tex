@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/core.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:33:29 2006]
-%% updated       julien quintard   [mon apr 10 13:23:24 2006]
+%% updated       julien quintard   [wed apr 12 06:53:01 2006]
 %%
 
 %
@@ -493,7 +493,7 @@ For this reason, the stats manager uses a specific data structure.
 % as manager
 %
 
-\section{as mananger}
+\section{as manager}
 
 The \textbf{address space manager} or \textbf{as manager} just manages
 the address spaces objects.
@@ -730,9 +730,9 @@ so the segment objects can be stored in a set object without effort.
 	   This function is used to force a segment to be given to an address
 	   space.
 
-	   \textbf{Catchable} segments are reserved by the module service
-	   for architecture specific servers. Catchable segments
-	   are defined in the \argument{kaneton.conf} file.
+	   \notice{Catchable segments are reserved by the module service
+	     for architecture specific servers. Catchable segments
+	     are defined in the \argument{kaneton.conf} file.}
 	 }
 
 \function{segment\_perms}{(i\_segment \argument{id},
@@ -1041,9 +1041,155 @@ relative time. Each timer object is identified by a unique timer identifier
 
 \section{task manager}
 
-XXX
+The \textbf{task manager} provides a complete interface for the task
+objects manipulation.
 
-behaviour, priority, classe
+A \textbf{task object} \textit{o\_task} describes a complete execution
+entity. Nevertheless, a task object is never scheduled since a task
+is not an active entity.
+
+A task is composed of an address space \textit{o\_as} and threads
+\textit{o\_thread}.
+
+Be careful, a task in the kaneton terms is different from a \textit{process}
+in the UNIX{\copyright} terms. Indeed, a \textit{process} has only one
+thread while kaneton tasks can have multiple ones. Nevertheless, the
+term \textit{process} is sometimes used to describe a kaneton task.
+
+Each task is identified by a unique task identifier \textit{i\_task}.
+
+The task manager uses an internal nomenclature we will now detail.
+
+The \textbf{class} \textit{t\_class} describes the task's rights on the
+system. The different classes are \textit{TASK\_CLASS\_CORE},
+\textit{TASK\_CLASS\_DRIVER}, \textit{TASK\_CLASS\_SERVICE} and
+\textit{TASK\_CLASS\_PROGRAM}.
+
+So a kaneton \textit{service} is in fact a task with a class
+\textit{TASK\_CLASS\_SERVICE} and so on for the \textit{core},
+\textit{drivers} and \textit{programs}.
+
+These classes permit to give certain tasks, for example, the permission
+to interact with hardware devices.
+
+Moreover, this classification permit to build a tasks hierarchy.
+Therefore, a task will be authorized to call another task only if
+greater or equal privileged.
+
+\notice{This calls hierarchy must be validated.}
+
+The \textbf{behaviour} \textit{t\_behav} describes a priority
+interval, each task being able to evolve in it by itself. The different
+behaviors are \textit{TASK\_BEHAV\_CORE}, \textit{TASK\_BEHAV\_REALTIME},
+\textit{TASK\_BEHAV\_INTERACTIVE}, \textit{TASK\_BEHAV\_TIMESHARING}
+and \textit{TASK\_BEHAV\_BACKGROUND}.
+
+The \textbf{priority} \textit{t\_prior} specify the current task
+priority. Then, a task can updates its priority while this new priority
+still is in the behaviour priority interval.
+
+%
+% interface
+%
+
+\subsubsection{Interface}
+
+\function{task\_show}{(i\_task \argument{id})}
+	 {
+	   This function displays information on the task \argument{id}.
+	 }
+
+\function{task\_dump}{(void)}
+	 {
+	   This function displays information on every task.
+	 }
+
+\function{task\_clone}{(i\_task \argument{old},
+                        i\_task* \argument{new})}
+	 {
+	   This function clones a task.
+
+	   This function must take care of cloning everything necessary
+	   including the address space and the threads.
+	 }
+
+\function{task\_reserve}{(t\_class \argument{class},
+                          t\_behav \argument{behav},
+                          t\_prior \argument{prior},
+                          i\_task* \argument{id})}
+	 {
+	   This function reserves a task object with the given
+	   properties: \argument{class}, \argument{behav} and
+	   \argument{prior}.
+
+	   Note that once reserved, the task is marked as stopped.
+	 }
+
+\function{task\_release}{(i\_task \argument{id})}
+	 {
+	   This function releases the task object \argument{id}.
+	 }
+
+\function{task\_priority}{(i\_task \argument{id},
+                           t\_prior \argument{prior})}
+	 {
+	   This function updates the task's priority to \argument{prior}.
+	 }
+
+\function{task\_run}{(i\_task \argument{id})}
+	 {
+	   This function marks the task as runnable.
+	 }
+
+\function{task\_stop}{(i\_task \argument{id})}
+	 {
+	   This function stops the task \argument{id}.
+	 }
+
+\function{task\_exit}{(i\_task \argument{id})}
+	 {
+	   This function kills the task \argument{id} which is forced to
+	   exit. In this case, the threads are stopped and the task becomes
+	   a \textit{zombie}.
+	 }
+
+\function{task\_wait}{(i\_task \argument{id},
+                       t\_opts \argument{opts},
+                       t\_wait* \argument{wait})}
+	 {
+	   This function waits for state change in one or more tasks
+	   depending on the options \argument{opts}.
+
+	   The flags of \argument{opts} specify the state to wait for:
+	   \textit{WAIT\_DEATH}, \textit{WAIT\_START},
+	   \textit{WAIT\_STOP} and \textit{WAIT\_ALL}.
+
+	   Moreover, other flags are used to precise the tasks to wait for:
+	   \textit{WAIT\_ID} for a precise task \argument{id} or
+	   \textit{WAIT\_CHILDREN} for any children.
+
+	   Finally, another flag \textit{WAIT\_NOHANG} can be used
+	   to make the function non-blocking if no task's state has changed.
+
+	   \notice{All these features are not implemented yet.}
+	 }
+
+\function{task\_get}{(i\_task \argument{id},
+                      o\_task** \argument{o})}
+	 {
+	   This function returns in \argument{o} the task object corresponding
+	   to \argument{id}.
+	 }
+
+\function{task\_init}{(void)}
+	 {
+	   This function initializes the task manager.
+	 }
+
+\function{task\_clean}{(void)}
+	 {
+	   This function cleans the task manager.
+	 }
 
 %
 % thread manager
@@ -1051,7 +1197,181 @@ behaviour, priority, classe
 
 \section{thread manager}
 
-XXX
+The \textbf{thread manager} manages the real active execution context
+called threads.
+
+A \textbf{thread object} is an active entity which describes the
+current state of an execution context including the \textit{program counter},
+the \textit{stack pointer} etc..
+
+Indeed, a thread is composed of a current \textit{program counter} which
+keeps the next instruction address to execute and the \textit{stack pointer}
+which keeps the stack address. With these two characteristics, a thread
+can be described.
+
+Needless to say, some additional architecture-dependent properties are
+required to fully describe a thread context.
+
+Like the tasks, each thread has its own priority meaning that each thread
+can parameterize its scheduling priority.
+
+The threads' priorities must be contained in the interval $[10, 250[$, the
+macro \textit{THREAD\_PRIOR} representing the default priority.
+
+%
+% interface
+%
+
+\subsubsection{Interface}
+
+\function{thread\_show}{(i\_thread \argument{id})}
+	 {
+	   This function displays information on the thread \argument{id}.
+	 }
+
+\function{thread\_dump}{(void)}
+	 {
+	   This function displays information on all the threads.
+	 }
+
+\function{thread\_give}{(i\_task \argument{task},
+                         i\_thread \argument{id})}
+	 {
+	   This function gives the thread object \argument{id} to the
+	   task \argument{task}.
+	 }
+
+\function{thread\_clone}{(i\_task \argument{task},
+                          i\_thread \argument{old},
+                          i\_thread* \argument{new})}
+	 {
+	   This function clones the task \argument{old} into a new one
+	   \argument{new}.
+
+	   This new thread, having the exact same properties as \argument{old},
+	   will be held by the task \argument{task}.
+	 }
+
+\function{thread\_reserve}{(i\_task \argument{task},
+                            t\_prior \argument{prior},
+                            i\_thread* \argument{id})}
+	 {
+	   This function reserves a thread for the task \argument{task}
+	   given the default thread priority \argument{prior}.
+
+	   Note that once reserved, the thread is marked as stopped.
+	 }
+
+\function{thread\_release}{(i\_thread \argument{id})}
+	 {
+	   This function releases the thread object \argument{id}.
+	 }
+
+\function{thread\_priority}{(i\_thread \argument{id},
+                             t\_prior \argument{prior})}
+	 {
+	   This function updates the current thread priority
+	   to \argument{prior}.
+	 }
+
+\function{thread\_run}{(i\_thread \argument{id})}
+	 {
+	   This function marks the thread object \argument{id}
+	   as runnable.
+	 }
+
+\function{thread\_stop}{(i\_thread \argument{id})}
+	 {
+	   This function stops the thread object \argument{id}.
+	 }
+
+\function{thread\_exit}{(i\_thread \argument{id})}
+	 {
+	   This function kills the thread \argument{id} forcing it to
+	   exit.
+
+	   Therefore, if all the threads of the same task have exited, the
+	   task must exit too via the \textbf{task\_exit}() function.
+	 }
+
+\function{thread\_wait}{(i\_thread \argument{id},
+                         t\_opts \argument{opts},
+                         t\_wait* \argument{wait})}
+	 {
+	   This function acts like the function \textbf{task\_wait}().
+
+	   This function waits for the thread's state to change depending on
+	   the options \argument{opts}.
+	 }
+
+\function{thread\_get}{(i\_thread \argument{id},
+                        o\_thread** \argument{o})}
+	 {
+	   This function returns in \argument{o} the thread object
+	   corresponding to \argument{id}.
+	 }
+
+\function{thread\_flush}{(i\_task \argument{task})}
+	 {
+	   This function removes every thread that belongs to the
+	   task object \argument{task}.
+	 }
+
+\function{thread\_stack}{(i\_thread \argument{id},
+                          t\_vsize \argument{size})}
+	 {
+	   This function allocates a stack of \argument{size} bytes
+	   for the thread \argument{id}.
+	 }
+
+\function{thread\_load}{(i\_thread \argument{id},
+                         t\_thread\_context \argument{context})}
+	 {
+	   This function loads a new execution context in the thread
+	   object \argument{id}.
+
+	   A thread execution context \textit{t\_thread\_context}
+	   only contains the \textit{program counter} and the
+	   \textit{stack pointer}.
+	 }
+
+\function{thread\_store}{(i\_thread \argument{id},
+                          t\_thread\_context* \argument{context})}
+	 {
+	   This function stores in \argument{context} the current
+	   thread execution context of the thread object \argument{id}.
+	 }
+
+\function{thread\_args}{(i\_thread \argument{id},
+                         void* \argument{args},
+                         t\_size \argument{size})}
+	 {
+	   This function installs the arguments of the thread \argument{id}
+	   on its stack.
+
+	   In other words, this function copies \argument{size} bytes
+	   from \argument{args} on the thread's stack.
+
+	   Note that this function was designed to fit the general case.
+	   Indeed, the special case of the \textit{main}() function
+	   with its arguments \textit{argc} and \textit{argv} is not
+	   directly handled by this function.
+
+	   A C library function must be used to pack command line
+	   argument strings into a unique arguments array. Then the
+	   \textbf{thread\_args}() function can be used to install
+	   this array onto the stack.
+	 }
+
+\function{thread\_init}{(void)}
+	 {
+	   This function initializes the thread manager.
+	 }
+
+\function{thread\_clean}{(void)}
+	 {
+	   This function cleans the thread manager.
+	 }
 
 %
 % scheduler
@@ -1060,6 +1380,8 @@ XXX
 \section{scheduler}
 
 XXX
+
+utilise behav et prior pour choisir
 
 %
 % message manager

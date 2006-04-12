@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/core.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sat apr  1 23:31:22 2006]
+ * updated       julien quintard   [wed apr 12 05:24:18 2006]
  */
 
 #ifndef CORE_CORE_H
@@ -100,6 +100,7 @@
 #include <core/timer.h>
 #include <core/thread.h>
 #include <core/task.h>
+#include <core/wait.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

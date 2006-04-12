@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       julien quintard   [sun apr  2 14:05:48 2006]
+ * updated       julien quintard   [wed apr 12 06:29:46 2006]
  */
 
 #ifndef CORE_TASK_H
@@ -17,9 +17,9 @@
  */
 
 #include <arch/machdep/machdep.h>
-
 #include <core/id.h>
 #include <core/types.h>
+#include <core/wait.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -88,6 +88,7 @@ typedef struct
   t_tskid			tskid;
 
   t_tskid			parent;
+  t_setid			children;
 
   t_class			class;
   t_behav			behav;
@@ -98,9 +99,8 @@ typedef struct
 
   t_state			sched;
 
-  /* XXX t_wait			status; */
-
   t_setid			waits;
+  t_wait			wait;
 
   machdep_data(o_task);
 }				o_task;

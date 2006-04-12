@@ -1,4 +1,12 @@
 --
+ probleme de nomenclature: chiche_get(o* o) ca marche pour recuperer un
+ objet mais quand ce seront des programs userland, recuperer l objet
+ entier ca ne les interesse pas, c'est lourd et c est pas le but.
+
+ donc on devrait changer pour mettre a disposition des fonctions pour
+ recuperer que certaines proprietes.
+
+--
  revoir le bootloader:
 
   t_modules

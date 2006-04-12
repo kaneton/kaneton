@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       thread
  *
- * file          /home/rhino/kaneton/kaneton/include/core/thread.h
+ * file          /home/mycure/kaneton/kaneton/include/core/thread.h
  *
  * created       renaud voltz   [tue apr  4 03:14:51 2006]
- * updated       renaud voltz   [tue apr  4 03:14:51 2006]
+ * updated       julien quintard   [wed apr 12 06:29:40 2006]
  */
 
 #ifndef CORE_THREAD_H
@@ -19,10 +19,33 @@
 #include <arch/machdep/machdep.h>
 #include <core/id.h>
 #include <core/types.h>
+#include <core/wait.h>
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+/*
+ * priorities
+ */
+
+#define THREAD_PRIOR		130
+#define THREAD_HPRIOR		250
+#define THREAD_LPRIOR		10
 
 /*
  * ---------- types -----------------------------------------------------------
  */
+
+/*
+ * thread execution context
+ */
+
+typedef struct
+{
+  t_vaddr			pc;
+  t_vaddr			sp;
+}				t_thread_context;
 
 /*
  * thread object
@@ -33,6 +56,16 @@ typedef struct
   t_thrid			threadid;
 
   t_tskid			taskid;
+
+  t_prior			prior;
+
+  t_state			sched;
+
+  t_setid			waits;
+  t_wait			wait;
+
+  t_vaddr			stack;
+  t_vsize			stacksz;
 
   machdep_data(o_thread);
 }				o_thread;
