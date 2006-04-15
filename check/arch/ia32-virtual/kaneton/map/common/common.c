@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/map/common/common.c
  *
  * created       matthieu bucchianeri   [wed mar 15 23:11:33 2006]
- * updated       matthieu bucchianeri   [sun apr  2 19:01:29 2006]
+ * updated       matthieu bucchianeri   [sat apr 15 23:01:55 2006]
  */
 
 #include <klibc.h>
@@ -28,5 +28,6 @@ void	check_map_common(void)
 void	check_map_tests(void)
 {
   check_map_common();
+  check_map_01();
   /* XXX continue tests */
 }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/check/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [fri mar 31 15:46:27 2006]
+ * updated       matthieu bucchianeri   [sat apr 15 22:59:36 2006]
  */
 
 #include <klibc.h>
@@ -36,8 +36,11 @@ void	check_tests(void)
   check_event_tests();*/
   /* XXX continue tests */
 #if DEBUG & DEBUG_AS
-//  check_as_tests ();
-//  check_segment_tests();
+  check_as_tests ();
+  check_segment_tests();
+  check_region_tests();
+  check_task_tests();
+  check_map_tests();
 #endif
 }
 

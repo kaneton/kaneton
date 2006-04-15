@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed apr 12 13:49:30 2006]
+ * updated       matthieu bucchianeri   [sat apr 15 23:06:58 2006]
  */
 
 /*
@@ -186,7 +186,7 @@ void			kaneton(t_init*				bootloader)
    * 14)
    */
 
-  if (0 && timer_init() != ERROR_NONE)
+  if (timer_init() != ERROR_NONE)
     kaneton_error("cannot initialise the timer manager\n");
 
   event_test();
@@ -202,8 +202,10 @@ void			kaneton(t_init*				bootloader)
 //  gdb_init();
 /*  check_task_01();
   check_as_08();
-  check_as_01();*/
+  check_as_01();
   check_as_03();
+  while(1);*/
+  check_tests();
   while(1);
   debug_init();
 #endif
