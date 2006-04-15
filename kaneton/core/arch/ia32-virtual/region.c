@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [tue apr 11 17:29:02 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 17:06:43 2006]
  */
 
 /*
@@ -128,6 +128,12 @@ static t_error		ia32_region_map_chunk(t_vaddr		v,
   if (pt_add_page(&pt, PTE_ENTRY(v), pg) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
+  t_uint32 chiche;
+  chiche = *((t_uint32*)(pt.entries) + PTE_ENTRY(v));
+  printf("add page %p = %x %b\n",
+	 (t_uint32*)(pt.entries) + PTE_ENTRY(v),
+	 chiche, chiche);
+
   /*
    * 3)
    */
@@ -181,6 +187,11 @@ static t_error		ia32_region_unmap_chunk(t_vaddr		v)
 
   pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(v));
 
+  t_uint32 chiche;
+  chiche = *((t_uint32*)(pt.entries) + PTE_ENTRY(v));
+  printf("delete page %p = %x %b\n",
+	 (t_uint32*)(pt.entries) + PTE_ENTRY(v),
+	 chiche, chiche);
   if (pt_delete_page(&pt, PTE_ENTRY(v)) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
@@ -355,6 +366,9 @@ t_error			ia32_region_reserve(t_asid		asid,
 				(t_paddr)pt.entries) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
+      printf("%p:%p\n", chunk, pt.entries);
+      printf("%p:%p\n", chunk, *((t_uint32*)ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(chunk)) + PTE_ENTRY(chunk)));
+
       pt.entries = chunk;
 
       if (clear_pt)
@@ -384,7 +398,6 @@ t_error			ia32_region_reserve(t_asid		asid,
 
 	  if (asid == kasid)
 	    tlb_invalidate((t_vaddr)ENTRY_ADDR(pde, pte));
-
 
 	  // -------8<-------8<-------8<-------8<-------8<-------8<-------
 	  if (!asid)
@@ -475,7 +488,7 @@ t_error			ia32_region_release(t_asid		asid,
 
   REGION_ENTER(region);
 
-  REGION_LEAVE(region, ERROR_NONE);				// XXX
+//  REGION_LEAVE(region, ERROR_NONE);				// XXX
 
   /*
    * 1)

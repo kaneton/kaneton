@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue apr 11 17:51:17 2006]
+ * updated       matthieu bucchianeri   [wed apr 12 13:49:30 2006]
  */
 
 /*
@@ -157,7 +157,8 @@ void			kaneton(t_init*				bootloader)
    * 11)
    */
 
-  if (region_init(REGION_VMEM_MIN, REGION_VMEM_MAX) != ERROR_NONE)
+  if (region_init(REGION_VMEM_MIN, REGION_VMEM_MAX - REGION_VMEM_MIN) !=
+      ERROR_NONE)
     kaneton_error("cannot initialise the region manager\n");
 
   /*
@@ -201,10 +202,10 @@ void			kaneton(t_init*				bootloader)
 //  gdb_init();
 /*  check_task_01();
   check_as_08();
-  check_as_01();
+  check_as_01();*/
   check_as_03();
   while(1);
-*/  debug_init();
+  debug_init();
 #endif
 
   /*

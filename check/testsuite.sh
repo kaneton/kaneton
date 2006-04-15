@@ -15,7 +15,7 @@ echo "Ready. Ctrl-C to exit, Enter to proceed."
 read
 export KANETON_USER=moulette
 echo "" | make init
-#make
+make
 #make install
 if [ "$?" -ne 0 ]; then
     exit 1

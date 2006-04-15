@@ -1,4 +1,9 @@
 --
+ il faut revoir  la gestion des permissions sur  la memoire. en effet,
+ c'est  segment  qui  gere  les  perms  mais  avec  ia32-virtual  c'est
+ region. il faut donc du code dans ia32_segment_perms
+
+--
  mettre des priorites sur les event? bottom-halves etc..
 
  comme ca le timer se lance immediatement, un driver peut se voir
