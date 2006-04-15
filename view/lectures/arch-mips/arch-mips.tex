@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/lectures/arch-mips/arch-mips.tex
 %%
 %% created       julien quintard   [wed nov 23 22:07:25 2005]
-%% updated       julien quintard   [sat apr  8 02:08:38 2006]
+%% updated       julien quintard   [thu apr 13 22:54:00 2006]
 %%
 
 %
@@ -203,7 +203,7 @@
 \pgfdeclareimage[interpolate=true,width=162pt,height=127pt]
                 {cache-internals}
 		{figures/cache-internals}
-\pgfdeclareimage[interpolate=true,width=185pt,height=124pt]
+\pgfdeclareimage[interpolate=true,width=171pt,height=186pt]
                 {set-associative-overview}
 		{figures/set-associative-overview}
 \pgfdeclareimage[interpolate=true,width=152pt,height=147pt]
@@ -4477,12 +4477,13 @@
 
       \begin{itemize}
 	\item
-	  Miss. The block is loaded in cache then the block is overwritten
-	  in cache.
-	\item
-	  Hit.
+	  The block in cache is simply updated.
       \end{itemize}
   \end{itemize}
+
+  Note, that in the case that the written block is not present in cache,
+  this block is loaded into the cache from the respect of the Spatial
+  Locality.
 \end{frame}
 
 % 52)

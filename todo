@@ -1,4 +1,26 @@
 --
+ mettre des priorites sur les event? bottom-halves etc..
+
+ comme ca le timer se lance immediatement, un driver peut se voir
+ schedule immediatement (preemptif) ou non
+
+--
+ faire des capabilities pour les gestionnaires du kernel en plus des objets.
+
+ faire egalement en sorte qu on puisse limiter les permissions d un cap
+ a l utilisation de cet objet par un seul manager.
+
+  par exemple, lorsqu on envoie un msg a une tache sur un autre ordi, ca
+  va passer par un service qui fera l appel message_send() sur sa propre
+  machine en se faisant passer pour la source.
+
+--
+ penser a la migration de processus via des as_paddr(), segment_read()
+
+--
+ etudier le SMP pour pouvoir faire evoluer kaneton vers ca.
+
+--
  probleme de nomenclature: chiche_get(o* o) ca marche pour recuperer un
  objet mais quand ce seront des programs userland, recuperer l objet
  entier ca ne les interesse pas, c'est lourd et c est pas le but.
