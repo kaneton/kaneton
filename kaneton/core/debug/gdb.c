@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/gdb.c
  *
  * created       matthieu bucchianeri   [mon apr 10 12:47:20 2006]
- * updated       matthieu bucchianeri   [wed apr 12 12:06:00 2006]
+ * updated       matthieu bucchianeri   [tue may 16 17:50:11 2006]
  */
 
 /*
@@ -17,6 +17,26 @@
  * this stub  is not very complete  but gives the  minimum required to
  * debug the kernel remotely.
  */
+
+/*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+#define	QUIET
+
+/*
+ * activating int 1 is slower.
+ */
+
+//#define	INT1
+
+/*
+ * otherwise the default is int 3.
+ */
+
+#ifndef INT1
+# define INT3
+#endif /* !INT1 */
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -73,6 +93,8 @@ static const t_uint32		com_port = SERIAL_COM1;
  */
 
 static volatile t_uint32	step = 0;
+static volatile t_uint32	step_old_opcode = 0;
+static volatile t_uint32	step_old_eip = 0;
 static volatile t_vaddr		ebp = 0;
 
 /*
@@ -80,6 +102,16 @@ static volatile t_vaddr		ebp = 0;
  */
 
 static i_set			br = ID_UNUSED;
+
+/*
+ * breakpoint.
+ */
+
+typedef struct
+{
+  t_id		id;
+  t_uint32	opcode;
+}		t_brk;
 
 /*
  * the commands list.
@@ -92,9 +124,9 @@ static const struct {
 } commands[] =
   {
     { 'g', "read registers", gdb_read_reg },
-    { 'G', "write registers", gdb_write_reg },
+//    { 'G', "write registers", gdb_write_reg },
     { 'm', "read memory", gdb_read_mem },
-    { 'M', "write memory", gdb_write_mem },
+//    { 'M', "write memory", gdb_write_mem },
     { 's', "step", gdb_step },
     { 'c', "continue", gdb_continue },
     { 'z', "unset breakpoint", gdb_unset_break },
@@ -120,7 +152,8 @@ void			gdb_handler(t_uint32 needless)
 {
   t_gdb_context*	ctx;
   t_uint8*		ptr;
-  t_id			id;
+  t_brk*		brk;
+  t_uint32		bp = 0;
 
   /*
    * 1)
@@ -140,13 +173,58 @@ void			gdb_handler(t_uint32 needless)
    * 2)
    */
 
+#ifdef INT1
+  if (set_get(br, ctx->eip, (void**)&brk) == ERROR_NONE)
+#else
+  if (set_get(br, (ctx->eip - 1), (void**)&brk) == ERROR_NONE)
+#endif /* INT1 */
+    {
+      bp = 1;
+#ifdef INT3
+      ctx->eip--;
+#ifndef QUIET
+      printf("placing back opcode @ %p (br)\n", ctx->eip);
+#endif /* !QUIET */
+      *(t_uint32*)(ctx->eip) = brk->opcode;
+#endif /* INT3 */
+    }
+
+  if (step && step_old_opcode)
+    {
+#ifdef INT3
+#ifndef QUIET
+      printf("placing back opcode @ %p\n", step_old_eip);
+#endif /* !QUIET */
+      *(t_uint32*)step_old_eip = step_old_opcode;
+#endif /* INT3 */
+    }
+
   if ((step/* && ctx->ebp == ebp*/) ||
-      set_get(br, ctx->eip, (void**)&id) == ERROR_NONE ||
-      ebp == 0)
+      ebp == 0 ||
+      bp)
     {
       gdb_status(NULL, ctx);
       step = 0;
       gdb_command(ctx);
+    }
+
+  if (!bp && step && step_old_opcode)
+    {
+#ifdef INT3
+      ctx->eip = step_old_eip;
+#ifndef QUIET
+      printf("resuming at %p\n", ctx->eip);
+#endif /* !QUIET */
+#endif /* INT3 */
+    }
+
+  if (bp)
+    {
+#ifdef INT3
+#ifndef QUIET
+      printf("resuming at %p\n", ctx->eip);
+#endif /* !QUIET */
+#endif /* INT3 */
     }
 }
 
@@ -567,6 +645,11 @@ int		gdb_write_mem(t_uint8*		buffer)
 
 /*
  * this function enables single-step mode.
+ *
+ * steps:
+ *
+ * 1) parse the command.
+ * 2) place an int3.
  */
 
 int			gdb_step(t_uint8*		buffer,
@@ -574,6 +657,11 @@ int			gdb_step(t_uint8*		buffer,
 {
   t_gdb_context*	ctx = context;
   t_vaddr		addr;
+  t_uint32		eip;
+
+  /*
+   * 1)
+   */
 
   buffer++;
   if (*buffer)
@@ -582,6 +670,33 @@ int			gdb_step(t_uint8*		buffer,
       ctx->eip = addr;
     }
   step = 1;
+
+  /*
+   * 2)
+   */
+
+#ifdef INT3
+  if ((t_uint8)step_old_opcode == 0xc3)
+    {
+      eip = *(t_uint32*)(ebp + 4);
+      step_old_eip = eip;
+      step_old_opcode = *(t_uint32*)eip;
+#ifndef QUIET
+      printf("placing INT3 @ %p (after RET)\n", eip);
+#endif /* !QUIET */
+      *(t_uint8*)eip = 0xcc;
+    }
+  else
+    {
+      step_old_eip = ctx->eip;
+      step_old_opcode = *(t_uint32*)ctx->eip;
+#ifndef QUIET
+      printf("placing INT3 @ %p\n", ctx->eip);
+#endif /* !QUIET */
+      *(t_uint8*)ctx->eip = 0xcc;
+    }
+#endif /* INT3 */
+
   return 1;
 }
 
@@ -611,7 +726,8 @@ int		gdb_continue(t_uint8*		buffer,
  * steps:
  *
  * 1) parse the incoming packet.
- * 2) remove the breakpoint and send ack.
+ * 2) remove the int3 instruction.
+ * 3) remove the breakpoint and send ack.
  */
 
 int		gdb_unset_break(t_uint8*	buffer)
@@ -619,7 +735,7 @@ int		gdb_unset_break(t_uint8*	buffer)
   t_uint8*	p;
   t_uint8*	addr;
   t_vaddr	pt;
-  t_id		id;
+  t_brk*	brk;
 
   /*
    * 1)
@@ -637,13 +753,26 @@ int		gdb_unset_break(t_uint8*	buffer)
     ;
   *p = 0;
   pt = strtol((char*)addr, NULL, 16);
-  id = pt;
 
   /*
    * 2)
    */
 
-  if (set_remove(br, id) != ERROR_NONE)
+#ifdef INT3
+  if (set_get(br, pt, (void**)&brk) != ERROR_NONE)
+    {
+      gdb_send((t_uint8*)"E00");
+      return 0;
+    }
+  *(t_uint32*)brk->id = brk->opcode;
+#endif /* INT3 */
+
+
+  /*
+   * 3)
+   */
+
+  if (set_remove(br, pt) != ERROR_NONE)
     gdb_send((t_uint8*)"E00");
   else
     gdb_send((t_uint8*)"OK");
@@ -656,7 +785,8 @@ int		gdb_unset_break(t_uint8*	buffer)
  * steps:
  *
  * 1) parse the incoming packet.
- * 2) add the breakpoint and send ack.
+ * 2) add a int3 instruction.
+ * 3) add the breakpoint and send ack.
  */
 
 int		gdb_set_break(t_uint8*		buffer)
@@ -664,7 +794,7 @@ int		gdb_set_break(t_uint8*		buffer)
   t_uint8*	p;
   t_uint8*	addr;
   t_vaddr	pt;
-  t_id		id;
+  t_brk		brk;
 
   /*
    * 1)
@@ -681,13 +811,26 @@ int		gdb_set_break(t_uint8*		buffer)
     ;
   *p = 0;
   pt = strtol((char*)addr, NULL, 16);
-  id = pt;
+
+  brk.id = pt;
+  brk.opcode = *(t_uint32*)pt;
 
   /*
    * 2)
    */
 
-  if (set_add(br, &id) != ERROR_NONE)
+#ifdef INT3
+#ifndef QUIET
+  printf("placing INT3 @ %p\n", pt);
+#endif /* !QUIET */
+  *(t_uint8*)pt = 0xcc;
+#endif /* INT3 */
+
+  /*
+   * 3)
+   */
+
+  if (set_add(br, &brk) != ERROR_NONE)
     gdb_send((t_uint8*)"E00");
   else
     gdb_send((t_uint8*)"OK");
@@ -738,7 +881,7 @@ t_error		gdb_init(void)
    * 1)
    */
   if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, 10,
-		  sizeof(t_id), &br) != ERROR_NONE)
+		  sizeof(t_brk), &br) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   /*
@@ -752,6 +895,8 @@ t_error		gdb_init(void)
    */
 
   if (event_reserve(1, EVENT_FUNCTION, (u_event_handler)gdb_handler) !=
+      ERROR_NONE ||
+      event_reserve(3, EVENT_FUNCTION, (u_event_handler)gdb_handler) !=
       ERROR_NONE)
     return (ERROR_UNKNOWN);
 
@@ -768,9 +913,11 @@ t_error		gdb_init(void)
    * 5)
    */
 
+#ifdef INT1
   asm volatile("pushf\n\t"
 	       "orw $0x0100, 0(%esp)\n\t"
 	       "popf");
+#endif
 
   return (ERROR_NONE);
 }
@@ -799,7 +946,8 @@ t_error		gdb_clean(void)
    * 2)
    */
 
-  if (event_release(1) != ERROR_NONE)
+  if (event_release(1) != ERROR_NONE ||
+      event_release(3) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   /*

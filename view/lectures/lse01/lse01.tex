@@ -5,8 +5,8 @@
 %%
 %% file          /home/buckman/kaneton/view/lectures/lse01/lse01.tex
 %%
-%% created       julien quintard   [fri dec  2 07:53:59 2005]
-%% updated       matthieu bucchianeri   [sat apr 15 19:05:46 2006]
+%% created       matthieu bucchianeri   [wed apr 19 23:07:29 2006]
+%% updated       matthieu bucchianeri   [wed apr 19 23:23:05 2006]
 %%
 
 %
@@ -33,6 +33,18 @@
 %
 % figures
 %
+
+\pgfdeclareimage[interpolate=true,width=177pt,height=160pt]
+                {sets}
+		{figures/sets}
+
+\pgfdeclareimage[interpolate=true,width=220pt,height=70pt]
+                {memory}
+		{figures/k1-memory-layout}
+
+\pgfdeclareimage[interpolate=true,width=172pt,height=132pt]
+                {hierarchy}
+		{figures/hierarchy}
 
 %
 % document
@@ -82,9 +94,9 @@
 
   \nl
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item Setup a basic runtime environment for the kernel:
-    \begin{itemize}[<+->]
+    \begin{itemize}
     \item Relocate the kernel code
     \item Build the ``init'' record with all necessary information
     \item Prepare protected mode and paging for the kernel
@@ -93,6 +105,9 @@
     \item Mark prereserved segments of memory
     \end{itemize}
   \item Scheme of memory organization
+  \begin{center}
+    \pgfuseimage{memory}
+  \end{center}
   \end{itemize}
 
 \end{frame}
@@ -107,6 +122,10 @@
 
 \begin{frame}
   \frametitle{Sets}
+
+  \begin{center}
+    \pgfuseimage{sets}
+  \end{center}
 \end{frame}
 
 %
@@ -119,6 +138,10 @@
 
 \begin{frame}
   \frametitle{Objects hierarchy}
+
+  \begin{center}
+    \pgfuseimage{hierarchy}
+  \end{center}
 \end{frame}
 
 %
@@ -142,7 +165,7 @@
 
   \nl
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item Allocate physical memory for processes
   \item Map this physical memory into a process' address space
   \item Manipulate easily address spaces
@@ -154,7 +177,7 @@
 
   \nl
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item Address spaces (bound to a task)
   \item Segments (physical memory chunks)
   \item Regions (virtual mapping of segments)
@@ -177,7 +200,7 @@
 
   \nl
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item Is bound to one task only
   \item Describe a task's physical and virtual memory
   \item Is able to make translations between physical and virtual addresses
@@ -190,7 +213,7 @@
 
   \nl
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item A set of segments
   \item A set of regions
   \end{itemize}
@@ -218,7 +241,7 @@
 \begin{frame}
   \frametitle{Intel IA32 implementation\\Segmentation}
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item Implement some kind of ``windows'' of addressable memory (with a base and a limit)
   \item Selecting a ``window'' is made via segment selector registers
   \end{itemize}
@@ -227,13 +250,13 @@
 
   Pros:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item Quick: translation is done adding the base of a segment to the linear address and checking the limit and privileges
   \end{itemize}
 
   Cons:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item Code must be position independent
   \item Always have to manipulate segment selectors registers
   \item Address space is not 4 Gb large and limited to real amount of physical memory
@@ -247,7 +270,7 @@
 \begin{frame}
   \frametitle{Intel IA32 implementation\\Paging}
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item A virtual address is divided in three fields: the page directory index, the page table index and the offset
   \item Translation is done using tables: one page directory and multiple page tables
   \end{itemize}
@@ -256,7 +279,7 @@
 
   Pros:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item 4 Gb of addressable memory
   \item Only one register to change when switching address space (PDBR)
   \item Contiguous data in the address space may not be contiguous in physical memory
@@ -264,7 +287,7 @@
 
   Cons:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item More complex (page directory \& page table manipulation)
   \item A bit slower: translations need to follow links in page tables (a cache called the Translation Lookaside Buffer is used to minimize memory accesses)
   \end{itemize}
@@ -283,7 +306,7 @@
   So an address space is represented only by its page-directory base register.
   Reserving an address space means:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item Reserving a segment for the page directory
   \item Mapping the created page-directory to clear it
   \item Filling an internal field holding the PDBR
@@ -347,7 +370,7 @@
 
   The available operations on segments are:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item Allocation and release
   \item Setting permissions
   \item Resizing, splitting and coalescing
@@ -426,7 +449,7 @@
 
   There are a very few operations on regions:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
   \item Allocating some space in an address space
   \item Mapping and unmapping virtual memory
   \end{itemize}
@@ -434,9 +457,9 @@
   \nl
 
   When  mapping some  memory,  you  can choose  to  force its  virtual
-  address (for  example, when allocating memory for  the code section)
-  or to  reserve some space  into the process' address  space (typical
-  example is \emph{mmap}).
+  address (for example, when allocating memory for the code section of
+  a binary you are loading) or to reserve some space into the process'
+  address space (typical example is \emph{mmap}).
 
 \end{frame}
 
@@ -531,12 +554,50 @@
 
 \begin{frame}
   \frametitle{Address space switch}
+
+  The  main  task  in  integrating memory  managament  into  processes
+  management is the  address space switching. Since each  task has its
+  own address space, we must  ensure that a process cannot access some
+  memory not in its address space.
+
+  \nl
+
+  As we are using paging, it is quite simple to switch between address
+  spaces. Remember we said that an address space contains a pointer to
+  the  page-directory, so  we just  have to  place this  address  in a
+  special register called PDBR.
+
 \end{frame}
 
 % 2)
 
 \begin{frame}
   \frametitle{Accessing an address space from the kernel}
+
+  There is an exception to the  previous rule: the kernel must be able
+  to  access  any  address  space.   For  example,  when  you  make  a
+  \emph{read}  syscall, it  must be  able to  write the  read  data at
+  specified address in the process' address space.
+
+  \nl
+
+  One  solution maybe  to keep  the kernel  always present  in virtual
+  memory. Then, system calls will not produce address space switching,
+  but  only segment privilege  changes. Then  during the  system call,
+  process' memory stay addressable.
+
+  \nl
+
+  In   kaneton,   we   choose   not   to  keep   the   kernel   mapped
+  permanently.  Every context  change  implies to  switch the  address
+  space.
+
+  \nl
+
+  As we switched  to the kernel address space,  process' memory is not
+  still  avaiable.   To  circumvent  the  problem,  we   need  to  map
+  temporarily  memory in  the  kernel to  access  it. This  is a  slow
+  technique but much more elegant.
 \end{frame}
 
 %
@@ -561,6 +622,18 @@
 
 \begin{frame}
   \frametitle{Steps in testing a student tarball}
+
+  \begin{itemize}
+  \item A tarball contains files to inject in the student tarball. These files may be the test system, the test suite and some file needed to compile.
+  \item Compile the kernel.
+  \item Boot it on a floppy or via TFTP or BOOTP.
+  \item Run the test script.
+  \end{itemize}
+
+  \nl
+
+  Test results are transmitted via serial port.
+
 \end{frame}
 
 %
@@ -573,6 +646,15 @@
 
 \begin{frame}
   \frametitle{The test suite}
+
+  Current test suite covers:
+
+  \begin{itemize}
+  \item The bootloader (pmode, paging, mapping, t\_init\ldots)
+  \item The basic managers: \textbf{id}, \textbf{set},
+  \item The architecture-dependent managers: \textbf{as}, \textbf{segment}, \textbf{region}
+  \item High-level functionnalities: \textbf{map}, the malloc
+  \end{itemize}
 \end{frame}
 
 \end{document}

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed apr 12 11:52:44 2006]
+ * updated       matthieu bucchianeri   [fri may 12 19:16:03 2006]
  */
 
 /*
@@ -167,7 +167,7 @@ t_error			ia32_as_reserve(i_task			tskid,
        * a)
        */
 
-      o->machdep.pd = init->machdep.pd;
+      memcpy(&o->machdep.pd, &init->machdep.pd, sizeof(t_ia32_directory));
 
       if (pd_activate(o->machdep.pd) != ERROR_NONE)
 	TASK_LEAVE(task, ERROR_UNKNOWN);
@@ -179,7 +179,9 @@ t_error			ia32_as_reserve(i_task			tskid,
       pt.present = 1;
       pt.rw = 1;
       pt.user = 0;
-      pt.entries = (t_paddr)o->machdep.pd;
+      void *p = malloc(8192);
+      memset(p, 0, 8192);
+      pt.entries = MK_BASE(((t_uint32)p) + 4096);
 
       if (pd_add_table(&o->machdep.pd, PD_MIRROR, pt) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
@@ -189,7 +191,7 @@ t_error			ia32_as_reserve(i_task			tskid,
        */
 
       oreg.address = ENTRY_ADDR(PD_MIRROR, 0);
-      oreg.segid = (t_segid)((t_uint32)o->machdep.pd);
+      oreg.segid = (t_segid)pt.entries;
       oreg.offset = 0;
       oreg.size = PT_MAX_ENTRIES * PAGESZ;
 

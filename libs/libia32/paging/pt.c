@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       matthieu bucchianeri   [tue apr  4 15:36:55 2006]
+ * updated       matthieu bucchianeri   [fri may 12 14:53:41 2006]
  */
 
 /*
@@ -135,6 +135,8 @@ t_error			pt_add_page(t_ia32_table*		tab,
 
   if (page.present)
     opts |= PTE_FLAG_P;
+  else
+    printf ("warning: adding non-present page\n");
 
   opts |= PTE_FLAG_WT;
 

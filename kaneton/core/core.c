@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat apr 15 23:06:58 2006]
+ * updated       matthieu bucchianeri   [tue may 16 14:45:01 2006]
  */
 
 /*
@@ -178,7 +178,7 @@ void			kaneton(t_init*				bootloader)
   /*
    * 13)
    */
-
+#if 1
   if (event_init() != ERROR_NONE)
     kaneton_error("cannot initialise the event manager\n");
 
@@ -190,7 +190,7 @@ void			kaneton(t_init*				bootloader)
     kaneton_error("cannot initialise the timer manager\n");
 
   event_test();
-
+#endif
   /*  timer_test(); */
 
 #ifdef CONF_ENABLE_CHECK
@@ -199,14 +199,35 @@ void			kaneton(t_init*				bootloader)
 #endif
 
 #ifdef SERIAL
-//  gdb_init();
-/*  check_task_01();
-  check_as_08();
-  check_as_01();
+  gdb_init();
+//  check_as_01();
+//  check_as_02();
   check_as_03();
-  while(1);*/
-  check_tests();
   while(1);
+  check_as_04();
+  check_as_05();
+  check_as_08();
+  check_segment_01();
+  check_segment_02();
+  check_segment_03();
+  check_segment_04();
+  check_segment_05();
+  check_segment_06();
+  check_segment_07();
+  check_segment_08();
+  check_segment_09();
+  check_segment_10();
+  check_segment_11();
+  check_segment_12();
+  check_region_01();
+  check_region_02();
+  check_region_03();
+  check_task_01();
+  check_map_01();
+
+  while(1);
+//  check_tests();
+//  while(1);
   debug_init();
 #endif
 

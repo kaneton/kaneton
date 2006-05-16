@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [sat apr 15 22:55:35 2006]
+ * updated       matthieu bucchianeri   [fri may 12 18:49:37 2006]
  */
 
 /*
@@ -37,7 +37,10 @@
  */
 
 extern m_region*	region;
-extern t_asid		kasid;
+
+#define MIRROR_PD	0
+#define MIRROR_PT	1
+
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -70,139 +73,61 @@ d_region		region_dispatch =
 
 /*                                                                  [cut] k2 */
 
-/*
- * this function directly maps a chunk of memory.
- *
- * steps:
- *
- * 1) check  if  the needed  page  table  is  present in  the  kernel,
- *    otherwise,  create  it.
- * 2) via the mirroring entry,  add the page-table entry corresponding
- *    to the virtual address.
- * 3) inject the manually mapped region into the kernel address space.
- * 4) invalidate tlb entry.
- */
-
-static t_error		ia32_region_map_chunk(t_vaddr		v,
-					      t_paddr		p)
+t_vaddr			ia32_region_map(t_uint32		pte,
+					t_paddr			p)
 {
-  o_region		oreg;
+  t_vaddr		v;
   t_ia32_table		pt;
   t_ia32_page		pg;
-  t_segid		seg;
 
-  REGION_ENTER(region);
-
-  /*
-   * 1)
-   */
-
-  if (pd_get_table(NULL, PDE_ENTRY(v), &pt) != ERROR_NONE)
+  if (pd_get_table(NULL, PD_MIRROR, &pt) != ERROR_NONE)
     {
-      if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
-			  &seg) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      pt.rw = 1;
-      pt.present = 1;
-      pt.user = 0;
-      pt.entries = seg;
-
-      if (pd_add_table(NULL, PDE_ENTRY(v), pt) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      tlb_invalidate(ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(v)));
-
-      memset((void*)ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(v)), 0, PAGESZ);
+      cons_msg('!', "%s:%d: %s\n", __FILE__, __LINE__, __FUNCTION__);
+      while (1)
+	;
     }
 
-  /*
-   * 2)
-   */
-
-  pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(v));
-
-  pg.rw = 1;
   pg.present = 1;
+  pg.rw = 1;
   pg.user = 0;
   pg.addr = p;
 
-  if (pt_add_page(&pt, PTE_ENTRY(v), pg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  if (pt_add_page(&pt, pte, pg) != ERROR_NONE)
+    {
+      cons_msg('!', "%s:%d: %s\n", __FILE__, __LINE__, __FUNCTION__);
+      while (1)
+	;
+    }
 
-  /*
-   * 3)
-   */
-
-  oreg.segid = p;
-  oreg.address = v;
-  oreg.offset = 0;
-  oreg.size = PAGESZ;
-
-  if (region_inject(kasid, &oreg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 4)
-   */
+  v = ENTRY_ADDR(PD_MIRROR, pte);
 
   tlb_invalidate(v);
 
-  REGION_LEAVE(region, ERROR_NONE);
+  return v;
 }
 
-/*
- * this function unmaps a page previously mapped with the map_chunk
- * function.
- *
- * steps:
- *
- * 1) get the page table corresponding to the virtual address.
- * 2) remove, via the mirroring entry, the page-table entry.
- * 3) manually remove the kernel region associated.
- * 4) invalidate translation caches.
- */
-
-static t_error		ia32_region_unmap_chunk(t_vaddr		v)
+void			ia32_region_unmap(t_uint32		pte)
 {
+  t_vaddr		v;
   t_ia32_table		pt;
-  o_as*			as;
 
-  REGION_ENTER(region);
+  if (pd_get_table(NULL, PD_MIRROR, &pt) != ERROR_NONE)
+    {
+      cons_msg('!', "%s:%d: %s\n", __FILE__, __LINE__, __FUNCTION__);
+      while (1)
+	;
+    }
 
-  /*
-   * 1)
-   */
+  if (pt_delete_page(&pt, pte) != ERROR_NONE)
+    {
+      cons_msg('!', "%s:%d: %s\n", __FILE__, __LINE__, __FUNCTION__);
+      while (1)
+	;
+    }
 
-  if (pd_get_table(NULL, PDE_ENTRY(v), &pt) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(v));
-
-  if (pt_delete_page(&pt, PTE_ENTRY(v)) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
-  if (as_get(kasid, &as) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  if (set_remove(as->regions, v) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 4)
-   */
+  v = ENTRY_ADDR(PD_MIRROR, pte);
 
   tlb_invalidate(v);
-
-  REGION_LEAVE(region, ERROR_NONE);
 }
 
 /*
@@ -210,19 +135,7 @@ static t_error		ia32_region_unmap_chunk(t_vaddr		v)
  *
  * steps:
  *
- * 1) get the as object and the kernel page-directory.
- * 2) get the task object (used to check privilege level).
- * 3) get the segment object (for permissions and physical base address).
- * 4) fill the t_page structure.
- * 5) map the as page-directory into the kernel.
- * 6) loop throught the virtual memory to map.
- *  a) get the needed page-table. if not present, the create it.
- *  b) temporarily map the page-table in the kernel as.
- *  c) loop throught the page-table.
- *  d) fill corresponding entries.
- *  e) invalidate translation lookaside buffers.
- *  f) unmap the temporarily mapped table.
- * 7) unmap the page-directory.
+ * XXX
  */
 
 t_error			ia32_region_reserve(t_asid		asid,
@@ -233,208 +146,103 @@ t_error			ia32_region_reserve(t_asid		asid,
 					    t_vsize		size,
 					    t_regid*		regid)
 {
-  o_as*			o;
-  o_segment*		oseg;
-  o_task*		otsk;
-  o_as*			kas;
-  t_vaddr		vaddr;
-  t_paddr		paddr;
+  o_as*			as;
+  t_vaddr		virt;
+  t_paddr		phys;
+  t_uint32		pde;
+  t_uint32		pte;
   t_ia32_directory	pd;
   t_ia32_table		pt;
   t_ia32_page		pg;
-  t_ia32_pde		pde_start;
-  t_ia32_pde		pde_end;
-  t_ia32_pte		pte_start;
-  t_ia32_pte		pte_end;
-  t_ia32_pde		pde;
-  t_ia32_pte		pte;
-  t_vaddr		chunk;
-  t_segid		ptseg;
-  t_uint32		clear_pt;
+  t_segid		seg;
+  int			clear;
+
 
   REGION_ENTER(region);
 
-  /*
-   * 1)
-   */
-
-  if (as_get(kasid, &kas) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  if (as_get(asid, &o) != ERROR_NONE)
+  if (as_get(asid, &as) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
-   * 2)
+   * map the pd.
    */
 
-  if (task_get(o->tskid, &otsk) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+  pd = ia32_region_map(MIRROR_PD, as->machdep.pd);
 
-  /*
-   * 3)
-   */
+  phys = segid + offset;
+  virt = address;
 
-  if (segment_get(segid, &oseg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 4)
-   */
-
-  pg.rw = !!(oseg->perms & PERM_WRITE);
-  pg.present = 1;
-  pg.user = (otsk->class == TASK_CLASS_PROGRAM);
-
-  /*
-   * 5)
-   */
-
-  if (asid == kasid)
+  for (; virt < address + size; virt += PAGESZ, phys += PAGESZ)
     {
-      pd = o->machdep.pd;
-    }
-  else
-    {
-      if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
+      pde = PDE_ENTRY(virt);
+      pte = PTE_ENTRY(virt);
 
-      pd = (t_ia32_directory)(t_uint32)chunk;
-
-      if (ia32_region_map_chunk((t_vaddr)pd, (t_paddr)o->machdep.pd) !=
-	  ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-    }
-
-  /*
-   * 6)
-   */
-
-  paddr = oseg->address + offset;
-  vaddr = address;
-
-  pde_start = PDE_ENTRY(vaddr);
-  pte_start = PTE_ENTRY(vaddr);
-  pde_end = PDE_ENTRY(vaddr + size);
-  pte_end = PTE_ENTRY(vaddr + size);
-
-  for (pde = pde_start; pde <= pde_end; pde++)
-    {
-      /* XXX some cases, empty pt is added */
-
-      /*
-       * a)
-       */
-
+      clear = 0;
       if (pd_get_table(&pd, pde, &pt) != ERROR_NONE)
 	{
-	  pt.rw = 1;
-	  pt.present = 1;
-	  pt.user = 0;
+	  /*
+	   * create the pt.
+	   */
 
-	  if (segment_reserve(asid, PAGESZ, PERM_READ | PERM_WRITE,
-			      &ptseg) != ERROR_NONE)
+	  if (segment_reserve(asid, PAGESZ, PERM_READ | PERM_WRITE, &seg) !=
+	      ERROR_NONE)
 	    REGION_LEAVE(region, ERROR_UNKNOWN);
 
-	  pt.entries = ptseg;
+	  pt.present = 1;
+	  pt.rw = 1;
+	  pt.user = 0;
+	  pt.entries = seg;
 
 	  if (pd_add_table(&pd, pde, pt) != ERROR_NONE)
 	    REGION_LEAVE(region, ERROR_UNKNOWN);
 
-	  clear_pt = 1;
-	}
-      else
-	clear_pt = 0;
-
-      /*
-       * b)
-       */
-
-      if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      if (ia32_region_map_chunk((t_vaddr)chunk,
-				(t_paddr)pt.entries) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      pt.entries = chunk;
-
-      if (clear_pt)
-	memset((void*)chunk, 0, PAGESZ);
-
-      /*
-       * c)
-       */
-
-      for (pte = (pde == pde_start ? pte_start : 0);
-	   pte < (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
-	   pte++)
-	{
-	  /*
-	   * d)
-	   */
-
-	  pg.addr = paddr;
-	  paddr += PAGESZ;
-
-	  if (pt_add_page(&pt, pte, pg) != ERROR_NONE)
-	    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-	  /*
-	   * e)
-	   */
-
-	  if (asid == kasid)
-	    tlb_invalidate((t_vaddr)ENTRY_ADDR(pde, pte));
-
-	  // -------8<-------8<-------8<-------8<-------8<-------8<-------
-	  if (!asid)
-	    {
-	      t_uint32* t = (t_uint32*)ENTRY_ADDR(PD_MIRROR, pde);
-	      if ((t[pte] & 0xfffff000) != pg.addr)
-		{
-		  printf("ERROR TON MAPPING SUCE DES CHICHES %p != %p\n",
-			 (t[pte] & 0xfffff000), pg.addr);
-		  if (pt_get_page(&pt, pte, &pg) != ERROR_NONE)
-		    {
-		      printf("VRAIMENT !\n");
-		    }
-		  if (pg.addr == paddr - PAGESZ)
-		    {
-		      printf("POURTANT CA A L AIR BON\n");
-		    }
-		  else
-		    {
-		      printf("ADDRESSE DE MERDE\n");
-		    }
-		}
-	    }
-	  if (!asid)
-	    {
-	      int *i = (int*)ENTRY_ADDR(pde, pte);
-	      int ii;
-	      for (ii = 0; ii < 102; ii++, i++)
-		*i = *i;
-	    }
-	  // ------->8------->8------->8------->8------->8------->8-------
-
+	  clear = 1;
 	}
 
       /*
-       * f)
+       * map the pt.
        */
 
-      if (ia32_region_unmap_chunk((t_vaddr)pt.entries) != ERROR_NONE)
+      pt.entries = ia32_region_map(MIRROR_PT, pt.entries);
+
+      /*
+       * clear if newly created.
+       */
+
+      if (clear)
+	memset((void*)pt.entries, 0, PAGESZ);
+
+      /*
+       * add the page.
+       */
+
+      pg.present = 1;
+      pg.rw = 1;
+      pg.user = 0;
+      pg.addr = phys;
+
+      if (pt_add_page(&pt, pte, pg) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      /*
+       * tlb.
+       */
+
+      if (asid == 0)
+	tlb_invalidate(virt);
+
+      /*
+       * unmap pt.
+       */
+
+      ia32_region_unmap(MIRROR_PT);
     }
 
   /*
-   * 7)
+   * unmap pd.
    */
 
-  if (asid != kasid)
-    if (ia32_region_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
-      REGION_LEAVE(region, ERROR_UNKNOWN);
+  ia32_region_unmap(MIRROR_PD);
 
   REGION_LEAVE(region, ERROR_NONE);
 }
@@ -445,155 +253,13 @@ t_error			ia32_region_reserve(t_asid		asid,
  *
  * steps:
  *
- * 1) get the kernel as object and the as proper object.
- * 2) get the region object.
- * 3) map the as page-directory temporarily.
- * 4) loop throught the page-directory and page-table entries.
- *  a) get the page-table.
- *  b) map it temporarily.
- *  c) delete the entries and flush the tlb entries.
- *  d) unmap the page-table.
- *  e) if the resulting page-table is empty, release it.
- * 5) unmap the as page-directory.
+ * XXX
  */
 
 t_error			ia32_region_release(t_asid		asid,
 					    t_regid		regid)
 {
-  o_as*			o;
-  o_as*			kas;
-  o_region*		oreg;
-  t_ia32_directory	pd;
-  t_ia32_table		pt;
-  t_ia32_pde		pde_start;
-  t_ia32_pde		pde_end;
-  t_ia32_pte		pte_start;
-  t_ia32_pte		pte_end;
-  t_ia32_pde		pde;
-  t_ia32_pte		pte;
-  t_vaddr		chunk;
-  t_paddr		table_address;
-
   REGION_ENTER(region);
-
-//  REGION_LEAVE(region, ERROR_NONE);				// XXX
-
-  /*
-   * 1)
-   */
-
-  if (as_get(kasid, &kas) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  if (as_get(asid, &o) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (region_get(asid, regid, &oreg) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
-  if (asid == kasid)
-    {
-      pd = o->machdep.pd;
-    }
-  else
-    {
-      if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      pd = (t_ia32_directory)(t_uint32)chunk;
-
-      if (ia32_region_map_chunk((t_vaddr)pd,
-				(t_paddr)o->machdep.pd) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-    }
-
-  /*
-   * 4)
-   */
-
-  pde_start = PDE_ENTRY(oreg->address);
-  pte_start = PTE_ENTRY(oreg->address);
-  pde_end = PDE_ENTRY(oreg->address + oreg->size);
-  pte_end = PTE_ENTRY(oreg->address + oreg->size);
-
-  for (pde = pde_start; pde <= pde_end; pde++)
-    {
-      /*
-       * a)
-       */
-
-      if (pd_get_table(&pd, pde, &pt) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      table_address = pt.entries;
-
-      /*
-       * b)
-       */
-
-      if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      if (ia32_region_map_chunk((t_vaddr)chunk,
-				(t_paddr)pt.entries) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      pt.entries = chunk;
-
-      /*
-       * c)
-       */
-
-      for (pte = (pde == pde_start ? pte_start : 0);
-	   pte < (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
-	   pte++)
-	{
-	  if (pt_delete_page(&pt, pte) != ERROR_NONE)
-	    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-	  if (asid == kasid)
-	    tlb_invalidate(ENTRY_ADDR(pde, pte));
-	}
-
-      /*
-       * d)
-       */
-
-      if (ia32_region_unmap_chunk((t_vaddr)pt.entries) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      /*
-       * e)
-       */
-
-      if (pde != pde_start && pde != pde_end)
-	{
-	  if (pd_delete_table(&pd, pde) != ERROR_NONE)
-	    REGION_LEAVE(region, ERROR_UNKNOWN);
-
-	  if (asid == kasid)
-	    tlb_invalidate(ENTRY_ADDR(PD_MIRROR, pde));
-
-	  if (segment_release((t_segid)table_address) != ERROR_NONE)
-	    REGION_LEAVE(region, ERROR_UNKNOWN);
-	}
-    }
-
-  /*
-   * 5)
-   */
-
-  if (asid != kasid)
-    if (ia32_region_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
-      REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
 }
