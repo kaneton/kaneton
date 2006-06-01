@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [thu jun  1 18:06:10 2006]
+ * updated       matthieu bucchianeri   [thu jun  1 18:42:32 2006]
  */
 
 /*
@@ -388,7 +388,7 @@ t_error			ia32_region_reserve(t_asid		asid,
 	    tlb_invalidate((t_vaddr)ENTRY_ADDR(pde, pte));
 
 	  // -------8<-------8<-------8<-------8<-------8<-------8<-------
-	  if (!asid)
+	  if (0 && !asid)
 	    {
 	      t_uint32* t = (t_uint32*)ENTRY_ADDR(PD_MIRROR, pde);
 	      if ((t[pte] & 0xfffff000) != pg.addr)
@@ -409,7 +409,7 @@ t_error			ia32_region_reserve(t_asid		asid,
 		    }
 		}
 	    }
-	  if (!asid)
+	  if (0 && !asid)
 	    {
 	      int *i = (int*)ENTRY_ADDR(pde, pte);
 	      int ii;
