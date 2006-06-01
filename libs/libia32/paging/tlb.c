@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/tlb.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:57:00 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:55:14 2006]
+ * updated       matthieu bucchianeri   [thu jun  1 14:14:16 2006]
  */
 
 /*
@@ -43,9 +43,11 @@
 
 t_error			tlb_invalidate(t_paddr			page)
 {
-  asm volatile("invlpg %0"
+
+  asm volatile("invlpg (%0)"
 	       :
-	       : "g" (page));
+	       : "r" (page)
+	       : "memory");
 
   return ERROR_NONE;
 }
@@ -56,8 +58,8 @@ t_error			tlb_invalidate(t_paddr			page)
 
 t_error			tlb_flush(void)
 {
-  asm volatile("movl %%cr0, %%eax\n\t"
-	       "movl %%eax, %%cr0"
+  asm volatile("movl %%cr3, %%eax\n\t"
+	       "movl %%eax, %%cr3"
 	       :
 	       :
 	       : "%eax");

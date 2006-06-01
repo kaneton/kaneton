@@ -6,7 +6,11 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
+<<<<<<< .mine
+ * updated       matthieu bucchianeri   [thu jun  1 18:27:12 2006]
+=======
  * updated       matthieu bucchianeri   [tue may 16 14:45:01 2006]
+>>>>>>> .r640
  */
 
 /*
@@ -199,11 +203,14 @@ void			kaneton(t_init*				bootloader)
 #endif
 
 #ifdef SERIAL
+<<<<<<< .mine
+  check_tests();
+=======
   gdb_init();
 //  check_as_01();
 //  check_as_02();
   check_as_03();
-  while(1);
+>>>>>>> .r640
   check_as_04();
   check_as_05();
   check_as_08();

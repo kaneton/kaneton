@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/map/01/01.c
  *
  * created       matthieu bucchianeri   [sun apr  2 19:04:14 2006]
- * updated       matthieu bucchianeri   [sun apr  9 20:03:42 2006]
+ * updated       matthieu bucchianeri   [thu jun  1 18:14:18 2006]
  */
 
 #include <klibc.h>
@@ -23,7 +23,7 @@ void		check_map_01(void)
   t_uint8*	p;
 
   TEST_ENTER;
-/*
+
   MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
@@ -31,9 +31,7 @@ void		check_map_01(void)
 	   "error creating task\n");
 
   MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
-*/
 
-  as = 0;
 
   for (i = 0; i < 200; i++)
     {
@@ -43,10 +41,6 @@ void		check_map_01(void)
 			    PERM_READ | PERM_WRITE,
 			    &addr) == ERROR_NONE,
 		"error reserving a map\n");
-
-      printf("vaddr = %p of size %u\n", addr, ((i % 100) + 1) * PAGESZ);
-
-//      check_as_08()
 
       for (j = 0, p = (t_uint8*)addr;
 	   j < ((i % 100) + 1) * PAGESZ;
@@ -59,12 +53,12 @@ void		check_map_01(void)
       MY_ASSERT(map_release(as, addr) == ERROR_NONE,
 		"error releasing a map\n");
     }
-/*
+
   MY_ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");
 
   MY_ASSERT(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
-*/
+
   TEST_LEAVE;
 }
