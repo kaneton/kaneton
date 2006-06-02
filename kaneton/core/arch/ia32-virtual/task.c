@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [wed apr 12 11:52:00 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 13:52:23 2006]
  */
 
 /*
@@ -37,7 +37,7 @@
  */
 
 extern m_task*		task;
-extern t_asid		kasid;
+extern i_as		kasid;
 
 /*
  * ---------- globals ---------------------------------------------------------

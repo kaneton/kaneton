@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [mon apr  3 18:53:07 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 13:43:25 2006]
  */
 
 /*
@@ -66,8 +66,8 @@ m_region*		region;
  * 3) call machine dependent code.
  */
 
-t_error			region_show(t_asid			asid,
-				    t_regid			regid)
+t_error			region_show(i_as			asid,
+				    i_region			regid)
 {
   o_region*		o;
 
@@ -113,7 +113,7 @@ t_error			region_show(t_asid			asid,
  * 3) for each entry in the region set, calls the region_show function.
  */
 
-t_error			region_dump(t_asid		asid)
+t_error			region_dump(i_as		asid)
 {
   t_state		state;
   o_as*			o;
@@ -171,7 +171,7 @@ t_error			region_dump(t_asid		asid)
  * 4) call machdep code.
  */
 
-t_error			region_inject(t_asid		asid,
+t_error			region_inject(i_as		asid,
 				      o_region*		o)
 {
   o_as*			as;
@@ -189,7 +189,7 @@ t_error			region_inject(t_asid		asid,
    * 2)
    */
 
-  o->regid = (t_regid)o->address;
+  o->regid = (i_region)o->address;
 
   /*
    * 3)
@@ -219,13 +219,13 @@ t_error			region_inject(t_asid		asid,
  * 4) calls the machine dependent code.
  */
 
-t_error			region_reserve(t_asid			asid,
-				       t_segid			segid,
+t_error			region_reserve(i_as			asid,
+				       i_segment		segid,
 				       t_paddr			offset,
 				       t_opts			opts,
 				       t_vaddr			address,
 				       t_vsize			size,
-				       t_regid*			regid)
+				       i_region*		regid)
 {
   o_segment*		segment;
   o_as*			as;
@@ -278,7 +278,7 @@ t_error			region_reserve(t_asid			asid,
    */
 
   address = o.address;
-  *regid = o.regid = (t_regid)o.address;
+  *regid = o.regid = (i_region)o.address;
   o.segid = segid;
   o.size = size;
   o.offset = offset;
@@ -309,8 +309,8 @@ t_error			region_reserve(t_asid			asid,
  * 5) removes the region from the region set.
  */
 
-t_error			region_release(t_asid			asid,
-				       t_regid			regid)
+t_error			region_release(i_as			asid,
+				       i_region			regid)
 {
   o_as*			as;
 
@@ -351,11 +351,11 @@ t_error			region_release(t_asid			asid,
  * 3) calls the machine dependent code.
  */
 
-t_error			region_flush(t_asid			asid)
+t_error			region_flush(i_as			asid)
 {
   o_as*			as;
   t_iterator		it;
-  t_regid*		obj;
+  i_region*		obj;
 
   REGION_ENTER(region);
 
@@ -401,8 +401,8 @@ t_error			region_flush(t_asid			asid)
  * this function returns a region object.
  */
 
-t_error			region_get(t_asid			asid,
-				   t_regid			regid,
+t_error			region_get(i_as				asid,
+				   i_region			regid,
 				   o_region**			o)
 {
   o_as*			as;

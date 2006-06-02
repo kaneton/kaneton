@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       matthieu bucchianeri   [wed apr 12 12:12:56 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 13:35:16 2006]
  */
 
 #ifndef CORE_TASK_H
@@ -94,7 +94,7 @@ typedef struct
   t_behav			behav;
   t_prior			prior;
 
-  t_asid			asid;
+  i_as				asid;
   i_set				threads;
 
   t_state			sched;

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/04/04.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sat mar 25 16:30:07 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 14:09:15 2006]
  */
 
 #include <klibc.h>
@@ -51,7 +51,7 @@ void		check_segment_04(void)
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
 
-  MY_ASSERT(segment_give(seg, as2) == ERROR_NONE, "error giving segment\n");
+  MY_ASSERT(segment_give(as2, seg) == ERROR_NONE, "error giving segment\n");
 
   MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment\n");
 

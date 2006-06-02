@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/map/map.c
+ * file          /home/buckman/kaneton/kaneton/core/map/map.c
  *
  * created       matthieu bucchianeri   [sun feb 26 12:56:54 2006]
- * updated       matthieu bucchianeri   [mon feb 27 12:17:20 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 13:40:21 2006]
  */
 
 /*
@@ -58,14 +58,14 @@ m_map*		map;
  *  b) do not specify a virtual address.
  */
 
-t_error			map_reserve(t_asid		asid,
+t_error			map_reserve(i_as		asid,
 				    t_opts		opts,
 				    t_vsize		size,
 				    t_perms		perms,
 				    t_vaddr*		addr)
 {
-  t_segid		segid;
-  t_regid		regid;
+  i_segment		segid;
+  i_region		regid;
 
   MAP_ENTER(map);
 
@@ -116,12 +116,12 @@ t_error			map_reserve(t_asid		asid,
  * 3) release the segment.
  */
 
-t_error			map_release(t_asid		asid,
+t_error			map_release(i_as		asid,
 				    t_vaddr		addr)
 {
   o_region*		reg;
-  t_regid		regid;
-  t_segid		segid;
+  i_region		regid;
+  i_segment		segid;
 
   MAP_ENTER(map);
 

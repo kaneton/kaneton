@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/04/04.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri mar 17 15:37:09 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 14:08:56 2006]
  */
 
 #include <klibc.h>
@@ -36,7 +36,7 @@ void		check_as_04(void)
 
   MY_ASSERT(as_reserve(task1, &as) == ERROR_NONE, "error creating as\n");
 
-  MY_ASSERT(as_give(as, task2) == ERROR_NONE, "error giving as\n");
+  MY_ASSERT(as_give(task2, as) == ERROR_NONE, "error giving as\n");
 
   MY_ASSERT(as_get(as, &o) == ERROR_NONE,
 	    "unable to get as\n");

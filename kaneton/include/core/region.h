@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [thu may 11 13:41:15 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 13:34:20 2006]
  */
 
 #ifndef CORE_REGION_H
@@ -46,9 +46,9 @@
 
 typedef struct
 {
-  t_regid			regid;
+  i_region			regid;
 
-  t_segid			segid;
+  i_segment			segid;
 
   t_vaddr			address;
   t_paddr			offset;
@@ -77,20 +77,20 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*region_show)(t_asid,
-					       t_regid);
-  t_error			(*region_inject)(t_asid,
+  t_error			(*region_show)(i_as,
+					       i_region);
+  t_error			(*region_inject)(i_as,
 						 o_region*);
-  t_error			(*region_reserve)(t_asid,
-						  t_segid,
+  t_error			(*region_reserve)(i_as,
+						  i_segment,
 						  t_paddr,
 						  t_opts,
 						  t_vaddr,
 						  t_vsize,
-						  t_regid*);
-  t_error			(*region_release)(t_asid,
-						  t_regid);
-  t_error			(*region_flush)(t_asid);
+						  i_region*);
+  t_error			(*region_release)(i_as,
+						  i_region);
+  t_error			(*region_flush)(i_as);
   t_error			(*region_init)(t_vaddr,
 					       t_vsize);
   t_error			(*region_clean)(void);
@@ -152,29 +152,29 @@ t_error			region_space(o_as*		as,
  * ../../core/region/region.c
  */
 
-t_error			region_show(t_asid			asid,
-				    t_regid			regid);
+t_error			region_show(i_as			asid,
+				    i_region			regid);
 
-t_error			region_dump(t_asid		asid);
+t_error			region_dump(i_as		asid);
 
-t_error			region_inject(t_asid		asid,
+t_error			region_inject(i_as		asid,
 				      o_region*		o);
 
-t_error			region_reserve(t_asid			asid,
-				       t_segid			segid,
+t_error			region_reserve(i_as			asid,
+				       i_segment		segid,
 				       t_paddr			offset,
 				       t_opts			opts,
 				       t_vaddr			address,
 				       t_vsize			size,
-				       t_regid*			regid);
+				       i_region*		regid);
 
-t_error			region_release(t_asid			asid,
-				       t_regid			regid);
+t_error			region_release(i_as			asid,
+				       i_region			regid);
 
-t_error			region_flush(t_asid			asid);
+t_error			region_flush(i_as			asid);
 
-t_error			region_get(t_asid			asid,
-				   t_regid			regid,
+t_error			region_get(i_as				asid,
+				   i_region			regid,
 				   o_region**			o);
 
 t_error			region_init(t_vaddr			start,

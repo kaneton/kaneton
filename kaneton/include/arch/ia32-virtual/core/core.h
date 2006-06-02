@@ -52,31 +52,26 @@
  * ../../../../core/arch/machdep/as.c
  */
 
-t_error			ia32_as_show(t_asid			asid);
+t_error			ia32_as_show(i_as			asid);
 
 t_error			ia32_as_reserve(i_task			tskid,
-					t_asid*			asid);
+					i_as*			asid);
 
 
 /*
  * ../../../../core/arch/machdep/region.c
  */
 
-t_vaddr			ia32_region_map(t_uint32		pte,
-					t_paddr			p);
-
-void			ia32_region_unmap(t_uint32		pte);
-
-t_error			ia32_region_reserve(t_asid		asid,
-					    t_segid		segid,
+t_error			ia32_region_reserve(i_as		asid,
+					    i_segment		segid,
 					    t_paddr		offset,
 					    t_opts		opts,
 					    t_vaddr		address,
 					    t_vsize		size,
-					    t_regid*		regid);
+					    i_region*		regid);
 
-t_error			ia32_region_release(t_asid		asid,
-					    t_regid		regid);
+t_error			ia32_region_release(i_as		asid,
+					    i_region		regid);
 
 t_error			ia32_region_init(t_vaddr		start,
 					 t_vsize		size);
@@ -88,19 +83,19 @@ t_error			ia32_region_clean(void);
  * ../../../../core/arch/machdep/segment.c
  */
 
-t_error			ia32_segment_read(t_segid		segid,
+t_error			ia32_segment_read(i_region		segid,
 					  t_paddr		offs,
 					  void*			buff,
 					  t_psize		sz);
 
-t_error			ia32_segment_write(t_segid		segid,
+t_error			ia32_segment_write(i_region		segid,
 					   t_paddr		offs,
 					   const void*		buff,
 					   t_psize		sz);
 
-t_error			ia32_segment_copy(t_segid		dst,
+t_error			ia32_segment_copy(i_region		dst,
 					  t_paddr		offsd,
-					  t_segid		src,
+					  i_region		src,
 					  t_paddr		offss,
 					  t_psize		sz);
 

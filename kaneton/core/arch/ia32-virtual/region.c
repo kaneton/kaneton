@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [thu jun  1 18:42:32 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 13:49:56 2006]
  */
 
 /*
@@ -37,7 +37,7 @@
  */
 
 extern m_region*	region;
-extern t_asid		kasid;
+extern i_as		kasid;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -89,7 +89,7 @@ static t_error		ia32_region_map_chunk(t_vaddr		v,
   o_region		oreg;
   t_ia32_table		pt;
   t_ia32_page		pg;
-  t_segid		seg;
+  i_segment		seg;
 
   REGION_ENTER(region);
 
@@ -225,13 +225,13 @@ static t_error		ia32_region_unmap_chunk(t_vaddr		v)
  * 7) unmap the page-directory.
  */
 
-t_error			ia32_region_reserve(t_asid		asid,
-					    t_segid		segid,
+t_error			ia32_region_reserve(i_as		asid,
+					    i_segment		segid,
 					    t_paddr		offset,
 					    t_opts		opts,
 					    t_vaddr		address,
 					    t_vsize		size,
-					    t_regid*		regid)
+					    i_region*		regid)
 {
   o_as*			o;
   o_segment*		oseg;
@@ -249,7 +249,7 @@ t_error			ia32_region_reserve(t_asid		asid,
   t_ia32_pde		pde;
   t_ia32_pte		pte;
   t_vaddr		chunk;
-  t_segid		ptseg;
+  i_segment		ptseg;
   t_uint32		clear_pt;
 
   REGION_ENTER(region);
@@ -386,38 +386,6 @@ t_error			ia32_region_reserve(t_asid		asid,
 
 	  if (asid == kasid)
 	    tlb_invalidate((t_vaddr)ENTRY_ADDR(pde, pte));
-
-	  // -------8<-------8<-------8<-------8<-------8<-------8<-------
-	  if (0 && !asid)
-	    {
-	      t_uint32* t = (t_uint32*)ENTRY_ADDR(PD_MIRROR, pde);
-	      if ((t[pte] & 0xfffff000) != pg.addr)
-		{
-		  printf("ERROR TON MAPPING SUCE DES CHICHES %p != %p\n",
-			 (t[pte] & 0xfffff000), pg.addr);
-		  if (pt_get_page(&pt, pte, &pg) != ERROR_NONE)
-		    {
-		      printf("VRAIMENT !\n");
-		    }
-		  if (pg.addr == paddr - PAGESZ)
-		    {
-		      printf("POURTANT CA A L AIR BON\n");
-		    }
-		  else
-		    {
-		      printf("ADDRESSE DE MERDE\n");
-		    }
-		}
-	    }
-	  if (0 && !asid)
-	    {
-	      int *i = (int*)ENTRY_ADDR(pde, pte);
-	      int ii;
-	      for (ii = 0; ii < 102; ii++, i++)
-		*i = *i;
-	    }
-	  // ------->8------->8------->8------->8------->8------->8-------
-
 	}
 
       /*
@@ -457,8 +425,8 @@ t_error			ia32_region_reserve(t_asid		asid,
  * 5) unmap the as page-directory.
  */
 
-t_error			ia32_region_release(t_asid		asid,
-					    t_regid		regid)
+t_error			ia32_region_release(i_as		asid,
+					    i_region		regid)
 {
   o_as*			o;
   o_as*			kas;
@@ -580,7 +548,7 @@ t_error			ia32_region_release(t_asid		asid,
 	  if (asid == kasid)
 	    tlb_invalidate(ENTRY_ADDR(PD_MIRROR, pde));
 
-	  if (segment_release((t_segid)table_address) != ERROR_NONE)
+	  if (segment_release((i_segment)table_address) != ERROR_NONE)
 	    REGION_LEAVE(region, ERROR_UNKNOWN);
 	}
     }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [wed apr 12 11:43:17 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 13:47:11 2006]
  */
 
 /*
@@ -543,10 +543,10 @@ t_error			task_get(i_task				tskid,
 
 t_error			task_init(void)
 {
-  t_asid		asid;
+  i_as			asid;
   t_id			needless;
   t_uint32		i;
-  t_segid		segments[INIT_SEGMENTS];
+  i_segment		segments[INIT_SEGMENTS];
 
   /*
    * 1)

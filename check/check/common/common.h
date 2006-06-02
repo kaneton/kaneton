@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/check/common/common.h
  *
  * created       matthieu bucchianeri   [tue dec 20 15:04:37 2005]
- * updated       matthieu bucchianeri   [fri mar 24 18:12:10 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 14:02:44 2006]
  */
 
 #ifndef CHECK_COMMON_H_
@@ -38,6 +38,14 @@ typedef struct
   t_uint32	nb_free;
 
 }		t_leaks;
+
+/*
+ * backward compatibility types.
+ */
+
+typedef i_as		t_asid;
+typedef i_segment	t_segid;
+typedef i_region	t_regid;
 
 void	check_set_tests(void);
 void	check_stats_tests(void);

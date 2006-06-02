@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [wed apr 12 12:06:25 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 14:12:43 2006]
  */
 
 /*
@@ -79,11 +79,11 @@ m_as*			as = NULL;
  * 4) call machine dependent code.
  */
 
-t_error			as_show(t_asid				asid)
+t_error			as_show(i_as				asid)
 {
   t_state		state;
-  t_segid		seg;
-  t_regid		reg;
+  i_segment		seg;
+  i_region		reg;
   t_iterator		i;
   o_as*			o;
 
@@ -194,8 +194,8 @@ t_error			as_dump(void)
  * 5) calls the machine-dependent code.
  */
 
-t_error			as_give(t_asid			asid,
-				i_task			tskid)
+t_error			as_give(i_task			tskid,
+				i_as			asid)
 {
   o_task*		from;
   o_task*		to;
@@ -239,7 +239,7 @@ t_error			as_give(t_asid			asid,
    * 5)
    */
 
-  if (machdep_call(as, as_give, asid, tskid) != ERROR_NONE)
+  if (machdep_call(as, as_give, tskid, asid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
@@ -249,7 +249,7 @@ t_error			as_give(t_asid			asid,
  * this function translate a physical address to its virtual address.
  */
 
-t_error			as_vaddr(t_asid			asid,
+t_error			as_vaddr(i_as			asid,
 				 t_paddr		physical,
 				 t_vaddr*		virtual)
 {
@@ -325,7 +325,7 @@ t_error			as_vaddr(t_asid			asid,
  * 5) call dependent code.
  */
 
-t_error			as_paddr(t_asid		asid,
+t_error			as_paddr(i_as		asid,
 				 t_vaddr	virtual,
 				 t_paddr*	physical)
 {
@@ -402,8 +402,8 @@ t_error			as_paddr(t_asid		asid,
  */
 
 t_error			as_clone(i_task				tskid,
-				 t_asid				old,
-				 t_asid*			new)
+				 i_as				old,
+				 i_as*				new)
 {
   t_state		state;
   o_task*		task;
@@ -412,8 +412,8 @@ t_error			as_clone(i_task				tskid,
   t_iterator		i;
   t_setsz		nb_segments;
   i_set			mapping;
-  t_segid		foo[2];
-  t_segid*		map = foo;
+  i_segment		foo[2];
+  i_segment*		map = foo;
 
   AS_ENTER(as);
 
@@ -465,8 +465,8 @@ t_error			as_clone(i_task				tskid,
 
   set_foreach(SET_OPT_FORWARD, from->segments, &i, state)
     {
-      t_segid		needless;
-      t_segid*		data;
+      i_segment		needless;
+      i_segment*	data;
 
       if (set_object(from->segments, i, (void**)&data) != ERROR_NONE)
 	{
@@ -496,7 +496,7 @@ t_error			as_clone(i_task				tskid,
 
   set_foreach(SET_OPT_FORWARD, from->regions, &i, state)
     {
-      t_regid		needless;
+      i_region		needless;
       o_region*		data;
 
       if (set_object(from->regions, i, (void**)&data) != ERROR_NONE)
@@ -544,7 +544,7 @@ t_error			as_clone(i_task				tskid,
  */
 
 t_error			as_reserve(i_task			tskid,
-				   t_asid*			asid)
+				   i_as*			asid)
 {
   o_task*		task;
   o_as			o;
@@ -586,7 +586,7 @@ t_error			as_reserve(i_task			tskid,
    */
 
   if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, AS_SEGMENTS_INITSZ,
-		  sizeof(t_segid), &o.segments) != ERROR_NONE)
+		  sizeof(i_segment), &o.segments) != ERROR_NONE)
     {
       id_release(&as->id, o.asid);
 
@@ -651,7 +651,7 @@ t_error			as_reserve(i_task			tskid,
  * 7) removes the address space object from the address space set.
  */
 
-t_error			as_release(t_asid			asid)
+t_error			as_release(i_as			asid)
 {
   o_task*		task;
   o_as*			o;
@@ -722,7 +722,7 @@ t_error			as_release(t_asid			asid)
  * set from its identifier.
  */
 
-t_error			as_get(t_asid				asid,
+t_error			as_get(i_as				asid,
 			       o_as**				o)
 {
   AS_ENTER(as);

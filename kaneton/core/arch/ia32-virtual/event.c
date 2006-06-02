@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [tue apr 11 16:57:05 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 13:52:09 2006]
  */
 
 /*
@@ -39,7 +39,7 @@
  * the kernel address space.
  */
 
-extern t_asid			kasid;
+extern i_as			kasid;
 
 /*
  * ---------- globals ---------------------------------------------------------

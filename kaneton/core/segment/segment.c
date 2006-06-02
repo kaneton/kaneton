@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun apr  9 19:28:24 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 14:13:32 2006]
  */
 
 /*
@@ -83,7 +83,7 @@ m_segment*		segment;
  * 5) call machine dependent code.
  */
 
-t_error			segment_show(t_segid			segid)
+t_error			segment_show(i_segment			segid)
 {
   char			perms[4];
   char*			type;
@@ -221,9 +221,9 @@ t_error			segment_dump(void)
  * 4) call machine-dependent code.
  */
 
-t_error			segment_clone(t_asid			asid,
-				      t_segid			old,
-				      t_segid*			new)
+t_error			segment_clone(i_as			asid,
+				      i_segment			old,
+				      i_segment*		new)
 {
   o_segment*		from;
   t_perms		perms;
@@ -280,9 +280,9 @@ t_error			segment_clone(t_asid			asid,
  * 4) calls dependent code.
  */
 
-t_error			segment_inject(t_asid		asid,
+t_error			segment_inject(i_as		asid,
 				       o_segment*	o,
-				       t_segid*		segid)
+				       i_segment*	segid)
 {
   o_as			*as;
 
@@ -299,7 +299,7 @@ t_error			segment_inject(t_asid		asid,
    * 2)
    */
 
-  o->segid = (t_segid)o->address;
+  o->segid = (i_segment)o->address;
   o->asid = asid;
   *segid = o->segid;
 
@@ -340,8 +340,8 @@ t_error			segment_inject(t_asid		asid,
  * 6) calls dependent code.
  */
 
-t_error			segment_give(t_segid		segid,
-				     t_asid		asid)
+t_error			segment_give(i_as		asid,
+				     i_segment		segid)
 {
   o_segment*		o;
   o_as*			dest;
@@ -412,9 +412,9 @@ t_error			segment_give(t_segid		segid,
  * 4) call machine dependent code.
  */
 
-t_error			segment_resize(t_segid		old,
+t_error			segment_resize(i_segment	old,
 				       t_psize		size,
-				       t_segid*		new)
+				       i_segment*	new)
 {
   o_segment*		o;
   o_segment*		onext;
@@ -519,15 +519,15 @@ t_error			segment_resize(t_segid		old,
  * 4) call machine-dependent code.
  */
 
-t_error			segment_split(t_segid		segid,
+t_error			segment_split(i_segment		segid,
 				      t_psize		size,
-				      t_segid*		left,
-				      t_segid*		right)
+				      i_segment*	left,
+				      i_segment*	right)
 {
   o_as*			as;
   o_segment*		o;
   o_segment		n;
-  t_segid		useless;
+  i_segment		useless;
 
   SEGMENT_ENTER(segment);
 
@@ -561,7 +561,7 @@ t_error			segment_split(t_segid		segid,
   n.address = o->address + size;
   n.type = SEGMENT_TYPE_MEMORY;
 
-  *right = n.segid = (t_segid)n.address;
+  *right = n.segid = (i_segment)n.address;
 
   if (segment_inject(o->asid, &n, &useless) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
@@ -589,13 +589,13 @@ t_error			segment_split(t_segid		segid,
  * 5) call machine-dependent code.
  */
 
-t_error			segment_coalesce(t_segid	left,
-					 t_segid	right,
-					 t_segid*	segid)
+t_error			segment_coalesce(i_segment	left,
+					 i_segment	right,
+					 i_segment*	segid)
 {
   o_segment*		seg1;
   o_segment*		seg2;
-  t_segid		tmp;
+  i_segment		tmp;
 
   SEGMENT_ENTER(segment);
 
@@ -651,7 +651,7 @@ t_error			segment_coalesce(t_segid	left,
  * 3) call machine dependent code.
  */
 
-t_error			segment_read(t_segid		segid,
+t_error			segment_read(i_segment		segid,
 				     t_paddr		offs,
 				     void*		buff,
 				     t_psize		sz)
@@ -697,7 +697,7 @@ t_error			segment_read(t_segid		segid,
  * 3) call the dependent code.
  */
 
-t_error			segment_write(t_segid		segid,
+t_error			segment_write(i_segment		segid,
 				      t_paddr		offs,
 				      const void*	buff,
 				      t_psize		sz)
@@ -744,9 +744,9 @@ t_error			segment_write(t_segid		segid,
  * 3) call machine dependent code.
  */
 
-t_error			segment_copy(t_segid		dst,
+t_error			segment_copy(i_segment		dst,
 				     t_paddr		offsd,
-				     t_segid		src,
+				     i_segment		src,
 				     t_paddr		offss,
 				     t_psize		sz)
 {
@@ -800,10 +800,10 @@ t_error			segment_copy(t_segid		dst,
  * 4) calls the machine dependent code.
  */
 
-t_error			segment_reserve(t_asid			asid,
+t_error			segment_reserve(i_as			asid,
 					t_psize			size,
 					t_perms			perms,
-					t_segid*		segid)
+					i_segment*		segid)
 {
   o_as*			as;
   o_segment		o;
@@ -833,7 +833,7 @@ t_error			segment_reserve(t_asid			asid,
   o.perms = perms;
   o.type = SEGMENT_TYPE_MEMORY;
 
-  *segid = o.segid = (t_segid)o.address;
+  *segid = o.segid = (i_segment)o.address;
 
   if (set_add(segment->segments, &o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
@@ -868,7 +868,7 @@ t_error			segment_reserve(t_asid			asid,
  * 5) removes the segment from the segment set.
  */
 
-t_error			segment_release(t_segid			segid)
+t_error			segment_release(i_segment		segid)
 {
   o_as*			as;
   o_segment*		o;
@@ -931,8 +931,8 @@ t_error			segment_release(t_segid			segid)
  * 7) call the machine-dependent code.
  */
 
-t_error			segment_catch(t_asid			asid,
-				      t_segid			segid)
+t_error			segment_catch(i_as			asid,
+				      i_segment			segid)
 {
   o_as*                 as;
   o_as*			old;
@@ -1006,7 +1006,7 @@ t_error			segment_catch(t_asid			asid,
  * 4) calls the machine-dependent code.
  */
 
-t_error			segment_perms(t_segid			segid,
+t_error			segment_perms(i_segment			segid,
 				      t_perms			perms)
 {
   o_segment*		o;
@@ -1054,7 +1054,7 @@ t_error			segment_perms(t_segid			segid,
  * 4) calls the machine-dependent code.
  */
 
-t_error			segment_type(t_segid			segid,
+t_error			segment_type(i_segment			segid,
 				     t_type			type)
 {
   o_segment*		o;
@@ -1103,9 +1103,9 @@ t_error			segment_type(t_segid			segid,
  *    the segment set to destroy it.
  */
 
-t_error			segment_flush(t_asid			asid)
+t_error			segment_flush(i_as			asid)
 {
-  t_segid*		data;
+  i_segment*		data;
   o_as*			as;
   t_iterator		i;
 
@@ -1150,7 +1150,7 @@ t_error			segment_flush(t_asid			asid)
  * this function returns a segment object.
  */
 
-t_error			segment_get(t_segid			segid,
+t_error			segment_get(i_segment			segid,
 				    o_segment**			o)
 {
   SEGMENT_ENTER(segment);

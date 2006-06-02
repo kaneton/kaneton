@@ -90,13 +90,13 @@ typedef struct
  * ../../core/map/map.c
  */
 
-t_error			map_reserve(t_asid		asid,
+t_error			map_reserve(i_as		asid,
 				    t_opts		opts,
 				    t_vsize		size,
 				    t_perms		perms,
 				    t_vaddr*		addr);
 
-t_error			map_release(t_asid		asid,
+t_error			map_release(i_as		asid,
 				    t_vaddr		addr);
 
 t_error			map_init(void);

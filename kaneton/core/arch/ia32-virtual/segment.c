@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon apr  3 23:31:48 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 13:50:37 2006]
  */
 
 /*
@@ -37,7 +37,7 @@
  */
 
 extern m_segment*	segment;
-extern t_asid		kasid;
+extern i_as		kasid;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -92,13 +92,13 @@ d_segment		segment_dispatch =
  * 4) unmap the region.
  */
 
-t_error			ia32_segment_read(t_segid		segid,
+t_error			ia32_segment_read(i_region		segid,
 					  t_paddr		offs,
 					  void*			buff,
 					  t_psize		sz)
 {
   o_segment*		o;
-  t_regid		reg;
+  i_region		reg;
   t_vsize		size;
 
   SEGMENT_ENTER(segment);
@@ -156,13 +156,13 @@ t_error			ia32_segment_read(t_segid		segid,
  * 4) unmap the region.
  */
 
-t_error			ia32_segment_write(t_segid		segid,
+t_error			ia32_segment_write(i_region		segid,
 					   t_paddr		offs,
 					   const void*		buff,
 					   t_psize		sz)
 {
   o_segment*		o;
-  t_regid		reg;
+  i_region		reg;
   t_vsize		size;
 
   SEGMENT_ENTER(segment);
@@ -220,14 +220,14 @@ t_error			ia32_segment_write(t_segid		segid,
  * 4) unmap the segments.
  */
 
-t_error			ia32_segment_copy(t_segid		dst,
+t_error			ia32_segment_copy(i_region		dst,
 					  t_paddr		offsd,
-					  t_segid		src,
+					  i_region		src,
 					  t_paddr		offss,
 					  t_psize		sz)
 {
-  t_regid		regs;
-  t_regid		regd;
+  i_region		regs;
+  i_region		regd;
   o_segment*		segs;
   o_segment*		segd;
   t_vsize		size;
