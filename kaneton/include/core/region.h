@@ -160,6 +160,17 @@ t_error			region_dump(i_as		asid);
 t_error			region_inject(i_as		asid,
 				      o_region*		o);
 
+t_error			region_split(i_as			asid,
+				     i_region			regid,
+				     t_vsize			size,
+				     i_region*			left,
+				     i_region*			right);
+
+t_error			region_resize(i_as			asid,
+				      i_region			old,
+				      t_vsize			size,
+				      i_region*			new);
+
 t_error			region_reserve(i_as			asid,
 				       i_segment		segid,
 				       t_paddr			offset,

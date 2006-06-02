@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [fri jun  2 13:43:25 2006]
+ * updated       matthieu bucchianeri   [fri jun  2 17:02:12 2006]
  */
 
 /*
@@ -204,6 +204,112 @@ t_error			region_inject(i_as		asid,
 
   if (machdep_call(region, region_inject, asid, o) != ERROR_NONE)
     REGION_LEAVE(as, ERROR_UNKNOWN);
+
+  REGION_LEAVE(region, ERROR_NONE);
+}
+
+/*
+ * this function splits a region in two regions.
+ *
+ * steps:
+ *
+ * 1) get the region object and the associated segment.
+ * 2) check if the sizes are correct.
+ * 3) check if a valid segment exists and can be used.
+ * 4) build the new region.
+ * 5) adjust the old region size.
+ */
+
+t_error			region_split(i_as			asid,
+				     i_region			regid,
+				     t_vsize			size,
+				     i_region*			left,
+				     i_region*			right)
+{
+  o_region*		reg;
+  o_segment*		seg;
+  o_region		new;
+  t_perms		perms;
+
+  REGION_ENTER(region);
+
+  /*
+   * 1)
+   */
+
+  if (region_get(asid, regid, &reg) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  if (segment_get(reg->segid, &seg) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  perms = seg->perms;
+
+  /*
+   * 2)
+   */
+
+  if (reg->size >= size)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (segment_get(reg->segid + reg->offset + size, &seg) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  if (seg->asid != asid || seg->size < reg->size - size ||
+      seg->perms != perms)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  new.regid = regid + reg->size;
+  new.segid = reg->segid + reg->offset + size;
+  new.address = (t_vaddr)new.regid;
+  new.offset = 0;
+  new.size = reg->size - size;
+
+  if (region_inject(asid, &new) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
+  reg->size = size;
+
+  REGION_LEAVE(region, ERROR_NONE);
+}
+
+/*
+ * this function resizes a region.
+ */
+
+t_error			region_resize(i_as			asid,
+				      i_region			old,
+				      t_vsize			size,
+				      i_region*			new)
+{
+  o_region*		reg;
+
+  REGION_ENTER(region);
+
+  /*
+   * 1)
+   */
+
+  if (region_get(asid, old, &reg) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  /* XXX */
 
   REGION_LEAVE(region, ERROR_NONE);
 }
