@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/kaneton/core/Makefile
+## file          /home/buckman/kaneton/kaneton/core/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [wed apr  5 01:17:30 2006]
+## updated       matthieu bucchianeri   [sat jun  3 22:31:32 2006]
 ##
 
 #
@@ -39,6 +39,7 @@ SUBDIRS			:=		arch				\
 					time				\
 					thread				\
 					task				\
+					sched				\
 					$(_CHECK_DIR_)
 
 # kaneton libraries
@@ -57,6 +58,7 @@ KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 					$(_TIME_LO_)			\
 					$(_THREAD_LO_)			\
 					$(_TASK_LO_)			\
+					$(_SCHED_LO_)			\
 					$(_CHECK_LO_)
 
 # kaneton binary

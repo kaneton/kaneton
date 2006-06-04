@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/types.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [fri jun  2 13:32:36 2006]
+ * updated       matthieu bucchianeri   [sat jun  3 22:55:35 2006]
  */
 
 #ifndef CORE_TYPES_H
@@ -72,7 +72,8 @@ typedef t_id			i_region;
 typedef t_id			i_event;
 typedef t_id			i_timer;
 typedef t_id			i_task;
-typedef t_id			t_thrid;
+typedef t_id			t_thrid;	/* XXX deprecated convention */
+typedef t_id			i_thread;
 
 /*
  * error type

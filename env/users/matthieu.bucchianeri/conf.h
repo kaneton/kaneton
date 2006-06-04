@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:18:09 2006]
+ * updated       matthieu bucchianeri   [sat jun  3 20:03:08 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -76,7 +76,7 @@
  * this define starts the tests by hand.
  */
 
-#undef CONF_ENABLE_CHECK
+#define CONF_ENABLE_CHECK
 
 /*
  * the configuration debug

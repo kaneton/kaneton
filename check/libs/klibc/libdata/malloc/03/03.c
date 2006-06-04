@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/libs/klibc/libdata/malloc/03/03.c
+ * file          /home/buckman/kaneton/check/libs/klibc/libdata/malloc/03/03.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:12:15 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:23:55 2005]
+ * updated       matthieu bucchianeri   [sun jun  4 19:54:56 2006]
  */
 
 #include <klibc.h>
@@ -24,7 +24,7 @@ void		check_malloc_03(void)
   int		*array = NULL;
   int		i;
 
-  TEST_ENTER;
+  TEST_ENTER(1);
 
   RESIZE(array, 10);
 

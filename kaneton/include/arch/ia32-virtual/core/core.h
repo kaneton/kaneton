@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/core.h
+ * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/core.h
  *
  * created       julien quintard   [sat dec 17 17:13:18 2005]
- * updated       julien quintard   [fri apr  7 14:24:26 2006]
+ * updated       matthieu bucchianeri   [sat jun  3 22:48:47 2006]
  */
 
 #ifndef IA32_CORE_CORE_H
@@ -35,6 +35,7 @@
 #include <arch/machdep/core/timer.h>
 #include <arch/machdep/core/thread.h>
 #include <arch/machdep/core/task.h>
+#include <arch/machdep/core/sched.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -46,6 +47,7 @@
  *	../../../../core/arch/machdep/timer.c
  *      ../../../../core/arch/machdep/task.c
  *      ../../../../core/arch/machdep/thread.c
+ *      ../../../../core/arch/machdep/sched.c
  */
 
 /*
@@ -160,6 +162,11 @@ t_error			ia32_thread_suspend(t_thrid		threadid);
 t_error			ia32_thread_execute(t_thrid		threadid);
 
 t_error			ia32_thread_clone(t_thrid		threadid);
+
+
+/*
+ * ../../../../core/arch/machdep/sched.c
+ */
 
 
 /*

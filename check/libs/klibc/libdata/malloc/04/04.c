@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/libs/klibc/libdata/malloc/04/04.c
+ * file          /home/buckman/kaneton/check/libs/klibc/libdata/malloc/04/04.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:12:15 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:23:51 2005]
+ * updated       matthieu bucchianeri   [sun jun  4 19:55:04 2006]
  */
 
 #include <klibc.h>
@@ -26,7 +26,7 @@ void		check_malloc_04(void)
   void		*p6;
   void		*pn;
 
-  TEST_ENTER;
+  TEST_ENTER(1);
 
   p1 = malloc(10);
 

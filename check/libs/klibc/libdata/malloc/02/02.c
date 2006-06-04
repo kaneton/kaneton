@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/libs/klibc/libdata/malloc/02/02.c
+ * file          /home/buckman/kaneton/check/libs/klibc/libdata/malloc/02/02.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:12:15 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:23:57 2005]
+ * updated       matthieu bucchianeri   [sun jun  4 19:54:49 2006]
  */
 
 #include <klibc.h>
@@ -22,7 +22,7 @@ void		check_malloc_02(void)
   int		i;
   size_t	sz;
 
-  TEST_ENTER;
+  TEST_ENTER(1);
 
   for (i = 0; i < 100; i++)
     {

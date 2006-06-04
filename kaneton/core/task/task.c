@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [fri jun  2 13:47:11 2006]
+ * updated       matthieu bucchianeri   [sun jun  4 18:54:31 2006]
  */
 
 /*
@@ -68,14 +68,13 @@ i_task			ktask = ID_UNUSED;
  *
  * steps:
  *
- * 1) XXX
+ * 1) get the task object.
+ * 2) display the task information.
  */
 
-t_error			task_show(i_task			tskid)
+t_error			task_show(i_task			id)
 {
-  /* XXX t_state		state; */
-  /* XXX t_iterator		i; */
-  /* XXX o_task*		o; */
+  o_task*		o;
 
   TASK_ENTER(task);
 
@@ -83,12 +82,10 @@ t_error			task_show(i_task			tskid)
    * 1)
    */
 
-  /* XXX
-  if (task_get(tskid, &o) != ERROR_NONE)
+  if (task_get(id, &o) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
-  */
 
-  cons_msg('#', "  task %qd:\n", tskid);
+  cons_msg('#', "  task %qd:\n", id);
 
   /*
    * 2)
@@ -250,7 +247,7 @@ t_error			task_clone(i_task			old,
 t_error			task_reserve(t_class			class,
 				     t_behav			behav,
 				     t_prior			prior,
-				     i_task*			tskid)
+				     i_task*			id)
 {
   o_task		o;
 
@@ -304,10 +301,10 @@ t_error			task_reserve(t_class			class,
    * 3)
    */
 
-  if (id_reserve(&task->id, tskid) != ERROR_NONE)
+  if (id_reserve(&task->id, id) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
-  o.tskid = *tskid;
+  o.tskid = *id;
 
   /*
    * 4)
@@ -354,7 +351,7 @@ t_error			task_reserve(t_class			class,
    */
 
   if (machdep_call(task, task_reserve, class,
-		   behav, prior, tskid) != ERROR_NONE)
+		   behav, prior, id) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_NONE);
@@ -373,7 +370,7 @@ t_error			task_reserve(t_class			class,
  * 6) removes the task object from the task set.
  */
 
-t_error			task_release(i_task			tskid)
+t_error			task_release(i_task			id)
 {
   o_task*		o;
 
@@ -383,14 +380,14 @@ t_error			task_release(i_task			tskid)
    * 1)
    */
 
-  if (machdep_call(task, task_release, tskid) != ERROR_NONE)
+  if (machdep_call(task, task_release, id) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (task_get(tskid, &o) != ERROR_NONE)
+  if (task_get(id, &o) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
@@ -511,12 +508,12 @@ t_error			task_wait(i_task			id,
  * this function gets a task object from the task set.
  */
 
-t_error			task_get(i_task				tskid,
+t_error			task_get(i_task				id,
 				 o_task**			o)
 {
   TASK_ENTER(task);
 
-  if (set_get(task->tasks, tskid, (void**)o) != ERROR_NONE)
+  if (set_get(task->tasks, id, (void**)o) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_NONE);
@@ -529,16 +526,17 @@ t_error			task_get(i_task				tskid,
  *
  * steps:
  *
- * 1) allocates and initialises the task manager structure.
- * 2) initialises the identifier object to be able to generate
+ * 1) allocate and initialises the task manager structure.
+ * 2) initialise the identifier object to be able to generate
  *    the task identifiers.
- * 3) reserves the task set set which will contain the task built later.
- * 4) tries to reserve a statistics object.
- * 5) reserves the kernel task and its address space.
- * 6) adds the segments to the kernel address space.
- * 7) adds the regions to the kernel address space.
- * 8) calls the machine-dependent code.
- * 9) if asked, dumps the task manager.
+ * 3) reserve the task set which will contain the tasks built later.
+ * 4) try to reserve a statistics object.
+ * 5) reserve the kernel task and its address space.
+ * 6) tells the kernel allocator the asid of the created address space.
+ * 7) add the segments to the kernel address space.
+ * 8) add the regions to the kernel address space.
+ * 9) call the machine-dependent code.
+ * 10) if asked, dumps the task manager.
  */
 
 t_error			task_init(void)
@@ -614,6 +612,13 @@ t_error			task_init(void)
    * 6)
    */
 
+  if (alloc_kasid(asid) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 7)
+   */
+
   for (i = 0; i < init->nsegments; i++)
     {
       if (segment_inject(asid, &init->segments[i], &segments[i]) != ERROR_NONE)
@@ -626,35 +631,31 @@ t_error			task_init(void)
     }
 
   /*
-   * 7)
+   * 8)
    */
 
   for (i = 0; i < init->nregions; i++)
     {
-/*      if (region_reserve(asid, segments[init->regions[i].segid], 0,
-			 REGION_OPT_FORCE | REGION_OPT_MAPALL,
-			 init->regions[i].address, 0,
-			 &needless) != ERROR_NONE)*/
       init->regions[i].segid = segments[init->regions[i].segid];
 
       if (region_inject(asid, &init->regions[i]) != ERROR_NONE)
 	{
 	  cons_msg('!', "region: cannot map a region to a pre-reserved "
-		   "segment\n");
+		   "region\n");
 
 	  return (ERROR_UNKNOWN);
 	}
     }
 
   /*
-   * 8)
+   * 9)
    */
 
   if (machdep_call(task, task_init) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
-   * 9)
+   * 10)
    */
 
 #if (DEBUG & DEBUG_TASK)
@@ -669,12 +670,12 @@ t_error			task_init(void)
  *
  * steps:
  *
- * 1) calls the machine-dependent code.
- * 2) releases the kernel task.
- * 3) releases the statistics object.
- * 4) releases the task's set.
- * 5) destroys the id object.
- * 6) frees the task manager structure's memory.
+ * 1) call the machine-dependent code.
+ * 2) release the kernel task.
+ * 3) release the statistics object.
+ * 4) release the task's set.
+ * 5) destroy the id object.
+ * 6) free the task manager structure's memory.
  */
 
 t_error			task_clean(void)

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [fri jun  2 13:34:20 2006]
+ * updated       matthieu bucchianeri   [sat jun  3 20:06:29 2006]
  */
 
 #ifndef CORE_REGION_H
@@ -127,8 +127,6 @@ typedef struct
 
 #define REGION_LEAVE(_region_, _error_)					\
   {									\
-    if (_error_ != ERROR_NONE) \
-      cons_msg('!', "error at %s (%s:%d)\n", __FUNCTION__, __FILE__, __LINE__); \
     STATS_END((_region_)->stats, (_error_));				\
 									\
     return (_error_);							\

@@ -184,7 +184,7 @@ typedef struct
  * ../../core/task/task.c
  */
 
-t_error			task_show(i_task			tskid);
+t_error			task_show(i_task			id);
 
 t_error			task_dump(void);
 
@@ -194,9 +194,9 @@ t_error			task_clone(i_task			old,
 t_error			task_reserve(t_class			class,
 				     t_behav			behav,
 				     t_prior			prior,
-				     i_task*			tskid);
+				     i_task*			id);
 
-t_error			task_release(i_task			tskid);
+t_error			task_release(i_task			id);
 
 t_error			task_priority(i_task			id,
 				      t_prior			prior);
@@ -211,7 +211,7 @@ t_error			task_wait(i_task			id,
 				  t_opts			opts,
 				  t_wait*			wait);
 
-t_error			task_get(i_task				tskid,
+t_error			task_get(i_task				id,
 				 o_task**			o);
 
 t_error			task_init(void);

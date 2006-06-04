@@ -6,21 +6,12 @@
  * file          /home/buckman/kaneton/libs/klibc/libdata/alloc.c
  *
  * created       cedric aubouy   [sun sep 25 19:57:33 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:20:29 2006]
+ * updated       matthieu bucchianeri   [sun jun  4 22:31:40 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
- *
- * the memory allocator implemented here is a very very very simple version.
- *
- * indeed, the algorithm used is the first fit, the simplest algorithm.
- *
- * moreover, the free chuncks are not merge to form larger chuncks, increasing
- * the matches probability.
- *
- * finally the realloc() function is very basic. to further information take
- * a look to the function and especially to its description.
+ * XXX
  */
 
 /*
@@ -30,6 +21,26 @@
 #include <klibc.h>
 #include <libdata/alloc.h>
 #include <kaneton.h>
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#define AREA_LIMIT(_area_)						\
+  (void*)((t_uint8*)(_area_) + sizeof(t_area) + (_area_)->size)
+
+#define NEXT_CHUNK(_chunk_)						\
+  (t_chunk*)((t_uint8*)(_chunk_) + sizeof(t_chunk) + (_chunk_)->size)
+
+#define ROUND_SIZE(_size_)						\
+  ((_size_) % sizeof(t_vaddr) ?						\
+   (_size_) + sizeof(t_vaddr) - (_size_) % sizeof(t_vaddr) :		\
+   (_size_))
+
+#define PAGED_SIZE(_size_)						\
+  ((_size_) % PAGESZ ?							\
+   (_size_) + PAGESZ - (_size_) % PAGESZ :				\
+   (_size_))
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -42,198 +53,201 @@ t_alloc			alloc;
  */
 
 /*
- * this inlined function aligns the size on a chunck size to simplify
- * the allocator internals.
- */
-
-static inline size_t	alloc_align(size_t			size)
-{
-  return (size == 0 ?
-	  sizeof(t_chunck) :
-	  (size + ALLOC_ALIGN_MASK) & ~ALLOC_ALIGN_MASK);
-}
-
-/*
- * this function tries to find a free chunck big enough for the size
- * argument.
- */
-
-static int		alloc_chunck(size_t			size,
-				     t_chunck**			search)
-{
-  t_chunck*		tmp;
-
-  for (tmp = alloc.free; tmp != NULL; tmp = tmp->nxt)
-    if (tmp->size >= size)
-      {
-	*search = tmp;
-
-	return (0);
-      }
-
-  return (-1);
-}
-
-/*
- * this function inserts the chunck new in the given list. the chuncks
- * are sorted by address.
- *
- * steps:
- *
- * 1) first tries to find a chunck with an higher address to inserts the new
- *    element before this one.
- * 2) finally, inserts the new chunk at the end of the list.
- */
-
-static int		alloc_insert(t_chunck**			list,
-				     t_chunck*			new)
-{
-  t_chunck*		prv;
-  t_chunck*		tmp;
-
-  /*
-   * 1)
-   */
-
-  for (prv = NULL, tmp = *list; tmp != NULL; prv = tmp, tmp = tmp->nxt)
-    if (tmp > new)
-      {
-	new->prv = tmp->prv;
-	new->nxt = tmp;
-
-	if (new->prv)
-	  new->prv->nxt = new;
-
-	if (new->nxt)
-	  new->nxt->prv = new;
-
-	if (prv == NULL)
-	  *list = new;
-
-	return (0);
-      }
-
-  /*
-   * 2)
-   */
-
-  if (prv == NULL)
-    {
-      new->prv = NULL;
-      new->nxt = NULL;
-
-      *list = new;
-    }
-  else
-    {
-      new->prv = prv;
-      new->nxt = NULL;
-
-      if (new->prv)
-	new->prv->nxt = new;
-    }
-
-  return (0);
-}
-
-/*
  * this function allocates memory.
  *
  * steps:
  *
- * 1) aligns the size on a chunck size.
- * 2) tries to find a free chunck big enough. if found no problem, otherwise
- *    this function will ask the system more physical and virtual memory.
- * 3) if the chunck's size does not exactly fit, then split the chunck
- *    into two, the first being the one returned to the user, the latter
- *    returning in the list of free chuncks.
- * 4) initialises the allocated chunck and puts it in the list of used chuncks.
- * 5) increases the allocate calls counter.
+ * 1) align the size correctly.
+ * 2) loop through the areas.
+ * 3) loop through the chunks.
+ * 4) is the current chunk large enough ?
+ *  a) split the chunk in two if necessary.
+ *  b) compute the address to return.
+ *  c) update the free-list.
+ * 5) we failed searching into our available chunks.
+ *  a) reserve a new area.
+ *  b) build the area.
+ *  c) build the one or two chunks.
+ * 6) increment the call counter.
+ * 7) update the lowest and highest block addresses.
  */
 
 void*			malloc(size_t				size)
 {
-  t_chunck*		search;
-  t_chunck*		new;
+  t_area*		area;
+  t_area*		prev_area = NULL;
+  t_chunk*		chunk;
+  t_chunk*		prev_free = NULL;
+  t_chunk*		next_free;
+  t_chunk*		splitted;
+  t_vsize		pagesz;
+  t_vaddr		addr;
+  void*			allocated = NULL;
 
   /*
    * 1)
    */
 
-  size = alloc_align(size);
+  size = ROUND_SIZE(size);
 
   /*
    * 2)
    */
 
-  if (alloc_chunck(size, &search) != 0)
+  for (area = alloc.areas;
+       area != NULL && allocated == NULL;
+       prev_area = area, area = area->next_area)
     {
-      printf("malloc: fatal error during malloc(%u)\n", size);
+      if (area->size < size || area->first_free_chunk == NULL)
+	continue;
 
-      return NULL;
+      /*
+       * 3)
+       */
 
-      /* XXX */
-    }
+      for (chunk = area->first_free_chunk;
+	   chunk != NULL && allocated == NULL;
+	   prev_free = chunk, chunk = chunk->next_free)
+	{
+	  /*
+	   * 4)
+	   */
 
-  /*
-   * 3)
-   */
+	  if (chunk->size >= size)
+	    {
+	      /*
+	       * a)
+	       */
 
-  if (search->size > (size + sizeof(t_chunck) + ALLOC_MINSZ))
-    {
-      new = (t_chunck*)((char*)search + size + sizeof(t_chunck));
+	      if (chunk->size > size)
+		{
+		  if (chunk->size - size < sizeof(t_chunk))
+		    {
+		      size = chunk->size;
+		    }
+		  else
+		    {
+		      splitted = (t_chunk*)((t_uint8*)chunk + sizeof(t_chunk) +
+					    size);
+		      splitted->size = chunk->size - size - sizeof(t_chunk);
+		      splitted->next_free = chunk->next_free;
+		      splitted->area = area;
+		      chunk->size = size;
+		      chunk->next_free = splitted;
+		    }
+		}
 
-      memset(new, 0x0, sizeof(t_chunck));
+	      /*
+	       * b)
+	       */
 
-      new->state = ALLOC_STATE_FREE;
-      new->size = search->size - size - sizeof(t_chunck);
-      new->prv = search->prv;
-      new->nxt = search->nxt;
+	      allocated = chunk + 1;
 
-      if (new->prv)
-	new->prv->nxt = new;
+	      /*
+	       * c)
+	       */
 
-      if (new->nxt)
-	new->nxt->prv = new;
+	      next_free = chunk->next_free;
 
-      if (alloc.free == search)
-	alloc.free = new;
-    }
-  else
-    {
-      if (search->prv)
-	search->prv->nxt = search->nxt;
-
-      if (search->nxt)
-	search->nxt->prv = search->prv;
-
-      if (alloc.free == search)
-	alloc.free = search->nxt;
-    }
-
-  /*
-   * 4)
-   */
-
-  search->state = ALLOC_STATE_USE;
-  search->size = size;
-  search->prv = NULL;
-  search->nxt = NULL;
-
-  if (alloc_insert(&alloc.use, search) != 0)
-    {
-      printf("[!] fatal error during malloc()\n");
-
-      return (NULL);
+	      if (prev_free == NULL)
+		{
+		  area->first_free_chunk = next_free;
+		}
+	      else
+		{
+		  prev_free->next_free = next_free;
+		}
+	    }
+	}
     }
 
   /*
    * 5)
    */
 
+  if (allocated == NULL)
+    {
+      if (alloc.as == ID_UNUSED)
+	{
+	  printf("FATAL ERROR: survey area exhausted !\n");
+
+	  while (1)
+	    ;
+	}
+#if 0
+      /*
+       * a)
+       */
+
+      pagesz = PAGED_SIZE(size + sizeof(t_area) + sizeof(t_chunk));
+
+      if (map_reserve(alloc.as,
+		      MAP_OPT_NONE,
+		      pagesz,
+		      PERM_READ | PERM_WRITE,
+		      &addr) != ERROR_NONE)
+	{
+	  printf("FATAL ERROR: physical memory exhausted !\n");
+
+	  while (1)
+	    ;
+	}
+
+      /*
+       * b)
+       */
+
+      area = (t_area*)addr;
+
+      area->size = pagesz - sizeof(t_area);
+      area->prev_area = prev_area;
+      area->next_area = NULL;
+
+      prev_area->next_area = area;
+
+      /*
+       * c)
+       */
+
+      chunk = (t_chunk*)(area + 1);
+      chunk->area = area;
+      allocated = chunk + 1;
+
+      if (2 * sizeof(t_chunk) + size < area->size)
+	{
+	  chunk->size = size;
+	  area->first_free_chunk = NEXT_CHUNK(chunk);
+	  area->first_free_chunk->area = area;
+	  area->first_free_chunk->next_free = NULL;
+	  area->first_free_chunk->size = area->size - size -
+	    2 * sizeof(t_chunk);
+	}
+      else
+	{
+	  chunk->size = area->size - sizeof(t_chunk);
+	  chunk->next_free = NULL;
+	  area->first_free_chunk = NULL;
+	}
+#endif
+    }
+
+  /*
+   * 6)
+   */
+
   alloc.nalloc++;
 
-  return ((char*)search + sizeof(t_chunck));
+  /*
+   * 7)
+   */
+
+  if (allocated < alloc.lowest)
+    alloc.lowest = allocated;
+
+  if (allocated > alloc.highest)
+    alloc.highest = allocated;
+
+  return (allocated);
 }
 
 /*
@@ -241,54 +255,109 @@ void*			malloc(size_t				size)
  *
  * steps:
  *
- * 1) checks whether the given pointer references a correct used chunck.
- * 2) reorganises the list of used chuncks by removing the chuncks of the
- *    list of used chuncks.
- * 3) reinitialises the fields of the chunck and puts it into the list
- *    of free chuncks.
- * 4) finally, increases the counter of free calls.
+ * 1) test pointer validity.
+ * 2) look for the previous free chunk in the same area.
+ * 3) update chunks information.
+ * 4) try to merge side-by-side free chunks.
+ * 5) if the area is empty then free it.
+ * 6) increment the free calls counter.
  */
 
 void			free(void*				ptr)
 {
-  t_chunck*		chunck = (t_chunck*)((char*)ptr - sizeof(t_chunck));
+  t_chunk*		chunk = (t_chunk*)ptr - 1;
+  t_area*		area;
+  t_chunk*		l;
+  t_chunk*		prev_free = NULL;
+  t_chunk*		next;
 
   /*
    * 1)
    */
 
-  if (chunck->state != ALLOC_STATE_USE)
-    return ;
+  if (!ptr)
+    return;
+
+  if (ptr < alloc.lowest)
+    {
+      printf("warning: junk pointer, to low to make sense.\n");
+      return;
+    }
+
+  if (ptr > alloc.highest)
+    {
+      printf("warning: junk pointer, to high to make sense.\n");
+      return;
+    }
 
   /*
    * 2)
    */
 
-  if (chunck->prv)
-    chunck->prv->nxt = chunck->nxt;
-  else
-    alloc.use = chunck->nxt;
+  area = chunk->area;
 
-  if (chunck->nxt)
-    chunck->nxt->prv = chunck->prv;
+  for (l = area->first_free_chunk;
+       l != NULL;
+       prev_free = l, l = l->next_free)
+    {
+      if (l == chunk)
+	{
+	  printf("warning: chunk is already free.\n");
+	  return;
+	}
+      if (l > chunk)
+	break;
+    }
 
   /*
    * 3)
    */
 
-  chunck->state = ALLOC_STATE_FREE;
-  chunck->prv = NULL;
-  chunck->nxt = NULL;
-
-  if (alloc_insert(&alloc.free, chunck) != 0)
+  if (prev_free)
     {
-      printf("[!] fatal error during free()\n");
-
-      return ;
+      chunk->next_free = prev_free->next_free;
+      prev_free->next_free = chunk;
+    }
+  else
+    {
+      chunk->next_free = area->first_free_chunk;
+      area->first_free_chunk = chunk;
     }
 
   /*
    * 4)
+   */
+
+  if (chunk->next_free == NEXT_CHUNK(chunk))
+    {
+      next = chunk->next_free;
+      chunk->next_free = next->next_free;
+      chunk->size += sizeof(t_chunk) + next->size;
+    }
+
+  if (prev_free != NULL && NEXT_CHUNK(prev_free) == chunk)
+    {
+      prev_free->next_free = chunk->next_free;
+      prev_free->size += sizeof(t_chunk) + chunk->size;
+    }
+
+  /*
+   * 5)
+   */
+
+  if (area != alloc.areas &&
+      area->first_free_chunk->size == area->size - sizeof(t_chunk))
+    {
+#if 0
+      area->prev_area->next_area = NULL;
+
+      if (map_release(alloc.as, (t_vaddr)area) != ERROR_NONE)
+	printf("warning: unable to release area.\n");
+#endif
+    }
+
+  /*
+   * 6)
    */
 
   alloc.nfree++;
@@ -314,89 +383,113 @@ u_int32_t		alloc_nfree(void)
 
 /*
  * this function dumps the allocator state.
+ *
+ * steps:
+ *
+ * 1) display some general information.
+ * 2) loop through areas.
+ * 3) loop through chunks in an area.
  */
 
 void			alloc_dump(void)
 {
-  t_chunck*		tmp;
+  t_area*		area;
+  t_chunk*		chunk;
+  void*			limit;
+  t_chunk*		next;
+  t_chunk*		next_free;
 
-  printf("[#] chunck size: %u bytes\n", sizeof(t_chunck));
+  /*
+   * 1)
+   */
 
-  printf("[#] calls: %u alloc(), %u free()\n", alloc.nalloc, alloc.nfree);
+  printf("allocator dump\n");
 
-  printf("[#] dumping free chuncks:\n");
+  printf("calls: %u alloc(), %u free()\n", alloc.nalloc, alloc.nfree);
 
-  for (tmp = alloc.free; tmp != NULL; tmp = tmp->nxt)
-    printf("[#]  [<0x%x, 0x%x, 0x%x>] %u bytes\n",
-	   tmp->prv, tmp, tmp->nxt, tmp->size);
+  printf("dumping all chunks:\n");
 
-  printf("[#] dumping used chuncks:\n");
+  /*
+   * 2)
+   */
 
-  for (tmp = alloc.use; tmp != NULL; tmp = tmp->nxt)
-    printf("[#]  [<0x%x, 0x%x, 0x%x] %u bytes\n",
-	   tmp->prv, tmp, tmp->nxt, tmp->size);
+  for (area = alloc.areas;
+       area != NULL;
+       area = area->next_area)
+    {
+      printf("area: %p, size: %u\n", area, area->size);
+
+      limit = AREA_LIMIT(area);
+      next_free = area->first_free_chunk;
+
+      /*
+       * 3)
+       */
+
+      for (chunk = (t_chunk*)(area + 1);
+	   (void*)chunk < limit;
+	   chunk = next)
+	{
+	  printf("  chunk: %p, user address: %p, size: %u", chunk,
+		 chunk + 1, chunk->size);
+	  if (chunk == next_free)
+	    {
+	      next_free = chunk->next_free;
+	      printf(" FREE\n");
+	    }
+	  else
+	    printf("\n");
+
+	  next = NEXT_CHUNK(chunk);
+	}
+    }
 }
 
 /*
  * this fonction reallocates memory, meaning this function resizes a memory
  * area.
  *
- * the algorithm used is the simplest existing. the function first allocates
- * memory, then copies the data from the previous area to the new one and
- * finally releases the old pointer.
- *
  * steps:
  *
- * 1) calls malloc() if the pointer is null.
- * 2) checks if the chunck is well used.
- * 3) reallocates memory.
- * 4) copies the data from the old area to the new one.
- * 5) releases the previous area.
  */
 
 void*			realloc(void* 				ptr,
 				size_t				size)
 {
-  t_chunck*		chunck = (t_chunck*)((char*)ptr - sizeof(t_chunck));
+  t_chunk*		chunk = (t_chunk*)ptr - 1;
   void*			new;
   size_t		s;
 
-  /*
-   * 1)
-   */
-
   if (ptr == NULL)
-    return (malloc(size));
-
-  /*
-   * 2)
-   */
-
-  if (chunck->state != ALLOC_STATE_USE)
-    return (NULL);
-
-  /*
-   * 3)
-   */
+    return malloc(size);
 
   if ((new = malloc(size)) == NULL)
     return (NULL);
 
-  /*
-   * 4)
-   */
-
-  s = size < chunck->size ? size : chunck->size;
+  if (chunk->size > size)
+    s = size;
+  else
+    s = chunk->size;
 
   memcpy(new, ptr, s);
-
-  /*
-   * 5)
-   */
 
   free(ptr);
 
   return (new);
+}
+
+/*
+ * this function tells the allocator the kernel asid.
+ */
+
+t_error			alloc_kasid(i_as			kernel)
+{
+  if (alloc.as != ID_UNUSED)
+    return (ERROR_UNKNOWN);
+
+  alloc.as = kernel;
+
+  return (ERROR_NONE);
 }
 
 /*
@@ -407,53 +500,49 @@ void*			realloc(void* 				ptr,
  * kernel memory manager is installed yet. so this area will be used in a
  * very special way.
  *
- * the argument fit specify the algorithm to use. for the moment, the only
- * fit implemented is the first fit.
- *
  * steps:
  *
- * 1) checks for the given algorithm.
- * 2) initialises the very first static area, the survival area.
- * 3) initialises the global allocator information.
- * 4) if needed, dumps the allocator state.
+ * 1) initialize the allocator global structure.
+ * 2) create the first chunk.
+ * 3) create the first area and put the first chunk in.
  */
 
 int			alloc_init(t_vaddr			addr,
 				   t_size			size)
 {
-  t_chunck*		init;
+  t_area*		first_area;
+  t_chunk*		first_chunk;
+
+  /*
+   * 1)
+   */
+
+  memset(&alloc, 0x0, sizeof(t_alloc));
+
+  first_area = alloc.areas = (t_area*)addr;
+  alloc.nalloc = 0;
+  alloc.nfree = 0;
+  alloc.lowest = (void*)((t_vaddr)-1);
+  alloc.highest = (void*)0;
+  alloc.as = ID_UNUSED;
 
   /*
    * 2)
    */
 
-  init = (t_chunck*)addr;
-
-  memset(init, 0x0, sizeof(t_alloc));
-
-  init->state = ALLOC_STATE_FREE;
-  init->size = size - sizeof(t_chunck);
-  init->prv = NULL;
-  init->nxt = NULL;
+  first_chunk = (t_chunk*)(first_area + 1);
+  first_chunk->size = size - sizeof(t_area) - sizeof(t_chunk);
+  first_chunk->next_free = NULL;
+  first_chunk->area = first_area;
 
   /*
    * 3)
    */
 
-  memset(&alloc, 0x0, sizeof(t_alloc));
+  first_area->size = size - sizeof(t_area);
+  first_area->first_free_chunk = first_chunk;
+  first_area->prev_area = NULL;
+  first_area->next_area = NULL;
 
-  alloc.use = NULL;
-  alloc.free = init;
-  alloc.nalloc = 0;
-  alloc.nfree = 0;
-
-  /*
-   * 4)
-   */
-
-#ifdef ALLOC_DEBUG
-  alloc_dump();
-#endif
-
-  return 0;
+  return (0);
 }

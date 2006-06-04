@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/libs/klibc/libdata/malloc/common/common.c
+ * file          /home/buckman/kaneton/check/libs/klibc/libdata/malloc/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:17:39 2005]
- * updated       matthieu bucchianeri   [wed jan 18 19:13:51 2006]
+ * updated       matthieu bucchianeri   [sun jun  4 19:38:42 2006]
  */
 
 #include <klibc.h>
@@ -30,6 +30,7 @@ void	check_malloc_tests(void)
   check_malloc_02();
   check_malloc_03();
   check_malloc_04();
+  check_malloc_05();
   /* XXX */
 }
 

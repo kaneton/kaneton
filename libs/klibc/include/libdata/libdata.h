@@ -50,8 +50,12 @@ void			alloc_dump(void);
 void*			realloc(void* 				ptr,
 				size_t				size);
 
+t_error			alloc_kasid(i_as			kernel);
+
 int			alloc_init(t_vaddr			addr,
 				   t_size			size);
+
+void alloc_test(void);
 
 
 /*
