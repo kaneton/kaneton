@@ -1,4 +1,15 @@
 --
+ virer les !# * meme pour perl, python, ruby etc.. car ca va forcement
+ chier sur des OS. a la place faire un truc comme autoconf qui trouve
+ les binaires.
+
+--
+ refaire la moulinette de tests pour qu elle soit propre
+
+--
+ integrer k comme partie du project kaneton?
+
+--
  cours systemes de fichiers: fat, ext2, ext3, reiser, distribues etc..
 
 --
