@@ -6,73 +6,74 @@
 %% file          /home/mycure/kaneton/view/papers/assignments/k0.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:23 2006]
-%% updated       julien quintard   [fri mar  3 16:31:26 2006]
+%% updated       julien quintard   [sat may  6 12:15:23 2006]
 %%
 
 %
 % k0
 %
 
-\section{k0}
-
-%
-% informations
-%
-
-\subsection{Informations}
-
-\begin{tabular}{p{7cm}l}
-Deadline: & XXX, 23h42 \\
-Duration: & One week \\
-File name: & k0.tar.gz \\
-In charge of: & Julien Quintard - \small{quinta\_j@epita.fr} \\
-Newsgroups: & epita.cours.kaneton \\
-Languages: & Assembly and C \\
-Architectures: & Intel Architecture 32-bit \\
-Students per group: & Three \\
-\end{tabular}
-
-%
-% overview
-%
-
-\subsection{Overview}
+\chapter{k0}
 
 The \textbf{k0} project consists in the development of the bootstrap.
 
 This project is very specific and will not be reused in the future
 projects.
 
-Indeed, we will use a multibootloader like \textit{grub} or \textit{lilo}
-as the bootstrap in the next steps.
+Indeed, in the next steps, we will use a multibootloader like \textit{grub}
+or \textit{lilo} as the bootstrap.
 
 The main goal of the bootstrap is to launch the bootloader in a better
 execution environment, with a better memory addressing model etc..
+
+Note that this project is recommended to better understand the
+microprocessor's architecture very first memory model. Nevertheless,
+this project may get needless on some architectures.
+
+\newpage
+
+%
+% informations
+%
+
+\section{Informations}
+
+\begin{tabular}{p{7cm}l}
+Duration: & One week \\
+File name: & \textit{[group]}-k0.tar.gz \\
+In charge: & Julien Quintard \\
+Newsgroup: & kaneton-students@googlegroups.com \\
+Languages: & Assembly and C \\
+Students per group: & Three \\
+\end{tabular}
 
 %
 % assignments
 %
 
-\subsection{Assignments}
+\section{Assignments}
 
-The only  goal is to develop  a bootstrap in assembly,  loading an ELF
-binary object from  floppy drive into main memory  and finally jumping
-on the binary entry point.
+The only  goal of this project is to develop a bootstrap in assembly language,
+loading an ELF binary object from the floppy drive into main memory and
+finally jumping onto the binary entry point.
 
 Generally, and on many architectures, the bootstrap also installs
 a more evolved memory addressing model.
 
 The project's diffculty resides in the development of an
 application first evolving in a basic addressing model, then in
-a more evolved one, all in a single assembly file.
+a more evolved one.
 
-Another difficulty is to deal with microprocessor crashes.
+Another difficulty is to deal with microprocessor's crashes.
+
+The code provided must be located in the directory
+\textit{kaneton/bootstrap/arch/[architecture]/}.
 
 %
 % ia32
 %
 
-\subsection{Intel Architecture 32-bit Implementation}
+\section{Intel Architecture 32-bit}
 
 First of all, the students will certainly want to use the BIOS interrupts
 to perform the most complex tasks like loading the ELF binary object
@@ -83,9 +84,6 @@ The only alternative to this is to develop your own floppy device driver.
 Then the students will have to install and activate the protected mode.
 
 At this point, the microprocessor is evolving into its 32-bit addressing
-mode.
+memory model.
 
 Finally, the binary object just needs to be launched.
-
-The code provided must be located in the directory
-\textit{core/bootstrap/arch/[architecture]/}.

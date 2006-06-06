@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/core.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:33:29 2006]
-%% updated       julien quintard   [sat apr 15 22:12:10 2006]
+%% updated       julien quintard   [mon may  8 17:53:16 2006]
 %%
 
 %
@@ -1443,79 +1443,149 @@ execution entities and not the tasks.
 
 \section{message manager}
 
-XXX
+The \textbf{message manager} provides a complete interface to send and
+receive messages in many different ways.
 
-alors que les task et thread sont concus pour la prog parallele avec des
- priorites sur chaque elements pour tout pouvoir definir au millimetre,
- les messages furent concus pour la prog parallele et distribue.
- l interface est directement inspirer des standards existants dans ce domaine.
+A \textbf{message object} \textit{o\_message} represents a message in a
+communication between two task entities. Each message object is identified
+by a unique message identifier \textit{i\_message}.
 
-message_send(): async / bloquant
-message_throw(): async / non-bloquant
+The kaneton message interface directly comes from standards in parallel
+and distributed programming.
 
-message_transmit(): sync / bloquant
-message_post(): sync / non-bloquant
+The message manager provides blocking and non-blocking functions,
+synchronous and asynchronous messages etc..
 
-message_receive(): bloquant
+A sychronous message is a very specific message which follows the
+\textit{rendez-vous} scheme. Therefore, the sender and the receiver
+must be ready before exchanging the message. Internally, a synchrnous
+message means that no kernel bufferization is used.
 
-message_grab(): non-bloquant
+A blocking function is a function which does not return until the
+action is totally performed.
+
+%
+% interface
+%
+
+\function{message\_show}{(i\_message \argument{id})}
+	 {
+	   This function displays information on the message \argument{id}.
+	 }
+
+\function{message\_dump}{(void)}
+	 {
+	   This function displays information on all the pending messages.
+	 }
+
+\function{message\_send}{(i\_node \argument{node},
+                          void* \argument{data},
+                          t\_size \argument{size})}
+	 {
+	   This blocking function sends \argument{size} bytes of
+	   \argument{data} to the node \argument{node}.
+
+	   The message is delivered asynchronously.
+	 }
+
+\function{message\_throw}{(i\_node \argument{node},
+                           void* \argument{data},
+                           t\_size \argument{size},
+                           i\_message* \argument{id})}
+	 {
+	   This non-blocking function sends \argument{size} bytes of
+	   \argument{data} to the node \argument{node}.
+
+	   The message is delivered asynchronously.
+	 }
+
+\function{message\_transmit}{(i\_node \argument{node},
+                              void* \argument{data},
+                              t\_size \argument{size})}
+	 {
+	   This blocking function sends \argument{size} bytes of
+	   \argument{data} to the node \argument{node}.
+
+	   The message is delivered synchronously.
+	 }
+
+\function{message\_post}{(i\_node \argument{node},
+                          void* \argument{data},
+                          t\_size \argument{size},
+                          i\_message* \argument{id})}
+	 {
+	   This non-blocking function sends \argument{size} bytes of
+	   \argument{data} to the node \argument{node}.
+
+	   The message is delivered synchronously.
+	 }
+
+\function{message\_info}{(t\_message\_info \argument{info})}
+	 {
+	   This function returns information on the next pending message.
+
+	   This function was introduced to allow servers to handle
+	   multiple different messages.
+	 }
+
+\function{message\_receive}{(i\_node \argument{node},
+                             void* \argument{data})}
+	 {
+	   This blocking function receives a message in \argument{data}.
+	 }
+
+\function{message\_grab}{(i\_node \argument{node},
+                          void* \argument{data},
+                          i\_message* \argument{id})}
+	 {
+	   This non-blocking function receives a message in \argument{data}.
+	 }
+
+\function{message\_get}{(i\_message \argument{id},
+                         o\_message** \argument{o})}
+	 {
+	   This function returns in \argument{o} the message object
+	   corresponding to \argument{id}.
+	 }
+
+\function{message\_flush}{(i\_task \argument{task})}
+	 {
+	   This function removes every message that belongs to the task
+	   \argument{task}.
+	 }
+
+\function{message\_init}{(void)}
+	 {
+	   This function initializes the message manager.
+	 }
+
+\function{message\_clean}{(void)}
+	 {
+	   This function cleans the message manager.
+	 }
+
+\notice{The message manager's interface is not well defined yet.}
+
+% XXX
+\begin{comment}
+
+XXX on peut mettre un tag de 32-bit dans la majeure partie des cas ca
+  suffit et si le mec est aps content, il ne l utilise pas et se met un
+  tag dans le message. mais au final autant mettre direct le tag dans
+  le message. donc c est au mec de se demerder...
 
 message_request(): demande quelque chose
 message_reply(): repond a la request
 
-message_check(): test si on a recu le message
+message_check|test(): test si on a recu le message
 message_wait(): attend un message
-
-% XXX
-\begin{comment}
-              /* t_message_request request */
-
-       int MPI_Send(void *buf, int count, MPI_Datatype dtype, int dest,
-                    int tag, MPI_Comm comm)
-        -> message_send(FLAG_ASYNC | FLAG_BLOCK)
-
-       int MPI_Ssend(void *buf, int count, MPI_Datatype dtype,
-                     int dest, int tag, MPI_Comm comm)
-        -> message_send(FLAG_SYNC | FLAG_BLOCK) // transmit(), post()
-                                                // pass()
-          -> message_transmit();
-
-       int MPI_Isend(void *buf, int count, MPI_Datatype dtype,
-                     int dest, int tag, MPI_Comm comm,
-                     MPI_Request *req)
-        -> message_send(FLAG_ASYNC | FLAG_NBLOCK, &request)
-          -> message_throw();
-
-       int MPI_Issend(void *buf, int count, MPI_Datatype dtype,
-                      int dest, int tag, MPI_Comm comm,
-                      MPI_Request *req)
-        -> message_send(FLAG_SYNC | FLAG_NBLOCK, &request) // hurl(), emit()
-                                                           // cast()
-          -> message_post();
-
----
-
-       int MPI_Recv(void *buf, int count, MPI_Datatype dtype,
-                    int src, int tag, MPI_Comm comm, MPI_Status *stat)
-        -> message_receive(FLAG_BLOCK)
-
-       int MPI_Irecv(void *buf, int count, MPI_Datatype dtype,
-                     int src, int tag, MPI_Comm comm,
-                     MPI_Request *req)
-        -> message_receive(FLAG_NBLOCK) // get(), acquire(), obtain()
-                                        // pick(), catch()
-          -> message_grab();
-
-message_check
-message_wait
-
-message_request()
-message_reply()
 
 XXX timeout
 
 message_control(): controler son interface de message
 
-\end{comment}
-
 XXX pas de signaux mais ils peuvent etre emules
+
+XXX task manager: init de la task kernel a partir du bootloader init
+
+\end{comment}

@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/development-environment.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:31:26 2006]
-%% updated       julien quintard   [sun apr  2 22:07:30 2006]
+%% updated       julien quintard   [thu may  4 12:35:37 2006]
 %%
 
 %
@@ -300,134 +300,188 @@ The current machine reference profile is the \textit{unix} one.
 \function{print}{(\argument{color},
                   \argument{text},
                   \argument{options})}
-         {This function display the \argument{text} in the specified
-	   \argument{color}.}
+         {
+	   This function display the \argument{text} in the specified
+	   \argument{color}.
+	 }
 
 \function{change-directory}{(\argument{directory},
                              \argument{options})}
-         {This function changes the current working directory.}
+         {
+	   This function changes the current working directory.
+	 }
 
 \function{shell-script}{(\argument{shell script},
                          \argument{arguments},
                          \argument{options})}
-         {This function launches a new shell script with its arguments.}
+         {
+	   This function launches a new shell script with its arguments.
+	 }
 
 \function{makefile}{(\argument{directory list},
                      \argument{options})}
-         {This function launches the make command in each directory of
-	   the list.}
+         {
+	   This function launches the make command in each directory of
+	   the list.
+	 }
 
 \function{preprocess}{(\argument{preprocessed file},
                        \argument{c file},
                        \argument{options})}
-         {This function launches a C preprocessor.}
+         {
+	   This function launches a C preprocessor.
+	 }
 
 \function{compile-c}{(\argument{object file},
                       \argument{c file},
                       \argument{options})}
-         {This function compile a C file generating an object file.}
+         {
+	   This function compile a C file generating an object file.
+	 }
 
 \function{lex-l}{(\argument{c file},
                   \argument{lex file},
                   \argument{options})}
-         {This function generates a C source file from a lex file.}
+         {
+	   This function generates a C source file from a lex file.
+	 }
 
 \function{assemble-s}{(\argument{object file},
                        \argument{S file},
                        \argument{options})}
-         {This function assemble a S file.}
+         {
+	   This function assemble a S file.
+	 }
 
 \function{assemble-asm}{(\argument{object file},
                          \argument{asm file},
                          \argument{options})}
-         {This function assemble an asm file.}
+         {
+	   This function assemble an asm file.
+	 }
 
 \function{static-library}{(\argument{static library file name},
                            \argument{object files},
                            \argument{options})}
-         {This function builds a static library from object files.}
+         {
+	   This function builds a static library from object files.
+	 }
 
 \function{dynamic-library}{(\argument{dynamic library file name},
                             \argument{object files and/or libraries},
                             \argument{options})}
-         {This function builds a dynamic library from object files and/or
-	   libraries.}
+         {
+	   This function builds a dynamic library from object files and/or
+	   libraries.
+	 }
 
 \function{executable}{(\argument{executable file name},
                        \argument{object files and/or libraries},
                        \argument{options})}
-         {This function builds a executable from object files and/or
-	   libraries.}
+         {
+	   This function builds a executable from object files and/or
+	   libraries.
+	 }
 
 \function{archive}{(\argument{archive file name},
                     \argument{object files},
                     \argument{options})}
-         {This function builds an archive of object files from multiple
-	   object files.}
+         {
+	   This function builds an archive of object files from multiple
+	   object files.
+	 }
 
 \function{remove}{(\argument{files},
                    \argument{options})}
-         {This function removes the files in the list.}
+         {
+	   This function removes the files in the list.
+	 }
 
 \function{purge}{()}
-         {This function just cleans the current working directory from
-	   unecessary files.}
+         {
+	   This function just cleans the current working directory from
+	   unecessary files.
+	 }
 
 \function{prototypes}{(\argument{files},
                        \argument{options})}
-         {This function will generate the prototypes in relation with
-	   the files in the list.}
+         {
+	   This function will generate the prototypes in relation with
+	   the files in the list.
+	 }
 
 \function{dependencies}{(\argument{files},
                          \argument{output},
                          \argument{options})}
-         {This function will generate the dependencies for the
+         {
+	   This function will generate the dependencies for the
 	   \argument{files} and build a makefile dependency
-	   \argument{output}.}
+	   \argument{output}.
+	 }
 
 \function{version}{(\argument{file},
                     \argument{user name},
                     \argument{host name},
                     \argument{date})}
-         {This function will generate a version file.}
+         {
+	   This function will generate a version file.
+	 }
 
 \function{link}{(\argument{link},
                  \argument{file},
                  \argument{options})}
-         {This function creates a link \argument{link} for the file
-	   \argument{file}.}
+         {
+	   This function creates a link \argument{link} for the file
+	   \argument{file}.
+	 }
 
 \function{compile-tex}{(\argument{file},
                         \argument{options})}
-         {This function compiles the file \argument{file}.tex and
-	   will generate a readable document.}
+         {
+	   This function compiles the file \argument{file}.tex and
+	   will generate a readable document.
+	 }
 
 \function{paper}{(\argument{file},
                   \argument{options})}
-         {This function builds a paper.}
+         {
+	   This function builds a paper.
+	 }
 
 \function{lecture}{(\argument{file},
                     \argument{options})}
-         {This function builds a lecture.}
+         {
+	   This function builds a lecture.
+	 }
 
 \function{subject}{(\argument{file},
                     \argument{options})}
-         {This function builds a subject.}
+         {
+	   This function builds a subject.
+	 }
 
 \function{correction}{(\argument{file},
                        \argument{options})}
-         {This function builds a correction.}
+         {
+	   This function builds a correction.
+	 }
 
 \function{view}{(\argument{file})}
-         {This function will launches a viewer for the readable document
-	   generated by \textbf{compile-tex()}.}
+         {
+	   This function will launches a viewer for the readable document
+	   generated by \textbf{compile-tex()}.
+	 }
 
 \function{contents}{(\argument{file},
                      \argument{options})}
-         {This function returns the contents of \argument{file}.}
+         {
+	   This function returns the contents of \argument{file}.
+	 }
 
 \function{date}{()}
-         {This function returns the current date.}
+         {
+	   This function returns the current date.
+	 }
 
 %
 % shell
@@ -446,45 +500,127 @@ The shell interface is not well defined yet.
 Many different actions can be triggered from the kaneton root directory.
 
 \command{make init}
-        {This action will initialize the kaneton development environment.}
+        {
+	  This action will initialize the kaneton development environment.
+
+	  \example{\$ make init}
+	}
 
 \command{make clean}
-	{This action will clean the kaneton development environment.}
+	{
+	  This action will clean the kaneton development environment.
+
+	  \example{\$ make clean}
+	}
 
 \command{make kaneton}
-	{This action will build the kaneton microkernel.}
+	{
+	  This action will build the kaneton microkernel.
+
+	  \example{\$ make kaneton}
+	}
 
 \command{make clear}
-	{This action will removing every compiled files.}
+	{
+	  This action will removing every compiled files.
+
+	  \example{\$ make clear}
+	}
 
 \command{make purge}
-	{This action will clean directories from unecessary files.}
+	{
+	  This action will clean directories from unecessary files.
+
+	  \example{\$ make purge}
+	}
 
 \command{make dep}
-	{This action will generate makefiles dependencies.}
+	{
+	  This action will generate makefiles dependencies.
+
+	  \example{\$ make dep}
+	}
 
 \command{make proto}
-	{This action will generate C prototypes.}
+	{
+	  This action will generate C prototypes.
+
+	  \example{\$ make proto}
+	}
 
 \command{make check}
-	{This action will be used to run the test suite used to validate
-	  the kaneton whole behaviour.}
+	{
+	  This action will be used to run the test suite used to validate
+	  the kaneton whole behaviour.
+
+	  \example{\$ make check}
+	}
 
 \command{make cheat}
-	{This action will launch the cheat tests on students kaneton
-	  implementations.}
+	{
+	  This action will launch the cheat tests on students kaneton
+	  implementations.
+
+	  \example{\$ make cheat}
+
+	  \example{\$ make cheat-2006.k3}
+	}
 
 \command{make build}
-	{This action will build the boot device.}
+	{
+	  This action will build the boot device.
+
+	  \example{\$ make build}
+	}
 
 \command{make install}
-	{This action will install the kaneton stuff on the boot device.}
+	{
+	  This action will install the kaneton stuff on the boot device.
+
+	  \example{\$ make install}
+	}
 
 \command{make export}
-	{This action will build a kaneton package.}
+	{
+	  This action will build a kaneton package.
+
+	  \example{\$ make export}
+
+	  \example{\$ make export-k5}
+	}
 
 \command{make view}
-	{This action will generate and display a kaneton document.}
+	{
+	  This action will generate and display a kaneton document.
+
+	  \example{\$ make view}
+
+	  \example{\$ make view-develop}
+
+	  \example{\$ make view-papers::kaneton}
+	}
+
+\command{make record}
+	{
+	  This action will record a real-time session.
+
+	  \example{\$ make record}
+
+	  \example{\$ make record-sessions::test.ts}
+	}
+
+\command{make play}
+	{
+	  This action will play a recorded session.
+
+	  \example{\$ make play}
+
+	  \example{\$ make play-sessions::prototypes.ts}
+	}
 
 \command{make info}
-	{This action will display general kaneton information.}
+	{
+	  This action will display general kaneton information.
+
+	  \example{\$ make info}
+	}

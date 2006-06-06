@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/exams/arch-mips/2006-exam/2006-exam.tex
 %%
 %% created       julien quintard   [fri dec  2 22:25:51 2005]
-%% updated       julien quintard   [sun apr  2 18:56:04 2006]
+%% updated       julien quintard   [tue may  9 18:33:46 2006]
 %%
 
 %
@@ -346,10 +346,9 @@ De m\^eme, combien de cycles sont n\'ecessaires pour une \'ecriture de
 1 +                     ; access
 5 +                     ; bus acquire
 1 +                     ; address
-3 +                     ; address / data
 1                       ; data
 
-= 11 cycles
+= 8 cycles
 \end{verbatim}
 
 \end{correction}
@@ -377,13 +376,13 @@ Puisque le cache de donn\'ees est de type \textit{Write Through}, un
 acc\`es m\'emoire intervient \`a chaque \'ecriture.
 
 La p\'enalit\'e en \'ecriture par rapport \`a la m\'emoire parfaite est
-donc de $11 - 1 = 10$ cycles.
+donc de $8 - 1 = 7$ cycles.
 
 Dans le code d'origine il y a deux instructions de lecture et une
 instruction d'\'ecriture.
 
 Le traitement d'un \'el\'ement de la matrice n\'ecessite donc
-$18 + (2 * 12) + (1 * 10) = 52$ cycles.
+$18 + (2 * 12) + (1 * 7) = 52$ cycles.
 
 \end{correction}
 
@@ -398,7 +397,7 @@ en compte par l'automate.
 De ce fait, une \'ecriture n'aura plus aucune p\'enalit\'e.
 
 Le traitement d'un \'el\'ement de la matrice n\'ecessite donc plus
-que $18 + (2 * 12) = 42$
+que $18 + (2 * 12) = 42$ cycles.
 
 Il est \`a noter que puisqu'une seul \'ecriture n'a lieu tous les $42$
 cycles, il est raisonnable de penser que l'\'ecriture a le temps de

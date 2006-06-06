@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/nomenclature.tex
 %%
 %% created       julien quintard   [tue mar  7 14:19:17 2006]
-%% updated       julien quintard   [wed apr 12 07:46:10 2006]
+%% updated       julien quintard   [thu may  4 13:24:01 2006]
 %%
 
 %
@@ -76,10 +76,10 @@ Moreover, the kaneton microkernel is divided into subparts to make the
 microkernel very clear to students. The subparts are called \textbf{managers}.
 
 A \textbf{manager} is simply a piece of coherent code which takes care
-of a unique kaneton object's type. For example the \textit{segment manager}
+of a unique kaneton object type. For example the \textit{segment manager}
 provides simple operations to use physical memory.
 
-The whole core is composed managers which manage multiple kaneton objects.
+The whole core is composed of managers which manage multiple kaneton objects.
 
 A \textbf{segment} object describes a contiguous area of physical memory.
 Each segment has a base address, a size, permissions and other properties.
@@ -97,7 +97,7 @@ A \textbf{thread} object is the kaneton active entity. Indeed, a thread
 describes an execution context.
 
 The \textbf{scheduler} manages threads using classes, behaviours and
-priorities.
+priorities to compute the schedule priority.
 
 A \textbf{task} object is an abstraction describing a complete execution
 context with addressable memory and threads. A task is composed of
@@ -113,6 +113,19 @@ A set object is an abstract data structure managed by the set manager.
 A set is just used to store data without taking care of how it is technically
 done. The set concepts was introduced to make the microkernel code as
 clear as pseudo code.
+
+We so might be able to easily represent the kaneton object hierarchy as
+the following:
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=0.8]{figures/nomenclature_hierarchy.pdf}
+    \caption{The kaneton object hierarchy.}
+    \label{figure:nomenclature_hierarchy}
+  \end{center}
+\end{figure}
+
+XXX est-ce que ce qui suit ne devrait pas etre mis dans coding-style ?
 
 The kaneton core was implemented following a very strict source code
 nomenclature we will now detail.

@@ -1,4 +1,28 @@
 --
+ cours systemes de fichiers: fat, ext2, ext3, reiser, distribues etc..
+
+--
+ ca deconne: segment-fit.c set_ll.c ???
+
+--
+ creer un rep view/books avec kaneton et assignments
+
+--
+ pour resoudre les forward declarations, normalement faire comme set.h
+ et ca marche, cad forward declarer tous les types d'un .h AVANT de
+ faire les includes recursifs.
+
+--
+ changer kaneton/core/Makefile  : --kaneton et virer les CFLAGS
+
+--
+ ce serait interessant de rajouter un ensemble 'slab' qui ne se baserait
+ pas sur malloc.
+
+ ca montrerait la possibilite du set manager et en plus on pourrait faire
+ des tests de perf avec le slab.
+
+--
  il faut revoir  la gestion des permissions sur  la memoire. en effet,
  c'est  segment  qui  gere  les  perms  mais  avec  ia32-virtual  c'est
  region. il faut donc du code dans ia32_segment_perms

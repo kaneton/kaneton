@@ -6,158 +6,143 @@
 %% file          /home/mycure/kaneton/view/papers/assignments/k2.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       julien quintard   [mon apr  3 18:47:09 2006]
+%% updated       julien quintard   [sun may  7 13:47:45 2006]
 %%
 
 %
 % k2
 %
 
-\section{k2}
+\chapter{k2}
+
+The \textbf{k2} project consists in the development of parts of
+the kaneton core leading to a complete memory management.
+
+These microkernel's parts include:
+
+\begin{itemize}
+  \item
+    A set manager's implementation.
+  \item
+    The segment manager.
+  \item
+    The region manager.
+\end{itemize}
+
+Since the kaneton microkernel heavily use the set manager to store data,
+the student should perfectly understand its design and implementation.
+For this reason, the first assignment will be to implement a set
+implementation.
+
+The segment manager is crucial since it will be used everywhere to allocate
+memory.
+
+Finally the region manager is also very important since it provide a complete
+interface to manipulate virtual memory.
+
+Note that the student must also fill in the architecture-dependent code
+to make the full memory management working. This means that the student
+should perfectly understand the segment, region and address space manager
+to be able to develop the whole architecture implementation.
+
+\newpage
 
 %
 % informations
 %
 
-\subsection{Informations}
+\section{Informations}
 
 \begin{tabular}{p{7cm}l}
-Deadline: & XXX, 23h42 \\
-Duration: & Two weeks \\
-File name: & k2.tar.gz \\
-In charge of: & Julien Quintard - \small{quinta\_j@epita.fr} \\
-Newsgroups: & epita.cours.kaneton \\
+Duration: & One week \\
+File name: & \textit{[group]}-k2.tar.gz \\
+In charge: & Julien Quintard \\
+Newgroup: & kaneton-students@googlegroups.com \\
 Languages: & Assembly and C \\
-Architectures: & Intel Architecture 32-bit \\
 Students per group: & Three \\
 \end{tabular}
-
-%
-% overview
-%
-
-\subsection{Overview}
-
-The \textbf{k2} project consists in the development of parts of
-the kaneton core including:
-
-\begin{itemize}
-  \item
-    The id manager.
-  \item
-    The set manager.
-  \item
-    The address space manager.
-  \item
-    The segment manager.
-\end{itemize}
-
-The id manager is very important because it is very simple and will
-introduce you how managers are implemented in kaneton. Every student
-should be able to understand it before starting other managers.
-
-Moreover, many parts of the kernel will lead student to use the sets,
-so the sets interface must be clearly understood.
-
-The as and segment managers introduce calls to machine-dependent code, this
-mecanism must be well understood by every students.
-
-For the two first managers, you have to follow precisely the bevavior
-as described in the kaneton reference documentation. For the memory
-management, you must be totally compliant with the given interface and
-the described behavior, but algorithm, especially for the machine-dependent
-code, are design-free.
 
 %
 % assignments
 %
 
-\subsection{Assignments}
+\section{Assignments}
 
 In this section, we will detail each manager.
-
-%
-% id manager
-%
-
-\subsubsection{id manager}
-
-XXX
 
 %
 % set manager
 %
 
-\subsubsection{set manager}
+\subsection{set manager}
 
-XXX
+The set manager provides an interface to create and manipule sets. These
+sets can be used to store data without taking care of anything.
 
-The manager's code is given, see \textit{core/kaneton/set/set.c} and
-\textit{core/include/kaneton/set.h}. Take a look at the information
-section in the header of the manager's code: each steps of the creation
-of a set is described.
+The manager's code is given, see \textit{kaneton/core/set/set.c} and
+\textit{kaneton/include/kaneton/set.h}. Take a look at the information
+section in the header of the manager's code: every step of the set creation
+is described.
 
-The student will have to write the entire code for the \textbf{array}
-and \textbf{ll} implementations.
+In this project, the student will have to write the entire code for
+the \textbf{l}inked-\textbf{l}ist set implementation.
 
-The functions below are explained independently of the data structure
-which is noted \textbf{<I>}.
+Notice that, the set implementation interface must be respected.
 
-XXX
-
-%
-% address space manager
-%
-
-\subsubsection{address space manager}
-
-XXX
-
-	    ---
-	    For \textbf{k2}, you don't have to deal with tasks, so you must
-	    ignore the \textit{task} arguments.
-	    ---
+The student so has to fill in the file \textit{kaneton/core/set/set\_ll.c}
 
 %
-% segment manager.
+% segment manager
 %
 
-\subsubsection{segment manager}
+\subsection{segment manager}
 
-XXX
+The segment manager provides a complete interface to manipulate physical
+memory including reserving, modifying permissions, releasing physical
+memory areas called \textbf{segments}.
 
+The student has to write the entire segment manager. Needless to say, the
+student's segment manager must be compliant with the segment manager
+interface.
 
-	   ---
-	    This function concerns \textbf{k1} pre-reserved segments.
-	    All of these must be passed to the inject function at kernel
-	    boot time.
-	    ---
+The segment manager's main file is \textit{kaneton/core/segment/segment.c}
+
+%
+% region manager
+%
+
+\subsection{region manager}
+
+The region manager provides everything necessary to manage virtual
+memory areas called \textbf{regions}.
+
+The student has to write the entire region manager including any
+machine-dependent code.
+
+The region manager's main file is \textit{kaneton/core/region/region.c}
 
 %
 % advanced topics
 %
 
-\subsubsection{Advanced Topics}
+\section{Advanced Topics}
 
-Students can implement better allocation algorithms for the segment manager,
-like a Buddy System etc..
+We advise students to first implement very simple algorithms for the segment
+and region manager.
+
+Nevertheless, once working, students might be able to implement better
+allocation algorithms for the segment and region manager, like Buddy Systems,
+advanced data structures etc..
 
 %
 % ia32
 %
 
-\subsection{Intel Architecture 32-bit Implementation}
-
-Students will have to develop the architecture-dependent part of the
-address space manager and segment manager.
+\section{Intel Architecture 32-bit}
 
 For the segment manager, the only work of the architecture-dependent source
 code is to get control over the protected mode so to rebuild the Global
 Descriptor Table for the kaneton needs.
-
-For the address space manager, the only work the architecture do is to
-manager Page Directories, allocating and releasing them each time an
-address space object is created, destroyed, modified etc..
 
 The corresponding source files are:
 

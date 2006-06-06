@@ -52,7 +52,7 @@ In kaneton, one of the \textbf{bootloader}'s role is to prepare a correct
 execution context for the core.
 
 To do so, the bootloader has to install the proper memory addressing model
-the kernel is expecting, depending on the architecture.
+the kernel is expecting to, depending on the architecture.
 
 Another bootloader's role is to provide the kernel enough information
 on the current microprocessor's architecture.
@@ -65,10 +65,10 @@ fundamental objects like the kernel code, the kernel stack, the
 initialization structure, the modules etc..
 
 Moreover, and for design reasons, the bootloader has to specify the
-pre-reserved segments, the pre-reserved regions, the alloc survival area
-and other specific kaneton design components so the core can properly
-and correctly initialize its data structures based on the architecture
-via the initialization structure.
+pre-reserved core segments, the pre-reserved core regions, the alloc
+survival area and other specific kaneton design components so the core
+can properly and correctly initialize its data structures based on the
+architecture via the initialization structure.
 
 We will now detail these components to better understand the design
 choices and their resulting effects.
@@ -121,7 +121,7 @@ For these reasons, a very specific area must be built to contain
 to whole stuff in relation with the modules so the kernel just has to
 give this area to the dedicated server.
 
-The modules area has the following form:
+The modules area is of the following form:
 
 \begin{enumerate}
   \item
@@ -159,10 +159,10 @@ sizeof(t_module) + module->size + strlen(module->name) + 1
   referencing the module's data.}
 
 %
-% segments
+% core segments
 %
 
-\subsubsection{Segments}
+\subsubsection{Core Segments}
 
 A \textbf{segment} is a contiguous area of used physical memory.
 
@@ -190,53 +190,53 @@ You should understand that the kaneton core needs to know which physical
 memory area should not be reserved or in other terms, are pre-reserved.
 
 So, the bootloader must build a data structure containing the set of
-pre-reserved segments. By pre-reserved segments we mean every fundamental
-and distinctive areas. We will call this simple data structure the
-\textit{segment array}.
+pre-reserved core segments. By pre-reserved segments we mean every
+fundamental and distinctive areas. We will call this area which
+contains these specific segments the \textit{core segments area}.
 
-This data structure will be used by the task manager to properly
-initialize the kernel's address space used by the kernel task object.
+This area will be used by the task manager to properly initialize
+the kernel's address space used by the kernel task object.
 
-In other words, this segment array describes the initial state of the
+In other words, these core segments describe the initial state of the
 segment manager, so the initial state of the physical memory held by the
-kernel.
+core.
 
 Therefore it will be impossible, for example, to reserve an area
 already held for something else because the segment manager internal
-data structure now contains the pre-reserved segments held by the
+data structure now contains the pre-reserved core segments held by the
 core.
 
-The segment array contains segment objects which are partially
+The core segments are segment objects which are partially
 initialized. Indeed, some segment object properties cannot be set
 by the bootloader and will be set by the segment manager.
 
-\notice{Once the segment manager is initialized, the segment array
-  gets useless, so it can be released.}
+\notice{Once the segment manager is initialized, the core segments
+  get useless, so they can be released.}
 
 %
-% regions
+% core regions
 %
 
-\subsubsection{Regions}
+\subsubsection{Core Regions}
 
 A \textbf{region} is a contiguous area of used virtual memory.
 
 A region maps the whole or part of a segment.
 
-As for the segments, the bootloader needs a \textit{region array}.
+As for the core segments, the bootloader needs \textit{core regions area}.
 
-The region array describes the initial state of the region manager, or
-the initial kernel's virtual memory state.
+The core regions describe the initial state of the region manager, or
+the initial core's virtual memory state.
 
 The kernel's task manager will so go through this data structure
 and properly rebuild the virtual memory from this data structure to
 initialize the kernel's address space.
 
-The region array contains region objects which are partially initialized
-as the segments of the segment array.
+The core regions are region objects which are partially initialized
+as the core segments.
 
-\notice{Once the regions manager is initialized, the region array
-  gets useless, so it can be released.}
+\notice{Once the regions manager is initialized, the core regions
+  get useless, so they can be released.}
 
 %
 % survival area
@@ -319,8 +319,7 @@ the core itself cannot decide where to put this pre-reserved area.
 
 Therefore, the kernel relies on the bootloader to find a pre-reserved
 area of physical memory for the \textit{malloc}() function. This area will
-then be called the \textit{survival area} or sometimes the
-\textit{survival segment}.
+then be called the \textit{survival area}.
 
 %
 % initialization structure
@@ -340,12 +339,12 @@ sizes aligned on an architecture page size \textit{PAGESZ}.
 
 The initialization structure contains fields to locate the different
 fundamental objects in main memory like the kernel code,
-the initialization structure itself, the module area, the segment
-array area, the region array area, the kernel stack and the survival
+the initialization structure itself, the module area, the core segments
+area, the core regions area, the kernel stack and the survival
 area.
 
 The initialization structure could also contain machine-dependent fields.
 
 Look at the file \textit{kaneton/include/arch/[architecture]/core/init.h}
-for more information about the structure machine-dependent initialization
-structure called \textit{a\_init}.
+for more information about the machine-dependent initialization structure
+called \textit{a\_init}.

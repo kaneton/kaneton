@@ -6,69 +6,48 @@
 %% file          /home/mycure/kaneton/view/papers/assignments/k1.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:38 2006]
-%% updated       julien quintard   [mon apr  3 01:45:53 2006]
+%% updated       julien quintard   [sat may  6 12:15:50 2006]
 %%
 
 %
 % k1
 %
 
-\section{k1}
+\chapter{k1}
+
+The \textbf{k1} project consists in the development of the bootloader.
+
+The bootloader, as the bootstrap, generally installs a better execution
+environment for the future core execution.
+
+Moreover, the kaneton bootloader must provide information on the current
+microprocessor's architecture including the location of the pre-reserved
+physical memory areas etc..
+
+\newpage
 
 %
 % informations
 %
 
-\subsection{Informations}
+\section{Informations}
 
 \begin{tabular}{p{7cm}l}
-Deadline: & XXX, 23h42 \\
-Duration: & Two weeks \\
-File name: & k1.tar.gz \\
-In charge of: & Julien Quintard - \small{quinta\_j@epita.fr} \\
-Newsgroups: & epita.cours.kaneton \\
+Duration: & One week \\
+File name: & \textit{[group]}-k1.tar.gz \\
+In charge: & Julien Quintard \\
+Newgroup: & kaneton-students@googlegroups.com \\
 Languages: & Assembly and C \\
-Architectures: & Intel Architecture 32-bit \\
 Students per group: & Three \\
 \end{tabular}
-
-%
-% overview
-%
-
-\subsection{Overview}
-
-The \textbf{k1} project consists in the development of the bootloader.
-
-XXX
-
----
-    For the bootloader, the only required fields of the \textit{o\_segment}
-    structures are \textit{segid}, \textit{address}, \textit{size} and
-    \textit{perms}.
-
-    Other fields will be filled in at kernel initialization time.
-
-    Note that the \textit{segid} field must be equal to the
-    \textit{address} one.
----
-
----
-    The bootloader must fill in the \textit{segid}, \textit{address},
-    \textit{offset} and \textit{size} fields of each \textit{o\_region}
-    structure.
-
-    Since many segments will be needless, this array will only specify the
-    fundamental segments to map.
----
 
 %
 % assignments
 %
 
-\subsection{Assignments}
+\section{Assignments}
 
-In this project, the students have to develop the entire source code.
+In this project, the students have to develop the entire bootloader.
 This means that no interface will be provided.
 
 The only requirement is your bootloader to be compliant with the
@@ -82,10 +61,11 @@ Below are listed the bootloader's steps:
 \begin{enumerate}
   \item
     The bootloader generally installs a more evolved memory addressing model,
-    depending on the architecture.
+    depending on the microprocessor's architecture.
   \item
-    The bootloader relocates the stuffs needed by the future kernel
-    execution and build the initialization structure.
+    The bootloader relocates the stuff, if necessary, depending on the
+    microprocessor's architecture. Then, the bootloader builds the
+    initialization structure.
 
     The stuff includes:
 
@@ -95,17 +75,17 @@ Below are listed the bootloader's steps:
       \item
 	The modules.
       \item
-	The pre-reserved segments.
+	The pre-reserved core segments.
       \item
-	The pre-reserved regions.
+	The pre-reserved core regions.
       \item
 	The kernel stack.
       \item
 	The alloc survival area.
     \end{itemize}
   \item
-    Then, the booloader prepares the kernel stack and calls it providing
-    to the kernel a complete initialization structure.
+    Then, the booloader prepares the kernel stack and calls the core
+    providing it the complete initialization structure.
 \end{enumerate}
 
 The relocation is not really necessary but we wanted the students
@@ -115,67 +95,71 @@ in a very strict environment with no fine-grain allocator provided.
 The main goal of this project is to lead the students to understand the
 project source organization. Indeed, a complete development environment
 is provided; therefore, the students should learn to use system defines,
-internal facilities etc.. to develop more quickly.
+internal facilities, kaneton tools etc.. to develop more quickly.
 
 Displaying the initialization structure's information is the
-minimum requirement. Having an enhanced display of pre-reserved
-segments, regions and modules will be very appreciated, but is not required.
+minimum requirement. Having an enhanced display of pre-reserved core
+segments, regions and modules will be very appreciated.
 
 The code provided must be located in the directory
-\textit{core/bootloader/arch/[architecture]/}.
+\textit{kaneton/bootloader/arch/[architecture]/}.
 
-\subsubsection{Tips}
+%
+% tips
+%
+
+\section{Tips}
 
 Try to think about a very simple memory allocator delivering single
 pages or contiguous areas. This allocator should help students to
 allocate dynamic memory.
 
-Assume that the kernel is the first given module.
+Let's assume that the kernel is the first given module.
 
-\subsubsection{Additional Work}
+%
+% additional work
+%
+
+\section{Additional Work}
 
 Moreover, students should write a tiny console driver. Try to make this
 driver code generic so you can reuse it in the next steps.
-
-Finally, for this project, the students have to initialize the segment
-and region manager, based on the segment and region array provided by
-the bootloader's initialization structure. Note that this specific
-initialization will change in the next projects.
-
-\subsubsection{Bonus}
-
-Be creative...
 
 %
 % ia32
 %
 
-\subsection{Intel Architecture 32-bit Implementation}
+\section{Intel Architecture 32-bit}
 
-The bootloader is highly specific to the architecture because its main
-roles are to:
+The bootloader is highly specific to the microprocessor's architecture
+since its main roles are to:
 
 \begin{itemize}
   \item
     Install new memory addressing models.
   \item
-    Build the pre-reserved segment array.
+    Build the pre-reserved core segments area.
   \item
-    Build the pre-reserved region array.
+    Build the pre-reserved core regions area.
 \end{itemize}
 
 The other tasks are independent of the architecture.
 
 We will so detail the three previous points.
 
-\subsubsection{Memory Addressing Models}
+%
+% memory addressing models
+%
 
-Since the kaneton microkernel can be implemented for three sub-architectures,
-different Intel memory addressing models can be used.
+\subsection{Memory Addressing Models}
+
+Since the kaneton microkernel can be implemented for multiple
+sub-architectures, different Intel memory addressing models can be used.
 
 We will assume in this document that the students implementing the
-Intel architecture are using the \textit{ia32-virtual} architecture, meaning
-that they are implementing the kaneton microkernel with true virtual memory.
+Intel architecture are using the \textit{ia32-virtual} sub-architecture,
+meaning that they are implementing the kaneton microkernel with true
+virtual memory.
 
 Students willing implement kaneton with other specific Intel architecture
 facilities should be able to adapt the assignments to their case.
@@ -191,59 +175,61 @@ has to install two memory addressing models:
     Indeed, the bootloader needs to rebuild the protected mode to be sure
     it is installed and to be able to maintain it.
   \item
-    Then, the paging mode to enable virtual memory.
+    Then, the paging mode to enable true virtual memory.
 \end{enumerate}
 
-We advise you to install the protected mode, then to relocate the stuff
-and build the initialization structure and finally to install the
+We advise the student to install the protected mode, then to relocate the
+stuff above the 16Mb and build the initialization structure and finally to install the
 virtual memory before calling the kernel.
 
 In this way, you will handle the hardest architecture problem, the virtual
-memory, at the end, before performing the very last step, call the kernel.
+memory, at the end, before performing the very last step, calling the kernel.
 
-\subsubsection{Segments}
+%
+% core segments
+%
 
-The segment array passed to the kernel by the bootloader to the kernel via
-the initialization structure is used to describe architecture dependent
-physical memory areas as kaneton memory areas.
+\subsection{Core Segments}
 
-The kaneton memory areas are the logical memory areas to keep from being
-erased like the kernel code, the kernel stack, the initialization structure,
-the modules, the segment and region arrays, the survival area etc..
+The core segments area passed to the kernel by the bootloader via
+the initialization structure is used to specify the microkernel the
+physical memory areas which have to be marked as pre-reserved by the core.
 
-These areas, the core might be able to find out by itself but we prefer
-specifying them in the segment array so everything is clear.
+These memory areas are memory areas to keep from being erased like the
+kernel code, the kernel stack, the initialization structure, the modules,
+the core segments area, the core regions area, the survival area but also
+architecture-specific areas like the ISA memory area etc..
 
-The architecture dependent memory areas are physical memory areas that
-have a very special meaning on the running architecture. These area can
-include the mapped video memory, the mapped BIOS ROM etc..
+%
+% core regions
+%
 
-To keep the core segment manager from allocating memory on them, the
-bootloader has to describe these areas via the segment array.
+\subsection{Core Regions}
 
-So the architecture dependent segments should include the ISA memory segment
-and any other architecture specific reserved memory area for example for
-the virtual memory page directories and page tables etc..
+The core regions area must contain everything necessary to describe
+the future core virtual memory state.
 
-\subsubsection{Regions}
+In other words, the core regions represent the future virtual memory
+state of the core. By \textit{future} we mean once the core's region
+manager is fully initialized. Indeed, the core's region manager will
+use the initialization structure and more precisly the core regions to
+properly rebuild the virtual memory.
 
-The region array must describe the virtual memory state on the specific
-architecture for the kernel address space.
-
-In other words, the region array must contains every virtual memory
-areas in use once the region manager is initialized.
-
-So, on the Intel architectures these include the mapped video memory,
-the kernel code, the kernel stack, the initialization structure, the
-survival area and any additional Intel specific objects like the Global
-Descriptor Table etc..
+So, on the Intel sub-architectures, these core regions include the mapped
+video memory, the kernel code, the kernel stack, the initialization
+structure, the survival area and any additional Intel specific elements
+like the Global Descriptor Table etc..
 
 Notice that it might be smart not to include the first memory page in
-the region array. Mapping this page will cause null pointers to be valid!
+the core regions so null pointers dereferencing will cause page faults.
 
-\subsubsection{Example}
+%
+% layout
+%
 
-Below is a sample physical memory layout for the Intel architectures:
+\subsection{Layout}
+
+Below is a sample physical memory layout for the Intel sub-architectures:
 
 \begin{center}
   \includegraphics[scale=0.7]{figures/k1-memory-layout.pdf}

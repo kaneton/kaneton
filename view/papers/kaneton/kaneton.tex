@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/kaneton.tex
 %%
 %% created       julien quintard   [thu dec  8 00:26:00 2005]
-%% updated       julien quintard   [sat apr 15 21:52:12 2006]
+%% updated       julien quintard   [mon may  8 18:35:26 2006]
 %%
 
 %
@@ -34,7 +34,7 @@
 %
 
 \author{\small{Julien Quintard},
-        \small{Matthieu Bucchianeri},
+        \small{Matthieu Bucchianeri} and
         \small{Renaud Voltz}}
 
 %
@@ -51,10 +51,6 @@
 
 %
 % --------- text --------------------------------------------------------------
-%
-
-%
-% authors
 %
 
 This document describes the kaneton microkernel reference project.
@@ -86,69 +82,30 @@ the official website
 \include{coding-style}
 \include{boot}
 \include{core}
-
-%\include{portability}
-%\include{architectures} % descriptions des archi supportees et implantees
-
+\include{drivers}
+\include{services}
+\include{portability}
+\include{architectures}
 %\include{tools}
 %\include{check}
 
+\include{licenses}
+\include{bibliography}
+
 \end{document}
 
----
+--
 
-XXX parler de la klibc: plutot dire que kaneton utilise les quad
-
-il faudrait dire que c est implante en C
-
----
-
-erreur: module dans bootloader je dis que c est n importe quoi alors
- que dans la nomenclature c est un binaire passif
-
----
-
-ensuite sections drivers, services
+virer de nomenclature le truc sur le code et le mettre dans coding-style
 
 --
 
-license dans le pdf
+module: n importe quoi au boot
+
+donc il faut qu on trouve un autre nom pour les binaires passifs.
 
 --
 
-parler de l avancement de kaneton: nombre de lignes etc..
-
---
-
-avec les Actions, mettre des exemple, make view-dev etc..
-
---
-
-faire un transcript sur comment faire un transcript
-
---
-
-mettre a jour les actions + rec, play, mais egalement la hierarchie etc..
-
---
-
-hierarchie des objets kaneton
-
---
-
-pour faire simple: t_{psize,vsize} size alignees sur PAGESZ alors
- que t_size non
-
---
-
-The kaneton developers wanted to make things simple to add source code
-at the beginning and/or at the end of the functions of a manager. To do
-so, some macro functions were introduced.
-
-*ENTER *LEAVE
-
-ptet meme que ca va plutot dans coding style avec t_error
-
---
-
-biblio avec tous les liens: tanebaum (livres), publi, lions etc..
+un solution pour les verbatim foireux a la couleur ou les fonctions
+qui sont decoupees sur deux pages (nom,desc), il suffit de faire une
+box autour (tabular) et comme ca il ne le splitte pas
