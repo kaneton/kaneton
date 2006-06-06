@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/env/users/julien.quintard/conf.h
+ * file          /home/buckman/kaneton/env/users/julien.quintard/conf.h
  *
  * created       julien quintard   [sat dec 17 17:24:46 2005]
- * updated       julien quintard   [sun apr  2 23:31:28 2006]
+ * updated       matthieu bucchianeri   [tue jun  6 13:12:10 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -64,7 +64,7 @@
  */
 
 #define CONF_DEBUG							\
-  (DEBUG_TASK)
+  (0)
 
 /*
  * the machine-dependent configuration debug

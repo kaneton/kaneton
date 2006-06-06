@@ -55,8 +55,6 @@ t_error			alloc_kasid(i_as			kernel);
 int			alloc_init(t_vaddr			addr,
 				   t_size			size);
 
-void alloc_test(void);
-
 
 /*
  * ../../libdata/dump.c

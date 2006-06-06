@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri jun  2 13:51:53 2006]
+ * updated       matthieu bucchianeri   [tue jun  6 13:21:14 2006]
  */
 
 /*
@@ -39,17 +39,11 @@
 extern m_as*		as;
 extern i_task		ktask;
 extern t_init*		init;
+extern i_as		kasid;
 
 /*
  * ---------- globals ---------------------------------------------------------
  */
-
-
-/*                                                                  [cut] k2 */
-
-i_as			kasid = ID_UNUSED;
-
-/*                                                                 [cut] /k2 */
 
 /*
  * the address space manager dispatch.

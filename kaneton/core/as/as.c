@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [fri jun  2 14:12:43 2006]
+ * updated       matthieu bucchianeri   [tue jun  6 13:23:18 2006]
  */
 
 /*
@@ -61,6 +61,12 @@ machdep_include(as);
  */
 
 m_as*			as = NULL;
+
+/*
+ * kernel address space.
+ */
+
+i_as			kasid = ID_UNUSED;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -849,8 +855,11 @@ t_error			as_clean(void)
 	  return (ERROR_UNKNOWN);
 	}
 
-      if (as_release(data->asid) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
+      if (data->asid == kasid)
+	set_remove(as->ass, data->asid);
+      else
+	if (as_release(data->asid) != ERROR_NONE)
+	  return (ERROR_UNKNOWN);
     }
 
   if (set_release(as->ass) != ERROR_NONE)

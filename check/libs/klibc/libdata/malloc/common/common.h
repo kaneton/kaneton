@@ -87,7 +87,7 @@ void		check_malloc_04(void);
  * ../05/05.c
  */
 
-void	check_malloc_05(void);
+void		check_malloc_05(void);
 
 
 /*

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun jun  4 18:53:10 2006]
+ * updated       matthieu bucchianeri   [tue jun  6 14:23:20 2006]
  */
 
 /*
@@ -213,7 +213,11 @@ void			kaneton(t_init*				bootloader)
    * XXX
    */
 
-  //  task_clean();
+//  timer_clean();
+
+//  event_clean();
+
+//  task_clean();
 
   map_clean();
 
