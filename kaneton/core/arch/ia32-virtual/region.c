@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [fri jun  2 13:49:56 2006]
+ * updated       matthieu bucchianeri   [sun jun 11 17:13:20 2006]
  */
 
 /*
@@ -54,6 +54,9 @@ d_region		region_dispatch =
 
     NULL,
     NULL,
+    NULL,
+    NULL,
+    NULL,
     ia32_region_reserve,
     ia32_region_release,
     NULL,
@@ -83,7 +86,7 @@ d_region		region_dispatch =
  * 4) invalidate tlb entry.
  */
 
-static t_error		ia32_region_map_chunk(t_vaddr		v,
+t_error			ia32_region_map_chunk(t_vaddr		v,
 					      t_paddr		p)
 {
   o_region		oreg;
@@ -163,7 +166,7 @@ static t_error		ia32_region_map_chunk(t_vaddr		v,
  * 4) invalidate translation caches.
  */
 
-static t_error		ia32_region_unmap_chunk(t_vaddr		v)
+t_error			ia32_region_unmap_chunk(t_vaddr		v)
 {
   t_ia32_table		pt;
   o_as*			as;

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [fri jun  2 17:02:12 2006]
+ * updated       matthieu bucchianeri   [sun jun 11 18:02:40 2006]
  */
 
 /*
@@ -218,6 +218,7 @@ t_error			region_inject(i_as		asid,
  * 3) check if a valid segment exists and can be used.
  * 4) build the new region.
  * 5) adjust the old region size.
+ * 6) call the dependent code.
  */
 
 t_error			region_split(i_as			asid,
@@ -282,6 +283,14 @@ t_error			region_split(i_as			asid,
 
   reg->size = size;
 
+  /*
+   * 6)
+   */
+
+  if (machdep_call(region, region_split, asid, regid, size, left, right) !=
+      ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
   REGION_LEAVE(region, ERROR_NONE);
 }
 
@@ -310,6 +319,84 @@ t_error			region_resize(i_as			asid,
    */
 
   /* XXX */
+
+  if (machdep_call(region, region_resize, asid, old, size, new) !=
+      ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  REGION_LEAVE(region, ERROR_NONE);
+}
+
+/*
+ * this function merges two adjacent regions.
+ *
+ * steps:
+ *
+ * 1) get both region objets.
+ * 2) check if the operation is correct.
+ * 3) get the as object.
+ * 4) update the region size.
+ * 5) remove the right region from the address space.
+ * 6) call the machine dependent code.
+ */
+
+t_error			region_coalesce(i_as		asid,
+					i_region	left,
+					i_region	right,
+					i_region*	regid)
+{
+  o_as*			as;
+  o_region*		oleft;
+  o_region*		oright;
+
+  REGION_ENTER(region);
+
+  /*
+   * 1)
+   */
+
+  if (region_get(asid, left, &oleft) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  if (region_get(asid, right, &oright) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (oleft->address + oleft->size != oright->address ||
+      oleft->segid != oright->segid ||
+      oleft->offset + oleft->size != oright->offset)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (as_get(asid, &as) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  oleft->size += oright->size;
+
+  /*
+   * 5)
+   */
+
+  if (set_remove(as->regions, right) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 6)
+   */
+
+  if (machdep_call(region, region_coalesce, asid, left, right, regid) !=
+      ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
 }

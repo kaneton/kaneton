@@ -64,6 +64,11 @@ t_error			ia32_as_reserve(i_task			tskid,
  * ../../../../core/arch/machdep/region.c
  */
 
+t_error			ia32_region_map_chunk(t_vaddr		v,
+					      t_paddr		p);
+
+t_error			ia32_region_unmap_chunk(t_vaddr		v);
+
 t_error			ia32_region_reserve(i_as		asid,
 					    i_segment		segid,
 					    t_paddr		offset,
@@ -100,6 +105,9 @@ t_error			ia32_segment_copy(i_region		dst,
 					  i_region		src,
 					  t_paddr		offss,
 					  t_psize		sz);
+
+t_error			ia32_segment_perms(i_segment		segid,
+					   t_perms		perms);
 
 t_error			ia32_segment_init(void);
 

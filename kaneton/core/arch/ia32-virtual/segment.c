@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri jun  2 13:50:37 2006]
+ * updated       matthieu bucchianeri   [sun jun 11 17:28:52 2006]
  */
 
 /*
@@ -65,7 +65,7 @@ d_segment		segment_dispatch =
     NULL,
     NULL,
     NULL,
-    NULL,
+    ia32_segment_perms,
     NULL,
     NULL,
     ia32_segment_init,
@@ -271,6 +271,182 @@ t_error			ia32_segment_copy(i_region		dst,
   if (region_release(kasid, regs) != ERROR_NONE ||
       region_release(kasid, regd) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  SEGMENT_LEAVE(segment, ERROR_NONE);
+}
+
+/*
+ * this function sets the permissions of a segment.
+ *
+ * steps:
+ *
+ * 1) get the segment object.
+ * 2) get the address space and the kernel address space object.
+ * 3) search for regions mapping the segment.
+ *  a) map the page directory if necessary.
+ *  b) loop throught the page directory entries.
+ *  c) map the page table temporarily.
+ *  d) loop throught the page table entries.
+ *  e) change the read/write flag.
+ *  f) invalidate the TLB if necessary.
+ *  g) unmap the page table.
+ * 4) unmap the page directory if needed.
+ */
+
+t_error			ia32_segment_perms(i_segment		segid,
+					   t_perms		perms)
+{
+  t_ia32_directory	pd = NULL;;
+  t_ia32_table		pt;
+  t_ia32_page		pg;
+  t_ia32_pde		pde_start;
+  t_ia32_pde		pde_end;
+  t_ia32_pte		pte_start;
+  t_ia32_pte		pte_end;
+  t_ia32_pde		pde;
+  t_ia32_pte		pte;
+  o_segment*		seg;
+  o_region*		reg;
+  o_as*			as;
+  o_as*			kas;
+  t_state		state;
+  t_iterator		it;
+  t_vaddr		vaddr;
+  t_vaddr		chunk;
+
+  SEGMENT_ENTER(segment);
+
+  /*
+   * 1)
+   */
+
+  if (segment_get(segid, &seg) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (as_get(kasid, &kas) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (as_get(seg->asid, &as) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  set_foreach(SET_OPT_FORWARD, as->regions, &it, state)
+    {
+      if (set_object(as->regions, it, (void**)&reg) != ERROR_NONE)
+	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+      if (reg->segid == segid)
+	{
+
+	  /*
+	   * a)
+	   */
+
+	  if (pd == NULL)
+	    {
+	      if (seg->asid == kasid)
+		{
+		  pd = as->machdep.pd;
+		}
+	      else
+		{
+		  if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
+		    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+		  pd = (t_ia32_directory)(t_uint32)chunk;
+
+		  if (ia32_region_map_chunk((t_vaddr)pd,
+					    (t_paddr)as->machdep.pd) !=
+		      ERROR_NONE)
+		    REGION_LEAVE(region, ERROR_UNKNOWN);
+		}
+	    }
+
+	  /*
+	   * b)
+	   */
+
+	  vaddr = reg->address;
+
+	  pde_start = PDE_ENTRY(vaddr);
+	  pte_start = PTE_ENTRY(vaddr);
+	  pde_end = PDE_ENTRY(vaddr + reg->size);
+	  pte_end = PTE_ENTRY(vaddr + reg->size);
+
+	  for (pde = pde_start; pde <= pde_end; pde++)
+	    {
+	      if (pd_get_table(&pd, pde, &pt) != ERROR_NONE)
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+	      /*
+	       * c)
+	       */
+
+	      if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
+		REGION_LEAVE(region, ERROR_UNKNOWN);
+
+	      if (ia32_region_map_chunk((t_vaddr)chunk,
+					(t_paddr)pt.entries) != ERROR_NONE)
+		REGION_LEAVE(region, ERROR_UNKNOWN);
+
+	      pt.entries = chunk;
+
+	      /*
+	       * d)
+	       */
+
+	      for (pte = (pde == pde_start ? pte_start : 0);
+		   pte < (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
+		   pte++)
+		{
+		  /*
+		   * e)
+		   */
+
+		  if (pt_get_page(&pt, pte, &pg) != ERROR_NONE)
+		    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+		  pg.rw = !!(perms & PERM_WRITE);
+
+		  if (pt_add_page(&pt, pte, pg) != ERROR_NONE)
+		    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+		  /*
+		   * f)
+		   */
+
+		  if (seg->asid == kasid)
+		    tlb_invalidate((t_vaddr)ENTRY_ADDR(pde, pte));
+		}
+
+	      /*
+	       * g)
+	       */
+
+	      if (ia32_region_unmap_chunk((t_vaddr)pt.entries) != ERROR_NONE)
+		REGION_LEAVE(region, ERROR_UNKNOWN);
+
+	    }
+	}
+    }
+
+  /*
+   * 4)
+   */
+
+  if (pd != NULL)
+    {
+      if (seg->asid != kasid)
+	if (ia32_region_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
+	  REGION_LEAVE(region, ERROR_UNKNOWN);
+    }
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }

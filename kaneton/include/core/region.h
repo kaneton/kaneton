@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sat jun  3 20:06:29 2006]
+ * updated       matthieu bucchianeri   [tue jun  6 15:23:50 2006]
  */
 
 #ifndef CORE_REGION_H
@@ -81,6 +81,19 @@ typedef struct
 					       i_region);
   t_error			(*region_inject)(i_as,
 						 o_region*);
+  t_error			(*region_split)(i_as,
+						i_region,
+						t_vsize,
+						i_region*,
+						i_region*);
+  t_error			(*region_resize)(i_as,
+						 i_region,
+						 t_vsize,
+						 i_region*);
+  t_error			(*region_coalesce)(i_as,
+						   i_region,
+						   i_region,
+						   i_region*);
   t_error			(*region_reserve)(i_as,
 						  i_segment,
 						  t_paddr,
@@ -168,6 +181,11 @@ t_error			region_resize(i_as			asid,
 				      i_region			old,
 				      t_vsize			size,
 				      i_region*			new);
+
+t_error			region_coalesce(i_as		asid,
+					i_region	left,
+					i_region	right,
+					i_region*	regid);
 
 t_error			region_reserve(i_as			asid,
 				       i_segment		segid,

@@ -34,11 +34,6 @@
  des tests de perf avec le slab.
 
 --
- il faut revoir  la gestion des permissions sur  la memoire. en effet,
- c'est  segment  qui  gere  les  perms  mais  avec  ia32-virtual  c'est
- region. il faut donc du code dans ia32_segment_perms
-
---
  mettre des priorites sur les event? bottom-halves etc..
 
  comme ca le timer se lance immediatement, un driver peut se voir
@@ -81,24 +76,11 @@
     + t_module* next;
   }
 
- enlever aussi le premier et faire qu il n y a qu un segment
- pour l ISA.
-
---
- ordre des *_give(). tjs le plus en dans la hierarchie en premier:
-
- as_give(task, as); segment_give(as, segment) etc..
-
 --
  mettre a jour dev-env
 
 --
- * vraiment finir les resize & co des regions. c'est le seul truc qui manque.
  * finir les tests suivants: as/06, as/07, region/*, map/*
- * revoir le kmalloc pour qu'il n'utilise plus le survey area une fois tout
-   lancé.
-
- une fois les trucs ci-dessus ok, la gestion de la mémoire sera ok+clean+testé.
 
  a revoir (pas urgent):
 
