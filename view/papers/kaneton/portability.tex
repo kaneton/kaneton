@@ -1,0 +1,135 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/papers/kaneton/portability.tex
+%%
+%% created       julien quintard   [sun apr 23 17:08:41 2006]
+%% updated       julien quintard   [sun apr 23 17:08:41 2006]
+%%
+
+%
+% portability
+%
+
+\chapter{Portability}
+
+In this chapter we will describe the kaneton portability system designed
+to perfectly fit the kaneton requirements.
+
+\newpage
+
+%
+% text
+%
+
+kaneton people wanted to design a powerful microkernel easily portable
+on every microprocessor's architecture.
+
+Therefore, a portability system had to be defined to fit the whole kaneton
+design and implementation.
+
+The different portability systems can be classified into two categories.
+
+The first type of portability system consists in letting the
+machine-dependent source code defining for example the whole memory manager
+for its precise architecture so it can optimize every data structure to
+better fit this architecture.
+
+The problem of such a portability system is the code redundancy in each
+architecture implementation of the memory manager.
+
+This kind of portability system seemed quite ugly to kaneton people
+even if many kernels use this one to optimize the kernel implementation
+on every architecture. For this reason, this solution was not adopted
+for the kaneton microkernel.
+
+The second type of portability system consists in the definition of
+an architecture interface. This architecture interface defines common
+architectures basic operations like flushing the Translation Lookaside Buffer,
+installing a new virtual memory, etc.. Indeed, these basic operations
+are present on about every modern architectures. Nevertheless, some
+architectures - currently existing or not - may possibly not fit this
+interface.
+
+This portability system is better than the previous one but still is too
+limitated. Once again, for this reason, the kaneton people decided not
+to adopt this system.
+
+Therefore, kaneton people decided to design a specific kaneton portability
+system perfectly fitting in the kaneton requirements based on the kaneton
+microkernel design.
+
+The kaneton portability system was designed based on the kaneton microkernel
+design. Indeed, the kaneton microkernel is composed of objects in
+kaneton terms.
+
+The kaneton objects describe the core's internal state. For this reason,
+the architecture-dependent code should only perform actions based on
+the modification of the kaneton objects' states.
+
+Therefore, the architecture-dependent code should be called every time
+a kaneton object is either created, modified or destroyed. Indeed, these
+three cases perfectly describe the core's internel state changes.
+
+The kaneton portability system is so equivalent to the one which uses
+an architecture interface. Nevertheless, the logic used was reversed.
+Indeed, rather than building an interface based on the architectures, the
+kaneton portability system uses an interface based on the kaneton managers
+interfaces.
+
+Moreover, the kaneton portability system goes further with the possibility
+for the architecture-dependent code to transparently include data in the
+kaneton objects.
+
+In other words, rather than calling the machine-dependent code to create
+a new page directory, the as manager will call the machine-dependent code
+each time an address space object is created. Therefore, the
+machine-dependent code could build an appropriate page directory each time
+an address space object is reserved.
+
+This portability system is experimental but seems correct.
+
+Theoritically, this portability system is perfect since there is no
+code redundancy and there are no constraints for the machine-dependent
+code.
+
+%
+% interface
+%
+
+\subsubsection{Interface}
+
+The whole kaneton portability system was implemented using the
+c-preprocessor facilities.
+
+Therefore, everything is transparent from the core point of view.
+
+\function{machdep\_include}{(\argument{manager})}
+	 {
+	   This macro-function can be used by the core to include
+	   machine-dependent code for the precise manager \argument{manager}.
+	 }
+
+\function{machdep\_data}{(\argument{object})}
+	 {
+	   This macro-function can be used by the machine-dependent code
+	   to add data in the kaneton object \argument{object}.
+	 }
+
+\function{machdep\_call}{(\argument{manager},
+                          \argument{function},
+                          \argument{args...})}
+	 {
+	   This macro-function can be used by the core to call the
+	   machine-dependent function \argument{function} of the manager
+	   \argument{manager}.
+	 }
+
+To better undestand how the kaneton portability system works, the reader
+should take a look at the file
+\textit{kaneton/include/arch/[architecture]/machdep.h}
+and an example of manager using the portability system like the address
+space manager
+\textit{kaneton/include/arch/[architecture]/core/as.h}.

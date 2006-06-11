@@ -1,0 +1,80 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/papers/kaneton/architectures.tex
+%%
+%% created       julien quintard   [sun apr 23 17:08:41 2006]
+%% updated       julien quintard   [sun apr 23 17:08:41 2006]
+%%
+
+%
+% architectures
+%
+
+\chapter{Architectures}
+
+This chapter will overview the different architectures supported by
+the kaneton microkernel reference.
+
+\newpage
+
+%
+% text
+%
+
+The kaneton microkernel references currently supports the following
+architectures.
+
+Notice that, sometimes, the kaneton microkernel can support multiples
+\textit{architectures} of a single microprocessor's architecture.
+These multiples \textit{architectures} generally exploit different
+facilities of the same microprocessor's architecture.
+
+There is a paper specific to every supported architecture. These papers
+are available on the kaneton official website
+  \footnote{http://www.kaneton.org}.
+
+%
+% intel architecture 32-bit
+%
+
+\section{Intel Architecture 32-bit}
+
+The kaneton microkernel reference was first developed on the Intel Architecture
+32-bit since this architecture is very popular and cheap.
+
+The following architecture implementations are supported by the kaneton
+microkernel.
+
+%
+% ia32-virtual
+%
+
+\subsection{ia32-virtual}
+
+This architecture uses a flat segmentation model with paging enabled
+allowing multiple virtual address space and so virtual address space
+protections.
+
+Nevertheless, this architecture implementation is kept as simple as possible
+since it is used as the basis of the operating system courses.
+
+One of the particularities of this architecture is that the core has its
+own address space. Then, each time a system call occurs, an address space
+switch is performed to work in the core's address space.
+
+This particularity leads to bad performances since each time an address
+space switch occurs, the microprocessor's caches are flushed.
+
+%
+% ia32-optimized
+%
+
+\subsection{ia32-optimized}
+
+This architecture also relies on the Intel Architecture 32-bit but uses
+every optimisations provided by the microprocessor's architecture.
+
+\notice{This architecture is not implemented yet.}
