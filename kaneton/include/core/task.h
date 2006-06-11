@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       matthieu bucchianeri   [fri jun  2 13:35:16 2006]
+ * updated       matthieu bucchianeri   [sun jun 11 18:33:05 2006]
  */
 
 #ifndef CORE_TASK_H
@@ -134,6 +134,14 @@ typedef struct
 						t_prior,
 						i_task*);
   t_error			(*task_release)(i_task);
+  t_error			(*task_priority)(i_task,
+						 t_prior);
+  t_error			(*task_run)(i_task);
+  t_error			(*task_stop)(i_task);
+  t_error			(*task_exit)(i_task);
+  t_error			(*task_wait)(i_task,
+					     t_opts,
+					     t_wait*);
   t_error			(*task_init)(void);
   t_error			(*task_clean)(void);
 }				d_task;

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/sched.h
  *
  * created       matthieu bucchianeri   [sat jun  3 22:34:42 2006]
- * updated       matthieu bucchianeri   [sat jun  3 22:55:53 2006]
+ * updated       matthieu bucchianeri   [sun jun 11 19:20:17 2006]
  */
 
 #ifndef CORE_SCHED_H
@@ -50,6 +50,9 @@ typedef struct
   t_error			(*sched_current)(i_thread*);
   t_error			(*sched_next)(i_thread*);
   t_error			(*sched_switch)(i_thread);
+  t_error			(*sched_add)(i_thread);
+  t_error			(*sched_remove)(i_thread);
+  t_error			(*sched_update)(i_thread);
   t_error			(*sched_init)(void);
   t_error			(*sched_clean)(void);
 }				d_sched;
@@ -109,6 +112,12 @@ t_error			sched_current(i_thread*			thread);
 t_error			sched_next(i_thread*			thread);
 
 t_error			sched_switch(i_thread			thread);
+
+t_error			sched_add(i_thread			thread);
+
+t_error			sched_remove(i_thread			thread);
+
+t_error			sched_update(i_thread			thread);
 
 t_error			sched_init(void);
 

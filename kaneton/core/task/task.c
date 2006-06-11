@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [sun jun  4 18:54:31 2006]
+ * updated       matthieu bucchianeri   [sun jun 11 19:29:29 2006]
  */
 
 /*
@@ -220,6 +220,9 @@ t_error			task_clone(i_task			old,
       */
     }
 
+  /* XXX waits */
+  /* XXX sched ? */
+
   /*
    * 6)
    */
@@ -237,11 +240,12 @@ t_error			task_clone(i_task			old,
  *
  * 1) checks the validity of arguments.
  * 2) initialises the task object.
- * 3) reserves an identifier for the task object.
- * 4) reserves the set of threads for the new task object.
- * 5) reserves the set of waits for the new task object.
- * 6) adds the new task object in the task set.
- * 7) calls the machine-dependent code.
+ * 3) get the parent task.
+ * 4) reserves an identifier for the task object.
+ * 5) reserves the set of threads for the new task object.
+ * 6) reserves the set of waits for the new task object.
+ * 7) adds the new task object in the task set.
+ * 8) calls the machine-dependent code.
  */
 
 t_error			task_reserve(t_class			class,
@@ -250,6 +254,8 @@ t_error			task_reserve(t_class			class,
 				     i_task*			id)
 {
   o_task		o;
+  o_thread*		othread;
+  i_thread		parentthr;
 
   TASK_ENTER(task);
 
@@ -283,22 +289,30 @@ t_error			task_reserve(t_class			class,
 
   memset(&o, 0x0, sizeof(o_task));
 
-  o.parent = 0; /* XXX */
   o.class = class;
   o.behav = behav;
   o.prior = prior;
 
   o.asid = ID_UNUSED;
   o.threads = ID_UNUSED;
+  o.waits = ID_UNUSED;
 
   o.sched = 0; /* XXX SCHEDULE_STATE_STOP */
 
-  /* XXX o.status = XXX; */
-
-  o.waits = ID_UNUSED;
-
   /*
    * 3)
+   */
+
+  if (sched_current(&parentthr) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  if (thread_get(parentthr, &othread) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  o.parent = othread->taskid;
+
+  /*
+   * 4)
    */
 
   if (id_reserve(&task->id, id) != ERROR_NONE)
@@ -307,7 +321,7 @@ t_error			task_reserve(t_class			class,
   o.tskid = *id;
 
   /*
-   * 4)
+   * 5)
    */
 
   if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, TASK_THREADS_INITSZ,
@@ -319,7 +333,7 @@ t_error			task_reserve(t_class			class,
     }
 
   /*
-   * 5)
+   * 6)
    */
 
   if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, TASK_WAITS_INITSZ,
@@ -333,7 +347,7 @@ t_error			task_reserve(t_class			class,
     }
 
   /*
-   * 6)
+   * 7)
    */
 
   if (set_add(task->tasks, &o) != ERROR_NONE)
@@ -347,7 +361,7 @@ t_error			task_reserve(t_class			class,
     }
 
   /*
-   * 7)
+   * 8)
    */
 
   if (machdep_call(task, task_reserve, class,
@@ -438,40 +452,172 @@ t_error			task_release(i_task			id)
 
 /*
  * this function updates the task's priority to "prior".
+ *
+ * steps:
+ *
+ * 1) get the task object.
+ * 2) check the priority range using the behaviour.
+ * 3) update the task priority.
+ * 4) update all the threads priorities.
+ * 5) call the machine dependent code.
  */
 
 t_error			task_priority(i_task			id,
 				      t_prior			prior)
 {
+  o_task*		o;
+  t_iterator		i;
+  t_state		state;
+
   TASK_ENTER(task);
 
-  /* XXX */
+  /*
+   * 1)
+   */
+
+  if (task_get(id, &o) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  switch (o->behav)
+    {
+      case TASK_BEHAV_CORE:
+	if (prior < TASK_LPRIOR_CORE || prior > TASK_HPRIOR_CORE)
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	break;
+      case TASK_BEHAV_REALTIME:
+	if (prior < TASK_LPRIOR_REALTIME || prior > TASK_HPRIOR_REALTIME)
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	break;
+      case TASK_BEHAV_INTERACTIVE:
+	if (prior < TASK_LPRIOR_INTERACTIVE || prior > TASK_HPRIOR_INTERACTIVE)
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	break;
+      case TASK_BEHAV_TIMESHARING:
+	if (prior < TASK_LPRIOR_TIMESHARING || prior > TASK_HPRIOR_TIMESHARING)
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	break;
+      case TASK_BEHAV_BACKGROUND:
+	if (prior < TASK_LPRIOR_BACKGROUND || prior > TASK_HPRIOR_BACKGROUND)
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	break;
+      default:
+	TASK_LEAVE(task, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 3)
+   */
+
+  o->prior = prior;
+
+  /*
+   * 4)
+   */
+
+  set_foreach(SET_OPT_FORWARD, o->threads, &i, state)
+    {
+      t_thrid*		data;
+
+      if (set_object(o->threads, i, (void**)&data) != ERROR_NONE)
+	{
+	  cons_msg('!', "task: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	}
+
+      if (sched_update(*data) != ERROR_NONE)
+	TASK_LEAVE(task, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 5)
+   */
+
+  if (machdep_call(task, task_priority, id, prior) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_UNKNOWN);
 }
 
 /*
  * this function marks the task as runnable.
+ *
+ * steps:
+ *
+ * 1) get the task object.
+ * 2) set the new state.
+ * 3) call the machine dependent code.
  */
 
 t_error			task_run(i_task				id)
 {
+  o_task*		o;
+
   TASK_ENTER(task);
 
+  /*
+   * 1)
+   */
+
+  if (task_get(id, &o) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
   /* XXX */
+
+  /*
+   * 3)
+   */
+
+  if (machdep_call(task, task_run, id) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_UNKNOWN);
 }
 
 /*
  * this function stops a task.
+ *
+ * steps:
+ *
+ * 1) get the task object.
+ * 2) set the new state.
+ * 3) call the machine dependent code.
  */
 
 t_error			task_stop(i_task			id)
 {
+  o_task*		o;
+
   TASK_ENTER(task);
 
+  /*
+   * 1)
+   */
+
+  if (task_get(id, &o) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
   /* XXX */
+
+  /*
+   * 3)
+   */
+
+  if (machdep_call(task, task_stop, id) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_UNKNOWN);
 }
