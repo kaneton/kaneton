@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/libs/Makefile
+## file          /home/mycure/kaneton/libs/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:28:05 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:50:09 2006]
+## updated       julien quintard   [wed jun  7 13:14:25 2006]
 ##
 
 #

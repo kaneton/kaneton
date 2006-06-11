@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/core.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:33:29 2006]
-%% updated       julien quintard   [mon may  8 17:53:16 2006]
+%% updated       julien quintard   [sun jun 11 19:25:13 2006]
 %%
 
 %
@@ -1407,6 +1407,23 @@ execution entities and not the tasks.
 	 {
 	   This function permits the current task to relinquish
 	   the processor voluntarily.
+	 }
+
+\function{sched\_add}{(i\_thread \argument{thread})}
+	 {
+	   This function adds a runnable thread to the scheduler.
+	 }
+
+\function{sched\_remove}{(i\_thread \argument{thread})}
+	 {
+	   This function remove a thread from the scheduler.
+	 }
+
+\function{sched\_update}{(i\_thread \argument{thread})}
+	 {
+	   This function asks the scheduler to update the thread
+	   \argument{thread} in its internal data structures since
+	   for example the thread's priority just changed.
 	 }
 
 \function{sched\_current}{(i\_thread* \argument{thread})}

@@ -1,4 +1,7 @@
 --
+ recuperer bpt.h v2.3 et relancer les tests
+
+--
  virer les !# * meme pour perl, python, ruby etc.. car ca va forcement
  chier sur des OS. a la place faire un truc comme autoconf qui trouve
  les binaires.
