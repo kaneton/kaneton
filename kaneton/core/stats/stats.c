@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/stats/stats.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed apr 12 11:48:38 2006]
+ * updated       matthieu bucchianeri   [thu jun 15 22:04:36 2006]
  */
 
 /*
@@ -46,6 +46,16 @@
  */
 
 m_stats*		stats;
+
+/*
+ * ---------- externals--------------------------------------------------------
+ */
+
+/*
+ * the timer manager structure.
+ */
+
+extern m_timer*		timer;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -166,16 +176,15 @@ t_error			stats_begin(i_stats			staid,
 
       f->calls = 0;
       f->errors = 0;
-
-      /*
-       * XXX start the timer here
-       */
+      f->total = 0;
     }
 
   /*
    * 4)
    */
 
+  if (timer != NULL)
+    f->timer_start = timer->timeref;
   f->calls++;
 
   STATS_LEAVE(stats, ERROR_NONE);
@@ -186,9 +195,10 @@ t_error			stats_begin(i_stats			staid,
  *
  * steps:
  *
- * 1) checks if the stats object is correct.
- * 2) gets the function slot.
- * 3) if an error occured, increases the number of errors in this function.
+ * 1) check if the stats object is correct.
+ * 2) get the function slot.
+ * 3) if an error occured, increase the number of errors in this function.
+ * 4) update the time statistics.
  */
 
 t_error			stats_end(i_stats			staid,
@@ -223,6 +233,13 @@ t_error			stats_end(i_stats			staid,
   if (error != ERROR_NONE)
     f->errors++;
 
+  /*
+   * 4)
+   */
+
+  if (timer != NULL)
+    f->total += timer->timeref - f->timer_start;
+
   STATS_LEAVE(stats, ERROR_NONE);
 }
 
@@ -233,6 +250,7 @@ t_error			stats_end(i_stats			staid,
 t_error			stats_show(i_stats			staid)
 {
   t_sint64		i;
+  t_uint32		total = 0;
 
   STATS_ENTER(stats);
 
@@ -247,15 +265,18 @@ t_error			stats_show(i_stats			staid)
     {
       if (stats->managers[staid].functions[i].name == NULL)
 	continue;
-      cons_msg('#', "    %s: %qu call(s) [%qu errors]\n",
+      cons_msg('#', "    %s: %qu call(s) [%qu errors] %u ticks total\n",
 	       stats->managers[staid].functions[i].name,
 	       stats->managers[staid].functions[i].calls,
-	       stats->managers[staid].functions[i].errors);
+	       stats->managers[staid].functions[i].errors,
+	       stats->managers[staid].functions[i].total);
 
-      /*
-       * XXX dump the timer here
-       */
+      total += stats->managers[staid].functions[i].total;
     }
+
+  cons_msg('#', "  [%qu] total tick : %u\n",
+	   staid,
+	   total);
 
   STATS_LEAVE(stats, ERROR_NONE);
 }
@@ -384,10 +405,6 @@ t_error			stats_release(i_stats			staid)
       if (stats->managers[staid].functions[i].name != NULL)
 	free(stats->managers[staid].functions[i].name);
     }
-
-  /*
-   * XXX release the timers here
-   */
 
   free(stats->managers[staid].functions);
 

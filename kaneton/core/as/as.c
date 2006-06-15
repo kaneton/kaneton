@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [tue jun  6 13:23:18 2006]
+ * updated       matthieu bucchianeri   [thu jun 15 21:47:46 2006]
  */
 
 /*
@@ -459,11 +459,11 @@ t_error			as_clone(i_task				tskid,
    */
 
   if (set_size (from->segments, &nb_segments) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   if (set_reserve(array, SET_OPT_ALLOC, nb_segments,
 		  sizeof (foo), &mapping) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
    * 6)

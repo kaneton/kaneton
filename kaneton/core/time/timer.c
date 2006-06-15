@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/time/timer.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       matthieu bucchianeri   [wed apr 12 11:54:56 2006]
+ * updated       matthieu bucchianeri   [thu jun 15 21:59:58 2006]
  */
 
 /*

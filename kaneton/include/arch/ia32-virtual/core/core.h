@@ -146,20 +146,6 @@ t_error			ia32_timer_init(void);
  * ../../../../core/arch/machdep/task.c
  */
 
-t_error			ia32_task_clone(i_task			old,
-					i_task*			new);
-
-t_error			ia32_task_reserve(t_class		class,
-					  t_behav		behav,
-					  t_prior		prior,
-					  i_task*		tskid);
-
-t_error			ia32_task_release(i_task		tskid);
-
-t_error			ia32_task_init(void);
-
-t_error			ia32_task_clean(void);
-
 
 /*
  * ../../../../core/arch/machdep/thread.c

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/stats.h
+ * file          /home/buckman/kaneton/kaneton/include/core/stats.h
  *
  * created       julien quintard   [sun jan 19 14:51:33 2005]
- * updated       julien quintard   [sun apr  2 13:02:58 2006]
+ * updated       matthieu bucchianeri   [thu jun 15 21:39:31 2006]
  */
 
 #ifndef CORE_STATS_H
@@ -43,7 +43,8 @@ typedef struct
   t_uint64			calls;
   t_uint64			errors;
 
-  /* XXX timer */
+  t_uint32			timer_start;
+  t_uint32			total;
 }				t_stats_func;
 
 /*

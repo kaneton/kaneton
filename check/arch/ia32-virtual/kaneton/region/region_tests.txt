@@ -3,4 +3,4 @@
 03 check if the mapping is good (limits, flags etc)
 04 work with many regions
 05 resize
-06 split
+06 split/coalesce

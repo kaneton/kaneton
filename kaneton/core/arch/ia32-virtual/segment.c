@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun jun 11 17:28:52 2006]
+ * updated       matthieu bucchianeri   [thu jun 15 21:47:08 2006]
  */
 
 /*
@@ -358,14 +358,14 @@ t_error			ia32_segment_perms(i_segment		segid,
 	      else
 		{
 		  if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
-		    REGION_LEAVE(region, ERROR_UNKNOWN);
+		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 		  pd = (t_ia32_directory)(t_uint32)chunk;
 
 		  if (ia32_region_map_chunk((t_vaddr)pd,
 					    (t_paddr)as->machdep.pd) !=
 		      ERROR_NONE)
-		    REGION_LEAVE(region, ERROR_UNKNOWN);
+		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 		}
 	    }
 
@@ -390,11 +390,11 @@ t_error			ia32_segment_perms(i_segment		segid,
 	       */
 
 	      if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
-		REGION_LEAVE(region, ERROR_UNKNOWN);
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 	      if (ia32_region_map_chunk((t_vaddr)chunk,
 					(t_paddr)pt.entries) != ERROR_NONE)
-		REGION_LEAVE(region, ERROR_UNKNOWN);
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 	      pt.entries = chunk;
 
@@ -411,12 +411,12 @@ t_error			ia32_segment_perms(i_segment		segid,
 		   */
 
 		  if (pt_get_page(&pt, pte, &pg) != ERROR_NONE)
-		    REGION_LEAVE(region, ERROR_UNKNOWN);
+		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 		  pg.rw = !!(perms & PERM_WRITE);
 
 		  if (pt_add_page(&pt, pte, pg) != ERROR_NONE)
-		    REGION_LEAVE(region, ERROR_UNKNOWN);
+		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 		  /*
 		   * f)
@@ -431,7 +431,7 @@ t_error			ia32_segment_perms(i_segment		segid,
 	       */
 
 	      if (ia32_region_unmap_chunk((t_vaddr)pt.entries) != ERROR_NONE)
-		REGION_LEAVE(region, ERROR_UNKNOWN);
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 	    }
 	}
@@ -445,7 +445,7 @@ t_error			ia32_segment_perms(i_segment		segid,
     {
       if (seg->asid != kasid)
 	if (ia32_region_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
-	  REGION_LEAVE(region, ERROR_UNKNOWN);
+	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
     }
 
   SEGMENT_LEAVE(segment, ERROR_NONE);

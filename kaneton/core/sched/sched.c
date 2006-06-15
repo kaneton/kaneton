@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [sun jun 11 19:19:54 2006]
+ * updated       matthieu bucchianeri   [thu jun 15 22:14:45 2006]
  */
 
 /*
@@ -37,6 +37,12 @@ machdep_include(sched);
  */
 
 m_sched*		sched = NULL;
+
+/*
+ * kernel task id.
+ */
+
+extern i_task		ktask;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -71,13 +77,39 @@ t_error			sched_quantum(t_quantum			quantum)
 /*
  * this function permits the current task to relinquish the processor
  * voluntary.
+ *
+ * steps:
+ *
+ * 1) get the next thread identifier.
+ * 2) switch to the next thread.
+ * 3) call the dependent code.
  */
 
 t_error			sched_yield(void)
 {
+  i_thread		th;
+
   SCHED_ENTER(sched);
 
-  /* XXX */
+  /*
+   * 1)
+   */
+
+  if (sched_next(&th) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (sched_switch(th) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  /*
+   * 3)
+   */
+
+  if (machdep_call(sched, sched_yield) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }
@@ -91,7 +123,7 @@ t_error			sched_current(i_thread*			thread)
 {
   SCHED_ENTER(sched);
 
-  /* XXX */
+  *thread = sched->current;
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }
@@ -186,6 +218,8 @@ t_error			sched_init(void)
     }
 
   memset(sched, 0x0, sizeof(m_sched));
+
+  /* XXX */
 
   /*
    * 2)

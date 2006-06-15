@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/include/misc/asm.h
+ * file          /home/buckman/kaneton/libs/libia32/include/misc/asm.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri mar 10 04:13:15 2006]
+ * updated       matthieu bucchianeri   [thu jun 15 22:10:37 2006]
  */
 
 /*
@@ -89,6 +89,9 @@
   asm volatile("ltr %0\n\t"						\
 	       :							\
 	       : "m" (_var_));
+
+#define		HLT()							\
+  asm volatile("hlt");
 
 /*
  * pio macro functions

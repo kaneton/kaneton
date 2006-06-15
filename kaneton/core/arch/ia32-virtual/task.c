@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [fri jun  2 13:52:23 2006]
+ * updated       matthieu bucchianeri   [mon jun 12 09:08:03 2006]
  */
 
 /*
@@ -50,16 +50,21 @@ extern i_as		kasid;
 d_task			task_dispatch =
   {
 
-/*                                                                  [cut] k2 */
+/*                                                                  [cut] k4 */
 
     NULL,
-    ia32_task_clone,
-    ia32_task_reserve,
-    ia32_task_release,
-    ia32_task_init,
-    ia32_task_clean
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
 
-/*                                                                 [cut] /k2 */
+/*                                                                 [cut] /k4 */
 
   };
 
@@ -67,89 +72,6 @@ d_task			task_dispatch =
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k2 */
+/*                                                                  [cut] k4 */
 
-/*
- * XXX
- */
-
-t_error			ia32_task_clone(i_task			old,
-					i_task*			new)
-{
-  TASK_ENTER(task);
-
-  /* XXX */
-
-  TASK_LEAVE(task, ERROR_NONE);
-}
-
-/*
- * XXX
- */
-
-t_error			ia32_task_reserve(t_class		class,
-					  t_behav		behav,
-					  t_prior		prior,
-					  i_task*		tskid)
-{
-  TASK_ENTER(task);
-
-  /* XXX */
-
-  TASK_LEAVE(task, ERROR_NONE);
-}
-
-/*
- * XXX
- */
-
-t_error			ia32_task_release(i_task		tskid)
-{
-  TASK_ENTER(task);
-
-  /* XXX */
-
-  TASK_LEAVE(task, ERROR_NONE);
-}
-
-/*
- * this function initializes the task manager and the kernel task.
- */
-
-t_error			ia32_task_init(void)
-{
-  o_as*			o;
-
-  TASK_ENTER(task);
-
-  /*
-   * 1)
-   */
-
-  if (as_get(kasid, &o) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (pd_activate(o->machdep.pd) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
-
-  TASK_LEAVE(task, ERROR_NONE);
-}
-
-/*
- * XXX
- */
-
-t_error			ia32_task_clean(void)
-{
-  TASK_ENTER(task);
-
-  /* XXX */
-
-  TASK_LEAVE(task, ERROR_NONE);
-}
-
-/*                                                                 [cut] /k2 */
+/*                                                                 [cut] /k4 */

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [sun jun 11 19:20:54 2006]
+ * updated       matthieu bucchianeri   [mon jun 12 08:09:54 2006]
  */
 
 /*
@@ -45,8 +45,6 @@ d_sched			sched_dispatch =
 
 /*                                                                  [cut] k5 */
 
-    NULL,
-    NULL,
     NULL,
     NULL,
     NULL,

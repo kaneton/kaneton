@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jun  6 14:23:20 2006]
+ * updated       matthieu bucchianeri   [thu jun 15 22:12:46 2006]
  */
 
 /*
@@ -73,9 +73,16 @@ t_init*			init;
  * 8) initialises the set manager.
  * 9) initialises the address space manager.
  * 10) initialises the segment manager.
- * 11) XXX
- * 12) XXX
- * 13) initialise the event manager.
+ * 11) initialises the region manager.
+ * 12) initialises the map manager
+ * 13) initialises the task manager.
+ * 14) initialises the thread manager.
+ * 15) initialise the event manager.
+ * 16) initialise the timer manager.
+ * 17) initialise the scheduler manager.
+ * 18) kernel ready. run some tests if needed.
+ * 19) clean all managers.
+ * 20) kernel exited.
  */
 
 /*                                                                 [cut] /k2 */
@@ -117,17 +124,25 @@ void			kaneton(t_init*				bootloader)
    * 5)
    */
 
+  cons_msg('+', "starting kmalloc\n");
+
   alloc_init(init->alloc, init->allocsz);
 
   /*
    * 6)
    */
 
+#ifdef CONF_STATS
+  cons_msg('+', "starting stats manager\n");
+#endif
+
   STATS_INIT();
 
   /*
    * 7)
    */
+
+  cons_msg('+', "starting id manager\n");
 
   if (id_init() != ERROR_NONE)
     kaneton_error("cannot initialise the id manager\n");
@@ -136,12 +151,16 @@ void			kaneton(t_init*				bootloader)
    * 8)
    */
 
+  cons_msg('+', "starting set manager\n");
+
   if (set_init() != ERROR_NONE)
     kaneton_error("cannot initialise the set manager\n");
 
   /*
    * 9)
    */
+
+  cons_msg('+', "starting as manager\n");
 
   if (as_init() != ERROR_NONE)
     kaneton_error("cannot initialise the address space manager\n");
@@ -150,12 +169,16 @@ void			kaneton(t_init*				bootloader)
    * 10)
    */
 
+  cons_msg('+', "starting segment manager\n");
+
   if (segment_init() != ERROR_NONE)
     kaneton_error("cannot initialise the segment manager\n");
 
   /*
    * 11)
    */
+
+  cons_msg('+', "starting region manager\n");
 
   if (region_init(REGION_VMEM_MIN, REGION_VMEM_MAX - REGION_VMEM_MIN) !=
       ERROR_NONE)
@@ -165,59 +188,96 @@ void			kaneton(t_init*				bootloader)
    * 12
    */
 
+  cons_msg('+', "starting map manager\n");
+
   if (map_init() != ERROR_NONE)
     kaneton_error("cannot initialise the map manager\n");
-
-  /*
-   * 12)
-   */
-
-  if (task_init() != ERROR_NONE)
-    kaneton_error("cannot initialise the task manager\n");
 
   /*
    * 13)
    */
 
-  if (event_init() != ERROR_NONE)
-    kaneton_error("cannot initialise the event manager\n");
+  cons_msg('+', "starting task manager\n");
+
+  if (task_init() != ERROR_NONE)
+    kaneton_error("cannot initialise the task manager\n");
 
   /*
    * 14)
    */
 
+  cons_msg('+', "starting thread manager\n");
+
+  if (thread_init() != ERROR_NONE)
+    kaneton_error("cannot initialise the thread manager\n");
+
+  /*
+   * 15)
+   */
+
+  cons_msg('+', "starting event manager\n");
+
+  if (event_init() != ERROR_NONE)
+    kaneton_error("cannot initialise the event manager\n");
+
+  /*
+   * 16)
+   */
+
+  cons_msg('+', "starting timer manager\n");
+
   if (timer_init() != ERROR_NONE)
     kaneton_error("cannot initialise the timer manager\n");
 
+  /* XXX remove me ! */
+
   event_test();
 
-  /*  timer_test(); */
+//  timer_test();
+
+  /*
+   * 17)
+   */
+
+  cons_msg('+', "starting scheduler manager\n");
+
+  if (sched_init() != ERROR_NONE)
+    kaneton_error("cannot initialise the scheduler manager\n");
+
+  /*
+   * 18)
+   */
+
+  cons_msg('+', "kaneton started\n");
 
 #ifdef CONF_ENABLE_CHECK
+  cons_msg('+', "running manual tests\n");
   check_tests();
   while(1);
 #endif
 
 #ifdef SERIAL
+  cons_msg('+', "starting debug manager\n");
   debug_init();
   while(1);
 #endif
 
-  /*
-   * XXX
-   */
-
-  //  STATS_DUMP();
+  STATS_DUMP();
 
   /*
-   * XXX
+   * 19)
    */
 
-//  timer_clean();
+  cons_msg('#', "kaneton is stopping...\n");
+  cons_msg('+', "cleaning all managers\n");
 
-//  event_clean();
+  sched_clean();
 
-//  task_clean();
+  timer_clean();
+
+  event_clean();
+
+  task_clean();
 
   map_clean();
 
@@ -233,9 +293,15 @@ void			kaneton(t_init*				bootloader)
 
   STATS_CLEAN();
 
+  /*
+   * 20)
+   */
+
+  cons_msg('+', "system shutdown\n");
+
 /*                                                                 [cut] /k2 */
 
-
+  HLT(); /* XXX this is IA32 code */
 
   while (1)
     ;

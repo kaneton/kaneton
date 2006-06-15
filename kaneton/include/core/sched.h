@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/sched.h
  *
  * created       matthieu bucchianeri   [sat jun  3 22:34:42 2006]
- * updated       matthieu bucchianeri   [sun jun 11 19:20:17 2006]
+ * updated       matthieu bucchianeri   [thu jun 15 22:15:21 2006]
  */
 
 #ifndef CORE_SCHED_H
@@ -24,6 +24,9 @@
  * ---------- macros ----------------------------------------------------------
  */
 
+#define SCHED_STATE_RUN		0
+#define SCHED_STATE_STOP	1
+
 /*
  * ---------- types -----------------------------------------------------------
  */
@@ -37,6 +40,8 @@ typedef struct
   i_stats	stats;
 
   t_quantum	quantum;
+
+  i_thread	current;
 }		m_sched;
 
 /*
@@ -47,8 +52,6 @@ typedef struct
 {
   t_error			(*sched_quantum)(t_quantum);
   t_error			(*sched_yield)(void);
-  t_error			(*sched_current)(i_thread*);
-  t_error			(*sched_next)(i_thread*);
   t_error			(*sched_switch)(i_thread);
   t_error			(*sched_add)(i_thread);
   t_error			(*sched_remove)(i_thread);
