@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/assignments/k0.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:23 2006]
-%% updated       julien quintard   [sat may  6 12:15:23 2006]
+%% updated       julien quintard   [sat jun 17 00:05:22 2006]
 %%
 
 %
@@ -27,8 +27,9 @@ The main goal of the bootstrap is to launch the bootloader in a better
 execution environment, with a better memory addressing model etc..
 
 Note that this project is recommended to better understand the
-microprocessor's architecture very first memory model. Nevertheless,
-this project may get needless on some architectures.
+microprocessor's architecture very first memory model.
+
+Nevertheless, this project may get needless on some architectures.
 
 \newpage
 
@@ -45,6 +46,7 @@ In charge: & Julien Quintard \\
 Newsgroup: & kaneton-students@googlegroups.com \\
 Languages: & Assembly and C \\
 Students per group: & Three \\
+Target directories: & \textit{kaneton/bootstrap/arch/[architecture]/} \\
 \end{tabular}
 
 %
@@ -64,10 +66,8 @@ The project's diffculty resides in the development of an
 application first evolving in a basic addressing model, then in
 a more evolved one.
 
-Another difficulty is to deal with microprocessor's crashes.
-
-The code provided must be located in the directory
-\textit{kaneton/bootstrap/arch/[architecture]/}.
+Another difficulty is to deal with microprocessor's crashes since
+nothing is provided to handle microprocessor's crashes yet.
 
 %
 % ia32
@@ -81,7 +81,9 @@ from the floppy drive into main memory.
 
 The only alternative to this is to develop your own floppy device driver.
 
-Then the students will have to install and activate the protected mode.
+Then the students will have to install and activate the flat protected mode.
+Indeed, on the Intel architectures, the microprocessor first runs in
+the real addressing mode.
 
 At this point, the microprocessor is evolving into its 32-bit addressing
 memory model.

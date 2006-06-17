@@ -6,182 +6,74 @@
 %% file          /home/mycure/kaneton/view/papers/assignments/k3.tex
 %%
 %% created       matthieu bucchianeri   [fri feb 10 13:52:29 2006]
-%% updated       julien quintard   [wed may 17 15:43:56 2006]
+%% updated       julien quintard   [sat jun 17 12:54:51 2006]
 %%
 
 %
-% k2
+% k3
 %
 
-\section{k3}
+\chapter{k3}
+
+The \textbf{k3} project consists in the development of everything in
+relation with the interrupts.
+
+This part could be called the \textit{funny} part.
+
+Indeed, one of the part of the project is to develop some drivers to
+make the kaneton microkernel more attractive. Moreover, these developments
+could be very helpful for the future developments since the students will
+then be able to write an interactive kind of debugger.
+
+Nevertheless, another part of the project is to design and implement
+the event manager. This part is by far less funny than the first one
+but will lead the students to the reflection in terms of genericity,
+portability etc..
+
+\newpage
 
 %
 % informations
 %
 
-\subsection{Informations}
+\section{Informations}
 
 \begin{tabular}{p{7cm}l}
-Deadline: & XXX, 23h42 \\
-Duration: & Four weeks \\
-File name: & k3.tar.gz \\
-In charge of: & Julien Quintard - \small{quinta\_j@epita.fr} \\
-Newsgroups: & epita.cours.kaneton \\
+Duration: & Two weeks \\
+File name: & \textit{[group]}-k3.tar.gz \\
+In charge: & Julien Quintard \\
+Newgroup: & kaneton-students@googlegroups.com \\
 Languages: & Assembly and C \\
-Architectures: & Intel Architecture 32-bit \\
 Students per group: & Three \\
+Target directories:
+  & \textit{kaneton/core/event/} \\
+  & \textit{kaneton/core/debug/} \\
 \end{tabular}
 
 %
-% overview
+% assignments
 %
 
-\subsection{Overview}
+\section{Assignments}
 
-k3 goals are:
+Since one of the assignments in to develop some drivers, first,
+the student will have to provide anything necessary to write drivers.
 
-\begin{itemize}
+Indeed, devices trigger what are called \textit{IRQ}
+\textit{Interrupt Request} which then become interrupts. While the term
+used can be slightly different, it always means a device alerting the
+microprocessor of an event: a transfer just finished, a key was pressed
+etc..
 
-\item To implement virtual memory (region manager \& map manager)
+Then, since the interrupts are highly dependent of the microprocessor
+architecture, the kaneton core needs a manager to handle a common
+concept but from a more abstract view: the event manager.
 
-\item To complete as and segment with virtual memory related functions
+The student, in this assignment will need to design the event manager's
+interface. Once designed, the student will also have to implement it.
 
-\item To design and implement the event manager and the timer manager
 
-\item To program a kernel-space keyboard driver
-
-\item To implement a kernel-space mini-shell
-
-\end{itemize}
-
-\subsection{region manager}
-
-An important thing to understand is that the address space object
-is composed of two sets. The first one called segments holds the
-segment identifiers \textit{t\_segid} of every segments that belong
-to this address space. The latter one called regions holds the
-region objects \textit{o\_region} that describe the virtual memory.
-
-\subsubsection{Functions to implement}
-
-\prototype{t\_error \textbf{region\_show}(t\_asid \textbf{asid},
-                                          t\_regid \textbf{regid});}
-	  {Displays information on a region.}
-
-\prototype{t\_error \textbf{region\_dump}(t\_asid \textbf{asid});}
-	  {Displays information on all regions of the address space.}
-
-\prototype{t\_error \textbf{region\_inject}(t\_asid \textbf{asid},
-                                            o\_region* \textbf{o});}
-	  {Injects a pre-reserved region.}
-
-\prototype{t\_error \textbf{region\_reserve}(t\_asid \textbf{asid},
-                                             t\_segid \textbf{segid},
-                                             t\_paddr \textbf{offset},
-                                             t\_opts \textbf{opts},
-                                             t\_vaddr \textbf{address},
-                                             t\_vsize \textbf{size},
-                                             t\_regid* \textbf{regid});}
-	  {Reserves a region given some properties.}
-
-\prototype{t\_error \textbf{region\_release}(t\_asid \textbf{asid},
-                                             t\_regid \textbf{regid});}
-	  {Releases a region.}
-
-\prototype{t\_error \textbf{region\_flush}(t\_asid \textbf{asid});}
-	  {Removes every region that belongs to the specified address space.}
-
-\prototype{t\_error \textbf{region\_get}(t\_asid \textbf{asid},
-                                         t\_regid \textbf{regid},
-                                         o\_region**\textbf{o});}
-	  {Looks for and returns a region object.}
-
-\prototype{t\_error \textbf{region\_init}(t\_vaddr \textbf{start},
-                                          t\_vsize \textbf{size});}
-	  {Initializes the region manager.}
-
-\prototype{t\_error \textbf{region\_clean}(void);}
-	  {Cleans the region manager.}
-
-\subsection{map manager}
-
-The map manager is used to manager memory in a simpler way.
-
-Indeed, dealing with segments and regions is not very easy when the
-end user just wants to reserve some memory.
-
-A map is an abstract couple of two kaneton objects: a segment and a region.
-
-\subsubsection{Code to write}
-
-\prototype{t\_error \textbf{map\_reserve}(t\_asid \textbf{asid},
-                                          t\_opts \textbf{opts},
-                                          t\_vaddr* \textbf{addr},
-                                          t\_vsize \textbf{size},
-                                          t\_perms \textbf{perms});}
-	  {Reserves a map. This function will so reserve a segment of
-	    the given size and finally perform the mapping by reserving
-	    a region.}
-
-\prototype{t\_error \textbf{map\_release}(t\_asid \textbf{asid},
-                                          t\_vaddr \textbf{addr});}
-	  {Releases a map.}
-
-\prototype{t\_error \textbf{map\_init}(void);}
-	  {Initializes the map manager.}
-
-\prototype{t\_error \textbf{map\_clean}(void);}
-	  {Cleans the map manager.}
-
-\subsection{as manager}
-
-Students must finish the as manager adding the following functions:
-
-\prototype{t\_error \textbf{as\_paddr}(t\_asid \textbf{asid},
-                                       t\_regid \textbf{regid},
-                                       t\_vaddr	\textbf{virtual},
-                                       t\_paddr* \textbf{physical});}
-	  {This function translates a virtual address to a physical address.}
-
-\prototype{t\_error \textbf{as\_vaddr}(t\_asid \textbf{as},
-                                       t\_segid \textbf{segid},
-                                       t\_paddr \textbf{physical},
-                                       t\_vaddr* \textbf{virtual});}
-	  {This function translates a physical address to a virtual address.}
-
-\subsection{segment manager}
-
-\subsubsection{Functions to add}
-
-In this part  of kaneton, students have to  finish the segment manager
-adding the following functions:
-
-\prototype{t\_error \textbf{segment\_read}(t\_segid \textbf{segid},
-                                           t\_paddr \textbf{offs},
-                                           void* \textbf{buff},
-                                           t\_psize \textbf{sz});}
-	  {This function reads raw data from a segment into a buffer.}
-
-\prototype{t\_error \textbf{segment\_write}(t\_segid \textbf{segid},
-                                            t\_paddr \textbf{offs},
-                                            const void* \textbf{buff},
-                                            t\_psize \textbf{sz});}
-	  {This function writes data to a segment.}
-
-\prototype{t\_error \textbf{segment\_copy}(t\_segid \textbf{dst},
-                                           t\_paddr \textbf{offsd},
-                                           t\_segid \textbf{src},
-                                           t\_paddr \textbf{offss},
-                                           t\_psize \textbf{sz});}
-	  {This function copies data from one segment to another.}
-
-\subsubsection{IA-32 implementation}
-
-These three functions  were not asked for k2  since directly accessing
-physical memory with paging mode enabled is not possible on Intel.
-
-Students have to write these functions even if they chose ia32-segment
-(which code will be very simple).
+--
 
 \subsection{event manager}
 
@@ -239,3 +131,9 @@ shell to allow the stupid GL user to press keys and see what? ... squares
 and circles ...
 
 Enjoy the corde!
+
+--- XXX
+
+k3: event manager a modeliser et implanter
+
+    partie fun: les drivers console, shell, keyboard, timer

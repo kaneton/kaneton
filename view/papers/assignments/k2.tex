@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/assignments/k2.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       julien quintard   [sun may  7 13:47:45 2006]
+%% updated       julien quintard   [sat jun 17 13:48:10 2006]
 %%
 
 %
@@ -60,6 +60,10 @@ In charge: & Julien Quintard \\
 Newgroup: & kaneton-students@googlegroups.com \\
 Languages: & Assembly and C \\
 Students per group: & Three \\
+Target directories:
+  & \textit{kaneton/core/set/} \\
+  & \textit{kaneton/core/segment/} \\
+  & \textit{kaneton/core/region/} \\
 \end{tabular}
 
 %
@@ -68,7 +72,22 @@ Students per group: & Three \\
 
 \section{Assignments}
 
-In this section, we will detail each manager.
+In this part of the kaneton project some important notions will be
+studied.
+
+First, the students will have to write entire managers. This point
+is very important since one of the fundamental concept of kaneton microkernel
+is to be subdivided into managers.
+
+Second, the kaneton microkernel was designed to be ported on many
+architectures. Indeed, the kaneton core uses specific macro functions
+to import and call architecture dependent stuff. The student will also
+have to understand this concept and to study how it is implemented in the
+kaneton microkernel, this feature being heavily used in the region
+manager since the big part of the region manager is generally located in
+the architecture-dependent code.
+
+In the following sections, we will detail each manager.
 
 %
 % set manager
@@ -98,14 +117,21 @@ The student so has to fill in the file \textit{kaneton/core/set/set\_ll.c}
 \subsection{segment manager}
 
 The segment manager provides a complete interface to manipulate physical
-memory including reserving, modifying permissions, releasing physical
-memory areas called \textbf{segments}.
+memory including reserving, modifying, releasing physical memory areas
+called \textbf{segments}.
 
 The student has to write the entire segment manager. Needless to say, the
 student's segment manager must be compliant with the segment manager
 interface.
 
-The segment manager's main file is \textit{kaneton/core/segment/segment.c}
+Moreover, the architecture-dependent code will have to be written using
+kaneton internal portability facilities.
+
+Note that some functions of the segment manager are provided including
+\textit{segment\_resize()}, \textit{segment\_split()},
+\textit{segment\_coalesce()}, \textit{segment\_read()},
+\textit{segment\_write()}, \textit{segment\_copy()} and
+\textit{segment\_catch()}.
 
 %
 % region manager
@@ -119,7 +145,11 @@ memory areas called \textbf{regions}.
 The student has to write the entire region manager including any
 machine-dependent code.
 
-The region manager's main file is \textit{kaneton/core/region/region.c}
+Moreover, the architecture-dependent code will have to be written.
+
+Note that some functions of the region manager are provided including
+\textit{region\_resize()}, \textit{region\_split()} and
+\textit{region\_coalesce()}.
 
 %
 % advanced topics
@@ -144,29 +174,17 @@ For the segment manager, the only work of the architecture-dependent source
 code is to get control over the protected mode so to rebuild the Global
 Descriptor Table for the kaneton needs.
 
-The corresponding source files are:
+Students must implement all dependent functions they need.
 
-\begin{itemize}
-  \item
-    \textit{core/kaneton/arch/[architecture]/segment.c}.
-  \item
-    \textit{core/kaneton/arch/[architecture]/as.c}.
-\end{itemize}
-
-The corresponding include files are:
-
-\begin{itemize}
-  \item
-    \textit{core/include/arch/[architecture]/kaneton/segment.h}.
-  \item
-    \textit{core/include/arch/[architecture]/kaneton/as.h}.
-\end{itemize}
-
-Students must implement all dependent functions they need. Remember that
-functions in \textit{libia32} should be reused.
+Remember that the architecture-dependent code should heavily use the
+\textit{libia32} functions.
 
 Take a look at the kaneton reference paper for more information about
 machine-dependent calls.
+
+%
+% Tips
+%
 
 \subsubsection{Tips}
 
@@ -175,47 +193,12 @@ machine-dependent calls.
     Segment sizes are aligned on page size. Assuming you are not using
     four megabytes pages, this value will be 4096.
 
-    Remember to use the \textbf{PAGESZ} define.
+    Remember to use the \textbf{PAGESZ} macro.
   \item
-    You must create two segments, one for code, the other for data
-    per task class: core, driver, service, and user program.
+    You must create two segments per task class: core, driver, service
+    and user program.
+
+    One of the segment is for the code while the other is for the data.
 
     Each one must have the appropriate privilege level and permissions.
 \end{itemize}
-
-%
-% main procedure
-%
-
-\subsection{Main Procedure}
-
-As the first managers are now working, it is time to write the kernel
-main procedure.
-
-This  one is  contained in \textit{core/kaneton/kaneton.c}. Students
-must first initialize the \textbf{init} variable from the one given by
-the bootloader.
-
-Then, they  must initialize the differents manager. Do not forget that
-it is better to initialize the set manager before as and segment,
-since these managers rely on sets!
-
-Do not forget to initialize the kernel standard library.
-
-You must initialize the \textbf{printf} function passing pointers to the
-console manager functions to \textbf{printf\_init()}.
-
-In addition, you must initialize the kernel \textbf{malloc} function which
-is used for early initial stages, until as, segment and region are running.
-You must use the \textbf{alloc\_init()} function, passing the survival area.
-
-To finish, you  have to create the kernel address space and to inject
-the pre-allocated segments in.
-
-Finally, all managers must be destroyed calling the clean() functions for
-each one.
-
-You might place code for your tests between these two phases. Do not
-forget to disable it for the final tarball.
-
-XXX set\_ll, segment

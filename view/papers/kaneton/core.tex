@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/kaneton/core.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:33:29 2006]
-%% updated       julien quintard   [sun jun 11 19:25:13 2006]
+%% updated       julien quintard   [sat jun 17 22:09:46 2006]
 %%
 
 %
@@ -1432,16 +1432,9 @@ execution entities and not the tasks.
 	   of the thread currently executed.
 	 }
 
-\function{sched\_next}{(i\_thread* \argument{thread})}
+\function{sched\_switch}{(void)}
 	 {
-	   This function returns in \argument{thread} the identifer
-	   of the next thread to execute.
-	 }
-
-\function{sched\_switch}{(i\_thread \argument{thread})}
-	 {
-	   This function switches the context to the new thread object
-	   \argument{thread}.
+	   This function just schedules a new elected thread.
 	 }
 
 \function{sched\_init}{(void)}

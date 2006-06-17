@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/papers/assignments/k1.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:38 2006]
-%% updated       julien quintard   [sat may  6 12:15:50 2006]
+%% updated       julien quintard   [sat jun 17 00:28:19 2006]
 %%
 
 %
@@ -20,9 +20,13 @@ The \textbf{k1} project consists in the development of the bootloader.
 The bootloader, as the bootstrap, generally installs a better execution
 environment for the future core execution.
 
-Moreover, the kaneton bootloader must provide information on the current
-microprocessor's architecture including the location of the pre-reserved
-physical memory areas etc..
+Nevertheless, the main goal of the kaneton bootloader is to provide
+information to the core on the current microprocessor's architecture
+including the location of the pre-reserved physical memory areas etc..
+
+This project is interesting since the student has to develop in a very
+strict environment and build precise data structures which will be passed
+to the core when launched.
 
 \newpage
 
@@ -39,6 +43,7 @@ In charge: & Julien Quintard \\
 Newgroup: & kaneton-students@googlegroups.com \\
 Languages: & Assembly and C \\
 Students per group: & Three \\
+Target directories: & \textit{kaneton/bootloader/arch/[architecture]/} \\
 \end{tabular}
 
 %
@@ -97,13 +102,6 @@ project source organization. Indeed, a complete development environment
 is provided; therefore, the students should learn to use system defines,
 internal facilities, kaneton tools etc.. to develop more quickly.
 
-Displaying the initialization structure's information is the
-minimum requirement. Having an enhanced display of pre-reserved core
-segments, regions and modules will be very appreciated.
-
-The code provided must be located in the directory
-\textit{kaneton/bootloader/arch/[architecture]/}.
-
 %
 % tips
 %
@@ -112,9 +110,10 @@ The code provided must be located in the directory
 
 Try to think about a very simple memory allocator delivering single
 pages or contiguous areas. This allocator should help students to
-allocate dynamic memory.
+allocate dynamic memory while evolving in a very strict environment.
 
-Let's assume that the kernel is the first given module.
+The bootloader receives from the bootstrap a list of modules. We are
+assuming that the core to launch is the first module of this list.
 
 %
 % additional work
@@ -122,8 +121,9 @@ Let's assume that the kernel is the first given module.
 
 \section{Additional Work}
 
-Moreover, students should write a tiny console driver. Try to make this
-driver code generic so you can reuse it in the next steps.
+To be able to debug, students should write a tiny console driver.
+
+Try to make this driver code generic so you can reuse it in the next steps.
 
 %
 % ia32
