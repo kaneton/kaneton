@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/debug/serial.c
+ * file          /home/buckman/kaneton/kaneton/core/debug/serial.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       julien quintard   [sat apr  1 23:13:33 2006]
+ * updated       matthieu bucchianeri   [sun jun 18 16:56:53 2006]
  */
 
 /*
@@ -153,20 +153,20 @@ int	serial_put(char c)
 	return 1;
 }
 
+/*
+ * 1) Turn off interupt on choosen port
+ * 2) Set dlab on
+ * 3) Set baud rate for choosen port
+ * 4) Set connection type
+ * 5) Set fifo type
+ * 6) DTR, RTS, OUT2 : on
+ */
+
 void			serial_init(t_uint32			com_port,
 				    t_uint8			baud_rate,
 				    t_uint8			bit_type,
 				    t_uint8			fifo_type)
 {
-  /*
-   * 1) Turn off interupt on choosen port
-   * 2) Set dlab on
-   * 3) Set baud rate for choosen port
-   * 4) Set connection type
-   * 5) Set fifo type
-   * 6) DTR, RTS, OUT2 : on
-   */
-
   /* 1) */
   OUTB(com_port + 1, 0x00);
   /* 2) */

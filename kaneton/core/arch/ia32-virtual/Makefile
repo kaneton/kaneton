@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [sat jun  3 22:57:53 2006]
+## updated       matthieu bucchianeri   [sat jun 17 19:53:33 2006]
 ##
 
 #
@@ -34,7 +34,8 @@ MACHDEP_C		:=		as.c				\
 					timer.c				\
 					thread.c			\
 					task.c				\
-					sched.c
+					sched.c				\
+					message.c
 
 MACHDEP_O		:=		$(MACHDEP_C:.c=.o)
 

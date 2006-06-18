@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       matthieu bucchianeri   [sun jun 11 18:33:05 2006]
+ * updated       matthieu bucchianeri   [sun jun 18 18:50:09 2006]
  */
 
 #ifndef CORE_TASK_H
@@ -119,6 +119,21 @@ typedef struct
 
   machdep_data(m_task);
 }				m_task;
+
+/*
+ * waitlist
+ */
+
+typedef struct
+{
+  union
+  {
+    i_task			task;
+    i_thread			thread;
+  }				u;
+
+  t_opts			opts;
+}				o_waitfor;
 
 /*
  * the task architecture dependent interface

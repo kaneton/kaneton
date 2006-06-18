@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/libs/klibc/libdata/malloc/02/02.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:12:15 2005]
- * updated       matthieu bucchianeri   [sun jun  4 19:54:49 2006]
+ * updated       matthieu bucchianeri   [sun jun 18 17:59:35 2006]
  */
 
 #include <klibc.h>

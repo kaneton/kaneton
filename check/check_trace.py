@@ -4,9 +4,9 @@ check.py
 This program is for testing kaneton
 """
 
-__author__	= "jacob_s@lse.epitech.net"
-__version__ 	= "0.0.1"
-__date__ 	= ""
+__author__	= "jacob_s@lse.epitech.net, bucchi_m@lse.epita.fr"
+__version__ 	= "0.1.0"
+__date__ 	= "sun jun 18 2006"
 
 html_nl="<br>"
 
@@ -251,6 +251,7 @@ def	main():
 		elif test_list[i][0] == "function":
 			try:
 				sys.stderr.write("test: " + test_list[i - 1] + "\n")
+				serial_timeout(3000);
 				result = SendCommand(test_list[i][1])
 				parsed_result = set_and_parse_result(test_list[i - 1], result)
 				if check_result(test_list[i - 1], parsed_result):
@@ -272,7 +273,7 @@ def	main():
 				print html_test_foot()
 				total_failed += 1
 				sys.stderr.write("/!\\ PLEASE REBOOT TEST MACHINE /!\\\n")
-				#serial_close()
+				serial_close()
 				retr = sys.stdin.readline().replace('\n','')
 				if retr == "":
 					serial_init(sys.argv[1])

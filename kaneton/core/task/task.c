@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [thu jun 15 21:44:10 2006]
+ * updated       matthieu bucchianeri   [sun jun 18 19:11:50 2006]
  */
 
 /*
@@ -66,6 +66,28 @@ i_task			ktask = ID_UNUSED;
  */
 
 /*                                                                  [cut] k4 */
+
+/*
+ * this function returns the current task.
+ */
+
+static t_error		task_current(i_task*			task)
+{
+  i_thread		current;
+  o_thread*		o;
+
+  TASK_ENTER(task);
+
+  if (sched_current(&current) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  if (thread_get(current, &o) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  *task = o->taskid;
+
+  TASK_LEAVE(task, ERROR_NONE);
+}
 
 /*
  * this function shows a precise task.
@@ -205,7 +227,7 @@ t_error			task_clone(i_task			old,
 
   set_foreach(SET_OPT_FORWARD, from->threads, &i, state)
     {
-      /* XXX t_thrid		needless; */
+      /* t_thrid		needless; */
       t_thrid*		data;
 
       if (set_object(from->threads, i, (void**)&data) != ERROR_NONE)
@@ -242,12 +264,13 @@ t_error			task_clone(i_task			old,
  *
  * 1) checks the validity of arguments.
  * 2) initialises the task object.
- * 3) get the parent task.
- * 4) reserves an identifier for the task object.
+ * 3) reserves an identifier for the task object.
+ * 4) get the parent task and add the created task to its children set.
  * 5) reserves the set of threads for the new task object.
  * 6) reserves the set of waits for the new task object.
- * 7) adds the new task object in the task set.
- * 8) calls the machine-dependent code.
+ * 7) reserves the set of children for the new task object.
+ * 8) adds the new task object in the task set.
+ * 9) calls the machine-dependent code.
  */
 
 t_error			task_reserve(t_class			class,
@@ -256,8 +279,7 @@ t_error			task_reserve(t_class			class,
 				     i_task*			id)
 {
   o_task		o;
-  o_thread*		othread;
-  i_thread		parentthr;
+  o_task*		parent;
 
   TASK_ENTER(task);
 
@@ -305,27 +327,28 @@ t_error			task_reserve(t_class			class,
    * 3)
    */
 
-  if (ktask != ID_UNUSED)
-    {
-      if (sched_current(&parentthr) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
-
-      if (thread_get(parentthr, &othread) != ERROR_NONE)
-	TASK_LEAVE(task, ERROR_UNKNOWN);
-
-      o.parent = othread->taskid;
-    }
-  else
-    o.parent = ID_UNUSED;
+  if (id_reserve(&task->id, &o.tskid) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (id_reserve(&task->id, id) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  if (ktask != ID_UNUSED)
+    {
+      if (task_current(&o.parent) != ERROR_NONE)
+	TASK_LEAVE(task, ERROR_UNKNOWN);
 
-  o.tskid = *id;
+      if (task_get(o.parent, &parent) != ERROR_NONE)
+	TASK_LEAVE(task, ERROR_UNKNOWN);
+
+      if (set_add(parent->children, &o) != ERROR_NONE)
+	TASK_LEAVE(task, ERROR_UNKNOWN);
+    }
+  else
+    o.parent = ID_UNUSED;
+
+  *id = o.tskid;
 
   /*
    * 5)
@@ -343,8 +366,8 @@ t_error			task_reserve(t_class			class,
    * 6)
    */
 
-  if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, TASK_WAITS_INITSZ,
-		  sizeof(t_thrid), &o.waits) != ERROR_NONE)
+  if (set_reserve(array, SET_OPT_ALLOC, TASK_WAITS_INITSZ,
+		  sizeof(o_waitfor), &o.waits) != ERROR_NONE)
     {
       id_release(&task->id, o.tskid);
 
@@ -357,7 +380,8 @@ t_error			task_reserve(t_class			class,
    * 7)
    */
 
-  if (set_add(task->tasks, &o) != ERROR_NONE)
+  if (set_reserve(ll, SET_OPT_SORT | SET_OPT_ALLOC,
+		  sizeof(i_task), &o.children) != ERROR_NONE)
     {
       id_release(&task->id, o.tskid);
 
@@ -369,6 +393,21 @@ t_error			task_reserve(t_class			class,
 
   /*
    * 8)
+   */
+
+  if (set_add(task->tasks, &o) != ERROR_NONE)
+    {
+      id_release(&task->id, o.tskid);
+
+      set_release(o.threads);
+      set_release(o.waits);
+      set_release(o.children);
+
+      TASK_LEAVE(task, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 9)
    */
 
   if (machdep_call(task, task_reserve, class,
@@ -556,8 +595,9 @@ t_error			task_priority(i_task			id,
  *
  * 1) get the task object.
  * 2) set the new state.
- * 3) add the thread into the scheduler.
- * 4) call the machine dependent code.
+ * 3) wakeup the waiting tasks.
+ * 4) start the threads.
+ * 5) call the machine dependent code.
  */
 
 t_error			task_run(i_task				id)
@@ -588,6 +628,28 @@ t_error			task_run(i_task				id)
    * 3)
    */
 
+  set_foreach(SET_OPT_FORWARD, o->waits, &i, state)
+    {
+      o_waitfor*	w;
+
+      if (set_object(o->waits, i, (void**)&w) != ERROR_NONE)
+	{
+	  cons_msg('!', "task: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	}
+
+      if (w->opts & WAIT_START)
+	task_run(w->u.task);
+
+      /* XXX remove */
+    }
+
+  /*
+   * 4)
+   */
+
   set_foreach(SET_OPT_FORWARD, o->threads, &i, state)
     {
       i_thread*		th;
@@ -605,7 +667,7 @@ t_error			task_run(i_task				id)
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if (machdep_call(task, task_run, id) != ERROR_NONE)
@@ -621,8 +683,9 @@ t_error			task_run(i_task				id)
  *
  * 1) get the task object.
  * 2) set the new state.
- * 3) remove the thread from the scheduler.
- * 4) call the machine dependent code.
+ * 3) wakeup waiting tasks.
+ * 4) stop the threads.
+ * 5) call the machine dependent code.
  */
 
 t_error			task_stop(i_task			id)
@@ -653,6 +716,28 @@ t_error			task_stop(i_task			id)
    * 3)
    */
 
+  set_foreach(SET_OPT_FORWARD, o->waits, &i, state)
+    {
+      o_waitfor*	w;
+
+      if (set_object(o->waits, i, (void**)&w) != ERROR_NONE)
+	{
+	  cons_msg('!', "task: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	}
+
+      if (w->opts & WAIT_STOP)
+	task_run(w->u.task);
+
+      /* XXX remove */
+    }
+
+  /*
+   * 4)
+   */
+
   set_foreach(SET_OPT_FORWARD, o->threads, &i, state)
     {
       i_thread*		th;
@@ -670,7 +755,7 @@ t_error			task_stop(i_task			id)
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if (machdep_call(task, task_stop, id) != ERROR_NONE)
@@ -681,23 +766,84 @@ t_error			task_stop(i_task			id)
 
 /*
  * this function kills a task which is forced to exit.
+ *
+ * steps:
+ *
+ * 1) get the task object.
+ * 2) set the new state.
+ * 3) wakeup waiting tasks.
+ * 4) exit all the threads.
+ * 5) call the machine dependent code.
  */
 
 t_error			task_exit(i_task			id)
 {
+  o_task*		o;
+  t_iterator		i;
+  t_state		state;
+
   TASK_ENTER(task);
 
   /*
    * 1)
    */
 
-  if (task_stop(id) != ERROR_NONE)
+  if (task_get(id, &o) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
-  /* XXX */
+  /*
+   * 2)
+   */
+
+  if (o->sched == SCHED_STATE_ZOMBIE)
+    TASK_LEAVE(task, ERROR_NONE);
+
+  o->sched = SCHED_STATE_ZOMBIE;
 
   /*
-   * x)
+   * 3)
+   */
+
+  set_foreach(SET_OPT_FORWARD, o->waits, &i, state)
+    {
+      o_waitfor*	w;
+
+      if (set_object(o->waits, i, (void**)&w) != ERROR_NONE)
+	{
+	  cons_msg('!', "task: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	}
+
+      if (w->opts & WAIT_DEATH)
+	task_run(w->u.task);
+
+      /* XXX remove */
+    }
+
+  /*
+   * 4)
+   */
+
+  set_foreach(SET_OPT_FORWARD, o->threads, &i, state)
+    {
+      i_thread*		th;
+
+      if (set_object(o->threads, i, (void**)&th) != ERROR_NONE)
+	{
+	  cons_msg('!', "task: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	}
+/* XXX
+      if (thread_exit(*th) != ERROR_NONE)
+	TASK_LEAVE(task, ERROR_UNKNOWN); */
+    }
+
+  /*
+   * 5)
    */
 
   if (machdep_call(task, task_exit, id) != ERROR_NONE)
@@ -714,12 +860,85 @@ t_error			task_wait(i_task			id,
 				  t_opts			opts,
 				  t_wait*			wait)
 {
+  o_task*		o;
+  o_waitfor		w;
+
   TASK_ENTER(task);
 
   /* XXX */
 
+  if (opts & WAIT_ID)
+    {
+      /*
+       * 1)
+       */
+
+      /*
+       * a)
+       */
+
+      if (task_get(id, &o) != ERROR_NONE)
+	TASK_LEAVE(task, ERROR_UNKNOWN);
+
+      /*
+       * b)
+       */
+
+      if ((opts & WAIT_START) && o->sched == SCHED_STATE_RUN)
+	TASK_LEAVE(task, ERROR_NONE);
+
+      if ((opts & WAIT_STOP) && o->sched == SCHED_STATE_STOP)
+	TASK_LEAVE(task, ERROR_NONE);
+
+      if ((opts & WAIT_DEATH) && o->sched == SCHED_STATE_ZOMBIE)
+	TASK_LEAVE(task, ERROR_NONE);
+
+      /*
+       * c)
+       */
+
+      if (!(opts & WAIT_NOHANG))
+	{
+	  /*
+	   * d)
+	   */
+
+	  if (task_current(&w.u.task) != ERROR_NONE)
+	    TASK_LEAVE(task, ERROR_UNKNOWN);;
+
+	  w.opts = opts;
+
+	  if (set_add(o->waits, &w) != ERROR_NONE)
+	    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+	  /*
+	   * e)
+	   */
+
+	  if (task_stop(w.u.task) != ERROR_NONE)
+	    TASK_LEAVE(task, ERROR_UNKNOWN);
+	}
+    }
+  else
+    {
+      /*
+       * 2)
+       */
+
+    }
+
   /*
-   * x)
+   * 3)
+   */
+
+  if (wait != NULL)
+    {
+
+    }
+
+  /*
+   * 4)
+   * XXX ou mettre ca !?
    */
 
   if (machdep_call(task, task_wait, id, opts, wait) != ERROR_NONE)
@@ -768,6 +987,7 @@ t_error			task_init(void)
   i_as			asid;
   t_uint32		i;
   i_segment		segments[INIT_SEGMENTS];
+  i_thread		needless;
 
   /*
    * 1)

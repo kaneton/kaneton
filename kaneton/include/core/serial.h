@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/serial.h
+ * file          /home/buckman/kaneton/kaneton/include/core/serial.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sat apr  1 22:45:42 2006]
+ * updated       matthieu bucchianeri   [sun jun 18 16:58:44 2006]
  */
 
 #ifndef	CORE_SERIAL_H
@@ -31,7 +31,7 @@
 #define	SERIAL_BR19200		0x06
 #define	SERIAL_BR38400		0x03
 #define	SERIAL_BR57600		0x02
-#define	SERIAL_BR115000		0x01
+#define	SERIAL_BR115200		0x01
 
 #define	SERIAL_8N1		0x03
 #define	SERIAL_7N1		0x02

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/core.h
  *
  * created       julien quintard   [sat dec 17 17:13:18 2005]
- * updated       matthieu bucchianeri   [sat jun  3 22:48:47 2006]
+ * updated       matthieu bucchianeri   [sat jun 17 19:44:31 2006]
  */
 
 #ifndef IA32_CORE_CORE_H
@@ -36,6 +36,7 @@
 #include <arch/machdep/core/thread.h>
 #include <arch/machdep/core/task.h>
 #include <arch/machdep/core/sched.h>
+#include <arch/machdep/core/message.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -48,6 +49,7 @@
  *      ../../../../core/arch/machdep/task.c
  *      ../../../../core/arch/machdep/thread.c
  *      ../../../../core/arch/machdep/sched.c
+ *      ../../../../core/arch/machdep/message.c
  */
 
 /*
@@ -160,6 +162,19 @@ t_error			ia32_thread_clone(t_thrid		threadid);
 
 /*
  * ../../../../core/arch/machdep/sched.c
+ */
+
+t_error			ia32_sched_quantum(t_quantum		quantum);
+
+t_error			ia32_sched_switch(i_thread		thread);
+
+t_error			ia32_sched_init(void);
+
+t_error			ia32_sched_clean(void);
+
+
+/*
+ * ../../../../core/arch/machdep/message.c
  */
 
 

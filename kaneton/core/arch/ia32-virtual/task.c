@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [mon jun 12 09:08:03 2006]
+ * updated       matthieu bucchianeri   [sat jun 17 19:39:15 2006]
  */
 
 /*
@@ -44,7 +44,7 @@ extern i_as		kasid;
  */
 
 /*
- * the address space manager dispatch.
+ * the task manager dispatch.
  */
 
 d_task			task_dispatch =

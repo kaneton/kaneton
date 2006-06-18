@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/debug.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [thu jun  1 18:56:18 2006]
+ * updated       matthieu bucchianeri   [sun jun 18 17:02:09 2006]
  */
 
 /*

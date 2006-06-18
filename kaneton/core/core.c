@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu jun 15 22:12:46 2006]
+ * updated       matthieu bucchianeri   [sun jun 18 18:18:11 2006]
  */
 
 /*
@@ -79,10 +79,11 @@ t_init*			init;
  * 14) initialises the thread manager.
  * 15) initialise the event manager.
  * 16) initialise the timer manager.
- * 17) initialise the scheduler manager.
- * 18) kernel ready. run some tests if needed.
- * 19) clean all managers.
- * 20) kernel exited.
+ * 17) initialise the message manager.
+ * 18) initialise the scheduler manager.
+ * 19) kernel ready. run some tests if needed.
+ * 20) clean all managers.
+ * 21) kernel exited.
  */
 
 /*                                                                 [cut] /k2 */
@@ -239,13 +240,22 @@ void			kaneton(t_init*				bootloader)
    * 17)
    */
 
+  cons_msg('+', "starting message manager\n");
+
+  if (message_init() != ERROR_NONE)
+    kaneton_error("cannot initialise the message manager\n");
+
+  /*
+   * 18)
+   */
+
   cons_msg('+', "starting scheduler manager\n");
 
   if (sched_init() != ERROR_NONE)
     kaneton_error("cannot initialise the scheduler manager\n");
 
   /*
-   * 18)
+   * 19)
    */
 
   cons_msg('+', "kaneton started\n");
@@ -253,25 +263,32 @@ void			kaneton(t_init*				bootloader)
 #ifdef CONF_ENABLE_CHECK
   cons_msg('+', "running manual tests\n");
   check_tests();
-  while(1);
+  while(1)
+    ;
 #endif
 
 #ifdef SERIAL
   cons_msg('+', "starting debug manager\n");
   debug_init();
-  while(1);
+  while(1)
+    ;
 #endif
 
   STATS_DUMP();
 
+  while(1)
+    ;
+
   /*
-   * 19)
+   * 20)
    */
 
   cons_msg('#', "kaneton is stopping...\n");
   cons_msg('+', "cleaning all managers\n");
 
   sched_clean();
+
+  message_clean();
 
   timer_clean();
 
@@ -294,7 +311,7 @@ void			kaneton(t_init*				bootloader)
   STATS_CLEAN();
 
   /*
-   * 20)
+   * 21)
    */
 
   cons_msg('+', "system shutdown\n");

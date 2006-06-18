@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [tue jun  6 15:23:50 2006]
+ * updated       matthieu bucchianeri   [sat jun 17 18:31:47 2006]
  */
 
 #ifndef CORE_REGION_H
@@ -53,6 +53,8 @@ typedef struct
   t_vaddr			address;
   t_paddr			offset;
   t_vsize			size;
+
+  machdep_data(o_region);
 }				o_region;
 
 /*
@@ -69,6 +71,8 @@ typedef struct
   t_vsize			size;
 
   i_stats			stats;
+
+  machdep_data(m_region);
 }				m_region;
 
 /*

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/sched.h
  *
  * created       matthieu bucchianeri   [sat jun  3 22:47:21 2006]
- * updated       matthieu bucchianeri   [sat jun  3 22:47:57 2006]
+ * updated       matthieu bucchianeri   [sat jun 17 18:28:50 2006]
  */
 
 #ifndef IA32_CORE_SCHED_H
@@ -17,6 +17,19 @@
  */
 
 /* XXX #include <core/sched.h>*/
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * the architecture dependent data for the sched manager.
+ */
+
+typedef struct
+{
+  i_timer			timer;
+}				am_sched;
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -37,7 +50,8 @@
     }									\
   )
 
-#define		machdep_data_m_sched()
+#define		machdep_data_m_sched()					\
+  am_sched			machdep
 
 #define		machdep_data_o_sched()
 

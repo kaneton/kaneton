@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/core.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sat jun  3 22:38:05 2006]
+ * updated       matthieu bucchianeri   [sat jun 17 19:44:54 2006]
  */
 
 #ifndef CORE_CORE_H
@@ -102,6 +102,7 @@
 #include <core/task.h>
 #include <core/wait.h>
 #include <core/sched.h>
+#include <core/message.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------
