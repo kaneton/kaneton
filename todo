@@ -1,4 +1,9 @@
 --
+ MIPS en GISTR? peut etre kaneton?
+
+ en tout cas les GISTR ont l'air interesses par le cours de MIPS.
+
+--
  il faudrait mieux prevoir une lib de manipulation des capabilities
  car vu que les serveurs en auront besoin...
 
