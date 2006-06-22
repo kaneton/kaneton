@@ -7,7 +7,7 @@
  *         quintard julien   [quinta_j@epita.fr]
  * 
  * started on    Mon Oct 25 11:26:13 2004   mycure
- * last update   Thu Oct 13 00:01:53 2005   mycure
+ * last update   Thu Oct 20 15:16:54 2005   lessyv
  */
 
 /*
@@ -32,7 +32,7 @@
  * general defines
  */
 
-#define BPT_VERSION		"2.2"
+#define BPT_VERSION		"2.3"
 
 /*
  * init values and limitations

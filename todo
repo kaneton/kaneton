@@ -1,16 +1,10 @@
 --
- pub csoft sur kaneton.org
+ il faudrait mieux prevoir une lib de manipulation des capabilities
+ car vu que les serveurs en auront besoin...
 
 --
  revoir la doc: apparamment les etudiants ne comprennent pas instinctivement
  qu il y a trois parties bien distinctes: core, machdep, libarch
-
---
- revoir l interface sched car sched_switch et sched_next ne font peut
- etre pas partie de l interface mais ce sont des fonctions internes
-
---
- recuperer bpt.h v2.3 et relancer les tests
 
 --
  virer les !# * meme pour perl, python, ruby etc.. car ca va forcement

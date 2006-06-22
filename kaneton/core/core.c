@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/core.c
+ * file          /home/mycure/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun jun 18 18:18:11 2006]
+ * updated       julien quintard   [thu jun 22 18:45:05 2006]
  */
 
 /*
@@ -125,7 +125,7 @@ void			kaneton(t_init*				bootloader)
    * 5)
    */
 
-  cons_msg('+', "starting kmalloc\n");
+  cons_msg('+', "starting malloc\n");
 
   alloc_init(init->alloc, init->allocsz);
 
