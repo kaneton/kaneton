@@ -146,7 +146,7 @@ for e in ${papers} ; do
 done
 
 books=$(list "${_BOOKS_DIR_}" "--directories")
-for e in ${papers} ; do
+for e in ${books} ; do
   PAPERS="${PAPERS} books::${e}"
 done
 
