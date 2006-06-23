@@ -1,4 +1,7 @@
 --
+ virer la doc de l'interieur de kaneton et mettre sur le web.
+
+--
  MIPS en GISTR? peut etre kaneton?
 
  en tout cas les GISTR ont l'air interesses par le cours de MIPS.
@@ -27,9 +30,6 @@
 
 --
  ca deconne: segment-fit.c set_ll.c ???
-
---
- creer un rep view/books avec kaneton et assignments
 
 --
  pour resoudre les forward declarations, normalement faire comme set.h

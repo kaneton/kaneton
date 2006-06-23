@@ -145,6 +145,11 @@ for e in ${papers} ; do
   PAPERS="${PAPERS} papers::${e}"
 done
 
+books=$(list "${_BOOKS_DIR_}" "--directories")
+for e in ${papers} ; do
+  PAPERS="${PAPERS} books::${e}"
+done
+
 internships=$(list "${_INTERNSHIPS_DIR_}" "--directories")
 for e in ${internships} ; do
   PAPERS="${PAPERS} internships::${e}"

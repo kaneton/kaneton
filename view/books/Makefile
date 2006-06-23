@@ -5,20 +5,20 @@
 ## 
 ## Makefile
 ## 
-## path          /home/mycure/kaneton/view
+## path          /home/mycure/kaneton/view/books
 ## 
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
 ## 
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Mon Nov  7 16:13:01 2005   mycure
+## last update   Mon Nov  7 16:22:06 2005   mycure
 ##
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../env/.env.mk
+include			../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -30,14 +30,8 @@ include			../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		curriculum			\
-					lectures			\
-					papers				\
-					books				\
-					exams				\
-					templates			\
-					internships			\
-					feedbacks			
+SUBDIRS			:=		assignments			\
+					kaneton				
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -49,10 +43,8 @@ all:
 clear:
 	$(call makefile,$(SUBDIRS),clear)
 
-	$(call purge,)
+	$(call purge)
 
 proto:
-	$(call makefile,$(SUBDIRS),proto)
 
 dep:
-	$(call makefile,$(SUBDIRS),dep)
