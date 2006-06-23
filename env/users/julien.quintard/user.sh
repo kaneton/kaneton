@@ -26,7 +26,7 @@
 #
 view()
 {
-  document=$1
+  document=${1}
 
-  xpdf $document
+  ${VIEWER} ${document}
 }

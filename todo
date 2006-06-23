@@ -1,4 +1,30 @@
 --
+ au lancement du core, celui-ci genere un nombre sur 64-bit.
+
+ ce nombre va devenir son machine-id.
+
+ de plus son node-id va etre calcule de la maniere suivante:
+
+   node-id = hash(machine-id + 0)
+
+ ou '+' designe la concatenation de donnees.
+
+ plus tard, chaque tache pourra simplement calcule son node-id avec:
+
+   node-id = hash(machine-id + task-id)
+
+ ainsi chaque tache du systeme reparti aura un node-id unique et de plus
+ les cores a leurs lancements auront un id, ce qui est requis pour la
+ generation des capabilities.
+
+--
+ finalement on va surement avoir besoin de mapper les modules pour que
+ le core puisse extraire le premier module et le lancer.
+
+--
+ virer les sections assignments dans les fichiers
+
+--
  tous les profiles machines sauf gnu-unix sont foireux
 
  il faudra les mettre a jour
