@@ -1,0 +1,50 @@
+This machine profile is based on GNU tools.
+
+If your operating system also used GNU tools, then you can certainly
+use this machine profile.
+
+Below, a list of the program this machine profile uses.
+
+For more information, take a look at the machine.conf file.
+
+Moreover, remember the user profile can override machine profile's
+variables. The user could so override for example the _SHELL_ variable
+to its specific bash binary path.
+
+  bash
+  gcc
+  gmake
+  rm
+  ar
+  ranlib
+  cd
+  ld
+  nasm
+  ln
+  touch
+  wc
+  date
+  tail
+  tar
+  pdflatex
+  cp
+  cat
+  sed
+  echo
+  read
+  ls
+  cpp
+  mtools
+  mcopy
+  grep
+  mkdir
+  find
+  xpdf
+  mktemp
+  mv
+  pwd
+  lex
+  script
+
+Of course, depending of your status, student or kaneton reference developer,
+some binaries should be needless.

@@ -3,16 +3,16 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/env/machines/unix/clean.sh
+## file          /home/mycure/kaneton/env/machines/gnu-unix/clean.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat apr  1 02:08:18 2006]
+## updated       julien quintard   [fri jun 23 16:18:30 2006]
 ##
 
 #
 # ---------- information ------------------------------------------------------
 #
-# this script has to be run into the directory: src/env/
+# this script has to be run into the directory: env/machines/gnu-unix/
 #
 
 #
@@ -46,7 +46,7 @@ clean()
   remove ${_MACHDEP_BOOTLOADER_DIR_}
   remove ${_MACHDEP_CORE_DIR_}
   remove ${_MACHDEP_INCLUDE_DIR_}
-  remove ${_MACHDEP_LDS_DIR_}
+  remove ${_MACHDEP_LINK_DIR_}
 }
 
 #

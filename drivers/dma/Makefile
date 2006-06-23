@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/drivers/dma/Makefile
 ##
 ## created       julien quintard   [fri feb 11 03:00:09 2005]
-## updated       julien quintard   [sat feb 25 14:45:38 2006]
+## updated       julien quintard   [fri jun 23 16:05:59 2006]
 ##
 
 #
@@ -39,7 +39,7 @@ DMA_INCLUDE		:=
 
 $(DMA):			libs $(DMA_O)
 	$(call executable,$(DMA),$(DMA_O) $(_KLIBC_A_),			\
-                 "--ld-script $(_MACHDEP_LDS_DIR_)/driver.lds"		\
+                 "--link-script $(_MACHDEP_LDS_DIR_)/driver.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 

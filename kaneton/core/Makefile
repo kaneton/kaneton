@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/core/Makefile
+## file          /home/mycure/kaneton/kaneton/core/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [sat jun 17 19:43:51 2006]
+## updated       julien quintard   [fri jun 23 16:07:54 2006]
 ##
 
 #
@@ -94,7 +94,7 @@ $(_CORE_):		libs $(CORE_O)
 					$(VERSION_O)			\
 					$(KANETON_LIBS)			\
 					$(_KLIBC_A_),			\
-                 "--ld-script $(_MACHDEP_LDS_DIR_)/kaneton.lds"		\
+                 "--link-script $(_MACHDEP_LDS_DIR_)/kaneton.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 

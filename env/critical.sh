@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/critical.sh
 ##
 ## created       matthieu bucchianeri   [tue dec 13 19:31:03 2005]
-## updated       julien quintard   [wed dec 14 12:28:36 2005]
+## updated       julien quintard   [fri jun 23 16:00:15 2006]
 ##
 
 #
@@ -14,7 +14,7 @@
 #
 # this script has to be run  in its directory: env/
 #
-# this script  is called critical because it  handles the installation
+# this script is called critical because it handles the installation
 # of critical environment variables used in next steps of kaneton init.
 #
 

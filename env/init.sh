@@ -6,13 +6,13 @@
 ## file          /home/mycure/kaneton/env/init.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [wed jun  7 13:12:31 2006]
+## updated       julien quintard   [fri jun 23 15:59:57 2006]
 ##
 
 #
 # ---------- information ------------------------------------------------------
 #
-# this script has to be run in its directory: src/env/
+# this script has to be run in its directory: env/
 #
 
 #

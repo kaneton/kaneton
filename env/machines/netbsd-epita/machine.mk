@@ -1,1 +1,1 @@
-../unix/machine.mk
+../gnu-unix/machine.mk

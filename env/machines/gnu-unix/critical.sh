@@ -3,16 +3,16 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/env/machines/unix/critical.sh
+## file          /home/mycure/kaneton/env/machines/gnu-unix/critical.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [wed dec 14 12:31:15 2005]
+## updated       julien quintard   [fri jun 23 15:55:30 2006]
 ##
 
 #
 # ---------- information ------------------------------------------------------
 #
-# this script has to be run in its directory: src/env/
+# this script has to be run in its directory: env/machines/gnu-unix/
 #
 # for the moment this script uses UNIX tools: sed, cat, rm, make etc..
 #

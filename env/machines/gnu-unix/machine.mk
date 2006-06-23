@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/env/machines/unix/machine.mk
+## file          /home/mycure/kaneton/env/machines/gnu-unix/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [mon mar 13 08:47:12 2006]
+## updated       julien quintard   [fri jun 23 16:07:37 2006]
 ##
 
 #
@@ -403,10 +403,10 @@ define executable
   executable_options=""							; \
   for o in $(3); do							\
     case "$${o}" in							\
-      "--ld-script"*)							\
+      "--link-script"*)							\
 	executable_options="$${executable_options}			\
                             `$(_ECHO_) $${o}				| \
-                            $(_SED_) -e 's/--ld-script/-T/1'`"		; \
+                            $(_SED_) -e 's/--link-script/-T/1'`"	; \
         ;;								\
       "--no-standard-include")						\
 	executable_options="$${executable_options} -nostdinc"		; \

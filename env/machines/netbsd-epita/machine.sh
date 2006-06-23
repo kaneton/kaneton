@@ -1,1 +1,1 @@
-../unix/machine.sh
+../gnu-unix/machine.sh

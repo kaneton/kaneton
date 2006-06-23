@@ -3,16 +3,16 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/env/clean.sh
+## file          /home/mycure/kaneton/env/clean.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       matthieu bucchianeri   [sun apr  2 22:15:46 2006]
+## updated       julien quintard   [fri jun 23 16:00:02 2006]
 ##
 
 #
 # ---------- information ------------------------------------------------------
 #
-# this script has to be run in its directory: src/env/
+# this script has to be run in its directory: env/
 #
 
 #

@@ -3,16 +3,16 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/env/machines/unix/init.sh
+## file          /home/mycure/kaneton/env/machines/gnu-unix/init.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [mon apr 10 14:33:39 2006]
+## updated       julien quintard   [fri jun 23 16:18:25 2006]
 ##
 
 #
 # ---------- information ------------------------------------------------------
 #
-# this script has to be run into the directory: src/env/
+# this script has to be run into the directory: env/machines/gnu-unix/
 #
 # this script installs operating system and architecture specific
 # stuff.
@@ -29,8 +29,8 @@ source			.env.sh
 #
 
 BINARIES="bash gcc gmake rm ar ranlib ld nasm ln touch wc date	\
-          tail tar pdflatex cp cat sed echo ls date cpp mtools	\
-          mcopy mkdir find xpdf mktemp mv script"
+          tail tar pdflatex cp cat sed ls cpp mtools mcopy grep	\
+          mkdir find xpdf mktemp mv lex script"
 
 #
 # ---------- functions --------------------------------------------------------
@@ -80,8 +80,8 @@ init()
   remove "${_MACHDEP_INCLUDE_DIR_}"
   link "${_MACHDEP_INCLUDE_DIR_}" "${_ARCHITECTURE_}"
 
-  remove "${_MACHDEP_LDS_DIR_}"
-  link "${_MACHDEP_LDS_DIR_}" "${_ARCHITECTURE_}"
+  remove "${_MACHDEP_LINK_DIR_}"
+  link "${_MACHDEP_LINK_DIR_}" "${_ARCHITECTURE_}"
 }
 
 #
