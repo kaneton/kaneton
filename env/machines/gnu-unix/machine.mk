@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/machines/gnu-unix/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [fri jun 23 16:07:37 2006]
+## updated       julien quintard   [fri jun 23 16:30:55 2006]
 ##
 
 #

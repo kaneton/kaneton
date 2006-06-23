@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:05:35 2005]
-## updated       julien quintard   [fri jun 23 16:08:10 2006]
+## updated       julien quintard   [fri jun 23 16:24:09 2006]
 ##
 
 #
@@ -52,7 +52,7 @@ CFLAGS			+=		-D___bootloader
 $(BOOTLOADER):		libs $(BOOTLOADER_O)
 	$(call executable,$(BOOTLOADER),$(BOOTLOADER_O)			\
 	         $(_LIBIA32_A_) $(_KLIBC_A_),				\
-	         "--link-script $(_MACHDEP_LDS_DIR_)/bootloader.lks"	\
+	         "--link-script $(_MACHDEP_LINK_DIR_)/bootloader.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 

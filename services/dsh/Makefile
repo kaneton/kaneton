@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/services/dsh/Makefile
 ##
 ## created       julien quintard   [fri feb 11 03:00:09 2005]
-## updated       julien quintard   [fri jun 23 16:09:33 2006]
+## updated       julien quintard   [fri jun 23 16:25:53 2006]
 ##
 
 #
@@ -39,7 +39,7 @@ DSH_INCLUDE		=
 
 $(DSH):			libs $(DSH_O)
 	$(call executable,$(DSH),$(DSH_O) $(_KLIBC_A_),			\
-                 "--link-script $(_MACHDEP_LDS_DIR_)/service.lks"	\
+                 "--link-script $(_MACHDEP_LINK_DIR_)/service.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 

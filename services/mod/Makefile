@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/services/mod/Makefile
 ##
 ## created       julien quintard   [fri feb 11 03:00:09 2005]
-## updated       julien quintard   [fri jun 23 16:09:25 2006]
+## updated       julien quintard   [fri jun 23 16:25:49 2006]
 ##
 
 #
@@ -40,7 +40,7 @@ MOD_INCLUDE		:=
 
 $(MOD):			libs $(MOD_O)
 	$(call executable,$(MOD),$(MOD_O) $(_KLIBC_A_),			\
-                 "--link-script $(_MACHDEP_LDS_DIR_)/service.lks"	\
+                 "--link-script $(_MACHDEP_LINK_DIR_)/service.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 

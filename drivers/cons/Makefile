@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/drivers/cons/Makefile
 ##
 ## created       julien quintard   [fri feb 11 03:00:09 2005]
-## updated       julien quintard   [fri jun 23 16:06:09 2006]
+## updated       julien quintard   [fri jun 23 16:24:58 2006]
 ##
 
 #
@@ -39,7 +39,7 @@ CONS_INCLUDE		:=
 
 $(CONS):		libs $(CONS_O)
 	$(call executable,$(CONS),$(CONS_O) $(_KLIBC_A_),		\
-	         "--link-script $(_MACHDEP_LDS_DIR_)/driver.lks"	\
+	         "--link-script $(_MACHDEP_LINK_DIR_)/driver.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 

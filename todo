@@ -1,4 +1,12 @@
 --
+ tous les profiles machines sauf gnu-unix sont foireux
+
+ il faudra les mettre a jour
+
+--
+ virer les CFLAGS = ___kernel c'est trop laid/specifique
+
+--
  virer la doc de l'interieur de kaneton et mettre sur le web.
 
 --

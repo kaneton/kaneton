@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/drivers/kbd/Makefile
 ##
 ## created       julien quintard   [fri feb 11 03:00:09 2005]
-## updated       julien quintard   [fri jun 23 16:05:47 2006]
+## updated       julien quintard   [fri jun 23 16:24:46 2006]
 ##
 
 #
@@ -39,7 +39,7 @@ KBD_INCLUDE		:=
 
 $(KBD):			libs $(KBD_O)
 	$(call executable,$(KBD),$(KBD_O) $(_KLIBC_A_),			\
-                 "--link-script $(_MACHDEP_LDS_DIR_)/driver.lks"	\
+                 "--link-script $(_MACHDEP_LINK_DIR_)/driver.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 
