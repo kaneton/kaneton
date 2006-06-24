@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/kaneton/core/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [fri jun 23 16:25:36 2006]
+## updated       julien quintard   [sat jun 24 13:15:00 2006]
 ##
 
 #
@@ -26,6 +26,7 @@ include			../../env/.env.mk
 #
 
 SUBDIRS			:=		arch				\
+					core				\
 					as				\
 					conf				\
 					debug				\
@@ -41,11 +42,14 @@ SUBDIRS			:=		arch				\
 					task				\
 					sched				\
 					message				\
+					capability			\
+					interface			\
 					$(_CHECK_DIR_)
 
 # kaneton libraries
 
 KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
+					$(_CORE_LO_)			\
 					$(_AS_LO_)			\
 					$(_CONF_LO_)			\
 					$(_DEBUG_LO_)			\
@@ -61,13 +65,17 @@ KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 					$(_TASK_LO_)			\
 					$(_SCHED_LO_)			\
 					$(_MESSAGE_LO_)			\
+					$(_CAPABILITY_LO_)		\
+					$(_INTERFACE_LO_)		\
 					$(_CHECK_LO_)
 
 # kaneton binary
 
-CORE_C			:=		core.c
+KANETON_C		:=		kaneton.c
 
-CORE_O			:=		$(CORE_C:.c=.o)
+KANETON_O		:=		$(KANETON_C:.c=.o)
+
+# core variables
 
 CORE_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/core.h
 
@@ -85,12 +93,12 @@ DATE			:=		$(call date)
 # ---------- rules ------------------------------------------------------------
 #
 
-$(_CORE_):		libs $(CORE_O)
+$(_CORE_):		libs $(KANETON_O)
 	$(call version,$(VERSION_C),$(USER),$(HOSTNAME),$(DATE))
 
 	$(call compile-c,$(VERSION_O),$(VERSION_C),)
 
-	$(call executable,$(_CORE_),	$(CORE_O)			\
+	$(call executable,$(_CORE_),	$(KANETON_O)			\
 					$(VERSION_O)			\
 					$(KANETON_LIBS)			\
 					$(_KLIBC_A_),			\
@@ -109,7 +117,7 @@ clear:
 	$(call remove,$(VERSION_O),)
 	$(call remove,$(VERSION_C),)
 
-	$(call remove,$(CORE_O),)
+	$(call remove,$(KANETON_O),)
 
 	$(call remove,$(_CORE_),)
 

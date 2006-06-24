@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [fri jun 23 22:02:14 2006]
+ * updated       julien quintard   [sat jun 24 13:27:44 2006]
  */
 
 /*
@@ -49,6 +49,7 @@
 t_error			capability_reserve(void)
 {
 
+  return (ERROR_NONE);
 }
 
 /*
@@ -58,6 +59,7 @@ t_error			capability_reserve(void)
 t_error			capability_release(void)
 {
 
+  return (ERROR_NONE);
 }
 
 /*
@@ -67,6 +69,7 @@ t_error			capability_release(void)
 t_error			capability_clone(void)
 {
 
+  return (ERROR_NONE);
 }
 
 /*
@@ -76,15 +79,7 @@ t_error			capability_clone(void)
 t_error			capability_init(void)
 {
 
-}
-
-/*
- * XXX
- */
-
-t_error			capability_init(void)
-{
-
+  return (ERROR_NONE);
 }
 
 /*
@@ -94,4 +89,5 @@ t_error			capability_init(void)
 t_error			capability_clean(void)
 {
 
+  return (ERROR_NONE);
 }
