@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/kaneton/core/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [sat jun 24 13:15:00 2006]
+## updated       julien quintard   [sat jun 24 13:30:58 2006]
 ##
 
 #
@@ -26,7 +26,7 @@ include			../../env/.env.mk
 #
 
 SUBDIRS			:=		arch				\
-					core				\
+					kernel				\
 					as				\
 					conf				\
 					debug				\
@@ -49,7 +49,7 @@ SUBDIRS			:=		arch				\
 # kaneton libraries
 
 KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
-					$(_CORE_LO_)			\
+					$(_KERNEL_LO_)			\
 					$(_AS_LO_)			\
 					$(_CONF_LO_)			\
 					$(_DEBUG_LO_)			\
