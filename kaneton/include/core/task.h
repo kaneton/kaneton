@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/task.h
+ * file          /home/mycure/kaneton/kaneton/include/core/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       matthieu bucchianeri   [sun jun 18 18:50:09 2006]
+ * updated       julien quintard   [sat jun 24 13:57:48 2006]
  */
 
 #ifndef CORE_TASK_H

@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/core.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [thu jun 22 18:45:20 2006]
+ * updated       julien quintard   [sat jun 24 13:31:58 2006]
  */
 
 #ifndef CORE_CORE_H
@@ -58,7 +58,7 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-#define kaneton_error(_fmt_...)						\
+#define core_error(_fmt_...)						\
   {									\
     printf("%#[%#!%#]%# %s:%u: ",					\
            CONS_FRONT(CONS_BLUE) | CONS_BACK(CONS_BLACK) | CONS_INT,	\
@@ -89,6 +89,7 @@
 #include <core/error.h>
 #include <core/types.h>
 
+#include <core/kernel.h>
 #include <core/id.h>
 #include <core/init.h>
 #include <core/region.h>
@@ -103,6 +104,8 @@
 #include <core/wait.h>
 #include <core/sched.h>
 #include <core/message.h>
+#include <core/capability.h>
+#include <core/interface.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

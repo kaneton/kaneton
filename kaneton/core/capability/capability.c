@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [sat jun 24 13:27:44 2006]
+ * updated       julien quintard   [sat jun 24 14:25:34 2006]
  */
 
 /*
@@ -29,6 +29,19 @@
  * machine on which it resides. indeed, if a task is migrated on another
  * machine, the node identifier of this task will remain the same. then
  * the user programs of the service will continue to work properly.
+ *
+ * note that capabilities are not kaneton objects. nevertheless a tip
+ * is used to store the capabilities in set objects. indeed, the capability
+ * format begins with the check which is a 64-bit number. this check field
+ * will so play the role of the kaneton id because.
+ *
+ * be careful, two capabilities may have the same check field since
+ * object identifiers are not uniques between managers. indeed, a segment
+ * could have the same identifier than a task for example. for this reason,
+ * the check field is assumed unique only for a manager.
+ *
+ * therefore, the capability manager holds the capabilities in different
+ * sets depending on the manager from which the capability was generated.
  */
 
 /*

@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jun 24 13:46:09 2006]
+ * updated       julien quintard   [sat jun 24 13:54:54 2006]
  */
 
 /*
@@ -167,9 +167,9 @@ void			kernel_init(void)
 
   /* XXX remove me ! */
 
-  event_test();
+  //  event_test();
 
-//  timer_test();
+  //  timer_test();
 
   /*
    * 12)
