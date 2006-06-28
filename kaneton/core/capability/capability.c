@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [wed jun 28 13:57:20 2006]
+ * updated       julien quintard   [wed jun 28 21:02:57 2006]
  */
 
 /*
@@ -85,32 +85,32 @@ extern m_kernel*	kernel;
 
 t_error			capability_show(t_id			id)
 {
-  t_capability_descriptor*	d;
+  t_capability_descriptor*	descriptor;
 
   CAPABILITY_ENTER(capability);
 
-  if (set_get(capability->descriptors, id, (void**)&d) != ERROR_NONE)
+  if (set_get(capability->descriptors, id, (void**)&descriptor) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
   cons_msg('#', "  [%8qd] node: %qd object: %qd operations: %024b\n",
-	   d->id,
-	   d->capability.node,
-	   d->capability.object,
-	   d->capability.operations);
+	   descriptor->id,
+	   descriptor->capability.node,
+	   descriptor->capability.object,
+	   descriptor->capability.operations);
 
   cons_msg('#', "             check: %qd parent: %qd children:\n",
-	   d->capability.check,
-	   d->parent);
+	   descriptor->capability.check,
+	   descriptor->parent);
 
-  if (d->children != ID_UNUSED)
+  if (descriptor->children != ID_UNUSED)
     {
       t_state			state;
       t_id*			data;
       t_iterator		i;
 
-      set_foreach(SET_OPT_FORWARD, d->children, &i, state)
+      set_foreach(SET_OPT_FORWARD, descriptor->children, &i, state)
 	{
-	  if (set_object(d->children, i, (void**)&data) != ERROR_NONE)
+	  if (set_object(descriptor->children, i, (void**)&data) != ERROR_NONE)
 	    {
 	      cons_msg('!', "capability: cannot find the object "
 		       "corresponding to its identifier\n");
@@ -185,9 +185,9 @@ t_error			capability_dump(void)
 
 t_error			capability_reserve(t_id			object,
 					   t_operations		operations,
-					   t_capability*	c)
+					   t_capability*	new)
 {
-  t_capability_descriptor	d;
+  t_capability_descriptor	descriptor;
 
   CAPABILITY_ENTER(capability);
 
@@ -195,24 +195,24 @@ t_error			capability_reserve(t_id			object,
    * 1)
    */
 
-  c->node = kernel->node;
-  c->object = object;
-  c->operations = operations;
-  c->check = 0;
+  new->node = kernel->node;
+  new->object = object;
+  new->operations = operations;
+  new->check = 0;
 
   // XXX should be a 64-bit random number generation
-  c->check = (t_uint64)sum2((char*)c, sizeof(t_capability));
+  new->check = (t_uint64)sum2((char*)&new, sizeof(t_capability));
 
   /*
    * 2)
    */
 
-  d.id = c->check;
-  d.capability = *c;
-  d.parent = ID_UNUSED;
-  d.children = ID_UNUSED;
+  descriptor.id = new->check;
+  descriptor.capability = *new;
+  descriptor.parent = ID_UNUSED;
+  descriptor.children = ID_UNUSED;
 
-  if (set_add(capability->descriptors, &d) != ERROR_NONE)
+  if (set_add(capability->descriptors, &descriptor) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
   CAPABILITY_LEAVE(capability, ERROR_NONE);
@@ -224,24 +224,24 @@ t_error			capability_reserve(t_id			object,
 
 t_error			capability_release(t_id			id)
 {
+  t_capability_descriptor*	descriptor;
   t_state			state;
   t_id*				data;
-  t_capability_descriptor*	d;
   t_iterator			i;
 
   CAPABILITY_ENTER(capability);
 
-  if (capability_get(id, &d) != ERROR_NONE)
+  if (capability_get(id, &descriptor) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
-  if (d->parent != ID_UNUSED)
+  if (descriptor->parent != ID_UNUSED)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
-  if (d->children != ID_UNUSED)
+  if (descriptor->children != ID_UNUSED)
     {
-      set_foreach(SET_OPT_FORWARD, d->children, &i, state)
+      set_foreach(SET_OPT_FORWARD, descriptor->children, &i, state)
 	{
-	  if (set_object(d->children, i, (void**)&data) != ERROR_NONE)
+	  if (set_object(descriptor->children, i, (void**)&data) != ERROR_NONE)
 	    {
 	      cons_msg('!', "capability: cannot find the object "
 		       "corresponding to its identifier\n");
@@ -249,15 +249,15 @@ t_error			capability_release(t_id			id)
 	      CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 	    }
 
-	  if (capability_invalidate(d->id, *data) != ERROR_NONE)
+	  if (capability_invalidate(descriptor->id, *data) != ERROR_NONE)
 	    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 	}
 
-      if (set_release(d->children) != ERROR_NONE)
+      if (set_release(descriptor->children) != ERROR_NONE)
 	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
     }
 
-  if (set_remove(capability->descriptors, d->id) != ERROR_NONE)
+  if (set_remove(capability->descriptors, descriptor->id) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
   CAPABILITY_LEAVE(capability, ERROR_NONE);
@@ -269,10 +269,11 @@ t_error			capability_release(t_id			id)
 
 t_error			capability_restrict(t_id		id,
 					    t_operations	operations,
-					    t_capability*	c)
+					    t_capability*	new)
 {
+  t_capability_descriptor	restricted;
   t_capability_descriptor*	parent;
-  t_capability_descriptor*	child;
+  t_uint64			xor;
 
   CAPABILITY_ENTER(capability);
 
@@ -283,28 +284,42 @@ t_error			capability_restrict(t_id		id,
       parent->capability.operations)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
-  if (capability_reserve(parent->capability.object,
-			 operations, c) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  new->node = parent->capability.node;
+  new->object = parent->capability.object;
+  new->operations = operations;
+  new->check = 0;
 
-  if (capability_get((t_id)c->check, &child) != ERROR_NONE)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+  // XXX xor between {node,object,operations} and parent->check
+  // XXX so between *new and parent->check
+  // XXX for the moment only a xor between operations and parent->check
+  xor = ((t_uint64)new->operations) ^ parent->capability.check;
 
-  child->parent = parent->id;
+  // XXX then the hash function
+  new->check = (t_uint64)sum2((char*)&xor, sizeof(t_uint64));
+
+  /*
+   * 2)
+   */
+
+  restricted.id = new->check;
+  restricted.capability = *new;
+  restricted.parent = parent->id;
+  restricted.children = ID_UNUSED;
+
+  if (set_add(capability->descriptors, &restricted) != ERROR_NONE)
+    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
   if (parent->children == ID_UNUSED)
     {
       if (set_reserve(array, SET_OPT_ALLOC, CAPABILITY_CHILDREN_INITSZ,
 		      sizeof(t_id), &parent->children) != ERROR_NONE)
 	{
-	  capability_release(child->id);
 	  CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 	}
     }
 
-  if (set_add(parent->children, &child->id) != ERROR_NONE)
+  if (set_add(parent->children, &restricted.id) != ERROR_NONE)
     {
-      capability_release(child->id);
       CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
     }
 
@@ -318,8 +333,8 @@ t_error			capability_restrict(t_id		id,
 t_error			capability_invalidate(t_id		p,
 					      t_id		c)
 {
+  t_capability_descriptor*	restricted;
   t_capability_descriptor*	parent;
-  t_capability_descriptor*	child;
   t_state			state;
   t_id*				data;
   t_iterator			i;
@@ -329,20 +344,20 @@ t_error			capability_invalidate(t_id		p,
   if (capability_get(p, &parent) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
-  if (capability_get(c, &child) != ERROR_NONE)
+  if (capability_get(c, &restricted) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
-  if (child->parent != parent->id)
+  if (restricted->parent != parent->id)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
-  if (set_remove(parent->children, child->id) != ERROR_NONE)
+  if (set_remove(parent->children, restricted->id) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
-  if (child->children != ID_UNUSED)
+  if (restricted->children != ID_UNUSED)
     {
-      set_foreach(SET_OPT_FORWARD, child->children, &i, state)
+      set_foreach(SET_OPT_FORWARD, restricted->children, &i, state)
 	{
-	  if (set_object(child->children, i, (void**)&data) != ERROR_NONE)
+	  if (set_object(restricted->children, i, (void**)&data) != ERROR_NONE)
 	    {
 	      cons_msg('!', "capability: cannot find the object "
 		       "corresponding to its identifier\n");
@@ -354,11 +369,11 @@ t_error			capability_invalidate(t_id		p,
 	    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 	}
 
-      if (set_release(child->children) != ERROR_NONE)
+      if (set_release(restricted->children) != ERROR_NONE)
 	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
     }
 
-  if (set_remove(capability->descriptors, child->id) != ERROR_NONE)
+  if (set_remove(capability->descriptors, restricted->id) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
   CAPABILITY_LEAVE(capability, ERROR_NONE);
@@ -369,12 +384,64 @@ t_error			capability_invalidate(t_id		p,
  */
 
 t_error			capability_get(t_id			id,
-				       t_capability_descriptor** d)
+				       t_capability_descriptor** descriptor)
 {
   CAPABILITY_ENTER(capability);
 
-  if (set_get(capability->descriptors, id, (void**)d) != ERROR_NONE)
+  if (set_get(capability->descriptors, id, (void**)descriptor) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+
+  CAPABILITY_LEAVE(capability, ERROR_NONE);
+}
+
+/*
+ * XXX
+ */
+
+t_error			capability_verify(t_capability*		provided)
+{
+  t_capability_descriptor*	current;
+
+  CAPABILITY_ENTER(capability);
+
+  if (capability_get((t_id)provided->check, &current) != ERROR_NONE)
+    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+
+  if (provided->node != current->capability.node)
+    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+
+  if (provided->object != current->capability.object)
+    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+
+  if (current->parent == ID_UNUSED)
+    {
+      if (provided->operations != current->capability.operations)
+	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+
+      if (provided->check != current->capability.check)
+	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+    }
+  else
+    {
+      // XXX t_capability		verification;
+      t_capability_descriptor*	parent;
+      t_uint64			xor;
+
+      t_uint64			verification; // XXX
+
+      if (capability_get((t_id)current->parent, &parent) != ERROR_NONE)
+	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+
+      // XXX O' ^ C
+      xor =
+	((t_uint64)current->capability.operations) ^ parent->capability.check;
+
+      // XXX hash(xor)
+      verification = sum2((char*)&xor, sizeof(t_uint64));
+
+      if (verification != current->capability.check)
+	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+    }
 
   CAPABILITY_LEAVE(capability, ERROR_NONE);
 }
@@ -425,6 +492,27 @@ t_error			capability_init(void)
 
 #if (DEBUG & DEBUG_CAPABILITY)
   capability_dump();
+#endif
+
+#if 0 // XXX
+  t_capability c;
+  t_capability r1;
+  t_capability r2;
+  t_capability f;
+
+  capability_reserve(42, 0x17, &c);
+
+  capability_restrict((t_id)c.check, 0x11, &r1);
+  capability_restrict((t_id)c.check, 0x7, &r2);
+
+  capability_restrict((t_id)r1.check, 0x1, &f);
+
+  capability_dump();
+
+  capability_verify(&c);
+  capability_verify(&f);
+  capability_verify(&r1);
+  capability_verify(&r2);
 #endif
 
   return (ERROR_NONE);
@@ -479,9 +567,6 @@ t_error			capability_clean(void)
   return (ERROR_NONE);
 }
 
-// XXX ajouter un set de capability dans o_task pour pouvoir les liberer
-// XXX
-
 // XXX probleme: comment liberer les capabilities
 // XXX une tache a une capability sur sa tache, puis elle demande d'obtenir
 // XXX une nouvelle cap sur son as. puis cette tache restrict cette nouvelle
@@ -495,6 +580,7 @@ t_error			capability_clean(void)
 // XXX meurt on parcours le set de cap en fonction des id. le probleme
 // XXX de cette derniere solution c'est qu il va falloir le faire pour
 // XXX le taskid, l'asid, chaque threadid puis chaque segid. donc c est long!
+// XXX -> ajouter un set de capability dans o_task pour pouvoir les liberer
 
 // XXX il faudrait ajouter des operations genre par exemple justement les
 // XXX oeprations sur les capabilities. si on forge une nouvelle cap, il
@@ -504,5 +590,10 @@ t_error			capability_clean(void)
 // XXX sauf pour la cap racine.
 // XXX -> pour l'instant on interdit un release sur une restricted cap
 
-// XXX expliquer bug dans cap amoeba et donc nous le check prend toute la
-// XXX cap.
+// XXX gerer les collisions avec salt
+
+// XXX si erreur, alors liberer ce qui vient d etre construit
+
+// XXX changer car actuellement on a pas de fonctions de hash ni ce qu'il
+// XXX faut pour faire un xor correct sur des donnees.
+// XXX actuellement on a le meme systeme que Amoeba et donc failles de secu.

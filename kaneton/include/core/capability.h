@@ -141,19 +141,21 @@ t_error			capability_dump(void);
 
 t_error			capability_reserve(t_id			object,
 					   t_operations		operations,
-					   t_capability*	c);
+					   t_capability*	new);
 
 t_error			capability_release(t_id			id);
 
 t_error			capability_restrict(t_id		id,
 					    t_operations	operations,
-					    t_capability*	c);
+					    t_capability*	new);
 
 t_error			capability_invalidate(t_id		p,
 					      t_id		c);
 
 t_error			capability_get(t_id			id,
-				       t_capability_descriptor** d);
+				       t_capability_descriptor** descriptor);
+
+t_error			capability_verify(t_capability*		provided);
 
 t_error			capability_init(void);
 
