@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jun 24 13:54:54 2006]
+ * updated       julien quintard   [sat jun 24 17:25:31 2006]
  */
 
 /*
@@ -37,6 +37,12 @@
 extern t_init*		init;
 
 /*
+ * the kernel manager variable.
+ */
+
+m_kernel*		kernel = NULL;
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -46,24 +52,42 @@ extern t_init*		init;
  *
  * steps:
  *
- * 1) if needed, initialises the stats manager.
- * 2) initialises the id manager.
- * 3) initialises the set manager.
- * 4) initialises the address space manager.
- * 5) initialises the segment manager.
- * 6) initialises the region manager.
- * 7) initialises the map manager
- * 8) initialises the task manager.
- * 9) initialises the thread manager.
- * 10) initialises the event manager.
- * 11) initialises the timer manager.
- * 12) initialises the message manager.
- * 13) initialises the capability manager.
- * 14) initialise the scheduler manager.
+ * 1) allocates and initializes the kernel manager structure.
+ * 2) if needed, initialises the stats manager.
+ * 3) initialises the id manager.
+ * 4) initialises the set manager.
+ * 5) initialises the address space manager.
+ * 6) initialises the segment manager.
+ * 7) initialises the region manager.
+ * 8) initialises the map manager
+ * 9) initialises the task manager.
+ * 10) initialises the thread manager.
+ * 11) initialises the event manager.
+ * 12) initialises the timer manager.
+ * 13) initialises the message manager.
+ * 14) initialises the capability manager.
+ * 15) initialise the scheduler manager.
  */
 
 void			kernel_init(void)
 {
+  /*
+   * 1)
+   */
+
+  if ((kernel = malloc(sizeof(m_kernel))) == NULL)
+    cons_msg('!', "kernel: cannot allocate memory for the kernel manager "
+	     "structure\n");
+
+  memset(kernel, 0x0, sizeof(m_kernel));
+
+  // XXX srand(time(0)) // init from the number of ticks for example
+
+  kernel->machine = /*rand() %*/ 2^64; // XXX bien sur ca c'est foireux car
+				   // rand ne genere pas sur 64-bit
+
+  // XXX kernel->node = ...
+
   /*
    * 1)
    */

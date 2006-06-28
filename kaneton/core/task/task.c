@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/task/task.c
+ * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [sun jun 18 19:11:50 2006]
+ * updated       julien quintard   [tue jun 27 23:49:12 2006]
  */
 
 /*

@@ -1,4 +1,24 @@
 --
+ les process qui veulent que l'on communique avec eux devraient effectuer
+ une action pour register leur nodeid aupres d'un groupe de nommage.
+
+ ensuite quand le process est migrer la communication va chier.
+
+ soit lors de la migration on met a jour le service de nommage, soit lors
+ de la communication si on ne trouve pas, on broadcast pour trouver la
+ nouvelle localisation.
+
+ regarder comment faire FLIP
+
+--
+ verifier que dans chaque manager il y a:
+
+   machdep_include()
+   tous les machdep_call()
+
+   la variable globale correspondante au manager
+
+--
  au lancement du core, celui-ci genere un nombre sur 64-bit.
 
  ce nombre va devenir son machine-id.

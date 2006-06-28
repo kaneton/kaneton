@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       julien quintard   [sat jun 24 13:57:48 2006]
+ * updated       julien quintard   [wed jun 28 11:18:45 2006]
  */
 
 #ifndef CORE_TASK_H

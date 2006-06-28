@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/segment/segment.c
+ * file          /home/mycure/kaneton/kaneton/core/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri jun  2 14:13:32 2006]
+ * updated       julien quintard   [tue jun 27 23:50:56 2006]
  */
 
 /*

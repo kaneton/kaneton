@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/interface/interface.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [sat jun 24 13:15:59 2006]
+ * updated       julien quintard   [sat jun 24 16:34:09 2006]
  */
 
 /*
@@ -63,3 +63,10 @@ void			interface_segment_perms(/*o_message*	message*/void)
    * then, the result of the operation is returned to the caller.
    */
 }
+
+/*
+ * XXX en fait dans ce fichier on va avoir une fonction interface_dispatch
+ * ou interface_call qui va lancer les dites fonctions...
+ *
+ * et on aura interface_segment avec toutes les fonctions de segment
+ */

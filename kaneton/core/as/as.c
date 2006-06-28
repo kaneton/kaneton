@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/as/as.c
+ * file          /home/mycure/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [thu jun 15 21:47:46 2006]
+ * updated       julien quintard   [wed jun 28 12:48:34 2006]
  */
 
 /*

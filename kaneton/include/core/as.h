@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/as.h
+ * file          /home/mycure/kaneton/kaneton/include/core/as.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [fri jun  2 14:11:05 2006]
+ * updated       julien quintard   [wed jun 28 12:47:44 2006]
  */
 
 #ifndef CORE_AS_H

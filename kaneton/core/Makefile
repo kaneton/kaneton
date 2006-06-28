@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/kaneton/core/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [sat jun 24 13:30:58 2006]
+## updated       julien quintard   [wed jun 28 11:18:30 2006]
 ##
 
 #
@@ -69,15 +69,15 @@ KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 					$(_INTERFACE_LO_)		\
 					$(_CHECK_LO_)
 
-# kaneton binary
-
-KANETON_C		:=		kaneton.c
-
-KANETON_O		:=		$(KANETON_C:.c=.o)
-
-# core variables
+# core binary
 
 CORE_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/core.h
+
+CORE_C			:=		core.c
+
+CORE_O			:=		$(CORE_C:.c=.o)
+
+# core variables
 
 CFLAGS			+=		-D___kernel
 
@@ -93,12 +93,12 @@ DATE			:=		$(call date)
 # ---------- rules ------------------------------------------------------------
 #
 
-$(_CORE_):		libs $(KANETON_O)
+$(_CORE_):		libs $(CORE_O)
 	$(call version,$(VERSION_C),$(USER),$(HOSTNAME),$(DATE))
 
 	$(call compile-c,$(VERSION_O),$(VERSION_C),)
 
-	$(call executable,$(_CORE_),	$(KANETON_O)			\
+	$(call executable,$(_CORE_),	$(CORE_O)			\
 					$(VERSION_O)			\
 					$(KANETON_LIBS)			\
 					$(_KLIBC_A_),			\
@@ -117,7 +117,7 @@ clear:
 	$(call remove,$(VERSION_O),)
 	$(call remove,$(VERSION_C),)
 
-	$(call remove,$(KANETON_O),)
+	$(call remove,$(CORE_O),)
 
 	$(call remove,$(_CORE_),)
 

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/kaneton.c
+ * file          /home/mycure/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jun 24 13:44:39 2006]
+ * updated       julien quintard   [wed jun 28 13:59:27 2006]
  */
 
 /*
