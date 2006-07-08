@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/id/id.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [mon apr  3 12:54:17 2006]
+ * updated       julien quintard   [sat jul  8 02:27:35 2006]
  */
 
 /*
@@ -19,14 +19,6 @@
  * the best example of this fact is located in the id_release()
  * function. indeed the function does nothing, meaning that the
  * identifier released will not be recycled.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * the goal of the id manager is simply to generate identifier.
- *
- * this is the simpler manager of the kaneton kernel.
  */
 
 /*

@@ -3,27 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/init.c
+ * file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [wed may  3 16:45:12 2006]
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * this file contains the functions intended to do the relocation.
- *
- * this file is very important because it does the most important things
- * of the bootloader: computes segments and regions, relocates data, creates
- * the init structure etc..
- *
- * the relocation is based on dynamic allocation. nevertheless, no dynamic
- * allocation is provided. the student so has to setup a very simple dynamic
- * memory allocation algorithm to be able to build the init structure.
- *
- * think about it because some components cannot have a dynamic address. there
- * are some crazy problems to resolve in this context.
+ * updated       julien quintard   [sat jul  8 02:31:22 2006]
  */
 
 /*

@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [tue jun 27 23:50:56 2006]
+ * updated       julien quintard   [sat jul  8 02:28:12 2006]
  */
 
 /*
@@ -25,14 +25,6 @@
  * remember  that  segments are  global:  there  is  only one  set  of
  * segments objects for  the entire kernel. the set  of segments in an
  * address space is just a set of identifiers.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students have  to write the entire manager:  this file implementing
- * independent code plus  an architecture dependant file (ia32-virtual
- * or ia32-segment for example).
  */
 
 /*

@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       julien quintard   [wed jun 28 12:48:34 2006]
+ * updated       julien quintard   [sat jul  8 02:28:24 2006]
  */
 
 /*
@@ -24,23 +24,6 @@
  * some segments.
  *
  * a task can give its address space to another with as_give().
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * the address space manager builds address space objects.
- *
- * every address space object is essentially composed of two sets: a
- * set of segments which list the segments held by this address space and
- * a set of regions which describes the useable virtual address ranges.
- *
- * the student just has to write the functions to reserve, release, get etc..
- * an address space.
- *
- * note that the address space does nothing more. indeed, the segment
- * manager and the region manager will add and/or remove the segments/regions
- * to/from the address space by their own.
  */
 
 /*

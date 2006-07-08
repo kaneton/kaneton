@@ -3,24 +3,16 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/paging/pt.c
+ * file          /home/mycure/kaneton/libs/libia32/paging/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       matthieu bucchianeri   [fri may 12 14:53:41 2006]
+ * updated       julien quintard   [sat jul  8 02:36:49 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * manage page tables.
- *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students have to place here everything dealing with page tables. no
- * restrictions apply on this file.
  *
  */
 

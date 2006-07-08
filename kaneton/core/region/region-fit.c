@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/region/region-fit.c
+ * file          /home/mycure/kaneton/kaneton/core/region/region-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:28:36 2006]
- * updated       matthieu bucchianeri   [sun apr  2 23:23:05 2006]
+ * updated       julien quintard   [sat jul  8 02:23:47 2006]
  */
 
 /*
@@ -20,12 +20,6 @@
  *  - FIT_FIRST: first fit algorithm - the first large enough space is taken
  *  - FIT_BEST: best fit algorithm - the smaller space is taken
  *  - ...
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students will have to develop at least a first-fit algorithm.
  */
 
 /*

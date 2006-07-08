@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/libs/libia32/interrupt/pic.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:44:58 2005]
- * updated       julien quintard   [fri mar 10 03:54:59 2006]
+ * updated       julien quintard   [sat jul  8 02:35:36 2006]
  */
 
 /*
@@ -14,16 +14,6 @@
  *
  * this  file  implements   the  management  of  the   programmable  interrupt
  * controller  (PIC 8259A)  on  ia32  architecture.
- *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students will use this file to place functions they wrote to manage
- * the pic. students may write as many functions as they whant without
- * any restrictions. Note that the pic is set to cascade mode, with normal
- * EOI.
  *
  */
 

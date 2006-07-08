@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/map/map.c
+ * file          /home/mycure/kaneton/kaneton/core/map/map.c
  *
  * created       matthieu bucchianeri   [sun feb 26 12:56:54 2006]
- * updated       matthieu bucchianeri   [fri jun  2 13:40:21 2006]
+ * updated       julien quintard   [sat jul  8 02:28:41 2006]
  */
 
 /*
@@ -16,12 +16,6 @@
  *
  * this manager only does two things: reserving a new map and releasing it.
  * a map is a couple of segment and region.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students have to write the whole map manager.
  */
 
 /*

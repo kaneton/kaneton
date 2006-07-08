@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/libs/libia32/time/timer.c
  *
  * created       renaud voltz   [mon feb 27 04:20:33 2006]
- * updated       julien quintard   [fri mar 10 03:56:11 2006]
+ * updated       julien quintard   [sat jul  8 02:35:44 2006]
  */
 
 /*
@@ -14,15 +14,6 @@
  *
  * this  file  implements   the  management  of  the   progammable   interval
  * timer  (PIT 8254)  on  ia32  architecture.
- *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students will use this file to place functions they wrote to manage
- * the pit. students may write as many functions as they whant without
- * any restrictions.
  *
  */
 

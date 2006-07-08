@@ -3,19 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
+ * file          /home/mycure/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [sun jun 18 18:13:21 2006]
+ * updated       julien quintard   [sat jul  8 02:24:01 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
- *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
  *
  */
 

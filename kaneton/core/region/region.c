@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/region/region.c
+ * file          /home/mycure/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [thu jun 15 21:51:05 2006]
+ * updated       julien quintard   [sat jul  8 02:23:54 2006]
  */
 
 /*
@@ -22,13 +22,6 @@
  * unlike segments, regions  are proper to an address  space: there is
  * one set of region objects for each address space to prevent collisions.
  *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students have to develop  entirely this manager, including the code
- * for one architecture (ia32-virtual or ia32-segment).
  */
 
 /*

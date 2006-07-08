@@ -3,20 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/bootstrap/arch/ia32-virtual/bootloader.c
+ * file          /home/mycure/kaneton/kaneton/bootstrap/arch/ia32-virtual/bootloader.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:02:04 2006]
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * this bootloader is very simple. its only goal is to show the boostrap
- * correctly installed the protected mode.
- *
- * in this bootloader, the student has to write a very light source code
- * which print a message.
+ * updated       julien quintard   [sat jul  8 02:32:15 2006]
  */
 
 /*

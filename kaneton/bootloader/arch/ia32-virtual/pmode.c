@@ -3,19 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/pmode.c
+ * file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/pmode.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [sun apr  2 23:53:33 2006]
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * the student just has to setup the protected mode in this file,
- * nothing more.
- *
- * of course, it will be better to provide some debug functions etc..
+ * updated       julien quintard   [sat jul  8 02:31:27 2006]
  */
 
 /*

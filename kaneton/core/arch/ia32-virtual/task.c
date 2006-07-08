@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/task.c
+ * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [sat jun 17 19:39:15 2006]
+ * updated       julien quintard   [sat jul  8 02:30:11 2006]
  */
 
 /*
@@ -15,14 +15,6 @@
  * this file implements  dependent code for task manager  on ia32 with
  * paging architecture.
  *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students will have to develop this entire part of the project. take
- * a look at the dispatch structure declaration to fill it correctly
- * and to write needed functions.
  */
 
 /*

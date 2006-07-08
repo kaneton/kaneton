@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/stats/stats.c
+ * file          /home/mycure/kaneton/kaneton/core/stats/stats.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu jun 15 22:04:36 2006]
+ * updated       julien quintard   [sat jul  8 02:27:41 2006]
  */
 
 /*
@@ -19,15 +19,6 @@
  * with this manager we will be able to evaluate critical managers
  * like the set manager and especially critical functions which could
  * be optimised in a near futur.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * the students have nothing to do here.
- *
- * nevetheless they can use the stats manager if they want to evaluate
- * their kernel implementation.
  */
 
 /*

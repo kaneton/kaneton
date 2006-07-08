@@ -3,36 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/bootloader.c
+ * file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/bootloader.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue mar 21 11:23:30 2006]
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * the goal of the bootloader is to install a correct environment for
- * the kernel.
- *
- * the first thing to do is to relocate the different kaneton data structure
- * in order to build the t_init structure. this structure must contain
- * everything the kernel will need.
- *
- * for more information on the relocating, take a look to the kaneton
- * paper which describes the entire kaneton reference.
- *
- * once the init structure was built, the kernel has to be launched.
- *
- * nevertheless, the kernel needs to evolve with the protected mode and
- * paging mode activated, so the bootloader first has to install these.
- *
- * printing some messages is interesting showing the protected mode and
- * paging mode are correctly installed.
- *
- * after all, the bootloader has launch the kernel binary.
- *
- * look at the ld scripts to know where the kernel has to be loaded.
+ * updated       julien quintard   [sat jul  8 02:31:45 2006]
  */
 
 /*

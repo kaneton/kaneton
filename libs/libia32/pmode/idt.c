@@ -3,24 +3,16 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/pmode/idt.c
+ * file          /home/mycure/kaneton/libs/libia32/pmode/idt.c
  *
  * created       renaud voltz   [sun feb 12 02:02:19 2006]
- * updated       matthieu bucchianeri   [sun apr  2 23:48:42 2006]
+ * updated       julien quintard   [sat jul  8 02:33:48 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * manage interrupt descriptor table.
- *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students  will  place  here   the  functions  they  need  to  manage
- * idt. prototypes are not imposed.
  *
  */
 

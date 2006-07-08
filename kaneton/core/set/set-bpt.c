@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/set/set_bpt.c
+ * file          /home/mycure/kaneton/kaneton/core/set/set-bpt.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed apr 12 12:08:27 2006]
+ * updated       julien quintard   [sat jul  8 02:24:30 2006]
  */
 
 /*
@@ -26,20 +26,6 @@
  * allocate option is set.
  *
  * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ALLOC, SET_OPT_FREE
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * the students should not develop anything here.
- *
- * this data structure is reserved to the reference kaneton project.
- *
- * nevertheless if the students really want to include a powerful data
- * structure into their kaneton implementation, take a look to the
- * bpt.h header file develop by myself:
- *
- *      core/include/sys/bpt.h
  */
 
 /*

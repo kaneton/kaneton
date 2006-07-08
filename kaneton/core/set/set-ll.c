@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/set/set_ll.c
+ * file          /home/mycure/kaneton/kaneton/core/set/set-ll.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed apr 12 12:08:54 2006]
+ * updated       julien quintard   [sat jul  8 02:27:14 2006]
  */
 
 /*
@@ -33,13 +33,6 @@
  * case the allocate or free options are set.
  *
  * options: SET_OPT_CONTAINER, SET_OPT_SORT, SET_OPT_ALLOC, SET_OPT_FREE
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * the students must develop the entire linked-list data structure, nothing
- * less, nothing more.
  */
 
 /*

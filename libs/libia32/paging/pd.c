@@ -3,25 +3,16 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/paging/pd.c
+ * file          /home/mycure/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [fri may 12 14:53:44 2006]
+ * updated       julien quintard   [sat jul  8 02:36:44 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * manage page directory.
- *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * this    file   is    destinated   to    functions    dealing   with
- * page-directories. there are no restrictions about function names or
- * prototype, so feel free.
  *
  */
 

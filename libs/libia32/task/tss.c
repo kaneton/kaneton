@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/libs/libia32/task/tss.c
+ * file          /home/mycure/kaneton/libs/libia32/task/tss.c
  *
  * created       renaud voltz   [mon apr 10 01:01:34 2006]
- * updated       renaud voltz   [mon apr 10 01:01:34 2006]
+ * updated       julien quintard   [sat jul  8 02:32:37 2006]
  */
 
 /*
@@ -19,12 +19,6 @@
  * the current TSS whose descriptor is pointed by the TR register.
  * thus, whatever the design chosen for the context switch implementation, ia32
  * architecture always needs at least one TSS.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * XXX THREAD assigments have to be written.
  */
 
 /*

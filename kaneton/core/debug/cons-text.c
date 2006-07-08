@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/kaneton/debug/cons-text.c
+ * file          /home/mycure/kaneton/kaneton/core/debug/cons-text.c
  *
  * created       quintard julien   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [tue jan 31 01:11:52 2006]
+ * updated       julien quintard   [sat jul  8 02:24:09 2006]
  */
 
 /*
@@ -17,13 +17,6 @@
  * in the  future, the console control  will be passed  to a dedicated
  * server.
  *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * similar to the bootloader one, students will have to develop the
- * code for console display.
  */
 
 /*

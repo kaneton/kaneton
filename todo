@@ -30,9 +30,6 @@
  le core puisse extraire le premier module et le lancer.
 
 --
- virer les sections assignments dans les fichiers
-
---
  tous les profiles machines sauf gnu-unix sont foireux
 
  il faudra les mettre a jour

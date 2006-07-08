@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/pmode/gdt.c
+ * file          /home/mycure/kaneton/libs/libia32/pmode/gdt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:45:19 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:48:53 2006]
+ * updated       julien quintard   [sat jul  8 02:33:00 2006]
  */
 
 /*
@@ -42,14 +42,6 @@
  */
 
 /*                                                                 [cut] /k2 */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students will have  to place here code to manage  gdt. there are no
- * restrictions on prototypes, names etc.
- *
- */
 
 /*
  * ---------- includes --------------------------------------------------------

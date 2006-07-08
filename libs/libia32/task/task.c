@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/libs/libia32/task/task.c
+ * file          /home/mycure/kaneton/libs/libia32/task/task.c
  *
  * created       renaud voltz   [tue apr  4 21:45:07 2006]
- * updated       renaud voltz   [tue apr  4 21:45:07 2006]
+ * updated       julien quintard   [sat jul  8 02:32:30 2006]
  */
 
 /*
@@ -14,13 +14,6 @@
  *
  * XXX THREAD information need to be written.
  */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * XXX THREAD assigments have to be written.
- */
-
 
 /*
  * ---------- includes --------------------------------------------------------

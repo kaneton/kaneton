@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
+ * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [sun jun 11 17:13:20 2006]
+ * updated       julien quintard   [sat jul  8 02:30:30 2006]
  */
 
 /*
@@ -15,14 +15,6 @@
  * this file  implements dependent  code for region  manager on  ia32 with
  * paging architecture.
  *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students will have to develop this entire part of the project. take
- * a look at the dispatch structure declaration to fill it correctly
- * and to write needed functions.
  */
 
 /*

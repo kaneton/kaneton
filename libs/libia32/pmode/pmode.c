@@ -3,27 +3,16 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/pmode/pmode.c
+ * file          /home/mycure/kaneton/libs/libia32/pmode/pmode.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:15 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:47:55 2006]
+ * updated       julien quintard   [sat jul  8 02:35:03 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * manage protected mode.
- *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students  must  write  here  function related  to  protected  mode:
- * entering, leaving etc.
- *
- * but  be careful: everything  that deals  with gdt  and ldt  must be
- * placed in the corresponding file, not here.
  *
  */
 

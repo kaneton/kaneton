@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/interrupt/interrupt.c
+ * file          /home/mycure/kaneton/libs/libia32/interrupt/interrupt.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       matthieu bucchianeri   [sun apr  2 23:51:19 2006]
+ * updated       julien quintard   [sat jul  8 02:35:21 2006]
  */
 
 /*
@@ -16,13 +16,6 @@
  * both exceptions and irq's are called interrupts in the machine-dependent
  * code of kaneton.
  */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * XXX EVENT assigments have to be written.
- */
-
 
 /*
  * ---------- includes --------------------------------------------------------

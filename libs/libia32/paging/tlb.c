@@ -3,24 +3,16 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/paging/tlb.c
+ * file          /home/mycure/kaneton/libs/libia32/paging/tlb.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:57:00 2005]
- * updated       matthieu bucchianeri   [thu jun  1 14:14:16 2006]
+ * updated       julien quintard   [sat jul  8 02:35:12 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * manage translation lookaside buffers.
- *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * this  file  must  be   filled  with  everything  about  translation
- * lookaside buffers.
  *
  */
 

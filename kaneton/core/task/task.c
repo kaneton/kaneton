@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [tue jun 27 23:49:12 2006]
+ * updated       julien quintard   [sat jul  8 02:27:53 2006]
  */
 
 /*
@@ -17,12 +17,6 @@
  * a task is  composed of the process control  block (task id, parent,
  * children...), a priority used  for the scheduling, an address space
  * and a set of waits.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * XXX
  */
 
 /*

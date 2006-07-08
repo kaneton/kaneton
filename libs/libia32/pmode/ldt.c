@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/pmode/ldt.c
+ * file          /home/mycure/kaneton/libs/libia32/pmode/ldt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 20:13:58 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:49:10 2006]
+ * updated       julien quintard   [sat jul  8 02:34:33 2006]
  */
 
 /*
@@ -36,14 +36,6 @@
  */
 
 /*                                                                 [cut] /k2 */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * this is the good place to put code dealing with ldt.
- *
- */
-
 
 /*
  * ---------- includes --------------------------------------------------------

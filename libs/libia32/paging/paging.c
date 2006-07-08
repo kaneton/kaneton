@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/paging/paging.c
+ * file          /home/mycure/kaneton/libs/libia32/paging/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:58:48 2006]
+ * updated       julien quintard   [sat jul  8 02:36:58 2006]
  */
 
 /*
@@ -14,17 +14,6 @@
  *
  * manage paging.
  *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students  will have  to fill  this  file with  function related  to
- * paging mode in the cpu: enable, disabling etc.
- *
- * there are no  restrictions about these functions, but  keep in mind
- * that  page-directory management and  page-tables management  are to
- * place in pd.c and pt.c.
  */
 
 /*

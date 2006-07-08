@@ -1,24 +1,18 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/kaneton/core/arch/ia32-virtual/thread.c
+ * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       renaud voltz   [tue apr  4 03:08:03 2006]
+ * updated       julien quintard   [sat jul  8 02:30:44 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * XXX THREAD information need to be written.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * XXX THREAD assignments need to be written.
  */
 
 /*

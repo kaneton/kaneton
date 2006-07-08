@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
+ * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu jun 15 21:46:09 2006]
+ * updated       julien quintard   [sat jul  8 02:30:24 2006]
  */
 
 /*
@@ -15,14 +15,6 @@
  * this file  implements dependent  code for as  manager on  ia32 with
  * paging architecture.
  *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students will have to develop this entire part of the project. take
- * a look at the dispatch structure declaration to fill it correctly
- * and to write needed functions.
  */
 
 /*

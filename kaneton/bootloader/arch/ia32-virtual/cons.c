@@ -3,17 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/core/bootloader/arch/ia32-virtual/cons.c
+ * file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/cons.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [tue jan 24 12:44:22 2006]
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * the student has to fill in this file just to be able to print some
- * debug messages.
+ * updated       julien quintard   [sat jul  8 02:31:11 2006]
  */
 
 /*

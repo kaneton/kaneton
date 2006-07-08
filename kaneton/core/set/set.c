@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/set/set.c
+ * file          /home/mycure/kaneton/kaneton/core/set/set.c
  *
  * created       julien quintard   [fri dec  2 19:55:19 2005]
- * updated       matthieu bucchianeri   [wed apr 12 12:06:56 2006]
+ * updated       julien quintard   [sat jul  8 02:36:34 2006]
  */
 
 /*
@@ -85,17 +85,6 @@
  * if a developer wants to add something at the start of each set manager's
  * function, he simply has to add his lines in the SET_ENTER macro located
  * in the kaneton/include/core/set.h header file.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * the student should understand the whole set manager, first to be able
- * to develop into the kaneton project and to add set data structures, then
- * because it uses very special c preprocessor interesting features.
- *
- * take a look to the subparts of the set manager. indeed the real assignments
- * are in relation with these subparts.
  */
 
 /*

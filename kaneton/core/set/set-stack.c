@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/set/set_stack.c
+ * file          /home/mycure/kaneton/kaneton/core/set/set-stack.c
  *
  * created       renaud voltz   [wed jan 25 17:11:05 2006]
- * updated       matthieu bucchianeri   [wed apr 12 12:10:15 2006]
+ * updated       julien quintard   [sat jul  8 02:24:18 2006]
  */
 
 /*
@@ -16,11 +16,6 @@
  * stacks.
  *
  * this is actually a front-end using the linked-list manager.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
  */
 
 /*

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/segment/segment-fit.c
+ * file          /home/mycure/kaneton/kaneton/core/segment/segment-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:03:46 2006]
- * updated       matthieu bucchianeri   [sun apr  2 23:22:59 2006]
+ * updated       julien quintard   [sat jul  8 02:28:01 2006]
  */
 
 /*
@@ -20,13 +20,6 @@
  *  - FIT_FIRST: first fit algorithm - the first large enough space is taken
  *  - FIT_BEST: best fit algorithm - the smaller space is taken
  *  - ...
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * students  have  to develop  at  least  the  first-fit algorithm  to
- * allocate physical memory.
  */
 
 /*

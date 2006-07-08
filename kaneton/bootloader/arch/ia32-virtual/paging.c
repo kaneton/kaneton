@@ -3,20 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/paging.c
+ * file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/paging.c
  *
  * created       julien quintard   [sun may 29 00:38:50 2005]
- * updated       matthieu bucchianeri   [mon apr  3 00:07:18 2006]
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * these function just install the paging mode to enable virtual memory
- * which is required by the kaneton kernel.
- *
- * think about mapping everything needed: kernel code, kernel stack, init
- * structure etc..
+ * updated       julien quintard   [sat jul  8 02:31:32 2006]
  */
 
 /*

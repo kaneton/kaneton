@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/timer.c
  *
  * created       renaud voltz   [tue feb 28 02:24:05 2006]
- * updated       julien quintard   [sun apr  2 14:17:17 2006]
+ * updated       julien quintard   [sat jul  8 02:28:58 2006]
  */
 
 /*
@@ -14,12 +14,6 @@
  *
  * this file implements dependant code for the timer managment on ia32 with
  * paging architecture.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * XXX TIMER assignments have to be written.
  */
 
 /*

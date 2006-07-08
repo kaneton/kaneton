@@ -1,21 +1,4 @@
 ;;
-;; ---------- assignments -----------------------------------------------------
-;;
-;; this boostrap just reads a sector from the floppy drive to load the
-;; bootloader.
-;;
-;; then the boostrap installs the protected mode because the bootloader
-;; needs it.
-;;
-;; finally, the boostrap jumps on the bootloader startup function. then
-;; the bootloader is running.
-;;
-;; think about printing a message in real mode.
-;;
-;; look at the ld scripts to know where the bootloader has to be loaded.
-;;
-
-;;
 ;; ---------- functions -------------------------------------------------------
 ;;
 

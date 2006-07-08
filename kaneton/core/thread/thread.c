@@ -3,22 +3,16 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/thread/thread.c
+ * file          /home/mycure/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       matthieu bucchianeri   [wed apr 12 11:54:36 2006]
+ * updated       julien quintard   [sat jul  8 02:28:36 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * this file implements the thread manager.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * XXX THREAD assignments need to be written.
  */
 
 /*                                                                  [cut] k4 */

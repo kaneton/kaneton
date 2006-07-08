@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/event.c
+ * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [fri jun  2 13:52:09 2006]
+ * updated       julien quintard   [sat jul  8 02:29:24 2006]
  */
 
 /*
@@ -14,12 +14,6 @@
  *
  * this file implements dependent code for the events on ia32 with paging
  * architecture.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * XXX EVENT assignments have to be written.
  */
 
 /*

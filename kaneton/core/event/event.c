@@ -3,22 +3,16 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/event/event.c
+ * file          /home/mycure/kaneton/kaneton/core/event/event.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       matthieu bucchianeri   [thu jun  1 18:07:11 2006]
+ * updated       julien quintard   [sat jul  8 02:23:25 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * this file implements the event manager.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * XXX EVENT assignments have to be written.
  */
 
 /*                                                                  [cut] k3 */

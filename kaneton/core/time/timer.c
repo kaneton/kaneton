@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/time/timer.c
+ * file          /home/mycure/kaneton/kaneton/core/time/timer.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       matthieu bucchianeri   [sun jun 18 18:15:41 2006]
+ * updated       julien quintard   [sat jul  8 02:27:47 2006]
  */
 
 /*
@@ -20,12 +20,6 @@
  *    automaticaly reset to its original delay.
  * b) if the timer repeat is set to TIMER_REPEAT_DISABLE, then the timer is
  *    released.
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
- *
- * XXX TIMER assignments have to be written.
  */
 
 /*								    [cut] k3 */
