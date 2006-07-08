@@ -1,16 +1,11 @@
-## copyright quintard julien
+## licence       kaneton licence
 ##
-## kaneton
+## project       kaneton
 ##
-## user.sh
+## file          /home/mycure/kaneton/env/users/julien.quintard/user.sh
 ##
-## path          /home/mycure/kaneton/env
-##
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-##
-## started on    Fri Feb 11 02:18:00 2005   mycure
-## last update   Tue Nov  8 12:03:39 2005   mycure
+## created       julien quintard   [sat jul  8 03:08:34 2006]
+## updated       julien quintard   [sat jul  8 03:08:39 2006]
 ##
 
 #

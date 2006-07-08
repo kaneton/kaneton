@@ -1,12 +1,11 @@
-#!/bin/sh
 ## licence       kaneton licence
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/env/users/matthieu.bucchianeri/user.sh
+## file          /home/mycure/kaneton/env/users/student/user.sh
 ##
 ## created       matthieu bucchianeri   [tue dec 13 21:02:30 2005]
-## updated       matthieu bucchianeri   [mon jan 23 20:10:30 2006]
+## updated       julien quintard   [sat jul  8 03:08:06 2006]
 ##
 
 #

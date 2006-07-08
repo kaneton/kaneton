@@ -1,4 +1,3 @@
-#!/bin/bash
 ## licence       kaneton licence
 ##
 ## project       kaneton
@@ -6,7 +5,7 @@
 ## file          /home/mycure/kaneton/tools/mbl/grub/grub.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [tue feb 21 22:55:27 2006]
+## updated       julien quintard   [sat jul  8 03:12:23 2006]
 ##
 
 #

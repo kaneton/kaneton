@@ -1,4 +1,3 @@
-#!/bin/bash
 ## licence       kaneton licence
 ##
 ## project
@@ -6,7 +5,7 @@
 ## file          /home/mycure/kaneton/export/export.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat jul  8 02:17:02 2006]
+## updated       julien quintard   [sat jul  8 03:06:34 2006]
 ##
 
 #

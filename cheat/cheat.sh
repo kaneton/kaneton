@@ -1,5 +1,3 @@
-#! /bin/bash
-
 ## licence       kaneton licence
 ##
 ## project       kaneton
@@ -7,7 +5,7 @@
 ## file          /home/mycure/kaneton/cheat/cheat.sh
 ##
 ## created       julien quintard   [sat feb 18 19:09:32 2006]
-## updated       julien quintard   [wed feb 22 19:43:05 2006]
+## updated       julien quintard   [sat jul  8 03:07:54 2006]
 ##
 
 #

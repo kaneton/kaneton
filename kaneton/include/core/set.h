@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/set.h
+ * file          /home/mycure/kaneton/kaneton/include/core/set.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       matthieu bucchianeri   [wed apr 12 12:12:37 2006]
+ * updated       julien quintard   [sat jul  8 03:17:01 2006]
  */
 
 #ifndef CORE_SET_H
@@ -86,9 +86,9 @@ typedef struct s_set		o_set;
  * ---------- includes --------------------------------------------------------
  */
 
-#include <core/set_array.h>
-#include <core/set_bpt.h>
-#include <core/set_ll.h>
+#include <core/set-array.h>
+#include <core/set-bpt.h>
+#include <core/set-ll.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -332,12 +332,11 @@ typedef struct
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/set/set.c
- *      ../../core/set/set_array.c
- *      ../../core/set/set_ll.c
- *	../../core/set/set_bpt.c
- *	../../core/set/set_pipe.c
- *	../../core/set/set_stack.c
-
+ *      ../../core/set/set-array.c
+ *      ../../core/set/set-ll.c
+ *	../../core/set/set-bpt.c
+ *	../../core/set/set-pipe.c
+ *	../../core/set/set-stack.c
  */
 
 /*
@@ -366,7 +365,7 @@ t_error			set_clean(void);
 
 
 /*
- * ../../core/set/set_array.c
+ * ../../core/set/set-array.c
  */
 
 t_error			set_type_array(i_set			setid);
@@ -437,7 +436,7 @@ t_error			set_pick_array(i_set			setid,
 
 
 /*
- * ../../core/set/set_ll.c
+ * ../../core/set/set-ll.c
  */
 
 t_error			set_type_ll(i_set			setid);
@@ -507,7 +506,7 @@ t_error			set_pick_ll(i_set			setid,
 
 
 /*
- * ../../core/set/set_bpt.c
+ * ../../core/set/set-bpt.c
  */
 
 void			set_load_bpt(t_bpt(set)*		bpt,
@@ -608,7 +607,7 @@ t_error			set_pick_bpt(i_set			setid,
 
 
 /*
- * ../../core/set/set_pipe.c
+ * ../../core/set/set-pipe.c
  */
 
 t_error			set_type_pipe(i_set			setid);
@@ -678,7 +677,7 @@ t_error			set_object_pipe(i_set			setid,
 
 
 /*
- * ../../core/set/set_stack.c
+ * ../../core/set/set-stack.c
  */
 
 t_error			set_type_stack(i_set			setid);

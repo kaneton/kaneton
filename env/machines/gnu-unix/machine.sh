@@ -1,12 +1,11 @@
-#!/bin/bash
 ## licence       kaneton licence
 ##
 ## project
 ##
-## file          /home/mycure/kaneton/env/machines/unix/machine.sh
+## file          /home/mycure/kaneton/env/machines/gnu-unix/machine.sh
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [mon apr 10 15:49:42 2006]
+## updated       julien quintard   [sat jul  8 03:10:08 2006]
 ##
 
 #

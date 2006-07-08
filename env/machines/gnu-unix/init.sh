@@ -1,4 +1,3 @@
-#!/bin/bash
 ## licence       kaneton licence
 ##
 ## project       kaneton
@@ -6,7 +5,7 @@
 ## file          /home/mycure/kaneton/env/machines/gnu-unix/init.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [fri jun 23 16:18:25 2006]
+## updated       julien quintard   [sat jul  8 03:08:57 2006]
 ##
 
 #

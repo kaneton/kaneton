@@ -1,4 +1,3 @@
-#!/bin/sh
 ## licence       kaneton licence
 ##
 ## project       kaneton
@@ -6,7 +5,7 @@
 ## file          /home/mycure/kaneton/env/critical.sh
 ##
 ## created       matthieu bucchianeri   [tue dec 13 19:31:03 2005]
-## updated       julien quintard   [fri jun 23 16:00:15 2006]
+## updated       julien quintard   [sat jul  8 03:10:29 2006]
 ##
 
 #

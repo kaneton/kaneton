@@ -32,7 +32,7 @@
 --
  tous les profiles machines sauf gnu-unix sont foireux
 
- il faudra les mettre a jour
+ il faudra les mettre a jour enfin les refaire plutot
 
 --
  virer les CFLAGS = ___kernel c'est trop laid/specifique
@@ -45,6 +45,14 @@
  virer les !# * meme pour perl, python, ruby etc.. car ca va forcement
  chier sur des OS. a la place faire un truc comme autoconf qui trouve
  les binaires.
+
+ launch
+   -> script-shell
+   -> makefile
+   -> python, ruby etc..
+
+ utilier une variable fonction launch-python etc.. qui est redefinissable
+ par le user.
 
 --
  refaire la moulinette de tests pour qu elle soit propre

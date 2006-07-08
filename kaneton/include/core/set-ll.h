@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/set_ll.h
+ * file          /home/mycure/kaneton/kaneton/include/core/set-ll.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       julien quintard   [sun apr  2 13:50:23 2006]
+ * updated       julien quintard   [sat jul  8 03:17:12 2006]
  */
 
 #ifndef CORE_SET_LL_H
