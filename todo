@@ -38,9 +38,6 @@
  virer les CFLAGS = ___kernel c'est trop laid/specifique
 
 --
- virer la doc de l'interieur de kaneton et mettre sur le web.
-
---
  revoir la doc: apparamment les etudiants ne comprennent pas instinctivement
  qu il y a trois parties bien distinctes: core, machdep, libarch
 
@@ -128,6 +125,8 @@
  de sorte qu'on n'ait plus de structure t_cons dependante a passer
 
  include/arch/ia32-virtual/kaneton/init.h
+
+ encore plus loin faire que bootloader et core soient independants
 
 --
  pour tester la moulette avec un seul pc : QEMU, avec l'option "-serial pty"
