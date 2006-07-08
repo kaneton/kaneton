@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/export/export.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [tue feb 21 22:55:17 2006]
+## updated       julien quintard   [sat jul  8 02:17:02 2006]
 ##
 
 #
@@ -137,13 +137,13 @@ build()
   svn-clean "${_EXPORT_}"
 
   # gets the list of the files
-  c_files=$(find-files "libs/ core/ drivers/ services/ programs/" "*.c"	\
+  c_files=$(find-files "libs/ core/" "*.c"				\
 	"--file")
-  h_files=$(find-files "libs/ core/ drivers/ services/ programs/" "*.h"	\
+  h_files=$(find-files "libs/ core/" "*.h"				\
 	"--file")
-  asm_files=$(find-files "libs/ core/ drivers/ services/ programs/"	\
+  asm_files=$(find-files "libs/ core/"					\
 	"*.asm" "--file")
-  S_files=$(find-files "libs/ core/ drivers/ services/ programs/" "*.S"	\
+  S_files=$(find-files "libs/ core/" "*.S"				\
 	"--file")
 
   FILES="${c_files} ${h_files} ${asm_files} ${S_files}"
