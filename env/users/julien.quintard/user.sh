@@ -26,7 +26,7 @@
 #
 view()
 {
-  document=${1}
+  local document=${1}
 
   ${VIEWER} ${document}
 }

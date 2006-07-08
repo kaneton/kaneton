@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/papers/kaneton/core.tex
+%% file          /home/mycure/kaneton/view/books/kaneton/core.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:33:29 2006]
-%% updated       julien quintard   [sat jun 17 22:09:46 2006]
+%% updated       julien quintard   [thu jul  6 17:25:14 2006]
 %%
 
 %
@@ -1489,6 +1489,7 @@ action is totally performed.
 	 }
 
 \function{message\_send}{(i\_node \argument{node},
+                          t\_tag \argument{tag},
                           void* \argument{data},
                           t\_size \argument{size})}
 	 {
@@ -1499,6 +1500,7 @@ action is totally performed.
 	 }
 
 \function{message\_throw}{(i\_node \argument{node},
+                           t\_tag \argument{tag},
                            void* \argument{data},
                            t\_size \argument{size},
                            i\_message* \argument{id})}
@@ -1510,6 +1512,7 @@ action is totally performed.
 	 }
 
 \function{message\_transmit}{(i\_node \argument{node},
+                              t\_tag \argument{tag},
                               void* \argument{data},
                               t\_size \argument{size})}
 	 {
@@ -1520,6 +1523,7 @@ action is totally performed.
 	 }
 
 \function{message\_post}{(i\_node \argument{node},
+                          t\_tag \argument{tag},
                           void* \argument{data},
                           t\_size \argument{size},
                           i\_message* \argument{id})}
@@ -1539,12 +1543,14 @@ action is totally performed.
 	 }
 
 \function{message\_receive}{(i\_node \argument{node},
+                             t\_tag \argument{tag},
                              void* \argument{data})}
 	 {
 	   This blocking function receives a message in \argument{data}.
 	 }
 
 \function{message\_grab}{(i\_node \argument{node},
+                          t\_tag \argument{tag},
                           void* \argument{data},
                           i\_message* \argument{id})}
 	 {
@@ -1552,6 +1558,7 @@ action is totally performed.
 	 }
 
 \function{message\_get}{(i\_message \argument{id},
+                         t\_tag \argument{tag},
                          o\_message** \argument{o})}
 	 {
 	   This function returns in \argument{o} the message object

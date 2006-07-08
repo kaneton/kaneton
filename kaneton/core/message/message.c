@@ -3,20 +3,32 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/message/message.c
+ * file          /home/mycure/kaneton/kaneton/core/message/message.c
  *
- * created       matthieu bucchianeri   [sat jun 17 19:37:05 2006]
- * updated       matthieu bucchianeri   [sat jun 17 19:50:53 2006]
+ * created       julien quintard   [sat jul  1 23:25:14 2006]
+ * updated       julien quintard   [thu jul  6 16:46:43 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- */
-
-/*
- * ---------- assignments -----------------------------------------------------
+ * the message manager provides a complete set of functions to send, receive,
+ * request and reply messages in different passing modes.
  *
+ * the message manager interface is equivalent in many ways to the
+ * well-known parallel and distributed computing libraries like MPI, PVM etc..
+ *
+ * indeed, functions to send synchronously and asynchronously are provided
+ * as well as blocking and non-blocking functions.
+ *
+ * sending an asynchronous message means the kaneton microkernel will have
+ * to copy the message into an internal buffer and then to copy it out in
+ * the destination buffer of the receiver.
+ *
+ * in the other hand, sending a synchronous message means that nothing is
+ * done until the two parts, sender and receiver, are ready to exchange the
+ * message. then, the kernel just copies the message from the source buffer
+ * directly into the destination buffer.
  */
 
 /*
@@ -41,8 +53,6 @@ m_message*		message = NULL;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                 [cut] /k6 */
 
 /*
  * this function initialises the message manager.
@@ -120,5 +130,3 @@ t_error			message_clean(void)
 
   return (ERROR_NONE);
 }
-
-/*                                                                 [cut] /k6 */

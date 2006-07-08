@@ -1,16 +1,4 @@
 --
- les process qui veulent que l'on communique avec eux devraient effectuer
- une action pour register leur nodeid aupres d'un groupe de nommage.
-
- ensuite quand le process est migrer la communication va chier.
-
- soit lors de la migration on met a jour le service de nommage, soit lors
- de la communication si on ne trouve pas, on broadcast pour trouver la
- nouvelle localisation.
-
- regarder comment faire FLIP
-
---
  verifier que dans chaque manager il y a:
 
    machdep_include()
@@ -56,15 +44,6 @@
  virer la doc de l'interieur de kaneton et mettre sur le web.
 
 --
- MIPS en GISTR? peut etre kaneton?
-
- en tout cas les GISTR ont l'air interesses par le cours de MIPS.
-
---
- il faudrait mieux prevoir une lib de manipulation des capabilities
- car vu que les serveurs en auront besoin...
-
---
  revoir la doc: apparamment les etudiants ne comprennent pas instinctivement
  qu il y a trois parties bien distinctes: core, machdep, libarch
 
@@ -77,21 +56,9 @@
  refaire la moulinette de tests pour qu elle soit propre
 
 --
- integrer k comme partie du project kaneton?
-
---
- cours systemes de fichiers: fat, ext2, ext3, reiser, distribues etc..
-
---
- ca deconne: segment-fit.c set_ll.c ???
-
---
  pour resoudre les forward declarations, normalement faire comme set.h
  et ca marche, cad forward declarer tous les types d'un .h AVANT de
  faire les includes recursifs.
-
---
- changer kaneton/core/Makefile  : --kaneton et virer les CFLAGS
 
 --
  ce serait interessant de rajouter un ensemble 'slab' qui ne se baserait
@@ -99,25 +66,6 @@
 
  ca montrerait la possibilite du set manager et en plus on pourrait faire
  des tests de perf avec le slab.
-
---
- mettre des priorites sur les event? bottom-halves etc..
-
- comme ca le timer se lance immediatement, un driver peut se voir
- schedule immediatement (preemptif) ou non
-
---
- faire des capabilities pour les gestionnaires du kernel en plus des objets.
-
- faire egalement en sorte qu on puisse limiter les permissions d un cap
- a l utilisation de cet objet par un seul manager.
-
-  par exemple, lorsqu on envoie un msg a une tache sur un autre ordi, ca
-  va passer par un service qui fera l appel message_send() sur sa propre
-  machine en se faisant passer pour la source.
-
---
- penser a la migration de processus via des as_paddr(), segment_read()
 
 --
  etudier le SMP pour pouvoir faire evoluer kaneton vers ca.
@@ -158,21 +106,6 @@
  revoir la moulinette de triche, a la limite retoucher le code de ctcompare
 
 --
- dans env/machine/XXX mettre un fichier qui decrit le profile machine
- genre les binaires utilises, si le user doit definir des choses etc..
-
---
-  faire un programme qui rajoute une section kaneton/kayou a un ELF.
-
-  les informations ajoutees peuvent etre:
-    - memoire requise ou memoire habituellement utilisee
-    - programme a distribue ou a parallelise (machines vs processeurs)
-    - type cpu du binaire
-
- toutes ces informations pourraient permettre a kayou de trouver l'endroit
- ideal ou lance le binaire, quel binaire lance, comme le repartir etc..
-
---
  pour le probleme de dependance entre segments et malloc() il suffit d'avoir
  un cache d'objets segment dans le manager de segment. et le segment
  manager pioche dedans pour ajouter des segments. donc set_reserve()
@@ -185,53 +118,6 @@
  les images microkernel_examples_* dans seminar sont a passer au format xfig
 
 --
- le cours intel a integrer a la tarball
-
---
- vraiment reflechir a un systeme de nommage. genre open(path) va en realite
- appeler vfs. lui il sait qu'il gere des FS donc il va demander au service
- de nom de chercher l'objet fs::path. l objet peut se trouver n importe
- ou peut etre sur une autre machine dans un fs distribue bref.
-
- et donc ensuite vfs recupere le chemin vers cet objet et fait une
- ouverture en envoyant un message au service/groupe qui gere cet objet.
-
- de plus grace a ce systeme il sera inutile de fournir une lib par
- service pour que le caller sache comment utiliser le service.
-
- la le caller demande juste au name server: "je cherche un service
- qui s'appelle surement comme ca, qui a telle version et qui fournit
- ca".
-
- de plus preciser que les capabilities sont generees par les servers
- de par leurs natures specifiques a chaque serveur mais que l'on
- pourrait egalement fournir une lib de gestion de capability par
- serveur. mais cette solution est trop inelegante pour etre utilisee
- dans kaneton. neanmoins elle fournirait de meilleur performance
- mais la frequence de generation de capability n'en vaut pas
- la chandelle.
-
---
- utiliser le programme sloccount pour compter le nombre de LOC
- de kaneton:
-
-   MINIX 2.0.4: 20 000
-   MINIX 3.0.0: 7 500
-   MACH 3.0: 75 000
-
---
- creer un service monitor lance en premier apres mod qui recevra des
- messages du kernel comme par exemple: les messages de debug du kernel
- et des dumps etc.. via des messages asynchrones.
-
---
- plutot que de faire un systeme de errno, et puisque toute la communication
- se fait par messages on pourrait imaginer que le message d'erreur (s'il
- existe se trouve dans la reponse) comme ca quand on fait un appel a une
- fonctinnalite d une autre machine sans trop savoir ce que le service
- de cette machine fournit on peut avoir des infos sur les erreurs.
-
---
  il faut prevoir que tout le demarrage des services via fichier de conf
  doit pouvoir etre fait en dynamique. par exemple si mod reserve un
  segment special (CATCH) pour le service tty (console) et bien il faut
@@ -239,78 +125,6 @@
  boote, soit le systeme de lui meme (via un fichier de conf) sait quels
  sont les objets dont il herite ou alors il faut prevoir des messages style
  segment_acquire() pour acquerir un segment specifique: la memoire video.
-
---
- envoye un message shutdown pour killer proprement une task.
-
---
- on pourrait imaginer que chaque service/driver accepte un message de type
- UPDATE et envoie sa capability task si jamais l'appellant est de confiance.
-
- de cette maniere on pourrait imaginer un service update qui enverrai
- UPDATE des qu une nouvell version d'un programme tournant existe. ainsi
- le service update stoppe la tache en question temporairement a un endroit
- precis et par exemple met a jour le code dynamiquement. c est complique
- mais ce serait pas mal.
-
---
- remarques sur le cours:
-
-   le tout premier cours de remise a niveau devrait a lui seul durer presque
-   3h tellement il faut tout revoir, espace d'adressage, adresses memoire,
-   stack etc..: vraiment aborder, memoire physique, memoire virtuelle,
-   mapping, bien insister mask bits, decalage, set, unset, align etc..
-   aborder egalement brievement l adressage, le ELF: bss, data, rodata etc..
-
---
- Antoine Castaing, Nicolas Clermont et Damien Laniel.
-
- Nicolas Clermont a ete pris en stage de fin d'annee chez EADS
- dans un departement de developement de micronoyau embarque.
-
- leur demander leurs bookmarks, et dire que quand meme kaneton
- ca peut servir pour les gens que ca interesse vraiment.
-
---
- je crois qu il y a une solution pour l'auth de messages.
-
- un client A demande le droit d'envoye un msg a un autre B. le server
- auth accepte. celui ci demande au kernel (via une capability que seul lui
- detient) une capability de message pour A vers B. le kernel l'envoie donc
- au server auth. et ce dernier retransmet cette cap au client qui l'utilisera
- pour communiquer.
-
- au final il n y a pas de duplication de cap puisque seul les kernels les
- a. de plus le serveur auth peut tjs faire tourner des algos de detections
- d'abus, blacklist etc.. puisqu il sait quand meme qui a le droit de
- communiquer avec qui.
-
- ca bande!
-
- les cap ca defonce tout...
-
- a noter que Mach fournit la primitive send_one() utilise pour les RPC
- pour autoriser l envoi d'un seul message. a etudier!
-
- Mach est bcp d'autres utilise un systeme de port mais aussi un ensemble
- de ports. comme ca un serveur attend que sur un port et recoie une categorie
- de messages.
-
- pour kaneton on peut imaginer un truc similaire mais d'une autre maniere.
-
---
- definitivement:
-
-  Amoeba: n'utilise pas de memoire virtuelle.
-  V distributed system (Stanford Cheriton): toute communication par RPC
-    (ca doit etre vachement lourd) de plus pas de notion de port mais
-    on nomme le processus destination
-
-  kaneton: toute communication par message meme sur le systeme distribue.
-    on nomme egalement le process/groupe destination
-
- pour kaneton on utilisera une communication style MPI soit direct une
- lib existante soit on en refait une.
 
 --
  virer tout affichage autre que warning et erreur dans le bootloader
@@ -326,6 +140,9 @@
  nettoyer conf.h, debug.h, check.h rendre tout ca coherent car la c'est
  un peu le bordel.
 
+ faire que tout ce qui touche a conf soit genere et qu il n y ait plus
+ conf.c et conf.h
+
 --
  hevea -exec xxdate.exe kaneton.tex pour generer du html
 
@@ -334,249 +151,11 @@
  ca aurait ete bien un make web mais bon c'est mort.
 
 --
- as + thread => domain (sprite)
-
- machines proches forment des villages
-
---
- definir une interface pour les drivers de sorte qu'ils soient portable
- tres facilement, qu'ils ne fassent que des entree sorties. dans l'interface
- on fournira le systeme de communication + gestion des structures de donnees.
-
- a etudier!
-
---
- le systeme pue. si on fait un systeme hierarchique alors on pourra
- JAMAIS allouer un segment, une tache ou autre chose sur une autre machine
- sauf en passant pas un service supplementaire migrate par exemple.
-
- de plus il faut trouver un systeme pour liberer les objets allouer:
-
-  1) systeme de time to live
-       il faudrait checker tout le temps si un objet n'est plus utilise
-       donc on aura 1 timer par objet. ce n'est donc pas envisageable.
-       trop lourd, complique, lent.
-  2) systeme de garbage collecting
-       un peu dans le meme principe donc pas possible non plus.
-  3) listing des objets alloues dans le kernel/server pour la desallocation
-  4) listing des objets alloues dans le processus
-
- exemple:
-   une tache alloue de la memoire partagee au groupe de memoire partagee
-   donc la memoire est peut etre allouee sur une autre machine. si la
-   tache meurt, elle DOIT prevenir les servers/groupes qui lui ont filer
-   des objets dans notre cas on doit prevenir le groupe de memoire partagee
-   de liberer la memoire.
-
-   comment faire?
-
- 1) on broadcast le fait qu'on est mort
- 2) on envoie un message a chaque server a qui on a reserver un objet
-    donc ca necessite de maintenir une liste de ces servers.
-
- attention: probleme de securite, il ne faut pas que quelqu'un se fasse
-            passer pour nous et broadcast ce message.
-
- il reste deux solutions.
-
- 1) on broadcast le fait qu'on est mort: systeme securise pour garantir
-    l'authenticite du message
- 2) avant de mourir le processus (ou son watchdog) appelle chaque server
-    avec les capabilities pour liberer les donnees.
-
- la premiere est lourde mais finalement surement la plus simple a implementer.
- il suffit de trouver un moyen pour garantir l'authenticite.
-
- la seconde est plus clean au niveau de la notification mais par contre
- il faut garder une trace des objets reserves.
-
- ok c'est bon j'ai trouve :)
-
- faut pas le voir comme ca. ca ne peut pas etre automatique et etre elegant
- en meme temps. en fait jcrois que vianney faisait comme ca, il avait raison.
-
- lorsque qu'une tache reserve un objet, il le fait un point c'est tout.
-   -> points positifs: interface de code simple puisque aucune gestion du
-      cote client (c'etait une des contraintes)
- par contre le server qui a fournit lui demande au groupe notify d'enregistrer
- le couple: server/client pour que lorsque le client meurt il en soit
- averti. bien sur il sera plus pratique de s'enregistrer aupres de notify
- avant de repondre au client, au cas ou le client meurt entre la reponse
- et l'enregistrement.
- de plus on pourrait imaginer que le groupe notify avertisse egalement le
- client que le server est mort. ce serait pratique genre, il recoit le
- message, il stoppe tous ses threads, il s'endort pour quelque secondes,
- le temps que le server redemarre ou qu'un autre prenne le relai, puis
- il redemande les objets. (ca implique de partager les objets entre les
- threads, enfin ca c'est un detail du client).
-   -> points positifs: pas de broadcast, systeme de capability entre le server
-      et notify (faudra trouver), pas de liste crades dans le client, ni
-      dans le server.
- ensuite quand la tache meurt, le service notify de sa machine le saura
- (comment? polling, message du kernel, message du client a notify avant de
- mourrir, bref!) et celui ci enverra un message au groupe notify pour
- le signaler.
-
- cette methode est je pense la plus elegante car ca passe pas ou groupe
- distribue, en plus c'est leger du cote client, du cote serveur il a le
- choix d'etre notifie ou non. bon son interface se complexifie un peu mais bon.
- il faut qu il gere un message de notify pour liberer un objet.
-
- !!! dans le cas du kernel cela n'arrange rien.
- il faut pouvoir faire en sorte que le kernel sache pour chaque objet quand
- est ce que son proprietaire est mort opur pouvoir les liberer. cela serait
- trop complique.
-
- 3 solutions:
-
- 1) systeme hierarchique de sorte qu'on ne puisse liberer qu'un objet
-    qui libere en chaine tous les autres. dans ce cas on peut se demander
-    a quoi ca sert de diviser les objets en une hierarchie. mais ca sert
-    quand meme notammenet pour l'emulation, de fork par exemple.
-
- 2) champ ownid dans chaque objet et on scanne tout le kernel des qu un
-    process meurt pour liberer les objets appartenant au process
-
- 3) objet object qui contiendrait un ensemble de sous objets genre segments,
-    set, task, threads etc.. et libererait tout.
-
- une solution a tout ce merdier serait une systeme generique pour le kernel
- comme pour les servers/groups. la solution sera qu'apres chaque appel systeme
- (message de reservation d'objets) ca envoie un message au notifier pour lui
- dire d'avertir le mec qui gere l'objet quand on meurt. comme ca ca marche
- avec le kernel et avec les servers.
-
- finalement il faudrait revoir l'entite kernel peut etre pour annihiler
- cette idee de hierarchie de communication et faire que le kernel comme les
- autre peut communiquer. il faut juste trouver un moyen de l'implementer
- correctement car c'est sur qu'un message bloquant n'est pas possible
- dans les meme termes que les processus. de plus le kernel peut avoir
- envoye plusieurs message "bloquant", donc en quelque sorte le kernel ne
- peut faire que de l'asynchrone.
-
- cette question venait du fait que ca faisait chier de pas pouvoir reserver
- deux as comme ca separement sans avoir encore de tache a qui les assigner.
- le probleme etant qu il fallait pouvoir savoir quand detruire les objets
- car ces objets la n'avaient pas de liens avec la tache qui meurt.
-
- maintenant qu on a une solution, la question est, est ce que ca vaut le
- coup car ca va couter tres cher de faire de segment_reserve() puis
- segment_attach().
-
- solutions:
-
- 1) abandonner cette idee et garder la hierarchie.
- 2) on fournit une autre fonction qui fait les deux d'un coup pour
-    que ce soit plus rapide dans la majeure partie des cas
-
- a noter que sur une machine, sur le microkernel, la communication est sure.
- on peut donc tout a fait se permettre des envois de messages sans
- acquittements.
-
- pour moi il faut garder le systeme hierarchique sinon ca fout tout par
- terre. on ne pourra plus recuperer une capability car ca se joue sur
- la hierarchy et ca fera bcp trop de suscribe aupres de notify (pour chaque
- objet reserve!!!).
-
- de plus penser a faire une capability core, qui sera notamment donnee
- a mod pour lui donner tous les droits. faire des capability sur les managers
- comme sur segment qui sera donne au service swap.
-
---
  trouver un moyen de gerer un systeme d'evenements intra kernel. soit
  comme unix soit on fait differemment. sleep/wakeup
 
  en fait le systeme des pthreads est vraiment pas mal avec les condition
  variables ayant un mutex associe.
-
---
- faire un truc bien opur le fichier de conf, systeme de commentaires etc..
- revoir la grammaire ...
-
---
- completer schedule avec les ECTS par cours et le nombre de semaines.
-
---
- un service demande au service dev de lui donner un acces sur tel ressource
- lui le fait avec le kernel car il a la capability. ensuite il sais dialoguer
- plus precisement soit car machdep soit "faut trouver comment nommer"
- et comme ca aucun service ne va se faire chier a nommer les periph a part
- dev.
-
---
- un seul swapper et on active ou non des options: network, hard drive etc..
- car un swapper ca stocke de la memoire sur un support secondaire qui peut
- etre n'importe quoi, une disquette, une clef usb etc..
-
---
- proposer deux sujets sur le vrai kaneton par exemple aux deux meilleurs
- groupes: integration du SMP, nommage, new archi etc..
-
---
- bouger le cours distributed-operating-systems dans kayou
-
---
- le fait de filer des params dans un fichier de conf implique qu on
- soit capable aussi de lancer ce meme service une fois le kernel boote.
-
- il faudra donc fournir un moyen de passer les meme params, capabilities
- inclues. il faudra ptet un filesystem pour mod assez complet.
-
---
- coder un programme C qui permettra de rajouter des options dans un ELF
- genre le nombre de processeurs etc.. ou des params kaneton: options,
- capabilities.
-
---
- sujets pour etudiants:
-   - integration du smp dans kaneton: pour, contre? modifications?
-   - complete naming scheme: objects
-
- mettre tous ces trucs dans seminars avec petite explication.
-
---
- systeme de nommage style: machine::service::subpart::object
-
- exemples:
-
-    mybox::core::segment::1  // segment 1 du core
-    yourbox::mod::*          // tous les modules de mod
-
- on pourrait imaginer un systeme de regexp :)
-
- ensuite si une tache comme une tache root demande une capability sur
- son espace d'adressage, c'est mod qui demandera a core la cap de l'as
- et qui la retournera.
-
- on pourrait imaginer encore plus loin
-
-    mybox::core::task:: taskid == 1
-    mybox::core::segment:: size >= 100 && size <= 200
-
---
- pour par exemple un driver, il faudra qu il soit capable de communiquer
- avec le hard autrement dit de se rajouter une trap.
-
- pour cela il faudra dans mod lui filer soit une cap precise sur l'evenement
- precise, soit une cap sur le gestionnaire d'evenements.
-
- soit il passera par le gestionnaire de dev qui lui saura si telle personne
- a le droit de se rajouter. (comment?)
-
---
- revoir conf.c et conf.h dans la partie user. le conf.h a la limite
- par contre le conf.c est un peu particulier.
-
---
- faire les logos: kaneton + kayou
-
---
- developer un kfs, un systeme de fichiers qui pourrait lister les objets
- du kernel: comme ca on pourrait acceder aux objects et ca resoudrait le
- lancement des services.
-
- ou mieux etudier Sprite et voir comment ils font eux avec leurs systeme
- de nommage.
 
 --
  segment:
@@ -588,151 +167,7 @@
  est en mode catch et qu elle est catchable que par telle tache (avec
  tel nom par exemple)
 
---
- mieux decouper les drivers et modules en fonctions de leur types:
-
-   drivers/
-     block/
-     char/
-     ...
-
-   services/
-     ...
-
---
- dans le document assignments, explicite tout genre reprendre les commentaires
- des fonctions. enfin le truc c'est que l'etudiant se fasse pas nique
- parcequ on avait pas precise le role de la fonction set_clone() et des
- comportements en fonction des options: opts
-
---
- forme d'une presentation de k:
-  . pourquoi une telle modelisation: pour/contre, autres systemes
-  . que doit faire l'etudiant
-  . comment
-  . rendu?
-
---
- parser: params et args
-
- int		main(int argc, char** argv);
-
- ce sera conforme a un truc classique avec la forme:
-
-   --verbose		1
-
- concernant les params, ce sont juste des arguments interpretes par le
- gestionnaire de modules.
-
- A REVOIR.
-
---
- une fois le gestionnaire de regions installe, essayer de faire un
- acces a l'adresse 0, normalement ca fait planter.
-
---
- continuer le cours sur loaders linkers de fab: linker.iecc.com
-
- un nouveau pourrait le faire.
-
---
- systeme de reboot automatique
-
--- messages
- faire un msg_build(size) qui va creer un segment partage et renvoyer
- un segid cache dans un msgid. ensuite on fait msg_send(msgid). quand
- de l'autre cote il fait un msg_receive(*msgid) il recoit le msgid
- donc le segid pour le segment partage, il fait un truc style msg_pack()
- et ca lui mappe le segment partage et hop il accede au message qui peut
- donc a la fois etre de taille indeterminee, et le kernel ne manipule que
- des identifiants de message, rien d'autre donc facile a passer.
-
- pour les message, soit mettre aucune protection cad tout le monde peut
- communiquer avec tlm soit le mec qui recoit cree des filtres sur les
- emmeteurs et transmet ces filtres au kernel. comme ca il n'y aura verification
- que si le recepteur veut limiter les emmeteurs.
-
- on peut aussi considerer le cas avec une capability sur les messages mais
- ca ca risque de prendre du temps a verifier a chaque fois + problemes
- car serveur d'auth detient ces infos et doit les partager avec le kernel
- donc probleme.
-
- voir ca avec cedric.
-
--- swap
- faire du swap sur le reseau et sur le disque mais experimenter
- le reseau.
-
- <reflexion>
- le swapper (reseau ou disk) sera un service sinon c'est laid de base.
-
- le swapper doit obtenir des infos sur l'utilisation de zones memoire.
-
- habituellement il recupere les infos sur des pages mais dans kaneton
- tout se base sur des segments, les seuls objets memoire identifiables.
-
- donc deja de base on swappera des segments.
-
- ensuite sur intel par exemple on recupere les infos via la memoire
- virtuelle car c'est la MMU qui est capable de connaitre les acces memoire
-
- or si on se base d'un point de vue logique c est la memoire choses que les
- permissions. c'est implemente par la memoire virtuelle mais ca concerne
- des zones physiques.
-
- donc en realite on va dire, comme pour les perms, que les infos d'utilisation
- se trouve en relation avec des segments.
-
- donc, le swapper demandera au gestionnaire de segment son etat (taux
- d'utilisation de la memoire physique) toutes les N secondes. si ce taux
- est trop eleve il faut swapper des segments. il va donc demande au
- gestionnaire de segments de lui donner l'identifiant du segment le moins
- utilise. il va ensuite prendre le segment et le mettre sur disque.
-
- de plus il faudra marque le segment comme non-present mais egalement la
- region pour que la partie dep fasse ce qu il faut.
-
- attention: ok pour le mettre sur disque mais ensuite lorsqu il y aura un
- acces comment le recuperer? un systeme de pagger doit etre mis en place.
-
- attention: pour que le swapper puisse acceder comme il veut aux segment
- il faut qu il ait une capability pour chaque, ou alors une capability generale
- sur le gestionnaire de segment. il faut regler ce probleme pour pouvoir
- fournir des cap generic.
-
- attention: comment donner cette cap generique, a quel moment etc.. :(((
-
- attention: rajouter un type de segment: swap ou non-present
-
- attention: dans le cas d'un swapper reseau et disk ils vont se marcher dessus
-   D: etat
-   R: etat
-   D: zone moins utilisee
-   R: zone moins utilisee
-   D: je prends cette zone pour la swappee
-   R: je prends cette zone pour la swappee: ERROR zone inexistante
-   etc.. tout le temps
-
- donc soit faire les deux en uns, soit faire des timer qui se chevauchent soit
- faire en sorte qu ils communiquent ou je sais pas.
-
- !!! bcp de problemes, ca sent le cul.
- </reflexion>
-
- <reflexion>
- autre solution, le crt cree un thread qui va checker tous les N l'etat
- de la memoire et demande un segment lui appartenant et peu utilise sur
- il faut swapper.
-
- bref que le user le fasse et qu il transmette les cap a un service swap
- a la limite.
-
- mais ca aussi pas terrible.
-
- ARFFFFFFFFFFF!
- </reflexion>
-
- bon on verra plus tard.
+ en fait revoir le concept de catch car c'est quand meme pas clair encore.
 
 -- norme commit
   [core/kaneton/set/set_bpt.c]
@@ -743,20 +178,6 @@
     1) ...
 
   -> les points 1,2,3 etc.. sont pas ordre d'importance
-
---
- lister les trucs qui reste a faire:
-
-  4) integrer la moulinette dans l intra: boot automatique, tftp etc..
-  10) retoucher cours intel, avec beamer bien etc.. images au bon format
-
---
- mettre toutes les regles de -old-/README dans kaneton.tex
-
---
- http://perso.wanadoo.fr/philippe.michel/qnx/
-
- http://xos.freezee.org/index.php?page=video
 
 --
  rajouter la compression dans grub.sh et le stripping aussi

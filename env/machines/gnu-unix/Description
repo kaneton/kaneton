@@ -48,3 +48,23 @@ to its specific bash binary path.
 
 Of course, depending of your status, student or kaneton reference developer,
 some binaries should be needless.
+
+If the user wants to use the development environment to build and display
+the kaneton documents via the command 'make view', he should define
+a shell function called 'view()' which takes a document as argument and then
+displays it.
+
+Below, an example of such a function defined in the file 'user.sh' of the
+user profile.
+
+   #
+   # VIEW
+   #
+   # this function opens and displays a document.
+   #
+   view()
+   {
+     local document=${1}
+
+     ${VIEWER} ${document}
+   }

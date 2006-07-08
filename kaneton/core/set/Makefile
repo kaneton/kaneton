@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/kaneton/core/set/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [sat apr  1 23:39:20 2006]
+## updated       julien quintard   [sat jul  1 20:35:12 2006]
 ##
 
 #
@@ -28,11 +28,11 @@ include			../../../env/.env.mk
 SET_LO			:=		set.lo
 
 SET_C			:=		set.c				\
-					set_array.c			\
-					set_bpt.c			\
-					set_ll.c			\
-					set_pipe.c			\
-					set_stack.c			
+					set-array.c			\
+					set-bpt.c			\
+					set-ll.c			\
+					set-pipe.c			\
+					set-stack.c			
 
 SET_O			:=		$(SET_C:.c=.o)
 

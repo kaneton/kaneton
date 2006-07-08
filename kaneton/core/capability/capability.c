@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [wed jun 28 21:02:57 2006]
+ * updated       julien quintard   [thu jul  6 17:27:46 2006]
  */
 
 /*
@@ -18,6 +18,9 @@
  * although the capabilities over the distributed system will have different
  * formats, the kaneton core uses a unique capability format for every
  * kaneton object.
+ *
+ * note that every capability format over the distributed system must
+ * begins with a 64-bit field describing the node identifier.
  *
  * the kaneton core capability format is composed of a node identifier on
  * 64 bits specifying the task of the distributed system which had generated
@@ -597,3 +600,6 @@ t_error			capability_clean(void)
 // XXX changer car actuellement on a pas de fonctions de hash ni ce qu'il
 // XXX faut pour faire un xor correct sur des donnees.
 // XXX actuellement on a le meme systeme que Amoeba et donc failles de secu.
+
+// XXX changer les protos et eviter les arg p, c etc.., il faut toujours
+// que les args d'un proto soit bien nomme

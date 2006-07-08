@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/message.h
+ * file          /home/mycure/kaneton/kaneton/include/core/message.h
  *
  * created       matthieu bucchianeri   [sat jun 17 19:39:50 2006]
- * updated       matthieu bucchianeri   [sat jun 17 19:41:09 2006]
+ * updated       julien quintard   [thu jul  6 16:53:29 2006]
  */
 
 #ifndef CORE_MESSAGE_H
@@ -27,6 +27,24 @@
 /*
  * ---------- types -----------------------------------------------------------
  */
+
+/*
+ * message object
+ */
+
+typedef struct
+{
+  // XXX
+}		o_message;
+
+/*
+ * message box
+ */
+
+typedef struct
+{
+  
+}		t_message_box;
 
 /*
  * message manager
