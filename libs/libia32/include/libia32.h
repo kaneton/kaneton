@@ -289,6 +289,14 @@ t_error			context_store(t_ia32_context*		context);
 
 t_error			context_dump(t_ia32_context*		context);
 
+void fun1();
+
+void fun2();
+
+void chiche_ctx(t_uint32 id);
+
+void ctx_test();
+
 
 /*
  * ../task/tss.c

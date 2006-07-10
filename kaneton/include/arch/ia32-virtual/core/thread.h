@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/kaneton/include/core/thread.h
+ * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/thread.h
  *
  * created       renaud voltz   [tue apr  4 03:10:52 2006]
- * updated       renaud voltz   [tue apr  4 03:10:52 2006]
+ * updated       matthieu bucchianeri   [sun jul  9 12:05:21 2006]
  */
 
 #ifndef IA32_CORE_THREAD_H
@@ -24,18 +24,10 @@
  * ---------- types -----------------------------------------------------------
  */
 
-/*
- * the architecture dependent data for the as object
- */
-
 typedef struct
 {
-
-  t_uint16		ss;
-  t_uint32		esp;
-
-}			__attribute__ ((packed)) ao_thread;
-
+  t_ia32_context	context;
+}			ao_thread;
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -59,7 +51,7 @@ typedef struct
 #define         machdep_data_m_thread()
 
 #define         machdep_data_o_thread()					\
-  ao_thread			machddep
+  ao_thread		machdep
 
 /*                                                               [cut] /k4   */
 

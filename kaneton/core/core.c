@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/core.c
+ * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [wed jun 28 20:33:48 2006]
+ * updated       matthieu bucchianeri   [sun jul  9 16:55:11 2006]
  */
 
 /*
@@ -115,6 +115,13 @@ void			kaneton(t_init*				bootloader)
    */
 
   cons_msg('+', "kaneton started\n");
+
+//  ctx_test();
+
+  sched_test();
+
+  while (1)
+    ;
 
   /*
    * XXX

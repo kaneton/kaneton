@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/sched/sched.c
+ * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       julien quintard   [sat jul  8 02:24:01 2006]
+ * updated       matthieu bucchianeri   [mon jul 10 10:47:51 2006]
  */
 
 /*
@@ -51,7 +51,8 @@ extern i_task		ktask;
  * steps:
  *
  * 1) dump the current thread.
- * 2) dump all the schedule queue.
+ * 2) dump the scheduler active queue.
+ * 2) dump the scheduler expired queue.
  */
 
 t_error			sched_dump(void)
@@ -72,11 +73,27 @@ t_error			sched_dump(void)
    * 2)
    */
 
-  cons_msg('#', "scheduler queue:");
+  cons_msg('#', "scheduler active queue:");
 
-  set_foreach(SET_OPT_FORWARD, sched->threads, &i, st)
+  set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
     {
-      if (set_object(sched->threads, i, (void**)&thread) != ERROR_NONE)
+      if (set_object(sched->active, i, (void**)&thread) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+      printf(" %qd", *thread);
+    }
+
+  printf("\n");
+
+  /*
+   * 3)
+   */
+
+  cons_msg('#', "scheduler expired queue:");
+
+  set_foreach(SET_OPT_FORWARD, sched->expired, &i, st)
+    {
+      if (set_object(sched->expired, i, (void**)&thread) != ERROR_NONE)
 	SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
       printf(" %qd", *thread);
@@ -166,19 +183,23 @@ t_error			sched_current(i_thread*			thread)
  *
  * steps:
  *
- * 1) get the next thread.
- * 2) check if the  currently scheduled thread is the  same as the one
+ * 1) if the active queue is empty, swap with expired queue.
+ * 2) get the next thread.
+ * 3) check if the  currently scheduled thread is the  same as the one
  *    we are asked to switch to.
- * 3) call  the  machine  dependent   code  (which  does  the  context
+ * 4) call  the  machine  dependent   code  (which  does  the  context
  *    switching).
- * 4) set the current thread.
- * 5) push the newly executing thread back into the schedule list.
+ * 5) push the thread in the expired queue.
+ * 6) set the current thread.
  */
 
 t_error			sched_switch(void)
 {
   t_iterator		it;
   i_thread*		thread;
+  i_thread		elected;
+  t_setsz		size;
+  i_set			tmp;
 
   SCHED_ENTER(sched);
 
@@ -186,40 +207,57 @@ t_error			sched_switch(void)
    * 1)
    */
 
-  if (set_head(sched->threads, &it) != ERROR_NONE)
+  if (set_size(sched->active, &size) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-  if (set_object(sched->threads, it, (void**)&thread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (!size)
+    {
+      tmp = sched->active;
+      sched->active = sched->expired;
+      sched->expired = tmp;
+    }
 
   /*
    * 2)
    */
 
-  if (sched->current == *thread)
-    SCHED_LEAVE(sched, ERROR_NONE);
+  if (set_head(sched->active, &it) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  if (set_object(sched->active, it, (void**)&thread) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (machdep_call(sched, sched_switch, *thread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (sched->current == *thread) // XXX normalement impossible.
+    SCHED_LEAVE(sched, ERROR_NONE);
 
   /*
    * 4)
    */
 
-  sched->current = *thread;
+  elected = *thread;
+
+  if (machdep_call(sched, sched_switch, elected) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   /*
    * 5)
    */
 
-  /* XXX push the thread back in the schedule list */
-
-  if (sched_update(*thread) != ERROR_NONE)
+  if (set_remove(sched->active, *thread) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  if (set_append(sched->expired, &sched->current) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  /*
+   * 6)
+   */
+
+  sched->current = elected;
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }
@@ -242,7 +280,7 @@ t_error			sched_add(i_thread			thread)
    * 1)
    */
 
-  if (set_add(sched->threads, &thread) != ERROR_NONE)
+  if (set_add(sched->active, &thread) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   /*
@@ -289,7 +327,8 @@ t_error			sched_remove(i_thread			thread)
    * 2)
    */
 
-  if (set_remove(sched->threads, thread) != ERROR_NONE)
+  if (set_remove(sched->active, thread) != ERROR_NONE &&
+      set_remove(sched->expired, thread) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   /*
@@ -354,7 +393,7 @@ t_error			sched_update(i_thread			thread)
  *
  * 1) allocate and initialises the scheduler manager structure.
  * 2) try to reserve a statistics object.
- * 3) create the scheduled thread list.
+ * 3) create the thread lists.
  * 4) create the kernel thread.
  * 5) call the machine-dependent code.
  */
@@ -378,7 +417,8 @@ t_error			sched_init(void)
 
   sched->current = ID_UNUSED;
   sched->quantum = SCHED_QUANTUM_INIT;
-  sched->threads = ID_UNUSED;
+  sched->active = ID_UNUSED;
+  sched->expired = ID_UNUSED;
 
   /*
    * 2)
@@ -390,7 +430,11 @@ t_error			sched_init(void)
    * 3)
    */
 
-  if (set_reserve(ll, SET_OPT_ALLOC, sizeof(i_thread), &sched->threads) !=
+  if (set_reserve(ll, SET_OPT_ALLOC, sizeof(i_thread), &sched->active) !=
+      ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (set_reserve(ll, SET_OPT_ALLOC, sizeof(i_thread), &sched->expired) !=
       ERROR_NONE)
     return (ERROR_UNKNOWN);
 
@@ -401,8 +445,8 @@ t_error			sched_init(void)
   if (thread_reserve(ktask, &sched->current) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  if (sched_add(sched->current) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+/*  if (sched_add(sched->current) != ERROR_NONE)
+    return (ERROR_UNKNOWN);*/
 
   /*
    * 5)
@@ -437,7 +481,10 @@ t_error			sched_clean(void)
    * 2)
    */
 
-  if (set_release(sched->threads) != ERROR_NONE)
+  if (set_release(sched->active) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  if (set_release(sched->expired) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   /*
@@ -456,3 +503,98 @@ t_error			sched_clean(void)
 }
 
 /*                                                                 [cut] /k5 */
+
+void _fun1()
+{
+  while (1)
+    {
+      printf("fun1\n");
+      asm volatile("int $31");
+    }
+}
+
+void _fun2()
+{
+  while (1)
+    {
+      printf("fun2\n");
+      asm volatile("int $31");
+    }
+}
+
+void _fun3()
+{
+  while (1)
+    {
+      printf("fun3\n");
+      asm volatile("int $31");
+    }
+}
+
+void _fun4()
+{
+  while (1)
+    {
+      printf("fun4\n");
+      asm volatile("int $31");
+    }
+}
+
+void load_ctx(i_thread th, t_uint32 pc, t_uint32 sp)
+{
+  o_thread* o;
+
+  thread_get(th, &o);
+
+  asm volatile("movl %%cr3, %%eax\n\t"
+	       "movl %%eax, %0"
+	       : "=g" (o->machdep.context.cr3)
+	       :
+	       : "%eax");
+  asm volatile("pushf\n\t"
+	       "popl %0" : "=g" (o->machdep.context.eflags));
+
+  o->machdep.context.cs = 0x8;
+  o->machdep.context.ds = 0x10;
+  o->machdep.context.es = 0x10;
+  o->machdep.context.fs = 0x10;
+  o->machdep.context.gs = 0x10;
+  o->machdep.context.ss = 0x10;
+
+  o->machdep.context.eip = pc;
+  o->machdep.context.esp = sp;
+}
+
+void chiche(t_uint32 id)
+{
+//  sched_dump();
+  sched_yield();
+//  sched_dump();
+}
+
+void sched_test()
+{
+  i_thread th[4];
+
+  event_reserve(31, EVENT_FUNCTION, (u_event_handler)chiche);
+
+  thread_reserve(0, &th[0]);
+  load_ctx(th[0], (t_uint32)_fun1, (t_uint32)malloc(100));
+  sched_add(th[0]);
+  thread_reserve(0, &th[1]);
+  load_ctx(th[1], (t_uint32)_fun2, (t_uint32)malloc(100));
+  sched_add(th[1]);
+  thread_reserve(0, &th[2]);
+  load_ctx(th[2], (t_uint32)_fun3, (t_uint32)malloc(100));
+  sched_add(th[2]);
+  thread_reserve(0, &th[3]);
+  load_ctx(th[3], (t_uint32)_fun4, (t_uint32)malloc(100));
+  sched_add(th[3]);
+
+  while(1)
+    {
+      printf("kernel\n");
+      asm volatile("int $31");
+    }
+
+}

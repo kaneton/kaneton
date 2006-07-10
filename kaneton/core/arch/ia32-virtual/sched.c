@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/sched.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [sat jul  8 02:30:37 2006]
+ * updated       matthieu bucchianeri   [mon jul 10 10:48:05 2006]
  */
 
 /*
@@ -79,15 +79,46 @@ t_error			ia32_sched_quantum(t_quantum		quantum)
 
 /*
  * this function switches execution to the specified thread.
+ *
+ * steps:
+ *
+ * 1) store back the executing context into the executing thread.
+ * 2) set current context as the elected thread one.
  */
 
 t_error			ia32_sched_switch(i_thread		thread)
 {
+  o_thread*		from;
+  o_thread*		to;
+
   SCHED_ENTER(sched);
 
-  /* XXX */
-
   printf("switching from %qd to %qd\n", sched->current, thread);
+
+  if (!context)
+    {
+      cons_msg('!', "unable to switch context in this state\n");
+
+      SCHED_LEAVE(sched, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 1)
+   */
+
+  if (thread_get(sched->current, &from) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  memcpy(&from->machdep.context, context, sizeof(t_ia32_context));
+
+  /*
+   * 2)
+   */
+
+  if (thread_get(thread, &to) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  memcpy(context, &to->machdep.context, sizeof(t_ia32_context));
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }

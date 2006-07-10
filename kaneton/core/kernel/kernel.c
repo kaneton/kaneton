@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/kernel/kernel.c
+ * file          /home/buckman/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jun 24 17:25:31 2006]
+ * updated       matthieu bucchianeri   [sat jul  8 19:26:15 2006]
  */
 
 /*
@@ -191,7 +191,7 @@ void			kernel_init(void)
 
   /* XXX remove me ! */
 
-  //  event_test();
+  //event_test();
 
   //  timer_test();
 

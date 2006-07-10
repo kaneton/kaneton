@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/sched.h
  *
  * created       matthieu bucchianeri   [sat jun  3 22:34:42 2006]
- * updated       matthieu bucchianeri   [sat jun 17 18:28:12 2006]
+ * updated       matthieu bucchianeri   [sun jul  9 12:34:47 2006]
  */
 
 #ifndef CORE_SCHED_H
@@ -46,7 +46,8 @@ typedef struct
 
   i_thread	current;
 
-  i_set		threads;
+  i_set		active;
+  i_set		expired;
 
   machdep_data(m_sched);
 }		m_sched;
@@ -132,6 +133,20 @@ t_error			sched_update(i_thread			thread);
 t_error			sched_init(void);
 
 t_error			sched_clean(void);
+
+void _fun1();
+
+void _fun2();
+
+void _fun3();
+
+void _fun4();
+
+void load_ctx(i_thread th, t_uint32 pc, t_uint32 sp);
+
+void chiche(t_uint32 id);
+
+void sched_test();
 
 
 /*

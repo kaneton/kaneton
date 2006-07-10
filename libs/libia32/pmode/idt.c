@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/pmode/idt.c
+ * file          /home/buckman/kaneton/libs/libia32/pmode/idt.c
  *
  * created       renaud voltz   [sun feb 12 02:02:19 2006]
- * updated       julien quintard   [sat jul  8 02:33:48 2006]
+ * updated       matthieu bucchianeri   [mon jul 10 10:47:41 2006]
  */
 
 /*
@@ -333,7 +333,7 @@ t_error			idt_get_gate(t_ia32_idt*		table,
    */
 
   gate->offset = table->descriptor[index].offset_00_15 |
-    table->descriptor[index].offset_16_31;
+    table->descriptor[index].offset_16_31 << 16;
 
   /*
    * 6

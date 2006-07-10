@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [mon apr 10 16:20:00 2006]
+ * updated       matthieu bucchianeri   [sun jul  9 13:36:38 2006]
  */
 
 /*
@@ -45,42 +45,10 @@
 #define NO_ERROR_CODE	0
 
 /*
- * save cpu register on the stack
- */
-
-#define SAVE_REG							\
-  "pushl %eax\n\t"							\
-  "pushl %ebx\n\t"							\
-  "pushl %ecx\n\t"							\
-  "pushl %edx\n\t"							\
-  "pushl %edi\n\t"							\
-  "pushl %esi\n\t"							\
-  "pushl %ds\n\t"							\
-  "pushl %es\n\t"							\
-  "pushl %fs\n\t"							\
-  "pushl %gs\n\t"
-
-/*
- * restore cpu register from the stack
- */
-
-#define RESTORE_REG							\
-  "popl %gs\n\t"							\
-  "popl %fs\n\t"							\
-  "popl %es\n\t"							\
-  "popl %ds\n\t"							\
-  "popl %esi\n\t"							\
-  "popl %edi\n\t"							\
-  "popl %edx\n\t"							\
-  "popl %ecx\n\t"							\
-  "popl %ebx\n\t"							\
-  "popl %eax\n\t"
-
-/*
  * load segment registers
  */
 
-#define LOAD_SEG_REG							\
+#define LOAD_CORE_SELECTORS						\
   "movl $0x10,%edx\n\t"							\
   "movw %dx,%ds\n\t"							\
   "movw %dx,%es\n\t"							\
@@ -88,12 +56,19 @@
   "movw %dx,%gs\n\t"
 
 /*
+ * update the global variable used for pointing saved context.
+ */
+
+#define UPDATE_CONTEXT_PTR						\
+  asm volatile("movl %%esp, %0\n\t"					\
+	       : "=g" (context))
+
+/*
  * simulate a return from function
  */
 
 #define ADJUST_STACK							\
-  "movl %ebp,%esp\n\t"							\
-  "popl %ebp\n\t"
+  "leave\n\t"
 
 /*
  * pre-handler for exceptions
@@ -104,14 +79,16 @@
     {									\
       t_uint32	code = 0;						\
 									\
-      asm volatile(SAVE_REG						\
-		   LOAD_SEG_REG);					\
+      asm volatile(SAVE_CONTEXT						\
+		   LOAD_CORE_SELECTORS);				\
+      UPDATE_CONTEXT_PTR;						\
       if (__error_code__)				       		\
         asm volatile("movl 4(%%ebp),%%eax\n\t"				\
 		     : "=a" (code)					\
 		     :);						\
       exception_wrapper(IDT_EXCEPTION_BASE + _nr_, code);		\
-      asm volatile(RESTORE_REG						\
+      context = NULL;							\
+      asm volatile(RESTORE_CONTEXT					\
 		   ADJUST_STACK);					\
       if (__error_code__)						\
         asm volatile("addl $4,%esp\n\t");				\
@@ -125,10 +102,14 @@
 #define IRQ_PREHANDLER(_nr_)						\
   void	prehandler_irq##_nr_(void)					\
     {									\
-      asm volatile(SAVE_REG						\
-		   LOAD_SEG_REG);					\
+      __attribute__((unused)) t_uint32	code = 0;			\
+									\
+      asm volatile(SAVE_CONTEXT						\
+		   LOAD_CORE_SELECTORS);				\
+      UPDATE_CONTEXT_PTR;						\
       irq_wrapper(IDT_IRQ_BASE + _nr_);					\
-      asm volatile(RESTORE_REG						\
+      context = NULL;							\
+      asm volatile(RESTORE_CONTEXT					\
 		   ADJUST_STACK						\
 		   "iret\n\t");						\
     }
