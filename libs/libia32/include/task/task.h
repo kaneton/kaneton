@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/task/task.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       matthieu bucchianeri   [sat jul  8 19:09:47 2006]
+ * updated       matthieu bucchianeri   [tue jul 11 17:17:44 2006]
  */
 
 /*
@@ -98,7 +98,6 @@ typedef struct
 
 typedef struct
 {
-//  t_uint32	ldtr;
   t_uint32	cr3;
   t_uint32	gs;
   t_uint32	fs;

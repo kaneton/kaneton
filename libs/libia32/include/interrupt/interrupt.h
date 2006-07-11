@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [tue jul 11 00:22:56 2006]
+ * updated       matthieu bucchianeri   [tue jul 11 18:05:02 2006]
  */
 
 /*
@@ -86,9 +86,9 @@
         asm volatile("movl 4(%%ebp),%%eax\n\t"				\
 		     : "=a" (code)					\
 		     :);						\
-      asm volatile("push %esp");					\
+      asm volatile("subl $0x8, %esp");					\
       exception_wrapper(IDT_EXCEPTION_BASE + _nr_, code);		\
-      asm volatile("pop %esp");						\
+      asm volatile("addl $0x8, %esp");					\
       context = NULL;							\
       asm volatile(RESTORE_CONTEXT					\
 		   ADJUST_STACK);					\
@@ -109,9 +109,9 @@
       asm volatile(SAVE_CONTEXT						\
 		   LOAD_CORE_SELECTORS);				\
       UPDATE_CONTEXT_PTR;						\
-      asm volatile("push %esp");					\
+      asm volatile("subl $0x8, %esp");					\
       irq_wrapper(IDT_IRQ_BASE + _nr_);					\
-      asm volatile("pop %esp");						\
+      asm volatile("addl $0x8, %esp");					\
       context = NULL;							\
       asm volatile(RESTORE_CONTEXT					\
 		   ADJUST_STACK						\

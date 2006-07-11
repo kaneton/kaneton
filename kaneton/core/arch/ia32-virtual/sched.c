@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [mon jul 10 10:48:05 2006]
+ * updated       matthieu bucchianeri   [tue jul 11 18:11:22 2006]
  */
 
 /*

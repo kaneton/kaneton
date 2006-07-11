@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat jul  8 19:26:15 2006]
+ * updated       matthieu bucchianeri   [tue jul 11 18:08:39 2006]
  */
 
 /*
@@ -191,7 +191,7 @@ void			kernel_init(void)
 
   /* XXX remove me ! */
 
-  //event_test();
+  event_test();
 
   //  timer_test();
 

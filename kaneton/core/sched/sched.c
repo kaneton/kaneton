@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [mon jul 10 10:47:51 2006]
+ * updated       matthieu bucchianeri   [tue jul 11 18:08:56 2006]
  */
 
 /*
@@ -509,7 +509,6 @@ void _fun1()
   while (1)
     {
       printf("fun1\n");
-      asm volatile("int $31");
     }
 }
 
@@ -518,7 +517,6 @@ void _fun2()
   while (1)
     {
       printf("fun2\n");
-      asm volatile("int $31");
     }
 }
 
@@ -527,7 +525,6 @@ void _fun3()
   while (1)
     {
       printf("fun3\n");
-      asm volatile("int $31");
     }
 }
 
@@ -536,7 +533,6 @@ void _fun4()
   while (1)
     {
       printf("fun4\n");
-      asm volatile("int $31");
     }
 }
 
@@ -567,16 +563,14 @@ void load_ctx(i_thread th, t_uint32 pc, t_uint32 sp)
 
 void chiche(t_uint32 id)
 {
-//  sched_dump();
+  sched_dump();
   sched_yield();
-//  sched_dump();
+  sched_dump();
 }
 
 void sched_test()
 {
   i_thread th[4];
-
-  event_reserve(31, EVENT_FUNCTION, (u_event_handler)chiche);
 
   thread_reserve(0, &th[0]);
   load_ctx(th[0], (t_uint32)_fun1, (t_uint32)malloc(100));
@@ -593,8 +587,7 @@ void sched_test()
 
   while(1)
     {
-      printf("kernel\n");
-      asm volatile("int $31");
+ //     printf("kernel\n");
     }
 
 }

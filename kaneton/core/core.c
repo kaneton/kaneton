@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun jul  9 16:55:11 2006]
+ * updated       matthieu bucchianeri   [mon jul 10 15:34:51 2006]
  */
 
 /*
