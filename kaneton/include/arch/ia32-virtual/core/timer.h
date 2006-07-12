@@ -12,6 +12,10 @@
 #ifndef IA32_CORE_TIMER_H
 #define IA32_CORE_TIMER_H	1
 
+
+
+typedef t_error			(*t_timer_handler)(void);
+
 /*
  * ---------- macro functions -------------------------------------------------
  */

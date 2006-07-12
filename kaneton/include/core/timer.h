@@ -36,6 +36,16 @@
  */
 
 /*
+ * timer handler type
+ */
+
+union				u_timer_handler
+{
+  t_timer_handler		function;
+  i_task			taskid;
+};
+
+/*
  * timer object
  */
 
@@ -46,6 +56,10 @@ typedef struct
   t_uint32			delay;
 
   t_uint32			repeat;
+
+  t_type			type;
+
+  u_timer_handler		handler;
 
   i_task			taskid;
 
@@ -85,7 +99,8 @@ typedef struct
 						t_uint32,
 						t_uint32);
   t_error			(*timer_notify)(i_timer);
-  t_error			(*timer_reserve)(i_task,
+  t_error			(*timer_reserve)(t_type,
+						 u_timer_handler,
 						 t_uint32,
 						 t_uint32,
 						 i_timer*);
@@ -148,7 +163,8 @@ t_error			timer_notify(i_timer			id);
 
 t_error			timer_insert(o_timer*			o);
 
-t_error			timer_reserve(i_task			taskid,
+t_error			timer_reserve(t_type			type,
+				      u_timer_handler		handler,
 				      t_uint32			delay,
 				      t_uint32			repeat,
 				      i_timer*			id);
@@ -175,6 +191,10 @@ t_error			timer_clean(void);
 t_error			timer_check(void);
 
 void			timer_handler(t_uint32		id);
+
+t_error			timer_hdl1(void);
+
+t_error			timer_hdl2(void);
 
 t_error			timer_test(void);
 

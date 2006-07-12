@@ -218,7 +218,8 @@ t_error			timer_insert(o_timer*			o)
  * 4) add the new timer to the timer manager.
  */
 
-t_error			timer_reserve(i_task			taskid,
+t_error			timer_reserve(t_type			type,
+				      u_timer_handler		handler,
 				      t_uint32			delay,
 				      t_uint32			repeat,
 				      i_timer*			id)
@@ -231,7 +232,7 @@ t_error			timer_reserve(i_task			taskid,
    * 1)
    */
 
-  if (machdep_call(timer, timer_reserve, taskid, delay, repeat, id)
+  if (machdep_call(timer, timer_reserve, type, handler, delay, repeat, id)
       != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
@@ -246,7 +247,12 @@ t_error			timer_reserve(i_task			taskid,
 
   o.timerid = *id;
 
-  o.taskid = taskid;
+  //  o.taskid = taskid;
+
+  o.type = type;
+
+  if (o.type == EVENT_FUNCTION)
+    o.handler = handler;
 
   /*
    * 3)
@@ -646,8 +652,16 @@ t_error			timer_check(void)
        * 3)
        */
 
-      if (timer_notify(o->timerid) != ERROR_NONE)
-        TIMER_LEAVE(timer, ERROR_UNKNOWN);
+      if (o->type == EVENT_MESSAGE)
+	{
+	  if (timer_notify(o->timerid) != ERROR_NONE)
+	    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+	}
+      else
+	{
+	  if (o->handler.function() != ERROR_NONE)
+	    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+	}
 
       /*
        * 4)
@@ -705,6 +719,26 @@ void			timer_handler(t_uint32		id)
  */
 
 /*
+ * XXX TIMER: remove !
+ * timer handler 1
+ */
+
+t_error			timer_hdl1(void)
+{
+  printf("timer handler 1\n");
+}
+
+/*
+ * XXX TIMER: remove !
+ * timer handler 2
+ */
+
+t_error			timer_hdl2(void)
+{
+  printf("timer handler 2\n");
+}
+
+/*
  * XXX TIMER: remove me !
  * just for testing
  */
@@ -713,13 +747,17 @@ t_error			timer_test(void)
 {
   i_timer		id;
 
-  if (timer_reserve(23, 500, TIMER_REPEAT_ENABLE, &id) != ERROR_NONE)
+  if (timer_reserve(EVENT_FUNCTION,
+		    (u_timer_handler)((t_timer_handler)timer_hdl1), 500,
+		    TIMER_REPEAT_ENABLE, &id) != ERROR_NONE)
     {
       printf("error: reserving a new timer !\n");
       return ERROR_UNKNOWN;
     }
 
-  if (timer_reserve(42, 100, TIMER_REPEAT_ENABLE, &id) != ERROR_NONE)
+  if (timer_reserve(EVENT_MESSAGE,
+		    (u_timer_handler)((i_task)42), 100,
+		    TIMER_REPEAT_ENABLE, &id) != ERROR_NONE)
     {
       printf("error: reserving a new timer !\n");
       return ERROR_UNKNOWN;

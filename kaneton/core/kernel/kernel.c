@@ -193,7 +193,7 @@ void			kernel_init(void)
 
   event_test();
 
-  //  timer_test();
+  timer_test();
 
   /*
    * 12)

@@ -101,6 +101,24 @@
  * pre-handler for irq's
  */
 
+#define IRQ_PREHANDLER(_nr_)                                            \
+  void  prehandler_irq##_nr_(void)                                      \
+    {                                                                   \
+      __attribute__((unused)) t_uint32  code = 0;                       \
+                                                                        \
+      asm volatile(SAVE_CONTEXT                                         \
+                   LOAD_CORE_SELECTORS);                                \
+      UPDATE_CONTEXT_PTR;                                               \
+      asm volatile("subl $0x8, %esp");                                  \
+      irq_wrapper(IDT_IRQ_BASE + _nr_);                                 \
+      asm volatile("addl $0x8, %esp");                                  \
+      context = NULL;                                                   \
+      asm volatile(RESTORE_CONTEXT                                      \
+                   ADJUST_STACK                                         \
+                   "iret\t");                                         \
+    }
+
+/*
 #define IRQ_PREHANDLER(_nr_)						\
   void	prehandler_irq##_nr_(void)					\
     {									\
@@ -117,6 +135,7 @@
 		   ADJUST_STACK						\
 		   "iret\n\t");						\
     }
+*/
 
 /*
  * ---------- types -----------------------------------------------------------
