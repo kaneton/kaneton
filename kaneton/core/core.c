@@ -116,6 +116,11 @@ void			kaneton(t_init*				bootloader)
 
   cons_msg('+', "kaneton started\n");
 
+  event_test();
+
+  timer_test();
+
+
   //ctx_test();
 
   sched_test();

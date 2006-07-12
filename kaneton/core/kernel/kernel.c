@@ -189,12 +189,6 @@ void			kernel_init(void)
   if (timer_init() != ERROR_NONE)
     core_error("cannot initialise the timer manager\n");
 
-  /* XXX remove me ! */
-
-  event_test();
-
-  timer_test();
-
   /*
    * 12)
    */

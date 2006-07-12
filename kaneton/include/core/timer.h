@@ -61,7 +61,7 @@ typedef struct
 
   u_timer_handler		handler;
 
-  i_task			taskid;
+  //  i_task			taskid;
 
   machdep_data(o_timer);
 }				o_timer;
@@ -190,7 +190,7 @@ t_error			timer_clean(void);
 
 t_error			timer_check(void);
 
-void			timer_handler(t_uint32		id);
+void			timer_handler(t_uint32			id);
 
 t_error			timer_hdl1(void);
 

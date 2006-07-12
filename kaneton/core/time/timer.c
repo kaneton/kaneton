@@ -157,7 +157,7 @@ t_error			timer_notify(i_timer			id)
    */
 
   /* XXX TIMER send a message to o->taskid */
-  printf("timer_notify: id = %qd, taskid = %qd\n", id, o->taskid);
+  printf("timer_notify: id = %qd, taskid = %qd\n", id, o->handler.taskid);
 
   TIMER_LEAVE(timer, ERROR_NONE);
 }
@@ -246,13 +246,8 @@ t_error			timer_reserve(t_type			type,
   memset(&o, 0x0, sizeof(o_timer));
 
   o.timerid = *id;
-
-  //  o.taskid = taskid;
-
   o.type = type;
-
-  if (o.type == EVENT_FUNCTION)
-    o.handler = handler;
+  o.handler = handler;
 
   /*
    * 3)
@@ -634,6 +629,7 @@ t_error			timer_check(void)
 
   while (set_head(timer->timers, &i) == ERROR_NONE)
     {
+
       /*
        * 1)
        */
@@ -659,8 +655,7 @@ t_error			timer_check(void)
 	}
       else
 	{
-	  if (o->handler.function() != ERROR_NONE)
-	    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+	  o->handler.function();
 	}
 
       /*
@@ -683,36 +678,21 @@ t_error			timer_check(void)
   TIMER_LEAVE(timer, ERROR_NONE);
 }
 
-/*
- * manage the timer interrupt.
- *
- * steps:
- *
- * 1) update the timer reference.
- * 2) check if a timer has expired.
- * 3) call the scheduler.
- */
-
-void			timer_handler(t_uint32		id)
+void			timer_handler(t_uint32			id)
 {
   /*
-   * 1)
+   *
    */
 
   timer->timeref++;
 
   /*
-   * 2)
+   *
    */
 
   timer_check();
-
-  /*
-   * 3)
-   */
-
-  /* XXX should call the scheduler */
 }
+
 
 /*
  * ---------- testing ---------------------------------------------------------
@@ -726,6 +706,8 @@ void			timer_handler(t_uint32		id)
 t_error			timer_hdl1(void)
 {
   printf("timer handler 1\n");
+
+  return ERROR_NONE;
 }
 
 /*
@@ -736,6 +718,8 @@ t_error			timer_hdl1(void)
 t_error			timer_hdl2(void)
 {
   printf("timer handler 2\n");
+
+  return ERROR_NONE;
 }
 
 /*
