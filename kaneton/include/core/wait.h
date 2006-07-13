@@ -51,7 +51,7 @@ typedef struct
   union
   {
     i_task			task;
-    t_thrid			thread;
+    i_thread			thread;
   }				id;
 
   t_status			status;

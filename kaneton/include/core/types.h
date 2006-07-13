@@ -73,7 +73,6 @@ typedef t_id			i_region;
 typedef t_id			i_event;
 typedef t_id			i_timer;
 typedef t_id			i_task;
-typedef t_id			t_thrid;	/* XXX deprecated convention */
 typedef t_id			i_thread;
 
 /*
@@ -88,6 +87,12 @@ typedef t_sint32		t_error;
 
 typedef union u_event_handler	u_event_handler;
 typedef union u_timer_handler	u_timer_handler;
+
+typedef struct
+{
+  t_vaddr                       pc;
+  t_vaddr                       sp;
+}				t_thread_context;
 
 
 #endif

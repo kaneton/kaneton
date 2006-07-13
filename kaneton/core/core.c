@@ -118,7 +118,7 @@ void			kaneton(t_init*				bootloader)
 
   event_test();
 
-  timer_test();
+  //  timer_test();
 
 
   //ctx_test();

@@ -40,20 +40,20 @@
 /*
  * thread execution context
  */
-
+/*
 typedef struct
 {
   t_vaddr			pc;
   t_vaddr			sp;
 }				t_thread_context;
-
+*/
 /*
  * thread object
  */
 
 typedef struct
 {
-  t_thrid			threadid;
+  i_thread			threadid;
 
   i_task			taskid;
 
@@ -92,14 +92,20 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*thread_show)(t_thrid);
-  t_error			(*thread_suspend)(t_thrid);
-  t_error			(*thread_execute)(t_thrid);
-  t_error			(*thread_clone)(t_thrid);
+  t_error			(*thread_show)(i_thread);
+  t_error			(*thread_suspend)(i_thread);
+  t_error			(*thread_execute)(i_thread);
+  t_error			(*thread_clone)(i_thread);
   t_error			(*thread_flush)(i_task);
+  t_error			(*thread_stack)(i_thread,
+						t_vsize);
+  t_error			(*thread_load)(i_thread,
+					       t_thread_context);
+  t_error			(*thread_store)(i_thread,
+						t_thread_context*);
   t_error			(*thread_reserve)(i_task,
-						  t_thrid*);
-  t_error			(*thread_release)(t_thrid);
+						  i_thread*);
+  t_error			(*thread_release)(i_thread);
   t_error			(*thread_init)(void);
   t_error			(*thread_clean)(void);
 }				d_thread;
@@ -150,24 +156,38 @@ typedef struct
  * ../../core/thread/thread.c
  */
 
-t_error			thread_show(t_thrid			threadid);
+t_error			thread_show(i_thread			threadid);
 
 t_error			thread_dump(void);
 
-t_error			thread_suspend(t_thrid			threadid);
+t_error			thread_give(i_task			taskid,
+				    i_thread			threadid);
 
-t_error			thread_execute(t_thrid			threadid);
+t_error			thread_clone(i_task			taskid,
+				     i_thread			old,
+				     i_thread*			new);
 
-t_error			thread_clone(t_thrid			threadid);
+t_error			thread_suspend(i_thread			threadid);
+
+t_error			thread_execute(i_thread			threadid);
 
 t_error			thread_reserve(i_task			taskid,
-				       t_thrid*			threadid);
+				       i_thread*			threadid);
 
-t_error			thread_release(t_thrid			threadid);
+t_error			thread_release(i_thread			threadid);
 
 t_error			thread_flush(i_task			taskid);
 
-t_error			thread_get(t_thrid			threadid,
+t_error			thread_stack(i_thread			threadid,
+				     t_vsize			size);
+
+t_error			thread_load(i_thread			threadid,
+				    t_thread_context		context);
+
+t_error			thread_store(i_thread			threadid,
+				     t_thread_context*		context);
+
+t_error			thread_get(i_thread			threadid,
 				   o_thread**			o);
 
 t_error			thread_init(void);

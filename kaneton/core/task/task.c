@@ -221,8 +221,8 @@ t_error			task_clone(i_task			old,
 
   set_foreach(SET_OPT_FORWARD, from->threads, &i, state)
     {
-      /* t_thrid		needless; */
-      t_thrid*		data;
+      /* i_thread		needless; */
+      i_thread*		data;
 
       if (set_object(from->threads, i, (void**)&data) != ERROR_NONE)
 	{
@@ -349,7 +349,7 @@ t_error			task_reserve(t_class			class,
    */
 
   if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, TASK_THREADS_INITSZ,
-		  sizeof(t_thrid), &o.threads) != ERROR_NONE)
+		  sizeof(i_thread), &o.threads) != ERROR_NONE)
     {
       id_release(&task->id, o.tskid);
 

@@ -156,13 +156,17 @@ t_error			ia32_timer_init(void);
  * ../../../../core/arch/machdep/thread.c
  */
 
-t_error			ia32_thread_suspend(t_thrid		threadid);
+t_error			ia32_thread_reserve(i_task		taskid,
+					    i_thread*		threadid);
 
-t_error			ia32_thread_execute(t_thrid		threadid);
+t_error			ia32_thread_stack(i_thread		threadid,
+					  t_vsize		size);
 
-t_error			ia32_thread_clone(t_thrid		threadid);
+t_error			ia32_thread_load(i_thread		threadid,
+					 t_thread_context	context);
 
-t_error			ia32_thread_reserve();
+t_error			ia32_thread_store(i_thread		threadid,
+					  t_thread_context*	context);
 
 
 /*

@@ -50,7 +50,7 @@ m_thread*		thread = NULL;
  * 3) call the machine-dependent code.
  */
 
-t_error			thread_show(t_thrid			threadid)
+t_error			thread_show(i_thread			threadid)
 {
   o_thread*		o;
 
@@ -123,6 +123,35 @@ t_error			thread_dump(void)
 }
 
 /*
+ *
+ */
+
+t_error			thread_give(i_task			taskid,
+				    i_thread			threadid)
+{
+  THREAD_ENTER(thread);
+
+
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
+
+/*
+ *
+ */
+
+t_error			thread_clone(i_task			taskid,
+				     i_thread			old,
+				     i_thread*			new)
+{
+  THREAD_ENTER(thread);
+
+
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
+
+/*
  * suspend a thread from execution.
  *
  * steps:
@@ -131,7 +160,7 @@ t_error			thread_dump(void)
  * 2)
  */
 
-t_error			thread_suspend(t_thrid			threadid)
+t_error			thread_suspend(i_thread			threadid)
 {
   THREAD_ENTER(thread);
 
@@ -160,7 +189,7 @@ t_error			thread_suspend(t_thrid			threadid)
  * 2)
  */
 
-t_error			thread_execute(t_thrid			threadid)
+t_error			thread_execute(i_thread			threadid)
 {
   THREAD_ENTER(thread);
 
@@ -181,35 +210,6 @@ t_error			thread_execute(t_thrid			threadid)
 }
 
 /*
- * clone a thread.
- *
- * steps:
- *
- * 1)
- * 2)
- */
-
-t_error			thread_clone(t_thrid			threadid)
-{
-  THREAD_ENTER(thread);
-
-  /*
-   * 1)
-   */
-
-
-
-  /*
-   *
-   */
-
-  if (machdep_call(thread, thread_clone, threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
-
-  THREAD_LEAVE(thread, ERROR_NONE);
-}
-
-/*
  * this function reserves a thread for a given task.
  *
  * steps:
@@ -221,7 +221,7 @@ t_error			thread_clone(t_thrid			threadid)
  */
 
 t_error			thread_reserve(i_task			taskid,
-				       t_thrid*			threadid)
+				       i_thread*		threadid)
 {
   o_task*		task;
   o_thread		o;
@@ -263,7 +263,7 @@ t_error			thread_reserve(i_task			taskid,
    * 4)
    */
 
-  if (machdep_call(thread, thread_reserve, taskid, threadid) != ERROR_NONE)
+  if (machdep_call(thread, thread_reserve, taskid, *threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -282,7 +282,7 @@ t_error			thread_reserve(i_task			taskid,
  * 6) remove the thread from the threads set.
  */
 
-t_error			thread_release(t_thrid			threadid)
+t_error			thread_release(i_thread			threadid)
 {
   o_task*		task;
   o_thread*		o;
@@ -346,7 +346,7 @@ t_error			thread_release(t_thrid			threadid)
 
 t_error			thread_flush(i_task			taskid)
 {
-  t_thrid*		data;
+  i_thread*		data;
   o_task*		task;
   t_iterator		i;
 
@@ -387,10 +387,94 @@ t_error			thread_flush(i_task			taskid)
 }
 
 /*
+ * XXX THREAD: verifier qu'une pile n'est pas deja allouee.
+ */
+
+t_error			thread_stack(i_thread			threadid,
+				     t_vsize			size)
+{
+  o_task*		task;
+  o_thread*		o;
+
+  THREAD_ENTER(thread);
+
+
+  /*
+   *
+   */
+
+  if (thread_get(threadid, &o) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   *
+   */
+
+  if (task_get(o->taskid, &task) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * XXX THREAD: opts + perms
+   */
+
+  if (map_reserve(task->asid, 0, size, 0, &(o->stack)) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  o->stacksz = size;
+
+  /*
+   *
+   */
+
+  if (machdep_call(thread, thread_stack, threadid, size) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
+
+/*
+ *
+ */
+
+t_error			thread_load(i_thread			threadid,
+				    t_thread_context		context)
+{
+  THREAD_ENTER(thread);
+
+  /*
+   *
+   */
+
+  if (machdep_call(thread, thread_load, threadid, context) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
+
+/*
+ *
+ */
+
+t_error			thread_store(i_thread			threadid,
+				     t_thread_context*		context)
+{
+  THREAD_ENTER(thread);
+
+  /*
+   *
+   */
+
+  if (machdep_call(thread, thread_store, threadid, context) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
+
+/*
  * this function gets an thread object from the thread container.
  */
 
-t_error			thread_get(t_thrid			threadid,
+t_error			thread_get(i_thread			threadid,
 				   o_thread**			o)
 {
   THREAD_ENTER(thread);
