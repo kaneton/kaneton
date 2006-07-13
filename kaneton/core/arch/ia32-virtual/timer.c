@@ -55,7 +55,7 @@ d_timer				timer_dispatch =
 
 t_error			ia32_timer_init(void)
 {
-  return pit_init(100);
+  return pit_init(1000);
 }
 
 /*								   [cut] /k3 */

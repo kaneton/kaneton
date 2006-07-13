@@ -79,5 +79,13 @@ t_error			ia32_thread_clone(t_thrid		threadid)
   return ERROR_NONE;
 }
 
+/*
+ *
+ */
+
+t_error			ia32_thread_reserve()
+{
+
+}
 
 /*                                                                 [cut] /k4 */

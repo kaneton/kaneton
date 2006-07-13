@@ -36,6 +36,12 @@
  */
 
 /*
+ * generic timer handler type.
+ */
+
+typedef t_error                 (*t_timer_handler)(void);
+
+/*
  * timer handler type
  */
 
@@ -60,8 +66,6 @@ typedef struct
   t_type			type;
 
   u_timer_handler		handler;
-
-  //  i_task			taskid;
 
   machdep_data(o_timer);
 }				o_timer;

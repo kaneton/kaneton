@@ -48,8 +48,8 @@
  * load segment registers
  */
 
-#define LOAD_CORE_SELECTORS						\
-  "movl $0x10,%edx\n\t"							\
+#define LOAD_CORE_SELECTORS(_ds_)					\
+  "movl $"#_ds_",%edx\n\t"						\
   "movw %dx,%ds\n\t"							\
   "movw %dx,%es\n\t"							\
   "movw %dx,%fs\n\t"							\
@@ -74,15 +74,15 @@
  * pre-handler for exceptions
  */
 
-#define EXCEPTION_PREHANDLER(_nr_, __error_code__)	       		\
+#define EXCEPTION_PREHANDLER(_nr_, _error_code_)	       		\
   void	prehandler_exception##_nr_(void)				\
     {									\
       t_uint32	code = 0;						\
 									\
       asm volatile(SAVE_CONTEXT						\
-		   LOAD_CORE_SELECTORS);				\
+		   LOAD_CORE_SELECTORS(0x10));				\
       UPDATE_CONTEXT_PTR;						\
-      if (__error_code__)				       		\
+      if (_error_code_)					       		\
         asm volatile("movl 4(%%ebp),%%eax\n\t"				\
 		     : "=a" (code)					\
 		     :);						\
@@ -92,7 +92,7 @@
       context = NULL;							\
       asm volatile(RESTORE_CONTEXT					\
 		   ADJUST_STACK);					\
-      if (__error_code__)						\
+      if (_error_code_)							\
         asm volatile("addl $4,%esp\n\t");				\
       asm volatile("iret\n\t");						\
     }
@@ -107,7 +107,7 @@
       __attribute__((unused)) t_uint32  code = 0;                       \
                                                                         \
       asm volatile(SAVE_CONTEXT                                         \
-                   LOAD_CORE_SELECTORS);                                \
+                   LOAD_CORE_SELECTORS(0x10));                          \
       UPDATE_CONTEXT_PTR;                                               \
       asm volatile("subl $0x8, %esp");                                  \
       irq_wrapper(IDT_IRQ_BASE + _nr_);                                 \
@@ -115,27 +115,8 @@
       context = NULL;                                                   \
       asm volatile(RESTORE_CONTEXT                                      \
                    ADJUST_STACK                                         \
-                   "iret\t");                                         \
+                   "iret\n\t");                                         \
     }
-
-/*
-#define IRQ_PREHANDLER(_nr_)						\
-  void	prehandler_irq##_nr_(void)					\
-    {									\
-      __attribute__((unused)) t_uint32	code = 0;			\
-									\
-      asm volatile(SAVE_CONTEXT						\
-		   LOAD_CORE_SELECTORS);				\
-      UPDATE_CONTEXT_PTR;						\
-      asm volatile("subl $0x8, %esp");					\
-      irq_wrapper(IDT_IRQ_BASE + _nr_);					\
-      asm volatile("addl $0x8, %esp");					\
-      context = NULL;							\
-      asm volatile(RESTORE_CONTEXT					\
-		   ADJUST_STACK						\
-		   "iret\n\t");						\
-    }
-*/
 
 /*
  * ---------- types -----------------------------------------------------------

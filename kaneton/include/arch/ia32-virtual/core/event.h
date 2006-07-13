@@ -18,24 +18,6 @@
 
 /* #include <core/event.h> */
 
-
-/*
- * generic event handler type.
- */
-
-typedef void                    (*t_event_handler)(t_uint32);
-
-/*
- * XXX EVENT move me ! (should be in /core/include/core/event.h)
- */
-/*
-union u_event_handler
-{
-  t_event_handler               function;
-  t_tskid                       taskid;
-};
-*/
-
 /*
  * ---------- macro functions -------------------------------------------------
  */

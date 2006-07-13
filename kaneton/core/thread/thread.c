@@ -422,7 +422,7 @@ t_error			thread_init(void)
 
   if ((thread = malloc(sizeof(m_thread))) == NULL)
     {
-      cons_msg('!', "thread: cannont allocate memory "
+      cons_msg('!', "thread: cannot allocate memory "
 	       "for the thread manager structure\n");
 
       return ERROR_UNKNOWN;

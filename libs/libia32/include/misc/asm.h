@@ -30,12 +30,10 @@
  */
 
 #define		CLI()							\
-  asm volatile("cli\n"							\
-	       ::)
+  asm volatile("cli\n")
 
 #define		STI()							\
-  asm volatile("sti\n"							\
-	       ::)
+  asm volatile("sti\n")
 
 #define		LGDT(_var_)						\
   asm volatile("lgdt %0\n"						\

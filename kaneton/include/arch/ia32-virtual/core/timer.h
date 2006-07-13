@@ -14,7 +14,7 @@
 
 
 
-typedef t_error			(*t_timer_handler)(void);
+//typedef t_error			(*t_timer_handler)(void);
 
 /*
  * ---------- macro functions -------------------------------------------------

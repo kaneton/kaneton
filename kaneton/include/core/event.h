@@ -35,6 +35,13 @@
  * ---------- types -----------------------------------------------------------
  */
 
+
+/*
+ * generic event handler type.
+ */
+
+typedef void                    (*t_event_handler)(t_uint32);
+
 /*
  * event handler type
  */
