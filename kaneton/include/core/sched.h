@@ -142,8 +142,6 @@ void _fun3();
 
 void _fun4();
 
-void load_ctx(i_thread th, t_uint32 pc, t_uint32 sp);
-
 void chiche(t_uint32 id);
 
 void sched_test();

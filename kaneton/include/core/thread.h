@@ -172,7 +172,7 @@ t_error			thread_suspend(i_thread			threadid);
 t_error			thread_execute(i_thread			threadid);
 
 t_error			thread_reserve(i_task			taskid,
-				       i_thread*			threadid);
+				       i_thread*		threadid);
 
 t_error			thread_release(i_thread			threadid);
 

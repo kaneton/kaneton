@@ -133,7 +133,8 @@ t_error			ia32_sched_init(void)
 {
   SCHED_ENTER(sched);
 
-  if (timer_reserve(EVENT_FUNCTION, (u_timer_handler)((t_timer_handler)sched_yield),
+  if (timer_reserve(EVENT_FUNCTION,
+		    (u_timer_handler)((t_timer_handler)sched_yield),
 		    sched->quantum, TIMER_REPEAT_ENABLE,
 		    &sched->machdep.timer) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);

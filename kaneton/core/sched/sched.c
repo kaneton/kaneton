@@ -536,43 +536,8 @@ void _fun4()
     }
 }
 
-void load_ctx(i_thread th, t_uint32 pc, t_uint32 sp)
-{
-  o_thread* o;
-
-  thread_get(th, &o);
-
-  /*
-  asm volatile("movl %%cr3, %%eax\n\t"
-	       "movl %%eax, %0"
-	       : "=g" (o->machdep.context.cr3)
-	       :
-	       : "%eax");
-  asm volatile("pushf\n\t"
-	       "popl %0" : "=g" (o->machdep.context.eflags));
-
-
-  o->machdep.context.cs = 0x8;
-  o->machdep.context.ds = 0x10;
-  o->machdep.context.es = 0x10;
-  o->machdep.context.fs = 0x10;
-  o->machdep.context.gs = 0x10;
-  o->machdep.context.ss = 0x10;
-  */
-  o->machdep.context.eip = pc;
-  o->machdep.context.esp = sp;
-}
-
-void chiche(t_uint32 id)
-{
-  sched_dump();
-  sched_yield();
-  sched_dump();
-}
-
 void sched_test()
 {
-  i_thread th[4];
   t_thread_context	ctx;
   i_thread thr;
 
@@ -585,22 +550,6 @@ void sched_test()
 
   sched_add(thr);
 
-  /*
-    thread_reserve(0, &th[0]);
-  load_ctx(th[0], (t_uint32)_fun1, (t_uint32)malloc(100));
-  sched_add(th[0]);
-  */
-
-  /*  thread_reserve(0, &th[1]);
-  load_ctx(th[1], (t_uint32)_fun2, (t_uint32)malloc(100));
-  sched_add(th[1]);
-  thread_reserve(0, &th[2]);
-  load_ctx(th[2], (t_uint32)_fun3, (t_uint32)malloc(100));
-  sched_add(th[2]);
-  thread_reserve(0, &th[3]);
-  load_ctx(th[3], (t_uint32)_fun4, (t_uint32)malloc(100));
-  sched_add(th[3]);
-  */
   while(1)
     {
  //     printf("kernel\n");

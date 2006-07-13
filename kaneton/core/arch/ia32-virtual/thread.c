@@ -69,6 +69,8 @@ t_error			ia32_thread_reserve(i_task		taskid,
   o_task*		task;
   o_as*			as;
   o_thread*		o;
+  t_uint16		code_segment;
+  t_uint16		data_segment;
 
   THREAD_ENTER(thread);
 
@@ -97,22 +99,36 @@ t_error			ia32_thread_reserve(i_task		taskid,
    * XXX THREAD: verifier d'abord que l'AS existe.
    */
 
-  //  pd_get_cr3(&(o->machdep.context.cr3), as->machdep.pd);
+  pd_get_cr3(&(o->machdep.context.cr3), as->machdep.pd);
 
-  asm volatile("movl %%cr3, %%eax\n\t"
-               "movl %%eax, %0"
-               : "=g" (o->machdep.context.cr3)
-               :
-               : "%eax");
+  /*
+   *
+   */
+
   asm volatile("pushf\n\t"
                "popl %0" : "=g" (o->machdep.context.eflags));
 
-  o->machdep.context.cs = 0x8;
-  o->machdep.context.ds = 0x10;
-  o->machdep.context.es = 0x10;
-  o->machdep.context.fs = 0x10;
-  o->machdep.context.gs = 0x10;
-  o->machdep.context.ss = 0x10;
+  /*
+   *
+   */
+
+  if (taskid == 0)
+    {
+      code_segment = 0x8;
+      data_segment = 0x10;
+    }
+  else
+    {
+      code_segment = 0x18;
+      data_segment = 0x20;
+    }
+
+  o->machdep.context.cs = code_segment;
+  o->machdep.context.ds = data_segment;
+  o->machdep.context.es = data_segment;
+  o->machdep.context.fs = data_segment;
+  o->machdep.context.gs = data_segment;
+  o->machdep.context.ss = data_segment;
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }
@@ -139,7 +155,7 @@ t_error			ia32_thread_stack(i_thread		threadid,
    *
    */
 
-  //  o->machdep.context.ebp = o->stack;
+  o->machdep.context.ebp = o->stack;
   o->machdep.context.esp = o->stack;
 
   THREAD_LEAVE(thread, ERROR_NONE);

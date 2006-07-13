@@ -123,101 +123,15 @@ t_error			thread_dump(void)
 }
 
 /*
- *
- */
-
-t_error			thread_give(i_task			taskid,
-				    i_thread			threadid)
-{
-  THREAD_ENTER(thread);
-
-
-
-  THREAD_LEAVE(thread, ERROR_NONE);
-}
-
-/*
- *
- */
-
-t_error			thread_clone(i_task			taskid,
-				     i_thread			old,
-				     i_thread*			new)
-{
-  THREAD_ENTER(thread);
-
-
-
-  THREAD_LEAVE(thread, ERROR_NONE);
-}
-
-/*
- * suspend a thread from execution.
- *
- * steps:
- *
- * 1)
- * 2)
- */
-
-t_error			thread_suspend(i_thread			threadid)
-{
-  THREAD_ENTER(thread);
-
-  /*
-   * 1)
-   */
-
-
-
-  /*
-   *
-   */
-
-  if (machdep_call(thread, thread_suspend, threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
-
-  THREAD_LEAVE(thread, ERROR_NONE);
-}
-
-/*
- * give execution to a thread.
- *
- * steps:
- *
- * 1)
- * 2)
- */
-
-t_error			thread_execute(i_thread			threadid)
-{
-  THREAD_ENTER(thread);
-
-  /*
-   * 1)
-   */
-
-
-
-  /*
-   *
-   */
-
-  if (machdep_call(thread, thread_execute, threadid) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
-
-  THREAD_LEAVE(thread, ERROR_NONE);
-}
-
-/*
  * this function reserves a thread for a given task.
  *
  * steps:
  *
  * 1) get the task object.
  * 2) get an id for the new thread and fill its information.
- * 3) add the new thread in the thread container and in the task threads list.
- * 4) call the machine-dependent code.
+ * 3)
+ * 4) add the new thread in the thread container and in the task threads list.
+ * 5) call the machine-dependent code.
  */
 
 t_error			thread_reserve(i_task			taskid,
@@ -242,11 +156,18 @@ t_error			thread_reserve(i_task			taskid,
   if (id_reserve(&thread->id, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
+  /*
+   * 3)
+   */
+
+  memset(&o, 0x0, sizeof(o_thread));
+
   o.threadid = *threadid;
+
   o.taskid = taskid;
 
   /*
-   * 3)
+   * 4)
    */
 
   if (set_add(thread->threads, &o) != ERROR_NONE)
@@ -260,7 +181,7 @@ t_error			thread_reserve(i_task			taskid,
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if (machdep_call(thread, thread_reserve, taskid, *threadid) != ERROR_NONE)
@@ -276,10 +197,11 @@ t_error			thread_reserve(i_task			taskid,
  *
  * 1) call the machine-dependent code.
  * 2) get the thread object.
- * 3) get the task object.
- * 4) release the thread-s object identifer.
- * 5) remove the thread from the task threads list.
- * 6) remove the thread from the threads set.
+ * 3) XXX THREAD: release the thread stack.
+ * 4) get the task object.
+ * 5) release the thread-s object identifer.
+ * 6) remove the thread from the task threads list.
+ * 7) remove the thread from the threads set.
  */
 
 t_error			thread_release(i_thread			threadid)
@@ -307,25 +229,31 @@ t_error			thread_release(i_thread			threadid)
    * 3)
    */
 
-  if (task_get(o->taskid, &task) != ERROR_UNKNOWN)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  /* XXX THREAD: release the thread stack */
 
   /*
    * 4)
    */
 
-  if (id_release(&thread->id, o->threadid) != ERROR_NONE)
+  if (task_get(o->taskid, &task) != ERROR_UNKNOWN)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
    * 5)
    */
 
-  if (set_remove(task->threads, threadid) != ERROR_NONE)
+  if (id_release(&thread->id, o->threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
    * 6)
+   */
+
+  if (set_remove(task->threads, threadid) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 7)
    */
 
   if (set_remove(thread->threads, threadid) != ERROR_NONE)
@@ -439,7 +367,22 @@ t_error			thread_stack(i_thread			threadid,
 t_error			thread_load(i_thread			threadid,
 				    t_thread_context		context)
 {
+  o_thread*		o;
+
   THREAD_ENTER(thread);
+
+  /*
+   *
+   */
+
+  if (thread_get(threadid, &o) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   *
+   */
+
+  o->stack = context.sp;
 
   /*
    *
@@ -529,7 +472,8 @@ t_error			thread_init(void)
    * 3)
    */
 
-  if (set_reserve(ll, SET_OPT_ALLOC, sizeof(o_thread), &thread->threads) != ERROR_NONE)
+  if (set_reserve(ll, SET_OPT_ALLOC, sizeof(o_thread), &thread->threads)
+      != ERROR_NONE)
     {
       cons_msg('!', "thread: unable to reserve the thread set\n\n");
 
