@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/paging/pd.c
+ * file          /home/buckman/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       julien quintard   [sat jul  8 02:36:44 2006]
+ * updated       matthieu bucchianeri   [thu jul 13 14:11:52 2006]
  */
 
 /*
@@ -170,6 +170,16 @@ t_error			pd_activate(t_ia32_directory		dir)
   pd = dir;
 
   return ERROR_NONE;
+}
+
+/*
+ * get the page-directory base register corresponding to a page-directory.
+ */
+
+t_error			pd_get_cr3(t_uint32*			cr3,
+				   t_ia32_directory		dir)
+{
+  *cr3 = ((t_uint32)dir & 0xfffffc18);
 }
 
 /*

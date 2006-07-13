@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/as.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jul  8 02:30:24 2006]
+ * updated       matthieu bucchianeri   [thu jul 13 14:18:22 2006]
  */
 
 /*
@@ -47,7 +47,7 @@ d_as			as_dispatch =
 /*                                                                  [cut] k2 */
 
     ia32_as_show,
-    NULL,
+    ia32_as_give,
     NULL,
     NULL,
     NULL,
@@ -65,6 +65,68 @@ d_as			as_dispatch =
  */
 
 /*                                                                  [cut] k2 */
+
+/*
+ * this function give an address space to a task.
+ *
+ * steps:
+ *
+ * 1) get the as object.
+ * 2) get the destination task.
+ * 3) for each thread, update the context's PDBR value.
+ */
+
+t_error			ia32_as_give(i_task			tskid,
+				     i_as			asid)
+{
+  o_as*			o;
+  o_task*		otask;
+  o_thread*		oth;
+  t_iterator		it;
+  t_state		state;
+
+  AS_ENTER(as);
+
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (task_get(tskid, &otask) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  set_foreach(SET_OPT_FORWARD, otask->threads, &it, state)
+    {
+      i_thread*		th;
+
+      if (set_object(otask->threads, it, (void**)&th) != ERROR_NONE)
+	{
+	  cons_msg('!', "as: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  AS_LEAVE(as, ERROR_UNKNOWN);
+	}
+
+      if (thread_get(*th, &oth) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (pd_get_cr3(&oth->machdep.context.cr3, o->machdep.pd) !=
+	  ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+    }
+
+  AS_LEAVE(as, ERROR_NONE);
+}
 
 /*
  * this function displays architecture dependent data.
@@ -115,6 +177,7 @@ t_error			ia32_as_show(i_as			asid)
  *  b) reserve a region for the directory in the kernel address space.
  *  c) build a new page directory for the as.
  *  d) release the kernel-side region mapping the directory.
+ *  e) set the new value of PDBR to all threads.
  */
 
 t_error			ia32_as_reserve(i_task			tskid,
@@ -135,6 +198,10 @@ t_error			ia32_as_reserve(i_task			tskid,
   t_ia32_pte		pte_end;
   t_ia32_pde		pde;
   t_ia32_pte		pte;
+  o_task*		otask;
+  o_thread*		oth;
+  t_iterator		it;
+  t_state		state;
 
   AS_ENTER(as);
 
@@ -297,6 +364,33 @@ t_error			ia32_as_reserve(i_task			tskid,
 
       if (region_release(kasid, reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      /*
+       * e)
+       */
+
+      if (task_get(tskid, &otask) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      set_foreach(SET_OPT_FORWARD, otask->threads, &it, state)
+	{
+	  i_thread*		th;
+
+	  if (set_object(otask->threads, it, (void**)&th) != ERROR_NONE)
+	    {
+	      cons_msg('!', "as: cannot find the object "
+		       "corresponding to its identifier\n");
+
+	      AS_LEAVE(as, ERROR_UNKNOWN);
+	    }
+
+	  if (thread_get(*th, &oth) != ERROR_NONE)
+	      AS_LEAVE(as, ERROR_UNKNOWN);
+
+	  if (pd_get_cr3(&oth->machdep.context.cr3, o->machdep.pd) !=
+	      ERROR_NONE)
+	    AS_LEAVE(as, ERROR_UNKNOWN);
+	}
     }
 
   AS_LEAVE(as, ERROR_NONE);

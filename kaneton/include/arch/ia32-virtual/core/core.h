@@ -56,6 +56,9 @@
  * ../../../../core/arch/machdep/as.c
  */
 
+t_error			ia32_as_give(i_task			tskid,
+				     i_as			asid);
+
 t_error			ia32_as_show(i_as			asid);
 
 t_error			ia32_as_reserve(i_task			tskid,
@@ -158,6 +161,8 @@ t_error			ia32_thread_suspend(t_thrid		threadid);
 t_error			ia32_thread_execute(t_thrid		threadid);
 
 t_error			ia32_thread_clone(t_thrid		threadid);
+
+t_error			ia32_thread_reserve();
 
 
 /*
