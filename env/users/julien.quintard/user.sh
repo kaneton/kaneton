@@ -5,7 +5,7 @@
 ## file          /home/mycure/kaneton/env/users/julien.quintard/user.sh
 ##
 ## created       julien quintard   [sat jul  8 03:08:34 2006]
-## updated       julien quintard   [sat jul  8 03:08:39 2006]
+## updated       julien quintard   [fri jul 14 13:58:25 2006]
 ##
 
 #
@@ -21,7 +21,11 @@
 #
 view()
 {
-  local document=${1}
+  local document
+
+echo "---[ user.sh::view()"
+
+  document="${1}"
 
   ${VIEWER} ${document}
 }

@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/view/lectures/Makefile
 ##
 ## created       julien quintard   [sat nov 19 18:06:43 2005]
-## updated       julien quintard   [mon apr 10 03:16:04 2006]
+## updated       julien quintard   [thu jul 13 11:45:55 2006]
 ##
 
 #
@@ -30,23 +30,21 @@ SUBDIRS			:=		advanced-makefiles		\
 					arch-mips			\
 					c-preprocessor			\
 					development-environment		\
-					distributed-operating-systems	\
 					inline-assembly			\
 					kernels				\
 					prerequisites			\
 					seminar				\
-					lse01				\
-					kaneton				
+					lse01				
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
 all:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call purge)
 

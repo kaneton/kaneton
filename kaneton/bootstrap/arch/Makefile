@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/core/bootstrap/arch/Makefile
+## file          /home/mycure/kaneton/kaneton/bootstrap/arch/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:13:09 2006]
+## updated       julien quintard   [thu jul 13 11:44:18 2006]
 ##
 
 #
@@ -26,15 +26,15 @@ include			../../../env/.env.mk
 #
 
 all:
-	$(call makefile,machdep,)
+	$(call launch,Makefile,machdep,,)
 
 clear:
-	$(call makefile,machdep,clear)
+	$(call launch,Makefile,machdep,clear,)
 
 	$(call purge,)
 
 proto:
-	$(call makefile,machdep,proto)
+	$(call launch,Makefile,machdep,proto,)
 
 dep:
-	$(call makefile,machdep,dep)
+	$(call launch,Makefile,machdep,dep,)

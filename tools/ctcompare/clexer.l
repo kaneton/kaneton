@@ -16,6 +16,8 @@ void myputint(char ch, char *text, FILE *f);
 extern FILE *zout;
 int inside_comment = 0;
 
+extern int ntokens;
+
 /* We keep a list of each identifier on a per file basis.
  */
 #define LIST_SIZE 65536
@@ -151,6 +153,8 @@ void myputc(char ch, FILE *f)
 {
   if (inside_comment && (ch!=LINE)) return;
   putc(ch, f);
+
+  ntokens++;
 }
 
 void initialise_lists(void)

@@ -5,7 +5,7 @@
 ## file          /home/mycure/kaneton/env/machines/gnu-unix/critical.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat jul  8 03:08:54 2006]
+## updated       julien quintard   [fri jul 14 04:02:08 2006]
 ##
 
 #
@@ -13,7 +13,7 @@
 #
 # this script has to be run in its directory: env/machines/gnu-unix/
 #
-# for the moment this script uses UNIX tools: sed, cat, rm, make etc..
+# for the moment this script uses GNU tools: sed, cat, rm, make etc..
 #
 
 #
@@ -41,6 +41,8 @@ USER_SH=""
 ENV_CONF=".env.conf"
 ENV_MK=".env.mk"
 ENV_SH=".env.sh"
+
+ENV_DIR="env/"
 
 SRC_DIR=""
 
@@ -155,7 +157,7 @@ check()
   # tries to find the user configuration file located in the user directory.
   if [ ! -e ${USER_CONF} ] ; then
     ${_ECHO_} ""
-    ${_ECHO_} "[!] user configuration file '${USER_CONF}' unreachable"
+    ${_ECHO_} "[!] user configuration file '${KANETON_USER}' unreachable"
     ${_ECHO_} ""
     ${_ECHO_} "[!] please check your KANETON_USER environment variable"
     ${_ECHO_} ""
@@ -176,7 +178,7 @@ check
 # gets the source directory path.
 ${_CD_} ..
 SRC_DIR=$(${_PWD_})
-${_CD_} env
+${_CD_} ${ENV_DIR}
 
 # generates the env.sh file.
 env_sh

@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/core/Makefile
+## file          /home/mycure/kaneton/check/core/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [wed jan 18 19:10:28 2006]
+## updated       julien quintard   [thu jul 13 11:32:02 2006]
 ##
 
 #
@@ -47,18 +47,18 @@ $(CORE_LO):		libs
 	$(call archive,$(CORE_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(CORE_LO),)
 
 	$(call purge,)
 
 proto:
-	$(call makefile,$(SUBDIRS),proto)
+	$(call launch,Makefile,$(SUBDIRS),proto,)
 
 dep:

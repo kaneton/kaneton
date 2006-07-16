@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/view/feedbacks/Makefile
 ##
 ## created       julien quintard   [wed apr 12 07:57:31 2006]
-## updated       julien quintard   [wed apr 12 07:57:47 2006]
+## updated       julien quintard   [thu jul 13 11:46:03 2006]
 ##
 
 #
@@ -34,10 +34,10 @@ SUBDIRS			:=		arch-ia32			\
 #
 
 all:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call purge)
 

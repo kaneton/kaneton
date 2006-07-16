@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       julien quintard   [wed jun  7 13:13:35 2006]
+## updated       julien quintard   [fri jul 14 21:53:59 2006]
 ##
 
 #
@@ -22,7 +22,7 @@
 .SILENT:
 
 .PHONY:		all init clean kaneton clear purge proto		\
-		dep build install check info 				\
+		dep build install check info dist backup		\
 		view view- export export- cheat cheat-			\
 		play play- record record-				
 
@@ -96,12 +96,12 @@ CLEARDIRS		:=		libs view export check		\
 #
 
 kaneton:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call makefile,$(CLEARDIRS),clear)
+	$(call launch,Makefile,$(CLEARDIRS),clear,)
 
 purge:
 	$(call purge,)
@@ -111,14 +111,14 @@ purge:
 #
 
 proto:
-	$(call makefile,$(SUBDIRS),proto)
+	$(call launch,Makefile,$(SUBDIRS),proto,)
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
 dep:
-	$(call makefile,$(SUBDIRS),dep)
+	$(call launch,Makefile,$(SUBDIRS),dep,)
 
 #
 # ---------- boot -------------------------------------------------------------
@@ -126,12 +126,12 @@ dep:
 
 build:
 	$(call change-directory,$(_MBL_DIR_)/$(_MBL_),)			; \
-	$(call shell-script,$(_MBL_).sh,build,)				; \
+	$(call launch,$(_MBL_).sh,build,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 install:		kaneton
 	$(call change-directory,$(_MBL_DIR_)/$(_MBL_),)			; \
-	$(call shell-script,$(_MBL_).sh,install,)			; \
+	$(call launch,$(_MBL_).sh,install,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 #
@@ -139,7 +139,7 @@ install:		kaneton
 #
 
 check:
-	$(call makefile,$(_CHECK_DIR_),)
+	$(call launch,Makefile,$(_CHECK_DIR_),,)
 
 #
 # ---------- view -------------------------------------------------------------
@@ -147,12 +147,12 @@ check:
 
 view- view:
 	$(call change-directory,$(_VIEW_DIR_),)				; \
-	$(call shell-script,$(_VIEW_SCRIPT_),$*,)			; \
+	$(call launch,$(_VIEW_SCRIPT_),$*,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 view-%:
 	$(call change-directory,$(_VIEW_DIR_),)				; \
-	$(call shell-script,$(_VIEW_SCRIPT_),$*,)			; \
+	$(call launch,$(_VIEW_SCRIPT_),$*,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 #
@@ -161,12 +161,12 @@ view-%:
 
 play- play:
 	$(call change-directory,$(_TRANSCRIPTS_DIR_),)			; \
-	$(call shell-script,$(_PLAY_SCRIPT_),$*,)			; \
+	$(call launch,$(_PLAY_SCRIPT_),$*,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 play-%:
 	$(call change-directory,$(_TRANSCRIPTS_DIR_),)			; \
-	$(call shell-script,$(_PLAY_SCRIPT_),$*,)			; \
+	$(call launch,$(_PLAY_SCRIPT_),$*,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 #
@@ -175,12 +175,12 @@ play-%:
 
 record- record:
 	$(call change-directory,$(_TRANSCRIPTS_DIR_),)			; \
-	$(call shell-script,$(_RECORD_SCRIPT_),$*,)			; \
+	$(call launch,$(_RECORD_SCRIPT_),$*,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 record-%:
 	$(call change-directory,$(_TRANSCRIPTS_DIR_),)			; \
-	$(call shell-script,$(_RECORD_SCRIPT_),$*,)			; \
+	$(call launch,$(_RECORD_SCRIPT_),$*,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 #
@@ -202,17 +202,23 @@ info:
 dist:			export-dist
 
 #
+# ---------- backup -----------------------------------------------------------
+#
+
+backup:			export-backup
+
+#
 # ---------- export -----------------------------------------------------------
 #
 
 export- export:
 	$(call change-directory,$(_EXPORT_DIR_),)			; \
-	$(call shell-script,$(_EXPORT_SCRIPT_),,)			; \
+	$(call launch,$(_EXPORT_SCRIPT_),,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 export-%:
 	$(call change-directory,$(_EXPORT_DIR_),)			; \
-	$(call shell-script,$(_EXPORT_SCRIPT_),$*,)			; \
+	$(call launch,$(_EXPORT_SCRIPT_),$*,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 #
@@ -220,17 +226,17 @@ export-%:
 #
 
 cheat- cheat:
-	$(call makefile,$(_CTCOMPARE_DIR_),)
+	$(call launch,Makefile,$(_CTCOMPARE_DIR_),,)
 
 	$(call change-directory,$(_CHEAT_DIR_),)			; \
-	$(call shell-script,$(_CHEAT_SCRIPT_),,)			; \
+	$(call launch,$(_CHEAT_SCRIPT_),,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 cheat-%:
-	$(call makefile,$(_CTCOMPARE_DIR_),)
+	$(call launch,Makefile,$(_CTCOMPARE_DIR_),,)
 
 	$(call change-directory,$(_CHEAT_DIR_),)			; \
-	$(call shell-script,$(_CHEAT_SCRIPT_),$*,)			; \
+	$(call launch,$(_CHEAT_SCRIPT_),$*,)				; \
 	$(call change-directory,$(_SRC_DIR_),)
 
 #

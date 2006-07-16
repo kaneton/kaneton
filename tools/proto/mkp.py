@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 #
 # Makeprotos / mkp.py
 #   Made by pwipwi <pwipwi@lse.epita.fr>

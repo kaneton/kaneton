@@ -18,6 +18,8 @@ extern void initialise_lists(void);
 extern int yylex(void);
 extern void yyrestart(FILE *input_file );
 
+int ntokens = 0;
+
 #define MIN_PRINTABLE       0.9
 
 FILE *zin, *zout;
@@ -100,6 +102,8 @@ int main(int argc, char *argv[])
 
     zin = eligible(entry->fts_accpath);
     if (zin == NULL) continue;
+
+    ntokens = 0;
 
     output_filename(entry->fts_accpath);
     yyrestart(zin); reset_comments(); yylex();

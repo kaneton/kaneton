@@ -5,7 +5,7 @@
 ## file          /home/mycure/kaneton/tools/mbl/grub/grub.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat jul  8 03:12:23 2006]
+## updated       julien quintard   [sun jul 16 19:16:51 2006]
 ##
 
 #
@@ -56,13 +56,11 @@ build()
 {
   case "${_BOOTMODE_}" in
     "floppy"|"tftp")
-      contents "${KANETON_IMAGE}" > ${_UDEVICE_}
+      contents "${KANETON_IMAGE}" "" > ${_UDEVICE_}
       ;;
-
     "floppy-image")
-      copy "${KANETON_IMAGE}" "${_IMAGE_}"
+      copy "${KANETON_IMAGE}" "${_IMAGE_}" ""
       ;;
-
     *)
       ;;
   esac
@@ -94,7 +92,6 @@ menu()
       print "" "root (fd0)" "" >> ${MENU}
       print "" "" "" >> ${MENU}
       ;;
-
     "tftp")
       print "" "ifconfig --address=${_ADDRESS_} --server=${_TFTP_ADDRESS_}" \
             "" >> ${MENU}
@@ -102,31 +99,32 @@ menu()
       print "" "root (nd)" "" >> ${MENU}
       print "" "" "" >> ${MENU}
       ;;
-
     *)
       ;;
   esac
 
   # fills in an array from the modules list
-  array=()
+  declare -a array
   i=0
 
   for m in ${_MODULES_} ; do
-    array[${i}]=${m}
+    array[${i}]="${m}"
 
     let "i += 1"
   done
 
   # sets the kernel into the grub menu file.
   print "" "${array[0]}" "" |						\
-    substitute "^.*\/(.*)$" "kernel \/modules\/\1" "all" >> ${MENU}
+    substitute "^.*\/(.*)$" "kernel \/modules\/\1" "--everywhere"	\
+    >> ${MENU}
 
   print "" "" "" >> ${MENU}
 
   i=1
   while [ ${i} -lt ${#array[*]} ] ; do
     print "" "${array[${i}]}" "" |					\
-      substitute "^.*\/(.*)$" "module \/modules\/\1" "all" >> ${MENU}
+      substitute "^.*\/(.*)$" "module \/modules\/\1" "--everywhere"	\
+      >> ${MENU}
 
     let "i += 1"
   done
@@ -148,7 +146,7 @@ install()
       if [ ! -e ${MENU} ] ; then
         display " ${MENU_LST}" "!"
       else
-	device-copy "${MENU}" "${_MDEVICE_}" "/boot/grub/${MENU_LST}" ""
+	load "${MENU}" "${_MDEVICE_}" "/boot/grub/${MENU_LST}" "--device"
         display " ${menu_lst}" "+"
       fi
 
@@ -156,18 +154,16 @@ install()
         if [ ! -e ${_SRC_DIR_}/${m} ] ; then
           display " ${m}" "!"
         else
-          device-copy "${_SRC_DIR_}/${m}" "${_MDEVICE_}" "/modules/" ""
+          load "${_SRC_DIR_}/${m}" "${_MDEVICE_}" "/modules/" "--device"
           display " ${m}" "+"
         fi
       done
-
       ;;
-
     "tftp")
       if [ ! -e ${MENU} ] ; then
         display " ${MENU_LST}" "!"
       else
-        device-copy "${MENU}" "${_MDEVICE_}" "/boot/grub/${MENU_LST}" ""
+        load "${MENU}" "${_MDEVICE_}" "/boot/grub/${MENU_LST}" "--device"
         display " ${MENU_LST}" "+"
       fi
 
@@ -179,14 +175,12 @@ install()
           display " ${m}" "+"
         fi
       done
-
       ;;
-
     "floppy-image")
       if [ ! -e ${MENU} ] ; then
         display " ${MENU_LST}" "!"
       else
-	device-copy "${MENU}" "${_IMAGE_}" "/boot/grub/${MENU_LST}" "--image"
+	load "${MENU}" "${_IMAGE_}" "/boot/grub/${MENU_LST}" "--image"
         display " ${MENU_LST}" "+"
       fi
 
@@ -194,11 +188,10 @@ install()
         if [ ! -e ${_SRC_DIR_}/${m} ] ; then
           display " ${m}" "!"
         else
-          device-copy "${_SRC_DIR_}/${m}" "${_IMAGE_}" "/modules/" "--image"
+          load "${_SRC_DIR_}/${m}" "${_IMAGE_}" "/modules/" "--image"
           display " ${m}" "+"
         fi
       done
-
       ;;
   esac
 }
@@ -221,10 +214,10 @@ warning()
   display "   udevice:                  ${_UDEVICE_}" "+"
   display "   mdevice:                  ${_MDEVICE_}" "+"
   display "   image:                    ${_IMAGE_}" "+"
-  display ""
+  display "" ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
-  wait-key
+  wait-key ""
 }
 
 #
@@ -232,12 +225,12 @@ warning()
 #
 
 # displays some stuff.
-display ""
+display "" ""
 
 # checks the number of arguments.
 if [ ${#} -lt 1 ] ; then
   usage
-  display ""
+  display "" ""
   exit -1
 fi
 
@@ -247,10 +240,9 @@ ACTION="${1}"
 # choose what to do.
 case ${ACTION} in
   "build")
-
     # initialising the boot system.
     display " initialising the boot system" "+"
-    display ""
+    display "" ""
 
     # calls the warning function.
     warning
@@ -259,17 +251,16 @@ case ${ACTION} in
     build
 
     ;;
-
   "install")
     # initialising the boot system.
     display " initialising the boot system" "+"
-    display ""
+    display "" ""
 
     # calls the warning function.
     warning
 
     # generates a temporary file for the grub menu file.
-    MENU=$(tempfile)
+    MENU=$(temporary "--file")
 
     # calls the menu function to generate the grub menu file.
     menu
@@ -278,13 +269,12 @@ case ${ACTION} in
     install
 
     # display some stuff.
-    display ""
+    display "" ""
 
     ;;
-
   *)
     display " unknown action \"${ACTION}\"" "!"
-    display ""
+    display "" ""
     usage
     exit -1
     ;;
@@ -294,4 +284,4 @@ esac
 display " boot system initialised successfully" "+"
 
 # displays some stuff.
-display ""
+display "" ""

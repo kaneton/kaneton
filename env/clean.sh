@@ -5,7 +5,7 @@
 ## file          /home/mycure/kaneton/env/clean.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat jul  8 03:10:36 2006]
+## updated       julien quintard   [fri jul 14 13:52:31 2006]
 ##
 
 #
@@ -31,20 +31,17 @@ source			.env.sh
 #
 machines()
 {
+  local machines
   local l
   local m
 
-  l=""
+  machines=$(list "${_MACHINES_DIR_}" "--directory")
 
-  machines=$(list ${_MACHINES_DIR_})
+  display " supported machines are:" "!"
 
   for m in ${machines} ; do
-    if [ -d ${_MACHINES_DIR_}/${m} ] ; then
-      l="${l} ${m}"
-    fi
+    display "   ${m}" "!"
   done
-
-  display " supported machines are:${l}" "!"
 }
 
 
@@ -58,8 +55,8 @@ links()
 {
   display " unlinking kernel configuration files" "+"
 
-  remove ${_CORE_CONF_DIR_}/conf.c
-  remove ${_CORE_INCLUDE_DIR_}/conf.h
+  remove "${_CORE_CONF_DIR_}/conf.c" ""
+  remove "${_CORE_INCLUDE_DIR_}/conf.h" ""
 }
 
 
@@ -71,14 +68,15 @@ links()
 #
 dep()
 {
+  local makefiles
   local m
 
   display " cleaning makefile dependencies" "+"
 
-  makefiles=$(find-files "${_SRC_DIR_}/" ".makefile.mk")
+  makefiles=$(search "${_SRC_DIR_}" ".makefile.mk" "--file")
 
-  for m in ${makefiles} ; do
-    remove ${m}
+  for m in "${makefiles}" ; do
+    remove "${m}" ""
   done
 }
 
@@ -94,40 +92,36 @@ clean()
 {
   if [ ! -d ${_MACHINE_DIR_} ] ; then
     display " unknown system: '${_MACHINE_}'" "!"
-    display ""
-    display " please check your _MACHINE_ variable into '${_USER_CONF_}'" "!"
-    display ""
+    display "" ""
+    display " please check your KANETON_MACHINE environment variable" "!"
+    display "" ""
     machines
-    display ""
-    usage
-    display ""
-    exit
+    display "" ""
+    exit -1
   fi
 
   if [ ! -e ${_MACHINE_DIR_}/clean.sh ] ; then
-    display " '${_MACHINE_}' machine-specific init script not present" "!"
-    display ""
-    display " please check your _MACHINE_ variable into '${_USER_CONF_}'" "!"
-    display ""
+    display " '${_MACHINE_}' machine-specific clean script not present" "!"
+    display "" ""
+    display " please check your KANETON_MACHINE environment variable" "!"
+    display "" ""
     machines
-    display ""
-    usage
-    display ""
-    exit
-  else
-    launch ${_MACHINE_DIR_}/clean.sh
+    display "" ""
+    exit -1
   fi
 
+  launch "${_MACHINE_DIR_}/clean.sh" "" ""
+
   if [ -e ${_USER_DIR_}/clean.sh ] ; then
-    launch ${_USER_DIR_}/clean.sh
+    launch "${_USER_DIR_}/clean.sh" "" ""
   fi
 
   # finally removes the env.mk and env.sh files.
-  remove ${_ENV_MK_}
-  remove ${_ENV_SH_}
+  remove "${_ENV_MK_}" ""
+  remove "${_ENV_SH_}" ""
 
   # also removes the kaneton runtime configuration file
-  remove ${_KANETON_CONF_}
+  remove "${_KANETON_CONF_}" ""
 }
 
 #
@@ -135,10 +129,10 @@ clean()
 #
 
 # displays some stuff.
-display ""
+display "" ""
 
 display " cleaning the environment" "+"
-display ""
+display "" ""
 
 # removes some links.
 links

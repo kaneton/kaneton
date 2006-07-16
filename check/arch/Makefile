@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/check/arch/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       julien quintard   [thu feb 23 07:30:33 2006]
+## updated       julien quintard   [thu jul 13 11:41:46 2006]
 ##
 
 #
@@ -47,18 +47,18 @@ $(ARCH_LO):		libs
 	$(call archive,$(ARCH_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(ARCH_LO),)
 
 	$(call purge,)
 
 proto:
-	$(call makefile,$(SUBDIRS),proto)
+	$(call launch,Makefile,$(SUBDIRS),proto,)
 
 dep:

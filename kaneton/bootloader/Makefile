@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/core/bootloader/Makefile
+## file          /home/mycure/kaneton/kaneton/bootloader/Makefile
 ##
 ## created       julien quintard   [Fri Feb 11 02:05:35 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:15:39 2006]
+## updated       julien quintard   [thu jul 13 11:44:02 2006]
 ##
 
 #
@@ -26,17 +26,17 @@ include			../../env/.env.mk
 #
 
 all:
-	$(call makefile,arch,)
+	$(call launch,Makefile,arch,,)
 
 clear:
-	$(call makefile,arch,clear)
+	$(call launch,Makefile,arch,clear,)
 
 	$(call remove,$(_BOOTLOADER_),)
 
 	$(call purge,)
 
 proto:
-	$(call makefile,arch,proto)
+	$(call launch,Makefile,arch,proto,)
 
 dep:
-	$(call makefile,arch,dep)
+	$(call launch,Makefile,arch,dep,)

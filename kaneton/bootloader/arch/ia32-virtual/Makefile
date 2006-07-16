@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:05:35 2005]
-## updated       julien quintard   [fri jun 23 16:24:09 2006]
+## updated       julien quintard   [thu jul 13 11:43:32 2006]
 ##
 
 #
@@ -59,7 +59,7 @@ $(BOOTLOADER):		libs $(BOOTLOADER_O)
 	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
 
 libs:
-	$(call makefile,$(_KLIBC_DIR_),)
+	$(call launch,Makefile,$(_KLIBC_DIR_),,)
 
 clear:
 	$(call remove,$(BOOTLOADER_O),)

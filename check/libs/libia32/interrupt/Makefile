@@ -1,12 +1,12 @@
 ##
-## licence       Kaneton licence
+## licence       kaneton licence
 ##
 ## project       kaneton
 ##
-## file          /home/rhino/kaneton/check/libs/libia32/interrupt/Makefile
+## file          /home/mycure/kaneton/check/libs/libia32/interrupt/Makefile
 ##
 ## created       renaud voltz   [mon mar 13 12:30:14 2006]
-## updated       renaud voltz   [mon mar 13 12:30:14 2006]
+## updated       julien quintard   [thu jul 13 11:34:50 2006]
 ##
 
 #
@@ -47,12 +47,12 @@ $(INTERRUPT_LO):		libs
 	$(call archive,$(INTERRUPT_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(INTERRUPT_LO),)
 

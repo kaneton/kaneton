@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/kaneton/Makefile
 ##
 ## created       julien quintard   [fri feb 11 03:24:11 2005]
-## updated       julien quintard   [sat jul  8 02:13:55 2006]
+## updated       julien quintard   [thu jul 13 11:44:38 2006]
 ##
 
 #
@@ -32,15 +32,15 @@ SUBDIRS			:=		$(_KANETON_DEP_)
 #
 
 all:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call purge,)
 
 proto:
-	$(call makefile,$(SUBDIRS),proto)
+	$(call launch,Makefile,$(SUBDIRS),proto,)
 
 dep:
-	$(call makefile,$(SUBDIRS),dep)
+	$(call launch,Makefile,$(SUBDIRS),dep,)

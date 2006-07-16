@@ -45,6 +45,8 @@ to its specific bash binary path.
   pwd
   lex
   script
+  perl
+  python
 
 Of course, depending of your status, student or kaneton reference developer,
 some binaries should be needless.

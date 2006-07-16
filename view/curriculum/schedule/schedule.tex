@@ -63,88 +63,71 @@
 
 \section{Overview}
 
-\textbf{kaneton} is a project of the EPITA specialisation year in system,
-network and security.
+The kaneton microkernel project's goal is to lead students to understand
+what really is an operating system and more precisely a kernel.
 
-The goal of the project is to give students a complete view of an operating
-system.
+Every group, composed of two students, will have to develop parts of
+the kaneton microkernel.
 
-Every group, composed of about four students, has to develop parts
-of the kaneton microkernel.
+To simplify the project, each group receives a development environment
+containing everything necessary to start the project including a
+working microkernel base, documentation, assignments etc..
 
-To do so, the professors give students a development environment containing
-everything needed to start the project.
-
-The whole project is divided into parts, each part must be validated by
-the students.
-
-The project comes with four, maybe five, courses:
+The project comes with two fundamental courses:
 
 \begin{itemize}
   \item
-    \textbf{kaneton}: this course is intended to give students a good overview
-    of operating system design problems and introduced the kaneton design.
-  \item
-    \textbf{kernel}: this course give a complete study of the kernel
-    internals including microkernels, memory management, processes and threads,
+    \textbf{Kernel}: this course explores the kernels internals including
+    microkernel architectures, memory management, processes and threads,
     synchronisation, communications, and complete case studies.
   \item
-    \textbf{mips architecture}: this course is dedicated to the mips internal
-    architecture including the pipeline, the bus etc..
-  \item
-    \textbf{intel 32-bit architecture}: this course will explain the Intel
-    external architecture including the instructions sets, the
-    memory management and finally to the task management.
-  \item
-    \textbf{distributed operating system}: this course is intented to
-    give students a simple approach of the distributed inherent problems.
+    \textbf{MIPS architecture}: this course is dedicated to the MIPS internal
+    architecture although this course actually explains modern microprocessors
+    concepts: pipelining, optimizations, caches etc..
 \end{itemize}
 
-Let's see the year scheduling:
+The whole kaneton project is subdivided into parts:
 
 \begin{itemize}
   \item
-    \textbf{k0}: the students will have to learn low-level programming to
-    understand the external architecture programming interface and the
-    different memory management models. This part is called the bootstrap.
+    \textbf{k0}: this project will be entirely developed during a
+    special coding session of about 6 hours and under the teachers'
+    supervisation. This project consists in an introduction to the
+    MIPS external architecture: basic memory management model,
+    MIPS assembly language, development tools etc..
   \item
-    \textbf{k1}: the students will develop a bootloader. Its role is to
-    build a memory environment for the future kernel execution. In this
-    project, the students will learn to deal with the virtual memory
-    and to develop in a very strict environment, from scratch.
+    \textbf{k1}: this project will lead the students to an higher abstraction
+    level. The goal of the project is to develop the segment manager to be
+    able to manage physical memory. This project is \textbf{two weeks} long.
   \item
-    \textbf{k2}: this project will lead the students to an higher abstraction
-    level. The goal of the project is to develop parts of the set manager,
-    the id manager, the address space manager and finally the segment
-    manager to be able to manage physical memory in a very elegant way.
+    \textbf{k2}: this project introduces the interrupts management and
+    the driver development. Indeed, the student will have to install
+    everything necessary to handle interrupts. Then, some drivers will
+    be developed including the keyboard, the timer and a demonstration shell.
+    This project is \textbf{two weeks} long.
   \item
-    \textbf{k3}: this project introduces the development of some drivers
-    (keyboard, timer, demonstration shell) and the development of the
-    region manager to provide virtual memory operations. Moreover the
-    students will have to design and implement a generic events interface.
-    A document will have to be provided by each group describing the
-    different design choices.
+    \textbf{k3}: the students will have to provide everything necessary
+    to handle execution contexts. Indeed, the student will have to
+    develop the scheduler but also to implement the context switchs from
+    the microprocessor point of view. This project is \textbf{three weeks}
+    long
   \item
-    \textbf{k4}: the students will have to develop the task manager, the
-    thread manager and the scheduler to provide the kaneton microkernel
-    the possibility to create execution contexts.
-  \item
-    \textbf{k5}: this project introduces the communication into the
-    microkernel and some microkernel servers.
+    \textbf{k4}: this project introduces the communication into the
+    microkernel. Indeed, the students will have to provide some
+    communication primitives including sychronous and asynchronous
+    functions as well as blocking and non-blocking functions. This project
+    is \textbf{two weeks} long.
   \item
     \textbf{kn}: this project is a free one. Each group has to choose the
     subject of this project, to design, to implement and to document
-    the project. The themes for this project are: distributed aspects,
-    security or network. Some subjects will be proposed to the best groups.
+    the project.
 \end{itemize}
 
-
-
 %
-% arch-mips
+% arch-MIPS
 %
 
-\section{arch-mips}
+\section{arch-MIPS}
 
 \textit{Name}: \textbf{MIA}
 
@@ -153,8 +136,10 @@ Let's see the year scheduling:
 \textit{Professor}: \textbf{Julien Quintard}
 
 This course is intended to give students a complete view of how a RISC
-processor works and what choices the designers made to build the future
-processors.
+microprocessor works and what choices the designers made to build the
+future modern microprocessors.
+
+Below are listed the concepts studied in this course:
 
 \begin{itemize}
   \item
@@ -162,7 +147,7 @@ processors.
     the memory management model etc..
   \item
     Pipeline: we will study the MIPS pipeline, its inherent problems
-    and limitations.
+    and limitations. Advanced pipelines will also be studied.
   \item
     Compiler optimisations: we will study the different direct assembly
     source code optimisations: rescheduling, software pipelining etc..
@@ -171,7 +156,7 @@ processors.
     the different cache management techniques.
 \end{itemize}
 
-The list below details the different sessions for the mips architecture
+The list below details the different sessions for the MIPS architecture
 course:
 
 \begin{enumerate}
@@ -200,9 +185,9 @@ course:
     Partial exam correction. Introduction to optimisations. (3 hours)
   \item
     Study of different optimisations used by compilers. Study of
-    advanced pipelines: superpipeline, superscalar etc.. (3 hours)
+    advanced pipelines: superpipeline, superscalar pipelines etc.. (3 hours)
   \item
-    Introduction to the Pi Bus used by MIPS microprocessor. Then complete
+    Introduction to the Pi-Bus used by the MIPS microprocessor. Then complete
     study of memory including cache management. (3 hours)
   \item
     End of memory course. Some exercises to practice. (3 hours)
@@ -210,148 +195,8 @@ course:
     Revisions for the final exam. (3 hours)
 \end{enumerate}
 
-
-
 %
-% kaneton
-%
-
-\section{kaneton}
-
-\textit{Name}: \textbf{KAN}
-
-\textit{Hours}: \textbf{35 hours}
-
-\textit{Professor}: \textbf{Julien Quintard}
-
-\textit{Assistants Professor}: \textbf{Cedric Aubouy},
-                               \textbf{Renaud Lienhart}
-
-This course will provide students a complete view of an operating system.
-Moreover this courses is coupled with a project which consists in the
-development of parts of a microkernel.
-
-\begin{itemize}
-  \item
-    XXX
-\end{itemize}
-
-The list below details the different sessions for the kaneton course.
-
-\begin{enumerate}
-  \item
-    Project presentation: professors, projects, schedule, design overview
-    etc.. (2 hours)
-  \item
-    Languages prerequisites for the kaneton project. (2 hours)
-  \item
-    \textbf{k0} project presentation. This project must be delivered by
-    each group \textbf{one week} after the publication of the
-    subject. (1 hour)
-  \item
-    TP for the k0 project about \textbf{three days} after the publication of
-    the subject. (3 hours)
-  \item
-    \textbf{k1} project presentation. This project must be delivered
-    \textbf{three weeks} afther the publication of the subject. (2 hours)
-  \item
-    Development environment presentation to lead students to a better
-    comprehension of the kaneton development environment including scripts,
-    organisation, makefiles etc.. (2 hours)
-  \item
-    TP for the k1 project during the first week of the project so about
-    \textbf{three days} after the subject's publication. (2 hours)
-  \item
-    TP for the k1 project during the second week of the project so
-    \textbf{in the middle of the second week}. (3 hours)
-  \item
-    Advanced makefiles presentation to lead students to a better
-    comprehension of the kaneton building system. (3 hours)
-  \item
-    TP for the k1 project during the third week of the project so about
-    \textbf{four days} before the end of the project. (3 hours)
-  \item
-    \textbf{k2} project presentation. This project must be delivered
-    in the next \textbf{two weeks}. (2 hours)
-  \item
-    C-preprocessor presentation to lead students to perfectly understand
-    the kaneton core set manager. (2 hours)
-  \item
-    \textbf{k3} project presentation. This project must be delivered
-    \textbf{two weeks} after the subject's publication. (2 hours)
-  \item
-    TP for the k3 project \textbf{during the second week} so in the
-    middle of this week. (2 hours)
-  \item
-    \textbf{k4} project presentation. This project must be delivered
-    \textbf{XXX weeks} after the publication of the project. (2 hours)
-  \item
-    \textbf{k5} project presentation. The project must be delivered
-    \textbf{XXX weeks} after the publication of the project. (2 hours)
-  \item
-    \textbf{kn} XXX
-\end{enumerate}
-
-
-
-%
-% arch-ia32
-%
-
-\section{arch-ia32}
-
-\textit{Name}: \textbf{INA}
-
-\textit{Hours}: \textbf{16 hours}
-
-\textit{Professor}: \textbf{Renaud Lienhart}
-
-This course will explain how the intel 32-bit architecture works including
-the memory management, the task management, the instructions set, the
-interruption and exception management etc..
-
-\begin{itemize}
-  \item
-    Generalities about the project and about inline assembly.
-  \item
-    Tools used for Kaneton.
-  \item
-    Memory management: segmentation and pagination.
-  \item
-    Interruptions: how it works, how to handle them.
-  \item
-    Scheduling: concepts and implementation (hard/soft)
-\end{itemize}
-
-The list below details the different sessions for the intel 32-bit
-architecture course.
-
-\begin{enumerate}
-  \item
-    Intel presentation including Intel assembly and gcc inline assembly.
-    (2 hours)
-  \item
-    TP on the Intel assembly. (2 hours)
-  \item
-    Tools presentation including emulators, linkers, loaders, bootloaders
-    etc.. (2 hours)
-  \item
-    Real Mode Memory Model and Protected Mode Memory Model study.
-    (3 hours)
-  \item
-    Virtual Memory study. (3 hours)
-  \item
-    Interrupts and exceptions study. Some drivers examples will also
-    be shown: console, keyboard etc.. (2 hours)
-  \item
-    Task scheduling study including Intel TSS auto scheduling and
-    manual scheduling. (2 hours)
-\end{enumerate}
-
-
-
-%
-% noyau
+% kernel
 %
 
 \section{kernel}
@@ -365,59 +210,58 @@ architecture course.
 This course is intended to give the students a general overview of
 kernel internals and its problematics.
 
+Below are listed the studied notions:
+
 \begin{itemize}
   \item
     Understand how kernel developpement evolves and why, receive a
-    minimal general culture on kernel internals and history
+    minimal general culture on kernel internals and history.
   \item
     We will see how to manage and share common resources (memory,
-    execution time) with increasing constraints and needs
+    execution time) with increasing constraints and needs.
   \item
     In each aspect of the kernel studies, students will learn the
-    common security issues and how to solve them
+    common security issues and how to solve them.
   \item
     The common kernel design issues will be totally understood by the
-    students and they will be able to build their own design
+    students and they will be able to build their own design.
   \item
-    The course aim at giving the students a precise idea of how it
+    The course aims at giving the students a precise idea of how it
     works inside, thus giving them the ability to fully understand
-    the kaneton project
+    the kaneton project.
 \end{itemize}
 
-The list below details the different sessions for the kernel course.\\
+The list below details the different sessions for the kernel course.
 
 \begin{enumerate}
   \item
-    \textbf{micro-kernel}: quick introduction to the courses. Overview
-    of kernel history and trends. Birth and evolution of micro-kernels, their
+    \textbf{Microkernel}: quick introduction to the courses. Overview
+    of kernel history and trends. Birth and evolution of microkernels, their
     fundamentals. (2 hours)
   \item
-    \textbf{memory management}: hardware base of memory management. What
-    kind of resulting constraints ? Physcical and virtual memory
+    \textbf{Memory management}: hardware base of memory management. What
+    kind of resulting constraints? Physcical and virtual memory
     management. (2 hours)
   \item
-    \textbf{processes \& threads}: current kernels manage simultaneous
-    executions. What kind of solutions to handle them ? (2 hours)
+    \textbf{Processes \& threads}: current kernels manage simultaneous
+    executions. What kind of solutions to handle them? (2 hours)
   \item
-    \textbf{synchronisation}: concurrent access to shared resources is a
+    \textbf{Synchronisation}: concurrent access to shared resources is a
     common problem in all levels of multithreaded kernels. How to resolve it,
     famous case studies. (2 hours)
   \item
-    \textbf{communication (IPC)}: quick overview of communications forms
+    \textbf{Communication (IPC)}: quick overview of communications forms
     from signals to message passing. New problems in the security and shape of
-    IPC, introduced by the micro-kernel design. (2 hours)
+    IPC, introduced by the microkernel design. (2 hours)
   \item
-    \textbf{case studies}: studies on L4, Mach, Hurd and Chorus (still
-    to confirm). (4 x 2 hours)
+    \textbf{Case studies}: studies on L4, Mach, Hurd and Chorus. (4 x 2 hours)
 \end{enumerate}
-
-
-
 
 \end{multicols}
 
-\begin{figure}[h]
-\centerline{\includegraphics[angle=-90,scale=0.35]{figures/schedule.pdf}}
-\end{figure}
+% XXX
+%\begin{figure}[h]
+%\centerline{\includegraphics[angle=-90,scale=0.35]{figures/schedule.pdf}}
+%\end{figure}
 
 \end{document}

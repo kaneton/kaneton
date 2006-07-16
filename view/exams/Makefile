@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/view/exams/Makefile
 ##
 ## created       julien quintard   [sat dec  3 22:53:10 2005]
-## updated       julien quintard   [sat dec  3 22:53:30 2005]
+## updated       julien quintard   [thu jul 13 11:46:43 2006]
 ##
 
 #
@@ -32,10 +32,10 @@ SUBDIRS			:=		arch-mips
 #
 
 all:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call purge)
 

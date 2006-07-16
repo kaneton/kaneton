@@ -1,12 +1,12 @@
 ##
-## licence       Kaneton licence
+## licence       kaneton licence
 ##
 ## project       kaneton
 ##
-## file          /home/rhino/kaneton/check/core/kaneton/event/Makefile
+## file          /home/mycure/kaneton/check/core/kaneton/event/Makefile
 ##
 ## created       renaud voltz   [sun mar 19 00:53:01 2006]
-## updated       renaud voltz   [sun mar 19 00:53:01 2006]
+## updated       julien quintard   [thu jul 13 11:29:22 2006]
 ##
 
 #
@@ -47,12 +47,12 @@ $(EVENT_LO):		libs
 	$(call archive,$(EVENT_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(EVENT_LO),)
 

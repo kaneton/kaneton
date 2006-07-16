@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/libs/libia32/Makefile
 ##
 ## created       matthieu bucchianeri   [tue dec 20 13:40:52 2005]
-## updated       julien quintard   [sat apr  1 02:24:13 2006]
+## updated       julien quintard   [thu jul 13 11:45:13 2006]
 ##
 
 #
@@ -50,10 +50,10 @@ $(_LIBIA32_A_):		libs
 				$(INTERRUPT_LO) $(TIME_LO) $(TASK_LO),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(LIBIA32_O),)
 
@@ -62,9 +62,9 @@ clear:
 	$(call purge,)
 
 proto:
-	$(call makefile,$(SUBDIRS),proto)
+	$(call launch,Makefile,$(SUBDIRS),proto,)
 
 	$(call prototypes,$(LIBIA32_INCLUDE),)
 
 dep:
-	$(call makefile,$(SUBDIRS),dep)
+	$(call launch,Makefile,$(SUBDIRS),dep,)

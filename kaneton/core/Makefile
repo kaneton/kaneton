@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/kaneton/core/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [wed jun 28 11:18:30 2006]
+## updated       julien quintard   [thu jul 13 11:43:19 2006]
 ##
 
 #
@@ -87,14 +87,12 @@ VERSION_C		:=		version.c
 
 VERSION_O		:=		$(VERSION_C:.c=.o)
 
-DATE			:=		$(call date)
-
 #
 # ---------- rules ------------------------------------------------------------
 #
 
 $(_CORE_):		libs $(CORE_O)
-	$(call version,$(VERSION_C),$(USER),$(HOSTNAME),$(DATE))
+	$(call version,$(VERSION_C))
 
 	$(call compile-c,$(VERSION_O),$(VERSION_C),)
 
@@ -107,12 +105,12 @@ $(_CORE_):		libs $(CORE_O)
                  "--no-standard-library")
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
-	$(call makefile,$(_KLIBC_DIR_),)
+	$(call launch,Makefile,$(_KLIBC_DIR_),,)
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(VERSION_O),)
 	$(call remove,$(VERSION_C),)
@@ -124,12 +122,12 @@ clear:
 	$(call purge,)
 
 proto:
-	$(call makefile,$(SUBDIRS),proto)
+	$(call launch,Makefile,$(SUBDIRS),proto,)
 
 	$(call prototypes,$(CORE_INCLUDE),)
 
 dep:
-	$(call makefile,$(SUBDIRS),dep)
+	$(call launch,Makefile,$(SUBDIRS),dep,)
 
 	$(call remove,$(_MAKEFILE_MK_),)
 

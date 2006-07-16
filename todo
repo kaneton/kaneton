@@ -1,4 +1,22 @@
 --
+ mettre a jour la doc sur les interfaces make et shell + options
+
+ locate-prog -> locate
+ locate -> lookup
+ launch + -make -python -shell -perl
+ find-files -> find
+ tags-clean -> temp --file + for + substitute + echo > $tmp
+ cut-code -> cut (a utiliser dans preprocess)
+ svn-clean -> find --directory .svn + remove
+
+ les options ont changees pour beaucoup de fonctions
+
+ grub.sh
+
+--
+ enlever QUICKSTART et expliquer ce qu'il faut sur le site
+
+--
  verifier que dans chaque manager il y a:
 
    machdep_include()
@@ -42,19 +60,6 @@
  qu il y a trois parties bien distinctes: core, machdep, libarch
 
 --
- virer les !# * meme pour perl, python, ruby etc.. car ca va forcement
- chier sur des OS. a la place faire un truc comme autoconf qui trouve
- les binaires.
-
- launch
-   -> script-shell
-   -> makefile
-   -> python, ruby etc..
-
- utilier une variable fonction launch-python etc.. qui est redefinissable
- par le user.
-
---
  refaire la moulinette de tests pour qu elle soit propre
 
 --
@@ -71,6 +76,9 @@
 
 --
  etudier le SMP pour pouvoir faire evoluer kaneton vers ca.
+
+ faire un cpu manager pour que les process puissent decider sur quels
+ cpus ils peuvent tourner.
 
 --
  probleme de nomenclature: chiche_get(o* o) ca marche pour recuperer un

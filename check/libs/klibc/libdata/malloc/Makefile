@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/libs/klibc/libdata/malloc/Makefile
+## file          /home/mycure/kaneton/check/libs/klibc/libdata/malloc/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [wed jan 18 19:12:02 2006]
+## updated       julien quintard   [thu jul 13 11:32:19 2006]
 ##
 
 #
@@ -47,12 +47,12 @@ $(MALLOC_LO):		libs
 	$(call archive,$(MALLOC_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(MALLOC_LO),)
 

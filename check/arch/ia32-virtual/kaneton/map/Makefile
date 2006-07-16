@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/map/Makefile
+## file          /home/mycure/kaneton/check/arch/ia32-virtual/kaneton/map/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [sun apr  2 19:00:28 2006]
+## updated       julien quintard   [thu jul 13 11:41:10 2006]
 ##
 
 #
@@ -47,12 +47,12 @@ $(MAP_LO):		libs
 	$(call archive,$(MAP_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(MAP_LO),)
 

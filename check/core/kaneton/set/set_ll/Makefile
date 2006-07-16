@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_ll/Makefile
+## file          /home/mycure/kaneton/check/core/kaneton/set/set_ll/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [tue dec 20 22:21:46 2005]
+## updated       julien quintard   [thu jul 13 11:29:50 2006]
 ##
 
 #
@@ -47,12 +47,12 @@ $(SET_LL_LO):	libs
 	$(call archive,$(SET_LL_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(SET_LL_LO),)
 

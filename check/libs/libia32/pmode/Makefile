@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/libs/libia32/pmode/Makefile
+## file          /home/mycure/kaneton/check/libs/libia32/pmode/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [wed jan 18 19:46:53 2006]
+## updated       julien quintard   [thu jul 13 11:34:36 2006]
 ##
 
 #
@@ -47,12 +47,12 @@ $(PMODE_LO):		libs
 	$(call archive,$(PMODE_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(PMODE_LO),)
 

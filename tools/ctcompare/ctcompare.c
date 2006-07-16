@@ -18,6 +18,9 @@
 #define STARTFILE2 0xff		/* Token id for start of each dstfile */
 #define BUF_SIZE 1024
 
+void paste_files(char *file1, int start1, int num1,
+		 char *file2, int start2, int num2);
+
 /*
  * Each token is represented by the following structure. Each file in a ctf
  * file is represented as a linked list following the next pointer. The value
@@ -86,6 +89,331 @@ unsigned char *tokstring[] = {
   "#line ", "#pragma ", "#undef ", "#warning ", "~= ", "== ", "break ", ">= ",
   "<< ", ">> ", "<<= ", "{ ", "| ", "} ", "~ ", "ERR "};
 
+/*
+ * <kaneton patch>
+ */
+#define KANETON
+
+typedef struct		s_exclude
+{
+  char*			file;
+
+  struct s_exclude*	next;
+}			t_exclude;
+
+typedef struct		s_detail
+{
+  char*			file;
+
+  unsigned int		from;
+  unsigned int		to;
+
+  unsigned int		slines;
+  unsigned int		dlines;
+
+  unsigned int		run;
+
+  struct s_detail*	next;
+}			t_detail;
+
+typedef struct		s_summary
+{
+  char*			source;
+  char*			destination;
+
+  unsigned int		run;
+  double		match;
+
+  unsigned int		records;
+
+  struct s_summary*	next;
+}			t_summary;
+
+typedef struct		s_file
+{
+  char*			file;
+  unsigned int		ntokens;
+
+  t_detail*		details;
+  t_detail*		_tail;
+
+  struct s_file*	next;
+}			t_file;
+
+t_exclude*		excludes = NULL;
+t_file*			files = NULL;
+t_summary*		summaries = NULL;
+
+#define DISPLAY_NONE		0x0
+#define DISPLAY_SUMMARY		0x1
+#define DISPLAY_DETAIL		0x2
+
+int			display = DISPLAY_NONE;
+
+void		kaneton_exclude(char*		name)
+{
+  t_exclude*	new;
+
+  if ((new = malloc(sizeof(t_exclude))) == NULL)
+    return;
+
+  new->file = name;
+  new->next = excludes;
+
+  excludes = new;
+}
+
+int		kaneton_include(char*		name)
+{
+  t_exclude*	tmp;
+
+  for (tmp = excludes; tmp != NULL; tmp = tmp->next)
+    if (strstr(name, tmp->file) != NULL)
+      return (-1);
+
+  return (0);
+}
+
+void		kaneton_file(char*		name)
+{
+  t_file*	new;
+
+  if ((new = malloc(sizeof(t_file))) == NULL)
+    return;
+
+  new->file = name;
+  new->ntokens = 0;
+  new->details = NULL;
+  new->_tail = NULL;
+
+  new->next = files;
+
+  files = new;
+}
+
+t_file*		kaneton_retrieve(char*		name)
+{
+  t_file*	tmp;
+
+  for (tmp = files; tmp != NULL; tmp = tmp->next)
+    if (strcmp(name, tmp->file) == 0)
+      return (tmp);
+
+  return (NULL);
+}
+
+void		kaneton_dump(void)
+{
+  t_file*	tmp;
+
+  for (tmp = files; tmp != NULL; tmp = tmp->next)
+    printf("[%s] %u tokens\n",
+	   tmp->file,
+	   tmp->ntokens);
+}
+
+void		kaneton_token(char*		name,
+			      struct token*	token)
+{
+  t_file*	file;
+
+  if ((file = kaneton_retrieve(name)) == NULL)
+    return;
+
+  file->ntokens++;
+}
+
+void		kaneton_insert(t_summary*	s)
+{
+  t_summary*	t;
+  t_summary*	p;
+
+  s->next = NULL;
+
+  for (p = NULL, t = summaries; t != NULL; p = t, t = t->next)
+    if (s->match > t->match)
+      {
+	s->next = t;
+
+	if (p != NULL)
+	  p->next = s;
+	else
+	  summaries = s;
+
+	return;
+      }
+
+  if (p != NULL)
+    p->next = s;
+  else
+    summaries = s;
+}
+
+int		kaneton_filter(t_file*		file,
+			       unsigned int	from,
+			       char*		destination,
+			       unsigned int	to,
+			       unsigned int	run)
+{
+  t_detail*	d;
+
+  for (d = file->details; d != NULL; d = d->next)
+    {
+      if (strcmp(destination, d->file) == 0)
+	{
+	  if ((from == d->from) && (run <= d->run))
+	    return (-1);
+
+	  if ((to == d->to) && (run <= d->run))
+	    return (-1);
+	}
+    }
+
+  return (0);
+}
+
+void		kaneton_record(char*		source,
+			       unsigned int	from,
+			       unsigned int	slines,
+			       char*		destination,
+			       unsigned int	to,
+			       unsigned int	dlines,
+			       unsigned int	run)
+{
+  t_summary*	summary;
+  t_detail*	detail;
+  t_file*	file;
+  t_summary*	p;
+  t_summary*	s;
+
+  if ((kaneton_include(source) != 0) || (kaneton_include(destination) != 0))
+    return;
+
+  if ((file = kaneton_retrieve(source)) == NULL)
+    return;
+
+  if (kaneton_filter(file, from, destination, to, run) != 0)
+    return;
+
+  if ((detail = malloc(sizeof(t_detail))) == NULL)
+    return;
+
+  detail->file = destination;
+  detail->from = from;
+  detail->to = to;
+  detail->slines = slines;
+  detail->dlines = dlines;
+  detail->run = run;
+  detail->next = NULL;
+
+  if ((file->details == NULL) && (file->_tail == NULL))
+    {
+      file->details = detail;
+      file->_tail = detail;
+    }
+  else
+    {
+      file->_tail->next = detail;
+
+      file->_tail = detail;
+    }
+
+  for (p = NULL, s = summaries; s != NULL; p = s, s = s->next)
+    if ((strcmp(source, s->source) == 0) &&
+	(strcmp(destination, s->destination) == 0))
+      {
+	s->run += run;
+	s->records += 1;
+	s->match =
+	  ((double)s->run) * 100.0 / ((double)file->ntokens);
+
+	if (p != NULL)
+	  p->next = s->next;
+	else
+	  summaries = s->next;
+
+	kaneton_insert(s);
+
+	return;
+      }
+
+  if ((summary = malloc(sizeof(t_summary))) == NULL)
+    return;
+
+  summary->source = source;
+  summary->destination = destination;
+  summary->run = run;
+  summary->match =
+    ((double)summary->run) * 100.0 / ((double)file->ntokens);
+  summary->records = 1;
+
+  kaneton_insert(summary);
+}
+
+void		kaneton_summaries(void)
+{
+  t_summary*	s;
+
+  printf("\n\n\n\t\t\t\t\t\t\t\t----------[ summary ]----------"
+	 "\n\n\n");
+
+  for (s = summaries; s != NULL; s = s->next)
+    {
+      t_file*	file;
+
+      if ((file = kaneton_retrieve(s->source)) == NULL)
+	continue;
+
+      printf("-----[%.2f%%]     # %u #\n"
+	     "                                  %s\n"
+	     "                                  %s\n"
+	     "\n",
+	     s->match,
+	     s->records,
+	     s->source,
+	     s->destination);
+    }
+}
+
+void		kaneton_details(void)
+{
+  t_file*	f;
+  t_detail*	d;
+
+  printf("\n\n\n\n\n\t\t\t\t\t\t\t\t----------[ details ]----------"
+	 "\n\n\n\n\n");
+
+  for (f = files; f != NULL; f = f->next)
+    {
+      if (f->details != NULL)
+	{
+	  for (d = f->details; d != NULL; d = d->next)
+	    {
+	      printf("-----{%u / %u}\n"
+		     "                                  %s:%u\n"
+		     "                                  %s:%u\n"
+		     "\n",
+		     d->run,
+		     f->ntokens,
+		     f->file,
+		     d->from,
+		     d->file,
+		     d->to);
+
+	      if (crosscompare)
+		{
+		  paste_files(f->file, d->from, d->slines,
+			      d->file, d->to, d->dlines);
+		}
+
+	      printf("\n\n\n\n\n");
+	    }
+	}
+    }
+}
+/*
+ * </kaneton patch>
+ */
 
 /* The next two functions take the linked list of
  * tokens and build corresponding char token arrays.
@@ -279,6 +607,13 @@ load_ctffile(char *filename, int issecond)
 	  this->type = STARTFILE1;
 	linenumber = 1;
 	value = 0;
+
+#ifdef KANETON
+	/*
+	 * kaneton patch
+	 */
+	kaneton_file(fname);
+#endif
       } else {
 	this->type = type = (unsigned char)ch;
       }
@@ -288,6 +623,13 @@ load_ctffile(char *filename, int issecond)
       this->linenum = linenumber;
       last = this;
       numtokens++;
+
+#ifdef KANETON
+      /*
+       * kaneton patch
+       */
+      kaneton_token(fname, this);
+#endif
     }
   }
 
@@ -329,6 +671,11 @@ paste_files(char *file1, int start1, int num1,
     fclose(f1in);
     return;
   }
+
+  printf("------------------------------------------------------------"
+	 "------------------------------------------------------------"
+	 "---------------------------------------\n\n");
+
   /* Get maximum number of lines */
   maxlines = (num1 > num2) ? num1 : num2;
   start1--;
@@ -395,6 +742,10 @@ paste_files(char *file1, int start1, int num1,
     printf("\n");
   fclose(f1in);
   fclose(f2in);
+
+  printf("------------------------------------------------------------"
+	 "------------------------------------------------------------"
+	 "---------------------------------------\n");
 }
 
 
@@ -503,14 +854,15 @@ verify_run(int srcstart, int dststart)
   int found;
 #endif
 
-
   /* We must now manually walk both arrays to get a real count */
   /* of the length of the token run. */
   s = srcstart;
   d = dststart;
+
   for (runcount = 0; Toksrcarray[s] == Tokdstarray[d]; runcount++) {
     s++; d++;
   }
+
   if (runcount < threshold)
     return;
 
@@ -555,6 +907,7 @@ verify_run(int srcstart, int dststart)
 #ifdef ISOMORPH_CODE
   isoruncount = isomorphic_compare(Toksrcref[srcstart],
 				   Tokdstref[dststart], runcount);
+
   if (isoruncount < threshold)
     return;
 
@@ -563,15 +916,23 @@ verify_run(int srcstart, int dststart)
   runcount = isoruncount;
 #endif
 
+#ifdef KANETON
   /*
    * kaneton patch
    */
+  kaneton_record(Toksrcref[srcstart]->file, Toksrcref[srcstart]->linenum,
+		 Toksrcref[s]->linenum - Toksrcref[srcstart]->linenum + 1,
+		 Tokdstref[dststart]->file, Tokdstref[dststart]->linenum,
+		 Tokdstref[d]->linenum - Tokdstref[dststart]->linenum + 1,
+		 runcount);
+#else
   printf("%d  %s:%d  %s:%d\n",
-	 runcount,
-	 Toksrcref[srcstart]->file,
-	 Toksrcref[srcstart]->linenum,
-	 Tokdstref[dststart]->file,
-	 Tokdstref[dststart]->linenum);
+         runcount,
+         Toksrcref[srcstart]->file,
+         Toksrcref[srcstart]->linenum,
+         Tokdstref[dststart]->file,
+         Tokdstref[dststart]->linenum);
+#endif
 
   if (showtokens) {
     /* Now print out the list of tokens */
@@ -593,12 +954,15 @@ verify_run(int srcstart, int dststart)
     fputc('\n', stdout);
     fputc('\n', stdout);
   }
+
+#ifndef KANETON
   if (crosscompare) {
     paste_files(Toksrcref[srcstart]->file, Toksrcref[srcstart]->linenum,
 		Toksrcref[s]->linenum - Toksrcref[srcstart]->linenum + 1,
 		Tokdstref[dststart]->file, Tokdstref[dststart]->linenum,
 		Tokdstref[d]->linenum - Tokdstref[dststart]->linenum + 1);
   }
+#endif
 }
 
 /* We now use the Rabin-Karp algorithm to find potential
@@ -677,6 +1041,7 @@ compare_trees(void)
 
   /* Walk the Toksrcarray[] to search for strings */
   /* that start at srcstart. */
+
   for (srcstart = 0; srcstart < Toksrcsize - threshold; srcstart++) {
 
     if ((progress == 1) && (Toksrcref[srcstart]->type == STARTFILE1)) {
@@ -723,7 +1088,11 @@ usage(void)
   fprintf(stderr, "\t-t: show matching tokens when match is found\n");
   fprintf(stderr, "\t-x: show matching source lines when match is found\n");
   fprintf(stderr, "\t-i: also match C preprocessor tokens (#include etc.)\n");
-  fprintf(stderr, "\t-n nnn: Set the minimum matching run length to nnn\n");
+  fprintf(stderr, "\t-n nnn: set the minimum matching run length to nnn\n");
+  fprintf(stderr, "\n");
+  fprintf(stderr, "\t-s: display results in a summary\n");
+  fprintf(stderr, "\t-d: display detailed results\n");
+
   exit(1);
 }
 
@@ -735,7 +1104,7 @@ main(int argc, char *argv[])
   int ch;
 
   /* Process options */
-  while ((ch = getopt(argc, argv, "ptxin:")) != -1) {
+  while ((ch = getopt(argc, argv, "ptxin:sde:")) != -1) {
     switch (ch) {
     case 'p':
       progress = 1;
@@ -764,6 +1133,22 @@ main(int argc, char *argv[])
 	threshold = 10;
       }
       break;
+
+#ifdef KANETON
+      /*
+       * kaneton patch
+       */
+    case 's':
+      display |= DISPLAY_SUMMARY;
+      break;
+    case 'd':
+      display |= DISPLAY_DETAIL;
+      break;
+    case 'e':
+      kaneton_exclude(optarg);
+      break;
+#endif
+
     default:
       usage();
     }
@@ -789,5 +1174,16 @@ main(int argc, char *argv[])
     exit(1);
   }
   compare_trees();
+
+#ifdef KANETON
+  /*
+   * kaneton patch
+   */
+  if (display & DISPLAY_SUMMARY)
+    kaneton_summaries();
+  if ((display & DISPLAY_DETAIL) || (display == DISPLAY_NONE))
+    kaneton_details();
+#endif
+
   exit(0);
 }

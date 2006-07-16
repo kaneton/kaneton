@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/Makefile
+## file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [sat jun 17 19:53:33 2006]
+## updated       julien quintard   [thu jul 13 11:42:34 2006]
 ##
 
 #
@@ -53,7 +53,7 @@ $(MACHDEP_LO):		libs $(MACHDEP_O)
 	$(call archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBIA32_A_),)
 
 libs:
-	$(call makefile,$(_LIBIA32_DIR_),)
+	$(call launch,Makefile,$(_LIBIA32_DIR_),,)
 
 clear:
 	$(call remove,$(MACHDEP_O),)

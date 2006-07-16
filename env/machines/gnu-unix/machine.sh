@@ -5,7 +5,7 @@
 ## file          /home/mycure/kaneton/env/machines/gnu-unix/machine.sh
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [sat jul  8 03:10:08 2006]
+## updated       julien quintard   [sun jul 16 19:16:46 2006]
 ##
 
 #
@@ -32,10 +32,12 @@ print()
   local color
   local text
   local options
+  local opt
 
   color="${1}"
   text="${2}"
-  for opt in ${3}; do
+
+  for opt in ${3} ; do
       case "${opt}" in
 	  "--no-newline")
 	      options="${options} -n"
@@ -92,58 +94,48 @@ print()
 contents()
 {
   local file
+  local options
+  local opt
 
   file="${1}"
-  for opt in ${2}; do
+
+  for opt in ${2} ; do
       case "${opt}" in
 	  *)
 	      ;;
       esac
   done
 
-  ${_CAT_} ${file}
+  ${_CAT_} ${options} ${file}
 }
 
 
 
 #
-# TEMPFILE
+# TEMPORARY
 #
-# gives an unique temporary file name.
+# creates a temporary file or directory.
 #
 # ${1}:		options
 #
-tempfile()
+temporary()
 {
-  for opt in ${1}; do
+  local options
+  local opt
+
+  for opt in ${1} ; do
       case "${opt}" in
+	  "--file")
+	      ;;
+	  "--directory")
+	      options="${options} -d";
+	      ;;
 	  *)
 	      ;;
       esac
   done
 
-  ${_MKTEMP_}
-}
-
-
-
-#
-# TEMPDIRECTORY
-#
-# gives an unique temporary directory name.
-#
-# ${1}:		options
-#
-tempdirectory()
-{
-  for opt in ${1}; do
-      case "${opt}" in
-	  *)
-	      ;;
-      esac
-  done
-
-  ${_MKTEMP_} -d
+  ${_MKTEMP_} ${options}
 }
 
 
@@ -157,42 +149,46 @@ tempdirectory()
 #
 working-directory()
 {
-  for opt in ${1}; do
+  local options
+  local opt
+
+  for opt in ${1} ; do
       case "${opt}" in
 	  *)
 	      ;;
       esac
   done
 
-  ${_PWD_}
+  ${_PWD_} ${options}
 }
 
 
 
 #
-# LOCATE-PROG
+# LOCATE
 #
 # locates a program on the system.
 #
-# ${1}:         program
+# ${1}:         program name
 # ${2}:		options
 #
-locate-prog()
+locate()
 {
   local program
+  local options
+  local opt
 
   program=${1}
-  for opt in ${2}; do
+
+  for opt in ${2} ; do
       case "${opt}" in
 	  *)
 	      ;;
       esac
   done
 
-  ${_WHICH_} ${program}
+  ${_WHICH_} ${options} ${program}
 }
-
-
 
 #
 # SUBSTITUTE
@@ -207,23 +203,24 @@ substitute()
 {
   local old
   local new
+  local commands
+  local options
+  local opt
 
   old="${1}"
   new="${2}"
 
-  case "${3}" in
-      "all")
-	  opt="g"
-	  ;;
-      "[1-9]+")
-	  opt="${3}"
-	  ;;
-      *)
-	  opt=""
-	  ;;
-  esac
+  for opt in ${3} ; do
+      case "${opt}" in
+	  "--everywhere")
+	      commands="${commands}g"
+	      ;;
+	  *)
+	      ;;
+      esac
+  done
 
-  ${_SED_} "s/${old}/${new}/${opt}"
+  ${_SED_} ${options} "s/${old}/${new}/${commands}"
 }
 
 
@@ -250,19 +247,16 @@ display()
       print "green" "+" "--no-newline"
       print "blue" "]" "--no-newline"
       ;;
-
     "!")
       print "blue" "[" "--no-newline"
       print "red" "!" "--no-newline"
       print "blue" "]" "--no-newline"
       ;;
-
     "?")
       print "blue" "[" "--no-newline"
       print "yellow" "?" "--no-newline --flickering"
       print "blue" "]" "--no-newline"
       ;;
-
     *)
       ;;
   esac
@@ -273,7 +267,7 @@ display()
 
 
 #
-# WAIT KEY
+# WAIT-KEY
 #
 # this function just waits for a key.
 #
@@ -282,15 +276,185 @@ display()
 wait-key()
 {
   local needless
+  local options
+  local opt
 
-  for opt in ${1}; do
+  for opt in ${1} ; do
       case "${opt}" in
 	  *)
 	      ;;
       esac
   done
 
-  ${_READ_} needless
+  ${_READ_} ${options} needless
+}
+
+
+
+#
+# LAUNCH-SHELL
+#
+# this function just launches a sheel script.
+#
+# ${1}:		the shell script file
+# ${2}:		arguments
+# ${3}:		options
+#
+launch-shell()
+{
+  local file
+  local arguments
+  local options
+  local opt
+
+  file="${1}"
+  arguments="${2}"
+
+  for opt in ${3} ; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
+  ${_SHELL_} ${options} ${file} ${arguments}
+}
+
+
+
+#
+# LAUNCH-PYTHON
+#
+# this function just launches a new python script.
+#
+# ${1}:		the python script file
+# ${2}:		arguments
+# ${3}:		options
+#
+launch-python()
+{
+  local file
+  local arguments
+  local options
+  local opt
+
+  file="${1}"
+  arguments="${2}"
+
+  for opt in ${3} ; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
+  ${_PYTHON_} ${options} ${file} ${arguments}
+}
+
+
+
+#
+# LAUNCH-PERL
+#
+# this function just launches a new perl script.
+#
+# ${1}:		the perl script file
+# ${2}:		arguments
+# ${3}:		options
+#
+launch-perl()
+{
+  local file
+  local arguments
+  local options
+  local opt
+
+  file="${1}"
+  arguments="${2}"
+
+  for opt in ${3} ; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
+  ${_PERL_} ${options} ${file} ${arguments}
+}
+
+
+
+#
+# LAUNCH-MAKE
+#
+# launches a new makefile.
+#
+# ${1}:		the make file to launch
+# ${2}:		the directory list
+# ${3}:		arguments
+# ${4}:		options
+#
+launch-make()
+{
+  local file
+  local wd
+  local directories
+  local dir
+  local arguments
+  local options
+  local opt
+
+  file="${1}"
+  directories="${2}"
+  arguments="${3}"
+
+  for opt in ${4} ; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
+  for dir in "${directories}" ; do
+    wd=$(working-directory)
+    change-directory "${dir}" ""
+    if [ ${?} -ne 0 ] ; then
+      exit -1
+    fi
+    ${_MAKE_} -f ${file} ${options} ${_MAKEFLAGS_} ${arguments}
+    change-directory "${wd}" ""
+  done
+}
+
+
+
+#
+# LAUNCH-PROGRAM
+#
+# launches a new program
+#
+# ${1}:		the file to launch
+# ${2}:		arguments
+# ${3}:		options
+#
+launch-program()
+{
+  local file
+  local arguments
+  local options
+  local opt
+
+  file="${1}"
+  arguments="${2}"
+
+  for opt in ${3} ; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
+  ${file} ${options} ${arguments}
 }
 
 
@@ -300,39 +464,25 @@ wait-key()
 #
 # this function just launches a new program, script etc..
 #
-# ${1}:		file
-# ${2}:		arguments
-# ${3}:		options
-#
 launch()
 {
-  local file
-  local arguments
-  local options
-
-  file="${1}"
-  arguments="${2}"
-  options="${3}"
-
-  ${_SHELL_} ${options} ${file} ${arguments}
-}
-
-
-
-#
-# MAKEFILE
-#
-# launches a makefile.
-#
-# ${1}:		options
-#
-makefile()
-{
-  local options
-
-  options="${1}"
-
-  ${_MAKE_} ${_MAKEFLAGS_} ${options}
+  case ${1} in
+      *.sh)
+	  launch-shell "${1}" "${2}" "${3}"
+	  ;;
+      *.py)
+	  launch-python "${1}" "${2}" "${3}"
+	  ;;
+      *.pl)
+	  launch-perl "${1}" "${2}" "${3}"
+	  ;;
+      Makefile)
+	  launch-make "${1}" "${2}" "${3}" "${4}"
+	  ;;
+      *)
+	  launch-program "${1}" "${2}" "${3}"
+	  ;;
+  esac
 }
 
 
@@ -350,17 +500,20 @@ copy()
 {
   local source
   local destination
+  local options
+  local opt
 
   source="${1}"
   destination="${2}"
-  for opt in ${3}; do
+
+  for opt in ${3} ; do
       case "${opt}" in
 	  *)
 	      ;;
       esac
   done
 
-  ${_CP_} ${source} ${destination}
+  ${_CP_} ${options} ${source} ${destination}
 }
 
 
@@ -378,17 +531,20 @@ link()
 {
   local source
   local destination
+  local options
+  local opt
 
   source="${1}"
   destination="${2}"
-  for opt in ${3}; do
+
+  for opt in ${3} ; do
       case "${opt}" in
 	  *)
 	      ;;
       esac
   done
 
-  ${_LN_} ${destination} ${source}
+  ${_LN_} ${options} ${destination} ${source}
 }
 
 
@@ -404,13 +560,13 @@ link()
 remove()
 {
   local files
-  local options
-
   local f
+  local options
+  local opt
 
   files="${1}"
-  options="${2}"
-  for opt in ${2}; do
+
+  for opt in ${2} ; do
       case "${opt}" in
 	  *)
 	      ;;
@@ -418,7 +574,7 @@ remove()
   done
 
   for f in ${files} ; do
-    if [ -d ${f} ] ; then
+    if [ -d "${f}" ] ; then
       ${_RM_} ${options} -Rf ${f}
     else
       ${_RM_} ${options} -f ${f}
@@ -439,33 +595,42 @@ remove()
 list()
 {
   local directory
-  local output
+  local options
   local opt
-  local out
+  local output
+  local o
+  local e
 
   directory="${1}"
-  for opt in ${2}; do
+
+  for opt in ${2} ; do
       case "${opt}" in
 	  *)
 	      ;;
       esac
   done
 
-  output=$(${_LS_} ${directory})
+  o=$(${_LS_} ${options} ${directory})
 
-  for opt in ${2}; do
-    case "${opt}" in
-      "--directories")
-        out="${output}"
-        output=""
-
-        for e in ${out} ; do
-	  if [ -d "${directory}/${e}" ] ; then
-            output="${output} ${e}"
-          fi
-        done
-        ;;
-    esac
+  for opt in ${2} ; do
+      case "${opt}" in
+	  "--file")
+	      for e in ${o} ; do
+		  if [ -f "${directory}/${e}" ] ; then
+		      output="${output} ${e}"
+		  fi
+	      done
+	      ;;
+	  "--directory")
+	      for e in ${o} ; do
+		  if [ -d "${directory}/${e}" ] ; then
+		      output="${output} ${e}"
+		  fi
+	      done
+	      ;;
+	  *)
+	      ;;
+      esac
   done
 
   echo ${output}
@@ -484,22 +649,25 @@ list()
 change-directory()
 {
   local directory
+  local options
+  local opt
 
   directory="${1}"
-  for opt in ${2}; do
+
+  for opt in ${2} ; do
       case "${opt}" in
 	  *)
 	      ;;
       esac
   done
 
-  ${_CD_} ${directory}
+  ${_CD_} ${options} ${directory}
 }
 
 
 
 #
-# LOCATE
+# LOOKUP
 #
 # this function tries to locate an element in an array.
 #
@@ -507,11 +675,17 @@ change-directory()
 # ${2}:		the element looked for
 # ${3}:		options
 #
-locate()
+lookup()
 {
+  local array
+  local element
+  local options
+  local opt
+
   array="${1}"
   element="${2}"
-  for opt in ${3}; do
+
+  for opt in ${3} ; do
       case "${opt}" in
 	  *)
 	      ;;
@@ -523,11 +697,9 @@ locate()
 
     if [ ${?} -eq 0 ] ; then
       ${_ECHO_} ${e}
-      return 0
+      return
     fi
   done
-
-  return -1
 }
 
 
@@ -539,22 +711,19 @@ locate()
 #
 # ${1}:		file to process
 # ${2}:		additional include
-# ${3}:		tag start
-# ${4}:		tag end
-# ${5}:		options
+# ${3}:		options
 #
 preprocess()
 {
-  local source
-  local options
+  local file
   local includes
-  local tags
-  local tage
+  local inc
+  local options
+  local opt
 
-  source="${1}"
-  tags="${3}"
-  tage="${4}"
-  for opt in ${5}; do
+  file="${1}"
+
+  for opt in ${3} ; do
       case "${opt}" in
 	  "--no-markers")
 	      options="${options} -P"
@@ -564,71 +733,48 @@ preprocess()
       esac
   done
 
-  for inc in ${2}; do
+  for inc in ${2} ; do
       includes="${includes} -include ${inc}"
   done
 
-  ${_CPP_} ${_INCLUDES_} ${options} ${includes} ${source} |		\
-    ${_SED_} -n "/^${tags}$/,/^${tage}$/p" |				\
-    ${_SED_} '/^!.*$/d'
-
+  ${_CPP_} ${_INCLUDES_} ${options} ${includes} ${file}
 }
 
 
 
 #
-# FIND-FILES
+# SEARCH
 #
-# find files given a pattern
+# search files given a pattern
 #
 # ${1}:		place to search for
 # ${2}:		files to match
 # ${3}:		options
 #
-find-files()
+search()
 {
-  local source
+  local path
   local pattern
   local options
+  local opt
 
-  source="${1}"
+  path="${1}"
   pattern="${2}"
-  for opt in ${3}; do
+
+  for opt in ${3} ; do
       case "${opt}" in
 	  "--file")
 	      options="${options} -type f"
+	      ;;
+	  "--directory")
+	      options="${options} -type d"
 	      ;;
 	  *)
 	      ;;
       esac
   done
 
-  ${_FIND_} ${source} -name "${pattern}" ${options}
-}
-
-
-
-#
-# TAGS CLEAN
-#
-# this function removes tags from the source code files.
-#
-# ${1}:		files
-#
-tags-clean()
-{
-  local files
-  local temp
-  local f
-
-  files="${1}"
-
-  temp=$(tempfile)
-
-  for f in ${files} ; do
-    ${_CAT_} ${f} | ${_SED_} "/^.*\[cut\].*$/ d" > ${temp}
-    ${_CP_} ${temp} ${f}
-  done
+  ${_FIND_} ${path} -name "${pattern}" ${options}
 }
 
 
@@ -640,16 +786,26 @@ tags-clean()
 #
 # ${1}:		directory
 # ${2}:		destination file
+# ${3}:		options
 #
 pack()
 {
   local directory
   local file
+  local options
+  local opt
 
   directory="${1}"
   file="${2}"
 
-  ${_TAR_} -czf ${file} ${directory}
+  for opt in ${3} ; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
+  ${_TAR_} -czf ${options} ${file} ${directory}
 }
 
 
@@ -661,19 +817,29 @@ pack()
 #
 # ${1}:		directory
 # ${2}:		destination file
+# ${3}:		options
 #
 unpack()
 {
   local directory
   local file
+  local options
+  local opt
 
   directory="${1}"
   file="${2}"
 
+  for opt in ${3} ; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
   if [ -n ${directory} ] ; then
-    ${_TAR_} -xzf ${file} -C ${directory}
+    ${_TAR_} -xzf ${options} ${file} -C ${directory}
   else
-    ${_TAR_} -xzf ${file}
+    ${_TAR_} -xzf ${options} ${file}
   fi
 }
 
@@ -685,44 +851,69 @@ unpack()
 # this function creates a directory.
 #
 # ${1}:		directory
+# ${2}:		options
 #
 make-directory()
 {
   local directory
+  local options
+  local opt
 
   directory="${1}"
 
-  ${_MKDIR_} ${directory}
+  for opt in ${2} ; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
+  ${_MKDIR_} ${options} ${directory}
 }
 
 
 
 #
-# DEVICE-COPY
+# CUT
 #
-# copies a file on a device (normally a floppy).
+# cut a text part.
 #
-# ${1}:		source file
-# ${2}:		destination device or image
-# ${3}:		destination path
-# ${4}:		options
+# ${1}:		head pattern
+# ${2}:		tail pattern
+# ${3}:		options
 #
-device-copy()
+cut()
 {
-  local source
-  local device
-  local dest
+  local head
+  local tail
+  local options
+  local opt
+  local mode
 
-  source="${1}"
-  device="${2}"
-  dest="${3}"
+  head="${1}"
+  tail="${2}"
 
-  case "${4}" in
-      "--image")
-	  ${_MCOPY_} -o -n -i ${device} ${source} ::/${dest}
+  for opt in ${3} ; do
+      case "${opt}" in
+	  "--delete")
+	      mode=${opt}
+	      ;;
+	  "--print")
+	      mode=${opt}
+	      ;;
+	  *)
+	      ;;
+      esac
+  done
+
+  case "${mode}" in
+      "--delete")
+	  ${_SED_} -e "/${head}/,/${tail}/d"
+	  ;;
+      "--print")
+	  ${_SED_} -ne "/${head}/,/${tail}/p"
 	  ;;
       *)
-	  ${_MCOPY_} -o -n ${source} ${device}/${dest}
 	  ;;
   esac
 }
@@ -730,56 +921,106 @@ device-copy()
 
 
 #
-# FORMAT-DATE
+# LOAD
+#
+# copies a file on a device.
+#
+# ${1}:		source file
+# ${2}:		destination device or image
+# ${3}:		destination path
+# ${4}:		options
+#
+load()
+{
+  local source
+  local device
+  local destination
+  local mode
+  local options
+  local opt
+
+  source="${1}"
+  device="${2}"
+  destination="${3}"
+
+  for opt in ${4} ; do
+      case "${opt}" in
+	  "--image")
+	      mode=${opt}
+	      ;;
+	  "--device")
+	      mode=${opt}
+	      ;;
+      esac
+  done
+
+  case "${mode}" in
+      "--image")
+	  ${_MCOPY_} -o -n ${options} -i ${device} ${source} ::/${destination}
+	  ;;
+      "--device")
+	  ${_MCOPY_} -o -n ${options} ${source} ${device}/${destination}
+	  ;;
+      *)
+	  ;;
+  esac
+}
+
+
+
+#
+# STAMP
 #
 # this function return current date formatted
 #
 # ${1}:		format
 # ${2}:		options
 #
-format-date()
+stamp()
 {
   local format
+  local options
+  local opt
 
   format="${1}"
-  for opt in ${2}; do
+
+  for opt in ${2} ; do
       case "${opt}" in
 	  *)
 	      ;;
       esac
   done
 
-  ${_DATE_} +${format}
+  ${_DATE_} ${options} +${format}
 }
 
 
 
 #
-# CUT-CODE
+# RECORD
 #
-# cut code for exporting.
+# this function runs the program used to record a session.
 #
-# ${1}:		stage
+# ${1}:		log file
+# ${2}:		time file
+# ${3}:		options
 #
-cut-code()
+record()
 {
-  local stage
+  local log
+  local time
+  local options
+  local opt
 
-  stage="${1}"
-  ${_SED_} -e "/^.*\[cut\].*${stage}.*$/,/^.*\[cut\].*\/${stage}.*$/ \
-                      { /^.*\[cut\].*${stage}.*$/ !d }"
-}
+  log="${1}"
+  time="${2}"
 
+  for opt in ${3} ; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
 
-
-#
-# SVN CLEAN
-#
-# this function cleans the svn contol directories.
-#
-# ${1}:		directory
-#
-svn-clean()
-{
-  ${_RM_} -Rf `${_FIND_} ./ -type d -name .svn`
+  ${_SCRIPT_} -q -t ${log} -c ${_TRANSCRIPTS_CMD_} 2> ${time}
 }

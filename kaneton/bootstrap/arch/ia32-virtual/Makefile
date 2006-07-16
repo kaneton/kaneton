@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/kaneton/bootstrap/arch/ia32-virtual/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:05:35 2005]
-## updated       julien quintard   [fri jun 23 16:24:29 2006]
+## updated       julien quintard   [mon jul 10 22:36:09 2006]
 ##
 
 #

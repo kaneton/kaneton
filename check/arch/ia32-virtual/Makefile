@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/arch/ia32-virtual/Makefile
+## file          /home/mycure/kaneton/check/arch/ia32-virtual/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [wed jan 18 19:59:25 2006]
+## updated       julien quintard   [thu jul 13 11:41:37 2006]
 ##
 
 #
@@ -47,18 +47,18 @@ $(IA32VIRTUAL_LO):		libs
 	$(call archive,$(IA32VIRTUAL_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(IA32VIRTUAL_LO),)
 
 	$(call purge,)
 
 proto:
-	$(call makefile,$(SUBDIRS),proto)
+	$(call launch,Makefile,$(SUBDIRS),proto,)
 
 dep:

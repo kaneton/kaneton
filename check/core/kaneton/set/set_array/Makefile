@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/core/kaneton/set/set_array/Makefile
+## file          /home/mycure/kaneton/check/core/kaneton/set/set_array/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [mon dec 19 18:24:57 2005]
+## updated       julien quintard   [thu jul 13 11:30:19 2006]
 ##
 
 #
@@ -47,12 +47,12 @@ $(SET_ARRAY_LO):	libs
 	$(call archive,$(SET_ARRAY_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(SET_ARRAY_LO),)
 

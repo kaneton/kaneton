@@ -5,7 +5,7 @@
 ## file          /home/mycure/kaneton/env/machines/gnu-unix/clean.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat jul  8 03:10:01 2006]
+## updated       julien quintard   [fri jul 14 13:54:02 2006]
 ##
 
 #
@@ -31,21 +31,21 @@ source			.env.sh
 #
 clean()
 {
+  local needless
+
   # cleaning development tree.
   display "   cleaning development tree" "+"
 
-  change-directory ${_SRC_DIR_}
-  makefile "clear" 2>/dev/null 1>/dev/null
-  change-directory ${_ENV_DIR_}
+  needless=$(launch "Makefile" "${_SRC_DIR_}" "clear")
 
   # destroys the architecture dependent links.
   display "   removing links to machine-dependent directories" "+"
 
-  remove ${_MACHDEP_BOOTSTRAP_DIR_}
-  remove ${_MACHDEP_BOOTLOADER_DIR_}
-  remove ${_MACHDEP_CORE_DIR_}
-  remove ${_MACHDEP_INCLUDE_DIR_}
-  remove ${_MACHDEP_LINK_DIR_}
+  remove "${_MACHDEP_BOOTSTRAP_DIR_}" ""
+  remove "${_MACHDEP_BOOTLOADER_DIR_}" ""
+  remove "${_MACHDEP_CORE_DIR_}" ""
+  remove "${_MACHDEP_INCLUDE_DIR_}" ""
+  remove "${_MACHDEP_LINK_DIR_}" ""
 }
 
 #

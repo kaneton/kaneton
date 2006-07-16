@@ -1,26 +1,22 @@
 ## licence       kaneton licence
 ##
-## project
+## project       kaneton
 ##
 ## file          /home/mycure/kaneton/export/export.sh
 ##
-## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sat jul  8 03:06:34 2006]
+## created       julien quintard   [fri jul 14 14:16:22 2006]
+## updated       julien quintard   [fri jul 14 22:34:55 2006]
 ##
 
 #
 # ---------- information ------------------------------------------------------
 #
-# this script has to be run in the directory src/export
-#
-# the argument 'kn' makes a valid distribution, meaning that
-# there will be no cut line in the distribution. this distribution
-# includes all the kaneton levels, all the source code
+# this script has to be run in the directory export/
 #
 # the argument 'dist' makes a backup of the current development tree
 # including the cut lines but still without the subversion control directories
 #
-# kn is used to always hide source code parts from the distribution
+# the argument 'backup' makes a simple backup of the whole project
 #
 # the hidden variable contains the list of directories to not include in
 # exported distributions
@@ -36,10 +32,13 @@ source			../env/.env.sh
 # ---------- globals ----------------------------------------------------------
 #
 
-STAGES="k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 kn dist"
+STAGES="k0 k1 k2 k3 k4 k5 k6 k7 k8 k9 dist backup"
 STAGE=""
+
 LOCATION=""
+
 FILES=""
+
 TEMP=""
 
 #
@@ -53,9 +52,16 @@ TEMP=""
 #
 usage()
 {
+  local s
+
   display " usage: export.sh [stage]" "!"
-  display ""
-  display " available stages: ${STAGES}" "+"
+  display "" ""
+
+  display " available stages:" "!"
+
+  for s in ${STAGES} ; do
+    display "   ${s}" "!"
+  done
 }
 
 
@@ -71,40 +77,107 @@ warning()
   display " your current configuration" "+"
   display "   export:                   ${_EXPORT_}" "+"
   display "   hidden:                   ${_HIDDEN_}" "+"
-  display ""
+  display "" ""
   display "   stage:                    ${LOCATION}" "+"
-  display ""
+  display "" ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
-  wait-key
+  wait-key ""
 }
 
 
 
 #
-# EXTRACT
+# GENERATE
 #
-# this function cuts the unwanted source code.
+# this function regenerates the non coherent stuff including
+# prototypes etc..
 #
-extract()
+generate()
 {
-  local cutted
+  local needless
 
-  cutted=$(tempfile)
-  # for each file, cut the unwanted source code
-  flag=0
+  needless=$(print "" "" "" | launch "Makefile" "init" "")
+
+  needless=$(launch "Makefile" "proto" "")
+
+  needless=$(print "" "" "" | launch "Makefile" "clean" "")
+}
+
+
+
+#
+# TAGS
+#
+# this function removes the cut lines.
+#
+tags()
+{
+  local tmp
+  local f
+
+  tmp=$(temporary "--file")
+
+  for f in ${FILES} ; do
+    contents "${f}" "" |						\
+      substitute "^.*\[cut\].*$" "" "" > ${tmp}
+
+    copy "${tmp}" "${f}" ""
+  done
+
+  remove "${tmp}" ""
+}
+
+
+
+#
+# CLEAR
+#
+# this function clears the unwanted source code.
+#
+clear()
+{
+  local tmp
+  local f
+  local s
+  local c
+
+  tmp=$(temporary "--file")
+
+  c=0
   for s in ${STAGES}; do
-    if [ $s = ${LOCATION} ] ; then
-      flag=1
+    if [ ${s} = ${LOCATION} ] ; then
+      c=1
     fi
 
-    if [ ${flag} = "1" ] ; then
+    if [ ${c} = "1" ] ; then
       for f in ${FILES} ; do
-        contents "${f}" | cut-code "${s}" > ${cutted}
-        copy "${cutted}" "${f}"
+        contents "${f}" "" |						\
+          cut "^.*\[cut\].*${s}.*$" "^.*\[cut\].*\/${s}.*$" "--delete"	\
+          > ${tmp}
+
+        copy "${tmp}" "${f}" ""
       done
     fi
   done
+
+  remove "${tmp}" ""
+}
+
+
+
+#
+# VERSIONING
+#
+# this function cleans the versioning directories.
+#
+versioning()
+{
+  local directories
+
+  directories=$(search "." ".svn" "--directory")
+
+  remove "${directories}" ""
 }
 
 
@@ -116,78 +189,75 @@ extract()
 #
 build()
 {
-  # removes the old directory for this stage.
-  remove "${_EXPORT_}-*-${LOCATION}.tar.gz"
-  remove "${_EXPORT_}"
+  local c
+  local h
+  local S
+  local asm
+
+  # removes the temporary directory
+  remove "${_EXPORT_}" ""
 
   # creates a tarball from the current working development tree.
-  change-directory "${_SRC_DIR_}"
-  pack "." "${TEMP}"
-  change-directory "${_EXPORT_DIR_}"
+  change-directory "${_SRC_DIR_}" ""
+  pack "." "${TEMP}" ""
+  change-directory "${_EXPORT_DIR_}" ""
 
   # cleans the copy of the current working development tree.
-  make-directory "${_EXPORT_}"
-  unpack "${_EXPORT_}" "${TEMP}"
+  make-directory "${_EXPORT_}" ""
+  unpack "${_EXPORT_}" "${TEMP}" ""
 
   # enters directory.
-  change-directory "${_EXPORT_}"
-
-  # removes svn control directories.
-  svn-clean "${_EXPORT_}"
+  change-directory "${_EXPORT_}" ""
 
   # gets the list of the files
-  c_files=$(find-files "libs/ core/" "*.c"				\
-	"--file")
-  h_files=$(find-files "libs/ core/" "*.h"				\
-	"--file")
-  asm_files=$(find-files "libs/ core/"					\
-	"*.asm" "--file")
-  S_files=$(find-files "libs/ core/" "*.S"				\
-	"--file")
+  c=$(search "." "*.c" "--file")
+  h=$(search "." "*.h" "--file")
+  S=$(search "." "*.S" "--file")
+  asm=$(search "." "*.asm" "--file")
 
-  FILES="${c_files} ${h_files} ${asm_files} ${S_files}"
+  FILES="${c} ${h} ${S} ${asm}"
 
   # make a choice from ${LOCATION}
   case ${LOCATION} in
-    "dist")
-      ;;
-    "kaneton")
-      tags-clean "${FILES}"
-      ;;
-    *)
-      extract
-      tags-clean "${FILES}"
-      ;;
+      "backup")
+	  ;;
+      "dist")
+	  versioning
+	  tags
+
+	  remove "${_HIDDEN_}" ""
+	  ;;
+      k*)
+	  versioning
+	  clear
+	  generate
+
+	  remove "${_HIDDEN_}" ""
+	  ;;
   esac
 
-  # we have to re-generate prototypes because the header files
-  # still contain our prototypes
-
-  print "" "" "" | makefile "init" > /dev/null 2> /dev/null
-
-  makefile "proto" > /dev/null 2> /dev/null
-
-  print "" "" "" | makefile "clean" > /dev/null 2> /dev/null
-
-  # remove the hidden directories
-  remove "${_HIDDEN_}"
-
   # leave directory
-  change-directory ".."
+  change-directory "${_EXPORT_DIR_}" ""
 }
 
+
+
+#
 # DIST
 #
 # this function makes a distribution from the exported version
+#
 dist()
 {
-  d=$(format-date "%Y%m%d")
+  local d
+
+  d=$(stamp "%Y%m%d" "")
 
   # make the distribution
   pack "${_EXPORT_}" "${_EXPORT_}-${d}-${LOCATION}.tar.gz"
 
   # remove the working directory
-  remove "${_EXPORT_}"
+  remove "${_EXPORT_}" ""
 }
 
 #
@@ -195,12 +265,12 @@ dist()
 #
 
 # displays some stuff.
-display ""
+display "" ""
 
 # check the number of arguments.
 if [ ${#} -lt 1 ] ; then
   usage
-  display ""
+  display "" ""
   exit -1
 fi
 
@@ -211,14 +281,14 @@ STAGE="${1}"
 display " preparing to export" "+"
 
 # locate the stage.
-LOCATION=$(locate "${STAGES}" "${STAGE}")
+LOCATION=$(lookup "${STAGES}" "${STAGE}" "")
 
 # checks the result
-if [ ${?} -ne 0 ] ; then
+if [ "${LOCATION}" = "" ] ; then
   display " unknown stage \"${STAGE}\"" "!"
-  display ""
+  display "" ""
   usage
-  display ""
+  display "" ""
   exit -1
 fi
 
@@ -226,10 +296,13 @@ fi
 warning
 
 # generates a temporary file.
-TEMP=$(tempfile)
+TEMP=$(temporary "--file")
 
 # build the exported subtree.
 build
+
+# removes the temporary file.
+remove "${TEMP}" ""
 
 # build a distribution from the subtree created.
 dist
@@ -238,4 +311,4 @@ dist
 display " ${LOCATION} exported successfully" "+"
 
 # displays some stuff.
-display ""
+display "" ""

@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/machines/gnu-unix/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [fri jun 23 16:30:55 2006]
+## updated       julien quintard   [thu jul 13 11:27:31 2006]
 ##
 
 #
@@ -196,41 +196,81 @@ endef
 # $(3):		advanced options
 #
 
-define shell-script
-  shell_script_options=""						; \
+define launch-shell
+  launch_shell_options=""						; \
   for o in $(3); do							\
     case "$${o}" in							\
       *)								\
         ;;								\
     esac								; \
   done									; \
-  $(_SHELL_) $${shell_script_options} $(1) $(2)
+  $(_SHELL_) $${launch_shell_options} $(1) $(2)
 endef
 
 #
-# call make in each directory of the list
+# launch a new python script
 #
-# the directories in the list must be direct subdirectories
-#
-# $(1):		the directory list
-# $(2):		advanced options
+# $(1):		the python script to launch
+# $(2):		arguments
+# $(3):		advanced options
 #
 
-define makefile
-  makefile_options=""							; \
-  for o in $(2); do							\
+define launch-python
+  launch_python_options=""						; \
+  for o in $(3); do							\
     case "$${o}" in							\
       *)								\
         ;;								\
     esac								; \
   done									; \
-  for d in $(1) ; do							\
+  $(_PYTHON_) $${launch_python_options} $(1) $(2)
+endef
+
+#
+# launch a new perl script
+#
+# $(1):		the perl script to launch
+# $(2):		arguments
+# $(3):		advanced options
+#
+
+define launch-perl
+  launch_perl_options=""						; \
+  for o in $(3); do							\
+    case "$${o}" in							\
+      *)								\
+        ;;								\
+    esac								; \
+  done									; \
+  $(_PERL_) $${launch_perl_options} $(1) $(2)
+endef
+
+#
+# launch a new make script
+#
+# the directories in the list must be direct subdirectories
+#
+# $(1):		the file name to launch
+# $(2):		the directory list
+# ${3}:		arguments
+# $(4):		advanced options
+#
+
+define launch-make
+  launch_make_options=""						; \
+  for o in $(4); do							\
+    case "$${o}" in							\
+      *)								\
+        ;;								\
+    esac								; \
+  done									; \
+  for d in $(2) ; do							\
     $(call change-directory,$${d},)					; \
     return=$$?								; \
     if [ $${return} -ne 0 ] ; then					\
       exit 0								; \
     fi									; \
-    $(_MAKE_) $${makefile_options} $(_MAKEFLAGS_) $(2)			; \
+    $(_MAKE_) -f $(1) $${launch_make_options} $(_MAKEFLAGS_) ${3}	; \
     return=$$?								; \
     if [ $${return} -ne 0 ] ; then					\
       $(call pretty-printer,red,ERROR,$${d},			)	; \
@@ -238,6 +278,27 @@ define makefile
     fi									; \
     $(call change-directory,..,)					; \
   done
+endef
+
+#
+# launch a new script
+#
+
+define launch
+  case "$(1)" in							\
+    *.sh)								\
+      $(call launch-shell,$(1),$(2),$(3))				; \
+      ;;								\
+    *.py)								\
+      $(call launch-python,$(1),$(2),$(3))				; \
+      ;;								\
+    *.pl)								\
+      $(call launch-perl,$(1),$(2),$(3))				; \
+      ;;								\
+    Makefile)								\
+      $(call launch-make,$(1),$(2),$(3),${4})				; \
+      ;;								\
+  esac
 endef
 
 #
@@ -496,7 +557,8 @@ define prototypes
   for f in $(1) ; do							\
     if [ -e $${f} ] ; then						\
       $(call pretty-printer,yellow,PROTOTYPES,$${f},		)	; \
-      $(_PROTO_TOOL_) $${prototypes_options} $${f} $(_VERBOSE_)		; \
+      $(call launch,$(_PROTO_TOOL_),					\
+        $${prototypes_options} $${f},)					; \
     fi									; \
   done
 endef
@@ -542,7 +604,7 @@ define version
   echo "#include <kaneton.h>" >> $(1)					; \
   echo "" >> $(1)							; \
   echo -n "const char version[] = \"$(_TITLE_)-$(_VERSION_)" >> $(1)	; \
-  echo " $(4) $(2)@$(3)\";" >> $(1)
+  echo " "$(shell $(_DATE_))" $(USER)@$(HOSTNAME)\";" >> $(1)
 endef
 
 #
@@ -653,12 +715,4 @@ endef
 
 define contents
   $(shell $(_CAT_) $(2) $(1))
-endef
-
-#
-# returns the current data
-#
-
-define date
-  $(shell $(_DATE_))
 endef

@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/libs/libia32/paging/Makefile
+## file          /home/mycure/kaneton/check/libs/libia32/paging/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [wed jan 18 19:47:38 2006]
+## updated       julien quintard   [thu jul 13 11:34:42 2006]
 ##
 
 #
@@ -47,12 +47,12 @@ $(PAGING_LO):		libs
 	$(call archive,$(PAGING_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(PAGING_LO),)
 

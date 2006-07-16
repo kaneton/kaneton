@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/task/Makefile
+## file          /home/mycure/kaneton/check/arch/ia32-virtual/kaneton/task/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [sat apr  8 00:46:43 2006]
+## updated       julien quintard   [thu jul 13 11:40:48 2006]
 ##
 
 #
@@ -47,12 +47,12 @@ $(TASK_LO):		libs
 	$(call archive,$(TASK_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(TASK_LO),)
 

@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/check/check/Makefile
+## file          /home/mycure/kaneton/check/check/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [wed jan 18 19:20:53 2006]
+## updated       julien quintard   [thu jul 13 11:42:03 2006]
 ##
 
 #
@@ -47,12 +47,12 @@ $(CHECK_LO):		libs
 	$(call archive,$(CHECK_LO),$(MODULES),)
 
 libs:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call remove,$(CHECK_LO),)
 

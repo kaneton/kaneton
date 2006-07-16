@@ -1,18 +1,11 @@
-#! /bin/bash
-
-## copyright quintard julien
-## 
-## kaneton
-## 
-## view.sh
-## 
-## path          /home/mycure/kaneton/view/lectures
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:58:21 2005   mycure
-## last update   Fri Nov 18 20:47:01 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/mycure/kaneton/view/view.sh
+##
+## created       julien quintard   [fri jul 14 14:02:03 2006]
+## updated       julien quintard   [fri jul 14 22:29:13 2006]
 ##
 
 #
@@ -47,9 +40,7 @@ PAPER=""
 #
 build()
 {
-  change-directory "${LOCATION}"
-  makefile "build"
-  change-directory "${_VIEW_DIR_}"
+  launch "Makefile" "${LOCATION}" "build" ""
 }
 
 
@@ -61,9 +52,7 @@ build()
 #
 view()
 {
-  change-directory "${LOCATION}"
-  makefile "view"
-  change-directory "${_VIEW_DIR_}"
+  launch "Makefile" "${LOCATION}" "view" ""
 }
 
 
@@ -78,12 +67,12 @@ warning()
   # display information and ask the user to continue or cancel
   display " your current configuration" "+"
   display "   viewer:                   ${_VIEWER_}" "+"
-  display ""
+  display "" ""
   display "   paper:                    ${LOCATION}" "+"
-  display ""
+  display "" ""
   display " to cancel press CTRL^C, otherwise press enter" "?"
 
-  wait-key
+  wait-key ""
 }
 
 
@@ -99,13 +88,12 @@ usage()
 
   display " usage: viewer.sh [paper]" "!"
 
-  display ""
+  display "" ""
 
-  display " papers:" "+"
-  display ""
+  display " papers:" "!"
 
   for p in ${PAPERS} ; do
-    display "   ${p}" "+"
+    display "   ${p}" "!"
   done
 }
 
@@ -114,43 +102,43 @@ usage()
 #
 
 # displays some stuff.
-display ""
+display "" ""
 
 # gets the papers list.
-curriculum=$(list "${_CURRICULUM_DIR_}" "--directories")
+curriculum=$(list "${_CURRICULUM_DIR_}" "--directory")
 for e in ${curriculum} ; do
   PAPERS="${PAPERS} curriculum::${e}"
 done
 
-exams=$(list "${_EXAMS_DIR_}" "--directories")
+exams=$(list "${_EXAMS_DIR_}" "--directory")
 for e in ${exams} ; do
-  archives=$(list "exams/${e}" "--directories")
+  archives=$(list "exams/${e}" "--directory")
   for a in ${archives} ; do
     PAPERS="${PAPERS} exams::${e}::${a}"
   done
 done
 
-feedbacks=$(list "${_FEEDBACKS_DIR_}" "--directories")
+feedbacks=$(list "${_FEEDBACKS_DIR_}" "--directory")
 for e in ${feedbacks} ; do
   PAPERS="${PAPERS} feedbacks::${e}"
 done
 
-lectures=$(list "${_LECTURES_DIR_}" "--directories")
+lectures=$(list "${_LECTURES_DIR_}" "--directory")
 for e in ${lectures} ; do
   PAPERS="${PAPERS} lectures::${e}"
 done
 
-papers=$(list "${_PAPERS_DIR_}" "--directories")
+papers=$(list "${_PAPERS_DIR_}" "--directory")
 for e in ${papers} ; do
   PAPERS="${PAPERS} papers::${e}"
 done
 
-books=$(list "${_BOOKS_DIR_}" "--directories")
+books=$(list "${_BOOKS_DIR_}" "--directory")
 for e in ${books} ; do
   PAPERS="${PAPERS} books::${e}"
 done
 
-internships=$(list "${_INTERNSHIPS_DIR_}" "--directories")
+internships=$(list "${_INTERNSHIPS_DIR_}" "--directory")
 for e in ${internships} ; do
   PAPERS="${PAPERS} internships::${e}"
 done
@@ -163,21 +151,22 @@ if [ ${#} -ne 1 ] ; then
 fi
 
 # gets the argument.
-PAPER=${1}
+PAPER="${1}"
 
 # prints some stuff.
 display " preparing the paper" "+"
-display ""
+display "" ""
 
 # locate the paper.
-LOCATION=$(locate "${PAPERS}" "${PAPER}" | substitute "::" "\/" "all")
+LOCATION=$(lookup "${PAPERS}" "${PAPER}" "" |				\
+           substitute "::" "\/" "--everywhere")
 
 # checks the result
-if [ ${?} -ne 0 ] || [ "${LOCATION}" = "" ] ; then
+if [ "${LOCATION}" = "" ] ; then
   display " unknown paper \"${PAPER}\"" "!"
-  display ""
+  display "" ""
   usage
-  display ""
+  display "" ""
   exit -1
 fi
 
@@ -191,4 +180,4 @@ build
 view
 
 # displays some stuff.
-display ""
+display "" ""

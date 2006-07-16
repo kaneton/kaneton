@@ -142,8 +142,6 @@ void _fun3();
 
 void _fun4();
 
-void chiche(t_uint32 id);
-
 void sched_test();
 
 

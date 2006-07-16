@@ -1,5 +1,3 @@
-#!/usr/bin/perl -w
-
 # "script -t" will output a typescript with timings
 # this script "scriptreplay" replays it
 # run pod2man on it to get a man page

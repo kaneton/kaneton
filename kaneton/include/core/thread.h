@@ -160,17 +160,6 @@ t_error			thread_show(i_thread			threadid);
 
 t_error			thread_dump(void);
 
-t_error			thread_give(i_task			taskid,
-				    i_thread			threadid);
-
-t_error			thread_clone(i_task			taskid,
-				     i_thread			old,
-				     i_thread*			new);
-
-t_error			thread_suspend(i_thread			threadid);
-
-t_error			thread_execute(i_thread			threadid);
-
 t_error			thread_reserve(i_task			taskid,
 				       i_thread*		threadid);
 

@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/libs/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:28:05 2005]
-## updated       julien quintard   [wed jun  7 13:14:25 2006]
+## updated       julien quintard   [thu jul 13 11:45:23 2006]
 ##
 
 #
@@ -34,15 +34,15 @@ SUBDIRS			:=		klibc				\
 #
 
 all:
-	$(call makefile,$(SUBDIRS),)
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 clear:
-	$(call makefile,$(SUBDIRS),clear)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call purge,)
 
 proto:
-	$(call makefile,$(SUBDIRS),proto)
+	$(call launch,Makefile,$(SUBDIRS),proto,)
 
 dep:
-	$(call makefile,$(SUBDIRS),dep)
+	$(call launch,Makefile,$(SUBDIRS),dep,)
