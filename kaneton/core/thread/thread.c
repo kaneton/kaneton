@@ -231,8 +231,7 @@ t_error			thread_clone(i_task			taskid,
    * 2)
    */
 
-  if (thread_reserve(taskid, from->prior, from->stacksz, new)
-      != ERROR_NONE)
+  if (thread_reserve(taskid, from->prior, new) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
@@ -285,14 +284,12 @@ t_error			thread_clone(i_task			taskid,
  * 2) get the task object.
  * 3) reserve an id for the new thread and fill its information.
  * 4) fill thread information.
- * 5) allocate the stack.
- * 6) add the new thread in the thread container and in the task threads list.
- * 7) call the machine-dependent code.
+ * 5) add the new thread in the thread container and in the task threads list.
+ * 6) call the machine-dependent code.
  */
 
 t_error			thread_reserve(i_task			taskid,
 				       t_prior			prior,
-				       t_vsize			stacksz,
 				       i_thread*		threadid)
 {
   o_task*		task;
@@ -332,23 +329,7 @@ t_error			thread_reserve(i_task			taskid,
   o.prior = prior;
 
   /*
-   * 5) XXX THREAD: opts + perms
-   */
-
-  if (stacksz)
-    {
-      if (map_reserve(task->asid, 0, stacksz, 0, &(o.stack)) != ERROR_NONE)
-	{
-	  id_release(&thread->id, o.threadid);
-
-	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
-	}
-
-      o.stacksz = stacksz;
-    }
-
-  /*
-   * 6)
+   * 5)
    */
 
   if (set_add(thread->threads, &o) != ERROR_NONE)
@@ -369,7 +350,7 @@ t_error			thread_reserve(i_task			taskid,
     }
 
   /*
-   * 7)
+   * 6)
    */
 
   if (machdep_call(thread, thread_reserve, taskid, threadid) != ERROR_NONE)
@@ -386,7 +367,7 @@ t_error			thread_reserve(i_task			taskid,
  * 1) call the machine-dependent code.
  * 2) get the thread object.
  * 3) get the task object.
- * 4) release the thread stack.
+ * 4) release the thread stack if needed.
  * 5) release the thread-s object identifer.
  * 6) remove the thread from the task threads list.
  * 7) remove the thread from the threads set.
@@ -424,8 +405,11 @@ t_error			thread_release(i_thread			threadid)
    * 4)
    */
 
-  if (map_release(task->asid, o->stack) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  if (o->stack)
+    {
+      if (map_release(task->asid, o->stack) != ERROR_NONE)
+	THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    }
 
   /*
    * 5)
@@ -587,6 +571,74 @@ t_error			thread_state(i_thread			threadid,
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }
+
+/*
+ * allocate the thread stack.
+ *
+ * steps:
+ *
+ * 1) check wether the stack is large enough.
+ * 2) get the thread object from the threads container.
+ * 3) get the task owning the thread.
+ * 3) allocate the thread stack in the task address space.
+ * 4) call the machine-dependent code.
+ */
+
+t_error			thread_stack(i_thread			threadid,
+				     t_stack			stack)
+{
+  o_thread*		o;
+  o_task*		task;
+
+  THREAD_ENTER(thread);
+
+  /*
+   * 1)
+   */
+
+  if (stack.size < THREAD_MIN_STACKSZ)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (thread_get(threadid, &o) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (task_get(o->taskid, &task) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (!stack.base)
+    {
+      /* XXX THREAD: map_reserve(): changer opt + perms */
+
+      if (map_reserve(task->asid, 0, stack.size, 0, &(o->stack)) != ERROR_NONE)
+	THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    }
+  else
+    o->stack = stack.base;
+
+  o->stacksz = stack.size;
+
+  /*
+   * 5)
+   */
+
+  if (machdep_call(thread, thread_stack, threadid, stack) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
+
 
 /*
  * this function removes every thread that belongs to the specified task.

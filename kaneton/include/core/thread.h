@@ -33,6 +33,9 @@
 #define THREAD_HPRIOR		250
 #define THREAD_LPRIOR		10
 
+#define THREAD_STACKSZ		4096
+#define THREAD_MIN_STACKSZ	4096
+
 /*
  * ---------- types -----------------------------------------------------------
  */
@@ -47,6 +50,17 @@ typedef struct
   t_vaddr			sp;
 }				t_thread_context;
 */
+
+/*
+ * stack
+ */
+
+typedef struct
+{
+  t_vaddr			base;
+  t_vsize			size;
+}				t_stack;
+
 /*
  * thread object
  */
@@ -69,7 +83,6 @@ typedef struct
 
   machdep_data(o_thread);
 }				o_thread;
-
 
 /*
  * thread manager
@@ -110,6 +123,8 @@ typedef struct
 						  t_prior);
   t_error			(*thread_state)(i_thread,
 						t_state);
+  t_error			(*thread_stack)(i_thread,
+						t_stack);
   t_error			(*thread_init)(void);
   t_error			(*thread_clean)(void);
 }				d_thread;
@@ -173,7 +188,6 @@ t_error			thread_clone(i_task			taskid,
 
 t_error			thread_reserve(i_task			taskid,
 				       t_prior			prior,
-				       t_vsize			stacksz,
 				       i_thread*		threadid);
 
 t_error			thread_release(i_thread			threadid);
@@ -183,6 +197,9 @@ t_error			thread_priority(i_thread		threadid,
 
 t_error			thread_state(i_thread			threadid,
 				     t_state			sched);
+
+t_error			thread_stack(i_thread			threadid,
+				     t_stack			stack);
 
 t_error			thread_flush(i_task			taskid);
 

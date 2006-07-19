@@ -400,6 +400,8 @@ t_error			sched_update(i_thread			thread)
 
 t_error			sched_init(void)
 {
+  t_stack		kstack;
+
   /*
    * 1)
    */
@@ -442,12 +444,19 @@ t_error			sched_init(void)
    */
 
   /*
-   * XXX definir stack et priority
+   * XXX definir la priorite de la tache kernel.
    */
-  /*
-  if (thread_reserve(ktask, THREAD_PRIOR, 0, &sched->current) != ERROR_NONE)
+
+  if (thread_reserve(ktask, THREAD_PRIOR, &sched->current) != ERROR_NONE)
     return (ERROR_UNKNOWN);
-  */
+
+  /*
+   * XXX changer
+   */
+
+  kstack.base = 6;
+  kstack.size = THREAD_MIN_STACKSZ;
+
 /*  if (sched_add(sched->current) != ERROR_NONE)
     return (ERROR_UNKNOWN);*/
 
@@ -543,13 +552,26 @@ void sched_test_add_thread(void *func)
 {
   o_thread*		o;
   t_thread_context	ctx;
-  i_thread thr;
+  i_thread		thr;
+  t_stack		stack;
 
-  thread_reserve(0, THREAD_PRIOR, 100, &thr);
+
+  thread_reserve(0, THREAD_PRIOR, &thr);
+
+  stack.base = 0;
+  stack.size = THREAD_MIN_STACKSZ;
+  thread_stack(thr, stack);
 
   thread_get(thr, &o);
 
-  ctx.sp = o->stack;
+  /*
+   * XXX
+   *
+   * faire une fonction dependante de l'archi
+   * pour trouver la base de la pile
+   */
+
+  ctx.sp = o->stack + THREAD_MIN_STACKSZ - 1;
   ctx.pc = (t_uint32)func;
 
   thread_load(thr, ctx);
