@@ -31,12 +31,6 @@
  */
 
 /*
- * the init variable.
- */
-
-extern t_init*		init;
-
-/*
  * the console variable.
  */
 
@@ -222,7 +216,10 @@ void			cons_msg(char				indicator,
 
 t_error			cons_init(void)
 {
-  memcpy(&cons, &init->machdep.cons, sizeof(t_cons));
+  cons.attr = CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT;
+  cons.vga = (char*)CONS_ADDR;
+
+  cons_clear();
 
   printf_init(cons_print_char, cons_attr);
 

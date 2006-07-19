@@ -71,10 +71,9 @@ void			bootloader_error(void)
  * 4) installs the paging mode.
  * 5) computes the segments and regions to pass to the kernel.
  * 6) dumps the init structure if required.
- * 7) loads the console state for the kernel.
- * 8) update registers for the new kernel stack.
- * 9) then, the kernel is launched.
- * 10) this part is only reached if the kernel exit.
+ * 7) update registers for the new kernel stack.
+ * 8) then, the kernel is launched.
+ * 9) this part is only reached if the kernel exit.
  */
 
 /*                                                                 [cut] /k1 */
@@ -135,12 +134,6 @@ int			bootloader(t_uint32			magic,
    * 7)
    */
 
-  bootloader_cons_load();
-
-  /*
-   * 8)
-   */
-
   asm("movl %%ebp, %0\n\t"
       "movl %%esp, %1\n\t"
       : "=m" (ebp), "=m" (esp)
@@ -157,7 +150,7 @@ int			bootloader(t_uint32			magic,
      );
 
   /*
-   * 9)
+   * 8)
    */
 
   kernel(init);
@@ -169,7 +162,7 @@ int			bootloader(t_uint32			magic,
      );
 
   /*
-   * 10)
+   * 9)
    */
 
   bootloader_cons_msg('!', "error: kernel exited\n");

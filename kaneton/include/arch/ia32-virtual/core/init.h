@@ -73,8 +73,6 @@ typedef struct
   t_ia32_directory		pd;
 
 /*                                                               [cut] /k1   */
-
-  t_cons			cons;
 }				a_init;
 
 /*

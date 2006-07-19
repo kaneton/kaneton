@@ -16,7 +16,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-/* #include <core/thread.h> */
+//#include <core/thread.h>
 
 /*                                                                [cut] k4   */
 

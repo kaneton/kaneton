@@ -70,6 +70,13 @@
 #define SEGSEL_TI_LDT           (1 << 2)
 
 /*
+ * build a segment selector
+ */
+
+#define SEGSEL(_index_, _rpl_)						\
+  ((t_uint16)((_index_) << 3 + (_rpl_)))
+
+/*
  * segment selector requested privilege level
  */
 

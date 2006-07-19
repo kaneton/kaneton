@@ -196,19 +196,6 @@ void			bootloader_cons_msg(char		indicator,
 }
 
 /*
- * this function loads the current console state into the init
- * variable to pass it to the kernel.
- *
- * this step is just used to keep the console in the same state between
- * the bootloader and the kernel.
- */
-
-void			bootloader_cons_load(void)
-{
-  memcpy(&init->machdep.cons, &cons, sizeof(t_cons));
-}
-
-/*
  * this function just initialises the bootloader console.
  *
  * this function also initialises the printf function to work with

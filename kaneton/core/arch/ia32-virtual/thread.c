@@ -155,15 +155,23 @@ t_error			ia32_thread_reserve(i_task		taskid,
    *
    */
 
-  if (taskid == 0)
+  switch(task->class)
     {
-      code_segment = 0x8;
-      data_segment = 0x10;
-    }
-  else
-    {
-      code_segment = 0x18;
-      data_segment = 0x20;
+      case TASK_CLASS_CORE:
+	code_segment = SEGSEL(PMODE_GDT_CORE_CS, PRIV_RING0);
+	data_segment = SEGSEL(PMODE_GDT_CORE_DS, PRIV_RING0);
+	break;
+      case TASK_CLASS_DRIVER:
+	code_segment = SEGSEL(PMODE_GDT_DRIVER_CS, PRIV_RING1);
+	data_segment = SEGSEL(PMODE_GDT_DRIVER_DS, PRIV_RING1);
+	break;
+      case TASK_CLASS_SERVICE:
+	code_segment = SEGSEL(PMODE_GDT_SERVICE_CS, PRIV_RING2);
+	data_segment = SEGSEL(PMODE_GDT_SERVICE_DS, PRIV_RING2);
+	break;
+      default:
+	code_segment = SEGSEL(PMODE_GDT_PROGRAM_CS, PRIV_RING3);
+	data_segment = SEGSEL(PMODE_GDT_PROGRAM_DS, PRIV_RING3);
     }
 
   o->machdep.context.cs = code_segment;

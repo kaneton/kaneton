@@ -64,8 +64,6 @@ void			bootloader_cons_msg(char		indicator,
 					    char*		fmt,
 					    ...);
 
-void			bootloader_cons_load(void);
-
 int			bootloader_cons_init(void);
 
 

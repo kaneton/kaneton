@@ -445,6 +445,7 @@ t_error			sched_init(void)
 
   /*
    * XXX definir la priorite de la tache kernel.
+   * pour le moment, elle est a THREAD_PRIOR.
    */
 
   if (thread_reserve(ktask, THREAD_PRIOR, &sched->current) != ERROR_NONE)
@@ -453,12 +454,16 @@ t_error			sched_init(void)
   /*
    * XXX
    *
-   * changer 6 (qui est n'importe quoi) par la base de la pile kernel
+   * changer 42 (qui est n'importe quoi) par le sommet de la pile kernel
    * changer THREAD_MIN_STACKSZ en KERNEL_STACKSZ
    */
 
-  kstack.base = 6;
+  kstack.base = 42;
   kstack.size = THREAD_MIN_STACKSZ;
+
+  /*
+   *
+   */
 
   if (sched_add(sched->current) != ERROR_NONE)
     return (ERROR_UNKNOWN);

@@ -63,12 +63,6 @@
  */
 
 /*
- * the init variable.
- */
-
-extern t_init*		init;
-
-/*
  * the console variable.
  */
 
@@ -696,7 +690,8 @@ t_error			cons_init(void)
   int			pos;
   int			attr;
 
-  memcpy(&cons, &init->machdep.cons, sizeof(t_cons));
+  cons.attr = CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT;
+  cons.vga = (char*)CONS_ADDR;
   memcpy(buff, cons.vga, 10 * CONS_COLUMNS * CONS_BPC);
 
 #ifdef MODE1

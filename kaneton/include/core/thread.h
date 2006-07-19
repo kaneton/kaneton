@@ -33,6 +33,10 @@
 #define THREAD_HPRIOR		250
 #define THREAD_LPRIOR		10
 
+/*
+ * stack size
+ */
+
 #define THREAD_STACKSZ		4096
 #define THREAD_MIN_STACKSZ	4096
 
@@ -55,12 +59,13 @@ typedef struct
  * stack
  */
 /*
-typedef struct
+struct				s_stack
 {
   t_vaddr			base;
   t_vsize			size;
-}				t_stack;
+};
 */
+
 /*
  * thread object
  */

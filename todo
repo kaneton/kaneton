@@ -9,7 +9,7 @@
  cut-code -> cut (a utiliser dans preprocess)
  svn-clean -> find --directory .svn + remove
 
- les options ont changees pour beaucoup de fonctions
+ les options ont change pour beaucoup de fonctions
 
 --
  enlever QUICKSTART et expliquer ce qu'il faut sur le site
@@ -133,14 +133,6 @@
  boote, soit le systeme de lui meme (via un fichier de conf) sait quels
  sont les objets dont il herite ou alors il faut prevoir des messages style
  segment_acquire() pour acquerir un segment specifique: la memoire video.
-
---
- virer tout affichage autre que warning et erreur dans le bootloader
- de sorte qu'on n'ait plus de structure t_cons dependante a passer
-
- include/arch/ia32-virtual/kaneton/init.h
-
- encore plus loin faire que bootloader et core soient independants
 
 --
  pour tester la moulette avec un seul pc : QEMU, avec l'option "-serial pty"
