@@ -165,6 +165,9 @@ t_error			ia32_thread_load(i_thread		threadid,
 t_error			ia32_thread_store(i_thread		threadid,
 					  t_thread_context*	context);
 
+t_error			ia32_thread_stack(i_thread		threadid,
+					  t_stack		stack);
+
 
 /*
  * ../../../../core/arch/machdep/sched.c

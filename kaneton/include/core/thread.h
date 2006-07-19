@@ -54,13 +54,13 @@ typedef struct
 /*
  * stack
  */
-
+/*
 typedef struct
 {
   t_vaddr			base;
   t_vsize			size;
 }				t_stack;
-
+*/
 /*
  * thread object
  */

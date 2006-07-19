@@ -451,14 +451,17 @@ t_error			sched_init(void)
     return (ERROR_UNKNOWN);
 
   /*
-   * XXX changer
+   * XXX
+   *
+   * changer 6 (qui est n'importe quoi) par la base de la pile kernel
+   * changer THREAD_MIN_STACKSZ en KERNEL_STACKSZ
    */
 
   kstack.base = 6;
   kstack.size = THREAD_MIN_STACKSZ;
 
-/*  if (sched_add(sched->current) != ERROR_NONE)
-    return (ERROR_UNKNOWN);*/
+  if (sched_add(sched->current) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
 
   /*
    * 5)
@@ -568,10 +571,10 @@ void sched_test_add_thread(void *func)
    * XXX
    *
    * faire une fonction dependante de l'archi
-   * pour trouver la base de la pile
+   * pour trouver le sommet de la pile.
    */
 
-  ctx.sp = o->stack + THREAD_MIN_STACKSZ - 1;
+  ctx.sp = o->stack + o->stacksz - 1;
   ctx.pc = (t_uint32)func;
 
   thread_load(thr, ctx);

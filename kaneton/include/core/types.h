@@ -98,5 +98,10 @@ typedef struct
   t_vaddr                       sp;
 }				t_thread_context;
 
+typedef struct
+{
+  t_vaddr			base;
+  t_vsize			size;
+}				t_stack;
 
 #endif
