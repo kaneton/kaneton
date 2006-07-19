@@ -86,7 +86,13 @@
 #define		LTR(_var_)						\
   asm volatile("ltr %0\n\t"						\
 	       :							\
-	       : "m" (_var_));
+	       : "m" (_var_))
+
+#define		SEFLAGS(_var_)						\
+  asm volatile("popf\n\t"						\
+	       "popl %0"						\
+	       : "=m" (_var_)						\
+	       :)
 
 #define		HLT()							\
   asm volatile("hlt");

@@ -43,7 +43,7 @@ d_thread			thread_dispatch =
   {
     NULL,
     NULL,
-    NULL,
+    ia32_thread_clone,
     NULL,
     ia32_thread_load,
     ia32_thread_store,
@@ -59,6 +59,49 @@ d_thread			thread_dispatch =
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * clone the ia32 architecture dependant part of a thread.
+ *
+ * steps:
+ *
+ * 1) get the thread to clone from the threads container.
+ * 2) get the new thread from the threads containers.
+ * 3) copy the ia32-dependent object data.
+ */
+
+t_error			ia32_thread_clone(i_task		taskid,
+					  i_thread		old,
+					  i_thread*		new)
+{
+  o_thread*		from;
+  o_thread*		to;
+
+  THREAD_ENTER(thread);
+
+  /*
+   * 1)
+   */
+
+  if (thread_get(old, &from) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (thread_get(*new, &to) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  memcpy(&(to->machdep.context), &(from->machdep.context),
+	 sizeof(t_ia32_context));
+
+  THREAD_LEAVE(thread, ERROR_NONE)
+}
 
 /*
  *
@@ -106,8 +149,7 @@ t_error			ia32_thread_reserve(i_task		taskid,
    *
    */
 
-  asm volatile("pushf\n\t"
-               "popl %0" : "=g" (o->machdep.context.eflags));
+  SEFLAGS(o->machdep.context.eflags);
 
   /*
    *
@@ -130,6 +172,17 @@ t_error			ia32_thread_reserve(i_task		taskid,
   o->machdep.context.fs = data_segment;
   o->machdep.context.gs = data_segment;
   o->machdep.context.ss = data_segment;
+
+  /*
+   *
+   */
+
+  o->machdep.context.esi = 0;
+  o->machdep.context.edi = 0;
+  o->machdep.context.edx = 0;
+  o->machdep.context.ecx = 0;
+  o->machdep.context.ebx = 0;
+  o->machdep.context.eax = 0;
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }
@@ -157,7 +210,6 @@ t_error			ia32_thread_load(i_thread		threadid,
    */
 
   o->machdep.context.eip = context.pc;
-  o->machdep.context.ebp = context.sp;
   o->machdep.context.esp = context.sp;
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -175,14 +227,14 @@ t_error			ia32_thread_store(i_thread		threadid,
   THREAD_ENTER(thread);
 
   /*
-   *
+   * 1)
    */
 
   if (thread_get(threadid, &o) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
-   *
+   * 2)
    */
 
   context->pc = o->machdep.context.eip;
@@ -192,11 +244,12 @@ t_error			ia32_thread_store(i_thread		threadid,
 }
 
 /*
+ * setup the stack on ia32 architecture.
  *
+ * steps:
  *
- *
- *
- *
+ * 1) get the thread object fromm the threads container.
+ * 2) update the machine-dependent part of the object.
  */
 
 t_error			ia32_thread_stack(i_thread		threadid,
@@ -218,7 +271,6 @@ t_error			ia32_thread_stack(i_thread		threadid,
    */
 
   o->machdep.context.ebp = stack.base + stack.size - 1;
-  o->machdep.context.esp = stack.base + stack.size - 1;
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }

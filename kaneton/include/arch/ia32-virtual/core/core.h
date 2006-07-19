@@ -156,6 +156,10 @@ t_error			ia32_timer_init(void);
  * ../../../../core/arch/machdep/thread.c
  */
 
+t_error			ia32_thread_clone(i_task		taskid,
+					  i_thread		old,
+					  i_thread*		new);
+
 t_error			ia32_thread_reserve(i_task		taskid,
 					    i_thread*		threadid);
 
