@@ -11,8 +11,6 @@
 
  les options ont changees pour beaucoup de fonctions
 
- grub.sh
-
 --
  enlever QUICKSTART et expliquer ce qu'il faut sur le site
 
@@ -190,7 +188,3 @@
     1) ...
 
   -> les points 1,2,3 etc.. sont pas ordre d'importance
-
---
- rajouter la compression dans grub.sh et le stripping aussi
- avec option

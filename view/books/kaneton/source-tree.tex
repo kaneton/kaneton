@@ -6,7 +6,7 @@
 %% file          /home/mycure/kaneton/view/books/kaneton/source-tree.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:32:40 2006]
-%% updated       julien quintard   [sat jul  8 02:18:45 2006]
+%% updated       julien quintard   [sun jul 16 19:35:21 2006]
 %%
 
 %
@@ -33,12 +33,12 @@ listing:
 \begin{verbatim}
 cheat/
 check/
-doc/
 env/
 export/
 kaneton/
 libs/
 licenses/
+link/
 tools/
 transcripts/
 view/
@@ -83,15 +83,6 @@ works fine, second, to test the students' implementations and to evaluate
 their microkernels' correctness.
 
 The \textit{check/} subdirectory so contains the set kaneton tools and tests.
-
-%
-% doc/
-%
-
-\section{doc/}
-
-This directory just contains some useful documentation including
-microprocessor architecture specifications, ebooks on kernels etc..
 
 %
 % env/
@@ -174,14 +165,10 @@ The directory is divided as shown below:
 \begin{verbatim}
 arch/
 as/
-conf/
-debug/
-id/
 region/
-schedule/
+sched/
 segment/
 set/
-stats/
 task/
 thread/
 [...]
@@ -220,6 +207,16 @@ in relation with the kaneton microkernel project.
 
 Each student have to read and accept this license before implementing
 or using the kaneton microkernel.
+
+%
+% link/
+%
+
+\section{link/}
+
+This directory contains everything necessary to link and build
+executable depending on the operating system and the microprocessor
+architecture.
 
 %
 % tools/

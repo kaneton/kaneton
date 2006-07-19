@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       julien quintard   [sat jul  8 02:23:54 2006]
+ * updated       julien quintard   [tue jul 18 09:30:01 2006]
  */
 
 /*
@@ -432,11 +432,11 @@ t_error			region_reserve(i_as			asid,
 /*  if (segment->size < size - offset)              XXX necessary ??
     REGION_LEAVE(region, ERROR_UNKNOWN);*/
 
-  if (opts & REGION_OPT_MAPALL)
+  if (opts & REGION_OPT_ALL)
     {
       offset = 0;
       size = segment->size;
-      opts &= ~REGION_OPT_MAPALL;
+      opts &= ~REGION_OPT_ALL;
     }
 
   /*
