@@ -53,8 +53,6 @@ d_task			task_dispatch =
     NULL,
     NULL,
     NULL,
-    NULL,
-    NULL,
 
 /*                                                                 [cut] /k4 */
 

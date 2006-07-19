@@ -159,9 +159,6 @@ t_error			ia32_timer_init(void);
 t_error			ia32_thread_reserve(i_task		taskid,
 					    i_thread*		threadid);
 
-t_error			ia32_thread_stack(i_thread		threadid,
-					  t_vsize		size);
-
 t_error			ia32_thread_load(i_thread		threadid,
 					 t_thread_context	context);
 

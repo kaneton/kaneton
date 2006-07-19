@@ -45,11 +45,11 @@ d_thread			thread_dispatch =
     NULL,
     NULL,
     NULL,
-    NULL,
-    ia32_thread_stack,
     ia32_thread_load,
     ia32_thread_store,
     ia32_thread_reserve,
+    NULL,
+    NULL,
     NULL,
     NULL,
     NULL
@@ -78,8 +78,8 @@ t_error			ia32_thread_reserve(i_task		taskid,
    *
    */
 
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    THREAD_LEAVE(*thread, ERROR_UNKNOWN);
+  if (thread_get(*threadid, &o) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
    *
@@ -100,6 +100,13 @@ t_error			ia32_thread_reserve(i_task		taskid,
    */
 
   pd_get_cr3(&(o->machdep.context.cr3), as->machdep.pd);
+
+  /*
+   * XXX THREAD mise en place de la pile
+   */
+
+  o->machdep.context.ebp = o->stack;
+  o->machdep.context.esp = o->stack;
 
   /*
    *
@@ -129,34 +136,6 @@ t_error			ia32_thread_reserve(i_task		taskid,
   o->machdep.context.fs = data_segment;
   o->machdep.context.gs = data_segment;
   o->machdep.context.ss = data_segment;
-
-  THREAD_LEAVE(thread, ERROR_NONE);
-}
-
-/*
- *
- */
-
-t_error			ia32_thread_stack(i_thread		threadid,
-					  t_vsize		size)
-{
-  o_thread*		o;
-
-  THREAD_ENTER(thread);
-
-  /*
-   *
-   */
-
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
-
-  /*
-   *
-   */
-
-  o->machdep.context.ebp = o->stack;
-  o->machdep.context.esp = o->stack;
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }

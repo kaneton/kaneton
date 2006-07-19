@@ -400,7 +400,6 @@ t_error			sched_update(i_thread			thread)
 
 t_error			sched_init(void)
 {
-
   /*
    * 1)
    */
@@ -442,9 +441,13 @@ t_error			sched_init(void)
    * 4)
    */
 
-  if (thread_reserve(ktask, &sched->current) != ERROR_NONE)
+  /*
+   * XXX definir stack et priority
+   */
+  /*
+  if (thread_reserve(ktask, THREAD_PRIOR, 0, &sched->current) != ERROR_NONE)
     return (ERROR_UNKNOWN);
-
+  */
 /*  if (sched_add(sched->current) != ERROR_NONE)
     return (ERROR_UNKNOWN);*/
 
@@ -536,19 +539,29 @@ void _fun4()
     }
 }
 
-void sched_test()
+void sched_test_add_thread(void *func)
 {
+  o_thread*		o;
   t_thread_context	ctx;
   i_thread thr;
 
+  thread_reserve(0, THREAD_PRIOR, 100, &thr);
 
-  thread_reserve(0, &thr);
+  thread_get(thr, &o);
 
-  ctx.pc = (t_uint32)_fun1;
+  ctx.sp = o->stack;
+  ctx.pc = (t_uint32)func;
+
   thread_load(thr, ctx);
-  thread_stack(thr, 100);
 
   sched_add(thr);
+}
+
+void sched_test()
+{
+  sched_test_add_thread(_fun1);
+  sched_test_add_thread(_fun2);
+  sched_test_add_thread(_fun3);
 
   while(1)
     {

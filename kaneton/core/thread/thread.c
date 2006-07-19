@@ -75,7 +75,6 @@ t_error			thread_show(i_thread			threadid)
   if (machdep_call(thread, thread_show, threadid) != ERROR_UNKNOWN)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
-
   THREAD_LEAVE(thread, ERROR_NONE);
 }
 
@@ -123,18 +122,177 @@ t_error			thread_dump(void)
 }
 
 /*
+ * this funtion unlinks a thread from its task and give it to another one.
+ * XXX THREAD: copier la pile dans son nouvel address space (ou pas).
+ *
+ * steps:
+ *
+ * 1) get the thread to give from the threads container.
+ * 2) check if the thread does not already belong to the specified task.
+ * 3) get the destination task from the tasks container.
+ * 4) get the source task from the tasks container.
+ * 5) remove the thread from the source task.
+ * 6) add the thread to the destination task.
+ * 7) call the machine-dependent code.
+ */
+
+t_error			thread_give(i_task			taskid,
+				    i_thread			threadid)
+{
+  o_thread*		o;
+  o_task*		src;
+  o_task*		dest;
+
+  THREAD_ENTER(thread);
+
+  /*
+   * 1)
+   */
+
+  if (thread_get(threadid, &o) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (o->taskid == taskid)
+    THREAD_LEAVE(thread, ERROR_NONE);
+
+  /*
+   * 3)
+   */
+
+  if (task_get(taskid, &dest) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (task_get(o->taskid, &src) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
+  if (set_remove(src->threads, threadid) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 6)
+   */
+
+  o->taskid = taskid;
+  if (set_add(dest->threads, &threadid) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 7)
+   */
+
+  if (machdep_call(thread, thread_give, taskid, threadid) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
+
+/*
+ * clone a thread.
+ * the clone is added to the specified task.
+ *
+ * 1) get the thread to clone.
+ * 2) reserve the clone objet.
+ * 3) copy data from the original thead to the new one.
+ * 4) copy the waits set from the original thread to the new one.
+ * 5) call the machine-dependent code.
+ */
+
+t_error			thread_clone(i_task			taskid,
+				     i_thread			old,
+				     i_thread*			new)
+{
+  o_thread*		from;
+  o_thread*		to;
+  t_state		state;
+  t_iterator		i;
+
+  THREAD_ENTER(thread);
+
+  /*
+   * 1)
+   */
+
+  if (thread_get(old, &from) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (thread_reserve(taskid, from->prior, from->stacksz, new)
+      != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  to->sched = from->sched;
+
+  to->wait = from->wait;
+
+  to->stack = from->stack;
+  to->stacksz = from->stacksz;
+
+  /*
+   * 4)
+   */
+
+  set_foreach(SET_OPT_FORWARD, from->waits, &i, state)
+    {
+      i_thread*		data;
+
+      if (set_object(from->waits, i, (void**)&data) != ERROR_NONE)
+	{
+	  cons_msg('!', "thread: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	}
+
+      if (set_add(to->waits, data) != ERROR_NONE)
+	THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 5)
+   */
+
+  if (machdep_call(thread, thread_clone, taskid, old, new) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
+
+/*
  * this function reserves a thread for a given task.
  *
  * steps:
  *
- * 1) get the task object.
- * 2) get an id for the new thread and fill its information.
- * 3)
- * 4) add the new thread in the thread container and in the task threads list.
- * 5) call the machine-dependent code.
+ * 1) sanity checks.
+ * 2) get the task object.
+ * 3) reserve an id for the new thread and fill its information.
+ * 4) fill thread information.
+ * 5) allocate the stack.
+ * 6) add the new thread in the thread container and in the task threads list.
+ * 7) call the machine-dependent code.
  */
 
 t_error			thread_reserve(i_task			taskid,
+				       t_prior			prior,
+				       t_vsize			stacksz,
 				       i_thread*		threadid)
 {
   o_task*		task;
@@ -146,45 +304,75 @@ t_error			thread_reserve(i_task			taskid,
    * 1)
    */
 
-  if (task_get(taskid, &task) != ERROR_NONE)
+  if (prior < THREAD_LPRIOR || prior > THREAD_HPRIOR)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (id_reserve(&thread->id, threadid) != ERROR_NONE)
+  if (task_get(taskid, &task) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  memset(&o, 0x0, sizeof(o_thread));
-
-  o.threadid = *threadid;
-
-  o.taskid = taskid;
+  if (id_reserve(&thread->id, threadid) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
+  memset(&o, 0x0, sizeof(o_thread));
+
+  o.threadid = *threadid;
+  o.taskid = taskid;
+  o.prior = prior;
+
+  /*
+   * 5) XXX THREAD: opts + perms
+   */
+
+  if (stacksz)
+    {
+      if (map_reserve(task->asid, 0, stacksz, 0, &(o.stack)) != ERROR_NONE)
+	{
+	  id_release(&thread->id, o.threadid);
+
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	}
+
+      o.stacksz = stacksz;
+    }
+
+  /*
+   * 6)
+   */
+
   if (set_add(thread->threads, &o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    {
+      map_release(task->asid, o.stack);
+      id_release(&thread->id, o.threadid);
+
+      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    }
 
   if (set_add(task->threads, &o.threadid) != ERROR_NONE)
     {
       set_remove(thread->threads, o.threadid);
+      map_release(task->asid, o.stack);
+      id_release(&thread->id, o.threadid);
 
       THREAD_LEAVE(thread, ERROR_UNKNOWN);
     }
 
   /*
-   * 5)
+   * 7)
    */
 
-  if (machdep_call(thread, thread_reserve, taskid, *threadid) != ERROR_NONE)
+  if (machdep_call(thread, thread_reserve, taskid, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -197,8 +385,8 @@ t_error			thread_reserve(i_task			taskid,
  *
  * 1) call the machine-dependent code.
  * 2) get the thread object.
- * 3) XXX THREAD: release the thread stack.
- * 4) get the task object.
+ * 3) get the task object.
+ * 4) release the thread stack.
  * 5) release the thread-s object identifer.
  * 6) remove the thread from the task threads list.
  * 7) remove the thread from the threads set.
@@ -229,13 +417,14 @@ t_error			thread_release(i_thread			threadid)
    * 3)
    */
 
-  /* XXX THREAD: release the thread stack */
+  if (task_get(o->taskid, &task) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (task_get(o->taskid, &task) != ERROR_UNKNOWN)
+  if (map_release(task->asid, o->stack) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
@@ -258,6 +447,143 @@ t_error			thread_release(i_thread			threadid)
 
   if (set_remove(thread->threads, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
+
+/*
+ * update the thread priority
+ *
+ * steps:
+ *
+ * 1) sanity checs.
+ * 2) get the thread object from the thread container.
+ * 3) update the priority if needed.
+ * 4) call the machine-dependent code.
+ */
+
+t_error			thread_priority(i_thread		threadid,
+					t_prior			prior)
+{
+  o_thread*		o;
+
+  THREAD_ENTER(thread);
+
+  /*
+   * 1)
+   */
+
+  if (prior < THREAD_LPRIOR || prior > THREAD_HPRIOR)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (thread_get(threadid, &o) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (o->prior == prior)
+    THREAD_LEAVE(thread, ERROR_NONE);
+
+  o->prior = prior;
+
+  /*
+   * 4)
+   */
+
+  if (machdep_call(thread, thread_priority, threadid, prior) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
+
+/*
+ * update the thread state.
+ *
+ * steps:
+ *
+ * 1) check wether the requested state is valid.
+ * 2) get the thread object from the thread container.
+ * 3) update the thread state if needed.
+ * 4) call the machine-dependent code.
+ */
+
+t_error			thread_state(i_thread			threadid,
+				     t_state			sched)
+{
+  o_thread*		o;
+  t_iterator		i;
+  t_state		state;
+  t_state		wakeup;
+
+  THREAD_ENTER(thread);
+
+  /*
+   * 1)
+   */
+
+  switch(sched)
+    {
+      case SCHED_STATE_RUN:
+	wakeup = WAIT_START;
+	break;
+      case SCHED_STATE_STOP:
+	wakeup = WAIT_STOP;
+	break;
+      case SCHED_STATE_ZOMBIE:
+	wakeup = WAIT_DEATH;
+	break;
+      default:
+	THREAD_LEAVE(thread, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 2)
+   */
+
+  if (thread_get(threadid, &o) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (o->sched == sched)
+    THREAD_LEAVE(thread, ERROR_NONE);
+
+  o->sched = sched;
+
+  /*
+   * 4)
+   */
+
+  set_foreach(SET_OPT_FORWARD, o->waits, &i, state)
+    {
+      o_waitfor*	w;
+
+      if (set_object(o->waits, i, (void**)&w) != ERROR_NONE)
+	{
+	  cons_msg('!', "thread: cannot find the object "
+		   "corresponding to its identifier\n");
+
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	}
+
+      if (w->opts & wakeup)
+	thread_state(w->u.thread, SCHED_STATE_RUN);
+    }
+
+  /*
+   * 5)
+   */
+
+  if (machdep_call(thread, thread_state, threadid, sched) != ERROR_NONE)
+    TASK_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }
@@ -315,77 +641,16 @@ t_error			thread_flush(i_task			taskid)
 }
 
 /*
- * XXX THREAD: verifier qu'une pile n'est pas deja allouee.
- */
-
-t_error			thread_stack(i_thread			threadid,
-				     t_vsize			size)
-{
-  o_task*		task;
-  o_thread*		o;
-
-  THREAD_ENTER(thread);
-
-
-  /*
-   *
-   */
-
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
-
-  /*
-   *
-   */
-
-  if (task_get(o->taskid, &task) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
-
-  /*
-   * XXX THREAD: opts + perms
-   */
-
-  if (map_reserve(task->asid, 0, size, 0, &(o->stack)) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
-
-  o->stacksz = size;
-
-  /*
-   *
-   */
-
-  if (machdep_call(thread, thread_stack, threadid, size) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
-
-  THREAD_LEAVE(thread, ERROR_NONE);
-}
-
-/*
  *
  */
 
 t_error			thread_load(i_thread			threadid,
 				    t_thread_context		context)
 {
-  o_thread*		o;
-
   THREAD_ENTER(thread);
 
   /*
-   *
-   */
-
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
-
-  /*
-   *
-   */
-
-  o->stack = context.sp;
-
-  /*
-   *
+   * 1)
    */
 
   if (machdep_call(thread, thread_load, threadid, context) != ERROR_NONE)
@@ -404,7 +669,7 @@ t_error			thread_store(i_thread			threadid,
   THREAD_ENTER(thread);
 
   /*
-   *
+   * 1)
    */
 
   if (machdep_call(thread, thread_store, threadid, context) != ERROR_NONE)

@@ -88,6 +88,10 @@ typedef t_sint32		t_error;
 typedef union u_event_handler	u_event_handler;
 typedef union u_timer_handler	u_timer_handler;
 
+/*
+ *
+ */
+
 typedef struct
 {
   t_vaddr                       pc;

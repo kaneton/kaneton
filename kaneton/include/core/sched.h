@@ -142,6 +142,8 @@ void _fun3();
 
 void _fun4();
 
+void sched_test_add_thread(void *func);
+
 void sched_test();
 
 

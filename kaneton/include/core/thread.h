@@ -93,12 +93,12 @@ typedef struct
 typedef struct
 {
   t_error			(*thread_show)(i_thread);
-  t_error			(*thread_suspend)(i_thread);
-  t_error			(*thread_execute)(i_thread);
-  t_error			(*thread_clone)(i_thread);
+  t_error			(*thread_give)(i_task,
+					       i_thread);
+  t_error			(*thread_clone)(i_task,
+						i_thread,
+						i_thread*);
   t_error			(*thread_flush)(i_task);
-  t_error			(*thread_stack)(i_thread,
-						t_vsize);
   t_error			(*thread_load)(i_thread,
 					       t_thread_context);
   t_error			(*thread_store)(i_thread,
@@ -106,6 +106,10 @@ typedef struct
   t_error			(*thread_reserve)(i_task,
 						  i_thread*);
   t_error			(*thread_release)(i_thread);
+  t_error			(*thread_priority)(i_thread,
+						  t_prior);
+  t_error			(*thread_state)(i_thread,
+						t_state);
   t_error			(*thread_init)(void);
   t_error			(*thread_clean)(void);
 }				d_thread;
@@ -160,15 +164,27 @@ t_error			thread_show(i_thread			threadid);
 
 t_error			thread_dump(void);
 
+t_error			thread_give(i_task			taskid,
+				    i_thread			threadid);
+
+t_error			thread_clone(i_task			taskid,
+				     i_thread			old,
+				     i_thread*			new);
+
 t_error			thread_reserve(i_task			taskid,
+				       t_prior			prior,
+				       t_vsize			stacksz,
 				       i_thread*		threadid);
 
 t_error			thread_release(i_thread			threadid);
 
-t_error			thread_flush(i_task			taskid);
+t_error			thread_priority(i_thread		threadid,
+					t_prior			prior);
 
-t_error			thread_stack(i_thread			threadid,
-				     t_vsize			size);
+t_error			thread_state(i_thread			threadid,
+				     t_state			sched);
+
+t_error			thread_flush(i_task			taskid);
 
 t_error			thread_load(i_thread			threadid,
 				    t_thread_context		context);

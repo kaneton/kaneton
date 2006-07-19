@@ -151,9 +151,8 @@ typedef struct
   t_error			(*task_release)(i_task);
   t_error			(*task_priority)(i_task,
 						 t_prior);
-  t_error			(*task_run)(i_task);
-  t_error			(*task_stop)(i_task);
-  t_error			(*task_exit)(i_task);
+  t_error			(*task_state)(i_task,
+					      t_state);
   t_error			(*task_wait)(i_task,
 					     t_opts,
 					     t_wait*);
@@ -224,11 +223,8 @@ t_error			task_release(i_task			id);
 t_error			task_priority(i_task			id,
 				      t_prior			prior);
 
-t_error			task_run(i_task				id);
-
-t_error			task_stop(i_task			id);
-
-t_error			task_exit(i_task			id);
+t_error			task_state(i_task			id,
+				   t_state			sched);
 
 t_error			task_wait(i_task			id,
 				  t_opts			opts,
