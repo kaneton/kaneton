@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/check/Makefile
+## file          /home/buckman/kaneton/check/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       julien quintard   [thu jul 13 11:42:13 2006]
+## updated       matthieu bucchianeri   [wed jul 19 20:16:22 2006]
 ##
 
 #
@@ -60,3 +60,4 @@ proto:
 	$(call launch,Makefile,$(SUBDIRS),proto,)
 
 dep:
+	$(call launch,Makefile,$(SUBDIRS),dep,)

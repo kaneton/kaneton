@@ -1,0 +1,11 @@
+01 reserve et release
+02 add
+03 SET_OPT_ALLOC et SET_OPT_FREE
+04 iterators
+05 insert_*
+06 remove et delete
+07 flush
+08 SET_OPT_SORT et locate
+09 operations sur des listes vides
+10 une liste un peu grande
+11 des algos de tris

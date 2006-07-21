@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/task/task.c
+ * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [sat jul  8 02:27:53 2006]
+ * updated       matthieu bucchianeri   [wed jul 19 17:56:12 2006]
  */
 
 /*
@@ -618,7 +618,7 @@ t_error			task_state(i_task			id,
         wakeup = WAIT_DEATH;
         break;
       default:
-        THREAD_LEAVE(thread, ERROR_UNKNOWN);
+        TASK_LEAVE(task, ERROR_UNKNOWN);
     }
 
   /*
@@ -675,7 +675,7 @@ t_error			task_state(i_task			id,
 	  TASK_LEAVE(task, ERROR_UNKNOWN);
 	}
 
-      if (thread_state(*th, SCHED_STATE_RUN) != ERROR_NONE)
+      if (thread_state(*th, state) != ERROR_NONE)
 	TASK_LEAVE(task, ERROR_UNKNOWN);
     }
 

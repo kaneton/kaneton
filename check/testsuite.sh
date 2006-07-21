@@ -1,6 +1,6 @@
 #!/bin/sh
-if [ $# -ne 4 ]; then
-    echo "usage $0 <test_suite> <tarball> <stage> <group>"
+if [ $# -ne 5 ]; then
+    echo "usage $0 <test_suite> <tarball> <stage> <group> <mode>"
     exit 0
 fi
 
@@ -10,22 +10,34 @@ mkdir /tmp/moulette
 tar -C /tmp/moulette -xzf $2
 tar -C /tmp/moulette/kaneton -xzf $1
 cd /tmp/moulette/kaneton
-#sed -i 's/^_IMAGE_.*:=.*/_IMAGE_ := \/tmp\/moulette\/kaneton\/kaneton.img/g' env/users/moulette/user.conf
 echo "Ready. Ctrl-C to exit, Enter to proceed."
 read
 export KANETON_USER=moulette
 echo "" | make init
+
 make
-#make install
 if [ "$?" -ne 0 ]; then
     exit 1
 fi
-cp core/bootloader/bootloader /tftp/modules/bootloader
-cp core/kaneton/kaneton /tftp/modules/core
-cp env/.kaneton.conf /tftp/modules/.kaneton.conf
 
-#mcopy menu.lst a:/boot/GRUB
-#qemu -fda kaneton.img -serial pty &
+case "$5" in
+    floppy)
+	make install
+	if [ "$?" -ne 0 ]; then
+	    exit 1
+	fi
+	#mcopy menu.lst a:/boot/GRUB
+	;;
+    tftp)
+	cp core/bootloader/bootloader /tftp/modules/bootloader
+	cp core/kaneton/kaneton /tftp/modules/core
+	cp env/.kaneton.conf /tftp/modules/.kaneton.conf
+	;;
+    *)
+	qemu -fda kaneton.img -serial pty &
+	;;
+esac
+
 pr=$!
 sleep 10s
 

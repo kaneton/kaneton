@@ -1,0 +1,2 @@
+Test check_bootloader_04
+check_bootloader_04 done.

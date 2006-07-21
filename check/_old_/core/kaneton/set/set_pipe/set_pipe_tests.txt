@@ -1,0 +1,9 @@
+01 reserve and release
+02 push simple
+03 push with ALLOC or FREE option
+04 pop
+05 iterators
+06 flush
+07 operations on empty pipes
+08 operations on large pipes
+09 pick

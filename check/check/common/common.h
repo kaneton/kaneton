@@ -6,13 +6,17 @@
  * file          /home/buckman/kaneton/check/check/common/common.h
  *
  * created       matthieu bucchianeri   [tue dec 20 15:04:37 2005]
- * updated       matthieu bucchianeri   [fri jun  2 14:02:44 2006]
+ * updated       matthieu bucchianeri   [thu jul 20 18:57:41 2006]
  */
 
 #ifndef CHECK_COMMON_H_
 # define CHECK_COMMON_H_
 
 # include <klibc.h>
+
+# ifndef PAGESZ
+#  define PAGESZ	4096
+# endif /* !PAGESZ */
 
 # define TEST_ENTER							\
   t_leaks __memory_leaks;						\

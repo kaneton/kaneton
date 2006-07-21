@@ -1,0 +1,4 @@
+01 test of t_init fields
+02 test of segments and regions
+03 modules
+04 cr0, segment registers, stack
