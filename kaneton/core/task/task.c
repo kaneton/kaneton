@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [wed jul 19 17:56:12 2006]
+ * updated       matthieu bucchianeri   [sat jul 22 19:14:45 2006]
  */
 
 /*
@@ -38,6 +38,8 @@ machdep_include(task);
  */
 
 extern t_init*		init;
+
+extern m_sched*		sched;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -71,6 +73,13 @@ static t_error		task_current(i_task*			task)
   o_thread*		o;
 
   TASK_ENTER(task);
+
+  if (!sched)
+    {
+      *task = ktask;
+
+      TASK_LEAVE(task, ERROR_NONE);
+    }
 
   if (sched_current(&current) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
@@ -463,7 +472,7 @@ t_error			task_release(i_task			id)
    * 5)
    */
 
-  if (thread_flush(o->threads) != ERROR_NONE)
+  if (0 && thread_flush(o->threads) != ERROR_NONE) /* XXX */
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   if (set_release(o->threads) != ERROR_NONE)

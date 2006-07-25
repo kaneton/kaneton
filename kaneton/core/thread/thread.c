@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/thread/thread.c
+ * file          /home/buckman/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       julien quintard   [sat jul  8 02:28:36 2006]
+ * updated       matthieu bucchianeri   [sat jul 22 19:13:48 2006]
  */
 
 /*
@@ -689,7 +689,7 @@ t_error			thread_flush(i_task			taskid)
 	THREAD_LEAVE(thread, ERROR_UNKNOWN);
     }
 
-  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+  THREAD_LEAVE(thread, ERROR_NONE);
 }
 
 /*

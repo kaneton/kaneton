@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/debug.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [sun jun 18 17:02:09 2006]
+ * updated       matthieu bucchianeri   [sat jul 22 19:07:44 2006]
  */
 
 /*
@@ -45,7 +45,6 @@ t_error			debug_init(void)
    */
   serial_init(SERIAL_COM1, SERIAL_BR57600, SERIAL_8N1, SERIAL_FIFO_8);
   printf("serial port initialized\n");
-  printf_init(serial_put, 0);
   set_reserve(ll, SET_OPT_ALLOC, sizeof(t_serial_buffer), &buffers);
 
   while(1) 	debug_recv();
@@ -127,8 +126,13 @@ t_error			debug_exec_cmd_tab(t_serial_data *cmd)
 {
   int (*func)(void);
 
-  func = (int (*)(void)) strtol((char*)cmd->data, 0, 16);
+  *strchr((char*)cmd->data, '/') = 0;
+  func = (int (*)(void)) strtol((char*)cmd->data + strlen(cmd->data) + 1,
+				0, 16);
+  cons_msg('+', "running test %s @ 0x%p\n", (char*)cmd->data, func);
+  printf_init(serial_put, 0);
   func();
+  printf_init(cons_print_char, cons_attr);
   return (ERROR_NONE);
 }
 

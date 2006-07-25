@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [tue jul 11 18:08:56 2006]
+ * updated       matthieu bucchianeri   [mon jul 24 12:58:15 2006]
  */
 
 /*
@@ -595,7 +595,7 @@ void sched_test()
 
   while(1)
     {
- //     printf("kernel\n");
+//      printf("kernel\n");
     }
 
 }

@@ -1,4 +1,32 @@
 --
+ Choses a finir (matthieu) :
+
+ * finir le test as/06
+ * coder region_resize
+ * tester region_coalesce
+ * revoir le  malloc de  la libc pour  qu'il soit generique.  faire un
+   systeme  avec deux  pointeurs  de fonctions  sur mmap/munmap)  voir
+   aussi l'histoire du cache d'objets pour les mallocs pendant malloc.
+ * debugger task et sched
+ * faire les tests pour task
+ * tests pour sched !?
+
+ Bugs connus :
+
+ * region_split : ne marche pas
+ * segment_resize : cas particuliers (1er/dernier segments)
+ * bootloader/02 et bootloader/03 ne passent plus
+ * set_array_locate : dicho desactivée
+ * ia32_region_reserve : cas particulier (pt vide)
+
+ Autre :
+
+ * faire des tests pour time
+ * refaire des tests plus poussés pour event
+ * revoir les timers dans stats
+ * faire un vrai realloc
+
+--
  mettre a jour la doc sur les interfaces make et shell + options
 
  locate-prog -> locate
@@ -98,17 +126,6 @@
     + void* content;
     + t_module* next;
   }
-
---
- * finir les tests suivants: as/06, as/07, region/*, map/*
-
- a revoir (pas urgent):
-
- * set_locate_array qui deconne.
- * modifier la gestion du parse_res.py de la moulinette.
- * segment R/W/copy ok, mais peut etre encore optimisé (pas urgent).
- * revoir la moulinette pour injecter le code des tests a la volé plutot qu'a
-   la compile.
 
 --
  revoir la moulinette de triche, a la limite retoucher le code de ctcompare

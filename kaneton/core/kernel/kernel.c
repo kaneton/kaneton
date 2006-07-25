@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jul 11 18:08:39 2006]
+ * updated       matthieu bucchianeri   [fri jul 21 15:45:01 2006]
  */
 
 /*
@@ -210,11 +210,12 @@ void			kernel_init(void)
   /*
    * 14)
    */
-
+#ifndef SERIAL
   cons_msg('+', "starting scheduler manager\n");
 
   if (sched_init() != ERROR_NONE)
     core_error("cannot initialise the scheduler manager\n");
+#endif
 }
 
 /*

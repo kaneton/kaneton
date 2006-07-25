@@ -68,7 +68,7 @@ def	get_function_addr(cmd):
 	Return addr of function named cmd in kaneton
 	"""
 
-	obj = os.popen("nm ../kaneton/core/core | grep " + cmd +  " | cut -d ' ' -f 1")
+	obj = os.popen("nm ../kaneton/core/core | grep " + cmd.replace('-', '_') +  " | cut -d ' ' -f 1")
 	addr = obj.read()
 	addr = addr.strip("\n")
 	return addr
@@ -87,7 +87,7 @@ def 	SendCommand(cmd):
 	tosend_size = 8
 	serial_send(tosend, tosend_size)
 
-	cmd = get_function_addr(cmd)
+	cmd = cmd + "/" + get_function_addr(cmd)
 	tosend = (cmd)
 	tosend_size = (len(cmd) + 1)
 	serial_send(tosend, tosend_size)
@@ -251,7 +251,7 @@ def	main():
 		elif test_list[i][0] == "function":
 			try:
 				sys.stderr.write("test: " + test_list[i - 1] + "\n")
-				serial_timeout(3000);
+				serial_timeout(300000);
 				result = SendCommand(test_list[i][1])
 				parsed_result = set_and_parse_result(test_list[i - 1], result)
 				if check_result(test_list[i - 1], parsed_result):

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/kaneton/bootloader/arch/ia32-virtual/02s/02s.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [wed jul 19 18:33:21 2006]
+ * updated       matthieu bucchianeri   [sat jul 22 18:58:35 2006]
  */
 
 #include <klibc.h>
@@ -64,7 +64,7 @@ typedef struct
  * segments and regions test
  */
 
-void			check_bootloader_02s(void)
+void			check_ia32_virtual_02s(void)
 {
   t_uint32		i;
   register t_uint32	cr3;

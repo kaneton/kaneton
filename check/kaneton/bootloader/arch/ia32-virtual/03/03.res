@@ -1,2 +1,2 @@
-Test check_bootloader_03
-check_bootloader_03 done.
+Test check_ia32_virtual_03
+check_ia32_virtual_03 done.

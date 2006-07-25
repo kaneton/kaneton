@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/misc/asm.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu jun 15 22:10:37 2006]
+ * updated       matthieu bucchianeri   [tue jul 25 15:44:32 2006]
  */
 
 /*
@@ -96,6 +96,9 @@
 
 #define		HLT()							\
   asm volatile("hlt");
+
+#define		WBINVD()						\
+  asm volatile("wbinvd");
 
 /*
  * pio macro functions

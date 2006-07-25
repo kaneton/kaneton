@@ -31,42 +31,44 @@
  * common.c
  */
 
-void		check_bootloader_common(void);
+void		check_ia32_virtual_common(void);
+
+void		check_bootloader_tests(void);
 
 
 /*
  * ../01/01.c
  */
 
-void		check_bootloader_01(void);
+void		check_ia32_virtual_01(void);
 
 
 /*
  * ../02/02.c
  */
 
-void		check_bootloader_02(void);
+void		check_ia32_virtual_02(void);
 
 
 /*
  * ../02s/02s.c
  */
 
-void			check_bootloader_02s(void);
+void			check_ia32_virtual_02s(void);
 
 
 /*
  * ../03/03.c
  */
 
-void		check_bootloader_03(void);
+void		check_ia32_virtual_03(void);
 
 
 /*
  * ../04/04.c
  */
 
-void		check_bootloader_04(void);
+void		check_ia32_virtual_04(void);
 
 
 /*

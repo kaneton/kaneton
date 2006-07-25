@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/task/task.c
  *
  * created       renaud voltz   [tue apr  4 21:45:07 2006]
- * updated       matthieu bucchianeri   [mon jul 10 10:47:23 2006]
+ * updated       matthieu bucchianeri   [tue jul 25 16:08:57 2006]
  */
 
 /*
@@ -102,78 +102,3 @@ t_error			context_dump(t_ia32_context*		context)
 #endif
 
 t_ia32_context* context = NULL;
-
-t_ia32_context ctx[2];
-
-t_uint32 current = 0;
-
-void fun1()
-{
-  printf("fun1: 1\n");
-  asm volatile("int $31");
-  printf("fun1: 2\n");
-  asm volatile("int $31");
-  printf("fun1: 3\n");
-  asm volatile("int $31");
-  while(1)
-    ;
-}
-
-void fun2()
-{
-  printf("fun2: 1\n");
-  asm volatile("int $31");
-  printf("fun2: 2\n");
-  asm volatile("int $31");
-  printf("fun2: 3\n");
-  asm volatile("int $31");
-  while(1);
-}
-
-void chiche_ctx(t_uint32 id)
-{
-  printf("SWITCH %d -> %d\n", current, (current + 1) % 2);
-/*  int i;
-  for (i = 0; i < 100000000; i++)
-    ;*/
-  memcpy(&ctx[current], context, sizeof(t_ia32_context));
-  printf("old EIP = %p\n", context->eip);
-  current = (current + 1) % 2;
-  memcpy(context, &ctx[current], sizeof(t_ia32_context));
-  printf("new EIP = %p\n", context->eip);
-}
-
-void ctx_test()
-{
-  t_uint32 cr3;
-  t_uint32 eflags;
-
-  if (event_reserve(31, EVENT_FUNCTION, (u_event_handler)chiche_ctx)
-      != ERROR_NONE)
-    {
-      printf("error\n");
-      return;
-    }
-
-  asm volatile("movl %%cr3, %%eax\n\t"
-	       "movl %%eax, %0"
-	       : "=g" (cr3)
-	       :
-	       : "%eax");
-  asm volatile("pushf\n\t"
-	       "popl %0" : "=g" (eflags));
-  memset(&ctx[0], 0, sizeof(t_ia32_context));
-  memset(&ctx[1], 0, sizeof(t_ia32_context));
-  ctx[1].ds = ctx[0].ds = 0x10;
-  ctx[1].es = ctx[0].es = 0x10;
-  ctx[1].fs = ctx[0].fs = 0x10;
-  ctx[1].gs = ctx[0].gs = 0x10;
-  ctx[1].ss = ctx[0].ss = 0x10;
-  ctx[1].cs = ctx[0].cs = 0x8;
-  ctx[0].eip = fun1;
-  ctx[1].eip = fun2;
-  ctx[1].cr3 = ctx[0].cr3 = cr3;
-  ctx[1].eflags = ctx[0].eflags = eflags;
-
-  fun1();
-}

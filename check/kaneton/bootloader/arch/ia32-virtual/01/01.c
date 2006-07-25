@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/kaneton/bootloader/arch/ia32-virtual/01/01.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [wed jul 19 18:32:48 2006]
+ * updated       matthieu bucchianeri   [sat jul 22 19:01:41 2006]
  */
 
 #include <klibc.h>
@@ -19,7 +19,7 @@ extern t_init*	init;
  * t_init test
  */
 
-void		check_bootloader_01(void)
+void		check_ia32_virtual_01(void)
 {
   t_uint32	i;
   t_reg32	ebp;
@@ -32,7 +32,7 @@ void		check_bootloader_01(void)
   if (!init->memsz || init->memsz % 1024)
     printf("bad memsz field\n");
 
-  if (init->kcode % PAGESZ || init->kcode > (t_paddr)check_bootloader_01)
+  if (init->kcode % PAGESZ || init->kcode > (t_paddr)check_ia32_virtual_01)
     printf("bad kcode field\n");
   if (!init->kcodesz || init->kcodesz % PAGESZ)
     printf("bad kcodesz field\n");

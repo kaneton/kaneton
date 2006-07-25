@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/kaneton/bootloader/arch/ia32-virtual/04/04.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [wed jul 19 18:33:00 2006]
+ * updated       matthieu bucchianeri   [sat jul 22 18:58:22 2006]
  */
 
 #include <klibc.h>
@@ -19,7 +19,7 @@ extern t_init*	init;
  * pmode, paging and context tests
  */
 
-void		check_bootloader_04(void)
+void		check_ia32_virtual_04(void)
 {
   register t_uint32	cr0;
   register t_uint16	cs;

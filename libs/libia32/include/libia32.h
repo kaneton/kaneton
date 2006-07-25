@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/libia32.h
  *
  * created       matthieu bucchianeri   [tue dec 20 13:58:56 2005]
- * updated       matthieu bucchianeri   [mon jan 30 23:15:42 2006]
+ * updated       matthieu bucchianeri   [tue jul 25 16:04:41 2006]
  */
 
 #ifndef LIBIA32_H
@@ -30,6 +30,7 @@
 #include "time/pit.h"
 #include "task/task.h"
 #include "task/tss.h"
+#include "apic/apic.h"
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -44,9 +45,11 @@
  *      ../paging/tlb.c
  *      ../interrupt/pic.c
  *      ../interrupt/interrupt.c
+ *      ../interrupt/ipi.c
  *	../time/timer.c
  *	../task/task.c
  *      ../task/tss.c
+ *      ../apic/apic.c
  */
 
 /*
@@ -278,6 +281,15 @@ void			irq_wrapper(t_uint32			nr);
 
 
 /*
+ * ../interrupt/ipi.c
+ */
+
+void			ipi_send_init(void);
+
+void			ipi_send_startup(void);
+
+
+/*
  * ../time/timer.c
  */
 
@@ -311,6 +323,20 @@ t_error			tss_load(t_ia32_tss*			tss_new,
 				 t_uint32			io);
 
 t_error			tss_init(t_ia32_tss*			base);
+
+
+/*
+ * ../apic/apic.c
+ */
+
+void			apic_write(t_uint32			reg,
+				   t_uint32			value);
+
+t_uint32		apic_read(t_uint32			reg);
+
+t_uint32		apic_id(void);
+
+void			apic_enable(void);
 
 
 /*

@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/libs/libia32/interrupt/Makefile
+## file          /home/buckman/kaneton/libs/libia32/interrupt/Makefile
 ##
 ## created       matthieu bucchianeri   [fri jan  6 11:45:56 2006]
-## updated       matthieu bucchianeri   [fri jan  6 11:50:10 2006]
+## updated       matthieu bucchianeri   [tue jul 25 16:01:03 2006]
 ##
 
 #
@@ -28,7 +28,8 @@ include			../../../env/.env.mk
 INTERRUPT_LO		:=		interrupt.lo
 
 INTERRUPT_C		:=		pic.c			\
-					interrupt.c
+					interrupt.c		\
+					ipi.c
 
 
 INTERRUPT_O		:=		$(INTERRUPT_C:.c=.o)

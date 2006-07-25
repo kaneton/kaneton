@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/region/region.c
+ * file          /home/buckman/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       julien quintard   [tue jul 18 09:30:01 2006]
+ * updated       matthieu bucchianeri   [sat jul 22 19:30:34 2006]
  */
 
 /*
@@ -243,7 +243,7 @@ t_error			region_split(i_as			asid,
    * 2)
    */
 
-  if (reg->size >= size)
+  if (reg->size <= size)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*

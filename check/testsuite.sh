@@ -22,7 +22,7 @@ fi
 
 case "$5" in
     floppy)
-	make install
+	echo "" | make install
 	if [ "$?" -ne 0 ]; then
 	    exit 1
 	fi
@@ -34,6 +34,8 @@ case "$5" in
 	cp env/.kaneton.conf /tftp/modules/.kaneton.conf
 	;;
     *)
+	echo "" | make build
+	echo "" | make install
 	qemu -fda kaneton.img -serial pty &
 	;;
 esac

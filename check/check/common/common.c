@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/check/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [sun jun  4 18:31:38 2006]
+ * updated       matthieu bucchianeri   [fri jul 21 15:42:33 2006]
  */
 
 #include <klibc.h>
@@ -27,8 +27,8 @@ void	check_check_common(void)
 void	check_tests(void)
 {
   check_check_common();
-  check_malloc_tests();
-  /*  check_set_tests();
+/*  check_malloc_tests();
+  check_set_tests();
   check_malloc_tests();
   check_printf_tests();
   check_stats_tests();
