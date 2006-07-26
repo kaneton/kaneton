@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [wed jul 26 11:57:40 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 15:46:27 2006]
  */
 
 /*
@@ -45,27 +45,35 @@
 #define NO_ERROR_CODE	0
 
 /*
+ * specific  to handlers.  this is  used to  place handler  code  in a
+ * special ELF section.
+ */
+
+#define HANDLER								\
+  __attribute__ ((section("handler")))
+
+/*
  * load segment registers
  */
 
 #define LOAD_CORE_SELECTORS(_ds_)					\
-  "movl $"#_ds_",%edx\n\t"						\
-  "movw %dx,%ds\n\t"							\
-  "movw %dx,%es\n\t"							\
-  "movw %dx,%fs\n\t"							\
-  "movw %dx,%gs\n\t"
+  asm volatile("movl $"#_ds_",%edx\n\t"					\
+	       "movw %dx,%ds\n\t"					\
+	       "movw %dx,%es\n\t"					\
+	       "movw %dx,%fs\n\t"					\
+	       "movw %dx,%gs\n\t")
 
 /*
  * pre-handler for exceptions
  */
 
 #define EXCEPTION_PREHANDLER(_nr_, _error_code_)	       		\
-  void	prehandler_exception##_nr_(void)				\
+  HANDLER void	prehandler_exception##_nr_(void)			\
     {									\
       t_uint32	code = 0;						\
 									\
       SAVE_CONTEXT();							\
-      asm volatile(LOAD_CORE_SELECTORS(0x10));				\
+      LOAD_CORE_SELECTORS(0x10);					\
       if (_error_code_)					       		\
         asm volatile("movl 4(%%ebp),%%eax\n\t"				\
 		     : "=a" (code)					\
@@ -85,12 +93,12 @@
  */
 
 #define IRQ_PREHANDLER(_nr_)                                            \
-  void  prehandler_irq##_nr_(void)                                      \
+  HANDLER void  prehandler_irq##_nr_(void)				\
     {                                                                   \
       __attribute__((unused)) t_uint32  code = 0;                       \
                                                                         \
       SAVE_CONTEXT();							\
-      asm volatile(LOAD_CORE_SELECTORS(0x10));				\
+      LOAD_CORE_SELECTORS(0x10);					\
       asm volatile("subl $0x8, %esp");                                  \
       irq_wrapper(IDT_IRQ_BASE + _nr_);                                 \
       asm volatile("addl $0x8, %esp");                                  \

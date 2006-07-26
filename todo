@@ -7,6 +7,7 @@
  * revoir le  malloc de  la libc pour  qu'il soit generique.  faire un
    systeme  avec deux  pointeurs  de fonctions  sur mmap/munmap)  voir
    aussi l'histoire du cache d'objets pour les mallocs pendant malloc.
+ * gerer le IOPL et le IO bitmap du TSS
  * debugger task et sched
  * faire les tests pour task
  * tests pour sched !?

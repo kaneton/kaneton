@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [thu jul 13 14:11:52 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 15:27:43 2006]
  */
 
 /*
@@ -180,6 +180,8 @@ t_error			pd_get_cr3(t_uint32*			cr3,
 				   t_ia32_directory		dir)
 {
   *cr3 = ((t_uint32)dir & 0xfffffc18);
+
+  return (ERROR_NONE);
 }
 
 /*

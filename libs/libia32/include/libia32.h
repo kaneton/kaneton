@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/libia32.h
  *
  * created       matthieu bucchianeri   [tue dec 20 13:58:56 2005]
- * updated       matthieu bucchianeri   [tue jul 25 23:14:21 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 14:39:02 2006]
  */
 
 #ifndef LIBIA32_H
@@ -51,6 +51,7 @@
  *      ../task/tss.c
  *      ../apic/apic.c
  *      ../misc/cpuid.c
+ *      ../misc/extensions.c
  */
 
 /*
@@ -336,9 +337,24 @@ void			apic_enable(void);
 
 t_uint32		cpuid_is_genuine(void);
 
+char*			cpuid_get_brand(char* brand, int n);
+
 t_uint32		cpuid_has_mmx(void);
 
 t_uint32		cpuid_has_sse(void);
+
+t_uint32		cpuid_has_sse2(void);
+
+t_uint32		cpuid_has_sse3(void);
+
+t_uint32		cpuid_has_fxstate(void);
+
+
+/*
+ * ../misc/extensions.c
+ */
+
+void			extensions_enable_sse(void);
 
 
 /*

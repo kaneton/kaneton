@@ -17,7 +17,8 @@ include			../../../env/.env.mk
 
 MISC_LO			:=		misc.lo
 
-MISC_C			:=		cpuid.c
+MISC_C			:=		cpuid.c			\
+					extensions.c
 
 MISC_O			:=		$(MISC_C:.c=.o)
 

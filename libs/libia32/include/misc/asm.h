@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/misc/asm.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jul 25 23:55:06 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 14:51:47 2006]
  */
 
 /*
@@ -130,15 +130,15 @@
 	       : "m" (_var_))
 
 #define		CPUID(_var_,_eax_,_ebx_,_ecx_,_edx_)			\
-  asm volatile("movl %0, %%eax\n\t"					\
+  asm volatile("movl %4, %%eax\n\t"					\
 	       "cpuid\n\t"						\
 	       "movl %%eax, %0\n\t"					\
 	       "movl %%ebx, %1\n\t"					\
 	       "movl %%ecx, %2\n\t"					\
 	       "movl %%edx, %3\n\t"					\
-	       : "=r" (_eax_), "=b" (_ebx_), "=c" (_ecx_), "=d" (_edx_)	\
+	       : "=g" (_eax_), "=g" (_ebx_), "=g" (_ecx_), "=g" (_edx_)	\
 	       : "r" (_var_)						\
-	       : "%eax")
+	       : "%eax", "%ebx", "%ecx", "%edx")
 
 /*
  * pio macro functions
