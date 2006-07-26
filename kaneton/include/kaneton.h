@@ -3,14 +3,21 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/kaneton.h
+ * file          /home/buckman/kaneton/kaneton/include/kaneton.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [sat jul  8 03:15:22 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 17:36:27 2006]
  */
 
 #ifndef KANETON_H
 #define KANETON_H		1
+
+/*
+ * ---------- defines ---------------------------------------------------------
+ */
+
+#define UNUSED								\
+  __attribute__ ((unused))
 
 /*
  * ---------- includes --------------------------------------------------------

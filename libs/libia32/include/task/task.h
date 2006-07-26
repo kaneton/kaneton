@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/task/task.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       matthieu bucchianeri   [wed jul 26 12:45:53 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 18:15:34 2006]
  */
 
 /*
@@ -58,18 +58,11 @@
  */
 
 #define SAVE_CONTEXT()							\
-  asm volatile("pushl %eax\n\t"						\
-	       "pushl %ebx\n\t"						\
+  asm volatile("pushl %ebx\n\t"						\
 	       "pushl %ecx\n\t"						\
 	       "pushl %edx\n\t"						\
 	       "pushl %edi\n\t"						\
-	       "pushl %esi\n\t"						\
-	       "pushl %ds\n\t"						\
-	       "pushl %es\n\t"						\
-	       "pushl %fs\n\t"						\
-	       "pushl %gs\n\t"						\
-	       "movl %cr3, %eax\n\t"					\
-	       "pushl %eax\n\t");					\
+	       "pushl %esi");						\
   UPDATE_CONTEXT_PTR;							\
   if (cpucaps & IA32_CAPS_SSE)						\
     asm volatile("movl %%esp, %%eax\n\t"				\
@@ -97,18 +90,13 @@
   else									\
     asm volatile("frstor (%esp)\n\t"					\
 		 "addl $108, %esp\n\t");				\
-  asm volatile("popl %eax\n\t"						\
-	       "movl %eax, %cr3\n\t"					\
-	       "popl %gs\n\t"						\
-	       "popl %fs\n\t"						\
-	       "popl %es\n\t"						\
-	       "popl %ds\n\t"						\
-	       "popl %esi\n\t"						\
+  asm volatile("popl %esi\n\t"						\
 	       "popl %edi\n\t"						\
 	       "popl %edx\n\t"						\
 	       "popl %ecx\n\t"						\
-	       "popl %ebx\n\t"						\
-	       "popl %eax\n\t")
+	       "popl %ebx\n\t")
+
+
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -120,19 +108,20 @@
 
 typedef struct
 {
-  t_uint32	cr3;
-  t_uint32	gs;
-  t_uint32	fs;
-  t_uint32	es;
-  t_uint32	ds;
   t_uint32	esi;
   t_uint32	edi;
   t_uint32	edx;
   t_uint32	ecx;
   t_uint32	ebx;
+  t_uint32	reserved2[0x18 + 0x18];
+  t_uint32	cr3;
+  t_uint32	gs;
+  t_uint32	fs;
+  t_uint32	es;
+  t_uint32	ds;
   t_uint32	eax;
-  t_uint8	reserved1[0x14];
-  t_uint32	reserved2;
+  t_uint8	reserved1[0x8];
+  t_uint32	code;
   t_uint32	ebp;
   t_uint32	eip;
   t_uint32	cs;

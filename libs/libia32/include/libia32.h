@@ -276,10 +276,10 @@ t_error			interrupt_set_handler(t_uint32			nr,
 
 t_error			interrupt_init(void);
 
-void			exception_wrapper(t_uint32		nr,
-					  t_uint32		error_code);
+void		handler_exception(t_uint32			nr,
+				  t_uint32			has_code);
 
-void			irq_wrapper(t_uint32			nr);
+void		handler_irq(t_uint32				nr);
 
 
 /*
@@ -303,6 +303,9 @@ t_error			pit_init(t_uint32			frequency);
  */
 
 void			task_setup(void);
+
+void			context_copy(t_ia32_context*			dst,
+				     const t_ia32_context*		src);
 
 
 /*

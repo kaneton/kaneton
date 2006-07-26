@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [wed jul 26 12:13:54 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 16:31:42 2006]
  */
 
 /*
@@ -109,7 +109,7 @@ t_error			ia32_sched_switch(i_thread		thread)
   if (thread_get(sched->current, &from) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-  memcpy(&from->machdep.context, context, sizeof(t_ia32_context));
+  context_copy(&from->machdep.context, context);
   if (cpucaps & IA32_CAPS_SSE)
     memcpy(&from->machdep.u.sse, SSE_STATE(), sizeof(t_sse_state));
   else
@@ -122,7 +122,7 @@ t_error			ia32_sched_switch(i_thread		thread)
   if (thread_get(thread, &to) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-  memcpy(context, &to->machdep.context, sizeof(t_ia32_context));
+  context_copy(context, &to->machdep.context);
   if (cpucaps & IA32_CAPS_SSE)
     memcpy(SSE_STATE(), &to->machdep.u.sse, sizeof(t_sse_state));
   else

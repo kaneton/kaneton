@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/segment.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jul  8 02:28:52 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 17:31:23 2006]
  */
 
 /*
@@ -454,6 +454,7 @@ t_error			ia32_segment_perms(i_segment		segid,
  * 4) insert code and data segments for services.
  * 5) insert code and data segments for userland programs.
  * 6) update segment selector registers.
+ * 7) setup the segment selector for interrupts.
  */
 
 t_error			ia32_segment_init(void)
@@ -558,6 +559,12 @@ t_error			ia32_segment_init(void)
   gdt_build_selector(PMODE_GDT_CORE_CS, ia32_prvl_supervisor, &kcs);
   gdt_build_selector(PMODE_GDT_CORE_DS, ia32_prvl_supervisor, &kds);
   pmode_set_segment_registers(kcs, kds);
+
+  /*
+   * 7)
+   */
+
+  interrupt_ds = kds;
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }

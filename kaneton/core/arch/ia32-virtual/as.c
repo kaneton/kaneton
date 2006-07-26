@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu jul 13 14:18:22 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 17:50:14 2006]
  */
 
 /*
@@ -172,12 +172,14 @@ t_error			ia32_as_show(i_as			asid)
  *  d) clean the page directory.
  *  e) reinject the page tables in the kernel as.
  *  f) invalidate MMU caches.
+ *  g) setup the PDBR to use on interrupts.
  *   normal task:
  *  a) reserve a segment for the directory.
  *  b) reserve a region for the directory in the kernel address space.
  *  c) build a new page directory for the as.
  *  d) release the kernel-side region mapping the directory.
- *  e) set the new value of PDBR to all threads.
+ *  e) map the mandatory regions.
+ *  f) set the new value of PDBR to all threads.
  */
 
 t_error			ia32_as_reserve(i_task			tskid,
@@ -326,6 +328,12 @@ t_error			ia32_as_reserve(i_task			tskid,
        */
 
       tlb_flush();
+
+      /*
+       * g)
+       */
+
+      pd_get_cr3(&interrupt_pdbr, o->machdep.pd);
     }
   else
     {
@@ -351,8 +359,6 @@ t_error			ia32_as_reserve(i_task			tskid,
 
       base = reg;
 
-      /* XXX pas tres malin le proto de pd_build ... */
-
       if (pd_build(base, &o->machdep.pd, 1) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
@@ -367,6 +373,23 @@ t_error			ia32_as_reserve(i_task			tskid,
 
       /*
        * e)
+       */
+
+      //elf_get_section("handler"); XXX
+
+      //region_reserve over kcode segment
+
+      if (region_reserve(*asid,
+			 (i_segment)init->kstack,
+			 0,
+			 REGION_OPT_FORCE,
+			 init->kstack,
+			 init->kstacksz,
+			 &reg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      /*
+       * f)
        */
 
       if (task_get(tskid, &otask) != ERROR_NONE)

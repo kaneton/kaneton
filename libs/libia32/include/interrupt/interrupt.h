@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [wed jul 26 15:46:27 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 17:29:44 2006]
  */
 
 /*
@@ -53,59 +53,89 @@
   __attribute__ ((section("handler")))
 
 /*
- * load segment registers
+ * switch to the kernel, loading segment selectors and PDBR.
  */
 
-#define LOAD_CORE_SELECTORS(_ds_)					\
-  asm volatile("movl $"#_ds_",%edx\n\t"					\
-	       "movw %dx,%ds\n\t"					\
-	       "movw %dx,%es\n\t"					\
-	       "movw %dx,%fs\n\t"					\
-	       "movw %dx,%gs\n\t")
+#define SWITCH_KERNEL()							\
+  asm volatile("pushl %eax\n\t"						\
+	       "pushw %ds\n\t"						\
+	       "pushw %es\n\t"						\
+	       "pushw %fs\n\t"						\
+	       "pushw %gs");						\
+  asm volatile("movw %%ax, %%ds\n\t"					\
+	       "movw %%ax, %%es\n\t"					\
+	       "movw %%ax, %%fs\n\t"					\
+	       "movw %%ax, %%gs"					\
+	       :							\
+	       : "a" (interrupt_ds));					\
+  asm volatile("movl %cr3, %eax\n\t"					\
+	       "pushl %eax");						\
+  asm volatile("movl %%eax, %%cr3"					\
+	       :							\
+	       : "a" (interrupt_pdbr))
 
 /*
- * pre-handler for exceptions
+ * switch back to the process.
+ */
+
+#define SWITCH_BACK()							\
+  asm volatile("popl %eax\n\t"						\
+	       "movl %eax, %cr3\n\t"					\
+	       "popw %gs\n\t"						\
+	       "popw %fs\n\t"						\
+	       "popw %es\n\t"						\
+	       "popw %ds\n\t"						\
+	       "popl %eax");
+
+/*
+ * adjust stack to clear error code.
+ */
+
+#define CLEAR_ERROR_CODE()						\
+  asm volatile("addl $4,%esp\n\t")
+
+/*
+ * get the error code in nested handler.
+ */
+
+#define GET_ERROR_CODE(_code_)						\
+  asm volatile("movl (%%ebp), %%eax\n\t"				\
+	       "movl 4(%%eax), %0"					\
+	       : "=r" (_code_)						\
+	       :							\
+	       : "%eax")
+
+/*
+ * pre-handler for exceptions. minimal  context save and address space
+ * switch.
  */
 
 #define EXCEPTION_PREHANDLER(_nr_, _error_code_)	       		\
   HANDLER void	prehandler_exception##_nr_(void)			\
-    {									\
-      t_uint32	code = 0;						\
-									\
-      SAVE_CONTEXT();							\
-      LOAD_CORE_SELECTORS(0x10);					\
-      if (_error_code_)					       		\
-        asm volatile("movl 4(%%ebp),%%eax\n\t"				\
-		     : "=a" (code)					\
-		     :);						\
-      asm volatile("subl $0x8, %esp");					\
-      exception_wrapper(IDT_EXCEPTION_BASE + _nr_, code);		\
-      asm volatile("addl $0x8, %esp");					\
-      RESTORE_CONTEXT();						\
-      LEAVE();								\
-      if (_error_code_)							\
-        asm volatile("addl $4,%esp\n\t");				\
-      IRET();								\
-    }
+  {									\
+    SWITCH_KERNEL();							\
+    handler_exception(IDT_EXCEPTION_BASE + _nr_, _error_code_);		\
+    SWITCH_BACK();							\
+    LEAVE();								\
+    if (_error_code_)							\
+      CLEAR_ERROR_CODE();						\
+    IRET();								\
+  }
 
 /*
- * pre-handler for irq's
+ * pre-handler  for  irqs.  minimal  context  save  and address  space
+ * switch.
  */
 
 #define IRQ_PREHANDLER(_nr_)                                            \
   HANDLER void  prehandler_irq##_nr_(void)				\
-    {                                                                   \
-      __attribute__((unused)) t_uint32  code = 0;                       \
-                                                                        \
-      SAVE_CONTEXT();							\
-      LOAD_CORE_SELECTORS(0x10);					\
-      asm volatile("subl $0x8, %esp");                                  \
-      irq_wrapper(IDT_IRQ_BASE + _nr_);                                 \
-      asm volatile("addl $0x8, %esp");                                  \
-      RESTORE_CONTEXT();						\
-      LEAVE();								\
-      IRET();								\
-    }
+  {									\
+    SWITCH_KERNEL();							\
+    handler_irq(IDT_IRQ_BASE + _nr_);					\
+    SWITCH_BACK();							\
+    LEAVE();								\
+    IRET();								\
+  }
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -113,6 +143,22 @@
 
 typedef void			(*t_ia32_interrupt_prehandler)(void);
 typedef void			(*t_ia32_interrupt_handler)(t_uint32);
+
+/*
+ * ---------- extern ----------------------------------------------------------
+ */
+
+/*
+ * on-interrupt data segment to load.
+ */
+
+extern volatile t_uint16	interrupt_ds;
+
+/*
+ * on-interrupt PDBR to load.
+ */
+
+extern volatile t_uint32	interrupt_pdbr;
 
 /*
  * ---------- prototypes ------------------------------------------------------

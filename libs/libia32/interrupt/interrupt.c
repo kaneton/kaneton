@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/interrupt/interrupt.c
+ * file          /home/buckman/kaneton/libs/libia32/interrupt/interrupt.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       julien quintard   [sat jul  8 02:35:21 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 18:13:02 2006]
  */
 
 /*
@@ -33,6 +33,18 @@
  */
 
 t_ia32_interrupt_handler	interrupt_handlers[EXCEPTION_NR + IRQ_NR];
+
+/*
+ * the segment selector to load on interrupt.
+ */
+
+volatile t_uint16		interrupt_ds = 0;
+
+/*
+ * the page directory to load on interrupt.
+ */
+
+volatile t_uint32		interrupt_pdbr = 0;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -179,38 +191,44 @@ t_error			interrupt_init(void)
 }
 
 /*
- * handle an exception.
- *
- * just pass the error_code to the appropriate handler.
- *
+ * this is the second handler called on exception.
+ * it saves the context second part and call the user-defined handler.
  */
 
-void			exception_wrapper(t_uint32		nr,
-					  t_uint32		error_code)
+void			handler_exception(t_uint32			nr,
+					  t_uint32			has_code)
 {
-  interrupt_handlers[nr](error_code);
+  t_uint32		code = 0;
+
+  SAVE_CONTEXT();
+
+  if (has_code)
+    {
+      GET_ERROR_CODE(code);
+    }
+
+  interrupt_handlers[nr](code);
+
+  RESTORE_CONTEXT();
 }
 
 /*
- * handle an irq.
- *
- * steps:
- *
- * 1) disable maskable interrupts.
- * 2) acknowledge the pic.
- * 3) call the appropriate handler.
- * 4) enable maskable interrupts.
+ * this is  the second  handler called on  irq.  it saves  the context
+ * second part, send the EOI and call the user-defined handler.
  */
 
-void			irq_wrapper(t_uint32			nr)
+
+void			handler_irq(t_uint32				nr)
 {
-  CLI();
+  UNUSED t_uint32	code = 0;
+
+  SAVE_CONTEXT();
 
   pic_acknowledge(nr - IDT_IRQ_BASE);
 
   interrupt_handlers[nr](nr);
 
-  STI();
+  RESTORE_CONTEXT();
 }
 
 /*
