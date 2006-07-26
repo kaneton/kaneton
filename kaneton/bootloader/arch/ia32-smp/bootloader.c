@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-smp/bootloader.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jul 25 15:37:10 2006]
+ * updated       matthieu bucchianeri   [tue jul 25 17:09:37 2006]
  */
 
 /*
@@ -160,7 +160,7 @@ int			bootloader(t_uint32			magic,
    * 9)
    */
 
-  kernel(init);
+ // kernel(init);
 
   asm("movl %0, %%ebp\n\t"
       "movl %1, %%esp\n\t"

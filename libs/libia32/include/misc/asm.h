@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/misc/asm.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jul 25 15:44:32 2006]
+ * updated       matthieu bucchianeri   [tue jul 25 23:55:06 2006]
  */
 
 /*
@@ -28,6 +28,12 @@
 /*
  * asm macro functions
  */
+
+#define		IRET()							\
+  asm volatile("iret");
+
+#define		LEAVE()							\
+  asm volatile("leave");
 
 #define		CLI()							\
   asm volatile("cli\n")
@@ -89,16 +95,50 @@
 	       : "m" (_var_))
 
 #define		SEFLAGS(_var_)						\
-  asm volatile("popf\n\t"						\
+  asm volatile("pushf\n\t"						\
 	       "popl %0"						\
 	       : "=m" (_var_)						\
 	       :)
 
 #define		HLT()							\
-  asm volatile("hlt");
+  asm volatile("hlt")
 
 #define		WBINVD()						\
-  asm volatile("wbinvd");
+  asm volatile("wbinvd")
+
+#define		FINIT()							\
+  asm volatile("finit")
+
+#define		FSAVE(_var_)						\
+  asm volatile("fsave %0"						\
+	       :							\
+	       : "m" (_var_))
+
+#define		FRSTOR(_var_)						\
+  asm volatile("frstor %0"						\
+	       :							\
+	       : "m" (_var_))
+
+#define		FXSAVE(_var_)						\
+  asm volatile("fxsave %0"						\
+	       :							\
+	       : "m" (_var_))
+
+#define		FXRSTOR(_var_)						\
+  asm volatile("fxrstor %0"						\
+	       :							\
+	       : "m" (_var_))
+
+#define		CPUID(_var_,_eax_,_ebx_,_ecx_,_edx_)			\
+  asm volatile("movl %0, %%eax\n\t"					\
+	       "cpuid\n\t"						\
+	       "movl %%eax, %0\n\t"					\
+	       "movl %%ebx, %1\n\t"					\
+	       "movl %%ecx, %2\n\t"					\
+	       "movl %%edx, %3\n\t"					\
+	       : "=r" (_eax_), "=b" (_ebx_), "=c" (_ecx_), "=d" (_edx_)	\
+	       : "r" (_var_)						\
+	       : "%eax")
 
 /*
  * pio macro functions

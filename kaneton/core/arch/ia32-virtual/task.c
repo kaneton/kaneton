@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/task.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       julien quintard   [sat jul  8 02:30:11 2006]
+ * updated       matthieu bucchianeri   [tue jul 25 23:27:49 2006]
  */
 
 /*
@@ -51,7 +51,7 @@ d_task			task_dispatch =
     NULL,
     NULL,
     NULL,
-    NULL,
+    ia32_task_init,
     NULL,
 
 /*                                                                 [cut] /k4 */
@@ -63,5 +63,14 @@ d_task			task_dispatch =
  */
 
 /*                                                                  [cut] k4 */
+
+t_error			ia32_task_init(void)
+{
+  TASK_ENTER(task);
+
+  task_setup();
+
+  TASK_LEAVE(task, ERROR_NONE);
+}
 
 /*                                                                 [cut] /k4 */

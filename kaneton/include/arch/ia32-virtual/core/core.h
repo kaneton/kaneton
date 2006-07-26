@@ -151,6 +151,8 @@ t_error			ia32_timer_init(void);
  * ../../../../core/arch/machdep/task.c
  */
 
+t_error			ia32_task_init(void);
+
 
 /*
  * ../../../../core/arch/machdep/thread.c

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-smp/mp.c
  *
  * created       matthieu bucchianeri   [tue jul 25 11:21:34 2006]
- * updated       matthieu bucchianeri   [tue jul 25 16:15:20 2006]
+ * updated       matthieu bucchianeri   [tue jul 25 17:08:48 2006]
  */
 
 /*
@@ -178,8 +178,20 @@ void			bootloader_mp_init(void)
    */
 
   bootloader_cons_msg('+', " multiprocessor ok, %d processor(s)\n", count);
+}
 
-  while(1);
+/*
+ * this function get a processor by its APIC ID.
+ */
+
+t_sint32		bootloader_get_cpu(t_uint32		apicid)
+{
+  t_uint32		i;
+
+  for (i = 0; i < count; i++)
+    if (mp[i].id == apicid)
+      return i;
+  return -1;
 }
 
 /*
@@ -194,15 +206,12 @@ void			bootloader_mp_init(void)
 
 t_sint32		bootloader_add_cpu(t_uint32		apicid)
 {
-  t_uint32		i;
-
   /*
    * 1)
    */
 
-  for (i = 0; i < count; i++)
-    if (mp[i].id == apicid)
-      return -1;
+  if (bootloader_get_cpu(apicid) != -1)
+    return -1;
 
   /*
    * 2)
@@ -252,7 +261,7 @@ void			bootloader_mp_ap_init(void)
 
   apicid = apic_id();
 
-  if ((id = bootloader_add_cpu(apicid)) >= 0)
+  if ((id = bootloader_get_cpu(apicid)) >= 0)
     {
       bootloader_cons_msg('#', " AP-%d APIC ID: %d\n", count, apicid);
 
@@ -260,6 +269,8 @@ void			bootloader_mp_ap_init(void)
 
       bootloader_paging_ap_init();
     }
+  else
+    bootloader_add_cpu(apicid);
 
   /*
    * 3)

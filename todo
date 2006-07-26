@@ -21,6 +21,10 @@
 
  Autre :
 
+ * trouver un moyen de reduire le  code du kernel a mapper dans chaque
+   as.  pour  l'instant il  y  a  besoin de  la  stack  kernel et  des
+   prehandlers d'exceptions et d'irq.  pour l'instant, tout les kernel
+   est mappé dans chaque as.
  * faire des tests pour time
  * refaire des tests plus poussés pour event
  * revoir les timers dans stats

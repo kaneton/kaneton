@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/thread.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [sat jul  8 02:30:44 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 12:15:34 2006]
  */
 
 /*
@@ -191,6 +191,11 @@ t_error			ia32_thread_reserve(i_task		taskid,
   o->machdep.context.ecx = 0;
   o->machdep.context.ebx = 0;
   o->machdep.context.eax = 0;
+
+  if (cpucaps & IA32_CAPS_SSE)
+    memset(&o->machdep.u.sse, 0, sizeof(t_sse_state));
+  else
+    memset(&o->machdep.u.x87, 0, sizeof(t_x87_state));
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }

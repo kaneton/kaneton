@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [mon jul 24 12:58:15 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 12:27:35 2006]
  */
 
 /*
@@ -526,25 +526,44 @@ t_error			sched_clean(void)
 
 void _fun1()
 {
+  FINIT();
+
+  float f;
+
+  f = 11111111.f;
+
   while (1)
     {
-      printf("fun1\n");
+      printf("fun1: %d\n", (int)f);
+      f -= 10.f;
     }
 }
 
 void _fun2()
 {
+  FINIT();
+
+  float f;
+
+  f = -11111111.f;
+
   while (1)
     {
-      printf("fun2\n");
+      printf("fun2: %d\n", (int)f);
+      f += 10.f;
     }
 }
 
 void _fun3()
 {
+  FINIT();
+
+  float f = 0.f;
+
   while (1)
     {
-      printf("fun3\n");
+      printf("fun3: %d\n", (int)f);
+      f += 0.00001f;
     }
 }
 
@@ -596,6 +615,7 @@ void sched_test()
   while(1)
     {
 //      printf("kernel\n");
+      sched_yield();
     }
 
 }

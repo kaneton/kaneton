@@ -109,6 +109,8 @@ void			bootloader_pmode_ap_init(void);
 
 void			bootloader_mp_init(void);
 
+t_sint32		bootloader_get_cpu(t_uint32		apicid);
+
 t_sint32		bootloader_add_cpu(t_uint32		apicid);
 
 void			bootloader_mp_ap_init(void);

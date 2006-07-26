@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/libia32.h
  *
  * created       matthieu bucchianeri   [tue dec 20 13:58:56 2005]
- * updated       matthieu bucchianeri   [tue jul 25 16:04:41 2006]
+ * updated       matthieu bucchianeri   [tue jul 25 23:14:21 2006]
  */
 
 #ifndef LIBIA32_H
@@ -50,6 +50,7 @@
  *	../task/task.c
  *      ../task/tss.c
  *      ../apic/apic.c
+ *      ../misc/cpuid.c
  */
 
 /*
@@ -300,17 +301,7 @@ t_error			pit_init(t_uint32			frequency);
  * ../task/task.c
  */
 
-t_error			context_store(t_ia32_context*		context);
-
-t_error			context_dump(t_ia32_context*		context);
-
-void fun1();
-
-void fun2();
-
-void chiche_ctx(t_uint32 id);
-
-void ctx_test();
+void			task_setup(void);
 
 
 /*
@@ -337,6 +328,17 @@ t_uint32		apic_read(t_uint32			reg);
 t_uint32		apic_id(void);
 
 void			apic_enable(void);
+
+
+/*
+ * ../misc/cpuid.c
+ */
+
+t_uint32		cpuid_is_genuine(void);
+
+t_uint32		cpuid_has_mmx(void);
+
+t_uint32		cpuid_has_sse(void);
 
 
 /*

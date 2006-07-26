@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [tue jul 11 18:05:02 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 11:57:40 2006]
  */
 
 /*
@@ -56,21 +56,6 @@
   "movw %dx,%gs\n\t"
 
 /*
- * update the global variable used for pointing saved context.
- */
-
-#define UPDATE_CONTEXT_PTR						\
-  asm volatile("movl %%esp, %0\n\t"					\
-	       : "=g" (context))
-
-/*
- * simulate a return from function
- */
-
-#define ADJUST_STACK							\
-  "leave\n\t"
-
-/*
  * pre-handler for exceptions
  */
 
@@ -79,9 +64,8 @@
     {									\
       t_uint32	code = 0;						\
 									\
-      asm volatile(SAVE_CONTEXT						\
-		   LOAD_CORE_SELECTORS(0x10));				\
-      UPDATE_CONTEXT_PTR;						\
+      SAVE_CONTEXT();							\
+      asm volatile(LOAD_CORE_SELECTORS(0x10));				\
       if (_error_code_)					       		\
         asm volatile("movl 4(%%ebp),%%eax\n\t"				\
 		     : "=a" (code)					\
@@ -89,12 +73,11 @@
       asm volatile("subl $0x8, %esp");					\
       exception_wrapper(IDT_EXCEPTION_BASE + _nr_, code);		\
       asm volatile("addl $0x8, %esp");					\
-      context = NULL;							\
-      asm volatile(RESTORE_CONTEXT					\
-		   ADJUST_STACK);					\
+      RESTORE_CONTEXT();						\
+      LEAVE();								\
       if (_error_code_)							\
         asm volatile("addl $4,%esp\n\t");				\
-      asm volatile("iret\n\t");						\
+      IRET();								\
     }
 
 /*
@@ -106,16 +89,14 @@
     {                                                                   \
       __attribute__((unused)) t_uint32  code = 0;                       \
                                                                         \
-      asm volatile(SAVE_CONTEXT                                         \
-                   LOAD_CORE_SELECTORS(0x10));                          \
-      UPDATE_CONTEXT_PTR;                                               \
+      SAVE_CONTEXT();							\
+      asm volatile(LOAD_CORE_SELECTORS(0x10));				\
       asm volatile("subl $0x8, %esp");                                  \
       irq_wrapper(IDT_IRQ_BASE + _nr_);                                 \
       asm volatile("addl $0x8, %esp");                                  \
-      context = NULL;                                                   \
-      asm volatile(RESTORE_CONTEXT                                      \
-                   ADJUST_STACK                                         \
-                   "iret\n\t");                                         \
+      RESTORE_CONTEXT();						\
+      LEAVE();								\
+      IRET();								\
     }
 
 /*
