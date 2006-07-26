@@ -174,6 +174,8 @@ t_error			ia32_thread_store(i_thread		threadid,
 t_error			ia32_thread_stack(i_thread		threadid,
 					  t_stack		stack);
 
+t_error			ia32_thread_init(void);
+
 
 /*
  * ../../../../core/arch/machdep/sched.c

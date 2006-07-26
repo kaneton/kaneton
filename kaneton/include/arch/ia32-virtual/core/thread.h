@@ -21,6 +21,15 @@
 /*                                                                [cut] k4   */
 
 /*
+ *
+ */
+
+typedef struct
+{
+  t_ia32_tss		tss;
+}			am_thread;
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -53,7 +62,8 @@ typedef struct
     }									\
   )
 
-#define         machdep_data_m_thread()
+#define         machdep_data_m_thread()					\
+  am_thread		machdep
 
 #define         machdep_data_o_thread()					\
   ao_thread		machdep

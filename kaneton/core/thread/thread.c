@@ -13,6 +13,11 @@
  * ---------- information -----------------------------------------------------
  *
  * this file implements the thread manager.
+ * a thread objecct contains:
+ *  - an execution context (architecture-depedent)
+ *  - information relevant to its own stack
+ *  - scheduling information (state, priority within the task)
+ *
  */
 
 /*                                                                  [cut] k4 */
@@ -72,7 +77,7 @@ t_error			thread_show(i_thread			threadid)
    * 3)
    */
 
-  if (machdep_call(thread, thread_show, threadid) != ERROR_UNKNOWN)
+  if (machdep_call(thread, thread_show, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -111,7 +116,7 @@ t_error			thread_dump(void)
 
   set_foreach(SET_OPT_FORWARD, thread->threads, &i, state)
     {
-      if (set_object(thread->threads, i, (void**)&data) != ERROR_UNKNOWN)
+      if (set_object(thread->threads, i, (void**)&data) != ERROR_NONE)
 	THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
       if (thread_show(data->threadid) != ERROR_NONE)
@@ -278,6 +283,8 @@ t_error			thread_clone(i_task			taskid,
 /*
  * this function reserves a thread for a given task.
  *
+ * XXX THREAD: il faut allouer une pile supplementaire pour le ring0
+ *
  * steps:
  *
  * 1) sanity checks.
@@ -334,7 +341,6 @@ t_error			thread_reserve(i_task			taskid,
 
   if (set_add(thread->threads, &o) != ERROR_NONE)
     {
-      map_release(task->asid, o.stack);
       id_release(&thread->id, o.threadid);
 
       THREAD_LEAVE(thread, ERROR_UNKNOWN);
@@ -343,7 +349,7 @@ t_error			thread_reserve(i_task			taskid,
   if (set_add(task->threads, &o.threadid) != ERROR_NONE)
     {
       set_remove(thread->threads, o.threadid);
-      map_release(task->asid, o.stack);
+
       id_release(&thread->id, o.threadid);
 
       THREAD_LEAVE(thread, ERROR_UNKNOWN);
@@ -693,7 +699,11 @@ t_error			thread_flush(i_task			taskid)
 }
 
 /*
+ * this function loads a new execution context in the thread object.
  *
+ * steps:
+ *
+ * 1)
  */
 
 t_error			thread_load(i_thread			threadid,
@@ -712,7 +722,7 @@ t_error			thread_load(i_thread			threadid,
 }
 
 /*
- *
+ * this fonction stores the thread execution context.
  */
 
 t_error			thread_store(i_thread			threadid,
@@ -782,7 +792,7 @@ t_error			thread_init(void)
     {
       cons_msg('!', "thread: unable to initialise the identifier object\n");
 
-      return ERROR_NONE;
+      return ERROR_UNKNOWN;
     }
 
   /*
@@ -794,7 +804,7 @@ t_error			thread_init(void)
     {
       cons_msg('!', "thread: unable to reserve the thread set\n\n");
 
-      return ERROR_NONE;
+      return ERROR_UNKNOWN;
     }
 
   /*
@@ -815,7 +825,7 @@ t_error			thread_init(void)
    */
 
 #if (DEBUG & DEBUG_THREAD)
-  if (thread_dump() != ERROR_UNKNOWN)
+  if (thread_dump() != ERROR_NONE)
     return ERROR_UNKNOWN;
 #endif
 

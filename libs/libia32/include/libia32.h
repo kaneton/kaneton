@@ -312,12 +312,12 @@ void			context_copy(t_ia32_context*			dst,
  * ../task/tss.c
  */
 
-t_error			tss_load(t_ia32_tss*			tss_new,
+t_error			tss_load(t_ia32_tss*			tss,
 				 t_uint16			ss,
 				 t_uint32			esp,
 				 t_uint32			io);
 
-t_error			tss_init(t_ia32_tss*			base);
+t_error			tss_init(t_ia32_tss*			tss);
 
 
 /*

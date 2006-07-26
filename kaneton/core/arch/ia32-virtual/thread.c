@@ -29,6 +29,8 @@
 
 extern m_thread*	thread;
 
+extern i_as		kasid;
+
 /*                                                                  [cut] k4 */
 
 /*
@@ -53,7 +55,7 @@ d_thread			thread_dispatch =
     NULL,
     ia32_thread_stack,
     NULL,
-    NULL
+    ia32_thread_init
   };
 
 /*
@@ -61,12 +63,12 @@ d_thread			thread_dispatch =
  */
 
 /*
- * clone the ia32 architecture dependant part of a thread.
+ * clone the ia32 architecture dependent part of a thread.
  *
  * steps:
  *
  * 1) get the thread to clone from the threads container.
- * 2) get the new thread from the threads containers.
+ * 2) get the new thread from the threads container.
  * 3) copy the ia32-dependent object data.
  */
 
@@ -103,8 +105,18 @@ t_error			ia32_thread_clone(i_task		taskid,
   THREAD_LEAVE(thread, ERROR_NONE)
 }
 
+
+
 /*
+ * reserve a thread on the ia32 architecture
  *
+ * steps:
+ *
+ * 1) get the thread object for the specified thread.
+ * 2) get the task object the thread belongs to.
+ * 3) get the task's address space.
+ * 4)
+ * 5)
  */
 
 t_error			ia32_thread_reserve(i_task		taskid,
@@ -119,40 +131,39 @@ t_error			ia32_thread_reserve(i_task		taskid,
   THREAD_ENTER(thread);
 
   /*
-   *
+   * 1)
    */
 
   if (thread_get(*threadid, &o) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
-   *
+   * 2)
    */
 
   if (task_get(taskid, &task) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
-   *
+   * 3)
    */
 
   if (as_get(task->asid, &as) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
+
   /*
-   * XXX THREAD: verifier d'abord que l'AS existe.
+   * 4)
    */
+
+  memset(&(o->machdep.context), 0x0, sizeof(t_ia32_context));
 
   pd_get_cr3(&(o->machdep.context.cr3), as->machdep.pd);
-
-  /*
-   *
-   */
 
   SEFLAGS(o->machdep.context.eflags);
 
   /*
-   *
+   * 5)
    */
 
   switch(task->class)
@@ -180,17 +191,6 @@ t_error			ia32_thread_reserve(i_task		taskid,
   o->machdep.context.fs = data_segment;
   o->machdep.context.gs = data_segment;
   o->machdep.context.ss = data_segment;
-
-  /*
-   *
-   */
-
-  o->machdep.context.esi = 0;
-  o->machdep.context.edi = 0;
-  o->machdep.context.edx = 0;
-  o->machdep.context.ecx = 0;
-  o->machdep.context.ebx = 0;
-  o->machdep.context.eax = 0;
 
   if (cpucaps & IA32_CAPS_SSE)
     memset(&o->machdep.u.sse, 0, sizeof(t_sse_state));
@@ -284,6 +284,51 @@ t_error			ia32_thread_stack(i_thread		threadid,
    */
 
   o->machdep.context.ebp = stack.base + stack.size - 1;
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
+
+/*
+ *
+ *
+ * steps:
+ *
+ * 1) get the kernel address space.
+ * 2) fill the tss.
+ * 3) load the current tss.
+ */
+
+t_error			ia32_thread_init(void)
+{
+  THREAD_ENTER(thread);
+
+  o_as*			as;
+
+  /*
+   * 1)
+   */
+
+
+  if (as_get(kasid, &as) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  memset(&(thread->machdep.tss), 0x0, sizeof(t_ia32_tss));
+
+  thread->machdep.tss.ss = SEGSEL(PMODE_GDT_CORE_DS, PRIV_RING0);
+
+  pd_get_cr3(&(thread->machdep.tss.cr3), as->machdep.pd);
+
+  SEFLAGS(thread->machdep.tss.eflags);
+
+  /*
+   * 3)
+   */
+
+  tss_init(&(thread->machdep.tss));
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }

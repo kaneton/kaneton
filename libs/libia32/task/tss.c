@@ -29,45 +29,21 @@
 #include <kaneton.h>
 
 /*
- * ---------- defines ---------------------------------------------------------
- */
-
-t_ia32_tss		tss;
-
-/*
  * ---------- functions -------------------------------------------------------
  */
 
 /*
- * XXX EVENT
- *
- * stes:
- *
- * 1) retrieve the global tss pointer if needed.
- * 2) update tss fields.
+ * update the current tss.
  */
 
-/* XXX EVENT rename tss_new */
-
-t_error			tss_load(t_ia32_tss*			tss_new,
+t_error			tss_load(t_ia32_tss*			tss,
 				 t_uint16			ss,
 				 t_uint32			esp,
 				 t_uint32			io)
 {
-  /*
-   * 1)
-   */
-
-  if (!tss_new)
-    tss_new = &tss;
-
-  /*
-   * 2)
-   */
-
-  tss_new->ss = ss;
-  tss_new->esp = esp;
-  tss_new->io = io;
+  tss->ss = ss;
+  tss->esp = esp;
+  tss->io = io;
 
   return ERROR_NONE;
 }
@@ -77,13 +53,12 @@ t_error			tss_load(t_ia32_tss*			tss_new,
  *
  * steps:
  *
- * 1)retrieve the global tss pointer if needed.
- * 2)fill the tss descriptor and add it into the gdt.
- * 3)get the segment selector for this descriptor.
- * 4)load the task register with this segment selector.
+ * 1)fill the tss descriptor and add it into the gdt.
+ * 2)get the segment selector for this descriptor.
+ * 3)load the task register with this segment selector.
  */
 
-t_error			tss_init(t_ia32_tss*			base)
+t_error			tss_init(t_ia32_tss*			tss)
 {
   t_uint16		segment;
   t_uint16		selector;
@@ -93,16 +68,9 @@ t_error			tss_init(t_ia32_tss*			base)
    * 1)
    */
 
-  if (!base)
-    base = &tss;
-
-  /*
-   * 2)
-   */
-
-  descriptor.base = (t_uint32)base;
+  descriptor.base = (t_uint32)tss;
   descriptor.limit = sizeof(t_ia32_tss);
-  descriptor.privilege = 0;
+  descriptor.privilege = PRIV_RING0;
   descriptor.is_system = 1;
   descriptor.type.sys = SEG_TYPE_TSS;
 
@@ -110,7 +78,7 @@ t_error			tss_init(t_ia32_tss*			base)
     return ERROR_UNKNOWN;
 
   /*
-   * 3)
+   * 2)
    */
 
   if (gdt_build_selector(segment, descriptor.privilege, &selector)
@@ -118,7 +86,7 @@ t_error			tss_init(t_ia32_tss*			base)
     return ERROR_UNKNOWN;
 
   /*
-   * 4)
+   * 3)
    */
 
   LTR(selector);
