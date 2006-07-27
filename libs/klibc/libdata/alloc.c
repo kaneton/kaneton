@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/klibc/libdata/alloc.c
  *
  * created       cedric aubouy   [sun sep 25 19:57:33 2005]
- * updated       matthieu bucchianeri   [sun jun  4 22:31:40 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 19:20:19 2006]
  */
 
 /*
@@ -167,25 +167,28 @@ void*			malloc(size_t				size)
 
   if (allocated == NULL)
     {
-      if (alloc.as == ID_UNUSED)
+      if (alloc.mmap == NULL)
 	{
 	  printf("FATAL ERROR: survey area exhausted !\n");
 
 	  while (1)
 	    ;
 	}
-#if 0
+
       /*
        * a)
        */
 
       pagesz = PAGED_SIZE(size + sizeof(t_area) + sizeof(t_chunk));
 
-      if (map_reserve(alloc.as,
-		      MAP_OPT_NONE,
-		      pagesz,
-		      PERM_READ | PERM_WRITE,
-		      &addr) != ERROR_NONE)
+      addr = (t_vaddr)alloc.mmap(0,
+				 pagesz,
+				 PROT_READ | PROT_WRITE,
+				 0,
+				 0,
+				 0);
+
+      if ((void*)addr == MAP_FAILED)
 	{
 	  printf("FATAL ERROR: physical memory exhausted !\n");
 
@@ -228,7 +231,7 @@ void*			malloc(size_t				size)
 	  chunk->next_free = NULL;
 	  area->first_free_chunk = NULL;
 	}
-#endif
+
     }
 
   /*
@@ -348,12 +351,10 @@ void			free(void*				ptr)
   if (area != alloc.areas &&
       area->first_free_chunk->size == area->size - sizeof(t_chunk))
     {
-#if 0
       area->prev_area->next_area = NULL;
 
-      if (map_release(alloc.as, (t_vaddr)area) != ERROR_NONE)
+      if (alloc.munmap((void*)area, area->size + sizeof(t_area)))
 	printf("warning: unable to release area.\n");
-#endif
     }
 
   /*
@@ -479,17 +480,14 @@ void*			realloc(void* 				ptr,
 }
 
 /*
- * this function tells the allocator the kernel asid.
+ * this function setup the mmap/munmap pointers.
  */
 
-t_error			alloc_kasid(i_as			kernel)
+void			alloc_setup(t_pfn_mmap			fmmap,
+				    t_pfn_munmap		fmunmap)
 {
-  if (alloc.as != ID_UNUSED)
-    return (ERROR_UNKNOWN);
-
-  alloc.as = kernel;
-
-  return (ERROR_NONE);
+  alloc.mmap = fmmap;
+  alloc.munmap = fmunmap;
 }
 
 /*
@@ -524,7 +522,8 @@ int			alloc_init(t_vaddr			addr,
   alloc.nfree = 0;
   alloc.lowest = (void*)((t_vaddr)-1);
   alloc.highest = (void*)0;
-  alloc.as = ID_UNUSED;
+  alloc.mmap = NULL;
+  alloc.munmap = NULL;
 
   /*
    * 2)

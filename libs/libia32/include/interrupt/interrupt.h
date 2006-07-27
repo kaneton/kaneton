@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [wed jul 26 17:29:44 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 16:51:12 2006]
  */
 
 /*
@@ -58,33 +58,34 @@
 
 #define SWITCH_KERNEL()							\
   asm volatile("pushl %eax\n\t"						\
-	       "pushw %ds\n\t"						\
-	       "pushw %es\n\t"						\
-	       "pushw %fs\n\t"						\
-	       "pushw %gs");						\
+	       "movl %cr3, %eax\n\t"					\
+	       "pushl %eax");						\
+  asm volatile("movl %%eax, %%cr3"					\
+	       :							\
+	       : "a" (interrupt_pdbr));					\
+  asm volatile("pushl %ds\n\t"						\
+	       "pushl %es\n\t"						\
+	       "pushl %fs\n\t"						\
+	       "pushl %gs");						\
   asm volatile("movw %%ax, %%ds\n\t"					\
 	       "movw %%ax, %%es\n\t"					\
 	       "movw %%ax, %%fs\n\t"					\
 	       "movw %%ax, %%gs"					\
 	       :							\
-	       : "a" (interrupt_ds));					\
-  asm volatile("movl %cr3, %eax\n\t"					\
-	       "pushl %eax");						\
-  asm volatile("movl %%eax, %%cr3"					\
-	       :							\
-	       : "a" (interrupt_pdbr))
+	       : "a" (interrupt_ds))
+
 
 /*
  * switch back to the process.
  */
 
 #define SWITCH_BACK()							\
-  asm volatile("popl %eax\n\t"						\
+  asm volatile("popl %gs\n\t"						\
+	       "popl %fs\n\t"						\
+	       "popl %es\n\t"						\
+	       "popl %ds\n\t"						\
+	       "popl %eax\n\t"						\
 	       "movl %eax, %cr3\n\t"					\
-	       "popw %gs\n\t"						\
-	       "popw %fs\n\t"						\
-	       "popw %es\n\t"						\
-	       "popw %ds\n\t"						\
 	       "popl %eax");
 
 /*

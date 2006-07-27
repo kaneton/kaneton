@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed jul 26 17:50:14 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 15:26:01 2006]
  */
 
 /*
@@ -374,6 +374,26 @@ t_error			ia32_as_reserve(i_task			tskid,
       /*
        * e)
        */
+
+      //pour l'instant on map tout le kcode.
+      if (region_reserve(*asid,
+			 (i_segment)init->kcode,
+			 0,
+			 REGION_OPT_FORCE,
+			 init->kcode,
+			 init->kcodesz,
+			 &reg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      // on map aussi de koi faire des printf.
+      if (region_reserve(*asid,
+			 (i_segment)0x1000,
+			 0,
+			 REGION_OPT_FORCE,
+			 0x1000,
+			 INIT_ISA_SIZE - 0x1000,
+			 &reg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
 
       //elf_get_section("handler"); XXX
 

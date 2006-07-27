@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/map/map.c
+ * file          /home/buckman/kaneton/kaneton/core/map/map.c
  *
  * created       matthieu bucchianeri   [sun feb 26 12:56:54 2006]
- * updated       julien quintard   [sat jul  8 02:28:41 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 19:30:38 2006]
  */
 
 /*
@@ -36,10 +36,65 @@
 m_map*		map;
 
 /*
+ * ---------- extern ----------------------------------------------------------
+ */
+
+/*
+ * the kernal as id.
+ */
+
+extern i_as	kasid;
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
 /*                                                                  [cut] k3 */
+
+/*
+ * this function is a wrapper of mmap to map_reserve.
+ */
+
+void*			mmap(void*			start,
+			     size_t			length,
+			     int			prot,
+			     int			flags,
+			     int			fd,
+			     off_t			offset)
+{
+  t_vaddr		addr;
+  t_perms		perms = 0;
+
+  if (flags)
+    return MAP_FAILED;
+
+  if (prot & PROT_READ)
+    perms |= PERM_READ;
+  if (prot & PROT_WRITE)
+    perms |= PERM_WRITE;
+
+  if (map_reserve(kasid,
+		  MAP_OPT_NONE,
+		  length,
+		  perms,
+		  &addr) != ERROR_NONE)
+    return MAP_FAILED;
+
+  return (void*)addr;
+}
+
+/*
+ * this function is a wrapper to munmap.
+ */
+
+int			munmap(void*			start,
+			       size_t			length)
+{
+  if (map_release(kasid, (t_vaddr)start) != ERROR_NONE)
+    return -1;
+
+  return 0;
+}
 
 /*
  * reserve virtual memory and map it.

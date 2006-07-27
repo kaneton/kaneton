@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [wed jul 26 12:27:35 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 16:50:43 2006]
  */
 
 /*
@@ -577,13 +577,36 @@ void _fun4()
 
 void sched_test_add_thread(void *func)
 {
+  static i_task		tsk = ID_UNUSED;
+  i_as			as;
   o_thread*		o;
   t_thread_context	ctx;
   i_thread		thr;
   t_stack		stack;
 
+  if (tsk == ID_UNUSED)
+    {
+      if (task_reserve(TASK_CLASS_CORE,
+		       TASK_BEHAV_INTERACTIVE,
+		       TASK_PRIOR_INTERACTIVE,
+		       &tsk) != ERROR_NONE)
+	{
+	  cons_msg('!', "cannot reserve task\n");
+	  return;
+	}
 
-  thread_reserve(0, THREAD_PRIOR, &thr);
+      if (as_reserve(tsk, &as) != ERROR_NONE)
+	{
+	  cons_msg('!', "cannot reserve as\n");
+	  return;
+	}
+    }
+
+  if (thread_reserve(tsk, THREAD_PRIOR, &thr) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot reserve thread\n");
+      return;
+    }
 
   stack.base = 0;
   stack.size = THREAD_MIN_STACKSZ;
@@ -598,7 +621,7 @@ void sched_test_add_thread(void *func)
    * pour trouver le sommet de la pile.
    */
 
-  ctx.sp = o->stack + o->stacksz - 1;
+  ctx.sp = o->stack + o->stacksz - 4;
   ctx.pc = (t_uint32)func;
 
   thread_load(thr, ctx);
@@ -614,8 +637,7 @@ void sched_test()
 
   while(1)
     {
-//      printf("kernel\n");
-      sched_yield();
+      printf("kernel\n");
     }
 
 }

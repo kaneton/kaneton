@@ -276,10 +276,10 @@ t_error			interrupt_set_handler(t_uint32			nr,
 
 t_error			interrupt_init(void);
 
-void		handler_exception(t_uint32			nr,
-				  t_uint32			has_code);
+void			handler_exception(t_uint32			nr,
+					  t_uint32			has_code);
 
-void		handler_irq(t_uint32				nr);
+void			handler_irq(t_uint32				nr);
 
 
 /*

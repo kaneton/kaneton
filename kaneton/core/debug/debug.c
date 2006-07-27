@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/debug.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [sat jul 22 19:07:44 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 19:29:24 2006]
  */
 
 /*
@@ -127,7 +127,7 @@ t_error			debug_exec_cmd_tab(t_serial_data *cmd)
   int (*func)(void);
 
   *strchr((char*)cmd->data, '/') = 0;
-  func = (int (*)(void)) strtol((char*)cmd->data + strlen(cmd->data) + 1,
+  func = (int (*)(void)) strtol((char*)cmd->data + strlen((char*)cmd->data) + 1,
 				0, 16);
   cons_msg('+', "running test %s @ 0x%p\n", (char*)cmd->data, func);
   printf_init(serial_put, 0);

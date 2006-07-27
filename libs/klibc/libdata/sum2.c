@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/klibc/libdata/sum2.c
  *
  * created       julien quintard   [fri feb 11 02:56:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:55:20 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 19:18:50 2006]
  */
 
 /*
@@ -36,7 +36,7 @@ u_int32_t		sum2(char				*buf,
 
   thecrc = total = 0;
 
-  for (total += size, p = buf; size--; ++p)
+  for (total += (u_int32_t)size, p = (u_char*)buf; size--; ++p)
     thecrc += *p;
 
   thecrc = (thecrc & 0xffff) + (thecrc >> 16);

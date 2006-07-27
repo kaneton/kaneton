@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/gdb.c
  *
  * created       matthieu bucchianeri   [mon apr 10 12:47:20 2006]
- * updated       matthieu bucchianeri   [tue may 16 17:50:11 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 19:30:18 2006]
  */
 
 /*
@@ -437,7 +437,7 @@ t_uint32		gdb_extract(t_uint8*	buffer,
 
   c = *(buffer + sz);
   *(buffer + sz) = 0;
-  val = strtol(buffer, NULL, 16);
+  val = strtol((char*)buffer, NULL, 16);
   *(buffer + sz) = c;
   return val;
 }
@@ -764,7 +764,7 @@ int		gdb_unset_break(t_uint8*	buffer)
       gdb_send((t_uint8*)"E00");
       return 0;
     }
-  *(t_uint32*)brk->id = brk->opcode;
+  *(t_uint32*)((t_uint32)brk->id) = brk->opcode;
 #endif /* INT3 */
 
 

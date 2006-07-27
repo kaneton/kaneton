@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/klibc/include/libdata/alloc.h
  *
  * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [sun jun  4 18:50:45 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 19:15:35 2006]
  */
 
 #ifndef LIBDATA_ALLOC_H
@@ -23,9 +23,25 @@
  * ---------- macros ----------------------------------------------------------
  */
 
+// XXX may be moved somewhere else
+
+#define MAP_FAILED	((void*)-1)
+
+#define PROT_READ	0x1		/* Page can be read.  */
+#define PROT_WRITE	0x2		/* Page can be written.  */
+#define PROT_EXEC	0x4		/* Page can be executed.  */
+#define PROT_NONE	0x0		/* Page can not be accessed.  */
+
 /*
  * ---------- types -----------------------------------------------------------
  */
+
+/*
+ * function pointers to mmap/munmap.
+ */
+
+typedef void* (*t_pfn_mmap)(void*, size_t, int, int, int, off_t);
+typedef int (*t_pfn_munmap)(void*, size_t);
 
 /*
  * chunk forward declaration.
@@ -71,7 +87,8 @@ typedef struct
   void*				lowest;
   void*				highest;
 
-  i_as				as;
+  t_pfn_mmap			mmap;
+  t_pfn_munmap			munmap;
 
   t_uint32			nalloc;
   t_uint32			nfree;

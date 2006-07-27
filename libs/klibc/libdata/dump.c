@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/klibc/libdata/dump.c
  *
  * created       julien quintard   [fri feb 11 02:56:44 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:55:32 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 19:18:02 2006]
  */
 
 /*
@@ -76,14 +76,14 @@ void			dump(char*				data,
     {
       if (j >= LINEDUMPS)
 	{
-	  dump_buf(buf, (u_int) (data + i - j), j);
+	  dump_buf((u_int8_t*)buf, (u_int) (data + i - j), j);
 	  j = 0;
 	}
       buf[j++] = data[i];
     }
 
   if (j > 0)
-    dump_buf(buf, (u_int) (data + i - j), j);
+    dump_buf((u_int8_t*)buf, (u_int) (data + i - j), j);
 }
 
 #undef LINEDUMPS

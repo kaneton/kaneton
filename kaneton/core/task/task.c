@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [sat jul 22 19:14:45 2006]
+ * updated       matthieu bucchianeri   [wed jul 26 19:22:39 2006]
  */
 
 /*
@@ -821,11 +821,10 @@ t_error			task_get(i_task				id,
  * 3) reserve the task set which will contain the tasks built later.
  * 4) try to reserve a statistics object.
  * 5) reserve the kernel task and its address space.
- * 6) tells the kernel allocator the asid of the created address space.
- * 7) add the segments to the kernel address space.
- * 8) add the regions to the kernel address space.
- * 9) call the machine-dependent code.
- * 10) if asked, dumps the task manager.
+ * 6) add the segments to the kernel address space.
+ * 7) add the regions to the kernel address space.
+ * 8) call the machine-dependent code.
+ * 9) if asked, dumps the task manager.
  */
 
 t_error			task_init(void)
@@ -901,13 +900,6 @@ t_error			task_init(void)
    * 6)
    */
 
-  if (alloc_kasid(asid) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  /*
-   * 7)
-   */
-
   for (i = 0; i < init->nsegments; i++)
     {
       if (segment_inject(asid, &init->segments[i], &segments[i]) != ERROR_NONE)
@@ -920,7 +912,7 @@ t_error			task_init(void)
     }
 
   /*
-   * 8)
+   * 7)
    */
 
   for (i = 0; i < init->nregions; i++)
@@ -937,14 +929,14 @@ t_error			task_init(void)
     }
 
   /*
-   * 9)
+   * 8)
    */
 
   if (machdep_call(task, task_init) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
-   * 10)
+   * 9)
    */
 
 #if (DEBUG & DEBUG_TASK)

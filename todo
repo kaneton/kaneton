@@ -4,10 +4,8 @@
  * finir le test as/06
  * coder region_resize
  * tester region_coalesce
- * revoir le  malloc de  la libc pour  qu'il soit generique.  faire un
-   systeme  avec deux  pointeurs  de fonctions  sur mmap/munmap)  voir
-   aussi l'histoire du cache d'objets pour les mallocs pendant malloc.
- * gerer le IOPL et le IO bitmap du TSS
+ * probleme du malloc qui se rappelle
+ * gerer le IOPL et le IO bitmap du TSS		=> io manager
  * debugger task et sched
  * faire les tests pour task
  * tests pour sched !?
@@ -27,6 +25,8 @@
 
  Autre :
 
+ * ya un gros pb : quand on map la kstack elle prend le priv de la task !
+   d'ou kstack en RW pour tous !
  * bouger les event_reserve ailleurs !
  * faire des tests pour time
  * refaire des tests plus poussés pour event

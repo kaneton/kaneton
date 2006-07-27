@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed jul 26 16:43:39 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 15:11:27 2006]
  */
 
 /*
@@ -124,10 +124,10 @@ void			kaneton(t_init*				bootloader)
 
   //ctx_test();
 
-  //sched_test();
+  sched_test();
 
   while (1)
-    ;
+    HLT();
 #endif
   /*
    * XXX
