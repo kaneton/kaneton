@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/task/task.c
  *
  * created       renaud voltz   [tue apr  4 21:45:07 2006]
- * updated       matthieu bucchianeri   [wed jul 26 16:34:52 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 18:40:55 2006]
  */
 
 /*

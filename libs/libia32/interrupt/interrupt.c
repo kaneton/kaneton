@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/interrupt/interrupt.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       matthieu bucchianeri   [wed jul 26 18:13:02 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 19:48:15 2006]
  */
 
 /*
@@ -38,13 +38,13 @@ t_ia32_interrupt_handler	interrupt_handlers[EXCEPTION_NR + IRQ_NR];
  * the segment selector to load on interrupt.
  */
 
-volatile t_uint16		interrupt_ds = 0;
+volatile HANDLER_DATA t_uint16		interrupt_ds = 0;
 
 /*
  * the page directory to load on interrupt.
  */
 
-volatile t_uint32		interrupt_pdbr = 0;
+volatile HANDLER_DATA t_uint32		interrupt_pdbr = 0;
 
 /*
  * ---------- functions -------------------------------------------------------

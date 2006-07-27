@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/region.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [sat jul  8 02:30:30 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 18:07:49 2006]
  */
 
 /*

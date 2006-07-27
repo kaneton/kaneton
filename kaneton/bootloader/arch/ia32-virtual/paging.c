@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/paging.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/paging.c
  *
  * created       julien quintard   [sun may 29 00:38:50 2005]
- * updated       julien quintard   [sat jul  8 02:31:32 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 19:06:50 2006]
  */
 
 /*

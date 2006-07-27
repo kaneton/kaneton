@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       matthieu bucchianeri   [sat jul 22 19:13:48 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 19:34:06 2006]
  */
 
 /*
@@ -625,9 +625,11 @@ t_error			thread_stack(i_thread			threadid,
 
   if (!stack.base)
     {
-      /* XXX THREAD: map_reserve(): changer opt + perms */
-
-      if (map_reserve(task->asid, 0, stack.size, 0, &(o->stack)) != ERROR_NONE)
+      if (map_reserve(task->asid,
+		      MAP_OPT_NONE,
+		      stack.size,
+		      PERM_READ | PERM_WRITE,
+		      &(o->stack)) != ERROR_NONE)
 	THREAD_LEAVE(thread, ERROR_UNKNOWN);
     }
   else

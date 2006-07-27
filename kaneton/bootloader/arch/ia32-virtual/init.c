@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/init.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       julien quintard   [sat jul  8 02:31:22 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 19:37:17 2006]
  */
 
 /*
@@ -170,7 +170,7 @@ void			bootloader_init_segments(void)
 
   init->segments[2].address = init->kcode;
   init->segments[2].size = init->kcodesz;
-  init->segments[2].perms = PERM_READ | PERM_EXEC;
+  init->segments[2].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
   init->segments[2].type = SEGMENT_TYPE_MEMORY;
 
   /*
@@ -188,7 +188,7 @@ void			bootloader_init_segments(void)
 
   init->segments[4].address = (t_paddr)init->modules;
   init->segments[4].size = init->modulessz;
-  init->segments[4].perms = PERM_READ | PERM_EXEC;
+  init->segments[4].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
   init->segments[4].type = SEGMENT_TYPE_MEMORY;
 
   /*

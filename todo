@@ -1,19 +1,30 @@
 --
+ /!\ IMPORTANT /!\
+
+ retablir les bits U/S des PDE/PTE comme avant !
+
+--
+ Choses a finir (matthieu) /!\ URGENT /!\
+
+ * debugger task, thread et sched
+ * faire les tests pour task
+ * tests pour sched !?
+ * revoir dans ia32_as_reserve les choses a mapper
+ * refaire le ELF, et mapper que handler et handler_data
+ * ya un gros pb : quand on map la kstack elle prend le priv de la task !
+   d'ou kstack en RW pour tous !
+   faut revoir la gestion des privilege et RW sur les pages !
+
  Choses a finir (matthieu) :
 
+ * descheduler  le thread  kernel et  trouver un  moyen de  delayer le
+   premier shot du timer.
+ * segment_perms sur l'IDT et la GDT une fois remplie pour virer le W
  * finir le test as/06
  * coder region_resize
  * tester region_coalesce
  * probleme du malloc qui se rappelle
  * gerer le IOPL et le IO bitmap du TSS		=> io manager
- * debugger task et sched
- * faire les tests pour task
- * tests pour sched !?
- * trouver un moyen de reduire le  code du kernel a mapper dans chaque
-   as.  pour  l'instant il  y  a  besoin de  la  stack  kernel et  des
-   prehandlers d'exceptions et d'irq.  pour l'instant, tout les kernel
-   est mappé dans chaque as.
- * faire/chopper une libelf.
 
  Bugs connus :
 
@@ -25,8 +36,6 @@
 
  Autre :
 
- * ya un gros pb : quand on map la kstack elle prend le priv de la task !
-   d'ou kstack en RW pour tous !
  * bouger les event_reserve ailleurs !
  * faire des tests pour time
  * refaire des tests plus poussés pour event

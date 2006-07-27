@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [thu jul 27 16:50:43 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 19:56:02 2006]
  */
 
 /*
@@ -250,8 +250,9 @@ t_error			sched_switch(void)
   if (set_remove(sched->active, *thread) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-  if (set_append(sched->expired, &sched->current) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (sched->current != 0) // XXX prevent execution of Kthread
+    if (set_append(sched->expired, &sched->current) != ERROR_NONE)
+      SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   /*
    * 6)
@@ -563,7 +564,7 @@ void _fun3()
   while (1)
     {
       printf("fun3: %d\n", (int)f);
-      f += 0.00001f;
+      f += 0.01f;
     }
 }
 
@@ -586,7 +587,7 @@ void sched_test_add_thread(void *func)
 
   if (tsk == ID_UNUSED)
     {
-      if (task_reserve(TASK_CLASS_CORE,
+      if (task_reserve(TASK_CLASS_PROGRAM,
 		       TASK_BEHAV_INTERACTIVE,
 		       TASK_PRIOR_INTERACTIVE,
 		       &tsk) != ERROR_NONE)
@@ -621,7 +622,7 @@ void sched_test_add_thread(void *func)
    * pour trouver le sommet de la pile.
    */
 
-  ctx.sp = o->stack + o->stacksz - 4;
+  ctx.sp = o->stack + o->stacksz - 16;
   ctx.pc = (t_uint32)func;
 
   thread_load(thr, ctx);
@@ -635,9 +636,11 @@ void sched_test()
   sched_test_add_thread(_fun2);
   sched_test_add_thread(_fun3);
 
+//  sched_dump();
+
   while(1)
     {
-      printf("kernel\n");
+//      printf("kernel\n");
     }
 
 }

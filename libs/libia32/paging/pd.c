@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [wed jul 26 15:27:43 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 19:09:07 2006]
  */
 
 /*
@@ -221,7 +221,7 @@ t_error			pd_add_table(t_ia32_directory*		dir,
 
   opts |= (table.rw ? PDE_FLAG_RW : PDE_FLAG_RO);
 
-  opts |= (table.user ? PDE_FLAG_USER : PDE_FLAG_SUPERVISOR);
+  opts |= (table.user || 1 ? PDE_FLAG_USER : PDE_FLAG_SUPERVISOR);
 
   opts |= PDE_FLAG_USED;
 

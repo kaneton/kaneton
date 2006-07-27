@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu jul 27 15:26:01 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 19:58:25 2006]
  */
 
 /*
@@ -32,6 +32,7 @@ extern m_as*		as;
 extern i_task		ktask;
 extern t_init*		init;
 extern i_as		kasid;
+extern t_ia32_idt           idt;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -375,7 +376,11 @@ t_error			ia32_as_reserve(i_task			tskid,
        * e)
        */
 
-      //pour l'instant on map tout le kcode.
+      //elf_get_section("handler"); XXX
+
+      //region_reserve over kcode segment
+
+      // pour l'instant on map tout le kcode -- OK
       if (region_reserve(*asid,
 			 (i_segment)init->kcode,
 			 0,
@@ -385,7 +390,7 @@ t_error			ia32_as_reserve(i_task			tskid,
 			 &reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      // on map aussi de koi faire des printf.
+      // on map aussi de koi faire des printf. A VIRER
       if (region_reserve(*asid,
 			 (i_segment)0x1000,
 			 0,
@@ -395,16 +400,43 @@ t_error			ia32_as_reserve(i_task			tskid,
 			 &reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      //elf_get_section("handler"); XXX
+      // gdt, bordel ca fait chier d'avoir a mapper ça !
+      if (region_reserve(*asid,
+			 (i_segment)init->machdep.gdt.descriptor,
+			 0,
+			 REGION_OPT_FORCE,
+			 init->machdep.gdt.descriptor,
+			 PAGESZ,
+			 &reg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      //region_reserve over kcode segment
+      // l'idt aussi, omg c la joie !
+      if (region_reserve(*asid,
+			 (i_segment)idt.descriptor,
+			 0,
+			 REGION_OPT_FORCE,
+			 idt.descriptor,
+			 PAGESZ,
+			 &reg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
 
+      // kstack -- OK
       if (region_reserve(*asid,
 			 (i_segment)init->kstack,
 			 0,
 			 REGION_OPT_FORCE,
 			 init->kstack,
 			 init->kstacksz,
+			 &reg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      // zone alloc ! A VIRER !
+      if (region_reserve(*asid,
+			 (i_segment)init->regions[6].address,
+			 0,
+			 REGION_OPT_FORCE,
+			 init->regions[6].address,
+			 init->regions[6].size,
 			 &reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 

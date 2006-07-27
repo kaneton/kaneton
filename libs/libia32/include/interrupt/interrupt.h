@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [thu jul 27 16:51:12 2006]
+ * updated       matthieu bucchianeri   [thu jul 27 19:48:33 2006]
  */
 
 /*
@@ -51,6 +51,9 @@
 
 #define HANDLER								\
   __attribute__ ((section("handler")))
+
+#define HANDLER_DATA				\
+  __attribute__ ((section("handler_data")))
 
 /*
  * switch to the kernel, loading segment selectors and PDBR.
