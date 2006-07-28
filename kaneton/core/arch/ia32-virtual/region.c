@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [thu jul 27 18:07:49 2006]
+ * updated       matthieu bucchianeri   [fri jul 28 17:20:09 2006]
  */
 
 /*
@@ -279,7 +279,7 @@ t_error			ia32_region_reserve(i_as		asid,
 
   pg.rw = !!(oseg->perms & PERM_WRITE);
   pg.present = 1;
-  pg.user = (otsk->class == TASK_CLASS_PROGRAM);
+  pg.user = !(opts & REGION_OPT_PRIVILEGED);
 
   /*
    * 5)
@@ -325,7 +325,7 @@ t_error			ia32_region_reserve(i_as		asid,
 	{
 	  pt.rw = 1;
 	  pt.present = 1;
-	  pt.user = 0;
+	  pt.user = 1;
 
 	  if (segment_reserve(asid, PAGESZ, PERM_READ | PERM_WRITE,
 			      &ptseg) != ERROR_NONE)

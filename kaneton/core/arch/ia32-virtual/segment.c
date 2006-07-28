@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed jul 26 17:31:23 2006]
+ * updated       matthieu bucchianeri   [fri jul 28 17:41:09 2006]
  */
 
 /*
@@ -117,8 +117,8 @@ t_error			ia32_segment_read(i_region		segid,
   else
     size = sz;
 
-  if (region_reserve(kasid, segid, offs, REGION_OPT_NONE, 0, size, &reg) !=
-      ERROR_NONE)
+  if (region_reserve(kasid, segid, offs, REGION_OPT_PRIVILEGED,
+		     0, size, &reg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -181,8 +181,8 @@ t_error			ia32_segment_write(i_region		segid,
   else
     size = sz;
 
-  if (region_reserve(kasid, segid, offs, REGION_OPT_NONE, 0, size, &reg) !=
-      ERROR_NONE)
+  if (region_reserve(kasid, segid, offs, REGION_OPT_PRIVILEGED,
+		     0, size, &reg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -243,11 +243,11 @@ t_error			ia32_segment_copy(i_region		dst,
   else
     size = sz;
 
-  if (region_reserve(kasid, src, offss, REGION_OPT_NONE, 0, size, &regs) !=
-      ERROR_NONE)
+  if (region_reserve(kasid, src, offss, REGION_OPT_PRIVILEGED,
+		     0, size, &regs) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-  if (region_reserve(kasid, dst, offsd, REGION_OPT_NONE, 0, size, &regd) !=
-      ERROR_NONE)
+  if (region_reserve(kasid, dst, offsd, REGION_OPT_PRIVILEGED,
+		     0, size, &regd) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/map/map.c
  *
  * created       matthieu bucchianeri   [sun feb 26 12:56:54 2006]
- * updated       matthieu bucchianeri   [wed jul 26 19:30:38 2006]
+ * updated       matthieu bucchianeri   [fri jul 28 17:29:40 2006]
  */
 
 /*
@@ -135,7 +135,9 @@ t_error			map_reserve(i_as		asid,
        * a)
        */
 
-      if (region_reserve(asid, segid, 0, REGION_OPT_FORCE,
+      if (region_reserve(asid, segid, 0,
+			 REGION_OPT_FORCE | ((opts & MAP_OPT_PRIVILEGED) ?
+					     REGION_OPT_PRIVILEGED : 0),
 			 *addr, size, &regid) != ERROR_NONE)
 	MAP_LEAVE(map, ERROR_UNKNOWN);
     }
@@ -145,7 +147,9 @@ t_error			map_reserve(i_as		asid,
        * b)
        */
 
-      if (region_reserve(asid, segid, 0, REGION_OPT_NONE,
+      if (region_reserve(asid, segid, 0,
+			 REGION_OPT_NONE | ((opts & MAP_OPT_PRIVILEGED) ?
+					    REGION_OPT_PRIVILEGED : 0),
 			 0, size, &regid) != ERROR_NONE)
 	MAP_LEAVE(map, ERROR_UNKNOWN);
 

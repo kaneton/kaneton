@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/region.h
+ * file          /home/buckman/kaneton/kaneton/include/core/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [tue jul 18 09:29:12 2006]
+ * updated       matthieu bucchianeri   [fri jul 28 17:27:39 2006]
  */
 
 #ifndef CORE_REGION_H
@@ -28,9 +28,9 @@
  * flags
  */
 
-#define REGION_OPT_NONE		(1 << 0)
-#define REGION_OPT_FORCE	(1 << 1)
-#define REGION_OPT_ALL		(1 << 2)
+#define REGION_OPT_NONE		0
+#define REGION_OPT_FORCE	(1 << 0)
+#define REGION_OPT_PRIVILEGED	(1 << 1)
 
 /*
  * ---------- types -----------------------------------------------------------

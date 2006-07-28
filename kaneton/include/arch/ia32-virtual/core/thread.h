@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/thread.h
  *
  * created       renaud voltz   [tue apr  4 03:10:52 2006]
- * updated       matthieu bucchianeri   [wed jul 26 12:13:41 2006]
+ * updated       matthieu bucchianeri   [fri jul 28 18:00:52 2006]
  */
 
 #ifndef IA32_CORE_THREAD_H
@@ -26,7 +26,7 @@
 
 typedef struct
 {
-  t_ia32_tss		tss;
+  t_ia32_tss*		tss;
 }			am_thread;
 
 /*

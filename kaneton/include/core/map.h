@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/map.h
  *
  * created       matthieu bucchianeri   [sun feb 26 12:23:01 2006]
- * updated       matthieu bucchianeri   [wed apr 12 11:47:17 2006]
+ * updated       matthieu bucchianeri   [fri jul 28 17:30:01 2006]
  */
 
 #ifndef CORE_MAP_H
@@ -28,8 +28,9 @@
  * flags
  */
 
-#define MAP_OPT_NONE		(1 << 0)
-#define MAP_OPT_FORCE		(1 << 1)
+#define MAP_OPT_NONE		0
+#define MAP_OPT_FORCE		(1 << 0)
+#define MAP_OPT_PRIVILEGED	(1 << 1)
 
 /*
  * ---------- types -----------------------------------------------------------

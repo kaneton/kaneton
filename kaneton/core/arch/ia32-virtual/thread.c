@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       matthieu bucchianeri   [thu jul 27 18:33:45 2006]
+ * updated       matthieu bucchianeri   [fri jul 28 18:03:27 2006]
  */
 
 /*
@@ -318,16 +318,23 @@ t_error			ia32_thread_init(void)
    * 2)
    */
 
-  memset(&(thread->machdep.tss), 0x0, sizeof(t_ia32_tss));
+  if (map_reserve(kasid,
+		  MAP_OPT_PRIVILEGED,
+		  PAGESZ,
+		  PERM_READ | PERM_WRITE,
+		  (t_vaddr*)&thread->machdep.tss) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
-  thread->machdep.tss.ss0 = SEGSEL(PMODE_GDT_CORE_DS, PRIV_RING0);
-  thread->machdep.tss.esp0 = init->kstack + init->kstacksz - 16;
+  memset(thread->machdep.tss, 0x0, sizeof(t_ia32_tss));
+
+  thread->machdep.tss->ss0 = SEGSEL(PMODE_GDT_CORE_DS, PRIV_RING0);
+  thread->machdep.tss->esp0 = init->kstack + init->kstacksz - 16;
 
   /*
    * 3)
    */
 
-  tss_init(&(thread->machdep.tss));
+  tss_init(thread->machdep.tss);
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }

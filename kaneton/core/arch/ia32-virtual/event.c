@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/event.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       julien quintard   [sat jul  8 02:29:24 2006]
+ * updated       matthieu bucchianeri   [fri jul 28 17:48:00 2006]
  */
 
 /*
@@ -152,11 +152,12 @@ t_error			ia32_event_release(i_event		id)
  * steps:
  *
  * 1) allocate space for the idt.
- * 2( build the idt and activate it.
+ * 2) build the idt and activate it.
  * 3) init events.
- * 4) set default handler for every exception.
- * 5) set default handler for every irq.
- * 6) enable external interrupts.
+ * 4) disable writing the IDT.
+ * 5) set default handler for every exception.
+ * 6) set default handler for every irq.
+ * 7) enable external interrupts.
  */
 
 t_error			ia32_event_init(void)
@@ -164,12 +165,14 @@ t_error			ia32_event_init(void)
   int			id;
   t_vaddr		vaddr;
   t_ia32_idt		new_idt;
+  o_region*		oreg;
 
   /*
    * 1)
    */
 
-  if (map_reserve(kasid, MAP_OPT_NONE,
+  if (map_reserve(kasid,
+		  MAP_OPT_PRIVILEGED,
 		  PAGESZ,
 		  PERM_READ | PERM_WRITE,
 		  &vaddr)
@@ -197,12 +200,22 @@ t_error			ia32_event_init(void)
    * 4)
    */
 
+  if (region_get(kasid, (i_region)vaddr, &oreg) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (segment_perms(oreg->segid, PERM_READ) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  /*
+   * 5)
+   */
+
   for (id = IDT_EXCEPTION_BASE; id < IDT_EXCEPTION_BASE + EXCEPTION_NR; id++)
     if (interrupt_set_handler(id, ia32_event_handler) != ERROR_NONE)
       return ERROR_UNKNOWN;
 
   /*
-   * 5)
+   * 6)
    */
 
   for (id = IDT_IRQ_BASE; id < IDT_IRQ_BASE + IRQ_NR; id++)
@@ -210,7 +223,7 @@ t_error			ia32_event_init(void)
       return ERROR_UNKNOWN;
 
   /*
-   * 6)
+   * 7)
    */
 
   STI();
