@@ -1,0 +1,64 @@
+
+ Prerequisites
+---------------
+
+The first time, you need to install the kserial module :
+
+chiche@barry$ cd tools/python
+chiche@barry$ su
+Password:
+root@barry$ ./domodules
+root@barry$ exit
+chiche@barry$
+
+ Students tarball checking
+---------------------------
+
+To run the test suite, run the testsuite.sh script in check :
+
+usage ./testsuite.sh <test_suite> <tarball> <stage> <group> <mode>
+
+	test_suite is a tarball containing the tests
+	tarball is the tarball to check
+	mode is {floppy,tftp,emu} -- for floppy and tftp, the floppy disk
+		must be build before starting the script, with 'make build'
+
+chiche@barry$ cd check
+chiche@barry$ ./testsuite.sh students_kN.tgz tarball.tgz kN srsX emu
+Ready. Ctrl-C to exit, Enter to proceed.
+...
+
+Before pressing  Enter, you can go in  /tmp/moulette/kaneton to modify
+manually some files.
+
+...
+Enter pty device:
+...
+
+Once there, you must enter the serial device.
+
+	/dev/pts/X	with qemu (check qemu output to determine X)
+	/dev/ttySX	for physical serial port
+
+Then the test run.
+
+During the test, some error can occur :
+
+...
+/!\ PLEASE REBOOT TEST MACHINE /!\
+...
+
+To continue  the tests, reboot the  machine or restart  qemu, and then
+press Enter.
+
+...
+Cleaning
+chiche@barry$
+
+The test are finished. Check your trace in srsX_kN.html.
+
+
+ Reference checking
+--------------------
+
+...coming soon...
