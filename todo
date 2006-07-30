@@ -1,4 +1,7 @@
 --
+ mettre a jour la doc: u_ notamment dans coding style
+
+--
  Choses a finir (matthieu) /!\ URGENT /!\
 
  * faire les tests pour task
@@ -33,17 +36,10 @@
  * rajouter REGION_OPT_USER partout ou il faut
 
 --
- mettre a jour la doc sur les interfaces make et shell + options
-
- locate-prog -> locate
- locate -> lookup
- launch + -make -python -shell -perl
- find-files -> find
- tags-clean -> temp --file + for + substitute + echo > $tmp
- cut-code -> cut (a utiliser dans preprocess)
- svn-clean -> find --directory .svn + remove
-
- les options ont change pour beaucoup de fonctions
+ + moulinette triche
+ + norme dans books/kaneton
+ + cheat chapter
+ + test chapter
 
 --
  enlever QUICKSTART et expliquer ce qu'il faut sur le site

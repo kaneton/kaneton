@@ -5,7 +5,7 @@
 ## file          /home/mycure/kaneton/env/machines/gnu-unix/machine.sh
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [sun jul 16 19:16:46 2006]
+## updated       julien quintard   [sun jul 30 22:49:58 2006]
 ##
 
 #
@@ -294,7 +294,7 @@ wait-key()
 #
 # LAUNCH-SHELL
 #
-# this function just launches a sheel script.
+# this function just launches a shell script.
 #
 # ${1}:		the shell script file
 # ${2}:		arguments
@@ -667,50 +667,12 @@ change-directory()
 
 
 #
-# LOOKUP
-#
-# this function tries to locate an element in an array.
-#
-# ${1}:		the array
-# ${2}:		the element looked for
-# ${3}:		options
-#
-lookup()
-{
-  local array
-  local element
-  local options
-  local opt
-
-  array="${1}"
-  element="${2}"
-
-  for opt in ${3} ; do
-      case "${opt}" in
-	  *)
-	      ;;
-      esac
-  done
-
-  for e in ${array} ; do
-    ${_ECHO_} ${e} | ${_GREP_} ${element} 2>/dev/null 1>/dev/null
-
-    if [ ${?} -eq 0 ] ; then
-      ${_ECHO_} ${e}
-      return
-    fi
-  done
-}
-
-
-
-#
 # PREPROCESS
 #
 # this function preprocess a file
 #
 # ${1}:		file to process
-# ${2}:		additional include
+# ${2}:		additional includes
 # ${3}:		options
 #
 preprocess()
@@ -1023,4 +985,73 @@ record()
   done
 
   ${_SCRIPT_} -q -t ${log} -c ${_TRANSCRIPTS_CMD_} 2> ${time}
+}
+
+
+
+#
+# PLAY
+#
+# this function runs the program used to play a session.
+#
+# ${1}:		log file
+# ${2}:		time file
+# ${3}:		options
+#
+play()
+{
+  local log
+  local time
+  local options
+  local opt
+
+  log="${1}"
+  time="${2}"
+
+  for opt in ${3} ; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
+  launch "${_SCRIPTREPLAY_TOOL_}" "${time} ${log}" ""
+}
+
+
+
+#
+# LOOKUP
+#
+# this function tries to locate an element in an array.
+#
+# ${1}:		the array
+# ${2}:		the element looked for
+# ${3}:		options
+#
+lookup()
+{
+  local array
+  local element
+  local options
+  local opt
+
+  array="${1}"
+  element="${2}"
+
+  for opt in ${3} ; do
+      case "${opt}" in
+	  *)
+	      ;;
+      esac
+  done
+
+  for e in ${array} ; do
+    ${_ECHO_} ${e} | ${_GREP_} ${element} 2>/dev/null 1>/dev/null
+
+    if [ ${?} -eq 0 ] ; then
+      ${_ECHO_} ${e}
+      return
+    fi
+  done
 }

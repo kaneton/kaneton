@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/view/papers/kaneton/Makefile
+## file          /home/mycure/kaneton/view/books/kaneton/Makefile
 ##
 ## created       matthieu bucchianeri   [mon jan 30 22:05:58 2006]
-## updated       julien quintard   [mon may  8 18:36:11 2006]
+## updated       julien quintard   [sun jul 30 23:24:00 2006]
 ##
 
 #
@@ -42,7 +42,8 @@ SOURCES			:=		kaneton.tex			\
 					portability.tex			\
 					architectures.tex		\
 					tools.tex			\
-					check.tex			\
+					test.tex			\
+					cheat.tex			\
 					licenses.tex			\
 					bibliography.tex		
 

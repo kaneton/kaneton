@@ -5,7 +5,7 @@
 ## file          /home/mycure/kaneton/transcripts/play.sh
 ##
 ## created       julien quintard   [mon apr 10 15:02:40 2006]
-## updated       julien quintard   [sun jul 16 13:41:27 2006]
+## updated       julien quintard   [sun jul 30 17:27:11 2006]
 ##
 
 #
@@ -86,21 +86,6 @@ prepare()
 
 
 #
-# PLAY
-#
-# this function plays the session.
-#
-play()
-{
-  # displays some stuff.
-  display " playing the session ..." "+"
-
-  launch "${_SCRIPTREPLAY_TOOL_}" "${TIME} ${LOG}" ""
-}
-
-
-
-#
 # CLEAN
 #
 # this function cleans the play.
@@ -175,7 +160,8 @@ warning
 prepare
 
 # launchs the play.
-play
+display " playing the session ..." "+"
+play "${LOG}" "${TIME}" ""
 
 # cleans the play.
 clean

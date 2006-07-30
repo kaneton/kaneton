@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/papers/kaneton/development-environment.tex
+%% file          /home/mycure/kaneton/view/books/kaneton/development-environment.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:31:26 2006]
-%% updated       julien quintard   [thu may  4 12:35:37 2006]
+%% updated       julien quintard   [sun jul 30 23:01:51 2006]
 %%
 
 %
@@ -63,7 +63,7 @@ on it.
 
 The kaneton development environment permit different users, with different
 development parameters and configuration files, running different operating
-systems on different architecture, to develop together on the same
+systems on different architectures, to develop together on the same
 microkernel project.
 
 To offer these functionalities, the kaneton development environment is
@@ -102,7 +102,7 @@ the user has to set before using the system:
   \item
     \textit{\$KANETON\_SHELL} holds the GNU bash binary path.
 
-    This path will be used to launch very first shell script used to
+    This path will be used to launch the very first shell script used to
     generate the current development environment.
 \end{itemize}
 
@@ -293,9 +293,7 @@ profile must implement.
 
 The reader should look closer to the machine profiles already implemented.
 
-Moreover, the list of options for each function will not be detailed here.
-
-The current machine reference profile is the \textit{unix} one.
+The current machine reference profile is the \textit{gnu-unix} one.
 
 \function{print}{(\argument{color},
                   \argument{text},
@@ -303,6 +301,9 @@ The current machine reference profile is the \textit{unix} one.
          {
 	   This function display the \argument{text} in the specified
 	   \argument{color}.
+
+	   The option \textit{--no-newline} can be used not to output
+	   the trailing newline.
 	 }
 
 \function{change-directory}{(\argument{directory},
@@ -311,25 +312,48 @@ The current machine reference profile is the \textit{unix} one.
 	   This function changes the current working directory.
 	 }
 
-\function{shell-script}{(\argument{shell script},
+\function{launch-shell}{(\argument{shell script},
                          \argument{arguments},
                          \argument{options})}
          {
 	   This function launches a new shell script with its arguments.
 	 }
 
-\function{makefile}{(\argument{directory list},
-                     \argument{options})}
+\function{launch-python}{(\argument{python script},
+                          \argument{arguments},
+                          \argument{options})}
+         {
+	   This function launches a new python script with its arguments.
+	 }
+
+\function{launch-perl}{(\argument{shell script},
+                        \argument{arguments},
+                        \argument{options})}
+         {
+	   This function launches a new perl script with its arguments.
+	 }
+
+\function{launch-make}{(\argument{make file},
+                        \argument{directory list},
+                        \argument{arguments},
+                        \argument{options})}
          {
 	   This function launches the make command in each directory of
 	   the list.
+	 }
+
+\function{launch}{(\argument{file},
+                   \argument{...})}
+         {
+	   This function is a wrapper over the functions to launch new
+	   shell, python, perl and make scripts.
 	 }
 
 \function{preprocess}{(\argument{preprocessed file},
                        \argument{c file},
                        \argument{options})}
          {
-	   This function launches a C preprocessor.
+	   This function launches the C preprocessor.
 	 }
 
 \function{compile-c}{(\argument{object file},
@@ -346,7 +370,7 @@ The current machine reference profile is the \textit{unix} one.
 	   This function generates a C source file from a lex file.
 	 }
 
-\function{assemble-s}{(\argument{object file},
+\function{assemble-S}{(\argument{object file},
                        \argument{S file},
                        \argument{options})}
          {
@@ -358,6 +382,9 @@ The current machine reference profile is the \textit{unix} one.
                          \argument{options})}
          {
 	   This function assemble an asm file.
+
+	   The option \textit{--output-format [format]} can be used to
+	   specify the output format \textit{elf}, \textit{bin} etc..
 	 }
 
 \function{static-library}{(\argument{static library file name},
@@ -381,6 +408,15 @@ The current machine reference profile is the \textit{unix} one.
          {
 	   This function builds a executable from object files and/or
 	   libraries.
+
+	   The option \textit{--link-script [file]} specifies the
+	   linker script file to use when building the executable object.
+
+	   The option \textit{--no-standard-include} tells the function
+	   not to use the operating system standard includes.
+
+	   The option \textit{--no-standard-library} tells the function
+	   not to use the operating system standard library.
 	 }
 
 \function{archive}{(\argument{archive file name},
@@ -419,12 +455,10 @@ The current machine reference profile is the \textit{unix} one.
 	   \argument{output}.
 	 }
 
-\function{version}{(\argument{file},
-                    \argument{user name},
-                    \argument{host name},
-                    \argument{date})}
+\function{version}{(\argument{file})}
          {
-	   This function will generate a version file.
+	   This function generates a version file from the operating
+	   system's informations: user, host, date etc..
 	 }
 
 \function{link}{(\argument{link},
@@ -445,42 +479,42 @@ The current machine reference profile is the \textit{unix} one.
 \function{paper}{(\argument{file},
                   \argument{options})}
          {
-	   This function builds a paper.
+	   This function builds a paper by calling the
+	   \textbf{compile-tex()} function.
 	 }
 
 \function{lecture}{(\argument{file},
                     \argument{options})}
          {
-	   This function builds a lecture.
+	   This function builds a lecture document by calling the
+	   \textbf{compile-tex()} function.
 	 }
 
 \function{subject}{(\argument{file},
                     \argument{options})}
          {
-	   This function builds a subject.
+	   This function builds a subject by calling the
+	   \textbf{compile-tex()} function.
 	 }
 
 \function{correction}{(\argument{file},
                        \argument{options})}
          {
-	   This function builds a correction.
+	   This function builds a correction document by calling the
+	   \textbf{compile-tex()} function.
 	 }
 
-\function{view}{(\argument{file})}
+\function{view}{(\argument{file},
+                 \argument{options})}
          {
-	   This function will launches a viewer for the readable document
-	   generated by \textbf{compile-tex()}.
+	   This function launches a viewer for the readable document
+	   generated by the function \textbf{compile-tex()}.
 	 }
 
 \function{contents}{(\argument{file},
                      \argument{options})}
          {
-	   This function returns the contents of \argument{file}.
-	 }
-
-\function{date}{()}
-         {
-	   This function returns the current date.
+	   This function returns the contents of the file \argument{file}.
 	 }
 
 %
@@ -489,7 +523,287 @@ The current machine reference profile is the \textit{unix} one.
 
 \subsection{Shell}
 
-The shell interface is not well defined yet.
+In this section we will detail the shell interface that every machine
+profile must implement.
+
+The reader should look closer to the machine profiles already implemented.
+
+\function{print}{(\argument{color},
+                  \argument{text},
+                  \argument{options})}
+         {
+	   This function outputs some text to the screen using a specific
+	   color \textit{red}, \textit{green}, \textit{blue} etc..
+
+	   The option \textit{--no-newline} can be used not to output
+	   the trailing newline.
+
+	   The option \textit{--flickering} tells the function to make
+	   the text flicker.
+	 }
+
+\function{contents}{(\argument{file},
+                     \argument{options})}
+         {
+	   This function returns the contents of the file \argument{file}.
+	 }
+
+\function{temporary}{(\argument{options})}
+         {
+	   This function creates a temporary file system object.
+
+	   The option \textit{--file} tells the function to create a
+	   temporary file.
+
+	   The option \textit{--directory} tells the function to create
+	   a temporary directory.
+	 }
+
+\function{working-directory}{(\argument{options})}
+         {
+	   This function returns the path of the current working directory.
+	 }
+
+\function{locate}{(\argument{name},
+                   \argument{options})}
+         {
+	   This function tries to locate the program \argument{name}
+	   on the system.
+	 }
+
+\function{substitute}{(\argument{pattern},
+                       \argument{string},
+                       \argument{options})}
+         {
+	   This function substitutes any string of the standard input
+	   matching the pattern \argument{pattern} by the string
+	   \argument{string}.
+
+	   The option \textit{--everywhere} tells the function to
+	   maximize the substitutions on the same line.
+	 }
+
+\function{display}{(\argument{message},
+                    \argument{header})}
+         {
+	   This function displays the text \argument{message} in a
+	   very specific manner based on the argument \argument{header}:
+	   \textit{+}, \textit{!}, \textit{?} etc..
+	 }
+
+\function{wait-key}{(\argument{options})}
+         {
+	   This function just waits for the user to press a key.
+	 }
+
+\function{launch-shell}{(\argument{file},
+                         \argument{arguments},
+                         \argument{options})}
+         {
+	   This function launches a new shell script \argument{file} with
+	   the arguments \argument{arguments}.
+	 }
+
+\function{launch-python}{(\argument{file},
+                          \argument{arguments},
+                          \argument{options})}
+         {
+	   This function launches the python file \argument{file} with
+	   the arguments \argument{arguments}.
+	 }
+
+\function{launch-perl}{(\argument{file},
+                        \argument{arguments},
+                        \argument{options})}
+         {
+	   This function launches the perl file \argument{file} with
+	   the arguments \argument{arguments}.
+	 }
+
+\function{launch-make}{(\argument{file},
+                        \argument{directories},
+                        \argument{arguments},
+                        \argument{options})}
+         {
+	   This function launches the make file \argument{file} in each
+	   directory of \argument{directories} with the arguments
+	   \argument{arguments}.
+	 }
+
+\function{launch-program}{(\argument{file},
+                           \argument{arguments},
+                           \argument{options})}
+         {
+	   This function launches the program file \argument{file} with
+	   the arguments \argument{arguments}.
+	 }
+
+\function{launch}{(\argument{file},
+                   \argument{...})}
+         {
+	   This function is a wrapper over the previously described
+	   launch functions.
+	 }
+
+\function{copy}{(\argument{source},
+                 \argument{destination},
+                 \argument{options})}
+         {
+	   This function copies the file \argument{source} to
+	   \argument{destination}.
+	 }
+
+\function{link}{(\argument{source},
+                 \argument{destination},
+                 \argument{options})}
+         {
+	   This function builds a link between the file \argument{source}
+	   and the file \argument{destination}.
+	 }
+
+\function{remove}{(\argument{file},
+                   \argument{options})}
+         {
+	   This function removes the file \argument{file}.
+	 }
+
+\function{list}{(\argument{directory},
+                 \argument{options})}
+         {
+	   This function lists the file system objects contains in the
+	   directory \argument{directory}.
+
+	   The option \textit{--file} tells the function to list the
+	   files only.
+
+	   The option \textit{--directory} tells the function to list
+	   the directories only.
+	 }
+
+\function{change-directory}{(\argument{directory},
+                             \argument{options})}
+         {
+	   This function changes the current working directory to
+	   \argument{directory}.
+	 }
+
+\function{preprocess}{(\argument{file},
+                       \argument{includes},
+                       \argument{options})}
+         {
+	   This function performs a preprocessing task on the file
+	   \argument{file}.
+
+	   The argument \argument{includes} is used to provide additional
+	   includes.
+
+	   The option \textit{--no-markers} inhibits the generation
+	   of linemarkers in the output.
+	 }
+
+\function{search}{(\argument{path},
+                   \argument{pattern},
+                   \argument{options})}
+         {
+	   This function looks for a file given the pattern
+	   \argument{pattern} from the directory \argument{path}.
+
+	   The option \textit{--file} is used to retrieve only files.
+
+	   The option \textit{--directory} is used to retrieve only
+	   directories.
+	 }
+
+\function{pack}{(\argument{directory},
+                 \argument{file},
+                 \argument{options})}
+         {
+	   This function makes an archive \argument{file} of the
+	   directory \argument{directory}.
+	 }
+
+\function{unpack}{(\argument{directory},
+                   \argument{file},
+                   \argument{options})}
+         {
+	   This function extractes the archive \argument{file} into the
+	   directory \argument{directory}.
+	 }
+
+\function{make-directory}{(\argument{directory},
+                           \argument{options})}
+         {
+	   This function builds a new directory named
+	   \argument{directory}.
+	 }
+
+\function{make-directory}{(\argument{directory},
+                           \argument{options})}
+         {
+	   This function builds a new directory named
+	   \argument{directory}.
+	 }
+
+\function{cut}{(\argument{head},
+                \argument{tail})}
+         {
+	   This function tries to locate text between the two patterns
+	   \argument{head} and \argument{tail} from the standard input.
+
+	   The option \textit{--delete} tells the function to delete
+	   this text and display the rest.
+
+	   The option \textit{--print} tells the function to print
+	   this text.
+	 }
+
+\function{load}{(\argument{source},
+                 \argument{device},
+                 \argument{path},
+                 \argument{options})}
+         {
+	   This function loads the file \argument{source} on the
+	   specificed device \argument{device}, more precisly
+	   at the location \argument{path}.
+
+	   The option \textit{--image} specifies that the argument
+	   \argument{device} represents a device image.
+
+	   The option \textit{--device} specifies that the argument
+	   \argument{device} represents a device.
+	 }
+
+\function{stamp}{(\argument{format},
+                  \argument{options})}
+         {
+	   This function returns a date following the given format
+	   \argument{format}.
+	 }
+
+\function{stamp}{(\argument{format},
+                  \argument{options})}
+         {
+	   This function returns a date following the given format
+	   \argument{format}.
+	 }
+
+\function{record}{(\argument{log},
+                   \argument{time},
+                   \argument{options})}
+         {
+	   This function starts recording a session and outputs
+	   the text into the file \argument{log} while the timings
+	   are output in the file \argument{time}.
+	 }
+
+\function{play}{(\argument{log},
+                 \argument{time},
+                 \argument{options})}
+         {
+	   This function plays a previously recorded session where
+	   the files \argument{log} and \argument{time} hold the
+	   text and the timings.
+	 }
 
 %
 % actions
@@ -497,7 +811,10 @@ The shell interface is not well defined yet.
 
 \section{Actions}
 
-Many different actions can be triggered from the kaneton root directory.
+Almost every different actions can be triggered from the kaneton
+root directory.
+
+These actions are listed below.
 
 \command{make init}
         {

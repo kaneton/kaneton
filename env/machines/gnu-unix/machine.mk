@@ -6,7 +6,7 @@
 ## file          /home/mycure/kaneton/env/machines/gnu-unix/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [thu jul 13 11:27:31 2006]
+## updated       julien quintard   [sun jul 30 20:06:19 2006]
 ##
 
 #
@@ -592,9 +592,6 @@ endef
 # generate a version file
 #
 # $(1):		the version file to generate
-# $(2):		the user name
-# $(3):		the host name
-# $(4):		the date
 #
 
 define version
@@ -699,11 +696,12 @@ endef
 # launch a document viewer
 #
 # $(1):		the file name without extension
+# $(2):		advanced options
 #
 
 define view
   $(call pretty-printer,yellow,VIEW,$(1),			)	; \
-  $(_VIEWER_) $(1).pdf $(_VERBOSE_)
+  $(_XPDF_) $(1).pdf $(_VERBOSE_)
 endef
 
 #
