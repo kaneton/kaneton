@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [fri jul 28 18:09:46 2006]
+ * updated       matthieu bucchianeri   [sat jul 29 19:31:56 2006]
  */
 
 /*
@@ -548,6 +548,8 @@ void _fun2()
 
   f = -11111111.f;
 
+  OUTB(0x60, 1);
+
   while (1)
     {
       printf("fun2: %d\n", (int)f);
@@ -600,6 +602,11 @@ void sched_test_add_thread(void *func)
 	{
 	  cons_msg('!', "cannot reserve as\n");
 	  return;
+	}
+
+      if (io_grant(0x60, tsk, IO_GRANT) != ERROR_NONE)
+	{
+	  cons_msg('!', "cannot grant I/O\n");
 	}
     }
 

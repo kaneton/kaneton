@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [thu jul 27 19:25:48 2006]
+ * updated       matthieu bucchianeri   [sat jul 29 18:40:35 2006]
  */
 
 /*
@@ -26,6 +26,8 @@
  */
 
 extern m_sched*		sched;
+
+extern m_thread*	thread;
 
 extern i_task		ktask;
 
@@ -84,16 +86,18 @@ t_error			ia32_sched_quantum(t_quantum		quantum)
  *
  * 1) store back the executing context into the executing thread.
  * 2) set current context as the elected thread one.
+ * 3) update the I/O permissions bit map.
  */
 
-t_error			ia32_sched_switch(i_thread		thread)
+t_error			ia32_sched_switch(i_thread		elected)
 {
   o_thread*		from;
   o_thread*		to;
+  o_task*		task;
 
   SCHED_ENTER(sched);
 
-  printf("switching from %qd to %qd\n", sched->current, thread);
+  printf("switching from %qd to %qd\n", sched->current, elected);
 
   if (!context)
     {
@@ -119,7 +123,7 @@ t_error			ia32_sched_switch(i_thread		thread)
    * 2)
    */
 
-  if (thread_get(thread, &to) != ERROR_NONE)
+  if (thread_get(elected, &to) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   context_copy(context, &to->machdep.context);
@@ -127,6 +131,17 @@ t_error			ia32_sched_switch(i_thread		thread)
     memcpy(SSE_STATE(), &to->machdep.u.sse, sizeof(t_sse_state));
   else
     memcpy(X87_STATE(), &to->machdep.u.x87, sizeof(t_x87_state));
+
+  /*
+   * 3)
+   */
+
+  if (task_get(to->taskid, &task) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
+	 &task->machdep.iomap,
+	 8192);
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }

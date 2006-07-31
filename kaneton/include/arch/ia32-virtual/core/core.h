@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/core.h
  *
  * created       julien quintard   [sat dec 17 17:13:18 2005]
- * updated       matthieu bucchianeri   [sat jun 17 19:44:31 2006]
+ * updated       matthieu bucchianeri   [sat jul 29 18:09:16 2006]
  */
 
 #ifndef IA32_CORE_CORE_H
@@ -37,6 +37,8 @@
 #include <arch/machdep/core/task.h>
 #include <arch/machdep/core/sched.h>
 #include <arch/machdep/core/message.h>
+#include <arch/machdep/core/cpu.h>
+#include <arch/machdep/core/io.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -50,6 +52,8 @@
  *      ../../../../core/arch/machdep/thread.c
  *      ../../../../core/arch/machdep/sched.c
  *      ../../../../core/arch/machdep/message.c
+ *      ../../../../core/arch/machdep/cpu.c
+ *      ../../../../core/arch/machdep/io.c
  */
 
 /*
@@ -151,6 +155,11 @@ t_error			ia32_timer_init(void);
  * ../../../../core/arch/machdep/task.c
  */
 
+t_error			ia32_task_reserve(t_class			class,
+					  t_behav			behav,
+					  t_prior			prior,
+					  i_task*			id);
+
 t_error			ia32_task_init(void);
 
 
@@ -183,7 +192,7 @@ t_error			ia32_thread_init(void);
 
 t_error			ia32_sched_quantum(t_quantum		quantum);
 
-t_error			ia32_sched_switch(i_thread		thread);
+t_error			ia32_sched_switch(i_thread		elected);
 
 t_error			ia32_sched_init(void);
 
@@ -193,6 +202,22 @@ t_error			ia32_sched_clean(void);
 /*
  * ../../../../core/arch/machdep/message.c
  */
+
+
+/*
+ * ../../../../core/arch/machdep/cpu.c
+ */
+
+
+/*
+ * ../../../../core/arch/machdep/io.c
+ */
+
+t_error			ia32_io_grant(i_port			id,
+				      i_task			task,
+				      t_state			state);
+
+t_error			ia32_io_init(void);
 
 
 /*

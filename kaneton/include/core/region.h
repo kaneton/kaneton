@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [fri jul 28 17:27:39 2006]
+ * updated       matthieu bucchianeri   [fri jul 28 18:25:21 2006]
  */
 
 #ifndef CORE_REGION_H
@@ -30,6 +30,7 @@
 
 #define REGION_OPT_NONE		0
 #define REGION_OPT_FORCE	(1 << 0)
+#define REGION_OPT_USER		(0 << 1)
 #define REGION_OPT_PRIVILEGED	(1 << 1)
 
 /*

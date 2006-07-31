@@ -4,16 +4,19 @@
 --
  Choses a finir (matthieu) /!\ URGENT /!\
 
- * faire les tests pour task
- * revoir dans ia32_as_reserve les choses a mapper
-   + refaire le ELF, et mapper que handler et handler_data
+ * finir task
+   + wait et clone
+   + tests
+ * finir sched
+   + prio et time-slices
+   + probleme du thread 0
 
  Choses a finir (matthieu) :
 
- * descheduler  le thread  kernel et  trouver un  moyen de  delayer le
-   premier shot du timer.
+ * revoir dans ia32_as_reserve les choses a mapper
+   + refaire le ELF, et mapper que handler et handler_data
  * fignoler la gestion de la mémoire
-   + finir le test as/06
+   + finir le test as/03
    + coder region_resize
    + tester region_coalesce
  * probleme du malloc qui se rappelle
@@ -21,7 +24,9 @@
  Bugs connus :
 
  * region_split : ne marche pas
+ * as_clone ne gere pas les regions PRIVILEGED
  * segment_resize : cas particuliers (1er/dernier segments)
+ * segment_perms: change seulement les regions dans l'as specifié.
  * bootloader/02 et bootloader/03 ne passent plus
  * set_array_locate : dicho desactivée
  * ia32_region_reserve : cas particulier (pt vide)
@@ -32,7 +37,6 @@
  * faire des tests pour time et refaire des tests plus poussés pour event
  * revoir les timers dans stats
  * faire un vrai realloc
- * gerer le IOPL et le IO bitmap du TSS		=> io manager
  * rajouter REGION_OPT_USER partout ou il faut
 
 --

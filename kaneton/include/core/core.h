@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/core.h
+ * file          /home/buckman/kaneton/kaneton/include/core/core.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [wed jun 28 11:18:55 2006]
+ * updated       matthieu bucchianeri   [sat jul 29 18:05:45 2006]
  */
 
 #ifndef CORE_CORE_H
@@ -106,6 +106,8 @@
 #include <core/message.h>
 #include <core/capability.h>
 #include <core/interface.h>
+#include <core/cpu.h>
+#include <core/io.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

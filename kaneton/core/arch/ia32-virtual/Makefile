@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/Makefile
+## file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [thu jul 13 11:42:34 2006]
+## updated       matthieu bucchianeri   [sat jul 29 18:03:21 2006]
 ##
 
 #
@@ -35,7 +35,9 @@ MACHDEP_C		:=		as.c				\
 					thread.c			\
 					task.c				\
 					sched.c				\
-					message.c
+					message.c			\
+					cpu.c				\
+					io.c
 
 MACHDEP_O		:=		$(MACHDEP_C:.c=.o)
 

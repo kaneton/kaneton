@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/task.h
+ * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/task.h
  *
  * created       julien quintard   [sat dec 10 15:24:34 2005]
- * updated       julien quintard   [sun apr  2 14:08:41 2006]
+ * updated       matthieu bucchianeri   [sat jul 29 18:36:24 2006]
  */
 
 #ifndef IA32_CORE_TASK_H
@@ -17,6 +17,19 @@
  */
 
 // XXX #include <core/task.h>
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * the architecture dependent data for the task object
+ */
+
+typedef struct
+{
+  t_uint8			iomap[8192];
+}				ao_task;
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -39,6 +52,7 @@
 
 #define		machdep_data_m_task()
 
-#define		machdep_data_o_task()
+#define		machdep_data_o_task()					\
+  ao_task				machdep
 
 #endif

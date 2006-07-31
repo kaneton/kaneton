@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/types.h
+ * file          /home/buckman/kaneton/kaneton/include/core/types.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [tue jun 27 22:01:21 2006]
+ * updated       matthieu bucchianeri   [sat jul 29 19:03:48 2006]
  */
 
 #ifndef CORE_TYPES_H
@@ -74,6 +74,7 @@ typedef t_id			i_event;
 typedef t_id			i_timer;
 typedef t_id			i_task;
 typedef t_id			i_thread;
+typedef t_id			i_port;
 
 /*
  * error type

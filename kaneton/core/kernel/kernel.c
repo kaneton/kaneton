@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed jul 26 19:23:16 2006]
+ * updated       matthieu bucchianeri   [sat jul 29 18:17:25 2006]
  */
 
 /*
@@ -61,12 +61,14 @@ m_kernel*		kernel = NULL;
  * 7) initialises the region manager.
  * 8) initialises the map manager
  * 9) initialises the task manager.
- * 10) initialises the thread manager.
- * 11) initialises the event manager.
- * 12) initialises the timer manager.
- * 13) initialises the message manager.
- * 14) initialises the capability manager.
- * 15) initialise the scheduler manager.
+ * 10)
+ * 11) initialises the thread manager.
+ * 12) initialises the event manager.
+ * 13)
+ * 14) initialises the timer manager.
+ * 15) initialises the message manager.
+ * 16) initialises the capability manager.
+ * 17) initialise the scheduler manager.
  */
 
 void			kernel_init(void)
@@ -177,13 +179,22 @@ void			kernel_init(void)
    * 10)
    */
 
+  cons_msg('+', "starting cpu manager\n");
+
+  if (cpu_init() != ERROR_NONE)
+    core_error("cannot initialise the cpu manager\n");
+
+  /*
+   * 11)
+   */
+
   cons_msg('+', "starting event manager\n");
 
   if (event_init() != ERROR_NONE)
     core_error("cannot initialise the event manager\n");
 
   /*
-   * 11)
+   * 12)
    */
 
   cons_msg('+', "starting timer manager\n");
@@ -192,7 +203,16 @@ void			kernel_init(void)
     core_error("cannot initialise the timer manager\n");
 
   /*
-   * 12)
+   * 13)
+   */
+
+  cons_msg('+', "starting io manager\n");
+
+  if (io_init() != ERROR_NONE)
+    core_error("cannot initialise the io manager\n");
+
+  /*
+   * 14)
    */
 
   cons_msg('+', "starting message manager\n");
@@ -201,7 +221,7 @@ void			kernel_init(void)
     core_error("cannot initialise the message manager\n");
 
   /*
-   * 13)
+   * 15)
    */
 
   cons_msg('+', "starting capability manager\n");
@@ -210,7 +230,7 @@ void			kernel_init(void)
     core_error("cannot initialise the capability manager\n");
 
   /*
-   * 14)
+   * 16)
    */
 #ifndef SERIAL
   cons_msg('+', "starting scheduler manager\n");
@@ -228,11 +248,19 @@ void			kernel_clean(void)
 {
   sched_clean();
 
+  capability_clean();
+
   message_clean();
+
+  io_clean();
 
   timer_clean();
 
   event_clean();
+
+  cpu_clean();
+
+  thread_clean();
 
   task_clean();
 

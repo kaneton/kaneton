@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/kaneton/core/Makefile
+## file          /home/buckman/kaneton/kaneton/core/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [thu jul 13 11:43:19 2006]
+## updated       matthieu bucchianeri   [sat jul 29 17:56:46 2006]
 ##
 
 #
@@ -44,6 +44,8 @@ SUBDIRS			:=		arch				\
 					message				\
 					capability			\
 					interface			\
+					cpu				\
+					io				\
 					$(_CHECK_DIR_)
 
 # kaneton libraries
@@ -67,6 +69,8 @@ KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
 					$(_MESSAGE_LO_)			\
 					$(_CAPABILITY_LO_)		\
 					$(_INTERFACE_LO_)		\
+					$(_CPU_LO_)			\
+					$(_IO_LO_)			\
 					$(_CHECK_LO_)
 
 # core binary

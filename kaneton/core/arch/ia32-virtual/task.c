@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [fri jul 28 17:48:31 2006]
+ * updated       matthieu bucchianeri   [sat jul 29 18:36:02 2006]
  */
 
 /*
@@ -47,7 +47,7 @@ d_task			task_dispatch =
 
     NULL,
     NULL,
-    NULL,
+    ia32_task_reserve,
     NULL,
     NULL,
     NULL,
@@ -64,6 +64,27 @@ d_task			task_dispatch =
  */
 
 /*                                                                  [cut] k4 */
+
+/*
+ *
+ */
+
+t_error			ia32_task_reserve(t_class			class,
+					  t_behav			behav,
+					  t_prior			prior,
+					  i_task*			id)
+{
+  o_task*		o;
+
+  TASK_ENTER(task);
+
+  if (task_get(*id, &o) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  memset(&o->machdep.iomap, 0xFF, 8192);
+
+  TASK_LEAVE(task, ERROR_NONE);
+}
 
 /*
  *

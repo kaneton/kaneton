@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/check/kaneton/core/arch/ia32-virtual/task/Makefile
+## file          /home/buckman/kaneton/check/kaneton/core/arch/ia32-virtual/io/Makefile
 ##
 ## created       julien quintard   [mon nov 28 18:59:45 2005]
-## updated       matthieu bucchianeri   [sun jul 30 18:20:40 2006]
+## updated       matthieu bucchianeri   [sun jul 30 18:06:18 2006]
 ##
 
 #
@@ -31,7 +31,7 @@ SUBDIRS			:=		$(call contents,$(LIST),)
 
 MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 
-TASK_LO			:=		task.lo
+IO_LO			:=		io.lo
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -39,12 +39,12 @@ TASK_LO			:=		task.lo
 
 all:			build run
 
-build:			$(TASK_LO)
+build:			$(IO_LO)
 
-$(TASK_LO):		libs
-	$(call remove,$(TASK_LO),)
+$(IO_LO):		libs
+	$(call remove,$(IO_LO),)
 
-	$(call archive,$(TASK_LO),$(MODULES),)
+	$(call archive,$(IO_LO),$(MODULES),)
 
 libs:
 	$(call launch,Makefile,$(SUBDIRS),,)
@@ -54,12 +54,12 @@ run:
 clear:
 	$(call launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call remove,$(TASK_LO),)
+	$(call remove,$(IO_LO),)
 
 	$(call purge,)
 
 proto:
-	$(call prototypes,"arch_common/common.h",)
+	$(call prototypes,"common/common.h",)
 
 dep:
 	$(call launch,Makefile,$(SUBDIRS),dep,)

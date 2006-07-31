@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/libs/libia32/include/task/tss.h
+ * file          /home/buckman/kaneton/libs/libia32/include/task/tss.h
  *
  * created       renaud voltz   [mon apr 10 00:50:33 2006]
- * updated       renaud voltz   [mon apr 10 00:50:33 2006]
+ * updated       matthieu bucchianeri   [sat jul 29 18:25:54 2006]
  */
 
 /*
@@ -72,6 +72,8 @@ typedef struct
   t_uint16		ldt_align;
   t_uint16		trap;
   t_uint16		io;
+  t_uint8		io_bitmap[8192];
+  t_uint8		io_end;
 }			__attribute__ ((packed)) t_ia32_tss;
 
 /*								[cut] /k4 */
