@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/interrupt/interrupt.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       matthieu bucchianeri   [thu jul 27 19:48:15 2006]
+ * updated       matthieu bucchianeri   [thu aug  3 16:35:02 2006]
  */
 
 /*
@@ -45,6 +45,8 @@ volatile HANDLER_DATA t_uint16		interrupt_ds = 0;
  */
 
 volatile HANDLER_DATA t_uint32		interrupt_pdbr = 0;
+
+volatile HANDLER_DATA t_uint32		interrupt_stack = 0;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -202,12 +204,16 @@ void			handler_exception(t_uint32			nr,
 
   SAVE_CONTEXT();
 
+  RING0_SWITCH();
+
   if (has_code)
     {
       GET_ERROR_CODE(code);
     }
 
   interrupt_handlers[nr](code);
+
+  RING0_BACK();
 
   RESTORE_CONTEXT();
 }
@@ -224,9 +230,13 @@ void			handler_irq(t_uint32				nr)
 
   SAVE_CONTEXT();
 
+  RING0_SWITCH();
+
   pic_acknowledge(nr - IDT_IRQ_BASE);
 
   interrupt_handlers[nr](nr);
+
+  RING0_BACK();
 
   RESTORE_CONTEXT();
 }

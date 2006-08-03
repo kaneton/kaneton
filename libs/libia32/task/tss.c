@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/task/tss.c
+ * file          /home/buckman/kaneton/libs/libia32/task/tss.c
  *
  * created       renaud voltz   [mon apr 10 01:01:34 2006]
- * updated       julien quintard   [sat jul  8 02:32:37 2006]
+ * updated       matthieu bucchianeri   [mon jul 31 19:56:13 2006]
  */
 
 /*
@@ -90,6 +90,8 @@ t_error			tss_init(t_ia32_tss*			tss)
    */
 
   LTR(selector);
+
+  interrupt_stack = tss->esp0;
 
   return ERROR_NONE;
 }

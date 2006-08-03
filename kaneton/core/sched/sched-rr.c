@@ -6,14 +6,13 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [thu aug  3 16:42:15 2006]
+ * updated       matthieu bucchianeri   [thu aug  3 16:41:14 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * this implementation  is multilevel feedback  queues scheduler (like
- * the GNU/Linux one).
+ * this implementation is a simple round-robin without priorities.
  */
 
 /*

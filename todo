@@ -8,8 +8,7 @@
    + wait et clone
    + tests
  * finir sched
-   + prio et time-slices
-   + probleme du thread 0
+   + ordonnanceur de type multilevel feedback queues.
 
  Choses a finir (matthieu) :
 

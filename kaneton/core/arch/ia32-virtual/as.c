@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri jul 28 18:04:56 2006]
+ * updated       matthieu bucchianeri   [thu aug  3 16:16:01 2006]
  */
 
 /*
@@ -437,12 +437,18 @@ t_error			ia32_as_reserve(i_task			tskid,
 			 &reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
+      base = thread->machdep.tss->esp0 - 2 * PAGESZ + 16;
+
+      if (region_get(kasid, (i_region)base,
+		     &preg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
       if (region_reserve(*asid,
-			 (i_segment)init->kstack,
+			 preg->segid,
 			 0,
 			 REGION_OPT_FORCE | REGION_OPT_PRIVILEGED,
-			 init->kstack,
-			 init->kstacksz,
+			 base,
+			 2 * PAGESZ,
 			 &reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 

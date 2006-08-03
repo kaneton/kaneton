@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [thu jul 27 19:48:33 2006]
+ * updated       matthieu bucchianeri   [thu aug  3 16:32:18 2006]
  */
 
 /*
@@ -142,6 +142,79 @@
   }
 
 /*
+ * force a stack switch event if coming from ring0.
+ */
+
+#define RING0_SWITCH()							\
+  if (!(context->cs & 0x3) && interrupt_stack)				\
+    {									\
+      memcpy((void*)(interrupt_stack - sizeof(t_ia32_context)),		\
+	     context,							\
+	     sizeof(t_ia32_context));					\
+      if (cpucaps & IA32_CAPS_SSE)					\
+	memcpy((void*)(interrupt_stack - sizeof(t_ia32_context) - 528),	\
+	       (t_uint8*)context - 528,					\
+	       528);							\
+      else								\
+	memcpy((void*)(interrupt_stack - sizeof(t_ia32_context) - 108),	\
+	       (t_uint8*)context - 108,					\
+	       108);							\
+      code = (t_uint32)context;						\
+      context = (void*)(interrupt_stack - sizeof(t_ia32_context));	\
+      context->ebp_handler = (t_uint32)context +			\
+	sizeof(t_ia32_context) - 24;					\
+      context->ss = context->ds;					\
+      context->esp = code + sizeof(t_ia32_context) - 8;			\
+      asm volatile("movl %0, %%ebp"					\
+		   :							\
+		   : "r" ((t_uint8*)context + 44));			\
+      asm volatile("movl %0, %%esp"					\
+		   :							\
+		   : "r" (context));					\
+      if (cpucaps & IA32_CAPS_SSE)					\
+	asm volatile("subl $512, %esp\n\t"				\
+		     "andw $0xFFF0, %sp\n\t"				\
+		     "subl $4, %esp");					\
+      else								\
+	asm volatile("subl $108, %esp");				\
+    }
+
+/*
+ * force a stack switch if coming to ring 0.
+ */
+
+#define RING0_BACK()							\
+  if (!(context->cs & 0x3) && interrupt_stack)				\
+    {									\
+      memcpy((void*)(context->esp - sizeof(t_ia32_context) + 8),	\
+	     (t_uint8*)context,						\
+	     sizeof(t_ia32_context) - 8);				\
+      if (cpucaps & IA32_CAPS_SSE)					\
+	memcpy((void*)(context->esp - sizeof(t_ia32_context) + 8 - 528), \
+	       (t_uint8*)context - 528,					\
+	       528);							\
+      else								\
+	memcpy((void*)(context->esp - sizeof(t_ia32_context) + 8 - 108), \
+	       (t_uint8*)context - 108,					\
+	       108);							\
+      context = (void*)(context->esp - sizeof(t_ia32_context) + 8);	\
+      context->ebp_handler = (t_uint32)context +			\
+	sizeof(t_ia32_context) - 24;					\
+      asm volatile("movl %0, %%ebp"					\
+		   :							\
+		   : "r" ((t_uint8*)context + 44));			\
+      asm volatile("movl %0, %%esp"					\
+		   :							\
+		   : "r" (context));					\
+      if (cpucaps & IA32_CAPS_SSE)					\
+	asm volatile("subl $512, %esp\n\t"				\
+		     "andw $0xFFF0, %sp\n\t"				\
+		     "subl $4, %esp");					\
+      else								\
+	asm volatile("subl $108, %esp");				\
+    }
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -163,6 +236,8 @@ extern volatile t_uint16	interrupt_ds;
  */
 
 extern volatile t_uint32	interrupt_pdbr;
+
+extern volatile t_uint32	interrupt_stack;
 
 /*
  * ---------- prototypes ------------------------------------------------------

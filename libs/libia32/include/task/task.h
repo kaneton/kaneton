@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/task/task.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       matthieu bucchianeri   [thu jul 27 16:08:30 2006]
+ * updated       matthieu bucchianeri   [mon jul 31 19:23:28 2006]
  */
 
 /*
@@ -113,7 +113,9 @@ typedef struct
   t_uint32	edx;
   t_uint32	ecx;
   t_uint32	ebx;
-  t_uint8	reserved2[0x18 + 0x18];
+  t_uint8	reserved3[0x18];
+  t_uint32	ebp_handler;
+  t_uint8	reserved2[0x14];
   t_uint32	gs;
   t_uint32	fs;
   t_uint32	es;
