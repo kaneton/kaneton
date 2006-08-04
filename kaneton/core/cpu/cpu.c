@@ -6,12 +6,15 @@
  * file          /home/buckman/kaneton/kaneton/core/cpu/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       matthieu bucchianeri   [sat jul 29 18:01:20 2006]
+ * updated       matthieu bucchianeri   [thu aug  3 20:07:03 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
+ * this manager will be used by the scheduler to perform efficient cpu
+ * load balancing  of threads execution  for Symmetric MultiProcessing
+ * (SMP).
  */
 
 /*

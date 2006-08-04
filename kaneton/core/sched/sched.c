@@ -6,14 +6,47 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [thu aug  3 16:42:15 2006]
+ * updated       matthieu bucchianeri   [fri aug  4 13:00:10 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * this implementation  is multilevel feedback  queues scheduler (like
+ * this implementation is a multilevel feedback queues scheduler (like
  * the GNU/Linux one).
+ *
+ * future implementation  will   include  dynamic  task  priorization,
+ * symmetrical multiprocessor support and cpu load balancing.
+ *
+ * there are  two lists : the  active and the expired  list.  each one
+ * contains an equal  number of queues (FIFO). the  first queue if for
+ * the highest priority threads and the last for the lowest priority.
+ *
+ * a thread priority is computed based on its parent task priority and
+ * the thread's priority itself. a thread's execution timeslice is the
+ * time a  thread can be executed.  it is computed  with the priority:
+ * higher priotity threads obtain an higher execution timeslice.
+ *
+ * the  quantum corresponds  to  the interval  when  the scheduler  is
+ * called.  so the execution  timeslices have  a granularity  equal to
+ * this quantum.
+ *
+ * when the scheduler is called, it checks for the currently executing
+ * thread  timeslice expiration.   if there  is no  more time  for the
+ * current thread,  it is placed in  the expired list,  into the queue
+ * corresponding to  its priority. then,  the scheduler looks  for the
+ * highest priority active thread. it  can be the current thread, then
+ * no  preemption  is  done.   if  multiple thread  have  the  highest
+ * priority, then  they are taken round-robin. the  selected thread is
+ * now scheduled for immediate execution.
+ *
+ * when the  active queues become  empty, the active and  expired list
+ * are swapped so the scheduler can continue its operation.
+ *
+ * this implementation  is based on explanations  around the GNU/Linux
+ * 2.6 branch "O(1)" scheduler.   a very good document describing this
+ * scheduler   and  the  current   GNU/Linux  implementation   can  be
+ * downloaded at http://josh.trancesoftware.com/linux.
  */
 
 /*
@@ -53,15 +86,19 @@ extern i_task		ktask;
  * steps:
  *
  * 1) dump the current thread.
- * 2) dump the scheduler active queue.
- * 2) dump the scheduler expired queue.
+ * 2) dump the scheduler active queues.
+ * 2) dump the scheduler expired queues.
  */
 
 t_error			sched_dump(void)
 {
   t_iterator		i;
+  t_iterator		iq;
   t_state		st;
-  i_thread*		thread;
+  t_state		stq;
+  i_set*		queue;
+  t_scheduled*		thread;
+  t_prior		prio;
 
   SCHED_ENTER(sched);
 
@@ -69,20 +106,30 @@ t_error			sched_dump(void)
    * 1)
    */
 
-  cons_msg('#', "scheduler current thread: %qd\n", sched->current);
+  cons_msg('#', "scheduler current thread: %qd (%d, %d ms)\n",
+	   sched->current, sched->prio, sched->timeslice);
 
   /*
    * 2)
    */
 
-  cons_msg('#', "scheduler active queue:");
+  cons_msg('#', "scheduler active queues:");
 
+  prio = 0;
   set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
     {
-      if (set_object(sched->active, i, (void**)&thread) != ERROR_NONE)
+      if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
 	SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-      printf(" %qd", *thread);
+      set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
+	{
+	  if (set_object(*queue, iq, (void**)&thread) != ERROR_NONE)
+	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+	  printf(" %qd (%d, %d ms)", thread->thread, prio, thread->timeslice);
+	}
+
+      prio++;
     }
 
   printf("\n");
@@ -91,14 +138,20 @@ t_error			sched_dump(void)
    * 3)
    */
 
-  cons_msg('#', "scheduler expired queue:");
+  cons_msg('#', "scheduler expired queues:");
 
   set_foreach(SET_OPT_FORWARD, sched->expired, &i, st)
     {
-      if (set_object(sched->expired, i, (void**)&thread) != ERROR_NONE)
+      if (set_object(sched->expired, i, (void**)&queue) != ERROR_NONE)
 	SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-      printf(" %qd", *thread);
+      set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
+	{
+	  if (set_object(*queue, iq, (void**)&thread) != ERROR_NONE)
+	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+	  printf(" %qd", thread->thread);
+	}
     }
 
   printf("\n");
@@ -125,6 +178,9 @@ t_error			sched_quantum(t_quantum			quantum)
 
   sched->quantum = quantum;
 
+  /* XXX  change time slices  for all  threads ?  (to take  account of
+     granularity */
+
   /*
    * 2)
    */
@@ -141,8 +197,12 @@ t_error			sched_quantum(t_quantum			quantum)
  *
  * steps:
  *
- * 1) switch to the next thread.
- * 2) call the dependent code.
+ * 1) we force  the current thread's  priority to the minimum,  so the
+ *    switch function  will force switching  to another active  thread
+ *    if possible.
+ * 2) switch to  the next thread.
+ * 3) call  the dependent
+ * code.
  */
 
 t_error			sched_yield(void)
@@ -151,6 +211,12 @@ t_error			sched_yield(void)
 
   /*
    * 1)
+   */
+
+  sched->prio = SCHED_N_PRIORITY_QUEUE + 1;
+
+  /*
+   * 2)
    */
 
   if (sched_switch() != ERROR_NONE)
@@ -185,81 +251,186 @@ t_error			sched_current(i_thread*			thread)
  *
  * steps:
  *
- * 1) if the active queue is empty, swap with expired queue.
- * 2) get the next thread.
- * 3) check if the  currently scheduled thread is the  same as the one
- *    we are asked to switch to.
- * 4) call  the  machine  dependent   code  (which  does  the  context
- *    switching).
- * 5) push the thread in the expired queue.
- * 6) set the current thread.
+ * 1) update the current thread timeslice.
+ * 2) if the thread timeslice is expired, push it into the expired queues.
+ * 3) look for the higher priority task.
+ * 4) if there are no active threads, swap the expired and active queues.
+ * 5) if  we are changing  current thread  while the  executing thread
+ *    timeslice is not expired, push it back to the active list.
+ * 6) call the machine dependent code that performs the context switching.
+ * 7) update the scheduler internal informations.
  */
 
 t_error			sched_switch(void)
 {
-  t_iterator		it;
-  i_thread*		thread;
+  t_iterator		i;
+  t_state		st;
+  t_scheduled		entity;
+  t_scheduled*		highest;
+  t_prior		prio;
+  t_prior		p;
+  i_set*		queue;
   i_thread		elected;
-  t_setsz		size;
-  i_set			tmp;
+  t_prior		elected_prio = (t_prior)-1;
+  t_timeslice		elected_timeslice = (t_timeslice)-1;
+  int			nonempty = 0;
+  i_set			list;
 
   SCHED_ENTER(sched);
+
+  elected = sched->current;
 
   /*
    * 1)
    */
 
-  if (set_size(sched->active, &size) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  sched->timeslice -= sched->quantum;
+  if (sched->entity)
+    sched->entity->timeslice = sched->timeslice;
 
-  if (!size)
+  /*
+   * XXX remove me!
+   */
+
+  sched_dump();
+
+  if ((t_sint32)sched->timeslice < 0)
     {
-      tmp = sched->active;
-      sched->active = sched->expired;
-      sched->expired = tmp;
+      printf("scheduler error !\n");
+
+      while (1);
     }
 
   /*
    * 2)
    */
 
-  if (set_head(sched->active, &it) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (sched->timeslice == 0)
+    {
+      entity.thread = sched->current;
+      entity.timeslice = COMPUTE_TIMESLICE(sched->current);
 
-  if (set_object(sched->active, it, (void**)&thread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+      prio = COMPUTE_PRIORITY(sched->current);
+
+      p = 0;
+      set_foreach(SET_OPT_FORWARD, sched->expired, &i, st)
+	{
+	  if (set_object(sched->expired, i, (void**)&queue) != ERROR_NONE)
+	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+	  if (prio == p)
+	    {
+	      if (set_push(*queue, &entity) != ERROR_NONE)
+		SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+	      break;
+	    }
+
+	  p++;
+	}
+    }
 
   /*
    * 3)
    */
 
-  if (sched->current == *thread) // XXX normalement impossible.
-    SCHED_LEAVE(sched, ERROR_NONE);
+ try:
+  p = 0;
+  set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
+    {
+      if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+      if (p > sched->prio && sched->timeslice)
+	{
+	  nonempty = 1;
+	  elected = sched->current;
+	  elected_prio = sched->prio;
+	  elected_timeslice = sched->timeslice;
+	  highest = sched->entity;
+	  break;
+	}
+
+      if (set_pick(*queue, (void**)&highest) == ERROR_NONE)
+	{
+	  if (set_pop(*queue) != ERROR_NONE)
+	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+	  nonempty = 1;
+	  elected = highest->thread;
+	  elected_prio = p;
+	  elected_timeslice = highest->timeslice;
+	  break;
+	}
+
+      p++;
+    }
 
   /*
    * 4)
    */
 
-  elected = *thread;
+  if (!nonempty)
+    {
+      list = sched->active;
+      sched->active = sched->expired;
+      sched->expired = list;
 
-  if (machdep_call(sched, sched_switch, elected) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+      goto try;
+    }
 
   /*
    * 5)
    */
 
-  if (set_remove(sched->active, *thread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (sched->timeslice != 0 && elected != sched->current)
+    {
+      entity.thread = sched->current;
+      entity.timeslice = sched->timeslice;
 
-  if (set_append(sched->expired, &sched->current) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+      prio = COMPUTE_PRIORITY(sched->current);
+
+      p = 0;
+      set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
+	{
+	  if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
+	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+	  if (prio == p)
+	    {
+	      if (set_push(*queue, &entity) != ERROR_NONE)
+		SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+	      break;
+	    }
+
+	  p++;
+	}
+    }
+
+  /*
+   * XXX remove me!
+   */
+
+  if (elected_prio == (t_prior)-1 ||
+      elected_timeslice == (t_timeslice)-1)
+    {
+      printf("scheduler error\n");
+
+      while (1);
+    }
 
   /*
    * 6)
    */
 
+  if (machdep_call(sched, sched_switch, elected) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
   sched->current = elected;
+  sched->prio = elected_prio;
+  sched->timeslice = elected_timeslice;
+  sched->entity = highest;
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }
@@ -269,31 +440,62 @@ t_error			sched_switch(void)
  *
  * steps:
  *
- * 1) add the thread to the schedule list.
- * 2) update the thread's priority.
- * 3) call the machine dependent code.
+ * 1) compute the thread's priority.
+ * 2) add the thread to the right queue.
+ * 3) preempt current thread if added thread has an higher priority.
+ * 4) call the machine dependent code.
  */
 
 t_error			sched_add(i_thread			thread)
 {
+  t_iterator		i;
+  t_state		st;
+  i_set*		queue;
+  t_prior		prio;
+  t_prior		p;
+  t_scheduled		entity;
+
   SCHED_ENTER(sched);
 
   /*
    * 1)
    */
 
-  if (set_add(sched->active, &thread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  prio = COMPUTE_PRIORITY(thread);
 
   /*
    * 2)
    */
 
-  if (sched_update(thread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  p = 0;
+  set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
+    {
+      if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+      if (prio == p)
+	{
+	  entity.thread = thread;
+	  entity.timeslice = COMPUTE_TIMESLICE(thread);
+
+	  if (set_push(*queue, &entity) != ERROR_NONE)
+	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+	  break;
+	}
+
+      p++;
+    }
 
   /*
    * 3)
+   */
+
+  if (0 && prio < COMPUTE_PRIORITY(sched->current)) // XXX
+    SCHED_LEAVE(sched, sched_yield());
+
+  /*
+   * 4)
    */
 
   if (machdep_call(sched, sched_add, thread) != ERROR_NONE)
@@ -309,12 +511,20 @@ t_error			sched_add(i_thread			thread)
  *
  * 1) if the  currently scheduled thread  is being removed,  then stop
  *    its execution.
- * 2) remove from the schedule list.
- * 3) call architecture dependent code.
+ * 2) call architecture dependent code.
+ * 3) compute the thread priority.
+ * 4) look in both active and expired lists to remove the thread.
  */
 
 t_error			sched_remove(i_thread			thread)
 {
+  t_iterator		i;
+  t_state		st;
+  i_set*		queue;
+  t_prior		prio;
+  t_prior		p;
+  int			removed = 0;
+
   SCHED_ENTER(sched);
 
   /*
@@ -329,57 +539,77 @@ t_error			sched_remove(i_thread			thread)
    * 2)
    */
 
-  if (set_remove(sched->active, thread) != ERROR_NONE &&
-      set_remove(sched->expired, thread) != ERROR_NONE)
+  if (machdep_call(sched, sched_remove, thread) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  if (machdep_call(sched, sched_remove, thread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  prio = COMPUTE_PRIORITY(thread);
+
+  /*
+   * 4)
+   */
+
+  p = 0;
+  set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
+    {
+      if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+      if (prio == p)
+	{
+	  if (set_remove(*queue, thread) == ERROR_NONE)
+	    removed = 1;
+	  break;
+	}
+    }
+
+  if (!removed)
+    {
+      p = 0;
+      set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
+	{
+	  if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
+	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+	  if (prio == p)
+	    {
+	      if (set_remove(*queue, thread) != ERROR_NONE)
+		SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	      break;
+	    }
+	}
+    }
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }
 
 /*
  * this function updates a thread into the scheduler.
+
  *
  * steps:
  *
- * x) call the machine dependent code.
+ * 1) XXX optimize this !!!
+ * 2) call the machine dependent code.
  */
 
 t_error			sched_update(i_thread			thread)
 {
-  o_thread*		oth;
-  o_task*		otsk;
-  t_prior		task_prior;
-  t_prior		thread_prior;
-
   SCHED_ENTER(sched);
 
   /*
    * 1)
    */
 
-  if (thread_get(thread, &oth) != ERROR_NONE)
+  if (sched_remove(thread) != ERROR_NONE ||
+      sched_add(thread) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  if (task_get(oth->taskid, &otsk) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  task_prior = ((otsk->prior - TASK_LPRIOR_BACKGROUND) * 100) /
-    (TASK_HPRIOR_CORE - TASK_LPRIOR_CORE);
-
-  thread_prior = ((oth->prior - THREAD_LPRIOR) * 100) /
-    (THREAD_HPRIOR - THREAD_LPRIOR);
-
-  /* XXX */
 
   /*
-   * x)
+   * 2)
    */
 
   if (machdep_call(sched, sched_update, thread) != ERROR_NONE)
@@ -402,7 +632,9 @@ t_error			sched_update(i_thread			thread)
 
 t_error			sched_init(void)
 {
-  t_stack		kstack;
+  int			i;
+  i_set			queue;
+  i_thread		kthread;
 
   /*
    * 1)
@@ -418,10 +650,13 @@ t_error			sched_init(void)
 
   memset(sched, 0x0, sizeof(m_sched));
 
-  sched->current = ID_UNUSED;
   sched->quantum = SCHED_QUANTUM_INIT;
+  sched->current = ID_UNUSED;
+  sched->timeslice = sched->quantum;
+  sched->prio = SCHED_N_PRIORITY_QUEUE;
   sched->active = ID_UNUSED;
   sched->expired = ID_UNUSED;
+  sched->entity = NULL;
 
   /*
    * 2)
@@ -433,20 +668,42 @@ t_error			sched_init(void)
    * 3)
    */
 
-  if (set_reserve(ll, SET_OPT_ALLOC, sizeof(i_thread), &sched->active) !=
+  if (set_reserve(ll, SET_OPT_ALLOC, sizeof(i_set), &sched->active) !=
       ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  if (set_reserve(ll, SET_OPT_ALLOC, sizeof(i_thread), &sched->expired) !=
+  for (i = 0; i <= SCHED_N_PRIORITY_QUEUE; i++)
+    {
+      if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_scheduled), &queue) !=
+	  ERROR_NONE)
+	return (ERROR_UNKNOWN);
+
+      if (set_insert(sched->active, &queue) != ERROR_NONE)
+	return (ERROR_UNKNOWN);
+    }
+
+  if (set_reserve(ll, SET_OPT_ALLOC, sizeof(i_set), &sched->expired) !=
       ERROR_NONE)
     return (ERROR_UNKNOWN);
+
+  for (i = 0; i <= SCHED_N_PRIORITY_QUEUE; i++)
+    {
+      if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_scheduled), &queue) !=
+	  ERROR_NONE)
+	return (ERROR_UNKNOWN);
+
+      if (set_insert(sched->expired, &queue) != ERROR_NONE)
+	return (ERROR_UNKNOWN);
+    }
 
   /*
    * 4)
    */
 
-  if (thread_reserve(ktask, THREAD_PRIOR, &sched->current) != ERROR_NONE)
+  if (thread_reserve(ktask, THREAD_PRIOR, &kthread) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+
+  sched->current = kthread;
 
   /*
    * 5)
@@ -464,12 +721,17 @@ t_error			sched_init(void)
  * steps:
  *
  * 1) call the machine-dependent code.
- * 2) release the stats object.
- * 3) free the scheduler manager structure's memory.
+ * 2) release the lists and the queues.
+ * 3) release the stats object.
+ * 4) free the scheduler manager structure's memory.
  */
 
 t_error			sched_clean(void)
 {
+  t_iterator		it;
+  t_state		st;
+  i_set*		queue;
+
   /*
    * 1)
    */
@@ -481,8 +743,26 @@ t_error			sched_clean(void)
    * 2)
    */
 
+  set_foreach(SET_OPT_FORWARD, sched->active, &it, st)
+    {
+      if (set_object(sched->active, it, (void**)&queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+      if (set_release(*queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+    }
+
   if (set_release(sched->active) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  set_foreach(SET_OPT_FORWARD, sched->expired, &it, st)
+    {
+      if (set_object(sched->expired, it, (void**)&queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+      if (set_release(*queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+    }
 
   if (set_release(sched->expired) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
@@ -534,7 +814,15 @@ void _fun3()
     }
 }
 
-void sched_test_add_thread(void *func)
+void _fun4()
+{
+  while (1)
+    {
+      printf("fun4\n");
+    }
+}
+
+void sched_test_add_thread(void *func, t_prior p)
 {
   static i_task		tsk = ID_UNUSED;
   i_as			as;
@@ -566,7 +854,7 @@ void sched_test_add_thread(void *func)
 	}
     }
 
-  if (thread_reserve(tsk, THREAD_PRIOR, &thr) != ERROR_NONE)
+  if (thread_reserve(tsk, p, &thr) != ERROR_NONE)
     {
       cons_msg('!', "cannot reserve thread\n");
       return;
@@ -595,11 +883,12 @@ void sched_test_add_thread(void *func)
 
 void sched_test()
 {
-  sched_test_add_thread(_fun1);
-  sched_test_add_thread(_fun2);
-  sched_test_add_thread(_fun3);
+  sched_test_add_thread(_fun1, 10);
+  sched_test_add_thread(_fun2, 150);
+  sched_test_add_thread(_fun3, 250);
+  sched_test_add_thread(_fun4, 250);
 
-//  sched_dump();
+  sched_dump();
 
   while(1)
     {

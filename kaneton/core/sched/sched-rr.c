@@ -3,16 +3,25 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
+ * file          /home/buckman/kaneton/kaneton/core/sched/sched-rr.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [thu aug  3 16:41:14 2006]
+ * updated       matthieu bucchianeri   [fri aug  4 12:58:26 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
  * this implementation is a simple round-robin without priorities.
+ *
+ * there are two lists: the active  list and the expired list. on each
+ * call to sched_switch, the scheduler put the current thread into the
+ * expired  list and  take  the first  thread  of the  active list  to
+ * schedule  it. when the  active list  is empty,  we swap  active and
+ * expired lists.
+ *
+ * be careful, in this implementation, the execution timeslice of each
+ * thread is equal to the scheduler quantum.
  */
 
 /*
@@ -358,24 +367,6 @@ t_error			sched_update(i_thread			thread)
   t_prior		thread_prior;
 
   SCHED_ENTER(sched);
-
-  /*
-   * 1)
-   */
-
-  if (thread_get(thread, &oth) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  if (task_get(oth->taskid, &otsk) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  task_prior = ((otsk->prior - TASK_LPRIOR_BACKGROUND) * 100) /
-    (TASK_HPRIOR_CORE - TASK_LPRIOR_CORE);
-
-  thread_prior = ((oth->prior - THREAD_LPRIOR) * 100) /
-    (THREAD_HPRIOR - THREAD_LPRIOR);
-
-  /* XXX */
 
   /*
    * x)

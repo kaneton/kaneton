@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/map/map.c
  *
  * created       matthieu bucchianeri   [sun feb 26 12:56:54 2006]
- * updated       matthieu bucchianeri   [fri jul 28 17:29:40 2006]
+ * updated       matthieu bucchianeri   [thu aug  3 20:11:00 2006]
  */
 
 /*
@@ -16,6 +16,8 @@
  *
  * this manager only does two things: reserving a new map and releasing it.
  * a map is a couple of segment and region.
+ *
+ * in future implementation, resizing of maps will be possible.
  */
 
 /*

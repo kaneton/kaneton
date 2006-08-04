@@ -8,7 +8,9 @@
    + wait et clone
    + tests
  * finir sched
-   + ordonnanceur de type multilevel feedback queues.
+   + resoudre le problème des threads de même priorité
+   + trouver une astuce pour le problème de sched_add (préemption à l'ajout)
+ * probleme du malloc qui se rappelle
 
  Choses a finir (matthieu) :
 
@@ -18,7 +20,6 @@
    + finir le test as/03
    + coder region_resize
    + tester region_coalesce
- * probleme du malloc qui se rappelle
 
  Bugs connus :
 

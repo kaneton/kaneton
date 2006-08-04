@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/types.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sat jul 29 19:03:48 2006]
+ * updated       matthieu bucchianeri   [thu aug  3 18:22:08 2006]
  */
 
 #ifndef CORE_TYPES_H
@@ -58,6 +58,7 @@ typedef t_uint32		t_behav;
 typedef t_uint32		t_prior;
 typedef t_uint32		t_quantum;
 typedef t_uint32		t_operations;
+typedef t_uint32		t_timeslice;
 
 /*
  * identifier types

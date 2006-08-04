@@ -6,12 +6,20 @@
  * file          /home/buckman/kaneton/kaneton/core/io/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       matthieu bucchianeri   [sat jul 29 18:59:21 2006]
+ * updated       matthieu bucchianeri   [thu aug  3 20:10:20 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
+ * the I/O  manager is  designed to grant  or deny  low-level hardware
+ * accesses to tasks.
+ *
+ * the only available operation is allowing or denying the access of a
+ * given hardware address (called a port) to a task.
+ *
+ * as low-level I/O are hardware specific, the manager only does calls
+ * to the architecture dependent code.
  */
 
 /*
