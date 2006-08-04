@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [wed jul 26 19:22:39 2006]
+ * updated       matthieu bucchianeri   [fri aug  4 18:02:44 2006]
  */
 
 /*
@@ -503,8 +503,8 @@ t_error			task_release(i_task			id)
  * 1) get the task object.
  * 2) check the priority range using the behaviour.
  * 3) update the task priority.
- * 4) update all the threads priorities in the scheduler.
- * 5) call the machine dependent code.
+ * 4) call the machine dependent code.
+ * 5) update all the threads priorities in the scheduler.
  */
 
 t_error			task_priority(i_task			id,
@@ -563,6 +563,13 @@ t_error			task_priority(i_task			id,
    * 4)
    */
 
+  if (machdep_call(task, task_priority, id, prior) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
   set_foreach(SET_OPT_FORWARD, o->threads, &i, state)
     {
       i_thread*		th;
@@ -579,13 +586,6 @@ t_error			task_priority(i_task			id,
 	TASK_LEAVE(task, ERROR_UNKNOWN);
     }
 
-  /*
-   * 5)
-   */
-
-  if (machdep_call(task, task_priority, id, prior) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
-
   TASK_LEAVE(task, ERROR_NONE);
 }
 
@@ -597,8 +597,8 @@ t_error			task_priority(i_task			id,
  * 1) get the task object.
  * 2) set the new state.
  * 3) wakeup the waiting tasks.
- * 4) start the threads.
- * 5) call the machine dependent code.
+ * 4) call the machine dependent code.
+ * 5) start the threads.
  */
 
 t_error			task_state(i_task			id,
@@ -672,6 +672,13 @@ t_error			task_state(i_task			id,
    * 4)
    */
 
+  if (machdep_call(task, task_state, id, sched) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
   set_foreach(SET_OPT_FORWARD, o->threads, &i, state)
     {
       i_thread*		th;
@@ -684,16 +691,9 @@ t_error			task_state(i_task			id,
 	  TASK_LEAVE(task, ERROR_UNKNOWN);
 	}
 
-      if (thread_state(*th, state) != ERROR_NONE)
+      if (thread_state(*th, sched) != ERROR_NONE)
 	TASK_LEAVE(task, ERROR_UNKNOWN);
     }
-
-  /*
-   * 5)
-   */
-
-  if (machdep_call(task, task_state, id, sched) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_NONE);
 }

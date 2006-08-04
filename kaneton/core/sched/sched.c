@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [fri aug  4 13:00:10 2006]
+ * updated       matthieu bucchianeri   [fri aug  4 18:30:11 2006]
  */
 
 /*
@@ -165,11 +165,19 @@ t_error			sched_dump(void)
  * steps:
  *
  * 1) set the new quantum value.
- * 2) call the architecture dependent code.
+ * 2) update all thread timeslices to take account of new granularity.
+ * 3) call the architecture dependent code.
  */
 
 t_error			sched_quantum(t_quantum			quantum)
 {
+  t_iterator		i;
+  t_state		st;
+  t_iterator		iq;
+  t_state		stq;
+  i_set*		queue;
+  t_scheduled*		entity;
+
   SCHED_ENTER(sched);
 
   /*
@@ -178,8 +186,39 @@ t_error			sched_quantum(t_quantum			quantum)
 
   sched->quantum = quantum;
 
-  /* XXX  change time slices  for all  threads ?  (to take  account of
-     granularity */
+  /*
+   * 2)
+   */
+
+  sched->timeslice = SCALE_TIMESLICE(sched->timeslice);
+
+  set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
+    {
+      if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+      set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
+	{
+	  if (set_object(*queue, iq, (void**)&entity) != ERROR_NONE)
+	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+	  entity->timeslice = SCALE_TIMESLICE(entity->timeslice);
+	}
+    }
+
+  set_foreach(SET_OPT_FORWARD, sched->expired, &i, st)
+    {
+      if (set_object(sched->expired, i, (void**)&queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+      set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
+	{
+	  if (set_object(*queue, iq, (void**)&entity) != ERROR_NONE)
+	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+	  entity->timeslice = SCALE_TIMESLICE(entity->timeslice);
+	}
+    }
 
   /*
    * 2)
@@ -285,21 +324,6 @@ t_error			sched_switch(void)
    */
 
   sched->timeslice -= sched->quantum;
-  if (sched->entity)
-    sched->entity->timeslice = sched->timeslice;
-
-  /*
-   * XXX remove me!
-   */
-
-  sched_dump();
-
-  if ((t_sint32)sched->timeslice < 0)
-    {
-      printf("scheduler error !\n");
-
-      while (1);
-    }
 
   /*
    * 2)
@@ -347,19 +371,19 @@ t_error			sched_switch(void)
 	  elected = sched->current;
 	  elected_prio = sched->prio;
 	  elected_timeslice = sched->timeslice;
-	  highest = sched->entity;
 	  break;
 	}
 
       if (set_pick(*queue, (void**)&highest) == ERROR_NONE)
 	{
-	  if (set_pop(*queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
 	  nonempty = 1;
 	  elected = highest->thread;
 	  elected_prio = p;
 	  elected_timeslice = highest->timeslice;
+
+	  if (set_pop(*queue) != ERROR_NONE)
+	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
 	  break;
 	}
 
@@ -409,18 +433,6 @@ t_error			sched_switch(void)
     }
 
   /*
-   * XXX remove me!
-   */
-
-  if (elected_prio == (t_prior)-1 ||
-      elected_timeslice == (t_timeslice)-1)
-    {
-      printf("scheduler error\n");
-
-      while (1);
-    }
-
-  /*
    * 6)
    */
 
@@ -430,7 +442,6 @@ t_error			sched_switch(void)
   sched->current = elected;
   sched->prio = elected_prio;
   sched->timeslice = elected_timeslice;
-  sched->entity = highest;
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }
@@ -491,7 +502,8 @@ t_error			sched_add(i_thread			thread)
    * 3)
    */
 
-  if (0 && prio < COMPUTE_PRIORITY(sched->current)) // XXX
+  if (sched->timeslice > sched->quantum &&
+      prio < COMPUTE_PRIORITY(sched->current))
     SCHED_LEAVE(sched, sched_yield());
 
   /*
@@ -656,7 +668,6 @@ t_error			sched_init(void)
   sched->prio = SCHED_N_PRIORITY_QUEUE;
   sched->active = ID_UNUSED;
   sched->expired = ID_UNUSED;
-  sched->entity = NULL;
 
   /*
    * 2)
@@ -790,39 +801,44 @@ t_error			sched_clean(void)
  * To be removed...
  */
 
-void _fun1()
+static volatile t_uint64 c1 = 0;
+static volatile t_uint64 c2 = 0;
+static volatile t_uint64 c3 = 0;
+static volatile t_uint64 c4 = 0;
+
+void _fun1(void)
 {
   while (1)
     {
-      printf("fun1\n");
+      c1++;
     }
 }
 
-void _fun2()
+void _fun2(void)
 {
   while (1)
     {
-      printf("fun2\n");
+      c2++;
     }
 }
 
-void _fun3()
+void _fun3(void)
 {
   while (1)
     {
-      printf("fun3\n");
+      c3++;
     }
 }
 
-void _fun4()
+void _fun4(void)
 {
   while (1)
     {
-      printf("fun4\n");
+      c4++;
     }
 }
 
-void sched_test_add_thread(void *func, t_prior p)
+i_task sched_test_add_thread(void *func, t_prior p)
 {
   static i_task		tsk = ID_UNUSED;
   i_as			as;
@@ -839,32 +855,41 @@ void sched_test_add_thread(void *func, t_prior p)
 		       &tsk) != ERROR_NONE)
 	{
 	  cons_msg('!', "cannot reserve task\n");
-	  return;
+	  while (1);
 	}
 
       if (as_reserve(tsk, &as) != ERROR_NONE)
 	{
 	  cons_msg('!', "cannot reserve as\n");
-	  return;
+	  while (1);
 	}
 
       if (io_grant(0x60, tsk, IO_GRANT) != ERROR_NONE)
 	{
 	  cons_msg('!', "cannot grant I/O\n");
+	  while (1);
 	}
     }
 
   if (thread_reserve(tsk, p, &thr) != ERROR_NONE)
     {
       cons_msg('!', "cannot reserve thread\n");
-      return;
+      while (1);
     }
 
   stack.base = 0;
   stack.size = THREAD_MIN_STACKSZ;
-  thread_stack(thr, stack);
+  if (thread_stack(thr, stack) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot set stack\n");
+      while (1);
+    }
 
-  thread_get(thr, &o);
+  if (thread_get(thr, &o) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot get thread\n");
+      while (1);
+    }
 
   /*
    * XXX
@@ -876,23 +901,39 @@ void sched_test_add_thread(void *func, t_prior p)
   ctx.sp = o->stack + o->stacksz - 16;
   ctx.pc = (t_uint32)func;
 
-  thread_load(thr, ctx);
+  if (thread_load(thr, ctx) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot load context\n");
+      while (1);
+    }
 
-  sched_add(thr); // XXX must be called by thread_start
+  return tsk;
 }
 
-void sched_test()
+void sched_test(void)
 {
+  i_task t;
+
   sched_test_add_thread(_fun1, 10);
   sched_test_add_thread(_fun2, 150);
   sched_test_add_thread(_fun3, 250);
-  sched_test_add_thread(_fun4, 250);
+  t = sched_test_add_thread(_fun4, 250);
+
+  if (task_state(t, SCHED_STATE_RUN) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot start !\n");
+
+      while (1);
+    }
 
   sched_dump();
 
+  printf("\n\n\n");
+
   while(1)
     {
-      printf("kernel\n");
+      printf("\r%12qu%12qu%12qu%12qu                      ",
+	     c1, c2, c3, c4);
     }
 
 }

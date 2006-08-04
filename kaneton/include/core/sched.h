@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/sched.h
  *
  * created       matthieu bucchianeri   [sat jun  3 22:34:42 2006]
- * updated       matthieu bucchianeri   [thu aug  3 19:34:33 2006]
+ * updated       matthieu bucchianeri   [fri aug  4 18:30:24 2006]
  */
 
 #ifndef CORE_SCHED_H
@@ -24,13 +24,29 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-#define SCHED_STATE_RUN		0
-#define SCHED_STATE_STOP	1
-#define SCHED_STATE_ZOMBIE	2
+/*
+ * this is thread state.
+ */
 
-#define SCHED_QUANTUM_INIT	5 // ms
+#define SCHED_STATE_RUN			0
+#define SCHED_STATE_STOP		1
+#define SCHED_STATE_ZOMBIE		2
 
-#define SCHED_N_PRIORITY_QUEUE	40
+/*
+ * initial value for the scheduler quantum in milliseconds.
+ */
+
+#define SCHED_QUANTUM_INIT		5
+
+/*
+ * the number of priority levels for the scheduler.
+ */
+
+#define SCHED_N_PRIORITY_QUEUE		40
+
+/*
+ * timeslice constants.
+ */
 
 #define SCHED_TIMESLICE_MIN		5
 #define SCHED_TIMESLICE_MAX		200
@@ -43,7 +59,7 @@
 /*
  * this macro function computes the  global priority of a thread.  the
  * global  priority is  an high  precision measurement  of  a thread's
- * priority.
+ * priority. used for timeslice computation.
  */
 
 #define COMPUTE_GLOBAL_PRIORITY(_thread_)				\
@@ -72,7 +88,8 @@
 
 /*
  * this  macro function  computes priority  queue index  of  a thread.
- * this is a low precision measurement of a thread's priority.
+ * this is  a low precision  measurement of a thread's  priority. used
+ * for queue index computation.
  */
 
 #define COMPUTE_PRIORITY(_thread_)					\
@@ -82,6 +99,16 @@
     global_prior = COMPUTE_GLOBAL_PRIORITY((_thread_));			\
     (SCHED_N_PRIORITY_QUEUE - global_prior / SCHED_N_PRIORITY_QUEUE);	\
   })
+
+/*
+ * this macro compute a ceil timeslice taking account of granularity.
+ */
+
+#define SCALE_TIMESLICE(_t_)						\
+  ((_t_) % SCHED_TIMESLICE_GRANULARITY ?				\
+   (_t_) + SCHED_TIMESLICE_GRANULARITY -				\
+   (_t_) % SCHED_TIMESLICE_GRANULARITY					\
+   : (_t_))
 
 /*
  * this macro function computes the timeslice given by the kernel to a
@@ -98,9 +125,7 @@
     t = SCHED_TIMESLICE_MIN;						\
     t += ((SCHED_TIMESLICE_MAX - SCHED_TIMESLICE_MIN) * global_prior) /	\
       (SCHED_N_PRIORITY_QUEUE * SCHED_N_PRIORITY_QUEUE);		\
-    (t % SCHED_TIMESLICE_GRANULARITY ?					\
-     t + SCHED_TIMESLICE_GRANULARITY - t % SCHED_TIMESLICE_GRANULARITY	\
-     : t);								\
+    SCALE_TIMESLICE(t);							\
   })
 
 /*
@@ -130,7 +155,6 @@ typedef struct
   i_thread	current;
   t_timeslice	timeslice;
   t_prior	prio;
-  t_scheduled*	entity;
 
   i_set		active;
   i_set		expired;
@@ -186,9 +210,7 @@ typedef struct
 #define SCHED_LEAVE(_sched_, _error_)					\
   {									\
     STATS_END((_sched_)->stats, (_error_));				\
-									\
-    if ((_error_) != ERROR_NONE)					\
-      cons_msg('!', "scheduler error @ %s:%d\n", __FUNCTION__, __LINE__); \
+    									\
     return (_error_);							\
   }
 
@@ -222,15 +244,17 @@ t_error			sched_init(void);
 
 t_error			sched_clean(void);
 
-void _fun1();
+void _fun1(void);
 
-void _fun2();
+void _fun2(void);
 
-void _fun3();
+void _fun3(void);
 
-void sched_test_add_thread(void *func, t_prior p);
+void _fun4(void);
 
-void sched_test();
+i_task sched_test_add_thread(void *func, t_prior p);
+
+void sched_test(void);
 
 
 /*

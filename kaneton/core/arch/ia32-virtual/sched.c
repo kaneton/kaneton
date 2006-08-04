@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [fri aug  4 12:05:50 2006]
+ * updated       matthieu bucchianeri   [fri aug  4 17:58:58 2006]
  */
 
 /*
@@ -97,14 +97,16 @@ t_error			ia32_sched_switch(i_thread		elected)
 
   SCHED_ENTER(sched);
 
-  printf("switching from %qd to %qd\n", sched->current, elected);
-
   if (!context)
     {
       cons_msg('!', "unable to switch context in this state\n");
 
-      SCHED_LEAVE(sched, ERROR_NONE);
+      while (1)
+	;
     }
+
+  if (sched->current == elected)
+      SCHED_LEAVE(sched, ERROR_NONE);
 
   /*
    * 1)

@@ -7,9 +7,6 @@
  * finir task
    + wait et clone
    + tests
- * finir sched
-   + resoudre le problème des threads de même priorité
-   + trouver une astuce pour le problème de sched_add (préemption à l'ajout)
  * probleme du malloc qui se rappelle
 
  Choses a finir (matthieu) :

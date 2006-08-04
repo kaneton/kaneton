@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       matthieu bucchianeri   [thu jul 27 19:34:06 2006]
+ * updated       matthieu bucchianeri   [fri aug  4 17:57:19 2006]
  */
 
 /*
@@ -197,6 +197,8 @@ t_error			thread_give(i_task			taskid,
    * 7)
    */
 
+  // XXX update CR3 value.
+
   if (machdep_call(thread, thread_give, taskid, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
@@ -242,6 +244,8 @@ t_error			thread_clone(i_task			taskid,
   /*
    * 3)
    */
+
+  // XXX do reserve !
 
   to->sched = from->sched;
 
@@ -334,6 +338,8 @@ t_error			thread_reserve(i_task			taskid,
   o.threadid = *threadid;
   o.taskid = taskid;
   o.prior = prior;
+  o.sched = SCHED_STATE_STOP;
+  o.waits = ID_UNUSED; // XXX
 
   /*
    * 5)
@@ -450,6 +456,7 @@ t_error			thread_release(i_thread			threadid)
  * 2) get the thread object from the thread container.
  * 3) update the priority if needed.
  * 4) call the machine-dependent code.
+ * 5) call the scheduler to update its internal data.
  */
 
 t_error			thread_priority(i_thread		threadid,
@@ -489,6 +496,14 @@ t_error			thread_priority(i_thread		threadid,
   if (machdep_call(thread, thread_priority, threadid, prior) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
+  /*
+   * 5)
+   */
+
+  if (o->sched == SCHED_STATE_RUN)
+    if (sched_update(threadid) != ERROR_NONE)
+      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
   THREAD_LEAVE(thread, ERROR_NONE);
 }
 
@@ -500,7 +515,9 @@ t_error			thread_priority(i_thread		threadid,
  * 1) check wether the requested state is valid.
  * 2) get the thread object from the thread container.
  * 3) update the thread state if needed.
- * 4) call the machine-dependent code.
+ * 4) XXX
+ * 5) call the machine-dependent code.
+ * 6) call the scheduler to schedule or cancel the thread.
  */
 
 t_error			thread_state(i_thread			threadid,
@@ -551,7 +568,7 @@ t_error			thread_state(i_thread			threadid,
   /*
    * 4)
    */
-
+/*
   set_foreach(SET_OPT_FORWARD, o->waits, &i, state)
     {
       o_waitfor*	w;
@@ -567,13 +584,32 @@ t_error			thread_state(i_thread			threadid,
       if (w->opts & wakeup)
 	thread_state(w->u.thread, SCHED_STATE_RUN);
     }
-
+*/
   /*
    * 5)
    */
 
   if (machdep_call(thread, thread_state, threadid, sched) != ERROR_NONE)
-    TASK_LEAVE(thread, ERROR_UNKNOWN);
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 6)
+   */
+
+  switch(sched)
+    {
+      case SCHED_STATE_RUN:
+	if (sched_add(threadid) != ERROR_NONE)
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	break;
+      case SCHED_STATE_STOP:
+	if (sched_remove(threadid) != ERROR_NONE)
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	break;
+      case SCHED_STATE_ZOMBIE:
+	/* XXX */
+	break;
+    }
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }
