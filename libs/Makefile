@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/libs/Makefile
+## file          /home/buckman/kaneton/libs/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:28:05 2005]
-## updated       julien quintard   [thu jul 13 11:45:23 2006]
+## updated       matthieu bucchianeri   [thu aug 10 15:56:41 2006]
 ##
 
 #
@@ -26,8 +26,10 @@ include			../env/.env.mk
 #
 
 SUBDIRS			:=		klibc				\
-					crt				\
-					libia32
+					crt
+
+ARCHSUBDIRS		:=		libia32				\
+					libsun4u
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -39,10 +41,16 @@ all:
 clear:
 	$(call launch,Makefile,$(SUBDIRS),clear,)
 
+	$(call launch,Makefile,$(ARCHSUBDIRS),clear,)
+
 	$(call purge,)
 
 proto:
 	$(call launch,Makefile,$(SUBDIRS),proto,)
 
+	$(call launch,Makefile,$(ARCHSUBDIRS),proto,)
+
 dep:
 	$(call launch,Makefile,$(SUBDIRS),dep,)
+
+	$(call launch,Makefile,$(ARCHSUBDIRS),dep,)

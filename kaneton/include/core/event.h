@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/event.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       matthieu bucchianeri   [wed apr 12 12:12:10 2006]
+ * updated       matthieu bucchianeri   [wed aug 16 20:24:37 2006]
  */
 
 #ifndef CORE_EVENT_H
@@ -32,6 +32,13 @@
 #define EVENT_MESSAGE		1
 
 /*
+ * ---------- macro functions -------------------------------------------------
+ */
+
+#define EVENT_HANDLER(_function_)					\
+  ((u_event_handler)(t_event_handler)(_function_))
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -40,7 +47,7 @@
  * generic event handler type.
  */
 
-typedef void                    (*t_event_handler)(t_uint32);
+typedef void                    (*t_event_handler)(t_id);
 
 /*
  * event handler type
@@ -163,8 +170,6 @@ t_error			event_get(i_event			id,
 t_error			event_init(void);
 
 t_error			event_clean(void);
-
-t_error			event_test(void);
 
 
 /*

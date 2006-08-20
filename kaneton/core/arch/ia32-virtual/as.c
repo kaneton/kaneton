@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu aug  3 16:16:01 2006]
+ * updated       matthieu bucchianeri   [thu aug 17 19:40:46 2006]
  */
 
 /*
@@ -246,12 +246,16 @@ t_error			ia32_as_reserve(i_task			tskid,
        * c)
        */
 
-      oreg.address = ENTRY_ADDR(PD_MIRROR, 0);
-      oreg.segid = (i_segment)pt.entries;
-      oreg.offset = 0;
-      oreg.size = PT_MAX_ENTRIES * PAGESZ;
+      if ((preg = malloc(sizeof(o_region))) == NULL)
+	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      if (region_inject(*asid, &oreg) != ERROR_NONE)
+      preg->address = ENTRY_ADDR(PD_MIRROR, 0);
+      preg->segid = (i_segment)pt.entries;
+      preg->offset = 0;
+      preg->size = PT_MAX_ENTRIES * PAGESZ;
+      preg->opts = REGION_OPT_NONE;
+
+      if (region_inject(*asid, preg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
       /*
@@ -400,7 +404,7 @@ t_error			ia32_as_reserve(i_task			tskid,
       if (region_reserve(*asid,
 			 (i_segment)init->kcode,
 			 0,
-			 REGION_OPT_FORCE, // XX priv
+			 REGION_OPT_FORCE | REGION_OPT_GLOBAL, // XX priv
 			 init->kcode,
 			 init->kcodesz,
 			 &reg) != ERROR_NONE)
@@ -413,7 +417,8 @@ t_error			ia32_as_reserve(i_task			tskid,
       if (region_reserve(*asid,
 			 preg->segid,
 			 0,
-			 REGION_OPT_FORCE | REGION_OPT_PRIVILEGED,
+			 REGION_OPT_FORCE | REGION_OPT_PRIVILEGED |
+			 REGION_OPT_GLOBAL,
 			 (t_vaddr)thread->machdep.tss,
 			 preg->size,
 			 &reg) != ERROR_NONE)
@@ -422,7 +427,8 @@ t_error			ia32_as_reserve(i_task			tskid,
       if (region_reserve(*asid,
 			 (i_segment)(t_uint32)init->machdep.gdt.descriptor,
 			 0,
-			 REGION_OPT_FORCE | REGION_OPT_PRIVILEGED,
+			 REGION_OPT_FORCE | REGION_OPT_PRIVILEGED |
+			 REGION_OPT_GLOBAL,
 			 (t_vaddr)init->machdep.gdt.descriptor,
 			 PAGESZ,
 			 &reg) != ERROR_NONE)
@@ -431,7 +437,8 @@ t_error			ia32_as_reserve(i_task			tskid,
       if (region_reserve(*asid,
 			 (i_segment)(t_uint32)idt.descriptor,
 			 0,
-			 REGION_OPT_FORCE | REGION_OPT_PRIVILEGED,
+			 REGION_OPT_FORCE | REGION_OPT_PRIVILEGED |
+			 REGION_OPT_GLOBAL,
 			 (t_vaddr)idt.descriptor,
 			 PAGESZ,
 			 &reg) != ERROR_NONE)
@@ -446,7 +453,8 @@ t_error			ia32_as_reserve(i_task			tskid,
       if (region_reserve(*asid,
 			 preg->segid,
 			 0,
-			 REGION_OPT_FORCE | REGION_OPT_PRIVILEGED,
+			 REGION_OPT_FORCE | REGION_OPT_PRIVILEGED |
+			 REGION_OPT_GLOBAL,
 			 base,
 			 2 * PAGESZ,
 			 &reg) != ERROR_NONE)

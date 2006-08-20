@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/paging/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue apr  4 16:44:17 2006]
+ * updated       matthieu bucchianeri   [wed aug 16 19:50:48 2006]
  */
 
 /*
@@ -62,6 +62,7 @@
  * page table entry flags
  */
 
+#define PTE_FLAG_G		(1 << 8)
 #define PTE_FLAG_D		(1 << 6)
 #define PTE_FLAG_A		(1 << 5)
 #define PTE_FLAG_CD		(1 << 4)
@@ -118,6 +119,7 @@ typedef struct
   t_uint8	present;
   t_uint8	rw;
   t_uint8	user;
+  t_uint8	global;
 }		t_ia32_page;
 
 /*

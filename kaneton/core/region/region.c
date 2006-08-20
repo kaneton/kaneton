@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [fri jul 28 17:18:35 2006]
+ * updated       matthieu bucchianeri   [thu aug 17 19:39:35 2006]
  */
 
 /*
@@ -81,10 +81,11 @@ t_error			region_show(i_as			asid,
    * 2)
    */
 
-  cons_msg('#', "    0x%08x [%qd] (%u)\n",
+  cons_msg('#', "    0x%08x [%qd] (%u) %c\n",
 	   o->address,
 	   o->segid,
-	   o->size);
+	   o->size,
+	   (o->opts & REGION_OPT_PRIVILEGED) ? 'S' : 'U');
 
   /*
    * 3)
@@ -183,6 +184,7 @@ t_error			region_inject(i_as		asid,
    */
 
   o->regid = (i_region)o->address;
+  o->opts &= REGION_OPT_FORCE;
 
   /*
    * 3)
@@ -222,7 +224,7 @@ t_error			region_split(i_as			asid,
 {
   o_region*		reg;
   o_segment*		seg;
-  o_region		new;
+  o_region*		new;
   t_perms		perms;
 
   REGION_ENTER(region);
@@ -261,13 +263,17 @@ t_error			region_split(i_as			asid,
    * 4)
    */
 
-  new.regid = regid + reg->size;
-  new.segid = reg->segid + reg->offset + size;
-  new.address = (t_vaddr)new.regid;
-  new.offset = 0;
-  new.size = reg->size - size;
+  if ((new = malloc(sizeof(o_region))) == NULL)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  if (region_inject(asid, &new) != ERROR_NONE)
+  new->regid = regid + reg->size;
+  new->segid = reg->segid + reg->offset + size;
+  new->address = (t_vaddr)new->regid;
+  new->offset = 0;
+  new->opts = reg->opts;
+  new->size = reg->size - size;
+
+  if (region_inject(asid, new) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
@@ -289,14 +295,22 @@ t_error			region_split(i_as			asid,
 
 /*
  * this function resizes a region.
+ *
+ * steps:
+ *
+ * 1) check if the operation is feasible.
+ * 2) if we need to relocate the region, choose a new location.
+ * 3) call the machine dependent code.
+ * 4) set the new size.
  */
 
-t_error			region_resize(i_as			asid,
+t_error			region_resize(i_as			as,
 				      i_region			old,
 				      t_vsize			size,
 				      i_region*			new)
 {
-  o_region*		reg;
+  o_region*		o;
+  o_segment*		seg;
 
   REGION_ENTER(region);
 
@@ -304,7 +318,16 @@ t_error			region_resize(i_as			asid,
    * 1)
    */
 
-  if (region_get(asid, old, &reg) != ERROR_NONE)
+  if (region_get(as, old, &o) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  if (o->size == size)
+    REGION_LEAVE(region, ERROR_NONE);
+
+  if (segment_get(o->segid, &seg) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  if (!size || size > seg->size)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
@@ -313,9 +336,40 @@ t_error			region_resize(i_as			asid,
 
   /* XXX */
 
-  if (machdep_call(region, region_resize, asid, old, size, new) !=
-      ERROR_NONE)
+  if (0)
+    {
+      if ((o->opts & REGION_OPT_FORCE))
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      if (region_reserve(as,
+			 o->segid,
+			 o->offset,
+			 o->opts,
+			 0,
+			 size,
+			 new) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      if (region_release(as, old) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      REGION_LEAVE(region, ERROR_NONE);
+    }
+  else
+    *new = old;
+
+  /*
+   * 3)
+   */
+
+  if (machdep_call(region, region_resize, as, old, size, new) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  o->size = size;
 
   REGION_LEAVE(region, ERROR_NONE);
 }
@@ -360,7 +414,9 @@ t_error			region_coalesce(i_as		asid,
 
   if (oleft->address + oleft->size != oright->address ||
       oleft->segid != oright->segid ||
-      oleft->offset + oleft->size != oright->offset)
+      oleft->offset + oleft->size != oright->offset ||
+      (oleft->opts & REGION_OPT_PRIVILEGED) !=
+      (oright->opts & REGION_OPT_PRIVILEGED))
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
@@ -415,7 +471,7 @@ t_error			region_reserve(i_as			asid,
 {
   o_segment*		segment;
   o_as*			as;
-  o_region		o;
+  o_region*		o;
 
   REGION_ENTER(region);
 
@@ -432,6 +488,9 @@ t_error			region_reserve(i_as			asid,
 /*  if (segment->size < size - offset)              XXX necessary ??
     REGION_LEAVE(region, ERROR_UNKNOWN);*/
 
+  if ((o = malloc(sizeof(o_region))) == NULL)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
   /*
    * 2)
    */
@@ -441,23 +500,26 @@ t_error			region_reserve(i_as			asid,
       if (address < region->start || address >= region->start + region->size)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
-      o.address = address;
+      /* XXX more verification here */
+
+      o->address = address;
     }
   else
-    if (region_space(as, size, &o.address) != ERROR_NONE)
+    if (region_space(as, size, &o->address) != ERROR_NONE)
       REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  address = o.address;
-  *regid = o.regid = (i_region)o.address;
-  o.segid = segid;
-  o.size = size;
-  o.offset = offset;
+  address = o->address;
+  *regid = o->regid = (i_region)o->address;
+  o->segid = segid;
+  o->size = size;
+  o->offset = offset;
+  o->opts = opts;
 
-  if (set_add(as->regions, &o) != ERROR_NONE)
+  if (set_add(as->regions, o) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*

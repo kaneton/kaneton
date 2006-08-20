@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [thu aug  3 16:32:18 2006]
+ * updated       matthieu bucchianeri   [wed aug 16 20:20:13 2006]
  */
 
 /*
@@ -219,7 +219,7 @@
  */
 
 typedef void			(*t_ia32_interrupt_prehandler)(void);
-typedef void			(*t_ia32_interrupt_handler)(t_uint32);
+typedef void			(*t_ia32_interrupt_handler)(t_id, t_uint32);
 
 /*
  * ---------- extern ----------------------------------------------------------

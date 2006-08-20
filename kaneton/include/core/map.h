@@ -102,6 +102,11 @@ void*			mmap(void*			start,
 int			munmap(void*			start,
 			       size_t			length);
 
+void*			mremap(void*			old_address,
+			       size_t			old_size,
+			       size_t			new_size,
+			       unsigned long		flags);
+
 t_error			map_reserve(i_as		asid,
 				    t_opts		opts,
 				    t_vsize		size,
@@ -110,6 +115,11 @@ t_error			map_reserve(i_as		asid,
 
 t_error			map_release(i_as		asid,
 				    t_vaddr		addr);
+
+t_error			map_resize(i_as			asid,
+				   t_vaddr		old,
+				   t_vsize		size,
+				   t_vaddr*		new);
 
 t_error			map_init(void);
 

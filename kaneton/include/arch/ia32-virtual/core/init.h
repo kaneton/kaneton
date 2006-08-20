@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       matthieu bucchianeri   [wed apr  5 17:19:11 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 19:08:25 2006]
  */
 
 #ifndef IA32_CORE_INIT_H
@@ -36,7 +36,7 @@
  * and the page directory.
  */
 
-#define INIT_SEGMENTS		11
+#define INIT_SEGMENTS		12
 
 /*
  * the regions represent the physical memory to be mapped by the kernel.
@@ -53,7 +53,7 @@
  * nor in the regions.
  */
 
-#define INIT_REGIONS		9
+#define INIT_REGIONS		10
 
 /*
  * the kernel stack size is set to two pages.

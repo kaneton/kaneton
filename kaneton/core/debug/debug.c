@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/debug.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [wed jul 26 19:29:24 2006]
+ * updated       matthieu bucchianeri   [thu aug 10 16:33:42 2006]
  */
 
 /*
@@ -27,7 +27,7 @@
 /*
  * ---------- globals ---------------------------------------------------------
  */
-
+#ifdef SERIAL
 i_set			buffers;
 
 /*
@@ -145,5 +145,6 @@ t_error			debug_clean(void)
 
   return (ERROR_NONE);
 }
+#endif
 
 /*                                                                 [cut] /k1 */

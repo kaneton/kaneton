@@ -1,0 +1,3 @@
+01 reserve, get, release
+02 delay, repeat and modify
+03 handling by message

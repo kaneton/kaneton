@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/region.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [fri jul 28 18:25:21 2006]
+ * updated       matthieu bucchianeri   [wed aug 16 19:45:15 2006]
  */
 
 #ifndef CORE_REGION_H
@@ -32,6 +32,8 @@
 #define REGION_OPT_FORCE	(1 << 0)
 #define REGION_OPT_USER		(0 << 1)
 #define REGION_OPT_PRIVILEGED	(1 << 1)
+#define REGION_OPT_LOCAL	(0 << 2)
+#define REGION_OPT_GLOBAL	(1 << 2)
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -54,6 +56,7 @@ typedef struct
   t_vaddr			address;
   t_paddr			offset;
   t_vsize			size;
+  t_opts			opts;
 
   machdep_data(o_region);
 }				o_region;
@@ -182,7 +185,7 @@ t_error			region_split(i_as			asid,
 				     i_region*			left,
 				     i_region*			right);
 
-t_error			region_resize(i_as			asid,
+t_error			region_resize(i_as			as,
 				      i_region			old,
 				      t_vsize			size,
 				      i_region*			new);

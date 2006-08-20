@@ -74,7 +74,8 @@ t_error			ia32_as_reserve(i_task			tskid,
  */
 
 t_error			ia32_region_map_chunk(t_vaddr		v,
-					      t_paddr		p);
+					      t_paddr		p,
+					      void*		alloc);
 
 t_error			ia32_region_unmap_chunk(t_vaddr		v);
 
@@ -88,6 +89,11 @@ t_error			ia32_region_reserve(i_as		asid,
 
 t_error			ia32_region_release(i_as		asid,
 					    i_region		regid);
+
+t_error			ia32_region_resize(i_as			as,
+					   i_region		old,
+					   t_vsize		size,
+					   i_region*		new);
 
 t_error			ia32_region_init(t_vaddr		start,
 					 t_vsize		size);
@@ -137,11 +143,21 @@ t_error			ia32_event_init(void);
 
 t_error			ia32_event_clean(void);
 
-void			ia32_event_handler(t_uint32		id);
+void			ia32_event_handler(t_id		id);
 
-void                    ia32_kbd_handler(t_uint32		id);
+void                    ia32_kbd_handler(t_id			id);
 
-void                    ia32_pf_handler(t_uint32		error_code);
+void			ia32_gp_handler(t_id			id,
+					t_uint32		error_code);
+
+void			ia32_df_handler(t_id			id,
+					t_uint32		error_code);
+
+void			ia32_ts_handler(t_id			id,
+					t_uint32		error_code);
+
+void                    ia32_pf_handler(t_id			id,
+					t_uint32		error_code);
 
 
 /*
@@ -207,6 +223,8 @@ t_error			ia32_sched_clean(void);
 /*
  * ../../../../core/arch/machdep/cpu.c
  */
+
+t_error			cpu_current(i_cpu*			cpuid);
 
 
 /*

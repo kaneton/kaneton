@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [fri aug  4 18:02:44 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 19:43:36 2006]
  */
 
 /*
@@ -17,6 +17,8 @@
  * a task is  composed of the process control  block (task id, parent,
  * children...), a priority used  for the scheduling, an address space
  * and a set of waits.
+ *
+ * XXX adapt for cpu use.
  */
 
 /*
@@ -67,7 +69,7 @@ i_task			ktask = ID_UNUSED;
  * this function returns the current task.
  */
 
-static t_error		task_current(i_task*			task)
+static t_error		task_current(i_task*			tsk)
 {
   i_thread		current;
   o_thread*		o;
@@ -76,7 +78,7 @@ static t_error		task_current(i_task*			task)
 
   if (!sched)
     {
-      *task = ktask;
+      *tsk = ktask;
 
       TASK_LEAVE(task, ERROR_NONE);
     }
@@ -87,18 +89,13 @@ static t_error		task_current(i_task*			task)
   if (thread_get(current, &o) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
-  *task = o->taskid;
+  *tsk = o->taskid;
 
   TASK_LEAVE(task, ERROR_NONE);
 }
 
 /*
  * this function shows a precise task.
- *
- * steps:
- *
- * 1) get the task object.
- * 2) display the task information.
  */
 
 t_error			task_show(i_task			id)
@@ -107,20 +104,13 @@ t_error			task_show(i_task			id)
 
   TASK_ENTER(task);
 
-  /*
-   * 1)
-   */
-
   if (task_get(id, &o) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
-  cons_msg('#', "  task %qd:\n", id);
+  cons_msg('#', "  task %qd: running on cpu %qd\n", id, o->cpuid);
 
-  /*
-   * 2)
-   */
-
-  /* XXX */
+  if (machdep_call(task, task_show, id) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_NONE);
 }
@@ -321,6 +311,14 @@ t_error			task_reserve(t_class			class,
   o.asid = ID_UNUSED;
   o.threads = ID_UNUSED;
   o.waits = ID_UNUSED;
+
+  if (ktask != ID_UNUSED)
+    {
+      if (cpu_select(&o.cpuid) != ERROR_NONE)
+	TASK_LEAVE(task, ERROR_UNKNOWN);
+    }
+  else
+    o.cpuid = init->bootcpu;
 
   o.sched = SCHED_STATE_STOP;
 

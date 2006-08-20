@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [sat jul 29 18:36:02 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 16:17:55 2006]
  */
 
 /*
@@ -107,7 +107,7 @@ t_error			ia32_task_init(void)
 
   if (segment_perms((i_segment)(t_uint32)init->machdep.gdt.descriptor,
 		    PERM_READ) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_NONE);
 }

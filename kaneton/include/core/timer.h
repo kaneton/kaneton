@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/timer.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       matthieu bucchianeri   [wed apr 12 12:13:20 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 17:57:40 2006]
  */
 
 #ifndef CORE_TIMER_H
@@ -30,6 +30,19 @@
 
 #define TIMER_REPEAT_DISABLE    0
 #define TIMER_REPEAT_ENABLE     1
+
+/*
+ * number of millisecond between each tick.
+ */
+
+#define TIMER_MS_PER_TICK	5
+
+/*
+ * ---------- macro functions -------------------------------------------------
+ */
+
+#define TIMER_HANDLER(_function_)					\
+  ((u_timer_handler)(t_timer_handler)(_function_))
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -194,7 +207,7 @@ t_error			timer_clean(void);
 
 t_error			timer_check(void);
 
-void			timer_handler(t_uint32			id);
+void			timer_handler(t_id			id);
 
 t_error			timer_hdl1(void);
 

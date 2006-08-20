@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/core.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sat jul 29 18:05:45 2006]
+ * updated       matthieu bucchianeri   [thu aug 10 16:32:26 2006]
  */
 
 #ifndef CORE_CORE_H
@@ -60,11 +60,7 @@
 
 #define core_error(_fmt_...)						\
   {									\
-    printf("%#[%#!%#]%# %s:%u: ",					\
-           CONS_FRONT(CONS_BLUE) | CONS_BACK(CONS_BLACK) | CONS_INT,	\
-           CONS_FRONT(CONS_RED) | CONS_BACK(CONS_BLACK) | CONS_INT,	\
-           CONS_FRONT(CONS_BLUE) | CONS_BACK(CONS_BLACK) | CONS_INT,	\
-           CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT,	\
+    printf("[!] %s:%u: ",						\
            __FILE__,							\
            __LINE__);							\
     printf(_fmt_);							\

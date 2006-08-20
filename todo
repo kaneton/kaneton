@@ -1,40 +1,47 @@
 --
+ probleme du malloc:  a priori c'est ok. mais  l'idéal serait en effet
+ de faire un set special qui ne poserait pas ce problème.
+
+--
  mettre a jour la doc: u_ notamment dans coding style
 
 --
- Choses a finir (matthieu) /!\ URGENT /!\
+ Choses a finir (matthieu)
 
  * finir task
    + wait et clone
-   + tests
- * probleme du malloc qui se rappelle
-
- Choses a finir (matthieu) :
-
+ * revoir as_clone, et en fait toute la chaine de *_clone
  * revoir dans ia32_as_reserve les choses a mapper
    + refaire le ELF, et mapper que handler et handler_data
  * fignoler la gestion de la mémoire
-   + finir le test as/03
-   + coder region_resize
-   + tester region_coalesce
+   + tester region_coalesce, region_resize et map_resize.
+ * tests
+   + as/03
+   + time/01, time/02, time/03
+   + task/01, task/02, task/03, task/04, task/05, task/06
 
- Bugs connus :
+ Bugs connus et TODO mineurs :
 
+ * set_remove_array: problem de double free.
+ * probleme du context_switch avec les registres SSE
+ * task_release: pb avec thread_flush
+ * sched_update: optimiser car ca pue
+ * sched_add: preemption quand prio >>
  * region_split : ne marche pas
- * as_clone ne gere pas les regions PRIVILEGED
+ * segment_*: plutot que faire des appels a segment_perms, modifier
+   direct le champ (trop couteux sinon)
  * segment_resize : cas particuliers (1er/dernier segments)
  * segment_perms: change seulement les regions dans l'as specifié.
+ * region_reserve: checks pour OPT_FORCE
  * bootloader/02 et bootloader/03 ne passent plus
  * set_array_locate : dicho desactivée
  * ia32_region_reserve : cas particulier (pt vide)
 
  Autre :
 
- * bouger les event_reserve ailleurs !
  * faire des tests pour time et refaire des tests plus poussés pour event
  * revoir les timers dans stats
  * faire un vrai realloc
- * rajouter REGION_OPT_USER partout ou il faut
 
 --
  + moulinette triche

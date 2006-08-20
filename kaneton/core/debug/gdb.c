@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/gdb.c
  *
  * created       matthieu bucchianeri   [mon apr 10 12:47:20 2006]
- * updated       matthieu bucchianeri   [wed jul 26 19:30:18 2006]
+ * updated       matthieu bucchianeri   [thu aug 10 16:34:27 2006]
  */
 
 /*
@@ -17,7 +17,7 @@
  * this stub  is not very complete  but gives the  minimum required to
  * debug the kernel remotely.
  */
-
+#ifdef GDB_STUB
 /*
  * ---------- defines ---------------------------------------------------------
  */
@@ -959,3 +959,4 @@ t_error		gdb_clean(void)
 
   return (ERROR_NONE);
 }
+#endif

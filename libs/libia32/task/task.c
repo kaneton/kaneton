@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/task/task.c
  *
  * created       renaud voltz   [tue apr  4 21:45:07 2006]
- * updated       matthieu bucchianeri   [thu aug  3 16:29:49 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 14:51:57 2006]
  */
 
 /*
@@ -50,7 +50,7 @@ void			task_setup(void)
     cpucaps |= IA32_CAPS_MMX;
 
 
-  if (cpuid_has_sse() && cpuid_has_fxstate())
+  if (0 && cpuid_has_sse() && cpuid_has_fxstate()) /* XXX */
     {
       extensions_enable_sse();
       cpucaps |= IA32_CAPS_SSE;

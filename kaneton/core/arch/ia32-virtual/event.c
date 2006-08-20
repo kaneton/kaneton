@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [fri jul 28 17:48:00 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 16:16:04 2006]
  */
 
 /*
@@ -86,13 +86,13 @@ t_error			ia32_event_reserve(i_event		id,
 
   if (type == EVENT_MESSAGE)
     {
-      if (interrupt_set_handler(eventid, (t_event_handler)event_notify)
+      if (interrupt_set_handler(eventid, (t_ia32_interrupt_handler)event_notify)
 	  != ERROR_NONE)
 	return ERROR_UNKNOWN;
     }
   else
     {
-      if (interrupt_set_handler(eventid, handler.function) != ERROR_NONE)
+      if (interrupt_set_handler(eventid, (t_ia32_interrupt_handler)handler.function) != ERROR_NONE)
 	return ERROR_UNKNOWN;
     }
 
@@ -132,7 +132,8 @@ t_error			ia32_event_release(i_event		id)
    * 2)
    */
 
-  if (interrupt_set_handler(eventid, ia32_event_handler) != ERROR_NONE)
+  if (interrupt_set_handler(eventid, (t_ia32_interrupt_handler)
+			    ia32_event_handler) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
@@ -211,7 +212,8 @@ t_error			ia32_event_init(void)
    */
 
   for (id = IDT_EXCEPTION_BASE; id < IDT_EXCEPTION_BASE + EXCEPTION_NR; id++)
-    if (interrupt_set_handler(id, ia32_event_handler) != ERROR_NONE)
+    if (interrupt_set_handler(id, (t_ia32_interrupt_handler)
+			      ia32_event_handler) != ERROR_NONE)
       return ERROR_UNKNOWN;
 
   /*
@@ -219,7 +221,8 @@ t_error			ia32_event_init(void)
    */
 
   for (id = IDT_IRQ_BASE; id < IDT_IRQ_BASE + IRQ_NR; id++)
-    if (interrupt_set_handler(id, ia32_event_handler) != ERROR_NONE)
+    if (interrupt_set_handler(id, (t_ia32_interrupt_handler)
+			      ia32_event_handler) != ERROR_NONE)
       return ERROR_UNKNOWN;
 
   /*
@@ -227,6 +230,30 @@ t_error			ia32_event_init(void)
    */
 
   STI();
+
+  /*
+   * 8)
+   */
+
+  if (event_reserve(33, EVENT_FUNCTION, EVENT_HANDLER(ia32_kbd_handler))
+      != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler))
+      != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (event_reserve(13, EVENT_FUNCTION, EVENT_HANDLER(ia32_gp_handler))
+      != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (event_reserve(8, EVENT_FUNCTION, EVENT_HANDLER(ia32_df_handler))
+      != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (event_reserve(10, EVENT_FUNCTION, EVENT_HANDLER(ia32_ts_handler))
+      != ERROR_NONE)
+    return ERROR_UNKNOWN;
 
   return ERROR_NONE;
 }
@@ -277,10 +304,12 @@ t_error			ia32_event_clean(void)
  * or after the event has been released.
  */
 
-void			ia32_event_handler(t_uint32		id)
+void			ia32_event_handler(t_id		id)
 {
+  printf("unhandled exception... %d\n", id);
 
-
+  while(1)
+    ;
 }
 
 /*
@@ -300,14 +329,30 @@ static const char       scancodes[] =
   };
 
 
-void                    ia32_kbd_handler(t_uint32		id)
+void                    ia32_kbd_handler(t_id			id)
 {
   t_uint8               scancode;
 
   INB(0x60, scancode);
 
   if (scancode < 70)
-    printf("%c", scancodes[scancode]);
+    {
+      switch (scancodes[scancode])
+	{
+	  case 's':
+	    printf("\n");
+	    STATS_DUMP();
+	    printf("\n");
+	    break;
+	  case 'c':
+	    printf("\n");
+	    sched_dump();
+	    printf("\n");
+	    break;
+	  default:
+	    printf("%c", scancodes[scancode]);
+	}
+    }
 }
 
 
@@ -334,10 +379,35 @@ typedef struct
 }		__attribute__ ((packed)) t_gdb_context;
 
 
+void			ia32_gp_handler(t_id			id,
+					t_uint32		error_code)
+{
+  printf("general protection fault.\n");
 
+  while (1)
+    ;
+}
 
+void			ia32_df_handler(t_id			id,
+					t_uint32		error_code)
+{
+  printf("double fault.\n");
 
-void                    ia32_pf_handler(t_uint32		error_code)
+  while (1)
+    ;
+}
+
+void			ia32_ts_handler(t_id			id,
+					t_uint32		error_code)
+{
+  printf("invalid TSS.\n");
+
+  while (1)
+    ;
+}
+
+void                    ia32_pf_handler(t_id			id,
+					t_uint32		error_code)
 {
   t_uint32              addr;
 

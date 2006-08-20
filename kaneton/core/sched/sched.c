@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [fri aug  4 18:30:11 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 19:38:39 2006]
  */
 
 /*
@@ -314,6 +314,7 @@ t_error			sched_switch(void)
   t_timeslice		elected_timeslice = (t_timeslice)-1;
   int			nonempty = 0;
   i_set			list;
+  i_cpu			cpuid;
 
   SCHED_ENTER(sched);
 
@@ -443,6 +444,17 @@ t_error			sched_switch(void)
   sched->prio = elected_prio;
   sched->timeslice = elected_timeslice;
 
+  /*
+   * 7)
+   */
+
+  if (cpu_current(&cpuid) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  if (cpu_stats(cpuid, sched->quantum) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+
   SCHED_LEAVE(sched, ERROR_NONE);
 }
 
@@ -502,9 +514,9 @@ t_error			sched_add(i_thread			thread)
    * 3)
    */
 
-  if (sched->timeslice > sched->quantum &&
+  if ( 0 && sched->timeslice > sched->quantum &&
       prio < COMPUTE_PRIORITY(sched->current))
-    SCHED_LEAVE(sched, sched_yield());
+    SCHED_LEAVE(sched, sched_yield()); // XXX a bit violent ^ ^
 
   /*
    * 4)
@@ -912,11 +924,12 @@ i_task sched_test_add_thread(void *func, t_prior p)
 
 void sched_test(void)
 {
+#if 1
   i_task t;
 
   sched_test_add_thread(_fun1, 10);
-  sched_test_add_thread(_fun2, 150);
-  sched_test_add_thread(_fun3, 250);
+  sched_test_add_thread(_fun2, 100);
+  sched_test_add_thread(_fun3, 150);
   t = sched_test_add_thread(_fun4, 250);
 
   if (task_state(t, SCHED_STATE_RUN) != ERROR_NONE)
@@ -935,5 +948,54 @@ void sched_test(void)
       printf("\r%12qu%12qu%12qu%12qu                      ",
 	     c1, c2, c3, c4);
     }
+#endif
+#if 0
+  t_uint32 dumps[2][10];
+  t_uint32* regs = dumps[0];
+  int first = 1;
+  while (1)
+    {
+      asm volatile("pusha");
 
+      asm volatile("movl %%eax, %0" : "=g" (regs[0]));
+      asm volatile("movl %%ebx, %0" : "=g" (regs[1]));
+      asm volatile("movl %%ecx, %0" : "=g" (regs[2]));
+      asm volatile("movl %%edx, %0" : "=g" (regs[3]));
+      asm volatile("movl %%esi, %0" : "=g" (regs[4]));
+      asm volatile("movl %%edi, %0" : "=g" (regs[5]));
+      asm volatile("movl %%esp, %0" : "=g" (regs[6]));
+      asm volatile("movl %%ebp, %0" : "=g" (regs[7]));
+      regs[8] = *(t_uint32*)(regs[6]);
+      regs[9] = *(t_uint32*)(regs[6] + 4);
+
+      if (0 && dumps[0][0] != dumps[1][0])
+	printf("eax differ %d %d\n", dumps[0][0], dumps[1][0]);
+      if (!first && (dumps[0][1] != dumps[1][1]))
+	printf("ebx differ %d %d\n", dumps[0][1], dumps[1][1]);
+      if (!first && (dumps[0][2] != dumps[1][2]))
+	printf("ecx differ %d %d\n", dumps[0][2], dumps[1][2]);
+      if (!first && (dumps[0][3] != dumps[1][3]))
+	printf("edx differ %d %d\n", dumps[0][3], dumps[1][3]);
+      if (!first && (dumps[0][4] != dumps[1][4]))
+	printf("esi differ %d %d\n", dumps[0][4], dumps[1][4]);
+      if (!first && (dumps[0][5] != dumps[1][5]))
+	printf("edi differ %d %d\n", dumps[0][5], dumps[1][5]);
+      if (!first && (dumps[0][6] != dumps[1][6]))
+	printf("esp differ %d %d\n", dumps[0][6], dumps[1][6]);
+      if (!first && (dumps[0][7] != dumps[1][7]))
+	printf("ebp differ %d %d\n", dumps[0][7], dumps[1][7]);
+      if (!first && (dumps[0][8] != dumps[1][8]))
+	printf("top stack differ %d %d\n", dumps[0][8], dumps[1][8]);
+      if (!first && (dumps[0][9] != dumps[1][9]))
+	printf("top stack (2) differ %d %d\n", dumps[0][9], dumps[1][9]);
+
+      if (regs == dumps[0])
+	regs = dumps[1];
+      else
+	regs = dumps[0];
+      asm volatile("popa");
+
+      first = 0;
+    }
+#endif
 }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat jul 29 18:17:25 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 17:25:20 2006]
  */
 
 /*

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [thu jul 27 19:37:17 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 19:44:31 2006]
  */
 
 /*
@@ -106,6 +106,14 @@ void			bootloader_init_dump(void)
 			i,
 			init->regions[i].address);
 
+  bootloader_cons_msg('#', " cpus: 0x%x - %u bytes\n",
+		      init->cpus,
+		      init->cpussz);
+
+  for (i = 0; i < init->ncpus; i++)
+    bootloader_cons_msg('#', "  [%u]\n",
+			i);
+
   bootloader_cons_msg('#', " kernel stack: 0x%x - %u bytes\n",
 		      init->kstack,
 		      init->kstacksz);
@@ -142,10 +150,11 @@ void			bootloader_init_dump(void)
  * 4) adds the modules segment.
  * 5) adds the segments segment.
  * 6) adds the regions segment.
- * 7) adds the kernel stack segment.
- * 8) adds the alloc segment.
- * 9) adds the global offset table segment.
- * 10) adds the page directory segment.
+ * 7) adds the cpu segment.
+ * 8) adds the kernel stack segment.
+ * 9) adds the alloc segment.
+ * 10) adds the global offset table segment.
+ * 11) adds the page directory segment.
  */
 
 void			bootloader_init_segments(void)
@@ -213,8 +222,8 @@ void			bootloader_init_segments(void)
    * 7)
    */
 
-  init->segments[7].address = init->kstack;
-  init->segments[7].size = init->kstacksz;
+  init->segments[7].address = (t_paddr)init->cpus;
+  init->segments[7].size = init->cpussz;
   init->segments[7].perms = PERM_READ | PERM_WRITE;
   init->segments[7].type = SEGMENT_TYPE_MEMORY;
 
@@ -222,8 +231,8 @@ void			bootloader_init_segments(void)
    * 8)
    */
 
-  init->segments[8].address = init->alloc;
-  init->segments[8].size = init->allocsz;
+  init->segments[8].address = init->kstack;
+  init->segments[8].size = init->kstacksz;
   init->segments[8].perms = PERM_READ | PERM_WRITE;
   init->segments[8].type = SEGMENT_TYPE_MEMORY;
 
@@ -231,9 +240,8 @@ void			bootloader_init_segments(void)
    * 9)
    */
 
-  /* XXX */
-  init->segments[9].address = (t_paddr)init->machdep.gdt.descriptor;
-  init->segments[9].size = PAGESZ/*init->machdep.gdt.count * sizeof (t_gdte)*/;
+  init->segments[9].address = init->alloc;
+  init->segments[9].size = init->allocsz;
   init->segments[9].perms = PERM_READ | PERM_WRITE;
   init->segments[9].type = SEGMENT_TYPE_MEMORY;
 
@@ -241,10 +249,20 @@ void			bootloader_init_segments(void)
    * 10)
    */
 
-  init->segments[10].address = (t_paddr)init->machdep.pd;
-  init->segments[10].size = PAGESZ;
+  /* XXX */
+  init->segments[10].address = (t_paddr)init->machdep.gdt.descriptor;
+  init->segments[10].size = PAGESZ/*init->machdep.gdt.count * sizeof (t_gdte)*/;
   init->segments[10].perms = PERM_READ | PERM_WRITE;
   init->segments[10].type = SEGMENT_TYPE_MEMORY;
+
+  /*
+   * 11)
+   */
+
+  init->segments[11].address = (t_paddr)init->machdep.pd;
+  init->segments[11].size = PAGESZ;
+  init->segments[11].perms = PERM_READ | PERM_WRITE;
+  init->segments[11].type = SEGMENT_TYPE_MEMORY;
 }
 
 /*
@@ -257,10 +275,11 @@ void			bootloader_init_segments(void)
  * 3) add the init structure region.
  * 4) add the segments region.
  * 5) add the region region.
- * 6) add the kernel stack region.
- * 7) add the alloc region.
- * 8) add the global offset table region.
- * 9) add the page directory region.
+ * 6) add the cpu region.
+ * 7) add the kernel stack region.
+ * 8) add the alloc region.
+ * 9) add the global offset table region.
+ * 10) add the page directory region.
  */
 
 void			bootloader_init_regions(void)
@@ -273,6 +292,7 @@ void			bootloader_init_regions(void)
   init->regions[0].size = init->segments[1].size;
   init->regions[0].offset = 0;
   init->regions[0].segid = 1;
+  init->regions[0].opts = REGION_OPT_PRIVILEGED;
 
   /*
    * 2)
@@ -282,6 +302,7 @@ void			bootloader_init_regions(void)
   init->regions[1].size = init->segments[2].size;
   init->regions[1].offset = 0;
   init->regions[1].segid = 2;
+  init->regions[1].opts = REGION_OPT_PRIVILEGED;
 
   /*
    * 3)
@@ -291,6 +312,7 @@ void			bootloader_init_regions(void)
   init->regions[2].size = init->segments[3].size;
   init->regions[2].offset = 0;
   init->regions[2].segid = 3;
+  init->regions[2].opts = REGION_OPT_PRIVILEGED;
 
   /*
    * 4)
@@ -300,6 +322,7 @@ void			bootloader_init_regions(void)
   init->regions[3].size = init->segments[5].size;
   init->regions[3].offset = 0;
   init->regions[3].segid = 5;
+  init->regions[3].opts = REGION_OPT_PRIVILEGED;
 
   /*
    * 5)
@@ -309,6 +332,7 @@ void			bootloader_init_regions(void)
   init->regions[4].size = init->segments[6].size;
   init->regions[4].offset = 0;
   init->regions[4].segid = 6;
+  init->regions[4].opts = REGION_OPT_PRIVILEGED;
 
 
   /*
@@ -319,6 +343,7 @@ void			bootloader_init_regions(void)
   init->regions[5].size = init->segments[7].size;
   init->regions[5].offset = 0;
   init->regions[5].segid = 7;
+  init->regions[5].opts = REGION_OPT_PRIVILEGED;
 
   /*
    * 7)
@@ -328,6 +353,7 @@ void			bootloader_init_regions(void)
   init->regions[6].size = init->segments[8].size;
   init->regions[6].offset = 0;
   init->regions[6].segid = 8;
+  init->regions[6].opts = REGION_OPT_PRIVILEGED;
 
   /*
    * 8)
@@ -337,6 +363,7 @@ void			bootloader_init_regions(void)
   init->regions[7].size = init->segments[9].size;
   init->regions[7].offset = 0;
   init->regions[7].segid = 9;
+  init->regions[7].opts = REGION_OPT_PRIVILEGED;
 
   /*
    * 9)
@@ -346,6 +373,17 @@ void			bootloader_init_regions(void)
   init->regions[8].size = init->segments[10].size;
   init->regions[8].offset = 0;
   init->regions[8].segid = 10;
+  init->regions[8].opts = REGION_OPT_PRIVILEGED;
+
+  /*
+   * 10)
+   */
+
+  init->regions[9].address = init->segments[11].address;
+  init->regions[9].size = init->segments[11].size;
+  init->regions[9].offset = 0;
+  init->regions[9].segid = 11;
+  init->regions[9].opts = REGION_OPT_PRIVILEGED;
 }
 
 /*
@@ -415,6 +453,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
   t_psize		modulessz;
   t_psize		segmentssz;
   t_psize		regionssz;
+  t_psize		cpussz;
   t_paddr		kcode;
   t_psize		kcodesz;
   t_psize		allocsz;
@@ -489,6 +528,16 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
   memset(init->regions, 0x0, regionssz);
   init->nregions = nregions;
   init->regionssz = regionssz;
+
+  init->cpus =
+    (o_cpu*)bootloader_init_alloc(sizeof(o_cpu),
+				      &cpussz);
+  memset(init->cpus, 0x0, cpussz);
+  init->ncpus = 1;
+  init->cpussz = cpussz;
+
+  init->cpus[0].cpuid = 0;
+  init->bootcpu = 0;
 
   /*
    * 5)

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/interrupt/interrupt.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       matthieu bucchianeri   [thu aug  3 16:35:02 2006]
+ * updated       matthieu bucchianeri   [thu aug 17 20:14:34 2006]
  */
 
 /*
@@ -211,7 +211,7 @@ void			handler_exception(t_uint32			nr,
       GET_ERROR_CODE(code);
     }
 
-  interrupt_handlers[nr](code);
+  interrupt_handlers[nr](nr, code);
 
   RING0_BACK();
 
@@ -234,7 +234,7 @@ void			handler_irq(t_uint32				nr)
 
   pic_acknowledge(nr - IDT_IRQ_BASE);
 
-  interrupt_handlers[nr](nr);
+  interrupt_handlers[nr](nr, 0);
 
   RING0_BACK();
 

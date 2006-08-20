@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/sched.h
  *
  * created       matthieu bucchianeri   [sat jun  3 22:34:42 2006]
- * updated       matthieu bucchianeri   [fri aug  4 18:30:24 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 17:57:51 2006]
  */
 
 #ifndef CORE_SCHED_H
@@ -19,6 +19,7 @@
 #include <arch/machdep/machdep.h>
 #include <core/id.h>
 #include <core/types.h>
+#include <core/timer.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -36,7 +37,7 @@
  * initial value for the scheduler quantum in milliseconds.
  */
 
-#define SCHED_QUANTUM_INIT		5
+#define SCHED_QUANTUM_INIT		20
 
 /*
  * the number of priority levels for the scheduler.
@@ -48,7 +49,7 @@
  * timeslice constants.
  */
 
-#define SCHED_TIMESLICE_MIN		5
+#define SCHED_TIMESLICE_MIN		20
 #define SCHED_TIMESLICE_MAX		200
 #define SCHED_TIMESLICE_GRANULARITY	sched->quantum
 

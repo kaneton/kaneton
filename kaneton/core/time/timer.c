@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/time/timer.c
+ * file          /home/buckman/kaneton/kaneton/core/time/timer.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       julien quintard   [sat jul  8 02:27:47 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 17:30:53 2006]
  */
 
 /*
@@ -678,13 +678,13 @@ t_error			timer_check(void)
   TIMER_LEAVE(timer, ERROR_NONE);
 }
 
-void			timer_handler(t_uint32			id)
+void			timer_handler(t_id			id)
 {
   /*
    *
    */
 
-  timer->timeref++;
+  timer->timeref += TIMER_MS_PER_TICK;
 
   /*
    *

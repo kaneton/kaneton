@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/klibc/libdata/alloc.c
  *
  * created       cedric aubouy   [sun sep 25 19:57:33 2005]
- * updated       matthieu bucchianeri   [wed jul 26 19:20:19 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 19:16:00 2006]
  */
 
 /*
@@ -74,6 +74,7 @@ t_alloc			alloc;
 
 void*			malloc(size_t				size)
 {
+  static int		stucked = 0;
   t_area*		area;
   t_area*		prev_area = NULL;
   t_chunk*		chunk;
@@ -175,25 +176,59 @@ void*			malloc(size_t				size)
 	    ;
 	}
 
-      /*
-       * a)
-       */
-
-      pagesz = PAGED_SIZE(size + sizeof(t_area) + sizeof(t_chunk));
-
-      addr = (t_vaddr)alloc.mmap(0,
-				 pagesz,
-				 PROT_READ | PROT_WRITE,
-				 0,
-				 0,
-				 0);
-
-      if ((void*)addr == MAP_FAILED)
+      if (stucked)
 	{
-	  printf("FATAL ERROR: physical memory exhausted !\n");
+	  addr = alloc.reserve;
 
-	  while (1)
-	    ;
+	  alloc.reserve = 0;
+
+	  pagesz = PAGESZ;
+	}
+      else
+	{
+
+	  /*
+	   * a)
+	   */
+
+	  pagesz = PAGED_SIZE(size + sizeof(t_area) + sizeof(t_chunk));
+
+	  stucked = 1;
+
+	  addr = (t_vaddr)alloc.mmap(0,
+				     pagesz,
+				     PROT_READ | PROT_WRITE,
+				     0,
+				     0,
+				     0);
+
+	  stucked = 0;
+
+	  if ((void*)addr == MAP_FAILED)
+	    {
+	      printf("FATAL ERROR: physical memory exhausted !\n");
+
+	      while (1)
+		;
+	    }
+
+	  if (alloc.reserve == 0)
+	    {
+	      alloc.reserve = (t_vaddr)alloc.mmap(0,
+						  PAGESZ,
+						  PROT_READ | PROT_WRITE,
+						  0,
+						  0,
+						  0);
+
+	      if ((void*)alloc.reserve == MAP_FAILED)
+		{
+		  printf("FATAL ERROR: physical memory exhausted !\n");
+
+		  while (1)
+		    ;
+		}
+	    }
 	}
 
       /*
@@ -488,6 +523,21 @@ void			alloc_setup(t_pfn_mmap			fmmap,
 {
   alloc.mmap = fmmap;
   alloc.munmap = fmunmap;
+
+  alloc.reserve = (t_vaddr)alloc.mmap(0,
+				      PAGESZ,
+				      PROT_READ | PROT_WRITE,
+				      0,
+				      0,
+				      0);
+
+  if ((void*)alloc.reserve == MAP_FAILED)
+    {
+      printf("FATAL ERROR: physical memory exhausted !\n");
+
+      while (1)
+	;
+    }
 }
 
 /*
@@ -524,6 +574,7 @@ int			alloc_init(t_vaddr			addr,
   alloc.highest = (void*)0;
   alloc.mmap = NULL;
   alloc.munmap = NULL;
+  alloc.reserve = 0;
 
   /*
    * 2)

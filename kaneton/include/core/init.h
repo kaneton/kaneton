@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/init.h
+ * file          /home/buckman/kaneton/kaneton/include/core/init.h
  *
  * created       julien quintard   [fri feb 11 02:19:11 2005]
- * updated       julien quintard   [mon apr  3 11:29:15 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 19:44:05 2006]
  */
 
 #ifndef CORE_INIT_H
@@ -19,6 +19,7 @@
 #include <arch/machdep/machdep.h>
 #include <core/segment.h>
 #include <core/region.h>
+#include <core/cpu.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -70,6 +71,11 @@ typedef struct
   t_uint32			nregions;
   o_region*			regions;
   t_psize			regionssz;
+
+  t_uint32			ncpus;
+  o_cpu*			cpus;
+  t_psize			cpussz;
+  i_cpu				bootcpu;
 
   t_paddr			kstack;
   t_psize			kstacksz;

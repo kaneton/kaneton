@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri jul 28 17:41:09 2006]
+ * updated       matthieu bucchianeri   [thu aug 17 19:46:28 2006]
  */
 
 /*
@@ -305,6 +305,7 @@ t_error			ia32_segment_perms(i_segment		segid,
   t_iterator		it;
   t_vaddr		vaddr;
   t_vaddr		chunk;
+  void*			tmp;
 
   SEGMENT_ENTER(segment);
 
@@ -349,13 +350,16 @@ t_error			ia32_segment_perms(i_segment		segid,
 		}
 	      else
 		{
+		  tmp = malloc(sizeof(o_region));
+
 		  if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
 		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 		  pd = (t_ia32_directory)(t_uint32)chunk;
 
 		  if (ia32_region_map_chunk((t_vaddr)pd,
-					    (t_paddr)as->machdep.pd) !=
+					    (t_paddr)as->machdep.pd,
+					    tmp) !=
 		      ERROR_NONE)
 		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 		}
@@ -381,11 +385,14 @@ t_error			ia32_segment_perms(i_segment		segid,
 	       * c)
 	       */
 
+	      tmp = malloc(sizeof(o_region));
+
 	      if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
 		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 	      if (ia32_region_map_chunk((t_vaddr)chunk,
-					(t_paddr)pt.entries) != ERROR_NONE)
+					(t_paddr)pt.entries,
+					tmp) != ERROR_NONE)
 		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
 	      pt.entries = chunk;

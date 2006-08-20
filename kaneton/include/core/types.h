@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/types.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [thu aug  3 18:22:08 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 18:55:34 2006]
  */
 
 #ifndef CORE_TYPES_H
@@ -76,6 +76,7 @@ typedef t_id			i_timer;
 typedef t_id			i_task;
 typedef t_id			i_thread;
 typedef t_id			i_port;
+typedef t_id			i_cpu;
 
 /*
  * error type

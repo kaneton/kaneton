@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/map/map.c
  *
  * created       matthieu bucchianeri   [sun feb 26 12:56:54 2006]
- * updated       matthieu bucchianeri   [thu aug  3 20:11:00 2006]
+ * updated       matthieu bucchianeri   [thu aug 17 14:16:16 2006]
  */
 
 /*
@@ -96,6 +96,39 @@ int			munmap(void*			start,
     return -1;
 
   return 0;
+}
+
+/*
+ * this is a wrapper to mremap.
+ */
+
+void*			mremap(void*			old_address,
+			       size_t			old_size,
+			       size_t			new_size,
+			       unsigned long		flags)
+{
+  o_region*		o = NULL;
+  t_opts		opts;
+  t_vaddr		p;
+
+  if (!(flags & MREMAP_MAYMOVE))
+    {
+      if (region_get(kasid, (i_region)(t_vaddr)old_address, &o) != ERROR_NONE)
+	return MAP_FAILED;
+
+      opts = o->opts;
+      o->opts &= REGION_OPT_FORCE;
+    }
+
+  if (map_resize(kasid, old_address, new_size, &p) != ERROR_NONE)
+    return MAP_FAILED;
+
+  if (o)
+    {
+      o->opts = opts;
+    }
+
+  return (void*)p;
 }
 
 /*
@@ -204,6 +237,109 @@ t_error			map_release(i_as		asid,
 
   if (segment_release(segid) != ERROR_NONE)
     MAP_LEAVE(map, ERROR_UNKNOWN);
+
+  MAP_LEAVE(map, ERROR_NONE);
+}
+
+/*
+ * this function remap some memory.
+ *
+ * steps:
+ *
+ * 1) resize the segment.
+ *  A) if the segment was relocated.
+ *   2) the mapping is now invalid, so release the region.
+ *   3) try to remap the region at the same address.
+ *   4) if it  is impossible, then we also relocate the region (unless
+ *      the address was forced)
+ *  B) otherwise, the segment kept the same address, mapping is valid.
+ *   2) only resize the region, shrinking or growing the mapped area.
+ */
+
+t_error			map_resize(i_as			asid,
+				   t_vaddr		old,
+				   t_vsize		size,
+				   t_vaddr*		new)
+{
+  o_region*		o;
+  i_segment		s;
+  i_region		r;
+  t_paddr		offset;
+  t_opts		opts;
+
+  MAP_ENTER(map);
+
+  if (region_get(asid, (i_region)old, &o) != ERROR_NONE)
+    MAP_LEAVE(map, ERROR_UNKNOWN);
+
+  /*
+   * 1)
+   */
+
+  if (segment_resize(o->segid, size, &s) != ERROR_NONE)
+    MAP_LEAVE(map, ERROR_UNKNOWN);
+
+  /*
+   * A)
+   */
+
+  if (s != o->segid)
+    {
+      offset = o->offset;
+      opts = o->opts;
+
+      /*
+       * 2)
+       */
+
+      if (region_release(asid, (i_region)old) != ERROR_NONE)
+	MAP_LEAVE(map, ERROR_UNKNOWN);
+
+      /*
+       * 3)
+       */
+
+      if (region_reserve(asid,
+			 s,
+			 offset,
+			 opts | REGION_OPT_FORCE,
+			 old,
+			 size,
+			 &r) != ERROR_NONE)
+	{
+	  if (opts & REGION_OPT_FORCE)
+	    MAP_LEAVE(map, ERROR_UNKNOWN);
+
+	  /*
+	   * 4)
+	   */
+
+	  if (region_reserve(asid,
+			     s,
+			     offset,
+			     opts,
+			     0,
+			     size,
+			     &r) != ERROR_NONE)
+	    MAP_LEAVE(map, ERROR_UNKNOWN);
+	}
+
+      *new = r;
+    }
+  /*
+   * B)
+   */
+  else
+    {
+      /*
+       * 2)
+       */
+
+      if (region_resize(asid, (i_region)old, size, &r) != ERROR_NONE)
+	MAP_LEAVE(map, ERROR_UNKNOWN);
+
+      *new = r;
+    }
 
   MAP_LEAVE(map, ERROR_NONE);
 }

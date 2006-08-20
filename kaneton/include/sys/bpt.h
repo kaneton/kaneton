@@ -1,13 +1,13 @@
 /*
  * bpt.h
- * 
+ *
  * bpt.h
- * 
+ *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
- * 
+ *
  * started on    Mon Oct 25 11:26:13 2004   mycure
- * last update   Thu Oct 20 15:16:54 2005   lessyv
+** Last update Thu Aug 10 15:09:24 2006 matthieu bucchianeri
  */
 
 /*
@@ -23,9 +23,11 @@
  * includes
  */
 
+#if 0
 #ifndef ___kaneton
 #include <string.h>
 #include <stdio.h>
+#endif
 #endif
 
 /*
@@ -759,7 +761,7 @@ typedef struct			s_bpt_head_##T                                \
   t_bpt_node(T)			parent;                                       \
   t_bpt_node(T)			prv;                                          \
   t_bpt_node(T)			nxt;                                          \
-}				__attribute__((packed)) t_bpt_head_##T;       
+}				__attribute__((packed)) t_bpt_head_##T;
 
 #define		bpt_make_protos(T)                                            \
                                                                               \
@@ -986,7 +988,7 @@ int			bpt_clean_node_##T(t_bpt(T)		*bpt,         \
 					   t_bpt_unused(T)	*unused);     \
                                                                               \
 int			bpt_clean_##T(t_bpt(T)			*bpt,         \
-				      t_bpt_unused(T)		*unused);     
+				      t_bpt_unused(T)		*unused);
 
 #define		bpt_make_functions(T, _key_, _value_)                         \
                                                                               \

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [fri aug  4 17:58:58 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 17:22:49 2006]
  */
 
 /*
@@ -158,11 +158,16 @@ t_error			ia32_sched_init(void)
 {
   SCHED_ENTER(sched);
 
+  CLI();
+
   if (timer_reserve(EVENT_FUNCTION,
-		    (u_timer_handler)((t_timer_handler)sched_switch),
-		    sched->quantum, TIMER_REPEAT_ENABLE,
+		    TIMER_HANDLER(sched_switch),
+		    sched->quantum,
+		    TIMER_REPEAT_ENABLE,
 		    &sched->machdep.timer) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  STI();
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }

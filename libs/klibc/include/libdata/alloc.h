@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/klibc/include/libdata/alloc.h
  *
  * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [wed jul 26 19:15:35 2006]
+ * updated       matthieu bucchianeri   [thu aug 17 14:38:03 2006]
  */
 
 #ifndef LIBDATA_ALLOC_H
@@ -31,6 +31,8 @@
 #define PROT_WRITE	0x2		/* Page can be written.  */
 #define PROT_EXEC	0x4		/* Page can be executed.  */
 #define PROT_NONE	0x0		/* Page can not be accessed.  */
+
+#define MREMAP_MAYMOVE	1
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -89,6 +91,8 @@ typedef struct
 
   t_pfn_mmap			mmap;
   t_pfn_munmap			munmap;
+
+  t_vaddr			reserve;
 
   t_uint32			nalloc;
   t_uint32			nfree;

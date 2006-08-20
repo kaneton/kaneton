@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/task.h
+ * file          /home/buckman/kaneton/kaneton/include/core/task.h
  *
  * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       julien quintard   [wed jun 28 11:18:45 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 19:30:40 2006]
  */
 
 #ifndef CORE_TASK_H
@@ -86,6 +86,8 @@
 typedef struct
 {
   i_task			tskid;
+
+  i_cpu				cpuid;
 
   i_task			parent;
   i_set				children;

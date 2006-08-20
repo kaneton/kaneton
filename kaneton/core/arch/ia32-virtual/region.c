@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [fri jul 28 17:20:09 2006]
+ * updated       matthieu bucchianeri   [thu aug 17 19:45:49 2006]
  */
 
 /*
@@ -47,7 +47,7 @@ d_region		region_dispatch =
     NULL,
     NULL,
     NULL,
-    NULL,
+    ia32_region_resize,
     NULL,
     ia32_region_reserve,
     ia32_region_release,
@@ -79,14 +79,18 @@ d_region		region_dispatch =
  */
 
 t_error			ia32_region_map_chunk(t_vaddr		v,
-					      t_paddr		p)
+					      t_paddr		p,
+					      void*		alloc)
 {
-  o_region		oreg;
   t_ia32_table		pt;
   t_ia32_page		pg;
   i_segment		seg;
+  o_region*		reg = alloc;
 
   REGION_ENTER(region);
+
+  if (reg == NULL)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
    * 1)
@@ -129,12 +133,12 @@ t_error			ia32_region_map_chunk(t_vaddr		v,
    * 3)
    */
 
-  oreg.segid = p;
-  oreg.address = v;
-  oreg.offset = 0;
-  oreg.size = PAGESZ;
+  reg->segid = p;
+  reg->address = v;
+  reg->offset = 0;
+  reg->size = PAGESZ;
 
-  if (region_inject(kasid, &oreg) != ERROR_NONE)
+  if (region_inject(kasid, reg) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
@@ -246,6 +250,7 @@ t_error			ia32_region_reserve(i_as		asid,
   t_vaddr		chunk;
   i_segment		ptseg;
   t_uint32		clear_pt;
+  void*			tmp;
 
   REGION_ENTER(region);
 
@@ -280,6 +285,7 @@ t_error			ia32_region_reserve(i_as		asid,
   pg.rw = !!(oseg->perms & PERM_WRITE);
   pg.present = 1;
   pg.user = !(opts & REGION_OPT_PRIVILEGED);
+  pg.global = !!(opts & REGION_OPT_GLOBAL);
 
   /*
    * 5)
@@ -291,12 +297,14 @@ t_error			ia32_region_reserve(i_as		asid,
     }
   else
     {
+      tmp = malloc(sizeof(o_region));
+
       if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
       pd = (t_ia32_directory)(t_uint32)chunk;
 
-      if (ia32_region_map_chunk((t_vaddr)pd, (t_paddr)o->machdep.pd) !=
+      if (ia32_region_map_chunk((t_vaddr)pd, (t_paddr)o->machdep.pd, tmp) !=
 	  ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
     }
@@ -345,11 +353,13 @@ t_error			ia32_region_reserve(i_as		asid,
        * b)
        */
 
+      tmp = malloc(sizeof(o_region));
+
       if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
       if (ia32_region_map_chunk((t_vaddr)chunk,
-				(t_paddr)pt.entries) != ERROR_NONE)
+				(t_paddr)pt.entries, tmp) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
       pt.entries = chunk;
@@ -436,6 +446,7 @@ t_error			ia32_region_release(i_as		asid,
   t_ia32_pte		pte;
   t_vaddr		chunk;
   t_paddr		table_address;
+  void*			tmp;
 
   REGION_ENTER(region);
 
@@ -466,13 +477,15 @@ t_error			ia32_region_release(i_as		asid,
     }
   else
     {
+      tmp = malloc(sizeof(o_region));
+
       if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
       pd = (t_ia32_directory)(t_uint32)chunk;
 
       if (ia32_region_map_chunk((t_vaddr)pd,
-				(t_paddr)o->machdep.pd) != ERROR_NONE)
+				(t_paddr)o->machdep.pd, tmp) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
     }
 
@@ -500,11 +513,13 @@ t_error			ia32_region_release(i_as		asid,
        * b)
        */
 
+      tmp = malloc(sizeof(o_region));
+
       if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
       if (ia32_region_map_chunk((t_vaddr)chunk,
-				(t_paddr)pt.entries) != ERROR_NONE)
+				(t_paddr)pt.entries, tmp) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
       pt.entries = chunk;
@@ -555,6 +570,110 @@ t_error			ia32_region_release(i_as		asid,
   if (asid != kasid)
     if (ia32_region_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
       REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  REGION_LEAVE(region, ERROR_NONE);
+}
+
+/*
+ * this function resizes a region.
+ *
+ * steps:
+ *
+ * A) region shrinking.
+ *  1) create and inject a fake region corresponding to the part to unmap.
+ *  2) calls directly the IA-32 code to unmap the fake region.
+ * B) region enlarging.
+ *  1) create and add a fake region corresponding to the new part to map.
+ *  2) calls directly the dependent code to do the mapping.
+ */
+
+t_error			ia32_region_resize(i_as			as,
+					   i_region		old,
+					   t_vsize		size,
+					   i_region*		new)
+{
+  o_region*		o;
+  o_as*			oas;
+  o_region*		tmp;
+
+  REGION_ENTER(region);
+
+  if (region_get(as, old, &o) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  if (as_get(as, &oas) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  if ((tmp = malloc(sizeof(o_region))) == NULL)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  /*
+   * A)
+   */
+
+  if (size < o->size)
+    {
+      /*
+       * 1)
+       */
+
+      tmp->regid = o->regid + size;
+      tmp->segid = o->segid;
+      tmp->address = o->address + size;
+      tmp->offset = o->offset + size;
+      tmp->size = o->size - size;
+      tmp->opts = o->opts;
+
+      if (region_inject(as, tmp) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      /*
+       * 2)
+       */
+
+      if (ia32_region_release(as, tmp->regid) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      if (set_remove(oas->regions, tmp->regid) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+    }
+  else
+
+  /*
+   * B)
+   */
+
+    {
+      /*
+       * 1)
+       */
+
+      tmp->regid = o->regid + o->size;
+      tmp->segid = o->segid;
+      tmp->address = o->address + o->size;
+      tmp->offset = o->offset + o->size;
+      tmp->size = size - o->size;
+      tmp->opts = o->opts;
+
+      if (region_inject(as, tmp) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      /*
+       * 2)
+       */
+
+      if (ia32_region_reserve(as,
+			      tmp->segid,
+			      tmp->offset,
+			      tmp->opts,
+			      tmp->address,
+			      tmp->size,
+			      &tmp->regid) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      if (set_remove(oas->regions, tmp->regid) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+    }
 
   REGION_LEAVE(region, ERROR_NONE);
 }

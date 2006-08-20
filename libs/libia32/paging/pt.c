@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       matthieu bucchianeri   [fri jul 28 17:16:06 2006]
+ * updated       matthieu bucchianeri   [wed aug 16 19:50:13 2006]
  */
 
 /*
@@ -136,6 +136,8 @@ t_error			pt_add_page(t_ia32_table*		tab,
 
   opts |= (page.user ? PTE_FLAG_USER : PTE_FLAG_SUPERVISOR);
 
+  opts |= (page.global ? PTE_FLAG_G : 0);
+
   opts |= PTE_FLAG_USED;
 
   t[entry] = MK_BASE(page.addr) | opts;
@@ -179,6 +181,7 @@ t_error			pt_get_page(t_ia32_table*		tab,
   page->rw = !!(t[entry] & PTE_FLAG_RW);
   page->present = !!(t[entry] & PTE_FLAG_P);
   page->user = !!(t[entry] & PTE_FLAG_USER);
+  page->global = !!(t[entry] & PTE_FLAG_G);
   page->addr = MK_BASE(t[entry]);
 
   return ERROR_NONE;

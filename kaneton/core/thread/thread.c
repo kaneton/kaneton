@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       matthieu bucchianeri   [fri aug  4 17:57:19 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 16:18:29 2006]
  */
 
 /*
@@ -279,7 +279,7 @@ t_error			thread_clone(i_task			taskid,
    */
 
   if (machdep_call(thread, thread_clone, taskid, old, new) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }

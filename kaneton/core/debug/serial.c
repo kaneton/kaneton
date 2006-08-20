@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/serial.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [sun jun 18 16:56:53 2006]
+ * updated       matthieu bucchianeri   [thu aug 10 16:33:31 2006]
  */
 
 /*
@@ -28,7 +28,7 @@
  * ---------- functions -------------------------------------------------------
  */
 
-
+#ifdef SERIAL
 t_uint32		chk_sum(void				*data,
 				unsigned int			size)
 {
@@ -181,5 +181,6 @@ void			serial_init(t_uint32			com_port,
   /* 6) */
   OUTB(com_port + 4, 0x08);
 }
+#endif
 
 /*                                                                 [cut] /k1 */

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat jul 29 18:19:26 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 16:22:39 2006]
  */
 
 /*
@@ -117,17 +117,10 @@ void			kaneton(t_init*				bootloader)
   cons_msg('+', "kaneton started\n");
 
 #ifndef SERIAL
-  event_test();
-
   //  timer_test();
-
-
-  //ctx_test();
 
   sched_test();
 
-  while (1)
-    HLT();
 #endif
   /*
    * XXX
@@ -148,13 +141,11 @@ void			kaneton(t_init*				bootloader)
     ;
 #endif
 
-  STATS_DUMP();
-
   /*
    * /XXX
    */
 
-  while(1)
+  while(0)
     ;
 
   cons_msg('#', "kaneton is stopping...\n");
@@ -171,7 +162,7 @@ void			kaneton(t_init*				bootloader)
 
   cons_msg('+', "system shutdown\n");
 
-  HLT(); /* XXX this is IA32 code */
+//  HLT(); /* XXX this is IA32 code */
 
   while (1)
     ;

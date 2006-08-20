@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/Makefile
+## file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:05:35 2005]
-## updated       julien quintard   [thu jul 13 11:43:32 2006]
+## updated       matthieu bucchianeri   [thu aug 10 16:38:25 2006]
 ##
 
 #
@@ -60,6 +60,8 @@ $(BOOTLOADER):		libs $(BOOTLOADER_O)
 
 libs:
 	$(call launch,Makefile,$(_KLIBC_DIR_),,)
+
+	$(call launch,Makefile,$(_LIBIA32_DIR_),,)
 
 clear:
 	$(call remove,$(BOOTLOADER_O),)

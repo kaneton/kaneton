@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/event/event.c
+ * file          /home/buckman/kaneton/kaneton/core/event/event.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       julien quintard   [sat jul  8 02:23:25 2006]
+ * updated       matthieu bucchianeri   [wed aug 16 20:06:42 2006]
  */
 
 /*
@@ -419,28 +419,6 @@ t_error			event_clean(void)
   free(event);
 
   return ERROR_NONE;
-}
-
-/*
- * XXX EVENT remove me !
- * just for testing.
- */
-
-t_error			event_test(void)
-{
-  if (event_reserve(32, EVENT_FUNCTION, (u_event_handler)timer_handler)
-      != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
-  if (event_reserve(33, EVENT_FUNCTION, (u_event_handler)ia32_kbd_handler)
-      != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
-  if (event_reserve(14, EVENT_FUNCTION, (u_event_handler)ia32_pf_handler)
-      != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
-  return ERROR_UNKNOWN;
 }
 
 /*                                                                 [cut] /k3 */
