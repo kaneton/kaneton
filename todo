@@ -1,4 +1,42 @@
 --
+ il y a 2 nouveaux managers :
+
+ io, qui gere les permissions des I/O
+     il se contente d'appeller le machdep
+
+ cpu, qui gere le multi processeur.
+     pour l'instant il gere juste un set de processeur en coordination
+     avec  sched. tout  les trucs  interessant restent  à  faire (load
+     balancing, migration, IPI)
+
+ j'ai rajouté  un champ a  t_init pour initialiser dans  le bootloader
+ une table de processeurs. j'ai aussi terminé le bootloader ia32-smp.
+ j'ai modifié  le scheduler pour qu'il  gere ses files  de threads par
+ processeurs (pour 1 proc: 1 thread en cours +  1 file ready +  1 file
+ expired).
+
+ a faire : ecrire les parties correspondantes dans le book kaneton, et
+ s'assurer que l'interface de io et cpu collera bien.
+
+--
+ le système est  trop lent. a chaque tick, on resoud  les timers et on
+ appelle les fonctions associées.
+
+ on  appelle  aussi  sched_switch,   qui  fait  plein  de  set_get  et
+ tout. c'est lent. pas moyen de regler le timer avec une frequence
+ vraiment précise...
+
+ la le truc a atteint ses  limites, on peut plus rajouter de code dans
+ la gestion des  event, timer  et du  scheduler sous  peine  de devoir
+ ralentir encore le timer (qui est a 200 Hz pour l'instant).
+
+ quand au stats manager, il  est tout simplement inutilisable car trop
+ lent.  (j'ai testé  et tout plante avec).  la  sauvegarde du contexte
+ complet (incluant  TOUT les registres du proc y compris  ceux MMX SSE
+ &co) ne  peut pas non plus  marcher dans ces conditions (trop d'acces
+ mémoire).  mais bon ca on pourra trafiquer sans probleme.
+
+--
  probleme du malloc:  a priori c'est ok. mais  l'idéal serait en effet
  de faire un set special qui ne poserait pas ce problème.
 
@@ -22,11 +60,10 @@
 
  Bugs connus et TODO mineurs :
 
- * set_remove_array: problem de double free.
- * probleme du context_switch avec les registres SSE
  * task_release: pb avec thread_flush
  * sched_update: optimiser car ca pue
- * sched_add: preemption quand prio >>
+ * ia32_sched_yield
+ * probleme du context_switch avec les registres SSE
  * region_split : ne marche pas
  * segment_*: plutot que faire des appels a segment_perms, modifier
    direct le champ (trop couteux sinon)

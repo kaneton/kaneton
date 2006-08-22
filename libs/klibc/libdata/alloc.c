@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/klibc/libdata/alloc.c
  *
  * created       cedric aubouy   [sun sep 25 19:57:33 2005]
- * updated       matthieu bucchianeri   [fri aug 18 19:16:00 2006]
+ * updated       matthieu bucchianeri   [mon aug 21 18:49:04 2006]
  */
 
 /*
@@ -178,6 +178,8 @@ void*			malloc(size_t				size)
 
       if (stucked)
 	{
+	  printf("Warning: allocating the reserve.\n");
+
 	  addr = alloc.reserve;
 
 	  alloc.reserve = 0;

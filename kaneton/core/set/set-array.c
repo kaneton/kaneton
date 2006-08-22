@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/set/set-array.c
+ * file          /home/buckman/kaneton/kaneton/core/set/set-array.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jul  8 02:27:21 2006]
+ * updated       matthieu bucchianeri   [mon aug 21 19:02:33 2006]
  */
 
 /*
@@ -1342,7 +1342,7 @@ t_error			set_reserve_array(t_opts		opts,
   o.opts = opts;
   o.datasz = datasz;
 
-  o.u.array.arraysz = initsz == 0 ? 1 : initsz;
+  o.u.array.arraysz = (initsz == 0 ? 1 : initsz);
   o.u.array.initsz = o.u.array.arraysz;
 
   if ((o.u.array.array =

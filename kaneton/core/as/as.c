@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [fri aug 18 19:53:23 2006]
+ * updated       matthieu bucchianeri   [mon aug 21 18:48:22 2006]
  */
 
 /*
@@ -587,8 +587,8 @@ t_error			as_reserve(i_task			tskid,
    * 5)
    */
 
-  if (set_reserve(ll, SET_OPT_SORT | SET_OPT_FREE, /* AS_REGIONS_INITSZ,*/
-		  sizeof(o_region), &o.regions) != ERROR_NONE) /* XXX */
+  if (set_reserve(array, SET_OPT_SORT | SET_OPT_FREE,  AS_REGIONS_INITSZ,
+		  sizeof(o_region), &o.regions) != ERROR_NONE)
     {
       id_release(&as->id, o.asid);
 

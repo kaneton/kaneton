@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:01 2006]
- * updated       matthieu bucchianeri   [fri aug 18 19:55:47 2006]
+ * updated       matthieu bucchianeri   [sun aug 20 19:07:38 2006]
  */
 
 /*
@@ -27,6 +27,7 @@
  */
 
 extern m_cpu*	cpu;
+extern t_init*	init;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -50,10 +51,15 @@ d_cpu		cpu_dispatch =
  */
 
 /*
- * this function get the current cpu id. always 0 since mono-processor mode.
+ * identifies the  current cpu. since  non-mp, the current cpu  is the
+ * boot processor.
  */
 
-t_error			cpu_current(i_cpu*			cpuid)
+t_error			ia32_cpu_current(i_cpu*			cpuid)
 {
-  *cpuid = 0;
+  CPU_ENTER(cpu);
+
+  *cpuid = init->bootcpu;
+
+  CPU_LEAVE(cpu, ERROR_NONE);
 }

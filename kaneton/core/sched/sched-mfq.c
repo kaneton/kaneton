@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [mon aug 21 19:26:28 2006]
+ * updated       matthieu bucchianeri   [fri aug 18 19:38:39 2006]
  */
 
 /*
@@ -15,10 +15,8 @@
  * this implementation is a multilevel feedback queues scheduler (like
  * the GNU/Linux one).
  *
- * future implementation  will   include  dynamic  task  priorization.
- *
- * following  explanation stand  for  one processor.  the mecanism  is
- * multiplied by the number of processors on the system.
+ * future implementation  will   include  dynamic  task  priorization,
+ * symmetrical multiprocessor support and cpu load balancing.
  *
  * there are  two lists : the  active and the expired  list.  each one
  * contains an equal  number of queues (FIFO). the  first queue if for
@@ -44,10 +42,6 @@
  *
  * when the  active queues become  empty, the active and  expired list
  * are swapped so the scheduler can continue its operation.
- *
- * the machine dependent part is responsible for context switching and
- * calling  of sched_switch  and cpu_balance.  for example,  these two
- * functions can be called by a timer.
  *
  * this implementation  is based on explanations  around the GNU/Linux
  * 2.6 branch "O(1)" scheduler.   a very good document describing this
@@ -81,12 +75,6 @@ m_sched*		sched = NULL;
 extern i_task		ktask;
 
 /*
- * cpu manager.
- */
-
-extern m_cpu*		cpu;
-
-/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -106,80 +94,67 @@ t_error			sched_dump(void)
 {
   t_iterator		i;
   t_iterator		iq;
-  t_iterator		ic;
   t_state		st;
   t_state		stq;
-  t_state		stc;
   i_set*		queue;
   t_scheduled*		thread;
   t_prior		prio;
-  t_cpu_sched*		ent;
 
   SCHED_ENTER(sched);
 
-  set_foreach(SET_OPT_FORWARD, sched->cpus, &ic, stc)
+  /*
+   * 1)
+   */
+
+  cons_msg('#', "scheduler current thread: %qd (%d, %d ms)\n",
+	   sched->current, sched->prio, sched->timeslice);
+
+  /*
+   * 2)
+   */
+
+  cons_msg('#', "scheduler active queues:");
+
+  prio = 0;
+  set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
     {
-      if (set_object(sched->cpus, ic, (void**)&ent) != ERROR_NONE)
+      if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
 	SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-      cons_msg('#', "cpu %qd\n", ent->cpuid);
-
-      /*
-       * 1)
-       */
-
-      cons_msg('#', " scheduler current thread: %qd (%d, %d ms)\n",
-	       ent->current, ent->prio, ent->timeslice);
-
-      /*
-       * 2)
-       */
-
-      cons_msg('#', " scheduler active queues:");
-
-      prio = 0;
-      set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
+      set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
 	{
-	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
+	  if (set_object(*queue, iq, (void**)&thread) != ERROR_NONE)
 	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-	  set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
-	    {
-	      if (set_object(*queue, iq, (void**)&thread) != ERROR_NONE)
-		SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-	      printf(" %qd (%d, %d ms)", thread->thread, prio,
-		     thread->timeslice);
-	    }
-
-	  prio++;
+	  printf(" %qd (%d, %d ms)", thread->thread, prio, thread->timeslice);
 	}
 
-      printf("\n");
-
-      /*
-       * 3)
-       */
-
-      cons_msg('#', " scheduler expired queues:");
-
-      set_foreach(SET_OPT_FORWARD, ent->expired, &i, st)
-	{
-	  if (set_object(ent->expired, i, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-	  set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
-	    {
-	      if (set_object(*queue, iq, (void**)&thread) != ERROR_NONE)
-		SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-	      printf(" %qd", thread->thread);
-	    }
-	}
-
-      printf("\n");
-
+      prio++;
     }
+
+  printf("\n");
+
+  /*
+   * 3)
+   */
+
+  cons_msg('#', "scheduler expired queues:");
+
+  set_foreach(SET_OPT_FORWARD, sched->expired, &i, st)
+    {
+      if (set_object(sched->expired, i, (void**)&queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+      set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
+	{
+	  if (set_object(*queue, iq, (void**)&thread) != ERROR_NONE)
+	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+	  printf(" %qd", thread->thread);
+	}
+    }
+
+  printf("\n");
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }
@@ -197,14 +172,11 @@ t_error			sched_dump(void)
 t_error			sched_quantum(t_quantum			quantum)
 {
   t_iterator		i;
-  t_iterator		ic;
   t_state		st;
-  t_state		stc;
   t_iterator		iq;
   t_state		stq;
   i_set*		queue;
   t_scheduled*		entity;
-  t_cpu_sched*		ent;
 
   SCHED_ENTER(sched);
 
@@ -218,39 +190,33 @@ t_error			sched_quantum(t_quantum			quantum)
    * 2)
    */
 
-  set_foreach(SET_OPT_FORWARD, sched->cpus, &ic, stc)
+  sched->timeslice = SCALE_TIMESLICE(sched->timeslice);
+
+  set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
     {
-      if (set_object(sched->cpus, i, (void**)&ent) != ERROR_NONE)
+      if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
 	SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-      ent->timeslice = SCALE_TIMESLICE(ent->timeslice);
-
-      set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
+      set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
 	{
-	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
+	  if (set_object(*queue, iq, (void**)&entity) != ERROR_NONE)
 	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-	  set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
-	    {
-	      if (set_object(*queue, iq, (void**)&entity) != ERROR_NONE)
-		SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-	      entity->timeslice = SCALE_TIMESLICE(entity->timeslice);
-	    }
+	  entity->timeslice = SCALE_TIMESLICE(entity->timeslice);
 	}
+    }
 
-      set_foreach(SET_OPT_FORWARD, ent->expired, &i, st)
+  set_foreach(SET_OPT_FORWARD, sched->expired, &i, st)
+    {
+      if (set_object(sched->expired, i, (void**)&queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+      set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
 	{
-	  if (set_object(ent->expired, i, (void**)&queue) != ERROR_NONE)
+	  if (set_object(*queue, iq, (void**)&entity) != ERROR_NONE)
 	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-	  set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
-	    {
-	      if (set_object(*queue, iq, (void**)&entity) != ERROR_NONE)
-		SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-	      entity->timeslice = SCALE_TIMESLICE(entity->timeslice);
-	    }
+	  entity->timeslice = SCALE_TIMESLICE(entity->timeslice);
 	}
     }
 
@@ -273,29 +239,33 @@ t_error			sched_quantum(t_quantum			quantum)
  * 1) we force  the current thread's  priority to the minimum,  so the
  *    switch function  will force switching  to another active  thread
  *    if possible.
- * 2) call  the dependent code (calling switch with the good cpu).
+ * 2) switch to  the next thread.
+ * 3) call  the dependent
+ * code.
  */
 
-t_error			sched_yield(i_cpu			cpuid)
+t_error			sched_yield(void)
 {
-  t_cpu_sched*		ent;
-
   SCHED_ENTER(sched);
 
   /*
    * 1)
    */
 
-  if (set_get(sched->cpus, cpuid, (void**)&ent) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  ent->prio = SCHED_N_PRIORITY_QUEUE + 1;
+  sched->prio = SCHED_N_PRIORITY_QUEUE + 1;
 
   /*
    * 2)
    */
 
-  if (machdep_call(sched, sched_yield, cpuid) != ERROR_NONE)
+  if (sched_switch() != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (machdep_call(sched, sched_yield) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   SCHED_LEAVE(sched, ERROR_NONE);
@@ -308,18 +278,9 @@ t_error			sched_yield(i_cpu			cpuid)
 
 t_error			sched_current(i_thread*			thread)
 {
-  i_cpu			cpuid;
-  t_cpu_sched*		ent;
-
   SCHED_ENTER(sched);
 
-  if (cpu_current(&cpuid) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  if (set_get(sched->cpus, cpuid, (void**)&ent) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  *thread = ent->current;
+  *thread = sched->current;
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }
@@ -354,39 +315,32 @@ t_error			sched_switch(void)
   int			nonempty = 0;
   i_set			list;
   i_cpu			cpuid;
-  t_cpu_sched*		ent;
 
   SCHED_ENTER(sched);
 
-  if (cpu_current(&cpuid) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  if (set_get(sched->cpus, cpuid, (void**)&ent) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  elected = ent->current;
+  elected = sched->current;
 
   /*
    * 1)
    */
 
-  ent->timeslice -= sched->quantum;
+  sched->timeslice -= sched->quantum;
 
   /*
    * 2)
    */
 
-  if (ent->timeslice == 0)
+  if (sched->timeslice == 0)
     {
-      entity.thread = ent->current;
-      entity.timeslice = COMPUTE_TIMESLICE(ent->current);
+      entity.thread = sched->current;
+      entity.timeslice = COMPUTE_TIMESLICE(sched->current);
 
-      prio = COMPUTE_PRIORITY(ent->current);
+      prio = COMPUTE_PRIORITY(sched->current);
 
       p = 0;
-      set_foreach(SET_OPT_FORWARD, ent->expired, &i, st)
+      set_foreach(SET_OPT_FORWARD, sched->expired, &i, st)
 	{
-	  if (set_object(ent->expired, i, (void**)&queue) != ERROR_NONE)
+	  if (set_object(sched->expired, i, (void**)&queue) != ERROR_NONE)
 	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
 	  if (prio == p)
@@ -407,17 +361,17 @@ t_error			sched_switch(void)
 
  try:
   p = 0;
-  set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
+  set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
     {
-      if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
+      if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
 	SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-      if (p > ent->prio && ent->timeslice)
+      if (p > sched->prio && sched->timeslice)
 	{
 	  nonempty = 1;
-	  elected = ent->current;
-	  elected_prio = ent->prio;
-	  elected_timeslice = ent->timeslice;
+	  elected = sched->current;
+	  elected_prio = sched->prio;
+	  elected_timeslice = sched->timeslice;
 	  break;
 	}
 
@@ -443,9 +397,9 @@ t_error			sched_switch(void)
 
   if (!nonempty)
     {
-      list = ent->active;
-      ent->active = ent->expired;
-      ent->expired = list;
+      list = sched->active;
+      sched->active = sched->expired;
+      sched->expired = list;
 
       goto try;
     }
@@ -454,17 +408,17 @@ t_error			sched_switch(void)
    * 5)
    */
 
-  if (ent->timeslice != 0 && elected != ent->current)
+  if (sched->timeslice != 0 && elected != sched->current)
     {
-      entity.thread = ent->current;
-      entity.timeslice = ent->timeslice;
+      entity.thread = sched->current;
+      entity.timeslice = sched->timeslice;
 
-      prio = COMPUTE_PRIORITY(ent->current);
+      prio = COMPUTE_PRIORITY(sched->current);
 
       p = 0;
-      set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
+      set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
 	{
-	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
+	  if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
 	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
 	  if (prio == p)
@@ -486,13 +440,16 @@ t_error			sched_switch(void)
   if (machdep_call(sched, sched_switch, elected) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-  ent->current = elected;
-  ent->prio = elected_prio;
-  ent->timeslice = elected_timeslice;
+  sched->current = elected;
+  sched->prio = elected_prio;
+  sched->timeslice = elected_timeslice;
 
   /*
    * 7)
    */
+
+  if (cpu_current(&cpuid) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   if (cpu_stats(cpuid, sched->quantum) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
@@ -520,9 +477,6 @@ t_error			sched_add(i_thread			thread)
   t_prior		prio;
   t_prior		p;
   t_scheduled		entity;
-  o_thread*		othread;
-  o_task*		otask;
-  t_cpu_sched*		ent;
 
   SCHED_ENTER(sched);
 
@@ -536,19 +490,10 @@ t_error			sched_add(i_thread			thread)
    * 2)
    */
 
-  if (thread_get(thread, &othread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  if (task_get(othread->taskid, &otask) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  if (set_get(sched->cpus, otask->cpuid, (void**)&ent) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
   p = 0;
-  set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
+  set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
     {
-      if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
+      if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
 	SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
       if (prio == p)
@@ -569,9 +514,9 @@ t_error			sched_add(i_thread			thread)
    * 3)
    */
 
-  if (ent->timeslice > sched->quantum &&
-      prio < COMPUTE_PRIORITY(ent->current))
-    SCHED_LEAVE(sched, sched_yield(ent->cpuid));
+  if ( 0 && sched->timeslice > sched->quantum &&
+      prio < COMPUTE_PRIORITY(sched->current))
+    SCHED_LEAVE(sched, sched_yield()); // XXX a bit violent ^ ^
 
   /*
    * 4)
@@ -603,9 +548,6 @@ t_error			sched_remove(i_thread			thread)
   t_prior		prio;
   t_prior		p;
   int			removed = 0;
-  o_thread*		othread;
-  o_task*		otask;
-  t_cpu_sched*		ent;
 
   SCHED_ENTER(sched);
 
@@ -613,17 +555,8 @@ t_error			sched_remove(i_thread			thread)
    * 1)
    */
 
-  if (thread_get(thread, &othread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  if (task_get(othread->taskid, &otask) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  if (set_get(sched->cpus, otask->cpuid, (void**)&ent) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  if (ent->current == thread)
-    if (sched_yield(ent->cpuid) != ERROR_NONE)
+  if (sched->current == thread)
+    if (sched_yield() != ERROR_NONE)
       SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   /*
@@ -644,9 +577,9 @@ t_error			sched_remove(i_thread			thread)
    */
 
   p = 0;
-  set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
+  set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
     {
-      if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
+      if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
 	SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
       if (prio == p)
@@ -660,9 +593,9 @@ t_error			sched_remove(i_thread			thread)
   if (!removed)
     {
       p = 0;
-      set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
+      set_foreach(SET_OPT_FORWARD, sched->active, &i, st)
 	{
-	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
+	  if (set_object(sched->active, i, (void**)&queue) != ERROR_NONE)
 	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
 	  if (prio == p)
@@ -724,15 +657,8 @@ t_error			sched_update(i_thread			thread)
 t_error			sched_init(void)
 {
   int			i;
-  t_iterator		it;
-  t_state		st;
   i_set			queue;
   i_thread		kthread;
-  t_cpu_sched		ent;
-  t_cpu_sched*		ent2;
-  i_cpu			cpuid;
-  o_cpu*		o;
-  t_setsz		ncpus;
 
   /*
    * 1)
@@ -749,7 +675,11 @@ t_error			sched_init(void)
   memset(sched, 0x0, sizeof(m_sched));
 
   sched->quantum = SCHED_QUANTUM_INIT;
-  sched->cpus = ID_UNUSED;
+  sched->current = ID_UNUSED;
+  sched->timeslice = sched->quantum;
+  sched->prio = SCHED_N_PRIORITY_QUEUE;
+  sched->active = ID_UNUSED;
+  sched->expired = ID_UNUSED;
 
   /*
    * 2)
@@ -761,56 +691,31 @@ t_error			sched_init(void)
    * 3)
    */
 
-  if (set_size(cpu->cpus, &ncpus) != ERROR_NONE)
+  if (set_reserve(ll, SET_OPT_ALLOC, sizeof(i_set), &sched->active) !=
+      ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  if (set_reserve(array, SET_OPT_ALLOC, ncpus, sizeof(t_cpu_sched),
-		  &sched->cpus) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  set_foreach(SET_OPT_FORWARD, cpu->cpus, &it, st)
+  for (i = 0; i <= SCHED_N_PRIORITY_QUEUE; i++)
     {
-      if (set_object(cpu->cpus, it, (void**)&o) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
-
-      ent.cpuid = o->cpuid;
-      ent.current = ID_UNUSED;
-      ent.timeslice = sched->quantum;
-      ent.prio = SCHED_N_PRIORITY_QUEUE;
-      ent.active = ID_UNUSED;
-      ent.expired = ID_UNUSED;
-
-      if (set_reserve(array, SET_OPT_ALLOC, SCHED_N_PRIORITY_QUEUE + 1,
-		      sizeof(i_set), &ent.active) !=
+      if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_scheduled), &queue) !=
 	  ERROR_NONE)
 	return (ERROR_UNKNOWN);
 
-      for (i = 0; i <= SCHED_N_PRIORITY_QUEUE; i++)
-	{
-	  if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_scheduled), &queue) !=
-	      ERROR_NONE)
-	    return (ERROR_UNKNOWN);
+      if (set_insert(sched->active, &queue) != ERROR_NONE)
+	return (ERROR_UNKNOWN);
+    }
 
-	  if (set_insert(ent.active, &queue) != ERROR_NONE)
-	    return (ERROR_UNKNOWN);
-	}
+  if (set_reserve(ll, SET_OPT_ALLOC, sizeof(i_set), &sched->expired) !=
+      ERROR_NONE)
+    return (ERROR_UNKNOWN);
 
-      if (set_reserve(array, SET_OPT_ALLOC, SCHED_N_PRIORITY_QUEUE + 1,
-		      sizeof(i_set), &ent.expired) !=
+  for (i = 0; i <= SCHED_N_PRIORITY_QUEUE; i++)
+    {
+      if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_scheduled), &queue) !=
 	  ERROR_NONE)
 	return (ERROR_UNKNOWN);
 
-      for (i = 0; i <= SCHED_N_PRIORITY_QUEUE; i++)
-	{
-	  if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_scheduled), &queue) !=
-	      ERROR_NONE)
-	    return (ERROR_UNKNOWN);
-
-	  if (set_insert(ent.expired, &queue) != ERROR_NONE)
-	    return (ERROR_UNKNOWN);
-	}
-
-      if (set_append(sched->cpus, &ent) != ERROR_NONE)
+      if (set_insert(sched->expired, &queue) != ERROR_NONE)
 	return (ERROR_UNKNOWN);
     }
 
@@ -821,13 +726,7 @@ t_error			sched_init(void)
   if (thread_reserve(ktask, THREAD_PRIOR, &kthread) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  if (cpu_current(&cpuid) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  if (set_get(sched->cpus, cpuid, (void**)&ent2) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  ent2->current = kthread;
+  sched->current = kthread;
 
   /*
    * 5)
@@ -854,10 +753,7 @@ t_error			sched_clean(void)
 {
   t_iterator		it;
   t_state		st;
-  t_iterator		it2;
-  t_state		st2;
   i_set*		queue;
-  t_cpu_sched*		ent;
 
   /*
    * 1)
@@ -870,35 +766,29 @@ t_error			sched_clean(void)
    * 2)
    */
 
-  set_foreach(SET_OPT_FORWARD, sched->cpus, &it2, st2)
+  set_foreach(SET_OPT_FORWARD, sched->active, &it, st)
     {
-      if (set_object(sched->cpus, it2, (void**)&ent) != ERROR_NONE)
+      if (set_object(sched->active, it, (void**)&queue) != ERROR_NONE)
 	SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-      set_foreach(SET_OPT_FORWARD, ent->active, &it, st)
-	{
-	  if (set_object(ent->active, it, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-	  if (set_release(*queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-	}
-
-      if (set_release(ent->active) != ERROR_NONE)
-	SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-      set_foreach(SET_OPT_FORWARD, ent->expired, &it, st)
-	{
-	  if (set_object(ent->expired, it, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-	  if (set_release(*queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-	}
-
-      if (set_release(ent->expired) != ERROR_NONE)
+      if (set_release(*queue) != ERROR_NONE)
 	SCHED_LEAVE(sched, ERROR_UNKNOWN);
     }
+
+  if (set_release(sched->active) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+  set_foreach(SET_OPT_FORWARD, sched->expired, &it, st)
+    {
+      if (set_object(sched->expired, it, (void**)&queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
+      if (set_release(*queue) != ERROR_NONE)
+	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+    }
+
+  if (set_release(sched->expired) != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   /*
    * 3)

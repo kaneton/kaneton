@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-smp/bootloader.h
  *
  * created       julien quintard   [fri feb 11 02:23:53 2005]
- * updated       matthieu bucchianeri   [tue jul 25 16:07:44 2006]
+ * updated       matthieu bucchianeri   [mon aug 21 14:45:33 2006]
  */
 
 #ifndef BOOTLOADER_H
@@ -36,6 +36,7 @@
  *      pmode.c
  *      mp.c
  *      apic.c
+ *      interrupt.c
  */
 
 /*
@@ -109,6 +110,10 @@ void			bootloader_pmode_ap_init(void);
 
 void			bootloader_mp_init(void);
 
+void			toto(void);
+
+void			tata(void);
+
 t_sint32		bootloader_get_cpu(t_uint32		apicid);
 
 t_sint32		bootloader_add_cpu(t_uint32		apicid);
@@ -123,6 +128,17 @@ void			bootloader_mp_ap_init(void);
 void			bootloader_apic_calibrate_timer(void);
 
 void			bootloader_apic_wait(t_uint32			delay);
+
+
+/*
+ * interrupt.c
+ */
+
+void			bootloader_interrupt_init(void);
+
+void			bootloader_interrupt_ap_init(void);
+
+void			bootloader_interrupt_dummy(void);
 
 
 /*

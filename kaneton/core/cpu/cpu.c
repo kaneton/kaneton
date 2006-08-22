@@ -6,15 +6,27 @@
  * file          /home/buckman/kaneton/kaneton/core/cpu/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       matthieu bucchianeri   [fri aug 18 19:54:35 2006]
+ * updated       matthieu bucchianeri   [mon aug 21 19:24:40 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * this manager will be used by the scheduler to perform efficient cpu
- * load balancing  of threads execution  for Symmetric MultiProcessing
- * (SMP).
+ * this manager is used by the scheduler to perform efficient cpu load
+ * balancing of tasks execution for Symmetric MultiProcessing (SMP).
+ *
+ * the scheduler  must communicate to  the cpu manager  the statistics
+ * for each cpus.
+ *
+ * then,  each time the  cpu_balance function  is called  (the machine
+ * dependent   part   is  responsible   for   calling  this   function
+ * periodically), the statistics are compared and the more loaded cpus
+ * give some tasks to the less loaded one. the cpu_migrate function is
+ * used when such event append.
+ *
+ * the cpu_select function  is called by the task  manager to assign a
+ * task to  a cpu.  like the load  balancing algorithm,  the selection
+ * must take account cpus load.
  */
 
 /*
@@ -61,8 +73,6 @@ t_error			cpu_show(i_cpu				id)
 
   cons_msg('#', "  cpu %qd: execution time %qd ms\n", id,
 	   o->efficiency);
-
-  /* XXX */
 
   if (machdep_call(cpu, cpu_show, id) != ERROR_NONE)
     CPU_LEAVE(cpu, ERROR_UNKNOWN);
@@ -130,7 +140,11 @@ t_error			cpu_select(i_cpu*			cpuid)
 {
   CPU_ENTER(cpu);
 
-  *cpuid = 0; /* XXX */
+  *cpuid = 0;
+
+  /*
+   * XXX select the cpu with lowest charge.
+   */
 
   CPU_LEAVE(cpu, ERROR_NONE);
 }
@@ -151,15 +165,15 @@ t_error			cpu_stats(i_cpu				cpuid,
 
   o->efficiency += time;
 
+  /*
+   * XXX we must take account number of context switch and complete schedule
+   */
+
   CPU_LEAVE(cpu, ERROR_NONE);
 }
 
 /*
  * this function is called for load balancing.
- *
- * steps:
- *
- * n) reset the efficiency statistics.
  */
 
 t_error			cpu_balance(void)
@@ -170,36 +184,61 @@ t_error			cpu_balance(void)
 
   CPU_ENTER(cpu);
 
-  /*
-   * n)
-   */
-
-  set_foreach(SET_OPT_FORWARD, cpu->cpus, &i, state)
-    {
-      if (set_object(cpu->cpus, i, (void**)&o) != ERROR_NONE)
-	CPU_LEAVE(cpu, ERROR_UNKNOWN);
-
-      /* XXX */
-
-      o->efficiency = 0;
-    }
+  /* XXX */
 
   CPU_LEAVE(cpu, ERROR_NONE);
 }
 
 /*
  * this function is used to move a task from one cpu to another.
+ *
+ * steps:
+ *
+ * 1) stop the task if necessary.
+ * 2) change the running cpu.
+ * 3) call the dependent code.
+ * 4) restart the task if necessary.
  */
 
 t_error			cpu_migrate(i_task			tskid,
 				    i_cpu			destination)
 {
+  o_task*		o;
+
   CPU_ENTER(cpu);
 
-  /* XXX */
+  if (task_get(tskid, &o) != ERROR_NONE)
+	CPU_LEAVE(cpu, ERROR_UNKNOWN);
+
+  /*
+   * 1)
+   */
+
+  if (o->sched == SCHED_STATE_RUN)
+    if (task_state(tskid, SCHED_STATE_STOP) != ERROR_NONE)
+      CPU_LEAVE(cpu, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+
+  o->cpuid = destination;
+
+  /*
+   * 3)
+   */
 
   if (machdep_call(cpu, cpu_migrate, tskid, destination) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+	CPU_LEAVE(cpu, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (o->sched == SCHED_STATE_RUN)
+    if (task_state(tskid, SCHED_STATE_RUN) != ERROR_NONE)
+      CPU_LEAVE(cpu, ERROR_UNKNOWN);
 
   CPU_LEAVE(cpu, ERROR_NONE);
 }
@@ -253,7 +292,7 @@ t_error			cpu_init(void)
    * 2)
    */
 
-  if (set_reserve(ll, SET_OPT_ALLOC | SET_OPT_SORT,
+  if (set_reserve(array, SET_OPT_ALLOC, init->ncpus,
 		  sizeof(o_cpu), &cpu->cpus) != ERROR_NONE)
     {
       cons_msg('!', "cpu: unable to reserve the cpu set\n");
@@ -267,7 +306,7 @@ t_error			cpu_init(void)
 
   for (i = 0; i < init->ncpus; i++)
     {
-      if (set_add(cpu->cpus, &init->cpus[i]) != ERROR_NONE)
+      if (set_append(cpu->cpus, &init->cpus[i]) != ERROR_NONE)
 	{
 	  cons_msg('!', "cpu: cannot add a cpu to the cpu set\n");
 

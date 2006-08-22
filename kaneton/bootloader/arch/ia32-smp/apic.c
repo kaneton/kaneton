@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-smp/apic.c
  *
  * created       matthieu bucchianeri   [tue jul 25 11:22:27 2006]
- * updated       matthieu bucchianeri   [tue jul 25 16:14:28 2006]
+ * updated       matthieu bucchianeri   [mon aug 21 18:29:16 2006]
  */
 
 /*
@@ -26,11 +26,27 @@
  * needed to convert nanoseconds to APIC timer ticks.
  */
 
-static t_uint64		timeref = 0;
+static t_uint32		timeref = 0;
+
+/*
+ * counter used to calibrate.
+ */
+
+static volatile t_uint32 ticks;
 
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+static void		bootloader_apic_calibrate_tick(void)
+{
+  ticks += 10;
+
+  pic_acknowledge(0);
+
+  LEAVE();
+  IRET();
+}
 
 /*
  * this function calibrates the APIC timer.
@@ -45,16 +61,16 @@ static t_uint64		timeref = 0;
 
 void			bootloader_apic_calibrate_timer(void)
 {
+  t_ia32_gate		gate;
   t_sint32		t1;
   t_sint32		t2;
-  int			i;
 
   /*
    * 1)
    */
 
   apic_write(APIC_REG_DIV, 11);
-  apic_write(APIC_REG_TIMER_CONF, 1 << 17);
+  apic_write(APIC_REG_TIMER_CONF, 1 << 16);
 
   /*
    * 2)
@@ -66,17 +82,31 @@ void			bootloader_apic_calibrate_timer(void)
    * 3)
    */
 
+  gate.offset = (t_uint32)bootloader_apic_calibrate_tick;
+  gate.segsel = PMODE_GDT_CORE_CS << 3;
+  gate.privilege = 0;
+  gate.type = ia32_type_gate_interrupt;
+
+  idt_add_gate(NULL, 32, gate);
+
+  pit_init(100);
+
+  pic_enable_irq(0);
+
+  ticks = 0;
   t1 = apic_read(APIC_REG_COUNT);
-  for (i = 0; i < 10000000; i++)
+  while (ticks < 200)
     ;
 
   t2 = apic_read(APIC_REG_COUNT);
+
+  pic_disable_irq(0);
 
   /*
    * 4)
    */
 
-  timeref = t1 - t2;
+  timeref = (t1 - t2) / ticks;
 }
 
 /*
@@ -97,14 +127,13 @@ void			bootloader_apic_wait(t_uint32			delay)
    * 1)
    */
 
-  total = (delay * timeref) / 4000000;
+  total = (delay * timeref);
 
   /*
    * 2)
    */
 
   apic_write(APIC_REG_DIV, 11);
-  apic_write(APIC_REG_TIMER_CONF, 1 << 17);
   apic_write(APIC_REG_TIMER, (t_uint32)total);
 
   /*

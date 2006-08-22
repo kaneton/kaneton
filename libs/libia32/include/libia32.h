@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/libia32.h
  *
  * created       matthieu bucchianeri   [tue dec 20 13:58:56 2005]
- * updated       matthieu bucchianeri   [wed jul 26 14:39:02 2006]
+ * updated       matthieu bucchianeri   [mon aug 21 18:14:10 2006]
  */
 
 #ifndef LIBIA32_H
@@ -21,12 +21,14 @@
 #include "misc/multiboot.h"
 #include "misc/stdarg.h"
 #include "misc/types.h"
+#include "misc/semaphore.h"
 #include "paging/paging.h"
 #include "pmode/pmode.h"
 #include "pmode/gdt.h"
 #include "pmode/idt.h"
 #include "interrupt/interrupt.h"
 #include "interrupt/pic.h"
+#include "interrupt/ipi.h"
 #include "time/pit.h"
 #include "task/task.h"
 #include "task/tss.h"
@@ -289,6 +291,9 @@ void			handler_irq(t_uint32				nr);
 void			ipi_send_init(void);
 
 void			ipi_send_startup(void);
+
+void			ipi_send_vector(t_uint8			vector,
+					t_ia32_ipi_dest		dest);
 
 
 /*

@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-smp/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:05:35 2005]
-## updated       matthieu bucchianeri   [tue jul 25 16:16:35 2006]
+## updated       matthieu bucchianeri   [mon aug 21 15:12:41 2006]
 ##
 
 #
@@ -33,7 +33,8 @@ BOOTLOADER_C		:=		bootloader.c			\
 					paging.c			\
 					pmode.c				\
 					apic.c				\
-					mp.c
+					mp.c				\
+					interrupt.c
 
 BOOTLOADER_ASM		:=		multiboot.asm
 
@@ -66,6 +67,8 @@ ap-boot.o:
 
 libs:
 	$(call launch,Makefile,$(_KLIBC_DIR_),,)
+
+	$(call launch,Makefile,$(_LIBIA32_DIR_),,)
 
 clear:
 	$(call remove,$(BOOTLOADER_O),)

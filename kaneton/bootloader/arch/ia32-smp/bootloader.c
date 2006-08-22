@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-smp/bootloader.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue jul 25 17:09:37 2006]
+ * updated       matthieu bucchianeri   [mon aug 21 18:40:00 2006]
  */
 
 /*
@@ -69,7 +69,7 @@ void			bootloader_error(void)
  * 2) relocates binaries, data, stack
  * 3) installs the protected mode.
  * 4) installs the paging mode.
- * 5) init mp.
+ * 5) init the other processors.
  * 6) computes the segments and regions to pass to the kernel.
  * 7) dumps the init structure if required.
  * 8) update registers for the new kernel stack.
@@ -109,6 +109,7 @@ int			bootloader(t_uint32			magic,
    */
 
   bootloader_pmode_init();
+  bootloader_interrupt_init();
 
   /*
    * 4)
@@ -160,7 +161,7 @@ int			bootloader(t_uint32			magic,
    * 9)
    */
 
- // kernel(init);
+  kernel(init);
 
   asm("movl %0, %%ebp\n\t"
       "movl %1, %%esp\n\t"

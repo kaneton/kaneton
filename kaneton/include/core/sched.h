@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/sched.h
  *
  * created       matthieu bucchianeri   [sat jun  3 22:34:42 2006]
- * updated       matthieu bucchianeri   [fri aug 18 17:57:51 2006]
+ * updated       matthieu bucchianeri   [sun aug 20 19:56:33 2006]
  */
 
 #ifndef CORE_SCHED_H
@@ -37,7 +37,7 @@
  * initial value for the scheduler quantum in milliseconds.
  */
 
-#define SCHED_QUANTUM_INIT		20
+#define SCHED_QUANTUM_INIT		5
 
 /*
  * the number of priority levels for the scheduler.
@@ -144,6 +144,22 @@ typedef struct
 }		t_scheduled;
 
 /*
+ * cpu scheduling environment.
+ */
+
+typedef struct
+{
+  i_cpu		cpuid;
+
+  i_thread	current;
+  t_timeslice	timeslice;
+  t_prior	prio;
+
+  i_set		active;
+  i_set		expired;
+}		t_cpu_sched;
+
+/*
  * scheduler manager
  */
 
@@ -153,12 +169,7 @@ typedef struct
 
   t_quantum	quantum;
 
-  i_thread	current;
-  t_timeslice	timeslice;
-  t_prior	prio;
-
-  i_set		active;
-  i_set		expired;
+  i_set		cpus;
 
   machdep_data(m_sched);
 }		m_sched;
@@ -170,7 +181,7 @@ typedef struct
 typedef struct
 {
   t_error			(*sched_quantum)(t_quantum);
-  t_error			(*sched_yield)(void);
+  t_error			(*sched_yield)(i_cpu);
   t_error			(*sched_switch)(i_thread);
   t_error			(*sched_add)(i_thread);
   t_error			(*sched_remove)(i_thread);
@@ -229,7 +240,7 @@ t_error			sched_dump(void);
 
 t_error			sched_quantum(t_quantum			quantum);
 
-t_error			sched_yield(void);
+t_error			sched_yield(i_cpu			cpuid);
 
 t_error			sched_current(i_thread*			thread);
 
