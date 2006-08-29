@@ -83,8 +83,6 @@
 --
  + moulinette triche
  + norme dans books/kaneton
- + cheat chapter
- + test chapter
 
 --
  enlever QUICKSTART et expliquer ce qu'il faut sur le site
@@ -173,18 +171,6 @@
     + void* content;
     + t_module* next;
   }
-
---
- revoir la moulinette de triche, a la limite retoucher le code de ctcompare
-
---
- pour le probleme de dependance entre segments et malloc() il suffit d'avoir
- un cache d'objets segment dans le manager de segment. et le segment
- manager pioche dedans pour ajouter des segments. donc set_reserve()
- sans l'option ALLOC.
-
- il suffit de calculer la limite d'appels recursifs a segment et d'en
- deduire la taille du cache, par exemple 3, pour etre sur disons 5.
 
 --
  les images microkernel_examples_* dans seminar sont a passer au format xfig

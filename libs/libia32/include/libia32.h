@@ -295,6 +295,8 @@ void			ipi_send_startup(void);
 void			ipi_send_vector(t_uint8			vector,
 					t_ia32_ipi_dest		dest);
 
+void			ipi_acknowledge(void);
+
 
 /*
  * ../time/timer.c

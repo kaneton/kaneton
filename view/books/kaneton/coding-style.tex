@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/papers/kaneton/coding-style.tex
+%% file          /home/mycure/kaneton/view/books/kaneton/coding-style.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:32:57 2006]
-%% updated       julien quintard   [sat apr 15 22:39:02 2006]
+%% updated       julien quintard   [tue aug  1 16:00:01 2006]
 %%
 
 %
@@ -261,7 +261,7 @@ There are several indentation rules in kaneton.
     \begin{verbatim}
       struct       s_set
       {
-        u_set      id;
+        i_set      id;
         t_setsz    size;
         t_type     type;
       };
@@ -273,8 +273,8 @@ There are several indentation rules in kaneton.
       typedef struct
       {
         o_id       id;
-        u_stats    stats;
-        u_set      ass;
+        i_stats    stats;
+        i_set      ass;
       }            m_as;
     \end{verbatim}
   \item
@@ -286,7 +286,7 @@ There are several indentation rules in kaneton.
       #define TASK_LPRIOR_CORE    210
 
       m_task*                     task;
-      u_task                      ktask = ID_UNUSED;
+      i_task                      ktask = ID_UNUSED;
     \end{verbatim}
 
     This rule also applies for variables declarations in functions.
@@ -294,7 +294,7 @@ There are several indentation rules in kaneton.
     Function prototypes and bodies should look like this:
 
     \begin{verbatim}
-      t_error             stats_function(u_stats          id,
+      t_error             stats_function(i_stats          id,
                                          char*            function,
                                          t_stats_func**   f)
       {
