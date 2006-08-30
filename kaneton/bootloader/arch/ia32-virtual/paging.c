@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/paging.c
  *
  * created       julien quintard   [sun may 29 00:38:50 2005]
- * updated       matthieu bucchianeri   [thu jul 27 19:06:50 2006]
+ * updated       matthieu bucchianeri   [wed aug 30 16:55:50 2006]
  */
 
 /*
@@ -100,14 +100,19 @@ void			bootloader_paging_init(void)
     }
 
   pt0.present = 1;
-  pt0.rw = 1;
-  pt0.user = 0;
+  pt0.rw = PT_WRITABLE;
+  pt0.user = PT_PRIVILEGED;
+  pt0.cached = PT_CACHED;
+  pt0.writeback = PT_WRITEBACK;
 
   pd_add_table(&pd, 0, pt0);
 
   pg.present = 1;
-  pg.rw = 1;
-  pg.user = 0;
+  pg.rw = PG_WRITABLE;
+  pg.user = PG_PRIVILEGED;
+  pg.cached = PG_CACHED;
+  pg.writeback = PG_WRITEBACK;
+
   for (i = 0, addr = PAGESZ;  i < PT_MAX_ENTRIES - 1; i++, addr += PAGESZ)
     {
       pg.addr = addr;
@@ -133,8 +138,10 @@ void			bootloader_paging_init(void)
 	    }
 
 	  pt.present = 1;
-	  pt.rw = 1;
-	  pt.user = 0;
+	  pt.rw = PT_WRITABLE;
+	  pt.user = PT_PRIVILEGED;
+	  pt.cached = PT_CACHED;
+	  pt.writeback = PT_WRITEBACK;
 
 	  pd_add_table(&pd, PDE_ENTRY(addr), pt);
 	  limit += PAGESZ;
@@ -147,7 +154,7 @@ void			bootloader_paging_init(void)
    * 5)
    */
 
-  pd_activate(pd);
+  pd_activate(pd, PD_CACHED, PD_WRITEBACK);
 
   /*
    * 6)

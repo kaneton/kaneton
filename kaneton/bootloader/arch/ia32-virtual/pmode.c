@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/pmode.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/pmode.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       julien quintard   [sat jul  8 02:31:27 2006]
+ * updated       matthieu bucchianeri   [wed aug 30 16:30:30 2006]
  */
 
 /*
@@ -47,7 +47,7 @@ extern t_init*		init;
  * 2) create a new idt and enable it.
  * 3) set two segments for the rest of the operations.
  * 4) update the segments registers.
- * 5) finally install the protected mode.
+ * 5) enable caching and write-back (since we are in uniprocessor mode).
  * 6) update the init structure.
  */
 
@@ -134,6 +134,16 @@ void			bootloader_pmode_init(void)
 
   /*
    * 5)
+   */
+
+  WBINVD();
+
+  asm volatile("movl %cr0, %eax\n\t"
+	       "andl $0x3FFFFFFF, %eax\n\t"
+	       "movl %eax, %cr0");
+
+  /*
+   * 6)
    */
 
   memcpy(&init->machdep.gdt, &gdt, sizeof (t_ia32_gdt));

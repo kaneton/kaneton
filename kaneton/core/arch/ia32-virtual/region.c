@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/machdep/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [thu aug 17 19:45:49 2006]
+ * updated       matthieu bucchianeri   [wed aug 30 17:37:05 2006]
  */
 
 /*
@@ -102,9 +102,11 @@ t_error			ia32_region_map_chunk(t_vaddr		v,
 			  &seg) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
-      pt.rw = 1;
+      pt.rw = PT_WRITABLE;
       pt.present = 1;
-      pt.user = 0;
+      pt.user = PT_PRIVILEGED;
+      pt.cached = PT_CACHED;
+      pt.writeback = PT_WRITEBACK;
       pt.entries = seg;
 
       if (pd_add_table(NULL, PDE_ENTRY(v), pt) != ERROR_NONE)
@@ -121,9 +123,11 @@ t_error			ia32_region_map_chunk(t_vaddr		v,
 
   pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(v));
 
-  pg.rw = 1;
+  pg.rw = PG_WRITABLE;
   pg.present = 1;
-  pg.user = 0;
+  pg.user = PG_PRIVILEGED;
+  pg.cached = PG_CACHED;
+  pg.writeback = PG_WRITEBACK;
   pg.addr = p;
 
   if (pt_add_page(&pt, PTE_ENTRY(v), pg) != ERROR_NONE)
@@ -282,10 +286,12 @@ t_error			ia32_region_reserve(i_as		asid,
    * 4)
    */
 
-  pg.rw = !!(oseg->perms & PERM_WRITE);
+  pg.rw = (oseg->perms & PERM_WRITE) ? PG_WRITABLE : PG_READONLY;
   pg.present = 1;
-  pg.user = !(opts & REGION_OPT_PRIVILEGED);
-  pg.global = !!(opts & REGION_OPT_GLOBAL);
+  pg.user = (opts & REGION_OPT_PRIVILEGED) ? PG_PRIVILEGED : PG_USER;
+  pg.global = (opts & REGION_OPT_GLOBAL) ? PG_GLOBAL : PG_NONGLOBAL;
+  pg.cached = PG_CACHED;
+  pg.writeback = PG_WRITEBACK;
 
   /*
    * 5)
@@ -331,9 +337,11 @@ t_error			ia32_region_reserve(i_as		asid,
 
       if (pd_get_table(&pd, pde, &pt) != ERROR_NONE)
 	{
-	  pt.rw = 1;
+	  pt.rw = PT_WRITABLE;
 	  pt.present = 1;
-	  pt.user = 1;
+	  pt.user = PT_USER;
+	  pt.cached = PT_CACHED;
+	  pt.writeback = PT_WRITEBACK;
 
 	  if (segment_reserve(asid, PAGESZ, PERM_READ | PERM_WRITE,
 			      &ptseg) != ERROR_NONE)

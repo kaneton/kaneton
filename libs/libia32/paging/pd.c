@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [fri jul 28 17:15:57 2006]
+ * updated       matthieu bucchianeri   [wed aug 30 17:18:55 2006]
  */
 
 /*
@@ -147,15 +147,23 @@ t_error			pd_base(t_ia32_directory*		dir,
  * 3) sets the global variable.
  */
 
-t_error			pd_activate(t_ia32_directory		dir)
+t_error			pd_activate(t_ia32_directory		dir,
+				    t_uint32			cached,
+				    t_uint32			writeback)
 {
   t_uint32		pdbr;
+  t_uint32		mask = 0xfffff000;
 
   /*
    * 1)
    */
 
-  pdbr = ((t_uint32)dir & 0xfffffc18);
+  if (cached == PD_NOTCACHED)
+    mask |= (1 << 4);
+  if (writeback == PD_WRITETHROUGH)
+    mask |= (1 << 3);
+
+  pdbr = ((t_uint32)dir & mask);
 
   /*
    * 2)
@@ -177,9 +185,18 @@ t_error			pd_activate(t_ia32_directory		dir)
  */
 
 t_error			pd_get_cr3(t_uint32*			cr3,
-				   t_ia32_directory		dir)
+				   t_ia32_directory		dir,
+				   t_uint32			cached,
+				   t_uint32			writeback)
 {
-  *cr3 = ((t_uint32)dir & 0xfffffc18);
+  t_uint32		mask = 0xfffff000;
+
+  if (cached == PD_NOTCACHED)
+    mask |= (1 << 4);
+  if (writeback == PD_WRITETHROUGH)
+    mask |= (1 << 3);
+
+  *cr3 = ((t_uint32)dir & mask);
 
   return (ERROR_NONE);
 }
@@ -193,6 +210,7 @@ t_error			pd_get_cr3(t_uint32*			cr3,
  * 2) setups the entry.
  * 3) adds the entry.
  */
+
 
 t_error			pd_add_table(t_ia32_directory*		dir,
 				     t_uint16			entry,
@@ -217,11 +235,14 @@ t_error			pd_add_table(t_ia32_directory*		dir,
   if (table.present)
     opts |= PDE_FLAG_P;
 
-  opts |= PDE_FLAG_WT;
+  if (table.cached == PT_NOTCACHED)
+    opts |= PDE_FLAG_CD;
+  if (table.writeback == PT_WRITETHROUGH)
+    opts |= PDE_FLAG_WT;
 
-  opts |= (table.rw ? PDE_FLAG_RW : PDE_FLAG_RO);
+  opts |= (table.rw == PT_WRITABLE ? PDE_FLAG_RW : PDE_FLAG_RO);
 
-  opts |= (table.user ? PDE_FLAG_USER : PDE_FLAG_SUPERVISOR);
+  opts |= (table.user == PT_USER ? PDE_FLAG_USER : PDE_FLAG_SUPERVISOR);
 
   opts |= PDE_FLAG_USED;
 
@@ -270,9 +291,11 @@ t_error			pd_get_table(t_ia32_directory*		dir,
    * 3)
    */
 
-  table->rw = !!(d[entry] & PDE_FLAG_RW);
+  table->rw = (d[entry] & PDE_FLAG_RW) ? PT_WRITABLE : PT_READONLY;
   table->present = !!(d[entry] & PDE_FLAG_P);
-  table->user = !!(d[entry] & PDE_FLAG_USER);
+  table->user = (d[entry] & PDE_FLAG_USER) ? PT_USER : PT_PRIVILEGED;
+  table->writeback = (d[entry] & PDE_FLAG_WT) ? PT_WRITETHROUGH : PT_WRITEBACK;
+  table->cached = (d[entry] & PDE_FLAG_CD) ? PT_NOTCACHED : PT_CACHED;
   table->entries = MK_BASE(d[entry]);
 
   return ERROR_NONE;

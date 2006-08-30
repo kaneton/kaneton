@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/paging/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed aug 16 19:50:48 2006]
+ * updated       matthieu bucchianeri   [wed aug 30 16:52:00 2006]
  */
 
 /*
@@ -37,6 +37,30 @@
 
 #define PD_MAX_ENTRIES		1024
 #define PT_MAX_ENTRIES		1024
+#define PD_NOTCACHED		0
+#define PD_CACHED		1
+#define PD_WRITETHROUGH		0
+#define PD_WRITEBACK		1
+
+#define PT_NOTCACHED		0
+#define PT_CACHED		1
+#define PT_WRITETHROUGH		0
+#define PT_WRITEBACK		1
+#define PT_READONLY		0
+#define PT_WRITABLE		1
+#define PT_PRIVILEGED		0
+#define PT_USER			1
+
+#define PG_NOTCACHED		0
+#define PG_CACHED		1
+#define PG_WRITETHROUGH		0
+#define PG_WRITEBACK		1
+#define PG_READONLY		0
+#define PG_WRITABLE		1
+#define PG_PRIVILEGED		0
+#define PG_USER			1
+#define PG_NONGLOBAL		0
+#define PG_GLOBAL		1
 
 /*
  * page directory entry flags
@@ -120,6 +144,8 @@ typedef struct
   t_uint8	rw;
   t_uint8	user;
   t_uint8	global;
+  t_uint8	cached;
+  t_uint8	writeback;
 }		t_ia32_page;
 
 /*
@@ -132,6 +158,8 @@ typedef struct
   t_uint8	present;
   t_uint8	rw;
   t_uint8	user;
+  t_uint8	cached;
+  t_uint8	writeback;
 }		t_ia32_table;
 
 typedef t_uint32		t_ia32_pde;

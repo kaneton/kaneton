@@ -204,10 +204,14 @@ t_error			pd_build(t_paddr			base,
 t_error			pd_base(t_ia32_directory*		dir,
 				t_paddr*			base);
 
-t_error			pd_activate(t_ia32_directory		dir);
+t_error			pd_activate(t_ia32_directory		dir,
+				    t_uint32			cached,
+				    t_uint32			writeback);
 
 t_error			pd_get_cr3(t_uint32*			cr3,
-				   t_ia32_directory		dir);
+				   t_ia32_directory		dir,
+				   t_uint32			cached,
+				   t_uint32			writeback);
 
 t_error			pd_add_table(t_ia32_directory*		dir,
 				     t_uint16			entry,

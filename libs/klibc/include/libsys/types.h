@@ -6,11 +6,17 @@
  * file          /home/buckman/kaneton/libs/klibc/include/libsys/types.h
  *
  * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:52:35 2006]
+ * updated       matthieu bucchianeri   [mon aug 28 17:47:02 2006]
  */
 
 #ifndef LIBSYS_TYPES_H
 #define LIBSYS_TYPES_H		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -21,19 +27,19 @@ typedef unsigned short		u_short;
 typedef unsigned int		u_int;
 typedef unsigned long		u_long;
 
-typedef unsigned long		paddr_t;
-typedef unsigned long		psize_t;
-typedef unsigned long		vaddr_t;
-typedef unsigned long		vsize_t;
+typedef t_paddr			paddr_t;
+typedef t_psize			psize_t;
+typedef t_vaddr			vaddr_t;
+typedef t_vsize			vsize_t;
 
-typedef char			int8_t;
-typedef unsigned char		u_int8_t;
-typedef short			int16_t;
-typedef unsigned short		u_int16_t;
-typedef int			int32_t;
-typedef unsigned int		u_int32_t;
-typedef long long		int64_t;
-typedef unsigned long long	u_int64_t;
+typedef t_sint8			int8_t;
+typedef t_uint8			u_int8_t;
+typedef t_sint16		int16_t;
+typedef t_uint16		u_int16_t;
+typedef t_sint32		int32_t;
+typedef t_uint32		u_int32_t;
+typedef t_sint64		int64_t;
+typedef t_uint64		u_int64_t;
 
 typedef int			register_t;
 

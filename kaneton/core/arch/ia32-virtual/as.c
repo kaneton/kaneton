@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/as.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/machdep/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu aug 17 19:40:46 2006]
+ * updated       matthieu bucchianeri   [wed aug 30 17:32:06 2006]
  */
 
 /*
@@ -122,8 +122,8 @@ t_error			ia32_as_give(i_task			tskid,
       if (thread_get(*th, &oth) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      if (pd_get_cr3(&oth->machdep.context.cr3, o->machdep.pd) !=
-	  ERROR_NONE)
+      if (pd_get_cr3(&oth->machdep.context.cr3, o->machdep.pd,
+		     PD_CACHED, PD_WRITEBACK) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
@@ -227,7 +227,7 @@ t_error			ia32_as_reserve(i_task			tskid,
 
       memcpy(&o->machdep.pd, &init->machdep.pd, sizeof(t_ia32_directory));
 
-      if (pd_activate(o->machdep.pd) != ERROR_NONE)
+      if (pd_activate(o->machdep.pd, PD_CACHED, PD_WRITEBACK) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
       /*
@@ -235,8 +235,10 @@ t_error			ia32_as_reserve(i_task			tskid,
        */
 
       pt.present = 1;
-      pt.rw = 1;
-      pt.user = 0;
+      pt.rw = PT_WRITABLE;
+      pt.user = PT_PRIVILEGED;
+      pt.cached = PT_NOTCACHED;
+      pt.writeback = PT_WRITEBACK;
       pt.entries = (t_paddr)o->machdep.pd;
 
       if (pd_add_table(&o->machdep.pd, PD_MIRROR, pt) != ERROR_NONE)
@@ -340,7 +342,9 @@ t_error			ia32_as_reserve(i_task			tskid,
        * g)
        */
 
-      pd_get_cr3((t_ia32_directory*)&interrupt_pdbr, o->machdep.pd);
+      if (pd_get_cr3((t_ia32_directory*)&interrupt_pdbr, o->machdep.pd,
+		     PD_CACHED, PD_WRITEBACK) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
     }
   else
     {
@@ -482,8 +486,8 @@ t_error			ia32_as_reserve(i_task			tskid,
 	  if (thread_get(*th, &oth) != ERROR_NONE)
 	      AS_LEAVE(as, ERROR_UNKNOWN);
 
-	  if (pd_get_cr3(&oth->machdep.context.cr3, o->machdep.pd) !=
-	      ERROR_NONE)
+	  if (pd_get_cr3(&oth->machdep.context.cr3, o->machdep.pd,
+			 PD_CACHED, PD_WRITEBACK) != ERROR_NONE)
 	    AS_LEAVE(as, ERROR_UNKNOWN);
 	}
     }

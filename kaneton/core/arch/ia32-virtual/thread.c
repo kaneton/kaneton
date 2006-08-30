@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       matthieu bucchianeri   [wed aug  2 22:59:55 2006]
+ * updated       matthieu bucchianeri   [wed aug 30 16:52:53 2006]
  */
 
 /*
@@ -160,7 +160,8 @@ t_error			ia32_thread_reserve(i_task		taskid,
 
   memset(&(o->machdep.context), 0x0, sizeof(t_ia32_context));
 
-  pd_get_cr3(&(o->machdep.context.cr3), as->machdep.pd);
+  pd_get_cr3(&(o->machdep.context.cr3), as->machdep.pd,
+	     PD_CACHED, PD_WRITEBACK);
 
   SEFLAGS(o->machdep.context.eflags);
 

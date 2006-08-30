@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [fri aug 18 19:44:31 2006]
+ * updated       matthieu bucchianeri   [wed aug 30 17:12:28 2006]
  */
 
 /*
@@ -363,7 +363,7 @@ void			bootloader_init_regions(void)
   init->regions[7].size = init->segments[9].size;
   init->regions[7].offset = 0;
   init->regions[7].segid = 9;
-  init->regions[7].opts = REGION_OPT_PRIVILEGED;
+  init->regions[7].opts = REGION_OPT_PRIVILEGED | REGION_OPT_GLOBAL;
 
   /*
    * 9)

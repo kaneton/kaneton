@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       matthieu bucchianeri   [wed aug 16 19:50:13 2006]
+ * updated       matthieu bucchianeri   [wed aug 30 17:10:20 2006]
  */
 
 /*
@@ -130,13 +130,16 @@ t_error			pt_add_page(t_ia32_table*		tab,
   else
     printf ("warning: adding non-present page\n");
 
-  opts |= PTE_FLAG_WT;
+  if (page.cached == PG_NOTCACHED)
+    opts |= PDE_FLAG_CD;
+  if (page.writeback == PG_WRITETHROUGH)
+    opts |= PDE_FLAG_WT;
 
-  opts |= (page.rw ? PTE_FLAG_RW : PTE_FLAG_RO);
+  opts |= (page.rw == PG_WRITABLE ? PTE_FLAG_RW : PTE_FLAG_RO);
 
-  opts |= (page.user ? PTE_FLAG_USER : PTE_FLAG_SUPERVISOR);
+  opts |= (page.user == PG_USER ? PTE_FLAG_USER : PTE_FLAG_SUPERVISOR);
 
-  opts |= (page.global ? PTE_FLAG_G : 0);
+  opts |= (page.global == PG_GLOBAL ? PTE_FLAG_G : 0);
 
   opts |= PTE_FLAG_USED;
 
@@ -178,10 +181,12 @@ t_error			pt_get_page(t_ia32_table*		tab,
    * 3 )
    */
 
-  page->rw = !!(t[entry] & PTE_FLAG_RW);
+  page->rw = (t[entry] & PTE_FLAG_RW) ? PG_WRITABLE : PG_READONLY;
   page->present = !!(t[entry] & PTE_FLAG_P);
-  page->user = !!(t[entry] & PTE_FLAG_USER);
-  page->global = !!(t[entry] & PTE_FLAG_G);
+  page->user = (t[entry] & PTE_FLAG_USER) ? PG_USER : PG_PRIVILEGED;
+  page->global = (t[entry] & PTE_FLAG_G) ? PG_GLOBAL : PG_NONGLOBAL;
+  page->writeback = (t[entry] & PTE_FLAG_WT) ? PG_WRITETHROUGH : PG_WRITEBACK;
+  page->cached = (t[entry] & PTE_FLAG_CD) ? PG_NOTCACHED : PG_CACHED;
   page->addr = MK_BASE(t[entry]);
 
   return ERROR_NONE;

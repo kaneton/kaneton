@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [thu aug 17 19:46:28 2006]
+ * updated       matthieu bucchianeri   [wed aug 30 17:07:43 2006]
  */
 
 /*
@@ -412,7 +412,7 @@ t_error			ia32_segment_perms(i_segment		segid,
 		  if (pt_get_page(&pt, pte, &pg) != ERROR_NONE)
 		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-		  pg.rw = !!(perms & PERM_WRITE);
+		  pg.rw = (perms & PERM_WRITE) ? PG_WRITABLE : PG_READONLY;
 
 		  if (pt_add_page(&pt, pte, pg) != ERROR_NONE)
 		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);

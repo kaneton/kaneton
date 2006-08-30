@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/klibc/include/libsys/libsys.h
  *
  * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:53:10 2006]
+ * updated       matthieu bucchianeri   [mon aug 28 17:43:56 2006]
  */
 
 #ifndef LIBSYS_LIBSYS_H
@@ -16,11 +16,11 @@
  * ---------- includes --------------------------------------------------------
  */
 
+#include <libsys/types.h>
 #include <libsys/errno.h>
 #include <libsys/limits.h>
 #include <libsys/services.h>
 #include <libsys/suberrno.h>
-#include <libsys/types.h>
 #include <libsys/quad.h>
 
 /*

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/paging/paging.c
+ * file          /home/buckman/kaneton/libs/libia32/paging/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       julien quintard   [sat jul  8 02:36:58 2006]
+ * updated       matthieu bucchianeri   [wed aug 30 16:38:24 2006]
  */
 
 /*
@@ -77,7 +77,8 @@ t_error			paging_init(void)
 }
 
 /*
- * enable paging by setting the higher order bit of CR0.
+ * enable paging  by setting  the higher order  bit of  CR0. activates
+ * global pages with bit 7 of CR4.
  */
 
 t_error			paging_enable(void)
@@ -85,6 +86,13 @@ t_error			paging_enable(void)
   asm volatile("movl %%cr0, %%eax\n\t"
 	       "orl $0x80000000, %%eax\n\t"
 	       "movl %%eax, %%cr0\n\t"
+	       :
+	       :
+	       : "%eax");
+
+  asm volatile("movl %%cr4, %%eax\n\t"
+	       "orl $128, %%eax\n\t"
+	       "movl %%eax, %%cr4\n\t"
 	       :
 	       :
 	       : "%eax");
