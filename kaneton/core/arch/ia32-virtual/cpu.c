@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/cpu.c
+ * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:01 2006]
- * updated       matthieu bucchianeri   [sun aug 20 19:07:38 2006]
+ * updated       julien quintard   [thu aug 31 20:18:01 2006]
  */
 
 /*
@@ -59,7 +59,7 @@ t_error			ia32_cpu_current(i_cpu*			cpuid)
 {
   CPU_ENTER(cpu);
 
-  *cpuid = init->bootcpu;
+  *cpuid = init->bsp;
 
   CPU_LEAVE(cpu, ERROR_NONE);
 }

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/init.h
+ * file          /home/mycure/kaneton/kaneton/include/core/init.h
  *
  * created       julien quintard   [fri feb 11 02:19:11 2005]
- * updated       matthieu bucchianeri   [fri aug 18 19:44:05 2006]
+ * updated       julien quintard   [thu aug 31 20:13:57 2006]
  */
 
 #ifndef CORE_INIT_H
@@ -75,7 +75,7 @@ typedef struct
   t_uint32			ncpus;
   o_cpu*			cpus;
   t_psize			cpussz;
-  i_cpu				bootcpu;
+  i_cpu				bsp;
 
   t_paddr			kstack;
   t_psize			kstacksz;

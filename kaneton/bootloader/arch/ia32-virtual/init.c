@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/init.c
+ * file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [wed aug 30 17:12:28 2006]
+ * updated       julien quintard   [thu aug 31 20:18:30 2006]
  */
 
 /*
@@ -537,7 +537,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
   init->cpussz = cpussz;
 
   init->cpus[0].cpuid = 0;
-  init->bootcpu = 0;
+  init->bsp = 0;
 
   /*
    * 5)

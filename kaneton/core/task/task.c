@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/task/task.c
+ * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [fri aug 18 19:43:36 2006]
+ * updated       julien quintard   [thu aug 31 20:17:48 2006]
  */
 
 /*
@@ -318,7 +318,7 @@ t_error			task_reserve(t_class			class,
 	TASK_LEAVE(task, ERROR_UNKNOWN);
     }
   else
-    o.cpuid = init->bootcpu;
+    o.cpuid = init->bsp;
 
   o.sched = SCHED_STATE_STOP;
 
