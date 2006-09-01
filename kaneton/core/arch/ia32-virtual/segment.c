@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed aug 30 17:07:43 2006]
+ * updated       matthieu bucchianeri   [fri sep  1 15:43:13 2006]
  */
 
 /*
@@ -30,6 +30,7 @@
 
 extern m_segment*	segment;
 extern i_as		kasid;
+extern m_as*		as;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -297,24 +298,18 @@ t_error			ia32_segment_perms(i_segment		segid,
   t_ia32_pte		pte_end;
   t_ia32_pde		pde;
   t_ia32_pte		pte;
-  o_segment*		seg;
   o_region*		reg;
-  o_as*			as;
   o_as*			kas;
+  t_state		statea;
+  t_iterator		ita;
   t_state		state;
   t_iterator		it;
   t_vaddr		vaddr;
   t_vaddr		chunk;
   void*			tmp;
+  o_as*			o;
 
   SEGMENT_ENTER(segment);
-
-  /*
-   * 1)
-   */
-
-  if (segment_get(segid, &seg) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 2)
@@ -323,128 +318,132 @@ t_error			ia32_segment_perms(i_segment		segid,
   if (as_get(kasid, &kas) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (as_get(seg->asid, &as) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
   /*
    * 3)
    */
 
-  set_foreach(SET_OPT_FORWARD, as->regions, &it, state)
+  set_foreach(SET_OPT_FORWARD, as->ass, &ita, statea)
     {
-      if (set_object(as->regions, it, (void**)&reg) != ERROR_NONE)
+      if (set_object(as->ass, ita, (void**)&o) != ERROR_NONE)
 	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-      if (reg->segid == segid)
+      set_foreach(SET_OPT_FORWARD, o->regions, &it, state)
 	{
+	  if (set_object(o->regions, it, (void**)&reg) != ERROR_NONE)
+	    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-	  /*
-	   * a)
-	   */
-
-	  if (pd == NULL)
+	  if (reg->segid == segid)
 	    {
-	      if (seg->asid == kasid)
+
+	      /*
+	       * a)
+	       */
+
+	      if (pd == NULL)
 		{
-		  pd = as->machdep.pd;
+		  if (o->asid == kasid)
+		    {
+		      pd = o->machdep.pd;
+		    }
+		  else
+		    {
+		      tmp = malloc(sizeof(o_region));
+
+		      if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
+			SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+		      pd = (t_ia32_directory)(t_uint32)chunk;
+
+		      if (ia32_region_map_chunk((t_vaddr)pd,
+						(t_paddr)o->machdep.pd,
+						tmp) !=
+			  ERROR_NONE)
+			SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+		    }
 		}
-	      else
+
+	      /*
+	       * b)
+	       */
+
+	      vaddr = reg->address;
+
+	      pde_start = PDE_ENTRY(vaddr);
+	      pte_start = PTE_ENTRY(vaddr);
+	      pde_end = PDE_ENTRY(vaddr + reg->size);
+	      pte_end = PTE_ENTRY(vaddr + reg->size);
+
+	      for (pde = pde_start; pde <= pde_end; pde++)
 		{
+		  if (pd_get_table(&pd, pde, &pt) != ERROR_NONE)
+		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+		  /*
+		   * c)
+		   */
+
 		  tmp = malloc(sizeof(o_region));
 
 		  if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
 		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-		  pd = (t_ia32_directory)(t_uint32)chunk;
-
-		  if (ia32_region_map_chunk((t_vaddr)pd,
-					    (t_paddr)as->machdep.pd,
-					    tmp) !=
-		      ERROR_NONE)
-		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-		}
-	    }
-
-	  /*
-	   * b)
-	   */
-
-	  vaddr = reg->address;
-
-	  pde_start = PDE_ENTRY(vaddr);
-	  pte_start = PTE_ENTRY(vaddr);
-	  pde_end = PDE_ENTRY(vaddr + reg->size);
-	  pte_end = PTE_ENTRY(vaddr + reg->size);
-
-	  for (pde = pde_start; pde <= pde_end; pde++)
-	    {
-	      if (pd_get_table(&pd, pde, &pt) != ERROR_NONE)
-		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-	      /*
-	       * c)
-	       */
-
-	      tmp = malloc(sizeof(o_region));
-
-	      if (region_space(kas, PAGESZ, &chunk) != ERROR_NONE)
-		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-	      if (ia32_region_map_chunk((t_vaddr)chunk,
-					(t_paddr)pt.entries,
-					tmp) != ERROR_NONE)
-		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-	      pt.entries = chunk;
-
-	      /*
-	       * d)
-	       */
-
-	      for (pte = (pde == pde_start ? pte_start : 0);
-		   pte < (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
-		   pte++)
-		{
-		  /*
-		   * e)
-		   */
-
-		  if (pt_get_page(&pt, pte, &pg) != ERROR_NONE)
+		  if (ia32_region_map_chunk((t_vaddr)chunk,
+					    (t_paddr)pt.entries,
+					    tmp) != ERROR_NONE)
 		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-		  pg.rw = (perms & PERM_WRITE) ? PG_WRITABLE : PG_READONLY;
-
-		  if (pt_add_page(&pt, pte, pg) != ERROR_NONE)
-		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+		  pt.entries = chunk;
 
 		  /*
-		   * f)
+		   * d)
 		   */
 
-		  if (seg->asid == kasid)
-		    tlb_invalidate((t_vaddr)ENTRY_ADDR(pde, pte));
+		  for (pte = (pde == pde_start ? pte_start : 0);
+		       pte < (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
+		       pte++)
+		    {
+		      /*
+		       * e)
+		       */
+
+		      if (pt_get_page(&pt, pte, &pg) != ERROR_NONE)
+			SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+		      pg.rw = (perms & PERM_WRITE) ? PG_WRITABLE : PG_READONLY;
+
+		      if (pt_add_page(&pt, pte, pg) != ERROR_NONE)
+			SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+		      /*
+		       * f)
+		       */
+
+		      if (o->asid == kasid)
+			tlb_invalidate((t_vaddr)ENTRY_ADDR(pde, pte));
+		    }
+
+		  /*
+		   * g)
+		   */
+
+		  if (ia32_region_unmap_chunk((t_vaddr)pt.entries) != ERROR_NONE)
+		    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
 		}
-
-	      /*
-	       * g)
-	       */
-
-	      if (ia32_region_unmap_chunk((t_vaddr)pt.entries) != ERROR_NONE)
-		SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
 	    }
 	}
-    }
 
-  /*
-   * 4)
-   */
+      /*
+       * 4)
+       */
 
-  if (pd != NULL)
-    {
-      if (seg->asid != kasid)
-	if (ia32_region_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
-	  SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      if (pd != NULL)
+	{
+	  if (o->asid != kasid)
+	    if (ia32_region_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
+	      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+	}
+
     }
 
   SEGMENT_LEAVE(segment, ERROR_NONE);

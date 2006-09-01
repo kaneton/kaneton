@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/task/task.c
+ * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [thu aug 31 20:17:48 2006]
+ * updated       matthieu bucchianeri   [fri sep  1 15:34:08 2006]
  */
 
 /*
@@ -470,7 +470,7 @@ t_error			task_release(i_task			id)
    * 5)
    */
 
-  if (0 && thread_flush(o->threads) != ERROR_NONE) /* XXX */
+  if (thread_flush(o->threads) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   if (set_release(o->threads) != ERROR_NONE)
@@ -831,6 +831,7 @@ t_error			task_init(void)
   t_uint32		i;
   i_segment		segments[INIT_SEGMENTS];
   i_thread		needless;
+  o_region*		tmp;
 
   /*
    * 1)
@@ -917,7 +918,10 @@ t_error			task_init(void)
     {
       init->regions[i].segid = segments[init->regions[i].segid];
 
-      if (region_inject(asid, &init->regions[i]) != ERROR_NONE)
+      tmp = malloc(sizeof(o_region));
+      memcpy(tmp, &init->regions[i], sizeof(o_region));
+
+      if (region_inject(asid, tmp) != ERROR_NONE)
 	{
 	  cons_msg('!', "region: cannot map a region to a pre-reserved "
 		   "region\n");

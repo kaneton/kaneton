@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/io/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       matthieu bucchianeri   [thu aug  3 20:10:20 2006]
+ * updated       matthieu bucchianeri   [fri sep  1 15:20:30 2006]
  */
 
 /*
@@ -46,19 +46,30 @@ m_io*			io = NULL;
  */
 
 /*
- * this function grant or deny I/O to a given port for a task.
+ * this function grant I/O to a given port for a task.
  */
 
 t_error			io_grant(i_port				id,
-				 i_task				task,
-				 t_state			state)
+				 i_task				task)
 {
   IO_ENTER(io);
 
-  if (state != IO_GRANT && state != IO_DENY)
+  if (machdep_call(io, io_grant, id, task) != ERROR_NONE)
     IO_LEAVE(io, ERROR_UNKNOWN);
 
-  if (machdep_call(io, io_grant, id, task, state) != ERROR_NONE)
+  IO_LEAVE(io, ERROR_NONE);
+}
+
+/*
+ * this function deny I/O to a given port for a task.
+ */
+
+t_error			io_deny(i_port				id,
+				i_task				task)
+{
+  IO_ENTER(io);
+
+  if (machdep_call(io, io_deny, id, task) != ERROR_NONE)
     IO_LEAVE(io, ERROR_UNKNOWN);
 
   IO_LEAVE(io, ERROR_NONE);

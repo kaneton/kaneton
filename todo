@@ -49,30 +49,30 @@
  * finir task
    + wait et clone
  * revoir as_clone, et en fait toute la chaine de *_clone
- * revoir dans ia32_as_reserve les choses a mapper
-   + refaire le ELF, et mapper que handler et handler_data
  * fignoler la gestion de la mémoire
    + tester region_coalesce, region_resize et map_resize.
  * tests
    + as/03
    + time/01, time/02, time/03
    + task/01, task/02, task/03, task/04, task/05, task/06
+ * revoir dans ia32_as_reserve les choses a mapper
+   + refaire le ELF, et mapper que handler et handler_data
 
  Bugs connus et TODO mineurs :
 
- * task_release: pb avec thread_flush
+ * region_reserve: checks pour OPT_FORCE
+ * segment_resize : cas particuliers (1er/dernier segments)
+ * segment_*: plutot que faire des appels a segment_perms, modifier
+   direct le champ (trop couteux sinon).
+   => OU PAS: ca dependra de l'archi :-/
+
+ * region_split : ne marche pas
+
+ * ia32_region_reserve : cas particulier (pt vide)
  * sched_update: optimiser car ca pue
  * ia32_sched_yield
  * probleme du context_switch avec les registres SSE
- * region_split : ne marche pas
- * segment_*: plutot que faire des appels a segment_perms, modifier
-   direct le champ (trop couteux sinon)
- * segment_resize : cas particuliers (1er/dernier segments)
- * segment_perms: change seulement les regions dans l'as specifié.
- * region_reserve: checks pour OPT_FORCE
- * bootloader/02 et bootloader/03 ne passent plus
  * set_array_locate : dicho desactivée
- * ia32_region_reserve : cas particulier (pt vide)
 
  Autre :
 

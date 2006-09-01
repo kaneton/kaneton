@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/io.h
  *
  * created       matthieu bucchianeri   [sat jul 29 18:06:00 2006]
- * updated       matthieu bucchianeri   [sat jul 29 18:58:51 2006]
+ * updated       matthieu bucchianeri   [fri sep  1 15:20:54 2006]
  */
 
 #ifndef CORE_IO_H
@@ -19,13 +19,6 @@
 #include <arch/machdep/machdep.h>
 #include <core/id.h>
 #include <core/types.h>
-
-/*
- * ---------- macros ----------------------------------------------------------
- */
-
-#define IO_GRANT		1
-#define IO_DENY			0
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -49,8 +42,9 @@ typedef struct
 typedef struct
 {
   t_error			(*io_grant)(i_port,
-					    i_task,
-					    t_state);
+					    i_task);
+  t_error			(*io_deny)(i_port,
+					   i_task);
   t_error			(*io_init)(void);
   t_error			(*io_clean)(void);
 }				d_io;
@@ -102,8 +96,10 @@ typedef struct
  */
 
 t_error			io_grant(i_port				id,
-				 i_task				task,
-				 t_state			state);
+				 i_task				task);
+
+t_error			io_deny(i_port				id,
+				i_task				task);
 
 t_error			io_init(void);
 

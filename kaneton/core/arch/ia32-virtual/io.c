@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:35 2006]
- * updated       matthieu bucchianeri   [sat jul 29 19:35:01 2006]
+ * updated       matthieu bucchianeri   [fri sep  1 15:22:39 2006]
  */
 
 /*
@@ -39,6 +39,7 @@ extern m_io*	io;
 d_io		io_dispatch =
   {
     ia32_io_grant,
+    ia32_io_deny,
     ia32_io_init,
     NULL
   };
@@ -62,7 +63,7 @@ static void		ia32_io_bitmap_set(t_uint8*		bitmap,
 }
 
 /*
- * this function allow or deny I/O to a port.
+ * this function allow I/O to a port.
  *
  * steps:
  *
@@ -72,8 +73,7 @@ static void		ia32_io_bitmap_set(t_uint8*		bitmap,
  */
 
 t_error			ia32_io_grant(i_port			id,
-				      i_task			task,
-				      t_state			state)
+				      i_task			task)
 {
   o_task*		o;
 
@@ -97,7 +97,47 @@ t_error			ia32_io_grant(i_port			id,
    * 3)
    */
 
-  ia32_io_bitmap_set(o->machdep.iomap, id, !state);
+  ia32_io_bitmap_set(o->machdep.iomap, id, 0);
+
+  IO_LEAVE(io, ERROR_NONE);
+}
+
+/*
+ * this function deny I/O to a port.
+ *
+ * steps:
+ *
+ * 1) check the port id.
+ * 2) get the task.
+ * 3) change permission bitmap.
+ */
+
+t_error			ia32_io_deny(i_port			id,
+				     i_task			task)
+{
+  o_task*		o;
+
+  IO_ENTER(io);
+
+  /*
+   * 1)
+   */
+
+  if (id >= 65536)
+    IO_LEAVE(io, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (task_get(task, &o) != ERROR_NONE)
+    IO_LEAVE(io, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  ia32_io_bitmap_set(o->machdep.iomap, id, 1);
 
   IO_LEAVE(io, ERROR_NONE);
 }

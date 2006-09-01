@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/check/kaneton/bootloader/arch/ia32-virtual/02s/Makefile
+## file          /home/buckman/kaneton/check/kaneton/bootloader/arch/ia32-virtual/02/Makefile
 ##
 ## created       matthieu bucchianeri   [tue dec 20 15:05:01 2005]
-## updated       matthieu bucchianeri   [wed jul 19 20:14:52 2006]
+## updated       matthieu bucchianeri   [fri sep  1 16:05:51 2006]
 ##
 
 #
@@ -25,9 +25,9 @@ include			../../../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TEST_LO			:=		02s.lo
+TEST_LO			:=		02.lo
 
-TEST_C			:=		02s.c
+TEST_C			:=		02.c
 
 TEST_O			:=		$(TEST_C:.c=.o)
 

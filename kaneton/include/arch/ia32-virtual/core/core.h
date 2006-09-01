@@ -234,8 +234,10 @@ t_error			ia32_cpu_current(i_cpu*			cpuid);
  */
 
 t_error			ia32_io_grant(i_port			id,
-				      i_task			task,
-				      t_state			state);
+				      i_task			task);
+
+t_error			ia32_io_deny(i_port			id,
+				     i_task			task);
 
 t_error			ia32_io_init(void);
 
