@@ -1,3 +1,0 @@
-01 genere 1 id
-02 genere beaucoup d'id
-03 test de clone

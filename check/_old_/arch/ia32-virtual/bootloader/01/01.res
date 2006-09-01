@@ -1,2 +1,0 @@
-Test check_bootloader_01
-check_bootloader_01 done.

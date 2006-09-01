@@ -1,6 +1,0 @@
-01 basics: reserve, get and release
-02 flush
-03 check if the mapping is good (limits, flags etc)
-04 work with many regions
-05 resize
-06 split/coalesce
