@@ -1,17 +1,17 @@
 ##
 ## copyright quintard julien
-## 
+##
 ## kaneton
-## 
+##
 ## Makefile
-## 
+##
 ## path          /home/mycure/kaneton/view/books
-## 
+##
 ## made by mycure
 ##         quintard julien   [quinta_j@epita.fr]
-## 
+##
 ## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Mon Nov  7 16:22:06 2005   mycure
+## Last update Sat Sep  2 11:27:57 2006 matthieu bucchianeri
 ##
 
 #
@@ -31,7 +31,8 @@ include			../../env/.env.mk
 #
 
 SUBDIRS			:=		assignments			\
-					kaneton				
+					kaneton				\
+					ia32-virtual
 
 #
 # ---------- rules ------------------------------------------------------------

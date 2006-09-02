@@ -1,0 +1,86 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/buckman/kaneton/view/books/ia32-virtual/ia32-virtual.tex
+%%
+%% created       matthieu bucchianeri   [sat sep  2 11:23:55 2006]
+%% updated       matthieu bucchianeri   [sat sep  2 11:42:28 2006]
+%%
+
+%
+% template
+%
+
+\input{../../templates/book.tex}
+
+%
+% header
+%
+
+\lhead{\scriptsize{The kaneton microkernel project reference}}
+\rhead{IA-32 implementation}
+
+%
+% title
+%
+
+\title{The kaneton microkernel reference\\IA-32 (with virtual memory)
+	implementation
+       \logos}
+
+%
+% authors
+%
+
+\author{\small{Julien Quintard},
+        \small{Matthieu Bucchianeri} and
+        \small{Renaud Voltz}}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+This document describes the kaneton microkernel reference project over
+Intel IA-32 architecture.
+
+This document should be used by every student willing implement the
+kaneton microkernel as people looking for more details on the kaneton
+microkernel implementation on Intel architecture.
+
+All the kaneton documents are available on
+the official website
+  \footnote{http://www.kaneton.org}.
+
+%
+% toc
+%
+
+\tableofcontents
+
+%
+% chapters
+%
+
+\include{overview}
+\include{bootloader}
+\include{memory}
+\include{event}
+\include{task}
+\include{io}
+\include{bibliography}
+
+\end{document}

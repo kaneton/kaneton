@@ -60,14 +60,11 @@
 
  Bugs connus et TODO mineurs :
 
- * region_reserve: checks pour OPT_FORCE
  * segment_resize : cas particuliers (1er/dernier segments)
  * segment_*: plutot que faire des appels a segment_perms, modifier
    direct le champ (trop couteux sinon).
    => OU PAS: ca dependra de l'archi :-/
-
  * region_split : ne marche pas
-
  * ia32_region_reserve : cas particulier (pt vide)
  * sched_update: optimiser car ca pue
  * ia32_sched_yield

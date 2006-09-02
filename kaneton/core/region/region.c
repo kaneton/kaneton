@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [thu aug 17 19:39:35 2006]
+ * updated       matthieu bucchianeri   [fri sep  1 16:23:11 2006]
  */
 
 /*
@@ -472,6 +472,9 @@ t_error			region_reserve(i_as			asid,
   o_segment*		segment;
   o_as*			as;
   o_region*		o;
+  t_state		state;
+  t_iterator		i;
+  o_region*		data;
 
   REGION_ENTER(region);
 
@@ -485,8 +488,8 @@ t_error			region_reserve(i_as			asid,
   if (segment_get(segid, &segment) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
-/*  if (segment->size < size - offset)              XXX necessary ??
-    REGION_LEAVE(region, ERROR_UNKNOWN);*/
+  if (segment->size < size - offset)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
 
   if ((o = malloc(sizeof(o_region))) == NULL)
     REGION_LEAVE(region, ERROR_UNKNOWN);
@@ -500,7 +503,14 @@ t_error			region_reserve(i_as			asid,
       if (address < region->start || address >= region->start + region->size)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
-      /* XXX more verification here */
+      set_foreach(SET_OPT_FORWARD, as->regions, &i, state)
+	{
+	  if (set_object(as->regions, i, (void**)&data) != ERROR_NONE)
+	    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+	  if (o->address <= address && o->address + o->size > address)
+	    REGION_LEAVE(region, ERROR_UNKNOWN);
+	}
 
       o->address = address;
     }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [mon aug 21 18:48:22 2006]
+ * updated       matthieu bucchianeri   [fri sep  1 16:25:33 2006]
  */
 
 /*
@@ -502,8 +502,8 @@ t_error			as_clone(i_task				tskid,
       printf ("map = %qd -> %qd\n", map[0], map[1]);
       printf ("mapping region to segment %qd (prev. %qd)\n", map[1], data->segid);
 
-      // XXX priv
-      if (region_reserve(to->asid, map[1], data->offset, REGION_OPT_FORCE,
+      if (region_reserve(to->asid, map[1], data->offset,
+			 data->opts | REGION_OPT_FORCE,
 			 data->address, data->size, &needless) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
     }
