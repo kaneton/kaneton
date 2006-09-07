@@ -1,4 +1,22 @@
 --
+ ameliorer la moulette:
+  - gerer les exceptions
+  - ajouter des descriptions aux tests
+  - refaire les output des tests des sets, jugés "non explicites" par certains
+  - verifier les tests bizarres (segment_r/w par exemple :-)
+
+--
+ pour les fonctions restantes dans segment/region/map, resumons :
+
+  - segment_resize: segment OK (bug pour le 1er/dernier seg), regions TODO
+  - segment_split: segment OK, regions TODO
+  - segment_coalesce: segment OK, regions TODO
+  - region_resize: a modifier - pas de relocation
+  - region_split: a modifier - 2 regions / 1 segment
+  - region_coalesce: OK
+  - map_resize: a revoir en fct des modifications ci-dessus
+
+--
  il y a 2 nouveaux managers :
 
  io, qui gere les permissions des I/O
@@ -46,8 +64,6 @@
  * finir task
    + wait et clone
  * revoir as_clone, et en fait toute la chaine de *_clone
- * fignoler la gestion de la mémoire
-   + tester region_coalesce, region_resize et map_resize.
  * tests
    + as/03
    + time/01, time/02, time/03
@@ -57,11 +73,9 @@
 
  Bugs connus et TODO mineurs :
 
- * segment_resize : cas particuliers (1er/dernier segments)
  * segment_*: plutot que faire des appels a segment_perms, modifier
    direct le champ (trop couteux sinon).
    => OU PAS: ca dependra de l'archi :-/
- * region_split : ne marche pas
  * ia32_region_reserve : cas particulier (pt vide)
  * sched_update: optimiser car ca pue
  * ia32_sched_yield

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/09/09.c
+ * file          /home/buckman/kaneton/check/kaneton/core/segment/09/09.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sun apr  9 18:25:08 2006]
+ * updated       matthieu bucchianeri   [thu sep  7 23:36:52 2006]
  */
 
 #include <klibc.h>
@@ -43,25 +43,25 @@ void		check_segment_09(void)
   MY_ASSERT(segment_split(seg, 2 * PAGESZ, &seg, &seg2) == ERROR_NONE,
 	    "error splitting\n");
 
-  MY_ASSERT(seg2 == seg + 2 * PAGESZ, "incorrect segment id\n");
+  MY_ASSERT(seg2 == seg + 2 * PAGESZ, "incorrect segment id after split\n");
 
-  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment\n");
+  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after split\n");
 
-  MY_ASSERT(o->segid == seg, "Bad segid field\n");
-  MY_ASSERT(o->asid == as, "Bad asid field\n");
-  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field\n");
-  MY_ASSERT(o->address == (t_uint32)seg, "Bad address field\n");
-  MY_ASSERT(o->size == 2 * PAGESZ, "Bad size field\n");
-  MY_ASSERT(o->perms == PERM_READ, "Bad perms field\n");
+  MY_ASSERT(o->segid == seg, "Bad segid field after split\n");
+  MY_ASSERT(o->asid == as, "Bad asid field after split\n");
+  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after split\n");
+  MY_ASSERT(o->address == (t_uint32)seg, "Bad address field after split\n");
+  MY_ASSERT(o->size == 2 * PAGESZ, "Bad size field after split\n");
+  MY_ASSERT(o->perms == PERM_READ, "Bad perms field after split\n");
 
-  MY_ASSERT(segment_get(seg2, &o) == ERROR_NONE, "error getting segment\n");
+  MY_ASSERT(segment_get(seg2, &o) == ERROR_NONE, "error getting segment after split\n");
 
-  MY_ASSERT(o->segid == seg2, "Bad segid field\n");
-  MY_ASSERT(o->asid == as, "Bad asid field\n");
-  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field\n");
-  MY_ASSERT(o->address == (t_uint32)seg2, "Bad address field\n");
-  MY_ASSERT(o->size == PAGESZ, "Bad size field\n");
-  MY_ASSERT(o->perms == PERM_READ, "Bad perms field\n");
+  MY_ASSERT(o->segid == seg2, "Bad segid field after split\n");
+  MY_ASSERT(o->asid == as, "Bad asid field after split\n");
+  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after split\n");
+  MY_ASSERT(o->address == (t_uint32)seg2, "Bad address field after split\n");
+  MY_ASSERT(o->size == PAGESZ, "Bad size field after split\n");
+  MY_ASSERT(o->perms == PERM_READ, "Bad perms field after split\n");
 
   MY_ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");

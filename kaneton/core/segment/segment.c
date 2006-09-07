@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/segment/segment.c
+ * file          /home/buckman/kaneton/kaneton/core/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jul  8 02:28:12 2006]
+ * updated       matthieu bucchianeri   [sun sep  3 11:45:30 2006]
  */
 
 /*
@@ -450,6 +450,9 @@ t_error			segment_resize(i_segment	old,
 
 	  if (o->address + size > onext->address)
 	    {
+/*	      if (opts & SEGLENT_OPT_NORELOCATE)
+		SEGMENT_LEAVE(segment, ERROR_UNKNOWN); XXX */
+
 	      perms = o->perms;
 
 	      if (segment_reserve(o->asid, size, PERM_WRITE, new) !=
@@ -551,7 +554,7 @@ t_error			segment_split(i_segment		segid,
   n.asid = o->asid;
   n.perms = o->perms;
   n.address = o->address + size;
-  n.type = SEGMENT_TYPE_MEMORY;
+  n.type = o->type;
 
   *right = n.segid = (i_segment)n.address;
 
@@ -605,7 +608,8 @@ t_error			segment_coalesce(i_segment	left,
 
   if (seg1->address + seg1->size != seg2->address ||
       seg1->asid != seg2->asid ||
-      seg1->perms != seg2->perms)
+      seg1->perms != seg2->perms ||
+      seg1->type != seg2->type)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [fri sep  1 16:23:11 2006]
+ * updated       matthieu bucchianeri   [sun sep  3 11:37:43 2006]
  */
 
 /*
@@ -446,6 +446,8 @@ t_error			region_coalesce(i_as		asid,
   if (machdep_call(region, region_coalesce, asid, left, right, regid) !=
       ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  *regid = left;
 
   REGION_LEAVE(region, ERROR_NONE);
 }

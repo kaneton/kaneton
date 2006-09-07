@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/bootloader.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/bootloader.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jul  8 02:31:45 2006]
+ * updated       matthieu bucchianeri   [sun sep  3 12:30:35 2006]
  */
 
 /*
@@ -49,7 +49,7 @@ t_reg32			esp;
 /*                                                                  [cut] k1 */
 
 /*
- * a funny function which do nothing.
+ * a funny function which does nothing.
  *
  * this function is called when a fatal error occurs.
  */
@@ -65,12 +65,12 @@ void			bootloader_error(void)
  *
  * steps:
  *
- * 1) initialises the console and checks the magic number.
- * 2) relocates binaries, data, stack
- * 3) installs the protected mode.
- * 4) installs the paging mode.
- * 5) computes the segments and regions to pass to the kernel.
- * 6) dumps the init structure if required.
+ * 1) initialise the console and checks the magic number.
+ * 2) relocate binaries, data, stack...
+ * 3) install the protected mode.
+ * 4) install the paging mode.
+ * 5) compute the segments and regions to pass to the kernel.
+ * 6) dump the init structure if required.
  * 7) update registers for the new kernel stack.
  * 8) then, the kernel is launched.
  * 9) this part is only reached if the kernel exit.

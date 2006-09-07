@@ -3,17 +3,17 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/06/06.c
+ * file          /home/buckman/kaneton/check/kaneton/core/as/03/03.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sun apr  2 19:11:20 2006]
+ * updated       matthieu bucchianeri   [thu sep  7 23:59:07 2006]
  */
 
 #include <klibc.h>
 #include <kaneton.h>
 #include "../common/common.h"
 
-void		check_as_06(void)
+void		check_as_03(void)
 {
   i_task	task;
   i_task	forked;
@@ -39,7 +39,7 @@ void		check_as_06(void)
   MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
   MY_ASSERT(segment_reserve(as,
-			    1024 * PAGESZ,
+			    2 * PAGESZ,
 			    PERM_READ | PERM_WRITE,
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
@@ -48,8 +48,8 @@ void		check_as_06(void)
 			   seg,
 			   0,
 			   REGION_OPT_FORCE,
-			   1024 * PAGESZ,
-			   1024 * PAGESZ,
+			   2 * PAGESZ,
+			   2 * PAGESZ,
 			   &reg) == ERROR_NONE,
 	    "error reserving region\n");
 

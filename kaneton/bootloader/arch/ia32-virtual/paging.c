@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/paging.c
  *
  * created       julien quintard   [sun may 29 00:38:50 2005]
- * updated       matthieu bucchianeri   [wed aug 30 16:55:50 2006]
+ * updated       matthieu bucchianeri   [sun sep  3 12:34:59 2006]
  */
 
 /*
@@ -55,13 +55,13 @@ t_ia32_table		pt;
  *
  * steps:
  *
- * 1) allocates and initialises the page directory.
- * 2) sets the page directory address into the init variable.
- * 3) installs the identity mapping via the first page table.
- * 4) installs extra identity mapping to be able to map the kernel code,
+ * 1) allocate and initialise the page directory.
+ * 2) set the page directory address into the init variable.
+ * 3) install the identity mapping via the first page table.
+ * 4) install extra identity mapping to be able to map the kernel code,
  *    the kernel stack, the global offset table, the modules etc..
- * 5) loads the new page directory.
- * 6) enables the paging mode.
+ * 5) load the new page directory.
+ * 6) enable the paging mode.
  */
 
 void			bootloader_paging_init(void)

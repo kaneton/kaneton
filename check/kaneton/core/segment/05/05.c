@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/05/05.c
+ * file          /home/buckman/kaneton/check/kaneton/core/segment/05/05.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sat mar 25 16:30:24 2006]
+ * updated       matthieu bucchianeri   [thu sep  7 23:34:58 2006]
  */
 
 #include <klibc.h>
@@ -42,18 +42,18 @@ void		check_segment_05(void)
   MY_ASSERT(segment_inject(as, &new_seg, &seg) == ERROR_NONE,
 	    "error injecting segment\n");
 
-  MY_ASSERT((t_paddr)seg == 0x400000, "Bad segment id\n");
+  MY_ASSERT((t_paddr)seg == 0x400000, "Bad segment id after segment_inject\n");
 
-  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting as\n");
+  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting as after segment_inject\n");
 
-  MY_ASSERT(o->segid == seg, "Bad segid field\n");
-  MY_ASSERT(o->asid == as, "Bad asid field\n");
-  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field\n");
-  MY_ASSERT(o->address == (t_uint32)seg, "Bad address field\n");
-  MY_ASSERT(o->size == 2 * PAGESZ, "Bad size field\n");
-  MY_ASSERT(o->perms == (PERM_READ | PERM_EXEC), "Bad perms field\n");
+  MY_ASSERT(o->segid == seg, "Bad segid field after segment_inject\n");
+  MY_ASSERT(o->asid == as, "Bad asid field after segment_inject\n");
+  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after segment_inject\n");
+  MY_ASSERT(o->address == (t_uint32)seg, "Bad address field after segment_inject\n");
+  MY_ASSERT(o->size == 2 * PAGESZ, "Bad size field after segment_inject\n");
+  MY_ASSERT(o->perms == (PERM_READ | PERM_EXEC), "Bad perms field after segment_inject\n");
 
-  MY_ASSERT(segment_release(seg) == ERROR_NONE, "error releasing segment\n");
+  MY_ASSERT(segment_release(seg) == ERROR_NONE, "error releasing segment after segment_inject\n");
 
   MY_ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");

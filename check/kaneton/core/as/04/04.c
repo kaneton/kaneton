@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/04/04.c
+ * file          /home/buckman/kaneton/check/kaneton/core/as/04/04.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri jun  2 14:08:56 2006]
+ * updated       matthieu bucchianeri   [thu sep  7 23:30:02 2006]
  */
 
 #include <klibc.h>
@@ -41,7 +41,7 @@ void		check_as_04(void)
   MY_ASSERT(as_get(as, &o) == ERROR_NONE,
 	    "unable to get as\n");
 
-  MY_ASSERT(o->tskid == task2, "Bad tskid field\n");
+  MY_ASSERT(o->tskid == task2, "Bad tskid field after as_give\n");
 
   MY_ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");

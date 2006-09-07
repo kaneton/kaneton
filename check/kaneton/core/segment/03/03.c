@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/03/03.c
+ * file          /home/buckman/kaneton/check/kaneton/core/segment/03/03.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sat mar 25 16:29:52 2006]
+ * updated       matthieu bucchianeri   [thu sep  7 23:33:30 2006]
  */
 
 #include <klibc.h>
@@ -48,8 +48,8 @@ void		check_segment_03(void)
 
   MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting as\n");
 
-  MY_ASSERT(o->perms == (PERM_READ | PERM_WRITE), "Bad perm field\n");
-  MY_ASSERT(o->type == SEGMENT_TYPE_CATCH, "Bad type field\n");
+  MY_ASSERT(o->perms == (PERM_READ | PERM_WRITE), "Bad perm field after changing perms\n");
+  MY_ASSERT(o->type == SEGMENT_TYPE_CATCH, "Bad type field after changing type\n");
 
   MY_ASSERT(segment_perms(seg, ~(PERM_READ | PERM_WRITE | PERM_EXEC)) !=
 	    ERROR_NONE,

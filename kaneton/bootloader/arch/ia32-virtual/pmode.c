@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/pmode.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [wed aug 30 16:30:30 2006]
+ * updated       matthieu bucchianeri   [sun sep  3 12:24:29 2006]
  */
 
 /*
@@ -44,11 +44,10 @@ extern t_init*		init;
  * steps:
  *
  * 1) create a new gdt and enable it.
- * 2) create a new idt and enable it.
- * 3) set two segments for the rest of the operations.
- * 4) update the segments registers.
- * 5) enable caching and write-back (since we are in uniprocessor mode).
- * 6) update the init structure.
+ * 2) set two segments for the rest of the operations.
+ * 3) update the segments registers.
+ * 4) enable caching and write-back (since we are in uniprocessor mode).
+ * 5) update the init structure.
  */
 
 void			bootloader_pmode_init(void)
@@ -80,25 +79,6 @@ void			bootloader_pmode_init(void)
   /*
    * 2)
    */
-  /*  if (idt_build(PMODE_IDT_ENTRIES,
-		bootloader_init_alloc(PMODE_IDT_ENTRIES *
-				      sizeof(t_ia32_idte), NULL),
-		&idt, 1) != ERROR_NONE)
-    {
-      bootloader_cons_msg('!', "pmode: error creating idt.\n");
-      bootloader_error();
-    }
-
-    if (idt_activate(idt) != ERROR_NONE)
-      {
-	bootloader_cons_msg('!', "pmode: error activating idt.\n");
-	bootloader_error();
-      }
-  */
-
-  /*
-   * 3)
-   */
 
   seg.base = 0;
   seg.limit = 0xffffffff;
@@ -123,7 +103,7 @@ void			bootloader_pmode_init(void)
     }
 
   /*
-   * 4)
+   * 3)
    */
 
   gdt_build_selector(PMODE_BOOTLOADER_CS, ia32_prvl_supervisor, &kcs);
@@ -133,7 +113,7 @@ void			bootloader_pmode_init(void)
   pmode_enable();
 
   /*
-   * 5)
+   * 4)
    */
 
   WBINVD();
@@ -143,12 +123,10 @@ void			bootloader_pmode_init(void)
 	       "movl %eax, %cr0");
 
   /*
-   * 6)
+   * 5)
    */
 
   memcpy(&init->machdep.gdt, &gdt, sizeof (t_ia32_gdt));
-
-  /*  memcpy(&init->machdep.idt, &idt, sizeof (t_ia32_idt));*/
 }
 
 /*                                                                 [cut] /k1 */

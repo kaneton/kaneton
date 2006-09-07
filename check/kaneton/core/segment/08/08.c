@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/08/08.c
+ * file          /home/buckman/kaneton/check/kaneton/core/segment/08/08.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sun mar 26 23:01:44 2006]
+ * updated       matthieu bucchianeri   [thu sep  7 23:36:15 2006]
  */
 
 #include <klibc.h>
@@ -64,14 +64,14 @@ void		check_segment_08(void)
   MY_ASSERT(segment_clone(as, seg, &seg) == ERROR_NONE,
 	    "error cloning segment\n");
 
-  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment\n");
+  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after cloning\n");
 
-  MY_ASSERT(o->asid == as, "Bad as field\n");
-  MY_ASSERT(o->segid == seg, "Bad segid field\n");
-  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field\n");
-  MY_ASSERT(o->address == (t_paddr)seg, "Bad address field\n");
-  MY_ASSERT(o->perms == (PERM_READ | PERM_WRITE), "Bad as field\n");
-  MY_ASSERT(o->size == PAGESZ, "Bad as field\n");
+  MY_ASSERT(o->asid == as, "Bad as field after cloning\n");
+  MY_ASSERT(o->segid == seg, "Bad segid field after cloning\n");
+  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after cloning\n");
+  MY_ASSERT(o->address == (t_paddr)seg, "Bad address field after cloning\n");
+  MY_ASSERT(o->perms == (PERM_READ | PERM_WRITE), "Bad as field after cloning\n");
+  MY_ASSERT(o->size == PAGESZ, "Bad as field after cloning\n");
 
   for (i = 0; i < PAGESZ; i++)
     {
@@ -83,7 +83,7 @@ void		check_segment_08(void)
 
   for (i = 0; i < PAGESZ; i++)
     {
-      MY_ASSERT(buff[i] == (i * 2 + 4) % 256, "bad data\n");
+      MY_ASSERT(buff[i] == (i * 2 + 4) % 256, "bad data after cloning\n");
     }
 
   MY_ASSERT(as_release(as) == ERROR_NONE,

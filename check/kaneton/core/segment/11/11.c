@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/11/11.c
+ * file          /home/buckman/kaneton/check/kaneton/core/segment/11/11.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [thu apr  6 11:21:25 2006]
+ * updated       matthieu bucchianeri   [thu sep  7 23:37:59 2006]
  */
 
 #include <klibc.h>
@@ -63,16 +63,16 @@ void		check_segment_11(void)
   MY_ASSERT(segment_coalesce(seg, seg2, &seg) == ERROR_NONE,
 	    "error in coalesce\n");
 
-  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment\n");
+  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after coalesce\n");
 
-  MY_ASSERT(o->segid == seg, "Bad segid field\n");
-  MY_ASSERT(o->asid == as, "Bad asid field\n");
-  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field\n");
-  MY_ASSERT(o->address == (t_uint32)seg, "Bad address field\n");
-  MY_ASSERT(o->size == 2 * PAGESZ, "Bad size field\n");
-  MY_ASSERT(o->perms == PERM_READ, "Bad perms field\n");
+  MY_ASSERT(o->segid == seg, "Bad segid field after coalesce\n");
+  MY_ASSERT(o->asid == as, "Bad asid field after coalesce\n");
+  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after coalesce\n");
+  MY_ASSERT(o->address == (t_uint32)seg, "Bad address field after coalesce\n");
+  MY_ASSERT(o->size == 2 * PAGESZ, "Bad size field after coalesce\n");
+  MY_ASSERT(o->perms == PERM_READ, "Bad perms field after coalesce\n");
 
-  MY_ASSERT(segment_get(seg2, &o) != ERROR_NONE, "old segment not removed\n");
+  MY_ASSERT(segment_get(seg2, &o) != ERROR_NONE, "old segment not removed after coalesce\n");
 
   MY_ASSERT(segment_reserve(as,
 			    PAGESZ,

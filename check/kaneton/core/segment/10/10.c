@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/10/10.c
+ * file          /home/buckman/kaneton/check/kaneton/core/segment/10/10.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sun apr  9 19:25:52 2006]
+ * updated       matthieu bucchianeri   [thu sep  7 23:37:21 2006]
  */
 
 #include <klibc.h>
@@ -45,14 +45,14 @@ void		check_segment_10(void)
   MY_ASSERT(segment_resize(seg, PAGESZ, &seg) == ERROR_NONE,
 	    "error resize\n");
 
-  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment\n");
+  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after resize\n");
 
-  MY_ASSERT(o->segid == seg, "Bad segid field\n");
-  MY_ASSERT(o->asid == as, "Bad asid field\n");
-  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field\n");
-  MY_ASSERT(o->address == (t_uint32)seg, "Bad address field\n");
-  MY_ASSERT(o->size == PAGESZ, "Bad size field\n");
-  MY_ASSERT(o->perms == PERM_READ, "Bad perms field\n");
+  MY_ASSERT(o->segid == seg, "Bad segid field after resize\n");
+  MY_ASSERT(o->asid == as, "Bad asid field after resize\n");
+  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after resize\n");
+  MY_ASSERT(o->address == (t_uint32)seg, "Bad address field after resize\n");
+  MY_ASSERT(o->size == PAGESZ, "Bad size field after resize\n");
+  MY_ASSERT(o->perms == PERM_READ, "Bad perms field after resize\n");
 
   while (try < 40)
     {
@@ -80,14 +80,14 @@ void		check_segment_10(void)
 
   seg = seg3;
 
-  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment\n");
+  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after resize\n");
 
-  MY_ASSERT(o->segid == seg, "Bad segid field\n");
-  MY_ASSERT(o->asid == as, "Bad asid field\n");
-  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field\n");
-  MY_ASSERT(o->address == (t_uint32)seg, "Bad address field\n");
-  MY_ASSERT(o->size == 10 * PAGESZ, "Bad size field\n");
-  MY_ASSERT(o->perms == PERM_READ, "Bad perms field\n");
+  MY_ASSERT(o->segid == seg, "Bad segid field after resize\n");
+  MY_ASSERT(o->asid == as, "Bad asid field after resize\n");
+  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after resize\n");
+  MY_ASSERT(o->address == (t_uint32)seg, "Bad address field after resize\n");
+  MY_ASSERT(o->size == 10 * PAGESZ, "Bad size field after resize\n");
+  MY_ASSERT(o->perms == PERM_READ, "Bad perms field after resize\n");
 
   MY_ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");

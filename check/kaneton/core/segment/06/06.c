@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/06/06.c
+ * file          /home/buckman/kaneton/check/kaneton/core/segment/06/06.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sat mar 25 16:30:38 2006]
+ * updated       matthieu bucchianeri   [thu sep  7 23:35:18 2006]
  */
 
 #include <klibc.h>
@@ -57,8 +57,8 @@ void		check_segment_06(void)
 
   MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting as\n");
 
-  MY_ASSERT(o->asid = as2, "Bad type field\n");
-  MY_ASSERT(o->type = SEGMENT_TYPE_MEMORY, "Bad type field\n");
+  MY_ASSERT(o->asid = as2, "Bad type field after catch\n");
+  MY_ASSERT(o->type = SEGMENT_TYPE_MEMORY, "Bad type field aftet catch\n");
 
   MY_ASSERT(as_release(as1) == ERROR_NONE,
 	    "failed to release as\n");

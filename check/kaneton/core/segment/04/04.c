@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/segment/04/04.c
+ * file          /home/buckman/kaneton/check/kaneton/core/segment/04/04.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri jun  2 14:09:15 2006]
+ * updated       matthieu bucchianeri   [thu sep  7 23:34:21 2006]
  */
 
 #include <klibc.h>
@@ -53,19 +53,19 @@ void		check_segment_04(void)
 
   MY_ASSERT(segment_give(as2, seg) == ERROR_NONE, "error giving segment\n");
 
-  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment\n");
+  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after segment_give\n");
 
-  MY_ASSERT(o->asid == as2, "Bad asid field\n");
+  MY_ASSERT(o->asid == as2, "Bad asid field after segment_give\n");
 
-  MY_ASSERT(as_get(as1, &oas) == ERROR_NONE, "error getting as\n");
+  MY_ASSERT(as_get(as1, &oas) == ERROR_NONE, "error getting as after segment_give\n");
 
   MY_ASSERT(set_get(oas->segments, seg, &chiche) != ERROR_NONE,
-	    "error: segment not removed from source as\n");
+	    "error: segment not removed from source as after segment_give\n");
 
-  MY_ASSERT(as_get(as2, &oas) == ERROR_NONE, "error getting as\n");
+  MY_ASSERT(as_get(as2, &oas) == ERROR_NONE, "error getting as after segment_give\n");
 
   MY_ASSERT(set_get(oas->segments, seg, &chiche) == ERROR_NONE,
-	    "error: segment not added to destination as\n");
+	    "error: segment not added to destination as after segment_give\n");
 
   MY_ASSERT(as_release(as1) == ERROR_NONE,
 	    "failed to release as\n");
