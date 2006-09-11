@@ -3,16 +3,25 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/task/task.c
+ * file          /home/buckman/kaneton/libs/libia32/task/context.c
  *
  * created       renaud voltz   [tue apr  4 21:45:07 2006]
- * updated       matthieu bucchianeri   [fri aug 18 14:51:57 2006]
+ * updated       matthieu bucchianeri   [sun sep 10 12:53:42 2006]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX THREAD information need to be written.
+ * this file contains some useful functions related to contexts.
+ *
+ * the ia32_context structure is defined in the header and contains
+ * all the processor state.
+ *
+ * the function context_setup is mainly used to detect processor's
+ * extended registers such as MMX or SSE registers.
+ *
+ * the function context_copy is used to copy from a context only the
+ * significant fields of a context structure.
  */
 
 /*
@@ -42,13 +51,29 @@ t_uint32	cpucaps = 0;
  * ---------- functions -------------------------------------------------------
  */
 
-void			task_setup(void)
+/*
+ * initialize a few things about contexts.
+ *
+ * steps:
+ *
+ * 1) initialize the FPU.
+ * 2) detect MMX and SSE processor capabilities.
+ */
+
+void			context_setup(void)
 {
+  /*
+   * 1)
+   */
+
   FINIT();
+
+  /*
+   * 2)
+   */
 
   if (cpuid_has_mmx())
     cpucaps |= IA32_CAPS_MMX;
-
 
   if (0 && cpuid_has_sse() && cpuid_has_fxstate()) /* XXX */
     {
@@ -56,6 +81,10 @@ void			task_setup(void)
       cpucaps |= IA32_CAPS_SSE;
     }
 }
+
+/*
+ * this function copies a context. useful for context switching.
+ */
 
 void			context_copy(t_ia32_context*			dst,
 				     const t_ia32_context*		src)

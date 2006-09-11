@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       matthieu bucchianeri   [wed aug 30 16:52:53 2006]
+ * updated       matthieu bucchianeri   [sun sep 10 13:17:42 2006]
  */
 
 /*
@@ -23,15 +23,20 @@
 #include <kaneton.h>
 
 /*
- * ---------- extern --------------------------------------------------------\
---
-*/
+ * ---------- extern ----------------------------------------------------------
+ */
+
+/*
+ * the thread manager.
+ */
 
 extern m_thread*	thread;
 
-extern i_as		kasid;
+/*
+ * we'll used the kernel address space identifier.
+ */
 
-extern t_init*		init;
+extern i_as		kasid;
 
 /*                                                                  [cut] k4 */
 
@@ -69,9 +74,9 @@ d_thread			thread_dispatch =
  *
  * steps:
  *
- * 1) get the thread to clone from the threads container.
- * 2) get the new thread from the threads container.
- * 3) copy the ia32-dependent object data.
+ * 1) get both the original and the cloned thread objects.
+ * 2) copy the ia32-dependent object data, including the general
+ *    context and the extended registers
  */
 
 t_error			ia32_thread_clone(i_task		taskid,
@@ -87,22 +92,21 @@ t_error			ia32_thread_clone(i_task		taskid,
    * 1)
    */
 
-  if (thread_get(old, &from) != ERROR_NONE)
+  if (thread_get(old, &from) != ERROR_NONE ||
+      thread_get(*new, &to) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (thread_get(*new, &to) != ERROR_NONE)
-    THREAD_LEAVE(thread, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
   memcpy(&(to->machdep.context), &(from->machdep.context),
 	 sizeof(t_ia32_context));
+
+  if (cpucaps & IA32_CAPS_SSE)
+    memcpy(&to->machdep.u.sse, &from->machdep.u.sse, sizeof(t_sse_state));
+  else
+    memcpy(&to->machdep.u.x87, &from->machdep.u.x87, sizeof(t_x87_state));
 
   THREAD_LEAVE(thread, ERROR_NONE)
 }
@@ -117,8 +121,11 @@ t_error			ia32_thread_clone(i_task		taskid,
  * 1) get the thread object for the specified thread.
  * 2) get the task object the thread belongs to.
  * 3) get the task's address space.
- * 4)
- * 5)
+ * 4) reset the context to zero.
+ * 5) setup the PDBR and the EFLAGS in the context.
+ * 6) depending on the task class, update the segment selectors into
+ *    the context.
+ * 7) reset advanced context (FPU or SSE).
  */
 
 t_error			ia32_thread_reserve(i_task		taskid,
@@ -160,13 +167,17 @@ t_error			ia32_thread_reserve(i_task		taskid,
 
   memset(&(o->machdep.context), 0x0, sizeof(t_ia32_context));
 
+  /*
+   * 5)
+   */
+
   pd_get_cr3(&(o->machdep.context.cr3), as->machdep.pd,
 	     PD_CACHED, PD_WRITEBACK);
 
-  SEFLAGS(o->machdep.context.eflags);
+  o->machdep.context.eflags = (1 << 9) | (1 << 1);
 
   /*
-   * 5)
+   * 6)
    */
 
   switch(task->class)
@@ -195,6 +206,10 @@ t_error			ia32_thread_reserve(i_task		taskid,
   o->machdep.context.gs = data_segment;
   o->machdep.context.ss = data_segment;
 
+  /*
+   * 7)
+   */
+
   if (cpucaps & IA32_CAPS_SSE)
     memset(&o->machdep.u.sse, 0, sizeof(t_sse_state));
   else
@@ -204,7 +219,8 @@ t_error			ia32_thread_reserve(i_task		taskid,
 }
 
 /*
- *
+ * this function updates the context with the new stack and
+ * instruction pointers.
  */
 
 t_error			ia32_thread_load(i_thread		threadid,
@@ -214,16 +230,8 @@ t_error			ia32_thread_load(i_thread		threadid,
 
   THREAD_ENTER(thread);
 
-  /*
-   *
-   */
-
   if (thread_get(threadid, &o) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
-
-  /*
-   *
-   */
 
   o->machdep.context.eip = context.pc;
   o->machdep.context.esp = context.sp;
@@ -232,7 +240,8 @@ t_error			ia32_thread_load(i_thread		threadid,
 }
 
 /*
- *
+ * this function reads from the context both the stack and instruction
+ * pointers.
  */
 
 t_error			ia32_thread_store(i_thread		threadid,
@@ -242,16 +251,8 @@ t_error			ia32_thread_store(i_thread		threadid,
 
   THREAD_ENTER(thread);
 
-  /*
-   * 1)
-   */
-
   if (thread_get(threadid, &o) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
 
   context->pc = o->machdep.context.eip;
   context->sp = o->machdep.context.esp;
@@ -292,13 +293,16 @@ t_error			ia32_thread_stack(i_thread		threadid,
 }
 
 /*
- *
+ * initialize the IA-32 related structures for the thread manager.
  *
  * steps:
  *
  * 1) get the kernel address space.
- * 2) fill the tss.
- * 3) load the current tss.
+ * 2) reserve some memory for the TSS.
+ * 3) reserve 2 pages for the interrupt stack. this stack is
+ *    automatically setup by the processor on privilege level switch.
+ * 4) load the interrupt stack and the I/O bitmap base into the TSS.
+ * 5) activate the TSS.
  */
 
 t_error			ia32_thread_init(void)
@@ -306,11 +310,11 @@ t_error			ia32_thread_init(void)
   THREAD_ENTER(thread);
 
   o_as*			as;
+  t_vaddr		int_stack;
 
   /*
    * 1)
    */
-
 
   if (as_get(kasid, &as) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
@@ -328,26 +332,33 @@ t_error			ia32_thread_init(void)
 
   memset(thread->machdep.tss, 0x0, sizeof(t_ia32_tss));
 
-  thread->machdep.tss->ss0 = SEGSEL(PMODE_GDT_CORE_DS, PRIV_RING0);
+  /*
+   * 3)
+   */
 
   if (map_reserve(kasid,
 		  MAP_OPT_PRIVILEGED,
 		  2 * PAGESZ,
 		  PERM_READ | PERM_WRITE,
-		  (t_vaddr*)&thread->machdep.tss->esp0) != ERROR_NONE)
+		  &int_stack) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
-  thread->machdep.tss->esp0 += 2 * PAGESZ - 16;
-//  thread->machdep.tss->esp0 = init->kstack + init->kstacksz - 16;
-
-  thread->machdep.tss->io = 0x68;
-  thread->machdep.tss->io_end = 0xFF;
-
   /*
-   * 3)
+   * 4)
    */
 
-  tss_init(thread->machdep.tss);
+  if (tss_load(thread->machdep.tss,
+	       SEGSEL(PMODE_GDT_CORE_DS, PRIV_RING0),
+	       int_stack + 2 * PAGESZ - 16,
+	       0x68) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
+  if (tss_init(thread->machdep.tss) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }

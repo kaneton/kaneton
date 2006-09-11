@@ -1,92 +1,83 @@
 --
+ faudrait implementer des regions copy-on-write pour gagner en
+ performance. qui plus est, il faut de toute facon pouvoir préciser si
+ un segment doit etre cloné en cas d'as_clone. par exemple, on a pas
+ envie de dupliquer la GDT, l'IDT, la kstack etc... qui sont mappés
+ dans chaque as.
+
+--
+ peut etre que le I/O manager est mal pensé. Sur SUN par exemple, les
+ I/O se font avec des load/store en mémoire. Pour gerer les permissions
+ c'est chaud (utiliser le paging ne changerais rien car pas
+ fragmentable).
+
+ peut etre on devrait faire en plus une interface du genre :
+
+ io_read_8, 16, 32, 64
+ io_write_8, 16, 32, 64
+
+ sur IA-32, on ne serait pas obligé de les utiliser (on utilise direct
+ les instructions in/out).
+
+ sur une archi qui fonction comme SUN, alors on utiliserais du coup un
+ set pour gerer les permissions, et c'est le kernel qui ferait les
+ acces memoire qu'il faut lors des io_read/io_write
+
+--
  ameliorer la moulette:
   - gerer les exceptions
+	--> OK, 1 warning a corriger
   - ajouter des descriptions aux tests
+	--> on pourrait utiliser le test "common" pour afficher les
+	    descriptions dans la trace
   - refaire les output des tests des sets, jugés "non explicites" par certains
   - verifier les tests bizarres (segment_r/w par exemple :-)
 
 --
- pour les fonctions restantes dans segment/region/map, resumons :
+ CHOSES A FAIRE PAR MANAGER:
 
+ * as
+  - as_clone a revoir
+  - ia32_as_reserve: ne mapper que certaines sections du ELF
+  - ia32_as_reserve: ajuster les flags G des pte du kas
+ * map
+  - map_resize: a revoir en fct des modifications de region/segment
+ * region
+  - region_resize: a modifier - pas de relocation
+  - region_split: a modifier - 2 regions / 1 segment
+  - ia32_region_reserve : cas particulier (pt vide)
+ * sched
+  - sched_update: optimiser car ca pue
+  - ia32_sched_yield
+  - gerer le switch du context FPU/SSE en utilisant l'exception qui va bien
+ * segment
   - segment_resize: segment OK (bug pour le 1er/dernier seg), regions TODO
   - segment_split: segment OK, regions TODO
   - segment_coalesce: segment OK, regions TODO
-  - region_resize: a modifier - pas de relocation
-  - region_split: a modifier - 2 regions / 1 segment
-  - region_coalesce: OK
-  - map_resize: a revoir en fct des modifications ci-dessus
+  - segment_perms: gestion des regions
+ * set
+  - set_array_locate : dicho desactivée
+ * task
+  - wait et clone a finir
+ * thread
+  - thread_clone: quand on clone un thread, il faut peut etre changer le
+    cr3 plutot que le recopier.
+  - thread_give: copier la pile dans le nouvel AS ?
+  - gestion des wait
 
---
- il y a 2 nouveaux managers :
-
- io, qui gere les permissions des I/O
-     il se contente d'appeller le machdep
-
- cpu, qui gere le multi processeur.
-     pour l'instant il gere juste un set de processeur en coordination
-     avec  sched. tout  les trucs  interessant restent  à  faire (load
-     balancing, migration, IPI)
-
- j'ai rajouté  un champ a  t_init pour initialiser dans  le bootloader
- une table de processeurs. j'ai aussi terminé le bootloader ia32-smp.
- j'ai modifié  le scheduler pour qu'il  gere ses files  de threads par
- processeurs (pour 1 proc: 1 thread en cours +  1 file ready +  1 file
- expired).
-
- a faire : ecrire les parties correspondantes dans le book kaneton, et
- s'assurer que l'interface de io et cpu collera bien.
-
---
- le système est  trop lent. a chaque tick, on resoud  les timers et on
- appelle les fonctions associées.
-
- on  appelle  aussi  sched_switch,   qui  fait  plein  de  set_get  et
- tout. c'est lent. pas moyen de regler le timer avec une frequence
- vraiment précise...
-
- la le truc a atteint ses  limites, on peut plus rajouter de code dans
- la gestion des  event, timer  et du  scheduler sous  peine  de devoir
- ralentir encore le timer (qui est a 200 Hz pour l'instant).
-
- quand au stats manager, il  est tout simplement inutilisable car trop
- lent.  (j'ai testé  et tout plante avec).  la  sauvegarde du contexte
- complet (incluant  TOUT les registres du proc y compris  ceux MMX SSE
- &co) ne  peut pas non plus  marcher dans ces conditions (trop d'acces
- mémoire).  mais bon ca on pourra trafiquer sans probleme.
-
---
- probleme du malloc:  a priori c'est ok. mais  l'idéal serait en effet
- de faire un set special qui ne poserait pas ce problème.
-
---
- Choses a finir (matthieu)
-
- * finir task
-   + wait et clone
- * revoir as_clone, et en fait toute la chaine de *_clone
  * tests
    + as/03
    + time/01, time/02, time/03
    + task/01, task/02, task/03, task/04, task/05, task/06
- * revoir dans ia32_as_reserve les choses a mapper
-   + refaire le ELF, et mapper que handler et handler_data
+   + event/*
 
- Bugs connus et TODO mineurs :
+--
+ ecrire les parties correspondantes dans le book kaneton a propos d'io
+ et cpu s'assurer que l'interface de collera bien.
 
- * segment_*: plutot que faire des appels a segment_perms, modifier
-   direct le champ (trop couteux sinon).
-   => OU PAS: ca dependra de l'archi :-/
- * ia32_region_reserve : cas particulier (pt vide)
- * sched_update: optimiser car ca pue
- * ia32_sched_yield
- * probleme du context_switch avec les registres SSE
- * set_array_locate : dicho desactivée
-
- Autre :
-
- * faire des tests pour time et refaire des tests plus poussés pour event
- * revoir les timers dans stats
- * faire un vrai realloc
+--
+ probleme du malloc:  a priori c'est ok. mais  l'idéal serait en effet
+ de faire un set special qui ne poserait pas ce problème.
 
 --
  + moulinette triche

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [fri aug 18 16:17:55 2006]
+ * updated       matthieu bucchianeri   [sun sep 10 12:51:57 2006]
  */
 
 /*
@@ -46,7 +46,7 @@ d_task			task_dispatch =
 /*                                                                  [cut] k4 */
 
     NULL,
-    NULL,
+    ia32_task_clone,
     ia32_task_reserve,
     NULL,
     NULL,
@@ -66,7 +66,33 @@ d_task			task_dispatch =
 /*                                                                  [cut] k4 */
 
 /*
+ * this function clones the dependent part of a task.
  *
+ * it only copies the I/O permission bitmap.
+ */
+
+t_error			ia32_task_clone(i_task			old,
+					i_task*			new)
+{
+  o_task*		from;
+  o_task*		to;
+
+
+  TASK_ENTER(task);
+
+  if (task_get(old, &from) != ERROR_NONE ||
+      task_get(*new, &to) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  memcpy(to->machdep.iomap, from->machdep.iomap, 8192);
+
+  TASK_LEAVE(task, ERROR_NONE);
+}
+
+/*
+ * this function initialize the dependent structures.
+ *
+ * it only clears the I/O permission bitmap, denying all I/O operations.
  */
 
 t_error			ia32_task_reserve(t_class			class,
@@ -87,7 +113,12 @@ t_error			ia32_task_reserve(t_class			class,
 }
 
 /*
+ * this function makes some architecture dependent initialization for
+ * the task manager.
  *
+ * steps:
+ *
+ * 1) initialize libia32 context module.
  * 2) disable writing the GDT.
  */
 
@@ -99,7 +130,7 @@ t_error			ia32_task_init(void)
    * 1)
    */
 
-  task_setup();
+  context_setup();
 
   /*
    * 2)

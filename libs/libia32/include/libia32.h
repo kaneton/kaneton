@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/libia32.h
  *
  * created       matthieu bucchianeri   [tue dec 20 13:58:56 2005]
- * updated       matthieu bucchianeri   [mon aug 21 18:14:10 2006]
+ * updated       matthieu bucchianeri   [sun sep 10 17:39:44 2006]
  */
 
 #ifndef LIBIA32_H
@@ -49,7 +49,7 @@
  *      ../interrupt/interrupt.c
  *      ../interrupt/ipi.c
  *	../time/timer.c
- *	../task/task.c
+ *	../task/context.c
  *      ../task/tss.c
  *      ../apic/apic.c
  *      ../misc/cpuid.c
@@ -310,10 +310,10 @@ t_error			pit_init(t_uint32			frequency);
 
 
 /*
- * ../task/task.c
+ * ../task/context.c
  */
 
-void			task_setup(void);
+void			context_setup(void);
 
 void			context_copy(t_ia32_context*			dst,
 				     const t_ia32_context*		src);

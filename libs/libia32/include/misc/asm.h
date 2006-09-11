@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/misc/asm.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed jul 26 14:51:47 2006]
+ * updated       matthieu bucchianeri   [sun sep 10 13:07:23 2006]
  */
 
 /*
@@ -93,12 +93,6 @@
   asm volatile("ltr %0\n\t"						\
 	       :							\
 	       : "m" (_var_))
-
-#define		SEFLAGS(_var_)						\
-  asm volatile("pushf\n\t"						\
-	       "popl %0"						\
-	       : "=m" (_var_)						\
-	       :)
 
 #define		HLT()							\
   asm volatile("hlt")

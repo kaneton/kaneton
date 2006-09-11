@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       matthieu bucchianeri   [fri aug 18 16:18:29 2006]
+ * updated       matthieu bucchianeri   [sun sep 10 16:00:04 2006]
  */
 
 /*
@@ -286,8 +286,6 @@ t_error			thread_clone(i_task			taskid,
 
 /*
  * this function reserves a thread for a given task.
- *
- * XXX THREAD: il faut allouer une pile supplementaire pour le ring0
  *
  * steps:
  *
@@ -738,20 +736,12 @@ t_error			thread_flush(i_task			taskid)
 
 /*
  * this function loads a new execution context in the thread object.
- *
- * steps:
- *
- * 1)
  */
 
 t_error			thread_load(i_thread			threadid,
 				    t_thread_context		context)
 {
   THREAD_ENTER(thread);
-
-  /*
-   * 1)
-   */
 
   if (machdep_call(thread, thread_load, threadid, context) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
@@ -767,10 +757,6 @@ t_error			thread_store(i_thread			threadid,
 				     t_thread_context*		context)
 {
   THREAD_ENTER(thread);
-
-  /*
-   * 1)
-   */
 
   if (machdep_call(thread, thread_store, threadid, context) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);

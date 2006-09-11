@@ -17,7 +17,7 @@ include			../../../env/.env.mk
 
 TASK_LO			:=		task.lo
 
-TASK_C			:=		task.c				\
+TASK_C			:=		context.c			\
 					tss.c
 
 TASK_O			:=		$(TASK_C:.c=.o)

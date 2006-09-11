@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [fri sep  1 15:34:08 2006]
+ * updated       matthieu bucchianeri   [sun sep 10 12:42:57 2006]
  */
 
 /*
@@ -165,12 +165,14 @@ t_error			task_dump(void)
  *
  * steps:
  *
- * 1) gets the source task object given its identifier.
- * 2) reserves the cloned task object.
- * 3) gets the destination task object previously reserved.
- * 4) clones the address space from the source task object.
- * 5) clones the thread set from the source task object.
- * 6) calls the machine-dependent code.
+ * 1) get the source task object given its identifier.
+ * 2) reserve the cloned task object.
+ * 3) get the destination task object previously reserved.
+ * 4) clone the address space from the source task object.
+ * 5) clone the thread set from the source task object.
+ * 6) clone the waits.
+ * 7) set the new task state.
+ * 8) call the machine-dependent code.
  */
 
 t_error			task_clone(i_task			old,
@@ -235,11 +237,20 @@ t_error			task_clone(i_task			old,
 	TASK_LEAVE(task, ERROR_UNKNOWN);
     }
 
-  /* XXX waits */
-  /* XXX sched ? */
-
   /*
    * 6)
+   */
+
+  /* XXX waits */
+
+  /*
+   * 7)
+   */
+
+  to->sched = from->sched;
+
+  /*
+   * 8)
    */
 
   if (machdep_call(task, task_clone, old, new) != ERROR_NONE)

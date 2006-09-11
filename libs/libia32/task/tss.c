@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/task/tss.c
  *
  * created       renaud voltz   [mon apr 10 01:01:34 2006]
- * updated       matthieu bucchianeri   [mon jul 31 19:56:13 2006]
+ * updated       matthieu bucchianeri   [sun sep 10 12:57:09 2006]
  */
 
 /*
@@ -41,9 +41,10 @@ t_error			tss_load(t_ia32_tss*			tss,
 				 t_uint32			esp,
 				 t_uint32			io)
 {
-  tss->ss = ss;
-  tss->esp = esp;
+  tss->ss0 = ss;
+  tss->esp0 = esp;
   tss->io = io;
+  tss->io_end = 0xFF;
 
   return ERROR_NONE;
 }
@@ -53,9 +54,9 @@ t_error			tss_load(t_ia32_tss*			tss,
  *
  * steps:
  *
- * 1)fill the tss descriptor and add it into the gdt.
- * 2)get the segment selector for this descriptor.
- * 3)load the task register with this segment selector.
+ * 1) fill the tss descriptor and add it into the gdt.
+ * 2) get the segment selector for this descriptor.
+ * 3) load the task register with this segment selector.
  */
 
 t_error			tss_init(t_ia32_tss*			tss)

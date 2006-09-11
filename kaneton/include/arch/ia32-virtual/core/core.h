@@ -171,6 +171,9 @@ t_error			ia32_timer_init(void);
  * ../../../../core/arch/machdep/task.c
  */
 
+t_error			ia32_task_clone(i_task			old,
+					i_task*			new);
+
 t_error			ia32_task_reserve(t_class			class,
 					  t_behav			behav,
 					  t_prior			prior,

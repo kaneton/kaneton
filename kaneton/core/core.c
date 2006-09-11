@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri sep  1 16:17:56 2006]
+ * updated       matthieu bucchianeri   [sat sep  9 17:47:15 2006]
  */
 
 /*
@@ -118,6 +118,8 @@ void			kaneton(t_init*				bootloader)
 
 #ifndef SERIAL
   //  timer_test();
+
+  check_check_common();
 
   sched_test();
 
