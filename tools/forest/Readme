@@ -1,0 +1,35 @@
+---[ forest ]------------------------------------------------------------------
+
+First of all, I apologize for the badness of this source code since it
+is my very first python script.
+
+
+
+usage: forest.py [options]
+
+options:
+  -h, --help       show this help message and exit
+  --parser=PARSER  parser
+  --style=STYLE    checking style
+  --output=FILE    output file
+  --output-pure    output a pure summary
+  --output-detail  output a detailed summary
+
+
+
+The '--parser' option is used to specify the parser to use. The parser
+modules are located in the parsers/ directory. Once the parser is specified
+with the '--parser' option, more options will be available.
+
+The '--style' option specifies the coding style to use. The styles modules
+are located in the styles/ directory. Once the style is specified, more
+options will be available.
+
+The '--output' option specifies where to place the ouptut. If this option
+is not present, the standard output is used.
+
+The '--output-pure' option is used to ouptut a very simple summary only
+containing the error messages.
+
+The '--output-detail' option is used to ouptut a more detailed summary
+in xml format.

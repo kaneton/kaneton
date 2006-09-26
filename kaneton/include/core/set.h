@@ -6,7 +6,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/set.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       julien quintard   [sat jul  8 03:17:01 2006]
+ * updated       julien quintard   [mon sep 25 18:50:55 2006]
  */
 
 #ifndef CORE_SET_H
