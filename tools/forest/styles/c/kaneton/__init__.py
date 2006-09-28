@@ -42,59 +42,59 @@ def		options(optparse):
   group = None
 
   group = OptionGroup(optparse,
-                      "[epita2006] checker package specific options",
+                      "[kaneton] checker package specific options",
                       "# these options enable/disable specific checkings #")
 
   #
   # enable specific checkings
   #
 
-  group.add_option("--epita-structures",
+  group.add_option("--kaneton-structures",
                    action="store_true",
                    dest="epita_structures",
                    help="enable the structures style checking")
 
-  group.add_option("--epita-enumerations",
+  group.add_option("--kaneton-enumerations",
                    action="store_true",
                    dest="epita_enumerations",
                    help="enable the enumerations style checking")
 
-  group.add_option("--epita-unions",
+  group.add_option("--kaneton-unions",
                    action="store_true",
                    dest="epita_unions",
                    help="enable the unions style checking")
 
-  group.add_option("--epita-types",
+  group.add_option("--kaneton-types",
                    action="store_true",
                    dest="epita_types",
                    help="enable the types style checking")
 
-  group.add_option("--epita-globals",
+  group.add_option("--kaneton-globals",
                    action="store_true",
                    dest="epita_globals",
                    help="enable the global variables style checking")
 
-  group.add_option("--epita-comments",
+  group.add_option("--kaneton-comments",
                    action="store_true",
                    dest="epita_comments",
                    help="enable the comments style checking")
 
-  group.add_option("--epita-macros",
+  group.add_option("--kaneton-macros",
                    action="store_true",
                    dest="epita_macros",
                    help="enable the macros style checking")
 
-  group.add_option("--epita-functions",
+  group.add_option("--kaneton-functions",
                    action="store_true",
                    dest="epita_functions",
                    help="enable the functions style checking")
 
-  group.add_option("--epita-prototypes",
+  group.add_option("--kaneton-prototypes",
                    action="store_true",
                    dest="epita_prototypes",
                    help="enable the prototypes style checking")
 
-  group.add_option("--epita-contents",
+  group.add_option("--kaneton-contents",
                    action="store_true",
                    dest="epita_contents",
                    help="enable the contents style checking")

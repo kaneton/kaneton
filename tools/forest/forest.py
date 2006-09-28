@@ -15,8 +15,8 @@
 # this file contains the main routines of the forest program.
 #
 # notice that the 'options()' function calls the 'options()' function
-# of the parsers module and styles module. this action is performed
-# to allow the parser and the style to use additional options.
+# of the parsers module and checkers module. this action is performed
+# to allow the parser and the checker to use additional options.
 #
 # the 'f' variable represents the main forest variable containing everything
 # necessary for the program.
@@ -40,7 +40,7 @@ import sys
 import re
 
 import parsers
-import styles
+import checkers
 
 #
 # ----- classes ---------------------------------------------------------------
@@ -56,7 +56,7 @@ class c_forest:
     self.arguments = None
     self.options = None
     self.parser = None
-    self.style = None
+    self.checker = None
     self.files = None
     self.summary = ""
     self.count = 0
@@ -139,7 +139,7 @@ def		process(f, file):
   except parsers.exceptions.ParserError:
     error(f, "error: unable to parse the file \"" + file + "\".")
 
-  s, c = styles.check(f.parser, f.style, p, f.options)
+  s, c = checkers.check(f.parser, f.checker, p, f.options)
 
   if s and c:
     f.summary += s
@@ -153,8 +153,8 @@ def		process(f, file):
 s_parser = "--parser(?:=| +)([a-zA-Z0-9_]*)"
 e_parser = re.compile(s_parser)
 
-s_style = "--style(?:=| +)([a-zA-Z0-9_]*)"
-e_style = re.compile(s_style)
+s_checker = "--checker(?:=| +)([a-zA-Z0-9_]*)"
+e_checker = re.compile(s_checker)
 
 def		options(f, arguments):
   optparse = OptionParser()
@@ -166,23 +166,23 @@ def		options(f, arguments):
   if match:
     f.parser = match.group(1)
 
-  match = e_style.search(" ".join(arguments))
+  match = e_checker.search(" ".join(arguments))
   if match:
-    f.style = match.group(1)
+    f.checker = match.group(1)
 
   optparse.add_option("--parser",
                       action="store",
-                      dest="style",
+                      dest="parser",
                       metavar="PARSER",
                       type="string",
                       help="parser")
 
-  optparse.add_option("--style",
+  optparse.add_option("--checker",
                       action="store",
-                      dest="style",
+                      dest="checker",
                       metavar="STYLE",
                       type="string",
-                      help="checking style")
+                      help="checker")
 
   optparse.add_option("--output",
                       action="store",
@@ -205,7 +205,7 @@ def		options(f, arguments):
   if o:
     optparse = o
 
-  o = styles.options(f.parser, f.style, optparse)
+  o = checkers.options(f.parser, f.checker, optparse)
   if o:
     optparse = o
 
@@ -234,11 +234,11 @@ def		main():
   if not f.files:
     error(f, "error: please specify at least one file.")
 
-  if f.style and (not f.options.output_pure and not f.options.output_detail):
+  if f.checker and (not f.options.output_pure and not f.options.output_detail):
     error(f, "error: please specify an output format: pure or detailed.")
 
-  if not f.style and (f.options.output_pure or f.options.output_detail):
-    error(f, "error: please specify a style.")
+  if not f.checker and (f.options.output_pure or f.options.output_detail):
+    error(f, "error: please specify a checker.")
 
   for file in f.files:
     process(f, file)

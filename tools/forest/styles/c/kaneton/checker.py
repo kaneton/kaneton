@@ -90,6 +90,9 @@ def		columns(e, error):
 #
 def		check(e):
   structures.check(e)
+
+  return
+
   enumerations.check(e)
   unions.check(e)
   types.check(e)
