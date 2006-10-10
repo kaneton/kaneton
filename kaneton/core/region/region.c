@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [sun sep  3 11:37:43 2006]
+ * updated       matthieu bucchianeri   [sun oct  8 17:20:35 2006]
  */
 
 /*
@@ -298,10 +298,11 @@ t_error			region_split(i_as			asid,
  *
  * steps:
  *
- * 1) check if the operation is feasible.
- * 2) if we need to relocate the region, choose a new location.
- * 3) call the machine dependent code.
- * 4) set the new size.
+ * 1) check if there is enough space in the address space.
+ * 2) check if the segment is large enough.
+ * 3) the destination region is the same as the original one.
+ * 4) call the machine dependent code.
+ * 5) set the new size.
  */
 
 t_error			region_resize(i_as			as,
@@ -309,8 +310,13 @@ t_error			region_resize(i_as			as,
 				      t_vsize			size,
 				      i_region*			new)
 {
-  o_region*		o;
+  o_region*		reg = NULL;
+  o_region*		next_reg;
   o_segment*		seg;
+  o_as*			oas;
+  t_iterator		i;
+  t_iterator		next;
+  t_state		state;
 
   REGION_ENTER(region);
 
@@ -318,58 +324,69 @@ t_error			region_resize(i_as			as,
    * 1)
    */
 
-  if (region_get(as, old, &o) != ERROR_NONE)
+  if (as_get(as, &oas) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  if (o->size == size)
-    REGION_LEAVE(region, ERROR_NONE);
+  set_foreach(SET_OPT_FORWARD, oas->regions, &i, state)
+    {
+      if (set_object(oas->regions, i, (void**)&reg) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  if (segment_get(o->segid, &seg) != ERROR_NONE)
+      if (reg->regid == old)
+	break;
+    }
+
+  if (reg == NULL)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  if (reg->size == size)
+    {
+      *new = old;
+      REGION_LEAVE(region, ERROR_NONE);
+    }
+
+  if (set_next(oas->regions, i, &next) == ERROR_NONE)
+    {
+      if (set_object(oas->regions, next, (void**)&next_reg) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+
+      if (reg->address + size >= next_reg->address)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+    }
+  else
+    {
+      if (reg->address + size >= region->start + region->size)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 2)
+   */
+
+  if (segment_get(reg->segid, &seg) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   if (!size || size > seg->size)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
-   * 2)
+   * 3)
    */
 
-  /* XXX */
-
-  if (0)
-    {
-      if ((o->opts & REGION_OPT_FORCE))
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      if (region_reserve(as,
-			 o->segid,
-			 o->offset,
-			 o->opts,
-			 0,
-			 size,
-			 new) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      if (region_release(as, old) != ERROR_NONE)
-	REGION_LEAVE(region, ERROR_UNKNOWN);
-
-      REGION_LEAVE(region, ERROR_NONE);
-    }
-  else
-    *new = old;
+  *new = old;
 
   /*
-   * 3)
+   * 4)
    */
 
   if (machdep_call(region, region_resize, as, old, size, new) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
-   * 4)
+   * 5)
    */
 
-  o->size = size;
+  reg->size = size;
 
   REGION_LEAVE(region, ERROR_NONE);
 }

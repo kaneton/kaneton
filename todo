@@ -1,4 +1,53 @@
 --
+ bon, en decembre on doit avoir
+
+ - tout les managers codés clean		-> cf todo plus bas
+ - les tests pour tout ce qui a été codé	-> idem
+ - kaneton book a jour				-> mettre a jour les proto
+						-> ajouter cpu et io
+ - ia32-virtual book ecrit			-> cf todo
+ - la moulette					-> idem
+ - l'intra					-> quasi ok
+
+ il doit rester comme managers a faire :
+
+ - message
+ - capability (a priori Julien l'a bien entamé)
+ - io (juste le revoir en fait, cf remarque plus bas)
+ - share ?
+ - (pas urgent) cpu
+
+--
+ liste des endroits vraiment ok :
+
+ * ia32-virtual's bootloader
+ * id
+ * set, set_ll, set_bpt, set_pipe, set_stack
+ * ia32-virtual segment
+ * ia32-virtual timer
+ * as
+
+ c'est maigre... mais ca devrait vite se remplir ! cf la todo plus bas
+
+ aussi: deplacer kaneton/core/debug/* dans les machdep
+
+--
+ bien qu'on a pas encore les IPC, faudrait reflechir a l'interface
+ pour les drivers assez vite.
+
+--
+ stats manager: utiliser l'instruction qui compte les cycles plutot
+ qu'un timer ?
+
+   + hyper precis
+   - pas dispo partout
+
+ en fait, le stat manager deconne trop maintenant qu'il y a le
+ scheduling. il faut augmenter vachement la latence du kernel pour
+ pouvoir s'en servir (dans timer.h: TIMER_MS_PER_TICK et dans sched.h:
+ SCHED_QUANTUM_INIT).
+
+--
  faudrait implementer des regions copy-on-write pour gagner en
  performance. qui plus est, il faut de toute facon pouvoir préciser si
  un segment doit etre cloné en cas d'as_clone. par exemple, on a pas
@@ -34,18 +83,37 @@
   - verifier les tests bizarres (segment_r/w par exemple :-)
 
 --
+ bon, on va se fixer des deadline comme ça au moins ca avancera:
+ (sinon panpan cucu)
+
+ next => 15 octobre
+ todo: as_clone X, region_resize X, ia32_region_reserve X, sched_update, as/03 X
+
+ next => 30 octobre
+ todo: task_wait, task_clone, task/*
+
+ next => 15 novembre
+ todo: context switch FPU/SSE, thread_*
+
+ next => 30 novembre
+ todo: time/*, event/*
+
+ fil rouge:
+  * retravailler encore un peu la moulinette (cf todo plus haut)
+  * ecrire ia32 book
+
+ choses à reflechir:
+  ia32_as_reserve, *_split *_coalesce *_resize, segment_perms, ia32_sched_yield
+
  CHOSES A FAIRE PAR MANAGER:
 
  * as
-  - as_clone a revoir
   - ia32_as_reserve: ne mapper que certaines sections du ELF
   - ia32_as_reserve: ajuster les flags G des pte du kas
  * map
   - map_resize: a revoir en fct des modifications de region/segment
  * region
-  - region_resize: a modifier - pas de relocation
   - region_split: a modifier - 2 regions / 1 segment
-  - ia32_region_reserve : cas particulier (pt vide)
  * sched
   - sched_update: optimiser car ca pue
   - ia32_sched_yield
@@ -66,7 +134,6 @@
   - gestion des wait
 
  * tests
-   + as/03
    + time/01, time/02, time/03
    + task/01, task/02, task/03, task/04, task/05, task/06
    + event/*
@@ -130,9 +197,6 @@
  qu il y a trois parties bien distinctes: core, machdep, libarch
 
 --
- refaire la moulinette de tests pour qu elle soit propre
-
---
  pour resoudre les forward declarations, normalement faire comme set.h
  et ca marche, cad forward declarer tous les types d'un .h AVANT de
  faire les includes recursifs.
@@ -143,12 +207,6 @@
 
  ca montrerait la possibilite du set manager et en plus on pourrait faire
  des tests de perf avec le slab.
-
---
- etudier le SMP pour pouvoir faire evoluer kaneton vers ca.
-
- faire un cpu manager pour que les process puissent decider sur quels
- cpus ils peuvent tourner.
 
 --
  probleme de nomenclature: chiche_get(o* o) ca marche pour recuperer un
@@ -182,10 +240,6 @@
  boote, soit le systeme de lui meme (via un fichier de conf) sait quels
  sont les objets dont il herite ou alors il faut prevoir des messages style
  segment_acquire() pour acquerir un segment specifique: la memoire video.
-
---
- pour tester la moulette avec un seul pc : QEMU, avec l'option "-serial pty"
- et changer en dur le device dans check.py.
 
 --
  nettoyer conf.h, debug.h, check.h rendre tout ca coherent car la c'est

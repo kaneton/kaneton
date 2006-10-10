@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/books/ia32-virtual/memory.tex
 %%
 %% created       matthieu bucchianeri   [sat sep  2 11:40:35 2006]
-%% updated       matthieu bucchianeri   [sun sep  3 12:12:33 2006]
+%% updated       matthieu bucchianeri   [sun oct  8 18:54:59 2006]
 %%
 
 %
@@ -63,6 +63,59 @@
 
 \subsection{Reserving a region}
 
+Reserving a region is the operation that create in a given address
+space a mapping between one or more physical pages and the same amount
+of virtual pages.
+
+The only action performed to reserve a region is to fill the
+page-tables tree, creating one or more page-tables and adding a few
+entries into these.
+
+As region is a high-level frontend, it only performs a mapping of
+contiguous areas. The algorithm for contiguous mapping is quite simple:
+
+\begin{enumerate}
+\item We compute the \textit{pde\_start} and \textit{pde\_end}
+values. These values give the interval of page-directory entries we
+will need to loop thought. We use a macro named \textit{PDE\_ENTRY},
+that returns for a given address the index of the page-directory entry
+that leads to the good page-table.
+\item Identically, we compute \textit{pte\_start} and
+\textit{pte\_end}, indicating the index of the first page-table entry
+to add into the first page-table, and the last page-table entry into
+the last page-table.
+\item Now, we will need to loop throught the page-directory. So, first
+of all, we must map it into the current address space (the kernel
+address space). This is done using the
+\textit{ia32\_region\_map\_chunk} function. This particular function
+uses the \textbf{mirroring technique}, explained below this algorithm.
+\item We loop throught \textit{pde\_start} and \textit{pde\_end}
+page-directory entries.
+  \begin{enumerate}
+  \item If the page-table we need to modify does not exist, we create
+  it. This is done by reserving a segment and adding the corresponding
+  page-directory entry.
+  \item Next, as we mapped the page-directory, we also need to map the
+  page-table into the kernel address space in order to change it. This
+  is done the same way as previously.
+  \item Now, we are able to add some page-table entries. We loop
+  throught the good interval, which is determined as follow :
+    \begin{itemize}
+    \item If the current page-table is the first-one, then we start at
+    \textit{pte\_start}, otherwise, we start at 0.
+    \item If the current page-table is the last-one, then we stop our
+    loop at \textit{pte\_end}, otherwise, we use the maximum value
+    (1024), to fill all the page-table entries.
+    \end{itemize}
+    \item We fill these entries. Each one maps exactly one page.
+    \item Before moving on to the next page-table, we take care of
+    unmapping the previous one.
+  \end{enumerate}
+\item Once the whole process is complete, we unmap the page-directory.
+\end{enumerate}
+
+
+
 %
 % releasing a region
 %
@@ -74,3 +127,42 @@
 %
 
 \subsection{Changing permissions of a region}
+
+%
+% translation cache flushing
+%
+
+\subsection{Translation cache flushing}
+
+The translation caches (also known as Translation Lookaside Buffers,
+TLB), are the low latency memories used to make the translation of
+virtual addresses into physical addresses.
+
+In fact, the whole page-tables tree is not browsed each time the
+microprocessor accesses a word in memory. Doing so will leads the
+translation mecanism to be very slow (as each memory access need two
+other accesses, one to read the page-directory and another to read a
+page-table entry). Each time such translation is done, the
+corresponding page-table entry is stored into the TLB. So, next accesses
+to the same page will not need to go thought the paging tree.
+
+But what appends when we add or remove a page translation while the TLB
+already have a translation for the same address? Let's imagine the
+following situation: we map the page A to the page frame B. The
+microprocessor accesses a word in A. The TLB is filled with the
+translation A $\rightarrow$ B. Next, we change the mapping so A
+$\rightarrow$ C. Now, the CPU accesses a word in A. The translation
+will be fetched from the TLB, still having A $\rightarrow$ B.
+
+So, when such mapping change occurs, we need to invalidate one or more
+TLB entries. Additionnaly, when switching from one address space to
+another, we must flush the entire TLB.
+
+On IA-32, flushing the whole TLB is done automatically when switching
+address space (changing the value in the page-directory base
+register). As all the functions modifying the virtual addresses
+mapping are executed in kernel-land, we must flush some TLB entries
+only when modifying mapping into the kernel address space. When
+changing some mappings into a task address space, it is not necessary
+to flush the TLB, as switching back to the task will invalidate the
+whole caches.

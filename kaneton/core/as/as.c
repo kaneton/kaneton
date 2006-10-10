@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [fri sep  1 16:25:33 2006]
+ * updated       matthieu bucchianeri   [sun oct  8 17:40:45 2006]
  */
 
 /*
@@ -471,8 +471,6 @@ t_error			as_clone(i_task				tskid,
       map[0] = *data;
       map[1] = needless;
 
-      printf ("cloning segment %qd -> %qd\n", *data, needless);
-
       if (set_add(mapping, map) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
     }
@@ -480,8 +478,6 @@ t_error			as_clone(i_task				tskid,
   /*
    * 7)
    */
-
-  set_show_array(mapping);
 
   set_foreach(SET_OPT_FORWARD, from->regions, &i, state)
     {
@@ -496,11 +492,11 @@ t_error			as_clone(i_task				tskid,
 	  AS_LEAVE(as, ERROR_UNKNOWN);
 	}
 
-      if (set_get(mapping, data->segid, (void**)&map) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
+      if (data->opts & REGION_OPT_GLOBAL)
+	continue;
 
-      printf ("map = %qd -> %qd\n", map[0], map[1]);
-      printf ("mapping region to segment %qd (prev. %qd)\n", map[1], data->segid);
+      if (set_get(mapping, data->segid, (void**)&map) != ERROR_NONE)
+	map[1] = data->segid;
 
       if (region_reserve(to->asid, map[1], data->offset,
 			 data->opts | REGION_OPT_FORCE,
@@ -509,7 +505,7 @@ t_error			as_clone(i_task				tskid,
     }
 
   /*
-   * 7)
+   * 8)
    */
 
   if (machdep_call(as, as_clone, tskid, old, new) != ERROR_NONE)

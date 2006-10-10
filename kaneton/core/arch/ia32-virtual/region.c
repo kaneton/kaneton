@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/machdep/region.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [wed aug 30 17:37:05 2006]
+ * updated       matthieu bucchianeri   [sun oct  8 17:33:15 2006]
  */
 
 /*
@@ -329,7 +329,8 @@ t_error			ia32_region_reserve(i_as		asid,
 
   for (pde = pde_start; pde <= pde_end; pde++)
     {
-      /* XXX some cases, empty pt is added */
+      if (!size)
+	break;
 
       /*
        * a)
@@ -389,6 +390,7 @@ t_error			ia32_region_reserve(i_as		asid,
 
 	  pg.addr = paddr;
 	  paddr += PAGESZ;
+	  size -= PAGESZ;
 
 	  if (pt_add_page(&pt, pte, pg) != ERROR_NONE)
 	    REGION_LEAVE(region, ERROR_UNKNOWN);
