@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/sched.h
  *
  * created       matthieu bucchianeri   [sat jun  3 22:47:21 2006]
- * updated       matthieu bucchianeri   [sat jun 17 18:28:50 2006]
+ * updated       matthieu bucchianeri   [tue oct 10 22:42:44 2006]
  */
 
 #ifndef IA32_CORE_SCHED_H
@@ -29,6 +29,8 @@
 typedef struct
 {
   i_timer			timer;
+
+  i_thread			mmx_context;
 }				am_sched;
 
 /*

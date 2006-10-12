@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/libia32/include/task/task.h
+ * file          /home/buckman/kaneton/libs/libia32/include/task/context.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       matthieu bucchianeri   [mon jul 31 19:23:28 2006]
+ * updated       matthieu bucchianeri   [thu oct 12 22:49:24 2006]
  */
 
 /*
@@ -31,71 +31,44 @@
 #define IA32_CAPS_MMX		(1 << 0)
 #define IA32_CAPS_SSE		(1 << 1)
 
-/*
- * update the global variable used for pointing saved context.
- */
-
-#define UPDATE_CONTEXT_PTR						\
-  asm volatile("movl %%esp, %0\n\t"					\
-	       : "=g" (context))
-
-/*
- * get the x87 state pointer.
- */
-
-#define X87_STATE()							\
-  (t_x87_state*)((t_uint8*)context - 108)
-
-/*
- * get the x87/mmx/sse state pointer.
- */
-
-#define SSE_STATE()							\
-  (t_sse_state*)(((t_uint32)context - 512) & 0xFFFFFFF0)
-
-/*
- * save cpu registers on the stack
- */
-
-#define SAVE_CONTEXT()							\
-  asm volatile("pushl %ebx\n\t"						\
-	       "pushl %ecx\n\t"						\
-	       "pushl %edx\n\t"						\
-	       "pushl %edi\n\t"						\
-	       "pushl %esi");						\
-  UPDATE_CONTEXT_PTR;							\
-  if (cpucaps & IA32_CAPS_SSE)						\
-    asm volatile("movl %%esp, %%eax\n\t"				\
-		 "subl $512, %%esp\n\t"					\
-		 "andw $0xFFF0, %%sp\n\t"				\
-		 "fxsave (%%esp)\n\t"					\
-		 "pushl %%eax"						\
-		 :							\
-		 :							\
-		 : "%eax");						\
-  else									\
-    asm volatile("subl $108, %esp\n\t"					\
-		 "fsave (%esp)")
-
-/*
- * restore cpu registers from the stack
- */
+#define	SAVE_CONTEXT()							\
+	 "	pushl %ebp				\n"		\
+	 "	pushl %eax				\n"		\
+	 "	pushl %ebx				\n"		\
+	 "	pushl %ecx				\n"		\
+	 "	pushl %edx				\n"		\
+	 "	pushl %esi				\n"		\
+	 "	pushl %edi				\n"		\
+	 "	movl %cr3, %eax				\n"		\
+	 "	pushl %eax				\n"		\
+	 "	movl interrupt_pdbr, %eax		\n"		\
+	 "	movl %eax, %cr3				\n"		\
+	 "	pushw %ds				\n"		\
+	 "	pushw %es				\n"		\
+	 "	pushw %fs				\n"		\
+	 "	pushw %gs				\n"		\
+	 "	movl %esp, context			\n"		\
+	 "	movw interrupt_ds, %ax			\n"		\
+	 "	movw %ax, %ds				\n"		\
+	 "	movw %ax, %es				\n"		\
+	 "	movw %ax, %fs				\n"		\
+	 "	movw %ax, %gs				\n"
 
 #define RESTORE_CONTEXT()						\
-  context = NULL;							\
-  if (cpucaps & IA32_CAPS_SSE)						\
-    asm volatile("popl %eax\n\t"					\
-		 "fxrstor (%esp)\n\t"					\
-		 "movl %eax, %esp");					\
-  else									\
-    asm volatile("frstor (%esp)\n\t"					\
-		 "addl $108, %esp\n\t");				\
-  asm volatile("popl %esi\n\t"						\
-	       "popl %edi\n\t"						\
-	       "popl %edx\n\t"						\
-	       "popl %ecx\n\t"						\
-	       "popl %ebx\n\t")
-
+	 "	movl $0, context			\n"		\
+	 "	popw %gs				\n"		\
+	 "	popw %fs				\n"		\
+	 "	popw %es				\n"		\
+	 "	popw %ds				\n"		\
+	 "	popl %eax				\n"		\
+	 "	movl %eax, %cr3				\n"		\
+	 "	popl %edi				\n"		\
+	 "	popl %esi				\n"		\
+	 "	popl %edx				\n"		\
+	 "	popl %ecx				\n"		\
+	 "	popl %ebx				\n"		\
+	 "	popl %eax				\n"		\
+	 "	popl %ebp				\n"
 
 
 /*
@@ -108,22 +81,19 @@
 
 typedef struct
 {
-  t_uint32	esi;
+  t_uint16	gs;
+  t_uint16	fs;
+  t_uint16	es;
+  t_uint16	ds;
+  t_uint32	cr3;
   t_uint32	edi;
+  t_uint32	esi;
   t_uint32	edx;
   t_uint32	ecx;
   t_uint32	ebx;
-  t_uint8	reserved3[0x18];
-  t_uint32	ebp_handler;
-  t_uint8	reserved2[0x14];
-  t_uint32	gs;
-  t_uint32	fs;
-  t_uint32	es;
-  t_uint32	ds;
-  t_uint32	cr3;
   t_uint32	eax;
-  t_uint8	reserved1[0x8];
   t_uint32	ebp;
+  t_uint32	code;
   t_uint32	eip;
   t_uint32	cs;
   t_uint32	eflags;

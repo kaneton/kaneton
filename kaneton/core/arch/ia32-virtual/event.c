@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [fri aug 18 16:16:04 2006]
+ * updated       matthieu bucchianeri   [wed oct 11 23:16:31 2006]
  */
 
 /*
@@ -159,6 +159,7 @@ t_error			ia32_event_release(i_event		id)
  * 5) set default handler for every exception.
  * 6) set default handler for every irq.
  * 7) enable external interrupts.
+ * 8) setup default exception handlers.
  */
 
 t_error			ia32_event_init(void)
@@ -252,6 +253,10 @@ t_error			ia32_event_init(void)
     return ERROR_UNKNOWN;
 
   if (event_reserve(10, EVENT_FUNCTION, EVENT_HANDLER(ia32_ts_handler))
+      != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (event_reserve(7, EVENT_FUNCTION, EVENT_HANDLER(ia32_sched_switch_mmx))
       != ERROR_NONE)
     return ERROR_UNKNOWN;
 

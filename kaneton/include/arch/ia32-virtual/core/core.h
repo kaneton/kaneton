@@ -215,6 +215,8 @@ t_error			ia32_sched_yield(i_cpu			cpuid);
 
 t_error			ia32_sched_switch(i_thread		elected);
 
+void			ia32_sched_switch_mmx(t_id			id);
+
 t_error			ia32_sched_init(void);
 
 t_error			ia32_sched_clean(void);

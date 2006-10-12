@@ -93,7 +93,7 @@
  todo: task_wait, task_clone, task/*
 
  next => 15 novembre
- todo: context switch FPU/SSE, thread_*
+ todo: context switch FPU/SSE X, thread_*
 
  next => 30 novembre
  todo: time/*, event/*
@@ -117,7 +117,6 @@
  * sched
   - sched_update: optimiser car ca pue
   - ia32_sched_yield
-  - gerer le switch du context FPU/SSE en utilisant l'exception qui va bien
  * segment
   - segment_resize: segment OK (bug pour le 1er/dernier seg), regions TODO
   - segment_split: segment OK, regions TODO

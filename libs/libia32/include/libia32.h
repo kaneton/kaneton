@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/libia32.h
  *
  * created       matthieu bucchianeri   [tue dec 20 13:58:56 2005]
- * updated       matthieu bucchianeri   [sun sep 10 17:39:44 2006]
+ * updated       matthieu bucchianeri   [tue oct 10 22:20:43 2006]
  */
 
 #ifndef LIBIA32_H
@@ -30,7 +30,7 @@
 #include "interrupt/pic.h"
 #include "interrupt/ipi.h"
 #include "time/pit.h"
-#include "task/task.h"
+#include "task/context.h"
 #include "task/tss.h"
 #include "apic/apic.h"
 
@@ -283,7 +283,7 @@ t_error			interrupt_set_handler(t_uint32			nr,
 t_error			interrupt_init(void);
 
 void			handler_exception(t_uint32			nr,
-					  t_uint32			has_code);
+					  t_uint32			code);
 
 void			handler_irq(t_uint32				nr);
 

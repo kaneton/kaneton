@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/pmode/pmode.c
+ * file          /home/buckman/kaneton/libs/libia32/pmode/pmode.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:15 2005]
- * updated       julien quintard   [sat jul  8 02:35:03 2006]
+ * updated       matthieu bucchianeri   [wed oct 11 19:56:42 2006]
  */
 
 /*
@@ -121,7 +121,7 @@ t_error			pmode_set_segment_registers(t_uint16	seg_code,
 	       "pushl $pmode_update_registers_label\n\t"
 	       "lret\n\t"
 	       "pmode_update_registers_label:\n\t"
-	       "movl %1, %%eax\n\t"
+	       "movw %1, %%ax\n\t"
 	       "movw %%ax, %%ds\n\t"
 	       "movw %%ax, %%ss\n\t"
 	       "movw %%ax, %%es\n\t"

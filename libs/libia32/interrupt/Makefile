@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/libs/libia32/interrupt/Makefile
 ##
 ## created       matthieu bucchianeri   [fri jan  6 11:45:56 2006]
-## updated       matthieu bucchianeri   [tue jul 25 16:01:03 2006]
+## updated       matthieu bucchianeri   [wed oct 11 22:59:19 2006]
 ##
 
 #

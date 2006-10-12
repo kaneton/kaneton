@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [sun aug 20 20:01:27 2006]
+ * updated       matthieu bucchianeri   [wed oct 11 23:22:05 2006]
  */
 
 /*
@@ -101,6 +101,8 @@ t_error			ia32_sched_yield(i_cpu			cpuid)
  * 2) store back the executing context into the executing thread.
  * 3) set current context as the elected thread one.
  * 4) update the I/O permissions bit map.
+ * 5) set the TS flag so any use of FPU, MMX or SSE instruction will
+ *    generate an exception.
  */
 
 t_error			ia32_sched_switch(i_thread		elected)
@@ -135,7 +137,7 @@ t_error			ia32_sched_switch(i_thread		elected)
       SCHED_LEAVE(sched, ERROR_NONE);
 
   /*
-   * 1)
+   * 2)
    */
 
   if (ent->current != ID_UNUSED)
@@ -144,27 +146,19 @@ t_error			ia32_sched_switch(i_thread		elected)
 	SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
       context_copy(&from->machdep.context, context);
-      if (cpucaps & IA32_CAPS_SSE)
-	memcpy(&from->machdep.u.sse, SSE_STATE(), sizeof(t_sse_state));
-      else
-	memcpy(&from->machdep.u.x87, X87_STATE(), sizeof(t_x87_state));
     }
 
   /*
-   * 2)
+   * 3)
    */
 
   if (thread_get(elected, &to) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   context_copy(context, &to->machdep.context);
-  if (cpucaps & IA32_CAPS_SSE)
-    memcpy(SSE_STATE(), &to->machdep.u.sse, sizeof(t_sse_state));
-  else
-    memcpy(X87_STATE(), &to->machdep.u.x87, sizeof(t_x87_state));
 
   /*
-   * 3)
+   * 4)
    */
 
   if (task_get(to->taskid, &task) != ERROR_NONE)
@@ -174,7 +168,118 @@ t_error			ia32_sched_switch(i_thread		elected)
 	 &task->machdep.iomap,
 	 8192);
 
+  /*
+   * 5)
+   */
+
+  asm volatile("movl %%cr0, %%eax\n\t"
+	       "orl $0x8, %%eax\n\t"
+	       "movl %%eax, %%cr0"
+	       :
+	       :
+	       : "%eax");
+
   SCHED_LEAVE(sched, ERROR_NONE);
+}
+
+/*
+ * this function is used to switch FPU, MMX and SSE context.
+ *
+ * steps:
+ *
+ * 1) get the currently executing thread.
+ * 2) SSE case
+ *  a) save the SSE & FPU context into the previous thread context.
+ *  b) restore the SSE & FPU context of the executing thread.
+ * 3) FPU or MMX case
+ *  a) save the FPU/MMX context into the previous thread context.
+ *  b) restore the FPU/MMX context of the executing thread.
+ * 4) clears the TS bit in CR0.
+ * 5) store the current thread identifier to save back its context later.
+ */
+
+void			ia32_sched_switch_mmx(t_id			id)
+{
+  i_cpu			cpuid;
+  t_cpu_sched*		ent;
+  i_thread		thread;
+  o_thread*		o;
+  o_thread*		old;
+
+  /*
+   * 1)
+   */
+
+  if (cpu_current(&cpuid) != ERROR_NONE)
+    return;
+
+  if (set_get(sched->cpus, cpuid, (void**)&ent) != ERROR_NONE)
+    return;
+
+  thread = ent->current;
+
+  if (thread_get(thread, &o) != ERROR_NONE)
+    return;
+
+  if (thread_get(sched->machdep.mmx_context, &old) != ERROR_NONE)
+    return;
+
+  if (cpucaps & IA32_CAPS_SSE)
+    {
+      /*
+       * 2)
+       */
+
+      /*
+       * a)
+       */
+
+      asm volatile("fxsave %0"
+		   :
+		   : "m" (old->machdep.u.sse));
+
+      /*
+       * b)
+       */
+
+      asm volatile("fxrstor %0"
+		   :
+		   : "m" (o->machdep.u.sse));
+    }
+  else
+    {
+      /*
+       * 3)
+       */
+
+      /*
+       * a)
+       */
+
+      asm volatile("fsave %0"
+		   :
+		   : "m" (old->machdep.u.x87));
+
+      /*
+       * b)
+       */
+
+      asm volatile("frstor %0"
+		   :
+		   : "m" (o->machdep.u.x87));
+    }
+
+  /*
+   * 4)
+   */
+
+  asm volatile("clts");
+
+  /*
+   * 5)
+   */
+
+  sched->machdep.mmx_context = thread;
 }
 
 /*

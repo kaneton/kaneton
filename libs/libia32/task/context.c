@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/task/context.c
  *
  * created       renaud voltz   [tue apr  4 21:45:07 2006]
- * updated       matthieu bucchianeri   [sun sep 10 12:53:42 2006]
+ * updated       matthieu bucchianeri   [tue oct 10 21:59:41 2006]
  */
 
 /*
@@ -75,7 +75,7 @@ void			context_setup(void)
   if (cpuid_has_mmx())
     cpucaps |= IA32_CAPS_MMX;
 
-  if (0 && cpuid_has_sse() && cpuid_has_fxstate()) /* XXX */
+  if (cpuid_has_sse() && cpuid_has_fxstate())
     {
       extensions_enable_sse();
       cpucaps |= IA32_CAPS_SSE;
