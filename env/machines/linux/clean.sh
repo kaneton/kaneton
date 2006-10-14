@@ -36,7 +36,7 @@ clean()
   # cleaning development tree.
   display "   cleaning development tree" "+"
 
-  needless=$(launch "Makefile" "${_SRC_DIR_}" "clear")
+  needless=$(launch "Makefile" "${_SRC_DIR_}" "clear" "")
 
   # destroys the architecture dependent links.
   display "   removing links to machine-dependent directories" "+"

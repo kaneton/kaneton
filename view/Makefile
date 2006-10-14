@@ -1,17 +1,14 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/view
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Mon Nov  7 16:13:01 2005   mycure
+## ---------- header ----------------------------------------------------------
+##
+## project       kaneton
+##
+## license       kaneton
+##
+## file          /home/mycure/kaneton/view/Makefile
+##
+## created       julien quintard   [sat oct 14 11:07:23 2006]
+## updated       julien quintard   [sat oct 14 11:07:25 2006]
 ##
 
 #

@@ -73,7 +73,7 @@ dep()
 
   display " cleaning makefile dependencies" "+"
 
-  makefiles=$(search "${_SRC_DIR_}" ".makefile.mk" "--file")
+  makefiles=$(search "${_SRC_DIR_}/" ".makefile.mk" "--file")
 
   for m in "${makefiles}" ; do
     remove "${m}" ""
