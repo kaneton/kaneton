@@ -1,7 +1,5 @@
-This machine profile is based on Linux and the GNU tools.
-
-More generally, if your operating system uses GNU tools, then you can
-certainly use this machine profile.
+This machine profile is based on Linux and the GNU tools but generates
+binaries and libraries for a 64-bit MIPS microprocessor machine.
 
 Below, a list of the program this machine profile uses.
 
@@ -12,14 +10,14 @@ variables. The user could so override for example the _SHELL_ variable
 to its specific bash binary path.
 
   bash
-  gcc
+  mips64-gcc
   gmake
   rm
-  ar
-  ranlib
+  mips64-ar
+  mips64-ranlib
   cd
-  ld
-  nasm
+  mips64-ld
+  mips64-as
   ln
   touch
   wc
@@ -33,7 +31,7 @@ to its specific bash binary path.
   echo
   read
   ls
-  cpp
+  mips64-cpp
   mtools
   mcopy
   grep
