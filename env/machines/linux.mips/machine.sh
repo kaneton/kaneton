@@ -8,7 +8,7 @@
 ## file          /home/mycure/kaneton/env/machines/linux.mips/machine.sh
 ##
 ## created       julien quintard   [sat oct 14 10:15:24 2006]
-## updated       julien quintard   [sat oct 14 10:15:25 2006]
+## updated       julien quintard   [sat oct 14 11:16:22 2006]
 ##
 
 #
@@ -190,7 +190,7 @@ locate()
       esac
   done
 
-  ${_WHICH_} ${options} ${program}
+  ${_WHICH_} ${options} ${program} 2>&1
 }
 
 #

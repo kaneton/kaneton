@@ -52,7 +52,7 @@ check()
   for b in ${BINARIES} ; do
     needless=$(locate "${b}")
 
-    if [ $? -ne 0 ] ; then
+    if [ ${?} -ne 0 ] ; then
       display "   binary '${b}' not present on your system" "!"
     fi
   done

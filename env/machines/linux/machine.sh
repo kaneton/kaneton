@@ -187,7 +187,7 @@ locate()
       esac
   done
 
-  ${_WHICH_} ${options} ${program}
+  ${_WHICH_} ${options} ${program} 2>&1
 }
 
 #
