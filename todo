@@ -184,7 +184,7 @@
  le core puisse extraire le premier module et le lancer.
 
 --
- tous les profiles machines sauf gnu-unix sont foireux
+ tous les profiles machines sauf linux et linux.mips sont foireux
 
  il faudra les mettre a jour enfin les refaire plutot
 

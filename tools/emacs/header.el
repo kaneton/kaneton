@@ -1,11 +1,8 @@
 ;;
-;; julien quintard
+;; julien quintard's emacs configuration
 ;;
-;; be careful of never editing this file with emacs and this emacs
-;; configuration.
+;; the header file generator is based on the following environment variables:
 ;;
-;; this header file generator is based on two environment variables:
-;;   EC_LICENCE:     the licence name
 ;;   EC_DEVELOPER:   the developer name
 ;;
 
@@ -23,18 +20,18 @@
    ec-c-list                 '( (o . "/*") (i . " *") (c . " */") )
    ec-css-list               '( (o . "/*") (i . " *") (c . " */") )
    ec-cpp-list               '( (o . "//") (i . "//") (c . "//") )
+   ec-ada-list               '( (o . "--") (i . "--") (c . "--") )
    ec-java-list              '( (o . "//") (i . "//") (c . "//") )
    ec-latex-list             '( (o . "%%") (i . "%%") (c . "%%") )
    ec-lisp-list              '( (o . ";;") (i . ";;") (c . ";;") )
    ec-xdefault-list          '( (o . "!!") (i . "!!") (c . "!!") )
    ec-makefile-list          '( (o . "##") (i . "##") (c . "##") )
+   ec-shell-list             '( (o . "##") (i . "##") (c . "##") )
+   ec-perl-list              '( (o . "##") (i . "##") (c . "##") )
    ec-text-list              '( (o . "##") (i . "##") (c . "##") )
    ec-fundamental-list       '( (o . "##") (i . "##") (c . "##") )
    ec-html-list              '( (o . "<!--") (i . "  --") (c . "-->"))
    ec-nroff-list             '( (o . "\\\"") (i . "\\\"") (c . "\\\""))
-   ec-sscript-list           '( (o . "#!/bin/sh")  (i . "##") (c . "##"))
-   ec-perl-list              '( (o . "#!/usr/bin/perl -w")  (i . "##")(c . "##") )
-   ec-cperl-list             '( (o . "#!/usr/bin/perl -w")  (i . "##")(c . "##") )
 )
 
 ;;
@@ -45,6 +42,7 @@
    ("C"                  . ec-c-list)
    ("CSS"                . ec-c-list)
    ("C++"                . ec-cpp-list)
+   ("Ada"                . ec-ada-list)
    ("java"               . ec-java-list)
    ("LaTeX"              . ec-latex-list)
    ("latex"              . ec-latex-list)
@@ -58,9 +56,9 @@
    ("Fundamental"        . ec-fundamental-list)
    ("HTML"               . ec-html-list)
    ("Nroff"              . ec-nroff-list)
-   ("Shell-script"       . ec-sscript-list)
-   ("Perl"               . ec-cperl-list)
-   ("CPerl"              . ec-cperl-list)
+   ("Shell-script"       . ec-shell-list)
+   ("Perl"               . ec-perl-list)
+   ("CPerl"              . ec-perl-list)
   )
 )
 
@@ -74,23 +72,32 @@
   (cdr (assoc a (eval (cdr (assoc mode-name ec-modes-list))))))
 
 ;;
-;; generates the header.
+;; generates the file header.
 ;;
 
 (defun ec-generate-header ()
    (interactive)
    (goto-char (point-min))
-   (let ((project-name "") (location ""))
+   (let ((project-name ""))
     (setq project-name (read-from-minibuffer
                         (format "project name: ")
+                       )
+    )
+    (setq license-name (read-from-minibuffer
+                        (format "license name: ")
                        )
     )
     (insert-string (ec-comment 'o))
     (newline)
     (insert-string (concat
                     (ec-comment 'i)
-                    " licence       "
-                    (getenv "EC_LICENCE")
+                    " ---------- header "
+                    (make-string
+		     (- 79 (+ (length (ec-comment 'i))
+			      (length " ---------- header ")
+			   )
+		     )
+		    ?-)
                    )
     )
     (newline)
@@ -100,6 +107,15 @@
                     (ec-comment 'i)
                     " project       "
                     project-name
+                   )
+    )
+    (newline)
+    (insert-string (ec-comment 'i))
+    (newline)
+    (insert-string (concat
+                    (ec-comment 'i)
+                    " license       "
+                    license-name
                    )
     )
     (newline)
@@ -151,77 +167,117 @@
     (if (buffer-modified-p)
      (progn
       (goto-char (point-min))
+
       (if (search-forward
            (concat
             (ec-comment 'i)
-            " licence       "
+            " ---------- header "
+            (make-string
+	     (- 79 (+ (length (ec-comment 'i))
+		      (length " ---------- header ")
+	           )
+	     )
+	    ?-)
            )
           nil t)
        (progn
-        (delete-region
-         (progn (beginning-of-line) (point))
-         (progn (end-of-line) (point))
+        (if (search-forward
+             (concat
+              (ec-comment 'i)
+              " file          "
+             )
+            nil t)
+         (progn
+          (delete-region
+           (progn (beginning-of-line) (point))
+           (progn (end-of-line) (point))
+          )
+          (insert-string (concat
+                          (ec-comment 'i)
+                          " file          "
+                          (buffer-file-name)
+                         )
+          )
+         )
         )
-        (insert-string (concat
-                        (ec-comment 'i)
-                        " licence       "
-                        (getenv "EC_LICENCE")
-                       )
-        )
-       )
-      )
-      (if (search-forward
-           (concat
-            (ec-comment 'i)
-            " file          "
-           )
-          nil t)
-       (progn
-        (delete-region
-         (progn (beginning-of-line) (point))
-         (progn (end-of-line) (point))
-        )
-        (insert-string (concat
-                        (ec-comment 'i)
-                        " file          "
-                        (buffer-file-name)
-                       )
-        )
-       )
-      )
-      (if (search-forward
-           (concat
-            (ec-comment 'i)
-            " updated       "
-           )
-          nil t)
-       (progn
-        (delete-region
-         (progn (beginning-of-line) (point))
-         (progn (end-of-line) (point))
-        )
-        (insert-string (concat
-                        (ec-comment 'i)
-                        " updated       "
-                        (getenv "EC_DEVELOPER")
-                        "   "
-                        "["
-                        (downcase (current-time-string))
-                        "]"
-                      )
+        (if (search-forward
+             (concat
+              (ec-comment 'i)
+              " updated       "
+             )
+            nil t)
+         (progn
+          (delete-region
+           (progn (beginning-of-line) (point))
+           (progn (end-of-line) (point))
+          )
+          (insert-string (concat
+                          (ec-comment 'i)
+                          " updated       "
+                          (getenv "EC_DEVELOPER")
+                          "   "
+                          "["
+                          (downcase (current-time-string))
+                          "]"
+                        )
+          )
+         )
         )
        )
       )
+
      )
     )
+  )
+)
+
+;;
+;; generates a section header.
+;;
+
+(defun ec-generate-section ()
+   (interactive)
+   (let ((section-name ""))
+    (setq section-name (read-from-minibuffer
+                        (format "section name: ")
+                       )
+    )
+    (insert-string (ec-comment 'o))
+    (newline)
+    (insert-string (concat
+                    (ec-comment 'i)
+                    " ---------- "
+		    section-name
+		    " "
+                    (make-string
+		     (- 79 (+ (length (ec-comment 'i))
+			      (+ (length " ---------- ")
+				 (+ (length section-name)
+				    (length " ")
+				 )
+			      )
+			   )
+		     )
+		     ?-)
+                   )
+    )
+    (newline)
+    (insert-string (ec-comment 'c))
+    (newline)
    )
 )
 
 ;;
-;; binding to generate the header.
+;; binding to generate the file header.
 ;;
 
 (global-set-key [(control c)(h)] 'ec-generate-header)
+
+;;
+;; binding to generate a section header.
+;;
+
+(global-set-key [(control c)(s)] 'ec-generate-section)
 
 ;;
 ;; binding to go to a specific line.
@@ -251,6 +307,18 @@
 (display-time)
 
 ;;
+;; show the in relation parentheses.
+;;
+
+(show-paren-mode t)
+
+;;
+;; syntaxic colorisation.
+;;
+
+(global-font-lock-mode)
+
+;;
 ;; no blank line at the end of the file.
 ;;
 
@@ -260,7 +328,7 @@
 ;; no scroll bar.
 ;;
 
-(scroll-bar-mode nil)
+;(scroll-bar-mode nil)
 
 ;;
 ;; no menu bar.

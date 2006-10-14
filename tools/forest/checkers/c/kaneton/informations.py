@@ -19,7 +19,7 @@
 # ----- informations ----------------------------------------------------------
 #
 
-STYLE = "epita2006"
+STYLE = "kaneton"
 VERSION = "1.0"
 AUTHOR = "mycure {julien.quintard@gmail.com}"
 CONTRIBUTORS = ""

@@ -20,10 +20,10 @@
 #
 
 #
-# epita
+# kaneton
 #
 
-class c_epita:
+class c_kaneton:
   def __init__(self):
     self.parser = None
     self.options = None

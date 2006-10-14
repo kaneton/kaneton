@@ -14,7 +14,7 @@
 #
 # this file checks for the correctness of the enumeration definitions.
 #
-# the 'e' variable represents the 'c_epita' checker main variable, the 'z'
+# the 'e' variable represents the 'c_kaneton' checker main variable, the 'z'
 # variable contains everything necessary for the enumerations checking while
 # the 'p' variable describes the current enumeration checking process.
 #
@@ -95,9 +95,9 @@ e_a_values = re.compile(s_a_values, re.MULTILINE)
 # this function adds specific options.
 #
 def		options(group):
-  group.add_option("--epita-enumerations-exclude",
+  group.add_option("--kaneton-enumerations-exclude",
                    action="append",
-                   dest="epita_enumerations_exclude",
+                   dest="kaneton_enumerations_exclude",
                    metavar="PATTERN",
                    help="exclude enumerations matching PATTERN from the "
                         "style checking")
@@ -217,8 +217,8 @@ def		check(e):
   for i in e.parser.enumerations:
     launch = 1
 
-    if e.options.epita_enumerations_exclude:
-      for x in e.options.epita_enumerations_exclude:
+    if e.options.kaneton_enumerations_exclude:
+      for x in e.options.kaneton_enumerations_exclude:
         if re.search(x, i, re.MULTILINE):
           launch = 0
           break

@@ -11,7 +11,7 @@
 #
 # ---------- information ------------------------------------------------------
 #
-# this script has to be run into the directory: env/machines/gnu-unix/
+# this script has to be run into the directory: env/machines/linux.mips/
 #
 
 #

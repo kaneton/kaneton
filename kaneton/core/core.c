@@ -119,7 +119,8 @@ void			kaneton(t_init*				bootloader)
 #ifndef SERIAL
   //  timer_test();
 
-  check_check_common();
+  // XXX commented by mycure for buckman
+  //check_check_common();
 
   sched_test();
 

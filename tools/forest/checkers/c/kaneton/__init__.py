@@ -32,7 +32,7 @@ import classes
 #
 # options()
 #
-# this function permits the 'epita2006' module to provide additional
+# this function permits the 'kaneton' module to provide additional
 # specific options to the user.
 #
 # moreover, this function calls the checker subparts' 'options()' function.
@@ -51,52 +51,52 @@ def		options(optparse):
 
   group.add_option("--kaneton-structures",
                    action="store_true",
-                   dest="epita_structures",
+                   dest="kaneton_structures",
                    help="enable the structures style checking")
 
   group.add_option("--kaneton-enumerations",
                    action="store_true",
-                   dest="epita_enumerations",
+                   dest="kaneton_enumerations",
                    help="enable the enumerations style checking")
 
   group.add_option("--kaneton-unions",
                    action="store_true",
-                   dest="epita_unions",
+                   dest="kaneton_unions",
                    help="enable the unions style checking")
 
   group.add_option("--kaneton-types",
                    action="store_true",
-                   dest="epita_types",
+                   dest="kaneton_types",
                    help="enable the types style checking")
 
   group.add_option("--kaneton-globals",
                    action="store_true",
-                   dest="epita_globals",
+                   dest="kaneton_globals",
                    help="enable the global variables style checking")
 
   group.add_option("--kaneton-comments",
                    action="store_true",
-                   dest="epita_comments",
+                   dest="kaneton_comments",
                    help="enable the comments style checking")
 
   group.add_option("--kaneton-macros",
                    action="store_true",
-                   dest="epita_macros",
+                   dest="kaneton_macros",
                    help="enable the macros style checking")
 
   group.add_option("--kaneton-functions",
                    action="store_true",
-                   dest="epita_functions",
+                   dest="kaneton_functions",
                    help="enable the functions style checking")
 
   group.add_option("--kaneton-prototypes",
                    action="store_true",
-                   dest="epita_prototypes",
+                   dest="kaneton_prototypes",
                    help="enable the prototypes style checking")
 
   group.add_option("--kaneton-contents",
                    action="store_true",
-                   dest="epita_contents",
+                   dest="kaneton_contents",
                    help="enable the contents style checking")
 
   #
@@ -123,14 +123,14 @@ def		options(optparse):
 #
 # check()
 #
-# this function just builds an object 'c_epita' named 'e'.
+# this function just builds an object 'c_kaneton' named 'e'.
 #
 # this object contains everything needed by the checker.
 #
 # then, this function calls the checker.
 #
 def		check(p, options):
-  e = classes.c_epita()
+  e = classes.c_kaneton()
 
   e.parser = p
   e.options = options

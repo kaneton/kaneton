@@ -14,7 +14,7 @@
 #
 # this file checks the correctness of the comments.
 #
-# the 'e' variable represents the 'c_epita' checker main variable, the 'z'
+# the 'e' variable represents the 'c_kaneton' checker main variable, the 'z'
 # variable contains everything necessary for the comments checking while
 # the 'p' variable describes the current comment checking process.
 #
@@ -57,19 +57,7 @@ class c_comment:
 # header
 #
 
-s_header = "^"								\
-           "/\*\n"							\
-           "\*\* (?:.*) for(?:(?: )|(?: .* ))in (?:.+)\n"		\
-           "\*\*(?: *)\n"						\
-           "\*\* Made by (?:.*)\n"					\
-           "\*\* Login   (?:.*)\n"					\
-           "\*\*(?: *)\n"						\
-           "\*\* Started on (?:.*)\n"					\
-           "\*\* Last update (?:.*)\n"					\
-           "\*/"
-
-e_header = re.compile("(" + s_header + ")",
-                      re.MULTILINE)
+# XXX
 
 #
 # comment
@@ -80,7 +68,7 @@ s_comment = " *"							\
               "(?:"							\
                 "/\*\n"							\
                 "(?:"							\
-                  "\*\*(?:.*)\n"					\
+                  " \*(?:.*)\n"						\
                 ")+"							\
                 "\*/"							\
               ")"							\
@@ -102,9 +90,9 @@ e_comment = re.compile(s_comment, re.MULTILINE)
 # this function adds comments checking specific options.
 #
 def		options(group):
-  group.add_option("--epita-comments-exclude",
+  group.add_option("--kaneton-comments-exclude",
                    action="append",
-                   dest="epita_comments_exclude",
+                   dest="kaneton_comments_exclude",
                    metavar="PATTERN",
                    help="exclude comments matching PATTERN from the "
                         "style checking")
@@ -114,29 +102,10 @@ def		options(group):
 #
 # header()
 #
-# this function checks the correctness of the EPITA header.
+# this function checks the correctness of the kaneton header.
 #
 def		header(e, z, i):
-  error = classes.c_error(i)
-  match = None
-
-  errors.open(e, error)
-
-  if not error.code:
-    errors.add(e, error, errors.ERRORS_STYLE,
-               "the file does not contains any header.\n")
-  else:
-    match = e_header.search(error.code)
-
-    if not match:
-      errors.add(e, error, errors.ERRORS_STYLE,
-                 "the file header is not properly formatted.\n")
-
-    checker.columns(e, error)
-
-  errors.close(e, error)
-
-  errors.commit(e, error)
+  return
 
 
 
@@ -205,8 +174,8 @@ def		check(e):
   for i in range(1, len(e.parser.comments)):
     launch = 1
 
-    if e.options.epita_comments_exclude:
-      for x in e.options.epita_comments_exclude:
+    if e.options.kaneton_comments_exclude:
+      for x in e.options.kaneton_comments_exclude:
         if re.search(x, e.parser.comments[i], re.MULTILINE):
           launch = 0
           break

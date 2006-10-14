@@ -14,7 +14,7 @@
 #
 # this file checks for the correctness of the type declarations.
 #
-# the 'e' variable represents the 'c_epita' checker main variable, the 'z'
+# the 'e' variable represents the 'c_kaneton' checker main variable, the 'z'
 # variable contains everything necessary for the types checking while
 # the 'p' variable describes the current type checking process.
 #
@@ -226,9 +226,9 @@ e_fields = re.compile(s_fields, re.MULTILINE)
 # this function adds specific options.
 #
 def		options(group):
-  group.add_option("--epita-types-exclude",
+  group.add_option("--kaneton-types-exclude",
                    action="append",
-                   dest="epita_types_exclude",
+                   dest="kaneton_types_exclude",
                    metavar="PATTERN",
                    help="exclude types matching PATTERN from the "
                         "style checking")
@@ -407,26 +407,7 @@ def		alignment(e, z, p, error):
 # this function verifies the type name's correctness.
 #
 def		name(e, z, p, error):
-  if p.type == TYPE_STRUCTURE:
-    if not e_structure.search(p.name.lstrip()):
-      errors.add(e, error, errors.ERRORS_STYLE,
-                 "structure aliased types must be prefixed by 's_'.\n")
-  elif p.type == TYPE_ENUMERATION:
-    if not e_enumeration.search(p.name.lstrip()):
-      errors.add(e, error, errors.ERRORS_STYLE,
-                 "enumeration aliased types must be prefixed by 'e_'.\n")
-  elif p.type == TYPE_UNION:
-    if not e_union.search(p.name.lstrip()):
-      errors.add(e, error, errors.ERRORS_STYLE,
-                 "union aliased types must be prefixed by 'u_'.\n")
-  elif p.type == TYPE_FUNCTION:
-    if not e_function.search(p.name.lstrip()):
-      errors.add(e, error, errors.ERRORS_STYLE,
-                 "function pointers aliased types must be prefixed by 'f_'.\n")
-  elif p.type == TYPE_BASIC:
-    if not e_basic.search(p.name.lstrip()):
-      errors.add(e, error, errors.ERRORS_STYLE,
-                 "basic types aliased types must be prefixed by 't_'.\n")
+  return
 
 
 
@@ -476,8 +457,8 @@ def		check(e):
   for i in e.parser.types:
     launch = 1
 
-    if e.options.epita_types_exclude:
-      for x in e.options.epita_types_exclude:
+    if e.options.kaneton_types_exclude:
+      for x in e.options.kaneton_types_exclude:
         if re.search(x, i, re.MULTILINE):
           launch = 0
           break

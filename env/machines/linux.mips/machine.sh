@@ -1,11 +1,14 @@
-## licence       kaneton licence
 ##
-## project
+## ---------- header ----------------------------------------------------------
 ##
-## file          /home/mycure/kaneton/env/machines/gnu-unix/machine.sh
+## project       kaneton
 ##
-## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [sun jul 30 22:49:58 2006]
+## license       kaneton
+##
+## file          /home/mycure/kaneton/env/machines/linux.mips/machine.sh
+##
+## created       julien quintard   [sat oct 14 10:15:24 2006]
+## updated       julien quintard   [sat oct 14 10:15:25 2006]
 ##
 
 #

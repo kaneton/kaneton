@@ -14,7 +14,7 @@
 #
 # this file is called when the module is imported.
 #
-# this file is a wrapper over the different styles.
+# this file is a wrapper over the different checkers.
 #
 
 #
@@ -30,7 +30,7 @@ import c
 #
 # options()
 #
-# this function just forwards the call to the correct styles.
+# this function just forwards the call to the correct checkers.
 #
 def		options(parser, style, optparse):
   if not parser or not style:

@@ -11,7 +11,7 @@
 #
 # ---------- information ------------------------------------------------------
 #
-# this script has to be run into the directory: env/machines/gnu-unix/
+# this script has to be run into the directory: env/machines/linux.mips/
 #
 # this script installs operating system and architecture specific
 # stuff.
@@ -27,8 +27,9 @@ source			.env.sh
 # ---------- globals ----------------------------------------------------------
 #
 
-BINARIES="bash gcc gmake rm ar ranlib ld nasm ln touch wc date	\
-          tail tar pdflatex cp cat sed ls cpp mtools mcopy grep	\
+BINARIES="bash mips64-gcc gmake rm mips64-ar mips64-ranlib	\
+          mips64-ld mips64-as ln touch wc date tail tar		\
+          pdflatex cp cat sed ls mips64-cpp mtools mcopy grep	\
           mkdir find xpdf mktemp mv lex script perl python"
 
 #

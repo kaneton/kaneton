@@ -14,7 +14,7 @@
 #
 # this file checks for the correctness of the macro declarations.
 #
-# the 'e' variable represents the 'c_epita' checker main variable, the 'z'
+# the 'e' variable represents the 'c_kaneton' checker main variable, the 'z'
 # variable contains everything necessary for the macros checking while
 # the 'p' variable describes the current macro checking process.
 #
@@ -116,9 +116,9 @@ e_a_breakers = re.compile(s_a_breakers, re.MULTILINE)
 # this function adds macro specific options.
 #
 def		options(group):
-  group.add_option("--epita-macros-exclude",
+  group.add_option("--kaneton-macros-exclude",
                    action="append",
-                   dest="epita_macros_exclude",
+                   dest="kaneton_macros_exclude",
                    metavar="PATTERN",
                    help="exclude macros matching PATTERN from the "
                         "style checking")
@@ -198,11 +198,6 @@ def		alignment(e, z, p, error):
   if p.type == MACRO_ENDIF:
     z.indentation = z.indentation - 1
 
-  if p.indentation != z.indentation:
-    errors.add(e, error, errors.ERRORS_STYLE,
-               "the macro indentation is wrong; expecting " +		\
-               str(z.indentation) + " whitespaces.\n")
-
   if p.type == MACRO_IFNDEF or p.type == MACRO_IFDEF or p.type == MACRO_IF:
     z.indentation = z.indentation + 1
 
@@ -230,20 +225,6 @@ def		name(e, z, p, error):
   if not p.type == MACRO_DEFINE and not p.type == MACRO_UNDEF and	\
      not p.type == MACRO_IFDEF and not p.type == MACRO_IFNDEF:
     return
-
-  if p.name:
-    if not p.name.isupper():
-      errors.add(e, error, errors.ERRORS_STYLE,
-                 "the macro name '" + p.name + "'is not capitalized.\n")
-
-  if p.arguments:
-    args = p.arguments.split(", ")
-
-    for a in args:
-      if not a.istitle():
-        errors.add(e, error, errors.ERRORS_STYLE,
-                   "the macro argument name '" + a +			\
-                   "' is not titled.\n")
 
 
 
@@ -290,8 +271,8 @@ def		check(e):
   for i in e.parser.macros:
     launch = 1
 
-    if e.options.epita_macros_exclude:
-      for x in e.options.epita_macros_exclude:
+    if e.options.kaneton_macros_exclude:
+      for x in e.options.kaneton_macros_exclude:
         if re.search(x, i, re.MULTILINE):
           launch = 0
           break

@@ -90,15 +90,12 @@ def		columns(e, error):
 #
 def		check(e):
   structures.check(e)
-
-  return
-
   enumerations.check(e)
   unions.check(e)
   types.check(e)
   globals.check(e)
-  comments.check(e)
-  macros.check(e)
-  functions.check(e)
+#  comments.check(e)
+#  macros.check(e)
+#  functions.check(e)
   prototypes.check(e)
   contents.check(e)

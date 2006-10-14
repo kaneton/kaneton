@@ -1,17 +1,20 @@
-## licence       kaneton licence
+##
+## ---------- header ----------------------------------------------------------
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/env/machines/gnu-unix/critical.sh
+## license       kaneton
 ##
-## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [fri jul 14 04:02:08 2006]
+## file          /home/mycure/kaneton/env/machines/linux.mips/critical.sh
+##
+## created       julien quintard   [sat oct 14 10:16:54 2006]
+## updated       julien quintard   [sat oct 14 10:18:45 2006]
 ##
 
 #
 # ---------- information ------------------------------------------------------
 #
-# this script has to be run in its directory: env/machines/gnu-unix/
+# this script has to be run in its directory: env/machines/linux.mips/
 #
 # for the moment this script uses GNU tools: sed, cat, rm, make etc..
 #

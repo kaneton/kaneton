@@ -14,7 +14,7 @@
 #
 # this file checks for the correctness of the prototypes declarations.
 #
-# the 'e' variable represents the 'c_epita' checker main variable, the 'z'
+# the 'e' variable represents the 'c_kaneton' checker main variable, the 'z'
 # variable contains everything necessary for the prototypes checking while
 # the 'p' variable describes the current prototype checking process.
 #
@@ -112,9 +112,9 @@ e_a_argument = re.compile(s_a_argument, re.MULTILINE)
 # this function adds specific prototypes options.
 #
 def		options(group):
-  group.add_option("--epita-prototypes-exclude",
+  group.add_option("--kaneton-prototypes-exclude",
                    action="append",
-                   dest="epita_prototypes_exclude",
+                   dest="kaneton_prototypes_exclude",
                    metavar="PATTERN",
                    help="exclude prototypes matching PATTERN from the "
                         "style checking")
@@ -266,8 +266,8 @@ def		check(e):
   for i in e.parser.prototypes:
     launch = 1
 
-    if e.options.epita_prototypes_exclude:
-      for x in e.options.epita_prototypes_exclude:
+    if e.options.kaneton_prototypes_exclude:
+      for x in e.options.kaneton_prototypes_exclude:
         if re.search(x, i, re.MULTILINE):
           launch = 0
           break

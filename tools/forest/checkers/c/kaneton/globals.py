@@ -14,7 +14,7 @@
 #
 # this file checks for the correctness of the global variable declarations.
 #
-# the 'e' variable represents the 'c_epita' checker main variable, the 'z'
+# the 'e' variable represents the 'c_kaneton' checker main variable, the 'z'
 # variable contains everything necessary for the globals checking while
 # the 'p' variable describes the current global variable checking process.
 #
@@ -107,9 +107,9 @@ e_call = re.compile(s_call)
 # this function adds specific global variables options.
 #
 def		options(group):
-  group.add_option("--epita-globals-exclude",
+  group.add_option("--kaneton-globals-exclude",
                    action="append",
-                   dest="epita_globals_exclude",
+                   dest="kaneton_globals_exclude",
                    metavar="PATTERN",
                    help="exclude global variables matching PATTERN from the "
                         "style checking")
@@ -144,10 +144,6 @@ def		parse(e, z, error):
   if p.extern == GLOBAL_STATIC:
     z.counter += 1
 
-    if z.counter > 1:
-      errors.add(e, error, errors.ERRORS_STYLE,
-                 "there must be only one global variable per file.\n")
-
   return p
 
 
@@ -158,12 +154,7 @@ def		parse(e, z, error):
 # this function verifies the global variable's name.
 #
 def		name(e, z, p, error):
-  if p.extern == GLOBAL_EXTERN:
-    return
-
-  if not e_name.search(p.name):
-    errors.add(e, error, errors.ERRORS_STYLE,
-               "global variables must be prefixed by 'g_'.\n")
+  return
 
 
 
@@ -174,15 +165,7 @@ def		name(e, z, p, error):
 # initialization.
 #
 def		initialization(e, z, p, error):
-  match = None
-
-  if not p.value:
-    return
-
-  if e_call.search(p.value):
-    errors.add(e, error, errors.ERRORS_STYLE,
-               "global variables must not be initialized by function "	\
-               "or macro-function calls.\n")
+  return
 
 
 
@@ -230,8 +213,8 @@ def		check(e):
   for i in e.parser.globals:
     launch = 1
 
-    if e.options.epita_globals_exclude:
-      for x in e.options.epita_globals_exclude:
+    if e.options.kaneton_globals_exclude:
+      for x in e.options.kaneton_globals_exclude:
         if re.search(x, i, re.MULTILINE):
           launch = 0
           break

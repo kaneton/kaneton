@@ -14,7 +14,7 @@
 #
 # this file checks for the correctness of the structure declarations.
 #
-# the 'e' variable represents the 'c_epita' checker main variable, the 'z'
+# the 'e' variable represents the 'c_kaneton' checker main variable, the 'z'
 # variable contains everything necessary for the structures checking while
 # the 'p' variable describes the current structure checking process.
 #
@@ -132,9 +132,9 @@ e_fields = re.compile(s_fields, re.MULTILINE)
 # this function adds specific options.
 #
 def		options(group):
-  group.add_option("--epita-structures-exclude",
+  group.add_option("--kaneton-structures-exclude",
                    action="append",
-                   dest="epita_structures_exclude",
+                   dest="kaneton_structures_exclude",
                    metavar="PATTERN",
                    help="exclude structures matching PATTERN from the "
                         "style checking")
@@ -279,8 +279,8 @@ def		check(e):
   for i in e.parser.structures:
     launch = 1
 
-    if e.options.epita_structures_exclude:
-      for x in e.options.epita_structures_exclude:
+    if e.options.kaneton_structures_exclude:
+      for x in e.options.kaneton_structures_exclude:
         if re.search(x, i, re.MULTILINE):
           launch = 0
           break
