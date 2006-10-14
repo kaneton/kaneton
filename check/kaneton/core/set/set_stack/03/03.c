@@ -34,7 +34,7 @@ void		check_set_stack_03(void)
   t_obj		obj1;
   t_obj*	obj2;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(stack, SET_OPT_ALLOC, sizeof(t_obj), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -67,7 +67,7 @@ void		check_set_stack_03(void)
 
   set_release(id);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }
 
 static void	display_t_obj(void* data)

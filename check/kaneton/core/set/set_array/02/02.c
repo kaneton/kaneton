@@ -23,7 +23,7 @@ void		check_set_array_02(void)
   t_id		objs[64];
   t_setsz	i;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(array, SET_OPT_NONE, 4, sizeof(t_id), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -39,5 +39,5 @@ void		check_set_array_02(void)
 
   set_release(id);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

@@ -25,7 +25,7 @@ void		check_set_pipe_05(void)
   t_id*		pdata;
   int		f = 0;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_id), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -54,5 +54,5 @@ void		check_set_pipe_05(void)
 
   set_release(id);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

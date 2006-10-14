@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/kaneton/bootloader/arch/ia32-virtual/04/04.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [sat jul 22 18:58:22 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 16:46:03 2006]
  */
 
 #include <klibc.h>
@@ -27,7 +27,7 @@ void		check_ia32_virtual_04(void)
   register t_uint16	ss;
   register t_uint32	esp;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   asm volatile("movl %%cr0, %0"
 	       : "=r" (cr0));
@@ -49,5 +49,5 @@ void		check_ia32_virtual_04(void)
   if (esp > init->kstack + init->kstacksz || esp <= init->kstack)
     printf("bad stack pointer (out of kernel stack)\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

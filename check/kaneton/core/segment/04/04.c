@@ -28,7 +28,7 @@ void		check_segment_04(void)
   o_as*		oas;
   void*		chiche;
 
-  TEST_ENTER;
+  TEST_ENTER();
   MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
@@ -79,5 +79,5 @@ void		check_segment_04(void)
   MY_ASSERT(task_release(task2) == ERROR_NONE,
 	    "failed to release task\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

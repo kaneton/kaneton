@@ -23,7 +23,7 @@ void		check_set_ll_05(void)
   t_iterator	it;
   t_id		obj;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(ll, SET_OPT_ALLOC, sizeof(t_id), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -53,5 +53,5 @@ void		check_set_ll_05(void)
 
   set_release(id);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

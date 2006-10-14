@@ -24,7 +24,7 @@ void		check_id_02(void)
   int		j;
   int		k;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (id_build(&id) != ERROR_NONE)
     printf("error id_build\n");
@@ -54,5 +54,5 @@ void		check_id_02(void)
 	printf("error id_destroy\n");
     }
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

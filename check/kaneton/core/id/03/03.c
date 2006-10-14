@@ -23,7 +23,7 @@ void		check_id_03(void)
   t_id		i;
   t_id		j;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (id_build(&id) != ERROR_NONE)
     printf("error id_build\n");
@@ -51,5 +51,5 @@ void		check_id_03(void)
 	printf("error id_destroy\n");
     }
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

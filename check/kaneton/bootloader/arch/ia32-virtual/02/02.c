@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/kaneton/bootloader/arch/ia32-virtual/02/02.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [fri sep  1 16:06:03 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 16:45:43 2006]
  */
 
 #include <klibc.h>
@@ -70,7 +70,7 @@ void			check_ia32_virtual_02(void)
   register t_uint32	cr3;
   t_gdtr		gdtr;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   for (i = 0; i < INIT_SEGMENTS; i++)
     {
@@ -111,5 +111,5 @@ void			check_ia32_virtual_02(void)
   LOOKUP_SEG(gdtr.base, PAGESZ, "gdt");
   LOOKUP_REG(gdtr.base, PAGESZ, "gdt");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

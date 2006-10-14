@@ -26,7 +26,7 @@ void		check_set_ll_08(void)
   t_id*		pdata;
   t_id		data;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(ll, SET_OPT_SORT, sizeof(t_id), &id) != ERROR_NONE)
     printf("error set_reserve()\n");
@@ -69,5 +69,5 @@ void		check_set_ll_08(void)
 
   set_release(id);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

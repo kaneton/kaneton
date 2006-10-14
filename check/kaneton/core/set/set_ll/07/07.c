@@ -24,7 +24,7 @@ void		check_set_ll_07(void)
   t_id		*obj;
   int		i;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(ll, SET_OPT_ALLOC, sizeof(t_id), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -72,5 +72,5 @@ void		check_set_ll_07(void)
 
   set_release(id);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

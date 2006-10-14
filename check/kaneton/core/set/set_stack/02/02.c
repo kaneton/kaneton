@@ -23,7 +23,7 @@ void		check_set_stack_02(void)
   t_id		objs[64];
   t_setsz	i;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(stack, SET_OPT_NONE, sizeof(t_id), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -39,5 +39,5 @@ void		check_set_stack_02(void)
 
   set_release(id);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

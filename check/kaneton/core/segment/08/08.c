@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/kaneton/core/segment/08/08.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [thu sep  7 23:36:15 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 17:32:22 2006]
  */
 
 #include <klibc.h>
@@ -29,7 +29,7 @@ void		check_segment_08(void)
   t_uint8*	buff;
   t_uint32	i;
 
-  TEST_ENTER;
+  TEST_ENTER();
   MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
@@ -92,5 +92,5 @@ void		check_segment_08(void)
   MY_ASSERT(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

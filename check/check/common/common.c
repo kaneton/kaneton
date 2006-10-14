@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/check/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [sat sep  9 18:00:58 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 18:05:46 2006]
  */
 
 #include <klibc.h>
@@ -18,10 +18,9 @@ void	check_check_common(void)
    * nothing to do here since this tests is only used to include code
    * for next steps
    */
+  TEST_ENTER();
 
-  TEST_ENTER_LEAKS();
-
-  t_uint8*	p = (t_uint8*)0x76543210;
+  t_uint8*     p = (t_uint8*)0x76543210;
 
   malloc(10);
 
@@ -29,7 +28,7 @@ void	check_check_common(void)
 
   printf("Didnot #PF\n");
 
-  TEST_LEAVE_LEAKS();
+  TEST_LEAVE();
 }
 
 /*
@@ -38,25 +37,18 @@ void	check_check_common(void)
 
 void	check_tests(void)
 {
-  check_check_common();
-/*  check_malloc_tests();
+//  check_check_common();
+#if 0
+  check_bootloader_tests();
   check_set_tests();
-  check_malloc_tests();
-  check_printf_tests();
-  check_stats_tests();
   check_id_tests();
-  check_libia32_tests();
-  check_event_tests();*/
-  /* XXX continue tests */
-/*
-#if DEBUG & DEBUG_AS
-  check_as_tests ();
+#endif
+  check_as_tests();
+#if 0
   check_segment_tests();
   check_region_tests();
-  check_task_tests();
   check_map_tests();
 #endif
-*/
 }
 
 /*
@@ -199,6 +191,8 @@ void	check_exc_catch(t_exc*		exc)
   /*
    * 4)
    */
+
+  while (1); /* XXX */
 
   asm volatile("leave\n\t"
 	       "ret");

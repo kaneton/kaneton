@@ -24,7 +24,7 @@ void		check_set_array_07(void)
   t_state	state;
   int		i;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(array, SET_OPT_ALLOC, 4, sizeof(t_id), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -54,5 +54,5 @@ void		check_set_array_07(void)
 
   set_release(id);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

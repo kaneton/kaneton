@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/01/01.c
+ * file          /home/buckman/kaneton/check/kaneton/core/as/01/01.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [fri mar 24 18:07:59 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 17:04:18 2006]
  */
 
 #include <klibc.h>
@@ -19,7 +19,7 @@ void		check_as_01(void)
   t_asid	as;
   o_as*		o;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
@@ -41,5 +41,5 @@ void		check_as_01(void)
   MY_ASSERT(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/check/common/common.h
  *
  * created       matthieu bucchianeri   [tue dec 20 15:04:37 2005]
- * updated       matthieu bucchianeri   [sat sep  9 17:54:17 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 17:03:05 2006]
  */
 
 #ifndef CHECK_COMMON_H_
@@ -75,7 +75,7 @@ typedef struct
   if (!(Test))								\
     {									\
       printf(Error);							\
-      TEST_LEAVE;							\
+      TEST_LEAVE();							\
     }
 
 typedef struct

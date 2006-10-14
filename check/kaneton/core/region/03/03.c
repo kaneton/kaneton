@@ -20,7 +20,7 @@ void		check_region_03(void)
   t_segid	seg;
   t_regid	reg;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   MY_ASSERT(segment_reserve(kasid,
 			    PAGESZ,
@@ -45,5 +45,5 @@ void		check_region_03(void)
   MY_ASSERT(segment_release(seg) == ERROR_NONE,
 	    "failed to release region\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

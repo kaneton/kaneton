@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/kaneton/core/as/03/03.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sun oct  8 17:55:49 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 18:12:02 2006]
  */
 
 #include <klibc.h>
@@ -31,7 +31,7 @@ void		check_as_03(void)
   t_setsz	sz;
   t_iterator	it;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
@@ -68,7 +68,7 @@ void		check_as_03(void)
 
   MY_ASSERT(set_size(o->segments, &sz) == ERROR_NONE, "invalid segment set in cloned object\n");
 
-  MY_ASSERT(sz == 1, "too many segments cloned\n");
+  MY_ASSERT(sz == 3, "too many segments cloned\n"); // 3 because 1 PD + 1 PT
 
   MY_ASSERT(set_head(o->segments, &it) == ERROR_NONE, "invalid segment set in cloned object\n");
 
@@ -97,5 +97,5 @@ void		check_as_03(void)
   MY_ASSERT(task_release(forked) == ERROR_NONE,
 	    "failed to release task\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/kaneton/core/as/common/common.h
  *
  * created       matthieu bucchianeri   [wed mar 15 23:12:48 2006]
- * updated       matthieu bucchianeri   [thu jul 20 19:25:34 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 17:00:54 2006]
  */
 
 #ifndef CHECK_AS_COMMON_H_
@@ -15,17 +15,6 @@
 # include <klibc.h>
 # include <kaneton.h>
 # include "../../../../check/common/common.h"
-
-# undef TEST_ENTER
-
-# define TEST_ENTER							\
-  printf("Test %s\n", __FUNCTION__);
-
-# undef TEST_LEAVE
-
-# define TEST_LEAVE							\
-  printf("%s done.\n", __FUNCTION__);					\
-  return
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -36,7 +25,6 @@
  *      ../03/03.c
  *      ../04/04.c
  *      ../05/05.c
- *      ../06/06.c
  */
 
 /*
@@ -81,13 +69,6 @@ void		check_as_04(void);
  */
 
 void		check_as_05(void);
-
-
-/*
- * ../06/06.c
- */
-
-void		check_as_06(void);
 
 
 /*

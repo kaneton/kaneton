@@ -21,7 +21,7 @@ void		check_region_01(void)
   t_regid	reg;
   o_region*	o;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
@@ -81,5 +81,5 @@ void		check_region_01(void)
   MY_ASSERT(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

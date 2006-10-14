@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/kaneton/bootloader/arch/ia32-virtual/03/03.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [fri sep  1 16:02:31 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 16:46:44 2006]
  */
 
 #include <klibc.h>
@@ -30,7 +30,7 @@ void		check_ia32_virtual_03(void)
   t_uint32	sz;
   i_region	reg;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (region_reserve(kasid,
 		     (i_segment)(t_uint32)init->modules,
@@ -41,7 +41,7 @@ void		check_ia32_virtual_03(void)
 		     &reg) != ERROR_NONE)
     {
       printf("cannot map modules\n");
-      TEST_LEAVE;
+      TEST_LEAVE();
     }
 
   mods = (t_modules*)(t_uint32)reg;
@@ -65,5 +65,5 @@ void		check_ia32_virtual_03(void)
 
   region_release(kasid, reg);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

@@ -21,7 +21,7 @@ void		check_set_stack_04(void)
 {
   i_set	id;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(stack, SET_OPT_ALLOC, sizeof(t_id), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -40,5 +40,5 @@ void		check_set_stack_04(void)
 
   set_release(id);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

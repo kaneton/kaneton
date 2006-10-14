@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/kaneton/bootloader/arch/ia32-virtual/01/01.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:06:15 2005]
- * updated       matthieu bucchianeri   [sat jul 22 19:01:41 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 16:45:30 2006]
  */
 
 #include <klibc.h>
@@ -25,7 +25,7 @@ void		check_ia32_virtual_01(void)
   t_reg32	ebp;
   t_reg32	esp;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (init->mem)
     printf("bad mem field\n");
@@ -83,5 +83,5 @@ void		check_ia32_virtual_01(void)
   if (!init->allocsz || init->allocsz % PAGESZ || init->allocsz < 8 * PAGESZ)
     printf("bad allocsz field\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

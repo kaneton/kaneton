@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/as/05/05.c
+ * file          /home/buckman/kaneton/check/kaneton/core/as/05/05.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [tue jul 18 19:14:49 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 18:05:40 2006]
  */
 
 #include <klibc.h>
@@ -43,7 +43,7 @@ void		check_as_05(void)
   t_paddr	p;
   t_uint32	i;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
@@ -77,15 +77,17 @@ void		check_as_05(void)
   for (i = 0; i < 8 * PAGESZ; i++)
     VTOP((t_vaddr)reg + i, (t_paddr)seg + 4 * PAGESZ + i);
 
+#if 0 /* XXX these test are unsafe since other regions are implicitly mapped */
   v = (t_vaddr)reg + 8 * PAGESZ;
   MY_ASSERT(as_paddr(as, v, &p) != ERROR_NONE,
-	    "conversion of unmapped address (higher)\n");
+	    "paddr: conversion of unmapped address (higher)\n");
   v = (t_vaddr)reg + 8 * PAGESZ + 1;
   MY_ASSERT(as_paddr(as, v, &p) != ERROR_NONE,
-	    "conversion of unmapped address (higher)\n");
+	    "paddr: conversion of unmapped address (higher)\n");
   v = (t_vaddr)reg - 1;
   MY_ASSERT(as_paddr(as, v, &p) != ERROR_NONE,
-	    "conversion of unmapped address (lower)\n");
+	    "paddr: conversion of unmapped address (lower)\n");
+#endif
 
   /* P to V */
 
@@ -96,16 +98,17 @@ void		check_as_05(void)
   for (i = 0; i < 8 * PAGESZ; i++)
     PTOV((t_paddr)seg + 4 * PAGESZ + i, (t_vaddr)reg + i);
 
+#if 0 /* XXX these test are unsafe since other regions are implicitly mapped */
   p = (t_paddr)seg  + 12 * PAGESZ;
   MY_ASSERT(as_vaddr(as, p, &v) != ERROR_NONE,
-	    "conversion of unmapped address (higher)\n");
+	    "vaddr: conversion of unmapped address (higher)\n");
   p = (t_paddr)seg  + 12 * PAGESZ + 1;
   MY_ASSERT(as_vaddr(as, p, &v) != ERROR_NONE,
-	    "conversion of unmapped address (higher)\n");
+	    "vaddr: conversion of unmapped address (higher)\n");
   p = (t_paddr)seg  + 4 * PAGESZ - 1;
   MY_ASSERT(as_vaddr(as, p, &v) != ERROR_NONE,
-	    "conversion of unmapped address (lower)\n");
-
+	    "vaddr: conversion of unmapped address (lower)\n");
+#endif
 
   MY_ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");
@@ -113,5 +116,5 @@ void		check_as_05(void)
   MY_ASSERT(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

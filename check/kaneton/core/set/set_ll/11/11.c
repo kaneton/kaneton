@@ -26,7 +26,7 @@ void		check_set_ll_11(void)
   t_setsz	i;
   t_id		m;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(ll, SET_OPT_ALLOC, sizeof(t_id), &id) != ERROR_NONE)
     printf("error set_reserve()\n");
@@ -56,7 +56,7 @@ void		check_set_ll_11(void)
 
   set_release(new);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }
 
 static t_id	get_min(i_set id)

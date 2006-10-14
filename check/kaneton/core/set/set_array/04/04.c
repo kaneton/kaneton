@@ -21,7 +21,7 @@ void		check_set_array_04(void)
 {
   i_set	id;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(array, SET_OPT_ORGANISE | SET_OPT_ALLOC, 4,
 		  sizeof(t_id), &id) != ERROR_NONE)
@@ -45,5 +45,5 @@ void		check_set_array_04(void)
 
   set_release(id);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

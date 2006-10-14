@@ -25,7 +25,7 @@ void		check_set_array_11(void)
   t_setsz	i;
   t_id*		pdata;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(array, SET_OPT_ALLOC, 10, sizeof(t_id), &id) != ERROR_NONE)
     printf("error set_reserve()\n");
@@ -51,5 +51,5 @@ void		check_set_array_11(void)
 
   set_release(id);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

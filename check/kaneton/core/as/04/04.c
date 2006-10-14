@@ -20,7 +20,7 @@ void		check_as_04(void)
   t_asid	as;
   o_as*		o;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
@@ -52,5 +52,5 @@ void		check_as_04(void)
   MY_ASSERT(task_release(task2) == ERROR_NONE,
 	    "failed to release task\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

@@ -21,7 +21,7 @@ void		check_set_ll_01(void)
 {
   i_set	id;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   if (set_reserve(ll, SET_OPT_NONE, sizeof(t_id), &id) != ERROR_NONE)
     printf("error: set_reserve()\n");
@@ -36,5 +36,5 @@ void		check_set_ll_01(void)
 		  sizeof(t_id), &id) == ERROR_NONE)
     printf("error: set_reserve() accepted bad arguments\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

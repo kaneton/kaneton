@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [sun oct  8 17:20:35 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 17:46:01 2006]
  */
 
 /*
@@ -507,7 +507,7 @@ t_error			region_reserve(i_as			asid,
   if (segment_get(segid, &segment) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
-  if (segment->size < size - offset)
+  if (segment->size < size + offset)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   if ((o = malloc(sizeof(o_region))) == NULL)

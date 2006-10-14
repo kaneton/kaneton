@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [sun sep 10 12:42:57 2006]
+ * updated       matthieu bucchianeri   [sat oct 14 17:19:31 2006]
  */
 
 /*
@@ -481,7 +481,7 @@ t_error			task_release(i_task			id)
    * 5)
    */
 
-  if (thread_flush(o->threads) != ERROR_NONE)
+  if (thread_flush(id) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   if (set_release(o->threads) != ERROR_NONE)
