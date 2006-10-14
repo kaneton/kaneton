@@ -408,7 +408,7 @@
     [+] your current configuration:
     [+]   user:                     julien.quintard
     [+]   machine:                  unix
-    [+]   architecture:             ia32
+    [+]   architecture:             ibm-pc.ia32-virtual
     [+]   multi-bootloader:         grub
 
     [...]
@@ -776,12 +776,6 @@
   For example a script to initialise and install modules on a grub
   bootloader boot device is provided in the subdirectory
   \textit{mbl/grub/}.
-
-  \nl
-
-  The \textbf{tools} directory also contains the ld scripts used
-  to correctly compile the bootstrap, the bootloader, the kernel, the
-  drivers, the services and the programs.
 \end{frame}
 
 % 2)
@@ -791,15 +785,6 @@
 
   \begin{verbatim}
     tools/
-      ld/
-        arch/
-          ia32-virtual/
-            bootstrap.lds
-            bootloader.lds
-            kaneton.lds
-            driver.lds
-            service.lds
-            program.lds
       mbl/
         grub/
         lilo/
@@ -963,8 +948,8 @@
     core/
       bootstrap/
         arch/
-          ia32-virtual/   <---;
-          machdep ------------+
+          ibm-pc.ia32-virtual/   <---;
+          machdep -------------------+
       bootloader/
         arch/
       kaneton/

@@ -32,7 +32,7 @@ include			../../env/.env.mk
 
 SUBDIRS			:=		assignments			\
 					kaneton				\
-					ia32-virtual
+					arch-ia32-virtual		
 
 #
 # ---------- rules ------------------------------------------------------------
