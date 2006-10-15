@@ -5,8 +5,6 @@
 #ifndef _ARC_H_
 #define _ARC_H_
 
-#include <libarc/types.h>
-
 #define ESUCCESS	0	/* No error                             */
 #define E2BIG		1	/* Argument list too long               */
 #define EACCES		2	/* Permission denied                    */
@@ -19,7 +17,7 @@
 #define EISDIR		9	/* Is a directory                       */
 #define EMFILE		10	/* Too many open files                  */
 #define EMLINK		11	/* Too many links                       */
-#define ENAMETOOLONG	12	/* Filename too long                    */
+#define ENAMETOOlong	12	/* Filename too long                    */
 #define ENODEV		13	/* No such device                       */
 #define ENOENT		14	/* No such file or directory            */
 #define ENOEXEC		15	/* Execute format error                 */
@@ -96,18 +94,18 @@ typedef struct {
 	COMPONENT_CLASS Class;
 	COMPONENT_TYPE Type;
 	COMPONENT_FLAGS Flags;
-	USHORT Version;
-	USHORT Revision;
-	ULONG Key;
-	ULONG AffinityMask;
-	ULONG ConfigurationDataSize;
-	ULONG IdentifierLength;
-	CHAR *Identifier;
+	unsigned short Version;
+	unsigned short Revision;
+	unsigned long Key;
+	unsigned long AffinityMask;
+	unsigned long ConfigurationDataSize;
+	unsigned long IdentifierLength;
+	char *Identifier;
 } COMPONENT;
 
 typedef struct {
-	CHAR VendorId[8];
-	UCHAR ProductId[8];
+	char VendorId[8];
+	unsigned char ProductId[8];
 } SYSTEMID;
 
 /* This is ARCS not ARC */
@@ -124,26 +122,26 @@ typedef enum {
 
 typedef struct {
 	MEMORYTYPE Type;
-	ULONG BasePage;
-	ULONG PageCount;
+	unsigned long BasePage;
+	unsigned long PageCount;
 } MEMORYDESCRIPTOR;
 
 typedef struct {
-	USHORT Year;
-	USHORT Month;
-	USHORT Day;
-	USHORT Hour;
-	USHORT Minutes;
-	USHORT Seconds;
-	USHORT Milliseconds;
+	unsigned short Year;
+	unsigned short Month;
+	unsigned short Day;
+	unsigned short Hour;
+	unsigned short Minutes;
+	unsigned short Seconds;
+	unsigned short Milliseconds;
 } TIMEINFO;
 
 #define ARC_NAME_MAX	32
 
 typedef struct {
-	ULONG FileNameLength;
-	ULONG FileAttribute;
-	ULONG FileName[ARC_NAME_MAX];
+	unsigned long FileNameLength;
+	unsigned long FileAttribute;
+	unsigned long FileName[ARC_NAME_MAX];
 } DIRECTORYENTRY;
 
 typedef enum {
@@ -160,11 +158,11 @@ typedef enum {
 
 typedef struct {
 #ifdef __MIPSEL__
-	ULONG LowPart;
-	*LONG HighPart;
+	unsigned long LowPart;
+	*long HighPart;
 #else /* !(__MIPSEL__) */
-	LONG HighPart;
-	ULONG LowPart;
+	long HighPart;
+	unsigned long LowPart;
 #endif
 } LARGEINTEGER;
 
@@ -183,9 +181,9 @@ typedef struct {
 	LARGEINTEGER EndingAddress;
 	LARGEINTEGER CurrentAddress;
 	COMPONENT_TYPE Type;
-	ULONG FileNameLength;
-	UCHAR Attributes;
-	CHAR Filename[ARC_NAME_MAX];
+	unsigned long FileNameLength;
+	unsigned char Attributes;
+	char Filename[ARC_NAME_MAX];
 } FILEINFORMATION;
 
 typedef enum {
@@ -198,65 +196,65 @@ typedef enum {
 } FILEATTRIBUTES;
 
 typedef struct {
-	USHORT CursorXPosition;
-	USHORT CursorYPosition;
-	USHORT CursorMaxXPosition;
-	USHORT CursorMaxYPosition;
-	UCHAR ForegroundColor;
-	UCHAR BackgroundColor;
-	UCHAR HighIntensity;
-	UCHAR Underscored;
-	UCHAR ReverseVideo;
+	unsigned short CursorXPosition;
+	unsigned short CursorYPosition;
+	unsigned short CursorMaxXPosition;
+	unsigned short CursorMaxYPosition;
+	unsigned char ForegroundColor;
+	unsigned char BackgroundColor;
+	unsigned char HighIntensity;
+	unsigned char Underscored;
+	unsigned char ReverseVideo;
 } DISPLAY_STATUS;
 
 
 #define ARC_STDIN	0
 #define ARC_STDOUT	1
 
-extern LONG ArcLoad(CHAR * Path, ULONG TopAddr, ULONG * ExecAddr,
-		    ULONG * LowAddr);
-extern LONG ArcInvoke(ULONG ExecAddr, ULONG StackAddr, ULONG Argc,
-		      CHAR * Argv[], CHAR * Envp[]);
-extern LONG ArcExecute(CHAR * Path, ULONG Argc, CHAR * Argv[],
-		       CHAR * Envp[]);
-extern VOID ArcHalt(VOID);
-extern VOID ArcPowerDown(VOID);
-extern VOID ArcRestart(VOID);
-extern VOID ArcReboot(VOID);
-extern VOID ArcEnterInteractiveMode(VOID);
+extern long ArcLoad(char * Path, unsigned long TopAddr, unsigned long * ExecAddr,
+		    unsigned long * LowAddr);
+extern long ArcInvoke(unsigned long ExecAddr, unsigned long StackAddr, unsigned long Argc,
+		      char * Argv[], char * Envp[]);
+extern long ArcExecute(char * Path, unsigned long Argc, char * Argv[],
+		       char * Envp[]);
+extern void ArcHalt(void);
+extern void ArcPowerDown(void);
+extern void ArcRestart(void);
+extern void ArcReboot(void);
+extern void ArcEnterInteractiveMode(void);
 extern COMPONENT *ArcGetPeer(COMPONENT * Current);
 extern COMPONENT *ArcGetChild(COMPONENT * Current);
 extern COMPONENT *ArcGetParent(COMPONENT * Current);
-extern LONG ArcGetConfigurationData
-    (VOID * ConfigurationData, COMPONENT * Component);
+extern long ArcGetConfigurationData
+    (void * ConfigurationData, COMPONENT * Component);
 extern COMPONENT *ArcAddChild
-    (COMPONENT * Current, COMPONENT * Template, VOID * ConfigurationData);
-extern LONG ArcDeleteComponent(COMPONENT * ComponentToDelete);
-extern COMPONENT *ArcGetComponent(CHAR * Path);
-extern LONG ArcSaveConfiguration(VOID);
-extern SYSTEMID *ArcGetSystemId(VOID);
+    (COMPONENT * Current, COMPONENT * Template, void * ConfigurationData);
+extern long ArcDeleteComponent(COMPONENT * ComponentToDelete);
+extern COMPONENT *ArcGetComponent(char * Path);
+extern long ArcSaveConfiguration(void);
+extern SYSTEMID *ArcGetSystemId(void);
 extern MEMORYDESCRIPTOR *ArcGetMemoryDescriptor(MEMORYDESCRIPTOR *
 						Current);
-extern TIMEINFO *ArcGetTime(VOID);
-extern ULONG ArcGetRelativeTime(VOID);
-extern LONG ArcGetDirectoryEntry
-    (ULONG FileID, DIRECTORYENTRY * Buffer, ULONG N, ULONG * Count);
-extern LONG ArcOpen(CHAR * Path, OPENMODE OpenMode, ULONG * FileID);
-extern LONG ArcClose(ULONG FileID);
-extern LONG ArcRead(ULONG FileID, VOID * Buffer, ULONG N, ULONG * Count);
-extern LONG ArcGetReadStatus(ULONG FileID);
-extern LONG ArcWrite(ULONG FileID, VOID * Buffer, ULONG N, ULONG * Count);
-extern LONG ArcSeek(ULONG FileID, LARGEINTEGER * Position,
+extern TIMEINFO *ArcGetTime(void);
+extern unsigned long ArcGetRelativeTime(void);
+extern long ArcGetDirectoryEntry
+    (unsigned long FileID, DIRECTORYENTRY * Buffer, unsigned long N, unsigned long * Count);
+extern long ArcOpen(char * Path, OPENMODE OpenMode, unsigned long * FileID);
+extern long ArcClose(unsigned long FileID);
+extern long ArcRead(unsigned long FileID, void * Buffer, unsigned long N, unsigned long * Count);
+extern long ArcGetReadStatus(unsigned long FileID);
+extern long ArcWrite(unsigned long FileID, void * Buffer, unsigned long N, unsigned long * Count);
+extern long ArcSeek(unsigned long FileID, LARGEINTEGER * Position,
 		    SEEKMODE SeekMode);
-extern LONG ArcMount(CHAR * Path, MOUNTOPERATION Operation);
-extern CHAR *ArcGetEnvironmentVariable(CHAR * Name);
-extern LONG ArcSetEnvironmentVariable(CHAR * Name, CHAR * Value);
-extern LONG ArcGetFileInformation(ULONG FileID,
+extern long ArcMount(char * Path, MOUNTOPERATION Operation);
+extern char *ArcGetEnvironmentVariable(char * Name);
+extern long ArcSetEnvironmentVariable(char * Name, char * Value);
+extern long ArcGetFileInformation(unsigned long FileID,
 				  FILEINFORMATION * Information);
-extern LONG ArcSetFileInformation(ULONG FileID, ULONG AttributeFlags,
-				  ULONG AttributeMask);
-extern VOID ArcFlushAllCaches(VOID);
-extern LONG ArcTestUnicodeCharacter(ULONG FileID, USHORT UnicodeCharacter);
-extern DISPLAY_STATUS *ArcGetDisplayStatus(ULONG FileID);
+extern long ArcSetFileInformation(unsigned long FileID, unsigned long AttributeFlags,
+				  unsigned long AttributeMask);
+extern void ArcFlushAllCaches(void);
+extern long ArcTestUnicodeCharacter(unsigned long FileID, unsigned short UnicodeCharacter);
+extern DISPLAY_STATUS *ArcGetDisplayStatus(unsigned long FileID);
 
 #endif				/* _ARC_H_ */

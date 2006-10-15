@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/libs/liboctane/libarc/Makefile
 ##
 ## created       Enguerrand RAYMOND   [sun oct 15 17:30:25 2006]
-## updated       Enguerrand RAYMOND   [sun oct 15 17:30:26 2006]
+## updated       Enguerrand RAYMOND   [sun oct 15 22:46:25 2006]
 ##
 
 #
@@ -33,8 +33,7 @@ LIBARC_C		:=		arc.c
 
 LIBARC_O		:=		$(LIBARC_C:.c=.o)
 
-LIBARC_INCLUDE		:=		$(_LIBOCTANE_INCLUDE_DIR_)/libarc/types.h	\
-					$(_LIBOCTANE_INCLUDE_DIR_)/libarc/arc.h		\
+LIBARC_INCLUDE		:=		$(_LIBOCTANE_INCLUDE_DIR_)/libarc/arc.h		\
 					$(_LIBOCTANE_INCLUDE_DIR_)/libarc/spb.h
 
 #

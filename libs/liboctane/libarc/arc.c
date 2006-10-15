@@ -6,52 +6,52 @@
 #include <libarc/spb.h>
 
 
-LONG ArcLoad(CHAR * Path, ULONG TopAddr, ULONG * ExecAddr, ULONG * LowAddr)
+long ArcLoad(char * Path, unsigned long TopAddr, unsigned long * ExecAddr, unsigned long * LowAddr)
 {
 	return FVector->Load(Path, TopAddr, ExecAddr, LowAddr);
 }
 
 
-LONG
-ArcInvoke(ULONG ExecAddr,
-	  ULONG StackAddr, ULONG Argc, CHAR * Argv[], CHAR * Envp[]
+long
+ArcInvoke(unsigned long ExecAddr,
+	  unsigned long StackAddr, unsigned long Argc, char * Argv[], char * Envp[]
     )
 {
 	return FVector->Invoke(ExecAddr, StackAddr, Argc, Argv, Envp);
 }
 
 
-LONG ArcExecute(CHAR * Path, ULONG Argc, CHAR * Argv[], CHAR * Envp[])
+long ArcExecute(char * Path, unsigned long Argc, char * Argv[], char * Envp[])
 {
 	return FVector->Execute(Path, Argc, Argv, Envp);
 }
 
 
-VOID ArcHalt(VOID)
+void ArcHalt(void)
 {
 	FVector->Halt();
 }
 
 
-VOID ArcPowerDown(VOID)
+void ArcPowerDown(void)
 {
 	FVector->PowerDown();
 }
 
 
-VOID ArcRestart(VOID)
+void ArcRestart(void)
 {
 	FVector->Restart();
 }
 
 
-VOID ArcReboot(VOID)
+void ArcReboot(void)
 {
 	FVector->Reboot();
 }
 
 
-VOID ArcEnterInteractiveMode(VOID)
+void ArcEnterInteractiveMode(void)
 {
 	FVector->EnterInteractiveMode();
 }
@@ -75,39 +75,39 @@ COMPONENT *ArcGetParent(COMPONENT * Current)
 }
 
 
-LONG
-ArcGetConfigurationData(VOID * ConfigurationData, COMPONENT * Component)
+long
+ArcGetConfigurationData(void * ConfigurationData, COMPONENT * Component)
 {
 	return FVector->GetConfigurationData(ConfigurationData, Component);
 }
 
 
 COMPONENT *ArcAddChild(COMPONENT * Current, COMPONENT * Template,
-		       VOID * ConfigurationData)
+		       void * ConfigurationData)
 {
 	return FVector->AddChild(Current, Template, ConfigurationData);
 }
 
 
-LONG ArcDeleteComponent(COMPONENT * ComponentToDelete)
+long ArcDeleteComponent(COMPONENT * ComponentToDelete)
 {
 	return FVector->DeleteComponent(ComponentToDelete);
 }
 
 
-COMPONENT *ArcGetComponent(CHAR * Path)
+COMPONENT *ArcGetComponent(char * Path)
 {
 	return FVector->GetComponent(Path);
 }
 
 
-LONG ArcSaveConfiguration(VOID)
+long ArcSaveConfiguration(void)
 {
 	return FVector->SaveConfiguration();
 }
 
 
-SYSTEMID *ArcGetSystemId(VOID)
+SYSTEMID *ArcGetSystemId(void)
 {
 	return FVector->GetSystemId();
 }
@@ -119,108 +119,108 @@ MEMORYDESCRIPTOR *ArcGetMemoryDescriptor(MEMORYDESCRIPTOR * Current)
 }
 
 
-TIMEINFO *ArcGetTime(VOID)
+TIMEINFO *ArcGetTime(void)
 {
 	return FVector->GetTime();
 }
 
 
-ULONG ArcGetRelativeTime(VOID)
+unsigned long ArcGetRelativeTime(void)
 {
 	return FVector->GetRelativeTime();
 }
 
 
-LONG
-ArcGetDirectoryEntry(ULONG FileID,
-		     DIRECTORYENTRY * Buffer, ULONG N, ULONG * Count)
+long
+ArcGetDirectoryEntry(unsigned long FileID,
+		     DIRECTORYENTRY * Buffer, unsigned long N, unsigned long * Count)
 {
 	return FVector->GetDirectoryEntry(FileID, Buffer, N, Count);
 }
 
 
-LONG ArcOpen(CHAR * Path, OPENMODE OpenMode, ULONG * FileID)
+long ArcOpen(char * Path, OPENMODE OpenMode, unsigned long * FileID)
 {
 	return FVector->Open(Path, OpenMode, FileID);
 }
 
 
-LONG ArcClose(ULONG FileID)
+long ArcClose(unsigned long FileID)
 {
 	return FVector->Close(FileID);
 }
 
 
-LONG ArcRead(ULONG FileID, VOID * Buffer, ULONG N, ULONG * Count)
+long ArcRead(unsigned long FileID, void * Buffer, unsigned long N, unsigned long * Count)
 {
 	return FVector->Read(FileID, Buffer, N, Count);
 }
 
 
-LONG ArcGetReadStatus(ULONG FileID)
+long ArcGetReadStatus(unsigned long FileID)
 {
 	return FVector->GetReadStatus(FileID);
 }
 
 
-LONG ArcWrite(ULONG FileID, VOID * Buffer, ULONG N, ULONG * Count)
+long ArcWrite(unsigned long FileID, void * Buffer, unsigned long N, unsigned long * Count)
 {
 	return FVector->Write(FileID, Buffer, N, Count);
 }
 
 
-LONG ArcSeek(ULONG FileID, LARGEINTEGER * Position, SEEKMODE SeekMode)
+long ArcSeek(unsigned long FileID, LARGEINTEGER * Position, SEEKMODE SeekMode)
 {
 	return FVector->Seek(FileID, Position, SeekMode);
 }
 
 
-LONG ArcMount(CHAR * Path, MOUNTOPERATION Operation)
+long ArcMount(char * Path, MOUNTOPERATION Operation)
 {
 	return FVector->Mount(Path, Operation);
 }
 
 
-CHAR *ArcGetEnvironmentVariable(CHAR * Name)
+char *ArcGetEnvironmentVariable(char * Name)
 {
 	return FVector->GetEnvironmentVariable(Name);
 }
 
 
-LONG ArcSetEnvironmentVariable(CHAR * Name, CHAR * Value)
+long ArcSetEnvironmentVariable(char * Name, char * Value)
 {
 	return FVector->SetEnvironmentVariable(Name, Value);
 }
 
 
-LONG ArcGetFileInformation(ULONG FileID, FILEINFORMATION * Information)
+long ArcGetFileInformation(unsigned long FileID, FILEINFORMATION * Information)
 {
 	return FVector->GetFileInformation(FileID, Information);
 }
 
 
-LONG
-ArcSetFileInformation(ULONG FileID, ULONG AttributeFlags,
-		      ULONG AttributeMask)
+long
+ArcSetFileInformation(unsigned long FileID, unsigned long AttributeFlags,
+		      unsigned long AttributeMask)
 {
 	return FVector->SetFileInformation(FileID, AttributeFlags,
 					   AttributeMask);
 }
 
 
-VOID ArcFlushAllCaches(VOID)
+void ArcFlushAllCaches(void)
 {
 	FVector->FlushAllCaches();
 }
 
 
-LONG ArcTestUnicodeCharacter(ULONG FileID, USHORT UnicodeCharacter)
+long ArcTestUnicodeCharacter(unsigned long FileID, unsigned short UnicodeCharacter)
 {
 	return FVector->TestUnicodeCharacter(FileID, UnicodeCharacter);
 }
 
 
-DISPLAY_STATUS *ArcGetDisplayStatus(ULONG FileID)
+DISPLAY_STATUS *ArcGetDisplayStatus(unsigned long FileID)
 {
 	return FVector->GetDisplayStatus(FileID);
 }

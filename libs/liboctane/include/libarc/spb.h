@@ -5,88 +5,87 @@
 #ifndef _SPB_H_
 #define _SPB_H_
 
-#include <libarc/types.h>
 #include <libarc/arc.h>
 
 typedef struct {
-	LONG(*Load) (CHAR *, ULONG, ULONG *, ULONG *);
-	LONG(*Invoke) (ULONG, ULONG, ULONG, CHAR *[], CHAR *[]);
-	LONG(*Execute) (CHAR *, ULONG, CHAR *[], CHAR *[]);
-	VOID(*Halt) (VOID);
-	VOID(*PowerDown) (VOID);
-	VOID(*Restart) (VOID);
-	VOID(*Reboot) (VOID);
-	VOID(*EnterInteractiveMode) (VOID);
-	VOID *reserved1;
+	LONG(*Load) (char *, unsigned long, unsigned long *, unsigned long *);
+	LONG(*Invoke) (unsigned long, unsigned long, unsigned long, char *[], char *[]);
+	LONG(*Execute) (char *, unsigned long, char *[], char *[]);
+	void(*Halt) (void);
+	void(*PowerDown) (void);
+	void(*Restart) (void);
+	void(*Reboot) (void);
+	void(*EnterInteractiveMode) (void);
+	void *reserved1;
 	COMPONENT *(*GetPeer) (COMPONENT *);
 	COMPONENT *(*GetChild) (COMPONENT *);
 	COMPONENT *(*GetParent) (COMPONENT *);
-	LONG(*GetConfigurationData) (VOID *, COMPONENT *);
-	COMPONENT *(*AddChild) (COMPONENT *, COMPONENT *, VOID *);
+	LONG(*GetConfigurationData) (void *, COMPONENT *);
+	COMPONENT *(*AddChild) (COMPONENT *, COMPONENT *, void *);
 	LONG(*DeleteComponent) (COMPONENT *);
-	COMPONENT *(*GetComponent) (CHAR *);
-	LONG(*SaveConfiguration) (VOID);
-	SYSTEMID *(*GetSystemId) (VOID);
+	COMPONENT *(*GetComponent) (char *);
+	LONG(*SaveConfiguration) (void);
+	SYSTEMID *(*GetSystemId) (void);
 	MEMORYDESCRIPTOR *(*GetMemoryDescriptor) (MEMORYDESCRIPTOR *);
-	VOID *reserved2;
-	TIMEINFO *(*GetTime) (VOID);
-	ULONG(*GetRelativeTime) (VOID);
-	LONG(*GetDirectoryEntry) (ULONG, DIRECTORYENTRY *, ULONG, ULONG *);
-	LONG(*Open) (CHAR *, OPENMODE, ULONG *);
-	LONG(*Close) (ULONG);
-	LONG(*Read) (ULONG, VOID *, ULONG, ULONG *);
-	LONG(*GetReadStatus) (ULONG);
-	LONG(*Write) (ULONG, VOID *, ULONG, ULONG *);
-	LONG(*Seek) (ULONG, LARGEINTEGER *, SEEKMODE);
-	LONG(*Mount) (CHAR *, MOUNTOPERATION);
-	CHAR *(*GetEnvironmentVariable) (CHAR *);
-	LONG(*SetEnvironmentVariable) (CHAR *, CHAR *);
-	LONG(*GetFileInformation) (ULONG, FILEINFORMATION *);
-	LONG(*SetFileInformation) (ULONG, ULONG, ULONG);
-	VOID(*FlushAllCaches) (VOID);
-	LONG(*TestUnicodeCharacter) (ULONG, USHORT);
-	DISPLAY_STATUS *(*GetDisplayStatus) (ULONG);
+	void *reserved2;
+	TIMEINFO *(*GetTime) (void);
+	unsigned long(*GetRelativeTime) (void);
+	LONG(*GetDirectoryEntry) (unsigned long, DIRECTORYENTRY *, unsigned long, unsigned long *);
+	LONG(*Open) (char *, OPENMODE, unsigned long *);
+	LONG(*Close) (unsigned long);
+	LONG(*Read) (unsigned long, void *, unsigned long, unsigned long *);
+	LONG(*GetReadStatus) (unsigned long);
+	LONG(*Write) (unsigned long, void *, unsigned long, unsigned long *);
+	LONG(*Seek) (unsigned long, LARGEINTEGER *, SEEKMODE);
+	LONG(*Mount) (char *, MOUNTOPERATION);
+	char *(*GetEnvironmentVariable) (char *);
+	LONG(*SetEnvironmentVariable) (char *, char *);
+	LONG(*GetFileInformation) (unsigned long, FILEINFORMATION *);
+	LONG(*SetFileInformation) (unsigned long, unsigned long, unsigned long);
+	void(*FlushAllCaches) (void);
+	LONG(*TestUnicodeCharacter) (unsigned long, unsigned short);
+	DISPLAY_STATUS *(*GetDisplayStatus) (unsigned long);
 } FIRMWAREVECTOR;
 
 #define RSTB_SIGNATURE	0x42545352
 
 typedef struct _rstb {
-	ULONG RSTBSignature;
-	ULONG RSTBLength;
-	USHORT Version;
-	USHORT Revision;
+	unsigned long RSTBSignature;
+	unsigned long RSTBLength;
+	unsigned short Version;
+	unsigned short Revision;
 	struct _rstb *NextRSTB;
-	VOID *RestartAddress;
-	ULONG BootMasterID;
-	ULONG ProcessorID;
-	ULONG BootStatus;
-	ULONG Checksum;
-	ULONG SaveAreaLength;
-	ULONG SavedStateArea[1];
+	void *RestartAddress;
+	unsigned long BootMasterID;
+	unsigned long ProcessorID;
+	unsigned long BootStatus;
+	unsigned long Checksum;
+	unsigned long SaveAreaLength;
+	unsigned long SavedStateArea[1];
 } RESTARTBLOCK;
 
 typedef struct {
-	ULONG AdapterType;
-	ULONG AdapterVectorLength;
-	VOID *AdapterVector;
+	unsigned long AdapterType;
+	unsigned long AdapterVectorLength;
+	void *AdapterVector;
 } ADAPTER;
 
 #define SPB_SIGNATURE	0x53435241
 
 typedef struct {
-	ULONG SPBSignature;
-	ULONG SPBLength;
-	USHORT Version;
-	USHORT Revision;
+	unsigned long SPBSignature;
+	unsigned long SPBLength;
+	unsigned short Version;
+	unsigned short Revision;
 	RESTARTBLOCK *RestartBlock;
-	VOID *DebugBlock;
-	VOID *GEVector;
-	VOID *UTLBMissVector;
-	ULONG FirmwareVectorLength;
+	void *DebugBlock;
+	void *GEVector;
+	void *UTLBMissVector;
+	unsigned long FirmwareVectorLength;
 	FIRMWAREVECTOR *FirmwareVector;
-	ULONG PrivateVectorLength;
-	VOID *PrivateVector;
-	ULONG AdapterCount;
+	unsigned long PrivateVectorLength;
+	void *PrivateVector;
+	unsigned long AdapterCount;
 	ADAPTER Adapters[1];
 } SPB;
 
