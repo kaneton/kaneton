@@ -1,7 +1,7 @@
 /*
  * Copyright 1999 Silicon Graphics, Inc.
  */
-#include <libarc/types.h>
+
 #include <libarc/arc.h>
 #include <libarc/spb.h>
 
