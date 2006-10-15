@@ -1,11 +1,14 @@
-## licence       kaneton licence
+##
+## ---------- header ----------------------------------------------------------
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/tools/mbl/grub/grub.sh
+## license       kaneton licence
 ##
-## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sun jul 16 19:16:51 2006]
+## file          /home/enguerrand/kaneton/tools/mbl/octaneload/octaneload.sh
+##
+## created       Enguerrand RAYMOND   [sun oct 15 20:29:10 2006]
+## updated       Enguerrand RAYMOND   [sun oct 15 20:37:19 2006]
 ##
 
 #
@@ -42,7 +45,7 @@ MENU_LST="menu.lst"
 #
 usage()
 {
-  display " usage: grub.sh [build|install]" "!"
+  display " usage: octaneload.sh [build|install]" "!"
 }
 
 
@@ -54,83 +57,8 @@ usage()
 #
 build()
 {
-  case "${_BOOTMODE_}" in
-    "floppy"|"tftp")
-      contents "${KANETON_IMAGE}" "" > ${_UDEVICE_}
-      ;;
-    "floppy-image")
-      copy "${KANETON_IMAGE}" "${_IMAGE_}" ""
-      ;;
-    *)
-      ;;
-  esac
+
 }
-
-
-
-#
-# MENU
-#
-# this function creates the grub menu file.
-#
-menu()
-{
-  local array
-  local m
-  local i
-
-  # cleans the menu file contents.
-  print "" "" "--no-newline" > ${MENU}
-
-  # creates new version.
-  print "" "title kaneton" "" >> ${MENU}
-  print "" "" "" >> ${MENU}
-
-  # inserts each module in the menu file.
-  case "${_BOOTMODE_}" in
-    "floppy"|"floppy-image")
-      print "" "root (fd0)" "" >> ${MENU}
-      print "" "" "" >> ${MENU}
-      ;;
-    "tftp")
-      print "" "ifconfig --address=${_ADDRESS_} --server=${_TFTP_ADDRESS_}" \
-            "" >> ${MENU}
-      print "" "" "" >> ${MENU}
-      print "" "root (nd)" "" >> ${MENU}
-      print "" "" "" >> ${MENU}
-      ;;
-    *)
-      ;;
-  esac
-
-  # fills in an array from the modules list
-  declare -a array
-  i=0
-
-  for m in ${_MODULES_} ; do
-    array[${i}]="${m}"
-
-    let "i += 1"
-  done
-
-  # sets the kernel into the grub menu file.
-  print "" "${array[0]}" "" |						\
-    substitute "^.*\/(.*)$" "kernel \/modules\/\1" "--everywhere"	\
-    >> ${MENU}
-
-  print "" "" "" >> ${MENU}
-
-  i=1
-  while [ ${i} -lt ${#array[*]} ] ; do
-    print "" "${array[${i}]}" "" |					\
-      substitute "^.*\/(.*)$" "module \/modules\/\1" "--everywhere"	\
-      >> ${MENU}
-
-    let "i += 1"
-  done
-}
-
-
 
 #
 # INSTALL
@@ -139,61 +67,7 @@ menu()
 #
 install()
 {
-  local m
-
-  case "${_BOOTMODE_}" in
-    "floppy")
-      if [ ! -e ${MENU} ] ; then
-        display " ${MENU_LST}" "!"
-      else
-	load "${MENU}" "${_MDEVICE_}" "/boot/grub/${MENU_LST}" "--device"
-        display " ${menu_lst}" "+"
-      fi
-
-      for m in ${_MODULES_} ; do
-        if [ ! -e ${_SRC_DIR_}/${m} ] ; then
-          display " ${m}" "!"
-        else
-          load "${_SRC_DIR_}/${m}" "${_MDEVICE_}" "/modules/" "--device"
-          display " ${m}" "+"
-        fi
-      done
-      ;;
-    "tftp")
-      if [ ! -e ${MENU} ] ; then
-        display " ${MENU_LST}" "!"
-      else
-        load "${MENU}" "${_MDEVICE_}" "/boot/grub/${MENU_LST}" "--device"
-        display " ${MENU_LST}" "+"
-      fi
-
-      for m in ${_MODULES_} ; do
-        if [ ! -e ${_SRC_DIR_}/${m} ] ; then
-          display " ${m}" "!"
-        else
-          copy "${_SRC_DIR_}/${m}" "${_TFTP_DIRECTORY_}"
-          display " ${m}" "+"
-        fi
-      done
-      ;;
-    "floppy-image")
-      if [ ! -e ${MENU} ] ; then
-        display " ${MENU_LST}" "!"
-      else
-	load "${MENU}" "${_IMAGE_}" "/boot/grub/${MENU_LST}" "--image"
-        display " ${MENU_LST}" "+"
-      fi
-
-      for m in ${_MODULES_} ; do
-        if [ ! -e ${_SRC_DIR_}/${m} ] ; then
-          display " ${m}" "!"
-        else
-          load "${_SRC_DIR_}/${m}" "${_IMAGE_}" "/modules/" "--image"
-          display " ${m}" "+"
-        fi
-      done
-      ;;
-  esac
+    cat > ${_IMAGE_}
 }
 
 

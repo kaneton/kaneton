@@ -1,6 +1,3 @@
-	.extern kaneton
-	.extern exception_handler
-
 	.text
 	.extern _start
 _start:
@@ -79,7 +76,7 @@ init_stack:
 	la $gp, _gp
 
 kloop:
-	jal kaneton
+	jal octaneload
 	j kloop
 	nop
 	.end _entry
