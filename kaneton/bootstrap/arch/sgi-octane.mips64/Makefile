@@ -1,12 +1,14 @@
 ##
-## licence       kaneton licence
+## ---------- header ----------------------------------------------------------
 ##
 ## project       kaneton
 ##
+## license       kaneton licence
+##
 ## file          /home/enguerrand/kaneton/kaneton/bootstrap/arch/sgi-octane.mips64/Makefile
 ##
-## created       Enguerrand RAYMOND   [fri feb 11 02:05:35 2005]
-## updated       Enguerrand RAYMOND   [mon jul 10 22:36:09 2006]
+## created       Enguerrand RAYMOND   [sun oct 15 17:31:41 2006]
+## updated       Enguerrand RAYMOND   [sun oct 15 17:31:42 2006]
 ##
 
 #

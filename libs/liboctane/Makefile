@@ -1,12 +1,14 @@
 ##
-## licence       kaneton licence
+## ---------- header ----------------------------------------------------------
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/libs/klibc/Makefile
+## license       kaneton licence
 ##
-## created       julien quintard   [fri feb 11 02:29:19 2005]
-## updated       julien quintard   [thu jul 13 11:45:02 2006]
+## file          /home/enguerrand/kaneton/libs/liboctane/Makefile
+##
+## created       Enguerrand RAYMOND   [sun oct 15 17:30:09 2006]
+## updated       Enguerrand RAYMOND   [sun oct 15 17:36:21 2006]
 ##
 
 #
@@ -25,21 +27,18 @@ include			../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		libdata libstring libsys
+SUBDIRS			:=		libarc
 
-LIBDATA_LO		:=		libdata/libdata.lo
-LIBSTRING_LO		:=		libstring/libstring.lo
-LIBSYS_LO		:=		libsys/libsys.lo
+LIBARC_LO		:=		libarc/libarc.lo
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(_KLIBC_A_):		libs
-	$(call remove,$(_KLIBC_A_),)
+$(_LIBOCTANE_A_):		libs
+	$(call remove,$(_LIBOCTANE_A_),)
 
-	$(call static-library,$(_KLIBC_A_),$(LIBDATA_LO) $(LIBSTRING_LO) \
-          $(LIBSYS_LO),)
+	$(call static-library,$(_LIBOCTANE_A_),$(LIBARC_LO),)
 
 libs:
 	$(call launch,Makefile,$(SUBDIRS),,)
@@ -47,7 +46,7 @@ libs:
 clear:
 	$(call launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call remove,$(_KLIBC_A_),)
+	$(call remove,$(_LIBOCTANE_A_),)
 
 	$(call purge,)
 

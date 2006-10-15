@@ -29,7 +29,8 @@ SUBDIRS			:=		klibc				\
 					crt
 
 ARCHSUBDIRS		:=		libia32				\
-					libsun4u
+					libsun4u			\
+					liboctane
 
 #
 # ---------- rules ------------------------------------------------------------

@@ -1,12 +1,14 @@
 ##
-## licence       kaneton licence
+## ---------- header ----------------------------------------------------------
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/libs/klibc/libdata/Makefile
+## license       kaneton licence
 ##
-## created       julien quintard   [fri feb 11 03:05:40 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:54:42 2006]
+## file          /home/enguerrand/kaneton/libs/liboctane/libarc/Makefile
+##
+## created       Enguerrand RAYMOND   [sun oct 15 17:30:25 2006]
+## updated       Enguerrand RAYMOND   [sun oct 15 17:30:26 2006]
 ##
 
 #
@@ -25,39 +27,39 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-LIBDATA_LO		:=		libdata.lo
+LIBARC_LO		:=		libarc.lo
 
-LIBDATA_C		:=		dump.c				\
-					alloc.c				\
-					sum2.c
+LIBARC_C		:=		arc.c
 
-LIBDATA_O		:=		$(LIBDATA_C:.c=.o)
+LIBARC_O		:=		$(LIBARC_C:.c=.o)
 
-LIBDATA_INCLUDE		:=		$(_KLIBC_INCLUDE_DIR_)/libdata/libdata.h
+LIBARC_INCLUDE		:=		$(_LIBOCTANE_INCLUDE_DIR_)/libarc/types.h	\
+					$(_LIBOCTANE_INCLUDE_DIR_)/libarc/arc.h		\
+					$(_LIBOCTANE_INCLUDE_DIR_)/libarc/spb.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(LIBDATA_LO):		$(LIBDATA_O)
-	$(call remove,$(LIBDATA_LO),)
+$(LIBARC_LO):		$(LIBARC_O)
+	$(call remove,$(LIBARC_LO),)
 
-	$(call archive,$(LIBDATA_LO),$(LIBDATA_O),)
+	$(call archive,$(LIBARC_LO),$(LIBARC_O),)
 
 clear:
-	$(call remove,$(LIBDATA_O),)
+	$(call remove,$(LIBARC_O),)
 
-	$(call remove,$(LIBDATA_LO),)
+	$(call remove,$(LIBARC_LO),)
 
 	$(call purge,)
 
 proto:
-	$(call prototypes,$(LIBDATA_INCLUDE),)
+	$(call prototypes,$(LIBARC_INCLUDE),)
 
 dep:
 	$(call remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(LIBDATA_C),$(_MAKEFILE_MK_),)
+	$(call dependencies,$(LIBARC_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

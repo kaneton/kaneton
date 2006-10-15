@@ -1,9 +1,9 @@
 /*
  * Copyright 1999 Silicon Graphics, Inc.
  */
-#include "types.h"
-#include "arc.h"
-#include "spb.h"
+#include <libarc/types.h>
+#include <libarc/arc.h>
+#include <libarc/spb.h>
 
 
 LONG ArcLoad(CHAR * Path, ULONG TopAddr, ULONG * ExecAddr, ULONG * LowAddr)

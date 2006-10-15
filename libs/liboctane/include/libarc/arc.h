@@ -5,7 +5,7 @@
 #ifndef _ARC_H_
 #define _ARC_H_
 
-#include "types.h"
+#include <libarc/types.h>
 
 #define ESUCCESS	0	/* No error                             */
 #define E2BIG		1	/* Argument list too long               */

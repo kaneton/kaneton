@@ -5,8 +5,8 @@
 #ifndef _SPB_H_
 #define _SPB_H_
 
-#include "types.h"
-#include "arc.h"
+#include <libarc/types.h>
+#include <libarc/arc.h>
 
 typedef struct {
 	LONG(*Load) (CHAR *, ULONG, ULONG *, ULONG *);
@@ -90,7 +90,7 @@ typedef struct {
 	ADAPTER Adapters[1];
 } SPB;
 
-#define SystemParameterBlock	((SPB *) 0xA0001000UL) 
+#define SystemParameterBlock	((SPB *) 0xA0001000UL)
 #define FVector		(SystemParameterBlock->FirmwareVector)
 
 #endif /* _SPB_H_ */
