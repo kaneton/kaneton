@@ -10,7 +10,7 @@ _start:
 	j _entry
 	nop
 	.rept 0x200 / 8 - 1
-	j exception_handler
+	;; j exception_handler
 	nop
 	.endr
 
