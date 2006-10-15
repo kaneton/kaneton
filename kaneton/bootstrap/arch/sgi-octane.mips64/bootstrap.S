@@ -76,7 +76,7 @@ init_stack:
 	la $gp, _gp
 
 kloop:
-	jal octaneload
+	jal bootloader
 	j kloop
 	nop
 	.end _entry

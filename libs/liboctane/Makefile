@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/libs/liboctane/Makefile
 ##
 ## created       Enguerrand RAYMOND   [sun oct 15 17:30:09 2006]
-## updated       Enguerrand RAYMOND   [sun oct 15 17:36:21 2006]
+## updated       Enguerrand RAYMOND   [sun oct 15 21:10:45 2006]
 ##
 
 #
@@ -51,7 +51,7 @@ clear:
 	$(call purge,)
 
 proto:
-	$(call launch,Makefile,$(SUBDIRS),proto,)
+	#$(call launch,Makefile,$(SUBDIRS),proto,)
 
 dep:
 	$(call launch,Makefile,$(SUBDIRS),dep,)
