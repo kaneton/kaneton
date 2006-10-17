@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-octane.mips64/event.c
  *
  * created       Enguerrand RAYMOND   [tue oct 17 13:38:14 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 15:18:45 2006]
+ * updated       Enguerrand RAYMOND   [tue oct 17 22:41:12 2006]
  */
 
 /*
@@ -33,6 +33,20 @@
 /*
  * ---------- globals ---------------------------------------------------------
  */
+
+/*
+ * the event manager dispatch.
+ */
+
+d_event				event_dispatch =
+  {
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+  };
 
 /*
  * ---------- functions -------------------------------------------------------

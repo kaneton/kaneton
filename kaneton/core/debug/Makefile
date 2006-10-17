@@ -29,8 +29,8 @@ DEBUG_LO		:=		debug.lo
 
 DEBUG_C			:=		$(_CONSOLE_FILE_)		\
 					debug.c				\
-					serial.c			\
 					gdb.c
+					#serial.c			\
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)
 

@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-octane.mips64/as.c
  *
  * created       Enguerrand RAYMOND   [tue oct 17 13:36:25 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 15:18:35 2006]
+ * updated       Enguerrand RAYMOND   [tue oct 17 22:40:13 2006]
  */
 
 /*
@@ -34,6 +34,23 @@
 /*
  * ---------- globals ---------------------------------------------------------
  */
+
+/*
+ * the address space manager dispatch.
+ */
+
+d_as			as_dispatch =
+  {
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+  };
 
 /*
  * ---------- functions -------------------------------------------------------

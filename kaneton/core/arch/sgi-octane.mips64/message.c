@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-octane.mips64/message.c
  *
  * created       Enguerrand RAYMOND   [tue oct 17 13:38:52 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 15:18:51 2006]
+ * updated       Enguerrand RAYMOND   [tue oct 17 22:42:07 2006]
  */
 
 /*
@@ -32,6 +32,16 @@
 /*
  * ---------- globals ---------------------------------------------------------
  */
+
+/*
+ * the message manager dispatch.
+ */
+
+d_message		message_dispatch =
+  {
+    NULL,
+    NULL
+  };
 
 /*
  * ---------- functions -------------------------------------------------------

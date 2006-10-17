@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-octane.mips64/io.c
  *
  * created       Enguerrand RAYMOND   [tue oct 17 13:38:30 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 15:18:48 2006]
+ * updated       Enguerrand RAYMOND   [tue oct 17 22:41:42 2006]
  */
 
 /*
@@ -32,6 +32,18 @@
 /*
  * ---------- globals ---------------------------------------------------------
  */
+
+/*
+ * the io manager dispatch.
+ */
+
+d_io		io_dispatch =
+  {
+    NULL,
+    NULL,
+    NULL,
+    NULL
+  };
 
 /*
  * ---------- functions -------------------------------------------------------

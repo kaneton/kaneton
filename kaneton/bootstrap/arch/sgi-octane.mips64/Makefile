@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/kaneton/bootstrap/arch/sgi-octane.mips64/Makefile
 ##
 ## created       Enguerrand RAYMOND   [sun oct 15 17:31:41 2006]
-## updated       Enguerrand RAYMOND   [sun oct 15 17:31:42 2006]
+## updated       Enguerrand RAYMOND   [wed oct 18 00:55:54 2006]
 ##
 
 #
@@ -33,31 +33,28 @@ BOOTSTRAP		=		bootstrap
 
 BOOTSTRAP_ASM		=		bootstrap.S
 
+BOOTSTRAP_O		=		$(BOOTSTRAP_ASM:.S=.o)
+
 # bootloader
 
-BOOTLOADER		=		bootloader
-
-BOOTLOADER_C		=		bootloader.c
-
-BOOTLOADER_O		=		$(BOOTLOADER_C:.c=.o)
+BOOTLOADER_O		=		bootloader.o
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(BOOTSTRAP):		#$(BOOTLOADER)
-	$(call assemble-asm,$(BOOTSTRAP),$(BOOTSTRAP_ASM),"--format bin")
+$(BOOTSTRAP):
+	$(call assemble-S,$(BOOTSTRAP_O),$(BOOTSTRAP_ASM),						\
+		"--no-standard-include"									\
+		"--no-standard-library")
 
-#$(BOOTLOADER):		$(BOOTLOADER_O)
-	#$(call executable,$(BOOTLOADER),$(BOOTLOADER_O),		\
-	 #        "--link-script $(_MACHDEP_LINK_DIR_)/bootstrap.lks"	\
-          #       "--no-standard-include"				\
-           #      "--no-standard-library")
+	$(call executable, $(BOOTSTRAP), $(BOOTSTRAP_O) $(_MACHDEP_BOOTLOADER_DIR_)/$(BOOTLOADER_O),	\
+		"--link-script $(_MACHDEP_LINK_DIR_)/bootstrap.lks"					\
+		"--no-standard-include"									\
+		"--no-standard-library")
 
 clear:
-	$(call remove,$(BOOTLOADER_O),)
-
-	$(call remove,$(BOOTLOADER),)
+	$(call remove,$(BOOTSTRAP_O),)
 
 	$(call remove,$(BOOTSTRAP),)
 

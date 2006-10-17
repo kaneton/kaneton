@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-octane.mips64/timer.c
  *
  * created       Enguerrand RAYMOND   [tue oct 17 13:41:56 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 15:19:15 2006]
+ * updated       Enguerrand RAYMOND   [tue oct 17 22:50:34 2006]
  */
 
 /*
@@ -33,6 +33,23 @@
 /*
  * ---------- globals ---------------------------------------------------------
  */
+
+/*
+ * the ia32 timer manager dispatch.
+ */
+
+d_timer				timer_dispatch =
+  {
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+  };
 
 /*
  * ---------- functions -------------------------------------------------------

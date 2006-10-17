@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-octane.mips64/Makefile
 ##
 ## created       Enguerrand RAYMOND   [sun oct 15 22:01:33 2006]
-## updated       Enguerrand RAYMOND   [tue oct 17 17:07:24 2006]
+## updated       Enguerrand RAYMOND   [tue oct 17 23:44:21 2006]
 ##
 
 #
@@ -29,7 +29,17 @@ include			../../../../env/.env.mk
 
 MACHDEP_LO		:=		machdep.lo
 
-MACHDEP_C		:=
+MACHDEP_C		:=		as.c				\
+					region.c			\
+					segment.c			\
+					event.c				\
+					timer.c				\
+					thread.c			\
+					task.c				\
+					sched.c				\
+					message.c			\
+					cpu.c				\
+					io.c
 
 MACHDEP_O		:=		$(MACHDEP_C:.c=.o)
 

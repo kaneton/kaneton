@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-octane.mips64/bootloader.c
  *
  * created       Enguerrand RAYMOND   [sun oct 15 20:46:15 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 16:16:40 2006]
+ * updated       Enguerrand RAYMOND   [wed oct 18 00:54:50 2006]
  */
 
 /*
@@ -45,5 +45,7 @@ void			(*kernel)(t_init*);
  */
 int		bootloader(t_uint32			magic)
 {
+  while (1)
+    ;
   return 0;
 }

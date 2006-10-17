@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-octane.mips64/segment.c
  *
  * created       Enguerrand RAYMOND   [tue oct 17 13:40:17 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 15:19:03 2006]
+ * updated       Enguerrand RAYMOND   [tue oct 17 22:44:04 2006]
  */
 
 /*
@@ -34,6 +34,32 @@
 /*
  * ---------- globals ---------------------------------------------------------
  */
+
+/*
+ * the segment manager dispatch.
+ */
+
+d_segment		segment_dispatch =
+  {
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL
+  };
 
 /*
  * ---------- functions -------------------------------------------------------

@@ -1,5 +1,6 @@
 	.text
 	.extern _start
+	.extern bootloader
 _start:
 	mfc0 $12, $10
 	andi $10, $10, 0xff7f
@@ -7,7 +8,6 @@ _start:
 	j _entry
 	nop
 	.rept 0x200 / 8 - 1
-	;; j exception_handler
 	nop
 	.endr
 
