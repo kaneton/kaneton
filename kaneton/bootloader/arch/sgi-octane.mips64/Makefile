@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-octane.mips64/Makefile
 ##
 ## created       Enguerrand RAYMOND   [sun oct 15 20:55:08 2006]
-## updated       Enguerrand RAYMOND   [sun oct 15 21:56:10 2006]
+## updated       Enguerrand RAYMOND   [tue oct 17 16:41:52 2006]
 ##
 
 #
@@ -41,15 +41,15 @@ CFLAGS			+=		-D___bootloader
 #
 # ---------- rules ------------------------------------------------------------
 #
-
-$(BOOTLOADER):		 $(BOOTLOADER_O)
-	$(call executable,$(BOOTLOADER),$(BOOTLOADER_O)			\
-	         $(_LIBOCTANE_A_) $(_KLIBC_A_),				\
 #	         "--link-script $(_MACHDEP_LINK_DIR_)/bootloader.lks"	\
+
+$(BOOTLOADER):		libs  $(BOOTLOADER_O)
+	$(call compile-c,$(BOOTLOADER),$(BOOTLOADER_O)			\
+	         $(_LIBOCTANE_A_) $(_KLIBC_A_),				\
                  "--no-standard-include"				\
                  "--no-standard-library")
 
-	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
+	#$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
 
 libs:
 	$(call launch,Makefile,$(_KLIBC_DIR_),,)

@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-octane.mips64/Makefile
 ##
 ## created       Enguerrand RAYMOND   [sun oct 15 22:01:33 2006]
-## updated       Enguerrand RAYMOND   [sun oct 15 22:01:58 2006]
+## updated       Enguerrand RAYMOND   [tue oct 17 17:07:24 2006]
 ##
 
 #
@@ -44,10 +44,10 @@ CFLAGS			+=		-D___kernel
 $(MACHDEP_LO):		libs $(MACHDEP_O)
 	$(call remove,$(MACHDEP_LO),)
 
-	$(call archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBIA32_A_),)
+	$(call archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBOCTANE_A_),)
 
 libs:
-	$(call launch,Makefile,$(_LIBIA32_DIR_),,)
+	$(call launch,Makefile,$(_LIBOCTANE_DIR_),,)
 
 clear:
 	$(call remove,$(MACHDEP_O),)

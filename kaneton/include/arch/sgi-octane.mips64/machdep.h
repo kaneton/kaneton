@@ -3,12 +3,12 @@
  *
  * project       kaneton
  *
- * license       kaneton
+ * license       kaneton licence
  *
- * file          /home/enguerrand/kaneton/kaneton/include/arch/machdep/machdep.h
+ * file          /home/enguerrand/kaneton/kaneton/include/arch/sgi-octane.mips64/machdep.h
  *
- * created       Enguerrand RAYMOND   [sun oct 15 22:04:48 2006]
- * updated       Enguerrand RAYMOND   [mon oct 16 00:02:09 2006]
+ * created       Enguerrand RAYMOND   [tue oct 17 14:03:09 2006]
+ * updated       Enguerrand RAYMOND   [tue oct 17 16:15:56 2006]
  */
 
 #ifndef OCTANE_MACHDEP_H
@@ -18,8 +18,11 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <core/types.h>
 #include <liboctane.h>
+#include <arch/machdep/core/core.h>
+#include <arch/machdep/services/services.h>
+#include <arch/machdep/sys/sys.h>
+#include <klibc.h>
 
 /*
  * ---------- macro functions -------------------------------------------------

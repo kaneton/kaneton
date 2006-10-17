@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/libs/liboctane/Makefile
 ##
 ## created       Enguerrand RAYMOND   [sun oct 15 17:30:09 2006]
-## updated       Enguerrand RAYMOND   [sun oct 15 21:10:45 2006]
+## updated       Enguerrand RAYMOND   [mon oct 16 20:56:05 2006]
 ##
 
 #
@@ -30,6 +30,8 @@ include			../../env/.env.mk
 SUBDIRS			:=		libarc
 
 LIBARC_LO		:=		libarc/libarc.lo
+
+LIBOCTANE_INCLUDE	:=		$(_LIBOCTANE_INCLUDE_DIR_)/liboctane.h
 
 #
 # ---------- rules ------------------------------------------------------------

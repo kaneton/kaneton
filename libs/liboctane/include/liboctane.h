@@ -7,8 +7,8 @@
  *
  * file          /home/enguerrand/kaneton/libs/liboctane/include/liboctane.h
  *
- * created       Enguerrand RAYMOND   [sun oct 15 20:48:04 2006]
- * updated       Enguerrand RAYMOND   [sun oct 15 22:46:38 2006]
+ * created       Enguerrand RAYMOND   [mon oct 16 20:38:18 2006]
+ * updated       Enguerrand RAYMOND   [tue oct 17 12:53:00 2006]
  */
 
 #ifndef LIBOCTANE_H
@@ -18,7 +18,9 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libarc/arc.h>
-#include <libarc/spb.h>
+//#include <libarc/arc.h>
+//#include <libarc/spb.h>
+#include <misc/types.h>
+#include <misc/stdarg.h>
 
 #endif
