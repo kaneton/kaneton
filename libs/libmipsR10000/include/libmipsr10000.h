@@ -5,14 +5,14 @@
  *
  * license       kaneton licence
  *
- * file          /home/enguerrand/kaneton/libs/liboctane/include/liboctane.h
+ * file          /home/enguerrand/kaneton/libs/libmipsR10000/include/liboctane.h
  *
- * created       Enguerrand RAYMOND   [mon oct 16 20:38:18 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 12:53:00 2006]
+ * created       enguerrand raymond   [wed oct 18 14:03:47 2006]
+ * updated       enguerrand raymond   [wed oct 18 14:05:55 2006]
  */
 
-#ifndef LIBOCTANE_H
-#define LIBOCTANE_H		1
+#ifndef LIBMIPSR10000_H
+#define LIBMIPSR10000_H		1
 
 /*
  * ---------- includes --------------------------------------------------------

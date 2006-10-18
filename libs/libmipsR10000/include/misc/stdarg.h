@@ -5,14 +5,14 @@
  *
  * license       kaneton licence
  *
- * file          /home/enguerrand/kaneton/libs/liboctane/include/misc/stdarg.h
+ * file          /home/enguerrand/kaneton/libs/libmipsR10000/include/misc/stdarg.h
  *
- * created       Enguerrand RAYMOND   [mon oct 16 21:12:36 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 13:15:06 2006]
+ * created       enguerrand raymond   [wed oct 18 14:04:03 2006]
+ * updated       enguerrand raymond   [wed oct 18 14:06:29 2006]
  */
 
-#ifndef STDARG_H
-#define STDARG_H	1
+#ifndef LIBMIPSR10000_STDARG_H
+#define LIBMIPSR10000_STDARG_H		1
 
 /*
  * ---------- types -----------------------------------------------------------

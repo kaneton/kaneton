@@ -5,14 +5,14 @@
  *
  * license       kaneton licence
  *
- * file          /home/enguerrand/kaneton/libs/liboctane/include/misc/types.h
+ * file          /home/enguerrand/kaneton/libs/libmipsR10000/include/misc/types.h
  *
- * created       Enguerrand RAYMOND   [mon oct 16 20:38:30 2006]
- * updated       Enguerrand RAYMOND   [mon oct 16 20:38:31 2006]
+ * created       enguerrand raymond   [wed oct 18 14:04:55 2006]
+ * updated       enguerrand raymond   [wed oct 18 14:06:13 2006]
  */
 
-#ifndef LIBOCTANE_TYPES_H
-#define LIBOCTANE_TYPES_H	1
+#ifndef LIBMIPSR10000_TYPES_H
+#define LIBMIPSR10000_TYPES_H		1
 
 /*
  * ---------- types -----------------------------------------------------------
