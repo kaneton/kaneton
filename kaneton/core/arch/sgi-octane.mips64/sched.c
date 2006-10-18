@@ -7,8 +7,8 @@
  *
  * file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-octane.mips64/sched.c
  *
- * created       Enguerrand RAYMOND   [tue oct 17 13:48:27 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 22:43:23 2006]
+ * created       enguerrand raymond   [wed oct 18 14:27:10 2006]
+ * updated       enguerrand raymond   [wed oct 18 14:27:18 2006]
  */
 
 /*
@@ -20,7 +20,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <liboctane.h>
+#include <libmipsr10000.h>
 #include <klibc.h>
 #include <kaneton.h>
 

@@ -5,10 +5,10 @@
 ##
 ## license       kaneton licence
 ##
-## file          /home/enguerrand/kaneton/libs/liboctane/libarc/Makefile
+## file          /home/enguerrand/kaneton/libs/libmipsR10000/libarc/Makefile
 ##
-## created       Enguerrand RAYMOND   [sun oct 15 17:30:25 2006]
-## updated       Enguerrand RAYMOND   [sun oct 15 22:46:25 2006]
+## created       enguerrand raymond   [wed oct 18 14:08:29 2006]
+## updated       enguerrand raymond   [wed oct 18 14:08:29 2006]
 ##
 
 #

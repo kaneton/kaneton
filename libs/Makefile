@@ -30,7 +30,7 @@ SUBDIRS			:=		klibc				\
 
 ARCHSUBDIRS		:=		libia32				\
 					libsun4u			\
-					liboctane
+					libmipsr10000
 
 #
 # ---------- rules ------------------------------------------------------------

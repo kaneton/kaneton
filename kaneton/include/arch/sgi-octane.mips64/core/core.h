@@ -7,12 +7,12 @@
  *
  * file          /home/enguerrand/kaneton/kaneton/include/arch/sgi-octane.mips64/core/core.h
  *
- * created       Enguerrand RAYMOND   [tue oct 17 13:23:34 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 13:43:52 2006]
+ * created       enguerrand raymond   [wed oct 18 14:15:13 2006]
+ * updated       enguerrand raymond   [wed oct 18 14:15:22 2006]
  */
 
-#ifndef OCTANE_CORE_CORE_H
-#define OCTANE_CORE_CORE_H	1
+#ifndef MIPS64_CORE_CORE_H
+#define MIPS64_CORE_CORE_H	1
 
 /*
  * ---------- macros ----------------------------------------------------------

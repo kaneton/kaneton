@@ -7,12 +7,12 @@
  *
  * file          /home/enguerrand/kaneton/kaneton/include/arch/sgi-octane.mips64/core/event.h
  *
- * created       Enguerrand RAYMOND   [tue oct 17 13:30:41 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 13:30:42 2006]
+ * created       enguerrand raymond   [wed oct 18 14:16:28 2006]
+ * updated       enguerrand raymond   [wed oct 18 14:16:35 2006]
  */
 
-#ifndef OCTANE_CORE_EVENT_H
-#define OCTANE_CORE_EVENT_H	1
+#ifndef MIPS64_CORE_EVENT_H
+#define MIPS64_CORE_EVENT_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------

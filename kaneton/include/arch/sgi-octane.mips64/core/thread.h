@@ -7,24 +7,18 @@
  *
  * file          /home/enguerrand/kaneton/kaneton/include/arch/sgi-octane.mips64/core/thread.h
  *
- * created       Enguerrand RAYMOND   [tue oct 17 13:32:54 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 13:32:54 2006]
+ * created       enguerrand raymond   [wed oct 18 14:19:28 2006]
+ * updated       enguerrand raymond   [wed oct 18 14:19:48 2006]
  */
 
-#ifndef OCTANE_CORE_THREAD_H
-#define OCTANE_CORE_THREAD_H       1
+#ifndef MIPS64_CORE_THREAD_H
+#define MIPS64_CORE_THREAD_H       1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 //#include <core/thread.h>
-
-/*                                                                [cut] k4   */
-
-/*
- *
- */
 
 typedef struct
 {

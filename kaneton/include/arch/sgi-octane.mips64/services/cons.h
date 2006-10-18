@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/include/arch/sgi-octane.mips64/services/cons.h
  *
  * created       julien quintard   [sat dec 17 17:16:27 2005]
- * updated       Enguerrand RAYMOND   [tue oct 17 17:12:17 2006]
+ * updated       enguerrand raymond   [wed oct 18 14:30:01 2006]
  */
 
 /*
@@ -31,7 +31,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <liboctane.h>
+#include <libmipsr10000.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

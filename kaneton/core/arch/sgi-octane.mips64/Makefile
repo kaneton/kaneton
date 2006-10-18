@@ -7,8 +7,8 @@
 ##
 ## file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-octane.mips64/Makefile
 ##
-## created       Enguerrand RAYMOND   [sun oct 15 22:01:33 2006]
-## updated       Enguerrand RAYMOND   [tue oct 17 23:44:21 2006]
+## created       enguerrand raymond   [wed oct 18 14:25:13 2006]
+## updated       enguerrand raymond   [wed oct 18 14:25:14 2006]
 ##
 
 #

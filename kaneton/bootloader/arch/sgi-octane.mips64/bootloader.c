@@ -7,8 +7,8 @@
  *
  * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-octane.mips64/bootloader.c
  *
- * created       Enguerrand RAYMOND   [sun oct 15 20:46:15 2006]
- * updated       Enguerrand RAYMOND   [wed oct 18 00:54:50 2006]
+ * created       enguerrand raymond   [wed oct 18 14:21:40 2006]
+ * updated       enguerrand raymond   [wed oct 18 14:21:48 2006]
  */
 
 /*
@@ -16,7 +16,7 @@
  */
 
 #include <kaneton.h>
-#include <liboctane.h>
+#include <libmipsr10000.h>
 #include "bootloader.h"
 
 /*

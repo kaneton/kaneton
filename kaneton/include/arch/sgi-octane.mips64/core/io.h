@@ -7,12 +7,12 @@
  *
  * file          /home/enguerrand/kaneton/kaneton/include/arch/sgi-octane.mips64/core/io.h
  *
- * created       Enguerrand RAYMOND   [tue oct 17 13:31:11 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 13:31:12 2006]
+ * created       enguerrand raymond   [wed oct 18 14:17:07 2006]
+ * updated       enguerrand raymond   [wed oct 18 14:20:28 2006]
  */
 
-#ifndef OCTANE_CORE_IO_H
-#define OCTANE_CORE_IO_H	1
+#ifndef MIPS64_CORE_IO_H
+#define MIPS64_CORE_IO_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------

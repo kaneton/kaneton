@@ -7,8 +7,8 @@
 ##
 ## file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-octane.mips64/Makefile
 ##
-## created       Enguerrand RAYMOND   [sun oct 15 20:55:08 2006]
-## updated       Enguerrand RAYMOND   [wed oct 18 00:49:23 2006]
+## created       enguerrand raymond   [wed oct 18 14:24:31 2006]
+## updated       enguerrand raymond   [wed oct 18 14:24:31 2006]
 ##
 
 #
@@ -45,7 +45,7 @@ CFLAGS			+=		-D___bootloader
 
 $(BOOTLOADER):		libs	$(BOOTLOADER_O)
 	$(call compile-c,$(BOOTLOADER),$(BOOTLOADER_O)			\
-	         $(_LIBOCTANE_A_) $(_KLIBC_A_),				\
+	         $(_LIBMIPSR10000_A_) $(_KLIBC_A_),			\
                  "--no-standard-include"				\
                  "--no-standard-library")
 
@@ -54,7 +54,7 @@ $(BOOTLOADER):		libs	$(BOOTLOADER_O)
 libs:
 	$(call launch,Makefile,$(_KLIBC_DIR_),,)
 
-	$(call launch,Makefile,$(_LIBOCTANE_DIR_),,)
+	$(call launch,Makefile,$(_LIBMIPSR10000_DIR_),,)
 
 clear:
 	$(call remove,$(BOOTLOADER_O),)

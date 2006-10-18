@@ -7,12 +7,12 @@
  *
  * file          /home/enguerrand/kaneton/kaneton/include/arch/sgi-octane.mips64/core/task.h
  *
- * created       Enguerrand RAYMOND   [tue oct 17 13:32:42 2006]
- * updated       Enguerrand RAYMOND   [tue oct 17 13:32:43 2006]
+ * created       enguerrand raymond   [wed oct 18 14:19:08 2006]
+ * updated       enguerrand raymond   [wed oct 18 14:19:16 2006]
  */
 
-#ifndef OCTANE_CORE_TASK_H
-#define OCTANE_CORE_TASK_H	1
+#ifndef MIPS64_CORE_TASK_H
+#define MIPS64_CORE_TASK_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
