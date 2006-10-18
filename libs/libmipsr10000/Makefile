@@ -5,10 +5,10 @@
 ##
 ## license       kaneton licence
 ##
-## file          /home/enguerrand/kaneton/libs/libmipsR10000/Makefile
+## file          /home/enguerrand/kaneton/libs/libmipsr10000/Makefile
 ##
 ## created       enguerrand raymond   [wed oct 18 14:08:40 2006]
-## updated       enguerrand raymond   [wed oct 18 14:08:42 2006]
+## updated       enguerrand raymond   [wed oct 18 14:36:51 2006]
 ##
 
 #
@@ -31,16 +31,16 @@ SUBDIRS			:=		libarc
 
 LIBARC_LO		:=		libarc/libarc.lo
 
-LIBOCTANE_INCLUDE	:=		$(_LIBOCTANE_INCLUDE_DIR_)/liboctane.h
+LIBMIPSR10000_INCLUDE	:=		$(_LIBMIPSR10000_INCLUDE_DIR_)/libmipsr10000.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(_LIBOCTANE_A_):		libs
-	$(call remove,$(_LIBOCTANE_A_),)
+$(_LIBMIPSR10000_A_):		libs
+	$(call remove,$(_LIBMIPSR10000_A_),)
 
-	$(call static-library,$(_LIBOCTANE_A_),$(LIBARC_LO),)
+	$(call static-library,$(_LIBMIPSR10000_A_),$(LIBARC_LO),)
 
 libs:
 	$(call launch,Makefile,$(SUBDIRS),,)
@@ -48,7 +48,7 @@ libs:
 clear:
 	$(call launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call remove,$(_LIBOCTANE_A_),)
+	$(call remove,$(_LIBMIPSR10000_A_),)
 
 	$(call purge,)
 

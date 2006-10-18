@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-octane.mips64/Makefile
 ##
 ## created       enguerrand raymond   [wed oct 18 14:24:31 2006]
-## updated       enguerrand raymond   [wed oct 18 14:24:31 2006]
+## updated       enguerrand raymond   [wed oct 18 14:38:44 2006]
 ##
 
 #
@@ -49,7 +49,7 @@ $(BOOTLOADER):		libs	$(BOOTLOADER_O)
                  "--no-standard-include"				\
                  "--no-standard-library")
 
-	$(call link, arch/machdep/$(BOOTLOADER_O), $(BOOTLOADER_O),)
+	$(call link, , arch/machdep/$(BOOTLOADER_O),)
 
 libs:
 	$(call launch,Makefile,$(_KLIBC_DIR_),,)
