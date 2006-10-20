@@ -5,28 +5,28 @@
 #ifndef _ARC_H_
 #define _ARC_H_
 
-#define ESUCCESS	0	/* No error                             */
-#define E2BIG		1	/* Argument list too long               */
-#define EACCES		2	/* Permission denied                    */
-#define EAGAIN		3	/* Resource temporarily unavailable     */
-#define EBADF		4	/* Bad file descriptor                  */
-#define EBUSY		5	/* Resource busy                        */
-#define EFAULT		6	/* Bad address                          */
-#define EINVAL		7	/* Invalid argument                     */
-#define EIO		8	/* Input/output error                   */
-#define EISDIR		9	/* Is a directory                       */
-#define EMFILE		10	/* Too many open files                  */
-#define EMLINK		11	/* Too many links                       */
-#define ENAMETOOlong	12	/* Filename too long                    */
-#define ENODEV		13	/* No such device                       */
-#define ENOENT		14	/* No such file or directory            */
-#define ENOEXEC		15	/* Execute format error                 */
-#define ENOMEM		16	/* Not enough space                     */
-#define ENOSPC		17	/* No space left on device              */
-#define ENOTDIR		18	/* Not a directory                      */
-#define ENOTTY		19	/* Inappropriate I/O control operation  */
-#define ENXIO		20	/* Media not loaded                     */
-#define EROFS		21	/* Read-only file system                */
+//#define ESUCCESS	0	/* No error                             */
+//#define E2BIG		1	/* Argument list too long               */
+//#define EACCES		2	/* Permission denied                    */
+//#define EAGAIN		3	/* Resource temporarily unavailable     */
+//#define EBADF		4	/* Bad file descriptor                  */
+//#define EBUSY		5	/* Resource busy                        */
+//#define EFAULT		6	/* Bad address                          */
+//#define EINVAL		7	/* Invalid argument                     */
+//#define EIO		8	/* Input/output error                   */
+//#define EISDIR		9	/* Is a directory                       */
+//#define EMFILE		10	/* Too many open files                  */
+//#define EMLINK		11	/* Too many links                       */
+//#define ENAMETOOlong	12	/* Filename too long                    */
+//#define ENODEV		13	/* No such device                       */
+//#define ENOENT		14	/* No such file or directory            */
+//#define ENOEXEC		15	/* Execute format error                 */
+//#define ENOMEM		16	/* Not enough space                     */
+//#define ENOSPC		17	/* No space left on device              */
+//#define ENOTDIR		18	/* Not a directory                      */
+//#define ENOTTY		19	/* Inappropriate I/O control operation  */
+//#define ENXIO		20	/* Media not loaded                     */
+//#define EROFS		21	/* Read-only file system                */
 
 
 typedef enum {
