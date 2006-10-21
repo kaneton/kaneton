@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-octane.mips64/bootloader.c
  *
  * created       enguerrand raymond   [wed oct 18 14:21:40 2006]
- * updated       enguerrand raymond   [fri oct 20 19:43:54 2006]
+ * updated       enguerrand raymond   [sat oct 21 02:02:52 2006]
  */
 
 /*
@@ -66,9 +66,9 @@ static void	t_printf_attr(u_int8_t	attr)
  */
 int		bootloader(t_uint32			magic)
 {
-  char i = 'E';
+  int i = 256;
   printf_init(t_printf_char, t_printf_attr);
-  printf("Enguerrand = %c", i);
+  printf("Enguerrand = %i", i);
   while (1)
     ;
   return 0;

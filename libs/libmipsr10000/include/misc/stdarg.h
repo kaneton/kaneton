@@ -5,10 +5,10 @@
  *
  * license       kaneton licence
  *
- * file          /home/enguerrand/kaneton/libs/libmipsR10000/include/misc/stdarg.h
+ * file          /home/enguerrand/kaneton/libs/libmipsr10000/include/misc/stdarg.h
  *
  * created       enguerrand raymond   [wed oct 18 14:04:03 2006]
- * updated       enguerrand raymond   [wed oct 18 14:06:29 2006]
+ * updated       enguerrand raymond   [sat oct 21 02:01:13 2006]
  */
 
 #ifndef LIBMIPSR10000_STDARG_H
@@ -24,7 +24,7 @@ typedef char*	va_list;
  * ---------- macros ----------------------------------------------------------
  */
 
-#define ALIGN	4
+#define ALIGN	8
 
 /*
  * ---------- macro functions -------------------------------------------------
