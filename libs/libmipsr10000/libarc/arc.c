@@ -5,6 +5,21 @@
 #include <libarc/arc.h>
 #include <libarc/spb.h>
 
+typedef unsigned long FILE;
+extern FILE *stdin;
+extern FILE *stdout;
+static FILE arc_stdin = ARC_STDIN;
+FILE *stdin = &arc_stdin;
+
+static FILE arc_stdout = ARC_STDOUT;
+FILE *stdout = &arc_stdout;
+
+int		write(char c)
+{
+  unsigned long	count = 0;
+
+  return (int) ArcWrite(*stdout, &c, 1, &count);
+}
 
 long ArcLoad(char * Path, unsigned long TopAddr, unsigned long * ExecAddr, unsigned long * LowAddr)
 {

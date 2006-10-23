@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-octane.mips64/Makefile
 ##
 ## created       enguerrand raymond   [wed oct 18 14:24:31 2006]
-## updated       enguerrand raymond   [fri oct 20 19:16:52 2006]
+## updated       enguerrand raymond   [sun oct 22 23:40:44 2006]
 ##
 
 #
@@ -29,7 +29,8 @@ include			../../../../env/.env.mk
 
 BOOTLOADER		:=		bootloader
 
-BOOTLOADER_C		:=		bootloader.c
+BOOTLOADER_C		:=		bootloader.c			\
+					cons.c
 
 BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
 					$(BOOTLOADER_S:.S=.o)
@@ -41,14 +42,13 @@ CFLAGS			+=		-D___bootloader
 #
 # ---------- rules ------------------------------------------------------------
 #
-#	         "--link-script $(_MACHDEP_LINK_DIR_)/bootloader.lks"	\ $(_LIBMIPSR10000_A_) $(_KLIBC_A_),			\
 
 $(BOOTLOADER):		libs	$(BOOTLOADER_O)
-	$(call compile-c,$(BOOTLOADER_O),$(BOOTLOADER_C),			\
-                 "--no-standard-include"				\
-                 "--no-standard-library")
-
-	#$(call link, arch/machdep/$(BOOTLOADER_O),$(BOOTLOADER_O),)
+	$(call executable, $(BOOTLOADER), $(BOOTLOADER_O) $(_KLIBC_A_)	\
+		$(_LIBMIPSR10000_A_),					\
+		"--link-script $(_MACHDEP_LINK_DIR_)/bootloader.lks"	\
+		"--no-standard-include"					\
+		"--no-standard-library")
 
 libs:
 	$(call launch,Makefile,$(_KLIBC_DIR_),,)

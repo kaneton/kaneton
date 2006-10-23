@@ -5,10 +5,10 @@
 ##
 ## license       kaneton
 ##
-## file          /home/mycure/kaneton/env/machines/linux.mips/machine.mk
+## file          /home/enguerrand/kaneton/env/machines/linux::sgi-octane.mips64/machine.mk
 ##
 ## created       julien quintard   [sat oct 14 10:15:53 2006]
-## updated       julien quintard   [sat oct 14 10:15:55 2006]
+## updated       enguerrand raymond   [sun oct 22 23:21:04 2006]
 ##
 
 #

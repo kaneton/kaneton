@@ -1,12 +1,12 @@
 OUTPUT_FORMAT("elf64-bigmips")
 OUTPUT_ARCH("mips")
-ENTRY(_start)
+ENTRY(bootloader)
 
 SECTIONS
 {
-	__kvaddr_sp = 0xa800000040070000;
+	__kvaddr_sp = 0xa800000000020000;
 
-	. = 0xa800000040080000;
+	. = 0xa800000000040000;
 
 	.text :
 	{
@@ -27,4 +27,3 @@ SECTIONS
 		*(.bss)
 	}
 }
-

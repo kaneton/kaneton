@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-octane.mips64/bootloader.c
  *
  * created       enguerrand raymond   [wed oct 18 14:21:40 2006]
- * updated       enguerrand raymond   [sat oct 21 02:02:52 2006]
+ * updated       enguerrand raymond   [sun oct 22 21:57:17 2006]
  */
 
 /*
@@ -18,19 +18,13 @@
 #include <libmipsr10000.h>
 #include <klibc.h>
 #include <kaneton.h>
+
 #include "bootloader.h"
 
 /*
  * ---------- globals ---------------------------------------------------------
  */
-typedef unsigned long FILE;
-extern FILE *stdin;
-extern FILE *stdout;
-static FILE arc_stdin = ARC_STDIN;
-FILE *stdin = &arc_stdin;
 
-static FILE arc_stdout = ARC_STDOUT;
-FILE *stdout = &arc_stdout;
 
 /*
  * the init variable.
@@ -49,27 +43,49 @@ extern	t_init		init;
 
 void			(*kernel)(t_init*);
 
-static int		t_printf_char(char	c)
-{
-  unsigned long	count = 0;
+/*
+ * ---------- functions -------------------------------------------------------
+ */
 
-  ArcWrite(*stdout, &c, 1, &count);
-  return 0;
-}
+/*
+ * a funny function which does nothing.
+ *
+ * this function is called when a fatal error occurs.
+ */
 
-static void	t_printf_attr(u_int8_t	attr)
+void			bootloader_error(void)
 {
+  while (1)
+    ;
 }
 
 /*
- * TODO: Write Commentaries about bootloader function works.
+ * the bootloader entry point.
+ *
+ * steps:
+ *
+ * 1) initialise the console.
  */
-int		bootloader(t_uint32			magic)
+
+int			bootloader(void)
 {
-  int i = 256;
-  printf_init(t_printf_char, t_printf_attr);
-  printf("Enguerrand = %i", i);
-  while (1)
-    ;
-  return 0;
+
+  /*
+   * 1)
+   */
+
+  bootloader_cons_init();
+
+  printf("\n");
+  printf("                --- the kaneton microkernel project ---\n");
+  printf("\n");
+
+  /*
+   * 2)
+   */
+
+  bootloader_cons_msg('!', "error: kernel exited\n");
+  bootloader_error();
+
+  return (0);
 }

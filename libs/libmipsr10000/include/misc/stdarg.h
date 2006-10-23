@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/libs/libmipsr10000/include/misc/stdarg.h
  *
  * created       enguerrand raymond   [wed oct 18 14:04:03 2006]
- * updated       enguerrand raymond   [sat oct 21 02:01:13 2006]
+ * updated       enguerrand raymond   [sun oct 22 21:33:26 2006]
  */
 
 #ifndef LIBMIPSR10000_STDARG_H
@@ -18,24 +18,14 @@
  * ---------- types -----------------------------------------------------------
  */
 
-typedef char*	va_list;
-
-/*
- * ---------- macros ----------------------------------------------------------
- */
-
-#define ALIGN	8
+typedef __builtin_va_list	va_list;
 
 /*
  * ---------- macro functions -------------------------------------------------
  */
 
-#define va_start(_argpt_, _lastarg_)				\
-(_argpt_ = ((char*)&_lastarg_ + ALIGN))
-
-#define va_arg(_argpt_, _type_)					\
-((_argpt_ += ALIGN),*((_type_*)(_argpt_ - ALIGN)))
-
-#define va_end(_argpt_)
+#define va_start(v,l)		__builtin_va_start(v,l)
+#define va_end(v)		__builtin_va_end(v)
+#define va_arg(v,l)		__builtin_va_arg(v,l)
 
 #endif
