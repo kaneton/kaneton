@@ -2,12 +2,9 @@
 	.extern _start
 	.extern bootloader
 _start:
-	mfc0 $12, $10
-	andi $10, $10, 0xff7f
-	;; mtc0 $10, $12
 	j _entry
 	nop
-	.rept 0x200 / 8 - 1
+		; .rept 0x200 / 8 - 1
 	nop
 	.endr
 

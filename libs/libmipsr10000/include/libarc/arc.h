@@ -5,6 +5,8 @@
 #ifndef _ARC_H_
 #define _ARC_H_
 
+#define ENAMETOOLONG	12
+
 typedef enum {
 	SystemClass = 0,
 	ProcessorClass = 1,
