@@ -85,7 +85,7 @@ int			bootloader(void)
    */
 
   bootloader_cons_msg('!', "error: kernel exited\n");
-  bootloader_error();
+  //bootloader_error();
 
   return (0);
 }
