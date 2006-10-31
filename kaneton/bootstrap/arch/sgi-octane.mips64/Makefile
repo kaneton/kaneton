@@ -33,25 +33,21 @@ BOOTSTRAP		=		bootstrap
 
 BOOTSTRAP_S		=		bootstrap.S
 
-BOOTLOADER_C		=		bootloader.c
-
 BOOTSTRAP_O		=		$(BOOTSTRAP_S:.S=.o)
 
-BOOTLOADER_O		=		$(BOOTLOADER_C:.c=.o)
-
-BOOTLOADER_INCLUDE	=		bootloader.h
+BOOTLOADER_LO		=		$(_MACHDEP_BOOTLOADER_DIR_)/bootloader.lo
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(BOOTSTRAP): libs $(BOOTLOADER_O)
+$(BOOTSTRAP): libs
 	$(call assemble-S, $(BOOTSTRAP_O), $(BOOTSTRAP_S),)
 
-	$(call executable, $(BOOTSTRAP), $(BOOTSTRAP_O)	$(BOOTLOADER_O)	$(_KLIBC_A_)	\
-		$(_LIBMIPSR10000_A_),							\
-		"--link-script $(_MACHDEP_LINK_DIR_)/bootstrap.lks"			\
-		"--no-standard-include"							\
+	$(call executable, $(BOOTSTRAP), $(BOOTSTRAP_O)	$(BOOTLOADER_LO)	\
+		$(_KLIBC_A_) $(_LIBMIPSR10000_A_),				\
+		"--link-script $(_MACHDEP_LINK_DIR_)/bootstrap.lks"		\
+		"--no-standard-include"						\
 		"--no-standard-library")
 
 libs:
@@ -61,8 +57,6 @@ libs:
 
 clear:
 	$(call remove,$(BOOTSTRAP_O),)
-
-	$(call remove,$(BOOTLOADER_O),)
 
 	$(call remove,$(BOOTSTRAP),)
 

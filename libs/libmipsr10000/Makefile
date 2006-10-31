@@ -40,7 +40,7 @@ LIBMIPSR10000_INCLUDE	:=		$(_LIBMIPSR10000_INCLUDE_DIR_)/libmipsr10000.h
 $(_LIBMIPSR10000_A_):		libs
 	$(call remove,$(_LIBMIPSR10000_A_),)
 
-	$(call static-library,$(_LIBMIPSR10000_A_),$(LIBARC_LO),)
+	$(call static-library,$(_LIBMIPSR10000_A_),$(LIBARC_LO),"-crs")
 
 libs:
 	$(call launch,Makefile,$(SUBDIRS),,)

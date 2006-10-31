@@ -4,9 +4,9 @@ ENTRY(bootloader)
 
 SECTIONS
 {
-	__kvaddr_sp = 0xa800000000020000;
+	__kvaddr_sp = 0xa800000020020000;
 
-	. = 0xa800000000040000;
+	. = 0xa800000020040000;
 
 	.text :
 	{

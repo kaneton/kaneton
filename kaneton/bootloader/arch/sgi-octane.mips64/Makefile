@@ -27,13 +27,15 @@ include			../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-BOOTLOADER		:=		bootloader
+BOOTLOADER_LO		:=		bootloader.lo
 
-BOOTLOADER_C		:=		bootloader.c			\
-					cons.c
+BOOTLOADER_C		:=		bootloader.c
 
-BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
-					$(BOOTLOADER_S:.S=.o)
+CONS_C			:=		cons.c
+
+BOOTLOADER_O		:=		bootloader.o
+
+CONS_O			:=		cons.o
 
 BOOTLOADER_INCLUDE	:=		bootloader.h
 
@@ -43,22 +45,17 @@ CFLAGS			+=		-D___bootloader
 # ---------- rules ------------------------------------------------------------
 #
 
-$(BOOTLOADER):		libs	$(BOOTLOADER_O)
-	$(call executable, $(BOOTLOADER), $(BOOTLOADER_O) $(_KLIBC_A_)	\
-		$(_LIBMIPSR10000_A_),					\
-		"--link-script $(_MACHDEP_LINK_DIR_)/bootloader.lks"	\
-		"--no-standard-include"					\
-		"--no-standard-library")
+$(BOOTLOADER_LO):	$(CONS_O) $(BOOTLOADER_O)
+	$(call remove,$(BOOTLOADER_LO),)
 
-libs:
-	$(call launch,Makefile,$(_KLIBC_DIR_),,)
-
-	$(call launch,Makefile,$(_LIBMIPSR10000_DIR_),,)
+	$(call archive,$(BOOTLOADER_LO),$(BOOTLOADER_O) $(CONS_O),)
 
 clear:
 	$(call remove,$(BOOTLOADER_O),)
 
-	$(call remove,$(BOOTLOADER),)
+	$(call remove,$(CONS_O),)
+
+	$(call remove,$(BOOTLOADER_LO),)
 
 	$(call purge,)
 

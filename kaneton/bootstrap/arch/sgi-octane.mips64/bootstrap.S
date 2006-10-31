@@ -4,7 +4,7 @@
 _start:
 	j _entry
 	nop
-		; .rept 0x200 / 8 - 1
+	.rept 0x200 / 8 - 1
 	nop
 	.endr
 

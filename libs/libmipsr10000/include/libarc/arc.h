@@ -7,6 +7,8 @@
 
 #define ENAMETOOLONG	12
 
+
+
 typedef enum {
 	SystemClass = 0,
 	ProcessorClass = 1,
@@ -234,6 +236,7 @@ extern long ArcSetFileInformation(unsigned long FileID, unsigned long AttributeF
 extern void ArcFlushAllCaches(void);
 extern long ArcTestUnicodeCharacter(unsigned long FileID, unsigned short UnicodeCharacter);
 extern DISPLAY_STATUS *ArcGetDisplayStatus(unsigned long FileID);
+
 
 int write(char c);
 
