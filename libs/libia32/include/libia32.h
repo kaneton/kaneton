@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/libia32.h
  *
  * created       matthieu bucchianeri   [tue dec 20 13:58:56 2005]
- * updated       matthieu bucchianeri   [tue oct 10 22:20:43 2006]
+ * updated       matthieu bucchianeri   [wed nov  1 18:07:26 2006]
  */
 
 #ifndef LIBIA32_H
@@ -21,7 +21,7 @@
 #include "misc/multiboot.h"
 #include "misc/stdarg.h"
 #include "misc/types.h"
-#include "misc/semaphore.h"
+#include "misc/spinlock.h"
 #include "paging/paging.h"
 #include "pmode/pmode.h"
 #include "pmode/gdt.h"

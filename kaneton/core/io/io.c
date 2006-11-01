@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/io/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       matthieu bucchianeri   [fri sep  1 15:20:30 2006]
+ * updated       matthieu bucchianeri   [wed nov  1 17:07:30 2006]
  */
 
 /*
@@ -50,11 +50,12 @@ m_io*			io = NULL;
  */
 
 t_error			io_grant(i_port				id,
-				 i_task				task)
+				 i_task				task,
+				 t_uint8			width)
 {
   IO_ENTER(io);
 
-  if (machdep_call(io, io_grant, id, task) != ERROR_NONE)
+  if (machdep_call(io, io_grant, id, task, width) != ERROR_NONE)
     IO_LEAVE(io, ERROR_UNKNOWN);
 
   IO_LEAVE(io, ERROR_NONE);
@@ -65,14 +66,119 @@ t_error			io_grant(i_port				id,
  */
 
 t_error			io_deny(i_port				id,
-				i_task				task)
+				i_task				task,
+				t_uint8				width)
 {
   IO_ENTER(io);
 
-  if (machdep_call(io, io_deny, id, task) != ERROR_NONE)
+  if (machdep_call(io, io_deny, id, task, width) != ERROR_NONE)
     IO_LEAVE(io, ERROR_UNKNOWN);
 
   IO_LEAVE(io, ERROR_NONE);
+}
+
+/*
+ * this function read a byte from an I/O port or memory-mapped I/O.
+ */
+
+t_error			io_read_8(i_task			task,
+				  i_port			id,
+				  t_uint8*			data)
+{
+  IO_ENTER(io);
+
+  IO_LEAVE(io, machdep_call(io, io_read_8, task, id, data));
+}
+
+/*
+ * this function read a 16 bits word from an I/O port or memory-mapped I/O.
+ */
+
+t_error			io_read_16(i_task			task,
+				   i_port			id,
+				   t_uint16*			data)
+{
+  IO_ENTER(io);
+
+  IO_LEAVE(io, machdep_call(io, io_read_16, task, id, data));
+}
+
+/*
+ * this function read a 32 bits word from an I/O port or memory-mapped I/O.
+ */
+
+t_error			io_read_32(i_task			task,
+				   i_port			id,
+				   t_uint32*			data)
+{
+  IO_ENTER(io);
+
+  IO_LEAVE(io, machdep_call(io, io_read_32, task, id, data));
+}
+
+/*
+ * this function read a 64 bits word from an I/O port or memory-mapped I/O.
+ */
+
+t_error			io_read_64(i_task			task,
+				   i_port			id,
+				   t_uint64*			data)
+{
+  IO_ENTER(io);
+
+  IO_LEAVE(io, machdep_call(io, io_read_64, task, id, data));
+}
+
+/*
+ * this function write a byte to an I/O port or memory-mapped I/O.
+ */
+
+t_error			io_write_8(i_task			task,
+				   i_port			id,
+				   t_uint8			data)
+{
+  IO_ENTER(io);
+
+  IO_LEAVE(io, machdep_call(io, io_write_8, task, id, data));
+}
+
+/*
+ * this function write a 16 bits word to an I/O port or memory-mapped I/O.
+ */
+
+t_error			io_write_16(i_task			task,
+				    i_port			id,
+				    t_uint16			data)
+{
+  IO_ENTER(io);
+
+  IO_LEAVE(io, machdep_call(io, io_write_16, task, id, data));
+}
+
+/*
+ * this function write a 32 bits word to an I/O port or memory-mapped I/O.
+ */
+
+t_error			io_write_32(i_task			task,
+				    i_port			id,
+				    t_uint32			data)
+{
+  IO_ENTER(io);
+
+  IO_LEAVE(io, machdep_call(io, io_write_32, task, id, data));
+}
+
+/*
+ * this function write a 64 bits word to an I/O port or memory-mapped I/O.
+ */
+
+t_error			io_write_64(i_task			task,
+				    i_port			id,
+				    t_uint64			data)
+{
+  IO_ENTER(io);
+
+  IO_LEAVE(io, machdep_call(io, io_write_64, task, id, data));
 }
 
 /*

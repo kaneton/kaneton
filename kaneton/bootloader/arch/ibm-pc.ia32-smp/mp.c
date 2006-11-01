@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-smp/mp.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/mp.c
  *
  * created       matthieu bucchianeri   [tue jul 25 11:21:34 2006]
- * updated       matthieu bucchianeri   [mon aug 21 18:31:46 2006]
+ * updated       matthieu bucchianeri   [wed nov  1 18:53:57 2006]
  */
 
 /*
@@ -19,12 +19,7 @@
 #include "bootloader.h"
 
 /*
- * ---------- macros ----------------------------------------------------------
- */
-
-
-/*
- * ---------- globals ---------------------------------------------------------
+ * ---------- extern ----------------------------------------------------------
  */
 
 /*
@@ -34,24 +29,25 @@
 extern t_init*		init;
 
 /*
- * AP init semaphore.
+ * AP boot code start and end.
  */
 
-static SEM_DECLARE(sem);
+extern char ap_boot_start;
+extern char ap_boot_end;
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
+
+/*
+ * AP init spinlock.
+ */
+
+static SPIN_DECLARE(spin);
 
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-#define AP_CODE_ADDR		0x8000
-
-/*
- * AP bootstrap code. correspond to ap-boot.o file.
- *
- * XXX find a more elegant way to do this
- */
-
-static t_uint8 code[] = "\xfa\xb8\x5d\x80\xbb\x45\x80\x29\xd8\xa3\x5d\x80\x66\xb8\x45\x80\x00\x00\x66\xa3\x5f\x80\x0f\x01\x16\x5d\x80\x0f\x20\xc0\x0d\x01\x00\x0f\x22\xc0\xea\x29\x80\x08\x00\x66\xb8\x10\x00\x8e\xd8\x8e\xd0\x8e\xc0\x8e\xe0\x8e\xe8\xbc\x00\x90\x00\x00\xbe\xfc\x7f\x00\x00\x8b\x16\xff\xe2\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\x00\x00\x00\x9b\xdf\x00\xff\xff\x00\x00\x00\x93\xdf\x00\x00\x00\x00\x00\x00\x00";
 
 /*
  * this function identifies and boots all the processors.
@@ -61,7 +57,7 @@ static t_uint8 code[] = "\xfa\xb8\x5d\x80\xbb\x45\x80\x29\xd8\xa3\x5d\x80\x66\xb
  * 1) check CPUID for MP compliance.
  * 2) calibrate the APIC timer.
  * 3) setup the BSP.
- * 4) copy the AP bootstrap code.
+ * 4) copy the AP bootstrap code & temporary GDT.
  * 5) enable the local APIC.
  * 6) send the INIT IPI.
  * 7) send the SIPI.
@@ -71,7 +67,9 @@ static t_uint8 code[] = "\xfa\xb8\x5d\x80\xbb\x45\x80\x29\xd8\xa3\x5d\x80\x66\xb
 
 void			bootloader_mp_init(void)
 {
+  t_ia32_gdtr*		gdtr = (t_ia32_gdtr*)0x7FF6;
   t_uint32*		core_ptr = (t_uint32*)0x7FFC;
+  void			*temp_gdtr;
   t_uint32		apicid;
 
   bootloader_cons_msg('+', "initializing other processors\n");
@@ -102,8 +100,12 @@ void			bootloader_mp_init(void)
    * 4)
    */
 
-  memcpy((void*)AP_CODE_ADDR, code, sizeof(code));
+  memcpy((void*)0x8000, &ap_boot_start, &ap_boot_end - &ap_boot_start);
   *core_ptr = (t_uint32)bootloader_mp_ap_init;
+  temp_gdtr = (void*)(0x8000 + &ap_boot_end - &ap_boot_start);
+  gdtr->address = (t_paddr)temp_gdtr;
+  gdtr->size = init->machdep.gdt.count * sizeof (t_ia32_gdte);
+  memcpy(temp_gdtr, init->machdep.gdt.descriptor, gdtr->size);
 
   WBINVD();
 
@@ -208,9 +210,9 @@ t_sint32		bootloader_add_cpu(t_uint32		apicid)
  *
  * steps:
  *
- * 1) take the semaphore.
+ * 1) take the lock.
  * 2) add the current CPU to the MP table.
- * 3) release the semaphore.
+ * 3) release the lock.
  * 4) enter in halt state.
  */
 
@@ -223,7 +225,7 @@ void			bootloader_mp_ap_init(void)
    * 1)
    */
 
-  SEM_TAKE(sem);
+  SPIN_LOCK(spin);
 
   /*
    * 2)
@@ -248,12 +250,11 @@ void			bootloader_mp_ap_init(void)
    * 3)
    */
 
-  SEM_RELEASE(sem);
+  SPIN_UNLOCK(spin);
 
   /*
    * 4)
    */
 
-  while (1)
-    ;
+  HLT();
 }

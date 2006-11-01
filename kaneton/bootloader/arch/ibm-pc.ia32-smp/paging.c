@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-smp/paging.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/paging.c
  *
  * created       julien quintard   [sun may 29 00:38:50 2005]
- * updated       matthieu bucchianeri   [tue jul 25 15:52:52 2006]
+ * updated       matthieu bucchianeri   [wed nov  1 18:04:46 2006]
  */
 
 /*
@@ -103,12 +103,16 @@ void			bootloader_paging_init(void)
   pt0.present = 1;
   pt0.rw = 1;
   pt0.user = 0;
+  pt0.cached = PT_CACHED;
+  pt0.writeback = PT_WRITETHROUGH;
 
   pd_add_table(&pd, 0, pt0);
 
   pg.present = 1;
   pg.rw = 1;
   pg.user = 0;
+  pg.cached = PT_CACHED;
+  pg.writeback = PT_WRITETHROUGH;
   for (i = 0, addr = PAGESZ;  i < PT_MAX_ENTRIES - 1; i++, addr += PAGESZ)
     {
       pg.addr = addr;
@@ -129,6 +133,8 @@ void			bootloader_paging_init(void)
   pt.present = 1;
   pt.rw = 1;
   pt.user = 0;
+  pt.cached = PT_CACHED;
+  pt.writeback = PT_WRITETHROUGH;
 
   pd_add_table(&pd, PDE_ENTRY(APIC_REG_BASE), pt);
 
@@ -156,6 +162,8 @@ void			bootloader_paging_init(void)
 	  pt.present = 1;
 	  pt.rw = 1;
 	  pt.user = 0;
+	  pt.cached = PT_CACHED;
+	  pt.writeback = PT_WRITETHROUGH;
 
 	  pd_add_table(&pd, PDE_ENTRY(addr), pt);
 	  limit += PAGESZ;
@@ -168,7 +176,7 @@ void			bootloader_paging_init(void)
    * 6)
    */
 
-  pd_activate(pd);
+  pd_activate(pd, PD_CACHED, PD_WRITETHROUGH);
 
   /*
    * 7)
@@ -194,7 +202,7 @@ void			bootloader_paging_ap_init(void)
    * 1)
    */
 
-  pd_activate(init->machdep.pd);
+  pd_activate(init->machdep.pd, PD_CACHED, PD_WRITETHROUGH);
 
   /*
    * 2)

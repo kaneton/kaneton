@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/kaneton/core/as/03/03.c
  *
  * created       matthieu bucchianeri   [fri feb 17 19:38:23 2006]
- * updated       matthieu bucchianeri   [sat oct 14 18:12:02 2006]
+ * updated       matthieu bucchianeri   [wed nov  1 15:50:19 2006]
  */
 
 #include <klibc.h>
@@ -68,17 +68,13 @@ void		check_as_03(void)
 
   MY_ASSERT(set_size(o->segments, &sz) == ERROR_NONE, "invalid segment set in cloned object\n");
 
-  MY_ASSERT(sz == 3, "too many segments cloned\n"); // 3 because 1 PD + 1 PT
+  MY_ASSERT(region_get(cloned, reg, &oreg) == ERROR_NONE, "invalid region set in cloned object\n");
 
-  MY_ASSERT(set_head(o->segments, &it) == ERROR_NONE, "invalid segment set in cloned object\n");
-
-  MY_ASSERT(set_object(o->segments, it, (void**)&oseg) == ERROR_NONE, "invalid segment set in cloned object\n");
+  MY_ASSERT(segment_get(oreg->segid, &oseg) == ERROR_NONE, "invalid segment set in cloned object\n");
 
   MY_ASSERT(oseg->size == 3 * PAGESZ, "Bad size field in cloned segment\n");
   MY_ASSERT(oseg->perms == PERM_READ, "Bad perms field in cloned segment\n");
   MY_ASSERT(oseg->type == SEGMENT_TYPE_MEMORY, "Bad type field in cloned segment\n");
-
-  MY_ASSERT(region_get(cloned, reg, &oreg) == ERROR_NONE, "invalid region set in cloned object\n");
 
   MY_ASSERT(oreg->regid == reg, "Bad regid field in cloned region\n");
   MY_ASSERT(oreg->size == 2 * PAGESZ, "Bad size field in cloned region\n");

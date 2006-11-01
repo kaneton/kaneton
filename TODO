@@ -16,7 +16,7 @@
 
  - message
  - capability (a priori Julien l'a bien entamé)
- - io (juste le revoir en fait, cf remarque plus bas)
+ - mod
  - share ?
  - (pas urgent) cpu
 
@@ -58,24 +58,6 @@
  dans chaque as.
 
 --
- peut etre que le I/O manager est mal pensé. Sur SUN par exemple, les
- I/O se font avec des load/store en mémoire. Pour gerer les permissions
- c'est chaud (utiliser le paging ne changerais rien car pas
- fragmentable).
-
- peut etre on devrait faire en plus une interface du genre :
-
- io_read_8, 16, 32, 64
- io_write_8, 16, 32, 64
-
- sur IA-32, on ne serait pas obligé de les utiliser (on utilise direct
- les instructions in/out).
-
- sur une archi qui fonction comme SUN, alors on utiliserais du coup un
- set pour gerer les permissions, et c'est le kernel qui ferait les
- acces memoire qu'il faut lors des io_read/io_write
-
---
  ameliorer la moulette:
   - gerer les exceptions
 	--> OK, 1 warning a corriger
@@ -89,14 +71,18 @@
  bon, on va se fixer des deadline comme ça au moins ca avancera:
  (sinon panpan cucu)
 
- next => 15 octobre
- todo: as_clone X, region_resize X, ia32_region_reserve X, sched_update, as/03 X
+ done:
+   as_clone
+   region_resize
+   ia32_region_reserve
+   as/03
+   context switch FPU/SSE
 
  next => 30 octobre
  todo: task_wait, task_clone, task/*
 
  next => 15 novembre
- todo: context switch FPU/SSE X, thread_*
+ todo: thread_*, sched_update
 
  next => 30 novembre
  todo: time/*, event/*
@@ -139,10 +125,6 @@
    + time/01, time/02, time/03
    + task/01, task/02, task/03, task/04, task/05, task/06
    + event/*
-
---
- ecrire les parties correspondantes dans le book kaneton a propos d'io
- et cpu s'assurer que l'interface de collera bien.
 
 --
  probleme du malloc:  a priori c'est ok. mais  l'idéal serait en effet

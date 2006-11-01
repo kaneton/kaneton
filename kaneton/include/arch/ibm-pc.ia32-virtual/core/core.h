@@ -239,10 +239,44 @@ t_error			ia32_cpu_current(i_cpu*			cpuid);
  */
 
 t_error			ia32_io_grant(i_port			id,
-				      i_task			task);
+				      i_task			task,
+				      t_uint8			width);
 
 t_error			ia32_io_deny(i_port			id,
-				     i_task			task);
+				     i_task			task,
+				     t_uint8			width);
+
+t_error			ia32_io_read_8(i_task			task,
+				       i_port			id,
+				       t_uint8			*data);
+
+t_error			ia32_io_read_16(i_task			task,
+					i_port			id,
+					t_uint16		*data);
+
+t_error			ia32_io_read_32(i_task			task,
+					i_port			id,
+					t_uint32		*data);
+
+t_error			ia32_io_read_64(i_task			task,
+					i_port			id,
+					t_uint64		*data);
+
+t_error			ia32_io_write_8(i_task			task,
+					i_port			id,
+					t_uint8			data);
+
+t_error			ia32_io_write_16(i_task			task,
+					 i_port			id,
+					 t_uint16		data);
+
+t_error			ia32_io_write_32(i_task			task,
+					 i_port			id,
+					 t_uint32		data);
+
+t_error			ia32_io_write_64(i_task			task,
+					 i_port			id,
+					 t_uint64		data);
 
 t_error			ia32_io_init(void);
 

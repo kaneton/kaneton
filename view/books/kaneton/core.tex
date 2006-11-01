@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/books/kaneton/core.tex
+%% file          /home/buckman/kaneton/view/books/kaneton/core.tex
 %%
 %% created       matthieu bucchianeri   [mon jan 30 17:33:29 2006]
-%% updated       julien quintard   [thu jul  6 17:25:14 2006]
+%% updated       matthieu bucchianeri   [wed nov  1 17:39:45 2006]
 %%
 
 %
@@ -1389,8 +1389,9 @@ and the threads' priorities.
 Be careful, the scheduler schedules the threads which are the active
 execution entities and not the tasks.
 
-\notice{The scheduler was currently designed for single microprocessor
-  architectures.}
+Current implementation of the scheduler uses a multilevel feedback
+queues algorithm. The scheduler, in conjunction with the \textbf{cpu
+manager}, supports multiple processors.
 
 %
 % interface
@@ -1448,6 +1449,96 @@ execution entities and not the tasks.
 	 }
 
 %
+% scheduler
+%
+
+\section{cpu manager}
+
+The \textbf{cpu manager} provides all mecanisms to support
+symmetrical multiprocessor platforms.
+
+The interface of this manager provides functions to assign a processor
+to a newly created task, to migrate a task from one processor to
+another and to perform load-balancing.
+
+A \textbf{cpu object} contains information dealing about a
+microprocessor's load weight and efficiency. These statistics are
+updated by the scheduler, which reports the current activity of each
+processors (like the effective timeslice of a thread on a given
+microprocessor.
+
+%
+% interface
+%
+
+\subsubsection{Interface}
+
+\function{cpu\_show}{(i\_cpu \argument{id})}
+	 {
+	   This function displays information on the processor \argument{id}.
+	 }
+
+\function{cpu\_dump}{(void)}
+	 {
+	   This function displays information on all the active
+	   microprocessors.
+	 }
+
+\function{cpu\_current}{(i\_cpu* \argument{id})}
+	 {
+	   This function sets \argument{id} to the identifier of the
+	   microprocessor on which the kernel is currently running.
+	 }
+
+\function{cpu\_select}{(i\_cpu* \argument{id})}
+	 {
+	   This function is called when a new task is created. It gives
+	   the identifier of the microprocessor with the lowest load.
+	 }
+
+\function{cpu\_stats}{(i\_cpu \argument{id},
+                       t\_timeslice \argument{time})}
+	 {
+	   This function updates statistics for the processor \argument{id}.
+
+	   \notice{This function will be extended to provide more
+	   precise statistics.}
+	 }
+
+\function{cpu\_balance}{(void)}
+	 {
+	   This function -- called periodically -- performs a
+	   load-balancing on all processors.
+	 }
+
+\function{cpu\_migrate}{(i\_task \argument{tskid},
+                         i\_cpu \argument{destination})}
+	 {
+	   This function migrates the task \argument{tskid} to the
+	   processor \argument{destination}.
+	 }
+
+\function{cpu\_get}{(i\_cpu \argument{id},
+                     o\_cpu** \argument{o})}
+	 {
+	   This function get the object corresponding to the processor
+	   \argument{id}.
+	 }
+
+\function{cpu\_init}{(void)}
+	 {
+	   This function initializes the cpu manager.
+	 }
+
+\function{cpu\_clean}{(void)}
+	 {
+	   This function cleans the cpu manager.
+	 }
+
+\notice{The cpu manager is not yet finished. For the moment, it only
+supports a single microprocessor.}
+
+%
 % message manager
 %
 
@@ -1477,6 +1568,8 @@ action is totally performed.
 %
 % interface
 %
+
+\subsubsection{Interface}
 
 \function{message\_show}{(i\_message \argument{id})}
 	 {
@@ -1606,3 +1699,125 @@ XXX pas de signaux mais ils peuvent etre emules
 XXX task manager: init de la task kernel a partir du bootloader init
 
 \end{comment}
+
+%
+% io manager
+%
+
+\section{io manager}
+
+The \textbf{io manager} provides an interface to interact with
+hardware through the microprocessor I/O ports or through memory mapped
+I/O.
+
+We use the term ``I/O port'', even if it refers to memory-mapped I/O
+depending on the architecture.
+
+The control of I/O ports access is implemented \textit{via} a couple
+of functions that allow or deny one precise task from reading or
+writing to a port. There is no way to deny a given operation (eg:
+reading or writing).
+
+The read and write operations are performed by the io manager
+architecture dependent part.
+
+%
+% interface
+%
+
+\subsubsection{Interface}
+
+\function{io\_grant}{(i\_port \argument{id},
+                      i\_task \argument{task},
+                      t\_uint8 \argument{width})}
+	 {
+	   This function grant \argument{task} for accessing
+	   \argument{width} bytes of \argument{id} port both for
+	   reading and writing.
+	 }
+
+\function{io\_deny}{(i\_port \argument{id},
+                     i\_task \argument{task},
+                     t\_uint8 \argument{width})}
+	 {
+	   This function deny \argument{task} for accessing
+	   \argument{width} bytes of \argument{id} port both for
+	   reading and writing.
+	 }
+
+\function{io\_read\_8}{(i\_task \argument{task},
+                        i\_port \argument{id},
+                        t\_uint8* \argument{data})}
+	 {
+	   This function reads a byte from \argument{id} port for
+	   \argument{task}.
+         }
+
+\function{io\_read\_16}{(i\_task \argument{task},
+                         i\_port \argument{id},
+                         t\_uint16* \argument{data})}
+	 {
+	   This function reads a 16 bits word from \argument{id} port for
+	   \argument{task}.
+         }
+
+\function{io\_read\_32}{(i\_task \argument{task},
+                         i\_port \argument{id},
+                         t\_uint32* \argument{data})}
+	 {
+	   This function reads a 32 bits word from \argument{id} port for
+	   \argument{task}.
+         }
+
+\function{io\_read\_64}{(i\_task \argument{task},
+                         i\_port \argument{id},
+                         t\_uint64* \argument{data})}
+	 {
+	   This function reads a 64 bits word from \argument{id} port for
+	   \argument{task}.
+         }
+
+\function{io\_write\_8}{(i\_task \argument{task},
+                         i\_port \argument{id},
+                         t\_uint8 \argument{data})}
+	 {
+	   This function write a byte to \argument{id} port for
+	   \argument{task}.
+         }
+
+\function{io\_write\_16}{(i\_task \argument{task},
+                          i\_port \argument{id},
+                          t\_uint16 \argument{data})}
+	 {
+	   This function write a 16 bits word to \argument{id} port for
+	   \argument{task}.
+         }
+
+\function{io\_write\_32}{(i\_task \argument{task},
+                          i\_port \argument{id},
+                          t\_uint32 \argument{data})}
+	 {
+	   This function write a 32 bits word to \argument{id} port for
+	   \argument{task}.
+         }
+
+\function{io\_write\_64}{(i\_task \argument{task},
+                          i\_port \argument{id},
+                          t\_uint64 \argument{data})}
+	 {
+	   This function write a 64 bits word to \argument{id} port for
+	   \argument{task}.
+         }
+
+\function{io\_init}{(void)}
+	 {
+	   This function initializes the io manager.
+	 }
+
+\function{io\_clean}{(void)}
+	 {
+	   This function cleans the io manager.
+	 }
+
+\notice{All read/write functions may not be implemented depending of
+the architecture.}

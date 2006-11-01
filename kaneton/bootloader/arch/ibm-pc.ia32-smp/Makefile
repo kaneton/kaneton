@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-smp/Makefile
+## file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:05:35 2005]
-## updated       matthieu bucchianeri   [mon aug 21 15:12:41 2006]
+## updated       matthieu bucchianeri   [wed nov  1 18:37:31 2006]
 ##
 
 #
@@ -36,7 +36,8 @@ BOOTLOADER_C		:=		bootloader.c			\
 					mp.c				\
 					interrupt.c
 
-BOOTLOADER_ASM		:=		multiboot.asm
+BOOTLOADER_ASM		:=		multiboot.asm			\
+					ap-boot.asm
 
 
 BOOTLOADER_S		:=		entry.S
@@ -53,7 +54,7 @@ CFLAGS			+=		-D___bootloader
 # ---------- rules ------------------------------------------------------------
 #
 
-$(BOOTLOADER):		libs $(BOOTLOADER_O) ap-boot.o
+$(BOOTLOADER):		libs $(BOOTLOADER_O)
 	$(call executable,$(BOOTLOADER),$(BOOTLOADER_O)			\
 	         $(_LIBIA32_A_) $(_KLIBC_A_),				\
 	         "--link-script $(_MACHDEP_LINK_DIR_)/bootloader.lks"	\
@@ -62,8 +63,8 @@ $(BOOTLOADER):		libs $(BOOTLOADER_O) ap-boot.o
 
 	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
 
-ap-boot.o:
-	$(call assemble-asm,ap-boot.o,ap-boot.asm,"--format bin")
+ap-boot.o: ap-boot.asm
+	$(call assemble-asm,ap-boot.o,ap-boot.asm,"--output-format elf")
 
 libs:
 	$(call launch,Makefile,$(_KLIBC_DIR_),,)

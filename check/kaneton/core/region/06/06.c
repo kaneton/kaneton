@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/kaneton/core/region/06/06.c
  *
  * created       matthieu bucchianeri   [sun apr  2 19:04:14 2006]
- * updated       matthieu bucchianeri   [thu sep  7 23:32:32 2006]
+ * updated       matthieu bucchianeri   [wed nov  1 16:07:47 2006]
  */
 
 #include <klibc.h>

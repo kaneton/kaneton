@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-smp/apic.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/apic.c
  *
  * created       matthieu bucchianeri   [tue jul 25 11:22:27 2006]
- * updated       matthieu bucchianeri   [mon aug 21 18:29:16 2006]
+ * updated       matthieu bucchianeri   [wed nov  1 19:01:52 2006]
  */
 
 /*
@@ -38,12 +38,19 @@ static volatile t_uint32 ticks;
  * ---------- functions -------------------------------------------------------
  */
 
+/*
+ * This is the PIT IRQ handler. Used to calibrate the APIC timer frequency.
+ */
+
 static void		bootloader_apic_calibrate_tick(void)
 {
-  ticks += 10;
+  asm volatile("pusha");
+
+  ticks++;
 
   pic_acknowledge(0);
 
+  asm volatile("popa");
   LEAVE();
   IRET();
 }
@@ -89,13 +96,13 @@ void			bootloader_apic_calibrate_timer(void)
 
   idt_add_gate(NULL, 32, gate);
 
-  pit_init(100);
+  pit_init(1000);
 
   pic_enable_irq(0);
 
   ticks = 0;
   t1 = apic_read(APIC_REG_COUNT);
-  while (ticks < 200)
+  while (ticks < 1000)
     ;
 
   t2 = apic_read(APIC_REG_COUNT);

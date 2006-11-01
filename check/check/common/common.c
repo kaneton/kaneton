@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/check/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [sat oct 14 18:05:46 2006]
+ * updated       matthieu bucchianeri   [wed nov  1 16:16:09 2006]
  */
 
 #include <klibc.h>
@@ -38,16 +38,14 @@ void	check_check_common(void)
 void	check_tests(void)
 {
 //  check_check_common();
-#if 0
-  check_bootloader_tests();
-  check_set_tests();
-  check_id_tests();
-#endif
-  check_as_tests();
-#if 0
-  check_segment_tests();
-  check_region_tests();
-  check_map_tests();
+#if 1
+//  check_bootloader_tests();
+//  check_set_tests();
+//  check_id_tests();
+//  check_as_tests();
+//  check_segment_tests();
+//  check_region_tests();
+//  check_map_tests();
 #endif
 }
 
@@ -192,7 +190,10 @@ void	check_exc_catch(t_exc*		exc)
    * 4)
    */
 
-  while (1); /* XXX */
+#ifdef CHECK_DO_NOT_RESUME
+  while (1)
+    ;
+#endif
 
   asm volatile("leave\n\t"
 	       "ret");

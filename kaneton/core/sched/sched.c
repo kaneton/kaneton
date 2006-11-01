@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [thu oct 12 23:09:05 2006]
+ * updated       matthieu bucchianeri   [wed nov  1 17:05:23 2006]
  */
 
 /*
@@ -986,7 +986,7 @@ i_task sched_test_add_thread(void *func, t_prior p)
 	  while (1);
 	}
 
-      if (io_grant(0x60, tsk) != ERROR_NONE)
+      if (io_grant(0x60, tsk, 1) != ERROR_NONE)
 	{
 	  cons_msg('!', "cannot grant I/O\n");
 	  while (1);

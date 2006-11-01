@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat oct 14 19:31:21 2006]
+ * updated       matthieu bucchianeri   [wed nov  1 16:16:32 2006]
  */
 
 /*
@@ -119,7 +119,7 @@ void			kaneton(t_init*				bootloader)
 #ifndef SERIAL
   //  timer_test();
 
-  //check_tests();
+//  check_tests();
 
   sched_test();
 
@@ -128,7 +128,7 @@ void			kaneton(t_init*				bootloader)
    * XXX
    */
 
-#ifdef CONF_ENABLE_CHECK
+#if defined(CONF_ENABLE_CHECK)
   cons_msg('+', "running manual tests\n");
   check_tests();
   while(1)
@@ -136,7 +136,6 @@ void			kaneton(t_init*				bootloader)
 #endif
 
 #ifdef SERIAL
-  check_region_06();
   cons_msg('+', "starting debug manager\n");
   debug_init();
   while(1)

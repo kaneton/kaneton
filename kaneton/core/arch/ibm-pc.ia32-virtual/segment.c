@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/segment.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri sep  1 15:43:13 2006]
+ * updated       matthieu bucchianeri   [wed nov  1 15:42:42 2006]
  */
 
 /*
@@ -442,6 +442,8 @@ t_error			ia32_segment_perms(i_segment		segid,
 	  if (o->asid != kasid)
 	    if (ia32_region_unmap_chunk((t_vaddr)pd) != ERROR_NONE)
 	      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+	  pd = NULL;
 	}
 
     }
