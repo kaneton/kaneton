@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/misc/asm.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun sep 10 13:07:23 2006]
+ * updated       matthieu bucchianeri   [sat nov  4 18:20:45 2006]
  */
 
 /*
@@ -40,6 +40,18 @@
 
 #define		STI()							\
   asm volatile("sti\n")
+
+#define		STS()							\
+  asm volatile("movl %%cr0, %%eax\n\t"					\
+	       "orl $0x8, %%eax\n\t"					\
+	       "movl %%eax, %%cr0"					\
+	       :							\
+	       :							\
+	       : "%eax");
+
+#define		CLTS()							\
+  asm volatile("clts");
+
 
 #define		LGDT(_var_)						\
   asm volatile("lgdt %0\n"						\

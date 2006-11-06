@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/buckman/kaneton/view/books/ia32-virtual/memory.tex
+%% file          /home/buckman/kaneton/view/books/arch-ia32-virtual/memory.tex
 %%
 %% created       matthieu bucchianeri   [sat sep  2 11:40:35 2006]
-%% updated       matthieu bucchianeri   [sun oct  8 18:54:59 2006]
+%% updated       matthieu bucchianeri   [sat nov  4 18:38:29 2006]
 %%
 
 %
@@ -14,6 +14,8 @@
 %
 
 \chapter{Memory management}
+
+\newpage
 
 %
 % overview of the ia-32 mmu
@@ -33,11 +35,30 @@
 
 \section{Raw accesses to kaneton segments}
 
+Direct accesses to memory segments (in kaneton terms) is not possible
+on IA-32, as it needs to bypass the MMU, which is impossible.
+
+The \textit{segment\_read}, \textit{segment\_write} and
+\textit{segment\_copy} dependent code is implemented using the region
+manager. We create a temporary mapping using \textit{region\_reserve},
+then we copy the data to a kernel buffer or directly from one segment
+to another, and to finish we call \textit{region\_release}.
+
+As a result, the three operations described above are very slow on
+IA-32 architecture, and their use is not recommended.
+
 %
 % creating address spaces
 %
 
 \section{Creating address spaces}
+
+Creating an address space is not just allocating a few structures and
+filling it. It also involves preparing the address space for later
+operations.
+
+The case of the kernel address space must be handled separately, as it
+is more complex and critical.
 
 %
 % creating the kernel address space
@@ -51,11 +72,59 @@
 
 \subsection{Creating a classical address space}
 
+When creating a new address space, we must install a few basic
+structures into this one:
+
+\begin{enumerate}
+\item A page-directory is built. This is done reserving a one-page
+segment and the calling \textit{pd\_build} ;
+\item The global memory areas must be injected and mapped: the
+\textit{.handler} section, the TSS, both GDT and IDT, and to finish, a
+ring 0 stack (see the \textbf{Task management} chapter for more
+information about these) ;
+\item The page-directory base register is given to all threads, so
+when switching from one thread to another, the address space is
+automatically switched.
+\end{enumerate}
+
+The need of mapping some common regions into each address space comes
+from the absense of Task State Segment, an high-level context
+switching mecanism implemented on IA-32. Instead, the context
+switching is done by hand. Structures like the interrupt vector and a
+kernel stack are needed when doing this context switch. They must be
+mapped permanently, because the address space is switched to the
+kernel address space only at some advanced stages of the switching
+algorithm. But these structures are mapped with the ``Supervisor''
+flag enabled, so even the owner of the address space cannot access it
+in normal running conditions. Please refer to the \textbf{Task
+management} chapter for further information.
+
+The third point is done getting the task associated with the new
+address space and browsing its thread set. For each thread, we fill
+the register CR3 (the page-directory base register) with the
+page-directory base, computed with \textit{pd\_get\_cr3}. See
+\textbf{Address space switching} section in \textbf{Task management}
+chapter.
+
 %
 % operations on regions
 %
 
 \section{Operations on regions}
+
+The region manager defines three operations on regions:
+
+\begin{itemize}
+\item The reservation ;
+\item The releasing ;
+\item The resizing.
+\end{itemize}
+
+We must add the permission changing operation, coming from the segment
+manager (see the corresponding paragraph for more information).
+
+Other operations (splitting and coalescing) don't affect architecture
+specific structure, and have no implementation issues on IA-32.
 
 %
 % reserving a region
@@ -79,42 +148,64 @@ contiguous areas. The algorithm for contiguous mapping is quite simple:
 values. These values give the interval of page-directory entries we
 will need to loop thought. We use a macro named \textit{PDE\_ENTRY},
 that returns for a given address the index of the page-directory entry
-that leads to the good page-table.
+that leads to the good page-table ;
 \item Identically, we compute \textit{pte\_start} and
 \textit{pte\_end}, indicating the index of the first page-table entry
 to add into the first page-table, and the last page-table entry into
-the last page-table.
+the last page-table ;
 \item Now, we will need to loop throught the page-directory. So, first
 of all, we must map it into the current address space (the kernel
 address space). This is done using the
 \textit{ia32\_region\_map\_chunk} function. This particular function
-uses the \textbf{mirroring technique}, explained below this algorithm.
+uses the \textbf{mirroring technique}, explained below this algorithm ;
 \item We loop throught \textit{pde\_start} and \textit{pde\_end}
-page-directory entries.
+page-directory entries ;
   \begin{enumerate}
   \item If the page-table we need to modify does not exist, we create
   it. This is done by reserving a segment and adding the corresponding
-  page-directory entry.
+  page-directory entry ;
   \item Next, as we mapped the page-directory, we also need to map the
   page-table into the kernel address space in order to change it. This
-  is done the same way as previously.
+  is done the same way as previously ;
   \item Now, we are able to add some page-table entries. We loop
-  throught the good interval, which is determined as follow :
+  throught the good interval, which is determined as follow:
     \begin{itemize}
     \item If the current page-table is the first-one, then we start at
-    \textit{pte\_start}, otherwise, we start at 0.
+    \textit{pte\_start}, otherwise, we start at 0 ;
     \item If the current page-table is the last-one, then we stop our
     loop at \textit{pte\_end}, otherwise, we use the maximum value
-    (1024), to fill all the page-table entries.
+    (1024), to fill all the page-table entries ;
     \end{itemize}
-    \item We fill these entries. Each one maps exactly one page.
+    \item We fill these entries. Each one maps exactly one page ;
     \item Before moving on to the next page-table, we take care of
-    unmapping the previous one.
+    unmapping the previous one ;
   \end{enumerate}
 \item Once the whole process is complete, we unmap the page-directory.
 \end{enumerate}
 
+The mirroring technique permits to access the current page-directory
+and page-tables hierarchy in the kernel address space. To access a
+page-table, this one must be mapped. And to map it, we must access
+another page-table to create a mapping. As you can see, there is a
+cyclic problem here.
 
+The solution is to consider the page-directory as a page-table. One
+entry in the page-directory points to the page-directory itself. This
+way, accessing a page-table is done by reading or writing to a precise
+address computed as follow:
+
+$page\_table = ENTRY\_ADDR(PD\_MIRROR, page\_table\_index)$
+
+The \textit{PD\_MIRROR} constant correspond to the index of the entry
+in the page-directory that points to the page-directory. To access the
+page-directory itself, the formula is the following:
+
+$page\_directory = ENTRY\_ADDR(PD\_MIRROR, PD\_MIRROR)$
+
+With this technique, we are able to modify the page-directory and the
+page-tables without mapping them each time. Both
+\textit{ia32\_region\_map\_chunk} and
+\textit{ia32\_region\_unmap\_chunk} rely on the mirroring technique.
 
 %
 % releasing a region
@@ -122,11 +213,69 @@ page-directory entries.
 
 \subsection{Releasing a region}
 
+Releasing a region is exactly the same processing as for reserving
+one, but instead of filling the page-table entries, we remove it.
+
+\begin{enumerate}
+\item We compute \textit{pde\_start}, \textit{pde\_end}, \textit{pte\_start}
+and \textit{pte\_end} the same way ;
+\item We map the page-directory into the current address space ;
+\item We loop throught \textit{pde\_start} and \textit{pde\_end}
+page-directory entries ;
+  \begin{enumerate}
+  \item We map the current page-table into the kernel address space in order
+    to change it ;
+  \item Now, we are able to add some page-table entries. We loop
+  throught the good interval, which is determined as follow:
+    \begin{itemize}
+    \item If the current page-table is the first-one, then we start at
+    \textit{pte\_start}, otherwise, we start at 0 ;
+    \item If the current page-table is the last-one, then we stop our
+    loop at \textit{pte\_end}, otherwise, we use the maximum value
+    (1024), to fill all the page-table entries ;
+    \end{itemize}
+    \item We remove the page-table entries ;
+    \item Before moving on to the next page-table, we take care of
+    unmapping the current one ;
+    \item If we unmapped all the entries present in the page-table, we
+    remove it and release the associated segment ;
+  \end{enumerate}
+\item Once the whole process is complete, we unmap the page-directory.
+\end{enumerate}
+
 %
 % changing permissions of a region
 %
 
 \subsection{Changing permissions of a region}
+
+On IA-32, we manage permissions with regions and not with
+segments. The \textit{segment\_perms} machine dependent code is very
+similar to the two previous one.
+
+The algorithm is quite the same, except that we modify each page-table
+entry only changing the permission flags.
+
+%
+% resizing of a region
+%
+
+\subsection{Resizing of a region}
+
+The current way of resizing a region is not optimized and rely on
+other operations of the region manager for simplicity reasons.
+
+When shrinking a region, the independent code changes the
+corresponding \textit{o\_region} object size field. The work done by
+the dependent code on IA-32 is to remove the invalidated page-table
+entries. The current implementation inject a temporary ``virtual''
+region corresponding to the memory chunk to unmap, and the directly
+calls \textit{ia32\_region\_release}.
+
+When a region needs to be enlarged, the process is very similar: we
+create a region directly after the region we need to enlarge. We use
+\textit{ia32\_region\_reserve} to fill the page-tables. Then, we
+coalesce the two region into one unique.
 
 %
 % translation cache flushing

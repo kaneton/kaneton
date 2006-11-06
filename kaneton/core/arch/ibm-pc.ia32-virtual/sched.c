@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/sched.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [wed oct 11 23:22:05 2006]
+ * updated       matthieu bucchianeri   [sat nov  4 18:22:07 2006]
  */
 
 /*
@@ -172,12 +172,7 @@ t_error			ia32_sched_switch(i_thread		elected)
    * 5)
    */
 
-  asm volatile("movl %%cr0, %%eax\n\t"
-	       "orl $0x8, %%eax\n\t"
-	       "movl %%eax, %%cr0"
-	       :
-	       :
-	       : "%eax");
+  STS();
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }
@@ -234,17 +229,13 @@ void			ia32_sched_switch_mmx(t_id			id)
        * a)
        */
 
-      asm volatile("fxsave %0"
-		   :
-		   : "m" (old->machdep.u.sse));
+      FXSAVE(old->machdep.u.sse);
 
       /*
        * b)
        */
 
-      asm volatile("fxrstor %0"
-		   :
-		   : "m" (o->machdep.u.sse));
+      FXRSTOR(o->machdep.u.sse);
     }
   else
     {
@@ -256,24 +247,20 @@ void			ia32_sched_switch_mmx(t_id			id)
        * a)
        */
 
-      asm volatile("fsave %0"
-		   :
-		   : "m" (old->machdep.u.x87));
+      FSAVE(old->machdep.u.x87);
 
       /*
        * b)
        */
 
-      asm volatile("frstor %0"
-		   :
-		   : "m" (o->machdep.u.x87));
+      FRSTOR(o->machdep.u.x87);
     }
 
   /*
    * 4)
    */
 
-  asm volatile("clts");
+  CLTS();
 
   /*
    * 5)
