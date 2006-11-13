@@ -76,10 +76,11 @@ int			bootloader(void)
   bootloader_cons_init();
 
   printf("\n");
-  printf("                --- the kaneton microkernel project ---\n");
-  printf("\n");
+  //printf("                --- the kaneton microkernel project ---\n");
+  //printf("\n");
 
-  bootloader_cons_msg('!', "error: kernel exited\n");
+  //bootloader_cons_msg('!', "error: kernel exited\n");
+
   bootloader_error();
 
   return (0);

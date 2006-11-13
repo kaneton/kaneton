@@ -1,4 +1,4 @@
-OUTPUT_FORMAT("elf64-litlemips")
+OUTPUT_FORMAT("elf64-bigmips")
 OUTPUT_ARCH("mips")
 ENTRY(_start)
 

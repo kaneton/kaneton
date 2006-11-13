@@ -41,7 +41,7 @@ BOOTLOADER_LO		=		$(_MACHDEP_BOOTLOADER_DIR_)/bootloader.lo
 # ---------- rules ------------------------------------------------------------
 #
 
-$(BOOTSTRAP): libs $(_MACHDEP_BOOTLOADER_DIR_)
+$(BOOTSTRAP): libs bootloader_lo
 	$(call assemble-S, $(BOOTSTRAP_O), $(BOOTSTRAP_S),)
 
 	$(call executable, $(BOOTSTRAP), $(BOOTSTRAP_O)	$(BOOTLOADER_LO)	\
@@ -49,6 +49,10 @@ $(BOOTSTRAP): libs $(_MACHDEP_BOOTLOADER_DIR_)
 		"--link-script $(_MACHDEP_LINK_DIR_)/bootstrap.lks"		\
 		"--no-standard-include"						\
 		"--no-standard-library")
+
+bootloader_lo:
+	$(call launch,Makefile,$(_MACHDEP_BOOTLOADER_DIR_),,)
+	echo $(_MACHDEP_BOOTLOADER_DIR_)
 
 libs:
 	$(call launch,Makefile,$(_KLIBC_DIR_),,)
@@ -63,6 +67,5 @@ clear:
 	$(call purge,)
 
 proto:
-	$(call prototypes,$(BOOTLOADER_INCLUDE),)
 
 dep:
