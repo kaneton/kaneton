@@ -1,12 +1,12 @@
-OUTPUT_FORMAT("elf64-bigmips")
+OUTPUT_FORMAT("elf64-litlemips")
 OUTPUT_ARCH("mips")
 ENTRY(_start)
 
 SECTIONS
 {
-	__kvaddr_sp = 0xa800000020070000;
+	__kvaddr_sp = 0xa800000020020000;
 
-	. = 0xa800000020080000;
+	. = 0xa800000020040000;
 
 	.text :
 	{

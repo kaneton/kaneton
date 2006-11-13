@@ -41,7 +41,7 @@ BOOTLOADER_LO		=		$(_MACHDEP_BOOTLOADER_DIR_)/bootloader.lo
 # ---------- rules ------------------------------------------------------------
 #
 
-$(BOOTSTRAP): libs
+$(BOOTSTRAP): libs $(_MACHDEP_BOOTLOADER_DIR_)
 	$(call assemble-S, $(BOOTSTRAP_O), $(BOOTSTRAP_S),)
 
 	$(call executable, $(BOOTSTRAP), $(BOOTSTRAP_O)	$(BOOTLOADER_LO)	\
