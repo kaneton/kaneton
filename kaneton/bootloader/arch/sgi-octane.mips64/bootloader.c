@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-octane.mips64/bootloader.c
  *
  * created       enguerrand raymond   [wed oct 18 14:21:40 2006]
- * updated       enguerrand raymond   [sun oct 22 21:57:17 2006]
+ * updated       enguerrand raymond   [wed nov 15 20:31:48 2006]
  */
 
 /*
@@ -76,10 +76,10 @@ int			bootloader(void)
   bootloader_cons_init();
 
   printf("\n");
-  //printf("                --- the kaneton microkernel project ---\n");
-  //printf("\n");
+  printf("                --- the kaneton microkernel project ---\n");
+  printf("\n");
 
-  //bootloader_cons_msg('!', "error: kernel exited\n");
+  bootloader_cons_msg('!', "error: kernel exited\n");
 
   bootloader_error();
 
