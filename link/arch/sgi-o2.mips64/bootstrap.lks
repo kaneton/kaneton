@@ -1,0 +1,30 @@
+OUTPUT_FORMAT("elf32-bigmips")
+OUTPUT_ARCH("mips")
+ENTRY(_start)
+
+SECTIONS
+{
+	__kvaddr_sp = 0x80020000;
+
+	. = 0x80040000;
+
+	.text :
+	{
+		*(.text)
+	}
+
+	.data :
+	{
+		*(.data)
+		*(.rdata)
+		*(.rodata)
+	}
+
+	_gp = ALIGN(16);
+
+	.bss :
+	{
+		*(.bss)
+	}
+}
+
