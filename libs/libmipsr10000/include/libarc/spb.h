@@ -5,6 +5,12 @@
 #ifndef _SPB_H_
 #define _SPB_H_
 
+#ifdef		O2
+#include <o2.h>
+#else
+#include <octane.h>
+#endif
+
 #include <libarc/arc.h>
 
 typedef struct {
@@ -89,7 +95,7 @@ typedef struct {
 	ADAPTER Adapters[1];
 } SPB;
 
-#define SystemParameterBlock	((SPB *)0xA0001000UL)
+#define SystemParameterBlock	((SPB *)SPB_ADDR)
 #define FVector		(SystemParameterBlock->FirmwareVector)
 
 #endif /* _SPB_H_ */
