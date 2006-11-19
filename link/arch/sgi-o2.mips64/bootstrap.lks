@@ -4,9 +4,9 @@ ENTRY(_start)
 
 SECTIONS
 {
-	__kvaddr_sp = 0x80020000;
+	__kvaddr_sp = 0x80008000;
 
-	. = 0x80040000;
+	. = 0x80002000;
 
 	.text :
 	{
@@ -26,5 +26,6 @@ SECTIONS
 	{
 		*(.bss)
 	}
+	__end_code = .;
 }
 

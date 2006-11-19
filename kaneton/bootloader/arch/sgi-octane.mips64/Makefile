@@ -5,10 +5,10 @@
 ##
 ## license       kaneton licence
 ##
-## file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-octane.mips64/Makefile
+## file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-o2.mips64/Makefile
 ##
 ## created       enguerrand raymond   [wed oct 18 14:24:31 2006]
-## updated       enguerrand raymond   [sun oct 22 23:40:44 2006]
+## updated       enguerrand raymond   [sun nov 19 17:43:19 2006]
 ##
 
 #
@@ -37,7 +37,8 @@ BOOTLOADER_O		:=		bootloader.o
 
 CONS_O			:=		cons.o
 
-BOOTLOADER_INCLUDE	:=		bootloader.h
+BOOTLOADER_INCLUDE	:=		bootloader.h	\
+					init.h
 
 CFLAGS			+=		-D___bootloader
 

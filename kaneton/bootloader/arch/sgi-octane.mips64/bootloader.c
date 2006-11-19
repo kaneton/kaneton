@@ -5,10 +5,10 @@
  *
  * license       kaneton licence
  *
- * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-octane.mips64/bootloader.c
+ * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-o2.mips64/bootloader.c
  *
  * created       enguerrand raymond   [wed oct 18 14:21:40 2006]
- * updated       enguerrand raymond   [wed nov 15 20:31:48 2006]
+ * updated       enguerrand raymond   [sun nov 19 16:16:14 2006]
  */
 
 /*
@@ -30,7 +30,7 @@
  * the init variable.
  */
 
-extern	t_init		init;
+extern	t_init*		init;
 
 /*
  * these three variable are globals to avoid them to be lost when the
@@ -78,6 +78,12 @@ int			bootloader(void)
   printf("\n");
   printf("                --- the kaneton microkernel project ---\n");
   printf("\n");
+
+  /*
+   * 2)
+   */
+
+
 
   bootloader_cons_msg('!', "error: kernel exited\n");
 
