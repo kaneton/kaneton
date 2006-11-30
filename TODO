@@ -51,6 +51,20 @@
  SCHED_QUANTUM_INIT).
 
 --
+ ecrire un paper juste sur la portabilite ou alors dans le reference
+ book mais bien detaille car ca doit etre flou pour les lecteurs.
+
+--
+ trouver un nom pour les modules histoire que ce soit coherent:
+ module = module noyaut, XXX = entite passive d'execution
+ program -> ??? (logram)
+
+--
+ il doit y avoir moyen d'eviter les fichiers o2.h et octane.h
+ dans la libmipsr10000 en definissant les macros dans l'archi
+ et non la lib. a etudier.
+
+--
  faudrait implementer des regions copy-on-write pour gagner en
  performance. qui plus est, il faut de toute facon pouvoir préciser si
  un segment doit etre cloné en cas d'as_clone. par exemple, on a pas

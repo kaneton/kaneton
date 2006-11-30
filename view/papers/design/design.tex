@@ -54,11 +54,11 @@
 
 This paper describes the design of the kaneton microkernel.
 This system was designed to be ported on many architectures without being
-intrusive. Moreover, the main goal of this system was to be understandable
+intrusive. The main goal of this system is to be understandable
 by everyone interested in operating systems internals. To do so, the kaneton
-design and implementation are very elegant and easy to understand. Finally,
-the kaneton microkernel includes modern distributed paradigms leading
-to a powerful, secure, flexible and reliable microkernel based
+design and implementation are very elegant and very easy to understand.
+The kaneton microkernel includes modern distributed paradigms
+leading to a powerful, secure, flexible and reliable microkernel based
 operating system.
 
 \end{abstract}
@@ -75,7 +75,7 @@ operating system.
 
 \section{The kaneton history}
 
-kaneton originated in Paris, France as a pedagogical project in operating
+kaneton originated in Paris, France as an educational project in operating
 systems. The project was primarily designed by two students Julien Quintard
 and Jean-Pascal Billaud although many other people also contributed to
 the design and especially to the implementation.
@@ -84,21 +84,20 @@ Having recently contributed to the development of a microkernel based
 operating system called LSE/OS, the two students decided to begin the
 design and development of an operating system with a more powerful design
 and able to share resources on a large network. Nevertheless, the goal of
-this project remains to be a pedagogical one. For this reason, special
-interest was made on the design and on the implementation to be as
-simple as possible.
+this project remains to be an educational one. For this reason, the
+designers focused on the simplicity of the design and the implementation.
 
-Moreover, the two students wanted to break some well-known kinds of
-computer sciences rules. Indeed, for example, many computer scientists
-consider that a project documentation is in fact its source code.
-Another example, for many low-level system programmers, the kernel boot
-source code and more generally the kernel source code cannot be
-understandable by everybody because too messy.
+The two students wanted to break some well-known kinds of computer sciences
+rules. Indeed, for example, many computer scientists consider that a
+project documentation is in fact its source code. Many low-level system
+programmers also consider that the kernel boot source code and more
+generally the kernel source code cannot be understandable by everyone
+because too hardware-dependent and then messy.
 
 People tried, in kaneton, to write documentation for every part of the
 project. Moreover people tried to build a microkernel understandable
 by everyone interested in operating systems internals via an elegant
-and coherent design.
+and coherent design but also implementation.
 
 %
 % the kaneton goals
@@ -109,7 +108,7 @@ and coherent design.
 Many research projects in operating systems started with an existing system.
 For the kaneton microkernel project, people decided to design a totally
 new system. Indeed, the LSE/OS project was not portable enough, so the
-kaneton people decided to design this new kernel from scratch with a
+kaneton people decided to design a new kernel from scratch with a
 special interest for the portability.
 
 The kaneton microkernel was developed in a very specific way, to build
@@ -120,18 +119,18 @@ The kaneton microkernel will become the base of a distributed operating
 system. For this reason, the kaneton microkernel was designed to fit
 the distributed operating system requirements. For example, the kaneton
 microkernel includes modern distributed concepts like capabilities
-which open many ways to security, reliability, flexibility etc..
+which open many interesting ways to security features and flexibility.
 
 The kaneton source code is extremely clear and heavily commented which
 make the project easily maintainable.
 
 Needless to say the kaneton project being a microkernel is extremely small
-and provides only fundamental functionalities.
+and provides only fundamental functionalities. Nonetheless, the kaneton
+microkernel design obviously implies a core bigger than many other
+microkernels.
 
 Finally, the kaneton microkernel will be able to run
-UNIX{\scriptsize \copyright} programs via an emulation library.
-Nevertheless, the kaneton microkernel is not a UNIX clone and does not
-follow the system calls interface.
+UNIX{\scriptsize \copyright} programs via a POSIX emulation library.
 
 %
 % the kaneton architecture
@@ -145,10 +144,13 @@ outline the kind of hardware for which the system was designed.
 The kaneton microkernel has been designed to deal with multiple architectures
 and heterogeneous systems.
 
-Since kaneton portability system was designed not to be intrusive, the
-microkernel has no precise requirement. Nevertheless, the kaneton was not
-precisely designed for embedded systems because everything is dynamic in
-its core.
+Since the kaneton portability system was designed not to be intrusive, the
+microkernel has no precise requirement.
+
+Although the kaneton microkernel design does not seem to fit embedded
+systems, the kaneton core can be parameterise to use for example specific
+fixed-size data structures. The same notice goes for other specific
+architectures.
 
 %
 % the kaneton microkernel
@@ -158,7 +160,7 @@ its core.
 
 A microkernel based operating system is composed of two parts:
 a \textbf{microkernel} which runs on every processor machine of the system
-and a collection of \textbf{servers} that provide most of traditional
+and a collection of \textbf{servers} that provides most of traditional
 operating system functionalities: drivers, file servers etc..
 
 The microkernel has four primary functionalities to provide:
@@ -174,22 +176,22 @@ The microkernel has four primary functionalities to provide:
     I/O.
 \end{enumerate}
 
-Although the microkernel architecture is modular, the kaneton microkernel
-is also subdivided into managers. This subdivision leads to a better
-understanding since each manager provides an interface to control a
-precise type of kaneton object.
+Although the microkernel architecture is already modular, the kaneton
+microkernel is also subdivided into managers. This subdivision leads to
+a better understanding since each manager provides an interface to control
+a precise type of kaneton object.
 
 For example, there exists an address space manager, a task manager,
 a thread manager etc.. So the reader interested in understanding how
 the threads are implemented in kaneton just has to read the source code
 in relation with the thread manager, nothing more.
 
-Moreover, each manager interface's functions naming follows a precise
+Moreover, each manager interface's function naming follows a precise
 nomenclature. This nomenclature leads to a better coherence of the whole
 microkernel.
 
-We will now describe microkernel's components to understand how the kaneton
-microkernel provides communication, memory management, process
+This paper will now describe microkernel's components to understand how
+the kaneton microkernel provides communication, memory management, process
 management etc..
 
 %
@@ -199,7 +201,7 @@ management etc..
 \subsection{Communication}
 
 The kaneton microkernel and more generally the distributed operating
-system use messages to communicate with everything.
+system uses messages to communicate with everything.
 
 Keep in mind that the kaneton project must be as simple as possible to be
 understood by students.
@@ -222,8 +224,8 @@ The kaneton project focuses on genericity, coherency, abstractions etc..
 
 Finally, the kaneton message passing interface was designed based on
 well-known parallel and distributed programming libraries like MPI. From
-this fact, the kaneton microkernel directly includes parallel and
-distributed facilities.
+this fact, the kaneton microkernel directly includes concurrent
+programming facilities.
 
 %
 % memory
@@ -256,12 +258,12 @@ which are linked to build more complex objects. An address space is composed
 of segments and regions. This model implies that a program is allowed to
 manage its entire memory itself, its physical memory like its virtual one.
 
-Note that we do not explain the memory algorithm used to manage
+Note that this paper does not explain the memory algorithm used to manage
 physical memory areas. Indeed, the memory manager uses the set manager
 to store its data. For this reason, the segment manager can easily change
 the algorithm used for storing its data.
 
-By \textit{easily} we mean that a single word has to be modified in the
+By \textit{easily} we mean that a single line has to be modified in the
 source code.
 
 For more information about the set manager, please refer to its
@@ -279,7 +281,7 @@ and manipulated over the microkernel with a capability.
 As said before, many kaneton objects are built by linking objects
 together.
 
-The figure below illustrates this hierarchy of the kaneton objects
+The figure below illustrates the hierarchy of the kaneton objects
 and the kaneton microkernel itself.
 
 \begin{center}
@@ -289,22 +291,31 @@ and the kaneton microkernel itself.
 Recall that the kaneton microkernel was designed to fit distributed
 operating systems requirements.
 
-This means that, contrary to classical operating systems, reserved
-objects must be secured to avoid security issues.
+This means that, contrary to classical operating systems, the microkernel
+has to provide distributed-specific features. First, any reserved
+objects must be secured over the network to avoid security issues.
 
-For example, on a classical operating system, when a user process asks
-the kernel for opening a file, the kernel just returns a file descriptor.
+Indeed, for example, on a classical operating system, when a user process
+asks the kernel for opening a file, the kernel just returns a file descriptor.
 In this context, there is no need to secure the file descriptor since
-this descriptor is private to the process which asked for it.
+this descriptor is private to the process' address space which asked for it.
 
 In a distributed operating system, the returned file descriptor may
 be transfered over the network to the caller. Then, in this context,
 an attacker could intercept the file descriptor and use it to access
 the file.
 
-A distributed system needs to protect the objects over the network. So,
-the kaneton designers decided to use capabilites to handle this security
-issue.
+So, a distributed system needs to protect the objects over the network.
+
+The second distributed-specific feature the microkernel has to provide
+is to allow a process which holds a resource, to grant access to another
+process, with equal or less rights, to its resource.
+
+This feature open many ways in managing fine-grained security over
+the distributed operating system.
+
+The kaneton designers then decided to use capabilites to handle these
+two distributed-specific features in relation with the security.
 
 A \textbf{capability} provides an easy way to allow a task of the
 system to access a privileged object via a very simple cryptographic
@@ -313,7 +324,7 @@ technique.
 Although this concept was introduced for the distributed operating systems
 needs, the kaneton designers decided to exploit the capabilities' properties.
 
-Indeed, the capabilities also permit a task to restrict the permissions
+Indeed, the capabilities permit a task to restrict the permissions
 of an owned capability and then to distribute this restricted capability
 to other tasks. Then, these tasks get the right to access the privileged
 object but this right is limited by the capability's permissions the
@@ -333,17 +344,17 @@ of the capability on the object listing the allowed operations, a check field
 ensuring security and other specific fields like for example the location
 of the service, a lifetime etc..
 
-The figure below illustrate the capability generic format used in the Amoeba
+The figure below illustrates the capability generic format used in the Amoeba
 distributed operating sytem, this capability format being used by every
-server of the system.
+server of the distributed system.
 
 \begin{center}
   \includegraphics[scale=0.35]{figures/capability.pdf}
 \end{center}
 
 Unlike many distributed systems, the kaneton microkernel based
-distributed operating system use specific and specialised capabilites
-rather than generic capabilities to increase scalability.
+distributed operating system will use specific and specialised capabilites,
+rather than generic capabilities, to increase scalability.
 
 Consider a modern file system with billions of inodes; this file system
 certainly wants to build capabilities with a 64-bit identifier.
@@ -376,14 +387,14 @@ generate a capability and distribute it to many other programs giving
 them the same permissions.
 
 To conclude, this system is performant in a normal use but can become
-slow if a program has to generate many different capabilities, this case
-being seldom.
+very slow if a program has to generate many different capabilities, this
+case being seldom.
 
 The use of specific capabilities also allows servers to create capabilities,
 for example, without identifier or with extra permission fields or with
 maximum security using for example a 128-bit check field.
 
-Note that the use of the check field does not guarantee security on a
+Note that the use of the check field does not guarantee security over the
 distributed system. For this reason, the kaneton microkernel based
 distributed operating system can evolve with three security policies:
 
@@ -413,8 +424,7 @@ distributed operating system can evolve with three security policies:
 The kaneton microkernel internally uses a set manager which organises data
 for other kernel managers. The entire microkernel is based on the sets.
 
-Using this manager leads to a very elegant and maintenable source code. From
-this fact, every kernel manager uses the set manager to store its data. For
+Using this manager leads to a very elegant and maintenable source code. For
 example the task manager uses the set manager to store every task of the
 system. Additionnaly, each task contains a set composed of the threads of
 this task etc..
@@ -422,77 +432,43 @@ this task etc..
 Such a system provides an easy way to store data without effort. The task
 manager for example does not care about how to store data.
 
-Moreover, it is possible to optimise the code where it is needed. In this
-case, it will be useful to optimise the data structures in the set manager
-and \textit{not} in every manager using such a data structure like
+Furthermore, it is possible to optimise the code where it needs to be. In
+this case, it will be useful to optimise the data structures in the set
+manager and \textit{not} in every manager using such a data structure like
 other systems do.
 
 Indeed, the other operating systems generally use pointers to link kernel
 structures together and implicitly form sets. Such a source code is human
 unreadable and leads to many programming confusions and errors.
 
-kaneton being a pedagogical microkernel project, we wanted to use the simplest
-design possible.
+kaneton being an educational microkernel project, kaneton people wanted
+to use the simplest design possible.
 
-The set manager provides many different data structures like linked-list,
-double linked-list, circular queue, stack, pipe, array, binary tree, b+-tree
-etc.. In addition, the set manager can be extended without affecting the
-other managers using it.
+The set manager provides many different data structures like double
+linked-list, stack, pipe, array, b+-tree etc.. In addition, the set
+manager can be extended without affecting the other managers using it.
 
-By this way, every kernel manager is now able to use the set manager to
-store its data. The set manager also provides tools like \textbf{iterators}
-to easily and quickly go through sets.
+The set manager also provides tools like \textbf{iterators} to easily and
+quickly go through sets object.
 
-The set manager interface is generic independently of the underlying set
+The set manager's interface is generic, independently of the underlying set
 implementation. From this fact, a manager using a set can easily modify
-the set implementation used just by modifying a word in the set reservation
-line, the other set manager functions calls do not need to be modified.
+the set implementation used just by modifying a word in the set
+object reservation line, the other set manager function calls do not
+need to be modified.
 
 The set manager is a key concept of kaneton because the whole kaneton
-core source code is using it leading to a very coherent and beautiful
+core source code uses it leading to a very coherent and understandable
 source code.
 
-Let's see an example of a set reservation for the segment manager.
+The set manager manages what are called \textbf{set objects}. These set
+objects are actually used to store data. Note that, the set objects are
+also stored in a set object.
 
-\begin{verbatim}
-set_reserve(ll, SET_OPT_ALLOC | SET_OPT_SORT,
-            sizeof(o_segment), &manager->segments);
+Indeed, the set manager uses itself to store the set objects. The special
+set object which stores the set objects is called the \textbf{set container}.
 
-[...]
-
-o_segment       o;
-
-[...]
-
-set_add(manager->segments, &o);
-
-[...]
-
-o_segment*	g;
-set_get(manager->segment, o.id, &g);
-g->perms = PERM_READ | PERM_WRITE;
-\end{verbatim}
-
-In this example, a set is reserved. The underlying implementation is
-a \textbf{l}inked-\textbf{l}ist. Then, an object is added to the set.
-
-Notice that, the user of the set manager does not care about how the
-object is stored internally.
-
-Finally, the user ask the set manager to find and return an object
-with the given identifier \textit{o.id}. Then, the permissions of
-this segment are modified.
-
-Since every manager uses the set, the set manager may seem quite
-complex.
-
-We said before that the set manager manages set objects, these set objects
-being used to store data. Note that, the set objects are also stored
-in a set object. Indeed, the set manager uses itself to store the set
-objects. The special set object which stores the set objects is called
-the set container.
-
-The figure below illustrates the sets.
+The figure below illustrates the sets interconnections.
 
 \end{multicols}
 
@@ -503,14 +479,18 @@ The figure below illustrates the sets.
 \begin{multicols}{2}
 
 The reader should notice on this figure that the set container holds
-three set objects.
-
-One of this set is used to hold task objects.
+three set objects. One of this set is used to hold task objects.
 
 Task objects are basically composed of memory and threads. For this
 reason, each task contains a set of threads.
 
-The figure illustrates this massive use of sets.
+The figure illustrates the complex organisations of set interconnections.
+
+Although this scheme seems complex, the implementation does not
+suffer from this complexity. The resulting effect is a concentration
+of the kernel complexity in a single point: the set manager.
+
+The rest of the kaneton core implementation is so extremely simple.
 
 %
 % process
@@ -526,12 +506,12 @@ The system is composed of five different entities in relation with execution.
 A \textbf{module} represents a passive execution entity in main memory.
 Indeed, a module does not run and has no execution context. The modules are
 managed by the module service to reside in main memory the time it is
-necessary. For example a very used program like \textit{/bin/ls} certainly
-becomes an important module due to its frequent use.
+necessary. For example a very used program like \textit{/bin/ls} will
+certainly become an important module due to its frequent use.
 
 Fundamental system's drivers and services are persistent modules because
 they would be used in the case of a crash to restart the crashed service
-without any dependency to the hard drive device driver, for example.
+without any dependency to the hard drive device driver for example.
 
 A \textbf{program} is the lowest privileged task on the system.
 The common user programs are the well-known UNIX{\scriptsize \copyright}
@@ -552,22 +532,21 @@ the only task able to modify every system's internal data structure.
 
 In typical microkernel, every task can only be called by less or equal
 privileged tasks. In kaneton, we decided to break this rule because we found
-it too restrictive. In fact the core processes are allowed to send
-asynchronous messages. Without this exception, the microkernel is not able
-to forward messages, so hardware and software communications are not
-possible.
+it too restrictive. In fact the cores are allowed to send asynchronous
+messages. Without this exception, the microkernel is not able to forward
+messages, so hardware and software communications are not possible.
 
 The kaneton microkernel does not have processes in the
-UNIX{\scriptsize \copyright} terms. Indeed, the kaneton microkernel manages
-tasks. A \textbf{task} is a non-active entity because a task is never
-scheduled. A task, in the kaneton terms, is an abstraction which describes
-an execution environment, a context. Each task has an address space describing
-its useable memory and one or more threads. A task with only an address
-space and one thread is essentially identical to a UNIX{\scriptsize \copyright}
-process. The term \textbf{process} is sometimes used in the kaneton
-documentation to describe a kaneton task.
+UNIX{\scriptsize \copyright} sens of the term. Indeed, the kaneton
+microkernel manages tasks. A \textbf{task} is a non-active entity because
+a task is never scheduled. A task, in the kaneton terms, is an abstraction
+which describes an execution environment, a context. Each task has an
+address space describing its useable memory and one or more threads.
+A task with only an address space and one thread is essentially identical
+to a UNIX{\scriptsize \copyright} process. The term \textbf{process} is
+sometimes used in the kaneton documentation to describe a kaneton task.
 
-The \textbf{thread} is the active entity because it is this one which is
+The \textbf{threads} are the active entities because they are the one
 scheduled. Such a thread belongs to a single task, has a set of registers,
 a program counter and finally a stack. Needless to say that the kaneton
 microkernel handles threads as kernel threads.
@@ -583,26 +562,26 @@ and service classes will have the same hardware system priority.
 Nevertheless, few architectures provide different hardware system privileges
 like the Intel 32-bit Architecture.
 
-The \textbf{behaviour} specifies the kernel the type of the task from the
+The \textbf{behaviour} specifies the kernel, the type of the task from the
 scheduler point of view. The different values for the behaviour are
 \textit{core}, \textit{realtime}, \textit{interactive}, \textit{timesharing}
 and \textit{backgroud}. Each behaviour defines a range of priorities for the
 task.
 
 The \textbf{priority} is a value included in the range defined by the
-task behaviour. Any thread of a task can update the priority of its
-task in this range modifying the task priority from the scheduler
+task's behaviour. Any thread of a task can update the priority of its
+task in this range, modifying the task priority from the scheduler
 point of view.
 
 With these properties, a user can create a task very reactive setting an
-appropriate behaviour and then update its priority to adjust its quantum.
+appropriate behaviour and then updating its priority to adjust its quantum.
 This mechanism gives the programs many possibilities and permits them to
 choose their execution context.
 
 The threads also have an important property: a priority.
 
-Each thread of a task can set its own priority in the range \textbf{[10, 250[}.
-From this fact, a thread can set itself an higher priority than the other
+Each thread of a task can set its own priority in the range $[10, 250[$.
+Therefore, a thread can set itself an higher priority than the other
 threads of its task. The resulting effect is a thread having a longer quantum
 so better interactivity. Once again, this mechanism gives more liberty to the
 programs.
@@ -635,47 +614,50 @@ the whole kaneton core is based on it.
 
 \section{The kaneton portability system}
 
-We will describe in the section the specific kaneton portability system.
+This section describes the specific kaneton portability system.
 
 The portability can be implemented through two different ways in kernels.
 
 The first way consists in the development of an entire part, functionality
-of the kernel for a specific architecture. For example, let's consider the
-memory manager. The memory manager source file will be totally re-developed
+of the kernel, for a specific architecture. For example, let's consider the
+memory manager. The memory manager source file will be totally redeveloped
 for each architecture on which the kernel will be ported. This system leads
-to source code parts redundancy but also to the best performances since
+to source code redundancy but also to the optimum performances since
 it is possible to use every external architecture facilities to optimise
 the kernel execution on this architecture.
 
 The second way consists in the design of an architecture interface defining
 the common architecture operations like \textit{tlb\_flush()},
 \textit{install\_page\_directory()} etc.. This system is better than the
-first from the redundancy point of view. Nevertheless, optimisations are more
-difficult to implement. Moreover, it is still possible for an architecture
-not to fill in this interface. Then, the kernel would not be able to be
-ported on this architecture.
+first from the redundancy point of view. Nonetheless, optimisations are more
+difficult to implement. Furthermore, it is still possible for an architecture
+not to fit in this interface. Then, the kernel could not be ported on
+this architecture.
 
 The kaneton designers were not satisfied by these two solutions and so
 decided to adapt the second solution to the kaneton microkernel design.
 
 The kaneton solution consists in a kind of extension of the second solution
-in which no interface is designed. Rather, every time an object is
+in which no interface is designed. Rather, every time a kaneton object is
 created, modified or destroyed, the machine-dependent source code is called
 to permit it to perform some operations on the object or on everything else.
 
-This pseudo interface is better than the previous ugly and static one.
-Nevertheless, there still exists the possibility of an architecture not
-filling in this portability system.
+This pseudo-interface is better than the previous ugly and static one.
+Despite this improvement, there still exists the possibility of an
+architecture not fitting in this portability system.
 
-For the kaneton microkernel we decided to use this system because
-it provides the most dynamic, moldable portability system. This system is
-experimental but seems absolutely correct. Theoritically, this system
-is the best because there is no redundancy and there are no constraints
-for the machine-dependent source code.
+kaneton people decided to use this system because it provides the most
+dynamic, moldable portability system. This system is experimental but
+seems to be functional. Theoritically, this system is optimum because
+there is no redundancy and there are no constraints for the
+machine-dependent source code.
 
 Moreover, this portability system is not intrusive, meaning that there
 is no need to modify a single line of the machine-independent source code
 to port kaneton on another microprocessor architecture.
+
+The kaneton portability system was developed, in its earliest version,
+using c-preprocessor's macros.
 
 %
 % implementation
@@ -685,7 +667,7 @@ to port kaneton on another microprocessor architecture.
 
 The kaneton microkernel project was created in a pedagogical way.
 
-Indeed, the kaneton authors provides many materials for the kaneton
+Indeed, the kaneton authors provide many materials for the kaneton
 microkernel development including complete documentation and assignments.
 
 Moreover, documentation on specific architectures are also provided
@@ -698,7 +680,7 @@ This reference implementation was written using the C language and
 modern tools.
 
 The current kaneton microkernel reference implementation is being
-ported on Intel 32-bit architectures and MIPS 32-bit architectures.
+ported on Intel 32-bit architectures and MIPS 32-bit and 64-bit architectures.
 
 %
 % conclusion
@@ -715,8 +697,8 @@ thread, task etc.. but also via a complete message passing interface.
 
 The set manager is used to make the kernel source code very elegant
 and then understandable by everyone including students. Moreover, the
-data structure management is centralized in a unique point limitating
-the bugs and increasing the possible optimizations.
+data structure management is centralised in a unique point limitating
+the bugs and increasing the possible optimisations.
 
 The kaneton portability system was designed to perfectly fit the
 kaneton microkernel requirements. Indeed, this portability system
@@ -729,7 +711,7 @@ also increase the reliability and flexibility.
 
 For more information on the kaneton microkernel project, please refer
 to the official kaneton website
-  \footnote{http://www.kaneton.org}
+  \footnote{http://www.kaneton.org}.
 
 %
 % acknowledgments
@@ -737,8 +719,10 @@ to the official kaneton website
 
 \section{Acknowledgments}
 
-To the kaneton people especially Jean-Pascal Billaud, Cedric Aubouy,
-Fabien Le-Mentec, Matthieu Bucchianeri, Renaud Voltz and friends.
+To the kaneton people especially Jean-Pascal Billaud, C\'edric Aubouy,
+Fabien Le-Mentec, Matthieu Bucchianeri, Renaud Voltz, Enguerrand Raymon,
+Mathieu S\'elari\`es and the EPITA Computer Systems Laboratory
+  \footnote{http://www.lse.epita.fr}.
 
 \end{multicols}
 
