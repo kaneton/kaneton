@@ -82,7 +82,7 @@ int			printf_string(char*			string,
 	  written += printf_char(' ');
     }
 
-  for (i = 0; (string[i] != 0) && (i < len1 != -1 ? len1 : i + 1); i++)
+  for (i = 0; (string[i] != 0) && (i < (len1 != -1 ? len1 : i + 1)); i++)
     if (printf_char != NULL)
       written += printf_char(string[i]);
 
