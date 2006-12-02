@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed nov  1 16:16:32 2006]
+ * updated       matthieu bucchianeri   [sat dec  2 03:32:02 2006]
  */
 
 /*
@@ -121,7 +121,7 @@ void			kaneton(t_init*				bootloader)
 
 //  check_tests();
 
-  sched_test();
+//  sched_test();
 
 #endif
   /*
@@ -146,7 +146,11 @@ void			kaneton(t_init*				bootloader)
    * /XXX
    */
 
-  while(0)
+#ifdef APP
+  APP();
+#endif
+
+  while(1)
     ;
 
   cons_msg('#', "kaneton is stopping...\n");

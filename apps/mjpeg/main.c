@@ -23,7 +23,7 @@
 int dsx_log_open();
 void endianness_init();
 
-void main(void)
+void mjpeg(void)
 {
   dsx_mwmr_t tg_demux;
   dsx_mwmr_t quanti;
