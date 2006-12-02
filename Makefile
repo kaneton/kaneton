@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/Makefile
+## file          /home/buckman/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       julien quintard   [fri jul 14 21:53:59 2006]
+## updated       matthieu bucchianeri   [sat dec  2 02:49:40 2006]
 ##
 
 #
@@ -24,7 +24,7 @@
 .PHONY:		all init clean kaneton clear purge proto		\
 		dep build install check info dist backup		\
 		view view- export export- cheat cheat-			\
-		play play- record record-				
+		play play- record record-
 
 #
 # ---------- variables --------------------------------------------------------
@@ -85,11 +85,11 @@ clean:
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		libs $(_SRC_DEP_)
+SUBDIRS			:=		libs apps $(_SRC_DEP_)
 
 CLEARDIRS		:=		libs view export check		\
 					cheat				\
-					$(_CTCOMPARE_DIR_)		
+					$(_CTCOMPARE_DIR_)
 
 #
 # ---------- development ------------------------------------------------------
