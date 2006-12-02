@@ -1,0 +1,22 @@
+##
+## ---------- header ----------------------------------------------------------
+##
+## project       kaneton
+##
+## license       kaneton
+##
+## file          /home/mycure/kaneton/monitor/README
+##
+## created       julien quintard   [sat dec  2 04:50:55 2006]
+## updated       julien quintard   [sat dec  2 05:31:57 2006]
+##
+
+##
+## ---------- information -----------------------------------------------------
+##
+
+Just run the monitor.sh shell script like this:
+
+  $> bash monitor.sh
+
+Note that you need GNU bash to run the kaneton monitor.
