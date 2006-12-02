@@ -1,0 +1,466 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/buckman/kaneton/view/lectures/seminar_2006/seminar.tex
+%%
+%% created       julien quintard   [fri dec  2 07:53:59 2005]
+%% updated       matthieu bucchianeri   [sat dec  2 13:00:18 2006]
+%%
+
+%
+% template
+%
+
+\input{../../templates/lecture.tex}
+
+%
+% title
+%
+
+\title{Pr\'{e}sentation de kaneton\\http://www.kaneton.org}
+
+%
+% authors
+%
+
+\author
+{
+  Renaud~Voltz,
+  Matthieu~Bucchianeri,
+  Julien~Quintard
+}
+
+%
+% figures
+%
+
+% 10 frames for a microkernel example
+
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_01}
+		{figures/microkernel_example_01}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_02}
+		{figures/microkernel_example_02}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_03}
+		{figures/microkernel_example_03}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_04}
+		{figures/microkernel_example_04}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_05}
+		{figures/microkernel_example_05}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_06}
+		{figures/microkernel_example_06}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_07}
+		{figures/microkernel_example_07}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_08}
+		{figures/microkernel_example_08}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_09}
+		{figures/microkernel_example_09}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_10}
+		{figures/microkernel_example_10}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+
+  \begin{center}
+    \logos
+  \end{center}
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Contenu}
+  \tableofcontents
+\end{frame}
+
+%
+% overview
+%
+
+\section{Pr\'{e}sentation}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Description}
+
+  kaneton est un micro-noyau \`{a} but p\'{e}dagogique
+  d\'{e}velopp\'{e} par le LSE.
+
+  \-
+
+  \begin{itemize}
+  \item
+    Un design compr\'{e}hensible
+  \item
+    Un code clair et comment\'{e}
+  \item
+    Facilement maintenable et portable
+  \item
+    Destin\'{e} au distribu\'{e}
+  \end{itemize}
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+
+  kaneton est aussi un projet en sp\'{e}cialisation SRS et GISTR.\\
+
+  Deux cours :
+
+  \-
+
+  \begin{itemize}
+  \item
+    Noyaux et syst\`{e}mes d'exploitation
+  \item
+    Architecture des microprocesseurs
+  \end{itemize}
+
+  \-
+
+  Cinq projets en SRS :
+
+  \-
+
+  \begin{itemize}
+  \item
+    K0 : le bootstrap
+  \item
+    K1 : la m\'{e}moire
+  \item
+    K2 : les \'{e}v\'{e}nements
+  \item
+    K3 : les process et l'ordonnancement
+  \item
+    K4 : les IPC
+  \end{itemize}
+
+  \-
+
+  Deux projets en GISTR :
+
+  \-
+
+  \begin{itemize}
+  \item
+    KG0 : les \'{e}v\'{e}nements et les I/O
+  \item
+    KG1 : les process et l'ordonnancement
+  \end{itemize}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Les gens qui travaillent sur kaneton}
+
+  \textbf{Design}
+
+  \begin{itemize}
+    \item
+      Julien Quintard
+    \item
+      Jean-Pascal Billaud
+  \end{itemize}
+
+  \nl
+
+  \textbf{Implementation}
+
+  \begin{itemize}
+    \item
+      Renaud Voltz
+    \item
+      Matthieu Bucchianeri
+    \item
+      Enguerrand Raymond
+  \end{itemize}
+
+  \nl
+
+  \textbf{Autres gens ayant contribu\'{e}s significativement}
+
+  \begin{itemize}
+    \item
+      C\'{e}dric Aubouy
+  \end{itemize}
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{La pr\'{e}sentation de ce soir}
+
+  \begin{itemize}
+  \item
+    Introduit le design de kaneton
+  \item
+    Pr\'{e}sente ce qui \`{a} \'{e}t\'{e} cod\'{e}
+  \item
+    Liste de ce qu'il reste \`{a} faire
+  \end{itemize}
+\end{frame}
+
+%
+% microkernels
+%
+
+\section{Les micro-noyaux}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Les micro-noyaux}
+
+  \begin{itemize}
+  \item
+    $\leftrightarrow$ noyaux monolithiques
+  \item
+    $\leftrightarrow$ exo-noyaux
+  \item
+    Conception modulaire : les services
+  \item
+    Fonctionnement en \emph{userland}
+  \item
+    Communication inter-processus (IPC)
+  \end{itemize}
+
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_01}
+  \end{center}
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_02}
+  \end{center}
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_03}
+  \end{center}
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_04}
+  \end{center}
+\end{frame}
+
+% 10)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_05}
+  \end{center}
+\end{frame}
+
+% 11)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_06}
+  \end{center}
+\end{frame}
+
+% 12)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_07}
+  \end{center}
+\end{frame}
+
+% 13)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_08}
+  \end{center}
+\end{frame}
+
+% 14)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_09}
+  \end{center}
+\end{frame}
+
+% 15)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_10}
+  \end{center}
+\end{frame}
+
+% 16)
+
+%
+% kaneton design
+%
+
+\section{Le design de kaneton}
+
+% 17)
+
+\begin{frame}
+  \frametitle{Fonctions remplies par kaneton}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Le \emph{set} manager}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Gestion de la m\'{e}moire}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Ev\`{e}nements et I/O}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{T\^{a}ches et threads}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{L'ordonnanceur}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Les IPC}
+
+\end{frame}
+
+%
+% avancement
+%
+
+\section{Avancement}
+
+\begin{frame}
+  \frametitle{Les managers ind\'{e}pendants}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Le syst\`{e}me de portabilit\'{e}}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Le code d\'{e}pendant de l'architecture}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Le portage IA-32}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Les tests}
+
+\end{frame}
+
+%
+% projets
+%
+
+\section{Projets}
+
+\begin{frame}
+  \frametitle{Les choses \`{a} faire}
+
+  \begin{itemize}
+  \item
+    Le portage sur architecture MIPS
+  \item
+    Le multiprocesseur sym\'{e}trique (SMP)
+  \item
+    Les pilotes
+  \item
+    Une couche r\'{e}seau
+  \item
+    Un Virtual Filesystem Switch (VFS)
+  \item
+    Une librairie d'\'{e}mulation UNIX
+  \item
+    Les services distribu\'{e}s
+  \end{itemize}
+
+\end{frame}
+
+%
+% ce que nous cherchons
+%
+
+\section{Ce que nous cherchons}
+
+\end{document}
