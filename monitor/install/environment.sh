@@ -8,7 +8,7 @@
 ## file          /home/mycure/kaneton/monitor/install/environment.sh
 ##
 ## created       julien quintard   [tue nov 28 22:03:54 2006]
-## updated       julien quintard   [sat dec  2 14:28:22 2006]
+## updated       julien quintard   [sun dec  3 10:55:22 2006]
 ##
 
 ##
@@ -21,6 +21,11 @@ source common/common.sh
 ## ---------- script ----------------------------------------------------------
 ##
 
+#
+# ENVIRONMENT
+#
+# this function asks the user to locate the environment directory.
+#
 environment()
 {
 

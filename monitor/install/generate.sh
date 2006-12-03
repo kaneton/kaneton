@@ -5,10 +5,10 @@
 ##
 ## license       kaneton
 ##
-## file          /home/mycure/kaneton/monitor/install/save.sh
+## file          /home/mycure/kaneton/monitor/install/generate.sh
 ##
 ## created       julien quintard   [sat dec  2 12:53:12 2006]
-## updated       julien quintard   [sat dec  2 14:34:54 2006]
+## updated       julien quintard   [sun dec  3 11:01:40 2006]
 ##
 
 ##
@@ -21,14 +21,19 @@ source common/common.sh
 ## ---------- script ----------------------------------------------------------
 ##
 
-save()
+#
+# GENERATE
+#
+# this function asks the user confirmation about the configuration
+#
+generate()
 {
 
 #
 # summarize the configuration
 #
 
-  kdialog --title "[kaneton] monitor > install > save"			\
+  kdialog --title "[kaneton] monitor > install > generate"		\
           --msgbox							\
 									\
 "Your current configuration is decribed below:\n\
@@ -43,7 +48,7 @@ save()
 # ask confirmation before creating the user profile
 #
 
-  kdialog --title "[kaneton] monitor > install > save"			\
+  kdialog --title "[kaneton] monitor > install > generate"		\
           --yesno "Are you sure you want to use this configuration?"	\
           5 70
 
@@ -59,7 +64,7 @@ save()
 # indicate what is going to happen
 #
 
-  kdialog --title "[kaneton] monitor > install > save"			\
+  kdialog --title "[kaneton] monitor > install > generate"		\
           --msgbox							\
 									\
 "A user profile will now be created at the following location:\n\
@@ -83,7 +88,7 @@ save()
 # indicate that everything is right
 #
 
-  kdialog --title "[kaneton] monitor > install > save"			\
+  kdialog --title "[kaneton] monitor > install > generate"		\
           --msgbox							\
 									\
 "The ${KANETON_USER}'s user profile was created successfully:\n\
@@ -97,7 +102,7 @@ save()
 # created profile
 #
 
-  kdialog --title "[kaneton] monitor > install > save"			\
+  kdialog --title "[kaneton] monitor > install > generate"		\
           --msgbox							\
 									\
 "To use this profile you have to set the following environment \
@@ -114,4 +119,4 @@ environment."								\
 
 }
 
-save
+generate

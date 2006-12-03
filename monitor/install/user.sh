@@ -8,7 +8,7 @@
 ## file          /home/mycure/kaneton/monitor/install/user.sh
 ##
 ## created       julien quintard   [tue nov 28 21:18:45 2006]
-## updated       julien quintard   [sat dec  2 14:32:32 2006]
+## updated       julien quintard   [sun dec  3 10:54:52 2006]
 ##
 
 ##
@@ -21,6 +21,11 @@ source common/common.sh
 ## ---------- script ----------------------------------------------------------
 ##
 
+#
+# USER
+#
+# this function asks the user to enter his developer name.
+#
 user()
 {
 
