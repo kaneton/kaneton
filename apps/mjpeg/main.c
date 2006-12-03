@@ -34,6 +34,8 @@ void mjpeg(void)
   dsx_mwmr_t idct_libu;
   dsx_mwmr_t libu_ramdac;
 
+  memset((void *)0xa0000, 0, 320 * 200);
+
   dsx_mwmr_alloc(&tg_demux, 8, 2, "tg_demux");
   dsx_mwmr_alloc(&quanti, 8, 4, "quanti");
   dsx_mwmr_alloc(&vld_iqzz, 32, 2, "vld_iqzz");

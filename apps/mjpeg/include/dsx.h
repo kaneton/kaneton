@@ -13,16 +13,22 @@
 #ifndef PLATFORM_TYPES_H
 #define PLATFORM_TYPES_H
 
+#include <kaneton.h>
 #include "../pthread.h"
 #include <dsx_endianness.h>
 #include "dsx_ext.h"
 
 typedef struct _barrier_t *dsx_barrier_t;
 struct _barrier_t {
+  i_set	threads;
+  t_uint8 c;
+  t_uint8 _c;
 };
 
 typedef struct _mwmr_t *dsx_mwmr_t;
 struct _mwmr_t {
+  i_set fifo;
+  unsigned int w;
 };
 
 typedef struct _memspace_t* dsx_memspace_t;
@@ -39,7 +45,7 @@ void dsx_memspace_alloc(dsx_memspace_t *memsp, size_t size);
 typedef struct _lock_t *dsx_lock_t;
 struct _lock_t
 {
-
+  t_uint8	v;
 };
 
 typedef void *dsx_signal_t;
