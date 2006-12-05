@@ -14,6 +14,7 @@ FUNC(ramdac)
     char buffer[MAX_WIDTH*8];
 
     dsx_log(TRACE, "RAMDAC: thread is alive !\n");
+    printf("rendering frame\n");
     for (i=0;i<MAX_HEIGHT;i+=8) {
       framebuffer[i*320] = 0;
         dsx_log_printf(TRACE, "copying line %d->%d\n", i, i+7);

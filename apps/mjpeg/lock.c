@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/apps/mjpeg/lock.c
  *
  * created       matthieu bucchianeri   [sat dec  2 01:59:29 2006]
- * updated       matthieu bucchianeri   [sun dec  3 19:10:02 2006]
+ * updated       matthieu bucchianeri   [tue dec  5 23:24:49 2006]
  */
 
 #include "dsx.h"

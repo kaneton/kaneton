@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed nov  1 15:45:55 2006]
+ * updated       matthieu bucchianeri   [tue dec  5 23:17:31 2006]
  */
 
 /*
@@ -191,7 +191,7 @@ t_error			ia32_as_reserve(i_task			tskid,
   i_segment	        seg;
   i_region		reg;
   o_segment*		oseg;
-  o_segment		pt_seg;
+  o_segment*		pt_seg;
   o_region		oreg;
   o_region*		preg;
   t_paddr		base;
@@ -321,11 +321,14 @@ t_error			ia32_as_reserve(i_task			tskid,
 
 		  if (segment_get(seg, &oseg) != ERROR_NONE)
 		    {
-		      pt_seg.address = (t_paddr)pt.entries;
-		      pt_seg.size = PAGESZ;
-		      pt_seg.perms = PERM_READ | PERM_WRITE;
+		      if ((pt_seg = malloc(sizeof(o_segment))) == NULL)
+			AS_LEAVE(as, ERROR_UNKNOWN);
 
-		      if (segment_inject(*asid, &pt_seg, &seg) != ERROR_NONE)
+		      pt_seg->address = (t_paddr)pt.entries;
+		      pt_seg->size = PAGESZ;
+		      pt_seg->perms = PERM_READ | PERM_WRITE;
+
+		      if (segment_inject(*asid, pt_seg, &seg) != ERROR_NONE)
 			AS_LEAVE(as, ERROR_UNKNOWN);
 		    }
 		}

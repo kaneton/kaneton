@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/klibc/libdata/alloc.c
  *
  * created       cedric aubouy   [sun sep 25 19:57:33 2005]
- * updated       matthieu bucchianeri   [mon aug 21 18:49:04 2006]
+ * updated       matthieu bucchianeri   [wed dec  6 00:31:11 2006]
  */
 
 /*
@@ -243,7 +243,10 @@ void*			malloc(size_t				size)
       area->prev_area = prev_area;
       area->next_area = NULL;
 
-      prev_area->next_area = area;
+      if (prev_area != NULL)
+	prev_area->next_area = area;
+      else
+	alloc.areas = area;
 
       /*
        * c)
@@ -251,6 +254,7 @@ void*			malloc(size_t				size)
 
       chunk = (t_chunk*)(area + 1);
       chunk->area = area;
+      chunk->next_free = NULL;
       allocated = chunk + 1;
 
       if (2 * sizeof(t_chunk) + size < area->size)
@@ -265,10 +269,8 @@ void*			malloc(size_t				size)
       else
 	{
 	  chunk->size = area->size - sizeof(t_chunk);
-	  chunk->next_free = NULL;
 	  area->first_free_chunk = NULL;
 	}
-
     }
 
   /*
@@ -315,7 +317,7 @@ void			free(void*				ptr)
    * 1)
    */
 
-  if (!ptr)
+  if (1 || !ptr)
     return;
 
   if (ptr < alloc.lowest)

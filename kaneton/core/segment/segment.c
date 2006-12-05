@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun sep  3 11:45:30 2006]
+ * updated       matthieu bucchianeri   [tue dec  5 23:16:21 2006]
  */
 
 /*
@@ -521,7 +521,7 @@ t_error			segment_split(i_segment		segid,
 {
   o_as*			as;
   o_segment*		o;
-  o_segment		n;
+  o_segment*		n;
   i_segment		useless;
 
   SEGMENT_ENTER(segment);
@@ -543,7 +543,10 @@ t_error			segment_split(i_segment		segid,
   if (size > o->size)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  n.size = o->size - size;
+  if ((n = malloc(sizeof (o_segment))) == NULL)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  n->size = o->size - size;
   o->size = size;
   *left = segid;
 
@@ -551,14 +554,14 @@ t_error			segment_split(i_segment		segid,
    * 3)
    */
 
-  n.asid = o->asid;
-  n.perms = o->perms;
-  n.address = o->address + size;
-  n.type = o->type;
+  n->asid = o->asid;
+  n->perms = o->perms;
+  n->address = o->address + size;
+  n->type = o->type;
 
-  *right = n.segid = (i_segment)n.address;
+  *right = n->segid = (i_segment)n->address;
 
-  if (segment_inject(o->asid, &n, &useless) != ERROR_NONE)
+  if (segment_inject(o->asid, n, &useless) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -590,7 +593,6 @@ t_error			segment_coalesce(i_segment	left,
 {
   o_segment*		seg1;
   o_segment*		seg2;
-  i_segment		tmp;
 
   SEGMENT_ENTER(segment);
 
@@ -802,7 +804,7 @@ t_error			segment_reserve(i_as			asid,
 					i_segment*		segid)
 {
   o_as*			as;
-  o_segment		o;
+  o_segment*		o;
 
   SEGMENT_ENTER(segment);
 
@@ -813,30 +815,33 @@ t_error			segment_reserve(i_as			asid,
   if (as_get(asid, &as) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
+  if ((o = malloc(sizeof(o_segment))) == NULL)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
   /*
    * 2)
    */
 
-  if (segment_space(as, size, &o.address) != ERROR_NONE)
+  if (segment_space(as, size, &o->address) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  o.asid = as->asid;
-  o.size = size;
-  o.perms = perms;
-  o.type = SEGMENT_TYPE_MEMORY;
+  o->asid = as->asid;
+  o->size = size;
+  o->perms = perms;
+  o->type = SEGMENT_TYPE_MEMORY;
 
-  *segid = o.segid = (i_segment)o.address;
+  *segid = o->segid = (i_segment)o->address;
 
-  if (set_add(segment->segments, &o) != ERROR_NONE)
+  if (set_add(segment->segments, o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (set_add(as->segments, &o.segid) != ERROR_NONE)
+  if (set_add(as->segments, &o->segid) != ERROR_NONE)
     {
-      set_remove(segment->segments, o.segid);
+      set_remove(segment->segments, o->segid);
 
       SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
     }
@@ -1200,7 +1205,7 @@ t_error			segment_init(void)
    * 3)
    */
 
-  if (set_reserve(bpt, SET_OPT_ALLOC | SET_OPT_SORT, sizeof(o_segment),
+  if (set_reserve(bpt, SET_OPT_SORT | SET_OPT_FREE, sizeof(o_segment),
 		  SEGMENT_BPT_NODESZ, &segment->segments) != ERROR_NONE)
     {
       cons_msg('!', "segment: unable to reserve the segment set\n");

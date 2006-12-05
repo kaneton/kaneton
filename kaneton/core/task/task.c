@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [sat oct 14 17:19:31 2006]
+ * updated       matthieu bucchianeri   [tue dec  5 23:20:44 2006]
  */
 
 /*
@@ -843,6 +843,7 @@ t_error			task_init(void)
   i_segment		segments[INIT_SEGMENTS];
   i_thread		needless;
   o_region*		tmp;
+  o_segment*		tmp2;
 
   /*
    * 1)
@@ -912,6 +913,10 @@ t_error			task_init(void)
 
   for (i = 0; i < init->nsegments; i++)
     {
+      if ((tmp2 = malloc(sizeof(o_segment))) == NULL)
+	return (ERROR_UNKNOWN);
+      memcpy(tmp2, &init->segments[i], sizeof(o_segment));
+
       if (segment_inject(asid, &init->segments[i], &segments[i]) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot add a pre-reserved segment in "
@@ -929,7 +934,8 @@ t_error			task_init(void)
     {
       init->regions[i].segid = segments[init->regions[i].segid];
 
-      tmp = malloc(sizeof(o_region));
+      if ((tmp = malloc(sizeof(o_region))) == NULL)
+	return (ERROR_UNKNOWN);
       memcpy(tmp, &init->regions[i], sizeof(o_region));
 
       if (region_inject(asid, tmp) != ERROR_NONE)
