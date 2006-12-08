@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/apps/mjpeg/mwmr.c
  *
  * created       matthieu bucchianeri   [sat dec  2 02:00:48 2006]
- * updated       matthieu bucchianeri   [fri dec  8 01:49:49 2006]
+ * updated       matthieu bucchianeri   [fri dec  8 02:16:05 2006]
  */
 
 #include "dsx.h"
@@ -66,6 +66,8 @@ void	_dsx_mwmr_read(dsx_mwmr_t	fifo,
 	  ++get;
 	  ptr += fifo->width;
 	}
+      else
+	pthread_yield();
 
       STI();
     }
@@ -96,6 +98,8 @@ void	_dsx_mwmr_write(dsx_mwmr_t	fifo,
 	  ++put;
 	  ptr += fifo->width;
 	}
+      else
+	pthread_yield();
 
       STI();
     }

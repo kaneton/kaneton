@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [sat nov  4 18:22:07 2006]
+ * updated       matthieu bucchianeri   [fri dec  8 02:24:34 2006]
  */
 
 /*
@@ -87,7 +87,7 @@ t_error			ia32_sched_yield(i_cpu			cpuid)
 {
   SCHED_ENTER(sched);
 
-  /* XXX int to sched_switch */
+//  asm volatile("int $31");
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }

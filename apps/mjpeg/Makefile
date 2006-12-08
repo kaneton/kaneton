@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/apps/mjpeg/Makefile
 ##
 ## created       matthieu bucchianeri   [sat dec  2 02:50:18 2006]
-## updated       matthieu bucchianeri   [wed dec  6 01:02:17 2006]
+## updated       matthieu bucchianeri   [fri dec  8 02:14:00 2006]
 ##
 
 #
@@ -38,7 +38,6 @@ MJPEG_C			:=		bit_reading.c		\
 					iqzz_launcher.c		\
 					libu.c			\
 					libu_launcher.c		\
-					log.c			\
 					main.c			\
 					mwmr.c			\
 					parser.c		\

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/event.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [wed oct 11 23:16:31 2006]
+ * updated       matthieu bucchianeri   [fri dec  8 02:23:57 2006]
  */
 
 /*
@@ -237,6 +237,11 @@ t_error			ia32_event_init(void)
    */
 
   if (event_reserve(33, EVENT_FUNCTION, EVENT_HANDLER(ia32_kbd_handler))
+      != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  /* XXX */
+  if (event_reserve(31, EVENT_FUNCTION, EVENT_HANDLER(sched_switch))
       != ERROR_NONE)
     return ERROR_UNKNOWN;
 

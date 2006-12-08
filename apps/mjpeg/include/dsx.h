@@ -81,11 +81,20 @@ void dsx_sig_send( dsx_signal_t sig );
 
 void dsx_thread_reset( void );
 
-void _dsx_log( int level, const char *msg );
+static void	_dsx_log(int			level,
+		 const char*		msg)
+{
+}
 
-void _dsx_log_printf( int level, const char *fmt, ... );
+static void	_dsx_log_printf(int		level,
+			const char*	fmt,
+			...)
+{
+}
 
-void dsx_putc( const char x );
+static void	dsx_putc(const char		c)
+{
+}
 
 #define dsx_log( l, c ) _dsx_log( VERB_ ## l, c )
 #define dsx_log_printf( l, c... ) _dsx_log_printf( VERB_ ## l, c )

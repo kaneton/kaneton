@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/apps/mjpeg/pthread.c
  *
  * created       matthieu bucchianeri   [sat dec  2 02:27:13 2006]
- * updated       matthieu bucchianeri   [sun dec  3 19:04:45 2006]
+ * updated       matthieu bucchianeri   [fri dec  8 02:21:49 2006]
  */
 
 #include <pthread.h>
@@ -51,4 +51,5 @@ int		pthread_create(pthread_t*	th,
 
 void	pthread_yield(void)
 {
+  sched_yield(0);
 }

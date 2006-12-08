@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/cons-vga.c
  *
  * created       matthieu bucchianeri   [fri dec  2 20:14:33 2005]
- * updated       matthieu bucchianeri   [fri dec  8 01:31:19 2006]
+ * updated       matthieu bucchianeri   [fri dec  8 02:02:17 2006]
  */
 
 /*
@@ -449,14 +449,6 @@ void		write_regs(unsigned char *regs)
     }
   INB(VGA_INSTAT_READ, a);
   OUTB(VGA_AC_INDEX, 0x20);
-
-  OUTB(VGA_DAC_WRITE_INDEX, 0);
-  for (i = 0; i < 256; i++)
-    {
-      OUTB(VGA_DAC_DATA, i >> 2);
-      OUTB(VGA_DAC_DATA, i >> 2);
-      OUTB(VGA_DAC_DATA, i >> 2);
-    }
 }
 
 /*

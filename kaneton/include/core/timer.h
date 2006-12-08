@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/timer.h
  *
  * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       matthieu bucchianeri   [wed dec  6 01:04:03 2006]
+ * updated       matthieu bucchianeri   [fri dec  8 02:15:21 2006]
  */
 
 #ifndef CORE_TIMER_H

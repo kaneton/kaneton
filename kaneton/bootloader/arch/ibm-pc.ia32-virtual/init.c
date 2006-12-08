@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [wed dec  6 00:56:32 2006]
+ * updated       matthieu bucchianeri   [fri dec  8 01:54:01 2006]
  */
 
 /*
