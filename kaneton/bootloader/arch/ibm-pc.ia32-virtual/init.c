@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [wed dec  6 00:02:01 2006]
+ * updated       matthieu bucchianeri   [wed dec  6 00:56:32 2006]
  */
 
 /*
@@ -597,7 +597,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 8)
    */
 
-  init->alloc = bootloader_init_alloc(16 * PAGESZ, &allocsz);
+  init->alloc = bootloader_init_alloc(1600 * PAGESZ, &allocsz);
   init->allocsz = allocsz;
 
   return (khdr->e_entry);

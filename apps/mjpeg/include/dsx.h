@@ -20,15 +20,24 @@
 
 typedef struct _barrier_t *dsx_barrier_t;
 struct _barrier_t {
-  i_set	threads;
+  i_thread *thr;
+  t_uint8 idx;
   t_uint8 c;
   t_uint8 _c;
 };
 
 typedef struct _mwmr_t *dsx_mwmr_t;
 struct _mwmr_t {
-  i_set fifo;
-  unsigned int w;
+  int width;
+  int depth;
+  int usage;
+  int *begin;
+  int *end;
+  int *rptr;
+  int *wptr;
+  const char *name;
+  void *fd;
+  int offset;
 };
 
 typedef struct _memspace_t* dsx_memspace_t;

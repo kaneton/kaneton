@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/apps/mjpeg/Makefile
 ##
 ## created       matthieu bucchianeri   [sat dec  2 02:50:18 2006]
-## updated       matthieu bucchianeri   [sat dec  2 02:56:27 2006]
+## updated       matthieu bucchianeri   [wed dec  6 01:02:17 2006]
 ##
 
 #
@@ -27,8 +27,7 @@ include			../../env/.env.mk
 
 MJPEG_LO		:=		mjpeg.lo
 
-MJPEG_C			:=		barrier.c		\
-					bit_reading.c		\
+MJPEG_C			:=		bit_reading.c		\
 					block_io.c		\
 					demux.c			\
 					demux_launcher.c	\
@@ -39,10 +38,8 @@ MJPEG_C			:=		barrier.c		\
 					iqzz_launcher.c		\
 					libu.c			\
 					libu_launcher.c		\
-					lock.c			\
 					log.c			\
 					main.c			\
-					memspace.c		\
 					mwmr.c			\
 					parser.c		\
 					pthread.c		\
