@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/lectures/seminar_2006/seminar.tex
 %%
 %% created       julien quintard   [fri dec  2 07:53:59 2005]
-%% updated       matthieu bucchianeri   [sat dec  2 13:00:18 2006]
+%% updated       matthieu bucchianeri   [sun dec 10 00:47:04 2006]
 %%
 
 %
@@ -69,6 +69,45 @@
                 {microkernel_example_10}
 		{figures/microkernel_example_10}
 
+% memory management
+
+\pgfdeclareimage[interpolate=true,width=179pt,height=190pt]
+                {vmem}
+		{figures/vmem}
+\pgfdeclareimage[interpolate=true,width=137pt,height=190pt]
+                {vmem_overlap}
+		{figures/vmem-overlap}
+\pgfdeclareimage[interpolate=true,width=137pt,height=190pt]
+                {vmem_contiguous}
+		{figures/vmem-contiguous}
+\pgfdeclareimage[interpolate=true,width=137pt,height=190pt]
+                {vmem_sharing}
+		{figures/vmem-sharing}
+
+% process scheduling
+
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq1}
+		{figures/sched1}
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq2}
+		{figures/sched2}
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq3}
+		{figures/sched3}
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq4}
+		{figures/sched4}
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq5}
+		{figures/sched5}
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq6}
+		{figures/sched6}
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq7}
+		{figures/sched7}
+
 %
 % document
 %
@@ -105,6 +144,43 @@
 % 1)
 
 \begin{frame}
+  \frametitle{Les gens qui travaillent sur kaneton}
+
+  \textbf{Design}
+
+  \begin{itemize}
+    \item
+      Julien Quintard
+    \item
+      Jean-Pascal Billaud
+  \end{itemize}
+
+  \nl
+
+  \textbf{Implementation}
+
+  \begin{itemize}
+    \item
+      Renaud Voltz
+    \item
+      Matthieu Bucchianeri
+    \item
+      Enguerrand Raymond
+  \end{itemize}
+
+  \nl
+
+  \textbf{Autres gens ayant contribu\'{e}s significativement}
+
+  \begin{itemize}
+    \item
+      C\'{e}dric Aubouy
+  \end{itemize}
+\end{frame}
+
+% 2)
+
+\begin{frame}
   \frametitle{Description}
 
   kaneton est un micro-noyau \`{a} but p\'{e}dagogique
@@ -125,7 +201,7 @@
 
 \end{frame}
 
-% 2)
+% 3)
 
 \begin{frame}
 
@@ -172,43 +248,6 @@
     KG0 : les \'{e}v\'{e}nements et les I/O
   \item
     KG1 : les process et l'ordonnancement
-  \end{itemize}
-\end{frame}
-
-% 3)
-
-\begin{frame}
-  \frametitle{Les gens qui travaillent sur kaneton}
-
-  \textbf{Design}
-
-  \begin{itemize}
-    \item
-      Julien Quintard
-    \item
-      Jean-Pascal Billaud
-  \end{itemize}
-
-  \nl
-
-  \textbf{Implementation}
-
-  \begin{itemize}
-    \item
-      Renaud Voltz
-    \item
-      Matthieu Bucchianeri
-    \item
-      Enguerrand Raymond
-  \end{itemize}
-
-  \nl
-
-  \textbf{Autres gens ayant contribu\'{e}s significativement}
-
-  \begin{itemize}
-    \item
-      C\'{e}dric Aubouy
   \end{itemize}
 \end{frame}
 
@@ -373,10 +412,78 @@
 
 \end{frame}
 
+% -)
+
 \begin{frame}
   \frametitle{Gestion de la m\'{e}moire}
 
+  kaneton offre des primitives pour g\'{e}rer la m\'{e}moire physique et la
+  m\'{e}moire virtuelle \`{a} travers le segment manager, le region manager et
+  enfin l'as manager.
+
 \end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{as, segment et region}
+
+  \begin{center}
+    \pgfuseimage{vmem}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le mapping}
+
+  \begin{center}
+    \pgfuseimage{vmem_overlap}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{L'allocation non contig\"{u}e}
+
+  \begin{center}
+    \pgfuseimage{vmem_contiguous}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le partage}
+
+  \begin{center}
+    \pgfuseimage{vmem_sharing}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Pourquoi une telle gestion de la m\'{e}moire ?}
+
+  \begin{itemize}
+  \item
+    Proteger les donn\'{e}es entres les processus\ldots
+  \item
+    \ldots{} tout en permettant le partage de certaines zones
+  \item
+    Optimiser l'allocation de la m\'{e}moire physique
+  \item
+    Permettre l'utilisation de programmes contenant des adresses absolues
+  \item
+    Avoir \`{a} disposition plus de m\'{e}moire qu'il n'y en a (\emph{swapping})
+  \end{itemize}
+
+\end{frame}
+
+% -)
 
 \begin{frame}
   \frametitle{Ev\`{e}nements et I/O}
@@ -388,8 +495,118 @@
 
 \end{frame}
 
+% -)
+
 \begin{frame}
   \frametitle{L'ordonnanceur}
+
+  kaneton dispose d'un ordonnanceur permettant l'ex\'{e}cution
+  simultan\'{e}e de plusieurs threads.
+
+  Cet ordonnanceur est pr\'{e}emptif, \'{e}quitable et avec gestion de
+  priorit\'{e}s. L'algorithme utilis\'{e} est un \emph{multilevel
+  feedback queues} (\`{a} l'instar de GNU/Linux).
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq1}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq2}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq3}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq4}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq5}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq6}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq7}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq1}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le support multiprocesseur}
+
+  Nous pr\'{e}voyons que kaneton puisse tirer parti des diff\'{e}rents
+  microprocesseurs dans un syst\`{e}me multiprocesseur.
+
+  Dans un syst\`{e}me multiprocesseur symé\'{e}trique (SMP),
+  l'ordonnanceur disposera d'une file de threads actifs pour chaque
+  microprocesseur.
+
+  Le cpu manager permettra d'effectuer du \emph{load balancing} et de
+  la migration de tâches d'un processeur \`{a} un autre.
+
+  Le gestionnaire de m\'{e}moire devra lui aussi subir des
+  modifications afin d'assurer dans tout le syst\`{e}me la
+  coh\'{e}rence des espaces d'adressages.
 
 \end{frame}
 
