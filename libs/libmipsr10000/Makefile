@@ -37,13 +37,15 @@ LIBMIPSR10000_INCLUDE	:=		$(_LIBMIPSR10000_INCLUDE_DIR_)/libmipsr10000.h
 # ---------- rules ------------------------------------------------------------
 #
 
-$(_LIBMIPSR10000_A_):		libs
+libs:
+	$(call launch,Makefile,$(SUBDIRS),,)
+
+	$(call launch,Makefile,.,$(_LIBMIPSR10000_A_),)
+
+$(_LIBMIPSR10000_A_):		$(LIBARC_LO)
 	$(call remove,$(_LIBMIPSR10000_A_),)
 
 	$(call static-library,$(_LIBMIPSR10000_A_),$(LIBARC_LO),"-crs")
-
-libs:
-	$(call launch,Makefile,$(SUBDIRS),,)
 
 clear:
 	$(call launch,Makefile,$(SUBDIRS),clear,)

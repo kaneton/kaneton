@@ -8,7 +8,7 @@
 ## file          /home/mycure/kaneton/monitor/install/machine.sh
 ##
 ## created       julien quintard   [tue nov 28 22:03:54 2006]
-## updated       julien quintard   [sun dec  3 10:55:52 2006]
+## updated       julien quintard   [mon dec  4 21:41:46 2006]
 ##
 
 ##
@@ -86,21 +86,20 @@ profile in here."							\
 A kaneton machine profile is composed of the following components:\n\
 \n\
 1. The operating system you are running on.\n\
-2. Eventually the microprocessor on which runs your operating system.\n\
 \n\
-3. The target machine for which kaneton will be developed.\n\
-4. Eventually the target microprocessor for which kaneton will be \
+2. The target machine for which kaneton will be developed.\n\
+3. Eventually the target microprocessor for which kaneton will be \
 developed.\n\
 \n\
 The nomenclature followed by the machine profiles is:\n\
 \n\
-[1-os].[2-processor]::[3-os].[4-processor]\n\
+[operating-system]::[machine].[microprocessor]\n\
 \n\
 Some valid examples:\n\
 \n\
    linux::pc-ibm\n\
-   linux.ia32::sgi-o2.mips32\n\
-   macos.ppc::pc-ibm.mips64"						\
+   linux::sgi-o2.mips32\n\
+   macos::pc-ibm.mips64"						\
 									\
           20 70
 

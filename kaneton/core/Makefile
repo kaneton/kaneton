@@ -48,9 +48,9 @@ SUBDIRS			:=		arch				\
 					io				\
 					$(_CHECK_DIR_)
 
-# kaneton libraries
+# kaneton objects
 
-KANETON_LIBS		:=		$(_MACHDEP_LO_)			\
+KANETON_O		:=		$(_MACHDEP_LO_)			\
 					$(_KERNEL_LO_)			\
 					$(_AS_LO_)			\
 					$(_CONF_LO_)			\
@@ -99,7 +99,13 @@ VERSION_O		:=		$(VERSION_C:.c=.o)
 # ---------- rules ------------------------------------------------------------
 #
 
-$(_CORE_):		libs $(CORE_O)
+libs:
+	$(call launch,Makefile,$(_KLIBC_DIR_),,)
+	$(call launch,Makefile,$(SUBDIRS),,)
+
+	$(call launch,Makefile,.,$(_CORE_),)
+
+$(_CORE_):		$(CORE_O) $(KANETON_O)
 	$(call version,$(VERSION_C))
 
 	$(call compile-c,$(VERSION_O),$(VERSION_C),)
@@ -107,7 +113,7 @@ $(_CORE_):		libs $(CORE_O)
 ifneq ($(APP),)
 	$(call executable,$(_CORE_),	$(CORE_O)			\
 					$(VERSION_O)			\
-					$(KANETON_LIBS)			\
+					$(KANETON_O)			\
 					$(_KLIBC_A_)			\
 					$(_APPS_DIR_)/$(APP)/$(APP).lo,	\
                  "--link-script $(_MACHDEP_LINK_DIR_)/core.lks"		\
@@ -116,17 +122,12 @@ ifneq ($(APP),)
 else
 	$(call executable,$(_CORE_),	$(CORE_O)			\
 					$(VERSION_O)			\
-					$(KANETON_LIBS)			\
+					$(KANETON_O)			\
 					$(_KLIBC_A_),			\
                  "--link-script $(_MACHDEP_LINK_DIR_)/core.lks"		\
                  "--no-standard-include"				\
                  "--no-standard-library")
 endif
-
-libs:
-	$(call launch,Makefile,$(SUBDIRS),,)
-
-	$(call launch,Makefile,$(_KLIBC_DIR_),,)
 
 clear:
 	$(call launch,Makefile,$(SUBDIRS),clear,)

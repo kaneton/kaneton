@@ -52,11 +52,11 @@ dep()
 
 
 #
-# RUNTIME CONFIGURATION
+# RUNTIME
 #
 # this function generates the kaneton runtime configuration file.
 #
-runtime-configuration()
+runtime()
 {
   local kaneton_conf
 
@@ -108,12 +108,70 @@ machines()
 
 
 #
-# LINKS
+# ENVIRONMENT
 #
-# this function links the kernel configuration files.
+# this function installs everything necessary for the kaneton
+# development environment.
 #
-links()
+environment()
 {
+  # creates the links for architecture dependencies.
+  display " installing links to machine-dependent directories" "+"
+
+  remove "${_MACHDEP_BOOTSTRAP_DIR_}" ""
+  link "${_MACHDEP_BOOTSTRAP_DIR_}" "${_ARCHITECTURE_}" ""
+
+  remove "${_MACHDEP_BOOTLOADER_DIR_}" ""
+  link "${_MACHDEP_BOOTLOADER_DIR_}" "${_ARCHITECTURE_}" ""
+
+  remove "${_MACHDEP_CORE_DIR_}" ""
+  link "${_MACHDEP_CORE_DIR_}" "${_ARCHITECTURE_}" ""
+
+  remove "${_MACHDEP_INCLUDE_DIR_}" ""
+  link "${_MACHDEP_INCLUDE_DIR_}" "${_ARCHITECTURE_}" ""
+
+  remove "${_MACHDEP_LINK_DIR_}" ""
+  link "${_MACHDEP_LINK_DIR_}" "${_ARCHITECTURE_}" ""
+}
+
+
+
+#
+# BOOT
+#
+# this function installs everything necessary for the boot system.
+#
+boot()
+{
+  display " installing stuff about the boot system" "+"
+}
+
+
+
+#
+# CORE
+#
+# this function configures the kaneton core based on the user configuration.
+#
+core()
+{
+  display " configuring the kaneton core" "+"
+}
+
+
+
+#
+# USER
+#
+# this function generates odd things based on the user configuration file.
+#
+user()
+{
+  environment
+  boot
+  core
+
+# XXX
   display " linking kernel configuration files" "+"
 
   remove "${_CORE_INCLUDE_DIR_}/conf.h" ""
@@ -129,21 +187,19 @@ links()
 # INIT
 #
 # this function installs the environment, calling the script depending
-# of your operating system.
+# on the machine profile and on the user profile.
 #
 init()
 {
   if [ ! -d ${_MACHINE_DIR_} ] ; then
-    display " unknown system: '${_MACHINE_}'" "!"
+    display " unknown machine profile: '${_MACHINE_}'" "!"
     display "" ""
     display " please check your KANETON_MACHINE environment variable" "!"
     display "" ""
     machines
     display "" ""
     exit -1
-  fi
-
-  if [ ! -e ${_MACHINE_DIR_}/init.sh ] ; then
+  elif [ ! -e ${_MACHINE_DIR_}/init.sh ] ; then
     display " '${_MACHINE_}' machine-specific init script not present" "!"
     display "" ""
     display " please check your KANETON_MACHINE environment variable" "!"
@@ -151,9 +207,9 @@ init()
     machines
     display "" ""
     exit -1
+  else
+    launch "${_MACHINE_DIR_}/init.sh" "" ""
   fi
-
-  launch "${_MACHINE_DIR_}/init.sh" "" ""
 
   if [ -e ${_USER_DIR_}/init.sh ] ; then
     launch "${_USER_DIR_}/init.sh" "" ""
@@ -205,8 +261,8 @@ display "" ""
 # asks the user to continue.
 warning
 
-# installs some links.
-links
+# generates the user configuration.
+user
 
 # calls the init function which will install machine-specific stuff.
 init
@@ -218,7 +274,7 @@ proto
 dep
 
 # generates the runtime kaneton configuration file.
-runtime-configuration
+runtime
 
 # end.
 display " environment installed successfully" "+"

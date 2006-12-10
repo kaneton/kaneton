@@ -8,7 +8,7 @@
 ## file          /home/mycure/kaneton/monitor/install/environment.sh
 ##
 ## created       julien quintard   [tue nov 28 22:03:54 2006]
-## updated       julien quintard   [sun dec  3 10:55:22 2006]
+## updated       julien quintard   [mon dec  4 11:37:43 2006]
 ##
 
 ##
@@ -40,7 +40,7 @@ environment()
 \n\
 This directory should be located at:\n\
 \n\
-[kaneton-root-directory]/env/\n"					\
+[kaneton]/env/\n"							\
 									\
           10 50 
 

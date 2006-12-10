@@ -57,40 +57,9 @@ check()
   done
 }
 
-
-
-#
-# INIT
-#
-# installs the environment for unix operating system.
-#
-init()
-{
-  # creates the links for architecture dependencies.
-  display "   installing links to machine-dependent directories" "+"
-
-  remove "${_MACHDEP_BOOTSTRAP_DIR_}" ""
-  link "${_MACHDEP_BOOTSTRAP_DIR_}" "${_ARCHITECTURE_}" ""
-
-  remove "${_MACHDEP_BOOTLOADER_DIR_}" ""
-  link "${_MACHDEP_BOOTLOADER_DIR_}" "${_ARCHITECTURE_}" ""
-
-  remove "${_MACHDEP_CORE_DIR_}" ""
-  link "${_MACHDEP_CORE_DIR_}" "${_ARCHITECTURE_}" ""
-
-  remove "${_MACHDEP_INCLUDE_DIR_}" ""
-  link "${_MACHDEP_INCLUDE_DIR_}" "${_ARCHITECTURE_}" ""
-
-  remove "${_MACHDEP_LINK_DIR_}" ""
-  link "${_MACHDEP_LINK_DIR_}" "${_ARCHITECTURE_}" ""
-}
-
 #
 # ---------- entry point ------------------------------------------------------
 #
 
 # checks the binaries.
 check
-
-# installs environment.
-init

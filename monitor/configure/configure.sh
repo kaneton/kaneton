@@ -8,7 +8,7 @@
 ## file          /home/mycure/kaneton/monitor/configure/configure.sh
 ##
 ## created       julien quintard   [sat dec  2 14:59:36 2006]
-## updated       julien quintard   [sun dec  3 11:06:05 2006]
+## updated       julien quintard   [mon dec  4 11:25:16 2006]
 ##
 
 ##
@@ -33,7 +33,8 @@ SECTION=""
 FILE=""
 CONTENT=""
 ENTRIES=""
-FILES=""
+INPUT=""
+OUTPUT=""
 ENTRY=""
 MENU=""
 TEMPORARY=""
@@ -45,26 +46,31 @@ TEMPORARY=""
 #
 # GET_VALUE
 #
-# this function tries to locate a variable's value in one of the
-# files FILES.
+# this function tries to locate a variable's value in the files INPUT/OUTPUT.
 #
 get_value()
 {
   local variable="${1}"
-  local f
-  local e
+  local i
+  local o
 
-  for f in ${FILES} ; do
-    e=$(contents "${f}" ""						| \
+  o=$(contents "${OUTPUT}" ""						| \
+      substitute "^(((override)?${variable}[ \t]*:?=[ \t]*(.*))|(.*))$"	\
+                   "\4"							\
+                   "")
+
+  if [ "${o}" != "" ] ; then
+    print "" "${o}" ""
+  else
+    i=$(contents "${INPUT}" ""						| \
         substitute "^(((override)?${variable}[ \t]*:?=[ \t]*(.*))|(.*))$" \
                    "\4"							\
                    "")
 
-    if [ "${e}" != "" ] ; then
-      echo "${e}"
-      break
+    if [ "${i}" != "" ] ; then
+      print "" "${i}" ""
     fi
-  done
+  fi
 }
 
 
@@ -72,34 +78,33 @@ get_value()
 #
 # SET_VALUE
 #
-# this functions sets a new value for the given variable in on of the
-# files FILES.
+# this functions sets a new value for the given variable in the file OUTPUT.
 #
 set_value()
 {
   local variable="${1}"
   local value="${2}"
-  local f
-  local e
+  local o
 
-  for f in ${FILES} ; do
-    e=$(contents "${f}" ""						| \
-        substitute "^(((override)?${variable}[ \t]*:?=[ \t]*(.*))|(.*))$" \
+  o=$(contents "${OUTPUT}" ""						| \
+      substitute "^(((override)?${variable}[ \t]*:?=[ \t]*(.*))|(.*))$" \
                    "\4"							\
                    "")
 
-    if [ "${e}" != "" ] ; then
-      e=$(contents "${f}" ""						| \
-          substitute "^(((override)?${variable}[ \t]*:?=[ \t]*)(.*))$"	\
-                     "\2${value}"					\
-                     ""							> \
+  if [ "${o}" != "" ] ; then
+    $(contents "${OUTPUT}" ""						| \
+      substitute "^(((override)?${variable}[ \t]*:?=[ \t]*)(.*))$"	\
+                 "\2${value}"						\
+                 ""							> \
           ${TEMPORARY})
 
-      copy "${TEMPORARY}" "${f}"
-
-      break
-    fi
-  done
+      copy "${TEMPORARY}" "${OUTPUT}"
+  else
+    $(print ""								\
+            "${variable}			:=		${value}"  \
+            ""								>> \
+      ${OUTPUT})
+  fi
 }
 
 
@@ -123,7 +128,7 @@ menu()
     fi
   done
 
-  echo "${menu}"
+  print "" "${menu}" ""
 }
 
 
@@ -223,7 +228,6 @@ handle()
 configure()
 {
   local content
-  local files
   local e
   local x
   local n
@@ -237,24 +241,45 @@ configure()
   FILE="${DIRECTORY}/${SECTION}.conf"
 
 #
-# get the file's content and generate the menu
+# get the file's content
 #
 
   CONTENT=$(contents "${FILE}")
+
+#
+# skip comments
+#
+
+  CONTENT=$(print "" "${CONTENT}" ""					| \
+            substitute "^#.*$" "" "")
+
+#
+# locate the input/output configuration files in relation with this section
+#
+
+  INPUT=$(print "" "${CONTENT}" ""					| \
+          substitute "^((<input>[ \t]*(.+))|(.*))$" "\3" "")
+  INPUT=$(eval echo ${INPUT})
+
+  OUTPUT=$(print "" "${CONTENT}" ""					| \
+           substitute "^((<output>[ \t]*(.+))|(.*))$" "\3" "")
+  OUTPUT=$(eval echo ${OUTPUT})
+
+#
+# remove the input/output directives
+#
+
+  CONTENT=$(print "" "${CONTENT}" ""					| \
+            substitute "^((<.*>.*)|(.*))$" "\3" "")
+
+#
+# generate the menu
+#
+
   ENTRIES=$(print "" "${CONTENT}" ""					| \
             cut "^\{$" "^\}$" "--delete"				| \
             substitute "^#.*$" "" "")
   MENU=$(menu)
-
-#
-# locate the configuration files in relation with this section
-#
-
-  files=$(print "" "${CONTENT}" "" | substitute "^((# (.+))|(.*))$" "\3" "")
-
-  for e in ${files} ; do
-    FILES="${FILES} $(eval echo ${e})"
-  done
 
   while [ true ] ; do
 

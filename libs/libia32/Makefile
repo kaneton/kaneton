@@ -47,15 +47,18 @@ LIBIA32_INCLUDE		:=		$(_LIBIA32_INCLUDE_DIR_)/libia32.h
 # ---------- rules ------------------------------------------------------------
 #
 
-$(_LIBIA32_A_):		libs
+libs:
+	$(call launch,Makefile,$(SUBDIRS),,)
+
+	$(call launch,Makefile,.,$(_LIBIA32_A_),)
+
+$(_LIBIA32_A_):		$(PMODE_LO) $(PAGING_LO) $(INTERRUPT_LO)	\
+			$(TIME_LO) $(TASK_LO) $(APIC_LO) $(MISC_LO)
 	$(call remove,$(_LIBIA32_A_),)
 
 	$(call static-library,$(_LIBIA32_A_),$(PMODE_LO) $(PAGING_LO)	\
 				$(INTERRUPT_LO) $(TIME_LO) $(TASK_LO)	\
 				$(APIC_LO) $(MISC_LO),)
-
-libs:
-	$(call launch,Makefile,$(SUBDIRS),,)
 
 clear:
 	$(call launch,Makefile,$(SUBDIRS),clear,)

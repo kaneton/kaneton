@@ -24,12 +24,13 @@
    ec-java-list              '( (o . "//") (i . "//") (c . "//") )
    ec-latex-list             '( (o . "%%") (i . "%%") (c . "%%") )
    ec-lisp-list              '( (o . ";;") (i . ";;") (c . ";;") )
+   ec-scheme-list            '( (o . ";;") (i . ";;") (c . ";;") )
    ec-xdefault-list          '( (o . "!!") (i . "!!") (c . "!!") )
-   ec-makefile-list          '( (o . "##") (i . "##") (c . "##") )
-   ec-shell-list             '( (o . "##") (i . "##") (c . "##") )
-   ec-perl-list              '( (o . "##") (i . "##") (c . "##") )
-   ec-text-list              '( (o . "##") (i . "##") (c . "##") )
-   ec-fundamental-list       '( (o . "##") (i . "##") (c . "##") )
+   ec-makefile-list          '( (o . "#") (i . "#") (c . "#") )
+   ec-shell-list             '( (o . "#") (i . "#") (c . "#") )
+   ec-perl-list              '( (o . "#") (i . "#") (c . "#") )
+   ec-text-list              '( (o . "#") (i . "#") (c . "#") )
+   ec-fundamental-list       '( (o . "#") (i . "#") (c . "#") )
    ec-html-list              '( (o . "<!--") (i . "  --") (c . "-->"))
    ec-nroff-list             '( (o . "\\\"") (i . "\\\"") (c . "\\\""))
 )
@@ -49,6 +50,7 @@
    ("TeX"                . ec-latex-list)
    ("Lisp"               . ec-lisp-list)
    ("Lisp Interaction"   . ec-lisp-list)
+   ("Scheme"             . ec-scheme-list)
    ("Emacs-Lisp"         . ec-lisp-list)
    ("xdefault"           . ec-xdefault-list)
    ("Makefile"           . ec-makefile-list)
@@ -328,7 +330,7 @@
 ;; no scroll bar.
 ;;
 
-;(scroll-bar-mode nil)
+;;(scroll-bar-mode nil)
 
 ;;
 ;; no menu bar.
@@ -339,27 +341,8 @@
 ;;
 ;; no tool bar.
 ;;
-;; (tool-bar-mode nil)
-;;
 
-;;
-;; wheel.
-;;
-
-(defun up-slightly () (interactive) (scroll-up 5))
-(defun down-slightly () (interactive) (scroll-down 5))
-(global-set-key [mouse-4] 'down-slightly)
-(global-set-key [mouse-5] 'up-slightly)
-
-(defun up-one () (interactive) (scroll-up 1))
-(defun down-one () (interactive) (scroll-down 1))
-(global-set-key [S-mouse-4] 'down-one)
-(global-set-key [S-mouse-5] 'up-one)
-
-(defun up-a-lot () (interactive) (scroll-up))
-(defun down-a-lot () (interactive) (scroll-down))
-(global-set-key [C-mouse-4] 'down-a-lot)
-(global-set-key [C-mouse-5] 'up-a-lot)
+(tool-bar-mode nil)
 
 ;;
 ;; bindings for home and end keys.

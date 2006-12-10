@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/Makefile
-##
-## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [sat jul 29 18:03:21 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/arch/machdep/Makefile
+#
+# created       julien quintard   [sun dec 10 18:38:17 2006]
+# updated       julien quintard   [sun dec 10 18:38:53 2006]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -49,13 +51,15 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(MACHDEP_LO):		libs $(MACHDEP_O)
+libs:
+	$(call launch,Makefile,$(_LIBIA32_DIR_),,)
+
+	$(call launch,Makefile,.,$(MACHDEP_LO),)
+
+$(MACHDEP_LO):		$(MACHDEP_O)
 	$(call remove,$(MACHDEP_LO),)
 
 	$(call archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBIA32_A_),)
-
-libs:
-	$(call launch,Makefile,$(_LIBIA32_DIR_),,)
 
 clear:
 	$(call remove,$(MACHDEP_O),)

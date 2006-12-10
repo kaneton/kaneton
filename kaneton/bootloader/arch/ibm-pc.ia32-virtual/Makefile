@@ -49,7 +49,13 @@ CFLAGS			+=		-D___bootloader
 # ---------- rules ------------------------------------------------------------
 #
 
-$(BOOTLOADER):		libs $(BOOTLOADER_O)
+libs:
+	$(call launch,Makefile,$(_KLIBC_DIR_),,)
+	$(call launch,Makefile,$(_LIBIA32_DIR_),,)
+
+	$(call launch,Makefile,.,$(BOOTLOADER),)
+
+$(BOOTLOADER):		$(BOOTLOADER_O)
 	$(call executable,$(BOOTLOADER),$(BOOTLOADER_O)			\
 	         $(_LIBIA32_A_) $(_KLIBC_A_),				\
 	         "--link-script $(_MACHDEP_LINK_DIR_)/bootloader.lks"	\
@@ -57,11 +63,6 @@ $(BOOTLOADER):		libs $(BOOTLOADER_O)
                  "--no-standard-library")
 
 	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
-
-libs:
-	$(call launch,Makefile,$(_KLIBC_DIR_),,)
-
-	$(call launch,Makefile,$(_LIBIA32_DIR_),,)
 
 clear:
 	$(call remove,$(BOOTLOADER_O),)

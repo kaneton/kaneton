@@ -1,4 +1,7 @@
 --
+ utiliser _CHECK_ pour activer ou non le debug
+
+--
  bon en fait malloc a tjs des problemes.......
 
 --

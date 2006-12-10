@@ -35,14 +35,16 @@ LIBSYS_LO		:=		libsys/libsys.lo
 # ---------- rules ------------------------------------------------------------
 #
 
-$(_KLIBC_A_):		libs
+libs:
+	$(call launch,Makefile,$(SUBDIRS),,)
+
+	$(call launch,Makefile,.,$(_KLIBC_A_),)
+
+$(_KLIBC_A_):		$(LIBDATA_LO) $(LIBSTRING_LO) $(LIBSYS_LO)
 	$(call remove,$(_KLIBC_A_),)
 
 	$(call static-library,$(_KLIBC_A_),$(LIBDATA_LO) $(LIBSTRING_LO) \
           $(LIBSYS_LO),)
-
-libs:
-	$(call launch,Makefile,$(SUBDIRS),,)
 
 clear:
 	$(call launch,Makefile,$(SUBDIRS),clear,)
