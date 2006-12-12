@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/lectures/seminar_2006/seminar.tex
 %%
 %% created       julien quintard   [fri dec  2 07:53:59 2005]
-%% updated       matthieu bucchianeri   [tue dec 12 01:23:49 2006]
+%% updated       matthieu bucchianeri   [wed dec 13 00:50:32 2006]
 %%
 
 %
@@ -209,12 +209,11 @@
 % 3)
 
 \begin{frame}
+  \frametitle{Les cours (1)}
 
   kaneton est aussi un projet en sp\'{e}cialisation SRS et GISTR.\\
 
   Deux cours :
-
-  \-
 
   \begin{itemize}
   \item
@@ -226,8 +225,6 @@
   \-
 
   Cinq projets en SRS :
-
-  \-
 
   \begin{itemize}
   \item
@@ -246,14 +243,34 @@
 
   Deux projets en GISTR :
 
-  \-
-
   \begin{itemize}
   \item
     KG0 : les \'{e}v\'{e}nements et les I/O
   \item
     KG1 : les process et l'ordonnancement
   \end{itemize}
+
+  \-
+
+  Ces cours et projets concernent au total une quarantaine de
+  personnes.
+
+\end{frame}
+
+
+% -)
+
+\begin{frame}
+  \frametitle{Les cours (2)}
+
+  Le p\^{o}le kernel du LSE dispense aussi les cours d'introduction
+  aux noyaux et programmation syst\`{e}me aux Ing1 (projet connu sous
+  le nom ``K'').
+
+  \-
+
+  Environ 60 \'{e}tudiants de la promotion 2008 ont suivi cette option.
+
 \end{frame}
 
 % 4)
@@ -265,9 +282,9 @@
   \item
     Introduit le design de kaneton
   \item
-    Pr\'{e}sente ce qui \`{a} \'{e}t\'{e} cod\'{e}
+    Pr\'{e}sente ce qui a \'{e}t\'{e} cod\'{e}
   \item
-    Liste de ce qu'il reste \`{a} faire
+    Liste de ce qu'il reste a faire
   \end{itemize}
 \end{frame}
 
@@ -288,11 +305,11 @@
   \item
     $\leftrightarrow$ exo-noyaux
   \item
-    Conception modulaire : les services
+    Conception modulaire en services
   \item
-    Fonctionnement en \emph{userland}
+    Fonctionnement de ces services en \emph{userland}
   \item
-    Communication inter-processus (IPC)
+    Communication inter-processus omnipr\'{e}sente (IPC)
   \end{itemize}
 
 \end{frame}
@@ -510,6 +527,13 @@
   Une t\^{a}che est juste un conteneur, ce qui s'\'{e}xecute vraiment
   ce sont les threads.
 
+  \-
+
+  Dans un noyau classique, une t\^{a}che contient aussi d'autres
+  donn\'{e}es : table de \emph{file-descriptors}, identifiants divers
+  (pid, ppid\ldots). Dans un micro-noyau, ces informations sont
+  stock\'{e}es dans les services appropri\'{e}s.
+
 \end{frame}
 
 % -)
@@ -520,8 +544,53 @@
   Un thread est une image des registres du microprocesseur (appel\'{e}
   contexte) \`{a} un instant donn\'{e}.
 
+  \-
+
+  Les registres du microprocesseur englobent :
+
+  \begin{itemize}
+  \item
+    Le compteur ordinal
+  \item
+    Le pointeur de pile
+  \item
+    Les registres g\'{e}n\'{e}raux
+  \item
+    Le contexte FPU
+  \item
+    Les registres sp\'{e}cifiques (exemple: registres SSE sur Pentium III)
+  \item
+    Les registres privil\'{e}gi\'{e}s
+  \end{itemize}
+
+  \-
+
+  Ainsi, un thread correspond \`{a} l'image d'un fil d'\'{e}xecution.
+
 \end{frame}
 
+% -)
+
+\begin{frame}
+  \frametitle{La permutation de contextes}
+
+  Permuter un contexte consiste \`{a} :
+
+  \begin{itemize}
+  \item
+    Sauvergarder le contexte courant
+  \item
+    Mettre en place un contexte (nouveau ou ancien)
+  \end{itemize}
+
+  \-
+
+  Un microprocesseur mono-coeur et mono-thread ne peut \'{e}xecuter
+  qu'un seul thread simultan\'{e}ment. Le principe de permutation de
+  contextes permet en \'{e}troite collaboration avec l'ordonnanceur de
+  cr\'{e}er une illusion de parallelisme.
+
+\end{frame}
 
 % -)
 
@@ -691,17 +760,101 @@
 
 \end{frame}
 
+% -)
+
 \begin{frame}
   \frametitle{Le portage IA-32}
 
+  L'architecture Intel IA-32 correspond \`{a} la famille des
+  microprocesseurs Intel du 80386 aux actuels Pentium, ainsi qu'\`{a} tous
+  les autres microprocesseurs estamp\'{e}s ``x86'' (AMD, Cyrix\ldots).
+
+  \-
+
+  kaneton est pratiquement fonctionnel sur ces microprocesseurs. Seuls
+  les IPC manquent. kaneton sur IA-32 offre :
+
+  \begin{itemize}
+  \item
+    Un bootloader fonctionnant au dessus de GRUB ;
+  \item
+    Gestion de la MMU avec segmentation et pagination (espace d'adressage de 4 Go) ;
+  \item
+    Gestion des exceptions, \emph{soft-interrupt} et IRQ (\emph{via} le PIC 8259) ;
+  \item
+    Gestion des permissions sur les I/O (\emph{I/O permission bitmap}) ;
+  \item
+    Gestion des threads et \emph{context switching} ;
+  \item
+    Service int\'{e}gr\'{e} de \emph{timers} gr\^{a}ce au PIT 8254
+  \item
+    Services int\'{e}gr\'{e}s de console, \emph{framebuffer} basse r\'{e}solution et port s\'{e}rie.
+  \end{itemize}
+
 \end{frame}
+
+% -)
 
 \begin{frame}
   \frametitle{Les tests}
 
+  kaneton \`{a} pour originalit\'{e} d'\^{e}tre 100\% testable. En effet, chacune
+  des fonctionnalit\'{e} du noyau peut-\^{e}tre test\'{e}e, notamment pour assurer
+  la non-regression.
+
+  \-
+
+  De la m\^{e}me mani\`{e}re, puisque kaneton est un projet \`{a} faire par des
+  \'{e}tudiants, ce syst\`{e}me de test nous est aussi utile pour l'\'{e}valuation
+  des rendus.
+
+  \-
+
+  Cette moulinette de test permet notamment de tester le noyau en boot
+  r\'{e}el : une premi\`{e}re machine sur laquelle est lanc\'{e} le script de la
+  moulinette, reli\'{e}e par port s\'{e}rie \`{a} une seconde machine sur laquelle
+  tourne un kaneton qu'on teste.
+
 \end{frame}
 
-%
+% -)
+
+\begin{frame}
+  \frametitle{Les tests}
+
+  La moulinette kaneton est \'{e}crite en \emph{python} (travail original
+  r\'{e}alis\'{e} par Solal Jacob).
+
+  \-
+
+  Une s\'{e}rie de tests, chacun sous forme d'un fichier C portant un nom
+  particulier est alors compil\'{e}e et li\'{e}e avec le binaire du noyau. Ces
+  tests peuvent appeler absolument toutes les fonctions du noyau et on
+  le niveau de privil\`{e}ges maximum.
+
+  \-
+
+  Le fonctionnement global est le suivant :
+
+  \begin{itemize}
+  \item
+    Le script python envoit l'adresse d'un test (une fonction) sur le
+    port s\'{e}rie ;
+  \item
+    La fonction est alors \'{e}xecut\'{e}e par le noyau, les r\'{e}sultats sont
+    renvoy\'{e}s sur le port s\'{e}rie ;
+  \item
+    Le script compare avec le r\'{e}sultat attendu, il y a aussi
+    possibilit\'{e} de scripter afin de parser le r\'{e}sultat ;
+  \item
+    Une trace est \'{e}mise : fichier HTML style uTTK (moulinette des
+    ACUs) et fichier Ruby pour le calcul de la note en fonction des
+    tests pass\'{e}s ou non (toujours dans le style ACU).
+  \end{itemize}
+
+\end{frame}
+
+%  Les résultats sont écrits sur le port série.
 % projets
 %
 
@@ -712,7 +865,11 @@
 
   \begin{itemize}
   \item
-    Le portage sur architecture MIPS
+    Le portage sur architecture MIPS et eventuellement SPARC
+  \item
+    Version optimis\'{e} du portage IA-32
+  \item
+    Version n'utilisant pas de MMU pour la m\'{e}moire virtuelle
   \item
     Le multiprocesseur sym\'{e}trique (SMP)
   \item
@@ -724,7 +881,11 @@
   \item
     Une librairie d'\'{e}mulation UNIX
   \item
-    Les services distribu\'{e}s
+    Les services distribu\'{e}s : partage de m\'{e}moire, des
+    p\'{e}riph\'{e}riques, migration de process\ldots
+  \item
+    Am\'{e}liorer la moulinette : injection distante de code, acc\`{e}s au
+    contexte, exploration de la m\'{e}moire, \emph{rollback}\ldots
   \end{itemize}
 
 \end{frame}
