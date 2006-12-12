@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/lectures/seminar_2006/seminar.tex
 %%
 %% created       julien quintard   [fri dec  2 07:53:59 2005]
-%% updated       matthieu bucchianeri   [sun dec 10 00:47:04 2006]
+%% updated       matthieu bucchianeri   [tue dec 12 01:23:49 2006]
 %%
 
 %
@@ -107,6 +107,11 @@
 \pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
                 {mfq7}
 		{figures/sched7}
+% task
+
+\pgfdeclareimage[interpolate=true,width=210pt,height=65pt]
+                {task}
+		{figures/task}
 
 %
 % document
@@ -490,10 +495,33 @@
 
 \end{frame}
 
-\begin{frame}
+% -)
+
+\begin{frame}[containsverbatim]
   \frametitle{T\^{a}ches et threads}
 
+  Une t\^{a}che est un ensemble \verb|{| \emph{as}, \emph{threads}
+  \verb|}|.
+
+  \begin{center}
+    \pgfuseimage{task}
+  \end{center}
+
+  Une t\^{a}che est juste un conteneur, ce qui s'\'{e}xecute vraiment
+  ce sont les threads.
+
 \end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{T\^{a}ches et threads}
+
+  Un thread est une image des registres du microprocesseur (appel\'{e}
+  contexte) \`{a} un instant donn\'{e}.
+
+\end{frame}
+
 
 % -)
 
@@ -592,17 +620,44 @@
 % -)
 
 \begin{frame}
+  \frametitle{La priorisation dynamique}
+
+  Le terme \emph{feedback} \`{a} pour origine le principe de
+  modification dynamique des priorit\'{e}s.
+
+  \begin{itemize}
+  \item
+    Les threads \emph{I/O-bound} sont pouss\'{e}es vers le debut de la
+    file active sans que leur timeslice ne soit modifi\'{e}. Ceci permet
+    de leur offrir une meilleur r\'{e}activit\'{e}.
+
+  \item
+    Les threads \emph{CPU-bound} sont pouss\'{e}s vers la fin de la file
+    et leur timeslice ne bouge pas non plus. Ainsi, ils s'\'{e}xecutent en
+    tâche de fond sans perdre de leur temps d'\'{e}xecution.
+
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
   \frametitle{Le support multiprocesseur}
 
   Nous pr\'{e}voyons que kaneton puisse tirer parti des diff\'{e}rents
   microprocesseurs dans un syst\`{e}me multiprocesseur.
 
-  Dans un syst\`{e}me multiprocesseur symé\'{e}trique (SMP),
+  \-
+
+  Dans un syst\`{e}me multiprocesseur sym\'{e}trique (SMP),
   l'ordonnanceur disposera d'une file de threads actifs pour chaque
   microprocesseur.
 
   Le cpu manager permettra d'effectuer du \emph{load balancing} et de
-  la migration de tâches d'un processeur \`{a} un autre.
+  la migration de t\^{a}ches d'un processeur \`{a} un autre.
+
+  \-
 
   Le gestionnaire de m\'{e}moire devra lui aussi subir des
   modifications afin d'assurer dans tout le syst\`{e}me la
