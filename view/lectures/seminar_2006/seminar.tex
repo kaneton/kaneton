@@ -432,6 +432,63 @@
 \begin{frame}
   \frametitle{Le \emph{set} manager}
 
+La gestion des structures de donne\'es d'un noyau g\'en\`ere beaucoup de code.
+
+M\'elanger ce code avec celui de l'impl\'ementation des algorithmes eux-m\^emes
+conduit \`a plusieurs inconv\'enients :
+
+  \begin{itemize}
+    \item un code lourd
+    \item un code redondant
+    \item un code complexe
+  \end{itemize}
+
+  \-
+
+  Finalement, les algorithmes deviennent plus difficiles \`a comprendre et \`a
+  programmer.
+
+  \-
+
+  Kaneton consid\`ere qu'un algorithme n'a pas besoin de savoir comment est
+  impl\'ement\'ee une file, tant qu'il la voit comme une file.
+
+  \-
+
+  Kaneton fournit une interface consacr\'ee \`a la gestion des structures de
+  donn\'ees du noyau: le {\bf set manager}.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le \emph{set} manager}
+
+  Le set manager fournit une interface tr\`es simple pour cr\'eer, stocker et
+  organiser les structures-objet de kaneton. Voici les diff\'erents types de
+  sets qu'elle impl\'emente d\'ej\`a :
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le \emph{set} manager}
+
+  Avantages du set manager:
+
+  \begin{itemize}
+    \item
+    minimise les risques d'erreur
+    \item
+    maximise le temps pass\'e dans l'impl\'ementation de l'algorithme
+    lui-m\^eme
+    \item
+    offre la possibilit\'e de tester facilement un m\^eme algorithme avec
+    plusieurs mod\`eles de structures de donn\'ees
+  \end{itemize}
+
 \end{frame}
 
 % -)
@@ -691,7 +748,7 @@
 \begin{frame}
   \frametitle{La priorisation dynamique}
 
-  Le terme \emph{feedback} \`{a} pour origine le principe de
+  Le terme \emph{feedback} a pour origine le principe de
   modification dynamique des priorit\'{e}s.
 
   \begin{itemize}
@@ -699,12 +756,10 @@
     Les threads \emph{I/O-bound} sont pouss\'{e}es vers le debut de la
     file active sans que leur timeslice ne soit modifi\'{e}. Ceci permet
     de leur offrir une meilleur r\'{e}activit\'{e}.
-
   \item
     Les threads \emph{CPU-bound} sont pouss\'{e}s vers la fin de la file
     et leur timeslice ne bouge pas non plus. Ainsi, ils s'\'{e}xecutent en
     tâche de fond sans perdre de leur temps d'\'{e}xecution.
-
   \end{itemize}
 
 \end{frame}
