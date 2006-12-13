@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/lectures/seminar_2006/seminar.tex
 %%
 %% created       julien quintard   [fri dec  2 07:53:59 2005]
-%% updated       matthieu bucchianeri   [wed dec 13 00:50:32 2006]
+%% updated       matthieu bucchianeri   [wed dec 13 15:00:41 2006]
 %%
 
 %
@@ -450,12 +450,12 @@ conduit \`a plusieurs inconv\'enients :
 
   \-
 
-  Kaneton consid\`ere qu'un algorithme n'a pas besoin de savoir comment est
+  kaneton consid\`ere qu'un algorithme n'a pas besoin de savoir comment est
   impl\'ement\'ee une file, tant qu'il la voit comme une file.
 
   \-
 
-  Kaneton fournit une interface consacr\'ee \`a la gestion des structures de
+  kaneton fournit une interface consacr\'ee \`a la gestion des structures de
   donn\'ees du noyau: le {\bf set manager}.
 
 \end{frame}
@@ -488,6 +488,40 @@ conduit \`a plusieurs inconv\'enients :
     offre la possibilit\'e de tester facilement un m\^eme algorithme avec
     plusieurs mod\`eles de structures de donn\'ees
   \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Le \emph{set} manager : un exemple}
+
+  Voici un mor\c{c}eau de code de l'allocateur de m\'{e}moire physique :
+
+  \begin{verbatim}
+o_segment*      current;
+t_iterator      i;
+
+set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
+  {
+    o_segment   *next;
+    t_iterator  j;
+
+    set_object(segment->segments, i, (void**)&current);
+
+    if (set_next(segment->segments, i, &j) != ERROR_NONE)
+      break;
+
+    set_object(segment->segments, j, (void**)&next);
+
+    if ((next->address - (current->address + current->size)) >= size)
+      {
+        *address = current->address + current->size;
+
+         return (ERROR_NONE);
+      }
+  }
+  \end{verbatim}
 
 \end{frame}
 
@@ -566,6 +600,36 @@ conduit \`a plusieurs inconv\'enients :
 
 \begin{frame}
   \frametitle{Ev\`{e}nements et I/O}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{I/O}
+
+  Les I/O sont le seul moyen de dialoguer avec les p\'{e}riph\'{e}riques. On
+  distingue deux types d'I/O :
+
+  \begin{verbatim}
+  \item
+    Les PIO (\emph{Processor's I/O})
+  \item
+    Les I/O mapp\'{e}es en m\'{e}moire
+  \end{verbatim}
+
+  \-
+
+  Un micro-noyau est con\c{c}u pour \^{e}tre extr\^{e}mement stable. Il faut
+  donc assurer que n'importe quel programme ne peut dialoguer avec un
+  p\'{e}riph\'{e}rique. Imagin\'{e} qu'un programme UNIX classique puisse
+  contr\^{o}ller le bus IDE et ainsi envoyer des commandes \`{a} vos disques
+  durs\ldots.
+
+  \-
+
+  Le I/O manager permet ainsi d'autoriser ou non certains processus à
+  effectuer des I/O.
 
 \end{frame}
 
@@ -909,7 +973,41 @@ conduit \`a plusieurs inconv\'enients :
 
 \end{frame}
 
-%  Les résultats sont écrits sur le port série.
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Un test}
+
+  \begin{verbatim}
+void		check_as_02(void)
+{
+  [...]
+
+  ASSERT(task_reserve([...]) == ERROR_NONE, "error creating task\n");
+  ASSERT(as_reserve([...]) == ERROR_NONE, "error creating as\n");
+  ASSERT(segment_reserve([...]) == ERROR_NONE, "error reserving segment\n");
+  ASSERT(region_reserve([...]) == ERROR_NONE, "error reserving region\n");
+
+  ASSERT(segment_get(seg, &oseg) == ERROR_NONE, "error getting segment\n");
+  ASSERT(oseg->segid == seg, "Bad segid field in segment\n");
+  ASSERT(oseg->asid == as, "Bad asid field in segment\n");
+
+  ASSERT(region_get(as, reg, &oreg) == ERROR_NONE, "error getting region\n");
+  ASSERT(oreg->regid == reg, "Bad regid field in region\n");
+  ASSERT(oreg->segid == seg, "Bad segid field in region\n");
+
+  ASSERT(region_release([...]) == ERROR_NONE, "failed to release region\n");
+  ASSERT(segment_release([...]) == ERROR_NONE, "failed to release segment\n");
+  ASSERT(as_release([...]) == ERROR_NONE, "failed to release as\n");
+  ASSERT(task_release([...]) == ERROR_NONE, "failed to release task\n");
+
+  [...]
+}
+  \end{verbatim}
+
+\end{frame}
+
+%
 % projets
 %
 
