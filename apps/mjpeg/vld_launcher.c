@@ -27,7 +27,7 @@ static void* vld_thread( void *_args )
 
 void vld_launcher( vld_args_t *args )
 {
-	struct thargs *thargs = malloc(sizeof(struct thargs));
-	thargs->args = args;
-	pthread_create( &(thargs->thread), NULL, vld_thread, thargs );
+  static struct thargs thargs;
+  thargs.args = args;
+  pthread_create( &(thargs.thread), NULL, vld_thread, &thargs );
 }

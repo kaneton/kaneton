@@ -4,7 +4,7 @@
 
 #include "jpeg.h"
 
-#include "image.h"
+#include "chiche.h"
 
 FUNC(tg)
 {

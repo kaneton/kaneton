@@ -27,7 +27,7 @@ static void* idct_thread( void *_args )
 
 void idct_launcher( idct_args_t *args )
 {
-	struct thargs *thargs = malloc(sizeof(struct thargs));
-	thargs->args = args;
-	pthread_create( &(thargs->thread), NULL, idct_thread, thargs );
+  static struct thargs thargs;
+  thargs.args = args;
+  pthread_create( &(thargs.thread), NULL, idct_thread, &thargs );
 }

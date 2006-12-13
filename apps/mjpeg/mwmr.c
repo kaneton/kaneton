@@ -6,26 +6,59 @@
  * file          /home/buckman/kaneton/apps/mjpeg/mwmr.c
  *
  * created       matthieu bucchianeri   [sat dec  2 02:00:48 2006]
- * updated       matthieu bucchianeri   [fri dec  8 02:16:05 2006]
+ * updated       matthieu bucchianeri   [wed dec 13 03:12:07 2006]
  */
+
+#include <klibc.h>
+#include <kaneton.h>
 
 #include "dsx.h"
 
 #define WORD_SIZE 4
 
-void	dsx_mwmr_alloc(dsx_mwmr_t*	fifop,
+extern i_task mjpeg_task;
+
+#if 1
+#define WAIT()		pthread_yield()
+
+#define SIGNAL()
+
+#define YIELD()		pthread_yield()
+#endif
+
+#if 0
+#define WAIT()		asm volatile("int $29")
+
+#define SIGNAL()	asm volatile("int $30")
+
+#define YIELD()		pthread_yield();
+#endif
+
+void	dsx_mwmr_alloc(dsx_mwmr_t	fifo,
 		       unsigned int	w,
 		       unsigned int	depth,
 		       const char*	name)
 {
-  *fifop = malloc(sizeof (**fifop));
-  (*fifop)->offset = 0;
-  (*fifop)->usage = 0;
-  (*fifop)->name = name;
-  (*fifop)->begin = (*fifop)->rptr = (*fifop)->wptr = malloc(w * depth * WORD_SIZE);
-  (*fifop)->end = (*fifop)->begin + w * depth;
-  (*fifop)->width = w;
-  (*fifop)->depth = depth;
+
+  t_vaddr addr;
+
+  if (map_reserve(mjpeg_task, MAP_OPT_NONE | MAP_OPT_USER, 4096, PERM_READ | PERM_WRITE ,&addr) != ERROR_NONE)
+    {
+      printf("cannot map_reserve\n");
+
+      while (1)
+	;
+    }
+
+  printf("mapped %p\n", addr);
+
+  fifo->offset = 0;
+  fifo->usage = 0;
+  fifo->name = name;
+  fifo->begin = fifo->rptr = fifo->wptr = (void*)addr;
+  fifo->end = fifo->begin + w * depth;
+  fifo->width = w;
+  fifo->depth = depth;
 }
 
 void	_dsx_mwmr_reset(dsx_mwmr_t	fifo,
@@ -36,6 +69,7 @@ void	_dsx_mwmr_reset(dsx_mwmr_t	fifo,
 
   fifo->usage = 0;
   fifo->rptr = fifo->wptr = fifo->begin;
+  SIGNAL();
 
   STI();
 }
@@ -67,7 +101,8 @@ void	_dsx_mwmr_read(dsx_mwmr_t	fifo,
 	  ptr += fifo->width;
 	}
       else
-	pthread_yield();
+	WAIT();
+
 
       STI();
     }
@@ -97,10 +132,12 @@ void	_dsx_mwmr_write(dsx_mwmr_t	fifo,
 	  fifo->usage += 1;
 	  ++put;
 	  ptr += fifo->width;
+	  SIGNAL();
 	}
       else
-	pthread_yield();
+	YIELD();
 
       STI();
+
     }
 }

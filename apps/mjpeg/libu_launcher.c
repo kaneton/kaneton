@@ -27,7 +27,7 @@ static void* libu_thread( void *_args )
 
 void libu_launcher( libu_args_t *args )
 {
-	struct thargs *thargs = malloc(sizeof(struct thargs));
-	thargs->args = args;
-	pthread_create( &(thargs->thread), NULL, libu_thread, thargs );
+  static struct thargs thargs;
+  thargs.args = args;
+  pthread_create( &(thargs.thread), NULL, libu_thread, &thargs );
 }

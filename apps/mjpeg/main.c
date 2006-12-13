@@ -123,19 +123,41 @@ static void setup_vga(void)
 
 }
 
+i_task mjpeg_task;
+i_as mjpeg_asid;
+extern i_task ktask;
+
 void mjpeg(void)
 {
-  dsx_mwmr_t tg_demux;
-  dsx_mwmr_t quanti;
-  dsx_mwmr_t vld_iqzz;
-  dsx_mwmr_t demux_vld;
-  dsx_mwmr_t huffman;
-  dsx_mwmr_t iqzz_idct;
-  dsx_mwmr_t idct_libu;
-  dsx_mwmr_t libu_ramdac;
+  static struct _mwmr_t tg_demux;
+  static struct _mwmr_t quanti;
+  static struct _mwmr_t vld_iqzz;
+  static struct _mwmr_t demux_vld;
+  static struct _mwmr_t huffman;
+  static struct _mwmr_t iqzz_idct;
+  static struct _mwmr_t idct_libu;
+  static struct _mwmr_t libu_ramdac;
   t_uint32 volatile *tt = &timer->timeref;
 
   t_uint32 t = timer->timeref;
+
+  if (task_reserve(TASK_CLASS_PROGRAM, TASK_BEHAV_REALTIME, TASK_HPRIOR_REALTIME, &mjpeg_task) != ERROR_NONE)
+    {
+      printf("cannot task_reserve\n");
+
+      while (1)
+	;
+    }
+
+  if (as_reserve(mjpeg_task, &mjpeg_asid) != ERROR_NONE)
+    {
+      printf("cannot as_reserve\n");
+
+      while (1)
+	;
+    }
+
+  task_priority(ktask, 10);
 
   while (*tt - t < 1500)
     ;
@@ -151,62 +173,74 @@ void mjpeg(void)
   dsx_mwmr_alloc(&idct_libu, 16, 2, "idct_libu");
   dsx_mwmr_alloc(&libu_ramdac, 96, 2, "libu_ramdac");
 
-  tg_args_t tg_args = {
-    .output = tg_demux,
+
+  static tg_args_t tg_args = {
+    .output = &tg_demux,
     .is_unused = 42
   };
   tg_launcher( &tg_args );
 
 
-  demux_args_t demux_args = {
-    .input = tg_demux,
-    .quanti = quanti,
-    .huffman = huffman,
-    .output = demux_vld,
+  static demux_args_t demux_args = {
+    .input = &tg_demux,
+    .quanti = &quanti,
+    .huffman = &huffman,
+    .output = &demux_vld,
     .is_unused = 42
   };
   demux_launcher( &demux_args );
 
 
-  vld_args_t vld_args = {
-    .input = demux_vld,
-    .huffman = huffman,
-    .output = vld_iqzz,
+  static vld_args_t vld_args = {
+    .input = &demux_vld,
+    .huffman = &huffman,
+    .output = &vld_iqzz,
     .is_unused = 42
   };
   vld_launcher( &vld_args );
 
 
-  iqzz_args_t iqzz_args = {
-    .input = vld_iqzz,
-    .quanti = quanti,
-    .output = iqzz_idct,
+  static iqzz_args_t iqzz_args = {
+    .input = &vld_iqzz,
+    .quanti = &quanti,
+    .output = &iqzz_idct,
     .is_unused = 42
   };
   iqzz_launcher( &iqzz_args );
 
 
-  idct_args_t idct_args = {
-    .input = iqzz_idct,
-    .output = idct_libu,
+  static idct_args_t idct_args = {
+    .input = &iqzz_idct,
+    .output = &idct_libu,
     .is_unused = 42
   };
   idct_launcher( &idct_args );
 
 
-  libu_args_t libu_args = {
-    .input = idct_libu,
-    .output = libu_ramdac,
+  static libu_args_t libu_args = {
+    .input = &idct_libu,
+    .output = &libu_ramdac,
     .is_unused = 42
   };
   libu_launcher( &libu_args );
 
 
-  ramdac_args_t ramdac_args = {
-    .input = libu_ramdac,
+  static ramdac_args_t ramdac_args = {
+    .input = &libu_ramdac,
     .is_unused = 42
   };
   ramdac_launcher( &ramdac_args );
+
+  if (task_state(mjpeg_task, SCHED_STATE_RUN) != ERROR_NONE)
+    {
+      printf("cannot run mjpeg task\n");
+    }
+
+  if (thread_priority(0, THREAD_LPRIOR) != ERROR_NONE)
+    printf("bouh\n");
+
+  if (thread_state(0, SCHED_STATE_STOP) != ERROR_NONE)
+    printf("bouh\n");
 
 
   while (1)

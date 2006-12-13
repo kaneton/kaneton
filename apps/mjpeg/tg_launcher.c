@@ -20,6 +20,8 @@ static void* tg_thread( void *_args )
 {
 	struct thargs *args = _args;
 
+	printf("tg args = %p\n", args);
+
 	while (1)
 	  tg_func_tg( args->args );
 	return NULL;
@@ -27,7 +29,7 @@ static void* tg_thread( void *_args )
 
 void tg_launcher( tg_args_t *args )
 {
-	struct thargs *thargs = malloc(sizeof(struct thargs));
-	thargs->args = args;
-	pthread_create( &(thargs->thread), NULL, tg_thread, thargs );
+  static struct thargs thargs;
+  thargs.args = args;
+  pthread_create( &(thargs.thread), NULL, tg_thread, &thargs );
 }

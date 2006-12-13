@@ -20,6 +20,8 @@ static void* demux_thread( void *_args )
 {
 	struct thargs *args = _args;
 
+	printf("demux args = %p\n", args);
+
 	while(1)
 	  demux_func_demux( args->args );
 	return NULL;
@@ -27,7 +29,7 @@ static void* demux_thread( void *_args )
 
 void demux_launcher( demux_args_t *args )
 {
-	struct thargs *thargs = malloc(sizeof(struct thargs));
-	thargs->args = args;
-	pthread_create( &(thargs->thread), NULL, demux_thread, thargs );
+  static struct thargs thargs;
+  thargs.args = args;
+  pthread_create( &(thargs.thread), NULL, demux_thread, &thargs );
 }

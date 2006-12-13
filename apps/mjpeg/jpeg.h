@@ -1,7 +1,7 @@
 /**********************************************************************/
 /* File   : jpeg.h, header file for MJPEG-JFIF Multi-thread decoder   */
 /* Author : Pascal GOMEZ, november 2001                               */
-/* Error process                                                      */ 
+/* Error process                                                      */
 /* Adaptation and cleanup for Kola example                            */
 /**********************************************************************/
 #ifndef JPEG_H_
@@ -9,11 +9,11 @@
 
 /* define picture size (viewable size) */
 #define WIDTH 48
-#define HEIGHT 48
+#define HEIGHT 64
 
 /* define maximum picture size (rounded up to 8x8) */
 #define MAX_WIDTH 48
-#define MAX_HEIGHT 48
+#define MAX_HEIGHT 64
 
 /* define fixed MCU size (8) */
 #define BLOCK_WIDTH 8

@@ -59,7 +59,7 @@ struct _lock_t
 
 typedef void *dsx_signal_t;
 
-void dsx_mwmr_alloc( dsx_mwmr_t *fifo, unsigned int width, unsigned int depth, const char *name );
+void dsx_mwmr_alloc( dsx_mwmr_t fifo, unsigned int width, unsigned int depth, const char *name );
 
 #define dsx_mwmr_reset(a) _dsx_mwmr_reset(a, __FILE__, __LINE__)
 void _dsx_mwmr_reset( dsx_mwmr_t fifo, const char *file, const int line );

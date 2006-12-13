@@ -27,7 +27,7 @@ static void* iqzz_thread( void *_args )
 
 void iqzz_launcher( iqzz_args_t *args )
 {
-	struct thargs *thargs = malloc(sizeof(struct thargs));
-	thargs->args = args;
-	pthread_create( &(thargs->thread), NULL, iqzz_thread, thargs );
+  static struct thargs thargs;
+  thargs.args = args;
+  pthread_create( &(thargs.thread), NULL, iqzz_thread, &thargs );
 }

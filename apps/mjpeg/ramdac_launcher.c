@@ -27,7 +27,7 @@ static void* ramdac_thread( void *_args )
 
 void ramdac_launcher( ramdac_args_t *args )
 {
-	struct thargs *thargs = malloc(sizeof(struct thargs));
-	thargs->args = args;
-	pthread_create( &(thargs->thread), NULL, ramdac_thread, thargs );
+  static struct thargs thargs;
+  thargs.args = args;
+  pthread_create( &(thargs.thread), NULL, ramdac_thread, &thargs );
 }
