@@ -1,12 +1,12 @@
 /*
- * licence       kaneton licence
+ * licence
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/env/users/julien.quintard/conf.h
+ * file          /home/buckman/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
- * created       julien quintard   [sat dec 17 17:24:46 2005]
- * updated       matthieu bucchianeri   [tue jun  6 13:12:10 2006]
+ * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
+ * updated       matthieu bucchianeri   [fri aug 18 17:46:11 2006]
  */
 
 #ifndef KANETON_CONF_H
@@ -17,18 +17,6 @@
  */
 
 #include <core/debug.h>
-
-/*
- * ---------- macros ----------------------------------------------------------
- */
-
-/*
- * the current kernel mode, release, development.
- *
- * the development mode means that the current kernel was not
- * entirely tested while the release mode indicates that the kernel can
- * be used.
- */
 
 #define CONF_MODE_DEVELOPMENT	(1 << 0)
 #define CONF_MODE_RELEASE	(1 << 1)
@@ -60,6 +48,12 @@
 #undef CONF_STATS
 
 /*
+ * this define starts the tests by hand.
+ */
+
+#undef CONF_ENABLE_CHECK
+
+/*
  * the configuration debug
  */
 
@@ -72,6 +66,12 @@
 
 #define CONF_MACHDEP_DEBUG						\
   (0)
+
+/*
+ * serial port debug
+ */
+
+#undef SERIAL
 
 /*
  * ---------- prototypes ------------------------------------------------------

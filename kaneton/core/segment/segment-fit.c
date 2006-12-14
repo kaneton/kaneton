@@ -22,6 +22,8 @@
  *  - ...
  */
 
+/* XXX #if (REGION_LOOKUP_ALGORITHM == FIRST_FIT) */
+
 /*
  * ---------- includes --------------------------------------------------------
  */
@@ -178,3 +180,5 @@ t_error			segment_space(o_as*		as,
 }
 
 /*                                                                 [cut] /k2 */
+
+/* XXX #endif */

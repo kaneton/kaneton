@@ -32,11 +32,6 @@ DIRECTORY=""
 SECTION=""
 FILE=""
 CONTENT=""
-ENTRIES=""
-INPUT=""
-OUTPUT=""
-ENTRY=""
-MENU=""
 TEMPORARY=""
 
 ##
@@ -44,84 +39,122 @@ TEMPORARY=""
 ##
 
 #
-# GET_VALUE
+# CLEAN
 #
-# this function tries to locate a variable's value in the files INPUT/OUTPUT.
+# this function cleans a string removing heading and trailing
+# whitespaces and newlines.
 #
-get_value()
+clean()
 {
-  local variable="${1}"
-  local i
-  local o
+  local string="${1}"
+  local length=0
+  local s
 
-  o=$(contents "${OUTPUT}" ""						| \
-      substitute "^(((override)?${variable}[ \t]*:?=[ \t]*(.*))|(.*))$"	\
-                   "\4"							\
-                   "")
+  while [ true ] ; do
+    s=${string}
 
-  if [ "${o}" != "" ] ; then
-    print "" "${o}" ""
-  else
-    i=$(contents "${INPUT}" ""						| \
-        substitute "^(((override)?${variable}[ \t]*:?=[ \t]*(.*))|(.*))$" \
-                   "\4"							\
-                   "")
+    s=${s# }
+    s=${s#
+}
 
-    if [ "${i}" != "" ] ; then
-      print "" "${i}" ""
+    s=${s% }
+    s=${s%
+}
+
+    if [ "${string}" = "${s}" ] ; then
+      break
     fi
-  fi
+
+    string="${s}"
+  done
+
+  echo "${string}"
 }
 
 
 
 #
-# SET_VALUE
+# GET-VALUE
 #
-# this functions sets a new value for the given variable in the file OUTPUT.
+# this function tries to locate a variable's value in the input files.
 #
-set_value()
+get-value()
 {
-  local variable="${1}"
-  local value="${2}"
-  local o
+  local files="${1}"
+  local name="${2}"
+  local value=""
+  local v
+  local f
 
-  o=$(contents "${OUTPUT}" ""						| \
-      substitute "^(((override)?${variable}[ \t]*:?=[ \t]*(.*))|(.*))$" \
+  files=$(eval echo "${files}")
+
+  for f in ${files} ; do
+    v=$(contents "${f}" ""						| \
+        substitute "^(((override)?${name}[ \t]*.?=[ \t]*(.*))|(.*))$" \
                    "\4"							\
                    "")
 
-  if [ "${o}" != "" ] ; then
-    $(contents "${OUTPUT}" ""						| \
-      substitute "^(((override)?${variable}[ \t]*:?=[ \t]*)(.*))$"	\
+    if [ "${v}" != "" ] ; then
+      value="${v}"
+    fi
+  done
+
+  print "" "${value}" ""
+}
+
+
+
+#
+# SET-VALUE
+#
+# this functions sets a new value for the given variable in the file OUTPUT.
+#
+set-value()
+{
+  local file="${1}"
+  local variable="${2}"
+  local value="${3}"
+  local v
+
+  file=$(eval echo "${file}")
+
+  v=$(contents "${file}" ""						| \
+      substitute "^(((override)?${name}[ \t]*.?=[ \t]*(.*))|(.*))$"	\
+                 "\4"							\
+                 "")
+
+  if [ "${v}" != "" ] ; then
+    $(contents "${file}" ""						| \
+      substitute "^(((override)?${variable}[ \t]*.?=[ \t]*)(.*))$"	\
                  "\2${value}"						\
                  ""							> \
           ${TEMPORARY})
 
-      copy "${TEMPORARY}" "${OUTPUT}"
+      copy "${TEMPORARY}" "${file}"
   else
     $(print ""								\
-            "${variable}			:=		${value}"  \
+            "${variable}	:=	${value}"			\
             ""								>> \
-      ${OUTPUT})
+      ${file})
   fi
 }
 
 
 
 #
-# MENU
+# GENERATE-MENU
 #
 # this function generates a menu based on the configuration/description
 # file FILE.
 #
-menu()
+generate-menu()
 {
+  local entries="${1}"
   local menu=""
   local n=1
   local e
 
-  for e in ${ENTRIES} ; do
+  for e in ${entries} ; do
     if [ "${e}" != "" ] ; then
       menu="${menu} ${n} ${e}"
       n=$(( ${n} + 1 ))
@@ -134,85 +167,264 @@ menu()
 
 
 #
-# HANDLE
+# CHOICE
 #
-# this function launch an action corresponding on the selected menu entry.
+# this function displays a radiolist box.
 #
-handle()
+choice()
 {
-  local description
-  local entry
-  local type
-  local text
+  local name="${1}"
+  local input="${2}"
+  local output="${3}"
+  local choices="${4}"
+  local values="${5}"
+  local description="${6}"
   local v
-
-#
-# is the selected entry a subsection?
-#
-
-  type=$(lookup "${ENTRY}" "^\[.*\]$" "")
-
-  if [ "${type}" != ""  ] ; then
-
-#
-# launch a new configure.sh for the subsection
-#
-
-    ENTRY=$(print "" "${ENTRY}" "" | substitute "^\[(.*)\]$" "\1" "")
-
-    ${_SHELL_} "${CONFIGURE_SH}" "${TITLE} > ${ENTRY}"			\
-               "${DIRECTORY}/${ENTRY}" "${ENTRY}"
-
-  else
-
-#
-# display a description of the variable and ask the user to enter the
-# new value.
-#
-# then update the value in the corresponding configuration file
-#
-
-    description=$(print "" "${CONTENT}" ""				| \
-                  cut "${ENTRY}" "^\}$" "--print"			| \
-                  substitute "^[^ ].*$" "" "")
-
-#
-# get the variable's current value
-#
-    v=$(get_value "${ENTRY}")
+  local n
+  local x
 
 #
 # display the variable's description
 #
 
-    kdialog --title "[kaneton] monitor > ${TITLE}"			\
-            --msgbox "${description}"					\
-            21 60
+  kdialog --title "[kaneton] monitor > ${TITLE}"			\
+          --msgbox							\
+									\
+"
+
+  ${description}
+
+"									\
+									\
+          21 60
 
 #
-# get a new value from the user
+# display the radiolist box
 #
 
-    kdialog --title "[kaneton] monitor > ${TITLE}"			\
-            --inputbox "Please enter a new value for ${ENTRY}."		\
-          7 70								\
-          ${v} 2> ${TEMPORARY}
+  kdialog --title "[kaneton] monitor > ${TITLE}"			\
+          --radiolist "Please choose a new value."			\
+          15 60								\
+          10 ${choices} 2> ${TEMPORARY}
+
+#
+# get the user's choice
+#
 
     case ${?} in
       0)
+        x=$(cat ${TEMPORARY})
+
+        n=1
+        for v in ${values} ; do
+          if [ ${n} -eq ${x} ] ; then
+            break
+          fi
+
+          n=$(( ${n} + 1 ))
+        done
+
+#
+# check if something has changed
+#
+
+        x=$(get-value "${input}" "${name}")
+
+        if [ "${v}" = "${x}" ] ; then
+          return
+        fi
 
 #
 # set the new variable's value
 #
 
-        set_value "${ENTRY}" "$(cat ${TEMPORARY})"
+        set-value "${output}" "${name}" "${v}"
         ;;
       *)
         return
         ;;
     esac
+}
 
-  fi
+
+
+#
+# INPUT
+#
+# this function displays an input box.
+#
+input()
+{
+  local name="${1}"
+  local input="${2}"
+  local output="${3}"
+  local value="${4}"
+  local description="${5}"
+  local v
+  local x
+
+#
+# display the variable's description
+#
+
+  kdialog --title "[kaneton] monitor > ${TITLE}"			\
+          --msgbox							\
+									\
+"
+
+  ${description}
+
+"									\
+									\
+          21 60
+
+#
+# display the radiolist box
+#
+
+    kdialog --title "[kaneton] monitor > ${TITLE}"			\
+            --inputbox "Please enter a new value."			\
+          7 60								\
+          ${value} 2> ${TEMPORARY}
+
+#
+# get the user's choice
+#
+
+    case ${?} in
+      0)
+        v=$(cat ${TEMPORARY})
+
+#
+# check if something has changed
+#
+
+        x=$(clean "$(get-value "${input}" "${name}")")
+
+        if [ "${v}" = "${x}" ] ; then
+          return
+        fi
+
+#
+# set the new variable's value
+#
+
+        set-value "${output}" "${name}" "${v}"
+        ;;
+      *)
+        return
+        ;;
+    esac
+}
+
+
+
+#
+# SUBSECTION
+#
+# this function calls another configure script for the selected subsection.
+#
+subsection()
+{
+  local section="${1}"
+
+  section=$(print "" "${section}" "" | substitute "^\[(.*)\]$" "\1" "")
+
+  ${_SHELL_} "${CONFIGURE_SH}" "${TITLE} > ${section}"			\
+             "${DIRECTORY}/${section}" "${section}"
+}
+
+
+
+#
+# VARIABLE
+#
+# this function asks the user to modify the variable.
+#
+variable()
+{
+  local entry="${1}"
+  local name
+  local type
+  local input
+  local output
+  local choices
+  local choice
+  local values
+  local description
+  local content
+  local length
+  local value
+  local c
+  local v
+  local n=1
+
+  content=$(print "" "${CONTENT}" ""					| \
+            cut "^${entry}$" "^\}$" "--print"				| \
+            substitute "^[^ ].*$" "" "")
+
+  name=$(clean							\
+         "$(print "" "${content}" ""					| \
+            substitute "^(([ \t]*\[variable\] (.*))|(.*))$" "\3" "")")
+
+  type=$(clean							\
+         "$(print "" "${content}" ""					| \
+            substitute "^(([ \t]*\[type\] (.*))|(.*))$" "\3" "")")
+
+  input=$(clean							\
+          "$(print "" "${content}" ""					| \
+             substitute "^(([ \t]*\[input\] (.*))|(.*))$" "\3" "")")
+
+  output=$(clean							\
+           "$(print "" "${content}" ""					| \
+              substitute "^(([ \t]*\[output\] (.*))|(.*))$" "\3" "")")
+
+  description=$(clean						\
+                "$(print "" "${content}" ""				| \
+                   substitute "^([ \t]*\[.*)$" "" "")")
+
+  value=$(clean "$(get-value "${input}" "${name}")")
+
+  choices=()
+  values=()
+
+  while [ true ] ; do
+    choice=$(clean							\
+             "$(print "" "${content}" ""				| \
+                substitute "^(([ \t]*\[choice ${n}\] (.*))|(.*))$" "\3" "")")
+
+    if [ "${choice}" = "" ] ; then
+      break
+    fi
+
+    c=$(clean								\
+        "$(print "" "${choice}" ""					| \
+           substitute "^(.*)[ \t]*::[ \t]*(.*)$" "\1" "")")
+
+    v=$(clean								\
+        "$(print "" "${choice}" ""					| \
+           substitute "^(.*)[ \t]*::[ \t]*(.*)$" "\2" "")")
+
+    if [ "${value}" = "${v}" ] ; then
+      choices="${choices} ${n} ${c} on"
+    else
+      choices="${choices} ${n} ${c} off"
+    fi
+
+    values="${values} ${v}"
+
+    n=$(( ${n} + 1 ))
+  done
+
+  case "${type}" in
+    "choice")
+      choice "${name}" "${input}" "${output}"				\
+             "${choices}" "${values}" "${description}"
+      ;;
+    "input")
+      input "${name}" "${input}" "${output}" "${value}" "${description}"
+    ;;
+  esac
 }
 
 
@@ -227,7 +439,11 @@ handle()
 #
 configure()
 {
+  local section
   local content
+  local entries
+  local entry
+  local menu
   local e
   local x
   local n
@@ -235,51 +451,28 @@ configure()
 #
 # set the globals
 #
+
   TITLE="${1}"
   DIRECTORY="${2}"
   SECTION="${3}"
   FILE="${DIRECTORY}/${SECTION}.conf"
 
 #
-# get the file's content
+# get the file's content and skip comments
 #
 
-  CONTENT=$(contents "${FILE}")
-
-#
-# skip comments
-#
-
-  CONTENT=$(print "" "${CONTENT}" ""					| \
+  CONTENT=$(contents "${FILE}"						| \
             substitute "^#.*$" "" "")
-
-#
-# locate the input/output configuration files in relation with this section
-#
-
-  INPUT=$(print "" "${CONTENT}" ""					| \
-          substitute "^((<input>[ \t]*(.+))|(.*))$" "\3" "")
-  INPUT=$(eval echo ${INPUT})
-
-  OUTPUT=$(print "" "${CONTENT}" ""					| \
-           substitute "^((<output>[ \t]*(.+))|(.*))$" "\3" "")
-  OUTPUT=$(eval echo ${OUTPUT})
-
-#
-# remove the input/output directives
-#
-
-  CONTENT=$(print "" "${CONTENT}" ""					| \
-            substitute "^((<.*>.*)|(.*))$" "\3" "")
 
 #
 # generate the menu
 #
 
-  ENTRIES=$(print "" "${CONTENT}" ""					| \
+  entries=$(print "" "${CONTENT}" ""					| \
             cut "^\{$" "^\}$" "--delete"				| \
             substitute "^#.*$" "" "")
-  MENU=$(menu)
+
+  menu=$(generate-menu "${entries}")
 
   while [ true ] ; do
 
@@ -291,7 +484,7 @@ configure()
             --menu ""							\
             20 70							\
             15								\
-            ${MENU} 2> ${TEMPORARY}
+            ${menu} 2> ${TEMPORARY}
 
 #
 # get the selected entry
@@ -302,11 +495,11 @@ configure()
         x=$(cat ${TEMPORARY})
 
         n=1
-        for e in ${ENTRIES} ; do
+        for e in ${entries} ; do
           if [ "${e}" != "" ] ; then
 
             if [ ${n} -eq ${x} ] ; then
-              ENTRY="${e}"
+              entry="${e}"
               break
             fi
 
@@ -321,10 +514,16 @@ configure()
     esac
 
 #
-# handle the entry
+# perform tha appropriate action
 #
 
-    handle
+    section=$(lookup "${entry}" "^\[.*\]$" "")
+
+    if [ "${section}" != ""  ] ; then
+      subsection "${section}"
+    else
+      variable "${entry}"
+    fi
 
   done
 }
@@ -340,7 +539,7 @@ TEMPORARY=$(temporary)
 #
 
 if [ ${#} -eq 0 ] ; then
-  configure "configure" "configure" "configure"
+  configure "configure" "${_CONFIGURATION_DIR_}" "configure"
 else
   configure "${1}" "${2}" "${3}"
 fi

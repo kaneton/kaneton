@@ -1,0 +1,56 @@
+This machine profile is based on Windows' Cygwin so on GNU tools.
+
+This machine profile was tested with:
+
+  Windows XP, Cygwin 1.5.22-1, binutils 2.17 and gcc 4-2
+
+This machine profile is based on specific tools to generate ELF binaries.
+
+Indeed, to use this profile you should first install a cross-compiler
+since Cygwin natively produces COFF files.
+
+To do so, you need to build the binutils and gcc tools for the
+i686-pc-elf target.
+
+Below, a list of the programs this machine profile uses.
+
+  bash.exe
+  i686-pc-elf-gcc.exe
+  make.exe
+  rm.exe
+  i686-pc-elf-ar.exe
+  i686-pc-elf-ranlib.exe
+  cd
+  i686-pc-elf-ld.exe
+  nasm.exe
+  ln.exe
+  touch.exe
+  wc.exe
+  date.exe
+  tail.exe
+  tar.exe
+  pdflatex.exe
+  cp.exe
+  cat.exe
+  sed.exe
+  echo.exe
+  read
+  ls.exe
+  i686-pc-elf-cpp.exe
+  mtools.exe
+  mcopy.exe
+  grep.exe
+  mkdir.exe
+  find.exe
+  xpdf.exe
+  mktemp.exe
+  mv.exe
+  pwd.exe
+  flex.exe
+  script.exe
+  perl.exe
+  python.exe
+  which.exe
+
+Of course, depending of your status, student or kaneton reference developer,
+some binaries should be needless.

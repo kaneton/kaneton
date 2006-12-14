@@ -1,4 +1,14 @@
 --
+ refaire la libc et inclure une libcrypt car le kernel en a besoin
+
+--
+ revoir l'interface shell qui est pourrave pour tout ce qui est
+ manipulation de chaines, fichiers bref regexp
+
+--
+ ajouter des check sur les macros via #error
+
+--
  utiliser _CHECK_ pour activer ou non le debug
 
 --

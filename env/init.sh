@@ -33,6 +33,8 @@ proto()
 {
   local needless
 
+  display " generating kaneton prototypes" "+"
+
   needless=$(launch "Makefile" "${_SRC_DIR_}" "proto" "")
 }
 
@@ -47,6 +49,8 @@ dep()
 {
   local needless
 
+  display " generating kaneton dependencies" "+"
+
   needless=$(launch "Makefile" "${_SRC_DIR_}" "dep" "")
 }
 
@@ -59,6 +63,8 @@ dep()
 runtime()
 {
   local kaneton_conf
+
+  display " generating the kaneton runtime configuration file" "+"
 
   # changes the directory.
   change-directory "${_SRC_DIR_}" ""
@@ -208,10 +214,14 @@ init()
     display "" ""
     exit -1
   else
+    display " calling the machine-dependent init script" "+"
+
     launch "${_MACHINE_DIR_}/init.sh" "" ""
   fi
 
   if [ -e ${_USER_DIR_}/init.sh ] ; then
+    display " calling the user-dependent init script" "+"
+
     launch "${_USER_DIR_}/init.sh" "" ""
   fi
 }
