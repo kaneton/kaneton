@@ -28,4 +28,3 @@ SECTIONS
 	}
 	__end_code = .;
 }
-

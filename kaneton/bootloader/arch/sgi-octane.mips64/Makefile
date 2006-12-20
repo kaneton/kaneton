@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-o2.mips64/Makefile
 ##
 ## created       enguerrand raymond   [wed oct 18 14:24:31 2006]
-## updated       enguerrand raymond   [sun nov 19 17:43:19 2006]
+## updated       enguerrand raymond   [wed dec 20 15:11:31 2006]
 ##
 
 #
@@ -29,32 +29,32 @@ include			../../../../env/.env.mk
 
 BOOTLOADER_LO		:=		bootloader.lo
 
-BOOTLOADER_C		:=		bootloader.c
+BOOTLOADER_C		:=		bootloader.c	\
+					cons.c		\
+					init.c
 
-CONS_C			:=		cons.c
-
-BOOTLOADER_O		:=		bootloader.o
-
-CONS_O			:=		cons.o
+BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
+					$(BOOTLOADER_ASM:.asm=.o)	\
+					$(BOOTLOADER_S:.S=.o)
 
 BOOTLOADER_INCLUDE	:=		bootloader.h	\
 					init.h
 
-CFLAGS			+=		-D___bootloader
+_CFLAGS_		=		$(_CFLAGS32_)
+_LDFLAGS_		=		$(_LDFLAGS32_)
+
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(BOOTLOADER_LO):	$(CONS_O) $(BOOTLOADER_O)
+$(BOOTLOADER_LO):	$(BOOTLOADER_O)
 	$(call remove,$(BOOTLOADER_LO),)
 
-	$(call archive,$(BOOTLOADER_LO),$(BOOTLOADER_O) $(CONS_O),)
+	$(call archive,$(BOOTLOADER_LO),$(BOOTLOADER_O),)
 
 clear:
 	$(call remove,$(BOOTLOADER_O),)
-
-	$(call remove,$(CONS_O),)
 
 	$(call remove,$(BOOTLOADER_LO),)
 

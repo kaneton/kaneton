@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/libs/libmipsr10000/include/libmipsr10000.h
  *
  * created       enguerrand raymond   [wed oct 18 14:03:47 2006]
- * updated       enguerrand raymond   [wed nov 15 18:51:27 2006]
+ * updated       enguerrand raymond   [sun dec 17 17:22:14 2006]
  */
 
 #ifndef LIBMIPSR10000_H

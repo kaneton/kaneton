@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/env/machines/linux::sgi-o2.mips64/machine.mk
 ##
 ## created       julien quintard   [sat oct 14 10:15:53 2006]
-## updated       enguerrand raymond   [wed nov 15 18:41:27 2006]
+## updated          [tue dec 19 19:51:36 2006]
 ##
 
 #

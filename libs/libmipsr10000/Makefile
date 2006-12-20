@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/libs/libmipsr10000/Makefile
 ##
 ## created       enguerrand raymond   [wed oct 18 14:08:40 2006]
-## updated       enguerrand raymond   [wed oct 18 14:36:51 2006]
+## updated       enguerrand raymond   [wed dec 20 15:04:48 2006]
 ##
 
 #

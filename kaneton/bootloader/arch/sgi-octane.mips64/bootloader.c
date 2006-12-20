@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-o2.mips64/bootloader.c
  *
  * created       enguerrand raymond   [wed oct 18 14:21:40 2006]
- * updated       enguerrand raymond   [sun nov 19 16:16:14 2006]
+ * updated       enguerrand raymond   [wed dec 20 15:36:32 2006]
  */
 
 /*
@@ -20,11 +20,11 @@
 #include <kaneton.h>
 
 #include "bootloader.h"
+#include "init.h"
 
 /*
  * ---------- globals ---------------------------------------------------------
  */
-
 
 /*
  * the init variable.
@@ -41,7 +41,7 @@ extern	t_init*		init;
  * globals bypass this problem.
  */
 
-void			(*kernel)(t_init*);
+void			(*kernel)(t_init*) = 0xffffffff8000f000;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -64,7 +64,10 @@ void			bootloader_error(void)
  *
  * steps:
  *
- * 1) initialise the console.
+ * 1) initializes the console and displays welcome messages
+ * 2) Initializes t_init structure
+ * 3) Fill the t_init fields
+ *    Set up 64 bits mode
  */
 
 int			bootloader(void)
@@ -83,7 +86,34 @@ int			bootloader(void)
    * 2)
    */
 
+  init = (t_init*)alloc(PAGESZ);
 
+  /*
+   * 3)
+   */
+
+  //bootloader_kernel_copy();
+
+  init->mem = START_PHYSICAL_ADDR;
+  init->memsz = bootloader_memory_size();
+
+  init->kcode = (t_paddr)KERNEL_BASE;
+  init->kcodesz = 0x64000;
+
+  init->init = (t_paddr)init;
+  init->initsz = PAGESZ;
+
+  //kernel(init);
+
+  printf("Set up 64 bits mode\n");
+
+  /*
+   *
+   */
+  asm("li $10, 0x300000e0\n\t"
+      "mtc0 $10, $12\n\t");
+
+  kernel(init);
 
   bootloader_cons_msg('!', "error: kernel exited\n");
 
