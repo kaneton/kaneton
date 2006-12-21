@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-o2.mips64/bootloader.c
  *
  * created       enguerrand raymond   [wed oct 18 14:21:40 2006]
- * updated       enguerrand raymond   [wed dec 20 15:36:32 2006]
+ * updated       enguerrand raymond   [thu dec 21 16:19:26 2006]
  */
 
 /*
@@ -113,7 +113,7 @@ int			bootloader(void)
   asm("li $10, 0x300000e0\n\t"
       "mtc0 $10, $12\n\t");
 
-  kernel(init);
+  //kernel(init);
 
   bootloader_cons_msg('!', "error: kernel exited\n");
 
