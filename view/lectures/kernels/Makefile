@@ -1,17 +1,12 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/view/lectures/kernels
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Tue Nov  8 13:23:00 2005   mycure
+## licence       kaneton licence
+##
+## project       kaneton
+##
+## file          /home/buckman/kaneton/view/lectures/kernels/Makefile
+##
+## created       matthieu bucchianeri   [tue dec 26 17:54:17 2006]
+## updated       matthieu bucchianeri   [tue dec 26 18:16:02 2006]
 ##
 
 #
@@ -24,37 +19,34 @@ include			../../../env/.env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all view build clear
+.PHONY:		all clear proto dep
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		kernels
-
-GARBAGE			:=		$(PAPER).aux			\
-					$(PAPER).log			\
-					$(PAPER).nav			\
-					$(PAPER).out			\
-					$(PAPER).snm			\
-					$(PAPER).toc			\
-					$(PAPER).dvi			\
-					$(PAPER).ps			\
-					$(PAPER).pdf			
+SUBDIRS			:=		bootstrap		\
+					interrupts		\
+					ipc			\
+					memory-management	\
+					prerequisites		\
+					task-scheduling
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build view
-
-view:
-	$(call view,$(PAPER),)
+all:
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 build:
-	$(call lecture,$(PAPER),)
+	$(call launch,Makefile,$(SUBDIRS),build,)
 
 clear:
-	$(call remove,$(GARBAGE),)
+	$(call launch,Makefile,$(SUBDIRS),clear,)
 
 	$(call purge)
+
+proto:
+
+dep:

@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/lectures/seminar_2006/seminar.tex
 %%
 %% created       julien quintard   [fri dec  2 07:53:59 2005]
-%% updated       matthieu bucchianeri   [wed dec 13 15:00:41 2006]
+%% updated       matthieu bucchianeri   [wed dec 13 18:06:05 2006]
 %%
 
 %
@@ -19,7 +19,7 @@
 % title
 %
 
-\title{Pr\'{e}sentation de kaneton\\http://www.kaneton.org}
+\title{Pr\'{e}sentation de kaneton --\\http://www.kaneton.org}
 
 %
 % authors
@@ -35,6 +35,18 @@
 %
 % figures
 %
+
+\pgfdeclareimage[interpolate=true,width=200pt,height=140pt]
+                {set}
+		{figures/set}
+
+\pgfdeclareimage[interpolate=true,width=300pt,height=140pt]
+                {manager}
+		{figures/manager}
+
+\pgfdeclareimage[interpolate=true,width=130pt,height=160pt]
+                {event}
+		{figures/event}
 
 % 10 frames for a microkernel example
 
@@ -427,6 +439,19 @@
 \begin{frame}
   \frametitle{Fonctions remplies par kaneton}
 
+  Le micro-noyau kaneton fourni les fonctionnalit\'{e}s suivants :
+
+  \begin{itemize}
+  \item
+    Gestion de la m\'emoire
+  \item
+    Gestion des \'ev\'enements et des I/O
+  \item
+    Gestion des processus
+  \item
+    Communication inter-processus
+  \end{itemize}
+
 \end{frame}
 
 \begin{frame}
@@ -457,7 +482,6 @@ conduit \`a plusieurs inconv\'enients :
 
   kaneton fournit une interface consacr\'ee \`a la gestion des structures de
   donn\'ees du noyau: le {\bf set manager}.
-
 \end{frame}
 
 % -)
@@ -468,6 +492,12 @@ conduit \`a plusieurs inconv\'enients :
   Le set manager fournit une interface tr\`es simple pour cr\'eer, stocker et
   organiser les structures-objet de kaneton. Voici les diff\'erents types de
   sets qu'elle impl\'emente d\'ej\`a :
+
+  \-
+
+  \begin{center}
+    \pgfuseimage{set}
+  \end{center}
 
 \end{frame}
 
@@ -524,6 +554,62 @@ set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
   \end{verbatim}
 
 \end{frame}
+
+% -)
+
+\begin{frame}
+ \frametitle{Les managers}
+
+  \begin{center}
+    \pgfuseimage{manager}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Les managers : portabilit\'e}
+
+   3 fa\c{c}ons d'aborder la portabilit\'e des managers:
+
+   \begin{itemize}
+   \item
+     Impl\'ementer chaque manager pour chaque architecture
+   \item
+     D\'efinir une interface g\'en\'erale et l'impl\'ementer pour chaque architecture
+   \item
+     Impl\'ementer un seul manager haut niveau; et permettre l'appel d'une partie sp\'ecifique
+     \`a l'architecture si n\'ecessaire
+   \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+ \frametitle{Les managers}
+
+  \begin{itemize}
+    \item set manager
+    \item id manager
+    \item as manager
+    \item segment manager
+    \item region manager
+    \item map manager
+    \item event manager
+    \item timer manager
+    \item thread manager
+    \item task manager
+    \item io manager
+    \item schedule manager
+    \item message manager
+    \item capability manager
+    \item interface manager
+    \end{itemize}
+
+\end{frame}
+
 
 % -)
 
@@ -599,7 +685,11 @@ set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
 % -)
 
 \begin{frame}
-  \frametitle{Ev\`{e}nements et I/O}
+  \frametitle{Ev\`{e}nements}
+
+  \begin{center}
+    \pgfuseimage{event}
+  \end{center}
 
 \end{frame}
 
@@ -611,12 +701,12 @@ set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
   Les I/O sont le seul moyen de dialoguer avec les p\'{e}riph\'{e}riques. On
   distingue deux types d'I/O :
 
-  \begin{verbatim}
+  \begin{itemize}
   \item
     Les PIO (\emph{Processor's I/O})
   \item
     Les I/O mapp\'{e}es en m\'{e}moire
-  \end{verbatim}
+  \end{itemize}
 
   \-
 
@@ -628,7 +718,7 @@ set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
 
   \-
 
-  Le I/O manager permet ainsi d'autoriser ou non certains processus à
+  Le I/O manager permet ainsi d'autoriser ou non certains processus \`{a}
   effectuer des I/O.
 
 \end{frame}
@@ -853,31 +943,75 @@ set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
 
 \end{frame}
 
+% -)
+
 \begin{frame}
   \frametitle{Les IPC}
 
+  Comme dit pr\'{e}cedement, les IPC (\emph{Inter-Process Communication})
+  ont un r\^{o}le critique dans un micro-noyau.
+
+  \-
+
+  Les seules IPC g\'{e}r\'{e}e directement par le noyau sont les messages
+  adress\'{e}s, c'est-\`{a}-dire l'envoi et la r\'{e}ception de buffers entre deux
+  t\^{a}ches donn\'{e}es. Toutes les autres formes d'IPC (semaphores, mutex,
+  conditions, barri\`{e}res\ldots) seront construites au dessus des
+  messages.
+
+  \-
+
+  Il existe 2 cat\'{e}gories de messages :
+
+  \begin{itemize}
+    \item
+      Les messages synchrones, qui suivent un sch\'{e}ma de
+      ``rendez-vous'' et dont aucune bufferisation c\^{o}t\'{e} noyau n'est
+      requise ;
+    \item
+      Les messages asynchrones, qui peuvent survenir \`{a} tout instant,
+      n\'{e}cessitant leur bufferisation dans une file du c\^{o}t\'{e} du noyau.
+  \end{itemize}
+
 \end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Les IPC dans un syst\`{e}me distribu\'{e}}
+
+  Dans un syst\`{e}me distribu\'{e}, les IPC peuvent avoir lieu entre
+  des t\^{a}ches s'\'{e}xecutant sur deux machines diff\'{e}rentes.
+
+  \-
+
+  Afin d'assurer la gestion des permissions lors de telles IPC,
+  kaneton utilisera un syst\`{e}me de capabilities. Une capability est une
+  structure int\'{e}grant :
+
+  \begin{itemize}
+  \item
+    L'identifiant d'un objet ;
+  \item
+    Les permissions associ\'{e}es \`{a} cet objet ;
+  \item
+    Un champ crypt\'{e} de s\'{e}curit\'{e} rendant impossible la modification de
+  la capability par une autre personne que son cr\'{e}ateur.
+  \end{itemize}
+
+  \-
+
+  De plus, afin d'assurer la s\'{e}curit\'{e} des donn\'{e}es des messages, ces
+  derni\`{e}res seront crypt\'{e}es.
+
+\end{frame}
+
 
 %
 % avancement
 %
 
 \section{Avancement}
-
-\begin{frame}
-  \frametitle{Les managers ind\'{e}pendants}
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{Le syst\`{e}me de portabilit\'{e}}
-
-\end{frame}
-
-\begin{frame}
-  \frametitle{Le code d\'{e}pendant de l'architecture}
-
-\end{frame}
 
 % -)
 
@@ -905,7 +1039,7 @@ set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
   \item
     Gestion des threads et \emph{context switching} ;
   \item
-    Service int\'{e}gr\'{e} de \emph{timers} gr\^{a}ce au PIT 8254
+    Service int\'{e}gr\'{e} de \emph{timers} gr\^{a}ce au PIT 8254 ;
   \item
     Services int\'{e}gr\'{e}s de console, \emph{framebuffer} basse r\'{e}solution et port s\'{e}rie.
   \end{itemize}
@@ -1022,7 +1156,7 @@ void		check_as_02(void)
   \item
     Version optimis\'{e} du portage IA-32
   \item
-    Version n'utilisant pas de MMU pour la m\'{e}moire virtuelle
+    Version utilisant la segmentation uniquement pour la m\'{e}moire virtuelle
   \item
     Le multiprocesseur sym\'{e}trique (SMP)
   \item
@@ -1039,6 +1173,9 @@ void		check_as_02(void)
   \item
     Am\'{e}liorer la moulinette : injection distante de code, acc\`{e}s au
     contexte, exploration de la m\'{e}moire, \emph{rollback}\ldots
+  \item
+    Am\'{e}liorer les algorithmes du noyau : allocation de
+    m\'{e}moire, ordonnancement\ldots
   \end{itemize}
 
 \end{frame}
@@ -1048,5 +1185,30 @@ void		check_as_02(void)
 %
 
 \section{Ce que nous cherchons}
+
+\begin{frame}
+
+  \textbf{Deux \'{e}tudiants, de l'Ing1 \`{a} l'Ing3}.
+
+  \begin{itemize}
+  \item
+    Pour maintenir et faire \'{e}voluer le projet
+  \item
+    Pour donner les cours aux Ing1 (en 2007)
+  \item
+    Pour donner les cours de sp\'{e}cialisation (en 2008)
+  \end{itemize}
+
+  Ces \'{e}tudiants int\'{e}greront le Laboratoire Syst\`{e}me \& S\'{e}curit\'{e}
+  d'EPITA/EPITECH (LSE) de Janvier jusqu'\`{a} la fin de leur scolarit\'{e}.
+
+  \-
+
+  kaneton est un projet qui demande beaucoup de temps. Nous cherchons
+  deux personnes motiv\'{e}s et ayant un bon niveau g\'{e}n\'{e}ral. Il n'est pas
+  envisageable de postuler pour finalement quitter l'\'{e}quipe deux mois
+  apr\`{e}s.
+
+\end{frame}
 
 \end{document}
