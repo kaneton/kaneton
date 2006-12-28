@@ -3,7 +3,7 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/buckman/kaneton/view/lectures/kernels/bootstrap/kernel-bootstrap.tex
+%% file          /home/buckman/kaneton/view/lectures/kernels/prerequisites/kernel-prerequisites.tex
 %%
 
 %
@@ -16,7 +16,7 @@
 % title
 %
 
-\title{MIPS Architecture}
+\title{Kernels - Prerequisites}
 
 %
 % authors
@@ -24,7 +24,7 @@
 
 \author
 {
-  Julien~Quintard\inst{1}
+  Matthieu~Bucchianeri and Renaud~Voltz\inst{1}
 }
 
 %
@@ -35,6 +35,55 @@
 %\pgfdeclareimage[interpolate=true,width=188pt,height=97pt]
 %                {sample}
 %		{figures/sample}
+
+% basic architecture
+
+\pgfdeclareimage[interpolate=true,width=158pt,height=150pt]
+                {arch-basic}
+		{figures/arch-basic}
+
+% memory access
+
+\pgfdeclareimage[interpolate=true,width=240pt,height=200pt]
+                {memory-access-step1}
+		{figures/memory-access-step1}
+\pgfdeclareimage[interpolate=true,width=240pt,height=200pt]
+                {memory-access-step2}
+		{figures/memory-access-step2}
+\pgfdeclareimage[interpolate=true,width=240pt,height=200pt]
+                {memory-access-step3}
+		{figures/memory-access-step3}
+\pgfdeclareimage[interpolate=true,width=240pt,height=200pt]
+                {memory-access-step4}
+		{figures/memory-access-step4}
+
+% irq reception
+
+\pgfdeclareimage[interpolate=true,width=225pt,height=180pt]
+                {irq-step1}
+		{figures/irq-step1}
+\pgfdeclareimage[interpolate=true,width=225pt,height=180pt]
+                {irq-step2}
+		{figures/irq-step2}
+\pgfdeclareimage[interpolate=true,width=225pt,height=180pt]
+                {irq-step3}
+		{figures/irq-step3}
+\pgfdeclareimage[interpolate=true,width=225pt,height=180pt]
+                {irq-step4}
+		{figures/irq-step4}
+
+% pipeline
+
+\pgfdeclareimage[interpolate=true,width=288pt,height=160pt]
+                {pipeline}
+		{figures/pipeline}
+
+% rob
+
+\pgfdeclareimage[interpolate=true,width=307pt,height=180pt]
+                {rob}
+		{figures/rob}
+
 
 %
 % document
@@ -61,6 +110,270 @@
 \begin{frame}
   \frametitle{Outline}
   \tableofcontents
+\end{frame}
+
+%
+% introduction to kernels
+%
+
+\section{Introduction to kernels}
+
+%
+% recalls of prerequisites
+%
+
+\section{Recalls of prerequisites}
+
+%
+% basic architectures
+%
+
+\subsection{Basic architectures}
+
+% -)
+
+\begin{frame}
+  \frametitle{Minimal components and buses}
+
+  \begin{center}
+    \pgfuseimage{arch-basic}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Memory accesses}
+
+  \begin{center}
+    \pgfuseimage{memory-access-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Memory accesses}
+
+  \begin{center}
+    \pgfuseimage{memory-access-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Memory accesses}
+
+  \begin{center}
+    \pgfuseimage{memory-access-step3}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Memory accesses}
+
+  \begin{center}
+    \pgfuseimage{memory-access-step4}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{I/Os}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{IRQ reception}
+
+  \begin{center}
+    \pgfuseimage{irq-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{IRQ reception}
+
+  \begin{center}
+    \pgfuseimage{irq-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{IRQ reception}
+
+  \begin{center}
+    \pgfuseimage{irq-step3}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{IRQ reception}
+
+  \begin{center}
+    \pgfuseimage{irq-step4}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Bus locking}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Direct Memory Access (DMA) / Bus mastering}
+
+\end{frame}
+
+%
+% microprocessor's internals
+%
+
+\subsection{Microprocessor's internals}
+
+% -)
+
+\begin{frame}
+  \frametitle{General description}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Instructions sets}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Register banks}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Reserved registers and ABI}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Execution units}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Very simple microprocessor}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Introduction to pipelines}
+
+  \begin{center}
+    \pgfuseimage{pipeline}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Introduction to Re-Ordering Buffer (ROB)}
+
+  \begin{center}
+    \pgfuseimage{rob}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Function call}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Memory Management Unit}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Caches}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Running modes}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Exceptions and soft-interrupts}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Hardware interrupts (IRQ)}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Program loading}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Multiprogramming}
+
 \end{frame}
 
 %
