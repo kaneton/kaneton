@@ -36,6 +36,18 @@
 %                {sample}
 %		{figures/sample}
 
+% lseos
+
+\pgfdeclareimage[interpolate=true,width=174pt,height=120pt]
+                {lseos}
+		{figures/lseos}
+
+% hexo
+
+\pgfdeclareimage[interpolate=true,width=176pt,height=120pt]
+                {hexo}
+		{figures/hexo}
+
 % basic architecture
 
 \pgfdeclareimage[interpolate=true,width=158pt,height=150pt]
@@ -74,7 +86,7 @@
 
 % pipeline
 
-\pgfdeclareimage[interpolate=true,width=288pt,height=160pt]
+\pgfdeclareimage[interpolate=true,width=300pt,height=141pt]
                 {pipeline}
 		{figures/pipeline}
 
@@ -104,6 +116,12 @@
 \pgfdeclareimage[interpolate=true,width=244pt,height=180pt]
                 {cache-step5}
 		{figures/cache-step5}
+
+% mmu
+
+\pgfdeclareimage[interpolate=true,width=211pt,height=80pt]
+                {mmu}
+		{figures/mmu}
 
 
 %
@@ -138,6 +156,103 @@
 %
 
 \section{Introduction to kernels}
+
+%
+% monolithic kernels
+%
+
+\subsection{Monolithic kernels}
+
+%
+% bsd
+%
+
+\begin{frame}
+  \frametitle{Example: BSD}
+
+\end{frame}
+
+%
+% microkernels
+%
+
+\subsection{Micro-kernels}
+
+%
+% kaneton
+%
+
+\begin{frame}
+  \frametitle{Example: kaneton}
+
+\end{frame}
+
+%
+% nanokernels
+%
+
+\subsection{Nano-kernels}
+
+%
+% lse/os
+%
+
+\begin{frame}
+  \frametitle{Example: LSE/OS}
+
+  LSE/OS has a nano-kernel conception to keep the code as tiny as
+  possible, preventing bugs into the kernel leading to global crashed
+  of the system.
+
+  \begin{center}
+    \pgfuseimage{lseos}
+  \end{center}
+
+  LSE/OS pushes out of the kernel the timer and interrupt controller
+  modules and offers minimal services for task and memory management.
+
+\end{frame}
+
+%
+% exokernels
+%
+
+\subsection{Exo-kernels}
+
+%
+% hexo
+%
+
+\begin{frame}
+  \frametitle{Example: HEXO}
+
+  HEXO is a massively parallel heterogeneous multiprocessor
+  exo-kernel.
+
+  \begin{center}
+    \pgfuseimage{hexo}
+  \end{center}
+
+  HEXO is build over two abstractions : CPU-specific and
+  Platform-specific. Higher level abstractions can be wrote easily
+  over HEXO's primitives.
+
+\end{frame}
+
+%
+% hybrid kernels
+%
+
+\subsection{Hybrid kernels}
+
+%
+% windows nt
+%
+
+\begin{frame}
+  \frametitle{Example: Windows NT}
+
+\end{frame}
 
 %
 % recalls of prerequisites
@@ -303,12 +418,93 @@
 \begin{frame}
   \frametitle{Reserved registers and ABI}
 
+  Few registers are reserved, either by the microprocessor itself or
+  by some specifications used by compilers.
+
+  \begin{itemize}
+  \item
+    Stack and Frame Pointer
+  \item
+    Return Value
+  \item
+    Return Address
+  \item
+    Global Storage Area
+  \end{itemize}
+
+  Example on SPARC V8 :
+
+  \begin{center}
+  \begin{tabular}{|c|c|c|}
+    \hline
+    Register & Description & Imposed by \\
+    \hline
+    g1 & global storage area & ABI \\
+    \hline
+    i0 & value to return & CPU \\
+    \hline
+    o0 & value returned & CPU \\
+    \hline
+    i6 & frame pointer & ABI \\
+    \hline
+    o6 & stack pointer & ABI \\
+    \hline
+    o7 & return address & CPU \\
+    \hline
+  \end{tabular}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Reserved registers and ABI}
+
+  Some registers are considered caller-save or callee-save, meaning
+  they can or cannot be modified by inside functions. These rules
+  depends on calling conventions.
+
+  \-
+
+  Example on x86 :
+
+  \begin{center}
+  \begin{tabular}{|c|c|c|}
+    \hline
+    Register & Is \\
+    \hline
+    EAX, ECX, EDX & Caller-save \\
+    \hline
+    EBX, ESI, EDI, EBP & Callee-save \\
+    \hline
+  \end{tabular}
+  \end{center}
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Execution units}
+
+  A microprocessor is made of several execution units that can issue a
+  given operation using specified operands.
+
+  \begin{itemize}
+  \item
+    Arithmetic and Logic Unit (ALU), performs additions, multiplications, shifts\ldots
+  \item
+    Load/Store Unit, performs memory accesses
+  \item
+    Floating Point Unit (FPU), performs IEEE 754 operations
+  \item
+    Extensions, including SIMD Units
+  \end{itemize}
+
+  There can be one or more unit of each type. If there are only one
+  adder and the CPU is able to execute two instructions at a time,
+  these instructions cannot be both additions.
 
 \end{frame}
 
@@ -352,6 +548,18 @@
 
 \begin{frame}
   \frametitle{Memory Management Unit}
+
+  The role of a MMU is to process ``logical'' addresses used in
+  programs into ``physical'' addresses that can be accessed in RAM.
+
+  \-
+
+  \begin{center}
+    \pgfuseimage{mmu}
+  \end{center}
+
+  Multiple kind of translation rules can be used depending on the
+  processors abilities. Error and privilege checking can be used.
 
 \end{frame}
 
@@ -425,6 +633,27 @@
 
 \begin{frame}
   \frametitle{Running modes}
+
+  A microprocessor can operates in multiple modes :
+
+  \begin{itemize}
+  \item
+    Kernel mode, or Privileged mode or Supervisor mode : the one used by the kernel
+  \item
+    User mode : to run applications
+  \end{itemize}
+
+  There can be extended mode, depending on microprocessor's
+  specifications :
+
+  \begin{itemize}
+  \item
+    Error recovery : to avoid crash when critical error occurs
+  \item
+    Halt mode : the microprocessor is executing nothing, waiting for external interrupts
+  \item
+    \ldots
+  \end{itemize}
 
 \end{frame}
 
