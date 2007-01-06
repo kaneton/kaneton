@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/view/lectures/Makefile
+## file          /home/buckman/kaneton/view/lectures/Makefile
 ##
 ## created       julien quintard   [sat nov 19 18:06:43 2005]
-## updated       julien quintard   [thu jul 13 11:45:55 2006]
+## updated       matthieu bucchianeri   [sat jan  6 21:35:06 2007]
 ##
 
 #
@@ -34,7 +34,8 @@ SUBDIRS			:=		advanced-makefiles		\
 					kernels				\
 					prerequisites			\
 					seminar				\
-					lse01				
+					lse01				\
+					project-overview
 
 #
 # ---------- rules ------------------------------------------------------------

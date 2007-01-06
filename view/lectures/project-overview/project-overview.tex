@@ -1,0 +1,398 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/buckman/kaneton/view/lectures/project-overview/project-overview.tex
+%%
+%% created       matthieu bucchianeri   [sat jan  6 21:35:58 2007]
+%% updated       matthieu bucchianeri   [sat jan  6 23:07:21 2007]
+%%
+
+%
+% template
+%
+
+\input{../../templates/lecture.tex}
+
+%
+% title
+%
+
+\title{kaneton SRS \& GISTR project}
+
+%
+% authors
+%
+
+\author
+{
+  Renaud~Voltz,
+  Matthieu~Bucchianeri,
+  Julien~Quintard
+}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+
+  \begin{center}
+    \logos
+  \end{center}
+\end{frame}
+
+%
+% overview
+%
+
+\section{Overview}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Who we are}
+
+  \begin{itemize}
+    \item
+      Julien Quintard
+      \begin{itemize}
+	\item
+	Creator of the project a few years ago
+        \item
+	Microprocessors architecture lessons
+      \end{itemize}
+    \item
+      Renaud Voltz \& Matthieu Bucchianeri
+      \begin{itemize}
+	\item
+	Working at LSE since last year
+	\item
+	Kernels and operating systems lessons
+      \end{itemize}
+  \end{itemize}
+
+  \nl
+
+  \textbf{Other people involved in the past}
+
+  \begin{itemize}
+    \item
+      C\'{e}dric Aubouy (Kernel and operating systems lessons for 2007)
+    \item
+      Renaud Lienhart (IA-32 architecture for 2007)
+    \item
+      Jean-Pascal Billaud (Kaneton cours for 2006)
+  \end{itemize}
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Description}
+
+  kaneton is a \textbf{microkernel} with \textbf{pedagogical purpose}.
+
+  \-
+
+  Like the \textbf{Tiger compiler} project developped by the LRDE, a
+  \textbf{reference} is developped (by the LSE) and is used to give a
+  \textbf{tarball} to students. This tarball contains some scripts,
+  makefiles and code including many \textbf{FIXME}.
+
+  \-
+
+  kaneton is also two lectures:
+
+  \begin{itemize}
+    \item
+    Microprocessor's architecture: describing completely the \textbf{design}
+    and \textbf{mecanisms} of a \textbf{modern microprocessor}
+    \item
+    Kernels and operating systems: analysing \textbf{main parts} of a kernel
+    such as low-level programming, memory and tasks, and introducing
+    \textbf{higher-level concepts} like scheduling
+  \end{itemize}
+
+  \-
+
+  The students (in groups of two) have to \textbf{apply} the concepts
+  learned during the lessons by writing \textbf{many significant}
+  parts of the kernel.
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Stages}
+
+  kaneton is divided into \textbf{five stages} for SRS and
+  \textbf{three stages} for GISTR.
+
+  \-
+
+  The SRS projects are:
+
+  \begin{itemize}
+  \item
+    K0 : bootstrap
+  \item
+    K1 : memory management
+  \item
+    K2 : interrupts \& IRQ handling
+  \item
+    K3 : process management \& scheduling
+  \item
+    K4 : inter-process communication
+  \end{itemize}
+
+  \-
+
+  On GISTR side:
+
+  \begin{itemize}
+  \item
+    K0 : bootstrap
+  \item
+    K2 : interrupts \& IRQ handling
+  \item
+    K3 : process management \& scheduling
+  \end{itemize}
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Implementation}
+
+  kaneton is implemented in C and assembly.
+
+  \-
+
+  Even if kaneton is portable, we ask you to develop for \textbf{IA-32
+  architecture} (aka x86).
+
+  \-
+
+  Your work will be tested on \textbf{real machine}, not simulators.
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Evaluation}
+
+  Your final grade for each term is made of two grades:
+
+  \begin{itemize}
+  \item
+    The written evaluation (\emph{partiel})
+  \item
+    The grades for each stage of the project
+  \end{itemize}
+
+  \-
+
+  Each stage is evaluated using a \textbf{testsuite}. You upload the
+  tarball, we run the testsuite, you get your trace and grade. It's
+  ACU-style.
+
+\end{frame}
+
+%
+% details
+%
+
+\section{Details}
+
+% 5)
+
+\begin{frame}
+  \frametitle{K0 - bootstrap}
+
+  This project is a practical work session of 6 hours.
+
+  \-
+
+  The bootstrap phase is one of the early stage of the boot
+  sequence. Its goals are :
+
+  \begin{itemize}
+  \item
+    To put the hardware in a known state
+  \item
+    To load the kernel from a media (usually disk or network )
+  \item
+    To prepare the kernel's environment
+  \item
+    To print funny messages like ``we all love Chiche''
+  \item
+    To jump on the kernel!
+  \end{itemize}
+
+  \-
+
+  IA-32 bootstrap is very specific because of historical reasons. So
+  this project will teach you how to deal with a restricted and
+  unfriendly environment. You will enjoy assembly programming,
+  printf-debugging, joys of addressing\ldots
+
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{K1 - memory management}
+
+  This project is \textbf{two weeks} long. In kaneton words, you work is:
+
+  \begin{itemize}
+  \item
+    Write the architecture-independant part of the \textbf{segment} manager
+  \item
+    Write the IA-32 part of the \textbf{region} manager
+  \end{itemize}
+
+  \-
+
+  The first point consists in managing the physical memory. The second
+  involves virtual memory management.
+
+  Together, these two parts will provide complete-enough memory
+  management primitives for the rest of the project.
+
+  \-
+
+  This stage will be helpful to handle the whole kaneton tarball. The
+  code to write is not so hard but requires to be very careful about
+  what you are doing (especially when handling virtual memory).
+
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{K2 - interrupt \& IRQ handling}
+
+  This stage is \textbf{two weeks} long. You will have to develop:
+
+  \begin{itemize}
+  \item
+    The low-level part of the \textbf{event} manager
+  \item
+    The whole \textbf{timer} manager
+  \item
+    A simple keyboard driver
+  \end{itemize}
+
+  \-
+
+  The development of the IA32 part of the event manager will include
+  programming the interrupt vector of the CPU, programming the IRQ
+  controller, handling context saving \& restoring and event
+  dispatching. The timer manager is based on a programmable timer
+  component and offers a high-level frontend to easily manage one-shot
+  or periodical timers.
+
+  \-
+
+  With the keyboard driver, let your imagination speak and display
+  poetry such as ``w00T s1gL 1s n()()bZ0r''.
+
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{K3 - process management \& scheduling}
+
+  The development of this part will spread on \textbf{three
+  weeks}. Enjoy the menu:
+
+  \begin{itemize}
+  \item
+    Contexts management and switching
+  \item
+    Round-Robin scheduling
+  \end{itemize}
+
+  \-
+
+  All your code will be based on previous work. Context switching will
+  allow multithreading and multitasking while the scheduler will deal
+  execution timeslices to every threads.
+
+  \-
+
+  Once this stage is working, your kaneton will be able to run simple
+  processes (we made a demonstration to Ing1 of kaneton running an
+  MJPEG player without IPC).
+
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{K4 - inter-process communication}
+
+  XXX
+
+\end{frame}
+
+%
+% homework
+%
+
+\section{Homework}
+
+% 10)
+
+\begin{frame}
+  \frametitle{Homework}
+
+  For the moment, there are a few administrative things to do:
+
+  \begin{itemize}
+  \item
+    Visit the kaneton intranet\\
+    http://www.lse.epita.fr:8000/ from the real world\\
+    http://kaneton.lse.epita.fr/ from EPITA
+  \item
+    Make the groups.
+  \item
+    Subscribe the Googlegroup\\
+    http://groups.google.com/group/kaneton-students
+  \item
+    The EPITA newsgroup (epita.cours.kaneton) is \textbf{obsolete} and
+    you won't get answers on it.
+  \item
+    Prepare you rack hard drive for the K0 practical work session
+    \begin{itemize}
+    \item
+      Install a correct \& up-to-date Linux distribution (Gentoo, Ubuntu,
+      Fedora). Please, forget about RedHat 7.0 or other prehistorical
+      distributions.
+    \item
+      Have a working GCC (> 3.x), GNU make, and QEMU (not Bochs!). We
+      won't waste time during the practical work for this kind of
+      problems.
+    \end{itemize}
+  \item
+    Come to the lessons. The project \textbf{is not feasible} without.
+  \end{itemize}
+
+\end{frame}
+
+\end{document}
