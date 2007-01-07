@@ -5,10 +5,10 @@
 ##
 ## license       kaneton licence
 ##
-## file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-octane.mips64/Makefile
+## file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-o2.mips64/Makefile
 ##
 ## created       enguerrand raymond   [wed oct 18 14:25:13 2006]
-## updated       enguerrand raymond   [wed oct 18 14:25:14 2006]
+## updated       enguerrand raymond   [sun jan  7 22:59:31 2007]
 ##
 
 #
@@ -54,10 +54,10 @@ CFLAGS			+=		-D___kernel
 $(MACHDEP_LO):		libs $(MACHDEP_O)
 	$(call remove,$(MACHDEP_LO),)
 
-	$(call archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBOCTANE_A_),)
+	$(call archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBMIPSR10000_A_),)
 
 libs:
-	$(call launch,Makefile,$(_LIBOCTANE_DIR_),,)
+	$(call launch,Makefile,$(_LIBMIPSR10000_DIR_),,)
 
 clear:
 	$(call remove,$(MACHDEP_O),)
