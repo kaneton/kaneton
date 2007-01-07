@@ -5,10 +5,10 @@
  *
  * license       kaneton licence
  *
- * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-octane.mips64/cons.c
+ * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-o2.mips64/cons.c
  *
  * created       enguerrand raymond   [sun oct 22 21:34:14 2006]
- * updated       enguerrand raymond   [sun oct 22 22:03:52 2006]
+ * updated       enguerrand raymond   [sun jan  7 15:41:56 2007]
  */
 
 /*

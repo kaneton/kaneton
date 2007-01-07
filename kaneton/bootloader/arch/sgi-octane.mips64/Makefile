@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-o2.mips64/Makefile
 ##
 ## created       enguerrand raymond   [wed oct 18 14:24:31 2006]
-## updated       enguerrand raymond   [wed dec 20 15:11:31 2006]
+## updated       enguerrand raymond   [sun jan  7 00:30:54 2007]
 ##
 
 #
@@ -29,15 +29,15 @@ include			../../../../env/.env.mk
 
 BOOTLOADER_LO		:=		bootloader.lo
 
-BOOTLOADER_C		:=		bootloader.c	\
-					cons.c		\
+BOOTLOADER_C		:=		bootloader.c			\
+					cons.c				\
 					init.c
 
 BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
 					$(BOOTLOADER_ASM:.asm=.o)	\
 					$(BOOTLOADER_S:.S=.o)
 
-BOOTLOADER_INCLUDE	:=		bootloader.h	\
+BOOTLOADER_INCLUDE	:=		bootloader.h			\
 					init.h
 
 _CFLAGS_		=		$(_CFLAGS32_)

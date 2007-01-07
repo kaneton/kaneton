@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-o2.mips64/init.h
  *
  * created       enguerrand raymond   [sun nov 19 16:17:50 2006]
- * updated       enguerrand raymond   [sun nov 19 17:42:43 2006]
+ * updated       enguerrand raymond   [sun jan  7 00:31:23 2007]
  */
 
 #ifndef INIT_H
@@ -39,11 +39,15 @@ _nbr_page_;					\
  * init.c
  */
 
-t_uint32	alloc(t_uint64	size);
+t_uint32	bootloader_alloc(t_uint64	size);
 
 t_uint32		bootloader_memory_size(void);
 
-t_uint32		bootloader_kernel_copy(void);
+void	bootloader_malloc_init(void);
+
+void	bootloader_segments_init(void);
+
+void			bootloader_init(void);
 
 
 /*
