@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/lectures/project-overview/project-overview.tex
 %%
 %% created       matthieu bucchianeri   [sat jan  6 21:35:58 2007]
-%% updated       matthieu bucchianeri   [sat jan  6 23:07:21 2007]
+%% updated       matthieu bucchianeri   [tue jan  9 15:03:25 2007]
 %%
 
 %
@@ -90,7 +90,7 @@
     \item
       Renaud Lienhart (IA-32 architecture for 2007)
     \item
-      Jean-Pascal Billaud (Kaneton cours for 2006)
+      Jean-Pascal Billaud (kaneton course for 2006)
   \end{itemize}
 
 \end{frame}
@@ -168,6 +168,13 @@
   \item
     K3 : process management \& scheduling
   \end{itemize}
+
+  \-
+
+  For those who made the ``introduction to kernels'' (K) course in
+  Ing1: kaneton is very different -- microkernel design, virtual
+  memory, multitasking, IPCs\ldots -- you will learn lot of thing we
+  did not talk about last year.
 
 \end{frame}
 
@@ -347,7 +354,25 @@
 \begin{frame}
   \frametitle{K4 - inter-process communication}
 
-  XXX
+  The final part of kaneton is \textbf{two weeks} long and deals with
+  Inter-Process Communication (IPC).
+
+  \-
+
+  The code consists in writing the whole \textbf{message} manager,
+  with primitives for synchroneous, asynchroneous, blocking and
+  non-blocking message sending and receiving.
+
+  \-
+
+  In addition, you will write a few common synchronization objects,
+  such as semaphore or RW-locks.
+
+  \-
+
+  Once K4 finished, your kaneton is able to run multithreaded programs
+  or drivers in separated address spaces, with variable privilege
+  level and providind IPC.
 
 \end{frame}
 
@@ -377,6 +402,13 @@
   \item
     The EPITA newsgroup (epita.cours.kaneton) is \textbf{obsolete} and
     you won't get answers on it.
+  \end{itemize}
+
+  \-
+
+  In addition of these:
+
+  \begin{itemize}
   \item
     Prepare you rack hard drive for the K0 practical work session
     \begin{itemize}
