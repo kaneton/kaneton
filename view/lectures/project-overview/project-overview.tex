@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/lectures/project-overview/project-overview.tex
 %%
 %% created       matthieu bucchianeri   [sat jan  6 21:35:58 2007]
-%% updated       matthieu bucchianeri   [wed jan 10 16:36:43 2007]
+%% updated       matthieu bucchianeri   [wed jan 10 17:41:43 2007]
 %%
 
 %
@@ -183,7 +183,15 @@
 \begin{frame}
   \frametitle{Implementation}
 
-  kaneton is implemented in C and assembly.
+  kaneton is implemented in \textbf{C and assembly}.
+
+  \-
+
+  Some code in kaneton is generic and independent of underlying
+  hardware (for example, the scheduler), and the rest is highly bound
+  to the architecture (interrupts, virtual memory\ldots). The code is
+  divided into several \textbf{managers}, each one made of an
+  independent part and dependant part.
 
   \-
 

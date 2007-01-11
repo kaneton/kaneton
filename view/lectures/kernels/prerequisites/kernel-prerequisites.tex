@@ -36,6 +36,18 @@
 %                {sample}
 %		{figures/sample}
 
+% bsd
+
+\pgfdeclareimage[interpolate=true,width=157pt,height=120pt]
+                {bsd}
+		{figures/bsd}
+
+% kaneton
+
+\pgfdeclareimage[interpolate=true,width=145pt,height=120pt]
+                {kaneton}
+		{figures/kaneton}
+
 % lseos
 
 \pgfdeclareimage[interpolate=true,width=174pt,height=120pt]
@@ -47,6 +59,18 @@
 \pgfdeclareimage[interpolate=true,width=176pt,height=120pt]
                 {hexo}
 		{figures/hexo}
+
+% nt
+
+\pgfdeclareimage[interpolate=true,width=194pt,height=120pt]
+                {nt}
+		{figures/nt}
+
+% k
+
+\pgfdeclareimage[interpolate=true,width=151pt,height=120pt]
+                {k}
+		{figures/k}
 
 % basic architecture
 
@@ -68,6 +92,19 @@
 \pgfdeclareimage[interpolate=true,width=240pt,height=200pt]
                 {memory-access-step4}
 		{figures/memory-access-step4}
+
+% io
+
+\pgfdeclareimage[interpolate=true,width=261pt,height=180pt]
+                {io-step1}
+		{figures/io-step1}
+\pgfdeclareimage[interpolate=true,width=261pt,height=180pt]
+                {io-step2}
+		{figures/io-step2}
+\pgfdeclareimage[interpolate=true,width=261pt,height=180pt]
+                {io-step3}
+		{figures/io-step3}
+
 
 % irq reception
 
@@ -158,10 +195,41 @@
 \section{Introduction to kernels}
 
 %
+% roles of a kernel
+%
+
+\subsection{Roles of a kernel}
+
+\begin{frame}
+  \frametitle{Finalité}
+
+  XXX
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Fonctionnement interne /detail parties /gestionnaires...}
+
+  XXX
+
+\end{frame}
+
+%
 % monolithic kernels
 %
 
 \subsection{Monolithic kernels}
+
+%
+% monolithic kernels
+%
+
+\begin{frame}
+  \frametitle{Monolithic kernels}
+
+  XXX
+
+\end{frame}
 
 %
 % bsd
@@ -169,6 +237,15 @@
 
 \begin{frame}
   \frametitle{Example: BSD}
+
+  4.4BSD kernel include all functionnalities in kernel-land: from
+    process management to network layer, through filesystems.
+
+  \begin{center}
+    \pgfuseimage{bsd}
+  \end{center}
+
+  The kernel is about 200.000 lines long.
 
 \end{frame}
 
@@ -179,11 +256,32 @@
 \subsection{Micro-kernels}
 
 %
+% microkernels
+%
+
+\begin{frame}
+  \frametitle{Micro-kernels}
+
+  XXX
+
+\end{frame}
+
+%
 % kaneton
 %
 
 \begin{frame}
   \frametitle{Example: kaneton}
+
+  kaneton provide a dozen of critical managers: memory, process,
+  I/O\ldots{} Only these functionnalities are running in kernel-land.
+
+  \begin{center}
+    \pgfuseimage{kaneton}
+  \end{center}
+
+  Advanced functionnalities (filesystems, network\ldots) are provided
+  by services in userland. IPC are omnipresent.
 
 \end{frame}
 
@@ -194,6 +292,17 @@
 \subsection{Nano-kernels}
 
 %
+% nanokernels
+%
+
+\begin{frame}
+  \frametitle{Nano-kernels}
+
+  XXX
+
+\end{frame}
+
+%
 % lse/os
 %
 
@@ -202,7 +311,7 @@
 
   LSE/OS has a nano-kernel conception to keep the code as tiny as
   possible, preventing bugs into the kernel leading to global crashed
-  of the system.
+  of the system. Only the core is running in kernel-land.
 
   \begin{center}
     \pgfuseimage{lseos}
@@ -218,6 +327,33 @@
 %
 
 \subsection{Exo-kernels}
+
+%
+% exokernels
+%
+
+\begin{frame}
+  \frametitle{Exo-kernels}
+
+  Exo-kernels is a very young class of kernel, still under research
+  effort. Principles:
+
+  \begin{itemize}
+  \item
+    A few abstraction as possible
+  \item
+    Abstractions are libraries
+  \item
+    Build other abstractions on existing one
+  \item
+    Programs use directly these abstractions for performances
+  \end{itemize}
+
+  \-
+
+  No commercial operating systems are based on exo-kernel.
+
+\end{frame}
 
 %
 % hexo
@@ -246,11 +382,92 @@
 \subsection{Hybrid kernels}
 
 %
+% hybrid kernels
+%
+
+\begin{frame}
+  \frametitle{Hybrid kernels}
+
+  The hybrid kernels relies on all the previously studied kernel
+  models.
+
+  \begin{itemize}
+  \item
+    Structure similar to micro-kernels, with services
+  \item
+    Most of the code is running in kernel-land to improve performance,
+    like in monolithic kernels
+  \end{itemize}
+
+  This class of kernels is considered as ``marketing argument'' by
+  many people, because there is no great innovation.
+
+\end{frame}
+
+%
 % windows nt
 %
 
 \begin{frame}
   \frametitle{Example: Windows NT}
+
+  \begin{center}
+    \pgfuseimage{nt}
+  \end{center}
+
+  The NT kernel is a mix of exo-kernels (HAL), micro-kernels
+  (services) and monolithic kernels (everything in kernel-land). On
+  Windows NT, it is fun to notice that even the GUI services are part
+  of the kernel.
+
+\end{frame}
+
+%
+% specific kernels
+%
+
+\begin{frame}
+  \frametitle{Specific kernels}
+
+  Specific kernels are dedicated to specific domains and applications.
+
+  \begin{itemize}
+  \item
+    Some of the classical functionnalities are not provided
+  \item
+    Important drivers are directly included into the kernel
+  \item
+    No portability
+  \item
+    Reduced set of system calls
+  \item
+    Non-standard API (specific API)
+  \end{itemize}
+
+  \-
+
+  For example, the operating system of a washing machine does not need
+  virtual memory, scheduler or filesystems.
+
+\end{frame}
+
+%
+% k
+%
+
+\begin{frame}
+  \frametitle{Example: K}
+
+  K is a specific kernel providing a reduced set of functionnality. K
+  is intended to run small games.
+
+  \begin{center}
+    \pgfuseimage{k}
+  \end{center}
+
+  K does not provide some classical functionnalities such as virtual
+  memory or process management, but is provides some main functions
+  for its specific domain like video or sound drivers.
 
 \end{frame}
 
@@ -326,6 +543,32 @@
 \begin{frame}
   \frametitle{I/Os}
 
+  \begin{center}
+    \pgfuseimage{io-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{I/Os}
+
+  \begin{center}
+    \pgfuseimage{io-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{I/Os}
+
+  \begin{center}
+    \pgfuseimage{io-step3}
+  \end{center}
+
 \end{frame}
 
 % -)
@@ -377,12 +620,16 @@
 \begin{frame}
   \frametitle{Bus locking}
 
+  XXX
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Direct Memory Access (DMA) / Bus mastering}
+
+  XXX
 
 \end{frame}
 
@@ -397,6 +644,10 @@
 \begin{frame}
   \frametitle{General description}
 
+  XXX
+
+  XXX out of order, in order, superscalaire, multitreadé, multicore
+
 \end{frame}
 
 % -)
@@ -404,12 +655,18 @@
 \begin{frame}
   \frametitle{Instructions sets}
 
+  XXX
+
+  XXX microcode
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Register banks}
+
+  XXX
 
 \end{frame}
 
@@ -513,6 +770,8 @@
 \begin{frame}
   \frametitle{Very simple microprocessor}
 
+  XXX
+
 \end{frame}
 
 % -)
@@ -534,13 +793,6 @@
   \begin{center}
     \pgfuseimage{rob}
   \end{center}
-
-\end{frame}
-
-% -)
-
-\begin{frame}
-  \frametitle{Function call}
 
 \end{frame}
 
@@ -662,12 +914,25 @@
 \begin{frame}
   \frametitle{Exceptions and soft-interrupts}
 
+  XXX
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Hardware interrupts (IRQ)}
+
+  XXX
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Inter-Processor Interrupts (IPI)}
+
+  XXX
 
 \end{frame}
 
@@ -676,12 +941,16 @@
 \begin{frame}
   \frametitle{Program loading}
 
+  XXX
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Multiprogramming}
+
+  XXX
 
 \end{frame}
 
