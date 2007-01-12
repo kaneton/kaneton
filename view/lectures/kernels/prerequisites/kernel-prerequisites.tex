@@ -16,7 +16,7 @@
 % title
 %
 
-\title{Kernels - Prerequisites}
+\title{Kernels \& Operating systems - Prerequisites}
 
 %
 % authors
@@ -92,6 +92,9 @@
 \pgfdeclareimage[interpolate=true,width=240pt,height=200pt]
                 {memory-access-step4}
 		{figures/memory-access-step4}
+\pgfdeclareimage[interpolate=true,width=300pt,height=110pt]
+                {memory-controller}
+		{figures/mem}
 
 % io
 
@@ -120,6 +123,33 @@
 \pgfdeclareimage[interpolate=true,width=225pt,height=180pt]
                 {irq-step4}
 		{figures/irq-step4}
+
+% bus lock
+
+\pgfdeclareimage[interpolate=true,width=270pt,height=150pt]
+                {bus-lock-step1}
+		{figures/bus-lock-step1}
+\pgfdeclareimage[interpolate=true,width=270pt,height=150pt]
+                {bus-lock-step2}
+		{figures/bus-lock-step2}
+\pgfdeclareimage[interpolate=true,width=270pt,height=150pt]
+                {bus-lock-step3}
+		{figures/bus-lock-step3}
+\pgfdeclareimage[interpolate=true,width=270pt,height=150pt]
+                {bus-lock-step4}
+		{figures/bus-lock-step4}
+
+% dma
+
+\pgfdeclareimage[interpolate=true,width=300pt,height=120pt]
+                {dma-step1}
+		{figures/dma-step1}
+\pgfdeclareimage[interpolate=true,width=300pt,height=120pt]
+                {dma-step2}
+		{figures/dma-step2}
+\pgfdeclareimage[interpolate=true,width=300pt,height=120pt]
+                {dma-step3}
+		{figures/dma-step3}
 
 % pipeline
 
@@ -154,11 +184,51 @@
                 {cache-step5}
 		{figures/cache-step5}
 
+% misaligned access
+
+\pgfdeclareimage[interpolate=true,width=300pt,height=150pt]
+                {unaligned-step1}
+		{figures/unaligned-step1}
+\pgfdeclareimage[interpolate=true,width=300pt,height=150pt]
+                {unaligned-step2}
+		{figures/unaligned-step2}
+\pgfdeclareimage[interpolate=true,width=300pt,height=150pt]
+                {unaligned-step3}
+		{figures/unaligned-step3}
+\pgfdeclareimage[interpolate=true,width=300pt,height=150pt]
+                {unaligned-step4}
+		{figures/unaligned-step4}
+
+
 % mmu
 
 \pgfdeclareimage[interpolate=true,width=211pt,height=80pt]
                 {mmu}
 		{figures/mmu}
+
+% event
+
+\pgfdeclareimage[interpolate=true,width=270pt,height=150pt]
+                {event-step1}
+		{figures/event-step1}
+\pgfdeclareimage[interpolate=true,width=270pt,height=150pt]
+                {event-step2}
+		{figures/event-step2}
+\pgfdeclareimage[interpolate=true,width=270pt,height=150pt]
+                {event-step3}
+		{figures/event-step3}
+
+% ipi
+
+\pgfdeclareimage[interpolate=true,width=276pt,height=120pt]
+                {ipi-step1}
+		{figures/ipi-step1}
+\pgfdeclareimage[interpolate=true,width=276pt,height=120pt]
+                {ipi-step2}
+		{figures/ipi-step2}
+\pgfdeclareimage[interpolate=true,width=276pt,height=120pt]
+                {ipi-step3}
+		{figures/ipi-step3}
 
 
 %
@@ -541,6 +611,61 @@
 % -)
 
 \begin{frame}
+  \frametitle{Memory controller}
+
+  \begin{center}
+    \pgfuseimage{memory-controller}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Misaligned memory access}
+
+  \begin{center}
+    \pgfuseimage{unaligned-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Misaligned memory access}
+
+  \begin{center}
+    \pgfuseimage{unaligned-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Misaligned memory access}
+
+  \begin{center}
+    \pgfuseimage{unaligned-step3}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Misaligned memory access}
+
+  \begin{center}
+    \pgfuseimage{unaligned-step4}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
   \frametitle{I/Os}
 
   \begin{center}
@@ -568,6 +693,20 @@
   \begin{center}
     \pgfuseimage{io-step3}
   \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Memory-mapped I/Os}
+
+  Sometimes, the CPU does not offers I/O specific signals. In this
+  cases, devices are considered like memory blocks.
+
+  \-
+
+  The \textbf{IORQ} signal is replaced by \textbf{MEMRQ}.
 
 \end{frame}
 
@@ -620,7 +759,42 @@
 \begin{frame}
   \frametitle{Bus locking}
 
-  XXX
+  \begin{center}
+    \pgfuseimage{bus-lock-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Bus locking}
+
+  \begin{center}
+    \pgfuseimage{bus-lock-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Bus locking}
+
+  \begin{center}
+    \pgfuseimage{bus-lock-step3}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Bus locking}
+
+  \begin{center}
+    \pgfuseimage{bus-lock-step4}
+  \end{center}
 
 \end{frame}
 
@@ -628,6 +802,111 @@
 
 \begin{frame}
   \frametitle{Direct Memory Access (DMA) / Bus mastering}
+
+  \begin{center}
+    \pgfuseimage{dma-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Direct Memory Access (DMA) / Bus mastering}
+
+  \begin{center}
+    \pgfuseimage{dma-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Direct Memory Access (DMA) / Bus mastering}
+
+  \begin{center}
+    \pgfuseimage{dma-step3}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Direct Memory Access (DMA) / Bus mastering}
+
+  Bus mastering is the same principle except it concerns even devices
+  with memory transfers and devices with devices transfers.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of a bus: ISA}
+
+  \begin{itemize}
+  \item
+    By IBM in 1981
+  \item
+    8-bit at 4 MHz, then 16-bit at 8 MHz and EISA 32-bit at 8 MHz
+  \end{itemize}
+
+  \-
+
+  We focus on the 16-bit ISA bus.
+
+  \begin{itemize}
+  \item
+    16-bit I/Os
+  \item
+    IRQ lines (1, 3, 4, 5, 6, 7, 10, 11, 12, 13 \& 14)
+  \item
+    DMA channels (1, 2, 3, 5, 6 \& 7), restricted to 24-bit addresses
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of a bus: ISA}
+
+  \begin{itemize}
+  \item
+    \textbf{D}: data bus
+  \item
+    \textbf{A}: address bus
+  \item
+    \textbf{IOW}, \textbf{IOR}: control signals
+  \item
+    \textbf{IRQx}: IRQ lines
+  \item
+    \textbf{DRQx}: request for DMA access
+  \item
+    \textbf{DACKx}: acknowledgment of DMA access
+  \item
+    \textbf{MASTER}: bus granted
+  \item
+    \textbf{TC}: bus holding
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Devices}
+
+  XXX
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of a device: network card}
 
   XXX
 
@@ -912,18 +1191,33 @@
 % -)
 
 \begin{frame}
-  \frametitle{Exceptions and soft-interrupts}
+  \frametitle{Exceptions, IRQ and soft-interrupts}
 
-  XXX
+  \begin{center}
+    \pgfuseimage{event-step1}
+  \end{center}
 
 \end{frame}
 
 % -)
 
 \begin{frame}
-  \frametitle{Hardware interrupts (IRQ)}
+  \frametitle{Exceptions, IRQ and soft-interrupts}
 
-  XXX
+  \begin{center}
+    \pgfuseimage{event-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Exceptions, IRQ and soft-interrupts}
+
+  \begin{center}
+    \pgfuseimage{event-step3}
+  \end{center}
 
 \end{frame}
 
@@ -932,6 +1226,56 @@
 \begin{frame}
   \frametitle{Inter-Processor Interrupts (IPI)}
 
+  \begin{center}
+    \pgfuseimage{ipi-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Inter-Processor Interrupts (IPI)}
+
+  \begin{center}
+    \pgfuseimage{ipi-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Inter-Processor Interrupts (IPI)}
+
+  \begin{center}
+    \pgfuseimage{ipi-step3}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Bus snooping}
+
+  Notice that for the previous problem (cache consistency), some
+  microprocessors use \textbf{bus snooping} to keep the caches
+  consistent.
+
+\end{frame}
+
+%
+% miscellaneous
+%
+
+\subsection{Miscellaneous}
+
+% -)
+
+\begin{frame}
+  \frametitle{Program loading}
+
   XXX
 
 \end{frame}
@@ -939,7 +1283,7 @@
 % -)
 
 \begin{frame}
-  \frametitle{Program loading}
+  \frametitle{System calls}
 
   XXX
 
