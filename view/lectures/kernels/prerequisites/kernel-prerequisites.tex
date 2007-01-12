@@ -230,6 +230,12 @@
                 {ipi-step3}
 		{figures/ipi-step3}
 
+% cpu
+
+\pgfdeclareimage[interpolate=true,width=293pt,height=100pt]
+                {cpu}
+		{figures/cpu}
+
 
 %
 % document
@@ -271,16 +277,53 @@
 \subsection{Roles of a kernel}
 
 \begin{frame}
-  \frametitle{Finalité}
+  \frametitle{Goals}
 
-  XXX
+  The kernel is the central part of an operating system. The kernel is
+  the entity offering abstraction of the hardware to the applications,
+  including:
+
+  \begin{itemize}
+  \item
+    Memory management
+  \item
+    Process management
+  \item
+    I/Os and events (both leading to drivers)
+  \item
+    Inter-Process Communication
+  \end{itemize}
+
+  In addition, the kernel must ensure the security of the resources.
+
+  \-
+
+  The final goal of a kernel is to run user programs, to enable them
+  to interact with hardware and between each others, what constitues
+  an operating system.
 
 \end{frame}
 
 \begin{frame}
-  \frametitle{Fonctionnement interne /detail parties /gestionnaires...}
+  \frametitle{A good kernel is\ldots}
 
-  XXX
+  \begin{itemize}
+  \item
+    Fast. Performances are critical.
+  \item
+    Reliable. When a kernel crashes, the whole machine does.
+  \item
+    Maintainable. Other developers must be able to write their own
+    drivers or services.
+  \item
+    Fault tolerant. Either in terms of hardware faults and software
+    faults.
+  \item
+    Secure.
+  \item
+    Portable. To work on different hardware with less possible porting
+    effort.
+  \end{itemize}
 
 \end{frame}
 
@@ -538,6 +581,17 @@
   K does not provide some classical functionnalities such as virtual
   memory or process management, but is provides some main functions
   for its specific domain like video or sound drivers.
+
+\end{frame}
+
+%
+% back to micro-kernels
+%
+
+\begin{frame}
+  \frametitle{Back to micro-kernels}
+
+  XXX history
 
 \end{frame}
 
@@ -899,7 +953,23 @@
 \begin{frame}
   \frametitle{Devices}
 
-  XXX
+  Basically, a device provides:
+
+  \begin{itemize}
+  \item
+    Configuration Registers, used to program the behavior of the device
+  \item
+    Control Registers, to trigger actions
+  \item
+    Status Registers, for reading the state of the device
+  \item
+    Data Registers, to send/receive data from the device (alternative
+    to DMA, often used for little amount of data)
+  \end{itemize}
+
+  \-
+
+  Access to these registers is made via PIOs or memory-mapped I/Os.
 
 \end{frame}
 
@@ -908,7 +978,33 @@
 \begin{frame}
   \frametitle{Example of a device: network card}
 
-  XXX
+  A basic network device has:
+
+  \begin{itemize}
+  \item
+    Configuration registers for sender and receiver modules, to enable
+    broadcast packets reception for example, or automatic computation
+    of Ethernet checksum for outgoing packets
+  \item
+    Control registers, to ask for sending a packet
+  \item
+    Status registers, to check for packets waiting in the receive
+    ring, also for get error reasons when sending packets
+  \item
+    Data registers, for exemple a set of registers that contains the
+    MAC address of the board, and in worst cases, data registers used
+    when sending/receiving packets
+  \end{itemize}
+
+  \-
+
+  \begin{itemize}
+  \item
+    One IRQ line, to interrupt the CPU on packet receiving or sending error
+  \item
+    One or two DMA channels for packet transfers between the NIC and
+    the system RAM
+  \end{itemize}
 
 \end{frame}
 
@@ -923,29 +1019,61 @@
 \begin{frame}
   \frametitle{General description}
 
-  XXX
+  \textbf{A central processing unit (CPU), or sometimes simply
+  processor, is the component in a digital computer that interprets
+  computer program instructions and processes data.} -- Wikipedia
 
-  XXX out of order, in order, superscalaire, multitreadé, multicore
+  A few important concepts:
+
+  \begin{itemize}
+  \item
+    In-order execution: instructions are executed in the order of the
+    program. Older microprocessors, but Sun's UltraSPARC is still
+    using this design.
+  \item
+    Out-of-order execution: instructions can be rescheduled by the
+    microprocessor (dynamic dataflow, speculative execution\ldots)
+  \item
+    Superscalar engine: multiple executions can be executed in the same cycle.
+  \item
+    Multithread core: multiple instructions from different instruction
+    streams can be executed at the same time.
+  \item
+    Multicore: the same microprocessor includes multiple execution
+    units, pipelines, pipelines\ldots{} Everything is duplicated (like
+    with multiprocessor) except the caches.
+  \end{itemize}
 
 \end{frame}
 
 % -)
 
 \begin{frame}
-  \frametitle{Instructions sets}
+  \frametitle{Program processing}
 
-  XXX
+  \begin{itemize}
+  \item
+    CISC: many instructions, with side-effects, multiple memory
+    accesses\ldots
+  \item
+    RISC: only essential instructions, other functions can be built
+    using multiple instructions
+  \end{itemize}
 
-  XXX microcode
+  \-
 
-\end{frame}
+  Flynn's classification:
 
-% -)
-
-\begin{frame}
-  \frametitle{Register banks}
-
-  XXX
+  \begin{itemize}
+  \item
+    SISD: classical uniprocessor
+  \item
+    SIMD: through extended instruction set
+  \item
+    MISD: redundant computation for example
+  \item
+    MIMD: multiprocessor
+  \end{itemize}
 
 \end{frame}
 
@@ -1049,7 +1177,37 @@
 \begin{frame}
   \frametitle{Very simple microprocessor}
 
-  XXX
+  \begin{center}
+    \pgfuseimage{cpu}
+  \end{center}
+
+  This is a one bus architecture.
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Microcode}
+
+  On such microprocessors, instructions are programmed into the CPU
+  using micro-instructions.
+
+  \-
+
+  With previous microprocessor, here is the microcode for an addition
+  of a register R1 and a memory operand at address R2, with result in
+  R1.
+
+  \begin{verbatim}
+R2 -> @
+read
+wait for memory operation
+D -> X
+R1 -> Y
+add
+R -> R1
+  \end{verbatim}
 
 \end{frame}
 
