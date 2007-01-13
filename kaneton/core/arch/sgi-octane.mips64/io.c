@@ -5,10 +5,10 @@
  *
  * license       kaneton licence
  *
- * file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-octane.mips64/io.c
+ * file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-o2.mips64/io.c
  *
  * created       enguerrand raymond   [wed oct 18 14:26:20 2006]
- * updated       enguerrand raymond   [wed oct 18 14:26:30 2006]
+ * updated       enguerrand raymond   [sat jan 13 22:43:11 2007]
  */
 
 /*
@@ -49,3 +49,17 @@ d_io		io_dispatch =
  * ---------- functions -------------------------------------------------------
  */
 
+static int	io_cons_print_char(char	c)
+{
+  return (write(c));
+}
+
+static void	io_cons_attr(u_int8_t	attr)
+{
+}
+
+int	io_cons_init(void)
+{
+  printf_init(io_cons_print_char, io_cons_attr);
+  return (0);
+}

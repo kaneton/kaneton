@@ -8,7 +8,7 @@
 ## file          /home/enguerrand/kaneton/kaneton/core/arch/sgi-o2.mips64/Makefile
 ##
 ## created       enguerrand raymond   [wed oct 18 14:25:13 2006]
-## updated       enguerrand raymond   [sun jan  7 22:59:31 2007]
+## updated       enguerrand raymond   [sun jan  7 23:11:11 2007]
 ##
 
 #

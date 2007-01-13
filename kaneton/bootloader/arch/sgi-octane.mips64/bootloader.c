@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-o2.mips64/bootloader.c
  *
  * created       enguerrand raymond   [wed oct 18 14:21:40 2006]
- * updated       enguerrand raymond   [sun jan  7 18:24:44 2007]
+ * updated       enguerrand raymond   [sat jan 13 22:41:19 2007]
  */
 
 /*
@@ -121,10 +121,10 @@ int			bootloader(void)
   bootloader_cons_msg('+', "Jump to the kernel\n");
 
   asm("move $10, $0\n\t"
-      "la $9, %0\n\t"
-      "la $10, %1\n\t"
+      "lw $9, %0\n\t"
+      "lw $10, %1\n\t"
       "addu $10, $10, $9\n\t"
-      "addiu $10, $10, -4\n\t"
+      //      "addiu $10, $10, -4\n\t"
       "move $29, $10\n\t"
       "move $30, $29\n\t"
       :

@@ -23,6 +23,7 @@
  */
 
 #include <klibc.h>
+#include <libmipsr10000.h>
 #include <kaneton.h>
 
 /*
@@ -68,6 +69,12 @@ void			kaneton(t_init*				bootloader)
   /*
    * 1)
    */
+
+#ifdef O2
+  io_cons_init();
+  printf("titi\n");
+  while(1);
+#endif
 
   init = bootloader;
 

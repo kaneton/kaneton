@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-o2.mips64/init.c
  *
  * created       enguerrand raymond   [sun nov 19 16:19:55 2006]
- * updated       enguerrand raymond   [sun jan  7 18:21:10 2007]
+ * updated       enguerrand raymond   [sat jan 13 22:24:17 2007]
  */
 
 /*
@@ -204,7 +204,7 @@ void			bootloader_init(void)
 
   init->kstack = (t_paddr)bootloader_alloc(KSTACK_SIZE);
   init->kstacksz = (t_psize)KSTACK_SIZE;
-
+  printf("kstack = %x -- kstack + kstacksz = %x\n", init->kstack, init->kstack + init->kstacksz);
   /*
    * 7)
    */

@@ -112,6 +112,8 @@
  * ../../../../core/arch/machdep/io.c
  */
 
+int	io_cons_init(void);
+
 
 /*
  * eop

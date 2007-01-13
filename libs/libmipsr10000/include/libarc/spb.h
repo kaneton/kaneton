@@ -95,7 +95,12 @@ typedef struct {
 	ADAPTER Adapters[1];
 } SPB;
 
-#define SystemParameterBlock	((SPB *)SPB_ADDR)
+#define SystemParameterBlock	((SPB *)SPB_ADDR32)
+
+#ifdef C32
+#define SystemParameterBlock	((SPB *)SPB_ADDR32)
+#endif
+
 #define FVector		(SystemParameterBlock->FirmwareVector)
 
 #endif /* _SPB_H_ */
