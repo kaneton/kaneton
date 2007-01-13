@@ -108,6 +108,11 @@
                 {io-step3}
 		{figures/io-step3}
 
+% memory mapped io
+
+\pgfdeclareimage[interpolate=true,width=200pt,height=180pt]
+                {mc9as}
+		{figures/mc9as}
 
 % irq reception
 
@@ -236,6 +241,18 @@
                 {cpu}
 		{figures/cpu}
 
+% program loading
+
+\pgfdeclareimage[interpolate=true,width=261pt,height=180pt]
+                {elf}
+		{figures/elf}
+
+% syscall
+
+\pgfdeclareimage[interpolate=true,width=200pt,height=160pt]
+                {syscall}
+		{figures/syscall}
+
 
 %
 % document
@@ -276,6 +293,8 @@
 
 \subsection{Roles of a kernel}
 
+% -)
+
 \begin{frame}
   \frametitle{Goals}
 
@@ -304,6 +323,8 @@
 
 \end{frame}
 
+% -)
+
 \begin{frame}
   \frametitle{A good kernel is\ldots}
 
@@ -327,6 +348,29 @@
 
 \end{frame}
 
+% -)
+
+\begin{frame}
+  \frametitle{Kernel-space \& User-land}
+
+  Kernel-space is the execution environment of the kernel. All
+  operations are permitted. Hardware can be accessed and
+  controlled. Microprocessor internal stuctures and control registers
+  too. The kernel can access all the tasks address spaces.
+
+  \-
+
+  User-land is the environment of classical programs, with many
+  restrictions. Hardware access is forbidden. Configuration facilities
+  are denied. A program can only access its own address space.
+
+  \-
+
+  The more code you have in kernel-space, the more risks of crashes you
+  have.
+
+\end{frame}
+
 %
 % monolithic kernels
 %
@@ -340,7 +384,34 @@
 \begin{frame}
   \frametitle{Monolithic kernels}
 
-  XXX
+  Monolithic kernels includes everything into the kernel, even
+  drivers, filesystems, networking\ldots
+
+  \-
+
+  \emph{This approach well known as ``The Big Mess''. The structure is
+  that there is no structure.} -- Tanenbaum
+
+  \-
+
+  Pros:
+
+  \begin{itemize}
+  \item
+    High performances: only function calls
+  \end{itemize}
+
+  \-
+
+  Cons:
+
+  \begin{itemize}
+  \item
+    Dangerous: one bug in a non-critical service may lead the system
+    to crash
+  \item
+    Not easy to understand and maintain
+  \end{itemize}
 
 \end{frame}
 
@@ -375,7 +446,33 @@
 \begin{frame}
   \frametitle{Micro-kernels}
 
-  XXX
+  In micro-kernels, only the critical functionnalities are running in
+  kernels-space. The other services are running as user programs
+  (having extended privileges).
+
+  \-
+
+  Pros:
+
+  \begin{itemize}
+  \item
+    Small amount of code in kernel-space: less bugs and risks of
+    crashes
+  \item
+    Clearest design, easy to understand
+  \item
+    Services can be started and stopped: reduce system load, run
+    concurrent services\ldots
+  \end{itemize}
+
+  \-
+
+  Cons:
+
+  \begin{itemize}
+  \item
+    Lots of IPC: slower performances
+  \end{itemize}
 
 \end{frame}
 
@@ -411,7 +508,9 @@
 \begin{frame}
   \frametitle{Nano-kernels}
 
-  XXX
+  The only difference with micro-kernels is that more and more
+  services are pushed out of kernel-space. The kernel code is then
+  reduced.
 
 \end{frame}
 
@@ -466,6 +565,19 @@
 
   No commercial operating systems are based on exo-kernel.
 
+  \-
+
+  Pros:
+
+  \begin{itemize}
+  \item
+    Fully customizable, by adding and removing unnecessary libraries
+  \item
+    Good performances: function calls like in monolithic kernels
+  \item
+    Clear design: modules are libraries
+  \end{itemize}
+
 \end{frame}
 
 %
@@ -514,6 +626,26 @@
 
   This class of kernels is considered as ``marketing argument'' by
   many people, because there is no great innovation.
+
+  \-
+
+  Pros:
+
+  \begin{itemize}
+  \item
+    All in kernel-space: less IPCs, better performances
+  \item
+    Micro-kernel design: clear and easy to maintain
+  \end{itemize}
+
+  \-
+
+  Cons:
+
+  \begin{itemize}
+  \item
+    Risks of crashes like with monolithic designs
+  \end{itemize}
 
 \end{frame}
 
@@ -581,17 +713,6 @@
   K does not provide some classical functionnalities such as virtual
   memory or process management, but is provides some main functions
   for its specific domain like video or sound drivers.
-
-\end{frame}
-
-%
-% back to micro-kernels
-%
-
-\begin{frame}
-  \frametitle{Back to micro-kernels}
-
-  XXX history
 
 \end{frame}
 
@@ -761,6 +882,17 @@
   \-
 
   The \textbf{IORQ} signal is replaced by \textbf{MEMRQ}.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{MC9S12NE64 memory map}
+
+  \begin{center}
+    \pgfuseimage{mc9as}
+  \end{center}
 
 \end{frame}
 
@@ -1019,9 +1151,11 @@
 \begin{frame}
   \frametitle{General description}
 
-  \textbf{A central processing unit (CPU), or sometimes simply
+  \emph{A central processing unit (CPU), or sometimes simply
   processor, is the component in a digital computer that interprets
   computer program instructions and processes data.} -- Wikipedia
+
+  \-
 
   A few important concepts:
 
@@ -1054,10 +1188,10 @@
   \begin{itemize}
   \item
     CISC: many instructions, with side-effects, multiple memory
-    accesses\ldots
+    accesses, few registers\ldots
   \item
     RISC: only essential instructions, other functions can be built
-    using multiple instructions
+    using multiple instructions, lots of registers
   \end{itemize}
 
   \-
@@ -1140,7 +1274,7 @@
     \hline
     EAX, ECX, EDX & Caller-save \\
     \hline
-    EBX, ESI, EDI, EBP & Callee-save \\
+    EBX, ESI, EDI, ESP, EBP & Callee-save \\
     \hline
   \end{tabular}
   \end{center}
@@ -1424,17 +1558,19 @@ R -> R1
 \end{frame}
 
 %
-% miscellaneous
+% operating systems
 %
 
-\subsection{Miscellaneous}
+\subsection{Operating systems}
 
 % -)
 
 \begin{frame}
   \frametitle{Program loading}
 
-  XXX
+  \begin{center}
+    \pgfuseimage{elf}
+  \end{center}
 
 \end{frame}
 
@@ -1443,16 +1579,9 @@ R -> R1
 \begin{frame}
   \frametitle{System calls}
 
-  XXX
-
-\end{frame}
-
-% -)
-
-\begin{frame}
-  \frametitle{Multiprogramming}
-
-  XXX
+  \begin{center}
+    \pgfuseimage{syscall}
+  \end{center}
 
 \end{frame}
 
