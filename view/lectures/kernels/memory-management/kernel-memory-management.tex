@@ -36,6 +36,12 @@
 %                {sample}
 %		{figures/sample}
 
+% tlb
+
+\pgfdeclareimage[interpolate=true,width=258pt,height=138pt]
+                {detailed-tlb}
+		{figures/detailed-tlb}
+
 %
 % document
 %
@@ -62,6 +68,203 @@
   \frametitle{Outline}
   \tableofcontents
 \end{frame}
+
+%
+% physical memory & virtual memory
+%
+
+\section{Physical memory \& virtual memory}
+
+
+%
+% segmentation
+%
+
+\section{Segmentation}
+
+%
+% paging
+%
+
+\section{Paging}
+
+% -)
+
+\begin{frame}
+  \frametitle{Translation Lookaside Buffers}
+
+  \begin{itemize}
+    \item
+    When the CPU encounters a memory access instruction such as
+    a load or a store, the source or destination \textbf{virtual
+    address} is translated into a \textbf{physical address}
+    \item
+    This translation is done using a translation cache: the
+    Translation Lookaside Buffers (TLB).
+    \item
+    There are one or more TLB into a single MMU: for example, we
+    found two TLB on UltraSPARC architectures: one for instruction
+    fetches and the other for data accesses. On IA-32 and MIPS
+    architecture, there is only one mixed TLB.
+    \item
+    These caches are often \textbf{full associative} or high degree
+    \textbf{set associative}, for performances reasons. But their size
+    is very small:
+    \begin{tabular}{|c|c|c|}
+    \hline
+    Microprocessor & TLB & Entries \\
+    \hline
+    Pentium (non-MMX) & Instruction & 32 entries, 4-way set associative \\
+    \hline
+    Pentium (non-MMX) & Data & 64 entries, 4-way set associative \\
+    \hline
+    Pentium 4 & Instruction & 128 entries, 4-way set associative \\
+    \hline
+    Pentium 4 & Data & 64 entries, full associative \\
+    \hline
+    UltraSPARC IIi & Instruction & 64 entries, full associative \\
+    \hline
+    UltraSPARC IIi & Data & 64 entries, full associative \\
+    \hline
+    MIPS R8000 & Mixed & 384 entries, 3-way set associative \\
+    \hline
+    \end{tabular}
+  \end{itemize}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{TLB Organization}
+
+    \begin{itemize}
+      \item A TLB is a cache where each entry is made of two parts :
+
+      \begin{center}
+        \pgfuseimage{detailed-tlb}
+      \end{center}
+    \end{itemize}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Scenario of page-hit}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Scenario of page-miss}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{What to do on TLB-miss ?}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Manual TLB entry replacement}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{MIPS example}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Exercise: tree-based replacement algorithm}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Semi-automatic TLB replacement}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{UltraSPARC example}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Full-automatic TLB replacement}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{IA-32 example}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Exercise: contiguous mapping with page-directory \&
+  page-tables}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{TLB coherency}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{TLB incoherency example}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Unmapping}
+
+\end{frame}
+
+%
+% allocation algorithms
+%
+
+\section{Allocation algorithms}
+
+% -)
+
+\begin{frame}
+  \frametitle{Physical memory allocation}
+
+\end{frame}
+
+% ... XXX user etc..
+
+%
+% swapping
+%
+
+\section{Swapping}
 
 %
 % bibliography
