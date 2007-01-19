@@ -102,6 +102,13 @@
     Time (\emph{milliseconds})
   \end{itemize}
 
+  \-
+
+  All these functionnalities make OpenBoot a tiny OS. In addition,
+  OpenBoot is able to run bytecode scripts (in Forth language), to
+  load ELF files from disk or network (TFTP) and to debug programs
+  (disassembly, registers dump, calls trace\ldots).
+
 \end{frame}
 
 % -)
@@ -157,6 +164,45 @@
 
 \begin{frame}
   \frametitle{ARCS (SGI)}
+
+  ARCS is the firmware used in all SGI MIPS-based stations. ARCS has
+  also been used on a few Pentium-based stations, in replacement of
+  the traditional BIOS.
+
+  \-
+
+  ARCS offers:
+
+  \begin{itemize}
+  \item
+    Device-tree functions (\emph{GetPeer}, \emph{GetChild},
+    \emph{GetComponent}\ldots)
+  \item
+    Device I/O (\emph{open}, \emph{read}, \emph{write}\ldots)
+  \item
+    Filesystem supports, FAT and ISO9660 (\emph{mount}, \emph{open},
+    \emph{read}\ldots)
+  \item
+    Environment variables
+  \item
+    Time (\emph{GetTime})
+  \end{itemize}
+
+  \-
+
+  ARCS is also able to load ELF files, from disk or network.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{ARCS System Parameter Block}
+
+  The System Parameter Block (SPB) is a structure filed by ARCS before
+  giving the hand to the boot program. The block contains notably the
+  Firmware Vector, which is an array of function pointers. Calling
+  ARCS is as simple as calling the wanted function from this vector.
 
 \end{frame}
 
