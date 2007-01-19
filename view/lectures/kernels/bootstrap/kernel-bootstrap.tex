@@ -36,6 +36,15 @@
 %                {sample}
 %		{figures/sample}
 
+% openboot
+
+\pgfdeclareimage[interpolate=true,width=232pt,height=140pt]
+                {devtree}
+		{figures/devtree}
+\pgfdeclareimage[interpolate=true,width=222pt,height=180pt]
+                {ofw}
+		{figures/ofw}
+
 %
 % document
 %
@@ -61,6 +70,94 @@
 \begin{frame}
   \frametitle{Outline}
   \tableofcontents
+\end{frame}
+
+%
+% sun's openboot
+%
+
+\begin{frame}
+  \frametitle{OpenBoot (Sun)}
+
+  OpenBoot (or OpenFirmware) is the software embedded in all Sun's
+  SPARC based stations.
+
+  \-
+
+  OpenBoot offers many services (as the BIOS does) necessary to the
+  bootup phase. For example:
+
+  \begin{itemize}
+  \item
+    Device-tree exploration (\emph{sibling}, \emph{child},
+    \emph{getprop}\ldots)
+  \item
+    Device I/O (\emph{open}, \emph{read}, \emph{write}\ldots)
+  \item
+    MMU (\emph{map\_phys}, \emph{unmap\_phys}, \emph{itlb\_load},
+    \emph{dtlb\_load}\ldots)
+  \item
+    Environment (boot path, boot device, boot arguments\ldots)
+  \item
+    Time (\emph{milliseconds})
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{OpenBoot device-tree example}
+
+  \begin{center}
+  \pgfuseimage{devtree}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{OpenBoot call}
+
+  Calling OpenBoot is as simple as jumping to the so-called
+  \emph{firmware entry-point} (given in register \%g7 at boot time)
+  with a structure in first argument (register \%o0). This structure is
+  as follow:
+
+  \begin{itemize}
+  \item
+    A pointer to a string indicating the name of the function to call.
+  \item
+    The number of arguments \emph{N}
+  \item
+    The number of return values \emph{M}
+  \item
+    \emph{N} 64-bit arguments
+  \item
+    \emph{M} 64-bit slots for results
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{OpenBoot example}
+
+  \begin{center}
+  \pgfuseimage{ofw}
+  \end{center}
+
+\end{frame}
+
+%
+% sgi's arc
+%
+
+\begin{frame}
+  \frametitle{ARCS (SGI)}
+
 \end{frame}
 
 %
