@@ -73,6 +73,239 @@
 \end{frame}
 
 %
+% Processor hard reset
+%
+
+\begin{frame}
+  \frametitle{Processor initialization}
+
+  At power-up, the processor performs a hardware initialization which sets its registers in a known state.
+
+  \-
+
+  \begin{itemize}
+  \item general purpose registers
+  \item status registers (operating mode)
+  \item caches invalidation
+  \item program counter
+  \end{itemize}
+
+  \-
+
+  After this hardware reset, an optional Built-In Self-Test (BIST) may be also performed.
+
+  \-
+
+  At this point, the processor fetches an executes the first instruction from the {\em PC} register. This instruction is the BIOS entry point (the BIOS is mapped in memomry).
+
+  \-
+
+  SCHEMA (man 3 Intel figure 9-3)
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{The BIOS}
+
+  BIOS stands for Basic Input Output System.
+
+  \-
+
+  It is a program stored in a motherboard EPROM and whose role is to:
+  \begin{itemize}
+  \item Set the basic hardware devices in a known state.
+  \item Provide standard routines to support basic operations on boot devices.
+  \end{itemize}
+
+  \-
+
+  The BIOS is mapped in memory within a fixed addresses range. Within this range, the BIOS entry point matches the initial {\em PC} value. Thus, the BIOS is automatically executed by the processor at boot-on.
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{BIOS interrupts}
+
+  To deal with the hardware, the BIOS provides a set of basic routines to:
+
+  \begin{itemize}
+  \item read/write disk sectors
+  \item display characters on screen
+  \item control keyboard inputs
+  \item perform a warm boot
+  \end{itemize}
+
+  \-
+
+  These routines are directly called by the BIOS itself, or by other programs, using software interrupts.
+
+  \-
+
+  The BIOS installs an interrupt vector in which every entry contains a pointer to a BIOS routine. Then the processor uses this table to determine which routine to call when a program raise an exception.
+
+  \-
+
+  Parameters are passed through the registers.
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{BIOS boot sequence}
+
+  \begin{enumerate}
+
+  \item The BIOS installs its interrupt vector in RAM
+
+  \-
+
+  \item The BIOS first performs the POST (Power-On Self Test) to ensure that vital hardware is present and works properly.
+
+  \-
+
+  \item Then, the BIOS initializes the boot devices, ie all the devices which may be needed to launch the kernel. This includes:
+
+  \-
+
+  \begin{itemize}
+  \item input devices (keyboard)
+  \item output devices (graphic card)
+  \item storage media (hard disk, floppy, usb key\ldots)
+  \item network devices (for PXE boot)
+  \end{itemize}
+
+  \-
+
+  \item Finally, if everthing is ok, the BIOS choses a boot device and charges the bootloader to load the kernel
+  \end{enumerate}
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Vocabulary}
+
+  \begin{description}
+  \item {\bf Bootloader}\\
+  Program which loads the kernel.
+
+  \nl
+
+  \item {\bf Boostrap}\\
+  Procedure while which the kernel is booted.
+
+  \nl
+
+  \item {\bf Bootsector}\\
+  Memory area in which the bootloader is stored.
+  \end{description}
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{BIOS limits}
+
+  {\bf Question:} Why the BIOS does not manage the bootstrap by itself ?
+
+  \-
+
+  \begin{enumerate}
+  \item The bootloader is system specific and particularly depends on:
+
+  \begin{itemize}
+  \item the device from wich to boot
+  \item the filesystem installed on the boot device
+  \item the kernel binary format
+  \end{itemize}
+
+  The BIOS cannot support all binary formats on all filesystems.
+
+  \-
+
+  \item The BIOS cannot find out what the kernel needs to start up.
+
+  \-
+
+  \item The BIOS is not easily updatable since it is written in an EPROM.
+
+  \end{enumerate}
+
+  \-
+
+  For these reasons, the BIOS does not transfer control to the kernel by itself. Instead, it executes a dedicated program whose role is to find the kernel, load it in memory, and execute it. Such a program is called a {\bf bootloader}.
+
+
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{The bootloader location}
+
+  Depending on the architectures, the bootloader can be either a firmware (seen as a BIOS extension), or a normal program:
+
+  \-
+
+  \begin{itemize}
+  \item Sparc, PowerPC, Motorolla and Mips provide a firmware : their BIOS just have to jump on the firmware which is stored in an EPROM. This firmware supports advanced features to load the kernel by itself.
+
+  \-
+
+  \item Intel lets developers program their own bootloader. The bootloader must be found in a fixed location on a boot device (usually in the first sector of a disk). Prior to be executed, the bootloader must be loaded in RAM by the BIOS.
+  \end{itemize}
+
+  \-
+
+  SCHEMA
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{The bootloader tasks}
+
+  In both cases (firmware or program), the bootloader uses the BIOS interrupts to achieve its final goal : run the kernel. This task consists in the following steps:
+
+  \-
+
+  \begin{enumerate}
+  \item Load the kernel and everything it needs in RAM
+  \item Provide the kernel with the information it needs to work correctly
+  \item Install a favorable execution environment
+  \item Transfer execution to the kernel
+  \end{enumerate}
+
+\end{frame}
+
+%
+%
+%
+
+%
 % sun's openboot
 %
 
@@ -203,6 +436,208 @@
   giving the hand to the boot program. The block contains notably the
   Firmware Vector, which is an array of function pointers. Calling
   ARCS is as simple as calling the wanted function from this vector.
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Bootstraping on IA-32 architecture}
+
+  Booting a kernel under IA-32 is much more pedagogical because Intel architecture does not provide any firmware. Thus, all the work has to be done by the kernel developer.
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+\frametitle{Loading the kernel}
+
+
+
+  {\bf Questions:} 
+
+
+  \begin{enumerate}
+  \item {\bf Where to find the kernel ?}\\
+  The kernel is a binary file located in a filesystem which is hosted on a hardware device.\\
+  Generally, accesses to the hardware devices are performed by the BIOS calls. However, the bootloader has to support the filesystem.
+
+  \-
+
+  \item {\bf How to load the kernel ?}\\
+  With the BIOS interrupts
+
+  \-
+
+  \item {\bf Where to load the kernel ?}\\
+  The kernel is linked to be executed at a fixed location. If it is not loaded at the right address, the first derefence will probably fail.\\
+  The address at which the kernel must be loaded is either statically defined in the bootloader, or found in the kernel binary.
+  \end{enumerate}
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Providing system information}
+
+  To boot correctly, a kernel may need to get some information from the system or from the user:
+
+  \begin{itemize}
+  \item RAM size, boot device
+  \item boot options (graphic mode, root partition \ldots)
+  \item modules information
+  \end{itemize}
+
+  \-
+
+  The bootloader can pass information through to ways:
+
+  \begin{itemize}
+  \item the microprocessor registers
+  \item an info structure written in memory. Most often, the structure base address is stored in a register. In some specific cases, this structure can also be found with a magic number.
+  \end{itemize}
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+\frametitle{Preparing the kernel environment}
+
+operating modes
+
+fill arch specific structures
+
+relocation
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+\frametitle{Jumping to the kernel}
+
+Binary format support
+
+stack
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Bootloader designs}
+
+  \begin{itemize}
+  \item {\bf Single stage bootloader}\\
+  The whole bootloader is contained in the 512-bytes bootsector. Such a bootloader is limited by its size and cannot provide many options. This kind of bootloader is most often kernel-specific.
+
+  \-
+
+  \item {\bf Two-stages bootloader}\\
+  This bootloader is divided in two stages. The first stage, whose only role is to load the second stage, is contained within the bootsector. The second stage is the actual bootloader. The main advantage of this kind of bootloader is to avoid the 512-bytes limitation of the bootsector. Thus, the bootloader can offer advanced features like multiboot, filesystems and binaries support, netboot \ldots
+
+  \-
+
+  \item {\bf Mixed bootloader}\\
+  To avoid the 512-byte barrier, the bootloader can be split in two parts, where the first half (512 bytes) can load the rest. This can be achieved by inserting a '512-bytes' break in the ASM code, making sure the rest of the loader is put after the bootsector.
+  \end{itemize}
+
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Multiboot standard}
+
+
+  Multiboot standard specifies an interface between a boot loader and a operating system.
+
+  \-
+
+  It ains at unifying kernel boot procedures in order to easily allow multiple OSes to coexist on the same machine.
+
+  \-
+
+  Multiboot specifications impose :
+
+  \begin{itemize}
+  \item an OS image format
+  \item Machine state
+  \item Boot information format
+  \end{itemize}
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Multiboot header}
+  kernel image must :
+
+  \begin{itemize}
+  \item be an ordinary 32-bit executable file in the standard format for that particular operating system
+  \item contain an additional header called Multiboot header. The Multiboot header must be contained completely within the first 8192 bytes of the OS image, and must be longword (32-bit) aligned.
+  \end{itemize}
+
+  \begin{tabular}{|l|l|l|l|l|}
+  \hline
+  Offset & Type & Field & Description & NameNote\\\hline\hline
+  0 & u32 & magic & multiboot magic & required\\\hline
+  4 & u32 & flags & flags & required\\\hline
+  8 & u32 & checksum & checksum & required\\\hline
+  12 & u32 & header\_addr & multiboot header addr & if flags[16] is set\\\hline
+  16 & u32 & load\_addr & .text physical addr & if flags[16] is set\\\hline
+  20 & u32 & load\_end\_addr & .data end & if flags[16] is set\\\hline
+  24 & u32 & bss\_end\_addr & .bss physical end & if flags[16] is set\\\hline
+  28 & u32 & entry\_addr & entry point physical addr & if flags[16] is set\\\hline
+  32 & u32 & mode\_type  & graphic mode & if flags[2] is set\\\hline
+  36 & u32 & width & number of columns & if flags[2] is set\\\hline
+  40 & u32 & height & number of lines & if flags[2] is set\\\hline
+  44 & u32 & depth & depth & if flags[2] is set\\\hline
+  \end{tabular}
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Chainloading}
+
+  Another way to boot multiple systems on the same machine is to use {\em chainloading}.
+
+  \-
+
+  This method consists in booting the system indirectly. This involves asking the bootloader of system A to boot the bootloader of system B and let the system B booted by its bootloader.
+
+  \-
+
+  Any operating system becomes chainloadable if it has a bootloader inside its root partition.
+
+  \-
+
+  As Windows requires to be installed on an active partition, it always installs its bootloader in the root partition. Thus, Windows is often booted via chainloading.
 
 \end{frame}
 
