@@ -96,7 +96,7 @@
 
   \-
 
-  At this point, the processor fetches an executes the first instruction from the {\em PC} register. This instruction is the BIOS entry point (the BIOS is mapped in memomry).
+  At this point, the processor fetches an executes the first instruction from the {\em PC} register. This instruction is the BIOS entry point (the BIOS is mapped in memory).
 
   \-
 
@@ -512,13 +512,19 @@
 %
 
 \begin{frame}
-\frametitle{Preparing the kernel environment}
+  \frametitle{Preparing the kernel environment}
 
-operating modes
+  {\bf Microprocessor operating mode}
 
-fill arch specific structures
+  \-
 
-relocation
+  Architecture-dependent code is completly obsolete on a microprocessor for which it has not been written. In the same way, it will not work if the microprocessor is not set in the right operating mode.
+
+  \-
+
+  The bootloader has to turn the processor into the appropriated operating mode before transfering execution to the kernel.
+
+  If this mode requires data structures to be initialized, it also will have to fill it.
 
 \end{frame}
 
@@ -527,11 +533,57 @@ relocation
 %
 
 \begin{frame}
-\frametitle{Jumping to the kernel}
+  \frametitle{IA-32 example}
 
-Binary format support
+  When the IA-32 microprocessor first starts, it initializes itself in {\em real mode} which is the default operating mode since 1969.
 
-stack
+  \begin{itemize}
+  \item 16-bit instruction set
+  \item 20-bit address space (1MB)
+  \item Segmented memory
+  \end{itemize}
+
+  \-
+
+  Modern kernels all expect to run in protected mode:
+  \begin{itemize}
+  \item 32-bit instruction set
+  \item 32-bit address space (4GB)
+  \item	Protection (memory protection, privilege levels)
+  \item Advanced memory management facilities (pagination)
+  \item Multitasking facilities
+  \end{itemize}
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Jumping to the kernel}
+
+  If the bootloader has not been statically informed, it will get useful data in the kernel binary headers. In this case obviously, the bootloader has to support the kernel binary format.
+
+  \-
+
+  Among the needed information, the bootloader needs to find:
+
+  \begin{itemize}
+  \item the segments (.text, .data, .bss) loading addresses
+  \item the kernel size
+  \item the kernel entry point
+  \end{itemize}
+
+  \-
+
+  The bootloader finally uses these information to:
+
+  \begin{enumerate}
+  \item relocate the kernel if needed
+  \item install the system stack
+  \item jump to the kernel
+  \end{enumerate}
 
 \end{frame}
 
