@@ -231,7 +231,7 @@
   \item The bootloader is system specific and particularly depends on:
 
   \begin{itemize}
-  \item the device from wich to boot
+  \item the device from which to boot
   \item the filesystem installed on the boot device
   \item the kernel binary format
   \end{itemize}
@@ -268,7 +268,7 @@
   \-
 
   \begin{itemize}
-  \item Sparc, PowerPC, Motorolla and Mips provide a firmware : their BIOS just have to jump on the firmware which is stored in an EPROM. This firmware supports advanced features to load the kernel by itself.
+  \item Sparc, PowerPC, Motorola and Mips provide a firmware : their BIOS just have to jump on the firmware which is stored in an EPROM. This firmware supports advanced features to load the kernel by itself.
 
   \-
 
@@ -439,9 +439,7 @@
 
 \end{frame}
 
-%
-%
-%
+% -)
 
 \begin{frame}
   \frametitle{Bootstraping on IA-32 architecture}
@@ -459,7 +457,7 @@
 
 
 
-  {\bf Questions:} 
+  {\bf Questions:}
 
 
   \begin{enumerate}
@@ -692,6 +690,208 @@
   As Windows requires to be installed on an active partition, it always installs its bootloader in the root partition. Thus, Windows is often booted via chainloading.
 
 \end{frame}
+
+%
+% elf and ld-script
+%
+
+% -)
+
+\begin{frame}
+  \frametitle{Introduction to ELF}
+
+  \textbf{Executable and Linkable Format} is a widely used file format
+  for executables, object code and shared libraries.
+
+  \-
+
+  An ELF file is made of:
+
+  \begin{itemize}
+  \item
+    Segments: used at runtime when loading the executable to memory.
+  \item
+    Sections: at linking time and for relocations.
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Introduction to ELF}
+
+  ELF segments are described using \textbf{program headers} with:
+
+  \begin{itemize}
+  \item
+    Offset and size of data to load from file
+  \item
+    Virtual address where to load the segment
+  \item
+    Physical address where to load the segment (only for architecture
+    that supports it)
+  \item
+    Total size in memory (greater or equal to data size, ex: BSS)
+  \item
+    Access rights (R-W-X)
+  \end{itemize}
+
+  \-
+
+  ELF sections are described with \textbf{section headers} including:
+
+  \begin{itemize}
+  \item
+    Section name (.text, .bss\ldots)
+  \item
+    Flags (allocated, writable\ldots)
+  \item
+    Address where to load/allocate
+  \item
+    Offset and size of data to load from file
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Customizing ELF: ld scripts (basics)}
+
+  Customizing sections is made using the \textbf{SECTIONS} block:
+
+  \begin{verbatim}
+SECTIONS
+{
+  . = 0x4000000;
+
+  .text : { *(.text*) }
+
+  . = 0x8000000;
+
+  .data : { *(.data*) }
+
+}
+  \end{verbatim}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Customizing ELF: ld scripts (basics)}
+
+  \begin{verbatim}
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  LOAD           0x001000 0x04000000 0x04000000 0x0002d 0x0002d R E 0x1000
+  LOAD           0x002000 0x08000000 0x08000000 0x00004 0x00008 RW  0x1000
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x4
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .text
+   01     .data .bss
+   02
+  \end{verbatim}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Customizing ELF: ld scripts (basics)}
+
+  Customizing segment can be done through the \textbf{PHDRS} block:
+
+  \begin{verbatim}
+PHDRS
+{
+  code PT_LOAD;
+  data PT_LOAD;
+}
+  \end{verbatim}
+
+  \-
+
+  Then is it possible to assign sections into a specified segment:
+
+  \begin{verbatim}
+SECTIONS
+{
+  . = 0x4000000;
+  .text : { *(.text*) } : code
+
+  . = 0x8000000;
+  .data : { *(.data*) *(.rodata*) *(.bss*) *(COMMON) } : data
+}
+  \end{verbatim}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Customizing ELF: ld scripts (basics)}
+
+  \begin{verbatim}
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  LOAD           0x001000 0x04000000 0x04000000 0x0002d 0x0002d R E 0x1000
+  LOAD           0x002000 0x08000000 0x08000000 0x00008 0x00008 RW  0x1000
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .text
+   01     .data
+  \end{verbatim}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Customizing ELF: ld scripts (basics)}
+
+  It is possible to declare symbols in ldscripts.
+
+  \begin{verbatim}
+.data : { *(.data*) }
+
+__cpu_data_start = LOADADDR(.data);
+__cpu_data_end = LOADADDR(.data) + SIZEOF(.data);
+  \end{verbatim}
+
+  Now, \emph{\_\_cpu\_data\_start} and \emph{\_\_cpu\_data\_end} can
+  be used as classical variables into your C program.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Why customizing ELF binaries}
+
+  The bootloader needs to load the appropriate segments from the ELF
+  file into the right places in memory.
+
+  \-
+
+  By writing your own rules for generating the ELF, you will know in
+  advance what your binary looks like.
+
+  \-
+
+  The easiest kind of binary to load is one-segment binary (every
+  sections are following each other), only one header to read from the
+  ELF.
+
+\end{frame}
+
+%
+%
+%
 
 %
 % bibliography
