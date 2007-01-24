@@ -67,14 +67,14 @@ Students per group: & 1
 Print a string at the (20, 10) coordinates.\\
 \\
 {\bf Steps:}
-\begin{itemize}
+\begin{enumerate}
 \item {\tt print\_char}\\
 Print a character at the current cursor position, and update the cursor position.
 \item {\tt print\_string}\\
 Print the string pointed by {\em \%si} register at the cursor position and update the cursor position.
 \item{\tt cursor\_set}\\
 Set the cursor position.
-\end{itemize}
+\end{enumerate}
 
 
 
@@ -82,7 +82,7 @@ Set the cursor position.
 \subsection*{Exercise 2: libc}
 
 
-  \begin{itemize}
+  \begin{enumerate}
   \item {\tt malloc}\\
   Very stupid malloc:
   \begin{itemize}
@@ -94,56 +94,76 @@ Set the cursor position.
   Basic itoa (hey, why not using it to test your malloc ?!).
   \item {\tt itoa\_hex}\\
   Hexadecimal itoa (the 0x prefix would be appreciated).
-  \end{itemize}
+  \item {\tt strcmp}\\
+  Basic strcmp : return 0 if both strings are equal, return 1 otherwise.
+  \end{enumerate}
 
 
 \subsection*{Exercise 3: keyboard inputs}
 
-Write a bootstrap which displays the keyboard inputs.\\
-You must display alpha-numeric character and punctuation.\\
-Do not implement key combinaisons (using modifiers like {\tt SHIFT}, {\tt ALT}, {\tt CTRL}, \ldots).\\
-Pressing {\tt ENTER} must result in a newline.
+Write a prompt which gets a string from the keyboard and wich displays it when you press {\tt ENTER}.\\
 \\
+You must display alpha-numeric characters and punctuation.\\
+Do not implement key combinations (using modifiers like {\tt SHIFT}, {\tt ALT}, {\tt CTRL}, \ldots).\\
+Pressing {\tt ENTER} must result in a newline.\\
 \\
+{\em Example}:
+\begin{verbatim}
+Enter your name: Renaud
+Hello Renaud !
+\end{verbatim}
 {\bf Steps:}
-  \begin{itemize}
+  \begin{enumerate}
   \item {\tt kbd\_get\_scancode}\\
   Get the next scancode from the keyboard buffer.
   \item {\tt scancode\_to\_ascii}\\
   Convert a scancode to an ASCII character.
-  \end{itemize}
+  \end{enumerate}
 
 
 
 \subsection*{Exercise 4: floppy drive}
 
+Write a program which loads the bootsector of a floppy disk and which checks wether it does contain a bootloader.\\
+\\
+(The bootsector contains a bootloader if it is ended by the 0xAA55 magic.)\\
+\\
+Your program must print the magic value as shown in the following example:\\
+\\
+{\em Example:}
+\begin{verbatim}
+Loading floppy bootsector ... OK
+magic found: 0xaa55
 
-  \begin{itemize}
+Loading floppy bootsector ... OK
+ERROR: bad magic: 0xt824
+\end{verbatim}
+{\bf Steps:}
+  \begin{enumerate}
   \item {\tt floppy\_read\_sector}\\
-  Read a sector from the floppy drive (A:).
-  \item {\tt floppy\_read}\\
   Read {\em n} sectors from the floppy drive (A:).
-  \end{itemize}
+  \end{enumerate}
 
 \subsection*{Exercise 5: operating modes switching}
 
+Write a program which turns the microprocessor into protected mode.
 
-  \begin{itemize}
+  \begin{enumerate}
   \item {\tt pmode\_enable}\\
   Switch from real mode to protected mode.
   \item {\tt memset}\\
   Basic memset function.
   \item {\tt memcpy}\\
   Basic memcpy function.
-  \end{itemize}
+  \end{enumerate}
 
 \subsection*{Exercise 6: ELF loader}
 
 
-  \begin{itemize}
+  \begin{enumerate}
   \item {\tt }
   \item {\tt }
-  \end{itemize}
+  \end{enumerate}
 
 \newpage
 
