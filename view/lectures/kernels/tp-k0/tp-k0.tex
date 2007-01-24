@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/lectures/kernels/tp-k0/tp-k0.tex
 %%
 %% created       matthieu bucchianeri   [wed jan 24 14:46:51 2007]
-%% updated       matthieu bucchianeri   [wed jan 24 15:10:21 2007]
+%% updated       matthieu bucchianeri   [thu jan 25 00:11:03 2007]
 %%
 
 %
@@ -61,10 +61,32 @@ Students per group: & 1
 \newpage
 
 
-\section*{implementation}
+\section*{Implementation}
+
+\subsection*{Before starting}
+
+\begin{itemize}
+\item
+  You will use NASM to assemble your code. NASM is present on the
+  PIE. To test, you will use QEMU, which can be ran using the script
+  \tt $\tilde{}$bucchi\_m/qemu/run.sh \rm and adding the correct parameters
+  (\tt -fda \rm for a floppy image).
+\item
+  A bootsector is not an ELF binary, but a flat object (without any
+  headers). Obtaining flat binaries with NASM is done using the \tt -f \rm
+  flag (refer to the manual).
+\item
+  The bootsector is loaded at address 0x7c00, you must find a way to
+  tell NASM that the code will be loaded there.
+\item
+  Remember that the microprocessor starts in 16-bit mode, so you must
+  find a directive to tell NASM to assemble 16-bit code. Next, when
+  you switch to 32-bit mode, find another directive to tell NASM the
+  new assembly mode.
+\end{itemize}
 
 \subsection*{Exercise 1: string display}
-Print a string at the (20, 10) coordinates.\\
+Print a string at the (20, 10) coordinates. You must use the BIOS calls.\\
 \\
 {\bf Steps:}
 \begin{enumerate}
@@ -159,44 +181,131 @@ Write a program which turns the microprocessor into protected mode.
 
 \subsection*{Exercise 6: ELF loader}
 
+You will now write a complete bootloader. This one will load an ELF
+file from the disk (located at the sector just after the bootsector)
+and then relocate it in memory at the right place, before jumping to
+it.
+
+The ELF file \textbf{must} contains two segments, one with code (which
+must be loaded at 1 Mb) and the other with data (loaded at 2
+Mb). Example:
+
+\begin{verbatim}
+42sh> readelf -l bootloader
+
+Elf file type is EXEC (Executable file)
+Entry point 0x1000cc
+There are 2 program headers, starting at offset 52
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  LOAD           0x001000 0x00100000 0x00100000 0x000df 0x000df R E 0x1000
+  LOAD           0x002000 0x00200000 0x00200000 0x00022 0x00028 RW  0x1000
+
+ Section to Segment mapping:
+  Segment Sections...
+   00     .text
+   01     .data .rodata .bss
+\end{verbatim}
+
+Your bootloader \textbf{must} reset the BSS memory. To keep the thing
+simple, put the \emph{.bss} section at the end of the second
+segment. Its size can be determined by computing the difference
+between MemSize and FileSiz.
+
+Your tarball \textbf{must} include the ld-script used to create such
+ELF binaries.
+
+Before starting, you should watch the ELF documentation, especially
+about the ELF header and the Program Header. The task is not as harder
+as it looks like (our code dealing with ELF files is about 30
+instructions long).
+
+A good methodology should follow these steps:
 
   \begin{enumerate}
-  \item {\tt }
-  \item {\tt }
+
+    \item {Get the \tt floppy\_read\_sector \rm function and call it
+    correctly to store the binary in a temporary location}
+
+    \item {Reuse your \tt pmode\_enable \rm function}
+
+    \item {Read the loaded binary to find the segments and extract
+    their load addresses, size and source location into the file}
+
+    \item {Use your \tt memcpy \rm to relocate the code and the
+    initialized data, use your \tt memset \rm to reset the BSS section}
+
+    \item {Find the binary entry point (2 instructions !) and jump on
+    it after initializing a correct stack)}
+
   \end{enumerate}
+
+You must write your own test ELF binary, which must be able to write
+text on the screen. See appendix \emph{VGA text framebuffer}.
 
 \newpage
 
+\section{Appendixes}
+
+\begin{itemize}
+\item
+  BIOS services:
+  \begin{itemize}
+  \item
+    int 10: video services
+  \item
+    int 13: disk services
+  \item
+    int 16: keyboard services
+  \end{itemize}
+\item
+  VGA Text Framebuffer
+\item
+  Executable \& Linkable Format (ELF) documentation
+\item
+  Intel IA-32 mode switching procedures
+\end{itemize}
 
 %
 % Bios interrupts documentation
 %
 
-\section{Bios Interupts}
-
-\subsection{Video services}
 \includepdf[pages=-]{int10}
 \includepdf[pages=-]{int10_2}
 \includepdf[pages=-]{int10_3}
 \includepdf[pages=-]{int10_e}
 
-\subsection{Disks accesses}
 \includepdf[pages=-]{int13}
 \includepdf[pages=-]{int13_0}
 \includepdf[pages=-]{int13_1}
 \includepdf[pages=-]{int13_2}
 
-\subsection{Keyboard}
 \includepdf[pages=-]{int16}
 \includepdf[pages=-]{int16_0}
 \includepdf[pages=-]{int16_1}
 \includepdf[pages=-]{int16_scancodes}
 
 %
-% ELF documentation
+% VGA framebuffer
 %
 
-\section{ELF format}
+\subsection*{VGA Text Framebuffer}
+
+At startup, a VGA card is initialized in color-text mode, with the 80x25
+resolution. Each cell is represented by the following couple of bytes:
+
+\begin{center}
+\includegraphics[width=\linewidth]{vga-text}
+\end{center}
+
+Write 0x4b at the address 0xb8000 and 0x96 at 0xb8001 will print the
+character 'K' blinking in yellow on a blue background, at the top-left corner
+of the screen.
+
+%
+% ELF documentation
+%
 
 \includepdf[pages=-]{elf1}
 \includepdf[pages=-]{elf2}
@@ -209,8 +318,6 @@ Write a program which turns the microprocessor into protected mode.
 %
 % IA-32 operating mode switch
 %
-
-\section{IA-32 operating modes}
 
 \includepdf[pages=-]{mode_switch}
 
