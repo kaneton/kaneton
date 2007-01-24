@@ -56,24 +56,141 @@ Architecture: & Intel 32-bit \\
 Students per group: & 1
 \end{tabular}
 
-\subsection*{Introduction}
+\section*{Introduction}
 
 \newpage
 
+
+\section*{implementation}
+
+\subsection*{Exercise 1: string display}
+Print a string at the (20, 10) coordinates.\\
+\\
+{\bf Steps:}
+\begin{itemize}
+\item {\tt print\_char}\\
+Print a character at the current cursor position, and update the cursor position.
+\item {\tt print\_string}\\
+Print the string pointed by {\em \%si} register at the cursor position and update the cursor position.
+\item{\tt cursor\_set}\\
+Set the cursor position.
+\end{itemize}
+
+
+
+
+\subsection*{Exercise 2: libc}
+
+
+  \begin{itemize}
+  \item {\tt malloc}\\
+  Very stupid malloc:
+  \begin{itemize}
+  \item Declare the heap.
+  \item Declare a break value at the begining of the heap.
+  \item malloc returns the break value in {\em \%ax} and then increments it.
+  \end{itemize}
+  \item {\tt itoa}\\
+  Basic itoa (hey, why not using it to test your malloc ?!).
+  \item {\tt itoa\_hex}\\
+  Hexadecimal itoa (the 0x prefix would be appreciated).
+  \end{itemize}
+
+
+\subsection*{Exercise 3: keyboard inputs}
+
+Write a bootstrap which displays the keyboard inputs.\\
+You must display alpha-numeric character and punctuation.\\
+Do not implement key combinaisons (using modifiers like {\tt SHIFT}, {\tt ALT}, {\tt CTRL}, \ldots).\\
+Pressing {\tt ENTER} must result in a newline.
+\\
+\\
+{\bf Steps:}
+  \begin{itemize}
+  \item {\tt kbd\_get\_scancode}\\
+  Get the next scancode from the keyboard buffer.
+  \item {\tt scancode\_to\_ascii}\\
+  Convert a scancode to an ASCII character.
+  \end{itemize}
+
+
+
+\subsection*{Exercise 4: floppy drive}
+
+
+  \begin{itemize}
+  \item {\tt floppy\_read\_sector}\\
+  Read a sector from the floppy drive (A:).
+  \item {\tt floppy\_read}\\
+  Read {\em n} sectors from the floppy drive (A:).
+  \end{itemize}
+
+\subsection*{Exercise 5: operating modes switching}
+
+
+  \begin{itemize}
+  \item {\tt pmode\_enable}\\
+  Switch from real mode to protected mode.
+  \item {\tt memset}\\
+  Basic memset function.
+  \item {\tt memcpy}\\
+  Basic memcpy function.
+  \end{itemize}
+
+\subsection*{Exercise 6: ELF loader}
+
+
+  \begin{itemize}
+  \item {\tt }
+  \item {\tt }
+  \end{itemize}
+
+\newpage
+
+
+%
+% Bios interrupts documentation
+%
+
+\section{Bios Interupts}
+
+\subsection{Video services}
 \includepdf[pages=-]{int10}
 \includepdf[pages=-]{int10_2}
 \includepdf[pages=-]{int10_3}
 \includepdf[pages=-]{int10_e}
 
+\subsection{Disks accesses}
 \includepdf[pages=-]{int13}
 \includepdf[pages=-]{int13_0}
 \includepdf[pages=-]{int13_1}
 \includepdf[pages=-]{int13_2}
 
+\subsection{Keyboard}
 \includepdf[pages=-]{int16}
 \includepdf[pages=-]{int16_0}
 \includepdf[pages=-]{int16_1}
 \includepdf[pages=-]{int16_scancodes}
+
+%
+% ELF documentation
+%
+
+\section{ELF format}
+
+\includepdf[pages=-]{elf1}
+\includepdf[pages=-]{elf2}
+\includepdf[pages=-]{elf3}
+\includepdf[pages=-]{elf4}
+\includepdf[pages=-]{elf5}
+\includepdf[pages=-]{elf6}
+\includepdf[pages=-]{elf7}
+
+%
+% IA-32 operating mode switch
+%
+
+\section{IA-32 operating modes}
 
 \includepdf[pages=-]{mode_switch}
 
