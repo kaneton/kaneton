@@ -36,9 +36,21 @@
 %                {sample}
 %		{figures/sample}
 
+%
+
+\pgfdeclareimage[interpolate=true,width=233pt,height=100pt]
+                {paging-step1}
+		{figures/paging-step1}
+\pgfdeclareimage[interpolate=true,width=233pt,height=100pt]
+                {paging-step2}
+		{figures/paging-step2}
+\pgfdeclareimage[interpolate=true,width=233pt,height=100pt]
+                {paging-step3}
+		{figures/paging-step3}
+
 % tlb
 
-\pgfdeclareimage[interpolate=true,width=258pt,height=138pt]
+\pgfdeclareimage[interpolate=true,width=187pt,height=100pt]
                 {detailed-tlb}
 		{figures/detailed-tlb}
 
@@ -143,6 +155,16 @@
       \begin{center}
         \pgfuseimage{detailed-tlb}
       \end{center}
+
+      \item A cache-hit occurs when:
+      \begin{enumerate}
+      \item
+        V = 1
+      \item
+        ID = current ASID \textbf{or} G = 1
+      \item
+        VA $\leq$ requested address $<$ VA + SZ
+      \end{enumerate}
     \end{itemize}
 \end{frame}
 
@@ -150,6 +172,41 @@
 
 \begin{frame}
   \frametitle{Scenario of page-hit}
+
+  \begin{center}
+    \pgfuseimage{paging-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Scenario of page-hit}
+
+  \begin{center}
+    \pgfuseimage{paging-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Scenario of page-hit}
+
+  \begin{center}
+    \pgfuseimage{paging-step3}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Scenario of page-hit with error}
+
+
 
 \end{frame}
 
