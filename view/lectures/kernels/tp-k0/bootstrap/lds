@@ -1,0 +1,33 @@
+ENTRY(bootloader_entry)
+
+PHDRS
+{
+	code PT_LOAD;
+	data PT_LOAD;
+}
+
+SECTIONS
+{
+	. = 0x100000;
+
+	.text :
+	{
+		*(.text*)
+	} : code
+
+
+	. = 0x200000;
+
+	.data :
+	{
+		*(.data*)
+	} : data
+	.rodata :
+	{
+		*(.rodata*)
+	} : data
+	.bss :
+	{
+		*(.bss*)
+	} : data
+}
