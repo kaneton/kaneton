@@ -53,10 +53,12 @@ Assistants : & Matthieu Bucchianeri - \small{chichelover@epita.fr} \\
 Dedicated googlegroup: & kaneton-students \\
 Programming languages: & Assembly, C \\
 Architecture: & Intel 32-bit \\
-Students per group: & 1
+Students per group: & 1\\
+Tarball: & k0-login\_l.tar.bz2\\
+Permissions: & we don't care
 \end{tabular}
 
-\section*{Introduction}
+%\section*{Introduction}
 
 \section*{Before starting}
 
@@ -75,15 +77,17 @@ Students per group: & 1
   tell NASM that the code will be loaded there.
 \item
   Remember that the microprocessor starts in 16-bit mode, so you must
-  find a directive to tell NASM to assemble 16-bit code. Next, when
+  find a directive to tell NASM to assemble 16-bit code. Then, when
   you switch to 32-bit mode, find another directive to tell NASM the
   new assembly mode.
 \item
   Your bootsector must end with a signature (0xAA55). This means that
-  blank characters must inserted until byte 510, and then these two
-  bytes must be present.\\
-  \tt times 510-(\$-\$\$) db 0	; fill the rest of the sector with zeros\\
-  \tt dw 0xAA55			; add the bootloader signature to the end
+  blank characters must be inserted until byte 510, and then these two
+  bytes must be present.
+  \begin{verbatim}
+  times 510-($-$$) db 0	  ; fill the rest of the sector with zeros
+  dw    0xAA55            ; add the bootloader signature to the end
+  \end{verbatim}
 \end{itemize}
 
 \newpage
@@ -144,14 +148,14 @@ Write a program wich dumps the registers values.\\
   \end{enumerate}
 \item {\bf Output}
 \begin{verbatim}
-ax = 0x1234
-bx = 0x0000
-cx = 0xabcd
-dx = 0x00ff
+ax = 0x1234 = 4660
+bx = 0x0000 = 0
+cx = 0xabcd = 43981
+dx = 0x00ff = 255
 
-bp = 0x1000
-sp = 0x0ff8
-ip = 0x07cd
+bp = 0x1000 = 4096
+sp = 0x0ff8 = 4088
+ip = 0x7c00 = 31744
 \end{verbatim}
 
 \end{itemize}
@@ -234,11 +238,13 @@ filename: & ex5.s
 \\
 \item {\bf Subject}\\
 Write a program which turns the microprocessor into protected mode.\\
+Once in protected mode, your program must clear the whole screen and print a message
+indicating that protected mode is enabled.
 \item {\bf Steps}
   \begin{enumerate}
   \item {\tt pmode\_enable}\\
   Switch from real mode to protected mode.
-  \item {\tt print\_string2}\\
+  \item {\tt print\_string\_fb}\\
   Print a string (in protected mode). See appendix \emph{VGA text
   framebuffer}.
   \item {\tt memset}\\
@@ -252,13 +258,22 @@ Write a program which turns the microprocessor into protected mode.\\
 
 \subsection*{Exercise 6: ELF loader}
 
+\begin{itemize}
+\item {\bf Source tree}\\
+\begin{tabular}{p{4cm}l}
+directory: & /k0-login\_l/ex6/\\
+filenames: & ex6.lds\\
+ & ex6.s
+\end{tabular}
+\\
+\item {\bf Subject}\\
 You will now write a complete bootloader. This one will load an ELF
 file from the disk (located at the sector just after the bootsector)
 and then relocate it in memory at the right place, before jumping to
 it.
 
-The ELF file \textbf{must} contains two segments, one with code (which
-must be loaded at 1 Mb) and the other with data (loaded at 2
+The ELF file \textbf{must} contain two segments, one with the code (which
+must be loaded at 1 Mb) and the other with the data (loaded at 2
 Mb). Example:
 
 \begin{verbatim}
@@ -290,25 +305,23 @@ ELF binaries.
 Before starting, you should watch the ELF documentation, especially
 about the ELF header and the Program Header. The task is not as harder
 as it looks like (our code dealing with ELF files is about 30
-instructions long).
-
-A good methodology should follow these steps:
-
+instructions long).\\
+\item {\bf Steps}
   \begin{enumerate}
 
     \item {Get the \tt floppy\_read\_sector \rm function and call it
-    correctly to store the binary in a temporary location}
+    correctly to store the binary in a temporary location}.
 
-    \item {Reuse your \tt pmode\_enable \rm function}
+    \item {Reuse your \tt pmode\_enable \rm function}.
 
-    \item {Read the loaded binary to find the segments and extract
-    their load addresses, size and source location into the file}
+    \item {Read the loaded binary to find its segments and extract
+    their load addresses, size and source location into the file}.
 
     \item {Use your \tt memcpy \rm to relocate the code and the
-    initialized data, use your \tt memset \rm to reset the BSS section}
+    initialized data, use your \tt memset \rm to reset the BSS section}.
 
     \item {Find the binary entry point (2 instructions !) and jump on
-    it after initializing a correct stack)}
+    it after having initialized a correct stack)}.
 
   \end{enumerate}
 
@@ -337,7 +350,7 @@ write text on the screen. See appendix \emph{VGA text framebuffer}.
 \item
   Intel IA-32 mode switching procedures
 \end{itemize}
-
+\end{itemize}
 %
 % Bios interrupts documentation
 %
