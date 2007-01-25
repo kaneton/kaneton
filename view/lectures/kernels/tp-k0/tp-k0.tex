@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/lectures/kernels/tp-k0/tp-k0.tex
 %%
 %% created       matthieu bucchianeri   [wed jan 24 14:46:51 2007]
-%% updated       matthieu bucchianeri   [thu jan 25 00:11:03 2007]
+%% updated       matthieu bucchianeri   [thu jan 25 00:56:02 2007]
 %%
 
 %
@@ -83,6 +83,12 @@ Students per group: & 1
   find a directive to tell NASM to assemble 16-bit code. Next, when
   you switch to 32-bit mode, find another directive to tell NASM the
   new assembly mode.
+\item
+  Your bootsector must end with a signature (0xAA55). This means that
+  blank characters must inserted until byte 510, and then these two
+  bytes must be present.\\
+  \tt times 510-(\$-\$\$) db 0	; fill the rest of the sector with zeros\\
+  \tt dw 0xAA55			; add the bootloader signature to the end
 \end{itemize}
 
 \subsection*{Exercise 1: string display}
@@ -168,11 +174,14 @@ ERROR: bad magic: 0xt824
 
 \subsection*{Exercise 5: operating modes switching}
 
-Write a program which turns the microprocessor into protected mode.
+Write a bootstrap which turns the microprocessor into protected mode.
 
   \begin{enumerate}
   \item {\tt pmode\_enable}\\
   Switch from real mode to protected mode.
+  \item {\tt print\_string2}\\
+  Print a string (in protected mode). See appendix \emph{VGA text
+  framebuffer}.
   \item {\tt memset}\\
   Basic memset function.
   \item {\tt memcpy}\\
@@ -241,8 +250,8 @@ A good methodology should follow these steps:
 
   \end{enumerate}
 
-You must write your own test ELF binary, which must be able to write
-text on the screen. See appendix \emph{VGA text framebuffer}.
+You must write your own test ELF binary in C, which must be able to
+write text on the screen. See appendix \emph{VGA text framebuffer}.
 
 \newpage
 
@@ -292,16 +301,24 @@ text on the screen. See appendix \emph{VGA text framebuffer}.
 
 \subsection*{VGA Text Framebuffer}
 
-At startup, a VGA card is initialized in color-text mode, with the 80x25
-resolution. Each cell is represented by the following couple of bytes:
+Displaying text on the screen can be done using the BIOS services (int
+10). But once in protected mode, the BIOS is not available anymore. So
+we must find an alternate way to drive the console.
+
+At startup, a VGA card is initialized in color-text mode, with the
+80x25 resolution. Each cell is represented by the following couple of
+bytes in memory:
 
 \begin{center}
 \includegraphics[width=\linewidth]{vga-text}
 \end{center}
 
+The console \emph{framebuffer} is a memory area (formatted with cells
+as described above) which maps the screen.
+
 Write 0x4b at the address 0xb8000 and 0x96 at 0xb8001 will print the
 character 'K' blinking in yellow on a blue background, at the top-left corner
-of the screen.
+of the screen. The second character is located at 0xb8002.
 
 %
 % ELF documentation
