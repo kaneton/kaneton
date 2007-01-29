@@ -47,12 +47,27 @@
 \pgfdeclareimage[interpolate=true,width=233pt,height=100pt]
                 {paging-step3}
 		{figures/paging-step3}
+\pgfdeclareimage[interpolate=true,width=233pt,height=100pt]
+                {paging-error-step1}
+		{figures/paging-error-step1}
+\pgfdeclareimage[interpolate=true,width=233pt,height=100pt]
+                {paging-error-step2}
+		{figures/paging-error-step2}
+\pgfdeclareimage[interpolate=true,width=233pt,height=100pt]
+                {paging-miss-step1}
+		{figures/paging-miss-step1}
+\pgfdeclareimage[interpolate=true,width=233pt,height=100pt]
+                {paging-miss-step2}
+		{figures/paging-miss-step2}
 
 % tlb
 
 \pgfdeclareimage[interpolate=true,width=187pt,height=100pt]
                 {detailed-tlb}
 		{figures/detailed-tlb}
+\pgfdeclareimage[interpolate=true,width=270pt,height=120pt]
+                {mips-tlb}
+		{figures/mips-tlb}
 
 %
 % document
@@ -206,7 +221,20 @@
 \begin{frame}
   \frametitle{Scenario of page-hit with error}
 
+  \begin{center}
+    \pgfuseimage{paging-error-step1}
+  \end{center}
 
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Scenario of page-hit with error}
+
+  \begin{center}
+    \pgfuseimage{paging-error-step2}
+  \end{center}
 
 \end{frame}
 
@@ -215,12 +243,47 @@
 \begin{frame}
   \frametitle{Scenario of page-miss}
 
+  \begin{center}
+    \pgfuseimage{paging-miss-step1}
+  \end{center}
+
 \end{frame}
 
 % -)
 
 \begin{frame}
-  \frametitle{What to do on TLB-miss ?}
+  \frametitle{Scenario of page-miss}
+
+  \begin{center}
+    \pgfuseimage{paging-miss-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{What to do on a TLB-miss ?}
+
+  When an error or TLB-miss occurs, an exception is thrown. There are
+  three possible actions:
+
+  \begin{itemize}
+  \item
+    Stopping the program and reporting the error to the user
+    (\emph{Segmentation fault}
+  \item
+    Modifying the TLB entry to avoid the error (changing rights or
+    ownership) and resuming the program
+  \item
+    Filling the missing entry and resuming the program
+  \end{itemize}
+
+  \-
+
+  In the next slides, we will focus on the third point. This is not an
+  error, remember that the TLB is a cache, meaning that it cannot host
+  all the required entries.
 
 \end{frame}
 
@@ -229,12 +292,91 @@
 \begin{frame}
   \frametitle{Manual TLB entry replacement}
 
+  Processors with very basic MMU let the kernel fill the TLB.
+
+  \-
+
+  On TLB-miss, an exception is thrown and the involved virtual address
+  is passed through a register. The exception handler must look in its
+  own structures an perform the TLB entry replacement by hand.
+
+  \-
+
+  A TLB replacement involves:
+
+  \begin{itemize}
+  \item
+    Selecting an unlikely to be used entry to remove
+  \item
+    Building and adding the new entry
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Choosing a good entry to replace}
+
+  Sometimes, the TLB cache is full, meaning that all of the few
+  entries are used. Adding a new entry forces to remove an existing
+  one.
+
+  \-
+
+  Some TLB implements a LRU (\emph{Least Recently Used}) algorithm and
+  put in a register the number of the entry most unlikely to be used.
+
+  \-
+
+  Otherwise, the kernel can implement its own aging algorithms using
+  the TLB entries facilities (accessed bit, user free
+  bits\ldots). Another easier solution is to replace a random entry,
+  this is fast but not really efficient.
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{MIPS example}
+
+  \begin{center}
+    \pgfuseimage{mips-tlb}
+  \end{center}
+
+  MIPS TLB entries are mapping two pages each, depending on the last
+  bit of the virtual address (odd or even pages). Many page size are
+  available, from 4 Kb to 256 Mb.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{MIPS example}
+
+  MMU registers list:
+
+  \begin{itemize}
+  \item
+    ASID register: specified the current ASID value
+  \item
+    Index register: index of the TLB to use (for modifying or removing)
+  \item
+    Random register: random index of a TLB entry that can be replaced
+    (the first dozen entries are protected)
+  \item
+    Tag register (called EntryHi): used to set the Tag word of an entry
+  \item
+    Entry registers (called EntryLo): used to set the Entry word of an entry
+  \item
+    PageMask register: used to specify the size of the page for the
+    TLB entry
+  \item
+    Bad virtual address (BadVAddr) register: reports the address that
+    caused page-miss of page-error
+\end{itemize}
 
 \end{frame}
 
@@ -243,12 +385,81 @@
 \begin{frame}
   \frametitle{Exercise: tree-based replacement algorithm}
 
+  Write a pseudo-algorithm for replacing TLB entries with a binary
+  page tree.
+
+  \-
+
+  Your algorithm, given a virtual address, must fill the TLB with the
+  correct entry or report an error if no translation can be done.
+
+  \-
+
+  Each bit of a virtual address correspond to a direction to take in
+  the tree. A bit set tells to take the right child and a bit reset
+  the left child.
+
+  \-
+
+  The leaf contains the translation. The page size is determined by
+  the depth of a leaf.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Exercise: correction}
+
+  \begin{enumerate}
+  \item
+    Pagesz $\leftarrow$ 31
+  \item
+    Get BadVAddr
+  \item
+    For each bit from left to right
+    \begin{enumerate}
+    \item
+      Goto appropriate child
+    \item
+      In non-existent child, throw error
+    \item
+      On a leaf:
+      \begin{itemize}
+      \item
+        Index $\leftarrow$ Random
+      \item
+        EntryHi $\leftarrow$ Build tag (Vaddr$_{31-pagesz}$, ASID)
+      \item
+        EntryLo $\leftarrow$ Build entry (Paddr, Writable)
+      \item
+        Pagemask $\leftarrow$ $2^{pagesz}-1$
+      \end{itemize}
+    \item
+      Otherwise, Pagesz $\leftarrow$ Pagesz - 1
+    \end{enumerate}
+  \end{enumerate}
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Semi-automatic TLB replacement}
+
+  Some kind of MMU offers a semi-automatic TLB replacement mecanism.
+
+  \-
+
+  The principle of semi-automatic TLB management consist in a software
+  cache in main memory. When no entry is found in the MMU's TLB, a
+  preprogrammed replacement routine is called and search the software
+  cache.
+
+  \-
+
+  If no entry is found in the software table, then an exception is
+  raised to the kernel.
 
 \end{frame}
 
@@ -257,12 +468,23 @@
 \begin{frame}
   \frametitle{UltraSPARC example}
 
+  On UltraSPARC, the software cache is called TSB (\emph{Translation
+  Storage Buffer}) and is a direct-mapped cache of TTE
+  (\emph{Translation Table Entry}). Searching the TSB involves only
+  one memory access, this is quite acceptable.
+
+  \-
+
+
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Full-automatic TLB replacement}
+
+
 
 \end{frame}
 
@@ -315,7 +537,7 @@
 
 \end{frame}
 
-% ... XXX user etc..
+% ... XXX user, copy on write, stack expansion, page-on-demand etc..
 
 %
 % swapping
