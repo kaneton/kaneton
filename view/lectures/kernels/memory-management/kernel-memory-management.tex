@@ -68,6 +68,22 @@
 \pgfdeclareimage[interpolate=true,width=270pt,height=120pt]
                 {mips-tlb}
 		{figures/mips-tlb}
+\pgfdeclareimage[interpolate=true,width=268pt,height=100pt]
+                {direct-mapped}
+		{figures/direct-mapped}
+
+% smp
+
+\pgfdeclareimage[interpolate=true,width=210pt,height=180pt]
+                {smp-coherency-step1}
+		{figures/smp-coherency-step1}
+\pgfdeclareimage[interpolate=true,width=210pt,height=180pt]
+                {smp-coherency-step2}
+		{figures/smp-coherency-step2}
+\pgfdeclareimage[interpolate=true,width=210pt,height=180pt]
+                {smp-coherency-step3}
+		{figures/smp-coherency-step3}
+
 
 %
 % document
@@ -475,7 +491,13 @@
 
   \-
 
+  \begin{center}
+    \pgfuseimage{direct-mapped}
+  \end{center}
 
+  \-
+
+  The MMU is given only the base and the size of the TSB.
 
 \end{frame}
 
@@ -501,6 +523,64 @@
   \frametitle{Exercise: contiguous mapping with page-directory \&
   page-tables}
 
+  \begin{itemize}
+  \item
+    pde\_start $\leftarrow$ PDE\_ENTRY(Vaddr) \\
+    pde\_end $\leftarrow$ PDE\_ENTRY(Vaddr + Size) \\
+    pte\_start $\leftarrow$ PDE\_ENTRY(Vaddr) \\
+    pte\_end $\leftarrow$ PDE\_ENTRY(Vaddr + Size)
+  \item
+    i $\leftarrow$ pde\_start to pde\_end
+    \begin{itemize}
+    \item
+      if pd\_get\_table(i) not exist then pd\_add\_table(i, new table)
+    \item
+      table $\leftarrow$ pd\_get\_table(i)
+    \item
+      j $\leftarrow$ (pte\_start if i == pde\_start, 0 otherwise) to (pte\_end if i == pde\_end, 1024 otherwise)
+      \begin{itemize}
+      \item
+        pt\_add\_page(table, j, translation)
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Cycles in virtual memory management}
+
+  There are a few common cycles when dealing with virtual memory.
+
+  \begin{itemize}
+  \item
+    When a TLB-miss handler is called, it may generate another
+    TLB-miss when accessing the kernel's structures
+  \item
+    When filling page-directory \& page-tables to map a region of
+    memory, the page directory and/or page-tables needs to be mapped
+  \end{itemize}
+
+  \-
+
+  Sometimes, the CPU provides facilities to avoid this cycle: a region
+  in virtual memory called a bypass region exists and permits to
+  bypass the MMU (this means that putting the memory management
+  structures in this area will never generate TLB-miss).
+
+  \-
+
+  Others CPU do not. So we have to show imagination.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Mirroring on IA-32}
+
 \end{frame}
 
 % -)
@@ -520,7 +600,50 @@
 % -)
 
 \begin{frame}
+  \frametitle{Coherency on multiprocessor platform}
+
+  \begin{center}
+    \pgfuseimage{smp-coherency-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Coherency on multiprocessor platform}
+
+  \begin{center}
+    \pgfuseimage{smp-coherency-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Coherency on multiprocessor platform}
+
+  \begin{center}
+    \pgfuseimage{smp-coherency-step3}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
   \frametitle{Unmapping}
+
+  Unmapping memory pages is very easy:
+
+  \begin{itemize}
+  \item
+    Remove the translation into the kernel's or MMU's structures
+  \item
+    Do not forget to invalidate the corresponding entry in TLB if
+    needed
+  \end{itemize}
 
 \end{frame}
 
