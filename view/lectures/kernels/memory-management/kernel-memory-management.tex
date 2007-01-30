@@ -59,6 +59,9 @@
 \pgfdeclareimage[interpolate=true,width=204pt,height=120pt]
                 {ia32-seg}
 		{figures/ia32-seg}
+\pgfdeclareimage[interpolate=true,width=198pt,height=180pt]
+                {ia32-multiseg}
+		{figures/ia32-multiseg}
 \pgfdeclareimage[interpolate=true,width=90pt,height=180pt]
                 {mips-as}
 		{figures/mips-as}
@@ -153,13 +156,55 @@
   \tableofcontents
 \end{frame}
 
+% -)
+
+\begin{frame}
+  \frametitle{Map of the lessons}
+
+  In the first lesson, we will focus on the basics of memory
+  management in a kernel in order to provide the main system calls
+  (\emph{mmap}).
+
+  \begin{itemize}
+  \item
+    Bank switching
+  \item
+    Segmentation
+  \item
+    Paging
+  \end{itemize}
+
+  \-
+
+  In the second lesson, we will deal with higher level algorithms of
+  allocation and with swapping.
+
+  \begin{itemize}
+  \item
+    User memory allocation
+  \item
+    Swapping
+  \end{itemize}
+
+\end{frame}
+
 %
 % physical memory & virtual memory
 %
 
 \section{Physical memory \& virtual memory}
 
-% XXX philo
+%-)
+
+\begin{frame}
+  \frametitle{Definition of an address space and virtual memory}
+
+  An address space is a set of memory area refering to the physical
+  RAM or to I/O.
+
+ XXX
+
+\end{frame}
 
 %-)
 
@@ -260,7 +305,13 @@
 \begin{frame}
   \frametitle{Overview}
 
-  XXX
+  Segmentation is a mecanism where the CPU or the kernel defines
+  multiple area in memory with specific privileges.
+
+  \-
+
+  Most MMU provides fixed segments, while more complicated one let the
+  kernel filling structures to declare the segments.
 
 \end{frame}
 
@@ -325,6 +376,17 @@
 
   \begin{center}
    \pgfuseimage{ia32-seg}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{IA-32 example, protected mode}
+
+  \begin{center}
+   \pgfuseimage{ia32-multiseg}
   \end{center}
 
 \end{frame}
@@ -1047,6 +1109,30 @@
 
 \end{frame}
 
+% -)
+
+\begin{frame}
+  \frametitle{Using paging with segmentation}
+
+  Segmentation is often used a bit with paging.
+
+  \-
+
+  On MIPS for example, there is no bit in TLB entries to tell if the
+  page belong to the kernel or to the user. So this protection between
+  privilege level is done by using the segmentation, putting the user
+  pages below the 2 Gb and the kernel pages above.
+
+  \-
+
+  On IA-32, there is no way to tell if a page is code or data (this
+  feature is added by AMD with the NX bit). For this reason, using a
+  flat model for segmentation is not sure, since the stack can be
+  executed for example. Fixing this problem can be done by forcing the
+  task to be in a non executable segment.
+
+\end{frame}
+
 %
 % allocation algorithms
 %
@@ -1055,10 +1141,10 @@
 
 % -)
 
-\begin{frame}
-  \frametitle{Physical memory allocation}
+%\begin{frame}
+%  \frametitle{Physical memory allocation}
 
-\end{frame}
+%\end{frame}
 
 % ... XXX user, copy on write, stack expansion, page-on-demand etc..
 
