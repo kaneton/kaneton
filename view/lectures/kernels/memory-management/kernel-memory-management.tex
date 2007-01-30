@@ -71,6 +71,12 @@
 \pgfdeclareimage[interpolate=true,width=268pt,height=100pt]
                 {direct-mapped}
 		{figures/direct-mapped}
+\pgfdeclareimage[interpolate=true,width=196pt,height=180pt]
+                {tlb-coherency-step1}
+		{figures/tlb-coherency-step1}
+\pgfdeclareimage[interpolate=true,width=196pt,height=180pt]
+                {tlb-coherency-step2}
+		{figures/tlb-coherency-step2}
 
 % smp
 
@@ -84,6 +90,14 @@
                 {smp-coherency-step3}
 		{figures/smp-coherency-step3}
 
+% ia32-mmu
+
+\pgfdeclareimage[interpolate=true,width=221pt,height=180pt]
+                {ia32-mmu}
+		{figures/ia32-mmu}
+\pgfdeclareimage[interpolate=true,width=154pt,height=180pt]
+                {pd-pt}
+		{figures/pd-pt}
 
 %
 % document
@@ -118,12 +132,15 @@
 
 \section{Physical memory \& virtual memory}
 
+% XXX
 
 %
 % segmentation
 %
 
 \section{Segmentation}
+
+% XXX
 
 %
 % paging
@@ -287,7 +304,7 @@
   \begin{itemize}
   \item
     Stopping the program and reporting the error to the user
-    (\emph{Segmentation fault}
+    (\emph{Segmentation fault})
   \item
     Modifying the TLB entry to avoid the error (changing rights or
     ownership) and resuming the program
@@ -475,7 +492,7 @@
   \-
 
   If no entry is found in the software table, then an exception is
-  raised to the kernel.
+  raised to the kernel (we fallback to the previous scheme).
 
 \end{frame}
 
@@ -495,8 +512,6 @@
     \pgfuseimage{direct-mapped}
   \end{center}
 
-  \-
-
   The MMU is given only the base and the size of the TSB.
 
 \end{frame}
@@ -506,7 +521,20 @@
 \begin{frame}
   \frametitle{Full-automatic TLB replacement}
 
+  Sophisticated MMU provides automatic TLB replacement algorithms,
+  meaning that particular structures imposed by the MMU must be filled
+  by the kernel.
 
+  \-
+
+  On TLB-miss, a preprogrammed handler is called and browse these
+  structures to find a corresponding translation.
+
+  \-
+
+  As defining a big array for each translation should not be efficient
+  (taking 4 Kb pages in a 4 Gb address space results in a 8 Mb array
+  per address space), trees are often used for this purpose.
 
 \end{frame}
 
@@ -515,6 +543,21 @@
 \begin{frame}
   \frametitle{IA-32 example}
 
+  \begin{center}
+    \pgfuseimage{ia32-mmu}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{IA-32 example}
+
+  \begin{center}
+    \pgfuseimage{pd-pt}
+  \end{center}
+
 \end{frame}
 
 % -)
@@ -522,6 +565,38 @@
 \begin{frame}
   \frametitle{Exercise: contiguous mapping with page-directory \&
   page-tables}
+
+  Write a procedure that create a page-directory \& page-tables
+  hierarchy for a precise memory mapping (given the virtual and
+  physical addresses and the size of the mapping).
+
+  \-
+
+  The following operation are given:
+
+  \begin{itemize}
+  \item
+    \textbf{PDE\_ENTRY}: get the page-directory entry corresponding to
+    a virtual address
+  \item
+    \textbf{PTE\_ENTRY}: get the page-table entry corresponding to
+    a virtual address
+  \item
+    \textbf{pd\_add\_table}: add a page-directory entry pointing to a
+    page table
+  \item
+    \textbf{pd\_get\_table}: get a page-directory entry
+  \item
+    \textbf{pt\_add\_page}: add a page-table entry, mapping a precise
+    virtual page to a physical one
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Exercise: correction}
 
   \begin{itemize}
   \item
@@ -579,7 +654,47 @@
 % -)
 
 \begin{frame}
+  \frametitle{MMU bypass on MIPS and UltraSPARC}
+
+  Bypassing the MMU is easy on MIPS processors: a special segment of
+  memory, called \emph{kseg0} and lying from 0x80000000 to 0x9FFFFFFF
+  is mapping RAM from 0x0 to 0x1FFFFFFF (about 500 Mb). No MMU
+  translations are needed.
+
+  \-
+
+  On UltraSPARC, special instruction are needed to bypass the
+  MMU. These instructions are LDA and STA (and all variant with
+  different data width). A special ASI (\emph{Address Space Index}) is
+  passed and indicate the LSU to bypass MMU translation.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
   \frametitle{Mirroring on IA-32}
+
+  Mirroring is a trick to avoid the need of mapping the page-directory
+  and the page-table when accessing them.
+
+  \-
+
+  The principle of mirroring is to create a page-directory entry
+  pointing to the page-directory itself. By doing this:
+
+  \begin{itemize}
+  \item
+    Looking at MAKE\_ADDR(mirror, mirror, offset) refers to the
+    page-directory itself
+  \item
+    Looking at MAKE\_ADDR(mirror, index\_pt, offset) refers to a
+    page-table
+  \end{itemize}
+
+  \-
+
+  This technique (thought unofficial) is often used to solve our problem.
 
 \end{frame}
 
@@ -588,12 +703,65 @@
 \begin{frame}
   \frametitle{TLB coherency}
 
+  The TLB is a cache, meaning that it represent a large amount of data
+  placed into a smaller room.
+
+  \-
+
+  The algorithms described above describe how to maintain internal
+  structures used by the TLB. But modifiying these structures does not
+  affect the TLB directly.
+
+  \-
+
+  Let's imagine a page translation -- for example a page-table entry
+  on IA-32 -- already in the TLB. Il you change or remove this
+  page-table entry in main memory, the TLB still have the
+  translation. This is a cache coherency error.
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{TLB incoherency example}
+
+  \begin{center}
+    \pgfuseimage{tlb-coherency-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{TLB incoherency example}
+
+  \begin{center}
+    \pgfuseimage{tlb-coherency-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{TLB invalidation or flushing}
+
+  To avoid the previous problem, TLB entries can be invalidated to
+  force their content to be reloaded from kernel's virtual mapping
+  structures.
+
+  \-
+
+  TLB flushing involves invalidating all the TLB entries. Switching
+  address space on IA-32 (loading a new value in PDBR) forces a flush
+  of TLB.
+
+  \-
+
+  But invalidating the TLB should be avoided because next accesses to the
+  TLB will be much more longer (TLB-miss, TLB replacement algorithm\ldots).
 
 \end{frame}
 
