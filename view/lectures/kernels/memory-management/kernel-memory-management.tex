@@ -197,12 +197,26 @@
 %-)
 
 \begin{frame}
-  \frametitle{Definition of an address space and virtual memory}
+  \frametitle{Definition of address space, virtual memory and MMU}
 
   An address space is a set of memory area refering to the physical
   RAM or to I/O.
 
- XXX
+  \-
+
+  Address spaces are protected, meaning that only the owner of an
+  address space can access it.
+
+  \-
+
+  The concept of virtual memory is to translated the addresses given
+  in a program into physical addresses in RAM.
+
+  \-
+
+  The MMU (\emph{Memory Management Unit}) is a part of the CPU in
+  charge of translating logical addresses (from programs) into
+  physical addresses given a few rules.
 
 \end{frame}
 
