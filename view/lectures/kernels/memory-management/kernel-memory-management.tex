@@ -36,7 +36,34 @@
 %                {sample}
 %		{figures/sample}
 
-%
+% virtual memory
+
+\pgfdeclareimage[interpolate=true,width=135pt,height=180pt]
+                {vmem-overlap}
+		{figures/vmem-overlap}
+\pgfdeclareimage[interpolate=true,width=135pt,height=180pt]
+                {vmem-contiguous}
+		{figures/vmem-contiguous}
+\pgfdeclareimage[interpolate=true,width=135pt,height=180pt]
+                {vmem-sharing}
+		{figures/vmem-sharing}
+
+% bank
+
+\pgfdeclareimage[interpolate=true,width=153pt,height=180pt]
+                {68hc11-bank}
+		{figures/68hc11-bank}
+
+% seg
+
+\pgfdeclareimage[interpolate=true,width=204pt,height=120pt]
+                {ia32-seg}
+		{figures/ia32-seg}
+\pgfdeclareimage[interpolate=true,width=90pt,height=180pt]
+                {mips-as}
+		{figures/mips-as}
+
+% paging
 
 \pgfdeclareimage[interpolate=true,width=233pt,height=100pt]
                 {paging-step1}
@@ -132,7 +159,95 @@
 
 \section{Physical memory \& virtual memory}
 
-% XXX
+% XXX philo
+
+%-)
+
+\begin{frame}
+  \frametitle{Protection}
+
+  \begin{center}
+   \pgfuseimage{vmem-overlap}
+  \end{center}
+
+\end{frame}
+
+%-)
+
+\begin{frame}
+  \frametitle{Contiguous allocation}
+
+  \begin{center}
+   \pgfuseimage{vmem-contiguous}
+  \end{center}
+
+\end{frame}
+
+%-)
+
+\begin{frame}
+  \frametitle{Region sharing}
+
+  \begin{center}
+   \pgfuseimage{vmem-sharing}
+  \end{center}
+
+\end{frame}
+
+%
+% bank switching
+%
+
+\section{Bank switching}
+
+%-)
+
+\begin{frame}
+  \frametitle{Bank switching or MMU of poor}
+
+  The multiple bank technique is the simplest mecanism to implement
+  virtual memory.
+
+  \-
+
+  The technique is also used to expand memory size with
+  microcontrollers or 8-bit microprocessors with 16-bit address bus.
+
+\end{frame}
+
+%-)
+
+\begin{frame}
+  \frametitle{68HC11 example}
+
+  \begin{center}
+   \pgfuseimage{68hc11-bank}
+  \end{center}
+
+\end{frame}
+
+%-)
+
+\begin{frame}
+  \frametitle{Limitations}
+
+  \begin{itemize}
+  \item
+    Limited in size (for example, only 16 Kb by address space)
+  \item
+    More complicated programming (managing the PPAGE register),
+    special compilers
+  \item
+    Not all possibilities we want: contiguous mapping or
+    sharing\ldots{} are possible but not trivial
+  \end{itemize}
+
+  \-
+
+  Bank switching is still used with small microprocessors, but modern
+  microprocessors offer better mecanisms.
+
+\end{frame}
 
 %
 % segmentation
@@ -140,7 +255,100 @@
 
 \section{Segmentation}
 
-% XXX
+% -)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  XXX
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{MIPS example}
+
+  \begin{center}
+   \pgfuseimage{mips-as}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{IA-32 example, real mode}
+
+  Real mode on Intel microprocessors divides the 1 Mb address space in
+  16 segments of 64 Kb each. A segment is selected using the segment
+  selector registers (the 4 upper bits).
+
+  \-
+
+  Even if this is called segmentation, no protection is ensured.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{IA-32 example, protected mode}
+
+  On IA-32 in protected mode, segments can be defined by the
+  kernel. Up to 16000 segments can be simultaneously defined.
+
+  \-
+
+  A table, called the GDT, containts records for each segment with:
+
+  \begin{itemize}
+  \item
+    Base address
+  \item
+    Limit
+  \item
+    Privilege level
+  \end{itemize}
+
+  \-
+
+  Selecting a segment is done with segment selector registers, filled
+  with the index of the required segment in the GDT.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{IA-32 example, protected mode}
+
+  \begin{center}
+   \pgfuseimage{ia32-seg}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Disabling segmentation}
+
+  Many kernels do not use segmentation and prefer paging. But
+  disabling segmentation is not possible.
+
+  \-
+
+  Instead, the kernel setup a flat model (or protected flat model),
+  meaning that it creates one segment (per privilege level) overlaying
+  all the physical memory.
+
+  \-
+
+  In the case of IA-32, two segments are required because permissions
+  can be set either on RW or RX, so we must produce a combination RWX.
+
+\end{frame}
 
 %
 % paging
@@ -151,13 +359,37 @@
 % -)
 
 \begin{frame}
+  \frametitle{Overview}
+
+  Paging is the concept of dividing the physical memory into chunk of
+  constant size (for example 4 Kb) called page frames.
+
+  \-
+
+  These page frames can be mapped precisely into address spaces. Thus,
+  a virtual address used in a program is translated by the MMU info a
+  physical address.
+
+  \-
+
+  With this technique, protection, contiguous allocation and sharing
+  can be done easily. But unlike with segmentation or bank switching,
+  the MMU is more complex to build and to program, and the translation
+  are slower.
+
+  \-
+
+  In addition, we will see later how paging makes easy to implement
+  swapping technique.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
   \frametitle{Translation Lookaside Buffers}
 
   \begin{itemize}
-    \item
-    When the CPU encounters a memory access instruction such as
-    a load or a store, the source or destination \textbf{virtual
-    address} is translated into a \textbf{physical address}
     \item
     This translation is done using a translation cache: the
     Translation Lookaside Buffers (TLB).
@@ -602,8 +834,8 @@
   \item
     pde\_start $\leftarrow$ PDE\_ENTRY(Vaddr) \\
     pde\_end $\leftarrow$ PDE\_ENTRY(Vaddr + Size) \\
-    pte\_start $\leftarrow$ PDE\_ENTRY(Vaddr) \\
-    pte\_end $\leftarrow$ PDE\_ENTRY(Vaddr + Size)
+    pte\_start $\leftarrow$ PTE\_ENTRY(Vaddr) \\
+    pte\_end $\leftarrow$ PTE\_ENTRY(Vaddr + Size)
   \item
     i $\leftarrow$ pde\_start to pde\_end
     \begin{itemize}
@@ -655,7 +887,7 @@
 
 \begin{frame}
   \frametitle{MMU bypass on MIPS and UltraSPARC}
-
+870
   Bypassing the MMU is easy on MIPS processors: a special segment of
   memory, called \emph{kseg0} and lying from 0x80000000 to 0x9FFFFFFF
   is mapping RAM from 0x0 to 0x1FFFFFFF (about 500 Mb). No MMU
@@ -695,7 +927,7 @@
   \-
 
   This technique (thought unofficial) is often used to solve our problem.
-
+870
 \end{frame}
 
 % -)
