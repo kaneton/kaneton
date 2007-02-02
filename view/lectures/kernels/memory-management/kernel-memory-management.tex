@@ -129,6 +129,18 @@
                 {pd-pt}
 		{figures/pd-pt}
 
+% stack
+
+\pgfdeclareimage[interpolate=true,width=70pt,height=160pt]
+                {stack-exp-step1}
+		{figures/stack-exp-step1}
+\pgfdeclareimage[interpolate=true,width=70pt,height=160pt]
+                {stack-exp-step2}
+		{figures/stack-exp-step2}
+\pgfdeclareimage[interpolate=true,width=70pt,height=160pt]
+                {stack-exp-step3}
+		{figures/stack-exp-step3}
+
 %
 % document
 %
@@ -604,7 +616,7 @@
 % -)
 
 \begin{frame}
-  \frametitle{What to do on a TLB-miss ?}
+  \frametitle{What to do on a TLB-miss?}
 
   When an error or TLB-miss occurs, an exception is thrown. There are
   three possible actions:
@@ -963,7 +975,7 @@
 
 \begin{frame}
   \frametitle{MMU bypass on MIPS and UltraSPARC}
-870
+
   Bypassing the MMU is easy on MIPS processors: a special segment of
   memory, called \emph{kseg0} and lying from 0x80000000 to 0x9FFFFFFF
   is mapping RAM from 0x0 to 0x1FFFFFFF (about 500 Mb). No MMU
@@ -1003,7 +1015,7 @@
   \-
 
   This technique (thought unofficial) is often used to solve our problem.
-870
+
 \end{frame}
 
 % -)
@@ -1177,6 +1189,13 @@
 % -)
 
 \begin{frame}
+  \frametitle{Allocating physical pages rather than memory chunks}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
   \frametitle{Hoard memory allocator}
 
 \end{frame}
@@ -1193,12 +1212,38 @@
 \begin{frame}
   \frametitle{Stack expansion}
 
+  \begin{center}
+    \pgfuseimage{stack-exp-step1}
+  \end{center}
+
 \end{frame}
 
 % -)
 
 \begin{frame}
-  \frametitle{Page-on-demand}
+  \frametitle{Stack expansion}
+
+  \begin{center}
+    \pgfuseimage{stack-exp-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Stack expansion}
+
+  \begin{center}
+    \pgfuseimage{stack-exp-step3}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Allocation-on-demand}
 
 \end{frame}
 
@@ -1213,6 +1258,90 @@
 
 \begin{frame}
   \frametitle{Out of memory (OOM)}
+
+  When the system is completely out-of-memory (physical memory and
+  swap), there are only a few option:
+
+  \begin{itemize}
+  \item
+    Do nothing. Memory allocation routine fails. Programs should be
+    able to handle those cases (\emph{malloc} returns NULL\ldots)
+  \item
+    Try to release memory
+  \end{itemize}
+
+  \-
+
+  The first solution should be the best, but in fact only a few
+  programs manage out-of-memory cases and crash. In addition, what
+  happen if the kernel needs memory?
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Linux OOM-killer}
+
+  Under Linux, when the system has no more memory to allocate, a
+  process called the OOM-killer is called to release memory.
+
+  \-
+
+  Before acting, the OOM-killer go through the following checklist:
+
+  \begin{itemize}
+  \item
+    Has it been more than 5 seconds since the last failure?
+  \item
+    Have we failed within the last second?
+  \item
+    Did we failed 10 times at least in the last 5 seconds?
+  \item
+    Has a process been killed within the last 5 seconds?
+  \end{itemize}
+
+  \-
+
+  These conditions must be checked because sometime we can leave OOM
+  state without killing a process (for example, a program is waiting
+  for an I/O to finish and this will free a few pages).
+
+  \-
+
+  The OOM-killer choose a process to kill, using the following
+  formula:
+
+  $$badness\_for\_task = \frac{total\_vm\_for\_task}
+  {\sqrt(cpu\_time\_in\_seconds) * \sqrt[4](cpu\_time\_in\_minutes)}$$
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Summary of page-miss cases}
+
+  \begin{itemize}
+  \item
+  Region valid, page frame not allocated\\
+  $\rightarrow$ Allocate the page frame and resume.
+  \item
+  Region valid, marked read-only\\
+  $\rightarrow$ Check for a copy-on-write page. Allocate a new page
+  frame, copy the data and resume. Otherwise, throw error.
+  \item
+  Region invalid, but below an expandable region\\
+  $\rightarrow$ Expand the region, allocate a page and resume.
+  \item
+  Region valid, page in swap space\\
+  $\rightarrow$ Remove another page from memory, load the required
+  page from storage and resume.
+  \item
+  Region invalid or access denied\\
+  $\rightarrow$ Throw an error. If this happens in the kernel address
+  space, it is a kernel bug, enter in panic mode.
+  \end{itemize}
 
 \end{frame}
 
