@@ -141,6 +141,34 @@
                 {stack-exp-step3}
 		{figures/stack-exp-step3}
 
+% alloc-on-demand
+
+\pgfdeclareimage[interpolate=true,width=60pt,height=160pt]
+                {alloc-demand-step1}
+		{figures/alloc-demand-step1}
+\pgfdeclareimage[interpolate=true,width=60pt,height=160pt]
+                {alloc-demand-step2}
+		{figures/alloc-demand-step2}
+\pgfdeclareimage[interpolate=true,width=60pt,height=160pt]
+                {alloc-demand-step3}
+		{figures/alloc-demand-step3}
+
+
+% copy-on-write
+
+\pgfdeclareimage[interpolate=true,width=120pt,height=160pt]
+                {cow-step1}
+		{figures/cow-step1}
+\pgfdeclareimage[interpolate=true,width=120pt,height=160pt]
+                {cow-step2}
+		{figures/cow-step2}
+\pgfdeclareimage[interpolate=true,width=120pt,height=160pt]
+                {cow-step3}
+		{figures/cow-step3}
+\pgfdeclareimage[interpolate=true,width=120pt,height=160pt]
+                {cow-step4}
+		{figures/cow-step4}
+
 %
 % document
 %
@@ -276,7 +304,7 @@
 \begin{frame}
   \frametitle{Bank switching or MMU of poor}
 
-  The multiple bank technique is the simplest mecanism to implement
+  The multiple bank technique is the simplest mechanism to implement
   virtual memory.
 
   \-
@@ -316,7 +344,7 @@
   \-
 
   Bank switching is still used with small microprocessors, but modern
-  microprocessors offer better mecanisms.
+  microprocessors offer better mechanisms.
 
 \end{frame}
 
@@ -331,7 +359,7 @@
 \begin{frame}
   \frametitle{Overview}
 
-  Segmentation is a mecanism where the CPU or the kernel defines
+  Segmentation is a mechanism where the CPU or the kernel defines
   multiple area in memory with specific privileges.
 
   \-
@@ -800,7 +828,7 @@
 \begin{frame}
   \frametitle{Semi-automatic TLB replacement}
 
-  Some kind of MMU offers a semi-automatic TLB replacement mecanism.
+  Some kind of MMU offers a semi-automatic TLB replacement mechanism.
 
   \-
 
@@ -1205,6 +1233,9 @@
 \begin{frame}
   \frametitle{Other tips \& tricks}
 
+  The next slides present a few techniques used to optimize memory
+  allocation.
+
 \end{frame}
 
 % -)
@@ -1245,12 +1276,112 @@
 \begin{frame}
   \frametitle{Allocation-on-demand}
 
+  Allocation-on-demand consists in reserving a region of virtual
+  memory without allocating the page frames.
+
+  \-
+
+  When a page-miss occurs, a page frame is then allocated and the
+  virtual space corresponding to the miss is updated.
+
+  \-
+
+  This technique allows to delay the allocation of page-frame, and
+  sometime to avoid allocating pages for unused chunks of memory.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Allocation-on-demand}
+
+  \begin{center}
+    \pgfuseimage{alloc-demand-step1}
+  \end{center}
+
+\end{frame}
+
+
+% -)
+
+\begin{frame}
+  \frametitle{Allocation-on-demand}
+
+  \begin{center}
+    \pgfuseimage{alloc-demand-step2}
+  \end{center}
+
+\end{frame}
+
+
+% -)
+
+\begin{frame}
+  \frametitle{Allocation-on-demand}
+
+  \begin{center}
+    \pgfuseimage{alloc-demand-step3}
+  \end{center}
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Copy-on-write}
+
+  Copy-on-write method (or COW) is often used when cloning and address
+  space (eg: fork).
+
+  \-
+
+  This mechanism uses read-only markers on TLB entries and reference
+  counters on page frames.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Copy-on-write}
+
+  \begin{center}
+    \pgfuseimage{cow-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Copy-on-write}
+
+  \begin{center}
+    \pgfuseimage{cow-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Copy-on-write}
+
+  \begin{center}
+    \pgfuseimage{cow-step3}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Copy-on-write}
+
+  \begin{center}
+    \pgfuseimage{cow-step4}
+  \end{center}
 
 \end{frame}
 
