@@ -129,6 +129,15 @@
                 {pd-pt}
 		{figures/pd-pt}
 
+% slab
+
+\pgfdeclareimage[interpolate=true,width=280pt,height=160pt]
+                {slabs}
+		{figures/slabs}
+\pgfdeclareimage[interpolate=true,width=243pt,height=160pt]
+                {slab-allocator}
+		{figures/slab-allocator}
+
 % stack
 
 \pgfdeclareimage[interpolate=true,width=70pt,height=160pt]
@@ -1196,21 +1205,37 @@
 % -)
 
 \begin{frame}
-  \frametitle{Free-list based allocation}
+  \frametitle{Allocator front-end and back-end}
 
-\end{frame}
+  An allocator provides a front-end (\emph{malloc}, \emph{realloc},
+  \emph{free}) and uses a back-end (\emph{brk}, \emph{sbrk},
+  \emph{mmap}\ldots).
 
-% -)
+  \-
 
-\begin{frame}
-  \frametitle{Buddy systems}
+  The goal of a memory allocator is to provide fine-grain memory
+  allocation and deallocation routines (opposed to large-grain
+  functions like \emph{mmap}).
 
-\end{frame}
+  \-
 
-% -)
+  Problems encountered in memory allocation:
 
-\begin{frame}
-  \frametitle{Slab allocation}
+  \begin{itemize}
+  \item
+    \textbf{Speed}, as memory allocation and freeing are largely used
+    in programs
+  \item
+    \textbf{Fragmentation}, an efficient allocator should not waste
+    space
+  \item
+    \textbf{Concurrent operations} (or scalability), because
+    multiprocessor systems are designed for high-performances
+  \item
+    \textbf{Cache placement}, a good allocator must take care of cache
+    line size and cache placement, even on multiprocessor (non-shared
+    caches)
+  \end{itemize}
 
 \end{frame}
 
@@ -1219,6 +1244,164 @@
 \begin{frame}
   \frametitle{Allocating physical pages rather than memory chunks}
 
+  In the next few slides, we will present four allocation techniques.
+
+  \-
+
+  The algorithms described are suitable for fine-grain allocators, but
+  can also be used for page allocation.
+
+  \-
+
+  In the case of page allocation, the sizes are then represented in
+  page numbers instead of bytes, and the initial space provided for
+  allocation is the entire or partial RAM.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Free-list based allocation}
+
+  XXX
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Free-list based allocation -- comparisons}
+
+  XXX
+
+  \begin{itemize}
+  \item
+    First-fit
+  \item
+    Best-fit
+  \item
+    Worst-fit
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Buddy systems}
+
+  XXX
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Buddy systems -- example}
+
+  XXX
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Buddy systems -- Fibonacci rather than power-of-two}
+
+  XXX
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Slab allocation}
+
+  SunOS 5.4 introduced a new memory allocator called the slab
+  allocator. This allocator improved performances in time from 5 to 15
+  \% and in space (fragmentation) for about 30 \%.
+
+  \-
+
+  The slab allocator was next implemented in Linux, FreeBSD, and a lot
+  of other operating systems.
+
+  \-
+
+  The principles behind this algorithm is simple:
+
+  \begin{itemize}
+  \item
+    The user allocates memory for objects, so it is likely that many
+    objects have the same size
+  \item
+    When an object is freed, reclaiming memory directly is premature,
+    behaving as a cache is a better behavior
+  \item
+    Managing the allocator's internal structures must not be more
+    expensive than allocating the memory itself
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Slab allocation -- slabs}
+
+  A slab is a contiguous space carved in multiple chunks of same size.
+
+  \begin{center}
+    \pgfuseimage{slabs}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Slab allocation -- large objects}
+
+  Large objects are not handled in slabs. They are directly allocated
+  using \emph{mmap} or equivalent.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Slab allocation -- construction and destruction}
+
+  When using object caches (like in a slab allocator), it is possible
+  to provide constructor and destructors for objects.
+
+  \-
+
+  Thus, the cost of initializing and destroying by hand objects is
+  reduced since the slab allocator knows when it is necessary to
+  construct/destruct an object.
+
+  \-
+
+  This principle is not used for user allocation since the allocator
+  does not know the nature of the objects, but it is heavily used in
+  the allocator itself. For example, slab and buffer descriptors lean
+  on an object cache using constructor and destructors so it is never
+  necessary to initialize or uninitialize objects (leading to better
+  overall performances of the allocator).
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Slab allocation -- example}
+
+  \begin{center}
+    \pgfuseimage{slab-allocator}
+  \end{center}
+
 \end{frame}
 
 % -)
@@ -1226,6 +1409,34 @@
 \begin{frame}
   \frametitle{Hoard memory allocator}
 
+  Hoard is a young memory allocator, usable on many operating systems
+  (Windows, Linux, Solaris) as a DLL or preloadable library.
+
+  \-
+
+  Hoard aims multiprocessor systems and multithreaded applications.
+
+  \-
+
+  Hoard proposes low fragmentation rates, linear scale in
+  multiprocessor systems and false-sharing avoidance.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Hoard memory allocator -- principle}
+
+  XXX
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Hoard memory allocator -- example}
+
+  XXX
 \end{frame}
 
 % -)
@@ -1487,6 +1698,7 @@
 \begin{frame}
   \frametitle{Principles}
 
+  XXX
 \end{frame}
 
 % -)
@@ -1494,6 +1706,7 @@
 \begin{frame}
   \frametitle{Page replacement algorithm}
 
+  XXX FIFO, NRU, LRU, NFU, Aging
 \end{frame}
 
 % -)
@@ -1501,13 +1714,7 @@
 \begin{frame}
   \frametitle{Implementation on IA-32}
 
-\end{frame}
-
-% -)
-
-\begin{frame}
-  \frametitle{Swapping under Windows}
-
+  XXX
 \end{frame}
 
 % -)
@@ -1515,6 +1722,7 @@
 \begin{frame}
   \frametitle{Swapping under Linux}
 
+  XXX
 \end{frame}
 
 %
