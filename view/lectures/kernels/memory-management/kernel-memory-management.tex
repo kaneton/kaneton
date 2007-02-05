@@ -129,6 +129,18 @@
                 {pd-pt}
 		{figures/pd-pt}
 
+% freelist
+
+\pgfdeclareimage[interpolate=true,width=228pt,height=100pt]
+                {free-list}
+		{figures/free-list}
+
+% buddy
+
+\pgfdeclareimage[interpolate=true,width=227pt,height=170pt]
+                {buddy}
+		{figures/buddy}
+
 % slab
 
 \pgfdeclareimage[interpolate=true,width=280pt,height=160pt]
@@ -1273,7 +1285,18 @@
 \begin{frame}
   \frametitle{Free-list based allocation}
 
-  XXX
+  Allocators based on free-list algorithms are often very simple. The
+  principle of free-list is to store pointers to free chunks of memory
+  in a list (called the free-list -- as you guessed).
+
+  \begin{center}
+    \pgfuseimage{free-list}
+  \end{center}
+
+  \-
+
+  The allocator is differenciated by the algorithm used to sort the
+  free-list.
 
 \end{frame}
 
@@ -1282,15 +1305,20 @@
 \begin{frame}
   \frametitle{Free-list based allocation -- comparisons}
 
-  XXX
+  There are three main algorithms:
 
   \begin{itemize}
   \item
-    First-fit
+    First-fit: the free-list is sorted by memory placement (addresses).\\
+    This is a bit like random, since there is no logic. Quite efficient.
   \item
-    Best-fit
+    Best-fit: the free-list is sorted by chunk size ascendant.\\
+    This algorithm ensures that minimum fragmentation will occur, but
+    sorting and searching the list takes much time.
   \item
-    Worst-fit
+    Worst-fit: the free-list is sorted by chunk size descendant.\\
+    This algorithm is very fast for allocating (constant time), but
+    splitting region is often necessary (leading to fragmentation).
   \end{itemize}
 
 \end{frame}
@@ -1309,7 +1337,9 @@
 \begin{frame}
   \frametitle{Buddy systems -- example}
 
-  XXX
+  \begin{center}
+    \pgfuseimage{buddy}
+  \end{center}
 
 \end{frame}
 
@@ -1318,7 +1348,18 @@
 \begin{frame}
   \frametitle{Buddy systems -- Fibonacci rather than power-of-two}
 
-  XXX
+  Previous example was about power-of-two (or binary) buddy systems,
+  meaning that we could only split blocks in two.
+
+  \-
+
+  Fibonacci buddy systems permit to use the Fibonacci numbers for
+  chunk sizes. For example: 2, 4, 6, 10, 16, 26, 42, 68\ldots
+
+  \-
+
+  The Fibonacci buddy system thus offers a larger selection of sizes
+  than the binary buddy system.
 
 \end{frame}
 
@@ -1779,8 +1820,7 @@
 \begin{thebibliography}{4}
 
 \bibitem{SLAB}
-The Slab Allocator
-\newblock An Object-Caching Kernel Memory Allocator
+The Slab Allocator: An Object-Caching Kernel Memory Allocator
 \newblock By Jeff Bonwick
 
 \bibitem{HOARD}
