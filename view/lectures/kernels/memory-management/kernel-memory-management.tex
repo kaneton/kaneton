@@ -138,6 +138,15 @@
                 {slab-allocator}
 		{figures/slab-allocator}
 
+% hoard
+
+\pgfdeclareimage[interpolate=true,width=166pt,height=70pt]
+                {false-sharing}
+		{figures/false-sharing}
+\pgfdeclareimage[interpolate=true,width=192pt,height=170pt]
+                {hoard}
+		{figures/hoard}
+
 % stack
 
 \pgfdeclareimage[interpolate=true,width=70pt,height=160pt]
@@ -1428,7 +1437,29 @@
 \begin{frame}
   \frametitle{Hoard memory allocator -- principle}
 
-  XXX
+  In order to manage efficiently multiple processors and optimum cache
+  placement, Hoard allocator uses a per-processor heap in addition of
+  a global heap.
+
+  \-
+
+  Multiplying the number of heaps by the number of microprocessors
+  reduces the need to lock many data structures when using the
+  allocator. Moreover, as the cache is local to one microprocessor (be
+  careful, this is not the case in multicore CPU), Hoard can optimize
+  the placement of data into cache lines.
+
+  \-
+
+  False sharing happens when two or more CPU share a chunk of memory
+  that go to the same cache line. As cache are local to CPU, when a
+  cache line is invalidated by one CPU, then it must be invalidated on
+  the other one.
+
+  \begin{center}
+    \pgfuseimage{false-sharing}
+  \end{center}
+
 \end{frame}
 
 % -)
@@ -1436,7 +1467,10 @@
 \begin{frame}
   \frametitle{Hoard memory allocator -- example}
 
-  XXX
+  \begin{center}
+    \pgfuseimage{hoard}
+  \end{center}
+
 \end{frame}
 
 % -)
@@ -1714,7 +1748,18 @@
 \begin{frame}
   \frametitle{Implementation on IA-32}
 
-  XXX
+  The simplest way to manage swapping is to manage a set which
+  associate a virtual address in an address space to a i-node in the
+  swap partition or offset in a swap file. Then, the kernel have to
+  search this set on page-miss.
+
+  \-
+
+  On IA-32, there is a way to include this set in the page-directory
+  \& page-table hierarchy. When a page-table entry is marked as
+  invalid (one bit reset), the other bits of the entry (typically 31
+  bits) can be used to store the information.
+
 \end{frame}
 
 % -)
@@ -1733,9 +1778,22 @@
 
 \begin{thebibliography}{4}
 
-%  \bibitem{ID}
-%    Sample
-%    \newblock Sample
+\bibitem{SLAB}
+The Slab Allocator
+\newblock An Object-Caching Kernel Memory Allocator
+\newblock By Jeff Bonwick
+
+\bibitem{HOARD}
+Hoard: A Scalable Memory Allocator For Multithreaded Applications
+\newblock By Emery D. Berger
+
+\bibitem{VMM}
+Understanding The Linux Virtual Memory Manager
+\newblock By Nikos Drakos \& Ross Moore
+
+\bibitem{SWAP}
+Page Replacement In Linux 2.4 Memory Management
+\newblock By Rick van Riel
 
 \end{thebibliography}
 
