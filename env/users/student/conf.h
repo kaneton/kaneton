@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/env/users/student/conf.h
+ * file          /home/buckman/kaneton/env/users/student/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       julien quintard   [fri mar 10 03:44:55 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:03:55 2007]
  */
 
 #ifndef KANETON_CONF_H
@@ -16,7 +16,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <kaneton/debug.h>
+#include <core/debug.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -49,16 +49,16 @@
 #define CONF_MODE		MODE_DEVELOPMENT
 
 /*
- * which fit method to use in segment
+ * which algorithm to use in segment
  */
 
-#define SEGMENT_FIT	FIT_FIRST
+#define SEGMENT_LOOKUP_ALGORITHM	FIT_FIRST
 
 /*
- * which fit method to use in region
+ * which algorithm to use in region
  */
 
-#define REGION_FIT	FIT_FIRST
+#define REGION_LOOKUP_ALGORITHM		FIT_FIRST
 
 /*
  * which fit method to use in alloc

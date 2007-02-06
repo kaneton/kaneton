@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/task/context.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       matthieu bucchianeri   [sat dec  9 00:06:23 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:49:02 2007]
  */
 
 /*
@@ -18,7 +18,7 @@
 #ifndef IA32_TASK_TASK_H
 #define IA32_TASK_TASK_H	1
 
-/*								[cut] k4 */
+/*								[cut] k3 */
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -195,5 +195,7 @@ extern t_ia32_context*	context;
  */
 
 extern t_uint32		cpucaps;
+
+/*								[cut] /k3 */
 
 #endif

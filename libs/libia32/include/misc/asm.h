@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/misc/asm.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat nov  4 18:20:45 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:50:38 2007]
  */
 
 /*
@@ -18,8 +18,6 @@
 
 #ifndef IA32_IA32_ASM_H
 #define IA32_IA32_ASM_H		1
-
-/*                                                                  [cut] k2 */
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -179,8 +177,5 @@
   asm volatile("inl %%dx, %%eax\n"					\
 	       : "=a" (_data_)						\
 	       : "d" (_port_))
-
-/*                                                                 [cut] /k2 */
-
 
 #endif

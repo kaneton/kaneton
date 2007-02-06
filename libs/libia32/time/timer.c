@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/time/timer.c
+ * file          /home/buckman/kaneton/libs/libia32/time/timer.c
  *
  * created       renaud voltz   [mon feb 27 04:20:33 2006]
- * updated       julien quintard   [sat jul  8 02:35:44 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:43:50 2007]
  */
 
 /*
@@ -24,7 +24,7 @@
 #include <klibc.h>
 #include <kaneton.h>
 
-/*                                                                  [cut] k3 */
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -70,3 +70,5 @@ t_error			pit_init(t_uint32			frequency)
 
   return ERROR_NONE;
 }
+
+/*                                                                 [cut] /k2 */

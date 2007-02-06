@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/pmode/ldt.c
+ * file          /home/buckman/kaneton/libs/libia32/pmode/ldt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 20:13:58 2005]
- * updated       julien quintard   [sat jul  8 02:34:33 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:36:44 2007]
  */
 
 /*
@@ -15,8 +15,6 @@
  * manage global descriptor table.
  *
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * ---------- information -----------------------------------------------------
@@ -35,8 +33,6 @@
  * ldt_activate sets a ldt as the active one.
  */
 
-/*                                                                 [cut] /k2 */
-
 /*
  * ---------- includes --------------------------------------------------------
  */
@@ -47,8 +43,6 @@
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * returns the base pointer of a ldt.
@@ -358,5 +352,3 @@ t_error			ldt_build_selector(t_ia32_ldt*		table,
 
   return ERROR_NONE;
 }
-
-/*                                                                 [cut] /k2 */

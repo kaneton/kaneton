@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/paging/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed aug 30 16:52:00 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:47:59 2007]
  */
 
 /*
@@ -18,8 +18,6 @@
 
 #ifndef IA32_IA32_PAGING_H
 #define IA32_IA32_PAGING_H	1
-
-/*                                                                  [cut] k2 */
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -170,7 +168,5 @@ typedef t_uint32		t_ia32_pte;
  */
 
 typedef t_ia32_pde* t_ia32_directory;
-
-/*                                                                 [cut] /k2 */
 
 #endif

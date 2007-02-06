@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/libs/libia32/include/time/pit.h
+ * file          /home/buckman/kaneton/libs/libia32/include/time/pit.h
  *
  * created       renaud voltz   [wed mar 15 10:59:38 2006]
- * updated       renaud voltz   [wed mar 15 10:59:38 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:49:56 2007]
  */
 
 /*
@@ -18,7 +18,7 @@
 #ifndef IA32_INTERRUPT_PIT_H
 #define IA32_INTERRUPT_PIT_H
 
-/*								[cut] k3 */
+/*								[cut] k2 */
 
 /*
  * ---------- defines ---------------------------------------------------------
@@ -35,6 +35,6 @@
 
 #define CLOCK_TICK_RATE 1193180
 
-/*								[cut] /k3 */
+/*								[cut] /k2 */
 
 #endif

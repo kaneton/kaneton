@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/paging/tlb.c
+ * file          /home/buckman/kaneton/libs/libia32/paging/tlb.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:57:00 2005]
- * updated       julien quintard   [sat jul  8 02:35:12 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:31:01 2007]
  */
 
 /*
@@ -26,8 +26,6 @@
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * flushes a single pte cache given a page address.
@@ -58,5 +56,3 @@ t_error			tlb_flush(void)
 
   return ERROR_NONE;
 }
-
-/*                                                                 [cut] /k2 */

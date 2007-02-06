@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/bootloader.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-virtual/bootloader.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun sep  3 12:30:35 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:16:07 2007]
  */
 
 /*
@@ -46,8 +46,6 @@ t_reg32			esp;
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k1 */
-
 /*
  * a funny function which does nothing.
  *
@@ -76,14 +74,9 @@ void			bootloader_error(void)
  * 9) this part is only reached if the kernel exit.
  */
 
-/*                                                                 [cut] /k1 */
-
 int			bootloader(t_uint32			magic,
 				   multiboot_info_t*		mbi)
 {
-
-/*                                                                  [cut] k1 */
-
   /*
    * 1)
    */
@@ -167,8 +160,6 @@ int			bootloader(t_uint32			magic,
 
   bootloader_cons_msg('!', "error: kernel exited\n");
   bootloader_error();
-
-/*                                                                 [cut] /k1 */
 
   return (0);
 }

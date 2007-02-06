@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:48 2005]
- * updated       matthieu bucchianeri   [wed aug 30 17:10:20 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:34:39 2007]
  */
 
 /*
@@ -22,8 +22,6 @@
 
 #include <klibc.h>
 #include <kaneton.h>
-
-/*                                                                  [cut] k2 */
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -228,5 +226,3 @@ t_error			pt_delete_page(t_ia32_table*		tab,
 
   return ERROR_NONE;
 }
-
-/*                                                                 [cut] /k2 */

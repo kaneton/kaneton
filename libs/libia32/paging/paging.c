@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/paging.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:05 2005]
- * updated       matthieu bucchianeri   [sat oct 14 12:24:39 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:34:23 2007]
  */
 
 /*
@@ -22,8 +22,6 @@
 
 #include <klibc.h>
 #include <kaneton.h>
-
-/*                                                                  [cut] k2 */
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -41,13 +39,9 @@ extern t_init*		init;
 
 extern t_ia32_directory	pd;
 
-/*                                                                 [cut] /k2 */
-
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * initialise paging.
@@ -108,5 +102,3 @@ t_error			paging_clean(void)
 {
   return ERROR_NONE;
 }
-
-/*                                                                 [cut] /k2 */

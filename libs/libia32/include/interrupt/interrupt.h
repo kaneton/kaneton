@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [thu oct 12 23:10:50 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:45:50 2007]
  */
 
 /*
@@ -18,7 +18,7 @@
 #ifndef IA32_INTERRUPT_INTERRUPT_H
 #define IA32_INTERRUPT_INTERRUPT_H       1
 
-/*                                                                  [cut] k3 */
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -224,6 +224,6 @@ void    prehandler_irq13(void);
 void    prehandler_irq14(void);
 void    prehandler_irq15(void);
 
-/*                                                                 [cut] /k3 */
+/*                                                                 [cut] /k2 */
 
 #endif

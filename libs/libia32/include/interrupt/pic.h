@@ -1,12 +1,12 @@
 /*
- * licence       Kaneton licence
+ * licence       kaneton licence
  *
  * project       kaneton
  *
- * file          /home/rhino/kaneton/libs/libia32/include/interrupt/pic.h
+ * file          /home/buckman/kaneton/libs/libia32/include/interrupt/pic.h
  *
  * created       renaud voltz   [wed mar 15 10:49:45 2006]
- * updated       renaud voltz   [wed mar 15 10:49:45 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:44:55 2007]
  */
 
 /*
@@ -18,7 +18,7 @@
 #ifndef IA32_INTERRUPT_PIC_H
 #define IA32_INTERRUPT_PIC_H
 
-/*								[cut] k3 */
+/*								[cut] k2 */
 
 /*
  * ---------- defines ---------------------------------------------------------
@@ -51,6 +51,6 @@
 #define SLAVE_ICW3              0x02
 #define SLAVE_ICW4              0x01
 
-/*								[cut] /k3 */
+/*								[cut] /k2 */
 
 #endif

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/task/tss.h
  *
  * created       renaud voltz   [mon apr 10 00:50:33 2006]
- * updated       matthieu bucchianeri   [sat jul 29 18:25:54 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:49:39 2007]
  */
 
 /*
@@ -17,8 +17,6 @@
 
 #ifndef IA32_TASK_TSS_H
 #define IA32_TASK_TSS_H		1
-
-/*								[cut] k4 */
 
 /*
  * ---------- defines ---------------------------------------------------------
@@ -75,7 +73,5 @@ typedef struct
   t_uint8		io_bitmap[8192];
   t_uint8		io_end;
 }			__attribute__ ((packed)) t_ia32_tss;
-
-/*								[cut] /k4 */
 
 #endif

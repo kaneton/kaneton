@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/pmode/idt.c
  *
  * created       renaud voltz   [sun feb 12 02:02:19 2006]
- * updated       matthieu bucchianeri   [mon jul 10 10:47:41 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:41:14 2007]
  */
 
 /*
@@ -23,7 +23,7 @@
 #include <klibc.h>
 #include <kaneton.h>
 
-/*                                                                  [cut] k3 */
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -35,13 +35,13 @@
 
 t_ia32_idt           idt;
 
-/*                                                                  [cut] /k3 */
+/*                                                                 [cut] /k2 */
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k3 */
+/*                                                                  [cut] k2 */
 
 /*
  * dumps an idt.
@@ -380,4 +380,4 @@ t_error			idt_delete_gate(t_ia32_idt*		table,
   return ERROR_UNKNOWN;
 }
 
-/*                                                                 [cut] /k3 */
+/*                                                                 [cut] /k2 */

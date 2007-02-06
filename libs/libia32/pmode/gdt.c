@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/pmode/gdt.c
+ * file          /home/buckman/kaneton/libs/libia32/pmode/gdt.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:45:19 2005]
- * updated       julien quintard   [sat jul  8 02:33:00 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:36:16 2007]
  */
 
 /*
@@ -15,8 +15,6 @@
  * manage global descriptor table.
  *
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * ---------- information -----------------------------------------------------
@@ -41,16 +39,12 @@
  *
  */
 
-/*                                                                 [cut] /k2 */
-
 /*
  * ---------- includes --------------------------------------------------------
  */
 
 #include <klibc.h>
 #include <kaneton.h>
-
-/*                                                                  [cut] k2 */
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -62,13 +56,9 @@
 
 t_ia32_gdt	gdt;
 
-/*                                                                 [cut] /k2 */
-
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * dumps a gdt.
@@ -524,5 +514,3 @@ t_error			gdt_build_selector(t_uint16		segment,
 
   return ERROR_NONE;
 }
-
-/*                                                                 [cut] /k2 */

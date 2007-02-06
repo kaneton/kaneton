@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/pmode/idt.h
  *
  * created       renaud voltz   [fri feb 10 16:36:20 2006]
- * updated       matthieu bucchianeri   [sun apr  2 23:50:14 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:48:23 2007]
  */
 
 /*
@@ -19,7 +19,7 @@
 #ifndef IA32_PMODE_IDT_H
 #define IA32_PMODE_IDT_H	1
 
-/*                                                                  [cut] k3 */
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -114,6 +114,6 @@ typedef struct
   t_uint32			address;
 }				__attribute__ ((packed)) t_ia32_idtr;
 
-/*                                                                 [cut] /k3 */
+/*                                                                 [cut] /k2 */
 
 #endif

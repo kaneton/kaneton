@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/pmode.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-virtual/pmode.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [sun sep  3 12:24:29 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:17:11 2007]
  */
 
 /*
@@ -31,8 +31,6 @@ extern t_init*		init;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k1 */
 
 /*
  * this  function initialises  the global  offset table  inserting two
@@ -128,5 +126,3 @@ void			bootloader_pmode_init(void)
 
   memcpy(&init->machdep.gdt, &gdt, sizeof (t_ia32_gdt));
 }
-
-/*                                                                 [cut] /k1 */

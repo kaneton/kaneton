@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/libia32/interrupt/pic.c
+ * file          /home/buckman/kaneton/libs/libia32/interrupt/pic.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:44:58 2005]
- * updated       julien quintard   [sat jul  8 02:35:36 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:26:12 2007]
  */
 
 /*
@@ -24,7 +24,7 @@
 #include <klibc.h>
 #include <kaneton.h>
 
-/*                                                                  [cut] k3 */
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -174,4 +174,4 @@ t_error			pic_acknowledge(t_uint8			irq)
   return ERROR_NONE;
 }
 
-/*                                                                 [cut] /k3 */
+/*                                                                 [cut] /k2 */

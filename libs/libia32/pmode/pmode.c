@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/pmode/pmode.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:15 2005]
- * updated       matthieu bucchianeri   [wed dec 13 02:37:33 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:39:53 2007]
  */
 
 /*
@@ -22,8 +22,6 @@
 
 #include <klibc.h>
 #include <kaneton.h>
-
-/*                                                                  [cut] k2 */
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -41,23 +39,15 @@ extern t_init*		init;
 
 extern t_ia32_gdt	gdt;
 
-/*                                                                 [cut] /k2 */
-
-/*                                                                  [cut] k3 */
-
 /*
  * global interrupt descriptor table
  */
 
 extern t_ia32_idt		idt;
 
-/*                                                                 [cut] /k3 */
-
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * initialises protected mode.
@@ -143,5 +133,3 @@ t_error			pmode_clean(void)
 {
   return ERROR_NONE;
 }
-
-/*                                                                 [cut] /k2 */

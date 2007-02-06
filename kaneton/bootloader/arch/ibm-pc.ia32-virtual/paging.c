@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-virtual/paging.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-virtual/paging.c
  *
  * created       julien quintard   [sun may 29 00:38:50 2005]
- * updated       matthieu bucchianeri   [sun sep  3 12:34:59 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:16:53 2007]
  */
 
 /*
@@ -28,8 +28,6 @@
 
 extern t_init*			init;
 
-/*                                                                  [cut] k1 */
-
 /*
  * the kernel page directory and page tables.
  *
@@ -42,13 +40,9 @@ t_ia32_directory	pd;
 t_ia32_table		pt0;
 t_ia32_table		pt;
 
-/*                                                                 [cut] /k1 */
-
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k1 */
 
 /*
  * this function initialises the paging.
@@ -162,5 +156,3 @@ void			bootloader_paging_init(void)
 
   paging_enable();
 }
-
-/*                                                                 [cut] /k1 */

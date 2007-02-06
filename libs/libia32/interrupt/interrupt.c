@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/interrupt/interrupt.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       matthieu bucchianeri   [wed oct 11 23:45:53 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:29:29 2007]
  */
 
 /*
@@ -23,6 +23,8 @@
 
 #include <klibc.h>
 #include <kaneton.h>
+
+/*                                                                  [cut] k2 */
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -273,3 +275,5 @@ IRQ_PREHANDLER(12);
 IRQ_PREHANDLER(13);
 IRQ_PREHANDLER(14);
 IRQ_PREHANDLER(15);
+
+/*                                                                 [cut] /k2 */

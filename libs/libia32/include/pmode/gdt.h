@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/pmode/gdt.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:49:55 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:48:11 2007]
  */
 
 /*
@@ -18,8 +18,6 @@
 
 #ifndef IA32_PMODE_GDT_H
 #define IA32_PMODE_GDT_H	1
-
-/*                                                                  [cut] k2 */
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -186,7 +184,5 @@ typedef struct
   t_uint16			size;
   t_uint32			address;
 }				__attribute__ ((packed)) t_ia32_ldtr;
-
-/*                                                                 [cut] /k2 */
 
 #endif

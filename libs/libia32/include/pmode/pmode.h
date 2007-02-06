@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/pmode/pmode.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun apr  2 23:31:05 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:48:31 2007]
  */
 
 /*
@@ -18,8 +18,6 @@
 
 #ifndef IA32_IA32_PMODE_H
 #define IA32_IA32_PMODE_H	1
-
-/*                                                                  [cut] k2 */
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -104,7 +102,5 @@ typedef enum
     ia32_prvl_privileged	= PRIV_RING1,
     ia32_prvl_user		= PRIV_RING3,
   }				t_ia32_prvl;
-
-/*                                                                 [cut] /k2 */
 
 #endif

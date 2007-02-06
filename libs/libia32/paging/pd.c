@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/paging/pd.c
  *
  * created       matthieu bucchianeri   [tue dec 20 19:56:20 2005]
- * updated       matthieu bucchianeri   [wed aug 30 17:18:55 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:34:11 2007]
  */
 
 /*
@@ -23,8 +23,6 @@
 #include <klibc.h>
 #include <kaneton.h>
 
-/*                                                                  [cut] k2 */
-
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -35,13 +33,9 @@
 
 t_ia32_directory	pd;
 
-/*                                                                 [cut] /k2 */
-
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * dumps a page directory and its tables.
@@ -340,5 +334,3 @@ t_error			pd_delete_table(t_ia32_directory*	dir,
 
   return ERROR_NONE;
 }
-
-/*                                                                 [cut] /k2 */
