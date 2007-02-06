@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/apps/mjpeg/pthread.c
  *
  * created       matthieu bucchianeri   [sat dec  2 02:27:13 2006]
- * updated       matthieu bucchianeri   [wed dec 13 03:00:32 2006]
+ * updated       matthieu bucchianeri   [wed dec 13 15:15:50 2006]
  */
 
 #include <pthread.h>
@@ -26,7 +26,7 @@ int		pthread_create(pthread_t*	th,
   t_vaddr	stk;
   static int no = 0;
 
-  if (thread_reserve(mjpeg_task, THREAD_HPRIOR, th) != ERROR_NONE)
+  if (thread_reserve(mjpeg_task, no == 7 ? THREAD_PRIOR : THREAD_HPRIOR, th) != ERROR_NONE)
     {
       printf("cannot thread_reserve\n");
 

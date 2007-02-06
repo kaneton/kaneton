@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [tue dec  5 23:20:44 2006]
+ * updated       matthieu bucchianeri   [sun dec 10 16:27:28 2006]
  */
 
 /*
@@ -302,7 +302,8 @@ t_error			task_reserve(t_class			class,
       (behav != TASK_BEHAV_BACKGROUND))
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
-  if ((prior != TASK_PRIOR_CORE) &&
+/* XXX bogus */
+  if (0 && (prior != TASK_PRIOR_CORE) &&
       (prior != TASK_PRIOR_REALTIME) &&
       (prior != TASK_PRIOR_INTERACTIVE) &&
       (prior != TASK_PRIOR_TIMESHARING) &&

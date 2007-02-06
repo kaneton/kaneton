@@ -67,15 +67,6 @@ floppy_read:
 pmode_enable:
 	cli			; disable interrupts
 
-	mov ax, eogdt		; the address of the end of the GDT
-	mov bx, gdt		; the address of the start of the GDT
-	sub ax, bx		; compute the GDT size
-
-	mov [gdtr + 0], ax	; set the GDT size into the gdtr
-
-	mov eax, gdt		; the address of the GDT
-	mov [gdtr + 2], eax	; set the GDT address into the gdtr
-
 	lgdt [gdtr]		; load the GDT using the gdtr
 
 	mov eax, cr0		; get the cr0
@@ -294,8 +285,8 @@ gdt_ds:
 eogdt:
 
 gdtr:
-		dw	0x0
-		dd	0x0
+		dw	eogdt-gdt
+		dd	gdt
 
 ;;
 ;; BOOTLOADER SIGNATURE

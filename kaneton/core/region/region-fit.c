@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/region/region-fit.c
+ * file          /home/buckman/kaneton/kaneton/core/region/region-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:28:36 2006]
- * updated       julien quintard   [sat jul  8 02:23:47 2006]
+ * updated       matthieu bucchianeri   [wed dec 13 14:19:16 2006]
  */
 
 /*
@@ -106,7 +106,7 @@ static t_error		region_first_fit(o_as*			as,
 
   set_foreach(SET_OPT_FORWARD, as->regions, &i, state)
     {
-      o_region*	next;
+      o_region*		next;
       t_iterator	j;
 
       if (set_object(as->regions, i, (void**)&current) !=

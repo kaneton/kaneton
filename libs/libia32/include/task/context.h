@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/task/context.h
  *
  * created       renaud voltz   [tue apr  4 22:01:00 2006]
- * updated       matthieu bucchianeri   [thu oct 12 22:49:24 2006]
+ * updated       matthieu bucchianeri   [sat dec  9 00:06:23 2006]
  */
 
 /*
@@ -61,7 +61,11 @@
 	 "	popw %es				\n"		\
 	 "	popw %ds				\n"		\
 	 "	popl %eax				\n"		\
+	 "	movl %cr3, %ebx				\n"		\
+	 "	cmp %eax, %ebx				\n"		\
+	 "	je 1f					\n"		\
 	 "	movl %eax, %cr3				\n"		\
+	 "1:						\n"		\
 	 "	popl %edi				\n"		\
 	 "	popl %esi				\n"		\
 	 "	popl %edx				\n"		\

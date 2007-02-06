@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       matthieu bucchianeri   [sun sep 10 16:00:04 2006]
+ * updated       matthieu bucchianeri   [sun dec 10 18:10:29 2006]
  */
 
 /*
@@ -609,6 +609,8 @@ t_error			thread_state(i_thread			threadid,
 	break;
     }
 
+//  printf("thread %qd is %s\n", threadid, sched == SCHED_STATE_STOP ? "stopping" : "starting");
+
   THREAD_LEAVE(thread, ERROR_NONE);
 }
 
@@ -660,7 +662,7 @@ t_error			thread_stack(i_thread			threadid,
   if (!stack.base)
     {
       if (map_reserve(task->asid,
-		      MAP_OPT_NONE,
+		      MAP_OPT_NONE | (task->class == TASK_CLASS_CORE ? MAP_OPT_PRIVILEGED : MAP_OPT_USER),
 		      stack.size,
 		      PERM_READ | PERM_WRITE,
 		      &(o->stack)) != ERROR_NONE)

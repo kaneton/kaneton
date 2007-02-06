@@ -141,7 +141,7 @@ void mjpeg(void)
 
   t_uint32 t = timer->timeref;
 
-  if (task_reserve(TASK_CLASS_PROGRAM, TASK_BEHAV_REALTIME, TASK_HPRIOR_REALTIME, &mjpeg_task) != ERROR_NONE)
+  if (task_reserve(TASK_CLASS_PROGRAM, TASK_BEHAV_CORE, TASK_HPRIOR_CORE, &mjpeg_task) != ERROR_NONE)
     {
       printf("cannot task_reserve\n");
 

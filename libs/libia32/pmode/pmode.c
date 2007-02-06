@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/pmode/pmode.c
  *
  * created       matthieu bucchianeri   [tue dec 20 13:45:15 2005]
- * updated       matthieu bucchianeri   [wed oct 11 19:56:42 2006]
+ * updated       matthieu bucchianeri   [wed dec 13 02:37:33 2006]
  */
 
 /*
@@ -101,8 +101,8 @@ t_error			pmode_enable(void)
 	       :
 	       : "%eax");
 
-  asm volatile("jmp pmode_enable_next\t\n"
-	       "pmode_enable_next:"
+  asm volatile("jmp 1f\t\n"
+	       "1:"
 	       );
 
   /* XXX STI(); */
@@ -118,9 +118,9 @@ t_error			pmode_set_segment_registers(t_uint16	seg_code,
 						    t_uint16	seg_data)
 {
   asm volatile("pushl %0\n\t"
-	       "pushl $pmode_update_registers_label\n\t"
+	       "pushl $1f\n\t"
 	       "lret\n\t"
-	       "pmode_update_registers_label:\n\t"
+	       "1:\n\t"
 	       "movw %1, %%ax\n\t"
 	       "movw %%ax, %%ds\n\t"
 	       "movw %%ax, %%ss\n\t"

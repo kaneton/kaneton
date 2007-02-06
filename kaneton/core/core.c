@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat dec  2 03:32:02 2006]
+ * updated       matthieu bucchianeri   [wed jan 24 20:29:35 2007]
  */
 
 /*
@@ -23,7 +23,7 @@
  */
 
 #include <klibc.h>
-#include <libmipsr10000.h>
+//#include <libmipsr10000.h>
 #include <kaneton.h>
 
 /*

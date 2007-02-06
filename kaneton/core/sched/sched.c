@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [wed nov  1 17:05:23 2006]
+ * updated       matthieu bucchianeri   [wed dec 13 03:11:09 2006]
  */
 
 /*

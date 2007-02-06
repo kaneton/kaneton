@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [fri dec  8 02:23:57 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 01:40:49 2007]
  */
 
 /*
@@ -240,11 +240,6 @@ t_error			ia32_event_init(void)
       != ERROR_NONE)
     return ERROR_UNKNOWN;
 
-  /* XXX */
-  if (event_reserve(31, EVENT_FUNCTION, EVENT_HANDLER(sched_switch))
-      != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
   if (event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler))
       != ERROR_NONE)
     return ERROR_UNKNOWN;
@@ -392,7 +387,7 @@ typedef struct
 void			ia32_gp_handler(t_id			id,
 					t_uint32		error_code)
 {
-  printf("general protection fault.\n");
+  printf("general protection fault @ %p\n", context->eip);
 
   while (1)
     ;
@@ -427,6 +422,12 @@ void                    ia32_pf_handler(t_id			id,
   /*
    * 1)
    */
+
+  SCR2(addr);
+  printf("#PF @ %p for %p\n", context->eip, addr);
+
+  while (1)
+    ;
 
   asm volatile("movl (%%ebp), %%eax\n\t"
 	       "movl (%%eax), %%ebx\n\t"

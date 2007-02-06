@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:35 2006]
- * updated       matthieu bucchianeri   [wed nov  1 17:08:00 2006]
+ * updated       matthieu bucchianeri   [sun dec 10 18:24:47 2006]
  */
 
 /*
