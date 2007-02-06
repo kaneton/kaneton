@@ -199,6 +199,27 @@
                 {cow-step4}
 		{figures/cow-step4}
 
+% swapping
+
+\pgfdeclareimage[interpolate=true,width=204pt,height=170pt]
+                {swap}
+		{figures/swap}
+\pgfdeclareimage[interpolate=true,width=294pt,height=140pt]
+                {swap-out-step1}
+		{figures/swap-out-step1}
+\pgfdeclareimage[interpolate=true,width=294pt,height=140pt]
+                {swap-out-step2}
+		{figures/swap-out-step2}
+\pgfdeclareimage[interpolate=true,width=294pt,height=140pt]
+                {swap-step1}
+		{figures/swap-step1}
+\pgfdeclareimage[interpolate=true,width=294pt,height=140pt]
+                {swap-step2}
+		{figures/swap-step2}
+\pgfdeclareimage[interpolate=true,width=294pt,height=140pt]
+                {swap-step3}
+		{figures/swap-step3}
+
 %
 % document
 %
@@ -1328,7 +1349,19 @@
 \begin{frame}
   \frametitle{Buddy systems}
 
-  XXX
+  The buddy system was described by Donald Knuth, and was widely used
+  in operating systems (since the appearance of slab allocator).
+
+  \-
+
+  The principle of a buddy system is to allocate larger chunks and
+  then to divide them (discretely) to fit correctly with the asked size.
+
+  \-
+
+  Then, there are multiple free-list (per size), and the buddy system
+  just look for a bigger chunk than the one asked and populate the
+  other free-lists with the divided blocks.
 
 \end{frame}
 
@@ -1773,7 +1806,65 @@
 \begin{frame}
   \frametitle{Principles}
 
-  XXX
+  \begin{center}
+    \pgfuseimage{swap}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Principles -- swap-out}
+
+  \begin{center}
+    \pgfuseimage{swap-out-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Principles -- swap-out}
+
+  \begin{center}
+    \pgfuseimage{swap-out-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Principles -- swapping}
+
+  \begin{center}
+    \pgfuseimage{swap-step1}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Principles -- swapping}
+
+  \begin{center}
+    \pgfuseimage{swap-step2}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Principles -- swapping}
+
+  \begin{center}
+    \pgfuseimage{swap-step3}
+  \end{center}
+
 \end{frame}
 
 % -)
@@ -1781,7 +1872,36 @@
 \begin{frame}
   \frametitle{Page replacement algorithm}
 
-  XXX FIFO, NRU, LRU, NFU, Aging
+  A page replacement algorithm must choose the good pages to swap out
+  in order to minimize the total number of page misses.
+
+  \-
+
+  \begin{itemize}
+  \item
+    Random: quick but not optimal
+  \item
+    FIFO: each allocated page is placed in a FIFO, the most likely
+    page to be swapped out is the one at the exit of the FIFO (the
+    older), quick, but not optimal
+  \item
+    Second Chance: like FIFO, but uses the accessed bit to give a
+    second chance to the older page
+  \item
+    NRU (Not Recently Used): at a given interval divide pages in 4
+    classes: not accessed \& not modified, not accessed \& modified,
+    accessed and not modified, accessed and modified. NRU picks a
+    random page from the lowest class
+  \item
+    LRU (Least Recently Used): like NRU, but not only on one
+    interval. Practically difficult and expensive to implement
+  \item
+    NFU (Not Frequently Used): like LRU, but penalties when a page is
+    not accessed in a cycle
+  \item
+    Aging: a NFU-like algorithm, using bit masks and shifts
+  \end{itemize}
+
 \end{frame}
 
 % -)
@@ -1801,6 +1921,11 @@
   invalid (one bit reset), the other bits of the entry (typically 31
   bits) can be used to store the information.
 
+  \-
+
+  In addition, page-table entry contains an accessed and dirty bit,
+  indicating if the page has been accessed in read or write recently.
+
 \end{frame}
 
 % -)
@@ -1808,7 +1933,12 @@
 \begin{frame}
   \frametitle{Swapping under Linux}
 
-  XXX
+  Linux (2.4) uses an algorithm between LRU and NFU, based on aging. Each page has a
+  counter that indicate if the page is likely to stay in physical
+  memory or not. This counter is incremented when the page is detected
+  to be accessed (using accessed bit) and divided (exponential
+  decline) otherwise.
+
 \end{frame}
 
 %
