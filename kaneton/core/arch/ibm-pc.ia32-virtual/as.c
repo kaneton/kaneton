@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue dec  5 23:17:31 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:58:49 2007]
  */
 
 /*
@@ -45,9 +45,6 @@ extern m_thread*	thread;
 
 d_as			as_dispatch =
   {
-
-/*                                                                  [cut] k2 */
-
     ia32_as_show,
     ia32_as_give,
     NULL,
@@ -57,16 +54,11 @@ d_as			as_dispatch =
     NULL,
     NULL,
     NULL
-
-/*                                                                 [cut] /k2 */
-
   };
 
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * this function give an address space to a task.
@@ -391,7 +383,7 @@ t_error			ia32_as_reserve(i_task			tskid,
 
       // A VIRER ---------------
 
-      // on map aussi de koi faire des printf. A VIRER
+      // on map aussi de quoi faire des printf. A VIRER
       if (region_reserve(*asid,
 			 (i_segment)0x1000,
 			 0,
@@ -497,5 +489,3 @@ t_error			ia32_as_reserve(i_task			tskid,
 
   AS_LEAVE(as, ERROR_NONE);
 }
-
-/*                                                                 [cut] /k2 */

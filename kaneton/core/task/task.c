@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [sun dec 10 16:27:28 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:05:13 2007]
  */
 
 /*
@@ -62,8 +62,6 @@ i_task			ktask = ID_UNUSED;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k4 */
 
 /*
  * this function returns the current task.
@@ -1040,5 +1038,3 @@ t_error			task_clean(void)
 
   return (ERROR_NONE);
 }
-
-/*                                                                  [cut] k4 */

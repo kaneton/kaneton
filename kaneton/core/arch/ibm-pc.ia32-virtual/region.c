@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/region.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [sat oct 14 17:49:05 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:43:25 2007]
  */
 
 /*
@@ -42,7 +42,7 @@ extern i_as		kasid;
 d_region		region_dispatch =
   {
 
-/*                                                                  [cut] k2 */
+/*                                                                  [cut] k1 */
 
     NULL,
     NULL,
@@ -55,7 +55,7 @@ d_region		region_dispatch =
     ia32_region_init,
     ia32_region_clean
 
-/*                                                                 [cut] /k2 */
+/*                                                                 [cut] /k1 */
 
   };
 
@@ -63,7 +63,7 @@ d_region		region_dispatch =
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k2 */
+/*                                                                  [cut] k1 */
 
 /*
  * this function directly maps a chunk of memory.
@@ -688,6 +688,8 @@ t_error			ia32_region_resize(i_as			as,
   REGION_LEAVE(region, ERROR_NONE);
 }
 
+/*                                                                 [cut] /k1 */
+
 /*
  * this function just initialises the machine-dependent region manager.
  *
@@ -718,5 +720,3 @@ t_error			ia32_region_clean(void)
 
   REGION_LEAVE(region, ERROR_NONE);
 }
-
-/*                                                                 [cut] /k2 */

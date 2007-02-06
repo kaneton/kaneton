@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/time/timer.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       matthieu bucchianeri   [fri aug 18 17:30:53 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:16:26 2007]
  */
 
 /*
@@ -21,8 +21,6 @@
  * b) if the timer repeat is set to TIMER_REPEAT_DISABLE, then the timer is
  *    released.
  */
-
-/*								    [cut] k3 */
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -46,6 +44,8 @@ m_timer*		timer = NULL;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*								    [cut] k2 */
 
 /*
  * this function shows a given timer.
@@ -471,6 +471,8 @@ t_error			timer_get(i_timer			id,
   TIMER_LEAVE(timer, ERROR_NONE);
 }
 
+/*								   [cut] /k2 */
+
 /*
  * initialize the timer manager.
  *
@@ -608,6 +610,8 @@ t_error			timer_clean(void)
 
   return ERROR_NONE;
 }
+
+/*								   [cut] k2 */
 
 /*
  * check timer expiration.
@@ -756,4 +760,4 @@ t_error			timer_test(void)
   return ERROR_NONE;
 }
 
-/*								   [cut] /k3 */
+/*								   [cut] /k2 */

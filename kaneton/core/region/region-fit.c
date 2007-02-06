@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/region/region-fit.c
  *
  * created       matthieu bucchianeri   [tue jan 10 01:28:36 2006]
- * updated       matthieu bucchianeri   [wed dec 13 14:19:16 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:46:36 2007]
  */
 
 /*
@@ -45,7 +45,7 @@ extern m_region*       region;
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k2 */
+/*								    [cut] k1 */
 
 /*
  * this function tries to find free space in the region set via the
@@ -157,6 +157,8 @@ static t_error		region_first_fit(o_as*			as,
   REGION_LEAVE(region, ERROR_UNKNOWN);
 }
 
+/*								   [cut] /k1 */
+
 /*
  * this function calls the good algorithm.
  */
@@ -178,5 +180,3 @@ t_error			region_space(o_as*		as,
 	REGION_LEAVE(region, ERROR_UNKNOWN);
     }
 }
-
-/*                                                                 [cut] /k2 */

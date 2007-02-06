@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [fri aug 18 17:25:20 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:32:58 2007]
  */
 
 /*
@@ -175,6 +175,8 @@ void			kernel_init(void)
   if (thread_init() != ERROR_NONE)
     core_error("cannot initialise the thread manager\n");
 
+/*								    [cut] k1 */
+
   /*
    * 10)
    */
@@ -183,6 +185,8 @@ void			kernel_init(void)
 
   if (cpu_init() != ERROR_NONE)
     core_error("cannot initialise the cpu manager\n");
+
+/*								   [cut] /k1 */
 
   /*
    * 11)
@@ -202,6 +206,8 @@ void			kernel_init(void)
   if (timer_init() != ERROR_NONE)
     core_error("cannot initialise the timer manager\n");
 
+/*								    [cut] k1 */
+
   /*
    * 13)
    */
@@ -210,6 +216,8 @@ void			kernel_init(void)
 
   if (io_init() != ERROR_NONE)
     core_error("cannot initialise the io manager\n");
+
+/*								   [cut] /k1 */
 
   /*
    * 14)
@@ -220,6 +228,8 @@ void			kernel_init(void)
   if (message_init() != ERROR_NONE)
     core_error("cannot initialise the message manager\n");
 
+/*								    [cut] k1 */
+
   /*
    * 15)
    */
@@ -228,6 +238,8 @@ void			kernel_init(void)
 
   if (capability_init() != ERROR_NONE)
     core_error("cannot initialise the capability manager\n");
+
+/*								   [cut] /k1 */
 
   /*
    * 16)
@@ -248,17 +260,29 @@ void			kernel_clean(void)
 {
   sched_clean();
 
+/*								    [cut] k1 */
+
   capability_clean();
+
+/*								   [cut] /k1 */
 
   message_clean();
 
+/*								    [cut] k1 */
+
   io_clean();
+
+/*								   [cut] /k1 */
 
   timer_clean();
 
   event_clean();
 
+/*								    [cut] k1 */
+
   cpu_clean();
+
+/*								   [cut] /k1 */
 
   thread_clean();
 

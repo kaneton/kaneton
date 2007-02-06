@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/region/region.c
  *
  * created       julien quintard   [wed nov 23 09:19:43 2005]
- * updated       matthieu bucchianeri   [sat oct 14 17:46:01 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:40:42 2007]
  */
 
 /*
@@ -46,8 +46,6 @@ m_region*		region;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * this function shows a region.
@@ -202,6 +200,8 @@ t_error			region_inject(i_as		asid,
 
   REGION_LEAVE(region, ERROR_NONE);
 }
+
+/*								    [cut] k1 */
 
 /*
  * this function splits a region in two regions.
@@ -468,6 +468,8 @@ t_error			region_coalesce(i_as		asid,
 
   REGION_LEAVE(region, ERROR_NONE);
 }
+
+/*								   [cut] /k1 */
 
 /*
  * this function reserves a region given the desired segment.
@@ -771,5 +773,3 @@ t_error			region_clean(void)
 
   return (ERROR_NONE);
 }
-
-/*                                                                 [cut] /k2 */

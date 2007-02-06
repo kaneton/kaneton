@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [sun oct  8 17:40:45 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:56:23 2007]
  */
 
 /*
@@ -54,8 +54,6 @@ i_as			kasid = ID_UNUSED;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * this function shows a precise address space.
@@ -868,5 +866,3 @@ t_error			as_clean(void)
 
   return (ERROR_NONE);
 }
-
-/*                                                                 [cut] /k2 */

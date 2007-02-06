@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/set/set-stack.c
+ * file          /home/buckman/kaneton/kaneton/core/set/set-stack.c
  *
  * created       renaud voltz   [wed jan 25 17:11:05 2006]
- * updated       julien quintard   [sat jul  8 02:24:18 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:59:14 2007]
  */
 
 /*
@@ -34,8 +34,6 @@ extern m_set*		set;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * this function tells if the set object is a stack set.
@@ -440,5 +438,3 @@ t_error			set_object_stack(i_set			setid,
 
   SET_LEAVE(set, retval);
 }
-
-/*                                                                 [cut] /k2 */

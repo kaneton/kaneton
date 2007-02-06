@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/event/event.c
  *
  * created       renaud voltz   [sun feb 12 23:04:54 2006]
- * updated       matthieu bucchianeri   [wed aug 16 20:06:42 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:26:00 2007]
  */
 
 /*
@@ -14,8 +14,6 @@
  *
  * this file implements the event manager.
  */
-
-/*                                                                  [cut] k3 */
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -420,5 +418,3 @@ t_error			event_clean(void)
 
   return ERROR_NONE;
 }
-
-/*                                                                 [cut] /k3 */

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/timer.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/timer.c
  *
  * created       renaud voltz   [tue feb 28 02:24:05 2006]
- * updated       matthieu bucchianeri   [fri aug 18 17:38:53 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:17:11 2007]
  */
 
 /*
@@ -22,8 +22,6 @@
 
 #include <klibc.h>
 #include <kaneton.h>
-
-/*								    [cut] k3 */
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -41,6 +39,9 @@ extern m_timer*		timer;
 
 d_timer				timer_dispatch =
   {
+
+/*								   [cut] k2 */
+
     NULL,
     NULL,
     NULL,
@@ -50,11 +51,16 @@ d_timer				timer_dispatch =
     NULL,
     ia32_timer_init,
     NULL,
+
+/*								   [cut] /k2 */
+
   };
 
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*								   [cut] k2 */
 
 /*
  * init the timer on the ia32-virtual architecture.
@@ -74,4 +80,4 @@ t_error			ia32_timer_init(void)
   TIMER_LEAVE(timer, ERROR_NONE);
 }
 
-/*								   [cut] /k3 */
+/*								   [cut] /k2 */

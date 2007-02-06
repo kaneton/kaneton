@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/map/map.c
  *
  * created       matthieu bucchianeri   [sun feb 26 12:56:54 2006]
- * updated       matthieu bucchianeri   [thu aug 17 14:16:16 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:39:11 2007]
  */
 
 /*
@@ -37,6 +37,8 @@
 
 m_map*		map;
 
+/*                                                                  [cut] k1 */
+
 /*
  * ---------- extern ----------------------------------------------------------
  */
@@ -50,8 +52,6 @@ extern i_as	kasid;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k3 */
 
 /*
  * this function is a wrapper of mmap to map_reserve.
@@ -344,6 +344,8 @@ t_error			map_resize(i_as			asid,
   MAP_LEAVE(map, ERROR_NONE);
 }
 
+/*                                                                 [cut] /k1 */
+
 /*
  * initialize the map manager.
  *
@@ -403,5 +405,3 @@ t_error			map_clean(void)
 
   return (ERROR_NONE);
 }
-
-/*                                                                 [cut] /k3 */

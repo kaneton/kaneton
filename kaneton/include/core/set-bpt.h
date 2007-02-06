@@ -3,16 +3,14 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/set_bpt.h
+ * file          /home/buckman/kaneton/kaneton/include/core/set-bpt.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       julien quintard   [sun apr  2 13:51:09 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:22:48 2007]
  */
 
 #ifndef CORE_SET_BPT_H
 #define CORE_SET_BPT_H		1
-
-/*                                                                  [cut] k2 */
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -100,7 +98,5 @@ typedef struct
  */
 
 bpt_make_protos(set)
-
-/*                                                                 [cut] /k2 */
 
 #endif

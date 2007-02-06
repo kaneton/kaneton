@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [wed dec 13 03:11:09 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:49:35 2007]
  */
 
 /*
@@ -74,6 +74,8 @@ machdep_include(sched);
 
 m_sched*		sched = NULL;
 
+/*                                                                 [cut] k3 */
+
 /*
  * kernel task id.
  */
@@ -89,8 +91,6 @@ extern m_cpu*		cpu;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                 [cut] /k5 */
 
 /*
  * dump the scheduler state.
@@ -709,6 +709,8 @@ t_error			sched_update(i_thread			thread)
   SCHED_LEAVE(sched, ERROR_NONE);
 }
 
+/*                                                                [cut] /k3 */
+
 /*
  * this function initialises the scheduler manager.
  *
@@ -915,7 +917,7 @@ t_error			sched_clean(void)
   return (ERROR_NONE);
 }
 
-/*                                                                 [cut] /k5 */
+/*                                                                 [cut] k3 */
 
 /*
  * -------- tests -------------------------------------------------------------
@@ -1109,3 +1111,5 @@ void sched_test(void)
     }
 #endif
 }
+
+/*                                                                [cut] /k3 */

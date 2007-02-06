@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/set/set-bpt.c
+ * file          /home/buckman/kaneton/kaneton/core/set/set-bpt.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jul  8 02:24:30 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:58:51 2007]
  */
 
 /*
@@ -44,8 +44,6 @@ extern m_set*		set;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * this macro call builds the bpt specific functions.
@@ -1115,5 +1113,3 @@ t_error			set_pick_bpt(i_set			setid,
 
   SET_LEAVE(set, ERROR_UNKNOWN);
 }
-
-/*                                                                 [cut] /k2 */

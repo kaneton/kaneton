@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [tue feb  6 01:40:49 2007]
+ * updated       matthieu bucchianeri   [tue feb  6 22:31:13 2007]
  */
 
 /*
@@ -23,7 +23,7 @@
 #include <klibc.h>
 #include <kaneton.h>
 
-/*								    [cut] k3 */
+/*								    [cut] k2 */
 
 /*
  * ---------- extern ---------------------------------------------------------
@@ -35,6 +35,8 @@
 
 extern i_as			kasid;
 
+/*								   [cut] /k2 */
+
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -45,13 +47,21 @@ extern i_as			kasid;
 
 d_event				event_dispatch =
   {
+
+/*								    [cut] k2 */
+
     NULL,
     NULL,
     ia32_event_reserve,
     ia32_event_release,
     ia32_event_init,
     ia32_event_clean
+
+/*								   [cut] /k2 */
+
   };
+
+/*								    [cut] k2 */
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -472,4 +482,4 @@ void                    ia32_pf_handler(t_id			id,
   while (1);
 }
 
-/*								[cut] /k3 */
+/*								[cut] /k2 */

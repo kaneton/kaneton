@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/set.h
+ * file          /home/buckman/kaneton/kaneton/include/core/set.h
  *
  * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       julien quintard   [mon sep 25 18:50:55 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:22:25 2007]
  */
 
 #ifndef CORE_SET_H
@@ -103,9 +103,7 @@ struct				s_iterator
   union
   {
     t_iterator_array		array;
-/*                                                                  [cut] k2 */
     t_iterator_bpt		bpt;
-/*                                                                 [cut] /k2 */
     t_iterator_ll		ll;
   }				u;
 };
@@ -132,9 +130,7 @@ struct				s_set
   union
   {
     t_set_array			array;
-/*                                                                  [cut] k2 */
     t_set_bpt			bpt;
-/*                                                                 [cut] /k2 */
     t_set_ll			ll;
   }				u;
 };
@@ -223,7 +219,6 @@ typedef struct
         {								\
           switch (_set_->type)						\
             {								\
-/*                                                          [cut] k2 */	\
               case SET_TYPE_ARRAY:					\
                 _r_ = _func_##_array((_id_), ##_args_);			\
                 break;							\
@@ -239,7 +234,6 @@ typedef struct
               case SET_TYPE_STACK:					\
                 _r_ = _func_##_stack((_id_), ##_args_);			\
                 break;							\
-/*                                                         [cut] /k2 */	\
             }								\
         }								\
       _r_;								\

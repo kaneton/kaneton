@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/cons-serial.c
  *
  * created       matthieu bucchianeri   [tue jul 11 00:32:13 2006]
- * updated       matthieu bucchianeri   [tue jul 11 00:37:17 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:24:29 2007]
  */
 
 /*
@@ -89,5 +89,3 @@ t_error			cons_clean(void)
 {
   return (ERROR_NONE);
 }
-
-/*                                                                 [cut] /k1 */

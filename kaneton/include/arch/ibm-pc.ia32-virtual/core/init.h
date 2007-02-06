@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/init.h
+ * file          /home/buckman/kaneton/kaneton/include/arch/ibm-pc.ia32-virtual/core/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       matthieu bucchianeri   [fri aug 18 19:08:25 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:19:17 2007]
  */
 
 #ifndef IA32_CORE_INIT_H
@@ -67,12 +67,8 @@
 
 typedef struct
 {
-/*                                                                [cut] k1   */
-
   t_ia32_gdt			gdt;
   t_ia32_directory		pd;
-
-/*                                                               [cut] /k1   */
 }				a_init;
 
 /*

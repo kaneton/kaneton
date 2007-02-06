@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed nov  1 15:42:42 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:58:06 2007]
  */
 
 /*
@@ -43,7 +43,7 @@ extern m_as*		as;
 d_segment		segment_dispatch =
   {
 
-/*                                                                  [cut] k2 */
+/*                                                                  [cut] k1 */
 
     NULL,
     NULL,
@@ -64,7 +64,7 @@ d_segment		segment_dispatch =
     ia32_segment_init,
     ia32_segment_clean
 
-/*                                                                 [cut] /k2 */
+/*                                                                 [cut] /k1 */
 
   };
 
@@ -72,7 +72,7 @@ d_segment		segment_dispatch =
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k2 */
+/*                                                                  [cut] k1 */
 
 /*
  * this function reads directly from a segment to a buffer.
@@ -451,6 +451,8 @@ t_error			ia32_segment_perms(i_segment		segid,
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
+/*                                                                 [cut] /k1 */
+
 /*
  * this function just initialises the machine-dependent segment manager.
  *
@@ -590,5 +592,3 @@ t_error			ia32_segment_clean(void)
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
-
-/*                                                                 [cut] /k2 */

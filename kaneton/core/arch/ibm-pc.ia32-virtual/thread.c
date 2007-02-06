@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/thread.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       matthieu bucchianeri   [sun sep 10 13:17:42 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:14:26 2007]
  */
 
 /*
@@ -32,13 +32,15 @@
 
 extern m_thread*	thread;
 
+/*                                                                  [cut] k3 */
+
 /*
- * we'll used the kernel address space identifier.
+ * we'll use the kernel address space identifier.
  */
 
 extern i_as		kasid;
 
-/*                                                                  [cut] k4 */
+/*                                                                 [cut] /k3 */
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -50,6 +52,9 @@ extern i_as		kasid;
 
 d_thread			thread_dispatch =
   {
+
+/*                                                                  [cut] k3 */
+
     NULL,
     NULL,
     ia32_thread_clone,
@@ -63,11 +68,16 @@ d_thread			thread_dispatch =
     ia32_thread_stack,
     ia32_thread_init,
     NULL
+
+/*                                                                 [cut] /k3 */
+
   };
 
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k3 */
 
 /*
  * clone the ia32 architecture dependent part of a thread.
@@ -291,6 +301,8 @@ t_error			ia32_thread_stack(i_thread		threadid,
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }
+
+/*                                                                 [cut] /k3 */
 
 /*
  * initialize the IA-32 related structures for the thread manager.

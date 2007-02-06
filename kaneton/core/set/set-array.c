@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/set/set-array.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [mon aug 21 19:02:33 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:58:44 2007]
  */
 
 /*
@@ -47,8 +47,6 @@ extern m_set*		set;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * this function tells if the set object is an array set.
@@ -1467,5 +1465,3 @@ t_error			set_pick_array(i_set			setid,
 
   SET_LEAVE(set, ERROR_UNKNOWN);
 }
-
-/*                                                                 [cut] /k2 */

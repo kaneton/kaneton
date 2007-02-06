@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/id/id.c
+ * file          /home/buckman/kaneton/kaneton/core/id/id.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jul  8 02:27:35 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:27:40 2007]
  */
 
 /*
@@ -42,8 +42,6 @@ m_id*			id = NULL;
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k2 */
-
 /*
  * this function shows the id object's state.
  */
@@ -75,8 +73,6 @@ t_error			id_clone(o_id*				o,
   ID_LEAVE(id, r);
 }
 
-/*                                                                 [cut] /k2 */
-
 /*
  * this function reserves an identifier in an identifier object
  */
@@ -86,11 +82,7 @@ t_error			id_reserve(o_id*			o,
 {
   ID_ENTER(id);
 
-/*                                                                  [cut] k2 */
-
   *i = o->id++;
-
-/*                                                                 [cut] /k2 */
 
   ID_LEAVE(id, ERROR_NONE);
 }
@@ -115,11 +107,7 @@ t_error			id_build(o_id*				o)
 {
   ID_ENTER(id);
 
-/*                                                                  [cut] k2 */
-
   memset(o, 0x0, sizeof(o_id));
-
-/*                                                                 [cut] /k2 */
 
   ID_LEAVE(id, ERROR_NONE);
 }
@@ -132,16 +120,10 @@ t_error			id_destroy(o_id*			o)
 {
   ID_ENTER(id);
 
-/*                                                                  [cut] k2 */
-
   memset(o, 0x0, sizeof(o_id));
-
-/*                                                                 [cut] /k2 */
 
   ID_LEAVE(id, ERROR_NONE);
 }
-
-/*                                                                  [cut] k2 */
 
 /*
  * this function must initialise the id manager.
@@ -174,5 +156,3 @@ t_error			id_clean(void)
 
   return (ERROR_NONE);
 }
-
-/*                                                                 [cut] /k2 */

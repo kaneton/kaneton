@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue dec  5 23:16:21 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:57:33 2007]
  */
 
 /*
@@ -61,7 +61,7 @@ m_segment*		segment;
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k2 */
+/*                                                                  [cut] k1 */
 
 /*
  * this function shows a segment.
@@ -1300,4 +1300,4 @@ t_error			segment_clean(void)
   return (ERROR_NONE);
 }
 
-/*                                                                 [cut] /k2 */
+/*                                                                 [cut] /k1 */

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/arch/ia32-virtual/message.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/message.c
  *
  * created       matthieu bucchianeri   [sat jun 17 19:38:22 2006]
- * updated       julien quintard   [sat jul  8 02:29:43 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:41:19 2007]
  */
 
 /*
@@ -39,12 +39,12 @@ extern m_message*	message;
 d_message		message_dispatch =
   {
 
-/*                                                                  [cut] k6 */
+/*                                                                  [cut] k4 */
 
     NULL,
     NULL
 
-/*                                                                 [cut] /k6 */
+/*                                                                 [cut] /k4 */
 
   };
 
@@ -52,6 +52,6 @@ d_message		message_dispatch =
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k6 */
+/*                                                                  [cut] k4 */
 
-/*                                                                 [cut] /k6 */
+/*                                                                 [cut] /k4 */

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/message/message.c
+ * file          /home/buckman/kaneton/kaneton/core/message/message.c
  *
  * created       julien quintard   [sat jul  1 23:25:14 2006]
- * updated       julien quintard   [thu jul  6 16:46:43 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:37:56 2007]
  */
 
 /*

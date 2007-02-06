@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [sat dec  9 00:10:07 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:51:21 2007]
  */
 
 /*
@@ -27,9 +27,13 @@
 
 extern m_sched*		sched;
 
+/*                                                                  [cut] k3 */
+
 extern m_thread*	thread;
 
 extern i_task		ktask;
+
+/*                                                                 [cut] /k3 */
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -42,7 +46,7 @@ extern i_task		ktask;
 d_sched			sched_dispatch =
   {
 
-/*                                                                  [cut] k5 */
+/*                                                                  [cut] k3 */
 
     ia32_sched_quantum,
     ia32_sched_yield,
@@ -53,7 +57,7 @@ d_sched			sched_dispatch =
     ia32_sched_init,
     ia32_sched_clean
 
-/*                                                                 [cut] /k5 */
+/*                                                                 [cut] /k3 */
 
   };
 
@@ -61,7 +65,7 @@ d_sched			sched_dispatch =
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k5 */
+/*                                                                  [cut] k3 */
 
 /*
  * this function sets the scheduler quantum value.
@@ -309,4 +313,4 @@ t_error			ia32_sched_clean(void)
   SCHED_LEAVE(sched, ERROR_NONE);
 }
 
-/*                                                                 [cut] /k5 */
+/*                                                                 [cut] /k3 */

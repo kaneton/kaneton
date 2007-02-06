@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/debug/cons-text.c
+ * file          /home/buckman/kaneton/kaneton/core/debug/cons-text.c
  *
  * created       quintard julien   [sat may 28 18:23:13 2005]
- * updated       julien quintard   [sat jul  8 02:24:09 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:22:47 2007]
  */
 
 /*
@@ -39,8 +39,6 @@ t_cons			cons;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k1 */
 
 /*
  * this function just clears the console.
@@ -152,8 +150,6 @@ void			cons_print_string(char*			string)
     cons_print_char(string[i]);
 }
 
-/*                                                                 [cut] /k1 */
-
 /*
  * this function prints a status message.
  *
@@ -166,9 +162,6 @@ void			cons_msg(char				indicator,
 				 char*				fmt,
 				 ...)
 {
-
-/*                                                                  [cut] k1 */
-
   t_uint8		attr = cons.attr;
   va_list		args;
 
@@ -200,12 +193,7 @@ void			cons_msg(char				indicator,
   vprintf(fmt, args);
 
   va_end(args);
-
-/*                                                                 [cut] /k1 */
-
 }
-
-/*                                                                  [cut] k1 */
 
 /*
  * this function just initialises the bootloader console.
@@ -236,5 +224,3 @@ t_error			cons_clean(void)
 {
   return (ERROR_NONE);
 }
-
-/*                                                                 [cut] /k1 */

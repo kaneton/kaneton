@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed jan 24 20:29:35 2007]
+ * updated       matthieu bucchianeri   [tue feb  6 20:11:20 2007]
  */
 
 /*
@@ -23,7 +23,6 @@
  */
 
 #include <klibc.h>
-//#include <libmipsr10000.h>
 #include <kaneton.h>
 
 /*
@@ -69,12 +68,6 @@ void			kaneton(t_init*				bootloader)
   /*
    * 1)
    */
-
-#ifdef O2
-  io_cons_init();
-  printf("titi\n");
-  while(1);
-#endif
 
   init = bootloader;
 
@@ -123,14 +116,6 @@ void			kaneton(t_init*				bootloader)
 
   cons_msg('+', "kaneton started\n");
 
-#ifndef SERIAL
-  //  timer_test();
-
-//  check_tests();
-
-//  sched_test();
-
-#endif
   /*
    * XXX
    */
@@ -173,8 +158,6 @@ void			kaneton(t_init*				bootloader)
    */
 
   cons_msg('+', "system shutdown\n");
-
-//  HLT(); /* XXX this is IA32 code */
 
   while (1)
     ;

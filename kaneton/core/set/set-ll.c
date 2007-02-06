@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/set/set-ll.c
+ * file          /home/buckman/kaneton/kaneton/core/set/set-ll.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [sat jul  8 02:27:14 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:58:58 2007]
  */
 
 /*
@@ -51,8 +51,6 @@ extern m_set*		set;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * this function tells if the set object is a linked-list set.
@@ -1237,6 +1235,3 @@ t_error			set_pick_ll(i_set			setid,
 
   SET_LEAVE(set, ERROR_UNKNOWN);
 }
-
-
-/*                                                                 [cut] /k2 */

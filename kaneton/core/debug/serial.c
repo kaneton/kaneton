@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/serial.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [sun sep 10 17:40:45 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 22:23:41 2007]
  */
 
 /*
