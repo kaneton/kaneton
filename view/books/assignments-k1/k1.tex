@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/papers/assignments/k2.tex
+%% file          /home/buckman/kaneton/view/books/assignments-k1/k1.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       julien quintard   [sat jun 17 13:48:10 2006]
+%% updated       matthieu bucchianeri   [wed feb  7 23:05:19 2007]
 %%
 
 %
@@ -88,9 +88,58 @@ most of its job is actually done in the architecture-dependent code.
     internal portability facilities.\\
     \\
     Your segment manager must be compliant to the kaneton segment manager
-    interface as described later.\\
+    interface as described below.\\
 
   \item {\bf Interface}\\
+    \function{segment\_reserve}{(i\_as \argument{as},
+      t\_psize \argument{size},
+      t\_perms \argument{perms},
+      i\_segment* \argument{id})}
+             {
+               This function reserves in the address space
+             \argument{as} a segment with specified properties. This
+             function calls the physical memory allocator, implemented
+             in function \emph{segment\_space}. The identifier
+             of the reserved segment is returned in \argument{id}.
+	     }
+     \function{segment\_space}{(o\_as* \argument{as},
+       t\_psize \argument{size},
+       t\_paddr* \argument{address})}
+     {
+       This function allocates for the address space \argument{as} a
+       contiguous space of size \argument{size} in physical
+       memory. The address of the beginning of the allocated block is
+       returned in \argument{address}.
+     }
+
+    \function{segment\_release}{(i\_segment \argument{id})}
+             {
+               This function releases the segment \argument{id}.
+             }
+
+    \function{segment\_inject}{(i\_as \argument{as},
+      o\_segment* \argument{o})}
+	     {
+	       This function injects a pre-allocated segment in the
+	       address space \argument{as}. It means that no physical
+	       memory is allocated, the \argument{o} structure is
+	       trusted to be correctly filled.
+	     }
+
+     \function{segment\_get}{(i\_segment \argument{segid},
+       o\_segment** \argument{o})}
+       {
+	 This function retrieves a segment object \argument{o} given its identifier
+	 \argument{segid}.
+       }
+
+     \function{segment\_flush}{(i\_as \argument{as})}
+              {
+		This function removes every segment that belongs to
+		the address space \argument{as} and releases the
+		physical memory associated.
+              }
+
     \function{segment\_clone}{(i\_as \argument{as},
       i\_segment \argument{old},
       i\_segment* \argument{new})}
@@ -101,19 +150,6 @@ most of its job is actually done in the architecture-dependent code.
                Cloning a segment means reserving a new segment with the
                exact same properties. Then the content is also copied.
              }
-
-    \function{segment\_inject}{(i\_as \argument{as},
-      o\_segment* \argument{o})}
-	     {
-	       This function injects a pre-allocated segment in the set of
-	       segments.
-	     }
-
-    \function{segment\_give}{(i\_as \argument{as},
-      i\_segment \argument{id})}
-	     {
-	       This function gives a segment from one address space to another.
-	     }
 
     \function{segment\_read}{(i\_segment \argument{id},
       t\_paddr \argument{offset},
@@ -143,37 +179,11 @@ most of its job is actually done in the architecture-dependent code.
                the segment \argument{dst}.
              }
 
-    \function{segment\_reserve}{(i\_as \argument{as},
-      t\_psize \argument{size},
-      t\_perms \argument{perms},
-      i\_segment* \argument{id})}
-             {
-               This function reserves a segment with specified properties.
-             }
-
-    \function{segment\_release}{(i\_segment \argument{id})}
-             {
-               This function releases the segment \argument{id}.
-             }
-
     \function{segment\_perms}{(i\_segment \argument{id},
       t\_perms \argument{perms})}
              {
                This function changes the permissions of the segment \argument{id}.
              }
-
-     \function{segment\_flush}{(i\_as \argument{as})}
-              {
-		This function removes every segment that belongs to the
-		address space \argument{as}.
-              }
-
-    segment\_get()\\
-    segment\_space()\\
-
-    ia32\_segment\_read()\\
-    ia32\_segment\_write()\\
-    ia32\_segment\_copy()\\
 
   \item {\bf {Files}}\\
 
@@ -218,9 +228,70 @@ most of its job is actually done in the architecture-dependent code.
     \\
     You are also asked to respect the given interface and to use the provided
     libarch low-level functions.\\
+    \\
+    The following functions are given, but you must write the code in
+    the architecture-dependent side of the manager.
 
   \item {\bf Interface}\\
+\function{region\_reserve}{(i\_as \argument{as},
+                            i\_segment \argument{segment},
+                            t\_paddr \argument{offset},
+                            t\_opts \argument{opts},
+                            t\_vaddr \argument{address},
+                            t\_vsize \argument{size},
+                            i\_region* \argument{id})}
+	 {
+	   This function reserves a region with specified properties
+	   into the address space \argument{as}. This region maps the
+	   segment given by \argument{segment}. The identifier of the reserved region is returned in \argument{id}. Values for \argument{opts} can be:
 
+	   \begin{itemize}
+	     \item {REGION\_OPT\_NONE}: no options
+	     \item {REGION\_OPT\_FORCE}: forces the region to be reserved at address \argument{address}. Otherwise, uses \emph{region\_space} to allocate the region.
+	     \item {REGION\_OPT\_USER}: set the region addressable in both user and kernel mode
+	     \item {REGION\_OPT\_PRIVILEGED}: set the region to be addressable in kernel mode only
+	     \item {REGION\_OPT\_LOCAL}: set the region to be local to the address space
+	     \item {REGION\_OPT\_GLOBAL}: set the region to be global over all address spaces
+	   \end{itemize}
+	   The \argument{offset} indicates where to start mapping
+	   physical address. For example, reserving two regions on a
+	   single segment is allowed.
+	   \begin{center}
+	     \includegraphics[width=0.4\linewidth]{figures/offset}
+	   \end{center}
+	 }
+
+\function{region\_release}{(i\_as \argument{as},
+                            i\_region \argument{id})}
+	 {
+	   This function releases the region \argument{id} that
+	   belongs to the address space object \argument{as}. Be
+	   careful, releasing a region does not mean releasing the
+	   associated segment.
+	 }
+
+\function{region\_inject}{(i\_as \argument{as},
+                           o\_region* \argument{o})}
+	 {
+	   This function injects a pre-allocated region in the set of
+	   regions of the address space \argument{as}.
+	 }
+
+\function{region\_flush}{(i\_as \argument{as})}
+	 {
+	   This function removes every region that belongs to the
+	   address space \argument{as}.
+	 }
+
+	 \function{region\_get}{(i\_as \argument{asid},
+	   i\_region \argument{regid},
+	   o\_region** \argument{o})}
+		  {
+		    This function retrieves the region object
+		    \argument{o} associated to the identifier
+		    \argument{regid} in the address space
+		    \argument{asid}.
+		  }
 
   \item {\bf Files}\\
 
@@ -262,8 +333,39 @@ most of its job is actually done in the architecture-dependent code.
     \\
     As usual, your map manager must conform to the kaneton map manager interface as
     described as follow.\\
+    \\
+    In addition, you will have to provide a wrapper to classical
+    \emph{mmap} and \emph{munmap} functions.
 
   \item {\bf Interface}\\
+
+\function{map\_reserve}{(i\_as \argument{as},
+                         t\_opts \argument{opts},
+                         t\_vsize \argument{size},
+                         t\_perms \argument{perms},
+                         t\_vaddr* \argument{address})}
+	 {
+	   This function reserves some physical memory and map it into
+	   the address space \argument{as}.  The segment will have the
+	   size \argument{size} with the permissions \argument{perms}
+	   while the region will map the whole segment.
+
+	   The virtual address is returned in \argument{address}. The
+	   values for \argument{opts} can be:
+	   \begin{itemize}
+	     \item {MAP\_OPT\_NONE}: no option is specified
+	     \item {MAP\_OPT\_FORCE}: forces the memory to be allocated at virtual address \argument{address}
+	     \item {MAP\_OPT\_USER}: set permissions for both user and kernel
+	     \item {MAP\_OPT\_PRIVILEGED}: set permissions for kernel only
+	   \end{itemize}
+	 }
+
+\function{map\_release}{(i\_as \argument{as},
+                         t\_vaddr \argument{address})}
+	 {
+	   This function releases a previously reserved map, this
+	   includes releasing both virtual and physical memory.
+	 }
 
   \item {\bf {Files}}\\
 
