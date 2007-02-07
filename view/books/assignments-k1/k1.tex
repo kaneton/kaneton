@@ -1,0 +1,298 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/papers/assignments/k2.tex
+%%
+%% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
+%% updated       julien quintard   [sat jun 17 13:48:10 2006]
+%%
+
+%
+% k2
+%
+
+\chapter{k1: memory management}
+
+%
+% informations
+%
+
+\begin{tabular}{p{7cm}l}
+Duration: & 2 weeks \\
+File name: & {\em login\_x}-k1.tar.bz2 \\
+In charge: & Matthieu Bucchianeri \& Renaud Voltz\\
+Mailing-list: & kaneton-students@googlegroups.com \\
+Languages: & C \\
+Students per group: & 2 \\
+\end{tabular}
+
+\section{Abstract}
+
+k1 project consists in developing a large part of the kaneton memory management. Using all the concepts learned in class, you will have to implement:
+
+\begin{enumerate}
+  \item
+    {\bf The segment manager}\\
+    Manage physical memory
+  \item
+    {\bf The region manager}\\
+    Manage virtual memory
+  \item
+    {\bf The map manager}\\
+    Assume the mapping between physical and virtual memory.\\
+\end{enumerate}
+
+This part of the kaneton project introduces important notions around the
+kaneton design.
+
+For the first time, you will have to write kaneton managers. This point is
+very important since one of the fundamental concepts of kaneton microkernel
+is to be subdivided into managers.
+
+The kaneton microkernel was also designed to be ported on many
+architectures. It uses specific macro functions to import and call
+architecture-dependent routines. You will also have
+to understand this concept and to study how it is implemented in the
+kaneton microkernel. This feature is heavily used in the region manager since
+most of its job is actually done in the architecture-dependent code.
+
+%
+% Segment manager
+%
+
+\newpage
+
+\section{Segment manager}
+
+\begin{itemize}
+  \item {\bf Overview}\\
+    The segment manager provides a complete interface to manipulate physical
+    memory areas called {\em segments}. It is called everytime the kernel
+    needs to allocate, modify or free a physical memory area.\\
+
+    In other words, the segment manager interface provides:
+    \begin{itemize}
+    \item a physical memory allocator
+    \item physical memory read/write operations
+    \item a way to set physical memory areas attributes (size, permissions, \ldots)\\
+      \end{itemize}
+
+  \item {\bf Assignments}\\
+    In k1, you will write the entire segment manager. That includes the
+    machine-independent part of the manager, as well as the machine-dependent
+    code.\\
+
+    The architecture-dependent code must always be invoked using the kaneton
+    internal portability facilities.\\
+    \\
+    Your segment manager must be compliant to the kaneton segment manager
+    interface as described later.\\
+
+  \item {\bf Interface}\\
+    \function{segment\_clone}{(i\_as \argument{as},
+      i\_segment \argument{old},
+      i\_segment* \argument{new})}
+             {
+               This function clones a segment which will then belong to
+               the address space object \argument{as}.
+
+               Cloning a segment means reserving a new segment with the
+               exact same properties. Then the content is also copied.
+             }
+
+    \function{segment\_inject}{(i\_as \argument{as},
+      o\_segment* \argument{o})}
+	     {
+	       This function injects a pre-allocated segment in the set of
+	       segments.
+	     }
+
+    \function{segment\_give}{(i\_as \argument{as},
+      i\_segment \argument{id})}
+	     {
+	       This function gives a segment from one address space to another.
+	     }
+
+    \function{segment\_read}{(i\_segment \argument{id},
+      t\_paddr \argument{offset},
+      void* \argument{buffer},
+      t\_psize \argument{size})}
+             {
+               This function reads \argument{size} bytes at offset
+               \argument{offset} from the segment \argument{id}.
+             }
+
+     \function{segment\_write}{(i\_segment \argument{id},
+       t\_paddr \argument{offset},
+       const void* \argument{buffer},
+       t\_psize \argument{size})}
+              {
+		This function write the data of \argument{buffer} into the
+		segment \argument{id}.
+              }
+
+    \function{segment\_copy}{(i\_segment \argument{dst},
+      t\_paddr \argument{offd},
+      i\_segment \argument{src},
+      t\_paddr \argument{offs},
+      t\_psize \argument{size})}
+             {
+               This function copies data from the segment \argument{src} to
+               the segment \argument{dst}.
+             }
+
+    \function{segment\_reserve}{(i\_as \argument{as},
+      t\_psize \argument{size},
+      t\_perms \argument{perms},
+      i\_segment* \argument{id})}
+             {
+               This function reserves a segment with specified properties.
+             }
+
+    \function{segment\_release}{(i\_segment \argument{id})}
+             {
+               This function releases the segment \argument{id}.
+             }
+
+    \function{segment\_perms}{(i\_segment \argument{id},
+      t\_perms \argument{perms})}
+             {
+               This function changes the permissions of the segment \argument{id}.
+             }
+
+     \function{segment\_flush}{(i\_as \argument{as})}
+              {
+		This function removes every segment that belongs to the
+		address space \argument{as}.
+              }
+
+    segment\_get()\\
+    segment\_space()\\
+
+    ia32\_segment\_read()\\
+    ia32\_segment\_write()\\
+    ia32\_segment\_copy()\\
+
+  \item {\bf {Files}}\\
+
+    \begin{tabular}{| l | l |}
+      \hline
+      machine-independent & {\em kaneton/core/segment/segment.c}\\
+      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/segment.c}\\
+      libarch & {\em libs/libia32/pmode/*.c}\\\hline
+    \end{tabular}
+\end{itemize}
+
+
+%
+% region manager
+%
+
+\newpage
+
+\section{Region manager}
+\begin{itemize}
+  \item {\bf Overview}\\
+    The region manager provides a complete interface to manipulate virtual memory
+    areas called {\em regions}. It is used to reserve virtual memory and to map it
+    on segments.\\
+    \\
+    The region manager thus provides:
+
+    \begin{itemize}
+      \item a virtual memory allocator
+      \item virtual memory mapping routines\\
+    \end{itemize}
+
+    {\em Warning:}\\
+    the region manager always deals with existing valid segments. In
+    other terms, it never reserves, releases or modifies a segment to fit the mapping
+    needs. Such an initiative is handled by the map manager.\\
+
+  \item {\bf Assignments}\\
+    In k1, you will write the machine-dependent code of the kaneton region manager.
+    This code implements an interface between the machine-independent manager, and
+    the specific needs of the IA-32 architecture.\\
+    \\
+    You are also asked to respect the given interface and to use the provided
+    libarch low-level functions.\\
+
+  \item {\bf Interface}\\
+
+
+  \item {\bf Files}\\
+
+    \begin{tabular}{| l | l |}
+      \hline
+      machine-independent & {\em kaneton/core/region/region.c}\\
+      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/region.c}\\
+      libarch & {\em libs/libia32/paging/*.c}\\\hline
+    \end{tabular}
+
+\end{itemize}
+
+%
+% Map manager
+%
+
+\newpage
+
+\section{Map manager}
+
+\begin{itemize}
+  \item {\bf Overview}\\
+    The map manager implements a high-level interface to manipulate memory mappings.
+    It directly depends on both segment and region managers.\\
+    \\
+    For example, reserving a map consists in the two following steps:
+    \begin{itemize}
+      \item ask the segment manager to reserve physical memory.
+      \item ask the region manager to map this memory on virtual addresses.\\
+    \end{itemize}
+
+    {\em Note:}\\
+    As the map manager's role is to delegate its tasks to lower managers, it does
+    not require to implement a machine-dependent interface.\\
+
+  \item {\bf Assignments}\\
+    In k1, you will write the whole map manager. This manager will use the segment
+    and region manager you implemented sooner.\\
+    \\
+    As usual, your map manager must conform to the kaneton map manager interface as
+    described as follow.\\
+
+  \item {\bf Interface}\\
+
+  \item {\bf {Files}}\\
+
+    \begin{tabular}{| l | l |}
+      \hline
+      machine-independent & {\em kaneton/core/map/map.c}\\\hline
+    \end{tabular}
+\end{itemize}
+
+%
+% advanced topics
+%
+
+\newpage
+
+\section{Bonuses}
+
+kaneton microkernel is first of all a pedagogical project which do not ains at being
+optimized. That is why, when nothing is specified, you always will implement the simplest
+algorithms.\\
+\\
+Nevertheless, we will always encourage students who want to write additional bonuses, as far as they respect the following rules:
+\begin{enumerate}
+  \item Bonuses will be evaluated only if a basic implementation is actually working.
+  \item Bonuses must be either picked from the following list, or accepted by the kaneton team.\\
+\end{enumerate}
+
+Bonuses ideas:
+\begin{itemize}
+\item Buddy system
+\item Slab allocator
+\end{itemize}
