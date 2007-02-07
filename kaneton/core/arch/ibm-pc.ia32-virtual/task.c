@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ia32-virtual/task.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/task.c
  *
  * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [sun sep 10 12:51:57 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:54:12 2007]
  */
 
 /*
@@ -42,9 +42,6 @@ extern t_init*		init;
 
 d_task			task_dispatch =
   {
-
-/*                                                                  [cut] k4 */
-
     NULL,
     ia32_task_clone,
     ia32_task_reserve,
@@ -54,16 +51,11 @@ d_task			task_dispatch =
     NULL,
     ia32_task_init,
     NULL,
-
-/*                                                                 [cut] /k4 */
-
   };
 
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k4 */
 
 /*
  * this function clones the dependent part of a task.
@@ -142,5 +134,3 @@ t_error			ia32_task_init(void)
 
   TASK_LEAVE(task, ERROR_NONE);
 }
-
-/*                                                                 [cut] /k4 */

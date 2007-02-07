@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       matthieu bucchianeri   [sun dec 10 18:10:29 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:49:11 2007]
  */
 
 /*
@@ -19,8 +19,6 @@
  *  - scheduling information (state, priority within the task)
  *
  */
-
-/*                                                                  [cut] k4 */
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -915,5 +913,3 @@ t_error			thread_clean(void)
 
   return ERROR_NONE;
 }
-
-/*                                                                 [cut] /k4 */
