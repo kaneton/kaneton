@@ -1,0 +1,118 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/buckman/kaneton/view/exams/kernels/2007-t5/2007-t5.tex
+%%
+%% created       julien quintard   [fri dec  2 22:25:51 2005]
+%% updated       matthieu bucchianeri   [fri feb  9 00:48:21 2007]
+%%
+
+%
+% template
+%
+
+\input{../../../templates/exam.tex}
+
+%
+% header
+%
+
+\lhead{\scriptsize{2007}}
+
+%
+% title
+%
+
+\title{Examen de noyaux et systèmes d'exploitation}
+
+%
+% authors
+%
+
+\author{\small{Matthieu Bucchianeri, Renaud Voltz}}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% --------- information -------------------------------------------------------
+%
+
+\begin{center}
+
+\textbf{Ordinateurs, PDA et téléphones non autoris\'es}
+
+\textbf{Documents autoris\'es}
+
+\textbf{Dur\'ee 2 heures}
+
+\scriptsize{Une copie mal présentée et bourrée de faute d'orthographe sera pénalisée.}
+
+\end{center}
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+\section{Exercice 1 - Généralités}
+
+XXX choisir 4 exos parmi les petits exos suivants
+
+\subsection{Assembleur}
+
+XXX foutre un code asm pas trop long, leur demander de commenter chaque instruction
+
+\subsection{Appel BIOS}
+
+XXX leur filer la doc d'un BIOS call et leur demandé de coder l'appel
+
+\subsection{Gestion de TLB}
+
+XXX filer une suite d'acces memoire, leur faire gerer le TLB a la main
+
+\subsection{ICU en cascade}
+
+XXX leur demander de construire un PIC 16 IRQ en cascade
+
+\subsection{Microcode}
+
+XXX leur demander d'écrire le microcode de qq instructions (sur le meme cpu en bus du cours)
+
+\subsection{Bank switching}
+
+XXX leur donner un code en asm et leur demander de le modifier pour adresser + de memoire avec du bank switching
+
+\subsection{Binary buddy system}
+
+XXX leur donner une suite d'alloc a faire
+
+\section{Exercice 2 - Gestion de mémoire}
+
+\subsection{Implémentation de \emph{region} sur MIPS}
+
+XXX leur faire coder le page-miss handler pour MIPS
+
+\subsection{Implémentation du copy-on-write}
+
+XXX leur faire coder le COW (d'un point de vue heaut niveau).
+XXX page-fault (write fault):
+    XXX cherche la region en cause
+    XXX voir si COW (ajouter un bool dans o_region)
+    XXX si oui, alors
+	XXX segment_clone
+	XXX decrementer le refcount du segment original
+	XXX maj TLB r/w
+    XXX sinon, segv
+
+\end{document}
