@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/exams/kernels/2007-t5/2007-t5.tex
 %%
 %% created       julien quintard   [fri dec  2 22:25:51 2005]
-%% updated       matthieu bucchianeri   [fri feb  9 00:48:21 2007]
+%% updated       matthieu bucchianeri   [fri feb  9 12:18:35 2007]
 %%
 
 %
@@ -51,13 +51,14 @@
 
 \begin{center}
 
-\textbf{Ordinateurs, PDA et téléphones non autoris\'es}
+\textbf{Ordinateurs, PDA et téléphones non autorisés}
 
-\textbf{Documents autoris\'es}
+\textbf{Documents autorisés}
 
-\textbf{Dur\'ee 2 heures}
+\textbf{Durée 2 heures}
 
-\scriptsize{Une copie mal présentée et bourrée de faute d'orthographe sera pénalisée.}
+\scriptsize{Une copie mal présentée et bourrée de faute d'orthographe
+            sera pénalisée.}
 
 \end{center}
 
@@ -65,7 +66,7 @@
 % --------- text --------------------------------------------------------------
 %
 
-\section{Exercice 1 - Généralités}
+\section{Exercice 1 : Généralités -- \emph{8 points}}
 
 XXX choisir 4 exos parmi les petits exos suivants
 
@@ -97,22 +98,110 @@ XXX leur donner un code en asm et leur demander de le modifier pour adresser + d
 
 XXX leur donner une suite d'alloc a faire
 
-\section{Exercice 2 - Gestion de mémoire}
+\section{Exercice 2 : Gestion de mémoire -- \emph{12 points}}
+
+Les deux parties suivantes sont indépendantes.
+
+Vous trouverez en annexe la description de l'interface kaneton et des
+objets qu'il vous sera nécessaire d'utiliser.
 
 \subsection{Implémentation de \emph{region} sur MIPS}
 
-XXX leur faire coder le page-miss handler pour MIPS
+Dans cet exercice, vous allez implementer le manager \emph{region} de
+kaneton pour un microprocesseur de la famille MIPS (vu en cours).
+
+Contrairement aux microprocesseurs IA-32 qui implementent un
+algorithme de remplacement automatique des entrées TLB basé sur un
+arbre (la page-directory et les page-tables), le microprocesseur MIPS
+R3000 n'offre aucune aide au programmeur en cas de TLB-miss.
+
+Lorsque la MMU demande une traduction d'adresse et qu'aucune entrée
+dans le TLB n'est satisfaisante, une exception est générée. C'est
+alors au noyau de remplir les TLB comme il convient, ou de déclarer
+une erreur fatale.
+
+\subsubsection{Modification du manager \emph{as} (X points)}
+
+Les TLB contiennent des entrées provenant de tous les espaces
+d'adressage confondus. Ainsi, pour indiquer à quel espace d'adressage
+une entrée TLB appartient, un champ identifiant de 6 bits est présent
+dans chacune des entrées.
+
+Allez-vous devoir faire des modifications dans la partie dépendante de
+\emph{as} ? Si oui, lesquelles ?
+
+En quoi le fait d'encoder le champ identifiant sur 6 bits peut-il
+poser problème ?
+
+\textbf{Pour la suite de l'exercice, vous ne devez pas considerer le
+        problème identifié ci-dessus.}
+
+\subsubsection{Implementation du gestionnaire de TLB-miss (X points)}
+
+Pour cette question, nous vous fournissons des fonctions de la
+bibliothèque MIPS. Ces fonctions (de bas-niveau) sont décrites en
+annexe.
+
+Ecrivez le code (dans le langage de votre choix, le pseudo-code étant
+conseillé) du gestionnaire de TLB-miss. Vous pouvez bien entendu vous
+appuyer sur les fonctions données ci-dessus et sur toutes les autres
+fonctions de l'interface kaneton.
+
+% XXX donner le proto aussi
+
+\subsubsection{Implementation de \emph{mipsr3000\_region\_release} (X points)}
+
+Ecrivez le code dépendant de la fonction \emph{region\_release}. Vous
+pouvez utiliser les fonctions de l'interface kaneton et celles de la
+bibliothèque MIPS.
+
+\subsubsection{Amélioration des performances (bonus)}
+
+Indiquez pourquoi votre code n'est pas suffisament
+performant. Proposez une (ou plusieurs) solution(s) pour gagner en
+performances.
 
 \subsection{Implémentation du copy-on-write}
 
-XXX leur faire coder le COW (d'un point de vue heaut niveau).
-XXX page-fault (write fault):
-    XXX cherche la region en cause
-    XXX voir si COW (ajouter un bool dans o_region)
-    XXX si oui, alors
-	XXX segment_clone
-	XXX decrementer le refcount du segment original
-	XXX maj TLB r/w
-    XXX sinon, segv
+Le copy-on-write (vu en cours) est une astuce d'optimisation trés
+utilisée dans les noyaux modernes.
+
+Le principe du copy-on-write est le suivant : lorsqu'on clone un
+espace d'adressage (par exemple dans le cas d'un appel système
+\emph{fork}), les zones réservées en mémoire physique ne sont pas
+dupliquées. Seuls les correspondances (mappings) entre la mémoire
+virtuelle et la mémoire physique sont recopiées.
+
+Par la suite, c'est uniquement lors d'une écriture dans une zone
+mémoire que le segment de mémoire physique est recopié (afin qu'il y
+en ait un exemplaire par espace d'adressage).
+
+Dans cet exercice, nous simplifierons le problème en considérant qu'un
+espace d'adressage ne pourra être dupliqué qu'une unique fois.
+
+\subsubsection{Modification des objets (X points)}
+
+Indiquez les modifications à apporter aux objets (\emph{o\_as},
+\emph{o\_segment} et \emph{o\_region}).
+
+Vous indiquerez aussi les modifications à faire dans les opérations
+existantes pour prendre en compte ou remplir les champs ajoutés.
+
+\subsubsection{Implémentation du gestionnaire de page-fault (X points)}
+
+Ecrivez le code du gestionnaire de page-fault. Vous pouvez employer
+toutes les fonctions de l'interface kaneton. \textbf{Attention},
+contrairement à l'exercice précédent, votre code doit être indépendant
+de l'architecture.
+
+% XXX donner le proto car c trop dependant en fait
+
+\subsubsection{Implémentation sans limitations (bonus)}
+
+En quoi le cas ou un espace d'adressage peut être dupliqué plusieurs
+fois est-il (un tout petit peu) plus complexe à gérer ?
+
+Proposez les modifications pour gérer le copy-on-write quelque soit le
+nombre de clonage de l'espace d'adressage effectué.
 
 \end{document}
