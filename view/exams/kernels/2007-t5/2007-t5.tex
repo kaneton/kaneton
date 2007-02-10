@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/exams/kernels/2007-t5/2007-t5.tex
 %%
 %% created       julien quintard   [fri dec  2 22:25:51 2005]
-%% updated       matthieu bucchianeri   [fri feb  9 12:18:35 2007]
+%% updated       matthieu bucchianeri   [sat feb 10 15:08:57 2007]
 %%
 
 %
@@ -25,7 +25,7 @@
 % title
 %
 
-\title{Examen de noyaux et systèmes d'exploitation}
+\title{Examen de noyaux et systèmes d'exploitation (kaneton)}
 
 %
 % authors
@@ -55,10 +55,13 @@
 
 \textbf{Documents autorisés}
 
-\textbf{Durée 2 heures}
+\textbf{Durée 1 heure 30 minutes}
 
 \scriptsize{Une copie mal présentée et bourrée de faute d'orthographe
             sera pénalisée.}
+
+\scriptsize{Le barème est donné à titre indicatif, en cas de modifications,
+            aucune contestation ne sera possible}
 
 \end{center}
 
@@ -105,6 +108,13 @@ Les deux parties suivantes sont indépendantes.
 Vous trouverez en annexe la description de l'interface kaneton et des
 objets qu'il vous sera nécessaire d'utiliser.
 
+Lorsqu'il vous est demandé d'écrire du code, vous pourrez négliger la
+gestion des erreurs \textbf{uniquement dans les cas où elle n'apporte
+rien au problème}. Comprenez par là qu'on considère (par exemple) qu'un
+\emph{segment\_get} sur un identifiant de segment valide ne renverra
+pas d'erreur. En revanche, vous \textbf{devez gerer les erreurs qui
+peuvent conduire à des segfault}.
+
 \subsection{Implémentation de \emph{region} sur MIPS}
 
 Dans cet exercice, vous allez implementer le manager \emph{region} de
@@ -116,11 +126,14 @@ arbre (la page-directory et les page-tables), le microprocesseur MIPS
 R3000 n'offre aucune aide au programmeur en cas de TLB-miss.
 
 Lorsque la MMU demande une traduction d'adresse et qu'aucune entrée
-dans le TLB n'est satisfaisante, une exception est générée. C'est
+dans les TLB n'est satisfaisante, une exception est générée. C'est
 alors au noyau de remplir les TLB comme il convient, ou de déclarer
 une erreur fatale.
 
-\subsubsection{Modification du manager \emph{as} (X points)}
+Notez aussi que la taille des pages sur le MIPS R3000 est fixée à 4
+kilo-octets.
+
+\subsubsection{Modification du manager \emph{as} (1 points)}
 
 Les TLB contiennent des entrées provenant de tous les espaces
 d'adressage confondus. Ainsi, pour indiquer à quel espace d'adressage
@@ -136,20 +149,28 @@ poser problème ?
 \textbf{Pour la suite de l'exercice, vous ne devez pas considerer le
         problème identifié ci-dessus.}
 
-\subsubsection{Implementation du gestionnaire de TLB-miss (X points)}
+\subsubsection{Implementation du gestionnaire de TLB-miss (3 points)}
 
 Pour cette question, nous vous fournissons des fonctions de la
 bibliothèque MIPS. Ces fonctions (de bas-niveau) sont décrites en
 annexe.
 
-Ecrivez le code (dans le langage de votre choix, le pseudo-code étant
-conseillé) du gestionnaire de TLB-miss. Vous pouvez bien entendu vous
-appuyer sur les fonctions données ci-dessus et sur toutes les autres
-fonctions de l'interface kaneton.
+Ecrivez le code du gestionnaire de TLB-miss. Vous pouvez bien entendu
+vous appuyer sur les fonctions données ci-dessus et sur toutes les
+autres fonctions de l'interface kaneton.
 
-% XXX donner le proto aussi
+Le prototype du gestionnaire de TLB-miss est le suivant :
 
-\subsubsection{Implementation de \emph{mipsr3000\_region\_release} (X points)}
+\function{tlb\_miss}{(i\_as asid)}
+{
+\begin{itemize}
+\item
+  \emph{asid} est l'identifiant de l'espace d'adressage sur lequel
+  s'est produit l'erreur
+\end{itemize}
+}
+
+\subsubsection{Implementation de \emph{mipsr3000\_region\_release} (3 points)}
 
 Ecrivez le code dépendant de la fonction \emph{region\_release}. Vous
 pouvez utiliser les fonctions de l'interface kaneton et celles de la
@@ -169,17 +190,18 @@ utilisée dans les noyaux modernes.
 Le principe du copy-on-write est le suivant : lorsqu'on clone un
 espace d'adressage (par exemple dans le cas d'un appel système
 \emph{fork}), les zones réservées en mémoire physique ne sont pas
-dupliquées. Seuls les correspondances (mappings) entre la mémoire
+dupliquées. Seules les correspondances (mappings) entre la mémoire
 virtuelle et la mémoire physique sont recopiées.
 
 Par la suite, c'est uniquement lors d'une écriture dans une zone
 mémoire que le segment de mémoire physique est recopié (afin qu'il y
 en ait un exemplaire par espace d'adressage).
 
-Dans cet exercice, nous simplifierons le problème en considérant qu'un
-espace d'adressage ne pourra être dupliqué qu'une unique fois.
+Dans cet exercice, nous simplifierons le problème en considérant
+qu'\textbf{un espace d'adressage ne pourra être dupliqué qu'une unique
+fois}.
 
-\subsubsection{Modification des objets (X points)}
+\subsubsection{Modification des objets (1,5 points)}
 
 Indiquez les modifications à apporter aux objets (\emph{o\_as},
 \emph{o\_segment} et \emph{o\_region}).
@@ -187,19 +209,36 @@ Indiquez les modifications à apporter aux objets (\emph{o\_as},
 Vous indiquerez aussi les modifications à faire dans les opérations
 existantes pour prendre en compte ou remplir les champs ajoutés.
 
-\subsubsection{Implémentation du gestionnaire de page-fault (X points)}
+\subsubsection{Implémentation du gestionnaire de page-fault (3,5 points)}
 
 Ecrivez le code du gestionnaire de page-fault. Vous pouvez employer
 toutes les fonctions de l'interface kaneton. \textbf{Attention},
 contrairement à l'exercice précédent, votre code doit être indépendant
-de l'architecture.
+de l'architecture. Cependant, dans le cas ou votre code nécessiterait
+une partie dépendante de l'architecture (pour mettre-à-jour des TLB
+par exemple), vous preciserez \textbf{sans l'implémenter} le
+comportement de ce code.
 
-% XXX donner le proto car c trop dependant en fait
+Le prototype du gestionnaire de page-fault est le suivant :
+
+\function{page\_fault}{(i\_as asid, t\_vaddr address, t\_bool is\_write\_fault)}
+{
+\begin{itemize}
+\item
+  \emph{asid} est l'identifiant de l'espace d'adressage sur lequel
+  s'est produit l'erreur
+\item
+  \emph{address} est l'adresse virtuelle ayant provoqué l'erreur
+\item
+  \emph{is\_write\_fault} indique si l'erreur est due à une tentative
+  d'écriture à une adresse marquée en lecture seule.
+\end{itemize}
+}
 
 \subsubsection{Implémentation sans limitations (bonus)}
 
 En quoi le cas ou un espace d'adressage peut être dupliqué plusieurs
-fois est-il (un tout petit peu) plus complexe à gérer ?
+fois est-il plus complexe à gérer ?
 
 Proposez les modifications pour gérer le copy-on-write quelque soit le
 nombre de clonage de l'espace d'adressage effectué.
