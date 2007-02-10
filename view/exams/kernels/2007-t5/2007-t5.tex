@@ -6,7 +6,7 @@
 %% file          /home/buckman/kaneton/view/exams/kernels/2007-t5/2007-t5.tex
 %%
 %% created       julien quintard   [fri dec  2 22:25:51 2005]
-%% updated       matthieu bucchianeri   [sat feb 10 15:08:57 2007]
+%% updated       matthieu bucchianeri   [sat feb 10 17:45:12 2007]
 %%
 
 %
@@ -69,37 +69,67 @@
 % --------- text --------------------------------------------------------------
 %
 
+\vspace{3cm}
+
 \section{Exercice 1 : Généralités -- \emph{8 points}}
 
-XXX choisir 4 exos parmi les petits exos suivants
+Ces petits exercices vous offrent la possibilité de nous montrer votre
+bonne connaissance et compréhension du cours.
 
-\subsection{Assembleur}
+\subsection{Assembleur (3 points)}
 
-XXX foutre un code asm pas trop long, leur demander de commenter chaque instruction
+Le code assembleur suivant est executé sur un microprocesseur Intel
+80386 en mode réel.
 
-\subsection{Appel BIOS}
+Indiquez, pour chaque instruction, ce qu'elle fait.
 
-XXX leur filer la doc d'un BIOS call et leur demandé de coder l'appel
+\begin{verbatim}
+MOV AX, 0x1200
+MOV ES, AX
+MOV BX, 0x4000
+MOV AL, ES:[BX]
+TEST AL, AL
+JZ end
+ADD AL, 42
+MOV AH, 0xE
+INT 0x10
+\end{verbatim}
 
-\subsection{Gestion de TLB}
+\subsection{ICU en cascade (3 points)}
 
-XXX filer une suite d'acces memoire, leur faire gerer le TLB a la main
+Les microprocesseurs de la famille IA-32 ne disposent que d'un fil
+d'IRQ nommé \textbf{INTA}.
 
-\subsection{ICU en cascade}
+Afin de supporter plusieurs sources d'interruptions externes, on
+utilise un controlleur d'interruption appelé PIC (\emph{Programmable
+Interrupt Controller}, chip 8259). Ce PIC dispose de 8 entrées
+(\textbf{IR$_{0}$} - \textbf{IR$_{7}$}) et d'une unique sortie
+\textbf{INT}. Il dispose aussi d'un fil \textbf{INTACK} qui sert à
+l'acquittement par le microprocesseur, déclencheant la mise sur le bus
+de données du numéro de l'IRQ reçue.
 
-XXX leur demander de construire un PIC 16 IRQ en cascade
+On considerera que cette valeur mise sur le bus peut être
+automatiquement additionnée à une autre par le PIC (ne vous souciez
+donc pas de cette dernière).
 
-\subsection{Microcode}
+On souhaite utiliser 2 PIC en cascade pour disposer de plus de 8
+lignes d'IRQ. Proposez un montage répondant à ce problème.
 
-XXX leur demander d'écrire le microcode de qq instructions (sur le meme cpu en bus du cours)
+\subsection{Binary buddy system (2 points)}
 
-\subsection{Bank switching}
+Un considère un allocateur de mémoire grain-fin de type \emph{malloc}
+basé sur un buddy system binaire.
 
-XXX leur donner un code en asm et leur demander de le modifier pour adresser + de memoire avec du bank switching
+Le buddy system dispose initialement d'une page de 4 ko.
 
-\subsection{Binary buddy system}
+Le programme effectue successivement des appels à \emph{malloc} avec
+les tailles suivantes (en kilo-octet) : 126, 510, 1200, 10, 1000, 498,
+2000. \textbf{Attention} : par successivement, nous entendons que vous
+ne repartirez pas du début (un bloc 4 ko) entre chaque allocation.
 
-XXX leur donner une suite d'alloc a faire
+Donnez l'état de l'allocateur, c'est-à-dire l'ensemble des blocs
+libres et occupés après chacune de ces allocations. Que se passe-t-il
+lors de la dernière allocation ? Que préconisez-vous ?
 
 \section{Exercice 2 : Gestion de mémoire -- \emph{12 points}}
 
