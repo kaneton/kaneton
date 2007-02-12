@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/env/machines/gnu-unix/machine.mk
+## file          /home/buckman/kaneton/env/machines/linux::ibm-pc.ia32-virtual/machine.mk
 ##
 ## created       julien quintard   [fri feb 11 02:08:31 2005]
-## updated       julien quintard   [sun jul 30 20:06:19 2006]
+## updated       matthieu bucchianeri   [sat feb 10 12:07:05 2007]
 ##
 
 #
@@ -601,7 +601,7 @@ define version
   echo "#include <kaneton.h>" >> $(1)					; \
   echo "" >> $(1)							; \
   echo -n "const char version[] = \"$(_TITLE_)-$(_VERSION_)" >> $(1)	; \
-  echo " "$(shell $(_DATE_))" $(USER)@$(HOSTNAME)\";" >> $(1)
+  echo " "'$(shell $(_DATE_))'" $(USER)@$(HOSTNAME)\";" >> $(1)
 endef
 
 #

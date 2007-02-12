@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/templates/exam.tex
+%% file          /home/buckman/kaneton/view/templates/exam.tex
 %%
 %% created       julien quintard   [fri dec  2 22:20:57 2005]
-%% updated       julien quintard   [sat apr  8 13:47:17 2006]
+%% updated       matthieu bucchianeri   [sat feb 10 13:47:41 2007]
 %%
 
 %
@@ -73,6 +73,25 @@
 	   \textbf{\color{red}{ ----- /correction}}
 	 }
    }
+
+%
+% colors
+%
+
+\definecolor{functioncolor}{rgb}{0.40,0.00,0.00}
+
+%
+% function
+%
+
+\newcommand\function[3]{
+  \begin{tabular}{p{0.2cm}p{13.8cm}}
+  & {\color{functioncolor}\textbf{#1}}#2
+  \end{tabular}
+
+  \begin{tabular}{p{1cm}p{13cm}}
+  & #3
+  \end{tabular}}
 
 %
 % header
