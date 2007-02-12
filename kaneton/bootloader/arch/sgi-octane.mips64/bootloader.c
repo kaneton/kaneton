@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-o2.mips64/bootloader.c
  *
  * created       enguerrand raymond   [wed oct 18 14:21:40 2006]
- * updated       enguerrand raymond   [sat jan 13 22:41:19 2007]
+ * updated       enguerrand raymond   [sun jan 28 00:52:39 2007]
  */
 
 /*
@@ -88,8 +88,6 @@ int			bootloader(void)
   /*
    * 2)
    */
-
-
 
   init = (t_init*)bootloader_alloc(PAGESZ);
 

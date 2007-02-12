@@ -1,10 +1,10 @@
-OUTPUT_FORMAT("elf64-bigmips")
+OUTPUT_FORMAT("elf32-bigmips")
 OUTPUT_ARCH("mips")
 ENTRY(kaneton)
 
 SECTIONS
 {
-	. = 0xffffffff8000f000;
+	. = 0x8000f000;
 
 	.text :
 	{
@@ -16,13 +16,6 @@ SECTIONS
 		*(.data)
 		*(.rdata)
 		*(.rodata)
-	}
-
-	_gp = ALIGN(16);
-
-	.bss :
-	{
 		*(.bss)
 	}
-	__end_code = .;
 }

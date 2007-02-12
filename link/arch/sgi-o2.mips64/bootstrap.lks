@@ -1,6 +1,11 @@
 OUTPUT_FORMAT("elf32-bigmips")
 OUTPUT_ARCH("mips")
 ENTRY(_start)
+PHDRS
+{
+ text PT_LOAD AT (0x80002000);
+ data PT_LOAD AT (0x8000a000);
+}
 
 SECTIONS
 {
@@ -10,21 +15,25 @@ SECTIONS
 
 	.text :
 	{
-		*(.text)
-	}
-
+		*(.text*)
+	}:text
+	. = 0x8000a000;
 	.data :
 	{
-		*(.data)
-		*(.rdata)
-		*(.rodata)
-	}
+		*(.data*)
+		*(.rdata*)
+
+	}:data
+
+	.rodata :
+	{
+		*(.rodata*)
+	}:data
 
 	_gp = ALIGN(16);
 
 	.bss :
 	{
-		*(.bss)
-	}
-	__end_code = .;
+		*(.bss*)
+	}:data
 }

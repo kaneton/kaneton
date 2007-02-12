@@ -69,6 +69,17 @@ void			kaneton(t_init*				bootloader)
    * 1)
    */
 
+#ifdef O2
+  io_cons_init();
+
+  printf("\n");
+  printf("%s\n", version);
+  printf("\n");
+
+  mipsr10k_event_init();
+  while(1);
+#endif
+
   init = bootloader;
 
   /*

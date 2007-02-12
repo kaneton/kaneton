@@ -5,10 +5,10 @@
  *
  * license       kaneton licence
  *
- * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/sgi-o2.mips64/init.c
+ * file          /home/enguerrand/kaneton/kaneton/bootloader/arch/machdep/init.c
  *
  * created       enguerrand raymond   [sun nov 19 16:19:55 2006]
- * updated       enguerrand raymond   [sat jan 13 22:24:17 2007]
+ * updated       enguerrand raymond   [sun jan 14 10:25:00 2007]
  */
 
 /*
@@ -174,7 +174,7 @@ void			bootloader_init(void)
    * 2)
    */
 
-  init->kcode = (t_paddr)KERNEL_BASE64;
+  init->kcode = (t_paddr)KERNEL_BASE32;
   init->kcodesz = (t_psize)(nbr_page(KERNEL_SIZE) * PAGESZ);
 
   /*
@@ -204,7 +204,7 @@ void			bootloader_init(void)
 
   init->kstack = (t_paddr)bootloader_alloc(KSTACK_SIZE);
   init->kstacksz = (t_psize)KSTACK_SIZE;
-  printf("kstack = %x -- kstack + kstacksz = %x\n", init->kstack, init->kstack + init->kstacksz);
+
   /*
    * 7)
    */

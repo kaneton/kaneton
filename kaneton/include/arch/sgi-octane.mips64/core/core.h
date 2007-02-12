@@ -5,10 +5,10 @@
  *
  * license       kaneton licence
  *
- * file          /home/enguerrand/kaneton/kaneton/include/arch/sgi-octane.mips64/core/core.h
+ * file          /home/enguerrand/kaneton/kaneton/include/arch/sgi-o2.mips64/core/core.h
  *
  * created       enguerrand raymond   [wed oct 18 14:15:13 2006]
- * updated       enguerrand raymond   [wed oct 18 14:15:22 2006]
+ * updated       enguerrand raymond   [sun jan 14 11:15:49 2007]
  */
 
 #ifndef MIPS64_CORE_CORE_H
@@ -77,6 +77,8 @@
  * ../../../../core/arch/machdep/event.c
  */
 
+t_error		mipsr10k_event_init(void);
+
 
 /*
  * ../../../../core/arch/machdep/timer.c
@@ -111,6 +113,10 @@
 /*
  * ../../../../core/arch/machdep/io.c
  */
+
+int	io_cons_print_char(char	c);
+
+void	io_cons_attr(t_uint8	attr);
 
 int	io_cons_init(void);
 

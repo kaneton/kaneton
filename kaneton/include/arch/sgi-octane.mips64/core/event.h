@@ -5,14 +5,14 @@
  *
  * license       kaneton licence
  *
- * file          /home/enguerrand/kaneton/kaneton/include/arch/sgi-octane.mips64/core/event.h
+ * file          /home/enguerrand/kaneton/kaneton/include/arch/sgi-o2.mips64/core/event.h
  *
  * created       enguerrand raymond   [wed oct 18 14:16:28 2006]
- * updated       enguerrand raymond   [wed oct 18 14:16:35 2006]
+ * updated       enguerrand raymond   [sun jan 28 18:19:45 2007]
  */
 
-#ifndef MIPS64_CORE_EVENT_H
-#define MIPS64_CORE_EVENT_H	1
+#ifndef MIPSR10K_CORE_EVENT_H
+#define MIPSR10K_CORE_EVENT_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------

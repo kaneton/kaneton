@@ -43,8 +43,6 @@ t_uint32	bootloader_alloc(t_uint64	size);
 
 t_uint32		bootloader_memory_size(void);
 
-void	bootloader_malloc_init(void);
-
 void	bootloader_segments_init(void);
 
 void			bootloader_init(void);
