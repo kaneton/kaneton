@@ -96,16 +96,16 @@
  * serial port debug
  */
 
-#undef SERIAL
+#define SERIAL
 
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *      ../../kaneton/conf/conf.c
+ *      ../../core/conf/conf.c
  */
 
 /*
- * ../../kaneton/conf/conf.c
+ * ../../core/conf/conf.c
  */
 
 

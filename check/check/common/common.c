@@ -19,7 +19,6 @@ void	check_check_common(void)
    * for next steps
    */
   TEST_ENTER();
-
   t_uint8*     p = (t_uint8*)0x76543210;
 
   malloc(10);
@@ -27,7 +26,6 @@ void	check_check_common(void)
   *p = 0; // should #PF
 
   printf("Didnot #PF\n");
-
   TEST_LEAVE();
 }
 

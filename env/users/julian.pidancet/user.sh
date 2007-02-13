@@ -23,5 +23,5 @@ view()
 {
   document=$1
 
-  xpdf $document
+  env $document
 }
