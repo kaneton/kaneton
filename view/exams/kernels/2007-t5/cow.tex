@@ -1,0 +1,60 @@
+\subsection{Implémentation du copy-on-write}
+
+Le copy-on-write (vu en cours) est une astuce d'optimisation trés
+utilisée dans les noyaux modernes.
+
+Le principe du copy-on-write est le suivant : lorsqu'on clone un
+espace d'adressage (par exemple dans le cas d'un appel système
+\emph{fork}), les zones réservées en mémoire physique ne sont pas
+dupliquées. Seules les correspondances (mappings) entre la mémoire
+virtuelle et la mémoire physique sont recopiées.
+
+Par la suite, c'est uniquement lors d'une écriture dans une zone
+mémoire que le segment de mémoire physique est recopié (afin qu'il y
+en ait un exemplaire par espace d'adressage).
+
+Dans cet exercice, nous simplifierons le problème en considérant
+qu'\textbf{un espace d'adressage ne pourra être dupliqué qu'une unique
+fois}.
+
+\subsubsection{Modification des objets (1,5 points)}
+
+Indiquez les modifications à apporter aux objets (\emph{o\_as},
+\emph{o\_segment} et \emph{o\_region}).
+
+Vous indiquerez aussi les modifications à faire dans les opérations
+existantes pour prendre en compte ou remplir les champs ajoutés.
+
+\subsubsection{Implémentation du gestionnaire de page-fault (3,5 points)}
+
+Ecrivez le code du gestionnaire de page-fault. Vous pouvez employer
+toutes les fonctions de l'interface kaneton. \textbf{Attention},
+contrairement à l'exercice précédent, votre code doit être indépendant
+de l'architecture. Cependant, dans le cas ou votre code nécessiterait
+une partie dépendante de l'architecture (pour mettre-à-jour des TLB
+par exemple), vous preciserez \textbf{sans l'implémenter} le
+comportement de ce code.
+
+Le prototype du gestionnaire de page-fault est le suivant :
+
+\function{page\_fault}{(i\_as asid, t\_vaddr address, t\_bool is\_write\_fault)}
+{
+\begin{itemize}
+\item
+  \emph{asid} est l'identifiant de l'espace d'adressage sur lequel
+  s'est produit l'erreur
+\item
+  \emph{address} est l'adresse virtuelle ayant provoqué l'erreur
+\item
+  \emph{is\_write\_fault} indique si l'erreur est due à une tentative
+  d'écriture à une adresse marquée en lecture seule.
+\end{itemize}
+}
+
+\subsubsection{Implémentation sans limitations (bonus)}
+
+En quoi le cas ou un espace d'adressage peut être dupliqué plusieurs
+fois est-il plus complexe à gérer ?
+
+Proposez les modifications pour gérer le copy-on-write quelque soit le
+nombre de clonage de l'espace d'adressage effectué.
