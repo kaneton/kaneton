@@ -1,4 +1,4 @@
-\subsection{Implémentation de \emph{region} sur MIPS}
+\section*{Exercice 3 : Mapping sur MIPS (7 points)}
 
 Dans cet exercice, vous allez implementer le manager \emph{region} de
 kaneton pour un microprocesseur de la famille MIPS (vu en cours).
@@ -9,43 +9,35 @@ arbre (la page-directory et les page-tables), le microprocesseur MIPS
 R3000 n'offre aucune aide au programmeur en cas de TLB-miss.
 
 Lorsque la MMU demande une traduction d'adresse et qu'aucune entrée
-dans les TLB n'est satisfaisante, une exception est générée. C'est
+dans les TLB n'est satisfaisante, une exception est d\'eclench\'ee. C'est
 alors au noyau de remplir les TLB comme il convient, ou de déclarer
 une erreur fatale.
 
-Notez aussi que la taille des pages sur le MIPS R3000 est fixée à 4
-kilo-octets.
+{\bf Note :} la taille des pages sur le MIPS R3000 est fixée à 4ko.
 
-\subsubsection{Modification du manager \emph{as} (1 points)}
+
+\begin{description}
+\item {\bf Impl\'ementation du gestionnaire de TLB-miss}
 
 Les TLB contiennent des entrées provenant de tous les espaces
 d'adressage confondus. Ainsi, pour indiquer à quel espace d'adressage
-une entrée TLB appartient, un champ identifiant de 6 bits est présent
-dans chacune des entrées.
+une entrée TLB appartient, chaque entr\'ee contient un identifiant
+cod\'e sur 6 bits.
 
 \begin{enumerate}
 \item Allez-vous devoir faire des modifications dans la partie dépendante de
 \emph{as} ?\\
-Si oui, lesquelles ?
-
+Si oui, lesquelles ?\\
 \item En quoi le fait d'encoder le champ identifiant sur 6 bits peut-il
-poser problème ?
-\end{enumerate}
-
-\textbf{Pour la suite de l'exercice, vous ne devez pas considerer le
-        problème identifié ci-dessus.}
+poser problème ?\\
+\textbf{Pour la suite de l'exercice, vous ne devez pas consid\'erer le
+        problème identifié ci-dessus.}\\
 
 
-\subsubsection{Implementation du gestionnaire de TLB-miss (3 points)}
-
-Pour cette question, nous vous fournissons des fonctions de la
-bibliothèque MIPS. Ces fonctions (de bas-niveau) sont décrites en
-annexe.
-
-Ecrivez le code du gestionnaire de TLB-miss. Vous pouvez bien entendu
-vous appuyer sur les fonctions données ci-dessus et sur toutes les
-autres fonctions de l'interface kaneton.
-
+\item Ecrivez le code du gestionnaire de TLB-miss.\\
+Vous vous appuyerez sur les fonctions de la biblioth\`eque MIPS et de
+l'interface kaneton (voir annexe).\\
+\\
 Le prototype du gestionnaire de TLB-miss est le suivant :
 
 \function{tlb\_miss}{(i\_as asid)}
@@ -57,14 +49,16 @@ Le prototype du gestionnaire de TLB-miss est le suivant :
 \end{itemize}
 }
 
-\subsubsection{Implementation de \emph{mipsr3000\_region\_release} (3 points)}
-
-Ecrivez le code dépendant de la fonction \emph{region\_release}. Vous
+\item Ecrivez le code dépendant de la fonction {\em region\_release}. Vous
 pouvez utiliser les fonctions de l'interface kaneton et celles de la
-bibliothèque MIPS.
+bibliothèque MIPS.\\
+\end{enumerate}
 
-\subsubsection{Amélioration des performances (bonus)}
+
+\item {\bf Amélioration des performances (bonus)}
 
 Indiquez pourquoi votre code n'est pas suffisament
 performant. Proposez une (ou plusieurs) solution(s) pour gagner en
 performances.
+
+\end{description}
