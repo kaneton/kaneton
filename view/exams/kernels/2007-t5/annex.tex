@@ -1,8 +1,10 @@
-\subsection*{Annexes}
+\section*{ANNEXES}
 
-\subsection{kaneton as manager}
+\vspace{2cm}
 
-\subsubsection{as object}
+\section*{kaneton as manager}
+
+\subsection*{as object}
 
 \begin{verbatim}
 typedef struct
@@ -18,7 +20,7 @@ typedef struct
 }              o_as;
 \end{verbatim}
 
-\subsubsection{as interface}
+\subsection*{as interface}
 
 \function{as\_vaddr}{(i\_as \argument{id},
                       t\_paddr \argument{physical},
@@ -69,9 +71,11 @@ typedef struct
 	   corresponding to the address space identifier \argument{id}.
 	 }
 
-\subsection{kaneton segment manager}
 
-\subsubsection{segment object}
+
+\section*{kaneton segment manager}
+
+\subsection*{segment object}
 
 \begin{verbatim}
 typedef struct
@@ -89,7 +93,7 @@ typedef struct
 }              o_segment;
 \end{verbatim}
 
-\subsubsection{segment interface}
+\subsection*{segment interface}
 
 \function{segment\_clone}{(i\_as \argument{as},
                            i\_segment \argument{old},
@@ -149,9 +153,9 @@ typedef struct
 	   This function changes the permissions of the segment \argument{id}.
 	 }
 
-\subsection{kaneton region manager}
+\section*{kaneton region manager}
 
-\subsubsection{region object}
+\subsection*{region object}
 
 \begin{verbatim}
 typedef struct
@@ -169,7 +173,7 @@ typedef struct
 }              o_region;
 \end{verbatim}
 
-\subsubsection{region interface}
+\subsection*{region interface}
 
 \function{region\_reserve}{(i\_as \argument{as},
                             i\_segment \argument{segment},
@@ -189,9 +193,12 @@ typedef struct
 	   to the address space object \argument{as}.
 	 }
 
-\subsection{kaneton libmips}
 
-\subsubsection{Interface}
+\newpage
+
+\section*{kaneton libmips}
+
+\subsection*{Interface}
 
 \functionn{t\_vaddr}{mips\_bad\_vaddr}{()}
 {
