@@ -1,34 +1,29 @@
-\section*{Exercice 4 : Copy-on-write (6 points)}
+\section*{Exercice 4 : Copy-On-Write (7 points)}
 
 Le copy-on-write est une astuce d'optimisation tr\`es utilisée dans
-les noyaux modernes dont le principe est le suivant :\\
-\\
- lorsqu'on clone un espace d'adressage (par exemple dans le cas d'un appel système
+les noyaux modernes dont le principe est le suivant.
+
+Lorsqu'on clone un espace d'adressage (par exemple dans le cas d'un appel système
 \emph{fork}), les zones réservées en mémoire physique ne sont pas
 dupliquées. Seules les correspondances (mappings) entre la mémoire
 virtuelle et la mémoire physique sont recopiées.
 
 Par la suite, c'est uniquement lors d'une écriture dans une zone
-mémoire que le segment de mémoire physique est recopié (afin qu'il y
+mémoire que le segment de mémoire physique est recopié (pour qu'il y
 en ait un exemplaire par espace d'adressage).
 
 Dans cet exercice, nous simplifions le problème en considérant
 qu'\textbf{un espace d'adressage ne pourra être dupliqué qu'une unique
 fois}.\\
 \begin{description}
-\item {\bf Implémentation du gestionnaire de page-fault}
+\item {\bf A - Implémentation du gestionnaire de page-fault (5.5 points)}
 
 \begin{enumerate}
 \item Comment faut-il modifier les objets {\em o\_as}, {\em o\_segment} et
-{\em o\_region} si l'on veut impl\'ementer le copy-on-write dans kaneton ?
-
-\item Quels autres changements devrez-vous Vous indiquerez aussi les modifications à faire dans les opérations
-existantes pour prendre en compte ou remplir les champs ajoutés.
-
-
-
-
-\item Ecrivez le code du gestionnaire de page-fault. Vous pouvez employer
+{\em o\_region} si l'on veut impl\'ementer le copy-on-write dans kaneton ?\\
+\item Quels autres changements devrez-vous effectuer dans les fonction
+de l'interface kaneton  pour prendre en compte ou remplir les champs ajoutés.\\
+\item \'Ecrivez le code du gestionnaire de page-fault. Vous pouvez employer
 toutes les fonctions de l'interface kaneton. Votre code doit être {\bf indépendant
 de l'architecture}.\\
 \\
@@ -48,8 +43,15 @@ Le prototype du gestionnaire de page-fault est le suivant :
 \end{itemize}
 \end{enumerate}
 
+\item {\bf B - Question de cours (1.5 points)}
 
-\item {\bf Implémentation sans limitations (bonus)}
+\begin{enumerate}
+\item Expliquez les diff\'erences et les points communs entre le Copy-On-Write
+et l'Allocation-On-Demand.
+\end{enumerate}
+
+
+\item {\bf C - Implémentation sans limitations (bonus)}
 
 \begin{enumerate}
 \item En quoi le cas ou un espace d'adressage peut être dupliqué plusieurs

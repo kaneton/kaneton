@@ -1,23 +1,30 @@
-\section*{Exercice 3 : Pagination sur MIPS (6 points)}
+\section*{Exercice 3 : Pagination (7 points)}
 
+\begin{description}
+\item {\bf A - Question de cours (1.5 points)}
+\begin{enumerate}
+\item D\'ecrivez le principe g\'en\'eral de la traduction d'adresses en m\'emoire pagin\'ee.\\
+ Vous d\'etaillerez notamment le fonctionnement interne de la MMU.
+\end{enumerate}
+\end{description}
+
+\begin{description}
+\item {\bf B - Impl\'ementation de la pagination sur MIPS (5.5 points)}\\
+\\
 Dans cet exercice, vous allez implementer le manager \emph{region} de
-kaneton pour un microprocesseur de la famille MIPS (vu en cours).
-
+kaneton pour un microprocesseur de la famille MIPS (vu en cours).\\
+\\
 Contrairement aux microprocesseurs IA-32 qui implementent un
 algorithme de remplacement automatique des entrées TLB basé sur un
 arbre (la page-directory et les page-tables), le microprocesseur MIPS
-R3000 n'offre aucune aide au programmeur en cas de TLB-miss.
-
+R3000 n'offre aucune aide au programmeur en cas de TLB-miss.\\
+\\
 Lorsque la MMU demande une traduction d'adresse et qu'aucune entrée
 dans les TLB n'est satisfaisante, une exception est d\'eclench\'ee. C'est
 alors au noyau de remplir les TLB comme il convient, ou de déclarer
-une erreur fatale.
-
-{\bf Note :} la taille des pages sur le MIPS R3000 est fixée à 4ko.
-
-
-\begin{description}
-\item {\bf Impl\'ementation du gestionnaire de TLB-miss}
+une erreur fatale.\\
+\\
+{\bf Note :} la taille des pages sur le MIPS R3000 est fixée à 4ko.\\
 
 \begin{enumerate}
 \item Les TLB contiennent des entrées provenant de tous les espaces
@@ -55,10 +62,12 @@ bibliothèque MIPS.\\
 \end{enumerate}
 
 
-\item {\bf Amélioration des performances (bonus)}
+\item {\bf C - Amélioration des performances (bonus)}
 
-Indiquez pourquoi votre code n'est pas suffisament
-performant. Proposez une (ou plusieurs) solution(s) pour gagner en
+\begin{enumerate}
+\item Indiquez pourquoi votre code n'est pas suffisament performant.\\
+  Proposez une (ou plusieurs) solution(s) pour gagner en
 performances.
+\end{enumerate}
 
 \end{description}
