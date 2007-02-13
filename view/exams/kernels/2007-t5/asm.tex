@@ -9,7 +9,7 @@ Indiquez, pour chaque instruction, ce qu'elle fait.
 MOV AX, 0x1200
 MOV ES, AX
 MOV BX, 0x4000
-MOV AL, ES:[BX]
+MOV AL, [ES:BX]
 TEST AL, AL
 JZ end
 ADD AL, 42
