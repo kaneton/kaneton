@@ -328,89 +328,91 @@ instructions long).\\
 You must write your own test ELF binary in C, which must be able to
 write text on the screen. See appendix \emph{VGA text framebuffer}.
 
-\newpage
-
-\section{Appendixes}
-
-\begin{itemize}
-\item
-  BIOS services:
-  \begin{itemize}
-  \item
-    int 10: video services
-  \item
-    int 13: disk services
-  \item
-    int 16: keyboard services
-  \end{itemize}
-\item
-  VGA Text Framebuffer
-\item
-  Executable \& Linkable Format (ELF) documentation
-\item
-  Intel IA-32 mode switching procedures
 \end{itemize}
-\end{itemize}
+
+%\newpage
+
+%\section{Appendixes}
+%
+%\begin{itemize}
+%\item
+%  BIOS services:
+%  \begin{itemize}
+%  \item
+%    int 10: video services
+%  \item
+%    int 13: disk services
+%  \item
+%    int 16: keyboard services
+%  \end{itemize}
+%\item
+%  VGA Text Framebuffer
+%\item
+%  Executable \& Linkable Format (ELF) documentation
+%\item
+%  Intel IA-32 mode switching procedures
+%\end{itemize}
+%\end{itemize}
 %
 % Bios interrupts documentation
 %
 
-\includepdf[pages=-]{int10}
-\includepdf[pages=-]{int10_2}
-\includepdf[pages=-]{int10_3}
-\includepdf[pages=-]{int10_e}
+%\includepdf[pages=-]{int10}
+%\includepdf[pages=-]{int10_2}
+%\includepdf[pages=-]{int10_3}
+%\includepdf[pages=-]{int10_e}
 
-\includepdf[pages=-]{int13}
-\includepdf[pages=-]{int13_0}
-\includepdf[pages=-]{int13_1}
-\includepdf[pages=-]{int13_2}
+%\includepdf[pages=-]{int13}
+%\includepdf[pages=-]{int13_0}
+%\includepdf[pages=-]{int13_1}
+%\includepdf[pages=-]{int13_2}
 
-\includepdf[pages=-]{int16}
-\includepdf[pages=-]{int16_0}
-\includepdf[pages=-]{int16_1}
-\includepdf[pages=-]{int16_scancodes}
+%\includepdf[pages=-]{int16}
+%\includepdf[pages=-]{int16_0}
+%\includepdf[pages=-]{int16_1}
+%\includepdf[pages=-]{int16_scancodes}
 
 %
 % VGA framebuffer
 %
 
-\subsection*{VGA Text Framebuffer}
+%\subsection*{VGA Text Framebuffer}
 
-Displaying text on the screen can be done using the BIOS services (int
-10). But once in protected mode, the BIOS is not available anymore. So
-we must find an alternate way to drive the console.
+%Displaying text on the screen can be done using the BIOS services (int
+%10). But once in protected mode, the BIOS is not available anymore. So
+%we must find an alternate way to drive the console.
 
-At startup, a VGA card is initialized in color-text mode, with the
-80x25 resolution. Each cell is represented by the following couple of
-bytes in memory:
-
-\begin{center}
-\includegraphics[width=\linewidth]{vga-text}
-\end{center}
-
-The console \emph{framebuffer} is a memory area (formatted with cells
-as described above) which maps the screen.
-
-Write 0x4b at the address 0xb8000 and 0x96 at 0xb8001 will print the
-character 'K' blinking in yellow on a blue background, at the top-left corner
-of the screen. The second character is located at 0xb8002.
+%At startup, a VGA card is initialized in color-text mode, with the
+%80x25 resolution. Each cell is represented by the following couple of
+%bytes in memory:
+%
+%\begin{center}
+%\includegraphics[width=\linewidth]{vga-text}
+%\end{center}
+%
+%The console \emph{framebuffer} is a memory area (formatted with cells
+%as described above) which maps the screen.
+%
+%Write 0x4b at the address 0xb8000 and 0x96 at 0xb8001 will print the
+%character 'K' blinking in yellow on a blue background, at the top-left corner
+%of the screen. The second character is located at 0xb8002.
 
 %
 % ELF documentation
 %
 
-\includepdf[pages=-]{elf1}
-\includepdf[pages=-]{elf2}
-\includepdf[pages=-]{elf3}
-\includepdf[pages=-]{elf4}
-\includepdf[pages=-]{elf5}
-\includepdf[pages=-]{elf6}
-\includepdf[pages=-]{elf7}
+%\includepdf[pages=-]{elf1}
+%\includepdf[pages=-]{elf2}
+%\includepdf[pages=-]{elf3}
+%\includepdf[pages=-]{elf4}
+%\includepdf[pages=-]{elf5}
+%\includepdf[pages=-]{elf6}
+%\includepdf[pages=-]{elf7}
 
 %
 % IA-32 operating mode switch
 %
 
-\includepdf[pages=-]{mode_switch}
+%\includepdf[pages=-]{mode_switch}
 
 \end{document}
