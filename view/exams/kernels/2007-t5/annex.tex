@@ -1,23 +1,21 @@
 \section*{ANNEXES}
 
-\vspace{2cm}
-
 \section*{kaneton as manager}
 
 \subsection*{as object}
 
 \begin{verbatim}
-typedef struct
-{
-  i_as         asid;
+       typedef struct
+       {
+         i_as         asid;
 
-  i_task       tskid;
+         i_task       tskid;
 
-  i_set        segments;
-  i_set        regions;
+         i_set        segments;
+         i_set        regions;
 
-  machdep_data(o_as);
-}              o_as;
+         machdep_data(o_as);
+       }              o_as;
 \end{verbatim}
 
 \subsection*{as interface}
@@ -78,19 +76,19 @@ typedef struct
 \subsection*{segment object}
 
 \begin{verbatim}
-typedef struct
-{
-  i_segment    segid;
+      typedef struct
+      {
+        i_segment    segid;
 
-  i_as         asid;
+        i_as         asid;
 
-  t_paddr      address;
-  t_psize      size;
+        t_paddr      address;
+        t_psize      size;
 
-  t_perms      perms;
+        t_perms      perms;
 
-  machdep_data(o_segment);
-}              o_segment;
+        machdep_data(o_segment);
+      }              o_segment;
 \end{verbatim}
 
 \subsection*{segment interface}
@@ -158,19 +156,19 @@ typedef struct
 \subsection*{region object}
 
 \begin{verbatim}
-typedef struct
-{
-  i_region     regid;
+      typedef struct
+      {
+        i_region     regid;
 
-  i_segment    segid;
+        i_segment    segid;
 
-  t_vaddr      address;
-  t_paddr      offset;
-  t_vsize      size;
-  t_opts       opts;
+        t_vaddr      address;
+        t_paddr      offset;
+        t_vsize      size;
+        t_opts       opts;
 
-  machdep_data(o_region);
-}              o_region;
+        machdep_data(o_region);
+      }              o_region;
 \end{verbatim}
 
 \subsection*{region interface}

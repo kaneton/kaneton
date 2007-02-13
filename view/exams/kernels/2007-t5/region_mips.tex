@@ -1,4 +1,4 @@
-\section*{Exercice 3 : Mapping sur MIPS (6 points)}
+\section*{Exercice 3 : Pagination sur MIPS (6 points)}
 
 Dans cet exercice, vous allez implementer le manager \emph{region} de
 kaneton pour un microprocesseur de la famille MIPS (vu en cours).
@@ -19,13 +19,13 @@ une erreur fatale.
 \begin{description}
 \item {\bf Impl\'ementation du gestionnaire de TLB-miss}
 
-Les TLB contiennent des entrées provenant de tous les espaces
+\begin{enumerate}
+\item Les TLB contiennent des entrées provenant de tous les espaces
 d'adressage confondus. Ainsi, pour indiquer à quel espace d'adressage
 une entrée TLB appartient, chaque entr\'ee contient un identifiant
-cod\'e sur 6 bits.
-
-\begin{enumerate}
-\item Allez-vous devoir faire des modifications dans la partie dépendante de
+cod\'e sur 6 bits.\\
+\\
+Allez-vous devoir faire des modifications dans la partie dépendante de
 \emph{as} ?\\
 Si oui, lesquelles ?\\
 \item En quoi le fait d'encoder le champ identifiant sur 6 bits peut-il
