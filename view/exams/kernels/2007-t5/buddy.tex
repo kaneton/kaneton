@@ -1,0 +1,18 @@
+\subsection{Binary buddy system (2 points)}
+
+Un considère un allocateur de mémoire grain-fin de type \emph{malloc}
+basé sur un buddy system binaire d'ordre 12 (qui peut allouer des blocs
+d'une taille maximale de 2$^{12}$ octets).
+
+L'allocateur dispose initialement d'un bloc libre de 4 ko.
+
+Le programme effectue successivement des appels à \emph{malloc} avec
+les tailles suivantes (en octets) : 126, 510, 1200, 10, 1000, 498.
+
+\begin{enumerate}
+\item Donnez l'état de l'allocateur, c'est-à-dire l'ensemble des blocs
+libres et occupés après chacune de ces allocations.
+
+\item On veut maintenant allouer un bloc de 2000 octets.
+Que se passe-t-il lors cette dernière allocation ? Que préconisez-vous ?
+\end{enumerate}

@@ -76,60 +76,9 @@
 Ces petits exercices vous offrent la possibilité de nous montrer votre
 bonne connaissance et compréhension du cours.
 
-\subsection{Assembleur (3 points)}
-
-Le code assembleur suivant est executé sur un microprocesseur Intel
-80386 en mode réel.
-
-Indiquez, pour chaque instruction, ce qu'elle fait.
-
-\begin{verbatim}
-MOV AX, 0x1200
-MOV ES, AX
-MOV BX, 0x4000
-MOV AL, ES:[BX]
-TEST AL, AL
-JZ end
-ADD AL, 42
-MOV AH, 0xE
-INT 0x10
-\end{verbatim}
-
-\subsection{ICU en cascade (3 points)}
-
-Les microprocesseurs de la famille IA-32 ne disposent que d'un fil
-d'IRQ nommé \textbf{INTA}.
-
-Afin de supporter plusieurs sources d'interruptions externes, on
-utilise un controlleur d'interruption appelé PIC (\emph{Programmable
-Interrupt Controller}, chip 8259). Ce PIC dispose de 8 entrées
-(\textbf{IR$_{0}$} - \textbf{IR$_{7}$}) et d'une unique sortie
-\textbf{INT}. Il dispose aussi d'un fil \textbf{INTACK} qui sert à
-l'acquittement par le microprocesseur, déclencheant la mise sur le bus
-de données du numéro de l'IRQ reçue.
-
-On considerera que cette valeur mise sur le bus peut être
-automatiquement additionnée à une autre par le PIC (ne vous souciez
-donc pas de cette dernière).
-
-On souhaite utiliser 2 PIC en cascade pour disposer de plus de 8
-lignes d'IRQ. Proposez un montage répondant à ce problème.
-
-\subsection{Binary buddy system (2 points)}
-
-Un considère un allocateur de mémoire grain-fin de type \emph{malloc}
-basé sur un buddy system binaire.
-
-Le buddy system dispose initialement d'une page de 4 ko.
-
-Le programme effectue successivement des appels à \emph{malloc} avec
-les tailles suivantes (en kilo-octet) : 126, 510, 1200, 10, 1000, 498,
-2000. \textbf{Attention} : par successivement, nous entendons que vous
-ne repartirez pas du début (un bloc 4 ko) entre chaque allocation.
-
-Donnez l'état de l'allocateur, c'est-à-dire l'ensemble des blocs
-libres et occupés après chacune de ces allocations. Que se passe-t-il
-lors de la dernière allocation ? Que préconisez-vous ?
+\input{asm.tex}
+\input{pic.tex}
+\input{buddy.tex}
 
 \section{Exercice 2 : Gestion de mémoire -- \emph{12 points}}
 
@@ -490,7 +439,7 @@ typedef struct
   Mark the \argument{entry} of the TLB as invalid (remove it).
 }
 
-\functionn{t_uint32}{mips\_randon\_entry}{()}
+\functionn{t\_uint32}{mips\_randon\_entry}{()}
 {
   Get the index of a random entry in the TLB that can be replaced.
 }

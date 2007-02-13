@@ -1,0 +1,18 @@
+\subsection{Assembleur (3 points)}
+
+Le code assembleur suivant est executé sur un microprocesseur Intel
+80386 en mode réel.
+
+Indiquez, pour chaque instruction, ce qu'elle fait.
+
+\begin{verbatim}
+MOV AX, 0x1200
+MOV ES, AX
+MOV BX, 0x4000
+MOV AL, ES:[BX]
+TEST AL, AL
+JZ end
+ADD AL, 42
+MOV AH, 0xE
+INT 0x10
+\end{verbatim}
