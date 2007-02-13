@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/debug/debug.c
+ * file          /home/buckman/crypt/kaneton/kaneton/core/debug/debug.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [thu aug 10 16:33:42 2006]
+ * updated       matthieu bucchianeri   [tue feb 13 17:37:21 2007]
  */
 
 /*

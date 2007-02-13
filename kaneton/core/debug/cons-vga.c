@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/debug/cons-vga.c
+ * file          /home/buckman/crypt/kaneton/kaneton/core/debug/cons-vga.c
  *
  * created       matthieu bucchianeri   [fri dec  2 20:14:33 2005]
- * updated       matthieu bucchianeri   [fri dec  8 02:02:17 2006]
+ * updated       matthieu bucchianeri   [tue feb 13 16:37:06 2007]
  */
 
 /*
@@ -18,7 +18,7 @@
 /*
  * mode selection (MODE2 is not working)
  */
-#define MODE3		// 1: 640x480x2, 2: 640x480x16, 3: 320x200x256
+#define MODE1		// 1: 640x480x2, 2: 640x480x16, 3: 320x200x256
 
 /*
  * ---------- includes --------------------------------------------------------

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/env/users/matthieu.bucchianeri/conf.h
+ * file          /home/buckman/crypt/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [fri aug 18 17:46:11 2006]
+ * updated       matthieu bucchianeri   [tue feb 13 14:50:08 2007]
  */
 
 #ifndef KANETON_CONF_H
@@ -96,7 +96,7 @@
  * serial port debug
  */
 
-#undef SERIAL
+#define SERIAL
 
 /*
  * ---------- prototypes ------------------------------------------------------

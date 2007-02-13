@@ -198,22 +198,39 @@ typedef struct
   Get the virtual address that caused the fault.
 }
 
-\functionn{}{mips\_set\_tlb}{()}
+\function{mips\_set\_tlb}{(t\_uint32 \argument{entry},
+			   t\_uint32 \argument{id},
+			   t\_vaddr \argument{vaddr},
+			   t\_paddr \argument{paddr},
+			   t\_perms  \argument{perms})}
 {
+  This function fills the entry of index \argument{entry} of the TLB
+  with a translation of virtual address \argument{vaddr} in address
+  space \argument{id} to the physical address \argument{paddr}.
 
+  Permissions \argument{perms} are associated with the translation.
 }
 
-\functionn{}{mips\_get\_tlb}{()}
+\function{mips\_get\_tlb}{(t\_uint32 \argument{entry},
+			   t\_vaddr* \argument{vaddr},
+			   t\_uint32* \argument{id})}
 {
-
+  This function get the virtual address \argument{vaddr} and the
+  address space identifier \argument{id} translated by the entry
+  \argument{entry} of the TLB.
 }
 
-\functionn{}{mips\_del\_tlb}{(t\_uint32 entry)}
+\function{mips\_del\_tlb}{(t\_uint32 \argument{entry})}
 {
   Mark the \argument{entry} of the TLB as invalid (remove it).
 }
 
-\functionn{t\_uint32}{mips\_randon\_entry}{()}
+\functionn{t\_uint32}{mips\_number\_entry}{()}
+{
+  Get the total number of entries in the TLB.
+}
+
+\functionn{t\_uint32}{mips\_random\_entry}{()}
 {
   Get the index of a random entry in the TLB that can be replaced.
 }
