@@ -13,9 +13,66 @@ les tailles suivantes : 126, 510, 1200, 10, 1000 et 498 octets.
 \item Donnez l'état de l'allocateur, c'est-à-dire l'ensemble des blocs
 libres et occupés après chacune de ces allocations.
 
+\begin{correction}
+
+Allocation de 126 octets.
+
+  \begin{center}
+    \includegraphics[width=0.5\linewidth]{figures/buddy-1}
+  \end{center}
+
+Allocation de 510 octets.
+
+  \begin{center}
+    \includegraphics[width=0.5\linewidth]{figures/buddy-2}
+  \end{center}
+
+Allocation de 1200 octets.
+
+  \begin{center}
+    \includegraphics[width=0.5\linewidth]{figures/buddy-3}
+  \end{center}
+
+Allocation de 10 octets.
+
+  \begin{center}
+    \includegraphics[width=0.5\linewidth]{figures/buddy-4}
+  \end{center}
+
+Allocation de 1000 octets.
+
+  \begin{center}
+    \includegraphics[width=0.5\linewidth]{figures/buddy-5}
+  \end{center}
+
+Allocation de 498 octets.
+
+  \begin{center}
+    \includegraphics[width=0.5\linewidth]{figures/buddy-6}
+  \end{center}
+
+\end{correction}
+
 \item Calculez le taux de fragmentation de la m\'emoire apr\'es ces 6
 allocations.
 
+\begin{correction}
+
+Taille totale allouée (utilisateur) : $126+510+1200+10+1000+498 = 3344$\\
+Taille totale allouée (réel) : $128+512+1280+16+1024+512 = 3472$\\
+Taux de fragmentation : $1 - \frac{3344}{3472} = 3.7 \%$
+
+\end{correction}
+
 \item On veut maintenant allouer un bloc de 2000 octets.
 Que se passe-t-il lors cette dernière allocation ? Que préconisez-vous ?
+
+\begin{correction}
+
+Il n'y a aucun bloc d'au moins 2000 octets disponible. L'allocateur
+doit demander une nouvelle page au noyau. Il divisera alors cette page
+en deux bloc de 2 ko chacun, et retournera l'un d'eux à l'utilisateur.
+
+\end{correction}
+
 \end{enumerate}

@@ -16,3 +16,28 @@ ADD AL, 42
 MOV AH, 0xE
 INT 0x10
 \end{verbatim}
+
+\begin{correction}
+
+\begin{itemize}
+\item \verb|MOV AX, 0x1200|\\
+Place la valeur 0x1200 dans le registre 16 bits AX.
+\item \verb|MOV ES, AX|\\
+Copie le contenu (sur 16 bits) du registre AX dans le registre ES.
+\item \verb|MOV BX, 0x4000|\\
+Place la valeur 0x4000 dans le registre 16 bits BX.
+\item \verb|MOV AL, [ES:BX]|\\
+Lit un octet à l'adresse 0x16000 et place sa valeur dans AL.
+\item \verb|TEST AL, AL|\\
+Met à jour les flags de condition en fonction de la valeur dans AL.
+\item \verb|JZ end|\\
+Si le flag Z vaut 1, saute à l'adresse du label ``end''
+\item \verb|ADD AL, 42|\\
+Ajoute 42 a la valeur contenue dans AL, place le resultat dans AL.
+\item \verb|MOV AH, 0xE|\\
+Place la valeur 0xE dans le registre 8 bits AH.
+\item \verb|INT 0x10|\\
+Déclenche une interruption logicielle de vecteur 0x10 (BIOS-call).
+\end{itemize}
+
+\end{correction}
