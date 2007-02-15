@@ -5,6 +5,28 @@
 \begin{enumerate}
 \item D\'ecrivez le principe g\'en\'eral de la traduction d'adresses en m\'emoire pagin\'ee.\\
  Vous d\'etaillerez notamment le fonctionnement interne de la MMU.
+
+\begin{correction}
+
+La pagination consiste à diviser la mémoire physique en zones de
+taille égale nommées pages. Sur certaines architectures, il peut y
+avoir plusieurs tailles de page.
+
+Chaque processus dispose alors d'un ensemble de pages qu'il peut
+adresser, on l'appelle l'espace d'adressage (ou espace d'adressage
+virtuel).
+
+L'unité de gestion de mémoire (MMU) du microprocesseur traduit les
+adresses virtuelles en adresses physiques, en suivant certaines règles
+décrites par le microprocesseur lui même ou par le noyau.
+
+On appelle TLB un cache de traduction d'adresse. Ce cache décrit la
+correspondance d'une page dans la mémoire virtuelle d'un espace
+d'adressage avec une page en mémoire physique. Ce cache est interrogé
+à chaque traduction par la MMU.
+
+\end{correction}
+
 \end{enumerate}
 \end{description}
 
@@ -35,11 +57,29 @@ cod\'e sur 6 bits.\\
 Allez-vous devoir faire des modifications dans la partie dépendante de
 \emph{as} ?\\
 Si oui, lesquelles ?\\
+
+\begin{correction}
+
+Nous allons devoir attribuer des identifiants sur 6 bits pour chaque
+espace d'adressage. Il faut donc ajouter un champ \emph{id} dans la
+partie dépendante de l'objet \emph{o\_as}.
+
+Cette valeur sera attribuée par le code dépendant de \emph{as\_reserve}.
+
+\end{correction}
+
 \item En quoi le fait d'encoder le champ identifiant sur 6 bits peut-il
 poser problème ?\\
 \textbf{Pour la suite de l'exercice, vous ne devez pas consid\'erer le
         problème identifié ci-dessus.}\\
 
+\begin{correction}
+
+6 bits permettent 64 valeurs, ce qui implique qu'il ne peut y avoir
+plus de 64 espaces d'adressages (donc 64 tâches) simultanément. Au
+dela, il faut alors user d'astuces pour gérer le TLB.
+
+\end{correction}
 
 \item Ecrivez le code du gestionnaire de TLB-miss.\\
 Vous vous appuyerez sur les fonctions de la biblioth\`eque MIPS et de
@@ -56,9 +96,19 @@ Le prototype du gestionnaire de TLB-miss est le suivant :
 \end{itemize}
 }
 
+
+\begin{correction}
+
+\end{correction}
+
 \item Ecrivez le code dépendant de la fonction {\em region\_release}. Vous
 pouvez utiliser les fonctions de l'interface kaneton et celles de la
 bibliothèque MIPS.\\
+
+\begin{correction}
+
+\end{correction}
+
 \end{enumerate}
 
 
@@ -68,6 +118,11 @@ bibliothèque MIPS.\\
 \item Indiquez pourquoi votre code n'est pas suffisament performant.\\
   Proposez une (ou plusieurs) solution(s) pour gagner en
 performances.
+
+\begin{correction}
+
+\end{correction}
+
 \end{enumerate}
 
 \end{description}
