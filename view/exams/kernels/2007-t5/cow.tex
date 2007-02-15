@@ -29,6 +29,23 @@ de l'interface kaneton  pour prendre en compte ou remplir les champs ajoutés.\\
 
 \begin{correction}
 
+Il faut ajouter aux objets \emph{o\_segment} un compteur de
+réference. Ce dernier sera mis à 0 lors de \emph{segment\_reserve} et
+incremente et decremente lorsqu'une region sera reservée ou
+libérée. Un \emph{semgent\_release} n'aura d'effet que si ce compteur
+de réference est à 0.
+
+Nous aurons aussi besoin de préciser dans l'objet segment les
+identifiants des 2 regions (et leur address space respectifs) qui se
+partagent le segment.
+
+En ce qui concerne les regions, nous allons ajouter dans
+\emph{o\_region} un booléen indiquant si la region est en
+copy-on-write. Ce booléen sera mis à 0 par \emph{region\_reserve}, et
+mis a un par \emph{as\_clone} lors du clonage de la region. Cette
+dernière fonction ne fera plus appel à \emph{segment\_clone} pour
+dupliquer la mémoire physique.
+
 \end{correction}
 
 \item \'Ecrivez le code du gestionnaire de page-fault. Vous pouvez employer
@@ -51,7 +68,7 @@ Le prototype du gestionnaire de page-fault est le suivant :\\
 \end{itemize}
 
 \begin{correction}
-
+XXX
 \end{correction}
 
 \end{enumerate}
@@ -62,8 +79,19 @@ Le prototype du gestionnaire de page-fault est le suivant :\\
 \item Expliquez les diff\'erences et les points communs entre le Copy-On-Write
 et l'Allocation-On-Demand.\\
 
-
 \begin{correction}
+
+Le copy-on-write et l'allocation-on-demand sont deux astuces pour
+améliorer la gestion de la mémoire en minimisant le nombre de page
+physique allouées.
+
+Les deux techniques se basent sur la génération volontaire de
+page-fault. Alors que le premier utilise le marquage lecture-seule
+d'une entrée TLB, le second repose sur l'absence d'une entrée.
+
+Alors que le copy-on-write recopie les pages partagées mais déjà
+existantes lors de leur premiere modification, l'allocation à la
+demande alloue les pages physique lors de leur premier accès.
 
 \end{correction}
 
@@ -79,7 +107,7 @@ fois est-il plus complexe à gérer ?
 nombre de clonages d'un espace d'adressage.
 
 \begin{correction}
-
+XXX
 \end{correction}
 
 \end{enumerate}
