@@ -32,7 +32,7 @@ de l'interface kaneton  pour prendre en compte ou remplir les champs ajoutés.\\
 Il faut ajouter aux objets \emph{o\_segment} un compteur de
 réference. Ce dernier sera mis à 0 lors de \emph{segment\_reserve} et
 incremente et decremente lorsqu'une region sera reservée ou
-libérée. Un \emph{semgent\_release} n'aura d'effet que si ce compteur
+libérée. Un \emph{segment\_release} n'aura d'effet que si ce compteur
 de réference est à 0.
 
 Nous aurons aussi besoin de préciser dans l'objet segment les
@@ -53,7 +53,7 @@ toutes les fonctions de l'interface kaneton. Votre code doit être {\bf indépenda
 de l'architecture}.\\
 \\
 {\bf Note:} si votre code n\'ecessite une partie dépendante de
-l'architecture (pour mettre-à-jour des TLB par exemple), vous
+l'architecture (pour mettre à jour des TLB par exemple), vous
 pr\'eciserez \textbf{sans l'implémenter} le comportement de ce code.
 
 Le prototype du gestionnaire de page-fault est le suivant :\\
@@ -68,7 +68,63 @@ Le prototype du gestionnaire de page-fault est le suivant :\\
 \end{itemize}
 
 \begin{correction}
-XXX
+
+\begin{verbatim}
+void          page_fault(i_as asid, t_vaddr address, t_bool is_write_fault)
+{
+  if (is_write_fault)
+  {
+    o_as*       as;
+    t_iterator  it;
+
+    as_get(asid, &as);
+
+    /* look through all the regions */
+    set_foreach(as->regions, it)
+    {
+      o_region*   region;
+
+      set_object(as->regions, it, &region);
+
+      /* is this the corresponding region ? */
+      if (region->address <= address &&
+          region->address + region->size > address)
+      {
+        o_region*   original;
+        o_segment*  segment;
+
+        if (!region->cow)
+          /* SIGSEGV, not COW, probably permission problem */
+
+        /* update the objects */
+        segment_get(region->segid, &segment);
+        segment->refcount--;
+        if (segment->reg1 == region->regid)
+          region_get(segment->as2, segment->reg2, &original);
+        else
+          region_get(segment->as1, segment->reg1, &original);
+        original->cow = region->cow = 0;
+
+        /* clone the segment */
+        segment_clone(asid, region->segid, &region->segid);
+        segment_get(region->segid, &segment);
+        segment->refcount = 1;
+
+        /* architecture specific, update TLB */
+      }
+    }
+  }
+  else
+    /* SIGSEGV */
+}
+\end{verbatim}
+
+Le code dépendant doit mettre-à-jour les structures utilisées par la
+MMU : page-directory \& page-table sur Intel, entrées TLB sur MIPS,
+etc\ldots{} en fonction de la nouvelle adresse physique du segment
+(recopié) associé à la region clonée, mais aussi des permissions
+(remise des droits en écriture !).
+
 \end{correction}
 
 \end{enumerate}
@@ -107,7 +163,24 @@ fois est-il plus complexe à gérer ?
 nombre de clonages d'un espace d'adressage.
 
 \begin{correction}
-XXX
+
+Il est plus délicat de gérer un nombre illimité de clonage d'espace
+d'adressage car il y a plus de cas particuliers à gérer : clonage
+d'une region déjà en copy-on-write, double clonage d'un même espace
+d'adressage (et donc de toutes ses regions déjà en
+copy-on-write)\ldots{} et le gestionnaire de page-fault devient lui
+aussi plus compliqué du fait qu'une region en copy-on-write à laquelle
+on accède en écriture pour la première fois engrendre toujours le
+clonage du segment mais une mise-à-jour différente des autres regions
+qui partagent le segment.
+
+Nous allons devoir ajouter à l'objet \emph{o\_segment} un set pour
+lister toutes les regions qui doivent recopier à l'écriture ce
+segment. Dans le gestionnaire de page-fault, le cas ou ce set ne
+compte que deux éléments revient au cas actuel. En revanche, si plus
+de deux éléments sont présents, alors il ne faut pas mettre à jour le
+booléen \emph{cow} ni rétablir les droits en écriture sur ces regions.
+
 \end{correction}
 
 \end{enumerate}
