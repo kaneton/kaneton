@@ -25,43 +25,43 @@ void		check_segment_03(void)
   o_segment*	o;
 
   TEST_ENTER();
-  MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task) == ERROR_NONE,
 	   "error creating task\n");
 
-  MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
+  ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
-  MY_ASSERT(segment_reserve(as,
+  ASSERT(segment_reserve(as,
 			    2 * PAGESZ,
 			    PERM_READ | PERM_EXEC,
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
 
-  MY_ASSERT(segment_perms(seg, PERM_READ | PERM_WRITE) == ERROR_NONE,
+  ASSERT(segment_perms(seg, PERM_READ | PERM_WRITE) == ERROR_NONE,
 	    "error setting perms\n");
 
-  MY_ASSERT(segment_type(seg, SEGMENT_TYPE_CATCH) == ERROR_NONE,
+  ASSERT(segment_type(seg, SEGMENT_TYPE_CATCH) == ERROR_NONE,
 	    "error setting type\n");
 
-  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting as\n");
+  ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting as\n");
 
-  MY_ASSERT(o->perms == (PERM_READ | PERM_WRITE), "Bad perm field after changing perms\n");
-  MY_ASSERT(o->type == SEGMENT_TYPE_CATCH, "Bad type field after changing type\n");
+  ASSERT(o->perms == (PERM_READ | PERM_WRITE), "Bad perm field after changing perms\n");
+  ASSERT(o->type == SEGMENT_TYPE_CATCH, "Bad type field after changing type\n");
 
-  MY_ASSERT(segment_perms(seg, ~(PERM_READ | PERM_WRITE | PERM_EXEC)) !=
+  ASSERT(segment_perms(seg, ~(PERM_READ | PERM_WRITE | PERM_EXEC)) !=
 	    ERROR_NONE,
 	    "error setting bad perms\n");
 
-  MY_ASSERT(segment_type(seg, (1 << 4)) != ERROR_NONE,
+  ASSERT(segment_type(seg, (1 << 4)) != ERROR_NONE,
 	    "error setting bad type\n");
 
-  MY_ASSERT(as_release(as) == ERROR_NONE,
+  ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");
 
-  MY_ASSERT(task_release(task) == ERROR_NONE,
+  ASSERT(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
 
   TEST_LEAVE();

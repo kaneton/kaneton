@@ -28,35 +28,35 @@ void		check_segment_10(void)
   o_segment*	o;
 
   TEST_ENTER();
-  MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task) == ERROR_NONE,
 	   "error creating task\n");
 
-  MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
+  ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
-  MY_ASSERT(segment_reserve(as,
+  ASSERT(segment_reserve(as,
 			    3 * PAGESZ,
 			    PERM_READ,
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
 
-  MY_ASSERT(segment_resize(seg, PAGESZ, &seg) == ERROR_NONE,
+  ASSERT(segment_resize(seg, PAGESZ, &seg) == ERROR_NONE,
 	    "error resize\n");
 
-  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after resize\n");
+  ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after resize\n");
 
-  MY_ASSERT(o->segid == seg, "Bad segid field after resize\n");
-  MY_ASSERT(o->asid == as, "Bad asid field after resize\n");
-  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after resize\n");
-  MY_ASSERT(o->address == (t_uint32)seg, "Bad address field after resize\n");
-  MY_ASSERT(o->size == PAGESZ, "Bad size field after resize\n");
-  MY_ASSERT(o->perms == PERM_READ, "Bad perms field after resize\n");
+  ASSERT(o->segid == seg, "Bad segid field after resize\n");
+  ASSERT(o->asid == as, "Bad asid field after resize\n");
+  ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after resize\n");
+  ASSERT(o->address == (t_uint32)seg, "Bad address field after resize\n");
+  ASSERT(o->size == PAGESZ, "Bad size field after resize\n");
+  ASSERT(o->perms == PERM_READ, "Bad perms field after resize\n");
 
   while (try < 40)
     {
-      MY_ASSERT(segment_reserve(as,
+      ASSERT(segment_reserve(as,
 				PAGESZ,
 				PERM_READ,
 				&seg2) == ERROR_NONE,
@@ -71,28 +71,28 @@ void		check_segment_10(void)
     }
 
   if (try == 40)
-    MY_ASSERT(0, "FATAL ERROR\n");
+    ASSERT(0, "FATAL ERROR\n");
 
-  MY_ASSERT(segment_resize(seg, 10 * PAGESZ, &seg3) == ERROR_NONE,
+  ASSERT(segment_resize(seg, 10 * PAGESZ, &seg3) == ERROR_NONE,
 	    "error resizing\n");
 
-  MY_ASSERT(seg3 != seg, "some segments are overlapping\n");
+  ASSERT(seg3 != seg, "some segments are overlapping\n");
 
   seg = seg3;
 
-  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after resize\n");
+  ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after resize\n");
 
-  MY_ASSERT(o->segid == seg, "Bad segid field after resize\n");
-  MY_ASSERT(o->asid == as, "Bad asid field after resize\n");
-  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after resize\n");
-  MY_ASSERT(o->address == (t_uint32)seg, "Bad address field after resize\n");
-  MY_ASSERT(o->size == 10 * PAGESZ, "Bad size field after resize\n");
-  MY_ASSERT(o->perms == PERM_READ, "Bad perms field after resize\n");
+  ASSERT(o->segid == seg, "Bad segid field after resize\n");
+  ASSERT(o->asid == as, "Bad asid field after resize\n");
+  ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after resize\n");
+  ASSERT(o->address == (t_uint32)seg, "Bad address field after resize\n");
+  ASSERT(o->size == 10 * PAGESZ, "Bad size field after resize\n");
+  ASSERT(o->perms == PERM_READ, "Bad perms field after resize\n");
 
-  MY_ASSERT(as_release(as) == ERROR_NONE,
+  ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");
 
-  MY_ASSERT(task_release(task) == ERROR_NONE,
+  ASSERT(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
 
   TEST_LEAVE();

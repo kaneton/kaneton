@@ -23,21 +23,21 @@ void		check_region_01(void)
 
   TEST_ENTER();
 
-  MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task) == ERROR_NONE,
 	   "error creating task\n");
 
-  MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
+  ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
-  MY_ASSERT(segment_reserve(as,
+  ASSERT(segment_reserve(as,
 			    2 * PAGESZ,
 			    PERM_READ,
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
 
-  MY_ASSERT(region_reserve(as,
+  ASSERT(region_reserve(as,
 			   seg,
 			   0,
 			   REGION_OPT_NONE,
@@ -46,18 +46,18 @@ void		check_region_01(void)
 			   &reg) == ERROR_NONE,
 	    "error reserving region\n");
 
-  MY_ASSERT(region_get(as, reg, &o) == ERROR_NONE,
+  ASSERT(region_get(as, reg, &o) == ERROR_NONE,
 	    "error getting region\n");
 
-  MY_ASSERT(o->regid == reg, "Bad regid field\n");
-  MY_ASSERT(o->segid == seg, "Bad segid field\n");
-  MY_ASSERT(o->address == (t_vaddr)reg, "Bad address field\n");
-  MY_ASSERT(o->offset == 0, "Bad offset field\n");
-  MY_ASSERT(o->size == 2 * PAGESZ, "Bad size field\n");
+  ASSERT(o->regid == reg, "Bad regid field\n");
+  ASSERT(o->segid == seg, "Bad segid field\n");
+  ASSERT(o->address == (t_vaddr)reg, "Bad address field\n");
+  ASSERT(o->offset == 0, "Bad offset field\n");
+  ASSERT(o->size == 2 * PAGESZ, "Bad size field\n");
 
-  MY_ASSERT(region_release(as, reg) == ERROR_NONE, "error releasing region\n");
+  ASSERT(region_release(as, reg) == ERROR_NONE, "error releasing region\n");
 
-  MY_ASSERT(region_reserve(as,
+  ASSERT(region_reserve(as,
 			   seg,
 			   PAGESZ,
 			   REGION_OPT_FORCE,
@@ -66,19 +66,19 @@ void		check_region_01(void)
 			   &reg) == ERROR_NONE,
 	    "error reserving region\n");
 
-  MY_ASSERT(region_get(as, reg, &o) == ERROR_NONE,
+  ASSERT(region_get(as, reg, &o) == ERROR_NONE,
 	    "error getting region\n");
 
-  MY_ASSERT(o->regid == reg, "Bad regid field\n");
-  MY_ASSERT(o->segid == seg, "Bad segid field\n");
-  MY_ASSERT(o->address == (t_vaddr)reg, "Bad address field\n");
-  MY_ASSERT(o->offset == PAGESZ, "Bad offset field\n");
-  MY_ASSERT(o->size == PAGESZ, "Bad size field\n");
+  ASSERT(o->regid == reg, "Bad regid field\n");
+  ASSERT(o->segid == seg, "Bad segid field\n");
+  ASSERT(o->address == (t_vaddr)reg, "Bad address field\n");
+  ASSERT(o->offset == PAGESZ, "Bad offset field\n");
+  ASSERT(o->size == PAGESZ, "Bad size field\n");
 
-  MY_ASSERT(as_release(as) == ERROR_NONE,
+  ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");
 
-  MY_ASSERT(task_release(task) == ERROR_NONE,
+  ASSERT(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
 
   TEST_LEAVE();

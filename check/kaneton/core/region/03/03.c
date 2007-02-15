@@ -22,12 +22,12 @@ void		check_region_03(void)
 
   TEST_ENTER();
 
-  MY_ASSERT(segment_reserve(kasid,
+  ASSERT(segment_reserve(kasid,
 			    PAGESZ,
 			    PERM_READ | PERM_WRITE,
 			    &seg) == ERROR_NONE, "error segment_reserve\n");
 
-  MY_ASSERT(region_reserve(kasid,
+  ASSERT(region_reserve(kasid,
 			   seg,
 			   0,
 			   REGION_OPT_NONE,
@@ -39,10 +39,10 @@ void		check_region_03(void)
   for (; p < (t_uint8*)(t_vaddr)reg + PAGESZ; p++)
     *p = *p;
 
-  MY_ASSERT(region_release(kasid, reg) == ERROR_NONE,
+  ASSERT(region_release(kasid, reg) == ERROR_NONE,
 	    "failed to release region\n");
 
-  MY_ASSERT(segment_release(seg) == ERROR_NONE,
+  ASSERT(segment_release(seg) == ERROR_NONE,
 	    "failed to release region\n");
 
   TEST_LEAVE();

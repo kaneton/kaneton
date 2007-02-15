@@ -30,20 +30,20 @@ void		check_segment_08(void)
   t_uint32	i;
 
   TEST_ENTER();
-  MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task) == ERROR_NONE,
 	   "error creating task\n");
 
-  MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
+  ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
-  MY_ASSERT(segment_reserve(as,
+  ASSERT(segment_reserve(as,
 			    PAGESZ,
 			    PERM_READ | PERM_WRITE,
 			    &seg) == ERROR_NONE,
 	    "error reserving segment\n");
-  MY_ASSERT(region_reserve(kasid,
+  ASSERT(region_reserve(kasid,
 			   seg,
 			   0,
 			   REGION_OPT_NONE,
@@ -58,38 +58,38 @@ void		check_segment_08(void)
       buff[i] = (i * 2 + 4) % 256;
     }
 
-  MY_ASSERT(segment_write(seg, 0, buff, PAGESZ) == ERROR_NONE,
+  ASSERT(segment_write(seg, 0, buff, PAGESZ) == ERROR_NONE,
 	    "error writing to segment\n");
 
-  MY_ASSERT(segment_clone(as, seg, &seg) == ERROR_NONE,
+  ASSERT(segment_clone(as, seg, &seg) == ERROR_NONE,
 	    "error cloning segment\n");
 
-  MY_ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after cloning\n");
+  ASSERT(segment_get(seg, &o) == ERROR_NONE, "error getting segment after cloning\n");
 
-  MY_ASSERT(o->asid == as, "Bad as field after cloning\n");
-  MY_ASSERT(o->segid == seg, "Bad segid field after cloning\n");
-  MY_ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after cloning\n");
-  MY_ASSERT(o->address == (t_paddr)seg, "Bad address field after cloning\n");
-  MY_ASSERT(o->perms == (PERM_READ | PERM_WRITE), "Bad as field after cloning\n");
-  MY_ASSERT(o->size == PAGESZ, "Bad as field after cloning\n");
+  ASSERT(o->asid == as, "Bad as field after cloning\n");
+  ASSERT(o->segid == seg, "Bad segid field after cloning\n");
+  ASSERT(o->type == SEGMENT_TYPE_MEMORY, "Bad type field after cloning\n");
+  ASSERT(o->address == (t_paddr)seg, "Bad address field after cloning\n");
+  ASSERT(o->perms == (PERM_READ | PERM_WRITE), "Bad as field after cloning\n");
+  ASSERT(o->size == PAGESZ, "Bad as field after cloning\n");
 
   for (i = 0; i < PAGESZ; i++)
     {
       buff[i] = 0;
     }
 
-  MY_ASSERT(segment_read(seg, 0, buff, PAGESZ) == ERROR_NONE,
+  ASSERT(segment_read(seg, 0, buff, PAGESZ) == ERROR_NONE,
 	    "error reading to segment\n");
 
   for (i = 0; i < PAGESZ; i++)
     {
-      MY_ASSERT(buff[i] == (i * 2 + 4) % 256, "bad data after cloning\n");
+      ASSERT(buff[i] == (i * 2 + 4) % 256, "bad data after cloning\n");
     }
 
-  MY_ASSERT(as_release(as) == ERROR_NONE,
+  ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");
 
-  MY_ASSERT(task_release(task) == ERROR_NONE,
+  ASSERT(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
 
   TEST_LEAVE();

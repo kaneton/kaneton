@@ -21,24 +21,24 @@ void		check_as_01(void)
 
   TEST_ENTER();
 
-  MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task) == ERROR_NONE,
 	   "error creating task\n");
 
-  MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
+  ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
-  MY_ASSERT(as_get(as, &o) == ERROR_NONE,
+  ASSERT(as_get(as, &o) == ERROR_NONE,
 	    "unable to get as\n");
 
-  MY_ASSERT(o->asid == as, "Bad asid field\n");
-  MY_ASSERT(o->tskid == task, "Bad tskid field\n");
+  ASSERT(o->asid == as, "Bad asid field\n");
+  ASSERT(o->tskid == task, "Bad tskid field\n");
 
-  MY_ASSERT(as_release(as) == ERROR_NONE,
+  ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");
 
-  MY_ASSERT(task_release(task) == ERROR_NONE,
+  ASSERT(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
 
   TEST_LEAVE();

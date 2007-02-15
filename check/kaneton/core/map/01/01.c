@@ -26,7 +26,7 @@ void		check_map_01(void)
 
   for (i = 0; i < 200; i++)
     {
-      MY_ASSERT(map_reserve(kasid,
+      ASSERT(map_reserve(kasid,
 			    MAP_OPT_NONE,
 			    ((i % 100) + 1) * PAGESZ,
 			    PERM_READ | PERM_WRITE,
@@ -38,10 +38,10 @@ void		check_map_01(void)
 	   p++, j++)
 	{
 	  *p = 0x0d;
-	  MY_ASSERT(*p == 0x0d, "integrity check failed\n");
+	  ASSERT(*p == 0x0d, "integrity check failed\n");
 	}
 
-      MY_ASSERT(map_release(kasid, addr) == ERROR_NONE,
+      ASSERT(map_release(kasid, addr) == ERROR_NONE,
 		"error releasing a map\n");
     }
 

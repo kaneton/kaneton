@@ -71,7 +71,7 @@ typedef struct
   return
 
 
-#define MY_ASSERT(Test,Error)						\
+#define ASSERT(Test,Error)						\
   if (!(Test))								\
     {									\
       printf(Error);							\

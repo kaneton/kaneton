@@ -29,15 +29,15 @@ void			check_as_arch_01(void)
 
   TEST_ENTER;
 
-  MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task) == ERROR_NONE,
 	   "error creating task\n");
 
-  MY_ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
+  ASSERT(as_reserve(task, &as) == ERROR_NONE, "error creating as\n");
 
-  MY_ASSERT(segment_reserve(as,
+  ASSERT(segment_reserve(as,
 			    1024 * PAGESZ,
 			    PERM_READ | PERM_WRITE,
 			    &seg) == ERROR_NONE,
@@ -45,7 +45,7 @@ void			check_as_arch_01(void)
 
   /* reserve kcode and kstack */
 
-  MY_ASSERT(region_reserve(as,
+  ASSERT(region_reserve(as,
 			   (t_segid)init->kcode,
 			   0,
 			   REGION_OPT_FORCE,
@@ -54,7 +54,7 @@ void			check_as_arch_01(void)
 			   &reg) == ERROR_NONE,
 	   "error reserving region for kcode\n");
 
-  MY_ASSERT(region_reserve(as,
+  ASSERT(region_reserve(as,
 			   (t_segid)init->kstack,
 			   0,
 			   REGION_OPT_FORCE,
@@ -65,7 +65,7 @@ void			check_as_arch_01(void)
 
   /* reserve console */
 
-  MY_ASSERT(region_reserve(as,
+  ASSERT(region_reserve(as,
 			   0x1000,
 			   0,
 			   REGION_OPT_FORCE,
@@ -76,7 +76,7 @@ void			check_as_arch_01(void)
 
   /* test region */
 
-  MY_ASSERT(region_reserve(as,
+  ASSERT(region_reserve(as,
 			   seg,
 			   0,
 			   REGION_OPT_FORCE,
@@ -87,15 +87,15 @@ void			check_as_arch_01(void)
 
   ptr = (int*)(t_uint32)reg;
 
-  MY_ASSERT(as_get(kasid, &o) == ERROR_NONE,
+  ASSERT(as_get(kasid, &o) == ERROR_NONE,
 	    "cannot get kernel as\n");
 
   kdir = o->machdep.pd;
 
-  MY_ASSERT(as_get(as, &o) == ERROR_NONE,
+  ASSERT(as_get(as, &o) == ERROR_NONE,
 	    "cannot get created as\n");
 
-  MY_ASSERT(pd_activate(o->machdep.pd) == ERROR_NONE,
+  ASSERT(pd_activate(o->machdep.pd) == ERROR_NONE,
 	    "cannot switch as\n");
 
   /* R/W test */
@@ -105,15 +105,15 @@ void			check_as_arch_01(void)
 
   pd_activate(kdir);
 
-  MY_ASSERT(i == 0x41424344, "read/write test failed\n");
+  ASSERT(i == 0x41424344, "read/write test failed\n");
 
-  MY_ASSERT(segment_release(seg) == ERROR_NONE,
+  ASSERT(segment_release(seg) == ERROR_NONE,
 	    "failed to release segment");
 
-  MY_ASSERT(as_release(as) == ERROR_NONE,
+  ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");
 
-  MY_ASSERT(task_release(task) == ERROR_NONE,
+  ASSERT(task_release(task) == ERROR_NONE,
 	    "failed to release task\n");
 
   TEST_LEAVE;

@@ -22,34 +22,34 @@ void		check_as_04(void)
 
   TEST_ENTER();
 
-  MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task1) == ERROR_NONE,
 	   "error creating task\n");
 
-  MY_ASSERT(task_reserve(TASK_CLASS_PROGRAM,
+  ASSERT(task_reserve(TASK_CLASS_PROGRAM,
 			 TASK_BEHAV_INTERACTIVE,
 			 TASK_PRIOR_INTERACTIVE,
 			 &task2) == ERROR_NONE,
 	   "error creating task\n");
 
-  MY_ASSERT(as_reserve(task1, &as) == ERROR_NONE, "error creating as\n");
+  ASSERT(as_reserve(task1, &as) == ERROR_NONE, "error creating as\n");
 
-  MY_ASSERT(as_give(task2, as) == ERROR_NONE, "error giving as\n");
+  ASSERT(as_give(task2, as) == ERROR_NONE, "error giving as\n");
 
-  MY_ASSERT(as_get(as, &o) == ERROR_NONE,
+  ASSERT(as_get(as, &o) == ERROR_NONE,
 	    "unable to get as\n");
 
-  MY_ASSERT(o->tskid == task2, "Bad tskid field after as_give\n");
+  ASSERT(o->tskid == task2, "Bad tskid field after as_give\n");
 
-  MY_ASSERT(as_release(as) == ERROR_NONE,
+  ASSERT(as_release(as) == ERROR_NONE,
 	    "failed to release as\n");
 
-  MY_ASSERT(task_release(task1) == ERROR_NONE,
+  ASSERT(task_release(task1) == ERROR_NONE,
 	    "failed to release task\n");
 
-  MY_ASSERT(task_release(task2) == ERROR_NONE,
+  ASSERT(task_release(task2) == ERROR_NONE,
 	    "failed to release task\n");
 
   TEST_LEAVE();
