@@ -97,6 +97,52 @@ Voici Le prototype du gestionnaire de TLB-miss :
 
 \begin{correction}
 
+\begin{verbatim}
+void          tlb_miss(i_as asid)
+{
+  o_as*       as;
+  t_iterator  it;
+  t_vaddr     badvaddr = mips_bad_vaddr();
+
+  as_get(asid, &as);
+
+  /* browse all the regions of the address space */
+  set_foreach(as->regions, it)
+  {
+    o_region*    region;
+
+    set_object(as->regions, it, &region);
+
+    /* check if this region matches */
+    if (region->address <= badvaddr &&
+        region->address + region->size > badvaddr)
+    {
+      o_segment*  segment;
+      t_vaddr     vaddr;
+      t_paddr     paddr;
+
+      /* get the segment mapped by the region */
+      segment_get(region->segid, &segment);
+
+      /* compute the virtual address and the physical address */
+      /* to put in the TLB */
+      vaddr = badvaddr & (~PAGESZ);
+      paddr = (badvaddr - vaddr) + region->offset + segment->address;
+
+      /* add the corresponding TLB entry */
+      mips_set_tlb(mips_random_entry(),
+                   as->machdep.id, vaddr,
+                   paddr, segment->perms);
+
+      /* resume execution */
+      return;
+    }
+  }
+
+  /* region does not exist SIGSEGV */
+}
+\end{verbatim}
+
 \end{correction}
 
 \item \'Ecrivez le code dépendant de la fonction {\em region\_release}. Vous
@@ -104,6 +150,39 @@ pouvez utiliser les fonctions de l'interface kaneton et celles de la
 bibliothèque MIPS.\\
 
 \begin{correction}
+
+\begin{verbatim}
+t_error       mipsr3000_region_release(i_as asid, i_region regid)
+{
+  o_as*       as;
+  o_region*   region;
+  t_uint32    i;
+
+  as_get(asid, &as);
+  region_get(asid, regid, &region);
+
+  /* loop through the TLB */
+  for (i = 0; i < mips_number_entry(); i++)
+  {
+    t_vaddr     vaddr;
+    t_uint32    id;
+
+    /* get the i-th entry */
+    if (mips_get_tlb(i, &vaddr, &id) == ERROR_NONE)
+    {
+      /* check if this entry correspond to a page in the */
+      /* region to be removed */
+      if (as->machdep.id == id &&
+          reg->address <= vaddr &&
+          reg->address + region->size > vaddr)
+      {
+        /* delete the entry */
+        mips_del_tlb(i);
+      }
+    }
+  }
+}
+\end{verbatim}
 
 \end{correction}
 
@@ -118,6 +197,11 @@ bibliothèque MIPS.\\
 performance.
 
 \begin{correction}
+
+Un parcours de liste est une longue opération. Il faudrait utiliser
+une autre structure de données pour stocker et chercher les regions
+plus rapidement en fonction de l'adresse virtuelle qui a causé
+l'exception.
 
 \end{correction}
 
