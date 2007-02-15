@@ -1,9 +1,23 @@
 \section*{Exercice 3 : Pagination (7 points)}
 
+{\bf Rappel :}
+
+Contrairement aux microprocesseurs IA-32 qui fournissent un
+algorithme de remplacement automatique des entrées TLB basé sur un
+arbre (le page-directory et les page-tables), le microprocesseur MIPS
+R3000 n'offre aucune aide au programmeur en cas de TLB-miss.
+
+Lorsque la MMU traduit une adresse et qu'aucune entrée dans les TLB
+ n'est satisfaisante, une exception est d\'eclench\'ee. C'est alors
+au noyau de mettre \`a jour les TLB, ou de déclarer une erreur fatale.
+
+La taille des pages sur le MIPS R3000 est fixée à 4ko.
+
 \begin{description}
 \item {\bf A - Question de cours (1.5 points)}
 \begin{enumerate}
-\item D\'ecrivez le principe g\'en\'eral de la traduction d'adresses en m\'emoire pagin\'ee.\\
+\item D\'ecrivez en quelques lignes le principe g\'en\'eral de la
+traduction d'adresses en m\'emoire pagin\'ee.
  Vous d\'etaillerez notamment le fonctionnement interne de la MMU.
 
 \begin{correction}
@@ -33,24 +47,12 @@ d'adressage avec une page en mémoire physique. Ce cache est interrogé
 \begin{description}
 \item {\bf B - Impl\'ementation de la pagination sur MIPS (5.5 points)}\\
 \\
-Dans cet exercice, vous allez implementer le manager \emph{region} de
-kaneton pour un microprocesseur de la famille MIPS (vu en cours).\\
-\\
-Contrairement aux microprocesseurs IA-32 qui implementent un
-algorithme de remplacement automatique des entrées TLB basé sur un
-arbre (la page-directory et les page-tables), le microprocesseur MIPS
-R3000 n'offre aucune aide au programmeur en cas de TLB-miss.\\
-\\
-Lorsque la MMU demande une traduction d'adresse et qu'aucune entrée
-dans les TLB n'est satisfaisante, une exception est d\'eclench\'ee. C'est
-alors au noyau de remplir les TLB comme il convient, ou de déclarer
-une erreur fatale.\\
-\\
-{\bf Note :} la taille des pages sur le MIPS R3000 est fixée à 4ko.\\
+Dans cet exercice, vous allez impl\'ementer le manager \emph{region} de
+kaneton pour un microprocesseur de la famille MIPS.
 
 \begin{enumerate}
 \item Les TLB contiennent des entrées provenant de tous les espaces
-d'adressage confondus. Ainsi, pour indiquer à quel espace d'adressage
+d'adressages confondus. Pour indiquer à quel espace d'adressage
 une entrée TLB appartient, chaque entr\'ee contient un identifiant
 cod\'e sur 6 bits.\\
 \\
@@ -81,27 +83,23 @@ dela, il faut alors user d'astuces pour gérer le TLB.
 
 \end{correction}
 
-\item Ecrivez le code du gestionnaire de TLB-miss.\\
+\item \'Ecrivez le code du gestionnaire de TLB-miss.\\
 Vous vous appuyerez sur les fonctions de la biblioth\`eque MIPS et de
 l'interface kaneton (voir annexe).\\
 \\
-Le prototype du gestionnaire de TLB-miss est le suivant :
+Voici Le prototype du gestionnaire de TLB-miss :
 
-\function{tlb\_miss}{(i\_as asid)}
-{
-\begin{itemize}
-\item
-  \emph{asid} est l'identifiant de l'espace d'adressage sur lequel
-  s'est produit l'erreur
-\end{itemize}
-}
-
+\begin{description}
+\item {\bf tlb\_miss}({\em i\_as asid})\\
+  \emph{asid} est l'identifiant de l'espace d'adressage dans lequel
+  s'est produite l'erreur.\\
+\end{description}
 
 \begin{correction}
 
 \end{correction}
 
-\item Ecrivez le code dépendant de la fonction {\em region\_release}. Vous
+\item \'Ecrivez le code dépendant de la fonction {\em region\_release}. Vous
 pouvez utiliser les fonctions de l'interface kaneton et celles de la
 bibliothèque MIPS.\\
 
@@ -112,12 +110,12 @@ bibliothèque MIPS.\\
 \end{enumerate}
 
 
-\item {\bf C - Amélioration des performances (bonus)}
+\item {\bf C - Optimisations (bonus)}
 
 \begin{enumerate}
 \item Indiquez pourquoi votre code n'est pas suffisament performant.\\
   Proposez une (ou plusieurs) solution(s) pour gagner en
-performances.
+performance.
 
 \begin{correction}
 

@@ -19,19 +19,20 @@
 % header
 %
 
-\lhead{\scriptsize{2007}}
+\lhead{\scriptsize{Noyaux et Syst\`emes d'exploitation}}
+\rhead{\scriptsize{2007}}
 
 %
 % title
 %
 
-\title{Examen de noyaux et systèmes d'exploitation (kaneton)}
+\title{{\huge {\bf Noyaux et Systèmes d'exploitation}}}
 
 %
 % authors
 %
 
-\author{\small{Matthieu Bucchianeri, Renaud Voltz}}
+\author{{Matthieu Bucchianeri \& Renaud Voltz}}
 
 %
 % document
@@ -50,20 +51,41 @@
 %
 
 \begin{center}
+\vspace{1cm}
 
-\textbf{Ordinateurs, PDA et téléphones non autorisés}
+{\huge {\bf Partiel 1}}
 
-\textbf{Documents autorisés}
+\vspace{2cm}
 
-\textbf{Durée 2 heures}
+{\large
+{\bf Ordinateurs, PDA et téléphones non autorisés}
 
-\scriptsize{Une copie mal présentée et bourrée de fautes d'orthographe
-            sera pénalisée.}
+{\bf Documents autorisés}
 
-\scriptsize{Le barème est donné à titre indicatif, en cas de modifications,
-            aucune contestation ne sera possible}
+\vspace{1cm}
 
+{\bf Durée : 2 heures}
+}
 \end{center}
+
+\vspace{2cm}
+
+{\large {\bf Important :}}\\
+\begin{itemize}
+\item Le barème est donné à titre indicatif, en cas de modifications,
+      aucune contestation ne sera possible.
+
+\item Un point de malus sur la note globale sanctionnera les copies peu
+      soign\'ees ou mal orthographi\'ees.
+
+\item Vos r\'eponses seront concises : {\bf courtes, claires et pr\'ecises}.
+
+\item Lorsqu'il vous est demand\'e d'\'ecrire du code (exercices 3 et 4),
+     vous pourrez n\'egliger la gestion des erreurs uniquement lorsqu'elle
+     n'apporte rien au probl\`eme. En revanche, vous devrez g\'erer les erreurs
+     provoquant un segfault.
+\end{itemize}
+
 
 %
 % --------- text --------------------------------------------------------------
@@ -72,24 +94,10 @@
 \vspace{3cm}
 
 \newpage
-
-\section*{Généralités}
-
-Ces petits exercices vous offrent la possibilité de nous montrer votre
-bonne connaissance et compréhension du cours.
+\part*{Exercices}
 
 \input{asm.tex}
 \input{buddy.tex}
-
-
-
-\section*{Gestion de mémoire}
-Dans les exercices suivants, lorsqu'il vous est demandé d'écrire du code, vous pourrez négliger la
-gestion des erreurs \textbf{uniquement dans les cas où elle n'apporte
-rien au problème}. Comprenez par là qu'on considère (par exemple) qu'un
-\emph{segment\_get} sur un identifiant de segment valide ne renverra
-pas d'erreur. En revanche, vous \textbf{devez gerer les erreurs qui
-peuvent conduire à des segfault}.
 
 \newpage
 
@@ -98,5 +106,6 @@ peuvent conduire à des segfault}.
 \input{cow.tex}
 
 \newpage
+\part*{Annexe}
 
 \input{annex.tex}

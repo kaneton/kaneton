@@ -1,21 +1,19 @@
-\section*{ANNEXES}
+\section{kaneton as manager}
 
-\section*{kaneton as manager}
-
-\subsection*{as object}
+{\large {\bf as object}}
 
 \begin{verbatim}
        typedef struct
-       {
-         i_as         asid;
+         {
+           i_as         asid;
 
-         i_task       tskid;
+           i_task       tskid;
 
-         i_set        segments;
-         i_set        regions;
+           i_set        segments;
+           i_set        regions;
 
-         machdep_data(o_as);
-       }              o_as;
+           machdep_data(o_as);
+       }                o_as;
 \end{verbatim}
 
 \subsection*{as interface}
@@ -41,7 +39,7 @@
                       i\_as* \argument{new})}
 	 {
 	   This function clones an address space taking care of cloning
-	   everything necessary: segments, regions etc\ldots
+	   all the necessary: segments, regions etc\ldots
 	 }
 
 \function{as\_reserve}{(i\_task \argument{task},
@@ -63,32 +61,30 @@
                     o\_as** \argument{o})}
 	 {
 	   This function should only be used by the as manager, the segment
-	   manager and the region manager.
-
-	   This function just returns the address space object
-	   corresponding to the address space identifier \argument{id}.
+	   manager and the region manager. It just returns the address space
+	   object corresponding to the address space identifier \argument{id}.
 	 }
 
 
 
-\section*{kaneton segment manager}
+\section{kaneton segment manager}
 
 \subsection*{segment object}
 
 \begin{verbatim}
       typedef struct
-      {
-        i_segment    segid;
+        {
+          i_segment    segid;
 
-        i_as         asid;
+          i_as         asid;
 
-        t_paddr      address;
-        t_psize      size;
+          t_paddr      address;
+          t_psize      size;
 
-        t_perms      perms;
+          t_perms      perms;
 
-        machdep_data(o_segment);
-      }              o_segment;
+          machdep_data(o_segment);
+      }                o_segment;
 \end{verbatim}
 
 \subsection*{segment interface}
@@ -98,10 +94,9 @@
                            i\_segment* \argument{new})}
 	 {
 	   This function clones a segment which will then belongs to
-	   the address space object \argument{as}.
-
-	   Cloning a segment means reserving a new segment with the
-	   exact same properties. Then the content is also copied.
+	   the address space object \argument{as}. Cloning a segment
+	   consists in reserving a new segment with the
+	   exact same properties and copying its content.
 	 }
 
 \function{segment\_read}{(i\_segment \argument{id},
@@ -118,7 +113,7 @@
                            const void* \argument{buffer},
                            t\_psize \argument{size})}
 	 {
-	   This function write the data of \argument{buffer} into the
+	   This function writes the data of \argument{buffer} into the
 	   segment \argument{id}.
 	 }
 
@@ -128,8 +123,8 @@
                           t\_paddr \argument{offs},
                           t\_psize \argument{size})}
 	 {
-	   This function copies data from the segment \argument{src} to
-	   the segment \argument{dst}.
+	   This function copies data from segment \argument{src} to
+	   segment \argument{dst}.
 	 }
 
 \function{segment\_reserve}{(i\_as \argument{as},
@@ -151,24 +146,24 @@
 	   This function changes the permissions of the segment \argument{id}.
 	 }
 
-\section*{kaneton region manager}
+\section{kaneton region manager}
 
 \subsection*{region object}
 
 \begin{verbatim}
       typedef struct
-      {
-        i_region     regid;
+        {
+          i_region     regid;
 
-        i_segment    segid;
+          i_segment    segid;
 
-        t_vaddr      address;
-        t_paddr      offset;
-        t_vsize      size;
-        t_opts       opts;
+          t_vaddr      address;
+          t_paddr      offset;
+          t_vsize      size;
+          t_opts       opts;
 
-        machdep_data(o_region);
-      }              o_region;
+          machdep_data(o_region);
+      }                o_region;
 \end{verbatim}
 
 \subsection*{region interface}
@@ -194,7 +189,7 @@
 
 \newpage
 
-\section*{kaneton libmips}
+\section{kaneton libmips}
 
 \subsection*{Interface}
 

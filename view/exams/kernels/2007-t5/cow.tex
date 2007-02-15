@@ -1,5 +1,7 @@
 \section*{Exercice 4 : Copy-On-Write (7 points)}
 
+{\bf Rappel :}
+
 Le copy-on-write est une astuce d'optimisation tr\`es utilisée dans
 les noyaux modernes dont le principe est le suivant.
 
@@ -15,13 +17,14 @@ en ait un exemplaire par espace d'adressage).
 Dans cet exercice, nous simplifions le problème en considérant
 qu'\textbf{un espace d'adressage ne pourra être dupliqué qu'une unique
 fois}.\\
+
 \begin{description}
 \item {\bf A - Implémentation du gestionnaire de page-fault (5.5 points)}
 
 \begin{enumerate}
 \item Comment faut-il modifier les objets {\em o\_as}, {\em o\_segment} et
 {\em o\_region} si l'on veut impl\'ementer le copy-on-write dans kaneton ?\\
-\item Quels autres changements devrez-vous effectuer dans les fonction
+\item Quels autres changements devrez-vous effectuer dans les fonctions
 de l'interface kaneton  pour prendre en compte ou remplir les champs ajoutés.\\
 \item \'Ecrivez le code du gestionnaire de page-fault. Vous pouvez employer
 toutes les fonctions de l'interface kaneton. Votre code doit être {\bf indépendant
@@ -31,14 +34,14 @@ de l'architecture}.\\
 l'architecture (pour mettre-à-jour des TLB par exemple), vous
 pr\'eciserez \textbf{sans l'implémenter} le comportement de ce code.
 
-Le prototype du gestionnaire de page-fault est le suivant :
-
-\function{page\_fault}{(i\_as asid, t\_vaddr address, t\_bool is\_write\_fault)}{}
+Le prototype du gestionnaire de page-fault est le suivant :\\
+\\
+{\bf page\_fault}({\em i\_as asid, t\_vaddr address, t\_bool is\_write\_fault)}\\
 \begin{itemize}
-\item \emph{asid} est l'identifiant de l'espace d'adressage sur lequel
-  s'est produit l'erreur
-\item \emph{address} est l'adresse virtuelle ayant provoqué l'erreur
-\item \emph{is\_write\_fault} indique si l'erreur est due à une tentative
+\item \emph{asid} : identifiant de l'espace d'adressage sur lequel s'est
+  produite l'erreur.
+\item \emph{address} : adresse virtuelle ayant provoqué l'erreur.
+\item \emph{is\_write\_fault} : indique si l'erreur est d\^ue à une tentative
   d'écriture à une adresse marquée en lecture seule.\\
 \end{itemize}
 \end{enumerate}
@@ -47,7 +50,7 @@ Le prototype du gestionnaire de page-fault est le suivant :
 
 \begin{enumerate}
 \item Expliquez les diff\'erences et les points communs entre le Copy-On-Write
-et l'Allocation-On-Demand.
+et l'Allocation-On-Demand.\\
 \end{enumerate}
 
 
@@ -58,6 +61,6 @@ et l'Allocation-On-Demand.
 fois est-il plus complexe à gérer ?
 
 \item Proposez les modifications pour gérer le copy-on-write quelque soit le
-nombre de clonages de l'espace d'adressage effectué.
+nombre de clonages d'un espace d'adressage.
 \end{enumerate}
 \end{description}
