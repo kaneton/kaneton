@@ -45,6 +45,7 @@
  *      ../multiple_reserve_02/multiple_reserve_02.c
  *      ../multiple_reserve_03/multiple_reserve_03.c
  *	../flush_01/flush_01.c
+ *	../perms_01/perms_01.c
  */
 
 /*
@@ -103,6 +104,13 @@ void		check_segment_multiple_reserve_03(void);
  */
 
 void		check_segment_flush_01(void);
+
+
+/*
+ * ../perms_01/perms_01.c
+ */
+
+void		check_segment_perms_01(void);
 
 
 /*
