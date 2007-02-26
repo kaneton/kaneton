@@ -20,7 +20,6 @@
  * ---------- prototypes ------------------------------------------------------
  *
  *      common.c
- *      ../01/01.c
  */
 
 /*
@@ -30,13 +29,6 @@
 void	check_map_common(void);
 
 void	check_map_tests(void);
-
-
-/*
- * ../01/01.c
- */
-
-void		check_map_01(void);
 
 
 /*

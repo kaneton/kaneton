@@ -28,11 +28,4 @@ void	check_region_common(void)
 void	check_region_tests(void)
 {
   check_region_common();
-  check_region_01();
-  check_region_02();
-  check_region_03();
-  check_region_04();
-  check_region_05();
-  check_region_06();
-  /* XXX continue tests */
 }

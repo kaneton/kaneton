@@ -102,7 +102,7 @@ void		check_segment_multiple_reserve_03(void);
  * ../flush_01/flush_01.c
  */
 
-void		check_flush_01(void);
+void		check_segment_flush_01(void);
 
 
 /*

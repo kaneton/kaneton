@@ -28,6 +28,4 @@ void	check_map_common(void)
 void	check_map_tests(void)
 {
   check_map_common();
-  check_map_01();
-  /* XXX continue tests */
 }

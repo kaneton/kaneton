@@ -20,12 +20,6 @@
  * ---------- prototypes ------------------------------------------------------
  *
  *      common.c
- *      ../01/01.c
- *      ../02/02.c
- *      ../03/03.c
- *      ../04/04.c
- *      ../05/05.c
- *      ../06/06.c
  */
 
 /*
@@ -35,48 +29,6 @@
 void	check_region_common(void);
 
 void	check_region_tests(void);
-
-
-/*
- * ../01/01.c
- */
-
-void		check_region_01(void);
-
-
-/*
- * ../02/02.c
- */
-
-void		check_region_02(void);
-
-
-/*
- * ../03/03.c
- */
-
-void		check_region_03(void);
-
-
-/*
- * ../04/04.c
- */
-
-void		check_region_04(void);
-
-
-/*
- * ../05/05.c
- */
-
-void		check_region_05(void);
-
-
-/*
- * ../06/06.c
- */
-
-void		check_region_06(void);
 
 
 /*
