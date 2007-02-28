@@ -1,0 +1,2 @@
+Test check_segment_clone_01
+check_segment_clone_01 done.
