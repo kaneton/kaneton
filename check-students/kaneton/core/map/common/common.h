@@ -21,6 +21,7 @@
  *
  *      common.c
  *	../map_01/map_01.c
+ *	../simple_reserve/simple_reserve.c
  */
 
 /*
@@ -37,6 +38,13 @@ void	check_map_tests(void);
  */
 
 void		check_map_map_01(void);
+
+
+/*
+ * ../simple_reserve/simple_reserve.c
+ */
+
+void		check_map_simple_reserve(void);
 
 
 /*

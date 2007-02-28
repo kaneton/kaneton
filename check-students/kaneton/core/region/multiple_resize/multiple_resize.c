@@ -1,23 +1,12 @@
-/*
- * licence       kaneton licence
- *
- * project       kaneton
- *
- * file          /home/buckman/kaneton/check/kaneton/core/region/05/05.c
- *
- * created       matthieu bucchianeri   [sun apr  2 19:04:14 2006]
- * updated       matthieu bucchianeri   [thu sep  7 23:31:55 2006]
- */
-
 #include <klibc.h>
 #include <kaneton.h>
 #include "../common/common.h"
 
-extern t_asid	kasid;
+extern t_asid kasid;
 
-void		check_region_05(void)
+void		check_region_multiple_resize(void)
 {
-  i_segment	seg;
+ i_segment	seg;
   i_region	reg;
   o_region*	o;
 

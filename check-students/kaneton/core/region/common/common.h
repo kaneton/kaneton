@@ -25,6 +25,13 @@
  *	../multiple_flush/multiple_flush.c
  *	../simple_flush/simple_flush.c
  *	../simple_write/simple_write.c
+ *	../multiple_reserve/multiple_reserve.c
+ *	../simple_get/simple_get.c
+ *	../simple_resize/simple_resize.c
+ *	../multiple_resize/multiple_resize.c
+ *	../resize_error/resize_error.c
+ *	../split_coalesce/split_coalesce.c
+ *	../inject_01/inject_01.c
  */
 
 /*
@@ -69,6 +76,55 @@ void		check_region_simple_flush(void);
  */
 
 void		check_region_simple_write(void);
+
+
+/*
+ * ../multiple_reserve/multiple_reserve.c
+ */
+
+void		check_region_multiple_reserve(void);
+
+
+/*
+ * ../simple_get/simple_get.c
+ */
+
+void		check_region_simple_get(void);
+
+
+/*
+ * ../simple_resize/simple_resize.c
+ */
+
+void		check_region_simple_resize(void);
+
+
+/*
+ * ../multiple_resize/multiple_resize.c
+ */
+
+void		check_region_multiple_resize(void);
+
+
+/*
+ * ../resize_error/resize_error.c
+ */
+
+void		check_region_resize_error(void);
+
+
+/*
+ * ../split_coalesce/split_coalesce.c
+ */
+
+void		check_region_split_coalesce(void);
+
+
+/*
+ * ../inject_01/inject_01.c
+ */
+
+void		check_region_inject_01(void);
 
 
 /*

@@ -33,4 +33,11 @@ void	check_region_tests(void)
   check_region_multiple_flush();
   check_region_simple_flush();
   check_region_simple_write();
+  check_region_multiple_reserve();
+  check_region_simple_get();
+  check_region_simple_resize();
+  check_region_multiple_resize();
+  check_region_resize_error();
+  check_region_split_coalesce();
+  check_region_inject_01();
 }

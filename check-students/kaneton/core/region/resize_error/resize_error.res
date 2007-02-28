@@ -1,0 +1,2 @@
+Test check_region_resize_error
+check_region_resize_error done.
