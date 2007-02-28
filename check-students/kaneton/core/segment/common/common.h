@@ -123,7 +123,6 @@ void		check_segment_perms_01(void);
 
 
 /*
-<<<<<<< .mine
  * ../read_write_01/read_write_01.c
  */
 
@@ -138,7 +137,13 @@ void		check_segment_read_write_02(void);
 
 
 /*
-=======
+ * ../clone_01/clone_01.c
+ */
+
+void		check_segment_clone_01(void);
+
+
+/*
  * ../perms_02/perms_02.c
  */
 
