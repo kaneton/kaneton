@@ -42,4 +42,7 @@ void	check_segment_tests(void)
   check_segment_perms_02();
   check_segment_perms_03();
   check_segment_inject_01();
+  check_segment_copy_01();
+  check_segment_perms_04();
+  check_segment_perms_05();
 }

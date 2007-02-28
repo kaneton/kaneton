@@ -52,6 +52,9 @@
  *	../perms_02/perms_02.c
  *	../perms_03/perms_03.c
  *	../inject_01/inject_01.c
+ *	../copy_01/copy_01.c
+ *	../perms_04/perms_04.c
+ *	../perms_05/perms_05.c
  */
 
 /*
@@ -157,7 +160,27 @@ void		check_segment_inject_01(void);
 
 
 /*
->>>>>>> .r899
+ * ../copy_01/copy_01.c
+ */
+
+void		check_segment_copy_01(void);
+
+
+/*
+ * ../perms_04/perms_04.c
+ */
+
+void		check_segment_perms_04(void);
+
+
+/*
+ * ../perms_05/perms_05.c
+ */
+
+void		check_segment_perms_05(void);
+
+
+/*
  * eop
  */
 
