@@ -1,1 +1,6 @@
 common
+reserve_opt_none
+reserve_opt_force
+multiple_flush
+simple_flush
+simple_write

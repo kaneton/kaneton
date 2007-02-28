@@ -28,4 +28,9 @@ void	check_region_common(void)
 void	check_region_tests(void)
 {
   check_region_common();
+  check_region_reserve_opt_none();
+  check_region_reserve_opt_force();
+  check_region_multiple_flush();
+  check_region_simple_flush();
+  check_region_simple_write();
 }

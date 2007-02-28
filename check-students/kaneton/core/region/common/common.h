@@ -20,6 +20,11 @@
  * ---------- prototypes ------------------------------------------------------
  *
  *      common.c
+ *	../reserve_opt_none/reserve_opt_none.c
+ *	../reserve_opt_force/reserve_opt_force.c
+ *	../multiple_flush/multiple_flush.c
+ *	../simple_flush/simple_flush.c
+ *	../simple_write/simple_write.c
  */
 
 /*
@@ -29,6 +34,41 @@
 void	check_region_common(void);
 
 void	check_region_tests(void);
+
+
+/*
+ * ../reserve_opt_none/reserve_opt_none.c
+ */
+
+void		check_region_reserve_opt_none(void);
+
+
+/*
+ * ../reserve_opt_force/reserve_opt_force.c
+ */
+
+void		check_region_reserve_opt_force(void);
+
+
+/*
+ * ../multiple_flush/multiple_flush.c
+ */
+
+void		check_region_multiple_flush(void);
+
+
+/*
+ * ../simple_flush/simple_flush.c
+ */
+
+void		check_region_simple_flush(void);
+
+
+/*
+ * ../simple_write/simple_write.c
+ */
+
+void		check_region_simple_write(void);
 
 
 /*

@@ -1,0 +1,2 @@
+Test check_region_simple_flush
+check_region_simple_flush done.
