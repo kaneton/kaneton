@@ -36,6 +36,9 @@ void	check_segment_tests(void)
   check_segment_multiple_reserve_03();
   check_segment_flush_01();
   check_segment_perms_01();
+  check_segment_read_write_01();
+  check_segment_read_write_02();
+  check_segment_clone_01();
   check_segment_perms_02();
   check_segment_perms_03();
   check_segment_inject_01();

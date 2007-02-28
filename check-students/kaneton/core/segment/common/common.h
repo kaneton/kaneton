@@ -46,6 +46,9 @@
  *      ../multiple_reserve_03/multiple_reserve_03.c
  *	../flush_01/flush_01.c
  *	../perms_01/perms_01.c
+ *	../read_write_01/read_write_01.c
+ *	../read_write_02/read_write_02.c
+ *	../clone_01/clone_01.c
  *	../perms_02/perms_02.c
  *	../perms_03/perms_03.c
  *	../inject_01/inject_01.c
@@ -117,6 +120,22 @@ void		check_segment_perms_01(void);
 
 
 /*
+<<<<<<< .mine
+ * ../read_write_01/read_write_01.c
+ */
+
+void		check_segment_read_write_01(void);
+
+
+/*
+ * ../read_write_02/read_write_02.c
+ */
+
+void		check_segment_read_write_02(void);
+
+
+/*
+=======
  * ../perms_02/perms_02.c
  */
 
@@ -138,6 +157,7 @@ void		check_segment_inject_01(void);
 
 
 /*
+>>>>>>> .r899
  * eop
  */
 
