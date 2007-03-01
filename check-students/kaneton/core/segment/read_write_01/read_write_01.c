@@ -9,7 +9,7 @@ void		check_segment_read_write_01(void)
   t_segid	seg;
   t_regid	reg;
   t_uint32	i;
-  t_uint8	buff[PAGESZ];
+  static t_uint8	buff[PAGESZ];
 
 
   TEST_ENTER();

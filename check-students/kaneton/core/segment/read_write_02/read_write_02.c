@@ -7,7 +7,7 @@ void		check_segment_read_write_02(void)
   i_task	task;
   t_asid	as;
   t_segid	seg;
-  t_uint8	buff[2 * PAGESZ];
+  static t_uint8	buff[2 * PAGESZ];
 
 
   TEST_ENTER();
