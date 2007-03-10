@@ -75,7 +75,6 @@ void			kaneton(t_init*				bootloader)
   printf("\n");
   printf("%s\n", version);
   printf("\n");
-
   mipsr10k_event_init();
   while(1);
 #endif

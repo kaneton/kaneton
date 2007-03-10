@@ -8,7 +8,7 @@
  * file          /home/enguerrand/kaneton/kaneton/include/arch/sgi-o2.mips64/core/core.h
  *
  * created       enguerrand raymond   [wed oct 18 14:15:13 2006]
- * updated       enguerrand raymond   [sun jan 14 11:15:49 2007]
+ * updated       enguerrand raymond   [sat mar 10 11:05:25 2007]
  */
 
 #ifndef MIPS64_CORE_CORE_H
@@ -77,7 +77,9 @@
  * ../../../../core/arch/machdep/event.c
  */
 
-t_error		mipsr10k_event_init(void);
+void	mipsr10k_event_handler(void);
+
+t_error			mipsr10k_event_init(void);
 
 
 /*
