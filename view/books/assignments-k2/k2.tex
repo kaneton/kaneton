@@ -57,13 +57,62 @@ XXX
   \item {\bf Assignments}\\
     XXX
   \item {\bf Interface}\\
-    XXX
+\function{event\_show}{(i\_event \argument{id})}
+	 {
+	   This function displays information on an event object.
+	 }
+
+\function{event\_dump}{(void)}
+	 {
+	   This function displays information on all the event objects.
+	 }
+
+\function{event\_reserve}{(i\_event \argument{id},
+                           e\_event\_type \argument{type},
+                           u\_event\_handler \argument{handler})}
+	 {
+	   This function installs an event handler.
+
+	   \argument{type} can be :
+	   \begin{itemize}
+	     \item
+	       \textbf{EVENT\_FUNCTION}: XXX
+	     \item
+	       \textbf{EVENT\_MESSAGE}: XXX
+	   \end{itemize}
+
+	   The union \argument{handler} contains XXX
+	 }
+
+\function{event\_release}{(i\_event \argument{id})}
+	 {
+	   This function releases an event handler.
+	 }
+
+\function{event\_get}{(i\_event \argument{id},
+                       o\_event** \argument{o})}
+	 {
+	   This function returns in \argument{o} the event object
+	   corresponding to \argument{id}.
+	 }
+
+\function{event\_init}{(void)}
+	 {
+	   This function initializes the event manager.
+	 }
+
+\function{event\_clean}{(void)}
+	 {
+	   This function cleans the event manager.
+	 }
   \item {\bf {Files}}\\
 
     \begin{tabular}{| l | l |}
       \hline
       machine-independent & {\em kaneton/core/event/event.c}\\
+      &  {\em kaneton/include/core/event.h}\\\hline
       machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/event.c}\\
+      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/event.h}\\\hline
       libarch & {\em libs/libia32/pmode/idt.c}\\
       & {\em libs/libia32/include/pmode/idt.h}\\
       & {\em libs/libia32/interrupt/*.c}\\
@@ -85,13 +134,80 @@ XXX
   \item {\bf Assignments}\\
     XXX
   \item {\bf Interface}\\
-    XXX
+\function{timer\_show}{(i\_timer \argument{id})}
+	 {
+	   This function displays information on a timer object.
+	 }
+
+\function{timer\_dump}{(void)}
+	 {
+	   This function displays information on all the timers.
+	 }
+
+\function{timer\_reserve}{(t\_type \argument{type},
+                           u\_timer\_handler \argument{handler},
+                           t\_uint32 \argument{delay},
+                           t\_uint32 \argument{repeat},
+                           i\_timer* \argument{id})}
+	 {
+	   This function reserves a timer which will expire in
+	   \argument{delay} microseconds.
+
+	   The arguments \argument{type} and {handler} works the same
+	   way as for \emph{event_reserve}.
+
+	   The \argument{repeat} argument specifies if the timer
+	   must be re-inserted once expired.
+	 }
+
+\function{timer\_release}{(i\_timer \argument{id})}
+	 {
+	   This function releases a timer object.
+	 }
+
+\function{timer\_delay}{(i\_timer \argument{id},
+                         t\_uint32 \argument{delay})}
+	 {
+	   This function updates the delay.
+	 }
+
+\function{timer\_repeat}{(i\_timer \argument{id},
+                          t\_uint32 \argument{repeat})}
+	 {
+	   This function updates the repeat property.
+	 }
+
+\function{timer\_modify}{(i\_timer \argument{id},
+                          t\_uint32 \argument{delay},
+                          t\_uint32 \argument{repeat})}
+	 {
+	   This function combines the effect of the two previous one.
+	 }
+
+\function{timer\_get}{(i\_timer \argument{id},
+                       o\_timer** \argument{o})}
+	 {
+	   This function returns in \argument{o} the timer object
+	   corresponding to \argument{id}.
+	 }
+
+\function{timer\_init}{(void)}
+	 {
+	   This function initializes the timer manager.
+	 }
+
+\function{timer\_clean}{(void)}
+	 {
+	   This function cleans the timer manager.
+	 }
   \item {\bf Files}\\
 
     \begin{tabular}{| l | l |}
       \hline
       machine-independent & {\em kaneton/core/time/timer.c}\\
+      &  {\em kaneton/include/core/timer.h}\\\hline
       machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/timer.c}\\
+      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/timer.h}\\\hline
       libarch & {\em libs/libia32/time/timer.c}\\
       &  {\em libs/libia32/include/time/pit.h}\\\hline
     \end{tabular}
@@ -122,6 +238,7 @@ additional bonuses, as far as they respect the following rules:
 
 Bonuses ideas:
 \begin{itemize}
-\item XXX
-\item XXX
+\item More accurate timer using the APIC
+\item Managing priority among interrupts
+\item Managing nested interrupts
 \end{itemize}

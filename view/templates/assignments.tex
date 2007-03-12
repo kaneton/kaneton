@@ -1,0 +1,150 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/buckman/kaneton/view/templates/book.tex
+%%
+%% created       julien quintard   [wed mar  1 23:45:22 2006]
+%% updated       matthieu bucchianeri   [wed feb  7 21:50:55 2007]
+%%
+
+%
+% class
+%
+
+\documentclass[10pt,a4wide]{report}
+
+%
+% packages
+%
+
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{a4wide}
+\usepackage{fancyheadings}
+\usepackage{multicol}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{verbatim}
+
+\usepackage{aeguill}
+
+\usepackage[Lenny]{../../../tools/latex/fncychap}
+
+\pagestyle{fancy}
+
+\setlength{\footrulewidth}{0.3pt}
+\setlength{\parindent}{0.3cm}
+\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+
+%
+% logos
+%
+
+\newcommand{\logos}
+  {
+    \begin{center}
+      \includegraphics[scale=0.8]{../../logos/kaneton.pdf}
+    \end{center}
+  }
+
+%
+% colors
+%
+
+\definecolor{functioncolor}{rgb}{0.40,0.00,0.00}
+\definecolor{commandcolor}{rgb}{0.00,0.00,0.40}
+\definecolor{verbatimcolor}{rgb}{0.00,0.40,0.00}
+\definecolor{noticecolor}{rgb}{0.87,0.84,0.02}
+
+%
+% function
+%
+
+\newcommand\function[3]{
+  \begin{tabular}{p{0.2cm}p{13.8cm}}
+  & {\color{functioncolor}\textbf{#1}}#2
+  \end{tabular}
+
+  \begin{tabular}{p{1cm}p{13cm}}
+  & #3
+  \end{tabular}}
+
+%
+% align
+%
+
+\newcommand\align[1]{
+  \\ & \hspace{#1}}
+
+%
+% argument
+%
+
+\newcommand\argument[1]{\textit{#1}}
+
+%
+% command
+%
+
+\newcommand\command[2]{
+  \begin{tabular}{p{0.2cm}p{13.8cm}}
+  & {\color{commandcolor}\textbf{#1}}
+  \end{tabular}
+
+  \begin{tabular}{p{1cm}p{13cm}}
+  & #2
+  \end{tabular}}
+
+%
+% notice
+%
+
+\newcommand\notice[1]{
+  {\color{noticecolor}\textbf{Notice}}
+
+  \begin{tabular}{p{0.2cm}p{13.8cm}}
+  & #1
+  \end{tabular}}
+
+%
+% example
+%
+
+\newcommand\example[1]{
+  \textit{Example:}
+
+  \begin{tabular}{p{0.2cm}p{13.8cm}}
+  & \textit{#1}
+  \end{tabular}}
+
+%
+% warning XXX
+%
+
+\renewcommand{\familydefault}{\sfdefault}
+
+%
+% verbatim stuff
+%
+
+\makeatletter
+
+\renewcommand{\verbatim@font}
+  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
+
+\def\verbatim@processline{\hskip15ex\the\verbatim@line\par}
+
+\makeatother
+
+%
+% header
+%
+
+\rhead{}
+\rfoot{\scriptsize{The kaneton microkernel project}}
+
+\date{\scriptsize{\today}}
