@@ -1,0 +1,127 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/buckman/kaneton/view/books/assignments-k1/k1.tex
+%%
+%% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
+%% updated       matthieu bucchianeri   [sun feb 11 22:54:06 2007]
+%%
+
+%
+% k2
+%
+
+\chapter{K2: event management}
+
+%
+% informations
+%
+
+\begin{tabular}{p{7cm}l}
+Duration: & 2 weeks \\
+Directory name: & kaneton/ \\
+In charge: & Matthieu Bucchianeri \& Renaud Voltz\\
+Mailing-list: & kaneton-students@googlegroups.com \\
+Languages: & C \\
+Students per group: & 2 (same groups as for K1) \\
+\end{tabular}
+
+\section{Abstract}
+
+K2 project consists in developing XXX
+
+\begin{enumerate}
+  \item
+    {\bf The event manager}\\
+    XXX
+  \item
+    {\bf The time manager}\\
+    XXX
+\end{enumerate}
+
+XXX
+
+%
+% event manager
+%
+
+\newpage
+
+\section{\textbf{event} manager}
+
+\begin{itemize}
+  \item {\bf Overview}\\
+    XXX
+  \item {\bf Assignments}\\
+    XXX
+  \item {\bf Interface}\\
+    XXX
+  \item {\bf {Files}}\\
+
+    \begin{tabular}{| l | l |}
+      \hline
+      machine-independent & {\em kaneton/core/event/event.c}\\
+      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/event.c}\\
+      libarch & {\em libs/libia32/pmode/idt.c}\\
+      & {\em libs/libia32/include/pmode/idt.h}\\
+      & {\em libs/libia32/interrupt/*.c}\\
+      & {\em libs/libia32/include/interrupt/*.h}\\\hline
+    \end{tabular}
+\end{itemize}
+
+
+%
+% tine manager
+%
+
+\newpage
+
+\section{\textbf{time} manager}
+\begin{itemize}
+  \item {\bf Overview}\\
+    XXX
+  \item {\bf Assignments}\\
+    XXX
+  \item {\bf Interface}\\
+    XXX
+  \item {\bf Files}\\
+
+    \begin{tabular}{| l | l |}
+      \hline
+      machine-independent & {\em kaneton/core/time/timer.c}\\
+      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/timer.c}\\
+      libarch & {\em libs/libia32/time/timer.c}\\
+      &  {\em libs/libia32/include/time/pit.h}\\\hline
+    \end{tabular}
+
+\end{itemize}
+
+%
+% advanced topics
+%
+
+\newpage
+
+\section{Bonuses}
+
+kaneton microkernel is first of all a pedagogical project which do not
+aims at being optimized. That is why, when nothing is specified, you
+always will implement the simplest algorithms.\\
+\\
+Nevertheless, we will always encourage students who want to write
+additional bonuses, as far as they respect the following rules:
+
+\begin{enumerate}
+  \item Bonuses will be evaluated only if a basic implementation is
+  actually working.
+  \item Bonuses must be either picked from the following list, or
+  accepted by the kaneton team.\\
+\end{enumerate}
+
+Bonuses ideas:
+\begin{itemize}
+\item XXX
+\item XXX
+\end{itemize}
