@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/segment.h
+ * file          /home/buckman/kaneton/kaneton/include/arch/ibm-pc.ia32-virtual/core/segment.h
  *
  * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       julien quintard   [sun apr  2 14:08:11 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:20:19 2007]
  */
 
 #ifndef IA32_CORE_SEGMENT_H
@@ -17,8 +17,6 @@
  */
 
 /* XXX #include <core/segment.h>*/
-
-/*                                                                [cut] k2   */
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -32,8 +30,6 @@
 #define PMODE_GDT_SERVICE_DS	0x6
 #define PMODE_GDT_PROGRAM_CS	0x7
 #define PMODE_GDT_PROGRAM_DS	0x8
-
-/*                                                               [cut] /k2   */
 
 /*
  * ---------- macro functions -------------------------------------------------

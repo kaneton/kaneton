@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/cpu/cpu.c
+ * file          /home/buckman/kaneton2/kaneton/kaneton/core/cpu/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       matthieu bucchianeri   [mon aug 21 19:24:40 2006]
+ * updated       matthieu bucchianeri   [tue mar 13 10:32:39 2007]
  */
 
 /*
@@ -204,6 +204,7 @@ t_error			cpu_migrate(i_task			tskid,
 				    i_cpu			destination)
 {
   o_task*		o;
+  t_state		old_state;
 
   CPU_ENTER(cpu);
 
@@ -214,6 +215,7 @@ t_error			cpu_migrate(i_task			tskid,
    * 1)
    */
 
+  old_state = o->sched;
   if (o->sched == SCHED_STATE_RUN)
     if (task_state(tskid, SCHED_STATE_STOP) != ERROR_NONE)
       CPU_LEAVE(cpu, ERROR_UNKNOWN);
@@ -236,7 +238,7 @@ t_error			cpu_migrate(i_task			tskid,
    * 4)
    */
 
-  if (o->sched == SCHED_STATE_RUN)
+  if (old_state == SCHED_STATE_RUN)
     if (task_state(tskid, SCHED_STATE_RUN) != ERROR_NONE)
       CPU_LEAVE(cpu, ERROR_UNKNOWN);
 

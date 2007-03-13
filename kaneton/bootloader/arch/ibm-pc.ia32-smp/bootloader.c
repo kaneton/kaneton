@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/bootloader.c
+ * file          /home/buckman/kaneton2/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/bootloader.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [wed nov  1 18:17:00 2006]
+ * updated       matthieu bucchianeri   [tue mar 13 10:36:27 2007]
  */
 
 /*
@@ -161,7 +161,7 @@ int			bootloader(t_uint32			magic,
    * 9)
    */
 
-//  kernel(init);
+  kernel(init);
 
   asm("movl %0, %%ebp\n\t"
       "movl %1, %%esp\n\t"

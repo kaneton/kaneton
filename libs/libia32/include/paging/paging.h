@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/paging/paging.h
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue feb  6 19:47:59 2007]
+ * updated       matthieu bucchianeri   [tue mar 13 11:24:14 2007]
  */
 
 /*

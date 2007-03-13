@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/paging.c
  *
  * created       julien quintard   [sun may 29 00:38:50 2005]
- * updated       matthieu bucchianeri   [wed nov  1 18:04:46 2006]
+ * updated       matthieu bucchianeri   [tue mar 13 11:46:11 2007]
  */
 
 /*
@@ -101,16 +101,16 @@ void			bootloader_paging_init(void)
     }
 
   pt0.present = 1;
-  pt0.rw = 1;
-  pt0.user = 0;
+  pt0.rw = PT_WRITABLE;
+  pt0.user = PT_PRIVILEGED;
   pt0.cached = PT_CACHED;
   pt0.writeback = PT_WRITETHROUGH;
 
   pd_add_table(&pd, 0, pt0);
 
   pg.present = 1;
-  pg.rw = 1;
-  pg.user = 0;
+  pg.rw = PG_WRITABLE;
+  pg.user = PG_PRIVILEGED;
   pg.cached = PT_CACHED;
   pg.writeback = PT_WRITETHROUGH;
   for (i = 0, addr = PAGESZ;  i < PT_MAX_ENTRIES - 1; i++, addr += PAGESZ)
@@ -131,8 +131,8 @@ void			bootloader_paging_init(void)
     }
 
   pt.present = 1;
-  pt.rw = 1;
-  pt.user = 0;
+  pt.rw = PT_WRITABLE;
+  pt.user = PT_PRIVILEGED;
   pt.cached = PT_CACHED;
   pt.writeback = PT_WRITETHROUGH;
 
@@ -160,8 +160,8 @@ void			bootloader_paging_init(void)
 	    }
 
 	  pt.present = 1;
-	  pt.rw = 1;
-	  pt.user = 0;
+	  pt.rw = PT_WRITABLE;
+	  pt.user = PT_PRIVILEGED;
 	  pt.cached = PT_CACHED;
 	  pt.writeback = PT_WRITETHROUGH;
 

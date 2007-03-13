@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/sched.h
+ * file          /home/buckman/kaneton/kaneton/include/arch/ibm-pc.ia32-virtual/core/sched.h
  *
  * created       matthieu bucchianeri   [sat jun  3 22:47:21 2006]
- * updated       matthieu bucchianeri   [sat jun 17 18:28:50 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:19:56 2007]
  */
 
 #ifndef IA32_CORE_SCHED_H
@@ -28,7 +28,15 @@
 
 typedef struct
 {
+
+/*                                                                [cut] k3   */
+
   i_timer			timer;
+
+  i_thread			mmx_context;
+
+/*                                                               [cut] /k3   */
+
 }				am_sched;
 
 /*

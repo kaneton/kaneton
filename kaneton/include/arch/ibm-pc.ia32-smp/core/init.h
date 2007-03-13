@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ia32-smp/core/init.h
+ * file          /home/buckman/kaneton/kaneton/include/arch/ibm-pc.ia32-smp/core/init.h
  *
  * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       matthieu bucchianeri   [mon aug 21 14:53:42 2006]
+ * updated       matthieu bucchianeri   [tue mar 13 11:53:10 2007]
  */
 
 #ifndef IA32_CORE_INIT_H
@@ -17,6 +17,7 @@
  */
 
 #include <libia32.h>
+#include <arch/machdep/services/cons.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -35,7 +36,7 @@
  * and the page directory.
  */
 
-#define INIT_SEGMENTS		13
+#define INIT_SEGMENTS		14
 
 /*
  * the regions represent the physical memory to be mapped by the kernel.
@@ -52,7 +53,7 @@
  * nor in the regions.
  */
 
-#define INIT_REGIONS		11
+#define INIT_REGIONS		12
 
 /*
  * the kernel stack size is set to two pages.
@@ -66,13 +67,9 @@
 
 typedef struct
 {
-/*                                                                [cut] k1   */
-
   t_ia32_gdt			gdt;
   t_ia32_directory		pd;
   t_ia32_idt			idt;
-
-/*                                                               [cut] /k1   */
 }				a_init;
 
 /*

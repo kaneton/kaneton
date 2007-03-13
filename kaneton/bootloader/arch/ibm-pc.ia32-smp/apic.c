@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/apic.c
  *
  * created       matthieu bucchianeri   [tue jul 25 11:22:27 2006]
- * updated       matthieu bucchianeri   [wed nov  1 19:01:52 2006]
+ * updated       matthieu bucchianeri   [tue mar 13 11:00:39 2007]
  */
 
 /*
@@ -44,13 +44,26 @@ static volatile t_uint32 ticks;
 
 static void		bootloader_apic_calibrate_tick(void)
 {
-  asm volatile("pusha");
+  asm volatile("push	%eax				\n"
+	       "push	%ebx				\n"
+	       "push	%ecx				\n"
+	       "push	%edx				\n"
+	       "push	%esi				\n"
+	       "push	%edi				\n"
+	       );
 
   ticks++;
 
   pic_acknowledge(0);
 
-  asm volatile("popa");
+  asm volatile("pop	%edi				\n"
+	       "pop	%esi				\n"
+	       "pop	%edx				\n"
+	       "pop	%ecx				\n"
+	       "pop	%ebx				\n"
+	       "pop	%eax				\n"
+	       );
+
   LEAVE();
   IRET();
 }

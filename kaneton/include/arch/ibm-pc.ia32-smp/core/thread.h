@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/thread.h
+ * file          /home/buckman/kaneton/kaneton/include/arch/ibm-pc.ia32-virtual/core/thread.h
  *
  * created       renaud voltz   [tue apr  4 03:10:52 2006]
- * updated       matthieu bucchianeri   [fri jul 28 18:00:52 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:20:57 2007]
  */
 
 #ifndef IA32_CORE_THREAD_H
@@ -17,8 +17,6 @@
  */
 
 //#include <core/thread.h>
-
-/*                                                                [cut] k4   */
 
 /*
  *
@@ -35,12 +33,18 @@ typedef struct
 
 typedef struct
 {
+
+/*                                                                [cut] k3   */
+
   t_ia32_context	context;
   union
   {
     t_x87_state		x87;
     t_sse_state		sse;
   }			u;
+
+/*                                                               [cut] /k3   */
+
 }			ao_thread;
 
 /*
@@ -67,7 +71,5 @@ typedef struct
 
 #define         machdep_data_o_thread()					\
   ao_thread		machdep
-
-/*                                                               [cut] /k4   */
 
 #endif

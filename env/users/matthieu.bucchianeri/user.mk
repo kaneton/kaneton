@@ -10,7 +10,7 @@
 ##         quintard julien   [quinta_j@epita.fr]
 ##
 ## started on    Fri Feb 11 02:18:00 2005   mycure
-## Last update Wed Jan 24 20:22:11 2007 matthieu bucchianeri
+## Last update Tue Mar 13 10:51:58 2007 matthieu bucchianeri
 ##
 
 #
@@ -22,3 +22,6 @@
 
 # for using gdb with qemu
 _CFLAGS_	+=	-g
+
+# disable checks
+_CHECK_LO_	:=

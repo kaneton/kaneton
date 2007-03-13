@@ -171,6 +171,9 @@ t_error			ia32_timer_init(void);
  * ../../../../core/arch/machdep/task.c
  */
 
+t_error			ia32_task_clone(i_task			old,
+					i_task*			new);
+
 t_error			ia32_task_reserve(t_class			class,
 					  t_behav			behav,
 					  t_prior			prior,
@@ -212,6 +215,8 @@ t_error			ia32_sched_yield(i_cpu			cpuid);
 
 t_error			ia32_sched_switch(i_thread		elected);
 
+void			ia32_sched_switch_mmx(t_id			id);
+
 t_error			ia32_sched_init(void);
 
 t_error			ia32_sched_clean(void);
@@ -235,7 +240,43 @@ t_error			ia32_cpu_current(i_cpu*			cpuid);
 
 t_error			ia32_io_grant(i_port			id,
 				      i_task			task,
-				      t_state			state);
+				      t_uint8			width);
+
+t_error			ia32_io_deny(i_port			id,
+				     i_task			task,
+				     t_uint8			width);
+
+t_error			ia32_io_read_8(i_task			task,
+				       i_port			id,
+				       t_uint8*			data);
+
+t_error			ia32_io_read_16(i_task			task,
+					i_port			id,
+					t_uint16*		data);
+
+t_error			ia32_io_read_32(i_task			task,
+					i_port			id,
+					t_uint32*		data);
+
+t_error			ia32_io_read_64(i_task			task,
+					i_port			id,
+					t_uint64*		data);
+
+t_error			ia32_io_write_8(i_task			task,
+					i_port			id,
+					t_uint8			data);
+
+t_error			ia32_io_write_16(i_task			task,
+					 i_port			id,
+					 t_uint16		data);
+
+t_error			ia32_io_write_32(i_task			task,
+					 i_port			id,
+					 t_uint32		data);
+
+t_error			ia32_io_write_64(i_task			task,
+					 i_port			id,
+					 t_uint64		data);
 
 t_error			ia32_io_init(void);
 

@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-smp/init.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [mon aug 21 18:26:43 2006]
+ * updated       matthieu bucchianeri   [tue mar 13 11:58:26 2007]
  */
 
 /*
@@ -144,18 +144,19 @@ void			bootloader_init_dump(void)
  *
  * steps:
  *
- * 1) adds the ISA segment from 0 to 1Mb.
- * 2) adds the kernel code segment.
- * 3) adds the init structure segment.
- * 4) adds the modules segment.
- * 5) adds the segments segment.
- * 6) adds the regions segment.
- * 7) adds the cpu segment.
- * 8) adds the kernel stack segment.
- * 9) adds the alloc segment.
- * 10) adds the global offset table segment.
- * 11) adds the interrupt descriptor table segment.
- * 12) adds the page directory segment.
+ * 1) add the ISA segment from 0 to 1Mb.
+ * 2) add the kernel code segment.
+ * 3) add the init structure segment.
+ * 4) add the modules segment.
+ * 5) add the segments segment.
+ * 6) add the regions segment.
+ * 7) add the cpu segment.
+ * 8) add the kernel stack segment.
+ * 9) add the alloc segment.
+ * 10) add the global offset table segment.
+ * 11) add the interrupt descriptor table segment.
+ * 12) add the page directory segment.
+ * 13) add the APIC registers segment.
  */
 
 void			bootloader_init_segments(void)
@@ -272,6 +273,15 @@ void			bootloader_init_segments(void)
   init->segments[12].size = PAGESZ;
   init->segments[12].perms = PERM_READ | PERM_WRITE;
   init->segments[12].type = SEGMENT_TYPE_MEMORY;
+
+  /*
+   * 13)
+   */
+
+  init->segments[13].address = APIC_REG_BASE;
+  init->segments[13].size = PAGESZ;
+  init->segments[13].perms = PERM_READ | PERM_WRITE;
+  init->segments[13].type = SEGMENT_TYPE_MEMORY;
 }
 
 /*
@@ -290,6 +300,7 @@ void			bootloader_init_segments(void)
  * 9) add the global offset table region.
  * 10) add the interrupt descriptor table region.
  * 11) add the page directory region.
+ * 12) add the APIC registers region.
  */
 
 void			bootloader_init_regions(void)
@@ -404,6 +415,16 @@ void			bootloader_init_regions(void)
   init->regions[10].offset = 0;
   init->regions[10].segid = 12;
   init->regions[10].opts = REGION_OPT_PRIVILEGED;
+
+  /*
+   * 12)
+   */
+
+  init->regions[11].address = init->segments[13].address;
+  init->regions[11].size = init->segments[13].size;
+  init->regions[11].offset = 0;
+  init->regions[11].segid = 13;
+  init->regions[11].opts = REGION_OPT_PRIVILEGED;
 }
 
 /*
@@ -605,7 +626,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 8)
    */
 
-  init->alloc = bootloader_init_alloc(16 * PAGESZ, &allocsz);
+  init->alloc = bootloader_init_alloc(1600 * PAGESZ, &allocsz);
   init->allocsz = allocsz;
 
   return (khdr->e_entry);

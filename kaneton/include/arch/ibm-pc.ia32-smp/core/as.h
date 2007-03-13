@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/as.h
+ * file          /home/buckman/kaneton/kaneton/include/arch/ibm-pc.ia32-virtual/core/as.h
  *
  * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       matthieu bucchianeri   [mon apr  3 00:02:10 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 23:18:51 2007]
  */
 
 #ifndef IA32_CORE_AS_H
@@ -28,11 +28,7 @@
 
 typedef struct
 {
-/*                                                                [cut] k2   */
-
   t_ia32_directory		pd;
-
-/*                                                               [cut] /k2   */
 }				ao_as;
 
 /*
