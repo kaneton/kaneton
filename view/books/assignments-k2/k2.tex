@@ -53,9 +53,39 @@ XXX
 
 \begin{itemize}
   \item {\bf Overview}\\
-    XXX
+
+    The event manager in kaneton is used to hook exceptions, IRQ and
+    software interrupts and to redirect them to the correct ISR
+    (\emph{Interrupt Service Routine}).
+
+    There are two possibilities when redirecting events:
+    \begin{itemize}
+      \item
+	Callbacks. Callbacks are function that can be registered for a
+	given event and called when the event occurs.
+      \item
+	Messages. IPC can be thrown on events. \textbf{At this point
+	of the project, these kind of hooks must not be implemented}.
+    \end{itemize}
+
   \item {\bf Assignments}\\
-    XXX
+
+    In K2 you will have to develop the low-level part of the event
+    manager for Intel IA-32 architecture.
+
+    Low-level includes that you will write some code in the
+    machine-dependent part of the manager. But for the first time, you
+    will also have to write significant part of the IA-32 library
+    (\emph{libia32}).
+
+    For example, the functions used to fill the interrupt vector table
+    (called IDT on IA-32) or to initialize the PIC will be placed in
+    libia32.
+
+    When receinving events, your kernel \textbf{must} save and restore
+    the execution context, for the moment only the processor's
+    registers need to be saved (address space switch is for K3).
+
   \item {\bf Interface}\\
 \function{event\_show}{(i\_event \argument{id})}
 	 {
@@ -130,9 +160,19 @@ XXX
 \section{\textbf{time} manager}
 \begin{itemize}
   \item {\bf Overview}\\
-    XXX
+
+    The timer manager is helpful to create one-shot or repeated
+    periodical actions. Like in the event manager, the action
+    performed can be either a callback or a message (\textbf{only
+    callbacks must be supported for K2}).
+
   \item {\bf Assignments}\\
-    XXX
+
+    Your work is to develop the whole timer manager.
+
+    The component required to measure time is called the PIT on
+    IA-32. Code used to program the PIT must be placed in the libia32.
+
   \item {\bf Interface}\\
 \function{timer\_show}{(i\_timer \argument{id})}
 	 {
@@ -153,8 +193,8 @@ XXX
 	   This function reserves a timer which will expire in
 	   \argument{delay} microseconds.
 
-	   The arguments \argument{type} and {handler} works the same
-	   way as for \emph{event_reserve}.
+	   The arguments \argument{type} and \argument{handler} works
+	   the same way as for \emph{event\_reserve}.
 
 	   The \argument{repeat} argument specifies if the timer
 	   must be re-inserted once expired.
