@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/buckman/kaneton/view/books/assignments-k1/k1.tex
+%% file          /home/buckman/kaneton/view/books/assignments-k2/k2.tex
 %%
 %% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
-%% updated       matthieu bucchianeri   [sun feb 11 22:54:06 2007]
+%% updated       matthieu bucchianeri   [wed mar 14 23:46:36 2007]
 %%
 
 %
@@ -42,6 +42,16 @@ K2 project consists in developing XXX
 \end{enumerate}
 
 XXX
+
+\textbf{Important}: do no forget the FIXME in the machine-dependent
+part of the as manager.
+
+\begin{verbatim}
+// FIXME: do not forget to map the IDT in the freshly created
+// address space
+\end{verbatim}
+
+Remember that you can add code even if there is no FIXME.
 
 %
 % event manager
@@ -82,11 +92,12 @@ XXX
     (called IDT on IA-32) or to initialize the PIC will be placed in
     libia32.
 
-    When receinving events, your kernel \textbf{must} save and restore
+    When receiving events, your kernel \textbf{must} save and restore
     the execution context, for the moment only the processor's
     registers need to be saved (address space switch is for K3).
 
   \item {\bf Interface}\\
+
 \function{event\_show}{(i\_event \argument{id})}
 	 {
 	   This function displays information on an event object.
@@ -106,12 +117,21 @@ XXX
 	   \argument{type} can be :
 	   \begin{itemize}
 	     \item
-	       \textbf{EVENT\_FUNCTION}: XXX
+	       \textbf{EVENT\_FUNCTION}: this means that the event will
+	       call a function, which pointer is given in the union
+	       \argument{handler}
 	     \item
-	       \textbf{EVENT\_MESSAGE}: XXX
+	       \textbf{EVENT\_MESSAGE}: this means that the event will
+	       generate an IPC to the task given in the union
+	       \argument{handler}. Not implemented.
 	   \end{itemize}
 
-	   The union \argument{handler} contains XXX
+	   The union \argument{handler} contains a pointer to a
+	   function returning void and getting an event identifier in
+	   argument and an optional error code (integer). The union
+	   also contains a task identifier in the case of IPC action.
+
+	   See appendix for an example of call.
 	 }
 
 \function{event\_release}{(i\_event \argument{id})}
@@ -135,6 +155,7 @@ XXX
 	 {
 	   This function cleans the event manager.
 	 }
+
   \item {\bf {Files}}\\
 
     \begin{tabular}{| l | l |}
@@ -173,15 +194,25 @@ XXX
     The component required to measure time is called the PIT on
     IA-32. Code used to program the PIT must be placed in the libia32.
 
+    \textbf{The accuracy of your time manager will be tested. An error
+    of more than a ten milliseconds will lead our tests to fail.}
+
+    The machine-dependent part of the manager will only consist in
+    initializing the PIT and then counting ticks. The independent code
+    of the manager will offer the higher level functionnalities.
+
   \item {\bf Interface}\\
+
 \function{timer\_show}{(i\_timer \argument{id})}
 	 {
-	   This function displays information on a timer object.
+	   This (\textbf{optional}) function displays information on a
+	   timer object.
 	 }
 
 \function{timer\_dump}{(void)}
 	 {
-	   This function displays information on all the timers.
+	   This (\textbf{optional}) function displays information on
+	   all the timers.
 	 }
 
 \function{timer\_reserve}{(t\_type \argument{type},
@@ -194,10 +225,14 @@ XXX
 	   \argument{delay} microseconds.
 
 	   The arguments \argument{type} and \argument{handler} works
-	   the same way as for \emph{event\_reserve}.
+	   the same way as for \emph{event\_reserve}, but the
+	   prototype of the callback is different (returning void and
+	   taking no argument).
 
 	   The \argument{repeat} argument specifies if the timer
 	   must be re-inserted once expired.
+
+	   See appendix for an example of call.
 	 }
 
 \function{timer\_release}{(i\_timer \argument{id})}
@@ -240,6 +275,7 @@ XXX
 	 {
 	   This function cleans the timer manager.
 	 }
+
   \item {\bf Files}\\
 
     \begin{tabular}{| l | l |}
@@ -279,6 +315,48 @@ additional bonuses, as far as they respect the following rules:
 Bonuses ideas:
 \begin{itemize}
 \item More accurate timer using the APIC
-\item Managing priority among interrupts
-\item Managing nested interrupts
+\item Managing nested interrupts and priorities
 \end{itemize}
+
+%
+% appendix
+%
+
+\newpage
+
+\section{Appendix}
+
+\textbf{Example of event\_reserve}
+
+\begin{verbatim}
+void          ia32_pf_handler(t_id         id,
+                              t_uint32     error_code)
+{
+  t_uint32    addr;
+
+  SCR2(addr);
+  printf("#PF @ %p\n", addr);
+
+  while (1)
+    ;
+}
+
+...
+
+event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
+\end{verbatim}
+
+\textbf{Example of timer\_reserve}
+
+\begin{verbatim}
+void          sched_switch(void)
+{
+  // FIXME: chiche just stole this code
+}
+
+...
+
+timer_reserve(EVENT_FUNCTION, TIMER_HANDLER(sched_switch),
+              sched->quantum, TIMER_REPEAT_ENABLE,
+              &sched->machdep.timer);
+\end{verbatim}
