@@ -30,18 +30,26 @@ Students per group: & 2 (same groups as for K1) \\
 
 \section{Abstract}
 
-K2 project consists in developing XXX
+K2 project consists in developing an important low-level part of the
+kernel: the interrupts. Interrupts can be thrown by the microprocessor
+itself (exceptions, software interrupts\ldots) or by external devices
+(IRQs). You will program another component of the CPU: the interrupt
+controller. In addition, K2 will introduce a high-level timer
+management, used later for the scheduler.
+
+The concerned managers are:
 
 \begin{enumerate}
   \item
     {\bf The event manager}\\
-    XXX
+    Handling exception, IRQ and soft-interrupts
   \item
     {\bf The time manager}\\
-    XXX
+    Providing one-shot or periodical triggers
 \end{enumerate}
 
-XXX
+As usual, some machine-independent code is needed (especially for the
+timer manager) and an architecture-specific code for Intel IA-32.
 
 \textbf{Important}: do no forget the FIXME in the machine-dependent
 part of the as manager.
@@ -173,7 +181,7 @@ Remember that you can add code even if there is no FIXME.
 
 
 %
-% tine manager
+% time manager
 %
 
 \newpage

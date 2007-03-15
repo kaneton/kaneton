@@ -1,0 +1,187 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/buckman/kaneton/view/books/assignments-k2/k2.tex
+%%
+%% created       matthieu bucchianeri   [tue feb  7 11:49:56 2006]
+%% updated       matthieu bucchianeri   [wed mar 14 23:46:36 2007]
+%%
+
+%
+% k2
+%
+
+\chapter{K3: tasks & scheduling}
+
+%
+% informations
+%
+
+\begin{tabular}{p{7cm}l}
+Duration: & 2 weeks \\
+Directory name: & kaneton/ \\
+In charge: & Matthieu Bucchianeri \& Renaud Voltz\\
+Mailing-list: & kaneton-students@googlegroups.com \\
+Languages: & C \\
+Students per group: & 2 (same groups as for K1 and K2) \\
+\end{tabular}
+
+\section{Abstract}
+
+K2 project consists in developing XXX
+The concerned managers are:
+
+\begin{enumerate}
+  \item
+    {\bf The task manager}\\
+    XXX
+  \item
+    {\bf The thread manager}\\
+    XXX
+  \item
+    {\bf The sched manager}\\
+    XXX
+\end{enumerate}
+
+XXX
+
+\textbf{Important}: do no forget the FIXME in the machine-dependent
+part of the as manager, near the end of the file.
+
+Remember that you can add code even if there is no FIXME.
+
+
+%
+% task manager
+%
+
+\newpage
+
+\section{\textbf{task} manager}
+
+\begin{itemize}
+  \item {\bf Overview}\\
+
+    XXX
+
+  \item {\bf Assignments}\\
+
+    XXX
+
+  \item {\bf Interface}\\
+
+    XXX
+
+  \item {\bf {Files}}\\
+
+    \begin{tabular}{| l | l |}
+      \hline
+      machine-independent & {\em kaneton/core/task/task.c}\\
+      &  {\em kaneton/include/core/task.h}\\\hline
+      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/task.c}\\
+      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/task.h}\\\hline
+      libarch & {\em libs/libia32/task/*.c}\\
+      & {\em libs/libia32/include/task/*.h}\\\hline
+    \end{tabular}
+\end{itemize}
+
+
+%
+% thread manager
+%
+
+\newpage
+
+\section{\textbf{thread} manager}
+\begin{itemize}
+  \item {\bf Overview}\\
+
+    XXX
+
+  \item {\bf Assignments}\\
+
+    XXX
+
+  \item {\bf Interface}\\
+
+    XXX
+
+  \item {\bf Files}\\
+
+    \begin{tabular}{| l | l |}
+      \hline
+      machine-independent & {\em kaneton/core/thread/thread.c}\\
+      &  {\em kaneton/include/core/thread.h}\\\hline
+      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/thread.c}\\
+      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/thread.h}\\\hline
+      libarch & {\em libs/libia32/task/*.c}\\
+      &  {\em libs/libia32/include/task/*.h}\\\hline
+    \end{tabular}
+
+\end{itemize}
+
+
+%
+% sched manager
+%
+
+\newpage
+
+\section{\textbf{sched} manager}
+\begin{itemize}
+  \item {\bf Overview}\\
+
+    XXX
+
+  \item {\bf Assignments}\\
+
+    XXX
+
+  \item {\bf Interface}\\
+
+    XXX
+
+  \item {\bf Files}\\
+
+    \begin{tabular}{| l | l |}
+      \hline
+      machine-independent & {\em kaneton/core/sched/sched.c}\\
+      &  {\em kaneton/include/core/sched.h}\\\hline
+      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/sched.c}\\
+      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/sched.h}\\\hline
+      libarch & {\em libs/libia32/task/*.c}\\
+      &  {\em libs/libia32/include/task/*.h}\\\hline
+    \end{tabular}
+
+\end{itemize}
+
+%
+% advanced topics
+%
+
+\newpage
+
+\section{Bonuses}
+
+kaneton microkernel is first of all a pedagogical project which do not
+aims at being optimized. That is why, when nothing is specified, you
+always will implement the simplest algorithms.\\
+\\
+Nevertheless, we will always encourage students who want to write
+additional bonuses, as far as they respect the following rules:
+
+\begin{enumerate}
+  \item Bonuses will be evaluated only if a basic implementation is
+  actually working.
+  \item Bonuses must be either picked from the following list, or
+  accepted by the kaneton team.\\
+\end{enumerate}
+
+Bonuses ideas:
+\begin{itemize}
+\item XXX
+\item XXX
+\end{itemize}
+
