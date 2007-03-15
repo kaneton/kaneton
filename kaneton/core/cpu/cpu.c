@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton2/kaneton/kaneton/core/cpu/cpu.c
+ * file          /home/buckman/kaneton/kaneton/core/cpu/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       matthieu bucchianeri   [tue mar 13 10:32:39 2007]
+ * updated       matthieu bucchianeri   [thu mar 15 00:04:16 2007]
  */
 
 /*
@@ -138,9 +138,16 @@ t_error			cpu_current(i_cpu*			cpuid)
 
 t_error			cpu_select(i_cpu*			cpuid)
 {
+  static i_cpu		cur = 0;
+  t_setsz		size;
+
   CPU_ENTER(cpu);
 
-  *cpuid = 0;
+  if (set_size(cpu->cpus, &size) != ERROR_NONE)
+    CPU_LEAVE(cpu, ERROR_UNKNOWN);
+
+  *cpuid = cur % size;
+  cur++;
 
   /*
    * XXX select the cpu with lowest charge.
@@ -370,4 +377,124 @@ t_error			cpu_clean(void)
   free(cpu);
 
   return (ERROR_NONE);
+}
+
+
+/*
+ * --------------
+ *
+ */
+
+void cpu1(void)
+{
+  printf("This is cpu1\n");
+  while (1)
+    ;
+}
+
+void cpu2(void)
+{
+  printf("This is cpu2\n");
+  while (1)
+    ;
+}
+
+i_thread	mk_thread(i_task tsk,
+			  void *func)
+{
+  i_thread		thr;
+  o_thread*		o;
+  t_thread_context	ctx;
+  t_stack		stack;
+
+  if (thread_reserve(tsk, 150, &thr) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot reserve thread\n");
+      while (1);
+    }
+
+  stack.base = 0;
+  stack.size = THREAD_MIN_STACKSZ;
+  if (thread_stack(thr, stack) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot set stack\n");
+      while (1);
+    }
+
+  if (thread_get(thr, &o) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot get thread\n");
+      while (1);
+    }
+
+  ctx.sp = o->stack + o->stacksz - 16;
+  ctx.pc = (t_uint32)func;
+
+  if (thread_load(thr, ctx) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot load context\n");
+      while (1);
+    }
+
+  return thr;
+}
+
+void smp_test(void)
+{
+  i_task	tsk1, tsk2;
+  i_as		as;
+
+  // XXX to move
+  if (event_reserve(30, EVENT_FUNCTION, EVENT_HANDLER(sched_switch))
+      != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+
+  if (task_reserve(TASK_CLASS_PROGRAM,
+		   TASK_BEHAV_INTERACTIVE,
+		   TASK_PRIOR_INTERACTIVE,
+		   &tsk1) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot reserve task\n");
+      while (1);
+    }
+
+  if (as_reserve(tsk1, &as) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot reserve as\n");
+      while (1);
+    }
+
+  if (task_reserve(TASK_CLASS_PROGRAM,
+		   TASK_BEHAV_INTERACTIVE,
+		   TASK_PRIOR_INTERACTIVE,
+		   &tsk2) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot reserve task\n");
+      while (1);
+    }
+
+  if (as_reserve(tsk2, &as) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot reserve as\n");
+      while (1);
+    }
+
+  mk_thread(tsk1, cpu1);
+  mk_thread(tsk2, cpu2);
+
+  if (task_state(tsk1, SCHED_STATE_RUN) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot start !\n");
+
+      while (1);
+    }
+  if (task_state(tsk2, SCHED_STATE_RUN) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot start !\n");
+
+      while (1);
+    }
+
+  ipi_send_vector(30, ipi_all_but_me, 0);
 }

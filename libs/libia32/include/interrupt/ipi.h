@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/ipi.h
  *
  * created       matthieu bucchianeri   [mon aug 21 15:03:41 2006]
- * updated       matthieu bucchianeri   [mon aug 21 15:05:06 2006]
+ * updated       matthieu bucchianeri   [tue mar 13 12:03:27 2007]
  */
 
 #ifndef IA32_INTERRUPT_IPI_H
@@ -25,7 +25,8 @@
 typedef enum
   {
 	ipi_all,
-	ipi_all_but_me
+	ipi_all_but_me,
+	ipi_cpu
   }	t_ia32_ipi_dest;
 
 #endif

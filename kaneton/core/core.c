@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue feb  6 20:11:20 2007]
+ * updated       matthieu bucchianeri   [wed mar 14 23:55:42 2007]
  */
 
 /*
@@ -143,6 +143,8 @@ void			kaneton(t_init*				bootloader)
   while(1)
     ;
 #endif
+
+  smp_test();
 
   /*
    * /XXX
