@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-smp/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue mar 13 11:52:48 2007]
+ * updated       matthieu bucchianeri   [fri mar 16 22:05:49 2007]
  */
 
 /*
@@ -32,7 +32,8 @@ extern m_as*		as;
 extern i_task		ktask;
 extern t_init*		init;
 extern i_as		kasid;
-extern t_ia32_idt           idt;
+extern t_ia32_idt	idt;
+extern t_ia32_gdt	gdt;
 extern m_thread*	thread;
 
 /*
@@ -427,11 +428,11 @@ t_error			ia32_as_reserve(i_task			tskid,
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
       if (region_reserve(*asid,
-			 (i_segment)(t_uint32)init->machdep.gdt.descriptor,
+			 (i_segment)(t_uint32)gdt.descriptor,
 			 0,
 			 REGION_OPT_FORCE | REGION_OPT_PRIVILEGED |
 			 REGION_OPT_GLOBAL,
-			 (t_vaddr)init->machdep.gdt.descriptor,
+			 (t_vaddr)gdt.descriptor,
 			 PAGESZ,
 			 &reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);

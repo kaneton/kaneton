@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/interrupt/interrupt.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       matthieu bucchianeri   [tue feb  6 19:29:29 2007]
+ * updated       matthieu bucchianeri   [fri mar 16 22:15:47 2007]
  */
 
 /*
@@ -34,7 +34,7 @@
  * global interrupt handler table
  */
 
-t_ia32_interrupt_handler	interrupt_handlers[EXCEPTION_NR + IRQ_NR];
+t_ia32_interrupt_handler	interrupt_handlers[EXCEPTION_NR + IRQ_NR + IPI_NR];
 
 /*
  * the segment selector to load on interrupt.
@@ -54,7 +54,7 @@ volatile HANDLER_DATA t_uint32		interrupt_stack = 0;
  * ---------- functions -------------------------------------------------------
  */
 
-static t_ia32_interrupt_prehandler	prehandlers[EXCEPTION_NR + IRQ_NR] =
+static t_ia32_interrupt_prehandler	prehandlers[EXCEPTION_NR + IRQ_NR + IPI_NR] =
   {
     prehandler_exception0,
     prehandler_exception1,
@@ -103,7 +103,15 @@ static t_ia32_interrupt_prehandler	prehandlers[EXCEPTION_NR + IRQ_NR] =
     prehandler_irq12,
     prehandler_irq13,
     prehandler_irq14,
-    prehandler_irq15
+    prehandler_irq15,
+    prehandler_ipi0,
+    prehandler_ipi1,
+    prehandler_ipi2,
+    prehandler_ipi3,
+    prehandler_ipi4,
+    prehandler_ipi5,
+    prehandler_ipi6,
+    prehandler_ipi7
   };
 
 /*
@@ -125,7 +133,7 @@ t_error			interrupt_add(t_uint32			nr,
    * 1)
    */
 
-  if (nr >= EXCEPTION_NR + IRQ_NR)
+  if (nr >= EXCEPTION_NR + IRQ_NR + IPI_NR)
     return ERROR_UNKNOWN;
 
   /*
@@ -137,9 +145,7 @@ t_error			interrupt_add(t_uint32			nr,
   gate.privilege = privilege;
   gate.type = ia32_type_gate_interrupt;
 
-  idt_add_gate(NULL, nr, gate);
-
-  return ERROR_NONE;
+  return idt_add_gate(NULL, nr, gate);
 }
 
 /*
@@ -161,7 +167,8 @@ t_error			interrupt_set_handler(t_uint32			nr,
  *
  * 1) add an interrupt gate descriptor in the idt for each exception.
  * 2) add an interrupt gate descriptor in the idt for each irq.
- * 3) initialize the pic 8259A.
+ * 3) add an interrupt gate descriptor in the idt for each ipi.
+ * 4) initialize the pic 8259A.
  */
 
 t_error			interrupt_init(void)
@@ -188,6 +195,14 @@ t_error			interrupt_init(void)
    * 3)
    */
 
+  for (i = IDT_IPI_BASE; i < IDT_IPI_BASE + IPI_NR; i++)
+    if (interrupt_add(i, 0, prehandlers[i]) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+
+  /*
+   * 4)
+   */
+
   if (pic_init() != ERROR_NONE)
     return ERROR_UNKNOWN;
 
@@ -210,12 +225,23 @@ void			handler_exception(t_uint32			nr,
  * second part, send the EOI and call the user-defined handler.
  */
 
-
 void			handler_irq(t_uint32				nr)
 {
   pic_acknowledge(nr);
 
   interrupt_handlers[IDT_IRQ_BASE + nr](IDT_IRQ_BASE + nr, 0);
+}
+
+/*
+ * this is  the second  handler called on  irq.  it saves  the context
+ * second part, send the EOI and call the user-defined handler.
+ */
+
+void			handler_ipi(t_uint32				nr)
+{
+  ipi_acknowledge();
+
+  interrupt_handlers[IDT_IPI_BASE + nr](IDT_IPI_BASE + nr, 0);
 }
 
 /*
@@ -275,5 +301,18 @@ IRQ_PREHANDLER(12);
 IRQ_PREHANDLER(13);
 IRQ_PREHANDLER(14);
 IRQ_PREHANDLER(15);
+
+/*
+ * ipi prehandlers
+ */
+
+IPI_PREHANDLER(0);
+IPI_PREHANDLER(1);
+IPI_PREHANDLER(2);
+IPI_PREHANDLER(3);
+IPI_PREHANDLER(4);
+IPI_PREHANDLER(5);
+IPI_PREHANDLER(6);
+IPI_PREHANDLER(7);
 
 /*                                                                 [cut] /k2 */

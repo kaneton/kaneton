@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/cpu/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       matthieu bucchianeri   [thu mar 15 00:04:16 2007]
+ * updated       matthieu bucchianeri   [fri mar 16 23:10:47 2007]
  */
 
 /*
@@ -445,7 +445,7 @@ void smp_test(void)
   i_as		as;
 
   // XXX to move
-  if (event_reserve(30, EVENT_FUNCTION, EVENT_HANDLER(sched_switch))
+  if (event_reserve(48, EVENT_FUNCTION, EVENT_HANDLER(sched_switch))
       != ERROR_NONE)
     return ERROR_UNKNOWN;
 
@@ -496,5 +496,5 @@ void smp_test(void)
       while (1);
     }
 
-  ipi_send_vector(30, ipi_all_but_me, 0);
+  ipi_send_vector(48, ipi_cpu, 1);
 }

@@ -233,6 +233,10 @@ t_error			ia32_sched_clean(void);
 
 t_error			ia32_cpu_current(i_cpu*			cpuid);
 
+t_error			ia32_cpu_init(void);
+
+void			ia32_cpu_init_ap(void);
+
 
 /*
  * ../../../../core/arch/machdep/io.c

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [tue feb  6 19:45:50 2007]
+ * updated       matthieu bucchianeri   [fri mar 16 21:54:38 2007]
  */
 
 /*
@@ -34,8 +34,9 @@
  * interrupts number.
  */
 
-#define EXCEPTION_NR	32
-#define IRQ_NR		16
+#define EXCEPTION_NR    32
+#define IRQ_NR          16
+#define IPI_NR          8
 
 /*
  * exception error code.
@@ -93,6 +94,21 @@
 	 "	pushl $0				\n"		\
 	 "	pushl $" #nr "				\n"		\
 	 "	call handler_irq			\n"		\
+	 "	addl $8, %esp				\n"		\
+	 FORCE_RING0_BACK()						\
+	 RESTORE_CONTEXT()						\
+	 "	addl $4, %esp				\n"		\
+	 "	iret					")
+
+#define IPI_PREHANDLER(nr)				       		\
+  asm	(".globl prehandler_ipi" #nr "			\n"		\
+	 "prehandler_ipi" #nr ":			\n"		\
+	 "	addl $-4, %esp				\n"		\
+	 SAVE_CONTEXT()							\
+	 FORCE_RING0_SWITCH()						\
+	 "	pushl $0				\n"		\
+	 "	pushl $" #nr "				\n"		\
+	 "	call handler_ipi			\n"		\
 	 "	addl $8, %esp				\n"		\
 	 FORCE_RING0_BACK()						\
 	 RESTORE_CONTEXT()						\
@@ -223,6 +239,15 @@ void    prehandler_irq12(void);
 void    prehandler_irq13(void);
 void    prehandler_irq14(void);
 void    prehandler_irq15(void);
+
+void    prehandler_ipi0(void);
+void    prehandler_ipi1(void);
+void    prehandler_ipi2(void);
+void    prehandler_ipi3(void);
+void    prehandler_ipi4(void);
+void    prehandler_ipi5(void);
+void    prehandler_ipi6(void);
+void    prehandler_ipi7(void);
 
 /*                                                                 [cut] /k2 */
 

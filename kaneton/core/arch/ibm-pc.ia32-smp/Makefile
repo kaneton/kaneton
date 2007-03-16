@@ -51,15 +51,13 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-libs:
-	$(call launch,Makefile,$(_LIBIA32_DIR_),,)
-
-	$(call launch,Makefile,.,$(MACHDEP_LO),)
-
-$(MACHDEP_LO):		$(MACHDEP_O)
+$(MACHDEP_LO):		libs $(MACHDEP_O)
 	$(call remove,$(MACHDEP_LO),)
 
 	$(call archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBIA32_A_),)
+
+libs:
+	$(call launch,Makefile,$(_LIBIA32_DIR_),,)
 
 clear:
 	$(call remove,$(MACHDEP_O),)

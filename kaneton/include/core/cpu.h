@@ -137,6 +137,15 @@ t_error			cpu_init(void);
 
 t_error			cpu_clean(void);
 
+void cpu1(void);
+
+void cpu2(void);
+
+i_thread	mk_thread(i_task tsk,
+			  void *func);
+
+void smp_test(void);
+
 
 /*
  * eop

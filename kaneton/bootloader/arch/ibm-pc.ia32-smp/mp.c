@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/mp.c
  *
  * created       matthieu bucchianeri   [tue jul 25 11:21:34 2006]
- * updated       matthieu bucchianeri   [wed nov  1 18:53:57 2006]
+ * updated       matthieu bucchianeri   [fri mar 16 22:24:15 2007]
  */
 
 /*
@@ -256,5 +256,7 @@ void			bootloader_mp_ap_init(void)
    * 4)
    */
 
-  HLT();
+//  HLT(); XXX why not working ?
+  while(1)
+    ;
 }

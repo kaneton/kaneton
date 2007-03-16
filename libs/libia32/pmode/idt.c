@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/pmode/idt.c
  *
  * created       renaud voltz   [sun feb 12 02:02:19 2006]
- * updated       matthieu bucchianeri   [tue feb  6 19:41:14 2007]
+ * updated       matthieu bucchianeri   [fri mar 16 21:38:28 2007]
  */
 
 /*

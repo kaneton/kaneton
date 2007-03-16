@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/event.c
+ * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-smp/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [tue feb  6 22:31:13 2007]
+ * updated       matthieu bucchianeri   [fri mar 16 22:54:08 2007]
  */
 
 /*
@@ -34,6 +34,12 @@
  */
 
 extern i_as			kasid;
+
+/*
+ * the init structure.
+ */
+
+extern t_init*			init;
 
 /*								   [cut] /k2 */
 
@@ -87,7 +93,7 @@ t_error			ia32_event_reserve(i_event		id,
    * 1)
    */
 
-  if (eventid >= EXCEPTION_NR + IRQ_NR)
+  if (eventid >= EXCEPTION_NR + IRQ_NR + IPI_NR)
     return ERROR_UNKNOWN;
 
   /*
@@ -135,7 +141,7 @@ t_error			ia32_event_release(i_event		id)
    * 1)
    */
 
-  if (eventid >= EXCEPTION_NR + IRQ_NR)
+  if (eventid >= EXCEPTION_NR + IRQ_NR + IPI_NR)
     return ERROR_UNKNOWN;
 
   /*
@@ -162,12 +168,12 @@ t_error			ia32_event_release(i_event		id)
  *
  * steps:
  *
- * 1) allocate space for the idt.
- * 2) build the idt and activate it.
- * 3) init events.
- * 4) disable writing the IDT.
- * 5) set default handler for every exception.
- * 6) set default handler for every irq.
+ * 1) activate the IDT.
+ * 2) init events.
+ * 3) disable writing the IDT.
+ * 4) set default handler for every exception.
+ * 5) set default handler for every irq.
+ * 6) set default handler for every ipi.
  * 7) enable external interrupts.
  * 8) setup default exception handlers.
  */
@@ -175,51 +181,35 @@ t_error			ia32_event_release(i_event		id)
 t_error			ia32_event_init(void)
 {
   int			id;
-  t_vaddr		vaddr;
-  t_ia32_idt		new_idt;
   o_region*		oreg;
 
   /*
    * 1)
    */
 
-  if (map_reserve(kasid,
-		  MAP_OPT_PRIVILEGED,
-		  PAGESZ,
-		  PERM_READ | PERM_WRITE,
-		  &vaddr)
-      != ERROR_NONE)
+  if (idt_activate(&init->machdep.idt) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
    * 2)
    */
 
-  if (idt_build(IDT_MAX_ENTRIES, vaddr, 1, &new_idt) != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
-  if (idt_activate(&new_idt) != ERROR_NONE)
+  if (interrupt_init() != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
    * 3)
    */
 
-  if (interrupt_init() != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
-  /*
-   * 4)
-   */
-
-  if (region_get(kasid, (i_region)vaddr, &oreg) != ERROR_NONE)
+  if (region_get(kasid, (i_region)(t_uint32)init->machdep.idt.descriptor,
+		 &oreg) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   if (segment_perms(oreg->segid, PERM_READ) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
-   * 5)
+   * 4)
    */
 
   for (id = IDT_EXCEPTION_BASE; id < IDT_EXCEPTION_BASE + EXCEPTION_NR; id++)
@@ -228,10 +218,19 @@ t_error			ia32_event_init(void)
       return ERROR_UNKNOWN;
 
   /*
-   * 6)
+   * 5)
    */
 
   for (id = IDT_IRQ_BASE; id < IDT_IRQ_BASE + IRQ_NR; id++)
+    if (interrupt_set_handler(id, (t_ia32_interrupt_handler)
+			      ia32_event_handler) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+
+  /*
+   * 6)
+   */
+
+  for (id = IDT_IPI_BASE; id < IDT_IPI_BASE + IPI_NR; id++)
     if (interrupt_set_handler(id, (t_ia32_interrupt_handler)
 			      ia32_event_handler) != ERROR_NONE)
       return ERROR_UNKNOWN;

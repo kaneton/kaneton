@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/pmode/idt.h
  *
  * created       renaud voltz   [fri feb 10 16:36:20 2006]
- * updated       matthieu bucchianeri   [tue feb  6 19:48:23 2007]
+ * updated       matthieu bucchianeri   [fri mar 16 21:18:50 2007]
  */
 
 /*
@@ -39,6 +39,7 @@
 
 #define IDT_EXCEPTION_BASE	0
 #define IDT_IRQ_BASE		32
+#define IDT_IPI_BASE		48
 
 /*
  * gate types (for idt entries)
