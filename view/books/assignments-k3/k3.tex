@@ -13,7 +13,7 @@
 % k2
 %
 
-\chapter{K3: tasks & scheduling}
+\chapter{K3: tasks \& scheduling}
 
 %
 % informations
@@ -25,7 +25,7 @@ Directory name: & kaneton/ \\
 In charge: & Matthieu Bucchianeri \& Renaud Voltz\\
 Mailing-list: & kaneton-students@googlegroups.com \\
 Languages: & C \\
-Students per group: & 2 (same groups as for K1 and K2) \\
+Students per group: & 2 (same groups as for previous stages) \\
 \end{tabular}
 
 \section{Abstract}
@@ -64,15 +64,98 @@ Remember that you can add code even if there is no FIXME.
 \begin{itemize}
   \item {\bf Overview}\\
 
-    XXX
+    The \textbf{task manager} provides a complete interface for the
+    task objects manipulation.
+
+    A \textbf{task object} \textit{o\_task} describes a complete
+    execution entity. Nevertheless, a task object is never scheduled
+    since a task is not an active entity (threads are).
+
+    A task is composed of an address space \textit{o\_as} and threads
+    \textit{o\_thread}.
 
   \item {\bf Assignments}\\
 
-    XXX
+    No assignments.
 
   \item {\bf Interface}\\
 
-    XXX
+\function{task\_show}{(i\_task \argument{id})}
+	 {
+	   This function displays information on the task \argument{id}.
+	 }
+
+\function{task\_dump}{(void)}
+	 {
+	   This function displays information on every task.
+	 }
+
+\function{task\_clone}{(i\_task \argument{old},
+                        i\_task* \argument{new})}
+	 {
+	   This function clones a task.
+
+	   This function must take care of cloning everything necessary
+	   including the address space and the threads.
+	 }
+
+\function{task\_reserve}{(t\_class \argument{class},
+                          t\_behav \argument{behav},
+                          t\_prior \argument{prior},
+                          i\_task* \argument{id})}
+	 {
+	   This function reserves a task object with the given
+	   properties: \argument{class}, \argument{behav} and
+	   \argument{prior}.
+
+	   Note that once reserved, the task is marked as stopped.
+
+	   XXX
+	 }
+
+\function{task\_release}{(i\_task \argument{id})}
+	 {
+	   This function releases the task object \argument{id}.
+	 }
+
+\function{task\_priority}{(i\_task \argument{id},
+                           t\_prior \argument{prior})}
+	 {
+	   This function updates the task's priority to \argument{prior}.
+	 }
+
+\function{task\_state}{(i\_task \argument{id},
+                        t\_state \argument{sched})}
+	 {
+	   XXX
+	 }
+
+\function{task\_wait}{(i\_task \argument{id},
+                       t\_opts \argument{opts},
+                       t\_wait* \argument{wait})}
+	 {
+	   This function waits for state change in one or more tasks
+	   depending on the options \argument{opts}.
+
+	   \notice{This feature is not yet implemented.}
+	 }
+
+\function{task\_get}{(i\_task \argument{id},
+                      o\_task** \argument{o})}
+	 {
+	   This function returns in \argument{o} the task object corresponding
+	   to \argument{id}.
+	 }
+
+\function{task\_init}{(void)}
+	 {
+	   This function initializes the task manager.
+	 }
+
+\function{task\_clean}{(void)}
+	 {
+	   This function cleans the task manager.
+	 }
 
   \item {\bf {Files}}\\
 
@@ -98,7 +181,20 @@ Remember that you can add code even if there is no FIXME.
 \begin{itemize}
   \item {\bf Overview}\\
 
-    XXX
+    The \textbf{thread manager} manages the real active execution
+    context called threads.
+
+    A \textbf{thread object} is an active entity which describes the
+    current state of an execution context including the
+    \textit{program counter}, the \textit{stack pointer} etc..
+
+    Indeed, a thread is composed of a current \textit{program counter}
+    which keeps the next instruction address to execute and the
+    \textit{stack pointer} which keeps the stack address. With these
+    two characteristics, a thread can be described.
+
+    Needless to say, some additional architecture-dependent properties
+    are required to fully describe a thread context.
 
   \item {\bf Assignments}\\
 
@@ -106,7 +202,127 @@ Remember that you can add code even if there is no FIXME.
 
   \item {\bf Interface}\\
 
-    XXX
+\function{thread\_show}{(i\_thread \argument{id})}
+	 {
+	   This function displays information on the thread \argument{id}.
+	 }
+
+\function{thread\_dump}{(void)}
+	 {
+	   This function displays information on all the threads.
+	 }
+
+\function{thread\_give}{(i\_task \argument{task},
+                         i\_thread \argument{id})}
+	 {
+	   This function gives the thread object \argument{id} to the
+	   task \argument{task}.
+	 }
+
+\function{thread\_clone}{(i\_task \argument{task},
+                          i\_thread \argument{old},
+                          i\_thread* \argument{new})}
+	 {
+	   This function clones the task \argument{old} into a new one
+	   \argument{new}.
+
+	   This new thread, having the exact same properties as \argument{old},
+	   will be held by the task \argument{task}.
+	 }
+
+\function{thread\_reserve}{(i\_task \argument{task},
+                            t\_prior \argument{prior},
+                            i\_thread* \argument{id})}
+	 {
+	   This function reserves a thread for the task \argument{task}
+	   given the default thread priority \argument{prior}.
+
+	   Note that once reserved, the thread is marked as stopped.
+	 }
+
+\function{thread\_release}{(i\_thread \argument{id})}
+	 {
+	   This function releases the thread object \argument{id}.
+	 }
+
+\function{thread\_priority}{(i\_thread \argument{id},
+                             t\_prior \argument{prior})}
+	 {
+	   This function updates the current thread priority
+	   to \argument{prior}.
+	 }
+
+\function{thread\_state}{(i\_thread \argument{id},
+                          t\_state \argument{sched})}
+	 {
+	   XXX
+	 }
+
+\function{thread\_wait}{(i\_thread \argument{id},
+                         t\_opts \argument{opts},
+                         t\_wait* \argument{wait})}
+	 {
+	   This function acts like the function \textbf{task\_wait}().
+
+	   This function waits for the thread's state to change depending on
+	   the options \argument{opts}.
+
+	   \notice{This feature is not yet implemented.}
+	 }
+
+\function{thread\_get}{(i\_thread \argument{id},
+                        o\_thread** \argument{o})}
+	 {
+	   This function returns in \argument{o} the thread object
+	   corresponding to \argument{id}.
+	 }
+
+\function{thread\_flush}{(i\_task \argument{task})}
+	 {
+	   This function removes every thread that belongs to the
+	   task object \argument{task}.
+	 }
+
+\function{thread\_stack}{(i\_thread \argument{id},
+                          t\_stack \argument{size})}
+	 {
+	   This function allocates a stack of \argument{size} bytes
+	   for the thread \argument{id}.
+
+	   XXX
+	 }
+
+\function{thread\_load}{(i\_thread \argument{id},
+                         t\_thread\_context \argument{context})}
+	 {
+	   This function loads a new execution context in the thread
+	   object \argument{id}.
+
+	   A thread execution context \textit{t\_thread\_context}
+	   only contains the \textit{program counter} and the
+	   \textit{stack pointer}.
+
+	   XXX
+	 }
+
+\function{thread\_store}{(i\_thread \argument{id},
+                          t\_thread\_context* \argument{context})}
+	 {
+	   This function stores in \argument{context} the current
+	   thread execution context of the thread object \argument{id}.
+
+	   XXX
+	 }
+
+\function{thread\_init}{(void)}
+	 {
+	   This function initializes the thread manager.
+	 }
+
+\function{thread\_clean}{(void)}
+	 {
+	   This function cleans the thread manager.
+	 }
 
   \item {\bf Files}\\
 
@@ -141,7 +357,72 @@ Remember that you can add code even if there is no FIXME.
 
   \item {\bf Interface}\\
 
-    XXX
+\function{sched\_dump}{(void)}
+	 {
+	   This function displays the scheduler state.
+	 }
+
+\function{sched\_quantum}{(t\_quantum \argument{quantum})}
+	 {
+	   This function sets the scheduler quantum to \argument{quantum}.
+
+	   XXX
+	 }
+
+\function{sched\_yield}{(i\_cpu \argument{cpuid})}
+	 {
+	   This function permits the current task to relinquish
+	   the processor voluntarily.
+
+	   Don't care about the argument \argument{cpuid}.
+	 }
+
+\function{sched\_add}{(i\_thread \argument{thread})}
+	 {
+	   This function adds a runnable thread to the scheduler.
+	 }
+
+\function{sched\_remove}{(i\_thread \argument{thread})}
+	 {
+	   This function remove a thread from the scheduler.
+	 }
+
+\function{sched\_update}{(i\_thread \argument{thread})}
+	 {
+	   This function asks the scheduler to update the thread
+	   \argument{thread} in its internal data structures since
+	   for example the thread's priority just changed.
+	 }
+
+\function{sched\_current}{(i\_thread* \argument{thread})}
+	 {
+	   This function returns in \argument{thread} the identifier
+	   of the thread currently executed.
+	 }
+
+\function{sched\_switch}{(void)}
+	 {
+	   This function just schedules a new elected thread.
+
+	   \textbf{Note}: the machine-dependent code of this function
+	   takes an additional parameter.
+
+	   \function{ia32\_sched\_switch}{(i\_thread \argument{elected})}
+		    {
+		      The argument \argument{elected} is the new
+		      thread to run.
+		    }
+	 }
+
+\function{sched\_init}{(void)}
+	 {
+	   This function initializes the scheduler.
+	 }
+
+\function{sched\_clean}{(void)}
+	 {
+	   This function cleans the scheduler.
+	 }
 
   \item {\bf Files}\\
 
@@ -181,7 +462,8 @@ additional bonuses, as far as they respect the following rules:
 
 Bonuses ideas:
 \begin{itemize}
-\item XXX
-\item XXX
+\item Implement a better scheduler. Feel free to implement any other
+algorithm. You can try the multi-level feedback queue explained during
+the lesson
 \end{itemize}
 
