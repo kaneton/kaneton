@@ -64,6 +64,478 @@
 \end{frame}
 
 %
+% multitasking basics
+%
+
+\section{Multitasking basics}
+
+%
+% execution context
+%
+
+\section{Execution context}
+
+% -)
+
+\begin{frame}
+  \frametitle{Definition}
+
+  The \textbf{execution context} or \textbf{processor context} is the
+  image of the processor's state at a given moment.
+
+  Execution context includes:
+
+  \begin{itemize}
+  \item
+    The instruction pointer
+  \item
+    The stack pointer
+  \item
+    The flags
+  \item
+    Processor's running mode (privilege level, interrupt state,
+    etc\ldots)
+  \item
+    The address space
+  \item
+    Other general purpose or dedicated registers
+  \end{itemize}
+
+  \-
+
+  Let's see some real examples of execution contexts. For the moment,
+  we omit FPU context.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of context: MIPS}
+
+  MIPS execution context consists in a few registers:
+
+  \begin{itemize}
+  \item
+    \$pc
+  \item
+    \$hi, \$lo, \$r0-\$r31
+  \item
+    ASid register (in CP0)
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of context: IA-32}
+
+  On IA-32 the processor context includes:
+
+  \begin{itemize}
+  \item
+    EIP
+  \item
+    ESP
+  \item
+    EFLAGS
+  \item
+    The segment selectors (CS, DS, ES, FS, GS and SS)
+  \item
+    CR3 (PDBR)
+  \item
+    General registers: EAX, EBX, ECX, EDX, ESI, EDI, EBP
+  \end{itemize}
+
+  \-
+
+  Why GDTR, IDTR or CR0 are not present? These registers ARE NOT part
+  of the processor context since the kernel is used to configure them
+  correctly. In addition, they cannot be part of the context while
+  they are privileged registers not addressable by user.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of context: SPARC}
+
+  SPARC is an example of original context because of the register
+  window technique:
+
+  \begin{itemize}
+  \item
+    PC
+  \item
+    PSR (contains flags)
+  \item
+    G0-G7, Y
+  \item
+    I0-I7, L0-L7 \& O0-O7 of \emph{all windows used by the current thread}
+  \end{itemize}
+
+  \-
+
+  Context switching on such microprocessors becomes more difficult.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Context saving \& restoring}
+
+  Context saving is the action of creating in memory an image of the
+  CPU context. Context restoring is the way of taking such image and
+  setting the CPU context according to it.
+
+  \-
+
+  The difficulty in context saving and restoring is to deal with
+  unadressable registers. For example,on IA-32, EIP is not
+  addressable. Getting/setting its value is done using tricky code
+  (call to fake label, manual stacking of new EIP value followed by a
+  RET\ldots)
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Context switching}
+
+  Context switching is a term involving two operations:
+
+  \begin{itemize}
+  \item
+    Saving the current context
+  \item
+    Restoring another context
+  \end{itemize}
+
+  \-
+
+  Context switching is the main operation in the kernel's
+  scheduler. This part of the code is critical for performances.
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Context switching - direct method}
+
+  The simplest way to switch context is to store the current context
+  in a dedicated structure instanciated for each thread and to restore
+  the context from such structure.
+
+  \begin{verbatim}
+t_context    thread_A, thread_B;
+
+thread_A.r0 <- r0
+thread_A.r1 <- r1
+...
+thread_A.r15 <- r15
+...
+r0 <- thread_B.r0
+r1 <- thread_B.r1
+...
+r15 <- thread_B.r15
+  \end{verbatim}
+
+  \begin{itemize}
+  \item[+]
+    Space efficient
+  \item[-]
+    Variable addresses computation: cost time and registers
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Context switching - stack method}
+
+  Another way is to use the stack. Context to save is pushed onto the
+  stack, then the stack is switched to the new elected thread's stack,
+  which contains the previously saved context.
+
+  \begin{verbatim}
+push r0
+push r1
+...
+push r15
+sp <- thread_A.sp
+pop r15
+...
+pop r1
+pop r0
+  \end{verbatim}
+
+  \begin{itemize}
+  \item[+]
+    Time efficient, no computation, no useless memory accesses
+  \item[-]
+    Requires one supervisor stack per thread (because of stack
+    switches when privilege level changes)
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Context switching - resuming execution}
+
+  In the two previous examples, we omitted to talk about the program
+  counter. We saved/restored all registers, except the PC, as it needs
+  special code to be handled. Let's imagine the naive solution:
+
+  \begin{verbatim}
+    push pc
+    ...
+    sp <- new_stack
+    ...
+    pop pc
+  \end{verbatim}
+
+  This code does not work. The stacked address for PC is the
+  instruction following the \verb|push pc|. Resuming at this address
+  is incorrect. One simple and efficient solution is to store the
+  address of the PC where to resume execution.
+
+  \begin{verbatim}
+    push label_resume
+    ...
+    sp <- new_stack
+    ...
+    pop pc
+label_resume:
+  \end{verbatim}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Exercise: simple stack-based context switching on
+  ARM7TDMI}
+
+  In this example, you will write some code switching context on an
+  ARM7TDMI. The exercise is simplified as possible.
+
+  \begin{itemize}
+  \item
+    General purpose registers are r0 to r12, plus r14
+  \item
+    r15 is the PC
+  \item
+    r13 is the SP
+  \item
+    Flags will be omitted to simplify the exercise\ldots
+  \item
+    The function \emph{sched\_next} takes in r0 the address of the
+    current stack and returns in r0 the pointer to the stack of the
+    newly elected thread
+  \end{itemize}
+
+  XXX assembleur
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Exercise: correction}
+
+  XXX
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Hardware context switching on IA-32}
+
+  IA-32 provides facilities to switch execution contexts. TSS are
+  structures containing all the processor's registers.
+
+  XXX decrire meca exact
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Hardware vs software context switching}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{FPU/SIMD context}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Naive FPU context switching}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Better solution\ldots}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Optimal FPU context switching}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Multiprocessor case}
+\end{frame}
+
+%
+% scheduling
+%
+
+\section{Scheduling}
+
+% -)
+
+\begin{frame}
+  \frametitle{Definition}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{History}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Preemptive vs collaborative execution}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Thread state automaton}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Algorithm: non-preemptive First-In First-Out}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Algorithm: Round Robin}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Execution priority}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Algorithm: Round Robin with fixed priorities and aging}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Dynamic priorization}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Algorithm: Multilevel Feedback Queue}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Real-time scheduling}
+\end{frame}
+
+%
+% task management
+%
+
+\section{Task management}
+
+% -)
+
+\begin{frame}
+  \frametitle{Tasks in the kernel}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Process Control Block (PCB)}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of PCB: XXX}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Address space mapping}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of typical address space: Linux}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Task lifecycle}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of primitives: Windows NT}
+\end{frame}
+
+%
+% multithreading
+%
+
+\section{Multithreading}
+
+%
+% multiprocessor systems
+%
+
+\section{Multiprocessor systems}
+
+%
 % bibliography
 %
 
