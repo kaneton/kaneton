@@ -36,6 +36,24 @@
 %                {sample}
 %		{figures/sample}
 
+% context switching
+
+\pgfdeclareimage[interpolate=true,width=300pt,height=71pt]
+                {context-op}
+		{figures/context-op}
+
+% fpu context switching
+
+\pgfdeclareimage[interpolate=true,width=300pt,height=65pt]
+                {fpu-switch-naive}
+		{figures/fpu-switch-naive}
+\pgfdeclareimage[interpolate=true,width=300pt,height=65pt]
+                {fpu-switch-optimal}
+		{figures/fpu-switch-optimal}
+\pgfdeclareimage[interpolate=true,width=300pt,height=125pt]
+                {fpu-switch-mp}
+		{figures/fpu-switch-mp}
+
 %
 % document
 %
@@ -68,6 +86,8 @@
 %
 
 \section{Multitasking basics}
+
+% XXX
 
 %
 % execution context
@@ -220,6 +240,10 @@
   Context switching is the main operation in the kernel's
   scheduler. This part of the code is critical for performances.
 
+  \begin{center}
+   \pgfuseimage{context-op}
+  \end{center}
+
 \end{frame}
 
 % -)
@@ -371,36 +395,94 @@ label_resume:
 
 \begin{frame}
   \frametitle{Hardware vs software context switching}
+
+  XXX
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{FPU/SIMD context}
+
+  On microprocessors with FPU, the registers used for floating
+  operations are not the general registers. The FPU registers are
+  often larger and addressable only by a restricted set of
+  instructions.
+
+  \-
+
+  Other specific-use registers can be found. For example, on newer
+  Intel's CPU, registers for SSE/SSE2/SSE3 instruction set can be
+  found. These registers are very large (128 bits) and can be used
+  only by SSE instructions (SIMD).
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Naive FPU context switching}
+
+  The naive solution is to switch FPU/SIMD context at the same time as
+  normal context.
+
+  \begin{center}
+   \pgfuseimage{fpu-switch-naive}
+  \end{center}
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Better solution\ldots}
+
+  As only a few applications use FPU or SIMD functionalities, it can
+  be useless to switch context fully for each tasks and FPU/SIMD
+  context are very huge (quadruple or more times larger).
+
+  \-
+
+  Microprocessors often propose better solutions. Each time an
+  FPU/SIMD instruction is executed while a precise bit into a register
+  is set, an exception is thrown. When this exception occurs, the
+  kernel saves the current FPU/SIMD context for the last thread that
+  used these registers, restores the FPU/SIMD registers for the
+  current thread and clears the bit.
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Optimal FPU context switching}
+
+  \begin{center}
+   \pgfuseimage{fpu-switch-optimal}
+  \end{center}
+
+  The FPU context is switched only when necessary. With tasks not
+  using FPU registers, the FPU context lays in the CPU. But this is
+  not a security hole since these registers cannot be accessed by
+  non-FPU instructions and FPU instructions force context switch.
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Multiprocessor case}
+
+  The optimal solution does not work on multiprocessor systems.
+
+  \begin{center}
+   \pgfuseimage{fpu-switch-mp}
+  \end{center}
+
+  The FPU context of the thread that just migrated to another
+  processor is still in the old processor.
+
 \end{frame}
 
 %
