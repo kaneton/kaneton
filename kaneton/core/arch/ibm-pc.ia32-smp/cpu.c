@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-smp/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:01 2006]
- * updated       matthieu bucchianeri   [wed mar 21 23:11:27 2007]
+ * updated       matthieu bucchianeri   [wed mar 21 23:32:59 2007]
  */
 
 /*
@@ -107,14 +107,30 @@ void			ia32_cpu_init_ap(void)
 
   ipi_acknowledge();
 
+  /* as/region_init OK */
   tlb_flush();
 
+  /* segment_init OK */
   gdt_build_selector(PMODE_GDT_CORE_CS, ia32_prvl_supervisor, &kcs);
   gdt_build_selector(PMODE_GDT_CORE_DS, ia32_prvl_supervisor, &kds);
   pmode_set_segment_registers(kcs, kds);
 
+  /* thread_init */
 /*  if (tss_init(thread->machdep.tss) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);*/
+
+  // + init ESP
+
+  /* io_init OK */
+  asm volatile("pushf\n\t"
+	       "andl $0xFFFFCFFF, %ss:(%esp)\n\t"
+	       "popf");
+
+  /* event_init OK */
+  STI();
+
+  /* task_init */
+  // XXX
 
   cpu_ok++;
 

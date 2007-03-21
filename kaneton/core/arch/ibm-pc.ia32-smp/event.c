@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-smp/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [wed mar 21 23:09:37 2007]
+ * updated       matthieu bucchianeri   [wed mar 21 23:39:16 2007]
  */
 
 /*
@@ -396,7 +396,7 @@ typedef struct
 void			ia32_gp_handler(t_id			id,
 					t_uint32		error_code)
 {
-  printf("general protection fault @ %p\n", context->eip);
+  printf("CPU%u: general protection fault @ %p\n", apic_id(), context->eip);
 
   while (1)
     ;
@@ -431,7 +431,7 @@ void                    ia32_pf_handler(t_id			id,
 
   SCR2(addr);
 
-  printf("CPU%u: page fault !\n"
+  printf("CPU%u: page fault\n"
          "  %p trying to %s at the address 0x%x requires %s\n",
 	 apic_id(),
 	 context->eip,

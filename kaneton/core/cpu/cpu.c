@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/cpu/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       matthieu bucchianeri   [wed mar 21 22:56:34 2007]
+ * updated       matthieu bucchianeri   [wed mar 21 23:57:13 2007]
  */
 
 /*
@@ -399,6 +399,19 @@ void cpu2(void)
     ;
 }
 
+void cpu3(void)
+{
+  printf("This is cpu3\n");
+  while (1)
+    ;
+}
+
+void cpu4(void)
+{
+  printf("This is cpu4\n");
+  while (1)
+    ;
+}
 i_thread	mk_thread(i_task tsk,
 			  void *func)
 {
@@ -441,60 +454,52 @@ i_thread	mk_thread(i_task tsk,
 
 void smp_test(void)
 {
-  i_task	tsk1, tsk2;
+  i_task	tsk;
   i_as		as;
+  int		i;
 
   // XXX to move
   if (event_reserve(48, EVENT_FUNCTION, EVENT_HANDLER(sched_switch))
       != ERROR_NONE)
     return ERROR_UNKNOWN;
 
-
-  if (task_reserve(TASK_CLASS_PROGRAM,
-		   TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE,
-		   &tsk1) != ERROR_NONE)
+  for (i = 0; i < init->ncpus; i++)
     {
-      cons_msg('!', "cannot reserve task\n");
-      while (1);
+      if (task_reserve(TASK_CLASS_PROGRAM,
+		       TASK_BEHAV_INTERACTIVE,
+		       TASK_PRIOR_INTERACTIVE,
+		       &tsk) != ERROR_NONE)
+	{
+	  cons_msg('!', "cannot reserve task\n");
+	  while (1);
+	}
+
+      if (as_reserve(tsk, &as) != ERROR_NONE)
+	{
+	  cons_msg('!', "cannot reserve as\n");
+	  while (1);
+	}
+
+      if (i == 0)
+	mk_thread(tsk, cpu1);
+      if (i == 1)
+	mk_thread(tsk, cpu2);
+      if (i == 2)
+	mk_thread(tsk, cpu3);
+      if (i == 3)
+	mk_thread(tsk, cpu4);
+
+      if (task_state(tsk, SCHED_STATE_RUN) != ERROR_NONE)
+	{
+	  cons_msg('!', "cannot start !\n");
+
+	  while (1);
+	}
     }
 
-  if (as_reserve(tsk1, &as) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot reserve as\n");
-      while (1);
-    }
-
-  if (task_reserve(TASK_CLASS_PROGRAM,
-		   TASK_BEHAV_INTERACTIVE,
-		   TASK_PRIOR_INTERACTIVE,
-		   &tsk2) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot reserve task\n");
-      while (1);
-    }
-
-  if (as_reserve(tsk2, &as) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot reserve as\n");
-      while (1);
-    }
-
-  mk_thread(tsk1, cpu1);
-  mk_thread(tsk2, cpu2);
-
-  if (task_state(tsk1, SCHED_STATE_RUN) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot start !\n");
-
-      while (1);
-    }
-  if (task_state(tsk2, SCHED_STATE_RUN) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot start !\n");
-
-      while (1);
-    }
+  CLI();
 
   ipi_send_vector(48, ipi_all_but_me, 1);
+
+  STI();
 }
