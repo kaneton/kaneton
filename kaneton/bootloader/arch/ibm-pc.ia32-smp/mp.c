@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/mp.c
  *
  * created       matthieu bucchianeri   [tue jul 25 11:21:34 2006]
- * updated       matthieu bucchianeri   [fri mar 16 22:24:15 2007]
+ * updated       matthieu bucchianeri   [wed mar 21 22:47:49 2007]
  */
 
 /*
@@ -80,7 +80,13 @@ void			bootloader_mp_init(void)
    * 1)
    */
 
-  // XXX check cpuid
+  if (!cpuid_has_apic())
+    {
+      bootloader_cons_msg('!', "non-MP compliant system\n");
+
+      bootloader_add_cpu(0);
+      return;
+    }
 
   /*
    * 2)
@@ -136,14 +142,14 @@ void			bootloader_mp_init(void)
   ipi_send_startup();
   bootloader_apic_wait(200);
 
-  bootloader_apic_wait(100000);
-
   /*
    * 9)
    */
 
   bootloader_cons_msg('+', " multiprocessor ok, %d processor(s)\n",
 		      init->ncpus);
+
+  bootloader_apic_wait(10000000);
 }
 
 /*

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/interrupt/interrupt.c
  *
  * created       renaud voltz   [thu feb 23 10:49:43 2006]
- * updated       matthieu bucchianeri   [fri mar 16 22:15:47 2007]
+ * updated       matthieu bucchianeri   [wed mar 21 22:54:16 2007]
  */
 
 /*

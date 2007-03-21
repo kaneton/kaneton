@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/cpu/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 17:59:35 2006]
- * updated       matthieu bucchianeri   [fri mar 16 23:10:47 2007]
+ * updated       matthieu bucchianeri   [wed mar 21 22:56:34 2007]
  */
 
 /*
@@ -216,7 +216,7 @@ t_error			cpu_migrate(i_task			tskid,
   CPU_ENTER(cpu);
 
   if (task_get(tskid, &o) != ERROR_NONE)
-	CPU_LEAVE(cpu, ERROR_UNKNOWN);
+    CPU_LEAVE(cpu, ERROR_UNKNOWN);
 
   /*
    * 1)
@@ -239,7 +239,7 @@ t_error			cpu_migrate(i_task			tskid,
    */
 
   if (machdep_call(cpu, cpu_migrate, tskid, destination) != ERROR_NONE)
-	CPU_LEAVE(cpu, ERROR_UNKNOWN);
+    CPU_LEAVE(cpu, ERROR_UNKNOWN);
 
   /*
    * 4)
@@ -496,5 +496,5 @@ void smp_test(void)
       while (1);
     }
 
-  ipi_send_vector(48, ipi_cpu, 1);
+  ipi_send_vector(48, ipi_all_but_me, 1);
 }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-smp/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:01 2006]
- * updated       matthieu bucchianeri   [fri mar 16 23:06:32 2007]
+ * updated       matthieu bucchianeri   [wed mar 21 23:11:27 2007]
  */
 
 /*
@@ -59,7 +59,7 @@ t_error			ia32_cpu_current(i_cpu*			cpuid)
 {
   CPU_ENTER(cpu);
 
-  *cpuid = init->bsp;
+  *cpuid = apic_id();
 
   CPU_LEAVE(cpu, ERROR_NONE);
 }
@@ -95,8 +95,6 @@ t_error			ia32_cpu_init(void)
 
   // XXX send TLB flush
 
-  printf("back to BSP\n");
-
   return (ERROR_NONE);
 }
 
@@ -123,7 +121,6 @@ void			ia32_cpu_init_ap(void)
   SPIN_UNLOCK(ia32_cpu_init_ap_lock);
 
 //  HLT(); XXX why not working ?
-  printf("Cpu %u ok\n", apic_id());
   while(1)
     ;
 }

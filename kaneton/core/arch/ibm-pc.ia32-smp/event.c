@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-smp/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [fri mar 16 22:54:08 2007]
+ * updated       matthieu bucchianeri   [wed mar 21 23:09:37 2007]
  */
 
 /*
@@ -425,60 +425,22 @@ void                    ia32_pf_handler(t_id			id,
 {
   t_uint32              addr;
 
-  t_gdb_context*	ctx;
-  t_uint8*		ptr;
-
   /*
    * 1)
    */
 
   SCR2(addr);
-  printf("#PF @ %p for %p\n", context->eip, addr);
 
-  while (1)
-    ;
-
-  asm volatile("movl (%%ebp), %%eax\n\t"
-	       "movl (%%eax), %%ebx\n\t"
-	       "movl %%ebx, %0"
-	       : "=g" (ptr)
-	       :
-	       : "%eax", "%ebx");
-
-  ptr -= 56;
-  ctx = (t_gdb_context*)ptr;
-
-  SCR2(addr);
-
-  printf("error: page fault !\n"
+  printf("CPU%u: page fault !\n"
          "  %p trying to %s at the address 0x%x requires %s\n",
-	 ctx->eip,
+	 apic_id(),
+	 context->eip,
          (error_code & 2) ? "write" : "read",
          addr,
          (error_code & 1) ? "a lower DPL" : "the page to be present");
 
-  t_ia32_directory pd;
-  t_ia32_table pt;
-  t_ia32_page pg;
-
-  pd = ENTRY_ADDR(PD_MIRROR, PD_MIRROR);
-
-  if (pd_get_table(&pd, PDE_ENTRY(addr), &pt) != ERROR_NONE)
-    printf("no pde\n");
-  else
-    {
-      printf("pde: %p\n", pt.entries);
-      pt.entries = ENTRY_ADDR(PD_MIRROR, PDE_ENTRY(addr));
-
-      if (pt_get_page(&pt, PTE_ENTRY(addr), &pg) != ERROR_NONE)
-	printf("no pte\n");
-      else
-	{
-	  printf("pte: %p\n", pg.addr);
-	}
-    }
-
-  while (1);
+  while (1)
+    ;
 }
 
 /*								[cut] /k2 */

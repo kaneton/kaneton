@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [tue feb  6 22:49:35 2007]
+ * updated       matthieu bucchianeri   [wed mar 21 23:14:59 2007]
  */
 
 /*
@@ -352,6 +352,7 @@ t_error			sched_switch(void)
   t_prior		elected_prio = (t_prior)-1;
   t_timeslice		elected_timeslice = (t_timeslice)-1;
   int			nonempty = 0;
+  int			second_round = 0;
   i_set			list;
   i_cpu			cpuid;
   t_cpu_sched*		ent;
@@ -376,7 +377,7 @@ t_error			sched_switch(void)
    * 2)
    */
 
-  if (ent->timeslice == 0)
+  if (ent->timeslice == 0 && ent->current != -1)
     {
       entity.thread = ent->current;
       entity.timeslice = COMPUTE_TIMESLICE(ent->current);
@@ -443,9 +444,14 @@ t_error			sched_switch(void)
 
   if (!nonempty)
     {
+      if (second_round)
+	{
+	  SCHED_LEAVE(sched, ERROR_NONE);
+	}
       list = ent->active;
       ent->active = ent->expired;
       ent->expired = list;
+      second_round = 1;
 
       goto try;
     }
@@ -497,6 +503,7 @@ t_error			sched_switch(void)
   if (cpu_stats(cpuid, sched->quantum) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
+//  ipi_send_vector(48, ipi_all_but_me, 1);
 
   SCHED_LEAVE(sched, ERROR_NONE);
 }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/misc/cpuid.c
  *
  * created       matthieu bucchianeri   [tue jul 25 23:09:24 2006]
- * updated       matthieu bucchianeri   [wed jul 26 15:29:24 2006]
+ * updated       matthieu bucchianeri   [wed mar 21 22:45:19 2007]
  */
 
 
@@ -160,4 +160,20 @@ t_uint32		cpuid_has_fxstate(void)
   CPUID(0x1, eax, ebx, ecx, edx);
 
   return !!(edx & (1 << 24));
+}
+
+/*
+ * tell if the CPU embed a local APIC
+ */
+
+t_uint32		cpuid_has_apic(void)
+{
+  t_uint32		eax;
+  t_uint32		ebx;
+  t_uint32		ecx;
+  t_uint32		edx;
+
+  CPUID(0x1, eax, ebx, ecx, edx);
+
+  return !!(edx & (1 << 9));
 }

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/apic.c
  *
  * created       matthieu bucchianeri   [tue jul 25 11:22:27 2006]
- * updated       matthieu bucchianeri   [tue mar 13 11:00:39 2007]
+ * updated       matthieu bucchianeri   [wed mar 21 22:23:46 2007]
  */
 
 /*
@@ -52,14 +52,14 @@ static void		bootloader_apic_calibrate_tick(void)
 	       "push	%edi				\n"
 	       );
 
-  ticks++;
+  ticks += 5;
 
   pic_acknowledge(0);
 
   asm volatile("pop	%edi				\n"
 	       "pop	%esi				\n"
 	       "pop	%edx				\n"
-	       "pop	%ecx				\n"
+	       "pop	%ecx		  		\n"
 	       "pop	%ebx				\n"
 	       "pop	%eax				\n"
 	       );
@@ -109,28 +109,29 @@ void			bootloader_apic_calibrate_timer(void)
 
   idt_add_gate(NULL, 32, gate);
 
-  pit_init(1000);
+  pit_init(200);
 
   pic_enable_irq(0);
 
   ticks = 0;
   t1 = apic_read(APIC_REG_COUNT);
-  while (ticks < 1000)
+
+  while (ticks < 100)
     ;
 
-  t2 = apic_read(APIC_REG_COUNT);
-
   pic_disable_irq(0);
+
+  t2 = apic_read(APIC_REG_COUNT);
 
   /*
    * 4)
    */
 
-  timeref = (t1 - t2) / ticks;
+  timeref = (t1 - t2) / (ticks * 1000);
 }
 
 /*
- * this function waits for the given amount of nanoseconds.
+ * this function waits for the given amount of microseconds.
  *
  * steps:
  *
@@ -147,13 +148,13 @@ void			bootloader_apic_wait(t_uint32			delay)
    * 1)
    */
 
-  total = (delay * timeref);
+  total = (delay * timeref) / 128;
 
   /*
    * 2)
    */
 
-  apic_write(APIC_REG_DIV, 11);
+  apic_write(APIC_REG_DIV, 10);
   apic_write(APIC_REG_TIMER, (t_uint32)total);
 
   /*
