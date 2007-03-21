@@ -44,7 +44,7 @@
 \pgfdeclareimage[interpolate=true,width=260pt,height=100pt]
                 {context-pc-switch-single}
 		{figures/context-pc-switch-single}
-\pgfdeclareimage[interpolate=true,width=260pt,height=86pt]
+\pgfdeclareimage[interpolate=true,width=260pt,height=100pt]
                 {context-pc-switch-multiple}
 		{figures/context-pc-switch-multiple}
 
@@ -59,6 +59,13 @@
 \pgfdeclareimage[interpolate=true,width=300pt,height=125pt]
                 {fpu-switch-mp}
 		{figures/fpu-switch-mp}
+
+% tss
+
+\pgfdeclareimage[interpolate=true,width=125pt,height=156pt]
+                {tss}
+		{figures/tss}
+
 
 %
 % document
@@ -412,23 +419,67 @@ label_resume:
   \item
     r13 is the SP
   \item
-    Flags will be omitted to simplify the exercise\ldots
+    Flags are in CPSR (renamed SPSR after an interrupt)
   \item
     The function \emph{sched\_next} takes in r0 the address of the
     current stack and returns in r0 the pointer to the stack of the
     newly elected thread
   \end{itemize}
 
-  XXX assembleur
+  \-
+
+  Following assembly instructions will be helpful:
+
+  \begin{itemize}
+  \item
+    \textbf{stmfd} sp!, \{register list\}
+  \item
+    \textbf{ldmfd} sp!, \{register list\}
+  \item
+    \textbf{mrs} rd, spsr
+  \item
+    \textbf{msr} spsr, rd
+  \item
+    \textbf{mov} rd, $<$operand$>$
+  \item
+    \textbf{bl} label
+  \end{itemize}
 
 \end{frame}
 
 % -)
 
-\begin{frame}
+\begin{frame}[containsverbatim]
   \frametitle{Exercise: correction}
 
-  XXX
+  \begin{verbatim}
+    ; save general registers
+    stmfd   sp!, {r0-r12,r14}
+    ; save flags
+    mrs     r0, spsr
+    stmfd   sp!, {r0}
+    ; save resuming pc
+    mov     r0, resume_pc
+    stmfd   sp!, {r0}
+
+    ; context fully saved onto the stack
+
+    ; call scheduler
+    mov     r0, sp
+    bl      sched_next
+    mov	    sp, r0
+
+    ; the stack is now containing the context to restore
+
+    ; restore pc
+    ldmfd   sp!, pc
+resume_pc:
+    ; restore flags
+    ldmfd   sp!, {r0}
+    msr     spsr, r0
+    ; restore general registers
+    ldmfd   sp!, {r0-r12,r14}
+  \end{verbatim}
 
 \end{frame}
 
@@ -440,7 +491,39 @@ label_resume:
   IA-32 provides facilities to switch execution contexts. TSS are
   structures containing all the processor's registers.
 
-  XXX decrire meca exact
+  \begin{center}
+   \pgfuseimage{tss}
+  \end{center}
+
+  TSS are filled automatically by the processor on context saving and
+  read by the processor on context restoring.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Hardware context switching on IA-32}
+
+  \begin{itemize}
+  \item
+    A TSS can be activated on interrupt or with a special instruction
+  \item
+    The base of the current TSS is stored into the Task Register (TR)
+  \end{itemize}
+
+  \-
+
+  When a TSS is activated:
+
+  \begin{itemize}
+  \item
+    The state of the processor is saved into the TSS pointed by TR
+  \item
+    The content of the activated TSS is pushed into the microprocessor
+  \item
+    The TR is updated with the base of the new TSS
+  \end{itemize}
 
 \end{frame}
 
@@ -449,7 +532,16 @@ label_resume:
 \begin{frame}
   \frametitle{Hardware vs software context switching}
 
-  XXX
+  Hardware context switching is rarely used since:
+
+  \begin{itemize}
+  \item
+    It introduces non-portable designs
+  \item
+    It is not customizable
+  \item
+    Performances are often less efficient
+  \end{itemize}
 
 \end{frame}
 
