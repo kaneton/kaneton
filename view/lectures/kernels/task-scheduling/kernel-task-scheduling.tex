@@ -41,6 +41,12 @@
 \pgfdeclareimage[interpolate=true,width=300pt,height=71pt]
                 {context-op}
 		{figures/context-op}
+\pgfdeclareimage[interpolate=true,width=260pt,height=100pt]
+                {context-pc-switch-single}
+		{figures/context-pc-switch-single}
+\pgfdeclareimage[interpolate=true,width=260pt,height=86pt]
+                {context-pc-switch-multiple}
+		{figures/context-pc-switch-multiple}
 
 % fpu context switching
 
@@ -312,6 +318,42 @@ pop r0
 % -)
 
 \begin{frame}[containsverbatim]
+  \frametitle{Context switching - the program counter (1)}
+
+  Does the PC needs to be saved ?
+
+  \begin{center}
+   \pgfuseimage{context-pc-switch-single}
+  \end{center}
+
+  In this situation, there is only one point in the whole code where
+  the context is switched between two threads. The PC of this point is
+  common. No need to save the PC since it is saved on the caller
+  thread's stack.
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Context switching - the program counter (2)}
+
+  Does the PC needs to be saved ?
+
+  \begin{center}
+   \pgfuseimage{context-pc-switch-multiple}
+  \end{center}
+
+  In this situation, there are multiple switch points. Each one could
+  have its specific code. The PC needs to be saved. The PC of the
+  thread is on the stack, but we need to remember which context switch
+  point applies to us.
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
   \frametitle{Context switching - resuming execution}
 
   In the two previous examples, we omitted to talk about the program
@@ -339,6 +381,17 @@ pop r0
     pop pc
 label_resume:
   \end{verbatim}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Context switching - autosaved registers}
+
+  Sometimes, the microprocessor automatically saves some registers. In
+  particular when an interrupt or trap occurs, the program counter
+  needs to be saved by the CPU itself.
 
 \end{frame}
 
