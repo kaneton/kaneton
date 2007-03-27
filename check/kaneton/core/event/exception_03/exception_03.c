@@ -18,16 +18,14 @@ static volatile int	thrown = 0;
 static void	check_int3(t_id	id)
 {
   printf(" + Exception thrown\n");
-  if (id != 3)
-    printf(" x Bad event identifier passed to handler\n");
-  thrown = 1;
+  thrown++;
 }
 
 /*
  * reserve event onto int3 and throw an int3.
  */
 
-void		check_event_exception_02(void)
+void		check_event_exception_03(void)
 {
   TEST_ENTER();
 
@@ -38,8 +36,21 @@ void		check_event_exception_02(void)
 
   printf(" - Throwing exception\n");
   asm volatile("int $3");
-  ASSERT(thrown == 1, " x Exception not caught\n");
   printf(" - Execution resumed\n");
+  printf(" - Throwing exception\n");
+  asm volatile("int $3");
+  printf(" - Execution resumed\n");
+  printf(" - Throwing exception\n");
+  asm volatile("int $3");
+  printf(" - Execution resumed\n");
+  printf(" - Throwing exception\n");
+  asm volatile("int $3");
+  printf(" - Execution resumed\n");
+  printf(" - Throwing exception\n");
+  asm volatile("int $3");
+  printf(" - Execution resumed\n");
+
+  ASSERT(thrown == 5, " x One or more exception was not caught\n");
 
   TEST_LEAVE();
 }
