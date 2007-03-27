@@ -141,6 +141,10 @@ void cpu1(void);
 
 void cpu2(void);
 
+void cpu3(void);
+
+void cpu4(void);
+
 i_thread	mk_thread(i_task tsk,
 			  void *func);
 

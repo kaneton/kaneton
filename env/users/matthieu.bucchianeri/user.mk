@@ -24,4 +24,4 @@
 _CFLAGS_	+=	-g
 
 # disable checks
-_CHECK_LO_	:=
+#_CHECK_LO_	:=

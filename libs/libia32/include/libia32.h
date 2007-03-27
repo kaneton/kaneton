@@ -366,6 +366,8 @@ t_uint32		cpuid_has_sse3(void);
 
 t_uint32		cpuid_has_fxstate(void);
 
+t_uint32		cpuid_has_apic(void);
+
 
 /*
  * ../misc/extensions.c

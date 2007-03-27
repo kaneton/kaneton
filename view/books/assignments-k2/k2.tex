@@ -24,7 +24,7 @@ Duration: & 2 weeks \\
 Directory name: & kaneton/ \\
 In charge: & Matthieu Bucchianeri \& Renaud Voltz\\
 Mailing-list: & kaneton-students@googlegroups.com \\
-Languages: & C \\
+Languages: & C, assembly \\
 Students per group: & 2 (same groups as for K1) \\
 \end{tabular}
 
@@ -79,11 +79,11 @@ Remember that you can add code even if there is no FIXME.
     There are two possibilities when redirecting events:
     \begin{itemize}
       \item
-	Callbacks. Callbacks are function that can be registered for a
-	given event and called when the event occurs.
+	Callbacks. Callbacks are functions that can be registered for
+	a given event and called when the event occurs.
       \item
 	Messages. IPC can be thrown on events. \textbf{At this point
-	of the project, these kind of hooks must not be implemented}.
+	of the project, these kind of hooks must not be implemented}.\\
     \end{itemize}
 
   \item {\bf Assignments}\\
@@ -97,12 +97,12 @@ Remember that you can add code even if there is no FIXME.
     (\emph{libia32}).
 
     For example, the functions used to fill the interrupt vector table
-    (called IDT on IA-32) or to initialize the PIC will be placed in
+    (called IDT on IA-32) or to initialize the PIC (8259A) will be placed in
     libia32.
 
     When receiving events, your kernel \textbf{must} save and restore
     the execution context, for the moment only the processor's
-    registers need to be saved (address space switch is for K3).
+    registers need to be saved (address space switch is for K3).\\
 
   \item {\bf Interface}\\
 
@@ -146,7 +146,7 @@ Remember that you can add code even if there is no FIXME.
 	 {
 	   This function releases an event handler.
 	 }
-
+\newpage
 \function{event\_get}{(i\_event \argument{id},
                        o\_event** \argument{o})}
 	 {
@@ -195,19 +195,22 @@ Remember that you can add code even if there is no FIXME.
     performed can be either a callback or a message (\textbf{only
     callbacks must be supported for K2}).
 
+    The component required to measure time is called the PIT (8254) on
+    IA-32.\\
+
   \item {\bf Assignments}\\
 
     Your work is to develop the whole timer manager.
 
-    The component required to measure time is called the PIT on
-    IA-32. Code used to program the PIT must be placed in the libia32.
+    Code used to program the PIT must be placed in the libia32.
 
     \textbf{The accuracy of your time manager will be tested. An error
     of more than a ten milliseconds will lead our tests to fail.}
 
     The machine-dependent part of the manager will only consist in
     initializing the PIT and then counting ticks. The independent code
-    of the manager will offer the higher level functionnalities.
+    of the manager will offer the higher level functionnalities listed
+    below.\\
 
   \item {\bf Interface}\\
 
