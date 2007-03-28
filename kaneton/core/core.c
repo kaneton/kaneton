@@ -130,7 +130,7 @@ void			kaneton(t_init*				bootloader)
    * XXX
    */
 
-  check_event_softint_01();
+  check_event_context_01();
 
 #if defined(CONF_ENABLE_CHECK)
   cons_msg('+', "running manual tests\n");
