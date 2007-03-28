@@ -538,7 +538,7 @@ identifiers while the set of regions holds region objects.
 
 \function{as\_vaddr}{(i\_as \argument{id},
                       t\_paddr \argument{physical},
-                      t\_vaddr \argument{virtual})}
+                      t\_vaddr* \argument{virtual})}
 	 {
 	   This function translates a physical address into its virtual
 	   address.
@@ -546,7 +546,7 @@ identifiers while the set of regions holds region objects.
 
 \function{as\_paddr}{(i\_as \argument{id},
                       t\_vaddr \argument{virtual},
-                      t\_paddr \argument{physical})}
+                      t\_paddr* \argument{physical})}
 	 {
 	   This function translates a virtual address into its physical
 	   address.
