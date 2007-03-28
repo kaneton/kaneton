@@ -29,6 +29,7 @@
  *	../idt_01/idt_01.c
  *	../idtr_01/idtr_01.c
  *	../int_state_01/int_state_01.c
+ *	../irq_01/irq_01.c
  *	../softint_01/softint_01.c
  */
 
@@ -102,6 +103,13 @@ void		check_event_idtr_01(void);
  */
 
 void		check_event_int_state_01(void);
+
+
+/*
+ * ../irq_01/irq_01.c
+ */
+
+void		check_event_irq_01(void);
 
 
 /*
