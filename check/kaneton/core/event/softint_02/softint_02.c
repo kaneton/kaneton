@@ -64,7 +64,7 @@ void		check_event_softint_02(void)
   asm volatile("int $0x42");
   asm volatile("int $0x43");
   asm volatile("int $0x44");
-  ASSERT(thrown == 3, " x Softint not caught\n");
+  ASSERT(thrown == 3, " x One or more softint were not caught\n");
   printf(" - Execution resumed\n");
 
   TEST_LEAVE();

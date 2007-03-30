@@ -9,6 +9,7 @@ exception_errorcode_03
 softint_01
 softint_02
 irq_01
+irq_02
 pic_01
 pic_02
 pic_03

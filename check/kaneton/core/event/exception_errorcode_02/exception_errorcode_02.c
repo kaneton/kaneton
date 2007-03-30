@@ -13,7 +13,7 @@
 #include <kaneton.h>
 #include "../common/common.h"
 
-static volatile unsigned short	gs = 128;
+static volatile unsigned short	gs = (16 << 3);
 
 static volatile int	thrown = 0;
 
@@ -21,7 +21,7 @@ static void	check_np(t_id	id, t_uint32 error_code)
 {
   printf(" + Exception thrown\n");
   thrown = 1;
-  printf(" + Checking error code");
+  printf(" + Checking error code\n");
   if (!(error_code & gs))
     printf(" x Bad error code\n");
   gs = 0x10;
@@ -35,13 +35,13 @@ void		check_event_exception_errorcode_02(void)
 {
   TEST_ENTER();
 
-  ASSERT(event_reserve(11,
+  ASSERT(event_reserve(13,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_np)) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   printf(" - Throwing exception\n");
-  asm volatile("mov %%gs, %0"
+  asm volatile("mov %0, %%gs"
 	       :
 	       : "m" (gs));
   ASSERT(thrown == 1, " x Exception not caught\n");

@@ -55,8 +55,6 @@ void		check_event_exception_errorcode_03(void)
 
   TEST_ENTER();
 
-  event_release(14);
-
   ASSERT(event_reserve(14,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_pf)) == ERROR_NONE,

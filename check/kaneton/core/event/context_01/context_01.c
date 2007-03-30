@@ -46,7 +46,6 @@ void			check_event_context_01(void)
   static t_check_ctx*	ctx1;
   static t_check_ctx*	ctx2;
   static t_uint32	esp;
-  static t_ia32_segment	seg;
 
   TEST_ENTER();
 
