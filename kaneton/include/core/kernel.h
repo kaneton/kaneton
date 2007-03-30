@@ -44,14 +44,20 @@
  * the term node in reference to the distributed system.
  */
 
+typedef t_id i_machine;
+
 typedef struct
 {
   t_id				machine;
 
-  t_id				node;
-
   // machdep_data(m_kernel);
 }				m_kernel;
+
+typedef struct
+{
+  i_machine			machine;
+  i_task			task;
+}				i_node;
 
 /*
  * the kernel architecture dependent interface
