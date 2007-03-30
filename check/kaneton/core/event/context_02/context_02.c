@@ -15,6 +15,11 @@
 
 typedef struct
 {
+  t_uint32	gs;
+  t_uint32	fs;
+  t_uint32	es;
+  t_uint32	ds;
+  t_uint32	cs;
   t_uint32	ebp;
   t_uint32	edi;
   t_uint32	esi;
@@ -28,6 +33,10 @@ static volatile int	thrown = 0;
 
 static void	check_int3(t_id	id)
 {
+  t_uint16	ds;
+
+  gdt_build_selector(14, ia32_prvl_supervisor, &ds);
+
   thrown = 1;
   asm volatile("	movl $0x10034a10, %eax		\n"
 	       "	movl $0xf5000100, %ebx		\n"
@@ -35,13 +44,22 @@ static void	check_int3(t_id	id)
 	       "	movl $0xffffffff, %edx		\n"
 	       "	movl $0xa5a5a5a5, %esi		\n"
 	       "	movl $0x5a5a5a5a, %edi		");
+
+  asm volatile("	movw %0, %%ax			\n"
+	       "	movw %%ax, %%ds			\n"
+	       "	movw %%ax, %%es			\n"
+	       "	movw %%ax, %%fs			\n"
+	       "	movw %%ax, %%gs			"
+	       :
+	       : "g" (ds)
+	       : "ax");
 }
 
 /*
  * reserve event onto int3 and throw an int3.
  */
 
-void			check_event_context_01(void)
+void			check_event_context_02(void)
 {
   static t_check_ctx*	ctx1;
   static t_check_ctx*	ctx2;
@@ -49,6 +67,14 @@ void			check_event_context_01(void)
   static t_ia32_segment	seg;
 
   TEST_ENTER();
+
+  seg.base = 0;
+  seg.limit = 0xffffffff;
+  seg.privilege = ia32_prvl_supervisor;
+  seg.is_system = 0;
+  seg.type.usr = ia32_type_data;
+  ASSERT(gdt_add_segment(NULL, 14, seg) == ERROR_NONE,
+	 "cannot add gdt segment\n");
 
   ASSERT(event_reserve(3,
 		       EVENT_FUNCTION,
@@ -62,6 +88,11 @@ void			check_event_context_01(void)
 	       "	pushl %%esi		\n"
 	       "	pushl %%edi		\n"
 	       "	pushl %%ebp		\n"
+	       "	pushl %%cs		\n"
+	       "	pushl %%ds		\n"
+	       "	pushl %%es		\n"
+	       "	pushl %%fs		\n"
+	       "	pushl %%gs		\n"
 	       "	movl %%esp, %0		\n"
 	       "	int $3			\n"
 	       "	movl %%esp, %2		\n"
@@ -72,6 +103,11 @@ void			check_event_context_01(void)
 	       "	pushl %%esi		\n"
 	       "	pushl %%edi		\n"
 	       "	pushl %%ebp		\n"
+	       "	pushl %%cs		\n"
+	       "	pushl %%ds		\n"
+	       "	pushl %%es		\n"
+	       "	pushl %%fs		\n"
+	       "	pushl %%gs		\n"
 	       "	movl %%esp, %1		"
 	       : "=m" (ctx1), "=m" (ctx2), "=m" (esp));
 
@@ -94,6 +130,17 @@ void			check_event_context_01(void)
     printf("edi differs\n");
   if (ctx1->ebp != ctx2->ebp)
     printf("ebp differs\n");
+
+  if (ctx1->cs != ctx2->cs)
+    printf("cs differs\n");
+  if (ctx1->ds != ctx2->ds)
+    printf("ds differs\n");
+  if (ctx1->es != ctx2->es)
+    printf("es differs\n");
+  if (ctx1->fs != ctx2->fs)
+    printf("fs differs\n");
+  if (ctx1->gs != ctx2->gs)
+    printf("gs differs\n");
 
   TEST_LEAVE();
 }

@@ -25,9 +25,9 @@ include			../../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TEST_LO			:=		pic_02.lo
+TEST_LO			:=		context_02.lo
 
-TEST_C			:=		pic_02.c
+TEST_C			:=		context_02.c
 
 TEST_O			:=		$(TEST_C:.c=.o)
 
