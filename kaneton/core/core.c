@@ -130,7 +130,7 @@ void			kaneton(t_init*				bootloader)
    * XXX
    */
 
-  check_time_repeat_01();
+  //check_time_repeat_01();
 
 #if defined(CONF_ENABLE_CHECK)
   cons_msg('+', "running manual tests\n");

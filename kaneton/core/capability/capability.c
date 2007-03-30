@@ -198,7 +198,8 @@ t_error			capability_reserve(t_id			object,
    * 1)
    */
 
-  new->node = kernel->node;
+  //new->node = kernel->node;
+  get_kernel_node(&new->node);
   new->object = object;
   new->operations = operations;
   new->check = 0;
@@ -410,7 +411,8 @@ t_error			capability_verify(t_capability*		provided)
   if (capability_get((t_id)provided->check, &current) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
-  if (provided->node != current->capability.node)
+  //if (provided->node != current->capability.node)
+  if (!node_cmp(provided->node, current->capability.node))
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
   if (provided->object != current->capability.object)

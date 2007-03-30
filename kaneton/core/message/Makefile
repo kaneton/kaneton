@@ -28,6 +28,7 @@ include			../../../env/.env.mk
 MESSAGE_LO		:=		message.lo
 
 MESSAGE_C		:=		message.c		\
+					node.c			\
 					$(_MESSAGE_FILE_)
 
 MESSAGE_O		:=		$(MESSAGE_C:.c=.o)

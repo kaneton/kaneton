@@ -29,22 +29,28 @@
  */
 
 /*
- * message object
- */
-
-typedef struct
-{
-  // XXX
-}		o_message;
-
-/*
  * message box
  */
 
+typedef t_id i_msgqueue;
+typedef t_id i_msg;
+typedef t_uint32 t_tag;
+
 typedef struct
 {
-  
-}		t_message_box;
+  void*		data;
+  t_size	sz;
+
+  /* timestamp ? */
+}		o_msg;
+
+typedef struct
+{
+  t_id		id;
+
+  /* Unique msgbox for now */
+  i_msgqueue	queue;
+}		t_local_box;
 
 /*
  * message manager
@@ -53,6 +59,8 @@ typedef struct
 typedef struct
 {
   i_stats	stats;
+
+  i_set		local_boxes;
 
   machdep_data(m_message);
 }		m_message;
@@ -107,6 +115,7 @@ typedef struct
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/message/message.c
+ *	../../core/message/node.c
  */
 
 /*
@@ -116,6 +125,33 @@ typedef struct
 t_error			message_init(void);
 
 t_error			message_clean(void);
+
+t_error			map_buffer(i_as asid, t_vaddr asvaddr, t_size size, void** mapping);
+
+t_error			unmap_buffer(void* ptr, t_size size);
+
+t_error			message_enqueue(i_task sender, i_node dest, t_tag tag, void* data, t_size size);
+
+t_error			message_pop(i_task taskid, t_tag tag, void* data);
+
+t_error			message_register(i_task taskid, t_tag tag);
+
+
+/*
+ * ../../core/message/node.c
+ */
+
+i_machine get_node_machine(i_node node);
+
+i_task get_node_task(i_node node);
+
+void get_node(i_machine m, i_task t, i_node* node);
+
+void get_kernel_node(i_node* node);
+
+t_uint32 is_local_node(i_node node);
+
+t_uint32 node_cmp(i_node a, i_node b);
 
 
 /*

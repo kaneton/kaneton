@@ -42,7 +42,8 @@
 
 typedef struct
 {
-  t_id				node;
+  //t_id				node;
+  i_node			node;
   t_id				object;
   t_operations			operations;
   t_uint64			check;
