@@ -26,6 +26,7 @@
  *	../precision_03/precision_03.c
  *	../release_01/release_01.c
  *	../repeat_01/repeat_01.c
+ *	../repeat_02/repeat_02.c
  *	../simple_reserve_01/simple_reserve_01.c
  */
 
