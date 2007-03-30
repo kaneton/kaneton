@@ -65,7 +65,12 @@ static volatile int	thrown = 0;
 
 static void	check_irq8(t_id	id)
 {
-  thrown = 1;
+  thrown++;
+
+  asm volatile ("movb $0xc, %al\n\t"
+                "outb %al,$0x70\n\t"
+                "outb %al,$0x80\n\t"
+		"inb  $0x71,%al\n\t");
 }
 
 /*
@@ -97,10 +102,10 @@ void		check_event_irq_02(void)
   // reset
   reg_read(RTC_INTR);
 
-  for (i = 0; i < 10000000; i++)
+  for (i = 0; i < 100000000; i++)
     asm volatile("nop");
 
-  ASSERT(thrown == 1, " x IRQ not caught\n");
+  ASSERT(thrown > 1, " x One or more IRQ was not caught\n");
 
   TEST_LEAVE();
 }

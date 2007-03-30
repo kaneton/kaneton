@@ -21,6 +21,9 @@
  *
  *      common.c
  *	../multiple_reserve_01/multiple_reserve_01.c
+ *	../precision_01/precision_01.c
+ *	../precision_02/precision_02.c
+ *	../precision_03/precision_03.c
  *	../release_01/release_01.c
  *	../repeat_01/repeat_01.c
  *	../simple_reserve_01/simple_reserve_01.c
@@ -46,6 +49,27 @@ void check_rtc_init(void);
  */
 
 void		check_time_multiple_reserve_01(void);
+
+
+/*
+ * ../precision_01/precision_01.c
+ */
+
+void		check_time_precision_01(void);
+
+
+/*
+ * ../precision_02/precision_02.c
+ */
+
+void		check_time_precision_02(void);
+
+
+/*
+ * ../precision_03/precision_03.c
+ */
+
+void		check_time_precision_01(void);
 
 
 /*

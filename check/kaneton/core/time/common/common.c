@@ -84,7 +84,7 @@ void	check_time_tests(void)
 #define  RTCIR_PERIOD	 0x40	/* periodic intr */
 #define  RTCIR_INT	 0x80	/* interrupt output signal */
 
-static unsigned char reg_read(unsigned char reg)
+static unsigned char check_reg_read(unsigned char reg)
 {
   t_uint8	v;
 
@@ -93,22 +93,45 @@ static unsigned char reg_read(unsigned char reg)
   return v;
 }
 
-static void reg_write(unsigned char reg, unsigned char val)
+static void check_reg_write(unsigned char reg, unsigned char val)
 {
   OUTB(0x70, reg);
   OUTB(0x71, val);
+}
+
+static void check_enable_irq(t_uint8 irq)
+{
+  t_uint8		mask;
+
+  if (irq < 8)
+    {
+      INB(MASTER_PORT_B, mask);
+      OUTB(MASTER_PORT_B, mask & ~(1 << irq));
+    }
+  else
+    {
+      INB(SLAVE_PORT_B, mask);
+      OUTB(SLAVE_PORT_B, mask & ~(1 << (irq - 8)));
+    }
 }
 
 static unsigned long ticks;
 
 static void	rtc_irq(void)
 {
+  t_uint8	mask;
+
   ticks += 3125;
 
   asm volatile ("movb $0xc, %al\n\t"
                 "outb %al,$0x70\n\t"
                 "outb %al,$0x80\n\t"
 		"inb  $0x71,%al\n\t");
+
+  INB(SLAVE_PORT_B, mask);
+  OUTB(SLAVE_PORT_B, mask);
+  OUTB(SLAVE_PORT_A, 0x60 + (8 & 0x7));
+  OUTB(MASTER_PORT_A, 0x60 + 2);
 }
 
 unsigned long check_rtc_ticks(void)
@@ -122,17 +145,19 @@ void check_rtc_init(void)
 		EVENT_FUNCTION,
 		EVENT_HANDLER(rtc_irq));
 
-  while (reg_read(RTC_STATUSA) & RTCSA_TUP)
+  check_enable_irq(8);
+
+  while (check_reg_read(RTC_STATUSA) & RTCSA_TUP)
     ; // wait till RTC ready
 
   ticks = 0;
 
   // set divider to 1024 Hz
-  reg_write(RTC_STATUSA, RTCSA_DIVIDER | RTCSA_32);
+  check_reg_write(RTC_STATUSA, RTCSA_DIVIDER | RTCSA_32);
 
   // set up interrupt
-  reg_write(RTC_STATUSB, reg_read(RTC_STATUSB) | RTCSB_PINTR | RTCSB_SQWE);
+  check_reg_write(RTC_STATUSB, check_reg_read(RTC_STATUSB) | RTCSB_PINTR | RTCSB_SQWE);
 
   // reset
-  reg_read(RTC_INTR);
+  check_reg_read(RTC_INTR);
 }

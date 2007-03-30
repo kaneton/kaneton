@@ -18,7 +18,7 @@ static volatile int	thrown = 0;
 static void	check_irq6(t_id	id)
 {
   printf(" + IRQ triggered\n");
-  thrown = 1;
+  thrown++;
 }
 
 /*
@@ -43,7 +43,13 @@ void		check_event_irq_01(void)
   OUTB(0x3F0 + 2, 0x0C);
   for (i = 0; i < 10000000; i++)
     asm volatile("nop");
-  ASSERT(thrown == 1, " x IRQ not caught\n");
+  OUTB(0x3F0 + 2, 0);
+  for (i = 0; i < 10000; i++)
+    asm volatile("nop");
+  OUTB(0x3F0 + 2, 0x0C);
+  for (i = 0; i < 10000000; i++)
+    asm volatile("nop");
+  ASSERT(thrown == 2, " x One or more IRQ was not caught\n");
   printf(" - Execution resumed\n");
 
   TEST_LEAVE();
