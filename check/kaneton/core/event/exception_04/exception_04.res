@@ -1,0 +1,2 @@
+Test check_event_exception_04
+check_event_exception_04 done.

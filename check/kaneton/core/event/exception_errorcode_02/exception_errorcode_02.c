@@ -21,6 +21,9 @@ static void	check_np(t_id	id, t_uint32 error_code)
 {
   printf(" + Exception thrown\n");
   thrown = 1;
+  printf(" + Checking error code");
+  if (!(error_code & gs))
+    printf(" x Bad error code\n");
   gs = 0x10;
 }
 
@@ -28,7 +31,7 @@ static void	check_np(t_id	id, t_uint32 error_code)
  * reserve event onto
  */
 
-void		check_event_exception_errorcode_01(void)
+void		check_event_exception_errorcode_02(void)
 {
   TEST_ENTER();
 

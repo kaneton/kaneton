@@ -63,7 +63,7 @@ void		check_event_idt_01(void)
 	printf("IDT entry %d is neither an interrupt nor a trap gate\n", i);
 
       if (idte[i].segsel != cs)
-	printf("IDT entry %d as incorrect segment selector\n");
+	printf("IDT entry %d as incorrect segment selector\n", i);
     }
 
   TEST_LEAVE();

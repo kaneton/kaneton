@@ -2,10 +2,17 @@ common
 exception_01
 exception_02
 exception_03
+exception_04
 exception_errorcode_01
+exception_errorcode_02
+exception_errorcode_03
 softint_01
+softint_02
 irq_01
+pic_01
+pic_02
 context_01
+context_02
 int_state_01
 idtr_01
 idt_01
