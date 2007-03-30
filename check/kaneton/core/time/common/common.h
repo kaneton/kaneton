@@ -36,6 +36,10 @@ t_uint32 check_cmos_sec(void);
 
 void	check_time_tests(void);
 
+unsigned long check_rtc_ticks(void);
+
+void check_rtc_init(void);
+
 
 /*
  * ../multiple_reserve_01/multiple_reserve_01.c

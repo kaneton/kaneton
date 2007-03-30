@@ -34,6 +34,7 @@
  *	../idtr_01/idtr_01.c
  *	../int_state_01/int_state_01.c
  *	../irq_01/irq_01.c
+ *	../irq_02/irq_02.c
  *	../pic_01/pic_01.c
  *	../pic_02/pic_02.c
  *	../pic_03/pic_03.c
