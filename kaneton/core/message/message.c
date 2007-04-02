@@ -53,6 +53,9 @@ m_message*		message = NULL;
 extern m_segment*	segment;
 extern i_as		kasid;
 
+// FIXME For test
+extern i_task		ktask;
+
 /*
  * ---------- functions -------------------------------------------------------
  */
@@ -107,6 +110,18 @@ t_error			message_init(void)
   if (machdep_call(message, message_init) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
+#if 0
+  if (message_test() != ERROR_NONE)
+  {
+    cons_msg('!', "message: message_test() failed\n");
+  }
+  else
+  {
+    cons_msg('+', "message: message_test() passed\n");
+  }
+#endif
+
+
   return (ERROR_NONE);
 
 }
@@ -156,12 +171,6 @@ t_error			map_buffer(i_as asid, t_vaddr asvaddr, t_size size, void** mapping)
   t_size		offset;
   i_region		mappingid;
   o_region*		reg;
-
-  if (asid == kasid)
-  {
-    *mapping = (void*) asvaddr;
-    return (ERROR_NONE);
-  }
 
   as_paddr(asid, asvaddr, &buff_paddr);
 
@@ -259,8 +268,13 @@ t_error			message_enqueue(i_task sender, i_node dest, t_tag tag, void* data, t_s
   /*
    * 2)
    */
-  if (map_buffer(sender_task->asid, (t_vaddr)data, size, &kernel_mapping) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (sender_task->asid != kasid)
+  {
+    if (map_buffer(sender_task->asid, (t_vaddr)data, size, &kernel_mapping) != ERROR_NONE)
+      return (ERROR_UNKNOWN);
+  }
+  else
+    kernel_mapping = data;
 
   /*
    * 3)
@@ -283,8 +297,9 @@ t_error			message_enqueue(i_task sender, i_node dest, t_tag tag, void* data, t_s
   /*
    * 5)
    */
-  if (unmap_buffer(kernel_mapping, size) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (sender_task->asid != kasid)
+    if (unmap_buffer(kernel_mapping, size) != ERROR_NONE)
+      return (ERROR_UNKNOWN);
 
   /*
    * 6)
@@ -340,8 +355,14 @@ t_error			message_pop(i_task taskid, t_tag tag, void* data)
   /*
    * 2)
    */
-  if (map_buffer(task->asid, (t_vaddr)data, msg->sz, &kernel_mapping) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (task->asid != kasid)
+  {
+    if (map_buffer(task->asid, (t_vaddr)data, msg->sz, &kernel_mapping) != ERROR_NONE)
+      return (ERROR_UNKNOWN);
+  }
+  else
+    kernel_mapping = data;
+
 
   /*
    * 3)
@@ -351,8 +372,9 @@ t_error			message_pop(i_task taskid, t_tag tag, void* data)
   /*
    * 4)
    */
-  if (unmap_buffer(kernel_mapping, msg->sz) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (task->asid != kasid)
+    if (unmap_buffer(kernel_mapping, msg->sz) != ERROR_NONE)
+      return (ERROR_UNKNOWN);
 
   /*
    * 5)
@@ -398,4 +420,35 @@ t_error			message_register(i_task taskid, t_tag tag)
   return (ERROR_NONE);
 }
 
+t_error			message_test(void)
+{
+  char			tosend[128] =
+    "Les chausettes de l'archiduchesse sont elles seches\n";
+  char			recv[128];
+  i_node		kernel_node;
 
+  if (message_register(ktask, 0) != ERROR_NONE)
+  {
+    cons_msg('!', "message test: message_register() error.\n");
+    return ERROR_UNKNOWN;
+  }
+  get_kernel_node(&kernel_node);
+  if (message_enqueue(ktask, kernel_node, 0, tosend, strlen(tosend) + 1)
+      != ERROR_NONE)
+  {
+    cons_msg('!', "message test: message_enqueue() error.\n");
+    return ERROR_UNKNOWN;
+  }
+  if (message_pop(ktask, 0, recv) != ERROR_NONE)
+  {
+    cons_msg('!', "message test: message_pop() error.\n");
+    return ERROR_UNKNOWN;
+  }
+  if (strcmp(tosend, recv))
+  {
+    cons_msg('!', "message test: message corrupted.\n");
+    return ERROR_UNKNOWN;
+  }
+
+  return ERROR_NONE;
+}

@@ -136,6 +136,8 @@ t_error			message_pop(i_task taskid, t_tag tag, void* data);
 
 t_error			message_register(i_task taskid, t_tag tag);
 
+t_error			message_test(void);
+
 
 /*
  * ../../core/message/node.c
