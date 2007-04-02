@@ -191,7 +191,7 @@ t_error			interrupt_init(void)
    */
 
   for (i = IDT_IRQ_BASE; i < IDT_IRQ_BASE + IRQ_NR; i++)
-    if (interrupt_add(i, 0, prehandlers[i]) != ERROR_NONE)
+    if (interrupt_add(i, 3, prehandlers[i]) != ERROR_NONE)
       return ERROR_UNKNOWN;
 
   /*
@@ -207,7 +207,7 @@ t_error			interrupt_init(void)
    */
 
   for (i = IDT_SYSCALL_BASE; i < IDT_SYSCALL_BASE + SYSCALL_NR; i++)
-    if (interrupt_add(i, 0, prehandlers[i]) != ERROR_NONE)
+    if (interrupt_add(i, 3, prehandlers[i]) != ERROR_NONE)
       return ERROR_UNKNOWN;
 
   /*

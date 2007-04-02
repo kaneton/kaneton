@@ -56,7 +56,32 @@ d_message		message_dispatch =
 
 void			ia32_message_send_handler(void)
 {
-  printf("send\n");
+  union
+  {
+    i_node		node;
+    t_uint32		dword[4];
+  }			u;
+  void			*ptr;
+  t_uint32		tag;
+  t_uint32		size;
+  i_task		source;
+
+  task_current(&source);
+
+  u.dword[0] = context->eax;
+  u.dword[1] = context->ebx;
+  u.dword[2] = context->ecx;
+  u.dword[3] = context->edx;
+  tag = context->esi;
+  ptr = (void*)context->edi;
+  size = context->ebp;
+
+  if (message_enqueue(source, u.node, tag, ptr, size)
+      != ERROR_NONE)
+    {
+      cons_msg('!', "message test: message_enqueue() error.\n");
+      return ERROR_UNKNOWN;
+    }
 }
 
 void			ia32_message_recv_handler(void)

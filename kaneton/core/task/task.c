@@ -67,7 +67,7 @@ i_task			ktask = ID_UNUSED;
  * this function returns the current task.
  */
 
-static t_error		task_current(i_task*			tsk)
+t_error			task_current(i_task*			tsk)
 {
   i_thread		current;
   o_thread*		o;

@@ -420,6 +420,27 @@ t_error			message_register(i_task taskid, t_tag tag)
   return (ERROR_NONE);
 }
 
+void			syscall_send(t_uint32	*node,
+				     t_uint32	tag,
+				     void	*ptr,
+				     t_uint32	size)
+{
+  asm volatile("	pusha			\n"
+	       "	movl %0, %%eax		\n"
+	       "	movl %1, %%ebx		\n"
+	       "	movl %2, %%ecx		\n"
+	       "	movl %3, %%edx		\n"
+	       "	movl %4, %%esi		\n"
+	       "	movl %5, %%edi		\n"
+	       "	movl %6, %%ebp		\n"
+	       "	int $56			\n"
+	       "	popa			\n"
+	       :
+	       : "m" (node[0]), "m" (node[1]), "m" (node[2]), "m" (node[3]),
+	       "g" (tag), "g" (ptr), "g" (size));
+}
+
+#if 0
 t_error			message_test(void)
 {
   char			tosend[128] =
@@ -427,33 +448,122 @@ t_error			message_test(void)
   char			recv[128];
   i_node		kernel_node;
 
-
-#if 0
   if (message_register(ktask, 0) != ERROR_NONE)
   {
     cons_msg('!', "message test: message_register() error.\n");
     return ERROR_UNKNOWN;
   }
   get_kernel_node(&kernel_node);
+
+#if 0
   if (message_enqueue(ktask, kernel_node, 0, tosend, strlen(tosend) + 1)
       != ERROR_NONE)
   {
     cons_msg('!', "message test: message_enqueue() error.\n");
     return ERROR_UNKNOWN;
   }
+#else
+  syscall_send(&kernel_node, 0, tosend, strlen(tosend) + 1);
+#endif
+
   if (message_pop(ktask, 0, recv) != ERROR_NONE)
   {
     cons_msg('!', "message test: message_pop() error.\n");
     return ERROR_UNKNOWN;
   }
+
+  printf("%s\n", recv);
+
   if (strcmp(tosend, recv))
   {
     cons_msg('!', "message test: message corrupted.\n");
     return ERROR_UNKNOWN;
   }
-#else
-  asm volatile("int $56");
-#endif
 
   return ERROR_NONE;
 }
+#else
+static void			chiche()
+{
+  char			tosend[128] =
+    "Les chausettes de l'archiduchesse sont elles seches\n";
+  i_node		kernel_node;
+
+  //  get_kernel_node(&kernel_node);
+  kernel_node.machine = 2^64;
+  kernel_node.task = 0;
+
+  syscall_send(&kernel_node, 0, tosend, strlen(tosend) + 1);
+
+  while (1)
+    ;
+}
+
+t_error			message_test(void)
+{
+  char			recv[128];
+  i_task		tsk;
+  i_as			as;
+  i_thread		th;
+  t_thread_context	ctx;
+  t_stack		stack;
+  o_thread*		o;
+
+  task_reserve(TASK_CLASS_PROGRAM,
+	       TASK_BEHAV_INTERACTIVE,
+	       TASK_PRIOR_INTERACTIVE,
+	       &tsk);
+
+  as_reserve(tsk, &as);
+
+  thread_reserve(tsk, 150, &th);
+
+  stack.base = 0;
+  stack.size = THREAD_MIN_STACKSZ;
+  if (thread_stack(th, stack) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot set stack\n");
+      while (1);
+    }
+
+  if (thread_get(th, &o) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot get thread\n");
+      while (1);
+    }
+
+  ctx.sp = o->stack + o->stacksz - 16;
+  ctx.pc = (t_uint32)chiche;
+
+  if (thread_load(th, ctx) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot load context\n");
+      while (1);
+    }
+
+  if (message_register(ktask, 0) != ERROR_NONE)
+  {
+    cons_msg('!', "message test: message_register() error.\n");
+    return ERROR_UNKNOWN;
+  }
+  if (message_register(tsk, 0) != ERROR_NONE)
+  {
+    cons_msg('!', "message test: message_register() error.\n");
+    return ERROR_UNKNOWN;
+  }
+
+  task_state(tsk, SCHED_STATE_RUN);
+
+  sched_dump();
+
+  while (1)
+    {
+      if (message_pop(ktask, 0, recv) == ERROR_NONE)
+	{
+	  printf("task: %s\n", recv);
+	}
+    }
+
+  return ERROR_NONE;
+}
+#endif
