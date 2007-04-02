@@ -17,10 +17,10 @@
 #
 
 # disable checks
-#_CHECK_LO_	:=
+_CHECK_LO_	:=
 
 # for using gdb with qemu
-_CFLAGS_	+=
+_CFLAGS_	+= -g -O0
 
 #EVINCE := evince
 

@@ -273,7 +273,7 @@
 ;; binding to generate the file header.
 ;;
 
-(global-set-key [(control c)(h)] 'ec-generate-header)
+(global-set-key [(control c)(control h)] 'ec-generate-header)
 
 ;;
 ;; binding to generate a section header.
