@@ -34,7 +34,7 @@
  * global interrupt handler table
  */
 
-t_ia32_interrupt_handler	interrupt_handlers[EXCEPTION_NR + IRQ_NR + IPI_NR];
+t_ia32_interrupt_handler	interrupt_handlers[EXCEPTION_NR + IRQ_NR + IPI_NR + SYSCALL_NR];
 
 /*
  * the segment selector to load on interrupt.
@@ -54,7 +54,7 @@ volatile HANDLER_DATA t_uint32		interrupt_stack = 0;
  * ---------- functions -------------------------------------------------------
  */
 
-static t_ia32_interrupt_prehandler	prehandlers[EXCEPTION_NR + IRQ_NR + IPI_NR] =
+static t_ia32_interrupt_prehandler	prehandlers[EXCEPTION_NR + IRQ_NR + IPI_NR + SYSCALL_NR] =
   {
     prehandler_exception0,
     prehandler_exception1,
@@ -111,7 +111,9 @@ static t_ia32_interrupt_prehandler	prehandlers[EXCEPTION_NR + IRQ_NR + IPI_NR] =
     prehandler_ipi4,
     prehandler_ipi5,
     prehandler_ipi6,
-    prehandler_ipi7
+    prehandler_ipi7,
+    prehandler_syscall0,
+    prehandler_syscall1
   };
 
 /*
@@ -133,7 +135,7 @@ t_error			interrupt_add(t_uint32			nr,
    * 1)
    */
 
-  if (nr >= EXCEPTION_NR + IRQ_NR + IPI_NR)
+  if (nr >= EXCEPTION_NR + IRQ_NR + IPI_NR + SYSCALL_NR)
     return ERROR_UNKNOWN;
 
   /*
@@ -168,6 +170,7 @@ t_error			interrupt_set_handler(t_uint32			nr,
  * 1) add an interrupt gate descriptor in the idt for each exception.
  * 2) add an interrupt gate descriptor in the idt for each irq.
  * 3) add an interrupt gate descriptor in the idt for each ipi.
+ * 3) add an interrupt gate descriptor in the idt for each syscall.
  * 4) initialize the pic 8259A.
  */
 
@@ -203,6 +206,14 @@ t_error			interrupt_init(void)
    * 4)
    */
 
+  for (i = IDT_SYSCALL_BASE; i < IDT_SYSCALL_BASE + SYSCALL_NR; i++)
+    if (interrupt_add(i, 0, prehandlers[i]) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+
+  /*
+   * 5)
+   */
+
   if (pic_init() != ERROR_NONE)
     return ERROR_UNKNOWN;
 
@@ -211,7 +222,7 @@ t_error			interrupt_init(void)
 
 /*
  * this is the second handler called on exception.
- * it saves the context second part and call the user-defined handler.
+ * it calls the user-defined handler.
  */
 
 void			handler_exception(t_uint32			nr,
@@ -221,8 +232,8 @@ void			handler_exception(t_uint32			nr,
 }
 
 /*
- * this is  the second  handler called on  irq.  it saves  the context
- * second part, send the EOI and call the user-defined handler.
+ * this is the second handler called on irq.  it sends the EOI and
+ * call the user-defined handler.
  */
 
 void			handler_irq(t_uint32				nr)
@@ -233,8 +244,8 @@ void			handler_irq(t_uint32				nr)
 }
 
 /*
- * this is  the second  handler called on  irq.  it saves  the context
- * second part, send the EOI and call the user-defined handler.
+ * this is the second handler called on ipi.  it sends the EOI and
+ * call the user-defined handler.
  */
 
 void			handler_ipi(t_uint32				nr)
@@ -242,6 +253,16 @@ void			handler_ipi(t_uint32				nr)
   ipi_acknowledge();
 
   interrupt_handlers[IDT_IPI_BASE + nr](IDT_IPI_BASE + nr, 0);
+}
+
+/*
+ * this is the second handler called on syscall.  it calls the
+ * user-defined handler.
+ */
+
+void			handler_syscall(t_uint32			nr)
+{
+  interrupt_handlers[IDT_SYSCALL_BASE + nr](IDT_SYSCALL_BASE + nr, 0);
 }
 
 /*
@@ -314,5 +335,12 @@ IPI_PREHANDLER(4);
 IPI_PREHANDLER(5);
 IPI_PREHANDLER(6);
 IPI_PREHANDLER(7);
+
+/*
+ * syscall prehandlers
+ */
+
+SYSCALL_PREHANDLER(0);
+SYSCALL_PREHANDLER(1);
 
 /*                                                                 [cut] /k2 */

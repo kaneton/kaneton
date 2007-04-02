@@ -289,6 +289,8 @@ void			handler_irq(t_uint32				nr);
 
 void			handler_ipi(t_uint32				nr);
 
+void			handler_syscall(t_uint32			nr);
+
 
 /*
  * ../interrupt/ipi.c

@@ -87,7 +87,7 @@ t_error			ia32_event_reserve(i_event		id,
    * 1)
    */
 
-  if (eventid >= EXCEPTION_NR + IRQ_NR)
+  if (eventid >= EXCEPTION_NR + IRQ_NR + IPI_NR + SYSCALL_NR)
     return ERROR_UNKNOWN;
 
   /*
@@ -135,7 +135,7 @@ t_error			ia32_event_release(i_event		id)
    * 1)
    */
 
-  if (eventid >= EXCEPTION_NR + IRQ_NR)
+  if (eventid >= EXCEPTION_NR + IRQ_NR + IPI_NR + SYSCALL_NR)
     return ERROR_UNKNOWN;
 
   /*

@@ -146,7 +146,8 @@ void			kaneton(t_init*				bootloader)
     ;
 #endif
 
-  smp_test();
+  //  smp_test();
+  //message_test();
 
   /*
    * /XXX

@@ -427,6 +427,8 @@ t_error			message_test(void)
   char			recv[128];
   i_node		kernel_node;
 
+
+#if 0
   if (message_register(ktask, 0) != ERROR_NONE)
   {
     cons_msg('!', "message test: message_register() error.\n");
@@ -449,6 +451,9 @@ t_error			message_test(void)
     cons_msg('!', "message test: message corrupted.\n");
     return ERROR_UNKNOWN;
   }
+#else
+  asm volatile("int $56");
+#endif
 
   return ERROR_NONE;
 }

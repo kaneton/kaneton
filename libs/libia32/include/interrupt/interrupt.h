@@ -37,6 +37,7 @@
 #define EXCEPTION_NR    32
 #define IRQ_NR          16
 #define IPI_NR          8
+#define SYSCALL_NR	2
 
 /*
  * exception error code.
@@ -91,10 +92,9 @@
 	 "	addl $-4, %esp				\n"		\
 	 SAVE_CONTEXT()							\
 	 FORCE_RING0_SWITCH()						\
-	 "	pushl $0				\n"		\
 	 "	pushl $" #nr "				\n"		\
 	 "	call handler_irq			\n"		\
-	 "	addl $8, %esp				\n"		\
+	 "	addl $4, %esp				\n"		\
 	 FORCE_RING0_BACK()						\
 	 RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
@@ -106,10 +106,23 @@
 	 "	addl $-4, %esp				\n"		\
 	 SAVE_CONTEXT()							\
 	 FORCE_RING0_SWITCH()						\
-	 "	pushl $0				\n"		\
 	 "	pushl $" #nr "				\n"		\
 	 "	call handler_ipi			\n"		\
-	 "	addl $8, %esp				\n"		\
+	 "	addl $4, %esp				\n"		\
+	 FORCE_RING0_BACK()						\
+	 RESTORE_CONTEXT()						\
+	 "	addl $4, %esp				\n"		\
+	 "	iret					")
+
+#define SYSCALL_PREHANDLER(nr)				       		\
+  asm	(".globl prehandler_syscall" #nr "		\n"		\
+	 "prehandler_syscall" #nr ":			\n"		\
+	 "	addl $-4, %esp				\n"		\
+	 SAVE_CONTEXT()							\
+	 FORCE_RING0_SWITCH()						\
+	 "	pushl $" #nr "				\n"		\
+	 "	call handler_syscall			\n"		\
+	 "	addl $4, %esp				\n"		\
 	 FORCE_RING0_BACK()						\
 	 RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
@@ -248,6 +261,9 @@ void    prehandler_ipi4(void);
 void    prehandler_ipi5(void);
 void    prehandler_ipi6(void);
 void    prehandler_ipi7(void);
+
+void    prehandler_syscall0(void);
+void    prehandler_syscall1(void);
 
 /*                                                                 [cut] /k2 */
 

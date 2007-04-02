@@ -40,6 +40,7 @@
 #define IDT_EXCEPTION_BASE	0
 #define IDT_IRQ_BASE		32
 #define IDT_IPI_BASE		48
+#define IDT_SYSCALL_BASE	56
 
 /*
  * gate types (for idt entries)
