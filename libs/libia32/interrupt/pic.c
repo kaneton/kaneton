@@ -77,7 +77,7 @@ t_error			pic_init(void)
    * 5)
    */
 
-  OUTB(MASTER_PORT_B, 0xff);
+  OUTB(MASTER_PORT_B, 0xfb);
   OUTB(SLAVE_PORT_B, 0xff);
 
   return ERROR_NONE;
