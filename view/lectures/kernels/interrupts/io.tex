@@ -1,0 +1,182 @@
+\pgfdeclareimage[interpolate=true,width=180pt]
+                {io_mapped}
+                {figures/io_mapped}
+
+\pgfdeclareimage[interpolate=true,width=200pt]
+                {io_port}
+                {figures/io_port}
+
+\pgfdeclareimage[interpolate=true,width=320pt]
+                {io_hybrid}
+                {figures/io_hybrid}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{I/O device}
+
+  An I/O device is generally composed of a control register and a data buffer.
+
+  \nl
+
+  Example of I/O devices: Hard disk, keyboard, Interrupt Controller, serial
+  port\ldots
+
+  \nl
+
+  To address the I/O devices, the microprocessor can use one of the 3
+  architectures:
+
+  \begin{itemize}
+    \item memory-mapped I/O\\
+      The hardware device's memory is mapped in RAM.
+    \item I/O ports\\
+    \item hybrid\\
+  \end{itemize}
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Memory-mapped I/O}
+
+  \begin{center}
+    \pgfuseimage{io_mapped}
+  \end{center}
+
+  {\bf Advantages}\\
+  \begin{itemize}
+    \item restricted instruction set
+    \item No special protection mechanism is needed, since protection is
+      already implemented at the memory level.
+  \end{itemize}
+
+  {\bf Disadvantages}\\
+  \begin{itemize}
+    \item Caching. Solution: disable caching (for a page)
+  \end{itemize}
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{I/O ports}
+
+  \begin{center}
+    \pgfuseimage{io_port}
+  \end{center}
+
+  {\bf Advantages}\\
+  \begin{itemize}
+    \item Can accept a large number of devices without affecting main memory.
+  \end{itemize}
+
+  {\bf Disadvantages}\\
+  \begin{itemize}
+    \item Enlarge the instruction set with special read and write instructions.
+  \end{itemize}
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Hybrid I/O}
+
+  \begin{center}
+    \pgfuseimage{io_hybrid}
+  \end{center}
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{I/O performing}
+
+  I/O are asynchronous:
+
+  \begin{itemize}
+    \item in emission: a hardware device may send data at any time
+    \item in reception: the kernel cannot find out when the device is ready to
+      receive data
+  \end{itemize}
+
+  \nl
+
+  There are 2 methods to handle asynchronous events:
+
+  \begin{itemize}
+    \item Programmed I/O (polling)
+    \item Interrupt-based I/O
+  \end{itemize}
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Programmed I/O}
+
+
+
+\end{frame}
+
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Interrupt-based I/O}
+
+
+
+\end{frame}
+
+%
+%
+%
+
+\begin{frame}
+  \frametitle{Direct Memory Access (DMA)}
+
+  To support DMA, the hardware must have a DMA controller. This controller
+  provides the following registers:
+
+  \begin{itemize}
+    \item The address register determiness the transfert's memory address.
+    \item count register specifies the transfer size.
+    \item control register contains the I/O port and the transfert direction.
+  \end{itemize}
+
+  \nl
+
+  {\bf Advantages}\\
+  \begin{itemize}
+    \item DMA minimize the microprocessor load
+    \item decrease the interrupt rate
+  \end{itemize}
+
+  {\bf Disadvantages}\\
+  \begin{itemize}
+    \item The DMA controller is much slower than the CPU. Also, when the CPU,
+      it could assume the transfert faster.
+    \item 
+  \end{itemize}
+
+\end{frame}
