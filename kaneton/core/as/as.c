@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/as/as.c
  *
  * created       julien quintard   [tue dec 13 03:05:27 2005]
- * updated       matthieu bucchianeri   [tue feb  6 19:56:23 2007]
+ * updated       matthieu bucchianeri   [tue apr  3 14:53:38 2007]
  */
 
 /*
@@ -369,6 +369,212 @@ t_error			as_paddr(i_as		asid,
   if (machdep_call(as, as_paddr, asid, virtual, physical) !=
       ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
+
+  AS_LEAVE(as, ERROR_NONE);
+}
+
+/*
+ * XXX
+ */
+
+t_error			as_read(i_as				as,
+				t_vaddr				src,
+				t_vsize				size,
+				void*				dst)
+{
+  o_as*			o;
+  o_region*		oreg;
+  o_region*		prev;
+  t_iterator		it;
+  t_iterator		next;
+  t_paddr		offs;
+  t_psize		copy;
+  t_uint8*		buff = dst;
+
+  AS_ENTER(as);
+
+  if (as_get(as, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (set_head(o->regions, &it) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  while (oreg->address + oreg->size < src)
+    {
+      if (set_next(o->regions, it, &next) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (set_object(o->regions, next, (void**)&oreg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      memcpy(&it, &next, sizeof (t_iterator));
+    }
+
+  if (oreg->address > src)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * next and oreg are the first region
+   */
+
+  offs = src - oreg->address;
+  copy = oreg->size - offs;
+  offs += oreg->offset;
+
+  printf("memcpy(%qd, %u (%u))\n", oreg->segid, offs, copy);
+  if (segment_read(oreg->segid, offs, buff, copy) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  buff += copy;
+  size -= copy;
+
+  if (size == 0)
+    AS_LEAVE(as, ERROR_NONE);
+
+  /*
+   * goto next region
+   */
+
+  for (;;)
+    {
+      prev = oreg;
+
+      if (set_next(o->regions, next, &it) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (oreg->address != prev->address + prev->size)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      /*
+       * it and oreg are the next region
+       */
+
+      offs = oreg->offset;
+      copy = oreg->size;
+      if (copy > size)
+	copy = size;
+
+      printf("memcpy(%qd, %u (%u))\n", oreg->segid, offs, copy);
+      if (segment_read(oreg->segid, offs, buff, copy) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      buff += copy;
+      size -= copy;
+
+      if (size == 0)
+	break;
+
+      memcpy(&next, &it, sizeof (t_iterator));
+    }
+
+  AS_LEAVE(as, ERROR_NONE);
+}
+
+/*
+ * XXX
+ */
+
+t_error			as_write(i_as				as,
+				 void*				src,
+				 t_vsize			size,
+				 t_vaddr			dst)
+{
+  o_as*			o;
+  o_region*		oreg;
+  o_region*		prev;
+  t_iterator		it;
+  t_iterator		next;
+  t_paddr		offs;
+  t_psize		copy;
+  t_uint8*		buff = src;
+
+  AS_ENTER(as);
+
+  if (as_get(as, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (set_head(o->regions, &it) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  while (oreg->address + oreg->size < dst)
+    {
+      if (set_next(o->regions, it, &next) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (set_object(o->regions, next, (void**)&oreg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      memcpy(&it, &next, sizeof (t_iterator));
+    }
+
+  if (oreg->address > dst)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * next and oreg are the first region
+   */
+
+  offs = dst - oreg->address;
+  copy = oreg->size - offs;
+  offs += oreg->offset;
+
+  printf("memcpy(%qd, %u (%u))\n", oreg->segid, offs, copy);
+  if (segment_write(oreg->segid, offs, buff, copy) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  buff += copy;
+  size -= copy;
+
+  if (size == 0)
+    AS_LEAVE(as, ERROR_NONE);
+
+  /*
+   * goto next region
+   */
+
+  for (;;)
+    {
+      prev = oreg;
+
+      if (set_next(o->regions, next, &it) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (oreg->address != prev->address + prev->size)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      /*
+       * it and oreg are the next region
+       */
+
+      offs = oreg->offset;
+      copy = oreg->size;
+      if (copy > size)
+	copy = size;
+
+      printf("memcpy(%qd, %u (%u))\n", oreg->segid, offs, copy);
+      if (segment_write(oreg->segid, offs, buff, copy) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      buff += copy;
+      size -= copy;
+
+      if (size == 0)
+	break;
+
+      memcpy(&next, &it, sizeof (t_iterator));
+    }
 
   AS_LEAVE(as, ERROR_NONE);
 }
