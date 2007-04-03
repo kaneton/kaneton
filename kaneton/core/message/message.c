@@ -110,18 +110,6 @@ t_error			message_init(void)
   if (machdep_call(message, message_init) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-#if 0
-  if (message_test() != ERROR_NONE)
-  {
-    cons_msg('!', "message: message_test() failed\n");
-  }
-  else
-  {
-    cons_msg('+', "message: message_test() passed\n");
-  }
-#endif
-
-
   return (ERROR_NONE);
 
 }
@@ -334,7 +322,7 @@ t_error			message_enqueue(i_task sender, i_node dest, t_tag tag, void* data, t_s
  * 5) Pop the message from the queue and free kernel buffer
  */
 
-t_error			message_pop(i_task taskid, t_tag tag, void* data)
+t_error			message_pop(i_task taskid, t_tag tag, void* data, size_t maxsz)
 {
   t_local_box*		msgbox;
   o_msg*		msg;
@@ -357,7 +345,7 @@ t_error			message_pop(i_task taskid, t_tag tag, void* data)
    */
   if (task->asid != kasid)
   {
-    if (map_buffer(task->asid, (t_vaddr)data, msg->sz, &kernel_mapping) != ERROR_NONE)
+    if (map_buffer(task->asid, (t_vaddr)data, (maxsz < msg->sz ? maxsz : msg->sz), &kernel_mapping) != ERROR_NONE)
       return (ERROR_UNKNOWN);
   }
   else
@@ -367,13 +355,13 @@ t_error			message_pop(i_task taskid, t_tag tag, void* data)
   /*
    * 3)
    */
-  memcpy(kernel_mapping, msg->data, msg->sz);
+  memcpy(kernel_mapping, msg->data, (maxsz < msg->sz ? maxsz : msg->sz));
 
   /*
    * 4)
    */
   if (task->asid != kasid)
-    if (unmap_buffer(kernel_mapping, msg->sz) != ERROR_NONE)
+    if (unmap_buffer(kernel_mapping, (maxsz < msg->sz ? maxsz : msg->sz)) != ERROR_NONE)
       return (ERROR_UNKNOWN);
 
   /*
@@ -420,80 +408,72 @@ t_error			message_register(i_task taskid, t_tag tag)
   return (ERROR_NONE);
 }
 
-void			syscall_send(t_uint32	*node,
-				     t_uint32	tag,
-				     void	*ptr,
-				     t_uint32	size)
+/*
+ * ---------- tests -----------------------------------------------------------
+ */
+
+
+t_uint32		syscall_send(t_uint32* node, t_uint32 tag, void* ptr, t_uint32 size)
 {
-  asm volatile("	pusha			\n"
-	       "	movl %0, %%eax		\n"
-	       "	movl %1, %%ebx		\n"
-	       "	movl %2, %%ecx		\n"
-	       "	movl %3, %%edx		\n"
-	       "	movl %4, %%esi		\n"
-	       "	movl %5, %%edi		\n"
-	       "	movl %6, %%ebp		\n"
+  t_uint32		ret;
+
+  asm volatile("	pushl %%ebp		\n"
+	       "	movl %7, %%ebp		\n"
 	       "	int $56			\n"
-	       "	popa			\n"
-	       :
-	       : "m" (node[0]), "m" (node[1]), "m" (node[2]), "m" (node[3]),
-	       "g" (tag), "g" (ptr), "g" (size));
+	       "	popl %%ebp		"
+	       : "=a" (ret)
+	       : "a" (node[0]), "b" (node[1]), "c" (node[2]), "d" (node[3]),
+	       "S" (tag), "D" (ptr), "m" (size));
+
+  return (ret);
 }
 
-#if 0
-t_error			message_test(void)
+t_uint32		syscall_recv(t_uint32 tag, void* ptr, t_uint32 size)
 {
-  char			tosend[128] =
-    "Les chausettes de l'archiduchesse sont elles seches\n";
-  char			recv[128];
-  i_node		kernel_node;
+  t_uint32		ret;
 
-  if (message_register(ktask, 0) != ERROR_NONE)
-  {
-    cons_msg('!', "message test: message_register() error.\n");
-    return ERROR_UNKNOWN;
-  }
-  get_kernel_node(&kernel_node);
+  asm volatile("	int $57			"
+	       : "=a" (ret)
+	       :"a" (tag), "b" (ptr), "c" (size));
 
-#if 0
-  if (message_enqueue(ktask, kernel_node, 0, tosend, strlen(tosend) + 1)
-      != ERROR_NONE)
-  {
-    cons_msg('!', "message test: message_enqueue() error.\n");
-    return ERROR_UNKNOWN;
-  }
-#else
-  syscall_send(&kernel_node, 0, tosend, strlen(tosend) + 1);
-#endif
-
-  if (message_pop(ktask, 0, recv) != ERROR_NONE)
-  {
-    cons_msg('!', "message test: message_pop() error.\n");
-    return ERROR_UNKNOWN;
-  }
-
-  printf("%s\n", recv);
-
-  if (strcmp(tosend, recv))
-  {
-    cons_msg('!', "message test: message corrupted.\n");
-    return ERROR_UNKNOWN;
-  }
-
-  return ERROR_NONE;
+  return (ret);
 }
-#else
-static void			chiche()
-{
-  char			tosend[128] =
-    "Les chausettes de l'archiduchesse sont elles seches\n";
-  i_node		kernel_node;
 
-  //  get_kernel_node(&kernel_node);
+i_task tsk1;
+i_task tsk2;
+
+static void			chiche_send()
+{
+  char				tosend[128] =
+    "Les chausettes de l'archiduchesse sont elles seches\n";
+  i_node			task1_node;
+
+  task1_node.machine = 2^64;
+  task1_node.task = tsk2;
+
+  syscall_send(&task1_node, 0, tosend, strlen(tosend) + 1);
+
+  while (1)
+    ;
+}
+
+static void			chiche_recv()
+{
+  char				recv[128];
+  i_node			kernel_node;
+
+  while (1)
+  {
+    if (syscall_recv(0, recv, 128) == ERROR_NONE)
+    {
+      break;
+    }
+  }
+
   kernel_node.machine = 2^64;
   kernel_node.task = 0;
 
-  syscall_send(&kernel_node, 0, tosend, strlen(tosend) + 1);
+  syscall_send(&kernel_node, 0, recv, strlen(recv) + 1);
 
   while (1)
     ;
@@ -502,40 +482,70 @@ static void			chiche()
 t_error			message_test(void)
 {
   char			recv[128];
-  i_task		tsk;
-  i_as			as;
-  i_thread		th;
-  t_thread_context	ctx;
-  t_stack		stack;
-  o_thread*		o;
+  i_as			as1;
+  i_as			as2;
+  i_thread		th1;
+  i_thread		th2;
+  t_thread_context	ctx1;
+  t_thread_context	ctx2;
+  t_stack		stack1;
+  t_stack		stack2;
+  o_thread*		o1;
+  o_thread*		o2;
 
   task_reserve(TASK_CLASS_PROGRAM,
 	       TASK_BEHAV_INTERACTIVE,
 	       TASK_PRIOR_INTERACTIVE,
-	       &tsk);
+	       &tsk1);
+  task_reserve(TASK_CLASS_PROGRAM,
+	       TASK_BEHAV_INTERACTIVE,
+	       TASK_PRIOR_INTERACTIVE,
+	       &tsk2);
 
-  as_reserve(tsk, &as);
+  as_reserve(tsk1, &as1);
+  as_reserve(tsk2, &as2);
 
-  thread_reserve(tsk, 150, &th);
+  thread_reserve(tsk1, 150, &th1);
+  thread_reserve(tsk2, 150, &th2);
 
-  stack.base = 0;
-  stack.size = THREAD_MIN_STACKSZ;
-  if (thread_stack(th, stack) != ERROR_NONE)
+  stack1.base = 0;
+  stack1.size = THREAD_MIN_STACKSZ;
+  stack2.base = 0;
+  stack2.size = THREAD_MIN_STACKSZ;
+
+  if (thread_stack(th1, stack1) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot set stack\n");
+      while (1);
+    }
+  if (thread_stack(th2, stack2) != ERROR_NONE)
     {
       cons_msg('!', "cannot set stack\n");
       while (1);
     }
 
-  if (thread_get(th, &o) != ERROR_NONE)
+  if (thread_get(th1, &o1) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot get thread\n");
+      while (1);
+    }
+  if (thread_get(th2, &o2) != ERROR_NONE)
     {
       cons_msg('!', "cannot get thread\n");
       while (1);
     }
 
-  ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_uint32)chiche;
+  ctx1.sp = o1->stack + o1->stacksz - 16;
+  ctx1.pc = (t_uint32)chiche_send;
+  ctx2.sp = o2->stack + o2->stacksz - 16;
+  ctx2.pc = (t_uint32)chiche_recv;
 
-  if (thread_load(th, ctx) != ERROR_NONE)
+  if (thread_load(th1, ctx1) != ERROR_NONE)
+    {
+      cons_msg('!', "cannot load context\n");
+      while (1);
+    }
+  if (thread_load(th2, ctx2) != ERROR_NONE)
     {
       cons_msg('!', "cannot load context\n");
       while (1);
@@ -546,19 +556,25 @@ t_error			message_test(void)
     cons_msg('!', "message test: message_register() error.\n");
     return ERROR_UNKNOWN;
   }
-  if (message_register(tsk, 0) != ERROR_NONE)
+  if (message_register(tsk1, 0) != ERROR_NONE)
+  {
+    cons_msg('!', "message test: message_register() error.\n");
+    return ERROR_UNKNOWN;
+  }
+  if (message_register(tsk2, 0) != ERROR_NONE)
   {
     cons_msg('!', "message test: message_register() error.\n");
     return ERROR_UNKNOWN;
   }
 
-  task_state(tsk, SCHED_STATE_RUN);
+  task_state(tsk1, SCHED_STATE_RUN);
+  task_state(tsk2, SCHED_STATE_RUN);
 
   sched_dump();
 
   while (1)
     {
-      if (message_pop(ktask, 0, recv) == ERROR_NONE)
+      if (message_pop(ktask, 0, recv, 128) == ERROR_NONE)
 	{
 	  printf("task: %s\n", recv);
 	}
@@ -566,4 +582,3 @@ t_error			message_test(void)
 
   return ERROR_NONE;
 }
-#endif

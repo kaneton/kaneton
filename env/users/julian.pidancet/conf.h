@@ -83,7 +83,7 @@
  */
 
 #define CONF_DEBUG							\
-  (13)
+  (0)
 
 /*
  * the machine-dependent configuration debug
@@ -97,6 +97,7 @@
  */
 
 #define SERIAL
+#undef SERIAL
 
 /*
  * ---------- prototypes ------------------------------------------------------

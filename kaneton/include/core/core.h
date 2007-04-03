@@ -119,6 +119,8 @@ void			kaneton(t_init*				bootloader);
 
 void			kaneton_dump(void);
 
+void copy_test(void);
+
 
 /*
  * eop

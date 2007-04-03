@@ -65,6 +65,7 @@ void			ia32_message_send_handler(void)
   t_uint32		tag;
   t_uint32		size;
   i_task		source;
+  t_uint32		ret;
 
   task_current(&source);
 
@@ -76,17 +77,28 @@ void			ia32_message_send_handler(void)
   ptr = (void*)context->edi;
   size = context->ebp;
 
-  if (message_enqueue(source, u.node, tag, ptr, size)
-      != ERROR_NONE)
-    {
-      cons_msg('!', "message test: message_enqueue() error.\n");
-      return ERROR_UNKNOWN;
-    }
+  ret = message_enqueue(source, u.node, tag, ptr, size);
+
+  context->eax = ret;
 }
 
 void			ia32_message_recv_handler(void)
 {
-  printf("recv\n");
+  t_uint32		ret;
+  t_uint32		tag;
+  void*			ptr;
+  t_uint32		size;
+  i_task		source;
+
+  task_current(&source);
+
+  tag = context->eax;
+  ptr = context->ebx;
+  size = context->ecx;
+
+  ret = message_pop(source, tag, ptr, size);
+
+  context->eax = ret;
 }
 
 t_error			ia32_message_init(void)

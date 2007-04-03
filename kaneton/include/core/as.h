@@ -152,6 +152,16 @@ t_error			as_paddr(i_as		asid,
 				 t_vaddr	virtual,
 				 t_paddr*	physical);
 
+t_error			as_read(i_as				as,
+				t_vaddr				src,
+				t_vsize				size,
+				void*				dst);
+
+t_error			as_write(i_as				as,
+				 void*				src,
+				 t_vsize			size,
+				 t_vaddr			dst);
+
 t_error			as_clone(i_task				tskid,
 				 i_as				old,
 				 i_as*				new);
