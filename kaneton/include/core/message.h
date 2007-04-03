@@ -136,10 +136,12 @@ t_error			message_pop(i_task taskid, t_tag tag, void* data);
 
 t_error			message_register(i_task taskid, t_tag tag);
 
-void			syscall_send(t_uint32	node[4],
+void			syscall_send(t_uint32	*node,
 				     t_uint32	tag,
 				     void	*ptr,
 				     t_uint32	size);
+
+t_error			message_test(void);
 
 t_error			message_test(void);
 

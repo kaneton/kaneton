@@ -526,8 +526,12 @@ define remove
     if [ -e $${f} ] ; then						\
       $(call pretty-printer,red,REMOVE,$${f},		)		; \
     fi									; \
-    $(_RM_) $${remove_options} $${f} $(_VERBOSE_)			; \
-  done
+   if [ -d $${f} ] ; then						\
+     $(_RM_) -Rf $${remove_options} $${f} $(_VERBOSE_)			; \
+   else									\
+     $(_RM_) $${remove_options} $${f} $(_VERBOSE_)			; \
+   fi									\
+   done
 endef
 
 #
