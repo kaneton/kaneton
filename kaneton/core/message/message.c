@@ -281,6 +281,7 @@ t_error			message_async_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
  * 1) Retrieve the message box and check if a sync_recv is pending
  * 2) If not, register to the senders queue, sleep & reschedule.
  * 3) If it is, pop the receiver from the queue, proceed to transfert
+ * 4) Unblock the receiver's task
  */
 
 t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t_size size)
@@ -328,13 +329,22 @@ t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t
 
   /* FIXME: Copy */
 
+  /*
+   * 4)
+   */
+
+  /* FIXME: Unblock receiver */
+
   return (ERROR_NONE);
 }
 
 /*
  * Receive synchronously a message by direct memory transfert
  *
- *
+ * 1) Retrieve the message box and check if a sync_send is pending
+ * 2) If not, register to the receivers queue, sleep & reschedule.
+ * 3) If it is, pop the sender from the queue, proceed to transfert
+ * 4) Unblock the sender's task
  */
 
 t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
@@ -381,6 +391,12 @@ t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
     return (ERROR_UNKNOWN);
 
   /* FIXME: Copy */
+
+  /*
+   * 4)
+   */
+
+  /* FIXME: Unblock sender */
 
   return (ERROR_NONE);
 }
