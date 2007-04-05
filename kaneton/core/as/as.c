@@ -374,10 +374,23 @@ t_error			as_paddr(i_as		asid,
 }
 
 /*
- * XXX
+ * read data from an as. this function supports contiguous regions
+ * mapped on non-contiguous segments.
+ *
+ * steps:
+ *
+ * 1) get the address space object.
+ * 2) get the first region of the as.
+ * 3) look for the first region to copy.
+ * 4) compute the offset and size.
+ * 5) read data from the segment.
+ * 6) loop throught the remaining regions (if needed).
+ * 7) get the next region (contiguously).
+ * 8) compute the offset and size.
+ * 9) read data from the segment.
  */
 
-t_error			as_read(i_as				as,
+t_error			as_read(i_as				asid,
 				t_vaddr				src,
 				t_vsize				size,
 				void*				dst)
@@ -393,14 +406,26 @@ t_error			as_read(i_as				as,
 
   AS_ENTER(as);
 
-  if (as_get(as, &o) != ERROR_NONE)
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
 
   if (set_head(o->regions, &it) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
 
   while (oreg->address + oreg->size < src)
     {
@@ -417,7 +442,7 @@ t_error			as_read(i_as				as,
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
-   * next and oreg are the first region
+   * 4)
    */
 
   offs = src - oreg->address;
@@ -425,6 +450,10 @@ t_error			as_read(i_as				as,
   if (copy > size)
     copy = size;
   offs += oreg->offset;
+
+  /*
+   * 5)
+   */
 
   if (segment_read(oreg->segid, offs, buff, copy) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
@@ -436,12 +465,16 @@ t_error			as_read(i_as				as,
     AS_LEAVE(as, ERROR_NONE);
 
   /*
-   * goto next region
+   * 6)
    */
 
   for (;;)
     {
       prev = oreg;
+
+      /*
+       * 7)
+       */
 
       if (set_next(o->regions, next, &it) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
@@ -453,7 +486,7 @@ t_error			as_read(i_as				as,
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
       /*
-       * it and oreg are the next region
+       * 8)
        */
 
       offs = oreg->offset;
@@ -461,7 +494,151 @@ t_error			as_read(i_as				as,
       if (copy > size)
 	copy = size;
 
+      /*
+       * 9)
+       */
+
       if (segment_read(oreg->segid, offs, buff, copy) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      buff += copy;
+      size -= copy;
+
+      if (size == 0)
+	break;
+
+      memcpy(&next, &it, sizeof (t_iterator));
+    }
+
+  AS_LEAVE(as, ERROR_NONE);
+}
+
+/*
+ * write data to an as. this function supports contiguous regions
+ * mapped on non-contiguous segments.
+ *
+ * steps:
+ *
+ * 1) get the address space object.
+ * 2) get the first region of the as.
+ * 3) look for the first region to copy.
+ * 4) compute the offset and size.
+ * 5) write data to the segment.
+ * 6) loop throught the remaining regions (if needed).
+ * 7) get the next region (contiguously).
+ * 8) compute the offset and size.
+ * 9) write data to the segment.
+ */
+
+t_error			as_write(i_as				asid,
+				 void*				src,
+				 t_vsize			size,
+				 t_vaddr			dst)
+{
+  o_as*			o;
+  o_region*		oreg;
+  o_region*		prev;
+  t_iterator		it;
+  t_iterator		next;
+  t_paddr		offs;
+  t_psize		copy;
+  t_uint8*		buff = src;
+
+  AS_ENTER(as);
+
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &o) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (set_head(o->regions, &it) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  while (oreg->address + oreg->size < dst)
+    {
+      if (set_next(o->regions, it, &next) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (set_object(o->regions, next, (void**)&oreg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      memcpy(&it, &next, sizeof (t_iterator));
+    }
+
+  if (oreg->address > dst)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  offs = dst - oreg->address;
+  copy = oreg->size - offs;
+  if (copy > size)
+    copy = size;
+  offs += oreg->offset;
+
+  /*
+   * 5)
+   */
+
+  if (segment_write(oreg->segid, offs, buff, copy) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  buff += copy;
+  size -= copy;
+
+  if (size == 0)
+    AS_LEAVE(as, ERROR_NONE);
+
+  /*
+   * 6)
+   */
+
+  for (;;)
+    {
+      prev = oreg;
+
+      /*
+       * 7)
+       */
+
+      if (set_next(o->regions, next, &it) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (oreg->address != prev->address + prev->size)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      /*
+       * 8)
+       */
+
+      offs = oreg->offset;
+      copy = oreg->size;
+      if (copy > size)
+	copy = size;
+
+      /*
+       * 9)
+       */
+
+      if (segment_write(oreg->segid, offs, buff, copy) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
       buff += copy;
@@ -480,101 +657,88 @@ t_error			as_read(i_as				as,
  * XXX
  */
 
-t_error			as_write(i_as				as,
-				 void*				src,
-				 t_vsize			size,
-				 t_vaddr			dst)
+t_error			as_copy(i_as				src_as,
+				t_vaddr				src,
+				i_as				dst_as,
+				t_vaddr				dst,
+				t_vsize				size)
 {
-  o_as*			o;
-  o_region*		oreg;
-  o_region*		prev;
-  t_iterator		it;
-  t_iterator		next;
-  t_paddr		offs;
-  t_psize		copy;
-  t_uint8*		buff = src;
+  o_as*			src_o;
+  o_region*		src_oreg;
+  o_as*			dst_o;
+  o_region*		dst_oreg;
+  t_iterator		src_it;
+  t_iterator		src_next;
+  t_iterator		dst_it;
+  t_iterator		dst_next;
 
   AS_ENTER(as);
 
-  if (as_get(as, &o) != ERROR_NONE)
+  /*
+   * 1)
+   */
+
+  if (as_get(src_as, &src_o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  if (set_head(o->regions, &it) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  while (oreg->address + oreg->size < dst)
-    {
-      if (set_next(o->regions, it, &next) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      if (set_object(o->regions, next, (void**)&oreg) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      memcpy(&it, &next, sizeof (t_iterator));
-    }
-
-  if (oreg->address > dst)
+  if (as_get(dst_as, &dst_o) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
-   * next and oreg are the first region
+   * 2)
    */
 
-  offs = dst - oreg->address;
-  copy = oreg->size - offs;
-  if (copy > size)
-    copy = size;
-  offs += oreg->offset;
-
-  if (segment_write(oreg->segid, offs, buff, copy) != ERROR_NONE)
+  if (set_head(src_o->regions, &src_it) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  buff += copy;
-  size -= copy;
-
-  if (size == 0)
-    AS_LEAVE(as, ERROR_NONE);
+  if (set_object(src_o->regions, src_it, (void**)&src_oreg) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
-   * goto next region
+   * 3)
    */
 
-  for (;;)
+  while (src_oreg->address + src_oreg->size < src)
     {
-      prev = oreg;
-
-      if (set_next(o->regions, next, &it) != ERROR_NONE)
+      if (set_next(src_o->regions, src_it, &src_next) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      if (set_object(o->regions, it, (void**)&oreg) != ERROR_NONE)
+      if (set_object(src_o->regions, src_next, (void**)&src_oreg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      if (oreg->address != prev->address + prev->size)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      /*
-       * it and oreg are the next region
-       */
-
-      offs = oreg->offset;
-      copy = oreg->size;
-      if (copy > size)
-	copy = size;
-
-      if (segment_write(oreg->segid, offs, buff, copy) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      buff += copy;
-      size -= copy;
-
-      if (size == 0)
-	break;
-
-      memcpy(&next, &it, sizeof (t_iterator));
+      memcpy(&src_it, &src_next, sizeof (t_iterator));
     }
+
+  if (src_oreg->address > src)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (set_head(dst_o->regions, &dst_it) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (set_object(dst_o->regions, dst_it, (void**)&dst_oreg) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
+  while (dst_oreg->address + dst_oreg->size < dst)
+    {
+      if (set_next(dst_o->regions, dst_it, &dst_next) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (set_object(dst_o->regions, dst_next, (void**)&dst_oreg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      memcpy(&dst_it, &dst_next, sizeof (t_iterator));
+    }
+
+  if (dst_oreg->address > dst)
+    AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
 }
