@@ -422,9 +422,10 @@ t_error			as_read(i_as				as,
 
   offs = src - oreg->address;
   copy = oreg->size - offs;
+  if (copy > size)
+    copy = size;
   offs += oreg->offset;
 
-  printf("memcpy(%qd, %u (%u))\n", oreg->segid, offs, copy);
   if (segment_read(oreg->segid, offs, buff, copy) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
@@ -460,7 +461,6 @@ t_error			as_read(i_as				as,
       if (copy > size)
 	copy = size;
 
-      printf("memcpy(%qd, %u (%u))\n", oreg->segid, offs, copy);
       if (segment_read(oreg->segid, offs, buff, copy) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
@@ -525,9 +525,10 @@ t_error			as_write(i_as				as,
 
   offs = dst - oreg->address;
   copy = oreg->size - offs;
+  if (copy > size)
+    copy = size;
   offs += oreg->offset;
 
-  printf("memcpy(%qd, %u (%u))\n", oreg->segid, offs, copy);
   if (segment_write(oreg->segid, offs, buff, copy) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
@@ -563,7 +564,6 @@ t_error			as_write(i_as				as,
       if (copy > size)
 	copy = size;
 
-      printf("memcpy(%qd, %u (%u))\n", oreg->segid, offs, copy);
       if (segment_write(oreg->segid, offs, buff, copy) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 

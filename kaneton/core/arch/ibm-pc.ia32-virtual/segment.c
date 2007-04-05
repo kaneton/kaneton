@@ -92,7 +92,9 @@ t_error			ia32_segment_read(i_region		segid,
 {
   o_segment*		o;
   i_region		reg;
-  t_vsize		size;
+  t_paddr		poffset;
+  t_vsize		psize;
+  t_paddr		end;
 
   SEGMENT_ENTER(segment);
 
@@ -108,25 +110,29 @@ t_error			ia32_segment_read(i_region		segid,
    */
 
   if (offs % PAGESZ)
-    {
-      sz += offs - (offs / PAGESZ * PAGESZ);
-      offs = offs / PAGESZ * PAGESZ;
-    }
-
-  if (sz % PAGESZ)
-    size = sz + PAGESZ - (sz % PAGESZ);
+  {
+    poffset = offs & ~(PAGESZ - 1);
+    offs -= poffset;
+  }
   else
-    size = sz;
+  {
+    poffset = offs;
+    offs = 0;
+  }
 
-  if (region_reserve(kasid, segid, offs, REGION_OPT_PRIVILEGED,
-		     0, size, &reg) != ERROR_NONE)
+  end = poffset + offs + sz;
+  if (end % PAGESZ)
+    end = (end & ~(PAGESZ - 1)) + PAGESZ;
+
+  if (region_reserve(kasid, segid, poffset, REGION_OPT_PRIVILEGED,
+		     0, end - poffset, &reg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  memcpy(buff, (void*)(t_vaddr)reg, sz);
+  memcpy(buff, (void*)(t_vaddr)reg + offs, sz);
 
   /*
    * 4)
@@ -156,7 +162,9 @@ t_error			ia32_segment_write(i_region		segid,
 {
   o_segment*		o;
   i_region		reg;
-  t_vsize		size;
+  t_paddr		poffset;
+  t_vsize		psize;
+  t_paddr		end;
 
   SEGMENT_ENTER(segment);
 
@@ -172,25 +180,29 @@ t_error			ia32_segment_write(i_region		segid,
    */
 
   if (offs % PAGESZ)
-    {
-      sz += offs - (offs / PAGESZ * PAGESZ);
-      offs = offs / PAGESZ * PAGESZ;
-    }
-
-  if (sz % PAGESZ)
-    size = sz + PAGESZ - (sz % PAGESZ);
+  {
+    poffset = offs & ~(PAGESZ - 1);
+    offs -= poffset;
+  }
   else
-    size = sz;
+  {
+    poffset = offs;
+    offs = 0;
+  }
 
-  if (region_reserve(kasid, segid, offs, REGION_OPT_PRIVILEGED,
-		     0, size, &reg) != ERROR_NONE)
+  end = poffset + offs + sz;
+  if (end % PAGESZ)
+    end = (end & ~(PAGESZ - 1)) + PAGESZ;
+
+  if (region_reserve(kasid, segid, poffset, REGION_OPT_PRIVILEGED,
+		     0, end - poffset, &reg) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  memcpy((void*)(t_vaddr)reg, buff, sz);
+  memcpy((void*)(t_vaddr)reg + offs, buff, sz);
 
   /*
    * 4)

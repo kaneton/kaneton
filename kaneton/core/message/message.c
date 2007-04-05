@@ -150,148 +150,60 @@ t_error			message_clean(void)
   return (ERROR_NONE);
 }
 
-
-t_error			map_buffer(i_as asid, t_vaddr asvaddr, t_size size, void** mapping)
-{
-  o_segment*		seg;
-  t_paddr		buff_paddr;
-  t_iterator		i;
-  t_size		offset;
-  i_region		mappingid;
-  o_region*		reg;
-
-  as_paddr(asid, asvaddr, &buff_paddr);
-
-  if (set_head(segment->segments, &i) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-  if (set_object(segment->segments, i, (void**)&seg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  while (buff_paddr >= seg->address + seg->size)
-  {
-    if (set_next(segment->segments, i, &i) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
-    if (set_object(segment->segments, i, (void**)&seg) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
-  }
-  if (buff_paddr < seg->address || buff_paddr >= seg->address + seg->size)
-    return (ERROR_UNKNOWN);
-
-  // FIXME: We actually force failure if the buffer is on more than one
-  // segment
-  if (buff_paddr + size > seg->address + seg->size)
-    return (ERROR_UNKNOWN);
-
-  offset = buff_paddr - seg->address;
-
-  // FIXME: Optimize mapping size tweaking offset and size parameter
-  if (region_reserve(kasid, seg->segid, 0, REGION_OPT_NONE, 0,
-      seg->size, &mappingid) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-  if (region_get(kasid, mappingid, &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  *mapping = (void*)(reg->address + offset);
-
-  return (ERROR_NONE);
-}
-
-t_error			unmap_buffer(void* ptr, t_size size)
-{
-  t_iterator		i;
-  o_as*			kas;
-  o_region*		reg;
-
-  size = size;
-
-  if (as_get(kasid, &kas) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  if (set_head(kas->regions, &i) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-  if (set_object(kas->regions, i, (void**)&reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  while ((t_vaddr)ptr >= reg->address + reg->size)
-  {
-    if (set_next(kas->regions, i, &i) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
-    if (set_object(kas->regions, i, (void**)&reg) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
-  }
-  if ((t_vaddr)ptr < reg->address || (t_vaddr)ptr >= reg->address + reg->size)
-    return (ERROR_UNKNOWN);
-
-  if (region_release(kasid, reg->regid) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  return (ERROR_NONE);
-}
-
 /*
  * Send asynchronously a message in a node msgbox
  *
- * 1) Get the data AS from the sender task id
- * 2) Temporary map the buffer into the kernel AS
- * 3) If the msgbox is not local, FIXME: pass the control to the gate
- * 4) in-kernel data copy through mapping
- * 5) Unmap the temporary zone
- * 6) Enqueue the message, in the node msgbox
+ * 1) Allocate a buffer in the kernel as
+ * 2) If the node is not on this machine, redirect the message FIXME
+ * 3) Copy the message from the given task's as to the kernel buffer
+ * 4) Enqueue the buffer into the node's messagebox
  */
 
 t_error			message_enqueue(i_task sender, i_node dest, t_tag tag, void* data, t_size size)
 {
   o_task*		sender_task;
-  void*			kernel_mapping;
   void*			kernel_buffer;
   o_msg			msg;
   t_local_box*		msgbox;
 
+  if (task_get(sender, &sender_task) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
   /*
    * 1)
    */
-  if (task_get(sender, &sender_task) != ERROR_NONE)
+
+  if (!(kernel_buffer = malloc(size)))
     return (ERROR_UNKNOWN);
 
   /*
    * 2)
    */
-  if (sender_task->asid != kasid)
+
+  if (!is_local_node(dest))
   {
-    if (map_buffer(sender_task->asid, (t_vaddr)data, size, &kernel_mapping) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+    /* XXX Redirect the message to the gate */
+    return (ERROR_UNKNOWN);
   }
-  else
-    kernel_mapping = data;
 
   /*
    * 3)
    */
-  if (!is_local_node(dest))
-  {
-    // FIXME: Send to the gate
 
-    unmap_buffer(kernel_mapping, size);
-    return (ERROR_NONE);
+  if (sender_task->asid != kasid)
+  {
+    if (as_read(sender_task->asid, (t_vaddr)data, size, kernel_buffer) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+  }
+  else
+  {
+    memcpy(kernel_buffer, data, size);
   }
 
   /*
    * 4)
    */
-  if (!(kernel_buffer = malloc(size)))
-    return (ERROR_UNKNOWN);
-  memcpy(kernel_buffer, kernel_mapping, size);
 
-  /*
-   * 5)
-   */
-  if (sender_task->asid != kasid)
-    if (unmap_buffer(kernel_mapping, size) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
-
-  /*
-   * 6)
-   */
   msg.sz = size;
   msg.data = kernel_buffer;
 
@@ -316,10 +228,8 @@ t_error			message_enqueue(i_task sender, i_node dest, t_tag tag, void* data, t_s
  * Receive asynchronously a message from a node msgbox
  *
  * 1) Retrieve the message box and check if a message is pending, retrieve it.
- * 2) Temporary map the buffer into kernel AS
- * 3) Data copy
- * 4) Unmap the buffer
- * 5) Pop the message from the queue and free kernel buffer
+ * 2) Copy the message from the kernel buffer to the given task's as
+ * 3) Pop the message from the queue and free kernel buffer
  */
 
 t_error			message_pop(i_task taskid, t_tag tag, void* data, size_t maxsz)
@@ -327,46 +237,38 @@ t_error			message_pop(i_task taskid, t_tag tag, void* data, size_t maxsz)
   t_local_box*		msgbox;
   o_msg*		msg;
   o_task*		task;
-  void*			kernel_mapping;
 
   /*
    * 1)
    */
+
   if (task_get(taskid, &task) != ERROR_NONE)
     return (ERROR_UNKNOWN);
   if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+
   tag = tag;
+
   if (set_pick(msgbox->queue, (void**)&msg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   /*
    * 2)
    */
+
   if (task->asid != kasid)
   {
-    if (map_buffer(task->asid, (t_vaddr)data, (maxsz < msg->sz ? maxsz : msg->sz), &kernel_mapping) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+    as_write(task->asid, msg->data, (maxsz < msg->sz ? maxsz : msg->sz), (t_paddr)data);
   }
   else
-    kernel_mapping = data;
-
+  {
+    memcpy(data, msg->data, (maxsz < msg->sz ? maxsz : msg->sz));
+  }
 
   /*
    * 3)
    */
-  memcpy(kernel_mapping, msg->data, (maxsz < msg->sz ? maxsz : msg->sz));
 
-  /*
-   * 4)
-   */
-  if (task->asid != kasid)
-    if (unmap_buffer(kernel_mapping, (maxsz < msg->sz ? maxsz : msg->sz)) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
-
-  /*
-   * 5)
-   */
   free(msg->data);
   set_pop(msgbox->queue);
 
@@ -379,6 +281,7 @@ t_error			message_pop(i_task taskid, t_tag tag, void* data, size_t maxsz)
  * 1) Create the message box if it doesn't exists
  * 2) Add the given tag to the message box FIXME
  */
+
 t_error			message_register(i_task taskid, t_tag tag)
 {
   t_local_box*		msgbox;
@@ -403,6 +306,7 @@ t_error			message_register(i_task taskid, t_tag tag)
   /*
    * 2) FIXME
    */
+
   tag = tag;
 
   return (ERROR_NONE);
@@ -451,7 +355,7 @@ static void			chiche_send()
   task1_node.machine = 2^64;
   task1_node.task = tsk2;
 
-  syscall_send(&task1_node, 0, tosend, strlen(tosend) + 1);
+  syscall_send((t_uint32 *)&task1_node, 0, tosend, strlen(tosend) + 1);
 
   while (1)
     ;
@@ -473,7 +377,7 @@ static void			chiche_recv()
   kernel_node.machine = 2^64;
   kernel_node.task = 0;
 
-  syscall_send(&kernel_node, 0, recv, strlen(recv) + 1);
+  syscall_send((t_uint32 *)&kernel_node, 0, recv, strlen(recv) + 1);
 
   while (1)
     ;
