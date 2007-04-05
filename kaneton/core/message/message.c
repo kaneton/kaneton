@@ -159,7 +159,7 @@ t_error			message_clean(void)
  * 4) Enqueue the buffer into the node's messagebox
  */
 
-t_error			message_enqueue(i_task sender, i_node dest, t_tag tag, void* data, t_size size)
+t_error			message_async_send(i_task sender, i_node dest, t_tag tag, void* data, t_size size)
 {
   o_task*		sender_task;
   void*			kernel_buffer;
@@ -215,7 +215,7 @@ t_error			message_enqueue(i_task sender, i_node dest, t_tag tag, void* data, t_s
 
   tag = tag;
 
-  if (set_push(msgbox->queue, &msg) != ERROR_NONE)
+  if (set_push(msgbox->msgqueue, &msg) != ERROR_NONE)
   {
     free(kernel_buffer);
     return (ERROR_UNKNOWN);
@@ -232,7 +232,7 @@ t_error			message_enqueue(i_task sender, i_node dest, t_tag tag, void* data, t_s
  * 3) Pop the message from the queue and free kernel buffer
  */
 
-t_error			message_pop(i_task taskid, t_tag tag, void* data, size_t maxsz)
+t_error			message_async_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
 {
   t_local_box*		msgbox;
   o_msg*		msg;
@@ -249,7 +249,7 @@ t_error			message_pop(i_task taskid, t_tag tag, void* data, size_t maxsz)
 
   tag = tag;
 
-  if (set_pick(msgbox->queue, (void**)&msg) != ERROR_NONE)
+  if (set_pick(msgbox->msgqueue, (void**)&msg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   /*
@@ -270,10 +270,121 @@ t_error			message_pop(i_task taskid, t_tag tag, void* data, size_t maxsz)
    */
 
   free(msg->data);
-  set_pop(msgbox->queue);
+  set_pop(msgbox->msgqueue);
 
   return (ERROR_NONE);
 }
+
+/*
+ * Send synchronously a message by direct memory transfert
+ *
+ * 1) Retrieve the message box and check if a sync_recv is pending
+ * 2) If not, register to the senders queue, sleep & reschedule.
+ * 3) If it is, pop the receiver from the queue, proceed to transfert
+ */
+
+t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t_size size)
+{
+  t_local_box*		msgbox;
+  o_task*		task;
+  t_waiter*		receiver;
+  t_waiter		send_waiter;
+
+  /*
+   * 1)
+   */
+
+  if (task_get(sender, &task) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+  if (set_get(message->local_boxes, get_node_task(dest), (void**)&msgbox) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  tag = tag;
+
+  if (set_pick(msgbox->receivers, (void**)&receiver) != ERROR_NONE)
+  {
+    /*
+     * 2)
+     */
+
+    send_waiter.task = sender;
+    send_waiter.data = (t_vaddr)data;
+    send_waiter.sz = size;
+
+    if (set_push(msgbox->senders, &send_waiter) != ERROR_NONE)
+      return (ERROR_UNKNOWN);
+
+    /* FIXME: Sleep & Reschedule */
+
+    return (ERROR_NONE);
+  }
+
+  /*
+   * 3)
+   */
+
+  if (set_pop(msgbox->receivers) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /* FIXME: Copy */
+
+  return (ERROR_NONE);
+}
+
+/*
+ * Receive synchronously a message by direct memory transfert
+ *
+ *
+ */
+
+t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
+{
+  t_local_box*		msgbox;
+  o_task*		task;
+  t_waiter*		sender;
+  t_waiter		recv_waiter;
+
+  /*
+   * 1)
+   */
+
+  if (task_get(taskid, &task) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+  if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  tag = tag;
+
+  if (set_pick(msgbox->senders, (void**)&sender) != ERROR_NONE)
+  {
+    /*
+     * 2)
+     */
+
+    recv_waiter.task = taskid;
+    recv_waiter.data = (t_vaddr)data;
+    recv_waiter.sz = maxsz;
+
+    if (set_push(msgbox->receivers, &recv_waiter) != ERROR_NONE)
+      return (ERROR_UNKNOWN);
+
+    /* FIXME: Sleep & Reschedule */
+
+    return (ERROR_NONE);
+  }
+
+  /*
+   * 3)
+   */
+
+  if (set_pop(msgbox->senders) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /* FIXME: Copy */
+
+  return (ERROR_NONE);
+}
+
 
 /*
  * Register a message box for a task in the message manager
@@ -294,8 +405,9 @@ t_error			message_register(i_task taskid, t_tag tag)
   if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
   {
     new.id = taskid;
-    if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_local_box),
-		    &new.queue) != ERROR_NONE)
+    if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(o_msg), &new.msgqueue) != ERROR_NONE ||
+	set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_waiter), &new.receivers) != ERROR_NONE ||
+	set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_waiter), &new.senders) != ERROR_NONE)
       return (ERROR_UNKNOWN);
     if (set_add(message->local_boxes, &new) != ERROR_NONE)
       return (ERROR_UNKNOWN);
@@ -478,7 +590,7 @@ t_error			message_test(void)
 
   while (1)
     {
-      if (message_pop(ktask, 0, recv, 128) == ERROR_NONE)
+      if (message_async_recv(ktask, 0, recv, 128) == ERROR_NONE)
 	{
 	  printf("task: %s\n", recv);
 	}

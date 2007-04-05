@@ -77,7 +77,7 @@ void			ia32_message_send_handler(void)
   ptr = (void*)context->edi;
   size = context->ebp;
 
-  ret = message_enqueue(source, u.node, tag, ptr, size);
+  ret = message_async_send(source, u.node, tag, ptr, size);
 
   context->eax = ret;
 }
@@ -96,7 +96,7 @@ void			ia32_message_recv_handler(void)
   ptr = context->ebx;
   size = context->ecx;
 
-  ret = message_pop(source, tag, ptr, size);
+  ret = message_async_recv(source, tag, ptr, size);
 
   context->eax = ret;
 }
