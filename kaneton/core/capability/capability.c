@@ -574,7 +574,7 @@ t_error			capability_init(void)
   capability_dump();
 #endif
 
-#if 1 // XXX
+#if 0 // XXX
   t_capability c;
   t_capability r1;
   t_capability r2;
@@ -599,7 +599,7 @@ t_error			capability_init(void)
 }
 
 /*
- * XXX
+ * Cleaning
  */
 
 t_error			capability_clean(void)
@@ -647,36 +647,8 @@ t_error			capability_clean(void)
   return (ERROR_NONE);
 }
 
-// XXX probleme: comment liberer les capabilities
-// XXX une tache a une capability sur sa tache, puis elle demande d'obtenir
-// XXX une nouvelle cap sur son as. puis cette tache restrict cette nouvelle
-// XXX cap et la donne a une autre tache pour que celle ci ne puisse que
-// XXX lire son as, par exemple pour debugger mais sans intervenir sur
-// XXX l'etat, sans modifier l'as.
-// XXX quand la tache meurt, comment savoir quelles sont les capabilities
-// XXX qu il faut detruire.
-// XXX soit on garde un ensemble de cap generees pour une tache
-// XXX soit on organise les cap descriptors par object id et quand une tache
-// XXX meurt on parcours le set de cap en fonction des id. le probleme
-// XXX de cette derniere solution c'est qu il va falloir le faire pour
-// XXX le taskid, l'asid, chaque threadid puis chaque segid. donc c est long!
-// XXX -> ajouter un set de capability dans o_task pour pouvoir les liberer
-
-// XXX il faudrait ajouter des operations genre par exemple justement les
-// XXX oeprations sur les capabilities. si on forge une nouvelle cap, il
-// XXX ne faut pas que si on la distribue a A et a B, a la release car
-// XXX B ne pourra plus s'en servir.
-// XXX soit on rajoute des op, soit interdit de faire release sur sa cap
-// XXX sauf pour la cap racine.
-// XXX -> pour l'instant on interdit un release sur une restricted cap
-
-// XXX gerer les collisions avec salt
-
 // XXX si erreur, alors liberer ce qui vient d etre construit
 
-// XXX changer car actuellement on a pas de fonctions de hash ni ce qu'il
-// XXX faut pour faire un xor correct sur des donnees.
-// XXX actuellement on a le meme systeme que Amoeba et donc failles de secu.
+// XXX changer car actuellement on a pas de fonctions de hash correct
 
-// XXX changer les protos et eviter les arg p, c etc.., il faut toujours
-// que les args d'un proto soit bien nomme
+// XXX fonction random pour les id ou pas? cela est-il vraiment necessaire?
