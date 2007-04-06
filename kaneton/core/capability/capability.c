@@ -83,7 +83,21 @@ extern m_kernel*	kernel;
  */
 
 /*
- * XXX
+ * Make a checksum on a capability, this one is simple but can be easily change
+ */
+static t_error		simple_checksum(char*			data,
+					t_uint32		size,
+					t_uint64*		res)
+{
+  CAPABILITY_ENTER(capability);
+
+  *res = (t_uint64)sum2((char*)&data, size);
+
+  CAPABILITY_LEAVE(capability, ERROR_NONE);
+}
+
+/*
+ * Display a capability, used for debugging purpose
  */
 
 t_error			capability_show(t_id			id)
@@ -102,7 +116,7 @@ t_error			capability_show(t_id			id)
 	   descriptor->capability.operations);
 
   cons_msg('#', "             check: %qd parent: %qd children:\n",
-	   descriptor->capability.check,
+	   descriptor->check,
 	   descriptor->parent);
 
   if (descriptor->children != ID_UNUSED)
@@ -129,7 +143,12 @@ t_error			capability_show(t_id			id)
 }
 
 /*
- * XXX
+ * Dumps the whole capabilities in the capability set
+ *
+ * 1) Gets the size of the capability set
+ * 2) Displays the numbers of capabilities
+ * 3) Displays all the capabilities
+displays
  */
 
 t_error			capability_dump(void)
@@ -176,8 +195,14 @@ t_error			capability_dump(void)
   CAPABILITY_LEAVE(capability, ERROR_NONE);
 }
 
+
 /*
- * XXX
+ * Reserves a capability
+ *
+ * 1) Setting the values of the capability
+ * 2) Getting an id for the capability descriptor
+ * 3) Setting the values of the capability descriptor and calculating the checksum
+ * 4) Adding the capability to the set
  */
 
   /*
@@ -197,25 +222,31 @@ t_error			capability_reserve(t_id			object,
   /*
    * 1)
    */
-
-  //new->node = kernel->node;
   get_kernel_node(&new->node);
   new->object = object;
   new->operations = operations;
-  new->check = 0;
-
-  // XXX should be a 64-bit random number generation
-  new->check = (t_uint64)sum2((char*)&new, sizeof(t_capability));
 
   /*
    * 2)
    */
+  // XXX should be a 64-bit random number generation
+  new->descriptor = (t_uint64)sum2((char*)&new, sizeof(t_capability));
 
-  descriptor.id = new->check;
+  /*
+   * 3)
+   */
+
+  descriptor.id = new->descriptor;
+  if (capability->f_checksum((char *)new, sizeof (t_capability), &descriptor.check) !=
+      ERROR_NONE)
+    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
   descriptor.capability = *new;
   descriptor.parent = ID_UNUSED;
   descriptor.children = ID_UNUSED;
 
+  /*
+   * 4)
+   */
   if (set_add(capability->descriptors, &descriptor) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
@@ -223,7 +254,11 @@ t_error			capability_reserve(t_id			object,
 }
 
 /*
- * XXX
+ * Releases a capability descriptor, if the capability has children it won't be deleted
+ *
+ * 1) Gets ths descriptor and then check if it has a parent
+ * 2) Invalidates all the children of the released capability
+ * 3) Removes the capability from the capability descriptor set
  */
 
 t_error			capability_release(t_id			id)
@@ -235,12 +270,19 @@ t_error			capability_release(t_id			id)
 
   CAPABILITY_ENTER(capability);
 
+  /*
+   * 1)
+   */
+
   if (capability_get(id, &descriptor) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
   if (descriptor->parent != ID_UNUSED)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
+  /*
+   * 2)
+   */
   if (descriptor->children != ID_UNUSED)
     {
       set_foreach(SET_OPT_FORWARD, descriptor->children, &i, state)
@@ -261,6 +303,9 @@ t_error			capability_release(t_id			id)
 	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
     }
 
+  /*
+   * 3)
+   */
   if (set_remove(capability->descriptors, descriptor->id) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
@@ -268,7 +313,13 @@ t_error			capability_release(t_id			id)
 }
 
 /*
- * XXX
+ * Creates a new restricted capability from another capability
+ *
+ * 1) Gets the capability
+ * 2) Checking that operations are really restriction of the parent capability
+ * 3) Setting the values of the new capability and its associated descriptor
+ * 4) Reserve a set on the parent capability if it doesn't have any child and
+ *    add the new capability to the set of children of the parent
  */
 
 t_error			capability_restrict(t_id		id,
@@ -277,35 +328,36 @@ t_error			capability_restrict(t_id		id,
 {
   t_capability_descriptor	restricted;
   t_capability_descriptor*	parent;
-  t_uint64			xor;
 
   CAPABILITY_ENTER(capability);
 
+  /*
+   * 1)
+   */
   if (capability_get(id, &parent) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
-
-  if ((parent->capability.operations | operations) !=
-      parent->capability.operations)
-    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
-
-  new->node = parent->capability.node;
-  new->object = parent->capability.object;
-  new->operations = operations;
-  new->check = 0;
-
-  // XXX xor between {node,object,operations} and parent->check
-  // XXX so between *new and parent->check
-  // XXX for the moment only a xor between operations and parent->check
-  xor = ((t_uint64)new->operations) ^ parent->capability.check;
-
-  // XXX then the hash function
-  new->check = (t_uint64)sum2((char*)&xor, sizeof(t_uint64));
 
   /*
    * 2)
    */
+  if ((parent->capability.operations | operations) !=
+      parent->capability.operations)
+    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
-  restricted.id = new->check;
+  /*
+   * 3)
+   */
+  new->node = parent->capability.node;
+  new->object = parent->capability.object;
+  new->operations = operations;
+
+  // XXX should be a 64-bit random number generation
+  new->descriptor = (t_uint64)sum2((char*)&new, sizeof(t_capability));
+
+  restricted.id = new->descriptor;
+  if (capability->f_checksum((char *)new, sizeof (t_capability), &restricted.check) !=
+      ERROR_NONE)
+    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
   restricted.capability = *new;
   restricted.parent = parent->id;
   restricted.children = ID_UNUSED;
@@ -313,14 +365,14 @@ t_error			capability_restrict(t_id		id,
   if (set_add(capability->descriptors, &restricted) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
+
+  /*
+   * 4)
+   */
   if (parent->children == ID_UNUSED)
-    {
       if (set_reserve(array, SET_OPT_ALLOC, CAPABILITY_CHILDREN_INITSZ,
 		      sizeof(t_id), &parent->children) != ERROR_NONE)
-	{
 	  CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
-	}
-    }
 
   if (set_add(parent->children, &restricted.id) != ERROR_NONE)
     {
@@ -331,7 +383,7 @@ t_error			capability_restrict(t_id		id,
 }
 
 /*
- * XXX
+ * Invalidates a previously restricted capability
  */
 
 t_error			capability_invalidate(t_id		p,
@@ -384,7 +436,7 @@ t_error			capability_invalidate(t_id		p,
 }
 
 /*
- * XXX
+ * Gets a capability descriptor corresponding to an id
  */
 
 t_error			capability_get(t_id			id,
@@ -398,61 +450,83 @@ t_error			capability_get(t_id			id,
   CAPABILITY_LEAVE(capability, ERROR_NONE);
 }
 
+
 /*
- * XXX
+ * Gives a capability to another node
+ * 1) Gets the descriptor
+ * 2) Sets the new node in the capability
+ * 3) Updates the checksum
+ */
+
+t_error			capability_give(t_id			id,
+					i_node			node)
+{
+  t_capability_descriptor* descriptor;
+
+  CAPABILITY_ENTER(capability);
+
+  /*
+   * 1)
+   */
+  if (capability_get(id, &descriptor) != ERROR_NONE)
+    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+  descriptor->capability.node = node;
+
+  /*
+   * 3)
+   */
+  if (capability->f_checksum((char *)&descriptor->capability,
+			     sizeof (t_capability),
+			     &descriptor->check) != ERROR_NONE)
+    CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
+
+  CAPABILITY_LEAVE(capability, ERROR_NONE);
+}
+
+
+/*
+ * Vefifies if a capability is correct by checking the value of the checksum
+ * 1) Gets the descriptor
+ * 2) Generates a correct checksum for the provided capability
+ * 3) Compares the generated checksum with the one saved in the descriptor
  */
 
 t_error			capability_verify(t_capability*		provided)
 {
   t_capability_descriptor*	current;
+  t_uint64			check;
 
   CAPABILITY_ENTER(capability);
 
-  if (capability_get((t_id)provided->check, &current) != ERROR_NONE)
+  /*
+   * 1)
+   */
+  if (capability_get((t_id)provided->descriptor, &current) != ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
-  //if (provided->node != current->capability.node)
-  if (!node_cmp(provided->node, current->capability.node))
+  /*
+   * 2)
+   */
+  if (capability->f_checksum((char *)provided, sizeof (t_capability), &check) !=
+      ERROR_NONE)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
 
-  if (provided->object != current->capability.object)
+  /*
+   * 3)
+   */
+  if (check != current->check)
     CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
-
-  if (current->parent == ID_UNUSED)
-    {
-      if (provided->operations != current->capability.operations)
-	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
-
-      if (provided->check != current->capability.check)
-	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
-    }
-  else
-    {
-      // XXX t_capability		verification;
-      t_capability_descriptor*	parent;
-      t_uint64			xor;
-
-      t_uint64			verification; // XXX
-
-      if (capability_get((t_id)current->parent, &parent) != ERROR_NONE)
-	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
-
-      // XXX O' ^ C
-      xor =
-	((t_uint64)current->capability.operations) ^ parent->capability.check;
-
-      // XXX hash(xor)
-      verification = sum2((char*)&xor, sizeof(t_uint64));
-
-      if (verification != current->capability.check)
-	CAPABILITY_LEAVE(capability, ERROR_UNKNOWN);
-    }
 
   CAPABILITY_LEAVE(capability, ERROR_NONE);
 }
 
+
 /*
- * XXX
+ * Init
  */
 
 t_error			capability_init(void)
@@ -494,12 +568,13 @@ t_error			capability_init(void)
   /*
    * 4)
    */
+  capability->f_checksum = simple_checksum;
 
 #if (DEBUG & DEBUG_CAPABILITY)
   capability_dump();
 #endif
 
-#if 0 // XXX
+#if 1 // XXX
   t_capability c;
   t_capability r1;
   t_capability r2;
@@ -507,10 +582,10 @@ t_error			capability_init(void)
 
   capability_reserve(42, 0x17, &c);
 
-  capability_restrict((t_id)c.check, 0x11, &r1);
-  capability_restrict((t_id)c.check, 0x7, &r2);
+  capability_restrict((t_id)c.descriptor, 0x11, &r1);
+  capability_restrict((t_id)c.descriptor, 0x7, &r2);
 
-  capability_restrict((t_id)r1.check, 0x1, &f);
+  capability_restrict((t_id)r1.descriptor, 0x1, &f);
 
   capability_dump();
 

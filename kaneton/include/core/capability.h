@@ -42,11 +42,10 @@
 
 typedef struct
 {
-  //t_id				node;
   i_node			node;
   t_id				object;
   t_operations			operations;
-  t_uint64			check;
+  t_id				descriptor;
 
   // machdep_data(t_capability);
 }				t_capability;
@@ -63,6 +62,7 @@ typedef struct
   t_id				id;
 
   t_capability			capability;
+  t_uint64			check;
 
   t_id				parent;
   i_set				children;
@@ -77,6 +77,10 @@ typedef struct
   i_stats			stats;
 
   i_set				descriptors;
+
+  t_error			(*f_checksum)(char* data,
+					      t_uint32 size,
+					      t_uint64* res);
 
   // machdep_data(m_capability);
 }				m_capability;
@@ -155,6 +159,9 @@ t_error			capability_invalidate(t_id		p,
 
 t_error			capability_get(t_id			id,
 				       t_capability_descriptor** descriptor);
+
+t_error			capability_give(t_id			id,
+					i_node			node);
 
 t_error			capability_verify(t_capability*		provided);
 
