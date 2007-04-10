@@ -665,12 +665,19 @@ t_error			as_copy(i_as				src_as,
 {
   o_as*			src_o;
   o_region*		src_oreg;
+  o_segment*		src_oseg;
   o_as*			dst_o;
   o_region*		dst_oreg;
+  o_segment*		dst_oseg;
   t_iterator		src_it;
   t_iterator		src_next;
   t_iterator		dst_it;
   t_iterator		dst_next;
+  t_paddr		src_offs;
+  t_paddr		dst_offs;
+  t_psize		copy;
+  o_region*		prev;
+  t_iterator		next;
 
   AS_ENTER(as);
 
@@ -712,6 +719,9 @@ t_error			as_copy(i_as				src_as,
   if (src_oreg->address > src)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
+  if (segment_get(src_oreg->segid, &src_oseg) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
   /*
    * 4)
    */
@@ -739,6 +749,67 @@ t_error			as_copy(i_as				src_as,
 
   if (dst_oreg->address > dst)
     AS_LEAVE(as, ERROR_UNKNOWN);
+
+  if (segment_get(dst_oreg->segid, &dst_oseg) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  /*
+   * XXX
+   */
+
+  src_offs = src_oreg->offset + (src - src_oreg->address);
+  dst_offs = dst_oreg->offset + (dst - dst_oreg->address);
+
+  for (;;)
+    {
+
+
+      if (segment_copy(dst_oreg->segid, dst_offs,
+		       src_oreg->segid, src_offs,
+		       copy) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (src_offs + copy == src_oseg->size)
+	{
+	  prev = src_oreg;
+
+	  if (set_next(src_o->regions, src_it, &next) != ERROR_NONE)
+	    AS_LEAVE(as, ERROR_UNKNOWN);
+
+	  if (set_object(src_o->regions, next, (void**)&src_oreg) != ERROR_NONE)
+	    AS_LEAVE(as, ERROR_UNKNOWN);
+
+	  if (src_oreg->address != prev->address + prev->size)
+	    AS_LEAVE(as, ERROR_UNKNOWN);
+
+	  memcpy(&src_it, &next, sizeof (t_iterator));
+
+	  if (segment_get(src_oreg->segid, &src_oseg) != ERROR_NONE)
+	    AS_LEAVE(as, ERROR_UNKNOWN);
+
+	  src_offs = src_oreg->offset;
+	}
+      else
+	{
+	  prev = dst_oreg;
+
+	  if (set_next(dst_o->regions, dst_it, &next) != ERROR_NONE)
+	    AS_LEAVE(as, ERROR_UNKNOWN);
+
+	  if (set_object(dst_o->regions, next, (void**)&dst_oreg) != ERROR_NONE)
+	    AS_LEAVE(as, ERROR_UNKNOWN);
+
+	  if (dst_oreg->address != prev->address + prev->size)
+	    AS_LEAVE(as, ERROR_UNKNOWN);
+
+	  memcpy(&src_it, &next, sizeof (t_iterator));
+
+	  if (segment_get(dst_oreg->segid, &dst_oseg) != ERROR_NONE)
+	    AS_LEAVE(as, ERROR_UNKNOWN);
+
+	  dst_offs = dst_oreg->offset;
+	}
+    }
 
   AS_LEAVE(as, ERROR_NONE);
 }
