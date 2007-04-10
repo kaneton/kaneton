@@ -91,6 +91,9 @@ Remember that you can add code even if there is no FIXME.
     No assignments. No modification of the task manager is
     required. The following interface is given as information.
 
+    \textbf{Warning:} remember to ``unpatch'' the line is
+    \emph{task\_current} (modified for K1 and K2).
+
   \item {\bf Interface}\\
 
 \function{task\_show}{(i\_task \argument{id})}
@@ -251,7 +254,23 @@ Remember that you can add code even if there is no FIXME.
 
   \item {\bf Assignments}\\
 
-    XXX
+    Part of your work for K3 is to write the IA-32 part of the thread
+    manager.
+
+    This part of the manager manages execution context of the threads,
+    which is by definition of context very specific between
+    architectures. First of all, you will have to create a structure
+    in the machine-dependent part of the \emph{o\_thread} object that
+    represent the execution context of the thread.
+
+    Next, your only work is to maintain this structure.
+
+    \textbf{Hint:} values of segment selector registers depend on the
+    task's class. See \emph{ia32\_segment\_init} for details.
+
+    \textbf{Hint:} flags must be set correctly in a new
+    thread. Interrupt Flag (IF) must be enabled in order to process
+    interrupts correctly.
 
   \item {\bf Interface}\\
 
@@ -307,6 +326,15 @@ Remember that you can add code even if there is no FIXME.
 	   This function updates the current thread priority
 	   to \argument{prior}.
 
+	   The priority must be in the interval \emph{THREAD\_LPRIOR},
+	   \emph{THREAD\_HPRIOR}.
+	 }
+
+\function{thread\_state}{(i\_thread \argument{id},
+                          t\_state \argument{sched})}
+	 {
+	   This function stops or starts a thread.
+
 	   Values for \argument{sched} are:
 
 	   \begin{itemize}
@@ -317,22 +345,17 @@ Remember that you can add code even if there is no FIXME.
 	   \end{itemize}
 	 }
 
-\function{thread\_state}{(i\_thread \argument{id},
-                          t\_state \argument{sched})}
-	 {
-	   XXX
-	 }
-
 \function{thread\_wait}{(i\_thread \argument{id},
                          t\_opts \argument{opts},
                          t\_wait* \argument{wait})}
 	 {
-	   This function acts like the function \textbf{task\_wait}().
+	   This function acts like the function \emph{task\_wait}().
 
 	   This function waits for the thread's state to change depending on
 	   the options \argument{opts}.
 
-	   \notice{This feature is not yet implemented.}
+	   \notice{This feature is not yet implemented. Do not care
+	     about it}
 	 }
 
 \function{thread\_get}{(i\_thread \argument{id},
@@ -349,12 +372,15 @@ Remember that you can add code even if there is no FIXME.
 	 }
 
 \function{thread\_stack}{(i\_thread \argument{id},
-                          t\_stack \argument{size})}
+                          t\_stack \argument{stack})}
 	 {
-	   This function allocates a stack of \argument{size} bytes
-	   for the thread \argument{id}.
+	   This function allocates a stack for the thread \argument{id}.
 
-	   XXX
+	   The \argument{stack} argument is a struct containing the
+	   size of the stack and a field called \emph{base}. If the
+	   base is set to a value different of 0, then no space will
+	   be allocated and the base of the stack will be set to the
+	   address \argument{base}.
 	 }
 
 \function{thread\_load}{(i\_thread \argument{id},
@@ -366,8 +392,6 @@ Remember that you can add code even if there is no FIXME.
 	   A thread execution context \textit{t\_thread\_context}
 	   only contains the \textit{program counter} and the
 	   \textit{stack pointer}.
-
-	   XXX
 	 }
 
 \function{thread\_store}{(i\_thread \argument{id},
@@ -375,8 +399,6 @@ Remember that you can add code even if there is no FIXME.
 	 {
 	   This function stores in \argument{context} the current
 	   thread execution context of the thread object \argument{id}.
-
-	   XXX
 	 }
 
 \function{thread\_init}{(void)}
@@ -414,30 +436,50 @@ Remember that you can add code even if there is no FIXME.
 \begin{itemize}
   \item {\bf Overview}\\
 
-    XXX
+    The scheduler's role is to allocate the cpu's resources to the
+    active threads depending on their priorities.
+
+    Be careful, the scheduler schedules the threads which are the active
+    execution entities and not the tasks.
 
   \item {\bf Assignments}\\
 
-    \textbf{Note about priorities}: the task priority will not be
-    used. Only priorities of thread are used for scheduling.
+    For K3, you have to implement the whole sched manager, consisting
+    in a simple round-robin algorithm with fixed priorities and the
+    machine-dependent part doing the context switching.
+
+    The architecture-dependent part of the scheduler is also
+    responsible of calling the \emph{sched\_switch} periodically. This
+    is typically done with a timer.
+
+    \textbf{Hint:} the special case of the kernel main thread must be
+    considered. The scheduler must create a kernel thread
+    (corresponding to the execution context in the kernel). Think
+    twice about it, there is a very simple implementation.
+
+    \textbf{Note about priorities:} the task priority will not be
+    used. Only priorities of thread are used for scheduling. There is
+    no real policiy required for priorities. Our test will check that
+    on a given amount of time, higher-priority threads are executed
+    more often than lower-priority one.
 
   \item {\bf Interface}\\
 
 \function{sched\_dump}{(void)}
 	 {
-	   This function displays the scheduler state.
+	   This (\textbf{optional}) function displays the scheduler state.
 	 }
 
 \function{sched\_quantum}{(t\_quantum \argument{quantum})}
 	 {
 	   This function sets the scheduler quantum to \argument{quantum}.
 
-	   XXX
+	   The quantum correspond to the period the scheduler is called.
 	 }
 
 \function{sched\_yield}{(i\_cpu \argument{cpuid})}
 	 {
-	   This function permits the current task to relinquish
+	   This function permits the current thread to relinquish
 	   the processor voluntarily.
 
 	   Don't care about the argument \argument{cpuid}.
@@ -445,12 +487,16 @@ Remember that you can add code even if there is no FIXME.
 
 \function{sched\_add}{(i\_thread \argument{thread})}
 	 {
-	   This function adds a runnable thread to the scheduler.
+	   This function adds a runnable thread to the scheduler. Even
+	   if the added thread has the highest priority, do not yield
+	   the current thread.
 	 }
 
 \function{sched\_remove}{(i\_thread \argument{thread})}
 	 {
-	   This function remove a thread from the scheduler.
+	   This function remove a thread from the
+	   scheduler. \textbf{Be careful:} the thread to remove can be
+	   the currently executing thread.
 	 }
 
 \function{sched\_update}{(i\_thread \argument{thread})}
@@ -468,7 +514,7 @@ Remember that you can add code even if there is no FIXME.
 
 \function{sched\_switch}{(void)}
 	 {
-	   This function just schedules a new elected thread.
+	   This function just elects and schedules a new thread.
 
 	   \textbf{Note}: the machine-dependent code of this function
 	   takes an additional parameter.
@@ -540,3 +586,57 @@ Bonuses ideas:
   Implement support for Floating Point Unit (FPU) contexts. The FPU
   context must be saved only when required.
 \end{itemize}
+
+%
+% appendix
+%
+
+\newpage
+
+\section{Appendix}
+
+\textbf{Example of task creation}
+
+\begin{verbatim}
+i_task           tsk;
+i_as             as;
+i_thread         thr;
+o_thread*        o;
+t_thread_context ctx;
+t_stack          stack;
+
+task_reserve(TASK_CLASS_PROGRAM,
+             TASK_BEHAV_INTERACTIVE,
+             TASK_PRIOR_INTERACTIVE,
+             &tsk);
+
+as_reserve(tsk, &as);
+
+thread_reserve(tsk, THREAD_PRIOR, &thr);
+
+stack.base = 0;
+stack.size = THREAD_MIN_STACKSZ;
+thread_stack(thr, stack);
+
+thread_get(thr, &o);
+
+ctx.sp = o->stack + o->stacksz - 16;
+ctx.pc = (t_vaddr)entry_point;
+
+thread_load(thr, ctx);
+
+task_state(tsk, SCHED_STATE_RUN);
+
+...
+
+void             entry_point()
+{
+  printf("This is a thread.\n");
+
+  /*                         */
+  /*   I MUST NOT RETURN !   */
+  /*                         */
+  while (1)
+    ;
+}
+\end{verbatim}
