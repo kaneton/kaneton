@@ -10,7 +10,7 @@
 %%
 
 %
-% k2
+% k3
 %
 
 \chapter{K3: tasks \& scheduling}
@@ -30,22 +30,34 @@ Students per group: & 2 (same groups as for previous stages) \\
 
 \section{Abstract}
 
-K2 project consists in developing XXX
+K3 project consists in giving kaneton the ability to execute
+tasks. Threads are implemented in kernel-land. The scheduling model is
+time-sharing with fixed priorities.
+
 The concerned managers are:
 
 \begin{enumerate}
   \item
     {\bf The task manager}\\
-    XXX
+    This manager works on the PCB (Process Control Block) of every
+    tasks. This PCB is very simple and made of a few properties, a
+    parent identifier, a set of chlidren, an address space identifier
+    and a set of threads.
   \item
     {\bf The thread manager}\\
-    XXX
+    The thread object is composed of the parent task identifier, stack
+    information and scheduling properties like priority. The thread
+    manager manage both this part of the thread object plus the
+    machine-dependent object made of the thread's execution context.
   \item
-    {\bf The sched manager}\\
-    XXX
+    {\bf The sched manager}\\ This manager provides an implementation
+    of the scheduler. The scheduler is called periodically (on timer
+    for example) to allocate the microprocessor's time.
 \end{enumerate}
 
-XXX
+Your work for this stage of kaneton is to provide a working
+time-sharing execution environment both for kernel-land threads and
+user-land threads.
 
 \textbf{Important}: do no forget the FIXME in the machine-dependent
 part of the as manager, near the end of the file.
@@ -71,12 +83,13 @@ Remember that you can add code even if there is no FIXME.
     execution entity. Nevertheless, a task object is never scheduled
     since a task is not an active entity (threads are).
 
-    A task is composed of an address space \textit{o\_as} and threads
-    \textit{o\_thread}.
+    A task is composed of an address space (\textit{i\_as}) and threads
+    (set of \textit{i\_thread}).
 
   \item {\bf Assignments}\\
 
-    No assignments.
+    No assignments. No modification of the task manager is
+    required. The following interface is given as information.
 
   \item {\bf Interface}\\
 
@@ -110,7 +123,33 @@ Remember that you can add code even if there is no FIXME.
 
 	   Note that once reserved, the task is marked as stopped.
 
-	   XXX
+	   Task classes include:
+
+	   \begin{itemize}
+	     \item
+	       \emph{TASK\_CLASS\_CORE}: the tasks executes with
+	       supervisor privileges.
+	     \item
+	       \emph{TASK\_CLASS\_PROGRAM}: the tasks executes as a
+	       classical program with user privileges.
+	     \item
+	       Other classes must not be supported and will not be
+	       tested.
+	   \end{itemize}
+
+	   Task behavior is used to force a priority interval. Values
+	   are (from higher priorities towards lower):
+
+	   \begin{enumerate}
+	     \item \emph{TASK\_BEHAV\_CORE}
+	     \item \emph{TASK\_BEHAV\_REATIME}
+	     \item \emph{TASK\_BEHAV\_INTERACTIVE}
+	     \item \emph{TASK\_BEHAV\_TIMESHARING}
+	     \item \emph{TASK\_BEHAV\_BACKGROUND}
+	   \end{enumerate}
+
+	   The default priority of a task is
+	   \emph{TASK\_PRIOR\_$<<$behav$>>$}.
 	 }
 
 \function{task\_release}{(i\_task \argument{id})}
@@ -122,12 +161,26 @@ Remember that you can add code even if there is no FIXME.
                            t\_prior \argument{prior})}
 	 {
 	   This function updates the task's priority to \argument{prior}.
+
+	   The priority must be in the interval corresponding to the
+	   task behavior, between \emph{TASK\_LPRIOR\_$<<$behav$>>$} and
+	   \emph{TASK\_HPRIOR\_$<<$behav$>>$}.
 	 }
 
 \function{task\_state}{(i\_task \argument{id},
                         t\_state \argument{sched})}
 	 {
-	   XXX
+	   This function starts or stop a task (this means all its
+	   threads).
+
+	   Values for \argument{sched} are:
+
+	   \begin{itemize}
+	     \item
+	       \emph{SCHED\_STATE\_RUN}: run the task.
+	     \item
+	       \emph{SCHED\_STATE\_STOP}: stop the task.
+	   \end{itemize}
 	 }
 
 \function{task\_wait}{(i\_task \argument{id},
@@ -238,6 +291,9 @@ Remember that you can add code even if there is no FIXME.
 	   given the default thread priority \argument{prior}.
 
 	   Note that once reserved, the thread is marked as stopped.
+
+	   The priority must be in the interval \emph{THREAD\_LPRIOR},
+	   \emph{THREAD\_HPRIOR}.
 	 }
 
 \function{thread\_release}{(i\_thread \argument{id})}
@@ -250,6 +306,15 @@ Remember that you can add code even if there is no FIXME.
 	 {
 	   This function updates the current thread priority
 	   to \argument{prior}.
+
+	   Values for \argument{sched} are:
+
+	   \begin{itemize}
+	     \item
+	       \emph{SCHED\_STATE\_RUN}: run the task.
+	     \item
+	       \emph{SCHED\_STATE\_STOP}: stop the task.
+	   \end{itemize}
 	 }
 
 \function{thread\_state}{(i\_thread \argument{id},
@@ -353,7 +418,8 @@ Remember that you can add code even if there is no FIXME.
 
   \item {\bf Assignments}\\
 
-    XXX
+    \textbf{Note about priorities}: the task priority will not be
+    used. Only priorities of thread are used for scheduling.
 
   \item {\bf Interface}\\
 
@@ -462,8 +528,15 @@ additional bonuses, as far as they respect the following rules:
 
 Bonuses ideas:
 \begin{itemize}
-\item Implement a better scheduler. Feel free to implement any other
-algorithm. You can try the multi-level feedback queue explained during
-the lesson
-\end{itemize}
+\item
+  Implement a better scheduler. Feel free to implement any other
+  algorithm. You can try the multi-level feedback queue explained
+  during the lesson.
 
+\item
+  Add dynamic priorities.
+
+\item
+  Implement support for Floating Point Unit (FPU) contexts. The FPU
+  context must be saved only when required.
+\end{itemize}
