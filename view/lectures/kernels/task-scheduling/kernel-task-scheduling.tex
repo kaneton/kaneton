@@ -789,12 +789,116 @@ resume_pc:
 
 \begin{frame}
   \frametitle{Process Control Block (PCB)}
+
+  The Process Control Block (PCB) is the structure describing a
+  task. The complexity of the PCB depend on task implementation and
+  capabilities.
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example of PCB: NetBSD}
+
+  \begin{itemize}
+  \item
+    Process IDentifier (PID)
+  \item
+    Parent, sibling and child processes list
+  \item
+    Address space
+  \item
+    List of LWP
+  \item
+    File-descriptors table and cwd information
+  \item
+    Process limits (\verb|setrlimit|)
+  \item
+    Signal pendind, waiters\ldots
+  \item
+    Time information and time statistics
+  \item
+    Scheduling information (most important like priorities etc are in
+    the LWPs)
+   \item
+    Zombie information
+  \end{itemize}
+
+  \-
+
+  LWP contains:
+
+  \begin{itemize}
+  \item
+    Priorities, state, waiting and waiters
+  \item
+    sigmask, sigpend\ldots
+  \item
+    Execution context
+  \end{itemize}
+
 \end{frame}
 
 % -)
 
 \begin{frame}
-  \frametitle{Example of PCB: NetBSD}
+  \frametitle{Example of PCB: Minix}
+
+  \begin{itemize}
+  \item
+    Process Number (PNR)
+  \item
+    Next process in list
+  \item
+    Address space
+  \item
+    Signals
+  \item
+    Message buffers and information
+  \item
+    Scheduling information
+  \item
+    Execution context
+  \end{itemize}
+
+  \-
+
+  In micro-kernels, many part of the PCB are picked out of the kernel
+  and stored in servers. For example, the file-descriptors table is
+  not in the PCB but in the VFS server.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{PCB in kaneton}
+
+  \begin{itemize}
+  \item
+    Task identifier
+  \item
+    Parent and children
+  \item
+    Dispatch processor identifier
+  \item
+    Address space
+  \item
+    Task class and behavior
+  \item
+    Scheduling information: state, priority
+  \item
+    Thread list
+  \item
+    Waiters and wait state
+  \end{itemize}
+
+  \-
+
+  As kenaton is a micro-kernel, other information like fd-table are
+  contained in servers.
+
 \end{frame}
 
 % -)
