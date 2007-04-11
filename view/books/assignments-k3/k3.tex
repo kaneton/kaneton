@@ -31,8 +31,8 @@ Students per group: & 2 (same groups as for previous stages) \\
 \section{Abstract}
 
 K3 project consists in giving kaneton the ability to execute
-tasks. Threads are implemented in kernel-land. The scheduling model is
-time-sharing with fixed priorities.
+tasks. Threads are implemented in kernel-land (1:1 model). The
+scheduling model is time-sharing with fixed priorities.
 
 The concerned managers are:
 
@@ -40,19 +40,19 @@ The concerned managers are:
   \item
     {\bf The task manager}\\
     This manager works on the PCB (Process Control Block) of every
-    tasks. This PCB is very simple and made of a few properties, a
+    task. This PCB is very simple and made of a few properties, a
     parent identifier, a set of chlidren, an address space identifier
     and a set of threads.
   \item
     {\bf The thread manager}\\
     The thread object is composed of the parent task identifier, stack
     information and scheduling properties like priority. The thread
-    manager manage both this part of the thread object plus the
+    manager manages both this part of the thread object plus the
     machine-dependent object made of the thread's execution context.
   \item
-    {\bf The sched manager}\\ This manager provides an implementation
-    of the scheduler. The scheduler is called periodically (on timer
-    for example) to allocate the microprocessor's time.
+    {\bf The sched manager}\\ This manager implements the
+    scheduler. The scheduler is called periodically (on timer for
+    example) to allocate the microprocessor's time.
 \end{enumerate}
 
 Your work for this stage of kaneton is to provide a working
@@ -154,6 +154,8 @@ Remember that you can add code even if there is no FIXME.
 	   The default priority of a task is
 	   \emph{TASK\_PRIOR\_$<<$behav$>>$}.
 	 }
+
+\newpage
 
 \function{task\_release}{(i\_task \argument{id})}
 	 {
@@ -261,7 +263,7 @@ Remember that you can add code even if there is no FIXME.
     which is by definition of context very specific between
     architectures. First of all, you will have to create a structure
     in the machine-dependent part of the \emph{o\_thread} object that
-    represent the execution context of the thread.
+    represents the execution context of the thread.
 
     Next, your only work is to maintain this structure.
 
@@ -276,12 +278,12 @@ Remember that you can add code even if there is no FIXME.
 
 \function{thread\_show}{(i\_thread \argument{id})}
 	 {
-	   This function displays information on the thread \argument{id}.
+	   This function displays information about the thread \argument{id}.
 	 }
 
 \function{thread\_dump}{(void)}
 	 {
-	   This function displays information on all the threads.
+	   This function displays information about all the threads.
 	 }
 
 \function{thread\_give}{(i\_task \argument{task},
@@ -295,7 +297,7 @@ Remember that you can add code even if there is no FIXME.
                           i\_thread \argument{old},
                           i\_thread* \argument{new})}
 	 {
-	   This function clones the task \argument{old} into a new one
+	   This function clones the thread \argument{old} into a new one
 	   \argument{new}.
 
 	   This new thread, having the exact same properties as \argument{old},
@@ -411,6 +413,8 @@ Remember that you can add code even if there is no FIXME.
 	   This function cleans the thread manager.
 	 }
 
+\newpage
+
   \item {\bf Files}\\
 
     \begin{tabular}{| l | l |}
@@ -436,7 +440,7 @@ Remember that you can add code even if there is no FIXME.
 \begin{itemize}
   \item {\bf Overview}\\
 
-    The scheduler's role is to allocate the cpu's resources to the
+    The scheduler's role is to allocate cpu's resources to the
     active threads depending on their priorities.
 
     Be careful, the scheduler schedules the threads which are the active
@@ -459,7 +463,7 @@ Remember that you can add code even if there is no FIXME.
 
     \textbf{Note about priorities:} the task priority will not be
     used. Only priorities of thread are used for scheduling. There is
-    no real policiy required for priorities. Our test will check that
+    no real policiy required for priorities. Our tests will check that
     on a given amount of time, higher-priority threads are executed
     more often than lower-priority one.
 
@@ -474,7 +478,7 @@ Remember that you can add code even if there is no FIXME.
 	 {
 	   This function sets the scheduler quantum to \argument{quantum}.
 
-	   The quantum correspond to the period the scheduler is called.
+	   The quantum corresponds to the period the scheduler is called.
 	 }
 
 \function{sched\_yield}{(i\_cpu \argument{cpuid})}
@@ -482,7 +486,7 @@ Remember that you can add code even if there is no FIXME.
 	   This function permits the current thread to relinquish
 	   the processor voluntarily.
 
-	   Don't care about the argument \argument{cpuid}.
+	   Do not care about the argument \argument{cpuid}.
 	 }
 
 \function{sched\_add}{(i\_thread \argument{thread})}
@@ -494,7 +498,7 @@ Remember that you can add code even if there is no FIXME.
 
 \function{sched\_remove}{(i\_thread \argument{thread})}
 	 {
-	   This function remove a thread from the
+	   This function removes a thread from the
 	   scheduler. \textbf{Be careful:} the thread to remove can be
 	   the currently executing thread.
 	 }
