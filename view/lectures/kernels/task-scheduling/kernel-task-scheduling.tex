@@ -66,6 +66,31 @@
                 {tss}
 		{figures/tss}
 
+% linux as
+
+\pgfdeclareimage[interpolate=true,width=45pt,height=180pt]
+                {linux-as}
+		{figures/linux-as}
+
+\pgfdeclareimage[interpolate=true,width=242pt,height=180pt]
+                {linux-kernel-as}
+		{figures/linux-kernel-as}
+
+\pgfdeclareimage[interpolate=true,width=156pt,height=180pt]
+                {kaneton-as}
+		{figures/kaneton-as}
+
+% lifecycle
+
+\pgfdeclareimage[interpolate=true,width=285pt,height=150pt]
+                {lifecycle-unix}
+		{figures/lifecycle-unix}
+\pgfdeclareimage[interpolate=true,width=300pt,height=150pt]
+                {lifecycle-windows}
+		{figures/lifecycle-windows}
+\pgfdeclareimage[interpolate=true,width=300pt,height=150pt]
+                {lifecycle-kaneton}
+		{figures/lifecycle-kaneton}
 
 %
 % document
@@ -896,7 +921,7 @@ resume_pc:
 
   \-
 
-  As kenaton is a micro-kernel, other information like fd-table are
+  As kaneton is a micro-kernel, other information like fd-table are
   contained in servers.
 
 \end{frame}
@@ -911,12 +936,33 @@ resume_pc:
 
 \begin{frame}
   \frametitle{Example of typical address space: Linux}
+
+  \begin{center}
+   \pgfuseimage{linux-as}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of typical address space: Linux}
+
+  \begin{center}
+   \pgfuseimage{linux-kernel-as}
+  \end{center}
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Implementation in kaneton}
+
+  \begin{center}
+   \pgfuseimage{kaneton-as}
+  \end{center}
+
 \end{frame}
 
 % -)
@@ -929,18 +975,33 @@ resume_pc:
 
 \begin{frame}
   \frametitle{Example of primitives: Unix + Pthread}
+
+  \begin{center}
+   \pgfuseimage{lifecycle-unix}
+  \end{center}
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Example of primitives: Windows NT}
+
+  \begin{center}
+   \pgfuseimage{lifecycle-windows}
+  \end{center}
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Primitives in kaneton}
+
+  \begin{center}
+   \pgfuseimage{lifecycle-kaneton}
+  \end{center}
+
 \end{frame}
 
 %
@@ -948,6 +1009,124 @@ resume_pc:
 %
 
 \section{Multithreading}
+
+% -)
+
+\begin{frame}
+  \frametitle{Why multithreading?}
+
+  \begin{itemize}
+  \item
+    High-level view of parallelism in programs
+  \item
+    Perform slow or blocking I/O while other threads do computation
+  \item
+    Allow pipelined design of applications
+  \item
+    Efficient with multiprocessors with shared memory
+  \end{itemize}
+
+  But\ldots
+
+  \begin{itemize}
+  \item
+    Require resource locking
+  \item
+    Dead-locks
+  \item
+    Starvation
+  \item
+    Scalability (number of threads/number of CPU)
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Kernel threads (1:1) model}
+
+  \begin{itemize}
+  \item
+    Direct correspondance between the thread itself and kernel
+    structures
+  \item
+    As the kernel is aware of the parallelism in the task, blocking
+    operations do not affect other threads and multiprocessor
+    dispatching can be optimized
+  \item
+    But the kernel is responsible of every operation on threads,
+    leading to many system calls
+  \item
+    Easier to implement
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{1:1 example: kaneton}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{``User'' threads (N:1) model}
+
+  \begin{itemize}
+  \item
+    Exactly one kernel thread per task
+  \item
+    Kernel does not know about user threads
+  \item
+    Threads are implemented via a library in user-land: fast
+    operations
+  \item
+    Second scheduler implemented
+  \item
+    Ofter very portable
+  \item
+    But not efficient for I/O: a read() call will block the whole task
+    and not only the calling thread
+  \item
+    Not designed for multiprocessing: the kernel is not aware of
+    threads, so it is impossible to dispatch them on microprocessors
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{N:1 example: GNU PTH}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Hybrid threads (N:M) model}
+
+  \begin{itemize}
+  \item
+    Advantages of both 1:1 and N:1 models (except portability) with
+    minimum disadvantages
+  \item
+    Two-level threads system
+  \item
+    Harder to implement
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{N:M example: NetBSD (Scheduler Activations)}
+
+\end{frame}
 
 %
 % multiprocessor systems
