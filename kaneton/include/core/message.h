@@ -41,7 +41,7 @@ typedef struct
 {
   t_vaddr	data;
   t_size	sz;
-  i_task	task;
+  i_thread	thread;
 }		t_waiter;
 
 typedef struct

@@ -290,6 +290,7 @@ t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t
   o_task*		task;
   t_waiter*		receiver;
   t_waiter		send_waiter;
+  i_thread		thread;
 
   /*
    * 1)
@@ -308,7 +309,10 @@ t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t
      * 2)
      */
 
-    send_waiter.task = sender;
+    if (sched_current(&thread) != ERROR_NONE)
+      return (ERROR_UNKNOWN);
+
+    send_waiter.thread = thread;
     send_waiter.data = (t_vaddr)data;
     send_waiter.sz = size;
 
@@ -353,6 +357,7 @@ t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
   o_task*		task;
   t_waiter*		sender;
   t_waiter		recv_waiter;
+  i_thread		thread;
 
   /*
    * 1)
@@ -371,7 +376,10 @@ t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
      * 2)
      */
 
-    recv_waiter.task = taskid;
+    if (sched_current(&thread) != ERROR_NONE)
+      return (ERROR_UNKNOWN);
+
+    recv_waiter.thread = thread;
     recv_waiter.data = (t_vaddr)data;
     recv_waiter.sz = maxsz;
 
