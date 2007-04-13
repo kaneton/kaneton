@@ -279,12 +279,13 @@ t_error			message_async_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
  * Send synchronously a message by direct memory transfert
  *
  * 1) Retrieve the message box and check if a sync_recv is pending
- * 2) If not, register to the senders queue, sleep & reschedule.
- * 3) If it is, pop the receiver from the queue, proceed to transfert
+ * 2) If not, register to the senders queue, block the thread and return
+  *   (another thread will be elected while returning from isr).
+ * 3) If it is, as-to-as mem copy, pop the receiver from the queue
  * 4) Unblock the receiver's task
  */
 
-t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t_size size)
+t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t_size size, t_uint32* rv)
 {
   t_local_box*		msgbox;
   o_task*		task;
@@ -315,11 +316,14 @@ t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t
     send_waiter.thread = thread;
     send_waiter.data = (t_vaddr)data;
     send_waiter.sz = size;
+    send_waiter.asid = task->asid;
+    send_waiter.rv = rv;
 
     if (set_push(msgbox->senders, &send_waiter) != ERROR_NONE)
       return (ERROR_UNKNOWN);
 
-    /* FIXME: Sleep & Reschedule */
+    if (thread_state(thread, SCHED_STATE_BLOCK) != ERROR_NONE)
+      return (ERROR_UNKNOWN);
 
     return (ERROR_NONE);
   }
@@ -328,16 +332,27 @@ t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t
    * 3)
    */
 
+#if 0
+  if (as_copy(task->asid, (t_vaddr) data, receiver->asid, receiver->data,
+          size <= receiver->sz ? size : receiver->sz) != ERROR_UNKNOWN)
+  {
+    /* XXX: do what ? */
+    return ERROR_UNKNOWN;
+  }
+#else
+
+#endif
+
   if (set_pop(msgbox->receivers) != ERROR_NONE)
     return (ERROR_UNKNOWN);
-
-  /* FIXME: Copy */
 
   /*
    * 4)
    */
 
-  /* FIXME: Unblock receiver */
+  *(receiver->rv) = ERROR_NONE;
+  if (thread_state(receiver->thread, SCHED_STATE_RUN) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);
 }
@@ -351,7 +366,7 @@ t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t
  * 4) Unblock the sender's task
  */
 
-t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
+t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz, t_uint32* rv)
 {
   t_local_box*		msgbox;
   o_task*		task;
@@ -382,11 +397,14 @@ t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
     recv_waiter.thread = thread;
     recv_waiter.data = (t_vaddr)data;
     recv_waiter.sz = maxsz;
+    recv_waiter.asid = task->asid;
+    recv_waiter.rv = rv;
 
     if (set_push(msgbox->receivers, &recv_waiter) != ERROR_NONE)
       return (ERROR_UNKNOWN);
 
-    /* FIXME: Sleep & Reschedule */
+    if (thread_state(thread, SCHED_STATE_BLOCK) != ERROR_NONE)
+      return (ERROR_UNKNOWN);
 
     return (ERROR_NONE);
   }
@@ -395,16 +413,28 @@ t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
    * 3)
    */
 
+
+#if 0
+  if (as_copy(sender->asid, sender->data, task->asid, (t_vaddr)data
+      size <= recv_waiter->sz ? size : recv_waiter->sz) != ERROR_UNKNOWN)
+  {
+    /* XXX: do what ? */
+    return ERROR_UNKNOWN;
+  }
+#else
+
+#endif
+
   if (set_pop(msgbox->senders) != ERROR_NONE)
     return (ERROR_UNKNOWN);
-
-  /* FIXME: Copy */
 
   /*
    * 4)
    */
 
-  /* FIXME: Unblock sender */
+  *(sender->rv) = ERROR_NONE;
+  if (thread_state(sender->thread, SCHED_STATE_RUN) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);
 }

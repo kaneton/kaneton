@@ -42,6 +42,8 @@ typedef struct
   t_vaddr	data;
   t_size	sz;
   i_thread	thread;
+  i_as		asid;
+  t_uint32*	rv;
 }		t_waiter;
 
 typedef struct
@@ -141,9 +143,9 @@ t_error			message_async_send(i_task sender, i_node dest, t_tag tag, void* data, 
 
 t_error			message_async_recv(i_task taskid, t_tag tag, void* data, size_t maxsz);
 
-t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t_size size);
+t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t_size size, t_uint32* rv);
 
-t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz);
+t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz, t_uint32* rv);
 
 t_error			message_register(i_task taskid, t_tag tag);
 

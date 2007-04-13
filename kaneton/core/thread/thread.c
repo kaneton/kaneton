@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/thread/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:02:57 2006]
- * updated       matthieu bucchianeri   [tue feb  6 23:49:11 2007]
+ * updated       julian pidancet   [fri apr 13 03:06:06 2007]
  */
 
 /*
@@ -541,6 +541,9 @@ t_error			thread_state(i_thread			threadid,
       case SCHED_STATE_ZOMBIE:
 	wakeup = WAIT_DEATH;
 	break;
+      case SCHED_STATE_BLOCK:
+	wakeup = 0;
+	break;
       default:
 	THREAD_LEAVE(thread, ERROR_UNKNOWN);
     }
@@ -604,6 +607,10 @@ t_error			thread_state(i_thread			threadid,
 	break;
       case SCHED_STATE_ZOMBIE:
 	/* XXX */
+	break;
+      case SCHED_STATE_BLOCK:
+	if (sched_remove(threadid) != ERROR_NONE)
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;
     }
 

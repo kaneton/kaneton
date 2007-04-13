@@ -93,7 +93,7 @@ void			ia32_message_recv_handler(void)
   task_current(&source);
 
   tag = context->eax;
-  ptr = context->ebx;
+  ptr = (void*)context->ebx;
   size = context->ecx;
 
   ret = message_async_recv(source, tag, ptr, size);

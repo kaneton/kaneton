@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/sched.h
  *
  * created       matthieu bucchianeri   [sat jun  3 22:34:42 2006]
- * updated       matthieu bucchianeri   [sun aug 20 19:56:33 2006]
+ * updated       julian pidancet   [fri apr 13 03:06:45 2007]
  */
 
 #ifndef CORE_SCHED_H
@@ -32,6 +32,7 @@
 #define SCHED_STATE_RUN			0
 #define SCHED_STATE_STOP		1
 #define SCHED_STATE_ZOMBIE		2
+#define SCHED_STATE_BLOCK		3
 
 /*
  * initial value for the scheduler quantum in milliseconds.

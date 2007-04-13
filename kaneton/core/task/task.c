@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       matthieu bucchianeri   [tue feb  6 23:05:13 2007]
+ * updated       julian pidancet   [fri apr 13 03:04:55 2007]
  */
 
 /*
@@ -634,6 +634,9 @@ t_error			task_state(i_task			id,
       case SCHED_STATE_ZOMBIE:
         wakeup = WAIT_DEATH;
         break;
+      case SCHED_STATE_BLOCK:
+	wakeup = 0;
+	break;
       default:
         TASK_LEAVE(task, ERROR_UNKNOWN);
     }
@@ -699,7 +702,8 @@ t_error			task_state(i_task			id,
 	  TASK_LEAVE(task, ERROR_UNKNOWN);
 	}
 
-      if (thread_state(*th, sched) != ERROR_NONE)
+      if (sched != SCHED_STATE_BLOCK &&
+	  thread_state(*th, sched) != ERROR_NONE)
 	TASK_LEAVE(task, ERROR_UNKNOWN);
     }
 
