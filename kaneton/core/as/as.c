@@ -654,7 +654,18 @@ t_error			as_write(i_as				asid,
 }
 
 /*
- * XXX
+ * this function copies from an as to another. this function supports
+ * contiguous regions mapped on non-contiguous segments.
+ *
+ * steps:
+ *
+ * 1) get address space object.
+ * 2) look for the first region of the source area.
+ * 3) look for the first region of the destination area.
+ * 4) compute start offsets and size to copy.
+ * 5) do the copy.
+ * 6) goto the next source region if necessary.
+ * 7) goto the next destination region if necessary.
  */
 
 t_error			as_copy(i_as				src_as,
@@ -701,10 +712,6 @@ t_error			as_copy(i_as				src_as,
   if (set_object(src_o->regions, src_it, (void**)&src_oreg) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  /*
-   * 3)
-   */
-
   while (src_oreg->address + src_oreg->size < src)
     {
       if (set_next(src_o->regions, src_it, &src_next) != ERROR_NONE)
@@ -723,7 +730,7 @@ t_error			as_copy(i_as				src_as,
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
-   * 4)
+   * 3)
    */
 
   if (set_head(dst_o->regions, &dst_it) != ERROR_NONE)
@@ -731,10 +738,6 @@ t_error			as_copy(i_as				src_as,
 
   if (set_object(dst_o->regions, dst_it, (void**)&dst_oreg) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
-
-  /*
-   * 5)
-   */
 
   while (dst_oreg->address + dst_oreg->size < dst)
     {
@@ -754,7 +757,7 @@ t_error			as_copy(i_as				src_as,
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*
-   * XXX
+   * 4)
    */
 
   src_offs = src_oreg->offset + (src - src_oreg->address);
@@ -762,14 +765,32 @@ t_error			as_copy(i_as				src_as,
 
   for (;;)
     {
+      if (src_oreg->size < dst_oreg->size)
+	copy = src_oreg->size;
+      else
+	copy = dst_oreg->size;
 
+      /*
+       * 5)
+       */
 
       if (segment_copy(dst_oreg->segid, dst_offs,
 		       src_oreg->segid, src_offs,
 		       copy) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      if (src_offs + copy == src_oseg->size)
+      src_offs += copy;
+      dst_offs += copy;
+      size -= copy;
+
+      if (!size)
+	break;
+
+      /*
+       * 6)
+       */
+
+      if (src_offs == src_oseg->size)
 	{
 	  prev = src_oreg;
 
@@ -789,7 +810,13 @@ t_error			as_copy(i_as				src_as,
 
 	  src_offs = src_oreg->offset;
 	}
-      else
+
+      /*
+       * 7)
+       */
+
+
+      if (dst_offs == dst_oseg->size)
 	{
 	  prev = dst_oreg;
 
@@ -802,7 +829,7 @@ t_error			as_copy(i_as				src_as,
 	  if (dst_oreg->address != prev->address + prev->size)
 	    AS_LEAVE(as, ERROR_UNKNOWN);
 
-	  memcpy(&src_it, &next, sizeof (t_iterator));
+	  memcpy(&dst_it, &next, sizeof (t_iterator));
 
 	  if (segment_get(dst_oreg->segid, &dst_oseg) != ERROR_NONE)
 	    AS_LEAVE(as, ERROR_UNKNOWN);
