@@ -42,7 +42,7 @@ void		check_as_read_write_01(void)
 			0x20001000, 2 * PAGESZ, &reg) == ERROR_NONE,
 	 "error reserving region\n");
   ASSERT(region_reserve(as, seg3, 0, REGION_OPT_FORCE,
-			0x20002000, PAGESZ, &reg) == ERROR_NONE,
+			0x20003000, PAGESZ, &reg) == ERROR_NONE,
 	 "error reserving region\n");
 
   for (i = 0; i < 4 * PAGESZ; i++)
