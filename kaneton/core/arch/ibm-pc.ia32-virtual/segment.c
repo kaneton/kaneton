@@ -93,7 +93,6 @@ t_error			ia32_segment_read(i_region		segid,
   o_segment*		o;
   i_region		reg;
   t_paddr		poffset;
-  t_vsize		psize;
   t_paddr		end;
 
   SEGMENT_ENTER(segment);
@@ -163,7 +162,6 @@ t_error			ia32_segment_write(i_region		segid,
   o_segment*		o;
   i_region		reg;
   t_paddr		poffset;
-  t_vsize		psize;
   t_paddr		end;
 
   SEGMENT_ENTER(segment);
@@ -235,7 +233,8 @@ t_error			ia32_segment_copy(i_region		dst,
   i_region		regd;
   o_segment*		segs;
   o_segment*		segd;
-  t_vsize		size;
+  t_paddr		poffset;
+  t_paddr		end;
 
   SEGMENT_ENTER(segment);
 
@@ -251,23 +250,49 @@ t_error			ia32_segment_copy(i_region		dst,
    * 2)
    */
 
-  if (sz % PAGESZ)
-    size = sz + PAGESZ - (sz % PAGESZ);
+  if (offss % PAGESZ)
+  {
+    poffset = offss & ~(PAGESZ - 1);
+    offss -= poffset;
+  }
   else
-    size = sz;
+  {
+    poffset = offss;
+    offss = 0;
+  }
 
-  if (region_reserve(kasid, src, offss, REGION_OPT_PRIVILEGED,
-		     0, size, &regs) != ERROR_NONE)
+  end = poffset + offss + sz;
+  if (end % PAGESZ)
+    end = (end & ~(PAGESZ - 1)) + PAGESZ;
+
+  if (region_reserve(kasid, src, poffset, REGION_OPT_PRIVILEGED,
+		     0, end - poffset, &regs) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-  if (region_reserve(kasid, dst, offsd, REGION_OPT_PRIVILEGED,
-		     0, size, &regd) != ERROR_NONE)
+
+  if (offsd % PAGESZ)
+  {
+    poffset = offsd & ~(PAGESZ - 1);
+    offsd -= poffset;
+  }
+  else
+  {
+    poffset = offsd;
+    offsd = 0;
+  }
+
+  end = poffset + offsd + sz;
+  if (end % PAGESZ)
+    end = (end & ~(PAGESZ - 1)) + PAGESZ;
+
+  if (region_reserve(kasid, dst, poffset, REGION_OPT_PRIVILEGED,
+		     0, end - poffset, &regd) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  memcpy((void*)(t_vaddr)regd, (void*)(t_vaddr)regs, sz);
+  memcpy((void*)(t_vaddr)regd + offsd, (void*)(t_vaddr)regs + offss, sz);
 
   /*
    * 4)

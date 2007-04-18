@@ -130,8 +130,6 @@ void			kaneton(t_init*				bootloader)
    * XXX
    */
 
-  //check_time_repeat_01();
-
 #if defined(CONF_ENABLE_CHECK)
   cons_msg('+', "running manual tests\n");
   check_tests();
@@ -220,61 +218,4 @@ void			kaneton_dump(void)
 #else
   core_error("no endian defined\n");
 #endif
-}
-
-
-/*
- *
- */
-
-void copy_test(void)
-{
-  i_task	tsk;
-  i_as		as;
-  i_segment	seg;
-  i_region	reg;
-  static t_uint8	buff[3 * PAGESZ];
-  int i;
-
-  task_reserve(TASK_CLASS_PROGRAM,
-	       TASK_BEHAV_INTERACTIVE,
-	       TASK_PRIOR_INTERACTIVE,
-	       &tsk);
-
-  as_reserve(tsk, &as);
-
-  segment_reserve(as, PAGESZ, PERM_READ | PERM_WRITE, &seg);
-  segment_show(seg);
-
-  region_reserve(as, seg, 0, REGION_OPT_FORCE, 0x20000000, PAGESZ, &reg);
-  region_show(as, reg);
-
-  segment_reserve(as, PAGESZ, PERM_READ | PERM_WRITE, &seg);
-  segment_show(seg);
-  segment_reserve(as, PAGESZ, PERM_READ | PERM_WRITE, &seg);
-  segment_show(seg);
-
-  region_reserve(as, seg, 0, REGION_OPT_FORCE, 0x20001000, PAGESZ, &reg);
-  region_show(as, reg);
-
-  segment_reserve(as, PAGESZ, PERM_READ | PERM_WRITE, &seg);
-  segment_show(seg);
-  segment_reserve(as, PAGESZ, PERM_READ | PERM_WRITE, &seg);
-  segment_show(seg);
-
-  region_reserve(as, seg, 0, REGION_OPT_FORCE, 0x20002000, PAGESZ, &reg);
-  region_show(as, reg);
-
-  for (i = 0x10; i < 3 * PAGESZ - 0x20; i++)
-    buff[i] = i;
-  as_write(as, buff, 3 * PAGESZ - 0x20, 0x20000010);
-
-  memset(buff, 0, 3 * PAGESZ);
-  as_read(as, 0x20000010, 3 * PAGESZ - 0x20, buff);
-  for (i = 0x10; i < 3 * PAGESZ - 0x20; i++)
-    if (buff[i] != (t_uint8)i)
-      {
-	printf("diff @ %u is %c, should be %c\n", i, buff[i], (t_uint8)i);
-	break;
-      }
 }

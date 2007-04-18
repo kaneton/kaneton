@@ -687,6 +687,8 @@ t_error			as_copy(i_as				src_as,
   t_paddr		src_offs;
   t_paddr		dst_offs;
   t_psize		copy;
+  t_psize		to_copy_src;
+  t_psize		to_copy_dst;
   o_region*		prev;
   t_iterator		next;
 
@@ -760,15 +762,20 @@ t_error			as_copy(i_as				src_as,
    * 4)
    */
 
+  to_copy_src = src_oreg->size - (src - src_oreg->address);
+  to_copy_dst = dst_oreg->size - (dst - dst_oreg->address);
   src_offs = src_oreg->offset + (src - src_oreg->address);
   dst_offs = dst_oreg->offset + (dst - dst_oreg->address);
 
   for (;;)
     {
-      if (src_oreg->size < dst_oreg->size)
-	copy = src_oreg->size;
+      if (to_copy_src < to_copy_dst)
+	copy = to_copy_src;
       else
-	copy = dst_oreg->size;
+	copy = to_copy_dst;
+
+      if(copy > size)
+	copy = size;
 
       /*
        * 5)
@@ -782,6 +789,8 @@ t_error			as_copy(i_as				src_as,
       src_offs += copy;
       dst_offs += copy;
       size -= copy;
+      to_copy_src -= copy;
+      to_copy_dst -= copy;
 
       if (!size)
 	break;
@@ -790,7 +799,7 @@ t_error			as_copy(i_as				src_as,
        * 6)
        */
 
-      if (src_offs == src_oseg->size)
+      if (to_copy_src == 0)
 	{
 	  prev = src_oreg;
 
@@ -809,6 +818,7 @@ t_error			as_copy(i_as				src_as,
 	    AS_LEAVE(as, ERROR_UNKNOWN);
 
 	  src_offs = src_oreg->offset;
+	  to_copy_src = src_oreg->size;
 	}
 
       /*
@@ -816,7 +826,7 @@ t_error			as_copy(i_as				src_as,
        */
 
 
-      if (dst_offs == dst_oseg->size)
+      if (to_copy_dst == 0)
 	{
 	  prev = dst_oreg;
 
@@ -835,6 +845,7 @@ t_error			as_copy(i_as				src_as,
 	    AS_LEAVE(as, ERROR_UNKNOWN);
 
 	  dst_offs = dst_oreg->offset;
+	  to_copy_dst = dst_oreg->size;
 	}
     }
 

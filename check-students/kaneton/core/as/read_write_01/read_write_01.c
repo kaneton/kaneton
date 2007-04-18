@@ -45,15 +45,15 @@ void		check_as_read_write_01(void)
 			0x20003000, PAGESZ, &reg) == ERROR_NONE,
 	 "error reserving region\n");
 
-  for (i = 0; i < 4 * PAGESZ; i++)
+  for (i = 10; i < 4 * PAGESZ - 12; i++)
     {
       buff[i] = (i * 2 + 4) % 256;
     }
 
-  ASSERT(as_write(as, buff, 4 * PAGESZ, 0x20000000) == ERROR_NONE,
+  ASSERT(as_write(as, buff + 10, 4 * PAGESZ - 12, 0x2000000a) == ERROR_NONE,
 	 "error in as_write\n");
 
-  for (i = 0; i < 4 * PAGESZ; i++)
+  for (i = 10; i < 4 * PAGESZ - 12; i++)
     {
       buff[i] = 0;
     }
@@ -65,20 +65,20 @@ void		check_as_read_write_01(void)
   ASSERT(segment_read(seg3, 0, buff + 3 * PAGESZ, PAGESZ) == ERROR_NONE,
 	 "error reading\n");
 
-  for (i = 0; i < 4 * PAGESZ; i++)
+  for (i = 10; i < 4 * PAGESZ - 12; i++)
     {
       ASSERT(buff[i] == (i * 2 + 4) % 256, "bad data after writing\n");
     }
 
-  for (i = 0; i < 4 * PAGESZ; i++)
+  for (i = 10; i < 4 * PAGESZ - 12; i++)
     {
       buff[i] = 0;
     }
 
-  ASSERT(as_read(as, 0x20000000, 4 * PAGESZ, buff) == ERROR_NONE,
+  ASSERT(as_read(as, 0x2000000a, 4 * PAGESZ - 12, buff + 10) == ERROR_NONE,
 	 "error in as_read\n");
 
-  for (i = 0; i < 4 * PAGESZ; i++)
+  for (i = 10; i < 4 * PAGESZ - 12; i++)
     {
       ASSERT(buff[i] == (i * 2 + 4) % 256, "bad data after reading\n");
     }

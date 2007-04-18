@@ -35,6 +35,7 @@ typedef struct
  * Classic test enter/leave.
  */
 
+#if 0
 # define TEST_ENTER()							\
   static t_exc	__exceptions;						\
   void		__exc()							\
@@ -43,11 +44,21 @@ typedef struct
   }									\
   printf("Test %s\n", __FUNCTION__);					\
   check_exc_init(&__exceptions, __exc)
+#else
+# define TEST_ENTER()							\
+  printf("Test %s\n", __FUNCTION__);
+#endif
 
+#if 0
 # define TEST_LEAVE()							\
   check_exc_reset(&__exceptions);					\
   printf("%s done.\n", __FUNCTION__);					\
   return
+#else
+# define TEST_LEAVE()							\
+  printf("%s done.\n", __FUNCTION__);					\
+  return
+#endif
 
 /*
  * W/ leaks detection enter/leave.
