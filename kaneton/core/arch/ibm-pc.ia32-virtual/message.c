@@ -54,7 +54,7 @@ d_message		message_dispatch =
 
 /*                                                                  [cut] k4 */
 
-void			ia32_message_send_handler(void)
+void			ia32_message_async_send_handler(void)
 {
   union
   {
@@ -82,7 +82,35 @@ void			ia32_message_send_handler(void)
   context->eax = ret;
 }
 
-void			ia32_message_recv_handler(void)
+void			ia32_message_sync_send_handler(void)
+{
+  union
+  {
+    i_node		node;
+    t_uint32		dword[4];
+  }			u;
+  void			*ptr;
+  t_uint32		tag;
+  t_uint32		size;
+  i_task		source;
+  t_uint32		ret;
+
+  task_current(&source);
+
+  u.dword[0] = context->eax;
+  u.dword[1] = context->ebx;
+  u.dword[2] = context->ecx;
+  u.dword[3] = context->edx;
+  tag = context->esi;
+  ptr = (void*)context->edi;
+  size = context->ebp;
+
+  ret = message_sync_send(source, u.node, tag, ptr, size, &context->eax);
+
+  context->eax = ret;
+}
+
+void			ia32_message_async_recv_handler(void)
 {
   t_uint32		ret;
   t_uint32		tag;
@@ -101,14 +129,41 @@ void			ia32_message_recv_handler(void)
   context->eax = ret;
 }
 
+void			ia32_message_sync_recv_handler(void)
+{
+  t_uint32		ret;
+  t_uint32		tag;
+  void*			ptr;
+  t_uint32		size;
+  i_task		source;
+
+  task_current(&source);
+
+  tag = context->eax;
+  ptr = (void*)context->ebx;
+  size = context->ecx;
+
+  ret = message_sync_recv(source, tag, ptr, size, &context->eax);
+
+  context->eax = ret;
+}
+
 t_error			ia32_message_init(void)
 {
   if (event_reserve(56, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_message_send_handler)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_message_async_send_handler)) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   if (event_reserve(57, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_message_recv_handler)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_message_async_recv_handler)) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (event_reserve(58, EVENT_FUNCTION,
+		    EVENT_HANDLER(ia32_message_sync_send_handler)) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (event_reserve(59, EVENT_FUNCTION,
+		    EVENT_HANDLER(ia32_message_sync_recv_handler)) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   return ERROR_NONE;

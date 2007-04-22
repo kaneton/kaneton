@@ -113,7 +113,9 @@ static t_ia32_interrupt_prehandler	prehandlers[EXCEPTION_NR + IRQ_NR + IPI_NR + 
     prehandler_ipi6,
     prehandler_ipi7,
     prehandler_syscall0,
-    prehandler_syscall1
+    prehandler_syscall1,
+    prehandler_syscall2,
+    prehandler_syscall3
   };
 
 /*
@@ -342,5 +344,7 @@ IPI_PREHANDLER(7);
 
 SYSCALL_PREHANDLER(0);
 SYSCALL_PREHANDLER(1);
+SYSCALL_PREHANDLER(2);
+SYSCALL_PREHANDLER(3);
 
 /*                                                                 [cut] /k2 */

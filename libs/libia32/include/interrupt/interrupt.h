@@ -37,7 +37,7 @@
 #define EXCEPTION_NR    32
 #define IRQ_NR          16
 #define IPI_NR          8
-#define SYSCALL_NR	2
+#define SYSCALL_NR	4
 
 /*
  * exception error code.
@@ -264,6 +264,8 @@ void    prehandler_ipi7(void);
 
 void    prehandler_syscall0(void);
 void    prehandler_syscall1(void);
+void    prehandler_syscall2(void);
+void    prehandler_syscall3(void);
 
 /*                                                                 [cut] /k2 */
 

@@ -226,9 +226,13 @@ t_error			ia32_sched_clean(void);
  * ../../../../core/arch/machdep/message.c
  */
 
-void			ia32_message_send_handler(void);
+void			ia32_message_async_send_handler(void);
 
-void			ia32_message_recv_handler(void);
+void			ia32_message_sync_send_handler(void);
+
+void			ia32_message_async_recv_handler(void);
+
+void			ia32_message_sync_recv_handler(void);
 
 t_error			ia32_message_init(void);
 

@@ -149,9 +149,13 @@ t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz, 
 
 t_error			message_register(i_task taskid, t_tag tag);
 
-t_uint32		syscall_send(t_uint32* node, t_uint32 tag, void* ptr, t_uint32 size);
+t_uint32		syscall_async_send(t_uint32* node, t_uint32 tag, void* ptr, t_uint32 size);
 
-t_uint32		syscall_recv(t_uint32 tag, void* ptr, t_uint32 size);
+t_uint32		syscall_sync_send(t_uint32* node, t_uint32 tag, void* ptr, t_uint32 size);
+
+t_uint32		syscall_async_recv(t_uint32 tag, void* ptr, t_uint32 size);
+
+t_uint32		syscall_sync_recv(t_uint32 tag, void* ptr, t_uint32 size);
 
 t_error			message_test(void);
 

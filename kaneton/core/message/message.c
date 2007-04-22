@@ -292,6 +292,7 @@ t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t
   t_waiter*		receiver;
   t_waiter		send_waiter;
   i_thread		thread;
+  t_size		sz;
 
   /*
    * 1)
@@ -332,16 +333,34 @@ t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t
    * 3)
    */
 
-#if 0
-  if (as_copy(task->asid, (t_vaddr) data, receiver->asid, receiver->data,
-          size <= receiver->sz ? size : receiver->sz) != ERROR_UNKNOWN)
-  {
-    /* XXX: do what ? */
-    return ERROR_UNKNOWN;
-  }
-#else
+  sz = size <= receiver->sz ? size : receiver->sz;
 
-#endif
+  if (receiver->asid == kasid && task->asid == kasid)
+  {
+    memcpy((void*)receiver->data, data, sz);
+    goto copied;
+  }
+
+  if (receiver->asid == kasid)
+  {
+    if (as_read(task->asid, (t_vaddr)data, sz,
+	(void*)receiver->data) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+    goto copied;
+  }
+
+  if (task->asid == kasid)
+  {
+    if (as_write(receiver->asid, data, sz, receiver->data) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+    goto copied;
+  }
+
+  if (as_copy(task->asid, (t_vaddr) data,
+      receiver->asid, receiver->data, sz) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+copied:
 
   if (set_pop(msgbox->receivers) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -373,6 +392,7 @@ t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz, 
   t_waiter*		sender;
   t_waiter		recv_waiter;
   i_thread		thread;
+  t_size		sz;
 
   /*
    * 1)
@@ -413,17 +433,34 @@ t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz, 
    * 3)
    */
 
+  sz = maxsz <= sender->sz ? maxsz : sender->sz;
 
-#if 0
-  if (as_copy(sender->asid, sender->data, task->asid, (t_vaddr)data
-      size <= recv_waiter->sz ? size : recv_waiter->sz) != ERROR_UNKNOWN)
+  if (sender->asid == kasid && task->asid == kasid)
   {
-    /* XXX: do what ? */
-    return ERROR_UNKNOWN;
+    memcpy(data, (void*)sender->data, sz);
+    goto copied;
   }
-#else
 
-#endif
+  if (task->asid == kasid)
+  {
+    if (as_read(sender->asid, sender->data, sz, data) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+    goto copied;
+  }
+
+  if (sender->asid == kasid)
+  {
+    if (as_write(task->asid, (void*)sender->data, sz,
+	(t_vaddr)data) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+    goto copied;
+  }
+
+  if (as_copy(sender->asid, sender->data,
+      task->asid, (t_vaddr)data, sz) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+copied:
 
   if (set_pop(msgbox->senders) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -483,7 +520,7 @@ t_error			message_register(i_task taskid, t_tag tag)
  */
 
 
-t_uint32		syscall_send(t_uint32* node, t_uint32 tag, void* ptr, t_uint32 size)
+t_uint32		syscall_async_send(t_uint32* node, t_uint32 tag, void* ptr, t_uint32 size)
 {
   t_uint32		ret;
 
@@ -498,11 +535,38 @@ t_uint32		syscall_send(t_uint32* node, t_uint32 tag, void* ptr, t_uint32 size)
   return (ret);
 }
 
-t_uint32		syscall_recv(t_uint32 tag, void* ptr, t_uint32 size)
+t_uint32		syscall_sync_send(t_uint32* node, t_uint32 tag, void* ptr, t_uint32 size)
+{
+  t_uint32		ret;
+
+  asm volatile("	pushl %%ebp		\n"
+	       "	movl %7, %%ebp		\n"
+	       "	int $58			\n"
+	       "	popl %%ebp		"
+	       : "=a" (ret)
+	       : "a" (node[0]), "b" (node[1]), "c" (node[2]), "d" (node[3]),
+	       "S" (tag), "D" (ptr), "m" (size));
+
+  return (ret);
+}
+
+
+t_uint32		syscall_async_recv(t_uint32 tag, void* ptr, t_uint32 size)
 {
   t_uint32		ret;
 
   asm volatile("	int $57			"
+	       : "=a" (ret)
+	       :"a" (tag), "b" (ptr), "c" (size));
+
+  return (ret);
+}
+
+t_uint32		syscall_sync_recv(t_uint32 tag, void* ptr, t_uint32 size)
+{
+  t_uint32		ret;
+
+  asm volatile("	int $59			"
 	       : "=a" (ret)
 	       :"a" (tag), "b" (ptr), "c" (size));
 
@@ -521,7 +585,7 @@ static void			chiche_send()
   task1_node.machine = 2^64;
   task1_node.task = tsk2;
 
-  syscall_send((t_uint32 *)&task1_node, 0, tosend, strlen(tosend) + 1);
+  syscall_sync_send((t_uint32 *)&task1_node, 0, tosend, strlen(tosend) + 1);
 
   while (1)
     ;
@@ -534,7 +598,7 @@ static void			chiche_recv()
 
   while (1)
   {
-    if (syscall_recv(0, recv, 128) == ERROR_NONE)
+    if (syscall_sync_recv(0, recv, 128) == ERROR_NONE)
     {
       break;
     }
@@ -543,7 +607,7 @@ static void			chiche_recv()
   kernel_node.machine = 2^64;
   kernel_node.task = 0;
 
-  syscall_send((t_uint32 *)&kernel_node, 0, recv, strlen(recv) + 1);
+  syscall_async_send((t_uint32 *)&kernel_node, 0, recv, strlen(recv) + 1);
 
   while (1)
     ;
