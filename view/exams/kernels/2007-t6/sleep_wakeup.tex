@@ -70,6 +70,7 @@ void          sleep(t_id id)
   {
     wait = malloc(sizeof (o_wait));
     wait->id = id;
+    set_add(waits, wait);
     set_reserve(pipe, SET_OPT_NONE, sizeof (o_wait), &wait->queue);
   }
   set_push(wait->queue, &thid);
