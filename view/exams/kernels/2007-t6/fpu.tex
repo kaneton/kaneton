@@ -53,8 +53,28 @@ moment opportun.
 
 \begin{enumerate}
 \item
-  Dans quelle structure allez-vous stocker le contexte FPU d'un thread
-  ?
-\end{enumerate}
+  Quatre threads tournent sur notre syst
 
+\item
+  La structure permettant de stocker le contexte FPU vous est
+  donnée. Elle se nomme \emph{t\_x87\_context}. Elle contient tous les
+  registres cités plus haut. Nous ne nous interesserons pas à son
+  contenu détaillé, mais sachez que la structure est compatible avec
+  \verb|FSAVE| et \verb|FRSTOR|.
+
+  Dans quel objet kaneton allez-vous stocker le contexte FPU d'un
+  thread ? Dans quelle fonction de l'interface kaneton allez-vous
+  initialiser ce contexte ?
+
+  \textbf{Dans la suite de l'excercice, vous considererez que les
+  structures de context FPU sont correctement remplies.}
+
+  \begin{correction}
+    Nous allons rajouter une instance de \emph{t\_x87\_context} dans
+    la partie dépendante de l'object \emph{o\_thread}.
+
+    Cette structure devra être initialisée au même moment que le reste
+    du contexte, dans \emph{ia32\_thread\_init}.
+  \end{correction}
+\end{enumerate}
 \end{description}
