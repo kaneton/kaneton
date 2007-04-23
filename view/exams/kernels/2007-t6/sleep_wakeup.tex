@@ -1,2 +1,39 @@
 \section*{Exercice 4 : Sleep/Wakeup (X points)}
 
+{\bf \emph{sleep}/\emph{wakeup} :}
+
+Le mécanisme \emph{sleep} /\emph{wakeup} existe depuis les plus vieux
+Unix.
+
+\emph{sleep} est utilisé pour endormir un thread et \emph{wakeup} pour
+le reveiller. Le deux fonctions prennent en argument un identifiant
+unique. Un appel a \emph{wakeup} avec un identifiant donné reveille
+\textbf{tous} les threads ayant appelés \emph{sleep} avec ce même
+identifiant. La fonction \emph{wakeup\_once} ne reveille qu'un seul de
+threads bloqués par \emph{sleep} (le premier s'étant endormi).
+
+\begin{description}
+\item {\bf Implémentation dans kaneton}
+
+\begin{enumerate}
+\item
+  Quelles données allez-vous devoir associer à chaque identifiant
+  passe à vos fonctions ?
+  \\
+  Ecrivez la structure en C correspondante.
+
+\item
+  Ecrivez le code de la fonction \emph{sleep}.\\
+  {\emph{void} \bf sleep}({\em t\_id id)}
+
+\item
+  Ecrivez le code de la fonction \emph{wakeup\_once}.\\
+  {\emph{void} \bf wakeup\_once}({\em t\_id id)}
+
+\item
+  Ecrivez le code de la fonction \emph{wakeup}.\\
+  {\emph{void} \bf wakeup}({\em t\_id id)}
+
+\end{enumerate}
+
+\end{description}
