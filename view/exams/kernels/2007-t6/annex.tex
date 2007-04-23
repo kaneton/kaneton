@@ -240,6 +240,19 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
 
 	   The reserved set object's identifier is returned in
 	   \argument{id}.
+
+	   Values for \argument{type} are:
+
+	   \begin{itemize}
+	     \item
+	       \emph{ll}: doubly linked-list
+	     \item
+	       \emph{array}: array
+	     \item
+	       \emph{pipe}: FIFO
+	     \item
+	       \emph{stack}: LIFO
+	   \end{itemize}
 	 }
 
 \function{set\_release}{(i\_set \argument{id})}

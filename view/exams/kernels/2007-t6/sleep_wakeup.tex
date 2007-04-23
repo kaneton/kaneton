@@ -12,6 +12,27 @@ unique. Un appel a \emph{wakeup} avec un identifiant donné reveille
 identifiant. La fonction \emph{wakeup\_once} ne reveille qu'un seul de
 threads bloqués par \emph{sleep} (le premier s'étant endormi).
 
+{\bf Exemple :}
+
+\begin{center}
+\begin{tabular}{| l | l | l | l |}
+thread 1 & thread 2 & thread 3 & thread 4\\
+\ldots & \ldots & \ldots & \ldots \\
+sleep(42); & \ldots & \ldots & \ldots \\
+\emph{sleeping} & \ldots & \ldots & \ldots \\
+\emph{sleeping} & sleep(42); & sleep(123);  & \ldots \\
+\emph{sleeping} & \emph{sleeping} & \emph{sleeping} & \ldots \\
+\emph{sleeping} & \emph{sleeping} & \emph{sleeping} & \ldots \\
+\emph{sleeping} & \emph{sleeping} & \emph{sleeping} & wakeup(42); \\
+\ldots & \ldots & \emph{sleeping} & \ldots \\
+\ldots & \ldots & \emph{sleeping} & \ldots \\
+\end{tabular}
+\end{center}
+
+Dans cet exemple, le thread 1 puis le thread 2 s'endorment avec comme
+identifiant 42. Le thread 3 s'endort avec l'identifiant 123. C'est le
+thread 4 qui reveille les threads 1 et 2.
+
 \begin{description}
 \item {\bf Implémentation dans kaneton}
 
@@ -22,18 +43,84 @@ threads bloqués par \emph{sleep} (le premier s'étant endormi).
   \\
   Ecrivez la structure en C correspondante.
 
+  \begin{correction}
+    \begin{verbatim}
+typedef struct
+{
+  t_id  id;
+
+  i_set queue;
+}       o_wait;
+    \end{verbatim}
+  \end{correction}
+
 \item
   Ecrivez le code de la fonction \emph{sleep}.\\
   {\emph{void} \bf sleep}({\em t\_id id)}
+
+  \begin{correction}
+    \begin{verbatim}
+void          sleep(t_id id)
+{
+  i_thread    thid;
+  o_wait      *wait;
+
+  thread_current(&thid);
+  if (set_get(waits, id, (void**)&wait) != ERROR_NONE)
+  {
+    wait = malloc(sizeof (o_wait));
+    wait->id = id;
+    set_reserve(pipe, SET_OPT_NONE, sizeof (o_wait), &wait->queue);
+  }
+  set_push(wait->queue, &thid);
+  thread_state(thid, SCHED_STATE_STOP);
+}
+    \end{verbatim}
+  \end{correction}
 
 \item
   Ecrivez le code de la fonction \emph{wakeup\_once}.\\
   {\emph{void} \bf wakeup\_once}({\em t\_id id)}
 
+  \begin{correction}
+    \begin{verbatim}
+void          wakeup_once(t_id id)
+{
+  i_thread    thid;
+  o_wait      *wait;
+
+  if (set_get(waits, id, (void**)&wait) != ERROR_NONE)
+    return;
+  if (set_pick(wait->queue, &thid) != ERROR_NONE)
+    return;
+  set_pop(wait->queue);
+  thread_state(thid, SCHED_STATE_RUN);
+}
+    \end{verbatim}
+  \end{correction}
+
+
 \item
   Ecrivez le code de la fonction \emph{wakeup}.\\
   {\emph{void} \bf wakeup}({\em t\_id id)}
 
+  \begin{correction}
+    \begin{verbatim}
+void          wakeup(t_id id)
+{
+  i_thread    thid;
+  o_wait      *wait;
+
+  if (set_get(waits, id, (void**)&wait) != ERROR_NONE)
+    return;
+  while (set_pick(wait->queue, &thid) != ERROR_NONE)
+  {
+    set_pop(wait->queue);
+    thread_state(thid, SCHED_STATE_RUN);
+  }
+}
+    \end{verbatim}
+  \end{correction}
 \end{enumerate}
 
 \end{description}
