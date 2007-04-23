@@ -1,49 +1,93 @@
+\newpage
+
 \section*{Exercice 2 : Gestionnaire d'interruption (3 points)}
 
 {\bf C\^ot\'e noyau}
 
-Consid\'erons un gestionnaire d'\'ev\'enements ayant les propri\'et\'es suivantes:
+Un SIGL a essay\'e d'optimiser le handler d'exceptions par d\'efaut dans la version 1.0 de Linux. Trouvez ses erreurs et proposez une correction.
 
-\begin{itemize}
-\item
-\item
-\item
-\end{itemize}
-
-Le code suivant impl\'emente un handler d'exception pour l'architecture IA32. Corrigez les diff\'erentes erreurs qu'il contient.
+{\bf Note:} Linux 1.0 est sortie en Mars 1994. \`A l'\'epoque de Linux n'avait pas \'et\'e port\'e sur d'autres arcitectures que IA32.
 
 \begin{verbatim}
+/* This is the default interrupt ``handler'' :-) */
+int_msg:
+        .asciz ``Unknown interrupt\n''
 
-.globl prehandler_irq
-         prehandler_irq#nr
-               addl $-4, %esp
+.align 2
+ignore_int:
 
-               push
-               push
-               push
-               push
+        cld                         ; ne pas prendre en compte
+        pushl %eax
+        pushl %ecx
+        pushl %edx
+        push %ds
+        push %es
+        push %fs
 
+        movl $(KERNEL_CS),%eax
+        mov %ax,%ds
+        mov %ax,%es
+        mov %ax,%fs
 
-         FORCE_RING0_SWITCH()
-               pushl $n
-               call handler_irq
-               addl $4, %esp
-         FORCE_RING0_BACK()
+        pushl $int_msg
+        call _printk
 
-               pop
-               pop
-               pop
-               pop
+        pop %fs
+        pop %es
+        pop %ds
+        popl %edx
+        popl %ecx
+        popl %eax
 
-               addl $4, %esp
-               iret
-
+        ret
 
 //code with sides effects before context saving
 //bad stack adjustment
 //ret before iret
 //ebp overwritten
 //pop microprocessor info
-
 \end{verbatim}
+
+\begin{itemize}
+\item Vous consid\'erez qu'aucun autre registre que ceux qui apparaissent dans ce code ne sera utilis\'e pendant le traitement du handler.
+\end{itemize}
+
+\begin{correction}
+\begin{verbatim}
+/* This is the default interrupt ``handler'' :-) */
+int_msg:
+        .asciz ``Unknown interrupt\n''
+
+.align 2
+ignore_int:
+        cld
+        pushl %eax
+        pushl %ecx
+        pushl %edx
+        push %ds
+        push %es
+        push %fs
+
+        movl $(KERNEL_DS),%eax
+        mov %ax,%ds
+        mov %ax,%es
+        mov %ax,%fs
+
+        pushl $int_msg
+        call _printk
+        popl %eax
+
+        pop %fs
+        pop %es
+        pop %ds
+        popl %edx
+        popl %ecx
+        popl %eax
+
+        iret
+\end{verbatim}
+\end{correction}
+
+
+
 
