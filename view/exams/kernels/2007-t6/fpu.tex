@@ -1,0 +1,60 @@
+\section*{Exercice 5 : Unité à virgule flottante (X points)}
+
+{\bf x87 FPU :}
+
+L'unité à virgule flottante (FPU) du Pentium, la x87 FPU, est un
+composant integré au microprocesseur et offrant le support des nombres
+flottant IEEE 754.
+
+La FPU contient les registres suivants :
+
+\begin{itemize}
+\item
+  Status Register : contient les flags (Z, N\ldots)
+\item
+  Control Register : contient le masque d'exception
+\item
+  Tag Word : indique l'état des registres R0-R7
+\item
+  Instruction Pointer : pointeur vers la dernière instruction
+  flottante executée
+\item
+  Instruction Opcode : opcode de la dernière instruction flottante
+  executée
+\item
+  Data Pointer : pointeur vers la dernière opérande en chargée en
+  mémoire
+\item
+  R0-R7 : huit registres de calcul (aussi appelés ST(0)-ST(7))
+\end{itemize}
+
+Les instructions suivante (disponible sous forme de macros) manipulent le contexte de la FPU :
+
+\begin{itemize}
+\item
+  \verb|FSAVE(ptr)| : sauvegarde le contexte FPU à l'adresse
+  \emph{ptr}
+\item
+  \verb|FRSTOR(ptr)| : restaure le contexte FPU depuis l'adresse
+  \emph{ptr}
+\end{itemize}
+
+Lorsque le flag TS du registre CR0 est à 1 et qu'une instruction
+flottante est executée, une exception 7 (Device Not Available) est
+levée. Le flag TS est mis à 0 par la macro CLTS() et mis à 1 par
+STS().
+
+Dans l'exercice qui suit, nous vous demandons d'utiliser ce mécanisme
+d'exception pour effectuer les changements de contexte uniquement au
+moment opportun.
+
+\begin{description}
+\item {\bf Implémentation du changement de contexte pour la FPU}
+
+\begin{enumerate}
+\item
+  Dans quelle structure allez-vous stocker le contexte FPU d'un thread
+  ?
+\end{enumerate}
+
+\end{description}
