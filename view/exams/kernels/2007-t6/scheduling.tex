@@ -1,2 +1,43 @@
 \section*{Exercice 3 : Ordonnancement (3 points)}
 
+\textbf{Pour repondre a cet exercice, dégraphez et rendez la dernière
+page du sujet.}
+
+\begin{enumerate}
+  \item
+    Ordonnancez les threads suivants avec l'algorithme Round Robin à
+    priorité fixe et viellissement vu en cours :\\
+
+    \begin{tabular}{| l | l | l |}
+      \hline
+      \textbf{Thread} & \textbf{Priorité} \\\hline
+      1 & 10 \\
+      2 & 3 \\
+      3 & 18 \\
+      4 & 18 \\
+      5 & 13 \\\hline
+    \end{tabular}
+
+    Quantum : 10 ms\\
+    Nombre de niveaux de priorité : 20\\
+    Viellissement : +5 tout les 5 quantums de non exécution\\
+
+  \item
+    Ordonnancez les threads suivants avec l'algorithme Multilevel
+    Feedback Queue vu en cours :\\
+
+    \begin{tabular}{| l | l | l |}
+      \hline
+      \textbf{Thread} & \textbf{Priorité} & \textbf{Timeslice total} \\\hline
+      1 & 10 & 30 \\
+      2 & 1 & 10 \\
+      3 & 18 & 50 \\
+      4 & 18 & 50 \\
+      5 & 13 & 40 \\\hline
+    \end{tabular}
+
+    Quantum : 10 ms\\
+    Nombre de niveaux de priorité : 20\\
+    Nombre de files de priorité : 20\\
+
+\end{enumerate}

@@ -1,12 +1,10 @@
-\newpage
-
 \section*{Exercice 2 : Gestionnaire d'interruption (3 points)}
 
 {\bf C\^ot\'e noyau}
 
 Un SIGL a essay\'e d'optimiser le handler d'exceptions par d\'efaut dans la version 1.0 de Linux. Trouvez ses erreurs et proposez une correction.
 
-{\bf Note:} Linux 1.0 est sortie en Mars 1994. \`A l'\'epoque de Linux n'avait pas \'et\'e port\'e sur d'autres arcitectures que IA32.
+{\bf Note:} Linux 1.0 est sortie en Mars 1994. \`A l'\'epoque Linux n'avait pas \'et\'e port\'e sur d'autres arcitectures que IA32.
 
 \begin{verbatim}
 /* This is the default interrupt ``handler'' :-) */
@@ -17,7 +15,7 @@ int_msg:
 ignore_int:
 
         //code with sides effects before context saving
-	
+
 
         cld                         ; ne pas prendre en compte
         pushl %eax
