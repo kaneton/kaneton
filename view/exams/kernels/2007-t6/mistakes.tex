@@ -1,2 +1,49 @@
 \section*{Exercice 2 : Gestionnaire d'interruption (3 points)}
 
+{\bf C\^ot\'e noyau}
+
+Consid\'erons un gestionnaire d'\'ev\'enements ayant les propri\'et\'es suivantes:
+
+\begin{itemize}
+\item
+\item
+\item
+\end{itemize}
+
+Le code suivant impl\'emente un handler d'exception pour l'architecture IA32. Corrigez les diff\'erentes erreurs qu'il contient.
+
+\begin{verbatim}
+
+.globl prehandler_irq
+         prehandler_irq#nr
+               addl $-4, %esp
+
+               push
+               push
+               push
+               push
+
+
+         FORCE_RING0_SWITCH()
+               pushl $n
+               call handler_irq
+               addl $4, %esp
+         FORCE_RING0_BACK()
+
+               pop
+               pop
+               pop
+               pop
+
+               addl $4, %esp
+               iret
+
+
+//code with sides effects before context saving
+//bad stack adjustment
+//ret before iret
+//ebp overwritten
+//pop microprocessor info
+
+\end{verbatim}
+
