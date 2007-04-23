@@ -16,6 +16,9 @@ int_msg:
 .align 2
 ignore_int:
 
+        //code with sides effects before context saving
+	
+
         cld                         ; ne pas prendre en compte
         pushl %eax
         pushl %ecx
@@ -41,10 +44,6 @@ ignore_int:
 
         ret
 
-//code with sides effects before context saving
-//bad stack adjustment
-//ret before iret
-//ebp overwritten
 //pop microprocessor info
 \end{verbatim}
 
