@@ -1,10 +1,10 @@
-\section*{Exercice 5 : Unité à virgule flottante (X points)}
+\section*{Exercice 5 : Unité à virgule flottante (5.5 points)}
 
 {\bf x87 FPU :}
 
-L'unité à virgule flottante (FPU) du Pentium, la x87 FPU, est un
-composant integré au microprocesseur et offrant le support des nombres
-flottant IEEE 754.
+L'unit\'e \`a virgule flottante (FPU) du Pentium, la x87 FPU, est un
+composant int\'egr\'e au microprocesseur et offrant le support des nombres
+flottants IEEE 754.
 
 La FPU contient les registres suivants :
 
@@ -22,13 +22,13 @@ La FPU contient les registres suivants :
   Instruction Opcode : opcode de la dernière instruction flottante
   exécutée
 \item
-  Data Pointer : pointeur vers la dernière opérande en chargée en
+  Data Pointer : pointeur vers la dernière opérande chargée en
   mémoire
 \item
   R0-R7 : huit registres de calcul (aussi appelés ST(0)-ST(7))
 \end{itemize}
 
-Les instructions suivante (disponible sous forme de macros) manipulent
+Les instructions suivantes (sous forme de macros) manipulent
 le contexte de la FPU :
 
 \begin{itemize}
@@ -42,10 +42,10 @@ le contexte de la FPU :
 
 Lorsque le flag TS du registre CR0 est à 1 et qu'une instruction
 flottante est exécutée, une exception 7 (Device Not Available) est
-levée. Le flag TS est mis à 0 par la macro CLTS() et mis à 1 par
+levée. Le flag TS est mis à 0 par la macro CLTS() ou mis à 1 par
 STS().
 
-Dans l'exercice qui suit, nous vous demandons d'utiliser ce mécanisme
+Dans l'exercice qui suit, vous utiliserez ce mécanisme
 d'exception pour effectuer les changements de contexte uniquement au
 moment opportun.
 
@@ -54,82 +54,41 @@ moment opportun.
 
 \begin{enumerate}
 \item
-  Quatre threads tournent sur notre système. T1, T2, T3 et T4 sont
-  exécutés les uns à la suite des autres (Round-Robin).
+  Quatre threads tournent sur notre système : T1, T2, T3 et T4 sont
+  exécutés l'un apr\`es l'autre (Round-Robin).
 
   Les threads T1, T2 et T4 effectuent des calculs flottants.
 
-  A partir du schéma ci-dessous, identifiez à quels instants vous
+  \`A partir du schéma ci-dessous, identifiez à quels instants vous
   allez devoir changer le contexte FPU.
 
   \begin{center}
     \includegraphics[width=\linewidth]{figures/cs-fpu}
   \end{center}
 
-  Deduisez-en la valeur du flag TS au fil de l'exécution de chacun des
+  D\'eduisez-en la valeur du flag TS au fil de l'exécution de chacun des
   threads.
-
-  \begin{correction}
-  \begin{center}
-    \includegraphics[width=\linewidth]{figures/cs-fpu-correct}
-  \end{center}
-  \end{correction}
 
 \item
   La structure permettant de stocker le contexte FPU vous est
   donnée. Elle se nomme \emph{t\_x87\_context}. Elle contient tous les
-  registres cités plus haut. Nous ne nous interesserons pas à son
-  contenu détaillé, mais sachez que la structure est compatible avec
-  \verb|FSAVE| et \verb|FRSTOR|.
+  registres cités plus haut. Ne vous int\'eressez pas au d\'etail de son contenu,
+  mais sachez que la structure est compatible avec \verb|FSAVE| et \verb|FRSTOR|.
 
   Dans quel objet kaneton allez-vous stocker le contexte FPU d'un
   thread ? Dans quelle fonction de l'interface kaneton allez-vous
   initialiser ce contexte ?
 
-  \textbf{Dans la suite de l'excercice, vous considererez que les
+  \textbf{Dans la suite de l'excercice, consid\'erez que les
   structures de contexte FPU sont correctement remplies.}
-
-  \begin{correction}
-
-    Nous allons rajouter une instance de \emph{t\_x87\_context} dans
-    la partie dépendante de l'object \emph{o\_thread}.
-
-    Cette structure devra être initialisée au même moment que le reste
-    du contexte, dans \emph{ia32\_thread\_init}.
-
-  \end{correction}
-
 \item
-  Ecrivez le code du gestionnaire d'interruption Device Not
+  \'Ecrivez le code du gestionnaire d'interruption Device Not
   Available. C'est bien evidemment dans ce dernier que vous devez
   échanger les contextes FPU.
-
-  \begin{correction}
-    \begin{verbatim}
-void          ia32_sched_switch_fpu(i_event id)
-{
-  o_thread    *o;
-  o_thread    *old;
-
-  thread_get(sched->current, &o);
-  thread_get(sched->current_fpu, &old);
-  FSAVE(&old->machdep.fpu_context);
-  FRSTOR(&o->machdep.fpu_context);
-  CLTS();
-  sched->current_fpu = sched->current;
-}
-    \end{verbatim}
-  \end{correction}
 
   Indiquez à quel endroit du code (aussi bien celui que vous venez
   d'écrire que celui des autres fonctions du scheduler) vous devez
   mettre à jour TS.
-
-  \begin{correction}
-
-    Il faut ajouter un STS() dans \emph{ia32\_sched\_switch}.
-
-  \end{correction}
 
 \end{enumerate}
 \end{description}

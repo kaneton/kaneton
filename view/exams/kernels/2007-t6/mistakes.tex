@@ -2,22 +2,34 @@
 
 {\bf C\^ot\'e noyau}
 
-Un SIGL a essay\'e d'optimiser le handler d'exceptions par d\'efaut dans la version 1.0 de Linux. Trouvez ses erreurs et proposez une correction.
+Le code suivant est inspir\'e du handler d'exceptions par d\'efaut de Linux 1.0 IA32, mais plusieurs erreurs ont \'et\'e introduites.
 
-{\bf Note:} Linux 1.0 est sortie en Mars 1994. \`A l'\'epoque Linux n'avait pas \'et\'e port\'e sur d'autres arcitectures que IA32.
+\begin{enumerate}
+\item Corrigez le handler pour que Linux 1.0 ne plante plus lors du d\'eclenchement d'une exception. Vous ne vous soucierez pas des probl\`emes li\'es \`a la s\'ecurit\'e.
+\begin{itemize}
+\item Aucun autre registre que ceux qui apparaissent dans ce code ne sera utilis\'e pendant le traitement du handler.
+\item Ce handler ne traite que les exceptions qui fournissent un code d'erreur.
+\item Le code assembleur est \'ecrit en syntax gas (source,destination)
+\end{itemize}
+
+\item Quelle autre pr\'ecaution faut-il g\'en\'erallement prendre pour rendre un handler plus s\^ur ?
+
+\item Dans les handlers d'exceptions sous Linux IA32, faut-il sauvegarder, modifier et restaurer le registre {\em CR3} ? Pourquoi ?
+\end{enumerate}
+
+
 
 \begin{verbatim}
 /* This is the default interrupt ``handler'' :-) */
+
 int_msg:
         .asciz ``Unknown interrupt\n''
 
 .align 2
 ignore_int:
+        popl %eax      ; depile le code d'erreur
 
-        //code with sides effects before context saving
-
-
-        cld                         ; ne pas prendre en compte
+        cld            ; ne pas prendre en compte cette instruction
         pushl %eax
         pushl %ecx
         pushl %edx
@@ -39,51 +51,8 @@ ignore_int:
         popl %edx
         popl %ecx
         popl %eax
-
         ret
-
-//pop microprocessor info
 \end{verbatim}
-
-\begin{itemize}
-\item Vous consid\'erez qu'aucun autre registre que ceux qui apparaissent dans ce code ne sera utilis\'e pendant le traitement du handler.
-\end{itemize}
-
-\begin{correction}
-\begin{verbatim}
-/* This is the default interrupt ``handler'' :-) */
-int_msg:
-        .asciz ``Unknown interrupt\n''
-
-.align 2
-ignore_int:
-        cld
-        pushl %eax
-        pushl %ecx
-        pushl %edx
-        push %ds
-        push %es
-        push %fs
-
-        movl $(KERNEL_DS),%eax
-        mov %ax,%ds
-        mov %ax,%es
-        mov %ax,%fs
-
-        pushl $int_msg
-        call _printk
-        popl %eax
-
-        pop %fs
-        pop %es
-        pop %ds
-        popl %edx
-        popl %ecx
-        popl %eax
-
-        iret
-\end{verbatim}
-\end{correction}
 
 
 

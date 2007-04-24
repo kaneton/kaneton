@@ -6,29 +6,27 @@
                            e\_event\_type \argument{type},
                            u\_event\_handler \argument{handler})}
 	 {
-	   This function installs an event handler.
+	   Install an event handler.
 
 	   \argument{type} can be :
 	   \begin{itemize}
 	     \item
-	       \textbf{EVENT\_FUNCTION}: this means that the event will
-	       call a function, which pointer is given in the union
-	       \argument{handler}
+	       {\em EVENT\_FUNCTION}:
+	       the event calls the function pointed by the union \argument{handler}
 	     \item
-	       \textbf{EVENT\_MESSAGE}: this means that the event will
-	       generate an IPC to the task given in the union
-	       \argument{handler}.
+	       {\em EVENT\_MESSAGE}:
+	       the event generates an IPC to the task given in the union \argument{handler}.
 	   \end{itemize}
 
 	   The union \argument{handler} contains a pointer to a
 	   function returning void and getting an event identifier in
 	   argument and an optional error code (integer). The union
-	   also contains a task identifier in the case of IPC action.
+	   also contains a task identifier in the case of an IPC action.
 	 }
 
 \function{event\_release}{(i\_event \argument{id})}
 	 {
-	   This function releases an event handler.
+	   Release an event handler.
 	 }
 
 \subsection*{event manager example}
@@ -61,69 +59,63 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
                             t\_prior \argument{prior},
                             i\_thread* \argument{id})}
 	 {
-	   This function reserves a thread for the task \argument{task}
+	   Reserve a thread for the task \argument{task}
 	   given the default thread priority \argument{prior}.
 
 	   Note that once reserved, the thread is marked as stopped.
 
-	   The priority must be in the interval \emph{THREAD\_LPRIOR},
-	   \emph{THREAD\_HPRIOR}.
+	   Priority takes its value from \emph{THREAD\_LPRIOR} to \emph{THREAD\_HPRIOR}.
 	 }
 
 \function{thread\_release}{(i\_thread \argument{id})}
 	 {
-	   This function releases the thread object \argument{id}.
+	   Release the thread object \argument{id}.
 	 }
 
 \function{thread\_priority}{(i\_thread \argument{id},
                              t\_prior \argument{prior})}
 	 {
-	   This function updates the current thread priority
-	   to \argument{prior}.
+	   Update the current thread priority to \argument{prior}.
 
-	   The priority must be in the interval \emph{THREAD\_LPRIOR},
-	   \emph{THREAD\_HPRIOR}.
+	   Priority takes its value from \emph{THREAD\_LPRIOR} to \emph{THREAD\_HPRIOR}.
 	 }
 
 \function{thread\_state}{(i\_thread \argument{id},
                           t\_state \argument{sched})}
 	 {
-	   This function stops or starts a thread.
+	   Stops or start a thread.
 
-	   Values for \argument{sched} are:
+	   \argument{sched} values can be:
 
 	   \begin{itemize}
 	     \item
-	       \emph{SCHED\_STATE\_RUN}: run the thread.
+	       {\em SCHED\_STATE\_RUN}: run the thread.
 	     \item
-	       \emph{SCHED\_STATE\_STOP}: stop the thread.
+	       {\em SCHED\_STATE\_STOP}: stop the thread.
 	   \end{itemize}
 	 }
 
 \function{thread\_get}{(i\_thread \argument{id},
                         o\_thread** \argument{o})}
 	 {
-	   This function returns in \argument{o} the thread object
-	   corresponding to \argument{id}.
+	   Find the thread object corresponding to \argument{id} and return it in \argument{o}.
 	 }
 
 \function{thread\_stack}{(i\_thread \argument{id},
                           t\_stack \argument{stack})}
 	 {
-	   This function allocates a stack for the thread \argument{id}.
+	   Allocates a stack for the thread \argument{id}.
 
 	   The \argument{stack} argument is a struct containing the
-	   size of the stack and a field called \emph{base}. If the
-	   base is set to a value different of 0, then no space will
-	   be allocated and the base of the stack will be set to the
-	   address \argument{base}.
+	   size of the stack and a field called \emph{base}. If {\em base}
+	   is not equal to 0, then no space is allocated and the stack base
+	   is set to the address \argument{base}.
 	 }
 
 \function{thread\_load}{(i\_thread \argument{id},
                          t\_thread\_context \argument{context})}
 	 {
-	   This function loads a new execution context in the thread
-	   object \argument{id}.
+	   Load a new execution context in the thread object \argument{id}.
 
 	   A thread execution context \textit{t\_thread\_context}
 	   only contains the \textit{program counter} and the
@@ -138,37 +130,34 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
 
 \function{sched\_yield}{(i\_cpu \argument{cpuid})}
 	 {
-	   This function permits the current thread to relinquish
-	   the processor voluntarily.
+	   Permit the current thread to relinquish the processor voluntarily.
 
 	   Do not care about the argument \argument{cpuid}.
 	 }
 
 \function{sched\_add}{(i\_thread \argument{thread})}
 	 {
-	   This function adds a runnable thread to the scheduler. Even
-	   if the added thread has the highest priority, do not yield
-	   the current thread.
+	   Adds a runnable thread to the scheduler. Even if the added thread
+	   has the highest priority, do not yield the current thread.
 	 }
 
 \function{sched\_remove}{(i\_thread \argument{thread})}
 	 {
-	   This function removes a thread from the
-	   scheduler. \textbf{Be careful:} the thread to remove can be
-	   the currently executing thread.
+	   Remove a thread from the scheduler. \textbf{Be careful:}
+	   the thread to remove can be executing.
 	 }
 
 \function{sched\_update}{(i\_thread \argument{thread})}
 	 {
-	   This function asks the scheduler to update the thread
-	   \argument{thread} in its internal data structures since
-	   for example the thread's priority just changed.
+	   Asks the scheduler to update the thread \argument{thread} in its
+	   internal data structures since for example the thread's priority
+	   just changed.
 	 }
 
 \function{sched\_current}{(i\_thread* \argument{thread})}
 	 {
-	   This function returns in \argument{thread} the identifier
-	   of the thread currently executed.
+	   Find the identifier of the currently executing thread and return
+	   it in \argument{thread}
 	 }
 
 \section{kaneton set manager}
@@ -178,54 +167,51 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
 \function{set\_size}{(i\_set \argument{id},
                       t\_setsz \argument{size})}
 	 {
-	   This function returns in \argument{size} the number of elements
-	   of the set.
+	   Returns in \argument{size} the number of elements in the set.
 	 }
 
 \function{set\_add}{(i\_set \argument{id},
                      void* \argument{data})}
 	 {
-	   This function adds a data object in the set \argument{id}.
+	   Adds a data object into the set \argument{id}.
 	 }
 
 \function{set\_remove}{(i\_set \argument{id},
                         t\_id \argument{i})}
 	 {
-	   This function removes an object identified by \argument{i}
-	   from the set \argument{id}.
+	   Remove an object identified by \argument{i} from the set
+	   \argument{id}.
 	 }
 
 \function{set\_object}{(i\_set \argument{id},
                         t\_iterator \argument{iterator},
                         void** \argument{data})}
 	 {
-	   This function returns the data object corresponding to
-	   the iterator.
+	   Return the data object matching the iterator.
 	 }
 
 \function{set\_get}{(i\_set \argument{setid},
                      t\_id \argument{id},
                      void** \argument{o})}
          {
-	   This function retrieve an element in the set given its
-	   identifier \argument{id}.
+	   Find an element in the set given its identifier \argument{id}.
 	 }
 
 \function{set\_push}{(i\_set \argument{id},
                       void* \argument{data})}
 	 {
-	   This function adds an object to a FIFO or LIFO structure.
+	   Add an object to a FIFO or LIFO structure.
 	 }
 
 \function{set\_pop}{(i\_set \argument{id})}
 	 {
-	   This function removes the next object of a FIFO or LIFO structure.
+	   Remove the next object of a FIFO or a LIFO structure.
 	 }
 
 \function{set\_pick}{(i\_set \argument{id},
                       void** \argument{data})}
 	 {
-	   This function returns the next object of a FIFO or LIFO structure
+	   Return the next object of a FIFO or a LIFO structure
 	   without deleting it.
 	 }
 
@@ -234,14 +220,11 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
                          t\_size \argument{datasz},
                          i\_set* \argument{id})}
 	 {
-	   This function reserves a set object of type \argument{type}
-	   with options \argument{opts} which will contain object of
-	   \argument{datasz} size.
+	   Reserves a set object of type \argument{type}
+	   with options \argument{opts} which contains objects of
+	   \argument{datasz} size. Its identifier is returned in \argument{id}.
 
-	   The reserved set object's identifier is returned in
-	   \argument{id}.
-
-	   Values for \argument{type} are:
+	   \argument{type} values can be:
 
 	   \begin{itemize}
 	     \item
@@ -257,7 +240,7 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
 
 \function{set\_release}{(i\_set \argument{id})}
 	 {
-	   This function releases the set \argument{id}.
+	   Release the set \argument{id}.
 	 }
 
 \subsection*{set\_foreach example}
@@ -290,19 +273,4 @@ Nom :\hspace{5cm}Prenom :\\
 
 \includegraphics[width=\linewidth]{figures/grid-sched}
 
-\newpage
-\begin{correction}
-
-\section{Feuille de réponse de l'excercice 3}
-
-Nom :\hspace{5cm}Prenom :\\
-
-\subsection{Round Robin avec priorité et vieillisement}
-
-\includegraphics[width=\linewidth]{figures/grid-sched-rr}
-
-\subsection{Multilevel Feedback Queue}
-
-\includegraphics[width=\linewidth]{figures/grid-sched-mfq}
-\end{correction}
 \end{document}
