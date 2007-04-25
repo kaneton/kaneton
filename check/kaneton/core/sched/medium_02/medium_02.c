@@ -13,18 +13,29 @@
 #include <kaneton.h>
 #include "../common/common.h"
 
-static volatile int executed[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+static volatile char executed[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+static void thread1(void);
+static void thread2(void);
+static void thread3(void);
+static void thread4(void);
+static void thread5(void);
+static void thread6(void);
+static void thread7(void);
+static void thread8(void);
 
 #define THREAD(Id)							\
-  static void	thread##Id(void)					\
-  {									\
-    asm volatile("cli");						\
-    executed[(Id) - 1] = 1;						\
-    asm volatile("sti");						\
-									\
-    while (1)								\
-      ;									\
-  }
+  asm ("thread" #Id ":				\n"			\
+       "	cli				\n"			\
+       "	pushl %eax			\n"			\
+       "	movl $" #Id ", %eax		\n"			\
+       "	addl $executed, %eax		\n"			\
+       "	subl $1, %eax			\n"			\
+       "	movb $1, (%eax)			\n"			\
+       "	popl %eax			\n"			\
+       "	sti				\n"			\
+       "1:					\n"			\
+       "	jmp 1b				");
 
 THREAD(1);
 THREAD(2);

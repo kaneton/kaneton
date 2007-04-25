@@ -15,15 +15,14 @@
 
 static volatile int executed = 0;
 
-static void	thread1(void)
-{
-  CLI();
-  executed++;
-  STI();
+static void thread1(void);
 
-  while (1)
-    ;
-}
+asm ("thread1:				\n"
+     "	cli				\n"
+     "	addl $1, executed		\n"
+     "	sti				\n"
+     "1:				\n"
+     "	jmp 1b				");
 
 /*
  * XXX
