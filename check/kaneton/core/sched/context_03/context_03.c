@@ -14,16 +14,30 @@
 #include "../common/common.h"
 
 static volatile int executed = 0;
-static volatile unsigned int eflags;
+static volatile unsigned short cs;
+static volatile unsigned short ds;
+static volatile unsigned short es;
+static volatile unsigned short fs;
+static volatile unsigned short gs;
+static volatile unsigned short ss;
 
 static void thread1(void);
 
 asm ("thread1:				\n"
      "	cli				\n"
      "	pushl %eax			\n"
-     "	pushf				\n"
-     "	popl %eax			\n"
-     "	mov %eax, eflags		\n"
+     "	movw %cs, %ax			\n"
+     "	movw %ax, cs			\n"
+     "	movw %ds, %ax			\n"
+     "	movw %ax, ds			\n"
+     "	movw %es, %ax			\n"
+     "	movw %ax, es			\n"
+     "	movw %fs, %ax			\n"
+     "	movw %ax, fs			\n"
+     "	movw %gs, %ax			\n"
+     "	movw %ax, gs			\n"
+     "	movw %ss, %ax			\n"
+     "	movw %ax, ss			\n"
      "	popl %eax			\n"
      "	movl $1, executed		\n"
      "	sti				\n"
@@ -34,7 +48,7 @@ asm ("thread1:				\n"
  * XXX
  */
 
-void		check_sched_context_01(void)
+void		check_sched_context_03(void)
 {
   t_id		id;
   t_uint32	start;
@@ -53,11 +67,12 @@ void		check_sched_context_01(void)
 
   ASSERT(executed == 1, "Thread not executed\n");
 
-  ASSERT(!(eflags & (1 << 0)), "flag CF should not be set\n");
-  ASSERT(!(eflags & (1 << 2)), "flag PF should not be set\n");
-  ASSERT(!(eflags & (1 << 6)), "flag ZF should not be set\n");
-  ASSERT(!(eflags & (1 << 7)), "flag SF should not be set\n");
-  ASSERT(!(eflags & (1 << 11)), "flag OF should not be set\n");
+  ASSERT(cs == 0x8, "Bad value for cs\n");
+  ASSERT(ds == 0x10, "Bad value for ds\n");
+  ASSERT(es == 0x10, "Bad value for es\n");
+  ASSERT(fs == 0x10, "Bad value for fs\n");
+  ASSERT(gs == 0x10, "Bad value for gs\n");
+  ASSERT(ss == 0x10, "Bad value for ss\n");
 
   TEST_LEAVE();
 }

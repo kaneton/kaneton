@@ -18,40 +18,34 @@ static volatile int executed = 0;
 static void thread1(void);
 
 asm ("thread1:				\n"
+     "1:				\n"
      "	cli				\n"
      "	addl $1, executed		\n"
      "	sti				\n"
-     "1:				\n"
      "	jmp 1b				");
 
 /*
  * XXX
  */
 
-void		check_sched_medium_01(void)
+void		check_sched_simple_03(void)
 {
   t_id		id;
   t_uint32	start;
-  int		i;
 
   TEST_ENTER();
 
-  CLI();
-  for (i = 0; i < 6; i++)
-    {
-      ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
-	     "error creating thread\n");
+  ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
+	 "error creating thread\n");
 
-      ASSERT(thread_state(id, SCHED_STATE_RUN) == ERROR_NONE,
-	     "cannot start thread\n");
-    }
-  STI();
+  ASSERT(thread_state(id, SCHED_STATE_RUN) == ERROR_NONE,
+	 "cannot start thread\n");
 
   start = check_cmos_sec();
-  while ((start + 3) % 60 != check_cmos_sec() && executed != 6)
+  while ((start + 3) % 60 != check_cmos_sec())
     ;
 
-  ASSERT(executed == 6, "One or more threads not executed\n")
+  ASSERT(executed > 15, "Thread not executed\n")
 
   TEST_LEAVE();
 }

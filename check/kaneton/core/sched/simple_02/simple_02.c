@@ -48,7 +48,7 @@ void		check_sched_simple_02(void)
   STI();
 
   start = check_cmos_sec();
-  while ((start + 3) % 60 != check_cmos_sec())
+  while ((start + 3) % 60 != check_cmos_sec() && executed != 2)
     ;
 
   ASSERT(executed == 2, "Thread not executed\n")

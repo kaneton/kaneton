@@ -42,7 +42,7 @@ void		check_sched_simple_01(void)
 	 "cannot start thread\n");
 
   start = check_cmos_sec();
-  while ((start + 3) % 60 != check_cmos_sec())
+  while ((start + 3) % 60 != check_cmos_sec() && !executed)
     ;
 
   ASSERT(executed == 1, "Thread not executed\n")

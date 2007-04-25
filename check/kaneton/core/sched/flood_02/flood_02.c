@@ -48,7 +48,7 @@ void		check_sched_flood_02(void)
   STI();
 
   start = check_cmos_sec();
-  while ((start + 3) % 60 != check_cmos_sec())
+  while ((start + 3) % 60 != check_cmos_sec() && executed != 50)
     ;
 
   ASSERT(executed == 50, "One or more threads not executed\n")
