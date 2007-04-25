@@ -232,12 +232,11 @@ void			kernel_init(void)
   /*
    * 16)
    */
-#ifndef SERIAL
+
   cons_msg('+', "starting scheduler manager\n");
 
   if (sched_init() != ERROR_NONE)
     core_error("cannot initialise the scheduler manager\n");
-#endif
 }
 
 /*
