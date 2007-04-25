@@ -18,20 +18,21 @@ static volatile int executed = 0;
 static void thread1(void);
 
 asm ("thread1:				\n"
-     "	cli				\n"
-     "	movl $1, executed		\n"
-     "	sti				\n"
      "1:				\n"
+     "	cli				\n"
+     "	addl $1, executed		\n"
+     "	sti				\n"
      "	jmp 1b				");
 
 /*
  * XXX
  */
 
-void		check_sched_simple_01(void)
+void		check_sched_state_01(void)
 {
   t_id		id;
   t_uint32	start;
+  t_uint32	prev;
 
   TEST_ENTER();
 
@@ -44,10 +45,23 @@ void		check_sched_simple_01(void)
   STI();
 
   start = check_cmos_sec();
-  while ((start + 3) % 60 != check_cmos_sec() && !executed)
+  while ((start + 3) % 60 != check_cmos_sec() && executed == 0)
     ;
 
-  ASSERT(executed == 1, "Thread not executed\n")
+  ASSERT(executed != 0, "Thread not executed\n");
+
+  CLI();
+  ASSERT(thread_state(id, SCHED_STATE_STOP) == ERROR_NONE,
+	 "cannot stop thread\n");
+  STI();
+
+  prev = executed;
+
+  start = check_cmos_sec();
+  while ((start + 3) % 60 != check_cmos_sec())
+    ;
+
+  ASSERT(executed == prev, "Thread not stopped\n");
 
   TEST_LEAVE();
 }
