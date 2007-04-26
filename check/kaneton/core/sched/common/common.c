@@ -162,6 +162,29 @@ void check_rtc_init(void)
   check_reg_read(RTC_INTR);
 }
 
+int		check_task_create(t_class		class,
+				  i_task		*task)
+{
+  i_as		as;
+
+  if (task_reserve(class,
+		   TASK_BEHAV_INTERACTIVE,
+		   TASK_PRIOR_INTERACTIVE,
+		   task) != ERROR_NONE)
+    {
+      printf("error in task_reserve\n");
+      return -1;
+    }
+
+  if (as_reserve(*task, &as) != ERROR_NONE)
+    {
+      printf("error in as_reserve\n");
+      return -1;
+    }
+
+  return 0;
+}
+
 int		check_thread_create(i_task		task,
 				    t_prior		prior,
 				    t_vaddr		entry,

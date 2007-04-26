@@ -58,6 +58,9 @@ unsigned long check_rtc_ticks(void);
 
 void check_rtc_init(void);
 
+int		check_task_create(t_class		class,
+				  i_task		*task);
+
 int		check_thread_create(i_task		task,
 				    t_prior		prior,
 				    t_vaddr		entry,
@@ -79,6 +82,13 @@ void		check_sched_simple_02(void);
 
 
 /*
+ * ../simple_03/simple_03.c
+ */
+
+void		check_sched_simple_03(void);
+
+
+/*
  * ../medium_01/medium_01.c
  */
 
@@ -90,6 +100,13 @@ void		check_sched_medium_01(void);
  */
 
 void		check_sched_medium_02(void);
+
+
+/*
+ * ../medium_03/medium_03.c
+ */
+
+void		check_sched_medium_03(void);
 
 
 /*
@@ -132,6 +149,13 @@ void		check_sched_context_01(void);
  */
 
 void		check_sched_context_02(void);
+
+
+/*
+ * ../context_03/context_03.c
+ */
+
+void		check_sched_context_03(void);
 
 
 /*
