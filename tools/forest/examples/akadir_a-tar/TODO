@@ -1,0 +1,4 @@
+-Gerer les eventuels attributs de l'header. (ko)
+-SegFault lors de l'exec (ok)
+-Faire l'arboresence des fichiers (Makefile, .h, ), structuration des fichiers.(bientot)
+-Refaire une fonction pour la converson en octal. (Urgent d'ici ce soir)

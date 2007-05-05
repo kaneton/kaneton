@@ -1,0 +1,22 @@
+#!/bin/sh
+## configure.sh for libstream in /u/a1/amsell_y
+## 
+## Made by yoann amsellem
+## Login   <amsell_y@epita.fr>
+## 
+## Started on  Mon Oct  3 13:25:17 2005 yoann amsellem
+## Last update Tue Jul  4 13:26:40 2006 yoann amsellem
+##
+rm -f Makefile.rules
+touch Makefile.rules
+case `uname -s` in
+ NetBSD)
+    echo 'CC =/u/prof/acu/pub/NetBSD/bin/gcc' >> Makefile.rules
+    echo 'FLAGS = -Wall -W -Werror -ansi -pedantic' >> Makefile.rules
+ ;;
+ *)
+    echo 'CC = gcc' >> Makefile.rules
+    echo 'FLAGS = ' >> Makefile.rules
+ ;;
+esac
+echo "OSTYPE = "`uname -s` >> Makefile.rules

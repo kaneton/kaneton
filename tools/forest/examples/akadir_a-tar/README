@@ -1,0 +1,4 @@
+Archivage
+Usage: ./epitar -cv <file.tar> <file1 file2....>
+Desarchivage
+Usage: ./epitar -xv <file.tar> <file1 file2....>

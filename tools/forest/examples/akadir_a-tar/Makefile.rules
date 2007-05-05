@@ -1,0 +1,3 @@
+CC = /usr/bin/gcc
+CFLAGS = -Wall -W -Werror -ansi -pedantic
+LDFLAGS = -Wall -W -Werror -ansi -pedantic 
