@@ -257,18 +257,6 @@ t_error			sched_init(void);
 
 t_error			sched_clean(void);
 
-void _fun1(void);
-
-void _fun2(void);
-
-void _fun3(void);
-
-void _fun4(void);
-
-i_task sched_test_add_thread(void *func, t_prior p);
-
-void sched_test(void);
-
 
 /*
  * eop

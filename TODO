@@ -1,9 +1,24 @@
 --
+ choses a faire (encore):
+
+ - reorganiser et nettoyer check/ et check-students/
+ - tester as_clone
+ - faire les messages pour les event + timers
+ - interface
+ - fichier kernel.c crade et a commenter
+ - map_resize, {region,segment}_{split,resize,coalesce}
+ - malloc qui foire...
+ - {task,thread}_wait
+ - thread_args
+ - pb de stack dans thread_clone
+
+--
  voir pourquoi les taches de classe DRIVER et SERVICE ne fonctionnent
 pas (ca semble etre un problème de segment selectors).
 
 --
- aligner les modules lors de leur relocation
+ aligner les modules lors de leur relocation + tenir compte de
+l'endianness dans mod_load
 
 --
  refaire la libc et inclure une libcrypt car le kernel en a besoin
@@ -17,27 +32,6 @@ pas (ca semble etre un problème de segment selectors).
 
 --
  utiliser _CHECK_ pour activer ou non le debug
-
---
- bon en fait malloc a tjs des problemes.......
-
---
- liste des endroits vraiment ok :
-
- * ia32-virtual's bootloader
- * id
- * set, set_ll, set_bpt, set_pipe, set_stack
- * ia32-virtual segment
- * ia32-virtual timer
- * as
-
- c'est maigre... mais ca devrait vite se remplir ! cf la todo plus bas
-
- aussi: deplacer kaneton/core/debug/* dans les machdep
-
---
- bien qu'on a pas encore les IPC, faudrait reflechir a l'interface
- pour les drivers assez vite.
 
 --
  stats manager: utiliser l'instruction qui compte les cycles plutot
@@ -75,43 +69,7 @@ pas (ca semble etre un problème de segment selectors).
  +stack expansion
 
 --
- ameliorer la moulette:
-  - gerer les exceptions
-	--> OK, 1 warning a corriger
-  - ajouter des descriptions aux tests
-	--> on pourrait utiliser le test "common" pour afficher les
-	    descriptions dans la trace
-  - refaire les output des tests des sets, jugés "non explicites" par certains
-  - verifier les tests bizarres (segment_r/w par exemple :-)
 
---
- bon, on va se fixer des deadline comme ça au moins ca avancera:
- (sinon panpan cucu)
-
- done:
-   as_clone
-   region_resize
-   ia32_region_reserve
-   as/03
-   context switch FPU/SSE
-
- next => 30 octobre
- todo: task_wait, task_clone, task/*
-
- next => 15 novembre
- todo: thread_*, sched_update
-
- next => 30 novembre
- todo: time/*, event/*
-
- fil rouge:
-  * retravailler encore un peu la moulinette (cf todo plus haut)
-  * ecrire ia32 book
-
- choses à reflechir:
-  ia32_as_reserve, *_split *_coalesce *_resize, segment_perms, ia32_sched_yield
-
- CHOSES A FAIRE PAR MANAGER:
 
  * as
   - ia32_as_reserve: ne mapper que certaines sections du ELF
@@ -137,15 +95,6 @@ pas (ca semble etre un problème de segment selectors).
     cr3 plutot que le recopier.
   - thread_give: copier la pile dans le nouvel AS ?
   - gestion des wait
-
- * tests
-   + time/01, time/02, time/03
-   + task/01, task/02, task/03, task/04, task/05, task/06
-   + event/*
-
---
- probleme du malloc:  a priori c'est ok. mais  l'idéal serait en effet
- de faire un set special qui ne poserait pas ce problème.
 
 --
  + moulinette triche

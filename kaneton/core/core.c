@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat may  5 18:58:05 2007]
+ * updated       matthieu bucchianeri   [sat may  5 20:37:02 2007]
  */
 
 /*
@@ -148,15 +148,9 @@ void			kaneton(t_init*				bootloader)
   smp_test();
 #endif
 
-  mod_launch();
-
-  /*
-   * /XXX
-   */
-
-#ifdef APP
-  APP();
-#endif
+  cons_msg('+', "starting modules\n");
+  if (mod_launch() != ERROR_NONE)
+    cons_msg('!', "failed to start initial modules\n");
 
   while(1)
     ;

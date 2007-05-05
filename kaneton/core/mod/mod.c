@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/mod/mod.c
  *
  * created       matthieu bucchianeri   [sat may  5 18:43:57 2007]
- * updated       matthieu bucchianeri   [sat may  5 20:00:51 2007]
+ * updated       matthieu bucchianeri   [sat may  5 20:20:59 2007]
  */
 
 /*
@@ -109,6 +109,13 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
 	  continue;
 	}
 
+      cons_msg('#', "Phdr LOAD at 0x%p (%c%c%c) of size %u\n",
+	       phdr->p_vaddr,
+	       phdr->p_flags & PF_R ? 'r' : '-',
+	       phdr->p_flags & PF_W ? 'w' : '-',
+	       phdr->p_flags & PF_X ? 'x' : '-',
+	       phdr->p_memsz);
+
       /*
        * 3)
        */
@@ -124,7 +131,7 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
 
       if (segment_reserve(as,
 			  PAGED_SIZE(phdr->p_memsz),
-			  perms,
+			  PERM_WRITE,
 			  &seg) != ERROR_NONE)
 	MOD_LEAVE(mod, ERROR_UNKNOWN);
 
@@ -145,6 +152,9 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
 			0,
 			(char*)header + phdr->p_offset,
 			phdr->p_filesz) != ERROR_NONE)
+	MOD_LEAVE(mod, ERROR_UNKNOWN);
+
+      if (segment_perms(seg, perms) != ERROR_NONE)
 	MOD_LEAVE(mod, ERROR_UNKNOWN);
     }
 
@@ -268,12 +278,18 @@ t_error			mod_launch(void)
       if (elf->e_ident[EI_CLASS] == ELFCLASS32)
 	{
 	  if (mod_load_32(elf, name) != ERROR_NONE)
-	    goto next;
+	    {
+	      cons_msg('!', "error loading module\n");
+	      goto next;
+	    }
 	}
       else
 	{
 	  if (mod_load_64((Elf64_Ehdr*)elf, name) != ERROR_NONE)
-	    goto next;
+	    {
+	      cons_msg('!', "error loading module\n");
+	      goto next;
+	    }
 	}
 
       cons_msg('+', "loaded.\n");
