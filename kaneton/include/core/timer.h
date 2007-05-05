@@ -209,12 +209,6 @@ t_error			timer_check(void);
 
 void			timer_handler(t_id			id);
 
-t_error			timer_hdl1(void);
-
-t_error			timer_hdl2(void);
-
-t_error			timer_test(void);
-
 
 /*
  * eop

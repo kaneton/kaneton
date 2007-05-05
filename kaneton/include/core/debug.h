@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/debug.h
+ * file          /home/buckman/kaneton/kaneton/include/core/debug.h
  *
  * created       julien quintard   [mon nov 28 19:37:01 2005]
- * updated       julien quintard   [tue jun 27 22:46:32 2006]
+ * updated       matthieu bucchianeri   [sat may  5 17:10:54 2007]
  */
 
 #ifndef CORE_DEBUG_H
@@ -34,6 +34,11 @@
 #define DEBUG_MESSAGE		(1 << 9)
 #define DEBUG_CAPABILITY	(1 << 10)
 #define DEBUG_INTERFACE		(1 << 11)
+#define DEBUG_EVENT		(1 << 12)
+#define DEBUG_TIME		(1 << 13)
+#define DEBUG_CPU		(1 << 14)
+#define DEBUG_IO		(1 << 15)
+#define DEBUG_MAP		(1 << 16)
 
 #define DEBUG								\
   (CONF_DEBUG)

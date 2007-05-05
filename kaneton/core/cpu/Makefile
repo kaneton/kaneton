@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/core/cpu/Makefile
 ##
 ## created       matthieu bucchianeri   [sat jun 17 19:36:16 2006]
-## updated       matthieu bucchianeri   [sat jul 29 17:59:21 2006]
+## updated       matthieu bucchianeri   [sat may  5 18:42:39 2007]
 ##
 
 #
@@ -27,8 +27,7 @@ include			../../../env/.env.mk
 
 CPU_LO			:=		cpu.lo
 
-CPU_C			:=		cpu.c		\
-					$(_CPU_FILE_)
+CPU_C			:=		cpu.c
 
 CPU_O			:=		$(CPU_C:.c=.o)
 

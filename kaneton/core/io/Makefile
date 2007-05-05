@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/core/io/Makefile
 ##
 ## created       matthieu bucchianeri   [sat jun 17 19:36:16 2006]
-## updated       matthieu bucchianeri   [sat jul 29 18:02:23 2006]
+## updated       matthieu bucchianeri   [sat may  5 18:42:50 2007]
 ##
 
 #
@@ -27,8 +27,7 @@ include			../../../env/.env.mk
 
 IO_LO			:=		io.lo
 
-IO_C			:=		io.c		\
-					$(_IO_FILE_)
+IO_C			:=		io.c
 
 IO_O			:=		$(IO_C:.c=.o)
 

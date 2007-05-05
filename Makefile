@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/Makefile
 ##
 ## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       matthieu bucchianeri   [sat dec  2 02:49:40 2006]
+## updated       matthieu bucchianeri   [sat may  5 18:11:20 2007]
 ##
 
 #
@@ -85,7 +85,7 @@ clean:
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		libs apps $(_SRC_DEP_)
+SUBDIRS			:=		libs apps drivers $(_SRC_DEP_)
 
 CLEARDIRS		:=		libs view export check		\
 					cheat				\

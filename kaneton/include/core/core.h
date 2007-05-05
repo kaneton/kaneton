@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/core.h
  *
  * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [thu aug 10 16:32:26 2006]
+ * updated       matthieu bucchianeri   [sat may  5 18:51:27 2007]
  */
 
 #ifndef CORE_CORE_H
@@ -104,6 +104,7 @@
 #include <core/interface.h>
 #include <core/cpu.h>
 #include <core/io.h>
+#include <core/mod.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -118,8 +119,6 @@
 void			kaneton(t_init*				bootloader);
 
 void			kaneton_dump(void);
-
-void copy_test(void);
 
 
 /*

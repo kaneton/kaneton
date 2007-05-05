@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/kaneton/core/map/Makefile
+## file          /home/buckman/kaneton/kaneton/core/map/Makefile
 ##
 ## created       matthieu bucchianeri   [sun feb 26 13:05:52 2006]
-## updated       julien quintard   [sat apr  1 23:39:52 2006]
+## updated       matthieu bucchianeri   [sat may  5 18:43:35 2007]
 ##
 
 #
@@ -27,8 +27,7 @@ include			../../../env/.env.mk
 
 MAP_LO			:=		map.lo
 
-MAP_C			:=		map.c		\
-					$(_MAP_FILE_)
+MAP_C			:=		map.c
 
 MAP_O			:=		$(MAP_C:.c=.o)
 

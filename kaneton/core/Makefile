@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/core/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [sat dec  2 03:32:50 2006]
+## updated       matthieu bucchianeri   [sat may  5 18:40:33 2007]
 ##
 
 #
@@ -46,6 +46,7 @@ SUBDIRS			:=		arch				\
 					interface			\
 					cpu				\
 					io				\
+					mod				\
 					$(_CHECK_DIR_)
 
 # kaneton objects
@@ -71,6 +72,7 @@ KANETON_O		:=		$(_MACHDEP_LO_)			\
 					$(_INTERFACE_LO_)		\
 					$(_CPU_LO_)			\
 					$(_IO_LO_)			\
+					$(_MOD_LO_)			\
 					$(_CHECK_LO_)
 
 # core binary

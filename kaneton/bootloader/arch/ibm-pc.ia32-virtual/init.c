@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [tue feb  6 19:16:39 2007]
+ * updated       matthieu bucchianeri   [sat may  5 18:34:25 2007]
  */
 
 /*
@@ -566,7 +566,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 7)
    */
 
-  for (i = 0,
+  for (i = 1,
 	 module = (t_module*)((t_uint32)init->modules + sizeof(t_modules));
        i < init->modules->nmodules;
        i++)

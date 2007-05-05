@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/kaneton/core/message/Makefile
+## file          /home/buckman/kaneton/kaneton/core/mod/Makefile
 ##
-## created       matthieu bucchianeri   [sat jun 17 19:36:16 2006]
-## updated       matthieu bucchianeri   [sat may  5 18:43:15 2007]
+## created       matthieu bucchianeri   [sat may  5 18:41:32 2007]
+## updated       matthieu bucchianeri   [sat may  5 18:42:08 2007]
 ##
 
 #
@@ -25,14 +25,14 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-MESSAGE_LO		:=		message.lo
+MOD_LO			:=		mod.lo
 
-MESSAGE_C		:=		message.c		\
-					node.c
+MOD_C			:=		mod.c
 
-MESSAGE_O		:=		$(MESSAGE_C:.c=.o)
 
-MESSAGE_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/message.h
+MOD_O			:=		$(MOD_C:.c=.o)
+
+MOD_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/mod.h
 
 CFLAGS			+=		-D___kernel
 
@@ -40,25 +40,25 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(MESSAGE_LO):		$(MESSAGE_O)
-	$(call remove,$(MESSAGE_LO),)
+$(MOD_LO):		$(MOD_O)
+	$(call remove,$(MOD_LO),)
 
-	$(call archive,$(MESSAGE_LO),$(MESSAGE_O),)
+	$(call archive,$(MOD_LO),$(MOD_O),)
 
 clear:
-	$(call remove,$(MESSAGE_O),)
+	$(call remove,$(MOD_O),)
 
-	$(call remove,$(MESSAGE_LO),)
+	$(call remove,$(MOD_LO),)
 
 	$(call purge,)
 
 proto:
-	$(call prototypes,$(MESSAGE_INCLUDE),)
+	$(call prototypes,$(MOD_INCLUDE),)
 
 dep:
 	$(call remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(MESSAGE_C),$(_MAKEFILE_MK_),)
+	$(call dependencies,$(MOD_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------
