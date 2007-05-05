@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/mod/mod.c
  *
  * created       matthieu bucchianeri   [sat may  5 18:43:57 2007]
- * updated       matthieu bucchianeri   [sat may  5 19:51:43 2007]
+ * updated       matthieu bucchianeri   [sat may  5 20:00:51 2007]
  */
 
 /*
@@ -54,6 +54,15 @@ extern i_as		kasid;
 
 /*
  * this function loads a module (32 bits).
+ *
+ * steps:
+ *
+ * 1) reserve the task.
+ * 2) loop through the ELF segments.
+ * 3) reserve the segment and map in the module's address space.
+ * 4) copy from the file to the memory.
+ * 5) create the thread.
+ * 6) run the module!
  */
 
 t_error			mod_load_32(Elf32_Ehdr*		header,
@@ -100,6 +109,10 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
 	  continue;
 	}
 
+      /*
+       * 3)
+       */
+
       perms = 0;
 
       if (phdr->p_flags & PF_R)
@@ -124,6 +137,10 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
 			 &reg) != ERROR_NONE)
 	MOD_LEAVE(mod, ERROR_UNKNOWN);
 
+      /*
+       * 4)
+       */
+
       if (segment_write(seg,
 			0,
 			(char*)header + phdr->p_offset,
@@ -132,7 +149,7 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
     }
 
   /*
-   * 3)
+   * 5)
    */
 
   if (thread_reserve(tsk, THREAD_PRIOR, &thr) != ERROR_NONE)
@@ -152,6 +169,10 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
 
   if (thread_load(thr, ctx) != ERROR_NONE)
     MOD_LEAVE(mod, ERROR_UNKNOWN);
+
+  /*
+   * 6)
+   */
 
   if (task_state(tsk, SCHED_STATE_RUN) != ERROR_NONE)
     MOD_LEAVE(mod, ERROR_UNKNOWN);

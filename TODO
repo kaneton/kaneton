@@ -1,4 +1,8 @@
 --
+ voir pourquoi les taches de classe DRIVER et SERVICE ne fonctionnent
+pas (ca semble etre un problème de segment selectors).
+
+--
  aligner les modules lors de leur relocation
 
 --
@@ -67,6 +71,8 @@
  un segment doit etre cloné en cas d'as_clone. par exemple, on a pas
  envie de dupliquer la GDT, l'IDT, la kstack etc... qui sont mappés
  dans chaque as.
+
+ +stack expansion
 
 --
  ameliorer la moulette:
