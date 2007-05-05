@@ -1,4 +1,7 @@
 --
+ aligner les modules lors de leur relocation
+
+--
  refaire la libc et inclure une libcrypt car le kernel en a besoin
 
 --
@@ -13,25 +16,6 @@
 
 --
  bon en fait malloc a tjs des problemes.......
-
---
- bon, en decembre on doit avoir
-
- - tout les managers codés clean		-> cf todo plus bas
- - les tests pour tout ce qui a été codé	-> idem
- - kaneton book a jour				-> mettre a jour les proto
-						-> ajouter cpu et io
- - ia32-virtual book ecrit			-> cf todo
- - la moulette					-> idem
- - l'intra					-> quasi ok
-
- il doit rester comme managers a faire :
-
- - message
- - capability (a priori Julien l'a bien entamé)
- - mod
- - share ?
- - (pas urgent) cpu
 
 --
  liste des endroits vraiment ok :
