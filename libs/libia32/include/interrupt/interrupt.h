@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/libs/libia32/include/interrupt/interrupt.h
  *
  * created       renaud voltz   [fri feb 17 16:48:22 2006]
- * updated       matthieu bucchianeri   [fri mar 16 21:54:38 2007]
+ * updated       matthieu bucchianeri   [sun may  6 17:23:08 2007]
  */
 
 /*
@@ -52,13 +52,14 @@
  */
 
 #define HANDLER								\
-  __attribute__ ((section("handler")))
+  __attribute__ ((section(".handler")))
 
-#define HANDLER_DATA				\
-  __attribute__ ((section("handler_data")))
+#define HANDLER_DATA							\
+  __attribute__ ((section(".handler_data")))
 
 #define EXCEPTION_PREHANDLER_CODE(nr)			       		\
-  asm	(".globl prehandler_exception" #nr "		\n"		\
+  asm	(".section .handler				\n"		\
+	 ".globl prehandler_exception" #nr "		\n"		\
 	 "prehandler_exception" #nr ":			\n"		\
 	 SAVE_CONTEXT()							\
 	 FORCE_RING0_SWITCH()						\
@@ -69,10 +70,12 @@
 	 FORCE_RING0_BACK()						\
 	 RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
-	 "	iret					")
+	 "	iret					\n"		\
+	 ".text						")
 
 #define EXCEPTION_PREHANDLER_NOCODE(nr)			       		\
-  asm	(".globl prehandler_exception" #nr "		\n"		\
+  asm	(".section .handler				\n"		\
+	 ".globl prehandler_exception" #nr "		\n"		\
 	 "prehandler_exception" #nr ":			\n"		\
 	 "	addl $-4, %esp				\n"		\
 	 SAVE_CONTEXT()							\
@@ -84,10 +87,12 @@
 	 FORCE_RING0_BACK()						\
 	 RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
-	 "	iret					")
+	 "	iret					\n"		\
+	 ".text						")
 
 #define IRQ_PREHANDLER(nr)				       		\
-  asm	(".globl prehandler_irq" #nr "			\n"		\
+  asm	(".section .handler				\n"		\
+	 ".globl prehandler_irq" #nr "			\n"		\
 	 "prehandler_irq" #nr ":			\n"		\
 	 "	addl $-4, %esp				\n"		\
 	 SAVE_CONTEXT()							\
@@ -98,10 +103,12 @@
 	 FORCE_RING0_BACK()						\
 	 RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
-	 "	iret					")
+	 "	iret					\n"		\
+	 ".text						")
 
 #define IPI_PREHANDLER(nr)				       		\
-  asm	(".globl prehandler_ipi" #nr "			\n"		\
+  asm	(".section .handler				\n"		\
+	 ".globl prehandler_ipi" #nr "			\n"		\
 	 "prehandler_ipi" #nr ":			\n"		\
 	 "	addl $-4, %esp				\n"		\
 	 SAVE_CONTEXT()							\
@@ -112,10 +119,12 @@
 	 FORCE_RING0_BACK()						\
 	 RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
-	 "	iret					")
+	 "	iret					\n"		\
+	 ".text						")
 
 #define SYSCALL_PREHANDLER(nr)				       		\
-  asm	(".globl prehandler_syscall" #nr "		\n"		\
+  asm	(".section .handler				\n"		\
+	 ".globl prehandler_syscall" #nr "		\n"		\
 	 "prehandler_syscall" #nr ":			\n"		\
 	 "	addl $-4, %esp				\n"		\
 	 SAVE_CONTEXT()							\
@@ -126,7 +135,8 @@
 	 FORCE_RING0_BACK()						\
 	 RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
-	 "	iret					")
+	 "	iret					\n"		\
+	 ".text						")
 
 /*
  * force a stack switch event if coming from ring0.

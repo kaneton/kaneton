@@ -3,10 +3,10 @@
 %%
 %% project       kaneton
 %%
-%% file          /home/mycure/kaneton/view/books/kaneton/history.tex
+%% file          /home/buckman/kaneton/view/books/kaneton/history.tex
 %%
 %% created       julien quintard   [sat mar  4 14:15:39 2006]
-%% updated       julien quintard   [sat jul  1 20:51:14 2006]
+%% updated       matthieu bucchianeri   [sun may  6 13:29:37 2007]
 %%
 
 %
@@ -141,3 +141,40 @@ microprocessor's architecture implementation.
 Nevertheless, the microkernel is not complete yet, so a full implementation
 of about \textit{15,000} lines can be expected which seems correct
 considering the kaneton microkernel advanced design.
+
+%
+% year 2007
+%
+
+\section{Year 2007}
+
+People joined the project:
+Pierre Duteil
+  \footnote{duteil\_p@epita.fr} and
+Julian Pidancet
+  \footnote{pidanc\_j@epita.fr}.
+
+As the kaneton reference implementation was much more advanced as in
+2006, the students were given more code and then focused only on
+interesting and system-related parts.
+
+Students totally implemented the physical and virtual memory
+management, the event and timers, the thread manager, the scheduler
+(with a round-robin algorithm) and the IPC. The implementation was on
+IA-32 architecture.
+
+The course is now given at Realtime \& Embedded Systems specialization
+in addition of System, Network and Security specialization, for a
+total of about 50 students.
+
+The project is evaluated using a testsuite of about a hundred
+tests. Many students completed a working microkernel, able to run tasks
+and to implement drivers and services.
+
+The reference implementation has grown\footnote{Estimations were
+realized with the UNIX program \textit{sloccount}.} to \textit{9,000}
+lines of code for the core and \textit{5,500} lines for the
+microprocessor's architecture implementation on Intel's IA-32.
+
+The kaneton reference was able to start modules (as standalone
+binaries) in userland and to communicate between them.

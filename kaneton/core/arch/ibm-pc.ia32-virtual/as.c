@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/as.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue feb  6 19:58:49 2007]
+ * updated       matthieu bucchianeri   [sun may  6 18:07:25 2007]
  */
 
 /*
@@ -55,6 +55,23 @@ d_as			as_dispatch =
     NULL,
     NULL
   };
+
+/*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+/*
+ * .handler and .handler_data addresses from ld.
+ */
+
+extern t_vaddr		_handler_begin;
+extern t_vaddr		_handler_end;
+extern t_vaddr		_handler_data_begin;
+extern t_vaddr		_handler_data_end;
+
+// XXX move elsewhere
+#define LINKER_SYMBOL(_symbol_)						\
+  ((t_vaddr)&(_symbol_))
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -392,22 +409,41 @@ t_error			ia32_as_reserve(i_task			tskid,
 			 INIT_ISA_SIZE - 0x1000,
 			 &reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      // -----------------------
-
-      //elf_get_section("handler"); XXX
-
-      //region_reserve over kcode segment
-
-      // pour l'instant on map tout le kcode -- OK
+#if 0
       if (region_reserve(*asid,
 			 (i_segment)init->kcode,
 			 0,
-			 REGION_OPT_FORCE | REGION_OPT_GLOBAL, // XX priv
+			 REGION_OPT_FORCE | REGION_OPT_GLOBAL,
 			 init->kcode,
 			 init->kcodesz,
 			 &reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
+#endif
+      // -----------------------
+
+      if (region_reserve(*asid,
+			 (i_segment)init->kcode,
+			 LINKER_SYMBOL(_handler_begin) - init->kcode,
+			 REGION_OPT_FORCE | REGION_OPT_PRIVILEGED |
+			 REGION_OPT_GLOBAL,
+			 LINKER_SYMBOL(_handler_begin),
+			 LINKER_SYMBOL(_handler_end) -
+			 LINKER_SYMBOL(_handler_begin),
+			 &reg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (region_reserve(*asid,
+			 (i_segment)init->kcode,
+			 LINKER_SYMBOL(_handler_data_begin) - init->kcode,
+			 REGION_OPT_FORCE | REGION_OPT_PRIVILEGED |
+			 REGION_OPT_GLOBAL,
+			 LINKER_SYMBOL(_handler_data_begin),
+			 LINKER_SYMBOL(_handler_data_end) -
+			 LINKER_SYMBOL(_handler_data_begin),
+			 &reg) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      region_dump(*asid);
 
       if (region_get(kasid, (i_region)(t_uint32)thread->machdep.tss,
 		     &preg) != ERROR_NONE)

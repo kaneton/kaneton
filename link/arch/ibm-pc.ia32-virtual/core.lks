@@ -2,6 +2,11 @@ OUTPUT_FORMAT("elf32-i386")
 OUTPUT_ARCH("i386")
 ENTRY(kaneton)
 
+PHDRS
+{
+        uniq PT_LOAD;
+}
+
 SECTIONS
 {
 	. = 0x01000000 + SIZEOF_HEADERS;
@@ -9,15 +14,25 @@ SECTIONS
 	.text :
 	{
 		*(.text)
-	}
+		. = ALIGN(0x1000);
+		_handler_begin = .;
+		*(.handler)
+		. = ALIGN(0x1000);
+		_handler_end = .;
+	} : uniq
 
 	.rodata :
 	{
 		*(.rodata)
-	}
+	} : uniq
 
 	.data :
 	{
 		*(.data) *(.bss) *(COMMON)
-	}
+		. = ALIGN(0x1000);
+		_handler_data_begin = .;
+		*(.handler_data)
+		. = ALIGN(0x1000);
+		_handler_data_end = .;
+	} : uniq
 }

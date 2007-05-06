@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/machdep/init.c
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-virtual/init.c
  *
  * created       julien quintard   [mon jul 19 20:43:14 2004]
- * updated       matthieu bucchianeri   [sat may  5 19:05:16 2007]
+ * updated       matthieu bucchianeri   [sun may  6 17:36:33 2007]
  */
 
 /*
@@ -476,7 +476,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
 
   phdr = (Elf32_Phdr*)((char*)khdr + khdr->e_phoff);
 
-  relocate = init_relocate = phdr->p_paddr;
+  relocate = init_relocate = 0x1000000; // phdr->p_paddr XXX;
 
   kcode = bootloader_init_alloc(mod->mod_end - mod->mod_start, &kcodesz);
 
