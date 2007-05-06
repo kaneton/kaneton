@@ -1,0 +1,21 @@
+---
+-
+  manager: segment
+  interface:
+    -
+      operation: perms
+      argument:
+        - i_segment
+        - t_perms
+    -
+      operation: get
+      argument:
+        - i_segment
+        - (out) o_segment**
+    -
+      operation: reserve
+      argument:
+        - i_as
+        - t_psize
+        - t_perms
+        - (out) i_segment*

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [sun may  6 18:31:33 2007]
+ * updated       matthieu bucchianeri   [sun may  6 18:44:51 2007]
  */
 
 #ifndef KANETON_CONF_H
@@ -102,7 +102,7 @@
  * gdb stub
  */
 
-#define GDB_STUB
+#undef GDB_STUB
 
 /*
  * ---------- prototypes ------------------------------------------------------
