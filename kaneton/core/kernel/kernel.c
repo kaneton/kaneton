@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/kernel/kernel.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat may  5 18:50:42 2007]
+ * updated       matthieu bucchianeri   [sun may  6 18:14:55 2007]
  */
 
 /*
@@ -61,14 +61,15 @@ m_kernel*		kernel = NULL;
  * 7) initialises the region manager.
  * 8) initialises the map manager
  * 9) initialises the task manager.
- * 10)
- * 11) initialises the thread manager.
- * 12) initialises the event manager.
- * 13)
- * 14) initialises the timer manager.
- * 15) initialises the message manager.
- * 16) initialises the capability manager.
+ * 10) initialises the thread manager.
+ * 11) initialises the event manager.
+ * 12) initialises the timer manager.
+ * 13) initialises the io manager.
+ * 14) initialises the message manager.
+ * 15) initialises the capability manager.
+ * 16) initialise the cpu manager.
  * 17) initialise the scheduler manager.
+ * 18) initialise the module manager.
  */
 
 void			kernel_init(void)
@@ -91,7 +92,7 @@ void			kernel_init(void)
   // XXX kernel->node = ...
 
   /*
-   * 1)
+   * 2)
    */
 
 #ifdef CONF_STATS
@@ -101,7 +102,7 @@ void			kernel_init(void)
   STATS_INIT();
 
   /*
-   * 2)
+   * 3)
    */
 
   cons_msg('+', "starting id manager\n");
@@ -110,7 +111,7 @@ void			kernel_init(void)
     core_error("cannot initialise the id manager\n");
 
   /*
-   * 3)
+   * 4)
    */
 
   cons_msg('+', "starting set manager\n");
@@ -119,7 +120,7 @@ void			kernel_init(void)
     core_error("cannot initialise the set manager\n");
 
   /*
-   * 4)
+   * 5)
    */
 
   cons_msg('+', "starting as manager\n");
@@ -128,7 +129,7 @@ void			kernel_init(void)
     core_error("cannot initialise the address space manager\n");
 
   /*
-   * 5)
+   * 6)
    */
 
   cons_msg('+', "starting segment manager\n");
@@ -137,7 +138,7 @@ void			kernel_init(void)
     core_error("cannot initialise the segment manager\n");
 
   /*
-   * 6)
+   * 7)
    */
 
   cons_msg('+', "starting region manager\n");
@@ -147,7 +148,7 @@ void			kernel_init(void)
     core_error("cannot initialise the region manager\n");
 
   /*
-   * 7)
+   * 8)
    */
 
   cons_msg('+', "starting map manager\n");
@@ -156,7 +157,7 @@ void			kernel_init(void)
     core_error("cannot initialise the map manager\n");
 
   /*
-   * 8)
+   * 9)
    */
 
   cons_msg('+', "starting task manager\n");
@@ -167,7 +168,7 @@ void			kernel_init(void)
   alloc_setup(mmap, munmap);
 
   /*
-   * 9)
+   * 10)
    */
 
   cons_msg('+', "starting thread manager\n");
@@ -176,7 +177,7 @@ void			kernel_init(void)
     core_error("cannot initialise the thread manager\n");
 
   /*
-   * 10)
+   * 11)
    */
 
   cons_msg('+', "starting event manager\n");
@@ -185,7 +186,7 @@ void			kernel_init(void)
     core_error("cannot initialise the event manager\n");
 
   /*
-   * 11)
+   * 12)
    */
 
   cons_msg('+', "starting timer manager\n");
@@ -194,7 +195,7 @@ void			kernel_init(void)
     core_error("cannot initialise the timer manager\n");
 
   /*
-   * 12)
+   * 13)
    */
 
   cons_msg('+', "starting io manager\n");
@@ -203,7 +204,7 @@ void			kernel_init(void)
     core_error("cannot initialise the io manager\n");
 
   /*
-   * 13)
+   * 14)
    */
 
   cons_msg('+', "starting message manager\n");
@@ -212,7 +213,7 @@ void			kernel_init(void)
     core_error("cannot initialise the message manager\n");
 
   /*
-   * 14)
+   * 15)
    */
 
   cons_msg('+', "starting capability manager\n");
@@ -221,7 +222,7 @@ void			kernel_init(void)
     core_error("cannot initialise the capability manager\n");
 
   /*
-   * 15)
+   * 16)
    */
 
   cons_msg('+', "starting cpu manager\n");
@@ -230,7 +231,7 @@ void			kernel_init(void)
     core_error("cannot initialise the cpu manager\n");
 
   /*
-   * 16)
+   * 17)
    */
 
   cons_msg('+', "starting scheduler manager\n");
@@ -239,7 +240,7 @@ void			kernel_init(void)
     core_error("cannot initialise the scheduler manager\n");
 
   /*
-   * 17)
+   * 18)
    */
 
   cons_msg('+', "starting module manager\n");

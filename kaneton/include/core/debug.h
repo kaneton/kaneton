@@ -153,33 +153,28 @@ void			serial_init(t_uint32			com_port,
 
 void			gdb_handler(t_uint32 needless);
 
-t_error		gdb_command(void* ctx);
+t_error		gdb_command(void);
 
 t_uint32		gdb_extract(t_uint8*	buffer,
 				    t_uint32	sz);
 
-int			gdb_read_reg(t_uint8*		buffer,
-				     void*		context);
+int			gdb_read_reg(t_uint8*		buffer);
 
-int		gdb_write_reg(t_uint8*		buffer,
-			      void*		context);
+int		gdb_write_reg(t_uint8*		buffer);
 
 int		gdb_read_mem(t_uint8*		buffer);
 
 int		gdb_write_mem(t_uint8*		buffer);
 
-int			gdb_step(t_uint8*		buffer,
-				 void*			context);
+int			gdb_step(t_uint8*		buffer);
 
-int		gdb_continue(t_uint8*		buffer,
-			     void*		context);
+int		gdb_continue(t_uint8*		buffer);
 
 int		gdb_unset_break(t_uint8*	buffer);
 
 int		gdb_set_break(t_uint8*		buffer);
 
-int			gdb_status(t_uint8*		buffer,
-				   void*		context);
+int			gdb_status(t_uint8*		buffer);
 
 t_error		gdb_init(void);
 

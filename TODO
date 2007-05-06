@@ -5,7 +5,6 @@
  - tester as_clone
  - faire les messages pour les event + timers
  - interface
- - fichier kernel.c crade et a commenter
  - map_resize, {region,segment}_{split,resize,coalesce}
  - malloc qui foire...
  - {task,thread}_wait
@@ -72,7 +71,6 @@ l'endianness dans mod_load
 
 
  * as
-  - ia32_as_reserve: ne mapper que certaines sections du ELF
   - ia32_as_reserve: ajuster les flags G des pte du kas
  * map
   - map_resize: a revoir en fct des modifications de region/segment

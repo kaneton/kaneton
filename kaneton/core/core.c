@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/core.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun may  6 18:00:58 2007]
+ * updated       matthieu bucchianeri   [sun may  6 18:30:41 2007]
  */
 
 /*
@@ -126,9 +126,6 @@ void			kaneton(t_init*				bootloader)
 
   cons_msg('+', "kaneton started\n");
 
-  /*
-   * XXX
-   */
 
 #if defined(CONF_ENABLE_CHECK)
   cons_msg('+', "running manual tests\n");
@@ -143,6 +140,9 @@ void			kaneton(t_init*				bootloader)
   while(1)
     ;
 #endif
+
+  cons_msg('+', "stating gdb manager\n");
+  gdb_init();
 
 #if (DEBUG & DEBUG_CPU)
   smp_test();
@@ -164,7 +164,7 @@ void			kaneton(t_init*				bootloader)
   kernel_clean();
 
   /*
-   * 21)
+   * 9)
    */
 
   cons_msg('+', "system shutdown\n");

@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/gdb.c
  *
  * created       matthieu bucchianeri   [mon apr 10 12:47:20 2006]
- * updated       matthieu bucchianeri   [thu aug 10 16:34:27 2006]
+ * updated       matthieu bucchianeri   [sun may  6 18:38:48 2007]
  */
 
 /*
@@ -17,7 +17,7 @@
  * this stub  is not very complete  but gives the  minimum required to
  * debug the kernel remotely.
  */
-#ifdef GDB_STUB
+
 /*
  * ---------- defines ---------------------------------------------------------
  */
@@ -45,32 +45,11 @@
 #include <klibc.h>
 #include <kaneton.h>
 
+#ifdef GDB_STUB
+
 /*
  * ---------- types -----------------------------------------------------------
  */
-
-/*
- * gdb context dump (done by the event handler).
- */
-
-typedef struct
-{
-  t_uint32	fs;
-  t_uint32	es;
-  t_uint32	ds;
-  t_uint32	esi;
-  t_uint32	edi;
-  t_uint32	edx;
-  t_uint32	ecx;
-  t_uint32	ebx;
-  t_uint32	eax;
-  t_uint8	reserved3[0x14];
-  t_uint32	reserved2;
-  t_uint32	ebp;
-  t_uint32	eip;
-  t_uint32	cs;
-  t_uint32	eflags;
-}		__attribute__ ((packed)) t_gdb_context;
 
 /*
  * simple function pointer.
@@ -124,9 +103,9 @@ static const struct {
 } commands[] =
   {
     { 'g', "read registers", gdb_read_reg },
-//    { 'G', "write registers", gdb_write_reg },
+    { 'G', "write registers", gdb_write_reg },
     { 'm', "read memory", gdb_read_mem },
-//    { 'M', "write memory", gdb_write_mem },
+    { 'M', "write memory", gdb_write_mem },
     { 's', "step", gdb_step },
     { 'c', "continue", gdb_continue },
     { 'z', "unset breakpoint", gdb_unset_break },
@@ -144,14 +123,11 @@ static const struct {
  *
  * steps:
  *
- * 1) compute the context frame address.
- * 2) stops the execution if needed.
+ * 1) stops the execution if needed.
  */
 
 void			gdb_handler(t_uint32 needless)
 {
-  t_gdb_context*	ctx;
-  t_uint8*		ptr;
   t_brk*		brk;
   t_uint32		bp = 0;
 
@@ -159,33 +135,19 @@ void			gdb_handler(t_uint32 needless)
    * 1)
    */
 
-  asm volatile("movl (%%ebp), %%eax\n\t"
-	       "movl (%%eax), %%ebx\n\t"
-	       "movl %%ebx, %0"
-	       : "=g" (ptr)
-	       :
-	       : "%eax", "%ebx");
-
-  ptr -= 60;
-  ctx = (t_gdb_context*)ptr;
-
-  /*
-   * 2)
-   */
-
 #ifdef INT1
-  if (set_get(br, ctx->eip, (void**)&brk) == ERROR_NONE)
+  if (set_get(br, context->eip, (void**)&brk) == ERROR_NONE)
 #else
-  if (set_get(br, (ctx->eip - 1), (void**)&brk) == ERROR_NONE)
+  if (set_get(br, (context->eip - 1), (void**)&brk) == ERROR_NONE)
 #endif /* INT1 */
     {
       bp = 1;
 #ifdef INT3
-      ctx->eip--;
+      context->eip--;
 #ifndef QUIET
-      printf("placing back opcode @ %p (br)\n", ctx->eip);
+      printf("placing back opcode @ %p (br)\n", context->eip);
 #endif /* !QUIET */
-      *(t_uint32*)(ctx->eip) = brk->opcode;
+      *(t_uint32*)(context->eip) = brk->opcode;
 #endif /* INT3 */
     }
 
@@ -199,21 +161,21 @@ void			gdb_handler(t_uint32 needless)
 #endif /* INT3 */
     }
 
-  if ((step/* && ctx->ebp == ebp*/) ||
+  if ((step/* && context->ebp == ebp*/) ||
       ebp == 0 ||
       bp)
     {
-      gdb_status(NULL, ctx);
+      gdb_status(NULL);
       step = 0;
-      gdb_command(ctx);
+      gdb_command();
     }
 
   if (!bp && step && step_old_opcode)
     {
 #ifdef INT3
-      ctx->eip = step_old_eip;
+      context->eip = step_old_eip;
 #ifndef QUIET
-      printf("resuming at %p\n", ctx->eip);
+      printf("resuming at %p\n", context->eip);
 #endif /* !QUIET */
 #endif /* INT3 */
     }
@@ -222,7 +184,7 @@ void			gdb_handler(t_uint32 needless)
     {
 #ifdef INT3
 #ifndef QUIET
-      printf("resuming at %p\n", ctx->eip);
+      printf("resuming at %p\n", context->eip);
 #endif /* !QUIET */
 #endif /* INT3 */
     }
@@ -319,7 +281,7 @@ static void	gdb_send(t_uint8*		packet)
  * 5) displatch the command.
  */
 
-t_error		gdb_command(void* ctx)
+t_error		gdb_command(void)
 {
   t_uint8	start;
   t_uint8	cmd;
@@ -384,7 +346,7 @@ t_error		gdb_command(void* ctx)
 	  break;
       if (commands[i].cmd)
 	{
-	  if (commands[i].fun(buffer, ctx))
+	  if (commands[i].fun(buffer))
 	    break;
 	}
       else
@@ -392,7 +354,7 @@ t_error		gdb_command(void* ctx)
 	  gdb_send((t_uint8*)"");
 	}
     }
-  ebp = ((t_gdb_context*)ctx)->ebp;
+  ebp = context->ebp;
   return (ERROR_NONE);
 }
 
@@ -446,27 +408,25 @@ t_uint32		gdb_extract(t_uint8*	buffer,
  * this function builds a register dump and sends it to the client.
  */
 
-int			gdb_read_reg(t_uint8*		buffer,
-				     void*		context)
+int			gdb_read_reg(t_uint8*		buffer)
 {
   t_uint8		send[353];
-  t_gdb_context*	ctx = context;
 
   memset(send, '0', sizeof(send));
   send[sizeof(send) - 1] = 0;
-  gdb_fill_reg(send + 0, ctx->eax, 8);
-  gdb_fill_reg(send + 8, ctx->ecx, 8);
-  gdb_fill_reg(send + 16, ctx->edx, 8);
-  gdb_fill_reg(send + 24, ctx->ebx, 8);
-  gdb_fill_reg(send + 32, ctx->ebp + 12, 8); // esp
-  gdb_fill_reg(send + 40, ctx->ebp, 8);
-  gdb_fill_reg(send + 48, ctx->esi, 8);
-  gdb_fill_reg(send + 56, ctx->edi, 8);
-  gdb_fill_reg(send + 64, ctx->eip, 8);
-  gdb_fill_reg(send + 72, ctx->eflags, 8);
-  gdb_fill_reg(send + 80, ctx->cs, 8);
-  gdb_fill_reg(send + 88, ctx->ds, 8); // ss
-  gdb_fill_reg(send + 96, ctx->ds, 8);
+  gdb_fill_reg(send + 0, context->eax, 8);
+  gdb_fill_reg(send + 8, context->ecx, 8);
+  gdb_fill_reg(send + 16, context->edx, 8);
+  gdb_fill_reg(send + 24, context->ebx, 8);
+  gdb_fill_reg(send + 32, context->esp, 8);
+  gdb_fill_reg(send + 40, context->ebp, 8);
+  gdb_fill_reg(send + 48, context->esi, 8);
+  gdb_fill_reg(send + 56, context->edi, 8);
+  gdb_fill_reg(send + 64, context->eip, 8);
+  gdb_fill_reg(send + 72, context->eflags, 8);
+  gdb_fill_reg(send + 80, context->cs, 8);
+  gdb_fill_reg(send + 88, context->ss, 8);
+  gdb_fill_reg(send + 96, context->ds, 8);
   gdb_send(send);
   return 0;
 }
@@ -475,25 +435,22 @@ int			gdb_read_reg(t_uint8*		buffer,
  * this function is not supported.
  */
 
-int		gdb_write_reg(t_uint8*		buffer,
-			      void*		context)
+int		gdb_write_reg(t_uint8*		buffer)
 {
-  t_gdb_context*	ctx = context;
-
   buffer++;
-  ctx->eax = gdb_extract(buffer + 0, 8);
-  ctx->ecx = gdb_extract(buffer + 8, 8);
-  ctx->edx = gdb_extract(buffer + 16, 8);
-  ctx->ebx = gdb_extract(buffer + 24, 8);
-//  ctx->esp = gdb_extract(buffer + 32, 8);
-  ctx->ebp = gdb_extract(buffer + 40, 8);
-  ctx->esi = gdb_extract(buffer + 48, 8);
-  ctx->edi = gdb_extract(buffer + 56, 8);
-  ctx->eip = gdb_extract(buffer + 64, 8);
-  ctx->eflags = gdb_extract(buffer + 72, 8);
-  ctx->cs = gdb_extract(buffer + 80, 8);
-//  ctx->ss = gdb_extract(buffer + 88, 8);
-  ctx->ds = gdb_extract(buffer + 96, 8);
+  context->eax = gdb_extract(buffer + 0, 8);
+  context->ecx = gdb_extract(buffer + 8, 8);
+  context->edx = gdb_extract(buffer + 16, 8);
+  context->ebx = gdb_extract(buffer + 24, 8);
+  context->esp = gdb_extract(buffer + 32, 8);
+  context->ebp = gdb_extract(buffer + 40, 8);
+  context->esi = gdb_extract(buffer + 48, 8);
+  context->edi = gdb_extract(buffer + 56, 8);
+  context->eip = gdb_extract(buffer + 64, 8);
+  context->eflags = gdb_extract(buffer + 72, 8);
+  context->cs = gdb_extract(buffer + 80, 8);
+  context->ss = gdb_extract(buffer + 88, 8);
+  context->ds = gdb_extract(buffer + 96, 8);
   gdb_send((t_uint8*)"OK");
   return 0;
 }
@@ -652,10 +609,8 @@ int		gdb_write_mem(t_uint8*		buffer)
  * 2) place an int3.
  */
 
-int			gdb_step(t_uint8*		buffer,
-				 void*			context)
+int			gdb_step(t_uint8*		buffer)
 {
-  t_gdb_context*	ctx = context;
   t_vaddr		addr;
   t_uint32		eip;
 
@@ -667,7 +622,7 @@ int			gdb_step(t_uint8*		buffer,
   if (*buffer)
     {
       addr = strtol((char*)buffer, NULL, 16);
-      ctx->eip = addr;
+      context->eip = addr;
     }
   step = 1;
 
@@ -688,12 +643,12 @@ int			gdb_step(t_uint8*		buffer,
     }
   else
     {
-      step_old_eip = ctx->eip;
-      step_old_opcode = *(t_uint32*)ctx->eip;
+      step_old_eip = context->eip;
+      step_old_opcode = *(t_uint32*)context->eip;
 #ifndef QUIET
-      printf("placing INT3 @ %p\n", ctx->eip);
+      printf("placing INT3 @ %p\n", context->eip);
 #endif /* !QUIET */
-      *(t_uint8*)ctx->eip = 0xcc;
+      *(t_uint8*)context->eip = 0xcc;
     }
 #endif /* INT3 */
 
@@ -704,17 +659,15 @@ int			gdb_step(t_uint8*		buffer,
  * this function restarts the execution since next breakpoint.
  */
 
-int		gdb_continue(t_uint8*		buffer,
-			     void*		context)
+int		gdb_continue(t_uint8*		buffer)
 {
-  t_gdb_context*	ctx = context;
   t_vaddr		addr;
 
   buffer++;
   if (*buffer)
     {
       addr = strtol((char*)buffer, NULL, 16);
-      ctx->eip = addr;
+      context->eip = addr;
     }
   step = 0;
   return 1;
@@ -841,19 +794,17 @@ int		gdb_set_break(t_uint8*		buffer)
  * this function signales status. we are always in TRAP mode.
  */
 
-int			gdb_status(t_uint8*		buffer,
-				   void*		context)
+int			gdb_status(t_uint8*		buffer)
 {
-  t_gdb_context*	ctx = context;
   t_uint8		buf[60];
 
-  if (ctx)
+  if (buffer)
     {
       memset(buf, 0, 60);
       strcpy((char*)buf, "T05");
       buf[3] = '8';
       buf[4] = ':';
-      gdb_fill_reg(buf + 5, ctx->eip, 8);
+      gdb_fill_reg(buf + 5, context->eip, 8);
       buf[13] = ';';
       buf[14] = 0;
       gdb_send(buf);
@@ -894,9 +845,9 @@ t_error		gdb_init(void)
    * 3)
    */
 
-  if (event_reserve(1, EVENT_FUNCTION, (u_event_handler)gdb_handler) !=
+  if (event_reserve(1, EVENT_FUNCTION, EVENT_HANDLER(gdb_handler)) !=
       ERROR_NONE ||
-      event_reserve(3, EVENT_FUNCTION, (u_event_handler)gdb_handler) !=
+      event_reserve(3, EVENT_FUNCTION, EVENT_HANDLER(gdb_handler)) !=
       ERROR_NONE)
     return (ERROR_UNKNOWN);
 
