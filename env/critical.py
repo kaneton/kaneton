@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [mon may  7 20:31:31 2007]
+# updated       julien quintard   [mon may  7 21:46:33 2007]
 #
 
 #
@@ -331,7 +331,12 @@ def			main():
                                                       architecture + "/",
                    "profile/environment/user/",
                    "profile/environment/user/" + user + "/",
-                   "profile/kaneton/")
+                   "profile/kaneton/",
+                   "profile/kaneton/core/",
+                   "profile/kaneton/plateform/",
+                   "profile/kaneton/plateform/" + plateform + "/",
+                   "profile/kaneton/architecture/",
+                   "profile/kaneton/architecture/" + architecture + "/")
 
   # first, set a virtual kaneton variable containing the location of
   # the kaneton source directory.
