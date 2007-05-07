@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [mon may  7 13:16:06 2007]
+# updated       julien quintard   [mon may  7 16:00:35 2007]
 #
 
 #
@@ -47,33 +47,40 @@ def			error(msg):
 #
 # load()
 #
-# this function takes an arbitray number of files and load them in a
-# single python string.
+# this function takes an arbitray number of directories where configuration
+# files could be located and load them in a single python string.
 #
-def			load(files):
+def			load(directories):
   global g_contents
 
+  directory = None
   handle = None
+  files = None
   line = None
   file = None
   cwd = None
 
   g_contents = "_SOURCE_DIR_		=		" + g_source_dir + "\n"
 
-  # load each file
-  for file in files:
-    if not os.path.exists(file):
-      continue
+  for directory in directories:
+    files = os.listdir(directory);
 
-    try:
-      handle = open(file, "r")
-    except IOError:
-      error("unable to open the file " + file + "\n")
+    for file in files:
+      if not os.path.isfile(directory + "/" + file):
+        continue
 
-    for line in handle.readlines():
-      g_contents += line
+      if not re.match("^.*\.conf$", os.path.basename(directory + "/" + file)):
+        continue
 
-    handle.close()
+      try:
+        handle = open(directory + "/" + file, "r")
+      except IOError:
+        error("unable to open the file " + directory + "/" + file + "\n")
+
+      for line in handle.readlines():
+        g_contents += line
+
+      handle.close()
 
 
 
@@ -326,12 +333,16 @@ def			main():
 
   # build a string containing all the directories where configuration
   # files could be located.
-  load(("default/environment/environment.conf",
-        "default/boot/boot.conf",
-        "default/machine/machine.conf",
-        "default/core/core.conf",
-        "machines/" + machine + "/machine.conf",
-        "users/" + user + "/user.conf"))
+  # ordering is crucial here since the first definitions are overriden
+  # by the latest.
+  load(("profile/",
+        "profile/environment/",
+        "profile/environment/behaviour/",
+        "profile/environment/behaviour/" + host + "/",
+        "profile/environment/behaviour/" + host + "/" + architecture + "/",
+        "profile/environment/user/",
+        "profile/environment/user/" + user + "/",
+        "profile/kaneton/"))
 
   # removes the comments
   comments()
