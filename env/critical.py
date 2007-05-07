@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [mon may  7 16:00:35 2007]
+# updated       julien quintard   [mon may  7 16:42:34 2007]
 #
 
 #
@@ -23,7 +23,7 @@ import re
 # ---------- globals ----------------------------------------------------------
 #
 
-g_source_dire = None
+g_directories = None
 g_contents = None
 g_assignments = None
 
@@ -47,11 +47,11 @@ def			error(msg):
 #
 # load()
 #
-# this function takes an arbitray number of directories where configuration
+# this function takes an arbitray number of directories where pattern
 # files could be located and load them in a single python string.
 #
-def			load(directories):
-  global g_contents
+def			load(directories, pattern):
+  content = ""
 
   directory = None
   handle = None
@@ -60,8 +60,6 @@ def			load(directories):
   file = None
   cwd = None
 
-  g_contents = "_SOURCE_DIR_		=		" + g_source_dir + "\n"
-
   for directory in directories:
     files = os.listdir(directory);
 
@@ -69,7 +67,7 @@ def			load(directories):
       if not os.path.isfile(directory + "/" + file):
         continue
 
-      if not re.match("^.*\.conf$", os.path.basename(directory + "/" + file)):
+      if not re.match(pattern, os.path.basename(directory + "/" + file)):
         continue
 
       try:
@@ -78,10 +76,11 @@ def			load(directories):
         error("unable to open the file " + directory + "/" + file + "\n")
 
       for line in handle.readlines():
-        g_contents += line
+        content += line
 
       handle.close()
 
+  return content
 
 
 #
@@ -142,12 +141,14 @@ def		get(variable):
 # this function tries to expand the given variable.
 #
 def		expand(variable, stack):
+  registered = None
   variables = None
+  position = None
   value = None
   var = None
-  registered = None
   new = None
-  position = None
+
+  print "--- " + variable
 
   # try to get the variable's value from the already expanded variables.
   try:
@@ -157,6 +158,10 @@ def		expand(variable, stack):
 
   # but also from the not yet expanded variables.
   new = get(variable)
+
+  print "-- reg | new"
+  print registered
+  print new
 
   # check if the variable is defined somewhere.
   if registered == None and new == None:
@@ -216,6 +221,7 @@ def		expand(variable, stack):
 # this function resolves the variable assignments.
 def			resolve():
   while len(g_assignments) != 0:
+    print "---------------------------------------- " + g_assignments[0][0]
     expand(g_assignments[0][0], [])
 
 
@@ -225,11 +231,9 @@ def			resolve():
 #
 # this function generates the kaneton development environment files.
 #
-def			generate(mfile, mdependencies, pfile, pdependencies):
+def			generate(mfile, mcontent, pfile, pcontent):
   mhandle = None
   phandle = None
-  handle = None
-  file = None
   line = None
   var = None
 
@@ -252,33 +256,12 @@ def			generate(mfile, mdependencies, pfile, pdependencies):
     phandle.write(var + " = " + "\"" + g_variables[var] + "\"" + "\n")
 
   # append the make environment files to the make environment file.
-  for file in mdependencies:
-    if not os.path.exists(file):
-      continue
-
-    try:
-      handle = open(file, "r")
-    except:
-      error("unable to open the file " + file + "\n")
-
-    mhandle.writelines(handle.readlines())
-
-    handle.close()
+  mhandle.write(mcontent)
 
   # append the python environment files to the python environment file.
-  for file in pdependencies:
-    if not os.path.exists(file):
-      continue
+  phandle.write(pcontent)
 
-    try:
-      handle = open(file, "r")
-    except:
-      error("unable to open the file " + file + "\n")
-
-    phandle.writelines(handle.readlines())
-
-    handle.close()
-
+  # close the files.
   phandle.close()
   mhandle.close()
 
@@ -290,8 +273,10 @@ def			generate(mfile, mdependencies, pfile, pdependencies):
 # this function builds a kaneton development environment.
 #
 def			main():
-  global g_source_dir
+  global g_directories
+  global g_contents
   architecture = None
+  source_dir = None
   plateform = None
   machine = None
   python = None
@@ -321,6 +306,17 @@ def			main():
   if architecture == None:
     error("the shell environment variable KANETON_ARCHITECTURE is not set")
 
+  # set the configuration directories based on the user variables.
+  g_directories = ("profile/",
+                   "profile/environment/",
+                   "profile/environment/behaviour/",
+                   "profile/environment/behaviour/" + host + "/",
+                   "profile/environment/behaviour/" + host + "/" +
+                                                      architecture + "/",
+                   "profile/environment/user/",
+                   "profile/environment/user/" + user + "/",
+                   "profile/kaneton/")
+
   # first, set a virtual kaneton variable containing the location of
   # the kaneton source directory.
   # this directory is expected to be relatively located at: ../
@@ -328,21 +324,14 @@ def			main():
   # directory
   cwd = os.getcwd()
   os.chdir("..")
-  g_source_dir = os.getcwd()
+  source_dir = os.getcwd()
   os.chdir(cwd)
 
-  # build a string containing all the directories where configuration
-  # files could be located.
-  # ordering is crucial here since the first definitions are overriden
-  # by the latest.
-  load(("profile/",
-        "profile/environment/",
-        "profile/environment/behaviour/",
-        "profile/environment/behaviour/" + host + "/",
-        "profile/environment/behaviour/" + host + "/" + architecture + "/",
-        "profile/environment/user/",
-        "profile/environment/user/" + user + "/",
-        "profile/kaneton/"))
+  # build the global content variable adding the _SOURCE_DIR_ variable.
+  # the load() function is used to load the content of the configuration
+  # files *.conf.
+  g_contents = "_SOURCE_DIR_		=		" + source_dir + "\n"
+  g_contents += load(g_directories, "^.*\.conf$")
 
   # removes the comments
   comments()
@@ -354,18 +343,8 @@ def			main():
   resolve()
 
   # generate the development environment files.
-  generate("env.mk", ("default/environment/environment.mk",
-                      "default/boot/boot.mk",
-                      "default/machine/machine.mk",
-                      "default/core/core.mk",
-                      "machines/" + machine + "/machine.mk",
-                      "users/" + user + "/user.mk"),
-           "env.py", ("default/environment/environment.py",
-                      "default/boot/boot.py",
-                      "default/machine/machine.py",
-                      "default/core/core.py",
-                      "machines/" + machine + "/machine.py",
-                      "users/" + user + "/user.py"))
+  generate("env.mk", load(g_directories, "^.*\.mk$"),
+           "env.py", load(g_directories, "^.*\.py$"))
 
 #
 # ---------- entry point ------------------------------------------------------
