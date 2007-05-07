@@ -52,8 +52,6 @@ m_message*		message = NULL;
 
 extern m_segment*	segment;
 extern i_as		kasid;
-
-// FIXME For test
 extern i_task		ktask;
 
 /*
@@ -88,14 +86,18 @@ t_error			message_init(void)
 
 
 
-  if (set_reserve(bpt, SET_OPT_SORT | SET_OPT_ALLOC, sizeof(t_local_box),
+  if (set_reserve(bpt, SET_OPT_SORT | SET_OPT_ALLOC, sizeof(t_message_box),
                   SEGMENT_BPT_NODESZ, &message->local_boxes) != ERROR_NONE)
   {
-    cons_msg('!', "message: unable to reserve the msgboxes set\n");
+    cons_msg('!', "message: unable to reserve the msgboxes set.\n");
     return (ERROR_UNKNOWN);
   }
 
-
+  if (message_register(ktask, 0) != ERROR_NONE)
+  {
+    cons_msg('!', "message: unable to register ktask msgbox.\n");
+    return ERROR_UNKNOWN;
+  }
 
   /*
    * 2)
@@ -151,20 +153,26 @@ t_error			message_clean(void)
 }
 
 /*
- * Send asynchronously a message in a node msgbox
+ * send asynchronously a message in a node msgbox
  *
- * 1) Allocate a buffer in the kernel as
- * 2) If the node is not on this machine, redirect the message FIXME
- * 3) Copy the message from the given task's as to the kernel buffer
- * 4) Enqueue the buffer into the node's messagebox
+ * steps:
+ *
+ * 1) allocate a buffer in the kernel as
+ * 2) if the node is not on this machine, redirect the message through the gate (FIXME)
+ * 3) copy the message from the given task's as to the kernel buffer
+ * 4) enqueue the buffer into the node's messagebox
  */
 
-t_error			message_async_send(i_task sender, i_node dest, t_tag tag, void* data, t_size size)
+t_error			message_async_send(i_task	sender,
+					   i_node	dest,
+					   t_tag	tag,
+					   void*	data,
+					   t_size	size)
 {
   o_task*		sender_task;
   void*			kernel_buffer;
   o_msg			msg;
-  t_local_box*		msgbox;
+  t_message_box*	msgbox;
 
   if (task_get(sender, &sender_task) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -225,16 +233,21 @@ t_error			message_async_send(i_task sender, i_node dest, t_tag tag, void* data, 
 }
 
 /*
- * Receive asynchronously a message from a node msgbox
+ * receive asynchronously a message from a node msgbox
  *
- * 1) Retrieve the message box and check if a message is pending, retrieve it.
- * 2) Copy the message from the kernel buffer to the given task's as
- * 3) Pop the message from the queue and free kernel buffer
+ * steps:
+ *
+ * 1) retrieve the message box and check if a message is pending, retrieve it.
+ * 2) copy the message from the kernel buffer to the given task's as.
+ * 3) pop the message from the queue and free kernel buffer.
  */
 
-t_error			message_async_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
+t_error			message_async_recv(i_task	taskid,
+					   t_tag	tag,
+					   void*	data,
+					   size_t	maxsz)
 {
-  t_local_box*		msgbox;
+  t_message_box*	msgbox;
   o_msg*		msg;
   o_task*		task;
 
@@ -276,26 +289,45 @@ t_error			message_async_recv(i_task taskid, t_tag tag, void* data, size_t maxsz)
 }
 
 /*
- * Send synchronously a message by direct memory transfert
+ * send synchronously a message by direct memory transfert
  *
- * 1) Retrieve the message box and check if a sync_recv is pending
- * 2) If not, register to the senders queue, block the thread and return
-  *   (another thread will be elected while returning from isr).
- * 3) If it is, as-to-as mem copy, pop the receiver from the queue
- * 4) Unblock the receiver's task
+ * steps:
+ *
+ * 1) if the node is not on this machine, redirect the message through the gate (FIXME)
+ * 2) retrieve the message box and check if a sync_recv is pending
+ * 3) if not, register to the senders queue, block the thread and return
+ *    (another thread will be elected while returning from isr).
+ * 4) if it is, as-to-as mem copy, pop the receiver from the queue
+ * 5) unblock the receiver's task
  */
 
-t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t_size size, t_uint32* rv)
+t_error			message_sync_send(i_task	sender,
+					  i_node	dest,
+					  t_tag		tag,
+					  void*		data,
+					  t_size	size,
+					  t_uint32*	rv)
 {
-  t_local_box*		msgbox;
+  t_message_box*	msgbox;
   o_task*		task;
   t_waiter*		receiver;
   t_waiter		send_waiter;
   i_thread		thread;
   t_size		sz;
 
+
   /*
    * 1)
+   */
+
+  if (!is_local_node(dest))
+  {
+    /* XXX Redirect the message to the gate */
+    return (ERROR_UNKNOWN);
+  }
+
+  /*
+   * 2)
    */
 
   if (task_get(sender, &task) != ERROR_NONE)
@@ -308,7 +340,7 @@ t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t
   if (set_pick(msgbox->receivers, (void**)&receiver) != ERROR_NONE)
   {
     /*
-     * 2)
+     * 3)
      */
 
     if (sched_current(&thread) != ERROR_NONE)
@@ -330,7 +362,7 @@ t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t
   }
 
   /*
-   * 3)
+   * 4)
    */
 
   sz = size <= receiver->sz ? size : receiver->sz;
@@ -366,7 +398,7 @@ copied:
     return (ERROR_UNKNOWN);
 
   /*
-   * 4)
+   * 5)
    */
 
   *(receiver->rv) = ERROR_NONE;
@@ -377,17 +409,23 @@ copied:
 }
 
 /*
- * Receive synchronously a message by direct memory transfert
+ * receive synchronously a message by direct memory transfert
  *
- * 1) Retrieve the message box and check if a sync_send is pending
- * 2) If not, register to the receivers queue, sleep & reschedule.
- * 3) If it is, pop the sender from the queue, proceed to transfert
- * 4) Unblock the sender's task
+ * steps:
+ *
+ * 1) retrieve the message box and check if a sync_send is pending
+ * 2) if not, register to the receivers queue, sleep & reschedule.
+ * 3) if it is, pop the sender from the queue, proceed to transfert
+ * 4) unblock the sender's task
  */
 
-t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz, t_uint32* rv)
+t_error			message_sync_recv(i_task	taskid,
+					  t_tag		tag,
+					  void*		data,
+					  size_t	maxsz,
+					  t_uint32*	rv)
 {
-  t_local_box*		msgbox;
+  t_message_box*	msgbox;
   o_task*		task;
   t_waiter*		sender;
   t_waiter		recv_waiter;
@@ -478,16 +516,19 @@ copied:
 
 
 /*
- * Register a message box for a task in the message manager
+ * register a message box for a task in the message manager
  *
- * 1) Create the message box if it doesn't exists
- * 2) Add the given tag to the message box FIXME
+ * steps:
+ *
+ * 1) create the message box if it doesn't exists
+ * 2) add the given tag to the message box (FIXME)
  */
 
-t_error			message_register(i_task taskid, t_tag tag)
+t_error			message_register(i_task	taskid,
+					 t_tag	tag)
 {
-  t_local_box*		msgbox;
-  t_local_box		new;
+  t_message_box*	msgbox;
+  t_message_box		new;
 
   /*
    * 1)
@@ -685,11 +726,6 @@ t_error			message_test(void)
       while (1);
     }
 
-  if (message_register(ktask, 0) != ERROR_NONE)
-  {
-    cons_msg('!', "message test: message_register() error.\n");
-    return ERROR_UNKNOWN;
-  }
   if (message_register(tsk1, 0) != ERROR_NONE)
   {
     cons_msg('!', "message test: message_register() error.\n");

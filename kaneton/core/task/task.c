@@ -269,8 +269,9 @@ t_error			task_clone(i_task			old,
  * 5) reserves the set of threads for the new task object.
  * 6) reserves the set of waits for the new task object.
  * 7) reserves the set of children for the new task object.
- * 8) adds the new task object in the task set.
- * 9) calls the machine-dependent code.
+ * 8) register a message box into the message manager.
+ * 9) adds the new task object in the task set.
+ * 10) calls the machine-dependent code.
  */
 
 t_error			task_reserve(t_class			class,
@@ -404,6 +405,24 @@ t_error			task_reserve(t_class			class,
    * 8)
    */
 
+  if (o.tskid != 0)
+  {
+    if (message_register(o.tskid, 0) != ERROR_NONE)
+    {
+      id_release(&task->id, o.tskid);
+
+      set_release(o.threads);
+      set_release(o.waits);
+      set_release(o.children);
+
+      TASK_LEAVE(task, ERROR_UNKNOWN);
+    }
+  }
+
+  /*
+   * 9)
+   */
+
   if (set_add(task->tasks, &o) != ERROR_NONE)
     {
       id_release(&task->id, o.tskid);
@@ -416,7 +435,7 @@ t_error			task_reserve(t_class			class,
     }
 
   /*
-   * 9)
+   * 10)
    */
 
   if (machdep_call(task, task_reserve, class,

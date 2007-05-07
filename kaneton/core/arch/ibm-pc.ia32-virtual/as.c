@@ -443,8 +443,6 @@ t_error			ia32_as_reserve(i_task			tskid,
 			 &reg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
-      region_dump(*asid);
-
       if (region_get(kasid, (i_region)(t_uint32)thread->machdep.tss,
 		     &preg) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);

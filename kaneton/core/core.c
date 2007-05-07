@@ -150,6 +150,11 @@ void			kaneton(t_init*				bootloader)
   smp_test();
 #endif
 
+#if (DEBUG & DEBUG_MESSAGE)
+  message_test();
+#endif
+
+
   cons_msg('+', "starting modules\n");
   if (mod_launch() != ERROR_NONE)
     cons_msg('!', "failed to start initial modules\n");

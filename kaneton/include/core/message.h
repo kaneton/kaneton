@@ -50,20 +50,18 @@ typedef struct
 {
   void*		data;
   t_size	sz;
-
-  /* timestamp ? */
 }		o_msg;
 
 typedef struct
 {
   t_id		id;
 
-  /* Unique queue for now */
+  /* XXX Unique queue for now */
   i_msgqueue	msgqueue;
 
   i_waitqueue	receivers;
   i_waitqueue	senders;
-}		t_local_box;
+}		t_message_box;
 
 /*
  * message manager
@@ -139,15 +137,32 @@ t_error			message_init(void);
 
 t_error			message_clean(void);
 
-t_error			message_async_send(i_task sender, i_node dest, t_tag tag, void* data, t_size size);
+t_error			message_async_send(i_task	sender,
+					   i_node	dest,
+					   t_tag	tag,
+					   void*	data,
+					   t_size	size);
 
-t_error			message_async_recv(i_task taskid, t_tag tag, void* data, size_t maxsz);
+t_error			message_async_recv(i_task	taskid,
+					   t_tag	tag,
+					   void*	data,
+					   size_t	maxsz);
 
-t_error			message_sync_send(i_task sender, i_node dest, t_tag tag, void* data, t_size size, t_uint32* rv);
+t_error			message_sync_send(i_task	sender,
+					  i_node	dest,
+					  t_tag		tag,
+					  void*		data,
+					  t_size	size,
+					  t_uint32*	rv);
 
-t_error			message_sync_recv(i_task taskid, t_tag tag, void* data, size_t maxsz, t_uint32* rv);
+t_error			message_sync_recv(i_task	taskid,
+					  t_tag		tag,
+					  void*		data,
+					  size_t	maxsz,
+					  t_uint32*	rv);
 
-t_error			message_register(i_task taskid, t_tag tag);
+t_error			message_register(i_task	taskid,
+					 t_tag	tag);
 
 t_uint32		syscall_async_send(t_uint32* node, t_uint32 tag, void* ptr, t_uint32 size);
 
