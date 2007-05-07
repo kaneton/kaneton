@@ -161,6 +161,12 @@ t_error			message_sync_recv(i_task	taskid,
 					  size_t	maxsz,
 					  t_uint32*	rv);
 
+t_error			message_sync_recv_nb(i_task	taskid,
+					     t_tag	tag,
+					     void*	data,
+					     size_t	maxsz,
+					     t_uint32*	rv);
+
 t_error			message_register(i_task	taskid,
 					 t_tag	tag);
 

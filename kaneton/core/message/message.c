@@ -514,6 +514,95 @@ copied:
   return (ERROR_NONE);
 }
 
+/*
+ * receive synchronously a message by direct memory transfert, non blocking.
+ * same as message_sync_recv, but returns if no message is pending
+ *
+ * steps:
+ *
+ * 1) retrieve the message box and check if a sync_send is pending
+ * 2) if not, returns.
+ * 3) if it is, pop the sender from the queue, proceed to transfert
+ * 4) unblock the sender's task
+ */
+
+t_error			message_sync_recv_nb(i_task	taskid,
+					     t_tag	tag,
+					     void*	data,
+					     size_t	maxsz,
+					     t_uint32*	rv)
+{
+  t_message_box*	msgbox;
+  o_task*		task;
+  t_waiter*		sender;
+  t_size		sz;
+
+  /*
+   * 1)
+   */
+
+  if (task_get(taskid, &task) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+  if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  tag = tag;
+
+  if (set_pick(msgbox->senders, (void**)&sender) != ERROR_NONE)
+  {
+    /*
+     * 2)
+     */
+
+    return (ERROR_UNKNOWN);
+  }
+
+  /*
+   * 3)
+   */
+
+  sz = maxsz <= sender->sz ? maxsz : sender->sz;
+
+  if (sender->asid == kasid && task->asid == kasid)
+  {
+    memcpy(data, (void*)sender->data, sz);
+    goto copied;
+  }
+
+  if (task->asid == kasid)
+  {
+    if (as_read(sender->asid, sender->data, sz, data) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+    goto copied;
+  }
+
+  if (sender->asid == kasid)
+  {
+    if (as_write(task->asid, (void*)sender->data, sz,
+	(t_vaddr)data) != ERROR_NONE)
+      return ERROR_UNKNOWN;
+    goto copied;
+  }
+
+  if (as_copy(sender->asid, sender->data,
+      task->asid, (t_vaddr)data, sz) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+copied:
+
+  if (set_pop(msgbox->senders) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  *(sender->rv) = ERROR_NONE;
+  if (thread_state(sender->thread, SCHED_STATE_RUN) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
+}
 
 /*
  * register a message box for a task in the message manager
