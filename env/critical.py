@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [mon may  7 16:42:34 2007]
+# updated       julien quintard   [mon may  7 20:31:31 2007]
 #
 
 #
@@ -25,7 +25,7 @@ import re
 
 g_directories = None
 g_contents = None
-g_assignments = None
+g_assignments = []
 
 g_variables = {}
 
@@ -36,11 +36,21 @@ g_variables = {}
 #
 # error()
 #
-# this function simply displays an error.
+# this function displays an error and quit.
 #
 def			error(msg):
   sys.stderr.write("[!] " + msg)
   sys.exit(42)
+
+
+
+#
+# warning()
+#
+# this function simply displays an error.
+#
+def			warning(msg):
+  sys.stderr.write("[!] " + msg)
 
 
 
@@ -101,6 +111,23 @@ def			comments():
 
 
 #
+# locate()
+#
+# this function tries to locate the variable of the given array and
+# return the corresponding tuple.
+#
+def		locate(array, variable):
+  var = None
+
+  for var in array:
+    if variable == var[0]:
+      return var
+
+  return None
+
+
+
+#
 # extract()
 #
 # this function extracts the variables assignments from the environment
@@ -108,30 +135,43 @@ def			comments():
 #
 def			extract():
   global g_assignments
+  assignments = None
+  assignment = None
+  already = None
+  new = None
 
-  g_assignments = re.findall("^"					\
+  assignments = re.findall("^"					\
                              "[ \t]*"					\
                              "([a-zA-Z0-9_]+)"				\
                              "[ \t]*"					\
-                             "="					\
+                             "(\+?=)"					\
                              "[ \t]*"					\
                              "((?:(?:\\\\\n)|[^\n])+)"			\
                              "\n", g_contents, re.MULTILINE);
 
+  for assignment in assignments:
+    # look for a previous registered assignment.
+    already = locate(g_assignments, assignment[0])
 
+    if already:
+      # if it is an assignment, just override the previous declaration.
+      if assignment[1] == "=":
+        new = (assignment[0], assignment[2])
+      # if it is a concatenation, override the previous one with a
+      # concatenation of the two values.
+      elif assignment[1] == "+=":
+        new = (assignment[0], already[1] + " " + assignment[2])
+      else:
+        error("unknown assignment token '" + assignment[1] + "'.\n")
 
-#
-# get()
-#
-# this function tries to locate the variable's value in the not yet
-# expanded variables list g_assignments
-#
-def		get(variable):
-  a = None
+      # remove and insert the new tuple.
+      g_assignments.remove(already)
+      g_assignments.append(new)
+    else:
+      # simple insert the tuple.
+      new = (assignment[0], assignment[2])
 
-  for a in g_assignments:
-    if variable == a[0]:
-      return a[1]
+      g_assignments.append(new)
 
 
 
@@ -140,78 +180,55 @@ def		get(variable):
 #
 # this function tries to expand the given variable.
 #
-def		expand(variable, stack):
-  registered = None
+def		expand(name, stack):
   variables = None
   position = None
+  tuple = None
   value = None
   var = None
-  new = None
-
-  print "--- " + variable
 
   # try to get the variable's value from the already expanded variables.
   try:
-    registered = g_variables[variable]
-  except:
-    pass
-
-  # but also from the not yet expanded variables.
-  new = get(variable)
-
-  print "-- reg | new"
-  print registered
-  print new
-
-  # check if the variable is defined somewhere.
-  if registered == None and new == None:
-      error("the kaneton environment variable " + variable +
-            " is not defined\n")
-
-  # in this case, just return 'cause the variable is already registered
-  # and up-to-date.
-  if new == None:
+    value = g_variables[name]
     return
+  except:
+    # check if the variable was declared somewhere.
+    tuple = locate(g_assignments, name)
+    if not tuple:
+      warning("the kaneton environment variable " + name +
+              " is not defined\n")
+    value = tuple[1]
 
   # check recursion assignments.
   try:
-    position = stack.index(variable)
+    position = stack.index(name)
   except:
     pass
 
   if position != None:
-    error("the kaneton environment variable " + variable +
+    error("the kaneton environment variable " + name +
           " recursively references itself.\n")
 
-  # in the other cases, expand the value and register this new variable.
-
-  # backup the 'new' value.
-  value = new
-
-  # remove the variable from the not yet expanded list.
-  g_assignments.remove((variable, new))
-
-  # locate the variables used in the variable's value and try
-  # to expand them too.
-  # finally, replace the variables by their values.
+  # locate, expand and replace the kaneton variables.
   variables = re.findall("\$\{([^}]+)\}", value)
   if variables:
     for var in variables:
-      expand(var, stack + [variable])
+      expand(var, stack + [name])
     for var in variables:
       value = value.replace("${" + var + "}", g_variables[var])
 
-  # locate the shell environment variables used in the variable's value
-  # and replace these variables by their values.
+  # locate, expand and replace the shell variables.
   variables = re.findall("\$\(([^}]+)\)", value)
   if variables:
     for var in variables:
       if os.getenv(var) == None:
-        error("shell user variable " + var + " is not defined\n")
-      value = value.replace("$(" + var + ")", os.getenv(var))
+        warning("shell user variable " + var + " is not defined\n")
+        value = value.replace("$(" + var + ")", "")
+      else:
+        value = value.replace("$(" + var + ")", os.getenv(var))
 
   # finally register the new variable with its expanded value.
-  g_variables[variable] = value
+  g_variables[name] = value
 
 
 
@@ -220,9 +237,8 @@ def		expand(variable, stack):
 #
 # this function resolves the variable assignments.
 def			resolve():
-  while len(g_assignments) != 0:
-    print "---------------------------------------- " + g_assignments[0][0]
-    expand(g_assignments[0][0], [])
+  for assignment in g_assignments:
+    expand(assignment[0], [])
 
 
 
