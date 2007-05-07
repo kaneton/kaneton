@@ -116,6 +116,9 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
 	       phdr->p_flags & PF_X ? 'x' : '-',
 	       phdr->p_memsz);
 
+      if (phdr->p_memsz == 0)
+	continue;
+
       /*
        * 3)
        */

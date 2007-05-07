@@ -158,7 +158,7 @@ t_error			message_clean(void)
  * steps:
  *
  * 1) allocate a buffer in the kernel as
- * 2) if the node is not on this machine, redirect the message through the gate (FIXME)
+ * 2) if the node is not on this machine (FIXME)
  * 3) copy the message from the given task's as to the kernel buffer
  * 4) enqueue the buffer into the node's messagebox
  */
@@ -200,7 +200,8 @@ t_error			message_async_send(i_task	sender,
 
   if (sender_task->asid != kasid)
   {
-    if (as_read(sender_task->asid, (t_vaddr)data, size, kernel_buffer) != ERROR_NONE)
+    if (as_read(sender_task->asid, (t_vaddr)data, size, kernel_buffer)
+	  != ERROR_NONE)
       return ERROR_UNKNOWN;
   }
   else
@@ -215,7 +216,8 @@ t_error			message_async_send(i_task	sender,
   msg.sz = size;
   msg.data = kernel_buffer;
 
-  if (set_get(message->local_boxes, get_node_task(dest), (void**)&msgbox) != ERROR_NONE)
+  if (set_get(message->local_boxes, get_node_task(dest), (void**)&msgbox)
+	!= ERROR_NONE)
   {
     free(kernel_buffer);
     return (ERROR_UNKNOWN);
@@ -271,7 +273,8 @@ t_error			message_async_recv(i_task	taskid,
 
   if (task->asid != kasid)
   {
-    as_write(task->asid, msg->data, (maxsz < msg->sz ? maxsz : msg->sz), (t_paddr)data);
+    as_write(task->asid, msg->data, (maxsz < msg->sz ? maxsz : msg->sz),
+	(t_paddr)data);
   }
   else
   {
@@ -332,7 +335,8 @@ t_error			message_sync_send(i_task	sender,
 
   if (task_get(sender, &task) != ERROR_NONE)
     return (ERROR_UNKNOWN);
-  if (set_get(message->local_boxes, get_node_task(dest), (void**)&msgbox) != ERROR_NONE)
+  if (set_get(message->local_boxes, get_node_task(dest), (void**)&msgbox)
+      != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   tag = tag;
@@ -626,9 +630,12 @@ t_error			message_register(i_task	taskid,
   if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
   {
     new.id = taskid;
-    if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(o_msg), &new.msgqueue) != ERROR_NONE ||
-	set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_waiter), &new.receivers) != ERROR_NONE ||
-	set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_waiter), &new.senders) != ERROR_NONE)
+    if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(o_msg), &new.msgqueue)
+	  != ERROR_NONE ||
+	set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_waiter), &new.receivers)
+	  != ERROR_NONE ||
+	set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_waiter), &new.senders)
+	  != ERROR_NONE)
       return (ERROR_UNKNOWN);
     if (set_add(message->local_boxes, &new) != ERROR_NONE)
       return (ERROR_UNKNOWN);
@@ -650,184 +657,9 @@ t_error			message_register(i_task	taskid,
  */
 
 
-t_uint32		syscall_async_send(t_uint32* node, t_uint32 tag, void* ptr, t_uint32 size)
-{
-  t_uint32		ret;
-
-  asm volatile("	pushl %%ebp		\n"
-	       "	movl %7, %%ebp		\n"
-	       "	int $56			\n"
-	       "	popl %%ebp		"
-	       : "=a" (ret)
-	       : "a" (node[0]), "b" (node[1]), "c" (node[2]), "d" (node[3]),
-	       "S" (tag), "D" (ptr), "m" (size));
-
-  return (ret);
-}
-
-t_uint32		syscall_sync_send(t_uint32* node, t_uint32 tag, void* ptr, t_uint32 size)
-{
-  t_uint32		ret;
-
-  asm volatile("	pushl %%ebp		\n"
-	       "	movl %7, %%ebp		\n"
-	       "	int $58			\n"
-	       "	popl %%ebp		"
-	       : "=a" (ret)
-	       : "a" (node[0]), "b" (node[1]), "c" (node[2]), "d" (node[3]),
-	       "S" (tag), "D" (ptr), "m" (size));
-
-  return (ret);
-}
-
-
-t_uint32		syscall_async_recv(t_uint32 tag, void* ptr, t_uint32 size)
-{
-  t_uint32		ret;
-
-  asm volatile("	int $57			"
-	       : "=a" (ret)
-	       :"a" (tag), "b" (ptr), "c" (size));
-
-  return (ret);
-}
-
-t_uint32		syscall_sync_recv(t_uint32 tag, void* ptr, t_uint32 size)
-{
-  t_uint32		ret;
-
-  asm volatile("	int $59			"
-	       : "=a" (ret)
-	       :"a" (tag), "b" (ptr), "c" (size));
-
-  return (ret);
-}
-
-i_task tsk1;
-i_task tsk2;
-
-static void			chiche_send()
-{
-  char				tosend[128] =
-    "Les chausettes de l'archiduchesse sont elles seches\n";
-  i_node			task1_node;
-
-  task1_node.machine = 2^64;
-  task1_node.task = tsk2;
-
-  syscall_sync_send((t_uint32 *)&task1_node, 0, tosend, strlen(tosend) + 1);
-
-  while (1)
-    ;
-}
-
-static void			chiche_recv()
-{
-  char				recv[128];
-  i_node			kernel_node;
-
-  while (1)
-  {
-    if (syscall_sync_recv(0, recv, 128) == ERROR_NONE)
-    {
-      break;
-    }
-  }
-
-  kernel_node.machine = 2^64;
-  kernel_node.task = 0;
-
-  syscall_async_send((t_uint32 *)&kernel_node, 0, recv, strlen(recv) + 1);
-
-  while (1)
-    ;
-}
-
 t_error			message_test(void)
 {
   char			recv[128];
-  i_as			as1;
-  i_as			as2;
-  i_thread		th1;
-  i_thread		th2;
-  t_thread_context	ctx1;
-  t_thread_context	ctx2;
-  t_stack		stack1;
-  t_stack		stack2;
-  o_thread*		o1;
-  o_thread*		o2;
-
-  task_reserve(TASK_CLASS_PROGRAM,
-	       TASK_BEHAV_INTERACTIVE,
-	       TASK_PRIOR_INTERACTIVE,
-	       &tsk1);
-  task_reserve(TASK_CLASS_PROGRAM,
-	       TASK_BEHAV_INTERACTIVE,
-	       TASK_PRIOR_INTERACTIVE,
-	       &tsk2);
-
-  as_reserve(tsk1, &as1);
-  as_reserve(tsk2, &as2);
-
-  thread_reserve(tsk1, 150, &th1);
-  thread_reserve(tsk2, 150, &th2);
-
-  stack1.base = 0;
-  stack1.size = THREAD_MIN_STACKSZ;
-  stack2.base = 0;
-  stack2.size = THREAD_MIN_STACKSZ;
-
-  if (thread_stack(th1, stack1) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot set stack\n");
-      while (1);
-    }
-  if (thread_stack(th2, stack2) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot set stack\n");
-      while (1);
-    }
-
-  if (thread_get(th1, &o1) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot get thread\n");
-      while (1);
-    }
-  if (thread_get(th2, &o2) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot get thread\n");
-      while (1);
-    }
-
-  ctx1.sp = o1->stack + o1->stacksz - 16;
-  ctx1.pc = (t_uint32)chiche_send;
-  ctx2.sp = o2->stack + o2->stacksz - 16;
-  ctx2.pc = (t_uint32)chiche_recv;
-
-  if (thread_load(th1, ctx1) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot load context\n");
-      while (1);
-    }
-  if (thread_load(th2, ctx2) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot load context\n");
-      while (1);
-    }
-
-  if (message_register(tsk1, 0) != ERROR_NONE)
-  {
-    cons_msg('!', "message test: message_register() error.\n");
-    return ERROR_UNKNOWN;
-  }
-  if (message_register(tsk2, 0) != ERROR_NONE)
-  {
-    cons_msg('!', "message test: message_register() error.\n");
-    return ERROR_UNKNOWN;
-  }
-
-  task_state(tsk1, SCHED_STATE_RUN);
-  task_state(tsk2, SCHED_STATE_RUN);
 
   sched_dump();
 
@@ -835,7 +667,8 @@ t_error			message_test(void)
     {
       if (message_async_recv(ktask, 0, recv, 128) == ERROR_NONE)
 	{
-	  printf("task: %s\n", recv);
+	  printf("received %d bytes : %s\n", strlen(recv) + 1, recv);
+	  break;
 	}
     }
 

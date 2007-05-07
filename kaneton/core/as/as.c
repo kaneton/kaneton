@@ -427,7 +427,7 @@ t_error			as_read(i_as				asid,
    * 3)
    */
 
-  while (oreg->address + oreg->size < src)
+  while (oreg->address + oreg->size <= src)
     {
       if (set_next(o->regions, it, &next) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
@@ -567,7 +567,7 @@ t_error			as_write(i_as				asid,
    * 3)
    */
 
-  while (oreg->address + oreg->size < dst)
+  while (oreg->address + oreg->size <= dst)
     {
       if (set_next(o->regions, it, &next) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
@@ -714,7 +714,7 @@ t_error			as_copy(i_as				src_as,
   if (set_object(src_o->regions, src_it, (void**)&src_oreg) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  while (src_oreg->address + src_oreg->size < src)
+  while (src_oreg->address + src_oreg->size <= src)
     {
       if (set_next(src_o->regions, src_it, &src_next) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
@@ -741,7 +741,7 @@ t_error			as_copy(i_as				src_as,
   if (set_object(dst_o->regions, dst_it, (void**)&dst_oreg) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
-  while (dst_oreg->address + dst_oreg->size < dst)
+  while (dst_oreg->address + dst_oreg->size <= dst)
     {
       if (set_next(dst_o->regions, dst_it, &dst_next) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
