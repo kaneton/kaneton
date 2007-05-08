@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [mon may  7 21:46:33 2007]
+# updated       julien quintard   [tue may  8 10:57:53 2007]
 #
 
 #
@@ -71,6 +71,9 @@ def			load(directories, pattern):
   cwd = None
 
   for directory in directories:
+    if not os.path.isdir(directory):
+      continue
+
     files = os.listdir(directory);
 
     for file in files:
@@ -197,7 +200,9 @@ def		expand(name, stack):
     if not tuple:
       warning("the kaneton environment variable " + name +
               " is not defined\n")
-    value = tuple[1]
+      value = ""
+    else:
+      value = tuple[1]
 
   # check recursion assignments.
   try:
