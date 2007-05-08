@@ -164,6 +164,8 @@ l'endianness dans mod_load
  donc on devrait changer pour mettre a disposition des fonctions pour
  recuperer que certaines proprietes.
 
+ une unique fonction genre chiche_pick()
+
 --
  revoir le bootloader:
 
