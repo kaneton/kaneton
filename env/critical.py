@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [tue may  8 11:19:03 2007]
+# updated       julien quintard   [tue may  8 16:41:00 2007]
 #
 
 #
@@ -64,6 +64,8 @@ def			load(directories, pattern):
   content = ""
 
   directory = None
+  includes = None
+  include = None
   handle = None
   files = None
   line = None
@@ -91,9 +93,29 @@ def			load(directories, pattern):
       for line in handle.readlines():
         content += line
 
+      includes = re.findall("("						\
+                              "^"					\
+                              "include"					\
+                              "[ \t]*"					\
+                              "(.*)"					\
+                              "\n"					\
+                            ")", content, re.MULTILINE);
+
+      for include in includes:
+        content = content.replace(include[0],
+                                  load([os.path.dirname(directory +
+                                                        "/" +
+                                                        include[1])],
+                                       "^" +
+                                         os.path.basename(directory +
+                                                          "/" +
+                                                          include[1]) +
+                                         "$"))
+
       handle.close()
 
   return content
+
 
 
 #
@@ -165,16 +187,24 @@ def			extract():
       elif assignment[1] == "+=":
         new = (assignment[0], already[1] + " " + assignment[2])
       else:
-        error("unknown assignment token '" + assignment[1] + "'.\n")
+        error("unknown assignment token '" + assignment[1] + "' for the "
+              "variable '" + assignment[0] + "'.\n")
 
       # remove and insert the new tuple.
       g_assignments.remove(already)
       g_assignments.append(new)
     else:
-      # simple insert the tuple.
-      new = (assignment[0], assignment[2])
+      if assignment[1] == "=":
+        # simple insert the tuple.
+        new = (assignment[0], assignment[2])
 
-      g_assignments.append(new)
+        g_assignments.append(new)
+      elif assignment[1] == "+=":
+        error("appending to the undefined variable '" + assignment[0] +
+              "' is not allowed\n")
+      else:
+        error("unknown assignment token '" + assignment[1] + "' for the "
+              "variable '" + assignment[0] + "'.\n")
 
 
 
@@ -299,6 +329,7 @@ def			main():
   architecture = None
   source_dir = None
   plateform = None
+  contents = None
   machine = None
   python = None
   host = None
@@ -353,9 +384,7 @@ def			main():
   source_dir = os.getcwd()
   os.chdir(cwd)
 
-  # build the global content variable adding the _SOURCE_DIR_ variable.
-  # the load() function is used to load the content of the configuration
-  # files *.conf.
+  # load the content of the configuration files *.conf.
   g_contents = "_SOURCE_DIR_		=		" + source_dir + "\n"
   g_contents += load(g_directories, "^.*\.conf$")
 
