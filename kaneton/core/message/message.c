@@ -405,7 +405,13 @@ copied:
    * 5)
    */
 
-  *(receiver->rv) = ERROR_NONE;
+  o_thread* th;
+
+  if (thread_get(receiver->thread, &th) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  th->machdep.context.eax = ERROR_NONE;
+
   if (thread_state(receiver->thread, SCHED_STATE_RUN) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
@@ -511,7 +517,13 @@ copied:
    * 4)
    */
 
-  *(sender->rv) = ERROR_NONE;
+  o_thread* th;
+
+  if (thread_get(sender->thread, &th) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  th->machdep.context.eax = ERROR_NONE;
+
   if (thread_state(sender->thread, SCHED_STATE_RUN) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
@@ -601,11 +613,15 @@ copied:
    * 4)
    */
 
-  *(sender->rv) = ERROR_NONE;
-  if (thread_state(sender->thread, SCHED_STATE_RUN) != ERROR_NONE)
+  o_thread* th;
+
+  if (thread_get(sender->thread, &th) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  return (ERROR_NONE);
+  th->machdep.context.eax = ERROR_NONE;
+
+  if (thread_state(sender->thread, SCHED_STATE_RUN) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
 }
 
 /*

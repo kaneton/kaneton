@@ -291,6 +291,9 @@ t_error			sched_yield(i_cpu			cpuid)
 
   ent->prio = SCHED_N_PRIORITY_QUEUE + 1;
 
+  if (sched_switch() != ERROR_NONE)
+    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+
   /*
    * 2)
    */
@@ -653,15 +656,16 @@ t_error			sched_remove(i_thread			thread)
   p = 0;
   set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
     {
-      if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
-	SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
       if (prio == p)
-	{
+        {
+	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
+	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  
 	  if (set_remove(*queue, thread) == ERROR_NONE)
 	    removed = 1;
 	  break;
 	}
+      p++;
     }
 
   if (!removed)
@@ -678,6 +682,7 @@ t_error			sched_remove(i_thread			thread)
 		SCHED_LEAVE(sched, ERROR_UNKNOWN);
 	      break;
 	    }
+	  p++;
 	}
     }
 

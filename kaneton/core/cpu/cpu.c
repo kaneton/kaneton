@@ -149,6 +149,8 @@ t_error			cpu_select(i_cpu*			cpuid)
   *cpuid = cur % size;
   cur++;
 
+  *cpuid = 0;
+
   /*
    * XXX select the cpu with lowest charge.
    */

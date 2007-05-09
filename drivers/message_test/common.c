@@ -43,13 +43,13 @@ t_uint32		syscall_async_recv(t_uint32 tag, void* ptr, t_uint32 size)
   return (ret);
 }
 
-t_uint32		syscall_sync_recv(t_uint32 tag, void* ptr, t_uint32 size)
+t_uint32		syscall_sync_recv(t_uint32 tag, void* ptr, t_uint32 size, t_uint32 flags)
 {
   t_uint32		ret;
 
   asm volatile("	int $59			"
 	       : "=a" (ret)
-	       :"a" (tag), "b" (ptr), "c" (size));
+	       :"a" (tag), "b" (ptr), "c" (size), "d" (flags));
 
   return (ret);
 }

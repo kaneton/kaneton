@@ -386,9 +386,13 @@ t_error			set_add_pipe(i_set			setid,
 t_error			set_remove_pipe(i_set			setid,
 					t_id			id)
 {
+  t_error		retval;
+
   SET_ENTER(set);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  retval = set_remove_ll(setid, id);
+
+  SET_LEAVE(set, retval);
 }
 
 /*
@@ -420,7 +424,7 @@ t_error			set_locate_pipe(i_set			setid,
 
   retval = set_locate_ll(setid, id, iterator);
 
-  SET_LEAVE(set, ERROR_UNKNOWN);
+  SET_LEAVE(set, retval);
 }
 
 /*

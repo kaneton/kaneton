@@ -94,8 +94,11 @@ void			ia32_message_sync_send_handler(void)
   t_uint32		size;
   i_task		source;
   t_uint32		ret;
+  i_thread		syscall, upcall;
 
   task_current(&source);
+
+  sched_current(&syscall);
 
   u.dword[0] = context->eax;
   u.dword[1] = context->ebx;
@@ -107,7 +110,10 @@ void			ia32_message_sync_send_handler(void)
 
   ret = message_sync_send(source, u.node, tag, ptr, size, &context->eax);
 
-  context->eax = ret;
+  sched_current(&upcall);
+
+  if (syscall == upcall)
+    context->eax = ret;
 }
 
 void			ia32_message_async_recv_handler(void)
@@ -117,14 +123,23 @@ void			ia32_message_async_recv_handler(void)
   void*			ptr;
   t_uint32		size;
   i_task		source;
+  i_thread i;
 
   task_current(&source);
+
+  sched_current(&i);
+
+  printf("syscall %qd\n", i);
 
   tag = context->eax;
   ptr = (void*)context->ebx;
   size = context->ecx;
 
   ret = message_async_recv(source, tag, ptr, size);
+
+  sched_current(&i);  
+
+  printf("upcall %qd\n", i);
 
   context->eax = ret;
 }
@@ -135,17 +150,28 @@ void			ia32_message_sync_recv_handler(void)
   t_uint32		tag;
   void*			ptr;
   t_uint32		size;
+  t_uint32		flags;
   i_task		source;
+  i_thread		syscall, upcall;
 
   task_current(&source);
+
+  sched_current(&syscall);
 
   tag = context->eax;
   ptr = (void*)context->ebx;
   size = context->ecx;
+  flags = context->edx;
 
-  ret = message_sync_recv(source, tag, ptr, size, &context->eax);
+  if (flags & 0x1)
+    ret = message_sync_recv_nb(source, tag, ptr, size, &context->eax);
+  else
+    ret = message_sync_recv(source, tag, ptr, size, &context->eax);
 
-  context->eax = ret;
+  sched_current(&upcall);
+
+  if (syscall == upcall)
+    context->eax = ret;
 }
 
 t_error			ia32_message_init(void)
