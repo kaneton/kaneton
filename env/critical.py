@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [wed may  9 09:32:55 2007]
+# updated       julien quintard   [wed may  9 09:34:46 2007]
 #
 
 #
@@ -362,7 +362,8 @@ def			main():
   g_directories = ("profile/",
                    "profile/environment/",
                    "profile/environment/behaviour/",
-                   "profile/environment/behaviour/" + host + "/" +
+                   "profile/environment/behaviour/" + host +
+                                                      "." +
                                                       architecture + "/",
                    "profile/kaneton/",
                    "profile/kaneton/core/",
