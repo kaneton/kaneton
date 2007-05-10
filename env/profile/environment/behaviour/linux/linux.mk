@@ -8,21 +8,17 @@
 # file          /home/mycure/kane...ile/environment/behaviour/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [wed may  9 15:08:02 2007]
+# updated       julien quintard   [thu may 10 13:34:19 2007]
 #
 
 #
 # ---------- information ------------------------------------------------------
 #
-# this file implements the entire kaneton development environment's
-# make interface.
+# this file implements the remaining functions of the kaneton make interface.
 #
-
+# indeed the major generic part of the interface is already provided by the
+# behaviour profile.
 #
-# ---------- directives -------------------------------------------------------
-#
-
-.SILENT:
 
 #
 # ---------- traps ------------------------------------------------------------
@@ -117,64 +113,6 @@ define print
 endef
 
 endif
-
-#
-# display functions
-#
-# 1:		action
-# 2:		file
-# 3:		identation
-# 4:		options
-#
-
-define display-red
-  $(call print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(1),red,$(OPTION_NO_NEWLINE))				; \
-  $(call print,],blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(3)$(2),,)
-endef
-
-define display-green
-  $(call print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(1),green,$(OPTION_NO_NEWLINE))				; \
-  $(call print,],blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(3)$(2),,)
-endef
-
-define display-yellow
-  $(call print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(1),yellow,$(OPTION_NO_NEWLINE))			; \
-  $(call print,],blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(3)$(2),,)
-endef
-
-define display-magenta
-  $(call print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(1),magenta,$(OPTION_NO_NEWLINE))			; \
-  $(call print,],blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(3)$(2),,)
-endef
-
-define display-cyan
-  $(call print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(1),cyan,$(OPTION_NO_NEWLINE))				; \
-  $(call print,],blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(3)$(2),,)
-endef
-
-#
-# display wrapper
-#
-# $(1):		color
-# $(2):		action
-# $(3):		file
-# $(4):		indentation
-# $(5):		options
-#
-
-define display
-  $(call display-$(1),$(2),$(3),$(4),$(5))
-endef
 
 #
 # change the current working directory
@@ -436,30 +374,6 @@ define purge
 endef
 
 #
-# generate prototypes from a source file
-#
-# $(1):		file list
-# $(2):		options
-#
-
-define prototypes
-  prototypes_options=""							; \
-  for o in $(2); do							\
-    case "$${o}" in							\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
-  for f in $(1) ; do							\
-    if [ -e $${f} ] ; then						\
-      $(call display,yellow,PROTOTYPES,$${f},		)		; \
-      $(call launch,$(_PROTO_TOOL_),					\
-        $${prototypes_options} $${f},)					; \
-    fi									; \
-  done
-endef
-
-#
 # genereate dependencies
 #
 # $(1):		the files for which the dependencies are generated
@@ -493,12 +407,12 @@ endef
 
 define version
   $(call display,yellow,VERSION,$(1),		)			; \
-  echo -n "" > $(1)							; \
-  echo "#include <klibc.h>" >> $(1)					; \
-  echo "#include <kaneton.h>" >> $(1)					; \
-  echo "" >> $(1)							; \
-  echo -n "const char version[] = \"$(_TITLE_)-$(_VERSION_)" >> $(1)	; \
-  echo " "$(shell $(_DATE_))" $(USER)@$(HOSTNAME)\";" >> $(1)
+  $(_ECHO_) -n "" > $(1)						; \
+  $(_ECHO_) "#include <klibc.h>" >> $(1)				; \
+  $(_ECHO_) "#include <kaneton.h>" >> $(1)				; \
+  $(_ECHO_) "" >> $(1)							; \
+  $(_ECHO_) -n "const char version[] = \"$(_TITLE_)-$(_VERSION_)" >> $(1) ; \
+  $(_ECHO_) " "$(shell $(_DATE_))" $(USER)@$(HOSTNAME)\";" >> $(1)
 endef
 
 #
@@ -544,28 +458,6 @@ define compile-tex
 endef
 
 #
-# build a paper
-#
-# $(1):		the file name without extension
-# $(2):		options
-#
-
-define paper
-  $(call compile-tex,$(1),$(2))
-endef
-
-#
-# build a lecture
-#
-# $(1):		the file name without extension
-# $(2):		options
-#
-
-define lecture
-  $(call compile-tex,$(1),$(2))
-endef
-
-#
 # build a subject
 #
 # $(1):		the file name without extension
@@ -573,7 +465,7 @@ endef
 #
 
 define subject
-  $(_ECHO_) '\def\kaneton-latex{subject}' > $(_KANETON_LATEX_)		; \
+  $(_ECHO_) '\def\kaneton-latex{subject}' > $(_DEPENDENCY_TEX_)		; \
   $(call compile-tex,$(1),$(2))
 endef
 
@@ -585,7 +477,7 @@ endef
 #
 
 define correction
-  $(_ECHO_) '\def\kaneton-latex{correction}' > $(_KANETON_LATEX_)	; \
+  $(_ECHO_) '\def\kaneton-latex{correction}' > $(_DEPENDENCY_TEX_)	; \
   $(call compile-tex,$(1),$(2))
 endef
 
@@ -609,5 +501,5 @@ endef
 #
 
 define contents
-  $(shell $(_CAT_) $(2) $(1))
+  $(_CAT_) $(2) $(1)
 endef
