@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ofile/environment/behaviour/behaviour.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [thu may 10 13:35:28 2007]
+# updated       julien quintard   [thu may 10 15:36:58 2007]
 #
 
 #
@@ -24,6 +24,26 @@
 #
 
 .SILENT:
+
+#
+# ---------- options ----------------------------------------------------------
+#
+
+HEADER_NONE = 0
+HEADER_OK = 1
+HEADER_ERROR = 2
+HEADER_INTERACTIVE = 4
+
+COLOR_NONE = 0
+COLOR_RED = 1
+COLOR_GREEN = 2
+COLOR_YELLOW = 3
+COLOR_BLUE = 4
+COLOR_WHITE = 5
+
+OPTION_NONE = 0
+OPTION_NO_NEWLINE = 1
+OPTION_FLICKERING = 2
 
 #
 # ---------- functions --------------------------------------------------------
@@ -85,30 +105,6 @@ endef
 
 define display
   $(call display-$(1),$(2),$(3),$(4),$(5))
-endef
-
-#
-# generate prototypes from a source file
-#
-# $(1):		file list
-# $(2):		options
-#
-
-define prototypes
-  prototypes_options=""							; \
-  for o in $(2); do							\
-    case "$${o}" in							\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
-  for f in $(1) ; do							\
-    if [ -e $${f} ] ; then						\
-      $(call display,yellow,PROTOTYPES,$${f},		)		; \
-      $(call launch,$(_MKP_TOOL_),					\
-        $${prototypes_options} $${f},)					; \
-    fi									; \
-  done
 endef
 
 #

@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ofile/environment/behaviour/behaviour.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [thu may 10 13:58:37 2007]
+# updated       julien quintard   [thu may 10 16:47:03 2007]
 #
 
 #
@@ -34,7 +34,7 @@ import shutil
 import time
 
 #
-# ---------- definitions ------------------------------------------------------
+# ---------- options ----------------------------------------------------------
 #
 
 HEADER_NONE = 0
@@ -181,9 +181,9 @@ def			launch(file, arguments, options):
   directory = info[0]
   file = info[1]
 
-  wd = cwd()
-
-  cd(directory)
+  if directory:
+    wd = cwd(OPTION_NONE)
+    cd(directory, OPTION_NONE)
 
   if re.match("^.*\.sh$", file):
     status = os.system(_SHELL_ + " " + file + " " + arguments)
@@ -199,7 +199,8 @@ def			launch(file, arguments, options):
   else:
     status = os.system(file + " " + arguments)
 
-  cd(wd)
+  if directory:
+    cd(wd, OPTION_NONE)
 
   return status
 
@@ -240,7 +241,7 @@ def			remove(target, options):
   if os.path.isdir(target):
     entries = os.listdir(target)
     for entry in entries:
-      remove(target + "/" + entry)
+      remove(target + "/" + entry, OPTION_NONE)
     os.rmdir(target)
 
 
@@ -302,7 +303,8 @@ def			search(directory, pattern, options):
          (re.search(pattern, entry)):
         elements += [ directory + "/" + entry ]
 
-      if (options & OPTION_RECURSIVE):
+      if (options & OPTION_RECURSIVE) and				\
+         (not os.path.islink(directory + "/" + entry)):
         elements += search(directory + "/" + entry, pattern, options)
 
   return elements
@@ -326,22 +328,3 @@ def			mkdir(directory, options):
 #
 def			stamp(format, options):
   return time.strftime(format)
-
-
-
-#
-# locate()
-#
-# this function tries to locate a program on the system.
-#
-def			locate(file, options):
-  path = None
-  directory = None
-
-  path = os.getenv("PATH")
-
-  for directory in path.split(os.pathsep):
-    if os.path.exists(directory + "/" + file):
-      return directory + "/" + file
-
-  return None

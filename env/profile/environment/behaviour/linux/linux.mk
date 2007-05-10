@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ile/environment/behaviour/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [thu may 10 13:34:19 2007]
+# updated       julien quintard   [thu may 10 15:39:07 2007]
 #
 
 #
@@ -395,6 +395,30 @@ define dependencies
       $(call display,yellow,DEPENDENCIES,$$i,		)		; \
       $(_CC_) $(_CC_FLAGS_) -M -MG $${dependencies_options}		\
         $${f} >> $(2)							; \
+    fi									; \
+  done
+endef
+
+#
+# generate prototypes from a source file
+#
+# $(1):		file list
+# $(2):		options
+#
+
+define prototypes
+  prototypes_options=""							; \
+  for o in $(2); do							\
+    case "$${o}" in							\
+      *)								\
+        ;;								\
+    esac								; \
+  done									; \
+  for f in $(1) ; do							\
+    if [ -e $${f} ] ; then						\
+      $(call display,yellow,PROTOTYPES,$${f},		)		; \
+      $(call launch,$(_MKP_TOOL_),					\
+        $${prototypes_options} $${f},)					; \
     fi									; \
   done
 endef

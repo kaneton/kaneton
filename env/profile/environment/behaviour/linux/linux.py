@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ile/environment/behaviour/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [wed may  9 19:07:13 2007]
+# updated       julien quintard   [thu may 10 16:38:10 2007]
 #
 
 #
@@ -62,7 +62,7 @@ def			colorize(text, color, options):
 # this function creates an archive of the given directory.
 #
 def			pack(directory, file):
-  launch(_TAR_, "-czf " + file + " " + directory)
+  launch(_TAR_, "-czf " + file + " " + directory, OPTION_NONE)
 
 
 
@@ -73,9 +73,9 @@ def			pack(directory, file):
 #
 def			unpack(file, directory):
   if directory:
-    launch(_TAR_, "-xzf " + file + " -C " + directory)
+    launch(_TAR_, "-xzf " + file + " -C " + directory, OPTION_NONE)
   else:
-    launch(_TAR_, "-xzf " + file)
+    launch(_TAR_, "-xzf " + file, OPTION_NONE)
 
 
 
@@ -87,10 +87,11 @@ def			unpack(file, directory):
 #
 def			load(file, device, path, options):
   if options == OPTION_DEVICE:
-    launch(_MCOPY_, "-o -n " + file + " " + device + path)
+    launch(_MCOPY_, "-o -n " + file + " " + device + path, OPTION_NONE)
 
   if options == OPTION_IMAGE:
-    launch(_MCOPY_, "-o -n " + "-i" + device + " " + file + " ::/" + path)
+    launch(_MCOPY_, "-o -n " + "-i" + device + " " +
+           file + " ::/" + path, OPTION_NONE)
 
 
 
@@ -100,7 +101,8 @@ def			load(file, device, path, options):
 # this function runs the program recording a session.
 #
 def			record(log, time):
-  launch(_SCRIPT_, "-q -t " + log + " -c " + _TRANSCRIPTS_CMD_ + " 2> " + time)
+  launch(_SCRIPT_, "-q -t " + log + " -c " +
+         _TRANSCRIPTS_CMD_ + " 2> " + time, OPTION_NONE)
 
 
 
@@ -110,4 +112,14 @@ def			record(log, time):
 # this function runs the program replaying a session.
 #
 def			play(log, time):
-  launch(_SCRIPTREPLAY_TOOL_, time + " " + log)
+  launch(_SCRIPTREPLAY_TOOL_, time + " " + log, OPTION_NONE)
+
+
+
+#
+# locate()
+#
+# this function tries to locate a program on the system.
+#
+def			locate(file, options):
+  return launch(_WHICH_, file + " 1>/dev/null 2>/dev/null", OPTION_NONE)

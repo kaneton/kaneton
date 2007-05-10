@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/init.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [thu may 10 13:57:42 2007]
+# updated       julien quintard   [thu may 10 16:41:28 2007]
 #
 
 #
@@ -64,32 +64,57 @@ def			machine():
               "installing links to machine-dependent directories",
               env.OPTION_NONE)
 
-XXX
+  env.remove(env._CORE_PLATEFORM_DIR_, env.OPTION_NONE)
+  env.link(env._CORE_PLATEFORM_DIR_,
+           env._PLATEFORM_CORE_DIR_,
+           env.OPTION_NONE)
 
-  env.remove(env._MACHDEP_CORE_DIR_, env.OPTION_NONE)
-  env.link(env._MACHDEP_CORE_DIR_, env._ARCHITECTURE_, env.OPTION_NONE)
+  env.remove(env._CORE_ARCHITECTURE_DIR_, env.OPTION_NONE)
+  env.link(env._CORE_ARCHITECTURE_DIR_,
+           env._ARCHITECTURE_CORE_DIR_,
+           env.OPTION_NONE)
 
-  env.remove(env._MACHDEP_INCLUDE_DIR_, env.OPTION_NONE)
-  env.link(env._MACHDEP_INCLUDE_DIR_, env._ARCHITECTURE_, env.OPTION_NONE)
+  env.remove(env._INCLUDE_PLATEFORM_DIR_, env.OPTION_NONE)
+  env.link(env._INCLUDE_PLATEFORM_DIR_,
+           env._PLATEFORM_INCLUDE_DIR_, env.OPTION_NONE)
 
+  env.remove(env._INCLUDE_ARCHITECTURE_DIR_, env.OPTION_NONE)
+  env.link(env._INCLUDE_ARCHITECTURE_DIR_,
+           env._ARCHITECTURE_INCLUDE_DIR_, env.OPTION_NONE)
+
+  # XXX deprecated
   env.remove(env._MACHDEP_LINK_DIR_, env.OPTION_NONE)
   env.link(env._MACHDEP_LINK_DIR_, env._ARCHITECTURE_, env.OPTION_NONE)
 
 
 
 #
-# initialise()
+# check()
 #
-# this function calls the machine and user specific initialisation scripts.
+# this function looks for every binary the behaviour profile needs to work
+# properly.
 #
-def			initialise():
-  if os.path.exists(env._MACHINE_DIR_ + "/init.py"):
-    env.display(env.HEADER_OK, "calling the machine-specific init script")
-    env.launch(env._MACHINE_DIR_ + "/init.py", "")
+def			check():
+  binaries = None
+  binary = None
 
-  if os.path.exists(env._USER_DIR_ + "/init.py"):
-    env.display(env.HEADER_OK, "calling the user-specific init script")
-    env.launch(env._USER_DIR_ + "/init.py", "")
+  env.display(env.HEADER_OK,
+              "looking for programs needed by the development environment",
+              env.OPTION_NONE)
+
+  binaries = env._BINARIES_.split(",")
+
+  for binary in binaries:
+    binary = binary.replace('\t', ' ')
+    binary = binary.lstrip().rstrip()
+
+    binary = binary.split(' ')
+
+    if env.locate(binary[0], env.OPTION_NONE) != 0:
+      env.display(env.HEADER_ERROR,
+                  "  the program " + binary[0] + " is not present "	\
+                  "on your system",
+                  env.OPTION_NONE)
 
 
 
@@ -99,7 +124,9 @@ def			initialise():
 # this function generates the kaneton prototypes.
 #
 def			prototypes():
-  env.display(env.HEADER_OK, "generating the kaneton prototypes")
+  env.display(env.HEADER_OK,
+              "generating the kaneton prototypes",
+              env.OPTION_NONE)
 # XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "proto")
 
 
@@ -110,7 +137,9 @@ def			prototypes():
 # this function generates the kaneton dependencies.
 #
 def			dependencies():
-  env.display(env.HEADER_OK, "generating the kaneton dependencies")
+  env.display(env.HEADER_OK,
+              "generating the kaneton dependencies",
+              env.OPTION_NONE)
 # XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "dep")
 
 
@@ -135,10 +164,8 @@ def			main():
   # install the chosen machine: plateform/architecture.
   machine()
 
-  sys.exit(1)
-
-  # call to the machine and user specific initialisation scripts.
-  initialise()
+  # check the presence of the binaries used by the behaviour profile.
+  check()
 
   # generate the kaneton prototypes.
   prototypes()
@@ -147,7 +174,9 @@ def			main():
   dependencies()
 
   # display some stuff.
-  env.display(env.HEADER_OK, "environment development installed successfully")
+  env.display(env.HEADER_OK,
+              "environment development installed successfully",
+              env.OPTION_NONE)
 
 #
 # ---------- entry point ------------------------------------------------------
