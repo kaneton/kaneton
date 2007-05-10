@@ -44,7 +44,7 @@
    ("CSS"                . ec-c-list)
    ("C++"                . ec-cpp-list)
    ("Ada"                . ec-ada-list)
-   ("java"               . ec-java-list)
+   ("Java"               . ec-java-list)
    ("LaTeX"              . ec-latex-list)
    ("latex"              . ec-latex-list)
    ("TeX"                . ec-latex-list)
@@ -89,6 +89,24 @@
                         (format "license name: ")
                        )
     )
+    (setq file-name (buffer-file-name))
+    (setq file-name-length (length file-name))
+    (if (> file-name-length 60)
+     (progn
+      (setq file-name-purge (- file-name-length 60))
+      (setq file-name-head (substring file-name 0 17))
+      (setq file-name-tail (substring file-name
+                            (- file-name-length 40)
+                            file-name-length)
+                           )
+      (setq file-name (concat
+                       file-name-head
+                       "..."
+                       file-name-tail
+                      )
+      )
+     )
+    )
     (insert-string (ec-comment 'o))
     (newline)
     (insert-string (concat
@@ -126,7 +144,7 @@
     (insert-string (concat
                     (ec-comment 'i)
                     " file          "
-                    (buffer-file-name)
+                    file-name
                    )
     )
     (newline)
@@ -169,7 +187,24 @@
     (if (buffer-modified-p)
      (progn
       (goto-char (point-min))
-
+      (setq file-name buffer-file-name)
+      (setq file-name-length (length file-name))
+      (if (> file-name-length 60)
+       (progn
+        (setq file-name-purge (- file-name-length 60))
+        (setq file-name-head (substring file-name 0 17))
+        (setq file-name-tail (substring file-name
+                              (- file-name-length 40)
+                              file-name-length)
+                             )
+        (setq file-name (concat
+                         file-name-head
+                         "..."
+                         file-name-tail
+                        )
+        )
+       )
+      )
       (if (search-forward
            (concat
             (ec-comment 'i)
@@ -197,7 +232,7 @@
           (insert-string (concat
                           (ec-comment 'i)
                           " file          "
-                          (buffer-file-name)
+                          file-name
                          )
           )
          )
@@ -227,7 +262,6 @@
         )
        )
       )
-
      )
     )
   )
@@ -270,22 +304,121 @@
 )
 
 ;;
-;; binding to generate the file header.
+;; generates a beamer frame.
 ;;
 
-(global-set-key [(control c)(control h)] 'ec-generate-header)
+(defun ec-beamer-generate-frame ()
+   (interactive)
+   (let ((frame-title ""))
+    (setq frame-title (read-from-minibuffer
+                       (format "frame title: ")
+                       )
+    )
+    (insert-string "\\begin{frame}")
+    (newline)
+    (insert-string (concat
+                    "  \\frametitle{"
+                    frame-title
+                    "}"
+                   )
+    )
+    (newline)
+    (newline)
+    (insert-string "\\end{frame}")
+    (newline)
+   )
+)
 
 ;;
-;; binding to generate a section header.
+;; generates a beamer item list.
+;;
+
+(defun ec-beamer-generate-item-list ()
+   (interactive)
+   (let ()
+    (insert-string "  \\begin{itemize}")
+    (newline)
+    (insert-string "    \\item")
+    (newline)
+    (insert-string "      XXX")
+    (newline)
+    (insert-string "    \\item")
+    (newline)
+    (insert-string "      XXX")
+    (newline)
+    (insert-string "    \\item")
+    (newline)
+    (insert-string "      XXX")
+    (newline)
+    (insert-string "  \\end{itemize}")
+    (newline)
+   )
+)
+
+;;
+;; generates a kaneton function comment.
+;;
+
+(defun ec-kaneton-generate-comment ()
+   (interactive)
+   (let ()
+    (insert-string "/*")
+    (newline)
+    (insert-string " * XXX")
+    (newline)
+    (insert-string " *")
+    (newline)
+    (insert-string " * steps:")
+    (newline)
+    (insert-string " *")
+    (newline)
+    (insert-string " * 1) XXX")
+    (newline)
+    (insert-string " * 2) XXX")
+    (newline)
+    (insert-string " * 3) XXX")
+    (newline)
+    (insert-string " */")
+    (newline)
+   )
+)
+
+
+;;
+;; binding for generating a file header.
+;;
+
+(global-set-key [(control c)(h)] 'ec-generate-header)
+
+;;
+;; binding for generating a section header.
 ;;
 
 (global-set-key [(control c)(s)] 'ec-generate-section)
 
 ;;
-;; binding to go to a specific line.
+;; binding for moving to a specific line.
 ;;
 
-(global-set-key [(control c)(control g)] 'goto-line)
+(global-set-key [(control c)(g)] 'goto-line)
+
+;;
+;; binding for generating a beamer frame.
+;;
+
+(global-set-key [(control c)(f)] 'ec-beamer-generate-frame)
+
+;;
+;; binding for generating a beamer item list.
+;;
+
+(global-set-key [(control c)(i)] 'ec-beamer-generate-item-list)
+
+;;
+;; binding for generating a kaneton comment.
+;;
+
+(global-set-key [(control c)(c)] 'ec-kaneton-generate-comment)
 
 ;;
 ;; prints column and line number.
@@ -301,14 +434,6 @@
 (setq visible-bell t)
 
 ;;
-;; displays time.
-;;
-
-(setq display-time-24hr-format t)
-(standard-display-european 1)
-(display-time)
-
-;;
 ;; show the in relation parentheses.
 ;;
 
@@ -319,12 +444,6 @@
 ;;
 
 (global-font-lock-mode)
-
-;;
-;; no blank line at the end of the file.
-;;
-
-(setq-default next-line-add-newlines nil)
 
 ;;
 ;; no scroll bar.
@@ -352,8 +471,12 @@
 (global-set-key [end] 'end-of-buffer)
 
 ;;
-;; 80 columns alignment [XXX]
+;; 80 columns alignment for C source files.
 ;;
-;; (setq tefault-major-mode 'text-mode)
-;; (setq text-mode-hook 'turn-on-auto-fill)
-;; (setq fill-column 80)
+
+(add-hook 'c-mode-hook
+ (lambda ()
+  (auto-fill-mode)
+  (setq fill-column 79)
+ )
+)
