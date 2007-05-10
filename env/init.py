@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/environment/init.py
+# file          /home/mycure/kaneton/env/init.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [wed feb 14 18:57:44 2007]
+# updated       julien quintard   [thu may 10 13:57:42 2007]
 #
 
 #
@@ -32,50 +32,57 @@ import env
 # the permission to continue.
 #
 def			warning():
-  env.display(env.HEADER_OK, "your current configuration:")
-  env.display(env.HEADER_OK, "  user:                   " + env._USER_)
-  env.display(env.HEADER_OK, "  machine:                " + env._MACHINE_)
-  env.display(env.HEADER_OK, "  architecture:           " + env._ARCHITECTURE_)
-  env.display(env.HEADER_NONE, "")
-  env.display(env.HEADER_INTERACTIVE,
-              "to cancel press CTRL^C, otherwise press enter")
-
-  env.input()
-
-
-
-#
-# architecture()
-#
-# this function installs the links to the architecture dependent files
-# and directories.
-def			architecture():
+  env.display(env.HEADER_OK, "your current configuration:", env.OPTION_NONE)
   env.display(env.HEADER_OK,
-              "installing links to machine-dependent directories")
+              "  user:                   " + env._USER_,
+              env.OPTION_NONE)
+  env.display(env.HEADER_OK,
+              "  host:                   " + env._HOST_,
+              env.OPTION_NONE)
+  env.display(env.HEADER_OK,
+              "  plateform:              " + env._PLATEFORM_,
+              env.OPTION_NONE)
+  env.display(env.HEADER_OK,
+              "  architecture:           " + env._ARCHITECTURE_,
+              env.OPTION_NONE)
+  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
+  env.display(env.HEADER_INTERACTIVE,
+              "to cancel press CTRL^C, otherwise press enter",
+              env.OPTION_NONE)
 
-  env.remove(env._MACHDEP_BOOTSTRAP_DIR_)
-  env.link(env._MACHDEP_BOOTSTRAP_DIR_, env._ARCHITECTURE_)
-
-  env.remove(env._MACHDEP_BOOTLOADER_DIR_)
-  env.link(env._MACHDEP_BOOTLOADER_DIR_, env._ARCHITECTURE_)
-
-  env.remove(env._MACHDEP_CORE_DIR_)
-  env.link(env._MACHDEP_CORE_DIR_, env._ARCHITECTURE_)
-
-  env.remove(env._MACHDEP_INCLUDE_DIR_)
-  env.link(env._MACHDEP_INCLUDE_DIR_, env._ARCHITECTURE_)
-
-  env.remove(env._MACHDEP_LINK_DIR_)
-  env.link(env._MACHDEP_LINK_DIR_, env._ARCHITECTURE_)
+  env.input(env.OPTION_NONE)
 
 
 
 #
-# initialize()
+# machine()
 #
-# this function calls the machine and user specific initialization scripts.
+# this function installs the links to the plateform and architecture
+# dependent files and directories.
+def			machine():
+  env.display(env.HEADER_OK,
+              "installing links to machine-dependent directories",
+              env.OPTION_NONE)
+
+XXX
+
+  env.remove(env._MACHDEP_CORE_DIR_, env.OPTION_NONE)
+  env.link(env._MACHDEP_CORE_DIR_, env._ARCHITECTURE_, env.OPTION_NONE)
+
+  env.remove(env._MACHDEP_INCLUDE_DIR_, env.OPTION_NONE)
+  env.link(env._MACHDEP_INCLUDE_DIR_, env._ARCHITECTURE_, env.OPTION_NONE)
+
+  env.remove(env._MACHDEP_LINK_DIR_, env.OPTION_NONE)
+  env.link(env._MACHDEP_LINK_DIR_, env._ARCHITECTURE_, env.OPTION_NONE)
+
+
+
 #
-def			initialize():
+# initialise()
+#
+# this function calls the machine and user specific initialisation scripts.
+#
+def			initialise():
   if os.path.exists(env._MACHINE_DIR_ + "/init.py"):
     env.display(env.HEADER_OK, "calling the machine-specific init script")
     env.launch(env._MACHINE_DIR_ + "/init.py", "")
@@ -111,23 +118,27 @@ def			dependencies():
 #
 # main()
 #
-# this function initializes the development environment.
+# this function initialises the development environment.
 #
 
 def			main():
   # display some stuff.
-  env.display(env.HEADER_NONE, "")
-  env.display(env.HEADER_OK, "installing the kaneton development environment")
-  env.display(env.HEADER_NONE, "")
+  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
+  env.display(env.HEADER_OK,
+              "installing the kaneton development environment",
+              env.OPTION_NONE)
+  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
   # display the current configuration and ask the user to continue.
   warning()
 
-  # install the chosen architecture.
-  architecture()
+  # install the chosen machine: plateform/architecture.
+  machine()
 
-  # call to the machine and user specific initialization scripts.
-  initialize()
+  sys.exit(1)
+
+  # call to the machine and user specific initialisation scripts.
+  initialise()
 
   # generate the kaneton prototypes.
   prototypes()

@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ofile/environment/behaviour/behaviour.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [wed may  9 19:05:58 2007]
+# updated       julien quintard   [thu may 10 13:58:37 2007]
 #
 
 #
@@ -169,7 +169,7 @@ def			input(options):
 #
 # this function launch a new program/script/make etc..
 #
-def			launch(file, arguments):
+def			launch(file, arguments, options):
   directory = None
   info = None
   status = 0
@@ -210,7 +210,7 @@ def			launch(file, arguments):
 #
 # this function copies a file.
 #
-def			copy(source, destination):
+def			copy(source, destination, options):
   shutil.copyfile(source, destination)
 
 
@@ -220,7 +220,7 @@ def			copy(source, destination):
 #
 # this function builds a link name source to the file destination.
 #
-def			link(source, destination):
+def			link(source, destination, options):
   os.symlink(destination, source)
 
 
@@ -230,7 +230,7 @@ def			link(source, destination):
 #
 # this function removes the targets.
 #
-def			remove(target):
+def			remove(target, options):
   entries = None
   entry = None
 
@@ -274,7 +274,7 @@ def			list(directory, options):
 #
 # this function changes the current working directory.
 #
-def			cd(directory):
+def			cd(directory, options):
   os.chdir(directory)
 
 
@@ -314,7 +314,7 @@ def			search(directory, pattern, options):
 #
 # this function creates a directory.
 #
-def			mkdir(directory):
+def			mkdir(directory, options):
   os.mkdir(directory)
 
 
@@ -324,7 +324,7 @@ def			mkdir(directory):
 #
 # this function returns the current formatted date.
 #
-def			stamp(format):
+def			stamp(format, options):
   return time.strftime(format)
 
 
@@ -334,7 +334,7 @@ def			stamp(format):
 #
 # this function tries to locate a program on the system.
 #
-def			locate(file):
+def			locate(file, options):
   path = None
   directory = None
 

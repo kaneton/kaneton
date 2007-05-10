@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...file/environment/behaviour/linux/init.py
 #
 # created       julien quintard   [sun dec 17 02:28:37 2006]
-# updated       julien quintard   [wed may  9 14:48:58 2007]
+# updated       julien quintard   [thu may 10 13:58:53 2007]
 #
 
 #
@@ -16,16 +16,6 @@
 #
 
 import env
-
-#
-# ---------- globals ----------------------------------------------------------
-#
-
-g_binaries = [ "bash", "gcc", "gmake", "rm", "ar", "ranlib", "ld",	\
-               "nasm", "ln", "touch", "wc", "date", "tail", "tar",	\
-               "pdflatex", "cp", "cat", "sed", "ls", "cpp", "mtools",	\
-               "mcopy", "grep", "mkdir", "find", "xpdf", "mktemp",	\
-               "mv", "lex", "script", "perl", "python" ]
 
 #
 # ---------- functions --------------------------------------------------------
@@ -66,3 +56,5 @@ def			main():
 
 if __name__ == "__main__":
   main()
+
+USE LOCATE() IN .PY
