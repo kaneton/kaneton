@@ -28,13 +28,13 @@ include			../env/.env.mk
 #
 
 SUBDIRS			:=		curriculum			\
-					lectures			\
-					papers				\
-					books				\
-					exams				\
-					templates			\
-					internships			\
-					feedbacks			
+					lecture				\
+					paper				\
+					book				\
+					exam				\
+					template			\
+					internship			\
+					feedback			
 
 #
 # ---------- rules ------------------------------------------------------------
