@@ -1,0 +1,378 @@
+%%
+%% ---------- header ----------------------------------------------------------
+%%
+%% project       kaneton
+%%
+%% license       kaneton
+%%
+%% file          /home/mycure/kaneton/view/exam/arch-mips/2007/mid/mid.tex
+%%
+%% created       julien quintard   [sat feb  3 22:12:43 2007]
+%% updated       julien quintard   [sat may 12 10:50:16 2007]
+%%
+
+%
+% template
+%
+
+\input{../../../../templates/exam.tex}
+
+%
+% header
+%
+
+\lhead{\scriptsize{2007}}
+
+%
+% title
+%
+
+\title{Examen d'Architecture MIPS}
+
+%
+% authors
+%
+
+\author{\small{Julien Quintard}}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% --------- information -------------------------------------------------------
+%
+
+\begin{center}
+
+\textbf{Documents Autoris\'es}
+
+\textbf{Dur\'ee 2
+heures\footnote{Ne perdez pas de temps! La m\'ethode \textit{La Rache}, bien
+                connue des EPIT\'eens, ne fonctionnera pas.}}
+
+\scriptsize{Une copie bien pr\'esent\'ee avec des sch\'emas propres et
+	    lisibles sera toujours mieux not\'ee qu'une autre.}
+
+\end{center}
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+%
+% assembleur
+%
+
+\section{Assembleur - 3 points}
+
+Pour cet exercice nous consid\'erons un processeur pipeline comme celui
+\'etudi\'e en cours. N\'eanmoins les d\'ependances entre instructions
+n'existent pas pour cet exercice. Autrement dit, pour cet exercice,
+le CPI est \'egal \`a 1 dans tous les cas.
+
+Veuillez \'ecrire le code assembleur optimis\'e de la fonction
+\textbf{postillon()}\footnote{M\'ELANGE DE VINS DE DIFF\'ERENTS
+                     PAYS DE LA COMMUNAUT\'E EUROP\'EENNE}
+qui effectue une copie de chaine de caract\`eres de la m\^eme
+mani\`ere\footnote{Mis \`a part que le nom de la fonction a
+                   beaucoup plus de style!}
+que la fonction \textit{strncpy()} de la biblioth\`eque C.
+
+Puis \'evaluer les performances de votre code assembleur pour une chaine
+de caract\`eres de longueur N en calculant le nombre de cycles moyen
+n\'ecessaire \`a l'ex\'ecution de votre fonction.
+
+\begin{verbatim}
+char*           postillon(char* dst, const char* src, unsigned int size)
+{
+  int           i;
+
+  for (i = 0; i < size && src[i]; i++)
+    dst[i] = src[i];
+  dst[i] = 0;
+
+  return (dst);
+}
+\end{verbatim}
+
+Un code assembleur avec une \'equivalence C en commentaire de fin de ligne
+sera appr\'eci\'e.
+
+\begin{correction}
+
+  \begin{verbatim}
+           Lw R5, 0(R29)                     ; dst
+           Lw R6, 4(R29)                     ; src
+           Lw R7, 8(R29)                     ; size
+
+           Add R2, R0, R5                    ; R2: dst
+
+           Add R16, R6, R7                   ; R16: pointeur fin de chaine
+
+  Loop:    Lb R10, 0(R6)                     ; R10: *src
+
+           Addiu R6, R6, 1                   ; src++
+
+           Beq R10, R0, EndLoop              ; if (*src == '\0') goto EndLoop
+           Sb R10, 0(R5)                     ; *dst = *src
+
+           Bne R6, R16, Loop                 ; if (src != R16) goto Loop
+           Addiu R5, R5, 1                   ; dst++
+
+  EndLoop: Jr R31
+           Nop
+  \end{verbatim}
+
+  \begin{verbatim}
+    cycles = 5 + 6 x min(N, size) + 4 + 2
+           = 11 + 6 x min(N, size)
+  \end{verbatim}
+
+\end{correction}
+
+%
+% vue simplifiee
+%
+
+\section{Vue simplifi\'ee - 4 points}
+
+Dans cet exercice nous consid\'erons le microprocesseur pipeline \'etudi\'e
+en cours incluant les d\'ependances entre instructions.
+
+Veuillez, pour la boucle principale de votre fonction \textbf{postillon()},
+d\'ecrire le pipeline en utilisant une vue simplifi\'ee.
+
+Veuillez indiquer sur cette m\^eme vue simplifi\'ee les \textit{bypasses}
+utilis\'es entre les instructions d\'ependantes.
+
+Puis \'evaluer les performances de votre boucle en calculant le CPI et CPI
+utile.
+
+\begin{correction}
+
+  \begin{center}
+    \includegraphics[scale=0.8]{figures/correction-vue-simplifiee.pdf}
+  \end{center}
+
+  \begin{verbatim}
+    CPI = 7 / 6
+
+    CPIu = 7 / 6
+  \end{verbatim}
+
+\end{correction}
+
+%
+% vue detaillee
+%
+
+\section{Vue D\'etaill\'ee - 6 points}
+
+Veuillez d\'ecrire, via une vue d\'etaill\'ee, le pipeline pour la s\'equence
+d'instructions suivantes:
+
+\begin{verbatim}
+Sll R4, R3, 2
+Add R5, R4, R0
+Lw R8, 0(R5)
+\end{verbatim}
+
+Il vous est demand\'e de mettre en \'evidence les \textit{bypasses} utilis\'es
+pour g\'erer les d\'ependances entre instructions.
+
+Un sch\'ema clair sera tr\`es appr\'eci\'e notamment via l'utilisation
+de diff\'erentes couleurs.
+
+%
+% questions de cours
+%
+
+\section{Questions de cours - 7 points}
+
+\begin{enumerate}
+  \item
+    Quelles sont les principales diff\'erences entre la philosophie CISC
+    et la philosophie RISC?
+
+    \begin{correction}
+
+      \textbf{CISC}
+
+      \begin{itemize}
+	\item
+	  Jeu d'instructions complexe pour coller aux exigences des
+	  langages de haut niveau.
+	\item
+	  Microprocesseur plus complexe car les instructions le sont.
+      \end{itemize}
+
+      \textbf{RISC}
+
+      \begin{itemize}
+	\item
+	  Jeu d'instructions tr\`es simple.
+	\item
+	  Microprocesseur tr\`es simple.
+	\item
+	  Processeur essentiellement compos\'e de registres.
+	\item
+	  Les instructions registre-\`a-registre composent largement le
+	  processeur. Les instructions d'acc\`es m\'emoire sont isol\'ees du
+	  reste des instructions.
+	\item
+	  Les processeurs RISC ont la caract\'eristique d'ex\'ecuter chaque
+	  instruction en un cycle.
+      \end{itemize}
+
+    \end{correction}
+  \item
+    Qu'est ce que la loi d'Amdhal?
+
+    \begin{correction}
+
+      La loi d'Amdhal est utilis\'ee par les concepteurs de microprocesseurs
+      pour choisir correctement les instructions \`a inclure dans le
+      jeu d'instructions du processeur.
+
+      Cette loi dit que le gain r\'eel li\'e \`a l'inclusion d'une instruction
+      est relatif \`a son temps d'ex\'ecution mais \'egalement au
+      taux d'utilisation de cette m\^eme instruction.
+
+    \end{correction}
+  \item
+    Consid\'erons l'ajout de l'instruction suivante:
+    \textit{Corbier Rt, Rs, I}.
+
+    Imaginons que cette instruction puisse se coder dans deux formats
+    d'instruction diff\'erents, \textbf{R} et \textbf{I}.
+
+    En tant que concepteur du processeur RISC MIPS R3000, quel
+    format choisireriez-vous pour l'instruction \textit{Corbier} et pourquoi?
+
+    \begin{correction}
+
+      Puisque en tant que concepteurs nous avons le choix pour l'instruction
+      \textit{Chiche} entre le format \textbf{R} et le format \textbf{I};
+      nous allons sans aucun doute choisir le format \textbf{R} car celui-ci
+      dispose d'un champ d'extension d'opcode.
+
+      Pour \'economiser les opcodes il nous faut donc utiliser au maximum
+      le format \textbf{R} d\`es que possible.
+
+    \end{correction}
+  \item
+    D\'ecrire dans le d\'etail l'instruction \textit{Andi} au niveau de la
+    gestion du bit de signe.
+
+    \begin{correction}
+
+      L'instruction \textit{Andi Rt, Rs, Immed} effectue un \textit{ET logique}
+      entre le registre source \textit{Rs} et l'imm\'ediat \textit{Immed}.
+
+      Puis le r\'esultat sur 32-bit est rang\'e dans le registre destination
+      \textit{Rt}.
+
+      Pour pouvoir effectuer une op\'eration sur 32-bit les deux op\'erandes
+      doivent \^etre sur 32-bit. Dans le cas d'une instruction avec
+      un imm\'ediat, ce dernier est \'etendu \`a une valeur sur 32-bit.
+
+      Puisque l'instruction \textit{Andi} est une op\'eration logique
+      et non arithm\'etique, l'imm\'ediat sera consid\'er\'e comme
+      un nombre non-sign\'e.
+
+      De ce fait les 16 bits de poids forts seront tous simplement
+      remplis de z\'eros et l'op\'eration pourra \^etre effectu\'ee
+      correctement.
+
+    \end{correction}
+  \item
+    R\'esumer de fa\c{c}on claire pourquoi, dans le cas d'un branchement,
+    le calcul de l'adresse de l'instruction suivante n'est pas:
+
+    \begin{verbatim}
+      target address = branch instruction address + immediate << 2
+    \end{verbatim}
+
+    \begin{correction}
+
+      Lorsque l'\'etage \textbf{DEC} de l'instruction \textit{i} est
+      ex\'ecut\'e, celui-ci ne connait pas l'adresse de sa propre instruction
+      \textit{i} mais seulement celle de l'instruction \textit{i+1}.
+
+      L'\'etage \textbf{DEC} pourrait alors soustraire \`a l'adresse de
+      l'instruction \textit{i+1}, \textit{4} afin de retrouver l'adresse
+      de l'instruction \textit{i} pr\'ec\'edente.
+
+      Cette solution n'est pas une bonne id\'ee car l'\'etage \textbf{DEC}
+      est d\'ej\`a beaucoup trop compliqu\'e.
+
+      Ainsi pour le raccourcir et donc \'equilibrer le pipeline, les
+      concepteurs de MIPS ont pr\'ef\'er\'e simplifier l'\'etage en
+      modifiant le calcul de l'adresse suivante dans le cas d'un branchement.
+
+      Ainsi l'adresse suivante est calcul\'ee de la mani\`ere suivante:
+
+      \begin{verbatim}
+        target address = branch instruction address + 4 + immediate << 2
+      \end{verbatim}
+
+      ce qui est \'equivalent \`a:
+
+      \begin{verbatim}
+	target address = PC + immediate << 2
+      \end{verbatim}
+
+    \end{correction}
+  \item
+    Pourquoi l'instruction \textit{Oriu} n'a pas de sens contrairement
+    \`a l'instruction \textit{Addiu}.
+
+    \begin{correction}
+
+      Tout simplement parceque l'instruction \textit{Add} est une
+      op\'eration arithm\'etique et peut donc s'utiliser avec des
+      imm\'ediats sign\'es ou non.
+
+      En revanche, l'instruction \textit{Oriu} n'a aucun sens puisque
+      l'instruction \textit{Or} est une op\'eration logique. De ce fait
+      l'imm\'ediat sera toujours consid\'er\'e comme non sign\'e.
+
+      L'ajout du suffixe \textbf{u} n'a donc aucun sens pour cette instruction.
+
+    \end{correction}
+  \item
+    Pourquoi l'instruction \textit{Nori} n'existe pas dans le jeu
+    d'instructions.
+
+    \begin{correction}
+
+      Tout simplement parceque cette op\'eration peut \^etre effectu\'ee
+      via d'autres instructions.
+
+      Les concepteurs du processeur MIPS, en utilisant les MIXs et la
+      loi d'Amdhal se sont rendus compte que cette instruction n'\'etait
+      pas rentable et ne l'ont donc pas inclus dans le jeu d'instructions
+      du microprocesseur.
+
+      \`A noter que l'instruction \textit{Nori Rt, Rs, I} peut
+      \^etre effectu\'ee via les instructions suivantes:
+
+      \begin{verbatim}
+	Addiu Rd, R0, I
+	Nor Rd, Rs, Rt
+      \end{verbatim}
+
+    \end{correction}
+
+\end{enumerate}
+
+\end{document}
