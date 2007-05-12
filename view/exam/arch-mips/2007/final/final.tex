@@ -1,0 +1,408 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/mycure/kaneton/view/exams/arch-mips/2006-exam/2006-exam.tex
+%%
+%% created       julien quintard   [fri dec  2 22:25:51 2005]
+%% updated       julien quintard   [tue may  9 18:33:46 2006]
+%%
+
+%
+% template
+%
+
+\input{../../../../templates/exam.tex}
+
+%
+% header
+%
+
+\lhead{\scriptsize{2006}}
+
+%
+% title
+%
+
+\title{Examen d'Architecture MIPS}
+
+%
+% authors
+%
+
+\author{\small{Julien Quintard}}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% --------- information -------------------------------------------------------
+%
+
+\begin{center}
+
+\textbf{Documents Autoris\'es}
+
+\textbf{Dur\'ee 3 heures}
+
+\scriptsize{Une copie bien pr\'esent\'ee avec des sch\'emas propres et
+	    lisibles sera toujours mieux not\'ee qu'une autre.}
+\end{center}
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+On consid\`ere la fonction \textbf{vatican}() suivante qui effectue
+l'op\'eration de \textit{Gauss} sur une ligne \textit{j} par rapport \`a
+la ligne \textit{k}.
+
+La matrice \textit{m} est une matrice carr\'ee de taille \textit{size}.
+
+On suppose qu'une ligne de la matrice contient 1024 \'el\'ements
+et que l'adresse de la matrice est align\'ee sur 4096.
+
+\begin{verbatim}
+int*            vatican(int* m,
+                        unsigned int j,
+                        unsigned int k,
+                        unsigned int size,
+                        int e)
+{
+  int           i;
+
+  for (i = 0; i < size; i++)
+    m[(j * size) + i] = m[(j * size) + i] - m[(k * size) + i] * e;
+
+  return (m);
+}
+\end{verbatim}
+
+Ce code f\^ut ensuite compil\'e pour une r\'ealisation \textbf{non pipeline}
+du processeur MIPS. Le code assembleur produit est le suivant.
+
+\begin{itemize}
+  \item
+    \textit{R5} contient l'adresse de la ligne \textit{j}.
+  \item
+    \textit{R6} contient l'adresse de la ligne \textit{k}.
+  \item
+    \textit{R7} contient l'adresse de la fin de la ligne \textit{j}.
+  \item
+    \textit{R8} contient le coefficient \textit{e}.
+\end{itemize}
+
+\begin{verbatim}
+Loop:    Lw R9, 0(R6)
+         Mul R9, R9, R8
+         Lw R10, 0(R5)
+         Sub R10, R10, R9
+         Sw R10, 0(R5)
+
+         Addiu R6, R6, 4
+         Addiu R5, R5, 4
+         Bne R5, R7, Loop
+\end{verbatim}
+
+Le processeur MIPS-9 \'etudi\'e est le suivant:
+
+\begin{center}
+  \includegraphics[scale=0.6]{figures/pipeline.pdf}
+\end{center}
+
+On suppose que ce microprocesseur dispose d'une instruction
+\textit{Mul Rd, Rs, Rt} de format R. Dans cette instruction, les 32 bits
+de poids faibles du r\'esultat sont rang\'es dans le registre \textit{Rd}.
+Pour cette instruction, les 4 \'etages EXE, MEM-1, MEM-2 et MEM-3 sont
+remplac\'es par MX-1, MX-2, MX-3 et MX-4.
+
+On supposse que ce microprocesseur dispose d'un cache d'instructions et d'un
+cache de donn\'ees. Ces caches sont reli\'es au syst\`eme m\'emoire \`a
+travers un Pi-Bus.
+
+On suppose que le cache d'instructions est parfait et ne g\'en\`ere pas de
+requ\^etes sur le bus.
+
+Le cache de donn\'ees est un cache \`a correspondance direct de type
+\textit{Write Through} et ne dispose pas de buffer d'\'ecriture. Un bloc
+de cache comporte 16 octets et le cache a une taille de 4 Koctets.
+
+Lorsque le cache re\c{c}oit une requ\^ete du processeur au cycle \textit{i}
+qui n\'ecessite un acc\`es au bus, il \'emet une requ\^ete sur le bus au
+cycle \textit{i + 1} et il faut en moyenne 5 cycles pour qu'il obtienne
+l'autorisation d'utilisation du bus. Le bus permet de transf\'erer 4 octets
+\`a chaque cycle suivant le protocole de Pi-Bus.
+
+En cas de \textit{Miss} sur une lecture, il faut attendre que le bloc soit
+enti\`erement lu depuis la m\'emoire, puis, dans le cycle suivant le cache
+met \`a jour ses m\'emoires et il faut un cycle suppl\'ementaire pour
+r\'epondre au processeur
+
+On suppose que le cache de donn\'ees est vide au d\'ebut de l'ex\'ecution
+de la boucle.
+
+%
+% fonctionnement
+%
+
+\section{Fonctionnement - 2 points}
+
+Modifier le code de la boucle de la fonction \textbf{vatican}() de telle
+mani\`ere qu'il soit ex\'ecutable par le processeur pipeline MIPS 9 \'etages.
+
+\begin{correction}
+
+  Il faut ajouter \textbf{3} \textit{delay slots} apr\`es chaque
+  branchement.
+
+  \begin{verbatim}
+  Loop:    Lw R9, 0(R6)
+           Mul R9, R9, R8
+           Lw R10, 0(R5)
+           Sub R10, R10, R9
+           Sw R10, 0(R5)
+
+           Addiu R6, R6, 4
+           Addiu R5, R5, 4
+           Bne R5, R7, Loop
+           Nop
+           Nop
+           Nop
+  \end{verbatim}
+
+\end{correction}
+
+%
+% bypasses
+%
+
+\section{Bypasses - 4 points}
+
+Veuillez sp\'ecifier, via une vue simplifi\'ee, les diff\'erents
+\textit{bypasses} que comporte ce processeur.
+
+Pour chaque \textit{bypass} vous devrez mettre en place une s\'equence
+d'op\'erations mettant en \'evidence l'utilisation d'un tel bypass.
+
+\begin{correction}
+
+  \begin{center}
+    \includegraphics[scale=0.6]{figures/correction-bypasses.pdf}
+  \end{center}
+
+  \begin{enumerate}
+    \item
+      \begin{verbatim}
+	Add R3, R2, R1
+	Add R5, R4, R3
+      \end{verbatim}
+    \item
+      \begin{verbatim}
+	Add R3, R2, R1
+	Nop
+	Beq R3, R0, Loop
+      \end{verbatim}
+    \item
+      \begin{verbatim}
+	Add R3, R2, R1
+	Nop
+	Nop
+	Beq R3, R0, Loop
+      \end{verbatim}
+    \item
+      \begin{verbatim}
+	Add R3, R2, R1
+	Nop
+	Nop
+	Nop
+	Beq R3, R0, Loop
+      \end{verbatim}
+    \item
+      \begin{verbatim}
+	Lw R3, 0(R5)
+	Nop
+	Nop
+	Nop
+	Add R5, R4, R3
+      \end{verbatim}
+    \item
+      \begin{verbatim}
+	Lw R3, 0(R5)
+	Nop
+	Nop
+	Nop
+	Nop
+	Beq R3, R0, Loop
+      \end{verbatim}
+  \end{enumerate}
+
+\end{correction}
+
+%
+% analyse simplifiee
+%
+
+\section{Analyse Simplifi\'ee - 4 points}
+
+Veuillez d\'ecrire l'ex\'ecution de la boucle de la fonction \textbf{vatican}()
+\`a l'aide d'une vue simplifi\'ee en sp\'ecifiant les \textit{bypasses}
+utilis\'es.
+
+Vous devrez ensuite calculer CPI et CPIu.
+
+\begin{correction}
+
+  \begin{center}
+    \includegraphics[scale=0.33]{figures/correction-analyse-simplifiee.pdf}
+  \end{center}
+
+\end{correction}
+
+%
+% optimisation
+%
+
+\section{Optimisation - 4 points}
+
+Veuillez appliquer l'optimisation \textit{Software Pipeline} sur
+la boucle de la fonction \textbf{vatican}() de mani\`ere \`a obtenir
+les meilleures performances.
+
+Vous calculerez ensuite le CPI et CPIu de cette nouvelle implantation
+de la boucle.
+
+Est-ce que l'optimisation \textit{Software Pipeline} est int\'eressante
+dans ce cas l\`a? Pourquoi? Quel est le gain ou la perte de performance?
+
+\begin{correction}
+
+  \begin{verbatim}
+  Loop:    Sw R11, 0(R5)
+
+           Sub R11, R10, R9
+
+           Lw R9, -8(R6)
+
+           Addiu R5, R5, 4
+
+           Lw R10, -12(R5)
+
+           Bne R5, R7, Loop
+           Mul R9, R9, R8
+           Nop
+           Addiu R6, R6, 4
+  \end{verbatim}
+
+  CPI = 9 / 9
+
+  CPIu = 9 / 8
+
+\end{correction}
+
+%
+% memoire
+%
+
+\section{M\'emoire - 6 points}
+
+\textit{Conseil}: Prenez bien en compte toutes les informations
+donn\'ees au d\'ebut du document.
+
+En cas de Miss, combien de cycles sont n\'ecessaires pour une lecture de
+16 octets?
+
+\begin{correction}
+
+\begin{verbatim}
+1 +                     ; access
+5 +                     ; bus acquire
+1 +                     ; address
+3 +                     ; address / data
+1 +                     ; data
+1 +                     ; update
+1                       ; response
+
+= 13 cycles
+\end{verbatim}
+
+\end{correction}
+
+De m\^eme, combien de cycles sont n\'ecessaires pour une \'ecriture de
+4 octets?
+
+\begin{correction}
+
+\begin{verbatim}
+1 +                     ; access
+5 +                     ; bus acquire
+1 +                     ; address
+1                       ; data
+
+= 8 cycles
+\end{verbatim}
+
+\end{correction}
+
+Calculer le nombre moyen de cycles n\'ecessaires au traitement d'un
+\'el\'ement de la matrice.
+
+\begin{correction}
+
+Une ligne de matrice contient 1024 \'el\'ements soit 4096 octets. Une ligne
+de matrice peut donc \^etre enti\`erement contenue dans le cache.
+
+De ce fait, chaque it\'eration de la boucle va provoquer 2 \textit{Miss},
+un premier pour lire un \'el\'ement de la ligne \textit{j} et un second
+pour lire un \'el\'ement de la ligne \textit{k}. En effet, le \textit{i}\`eme
+\'el\'ement de la ligne \textit{j} appartiendra \`a la m\^eme famille
+du cache que le \textit{i}\`eme \'el\'ement de la ligne \textit{k}.
+
+Le taux de \textit{Miss} est donc de 100\%.
+
+La p\'enalit\'e en lecture par rapport \`a la m\'emoire parfaite est
+donc de $13 - 1 = 12$ cycles.
+
+Puisque le cache de donn\'ees est de type \textit{Write Through}, un
+acc\`es m\'emoire intervient \`a chaque \'ecriture.
+
+La p\'enalit\'e en \'ecriture par rapport \`a la m\'emoire parfaite est
+donc de $8 - 1 = 7$ cycles.
+
+Dans le code d'origine il y a deux instructions de lecture et une
+instruction d'\'ecriture.
+
+Le traitement d'un \'el\'ement de la matrice n\'ecessite donc
+$18 + (2 * 12) + (1 * 7) = 52$ cycles.
+
+\end{correction}
+
+En ajoutant un buffer d'\'ecriture dans le cache de donn\'ees, quel
+gain en nombre de cycles peut on obtenir?
+
+\begin{correction}
+
+Avec un buffer d'\'ecriture les \'ecritures seraient enti\`erement prises
+en compte par l'automate.
+
+De ce fait, une \'ecriture n'aura plus aucune p\'enalit\'e.
+
+Le traitement d'un \'el\'ement de la matrice n\'ecessite donc plus
+que $18 + (2 * 12) = 42$ cycles.
+
+Il est \`a noter que puisqu'une seul \'ecriture n'a lieu tous les $42$
+cycles, il est raisonnable de penser que l'\'ecriture a le temps de
+s'effectuer.
+
+\end{correction}
+
+\end{document}
