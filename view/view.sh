@@ -112,35 +112,35 @@ done
 
 exams=$(list "${_EXAMS_DIR_}" "--directory")
 for e in ${exams} ; do
-  archives=$(list "exams/${e}" "--directory")
+  archives=$(list "${_EXAMS_DIR_}/${e}" "--directory")
   for a in ${archives} ; do
-    PAPERS="${PAPERS} exams::${e}::${a}"
+    PAPERS="${PAPERS} exam::${e}::${a}"
   done
 done
 
 feedbacks=$(list "${_FEEDBACKS_DIR_}" "--directory")
 for e in ${feedbacks} ; do
-  PAPERS="${PAPERS} feedbacks::${e}"
+  PAPERS="${PAPERS} feedback::${e}"
 done
 
 lectures=$(list "${_LECTURES_DIR_}" "--directory")
 for e in ${lectures} ; do
-  PAPERS="${PAPERS} lectures::${e}"
+  PAPERS="${PAPERS} lecture::${e}"
 done
 
 papers=$(list "${_PAPERS_DIR_}" "--directory")
 for e in ${papers} ; do
-  PAPERS="${PAPERS} papers::${e}"
+  PAPERS="${PAPERS} paper::${e}"
 done
 
 books=$(list "${_BOOKS_DIR_}" "--directory")
 for e in ${books} ; do
-  PAPERS="${PAPERS} books::${e}"
+  PAPERS="${PAPERS} book::${e}"
 done
 
 internships=$(list "${_INTERNSHIPS_DIR_}" "--directory")
 for e in ${internships} ; do
-  PAPERS="${PAPERS} internships::${e}"
+  PAPERS="${PAPERS} internship::${e}"
 done
 
 # check the number of arguments.
