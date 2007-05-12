@@ -51,9 +51,9 @@
 
 \begin{center}
 
-\textbf{Documents Autoris\'es}
+\textbf{Documents Interdits}
 
-\textbf{Dur\'ee 3 heures}
+\textbf{Dur\'ee 2 heures}
 
 \scriptsize{Une copie bien pr\'esent\'ee avec des sch\'emas propres et
 	    lisibles sera toujours mieux not\'ee qu'une autre.}
@@ -63,7 +63,7 @@
 % --------- text --------------------------------------------------------------
 %
 
-On consid\`ere la fonction \textbf{vatican}() suivante qui effectue
+On consid\`ere la fonction \textbf{villageoise}() suivante qui effectue
 l'op\'eration de \textit{Gauss} sur une ligne \textit{j} par rapport \`a
 la ligne \textit{k}.
 
@@ -73,11 +73,11 @@ On suppose qu'une ligne de la matrice contient 1024 \'el\'ements
 et que l'adresse de la matrice est align\'ee sur 4096.
 
 \begin{verbatim}
-int*            vatican(int* m,
-                        unsigned int j,
-                        unsigned int k,
-                        unsigned int size,
-                        int e)
+int*            villageoise(int* m,
+                            unsigned int j,
+                            unsigned int k,
+                            unsigned int size,
+                            int e)
 {
   int           i;
 
@@ -88,7 +88,7 @@ int*            vatican(int* m,
 }
 \end{verbatim}
 
-Ce code f\^ut ensuite compil\'e pour une r\'ealisation \textbf{non pipeline}
+Ce code est ensuite compil\'e pour une r\'ealisation \textbf{non pipeline}
 du processeur MIPS. Le code assembleur produit est le suivant.
 
 \begin{itemize}
@@ -114,11 +114,20 @@ Loop:    Lw R9, 0(R6)
          Bne R5, R7, Loop
 \end{verbatim}
 
-Le processeur MIPS-9 \'etudi\'e est le suivant:
+Le processeur MIPS-10 \'etudi\'e est le suivant:
 
 \begin{center}
   \includegraphics[scale=0.6]{figures/pipeline.pdf}
 \end{center}
+
+Comme pour les microprocesseurs profonds \'etudi\'es en cours, les \'etages
+\textit{IFC} et \textit{MEM} sont d\'ecoup\'es afin de laisser plus de temps
+\`a la m\'emoire pour r\'epondre. Ce MIPS-10 dispose \'egalement d'un
+double \'etage \textit{DEC} afin de soulager la complexit\'e de cet \'etage.
+
+Plus pr\'ecis\'ement, l'\'etage \textit{DEC-1} s'occupe de d\'ecoder et
+d'extraire les op\'erandes tandis que l'\'etage \textit{DEC-2} se charge,
+quant \`a lui, du calcul de l'adresse suivante.
 
 On suppose que ce microprocesseur dispose d'une instruction
 \textit{Mul Rd, Rs, Rt} de format R. Dans cette instruction, les 32 bits
@@ -157,12 +166,12 @@ de la boucle.
 
 \section{Fonctionnement - 2 points}
 
-Modifier le code de la boucle de la fonction \textbf{vatican}() de telle
-mani\`ere qu'il soit ex\'ecutable par le processeur pipeline MIPS 9 \'etages.
+Modifier le code de la boucle de la fonction \textbf{villageoise}() de telle
+mani\`ere qu'il soit ex\'ecutable par le processeur pipeline MIPS 10 \'etages.
 
 \begin{correction}
 
-  Il faut ajouter \textbf{3} \textit{delay slots} apr\`es chaque
+  Il faut ajouter \textbf{4} \textit{delay slots} apr\`es chaque
   branchement.
 
   \begin{verbatim}
@@ -178,6 +187,7 @@ mani\`ere qu'il soit ex\'ecutable par le processeur pipeline MIPS 9 \'etages.
            Nop
            Nop
            Nop
+           Nop
   \end{verbatim}
 
 \end{correction}
@@ -188,16 +198,20 @@ mani\`ere qu'il soit ex\'ecutable par le processeur pipeline MIPS 9 \'etages.
 
 \section{Bypasses - 4 points}
 
-Veuillez sp\'ecifier, via une vue simplifi\'ee, les diff\'erents
-\textit{bypasses} que comporte ce processeur.
+Veuillez mettre en \'evidence, via une vue simplifi\'ee, les diff\'erents
+\textit{bypasses} que comporte ce processeur MIPS-10.
 
 Pour chaque \textit{bypass} vous devrez mettre en place une s\'equence
 d'op\'erations mettant en \'evidence l'utilisation d'un tel bypass.
 
+Donner une explication du nombre de \textit{bypasses} trouv\'es par rapport
+au MIPS-7 \'etudi\'e en cours. En d'autres termes, ce nombre vous parait
+il coh\'erent
+
 \begin{correction}
 
   \begin{center}
-    \includegraphics[scale=0.6]{figures/correction-bypasses.pdf}
+    \includegraphics[scale=0.45]{figures/correction-bypasses.pdf}
   \end{center}
 
   \begin{enumerate}
@@ -244,6 +258,16 @@ d'op\'erations mettant en \'evidence l'utilisation d'un tel bypass.
 	Nop
 	Beq R3, R0, Loop
       \end{verbatim}
+    \item
+      \begin{verbatim}
+	Lw R3, 0(R5)
+	Nop
+	Nop
+	Nop
+	Nop
+	Nop
+	Beq R3, R0, Loop
+      \end{verbatim}
   \end{enumerate}
 
 \end{correction}
@@ -254,16 +278,21 @@ d'op\'erations mettant en \'evidence l'utilisation d'un tel bypass.
 
 \section{Analyse Simplifi\'ee - 4 points}
 
-Veuillez d\'ecrire l'ex\'ecution de la boucle de la fonction \textbf{vatican}()
-\`a l'aide d'une vue simplifi\'ee en sp\'ecifiant les \textit{bypasses}
-utilis\'es.
+Veuillez d\'ecrire l'ex\'ecution de la boucle de la fonction
+\textbf{villageoise}() \`a l'aide d'une vue simplifi\'ee en sp\'ecifiant les
+\textit{bypasses} utilis\'es.
 
 Vous devrez ensuite calculer CPI et CPIu.
+
+On consid\`ere que l'on dispose d'un cache de donn\'ees parfait, dans cet
+exercice et dans le suivant, afin de mettre les probl\'ematiques d'acc\`es
+m\'emoire de c\^ot\'e. Ces probl\'ematiques seront trait\'ees dans le
+dernier exercice.
 
 \begin{correction}
 
   \begin{center}
-    \includegraphics[scale=0.33]{figures/correction-analyse-simplifiee.pdf}
+    \includegraphics[scale=0.25]{figures/correction-analyse-simplifiee.pdf}
   \end{center}
 
 \end{correction}
@@ -275,8 +304,11 @@ Vous devrez ensuite calculer CPI et CPIu.
 \section{Optimisation - 4 points}
 
 Veuillez appliquer l'optimisation \textit{Software Pipeline} sur
-la boucle de la fonction \textbf{vatican}() de mani\`ere \`a obtenir
+la boucle de la fonction \textbf{villageoise}() de mani\`ere \`a obtenir
 les meilleures performances.
+
+Vous \^etes bien entendu autoris\'es \`a effectuer un r\'eordonnancement
+afin d'optimiser la boucle obtenue.
 
 Vous calculerez ensuite le CPI et CPIu de cette nouvelle implantation
 de la boucle.
@@ -301,11 +333,12 @@ dans ce cas l\`a? Pourquoi? Quel est le gain ou la perte de performance?
            Mul R9, R9, R8
            Nop
            Addiu R6, R6, 4
+           Nop
   \end{verbatim}
 
-  CPI = 9 / 9
+  CPI = 10 / 10
 
-  CPIu = 9 / 8
+  CPIu = 10 / 8
 
 \end{correction}
 
@@ -318,91 +351,109 @@ dans ce cas l\`a? Pourquoi? Quel est le gain ou la perte de performance?
 \textit{Conseil}: Prenez bien en compte toutes les informations
 donn\'ees au d\'ebut du document.
 
-En cas de Miss, combien de cycles sont n\'ecessaires pour une lecture de
-16 octets?
+Nous consid\'erons dans cette question, l'implantation originale de la
+boucle et non son \'evolution \textit{Software Pipeline}.
 
-\begin{correction}
+Veuillez r\'epondre aux questions ci-dessous en justifiant chaque \'el\'ement
+intervenant dans vos calculs.
 
-\begin{verbatim}
-1 +                     ; access
-5 +                     ; bus acquire
-1 +                     ; address
-3 +                     ; address / data
-1 +                     ; data
-1 +                     ; update
-1                       ; response
+\begin{enumerate}
+  \item
+    En cas de Miss, combien de cycles sont n\'ecessaires pour une lecture de
+    16 octets?
 
-= 13 cycles
-\end{verbatim}
+    \begin{correction}
 
-\end{correction}
+      \begin{verbatim}
+	1 +                     ; access
+	5 +                     ; bus acquire
+	1 +                     ; address
+	3 +                     ; address / data
+	1 +                     ; data
+	1 +                     ; update
+	1                       ; response
 
-De m\^eme, combien de cycles sont n\'ecessaires pour une \'ecriture de
-4 octets?
+	= 13 cycles
+      \end{verbatim}
 
-\begin{correction}
+    \end{correction}
+  \item
+    De m\^eme, combien de cycles sont n\'ecessaires pour une \'ecriture de
+    4 octets?
 
-\begin{verbatim}
-1 +                     ; access
-5 +                     ; bus acquire
-1 +                     ; address
-1                       ; data
+    \begin{correction}
 
-= 8 cycles
-\end{verbatim}
+      \begin{verbatim}
+	1 +                     ; access
+	5 +                     ; bus acquire
+	1 +                     ; address
+	1                       ; data
 
-\end{correction}
+	= 8 cycles
+      \end{verbatim}
 
-Calculer le nombre moyen de cycles n\'ecessaires au traitement d'un
-\'el\'ement de la matrice.
+    \end{correction}
+  \item
+    Calculer le nombre moyen de cycles n\'ecessaires au traitement d'un
+    \'el\'ement de la matrice.
 
-\begin{correction}
+    Un bon moyen d'effectuer cela pourrait \^etre d'identifier le taux de
+    \textit{Miss} dans une boucle et de calculer la p\'enalit\'e
+    qu'engendre cette ex\'ecution par rapport \`a une m\'emoire parfaite;
+    m\'emoire que nous avons consid\'er\'ee jusqu'ici.
 
-Une ligne de matrice contient 1024 \'el\'ements soit 4096 octets. Une ligne
-de matrice peut donc \^etre enti\`erement contenue dans le cache.
+    \begin{correction}
 
-De ce fait, chaque it\'eration de la boucle va provoquer 2 \textit{Miss},
-un premier pour lire un \'el\'ement de la ligne \textit{j} et un second
-pour lire un \'el\'ement de la ligne \textit{k}. En effet, le \textit{i}\`eme
-\'el\'ement de la ligne \textit{j} appartiendra \`a la m\^eme famille
-du cache que le \textit{i}\`eme \'el\'ement de la ligne \textit{k}.
+      Une ligne de matrice contient 1024 \'el\'ements soit 4096 octets.
+      Une ligne de matrice peut donc \^etre enti\`erement contenue dans le
+      cache.
 
-Le taux de \textit{Miss} est donc de 100\%.
+      De ce fait, chaque it\'eration de la boucle va provoquer 2 \textit{Miss},
+      un premier pour lire un \'el\'ement de la ligne \textit{j} et un second
+      pour lire un \'el\'ement de la ligne \textit{k}. En effet, le
+      \textit{i}\`eme \'el\'ement de la ligne \textit{j} appartiendra \`a la
+      m\^eme famille que le \textit{i}\`eme \'el\'ement de la ligne \textit{k}.
 
-La p\'enalit\'e en lecture par rapport \`a la m\'emoire parfaite est
-donc de $13 - 1 = 12$ cycles.
+      Le taux de \textit{Miss} est donc de 100\%.
 
-Puisque le cache de donn\'ees est de type \textit{Write Through}, un
-acc\`es m\'emoire intervient \`a chaque \'ecriture.
+      Rappelons que le cache d'instruction est parfait et ne g\'en\`ere donc
+      aucun \textit{Miss}.
 
-La p\'enalit\'e en \'ecriture par rapport \`a la m\'emoire parfaite est
-donc de $8 - 1 = 7$ cycles.
+      La p\'enalit\'e en lecture par rapport \`a la m\'emoire parfaite est
+      donc de $13 - 1 = 12$ cycles.
 
-Dans le code d'origine il y a deux instructions de lecture et une
-instruction d'\'ecriture.
+      Puisque le cache de donn\'ees est de type \textit{Write Through}, un
+      acc\`es m\'emoire intervient \`a chaque \'ecriture.
 
-Le traitement d'un \'el\'ement de la matrice n\'ecessite donc
-$18 + (2 * 12) + (1 * 7) = 52$ cycles.
+      La p\'enalit\'e en \'ecriture par rapport \`a la m\'emoire parfaite est
+      donc de $8 - 1 = 7$ cycles.
 
-\end{correction}
+      Dans le code d'origine il y a deux instructions de lecture et une
+      instruction d'\'ecriture.
 
-En ajoutant un buffer d'\'ecriture dans le cache de donn\'ees, quel
-gain en nombre de cycles peut on obtenir?
+      Le traitement d'un \'el\'ement de la matrice n\'ecessite donc
+      $19 + (2 * 12) + (1 * 7) = 50$ cycles.
 
-\begin{correction}
+    \end{correction}
+  \item
+    En ajoutant un buffer d'\'ecriture dans le cache de donn\'ees, quel
+    gain en nombre de cycles peut on obtenir?
 
-Avec un buffer d'\'ecriture les \'ecritures seraient enti\`erement prises
-en compte par l'automate.
+    \begin{correction}
 
-De ce fait, une \'ecriture n'aura plus aucune p\'enalit\'e.
+      Avec un buffer d'\'ecriture les \'ecritures seraient enti\`erement prises
+      en compte par l'automate.
 
-Le traitement d'un \'el\'ement de la matrice n\'ecessite donc plus
-que $18 + (2 * 12) = 42$ cycles.
+      De ce fait, une \'ecriture n'aura plus aucune p\'enalit\'e.
 
-Il est \`a noter que puisqu'une seul \'ecriture n'a lieu tous les $42$
-cycles, il est raisonnable de penser que l'\'ecriture a le temps de
-s'effectuer.
+      Le traitement d'un \'el\'ement de la matrice n\'ecessite donc plus
+      que $19 + (2 * 12) = 43$ cycles.
 
-\end{correction}
+      Il est \`a noter que puisqu'une seul \'ecriture n'a lieu tous les $43$
+      cycles, il est raisonnable de penser que l'\'ecriture a le temps de
+      s'effectuer.
+
+    \end{correction}
+\end{enumerate}
 
 \end{document}
