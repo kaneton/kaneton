@@ -42,7 +42,8 @@ d_message		message_dispatch =
 /*                                                                  [cut] k4 */
 
     ia32_message_init,
-    ia32_message_clean
+    ia32_message_clean,
+    ia32_message_epilogue
 
 /*                                                                 [cut] /k4 */
 
@@ -108,7 +109,7 @@ void			ia32_message_sync_send_handler(void)
   ptr = (void*)context->edi;
   size = context->ebp;
 
-  ret = message_sync_send(source, u.node, tag, ptr, size, &context->eax);
+  ret = message_sync_send(source, u.node, tag, ptr, size);
 
   sched_current(&upcall);
 
@@ -123,23 +124,14 @@ void			ia32_message_async_recv_handler(void)
   void*			ptr;
   t_uint32		size;
   i_task		source;
-  i_thread i;
 
   task_current(&source);
-
-  sched_current(&i);
-
-  printf("syscall %qd\n", i);
 
   tag = context->eax;
   ptr = (void*)context->ebx;
   size = context->ecx;
 
   ret = message_async_recv(source, tag, ptr, size);
-
-  sched_current(&i);  
-
-  printf("upcall %qd\n", i);
 
   context->eax = ret;
 }
@@ -164,14 +156,27 @@ void			ia32_message_sync_recv_handler(void)
   flags = context->edx;
 
   if (flags & 0x1)
-    ret = message_sync_recv_nb(source, tag, ptr, size, &context->eax);
+    ret = message_sync_recv_nb(source, tag, ptr, size);
   else
-    ret = message_sync_recv(source, tag, ptr, size, &context->eax);
+    ret = message_sync_recv(source, tag, ptr, size);
 
   sched_current(&upcall);
 
   if (syscall == upcall)
     context->eax = ret;
+}
+
+t_error			ia32_message_epilogue(i_thread		thread,
+					      t_error		exit_value)
+{
+  o_thread*		th;
+
+  if (thread_get(thread, &th) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  th->machdep.context.eax = exit_value;
+
+  return ERROR_NONE;
 }
 
 t_error			ia32_message_init(void)

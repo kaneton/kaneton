@@ -234,6 +234,9 @@ void			ia32_message_async_recv_handler(void);
 
 void			ia32_message_sync_recv_handler(void);
 
+t_error			ia32_message_epilogue(i_thread		thread,
+					      t_error		exit_value);
+
 t_error			ia32_message_init(void);
 
 t_error			ia32_message_clean(void);

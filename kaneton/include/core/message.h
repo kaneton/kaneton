@@ -43,7 +43,6 @@ typedef struct
   t_size	sz;
   i_thread	thread;
   i_as		asid;
-  t_uint32*	rv;
 }		t_waiter;
 
 typedef struct
@@ -84,6 +83,7 @@ typedef struct
 {
   t_error			(*message_init)(void);
   t_error			(*message_clean)(void);
+  t_error			(*message_epilogue)(i_thread, t_error);
 }				d_message;
 
 /*
@@ -152,20 +152,17 @@ t_error			message_sync_send(i_task	sender,
 					  i_node	dest,
 					  t_tag		tag,
 					  void*		data,
-					  t_size	size,
-					  t_uint32*	rv);
+					  t_size	size);
 
 t_error			message_sync_recv(i_task	taskid,
 					  t_tag		tag,
 					  void*		data,
-					  size_t	maxsz,
-					  t_uint32*	rv);
+					  size_t	maxsz);
 
 t_error			message_sync_recv_nb(i_task	taskid,
 					     t_tag	tag,
 					     void*	data,
-					     size_t	maxsz,
-					     t_uint32*	rv);
+					     size_t	maxsz);
 
 t_error			message_register(i_task	taskid,
 					 t_tag	tag);

@@ -308,8 +308,7 @@ t_error			message_sync_send(i_task	sender,
 					  i_node	dest,
 					  t_tag		tag,
 					  void*		data,
-					  t_size	size,
-					  t_uint32*	rv)
+					  t_size	size)
 {
   t_message_box*	msgbox;
   o_task*		task;
@@ -354,7 +353,6 @@ t_error			message_sync_send(i_task	sender,
     send_waiter.data = (t_vaddr)data;
     send_waiter.sz = size;
     send_waiter.asid = task->asid;
-    send_waiter.rv = rv;
 
     if (set_push(msgbox->senders, &send_waiter) != ERROR_NONE)
       return (ERROR_UNKNOWN);
@@ -405,12 +403,9 @@ copied:
    * 5)
    */
 
-  o_thread* th;
-
-  if (thread_get(receiver->thread, &th) != ERROR_NONE)
+  if (machdep_call(message, message_epilogue, receiver->thread, ERROR_NONE)
+        != ERROR_NONE)
     return (ERROR_UNKNOWN);
-
-  th->machdep.context.eax = ERROR_NONE;
 
   if (thread_state(receiver->thread, SCHED_STATE_RUN) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -432,8 +427,7 @@ copied:
 t_error			message_sync_recv(i_task	taskid,
 					  t_tag		tag,
 					  void*		data,
-					  size_t	maxsz,
-					  t_uint32*	rv)
+					  size_t	maxsz)
 {
   t_message_box*	msgbox;
   o_task*		task;
@@ -466,7 +460,6 @@ t_error			message_sync_recv(i_task	taskid,
     recv_waiter.data = (t_vaddr)data;
     recv_waiter.sz = maxsz;
     recv_waiter.asid = task->asid;
-    recv_waiter.rv = rv;
 
     if (set_push(msgbox->receivers, &recv_waiter) != ERROR_NONE)
       return (ERROR_UNKNOWN);
@@ -517,12 +510,9 @@ copied:
    * 4)
    */
 
-  o_thread* th;
-
-  if (thread_get(sender->thread, &th) != ERROR_NONE)
+  if (machdep_call(message, message_epilogue, sender->thread, ERROR_NONE)
+        != ERROR_NONE)
     return (ERROR_UNKNOWN);
-
-  th->machdep.context.eax = ERROR_NONE;
 
   if (thread_state(sender->thread, SCHED_STATE_RUN) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -545,8 +535,7 @@ copied:
 t_error			message_sync_recv_nb(i_task	taskid,
 					     t_tag	tag,
 					     void*	data,
-					     size_t	maxsz,
-					     t_uint32*	rv)
+					     size_t	maxsz)
 {
   t_message_box*	msgbox;
   o_task*		task;
@@ -613,15 +602,14 @@ copied:
    * 4)
    */
 
-  o_thread* th;
-
-  if (thread_get(sender->thread, &th) != ERROR_NONE)
+  if (machdep_call(message, message_epilogue, sender->thread, ERROR_NONE)
+        != ERROR_NONE)
     return (ERROR_UNKNOWN);
-
-  th->machdep.context.eax = ERROR_NONE;
 
   if (thread_state(sender->thread, SCHED_STATE_RUN) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
 }
 
 /*
