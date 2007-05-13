@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ile/environment/behaviour/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [thu may 10 16:38:10 2007]
+# updated       julien quintard   [sun may 13 13:49:08 2007]
 #
 
 #
@@ -53,6 +53,45 @@ def			colorize(text, color, options):
     text = "[37;01m" + text + "[39;49;00m"
 
   return text
+
+
+
+#
+# launch()
+#
+# this function launch a new program/script/make etc..
+#
+def			launch(file, arguments, options):
+  directory = None
+  info = None
+  status = 0
+  wd = None
+
+  info = os.path.split(file)
+
+  directory = info[0]
+  file = info[1]
+
+  if directory:
+    wd = cwd(OPTION_NONE)
+    cd(directory, OPTION_NONE)
+
+  if re.match("^.*\.sh$", file):
+    status = os.system(_SHELL_ + " " + file + " " + arguments)
+  elif re.match("^.*\.py$", file):
+    os.putenv("PYTHONPATH", _PYTHON_INCLUDE_DIR_)
+    status = os.system(_PYTHON_ + " " + file + " " + arguments)
+  elif re.match("^.*\.pl$", file):
+    status = os.system(_PERL_ + " " + file + " " + arguments)
+  elif re.match("^Makefile$", file):
+    status = os.system(_MAKE_ + " -f " + file + " " + arguments)
+  else:
+    status = os.system(file + " " + arguments)
+
+  if directory:
+    cd(wd, OPTION_NONE)
+
+  return status
 
 
 

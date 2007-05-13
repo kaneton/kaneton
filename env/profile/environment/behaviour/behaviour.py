@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ofile/environment/behaviour/behaviour.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [thu may 10 16:47:03 2007]
+# updated       julien quintard   [sun may 13 11:26:14 2007]
 #
 
 #
@@ -165,48 +165,6 @@ def			input(options):
 
 
 #
-# launch()
-#
-# this function launch a new program/script/make etc..
-#
-def			launch(file, arguments, options):
-  directory = None
-  info = None
-  status = 0
-  wd = None
-  pp = None
-
-  info = os.path.split(file)
-
-  directory = info[0]
-  file = info[1]
-
-  if directory:
-    wd = cwd(OPTION_NONE)
-    cd(directory, OPTION_NONE)
-
-  if re.match("^.*\.sh$", file):
-    status = os.system(_SHELL_ + " " + file + " " + arguments)
-  elif re.match("^.*\.py$", file):
-    pp = os.getenv("PYTHONPATH")
-    os.putenv("PYTHONPATH", pp + ":" + wd)
-    status = os.system(_PYTHON_ + " " + file + " " + arguments)
-    os.putenv("PYTHONPATH", pp)
-  elif re.match("^.*\.pl$", file):
-    status = os.system(_PERL_ + " " + file + " " + arguments)
-  elif re.match("^Makefile$", file):
-    status = os.system(_MAKE_ + " -f " + file + " " + arguments)
-  else:
-    status = os.system(file + " " + arguments)
-
-  if directory:
-    cd(wd, OPTION_NONE)
-
-  return status
-
-
-
-#
 # copy()
 #
 # this function copies a file.
@@ -328,3 +286,18 @@ def			mkdir(directory, options):
 #
 def			stamp(format, options):
   return time.strftime(format)
+
+
+
+#
+# path()
+#
+# this function returns information on a path: file, directory etc..
+#
+def			path(path, options):
+  if options == OPTION_FILE:
+    return os.path.basename(path)
+  if options == OPTION_DIRECTORY:
+    return os.path.dirname(path)
+
+  return None

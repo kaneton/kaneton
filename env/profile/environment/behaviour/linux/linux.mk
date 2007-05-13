@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ile/environment/behaviour/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [thu may 10 15:39:07 2007]
+# updated       julien quintard   [sun may 13 13:48:55 2007]
 #
 
 #
@@ -141,10 +141,8 @@ define launch
       $(_SHELL_) $${launch_options} $(1) $(2)				; \
       ;;								\
     *.py)								\
-      pp=$(PYTHONPATH)							; \
-      export PYTHONPATH="$(PWD):"$(PYTHONPATH)				; \
+      export PYTHONPATH=$(_PYTHON_INCLUDE_DIR_)
       $(_PYTHON_) $${launch_options} $(1) $(2)				; \
-      export PYTHONPATH=$(pp)						; \
       ;;								\
     *.pl)								\
       $(_PERL_) $${launch_options} $(1) $(2)				; \
