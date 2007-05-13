@@ -30,7 +30,7 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		project-overview
+PAPER			:=		presentation
 
 GARBAGE			:=		$(PAPER).aux			\
 					$(PAPER).log			\
