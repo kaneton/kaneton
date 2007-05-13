@@ -3,7 +3,7 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/view/templates/Makefile
+## file          /home/mycure/kaneton/view/template/Makefile
 ##
 ## created       julien quintard   [sat dec  3 22:53:10 2005]
 ## updated       julien quintard   [sat dec  3 22:55:36 2005]

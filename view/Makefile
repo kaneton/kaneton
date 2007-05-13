@@ -41,7 +41,9 @@ SUBDIRS			:=		curriculum			\
 #
 
 all:
-	$(call launch,Makefile,$(SUBDIRS),,)
+
+view:
+	$(call launch,$(_VIEW_SCRIPT_),$*,)				; \
 
 clear:
 	$(call launch,Makefile,$(SUBDIRS),clear,)
@@ -49,7 +51,5 @@ clear:
 	$(call purge,)
 
 proto:
-	$(call launch,Makefile,$(SUBDIRS),proto,)
 
 dep:
-	$(call launch,Makefile,$(SUBDIRS),dep,)
