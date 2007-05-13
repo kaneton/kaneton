@@ -27,32 +27,14 @@ include			../../../env/.env.mk
 .PHONY:		all view build clear
 
 #
-# ---------- variables --------------------------------------------------------
-#
-
-PAPER			:=		arch-ia32
-
-GARBAGE			:=		$(PAPER).aux			\
-					$(PAPER).log			\
-					$(PAPER).nav			\
-					$(PAPER).out			\
-					$(PAPER).snm			\
-					$(PAPER).toc			\
-					$(PAPER).dvi			\
-					$(PAPER).ps			\
-					$(PAPER).pdf			
-
-#
 # ---------- rules ------------------------------------------------------------
 #
 
 all:			build view
 
 view:
-	$(call view,$(PAPER),)
 
 build:
-	$(call lecture,$(PAPER),)
 
 clear:
 	$(call remove,$(GARBAGE),)

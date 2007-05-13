@@ -25,8 +25,7 @@ include			../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		advanced-makefiles		\
-					arch-ia32			\
+SUBDIRS			:=		arch-ia32			\
 					arch-mips			\
 					c-preprocessor			\
 					development-environment		\
