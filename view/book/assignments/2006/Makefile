@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/view/book/assignments/2006/Makefile
 #
 # created       julien quintard   [mon may 14 19:03:18 2007]
-# updated       julien quintard   [mon may 14 19:39:45 2007]
+# updated       julien quintard   [mon may 14 20:00:33 2007]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
