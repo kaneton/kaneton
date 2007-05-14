@@ -1,0 +1,1226 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          /home/buckman/kaneton/view/lectures/seminar_2006/seminar.tex
+%%
+%% created       julien quintard   [fri dec  2 07:53:59 2005]
+%% updated       matthieu bucchianeri   [wed dec 13 18:06:05 2006]
+%%
+
+%
+% template
+%
+
+\input{../../../template/lecture.tex}
+
+%
+% title
+%
+
+\title{Pr\'{e}sentation de kaneton --\\http://www.kaneton.org}
+
+%
+% authors
+%
+
+\author
+{
+  Renaud~Voltz,
+  Matthieu~Bucchianeri,
+  Julien~Quintard
+}
+
+%
+% figures
+%
+
+\pgfdeclareimage[interpolate=true,width=200pt,height=140pt]
+                {set}
+		{figures/set}
+
+\pgfdeclareimage[interpolate=true,width=300pt,height=140pt]
+                {manager}
+		{figures/manager}
+
+\pgfdeclareimage[interpolate=true,width=130pt,height=160pt]
+                {event}
+		{figures/event}
+
+% 10 frames for a microkernel example
+
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_01}
+		{figures/microkernel_example_01}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_02}
+		{figures/microkernel_example_02}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_03}
+		{figures/microkernel_example_03}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_04}
+		{figures/microkernel_example_04}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_05}
+		{figures/microkernel_example_05}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_06}
+		{figures/microkernel_example_06}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_07}
+		{figures/microkernel_example_07}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_08}
+		{figures/microkernel_example_08}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_09}
+		{figures/microkernel_example_09}
+\pgfdeclareimage[interpolate=true,width=290pt,height=165pt]
+                {microkernel_example_10}
+		{figures/microkernel_example_10}
+
+% memory management
+\pgfdeclareimage[interpolate=true,width=179pt,height=190pt]
+                {vmem}
+		{figures/vmem}
+\pgfdeclareimage[interpolate=true,width=137pt,height=190pt]
+                {vmem_overlap}
+		{figures/vmem-overlap}
+\pgfdeclareimage[interpolate=true,width=137pt,height=190pt]
+                {vmem_contiguous}
+		{figures/vmem-contiguous}
+\pgfdeclareimage[interpolate=true,width=137pt,height=190pt]
+                {vmem_sharing}
+		{figures/vmem-sharing}
+
+% process scheduling
+
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq1}
+		{figures/sched1}
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq2}
+		{figures/sched2}
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq3}
+		{figures/sched3}
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq4}
+		{figures/sched4}
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq5}
+		{figures/sched5}
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq6}
+		{figures/sched6}
+\pgfdeclareimage[interpolate=true,width=150pt,height=190pt]
+                {mfq7}
+		{figures/sched7}
+% task
+
+\pgfdeclareimage[interpolate=true,width=210pt,height=65pt]
+                {task}
+		{figures/task}
+
+
+
+
+\pgfdeclareimage[interpolate=true,width=200pt,height=140pt]
+                {set}
+		{figures/set}
+
+\pgfdeclareimage[interpolate=true,width=300pt,height=140pt]
+                {manager}
+		{figures/manager}
+
+
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+
+  \begin{center}
+    \logos
+  \end{center}
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Contenu}
+  \tableofcontents
+\end{frame}
+
+%
+% overview
+%
+
+\section{Pr\'{e}sentation}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Les gens qui travaillent sur kaneton}
+
+  \textbf{Design}
+
+  \begin{itemize}
+    \item
+      Julien Quintard
+    \item
+      Jean-Pascal Billaud
+  \end{itemize}
+
+  \nl
+
+  \textbf{Implementation}
+
+  \begin{itemize}
+    \item
+      Renaud Voltz
+    \item
+      Matthieu Bucchianeri
+    \item
+      Enguerrand Raymond
+  \end{itemize}
+
+  \nl
+
+  \textbf{Autres gens ayant contribu\'{e}s significativement}
+
+  \begin{itemize}
+    \item
+      C\'{e}dric Aubouy
+  \end{itemize}
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Description}
+
+  kaneton est un micro-noyau \`{a} but p\'{e}dagogique
+  d\'{e}velopp\'{e} par le LSE.
+
+  \-
+
+  \begin{itemize}
+  \item
+    Un design compr\'{e}hensible
+  \item
+    Un code clair et comment\'{e}
+  \item
+    Facilement maintenable et portable
+  \item
+    Destin\'{e} au distribu\'{e}
+  \end{itemize}
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Les cours (1)}
+
+  kaneton est aussi un projet en sp\'{e}cialisation SRS et GISTR.\\
+
+  Deux cours :
+
+  \begin{itemize}
+  \item
+    Noyaux et syst\`{e}mes d'exploitation
+  \item
+    Architecture des microprocesseurs
+  \end{itemize}
+
+  \-
+
+  Cinq projets en SRS :
+
+  \begin{itemize}
+  \item
+    K0 : le bootstrap
+  \item
+    K1 : la m\'{e}moire
+  \item
+    K2 : les \'{e}v\'{e}nements
+  \item
+    K3 : les process et l'ordonnancement
+  \item
+    K4 : les IPC
+  \end{itemize}
+
+  \-
+
+  Deux projets en GISTR :
+
+  \begin{itemize}
+  \item
+    KG0 : les \'{e}v\'{e}nements et les I/O
+  \item
+    KG1 : les process et l'ordonnancement
+  \end{itemize}
+
+  \-
+
+  Ces cours et projets concernent au total une quarantaine de
+  personnes.
+
+\end{frame}
+
+
+% -)
+
+\begin{frame}
+  \frametitle{Les cours (2)}
+
+  Le p\^{o}le kernel du LSE dispense aussi les cours d'introduction
+  aux noyaux et programmation syst\`{e}me aux Ing1 (projet connu sous
+  le nom ``K'').
+
+  \-
+
+  Environ 60 \'{e}tudiants de la promotion 2008 ont suivi cette option.
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{La pr\'{e}sentation de ce soir}
+
+  \begin{itemize}
+  \item
+    Introduit le design de kaneton
+  \item
+    Pr\'{e}sente ce qui a \'{e}t\'{e} cod\'{e}
+  \item
+    Liste de ce qu'il reste a faire
+  \end{itemize}
+\end{frame}
+
+%
+% microkernels
+%
+
+\section{Les micro-noyaux}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Les micro-noyaux}
+
+  \begin{itemize}
+  \item
+    $\leftrightarrow$ noyaux monolithiques
+  \item
+    $\leftrightarrow$ exo-noyaux
+  \item
+    Conception modulaire en services
+  \item
+    Fonctionnement de ces services en \emph{userland}
+  \item
+    Communication inter-processus omnipr\'{e}sente (IPC)
+  \end{itemize}
+
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_01}
+  \end{center}
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_02}
+  \end{center}
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_03}
+  \end{center}
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_04}
+  \end{center}
+\end{frame}
+
+% 10)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_05}
+  \end{center}
+\end{frame}
+
+% 11)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_06}
+  \end{center}
+\end{frame}
+
+% 12)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_07}
+  \end{center}
+\end{frame}
+
+% 13)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_08}
+  \end{center}
+\end{frame}
+
+% 14)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_09}
+  \end{center}
+\end{frame}
+
+% 15)
+
+\begin{frame}
+  \frametitle{Microkernel example}
+
+  \begin{center}
+    \pgfuseimage{microkernel_example_10}
+  \end{center}
+\end{frame}
+
+% 16)
+
+%
+% kaneton design
+%
+
+\section{Le design de kaneton}
+
+% 17)
+
+\begin{frame}
+  \frametitle{Fonctions remplies par kaneton}
+
+  Le micro-noyau kaneton fourni les fonctionnalit\'{e}s suivants :
+
+  \begin{itemize}
+  \item
+    Gestion de la m\'emoire
+  \item
+    Gestion des \'ev\'enements et des I/O
+  \item
+    Gestion des processus
+  \item
+    Communication inter-processus
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Le \emph{set} manager}
+
+La gestion des structures de donne\'es d'un noyau g\'en\`ere beaucoup de code.
+
+M\'elanger ce code avec celui de l'impl\'ementation des algorithmes eux-m\^emes
+conduit \`a plusieurs inconv\'enients :
+
+  \begin{itemize}
+    \item un code lourd
+    \item un code redondant
+    \item un code complexe
+  \end{itemize}
+
+  \-
+
+  Finalement, les algorithmes deviennent plus difficiles \`a comprendre et \`a
+  programmer.
+
+  \-
+
+  kaneton consid\`ere qu'un algorithme n'a pas besoin de savoir comment est
+  impl\'ement\'ee une file, tant qu'il la voit comme une file.
+
+  \-
+
+  kaneton fournit une interface consacr\'ee \`a la gestion des structures de
+  donn\'ees du noyau: le {\bf set manager}.
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le \emph{set} manager}
+
+  Le set manager fournit une interface tr\`es simple pour cr\'eer, stocker et
+  organiser les structures-objet de kaneton. Voici les diff\'erents types de
+  sets qu'elle impl\'emente d\'ej\`a :
+
+  \-
+
+  \begin{center}
+    \pgfuseimage{set}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le \emph{set} manager}
+
+  Avantages du set manager:
+
+  \begin{itemize}
+    \item
+    minimise les risques d'erreur
+    \item
+    maximise le temps pass\'e dans l'impl\'ementation de l'algorithme
+    lui-m\^eme
+    \item
+    offre la possibilit\'e de tester facilement un m\^eme algorithme avec
+    plusieurs mod\`eles de structures de donn\'ees
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Le \emph{set} manager : un exemple}
+
+  Voici un mor\c{c}eau de code de l'allocateur de m\'{e}moire physique :
+
+  \begin{verbatim}
+o_segment*      current;
+t_iterator      i;
+
+set_foreach(SET_OPT_FORWARD, segment->segments, &i, state)
+  {
+    o_segment   *next;
+    t_iterator  j;
+
+    set_object(segment->segments, i, (void**)&current);
+
+    if (set_next(segment->segments, i, &j) != ERROR_NONE)
+      break;
+
+    set_object(segment->segments, j, (void**)&next);
+
+    if ((next->address - (current->address + current->size)) >= size)
+      {
+        *address = current->address + current->size;
+
+         return (ERROR_NONE);
+      }
+  }
+  \end{verbatim}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+ \frametitle{Les managers}
+
+  \begin{center}
+    \pgfuseimage{manager}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Les managers : portabilit\'e}
+
+   3 fa\c{c}ons d'aborder la portabilit\'e des managers:
+
+   \begin{itemize}
+   \item
+     Impl\'ementer chaque manager pour chaque architecture
+   \item
+     D\'efinir une interface g\'en\'erale et l'impl\'ementer pour chaque architecture
+   \item
+     Impl\'ementer un seul manager haut niveau; et permettre l'appel d'une partie sp\'ecifique
+     \`a l'architecture si n\'ecessaire
+   \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+ \frametitle{Les managers}
+
+  \begin{itemize}
+    \item set manager
+    \item id manager
+    \item as manager
+    \item segment manager
+    \item region manager
+    \item map manager
+    \item event manager
+    \item timer manager
+    \item thread manager
+    \item task manager
+    \item io manager
+    \item schedule manager
+    \item message manager
+    \item capability manager
+    \item interface manager
+    \end{itemize}
+
+\end{frame}
+
+
+% -)
+
+\begin{frame}
+  \frametitle{Gestion de la m\'{e}moire}
+
+  kaneton offre des primitives pour g\'{e}rer la m\'{e}moire physique et la
+  m\'{e}moire virtuelle \`{a} travers le segment manager, le region manager et
+  enfin l'as manager.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{as, segment et region}
+
+  \begin{center}
+    \pgfuseimage{vmem}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le mapping}
+
+  \begin{center}
+    \pgfuseimage{vmem_overlap}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{L'allocation non contig\"{u}e}
+
+  \begin{center}
+    \pgfuseimage{vmem_contiguous}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le partage}
+
+  \begin{center}
+    \pgfuseimage{vmem_sharing}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Pourquoi une telle gestion de la m\'{e}moire ?}
+
+  \begin{itemize}
+  \item
+    Proteger les donn\'{e}es entres les processus\ldots
+  \item
+    \ldots{} tout en permettant le partage de certaines zones
+  \item
+    Optimiser l'allocation de la m\'{e}moire physique
+  \item
+    Permettre l'utilisation de programmes contenant des adresses absolues
+  \item
+    Avoir \`{a} disposition plus de m\'{e}moire qu'il n'y en a (\emph{swapping})
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Ev\`{e}nements}
+
+  \begin{center}
+    \pgfuseimage{event}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{I/O}
+
+  Les I/O sont le seul moyen de dialoguer avec les p\'{e}riph\'{e}riques. On
+  distingue deux types d'I/O :
+
+  \begin{itemize}
+  \item
+    Les PIO (\emph{Processor's I/O})
+  \item
+    Les I/O mapp\'{e}es en m\'{e}moire
+  \end{itemize}
+
+  \-
+
+  Un micro-noyau est con\c{c}u pour \^{e}tre extr\^{e}mement stable. Il faut
+  donc assurer que n'importe quel programme ne peut dialoguer avec un
+  p\'{e}riph\'{e}rique. Imagin\'{e} qu'un programme UNIX classique puisse
+  contr\^{o}ller le bus IDE et ainsi envoyer des commandes \`{a} vos disques
+  durs\ldots.
+
+  \-
+
+  Le I/O manager permet ainsi d'autoriser ou non certains processus \`{a}
+  effectuer des I/O.
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{T\^{a}ches et threads}
+
+  Une t\^{a}che est un ensemble \verb|{| \emph{as}, \emph{threads}
+  \verb|}|.
+
+  \begin{center}
+    \pgfuseimage{task}
+  \end{center}
+
+  Une t\^{a}che est juste un conteneur, ce qui s'\'{e}xecute vraiment
+  ce sont les threads.
+
+  \-
+
+  Dans un noyau classique, une t\^{a}che contient aussi d'autres
+  donn\'{e}es : table de \emph{file-descriptors}, identifiants divers
+  (pid, ppid\ldots). Dans un micro-noyau, ces informations sont
+  stock\'{e}es dans les services appropri\'{e}s.
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{T\^{a}ches et threads}
+
+  Un thread est une image des registres du microprocesseur (appel\'{e}
+  contexte) \`{a} un instant donn\'{e}.
+
+  \-
+
+  Les registres du microprocesseur englobent :
+
+  \begin{itemize}
+  \item
+    Le compteur ordinal
+  \item
+    Le pointeur de pile
+  \item
+    Les registres g\'{e}n\'{e}raux
+  \item
+    Le contexte FPU
+  \item
+    Les registres sp\'{e}cifiques (exemple: registres SSE sur Pentium III)
+  \item
+    Les registres privil\'{e}gi\'{e}s
+  \end{itemize}
+
+  \-
+
+  Ainsi, un thread correspond \`{a} l'image d'un fil d'\'{e}xecution.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{La permutation de contextes}
+
+  Permuter un contexte consiste \`{a} :
+
+  \begin{itemize}
+  \item
+    Sauvergarder le contexte courant
+  \item
+    Mettre en place un contexte (nouveau ou ancien)
+  \end{itemize}
+
+  \-
+
+  Un microprocesseur mono-coeur et mono-thread ne peut \'{e}xecuter
+  qu'un seul thread simultan\'{e}ment. Le principe de permutation de
+  contextes permet en \'{e}troite collaboration avec l'ordonnanceur de
+  cr\'{e}er une illusion de parallelisme.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{L'ordonnanceur}
+
+  kaneton dispose d'un ordonnanceur permettant l'ex\'{e}cution
+  simultan\'{e}e de plusieurs threads.
+
+  Cet ordonnanceur est pr\'{e}emptif, \'{e}quitable et avec gestion de
+  priorit\'{e}s. L'algorithme utilis\'{e} est un \emph{multilevel
+  feedback queues} (\`{a} l'instar de GNU/Linux).
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq1}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq2}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq3}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq4}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq5}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq6}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq7}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le multilevel feedback queue}
+
+  \begin{center}
+    \pgfuseimage{mfq1}
+  \end{center}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{La priorisation dynamique}
+
+  Le terme \emph{feedback} a pour origine le principe de
+  modification dynamique des priorit\'{e}s.
+
+  \begin{itemize}
+  \item
+    Les threads \emph{I/O-bound} sont pouss\'{e}es vers le debut de la
+    file active sans que leur timeslice ne soit modifi\'{e}. Ceci permet
+    de leur offrir une meilleur r\'{e}activit\'{e}.
+  \item
+    Les threads \emph{CPU-bound} sont pouss\'{e}s vers la fin de la file
+    et leur timeslice ne bouge pas non plus. Ainsi, ils s'\'{e}xecutent en
+    tâche de fond sans perdre de leur temps d'\'{e}xecution.
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le support multiprocesseur}
+
+  Nous pr\'{e}voyons que kaneton puisse tirer parti des diff\'{e}rents
+  microprocesseurs dans un syst\`{e}me multiprocesseur.
+
+  \-
+
+  Dans un syst\`{e}me multiprocesseur sym\'{e}trique (SMP),
+  l'ordonnanceur disposera d'une file de threads actifs pour chaque
+  microprocesseur.
+
+  Le cpu manager permettra d'effectuer du \emph{load balancing} et de
+  la migration de t\^{a}ches d'un processeur \`{a} un autre.
+
+  \-
+
+  Le gestionnaire de m\'{e}moire devra lui aussi subir des
+  modifications afin d'assurer dans tout le syst\`{e}me la
+  coh\'{e}rence des espaces d'adressages.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Les IPC}
+
+  Comme dit pr\'{e}cedement, les IPC (\emph{Inter-Process Communication})
+  ont un r\^{o}le critique dans un micro-noyau.
+
+  \-
+
+  Les seules IPC g\'{e}r\'{e}e directement par le noyau sont les messages
+  adress\'{e}s, c'est-\`{a}-dire l'envoi et la r\'{e}ception de buffers entre deux
+  t\^{a}ches donn\'{e}es. Toutes les autres formes d'IPC (semaphores, mutex,
+  conditions, barri\`{e}res\ldots) seront construites au dessus des
+  messages.
+
+  \-
+
+  Il existe 2 cat\'{e}gories de messages :
+
+  \begin{itemize}
+    \item
+      Les messages synchrones, qui suivent un sch\'{e}ma de
+      ``rendez-vous'' et dont aucune bufferisation c\^{o}t\'{e} noyau n'est
+      requise ;
+    \item
+      Les messages asynchrones, qui peuvent survenir \`{a} tout instant,
+      n\'{e}cessitant leur bufferisation dans une file du c\^{o}t\'{e} du noyau.
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Les IPC dans un syst\`{e}me distribu\'{e}}
+
+  Dans un syst\`{e}me distribu\'{e}, les IPC peuvent avoir lieu entre
+  des t\^{a}ches s'\'{e}xecutant sur deux machines diff\'{e}rentes.
+
+  \-
+
+  Afin d'assurer la gestion des permissions lors de telles IPC,
+  kaneton utilisera un syst\`{e}me de capabilities. Une capability est une
+  structure int\'{e}grant :
+
+  \begin{itemize}
+  \item
+    L'identifiant d'un objet ;
+  \item
+    Les permissions associ\'{e}es \`{a} cet objet ;
+  \item
+    Un champ crypt\'{e} de s\'{e}curit\'{e} rendant impossible la modification de
+  la capability par une autre personne que son cr\'{e}ateur.
+  \end{itemize}
+
+  \-
+
+  De plus, afin d'assurer la s\'{e}curit\'{e} des donn\'{e}es des messages, ces
+  derni\`{e}res seront crypt\'{e}es.
+
+\end{frame}
+
+
+%
+% avancement
+%
+
+\section{Avancement}
+
+% -)
+
+\begin{frame}
+  \frametitle{Le portage IA-32}
+
+  L'architecture Intel IA-32 correspond \`{a} la famille des
+  microprocesseurs Intel du 80386 aux actuels Pentium, ainsi qu'\`{a} tous
+  les autres microprocesseurs estamp\'{e}s ``x86'' (AMD, Cyrix\ldots).
+
+  \-
+
+  kaneton est pratiquement fonctionnel sur ces microprocesseurs. Seuls
+  les IPC manquent. kaneton sur IA-32 offre :
+
+  \begin{itemize}
+  \item
+    Un bootloader fonctionnant au dessus de GRUB ;
+  \item
+    Gestion de la MMU avec segmentation et pagination (espace d'adressage de 4 Go) ;
+  \item
+    Gestion des exceptions, \emph{soft-interrupt} et IRQ (\emph{via} le PIC 8259) ;
+  \item
+    Gestion des permissions sur les I/O (\emph{I/O permission bitmap}) ;
+  \item
+    Gestion des threads et \emph{context switching} ;
+  \item
+    Service int\'{e}gr\'{e} de \emph{timers} gr\^{a}ce au PIT 8254 ;
+  \item
+    Services int\'{e}gr\'{e}s de console, \emph{framebuffer} basse r\'{e}solution et port s\'{e}rie.
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Les tests}
+
+  kaneton \`{a} pour originalit\'{e} d'\^{e}tre 100\% testable. En effet, chacune
+  des fonctionnalit\'{e} du noyau peut-\^{e}tre test\'{e}e, notamment pour assurer
+  la non-regression.
+
+  \-
+
+  De la m\^{e}me mani\`{e}re, puisque kaneton est un projet \`{a} faire par des
+  \'{e}tudiants, ce syst\`{e}me de test nous est aussi utile pour l'\'{e}valuation
+  des rendus.
+
+  \-
+
+  Cette moulinette de test permet notamment de tester le noyau en boot
+  r\'{e}el : une premi\`{e}re machine sur laquelle est lanc\'{e} le script de la
+  moulinette, reli\'{e}e par port s\'{e}rie \`{a} une seconde machine sur laquelle
+  tourne un kaneton qu'on teste.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Les tests}
+
+  La moulinette kaneton est \'{e}crite en \emph{python} (travail original
+  r\'{e}alis\'{e} par Solal Jacob).
+
+  \-
+
+  Une s\'{e}rie de tests, chacun sous forme d'un fichier C portant un nom
+  particulier est alors compil\'{e}e et li\'{e}e avec le binaire du noyau. Ces
+  tests peuvent appeler absolument toutes les fonctions du noyau et on
+  le niveau de privil\`{e}ges maximum.
+
+  \-
+
+  Le fonctionnement global est le suivant :
+
+  \begin{itemize}
+  \item
+    Le script python envoit l'adresse d'un test (une fonction) sur le
+    port s\'{e}rie ;
+  \item
+    La fonction est alors \'{e}xecut\'{e}e par le noyau, les r\'{e}sultats sont
+    renvoy\'{e}s sur le port s\'{e}rie ;
+  \item
+    Le script compare avec le r\'{e}sultat attendu, il y a aussi
+    possibilit\'{e} de scripter afin de parser le r\'{e}sultat ;
+  \item
+    Une trace est \'{e}mise : fichier HTML style uTTK (moulinette des
+    ACUs) et fichier Ruby pour le calcul de la note en fonction des
+    tests pass\'{e}s ou non (toujours dans le style ACU).
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Un test}
+
+  \begin{verbatim}
+void		check_as_02(void)
+{
+  [...]
+
+  ASSERT(task_reserve([...]) == ERROR_NONE, "error creating task\n");
+  ASSERT(as_reserve([...]) == ERROR_NONE, "error creating as\n");
+  ASSERT(segment_reserve([...]) == ERROR_NONE, "error reserving segment\n");
+  ASSERT(region_reserve([...]) == ERROR_NONE, "error reserving region\n");
+
+  ASSERT(segment_get(seg, &oseg) == ERROR_NONE, "error getting segment\n");
+  ASSERT(oseg->segid == seg, "Bad segid field in segment\n");
+  ASSERT(oseg->asid == as, "Bad asid field in segment\n");
+
+  ASSERT(region_get(as, reg, &oreg) == ERROR_NONE, "error getting region\n");
+  ASSERT(oreg->regid == reg, "Bad regid field in region\n");
+  ASSERT(oreg->segid == seg, "Bad segid field in region\n");
+
+  ASSERT(region_release([...]) == ERROR_NONE, "failed to release region\n");
+  ASSERT(segment_release([...]) == ERROR_NONE, "failed to release segment\n");
+  ASSERT(as_release([...]) == ERROR_NONE, "failed to release as\n");
+  ASSERT(task_release([...]) == ERROR_NONE, "failed to release task\n");
+
+  [...]
+}
+  \end{verbatim}
+
+\end{frame}
+
+%
+% projets
+%
+
+\section{Projets}
+
+\begin{frame}
+  \frametitle{Les choses \`{a} faire}
+
+  \begin{itemize}
+  \item
+    Le portage sur architecture MIPS et eventuellement SPARC
+  \item
+    Version optimis\'{e} du portage IA-32
+  \item
+    Version utilisant la segmentation uniquement pour la m\'{e}moire virtuelle
+  \item
+    Le multiprocesseur sym\'{e}trique (SMP)
+  \item
+    Les pilotes
+  \item
+    Une couche r\'{e}seau
+  \item
+    Un Virtual Filesystem Switch (VFS)
+  \item
+    Une librairie d'\'{e}mulation UNIX
+  \item
+    Les services distribu\'{e}s : partage de m\'{e}moire, des
+    p\'{e}riph\'{e}riques, migration de process\ldots
+  \item
+    Am\'{e}liorer la moulinette : injection distante de code, acc\`{e}s au
+    contexte, exploration de la m\'{e}moire, \emph{rollback}\ldots
+  \item
+    Am\'{e}liorer les algorithmes du noyau : allocation de
+    m\'{e}moire, ordonnancement\ldots
+  \end{itemize}
+
+\end{frame}
+
+%
+% ce que nous cherchons
+%
+
+\section{Ce que nous cherchons}
+
+\begin{frame}
+
+  \textbf{Deux \'{e}tudiants, de l'Ing1 \`{a} l'Ing3}.
+
+  \begin{itemize}
+  \item
+    Pour maintenir et faire \'{e}voluer le projet
+  \item
+    Pour donner les cours aux Ing1 (en 2007)
+  \item
+    Pour donner les cours de sp\'{e}cialisation (en 2008)
+  \end{itemize}
+
+  Ces \'{e}tudiants int\'{e}greront le Laboratoire Syst\`{e}me \& S\'{e}curit\'{e}
+  d'EPITA/EPITECH (LSE) de Janvier jusqu'\`{a} la fin de leur scolarit\'{e}.
+
+  \-
+
+  kaneton est un projet qui demande beaucoup de temps. Nous cherchons
+  deux personnes motiv\'{e}s et ayant un bon niveau g\'{e}n\'{e}ral. Il n'est pas
+  envisageable de postuler pour finalement quitter l'\'{e}quipe deux mois
+  apr\`{e}s.
+
+\end{frame}
+
+\end{document}
