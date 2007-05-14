@@ -40,10 +40,11 @@ SUBDIRS			:=		curriculum			\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
-
 view:
 	$(call launch,$(_VIEW_SCRIPT_),$*,)				; \
+
+all:
+	$(call launch,Makefile,$(SUBDIRS),,)
 
 clear:
 	$(call launch,Makefile,$(SUBDIRS),clear,)

@@ -29,7 +29,15 @@ include			../../../../env/.env.mk
 
 PAPER			:=		ia32-virtual
 
-SOURCES			:=		
+SOURCES			:=		bibliography.tex		\
+					bootloader.tex			\
+					event.tex			\
+					ia32-virtual.tex		\
+					io.tex				\
+					memory.tex			\
+					overview.tex			\
+					references.tex			\
+					task.tex			
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
@@ -42,7 +50,7 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build view
+all:			build
 
 view:
 	$(call view,$(PAPER),)
