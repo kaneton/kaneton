@@ -644,10 +644,10 @@ define compile-tex
     esac								; \
   done									; \
   $(call pretty-printer,green,COMPILE-TEX,$(1),		)		; \
-  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			\
-                -o $(1).pdf $(_VERBOSE_)				; \
-  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			\
-                -o $(1).pdf $(_VERBOSE_)
+  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			; \
+  bibtex $(1)								; \
+  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			; \
+  $(_PDFLATEX_) $${compile_tex_options} $(1).tex
 endef
 
 #

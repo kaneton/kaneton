@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...ile/environment/behaviour/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [sun may 13 13:48:55 2007]
+# updated       julien quintard   [mon may 14 19:14:26 2007]
 #
 
 #
@@ -473,10 +473,10 @@ define compile-tex
     esac								; \
   done									; \
   $(call display,green,COMPILE-TEX,$(1),		)		; \
-  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			\
-                -o $(1).pdf				; \
-  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			\
-                -o $(1).pdf
+  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			; \
+  $(_BIBTEX_) $(1).tex							; \
+  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			; \
+  $(_PDFLATEX_) $${compile_tex_options} $(1).tex
 endef
 
 #
