@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/exam/kernels/Makefile
+# file          /home/mycure/kaneton/view/exam/kernels/2007/Makefile
 #
 # created       julien quintard   [mon may 14 21:34:22 2007]
-# updated       julien quintard   [mon may 14 21:54:41 2007]
+# updated       julien quintard   [mon may 14 21:55:38 2007]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,7 +27,8 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		2007				
+SUBDIRS			:=		t5				\
+					t6				
 
 #
 # ---------- rules ------------------------------------------------------------

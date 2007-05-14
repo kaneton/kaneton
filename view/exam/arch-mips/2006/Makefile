@@ -1,19 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/view/exams/Makefile
-##
-## created       julien quintard   [sat dec  3 22:53:10 2005]
-## updated       matthieu bucchianeri   [fri feb  9 00:13:05 2007]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/view/exam/arch-mips/2006/Makefile
+#
+# created       julien quintard   [mon may 14 21:34:22 2007]
+# updated       julien quintard   [mon may 14 21:41:23 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -25,8 +27,8 @@ include			../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		arch-mips			\
-					kernels
+SUBDIRS			:=		mid				\
+					final				
 
 #
 # ---------- rules ------------------------------------------------------------

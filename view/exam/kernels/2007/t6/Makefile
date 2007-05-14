@@ -27,9 +27,15 @@ include			../../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		final
+PAPER			:=		t6
 
-SOURCES			:=		final.tex			
+SOURCES			:=		t6.tex				\
+					annex.tex			\
+					fpu.tex				\
+					interrupts.tex			\
+					mistakes.tex			\
+					scheduling.tex			\
+					sleep_wakeup.tex		
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\

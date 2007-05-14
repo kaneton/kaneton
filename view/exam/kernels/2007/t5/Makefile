@@ -27,9 +27,14 @@ include			../../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		final
+PAPER			:=		t5
 
-SOURCES			:=		final.tex			
+SOURCES			:=		t5.tex				\
+					annex.tex			\
+					asm.tex				\
+					buddy.tex			\
+					cow.tex				\
+					region_mips.tex			
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\

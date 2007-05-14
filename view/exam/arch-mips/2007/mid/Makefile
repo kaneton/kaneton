@@ -1,17 +1,14 @@
 ##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/view/lectures/arch-mips
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Fri Nov 18 20:47:51 2005   mycure
+## ---------- header ----------------------------------------------------------
+##
+## project       kaneton
+##
+## license       kaneton
+##
+## file          /home/mycure/kaneton/view/books/ia32-virtual/Makefile
+##
+## created       julien quintard   [sat oct 14 11:07:49 2006]
+## updated       julien quintard   [sat oct 14 11:08:09 2006]
 ##
 
 #
@@ -24,7 +21,7 @@ include			../../../../../env/.env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all view build subject correction clear
+.PHONY:		all view build clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -32,23 +29,22 @@ include			../../../../../env/.env.mk
 
 PAPER			:=		mid
 
-GARBAGE			:=		$(PAPER).aux			\
-					$(PAPER).log			\
-					$(PAPER).nav			\
-					$(PAPER).out			\
-					$(PAPER).snm			\
-					$(PAPER).toc			\
-					$(PAPER).dvi			\
-					$(PAPER).ps			\
-					$(PAPER).pdf			
+SOURCES			:=		mid.tex				
+
+GARBAGE			:=		$(SOURCES:.tex=.aux)		\
+					$(SOURCES:.tex=.log)		\
+					$(SOURCES:.tex=.toc)		\
+					$(SOURCES:.tex=.pdf)		\
+					$(SOURCES:.tex=.bbl)		\
+					$(SOURCES:.tex=.blg)		
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build view
+all:			build
 
-view:
+view:			build
 	$(call view,$(PAPER),)
 
 build:			correction
