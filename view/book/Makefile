@@ -30,12 +30,11 @@ include			../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		assignments			\
-					kaneton				\
-					arch-ia32-virtual		\
-					assignments-k1			\
-					assignments-k2			\
-					assignments-k3
+SUBDIRS			:=		arch-ia32			\
+					arch-mips64			\
+					assignments			\
+					development			\
+					kaneton				
 
 #
 # ---------- rules ------------------------------------------------------------
