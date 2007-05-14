@@ -160,7 +160,7 @@ void			kaneton(t_init*				bootloader)
 #endif
 
   while(1)
-    ;
+    interface_loop();
 
   cons_msg('#', "kaneton is stopping...\n");
 

@@ -671,9 +671,9 @@ t_error			sched_remove(i_thread			thread)
   if (!removed)
     {
       p = 0;
-      set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
+      set_foreach(SET_OPT_FORWARD, ent->expired, &i, st)
 	{
-	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
+	  if (set_object(ent->expired, i, (void**)&queue) != ERROR_NONE)
 	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
 	  if (prio == p)

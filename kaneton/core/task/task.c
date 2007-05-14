@@ -99,13 +99,27 @@ t_error			task_current(i_task*			tsk)
 t_error			task_show(i_task			id)
 {
   o_task*		o;
+  char*			state;
 
   TASK_ENTER(task);
 
   if (task_get(id, &o) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
-  cons_msg('#', "  task %qd: running on cpu %qd\n", id, o->cpuid);
+  switch (o->sched)
+    {
+      case SCHED_STATE_STOP:
+	state = "stopped";
+	break;
+      case SCHED_STATE_RUN:
+	state = "running";
+	break;
+      default:
+	state = "other";
+	break;
+    }
+
+  cons_msg('#', "  task %qd: %s on cpu %qd\n", id, state, o->cpuid);
 
   if (machdep_call(task, task_show, id) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
