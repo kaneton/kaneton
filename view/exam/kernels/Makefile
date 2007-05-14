@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/view/exams/kernels/Makefile
-##
-## created       julien quintard   [sat dec  3 22:53:10 2005]
-## updated       matthieu bucchianeri   [fri feb  9 00:13:40 2007]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/view/exam/kernels/Makefile
+#
+# created       julien quintard   [mon may 14 21:34:22 2007]
+# updated       julien quintard   [mon may 14 21:50:50 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -25,7 +27,8 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		2007-t5
+SUBDIRS			:=		2007-t5				\
+					2007-t6				
 
 #
 # ---------- rules ------------------------------------------------------------
