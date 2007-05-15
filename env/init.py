@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/init.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [sun may 13 12:17:33 2007]
+# updated       julien quintard   [tue may 15 21:04:38 2007]
 #
 
 #
@@ -40,7 +40,7 @@ def			warning():
               "  host:                   " + env._HOST_,
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
-              "  plateform:              " + env._PLATEFORM_,
+              "  platform:              " + env._PLATFORM_,
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  architecture:           " + env._ARCHITECTURE_,
@@ -57,16 +57,16 @@ def			warning():
 #
 # machine()
 #
-# this function installs the links to the plateform and architecture
+# this function installs the links to the platform and architecture
 # dependent files and directories.
 def			machine():
   env.display(env.HEADER_OK,
               "installing links to machine-dependent directories",
               env.OPTION_NONE)
 
-  env.remove(env._CORE_PLATEFORM_DIR_, env.OPTION_NONE)
-  env.link(env._CORE_PLATEFORM_DIR_,
-           env._PLATEFORM_CORE_DIR_,
+  env.remove(env._CORE_PLATFORM_DIR_, env.OPTION_NONE)
+  env.link(env._CORE_PLATFORM_DIR_,
+           env._PLATFORM_CORE_DIR_,
            env.OPTION_NONE)
 
   env.remove(env._CORE_ARCHITECTURE_DIR_, env.OPTION_NONE)
@@ -74,9 +74,9 @@ def			machine():
            env._ARCHITECTURE_CORE_DIR_,
            env.OPTION_NONE)
 
-  env.remove(env._INCLUDE_PLATEFORM_DIR_, env.OPTION_NONE)
-  env.link(env._INCLUDE_PLATEFORM_DIR_,
-           env._PLATEFORM_INCLUDE_DIR_, env.OPTION_NONE)
+  env.remove(env._INCLUDE_PLATFORM_DIR_, env.OPTION_NONE)
+  env.link(env._INCLUDE_PLATFORM_DIR_,
+           env._PLATFORM_INCLUDE_DIR_, env.OPTION_NONE)
 
   env.remove(env._INCLUDE_ARCHITECTURE_DIR_, env.OPTION_NONE)
   env.link(env._INCLUDE_ARCHITECTURE_DIR_,
@@ -161,7 +161,7 @@ def			main():
   # display the current configuration and ask the user to continue.
   warning()
 
-  # install the chosen machine: plateform/architecture.
+  # install the chosen machine: platform/architecture.
   machine()
 
   # check the presence of the binaries used by the behaviour profile.

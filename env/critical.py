@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [thu may 10 16:01:36 2007]
+# updated       julien quintard   [tue may 15 21:04:04 2007]
 #
 
 #
@@ -328,7 +328,7 @@ def			main():
   global g_contents
   architecture = None
   source_dir = None
-  plateform = None
+  platform = None
   contents = None
   machine = None
   python = None
@@ -339,7 +339,7 @@ def			main():
   user = os.getenv("KANETON_USER")
   host = os.getenv("KANETON_HOST")
   python = os.getenv("KANETON_PYTHON")
-  plateform = os.getenv("KANETON_PLATEFORM")
+  platform = os.getenv("KANETON_PLATFORM")
   architecture = os.getenv("KANETON_ARCHITECTURE")
 
   # check the presence of the shell environment variable.
@@ -352,8 +352,8 @@ def			main():
   if python == None:
     error("the shell environment variable KANETON_PYTHON is not set")
 
-  if plateform == None:
-    error("the shell environment variable KANETON_PLATEFORM is not set")
+  if platform == None:
+    error("the shell environment variable KANETON_PLATFORM is not set")
 
   if architecture == None:
     error("the shell environment variable KANETON_ARCHITECTURE is not set")
@@ -367,8 +367,8 @@ def			main():
                                                       architecture + "/",
                    "profile/kaneton/",
                    "profile/kaneton/core/",
-                   "profile/kaneton/plateform/",
-                   "profile/kaneton/plateform/" + plateform + "/",
+                   "profile/kaneton/platform/",
+                   "profile/kaneton/platform/" + platform + "/",
                    "profile/kaneton/architecture/",
                    "profile/kaneton/architecture/" + architecture + "/",
                    "profile/user/",
