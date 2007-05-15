@@ -1,15 +1,15 @@
-##
-## ---------- header ----------------------------------------------------------
-##
-## project       kaneton
-##
-## license       kaneton
-##
-## file          /home/mycure/kaneton/view/books/ia32-virtual/Makefile
-##
-## created       julien quintard   [sat oct 14 11:07:49 2006]
-## updated       julien quintard   [sat oct 14 11:08:09 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/view/feedback/kernels/Makefile
+#
+# created       julien quintard   [tue may 15 21:52:06 2007]
+# updated       julien quintard   [tue may 15 21:52:20 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -27,9 +27,9 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		kaneton
+PAPER			:=		kernels
 
-SOURCES			:=		kaneton.tex			
+SOURCES			:=		kernels.tex
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
@@ -41,6 +41,8 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 #
 # ---------- rules ------------------------------------------------------------
 #
+
+XXX:
 
 all:			build
 
