@@ -1,0 +1,213 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/development/development.tex
+%
+% created       julien quintard   [mon may 14 19:56:45 2007]
+% updated       julien quintard   [wed may 16 21:42:55 2007]
+%
+
+%
+% path
+%
+
+\newcommand{\path}{../..}
+
+%
+% template
+%
+
+\input{\path/template/book.tex}
+
+%
+% header
+%
+
+\lhead{\scriptsize{The kaneton microkernel project reference}}
+\rhead{}
+
+%
+% title
+%
+
+\title{The kaneton microkernel reference $_{beta}$
+       \logos}
+
+%
+% authors
+%
+
+\author{\small{Julien Quintard}}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+This document describes how people can contribute to the kaneton microkernel
+project and the rules they have to follow.
+
+This document must be read by everyone involved in the kaneton microkernel
+project.
+
+All the kaneton documents are available on
+the official website
+  \footnote{http://www.kaneton.org}.
+
+%
+% toc
+%
+
+\tableofcontents
+
+%
+% chapters
+%
+
+\include{introduction}
+%\include{community}
+%\include{source-tree}
+%\include{development-environment}
+%\include{coding}
+%\include{licenses}
+%\include{bibliography}
+
+\end{document}
+
+%
+% ---------- intro ------------------------------------------------------------
+%
+
+kaneton est un projet pedagogique -> code clair, documente, cours etc..
+
+un point tres important est la clarete du code. cela implique une rigeur
+exceptionnel de la part des developpeurs.
+
+le projet est compose du code du kernel, d'un certain nombre de scripts
+et makefiles pour faciliter bcp d'operations et de documentations.
+
+ce document decrit donc en profondeurs les regles qu'un contributeur doit
+absolument suivre mais revient egalement sur la philisophie d'un travail
+communautaire qui implique un comportement exemplaire de la part de
+chaque developpeurs.
+
+%
+% ---------- community --------------------------------------------------------
+%
+
+regles communautaire.
+
+-- comportement
+
+mieux plutot que meilleur
+
+savoir participer en faisant des trucs moins cool que d'autres car ca
+doit etre fait
+
+...
+
+le projet dispose de certains outils pour effectuer le minimum vital:
+outils de comm interne, dev communautaire, outils de comm ext, gestion
+de taches.
+
+%
+% ---------- tools ------------------------------------------------------------
+%
+
+regles concernant les outils.
+
+-- communication
+
+parceque c'est chiant d'avoir plusieurs outils de comm mail, news, forum
+et que tout le monde dispose d'un mail, on utilise une ml.
+
+comportement tres important sur une ml: eviter les trolls, repondre
+en suvant la netiquette, participer en donnant son avis etc..
+
+pour la communication temps-reel, un serveur irc pourrait etre mis en
+place mais ce n'est pas le cas actuellemeent. si vous en ressentez le
+desir, proposez l'idee sur la ml. dans tous les cas, cela ne sera pas
+obligatoire.
+
+de maniere generale, des outils libres, pre-fournis et simple d'utilisation
+seront privlegies. ainsi google fournit un certains nombre d'outils que
+kaneton utilise: gmail opur les mails si vous le desirez, googlegroup pour
+la ml, project hosting pour le projet ..
+
+-- repository
+
+le repository est l'outil le plus important du projet puisque tout y
+est stocke, le code bien sur mais egalement les documentations, les
+projets des etudiants au fil des annees ...
+
+le repository actuel contient toute l'histoire du projet kaneton depuis
+le premier jour jusqu'a aujourdhui. nous utilisons subversion car a l'epoque
+c'etait de loin le meilleur outil, son concurrent CVS etant deja trop
+limite.
+
+durant les premieres annees aucune normalisation de l'utilisation du
+repository ne fut instauree. maintenant, les commits doivent suivre une
+procedure praticuliere qui implique un descriptif normalise.
+
+de plus l'organisation du repository est tres tres important et chaque ajout
+doit etre fait intelligemment afin d'eviter que quelqu'un soit oblige de
+repasser derriere pour reparer ces erreurs.
+
+-- wiki
+
+le wiki contient trois parties: une partie publique et deux wikis: un pour
+les etudiants et un pour les developpeurs.
+
+le wiki kaneton.org doit etre utilise en priorite du wiki associe avec
+le systeme de tickets etc..
+
+participer au wiki est tres important puisqu'il permet de mettre en avant
+l'evolution du projet.
+
+neanmoins suivant le nombre de developpeurs impliques il est normal que
+certains soient moins actifs que d'autres mais neanmoins participer a
+la documentation et donc au wiki est aussi important que le code lui-meme.
+
+-- tickets
+
+le systeme de tickets/bugs est egalement tres important. chaque ticket se
+voit affecte une priorite et il est important de comprendre que pour le
+bien global du projet, un developpeur ne peut se contenter de faire ce
+qui lui plait, il se doit de contribuer egalement a la resolution de problemes.
+
+encore une fois les tickets doivent suivre une norme.
+
+%
+% ---------- languages --------------------------------------------------------
+%
+
+pour chaque language explique les regles: header, commentaire etc..
+
+-- c
+
+-- make
+
+-- python
+
+-- latex
+
+figures in .fig
+
+-- asm
+
+-- shell
