@@ -1,19 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/view/template/Makefile
-##
-## created       julien quintard   [sat dec  3 22:53:10 2005]
-## updated       julien quintard   [sat dec  3 22:55:36 2005]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/view/template/Makefile
+#
+# created       julien quintard   [wed may 16 18:08:19 2007]
+# updated       julien quintard   [wed may 16 18:08:22 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -28,7 +30,6 @@ include			../../env/.env.mk
 all:
 
 clear:
-	$(call purge)
 
 proto:
 
