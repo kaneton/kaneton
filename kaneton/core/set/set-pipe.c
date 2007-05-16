@@ -378,9 +378,8 @@ t_error			set_add_pipe(i_set			setid,
 }
 
 /*
- * this function just returns an error.
- *
- * use set_pop_pipe instead.
+ * this function just calls the corresponding function for the ll set
+ * underlying implementation.
  */
 
 t_error			set_remove_pipe(i_set			setid,
