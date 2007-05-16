@@ -1,21 +1,23 @@
 ---
 -
-  manager: segment
+  manager: map
   interface:
-    -
-      operation: perms
-      argument:
-        - i_segment
-        - t_perms
-    -
-      operation: get
-      argument:
-        - i_segment
-        - (out) o_segment**
     -
       operation: reserve
       argument:
-        - i_as
-        - t_psize
+        - (capability)
+        - t_opts
+        - t_vsize
         - t_perms
-        - (out) i_segment*
+        - (out) t_vaddr*
+    -
+      operation: release
+      argument:
+        - (capability)
+        - t_vaddr
+    -
+      operation: get
+      argument:
+        - (capability)
+        - (out) o_map**
+
