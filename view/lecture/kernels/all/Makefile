@@ -1,12 +1,14 @@
 ##
-## licence       kaneton licence
+## ---------- header ----------------------------------------------------------
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/view/lectures/kernels/interrupts/Makefile
+## license       kaneton
 ##
-## created       matthieu bucchianeri   [tue dec 26 17:58:59 2006]
-## updated       matthieu bucchianeri   [tue dec 26 18:13:26 2006]
+## file          /home/mycure/kaneton/view/books/ia32-virtual/Makefile
+##
+## created       julien quintard   [sat oct 14 11:07:49 2006]
+## updated       julien quintard   [sat oct 14 11:08:09 2006]
 ##
 
 #
@@ -25,34 +27,37 @@ include			../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		kernel
+PAPER			:=		kernels
 
-GARBAGE			:=		$(PAPER).aux			\
-					$(PAPER).log			\
-					$(PAPER).nav			\
-					$(PAPER).out			\
-					$(PAPER).snm			\
-					$(PAPER).toc			\
-					$(PAPER).dvi			\
-					$(PAPER).ps			\
-					$(PAPER).pdf
+SOURCES			:=		kernels.tex		
+
+GARBAGE			:=		$(SOURCES:.tex=.aux)		\
+					$(SOURCES:.tex=.log)		\
+					$(SOURCES:.tex=.toc)		\
+					$(SOURCES:.tex=.pdf)		\
+					$(SOURCES:.tex=.bbl)		\
+					$(SOURCES:.tex=.blg)		\
+					$(SOURCES:.tex=.nav)		\
+					$(SOURCES:.tex=.out)		\
+					$(SOURCES:.tex=.snm)		
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:	build view
+all:			build
 
-view:
+view:			build
 	$(call view,$(PAPER),)
 
-build:	figures
-	$(call compile-tex,$(PAPER))
-
-figures:
-	./figlink.sh
+build:
+	$(call paper,$(PAPER))
 
 clear:
 	$(call remove,$(GARBAGE),)
-	$(call remove,figures,)
+
 	$(call purge)
+
+# XXX
+figures:
+	./figlink.sh
