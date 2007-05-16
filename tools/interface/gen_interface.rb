@@ -19,11 +19,19 @@ if $rest.size != 1 then
 end
 
 $input = $rest[0];
-$nsyscall = 0
+$nsyscalls = 0
+$dispatch = ""
+$macros = ""
+$type_request = ""
+$type_reply = ""
 
-def process(kinterface, manager, func)
+def process(kinterface, hinterface, uinterface, manager, func)
   operation = manager + "_" + func['operation']
-  capability = manager.upcase + "_OPERATION_" + func['operation'].upcase
+  if func['capability'] == nil then
+    capability = manager.upcase + "_OPERATION_" + func['operation'].upcase
+  else
+    capability = manager.upcase + "_OPERATION_" + func['capability']
+  end
 
   kinterface.puts "/*
  * this function launchs the #{operation}() function.
@@ -36,33 +44,36 @@ def process(kinterface, manager, func)
 
   code_cap = "  if (capability_check(#{manager}, #{capability}) != ERROR_NONE)\n    return (ERROR_UNKNOWN);\n\n"
 
+  trequest = ""
+  treply = ""
   args = ""
   code_decl = ""
   code_serialize = ""
   j = i = 1
   cap = false
   func['argument'].each do | arg |
-    if i != 1 || cap then
+    if i != 1 || j != 1 || cap then
       args += ",\n\t\t\t"
     end
 
+    type = arg
+    dbl_ptr = type.index("**") != nil
+    ptr = type.index("*") != nil
+    type = type.sub('*', '')
+
     if arg.index("(out) ") == 0 then
-      type = arg[6..arg.length]
-
-      dbl_ptr = type.index("**") != nil
-      ptr = type.index("*") != nil
-
-      type = type.sub('*', '')
+      type = type[6..type.length]
 
       code_decl += "  #{type}\tresult#{j};\n"
 
       if dbl_ptr then
         code_serialize += "  message->u.reply.u.#{operation}.result#{j} = *result#{j};\n"
       else
+        # FIXME: can be optimised
         code_serialize += "  message->u.reply.u.#{operation}.result#{j} = result#{j};\n"
       end
 
-
+      treply += "\n	  #{type.gsub('*', '')}\tresult#{j};"
       args += "&result#{j}"
 
       j += 1
@@ -71,7 +82,19 @@ def process(kinterface, manager, func)
         args += "message->u.request.capability.object"
         cap = true
       else
-        args += "message->u.request.u.#{operation}.arg#{i}"
+        if arg.index("(var) ") == 0 then
+          type = type[6..type.length]
+          # FIXME: can be optimised
+          code_serialize += "  message->u.reply.u.#{operation}.result#{j} = message->u.request.u.#{operation}.arg#{i};\n"
+          treply += "\n	  #{type}\tresult#{j};"
+          j += 1
+        end
+        trequest += "\n	  #{type}\targ#{i};"
+        if ptr then
+          args += "&message->u.request.u.#{operation}.arg#{i}"
+        else
+          args += "message->u.request.u.#{operation}.arg#{i}"
+        end
         i += 1
       end
     end
@@ -89,34 +112,76 @@ def process(kinterface, manager, func)
 
   kinterface.puts "  return (ERROR_NONE);\n}\n\n"
 
-  return "  interface_#{operation},\n"
+  $type_request += "\tstruct\n\t{#{trequest}\n\t}\t\t#{operation};\n" if trequest != ""
+  $type_reply += "\tstruct\n\t{#{treply}\n\t}\t\t#{operation};\n" if treply != ""
+
+  $dispatch += "  interface_#{operation},\n"
+  $macros += "#define INTERFACE_#{manager.upcase}_#{func['operation'].upcase} #{$nsyscalls}\n"
+  $nsyscalls += 1
 end
 
-File.open("interface.c", "w") do | kinterface |
-  begin
+kinterface = File.open("interface.c", "w")
+hinterface = File.open("interface.h", "w")
+uinterface = File.open("interface_user.c", "w")
+begin
 
-    header_kinterface(kinterface)
+  header_kinterface(kinterface)
+  header_hinterface(hinterface)
 
-    data = YAML.load_file($input)
+  data = YAML.load_file($input)
 
-    dispatch = ""
-    data.each do | section |
-      manager = section["manager"]
-      section["interface"].each do | func |
-        dispatch += process(kinterface, manager, func)
-      end
+  data.each do | section |
+    manager = section["manager"]
+    section["interface"].each do | func |
+      process(kinterface, hinterface, uinterface, manager, func)
     end
+  end
 
-    kinterface.puts "/*
+  kinterface.puts "/*
  * this structure dispatchs incoming system calls.
  */
 
-t_interface_dispatch dispatch[] =\n{\n#{dispatch}};\n\n"
+t_interface_dispatch dispatch[] =\n{\n#{$dispatch}};\n\n"
 
-    footer_kinterface(kinterface)
-  rescue
-    $stderr.puts $!
-    exit(1)
-  end
+  hinterface.puts "/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#{$macros}
+
+#define INTERFACE_NSYSCALLS #{$nsyscalls}\n\n"
+
+  hinterface.puts "/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct
+{
+  t_id			id;
+  i_node		node;
+  union
+  {
+    struct
+    {
+      t_operations	operation;
+      t_capability	capability;
+      union
+      {
+#{$type_request}      }	u;
+    } request;
+    struct
+    {
+      t_error		error;
+      union
+      {
+#{$type_reply}      } u;
+    } reply;
+  } u;
+}			o_message;\n\n"
+
+  footer_kinterface(kinterface)
+  footer_hinterface(hinterface)
+rescue
+  $stderr.puts $!
+  exit(1)
 end
-

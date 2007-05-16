@@ -15,9 +15,18 @@
       argument:
         - (capability)
         - t_vaddr
+-
+  manager: segment
+  interface:
     -
       operation: get
       argument:
         - (capability)
-        - (out) o_map**
-
+        - (out) o_segment**
+      capability: CHICHE
+    -
+      operation: inject
+      argument:
+        - (capability)
+        - (var) o_segment*
+        - (out) i_segment*
