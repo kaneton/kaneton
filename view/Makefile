@@ -21,7 +21,7 @@ include			../env/.env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		all view build clear proto dep
 
 #
 # ---------- variables --------------------------------------------------------
@@ -43,10 +43,12 @@ SUBDIRS			:=		bibliography			\
 # ---------- rules ------------------------------------------------------------
 #
 
+all:		build
+
 view:
 	$(call launch,$(_VIEW_SCRIPT_),$*,)				; \
 
-all:
+build:
 	$(call launch,Makefile,$(SUBDIRS),,)
 
 clear:

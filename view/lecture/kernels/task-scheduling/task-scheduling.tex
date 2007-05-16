@@ -1,0 +1,1087 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kane...nels/task-scheduling/task-scheduling.tex
+%
+% created       julien quintard   [wed may 16 19:33:50 2007]
+% updated       julien quintard   [wed may 16 19:34:37 2007]
+%
+
+%
+% figures
+%
+
+% context switching
+
+\pgfdeclareimage[interpolate=true,width=300pt,height=71pt]
+                {context-op}
+		{figures/context-op}
+\pgfdeclareimage[interpolate=true,width=260pt,height=100pt]
+                {context-pc-switch-single}
+		{figures/context-pc-switch-single}
+\pgfdeclareimage[interpolate=true,width=260pt,height=100pt]
+                {context-pc-switch-multiple}
+		{figures/context-pc-switch-multiple}
+
+% fpu context switching
+
+\pgfdeclareimage[interpolate=true,width=300pt,height=65pt]
+                {fpu-switch-naive}
+		{figures/fpu-switch-naive}
+\pgfdeclareimage[interpolate=true,width=300pt,height=65pt]
+                {fpu-switch-optimal}
+		{figures/fpu-switch-optimal}
+\pgfdeclareimage[interpolate=true,width=300pt,height=125pt]
+                {fpu-switch-mp}
+		{figures/fpu-switch-mp}
+
+% tss
+
+\pgfdeclareimage[interpolate=true,width=100pt,height=125pt]
+                {tss}
+		{figures/tss}
+
+% linux as
+
+\pgfdeclareimage[interpolate=true,width=45pt,height=180pt]
+                {linux-as}
+		{figures/linux-as}
+
+\pgfdeclareimage[interpolate=true,width=242pt,height=180pt]
+                {linux-kernel-as}
+		{figures/linux-kernel-as}
+
+\pgfdeclareimage[interpolate=true,width=156pt,height=180pt]
+                {kaneton-as}
+		{figures/kaneton-as}
+
+% lifecycle
+
+\pgfdeclareimage[interpolate=true,width=285pt,height=150pt]
+                {lifecycle-unix}
+		{figures/lifecycle-unix}
+\pgfdeclareimage[interpolate=true,width=300pt,height=150pt]
+                {lifecycle-windows}
+		{figures/lifecycle-windows}
+\pgfdeclareimage[interpolate=true,width=300pt,height=150pt]
+                {lifecycle-kaneton}
+		{figures/lifecycle-kaneton}
+
+%
+% multitasking basics
+%
+
+\section{Multitasking basics}
+
+% -)
+
+\begin{frame}
+  \frametitle{What is a program?}
+
+  \emph{An organized list of instructions that, when executed, causes
+  the computer to behave in a predetermined manner. Without programs,
+  computers are useless.}
+
+  \-
+
+  A program is a \textbf{passive} entity made of instructions (program
+  code) and static data.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{What is a task or process?}
+
+  \emph{In computing, a process (or task) is an instance of a computer
+  program that is being executed.}
+
+  \-
+
+  A process (or task) is the \textbf{active} entity corresponding to a
+  program. This entity is made of:
+
+  \begin{itemize}
+  \item
+    One address space, containing an image of the program and dynamic
+    data (such as the heap)
+  \item
+    One or more threads (discussed later)
+  \item
+    Operating system specific descriptors and handles (file
+    descriptors for example)
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{What is a thread?}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{What is a fiber?}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{What is a light-weight process (LWP)?}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{What is multitasking?}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{What is time-sharing?}
+
+\end{frame}
+
+%
+% execution context
+%
+
+\section{Execution context}
+
+% -)
+
+\begin{frame}
+  \frametitle{Definition}
+
+  The \textbf{execution context} or \textbf{processor context} is the
+  image of the processor's state at a given moment.
+
+  Execution context includes:
+
+  \begin{itemize}
+  \item
+    The instruction pointer
+  \item
+    The stack pointer
+  \item
+    The flags
+  \item
+    Processor's running mode (privilege level, interrupt state,
+    etc\ldots)
+  \item
+    The address space
+  \item
+    Other general purpose or dedicated registers
+  \end{itemize}
+
+  \-
+
+  Let's see some real examples of execution contexts. For the moment,
+  we omit FPU context.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of context: MIPS}
+
+  MIPS execution context consists in a few registers:
+
+  \begin{itemize}
+  \item
+    \$pc
+  \item
+    \$hi, \$lo, \$r0-\$r31
+  \item
+    ASid register (in CP0)
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of context: IA-32}
+
+  On IA-32 the processor context includes:
+
+  \begin{itemize}
+  \item
+    EIP
+  \item
+    ESP
+  \item
+    EFLAGS
+  \item
+    The segment selectors (CS, DS, ES, FS, GS and SS)
+  \item
+    CR3 (PDBR)
+  \item
+    General registers: EAX, EBX, ECX, EDX, ESI, EDI, EBP
+  \end{itemize}
+
+  \-
+
+  Why GDTR, IDTR or CR0 are not present? These registers ARE NOT part
+  of the processor context since the kernel is used to configure them
+  correctly. In addition, they cannot be part of the context while
+  they are privileged registers not addressable by user.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of context: SPARC}
+
+  SPARC is an example of original context because of the register
+  window technique:
+
+  \begin{itemize}
+  \item
+    PC
+  \item
+    PSR (contains flags)
+  \item
+    G0-G7, Y
+  \item
+    I0-I7, L0-L7 \& O0-O7 of \emph{all windows used by the current thread}
+  \item
+    ASID register
+  \end{itemize}
+
+  \-
+
+  Context switching on such microprocessors becomes more difficult.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Context saving \& restoring}
+
+  Context saving is the action of creating in memory an image of the
+  CPU context. Context restoring is the way of taking such image and
+  setting the CPU context according to it.
+
+  \-
+
+  The difficulty in context saving and restoring is to deal with
+  unadressable registers. For example,on IA-32, EIP is not
+  addressable. Getting/setting its value is done using tricky code
+  (call to fake label, manual stacking of new EIP value followed by a
+  RET\ldots)
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Context switching}
+
+  Context switching is a term involving two operations:
+
+  \begin{itemize}
+  \item
+    Saving the current context
+  \item
+    Restoring another context
+  \end{itemize}
+
+  \-
+
+  Context switching is the main operation in the kernel's
+  scheduler. This part of the code is critical for performances.
+
+  \begin{center}
+   \pgfuseimage{context-op}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Context switching - direct method}
+
+  The simplest way to switch context is to store the current context
+  in a dedicated structure instanciated for each thread and to restore
+  the context from such structure.
+
+  \begin{verbatim}
+t_context    thread_A, thread_B;
+
+thread_A.r0 <- r0
+thread_A.r1 <- r1
+...
+thread_A.r15 <- r15
+...
+r0 <- thread_B.r0
+r1 <- thread_B.r1
+...
+r15 <- thread_B.r15
+  \end{verbatim}
+
+  \begin{itemize}
+  \item[+]
+    Space efficient
+  \item[-]
+    Variable addresses computation: cost time and registers
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Context switching - stack method}
+
+  Another way is to use the stack. Context to save is pushed onto the
+  stack, then the stack is switched to the new elected thread's stack,
+  which contains the previously saved context.
+
+  \begin{verbatim}
+push r0
+push r1
+...
+push r15
+sp <- thread_A.sp
+pop r15
+...
+pop r1
+pop r0
+  \end{verbatim}
+
+  \begin{itemize}
+  \item[+]
+    Time efficient, no computation, no useless memory accesses
+  \item[-]
+    Requires one supervisor stack per thread (because of stack
+    switches when privilege level changes)
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Context switching - the program counter (1)}
+
+  Does the PC needs to be saved ?
+
+  \begin{center}
+   \pgfuseimage{context-pc-switch-single}
+  \end{center}
+
+  In this situation, there is only one point in the whole code where
+  the context is switched between two threads. The PC of this point is
+  common. No need to save the PC since it is saved on the caller
+  thread's stack.
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Context switching - the program counter (2)}
+
+  Does the PC needs to be saved ?
+
+  \begin{center}
+   \pgfuseimage{context-pc-switch-multiple}
+  \end{center}
+
+  In this situation, there are multiple switch points. Each one could
+  have its specific code. The PC needs to be saved. The PC of the
+  thread is on the stack, but we need to remember which context switch
+  point applies to us.
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Context switching - resuming execution}
+
+  In the two previous examples, we omitted to talk about the program
+  counter. We saved/restored all registers, except the PC, as it needs
+  special code to be handled. Let's imagine the naive solution:
+
+  \begin{verbatim}
+    push pc
+    ...
+    sp <- new_stack
+    ...
+    pop pc
+  \end{verbatim}
+
+  This code does not work. The stacked address for PC is the
+  instruction following the \verb|push pc|. Resuming at this address
+  is incorrect. One simple and efficient solution is to store the
+  address of the PC where to resume execution.
+
+  \begin{verbatim}
+    push label_resume
+    ...
+    sp <- new_stack
+    ...
+    pop pc
+label_resume:
+  \end{verbatim}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Context switching - autosaved registers}
+
+  Sometimes, the microprocessor automatically saves some registers. In
+  particular when an interrupt or trap occurs, the program counter
+  needs to be saved by the CPU itself.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Exercise: simple stack-based context switching on
+  ARM7TDMI}
+
+  In this example, you will write some code switching context on an
+  ARM7TDMI. The exercise is simplified as possible.
+
+  \begin{itemize}
+  \item
+    General purpose registers are r0 to r12, plus r14
+  \item
+    r15 is the PC
+  \item
+    r13 is the SP
+  \item
+    Flags are in CPSR (renamed SPSR after an interrupt)
+  \item
+    The function \emph{sched\_next} takes in r0 the address of the
+    current stack and returns in r0 the pointer to the stack of the
+    newly elected thread
+  \end{itemize}
+
+  \-
+
+  Following assembly instructions will be helpful:
+
+  \begin{itemize}
+  \item
+    \textbf{stmfd} sp!, \{register list\}
+  \item
+    \textbf{ldmfd} sp!, \{register list\}
+  \item
+    \textbf{mrs} rd, spsr
+  \item
+    \textbf{msr} spsr, rd
+  \item
+    \textbf{mov} rd, $<$operand$>$
+  \item
+    \textbf{bl} label
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Exercise: correction}
+
+  \begin{verbatim}
+    ; save general registers
+    stmfd   sp!, {r0-r12,r14}
+    ; save flags
+    mrs     r0, spsr
+    stmfd   sp!, {r0}
+    ; save resuming pc
+    mov     r0, resume_pc
+    stmfd   sp!, {r0}
+
+    ; context fully saved onto the stack
+
+    ; call scheduler
+    mov     r0, sp
+    bl      sched_next
+    mov	    sp, r0
+
+    ; the stack is now containing the context to restore
+
+    ; restore pc
+    ldmfd   sp!, pc
+resume_pc:
+    ; restore flags
+    ldmfd   sp!, {r0}
+    msr     spsr, r0
+    ; restore general registers
+    ldmfd   sp!, {r0-r12,r14}
+  \end{verbatim}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Hardware context switching on IA-32}
+
+  IA-32 provides facilities to switch execution contexts. TSS are
+  structures containing all the processor's registers.
+
+  \begin{center}
+   \pgfuseimage{tss}
+  \end{center}
+
+  TSS are filled automatically by the processor on context saving and
+  read by the processor on context restoring.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Hardware context switching on IA-32}
+
+  \begin{itemize}
+  \item
+    A TSS can be activated on interrupt or with a special instruction
+  \item
+    The base of the current TSS is stored into the Task Register (TR)
+  \end{itemize}
+
+  \-
+
+  When a TSS is activated:
+
+  \begin{itemize}
+  \item
+    The state of the processor is saved into the TSS pointed by TR
+  \item
+    The content of the activated TSS is pushed into the microprocessor
+  \item
+    The TR is updated with the base of the new TSS
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Hardware vs software context switching}
+
+  Hardware context switching is rarely used since:
+
+  \begin{itemize}
+  \item
+    It introduces non-portable designs
+  \item
+    It is not customizable
+  \item
+    Performances are often less efficient
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{FPU/SIMD context}
+
+  On microprocessors with FPU, the registers used for floating
+  operations are not the general registers. The FPU registers are
+  often larger and addressable only by a restricted set of
+  instructions.
+
+  \-
+
+  Other specific-use registers can be found. For example, on newer
+  Intel's CPU, registers for SSE/SSE2/SSE3 instruction set can be
+  found. These registers are very large (128 bits) and can be used
+  only by SSE instructions (SIMD).
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Naive FPU context switching}
+
+  The naive solution is to switch FPU/SIMD context at the same time as
+  normal context.
+
+  \begin{center}
+   \pgfuseimage{fpu-switch-naive}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Better solution\ldots}
+
+  As only a few applications use FPU or SIMD functionalities, it can
+  be useless to switch context fully for each tasks and FPU/SIMD
+  context are very huge (quadruple or more times larger).
+
+  \-
+
+  Microprocessors often propose better solutions. Each time an
+  FPU/SIMD instruction is executed while a precise bit into a register
+  is set, an exception is thrown. When this exception occurs, the
+  kernel saves the current FPU/SIMD context for the last thread that
+  used these registers, restores the FPU/SIMD registers for the
+  current thread and clears the bit.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Optimal FPU context switching}
+
+  \begin{center}
+   \pgfuseimage{fpu-switch-optimal}
+  \end{center}
+
+  The FPU context is switched only when necessary. With tasks not
+  using FPU registers, the FPU context lays in the CPU. But this is
+  not a security hole since these registers cannot be accessed by
+  non-FPU instructions and FPU instructions force context switch.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Multiprocessor case}
+
+  The optimal solution does not work on multiprocessor systems.
+
+  \begin{center}
+   \pgfuseimage{fpu-switch-mp}
+  \end{center}
+
+  The FPU context of the thread that just migrated to another
+  processor is still in the old processor.
+
+\end{frame}
+
+%
+% scheduling
+%
+
+\section{Scheduling}
+
+% -)
+
+\begin{frame}
+  \frametitle{Definition}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{History}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Preemptive vs collaborative execution}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Thread state automaton}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Algorithm: non-preemptive First-In First-Out}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Algorithm: Round Robin}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Execution priority}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Algorithm: Round Robin with fixed priorities and aging}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Dynamic priorization}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Algorithm: Multilevel Feedback Queue}
+\end{frame}
+
+%
+% task management
+%
+
+\section{Task management}
+
+% -)
+
+\begin{frame}
+  \frametitle{Tasks in the kernel}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Process Control Block (PCB)}
+
+  The Process Control Block (PCB) is the structure describing a
+  task. The complexity of the PCB depend on task implementation and
+  capabilities.
+
+\end{frame}
+
+% -)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Example of PCB: NetBSD}
+
+  \begin{itemize}
+  \item
+    Process IDentifier (PID)
+  \item
+    Parent, sibling and child processes list
+  \item
+    Address space
+  \item
+    List of LWP
+  \item
+    File-descriptors table and cwd information
+  \item
+    Process limits (\verb|setrlimit|)
+  \item
+    Signal pendind, waiters\ldots
+  \item
+    Time information and time statistics
+  \item
+    Scheduling information (most important like priorities etc are in
+    the LWPs)
+   \item
+    Zombie information
+  \end{itemize}
+
+  \-
+
+  LWP contains:
+
+  \begin{itemize}
+  \item
+    Priorities, state, waiting and waiters
+  \item
+    sigmask, sigpend\ldots
+  \item
+    Execution context
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of PCB: Minix}
+
+  \begin{itemize}
+  \item
+    Process Number (PNR)
+  \item
+    Next process in list
+  \item
+    Address space
+  \item
+    Signals
+  \item
+    Message buffers and information
+  \item
+    Scheduling information
+  \item
+    Execution context
+  \end{itemize}
+
+  \-
+
+  In micro-kernels, many part of the PCB are picked out of the kernel
+  and stored in servers. For example, the file-descriptors table is
+  not in the PCB but in the VFS server.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{PCB in kaneton}
+
+  \begin{itemize}
+  \item
+    Task identifier
+  \item
+    Parent and children
+  \item
+    Dispatch processor identifier
+  \item
+    Address space
+  \item
+    Task class and behavior
+  \item
+    Scheduling information: state, priority
+  \item
+    Thread list
+  \item
+    Waiters and wait state
+  \end{itemize}
+
+  \-
+
+  As kaneton is a micro-kernel, other information like fd-table are
+  contained in servers.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Address space mapping}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of typical address space: Linux}
+
+  \begin{center}
+   \pgfuseimage{linux-as}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of typical address space: Linux}
+
+  \begin{center}
+   \pgfuseimage{linux-kernel-as}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Implementation in kaneton}
+
+  \begin{center}
+   \pgfuseimage{kaneton-as}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Task lifecycle}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of primitives: Unix + Pthread}
+
+  \begin{center}
+   \pgfuseimage{lifecycle-unix}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Example of primitives: Windows NT}
+
+  \begin{center}
+   \pgfuseimage{lifecycle-windows}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Primitives in kaneton}
+
+  \begin{center}
+   \pgfuseimage{lifecycle-kaneton}
+  \end{center}
+
+\end{frame}
+
+%
+% multithreading
+%
+
+\section{Multithreading}
+
+% -)
+
+\begin{frame}
+  \frametitle{Why multithreading?}
+
+  \begin{itemize}
+  \item
+    High-level view of parallelism in programs
+  \item
+    Perform slow or blocking I/O while other threads do computation
+  \item
+    Allow pipelined design of applications
+  \item
+    Efficient with multiprocessors with shared memory
+  \end{itemize}
+
+  But\ldots
+
+  \begin{itemize}
+  \item
+    Require resource locking
+  \item
+    Dead-locks
+  \item
+    Starvation
+  \item
+    Scalability (number of threads/number of CPU)
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Kernel threads (1:1) model}
+
+  \begin{itemize}
+  \item
+    Direct correspondance between the thread itself and kernel
+    structures
+  \item
+    As the kernel is aware of the parallelism in the task, blocking
+    operations do not affect other threads and multiprocessor
+    dispatching can be optimized
+  \item
+    But the kernel is responsible of every operation on threads,
+    leading to many system calls
+  \item
+    Easier to implement
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{1:1 example: kaneton}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{``User'' threads (N:1) model}
+
+  \begin{itemize}
+  \item
+    Exactly one kernel thread per task
+  \item
+    Kernel does not know about user threads
+  \item
+    Threads are implemented via a library in user-land: fast
+    operations
+  \item
+    Second scheduler implemented
+  \item
+    Ofter very portable
+  \item
+    But not efficient for I/O: a read() call will block the whole task
+    and not only the calling thread
+  \item
+    Not designed for multiprocessing: the kernel is not aware of
+    threads, so it is impossible to dispatch them on microprocessors
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{N:1 example: GNU PTH}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Hybrid threads (N:M) model}
+
+  \begin{itemize}
+  \item
+    Advantages of both 1:1 and N:1 models (except portability) with
+    minimum disadvantages
+  \item
+    Two-level threads system
+  \item
+    Harder to implement
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{N:M example: NetBSD (Scheduler Activations)}
+
+\end{frame}
+
+%
+% multiprocessor systems
+%
+
+\section{Multiprocessor systems}

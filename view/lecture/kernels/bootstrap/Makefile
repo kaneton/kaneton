@@ -27,9 +27,9 @@ include			../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		kernel-ipc
+PAPER			:=		kernel-bootstrap
 
-SOURCES			:=		kernel-ipc.tex		
+SOURCES			:=		kernel-bootstrap.tex		
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
@@ -44,8 +44,6 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 #
 # ---------- rules ------------------------------------------------------------
 #
-
-XXX:
 
 all:			build
 
