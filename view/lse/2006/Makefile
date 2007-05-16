@@ -1,17 +1,14 @@
 ##
-## copyright quintard julien
+## ---------- header ----------------------------------------------------------
 ##
-## kaneton
+## project       kaneton
 ##
-## Makefile
+## license       kaneton
 ##
-## path          /home/mycure/kaneton/view/papers/seminar
+## file          /home/mycure/kaneton/view/books/ia32-virtual/Makefile
 ##
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-##
-## started on    Fri Feb 11 02:59:20 2005   mycure
-## Last update Sun Apr  9 23:19:12 2006 matthieu bucchianeri
+## created       julien quintard   [sat oct 14 11:07:49 2006]
+## updated       julien quintard   [sat oct 14 11:08:09 2006]
 ##
 
 #
@@ -30,29 +27,28 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		lse01
+PAPER			:=		2006
 
-GARBAGE			:=		$(PAPER).aux			\
-					$(PAPER).log			\
-					$(PAPER).nav			\
-					$(PAPER).out			\
-					$(PAPER).snm			\
-					$(PAPER).toc			\
-					$(PAPER).dvi			\
-					$(PAPER).ps			\
-					$(PAPER).pdf
+SOURCES			:=		2006.tex			
+
+GARBAGE			:=		$(SOURCES:.tex=.aux)		\
+					$(SOURCES:.tex=.log)		\
+					$(SOURCES:.tex=.toc)		\
+					$(SOURCES:.tex=.pdf)		\
+					$(SOURCES:.tex=.bbl)		\
+					$(SOURCES:.tex=.blg)		
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build view
+all:			build
 
-view:
+view:			build
 	$(call view,$(PAPER),)
 
 build:
-	$(call lecture,$(PAPER),)
+	$(call paper,$(PAPER))
 
 clear:
 	$(call remove,$(GARBAGE),)
