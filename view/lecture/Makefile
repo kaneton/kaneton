@@ -1,12 +1,17 @@
 ##
-## copyright     (c) julien quintard
+## copyright quintard julien
 ##
-## project       kaneton
+## kaneton
 ##
-## file          /home/buckman/kaneton/view/lectures/Makefile
+## Makefile
 ##
-## created       julien quintard   [sat nov 19 18:06:43 2005]
-## updated       matthieu bucchianeri   [sat jan  6 21:35:06 2007]
+## path          /home/mycure/kaneton/view/books
+##
+## made by mycure
+##         quintard julien   [quinta_j@epita.fr]
+##
+## started on    Fri Feb 11 02:59:20 2005   mycure
+## Last update Sat Sep  2 11:27:57 2006 matthieu bucchianeri
 ##
 
 #
@@ -31,10 +36,7 @@ SUBDIRS			:=		arch-ia32			\
 					development-environment		\
 					inline-assembly			\
 					kernels				\
-					prerequisites			\
-					seminar				\
-					lse01				\
-					project-overview
+					prerequisites			
 
 #
 # ---------- rules ------------------------------------------------------------

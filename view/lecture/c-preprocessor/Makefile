@@ -1,18 +1,15 @@
-##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/view/lectures/c-preprocessor
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Tue Nov  8 13:21:28 2005   mycure
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/view/lecture/c-preprocessor/Makefile
+#
+# created       julien quintard   [wed may 16 18:44:45 2007]
+# updated       julien quintard   [wed may 16 18:45:01 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -32,27 +29,29 @@ include			../../../env/.env.mk
 
 PAPER			:=		c-preprocessor
 
-GARBAGE			:=		$(PAPER).aux			\
-					$(PAPER).log			\
-					$(PAPER).nav			\
-					$(PAPER).out			\
-					$(PAPER).snm			\
-					$(PAPER).toc			\
-					$(PAPER).dvi			\
-					$(PAPER).ps			\
-					$(PAPER).pdf			
+SOURCES			:=		c-preprocessor.tex		
+
+GARBAGE			:=		$(SOURCES:.tex=.aux)		\
+					$(SOURCES:.tex=.log)		\
+					$(SOURCES:.tex=.toc)		\
+					$(SOURCES:.tex=.pdf)		\
+					$(SOURCES:.tex=.bbl)		\
+					$(SOURCES:.tex=.blg)		\
+					$(SOURCES:.tex=.nav)		\
+					$(SOURCES:.tex=.out)		\
+					$(SOURCES:.tex=.snm)		
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build view
+all:			build
 
-view:
+view:			build
 	$(call view,$(PAPER),)
 
 build:
-	$(call lecture,$(PAPER),)
+	$(call paper,$(PAPER))
 
 clear:
 	$(call remove,$(GARBAGE),)

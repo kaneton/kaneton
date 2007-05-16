@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/view/lectures/kernels/Makefile
-##
-## created       matthieu bucchianeri   [tue dec 26 17:54:17 2006]
-## updated       matthieu bucchianeri   [tue dec 26 18:16:02 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/view/lecture/kernels/Makefile
+#
+# created       julien quintard   [wed may 16 18:54:58 2007]
+# updated       julien quintard   [wed may 16 18:57:46 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -25,12 +27,14 @@ include			../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		bootstrap		\
-					interrupts		\
-					ipc			\
-					memory-management	\
-					prerequisites		\
-					task-scheduling
+SUBDIRS			:=		bootstrap			\
+					capabilities			\
+					interrupts			\
+					ipc				\
+					memory-management		\
+					prerequisites			\
+					task-scheduling			\
+					tp-k0				
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -38,9 +42,6 @@ SUBDIRS			:=		bootstrap		\
 
 all:
 	$(call launch,Makefile,$(SUBDIRS),,)
-
-build:
-	$(call launch,Makefile,$(SUBDIRS),build,)
 
 clear:
 	$(call launch,Makefile,$(SUBDIRS),clear,)

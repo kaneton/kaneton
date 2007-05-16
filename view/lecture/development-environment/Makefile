@@ -1,18 +1,15 @@
-##
-## copyright quintard julien
-## 
-## kaneton
-## 
-## Makefile
-## 
-## path          /home/mycure/kaneton/view/lectures/development-environment
-## 
-## made by mycure
-##         quintard julien   [quinta_j@epita.fr]
-## 
-## started on    Fri Feb 11 02:59:20 2005   mycure
-## last update   Tue Nov  8 13:21:56 2005   mycure
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kane...lecture/development-environment/Makefile
+#
+# created       julien quintard   [wed may 16 18:46:48 2007]
+# updated       julien quintard   [wed may 16 18:47:08 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -32,27 +29,29 @@ include			../../../env/.env.mk
 
 PAPER			:=		development-environment
 
-GARBAGE			:=		$(PAPER).aux			\
-					$(PAPER).log			\
-					$(PAPER).nav			\
-					$(PAPER).out			\
-					$(PAPER).snm			\
-					$(PAPER).toc			\
-					$(PAPER).dvi			\
-					$(PAPER).ps			\
-					$(PAPER).pdf			
+SOURCES			:=		development-environment.tex	
+
+GARBAGE			:=		$(SOURCES:.tex=.aux)		\
+					$(SOURCES:.tex=.log)		\
+					$(SOURCES:.tex=.toc)		\
+					$(SOURCES:.tex=.pdf)		\
+					$(SOURCES:.tex=.bbl)		\
+					$(SOURCES:.tex=.blg)		\
+					$(SOURCES:.tex=.nav)		\
+					$(SOURCES:.tex=.out)		\
+					$(SOURCES:.tex=.snm)		
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build view
+all:			build
 
-view:
+view:			build
 	$(call view,$(PAPER),)
 
 build:
-	$(call lecture,$(PAPER),)
+	$(call paper,$(PAPER))
 
 clear:
 	$(call remove,$(GARBAGE),)

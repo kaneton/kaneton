@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/view/template/Makefile
 #
 # created       julien quintard   [wed may 16 18:08:19 2007]
-# updated       julien quintard   [wed may 16 18:08:22 2007]
+# updated       julien quintard   [wed may 16 18:38:20 2007]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../env/.env.mk
+include			../../env/.env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -30,6 +30,7 @@ include			../env/.env.mk
 all:
 
 clear:
+	$(call purge)
 
 proto:
 

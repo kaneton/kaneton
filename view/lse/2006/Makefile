@@ -29,14 +29,17 @@ include			../../../env/.env.mk
 
 PAPER			:=		2006
 
-SOURCES			:=		2006.tex			
+SOURCES			:=		2006.tex		
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
 					$(SOURCES:.tex=.toc)		\
 					$(SOURCES:.tex=.pdf)		\
 					$(SOURCES:.tex=.bbl)		\
-					$(SOURCES:.tex=.blg)		
+					$(SOURCES:.tex=.blg)		\
+					$(SOURCES:.tex=.nav)		\
+					$(SOURCES:.tex=.out)		\
+					$(SOURCES:.tex=.snm)		
 
 #
 # ---------- rules ------------------------------------------------------------
