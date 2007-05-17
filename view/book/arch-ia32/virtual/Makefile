@@ -27,12 +27,12 @@ include			../../../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		ia32-virtual
+PAPER			:=		virtual
 
 SOURCES			:=		bibliography.tex		\
 					bootloader.tex			\
 					event.tex			\
-					ia32-virtual.tex		\
+					virtual.tex			\
 					io.tex				\
 					memory.tex			\
 					overview.tex			\
