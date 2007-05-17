@@ -1,4 +1,14 @@
 --
+ faire des screenshots pour kaneton: installation, configuration, env-dev,
+ boot, into (mjpeg)
+
+--
+ axe kaneton sur le multiproc car avec les multicoeurs ca va devenir courant
+
+--
+ catch(addr, size, asid) then the asid could be able to do: reserve(addr, size)
+
+--
  choses a faire (encore):
 
  - reorganiser et nettoyer check/ et check-students/
@@ -132,6 +142,9 @@ l'endianness dans mod_load
  finalement on va surement avoir besoin de mapper les modules pour que
  le core puisse extraire le premier module et le lancer.
 
+ ou mieux il faudrait que le bootloader passe en argument le premier module
+ a lancer comme ca le kernel ne refait pas un boulot identique au bootloader.
+
 --
  tous les profiles machines sauf linux et linux.mips sont foireux
 
@@ -180,9 +193,6 @@ l'endianness dans mod_load
   }
 
 --
- les images microkernel_examples_* dans seminar sont a passer au format xfig
-
---
  il faut prevoir que tout le demarrage des services via fichier de conf
  doit pouvoir etre fait en dynamique. par exemple si mod reserve un
  segment special (CATCH) pour le service tty (console) et bien il faut
@@ -192,18 +202,12 @@ l'endianness dans mod_load
  segment_acquire() pour acquerir un segment specifique: la memoire video.
 
 --
- nettoyer conf.h, debug.h, check.h rendre tout ca coherent car la c'est
- un peu le bordel.
-
- faire que tout ce qui touche a conf soit genere et qu il n y ait plus
- conf.c et conf.h
-
---
  hevea -exec xxdate.exe kaneton.tex pour generer du html
 
  latex -> html: HeVeA
 
- ca aurait ete bien un make web mais bon c'est mort.
+ ca aurait ete bien un make web: faire un rep web/ au pire avec generation
+ de doc, generation des resultats de tests et de la doc le tout en html.
 
 --
  trouver un moyen de gerer un systeme d'evenements intra kernel. soit

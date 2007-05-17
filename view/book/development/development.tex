@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/development.tex
 %
 % created       julien quintard   [mon may 14 19:56:45 2007]
-% updated       julien quintard   [wed may 16 21:42:55 2007]
+% updated       julien quintard   [thu may 17 12:21:15 2007]
 %
 
 %
@@ -80,10 +80,14 @@ the official website
 %
 
 \include{introduction}
-%\include{community}
 %\include{source-tree}
-%\include{development-environment}
-%\include{coding}
+%\include{environment}
+
+%\include{kaneton}
+%\include{community}
+%\include{tools}
+%\include{development}
+
 %\include{licenses}
 %\include{bibliography}
 
@@ -105,6 +109,63 @@ ce document decrit donc en profondeurs les regles qu'un contributeur doit
 absolument suivre mais revient egalement sur la philisophie d'un travail
 communautaire qui implique un comportement exemplaire de la part de
 chaque developpeurs.
+
+la suite du document commence par decrire la hierarchie du projet puis
+l'outil fondamental dans kaneton qui est l'environement de developpement.
+puis les regles sont decrites, en commencant par des regles generales
+puis des regles lieees a la communaute et au developpement.
+
+%
+% ---------- source tree ------------------------------------------------------
+%
+
+decrire l'organisation.
+
+%
+% ---------- environment ------------------------------------------------------
+%
+
+decrire l'environment, pourquoi, comment l'utiliser, le configurer
+
+make things easier
+
+%
+% ---------- kaneton ----------------------------------------------------------
+%
+
+XXX regles generales de kaneton
+
+$$$ ne peut on pas les mettre dans development??? $$$
+
+aucun fichier dans le repository avec les droits executables: Makefile,
+scripts etc.. must be non-executable.
+
+utiliser des mots entiers plutot que des simplifications sauf si vraiment
+le mot est long.
+
+preferez - plutot que _ pour separer sauf si le langage ne le permet pas.
+
+si le langage ne permet pas l'utilisation de namespace ou forme du genre,
+prefixez tout par le nom du module.
+
+SURTOUT, regardez le code deja produit afin de vous inspirez de ce qui
+existe deja et evitez des erreurs, c'est TRES IMPORTANT!!! si ces regles
+ne sont pas suivies tout le monde perd du temps et le projet perd en
+clarete. de plus a long terme, du temps devra etre perdu a developper des
+outils specifiques pour verifier que vous respectez ces regles ce qui serait
+vraiment completement stupide.
+
+le nommage d'une fonctionnalite doit autant que possible se faire en un
+seul et unique mot, ce mot designant au mieux la fonctionnalite. il peut bien
+evidemment etre prefixe par le nom du module.
+
+arguments en C, doivent etre simple, complet clairs car c'est l'interface
+du module. o doit etre utilise opur un objet kernel correspondant au module.
+tout doit etre nomme en un mot autant que possible et etre coherent par
+rapport a ce qui existe deja. de plus le nom d'une variable ne doit
+pas recoupe son type: t_wait waitlist c'est stupide.
+
+XXX
 
 %
 % ---------- community --------------------------------------------------------
@@ -193,7 +254,7 @@ qui lui plait, il se doit de contribuer egalement a la resolution de problemes.
 encore une fois les tickets doivent suivre une norme.
 
 %
-% ---------- languages --------------------------------------------------------
+% ---------- development ------------------------------------------------------
 %
 
 pour chaque language explique les regles: header, commentaire etc..
