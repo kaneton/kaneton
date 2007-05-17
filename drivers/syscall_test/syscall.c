@@ -87,7 +87,7 @@ t_error			map_reserve(i_as		asid,
   message.node.machine = dest.machine;
   message.node.task = 1;
 
-  message.u.request.operation = INTERFACE_OP_MAP_RESERVE;
+  message.u.request.operation = INTERFACE_MAP_RESERVE;
   message.u.request.capability.object = asid;
   message.u.request.u.map_reserve.arg1 = opts;
   message.u.request.u.map_reserve.arg2 = size;

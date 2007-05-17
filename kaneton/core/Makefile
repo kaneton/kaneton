@@ -6,7 +6,7 @@
 ## file          /home/buckman/kaneton/kaneton/core/Makefile
 ##
 ## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [sat may  5 18:40:33 2007]
+## updated       matthieu bucchianeri   [tue may  8 13:05:45 2007]
 ##
 
 #
@@ -85,11 +85,7 @@ CORE_O			:=		$(CORE_C:.c=.o)
 
 # core variables
 
-ifeq ($(APP),)
 _CFLAGS_		+=		-D___kernel
-else
-_CFLAGS_		+=		-D___kernel -DAPP=$(APP)
-endif
 
 # version file
 
@@ -112,16 +108,6 @@ $(_CORE_):		$(CORE_O) $(KANETON_O)
 
 	$(call compile-c,$(VERSION_O),$(VERSION_C),)
 
-ifneq ($(APP),)
-	$(call executable,$(_CORE_),	$(CORE_O)			\
-					$(VERSION_O)			\
-					$(KANETON_O)			\
-					$(_KLIBC_A_)			\
-					$(_APPS_DIR_)/$(APP)/$(APP).lo,	\
-                 "--link-script $(_MACHDEP_LINK_DIR_)/core.lks"		\
-                 "--no-standard-include"				\
-                 "--no-standard-library")
-else
 	$(call executable,$(_CORE_),	$(CORE_O)			\
 					$(VERSION_O)			\
 					$(KANETON_O)			\
@@ -129,7 +115,6 @@ else
                  "--link-script $(_MACHDEP_LINK_DIR_)/core.lks"		\
                  "--no-standard-include"				\
                  "--no-standard-library")
-endif
 
 clear:
 	$(call launch,Makefile,$(SUBDIRS),clear,)

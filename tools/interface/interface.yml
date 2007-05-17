@@ -214,8 +214,8 @@
     -
       operation: release
       argument:
+        - i_as
         - (capability)
-        - i_region
     -
       operation: get
       argument:
