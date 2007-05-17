@@ -102,7 +102,7 @@ def process(kinterface, hinterface, uinterface, manager, func)
 
   kinterface.puts code_decl + "\n"
 
-  kinterface.puts code_cap
+  #kinterface.puts code_cap # FIXME
 
   kinterface.puts "  error = #{operation}(#{args});\n\n"
 
@@ -154,6 +154,8 @@ t_interface_dispatch dispatch[] =\n{\n#{$dispatch}};\n\n"
   hinterface.puts "/*
  * ---------- types -----------------------------------------------------------
  */
+
+typedef t_error (*t_interface_dispatch)(void*);
 
 typedef struct
 {
