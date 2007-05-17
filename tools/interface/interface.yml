@@ -302,3 +302,137 @@
       argument:
         - (capability)
         - (out) o_segment**
+-
+  manager: task
+  interface:
+    -
+      operation: current
+      argument:
+        - (out) i_task*
+    -
+      operation: clone
+      argument:
+        - (capability)
+        - (out) i_task*
+    -
+      operation: reserve
+      argument:
+        - t_class
+        - t_behav
+        - t_prior
+        - (out) i_task*
+    -
+      operation: release
+      argument:
+        - (capability)
+    -
+      operation: priority
+      argument:
+        - (capability)
+        - t_prior
+    -
+      operation: state
+      argument:
+        - (capability)
+        - t_state
+    -
+      operation: wait
+      argument:
+        - (capability)
+        - t_opts
+        - (out) t_wait*
+    -
+      operation: get
+      argument:
+        - (capability)
+        - (out) o_task**
+-
+  manager: thread
+  interface:
+    -
+      operation: give
+      argument:
+        - i_task
+        - (capability)
+    -
+      operation: clone
+      argument:
+        - i_task
+        - (capability)
+        - (out) i_thread*
+    -
+      operation: reserve
+      argument:
+        - i_task
+        - t_prior
+        - (out) i_thread*
+    -
+      operation: release
+      argument:
+        - (capability)
+    -
+      operation: priority
+      argument:
+        - (capability)
+        - t_prior
+    -
+      operation: state
+      argument:
+        - (capability)
+        - t_state
+    -
+      operation: stack
+      argument:
+        - (capability)
+        - t_stack
+    -
+      operation: load
+      argument:
+        - (capability)
+        - t_thread_context
+    -
+      operation: store
+      argument:
+        - (capability)
+        - (out) t_thread_context*
+    -
+      operation: get
+      argument:
+        - (capability)
+        - (out) o_thread**
+-
+  manager: timer
+  interface:
+    -
+      operation: reserve
+      argument:
+        - t_type
+        - u_timer_handler
+        - t_uint32
+        - t_uint32
+        - (out) i_timer*
+    -
+      operation: release
+      argument:
+        - (capability)
+    -
+      operation: delay
+      argument:
+        - (capability)
+	- t_uint32
+    -
+      operation: repeat
+      argument:
+        - (capability)
+	- t_uint32
+    -
+      operation: modify
+      argument:
+        - (capability)
+	- t_uint32
+	- t_uint32
+    -
+      operation: get
+      argument:
+        - (capability)
+        - (out) o_timer**
