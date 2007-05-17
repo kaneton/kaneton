@@ -242,3 +242,9 @@ l'endianness dans mod_load
  pour detecter les fichiers qui sont executables, ce qui n'est pas normal:
 
    find ./ -type f -perm +111
+
+--
+ dire dans kaneton design que un kernel c'est: des structures de donnees et
+ de l'archi. dans kaneton, l'archi est separee de ce qui est independant
+ de l'archi et les sturctures de donnees sont simplifiees au maximum via
+ le set manager.
