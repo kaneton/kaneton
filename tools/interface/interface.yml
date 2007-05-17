@@ -419,18 +419,18 @@
       operation: delay
       argument:
         - (capability)
-	- t_uint32
+        - t_uint32
     -
       operation: repeat
       argument:
         - (capability)
-	- t_uint32
+        - t_uint32
     -
       operation: modify
       argument:
         - (capability)
-	- t_uint32
-	- t_uint32
+        - t_uint32
+        - t_uint32
     -
       operation: get
       argument:
