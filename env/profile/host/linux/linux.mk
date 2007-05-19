@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...ile/environment/behaviour/linux/linux.mk
+# file          /home/mycure/kaneton/env/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [mon may 14 19:14:26 2007]
+# updated       julien quintard   [sat may 19 14:37:53 2007]
 #
 
 #
@@ -17,7 +17,7 @@
 # this file implements the remaining functions of the kaneton make interface.
 #
 # indeed the major generic part of the interface is already provided by the
-# behaviour profile.
+# host profile.
 #
 
 #

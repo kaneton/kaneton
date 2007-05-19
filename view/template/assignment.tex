@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/template/assignment.tex
 %
 % created       julien quintard   [wed may 16 18:08:37 2007]
-% updated       julien quintard   [wed may 16 18:12:02 2007]
+% updated       julien quintard   [sat may 19 16:03:29 2007]
 %
 
 %
@@ -136,9 +136,11 @@
 \makeatletter
 
 \renewcommand{\verbatim@font}
-  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
+  {\ttfamily\footnotesize\selectfont}
 
-\def\verbatim@processline{\hskip15ex\the\verbatim@line\par}
+\def\verbatim@processline{
+  \hskip15ex{\color{verbatimcolor}\the\verbatim@line}\par
+}
 
 \makeatother
 

@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/template/feedback.tex
 %
 % created       julien quintard   [wed may 16 18:17:07 2007]
-% updated       julien quintard   [wed may 16 18:17:13 2007]
+% updated       julien quintard   [sat may 19 16:06:01 2007]
 %
 
 %
@@ -49,6 +49,22 @@
 
   \vspace{#2}}
 
+%
+% verbatim stuff
+%
+
+\definecolor{verbatimcolor}{rgb}{0.00,0.40,0.00}
+
+\makeatletter
+
+\renewcommand{\verbatim@font}
+  {\ttfamily\footnotesize\selectfont}
+
+\def\verbatim@processline{
+  \hskip15ex{\color{verbatimcolor}\the\verbatim@line}\par
+}
+
+\makeatother
 
 %
 % header

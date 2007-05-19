@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...ofile/environment/behaviour/behaviour.mk
+# file          /home/mycure/kaneton/env/profile/host/host.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [thu may 10 15:36:58 2007]
+# updated       julien quintard   [sat may 19 14:38:23 2007]
 #
 
 #

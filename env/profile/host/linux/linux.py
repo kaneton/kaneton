@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...ile/environment/behaviour/linux/linux.py
+# file          /home/mycure/kaneton/env/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [sun may 13 13:49:08 2007]
+# updated       julien quintard   [sat may 19 14:38:06 2007]
 #
 
 #
@@ -16,10 +16,10 @@
 #
 # this file implements the remaining functions of the kaneton python interface.
 #
-# note that the behaviour profile already provides many functions. these
+# note that the host profile already provides many functions. these
 # functions can be overriden but you will probably just use them.
 #
-# in addition, the behaviour profile already imports some packages.
+# in addition, the host profile already imports some packages.
 #
 
 #

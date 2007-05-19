@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/template/internship.tex
 %
 % created       julien quintard   [wed may 16 18:17:18 2007]
-% updated       julien quintard   [wed may 16 18:17:22 2007]
+% updated       julien quintard   [sat may 19 16:06:46 2007]
 %
 
 %
@@ -40,14 +40,20 @@
 \setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
 
 %
-% verbatim font
+% verbatim stuff
 %
 
-\definecolor{verbatimcolor}{rgb}{0,0.4,0}
+\definecolor{verbatimcolor}{rgb}{0.00,0.40,0.00}
 
 \makeatletter
+
 \renewcommand{\verbatim@font}
-  {\ttfamily\footnotesize\color{verbatimcolor}\selectfont}
+  {\ttfamily\footnotesize\selectfont}
+
+\def\verbatim@processline{
+  \hskip15ex{\color{verbatimcolor}\the\verbatim@line}\par
+}
+
 \makeatother
 
 %
