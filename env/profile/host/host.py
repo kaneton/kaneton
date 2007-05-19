@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...ofile/environment/behaviour/behaviour.py
+# file          /home/mycure/kaneton/env/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [sun may 13 11:26:14 2007]
+# updated       julien quintard   [sat may 19 14:31:00 2007]
 #
 
 #
@@ -19,7 +19,7 @@
 #
 # since the python scripting language was designed to provide portable
 # operations, the following operations are considered as generic, making
-# work easier for behaviour sub-profiles.
+# work easier for host sub-profiles.
 #
 
 #
