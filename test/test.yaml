@@ -1,0 +1,14 @@
+- manager: segment
+  category: reserve
+  number: !!str 01
+# deduced by default from the 3 previous fields
+# name: segment_reserve_01
+# deduced by default from the 3 previous fields
+# symbol: check_segment_reserve_01
+  description: Try to reserve a unique kaneton segment
+  apply_to: [students,kaneton]
+  source: kaneton/core/segment/reserve.c
+  result: |
+    Test check_segment_reserve_01
+    check_segment_reserve_01 done.
+
