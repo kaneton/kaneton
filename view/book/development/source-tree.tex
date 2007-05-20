@@ -8,11 +8,11 @@
 % file          /home/mycure/kaneton/view/book/development/source-tree.tex
 %
 % created       julien quintard   [thu may 17 22:41:36 2007]
-% updated       julien quintard   [sat may 19 15:43:09 2007]
+% updated       julien quintard   [sun may 20 18:09:37 2007]
 %
 
 %
-% source tree
+% ---------- source tree ------------------------------------------------------
 %
 
 \chapter{Source Tree}
@@ -23,7 +23,7 @@ source tree.
 \newpage
 
 %
-% text
+% ---------- text -------------------------------------------------------------
 %
 
 The kaneton microkernel reference source tree looks like the following
@@ -43,9 +43,7 @@ transcript/
 view/
 \end{verbatim}
 
-%
 % cheat/
-%
 
 \subsection*{cheat/}
 
@@ -62,9 +60,7 @@ to perform such tasks including the software, the different source codes
 found on the internet, the kaneton students' implementation from the
 previous years etc..
 
-%
 % environment/
-%
 
 \subsection*{environment/}
 
@@ -87,9 +83,7 @@ As a result, each developer can use a different operating system and
 microprocessor architecture with his own specific compiling flags, kaneton
 parameters etc.. without modifying another developer's configuration.
 
-%
 % export/
-%
 
 \subsection*{export/}
 
@@ -103,9 +97,7 @@ important directories the students do not need to be aware of.
 Moreover some source code parts are removed since the students then have to
 rewrite these piece of code.
 
-%
 % configure/
-%
 
 \subsection*{configure/}
 
@@ -115,9 +107,7 @@ to the boot system.
 
 Any new contributor should first look at this directory.
 
-%
 % kaneton/
-%
 
 \subsection*{kaneton/}
 
@@ -128,9 +118,7 @@ The directory is composed of three important subdirectories: \textit{core/},
 \textit{platform} and \textit{architecture}. These subdirectories are described
 next.
 
-%
 % kaneton/core/
-%
 
 \subsection*{kaneton/core/}
 
@@ -153,9 +141,7 @@ Each directory represents a kaneton core manager. For more information on
 the kaneton core, please refer to the appropriate document:
 \textit{The kaneton microkernel :: reference implementation}
 
-%
 % kaneton/platform/
-%
 
 \subsection*{kaneton/platform/}
 
@@ -166,9 +152,7 @@ board supporting the devices: microprocessor, memory, peripherals etc..
 This directory obviously contains subdirectories for each platform
 supported by the kaneton microkernel.
 
-%
 % kaneton/architecture
-%
 
 \subsection*{kaneton/architecture}
 
@@ -178,9 +162,7 @@ the microprocessor architecture.
 This directory is composed of subdirectories, each one representing an
 architecture: \textit{ia32}, \textit{mips64} etc..
 
-%
 % library/
-%
 
 \subsection*{library/}
 
@@ -188,9 +170,7 @@ This directory contains the libraries used either by the kaneton microkernel
 itself or by the kaneton microkernel servers. This directory especially
 contrains the standard \textit{kaneton C library}.
 
-%
 % license/
-%
 
 \subsection*{license/}
 
@@ -200,18 +180,14 @@ in relation with the kaneton microkernel project.
 Each student has to read and accept the kaneton license before implementing
 or even using the kaneton microkernel project.
 
-%
 % tool/
-%
 
 \subsection*{tool/}
 
 This directory contains additional files used by the kaneton development
 environment.
 
-%
 % test/
-%
 
 \subsection*{test/}
 
@@ -226,9 +202,7 @@ for evaluating the correctness of the students' implementation.
 The \textit{test/} directory so contains the set kaneton scripts and tests
 for validating a kaneton microkernel implementation.
 
-%
 % transcript/
-%
 
 \subsection*{transcript/}
 
@@ -236,9 +210,7 @@ This directory contains real-time recorded sessions. These sessions can be
 replayed showing how to use the kaneton microkernel project and more
 specifically the kaneton development environement.
 
-%
 % view/
-%
 
 \subsection*{view/}
 
