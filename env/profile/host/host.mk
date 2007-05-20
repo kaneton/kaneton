@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/profile/host/host.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [sat may 19 14:38:23 2007]
+# updated       julien quintard   [sun may 20 15:17:53 2007]
 #
 
 #
@@ -29,21 +29,42 @@
 # ---------- options ----------------------------------------------------------
 #
 
-HEADER_NONE = 0
-HEADER_OK = 1
-HEADER_ERROR = 2
-HEADER_INTERACTIVE = 4
+ENV_HEADER_NONE = 0
+ENV_HEADER_OK = 1
+ENV_HEADER_ERROR = 2
+ENV_HEADER_INTERACTIVE = 4
 
-COLOR_NONE = 0
-COLOR_RED = 1
-COLOR_GREEN = 2
-COLOR_YELLOW = 3
-COLOR_BLUE = 4
-COLOR_WHITE = 5
+ENV_COLOR_NONE = 0
+ENV_COLOR_RED = 1
+ENV_COLOR_GREEN = 2
+ENV_COLOR_YELLOW = 3
+ENV_COLOR_BLUE = 4
+ENV_COLOR_WHITE = 5
 
-OPTION_NONE = 0
-OPTION_NO_NEWLINE = 1
-OPTION_FLICKERING = 2
+ENV_OPTION_NONE = 0
+ENV_OPTION_NO_NEWLINE = 1
+ENV_OPTION_FLICKERING = 2
+
+ENV_OUTPUT_OBJECT = 1
+ENV_OUTPUT_BINARY = 2
+
+ENV_OPTION_NO_STANDARD = 1
+
+#
+# ---------- traps ------------------------------------------------------------
+#
+
+%.o:			%.asm
+	$(call env_assemble-asm,$@,$<,$(ENV_OUTPUT_OBJECT))
+
+%.o:			%.S
+	$(call env_assemble-S,$@,$<,)
+
+%.o:			%.c
+	$(call env_compile-c,$@,$<,)
+
+%.c:			%.l
+	$(call env_lex-l,$@,$<,)
 
 #
 # ---------- functions --------------------------------------------------------
@@ -58,39 +79,39 @@ OPTION_FLICKERING = 2
 # 4:		options
 #
 
-define display-red
-  $(call print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(1),red,$(OPTION_NO_NEWLINE))				; \
-  $(call print,],blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(3)$(2),,)
+define env_display-red
+  $(call env_print,[,blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,$(1),red,$(OPTION_NO_NEWLINE))			; \
+  $(call env_print,],blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,$(3)$(2),,)
 endef
 
-define display-green
-  $(call print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(1),green,$(OPTION_NO_NEWLINE))				; \
-  $(call print,],blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(3)$(2),,)
+define env_display-green
+  $(call env_print,[,blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,$(1),green,$(OPTION_NO_NEWLINE))			; \
+  $(call env_print,],blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,$(3)$(2),,)
 endef
 
-define display-yellow
-  $(call print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(1),yellow,$(OPTION_NO_NEWLINE))			; \
-  $(call print,],blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(3)$(2),,)
+define env_display-yellow
+  $(call env_print,[,blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,$(1),yellow,$(OPTION_NO_NEWLINE))			; \
+  $(call env_print,],blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,$(3)$(2),,)
 endef
 
-define display-magenta
-  $(call print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(1),magenta,$(OPTION_NO_NEWLINE))			; \
-  $(call print,],blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(3)$(2),,)
+define env_display-magenta
+  $(call env_print,[,blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,$(1),magenta,$(OPTION_NO_NEWLINE))			; \
+  $(call env_print,],blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,$(3)$(2),,)
 endef
 
-define display-cyan
-  $(call print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(1),cyan,$(OPTION_NO_NEWLINE))				; \
-  $(call print,],blue,$(OPTION_NO_NEWLINE))				; \
-  $(call print,$(3)$(2),,)
+define env_display-cyan
+  $(call env_print,[,blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,$(1),cyan,$(OPTION_NO_NEWLINE))			; \
+  $(call env_print,],blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,$(3)$(2),,)
 endef
 
 #
@@ -103,28 +124,6 @@ endef
 # $(5):		options
 #
 
-define display
-  $(call display-$(1),$(2),$(3),$(4),$(5))
-endef
-
-#
-# build a paper
-#
-# $(1):		the file name without extension
-# $(2):		options
-#
-
-define paper
-  $(call compile-tex,$(1),$(2))
-endef
-
-#
-# build a lecture
-#
-# $(1):		the file name without extension
-# $(2):		options
-#
-
-define lecture
-  $(call compile-tex,$(1),$(2))
+define env_display
+  $(call env_display-$(1),$(2),$(3),$(4),$(5))
 endef

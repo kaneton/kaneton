@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [sat may 19 14:37:53 2007]
+# updated       julien quintard   [sun may 20 15:21:00 2007]
 #
 
 #
@@ -21,22 +21,6 @@
 #
 
 #
-# ---------- traps ------------------------------------------------------------
-#
-
-%.o:			%.asm
-	$(call assemble-asm,$@,$<,"--output-format elf")
-
-%.o:			%.S
-	$(call assemble-S,$@,$<,)
-
-%.o:			%.c
-	$(call compile-c,$@,$<,)
-
-%.c:			%.l
-	$(call lex-l,$@,$<,)
-
-#
 # ---------- functions --------------------------------------------------------
 #
 
@@ -47,39 +31,39 @@
 # 2:		options
 #
 
-define colorize-black
+define env_colorize-black
   '\E[;30m'"\033[1m$(1)\033[0m"
 endef
 
-define colorize-red
+define env_colorize-red
   '\E[;31m'"\033[1m$(1)\033[0m"
 endef
 
-define colorize-green
+define env_colorize-green
   '\E[;32m'"\033[1m$(1)\033[0m"
 endef
 
-define colorize-yellow
+define env_colorize-yellow
   '\E[;33m'"\033[1m$(1)\033[0m"
 endef
 
-define colorize-blue
+define env_colorize-blue
   '\E[;34m'"\033[1m$(1)\033[0m"
 endef
 
-define colorize-magenta
+define env_colorize-magenta
   '\E[;35m'"\033[1m$(1)\033[0m"
 endef
 
-define colorize-cyan
+define env_colorize-cyan
   '\E[;36m'"\033[1m$(1)\033[0m"
 endef
 
-define colorize-white
+define env_colorize-white
   '\E[;37m'"\033[1m$(1)\033[0m"
 endef
 
-define colorize-
+define env_colorize-
   $(1)
 endef
 
@@ -94,19 +78,19 @@ endef
 ifeq ($(_DISPLAY_),$(_DISPLAY_COLORED_))	# if the user wants to display
 						# the text with color
 
-define print
+define env_print
   print_options=""							; \
-  if [ $(( $(3) & $(OPTION_NO_NEWLINE) )) -ne 0 ] ; then		\
+  if [ $(( $(3) & $(ENV_OPTION_NO_NEWLINE) )) -ne 0 ] ; then		\
     print_options="$${print_options} -n"				; \
   fi									; \
-  $(_ECHO_) $${print_options} $(call colorize-$(2),$(1),)
+  $(_ECHO_) $${print_options} $(call env_colorize-$(2),$(1),)
 endef
 
 else						# if not ...
 
-define print
+define env_print
   print_options=""							; \
-  if [ $(( $(3) & $(OPTION_NO_NEWLINE) )) -ne 0 ] ; then		\
+  if [ $(( $(3) & $(ENV_OPTION_NO_NEWLINE) )) -ne 0 ] ; then		\
     print_options="$${print_options} -n"				; \
   fi									; \
   $(_ECHO_) $${print_options} $(1)
@@ -121,9 +105,20 @@ endif
 # $(2):		options
 #
 
-define cd
+define env_cd
   cd_options=""								; \
   $(_CD_) $${cd_options} $(1)
+endef
+
+#
+# returns a file contents
+#
+# $(1):		the file
+# $(2):		options
+#
+
+define env_contents
+  $(_CAT_) $(2) $(1)
 endef
 
 #
@@ -134,18 +129,18 @@ endef
 # $(3):		options
 #
 
-define launch
+define env_launch
   launch_options=""							; \
   case "$(1)" in							\
     *.sh)								\
-      $(_SHELL_) $${launch_options} $(1) $(2)				; \
+      $(_SHELL_) $${launch_options} $(1) $(_SHELL_FLAGS_) $(2)		; \
       ;;								\
     *.py)								\
-      export PYTHONPATH=$(_PYTHON_INCLUDE_DIR_)
-      $(_PYTHON_) $${launch_options} $(1) $(2)				; \
+      export PYTHONPATH=$(_PYTHON_INCLUDE_DIR_)				; \
+      $(_PYTHON_) $${launch_options} $(1) $(_PYTHON_FLAGS_) $(2)	; \
       ;;								\
     *.pl)								\
-      $(_PERL_) $${launch_options} $(1) $(2)				; \
+      $(_PERL_) $${launch_options} $(1) $(_PERL_FLAGS_) $(2)		; \
       ;;								\
     Makefile)								\
       $(_MAKE_) $${launch_options} -f $(1) $(_MAKE_FLAGS_) ${2}		; \
@@ -161,9 +156,9 @@ endef
 # $(3):		options
 #
 
-define preprocess
+define env_preprocess
   preprocess_options=""							; \
-  $(call display,green,PREPROCESS,$(2),		)			; \
+  $(call env_display,green,PREPROCESS,$(2),		)		; \
   $(_CPP_) -P $(_CPP_FLAGS_) $${preprocess_options} $(2) -o $(1)
 endef
 
@@ -175,9 +170,9 @@ endef
 # $(3):		options
 #
 
-define compile-c
+define env_compile-c
   compile_c_options=""							; \
-  $(call display,green,COMPILE-C,$(2),		)			; \
+  $(call env_display,green,COMPILE-C,$(2),		)		; \
   $(_CC_) $(_CC_FLAGS_) $${compile_c_options} -c $(2) -o $(1)
 endef
 
@@ -189,9 +184,9 @@ endef
 # $(3):		options
 #
 
-define lex-l
+define env_lex-l
   lex_l_options=""							; \
-  $(call display,green,LEX-L,$(2),			)		; \
+  $(call env_display,green,LEX-L,$(2),			)		; \
   $(_LEX_) $${lex_l_options} $(2) > $(1)
 endef
 
@@ -203,15 +198,9 @@ endef
 # $(3):		options
 #
 
-define assemble-S
+define env_assemble-S
   assemble_S_options=""							; \
-  for o in $(3); do							\
-    case "$${o}" in							\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
-  $(call display,green,ASSEMBLE-S,$(2),		)			; \
+  $(call env_display,green,ASSEMBLE-S,$(2),		)		; \
   $(_CC_) $(_CC_FLAGS_) $${assemble_S_options}				\
           -c $(2) -o $(1)
 endef
@@ -224,20 +213,15 @@ endef
 # $(3):		options
 #
 
-define assemble-asm
+define env_assemble-asm
   assemble_asm_options=""						; \
-  for o in $(3); do							\
-    case "$${o}" in							\
-      "--output-format"*)						\
-	assemble_asm_options="$${assemble_asm_options}			\
-                              `$(_ECHO_) $${o}				| \
-                                $(_SED_) 's/--output-format/-f/1'`"	; \
-        ;;								\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
-  $(call display,green,ASSEMBLE-ASM,$(2),		)		; \
+  if [ $(( $(3) & $(ENV_OUTPUT_OBJECT) )) -ne 0 ] ; then		\
+    assemble_asm_options="$${assemble_asm_options} -f elf"		; \
+  fi									; \
+  if [ $(( $(3) & $(ENV_OUTPUT_BINARY) )) -ne 0 ] ; then		\
+    assemble_asm_options="$${assemble_asm_options} -f bin"		; \
+  fi									; \
+  $(call env_display,green,ASSEMBLE-ASM,$(2),		)		; \
   $(_NASM_) $${assemble_asm_options} $(2) -o $(1)
 endef
 
@@ -249,15 +233,9 @@ endef
 # $(3):		options
 #
 
-define static-library
+define env_static-library
   static_library_options=""						; \
-  for o in $(3); do							\
-    case "$${o}" in							\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
-  $(call display,magenta,STATIC-LIBRARY,$(1),	)			; \
+  $(call env_display,magenta,STATIC-LIBRARY,$(1),	)		; \
   $(_AR_) $${static_library_options} $(1) $(2)				; \
   $(_RANLIB_) $${static_library_options} $(1)
 endef
@@ -271,15 +249,9 @@ endef
 # $(3):		options
 #
 
-define dynamic-library
+define env_dynamic-library
   dynamic_library_options=""						; \
-  for o in $(3); do							\
-    case "$${o}" in							\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
-  $(call display,magenta,DYNAMIC-LIBRARY,$(1),	)			; \
+  $(call env_display,magenta,DYNAMIC-LIBRARY,$(1),	)		; \
   $(_LD_) --shared $(_LD_FLAGS_) $${dynamic_library_options}		\
           -o $(1) $(2)
 endef
@@ -289,29 +261,19 @@ endef
 #
 # $(1):		executable file name
 # $(2):		objects files and/or libraries
-# $(3):		options
+# $(3):		layout file
+# $(4):		options
 #
 
-define executable
+define env_executable
   executable_options=""							; \
-  for o in $(3); do							\
-    case "$${o}" in							\
-      "--link-script"*)							\
-	executable_options="$${executable_options}			\
-                            `$(_ECHO_) $${o}				| \
-                            $(_SED_) -e 's/--link-script/-T/1'`"	; \
-        ;;								\
-      "--no-standard-include")						\
-	executable_options="$${executable_options} -nostdinc"		; \
-        ;;								\
-      "--no-standard-library")						\
-	executable_options="$${executable_options} -nostdlib"		; \
-        ;;								\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
-  $(call display,magenta,EXECUTABLE,$(1),		)		; \
+  if [ -n $(3) ] ; then							\
+    executable_options="$${executable_options} -T $(3)"			; \
+  fi									; \
+  if [ $(( $(4) & $(ENV_OPTION_NO_STANDARD) )) -ne 0 ] ; then		\
+    assemble_asm_options="$${assemble_asm_options} -nostdinc -nostdlib"	; \
+  fi									; \
+  $(call env_display,magenta,EXECUTABLE,$(1),		)		; \
   $(_CC_) $(_CC_FLAGS_) $(_LD_FLAGS_) $${executable_options}		\
           -o $(1) $(2)
 endef
@@ -326,17 +288,10 @@ endef
 # $(3):		options
 #
 
-define archive
+define env_archive
   archive_options=""							; \
-  for o in $(3); do							\
-    case "$${o}" in							\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
-  $(call display,magenta,ARCHIVE,$(1),		)			; \
-  $(_LD_) -r $(_LD_FLAGS_) $${archive_options}				\
-          -o $(1) $(2)
+  $(call env_display,magenta,ARCHIVE,$(1),		)		; \
+  $(_LD_) -r $(_LD_FLAGS_) $${archive_options} -o $(1) $(2)
 endef
 
 #
@@ -346,17 +301,11 @@ endef
 # $(2):		options
 #
 
-define remove
+define env_remove
   remove_options=""							; \
-  for o in $(2); do							\
-    case "$${o}" in							\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
   for f in $(1) ; do							\
     if [ -e $${f} ] ; then						\
-      $(call display,red,REMOVE,$${f},		)			; \
+      $(call env_display,red,REMOVE,$${f},		)		; \
     fi									; \
     $(_RM_) $${remove_options} $${f}					; \
   done
@@ -366,9 +315,33 @@ endef
 # purge i.e clean the directory from unwanted files
 #
 
-define purge
-  $(call display,red,PURGE,,)						; \
+define env_purge
+  $(call env_display,red,PURGE,,)					; \
   $(_PURGE_)
+endef
+
+#
+# generate prototypes from a source file
+#
+# $(1):		file list
+# $(2):		options
+#
+
+define env_prototypes
+  prototypes_options=""							; \
+  for o in $(2); do							\
+    case "$${o}" in							\
+      *)								\
+        ;;								\
+    esac								; \
+  done									; \
+  for f in $(1) ; do							\
+    if [ -e $${f} ] ; then						\
+      $(call env_display,yellow,PROTOTYPES,$${f},		)	; \
+      $(call env_launch,$(_MKP_TOOL_),					\
+        $${prototypes_options} $${f},)					; \
+    fi									; \
+  done
 endef
 
 #
@@ -379,7 +352,7 @@ endef
 # $(3):		options
 #
 
-define dependencies
+define env_dependencies
   dependencies_options=""						; \
   for o in $(3); do							\
     case "$${o}" in							\
@@ -390,33 +363,9 @@ define dependencies
   $(_TOUCH_) $(2)							; \
   for f in $(1) ; do							\
     if [ -e $${f} ] ; then						\
-      $(call display,yellow,DEPENDENCIES,$$i,		)		; \
+      $(call env_display,yellow,DEPENDENCIES,$$i,		)	; \
       $(_CC_) $(_CC_FLAGS_) -M -MG $${dependencies_options}		\
         $${f} >> $(2)							; \
-    fi									; \
-  done
-endef
-
-#
-# generate prototypes from a source file
-#
-# $(1):		file list
-# $(2):		options
-#
-
-define prototypes
-  prototypes_options=""							; \
-  for o in $(2); do							\
-    case "$${o}" in							\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
-  for f in $(1) ; do							\
-    if [ -e $${f} ] ; then						\
-      $(call display,yellow,PROTOTYPES,$${f},		)		; \
-      $(call launch,$(_MKP_TOOL_),					\
-        $${prototypes_options} $${f},)					; \
     fi									; \
   done
 endef
@@ -427,8 +376,8 @@ endef
 # $(1):		the version file to generate
 #
 
-define version
-  $(call display,yellow,VERSION,$(1),		)			; \
+define env_version
+  $(call env_display,yellow,VERSION,$(1),		)		; \
   $(_ECHO_) -n "" > $(1)						; \
   $(_ECHO_) "#include <klibc.h>" >> $(1)				; \
   $(_ECHO_) "#include <kaneton.h>" >> $(1)				; \
@@ -445,15 +394,9 @@ endef
 # $(3):		options
 #
 
-define link
+define env_link
   link_options=""							; \
-  for o in $(3); do							\
-    case "$${o}" in							\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
-  $(call display,cyan,LINK,$(1),			)		; \
+  $(call env_display,cyan,LINK,$(1),			)		; \
   $(_LN_) $${link_options} $(2) $(1)
 endef
 
@@ -464,19 +407,35 @@ endef
 # $(2):		options
 #
 
-define compile-tex
+define env_compile-tex
   compile_tex_options=""						; \
-  for o in $(2); do							\
-    case "$${o}" in							\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
-  $(call display,green,COMPILE-TEX,$(1),		)		; \
+  $(call env_display,green,COMPILE-TEX,$(1),		)		; \
   $(_PDFLATEX_) $${compile_tex_options} $(1).tex			; \
   $(_BIBTEX_) $(1).tex							; \
   $(_PDFLATEX_) $${compile_tex_options} $(1).tex			; \
   $(_PDFLATEX_) $${compile_tex_options} $(1).tex
+endef
+
+#
+# build a paper
+#
+# $(1):		the file name without extension
+# $(2):		options
+#
+
+define env_paper
+  $(call env_compile-tex,$(1),$(2))
+endef
+
+#
+# build a lecture
+#
+# $(1):		the file name without extension
+# $(2):		options
+#
+
+define env_lecture
+  $(call env_compile-tex,$(1),$(2))
 endef
 
 #
@@ -486,9 +445,9 @@ endef
 # $(2):		options
 #
 
-define subject
+define env_subject
   $(_ECHO_) '\def\kaneton-latex{subject}' > $(_DEPENDENCY_TEX_)		; \
-  $(call compile-tex,$(1),$(2))
+  $(call env_compile-tex,$(1),$(2))
 endef
 
 #
@@ -498,9 +457,9 @@ endef
 # $(2):		options
 #
 
-define correction
+define env_correction
   $(_ECHO_) '\def\kaneton-latex{correction}' > $(_DEPENDENCY_TEX_)	; \
-  $(call compile-tex,$(1),$(2))
+  $(call env_compile-tex,$(1),$(2))
 endef
 
 #
@@ -510,18 +469,7 @@ endef
 # $(2):		options
 #
 
-define view
-  $(call display,yellow,VIEW,$(1),			)		; \
+define env_view
+  $(call env_display,yellow,VIEW,$(1),			)		; \
   $(_XPDF_) $(1).pdf
-endef
-
-#
-# returns a file contents
-#
-# $(1):		the file
-# $(2):		options
-#
-
-define contents
-  $(_CAT_) $(2) $(1)
 endef

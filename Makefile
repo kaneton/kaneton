@@ -22,7 +22,7 @@
 .SILENT:
 
 .PHONY:		all init clean kaneton clear purge proto		\
-		dep build install check info dist backup		\
+		dep build install check info dist 			\
 		view view- export export- cheat cheat-			\
 		play play- record record-
 
@@ -200,12 +200,6 @@ info:
 #
 
 dist:			export-dist
-
-#
-# ---------- backup -----------------------------------------------------------
-#
-
-backup:			export-backup
 
 #
 # ---------- export -----------------------------------------------------------

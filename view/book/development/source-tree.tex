@@ -1,0 +1,250 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/development/source-tree.tex
+%
+% created       julien quintard   [thu may 17 22:41:36 2007]
+% updated       julien quintard   [sat may 19 15:43:09 2007]
+%
+
+%
+% source tree
+%
+
+\chapter{Source Tree}
+
+In this chapter we will briefly describe the kaneton microkernel project
+source tree.
+
+\newpage
+
+%
+% text
+%
+
+The kaneton microkernel reference source tree looks like the following
+listing:
+
+\begin{verbatim}
+cheat/
+environment/
+export/
+configure/
+kaneton/
+library/
+license/
+tool/
+test/
+transcript/
+view/
+\end{verbatim}
+
+%
+% cheat/
+%
+
+\subsection*{cheat/}
+
+Since the kaneton microkernel is implemented by students, the kaneton
+people need to check whether students are cheating by re-using parts of
+previous years projects or other kernel source code available on the
+\textit{Internet}.
+
+To avoid cheating, kaneton people developed a software checking for
+commonalities between different source codes.
+
+The \textit{cheat/} kaneton subdirectory contains everything necessary
+to perform such tasks including the software, the different source codes
+found on the internet, the kaneton students' implementation from the
+previous years etc..
+
+%
+% environment/
+%
+
+\subsection*{environment/}
+
+This directory contains everything necessary to the kaneton development
+environment.
+
+The kaneton development environment allows different developers to
+interact on the development of the same microkernel in a pretty easy way.
+
+The development environment aims at providing developers to possibility to
+work in a collaborative manner without interfering with each other. These
+developers are likely to run different operating systems on different
+microprocessors. In addition, the kaneton microkernel can be targeted for
+different microprocessor architectures. The development environment was
+introduced to cope with these combinaisons by providing profiles, each
+profile describing the behaviour of a component: underlying operating system,
+target architecture, user-specific stuff etc..
+
+As a result, each developer can use a different operating system and
+microprocessor architecture with his own specific compiling flags, kaneton
+parameters etc.. without modifying another developer's configuration.
+
+%
+% export/
+%
+
+\subsection*{export/}
+
+The \textit{export/} directory contains scripts used to generate a kaneton
+tarball in order to be distributed to the students at the beginning of the
+kaneton project.
+
+Indeed, these scripts rearrange the kaneton hierarchy hidding some
+important directories the students do not need to be aware of.
+
+Moreover some source code parts are removed since the students then have to
+rewrite these piece of code.
+
+%
+% configure/
+%
+
+\subsection*{configure/}
+
+This directory contains everything necessary for configuring its own
+kaneton microkernel development environment through the compiling process
+to the boot system.
+
+Any new contributor should first look at this directory.
+
+%
+% kaneton/
+%
+
+\subsection*{kaneton/}
+
+This directory is the most important of the project since it contains
+the whole microkernel source code.
+
+The directory is composed of three important subdirectories: \textit{core/},
+\textit{platform} and \textit{architecture}. These subdirectories are described
+next.
+
+%
+% kaneton/core/
+%
+
+\subsection*{kaneton/core/}
+
+This directory contains the kaneton core source code.
+
+The directory is divided as shown below:
+
+\begin{verbatim}
+as/
+region/
+sched/
+segment/
+set/
+task/
+thread/
+[...]
+\end{verbatim}
+
+Each directory represents a kaneton core manager. For more information on
+the kaneton core, please refer to the appropriate document:
+\textit{The kaneton microkernel :: reference implementation}
+
+%
+% kaneton/platform/
+%
+
+\subsection*{kaneton/platform/}
+
+This directory contains everything in relation with what the kaneton
+microkernel project calls a \textbf{platform}. The platform represents the
+board supporting the devices: microprocessor, memory, peripherals etc..
+
+This directory obviously contains subdirectories for each platform
+supported by the kaneton microkernel.
+
+%
+% kaneton/architecture
+%
+
+\subsection*{kaneton/architecture}
+
+The \textit{architecture} directory contains the source-code related to
+the microprocessor architecture.
+
+This directory is composed of subdirectories, each one representing an
+architecture: \textit{ia32}, \textit{mips64} etc..
+
+%
+% library/
+%
+
+\subsection*{library/}
+
+This directory contains the libraries used either by the kaneton microkernel
+itself or by the kaneton microkernel servers. This directory especially
+contrains the standard \textit{kaneton C library}.
+
+%
+% license/
+%
+
+\subsection*{license/}
+
+This directory contains the licenses used for any program or document
+in relation with the kaneton microkernel project.
+
+Each student has to read and accept the kaneton license before implementing
+or even using the kaneton microkernel project.
+
+%
+% tool/
+%
+
+\subsection*{tool/}
+
+This directory contains additional files used by the kaneton development
+environment.
+
+%
+% test/
+%
+
+\subsection*{test/}
+
+Since the kaneton microkernel is used as a material for operating system
+courses, the kaneton microkernel reference which is the basis of students'
+work is to be extremely reliable.
+
+The kaneton project therefore contains a set of tools in order to validate
+the kaneton reference implementation behaviour. These tools are also used
+for evaluating the correctness of the students' implementation.
+
+The \textit{test/} directory so contains the set kaneton scripts and tests
+for validating a kaneton microkernel implementation.
+
+%
+% transcript/
+%
+
+\subsection*{transcript/}
+
+This directory contains real-time recorded sessions. These sessions can be
+replayed showing how to use the kaneton microkernel project and more
+specifically the kaneton development environement.
+
+%
+% view/
+%
+
+\subsection*{view/}
+
+This directory contains all the kaneton documents including kaneton
+administrative documents, exams documents, lectures materials, kaneton papers
+and books etc..
+
+Additionally, scripts are provided in order to very easily build and
+display these documents.

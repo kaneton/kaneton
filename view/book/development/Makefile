@@ -29,8 +29,12 @@ include			../../../env/.env.mk
 
 PAPER			:=		development
 
-SOURCES			:=		development.tex			\
-					introduction.tex		
+SOURCES			:=		control-panel.tex		\
+					development.tex			\
+					environment.tex			\
+					introduction.tex		\
+					source-tree.tex			\
+					tools.tex			
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\

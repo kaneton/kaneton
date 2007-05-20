@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/env/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [sat may 19 14:38:06 2007]
+# updated       julien quintard   [sun may 20 17:38:14 2007]
 #
 
 #
@@ -100,7 +100,7 @@ def			launch(file, arguments, options):
 #
 # this function creates an archive of the given directory.
 #
-def			pack(directory, file):
+def			pack(directory, file, options):
   launch(_TAR_, "-czf " + file + " " + directory, OPTION_NONE)
 
 
@@ -110,7 +110,7 @@ def			pack(directory, file):
 #
 # this function unpackages an archive into the given (optional) directory.
 #
-def			unpack(file, directory):
+def			unpack(file, directory, options):
   if directory:
     launch(_TAR_, "-xzf " + file + " -C " + directory, OPTION_NONE)
   else:
@@ -139,7 +139,7 @@ def			load(file, device, path, options):
 #
 # this function runs the program recording a session.
 #
-def			record(log, time):
+def			record(log, time, options):
   launch(_SCRIPT_, "-q -t " + log + " -c " +
          _TRANSCRIPTS_CMD_ + " 2> " + time, OPTION_NONE)
 
@@ -150,7 +150,7 @@ def			record(log, time):
 #
 # this function runs the program replaying a session.
 #
-def			play(log, time):
+def			play(log, time, options):
   launch(_SCRIPTREPLAY_TOOL_, time + " " + log, OPTION_NONE)
 
 
