@@ -119,30 +119,43 @@ typedef struct
 	struct
 	{
 	  i_task	arg1;
+	  t_id	arg2;
 	}		as_give;
 	struct
 	{
-	  t_paddr	arg1;
+	  t_id	arg1;
+	  t_paddr	arg2;
 	}		as_vaddr;
 	struct
 	{
-	  t_vaddr	arg1;
+	  t_id	arg1;
+	  t_vaddr	arg2;
 	}		as_paddr;
 	struct
 	{
-	  t_vaddr	arg1;
-	  i_as	arg2;
-	  t_vaddr	arg3;
-	  t_vsize	arg4;
+	  t_id	arg1;
+	  t_vaddr	arg2;
+	  i_as	arg3;
+	  t_vaddr	arg4;
+	  t_vsize	arg5;
 	}		as_copy;
 	struct
 	{
 	  i_task	arg1;
+	  t_id	arg2;
 	}		as_clone;
 	struct
 	{
 	  i_task	arg1;
 	}		as_reserve;
+	struct
+	{
+	  t_id	arg1;
+	}		as_release;
+	struct
+	{
+	  t_id	arg1;
+	}		as_get;
 	struct
 	{
 	  t_id	arg1;
@@ -177,69 +190,91 @@ typedef struct
 	}		capability_verify;
 	struct
 	{
-	  t_type	arg1;
-	  u_event_handler	arg2;
+	  t_id	arg1;
+	  t_type	arg2;
+	  u_event_handler	arg3;
 	}		event_reserve;
 	struct
 	{
-	  i_task	arg1;
-	  t_uint8	arg2;
+	  t_id	arg1;
+	}		event_release;
+	struct
+	{
+	  t_id	arg1;
+	}		event_get;
+	struct
+	{
+	  t_id	arg1;
+	  i_task	arg2;
+	  t_uint8	arg3;
 	}		io_grant;
 	struct
 	{
-	  i_task	arg1;
-	  t_uint8	arg2;
+	  t_id	arg1;
+	  i_task	arg2;
+	  t_uint8	arg3;
 	}		io_deny;
 	struct
 	{
 	  i_task	arg1;
+	  t_id	arg2;
 	}		io_read_8;
 	struct
 	{
 	  i_task	arg1;
+	  t_id	arg2;
 	}		io_read_16;
 	struct
 	{
 	  i_task	arg1;
+	  t_id	arg2;
 	}		io_read_32;
 	struct
 	{
 	  i_task	arg1;
+	  t_id	arg2;
 	}		io_read_64;
 	struct
 	{
 	  i_task	arg1;
-	  t_uint8	arg2;
+	  t_id	arg2;
+	  t_uint8	arg3;
 	}		io_write_8;
 	struct
 	{
 	  i_task	arg1;
-	  t_uint16	arg2;
+	  t_id	arg2;
+	  t_uint16	arg3;
 	}		io_write_16;
 	struct
 	{
 	  i_task	arg1;
-	  t_uint32	arg2;
+	  t_id	arg2;
+	  t_uint32	arg3;
 	}		io_write_32;
 	struct
 	{
 	  i_task	arg1;
-	  t_uint64	arg2;
+	  t_id	arg2;
+	  t_uint64	arg3;
 	}		io_write_64;
 	struct
 	{
-	  t_opts	arg1;
-	  t_vsize	arg2;
-	  t_perms	arg3;
+	  t_id	arg1;
+	  t_opts	arg2;
+	  t_vsize	arg3;
+	  t_perms	arg4;
 	}		map_reserve;
 	struct
 	{
-	  t_vaddr	arg1;
+	  t_id	arg1;
+	  t_vaddr	arg2;
 	}		map_release;
 	struct
 	{
-	  t_vaddr	arg1;
-	  t_vsize	arg2;
+	  t_id	arg1;
+	  t_vaddr	arg2;
+	  t_vsize	arg3;
 	}		map_resize;
 	struct
 	{
@@ -248,19 +283,22 @@ typedef struct
 	}		message_register;
 	struct
 	{
-	  i_segment	arg1;
-	  t_paddr	arg2;
-	  t_opts	arg3;
-	  t_vaddr	arg4;
-	  t_vsize	arg5;
+	  t_id	arg1;
+	  i_segment	arg2;
+	  t_paddr	arg3;
+	  t_opts	arg4;
+	  t_vaddr	arg5;
+	  t_vsize	arg6;
 	}		region_reserve;
 	struct
 	{
 	  i_as	arg1;
+	  t_id	arg2;
 	}		region_release;
 	struct
 	{
 	  i_as	arg1;
+	  t_id	arg2;
 	}		region_get;
 	struct
 	{
@@ -285,17 +323,20 @@ typedef struct
 	struct
 	{
 	  i_as	arg1;
+	  t_id	arg2;
 	}		segment_clone;
 	struct
 	{
 	  i_as	arg1;
+	  t_id	arg2;
 	}		segment_give;
 	struct
 	{
-	  t_paddr	arg1;
-	  i_segment	arg2;
-	  t_paddr	arg3;
-	  t_psize	arg4;
+	  t_id	arg1;
+	  t_paddr	arg2;
+	  i_segment	arg3;
+	  t_paddr	arg4;
+	  t_psize	arg5;
 	}		segment_copy;
 	struct
 	{
@@ -310,15 +351,26 @@ typedef struct
 	struct
 	{
 	  i_as	arg1;
+	  t_id	arg2;
 	}		segment_catch;
 	struct
 	{
-	  t_perms	arg1;
+	  t_id	arg1;
+	  t_perms	arg2;
 	}		segment_perms;
 	struct
 	{
-	  t_type	arg1;
+	  t_id	arg1;
+	  t_type	arg2;
 	}		segment_type;
+	struct
+	{
+	  t_id	arg1;
+	}		segment_get;
+	struct
+	{
+	  t_id	arg1;
+	}		task_clone;
 	struct
 	{
 	  t_class	arg1;
@@ -327,23 +379,36 @@ typedef struct
 	}		task_reserve;
 	struct
 	{
-	  t_prior	arg1;
+	  t_id	arg1;
+	}		task_release;
+	struct
+	{
+	  t_id	arg1;
+	  t_prior	arg2;
 	}		task_priority;
 	struct
 	{
-	  t_state	arg1;
+	  t_id	arg1;
+	  t_state	arg2;
 	}		task_state;
 	struct
 	{
-	  t_opts	arg1;
+	  t_id	arg1;
+	  t_opts	arg2;
 	}		task_wait;
 	struct
 	{
+	  t_id	arg1;
+	}		task_get;
+	struct
+	{
 	  i_task	arg1;
+	  t_id	arg2;
 	}		thread_give;
 	struct
 	{
 	  i_task	arg1;
+	  t_id	arg2;
 	}		thread_clone;
 	struct
 	{
@@ -352,20 +417,36 @@ typedef struct
 	}		thread_reserve;
 	struct
 	{
-	  t_prior	arg1;
+	  t_id	arg1;
+	}		thread_release;
+	struct
+	{
+	  t_id	arg1;
+	  t_prior	arg2;
 	}		thread_priority;
 	struct
 	{
-	  t_state	arg1;
+	  t_id	arg1;
+	  t_state	arg2;
 	}		thread_state;
 	struct
 	{
-	  t_stack	arg1;
+	  t_id	arg1;
+	  t_stack	arg2;
 	}		thread_stack;
 	struct
 	{
-	  t_thread_context	arg1;
+	  t_id	arg1;
+	  t_thread_context	arg2;
 	}		thread_load;
+	struct
+	{
+	  t_id	arg1;
+	}		thread_store;
+	struct
+	{
+	  t_id	arg1;
+	}		thread_get;
 	struct
 	{
 	  t_type	arg1;
@@ -375,17 +456,28 @@ typedef struct
 	}		timer_reserve;
 	struct
 	{
-	  t_uint32	arg1;
+	  t_id	arg1;
+	}		timer_release;
+	struct
+	{
+	  t_id	arg1;
+	  t_uint32	arg2;
 	}		timer_delay;
 	struct
 	{
-	  t_uint32	arg1;
+	  t_id	arg1;
+	  t_uint32	arg2;
 	}		timer_repeat;
 	struct
 	{
-	  t_uint32	arg1;
+	  t_id	arg1;
 	  t_uint32	arg2;
+	  t_uint32	arg3;
 	}		timer_modify;
+	struct
+	{
+	  t_id	arg1;
+	}		timer_get;
       }	u;
     } request;
     struct
@@ -531,160 +623,6 @@ typedef struct
  *
  *      ../../core/interface/interface.c
  */
-
-/*
- * ../../core/interface/interface.c
- */
-
-t_error		interface_as_give(o_message*	message);
-
-t_error		interface_as_vaddr(o_message*	message);
-
-t_error		interface_as_paddr(o_message*	message);
-
-t_error		interface_as_copy(o_message*	message);
-
-t_error		interface_as_clone(o_message*	message);
-
-t_error		interface_as_reserve(o_message*	message);
-
-t_error		interface_as_release(o_message*	message);
-
-t_error		interface_as_get(o_message*	message);
-
-t_error		interface_capability_reserve(o_message*	message);
-
-t_error		interface_capability_release(o_message*	message);
-
-t_error		interface_capability_restrict(o_message*	message);
-
-t_error		interface_capability_invalidate(o_message*	message);
-
-t_error		interface_capability_get(o_message*	message);
-
-t_error		interface_capability_give(o_message*	message);
-
-t_error		interface_capability_verify(o_message*	message);
-
-t_error		interface_event_reserve(o_message*	message);
-
-t_error		interface_event_release(o_message*	message);
-
-t_error		interface_event_get(o_message*	message);
-
-t_error		interface_io_grant(o_message*	message);
-
-t_error		interface_io_deny(o_message*	message);
-
-t_error		interface_io_read_8(o_message*	message);
-
-t_error		interface_io_read_16(o_message*	message);
-
-t_error		interface_io_read_32(o_message*	message);
-
-t_error		interface_io_read_64(o_message*	message);
-
-t_error		interface_io_write_8(o_message*	message);
-
-t_error		interface_io_write_16(o_message*	message);
-
-t_error		interface_io_write_32(o_message*	message);
-
-t_error		interface_io_write_64(o_message*	message);
-
-t_error		interface_map_reserve(o_message*	message);
-
-t_error		interface_map_release(o_message*	message);
-
-t_error		interface_map_resize(o_message*	message);
-
-t_error		interface_message_register(o_message*	message);
-
-t_error		interface_region_reserve(o_message*	message);
-
-t_error		interface_region_release(o_message*	message);
-
-t_error		interface_region_get(o_message*	message);
-
-t_error		interface_sched_quantum(o_message*	message);
-
-t_error		interface_sched_yield(o_message*	message);
-
-t_error		interface_sched_current(o_message*	message);
-
-t_error		interface_sched_add(o_message*	message);
-
-t_error		interface_sched_remove(o_message*	message);
-
-t_error		interface_sched_update(o_message*	message);
-
-t_error		interface_segment_clone(o_message*	message);
-
-t_error		interface_segment_give(o_message*	message);
-
-t_error		interface_segment_copy(o_message*	message);
-
-t_error		interface_segment_reserve(o_message*	message);
-
-t_error		interface_segment_release(o_message*	message);
-
-t_error		interface_segment_catch(o_message*	message);
-
-t_error		interface_segment_perms(o_message*	message);
-
-t_error		interface_segment_type(o_message*	message);
-
-t_error		interface_segment_get(o_message*	message);
-
-t_error		interface_task_current(o_message*	message);
-
-t_error		interface_task_clone(o_message*	message);
-
-t_error		interface_task_reserve(o_message*	message);
-
-t_error		interface_task_release(o_message*	message);
-
-t_error		interface_task_priority(o_message*	message);
-
-t_error		interface_task_state(o_message*	message);
-
-t_error		interface_task_wait(o_message*	message);
-
-t_error		interface_task_get(o_message*	message);
-
-t_error		interface_thread_give(o_message*	message);
-
-t_error		interface_thread_clone(o_message*	message);
-
-t_error		interface_thread_reserve(o_message*	message);
-
-t_error		interface_thread_release(o_message*	message);
-
-t_error		interface_thread_priority(o_message*	message);
-
-t_error		interface_thread_state(o_message*	message);
-
-t_error		interface_thread_stack(o_message*	message);
-
-t_error		interface_thread_load(o_message*	message);
-
-t_error		interface_thread_store(o_message*	message);
-
-t_error		interface_thread_get(o_message*	message);
-
-t_error		interface_timer_reserve(o_message*	message);
-
-t_error		interface_timer_release(o_message*	message);
-
-t_error		interface_timer_delay(o_message*	message);
-
-t_error		interface_timer_repeat(o_message*	message);
-
-t_error		interface_timer_modify(o_message*	message);
-
-t_error		interface_timer_get(o_message*	message);
-
-void			interface_loop(void);
 
 
 /*

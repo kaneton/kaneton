@@ -43,7 +43,7 @@ t_error		interface_as_give(o_message*	message)
   t_error	error;
 
   error = as_give(message->u.request.u.as_give.arg1,
-			message->u.request.capability.object);
+			message->u.request.u.as_give.arg2);
 
   message->u.reply.error = error;
 
@@ -59,8 +59,8 @@ t_error		interface_as_vaddr(o_message*	message)
   t_error	error;
   t_vaddr	result1;
 
-  error = as_vaddr(message->u.request.capability.object,
-			message->u.request.u.as_vaddr.arg1,
+  error = as_vaddr(message->u.request.u.as_vaddr.arg1,
+			message->u.request.u.as_vaddr.arg2,
 			&result1);
 
   message->u.reply.error = error;
@@ -78,8 +78,8 @@ t_error		interface_as_paddr(o_message*	message)
   t_error	error;
   t_paddr	result1;
 
-  error = as_paddr(message->u.request.capability.object,
-			message->u.request.u.as_paddr.arg1,
+  error = as_paddr(message->u.request.u.as_paddr.arg1,
+			message->u.request.u.as_paddr.arg2,
 			&result1);
 
   message->u.reply.error = error;
@@ -96,11 +96,11 @@ t_error		interface_as_copy(o_message*	message)
 {
   t_error	error;
 
-  error = as_copy(message->u.request.capability.object,
-			message->u.request.u.as_copy.arg1,
+  error = as_copy(message->u.request.u.as_copy.arg1,
 			message->u.request.u.as_copy.arg2,
 			message->u.request.u.as_copy.arg3,
-			message->u.request.u.as_copy.arg4);
+			message->u.request.u.as_copy.arg4,
+			message->u.request.u.as_copy.arg5);
 
   message->u.reply.error = error;
 
@@ -117,7 +117,7 @@ t_error		interface_as_clone(o_message*	message)
   i_as	result1;
 
   error = as_clone(message->u.request.u.as_clone.arg1,
-			message->u.request.capability.object,
+			message->u.request.u.as_clone.arg2,
 			&result1);
 
   message->u.reply.error = error;
@@ -152,7 +152,7 @@ t_error		interface_as_release(o_message*	message)
 {
   t_error	error;
 
-  error = as_release(message->u.request.capability.object);
+  error = as_release(message->u.request.u.as_release.arg1);
 
   message->u.reply.error = error;
 
@@ -168,7 +168,7 @@ t_error		interface_as_get(o_message*	message)
   t_error	error;
   o_as*	result1;
 
-  error = as_get(message->u.request.capability.object,
+  error = as_get(message->u.request.u.as_get.arg1,
 			&result1);
 
   message->u.reply.error = error;
@@ -303,9 +303,9 @@ t_error		interface_event_reserve(o_message*	message)
 {
   t_error	error;
 
-  error = event_reserve(message->u.request.capability.object,
-			message->u.request.u.event_reserve.arg1,
-			message->u.request.u.event_reserve.arg2);
+  error = event_reserve(message->u.request.u.event_reserve.arg1,
+			message->u.request.u.event_reserve.arg2,
+			message->u.request.u.event_reserve.arg3);
 
   message->u.reply.error = error;
 
@@ -320,7 +320,7 @@ t_error		interface_event_release(o_message*	message)
 {
   t_error	error;
 
-  error = event_release(message->u.request.capability.object);
+  error = event_release(message->u.request.u.event_release.arg1);
 
   message->u.reply.error = error;
 
@@ -336,7 +336,7 @@ t_error		interface_event_get(o_message*	message)
   t_error	error;
   o_event*	result1;
 
-  error = event_get(message->u.request.capability.object,
+  error = event_get(message->u.request.u.event_get.arg1,
 			&result1);
 
   message->u.reply.error = error;
@@ -353,9 +353,9 @@ t_error		interface_io_grant(o_message*	message)
 {
   t_error	error;
 
-  error = io_grant(message->u.request.capability.object,
-			message->u.request.u.io_grant.arg1,
-			message->u.request.u.io_grant.arg2);
+  error = io_grant(message->u.request.u.io_grant.arg1,
+			message->u.request.u.io_grant.arg2,
+			message->u.request.u.io_grant.arg3);
 
   message->u.reply.error = error;
 
@@ -370,9 +370,9 @@ t_error		interface_io_deny(o_message*	message)
 {
   t_error	error;
 
-  error = io_deny(message->u.request.capability.object,
-			message->u.request.u.io_deny.arg1,
-			message->u.request.u.io_deny.arg2);
+  error = io_deny(message->u.request.u.io_deny.arg1,
+			message->u.request.u.io_deny.arg2,
+			message->u.request.u.io_deny.arg3);
 
   message->u.reply.error = error;
 
@@ -389,7 +389,7 @@ t_error		interface_io_read_8(o_message*	message)
   t_uint8	result1;
 
   error = io_read_8(message->u.request.u.io_read_8.arg1,
-			message->u.request.capability.object,
+			message->u.request.u.io_read_8.arg2,
 			&result1);
 
   message->u.reply.error = error;
@@ -408,7 +408,7 @@ t_error		interface_io_read_16(o_message*	message)
   t_uint16	result1;
 
   error = io_read_16(message->u.request.u.io_read_16.arg1,
-			message->u.request.capability.object,
+			message->u.request.u.io_read_16.arg2,
 			&result1);
 
   message->u.reply.error = error;
@@ -427,7 +427,7 @@ t_error		interface_io_read_32(o_message*	message)
   t_uint32	result1;
 
   error = io_read_32(message->u.request.u.io_read_32.arg1,
-			message->u.request.capability.object,
+			message->u.request.u.io_read_32.arg2,
 			&result1);
 
   message->u.reply.error = error;
@@ -446,7 +446,7 @@ t_error		interface_io_read_64(o_message*	message)
   t_uint64	result1;
 
   error = io_read_64(message->u.request.u.io_read_64.arg1,
-			message->u.request.capability.object,
+			message->u.request.u.io_read_64.arg2,
 			&result1);
 
   message->u.reply.error = error;
@@ -464,8 +464,8 @@ t_error		interface_io_write_8(o_message*	message)
   t_error	error;
 
   error = io_write_8(message->u.request.u.io_write_8.arg1,
-			message->u.request.capability.object,
-			message->u.request.u.io_write_8.arg2);
+			message->u.request.u.io_write_8.arg2,
+			message->u.request.u.io_write_8.arg3);
 
   message->u.reply.error = error;
 
@@ -481,8 +481,8 @@ t_error		interface_io_write_16(o_message*	message)
   t_error	error;
 
   error = io_write_16(message->u.request.u.io_write_16.arg1,
-			message->u.request.capability.object,
-			message->u.request.u.io_write_16.arg2);
+			message->u.request.u.io_write_16.arg2,
+			message->u.request.u.io_write_16.arg3);
 
   message->u.reply.error = error;
 
@@ -498,8 +498,8 @@ t_error		interface_io_write_32(o_message*	message)
   t_error	error;
 
   error = io_write_32(message->u.request.u.io_write_32.arg1,
-			message->u.request.capability.object,
-			message->u.request.u.io_write_32.arg2);
+			message->u.request.u.io_write_32.arg2,
+			message->u.request.u.io_write_32.arg3);
 
   message->u.reply.error = error;
 
@@ -515,8 +515,8 @@ t_error		interface_io_write_64(o_message*	message)
   t_error	error;
 
   error = io_write_64(message->u.request.u.io_write_64.arg1,
-			message->u.request.capability.object,
-			message->u.request.u.io_write_64.arg2);
+			message->u.request.u.io_write_64.arg2,
+			message->u.request.u.io_write_64.arg3);
 
   message->u.reply.error = error;
 
@@ -532,10 +532,10 @@ t_error		interface_map_reserve(o_message*	message)
   t_error	error;
   t_vaddr	result1;
 
-  error = map_reserve(message->u.request.capability.object,
-			message->u.request.u.map_reserve.arg1,
+  error = map_reserve(message->u.request.u.map_reserve.arg1,
 			message->u.request.u.map_reserve.arg2,
 			message->u.request.u.map_reserve.arg3,
+			message->u.request.u.map_reserve.arg4,
 			&result1);
 
   message->u.reply.error = error;
@@ -552,8 +552,8 @@ t_error		interface_map_release(o_message*	message)
 {
   t_error	error;
 
-  error = map_release(message->u.request.capability.object,
-			message->u.request.u.map_release.arg1);
+  error = map_release(message->u.request.u.map_release.arg1,
+			message->u.request.u.map_release.arg2);
 
   message->u.reply.error = error;
 
@@ -569,9 +569,9 @@ t_error		interface_map_resize(o_message*	message)
   t_error	error;
   t_vaddr	result1;
 
-  error = map_resize(message->u.request.capability.object,
-			message->u.request.u.map_resize.arg1,
+  error = map_resize(message->u.request.u.map_resize.arg1,
 			message->u.request.u.map_resize.arg2,
+			message->u.request.u.map_resize.arg3,
 			&result1);
 
   message->u.reply.error = error;
@@ -605,12 +605,12 @@ t_error		interface_region_reserve(o_message*	message)
   t_error	error;
   i_region	result1;
 
-  error = region_reserve(message->u.request.capability.object,
-			message->u.request.u.region_reserve.arg1,
+  error = region_reserve(message->u.request.u.region_reserve.arg1,
 			message->u.request.u.region_reserve.arg2,
 			message->u.request.u.region_reserve.arg3,
 			message->u.request.u.region_reserve.arg4,
 			message->u.request.u.region_reserve.arg5,
+			message->u.request.u.region_reserve.arg6,
 			&result1);
 
   message->u.reply.error = error;
@@ -628,7 +628,7 @@ t_error		interface_region_release(o_message*	message)
   t_error	error;
 
   error = region_release(message->u.request.u.region_release.arg1,
-			message->u.request.capability.object);
+			message->u.request.u.region_release.arg2);
 
   message->u.reply.error = error;
 
@@ -645,7 +645,7 @@ t_error		interface_region_get(o_message*	message)
   o_region*	result1;
 
   error = region_get(message->u.request.u.region_get.arg1,
-			message->u.request.capability.object,
+			message->u.request.u.region_get.arg2,
 			&result1);
 
   message->u.reply.error = error;
@@ -756,7 +756,7 @@ t_error		interface_segment_clone(o_message*	message)
   i_segment	result1;
 
   error = segment_clone(message->u.request.u.segment_clone.arg1,
-			message->u.request.capability.object,
+			message->u.request.u.segment_clone.arg2,
 			&result1);
 
   message->u.reply.error = error;
@@ -774,7 +774,7 @@ t_error		interface_segment_give(o_message*	message)
   t_error	error;
 
   error = segment_give(message->u.request.u.segment_give.arg1,
-			message->u.request.capability.object);
+			message->u.request.u.segment_give.arg2);
 
   message->u.reply.error = error;
 
@@ -789,11 +789,11 @@ t_error		interface_segment_copy(o_message*	message)
 {
   t_error	error;
 
-  error = segment_copy(message->u.request.capability.object,
-			message->u.request.u.segment_copy.arg1,
+  error = segment_copy(message->u.request.u.segment_copy.arg1,
 			message->u.request.u.segment_copy.arg2,
 			message->u.request.u.segment_copy.arg3,
-			message->u.request.u.segment_copy.arg4);
+			message->u.request.u.segment_copy.arg4,
+			message->u.request.u.segment_copy.arg5);
 
   message->u.reply.error = error;
 
@@ -844,7 +844,7 @@ t_error		interface_segment_catch(o_message*	message)
   t_error	error;
 
   error = segment_catch(message->u.request.u.segment_catch.arg1,
-			message->u.request.capability.object);
+			message->u.request.u.segment_catch.arg2);
 
   message->u.reply.error = error;
 
@@ -859,8 +859,8 @@ t_error		interface_segment_perms(o_message*	message)
 {
   t_error	error;
 
-  error = segment_perms(message->u.request.capability.object,
-			message->u.request.u.segment_perms.arg1);
+  error = segment_perms(message->u.request.u.segment_perms.arg1,
+			message->u.request.u.segment_perms.arg2);
 
   message->u.reply.error = error;
 
@@ -875,8 +875,8 @@ t_error		interface_segment_type(o_message*	message)
 {
   t_error	error;
 
-  error = segment_type(message->u.request.capability.object,
-			message->u.request.u.segment_type.arg1);
+  error = segment_type(message->u.request.u.segment_type.arg1,
+			message->u.request.u.segment_type.arg2);
 
   message->u.reply.error = error;
 
@@ -892,7 +892,7 @@ t_error		interface_segment_get(o_message*	message)
   t_error	error;
   o_segment*	result1;
 
-  error = segment_get(message->u.request.capability.object,
+  error = segment_get(message->u.request.u.segment_get.arg1,
 			&result1);
 
   message->u.reply.error = error;
@@ -927,7 +927,7 @@ t_error		interface_task_clone(o_message*	message)
   t_error	error;
   i_task	result1;
 
-  error = task_clone(message->u.request.capability.object,
+  error = task_clone(message->u.request.u.task_clone.arg1,
 			&result1);
 
   message->u.reply.error = error;
@@ -964,7 +964,7 @@ t_error		interface_task_release(o_message*	message)
 {
   t_error	error;
 
-  error = task_release(message->u.request.capability.object);
+  error = task_release(message->u.request.u.task_release.arg1);
 
   message->u.reply.error = error;
 
@@ -979,8 +979,8 @@ t_error		interface_task_priority(o_message*	message)
 {
   t_error	error;
 
-  error = task_priority(message->u.request.capability.object,
-			message->u.request.u.task_priority.arg1);
+  error = task_priority(message->u.request.u.task_priority.arg1,
+			message->u.request.u.task_priority.arg2);
 
   message->u.reply.error = error;
 
@@ -995,8 +995,8 @@ t_error		interface_task_state(o_message*	message)
 {
   t_error	error;
 
-  error = task_state(message->u.request.capability.object,
-			message->u.request.u.task_state.arg1);
+  error = task_state(message->u.request.u.task_state.arg1,
+			message->u.request.u.task_state.arg2);
 
   message->u.reply.error = error;
 
@@ -1012,8 +1012,8 @@ t_error		interface_task_wait(o_message*	message)
   t_error	error;
   t_wait	result1;
 
-  error = task_wait(message->u.request.capability.object,
-			message->u.request.u.task_wait.arg1,
+  error = task_wait(message->u.request.u.task_wait.arg1,
+			message->u.request.u.task_wait.arg2,
 			&result1);
 
   message->u.reply.error = error;
@@ -1031,7 +1031,7 @@ t_error		interface_task_get(o_message*	message)
   t_error	error;
   o_task*	result1;
 
-  error = task_get(message->u.request.capability.object,
+  error = task_get(message->u.request.u.task_get.arg1,
 			&result1);
 
   message->u.reply.error = error;
@@ -1049,7 +1049,7 @@ t_error		interface_thread_give(o_message*	message)
   t_error	error;
 
   error = thread_give(message->u.request.u.thread_give.arg1,
-			message->u.request.capability.object);
+			message->u.request.u.thread_give.arg2);
 
   message->u.reply.error = error;
 
@@ -1066,7 +1066,7 @@ t_error		interface_thread_clone(o_message*	message)
   i_thread	result1;
 
   error = thread_clone(message->u.request.u.thread_clone.arg1,
-			message->u.request.capability.object,
+			message->u.request.u.thread_clone.arg2,
 			&result1);
 
   message->u.reply.error = error;
@@ -1102,7 +1102,7 @@ t_error		interface_thread_release(o_message*	message)
 {
   t_error	error;
 
-  error = thread_release(message->u.request.capability.object);
+  error = thread_release(message->u.request.u.thread_release.arg1);
 
   message->u.reply.error = error;
 
@@ -1117,8 +1117,8 @@ t_error		interface_thread_priority(o_message*	message)
 {
   t_error	error;
 
-  error = thread_priority(message->u.request.capability.object,
-			message->u.request.u.thread_priority.arg1);
+  error = thread_priority(message->u.request.u.thread_priority.arg1,
+			message->u.request.u.thread_priority.arg2);
 
   message->u.reply.error = error;
 
@@ -1133,8 +1133,8 @@ t_error		interface_thread_state(o_message*	message)
 {
   t_error	error;
 
-  error = thread_state(message->u.request.capability.object,
-			message->u.request.u.thread_state.arg1);
+  error = thread_state(message->u.request.u.thread_state.arg1,
+			message->u.request.u.thread_state.arg2);
 
   message->u.reply.error = error;
 
@@ -1149,8 +1149,8 @@ t_error		interface_thread_stack(o_message*	message)
 {
   t_error	error;
 
-  error = thread_stack(message->u.request.capability.object,
-			message->u.request.u.thread_stack.arg1);
+  error = thread_stack(message->u.request.u.thread_stack.arg1,
+			message->u.request.u.thread_stack.arg2);
 
   message->u.reply.error = error;
 
@@ -1165,8 +1165,8 @@ t_error		interface_thread_load(o_message*	message)
 {
   t_error	error;
 
-  error = thread_load(message->u.request.capability.object,
-			message->u.request.u.thread_load.arg1);
+  error = thread_load(message->u.request.u.thread_load.arg1,
+			message->u.request.u.thread_load.arg2);
 
   message->u.reply.error = error;
 
@@ -1182,7 +1182,7 @@ t_error		interface_thread_store(o_message*	message)
   t_error	error;
   t_thread_context	result1;
 
-  error = thread_store(message->u.request.capability.object,
+  error = thread_store(message->u.request.u.thread_store.arg1,
 			&result1);
 
   message->u.reply.error = error;
@@ -1200,7 +1200,7 @@ t_error		interface_thread_get(o_message*	message)
   t_error	error;
   o_thread*	result1;
 
-  error = thread_get(message->u.request.capability.object,
+  error = thread_get(message->u.request.u.thread_get.arg1,
 			&result1);
 
   message->u.reply.error = error;
@@ -1238,7 +1238,7 @@ t_error		interface_timer_release(o_message*	message)
 {
   t_error	error;
 
-  error = timer_release(message->u.request.capability.object);
+  error = timer_release(message->u.request.u.timer_release.arg1);
 
   message->u.reply.error = error;
 
@@ -1253,8 +1253,8 @@ t_error		interface_timer_delay(o_message*	message)
 {
   t_error	error;
 
-  error = timer_delay(message->u.request.capability.object,
-			message->u.request.u.timer_delay.arg1);
+  error = timer_delay(message->u.request.u.timer_delay.arg1,
+			message->u.request.u.timer_delay.arg2);
 
   message->u.reply.error = error;
 
@@ -1269,8 +1269,8 @@ t_error		interface_timer_repeat(o_message*	message)
 {
   t_error	error;
 
-  error = timer_repeat(message->u.request.capability.object,
-			message->u.request.u.timer_repeat.arg1);
+  error = timer_repeat(message->u.request.u.timer_repeat.arg1,
+			message->u.request.u.timer_repeat.arg2);
 
   message->u.reply.error = error;
 
@@ -1285,9 +1285,9 @@ t_error		interface_timer_modify(o_message*	message)
 {
   t_error	error;
 
-  error = timer_modify(message->u.request.capability.object,
-			message->u.request.u.timer_modify.arg1,
-			message->u.request.u.timer_modify.arg2);
+  error = timer_modify(message->u.request.u.timer_modify.arg1,
+			message->u.request.u.timer_modify.arg2,
+			message->u.request.u.timer_modify.arg3);
 
   message->u.reply.error = error;
 
@@ -1303,7 +1303,7 @@ t_error		interface_timer_get(o_message*	message)
   t_error	error;
   o_timer*	result1;
 
-  error = timer_get(message->u.request.capability.object,
+  error = timer_get(message->u.request.u.timer_get.arg1,
 			&result1);
 
   message->u.reply.error = error;

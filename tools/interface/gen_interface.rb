@@ -47,18 +47,27 @@ def process(kinterface, hinterface, uinterface, manager, func)
   trequest = ""
   treply = ""
   args = ""
+  uargs = ""
   code_decl = ""
   code_serialize = ""
+  code_output = ""
+  message = "  message.id = 0;
+  message.node.machine = dest.machine;
+  message.node.task = 1;
+
+  message.u.request.operation = INTERFACE_#{manager.upcase}_#{func['operation'].upcase};\n"
   j = i = 1
   cap = false
   func['argument'].each do | arg |
     if i != 1 || j != 1 || cap then
       args += ",\n\t\t\t"
+      uargs += ",\n\t\t\t"
     end
 
     type = arg
     dbl_ptr = type.index("**") != nil
     ptr = type.index("*") != nil
+    original = type
     type = type.sub('*', '')
 
     if arg.index("(out) ") == 0 then
@@ -75,12 +84,26 @@ def process(kinterface, hinterface, uinterface, manager, func)
 
       treply += "\n	  #{type.gsub('*', '')}\tresult#{j};"
       args += "&result#{j}"
+      if dbl_ptr then
+        uargs += "#{type}\t\tresult#{j}"
+      else
+        uargs += "#{original[6..original.length]}\t\tresult#{j}"
+      end
+      code_output += "  *result#{j} = message.u.reply.u.#{operation}.result#{j};\n"
 
       j += 1
     else
       if arg.index("(capability)") == 0 then
-        args += "message->u.request.capability.object"
-        cap = true
+
+        #args += "message->u.request.capability.object"
+        #cap = true
+
+        args += "message->u.request.u.#{operation}.arg#{i}"
+        trequest += "\n	  t_id\targ#{i};"
+        uargs += "t_id\t\targ#{i}"
+        message += "  message.u.request.u.#{operation}.arg#{i} = arg#{i};\n"
+        i += 1
+
       else
         if arg.index("(var) ") == 0 then
           type = type[6..type.length]
@@ -88,13 +111,17 @@ def process(kinterface, hinterface, uinterface, manager, func)
           code_serialize += "  message->u.reply.u.#{operation}.result#{j} = message->u.request.u.#{operation}.arg#{i};\n"
           treply += "\n	  #{type}\tresult#{j};"
           j += 1
+          # FIXME: uinterface
         end
         trequest += "\n	  #{type}\targ#{i};"
         if ptr then
           args += "&message->u.request.u.#{operation}.arg#{i}"
+          message += "  message.u.request.u.#{operation}.arg#{i} = *arg#{i};\n"
         else
           args += "message->u.request.u.#{operation}.arg#{i}"
+          message += "  message.u.request.u.#{operation}.arg#{i} = arg#{i};\n"
         end
+        uargs += "#{original}\t\targ#{i}"
         i += 1
       end
     end
@@ -112,6 +139,29 @@ def process(kinterface, hinterface, uinterface, manager, func)
 
   kinterface.puts "  return (ERROR_NONE);\n}\n\n"
 
+  uinterface.puts "t_error\t\tsyscall_#{operation}(#{uargs})\n{\n  o_message\t\tmessage;\n  i_node\t\tdest;\n\n"
+
+  uinterface.puts "  dest.machine = 2^64;
+  dest.task = 0;
+
+" # XXX this is bad
+
+  uinterface.puts message + "\n"
+
+  uinterface.puts "  syscall_async_send((t_uint32*)&dest, 0, &message, sizeof (message));
+
+  while (syscall_async_recv(0, &message, sizeof (message)) != ERROR_NONE)
+    ;
+
+"
+
+  uinterface.puts "  if (message.u.reply.error != ERROR_NONE)\n    return (ERROR_UNKNOWN);\n\n"
+
+  uinterface.puts code_output + "\n"
+
+  uinterface.puts "  return (ERROR_NONE);\n}\n\n"
+
+
   $type_request += "\tstruct\n\t{#{trequest}\n\t}\t\t#{operation};\n" if trequest != ""
   $type_reply += "\tstruct\n\t{#{treply}\n\t}\t\t#{operation};\n" if treply != ""
 
@@ -127,6 +177,7 @@ begin
 
   header_kinterface(kinterface)
   header_hinterface(hinterface)
+  header_uinterface(uinterface)
 
   data = YAML.load_file($input)
 
@@ -183,6 +234,7 @@ typedef struct
 
   footer_kinterface(kinterface)
   footer_hinterface(hinterface)
+  footer_uinterface(uinterface)
 rescue
   $stderr.puts $!
   exit(1)
