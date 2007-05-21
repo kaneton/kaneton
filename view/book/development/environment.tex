@@ -293,10 +293,6 @@ described below, starting with the lowest layer thourgh the highest one.
   profile/user/${KANETON_USER}         
 \end{verbatim}
 
-\begin{verbatim}
-XXX $ XXX
-\end{verbatim}
-
 In this layered organisation, a variable defined in, for instance, the
 \textit{host} profile could be overwritten anywhere in the upper layers
 \textit{kaneton}, \textit{kaneton/architecture/\$\{KANETON\_ARCHITECTURE\}},
@@ -360,79 +356,65 @@ environment engine.
 The \textit{description} files describe the environment variables in order
 to specify what kind of value a variable can take etc..
 
-Each variable description is contained between braces. A description is
-composed of fields, some are mandatory and some are optional.
+The description syntax is based on the \textit{YAML} language. Therefore,
+the \textit{Python} \textit{PyYAML} module needs to be set up.
 
 Examples of description for variables named \textit{\_FOO\_}, \textit{\_BAR\_}
 and \textit{\_CHICHE\_} are given next:
 
 \begin{verbatim}
-  _FOO_ :: the foo flag
-  {
-    <on> -D_FOO_FLAG_=1
-    <off> -D_FOO_FLAG_=0
+  #
+  # _FOO_
+  #
+  - variable: _FOO_
+    name: the foo flag
+    states: [ -D_FOO_FLAG_=0, -D_FOO_FLAG_=1 ]
+    description: |
+      This is a description of the two-state variable _FOO_.
 
-    This is a description of the two-state variable _FOO_.
-  }
+  #
+  # _BAR_
+  #
+  - variable: _BAR_
+    name: the bar parameter
+    values: [ simple:BAR_SIMPLE, normal:BAR_NORMAL, optimised:BAR_OPTIMISED ]
+    description: |
+      This is another parameter which can take three values: simple,
+      normal and optimised.
 
-  _BAR_ :: the bar parameter
-  {
-    <simple> BAR_SIMPLE
-    <normal> BAR_NORMAL
-    <optimised> BAR_OPTIMISED
-
-    This is another parameter which can take three values: simple,
-    normal and optimised.
-  }
-
-  _CHICHE_ :: the most powerful optimisation
-  {
-    This is the magic kaneton optimisation.
-  }
+  #
+  # _CHICHE_
+  #
+  - variable: _CHICHE_
+    name: the most powerful optimisation
+    description: This is the magic kaneton optimisation.
 \end{verbatim}
 
-Note that environment engine never takes these descriptions into account.
+Note that the environment engine never takes these descriptions into account.
 Indeed, this is the r\^ole of the \textit{configure} tool.
 
 In this syntax, variables are classified according to the type of value
-they can take: \textit{state}, \textit{set} and \textit{any}.
+they can take: \textit{two-state}, \textit{multiple-values} and \textit{any}.
 
-A \textit{state} variable is either activated or deactivated. If the two
-fields \textit{<on>} and \textit{<off>} are present, then, this variable
-is considered as a \textit{state} variable.
+A \textit{two-state} variable is either activated or deactivated. This is
+the case of the \textit{\_FOO\_} variable where the \textit{states}
+field is present. In this field, the first element represents the value
+to assign if the state is deactivated while the second element represents
+the value when activated.
 
-A \textit{set} variable can take any value of a given list of values. This
-is the most common type of variables. In this case, each field detected
-is considered as a potential value.
+A \textit{multiple-values} variable can take any value in a given list of
+values. This is the most common type of variable. In this case, the
+\textit{values} field contains couples name/value the variable can take.
 
 Finally, a \textit{any} variable represents a variable which can take any
-value. This case is detected by the absence of value field in the description.
+value. This case is detected by the absence of both \textit{states} and
+\textit{values} fields in the description.
 
-The value fields follow the next pattern:
-
-\begin{verbatim}
-  <name> value
-\end{verbatim}
-
-The \textit{name} is displayed by the \textit{configure} tool to the final
-user while the \textit{value} value is affected to the described variable. This
-way, the tool can displayed more human-readable description. For instance,
-if the \textit{optimised} option is chosen, then the \textit{BAR\_OPTIMISED}
-will be affected to the \textit{\_BAR\_} variable.
-
-The name of the variable follows the pattern:
-
-\begin{verbatim}
-  variable :: name
-\end{verbatim}
-
-Once again, this construct was introduced to avoid displaying internal
-non-user-friendly variable names. The \textit{variable} will not be directly
-displayed by the \textit{configure} tool which will use the \textit{name}
-string instead.
-
-Finally, any remaining text between the braces is considered as a variable's
-description text.
+The \textit{names} were introduced to avoid displaying internal
+non user-friendly variable names and/or values. Therefore, the
+\textit{configure} tool will always display literal string \textit{names}
+rather than variable names or values which are likely to do not make any
+sense to the user.
 
 % configuration
 

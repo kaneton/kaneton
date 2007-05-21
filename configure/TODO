@@ -1,0 +1,40 @@
+#
+# ---------- test.desc --------------------------------------------------------
+#
+
+#
+# _BAR_
+#
+- variable: _BAR_
+  name: the bar parameter
+  values: [avale: suce, leche: avale mon cul, ingurgite: chiche] # set
+  values: [branle, avale] # state
+  description: |
+    ``This is another parameter which can take three values: simple,
+      normal and optimised.''
+
+#
+# ---------- parser.py --------------------------------------------------------
+#
+
+import yaml
+
+stream = yaml.load(file("TEST.YML", "r"))
+
+values = stream[0]["values"]
+
+print values.__class__
+
+print values
+
+if values == None:
+  print "--- any"
+elif isinstance(values, list) and					\
+   len(values) == 2 and							\
+   isinstance(values[0], str):
+  print "--- state"
+elif isinstance(values, list) and					\
+     isinstance(values[0], dict):
+  print "--- set"
+else:
+  print "--- error"
