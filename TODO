@@ -253,67 +253,101 @@ l'endianness dans mod_load
 
 --
 
-securite et gestion des objets fondamentaux: zone memoire DMA, IRQ etc..
+[raisonnement a propos des objets dedies]
 
-le kernel ne peut pas deviner a qui doivent revenir ces objets. il est
-donc evident qu'une assistance externe est requise: un fichier de configuration
+le kernel ne peut pas deviner a qui doivent revenir ces objets dedies. il est
+donc evident qu'une assistance externe est requise: un fichier de
+configuration.
 
-ce fichier de configuration contiendra la liste des taches qui requiert
-un objet particulier. les taches seront identifiees par un nom de binaire
-genre 'zsh' et un hash sur le code executable pour eviter tout detournement.
+ce fichier de configuration contiendra une liste des taches qui requiert
+un objet dedie. les taches seront identifiees par un nom de binaire genre
+'zsh' et un hash sur le code executable pour eviter tout detournement.
 
-1) le kernel a la liste des objets prereserves et lorsqu'un reserve arrive
-   sur cet objet il autorise seulement si ca matche un objet de la liste.
+voici trois solutions possibles qui collent au design actuel:
 
-   cette technique est propre car le comportement des taches est identique
-   peu importe que ce soit un objet normal ou prereserve: X_reserve()
+1) le kernel detient le fichier de configuration. lorsqu'un X_reserve() arrive
+   sur un objet, il autorise l'operation uniquement si l'objet en question
+   matche un objet dedie de la liste.
 
-   le probleme c'est que c'est le kernel qui doit s'occuper de se fichier
-   ce qui implique parsing dans le kernel, probleme pour mettre a jour
-   cette liste dynamiquement etc..
+   [+] cette technique est propre car le comportement des taches est identique
+   peu importe que ce soit un objet normal ou dedie; la tache effectue toujours
+   un X_reserve().
 
-2) le service 'mod' lorsqu'une lance une nouvelle tache, regarde si des objets
-   sont dans la liste pour cette tache. si c'est le cas, mod reserve l'objet
-   et le donne a la tache.
+   [-] le probleme c'est que c'est le kernel qui doit s'occuper de ce fichier
+   ce qui implique du parsing dans le kernel, une difficulte pour la mise a
+   jour dynamique de cette liste etc.. bref ce n'est pas tres approprie car
+   le design est fait pour eviter ce genre de choses dans le kernel: parsing,
+   chaines de caracteres etc..
 
-   le parsing se fait dans mod et pas dans le kernel donc c'est plus propre.
-   la mise a jour est egalement plus simple car 'mod' reste un programme,
-   c'est plus flexible: interface de mise a jour, serialisation puis
-   relancement de 'mod' etc.. bref il existe des methodes.
+2) rappelons que c'est le service 'mod' qui effectue tous les chargements de
+   binaire ELF, a.out etc.. c'est egalement ce module qui est lance en tout
+   premier par le kernel. sa tache, une fois lancee, est de parser le fichier
+   de configuration contenant la liste de servers a lance au boot et de
+   les lancer, a l'instar de 'init' sous Unix. autrement dit, 'mod' peut
+   effectuer tout ce qu'il veut avant de creer les premieres taches.
 
-   le probleme c'est que 'mod' a le droit de reserver tous les objets donc
-   au niveau securite, si ce service contient une faille c'est dangereux.
+   dans cette solution, une fois 'mod' lance au boot, et avant de creer les
+   taches, il va reserver tous les objets dedies de la liste et les donner
+   via X_give() a la tache en question (un fois celle-ci creee et avant de
+   la demarrer).
 
-   de plus, dans cette solution, l'objet est detenu par la tache sans qu'elle
+   [+] le parsing se fait dans 'mod' et pas dans le kernel ce qui est plus
+   propre. la mise a jour est egalement plus simple car 'mod' reste un
+   programme, c'est plus flexible: interface de mise a jour, serialisation puis
+   redemarrage de 'mod' etc.. bref il existe des methodes ... plus ou moins
+   elegantes.
+
+   [-] le probleme c'est que 'mod' a le droit de reserver tous les objets donc
+   au niveau securite, si ce service contient une faille c'est dangereux. de
+   plus, dans cette solution, l'objet est detenu par la tache sans qu'elle
    n'ai rien eu a faire. c'est un peu bizarre comme fonctionnement pusisque
-   la tache n'est pas censee savoir que 'mod' va reserve tel truc pour elle.
+   la tache n'est pas censee savoir que 'mod' va reserver tel objet pour elle.
+   par exemple, le driver DMA ne reservera pas la zone DMA mais se la verra
+   octroyer par defaut, un peu bizarre donc dans le fonctionnement.
 
-3) une sorte de mix des deux solutions precedentes.
+3) une derniere solution, sorte de mix entre les deux solutions precedentes.
 
-   le service 'mod' a chaque creation de tache, va dire au kernel de
-   prereserve un objet on the behalf of la tache en question. comme ca
-   quand un reserve arrive, on voit que l'objet est deja reserve mais le
-   kernel verifie. si l'objet est en realite pseudo reserve (catch) alors
-   l'objet est en fait reserve et son etant passe de catchable->reserved.
+   on avait deja commence a resoudre ce probleme avec la zone DMA en ajoutant
+   une fonction segment_catch(). l'idee etait que 'mod' reserve la zone DMA
+   avant que les servers soient lances comme explique dans la solution
+   precedente. puis il change le type de la zone reservee de
+   RESERVED -> CATCHABLE. ensuite, le driver DMA faisait un appel a
+   segment_catch() pour recuperer l'objet segment que lui avait pre-reserve
+   'mod'.
 
-   la fonction utilisee est unique: reserve(), l'interface ne change donc pas.
-   la tache n'est pas au courant que quelqu'un a prereserve pour elle.
+   cette solution n'est pas terrible puisque c'est 'mod' qui fait le
+   X_reserve() et 'dma' qui fait le X_catch(). 'dma' doit donc utiliser,
+   suivant l'objet reserve (si il est specifique ou non) une fonction
+   differente.
 
-   le seul probleme c'est que 'mod' doit avoir le droit de prereserver des
+   pour eviter ca il faut renverser l'interface, et faire que 'mod' utilise
+   une fonction pour indiquer au kernel qu'un objet ne doit etre reservable
+   que par une tache particuliere, disons X_protect() et 'dma' fera un
+   X_reserve() peu importe le type d'objet. le kernel va voir que l'objet
+   n'est pas libre mais protege pour la tache T. si c'est T qui fait l'appel
+   alors OK, l'objet est reserve.
+
+   [+] la fonction utilisee est unique: reserve(), l'interface ne change
+   donc pas. la tache n'est pas au courant que quelqu'un a pre-reserve pour
+   elle.
+
+   [-] le seul probleme c'est que 'mod' doit avoir le droit de pre-reserver des
    objets. ce n'est pas vraiment dramatique puisque 'mod' est considere comme
    un service prioritaire puisqu'il est la continuite du kernel. il effectue
    des taches kernels: loading de code etc.. a la place du kernel car
    c'est plus adapte que ce soit en dehors du kernel pour des raisons de
    proprete: parsing et evolutivite: fichier de conf, format de fichiers.
 
-   en conclusion, 'mod' fait des catch() [fonction a renommer car aucun
-   sens, ou plutot pire ca veut dire l'inverse de ce que l'on veut] sur
-   tous les objets listes, puis les taches font des reserve dessus.
+en conclusion, 'mod' fait des protect() sur tous les objets dedies de la
+liste du fichier de configuration, puis les taches font des reserve() dessus
+comme d'habitude.
 
-   le probleme c'est que l'evolutivite est moyenne. si on se rend compte que
-   finalement une zone memoire ne devrait etre reservee que par une tache
-   particuliere mais que cette info n'est pas dans le fichier de conf et
-   bein meme si l'oin recharge le fichier de conf, une tache a tres bien pu
-   deja reserver cette zone. bien entendu c'est un faux probleme puisque
-   impossible a resoudre. si on veut faire les matheux, on formule LTL
-   devrait suffir a le prouver.
+un petit mot sur l'evolutivite du systeme, plus exactement de la liste
+des objets dedies. si on se rend compte que finalement une zone memoire ne
+devrait etre reservee que par une tache particuliere mais que cette info
+n'est pas dans le fichier de conf et bien meme si l'on recharge le fichier
+de conf, une tache a tres bien pu deja reserver cette zone. donc je pense
+qu'on peut dire que c'est un faux probleme et que donc l'evolutivite du
+systeme sur ce point est impossible si l'on veut garantir l'ownership de
+ces objets a tout instant (si on veut faire les matheux, on formule LTL
+devrait suffir a le prouver).
