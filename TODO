@@ -248,3 +248,72 @@ l'endianness dans mod_load
  de l'archi. dans kaneton, l'archi est separee de ce qui est independant
  de l'archi et les sturctures de donnees sont simplifiees au maximum via
  le set manager.
+
+ mettre a jour le papier sur le design: capabilities, message, cpu etc..
+
+--
+
+securite et gestion des objets fondamentaux: zone memoire DMA, IRQ etc..
+
+le kernel ne peut pas deviner a qui doivent revenir ces objets. il est
+donc evident qu'une assistance externe est requise: un fichier de configuration
+
+ce fichier de configuration contiendra la liste des taches qui requiert
+un objet particulier. les taches seront identifiees par un nom de binaire
+genre 'zsh' et un hash sur le code executable pour eviter tout detournement.
+
+1) le kernel a la liste des objets prereserves et lorsqu'un reserve arrive
+   sur cet objet il autorise seulement si ca matche un objet de la liste.
+
+   cette technique est propre car le comportement des taches est identique
+   peu importe que ce soit un objet normal ou prereserve: X_reserve()
+
+   le probleme c'est que c'est le kernel qui doit s'occuper de se fichier
+   ce qui implique parsing dans le kernel, probleme pour mettre a jour
+   cette liste dynamiquement etc..
+
+2) le service 'mod' lorsqu'une lance une nouvelle tache, regarde si des objets
+   sont dans la liste pour cette tache. si c'est le cas, mod reserve l'objet
+   et le donne a la tache.
+
+   le parsing se fait dans mod et pas dans le kernel donc c'est plus propre.
+   la mise a jour est egalement plus simple car 'mod' reste un programme,
+   c'est plus flexible: interface de mise a jour, serialisation puis
+   relancement de 'mod' etc.. bref il existe des methodes.
+
+   le probleme c'est que 'mod' a le droit de reserver tous les objets donc
+   au niveau securite, si ce service contient une faille c'est dangereux.
+
+   de plus, dans cette solution, l'objet est detenu par la tache sans qu'elle
+   n'ai rien eu a faire. c'est un peu bizarre comme fonctionnement pusisque
+   la tache n'est pas censee savoir que 'mod' va reserve tel truc pour elle.
+
+3) une sorte de mix des deux solutions precedentes.
+
+   le service 'mod' a chaque creation de tache, va dire au kernel de
+   prereserve un objet on the behalf of la tache en question. comme ca
+   quand un reserve arrive, on voit que l'objet est deja reserve mais le
+   kernel verifie. si l'objet est en realite pseudo reserve (catch) alors
+   l'objet est en fait reserve et son etant passe de catchable->reserved.
+
+   la fonction utilisee est unique: reserve(), l'interface ne change donc pas.
+   la tache n'est pas au courant que quelqu'un a prereserve pour elle.
+
+   le seul probleme c'est que 'mod' doit avoir le droit de prereserver des
+   objets. ce n'est pas vraiment dramatique puisque 'mod' est considere comme
+   un service prioritaire puisqu'il est la continuite du kernel. il effectue
+   des taches kernels: loading de code etc.. a la place du kernel car
+   c'est plus adapte que ce soit en dehors du kernel pour des raisons de
+   proprete: parsing et evolutivite: fichier de conf, format de fichiers.
+
+   en conclusion, 'mod' fait des catch() [fonction a renommer car aucun
+   sens, ou plutot pire ca veut dire l'inverse de ce que l'on veut] sur
+   tous les objets listes, puis les taches font des reserve dessus.
+
+   le probleme c'est que l'evolutivite est moyenne. si on se rend compte que
+   finalement une zone memoire ne devrait etre reservee que par une tache
+   particuliere mais que cette info n'est pas dans le fichier de conf et
+   bein meme si l'oin recharge le fichier de conf, une tache a tres bien pu
+   deja reserver cette zone. bien entendu c'est un faux probleme puisque
+   impossible a resoudre. si on veut faire les matheux, on formule LTL
+   devrait suffir a le prouver.
