@@ -1411,6 +1411,8 @@ void			interface_loop(void)
         {
           dispatch[message.u.request.operation](&message);
 
+	  printf("upcall with %d\n", message.u.reply.error);
+
           if (message_async_send(ktask,
 			         message.node,
 			         0,

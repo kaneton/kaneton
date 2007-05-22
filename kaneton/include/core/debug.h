@@ -45,6 +45,14 @@
 
 /*                                                                [cut] k1   */
 
+#define ASSERT(Test)							\
+  if (!(Test))								\
+    {									\
+      printf("assert(%s) failed at %s:%d\n", #Test, __FILE__, __LINE__); \
+      while (1)								\
+	;								\
+    }
+
 /*
  * ---------- types -----------------------------------------------------------
  */

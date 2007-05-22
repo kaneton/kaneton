@@ -98,6 +98,8 @@ t_error			map_reserve(i_as		asid,
   while (syscall_async_recv(0, &message, sizeof (message)) != ERROR_NONE)
     ;
 
+  printf("replyed %qd %qd %d\n", message.id, message.node.task, message.u.reply.error);
+
   if (message.u.reply.error != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
@@ -113,7 +115,7 @@ int			main(void)
   cons.line = 0;
   cons.column = 0;
   printf_init(cons_print_char, NULL);
-  printf("chiche\n");
+  printf("chiche %u\n", sizeof (o_message));
 
   t_vaddr		addr;
 

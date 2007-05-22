@@ -258,6 +258,8 @@ t_error			ia32_region_reserve(i_as		asid,
 
   REGION_ENTER(region);
 
+  ASSERT(!(size % PAGESZ));
+
   /*
    * 1)
    */

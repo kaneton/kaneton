@@ -273,8 +273,9 @@ t_error			message_async_recv(i_task	taskid,
 
   if (task->asid != kasid)
   {
-    as_write(task->asid, msg->data, (maxsz < msg->sz ? maxsz : msg->sz),
-	(t_paddr)data);
+    if (as_write(task->asid, msg->data, (maxsz < msg->sz ? maxsz : msg->sz),
+		 (t_paddr)data) != ERROR_NONE)
+      return (ERROR_UNKNOWN);
   }
   else
   {

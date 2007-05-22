@@ -169,7 +169,7 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
     MOD_LEAVE(mod, ERROR_UNKNOWN);
 
   stack.base = 0;
-  stack.size = THREAD_MIN_STACKSZ;
+  stack.size = 4 * PAGESZ;
 
   if (thread_stack(thr, stack) != ERROR_NONE)
     MOD_LEAVE(mod, ERROR_UNKNOWN);

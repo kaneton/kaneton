@@ -59,7 +59,7 @@
  * the kernel stack size is set to two pages.
  */
 
-#define INIT_KSTACKSZ		(2 * PAGESZ)
+#define INIT_KSTACKSZ		(4 * PAGESZ)
 
 /*
  * ---------- types -----------------------------------------------------------
