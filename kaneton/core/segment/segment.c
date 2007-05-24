@@ -248,7 +248,7 @@ t_error			segment_clone(i_as			asid,
   if (segment_copy(*new, 0, old, 0, from->size) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (segment_perms(*new, perms) != ERROR_NONE)
+  if (segment_perms(old, perms) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
