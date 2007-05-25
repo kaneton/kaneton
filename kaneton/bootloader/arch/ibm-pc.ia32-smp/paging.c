@@ -60,7 +60,7 @@ t_ia32_table		pt;
  * 3) installs the identity mapping via the first page table.
  * 4) map the APIC registers memory.
  * 5) installs extra identity mapping to be able to map the kernel code,
- *    the kernel stack, the global offset table, the modules etc..
+ *    the kernel stack, the global offset table, the modules etc.
  * 6) loads the new page directory.
  * 7) enables the paging mode.
  */

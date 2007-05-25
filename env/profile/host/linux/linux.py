@@ -59,7 +59,7 @@ def			colorize(text, color, options):
 #
 # launch()
 #
-# this function launch a new program/script/make etc..
+# this function launch a new program/script/make etc.
 #
 def			launch(file, arguments, options):
   directory = None

@@ -17,7 +17,7 @@
 # ---------- information ------------------------------------------------------
 #
 # this file contains specific user makefile dependencies, rules, variables
-# etc..
+# etc.
 #
 
 # for using gdb with qemu

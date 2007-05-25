@@ -14,7 +14,7 @@
 #
 # this script has to be run in its directory: src/env/
 #
-# for the moment this script uses UNIX tools: sed, cat, rm, make etc..
+# for the moment this script uses UNIX tools: sed, cat, rm, make etc.
 #
 
 #

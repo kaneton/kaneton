@@ -1,6 +1,6 @@
 1) Au niveau du parser il faudrait repasser sur chaque regexp et les
    rendre plus laxistes notamment sur les trailing whitespaces mais
-   egalement sur le placement des parentheses, accolades etc..
+   egalement sur le placement des parentheses, accolades etc.
 
 2) 
 
@@ -8,12 +8,12 @@
    fichiers header.
 
 4) Il faudrait verifier que les noms de fonction, structure, enumeration,
-   union etc.. sont en minuscule.
+   union etc. sont en minuscule.
 
 5) Il faut verifier que les variables globales statiques sont bien marquees
    en constantes.
 
-6) Rajouter les mots clef signed, register etc.. car pour l'instant les
+6) Rajouter les mots clef signed, register etc. car pour l'instant les
    regexp ne contiennent que les mots clef de base.
 
 7) Rendre le code plus evolutif en utilisant des variables python

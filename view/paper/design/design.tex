@@ -121,7 +121,7 @@ special interest for the portability.
 
 The kaneton microkernel was developed in a very specific way, to build
 a pedagogical project, with the clearest possible design to become an
-all easy-to-understand project including source code, design etc..
+all easy-to-understand project including source code, design etc.
 
 The kaneton microkernel will become the base of a distributed operating
 system. For this reason, the kaneton microkernel was designed to fit
@@ -169,7 +169,7 @@ architectures.
 A microkernel based operating system is composed of two parts:
 a \textbf{microkernel} which runs on every processor machine of the system
 and a collection of \textbf{servers} that provides most of traditional
-operating system functionalities: drivers, file servers etc..
+operating system functionalities: drivers, file servers etc.
 
 The microkernel has four primary functionalities to provide:
 
@@ -190,7 +190,7 @@ a better understanding since each manager provides an interface to control
 a precise type of kaneton object.
 
 For example, there exists an address space manager, a task manager,
-a thread manager etc.. So the reader interested in understanding how
+a thread manager etc. So the reader interested in understanding how
 the threads are implemented in kaneton just has to read the source code
 in relation with the thread manager, nothing more.
 
@@ -200,7 +200,7 @@ microkernel.
 
 This paper will now describe microkernel's components to understand how
 the kaneton microkernel provides communication, memory management, process
-management etc..
+management etc.
 
 %
 % communication
@@ -228,7 +228,7 @@ Moreover, unlike UNIX-like operating systems, the kaneton microkernel does
 not use signals. Indeed, the goal of the kaneton microkernel is not to
 be as fast as a monolithic type kernel like Linux.
 
-The kaneton project focuses on genericity, coherency, abstractions etc..
+The kaneton project focuses on genericity, coherency, abstractions etc.
 
 Finally, the kaneton message passing interface was designed based on
 well-known parallel and distributed programming libraries like MPI. From
@@ -248,7 +248,7 @@ Each address space of the system is composed of segments and regions.
 A \textbf{segment} consists in a linear sequence of physical addresses.
 A segment describes one area of physical memory including the
 first address, the last but also some properties like the owner of this
-segment, the permissions: execution, read, write etc.. and some
+segment, the permissions: execution, read, write etc. and some
 extra attributes. Segments can be accessed via mappings or directly via
 the segment manager interface provided by the kaneton microkernel.
 
@@ -350,7 +350,7 @@ the segment but not to write it.
 A common capability format includes the object identifier, the permissions
 of the capability on the object listing the allowed operations, a check field
 ensuring security and other specific fields like for example the location
-of the service, a lifetime etc..
+of the service, a lifetime etc.
 
 The figure below illustrates the capability generic format used in the Amoeba
 distributed operating sytem, this capability format being used by every
@@ -435,7 +435,7 @@ for other kernel managers. The entire microkernel is based on the sets.
 Using this manager leads to a very elegant and maintenable source code. For
 example the task manager uses the set manager to store every task of the
 system. Additionnaly, each task contains a set composed of the threads of
-this task etc..
+this task etc.
 
 Such a system provides an easy way to store data without effort. The task
 manager for example does not care about how to store data.
@@ -453,7 +453,7 @@ kaneton being an educational microkernel project, kaneton people wanted
 to use the simplest design possible.
 
 The set manager provides many different data structures like double
-linked-list, stack, pipe, array, b+-tree etc.. In addition, the set
+linked-list, stack, pipe, array, b+-tree etc. In addition, the set
 manager can be extended without affecting the other managers using it.
 
 The set manager also provides tools like \textbf{iterators} to easily and
@@ -523,7 +523,7 @@ without any dependency to the hard drive device driver for example.
 
 A \textbf{program} is the lowest privileged task on the system.
 The common user programs are the well-known UNIX{\scriptsize \copyright}
-programs like \textit{/bin/ls}, \textit{/bin/wc}, \textit{/usr/bin/cc} etc..
+programs like \textit{/bin/ls}, \textit{/bin/wc}, \textit{/usr/bin/cc} etc.
 A program is a task with no privilege. All it can do is compute some things,
 manage data and send messages to more privileged processes.
 
@@ -636,7 +636,7 @@ the kernel execution on this architecture.
 
 The second way consists in the design of an architecture interface defining
 the common architecture operations like \textit{tlb\_flush()},
-\textit{install\_page\_directory()} etc.. This system is better than the
+\textit{install\_page\_directory()} etc. This system is better than the
 first from the redundancy point of view. Nonetheless, optimisations are more
 difficult to implement. Furthermore, it is still possible for an architecture
 not to fit in this interface. Then, the kernel could not be ported on
@@ -701,7 +701,7 @@ programmers to manage memory and execution context as they want to.
 
 A special interest was ported on parallel and distributed programming
 providing complete primitives to manage priorities on many levels:
-thread, task etc.. but also via a complete message passing interface.
+thread, task etc. but also via a complete message passing interface.
 
 The set manager is used to make the kernel source code very elegant
 and then understandable by everyone including students. Moreover, the

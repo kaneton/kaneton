@@ -13,7 +13,7 @@
 # ---------- information ------------------------------------------------------
 #
 # this file contains specific user makefile dependencies, rules, variables
-# etc..
+# etc.
 #
 
 # disable checks

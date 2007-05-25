@@ -45,7 +45,7 @@ scripts and configuration files and together provide multi-users cooperation,
 with many operating systems on many architectures.
 
 A development environment describes binaries, compiling options, linking
-options etc.. to use for the kaneton microkernel project.
+options etc. to use for the kaneton microkernel project.
 
 The whole kaneton development environment needs exactly two
 fundamental tools to work. The first one is GNU make, used to build
@@ -72,7 +72,7 @@ behaviours and user profiles which describe users configurations.
 
 From these profiles, the kaneton development environment will generate
 development environment files containing the whole kaneton environment
-stuff including variables, shell functions, make functions etc..
+stuff including variables, shell functions, make functions etc.
 
 The three kaneton development environment files are located in the
 \textit{env/} directory.
@@ -157,7 +157,7 @@ Then the current machine profile's files are always located in the
 A machine profile describes the operating system behaviour for very
 generic operations like compiling a file, assembling a file, building
 a link between two files, removing a file, changing the current directory,
-displaying a message etc..
+displaying a message etc.
 
 As seen earlier, the kaneton development environment describes two
 behaviours, one for the makefiles, and another for the shell scripts.
@@ -190,7 +190,7 @@ Finally, the \textit{clean.sh} is called to uninstall the machine
 specific stuff.
 
 The \textit{machine.conf} file describes the machine profile configuration
-including general variables, general flags etc.. for the machine profile.
+including general variables, general flags etc. for the machine profile.
 
 The file \textit{machine.mk} describes the machine behaviour for
 make operations. This file must implement the whole kaneton make interface.
@@ -243,7 +243,7 @@ implementation.
 
 The file \textit{conf.h} parameterizes the kaneton microkernel specifying
 for example the algorithm to use in the segment and region managers,
-but is also used to activate for example the debug modes etc..
+but is also used to activate for example the debug modes etc.
 
 The file \textit{kaneton.conf} is the runtime kaneton microkernel
 configuration file. This file describes the kaneton servers to launch
@@ -258,7 +258,7 @@ The file \textit{user.conf} is the most important since it is used
 to configure the whole kaneton development environment. This file uses
 the GNU make syntax. Via this file, the developer can parameter the compiling
 flags, the boot device modes, the display options, the microkernel
-files to use etc..
+files to use etc.
 
 The \textit{user.mk} makefile is used to redefine or complete the machine
 makefile behaviour.
@@ -382,7 +382,7 @@ The current machine reference profile is the \textit{linux} one.
 	   This function assemble an asm file.
 
 	   The option \textit{--output-format [format]} can be used to
-	   specify the output format \textit{elf}, \textit{bin} etc..
+	   specify the output format \textit{elf}, \textit{bin} etc.
 	 }
 
 \function{static-library}{(\argument{static library file name},
@@ -456,7 +456,7 @@ The current machine reference profile is the \textit{linux} one.
 \function{version}{(\argument{file})}
          {
 	   This function generates a version file from the operating
-	   system's informations: user, host, date etc..
+	   system's informations: user, host, date etc.
 	 }
 
 \function{link}{(\argument{link},
@@ -531,7 +531,7 @@ The reader should look closer to the machine profiles already implemented.
                   \argument{options})}
          {
 	   This function outputs some text to the screen using a specific
-	   color \textit{red}, \textit{green}, \textit{blue} etc..
+	   color \textit{red}, \textit{green}, \textit{blue} etc.
 
 	   The option \textit{--no-newline} can be used not to output
 	   the trailing newline.
@@ -586,7 +586,7 @@ The reader should look closer to the machine profiles already implemented.
          {
 	   This function displays the text \argument{message} in a
 	   very specific manner based on the argument \argument{header}:
-	   \textit{+}, \textit{!}, \textit{?} etc..
+	   \textit{+}, \textit{!}, \textit{?} etc.
 	 }
 
 \function{wait-key}{(\argument{options})}

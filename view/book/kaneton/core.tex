@@ -114,7 +114,7 @@ objects.
 
 The \textbf{set manager} is used to manage the data structures in order
 to simplify the other kernel managers. Indeed, every kernel manager
-including the task manager, the thread manager, the segment manager etc..
+including the task manager, the thread manager, the segment manager etc.
 uses the set manager to store the data rather than create and manage data
 structures by their own.
 
@@ -134,7 +134,7 @@ The set mecanism is divided in two parts: the set manager and the set
 implementations.
 
 While the set implementations are specific to each type of set: array,
-linked-list, pipe, etc.., the set manager code is generic and works with all
+linked-list, pipe, etc., the set manager code is generic and works with all
 sets.
 
 The set manager has its own nomenclature we will now detail.
@@ -148,7 +148,7 @@ We use the term \textit{set object} to describe a set outside of the set
 manager while the term \textit{set descriptor} is used inside the set
 manager. A set descriptor contains the set meta-data. Indeed, a set descriptor
 contains the number of objects managed, the set options, the size of the
-objects held, the identifier of the set etc.. Each set descriptor is also
+objects held, the identifier of the set etc. Each set descriptor is also
 composed of an implementation subpart containing the data structure holding
 the objects.
 
@@ -185,7 +185,7 @@ function to be able to expand the data structure without effort.
 
 Using this initial \textit{malloc}() function with its survival area,
 the set manager is able to build sets for every kernel managers including
-the segment manager, the address space manager, the region manager etc..
+the segment manager, the address space manager, the region manager etc.
 
 The set manager provides options to parameterize the set reservation.
 
@@ -557,7 +557,7 @@ identifiers while the set of regions holds region objects.
                       i\_as* \argument{new})}
 	 {
 	   This function clones an address space taking care of cloning
-	   everything necessary: segments, regions etc..
+	   everything necessary: segments, regions etc.
 	 }
 
 \function{as\_reserve}{(i\_task \argument{task},
@@ -610,7 +610,7 @@ The kaneton object managed by the segment manager is the segment object.
 
 A \textbf{segment object} \textit{o\_segment} describes an area of reserved
 physical memory. A segment object has some properties like the base
-address, the size, the permissions etc.. and is identified by a
+address, the size, the permissions etc. and is identified by a
 segment identifier \textit{i\_segment}.
 
 In the current kaneton microkernel reference implementation, the
@@ -1174,7 +1174,7 @@ still is in the behaviour priority interval.
 	   \notice{All these features are not implemented yet.}
 
 	   \notice{We could probably extend the waiting states to more
-	     exotic ones like WAIT\_IO etc..}
+	     exotic ones like WAIT\_IO etc.}
 	 }
 
 \function{task\_get}{(i\_task \argument{id},
@@ -1205,7 +1205,7 @@ called threads.
 
 A \textbf{thread object} is an active entity which describes the
 current state of an execution context including the \textit{program counter},
-the \textit{stack pointer} etc..
+the \textit{stack pointer} etc.
 
 Indeed, a thread is composed of a current \textit{program counter} which
 keeps the next instruction address to execute and the \textit{stack pointer}
@@ -1555,7 +1555,7 @@ The kaneton message interface directly comes from standards in parallel
 and distributed programming.
 
 The message manager provides blocking and non-blocking functions,
-synchronous and asynchronous messages etc..
+synchronous and asynchronous messages etc.
 
 A sychronous message is a very specific message which follows the
 \textit{rendez-vous} scheme. Therefore, the sender and the receiver

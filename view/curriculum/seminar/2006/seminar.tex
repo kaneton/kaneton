@@ -364,7 +364,7 @@
       an emulation library.
     \item
       Finally, an \textbf{all easy to understand}: source code, design,
-      etc..
+      etc.
   \end{itemize}
 \end{frame}
 
@@ -401,7 +401,7 @@
   \nl
 
   Nevertheless, the kaneton microkernel implementation is very different
-  from the other kernels such BSD, Linux, KOS, etc..
+  from the other kernels such BSD, Linux, KOS, etc.
 \end{frame}
 
 %
@@ -420,7 +420,7 @@
   \nl
 
   Every event becomes a message including system calls, interrupts,
-  signals etc..
+  signals etc.
 
   \nl
 
@@ -517,7 +517,7 @@
 
   A capability is composed of: object identifier, permissions,
   security check, and optional fields including location, lifetime
-  etc..
+  etc.
 
   \nl
 
@@ -569,7 +569,7 @@
   \begin{itemize}[<+->]
     \item
       Capabilities are built by the servers contrary to other systems:
-      Amoeba etc..
+      Amoeba etc.
     \item
       No capability unification.
     \item
@@ -586,7 +586,7 @@
     \item
       More scalable to servers requirements: cryptography,
       capability format: without object identifier, with extended
-      permissions etc..
+      permissions etc.
     \item
       Moreover, capability generation is seldom and generally used
       to restrict permissions.
@@ -631,10 +631,10 @@
 \begin{frame}
   \frametitle{Overview}
 
-  The current systems like linux, BSD, solaris etc.. generally use
-  double linked-list, hash tables, trees etc.. data structures to
+  The current systems like linux, BSD, solaris etc. generally use
+  double linked-list, hash tables, trees etc. data structures to
   organise internals data like tasks structures, cache structures,
-  memory allocators etc..
+  memory allocators etc.
 
   \nl
 
@@ -670,7 +670,7 @@
 
   \nl
 
-  Examples: \textit{segments, regions, address spaces, tasks etc..}
+  Examples: \textit{segments, regions, address spaces, tasks etc.}
 
   \nl
 
@@ -684,7 +684,7 @@
   \nl
 
   Many different data structures will be provided: linked list, circular
-  queue, pipe, stack, hash tables, binary tree, array, b+-tree etc..
+  queue, pipe, stack, hash tables, binary tree, array, b+-tree etc.
 
   \nl
 
@@ -972,7 +972,7 @@
   \begin{itemize}[<+->]
     \item
       Little objects linked to build more complex objects:
-      as, task etc..
+      as, task etc.
     \item
       Let's programs manage objects themselves.
     \item
@@ -1032,7 +1032,7 @@
       Define a generic interface in which each architecture must fill in.
       Then, the kernel code just calls machine-dependent source code
       to perform some specific operations like: flush\_tlb(),
-      new\_page\_directory() etc..
+      new\_page\_directory() etc.
 
       \nl
 
@@ -1041,7 +1041,7 @@
     \item
       The last consists in calling the machine-dependent code everytime
       it may be needed by the architecture to perform modifications on
-      architecture data structures etc..
+      architecture data structures etc.
 
       \nl
 
@@ -1070,7 +1070,7 @@
   For example, when an address space object is created, the machine
   dependent code is called. Then the architecture performs the operations
   needed like building a new page directory and linking it to the
-  new address space just created etc..
+  new address space just created etc.
 
   \nl
 
@@ -1126,7 +1126,7 @@
       The C library.
     \item
       Every kernel manager including: segment, region, as, task, thread
-      etc.. and the famous set manager.
+      etc. and the famous set manager.
   \end{itemize}
 \end{frame}
 
@@ -1159,9 +1159,9 @@
     \item
       python
     \item
-      emulators: bochs, qemu, gxemul etc..
+      emulators: bochs, qemu, gxemul etc.
     \item
-      etc..
+      etc.
   \end{itemize}
 
   \nl
@@ -1237,7 +1237,7 @@
   \nl
 
   The first year, the students will \textbf{learn} the basis of the low-level
-  programming, kernel development, kaneton design etc.. and
+  programming, kernel development, kaneton design etc. and
   \textbf{participate} to the kaneton design and development through
   the different subprojects listed below.
 
@@ -1263,12 +1263,12 @@
   \begin{itemize}[<+->]
     \item
       To validate the portability system through other architectures:
-      sparc, mips, powerpc, intel etc..
+      sparc, mips, powerpc, intel etc.
 
       \nl
 
       Also develop very special architecture to explore different ways
-      like optimisations: ia32-virtual, ia32-segment, ia32-optimised etc..
+      like optimisations: ia32-virtual, ia32-segment, ia32-optimised etc.
     \item
       To increase the set types.
     \item
@@ -1279,7 +1279,7 @@
     \item
       To design a powerful naming scheme allowing concurrent
       servers executions while permitting to name every system object:
-      segment, as, task, id etc.. like the research distributed operating
+      segment, as, task, id etc. like the research distributed operating
       system Sprite from Berkeley did.
     \item
       To design a complete device manager.

@@ -16,7 +16,7 @@
  * request and reply messages in different passing modes.
  *
  * the message manager interface is equivalent in many ways to the
- * well-known parallel and distributed computing libraries like MPI, PVM etc..
+ * well-known parallel and distributed computing libraries like MPI, PVM etc.
  *
  * indeed, functions to send synchronously and asynchronously are provided
  * as well as blocking and non-blocking functions.

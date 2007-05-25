@@ -202,7 +202,7 @@ define change-directory
 endef
 
 #
-# launch a new program, script etc..
+# launch a new program, script etc.
 #
 # $(1):		the file to launch
 # $(2):		arguments

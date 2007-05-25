@@ -14,7 +14,7 @@
  *
  * this manager is used to make statistics on managers and more precisely
  * on manager functions use: number of calls, number of errors, time past
- * in each function etc..
+ * in each function etc.
  *
  * with this manager we will be able to evaluate critical managers
  * like the set manager and especially critical functions which could

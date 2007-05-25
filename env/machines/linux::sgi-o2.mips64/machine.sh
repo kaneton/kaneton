@@ -465,7 +465,7 @@ launch-program()
 #
 # LAUNCH
 #
-# this function just launches a new program, script etc..
+# this function just launches a new program, script etc.
 #
 launch()
 {

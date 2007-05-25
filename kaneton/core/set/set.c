@@ -14,7 +14,7 @@
  *
  * the set manager is used to manage the data structures in order to simplify
  * the other kernel managers. indeed, every kernel manager including the
- * task manager, the thread manager, the segment manager etc.. uses the
+ * task manager, the thread manager, the segment manager etc. uses the
  * set manager to store the data rather than create themselves data structures
  * by their own.
  *
@@ -46,7 +46,7 @@
  * c-preprocessor.
  *
  * each data structure allows some options to parameterise the data structure
- * wanted. the common ones are: ALLOCATE, SORT etc..
+ * wanted. the common ones are: ALLOCATE, SORT etc.
  *
  * the ALLOCATE option may be disabled for certain data structures because
  * of its meaningless for this data structure.
@@ -64,7 +64,7 @@
  * for this common problem, a new option was introduced, the FREE option
  * which tells the set manager to call the free() function every time an
  * element is released, for example into the functions set_remove(),
- * set_flush(), set_release() etc..
+ * set_flush(), set_release() etc.
  *
  * be careful to never set the FREE option with the ALLOCATE option. the
  * FREE option tells the set manager that the user is using preallocated

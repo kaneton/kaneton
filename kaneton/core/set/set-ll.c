@@ -227,7 +227,7 @@ t_error			set_next_ll(i_set			setid,
  * 2) gets the set descriptor corresponding to the set identifier.
  * 3) if the sort option is enable, this operation is not allowed.
  * 4) allocates and initialises the new node.
- * 5) performs operations from the set options: alloc or not etc..
+ * 5) performs operations from the set options: alloc or not etc.
  * 6) inserts the new node and reorganises the list.
  * 7) increments the number of nodes in the list.
  */
@@ -323,7 +323,7 @@ t_error			set_insert_ll(i_set			setid,
  * 2) gets the set descriptor corresponding to the set identifier.
  * 3) if the sort option is enable, this operation is not allowed.
  * 4) allocates and initialises the new node.
- * 5) performs operations from the set options: alloc or not etc..
+ * 5) performs operations from the set options: alloc or not etc.
  * 6) inserts the new node and reorganises the list.
  * 7) increments the number of nodes in the list.
  */
@@ -613,7 +613,7 @@ t_error			set_after_ll(i_set			setid,
  * 1) avoids bad identifiers.
  * 2) gets the set descriptor corresponding to the set identifier.
  * 3) allocates and initialises the new node for the new object.
- * 4) performs operations from the set options: alloc or not etc..
+ * 4) performs operations from the set options: alloc or not etc.
  * 5) inserts the new node in the list.
  *   A) sorts the nodes.
  *     a) inserts the new node in the list.

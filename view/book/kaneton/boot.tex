@@ -62,7 +62,7 @@ To do so, the bootloader has to fill in an initialization structure
 
 This structure will inform the core of the location of some
 fundamental objects like the kernel code, the kernel stack, the
-initialization structure, the modules etc..
+initialization structure, the modules etc.
 
 Moreover, and for design reasons, the bootloader has to specify the
 pre-reserved core segments, the pre-reserved core regions, the alloc
@@ -100,7 +100,7 @@ a multi-bootloader is generally used as kaneton boostrap.
 
 The bootloader must build a special data structure containing everything
 necessary to get access to the modules including: number of modules,
-modules' information, modules' content etc.. Then the core will be
+modules' information, modules' content etc. Then the core will be
 able to use it to retrieve the modules.
 
 In fact, the core itself will not use the modules. Indeed, a dedicated
@@ -184,7 +184,7 @@ an empty data structure. Then the segment manager can choose any
 unused area and return an identifier on it. By \textit{any unused area} we
 mean any unused physical memory area including the kernel code area, the kernel
 stack area, the modules area, the architecture dependent areas like maybe the
-video mapped memory area and the BIOS mapped memory area etc..
+video mapped memory area and the BIOS mapped memory area etc.
 
 You should understand that the kaneton core needs to know which physical
 memory area should not be reserved or in other terms, are pre-reserved.
@@ -260,7 +260,7 @@ system or complex data structures like the b-tree.
 Let's consider a relatively simple data structure which only keeps track
 of used physical memory area in a linked-list. Each element of the
 linked-list provides enough information to describe a used physical memory
-area including the base address, the area size, the permissions etc..
+area including the base address, the area size, the permissions etc.
 
 Note that, in kaneton terms, this manager is called the segment manager.
 

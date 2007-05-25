@@ -53,7 +53,7 @@ t_ia32_table		pt;
  * 2) set the page directory address into the init variable.
  * 3) install the identity mapping via the first page table.
  * 4) install extra identity mapping to be able to map the kernel code,
- *    the kernel stack, the global offset table, the modules etc..
+ *    the kernel stack, the global offset table, the modules etc.
  * 5) load the new page directory.
  * 6) enable the paging mode.
  */

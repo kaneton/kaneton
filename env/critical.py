@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/env/critical.py
+# file          /home/mycure/kaneton/environment/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [mon may 21 13:23:56 2007]
+# updated       julien quintard   [thu may 24 18:01:57 2007]
 #
 
 #
@@ -82,7 +82,7 @@ def			load(directories, pattern):
       if not os.path.isfile(directory + "/" + file):
         continue
 
-      if not re.match(pattern, os.path.basename(directory + "/" + file)):
+      if not re.match(pattern, file):
         continue
 
       try:
@@ -141,7 +141,7 @@ def			comments():
 # this function tries to locate the variable of the given array and
 # return the corresponding tuple.
 #
-def		locate(array, variable):
+def			locate(array, variable):
   var = None
 
   for var in array:
@@ -213,7 +213,7 @@ def			extract():
 #
 # this function tries to expand the given variable.
 #
-def		expand(name, stack):
+def			expand(name, stack):
   variables = None
   position = None
   tuple = None

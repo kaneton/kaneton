@@ -91,7 +91,7 @@ warning()
 # GENERATE
 #
 # this function regenerates the non coherent stuff including
-# prototypes etc..
+# prototypes etc.
 #
 generate()
 {

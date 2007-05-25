@@ -89,7 +89,7 @@ Let's recall what is a microkernel.
 
 A \textbf{microkernel} is a kernel type designed to be modular. Instead
 of building a large binary object containing the kernel itself, the drivers,
-the file systems etc.. microkernels try to be as small as possible,
+the file systems etc. microkernels try to be as small as possible,
 providing only the fundamental services like managing memory, execution
 contexts, communication and input/output. Then the other classical operating
 system's services are provided by userland processes with special privileges
@@ -204,7 +204,7 @@ The second manager involved in the memory management is called the
 \textbf{segment manager}. This manager manages the physical memory
 as other kernel's physical memory manager do. Indeed, its role
 is to provide access to low-level functionalities dealing with
-physical memory to reserve, release etc.. memory.
+physical memory to reserve, release etc. memory.
 
 This manager is the most important of the three ones.
 
@@ -219,7 +219,7 @@ manages the mappings between virtual and physical memory locations.
 \subsection{Execution Contexts Management}
 
 The execution contexts management consits in providing a complete
-interface to create, extend, destroy etc.. execution contexts.
+interface to create, extend, destroy etc. execution contexts.
 
 In kaneton, there are two managers involved in execution contexts
 management.
@@ -240,7 +240,7 @@ In kaneton, the active entity, the scheduled entity is the thread. The
 task object is in fact just an abstraction describing the entire execution
 context.
 
-The thread manager permit to add, remove, start, stop etc.. threads
+The thread manager permit to add, remove, start, stop etc. threads
 of the task them belong to.
 
 Notice that another manager exists, called the \textbf{scheduler} but

@@ -31,7 +31,7 @@
 
 /*
  * init variable received from the bootloader specifying segments, regions,
- * physical memory layout etc..
+ * physical memory layout etc.
  */
 
 extern t_init*		init;

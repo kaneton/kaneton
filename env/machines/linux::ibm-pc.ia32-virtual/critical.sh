@@ -13,7 +13,7 @@
 #
 # this script has to be run in its directory: env/machines/linux/
 #
-# for the moment this script uses GNU tools: sed, cat, rm, make etc..
+# for the moment this script uses GNU tools: sed, cat, rm, make etc.
 #
 
 #

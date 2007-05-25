@@ -11,7 +11,7 @@
 #
 # ---------- information ------------------------------------------------------
 #
-# this file contains specific user shell variables, functions etc..
+# this file contains specific user shell variables, functions etc.
 #
 
 #

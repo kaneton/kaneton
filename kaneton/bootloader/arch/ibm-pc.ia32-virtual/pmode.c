@@ -37,7 +37,7 @@ extern t_init*		init;
  * default segments for the bootloader and kernel initialisation.
  *
  * each segment has the same size with different rights: read/execution,
- * read/write etc..
+ * read/write etc.
  *
  * steps:
  *

@@ -38,7 +38,7 @@ extern const char	version[];
 
 /*
  * init variable received from the bootloader specifying segments, regions,
- * physical memory layout etc..
+ * physical memory layout etc.
  */
 
 t_init*			init;

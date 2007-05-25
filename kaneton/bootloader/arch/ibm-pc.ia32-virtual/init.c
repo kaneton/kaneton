@@ -26,8 +26,8 @@
  * init variable, describing the initial memory layout.
  *
  * this structure will be passed to the kernel describing modules,
- * physical memory reserved by the hardware etc.. thus the kernel will
- * be able to initialise its managers: segment manager, module manager etc..
+ * physical memory reserved by the hardware etc. thus the kernel will
+ * be able to initialise its managers: segment manager, module manager etc.
  */
 
 t_init*			init;
@@ -396,7 +396,7 @@ void			bootloader_init_regions(void)
  * this function just allocates memory for relocation.
  *
  * this function is needed because many objects are dynamic: modules,
- * page tables etc..
+ * page tables etc.
  */
 
 t_paddr			bootloader_init_alloc(t_psize		size,

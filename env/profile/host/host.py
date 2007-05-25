@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/env/profile/host/host.py
+# file          /home/mycure/kaneton/environment/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [sat may 19 14:31:00 2007]
+# updated       julien quintard   [thu may 24 17:19:48 2007]
 #
 
 #
@@ -58,6 +58,9 @@ OPTION_DIRECTORY = 2
 OPTION_RECURSIVE = 3
 OPTION_ALL = OPTION_FILE | OPTION_DIRECTORY
 
+OPTION_READ = 1
+OPTION_WRITE = 2
+
 OPTION_DEVICE = 1
 OPTION_IMAGE = 2
 
@@ -97,33 +100,36 @@ def			display(header, text, options):
 
 
 #
-# contents()
+# file()
 #
-# this functions returns the contents of one or more files.
+# this function reads/writes the content of a single file.
 #
-def			contents(files, options):
-  contents = None
+def			file(file, content, options):
   handle = None
-  file = None
   line = None
 
-  contents = ""
-
-  for file in files:
+  if (options & OPTION_READ):
     if not os.path.exists(file):
-      continue
+      return None
 
     try:
       handle = open(file, "r")
     except IOError:
-      continue
+      return None
 
+    content = ""
     for line in handle.readlines():
-      contents += line
+      content += line
 
     handle.close()
 
-  return contents
+    return content
+  elif (options & OPTION_WRITE):
+    handle = open(file, "w")
+
+    handle.write(content)
+
+    handle.close()
 
 
 
@@ -292,7 +298,7 @@ def			stamp(format, options):
 #
 # path()
 #
-# this function returns information on a path: file, directory etc..
+# this function returns information on a path: file, directory etc.
 #
 def			path(path, options):
   if options == OPTION_FILE:

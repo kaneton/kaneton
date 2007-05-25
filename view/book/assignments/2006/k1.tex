@@ -22,7 +22,7 @@ environment for the future core execution.
 
 Nevertheless, the main goal of the kaneton bootloader is to provide
 information to the core on the current microprocessor's architecture
-including the location of the pre-reserved physical memory areas etc..
+including the location of the pre-reserved physical memory areas etc.
 
 This project is interesting since the student has to develop in a very
 strict environment and build precise data structures which will be passed
@@ -100,7 +100,7 @@ in a very strict environment with no fine-grain allocator provided.
 The main goal of this project is to lead the students to understand the
 project source organization. Indeed, a complete development environment
 is provided; therefore, the students should learn to use system defines,
-internal facilities, kaneton tools etc.. to develop more quickly.
+internal facilities, kaneton tools etc. to develop more quickly.
 
 %
 % tips
@@ -198,7 +198,7 @@ physical memory areas which have to be marked as pre-reserved by the core.
 These memory areas are memory areas to keep from being erased like the
 kernel code, the kernel stack, the initialization structure, the modules,
 the core segments area, the core regions area, the survival area but also
-architecture-specific areas like the ISA memory area etc..
+architecture-specific areas like the ISA memory area etc.
 
 %
 % core regions
@@ -218,7 +218,7 @@ properly rebuild the virtual memory.
 So, on the Intel sub-architectures, these core regions include the mapped
 video memory, the kernel code, the kernel stack, the initialization
 structure, the survival area and any additional Intel specific elements
-like the Global Descriptor Table etc..
+like the Global Descriptor Table etc.
 
 Notice that it might be smart not to include the first memory page in
 the core regions so null pointers dereferencing will cause page faults.

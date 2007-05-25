@@ -278,7 +278,7 @@ wait-key()
 #
 # LAUNCH
 #
-# this function just launches a new program, script etc..
+# this function just launches a new program, script etc.
 #
 # ${1}:		file
 # ${2}:		arguments

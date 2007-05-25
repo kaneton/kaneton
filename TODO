@@ -72,7 +72,7 @@ l'endianness dans mod_load
  faudrait implementer des regions copy-on-write pour gagner en
  performance. qui plus est, il faut de toute facon pouvoir préciser si
  un segment doit etre cloné en cas d'as_clone. par exemple, on a pas
- envie de dupliquer la GDT, l'IDT, la kstack etc... qui sont mappés
+ envie de dupliquer la GDT, l'IDT, la kstack etc. qui sont mappés
  dans chaque as.
 
  +stack expansion
@@ -236,7 +236,7 @@ l'endianness dans mod_load
   [core/kaneton/kaneton.c]
     1) ...
 
-  -> les points 1,2,3 etc.. sont pas ordre d'importance
+  -> les points 1,2,3 etc. sont pas ordre d'importance
 
 --
  pour detecter les fichiers qui sont executables, ce qui n'est pas normal:
@@ -249,7 +249,7 @@ l'endianness dans mod_load
  de l'archi et les sturctures de donnees sont simplifiees au maximum via
  le set manager.
 
- mettre a jour le papier sur le design: capabilities, message, cpu etc..
+ mettre a jour le papier sur le design: capabilities, message, cpu etc.
 
 --
 
@@ -275,12 +275,12 @@ voici trois solutions possibles qui collent au design actuel:
 
    [-] le probleme c'est que c'est le kernel qui doit s'occuper de ce fichier
    ce qui implique du parsing dans le kernel, une difficulte pour la mise a
-   jour dynamique de cette liste etc.. bref ce n'est pas tres approprie car
+   jour dynamique de cette liste etc. bref ce n'est pas tres approprie car
    le design est fait pour eviter ce genre de choses dans le kernel: parsing,
-   chaines de caracteres etc..
+   chaines de caracteres etc.
 
 2) rappelons que c'est le service 'mod' qui effectue tous les chargements de
-   binaire ELF, a.out etc.. c'est egalement ce module qui est lance en tout
+   binaire ELF, a.out etc. c'est egalement ce module qui est lance en tout
    premier par le kernel. sa tache, une fois lancee, est de parser le fichier
    de configuration contenant la liste de servers a lance au boot et de
    les lancer, a l'instar de 'init' sous Unix. autrement dit, 'mod' peut
@@ -294,7 +294,7 @@ voici trois solutions possibles qui collent au design actuel:
    [+] le parsing se fait dans 'mod' et pas dans le kernel ce qui est plus
    propre. la mise a jour est egalement plus simple car 'mod' reste un
    programme, c'est plus flexible: interface de mise a jour, serialisation puis
-   redemarrage de 'mod' etc.. bref il existe des methodes ... plus ou moins
+   redemarrage de 'mod' etc. bref il existe des methodes ... plus ou moins
    elegantes.
 
    [-] le probleme c'est que 'mod' a le droit de reserver tous les objets donc
@@ -334,7 +334,7 @@ voici trois solutions possibles qui collent au design actuel:
    [-] le seul probleme c'est que 'mod' doit avoir le droit de pre-reserver des
    objets. ce n'est pas vraiment dramatique puisque 'mod' est considere comme
    un service prioritaire puisqu'il est la continuite du kernel. il effectue
-   des taches kernels: loading de code etc.. a la place du kernel car
+   des taches kernels: loading de code etc. a la place du kernel car
    c'est plus adapte que ce soit en dehors du kernel pour des raisons de
    proprete: parsing et evolutivite: fichier de conf, format de fichiers.
 

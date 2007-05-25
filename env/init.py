@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/env/init.py
+# file          /home/mycure/kaneton/environment/init.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [tue may 15 21:04:38 2007]
+# updated       julien quintard   [thu may 24 17:05:05 2007]
 #
 
 #
@@ -40,7 +40,7 @@ def			warning():
               "  host:                   " + env._HOST_,
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
-              "  platform:              " + env._PLATFORM_,
+              "  platform:               " + env._PLATFORM_,
               env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "  architecture:           " + env._ARCHITECTURE_,
@@ -149,10 +149,8 @@ def			dependencies():
 #
 # this function initialises the development environment.
 #
-
 def			main():
   # display some stuff.
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
   env.display(env.HEADER_OK,
               "installing the kaneton development environment",
               env.OPTION_NONE)

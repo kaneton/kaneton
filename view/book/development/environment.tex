@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/environment.tex
 %
 % created       julien quintard   [sun may 20 14:49:26 2007]
-% updated       julien quintard   [sun may 20 18:07:59 2007]
+% updated       julien quintard   [thu may 24 17:02:07 2007]
 %
 
 %
@@ -35,7 +35,7 @@ everytime.
 The kaneton development environment aims at providing an easy and portable
 way for managing the kaneton microkernel project from a development point
 of view. Therefore, the kaneton environment provides everything necessary
-for compiling, assembling, etc.. These tasks highly rely on the underlying
+for compiling, assembling, etc. These tasks highly rely on the underlying
 running operating system as well as on the kaneton microkernel's target
 microprocessor. Moreover, the user could need to redefine some behaviours
 depending on its personal operating system configuration to use a specific
@@ -66,7 +66,7 @@ shell variables.
 \subsubsubsection{Host}
 
 The \textit{host} profile essentially describes how to perform basic tasks:
-compile, assemble, change the current directory, display a message etc.. These
+compile, assemble, change the current directory, display a message etc. These
 tasks rely on the operating system currently running as well as on the target
 processor which kaneton will be built for. For these reasons, there are
 several host sub-profiles.
@@ -128,7 +128,7 @@ microprocessor while kaneton is built for a \textit{MIPS 64-bit} target
 architecture. This profile is likely to include the \textit{linux.*} of the
 parent directory since there are not much difference between all the
 \textit{linux/*.*} \textit{host} profiles. However, such a profile will
-certainly redefine the binary paths of the C compiler, linker etc.. in order
+certainly redefine the binary paths of the C compiler, linker etc. in order
 to produce \textit{MIPS 64-bit} binary objects.
 
 To conclude, the \textit{host} sub-profile is accessed by the following
@@ -296,7 +296,7 @@ described below, starting with the lowest layer thourgh the highest one.
 In this layered organisation, a variable defined in, for instance, the
 \textit{host} profile could be overwritten anywhere in the upper layers
 \textit{kaneton}, \textit{kaneton/architecture/\$\{KANETON\_ARCHITECTURE\}},
-\textit{user} etc..
+\textit{user} etc.
 
 The \textit{host} and \textit{kaneton} profiles are theoretically completed
 separated. However, the environment engine does not check for such
@@ -354,7 +354,7 @@ environment engine.
 \subsubsubsection{Description}
 
 The \textit{description} files describe the environment variables in order
-to specify what kind of value a variable can take etc..
+to specify what kind of value a variable can take etc.
 
 The description syntax is based on the \textit{YAML} language. Therefore,
 the \textit{Python} \textit{PyYAML} module needs to be set up.
@@ -521,17 +521,17 @@ to avoid name conflicts.
 	   This function changes the current working directory.
 	 }
 
-\function{env\_contents}{(\argument{file},
-                          \argument{options})}
+\function{env\_content}{(\argument{file},
+                         \argument{options})}
          {
-	   This function returns the contents of the file \argument{file}.
+	   This function returns the content of the file \argument{file}.
 	 }
 
 \function{env\_launch}{(\argument{file},
                         \argument{arguments},
                         \argument{options})}
          {
-	   This function launches a new program/script/make etc..
+	   This function launches a new program/script/make etc.
 
 	   \-
 
@@ -613,13 +613,13 @@ to avoid name conflicts.
          {
 	   This function builds a executable from object files and/or
 	   libraries. The \argument{layout file} describes where to
-	   place the different data: code, read-only data, stack etc..
+	   place the different data: code, read-only data, stack etc.
 
 	   \-
 
 	   The option \textit{\$(ENV\_OPTION\_NO\_STANDARD)} tells the function
 	   not to use the operating system standard stuff: libraries, includes
-	   etc..
+	   etc.
 	 }
 
 \function{env\_archive}{(\argument{archive file name},
@@ -660,7 +660,7 @@ to avoid name conflicts.
 \function{env\_version}{(\argument{file})}
          {
 	   This function generates a version \argument{file} from the operating
-	   system's informations: user, host, date etc..
+	   system's informations: user, host, date etc.
 	 }
 
 \function{env\_link}{(\argument{link},
@@ -739,10 +739,12 @@ Below are described the functions implemented by the \textit{env} package.
 	   \textit{HEADER\_ERROR}, \textit{HEADER\_INTERACTIVE}.
 	 }
 
-\function{contents}{(\argument{file},
-                     \argument{options})}
+\function{file}{(\argument{file},
+                 \argument{options})}
          {
-	   This function returns the contents of the \argument{file}.
+	   This function returns the content of the \argument{file} with
+	   the \textit{OPTION\_READ} option or write the content with the
+	   option \textit{OPTION\_WRITE}.
 	 }
 
 \function{temporary}{(\argument{options})}
@@ -769,7 +771,7 @@ Below are described the functions implemented by the \textit{env} package.
                    \argument{arguments},
                    \argument{options})}
          {
-	   This function launches a new program/script/make file etc..
+	   This function launches a new program/script/make file etc.
 
 	   \-
 

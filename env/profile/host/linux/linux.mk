@@ -122,7 +122,7 @@ define env_contents
 endef
 
 #
-# launch a new program/script/make etc..
+# launch a new program/script/make etc.
 #
 # $(1):		file
 # $(2):		arguments

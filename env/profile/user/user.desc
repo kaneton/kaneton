@@ -1,0 +1,24 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/environment/profile/user/user.desc
+#
+# created       julien quintard   [fri may 25 09:36:30 2007]
+# updated       julien quintard   [fri may 25 09:37:57 2007]
+#
+
+#
+# ---------- information ------------------------------------------------------
+#
+# this file contains the description of the user variables.
+#
+
+- variable: _DISPLAY_
+  name: display colorization
+  type: state
+  states: [_DISPLAY_UNCOLORED_, _DISPLAY_COLORED_]
+  description: Activate or not the colorization of the environment messages.
