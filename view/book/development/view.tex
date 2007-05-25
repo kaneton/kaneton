@@ -1,0 +1,120 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/development/view.tex
+%
+% created       julien quintard   [wed may 23 00:36:53 2007]
+% updated       julien quintard   [wed may 23 20:20:19 2007]
+%
+
+%
+% ---------- view -------------------------------------------------------------
+%
+
+\subsection{View}
+
+The \textit{view} tool serves as a document database as well as a tool for
+building and displaying documents in an easy way.
+
+The kaneton documents are classified, each directory corresponding to a
+class of documents. Below are listed the subdirectories of the \textit{view/}
+directory.
+
+\begin{verbatim}
+  bibliography/
+  book/
+  curriculum/
+  exam/
+  feedback/
+  internship/
+  lecture/
+  logo/
+  lse/
+  paper/
+  template/
+\end{verbatim}
+
+The \textit{template/} directory contains templates for every class of
+document. The \textit{bibliography/} and \textit{logo/} directories contain,
+obviously, the bibliography which is common to all the documents, and the
+logos, respectively.
+
+The directories \textit{curriculum/}, \textit{exam/} and \textit{feedback/}
+contain documents in relation with teaching. The \textit{curriculum/}
+directory contains official documents like the project year planning,
+presentations of the project for the students etc.. The
+\textit{feedback/} directory contains documents which are distributed to the
+students at the end of the kaneton project for feedback in order to improve
+the project for the next years. Needless to say the \textit{exam/} directory
+contains everything related to exams.
+
+The other directories contain the actual kaneton documentation. The
+\textit{books} represent the major document targeting any public:
+contributors, teachers, students etc.. The \textit{papers} are lighter
+documents intended to present a specific feature, design choice of the kaneton
+project. The \textit{lectures} are the courses material, generally composed of
+presentation slides. Finally, the \textit{internship} documentation is
+composed of documents written by people partially involved in the kaneton
+project.
+
+Any document is composed of a \textit{Make} file and one or more
+\textit{\LaTeX} files. The \textit{Make} file always has the same form
+with little variations depending on the type of document.
+
+The only rules which apply to the kaneton documents are listed below.
+
+\begin{itemize}
+  \item
+    Each document must define where it is located from the \textit{view/}
+    directory so that every included file can retrieve things at their exact
+    location.
+
+    The variable \textit{path} must thus be defined before any other
+    \textit{\LaTeX} command and especially before including the template
+    file.
+
+    \begin{verbatim}
+      %
+      % path
+      %
+
+      \def\path{../..}
+    \end{verbatim}
+  \item
+    Each document must also use a kaneton template by including the
+    appropriate file, as show below for a \textit{paper} document.
+
+    \begin{verbatim}
+      %
+      % template
+      %
+
+      \input{\path/template/paper.tex}
+    \end{verbatim}
+\end{itemize}
+
+The \textit{view} tool basically starts looking for \textit{.tex} files
+and builds a list of directories containing documents. Then, it provides
+to the user the possibility to build and display a given document. If no
+document name is given on the command line, then the tool draws a list
+of the available documents.
+
+People contributing to the kaneton documents must take care of following
+the rules in relation with the \textit{\LaTeX} language. Moreover, contributors
+should look at the existing documents to understand to logic behind all
+these rules.
+
+Finally, note that nobody should create a document without discussing it
+on the mailing-list first. Especially, be very careful in naming your
+documents as people took good care of this directory in order to avoid
+it to become messy.
+
+If a document already exists with the same name, then go through the
+mailing-list in order to decide whether to keep the current version. If
+people decide to keep a document, then, the contributor in charge of writing
+the new one should re-organise the documents by creating archives for
+each year.

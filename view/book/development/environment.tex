@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/environment.tex
 %
 % created       julien quintard   [sun may 20 14:49:26 2007]
-% updated       julien quintard   [thu may 24 17:02:07 2007]
+% updated       julien quintard   [fri may 25 18:14:30 2007]
 %
 
 %
@@ -368,6 +368,7 @@ and \textit{\_CHICHE\_} are given next:
   #
   - variable: _FOO_
     name: the foo flag
+    type: state
     states: [ -D_FOO_FLAG_=0, -D_FOO_FLAG_=1 ]
     description: |
       This is a description of the two-state variable _FOO_.
@@ -377,6 +378,7 @@ and \textit{\_CHICHE\_} are given next:
   #
   - variable: _BAR_
     name: the bar parameter
+    type: set
     values: [ simple:BAR_SIMPLE, normal:BAR_NORMAL, optimised:BAR_OPTIMISED ]
     description: |
       This is another parameter which can take three values: simple,
@@ -387,6 +389,7 @@ and \textit{\_CHICHE\_} are given next:
   #
   - variable: _CHICHE_
     name: the most powerful optimisation
+    type: any
     description: This is the magic kaneton optimisation.
 \end{verbatim}
 
@@ -394,21 +397,20 @@ Note that the environment engine never takes these descriptions into account.
 Indeed, this is the r\^ole of the \textit{configure} tool.
 
 In this syntax, variables are classified according to the type of value
-they can take: \textit{two-state}, \textit{multiple-values} and \textit{any}.
+they can take: \textit{state}, \textit{set} and \textit{any}.
 
-A \textit{two-state} variable is either activated or deactivated. This is
+A \textit{state} variable is either activated or deactivated. This is
 the case of the \textit{\_FOO\_} variable where the \textit{states}
 field is present. In this field, the first element represents the value
 to assign if the state is deactivated while the second element represents
 the value when activated.
 
-A \textit{multiple-values} variable can take any value in a given list of
-values. This is the most common type of variable. In this case, the
-\textit{values} field contains couples name/value the variable can take.
+A \textit{set} variable can take any value in a given list of values. This
+is the most common type of variable. In this case, the \textit{values} field
+contains couples name/value the variable can take.
 
 Finally, a \textit{any} variable represents a variable which can take any
-value. This case is detected by the absence of both \textit{states} and
-\textit{values} fields in the description.
+value.
 
 The \textit{names} were introduced to avoid displaying internal
 non user-friendly variable names and/or values. Therefore, the

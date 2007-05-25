@@ -1,0 +1,160 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/development/export.tex
+%
+% created       julien quintard   [wed may 23 18:58:41 2007]
+% updated       julien quintard   [thu may 24 20:44:48 2007]
+%
+
+%
+% ---------- export -----------------------------------------------------------
+%
+
+\subsection{Export}
+
+The \textit{export} tool was introduced for making the process of releasing
+easier. The tool takes an argument specifying the type of target release.
+
+Recall the kaneton microkernel project is used as a material for operating
+system courses. The source code of the microkernel is distributed to
+the students with some parts missing. Then, students have to re-write
+these pieces of code in order to prove their well-understanding of the
+kernel internals. Additionnaly, the kaneton project is also a research project
+in operating systems design.
+
+As a result, the \textit{export} tool sometimes has to build a release
+with pieces of code removed, sometimes not. Below are listed the different
+type of release:
+
+\begin{itemize}
+  \item
+    \textbf{backup}: this release type is basically a bare backup of
+    the kaneton microkernel project source code.
+  \item
+    \textbf{dist}: the distribution release is performed by removing
+    the repository-specific stuff.
+  \item
+    \textbf{k}$\gamma$\textbf{,}$\epsilon$: this type of release is intended
+    to students. Therefore, repository-specific stuff is removed. Also
+    teaching materials such as courses, testing scripts, cheating scripts
+    etc.. - specified in the kaneton development environment variable
+    \textit{\_HIDDEN\_} - are removed.
+
+    \-
+
+    Finally, the pieces of code comprised in the range $[\gamma,\epsilon]$
+    are removed from the release. These pieces of code are marked using the
+    \textit{export} syntax described next.
+
+    \-
+
+    The stages $\gamma$ and $\epsilon$ represent kaneton sub-project ranks:
+
+    \begin{itemize}
+      \item
+	\textbf{0}: boot stuff: boostrap, bootloader etc..;
+      \item
+	\textbf{1}: memory management;
+      \item
+	\textbf{2}: event management: interrupts, I/O etc..;
+      \item
+	\textbf{3}: task management, scheduling;
+      \item
+	\textbf{4}: communication management.
+    \end{itemize}
+\end{itemize}
+
+Finally, the generated release is named based on the \textit{\_EXPORT\_}
+kaneton environment variable followed by the date and type of the release:
+\textit{backup}, \textit{dist} or \textit{k}$\gamma$\textit{,}$\epsilon$.
+
+% syntax
+
+\subsubsubsection{Syntax}
+
+As explained previously, pieces of code are removed in order to build
+\textit{stage} releases.
+
+The kaneton source code is marked so that the \textit{export} tool knows
+what piece of code to remove and for what stage. Indeed, every piece of
+educational code is marked by a tag indicating the stage it is related to.
+
+The syntax used is illustrated below:
+
+\begin{verbatim}
+  /*                                                                [cut] k1 */
+
+  /*
+   * this function clones a segment.
+   *
+   * steps:
+   *
+   * 1) get the original segment object.
+   * 2) reserve a new segment of same size with same permissions.
+   * 3) copy the data from the old segment.
+   * 4) call machine-dependent code.
+   */
+
+  t_error                 segment_clone(i_as                      asid,
+                                        i_segment                 old,
+                                        i_segment*                new)
+  {
+    o_segment*            from;
+    t_perms               perms;
+
+    SEGMENT_ENTER(segment);
+
+    /*
+     * 1)
+     */
+
+    if (segment_get(old, &from) != ERROR_NONE)
+      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+    [...]
+
+    /*
+     * 4)
+     */
+
+    if (machdep_call(segment, segment_clone, asid, old, new) != ERROR_NONE)
+      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+    SEGMENT_LEAVE(segment, ERROR_NONE);
+  }
+
+  /*                                                               [cut] /k1 */
+\end{verbatim}
+
+In this example, the kaneton teachers decided \textit{segment\_clone()}
+was a functionality the students should implement.
+
+The markings at the top \verb|[cut] k1| and bottom \verb|[cut] /k1| of this
+example indicate the \textit{export} tool the location of the piece of code
+to remove for the stage \textit{k1}.
+
+Let us suppose a teacher $T_{1}$ wants to use kaneton leading the students to
+the development of the memory management functionality, only. On the other
+hand, another teacher, $T_{2}$, wants to use the whole kaneton project starting
+with the bootloader implementation to the task management. Additionally,
+this teacher chooses to hide the communication management pieces of code,
+to avoid cheating between students of different universities for instance.
+
+In the first case, since the students have to implement the kaneton managers
+around the memory management, $T_{1}$ has to provide the students everything
+the memory management stuff relies on, including some fundamental managers,
+the bootloader etc.. Also, the teacher does not need to provide the source
+code of the upper level managers. As a result, a \textit{k1,1} release will
+remove the pieces of codes with every marking $k_{\alpha}$ for
+$1 \le \alpha \le 1$.
+
+The teacher $T_{2}$ needs something different since the students are going
+to implement every major piece of the kaneton source code. Since this teacher
+wants their students to implement all the steps, starting with \textit{k0}
+to \textit{k4}, a \textit{k0,4} release will not contain the pieces of source
+code marked $k_{\alpha}$ for $0 \le \alpha \le 4$.

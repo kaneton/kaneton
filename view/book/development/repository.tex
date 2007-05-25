@@ -1,0 +1,99 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/development/repository.tex
+%
+% created       julien quintard   [thu may 24 20:43:26 2007]
+% updated       julien quintard   [thu may 24 23:09:01 2007]
+%
+
+%
+% ---------- repository -------------------------------------------------------
+%
+
+\subsection{Repository}
+
+The repository contains everything related to the kaneton microkernel
+project, in other words, the whole kaneton source tree described in a
+previous section. Indeed, the repository contains the whole history
+of the kaneton project including the documentation, the source code
+but also the students tarballs.
+
+The actual repository is based on the \textit{Subversion} software which
+provides far more advanced features than its historical rival \textit{CVS}.
+
+The repository is actually hosted on the \textit{kaneton.org} server which
+also contains the web server and everything else related to the development
+of the kaneton reference implementation.
+
+The repository is accessed in a secure way through a \textit{SSH} channel.
+Indeed, the kaneton \textit{Subversion} repository can be accessed at the
+following address:
+
+\begin{verbatim}
+  svn+ssh://subversion@repositories.kaneton.org/kaneton
+\end{verbatim}
+
+Note that the security is achieved by the use of \textit{SSH} keys. Therefore,
+any new contributor should get in touch with an administrator of the
+kaneton server in order to obtain an access. Also note that, even if this is
+not the case yet, a test period could be set up for any new contributor
+to get the trust of the kaneton community. At the end of this period,
+either the contributor would be evinced or accepted with a complete access to
+the repository.
+
+A contributor willing to create a \textit{SSH} key shoud simply use this
+command:
+
+\begin{verbatim}
+  $> ssh-keygen -t dsa
+\end{verbatim}
+
+For more information about how to use the repository, please refer to the
+official \textit{Subversion} documentation. The same goes for the
+\textit{SSH} tools suite.
+
+The example below illustrates the checkout of the kaneton repository
+under the \textit{julien.quintard} user identity. Note that the
+\textit{Subversion} user names should be identical to the kaneton \textit{user}
+profile names.
+
+\begin{verbatim}
+  $> svn checkout --username julien.quintard                            \
+       svn+ssh://subversion@repositories.kaneton.org/kaneton
+\end{verbatim}
+
+The contributors getting access to the kaneton repositories must behave
+properly according to the obvious cooperative development rules. As an
+example, a kaneton developer must not perform any commit before making sure
+the kaneton microkernel compiles and passes all the tests.
+
+The repository organisation is crucial. Therefore, nothing should be
+added, removed or renamed without the permission of the developers in charge
+of the repository.
+
+Finally, any commit must come with a log describing what are the modifications
+implied by the commit. These logs must conform to the following syntax.
+
+\begin{verbatim}
+  [kaneton/core/segment/]
+    1) the bug about the permissions was corrected in segment_clone().
+    2) an algorithm based on a b-tree was added.
+
+  [environment/profile/user/julien.quintard/]
+    1) some personal configurations were modified.
+
+  [/]
+    1) the shebangs were removed from the script files.
+\end{verbatim}
+
+Following this syntax is very important as an email is sent to the
+\textit{kaneton-developers} mailing-list every time a commit is performed.
+Therefore, the contributors reading the mailing-list are aware of every
+modification in the kaneton source code. This feature can also be used
+to review the modifications done by a new contributor in order to help
+him doing things in a better way.

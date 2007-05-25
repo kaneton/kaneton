@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/internship/Makefile
 #
 # created       julien quintard   [mon may 14 22:16:45 2007]
-# updated       julien quintard   [wed may 16 18:04:23 2007]
+# updated       julien quintard   [wed may 23 18:03:25 2007]
 #
 
 #
@@ -27,7 +27,8 @@ include			../../env/.env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		check				
+SUBDIRS			:=		check				\
+					lse				
 
 #
 # ---------- rules ------------------------------------------------------------

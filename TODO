@@ -228,16 +228,6 @@ l'endianness dans mod_load
 
  en fait revoir le concept de catch car c'est quand meme pas clair encore.
 
--- norme commit
-  [core/kaneton/set/set_bpt.c]
-    1) init function updated to properly handle set options.
-    2) ...
-
-  [core/kaneton/kaneton.c]
-    1) ...
-
-  -> les points 1,2,3 etc. sont pas ordre d'importance
-
 --
  pour detecter les fichiers qui sont executables, ce qui n'est pas normal:
 
