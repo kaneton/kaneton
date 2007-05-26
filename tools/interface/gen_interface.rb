@@ -38,7 +38,7 @@ def process(kinterface, hinterface, uinterface, manager, func)
  */
 
 "
-  kinterface.puts "t_error\t\tinterface_#{operation}(o_message*\tmessage)\n{\n"
+  kinterface.puts "t_error\t\tinterface_#{operation}(o_syscall*\tmessage)\n{\n"
 
   kinterface.puts "  t_error\terror;\n"
 
@@ -139,7 +139,7 @@ def process(kinterface, hinterface, uinterface, manager, func)
 
   kinterface.puts "  return (ERROR_NONE);\n}\n\n"
 
-  uinterface.puts "t_error\t\tsyscall_#{operation}(#{uargs})\n{\n  o_message\t\tmessage;\n  i_node\t\tdest;\n\n"
+  uinterface.puts "t_error\t\tsyscall_#{operation}(#{uargs})\n{\n  o_syscall\t\tmessage;\n  i_node\t\tdest;\n\n"
 
   uinterface.puts "  dest.machine = 2^64;
   dest.task = 0;
@@ -230,7 +230,7 @@ typedef struct
 #{$type_reply}      } u;
     } reply;
   } u;
-}			o_message;\n\n"
+}			o_syscall;\n\n"
 
   footer_kinterface(kinterface)
   footer_hinterface(hinterface)

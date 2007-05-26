@@ -1,6 +1,7 @@
 
 #include <kaneton.h>
 #include <klibc.h>
+#include "interface_user.h"
 
 t_uint32		syscall_async_send(t_uint32*		node,
 					   t_uint32		tag,

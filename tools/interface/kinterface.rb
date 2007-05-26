@@ -54,7 +54,7 @@ def footer_kinterface(f)
 
 void			interface_loop(void)
 {
-  o_message		message;
+  o_syscall		message;
 
   if (message_async_recv(ktask,
 			 0,

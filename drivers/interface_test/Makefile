@@ -54,6 +54,7 @@ clear:
 	$(call purge,)
 
 proto:
+	$(call prototypes,interface_user.h,)
 
 dep:
 	$(call remove,$(_MAKEFILE_MK_),)

@@ -30,6 +30,16 @@
  */
 
 /*
+ * the kernel manager variable.
+ */
+
+m_kernel*		kernel = NULL;
+
+/*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+/*
  * init variable received from the bootloader specifying segments, regions,
  * physical memory layout etc.
  */
@@ -37,10 +47,10 @@
 extern t_init*		init;
 
 /*
- * the kernel manager variable.
+ * kernel address space identifier
  */
 
-m_kernel*		kernel = NULL;
+extern i_as		kasid;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -165,7 +175,7 @@ void			kernel_init(void)
   if (task_init() != ERROR_NONE)
     core_error("cannot initialise the task manager\n");
 
-  alloc_setup(mmap, munmap);
+  alloc_setup(map_reserve, map_release, kasid);
 
   /*
    * 10)

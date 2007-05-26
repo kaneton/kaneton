@@ -38,7 +38,7 @@ extern i_task		ktask;
  * this function launchs the as_give() function.
  */
 
-t_error		interface_as_give(o_message*	message)
+t_error		interface_as_give(o_syscall*	message)
 {
   t_error	error;
 
@@ -54,7 +54,7 @@ t_error		interface_as_give(o_message*	message)
  * this function launchs the as_vaddr() function.
  */
 
-t_error		interface_as_vaddr(o_message*	message)
+t_error		interface_as_vaddr(o_syscall*	message)
 {
   t_error	error;
   t_vaddr	result1;
@@ -73,7 +73,7 @@ t_error		interface_as_vaddr(o_message*	message)
  * this function launchs the as_paddr() function.
  */
 
-t_error		interface_as_paddr(o_message*	message)
+t_error		interface_as_paddr(o_syscall*	message)
 {
   t_error	error;
   t_paddr	result1;
@@ -92,7 +92,7 @@ t_error		interface_as_paddr(o_message*	message)
  * this function launchs the as_copy() function.
  */
 
-t_error		interface_as_copy(o_message*	message)
+t_error		interface_as_copy(o_syscall*	message)
 {
   t_error	error;
 
@@ -111,7 +111,7 @@ t_error		interface_as_copy(o_message*	message)
  * this function launchs the as_clone() function.
  */
 
-t_error		interface_as_clone(o_message*	message)
+t_error		interface_as_clone(o_syscall*	message)
 {
   t_error	error;
   i_as	result1;
@@ -130,7 +130,7 @@ t_error		interface_as_clone(o_message*	message)
  * this function launchs the as_reserve() function.
  */
 
-t_error		interface_as_reserve(o_message*	message)
+t_error		interface_as_reserve(o_syscall*	message)
 {
   t_error	error;
   i_as	result1;
@@ -148,7 +148,7 @@ t_error		interface_as_reserve(o_message*	message)
  * this function launchs the as_release() function.
  */
 
-t_error		interface_as_release(o_message*	message)
+t_error		interface_as_release(o_syscall*	message)
 {
   t_error	error;
 
@@ -163,7 +163,7 @@ t_error		interface_as_release(o_message*	message)
  * this function launchs the as_get() function.
  */
 
-t_error		interface_as_get(o_message*	message)
+t_error		interface_as_get(o_syscall*	message)
 {
   t_error	error;
   o_as*	result1;
@@ -181,7 +181,7 @@ t_error		interface_as_get(o_message*	message)
  * this function launchs the capability_reserve() function.
  */
 
-t_error		interface_capability_reserve(o_message*	message)
+t_error		interface_capability_reserve(o_syscall*	message)
 {
   t_error	error;
   t_capability	result1;
@@ -200,7 +200,7 @@ t_error		interface_capability_reserve(o_message*	message)
  * this function launchs the capability_release() function.
  */
 
-t_error		interface_capability_release(o_message*	message)
+t_error		interface_capability_release(o_syscall*	message)
 {
   t_error	error;
 
@@ -215,7 +215,7 @@ t_error		interface_capability_release(o_message*	message)
  * this function launchs the capability_restrict() function.
  */
 
-t_error		interface_capability_restrict(o_message*	message)
+t_error		interface_capability_restrict(o_syscall*	message)
 {
   t_error	error;
   t_capability	result1;
@@ -234,7 +234,7 @@ t_error		interface_capability_restrict(o_message*	message)
  * this function launchs the capability_invalidate() function.
  */
 
-t_error		interface_capability_invalidate(o_message*	message)
+t_error		interface_capability_invalidate(o_syscall*	message)
 {
   t_error	error;
 
@@ -250,7 +250,7 @@ t_error		interface_capability_invalidate(o_message*	message)
  * this function launchs the capability_get() function.
  */
 
-t_error		interface_capability_get(o_message*	message)
+t_error		interface_capability_get(o_syscall*	message)
 {
   t_error	error;
   t_capability_descriptor*	result1;
@@ -268,7 +268,7 @@ t_error		interface_capability_get(o_message*	message)
  * this function launchs the capability_give() function.
  */
 
-t_error		interface_capability_give(o_message*	message)
+t_error		interface_capability_give(o_syscall*	message)
 {
   t_error	error;
 
@@ -284,7 +284,7 @@ t_error		interface_capability_give(o_message*	message)
  * this function launchs the capability_verify() function.
  */
 
-t_error		interface_capability_verify(o_message*	message)
+t_error		interface_capability_verify(o_syscall*	message)
 {
   t_error	error;
 
@@ -299,7 +299,7 @@ t_error		interface_capability_verify(o_message*	message)
  * this function launchs the event_reserve() function.
  */
 
-t_error		interface_event_reserve(o_message*	message)
+t_error		interface_event_reserve(o_syscall*	message)
 {
   t_error	error;
 
@@ -316,7 +316,7 @@ t_error		interface_event_reserve(o_message*	message)
  * this function launchs the event_release() function.
  */
 
-t_error		interface_event_release(o_message*	message)
+t_error		interface_event_release(o_syscall*	message)
 {
   t_error	error;
 
@@ -331,7 +331,7 @@ t_error		interface_event_release(o_message*	message)
  * this function launchs the event_get() function.
  */
 
-t_error		interface_event_get(o_message*	message)
+t_error		interface_event_get(o_syscall*	message)
 {
   t_error	error;
   o_event*	result1;
@@ -349,7 +349,7 @@ t_error		interface_event_get(o_message*	message)
  * this function launchs the io_grant() function.
  */
 
-t_error		interface_io_grant(o_message*	message)
+t_error		interface_io_grant(o_syscall*	message)
 {
   t_error	error;
 
@@ -366,7 +366,7 @@ t_error		interface_io_grant(o_message*	message)
  * this function launchs the io_deny() function.
  */
 
-t_error		interface_io_deny(o_message*	message)
+t_error		interface_io_deny(o_syscall*	message)
 {
   t_error	error;
 
@@ -383,7 +383,7 @@ t_error		interface_io_deny(o_message*	message)
  * this function launchs the io_read_8() function.
  */
 
-t_error		interface_io_read_8(o_message*	message)
+t_error		interface_io_read_8(o_syscall*	message)
 {
   t_error	error;
   t_uint8	result1;
@@ -402,7 +402,7 @@ t_error		interface_io_read_8(o_message*	message)
  * this function launchs the io_read_16() function.
  */
 
-t_error		interface_io_read_16(o_message*	message)
+t_error		interface_io_read_16(o_syscall*	message)
 {
   t_error	error;
   t_uint16	result1;
@@ -421,7 +421,7 @@ t_error		interface_io_read_16(o_message*	message)
  * this function launchs the io_read_32() function.
  */
 
-t_error		interface_io_read_32(o_message*	message)
+t_error		interface_io_read_32(o_syscall*	message)
 {
   t_error	error;
   t_uint32	result1;
@@ -440,7 +440,7 @@ t_error		interface_io_read_32(o_message*	message)
  * this function launchs the io_read_64() function.
  */
 
-t_error		interface_io_read_64(o_message*	message)
+t_error		interface_io_read_64(o_syscall*	message)
 {
   t_error	error;
   t_uint64	result1;
@@ -459,7 +459,7 @@ t_error		interface_io_read_64(o_message*	message)
  * this function launchs the io_write_8() function.
  */
 
-t_error		interface_io_write_8(o_message*	message)
+t_error		interface_io_write_8(o_syscall*	message)
 {
   t_error	error;
 
@@ -476,7 +476,7 @@ t_error		interface_io_write_8(o_message*	message)
  * this function launchs the io_write_16() function.
  */
 
-t_error		interface_io_write_16(o_message*	message)
+t_error		interface_io_write_16(o_syscall*	message)
 {
   t_error	error;
 
@@ -493,7 +493,7 @@ t_error		interface_io_write_16(o_message*	message)
  * this function launchs the io_write_32() function.
  */
 
-t_error		interface_io_write_32(o_message*	message)
+t_error		interface_io_write_32(o_syscall*	message)
 {
   t_error	error;
 
@@ -510,7 +510,7 @@ t_error		interface_io_write_32(o_message*	message)
  * this function launchs the io_write_64() function.
  */
 
-t_error		interface_io_write_64(o_message*	message)
+t_error		interface_io_write_64(o_syscall*	message)
 {
   t_error	error;
 
@@ -527,7 +527,7 @@ t_error		interface_io_write_64(o_message*	message)
  * this function launchs the map_reserve() function.
  */
 
-t_error		interface_map_reserve(o_message*	message)
+t_error		interface_map_reserve(o_syscall*	message)
 {
   t_error	error;
   t_vaddr	result1;
@@ -548,7 +548,7 @@ t_error		interface_map_reserve(o_message*	message)
  * this function launchs the map_release() function.
  */
 
-t_error		interface_map_release(o_message*	message)
+t_error		interface_map_release(o_syscall*	message)
 {
   t_error	error;
 
@@ -564,7 +564,7 @@ t_error		interface_map_release(o_message*	message)
  * this function launchs the map_resize() function.
  */
 
-t_error		interface_map_resize(o_message*	message)
+t_error		interface_map_resize(o_syscall*	message)
 {
   t_error	error;
   t_vaddr	result1;
@@ -584,7 +584,7 @@ t_error		interface_map_resize(o_message*	message)
  * this function launchs the message_register() function.
  */
 
-t_error		interface_message_register(o_message*	message)
+t_error		interface_message_register(o_syscall*	message)
 {
   t_error	error;
 
@@ -600,7 +600,7 @@ t_error		interface_message_register(o_message*	message)
  * this function launchs the region_reserve() function.
  */
 
-t_error		interface_region_reserve(o_message*	message)
+t_error		interface_region_reserve(o_syscall*	message)
 {
   t_error	error;
   i_region	result1;
@@ -623,7 +623,7 @@ t_error		interface_region_reserve(o_message*	message)
  * this function launchs the region_release() function.
  */
 
-t_error		interface_region_release(o_message*	message)
+t_error		interface_region_release(o_syscall*	message)
 {
   t_error	error;
 
@@ -639,7 +639,7 @@ t_error		interface_region_release(o_message*	message)
  * this function launchs the region_get() function.
  */
 
-t_error		interface_region_get(o_message*	message)
+t_error		interface_region_get(o_syscall*	message)
 {
   t_error	error;
   o_region*	result1;
@@ -658,7 +658,7 @@ t_error		interface_region_get(o_message*	message)
  * this function launchs the sched_quantum() function.
  */
 
-t_error		interface_sched_quantum(o_message*	message)
+t_error		interface_sched_quantum(o_syscall*	message)
 {
   t_error	error;
 
@@ -673,7 +673,7 @@ t_error		interface_sched_quantum(o_message*	message)
  * this function launchs the sched_yield() function.
  */
 
-t_error		interface_sched_yield(o_message*	message)
+t_error		interface_sched_yield(o_syscall*	message)
 {
   t_error	error;
 
@@ -688,7 +688,7 @@ t_error		interface_sched_yield(o_message*	message)
  * this function launchs the sched_current() function.
  */
 
-t_error		interface_sched_current(o_message*	message)
+t_error		interface_sched_current(o_syscall*	message)
 {
   t_error	error;
   i_thread	result1;
@@ -705,7 +705,7 @@ t_error		interface_sched_current(o_message*	message)
  * this function launchs the sched_add() function.
  */
 
-t_error		interface_sched_add(o_message*	message)
+t_error		interface_sched_add(o_syscall*	message)
 {
   t_error	error;
 
@@ -720,7 +720,7 @@ t_error		interface_sched_add(o_message*	message)
  * this function launchs the sched_remove() function.
  */
 
-t_error		interface_sched_remove(o_message*	message)
+t_error		interface_sched_remove(o_syscall*	message)
 {
   t_error	error;
 
@@ -735,7 +735,7 @@ t_error		interface_sched_remove(o_message*	message)
  * this function launchs the sched_update() function.
  */
 
-t_error		interface_sched_update(o_message*	message)
+t_error		interface_sched_update(o_syscall*	message)
 {
   t_error	error;
 
@@ -750,7 +750,7 @@ t_error		interface_sched_update(o_message*	message)
  * this function launchs the segment_clone() function.
  */
 
-t_error		interface_segment_clone(o_message*	message)
+t_error		interface_segment_clone(o_syscall*	message)
 {
   t_error	error;
   i_segment	result1;
@@ -769,7 +769,7 @@ t_error		interface_segment_clone(o_message*	message)
  * this function launchs the segment_give() function.
  */
 
-t_error		interface_segment_give(o_message*	message)
+t_error		interface_segment_give(o_syscall*	message)
 {
   t_error	error;
 
@@ -785,7 +785,7 @@ t_error		interface_segment_give(o_message*	message)
  * this function launchs the segment_copy() function.
  */
 
-t_error		interface_segment_copy(o_message*	message)
+t_error		interface_segment_copy(o_syscall*	message)
 {
   t_error	error;
 
@@ -804,7 +804,7 @@ t_error		interface_segment_copy(o_message*	message)
  * this function launchs the segment_reserve() function.
  */
 
-t_error		interface_segment_reserve(o_message*	message)
+t_error		interface_segment_reserve(o_syscall*	message)
 {
   t_error	error;
   i_segment	result1;
@@ -824,7 +824,7 @@ t_error		interface_segment_reserve(o_message*	message)
  * this function launchs the segment_release() function.
  */
 
-t_error		interface_segment_release(o_message*	message)
+t_error		interface_segment_release(o_syscall*	message)
 {
   t_error	error;
 
@@ -839,7 +839,7 @@ t_error		interface_segment_release(o_message*	message)
  * this function launchs the segment_catch() function.
  */
 
-t_error		interface_segment_catch(o_message*	message)
+t_error		interface_segment_catch(o_syscall*	message)
 {
   t_error	error;
 
@@ -855,7 +855,7 @@ t_error		interface_segment_catch(o_message*	message)
  * this function launchs the segment_perms() function.
  */
 
-t_error		interface_segment_perms(o_message*	message)
+t_error		interface_segment_perms(o_syscall*	message)
 {
   t_error	error;
 
@@ -871,7 +871,7 @@ t_error		interface_segment_perms(o_message*	message)
  * this function launchs the segment_type() function.
  */
 
-t_error		interface_segment_type(o_message*	message)
+t_error		interface_segment_type(o_syscall*	message)
 {
   t_error	error;
 
@@ -887,7 +887,7 @@ t_error		interface_segment_type(o_message*	message)
  * this function launchs the segment_get() function.
  */
 
-t_error		interface_segment_get(o_message*	message)
+t_error		interface_segment_get(o_syscall*	message)
 {
   t_error	error;
   o_segment*	result1;
@@ -905,7 +905,7 @@ t_error		interface_segment_get(o_message*	message)
  * this function launchs the task_current() function.
  */
 
-t_error		interface_task_current(o_message*	message)
+t_error		interface_task_current(o_syscall*	message)
 {
   t_error	error;
   i_task	result1;
@@ -922,7 +922,7 @@ t_error		interface_task_current(o_message*	message)
  * this function launchs the task_clone() function.
  */
 
-t_error		interface_task_clone(o_message*	message)
+t_error		interface_task_clone(o_syscall*	message)
 {
   t_error	error;
   i_task	result1;
@@ -940,7 +940,7 @@ t_error		interface_task_clone(o_message*	message)
  * this function launchs the task_reserve() function.
  */
 
-t_error		interface_task_reserve(o_message*	message)
+t_error		interface_task_reserve(o_syscall*	message)
 {
   t_error	error;
   i_task	result1;
@@ -960,7 +960,7 @@ t_error		interface_task_reserve(o_message*	message)
  * this function launchs the task_release() function.
  */
 
-t_error		interface_task_release(o_message*	message)
+t_error		interface_task_release(o_syscall*	message)
 {
   t_error	error;
 
@@ -975,7 +975,7 @@ t_error		interface_task_release(o_message*	message)
  * this function launchs the task_priority() function.
  */
 
-t_error		interface_task_priority(o_message*	message)
+t_error		interface_task_priority(o_syscall*	message)
 {
   t_error	error;
 
@@ -991,7 +991,7 @@ t_error		interface_task_priority(o_message*	message)
  * this function launchs the task_state() function.
  */
 
-t_error		interface_task_state(o_message*	message)
+t_error		interface_task_state(o_syscall*	message)
 {
   t_error	error;
 
@@ -1007,7 +1007,7 @@ t_error		interface_task_state(o_message*	message)
  * this function launchs the task_wait() function.
  */
 
-t_error		interface_task_wait(o_message*	message)
+t_error		interface_task_wait(o_syscall*	message)
 {
   t_error	error;
   t_wait	result1;
@@ -1026,7 +1026,7 @@ t_error		interface_task_wait(o_message*	message)
  * this function launchs the task_get() function.
  */
 
-t_error		interface_task_get(o_message*	message)
+t_error		interface_task_get(o_syscall*	message)
 {
   t_error	error;
   o_task*	result1;
@@ -1044,7 +1044,7 @@ t_error		interface_task_get(o_message*	message)
  * this function launchs the thread_give() function.
  */
 
-t_error		interface_thread_give(o_message*	message)
+t_error		interface_thread_give(o_syscall*	message)
 {
   t_error	error;
 
@@ -1060,7 +1060,7 @@ t_error		interface_thread_give(o_message*	message)
  * this function launchs the thread_clone() function.
  */
 
-t_error		interface_thread_clone(o_message*	message)
+t_error		interface_thread_clone(o_syscall*	message)
 {
   t_error	error;
   i_thread	result1;
@@ -1079,7 +1079,7 @@ t_error		interface_thread_clone(o_message*	message)
  * this function launchs the thread_reserve() function.
  */
 
-t_error		interface_thread_reserve(o_message*	message)
+t_error		interface_thread_reserve(o_syscall*	message)
 {
   t_error	error;
   i_thread	result1;
@@ -1098,7 +1098,7 @@ t_error		interface_thread_reserve(o_message*	message)
  * this function launchs the thread_release() function.
  */
 
-t_error		interface_thread_release(o_message*	message)
+t_error		interface_thread_release(o_syscall*	message)
 {
   t_error	error;
 
@@ -1113,7 +1113,7 @@ t_error		interface_thread_release(o_message*	message)
  * this function launchs the thread_priority() function.
  */
 
-t_error		interface_thread_priority(o_message*	message)
+t_error		interface_thread_priority(o_syscall*	message)
 {
   t_error	error;
 
@@ -1129,7 +1129,7 @@ t_error		interface_thread_priority(o_message*	message)
  * this function launchs the thread_state() function.
  */
 
-t_error		interface_thread_state(o_message*	message)
+t_error		interface_thread_state(o_syscall*	message)
 {
   t_error	error;
 
@@ -1145,7 +1145,7 @@ t_error		interface_thread_state(o_message*	message)
  * this function launchs the thread_stack() function.
  */
 
-t_error		interface_thread_stack(o_message*	message)
+t_error		interface_thread_stack(o_syscall*	message)
 {
   t_error	error;
 
@@ -1161,7 +1161,7 @@ t_error		interface_thread_stack(o_message*	message)
  * this function launchs the thread_load() function.
  */
 
-t_error		interface_thread_load(o_message*	message)
+t_error		interface_thread_load(o_syscall*	message)
 {
   t_error	error;
 
@@ -1177,7 +1177,7 @@ t_error		interface_thread_load(o_message*	message)
  * this function launchs the thread_store() function.
  */
 
-t_error		interface_thread_store(o_message*	message)
+t_error		interface_thread_store(o_syscall*	message)
 {
   t_error	error;
   t_thread_context	result1;
@@ -1195,7 +1195,7 @@ t_error		interface_thread_store(o_message*	message)
  * this function launchs the thread_get() function.
  */
 
-t_error		interface_thread_get(o_message*	message)
+t_error		interface_thread_get(o_syscall*	message)
 {
   t_error	error;
   o_thread*	result1;
@@ -1213,7 +1213,7 @@ t_error		interface_thread_get(o_message*	message)
  * this function launchs the timer_reserve() function.
  */
 
-t_error		interface_timer_reserve(o_message*	message)
+t_error		interface_timer_reserve(o_syscall*	message)
 {
   t_error	error;
   i_timer	result1;
@@ -1234,7 +1234,7 @@ t_error		interface_timer_reserve(o_message*	message)
  * this function launchs the timer_release() function.
  */
 
-t_error		interface_timer_release(o_message*	message)
+t_error		interface_timer_release(o_syscall*	message)
 {
   t_error	error;
 
@@ -1249,7 +1249,7 @@ t_error		interface_timer_release(o_message*	message)
  * this function launchs the timer_delay() function.
  */
 
-t_error		interface_timer_delay(o_message*	message)
+t_error		interface_timer_delay(o_syscall*	message)
 {
   t_error	error;
 
@@ -1265,7 +1265,7 @@ t_error		interface_timer_delay(o_message*	message)
  * this function launchs the timer_repeat() function.
  */
 
-t_error		interface_timer_repeat(o_message*	message)
+t_error		interface_timer_repeat(o_syscall*	message)
 {
   t_error	error;
 
@@ -1281,7 +1281,7 @@ t_error		interface_timer_repeat(o_message*	message)
  * this function launchs the timer_modify() function.
  */
 
-t_error		interface_timer_modify(o_message*	message)
+t_error		interface_timer_modify(o_syscall*	message)
 {
   t_error	error;
 
@@ -1298,7 +1298,7 @@ t_error		interface_timer_modify(o_message*	message)
  * this function launchs the timer_get() function.
  */
 
-t_error		interface_timer_get(o_message*	message)
+t_error		interface_timer_get(o_syscall*	message)
 {
   t_error	error;
   o_timer*	result1;
@@ -1400,7 +1400,7 @@ t_interface_dispatch dispatch[] =
 
 void			interface_loop(void)
 {
-  o_message		message;
+  o_syscall		message;
 
   if (message_async_recv(ktask,
 			 0,
@@ -1410,8 +1410,6 @@ void			interface_loop(void)
       if (message.u.request.operation < INTERFACE_NSYSCALLS)
         {
           dispatch[message.u.request.operation](&message);
-
-	  printf("upcall with %d\n", message.u.reply.error);
 
           if (message_async_send(ktask,
 			         message.node,

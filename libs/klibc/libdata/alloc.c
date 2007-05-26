@@ -42,6 +42,12 @@
    (_size_) + PAGESZ - (_size_) % PAGESZ :				\
    (_size_))
 
+#define SIGN(_type_,_obj_)						\
+  (_obj_)->signature = _type_##_SIGNATURE;
+
+#define CHECK_SIGN(_type_,_obj_)					\
+  ((_obj_)->signature == _type_##_SIGNATURE)
+
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -84,6 +90,7 @@ void*			malloc(size_t				size)
   t_vsize		pagesz;
   t_vaddr		addr;
   void*			allocated = NULL;
+  t_error		err;
 
   /*
    * 1)
@@ -133,6 +140,7 @@ void*			malloc(size_t				size)
 		      splitted->size = chunk->size - size - sizeof(t_chunk);
 		      splitted->next_free = chunk->next_free;
 		      splitted->area = area;
+		      SIGN(CHUNK, splitted);
 		      chunk->size = size;
 		      chunk->next_free = splitted;
 		    }
@@ -168,7 +176,7 @@ void*			malloc(size_t				size)
 
   if (allocated == NULL)
     {
-      if (alloc.mmap == NULL)
+      if (alloc.map_reserve == NULL)
 	{
 	  printf("FATAL ERROR: survey area exhausted !\n");
 
@@ -197,16 +205,16 @@ void*			malloc(size_t				size)
 
 	  stucked = 1;
 
-	  addr = (t_vaddr)alloc.mmap(0,
-				     pagesz,
-				     PROT_READ | PROT_WRITE,
-				     0,
-				     0,
-				     0);
+	  err = alloc.map_reserve(alloc.asid,
+				  alloc.asid ?
+					  MAP_OPT_USER : MAP_OPT_PRIVILEGED,
+				  pagesz,
+				  PERM_READ | PERM_WRITE,
+				  &addr);
 
 	  stucked = 0;
 
-	  if ((void*)addr == MAP_FAILED)
+	  if (err != ERROR_NONE)
 	    {
 	      printf("FATAL ERROR: physical memory exhausted !\n");
 
@@ -216,14 +224,14 @@ void*			malloc(size_t				size)
 
 	  if (alloc.reserve == 0)
 	    {
-	      alloc.reserve = (t_vaddr)alloc.mmap(0,
-						  PAGESZ,
-						  PROT_READ | PROT_WRITE,
-						  0,
-						  0,
-						  0);
+	      err = alloc.map_reserve(alloc.asid,
+				      alloc.asid ?
+				        MAP_OPT_USER : MAP_OPT_PRIVILEGED,
+				      PAGESZ,
+				      PERM_READ | PERM_WRITE,
+				      &alloc.reserve);
 
-	      if ((void*)alloc.reserve == MAP_FAILED)
+	      if (err != ERROR_NONE)
 		{
 		  printf("FATAL ERROR: physical memory exhausted !\n");
 
@@ -242,6 +250,7 @@ void*			malloc(size_t				size)
       area->size = pagesz - sizeof(t_area);
       area->prev_area = prev_area;
       area->next_area = NULL;
+      SIGN(AREA, area);
 
       if (prev_area != NULL)
 	prev_area->next_area = area;
@@ -255,6 +264,7 @@ void*			malloc(size_t				size)
       chunk = (t_chunk*)(area + 1);
       chunk->area = area;
       chunk->next_free = NULL;
+      SIGN(CHUNK, chunk);
       allocated = chunk + 1;
 
       if (2 * sizeof(t_chunk) + size < area->size)
@@ -265,6 +275,7 @@ void*			malloc(size_t				size)
 	  area->first_free_chunk->next_free = NULL;
 	  area->first_free_chunk->size = area->size - size -
 	    2 * sizeof(t_chunk);
+	  SIGN(CHUNK, area->first_free_chunk);
 	}
       else
 	{
@@ -288,6 +299,8 @@ void*			malloc(size_t				size)
 
   if (allocated > alloc.highest)
     alloc.highest = allocated;
+
+  alloc_check_signatures();
 
   return (allocated);
 }
@@ -317,7 +330,7 @@ void			free(void*				ptr)
    * 1)
    */
 
-  if (1 || !ptr)
+  if (!ptr)
     return;
 
   if (ptr < alloc.lowest)
@@ -392,7 +405,7 @@ void			free(void*				ptr)
     {
       area->prev_area->next_area = NULL;
 
-      if (alloc.munmap((void*)area, area->size + sizeof(t_area)))
+      if (alloc.map_release(alloc.asid, (t_vaddr)area) != ERROR_NONE)
 	printf("warning: unable to release area.\n");
     }
 
@@ -401,6 +414,8 @@ void			free(void*				ptr)
    */
 
   alloc.nfree++;
+
+  alloc_check_signatures();
 }
 
 /*
@@ -486,6 +501,48 @@ void			alloc_dump(void)
 }
 
 /*
+ * this function checks all the signatures.
+ *
+ * steps:
+ *
+ * 1) loop through areas.
+ * 2) loop through chunks in an area.
+ */
+
+void			alloc_check_signatures(void)
+{
+  t_area*		area;
+  t_chunk*		chunk;
+  void*			limit;
+  t_chunk*		next;
+  t_chunk*		next_free;
+
+  /*
+   * 2)
+   */
+
+  for (area = alloc.areas;
+       area != NULL;
+       area = area->next_area)
+    {
+      limit = AREA_LIMIT(area);
+
+      if (!CHECK_SIGN(AREA, area))
+	printf("warning: area %p signature is broken\n", area);
+
+      for (chunk = (t_chunk*)(area + 1);
+	   (void*)chunk < limit;
+	   chunk = next)
+	{
+	  if (!CHECK_SIGN(CHUNK, chunk))
+	    printf("warning: chunk %p signature is broken\n", area);
+
+	  next = NEXT_CHUNK(chunk);
+	}
+    }
+}
+
+/*
  * this fonction reallocates memory, meaning this function resizes a memory
  * area.
  *
@@ -519,23 +576,27 @@ void*			realloc(void* 				ptr,
 }
 
 /*
- * this function setup the mmap/munmap pointers.
+ * this function setup the map_reserve/map_release pointers.
  */
 
-void			alloc_setup(t_pfn_mmap			fmmap,
-				    t_pfn_munmap		fmunmap)
+void			alloc_setup(t_pfn_map_reserve		freserve,
+				    t_pfn_map_release		frelease,
+				    i_as			asid)
 {
-  alloc.mmap = fmmap;
-  alloc.munmap = fmunmap;
+  t_error		err;
 
-  alloc.reserve = (t_vaddr)alloc.mmap(0,
-				      PAGESZ,
-				      PROT_READ | PROT_WRITE,
-				      0,
-				      0,
-				      0);
+  alloc.map_reserve = freserve;
+  alloc.map_release = frelease;
+  alloc.asid = asid;
 
-  if ((void*)alloc.reserve == MAP_FAILED)
+  err = alloc.map_reserve(alloc.asid,
+			  alloc.asid ?
+				  MAP_OPT_USER : MAP_OPT_PRIVILEGED,
+			  PAGESZ,
+			  PERM_READ | PERM_WRITE,
+			  &alloc.reserve);
+
+  if (err != ERROR_NONE)
     {
       printf("FATAL ERROR: physical memory exhausted !\n");
 
@@ -576,8 +637,8 @@ int			alloc_init(t_vaddr			addr,
   alloc.nfree = 0;
   alloc.lowest = (void*)((t_vaddr)-1);
   alloc.highest = (void*)0;
-  alloc.mmap = NULL;
-  alloc.munmap = NULL;
+  alloc.map_reserve = NULL;
+  alloc.map_release = NULL;
   alloc.reserve = 0;
 
   /*
@@ -588,6 +649,7 @@ int			alloc_init(t_vaddr			addr,
   first_chunk->size = size - sizeof(t_area) - sizeof(t_chunk);
   first_chunk->next_free = NULL;
   first_chunk->area = first_area;
+  SIGN(CHUNK, first_chunk);
 
   /*
    * 3)
@@ -597,6 +659,7 @@ int			alloc_init(t_vaddr			addr,
   first_area->first_free_chunk = first_chunk;
   first_area->prev_area = NULL;
   first_area->next_area = NULL;
+  SIGN(AREA, first_area);
 
   return (0);
 }

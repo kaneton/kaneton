@@ -597,7 +597,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 8)
    */
 
-  init->alloc = bootloader_init_alloc(1600 * PAGESZ, &allocsz);
+  init->alloc = bootloader_init_alloc(16 * PAGESZ, &allocsz);
   init->allocsz = allocsz;
 
   return (khdr->e_entry);

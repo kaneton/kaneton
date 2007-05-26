@@ -50,8 +50,9 @@ void			alloc_dump(void);
 void*			realloc(void* 				ptr,
 				size_t				size);
 
-void			alloc_setup(t_pfn_mmap			fmmap,
-				    t_pfn_munmap		fmunmap);
+void			alloc_setup(t_pfn_map_reserve		freserve,
+				    t_pfn_map_release		frelease,
+				    i_as			asid);
 
 int			alloc_init(t_vaddr			addr,
 				   t_size			size);

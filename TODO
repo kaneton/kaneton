@@ -1,4 +1,7 @@
 --
+ corriger le probleme de makefile de libia32
+
+--
  faire des screenshots pour kaneton: installation, configuration, env-dev,
  boot, into (mjpeg)
 
@@ -344,6 +347,90 @@ devrait suffir a le prouver).
 
 --
 
+ code vire du map manager (rien a faire la)
+
+ mais on pourra le reutiliser pour la libunix, donc je garde :-)
+
+/*
+ * this function is a wrapper of mmap to map_reserve.
+ */
+
+void*			mmap(void*			start,
+			     size_t			length,
+			     int			prot,
+			     int			flags,
+			     int			fd,
+			     off_t			offset)
+{
+  t_vaddr		addr;
+  t_perms		perms = 0;
+
+  if (flags)
+    return MAP_FAILED;
+
+  if (prot & PROT_READ)
+    perms |= PERM_READ;
+  if (prot & PROT_WRITE)
+    perms |= PERM_WRITE;
+
+  if (map_reserve(kasid,
+		  MAP_OPT_NONE,
+		  length,
+		  perms,
+		  &addr) != ERROR_NONE)
+    return MAP_FAILED;
+
+  return (void*)addr;
+}
+
+/*
+ * this function is a wrapper to munmap.
+ */
+
+int			munmap(void*			start,
+			       size_t			length)
+{
+  if (map_release(kasid, (t_vaddr)start) != ERROR_NONE)
+    return -1;
+
+  return 0;
+}
+
+/*
+ * this is a wrapper to mremap.
+ */
+
+void*			mremap(void*			old_address,
+			       size_t			old_size,
+			       size_t			new_size,
+			       unsigned long		flags)
+{
+  o_region*		o = NULL;
+  t_opts		opts;
+  t_vaddr		p;
+
+  if (!(flags & MREMAP_MAYMOVE))
+    {
+      if (region_get(kasid, (i_region)(t_vaddr)old_address, &o) != ERROR_NONE)
+	return MAP_FAILED;
+
+      opts = o->opts;
+      o->opts &= REGION_OPT_FORCE;
+    }
+
+  if (map_resize(kasid, old_address, new_size, &p) != ERROR_NONE)
+    return MAP_FAILED;
+
+  if (o)
+    {
+      o->opts = opts;
+    }
+
+  return (void*)p;
+}
+
+--
+
 il va nous falloir un bout de code glue pour effectuer le lien
 entre platform et architecture.
 
@@ -352,3 +439,4 @@ a priori L4 font exactement comme nous.
 cette glue contiendrait les ld scripts mais aussi par exemple le
 fichier de conf qui decrit les zones prereservees a certains servers
 car ces zones dependent de l'archi/platform donc glue
+

@@ -23,27 +23,28 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-// XXX may be moved somewhere else
+/*
+ * area block signature
+ */
 
-#define MAP_FAILED	((void*)-1)
+#define AREA_SIGNATURE		0xab121337
 
-#define PROT_READ	0x1		/* Page can be read.  */
-#define PROT_WRITE	0x2		/* Page can be written.  */
-#define PROT_EXEC	0x4		/* Page can be executed.  */
-#define PROT_NONE	0x0		/* Page can not be accessed.  */
+/*
+ * chunk metadata signature
+ */
 
-#define MREMAP_MAYMOVE	1
+#define CHUNK_SIGNATURE		0xBA153E01
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
 /*
- * function pointers to mmap/munmap.
+ * function pointers to map_reserve/map_release
  */
 
-typedef void* (*t_pfn_mmap)(void*, size_t, int, int, int, off_t);
-typedef int (*t_pfn_munmap)(void*, size_t);
+typedef t_error (*t_pfn_map_reserve)(i_as, t_opts, t_vsize, t_perms, t_vaddr*);
+typedef t_error (*t_pfn_map_release)(i_as, t_vaddr);
 
 /*
  * chunk forward declaration.
@@ -59,6 +60,8 @@ typedef struct			s_area
 {
   t_vsize			size;
 
+  t_uint32			signature;
+
   struct s_chunk*		first_free_chunk;
 
   struct s_area*		prev_area;
@@ -72,6 +75,8 @@ typedef struct			s_area
 typedef struct			s_chunk
 {
   t_vsize			size;
+
+  t_uint32			signature;
 
   struct s_chunk*		next_free;
 
@@ -89,8 +94,9 @@ typedef struct
   void*				lowest;
   void*				highest;
 
-  t_pfn_mmap			mmap;
-  t_pfn_munmap			munmap;
+  t_pfn_map_reserve		map_reserve;
+  t_pfn_map_release		map_release;
+  i_as				asid;
 
   t_vaddr			reserve;
 
