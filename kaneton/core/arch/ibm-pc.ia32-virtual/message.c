@@ -171,42 +171,50 @@ t_error			ia32_message_epilogue(i_thread		thread,
 {
   o_thread*		th;
 
+  MESSAGE_ENTER(message);
+
   if (thread_get(thread, &th) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   th->machdep.context.eax = exit_value;
 
-  return ERROR_NONE;
+  MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
 t_error			ia32_message_init(void)
 {
+  MESSAGE_ENTER(message);
+
   if (event_reserve(56, EVENT_FUNCTION,
 		    EVENT_HANDLER(ia32_message_async_send_handler)) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   if (event_reserve(57, EVENT_FUNCTION,
 		    EVENT_HANDLER(ia32_message_async_recv_handler)) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   if (event_reserve(58, EVENT_FUNCTION,
 		    EVENT_HANDLER(ia32_message_sync_send_handler)) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   if (event_reserve(59, EVENT_FUNCTION,
 		    EVENT_HANDLER(ia32_message_sync_recv_handler)) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
-  return ERROR_NONE;
+  MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
 t_error			ia32_message_clean(void)
 {
-  if (event_release(56) != ERROR_NONE ||
-      event_release(57) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  MESSAGE_ENTER(message);
 
-  return ERROR_NONE;
+  if (event_release(56) != ERROR_NONE ||
+      event_release(57) != ERROR_NONE ||
+      event_release(58) != ERROR_NONE ||
+      event_release(59) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
 /*                                                                 [cut] /k4 */

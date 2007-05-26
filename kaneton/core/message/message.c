@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/message/message.c
  *
  * created       julien quintard   [sat jul  1 23:25:14 2006]
- * updated       matthieu bucchianeri   [tue feb  6 22:37:56 2007]
+ * updated       julian pidancet   [sat may  26 02:17:07 2007]
  */
 
 /*
@@ -96,7 +96,7 @@ t_error			message_init(void)
   if (message_register(ktask, 0) != ERROR_NONE)
   {
     cons_msg('!', "message: unable to register ktask msgbox.\n");
-    return ERROR_UNKNOWN;
+    return (ERROR_UNKNOWN);
   }
 
   /*
@@ -110,7 +110,7 @@ t_error			message_init(void)
    */
 
   if (machdep_call(message, message_init) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   return (ERROR_NONE);
 
@@ -145,7 +145,11 @@ t_error			message_clean(void)
    * 3)
    */
 
-  set_release(message->local_boxes);
+  if (set_release(message->local_boxes) != ERROR_NONE)
+  {
+    free(message);
+    return (ERROR_UNKNOWN);
+  }
 
   free(message);
 
@@ -171,18 +175,20 @@ t_error			message_async_send(i_task	sender,
 {
   o_task*		sender_task;
   void*			kernel_buffer;
-  o_msg			msg;
+  o_message			msg;
   t_message_box*	msgbox;
 
+  MESSAGE_ENTER(message);
+
   if (task_get(sender, &sender_task) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   /*
    * 1)
    */
 
   if (!(kernel_buffer = malloc(size)))
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   /*
    * 2)
@@ -191,7 +197,7 @@ t_error			message_async_send(i_task	sender,
   if (!is_local_node(dest))
   {
     /* XXX Redirect the message to the gate */
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   }
 
   /*
@@ -202,7 +208,7 @@ t_error			message_async_send(i_task	sender,
   {
     if (as_read(sender_task->asid, (t_vaddr)data, size, kernel_buffer)
 	  != ERROR_NONE)
-      return ERROR_UNKNOWN;
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   }
   else
   {
@@ -220,7 +226,7 @@ t_error			message_async_send(i_task	sender,
 	!= ERROR_NONE)
   {
     free(kernel_buffer);
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   }
 
   tag = tag;
@@ -228,10 +234,10 @@ t_error			message_async_send(i_task	sender,
   if (set_push(msgbox->msgqueue, &msg) != ERROR_NONE)
   {
     free(kernel_buffer);
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   }
 
-  return (ERROR_NONE);
+  MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
 /*
@@ -250,22 +256,24 @@ t_error			message_async_recv(i_task	taskid,
 					   size_t	maxsz)
 {
   t_message_box*	msgbox;
-  o_msg*		msg;
+  o_message*		msg;
   o_task*		task;
+
+  MESSAGE_ENTER(message);
 
   /*
    * 1)
    */
 
   if (task_get(taskid, &task) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   tag = tag;
 
   if (set_pick(msgbox->msgqueue, (void**)&msg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   /*
    * 2)
@@ -274,8 +282,8 @@ t_error			message_async_recv(i_task	taskid,
   if (task->asid != kasid)
   {
     if (as_write(task->asid, msg->data, (maxsz < msg->sz ? maxsz : msg->sz),
-		 (t_paddr)data) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+	(t_paddr)data) != ERROR_NONE)
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   }
   else
   {
@@ -287,9 +295,11 @@ t_error			message_async_recv(i_task	taskid,
    */
 
   free(msg->data);
-  set_pop(msgbox->msgqueue);
 
-  return (ERROR_NONE);
+  if (set_pop(msgbox->msgqueue) != ERROR_NONE)
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
 /*
@@ -313,10 +323,12 @@ t_error			message_sync_send(i_task	sender,
 {
   t_message_box*	msgbox;
   o_task*		task;
-  t_waiter*		receiver;
-  t_waiter		send_waiter;
+  t_message_waiter*		receiver;
+  t_message_waiter		send_waiter;
   i_thread		thread;
   t_size		sz;
+
+  MESSAGE_ENTER(message);
 
 
   /*
@@ -326,7 +338,7 @@ t_error			message_sync_send(i_task	sender,
   if (!is_local_node(dest))
   {
     /* XXX Redirect the message to the gate */
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   }
 
   /*
@@ -334,10 +346,10 @@ t_error			message_sync_send(i_task	sender,
    */
 
   if (task_get(sender, &task) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   if (set_get(message->local_boxes, get_node_task(dest), (void**)&msgbox)
       != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   tag = tag;
 
@@ -348,7 +360,7 @@ t_error			message_sync_send(i_task	sender,
      */
 
     if (sched_current(&thread) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
     send_waiter.thread = thread;
     send_waiter.data = (t_vaddr)data;
@@ -356,10 +368,10 @@ t_error			message_sync_send(i_task	sender,
     send_waiter.asid = task->asid;
 
     if (set_push(msgbox->senders, &send_waiter) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
     if (thread_state(thread, SCHED_STATE_BLOCK) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
     return (ERROR_NONE);
   }
@@ -380,25 +392,25 @@ t_error			message_sync_send(i_task	sender,
   {
     if (as_read(task->asid, (t_vaddr)data, sz,
 	(void*)receiver->data) != ERROR_NONE)
-      return ERROR_UNKNOWN;
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     goto copied;
   }
 
   if (task->asid == kasid)
   {
     if (as_write(receiver->asid, data, sz, receiver->data) != ERROR_NONE)
-      return ERROR_UNKNOWN;
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     goto copied;
   }
 
   if (as_copy(task->asid, (t_vaddr) data,
       receiver->asid, receiver->data, sz) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
 copied:
 
   if (set_pop(msgbox->receivers) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   /*
    * 5)
@@ -406,12 +418,12 @@ copied:
 
   if (machdep_call(message, message_epilogue, receiver->thread, ERROR_NONE)
         != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   if (thread_state(receiver->thread, SCHED_STATE_RUN) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
-  return (ERROR_NONE);
+  MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
 /*
@@ -432,19 +444,21 @@ t_error			message_sync_recv(i_task	taskid,
 {
   t_message_box*	msgbox;
   o_task*		task;
-  t_waiter*		sender;
-  t_waiter		recv_waiter;
+  t_message_waiter*		sender;
+  t_message_waiter		recv_waiter;
   i_thread		thread;
   t_size		sz;
+
+  MESSAGE_ENTER(message);
 
   /*
    * 1)
    */
 
   if (task_get(taskid, &task) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   tag = tag;
 
@@ -455,7 +469,7 @@ t_error			message_sync_recv(i_task	taskid,
      */
 
     if (sched_current(&thread) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
     recv_waiter.thread = thread;
     recv_waiter.data = (t_vaddr)data;
@@ -463,10 +477,10 @@ t_error			message_sync_recv(i_task	taskid,
     recv_waiter.asid = task->asid;
 
     if (set_push(msgbox->receivers, &recv_waiter) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
     if (thread_state(thread, SCHED_STATE_BLOCK) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
     return (ERROR_NONE);
   }
@@ -486,7 +500,7 @@ t_error			message_sync_recv(i_task	taskid,
   if (task->asid == kasid)
   {
     if (as_read(sender->asid, sender->data, sz, data) != ERROR_NONE)
-      return ERROR_UNKNOWN;
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     goto copied;
   }
 
@@ -494,18 +508,18 @@ t_error			message_sync_recv(i_task	taskid,
   {
     if (as_write(task->asid, (void*)sender->data, sz,
 	(t_vaddr)data) != ERROR_NONE)
-      return ERROR_UNKNOWN;
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     goto copied;
   }
 
   if (as_copy(sender->asid, sender->data,
       task->asid, (t_vaddr)data, sz) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
 copied:
 
   if (set_pop(msgbox->senders) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   /*
    * 4)
@@ -513,12 +527,12 @@ copied:
 
   if (machdep_call(message, message_epilogue, sender->thread, ERROR_NONE)
         != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   if (thread_state(sender->thread, SCHED_STATE_RUN) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
-  return (ERROR_NONE);
+  MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
 /*
@@ -540,17 +554,19 @@ t_error			message_sync_recv_nb(i_task	taskid,
 {
   t_message_box*	msgbox;
   o_task*		task;
-  t_waiter*		sender;
+  t_message_waiter*		sender;
   t_size		sz;
+
+  MESSAGE_ENTER(message);
 
   /*
    * 1)
    */
 
   if (task_get(taskid, &task) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   tag = tag;
 
@@ -560,7 +576,7 @@ t_error			message_sync_recv_nb(i_task	taskid,
      * 2)
      */
 
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   }
 
   /*
@@ -578,7 +594,7 @@ t_error			message_sync_recv_nb(i_task	taskid,
   if (task->asid == kasid)
   {
     if (as_read(sender->asid, sender->data, sz, data) != ERROR_NONE)
-      return ERROR_UNKNOWN;
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     goto copied;
   }
 
@@ -586,18 +602,18 @@ t_error			message_sync_recv_nb(i_task	taskid,
   {
     if (as_write(task->asid, (void*)sender->data, sz,
 	(t_vaddr)data) != ERROR_NONE)
-      return ERROR_UNKNOWN;
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     goto copied;
   }
 
   if (as_copy(sender->asid, sender->data,
       task->asid, (t_vaddr)data, sz) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
 copied:
 
   if (set_pop(msgbox->senders) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   /*
    * 4)
@@ -605,12 +621,12 @@ copied:
 
   if (machdep_call(message, message_epilogue, sender->thread, ERROR_NONE)
         != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   if (thread_state(sender->thread, SCHED_STATE_RUN) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
-  return (ERROR_NONE);
+  MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
 /*
@@ -628,6 +644,8 @@ t_error			message_register(i_task	taskid,
   t_message_box*	msgbox;
   t_message_box		new;
 
+  MESSAGE_ENTER(message);
+
   /*
    * 1)
    */
@@ -635,17 +653,17 @@ t_error			message_register(i_task	taskid,
   if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
   {
     new.id = taskid;
-    if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(o_msg), &new.msgqueue)
+    if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(o_message), &new.msgqueue)
 	  != ERROR_NONE ||
-	set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_waiter), &new.receivers)
+	set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_message_waiter), &new.receivers)
 	  != ERROR_NONE ||
-	set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_waiter), &new.senders)
+	set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_message_waiter), &new.senders)
 	  != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     if (set_add(message->local_boxes, &new) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
-      return (ERROR_UNKNOWN);
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   }
 
   /*
@@ -654,7 +672,7 @@ t_error			message_register(i_task	taskid,
 
   tag = tag;
 
-  return (ERROR_NONE);
+  MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
 /*

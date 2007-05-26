@@ -32,35 +32,34 @@
  * message box
  */
 
-typedef t_id i_msgqueue;
-typedef t_id i_msg;
-typedef t_id i_waitqueue;
-typedef t_uint32 t_tag;
+typedef t_id		i_message_queue;
+typedef t_id		i_message;
+typedef t_id		i_message_waitqueue;
+typedef t_uint32	t_tag;
 
 typedef struct
 {
-  t_vaddr	data;
-  t_size	sz;
-  i_thread	thread;
-  i_as		asid;
-}		t_waiter;
+  t_vaddr		data;
+  t_size		sz;
+  i_thread		thread;
+  i_as			asid;
+}			t_message_waiter;
 
 typedef struct
 {
-  void*		data;
-  t_size	sz;
-}		o_msg;
+  void*			data;
+  t_size		sz;
+}			o_message;
 
 typedef struct
 {
-  t_id		id;
+  t_id			id;
 
-  /* XXX Unique queue for now */
-  i_msgqueue	msgqueue;
+  i_message_queue	msgqueue;
 
-  i_waitqueue	receivers;
-  i_waitqueue	senders;
-}		t_message_box;
+  i_message_waitqueue	receivers;
+  i_message_waitqueue	senders;
+}			t_message_box;
 
 /*
  * message manager
@@ -68,12 +67,12 @@ typedef struct
 
 typedef struct
 {
-  i_stats	stats;
+  i_stats		stats;
 
-  i_set		local_boxes;
+  i_set			local_boxes;
 
   machdep_data(m_message);
-}		m_message;
+}			m_message;
 
 /*
  * the message architecture-dependent interface
@@ -81,10 +80,10 @@ typedef struct
 
 typedef struct
 {
-  t_error			(*message_init)(void);
-  t_error			(*message_clean)(void);
-  t_error			(*message_epilogue)(i_thread, t_error);
-}				d_message;
+  t_error		(*message_init)(void);
+  t_error		(*message_clean)(void);
+  t_error		(*message_epilogue)(i_thread, t_error);
+}			d_message;
 
 /*
  * ---------- macro functions -------------------------------------------------
