@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/segment/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue feb  6 22:57:33 2007]
+ * updated       matthieu bucchianeri   [fri may 25 11:33:16 2007]
  */
 
 /*
@@ -233,7 +233,7 @@ t_error			segment_clone(i_as			asid,
    * 2)
    */
 
-  if (segment_reserve(asid, from->size, PERM_READ | PERM_WRITE, new) != ERROR_NONE)
+  if (segment_reserve(asid, from->size, PERM_WRITE, new) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -249,6 +249,9 @@ t_error			segment_clone(i_as			asid,
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   if (segment_perms(old, perms) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  if (segment_perms(*new, perms) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*

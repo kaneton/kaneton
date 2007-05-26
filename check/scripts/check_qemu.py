@@ -270,7 +270,6 @@ def	main():
 	total_failed = 0
 	total_leak = 0
 
-	serial_init(sys.argv[1])
 	test_list = ListTest()
 
 	trace = open(sys.argv[2] + "-" + sys.argv[3] + ".html", "w");
@@ -297,15 +296,15 @@ def	main():
 				testid = test_list[i - 1].replace("/", "_").replace("-", "_").rstrip("_").lstrip("kaneton");
 
 				serial_close()
-				os.system("killall -9 qemu ; qemu -fda /tmp/kaneton.img -serial pty > /dev/null 2>&1 &");
+				os.system("killall -9 qemu ; sleep 1s ;  qemu -fda /tmp/kaneton.img -nographic -serial pty > /dev/null 2>&1 &");
 				os.system("sleep 2s");
 				serial_init(sys.argv[1])
-				serial_timeout(300000);
+				serial_timeout(30000);
 				if serial_recv()[1] != 'Ready!':
 					sys.stderr.write("(not ready) ");
 					raise NameError('Not ready on time');
 
-				serial_timeout(300000);
+				serial_timeout(30000);
 				result = SendCommand(test_list[i][1])
 				parsed_result = set_and_parse_result(test_list[i - 1], result)
 				if check_result(test_list[i - 1], parsed_result):
