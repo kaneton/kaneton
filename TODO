@@ -348,3 +348,7 @@ il va nous falloir un bout de code glue pour effectuer le lien
 entre platform et architecture.
 
 a priori L4 font exactement comme nous.
+
+cette glue contiendrait les ld scripts mais aussi par exemple le
+fichier de conf qui decrit les zones prereservees a certains servers
+car ces zones dependent de l'archi/platform donc glue
