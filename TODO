@@ -341,3 +341,10 @@ qu'on peut dire que c'est un faux probleme et que donc l'evolutivite du
 systeme sur ce point est impossible si l'on veut garantir l'ownership de
 ces objets a tout instant (si on veut faire les matheux, on formule LTL
 devrait suffir a le prouver).
+
+--
+
+il va nous falloir un bout de code glue pour effectuer le lien
+entre platform et architecture.
+
+a priori L4 font exactement comme nous.

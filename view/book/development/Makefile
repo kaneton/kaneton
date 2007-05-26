@@ -30,6 +30,7 @@ include			../../../env/.env.mk
 PAPER			:=		development
 
 SOURCES			:=		cheat.tex			\
+					c.tex				\
 					community.tex			\
 					configure.tex			\
 					control-panel.tex		\
@@ -37,7 +38,10 @@ SOURCES			:=		cheat.tex			\
 					environment.tex			\
 					export.tex			\
 					introduction.tex		\
+					languages.tex			\
+					licenses.tex			\
 					mailing-list.tex		\
+					project-management.tex		\
 					repository.tex			\
 					source-tree.tex			\
 					test.tex			\
