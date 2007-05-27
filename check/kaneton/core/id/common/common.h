@@ -36,24 +36,24 @@ void	check_id_tests(void);
 
 
 /*
- * ../01/01.c
+ * ../simple_01/simple_01.c
  */
 
-void		check_id_01(void);
+void		check_id_simple_01(void);
 
 
 /*
- * ../02/02.c
+ * ../multiple_01/multiple_01.c
  */
 
-void		check_id_02(void);
+void		check_id_multiple_01(void);
 
 
 /*
- * ../03/03.c
+ * ../clone_01/clone_01.c
  */
 
-void		check_id_03(void);
+void		check_id_clone_01(void);
 
 
 /*

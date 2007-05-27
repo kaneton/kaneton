@@ -150,6 +150,13 @@ void		check_event_irq_01(void);
 
 
 /*
+ * ../irq_02/irq_02.c
+ */
+
+void		check_event_irq_02(void);
+
+
+/*
  * ../pic_01/pic_01.c
  */
 

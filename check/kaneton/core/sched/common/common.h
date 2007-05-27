@@ -48,15 +48,11 @@ extern i_task ktask;
  * common.c
  */
 
-void	check_time_common(void);
+void	check_sched_common(void);
 
 t_uint32 check_cmos_sec(void);
 
-void	check_time_tests(void);
-
-unsigned long check_rtc_ticks(void);
-
-void check_rtc_init(void);
+void	check_sched_tests(void);
 
 int		check_task_create(t_class		class,
 				  i_task		*task);

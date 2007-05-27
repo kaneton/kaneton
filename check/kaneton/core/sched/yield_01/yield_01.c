@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/region/01/01.c
+ * file          /home/buckman/kaneton/check/kaneton/core/sched/yield_01/yield_01.c
  *
  * created       matthieu bucchianeri   [sun apr  2 19:04:14 2006]
- * updated       matthieu bucchianeri   [sun apr  9 17:41:04 2006]
+ * updated       matthieu bucchianeri   [sun may 27 21:25:47 2007]
  */
 
 #include <klibc.h>
@@ -67,6 +67,8 @@ void		check_sched_yield_01(void)
 	 "error creating thread\n");
   ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread2, &id2) == 0,
 	 "error creating thread\n");
+
+  tutu = 0;
 
   CLI();
   ASSERT(thread_state(id1, SCHED_STATE_RUN) == ERROR_NONE,

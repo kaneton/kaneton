@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/core/kaneton/id/common/common.c
+ * file          /home/buckman/kaneton/check/kaneton/core/id/common/common.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:03:30 2005]
- * updated       matthieu bucchianeri   [wed jan 18 18:53:18 2006]
+ * updated       matthieu bucchianeri   [sun may 27 21:03:54 2007]
  */
 
 #include <klibc.h>
@@ -27,9 +27,5 @@ void	check_id_common(void)
 
 void	check_id_tests(void)
 {
-  check_id_common();
-  check_id_01();
-  check_id_02();
-  check_id_03();
-  /* XXX continue tests */
+  /* XXX */
 }

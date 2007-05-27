@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/libs/klibc/libstring/printf/08/08.c
+ * file          /home/buckman/kaneton/check/libs/klibc/libstring/printf/08/08.c
  *
  * created       matthieu bucchianeri   [mon dec 26 18:04:53 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:26:33 2005]
+ * updated       matthieu bucchianeri   [sun may 27 21:12:22 2007]
  */
 
 #include <klibc.h>
@@ -20,7 +20,7 @@ void	check_printf_08(void)
 {
   char	*p = (char*)0xffff4f05;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   CHECK_PRINTF(printf("%x %qX %p\n", 0xabcdef98, 0xfedcba9876543210LL, p), 35);
 
@@ -30,5 +30,5 @@ void	check_printf_08(void)
 
   CHECK_PRINTF(printf("%b %qb\n", 42, 0xffffffff11LL), 48);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

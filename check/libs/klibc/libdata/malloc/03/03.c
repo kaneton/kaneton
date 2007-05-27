@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/libs/klibc/libdata/malloc/03/03.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:12:15 2005]
- * updated       matthieu bucchianeri   [sun jun  4 19:54:56 2006]
+ * updated       matthieu bucchianeri   [sun may 27 21:22:28 2007]
  */
 
 #include <klibc.h>
@@ -24,7 +24,7 @@ void		check_malloc_03(void)
   int		*array = NULL;
   int		i;
 
-  TEST_ENTER(1);
+  TEST_ENTER();
 
   RESIZE(array, 10);
 
@@ -56,5 +56,5 @@ void		check_malloc_03(void)
   else
     printf("error realloc()\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

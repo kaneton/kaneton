@@ -2,6 +2,8 @@
 #include <kaneton.h>
 #include "../common/common.h"
 
+extern i_as	kasid;
+
 void		check_region_simple_get_01(void)
 {
   i_segment	seg;

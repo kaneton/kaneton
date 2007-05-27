@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check-clean/check/common/common.h
+ * file          /home/buckman/kaneton/check/check/common/common.h
  *
  * created       matthieu bucchianeri   [tue dec 20 15:04:37 2005]
- * updated       matthieu bucchianeri   [sun may 27 13:03:09 2007]
+ * updated       matthieu bucchianeri   [sun may 27 21:09:10 2007]
  */
 
 #ifndef CHECK_COMMON_H_
@@ -81,13 +81,23 @@ typedef struct
   printf("%s done.\n", __FUNCTION__);					\
   return
 
-
+#undef ASSERT
 #define ASSERT(Test,Error)						\
   if (!(Test))								\
     {									\
       printf(Error);							\
       TEST_LEAVE();							\
     }
+
+#define TEST_NEW_AS(Task,As)						\
+  ASSERT(task_reserve(TASK_CLASS_PROGRAM, TASK_BEHAV_INTERACTIVE,	\
+		      TASK_PRIOR_INTERACTIVE, &(Task)) == ERROR_NONE,	\
+	 "Error creating task\n");					\
+  ASSERT(as_reserve((Task), &(As)) == ERROR_NONE, "Error creating as\n")
+
+#define TEST_LEAVE_AS(Task,As)						\
+  ASSERT(as_release(As) == ERROR_NONE, "Failed to release as\n");	\
+  ASSERT(task_release(Task) == ERROR_NONE, "Failed to release task\n")
 
 typedef struct
 {
@@ -104,6 +114,8 @@ typedef struct
 typedef i_as		t_asid;
 typedef i_segment	t_segid;
 typedef i_region	t_regid;
+
+extern i_as	kasid;
 
 /*
  * ---------- prototypes ------------------------------------------------------

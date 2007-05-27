@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/check/arch/ia32-virtual/kaneton/region/01/01.c
+ * file          /home/buckman/kaneton/check/kaneton/core/sched/context_02/context_02.c
  *
  * created       matthieu bucchianeri   [sun apr  2 19:04:14 2006]
- * updated       matthieu bucchianeri   [sun apr  9 17:41:04 2006]
+ * updated       matthieu bucchianeri   [sun may 27 21:26:09 2007]
  */
 
 #include <klibc.h>
@@ -100,6 +100,8 @@ void		check_sched_context_02(void)
   t_uint32	start;
 
   TEST_ENTER();
+
+  regs[0] = regs[1] = regs[2] = regs[3] = regs[4] =regs[5] = 0 ;
 
   CLI();
   ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,

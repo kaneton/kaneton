@@ -89,16 +89,6 @@ typedef	struct			s_serial_buffer
 
 t_error			debug_init(void);
 
-t_error			debug_recv(void);
-
-t_error			load_data(void);
-
-char*		get_data(char *name);
-
-t_error			debug_recv_cmd(void);
-
-t_error			debug_exec_cmd_tab(t_serial_data *cmd);
-
 t_error			debug_clean(void);
 
 
@@ -128,9 +118,6 @@ t_error			cons_clean(void);
 /*
  * ../../core/debug/serial.c
  */
-
-t_uint32		chk_sum(void				*data,
-				unsigned int			size);
 
 void			serial_read(t_uint32			com_port,
 				    t_uint8*			data,

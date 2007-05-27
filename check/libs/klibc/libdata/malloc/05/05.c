@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/libs/klibc/libdata/malloc/05/05.c
  *
  * created       matthieu bucchianeri   [sun jun  4 19:37:30 2006]
- * updated       matthieu bucchianeri   [sun jun  4 20:03:53 2006]
+ * updated       matthieu bucchianeri   [sun may 27 21:11:18 2007]
  */
 
 #include <kaneton.h>
@@ -28,7 +28,7 @@ void		check_malloc_05(void)
   void		*p;
   size_t	big = 42 * PAGESZ + 1234;
 
-  TEST_ENTER(0);
+  TEST_ENTER();
 
   ASSERT(as_get(kasid, &kas) == ERROR_NONE,
 	    "cannot get kernel as\n");
@@ -60,5 +60,5 @@ void		check_malloc_05(void)
   ASSERT(nb_regions == nb_regions_after,
 	    "region not released\n");
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

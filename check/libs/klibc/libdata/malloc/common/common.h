@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/libs/klibc/libdata/malloc/common/common.h
  *
  * created       matthieu bucchianeri   [tue dec 20 15:22:46 2005]
- * updated       matthieu bucchianeri   [sun jun  4 19:54:13 2006]
+ * updated       matthieu bucchianeri   [sun may 27 21:10:54 2007]
  */
 
 #ifndef CHECK_MALLOC_COMMON_H_
@@ -14,22 +14,6 @@
 
 # include <klibc.h>
 # include "../../../../../check/common/common.h"
-
-# undef TEST_ENTER
-
-# define TEST_ENTER(_check_leaks_)					\
-  int __check_leaks = (_check_leaks_);					\
-  t_leaks __memory_leaks;						\
-  printf("Test %s\n", __FUNCTION__);					\
-  check_leaks_init(&__memory_leaks)
-
-# undef TEST_LEAVE
-
-# define TEST_LEAVE							\
-  if (__check_leaks)							\
-    check_leaks_display(&__memory_leaks);				\
-  printf("%s done.\n", __FUNCTION__);					\
-  return
 
 /*
  * ---------- prototypes ------------------------------------------------------

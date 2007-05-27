@@ -96,6 +96,13 @@ void		check_segment_simple_reserve_03(void);
 
 
 /*
+ * ../simple_reserve_release_01/simple_reserve_release_01.c
+ */
+
+void		check_segment_simple_reserve_release_01(void);
+
+
+/*
  * ../multiple_reserve_01/multiple_reserve_01.c
  */
 
@@ -114,6 +121,13 @@ void		check_segment_multiple_reserve_02(void);
  */
 
 void		check_segment_multiple_reserve_03(void);
+
+
+/*
+ * ../multiple_reserve_release_01/multiple_reserve_release_01.c
+ */
+
+void		check_segment_multiple_reserve_release_01(void);
 
 
 /*
@@ -191,6 +205,55 @@ void		check_segment_perms_04(void);
  */
 
 void		check_segment_perms_05(void);
+
+
+/*
+ * ../give_01/give_01.c
+ */
+
+void		check_segment_give_01(void);
+
+
+/*
+ * ../type_01/type_01.c
+ */
+
+void		check_segment_type_01(void);
+
+
+/*
+ * ../catch_01/catch_01.c
+ */
+
+void		check_segment_catch_01(void);
+
+
+/*
+ * ../resize_01/resize_01.c
+ */
+
+void		check_segment_resize_01(void);
+
+
+/*
+ * ../resize_02/resize_02.c
+ */
+
+void		check_segment_resize_02(void);
+
+
+/*
+ * ../split_01/split_01.c
+ */
+
+void		check_segment_split_01(void);
+
+
+/*
+ * ../coalesce_01/coalesce_01.c
+ */
+
+void		check_segment_coalesce_01(void);
 
 
 /*

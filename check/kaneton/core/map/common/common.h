@@ -36,17 +36,31 @@ void	check_map_tests(void);
 
 
 /*
- * ../map_01/map_01.c
+ * ../simple_reserve_01/simple_reserve_01.c
  */
 
-void		check_map_map_01(void);
+void		check_map_simple_reserve_01(void);
 
 
 /*
- * ../simple_reserve/simple_reserve.c
+ * ../simple_reserve_release_01/simple_reserve_release_01.c
  */
 
-void		check_map_simple_reserve(void);
+void		check_map_simple_reserve_release_01(void);
+
+
+/*
+ * ../multiple_reserve_01/multiple_reserve_01.c
+ */
+
+void		check_map_multiple_reserve_01(void);
+
+
+/*
+ * ../multiple_reserve_release_01/multiple_reserve_release_01.c
+ */
+
+void		check_map_multiple_reserve_release_01(void);
 
 
 /*

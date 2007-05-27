@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/libs/klibc/libdata/malloc/01/01.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:12:15 2005]
- * updated       matthieu bucchianeri   [sun jun  4 19:54:41 2006]
+ * updated       matthieu bucchianeri   [sun may 27 21:23:01 2007]
  */
 
 #include <klibc.h>
@@ -20,11 +20,11 @@ void	check_malloc_01(void)
 {
   void	*p;
 
-  TEST_ENTER(1);
+  TEST_ENTER();
 
   p = check_init_memory(malloc(42), 42);
   check_memory(p, 42);
   free(p);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

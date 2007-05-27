@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/check/libs/klibc/libdata/malloc/02/02.c
  *
  * created       matthieu bucchianeri   [tue dec 20 15:12:15 2005]
- * updated       matthieu bucchianeri   [sun jun 18 17:59:35 2006]
+ * updated       matthieu bucchianeri   [sun may 27 21:22:38 2007]
  */
 
 #include <klibc.h>
@@ -22,7 +22,7 @@ void		check_malloc_02(void)
   int		i;
   size_t	sz;
 
-  TEST_ENTER(1);
+  TEST_ENTER();
 
   for (i = 0; i < 100; i++)
     {
@@ -37,5 +37,5 @@ void		check_malloc_02(void)
 	free(p[i]);
     }
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }

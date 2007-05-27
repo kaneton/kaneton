@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/debug.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [sun may 27 14:45:00 2007]
+ * updated       matthieu bucchianeri   [sun may 27 21:14:51 2007]
  */
 
 /*
@@ -27,6 +27,51 @@
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * this function executes the right function.
+ *
+ * steps:
+ *
+ * 1) parse the function address.
+ * 2) setup serial output.
+ * 3) execute the function.
+ * 4) set back the console output.
+ */
+
+static t_error		debug_exec_cmd_tab(t_serial_data *cmd)
+{
+  int (*func)(void);
+
+  /*
+   * 1)
+   */
+
+  *strchr((char*)cmd->data, '/') = 0;
+  func = (int (*)(void))strtol((char*)cmd->data + strlen((char*)cmd->data) + 1,
+			       0, 16);
+  cons_msg('+', "running test %s @ 0x%p\n", (char*)cmd->data, func);
+
+  /*
+   * 2)
+   */
+
+  printf_init(serial_put, 0);
+
+  /*
+   * 3)
+   */
+
+  func();
+
+  /*
+   * 4)
+   */
+
+  printf_init(cons_print_char, cons_attr);
+
+  return (ERROR_NONE);
+}
 
 /*
  * this function receives and parses the commands.
@@ -70,51 +115,6 @@ static t_error		debug_recv(void)
    */
 
   free(recv_type.data);
-
-  return (ERROR_NONE);
-}
-
-/*
- * this function executes the right function.
- *
- * steps:
- *
- * 1) parse the function address.
- * 2) setup serial output.
- * 3) execute the function.
- * 4) set back the console output.
- */
-
-static t_error		debug_exec_cmd_tab(t_serial_data *cmd)
-{
-  int (*func)(void);
-
-  /*
-   * 1)
-   */
-
-  *strchr((char*)cmd->data, '/') = 0;
-  func = (int (*)(void))strtol((char*)cmd->data + strlen((char*)cmd->data) + 1,
-			       0, 16);
-  cons_msg('+', "running test %s @ 0x%p\n", (char*)cmd->data, func);
-
-  /*
-   * 2)
-   */
-
-  printf_init(serial_put, 0);
-
-  /*
-   * 3)
-   */
-
-  func();
-
-  /*
-   * 4)
-   */
-
-  printf_init(cons_print_char, cons_attr);
 
   return (ERROR_NONE);
 }

@@ -70,7 +70,7 @@ void		check_time_precision_02(void);
  * ../precision_03/precision_03.c
  */
 
-void		check_time_precision_01(void);
+void		check_time_precision_03(void);
 
 
 /*
@@ -85,6 +85,13 @@ void		check_time_release_01(void);
  */
 
 void		check_time_repeat_01(void);
+
+
+/*
+ * ../repeat_02/repeat_02.c
+ */
+
+void		check_time_repeat_02(void);
 
 
 /*

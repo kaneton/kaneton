@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/check/libs/klibc/libstring/printf/06/06.c
+ * file          /home/buckman/kaneton/check/libs/klibc/libstring/printf/06/06.c
  *
  * created       matthieu bucchianeri   [mon dec 26 18:04:53 2005]
- * updated       matthieu bucchianeri   [wed dec 28 17:25:27 2005]
+ * updated       matthieu bucchianeri   [sun may 27 21:12:31 2007]
  */
 
 #include <klibc.h>
@@ -18,7 +18,7 @@
 
 void	check_printf_06(void)
 {
-  TEST_ENTER;
+  TEST_ENTER();
 
   CHECK_PRINTF(printf("%s%s toto %s%s", "test", "%s", "tata", "\n"), 17);
 
@@ -26,5 +26,5 @@ void	check_printf_06(void)
 		      " une petite derniere %s\n", "de caracteres",
 		      "encore une autre", "autre", NULL), 101);
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }
