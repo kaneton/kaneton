@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/c.tex
 %
 % created       julien quintard   [fri may 25 20:24:38 2007]
-% updated       julien quintard   [sat may 26 15:42:50 2007]
+% updated       julien quintard   [sun may 27 14:10:41 2007]
 %
 
 %
@@ -149,18 +149,18 @@ must be used, at all.
 
 \begin{verbatim}
   /*
-  * this function shows a segment.
-  *
-  * steps:
-  *
-  * 1) get the segment object.
-  * 2) compute the type string.
-  * 3) compute the perms string.
-  * 4) display the entry.
-  * 5) call machine dependent code.
-  */
+   * this function shows a segment.
+   *
+   * steps:
+   *
+   * 1) get the segment object.
+   * 2) compute the type string.
+   * 3) compute the perms string.
+   * 4) display the entry.
+   * 5) call machine dependent code.
+   */
 
-  t_error                 segment_show(i_segment                  segid)
+  t_error                 segment_show(i_segment                  id)
   {
     [...]
   }
@@ -215,9 +215,9 @@ The example below illustrates this rule:
 \begin{verbatim}
   typedef struct
   {
-    i_segment                     segid;
+    i_segment                     id;
 
-    i_as                          asid;
+    i_as                          as;
 
     t_type                        type;
 
@@ -228,18 +228,459 @@ The example below illustrates this rule:
   }                               o_segment;
 \end{verbatim}
 
+The use of \textit{C} standard types like \textit{int}, \textit{long long}
+is prohibited since there exist kaneton-specific types \textit{t\_uint32},
+\textit{t\_uint64} which guarantee the type size. Indeed, the \textit{C}
+standard does not specify the size of the types \textit{int} etc. depending
+on the architecture.
+
 %
 % layout
 %
 
+\subsection{Layout}
+
+The global layout of files and sections of code pertaining to the \textit{C}
+preprocessor, including file inclusion and inclusion protection, must
+comply to specifications detailed in the following.
+
+Note that an \textit{Emacs} configuration file is provided in
+\textit{tool/emacs}. This file contains bindkeys for generating many of
+the syntaxes explained in this section. If some contributors are using
+a different text editor, then it is their responsibility to follow the rules
+by developing a plugin for their text editor, for instance.
+
+% file
+
+\subsubsection{File}
+
+\textit{C} source and header files are composed of sections in order to make
+the organisation simpler and clearer. Each section starts with a specific
+header and then contains source code related to the section.
+
+A section header is basically a commented separator as the examples
+illustrates below with two sections \textit{dependencies} and \textit{macros}.
+
+\begin{verbatim}
+  /*
+   * -------- dependencies ----------------------------------------------------
+   */
+
+  #include <core/id.h>
+  #include <core/types.h>
+
+  /*
+   * -------- macros ----------------------------------------------------------
+   */
+
+  /*
+   * types
+   */
+
+  #define SET_TYPE_ARRAY          0x01
+  #define SET_TYPE_BPT            0x02
+  #define SET_TYPE_LL             0x03
+  #define SET_TYPE_PIPE           0x04
+  #define SET_TYPE_STACK          0x05
+
+  /*
+   * iterator's state
+   */
+
+  #define ITERATOR_STATE_USED     0x01
+  #define ITERATOR_STATE_UNUSED   0x02
+\end{verbatim}
+
+Next are listed some of the most important sections:
+
+\begin{itemize}
+  \item
+    \textbf{header}: this section contains the file header which provides
+    information on the file edition: creation, last update etc.
+
+    \-
+
+    Note that the first and last authors are also specified in this header.
+    Remember that kaneton is a community driven project and therefore these
+    names do not represent the main file's authors.
+
+    \-
+
+    This section must be present in every source and header file as it
+    contains the file creation and last update dates.
+  \item
+    \textbf{information}: this section contains a general description of
+    what this file provides.
+
+    \-
+
+    This section must be present in every source file.
+
+    \begin{verbatim}
+      /*
+       * ---------- information -----------------------------------------------
+       *
+       * the address space manager manages address spaces.
+       *
+       * an address space describes process' useable memory. each address space
+       * is composed of two sets.
+       *
+       * the first describes the segments held by this address space, in other
+       * words the physical memory.
+       *
+       * the latter describes the regions, the virtual areas which reference
+       * some segments.
+       *
+       * a task can give its address space to another with as_give().
+       */
+    \end{verbatim}
+  \item
+    \textbf{dependencies}: this section contains inclusions of dependency
+    files.
+
+    \-
+
+    This is the common section which contains the well-known \textit{\#include}
+    preprocessor directives.
+  \item
+    \textbf{includes}: this section contains inclusion statements of additional
+    files.
+
+    \-
+
+    This section must not be misused since there also exist a
+    \textit{dependencies} section.
+
+    \begin{verbatim}
+      /*
+       * ---------- dependencies ----------------------------------------------
+       */
+
+      #include <core/id.h>
+      #include <core/types.h>
+
+      /*
+       * ---------- includes --------------------------------------------------
+       */
+
+      #include <core/set-array.h>
+      #include <core/set-bpt.h>
+      #include <core/set-ll.h>
+    \end{verbatim}
+  \item
+    \textbf{macros}: this section contains macro definitions.
+
+    \-
+
+    This section must not contain macro functions as there is a section
+    dedicated to these.
+  \item
+    \textbf{macro functions}: this sections contains the macro function
+    definitions which are dissociated from the basic macro definitions.
+
+    \begin{verbatim}
+      /*
+       * ---------- macros ----------------------------------------------------
+       */
+
+      /*
+       * options
+       */
+
+      #define SET_OPT_NONE            0x00
+      #define SET_OPT_FORWARD         0x01
+      #define SET_OPT_BACKWARD        0x02
+      #define SET_OPT_CONTAINER       0x04
+      #define SET_OPT_ALLOC           0x08
+      #define SET_OPT_FREE            0x10
+      #define SET_OPT_SORT            0x20
+      #define SET_OPT_ORGANISE        0x40
+
+      /*
+       * ---------- macro functions -------------------------------------------
+       */
+
+      #define set_type(_type_, _id_)                                    \
+        set_type_##_type_(_id_)
+
+      #define set_reserve(_type_, _args_...)                            \
+        set_reserve_##_type_(_args_)
+    \end{verbatim}
+  \item
+    \textbf{types}: this section contains de type definitions.
+  \item
+    \textbf{prototypes}: this section contains the prototype definititions.
+
+    \-
+
+    This section is specific as the kaneton microkernel project uses a
+    tool for generating prototypes from \textit{C} source file. For more
+    information, please refer to the section dedicated to the prototype
+    generation.
+
+    \begin{verbatim}
+      /*
+       * ---------- prototypes ------------------------------------------------
+       *
+       *      ../../core/set/set.c
+       *      ../../core/set/set-array.c
+       *      ../../core/set/set-ll.c
+       *      ../../core/set/set-bpt.c
+       *      ../../core/set/set-pipe.c
+       *      ../../core/set/set-stack.c
+       */
+
+      /*
+       * ../../core/set/set.c
+       */
+
+      t_error                 set_dump(void);
+
+      t_error                 set_size(i_set                          id,
+                                       t_setsz*                       size);
+    \end{verbatim}
+  \item
+    \textbf{externs}: this section contains extern declarations.
+
+    \begin{verbatim}
+      /*
+       * ---------- extern ----------------------------------------------------
+       */
+
+      /*
+       * the init variable, filled by the bootloader, containing in this case
+       * the list of segments to mark used.
+       */
+
+      extern t_init*          init;
+    \end{verbatim}
+  \item
+    \textbf{globals}: this section contains global variable declarations.
+
+    \begin{verbatim}
+      /*
+       * ---------- globals ---------------------------------------------------
+       */
+
+      /*
+       * the segment manager structure.
+       */
+
+      m_segment*              segment;
+    \end{verbatim}
+  \item
+    \textbf{functions}: this section contains function definitions.
+\end{itemize}
+
+More specifically, header files are likely to contain the sections:
+\textit{header}, \textit{dependencies}, \textit{macros}, \textit{types},
+\textit{includes}, \textit{macro functions}, \textit{prototypes} etc. while
+the source files should contain the sections: \textit{header},
+\textit{information}, \textit{includes}, \textit{externs}, \textit{globals},
+\textit{functions} etc..
+
+\textit{C} files must not exceed \textit{80} characters in width, including
+the trailing newline character. Moreover, the \textit{DOS} \textit{CR+LF}
+line terminator must not be used.
+
+As said above, all source and header files must start with a file header
+\textit{i.e} a \textit{header} section. This file header specifies the
+the project name, the license of this file, the file name, the author
+and date of the file creation and finally the author and date of the last
+edition. This header must comply to the following template:
+
+\begin{verbatim}
+  /*
+   * ---------- header --------------------------------------------------------
+   *
+   * project       <project>
+   *
+   * license       <license>
+   *
+   * file          <file location>
+   *
+   * created       <first author>   [<creation date>]
+   * updated       <last author>   [<last update date>]
+   */
+\end{verbatim}
+
+Obviously, the project and license field must be filled, in the kaneton project
+context, with \textit{kaneton} and \textit{kaneton}, respectively. The
+author field must contain the author's full name - firsname and lastname -
+in lower case letters. Note that auto-generated values must comply to
+the general kaneton rules especially they must be in lower case letters and
+must not exceed \textit{80} characters in width.
+
+% preprocessor
+
+\subsubsection{Preprocessor}
+
+The preprocessor directives must appear on the first column with no
+identation or special end marking:
+
+\begin{verbatim}
+  #ifndef CORE_SET_H
+  #define CORE_SET_H              1
+
+  /*
+   * debug
+   */
+
+  #if (DEBUG & DEBUG_SET) && defined(SET_DEBUG_TRAP)
+
+  #define set_debug(_func_, _id_, _args_...)                              \
+    fprintf(stderr, '[setd] trap: %s(%qu, %s)\n',                         \
+            #_func_,                                                      \
+            _id_,                                                         \
+            #_args_);
+
+  #else
+
+  #define set_debug(_func_, _id_, _args...)
+
+  #endif
+
+  #endif
+\end{verbatim}
+
+All header files must be protected against multiple inclusions. The
+guard macro must be named according to the location of the header file
+with the suffix \textit{\_H} in order to avoid guard macro name collision.
+
+\begin{verbatim}
+  #ifndef ARCHITECTURE_IA32_SEGMENT_H
+  #define ARCHITECTURE_IA32_SEGMENT_H           1
+
+  [...]
+
+  #endif
+\end{verbatim}
+
+Spanning macros over multiple lines is encouraged for a sake of clarity. In
+such cases, escaped lines breaks \textit{$\backslash$-newline} must appear
+on the same column. For this purpose, tabulations must be used:
+
+\begin{verbatim}
+  /*
+   * traps
+   */
+
+  #define set_trap(_func_, _id_, _args_...)                               \
+    (                                                                     \
+      {                                                                   \
+        t_error           _r_ = ERROR_UNKNOWN;                            \
+        o_set*            _set_;                                          \
+                                                                          \
+        set_debug(_func_, _id_, _args_);                                  \
+                                                                          \
+        if (set_descriptor((_id_), &_set_) == ERROR_NONE)                 \
+          {                                                               \
+            switch (_set_->type)                                          \
+              {                                                           \
+                case SET_TYPE_ARRAY:                                      \
+                  _r_ = _func_##_array((_id_), ##_args_);                 \
+                  break;                                                  \
+                case SET_TYPE_BPT:                                        \
+                  _r_ = _func_##_bpt((_id_), ##_args_);                   \
+                  break;                                                  \
+                case SET_TYPE_LL:                                         \
+                  _r_ = _func_##_ll((_id_), ##_args_);                    \
+                  break;                                                  \
+                case SET_TYPE_PIPE:                                       \
+                  _r_ = _func_##_pipe((_id_), ##_args_);                  \
+                  break;                                                  \
+                case SET_TYPE_STACK:                                      \
+                  _r_ = _func_##_stack((_id_), ##_args_);                 \
+                  break;                                                  \
+              }                                                           \
+          }                                                               \
+        _r_;                                                              \
+      }                                                                   \
+    )
+\end{verbatim}
+
+% functions
+
+\subsubsection{Functions}
+
+Every function must be preceded by a comment which completely describes the
+actions the function performs. Moreover, some function parts need additional
+description. In order not to overload the function body with heavy comments,
+a kaneton-specific function organisation was introduced.
+
+Then, functions body are composed of \textit{steps}, each step representing
+a bunch of coherent actions. These actions are not described in the body
+of the function, but rather in the comment preceding the function. Thus,
+the body is clearly decomposed into steps for the sake of clarity and
+expressiveness while these steps can be heavily documented in the
+function comment.
+
+Therefore, function definitions must comply this organisation as illustrated
+below:
+
+\begin{verbatim}
+  /*
+   * this function adds a set descriptor to the set container.
+   *
+   * steps:
+   *
+   * 1) if the descriptor to add is the set which will contain the set objects,
+   *    the container, just put it as the set container.
+   * 2) otherwise, add this object in the set container.
+   */
+
+  t_error                 set_new(o_set*                          o)
+  {
+    SET_ENTER(set);
+
+    /*
+     * 1)
+     */
+
+    if (o->setid == set->sets)
+      {
+        if ((set->container = malloc(sizeof(o_set))) == NULL)
+          SET_LEAVE(set, ERROR_UNKNOWN);
+
+        memcpy(set->container, o, sizeof(o_set));
+
+        SET_LEAVE(set, ERROR_NONE);
+      }
+
+    /*
+     * 2)
+     */
+
+    if (set_add(set->sets, o) != ERROR_NONE)
+      {
+        cons_msg('!', 'set: unable to add this set descriptor '
+                 'to the set container\n');
+
+        SET_LEAVE(set, ERROR_UNKNOWN);
+      }
+
+    SET_LEAVE(set, ERROR_NONE);
+  }
+\end{verbatim}
+
+Note that putting empty lines for separating pieces of code is more than
+encouraged as it leads to a very readable source code.
+
+Finally, it is absolutely forbidden to put comments on a single line
+as well as to use \textit{C++} comment characteres \textit{//}.
+
+%
+% style
+%
+
+\subsection{Style}
+
+XXX
+
+
 %
 % ---------- XXX --------------------------------------------------------------
 %
-
-Layout
-  File [trailing whitespace, empty lines]
-  Comments [lowercase]
-  Preprocessor [\\]
 
 Style
   Blocks
@@ -256,3 +697,7 @@ Control Structures
 
 +comment system: step etc..
 +programmation differente: type retour = error, valeur retour = last args
+
+dire qu'il faut mettre un XXX pour les TODO
+
+alignement des fonctions etc.

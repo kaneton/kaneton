@@ -35,7 +35,6 @@ SUBDIRS			:=		bibliography			\
 					internship			\
 					lecture				\
 					logo				\
-					lse				\
 					paper				\
 					template			
 

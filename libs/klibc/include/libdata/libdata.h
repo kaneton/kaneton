@@ -47,6 +47,8 @@ u_int32_t		alloc_nfree(void);
 
 void			alloc_dump(void);
 
+void			alloc_check_signatures(void);
+
 void*			realloc(void* 				ptr,
 				size_t				size);
 

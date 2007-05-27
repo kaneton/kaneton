@@ -191,7 +191,7 @@ typedef struct
 
 #if (DEBUG & DEBUG_SET) && defined(SET_DEBUG_TRAP)
 
-# define set_debug(_func_, _id_, _args_...)				\
+#define set_debug(_func_, _id_, _args_...)				\
   fprintf(stderr, "[setd] trap: %s(%qu, %s)\n",				\
           #_func_,							\
           _id_,								\
@@ -199,7 +199,7 @@ typedef struct
 
 #else
 
-# define set_debug(_func_, _id_, _args...)
+#define set_debug(_func_, _id_, _args...)
 
 #endif
 

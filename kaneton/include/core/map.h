@@ -92,21 +92,6 @@ typedef struct
  * ../../core/map/map.c
  */
 
-void*			mmap(void*			start,
-			     size_t			length,
-			     int			prot,
-			     int			flags,
-			     int			fd,
-			     off_t			offset);
-
-int			munmap(void*			start,
-			       size_t			length);
-
-void*			mremap(void*			old_address,
-			       size_t			old_size,
-			       size_t			new_size,
-			       unsigned long		flags);
-
 t_error			map_reserve(i_as		asid,
 				    t_opts		opts,
 				    t_vsize		size,
