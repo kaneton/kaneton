@@ -1,2 +1,0 @@
-Test check_sched_yield_01
-check_sched_yield_01 done.

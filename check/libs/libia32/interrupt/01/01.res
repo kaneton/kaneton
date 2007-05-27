@@ -1,2 +1,0 @@
-Test check_interrupt_01
-check_interrupt_01 done.

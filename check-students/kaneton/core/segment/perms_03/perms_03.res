@@ -1,2 +1,0 @@
-Test check_segment_perms_03
-check_segment_perms_03 done.

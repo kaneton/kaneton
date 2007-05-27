@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/serial.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [tue feb  6 22:23:41 2007]
+ * updated       matthieu bucchianeri   [sun may 27 14:47:01 2007]
  */
 
 /*
@@ -28,7 +28,11 @@
  * ---------- functions -------------------------------------------------------
  */
 
-t_uint32		chk_sum(void				*data,
+/*
+ * compute packet checksum.
+ */
+
+static t_uint32		chk_sum(void				*data,
 				unsigned int			size)
 {
   t_uint32		crc = 0;
@@ -81,6 +85,10 @@ void			serial_write(t_uint32			com_port,
     }
 }
 
+/*
+ * this function sends a chunk of data.
+ */
+
 int			serial_send(t_uint32			com_port,
 				    t_uint8*			data,
 				    t_uint32			size)
@@ -103,6 +111,9 @@ int			serial_send(t_uint32			com_port,
     return (-1);
 }
 
+/*
+ * this function receives a chunk of data.
+ */
 
 int			serial_recv(t_uint32			com_port,
 				    t_serial_data		*rdata)
@@ -130,35 +141,30 @@ int			serial_recv(t_uint32			com_port,
 }
 
 /*
- * this function just initialises the serial driver.
+ * this function is used to output data on serial port.
  */
 
 int	serial_put(char c)
 {
-	static int n = 0;
-	static char buffer[512];
+  static int n = 0;
+  static char buffer[512];
 
-	if (c != '\n' && n < 512 && c != -1)
-	    buffer[n++] = c;
-	else
-	{
-	 if (c != -1)
-	  buffer[n++] = c;
-	  buffer[n] = 0;
-          serial_send(SERIAL_COM1, (t_uint8*)"printf", 6);
-	  serial_send(SERIAL_COM1, (t_uint8*)buffer, n);
-	  n = 0;
-	}
-	return 1;
+  if (c != '\n' && n < 512 && c != -1)
+    buffer[n++] = c;
+  else
+    {
+      if (c != -1)
+	buffer[n++] = c;
+      buffer[n] = 0;
+      serial_send(SERIAL_COM1, (t_uint8*)"printf", 6);
+      serial_send(SERIAL_COM1, (t_uint8*)buffer, n);
+      n = 0;
+    }
+  return 1;
 }
 
 /*
- * 1) Turn off interupt on choosen port
- * 2) Set dlab on
- * 3) Set baud rate for choosen port
- * 4) Set connection type
- * 5) Set fifo type
- * 6) DTR, RTS, OUT2 : on
+ * this function initializes the serial port.
  */
 
 void			serial_init(t_uint32			com_port,
@@ -166,18 +172,12 @@ void			serial_init(t_uint32			com_port,
 				    t_uint8			bit_type,
 				    t_uint8			fifo_type)
 {
-  /* 1) */
   OUTB(com_port + 1, 0x00);
-  /* 2) */
   OUTB(com_port + 3, 0x80);
-  /* 3) */
   OUTB(com_port + 0, baud_rate);
   OUTB(com_port + 1, 0x00);
-  /* 4) */
   OUTB(com_port + 3, bit_type);
-  /* 5) */
   OUTB(com_port + 2, fifo_type);
-  /* 6) */
   OUTB(com_port + 4, 0x08);
 }
 

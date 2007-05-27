@@ -1,2 +1,0 @@
-Test check_region_simple_write
-check_region_simple_write done.

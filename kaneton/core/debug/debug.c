@@ -3,10 +3,10 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/crypt/kaneton/kaneton/core/debug/debug.c
+ * file          /home/buckman/kaneton/kaneton/core/debug/debug.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [tue feb 13 17:37:21 2007]
+ * updated       matthieu bucchianeri   [sun may 27 14:45:00 2007]
  */
 
 /*
@@ -25,29 +25,131 @@
 #include <core/debug.h>
 
 /*
- * ---------- globals ---------------------------------------------------------
- */
-#ifdef SERIAL
-i_set			buffers;
-
-/*
  * ---------- functions -------------------------------------------------------
  */
 
 /*
+ * this function receives and parses the commands.
+ *
+ * steps:
+ *
+ * 1) receive the buffer.
+ * 2) execute the command.
+ * 3) release memory.
+ */
+
+static t_error		debug_recv(void)
+{
+  t_serial_data		recv_type;
+
+  /*
+   * 1)
+   */
+
+  serial_recv(SERIAL_COM1, &recv_type);
+
+  if (!strcmp((char*)recv_type.data, "command"))
+    {
+      t_serial_data		cmd;
+
+      /*
+       * 2)
+       */
+
+      serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
+      debug_exec_cmd_tab(&cmd);
+      free(cmd.data);
+      serial_put(-1);
+      serial_send(SERIAL_COM1, (t_uint8*)"endprintf", 9);
+    }
+  else
+    printf("debug receive unknown type\n");
+
+  /*
+   * 3)
+   */
+
+  free(recv_type.data);
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function executes the right function.
+ *
+ * steps:
+ *
+ * 1) parse the function address.
+ * 2) setup serial output.
+ * 3) execute the function.
+ * 4) set back the console output.
+ */
+
+static t_error		debug_exec_cmd_tab(t_serial_data *cmd)
+{
+  int (*func)(void);
+
+  /*
+   * 1)
+   */
+
+  *strchr((char*)cmd->data, '/') = 0;
+  func = (int (*)(void))strtol((char*)cmd->data + strlen((char*)cmd->data) + 1,
+			       0, 16);
+  cons_msg('+', "running test %s @ 0x%p\n", (char*)cmd->data, func);
+
+  /*
+   * 2)
+   */
+
+  printf_init(serial_put, 0);
+
+  /*
+   * 3)
+   */
+
+  func();
+
+  /*
+   * 4)
+   */
+
+  printf_init(cons_print_char, cons_attr);
+
+  return (ERROR_NONE);
+}
+
+/*
  * this function just initialises the debug manager.
+ *
+ * steps:
+ *
+ * 1) initialize the serial port.
+ * 2) send the ready command.
+ * 3) receive and parse commands.
  */
 
 t_error			debug_init(void)
 {
   /*
-   * XXX
+   * 1)
    */
+
   serial_init(SERIAL_COM1, SERIAL_BR57600, SERIAL_8N1, SERIAL_FIFO_8);
   printf("serial port initialized\n");
-  set_reserve(ll, SET_OPT_ALLOC, sizeof(t_serial_buffer), &buffers);
 
-  while(1) 	debug_recv();
+  /*
+   * 2)
+   */
+
+  serial_send(SERIAL_COM1, "Ready!", 6);
+
+  /*
+   * 3)
+   */
+
+  while(1)
+    debug_recv();
 
   return (ERROR_NONE);
 }
@@ -56,95 +158,9 @@ t_error			debug_init(void)
  * this function cleans the debug manager.
  */
 
-t_error			debug_recv(void)
-{
-  t_serial_data		recv_type;
-
-  serial_recv(SERIAL_COM1, &recv_type);
-
-  if (!strcmp((char*)recv_type.data, "command"))
-	debug_recv_cmd();
-  else if (!strcmp((char*)recv_type.data, "loadfile"))
-  	load_data();
-  else
-	printf("debug receive unknown type\n");
-  /* rajouter un unload file pour cleaner ! */
-  free(recv_type.data);
-
-  return (ERROR_NONE);
-}
-
-
-t_error			load_data(void)
-{
-  t_serial_data		cmd;
-  t_serial_buffer	buffer;
-
-  serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
-  buffer.name = (char*)cmd.data;
-/*  free(cmd.data);
-*/
-
-  serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
-  buffer.data = cmd.data;
-  set_add(buffers, &buffer);
-
-  /*free(cmd.data);*/
-
-  return (ERROR_NONE);
-}
-
-char*		get_data(char *name)
-{
-  t_state		state;
-  t_iterator		i;
-  t_serial_buffer*	buffer;
-
-  set_foreach(SET_OPT_FORWARD, buffers, &i, state)
-  {
-	set_object(buffers, i,(void**)&buffer);
-  	if (!strcmp(buffer->name, name))
-		return (buffer->data);
-  }
- return (0);
-}
-
-t_error			debug_recv_cmd(void)
-{
-  t_serial_data		cmd;
-
-  serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
-  debug_exec_cmd_tab(&cmd);
-  free(cmd.data);
-  serial_put(-1);
-  serial_send(SERIAL_COM1, (t_uint8*)"endprintf", 9);
-
-  return (ERROR_NONE);
-}
-
-t_error			debug_exec_cmd_tab(t_serial_data *cmd)
-{
-  int (*func)(void);
-
-  *strchr((char*)cmd->data, '/') = 0;
-  func = (int (*)(void)) strtol((char*)cmd->data + strlen((char*)cmd->data) + 1,
-				0, 16);
-  cons_msg('+', "running test %s @ 0x%p\n", (char*)cmd->data, func);
-  printf_init(serial_put, 0);
-  func();
-  printf_init(cons_print_char, cons_attr);
-  return (ERROR_NONE);
-}
-
-
 t_error			debug_clean(void)
 {
-  /*
-   * XXX
-   */
-
   return (ERROR_NONE);
 }
-#endif
 
 /*                                                                 [cut] /k1 */

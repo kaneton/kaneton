@@ -1,2 +1,0 @@
-Test check_event_idtr_01
-check_event_idtr_01 done.

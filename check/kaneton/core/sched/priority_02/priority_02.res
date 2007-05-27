@@ -1,2 +1,0 @@
-Test check_sched_priority_02
-check_sched_priority_02 done.

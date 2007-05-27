@@ -1,3 +1,0 @@
-Test check_time_precision_02
-Timer precision 200ms
-check_time_precision_02 done.

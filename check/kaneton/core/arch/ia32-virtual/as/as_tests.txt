@@ -1,2 +1,0 @@
-01 as switch
-02 check mapping

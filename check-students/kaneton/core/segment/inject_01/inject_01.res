@@ -1,2 +1,0 @@
-Test check_segment_inject_01
-check_segment_inject_01 done.

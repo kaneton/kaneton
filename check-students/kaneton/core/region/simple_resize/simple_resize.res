@@ -1,2 +1,0 @@
-Test check_region_simple_resize
-check_region_simple_resize done.

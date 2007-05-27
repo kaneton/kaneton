@@ -1,2 +1,0 @@
-Test check_sched_state_01
-check_sched_state_01 done.

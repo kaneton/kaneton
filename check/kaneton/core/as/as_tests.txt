@@ -1,5 +1,0 @@
-01 as basics: reserve, get and release
-02 reserving segments and regions in an as
-03 cloning an as
-04 giving an as from one task to another
-05 virtual-to-physical and physical-to-virtual translations

@@ -1,2 +1,0 @@
-Test check_region_split_coalesce
-check_region_split_coalesce done.

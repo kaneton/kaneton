@@ -1,2 +1,0 @@
-Test check_sched_simple_03
-check_sched_simple_03 done.

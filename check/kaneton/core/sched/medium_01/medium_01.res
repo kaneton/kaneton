@@ -1,2 +1,0 @@
-Test check_sched_medium_01
-check_sched_medium_01 done.

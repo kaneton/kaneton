@@ -1,2 +1,0 @@
-Test check_segment_read_write_02
-check_segment_read_write_02 done.

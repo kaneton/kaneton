@@ -1,1 +1,0 @@
-arch01 mapping of prereseved segment/region

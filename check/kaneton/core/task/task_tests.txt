@@ -1,6 +1,0 @@
-01 check segments and region injection in the kernel
-02 reserve, get and release
-03 priority
-04 state
-05 wait
-06 clone

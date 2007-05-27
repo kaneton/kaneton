@@ -1,2 +1,0 @@
-Test check_segment_multiple_reserve_03
-check_segment_multiple_reserve_03 done.

@@ -1,2 +1,0 @@
-Test check_sched_complete_01
-check_sched_complete_01 done.
