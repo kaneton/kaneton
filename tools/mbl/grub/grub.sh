@@ -2,10 +2,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/mycure/kaneton/tools/mbl/grub/grub.sh
+## file          /home/buckman/kaneton/tools/mbl/grub/grub.sh
 ##
 ## created       julien quintard   [fri feb 11 02:58:21 2005]
-## updated       julien quintard   [sun jul 16 19:16:51 2006]
+## updated       matthieu bucchianeri   [sun may 27 21:44:30 2007]
 ##
 
 #
@@ -83,6 +83,7 @@ menu()
   print "" "" "--no-newline" > ${MENU}
 
   # creates new version.
+  print "" "timeout 0" "" >> ${MENU}
   print "" "title kaneton" "" >> ${MENU}
   print "" "" "" >> ${MENU}
 

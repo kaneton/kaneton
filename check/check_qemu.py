@@ -296,7 +296,7 @@ def	main():
 				testid = test_list[i - 1].replace("/", "_").replace("-", "_").rstrip("_").lstrip("kaneton");
 
 				serial_close()
-				os.system("killall -9 qemu ; sleep 1s ;  qemu -fda /tmp/kaneton.img -nographic -serial pty > /dev/null 2>&1 &");
+				os.system("killall -9 qemu > /dev/null 2>&1 ; sleep 1s ;  qemu -fda ../kaneton.img -nographic -serial pty > /dev/null 2>&1 &");
 				os.system("sleep 2s");
 				serial_init(sys.argv[1])
 				serial_timeout(30000);

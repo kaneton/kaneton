@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/env/users/matthieu.bucchianeri/conf.h
  *
  * created       matthieu bucchianeri   [fri dec  2 18:50:46 2005]
- * updated       matthieu bucchianeri   [sun may  6 18:44:51 2007]
+ * updated       matthieu bucchianeri   [sun may 27 21:31:55 2007]
  */
 
 #ifndef KANETON_CONF_H
@@ -96,7 +96,7 @@
  * serial port debug
  */
 
-#undef SERIAL
+#define SERIAL
 
 /*
  * gdb stub
