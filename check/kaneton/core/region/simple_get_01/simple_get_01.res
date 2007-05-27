@@ -1,0 +1,2 @@
+Test check_region_simple_get_01
+check_region_simple_get_01 done.

@@ -1,0 +1,2 @@
+Test check_segment_type_01
+check_segment_type_01 done.

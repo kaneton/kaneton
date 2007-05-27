@@ -1,0 +1,2 @@
+Test check_as_paddr_vaddr_01
+check_as_paddr_vaddr_01 done.

@@ -1,0 +1,2 @@
+Test check_ia32_virtual_01
+check_ia32_virtual_01 done.

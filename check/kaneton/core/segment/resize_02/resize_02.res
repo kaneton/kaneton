@@ -1,0 +1,2 @@
+Test check_segment_resize_02
+check_segment_resize_02 done.

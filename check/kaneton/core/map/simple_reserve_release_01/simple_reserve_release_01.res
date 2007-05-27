@@ -1,0 +1,2 @@
+Test check_map_simple_reserve_release_01
+check_map_simple_reserve_release_01 done.

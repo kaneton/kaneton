@@ -1,0 +1,2 @@
+Test check_sched_medium_03
+check_sched_medium_03 done.

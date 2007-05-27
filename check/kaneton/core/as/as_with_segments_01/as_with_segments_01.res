@@ -1,0 +1,2 @@
+Test check_as_as_with_segments_01
+check_as_as_with_segments_01 done.
