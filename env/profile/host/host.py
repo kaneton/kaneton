@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [thu may 24 17:19:48 2007]
+# updated       julien quintard   [sun may 27 15:58:36 2007]
 #
 
 #
@@ -64,6 +64,8 @@ OPTION_WRITE = 2
 OPTION_DEVICE = 1
 OPTION_IMAGE = 2
 
+OPTION_CURRENT_DIRECTORY = 1
+
 #
 # ---------- functions --------------------------------------------------------
 #
@@ -100,36 +102,45 @@ def			display(header, text, options):
 
 
 #
-# file()
+# pull()
 #
-# this function reads/writes the content of a single file.
+# this function reads the content of a single file.
 #
-def			file(file, content, options):
+def			pull(file, options):
   handle = None
   line = None
 
-  if (options & OPTION_READ):
-    if not os.path.exists(file):
-      return None
+  if not os.path.exists(file):
+    return None
 
-    try:
-      handle = open(file, "r")
-    except IOError:
-      return None
+  try:
+    handle = open(file, "r")
+  except IOError:
+    return None
 
-    content = ""
-    for line in handle.readlines():
-      content += line
+  content = ""
+  for line in handle.readlines():
+    content += line
 
-    handle.close()
+  handle.close()
 
-    return content
-  elif (options & OPTION_WRITE):
-    handle = open(file, "w")
+  return content
 
-    handle.write(content)
 
-    handle.close()
+
+#
+# push()
+#
+# this function writes the content of a single file.
+#
+def			push(file, content, options):
+  handle = None
+
+  handle = open(file, "w")
+
+  handle.write(content)
+
+  handle.close()
 
 
 
@@ -307,3 +318,14 @@ def			path(path, options):
     return os.path.dirname(path)
 
   return None
+
+
+
+#
+# info()
+#
+# this function returns information on the system.
+#
+def			info(options):
+  if (options & OPTION_CURRENT_DIRECTORY):
+    return os.path.curdir

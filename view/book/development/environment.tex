@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/environment.tex
 %
 % created       julien quintard   [sun may 20 14:49:26 2007]
-% updated       julien quintard   [fri may 25 18:14:30 2007]
+% updated       julien quintard   [sun may 27 15:59:43 2007]
 %
 
 %
@@ -741,12 +741,17 @@ Below are described the functions implemented by the \textit{env} package.
 	   \textit{HEADER\_ERROR}, \textit{HEADER\_INTERACTIVE}.
 	 }
 
-\function{file}{(\argument{file},
+\function{pull}{(\argument{file},
                  \argument{options})}
          {
-	   This function returns the content of the \argument{file} with
-	   the \textit{OPTION\_READ} option or write the content with the
-	   option \textit{OPTION\_WRITE}.
+	   This function returns the content of the \argument{file}.
+	 }
+
+\function{push}{(\argument{file},
+                 \argument{content},
+                 \argument{options})}
+         {
+	   This function writes the \argument{content} in the \argument{file}.
 	 }
 
 \function{temporary}{(\argument{options})}
@@ -921,4 +926,14 @@ Below are described the functions implemented by the \textit{env} package.
 
 	   The options \textit{OPTION\_FILE} and \textit{OPTION\_DIRECTORY}
 	   specify which information the caller is interested in.
+	 }
+
+\function{info}{(\argument{options})}
+         {
+	   This function returns information on the system.
+
+	   \-
+
+	   The options \textit{OPTION\_CURRENT\_DIRECTORY} returns the
+           sequence of characters used for accessing the current directory.
 	 }

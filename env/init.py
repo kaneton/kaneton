@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/init.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [fri may 25 18:12:19 2007]
+# updated       julien quintard   [sun may 27 21:30:45 2007]
 #
 
 #
@@ -106,7 +106,7 @@ def			check():
 
   for binary in binaries:
     binary = binary.replace('\t', ' ')
-    binary = binary.lstrip().rstrip()
+    binary = binary.strip()
 
     binary = binary.split(' ')
 

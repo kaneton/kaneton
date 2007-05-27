@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/export.tex
 %
 % created       julien quintard   [wed may 23 18:58:41 2007]
-% updated       julien quintard   [thu may 24 20:44:48 2007]
+% updated       julien quintard   [sun may 27 21:59:12 2007]
 %
 
 %
@@ -39,7 +39,7 @@ type of release:
     \textbf{dist}: the distribution release is performed by removing
     the repository-specific stuff.
   \item
-    \textbf{k}$\gamma$\textbf{,}$\epsilon$: this type of release is intended
+    \textbf{k}$\gamma$\textbf{,}$\tau$: this type of release is intended
     to students. Therefore, repository-specific stuff is removed. Also
     teaching materials such as courses, testing scripts, cheating scripts
     etc.. - specified in the kaneton development environment variable
@@ -47,13 +47,13 @@ type of release:
 
     \-
 
-    Finally, the pieces of code comprised in the range $[\gamma,\epsilon]$
+    Finally, the pieces of code comprised in the range $[\gamma,\tau]$
     are removed from the release. These pieces of code are marked using the
     \textit{export} syntax described next.
 
     \-
 
-    The stages $\gamma$ and $\epsilon$ represent kaneton sub-project ranks:
+    The stages $\gamma$ and $\tau$ represent kaneton sub-project ranks:
 
     \begin{itemize}
       \item
@@ -71,7 +71,7 @@ type of release:
 
 Finally, the generated release is named based on the \textit{\_EXPORT\_}
 kaneton environment variable followed by the date and type of the release:
-\textit{backup}, \textit{dist} or \textit{k}$\gamma$\textit{,}$\epsilon$.
+\textit{backup}, \textit{dist} or \textit{k}$\gamma$\textit{,}$\tau$.
 
 % syntax
 
@@ -137,6 +137,9 @@ was a functionality the students should implement.
 The markings at the top \verb|[cut] k1| and bottom \verb|[cut] /k1| of this
 example indicate the \textit{export} tool the location of the piece of code
 to remove for the stage \textit{k1}.
+
+Note that the marked areas must not overlap, the \textit{export} tool's
+behaviour being undetermined in such cases.
 
 Let us suppose a teacher $T_{1}$ wants to use kaneton leading the students to
 the development of the memory management functionality, only. On the other

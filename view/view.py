@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/view.py
 #
 # created       julien quintard   [sun may 13 11:04:52 2007]
-# updated       julien quintard   [thu may 24 02:07:31 2007]
+# updated       julien quintard   [mon may 28 00:50:55 2007]
 #
 
 #
@@ -121,6 +121,7 @@ def			warning():
   env.display(env.HEADER_INTERACTIVE,
               "to cancel press CTRL^C, otherwise press enter", env.OPTION_NONE)
 
+  # wait for the user's approval
   env.input(env.OPTION_NONE)
 
 

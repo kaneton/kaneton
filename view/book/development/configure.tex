@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/configure.tex
 %
 % created       julien quintard   [tue may 22 22:34:37 2007]
-% updated       julien quintard   [wed may 23 01:53:17 2007]
+% updated       julien quintard   [sun may 27 15:46:53 2007]
 %
 
 %
@@ -33,10 +33,9 @@ profiles, contain \textit{description} files which actually describe the
 environment variables. These files are not used by the development
 environment but rather by the \textit{configure} tool.
 
-The \textit{configure/} directory is composed of \textit{description} files as
-well but these files contain frame descriptions rather than variable
-descriptions. A frame can be seen as a menu presented to the final user. A
-frame is composed of sub-frame and variable entries.
+The \textit{configure/} directory is composed of \textit{frame} files
+which contain frame descriptions. A frame can be seen as a menu presented
+to the final user. A frame is composed of sub-frame and variable entries.
 
 The \textit{configure} tool works as follow. It starts by processing the
 environment development configuration files as the environment engine did
@@ -45,8 +44,8 @@ for the generation of the configured environment files. Note that the
 focuses on variables and actually ignores the interfaces' functions.
 
 Once this step is done, the tool gets a list of configured and fully described
-variables. Then, the \textit{configure} tool displays the current frame
-according to the first frame description file.
+variables. Then, the \textit{configure} tool displays the first frame and
+waits for the user to choose an entry.
 
 The user has the possibility to either move to another menu - if any sub-frame
 entry is present - or configure a variable of the list. If the user chooses
@@ -95,6 +94,12 @@ profile configuration file:
   _FOO_                         =                       initial new
 \end{verbatim}
 
+Finally, note that when the \textit{configure} tool is launched, it first
+tries to detect whether the user is a newcomer or not. If it is, then the
+tool asks the user to create a new \textit{user} profile, step by step. These
+actions are performed in the \textit{critical.py} script of the
+\textit{configure/} directory.
+
 % requirements
 
 \subsubsubsection{Requirements}
@@ -122,13 +127,9 @@ The example below illustrates this very simple syntax:
 \begin{verbatim}
   - frame: optimisations
     path: subsections/optimisations.desc
-    description: |
-      This subsection focuses on kaneton optimisations.
 
   - frame: machine dependent
     path: subsections/machine.desc
-    description: |
-      Feel free to configure the machine dependent stuff.
 
   - variable: _FOO_
 
