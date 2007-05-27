@@ -96,7 +96,7 @@
  * serial port debug
  */
 
-#undef SERIAL
+#define SERIAL
 
 /*
  * gdb stub
