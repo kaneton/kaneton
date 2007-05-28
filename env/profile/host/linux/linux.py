@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/env/profile/host/linux/linux.py
+# file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [sun may 20 17:38:14 2007]
+# updated       julien quintard   [mon may 28 13:05:48 2007]
 #
 
 #
@@ -139,9 +139,34 @@ def			load(file, device, path, options):
 #
 # this function runs the program recording a session.
 #
-def			record(log, time, options):
+def			record(transcript, options):
+  directory = None
+  time = None
+  log = None
+  tmp = None
+  wd = None
+
+  tmp = temporary(OPTION_DIRECTORY)
+
+  directory = tmp + "/" + "transcript"
+
+  log = directory + "/" + "log"
+  time = directory + "/" + "time"
+
+  mkdir(directory, OPTION_NONE)
+
   launch(_SCRIPT_, "-q -t " + log + " -c " +
-         _TRANSCRIPTS_CMD_ + " 2> " + time, OPTION_NONE)
+         _TRANSCRIPT_CMD_ + " 2> " + time, OPTION_NONE)
+
+  wd = cwd(OPTION_NONE)
+
+  cd(tmp, OPTION_NONE)
+
+  pack("transcript", wd + "/" + transcript, OPTION_NONE)
+
+  cd(wd, OPTION_NONE)
+
+  remove(tmp, OPTION_NONE)
 
 
 
@@ -150,8 +175,23 @@ def			record(log, time, options):
 #
 # this function runs the program replaying a session.
 #
-def			play(log, time, options):
+def			play(transcript, options):
+  directory = None
+  time = None
+  log = None
+  tmp = None
+  wd = None
+
+  tmp = temporary(OPTION_DIRECTORY)
+
+  log = tmp + "/" + "transcript/log"
+  time = tmp + "/" + "transcript/time"
+
+  unpack(transcript, tmp, OPTION_NONE)
+
   launch(_SCRIPTREPLAY_TOOL_, time + " " + log, OPTION_NONE)
+
+  remove(tmp, OPTION_NONE)
 
 
 

@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/environment.tex
 %
 % created       julien quintard   [sun may 20 14:49:26 2007]
-% updated       julien quintard   [sun may 27 15:59:43 2007]
+% updated       julien quintard   [mon may 28 12:50:54 2007]
 %
 
 %
@@ -857,8 +857,8 @@ Below are described the functions implemented by the \textit{env} package.
 	   directory \argument{directory}.
 	 }
 
-\function{unpack}{(\argument{directory},
-                   \argument{file},
+\function{unpack}{(\argument{file},
+                   \argument{directory},
                    \argument{options})}
          {
 	   This function extracts the archive \argument{file} into the
@@ -892,22 +892,17 @@ Below are described the functions implemented by the \textit{env} package.
 	   This function returns a date following the given \argument{format}.
 	 }
 
-\function{record}{(\argument{log},
-                   \argument{time},
+\function{record}{(\argument{transcript},
                    \argument{options})}
          {
-	   This function starts recording a session and outputs
-	   the text into the file \argument{log} while the timings
-	   are output in the file \argument{time}.
+	   This function starts recording a session and transcripts it
+           into \argument{transcript}.
 	 }
 
-\function{play}{(\argument{log},
-                 \argument{time},
+\function{play}{(\argument{transcript},
                  \argument{options})}
          {
-	   This function plays a previously recorded session where
-	   the files \argument{log} and \argument{time} hold the
-	   text and timings.
+	   This function plays a previously recorded \argument{transcript}.
 	 }
 
 \function{locate}{(\argument{file},
