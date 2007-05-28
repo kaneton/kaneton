@@ -8,14 +8,14 @@
 % file          /home/mycure/kaneton/view/book/development/general.tex
 %
 % created       julien quintard   [mon may 28 19:44:49 2007]
-% updated       julien quintard   [mon may 28 19:57:57 2007]
+% updated       julien quintard   [mon may 28 23:43:35 2007]
 %
 
 %
 % ---------- general ----------------------------------------------------------
 %
 
-\section{General}
+\chapter{General}
 
 This section describes the rules which apply to any language or tool. These
 rules can therefore be considered as the most important ones.
@@ -78,10 +78,47 @@ in lower case letters. Note that auto-generated values must comply to
 the general kaneton rules especially they must be in lower case letters and
 must not exceed \textit{80} characters in width.
 
-% development
+% markings
 
-\subsubsection{Development}
+\subsubsection{Markings}
 
 Any developer must put the sequence \textit{XXX} everywhere a piece of code
 is considered as unfinished. This way, any unfixed piece of code can be
 easily retrieved via a very simple command line.
+
+% naming
+
+\subsubsection{Naming}
+
+When using a language which does not support namespaces, the developer should
+prefix every entity by the package, module etc. it belongs to.
+
+As long as it is possible, entities must be named with a unique word, excluding
+the namespace prefix.
+
+Names must obviously be expressed in English, without any spelling mistakes.
+
+% layout
+
+\subsubsection{Layout}
+
+Files are composed of sections in order to make the organisation clearer.
+Each section starts with a specific header and then contains code, text etc.
+related to the section.
+
+A section header is basically a commented separator.
+
+Any file must include a \textit{header} section as explained above. Moreover,
+some sections are mandatory depending of the type of file. For instance,
+even configuration files, description files etc. must provide a
+\textit{information} section.
+
+Files related to any language should provide a section for the core
+content like \textit{rules} for \textit{Make} files or \textit{functions}
+for many other languages.
+
+For more information on the mandatory sections, please refer to
+the sections about the language your are interested in and/or look at
+examples in the kaneton repository.
+
+There must not be any whitespace at the end of a line.

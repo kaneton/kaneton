@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/c.tex
 %
 % created       julien quintard   [fri may 25 20:24:38 2007]
-% updated       julien quintard   [mon may 28 20:34:26 2007]
+% updated       julien quintard   [mon may 28 23:40:06 2007]
 %
 
 %
@@ -18,13 +18,13 @@
 \section{C}
 
 This section is intended to detail the kaneton \textit{C} coding style.
-The specifications in this documents are to be well-known by every kaneton
+The specifications in this document are to be well-known by every kaneton
 developer.
 
 The kaneton coding style was introduced in order to uniformize the \textit{C}
 coding styles of kaneton project contributors. Indeed, as explained in this
 section, the kaneton coding style is very different from the coding styles
-of other open source project especially the \textit{GNU} style.
+of other open source projects especially the \textit{GNU} style.
 
 The key aspect of the coding style is the clarity through the coherency.
 Indeed, every choice was made for the good of the project so that everyone
@@ -36,7 +36,7 @@ can very easily read the source code of the kaneton microkernel.
 
 \subsection{Naming}
 
-Names in programs must comply to the following several rules.
+Names in kaneton must comply to the following several rules.
 
 % general
 
@@ -54,7 +54,9 @@ have explicit and/or mnemonic names.
 
 \begin{verbatim}
   #define IA32_OPTION_READ              1
+
   #define SET_TYPE_ARRAY                0x02
+
   #define MIPS64_THREAD_STACKSZ         8192
 \end{verbatim}
 
@@ -82,7 +84,7 @@ More generally, entities must be named with a \textit{unique} word,
 excluding the namespace prefix. Short less explicit names are always prefered
 on very long explicit names which are then difficult to name and use.
 
-The following example first illustrates a wrong usage and then its correction:
+The following example first illustrates a wrong usage:
 
 \begin{verbatim}
   t_errval              segment_dump_set(i_set              segment_set,
@@ -97,7 +99,7 @@ something similar to the following:
                                      t_uint32           nsegmens);
 \end{verbatim}
 
-Additionally, types are used as pre-names. Therefore, the entity name should
+Indeed, types are used as pre-names. Therefore, the entity name should
 not overlap the type's name. For example, the following example is incorrect:
 
 \begin{verbatim}
@@ -138,13 +140,14 @@ collision is avoided.
 
 \begin{verbatim}
   #define SCHEDULER_STATE_RUN           0
+
   #define SEGMENT_BPT_NODESZ            4096
 
   #define set_reserve(_type_, _args_...)                                \
     set_reserve_##_type_(_args_)
 \end{verbatim}
 
-Comments must also be written in lower case letters. Indeed, no capitalization
+Comments must be written in lower case letters. Indeed, no capitalization
 must be used, at all.
 
 \begin{verbatim}
@@ -193,7 +196,7 @@ Below are listed the different groups:
     kaneton identifiers are prefixed by \textit{i\_}.
 \end{itemize}
 
-Note that group prefixed can be combined in several ways. For instance,
+Note that group prefixes can be combined in several ways. For instance,
 the prefix \textit{ao\_} represents an architecture-dependent object.
 
 If a type does not fit in these groups, then it can be considered as a
@@ -230,7 +233,7 @@ The example below illustrates this rule:
 
 The use of \textit{C} standard types like \textit{int}, \textit{long long}
 is prohibited since there exist kaneton-specific types \textit{t\_uint32},
-\textit{t\_uint64} which guarantee the type size. Indeed, the \textit{C}
+\textit{t\_uint64} which provide a size guarantee. Indeed, the \textit{C}
 standard does not specify the size of the types \textit{int} etc. depending
 on the architecture.
 
@@ -254,12 +257,8 @@ by developing a plugin for their text editor, for instance.
 
 \subsubsection{File}
 
-\textit{C} source and header files are composed of sections in order to make
-the organisation simpler and clearer. Each section starts with a specific
-header and then contains source code related to the section.
-
-A section header is basically a commented separator as the examples
-illustrates below with two sections \textit{dependencies} and \textit{macros}.
+\textit{C} source and header files are composed of sections. The example
+below illustrates these sections:
 
 \begin{verbatim}
   /*
@@ -307,7 +306,7 @@ Next are listed some of the most important sections:
     \-
 
     This section must be present in every source and header file as it
-    contains the file creation and last update dates.
+    contains the file creation and last updates.
   \item
     \textbf{information}: this section contains a general description of
     what this file provides.
@@ -375,7 +374,7 @@ Next are listed some of the most important sections:
     This section must not contain macro functions as there is a section
     dedicated to these.
   \item
-    \textbf{macro functions}: this sections contains the macro function
+    \textbf{macro functions}: this section contains the macro function
     definitions which are dissociated from the basic macro definitions.
 
     \begin{verbatim}
@@ -440,7 +439,7 @@ Next are listed some of the most important sections:
                                        t_setsz*                       size);
     \end{verbatim}
   \item
-    \textbf{externs}: this section contains extern declarations.
+    \textbf{externs}: this section contains external declarations.
 
     \begin{verbatim}
       /*
@@ -487,7 +486,7 @@ in a previous section.
 \subsubsection{Preprocessor}
 
 The preprocessor directives must appear on the first column with no
-identation or special end marking:
+identation:
 
 \begin{verbatim}
   #ifndef CORE_SET_H
@@ -579,7 +578,7 @@ actions the function performs. Moreover, some function parts need additional
 description. In order not to overload the function body with heavy comments,
 a kaneton-specific function organisation was introduced.
 
-Then, functions body are composed of \textit{steps}, each step representing
+Indeed, functions body are composed of \textit{steps}, each step representing
 a bunch of coherent actions. These actions are not described in the body
 of the function, but rather in the comment preceding the function. Thus,
 the body is clearly decomposed into steps for the sake of clarity and
@@ -635,7 +634,7 @@ below:
 \end{verbatim}
 
 Note that putting a single blank line for separating pieces of code is more
-than encouraged as it leads to a very readable source code.
+than encouraged as it leads to a more readable source code.
 
 Note that comments must comply to the template exposed above. The following
 are examples of what is a bad comment:
@@ -645,12 +644,12 @@ are examples of what is a bad comment:
   ** bad comment
   */
 
-  /* Bad Comment too
+  /* Bad Comment
    */
 \end{verbatim}
 
 Finally, it is absolutely forbidden to put comments on a single line
-as well as to use \textit{C++} comment characteres \textit{//}.
+as well as to use the \textit{C++} comment characters sequence \textit{//}.
 
 %
 % style
@@ -668,7 +667,7 @@ of the \textit{C} constructs.
 
 All braces must be on their own line. This rule implies a programming style
 very different from the \textit{BSD} or \textit{GNU} coding styles which
-put the open brace at the end of the constrol structure line.
+put the open brace at the end of the line.
 
 \begin{verbatim}
   if (option & OPTION_OPTIMISED)
@@ -681,9 +680,8 @@ In addition, closing braces must appear on the same column as the
 corresponding opening brace.
 
 The text between two braces must be indented by a fixed, homogeneous amount
-of whitespaces. This amount is fixed, in the kaneton project context, to
-\textit{2} spaces. Note that the \textit{Emacs} default identation comply
-to this rule.
+of whitespaces. This amount is fixed to \textit{2} whitespaces. Note that
+the \textit{Emacs} default identation comply to this rule.
 
 Moreover, the braces must also be indented by the amount of \textit{2}
 spaces from the previous line. However, some exceptions exist:
@@ -696,9 +694,7 @@ spaces from the previous line. However, some exceptions exist:
       {
         int     j;
 
-        /*
-         * this inner block is not indented from the parent block.
-         */
+	[...]
       }
     }
 \end{verbatim}
@@ -753,6 +749,10 @@ In \textit{C}, pointerness is not part of the type. However, in the kaneton
 coding style, the pointer symbol \textit{*} in declarations must appear next
 to the type.
 
+Function argument lists must be broken between each argument, after the
+comma. In addition, the argument identifiers must be properly aligned
+together, with tabulations.
+
 \begin{verbatim}
   t_error                 as_give(i_task                  tskid,
                                   i_as                    asid)
@@ -782,13 +782,19 @@ must be only one field declaration per line.
 
 Enumerations values must be capitalized and must appear on their own line.
 
+When an expression, declaration, assignment etc. spans over multiple lines,
+the additional lines must be indented according to the type of statement.
+It is indeed the responsibility of the developer to align these lines
+properly. Note that \textit{Emacs}'s alignment comply to many of the
+kaneton rules.
+
 % declarations
 
 \subsubsection{Declarations}
 
 There must be only one declaration per line.
 
-Extern declarations must not be contained in functions but rather in the
+External declarations must not be located in functions blocks but rather in the
 global scope.
 
 Variables may be initialised at the point of declaration. This way, bugs
@@ -823,8 +829,6 @@ The semicolon must be followed by a newline and must not be preceded by
 a whitespace, except if alone on its line.
 
 \begin{verbatim}
-  t_error                 obscure_example(i_timer                      id,
-                                          i_as                         as)
   {
     int                   i;
 
@@ -839,46 +843,190 @@ a whitespace, except if alone on its line.
   }
 \end{verbatim}
 
-There exist exception the the above rules. For more information, please
-refer the to section about control structures.
+There exist exception to the above rules. For more information, please
+refer to the section about control structures.
 
-Statements keywords must be followed by a single whitespace, except
+Statement keywords must be followed by a single whitespace, except
 those without arguments. This especially implies the \texttt{return} without
 argument, like \texttt{continue} and \texttt{break}, must not be separated
 from the following semicolon.
 
-Statements keywords which takes an argument must enclose the argument
+Statement keywords which take an argument must enclose the argument
 between parentheses, as illustrated next.
 
 \begin{verbatim}
-  t_error                 timer_notify(i_timer                    id)
   {
-    o_timer*              o;
+    i_timer              id;
 
-    if (id == ID_UNUSED)
-      return (0);
+    while (1)
+      {
+        if (id != ID_UNUSED)
+          continue;
+
+        [...]
+
+        return (0);
+      }
   }
 \end{verbatim}
+
+Finally, the \texttt{goto} statement must not be used.
+
+% expressions
+
+\subsubsection{Expressions}
+
+All binary and ternary operators must be padded on the left and right by
+one space, including assignment operators.
+
+Prefix and suffix operators must not be padded neither on the left nor on
+the right.
+
+When necessary, padding is always done with a single whitespace.
+
+The \verb|.| and \verb|->| operators must no be padded.
+
+Below is an example illustrating these rules.
+
+\begin{verbatim}
+  {
+    int*        p;
+
+    x = 10 * *p + reference->value++;
+
+    x += (reference->tag == 1 ? 10 : 0);
+  }
+\end{verbatim}
+
+There must not be any whitespaces between the function name and the opening
+parenthesis in function calls.
+
+Expressions may span over multiple lines. When a line break occurs within
+an expression, it must appear just after a binary operator, in which case the
+binary operator must not be padded on the right by a whitespace.
+
+%
+% control structures
+%
+
+\subsection{Control Structures}
+
+% general
+
+\subsubsection{General}
+
+Control structure keywords must be followed by a whitespace. The conditional
+parts of algorithmic constructs - \texttt{if}, \textit{while}, \texttt{do},
+\textit{for}, \textit{else} - must be alone on their line.
+
+The following constructs are incorrect:
+
+\begin{verbatim}
+  {
+    if(option & OPTION_SET)
+      return 0;
+
+    while (str[i]) write(1, str[i++], 1)
+
+    if (id != ID_UNUSED) {
+      foo();
+    } else {
+      bar();
+    }
+
+    do {
+      ++x;
+    } while (x < 10);
+  }
+\end{verbatim}
+
+The following must be prefered:
+
+\begin{verbatim}
+  {
+    if (option & OPTION_SET)
+      return (0);
+
+    while (str[i])
+      write(1, str[i++], 1)
+
+    if (id != ID_UNUSED)
+      {
+        foo();
+      }
+    else
+      {
+        bar();
+      }
+
+    do
+      {
+        ++x;
+      } while (x < 10);
+  }
+\end{verbatim}
+
+% for
+
+\subsubsection{for}
+
+As a general exception, the \texttt{for} construct breaks many of the
+previously defined rules.
+
+Multiple statements may appear in the initial and iteration part of the
+\texttt{for} structure. For this effect, commas must be used to separate
+statements.
+
+The three part of the \texttt{for} construct may span over multiple lines. The
+\texttt{while} construct must be prefered to a \texttt{for} construct with
+three empty parts.
+
+The following examples are very wrong:
+
+\begin{verbatim}
+  {
+    int         i;
+
+    for (i = 0, int j = 1;
+         j = j + 2, i < 10;
+         i++)
+      ;
+
+    for (;;) ;
+  }
+\end{verbatim}
+
+Instead, prefer:
+
+\begin{verbatim}
+  {
+    int         i;
+    int         j;
+
+    for (i = 0, j = 1, j = j + 2;
+         i < 10;
+         j = j + 2, i++)
+      ;
+
+    for (; ; )
+      ;
+  }
+\end{verbatim}
+
+Finally, single-line loops - \texttt{for} and \texttt{while} - must have
+their terminating semicolon on the following line, as illustrated above.
 
 %
 % ---------- XXX --------------------------------------------------------------
 %
 
-Style
-  Blocks
-  Alignment
-  Declarations
-  Statements
-  Expressions
-  Functions [arg align]
-
-Control Structures
-  General Rules
-  for
-  switch
   return [sepcial dans kaneton avec les LEAVE]
 
-+comment system: step etc.
 +programmation differente: type retour = error, valeur retour = last args
 
-alignement des fonctions etc.
+declarations au debut des blocs et nul par ailleurs, for, a l'interieur etc..
+
+function(input, *output)
+
+prototype tool dans Tools Internal
+
