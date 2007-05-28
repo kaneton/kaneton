@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/view.py
 #
 # created       julien quintard   [sun may 13 11:04:52 2007]
-# updated       julien quintard   [mon may 28 00:50:55 2007]
+# updated       julien quintard   [mon may 28 11:47:53 2007]
 #
 
 #
