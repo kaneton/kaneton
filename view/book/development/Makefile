@@ -37,6 +37,7 @@ SOURCES			:=		cheat.tex			\
 					development.tex			\
 					environment.tex			\
 					export.tex			\
+					general.tex			\
 					introduction.tex		\
 					languages.tex			\
 					licenses.tex			\

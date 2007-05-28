@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/c.tex
 %
 % created       julien quintard   [fri may 25 20:24:38 2007]
-% updated       julien quintard   [mon may 28 18:24:30 2007]
+% updated       julien quintard   [mon may 28 20:01:25 2007]
 %
 
 %
@@ -479,37 +479,8 @@ the source files should contain the sections: \textit{header},
 \textit{information}, \textit{includes}, \textit{externs}, \textit{globals},
 \textit{functions} etc.
 
-\textit{C} files must not exceed \textit{80} characters in width, including
-the trailing newline character. Moreover, the \textit{DOS} \textit{CR+LF}
-line terminator must not be used.
-
-As said above, all source and header files must start with a file header
-\textit{i.e} a \textit{header} section. This file header specifies the
-the project name, the license of this file, the file name, the author
-and date of the file creation and finally the author and date of the last
-edition. This header must comply to the following template:
-
-\begin{verbatim}
-  /*
-   * ---------- header --------------------------------------------------------
-   *
-   * project       <project>
-   *
-   * license       <license>
-   *
-   * file          <file location>
-   *
-   * created       <first author>   [<creation date>]
-   * updated       <last author>   [<last update date>]
-   */
-\end{verbatim}
-
-Obviously, the project and license field must be filled, in the kaneton project
-context, with \textit{kaneton} and \textit{kaneton}, respectively. The
-author field must contain the author's full name - firsname and lastname -
-in lower case letters. Note that auto-generated values must comply to
-the general kaneton rules especially they must be in lower case letters and
-must not exceed \textit{80} characters in width.
+The \textit{header} section is basically the file header which was described
+in a previous section.
 
 % preprocessor
 
@@ -841,7 +812,12 @@ Below are illustrated some very bad constructs:
 
 \subsubsection{Statements}
 
-A single line must not contain more than one statement.
+A single line must not contain more than one statement. In addition, commas
+must not be used on a line to separate statements.
+
+
+
+
 
 XXX
 
