@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/c.tex
 %
 % created       julien quintard   [fri may 25 20:24:38 2007]
-% updated       julien quintard   [sun may 27 15:58:44 2007]
+% updated       julien quintard   [mon may 28 18:24:30 2007]
 %
 
 %
@@ -663,8 +663,20 @@ below:
   }
 \end{verbatim}
 
-Note that putting empty lines for separating pieces of code is more than
-encouraged as it leads to a very readable source code.
+Note that putting a single blank line for separating pieces of code is more
+than encouraged as it leads to a very readable source code.
+
+Note that comments must comply to the template exposed above. The following
+are examples of what is a bad comment:
+
+\begin{verbatim}
+  /*
+  ** bad comment
+  */
+
+  /* Bad Comment too
+   */
+\end{verbatim}
 
 Finally, it is absolutely forbidden to put comments on a single line
 as well as to use \textit{C++} comment characteres \textit{//}.
@@ -675,8 +687,163 @@ as well as to use \textit{C++} comment characteres \textit{//}.
 
 \subsection{Style}
 
-XXX
+The following sections specify various aspects of what constitutes good
+programming behaviour at the language level. They cover various aspects
+of the \textit{C} constructs.
 
+% blocs
+
+\subsubsection{Blocks}
+
+All braces must be on their own line. This rule implies a programming style
+very different from the \textit{BSD} or \textit{GNU} coding styles which
+put the open brace at the end of the constrol structure line.
+
+\begin{verbatim}
+  if (option & OPTION_OPTIMISED)
+    {
+      [...]
+    }
+\end{verbatim}
+
+In addition, closing braces must appear on the same column as the
+corresponding opening brace.
+
+The text between two braces must be indented by a fixed, homogeneous amount
+of whitespaces. This amount is fixed, in the kaneton project context, to
+\textit{2} spaces. Note that the \textit{Emacs} default identation comply
+to this rule.
+
+Moreover, the braces must also be indented by the amount of \textit{2}
+spaces from the previous line. However, some exceptions exist:
+
+\begin{verbatim}
+  if (type == TYPE_SET)
+    {
+      int       i;
+
+      {
+        int     j;
+
+        /*
+         * this inner block is not indented from the parent block.
+         */
+      }
+    }
+\end{verbatim}
+
+In \textit{C} functions, the declaration part must be separated from statements
+with a single blank line. Note that when there are no declarations, there
+must not be any blank line separator.
+
+Blocks are generally composed of bunches of statements and expressions. Every
+developer is welcomed to put a single blank line in order to clearly separate
+bunches of pieces of code.
+
+\begin{verbatim}
+  t_error                 set_get(i_set                           setid,
+                                  t_id                            id,
+                                  void**                          o)
+  {
+    t_iterator            iterator;
+
+    SET_ENTER(set);
+
+    if (set_locate(setid, id, &iterator) != ERROR_NONE)
+      SET_LEAVE(set, ERROR_UNKNOWN);
+
+    if (set_object(setid, iterator, o) != ERROR_NONE)
+      SET_LEAVE(set, ERROR_UNKNOWN);
+
+    SET_LEAVE(set, ERROR_NONE);
+  }
+\end{verbatim}
+
+% alignment
+
+\subsubsection{Alignment}
+
+Declaration identifiers must be aligned with the function name, using
+tabulations only. Moreover, the declarations must be ordered according
+to the length of the identifier, starting with the longer, as shown below.
+
+\begin{verbatim}
+  t_error                 segment_dump(void)
+  {
+    t_state               state;
+    t_setsz               size;
+    t_iterator            i;
+
+    [...]
+  }
+\end{verbatim}
+
+In \textit{C}, pointerness is not part of the type. However, in the kaneton
+coding style, the pointer symbol \textit{*} in declarations must appear next
+to the type.
+
+\begin{verbatim}
+  t_error                 as_give(i_task                  tskid,
+                                  i_as                    asid)
+  {
+    o_task*               from;
+    o_task*               to;
+    o_as*                 o;
+
+    [...]
+  }
+\end{verbatim}
+
+Structures and union fields must be aligned with the type name, using
+tabulations. In addition, when declaring a structure or union type, there
+must be only one field declaration per line.
+
+\begin{verbatim}
+  typedef struct
+  {
+    i_event                       eventid;
+
+    t_type                        type;
+
+    u_event_handler               handler;
+  }                               o_event;
+\end{verbatim}
+
+Enumerations values must be capitalized and must appear on their own line.
+
+% declarations
+
+\subsubsection{Declarations}
+
+There must be only one declaration per line.
+
+Extern declarations must not be contained in functions but rather in the
+global scope.
+
+Variables may be initialised at the point of declaration. This way, bugs
+detection could be improved. For this purpose, however, valid expressions
+are only those composed of constants and macros.
+
+Below are illustrated some very bad constructs:
+
+\begin{verbatim}
+  t_error                 task_current(i_task*                    tsk)
+  {
+    i_thread              current, next;
+    o_thread*             o = thread_get(current);
+    extern                sched;
+
+    [...]
+  }
+\end{verbatim}
+
+% statements
+
+\subsubsection{Statements}
+
+A single line must not contain more than one statement.
+
+XXX
 
 %
 % ---------- XXX --------------------------------------------------------------
@@ -697,7 +864,5 @@ Control Structures
 
 +comment system: step etc.
 +programmation differente: type retour = error, valeur retour = last args
-
-dire qu'il faut mettre un XXX pour les TODO
 
 alignement des fonctions etc.
