@@ -1,0 +1,87 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/development/general.tex
+%
+% created       julien quintard   [mon may 28 19:44:49 2007]
+% updated       julien quintard   [mon may 28 19:57:57 2007]
+%
+
+%
+% ---------- general ----------------------------------------------------------
+%
+
+\section{General}
+
+This section describes the rules which apply to any language or tool. These
+rules can therefore be considered as the most important ones.
+
+% header
+
+\subsubsection{Header}
+
+Files must not exceed \textit{80} characters in width, including
+the trailing newline character. Moreover, the \textit{DOS} \textit{CR+LF}
+line terminator must not be used.
+
+All files must start with a file header. This file header specifies the
+project name, the license of this file, the file name, the author and
+date of the file creation and finally the author and date of the last
+edition. This header must comply to the following template, depending
+on the sequence of characters used as comments. The example below illustrates
+the template for the \textit{C} files.
+
+\begin{verbatim}
+  /*
+   * ---------- header --------------------------------------------------------
+   *
+   * project       <project>
+   *
+   * license       <license>
+   *
+   * file          <file location>
+   *
+   * created       <first author>   [<creation date>]
+   * updated       <last author>   [<last update date>]
+   */
+\end{verbatim}
+
+A then, an example for \textit{TeX} files:
+
+\begin{verbatim}
+  %
+  % ---------- header ---------------------------------------------------------
+  %
+  % project       kaneton
+  %
+  % license       kaneton
+  %
+  % file          /home/mycure/kaneton/view/book/development/general.tex
+  %
+  % created       julien quintard   [mon may 28 19:44:49 2007]
+  % updated       julien quintard   [mon may 28 19:48:07 2007]
+  %
+\end{verbatim}
+
+Note that the kaneton project provides an \textit{Emacs} file which contains
+everything necessary to build such headers. This file is located in the
+\textit{tool/emacs/} directory.
+
+Obviously, the project and license fields must be filled, in the kaneton
+project context, with \textit{kaneton} and \textit{kaneton}, respectively. The
+author field must contain the author's full name - firsname and lastname -
+in lower case letters. Note that auto-generated values must comply to
+the general kaneton rules especially they must be in lower case letters and
+must not exceed \textit{80} characters in width.
+
+% development
+
+\subsubsection{Development}
+
+Any developer must put the sequence \textit{XXX} everywhere a piece of code
+is considered as unfinished. This way, any unfixed piece of code can be
+easily retrieved via a very simple command line.
