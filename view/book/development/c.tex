@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/c.tex
 %
 % created       julien quintard   [fri may 25 20:24:38 2007]
-% updated       julien quintard   [mon may 28 20:01:25 2007]
+% updated       julien quintard   [mon may 28 20:34:26 2007]
 %
 
 %
@@ -815,11 +815,50 @@ Below are illustrated some very bad constructs:
 A single line must not contain more than one statement. In addition, commas
 must not be used on a line to separate statements.
 
+The comma must be followed by a single space, except when they separate
+arguments in functions or macro functions declarations and calls, and the
+argument list spans multiple lines.
 
+The semicolon must be followed by a newline and must not be preceded by
+a whitespace, except if alone on its line.
 
+\begin{verbatim}
+  t_error                 obscure_example(i_timer                      id,
+                                          i_as                         as)
+  {
+    int                   i;
 
+    for (i = 0; i < 256; i++)
+      ;
 
-XXX
+    [...]
+
+    obscure_example(id, as);
+
+    [...]
+  }
+\end{verbatim}
+
+There exist exception the the above rules. For more information, please
+refer the to section about control structures.
+
+Statements keywords must be followed by a single whitespace, except
+those without arguments. This especially implies the \texttt{return} without
+argument, like \texttt{continue} and \texttt{break}, must not be separated
+from the following semicolon.
+
+Statements keywords which takes an argument must enclose the argument
+between parentheses, as illustrated next.
+
+\begin{verbatim}
+  t_error                 timer_notify(i_timer                    id)
+  {
+    o_timer*              o;
+
+    if (id == ID_UNUSED)
+      return (0);
+  }
+\end{verbatim}
 
 %
 % ---------- XXX --------------------------------------------------------------
@@ -837,6 +876,7 @@ Control Structures
   General Rules
   for
   switch
+  return [sepcial dans kaneton avec les LEAVE]
 
 +comment system: step etc.
 +programmation differente: type retour = error, valeur retour = last args
