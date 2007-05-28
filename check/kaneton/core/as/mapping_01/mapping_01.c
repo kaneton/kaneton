@@ -11,7 +11,7 @@
 
 #include <klibc.h>
 #include <kaneton.h>
-#include "../arch_common/common.h"
+#include "../common/common.h"
 
 extern t_init*	init;
 extern t_asid	kasid;
@@ -91,14 +91,14 @@ void		check_as_mapping_01(void)
   t_iterator	it2;
   t_state	st2;
 
-  TEST_ENTER;
+  TEST_ENTER();
 
   set_foreach(SET_OPT_FORWARD, as->ass, &it, st)
     {
       if (set_object(as->ass, it, (void**)&oas) != ERROR_NONE)
 	{
 	  printf("error set_object\n");
-	  TEST_LEAVE;
+	  TEST_LEAVE();
 	}
 
       set_foreach(SET_OPT_FORWARD, oas->regions, &it2, st2)
@@ -106,12 +106,12 @@ void		check_as_mapping_01(void)
 	  if (set_object(oas->regions, it2, (void**)&oreg) != ERROR_NONE)
 	    {
 	      printf("error set_object\n");
-	      TEST_LEAVE;
+	      TEST_LEAVE();
 	    }
 	  if (segment_get(oreg->segid, &oseg) != ERROR_NONE)
 	    {
 	      printf("error segment_get\n");
-	      TEST_LEAVE;
+	      TEST_LEAVE();
 	    }
 //	  printf("check mapping for region %qd of as %qd\n",
 //		 oreg->regid, oas->asid);
@@ -119,5 +119,5 @@ void		check_as_mapping_01(void)
 	}
     }
 
-  TEST_LEAVE;
+  TEST_LEAVE();
 }
