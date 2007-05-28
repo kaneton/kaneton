@@ -34,6 +34,7 @@ SUBDIRS			:=		arch-ia32			\
 					arch-mips64			\
 					assignments			\
 					development			\
+					core				\
 					kaneton				
 
 #
