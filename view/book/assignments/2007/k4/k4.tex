@@ -22,7 +22,7 @@
 \begin{tabular}{p{7cm}l}
 Duration: & 2 weeks \\
 Directory name: & kaneton/ \\
-In charge: Julian Pidancet \& Matthieu Bucchianeri \& Renaud Voltz\\
+In charge: & Julian Pidancet \& Matthieu Bucchianeri \& Renaud Voltz\\
 Mailing-list: & kaneton-students@googlegroups.com \\
 Languages: & C, assembly \\
 Students per group: & 2 (same groups as for K3) \\
@@ -42,17 +42,22 @@ The concerned parts are:
 
 \begin{enumerate}
   \item
-    {\bf The message manager, machine-independant part}\\
+    {\bf The message manager, messaging primitives}\\
     Inter-process messaging primitives. Send and receive functions,
     synchronous and asynchronous.
   \item
-    {\bf The message manager, IA-32 part}\\
-    Handling soft-interrupt (syscall to the messaging primitives).
+    {\bf The message manager, IA-32 Syscall Handlers}\\
+    Handling kernel side soft-interrupts (syscall to the messaging primitives).
+  \item
+    {\bf Task side, IA-32 Syscall Triggers}\\
+    Userland-side syscall Triggering (Interrupt the kernel to send a
+    message from userland).
+
 \end{enumerate}
 
 \newpage
 
-\section{message manager, \textbf{machine-independant part}}
+\section{message manager, \textbf{messaging primitives}}
 
 \begin{itemize}
   \item {\bf Assignments}\\
@@ -68,10 +73,42 @@ The concerned parts are:
 				 i\_node \argument{dest},
 				 t\_tag \argument{tag},
 				 t\_vaddr \argument{data},
-				 t\_size \argument{size})}
+				 t\_vsize \argument{size})}
 	 {
 
 	 }
+
+\function{message\_async\_recv}{(i\_task \argument{receiver},
+				 t\_tag \argument{tag},
+				 t\_vaddr \argument{data},
+				 t\_vsize \argument{maxsz},
+				 i\_node* \argument{sender},
+				 t\_vsize* \argument{msgsz})}
+	 {
+
+	 }
+
+\function{message\_sync\_send}{(i\_task \argument{sender},
+				i\_node \argument{dest},
+				t\_tag \argument{tag},
+				t\_vaddr \argument{data},
+				t\_vsize \argument{size})}
+	 {
+
+	 }
+
+\function{message\_sync\_recv}{(i\_task \argument{receiver},
+				t\_tag \argument{tag},
+				t\_vaddr \argument{data},
+				t\_vsize \argument{maxsz},
+				t\_state \argument{blocking},
+				i\_node* \argument{sender},
+				t\_vsize* \argument{msgsz})}
+	 {
+
+	 }
+
+
 
 
   \item {\bf {Files}}\\
@@ -85,16 +122,9 @@ The concerned parts are:
 
 \newpage
 
-\section{message manager \textbf{IA-32 part}}
+\section{message manager, \textbf{IA-32 Syscall Handlers}}
 \begin{itemize}
   \item {\bf Assignments}\\
-
-    The goal of this part is to permit software to send and receive
-    data from userspace.\\
-
-    Your work is splitted in two parts. First part is to write syscall
-    handlers for the 4 given primitives. Second part is to write interface
-    sending and receiving functions that will provide task-side syscalls.
 
   \item {\bf {Files}}\\
 
@@ -106,45 +136,55 @@ The concerned parts are:
 
 \end{itemize}
 
-%
-% advanced topics
-%
+\section{Task side, \textbf{IA-32 Syscall Triggers}}
+\begin{itemize}
+  \item {\bf Assignments}\\
 
-\newpage
+  \item {\bf Interface}\\
 
-\section{Appendix}
+\function{syscall\_async\_send}{(i\_node \argument{dest},
+				 t\_tag \argument{tag},
+				 void* \argument{data},
+				 t\_size \argument{size})}
+	 {
 
-\textbf{Example of event\_reserve}
+	 }
 
-\begin{verbatim}
-void          ia32_pf_handler(t_id         id,
-                              t_uint32     error_code)
-{
-  t_uint32    addr;
+\function{syscall\_async\_recv}{(t\_tag \argument{tag},
+				 void* \argument{buff},
+				 t\_size \argument{maxsz},
+				 i\_node* \argument{sender},
+				 t\_size* \argument{msgsz})}
+	 {
 
-  SCR2(addr);
-  printf("#PF @ %p\n", addr);
+	 }
 
-  while (1)
-    ;
-}
+\function{syscall\_sync\_send}{(i\_node \argument{dest},
+				t\_tag \argument{tag},
+				void* \argument{data},
+				t\_size \argument{size})}
+	 {
 
-...
+	 }
 
-event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
-\end{verbatim}
+\function{syscall\_sync\_recv}{(t\_tag \argument{tag},
+				void* \argument{buff},
+				t\_size \argument{maxsz},
+				t\_state \argument{blocking},
+				i\_node* \argument{sender},
+				t\_size* \argument{msgsz})}
+	 {
 
-\textbf{Example of timer\_reserve}
+	 }
 
-\begin{verbatim}
-void          sched_switch(void)
-{
-  // FIXME: chiche just stole this code
-}
 
-...
 
-timer_reserve(EVENT_FUNCTION, TIMER_HANDLER(sched_switch),
-              sched->quantum, TIMER_REPEAT_ENABLE,
-              &sched->machdep.timer);
-\end{verbatim}
+  \item {\bf {Files}}\\
+
+    \begin{tabular}{| l | l |}
+      \hline
+      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/message.c}\\
+      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/message.h}\\\hline
+    \end{tabular}
+
+\end{itemize}
