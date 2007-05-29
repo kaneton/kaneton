@@ -1,0 +1,150 @@
+%%
+%% licence       kaneton licence
+%%
+%% project       kaneton
+%%
+%% file          view/books/assignments/2007/k4/k4.tex
+%%
+%% created	 pidancet julian	[tue may29 16:34:56 2006]
+%% updated	 pidancet julian	[tue may29 16:34:56 2006]
+%%
+
+%
+% k2
+%
+
+\chapter{K4: IPC Management}
+
+%
+% informations
+%
+
+\begin{tabular}{p{7cm}l}
+Duration: & 2 weeks \\
+Directory name: & kaneton/ \\
+In charge: Julian Pidancet \& Matthieu Bucchianeri \& Renaud Voltz\\
+Mailing-list: & kaneton-students@googlegroups.com \\
+Languages: & C, assembly \\
+Students per group: & 2 (same groups as for K3) \\
+\end{tabular}
+
+\section{Abstract}
+
+K4 project consists in developing the last part of the microkernel : the
+IPC (Inter-process Communication). As you know, in a microkernel, contrary
+to a monolithic kernel, every kernel services are running independently
+from the core, in separate userspace privileged tasks. Though, in order
+to keep coherency, tasks need to interact : sending, receiving messages,
+and also synchronizing each others. The IPC model chosen for Kaneton is
+``message passing''
+
+The concerned parts are:
+
+\begin{enumerate}
+  \item
+    {\bf The message manager, machine-independant part}\\
+    Inter-process messaging primitives. Send and receive functions,
+    synchronous and asynchronous.
+  \item
+    {\bf The message manager, IA-32 part}\\
+    Handling soft-interrupt (syscall to the messaging primitives).
+\end{enumerate}
+
+\newpage
+
+\section{message manager, \textbf{machine-independant part}}
+
+\begin{itemize}
+  \item {\bf Assignments}\\
+
+  In the machine-independant part of the message manager, you will have to
+  implement the messaging primitives for sending and receiving messages.
+  These primitives will have to be accessible by syscall, to permit
+  running tasks to send and receive messages from userspace.
+
+  \item {\bf Interface}\\
+
+\function{message\_async\_send}{(i\_task \argument{sender},
+				 i\_node \argument{dest},
+				 t\_tag \argument{tag},
+				 t\_vaddr \argument{data},
+				 t\_size \argument{size})}
+	 {
+
+	 }
+
+
+  \item {\bf {Files}}\\
+
+    \begin{tabular}{| l | l |}
+      \hline
+      machine-independent & {\em kaneton/core/message/message.c}\\
+      &  {\em kaneton/include/core/message.h}\\\hline
+    \end{tabular}
+\end{itemize}
+
+\newpage
+
+\section{message manager \textbf{IA-32 part}}
+\begin{itemize}
+  \item {\bf Assignments}\\
+
+    The goal of this part is to permit software to send and receive
+    data from userspace.\\
+
+    Your work is splitted in two parts. First part is to write syscall
+    handlers for the 4 given primitives. Second part is to write interface
+    sending and receiving functions that will provide task-side syscalls.
+
+  \item {\bf {Files}}\\
+
+    \begin{tabular}{| l | l |}
+      \hline
+      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/message.c}\\
+      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/message.h}\\\hline
+    \end{tabular}
+
+\end{itemize}
+
+%
+% advanced topics
+%
+
+\newpage
+
+\section{Appendix}
+
+\textbf{Example of event\_reserve}
+
+\begin{verbatim}
+void          ia32_pf_handler(t_id         id,
+                              t_uint32     error_code)
+{
+  t_uint32    addr;
+
+  SCR2(addr);
+  printf("#PF @ %p\n", addr);
+
+  while (1)
+    ;
+}
+
+...
+
+event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
+\end{verbatim}
+
+\textbf{Example of timer\_reserve}
+
+\begin{verbatim}
+void          sched_switch(void)
+{
+  // FIXME: chiche just stole this code
+}
+
+...
+
+timer_reserve(EVENT_FUNCTION, TIMER_HANDLER(sched_switch),
+              sched->quantum, TIMER_REPEAT_ENABLE,
+              &sched->machdep.timer);
+\end{verbatim}
