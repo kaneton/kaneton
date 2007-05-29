@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/environment.py
 #
 # created       julien quintard   [thu may 24 16:58:00 2007]
-# updated       julien quintard   [tue may 29 18:36:29 2007]
+# updated       julien quintard   [tue may 29 23:20:28 2007]
 #
 
 #
@@ -27,18 +27,18 @@ import yaml
 #
 
 #
-# this class represents a variable with its actual value, its type
-# the values or states it can take and a little description of it.
+# this class represents a variable with its actual value, its type,
+# the values it can take and a little description of it.
 #
 class c_variable:
   def __init__(self):
     self.variable = None
 
+    self.assignment = None
     self.value = None
 
     self.string = None
     self.type = None
-    self.states = None
     self.values = None
     self.description = None
 
@@ -68,8 +68,7 @@ OPTION_INCLUDES = 1
 OPTION_COMMENTS = 2
 
 TYPE_ANY = 1
-TYPE_STATE = 2
-TYPE_SET = 3
+TYPE_SET = 2
 
 #
 # ---------- functions --------------------------------------------------------
@@ -293,6 +292,7 @@ def			build(assignments):
       # if it is an assignment.
       if assignment[1] == "=":
         object.variable = assignment[0]
+        object.assignment = assignment[2]
         object.value = assignment[2]
       # an appending.
       elif assignment[1] == "+=":
@@ -306,10 +306,12 @@ def			build(assignments):
     else:
       # if it is an assignment, just override the previous declaration.
       if assignment[1] == "=":
+        object.assignment = assignment[2]
         object.value = assignment[2]
       # if it is a concatenation, override the previous one with a
       # concatenation of the two values.
       elif assignment[1] == "+=":
+        object.assignment = object.assignment + " " + assignment[2]
         object.value = object.value + " " + assignment[2]
       else:
         error("unknown assignment token '" + assignment[1] + "' for the "
@@ -371,10 +373,7 @@ def			description():
 
       object.string = stream["string"]
 
-      if stream["type"] == "state":
-        object.type = TYPE_STATE
-        object.states = stream["states"]
-      elif stream["type"] == "set":
+      if stream["type"] == "set":
         object.type = TYPE_SET
         object.values = stream["values"]
       elif stream["type"] == "any":
@@ -385,6 +384,61 @@ def			description():
       object.description = stream["description"]
     except:
       continue
+
+
+
+#
+# modify()
+#
+# this function takes a variable name and value and modify both the
+# in-memory database entry as well as the user profile configuration file.
+#
+def			modify(variable, assignment):
+  content = None
+  matches = None
+  object = None
+  match = None
+
+  # update the database
+  for object in g_database:
+    if variable == object.variable:
+
+      # if the value is the same, just ignore the call
+      if object.assignment == assignment:
+        return
+
+      object.assignment = assignment
+
+      break
+
+  # load the user profile configuration file.
+  content = env.pull(env._PROFILE_USER_, env.OPTION_NONE) + "\n"
+
+  # find the assignments related to the given variable
+  matches = re.findall("(" +						\
+                         "^" +						\
+                         "(" +						\
+                           "[ \t]*" +					\
+                           variable +					\
+                           "[ \t]*" +					\
+                           "\+?=" +					\
+                           "[ \t]*" +					\
+                         ")" +						\
+                         "((?:(?:\\\\\n)|[^\n])+)" +			\
+                         "\n" +						\
+                       ")", content, re.MULTILINE);
+
+  if not matches:
+    # add a new entry to the file.
+    content = content +							\
+              variable + "		=	" + assignment + "\n"
+  else:
+    # replace the value part with the given value.
+    for match in matches:
+      content = content.replace(match[0], match[1] + assignment + "\n")
+
+  # finally, write back the content.
+  env.push(env._PROFILE_USER_, content, env.OPTION_NONE)
 
 
 

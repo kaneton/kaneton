@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/configure.frm
 #
 # created       julien quintard   [fri may 25 09:51:05 2007]
-# updated       julien quintard   [tue may 29 18:34:08 2007]
+# updated       julien quintard   [tue may 29 20:52:05 2007]
 #
 
 #
@@ -39,3 +39,5 @@
 #
 
 - variable: _DISPLAY_
+
+- variable: _SEGMENT_LOOKUP_ALGORITHM_

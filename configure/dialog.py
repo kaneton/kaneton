@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/dialog.py
 #
 # created       julien quintard   [wed may 23 10:36:51 2007]
-# updated       julien quintard   [fri may 25 12:25:02 2007]
+# updated       julien quintard   [tue may 29 21:13:25 2007]
 #
 
 #
@@ -24,6 +24,15 @@
 import env
 
 #
+# ---------- globals ----------------------------------------------------------
+#
+
+WINDOW_WIDTH=68
+WINDOW_HEIGHT=19
+
+MENU_HEIGHT=7
+
+#
 # ---------- functions --------------------------------------------------------
 #
 
@@ -32,8 +41,9 @@ import env
 #
 # this function displays a menu.
 #
-def			menu(title, entries):
+def			menu(title, description, entries):
   choice = None
+  height = None
   menu = ""
 
   for i in range(len(entries)):
@@ -42,11 +52,15 @@ def			menu(title, entries):
     if (i + 1) < len(entries):
       menu += " "
 
-  env.launch("dialog", "--title \"" + title +				\
-             "\" --menu \"\" " + "10 50 0 " + menu +			\
-             " 2> " + g_temporary, env.OPTION_NONE)
+  description="\n" + description + "\n "
 
-  choice = env.file(g_temporary, None, env.OPTION_READ)
+  env.launch("dialog", "--title \"" + title + "\" " +			\
+                       "--menu \"" + description + "\" " +		\
+                       str(WINDOW_HEIGHT) + " " + str(WINDOW_WIDTH) +	\
+                       " " + str(MENU_HEIGHT) + " " + menu + " 2> " +	\
+                       g_temporary, env.OPTION_NONE)
+
+  choice = env.pull(g_temporary, env.OPTION_READ)
 
   if not choice:
     return None
@@ -60,7 +74,7 @@ def			menu(title, entries):
 #
 # this function displays a radio list.
 #
-def			radio(title, entries, current):
+def			radio(title, description, entries, current):
   choice = None
   menu = ""
 
@@ -75,16 +89,42 @@ def			radio(title, entries, current):
     if (i + 1) < len(entries):
       menu += " "
 
-  env.launch("dialog", "--title \"" + title +				\
-             "\" --radiolist \"\" " + "10 50 0 " + menu +		\
-             " 2> " + g_temporary, env.OPTION_NONE)
+  description="\n" + description + "\n "
 
-  choice = env.file(g_temporary, None, env.OPTION_READ)
+  env.launch("dialog", "--title \"" + title + "\" " +			\
+                       " --radiolist \"" + description + "\" " +	\
+                       str(WINDOW_HEIGHT) + " " + str(WINDOW_WIDTH) +	\
+                       " " + str(MENU_HEIGHT) + " " + menu + " 2> " +	\
+                       g_temporary, env.OPTION_NONE)
+
+  choice = env.pull(g_temporary, env.OPTION_READ)
 
   if not choice:
     return None
 
   return entries.index(choice)
+
+
+
+#
+# input()
+#
+# this function displays an input box.
+#
+def			input(title, description, current):
+  choice = None
+
+  description="\n" + description + "\n "
+
+  env.launch("dialog", "--title \"" + title + "\" " +			\
+                       " --inputbox \"" + description + "\" " +		\
+                       str(WINDOW_HEIGHT) + " " + str(WINDOW_WIDTH) +	\
+                       " " + current + " 2> " +	g_temporary,
+                       env.OPTION_NONE)
+
+  choice = env.pull(g_temporary, env.OPTION_READ)
+
+  return choice
 
 
 

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/configure.py
 #
 # created       julien quintard   [wed may 23 10:17:59 2007]
-# updated       julien quintard   [tue may 29 18:36:47 2007]
+# updated       julien quintard   [tue may 29 21:42:23 2007]
 #
 
 #
@@ -44,6 +44,9 @@ class c_entry:
 
     self.variable = None
 
+    self.list = []
+    self.current = None
+
 class c_frame:
   def __init__(self):
     self.title = None
@@ -58,9 +61,9 @@ class c_frame:
 # ---------- globals ----------------------------------------------------------
 #
 
-g_frames = []
 g_frame = None
 
+g_paths = []
 g_path = None
 
 #
@@ -69,6 +72,9 @@ g_path = None
 
 TYPE_FRAME = 1
 TYPE_VARIABLE = 2
+
+DRAW_MENU = 1
+DRAW_RADIO = 2
 
 #
 # ---------- functions --------------------------------------------------------
@@ -81,12 +87,12 @@ TYPE_VARIABLE = 2
 # frame class.
 #
 def			load(path):
-  global g_frames
   global g_frame
   streams = None
   stream = None
   object = None
   entry = None
+  value = None
 
   # load the YAML entries.
   streams = yaml.load(env.pull(path, env.OPTION_READ))
@@ -121,58 +127,20 @@ def			load(path):
         if not entry.variable:
           continue
 
+        # build the list and current value for each variable type.
+        if entry.variable.type == environment.TYPE_SET:
+          for value in entry.variable.values:
+            if entry.variable.assignment == value[value.keys()[0]]:
+              entry.current = value.keys()[0]
+
+            entry.list.append(value.keys()[0])
+        elif entry.variable.type == environment.TYPE_ANY:
+          entry.current = entry.variable.assignment
+
         g_frame.list.append(entry.variable.string)
         g_frame.entries.append(entry)
       except:
         continue
-
-  # finally add the frame to the list of frames.
-  g_frames.append(g_frame)
-
-
-
-#
-# radio()
-#
-# this function displays a radiolist in order to ask the user to
-# choice a value among a list.
-#
-def			radio(object):
-  default = None
-  value = None
-  key = None
-  menu = []
-
-  for value in object.values:
-    key = value.keys()[0]
-
-    if object.value == value[key]:
-      default = key
-
-    menu.append(key)
-
-  dialog.radio(g_title, menu, default)
-
-
-
-#
-# variable()
-#
-# this function dispatch the function call to an appropriate function
-# depending on the variable value type.
-#
-def			variable(entry):
-  object = None
-  value = None
-
-  object = environment.get(entry.variable)
-
-  if object.type == environment.TYPE_STATE:
-    value = check(object)
-  elif object.type == environment.TYPE_SET:
-    value = radio(object)
-  elif object.type == environment.TYPE_ANY:
-    value = input(object)
 
 
 
@@ -183,8 +151,12 @@ def			variable(entry):
 # interfactive frames.
 #
 def			main():
+  global g_paths
+  global g_frame
   global g_path
+  select = None
   choice = None
+  value = None
 
   # load the environment variables.
   environment.init()
@@ -194,35 +166,55 @@ def			main():
 
   # initialise the 'g_path' variable.
   g_path = "configure.frm"
+  g_paths.append(g_path)
 
   # main loop until there is a frame or variable to display.
   while True:
-    # load the information on the current frame.
+    # load the information on the current frame, if necessary:
     load(g_path)
 
-    print g_frame.list
-
     # display the current frame and get the user's choice.
-#    choice = draw_frame()
-
-    sys.exit(1)
+    choice = dialog.menu(g_frame.title, g_frame.description, g_frame.list)
 
     # did the user want to go back?
-#    if not entry:
-#      g_frames.pop(len(g_frames) - 1)
+    if choice == None:
+      g_paths.pop(len(g_paths) - 1)
 
-#      if len(g_frames) == 0:
-#        sys.exit(0)
+      if len(g_paths) == 0:
+        sys.exit(0)
 
-#      continue
+      g_path = g_paths[len(g_paths) - 1]
 
-    # if the choice is a subframe, then go to it. otherwise, ask the
-    # user to enter a new value for the variable.
-#    if entry.type == TYPE_FRAME:
-#      g_frames.append(entry.path)
+      continue
+    # if the choice is a subframe, then go to it.
+    elif g_frame.entries[choice].type == TYPE_FRAME:
+      g_path = g_frame.entries[choice].path
+      g_paths.append(g_path)
+      continue
 
-#    elif entry.type == TYPE_VARIABLE:
-#      variable(entry)
+    # otherwise, ask the user to enter a new value for the variable.
+    if g_frame.entries[choice].type == TYPE_VARIABLE:
+
+      # set variable
+      if g_frame.entries[choice].variable.type == environment.TYPE_SET:
+        select = dialog.radio(g_frame.entries[choice].variable.string,
+                              g_frame.entries[choice].variable.description,
+                              g_frame.entries[choice].list,
+                              g_frame.entries[choice].current)
+
+        if select == None:
+          continue
+
+        value = g_frame.entries[choice].variable.values[select].values()[0]
+
+      # any variable
+      elif g_frame.entries[choice].variable.type == environment.TYPE_ANY:
+        value = dialog.input(g_frame.entries[choice].variable.string,
+                             g_frame.entries[choice].variable.description,
+                             g_frame.entries[choice].current)
+
+    # tell the environment to modify the variable's value.
+    environment.modify(g_frame.entries[choice].variable.variable, value)
 
 #
 # ---------- entry point ------------------------------------------------------
