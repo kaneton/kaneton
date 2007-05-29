@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/general.tex
 %
 % created       julien quintard   [mon may 28 19:44:49 2007]
-% updated       julien quintard   [mon may 28 23:43:35 2007]
+% updated       julien quintard   [tue may 29 01:22:23 2007]
 %
 
 %
@@ -24,16 +24,12 @@ rules can therefore be considered as the most important ones.
 
 \subsubsection{Header}
 
-Files must not exceed \textit{80} characters in width, including
-the trailing newline character. Moreover, the \textit{DOS} \textit{CR+LF}
-line terminator must not be used.
-
 All files must start with a file header. This file header specifies the
 project name, the license of this file, the file name, the author and
 date of the file creation and finally the author and date of the last
 edition. This header must comply to the following template, depending
-on the sequence of characters used as comments. The example below illustrates
-the template for the \textit{C} files.
+on the sequence of characters used for comments. The example below illustrates
+the template for \textit{C} files.
 
 \begin{verbatim}
   /*
@@ -50,7 +46,7 @@ the template for the \textit{C} files.
    */
 \end{verbatim}
 
-A then, an example for \textit{TeX} files:
+Then, an example for \textit{TeX} files:
 
 \begin{verbatim}
   %
@@ -84,17 +80,17 @@ must not exceed \textit{80} characters in width.
 
 Any developer must put the sequence \textit{XXX} everywhere a piece of code
 is considered as unfinished. This way, any unfixed piece of code can be
-easily retrieved via a very simple command line.
+easily retrieved via a very simple command line or script.
 
 % naming
 
 \subsubsection{Naming}
 
 When using a language which does not support namespaces, the developer should
-prefix every entity by the package, module etc. it belongs to.
+prefix every entity by the package, module etc. name it actually belongs to.
 
-As long as it is possible, entities must be named with a unique word, excluding
-the namespace prefix.
+As long as it is possible, entities must be named with a \textit{unique}
+word, excluding the namespace prefix.
 
 Names must obviously be expressed in English, without any spelling mistakes.
 
@@ -113,6 +109,8 @@ some sections are mandatory depending of the type of file. For instance,
 even configuration files, description files etc. must provide a
 \textit{information} section.
 
+XXX exemple configuration file: header + information
+
 Files related to any language should provide a section for the core
 content like \textit{rules} for \textit{Make} files or \textit{functions}
 for many other languages.
@@ -121,4 +119,7 @@ For more information on the mandatory sections, please refer to
 the sections about the language your are interested in and/or look at
 examples in the kaneton repository.
 
-There must not be any whitespace at the end of a line.
+Files must not exceed \textit{80} characters in width, including
+the trailing newline character. Moreover, the \textit{DOS} \textit{CR+LF}
+line terminator must not be used. Finally, there must not be any whitespace
+at the end of a line.
