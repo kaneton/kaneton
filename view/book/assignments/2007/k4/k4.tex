@@ -3,7 +3,7 @@
 %%
 %% project       kaneton
 %%
-%% file          view/books/assignments/2007/k4/k4.tex
+%% file          /home/buckman/kaneton/view/book/assignments/2007/k4/k4.tex
 %%
 %% created	 pidancet julian	[tue may29 16:34:56 2006]
 %% updated	 pidancet julian	[tue may29 16:34:56 2006]
@@ -22,7 +22,7 @@
 \begin{tabular}{p{7cm}l}
 Duration: & 2 weeks \\
 Directory name: & kaneton/ \\
-In charge: & Julian Pidancet \& Matthieu Bucchianeri \& Renaud Voltz\\
+In charge: & Julian Pidancet, Matthieu Bucchianeri \& Renaud Voltz\\
 Mailing-list: & kaneton-students@googlegroups.com \\
 Languages: & C, assembly \\
 Students per group: & 2 (same groups as for K3) \\
@@ -30,42 +30,52 @@ Students per group: & 2 (same groups as for K3) \\
 
 \section{Abstract}
 
-K4 project consists in developing the last part of the microkernel : the
-IPC (Inter-process Communication). As you know, in a microkernel, contrary
-to a monolithic kernel, every kernel services are running independently
-from the core, in separate userspace privileged tasks. Though, in order
-to keep coherency, tasks need to interact : sending, receiving messages,
-and also synchronizing each others. The IPC model chosen for Kaneton is
-``message passing''
+K4 project consists in developing the last part of the microkernel :
+the IPC (Inter-process Communication). As you know, in a microkernel,
+contrary to a monolithic kernel, every kernel services are running
+independently from the core, in separate userspace tasks. In order to
+communicate, tasks need to interact : sending, receiving messages, and
+also synchronizing each others. The IPC model chosen for kaneton is
+``message passing''.
 
 The concerned parts are:
 
 \begin{enumerate}
   \item
-    {\bf The message manager, messaging primitives}\\
+    {\bf The message manager, messaging primitives (1)} \\
     Inter-process messaging primitives. Send and receive functions,
     synchronous and asynchronous.
   \item
-    {\bf The message manager, IA-32 Syscall Handlers}\\
-    Handling kernel side soft-interrupts (syscall to the messaging primitives).
+    {\bf The message manager, IA-32 Syscall Handlers (2)}\\
+    Handling kernel side soft-interrupts (syscalls to the messaging
+    primitives).
   \item
-    {\bf Task side, IA-32 Syscall Triggers}\\
-    Userland-side syscall Triggering (Interrupt the kernel to send a
-    message from userland).
-
+    {\bf Task side, IA-32 Syscall Triggers (3)}\\
+    Userland syscall functions (sends soft interrupts to the kernel to
+    send a message from userland).
 \end{enumerate}
+
+\begin{center}
+\includegraphics[width=0.5\linewidth]{figures/message.png}
+\end{center}
 
 \newpage
 
 \section{message manager, \textbf{messaging primitives}}
 
 \begin{itemize}
+  \item {\bf Overview}\\
+
+    This part of the code contains the 4 messaging primitives: sending
+    and receiving in both asynchronous and synchronous mode.
+
   \item {\bf Assignments}\\
 
-  In the machine-independant part of the message manager, you will have to
-  implement the messaging primitives for sending and receiving messages.
-  These primitives will have to be accessible by syscall, to permit
-  running tasks to send and receive messages from userspace.
+    In the machine-independant part of the message manager, you will
+    have to implement the messaging primitives for sending and
+    receiving messages.  These primitives will have to be accessible
+    by syscalls, to permit running tasks to send and receive messages
+    from userspace (see the 2 next sections).
 
   \item {\bf Interface}\\
 
@@ -75,7 +85,7 @@ The concerned parts are:
 				 t\_vaddr \argument{data},
 				 t\_vsize \argument{size})}
 	 {
-
+	   XXX
 	 }
 
 \function{message\_async\_recv}{(i\_task \argument{receiver},
@@ -85,7 +95,7 @@ The concerned parts are:
 				 i\_node* \argument{sender},
 				 t\_vsize* \argument{msgsz})}
 	 {
-
+	   XXX
 	 }
 
 \function{message\_sync\_send}{(i\_task \argument{sender},
@@ -94,7 +104,7 @@ The concerned parts are:
 				t\_vaddr \argument{data},
 				t\_vsize \argument{size})}
 	 {
-
+	   XXX
 	 }
 
 \function{message\_sync\_recv}{(i\_task \argument{receiver},
@@ -105,10 +115,8 @@ The concerned parts are:
 				i\_node* \argument{sender},
 				t\_vsize* \argument{msgsz})}
 	 {
-
+	   XXX
 	 }
-
-
 
 
   \item {\bf {Files}}\\
@@ -122,9 +130,21 @@ The concerned parts are:
 
 \newpage
 
-\section{message manager, \textbf{IA-32 Syscall Handlers}}
+\section{message manager, \textbf{IA-32 syscalls handlers}}
 \begin{itemize}
+  \item {\bf Overview}\\
+
+    This part of the code is used to hook software interrupts to your
+    handlers. These handlers must read the passed argument from the
+    interrupted context, call the right function of the message
+    manager, and writeback results into the interrupted context.
+
   \item {\bf Assignments}\\
+
+    No special model is given. You can implement the kernel-side of
+    your syscalls as you want. You may use one interrupt gate per
+    syscall or only one gate for all the syscalls (then adding an
+    argument identifying which syscall is invoked).
 
   \item {\bf {Files}}\\
 
@@ -136,9 +156,33 @@ The concerned parts are:
 
 \end{itemize}
 
-\section{Task side, \textbf{IA-32 Syscall Triggers}}
+\section{Task side, \textbf{IA-32 syscall triggers}}
 \begin{itemize}
+  \item {\bf Overview}\\
+
+    This portion of code will be used by user (and kernel) tasks. IRL,
+    it would be located in the libc (like in UN*X systems, the
+    \emph{read} function that does the read syscall is located in the
+    libc), but as the kernel code is always mapped to make the debug
+    and testing easier, it will be put into this code.
+
+    Each function must:
+
+    \begin{itemize}
+      \item
+	Put the incoming arguments in registers
+      \item
+	Trigger tge right software interrupt
+      \item
+	Get back the results from the registers to the outgoing arguments
+    \end{itemize}
+
   \item {\bf Assignments}\\
+
+    Your work is to implement the 4 syscalls so the userland tasks can
+    call the message manager into the kernel.
+
+    XXX
 
   \item {\bf Interface}\\
 
@@ -147,7 +191,7 @@ The concerned parts are:
 				 void* \argument{data},
 				 t\_size \argument{size})}
 	 {
-
+	   See above sections.
 	 }
 
 \function{syscall\_async\_recv}{(t\_tag \argument{tag},
@@ -156,7 +200,7 @@ The concerned parts are:
 				 i\_node* \argument{sender},
 				 t\_size* \argument{msgsz})}
 	 {
-
+	   See above sections.
 	 }
 
 \function{syscall\_sync\_send}{(i\_node \argument{dest},
@@ -164,7 +208,7 @@ The concerned parts are:
 				void* \argument{data},
 				t\_size \argument{size})}
 	 {
-
+	   See above sections.
 	 }
 
 \function{syscall\_sync\_recv}{(t\_tag \argument{tag},
@@ -174,10 +218,8 @@ The concerned parts are:
 				i\_node* \argument{sender},
 				t\_size* \argument{msgsz})}
 	 {
-
+	   See above sections.
 	 }
-
-
 
   \item {\bf {Files}}\\
 
@@ -188,3 +230,17 @@ The concerned parts are:
     \end{tabular}
 
 \end{itemize}
+
+%
+% appendix
+%
+
+\newpage
+
+\section{Appendix}
+
+\textbf{Example of \ldots}
+
+\begin{verbatim}
+XXX
+\end{verbatim}
