@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/configure.frm
 #
 # created       julien quintard   [fri may 25 09:51:05 2007]
-# updated       julien quintard   [fri may 25 11:19:56 2007]
+# updated       julien quintard   [tue may 29 18:34:08 2007]
 #
 
 #
@@ -17,10 +17,25 @@
 # this is the main frame which contains all the subframe entries.
 #
 
+#
+# ---------- general ----------------------------------------------------------
+#
+
+- title: Configure
+  description: This is the main menu of the kaneton configure utility.
+
+#
+# ---------- frames -----------------------------------------------------------
+#
+
 - frame: Boot
   path: boot/boot.frm
 
 - frame: Core
   path: core/core.frm
 
-- variable: _DISPLAY_COLOR_
+#
+# ---------- variables --------------------------------------------------------
+#
+
+- variable: _DISPLAY_

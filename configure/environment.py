@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/environment.py
 #
 # created       julien quintard   [thu may 24 16:58:00 2007]
-# updated       julien quintard   [fri may 25 12:06:59 2007]
+# updated       julien quintard   [tue may 29 18:36:29 2007]
 #
 
 #
@@ -19,6 +19,7 @@ import env
 
 import re
 import os
+import sys
 import yaml
 
 #
@@ -33,10 +34,9 @@ class c_variable:
   def __init__(self):
     self.variable = None
 
-    self.assignments = []
     self.value = None
 
-    self.name = None
+    self.string = None
     self.type = None
     self.states = None
     self.values = None
@@ -74,6 +74,27 @@ TYPE_SET = 3
 #
 # ---------- functions --------------------------------------------------------
 #
+
+#
+# error()
+#
+# this function displays an error and quit.
+#
+def                     error(message):
+  env.display(env.HEADER_ERROR, message, env.OPTION_NONE)
+  sys.exit(42)
+
+
+
+#
+# warning()
+#
+# this function simply displays an error.
+#
+def                     warning(message):
+  env.display(env.HEADER_ERROR, message, env.OPTION_NONE)
+
+
 
 #
 # comments()
@@ -121,7 +142,7 @@ def			load(directories, pattern, option):
       if not re.match(pattern, file):
         continue
 
-      content += env.file(directory + "/" + file, None, env.OPTION_READ)
+      content += env.pull(directory + "/" + file, env.OPTION_READ) + "\n"
 
       if (option & OPTION_COMMENTS):
         content = comments(content)
@@ -149,14 +170,6 @@ def			load(directories, pattern, option):
 
 
 
-  for var in array:
-    if variable == var[0]:
-      return var
-
-  return None
-
-
-
 #
 # locate()
 #
@@ -181,15 +194,27 @@ def		        locate(name, array):
 #
 # the variables assignments are supposed correct.
 #
-def			expand(object):
+def			expand(variable, stack):
   references = None
   reference = None
+
+  # get the object corresponding to the variable
+  object = get(variable)
+
+  if not object:
+    error("the kaneton environment variable " + variable + " is not defined\n")
+
+  # try to locate the variable in the stack, meaning the variable references
+  # itself, maybe indirectly.
+  if variable in stack:
+    error("the environment variable " + variable +
+          " recursively references itself.\n")
 
   # locate, expand and replace the kaneton environment variable references.
   references = re.findall("\$\{([^}]+)\}", object.value)
   if references:
     for reference in references:
-      expand(get(reference))
+      expand(reference, stack + [variable])
     for reference in references:
       object.value = object.value.replace("${" + reference + "}",
                                           get(reference).value)
@@ -199,6 +224,8 @@ def			expand(object):
   if references:
     for reference in references:
       if os.getenv(reference) == None:
+        warning("shell user variable " + var + " is not defined\n")
+
         object.value = object.value.replace("$(" + reference + ")", "")
       else:
         object.value = object.value.replace("$(" + reference + ")",
@@ -263,14 +290,30 @@ def			build(assignments):
     if not object:
       object = c_variable()
 
-      object.variable = assignment[0]
-      object.assignments.append(assignment[2])
-      object.value = assignment[2]
+      # if it is an assignment.
+      if assignment[1] == "=":
+        object.variable = assignment[0]
+        object.value = assignment[2]
+      # an appending.
+      elif assignment[1] == "+=":
+         error("appending to an undefined variable '" + assignment[0] +
+              "' is not allowed\n")
+      else:
+        error("unknown assignment token '" + assignment[1] + "' for the "
+              "variable '" + assignment[0] + "'.\n")
 
       g_database.append(object)
     else:
-      object.assignments.append(assignment[2])
-      object.value += " " + assignment[2]
+      # if it is an assignment, just override the previous declaration.
+      if assignment[1] == "=":
+        object.value = assignment[2]
+      # if it is a concatenation, override the previous one with a
+      # concatenation of the two values.
+      elif assignment[1] == "+=":
+        object.value = object.value + " " + assignment[2]
+      else:
+        error("unknown assignment token '" + assignment[1] + "' for the "
+              "variable '" + assignment[0] + "'.\n")
 
 
 
@@ -286,8 +329,7 @@ def			configuration():
   object = None
 
   # load the files in a single python string.
-  content = "_SOURCE_DIR_		=		" +		\
-            env._SOURCE_DIR_ + "\n"
+  content = "_SOURCE_DIR_	=	" + env._SOURCE_DIR_ + "\n"
   content += load(g_directories, "^.*\.conf$",
                   OPTION_COMMENTS | OPTION_INCLUDES)
 
@@ -299,7 +341,7 @@ def			configuration():
 
   # expands the variables.
   for object in g_database:
-    expand(object)
+    expand(object.variable, [])
 
 
 
@@ -311,6 +353,7 @@ def			configuration():
 #
 def			description():
   content = None
+  streams = None
   stream = None
   object = None
   entry = None
@@ -319,26 +362,29 @@ def			description():
   content = load(g_directories, "^.*\.desc$", OPTION_COMMENTS)
 
   # parse the description content based on the YAML syntax.
-  stream = yaml.load(content)
+  streams = yaml.load(content)
 
   # for each entry, complete the variables database.
-  for entry in stream:
-    object = get(entry["variable"])
+  for stream in streams:
+    try:
+      object = get(stream["variable"])
 
-    object.name = entry["name"]
+      object.string = stream["string"]
 
-    if entry["type"] == "state":
-      object.type = TYPE_STATE
-      object.states = entry["states"]
-    elif entry["type"] == "set":
-      object.type = TYPE_SET
-      object.values = entry["values"]
-    elif entry["type"] == "any":
-      object.type = TYPE_ANY
-    else:
+      if stream["type"] == "state":
+        object.type = TYPE_STATE
+        object.states = stream["states"]
+      elif stream["type"] == "set":
+        object.type = TYPE_SET
+        object.values = stream["values"]
+      elif stream["type"] == "any":
+        object.type = TYPE_ANY
+      else:
+        continue
+
+      object.description = stream["description"]
+    except:
       continue
-
-    object.description = entry["description"]
 
 
 

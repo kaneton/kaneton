@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [thu may 24 18:01:57 2007]
+# updated       julien quintard   [tue may 29 14:24:58 2007]
 #
 
 #
@@ -92,6 +92,8 @@ def			load(directories, pattern):
 
       for line in handle.readlines():
         content += line
+
+      content += "\n"
 
       includes = re.findall("("						\
                               "^"					\

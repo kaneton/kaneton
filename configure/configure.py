@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/configure.py
 #
 # created       julien quintard   [wed may 23 10:17:59 2007]
-# updated       julien quintard   [fri may 25 13:10:53 2007]
+# updated       julien quintard   [tue may 29 18:36:47 2007]
 #
 
 #
@@ -32,16 +32,6 @@ import environment
 import dialog
 
 #
-# ---------- globals ----------------------------------------------------------
-#
-
-g_title = "[configure]"
-
-g_frames = []
-
-g_entries = None
-
-#
 # ---------- types ------------------------------------------------------------
 #
 
@@ -53,6 +43,25 @@ class c_entry:
     self.path = None
 
     self.variable = None
+
+class c_frame:
+  def __init__(self):
+    self.title = None
+    self.description = None
+
+    self.entries = []
+
+    # a list of strings rather that a list of objects: self.entries
+    self.list = []
+
+#
+# ---------- globals ----------------------------------------------------------
+#
+
+g_frames = []
+g_frame = None
+
+g_path = None
 
 #
 # ---------- options ----------------------------------------------------------
@@ -66,57 +75,59 @@ TYPE_VARIABLE = 2
 #
 
 #
-# frame()
+# load()
 #
-# this function displays the current frame and waits for the user
-# to do something.
+# this function loads the current frame into a instance of the
+# frame class.
 #
-def			frame(path):
-  global g_entries
-  object = None
-  choice = None
+def			load(path):
+  global g_frames
+  global g_frame
+  streams = None
   stream = None
+  object = None
   entry = None
-  menu = []
-  s = None
 
-  # initialisation of the 'g_entries' menu.
-  g_entries = []
+  # load the YAML entries.
+  streams = yaml.load(env.pull(path, env.OPTION_READ))
 
-  # load the frame file and parse the YAML syntax
-  stream = yaml.load(env.file(path, None, env.OPTION_READ))
+  # create an new frame object.
+  g_frame = c_frame()
 
-  # build a list of entries.
-  for s in stream:
-    # new instance of the c_entry class.
+  # try to fill the g_frame object with the YAML entries.
+  for stream in streams:
+    try:
+      g_frame.title = stream["title"]
+      g_frame.description = stream["description"]
+
+      continue
+    except:
+      pass
+
     entry = c_entry()
 
-    # detect the entry type and build the entry object as well as
-    # the menu list.
     try:
+      entry.frame = stream["frame"]
+      entry.path = stream["path"]
       entry.type = TYPE_FRAME
-      entry.frame = s["frame"]
-      entry.path = s["path"]
 
-      menu.append(entry.frame)
+      g_frame.list.append(entry.frame)
+      g_frame.entries.append(entry)
     except:
       try:
         entry.type = TYPE_VARIABLE
-        entry.variable = s["variable"]
+        entry.variable = environment.get(stream["variable"])
 
-        menu.append(environment.get(entry.variable).name)
+        if not entry.variable:
+          continue
+
+        g_frame.list.append(entry.variable.string)
+        g_frame.entries.append(entry)
       except:
         continue
 
-    g_entries.append(entry)
-
-  # actually display the frame and get the user entry choice.
-  choice = dialog.menu(g_title, menu)
-
-  if choice == None:
-    return None
-
-  return g_entries[choice]
+  # finally add the frame to the list of frames.
+  g_frames.append(g_frame)
 
 
 
@@ -172,8 +183,8 @@ def			variable(entry):
 # interfactive frames.
 #
 def			main():
-  global g_frames
-  entry = None
+  global g_path
+  choice = None
 
   # load the environment variables.
   environment.init()
@@ -181,30 +192,37 @@ def			main():
   # initialiase the dialog package.
   dialog.init()
 
-  # initialise the 'g_frames' variable.
-  g_frames.append("configure.frm")
+  # initialise the 'g_path' variable.
+  g_path = "configure.frm"
 
   # main loop until there is a frame or variable to display.
   while True:
-    # display the current frame stored in 'g_frame'.
-    entry = frame(g_frames[len(g_frames) - 1])
+    # load the information on the current frame.
+    load(g_path)
+
+    print g_frame.list
+
+    # display the current frame and get the user's choice.
+#    choice = draw_frame()
+
+    sys.exit(1)
 
     # did the user want to go back?
-    if not entry:
-      g_frames.pop(len(g_frames) - 1)
+#    if not entry:
+#      g_frames.pop(len(g_frames) - 1)
 
-      if len(g_frames) == 0:
-        sys.exit(0)
+#      if len(g_frames) == 0:
+#        sys.exit(0)
 
-      continue
+#      continue
 
     # if the choice is a subframe, then go to it. otherwise, ask the
     # user to enter a new value for the variable.
-    if entry.type == TYPE_FRAME:
-      g_frames.append(entry.path)
+#    if entry.type == TYPE_FRAME:
+#      g_frames.append(entry.path)
 
-    elif entry.type == TYPE_VARIABLE:
-      variable(entry)
+#    elif entry.type == TYPE_VARIABLE:
+#      variable(entry)
 
 #
 # ---------- entry point ------------------------------------------------------

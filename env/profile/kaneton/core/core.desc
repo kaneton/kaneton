@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...vironment/profile/kaneton/core/core.desc
 #
 # created       julien quintard   [tue may  8 13:43:36 2007]
-# updated       julien quintard   [fri may 25 12:15:14 2007]
+# updated       julien quintard   [tue may 29 16:37:19 2007]
 #
 
 #
@@ -18,7 +18,7 @@
 #
 
 - variable: _SEGMENT_LOOKUP_ALGORITHM_
-  name: Segment Manager Algorithm
+  string: Segment Manager Algorithm
   type: set
   values:
     - First Fit: -DSEGMENT_LOOKUPALGORITHM=FIT_FIRST

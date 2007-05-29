@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/environment.tex
 %
 % created       julien quintard   [sun may 20 14:49:26 2007]
-% updated       julien quintard   [mon may 28 12:50:54 2007]
+% updated       julien quintard   [tue may 29 16:36:53 2007]
 %
 
 %
@@ -367,7 +367,7 @@ and \textit{\_CHICHE\_} are given next:
   # _FOO_
   #
   - variable: _FOO_
-    name: the foo flag
+    string[XXX]: the foo flag
     type: state
     states: [ -D_FOO_FLAG_=0, -D_FOO_FLAG_=1 ]
     description: |
@@ -377,7 +377,7 @@ and \textit{\_CHICHE\_} are given next:
   # _BAR_
   #
   - variable: _BAR_
-    name: the bar parameter
+    entry: the bar parameter
     type: set
     values: [ simple:BAR_SIMPLE, normal:BAR_NORMAL, optimised:BAR_OPTIMISED ]
     description: |
@@ -388,7 +388,7 @@ and \textit{\_CHICHE\_} are given next:
   # _CHICHE_
   #
   - variable: _CHICHE_
-    name: the most powerful optimisation
+    entry: the most powerful optimisation
     type: any
     description: This is the magic kaneton optimisation.
 \end{verbatim}
@@ -407,14 +407,14 @@ the value when activated.
 
 A \textit{set} variable can take any value in a given list of values. This
 is the most common type of variable. In this case, the \textit{values} field
-contains couples name/value the variable can take.
+contains couples entry/value the variable can take.
 
 Finally, a \textit{any} variable represents a variable which can take any
 value.
 
-The \textit{names} were introduced to avoid displaying internal
+The \textit{entry} fields were introduced to avoid displaying internal
 non user-friendly variable names and/or values. Therefore, the
-\textit{configure} tool will always display literal string \textit{names}
+\textit{configure} tool will always display literal strings \textit{entry}
 rather than variable names or values which are likely to do not make any
 sense to the user.
 
