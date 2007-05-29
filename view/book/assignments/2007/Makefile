@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/book/assignments/2006/Makefile
+# file          /home/buckman/crypt/kaneton/view/book/assignments/2007/Makefile
 #
 # created       julien quintard   [mon may 14 19:03:18 2007]
-# updated       julien quintard   [mon may 14 20:00:33 2007]
+# updated       matthieu bucchianeri   [tue may 29 14:56:27 2007]
 #
 
 #
@@ -29,7 +29,8 @@ include			../../../../env/.env.mk
 
 SUBDIRS			:=		k1				\
 					k2				\
-					k3				
+					k3				\
+					k4
 
 #
 # ---------- rules ------------------------------------------------------------
