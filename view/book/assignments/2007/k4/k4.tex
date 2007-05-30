@@ -293,12 +293,13 @@ Task 1 sends ``ping'' to task 2, and task 2 answer ``pong'' to task 1.
 
 \begin{enumerate}
   \item Using synchronous send and receive, Task 1 and task2 first
-  synchronize together, the string ``ping'' is then copied directly from task 1
-  address space to task 2 address space.
+  synchronize together (because both \textbf{sync\_send} and
+  \textbf{sync\_recv} are blocking), the string ``ping'' is then copied
+  directly from task 1 address space to task 2 address space.
 
-  \item	Then task 1 enters in a polling loop, waiting to an answer, because
-  task2 answer in asynchronous mode. The string ``pong'' is copied into task 1
-  address space in two times : message is queued into the kernel memory between
+  \item	Then task 1 enters in a polling loop, waiting for an answer, because
+  task2 answers in asynchronous mode. The string ``pong'' is copied into task 1
+  address space in two times: message is queued into the kernel memory between
   the two calls.
 \end{enumerate}
 
