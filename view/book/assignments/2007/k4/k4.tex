@@ -297,8 +297,49 @@ The concerned parts are:
 
 \section{Appendix}
 
-\textbf{Example of \ldots}
+\textbf{Example of messaging syscall use\ldots}
+
+\begin{itemize}
+  \item Task 1
 
 \begin{verbatim}
-XXX
+void             tsk1_main()
+{
+  char          *to_send = "ping";
+  i_node        dest;
+  
+  char		recv[64];
+  i_node	from;
+  t_size	recv_sz = 0;
+
+  dest.task = 2;
+
+  /* Send a ping to task 2 */
+  syscall_sync_send(dest, 0, to_send, 5);
+
+  /* Receive an answer from task 2 */
+  while (syscall_async_recv(0, recv, 64, &from, &recv_sz) != ERROR_NONE
+	 && from != 2)
+    ;
+}
 \end{verbatim}
+
+  \item Task 2
+
+\begin{verbatim}
+void             tsk2_main()
+{
+  char          *to_send = "pong";
+  i_node        from;
+  char		recv[64];
+  t_size	recv_sz = 0;
+
+  /* Wait for a message */
+  syscall_sync_recv(0, recv, 64, 1, &from, &recv_sz);
+
+  /* Answer */
+  syscall_async_send(from, 0, to_send, 5);
+}
+\end{verbatim}
+
+\end{itemize}
