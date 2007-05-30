@@ -299,6 +299,19 @@ The concerned parts are:
 
 \textbf{Example of messaging syscall use\ldots}
 
+Task 1 sends ``ping'' to task 2, and task 2 answer ``pong'' to task 1.
+
+\begin{enumerate}
+  \item Using synchronous send and receive, Task 1 and task2 first
+  synchronize together, the string ``ping'' is then copied directly from task 1
+  address space to task 2 address space.
+
+  \item	Then task 1 enters in a polling loop, waiting to an answer, because
+  task2 answer in asynchronous mode. The string ``pong'' is copied into task 1
+  address space in two times : message is queued into the kernel memory between
+  the two calls.
+\end{enumerate}
+
 \begin{itemize}
   \item Task 1
 
@@ -314,12 +327,12 @@ void             tsk1_main()
 
   dest.task = 2;
 
-  /* Send a ping to task 2 */
+  /* Synchronize to task 2 and send "ping" */
   syscall_sync_send(dest, 0, to_send, 5);
 
-  /* Receive an answer from task 2 */
+  /* Polling to receive a message */
   while (syscall_async_recv(0, recv, 64, &from, &recv_sz) != ERROR_NONE
-	 && from != 2)
+         && from != 2)
     ;
 }
 \end{verbatim}
@@ -334,10 +347,10 @@ void             tsk2_main()
   char		recv[64];
   t_size	recv_sz = 0;
 
-  /* Wait for a message */
+  /* Synchronize, and receive a message */
   syscall_sync_recv(0, recv, 64, 1, &from, &recv_sz);
 
-  /* Answer */
+  /* Answer asynchronously */
   syscall_async_send(from, 0, to_send, 5);
 }
 \end{verbatim}
