@@ -147,7 +147,7 @@ The concerned parts are:
 				t\_vaddr \argument{data},
 				t\_vsize \argument{size})}
 	 {
-	   \item Send a message synchronously. 
+	   \item Send a message synchronously.
 
 	   \item See \textbf{message\_async\_send()} for parameters details.
 	 }
@@ -164,14 +164,14 @@ The concerned parts are:
 
 	   \item The \argument{blocking} parameter is a boolean which
 	   set the behaviour of the function if no symetric
-	   \textbf{message\_sync\_send()} to task \argument{receiver} 
+	   \textbf{message\_sync\_send()} to task \argument{receiver}
 	   happened before. In this case, if \argument{blocking}
 	   is clear, the function return immediatly an error.
 	   If \argument{blocking} is set, the task \argument{receiver}
 	   will be blocked until another task try to synchronize with it.
 
 	   \item See \textbf{message\_async\_recv()} for other parameters
-	   details. 
+	   details.
 	 }
 
 
@@ -181,12 +181,8 @@ The concerned parts are:
       \hline
       machine-independent & {\em kaneton/core/message/message.c}\\
       &  {\em kaneton/include/core/message.h}\\\hline
-      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/message.c}\\
-      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/message.h}\\\hline
     \end{tabular}
 \end{itemize}
-
-\newpage
 
 \section{message manager, \textbf{IA-32 syscalls handlers}}
 \begin{itemize}
@@ -214,6 +210,8 @@ The concerned parts are:
 
 \end{itemize}
 
+\newpage
+
 \section{Task side, \textbf{IA-32 syscall triggers}}
 \begin{itemize}
   \item {\bf Overview}\\
@@ -237,8 +235,8 @@ The concerned parts are:
 
   \item {\bf Assignments}\\
 
-    Your work is to implement the 4 syscalls so the userland tasks can
-    call the message manager into the kernel.
+    Implement the 4 syscalls so the userland tasks can call the
+    message manager into the kernel.
 
     XXX
 
@@ -248,26 +246,20 @@ The concerned parts are:
 				 t\_tag \argument{tag},
 				 void* \argument{data},
 				 t\_size \argument{size})}
-	 {
-	   See above sections.
-	 }
+	 {}
 
 \function{syscall\_async\_recv}{(t\_tag \argument{tag},
 				 void* \argument{buff},
 				 t\_size \argument{maxsz},
 				 i\_node* \argument{sender},
 				 t\_size* \argument{msgsz})}
-	 {
-	   See above sections.
-	 }
+	 {}
 
 \function{syscall\_sync\_send}{(i\_node \argument{dest},
 				t\_tag \argument{tag},
 				void* \argument{data},
 				t\_size \argument{size})}
-	 {
-	   See above sections.
-	 }
+	 {}
 
 \function{syscall\_sync\_recv}{(t\_tag \argument{tag},
 				void* \argument{buff},
@@ -275,9 +267,7 @@ The concerned parts are:
 				t\_state \argument{blocking},
 				i\_node* \argument{sender},
 				t\_size* \argument{msgsz})}
-	 {
-	   See above sections.
-	 }
+	 {See above sections}
 
   \item {\bf {Files}}\\
 
@@ -320,7 +310,7 @@ void             tsk1_main()
 {
   char          *to_send = "ping";
   i_node        dest;
-  
+
   char		recv[64];
   i_node	from;
   t_size	recv_sz = 0;
