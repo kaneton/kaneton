@@ -443,3 +443,8 @@ car ces zones dependent de l'archi/platform donc glue
 --
 
 un getter par manager: *_attribute() pour recuperer un attribut d'un objet.
+
+--
+
+etudier le systeme de messages entre machines. regarder XDR et trouver
+un compilateur a stub pour essayer de l'adapter elegamment a kaneton.
