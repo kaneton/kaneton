@@ -85,17 +85,60 @@ The concerned parts are:
 				 t\_vaddr \argument{data},
 				 t\_vsize \argument{size})}
 	 {
-	   XXX
+	   \item This primitive sends asynchronously a message to the task
+	   referenced by the field \textbf{taskid} of the \argument{dest}
+	   parameter. (The field \textbf{machineid} of \argument{dest}
+	   is ignored).
+
+	   \item The \argument{sender} parameter refer to the sending task, this
+	   parameter should be set by the kernel syscall handlers with the
+	   calling task, which can be obtained by result to a call of
+	   \textbf{task\_current()}.
+
+	   \item The \argument{tag} parameter is ignored, it should be used in the
+	   future to apply selection on the queued messages in a task's
+	   message box.
+
+	   \item \argument{data} designate the virtual address of the buffer to be
+	   transmit. Be carreful, this address is not always mapped in the
+	   kernel address space, address space of \argument{data} can be
+	   retrieved in the \argument{sender}'s \textbf{o\_task}.
+
+	   \item \argument{size} is the size of the message in the
+	   \argument{data} buffer.
 	 }
 
 \function{message\_async\_recv}{(i\_task \argument{receiver},
 				 t\_tag \argument{tag},
-				 t\_vaddr \argument{data},
-				 t\_vsize \argument{maxsz},
+				 t\_vaddr \argument{buff},
+				 t\_vsize \argument{buffsz},
 				 i\_node* \argument{sender},
 				 t\_vsize* \argument{msgsz})}
 	 {
-	   XXX
+	   \item This primitive receive an asynchronous message and returns
+	   an error if no messages are pending for the \argument{receiver}
+	   task. \argument{sender} parameter refer to the receiving task,
+	   this parameter should be set by the kernel syscall handlers with the
+	   calling task, which can be obtained by result to a call of
+	   \textbf{task\_current()}.
+
+	   \item The \argument{tag} parameter is ignored, it should be used in the
+	   future to apply selection on the queued messages in a task's
+	   message box.
+
+	   \item \argument{buff} designate the virtual address of the receiving
+	   buffer to be written. Be carreful, this address is not always
+	   mapped in the kernel address space, address space of \argument{buff}
+	   can be retrieved in the \argument{sender}'s \textbf{o\_task}.
+
+	   \item \argument{maxsz} is the size of the receiving buffer, used
+	   to prevent buffer overflow.
+
+	   \item \argument{sender} and \argument{msgsz} are pointers used to
+	   return the sender and the size of the received message. Be carefull,
+	   theses pointers are not pointers to calling task's address space,
+	   the return values will have to be passed by registers while
+	   returning from syscall.
 	 }
 
 \function{message\_sync\_send}{(i\_task \argument{sender},
@@ -104,7 +147,9 @@ The concerned parts are:
 				t\_vaddr \argument{data},
 				t\_vsize \argument{size})}
 	 {
-	   XXX
+	   \item Send a message synchronously. 
+
+	   \item See \textbf{message\_async\_send()} for parameters details.
 	 }
 
 \function{message\_sync\_recv}{(i\_task \argument{receiver},
@@ -115,7 +160,18 @@ The concerned parts are:
 				i\_node* \argument{sender},
 				t\_vsize* \argument{msgsz})}
 	 {
-	   XXX
+	   \item Receive a synchronous message.
+
+	   \item The \argument{blocking} parameter is a boolean which
+	   set the behaviour of the function if no symetric
+	   \textbf{message\_sync\_send()} to task \argument{receiver} 
+	   happened before. In this case, if \argument{blocking}
+	   is clear, the function return immediatly an error.
+	   If \argument{blocking} is set, the task \argument{receiver}
+	   will be blocked until another task try to synchronize with it.
+
+	   \item See \textbf{message\_async\_recv()} for other parameters
+	   details. 
 	 }
 
 
@@ -125,6 +181,8 @@ The concerned parts are:
       \hline
       machine-independent & {\em kaneton/core/message/message.c}\\
       &  {\em kaneton/include/core/message.h}\\\hline
+      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/message.c}\\
+      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/message.h}\\\hline
     \end{tabular}
 \end{itemize}
 
@@ -172,7 +230,7 @@ The concerned parts are:
       \item
 	Put the incoming arguments in registers
       \item
-	Trigger tge right software interrupt
+	Trigger the right software interrupt
       \item
 	Get back the results from the registers to the outgoing arguments
     \end{itemize}
