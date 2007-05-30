@@ -14,11 +14,6 @@
 %
 
 \chapter{K4: IPC Management}
-
-%
-% informations
-%
-
 \begin{tabular}{p{7cm}l}
 Duration: & 2 weeks \\
 Directory name: & kaneton/ \\
@@ -30,15 +25,14 @@ Students per group: & 2 (same groups as for K3) \\
 
 \section{Abstract}
 
-K4 project consists in developing the last part of the microkernel :
-the IPC (Inter-process Communication). As you know, in a microkernel,
-contrary to a monolithic kernel, every kernel services are running
-independently from the core, in separate userspace tasks. In order to
-communicate, tasks need to interact : sending, receiving messages, and
-also synchronizing each others. The IPC model chosen for kaneton is
-``message passing''.
+K4 implements the last part of our microkernel: IPC (Inter-process
+Communication). In a microkernel, on the contrary to a monolithic kernel,
+every kernel services are running independently from the core, in separate
+userspace tasks. In order to communicate, they need to interact: sending,
+receiving messages, and synchronizing each others. The IPC model chosen for
+kaneton is {\bf message passing}.
 
-The concerned parts are:
+Concerned parts are:
 
 \begin{enumerate}
   \item
@@ -47,7 +41,7 @@ The concerned parts are:
     synchronous and asynchronous.
   \item
     {\bf The message manager, IA-32 Syscall Handlers (2)}\\
-    Handling kernel side soft-interrupts (syscalls to the messaging
+    Handling kernel-side soft-interrupts (syscalls to the messaging
     primitives).
   \item
     {\bf Task side, IA-32 Syscall Triggers (3)}\\
@@ -64,50 +58,48 @@ The concerned parts are:
 \section{message manager, \textbf{messaging primitives}}
 
 \begin{itemize}
-  \item {\bf Overview}\\
+  \item {\bf Assignments (architecture-independent)}
 
-    This part of the code contains the 4 messaging primitives: sending
-    and receiving in both asynchronous and synchronous mode.
-
-  \item {\bf Assignments}\\
-
-    In the machine-independant part of the message manager, you will
-    have to implement the messaging primitives for sending and
-    receiving messages.  These primitives will have to be accessible
-    by syscalls, to permit running tasks to send and receive messages
+    Implement the messaging primitives to send and receive messages in both
+    asynchronous and synchronous modes. These primitives will be invoked by
+    syscalls, to permit running tasks sending and receiving messages to and
     from userspace (see the 2 next sections).
 
-  \item {\bf Interface}\\
+  \item {\bf Interface}
 
-\function{message\_async\_send}{(i\_task \argument{sender},
-				 i\_node \argument{dest},
-				 t\_tag \argument{tag},
-				 t\_vaddr \argument{data},
-				 t\_vsize \argument{size})}
+    \function{message\_async\_send}{(i\_task \argument{sender},
+      i\_node \argument{dest},
+      t\_tag \argument{tag},
+      t\_vaddr \argument{data},
+      t\_vsize \argument{size})}
 	 {
-	   \item This primitive sends asynchronously a message to the task
-	   referenced by the field \textbf{taskid} of the \argument{dest}
-	   parameter. (The field \textbf{machineid} of \argument{dest}
-	   is ignored).
+	   \item \argument{dest}
 
-	   \item The \argument{sender} parameter refer to the sending task, this
-	   parameter should be set by the kernel syscall handlers with the
-	   calling task, which can be obtained by result to a call of
-	   \textbf{task\_current()}.
+	     contains the {\bf taskid} and the {\bf machineid} to which the
+	     message must be sent asynchronously (\textbf{machineid} is ignored).
 
-	   \item The \argument{tag} parameter is ignored, it should be used in the
-	   future to apply selection on the queued messages in a task's
-	   message box.
+	   \item \argument{sender}
 
-	   \item \argument{data} designate the virtual address of the buffer to be
-	   transmit. Be carreful, this address is not always mapped in the
-	   kernel address space, address space of \argument{data} can be
-	   retrieved in the \argument{sender}'s \textbf{o\_task}.
+	     Identifier of the sending task. Set by the kernel syscall
+	     handlers with \textbf{task\_current()}.
 
-	   \item \argument{size} is the size of the message in the
-	   \argument{data} buffer.
+	   \item \argument{tag}
+
+	     Ignored. It will be used in the future to apply selection on
+	     the queued messages in a task's message box.
+
+	   \item \argument{data}
+
+	     Virtual address of the buffer to be transmitted. Be carreful,
+	     this address is not always mapped in the kernel address
+	     space. \argument{data} address space is stored in the
+	     \argument{sender}'s \textbf{o\_task}.
+
+	   \item \argument{size}
+
+	     Size of the message in the \argument{data} buffer.
 	 }
-
+	 
 \function{message\_async\_recv}{(i\_task \argument{receiver},
 				 t\_tag \argument{tag},
 				 t\_vaddr \argument{buff},
@@ -115,30 +107,38 @@ The concerned parts are:
 				 i\_node* \argument{sender},
 				 t\_vsize* \argument{msgsz})}
 	 {
-	   \item This primitive receive an asynchronous message and returns
-	   an error if no messages are pending for the \argument{receiver}
-	   task. \argument{sender} parameter refer to the receiving task,
-	   this parameter should be set by the kernel syscall handlers with the
-	   calling task, which can be obtained by result to a call of
-	   \textbf{task\_current()}.
+	 \item This primitive receives an asynchronous message. It returns
+	   an error if no message is pending for the \argument{receiver}
+	   task.
+	     
+	 \item \argument{sender}
 
-	   \item The \argument{tag} parameter is ignored, it should be used in the
-	   future to apply selection on the queued messages in a task's
-	   message box.
+	   Identifier of the receiving task. Set by
+	   the kernel syscall handlers with \textbf{task\_current()}.
 
-	   \item \argument{buff} designate the virtual address of the receiving
-	   buffer to be written. Be carreful, this address is not always
-	   mapped in the kernel address space, address space of \argument{buff}
-	   can be retrieved in the \argument{sender}'s \textbf{o\_task}.
+	 \item \argument{tag}
 
-	   \item \argument{maxsz} is the size of the receiving buffer, used
-	   to prevent buffer overflow.
+	   Ignored. It will be used in the future to
+	   apply selection on the queued messages in a task's message box.
 
-	   \item \argument{sender} and \argument{msgsz} are pointers used to
-	   return the sender and the size of the received message. Be carefull,
-	   theses pointers are not pointers to calling task's address space,
-	   the return values will have to be passed by registers while
-	   returning from syscall.
+	 \item \argument{buff}
+
+	   Virtual address of the receiving
+	   buffer. Be carreful, this address is not always mapped in the
+	   kernel address space. \argument{buff} address space is stored in
+	   the \argument{sender}'s \textbf{o\_task}.
+
+	 \item \argument{maxsz}
+
+	   Size of the receiving buffer, used to avoid buffer overflows.
+
+	 \item \argument{sender} and \argument{msgsz}
+	   
+	   Pointers used to
+	   get back the sender and the size of the received message. Be carefull,
+	   these pointers are not refering to the calling task's address space.
+	   The return values have to be passed by registers while returning
+	   from the syscall.
 	 }
 
 \function{message\_sync\_send}{(i\_task \argument{sender},
@@ -147,9 +147,10 @@ The concerned parts are:
 				t\_vaddr \argument{data},
 				t\_vsize \argument{size})}
 	 {
-	   \item Send a message synchronously.
+	   \item \argument{send}, \argument{dest}, \argument{tag},
+	     \argument{data}, \argument{size}
 
-	   \item See \textbf{message\_async\_send()} for parameters details.
+	     See \textbf{message\_async\_send()} for details.
 	 }
 
 \function{message\_sync\_recv}{(i\_task \argument{receiver},
@@ -160,22 +161,23 @@ The concerned parts are:
 				i\_node* \argument{sender},
 				t\_vsize* \argument{msgsz})}
 	 {
-	   \item Receive a synchronous message.
+	   \item \argument{blocking}
 
-	   \item The \argument{blocking} parameter is a boolean which
-	   set the behaviour of the function if no symetric
-	   \textbf{message\_sync\_send()} to task \argument{receiver}
-	   happened before. In this case, if \argument{blocking}
-	   is clear, the function return immediatly an error.
-	   If \argument{blocking} is set, the task \argument{receiver}
-	   will be blocked until another task try to synchronize with it.
+	     Sets the behaviour of the function if no symetric
+	     \textbf{message\_sync\_send()} to task \argument{receiver}
+	     happened before. if \argument{blocking} is clear, the function
+	     immediatly returns an error. Otherwise, the task
+	     \argument{receiver} is blocked until another task tries to
+	     synchronize with it.
 
-	   \item See \textbf{message\_async\_recv()} for other parameters
-	   details.
+	   \item \argument{receiver}, \argument{tag}, \argument{data},
+	     \argument{sender}, \argument{msgsz}
+
+	     See \textbf{message\_async\_recv()} for details.
 	 }
 
 
-  \item {\bf {Files}}\\
+  \item {\bf {Files}}
 
     \begin{tabular}{| l | l |}
       \hline
@@ -186,21 +188,28 @@ The concerned parts are:
 
 \section{message manager, \textbf{IA-32 syscalls handlers}}
 \begin{itemize}
-  \item {\bf Overview}\\
+  \item {\bf Overview}
 
     This part of the code is used to hook software interrupts to your
-    handlers. These handlers must read the passed argument from the
-    interrupted context, call the right function of the message
-    manager, and writeback results into the interrupted context.
+    handlers. Handlers must:
 
-  \item {\bf Assignments}\\
+    \begin{enumerate}
+      \item fetch the passed arguments from the interrupted context
+      \item call the right function of the message manager
+      \item write its result back into the interrupted context.
+    \end{enumerate}
 
-    No special model is given. You can implement the kernel-side of
-    your syscalls as you want. You may use one interrupt gate per
-    syscall or only one gate for all the syscalls (then adding an
-    argument identifying which syscall is invoked).
+  \item {\bf Assignments (architecture-dependent)}
 
-  \item {\bf {Files}}\\
+    Implement the kernel-side of the syscalls that will invoke the messaging
+    functions.
+
+    No special model is imposed. You can either dispatch your syscalls by hand
+    (using a single interrupt gate and passing an identifer as an argument),
+    or let the microprocessor do it for you (using one specific gate for each
+    syscall).
+
+  \item {\bf {Files}}
 
     \begin{tabular}{| l | l |}
       \hline
@@ -214,62 +223,59 @@ The concerned parts are:
 
 \section{Task side, \textbf{IA-32 syscall triggers}}
 \begin{itemize}
-  \item {\bf Overview}\\
+  \item {\bf Overview}
 
-    This portion of code will be used by user (and kernel) tasks. IRL,
-    it would be located in the libc (like in UN*X systems, the
+    This portion of code is used by user (and kernel) tasks. IRL,
+    it would be located in the libc (like in UNIX systems, the
     \emph{read} function that does the read syscall is located in the
     libc), but as the kernel code is always mapped to make the debug
     and testing easier, it will be put into this code.
 
     Each function must:
 
-    \begin{itemize}
-      \item
-	Put the incoming arguments in registers
-      \item
-	Trigger the right software interrupt
-      \item
-	Get back the results from the registers to the outgoing arguments
-    \end{itemize}
+    \begin{enumerate}
+      \item Put the incoming arguments in registers
+      \item Trigger the right software interrupt
+      \item Get back the results from the registers to the outgoing arguments
+    \end{enumerate}
 
-  \item {\bf Assignments}\\
+  \item {\bf Assignments (architecture-dependent)}
 
     Implement the 4 syscalls so the userland tasks can call the
     message manager into the kernel.
 
     XXX
 
-  \item {\bf Interface}\\
+  \item {\bf Interface}
 
-\function{syscall\_async\_send}{(i\_node \argument{dest},
+    \function{syscall\_async\_send}{(i\_node \argument{dest},
 				 t\_tag \argument{tag},
 				 void* \argument{data},
 				 t\_size \argument{size})}
-	 {}
-
-\function{syscall\_async\_recv}{(t\_tag \argument{tag},
+	     {}
+	 \function{syscall\_async\_recv}{(t\_tag \argument{tag},
 				 void* \argument{buff},
 				 t\_size \argument{maxsz},
 				 i\_node* \argument{sender},
 				 t\_size* \argument{msgsz})}
-	 {}
-
-\function{syscall\_sync\_send}{(i\_node \argument{dest},
+		  {}
+	 \function{syscall\_sync\_send}{(i\_node \argument{dest},
 				t\_tag \argument{tag},
 				void* \argument{data},
 				t\_size \argument{size})}
-	 {}
-
-\function{syscall\_sync\_recv}{(t\_tag \argument{tag},
+		  {}
+	 \function{syscall\_sync\_recv}{(t\_tag \argument{tag},
 				void* \argument{buff},
 				t\_size \argument{maxsz},
 				t\_state \argument{blocking},
 				i\_node* \argument{sender},
 				t\_size* \argument{msgsz})}
-	 {See above sections}
+		  {}
 
-  \item {\bf {Files}}\\
+		  See above sections for more information about functions
+		  parameters
+
+  \item {\bf {Files}}
 
     \begin{tabular}{| l | l |}
       \hline
@@ -287,25 +293,27 @@ The concerned parts are:
 
 \section{Appendix}
 
-\textbf{Example of messaging syscall use\ldots}
+\textbf{Example of messaging syscall use: let us consider this amayzing scenario:}
+\begin{itemize}
+  \item task\_1 sends ``ping'' to task\_2
+  \item task\_2 answers ``pong'' to task\_1
+\end{itemize}
 
-Task 1 sends ``ping'' to task 2, and task 2 answer ``pong'' to task 1.
 
 \begin{enumerate}
-  \item Using synchronous send and receive, Task 1 and task2 first
-  synchronize together (because both \textbf{sync\_send} and
-  \textbf{sync\_recv} are blocking), the string ``ping'' is then copied
-  directly from task 1 address space to task 2 address space.
+  \item Using synchronous send and receive, task\_1 and task\_2 first
+    synchronize together (because both \textbf{sync\_send} and
+    \textbf{sync\_recv} are blocking), the string ``ping'' is then copied
+    directly from task\_1 address space to task\_2 address space.
 
-  \item	Then task 1 enters in a polling loop, waiting for an answer, because
-  task2 answers in asynchronous mode. The string ``pong'' is copied into task 1
-  address space in two times: message is queued into the kernel memory between
-  the two calls.
+  \item	Then task\_1 enters in a polling loop, waiting for an answer, because
+    task\_2 answers in asynchronous mode. The string ``pong'' is copied into
+    task\_1 address space in two stepss: message is queued into the kernel
+    memory between the two calls.
 \end{enumerate}
 
 \begin{itemize}
   \item Task 1
-
 \begin{verbatim}
 void             tsk1_main()
 {
@@ -329,7 +337,6 @@ void             tsk1_main()
 \end{verbatim}
 
   \item Task 2
-
 \begin{verbatim}
 void             tsk2_main()
 {
