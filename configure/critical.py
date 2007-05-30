@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/monitor/critical.py
+# file          /home/mycure/kaneton/configure/critical.py
 #
 # created       julien quintard   [wed may 23 10:31:42 2007]
-# updated       julien quintard   [wed may 23 15:47:41 2007]
+# updated       julien quintard   [wed may 30 19:24:33 2007]
 #
 
 #
 # ---------- information ------------------------------------------------------
 #
 # this file starts by checking if the user is a newcomer and if so, the
-# script creates a new user profile.
+# script creates a new user profile, step by step.
 #
 # this script is critical as it does not rely on the kaneton environment
 # system.

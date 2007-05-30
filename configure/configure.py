@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/configure.py
 #
 # created       julien quintard   [wed may 23 10:17:59 2007]
-# updated       julien quintard   [tue may 29 21:42:23 2007]
+# updated       julien quintard   [wed may 30 19:17:25 2007]
 #
 
 #
@@ -145,6 +145,72 @@ def			load(path):
 
 
 #
+# variable()
+#
+# this function is launched whenever a user wants to edit a variable.
+#
+def			variable(choice):
+  select = None
+  value = None
+
+  # set variable
+  if g_frame.entries[choice].variable.type == environment.TYPE_SET:
+    select = dialog.radio(g_frame.entries[choice].variable.string,
+                          g_frame.entries[choice].variable.description,
+                          g_frame.entries[choice].list,
+                          g_frame.entries[choice].current)
+
+    if select == None:
+      return
+
+    value = g_frame.entries[choice].variable.values[select].values()[0]
+
+  # any variable
+  elif g_frame.entries[choice].variable.type == environment.TYPE_ANY:
+    value = dialog.input(g_frame.entries[choice].variable.string,
+                         g_frame.entries[choice].variable.description,
+                         g_frame.entries[choice].current)
+
+  # tell the environment to modify the variable's value.
+  environment.modify(g_frame.entries[choice].variable.variable, value)
+
+
+
+#
+# frame()
+#
+# this function displays the current frame and get the user's choice.
+#
+def			frame():
+  global g_paths
+  global g_path
+  choice = None
+
+  # display the current frame and get the user's choice.
+  choice = dialog.menu(g_frame.title, g_frame.description, g_frame.list)
+
+  # did the user want to go back?
+  if choice == None:
+    g_paths.pop(len(g_paths) - 1)
+
+    if len(g_paths) == 0:
+      sys.exit(0)
+
+    g_path = g_paths[len(g_paths) - 1]
+
+    return
+
+  # if the choice is a subframe, then go to it.
+  if g_frame.entries[choice].type == TYPE_FRAME:
+    g_path = g_frame.entries[choice].path
+    g_paths.append(g_path)
+  # otherwise, ask the user to enter a new value for the variable.
+  elif g_frame.entries[choice].type == TYPE_VARIABLE:
+    variable(choice)
+
+
+
+#
 # main()
 #
 # this function starts by loading the environment and then displays the
@@ -152,11 +218,7 @@ def			load(path):
 #
 def			main():
   global g_paths
-  global g_frame
   global g_path
-  select = None
-  choice = None
-  value = None
 
   # load the environment variables.
   environment.init()
@@ -170,51 +232,11 @@ def			main():
 
   # main loop until there is a frame or variable to display.
   while True:
-    # load the information on the current frame, if necessary:
+    # load the information on the current frame.
     load(g_path)
 
-    # display the current frame and get the user's choice.
-    choice = dialog.menu(g_frame.title, g_frame.description, g_frame.list)
-
-    # did the user want to go back?
-    if choice == None:
-      g_paths.pop(len(g_paths) - 1)
-
-      if len(g_paths) == 0:
-        sys.exit(0)
-
-      g_path = g_paths[len(g_paths) - 1]
-
-      continue
-    # if the choice is a subframe, then go to it.
-    elif g_frame.entries[choice].type == TYPE_FRAME:
-      g_path = g_frame.entries[choice].path
-      g_paths.append(g_path)
-      continue
-
-    # otherwise, ask the user to enter a new value for the variable.
-    if g_frame.entries[choice].type == TYPE_VARIABLE:
-
-      # set variable
-      if g_frame.entries[choice].variable.type == environment.TYPE_SET:
-        select = dialog.radio(g_frame.entries[choice].variable.string,
-                              g_frame.entries[choice].variable.description,
-                              g_frame.entries[choice].list,
-                              g_frame.entries[choice].current)
-
-        if select == None:
-          continue
-
-        value = g_frame.entries[choice].variable.values[select].values()[0]
-
-      # any variable
-      elif g_frame.entries[choice].variable.type == environment.TYPE_ANY:
-        value = dialog.input(g_frame.entries[choice].variable.string,
-                             g_frame.entries[choice].variable.description,
-                             g_frame.entries[choice].current)
-
-    # tell the environment to modify the variable's value.
-    environment.modify(g_frame.entries[choice].variable.variable, value)
+    # handle the current frame: display, get the user choice etc.
+    frame()
 
 #
 # ---------- entry point ------------------------------------------------------
