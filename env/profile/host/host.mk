@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/env/profile/host/host.mk
+# file          /home/mycure/kaneton/environment/profile/host/host.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [sun may 20 15:17:53 2007]
+# updated       julien quintard   [thu may 31 22:37:11 2007]
 #
 
 #
@@ -49,6 +49,8 @@ ENV_OUTPUT_OBJECT = 1
 ENV_OUTPUT_BINARY = 2
 
 ENV_OPTION_NO_STANDARD = 1
+
+ENV_OPTION_PRIVATE = 1
 
 #
 # ---------- traps ------------------------------------------------------------

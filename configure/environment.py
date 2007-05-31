@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/environment.py
 #
 # created       julien quintard   [thu may 24 16:58:00 2007]
-# updated       julien quintard   [tue may 29 23:20:28 2007]
+# updated       julien quintard   [thu may 31 21:59:51 2007]
 #
 
 #

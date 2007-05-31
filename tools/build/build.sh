@@ -12,6 +12,9 @@
 # global declarations
 #
 
+# set the PATH shell environment
+export PATH="/usr/local/bin:/usr/bin:/bin"
+
 # set the shell environment variables so that the kaneton
 # environment engine can be set up properly
 export KANETON_USER="build"
@@ -25,7 +28,7 @@ g_repository="svn+ssh://repositories.kaneton.org/kaneton"
 g_image="/home/mycure/kaneton/kaneton.img"
 
 # the pts to use
-g_pts="/dev/pts/1"
+g_pts=""
 
 # the temporary directory
 g_directory=$(mktemp -d)
@@ -57,7 +60,7 @@ error()
   g_state="error"
 
   g_report="
------------------------------------------------------------------------------ errors
+------------------------------------------------------------------------ errors
 
 ${g_report}
 
@@ -65,7 +68,7 @@ ${g_report}
 
 
 
------------------------------------------------------------------------------- debug
+------------------------------------------------------------------------- debug
 
 ${g_debug}
 "
@@ -76,12 +79,45 @@ ${g_debug}
 }
 
 #
+# PTS
+#
+# this function determines the pts to use.
+#
+pts()
+{
+  output=""
+
+  # go to the home directory: /home/mycure/kaneton
+  cd "/home/mycure/kaneton"
+
+  # launch qemu and quit, just to get the output.
+  output=$(echo "
+quit" | qemu -m 32m -fda pty.img -boot a -nographic -serial pty 2>&1)
+
+  # get the pts from the output of qemu.
+  g_debug=$(echo ${output} |  sed -rn "s/^.*(\/dev\/pts\/[0-9]*).*$/\1/p")
+
+  if [ ${?} -ne 0 ] ; then
+    g_report="
+Unable to find any /dev/pts/X in the QEMU output
+"
+    error
+  fi
+
+  # set the pts device path.
+  g_pts="${g_debug}"
+}
+
+#
 # INITIALIZE
 #
 # this function initialize the build context
 #
 initialize()
 {
+  # kill any running QEMU
+  killall -9 qemu
+
   # make sure of the umask
   umask 022
 
@@ -103,11 +139,7 @@ clean()
   rm -Rf ${g_directory}
 
   # kill the running emulators
-  pid=$(ps aux | grep qemu | grep -v grep | sed -r "s/^mycure +([0-9]+).*$/\1/")
-
-  if [ -n "${pid}" ] ; then
-    kill -9 "${pid}"
-  fi
+  killall -9 qemu
 }
 
 #
@@ -290,7 +322,7 @@ evaluate()
 
   # build the file report
   g_report="
----------------------------------------------------------------------------- summary
+----------------------------------------------------------------------- summary
 
   ${g_ntests} tests
 
@@ -301,7 +333,7 @@ evaluate()
 
 
 
------------------------------------------------------------------------------ detail
+------------------------------------------------------------------------ detail
 
 ${g_detail}
 "
@@ -333,7 +365,7 @@ email()
 
 
 
------------------------------------------------------------------------------ system
+------------------------------------------------------------------------ system
 
 ${machine}
 
@@ -359,6 +391,7 @@ EOF
 #
 main()
 {
+  pts
   initialize
   repository
   environment

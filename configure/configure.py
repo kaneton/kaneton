@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/configure.py
 #
 # created       julien quintard   [wed may 23 10:17:59 2007]
-# updated       julien quintard   [wed may 30 19:17:25 2007]
+# updated       julien quintard   [thu may 31 22:03:41 2007]
 #
 
 #
@@ -93,6 +93,7 @@ def			load(path):
   object = None
   entry = None
   value = None
+  key = None
 
   # load the YAML entries.
   streams = yaml.load(env.pull(path, env.OPTION_READ))
@@ -129,16 +130,17 @@ def			load(path):
 
         # build the list and current value for each variable type.
         if entry.variable.type == environment.TYPE_SET:
-          for value in entry.variable.values:
-            if entry.variable.assignment == value[value.keys()[0]]:
-              entry.current = value.keys()[0]
+          for key, value in entry.variable.values.iteritems():
+            if entry.variable.assignment == value:
+              entry.current = key
 
-            entry.list.append(value.keys()[0])
+            entry.list.append(key)
         elif entry.variable.type == environment.TYPE_ANY:
           entry.current = entry.variable.assignment
 
         g_frame.list.append(entry.variable.string)
         g_frame.entries.append(entry)
+
       except:
         continue
 
@@ -163,7 +165,9 @@ def			variable(choice):
     if select == None:
       return
 
-    value = g_frame.entries[choice].variable.values[select].values()[0]
+    value = g_frame.entries[choice].variable.values[
+                g_frame.entries[choice].list[select]
+              ]
 
   # any variable
   elif g_frame.entries[choice].variable.type == environment.TYPE_ANY:

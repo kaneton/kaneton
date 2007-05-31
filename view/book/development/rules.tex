@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/rules.tex
 %
 % created       julien quintard   [mon may 28 19:44:49 2007]
-% updated       julien quintard   [thu may 31 07:05:15 2007]
+% updated       julien quintard   [thu may 31 18:56:18 2007]
 %
 
 %
@@ -18,14 +18,20 @@
 \chapter{Rules}
 \label{chapter:rules}
 
-This section describes the rules which apply to any language or tool. These
-rules can therefore be considered as the most important ones.
+This chapter describes the rules which apply to the whole kaneton microkernel
+project. These rules can therefore be considered as the most important ones.
+
+\newpage
+
+%
+% ---------- text -------------------------------------------------------------
+%
 
 % header
 
 \subsubsection{Header}
 
-All files must start with a file header. This file header specifies the
+Files must start with a file header. This file header specifies the
 project name, the license of this file, the file name, the author and
 date of the file creation and finally the author and date of the last
 edition. This header must comply to the following template, depending
@@ -57,7 +63,7 @@ Then, an example for \textit{TeX} files:
   %
   % license       kaneton
   %
-  % file          /home/mycure/kaneton/view/book/development/general.tex
+  % file          /home/mycure/kaneton/view/book/development/community.tex
   %
   % created       julien quintard   [mon may 28 19:44:49 2007]
   % updated       julien quintard   [mon may 28 19:48:07 2007]
@@ -93,7 +99,8 @@ prefix every entity by the package, module etc. name it actually belongs to.
 As long as it is possible, entities must be named with a \textit{unique}
 word, excluding the namespace prefix.
 
-Names must obviously be expressed in English, without any spelling mistakes.
+Names must obviously be expressed in English, lower case letters and
+without any spelling mistake.
 
 % layout
 
@@ -107,10 +114,70 @@ A section header is basically a commented separator.
 
 Any file must include a \textit{header} section as explained above. Moreover,
 some sections are mandatory depending of the type of file. For instance,
-even configuration files, description files etc. must provide a
-\textit{information} section.
+even configuration files, description files, frame file, \textit{Python}
+files etc. must provide a \textit{information} section.
 
-XXX exemple configuration file: header + information
+Below is an example of a \textit{Python} script which illustrates the
+use of sections:
+
+\begin{verbatim}
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/foo/foo.py
+#
+# created       julien quintard   [sun may 13 11:04:52 2007]
+# updated       julien quintard   [mon may 28 12:42:57 2007]
+#
+
+#
+# ---------- information ------------------------------------------------------
+#
+# this script is used to illustrates the use of sections in kaneton
+# files.
+#
+
+#
+# ---------- imports ----------------------------------------------------------
+#
+
+import env
+
+import sys
+import re
+
+#
+# ---------- globals ----------------------------------------------------------
+#
+
+g_string = `kaneton'
+
+#
+# ---------- functions --------------------------------------------------------
+#
+
+#
+# main()
+#
+# this function does the main work: displaying a string.
+#
+def			main():
+  env.display(env.HEADER_NONE, g_string, env.OPTION_NONE)
+
+
+
+#
+# ---------- entry point ------------------------------------------------------
+#
+
+if __name__ == "__main__":
+  main()
+
+\end{verbatim}
 
 Files related to any language should provide a section for the core
 content like \textit{rules} for \textit{Make} files or \textit{functions}
@@ -125,6 +192,17 @@ the trailing newline character. Moreover, the \textit{DOS} \textit{CR+LF}
 line terminator must not be used. Finally, there must not be any whitespace
 at the end of a line.
 
-XXX si quelque chose n'est pas conforme il faut le dire
-XXX si une regle manque dans ce document il faut l'ajoter, avec accord de
-  son superviseur
+% rules
+
+\subsubsection{Rules}
+
+Any contributor which notices a misuage of these rules must inform the
+kaneton community and especially its supervisor so that the mistakes can be
+corrected.
+
+Moreover if something is missing in this book, any contributor is welcomed
+to inform the community about it so that a rule is added or modified.
+
+Contributors are asked to read the rules enumerated in this book but also
+to look at the kaneton repository as it contains many examples of applications
+of these rules.

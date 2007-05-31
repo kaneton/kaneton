@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/export/export.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [mon may 28 00:49:17 2007]
+# updated       julien quintard   [thu may 31 22:55:26 2007]
 #
 
 #
@@ -154,7 +154,7 @@ def			dist():
     name = "k" + g_from + "," + g_to
 
   g_distribution = env._EXPORT_ + "-" +					\
-                   env.stamp("%Y%m%d", env.OPTION_NONE) + "-" + name
+                   env.stamp(env.OPTION_NONE) + "-" + name
 
   # move to the directory parent to the kaneton repository copy.
   env.cd(g_directory, env.OPTION_NONE)

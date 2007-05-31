@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/environment.tex
 %
 % created       julien quintard   [sun may 20 14:49:26 2007]
-% updated       julien quintard   [thu may 31 06:22:58 2007]
+% updated       julien quintard   [thu may 31 22:56:27 2007]
 %
 
 %
@@ -45,7 +45,7 @@ C compiler for instance.
 The kaneton development environment provides a layered organisation of
 profiles, each profile defining variables and functions used by the final
 environment engine. The goal of the layered model is to allow layers to
-override the definitions of lower layers.
+override the definitions of lower-level layers.
 
 %
 % profiles
@@ -53,13 +53,14 @@ override the definitions of lower layers.
 
 \subsubsection{Profiles}
 
-A configuration is composed of profiles including a \textit{host} profile which
-describes the behaviour of the underlying operating system, a \textit{kaneton}
-profile which parameters the kaneton core and a \textit{user} profile which
-permits the user to redefine lower layers' declarations.
+The development environment is composed of profiles including a \textit{host}
+profile which describes the behaviour of the underlying operating system, a
+\textit{kaneton} profile which parameters the kaneton microkernel and a
+\textit{user} profile which permits the user to redefine lower-level layers'
+declarations.
 
-These profiles eventually hold sub-profiles which actually define variables
-and functions. These actual profiles are accessed according to user-defined
+These profiles eventually hold sub-profiles which define variables and
+functions. These actual profiles are accessed according to user-defined
 shell variables.
 
 % host
@@ -80,14 +81,15 @@ a \textit{PowerPC} microprocessor, then using the default compiler should
 produce \textit{PowerPC} object files. This is well-known to be the common
 compiling way. On the other hand, if \textit{Linux} is running on a
 different microprocessor, then a cross-compiler must be used to produce
-binary objects targeting a specific different microprocessor architecture.
+binary objects targeting a specific different microprocessor architecture,
+the \textit{PowerPC} architecture in our example.
 
 To avoid this issue, a \textit{host} sub-profile name is composed of two parts
 separated by a slash. The first part is the name of the operating system and
 the latter is a pair source/target processors separated by a period. For
-example, \textit{linux/ia32.ppc} names a \textit{host} profile running the
+example, \textit{linux/ia32.ppc} names a \textit{host} profile representing a
 \textit{Linux} operating system on a \textit{Intel 32-bit} microprocessor
-which aims at building a kaneton microkernel for the \textit{PowerPC}
+which aims at building a kaneton microkernel for a \textit{PowerPC}
 target architecture. Needless to say that \textit{linux/ia32.ia32} represents
 a non cross-compiling environment.
 
@@ -102,7 +104,7 @@ shown below:
     linux.mk
     linux.py
     ia32.ia32/
-      virtual -> .
+      educational -> .
       optimised -> .
       smp -> .
       ia32.desc
@@ -143,7 +145,7 @@ With, for instance, the following values:
 
 \begin{verbatim}
   KANETON_HOST = linux/ia32
-  KANETON_ARCHTECTURE = ia32/virtual
+  KANETON_ARCHTECTURE = ia32/educational
 \end{verbatim}
 
 Note that the possibility to include files in the configuration syntax allows
@@ -159,7 +161,7 @@ The \textit{kaneton} profile is composed of three sub-profiles: \textit{core},
 The \textit{core} sub-profile contains variables for parameterizing the
 kaneton core. The \textit{platform} and \textit{architecture} sub-profiles
 focus on the configuration of the platform- and architecture-dependent code
-of the kaneton microkernel.
+of the kaneton microkernel, respectively.
 
 The user-defined shell variables \textit{\$\{KANETON\_PLATFORM\}} and
 \textit{\$\{KANETON\_ARCHITECTURE\}} are used to address the \textit{platform}
@@ -176,28 +178,14 @@ configurations are actually allowed by the \textit{user} profile.
 
 The user-defined shell variable \textit{\$\{KANETON\_USER\}} defines the name
 of the \textit{user} profile. This profile contains user-specific
-configurations allowing a contributor to overwrite lower layer defintions
+configurations allowing a contributor to overwrite lower-level layer defintions
 in order to specialise a behaviour.
 
-The kaneton project also provides a tool allowing developers to configure
-their development environment. This tool is named \textbf{configure} and is
-available from the kaneton project root directory.
+The kaneton project also provides a tool allowing users to configure
+their development environment. This tool is named \textit{configure} and is
+available from the kaneton project root directory. For more information about
+this tool, please refer to \textit{Section \ref{section:configure}}.
 
-Although the profile directories can contain any number of configuration files
-it is not the case of the \textit{user} profile directory. Indeed, there must
-be a single configuration file named with
-
-XXX conseille d'avoir un seul fichier a chaque fois meme si possible autrement
-
-XXX -state type variable
-
-XXX ecrire dans environment-design que le generateur de user-profile doit
-XXX aussi creer un fichier .conf
-
-XXX dire que kaneton s'ecrit en minuscule et les kX aussi.
-
-XXX dans book::kaneton, archi supportees, core, glue, machdep system, syscall
-    interface
 
 %
 % requirements
@@ -227,8 +215,8 @@ described below:
   \item
     \textbf{\$\{KANETON\_PYTHON\}} contains the path of the python binary.
 
-    This path is necessary since the very first scripts which set up the
-    configured environment are based on python scripts.
+    This path is required since the very first scripts which set up the
+    configured environment are written in \textit{Python}.
   \item
     \textbf{\$\{KANETON\_PLATFORM\}}: the name of the target platform.
   \item
@@ -240,8 +228,8 @@ no longer used by the kaneton environment engine. Indeed, instead, the
 kaneton environment operations are based on the \textit{host} profile on
 which rely the configured environment.
 
-The profiles names must all be lowercase. Below are some examples of what
-could contain these variables:
+The profiles names must all be in lowercase letters. Below are some examples
+of what could contain these variables:
 
 \begin{verbatim}
   KANETON_USER='julien.quintard'
@@ -256,7 +244,7 @@ could contain these variables:
   KANETON_PLATFORM='sgi/octane'
 
   KANETON_ARCHITECTURE='mips64'
-  KANETON_ARCHITECTURE='ia32/virtual'
+  KANETON_ARCHITECTURE='ia32/educational'
   KANETON_ARCHITECTURE='ia32/smp'
 \end{verbatim}
 
@@ -294,7 +282,7 @@ The generation of the configured environment is done by going through
 the configuration files of all the profiles and sub-profiles associated
 to the user configuration. In other words, the kaneton environment engine
 processes the configuration files according to the layered organisation
-described below, starting with the lowest layer thourgh the highest one.
+described below, starting with the lowest-level layer thourgh the highest one.
 
 \begin{verbatim}
   profile/
@@ -311,54 +299,64 @@ described below, starting with the lowest layer thourgh the highest one.
 \end{verbatim}
 
 In this layered organisation, a variable defined in, for instance, the
-\textit{host} profile could be overwritten anywhere in the upper layers
-\textit{kaneton}, \textit{kaneton/architecture/\$\{KANETON\_ARCHITECTURE\}},
-\textit{user} etc.
+\textit{host} profile could be overwritten anywhere in the upper-level layers
+\textit{kaneton/}, \textit{kaneton/architecture/\$\{KANETON\_ARCHITECTURE\}/},
+\textit{user/} etc.
 
 The \textit{host} and \textit{kaneton} profiles are theoretically completed
 separated. However, the environment engine does not check for such
 unauthorised overridings. Therefore the \textit{core} configuration could
 override a variable previously defined in the \textit{host} profile.
 
-Finally, the \textit{user} profile can override any definition adjusting the
-environment to his needs.
+Finally, the \textit{user} profile can override any definition to adjust the
+environment to its needs.
 
-The environment engine looks for the following types of files in the
+The environment engine looks for the following types of file in the
 kaneton environment profile directories:
 
 \begin{itemize}
   \item
-    \textbf{.conf}: the \textit{configuration} files gathered by the
-    development environment engine for generating the configured environment
-    files.
+    \textbf{.conf}: the \textit{configuration} files contains variable
+    definitions. These files are gathered by the development environment
+    engine for generating the configured environment files.
   \item
     \textbf{.desc}: these \textit{description} files contain descriptions of
     the variables of the current profile or sub-profile. These descriptions
     are used by the \textit{configure} tool.
   \item
-    \textbf{.mk}: the \textit{Make} files usually contains the implementation
+    \textbf{.mk}: the \textit{Make} files usually contain the implementation
     of the kaneton \textit{Make} interface.
   \item
-    \textbf{.py}: the \textit{Python} files usually contains the
+    \textbf{.py}: the \textit{Python} files usually contain the
     implementation of the kaneton \textit{Python} interface.
 \end{itemize}
 
 The engine supposes that there is no variable or function overriding in
-a single profile. more precisely, if there are more than a single
+a single profile. More precisely, if there are more than a single
 configuration file in a directory, the engine cannot guarantee anything
 on the order these files will be processed. As a result, the overridings
 could differ depending on the processing order.
+
+Besides, although the environment engine gathers every \textit{configuration}
+files it finds in the environment profiles directory, it is highly recommended
+to provide a single \textit{configuration} file per profile directory. This
+file should be named according to the name of its profile. For more details,
+take a look at the environment directory which contains existing profiles.
+
+Moreover, the \textit{configure} tool requires the \textit{user} profile to
+contains a single \textit{configuration} file named, as explained above:
+
+\begin{verbatim}
+  ${KANETON_USER}.conf
+\end{verbatim}
 
 The kaneton development environment engine first gathers the
 \textit{configuration} files and process them creating an in-memory list of
 configuration variables. Then it generates the configured environment files
 \textit{env.mk} and \textit{env.py}. Indeed, the engine outputs the
 configuration variables in each file and then append the content of the
-\textit{Make} files and \textit{Python} files to the configured environment
-file \textit{env.mk} and \textit{env.py}, respectively.
-
-Note that the \textit{description} files are not directly used by the
-environment engine.
+\textit{Make} files and \textit{Python} files of the profiles to the
+configured environment files \textit{env.mk} and \textit{env.py}, respectively.
 
 %
 % syntaxes
@@ -373,10 +371,9 @@ environment engine.
 The \textit{description} files describe the environment variables in order
 to specify what kind of value a variable can take etc.
 
-The description syntax is based on the \textit{YAML} language. Therefore,
-the \textit{Python} \textit{PyYAML} module needs to be set up.
+The description syntax is based on the \textit{YAML} language.
 
-Examples of description for variables named \textit{\_FOO\_}, \textit{\_BAR\_}
+Examples of variable descriptions named \textit{\_FOO\_}, \textit{\_BAR\_}
 and \textit{\_CHICHE\_} are given next:
 
 \begin{verbatim}
@@ -384,11 +381,13 @@ and \textit{\_CHICHE\_} are given next:
   # _FOO_
   #
   - variable: _FOO_
-    string[XXX]: the foo flag
-    type: state
-    states: [ -D_FOO_FLAG_=0, -D_FOO_FLAG_=1 ]
+    string: the foo flag
+    type: set
+    values:
+      Off: -D_FOO_FLAG_=0
+      On: -D_FOO_FLAG_=1
     description: |
-      This is a description of the two-state variable _FOO_.
+      This is a description of a two-state variable _FOO_.
 
   #
   # _BAR_
@@ -396,7 +395,10 @@ and \textit{\_CHICHE\_} are given next:
   - variable: _BAR_
     entry: the bar parameter
     type: set
-    values: [ simple:BAR_SIMPLE, normal:BAR_NORMAL, optimised:BAR_OPTIMISED ]
+    values:
+      Simple: ${BAR_SIMPLE}
+      Normal: ${BAR_NORMAL}
+      Optimised: ${BAR_OPTIMISED}
     description: |
       This is another parameter which can take three values: simple,
       normal and optimised.
@@ -414,24 +416,19 @@ Note that the environment engine never takes these descriptions into account.
 Indeed, this is the r\^ole of the \textit{configure} tool.
 
 In this syntax, variables are classified according to the type of value
-they can take: \textit{state}, \textit{set} and \textit{any}.
+they can take: \textit{set} and \textit{any}.
 
-A \textit{state} variable is either activated or deactivated. This is
-the case of the \textit{\_FOO\_} variable where the \textit{states}
-field is present. In this field, the first element represents the value
-to assign if the state is deactivated while the second element represents
-the value when activated.
-
-A \textit{set} variable can take any value in a given list of values. This
-is the most common type of variable. In this case, the \textit{values} field
-contains couples entry/value the variable can take.
+A \textit{set} variable can take any value in a given list of values. In
+this case, the \textit{values} field contains couples string/value the
+variable can take. The \textit{string} is displayed by the \textit{configure}
+tool while the \textit{value} is assigned to the variable.
 
 Finally, a \textit{any} variable represents a variable which can take any
 value.
 
-The \textit{entry} fields were introduced to avoid displaying internal
+The \textit{string} fields were introduced to avoid displaying internal
 non user-friendly variable names and/or values. Therefore, the
-\textit{configure} tool will always display literal strings \textit{entry}
+\textit{configure} tool will always display literal \textit{strings}
 rather than variable names or values which are likely to do not make any
 sense to the user.
 
@@ -442,8 +439,7 @@ sense to the user.
 The \textit{configuration} files contains the actual variable definitions
 through a very simple syntax.
 
-The syntax allows both assignments and completion of variables' value
-as show in the next example:
+The syntax allows both assignments and completion as shown in the next example:
 
 \begin{verbatim}
   FOO = bar
@@ -451,15 +447,15 @@ as show in the next example:
   FOO = kaneton
 \end{verbatim}
 
-The \textit{FOO} variable first took the initial value \textit{bar}. Then,
-the value \textit{baz} was added to the previous \textit{FOO}'s value
+The \textit{FOO} variable first takes the initial value \textit{bar}. Then,
+the value \textit{baz} is added to the previous \textit{FOO}'s value
 leading the the value \textit{bar baz}. Finally, the last assignment
-overwrite the previous definitions by setting the value of \textit{FOO}'s
+overwrites the previous definition by setting the value of \textit{FOO}'s
 variable to \textit{kaneton}.
 
-The configuration syntax enables the use of variables in values. These
-variables can be both environment variable or shell variable. The following
-example illustrates it.
+The configuration syntax enables variable references. These references can
+be both environment variable or shell variable. The following example
+illustrates this.
 
 \begin{verbatim}
   BAR = ${FOO} is a very powerful microkernel
@@ -477,11 +473,13 @@ Finally, a configuration file can also include another file using the
   include ../an/other/file/far/../far/../away
 \end{verbatim}
 
-This construct is very useful to centralize the definitions common to
-multiple sub-profiles in a single location.
+This construct is very useful to centralize definitions common to multiple
+profiles or sub-profiles in a single location.
 
 Note that kaneton environment variables start and end with an underscore
-for avoiding naming collisions.
+to avoid naming collisions. Another solution would have been to use a
+prefix \textit{KANETON\_} as it is stipulated in the general kaneton rules
+but this would have led to very long names.
 
 % make
 
@@ -525,7 +523,7 @@ to avoid name conflicts.
                          \argument{indentation},
                          \argument{options})}
          {
-	   This function display a message representing an action performed
+	   This function displays a message representing an action performed
 	   by the kaneton \textit{Make} interface.
 
 	   \-
@@ -540,10 +538,10 @@ to avoid name conflicts.
 	   This function changes the current working directory.
 	 }
 
-\function{env\_content}{(\argument{file},
-                         \argument{options})}
+\function{env\_pull}{(\argument{file},
+                      \argument{options})}
          {
-	   This function returns the content of the file \argument{file}.
+	   This function returns the content of the \argument{file}.
 	 }
 
 \function{env\_launch}{(\argument{file},
@@ -555,7 +553,8 @@ to avoid name conflicts.
 	   \-
 
 	   This function must look at the file name in order to determine
-	   how to launch it.
+	   how to launch it. Moreover, the function must move the the
+	   directory where is located the file before launching it.
 
 	   \-
 
@@ -577,7 +576,7 @@ to avoid name conflicts.
                            \argument{c file},
                            \argument{options})}
          {
-	   This function compile a \argument{c file} generating an
+	   This function compiles a \argument{c file} generating an
 	   \argument{object file}.
 	 }
 
@@ -593,14 +592,14 @@ to avoid name conflicts.
                             \argument{S file},
                             \argument{options})}
          {
-	   This function assemble an \argument{S file}.
+	   This function assembles an \argument{S file}.
 	 }
 
 \function{env\_assemble-asm}{(\argument{object file},
                               \argument{asm file},
                               \argument{options})}
          {
-	   This function assemble an asm file.
+	   This function assembles an \argument{asm file}.
 
 	   \-
 
@@ -621,8 +620,8 @@ to avoid name conflicts.
                                  \argument{object files and/or libraries},
                                  \argument{options})}
          {
-	   This function builds a dynamic library from object files and/or
-	   libraries.
+	   This function builds a dynamic library from \argument{object
+           files and/or libraries}.
 	 }
 
 \function{env\_executable}{(\argument{executable file name},
@@ -645,7 +644,7 @@ to avoid name conflicts.
                          \argument{object files},
                          \argument{options})}
          {
-	   This function builds an archive of object from multiple
+	   This function builds an archive of objects from multiple
 	   \argument{object files}.
 	 }
 
@@ -686,49 +685,41 @@ to avoid name conflicts.
                       \argument{file},
                       \argument{options})}
          {
-	   This function creates a link \argument{link} to the \argument{file}.
+	   This function creates a \argument{link} to the \argument{file}.
 	 }
 
 \function{env\_compile-tex}{(\argument{file},
                              \argument{options})}
          {
 	   This function compiles the file \argument{file}.tex and
-	   will generate a readable document.
+	   generates a readable document.
 	 }
 
-\function{env\_paper}{(\argument{file},
-                       \argument{options})}
+\function{env\_document}{(\argument{file},
+                          \argument{options})}
          {
-	   This function builds a \textit{paper} by calling the
-	   \textbf{env\_compile-tex()} function.
-	 }
+	   This function builds a document by calling the
+           \textit{env\_compile-tex()} function.
 
-\function{env\_lecture}{(\argument{file},
-                         \argument{options})}
-         {
-	   This function builds a \textit{lecture} document by calling the
-	   \textbf{env\_compile-tex()} function.
-	 }
+	   \-
 
-\function{env\_subject}{(\argument{file},
-                         \argument{options})}
-         {
-	   This function builds a \textit{subject} by calling the
-	   \textbf{env\_compile-tex()} function.
-	 }
-
-\function{env\_correction}{(\argument{file},
-                            \argument{options})}
-         {
-	   This function builds a \textit{correction} document by calling the
-	   \textbf{env\_compile-tex()} function.
+           The option \textit{ENV\_OPTION\_PRIVATE} configures the document
+	   by setting the {\LaTeX} definition \textit{$\backslash$mode} to
+	   the value \textit{private}. This option was introduced to deal with
+	   documents which contain information which must be kept private to
+	   the students.
 	 }
 
 \function{env\_view}{(\argument{file},
                       \argument{options})}
          {
 	   This function launches a viewer for the readable document
-	   generated by the function \textbf{env\_compile-tex()}.
+	   generated by the function \textit{env\_compile-tex()}.
+
+	   \-
+
+	   Note that file, as for the \textit{env\_compile-tex()} function,
+	   does not have any filename suffix.
 	 }
 
 % python
@@ -744,8 +735,8 @@ by the \textit{host} generic profile.
 
 Note that the \textit{Python} language provides modularity through packages.
 Therefore, each \textit{Python} script has to import the \textit{env} package
-generated by the development environment engine. Then, environment functions
-and variables are accessed through this package.
+generated by the development environment engine: \textit{environment/env.py}.
+Then, environment functions and variables are accessed through this package.
 
 Below are described the functions implemented by the \textit{env} package.
 
@@ -788,7 +779,7 @@ Below are described the functions implemented by the \textit{env} package.
 
 \function{input}{(\argument{options})}
          {
-	   This function waits for an input.
+	   This function waits for an input from the user.
 	 }
 
 \function{launch}{(\argument{file},
@@ -800,7 +791,8 @@ Below are described the functions implemented by the \textit{env} package.
 	   \-
 
 	   This function must look at the file name in order to determine
-	   how to launch it.
+	   how to launch it. Moreover, the function must move the the
+	   directory where is located the file before launching it.
 
 	   \-
 
@@ -871,7 +863,7 @@ Below are described the functions implemented by the \textit{env} package.
                  \argument{options})}
          {
 	   This function makes an archive \argument{file} of the
-	   directory \argument{directory}.
+	   \argument{directory}.
 	 }
 
 \function{unpack}{(\argument{file},
@@ -879,7 +871,7 @@ Below are described the functions implemented by the \textit{env} package.
                    \argument{options})}
          {
 	   This function extracts the archive \argument{file} into the
-	   directory \argument{directory}, if specified.
+	   \argument{directory}, if specified.
 	 }
 
 \function{mkdir}{(\argument{directory},
@@ -894,7 +886,7 @@ Below are described the functions implemented by the \textit{env} package.
                  \argument{options})}
          {
 	   This function copies the \argument{file} on the specificed
-	   \argument{device}, more precisly at the location \argument{path}.
+	   \argument{device}, more precisely at the location \argument{path}.
 	   The device can be virtual: an image.
 
 	   \-
@@ -903,10 +895,9 @@ Below are described the functions implemented by the \textit{env} package.
 	   specify on which type of device the file must be copied.
 	 }
 
-\function{stamp}{(\argument{format},
-                  \argument{options})}
+\function{stamp}{(\argument{options})}
          {
-	   This function returns a date following the given \argument{format}.
+	   This function returns a current date.
 	 }
 
 \function{record}{(\argument{transcript},
@@ -946,6 +937,6 @@ Below are described the functions implemented by the \textit{env} package.
 
 	   \-
 
-	   The options \textit{OPTION\_CURRENT\_DIRECTORY} returns the
+	   The option \textit{OPTION\_CURRENT\_DIRECTORY} returns the
            sequence of characters used for accessing the current directory.
 	 }

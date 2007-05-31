@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/env/profile/host/linux/linux.mk
+# file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [sun may 20 15:21:00 2007]
+# updated       julien quintard   [thu may 31 22:36:57 2007]
 #
 
 #
@@ -117,7 +117,7 @@ endef
 # $(2):		options
 #
 
-define env_contents
+define env_pull
   $(_CAT_) $(2) $(1)
 endef
 
@@ -136,7 +136,7 @@ define env_launch
       $(_SHELL_) $${launch_options} $(1) $(_SHELL_FLAGS_) $(2)		; \
       ;;								\
     *.py)								\
-      export PYTHONPATH=$(_PYTHON_INCLUDE_DIR_)				; \
+      export PYTHONPATH=$$(PYTHONPATH)':'$(_PYTHON_INCLUDE_DIR_)	; \
       $(_PYTHON_) $${launch_options} $(1) $(_PYTHON_FLAGS_) $(2)	; \
       ;;								\
     *.pl)								\
@@ -417,48 +417,16 @@ define env_compile-tex
 endef
 
 #
-# build a paper
+# build a document
 #
 # $(1):		the file name without extension
 # $(2):		options
 #
 
-define env_paper
-  $(call env_compile-tex,$(1),$(2))
-endef
-
-#
-# build a lecture
-#
-# $(1):		the file name without extension
-# $(2):		options
-#
-
-define env_lecture
-  $(call env_compile-tex,$(1),$(2))
-endef
-
-#
-# build a subject
-#
-# $(1):		the file name without extension
-# $(2):		options
-#
-
-define env_subject
-  $(_ECHO_) '\def\kaneton-latex{subject}' > $(_DEPENDENCY_TEX_)		; \
-  $(call env_compile-tex,$(1),$(2))
-endef
-
-#
-# build a correction
-#
-# $(1):		the file name without extension
-# $(2):		options
-#
-
-define env_correction
-  $(_ECHO_) '\def\kaneton-latex{correction}' > $(_DEPENDENCY_TEX_)	; \
+define env_document
+  if [ $(( $(2) & $(ENV_OPTION_PRIVATE) )) -ne 0 ] ; then		\
+    $(_ECHO_) '\def\mode{private}' > $(_DEPENDENCY_TEX_)		; \
+  fi									; \
   $(call env_compile-tex,$(1),$(2))
 endef
 

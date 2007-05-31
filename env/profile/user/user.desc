@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/user/user.desc
 #
 # created       julien quintard   [fri may 25 09:36:30 2007]
-# updated       julien quintard   [tue may 29 20:57:21 2007]
+# updated       julien quintard   [thu may 31 21:49:03 2007]
 #
 
 #
@@ -21,6 +21,6 @@
   string: Display Colorization
   type: set
   values:
-    - Uncolored: ${_DISPLAY_UNCOLORED_}
-    - Colored: ${_DISPLAY_COLORED_}
+    Uncolored: ${_DISPLAY_UNCOLORED_}
+    Colored: ${_DISPLAY_COLORED_}
   description: Activate or not the colorization of the environment messages.

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [sun may 27 15:58:36 2007]
+# updated       julien quintard   [thu may 31 22:55:46 2007]
 #
 
 #
@@ -301,8 +301,8 @@ def			mkdir(directory, options):
 #
 # this function returns the current formatted date.
 #
-def			stamp(format, options):
-  return time.strftime(format)
+def			stamp(options):
+  return time.strftime("%Y%m%d")
 
 
 

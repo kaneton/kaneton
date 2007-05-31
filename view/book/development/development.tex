@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/development.tex
 %
 % created       julien quintard   [mon may 14 19:56:45 2007]
-% updated       julien quintard   [thu may 31 06:38:43 2007]
+% updated       julien quintard   [thu may 31 22:36:29 2007]
 %
 
 %
@@ -94,29 +94,22 @@ the official website
 % ---------- kaneton ----------------------------------------------------------
 %
 
-Tool -> General
+--
 
 aucun fichier dans le repository avec les droits executables: Makefile,
 scripts etc. must be non-executable.
+pas de shebang, pas d'executable
 
-utiliser des mots entiers plutot que des simplifications sauf si vraiment
-le mot est long.
+--
 
+.tar.gz pour les tarballs
+
+--
+
+files: - et pas de _, en minuscule bien sur et pas de characters cheloux
 preferez - plutot que _ pour separer sauf si le langage ne le permet pas.
 
-si le langage ne permet pas l'utilisation de namespace ou forme du genre,
-prefixez tout par le nom du module.
-
-SURTOUT, regardez le code deja produit afin de vous inspirez de ce qui
-existe deja et evitez des erreurs, c'est TRES IMPORTANT!!! si ces regles
-ne sont pas suivies tout le monde perd du temps et le projet perd en
-clarete. de plus a long terme, du temps devra etre perdu a developper des
-outils specifiques pour verifier que vous respectez ces regles ce qui serait
-vraiment completement stupide.
-
-le nommage d'une fonctionnalite doit autant que possible se faire en un
-seul et unique mot, ce mot designant au mieux la fonctionnalite. il peut bien
-evidemment etre prefixe par le nom du module.
+--
 
 arguments en C, doivent etre simple, complet clairs car c'est l'interface
 du module. o doit etre utilise opur un objet kernel correspondant au module.
@@ -124,68 +117,16 @@ tout doit etre nomme en un mot autant que possible et etre coherent par
 rapport a ce qui existe deja. de plus le nom d'une variable ne doit
 pas recoupe son type: t_wait waitlist c'est stupide.
 
-XXX
-
-%
-% ---------- development ------------------------------------------------------
-%
-
-pour chaque language explique les regles: header, commentaire etc.
-
-minuscule
-
--- c
-
--- make
-
--- python
-
--- latex
-
-figures in .fig
-
--- asm
-
--- shell
-
-XXX
-ca ne devrait pas juste expliquer les regles mais aussi comment utiliser
-les outils, syntaxes etc. genre configure/, test/, cheat/ etc.
-
-------------------------------
-
-introduction
-
-source-tree
-
-tools
-
-  internal
-  external
-
-rules
-
-  tools
-    XXX
-  languages
-    c
-    python
-    ...
-
-XXX latex
-beamer, % N) devant chaque slide,
-paper: pas de \par etc.., juste des retours a la ligne pour que le document
-latex soit aussi lisible que le document genere.
-
-pas de shebang, pas d'executable
-
-.tar.gz pour les tarballs
-
--- code
-
-eviter qu'une seule personne ne soit maitre d'un gros bout de code sans
-quoi si elle part, le projet tombe a l'eau. il faut donc que tlm s'interesse
-aux autres parties du code en demandant si il faut des infos autres autres
-developpeurs sur cette partie.
+--
 
 == NULL ou ERROR_UNKNOWN mais pas de (!(...))
+
+--
+
+XXX ecrire dans environment-design que le generateur de user-profile doit
+XXX aussi creer un fichier .conf
+
+XXX dire que kaneton s'ecrit en minuscule et les kX aussi.
+
+XXX dans book::kaneton, archi supportees, core, glue, machdep system, syscall
+    interface

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [mon may 28 13:05:48 2007]
+# updated       julien quintard   [thu may 31 22:24:08 2007]
 #
 
 #
@@ -79,7 +79,8 @@ def			launch(file, arguments, options):
   if re.match("^.*\.sh$", file):
     status = os.system(_SHELL_ + " " + file + " " + arguments)
   elif re.match("^.*\.py$", file):
-    os.putenv("PYTHONPATH", _PYTHON_INCLUDE_DIR_)
+    os.putenv("PYTHONPATH",
+              os.getenv("PYTHONPATH") + ":" + _PYTHON_INCLUDE_DIR_)
     status = os.system(_PYTHON_ + " " + file + " " + arguments)
   elif re.match("^.*\.pl$", file):
     status = os.system(_PERL_ + " " + file + " " + arguments)
