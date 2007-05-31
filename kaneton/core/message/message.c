@@ -170,12 +170,12 @@ t_error			message_clean(void)
 t_error			message_async_send(i_task	sender,
 					   i_node	dest,
 					   t_tag	tag,
-					   void*	data,
-					   t_size	size)
+					   t_vaddr	data,
+					   t_vsize	size)
 {
   o_task*		sender_task;
   void*			kernel_buffer;
-  o_message			msg;
+  o_message		msg;
   t_message_box*	msgbox;
 
   MESSAGE_ENTER(message);
@@ -206,13 +206,13 @@ t_error			message_async_send(i_task	sender,
 
   if (sender_task->asid != kasid)
   {
-    if (as_read(sender_task->asid, (t_vaddr)data, size, kernel_buffer)
+    if (as_read(sender_task->asid, data, size, kernel_buffer)
 	  != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   }
   else
   {
-    memcpy(kernel_buffer, data, size);
+    memcpy(kernel_buffer, (void *)data, size);
   }
 
   /*
@@ -252,8 +252,8 @@ t_error			message_async_send(i_task	sender,
 
 t_error			message_async_recv(i_task	taskid,
 					   t_tag	tag,
-					   void*	data,
-					   size_t	maxsz)
+					   t_vaddr	data,
+					   t_vsize	maxsz)
 {
   t_message_box*	msgbox;
   o_message*		msg;
@@ -282,12 +282,13 @@ t_error			message_async_recv(i_task	taskid,
   if (task->asid != kasid)
   {
     if (as_write(task->asid, msg->data, (maxsz < msg->sz ? maxsz : msg->sz),
-	(t_paddr)data) != ERROR_NONE)
+	data) != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   }
   else
   {
-    memcpy(data, msg->data, (maxsz < msg->sz ? maxsz : msg->sz));
+    memcpy((void*)data, (void*)msg->data,
+	(maxsz < msg->sz ? maxsz : msg->sz));
   }
 
   /*
@@ -318,13 +319,13 @@ t_error			message_async_recv(i_task	taskid,
 t_error			message_sync_send(i_task	sender,
 					  i_node	dest,
 					  t_tag		tag,
-					  void*		data,
-					  t_size	size)
+					  t_vaddr	data,
+					  t_vsize	size)
 {
   t_message_box*	msgbox;
   o_task*		task;
-  t_message_waiter*		receiver;
-  t_message_waiter		send_waiter;
+  t_message_waiter*	receiver;
+  t_message_waiter	send_waiter;
   i_thread		thread;
   t_size		sz;
 
@@ -363,7 +364,7 @@ t_error			message_sync_send(i_task	sender,
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
     send_waiter.thread = thread;
-    send_waiter.data = (t_vaddr)data;
+    send_waiter.data = data;
     send_waiter.sz = size;
     send_waiter.asid = task->asid;
 
@@ -384,27 +385,28 @@ t_error			message_sync_send(i_task	sender,
 
   if (receiver->asid == kasid && task->asid == kasid)
   {
-    memcpy((void*)receiver->data, data, sz);
+    memcpy((void*)receiver->data, (void *)data, sz);
     goto copied;
   }
 
   if (receiver->asid == kasid)
   {
-    if (as_read(task->asid, (t_vaddr)data, sz,
-	(void*)receiver->data) != ERROR_NONE)
+    if (as_read(task->asid, data, sz, (void*)receiver->data)
+	!= ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     goto copied;
   }
 
   if (task->asid == kasid)
   {
-    if (as_write(receiver->asid, data, sz, receiver->data) != ERROR_NONE)
+    if (as_write(receiver->asid, (void *)data, sz, receiver->data)
+	!= ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     goto copied;
   }
 
-  if (as_copy(task->asid, (t_vaddr) data,
-      receiver->asid, receiver->data, sz) != ERROR_NONE)
+  if (as_copy(task->asid, data, receiver->asid, receiver->data, sz)
+      != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
 copied:
@@ -432,20 +434,23 @@ copied:
  * steps:
  *
  * 1) retrieve the message box and check if a sync_send is pending
- * 2) if not, register to the receivers queue, sleep & reschedule.
- * 3) if it is, pop the sender from the queue, proceed to transfert
- * 4) unblock the sender's task
+ * 2) if no sync is pending, return if function not blocking.
+ * 3) if no sync is pending and function blocking,
+ *    register to the receivers queue, sleep & reschedule.
+ * 4) if it is, pop the sender from the queue, proceed to transfert
+ * 5) unblock the sender's task
  */
 
 t_error			message_sync_recv(i_task	taskid,
 					  t_tag		tag,
-					  void*		data,
-					  size_t	maxsz)
+					  t_vaddr	data,
+					  t_vsize	maxsz,
+					  t_state	blocking)
 {
   t_message_box*	msgbox;
   o_task*		task;
-  t_message_waiter*		sender;
-  t_message_waiter		recv_waiter;
+  t_message_waiter*	sender;
+  t_message_waiter	recv_waiter;
   i_thread		thread;
   t_size		sz;
 
@@ -468,11 +473,18 @@ t_error			message_sync_recv(i_task	taskid,
      * 2)
      */
 
+    if (!blocking)
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+    /*
+     * 3)
+     */
+
     if (sched_current(&thread) != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
     recv_waiter.thread = thread;
-    recv_waiter.data = (t_vaddr)data;
+    recv_waiter.data = data;
     recv_waiter.sz = maxsz;
     recv_waiter.asid = task->asid;
 
@@ -486,34 +498,33 @@ t_error			message_sync_recv(i_task	taskid,
   }
 
   /*
-   * 3)
+   * 4)
    */
 
   sz = maxsz <= sender->sz ? maxsz : sender->sz;
 
   if (sender->asid == kasid && task->asid == kasid)
   {
-    memcpy(data, (void*)sender->data, sz);
+    memcpy((void *)data, (void*)sender->data, sz);
     goto copied;
   }
 
   if (task->asid == kasid)
   {
-    if (as_read(sender->asid, sender->data, sz, data) != ERROR_NONE)
+    if (as_read(sender->asid, sender->data, sz, (void*)data) != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     goto copied;
   }
 
   if (sender->asid == kasid)
   {
-    if (as_write(task->asid, (void*)sender->data, sz,
-	(t_vaddr)data) != ERROR_NONE)
+    if (as_write(task->asid, (void*)sender->data, sz, data) != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     goto copied;
   }
 
-  if (as_copy(sender->asid, sender->data,
-      task->asid, (t_vaddr)data, sz) != ERROR_NONE)
+  if (as_copy(sender->asid, sender->data, task->asid, data, sz)
+      != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
 copied:
@@ -522,101 +533,7 @@ copied:
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   /*
-   * 4)
-   */
-
-  if (machdep_call(message, message_epilogue, sender->thread, ERROR_NONE)
-        != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  if (thread_state(sender->thread, SCHED_STATE_RUN) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  MESSAGE_LEAVE(message, ERROR_NONE);
-}
-
-/*
- * receive synchronously a message by direct memory transfert, non blocking.
- * same as message_sync_recv, but returns if no message is pending
- *
- * steps:
- *
- * 1) retrieve the message box and check if a sync_send is pending
- * 2) if not, returns.
- * 3) if it is, pop the sender from the queue, proceed to transfert
- * 4) unblock the sender's task
- */
-
-t_error			message_sync_recv_nb(i_task	taskid,
-					     t_tag	tag,
-					     void*	data,
-					     size_t	maxsz)
-{
-  t_message_box*	msgbox;
-  o_task*		task;
-  t_message_waiter*		sender;
-  t_size		sz;
-
-  MESSAGE_ENTER(message);
-
-  /*
-   * 1)
-   */
-
-  if (task_get(taskid, &task) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-  if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  tag = tag;
-
-  if (set_pick(msgbox->senders, (void**)&sender) != ERROR_NONE)
-  {
-    /*
-     * 2)
-     */
-
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-  }
-
-  /*
-   * 3)
-   */
-
-  sz = maxsz <= sender->sz ? maxsz : sender->sz;
-
-  if (sender->asid == kasid && task->asid == kasid)
-  {
-    memcpy(data, (void*)sender->data, sz);
-    goto copied;
-  }
-
-  if (task->asid == kasid)
-  {
-    if (as_read(sender->asid, sender->data, sz, data) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-    goto copied;
-  }
-
-  if (sender->asid == kasid)
-  {
-    if (as_write(task->asid, (void*)sender->data, sz,
-	(t_vaddr)data) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-    goto copied;
-  }
-
-  if (as_copy(sender->asid, sender->data,
-      task->asid, (t_vaddr)data, sz) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-copied:
-
-  if (set_pop(msgbox->senders) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  /*
-   * 4)
+   * 5)
    */
 
   if (machdep_call(message, message_epilogue, sender->thread, ERROR_NONE)
@@ -635,7 +552,6 @@ copied:
  * steps:
  *
  * 1) create the message box if it doesn't exists
- * 2) add the given tag to the message box (FIXME)
  */
 
 t_error			message_register(i_task	taskid,
@@ -666,12 +582,6 @@ t_error			message_register(i_task	taskid,
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
   }
 
-  /*
-   * 2) FIXME
-   */
-
-  tag = tag;
-
   MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
@@ -688,7 +598,7 @@ t_error			message_test(void)
 
   while (1)
     {
-      if (message_async_recv(ktask, 0, recv, 128) == ERROR_NONE)
+      if (message_async_recv(ktask, 0, (t_vaddr)recv, 128) == ERROR_NONE)
 	{
 	  printf("received %d bytes : %s\n", strlen(recv) + 1, recv);
 	  break;

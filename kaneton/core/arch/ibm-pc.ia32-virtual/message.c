@@ -62,7 +62,7 @@ void			ia32_message_async_send_handler(void)
     i_node		node;
     t_uint32		dword[4];
   }			u;
-  void			*ptr;
+  t_vaddr		ptr;
   t_uint32		tag;
   t_uint32		size;
   i_task		source;
@@ -75,7 +75,7 @@ void			ia32_message_async_send_handler(void)
   u.dword[2] = context->ecx;
   u.dword[3] = context->edx;
   tag = context->esi;
-  ptr = (void*)context->edi;
+  ptr = context->edi;
   size = context->ebp;
 
   ret = message_async_send(source, u.node, tag, ptr, size);
@@ -90,7 +90,7 @@ void			ia32_message_sync_send_handler(void)
     i_node		node;
     t_uint32		dword[4];
   }			u;
-  void			*ptr;
+  t_vaddr		ptr;
   t_uint32		tag;
   t_uint32		size;
   i_task		source;
@@ -106,7 +106,7 @@ void			ia32_message_sync_send_handler(void)
   u.dword[2] = context->ecx;
   u.dword[3] = context->edx;
   tag = context->esi;
-  ptr = (void*)context->edi;
+  ptr = context->edi;
   size = context->ebp;
 
   ret = message_sync_send(source, u.node, tag, ptr, size);
@@ -121,14 +121,14 @@ void			ia32_message_async_recv_handler(void)
 {
   t_uint32		ret;
   t_uint32		tag;
-  void*			ptr;
+  t_vaddr		ptr;
   t_uint32		size;
   i_task		source;
 
   task_current(&source);
 
   tag = context->eax;
-  ptr = (void*)context->ebx;
+  ptr = context->ebx;
   size = context->ecx;
 
   ret = message_async_recv(source, tag, ptr, size);
@@ -140,9 +140,9 @@ void			ia32_message_sync_recv_handler(void)
 {
   t_uint32		ret;
   t_uint32		tag;
-  void*			ptr;
+  t_vaddr		ptr;
   t_uint32		size;
-  t_uint32		flags;
+  t_state		blocking;
   i_task		source;
   i_thread		syscall, upcall;
 
@@ -151,14 +151,11 @@ void			ia32_message_sync_recv_handler(void)
   sched_current(&syscall);
 
   tag = context->eax;
-  ptr = (void*)context->ebx;
+  ptr = context->ebx;
   size = context->ecx;
-  flags = context->edx;
+  blocking = context->edx;
 
-  if (flags & 0x1)
-    ret = message_sync_recv_nb(source, tag, ptr, size);
-  else
-    ret = message_sync_recv(source, tag, ptr, size);
+  ret = message_sync_recv(source, tag, ptr, size, blocking);
 
   sched_current(&upcall);
 
