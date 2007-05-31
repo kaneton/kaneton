@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/source-tree.tex
 %
 % created       julien quintard   [thu may 17 22:41:36 2007]
-% updated       julien quintard   [thu may 24 22:58:24 2007]
+% updated       julien quintard   [thu may 31 07:20:37 2007]
 %
 
 %
@@ -16,6 +16,7 @@
 %
 
 \chapter{Source Tree}
+\label{chapter:source tree}
 
 In this chapter we will briefly describe the kaneton microkernel project
 source tree.
@@ -31,19 +32,22 @@ listing:
 
 \begin{verbatim}
 cheat/
+configure/
 environment/
 export/
-configure/
+history/
 kaneton/
 library/
 license/
-tool/
 test/
+tool/
 transcript/
 view/
 \end{verbatim}
 
+%
 % cheat/
+%
 
 \subsection*{cheat/}
 
@@ -55,12 +59,32 @@ previous years projects or other kernel source code available on the
 To avoid cheating, kaneton people developed a software checking for
 commonalities between different source codes.
 
-The \textit{cheat/} kaneton subdirectory contains everything necessary
-to perform such tasks including the software, the different source codes
-found on the internet, the kaneton students' implementation from the
-previous years etc.
+This directory contains scripts that performs these verifications. However,
+the students work over the years are not stored in this directory but in
+the \textit{history/} directory instead.
 
+%
+% configure/
+%
+
+\subsection*{configure/}
+
+This directory contains everything necessary for configuring its own
+kaneton microkernel development environment through the compiling process
+to the boot system.
+
+Any new contributor should first look at this directory. However, note that
+this directory mainly contains tools targeting final-users rather than
+kaneton contributors. Indeed, for instance, the \textit{configure} utility
+was developed in a user-friendly way but does not take advantage of the
+power of the kaneton development environment.
+
+Contributors should then learn about the development environment internal
+while final-users should use the \textit{configure} tool.
+
+%
 % environment/
+%
 
 \subsection*{environment/}
 
@@ -75,15 +99,20 @@ work in a collaborative manner without interfering with each other. These
 developers are likely to run different operating systems on different
 microprocessors. In addition, the kaneton microkernel can be targeted for
 different microprocessor architectures. The development environment was
-introduced to cope with these combinaisons by providing profiles, each
+introduced to cope with these combinations by providing profiles, each
 profile describing the behaviour of a component: underlying operating system,
 target architecture, user-specific stuff etc.
 
 As a result, each developer can use a different operating system and
-microprocessor architecture with his own specific compiling flags, kaneton
+microprocessor architecture with its own specific compiling flags, kaneton
 parameters etc. without modifying another developer's configuration.
 
+The development environment is detailed in \textit{Section
+\ref{section:environment}}.
+
+%
 % export/
+%
 
 \subsection*{export/}
 
@@ -91,23 +120,29 @@ The \textit{export/} directory contains scripts used to generate a kaneton
 tarball in order to be distributed to the students at the beginning of the
 kaneton project.
 
-Indeed, these scripts rearrange the kaneton hierarchy hidding some
-important directories the students do not need to be aware of.
+Indeed, these scripts rearrange the kaneton hierarchy hidding some important
+directories the students do not need to be aware of. Moreover some source
+code parts are removed since the students then have to rewrite these piece
+of code as assignments.
 
-Moreover some source code parts are removed since the students then have to
-rewrite these piece of code.
+These scripts are also used for making backups and distribution of the
+kaneton microkernel project.
 
-% configure/
+%
+% history/
+%
 
-\subsection*{configure/}
+\subsection*{history/}
 
-This directory contains everything necessary for configuring its own
-kaneton microkernel development environment through the compiling process
-to the boot system.
+The \textit{history/} directory contains the students work over the years
+for the unverisities and schools the kaneton project was used for.
 
-Any new contributor should first look at this directory.
+The tools of the \textit{cheat/} directory use these students works for
+performing cheating verifications.
 
+%
 % kaneton/
+%
 
 \subsection*{kaneton/}
 
@@ -118,9 +153,9 @@ The directory is composed of three important subdirectories: \textit{core/},
 \textit{platform} and \textit{architecture}. These subdirectories are described
 next.
 
-% kaneton/core/
+% core/
 
-\subsection*{kaneton/core/}
+\subsubsection*{core/}
 
 This directory contains the kaneton core source code.
 
@@ -139,11 +174,11 @@ thread/
 
 Each directory represents a kaneton core manager. For more information on
 the kaneton core, please refer to the appropriate document:
-\textit{The kaneton microkernel :: reference implementation}
+\textit{The kaneton microkernel :: core}
 
-% kaneton/platform/
+% platform/
 
-\subsection*{kaneton/platform/}
+\subsubsection*{platform/}
 
 This directory contains everything in relation with what the kaneton
 microkernel project calls a \textbf{platform}. The platform represents the
@@ -152,57 +187,78 @@ board supporting the devices: microprocessor, memory, peripherals etc.
 This directory obviously contains subdirectories for each platform
 supported by the kaneton microkernel.
 
-% kaneton/architecture/
+% architecture/
 
-\subsection*{kaneton/architecture/}
+\subsubsection*{architecture/}
 
 The \textit{architecture} directory contains the source-code related to
-the microprocessor architecture.
+the microprocessor architecture supported by the kaneton microkernel.
 
-This directory is composed of subdirectories, each one representing an
-architecture: \textit{ia32}, \textit{mips64} etc.
+This directory is composed of subdirectories, each one representing a
+supported architecture: \textit{ia32}, \textit{mips64} etc. Note that each
+architecture can be specialised as \textit{ia32/optimised} represents an
+optimised implementation of the Intel IA-32 microprocessor architecture.
 
+%
 % library/
+%
 
 \subsection*{library/}
 
-This directory contains the libraries used either by the kaneton microkernel
-itself or by the kaneton microkernel servers. This directory especially
-contrains the standard \textit{kaneton C library}.
+This directory contains the libraries used by either the kaneton microkernel
+itself or the kaneton microkernel servers or maybe both. This directory
+especially contains the standard \textit{kaneton C library}.
 
+%
 % license/
+%
 
 \subsection*{license/}
 
 This directory contains the licenses used for any program or document
-in relation with the kaneton microkernel project.
+in relation with the kaneton microkernel project. Indeed, the kaneton
+microkernel is under the \textit{kaneton license} which is described in
+depth in the documents contained in this directory. Note that these licenses
+are also available in the \textit{Chapter \ref{chapter:licenses}}.
 
-Each student has to read and accept the kaneton license before implementing
-or even using the kaneton microkernel project.
+Each student has to read and agree with the kaneton license before
+implementing or even using the kaneton microkernel project..
 
-% tool/
+Every user of the kaneton-related stuff is considered as having implicitly
+accepted the kaneton license.
 
-\subsection*{tool/}
-
-This directory contains additional files used by the kaneton development
-environment.
-
+%
 % test/
+%
 
 \subsection*{test/}
 
 Since the kaneton microkernel is used as a material for operating system
-courses, the kaneton microkernel reference which is the basis of students'
-work is to be extremely reliable.
+courses, the kaneton microkernel reference, which is the basis of students
+work, must be extremely reliable.
 
 The kaneton project therefore contains a set of tools in order to validate
 the kaneton reference implementation behaviour. These tools are also used
-for evaluating the correctness of the students' implementation.
+for evaluating the correctness of the students implementation.
 
-The \textit{test/} directory so contains the set kaneton scripts and tests
+The \textit{test/} directory so contains the set of kaneton scripts and tests
 for validating a kaneton microkernel implementation.
 
+%
+% tool/
+%
+
+\subsection*{tool/}
+
+This directory contains additional files used by either the kaneton development
+environment or the kaneton developers.
+
+As an example, this directory contains script for generating prototypes,
+building a boot device etc.
+
+%
 % transcript/
+%
 
 \subsection*{transcript/}
 
@@ -210,7 +266,9 @@ This directory contains real-time recorded sessions. These sessions can be
 replayed showing how to use the kaneton microkernel project and more
 specifically the kaneton development environement.
 
+%
 % view/
+%
 
 \subsection*{view/}
 

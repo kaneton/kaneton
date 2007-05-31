@@ -32,18 +32,19 @@ PAPER			:=		development
 SOURCES			:=		cheat.tex			\
 					c.tex				\
 					community.tex			\
+					conclusion.tex			\
 					configure.tex			\
 					control-panel.tex		\
 					development.tex			\
 					environment.tex			\
 					export.tex			\
-					general.tex			\
 					introduction.tex		\
 					languages.tex			\
 					licenses.tex			\
 					mailing-list.tex		\
 					project-management.tex		\
 					repository.tex			\
+					rules.tex			\
 					source-tree.tex			\
 					test.tex			\
 					tools.tex			\
