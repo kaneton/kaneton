@@ -1,0 +1,121 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/development/prototypes.tex
+%
+% created       julien quintard   [fri jun  1 01:07:42 2007]
+% updated       julien quintard   [fri jun  1 01:33:22 2007]
+%
+
+%
+% ---------- prototypes -------------------------------------------------------
+%
+
+\subsection{Prototypes}
+\label{section:prototypes}
+
+The \textit{tool/} directory contains a interesting tool developed by
+the kaneton community for generating \textit{C} prototypes automatically.
+
+This tool named \textit{mkp} must not be used directly as the prototypes
+automatic generation can be triggered from the \textit{Make} files via the
+\textit{proto} rule. This rule should be called everytime a developer wants
+the prototypes to be correct, for instance, before starting a compiling
+process.
+
+This script was introduced to avoid spending time writing prototypes.
+Since, this utility generates the prototypes automatically, developers
+should no longer write prototypes manually.
+
+This script takes a list of \textit{C} header files as arguments. These header
+files are supposed to contain a \textit{prototypes} section as illustrated
+below:
+
+\begin{verbatim}
+  /*
+   * ---------- prototypes ----------------------------------------------------
+   *
+   *      ../../core/set/set.c
+   *      ../../core/set/set-array.c
+   *      ../../core/set/set-ll.c
+   *      ../../core/set/set-bpt.c
+   *      ../../core/set/set-pipe.c
+   *      ../../core/set/set-stack.c
+   */
+
+  [...]
+
+  /*
+   * eop
+   */
+\end{verbatim}
+
+The \textit{mkp} tool then retrieve the list of the \textit{C} source files
+listed in the \textit{prototypes} section and remove the text between
+the \textit{prototype} opening section and the \textit{eop} tag.
+
+Then, the script goes through each of the listed source files and tries to
+detect \textit{C} function declarations. For each function declaration found,
+the tool generates a prototype in the corresponding header file.
+
+Below is an example of a header file with such a \textit{prototypes}
+section and generated prototypes.
+
+\begin{verbatim}
+  /*
+   * ---------- prototypes ----------------------------------------------------
+   *
+   *      ../../core/set/set.c
+   *      ../../core/set/set-array.c
+   *      ../../core/set/set-ll.c
+   *      ../../core/set/set-bpt.c
+   *      ../../core/set/set-pipe.c
+   *      ../../core/set/set-stack.c
+   */
+
+  /*
+   * ../../core/set/set.c
+   */
+
+  t_error                 set_dump(void);
+
+  t_error                 set_size(i_set                          setid,
+                                   t_setsz*                       size);
+
+  t_error                 set_new(o_set*                          o);
+
+  t_error                 set_destroy(i_set                       setid);
+
+  t_error                 set_descriptor(i_set                    setid,
+                                         o_set**                  o);
+
+  t_error                 set_get(i_set                           setid,
+                                  t_id                            id,
+                                  void**                          o);
+
+  t_error                 set_init(void);
+
+  t_error                 set_clean(void);
+
+
+  /*
+   * ../../core/set/set-array.c
+   */
+
+  t_error                 set_type_array(i_set                    setid);
+
+  t_error                 set_show_array(i_set                    setid);
+
+  t_error                 set_head_array(i_set                    setid,
+                                         t_iterator*              iterator);
+
+  [...]
+
+  /*
+   * eop
+   */
+\end{verbatim}

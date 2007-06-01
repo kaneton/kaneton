@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/view.tex
 %
 % created       julien quintard   [wed may 23 00:36:53 2007]
-% updated       julien quintard   [thu may 31 06:23:17 2007]
+% updated       julien quintard   [fri jun  1 00:38:18 2007]
 %
 
 %
@@ -31,6 +31,7 @@ directory.
   curriculum/
   exam/
   feedback/
+  figures/
   internship/
   lecture/
   logo/
@@ -42,22 +43,23 @@ directory.
 The \textit{template/} directory contains templates for every class of
 document. The \textit{bibliography/} and \textit{logo/} directories contain,
 obviously, the bibliography which is common to all the documents, and the
-logos, respectively.
+logos, respectively. The \textit{figures/} directory contains figures
+common to all the documents.
 
 The directories \textit{curriculum/}, \textit{exam/} and \textit{feedback/}
 contain documents in relation with teaching. The \textit{curriculum/}
 directory contains official documents like the project year planning,
-presentations of the project for the students etc.. The
-\textit{feedback/} directory contains documents which are distributed to the
-students at the end of the kaneton project for feedback in order to improve
+presentations of the education project etc. The \textit{feedback/}
+directory contains documents which are distributed to the students
+at the end of the kaneton project in order to get feedback for improving
 the project for the next years. Needless to say the \textit{exam/} directory
-contains everything related to exams.
+contains everything related to examinations.
 
 The other directories contain the actual kaneton documentation. The
-\textit{books} represent the major document targeting any public:
+\textit{books} represent the main documents targeting any public:
 contributors, teachers, students etc.. The \textit{papers} are lighter
-documents intended to present a specific feature, design choice of the kaneton
-project. The \textit{lectures} are the courses material, generally composed of
+documents intended to present a specific feature, design etc. The
+\textit{lectures} are the courses materials, generally composed of
 presentation slides. Finally, the \textit{internship} documentation is
 composed of documents written by people partially involved in the kaneton
 project.
@@ -66,7 +68,7 @@ Any document is composed of a \textit{Make} file and one or more
 \textit{\LaTeX} files. The \textit{Make} file always has the same form
 with little variations depending on the type of document.
 
-The only rules which apply to the kaneton documents are listed below.
+The rules which apply to the kaneton documents are listed below.
 
 \begin{itemize}
   \item
@@ -74,7 +76,7 @@ The only rules which apply to the kaneton documents are listed below.
     directory so that every included file can retrieve things at their exact
     location.
 
-    The variable \textit{path} must thus be defined before any other
+    The \textit{$\backslash$path} must thus be defined before any other
     \textit{\LaTeX} command and especially before including the template
     file.
 

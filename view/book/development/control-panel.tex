@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/control-panel.tex
 %
 % created       julien quintard   [sun may 20 15:22:52 2007]
-% updated       julien quintard   [thu may 31 06:25:01 2007]
+% updated       julien quintard   [fri jun  1 01:39:19 2007]
 %
 
 %
@@ -91,7 +91,7 @@ These actions are listed below:
 \command{test}
 	{
 	  This action runs the test suite in order to validate the kaneton
-	  whole behaviour.
+	  microkernel behaviour.
 
 	  \-
 
@@ -133,7 +133,7 @@ These actions are listed below:
 
 \command{export}
 	{
-	  This action builds a kaneton package.
+	  This action builds a kaneton distribution package.
 
 	  \-
 
@@ -141,7 +141,8 @@ These actions are listed below:
 
 	  \-
 
-	  \example{\$ make export-k3,k5}
+	  \example{\$ make export-k3,5}
+
 	  \-
 
 	  \example{\$ make export-back}
@@ -149,7 +150,7 @@ These actions are listed below:
 
 \command{view}
 	{
-	  This action generates and displays a kaneton document.
+	  This action builds and displays a kaneton document.
 
 	  \-
 
@@ -161,7 +162,7 @@ These actions are listed below:
 
 	  \-
 
-	  \example{\$ make view-paper::kaneton}
+	  \example{\$ make view-book::kaneton}
 	}
 
 \command{record}
@@ -196,7 +197,7 @@ These actions are listed below:
 
 \command{info}
 	{
-	  This action displays general kaneton information.
+	  This action displays general information about kaneton.
 
 	  \-
 

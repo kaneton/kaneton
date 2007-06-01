@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/configure.tex
 %
 % created       julien quintard   [tue may 22 22:34:37 2007]
-% updated       julien quintard   [thu may 31 21:16:59 2007]
+% updated       julien quintard   [fri jun  1 00:29:28 2007]
 %
 
 %
@@ -30,8 +30,8 @@ The kaneton development environment is thus used to configure the environment
 behaviour as well as the kaneton microkernel itself.
 
 The \textit{environment/} directory, and more precisely the environment
-profiles, contain \textit{description} files which actually describe the
-environment variables. These files are not used by the development
+profile directories, contain \textit{description} files which actually
+describe the environment variables. These files are not used by the development
 environment but rather by the \textit{configure} tool.
 
 The \textit{configure/} directory is composed of \textit{frame} files
@@ -42,7 +42,8 @@ The \textit{configure} tool works as follow. It starts by processing the
 environment development configuration files as the environment engine did
 for the generation of the configured environment files. Note that the
 \textit{configure} tool also processes the description files. Also, it
-focuses on variables and actually ignores the interfaces' functions.
+focuses on variables and actually ignores the \textit{Make} and \textit{Python}
+functions.
 
 Once this step is done, the tool gets a list of configured and fully described
 variables. Then, the \textit{configure} tool displays the first frame and
@@ -55,10 +56,10 @@ variable's description.
 
 Every modifications of the development environment are private to the actual
 user. Therefore, any variable modification adds or modifies an entry in the
-related \textit{user} profile.
+related \textit{user} profile's configuration file.
 
 Note that the \textit{configure} tool is not a environment configuration
-files editor. Indeed, this tool targets final users and therefore has to
+files editor. Indeed, this tool targets final users and therefore tries to
 be as simple as possible.
 
 The basic \textit{configure} behaviour consists in displaying the final
@@ -67,15 +68,15 @@ a relation with its previous value, the tool creates/modifies an entry in the
 \textit{user} profile's configuration file overriding any previous definition.
 
 For instance, consider the \textit{\_FOO\_} development environment variable
-with the following configuration definition:
+and the following configuration files:
 
-In \textit{profile/environment.conf}:
+In \textit{environment/profile/environment.conf}:
 
 \begin{verbatim}
   _FOO_                         =                       initial
 \end{verbatim}
 
-In \textit{profile/core/core.conf}:
+In \textit{environment/profile/core/core.conf}:
 
 \begin{verbatim}
   _FOO_                         +=                      addon
@@ -124,28 +125,46 @@ description and frame files use the \textit{YAML} syntax, as described next.
 
 \subsubsubsection{Syntax}
 
-The syntax of the frame description files is based on \textit{YAML}. Therefore,
-the \textit{Python} \textit{PyYAML} module needs to be set up.
+The syntax of the frame description files is based on \textit{YAML}.
 
 As said previously, a frame is composed of sub-frame and variable entries. A
-sub-frame entry contains a name and a path to the sub-frame description file
-while a variable entry only contains the name of the variable. This variable
-name is then used to retrieve the variable description.
+sub-frame entry contains a name and a path to the sub-frame \textit{frame}
+file while a variable entry only contains the name of the variable. This
+variable name is then used to retrieve the variable description.
+
+In addition, a section containing a title and a description is used to
+customize the display presented to the user.
 
 The example below illustrates this very simple syntax:
 
 \begin{verbatim}
-[XXX]
+  #
+  # ---------- information ----------------------------------------------------
+  #
+  # this is the main menu of segment manager.
+  #
+
+  #
+  # ---------- general --------------------------------------------------------
+  #
+
   - title: Segment Manager
     description: |
-      This frame contains configuration about the core
-      segment manager
+      This section contains configuration about the core segment manager.
 
-  - frame: optimisations
+  #
+  # ---------- frames ---------------------------------------------------------
+  #
+
+  - frame: Optimisations
     path: subsections/optimisations.desc
 
-  - frame: machine dependent
+  - frame: Machine-dependent
     path: subsections/machine.desc
+
+  #
+  # ---------- variables ------------------------------------------------------
+  #
 
   - variable: _FOO_
 

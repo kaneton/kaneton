@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/repository.tex
 %
 % created       julien quintard   [thu may 24 20:43:26 2007]
-% updated       julien quintard   [thu may 31 06:25:39 2007]
+% updated       julien quintard   [fri jun  1 02:15:14 2007]
 %
 
 %
@@ -28,8 +28,8 @@ The actual repository is based on the \textit{Subversion} software which
 provides far more advanced features than its historical rival \textit{CVS}.
 
 The repository is actually hosted on the \textit{kaneton.org} server which
-also contains the web server and everything else related to the development
-of the kaneton reference implementation.
+also contains the web server and everything else related to the management
+of the kaneton microkernel project.
 
 The repository is accessed in a secure way through a \textit{SSH} channel.
 Indeed, the kaneton \textit{Subversion} repository can be accessed at the
@@ -98,3 +98,9 @@ Therefore, the contributors reading the mailing-list are aware of every
 modification in the kaneton source code. This feature can also be used
 to review the modifications done by a new contributor in order to help
 him doing things in a better way.
+
+Note that there must not be any file with the executable flag permission
+enabled. Moreover, scripts files must not contain any \textit{shebang}.
+Indeed, the kaneton development environment knows which interpreter to
+use for every type of file. It is therefore a non-sense to introduce a
+hard-coded path to an interpreter.

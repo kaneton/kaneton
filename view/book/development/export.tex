@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/export.tex
 %
 % created       julien quintard   [wed may 23 18:58:41 2007]
-% updated       julien quintard   [thu may 31 06:23:43 2007]
+% updated       julien quintard   [fri jun  1 00:52:30 2007]
 %
 
 %
@@ -18,7 +18,7 @@
 \subsection{Export}
 \label{section:export}
 
-The \textit{export} tool was introduced for making the process of releasing
+The \textit{export} tool was introduced for making the releasing process
 easier. The tool takes an argument specifying the type of target release.
 
 Recall the kaneton microkernel project is used as a material for operating
@@ -35,13 +35,13 @@ type of release:
 \begin{itemize}
   \item
     \textbf{backup}: this release type is basically a bare backup of
-    the kaneton microkernel project source code.
+    the kaneton microkernel project repository.
   \item
     \textbf{dist}: the distribution release is performed by removing
-    the repository-specific stuff.
+    the repository-specific stuff: \textit{.svn/}, \textit{CVS/} etc.
   \item
     \textbf{k}$\gamma$\textbf{,}$\tau$: this type of release is intended
-    to students. Therefore, repository-specific stuff is removed. Also
+    to students. Therefore, repository-specific stuff is removed. Also,
     teaching materials such as courses, testing scripts, cheating scripts
     etc.. - specified in the kaneton development environment variable
     \textit{\_HIDDEN\_} - are removed.
@@ -58,15 +58,15 @@ type of release:
 
     \begin{itemize}
       \item
-	\textbf{0}: boot stuff: boostrap, bootloader etc..;
+	\textbf{k0}: boot stuff: boostrap, bootloader etc..;
       \item
-	\textbf{1}: memory management;
+	\textbf{k1}: memory management;
       \item
-	\textbf{2}: event management: interrupts, I/O etc..;
+	\textbf{k2}: event management: interrupts, I/O etc..;
       \item
-	\textbf{3}: task management, scheduling;
+	\textbf{k3}: task management, scheduling;
       \item
-	\textbf{4}: communication management.
+	\textbf{k4}: communication management.
     \end{itemize}
 \end{itemize}
 
@@ -82,10 +82,8 @@ As explained previously, pieces of code are removed in order to build
 \textit{stage} releases.
 
 The kaneton source code is marked so that the \textit{export} tool knows
-what piece of code to remove and for what stage. Indeed, every piece of
-educational code is marked by a tag indicating the stage it is related to.
-
-The syntax used is illustrated below:
+what stage a piece of code belongs to. Indeed, every piece of educational
+code is marked by a tag as illustrated below:
 
 \begin{verbatim}
   /*                                                                [cut] k1 */
@@ -153,12 +151,11 @@ In the first case, since the students have to implement the kaneton managers
 around the memory management, $T_{1}$ has to provide the students everything
 the memory management stuff relies on, including some fundamental managers,
 the bootloader etc.. Also, the teacher does not need to provide the source
-code of the upper level managers. As a result, a \textit{k1,1} release will
-remove the pieces of codes with every marking $k_{\alpha}$ for
-$1 \le \alpha \le 1$.
+code of the upper-level managers. As a result, a \textit{k1,1} release will
+remove the pieces of codes marked $k_{\alpha}$ for $1 \le \alpha \le 1$.
 
 The teacher $T_{2}$ needs something different since the students are going
-to implement every major piece of the kaneton source code. Since this teacher
+to implement every major pieces of the kaneton source code. Since this teacher
 wants their students to implement all the steps, starting with \textit{k0}
 to \textit{k4}, a \textit{k0,4} release will not contain the pieces of source
 code marked $k_{\alpha}$ for $0 \le \alpha \le 4$.
