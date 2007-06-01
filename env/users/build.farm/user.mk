@@ -22,6 +22,3 @@
 
 # for using gdb with qemu
 _CFLAGS_	+=	-O2
-
-# disable checks
-#_CHECK_LO_	:=
