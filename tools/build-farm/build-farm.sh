@@ -1,4 +1,19 @@
 #
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/tool/build-farm/build-farm.sh
+#
+# created       julien quintard   [fri jun  1 02:31:40 2007]
+# updated       julien quintard   [fri jun  1 02:32:29 2007]
+#
+
+#
+# ---------- information ------------------------------------------------------
+#
 # this file performs an automatic checkout of the kaneton repository
 #
 # then it tries to compile the microkernel and launches the testsuite
@@ -6,6 +21,10 @@
 #
 # finally, the script sends an email to the kaneton developers mailing
 # list.
+#
+# this file requires the script 'gmail.sh' to send an email to the
+# developers mailing-list and the image 'pty.img' for booting QEMU in
+# order to determine the pty device path.
 #
 
 #
@@ -17,7 +36,7 @@ export PATH="/usr/local/bin:/usr/bin:/bin"
 
 # set the shell environment variables so that the kaneton
 # environment engine can be set up properly
-export KANETON_USER="build"
+export KANETON_USER="build.farm"
 export KANETON_MACHINE='linux::ibm-pc.ia32-virtual'
 export KANETON_SHELL='/bin/bash'
 
@@ -115,9 +134,6 @@ Unable to find any /dev/pts/X in the QEMU output
 #
 initialize()
 {
-  # kill any running QEMU
-  killall -9 qemu
-
   # make sure of the umask
   umask 022
 
@@ -151,7 +167,7 @@ repository()
 {
   # checkout the kaneton subversion repository based on the
   # ssh configuration: see ~/.ssh/
-  g_debug=$(svn co --username build "${g_repository}" 2>&1)
+  g_debug=$(svn co --username build.farm "${g_repository}" 2>&1)
 
   if [ ${?} -ne 0 ] ; then
     g_report="
@@ -168,7 +184,7 @@ Unable to checkout the kaneton repository at:
 #
 # this function moves to the kaneton repository and tries to
 # initialize the kaneton development environment for the
-# 'build' user profile.
+# 'build.farm' user profile.
 #
 environment()
 {
@@ -378,7 +394,7 @@ ${ld}
   bash /home/mycure/kaneton/gmail.sh <<EOF
 From: admin@kaneton.org
 To: kaneton-developers@googlegroups.com
-Subject: [build] ${g_state}
+Subject: [build farm] ${g_state}
 
 ${g_report}
 EOF
