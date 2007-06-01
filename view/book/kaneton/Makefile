@@ -29,7 +29,12 @@ include			../../../env/.env.mk
 
 PAPER			:=		kaneton
 
-SOURCES			:=		
+SOURCES			:=		bibliography.tex		\
+					goals.tex			\
+					history.tex			\
+					kaneton.tex			\
+					licenses.tex			\
+					portability.tex			
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
@@ -41,8 +46,6 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 #
 # ---------- rules ------------------------------------------------------------
 #
-
-XXX:
 
 all:			build
 
