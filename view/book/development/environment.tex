@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/environment.tex
 %
 % created       julien quintard   [sun may 20 14:49:26 2007]
-% updated       julien quintard   [thu may 31 22:56:27 2007]
+% updated       julien quintard   [sun jun  3 19:39:38 2007]
 %
 
 %
@@ -260,7 +260,7 @@ following scripts:
 
 \begin{verbatim}
   critical.py
-  init.py
+  initialize.py
   clean.py
 \end{verbatim}
 
@@ -271,12 +271,13 @@ variables and functions for the \textit{Make} files and \textit{Python}
 scripts, respectively. This file is called critical because it does not rely
 on the portable development environment as it generates it.
 
-The \textit{init.py} script relies on the file \textit{env.py} previously
+The \textit{initialize.py} script relies on the file \textit{env.py} previously
 generated. This script set up everything necessary for building the
 kaneton microkernel based on the configured environment.
 
 Finally, the \textit{clean.py} script cleans everything installed by the
-\textit{init.py} script and removes the generated configured environment files.
+\textit{initialize.py} script and removes the generated configured environment
+files.
 
 The generation of the configured environment is done by going through
 the configuration files of all the profiles and sub-profiles associated

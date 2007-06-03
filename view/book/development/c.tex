@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/c.tex
 %
 % created       julien quintard   [fri may 25 20:24:38 2007]
-% updated       julien quintard   [fri jun  1 01:05:19 2007]
+% updated       julien quintard   [sun jun  3 09:50:39 2007]
 %
 
 %
@@ -37,7 +37,7 @@ can very easily read the source code of the kaneton microkernel.
 
 \subsection{Naming}
 
-Names in kaneton must comply to the following several rules.
+Names in kaneton must comply to the following rules.
 
 % general
 
@@ -74,7 +74,7 @@ without a loss of meaning. The following rules must be used in this way:
       int                               modsz;
     \end{verbatim}
   \item
-    The \textbf{n} prefix for variables representing a number:
+    The \textbf{n} prefix must be used for variables representing a number:
 
     \begin{verbatim}
       int                               ntasks;
@@ -85,7 +85,7 @@ More generally, entities must be named with a \textit{unique} word,
 excluding the namespace prefix. Short less explicit names are always prefered
 on very long explicit names which are then difficult to name and use.
 
-The following example first illustrates a wrong usage:
+The following example illustrates a wrong usage of names in kaneton:
 
 \begin{verbatim}
   t_errval              segment_dump_set(i_set              segment_set,
@@ -97,11 +97,11 @@ something similar to the following:
 
 \begin{verbatim}
   t_error               segment_dump(i_set              segments,
-                                     t_uint32           nsegmens);
+                                     t_uint32           nsegments);
 \end{verbatim}
 
 Indeed, types are used as pre-names. Therefore, the entity name should
-not overlap the type's name. For example, the following example is incorrect:
+not overlap the type name. For example, the following example is incorrect:
 
 \begin{verbatim}
   t_vaddr               video_addr;
@@ -116,6 +116,11 @@ Developers should prefer simpler names:
 
   i_event               id;
 \end{verbatim}
+
+These rules must be respected, especially in the case of functions belonging
+to an interface. Indeed, since interfaces are presented to the user, they
+must be easy to use and self-described. Therefore, functions as well as
+arguments must be very clearly named, using a single word.
 
 Finally, names must be expressed in English, without spelling mistakes.
 
@@ -136,8 +141,12 @@ This is the common rule. However, some exceptions exist.
 
 Macro names must be entirely capitalized except for macros which create
 an abstraction as it is the case for the \textit{set manager} interface. Macro
-arguments must be prefixed and suffixed by an underscore so that naming
+arguments, must be prefixed and suffixed by an underscore so that naming
 collision is avoided.
+
+Note that the kaneton coding style names function arguments as
+\textit{arguments} and macro arguments as \textit{parameters} as these
+latter ones are statically computed.
 
 \begin{verbatim}
   #define SCHEDULER_STATE_RUN           0
@@ -180,7 +189,7 @@ Firstly, structures, unions and enumerations must not be directly used.
 Instead, a type must be defined. In order to indicate the entity class a type
 represents, prefixes are used.
 
-Below are listed the different groups:
+Below are listed the different prefix groups:
 
 \begin{itemize}
   \item
@@ -200,19 +209,8 @@ Below are listed the different groups:
 Note that group prefixes can be combined in several ways. For instance,
 the prefix \textit{ao\_} represents an architecture-dependent object.
 
-If a type does not fit in these groups, then it can be considered as a
-general purpose type. In this case, one of the following prefixes must be used:
-
-\begin{itemize}
-  \item
-    Structure types are prefixed by \textit{s\_};
-  \item
-    Enumeration types are prefixed by \textit{e\_};
-  \item
-    Union types are prefixed by \textit{u\_};
-  \item
-    Basic aliased types are prefixed by \textit{t\_}.
-\end{itemize}
+If a type does not fit into on of these groups, then it can be considered as a
+general purpose type. In this case, types are prefixed by \textit{t\_}.
 
 The example below illustrates this rule:
 
@@ -235,8 +233,8 @@ The example below illustrates this rule:
 The use of \textit{C} standard types like \textit{int}, \textit{long long}
 is prohibited since there exist kaneton-specific types \textit{t\_uint32},
 \textit{t\_uint64} which provide a size guarantee. Indeed, the \textit{C}
-standard does not specify the size of the types \textit{int} etc. depending
-on the architecture.
+standard does not specify the size of the types \textit{int}, \textit{short}
+etc. depending on the architecture.
 
 %
 % layout
@@ -415,8 +413,7 @@ Next are listed some of the most important sections:
 
     This section is specific as the kaneton microkernel project uses a
     tool for generating prototypes from \textit{C} source file. For more
-    information, please refer to the section dedicated to the prototype
-    generation.
+    information, please refer to \textit{Section \ref{section:prototypes}}.
 
     \begin{verbatim}
       /*
@@ -472,15 +469,15 @@ Next are listed some of the most important sections:
     \textbf{functions}: this section contains function definitions.
 \end{itemize}
 
-More specifically, header files are likely to contain the sections:
+More specifically, \textit{C} header files are likely to contain the sections:
 \textit{header}, \textit{dependencies}, \textit{macros}, \textit{types},
 \textit{includes}, \textit{macro functions}, \textit{prototypes} etc. while
-the source files should contain the sections: \textit{header},
+the \textit{C} source files should contain the sections: \textit{header},
 \textit{information}, \textit{includes}, \textit{externs}, \textit{globals},
 \textit{functions} etc.
 
 The \textit{header} section is basically the file header which was described
-in a previous section.
+in \textit{Chapter \ref{chapter:rules}}.
 
 % preprocessor
 
@@ -527,9 +524,12 @@ with the suffix \textit{\_H} in order to avoid guard macro name collision.
   #endif
 \end{verbatim}
 
-Spanning macros over multiple lines is encouraged for a sake of clarity. In
-such cases, escaped lines breaks \textit{$\backslash$-newline} must appear
-on the same column. For this purpose, tabulations must be used:
+Spanning macros over multiple lines is encouraged for the sake of clarity. In
+such cases, escaped line breaks \textit{$\backslash$-newline} must appear
+on the same column. For this purpose, tabulations must be used.
+
+Moreover, the body of macro functions must start on a new line, idented by
+\textit{2} whitespaces.
 
 \begin{verbatim}
   /*
@@ -576,17 +576,17 @@ on the same column. For this purpose, tabulations must be used:
 
 Every function must be preceded by a comment which completely describes the
 actions the function performs. Moreover, some function parts need additional
-description. In order not to overload the function body with heavy comments,
+descriptions. In order not to overload the function body with heavy comments,
 a kaneton-specific function organisation was introduced.
 
 Indeed, functions body are composed of \textit{steps}, each step representing
 a bunch of coherent actions. These actions are not described in the body
 of the function, but rather in the comment preceding the function. Thus,
-the body is clearly decomposed into steps for the sake of clarity and
-expressiveness while these steps can be heavily documented in the
+the body is clearly decomposed into steps for the sake of clarity
+while expressiveness is guaranted by heavy documentation contained in the
 function comment.
 
-Therefore, function definitions must comply this organisation as illustrated
+Therefore, function definitions must comply the organisation illustrated
 below:
 
 \begin{verbatim}
@@ -634,11 +634,12 @@ below:
   }
 \end{verbatim}
 
-Note that putting a single blank line for separating pieces of code is more
-than encouraged as it leads to a more readable source code.
+Note that a single blank line must be put for separating pieces of code
+as it leads to a more readable source code. Moreover, a blank line must
+be put before and after each step comment in the function's body.
 
 Note that comments must comply to the template exposed above. The following
-are examples of what is a bad comment:
+are examples of bad comments:
 
 \begin{verbatim}
   /*
@@ -647,10 +648,11 @@ are examples of what is a bad comment:
 
   /* Bad Comment
    */
-\end{verbatim}
 
-Finally, it is absolutely forbidden to put comments on a single line
-as well as to use the \textit{C++} comment characters sequence \textit{//}.
+  /* bad comment */
+
+  // bad comment
+\end{verbatim}
 
 %
 % style
@@ -685,20 +687,8 @@ of whitespaces. This amount is fixed to \textit{2} whitespaces. Note that
 the \textit{Emacs} default identation comply to this rule.
 
 Moreover, the braces must also be indented by the amount of \textit{2}
-spaces from the previous line. However, some exceptions exist:
-
-\begin{verbatim}
-  if (type == TYPE_SET)
-    {
-      int       i;
-
-      {
-        int     j;
-
-	[...]
-      }
-    }
-\end{verbatim}
+spaces from the previous line. However, some exceptions exist, especially
+with nested block declarations.
 
 In \textit{C} functions, the declaration part must be separated from statements
 with a single blank line. Note that when there are no declarations, there
@@ -747,7 +737,7 @@ to the length of the identifier, starting with the longer, as shown below.
 \end{verbatim}
 
 In \textit{C}, pointerness is not part of the type. However, in the kaneton
-coding style, the pointer symbol \textit{*} in declarations must appear next
+coding style, the \textit{*} pointer symbol in declarations must appear next
 to the type.
 
 Function argument lists must be broken between each argument, after the
@@ -789,6 +779,11 @@ It is indeed the responsibility of the developer to align these lines
 properly. Note that \textit{Emacs}'s alignment comply to many of the
 kaneton rules.
 
+\begin{verbatim}
+  int           x = y * foo(z + pow(z, 3)) +
+    a_very_very_long_function_name(y, z) + bar(baz(42, 21), y * z);
+\end{verbatim}
+
 % declarations
 
 \subsubsection{Declarations}
@@ -809,11 +804,13 @@ Below are illustrated some very bad constructs:
   {
     i_thread              current, next;
     o_thread*             o = thread_get(current);
-    extern                sched;
+    extern int            sched;
 
     [...]
   }
 \end{verbatim}
+
+Variables must always be declared at the beginning of a block.
 
 % statements
 
@@ -845,7 +842,7 @@ a whitespace, except if alone on its line.
 \end{verbatim}
 
 There exist exception to the above rules. For more information, please
-refer to the section about control structures.
+refer to the section about \textit{Control Structures}.
 
 Statement keywords must be followed by a single whitespace, except
 those without arguments. This especially implies the \texttt{return} without
@@ -871,7 +868,7 @@ between parentheses, as illustrated next.
   }
 \end{verbatim}
 
-Finally, the \texttt{goto} statement must not be used.
+Finally, the use of the \texttt{goto} statement must be extremely limited.
 
 % expressions
 
@@ -895,7 +892,7 @@ Below is an example illustrating these rules.
 
     x = 10 * *p + reference->value++;
 
-    x += (reference->tag == 1 ? 10 : 0);
+    x += ((*reference).tag == 1 ? 10 : 0);
   }
 \end{verbatim}
 
@@ -967,6 +964,32 @@ The following must be prefered:
   }
 \end{verbatim}
 
+Finally, the conditional control structures must always use a full
+comparison and avoid the use of the logical not operator: \textit{!}
+
+For instance, the following construct is very wrong:
+
+\begin{verbatim}
+  if (!(kernel_buffer = malloc(size)))
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+\end{verbatim}
+
+Indeed, this construct supposes the \textit{malloc()} function returns
+\textit{0} when it fails. However, the \textit{malloc()} function returns
+\textit{NULL} when it fails and no specification actually indicates what
+is the value of the \textit{NULL} macro. Many programmers consider this
+macro is always equivalent to the \textit{zero} integer value but this is
+not true.
+
+Therefore, kaneton developers must use comparison operators to avoid such
+issues. In addition, using comparison operators makes the code much
+more simple to read and understand:
+
+\begin{verbatim}
+  if ((kernel_buffer = malloc(size)) == NULL)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+\end{verbatim}
+
 % for
 
 \subsubsection{for}
@@ -1009,7 +1032,7 @@ Instead, prefer:
          j = j + 2, i++)
       ;
 
-    for (; ; )
+    for (; 1; )
       ;
   }
 \end{verbatim}
@@ -1018,13 +1041,125 @@ Finally, single-line loops - \texttt{for} and \texttt{while} - must have
 their terminating semicolon on the following line, as illustrated above.
 
 %
-% ---------- XXX --------------------------------------------------------------
+% kaneton
 %
 
-  return [sepcial dans kaneton avec les LEAVE]
+\subsection{kaneton}
 
-+programmation differente: type retour = error, valeur retour = last args
+The following rules apply specifically to the source code of the microkernel
+itself.
 
-declarations au debut des blocs et nul par ailleurs, for, a l'interieur etc..
+In kaneton, function declarations follow the same template. Indeed, the
+return value must always indicate whether the function call successed or not.
+The return type is therefore always the same: \textit{t\_error}.
 
-function(input, *output)
+Function arguments must be ordered, starting with input argument and
+finishing with ouput arguments. Moreover, the first argument must
+be the more important \textit{i.e} the kaneton object identifier or
+capability on which the action is performed.
+
+\begin{verbatim}
+  t_error                 task_reserve(t_class                    class,
+                                       t_behav                    behav,
+                                       t_prior                    prior,
+                                       i_task*                    id);
+\end{verbatim}
+
+In this example, \textit{class}, \textit{behav} and \textit{prior} are
+input arguments. The function creates a new task object and returns the
+identifier of this new task into the \textit{id} output argument, which
+is the last of the list.
+
+Especially note that kaneton does not have any function returning a value.
+The return value is always used as an error status, thus leading to a more
+uniform and coherent programming style.
+
+Functions located in a kaneton manager must start with a call to the
+\textit{ENTER()} macro function and finish with a call to the \textit{LEAVE()}
+macro function. These macro functions were introduced in order to
+facilitate the process of adding a statement at the beginning and/or at
+the end of a function. Especially, the \texttt{return} keyword should no
+longer be used.
+
+Below is an example of such calls:
+
+\begin{verbatim}
+  /*
+   * this function releases a thread from a given task.
+   *
+   * steps:
+   *
+   * 1) call the machine-dependent code.
+   * 2) get the thread object.
+   * 3) get the task object.
+   * 4) release the thread stack if needed.
+   * 5) release the thread-s object identifer.
+   * 6) remove the thread from the task threads list.
+   * 7) remove the thread from the threads set.
+   */
+
+  t_error                 thread_release(i_thread                 threadid)
+  {
+    o_task*               task;
+    o_thread*             o;
+
+    THREAD_ENTER(thread);
+
+    /*
+     * 1)
+     */
+
+    if (machdep_call(thread, thread_release, threadid) != ERROR_NONE)
+      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+    /*
+     * 2)
+     */
+
+    if (thread_get(threadid, &o) != ERROR_NONE)
+      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+    /*
+     * 3)
+     */
+
+    if (task_get(o->taskid, &task) != ERROR_NONE)
+      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+    /*
+     * 4)
+     */
+
+    if (o->stack)
+      {
+        if (map_release(task->asid, o->stack) != ERROR_NONE)
+          THREAD_LEAVE(thread, ERROR_UNKNOWN);
+      }
+
+    /*
+     * 5)
+     */
+
+    if (id_release(&thread->id, o->threadid) != ERROR_NONE)
+      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+    /*
+     * 6)
+     */
+
+    if (set_remove(task->threads, threadid) != ERROR_NONE)
+      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+    /*
+     * 7)
+     */
+
+    if (set_remove(thread->threads, threadid) != ERROR_NONE)
+      THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+    THREAD_LEAVE(thread, ERROR_NONE);
+  }
+\end{verbatim}
+
+In this example, the types of error are not distinguished as the function
+always returns \textit{ERROR\_UNKNOWN} which is not a very good idea.

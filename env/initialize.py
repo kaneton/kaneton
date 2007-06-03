@@ -5,21 +5,21 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/environment/init.py
+# file          /home/mycure/kaneton/env/initialize.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [sun may 27 21:30:45 2007]
+# updated       julien quintard   [sun jun  3 19:43:41 2007]
 #
 
 #
 # ---------- imports ----------------------------------------------------------
 #
 
-import os
-
 import critical
 
 import env
+
+import os
 
 #
 # ---------- functions --------------------------------------------------------
@@ -127,20 +127,20 @@ def			prototypes():
   env.display(env.HEADER_OK,
               "generating the kaneton prototypes",
               env.OPTION_NONE)
-# XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "proto")
+# XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "prototypes")
 
 
 
 #
-# dependencies()
+# headers()
 #
-# this function generates the kaneton dependencies.
+# this function generates the kaneton header dependencies.
 #
-def			dependencies():
+def			headers():
   env.display(env.HEADER_OK,
-              "generating the kaneton dependencies",
+              "generating the kaneton header dependencies",
               env.OPTION_NONE)
-# XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "dep")
+# XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "headers")
 
 
 
@@ -168,8 +168,8 @@ def			main():
   # generate the kaneton prototypes.
   prototypes()
 
-  # generate the kaneton dependencies.
-  dependencies()
+  # generate the kaneton headers.
+  headers()
 
   # display some stuff.
   env.display(env.HEADER_OK,

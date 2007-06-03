@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/control-panel.tex
 %
 % created       julien quintard   [sun may 20 15:22:52 2007]
-% updated       julien quintard   [fri jun  1 01:39:19 2007]
+% updated       julien quintard   [sun jun  3 19:03:38 2007]
 %
 
 %
@@ -23,7 +23,7 @@ the \textit{Make} file of the project's root directory.
 
 These actions are listed below:
 
-\command{init}
+\command{initialize}
         {
 	  This action initializes the kaneton development environment by
 	  invoking the \textit{init.py} script of the \textit{environment/}
@@ -31,7 +31,7 @@ These actions are listed below:
 
 	  \-
 
-	  \example{\$ make init}
+	  \example{\$ make initialize}
 	}
 
 \command{clean}
@@ -70,22 +70,32 @@ These actions are listed below:
 	  \example{\$ make purge}
 	}
 
-\command{dep}
+\command{headers}
 	{
-	  This action generates make files dependencies.
+	  This action generates \textit{Make} files' \textit{C} header
+	  files dependencies.
 
 	  \-
 
-	  \example{\$ make dep}
+	  \example{\$ make headers}
 	}
 
-\command{proto}
+\command{prototypes}
 	{
 	  This action generates C prototypes.
 
 	  \-
 
-	  \example{\$ make proto}
+	  \example{\$ make prototypes}
+	}
+
+\command{prototypes}
+	{
+	  This action generates C prototypes.
+
+	  \-
+
+	  \example{\$ make prototypes}
 	}
 
 \command{test}

@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/build-farm.tex
 %
 % created       julien quintard   [fri jun  1 02:21:37 2007]
-% updated       julien quintard   [fri jun  1 02:23:49 2007]
+% updated       julien quintard   [fri jun  1 20:57:43 2007]
 %
 
 %
@@ -18,4 +18,23 @@
 \subsection{Build Farm}
 \label{section:build farm}
 
-XXX
+A \textit{Build Farm} was introduced in order to perform a verification
+of the correct behaviour of the kaneton microkernel on a daily-basis.
+
+Indeed, every night, the \textit{build-farm} tool is launched on the
+\textit{kaneton.org} server and performs the following steps:
+
+\begin{enumerate}
+  \item
+    \textbf{checkout} of the kaneton repository;
+  \item
+    \textbf{compiling} of the kaneton microkernel and its dependencies;
+  \item
+    \textbf{test} of the microkernel behaviour in an emulated environment.
+\end{enumerate}
+
+At the end of the process, the tool reports the results obtained on
+the kaneton developers mailing-list.
+
+Thus, if the kaneton microkernel does not pass all the tests, this means
+that a modification has introduced some bugs.

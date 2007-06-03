@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/development.tex
 %
 % created       julien quintard   [mon may 14 19:56:45 2007]
-% updated       julien quintard   [fri jun  1 01:31:27 2007]
+% updated       julien quintard   [sun jun  3 19:44:41 2007]
 %
 
 %
@@ -60,10 +60,8 @@
 %
 
 This document describes how people can contribute to the kaneton microkernel
-project and the rules they have to follow.
-
-This document must be read by everyone contributing to the kaneton microkernel
-reference implementation.
+project and the rules they have to follow. This document must be read by
+everyone contributing to the kaneton microkernel reference implementation.
 
 All the kaneton documents are available on
 the official website
@@ -73,7 +71,7 @@ the official website
 % toc
 %
 
-\tableofcontents
+\toc
 
 %
 % chapters
@@ -84,9 +82,10 @@ the official website
 \input{community.tex}
 \input{rules.tex}
 \input{tools.tex}
-\input{languages}
-\input{licenses}
-\input{conclusion}
+\input{languages.tex}
+\input{people.tex}
+\input{licenses.tex}
+\input{conclusion.tex}
 
 \end{document}
 
@@ -96,39 +95,6 @@ the official website
 
 --
 
-aucun fichier dans le repository avec les droits executables: Makefile,
-scripts etc. must be non-executable.
-pas de shebang, pas d'executable
+systeme de redefinition de Makefiles entiers: environment + make
 
 --
-
-.tar.gz pour les tarballs
-
---
-
-files: - et pas de _, en minuscule bien sur et pas de characters cheloux
-preferez - plutot que _ pour separer sauf si le langage ne le permet pas.
-
---
-
-arguments en C, doivent etre simple, complet clairs car c'est l'interface
-du module. o doit etre utilise opur un objet kernel correspondant au module.
-tout doit etre nomme en un mot autant que possible et etre coherent par
-rapport a ce qui existe deja. de plus le nom d'une variable ne doit
-pas recoupe son type: t_wait waitlist c'est stupide.
-
---
-
-== NULL ou ERROR_UNKNOWN mais pas de (!(...))
-
---
-
-XXX ecrire dans environment-design que le generateur de user-profile doit
-XXX aussi creer un fichier .conf
-
-XXX dire que kaneton s'ecrit en minuscule et les kX aussi.
-
-XXX dans book::kaneton, archi supportees, core, glue, machdep system, syscall
-    interface, dans book::core, un fichier par manager.
-
-XXX diff arg | param

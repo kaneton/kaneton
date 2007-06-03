@@ -29,7 +29,8 @@ include			../../../env/.env.mk
 
 PAPER			:=		development
 
-SOURCES			:=		build-farm.tex			\
+SOURCES			:=		asm.tex				\
+					build-farm.tex			\
 					cheat.tex			\
 					c.tex				\
 					community.tex			\
@@ -42,9 +43,12 @@ SOURCES			:=		build-farm.tex			\
 					introduction.tex		\
 					languages.tex			\
 					licenses.tex			\
+					make.tex			\
 					mailing-list.tex		\
+					people.tex			\
 					project-management.tex		\
 					prototypes.tex			\
+					python.tex			\
 					repository.tex			\
 					rules.tex			\
 					source-tree.tex			\

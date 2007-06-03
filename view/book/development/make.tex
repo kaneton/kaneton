@@ -1,0 +1,172 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/development/make.tex
+%
+% created       julien quintard   [sat jun  2 12:34:28 2007]
+% updated       julien quintard   [sun jun  3 19:22:38 2007]
+%
+
+%
+% ---------- make -------------------------------------------------------------
+%
+
+\section{Make}
+\label{section:make}
+
+The coding style related to \textit{Make} files is very simple.
+
+% naming
+
+\subsection{Naming}
+
+First, \textit{Make} files must be named \textbf{Makefile}, with the first
+letter in upper case letter.
+
+Rules must be named with a single word in lower case letters.
+
+% layout
+
+\subsection{Layout}
+
+\textit{Make} files must be organised as sections.
+
+\begin{itemize}
+  \item
+    \textbf{header}: this section contains the file header which provides
+    information on the file edition: creation, last update etc.
+  \item
+    \textbf{dependencies}: this section contains the \textit{include}
+    directives.
+
+    \begin{verbatim}
+      #
+      # ---------- dependencies -----------------------------------------------
+      #
+
+      include                 ../../env/.env.mk
+
+      [...]
+
+      #
+      # ---------- dependencies -----------------------------------------------
+      #
+
+      -include                ./$(_MAKEFILE_MK_)
+    \end{verbatim}
+  \item
+    \textbf{directives}: this section contains \textit{Make} directives
+    like \textit{.PHONY}, \textit{.SUFFIXES} etc.
+
+    \begin{verbatim}
+      #
+      # ---------- directives -------------------------------------------------
+      #
+
+      .PHONY:         libs clear proto dep
+    \end{verbatim}
+  \item
+    \textbf{variables}: this section contains the variable definitions.
+
+    \begin{verbatim}
+      #
+      # ---------- variables --------------------------------------------------
+      #
+
+      SUBDIRS                 :=              arch                      \
+                                              kernel                    \
+                                              as                        \
+                                              conf                      \
+                                              id                        \
+                                              region                    \
+                                              segment                   \
+                                              debug                     \
+                                              map                       
+
+      CORE_INCLUDE            :=              $(_CORE_INCLUDE_DIR_)/core.h
+
+      CORE_C                  :=              core.c
+
+      CORE_O                  :=              $(CORE_C:.c=.o)
+    \end{verbatim}
+  \item
+    \textbf{rules}: this section contains the \textit{Make} rules.
+
+    \begin{verbatim}
+      #
+      # ---------- rules ------------------------------------------------------
+      #
+
+      $(LIBSTRING_LO):        $(LIBSTRING_O)
+              $(call remove,$(LIBSTRING_LO),)
+
+              $(call archive,$(LIBSTRING_LO),$(LIBSTRING_O),)
+
+      clear:
+              $(call remove,$(LIBSTRING_O),)
+
+              $(call remove,$(LIBSTRING_LO),)
+
+              $(call purge,)
+
+      proto:
+              $(call prototypes,$(LIBSTRING_INCLUDE),)
+
+      dep:
+              $(call remove,$(_MAKEFILE_MK_),)
+
+              $(call dependencies,$(LIBSTRING_C),$(_MAKEFILE_MK_),)
+    \end{verbatim}
+\end{itemize}
+
+% style
+
+\subsection{Style}
+
+Recall that the kaneton development environment provides a \textit{Make}
+interface allowing \textit{Make} files to perform operations in a portable
+way. Thus, \textit{Make} files must not contain any operations specific
+to any operating system.
+
+In fact, every operation should be a call to one of the \textit{Make} functions
+provided by the kaneton development environment interface.
+
+Variables must be expressed in upper case letters while rules must be in a
+single lower case letters word.
+
+Any contributor writing a Makefile should take care of properly cleaning
+the directory from temporary files. Indeed, every \textit{Make} file
+provides a \textit{clear} rule which is intended to clean these temporary
+files. Therefore, every developer should take care of that and verify every
+file was cleaned before committing.
+
+The kaneton project provides a tool for generating \textit{C} prototypes
+through a \textit{Make} rule called \textit{prototypes}. Therefore, the
+\textit{Make} file must carefully use this rule to trigger the generation
+of prototypes in the right header files. For more information about the
+prototypes generation, please refer to \textit{Section
+\ref{section:prototypes}}.
+
+One of the other important rules is called \textit{headers} and generated
+a file containing all the dependencies related to a set of \textit{C}
+source files. This generated file must be included in the \textit{Make}
+so that it can use it. A \textit{Make} file inclusion is present at the
+end of many \textit{Make} files for this purpose:
+
+\begin{verbatim}
+  #
+  # ---------- dependencies ---------------------------------------------------
+  #
+
+  -include                ./$(_MAKEFILE_MK_)
+\end{verbatim}
+
+Finally, \textit{Make} files must resolve dependencies before performing
+any other task. Therefore, a rule named \textit{dependencies} launches
+every \textit{Make} file in charge of one of the dependency. Note that this
+\textit{dependencies} rule is automatically launched when you try to
+build a component.

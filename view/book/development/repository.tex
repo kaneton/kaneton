@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/repository.tex
 %
 % created       julien quintard   [thu may 24 20:43:26 2007]
-% updated       julien quintard   [fri jun  1 15:39:15 2007]
+% updated       julien quintard   [sat jun  2 12:30:06 2007]
 %
 
 %
@@ -19,10 +19,10 @@
 \label{section:repository}
 
 The repository contains everything related to the kaneton microkernel
-project, in other words, the whole kaneton source tree described in a
-previous section. Indeed, the repository contains the whole history
-of the kaneton project including the documentation, the source code
-but also the students tarballs.
+project, in other words, the kaneton source tree described in
+\textit{Chapter \ref{chapter:source-tree}}. Indeed, the repository contains
+the whole history of the kaneton project including the documentation, the
+source code but also the students tarballs over the years.
 
 The actual repository is based on the \textit{Subversion} software which
 provides far more advanced features than its historical rival \textit{CVS}.
@@ -43,9 +43,8 @@ Note that the security is achieved by the use of \textit{SSH} keys. Therefore,
 any new contributor should get in touch with an administrator of the
 kaneton server in order to obtain an access. Also note that, even if this is
 not the case yet, a test period could be set up for any new contributor
-to get the trust of the kaneton community. At the end of this period,
-either the contributor would be evinced or accepted with a complete access to
-the repository.
+to get the trust of the kaneton community. For more information, please
+refer to \textit{Chapter \ref{chapter:community}}.
 
 A contributor willing to create a \textit{SSH} key shoud simply use this
 command:
@@ -73,7 +72,7 @@ The repository organisation is crucial. Therefore, nothing should be
 added, removed or renamed without the permission of the developers in charge
 of the repository.
 
-Finally, any commit must come with a log describing what are the modifications
+Finally, any commit must come with a log describing the modifications
 implied by the commit. These logs must conform to the following syntax.
 
 \begin{verbatim}
@@ -100,3 +99,6 @@ enabled. Moreover, scripts files must not contain any \textit{shebang}.
 Indeed, the kaneton development environment knows which interpreter to
 use for every type of file. It is therefore a non-sense to introduce a
 hard-coded path to an interpreter.
+
+Tarball file names must be extended with \textit{.tar} while \textit{gzip}
+compressed tarballs must be extended with \textit{.tar.gz}.

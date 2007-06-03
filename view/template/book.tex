@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/template/book.tex
 %
 % created       julien quintard   [wed may 16 18:16:50 2007]
-% updated       julien quintard   [fri jun  1 13:40:31 2007]
+% updated       julien quintard   [sun jun  3 12:00:37 2007]
 %
 
 %
@@ -38,11 +38,23 @@
 
 \pagestyle{fancy}
 
-\setlength{\footrulewidth}{0.3pt}
-\setlength{\parindent}{0.3cm}
-\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+%
+% -
+%
 
 \renewcommand{\-}{\vspace{\parskip}}
+
+%
+% toc
+%
+
+\newcommand{\toc}
+  {
+    \tableofcontents
+    \setlength{\footrulewidth}{0.3pt}
+    \setlength{\parindent}{0.3cm}
+    \setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+  }
 
 %
 % logos

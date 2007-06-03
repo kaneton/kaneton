@@ -1,0 +1,54 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/development/python.tex
+%
+% created       julien quintard   [sat jun  2 13:06:42 2007]
+% updated       julien quintard   [sat jun  2 13:06:49 2007]
+%
+
+%
+% ---------- python -----------------------------------------------------------
+%
+
+\section{Python}
+
+XXX
+
+-- XXX
+The rules which apply to the kaneton documents are listed below.
+
+\begin{itemize}
+  \item
+    Each document must define where it is located from the \textit{view/}
+    directory so that every included file can retrieve things at their exact
+    location.
+
+    The \textit{$\backslash$path} must thus be defined before any other
+    \textit{\LaTeX} command and especially before including the template
+    file.
+
+    \begin{verbatim}
+      %
+      % path
+      %
+
+      \def\path{../..}
+    \end{verbatim}
+  \item
+    Each document must also use a kaneton template by including the
+    appropriate file, as show below for a \textit{paper} document.
+
+    \begin{verbatim}
+      %
+      % template
+      %
+
+      \input{\path/template/paper.tex}
+    \end{verbatim}
+\end{itemize}
+--

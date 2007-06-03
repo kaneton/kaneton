@@ -1,6 +1,19 @@
-;;
-;; ---------- functions -------------------------------------------------------
-;;
+;
+; ---------- header -----------------------------------------------------------
+;
+; project       kaneton
+;
+; license       kaneton
+;
+; file          /home/mycure/kane...p/arch/ibm-pc.ia32-virtual/bootstrap.asm
+;
+; created       julien quintard   [sat jun  2 11:50:57 2007]
+; updated       julien quintard   [sat jun  2 11:51:02 2007]
+;
+
+;
+; ---------- routines ---------------------------------------------------------
+;
 
 ;;                                                                     [cut] k0
 

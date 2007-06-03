@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/prototypes.tex
 %
 % created       julien quintard   [fri jun  1 01:07:42 2007]
-% updated       julien quintard   [fri jun  1 01:33:22 2007]
+% updated       julien quintard   [sun jun  3 18:58:48 2007]
 %
 
 %
@@ -23,8 +23,8 @@ the kaneton community for generating \textit{C} prototypes automatically.
 
 This tool named \textit{mkp} must not be used directly as the prototypes
 automatic generation can be triggered from the \textit{Make} files via the
-\textit{proto} rule. This rule should be called everytime a developer wants
-the prototypes to be correct, for instance, before starting a compiling
+\textit{prototypes} rule. This rule should be called everytime a developer
+wants the prototypes to be correct, for instance, before starting a compiling
 process.
 
 This script was introduced to avoid spending time writing prototypes.
@@ -56,7 +56,7 @@ below:
 
 The \textit{mkp} tool then retrieve the list of the \textit{C} source files
 listed in the \textit{prototypes} section and remove the text between
-the \textit{prototype} opening section and the \textit{eop} tag.
+the \textit{prototypes} opening section and the \textit{eop} tag.
 
 Then, the script goes through each of the listed source files and tries to
 detect \textit{C} function declarations. For each function declaration found,

@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/view.tex
 %
 % created       julien quintard   [wed may 23 00:36:53 2007]
-% updated       julien quintard   [fri jun  1 00:38:18 2007]
+% updated       julien quintard   [sat jun  2 13:06:31 2007]
 %
 
 %
@@ -66,39 +66,10 @@ project.
 
 Any document is composed of a \textit{Make} file and one or more
 \textit{\LaTeX} files. The \textit{Make} file always has the same form
-with little variations depending on the type of document.
-
-The rules which apply to the kaneton documents are listed below.
-
-\begin{itemize}
-  \item
-    Each document must define where it is located from the \textit{view/}
-    directory so that every included file can retrieve things at their exact
-    location.
-
-    The \textit{$\backslash$path} must thus be defined before any other
-    \textit{\LaTeX} command and especially before including the template
-    file.
-
-    \begin{verbatim}
-      %
-      % path
-      %
-
-      \def\path{../..}
-    \end{verbatim}
-  \item
-    Each document must also use a kaneton template by including the
-    appropriate file, as show below for a \textit{paper} document.
-
-    \begin{verbatim}
-      %
-      % template
-      %
-
-      \input{\path/template/paper.tex}
-    \end{verbatim}
-\end{itemize}
+with little variations depending on the type of document. For more information
+on the rules applying to the \textit{Make} and \textit{\LaTeX} files, please
+refer to their respective sections: \textit{Section \ref{section:make}}
+and \textit{Section \ref{section:python}}.
 
 The \textit{view} tool basically starts looking for \textit{.tex} files
 and builds a list of directories containing documents. Then, it provides

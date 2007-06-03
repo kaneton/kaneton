@@ -35,7 +35,9 @@ LIBSYS_LO		:=		libsys/libsys.lo
 # ---------- rules ------------------------------------------------------------
 #
 
-libs:
+#main:		relations
+
+relations:
 	$(call launch,Makefile,$(SUBDIRS),,)
 
 	$(call launch,Makefile,.,$(_KLIBC_A_),)
