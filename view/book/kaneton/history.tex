@@ -1,0 +1,164 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/kaneton/history.tex
+%
+% created       julien quintard   [fri jun  1 14:33:16 2007]
+% updated       julien quintard   [fri jun  1 14:55:19 2007]
+%
+
+%
+% ---------- history ----------------------------------------------------------
+%
+
+\chapter{History}
+
+In this chapter we will detail the kaneton history from the first
+year with low-level programming introduction to the last kaneton
+microkernel implementation.
+
+\newpage
+
+%
+% ---------- text -------------------------------------------------------------
+%
+
+As said in the previous chapter, the kaneton microkernel was introduced
+by two students, \textit{Julien Quintard} and \textit{Jean-Pascal Billaud}
+in 2004.
+
+The kaneton microkernel is currently studied during the
+EPITA \footnote{http://www.epita.fr}
+System, Network and Security \footnote{http://www.srs.epita.fr} specialization
+but also
+Embedded and Real-Time Systems \footnote{http://www.gistr.epita.fr}
+specialization curriculums.
+
+During the kaneton history, the project evolved and courses were added
+to the curriculum to make the whole kaneton project more interesting and
+understandable by the students.
+
+%
+% year 2004
+%
+
+\section{Year 2004}
+
+The first year, a low-level programming introduction course was proposed
+for the engineering school's first year students.
+
+Then, about fourteen hours courses were made to introduce microprocessor's
+external architecture and low-level programming.
+
+The students had to develop small, poor and messy device drivers for the
+console and keyboard peripherals. Moreover, a tiny shell was developed
+by students so they were able to enter a command triggering a special
+kernel action.
+
+The course was a bit chaotic but this first shot was a success.
+
+Therefore, the System, Network and Security specialization students
+themselves asked the two students a more evolved project in their
+curriculum so they were able to learn about operating systems internals.
+
+%
+% year 2005
+%
+
+\section{Year 2005}
+
+Then, for the next year, the two students prepared a complete microkernel
+design with two complete courses on kernel design and \textit{Intel IA-32
+Architecture} programming.
+
+Moreover, other students joined the project including \textit{C\'edric Aubouy},
+\textit{Fabien Le-Mentec}, and \textit{Renaud Lienhart}.
+
+The project was composed of six steps, from the bootstrap, passing by
+the kernel internals including memory management, task management etc.
+to the servers with an IDE device driver and finally a FAT file system.
+
+Once again, the whole project was a success but the kaneton people
+noticed that the students took much time doing boring work like
+filling in header files, dealing with versionning problems, writing
+makefiles and shell scripts etc.
+
+Moreover, the courses were too messy and the students had difficulties
+to make the relation between kaneton design and microprocessor's
+architecture implementation.
+
+Finally, kaneton people started to implement a kaneton microkernel
+reference into the \textit{C} language.
+
+%
+% year 2006
+%
+
+\section{Year 2006}
+
+People joined the project including \textit{Matthieu Bucchianeri} and
+\textit{Renaud Voltz}.
+
+These students actively contributed to the kaneton implementation.
+
+This year, kaneton people decided to introduce a development environment,
+based on the kaneton implementation reference, including everything
+necessary to set up a collaborative kernel development.
+
+While, previously, the students had to write the entire microkernel
+and servers from scratch, this year, students only had to write precise
+parts of the microkernel.
+
+These major modifications in the kaneton project were made to
+allow students to explore advanced fields like distributed systems
+aspects and/or microkernel's security.
+
+Finally, courses were added to the EPITA System, Network and Security
+specialization curriculum including microprocessor's architectures,
+kernels history etc.
+
+The kaneton microkernel implementation, in 2006, counted
+\footnote{Estimations were realized with the UNIX program \textit{sloccount}.}
+about \textit{7,000} lines for the core and about \textit{2,000} lines for the
+microprocessor's architecture implementation.
+
+Nevertheless, the microkernel is not complete yet, so a full implementation
+of about \textit{15,000} lines can be expected which seems correct
+considering the kaneton microkernel advanced design.
+
+%
+% year 2007
+%
+
+\section{Year 2007}
+
+People joined the project including \textit{Pierre Duteil} and
+\textit{Julian Pidancet}.
+
+As the kaneton reference implementation was much more advanced as in
+2006, the students were given more code and then focused only on
+interesting and system-related parts.
+
+Students totally implemented the physical and virtual memory
+management, the event and timers, the thread manager, the scheduler
+(with a round-robin algorithm) and the IPC. The implementation was on
+IA-32 architecture.
+
+The course is now given at Realtime \& Embedded Systems specialization
+in addition of System, Network and Security specialization, for a
+total of about 50 students.
+
+The project is evaluated using a test suite of about a hundred
+tests. Many students completed a working microkernel, able to run tasks
+and to implement drivers and services.
+
+The reference implementation has grown to \textit{9,000}
+lines of code for the core and \textit{5,500} lines for the
+microprocessor's architecture implementation on Intel's IA-32.
+
+The kaneton reference was able to start modules (as standalone
+binaries) in userland and to communicate between them.

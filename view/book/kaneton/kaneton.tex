@@ -1,2 +1,101 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/kaneton/kaneton.tex
+%
+% created       julien quintard   [mon may 14 19:56:45 2007]
+% updated       julien quintard   [fri jun  1 15:02:48 2007]
+%
+
+%
+% path
+%
+
+\def\path{../..}
+
+%
+% template
+%
+
+\input{\path/template/book.tex}
+
+%
+% header
+%
+
+\lhead{\scriptsize{The kaneton microkernel}}
+\rhead{}
+
+%
+% title
+%
+
+\title{The kaneton microkernel
+       \logos}
+
+%
+% authors
+%
+
+\author{\small{Julien Quintard}}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+This document describes the kaneton microkernel research project.
+
+This document should be used by every student willing implement the
+kaneton microkernel as well as by people looking for more details on the
+kaneton microkernel design and implementation.
+
+All the kaneton documents are available on
+the official website
+  \footnote{http://www.kaneton.org}.
+
+%
+% toc
+%
+
+\tableofcontents
+
+%
+% chapters
+%
+
+\input{goals}
+\input{history}
+\input{overview}
+\input{portability}
+% core
+\input{architectures}
+\input{licenses}
+\input{bibliography}
+
+\end{document}
+
+--
+
+overview: kernel = arch + generic :: data-struct + proc
+
+--
+
+bouger les figures dans view/figures
 XXX dans book::kaneton, archi supportees, core, glue, machdep system, syscall
     interface, dans book::core, un fichier par manager.

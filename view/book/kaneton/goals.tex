@@ -1,0 +1,89 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/kaneton/goals.tex
+%
+% created       julien quintard   [fri jun  1 13:58:12 2007]
+% updated       julien quintard   [fri jun  1 14:08:23 2007]
+%
+
+%
+% ---------- goals ------------------------------------------------------------
+%
+
+\chapter{Goals}
+
+In this chapter we will briefly introduce the kaneton microkernel
+through the kaneton microkernel goals.
+
+\newpage
+
+%
+% ---------- text -------------------------------------------------------------
+%
+
+The project was primarily designed by two students in computer science,
+Julien Quintard and Jean-Pascal Billaud.
+
+These two students previously actively contributed to the development
+of a laboratory's microkernel based operating system project. This system
+was not powerful enough from the design point of view.
+
+Therefore, the two students started the design of a new microkernel
+by their own, called \textbf{kaneton}, for an educational purpose.
+
+The design was based on five fundamental guidelines.
+
+First, the kaneton project was built to become a pedagogical project.
+Therefore, kaneton must be understandable be everyone willing learn
+operating systems internals.
+
+A pedagogical project needs to be understandable by every student. So
+the kaneton design must be as clear as possible and by the way the
+kaneton microkernel implementation source code should also use
+special techniques to be easily comprehensible and generic.
+
+Second, the microkernel was particularly designed to be portable on many
+architectures. The designers tried to develop a portability system powerful
+enough to port kaneton on any, existing or not, architectures.
+
+The third point is the maintainability. In fact, microkernel based
+operating systems use a modular design, but kaneton designers
+also wanted the microkernel itself to be modular and maintainable.
+
+Fourth, the kaneton microkernel had to be designed to fit distributed
+operating systems requirements. Indeed, the kaneton microkernel was
+developed in order to design and implement a distributed operating
+system called \textbf{kayou}.
+
+This point led to many specific choices in the kaneton microkernel design.
+
+Fifth, kaneton people would like to break some well-known kinds of
+computer science rules. Indeed, for example, many computer scientists
+consider that a project documentation is its source code itself.
+Also, for many low-level programmers, the kernel boot source code and
+more generally the kernel source code cannot be understandable by everybody
+because too messy.
+
+kaneton people paid particular attention at the microkernel source code to be
+easily understandable, maintainable and extendable. Moreover, kaneton
+people tried to write documentation for every part of the project.
+
+Notice that building a pedagogical microkernel project is nothing innovative.
+Indeed few other projects already exist; the most popular being \textit{MINIX}
+from \textit{Vrije Universiteit}, \textit{NachOS} from \textit{Berkeley
+University} or \textit{PintOS} from \textit{Stanford University}.
+
+kaneton people tried to design and implement a more modern microkernel
+since, the \textit{MINIX} microkernel for example, do not use modern
+development tools. Moreover, the kaneton source code is heavily commented
+and use modern languages techniques.
+
+Finally, the kaneton microkernel was first designed to fit in the
+\textit{kayou} requirements. The kaneton project itself is just a step
+leading to the \textit{kayou} distributed operating system which will
+be used as a educational material for distributed courses.
