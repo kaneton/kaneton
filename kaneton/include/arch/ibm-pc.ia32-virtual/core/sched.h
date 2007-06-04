@@ -59,6 +59,6 @@ typedef struct
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX #include <core/sched.h>
+#include <core/sched.h>
 
 #endif

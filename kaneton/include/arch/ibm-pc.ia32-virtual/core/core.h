@@ -26,8 +26,6 @@
  */
 
 #include <arch/machdep/core/as.h>
-#include <arch/machdep/core/debug.h>
-#include <arch/machdep/core/init.h>
 #include <arch/machdep/core/region.h>
 #include <arch/machdep/core/segment.h>
 #include <arch/machdep/core/stats.h>
@@ -39,6 +37,8 @@
 #include <arch/machdep/core/message.h>
 #include <arch/machdep/core/cpu.h>
 #include <arch/machdep/core/io.h>
+#include <arch/machdep/core/debug.h>
+#include <arch/machdep/core/init.h>
 
 /*
  * ---------- dependencies ----------------------------------------------------

@@ -46,6 +46,6 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX #include <core/region.h>
+#include <core/region.h>
 
 #endif

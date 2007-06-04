@@ -13,25 +13,6 @@
 #define IA32_CORE_TASK_H	1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/task.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * the architecture dependent data for the task object
- */
-
-typedef struct
-{
-  t_uint8			iomap[8192];
-}				ao_task;
-
-/*
  * ---------- macro functions -------------------------------------------------
  */
 
@@ -54,5 +35,24 @@ typedef struct
 
 #define		machdep_data_o_task()					\
   ao_task				machdep
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * the architecture dependent data for the task object
+ */
+
+typedef struct
+{
+  t_uint8			iomap[8192];
+}				ao_task;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/task.h>
 
 #endif

@@ -79,7 +79,7 @@ typedef struct
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXXXXXXXXXXXXXXXX #include <core/init.h>
-//#include <libia32.h>
+#include <core/init.h>
+#include <libia32.h>
 
 #endif

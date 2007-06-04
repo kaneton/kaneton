@@ -13,12 +13,6 @@
 #define IA32_CORE_STATS_H	1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/stats.h>
-
-/*
  * ---------- macro functions -------------------------------------------------
  */
 
@@ -34,5 +28,11 @@
   )
 
 #define		machdep_data_stats()
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/stats.h>
 
 #endif

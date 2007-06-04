@@ -39,6 +39,6 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX #include <core/message.h>
+#include <core/message.h>
 
 #endif

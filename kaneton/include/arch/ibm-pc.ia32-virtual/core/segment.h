@@ -13,25 +13,6 @@
 #define IA32_CORE_SEGMENT_H	1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-/* XXX #include <core/segment.h>*/
-
-/*
- * ---------- macros ----------------------------------------------------------
- */
-
-#define PMODE_GDT_CORE_CS	0x1
-#define PMODE_GDT_CORE_DS	0x2
-#define PMODE_GDT_DRIVER_CS	0x3
-#define PMODE_GDT_DRIVER_DS	0x4
-#define PMODE_GDT_SERVICE_CS	0x5
-#define PMODE_GDT_SERVICE_DS	0x6
-#define PMODE_GDT_PROGRAM_CS	0x7
-#define PMODE_GDT_PROGRAM_DS	0x8
-
-/*
  * ---------- macro functions -------------------------------------------------
  */
 
@@ -53,5 +34,24 @@
 #define		machdep_data_m_segment()
 
 #define		machdep_data_o_segment()
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#define PMODE_GDT_CORE_CS	0x1
+#define PMODE_GDT_CORE_DS	0x2
+#define PMODE_GDT_DRIVER_CS	0x3
+#define PMODE_GDT_DRIVER_DS	0x4
+#define PMODE_GDT_SERVICE_CS	0x5
+#define PMODE_GDT_SERVICE_DS	0x6
+#define PMODE_GDT_PROGRAM_CS	0x7
+#define PMODE_GDT_PROGRAM_DS	0x8
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/segment.h>
 
 #endif
