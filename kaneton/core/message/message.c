@@ -112,8 +112,7 @@ t_error			message_init(void)
   if (machdep_call(message, message_init) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
-  return (ERROR_NONE);
-
+  MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
 /*
@@ -374,7 +373,7 @@ t_error			message_sync_send(i_task	sender,
     if (thread_state(thread, SCHED_STATE_BLOCK) != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
-    return (ERROR_NONE);
+    MESSAGE_LEAVE(message, ERROR_NONE);
   }
 
   /*
@@ -494,7 +493,7 @@ t_error			message_sync_recv(i_task	taskid,
     if (thread_state(thread, SCHED_STATE_BLOCK) != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
-    return (ERROR_NONE);
+    MESSAGE_LEAVE(message, ERROR_NONE);
   }
 
   /*
@@ -594,6 +593,8 @@ t_error			message_test(void)
 {
   char			recv[128];
 
+  MESSAGE_ENTER(message);
+
   sched_dump();
 
   while (1)
@@ -605,5 +606,5 @@ t_error			message_test(void)
 	}
     }
 
-  return ERROR_NONE;
+  MESSAGE_LEAVE(message, ERROR_NONE);
 }
