@@ -1,26 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/cpu.h
+ * license       kaneton
  *
- * created       matthieu bucchianeri   [sat jul 29 18:09:38 2006]
- * updated       matthieu bucchianeri   [sat jul 29 18:10:03 2006]
+ * file          /home/mycure/kaneton/kaneton/include/arch/machdep/core/cpu.h
+ *
+ * created       julien quintard   [mon jun  4 01:05:31 2007]
+ * updated       julien quintard   [mon jun  4 01:10:00 2007]
  */
 
 #ifndef IA32_CORE_CPU_H
 #define IA32_CORE_CPU_H	1
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-/* XXX #include <core/cpu.h>*/
-
-/*
- * ---------- types -----------------------------------------------------------
- */
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -44,5 +36,11 @@
 #define		machdep_data_m_cpu()
 
 #define		machdep_data_o_cpu()
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+// XXX #include <core/cpu.h>
 
 #endif

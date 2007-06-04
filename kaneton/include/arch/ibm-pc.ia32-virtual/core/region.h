@@ -13,13 +13,6 @@
 #define IA32_CORE_REGION_H	1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/region.h>
-#include <klibc.h>
-
-/*
  * ---------- macros ----------------------------------------------------------
  */
 
@@ -48,5 +41,11 @@
 #define		machdep_data_m_region()
 
 #define		machdep_data_o_region()
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+// XXX #include <core/region.h>
 
 #endif

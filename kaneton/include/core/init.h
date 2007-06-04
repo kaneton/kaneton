@@ -13,6 +13,14 @@
 #define CORE_INIT_H		1
 
 /*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct s_module		t_module;
+typedef struct s_modules	t_modules;
+typedef struct s_init		t_init;
+
+/*
  * ---------- dependencies ----------------------------------------------------
  */
 
@@ -29,16 +37,16 @@
  * modules
  */
 
-typedef struct
+struct				s_module
 {
   char*				name;
   t_psize			size;
-}				t_module;
+};
 
-typedef struct
+struct				s_modules
 {
   t_uint32			nmodules;
-}				t_modules;
+};
 
 /*
  * the init structure
@@ -50,7 +58,7 @@ typedef struct
  * note that the size fields represent sizes aligned on PAGESZ.
  */
 
-typedef struct
+struct				s_init
 {
   t_paddr			mem;
   t_psize			memsz;
@@ -84,6 +92,6 @@ typedef struct
   t_psize			allocsz;
 
   machdep_data(init);
-}				t_init;
+};
 
 #endif

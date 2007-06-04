@@ -13,6 +13,13 @@
 #define CORE_SET_ARRAY_H	1
 
 /*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct s_set_array	t_set_array;
+typedef struct s_iterator_array	t_iterator_array;
+
+/*
  * ---------- dependencies ----------------------------------------------------
  */
 
@@ -27,21 +34,21 @@
  * specific array data
  */
 
-typedef struct
+struct				s_set_array
 {
   t_size			initsz;
 
   void**			array;
   t_setsz			arraysz;
-}				t_set_array;
+};
 
 /*
  * array iterator
  */
 
-typedef struct
+struct				s_iterator_array
 {
   t_setsz			i;
-}				t_iterator_array;
+};
 
 #endif

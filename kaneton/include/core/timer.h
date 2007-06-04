@@ -13,15 +13,23 @@
 #define CORE_TIMER_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
+typedef union u_timer_handler	u_timer_handler;
+
+typedef struct so_timer		o_timer;
+typedef struct sm_timer		m_timer;
+typedef struct sd_timer		d_timer;
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * generic timer handler type.
+ */
+
+typedef t_error			(*t_timer_handler)(void);
+
+/*
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*
@@ -45,14 +53,16 @@
   ((u_timer_handler)(t_timer_handler)(_function_))
 
 /*
- * ---------- types -----------------------------------------------------------
+ * ---------- dependencies ----------------------------------------------------
  */
+
+#include <arch/machdep/machdep.h>
+#include <core/id.h>
+#include <core/types.h>
 
 /*
- * generic timer handler type.
+ * ---------- types -----------------------------------------------------------
  */
-
-typedef t_error                 (*t_timer_handler)(void);
 
 /*
  * timer handler type
@@ -68,7 +78,7 @@ union				u_timer_handler
  * timer object
  */
 
-typedef struct
+struct				so_timer
 {
   i_timer			timerid;
 
@@ -81,14 +91,14 @@ typedef struct
   u_timer_handler		handler;
 
   machdep_data(o_timer);
-}				o_timer;
+};
 
 
 /*
  * timer manager
  */
 
-typedef struct
+struct				sm_timer
 {
   o_id				id;
 
@@ -99,13 +109,13 @@ typedef struct
   i_set				timers;
 
   machdep_data(m_timer);
-}				m_timer;
+};
 
 /*
  * the timer architecture dependent interface
  */
 
-typedef struct
+struct				sd_timer
 {
   t_error			(*timer_show)(i_timer);
   t_error			(*timer_delay)(i_timer,
@@ -124,7 +134,7 @@ typedef struct
   t_error			(*timer_release)(i_timer);
   t_error			(*timer_init)(void);
   t_error			(*timer_clean)(void);
-}				d_timer;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

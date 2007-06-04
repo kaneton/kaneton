@@ -13,13 +13,14 @@
 #define CORE_SCHED_H	1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-#include <core/timer.h>
+typedef struct s_scheduled	t_scheduled;
+typedef struct s_cpu_sched	t_cpu_sched;
+
+typedef struct sm_sched		m_sched;
+typedef struct sd_sched		d_sched;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -131,6 +132,15 @@
   })
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
+#include <core/id.h>
+#include <core/types.h>
+#include <core/timer.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -138,48 +148,48 @@
  * a schedule queue element.
  */
 
-typedef struct
+struct				s_scheduled
 {
-  i_thread	thread;
-  t_timeslice	timeslice;
-}		t_scheduled;
+  i_thread			thread;
+  t_timeslice			timeslice;
+};
 
 /*
  * cpu scheduling environment.
  */
 
-typedef struct
+struct				s_cpu_sched
 {
-  i_cpu		cpuid;
+  i_cpu				cpuid;
 
-  i_thread	current;
-  t_timeslice	timeslice;
-  t_prior	prio;
+  i_thread			current;
+  t_timeslice			timeslice;
+  t_prior			prio;
 
-  i_set		active;
-  i_set		expired;
-}		t_cpu_sched;
+  i_set				active;
+  i_set				expired;
+};
 
 /*
  * scheduler manager
  */
 
-typedef struct
+struct				sm_sched
 {
-  i_stats	stats;
+  i_stats			stats;
 
-  t_quantum	quantum;
+  t_quantum			quantum;
 
-  i_set		cpus;
+  i_set				cpus;
 
   machdep_data(m_sched);
-}		m_sched;
+};
 
 /*
  * the scheduler architecture-dependent interface
  */
 
-typedef struct
+struct				sd_sched
 {
   t_error			(*sched_quantum)(t_quantum);
   t_error			(*sched_yield)(i_cpu);
@@ -189,7 +199,7 @@ typedef struct
   t_error			(*sched_update)(i_thread);
   t_error			(*sched_init)(void);
   t_error			(*sched_clean)(void);
-}				d_sched;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

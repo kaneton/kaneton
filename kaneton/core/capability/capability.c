@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
+ * license       kaneton
+ *
  * file          /home/mycure/kaneton/kaneton/core/capability/capability.c
  *
- * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julien quintard   [thu jul  6 17:27:46 2006]
+ * created       julien quintard   [sun jun  3 19:48:52 2007]
+ * updated       julien quintard   [sun jun  3 19:49:44 2007]
  */
 
 /*
@@ -20,7 +22,7 @@
  * kaneton object.
  *
  * note that every capability format over the distributed system must
- * begins with a 64-bit field describing the node identifier.
+ * begins with a 128-bit field describing the node identifier.
  *
  * the kaneton core capability format is composed of a node identifier on
  * 64 bits specifying the task of the distributed system which had generated

@@ -13,13 +13,13 @@
 #define CORE_TASK_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-#include <core/wait.h>
+typedef struct so_task		o_task;
+typedef struct sm_task		m_task;
+typedef struct so_waitfor	o_waitfor;
+typedef struct sd_task		d_task;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -76,6 +76,15 @@
 #define TASK_WAITS_INITSZ	0x1
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
+#include <core/id.h>
+#include <core/types.h>
+#include <core/wait.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -83,7 +92,7 @@
  * task object
  */
 
-typedef struct
+struct				so_task
 {
   i_task			tskid;
 
@@ -105,13 +114,13 @@ typedef struct
   t_wait			wait;
 
   machdep_data(o_task);
-}				o_task;
+};
 
 /*
  * task manager
  */
 
-typedef struct
+struct				sm_task
 {
   o_id				id;
 
@@ -120,13 +129,13 @@ typedef struct
   i_set				tasks;
 
   machdep_data(m_task);
-}				m_task;
+};
 
 /*
  * waitlist
  */
 
-typedef struct
+struct				so_waitfor
 {
   union
   {
@@ -135,13 +144,13 @@ typedef struct
   }				u;
 
   t_opts			opts;
-}				o_waitfor;
+};
 
 /*
  * the task architecture dependent interface
  */
 
-typedef struct
+struct				sd_task
 {
   t_error			(*task_show)(i_task);
   t_error			(*task_clone)(i_task,
@@ -160,7 +169,7 @@ typedef struct
 					     t_wait*);
   t_error			(*task_init)(void);
   t_error			(*task_clean)(void);
-}				d_task;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

@@ -13,12 +13,19 @@
 #define CORE_SET_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
+typedef struct s_iterator	t_iterator;
+
+typedef struct so_set		o_set;
+typedef struct sm_set		m_set;
+
+/*
+ * set size
+ */
+
+typedef t_sint64		t_setsz;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -61,26 +68,12 @@
 #undef SET_DEBUG_TRAP
 
 /*
- * ---------- types -----------------------------------------------------------
+ * ---------- dependencies ----------------------------------------------------
  */
 
-/*
- * iterator's forward declaration
- */
-
-typedef struct s_iterator	t_iterator;
-
-/*
- * set size
- */
-
-typedef t_sint64		t_setsz;
-
-/*
- * set object's forward declaration
- */
-
-typedef struct s_set		o_set;
+#include <arch/machdep/machdep.h>
+#include <core/id.h>
+#include <core/types.h>
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -116,7 +109,7 @@ struct				s_iterator
  * set type.
  */
 
-struct				s_set
+struct				so_set
 {
   i_set				setid;
 
@@ -139,7 +132,7 @@ struct				s_set
  * set manager
  */
 
-typedef struct
+struct				sm_set
 {
   o_id				id;
 
@@ -147,7 +140,7 @@ typedef struct
 
   t_id				sets;
   o_set*			container;
-}				m_set;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

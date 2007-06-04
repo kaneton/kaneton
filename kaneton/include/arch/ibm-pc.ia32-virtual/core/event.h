@@ -13,12 +13,6 @@
 #define IA32_CORE_EVENT_H	1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-/* #include <core/event.h> */
-
-/*
  * ---------- macro functions -------------------------------------------------
  */
 
@@ -40,5 +34,11 @@
 #define		machdep_data_m_event()
 
 #define		machdep_data_o_event()
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/event.h>
 
 #endif

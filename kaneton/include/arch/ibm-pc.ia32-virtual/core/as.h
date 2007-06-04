@@ -1,35 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ibm-pc.ia32-virtual/core/as.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       matthieu bucchianeri   [tue feb  6 23:18:51 2007]
+ * file          /home/mycure/kaneton/kaneton/include/arch/machdep/core/as.h
+ *
+ * created       julien quintard   [sun jun  3 23:54:56 2007]
+ * updated       julien quintard   [mon jun  4 00:04:39 2007]
  */
 
 #ifndef IA32_CORE_AS_H
 #define IA32_CORE_AS_H		1
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/as.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * the architecture dependent data for the as object
- */
-
-typedef struct
-{
-  t_ia32_directory		pd;
-}				ao_as;
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -54,5 +37,24 @@ typedef struct
 
 #define		machdep_data_o_as()					\
   ao_as				machdep
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * the architecture dependent data for the as object
+ */
+
+typedef struct
+{
+  t_ia32_directory		pd;
+}				ao_as;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/as.h>
 
 #endif

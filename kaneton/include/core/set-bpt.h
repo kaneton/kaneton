@@ -13,6 +13,27 @@
 #define CORE_SET_BPT_H		1
 
 /*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct s_set_bpt_inentry	t_set_bpt_inentry;
+typedef struct s_set_bpt_lfentry	t_set_bpt_lfentry;
+typedef struct s_set_bpt		t_set_bpt;
+typedef struct s_iterator_bpt		t_iterator_bpt;
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#define SET_BPT_ADDR_T		void*
+#define SET_BPT_KEY_T		t_id
+#define SET_BPT_VALUE_T		void*
+
+#define SET_BPT_UADDR		NULL
+#define SET_BPT_UKEY		ID_UNUSED
+#define SET_BPT_UVALUE		NULL
+
+/*
  * ---------- dependencies ----------------------------------------------------
  */
 
@@ -28,18 +49,6 @@
 #include <sys/bpt.h>
 
 /*
- * ---------- macros ----------------------------------------------------------
- */
-
-#define SET_BPT_ADDR_T		void*
-#define SET_BPT_KEY_T		t_id
-#define SET_BPT_VALUE_T		void*
-
-#define SET_BPT_UADDR		NULL
-#define SET_BPT_UKEY		ID_UNUSED
-#define SET_BPT_UVALUE		NULL
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -47,17 +56,17 @@
  * bpt inentry and lfentry structures
  */
 
-typedef struct
+struct				s_set_bpt_inentry
 {
   SET_BPT_KEY_T			id;
   SET_BPT_ADDR_T		data;
-}				t_set_bpt_inentry;
+};
 
-typedef struct
+struct				s_set_bpt_lfentry
 {
   SET_BPT_KEY_T			id;
   SET_BPT_VALUE_T		data;
-}				t_set_bpt_lfentry;
+};
 
 /*
  * bpt types
@@ -71,22 +80,22 @@ bpt_make_types(set, BPT_NODESZ_T, BPT_NDI_T, BPT_UNI_T, BPT_NODES_T,
  * specific bpt set
  */
 
-typedef struct
+struct				s_set_bpt
 {
   t_bpt_unused(set)		unused;
   t_bpt_uni(set)		unusedsz;
 
   t_bpt(set)			bpt;
-}				t_set_bpt;
+};
 
 /*
  * bpt iterator
  */
 
-typedef struct
+struct				s_iterator_bpt
 {
   t_bpt_entry(set)		entry;
-}				t_iterator_bpt;
+};
 
 /*
  * ---------- prototypes ------------------------------------------------------

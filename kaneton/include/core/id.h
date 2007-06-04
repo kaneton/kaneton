@@ -13,6 +13,19 @@
 #define CORE_ID_H		1
 
 /*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct so_id		o_id;
+typedef struct sm_id		m_id;
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#define ID_UNUSED		((t_id)-1)
+
+/*
  * ---------- dependencies ----------------------------------------------------
  */
 
@@ -27,25 +40,19 @@
  * identifier object
  */
 
-typedef struct
+struct				so_id
 {
   t_id				id;
-}				o_id;
+};
 
 /*
  * the identifier manager
  */
 
-typedef struct
+struct				sm_id
 {
   i_stats			stats;
-}				m_id;
-
-/*
- * ---------- macros ----------------------------------------------------------
- */
-
-#define ID_UNUSED		((t_id)-1)
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

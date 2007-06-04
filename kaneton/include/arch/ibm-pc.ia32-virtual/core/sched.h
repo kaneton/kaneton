@@ -13,33 +13,6 @@
 #define IA32_CORE_SCHED_H	1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-/* XXX #include <core/sched.h>*/
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * the architecture dependent data for the sched manager.
- */
-
-typedef struct
-{
-
-/*                                                                [cut] k3   */
-
-  i_timer			timer;
-
-  i_thread			mmx_context;
-
-/*                                                               [cut] /k3   */
-
-}				am_sched;
-
-/*
  * ---------- macro functions -------------------------------------------------
  */
 
@@ -62,5 +35,30 @@ typedef struct
   am_sched			machdep
 
 #define		machdep_data_o_sched()
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * the architecture dependent data for the sched manager.
+ */
+
+typedef struct
+{
+/*                                                                [cut] k3   */
+
+  i_timer			timer;
+
+  i_thread			mmx_context;
+
+/*                                                               [cut] /k3   */
+}				am_sched;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+// XXX #include <core/sched.h>
 
 #endif

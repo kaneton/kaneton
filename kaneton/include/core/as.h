@@ -13,12 +13,12 @@
 #define CORE_AS_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
+typedef struct so_as		o_as;
+typedef struct sm_as		m_as;
+typedef struct sd_as		d_as;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -32,6 +32,14 @@
 #define AS_REGIONS_INITSZ	0x4
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
+#include <core/id.h>
+#include <core/types.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -39,7 +47,7 @@
  * as object
  */
 
-typedef struct
+struct				so_as
 {
   i_as				asid;
 
@@ -49,13 +57,13 @@ typedef struct
   i_set				regions;
 
   machdep_data(o_as);
-}				o_as;
+};
 
 /*
  * as manager
  */
 
-typedef struct
+struct				sm_as
 {
   o_id				id;
 
@@ -64,13 +72,13 @@ typedef struct
   i_set				ass;
 
   machdep_data(m_as);
-}				m_as;
+};
 
 /*
  * the as architecture dependent interface
  */
 
-typedef struct
+struct				sd_as
 {
   t_error			(*as_show)(i_as);
   t_error			(*as_give)(i_task,
@@ -89,7 +97,7 @@ typedef struct
   t_error			(*as_release)(i_as);
   t_error			(*as_init)(void);
   t_error			(*as_clean)(void);
-}				d_as;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

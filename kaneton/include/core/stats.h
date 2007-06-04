@@ -13,13 +13,13 @@
 #define CORE_STATS_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-#include <core/conf.h>
+typedef struct s_stats_func	t_stats_func;
+typedef struct s_stats		t_stats;
+
+typedef struct sm_stats		m_stats;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -29,6 +29,15 @@
 #define STATS_FUNCTIONS_INITSZ	0x4
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
+#include <core/id.h>
+#include <core/types.h>
+#include <core/conf.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -36,7 +45,7 @@
  * stats function
  */
 
-typedef struct
+struct				s_stats_func
 {
   char*				name;
 
@@ -45,29 +54,29 @@ typedef struct
 
   t_uint32			timer_start;
   t_uint32			total;
-}				t_stats_func;
+};
 
 /*
  * stats object
  */
 
-typedef struct
+struct				s_stats
 {
   char*				name;
 
   t_stats_func*			functions;
   t_sint64			functionssz;
-}				t_stats;
+};
 
 /*
  * stats manager
  */
 
-typedef struct
+struct				sm_stats
 {
   t_stats*			managers;
   t_sint64			managerssz;
-}				m_stats;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

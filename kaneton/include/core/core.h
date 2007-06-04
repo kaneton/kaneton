@@ -13,12 +13,6 @@
 #define CORE_CORE_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-
-/*
  * ---------- macros ----------------------------------------------------------
  */
 
@@ -53,6 +47,12 @@
 #define FIT_BEST		(1 << 1)
 #define FIT_NEXT		(1 << 2)
 #define FIT_WORST		(1 << 3)
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- macro functions -------------------------------------------------

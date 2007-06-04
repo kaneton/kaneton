@@ -13,12 +13,10 @@
 #define CORE_MAP_H	1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
+typedef struct sm_map		m_map;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -34,6 +32,14 @@
 #define MAP_OPT_PRIVILEGED	(1 << 1)
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
+#include <core/id.h>
+#include <core/types.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -41,10 +47,10 @@
  * map manager
  */
 
-typedef struct
+struct				sm_map
 {
-  i_stats	stats;
-}		m_map;
+  i_stats			stats;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

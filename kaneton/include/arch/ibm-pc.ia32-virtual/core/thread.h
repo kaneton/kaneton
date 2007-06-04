@@ -13,41 +13,6 @@
 #define IA32_CORE_THREAD_H       1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-//#include <core/thread.h>
-
-/*
- *
- */
-
-typedef struct
-{
-  t_ia32_tss*		tss;
-}			am_thread;
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef struct
-{
-
-/*                                                                [cut] k3   */
-
-  t_ia32_context	context;
-  union
-  {
-    t_x87_state		x87;
-    t_sse_state		sse;
-  }			u;
-
-/*                                                               [cut] /k3   */
-
-}			ao_thread;
-
-/*
  * ---------- macro functions -------------------------------------------------
  */
 
@@ -71,5 +36,44 @@ typedef struct
 
 #define         machdep_data_o_thread()					\
   ao_thread		machdep
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * architecture-dependent part of the thread manager.
+ */
+
+typedef struct
+{
+  t_ia32_tss*		tss;
+}			am_thread;
+
+/*
+ * architecture-dependent part of a thread object.
+ */
+
+typedef struct
+{
+
+/*                                                                [cut] k3   */
+
+  t_ia32_context	context;
+  union
+  {
+    t_x87_state		x87;
+    t_sse_state		sse;
+  }			u;
+
+/*                                                               [cut] /k3   */
+
+}			ao_thread;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/thread.h>
 
 #endif

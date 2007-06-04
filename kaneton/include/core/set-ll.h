@@ -13,6 +13,14 @@
 #define CORE_SET_LL_H		1
 
 /*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct s_set_ll_node	t_set_ll_node;
+typedef struct s_set_ll		t_set_ll;
+typedef struct s_iterator_ll	t_iterator_ll;
+
+/*
  * ---------- dependencies ----------------------------------------------------
  */
 
@@ -27,31 +35,31 @@
  * a node of the linked-list
  */
 
-typedef struct			s_set_ll_node
+struct				s_set_ll_node
 {
   void*				data;
 
   struct s_set_ll_node*		prv;
   struct s_set_ll_node*		nxt;
-}				t_set_ll_node;
+};
 
 /*
  * specific linked-list data
  */
 
-typedef struct
+struct				s_set_ll
 {
   t_set_ll_node*		head;
   t_set_ll_node*		tail;
-}				t_set_ll;
+};
 
 /*
  * linked-list iterator
  */
 
-typedef struct
+struct				s_iterator_ll
 {
   t_set_ll_node*		node;
-}				t_iterator_ll;
+};
 
 #endif

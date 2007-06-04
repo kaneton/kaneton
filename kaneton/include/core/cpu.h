@@ -1,16 +1,26 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/cpu.h
+ * license       kaneton
  *
- * created       matthieu bucchianeri   [sat jul 29 18:07:16 2006]
- * updated       matthieu bucchianeri   [fri aug 18 19:40:24 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/cpu.h
+ *
+ * created       julien quintard   [sun jun  3 20:25:39 2007]
+ * updated       julien quintard   [sun jun  3 23:52:39 2007]
  */
 
 #ifndef CORE_CPU_H
 #define CORE_CPU_H	1
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct so_cpu		o_cpu;
+typedef struct sm_cpu		m_cpu;
+typedef struct sd_cpu		d_cpu;
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -21,10 +31,6 @@
 #include <core/types.h>
 
 /*
- * ---------- macros ----------------------------------------------------------
- */
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -32,33 +38,33 @@
  * cpu object
  */
 
-typedef struct
+struct				so_cpu
 {
-  i_cpu		cpuid;
+  i_cpu				cpuid;
 
-  t_timeslice	efficiency;
+  t_timeslice			efficiency;
 
   machdep_data(o_cpu);
-}		o_cpu;
+};
 
 /*
  * cpu manager
  */
 
-typedef struct
+struct				sm_cpu
 {
-  i_stats	stats;
+  i_stats			stats;
 
-  i_set		cpus;
+  i_set				cpus;
 
   machdep_data(m_cpu);
-}		m_cpu;
+};
 
 /*
  * the cpu architecture-dependent interface
  */
 
-typedef struct
+struct				sd_cpu
 {
   t_error			(*cpu_show)(i_cpu);
   t_error			(*cpu_current)(i_cpu*);
@@ -66,7 +72,7 @@ typedef struct
 					       i_cpu);
   t_error			(*cpu_init)(void);
   t_error			(*cpu_clean)(void);
-}				d_cpu;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

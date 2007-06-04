@@ -12,10 +12,6 @@
 #ifndef IA32_CORE_TIMER_H
 #define IA32_CORE_TIMER_H	1
 
-
-
-//typedef t_error			(*t_timer_handler)(void);
-
 /*
  * ---------- macro functions -------------------------------------------------
  */
@@ -38,5 +34,11 @@
 #define		machdep_data_m_timer()
 
 #define		machdep_data_o_timer()
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/timer.h>
 
 #endif

@@ -13,13 +13,6 @@
 #define IA32_CORE_INIT_H	1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <libia32.h>
-#include <arch/machdep/services/cons.h>
-
-/*
  * ---------- macros ----------------------------------------------------------
  */
 
@@ -62,6 +55,17 @@
 #define INIT_KSTACKSZ		(4 * PAGESZ)
 
 /*
+ * ---------- macro functions -------------------------------------------------
+ */
+
+/*
+ * machdep traps
+ */
+
+#define		machdep_data_init()					\
+  a_init			machdep
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -72,14 +76,10 @@ typedef struct
 }				a_init;
 
 /*
- * ---------- macro functions -------------------------------------------------
+ * ---------- dependencies ----------------------------------------------------
  */
 
-/*
- * machdep traps
- */
-
-#define		machdep_data_init()					\
-  a_init			machdep
+// XXXXXXXXXXXXXXXXX #include <core/init.h>
+//#include <libia32.h>
 
 #endif

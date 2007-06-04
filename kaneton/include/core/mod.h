@@ -13,6 +13,12 @@
 #define CORE_MOD_H	1
 
 /*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct sm_mod		m_mod;
+
+/*
  * ---------- dependencies ----------------------------------------------------
  */
 
@@ -28,10 +34,10 @@
  * mod manager
  */
 
-typedef struct
+struct				sm_mod
 {
-  i_stats	stats;
-}		m_mod;
+  i_stats			stats;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

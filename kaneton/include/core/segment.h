@@ -13,12 +13,12 @@
 #define CORE_SEGMENT_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
+typedef struct so_segment	o_segment;
+typedef struct sm_segment	m_segment;
+typedef struct sd_segment	d_segment;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -38,6 +38,14 @@
 #define SEGMENT_TYPE_CATCH	(1 << 1)
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
+#include <core/id.h>
+#include <core/types.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -45,7 +53,7 @@
  * segment object
  */
 
-typedef struct
+struct				so_segment
 {
   i_segment			segid;
 
@@ -59,13 +67,13 @@ typedef struct
   t_perms			perms;
 
   machdep_data(o_segment);
-}				o_segment;
+};
 
 /*
  * segment manager
  */
 
-typedef struct
+struct				sm_segment
 {
   o_id				id;
 
@@ -79,13 +87,13 @@ typedef struct
   i_set				segments;
 
   machdep_data(m_segment);
-}				m_segment;
+};
 
 /*
  * the segment architecture-dependent interface
  */
 
-typedef struct
+struct				sd_segment
 {
   t_error			(*segment_show)(i_segment);
   t_error			(*segment_clone)(i_as,
@@ -132,7 +140,7 @@ typedef struct
   t_error			(*segment_flush)(i_as);
   t_error			(*segment_init)();
   t_error			(*segment_clean)(void);
-}				d_segment;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

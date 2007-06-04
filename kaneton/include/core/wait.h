@@ -13,11 +13,10 @@
 #define CORE_WAIT_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/types.h>
+typedef struct s_wait		t_wait;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -37,28 +36,6 @@
 #define STATUS_STOPPED		2
 #define STATUS_EXITED		3
 
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * wait type
- */
-
-typedef struct
-{
-  union
-  {
-    i_task			task;
-    i_thread			thread;
-  }				id;
-
-  t_status			status;
-
-  t_uint32			error;
-}				t_wait;
-
 /*
  * ---------- macro functions -------------------------------------------------
  */
@@ -74,5 +51,33 @@ typedef struct
 
 #define WAIT_STATUS(_wait_)						\
   (_wait_).error
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
+#include <core/types.h>
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * wait type
+ */
+
+struct				s_wait
+{
+  union
+  {
+    i_task			task;
+    i_thread			thread;
+  }				id;
+
+  t_status			status;
+
+  t_uint32			error;
+};
 
 #endif

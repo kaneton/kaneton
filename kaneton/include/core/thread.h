@@ -13,13 +13,15 @@
 #define CORE_THREAD_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-#include <core/wait.h>
+typedef struct s_thread_context	t_thread_context;
+typedef struct s_stack		t_stack;
+
+typedef struct so_thread	o_thread;
+typedef struct sm_thread	m_thread;
+typedef struct sd_thread	d_thread;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -41,36 +43,43 @@
 #define THREAD_MIN_STACKSZ	4096
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
+#include <core/id.h>
+#include <core/types.h>
+#include <core/wait.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
 /*
  * thread execution context
  */
-/*
-typedef struct
+
+struct				s_thread_context
 {
   t_vaddr			pc;
   t_vaddr			sp;
-}				t_thread_context;
-*/
+};
 
 /*
  * stack
  */
-/*
+
 struct				s_stack
 {
   t_vaddr			base;
   t_vsize			size;
 };
-*/
 
 /*
  * thread object
  */
 
-typedef struct
+struct				so_thread
 {
   i_thread			threadid;
 
@@ -87,13 +96,13 @@ typedef struct
   t_vsize			stacksz;
 
   machdep_data(o_thread);
-}				o_thread;
+};
 
 /*
  * thread manager
  */
 
-typedef struct
+struct				sm_thread
 {
   o_id				id;
 
@@ -102,13 +111,13 @@ typedef struct
   i_set				threads;
 
   machdep_data(m_thread);
-}				m_thread;
+};
 
 /*
  * the thread architecture dependent interface
  */
 
-typedef struct
+struct				sd_thread
 {
   t_error			(*thread_show)(i_thread);
   t_error			(*thread_give)(i_task,
@@ -132,7 +141,7 @@ typedef struct
 						t_stack);
   t_error			(*thread_init)(void);
   t_error			(*thread_clean)(void);
-}				d_thread;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

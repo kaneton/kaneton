@@ -13,6 +13,13 @@
 #define CORE_IO_H	1
 
 /*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct sm_io		m_io;
+typedef struct sd_io		d_io;
+
+/*
  * ---------- dependencies ----------------------------------------------------
  */
 
@@ -28,18 +35,18 @@
  * io manager
  */
 
-typedef struct
+struct				sm_io
 {
-  i_stats	stats;
+  i_stats			stats;
 
   machdep_data(m_io);
-}		m_io;
+};
 
 /*
  * the io architecture-dependent interface
  */
 
-typedef struct
+struct				sd_io
 {
   t_error			(*io_grant)(i_port,
 					    i_task,
@@ -73,7 +80,7 @@ typedef struct
 					       t_uint64);
   t_error			(*io_init)(void);
   t_error			(*io_clean)(void);
-}				d_io;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

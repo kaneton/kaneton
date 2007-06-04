@@ -13,12 +13,12 @@
 #define CORE_REGION_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
+typedef struct so_region	o_region;
+typedef struct sm_region	m_region;
+typedef struct sd_region	d_region;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -36,6 +36,14 @@
 #define REGION_OPT_GLOBAL	(1 << 2)
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
+#include <core/id.h>
+#include <core/types.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -47,7 +55,7 @@
  * the identifier is in fact identical to the virtual address of the region.
  */
 
-typedef struct
+struct				so_region
 {
   i_region			regid;
 
@@ -59,13 +67,13 @@ typedef struct
   t_opts			opts;
 
   machdep_data(o_region);
-}				o_region;
+};
 
 /*
  * region manager
  */
 
-typedef struct
+struct				sm_region
 {
   o_id				id;
 
@@ -77,13 +85,13 @@ typedef struct
   i_stats			stats;
 
   machdep_data(m_region);
-}				m_region;
+};
 
 /*
  * the region architecture-dependent interface
  */
 
-typedef struct
+struct				sd_region
 {
   t_error			(*region_show)(i_as,
 					       i_region);
@@ -115,7 +123,7 @@ typedef struct
   t_error			(*region_init)(t_vaddr,
 					       t_vsize);
   t_error			(*region_clean)(void);
-}				d_region;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

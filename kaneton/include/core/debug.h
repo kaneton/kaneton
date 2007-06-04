@@ -13,10 +13,11 @@
 #define CORE_DEBUG_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
+typedef struct s_serial_data	t_serial_data;
+typedef struct s_serial_buffer	t_serial_buffer;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -45,32 +46,43 @@
 
 /*                                                                [cut] k1   */
 
-#define ASSERT(Test)							\
-  if (!(Test))								\
+#define ASSERT(_test_)							\
+  if (!(_test_))							\
     {									\
-      printf("assert(%s) failed at %s:%d\n", #Test, __FILE__, __LINE__); \
+      printf("assert(%s) failed at %s:%d\n",				\
+             #_test_, __FILE__, __LINE__);				\
+									\
       while (1)								\
 	;								\
     }
+
+/*                                                                [cut] /k1  */
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
+/*                                                                [cut] k1   */
 
-typedef struct			s_serial_data
+struct				s_serial_data
 {
   t_uint32			size;
   t_uint32			magic;
   t_uint32			crc;
   t_uint8*			data;
-}				t_serial_data;
+};
 
-typedef	struct			s_serial_buffer
+struct				s_serial_buffer
 {
  char*				name;
  void*				data;
-}				t_serial_buffer;
+};
 
 /*                                                               [cut] /k1   */
 

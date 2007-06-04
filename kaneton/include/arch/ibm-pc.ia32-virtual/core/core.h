@@ -41,6 +41,20 @@
 #include <arch/machdep/core/io.h>
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/types.h>
+#include <core/id.h>
+#include <core/task.h>
+#include <core/thread.h>
+#include <core/segment.h>
+#include <core/region.h>
+#include <core/as.h>
+#include <core/event.h>
+#include <core/timer.h>
+
+/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../../../core/arch/machdep/as.c

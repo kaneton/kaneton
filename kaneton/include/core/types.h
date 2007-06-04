@@ -78,33 +78,18 @@ typedef t_id			i_thread;
 typedef t_id			i_port;
 typedef t_id			i_cpu;
 
+typedef t_id			i_machine;
+
+typedef struct
+{
+  i_machine			machine;
+  i_task			task;
+}				i_node;
+
 /*
  * error type
  */
 
 typedef t_sint32		t_error;
-
-/*
- * event handler type
- */
-
-typedef union u_event_handler	u_event_handler;
-typedef union u_timer_handler	u_timer_handler;
-
-/*
- *
- */
-
-typedef struct
-{
-  t_vaddr                       pc;
-  t_vaddr                       sp;
-}				t_thread_context;
-
-typedef struct
-{
-  t_vaddr			base;
-  t_vsize			size;
-}				t_stack;
 
 #endif

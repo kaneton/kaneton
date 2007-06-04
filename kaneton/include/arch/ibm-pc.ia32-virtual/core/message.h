@@ -13,16 +13,6 @@
 #define IA32_CORE_MESSAGE_H	1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-/* XXX #include <core/message.h>*/
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
  * ---------- macro functions -------------------------------------------------
  */
 
@@ -44,5 +34,11 @@
 #define		machdep_data_m_message()
 
 #define		machdep_data_o_message()
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+// XXX #include <core/message.h>
 
 #endif

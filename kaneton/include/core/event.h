@@ -10,18 +10,26 @@
  */
 
 #ifndef CORE_EVENT_H
-#define CORE_EVENT_H
+#define CORE_EVENT_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
+typedef union u_event_handler	u_event_handler;
+
+typedef struct so_event		o_event;
+typedef struct sm_event		m_event;
+typedef struct sd_event		d_event;
 
 /*
- * ---------- defines ---------------------------------------------------------
+ * generic event handler type.
+ */
+
+typedef void			(*t_event_handler)(t_id);
+
+/*
+ * ---------- macros ----------------------------------------------------------
  */
 
 /*
@@ -39,15 +47,16 @@
   ((u_event_handler)(t_event_handler)(_function_))
 
 /*
- * ---------- types -----------------------------------------------------------
+ * ---------- dependencies ----------------------------------------------------
  */
 
+#include <arch/machdep/machdep.h>
+#include <core/id.h>
+#include <core/types.h>
 
 /*
- * generic event handler type.
+ * ---------- types -----------------------------------------------------------
  */
-
-typedef void                    (*t_event_handler)(t_id);
 
 /*
  * event handler type
@@ -63,7 +72,7 @@ union				u_event_handler
  * event object
  */
 
-typedef struct
+struct				so_event
 {
   i_event			eventid;
 
@@ -72,14 +81,13 @@ typedef struct
   u_event_handler		handler;
 
   machdep_data(o_event);
-}				o_event;
-
+};
 
 /*
  * event manager
  */
 
-typedef struct
+struct				sm_event
 {
   o_id				id;
 
@@ -88,13 +96,13 @@ typedef struct
   i_set				events;
 
   machdep_data(m_event);
-}				m_event;
+};
 
 /*
  * the event architecture dependent interface
  */
 
-typedef struct
+struct				sd_event
 {
   t_error			(*event_show)(i_event);
   t_error			(*event_notify)(i_event);
@@ -104,7 +112,7 @@ typedef struct
   t_error			(*event_release)(i_event);
   t_error			(*event_init)(void);
   t_error			(*event_clean)(void);
-}				d_event;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

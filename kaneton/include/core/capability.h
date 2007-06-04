@@ -13,12 +13,13 @@
 #define CORE_CAPABILITY_H	1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- types -----------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
+typedef struct s_capability		t_capability;
+typedef struct s_capability_descriptor	t_capability_descriptor;
+typedef struct sm_capability		m_capability;
+typedef struct sd_capability		d_capability;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -31,6 +32,14 @@
 #define CAPABILITY_CHILDREN_INITSZ	0x4
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/machdep.h>
+#include <core/id.h>
+#include <core/types.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -40,7 +49,7 @@
  * this is the structure manipulated by the programs.
  */
 
-typedef struct
+struct				s_capability
 {
   i_node			node;
   t_id				object;
@@ -48,7 +57,7 @@ typedef struct
   t_id				descriptor;
 
   // machdep_data(t_capability);
-}				t_capability;
+};
 
 /*
  * a capability descriptor contains the check field of the generated
@@ -57,7 +66,7 @@ typedef struct
  * capabilities generated from this capbility.
  */
 
-typedef struct
+struct				s_capability_descriptor
 {
   t_id				id;
 
@@ -66,13 +75,13 @@ typedef struct
 
   t_id				parent;
   i_set				children;
-}				t_capability_descriptor;
+};
 
 /*
  * the capability manager structure
  */
 
-typedef struct
+struct				sm_capability
 {
   i_stats			stats;
 
@@ -83,16 +92,16 @@ typedef struct
 					      t_uint64* res);
 
   // machdep_data(m_capability);
-}				m_capability;
+};
 
 /*
  * the kernel architecture dependent interface
  */
 
-typedef struct
+struct				sd_capability
 {
   /* XXX */
-}				d_capability;
+};
 
 /*
  * ---------- macro functions -------------------------------------------------

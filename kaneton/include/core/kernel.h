@@ -13,18 +13,19 @@
 #define CORE_KERNEL_H		1
 
 /*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct sm_kernel	m_kernel;
+typedef struct sd_kernel	d_kernel;
+
+/*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
 #include <core/id.h>
 #include <core/types.h>
-
-/*
- * ---------- macros ----------------------------------------------------------
- */
-
-/* XXX */
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -44,29 +45,25 @@
  * the term node in reference to the distributed system.
  */
 
-typedef t_id i_machine;
+/*
+ * the kernel manager structure
+ */
 
-typedef struct
+struct				sm_kernel
 {
   t_id				machine;
 
-  // machdep_data(m_kernel);
-}				m_kernel;
-
-typedef struct
-{
-  i_machine			machine;
-  i_task			task;
-}				i_node;
+  // XXX machdep_data(m_kernel);
+};
 
 /*
  * the kernel architecture dependent interface
  */
 
-typedef struct
+struct				sd_kernel
 {
   /* XXX */
-}				d_kernel;
+};
 
 /*
  * ---------- prototypes ------------------------------------------------------
