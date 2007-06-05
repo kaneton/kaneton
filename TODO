@@ -440,6 +440,9 @@ cette glue contiendrait les ld scripts mais aussi par exemple le
 fichier de conf qui decrit les zones prereservees a certains servers
 car ces zones dependent de l'archi/platform donc glue
 
+dans notre cas, on pourrait appeler la zone glue: machine car justement
+machine regroupe plateform et archi. ou alors machine = arch + plat + glue
+
 --
 
 un getter par manager: *_attribute() pour recuperer un attribut d'un objet.
