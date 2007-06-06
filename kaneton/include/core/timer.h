@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       julien quintard   [wed jun  6 15:57:57 2007]
+ * updated       julien quintard   [wed jun  6 19:19:21 2007]
  */
 
 #ifndef GUARD_CORE_TIMER
@@ -30,7 +30,7 @@ typedef t_id			i_timer;
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/task.h>
 #include <core/stats.h>
 #include <core/set.h>

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/kaneton.h
  *
  * created       julien quintard   [wed jun  6 12:22:33 2007]
- * updated       julien quintard   [wed jun  6 12:40:23 2007]
+ * updated       julien quintard   [wed jun  6 19:54:47 2007]
  */
 
 #ifndef GUARD_KANETON
@@ -31,5 +31,3 @@
 
 #include <core/core.h>
 #include <sys/sys.h>
-
-#endif

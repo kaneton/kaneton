@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/arch/machdep/machdep.h
  *
  * created       julien quintard   [wed jun  6 15:50:24 2007]
- * updated       julien quintard   [wed jun  6 15:50:48 2007]
+ * updated       julien quintard   [wed jun  6 19:12:18 2007]
  */
 
 #ifndef GUARD_IA32_MACHDEP_H
@@ -36,6 +36,8 @@
 /*
  * ---------- includes --------------------------------------------------------
  */
+
+#include <arch/machdep/kaneton.h>
 
 #include <arch/machdep/core/core.h>
 #include <arch/machdep/services/services.h>

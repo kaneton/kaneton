@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [wed jun  6 15:57:46 2007]
+ * updated       julien quintard   [wed jun  6 19:19:10 2007]
  */
 
 #ifndef GUARD_CORE_TASK
@@ -34,7 +34,7 @@ typedef t_id			i_task;
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/cpu.h>
 #include <core/set.h>
 #include <core/as.h>

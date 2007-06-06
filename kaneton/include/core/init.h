@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/init.h
  *
  * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       julien quintard   [wed jun  6 15:56:15 2007]
+ * updated       julien quintard   [wed jun  6 20:01:52 2007]
  */
 
 #ifndef GUARD_CORE_INIT
@@ -18,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -50,44 +50,23 @@ struct				s_modules
  */
 
 /* XXX temporary, hopefully */
+#include <arch/machdep/machdep.h>
+
 typedef struct
 {
-  i_segment			segid;
-
-  i_as				asid;
-
-  t_type			type;
-
   t_paddr			address;
   t_psize			size;
-
   t_perms			perms;
-
-  machdep_data(o_segment);
 }				s_segment;
 
 typedef struct
 {
-  i_region			regid;
-
-  i_segment			segid;
-
-  t_vaddr			address;
-  t_paddr			offset;
+  t_paddr			physical;
+  t_vaddr			virtual;
+  t_vaddr			offset;
   t_vsize			size;
   t_opts			opts;
-
-  machdep_data(o_region);
 }				s_region;
-
-typedef struct
-{
-  i_cpu				cpuid;
-
-  t_timeslice			efficiency;
-
-  machdep_data(o_cpu);
-}				s_cpu;
 /* /XXX */
 
 struct				s_init
@@ -112,10 +91,12 @@ struct				s_init
   s_region*			regions;
   t_psize			regionssz;
 
+  /* XXX
   t_uint32			ncpus;
   s_cpu*			cpus;
   t_psize			cpussz;
   i_cpu				bsp;
+  */
 
   t_paddr			kstack;
   t_psize			kstacksz;

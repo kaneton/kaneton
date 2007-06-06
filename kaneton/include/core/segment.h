@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [wed jun  6 15:56:52 2007]
+ * updated       julien quintard   [wed jun  6 19:18:36 2007]
  */
 
 #ifndef GUARD_CORE_SEGMENT
@@ -34,7 +34,7 @@ typedef t_id			i_segment;
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/stats.h>
 #include <core/set.h>
 #include <core/as.h>

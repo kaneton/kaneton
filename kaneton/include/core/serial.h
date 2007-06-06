@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/serial.h
  *
  * created       julien quintard   [wed jun  6 14:06:42 2007]
- * updated       julien quintard   [wed jun  6 15:56:58 2007]
+ * updated       julien quintard   [wed jun  6 19:18:41 2007]
  */
 
 #ifndef	GUARD_CORE_SERIAL
@@ -18,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

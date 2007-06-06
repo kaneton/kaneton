@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/as.h
  *
  * created       julien quintard   [wed jun  6 12:25:01 2007]
- * updated       julien quintard   [wed jun  6 15:55:23 2007]
+ * updated       julien quintard   [wed jun  6 19:16:59 2007]
  */
 
 #ifndef GUARD_CORE_AS
@@ -34,7 +34,7 @@ typedef t_id			i_as;
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/stats.h>
 #include <core/set.h>
 #include <core/task.h>

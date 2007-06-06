@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...aneton/include/arch/machdep/core/sched.h
  *
  * created       julien quintard   [wed jun  6 16:24:14 2007]
- * updated       julien quintard   [wed jun  6 16:24:56 2007]
+ * updated       julien quintard   [wed jun  6 19:47:09 2007]
  */
 
 #ifndef GUARD_IA32_CORE_SCHED
@@ -34,34 +34,18 @@
   )
 
 #define		machdep_data_m_sched()					\
-  am_sched			machdep
+  /*									\
+   * the architecture dependent data for the sched manager.		\
+   */									\
+  struct								\
+  {									\
+    /*                                                   [cut] k3   */	\
+    i_timer			timer;					\
+									\
+    i_thread			mmx_context;				\
+    /*                                                   [cut] /k3   */	\
+  }				machdep;
 
 #define		machdep_data_o_sched()
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/timer.h>
-#include <core/thread.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * the architecture dependent data for the sched manager.
- */
-
-typedef struct
-{
-/*                                                                [cut] k3   */
-
-  i_timer			timer;
-
-  i_thread			mmx_context;
-
-/*                                                               [cut] /k3   */
-}				am_sched;
 
 #endif

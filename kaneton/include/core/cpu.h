@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/cpu.h
  *
  * created       julien quintard   [sun jun  3 20:25:39 2007]
- * updated       julien quintard   [wed jun  6 16:41:56 2007]
+ * updated       julien quintard   [wed jun  6 19:17:13 2007]
  */
 
 #ifndef GUARD_CORE_CPU
@@ -34,7 +34,7 @@ typedef t_id			i_cpu;
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/stats.h>
 #include <core/set.h>
 #include <core/task.h>

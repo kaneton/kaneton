@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/event.h
  *
  * created       julien quintard   [wed jun  6 13:13:41 2007]
- * updated       julien quintard   [wed jun  6 15:55:57 2007]
+ * updated       julien quintard   [wed jun  6 19:17:46 2007]
  */
 
 #ifndef GUARD_CORE_EVENT
@@ -34,7 +34,7 @@ typedef t_id			i_event;
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/task.h>
 #include <core/set.h>
 #include <core/stats.h>

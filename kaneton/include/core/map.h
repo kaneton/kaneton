@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/map.h
  *
  * created       julien quintard   [wed jun  6 13:31:27 2007]
- * updated       julien quintard   [wed jun  6 15:56:26 2007]
+ * updated       julien quintard   [wed jun  6 19:33:21 2007]
  */
 
 #ifndef GUARD_CORE_MAP
@@ -18,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/stats.h>
 #include <core/as.h>
 #include <core/error.h>
@@ -47,7 +47,7 @@
 typedef struct
 {
   i_stats			stats;
-}				m_stats;
+}				m_map;
 
 /*
  * ---------- macro functions -------------------------------------------------

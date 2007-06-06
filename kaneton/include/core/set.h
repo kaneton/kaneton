@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/set.h
  *
  * created       julien quintard   [wed jun  6 11:56:46 2007]
- * updated       julien quintard   [wed jun  6 15:57:05 2007]
+ * updated       julien quintard   [wed jun  6 19:31:20 2007]
  */
 
 #ifndef GUARD_CORE_SET
@@ -18,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/id.h>
 
 /*
@@ -95,7 +95,7 @@ typedef t_sint64		t_setsz;
  * iterator
  */
 
-struct				s_iterator
+typedef struct
 {
   union
   {
@@ -103,7 +103,7 @@ struct				s_iterator
     t_iterator_bpt		bpt;
     t_iterator_ll		ll;
   }				u;
-};
+}				t_iterator;
 
 /*
  * set object
@@ -113,7 +113,7 @@ struct				s_iterator
  * set type.
  */
 
-struct				so_set
+typedef struct
 {
   i_set				setid;
 
@@ -130,13 +130,13 @@ struct				so_set
     t_set_bpt			bpt;
     t_set_ll			ll;
   }				u;
-};
+}				o_set;
 
 /*
  * set manager
  */
 
-struct				sm_set
+typedef struct
 {
   o_id				id;
 
@@ -144,7 +144,7 @@ struct				sm_set
 
   t_id				sets;
   o_set*			container;
-};
+}				m_set;
 
 /*
  * ---------- macro functions -------------------------------------------------

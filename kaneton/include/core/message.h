@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       julien quintard   [wed jun  6 16:21:53 2007]
+ * updated       julien quintard   [wed jun  6 19:18:18 2007]
  */
 
 #ifndef GUARD_CORE_MESSAGE
@@ -18,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/id.h>
 #include <core/thread.h>
 #include <core/as.h>

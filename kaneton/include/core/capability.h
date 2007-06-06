@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/capability.h
  *
  * created       julien quintard   [wed jun  6 12:44:04 2007]
- * updated       julien quintard   [wed jun  6 15:55:35 2007]
+ * updated       julien quintard   [wed jun  6 19:48:19 2007]
  */
 
 #ifndef GUARD_CORE_CAPABILITY
@@ -18,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/id.h>
 #include <core/kernel.h>
 #include <core/error.h>
@@ -43,7 +43,7 @@
  * this is the structure manipulated by the programs.
  */
 
-struct				s_capability
+typedef struct
 {
   i_node			node;
   t_id				object;
@@ -51,7 +51,7 @@ struct				s_capability
   t_id				descriptor;
 
   // machdep_data(t_capability);
-};
+}				t_capability;
 
 /*
  * a capability descriptor contains the check field of the generated
@@ -60,7 +60,7 @@ struct				s_capability
  * capabilities generated from this capbility.
  */
 
-struct				s_capability_descriptor
+typedef struct
 {
   t_id				id;
 
@@ -69,13 +69,13 @@ struct				s_capability_descriptor
 
   t_id				parent;
   i_set				children;
-};
+}				t_capability_descriptor;
 
 /*
  * the capability manager structure
  */
 
-struct				sm_capability
+typedef struct
 {
   i_stats			stats;
 
@@ -86,16 +86,16 @@ struct				sm_capability
 					      t_uint64* res);
 
   // machdep_data(m_capability);
-};
+}				m_capability;
 
 /*
  * the kernel architecture dependent interface
  */
 
-struct				sd_capability
+typedef struct
 {
   /* XXX */
-};
+}				d_capability;
 
 /*
  * ---------- macro functions -------------------------------------------------

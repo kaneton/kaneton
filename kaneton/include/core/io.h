@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/io.h
  *
  * created       julien quintard   [wed jun  6 13:26:01 2007]
- * updated       julien quintard   [wed jun  6 15:56:21 2007]
+ * updated       julien quintard   [wed jun  6 19:18:08 2007]
  */
 
 #ifndef GUARD_CORE_IO
@@ -30,7 +30,7 @@ typedef t_id			i_port;
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/stats.h>
 #include <core/task.h>
 #include <core/error.h>

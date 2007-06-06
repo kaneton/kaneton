@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...kaneton/include/arch/machdep/core/core.h
  *
  * created       julien quintard   [wed jun  6 15:58:22 2007]
- * updated       julien quintard   [wed jun  6 16:07:15 2007]
+ * updated       julien quintard   [wed jun  6 20:06:32 2007]
  */
 
 #ifndef GUARD_IA32_CORE_CORE
@@ -22,19 +22,6 @@
 #define ___wordsz		WORDSZ_32
 
 #define PAGESZ			4096
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef unsigned char		t_uint8;
-typedef signed char		t_sint8;
-typedef unsigned short		t_uint16;
-typedef signed short		t_sint16;
-typedef unsigned int		t_uint32;
-typedef signed int		t_sint32;
-typedef unsigned long long	t_uint64;
-typedef signed long long	t_sint64;
 
 #endif
 

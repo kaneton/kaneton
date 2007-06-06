@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/stats.h
  *
  * created       julien quintard   [wed jun  6 13:00:10 2007]
- * updated       julien quintard   [wed jun  6 15:57:40 2007]
+ * updated       julien quintard   [wed jun  6 19:28:53 2007]
  */
 
 #ifndef GUARD_CORE_STATS
@@ -18,7 +18,12 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/id.h>
+
+typedef int _debug_stats_1_;
+
+//#include <core/id.h>
+
+typedef int _debug_stats_2_;
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -34,7 +39,8 @@ typedef t_id			i_stats;
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
+#include <core/error.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -51,7 +57,7 @@ typedef t_id			i_stats;
  * stats function
  */
 
-struct
+typedef struct
 {
   char*				name;
 
@@ -66,7 +72,7 @@ struct
  * stats object
  */
 
-struct
+typedef struct
 {
   char*				name;
 
@@ -78,7 +84,7 @@ struct
  * stats manager
  */
 
-struct
+typedef struct
 {
   t_stats*			managers;
   t_sint64			managerssz;

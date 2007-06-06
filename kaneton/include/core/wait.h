@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/wait.h
  *
  * created       julien quintard   [wed jun  6 15:48:52 2007]
- * updated       julien quintard   [wed jun  6 17:24:52 2007]
+ * updated       julien quintard   [wed jun  6 19:19:26 2007]
  */
 
 #ifndef GUARD_CORE_WAIT
@@ -18,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/task.h>
 #include <core/thread.h>
 

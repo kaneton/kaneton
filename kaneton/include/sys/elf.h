@@ -47,44 +47,44 @@
  *	http://www.sco.com/developer/gabi/latest/ch4.eheader.html
  */
 
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/kaneton.h>
 
-typedef	u_int8_t  	Elf_Byte;
+typedef	t_uint8  	Elf_Byte;
 
-typedef	u_int32_t	Elf32_Addr;
+typedef	t_uint32	Elf32_Addr;
 #define	ELF32_FSZ_ADDR	4
-typedef	u_int32_t	Elf32_Off;
+typedef	t_sint32		Elf32_Off;
 #define	ELF32_FSZ_OFF	4
-typedef	int32_t		Elf32_Sword;
+typedef	t_sint32		Elf32_Sword;
 #define	ELF32_FSZ_SWORD	4
-typedef	u_int32_t	Elf32_Word;
+typedef	t_uint32	Elf32_Word;
 #define	ELF32_FSZ_WORD	4
-typedef	u_int16_t	Elf32_Half;
+typedef	t_uint16	Elf32_Half;
 #define	ELF32_FSZ_HALF	2
 
-typedef	u_int64_t	Elf64_Addr;
+typedef	t_uint64	Elf64_Addr;
 #define	ELF64_FSZ_ADDR	8
-typedef	u_int64_t	Elf64_Off;
+typedef	t_uint64	Elf64_Off;
 #define	ELF64_FSZ_OFF	8
-typedef	int32_t		Elf64_Shalf;
+typedef	t_sint32		Elf64_Shalf;
 #define	ELF64_FSZ_SHALF	4
 
 #ifndef ELF64_FSZ_SWORD
-typedef	int32_t		Elf64_Sword;
+typedef	t_sint32		Elf64_Sword;
 #define	ELF64_FSZ_SWORD	4
 #endif /* ELF64_FSZ_SWORD */
 #ifndef ELF64_FSZ_WORD
-typedef	u_int32_t	Elf64_Word;
+typedef	t_uint32	Elf64_Word;
 #define	ELF64_FSZ_WORD	4
 #endif /* ELF64_FSZ_WORD */
 
-typedef	int64_t		Elf64_Sxword;
+typedef	t_sint64		Elf64_Sxword;
 #define	ELF64_FSZ_XWORD	8
-typedef	u_int64_t	Elf64_Xword;
+typedef	t_uint64	Elf64_Xword;
 #define	ELF64_FSZ_XWORD	8
-typedef	u_int32_t	Elf64_Half;
+typedef	t_uint32	Elf64_Half;
 #define	ELF64_FSZ_HALF	4
-typedef	u_int16_t	Elf64_Quarter;
+typedef	t_uint16	Elf64_Quarter;
 #define	ELF64_FSZ_QUARTER 2
 
 /*
@@ -675,26 +675,26 @@ typedef struct {
 
 struct netbsd_elfcore_procinfo {
 	/* Version 1 fields start here. */
-	u_int32_t	cpi_version;	/* netbsd_elfcore_procinfo version */
-	u_int32_t	cpi_cpisize;	/* sizeof(netbsd_elfcore_procinfo) */
-	u_int32_t	cpi_signo;	/* killing signal */
-	u_int32_t	cpi_sigcode;	/* signal code */
-	u_int32_t	cpi_sigpend[4];	/* pending signals */
-	u_int32_t	cpi_sigmask[4];	/* blocked signals */
-	u_int32_t	cpi_sigignore[4];/* blocked signals */
-	u_int32_t	cpi_sigcatch[4];/* blocked signals */
-	int32_t		cpi_pid;	/* process ID */
-	int32_t		cpi_ppid;	/* parent process ID */
-	int32_t		cpi_pgrp;	/* process group ID */
-	int32_t		cpi_sid;	/* session ID */
-	u_int32_t	cpi_ruid;	/* real user ID */
-	u_int32_t	cpi_euid;	/* effective user ID */
-	u_int32_t	cpi_svuid;	/* saved user ID */
-	u_int32_t	cpi_rgid;	/* real group ID */
-	u_int32_t	cpi_egid;	/* effective group ID */
-	u_int32_t	cpi_svgid;	/* saved group ID */
-	u_int32_t	cpi_nlwps;	/* number of LWPs */
-	int8_t		cpi_name[32];	/* copy of p->p_comm */
+	t_uint32	cpi_version;	/* netbsd_elfcore_procinfo version */
+	t_uint32	cpi_cpisize;	/* sizeof(netbsd_elfcore_procinfo) */
+	t_uint32	cpi_signo;	/* killing signal */
+	t_uint32	cpi_sigcode;	/* signal code */
+	t_uint32	cpi_sigpend[4];	/* pending signals */
+	t_uint32	cpi_sigmask[4];	/* blocked signals */
+	t_uint32	cpi_sigignore[4];/* blocked signals */
+	t_uint32	cpi_sigcatch[4];/* blocked signals */
+	t_sint32		cpi_pid;	/* process ID */
+	t_sint32		cpi_ppid;	/* parent process ID */
+	t_sint32		cpi_pgrp;	/* process group ID */
+	t_sint32		cpi_sid;	/* session ID */
+	t_uint32	cpi_ruid;	/* real user ID */
+	t_uint32	cpi_euid;	/* effective user ID */
+	t_uint32	cpi_svuid;	/* saved user ID */
+	t_uint32	cpi_rgid;	/* real group ID */
+	t_uint32	cpi_egid;	/* effective group ID */
+	t_uint32	cpi_svgid;	/* saved group ID */
+	t_uint32	cpi_nlwps;	/* number of LWPs */
+	t_sint8		cpi_name[32];	/* copy of p->p_comm */
 	/* Add version 2 fields below here. */
 };
 

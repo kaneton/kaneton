@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/id.h
  *
  * created       julien quintard   [wed jun  6 12:50:13 2007]
- * updated       julien quintard   [wed jun  6 17:23:10 2007]
+ * updated       julien quintard   [wed jun  6 20:24:12 2007]
  */
 
 #ifndef GUARD_CORE_ID
@@ -18,7 +18,24 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-//#include <core/core.h>
+typedef int _debug_id_1_;
+
+// XXX #include <core/core.h>
+
+typedef int _debug_id_2_;
+
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#define ID_UNUSED		((t_id)-1)
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+// XXX #include <core/stats.h>
+#include <core/error.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -40,29 +57,12 @@ typedef struct
 }				o_id;
 
 /*
- * ---------- macros ----------------------------------------------------------
- */
-
-#define ID_UNUSED		((t_id)-1)
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/stats.h>
-#include <core/error.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
  * the identifier manager
  */
 
 typedef struct
 {
-  i_stats			stats;
+  // XXX i_stats			stats;
 }				m_id;
 
 /*

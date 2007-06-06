@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/debug.h
  *
  * created       julien quintard   [wed jun  6 13:11:05 2007]
- * updated       julien quintard   [wed jun  6 15:55:47 2007]
+ * updated       julien quintard   [wed jun  6 19:17:17 2007]
  */
 
 #ifndef GUARD_CORE_DEBUG
@@ -43,7 +43,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/error.h>
 
 /*

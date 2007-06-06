@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/sched.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [wed jun  6 15:56:46 2007]
+ * updated       julien quintard   [wed jun  6 19:18:26 2007]
  */
 
 #ifndef GUARD_CORE_SCHED
@@ -18,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+// XXX #include <core/core.h>
 #include <core/thread.h>
 #include <core/cpu.h>
 #include <core/set.h>
