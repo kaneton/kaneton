@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/kernel.h
  *
  * created       julien quintard   [wed jun  6 13:27:34 2007]
- * updated       julien quintard   [wed jun  6 13:32:08 2007]
+ * updated       julien quintard   [wed jun  6 21:24:16 2007]
  */
 
 #ifndef GUARD_CORE_KERNEL
@@ -18,31 +18,8 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/id.h>
-#include <core/task.h>
+// XXX #include <core/task.h>
 
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * this identifier identifies a unique machine in the distributed system.
- */
-
-typedef t_id			i_machine;
-
-/*
- * unique identifier of a node in the distributed system.
- *
- * a node is a communicating task located in a machine of the distributed
- * system.
- */
-
-typedef struct
-{
-  i_machine			machine;
-  i_task			task;
-}				i_node;
 
 /*
  * ---------- dependencies ----------------------------------------------------

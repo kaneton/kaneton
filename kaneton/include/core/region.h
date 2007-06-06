@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [wed jun  6 19:31:58 2007]
+ * updated       julien quintard   [wed jun  6 21:37:33 2007]
  */
 
 #ifndef GUARD_CORE_REGION
@@ -24,7 +24,7 @@
  * ---------- types -----------------------------------------------------------
  */
 
-typedef t_id			i_region;
+typedef struct o_region		o_region;
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -65,7 +65,7 @@ typedef t_id			i_region;
  * the identifier is in fact identical to the virtual address of the region.
  */
 
-typedef struct
+struct				o_region
 {
   i_region			regid;
 
@@ -77,7 +77,7 @@ typedef struct
   t_opts			opts;
 
   machdep_data(o_region);
-}				o_region;
+};
 
 /*
  * region manager

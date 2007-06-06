@@ -188,7 +188,7 @@
 
 #include <core/id.h>
 
-#include <arch/machdep/kaneton.h>
+#include <arch/machdep/core/types.h>
 
 /*
  * ---------- types -----------------------------------------------------------

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/as.h
  *
  * created       julien quintard   [wed jun  6 12:25:01 2007]
- * updated       julien quintard   [wed jun  6 19:16:59 2007]
+ * updated       julien quintard   [wed jun  6 21:37:04 2007]
  */
 
 #ifndef GUARD_CORE_AS
@@ -28,7 +28,7 @@
  * identifier of an address space object
  */
 
-typedef t_id			i_as;
+typedef struct o_as		o_as;
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -61,7 +61,7 @@ typedef t_id			i_as;
  * as object
  */
 
-typedef struct
+struct				o_as
 {
   i_as				asid;
 
@@ -71,7 +71,7 @@ typedef struct
   i_set				regions;
 
   machdep_data(o_as);
-}				o_as;
+};
 
 /*
  * as manager

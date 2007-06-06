@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...aneton/include/arch/machdep/core/sched.h
  *
  * created       julien quintard   [wed jun  6 16:24:14 2007]
- * updated       julien quintard   [wed jun  6 19:47:09 2007]
+ * updated       julien quintard   [wed jun  6 20:48:56 2007]
  */
 
 #ifndef GUARD_IA32_CORE_SCHED
@@ -34,9 +34,6 @@
   )
 
 #define		machdep_data_m_sched()					\
-  /*									\
-   * the architecture dependent data for the sched manager.		\
-   */									\
   struct								\
   {									\
     /*                                                   [cut] k3   */	\

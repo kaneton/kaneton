@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/id.h
  *
  * created       julien quintard   [wed jun  6 12:50:13 2007]
- * updated       julien quintard   [wed jun  6 20:24:12 2007]
+ * updated       julien quintard   [wed jun  6 20:35:26 2007]
  */
 
 #ifndef GUARD_CORE_ID
@@ -45,7 +45,7 @@ typedef int _debug_id_2_;
  * generic kaneton identifier
  */
 
-typedef t_uint64		t_id;
+// XXX typedef t_uint64		t_id;
 
 /*
  * identifier object

@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...kaneton/include/arch/machdep/core/task.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [wed jun  6 16:26:41 2007]
+ * updated       julien quintard   [wed jun  6 21:25:59 2007]
  */
 
 #ifndef GUARD_IA32_CORE_TASK
@@ -36,25 +36,9 @@
 #define		machdep_data_m_task()
 
 #define		machdep_data_o_task()					\
-  ao_task				machdep
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/core.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * the architecture dependent data for the task object
- */
-
-typedef struct
-{
-  t_uint8			iomap[8192];
-}				ao_task;
+  struct								\
+  {									\
+    t_uint8			iomap[8192];				\
+  }				machdep;
 
 #endif

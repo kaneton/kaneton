@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...kaneton/include/arch/machdep/core/init.h
  *
  * created       julien quintard   [wed jun  6 16:16:48 2007]
- * updated       julien quintard   [wed jun  6 16:17:29 2007]
+ * updated       julien quintard   [wed jun  6 21:35:23 2007]
  */
 
 #ifndef GUARD_IA32_CORE_INIT
@@ -65,22 +65,10 @@
  */
 
 #define		machdep_data_init()					\
-  a_init			machdep
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <libia32.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef struct
-{
-  t_ia32_gdt			gdt;
-  t_ia32_directory		pd;
-}				a_init;
+  struct								\
+  {									\
+    t_ia32_gdt			gdt;					\
+    t_ia32_directory		pd;					\
+  }				machdep;
 
 #endif

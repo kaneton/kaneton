@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [wed jun  6 20:05:25 2007]
+ * updated       julien quintard   [wed jun  6 20:36:29 2007]
  */
 
 #ifndef GUARD_PUBLIC_CORE_CORE
@@ -53,16 +53,6 @@
 #define FIT_WORST		(1 << 3)
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-typedef int _debug_core_1_;
-
-#include <arch/machdep/kaneton.h>
-
-typedef int _debug_core_2_;
-
-/*
  * ---------- macro functions -------------------------------------------------
  */
 
@@ -89,9 +79,11 @@ typedef int _debug_core_2_;
 // XXX
 // #include <core/types.h>
 
-#include <core/stats.h>
+#include <core/types.h>
 #include <core/error.h>
 #include <core/id.h>
+
+#include <core/stats.h>
 #include <core/init.h>
 #include <core/kernel.h>
 #include <core/set.h>

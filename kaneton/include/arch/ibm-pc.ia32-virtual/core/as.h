@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/arch/machdep/core/as.h
  *
  * created       julien quintard   [sun jun  3 23:54:56 2007]
- * updated       julien quintard   [wed jun  6 16:12:43 2007]
+ * updated       julien quintard   [wed jun  6 21:20:43 2007]
  */
 
 #ifndef GUARD_IA32_CORE_AS
@@ -36,25 +36,9 @@
 #define		machdep_data_m_as()
 
 #define		machdep_data_o_as()					\
-  ao_as				machdep
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <libia32.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * the architecture dependent data for the as object
- */
-
-typedef struct
-{
-  t_ia32_directory		pd;
-}				ao_as;
+  struct								\
+  {									\
+    t_ia32_directory		pd;					\
+  }				ao_as;					\
 
 #endif

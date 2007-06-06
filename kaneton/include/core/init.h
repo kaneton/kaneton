@@ -8,17 +8,27 @@
  * file          /home/mycure/kaneton/kaneton/include/core/init.h
  *
  * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       julien quintard   [wed jun  6 20:01:52 2007]
+ * updated       julien quintard   [wed jun  6 21:32:57 2007]
  */
 
 #ifndef GUARD_CORE_INIT
 #define GUARD_CORE_INIT			1
 
 /*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef struct t_init		t_init;
+
+/*
  * ---------- dependencies ----------------------------------------------------
  */
 
 // XXX #include <core/core.h>
+#include <core/segment.h>
+#include <core/region.h>
+#include <core/cpu.h>
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -28,16 +38,16 @@
  * modules
  */
 
-struct				s_module
+typedef struct
 {
   char*				name;
   t_psize			size;
-};
+}				t_module;
 
-struct				s_modules
+typedef struct
 {
   t_uint32			nmodules;
-};
+}				t_modules;
 
 /*
  * the init structure
@@ -49,27 +59,7 @@ struct				s_modules
  * note that the size fields represent sizes aligned on PAGESZ.
  */
 
-/* XXX temporary, hopefully */
-#include <arch/machdep/machdep.h>
-
-typedef struct
-{
-  t_paddr			address;
-  t_psize			size;
-  t_perms			perms;
-}				s_segment;
-
-typedef struct
-{
-  t_paddr			physical;
-  t_vaddr			virtual;
-  t_vaddr			offset;
-  t_vsize			size;
-  t_opts			opts;
-}				s_region;
-/* /XXX */
-
-struct				s_init
+struct				t_init
 {
   t_paddr			mem;
   t_psize			memsz;
@@ -84,19 +74,17 @@ struct				s_init
   t_psize			modulessz;
 
   t_uint32			nsegments;
-  s_segment*			segments;
+  o_segment*			segments;
   t_psize			segmentssz;
 
   t_uint32			nregions;
-  s_region*			regions;
+  o_region*			regions;
   t_psize			regionssz;
 
-  /* XXX
   t_uint32			ncpus;
-  s_cpu*			cpus;
+  o_cpu*			cpus;
   t_psize			cpussz;
   i_cpu				bsp;
-  */
 
   t_paddr			kstack;
   t_psize			kstacksz;

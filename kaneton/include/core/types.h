@@ -60,4 +60,45 @@ typedef t_uint32		t_quantum;
 typedef t_uint32		t_operations;
 typedef t_uint32		t_timeslice;
 
+// XXX
+typedef t_uint64		t_id;
+
+typedef t_id			i_cpu;
+
+typedef t_id			i_task;
+
+typedef t_id			i_as;
+
+typedef t_id			i_event;
+
+typedef t_id			i_segment;
+
+typedef t_id			i_region;
+
+
+typedef t_id			i_thread;
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * this identifier identifies a unique machine in the distributed system.
+ */
+
+typedef t_id			i_machine;
+
+/*
+ * unique identifier of a node in the distributed system.
+ *
+ * a node is a communicating task located in a machine of the distributed
+ * system.
+ */
+
+typedef struct
+{
+  i_machine			machine;
+  /* XXX i_task */ t_id			task;
+}				i_node;
+
 #endif

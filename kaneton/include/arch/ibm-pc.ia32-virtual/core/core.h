@@ -8,7 +8,7 @@
  * file          /home/mycure/kane...kaneton/include/arch/machdep/core/core.h
  *
  * created       julien quintard   [wed jun  6 15:58:22 2007]
- * updated       julien quintard   [wed jun  6 20:06:32 2007]
+ * updated       julien quintard   [wed jun  6 20:36:00 2007]
  */
 
 #ifndef GUARD_IA32_CORE_CORE
@@ -28,6 +28,8 @@
 /*
  * ---------- includes --------------------------------------------------------
  */
+
+#include <arch/machdep/core/types.h>
 
 #include <arch/machdep/core/as.h>
 #include <arch/machdep/core/segment.h>

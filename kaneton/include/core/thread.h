@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [wed jun  6 19:36:02 2007]
+ * updated       julien quintard   [wed jun  6 21:38:15 2007]
  */
 
 #ifndef GUARD_CORE_THREAD
@@ -23,8 +23,6 @@
 /*
  * ---------- types -----------------------------------------------------------
  */
-
-typedef t_id			i_thread;
 
 /*
  * ---------- dependencies ----------------------------------------------------

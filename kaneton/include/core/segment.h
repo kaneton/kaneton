@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [wed jun  6 19:18:36 2007]
+ * updated       julien quintard   [wed jun  6 21:37:26 2007]
  */
 
 #ifndef GUARD_CORE_SEGMENT
@@ -28,7 +28,7 @@
  * segment object identifier
  */
 
-typedef t_id			i_segment;
+typedef struct o_segment	o_segment;
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -38,6 +38,7 @@ typedef t_id			i_segment;
 #include <core/stats.h>
 #include <core/set.h>
 #include <core/as.h>
+#include <core/region.h>
 #include <core/error.h>
 
 #include <arch/machdep/machdep.h>
@@ -67,7 +68,7 @@ typedef t_id			i_segment;
  * segment object
  */
 
-typedef struct
+struct				o_segment
 {
   i_segment			segid;
 
@@ -81,7 +82,7 @@ typedef struct
   t_perms			perms;
 
   machdep_data(o_segment);
-}				o_segment;
+};
 
 /*
  * segment manager
