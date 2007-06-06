@@ -26,7 +26,7 @@ typedef struct sd_timer		d_timer;
  * generic timer handler type.
  */
 
-typedef t_error			(*t_timer_handler)(void);
+// XXX typedef t_error			(*t_timer_handler)(void);
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -63,6 +63,9 @@ typedef t_error			(*t_timer_handler)(void);
 /*
  * ---------- types -----------------------------------------------------------
  */
+
+// XXX
+typedef t_error			(*t_timer_handler)(void);
 
 /*
  * timer handler type

@@ -20,14 +20,39 @@ typedef struct s_module		t_module;
 typedef struct s_modules	t_modules;
 typedef struct s_init		t_init;
 
+// XXX
+#endif
+
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
+// XXX
+#ifndef CORE_INIT_H2
+#define CORE_INIT_H2	1
+
+// XXX
+typedef int _debug_init_1_;
+
 #include <arch/machdep/machdep.h>
+
+// XXX
+typedef int _debug_init_2_;
+
 #include <core/segment.h>
+
+// XXX
+typedef int _debug_init_3_;
+
 #include <core/region.h>
+
+// XXX
+typedef int _debug_init_4_;
+
 #include <core/cpu.h>
+
+// XXX
+typedef int _debug_init_5_;
 
 /*
  * ---------- types -----------------------------------------------------------

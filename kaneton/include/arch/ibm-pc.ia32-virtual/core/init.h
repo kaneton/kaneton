@@ -79,7 +79,17 @@ typedef struct
  * ---------- dependencies ----------------------------------------------------
  */
 
+// XXX
+typedef int _debug_machdep_init_1_;
+
 #include <core/init.h>
+
+// XXX
+typedef int _debug_machdep_init_2_;
+
 #include <libia32.h>
+
+// XXX
+typedef int _debug_machdep_init_3_;
 
 #endif

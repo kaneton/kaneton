@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/arch/machdep/core/as.h
  *
  * created       julien quintard   [sun jun  3 23:54:56 2007]
- * updated       julien quintard   [mon jun  4 00:04:39 2007]
+ * updated       julien quintard   [tue jun  5 18:55:56 2007]
  */
 
 #ifndef IA32_CORE_AS_H
@@ -55,6 +55,7 @@ typedef struct
  * ---------- dependencies ----------------------------------------------------
  */
 
+#include <libia32.h>
 #include <core/as.h>
 
 #endif

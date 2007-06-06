@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/core/cpu.h
  *
  * created       julien quintard   [sun jun  3 20:25:39 2007]
- * updated       julien quintard   [sun jun  3 23:52:39 2007]
+ * updated       julien quintard   [tue jun  5 18:29:39 2007]
  */
 
 #ifndef CORE_CPU_H
@@ -22,13 +22,34 @@ typedef struct so_cpu		o_cpu;
 typedef struct sm_cpu		m_cpu;
 typedef struct sd_cpu		d_cpu;
 
+// XXX
+#endif
+
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
+// XXX
+#ifndef CORE_CPU_H2
+#define CORE_CPU_H2	1
+
+// XXX
+typedef int _debug_cpu_1_;
+
 #include <arch/machdep/machdep.h>
+
+// XXX
+typedef int _debug_cpu_2_;
+
 #include <core/id.h>
+
+// XXX
+typedef int _debug_cpu_3_;
+
 #include <core/types.h>
+
+// XXX
+typedef int _debug_cpu_4_;
 
 /*
  * ---------- types -----------------------------------------------------------

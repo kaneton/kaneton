@@ -29,14 +29,17 @@
 #define		machdep_data(_object_)					\
   machdep_data_##_object_()
 
+#endif
+
 /*
  * ---------- includes --------------------------------------------------------
  */
+
+// XXX
+#include <core/types.h>
 
 #include <libia32.h>
 
 #include <arch/machdep/core/core.h>
 #include <arch/machdep/services/services.h>
 #include <arch/machdep/sys/sys.h>
-
-#endif

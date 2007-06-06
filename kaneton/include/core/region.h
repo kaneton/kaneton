@@ -35,13 +35,34 @@ typedef struct sd_region	d_region;
 #define REGION_OPT_LOCAL	(0 << 2)
 #define REGION_OPT_GLOBAL	(1 << 2)
 
+// XXX
+#endif
+
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
+// XXX
+#ifndef CORE_REGION_H2
+#define CORE_REGION_H2	1
+
+// XXX
+typedef int _debug_region_1_;
+
 #include <arch/machdep/machdep.h>
+
+// XXX
+typedef int _debug_region_2_;
+
 #include <core/id.h>
+
+// XXX
+typedef int _debug_region_3_;
+
 #include <core/types.h>
+
+// XXX
+typedef int _debug_region_4_;
 
 /*
  * ---------- types -----------------------------------------------------------

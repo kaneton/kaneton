@@ -46,6 +46,12 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
+// XXX
+typedef int _debug_machdep_region_1_;
+
 #include <core/region.h>
+
+// XXX
+typedef int _debug_machdep_region_2_;
 
 #endif

@@ -37,13 +37,34 @@ typedef struct sd_segment	d_segment;
 #define SEGMENT_TYPE_MEMORY	(1 << 0)
 #define SEGMENT_TYPE_CATCH	(1 << 1)
 
+// XXX
+#endif
+
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
+// XXX
+#ifndef CORE_SEGMENT_H2
+#define CORE_SEGMENT_H2	1
+
+// XXX
+typedef int _debug_segment_1_;
+
 #include <arch/machdep/machdep.h>
+
+// XXX
+typedef int _debug_segment_2_;
+
 #include <core/id.h>
+
+// XXX
+typedef int _debug_segment_3_;
+
 #include <core/types.h>
+
+// XXX
+typedef int _debug_segment_4_;
 
 /*
  * ---------- types -----------------------------------------------------------

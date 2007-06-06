@@ -21,11 +21,17 @@
 
 #define PAGESZ			4096
 
+// XXX
+#endif
+
 /*
  * ---------- includes --------------------------------------------------------
  */
 
 #include <arch/machdep/core/as.h>
+
+#include <arch/machdep/core/init.h>
+
 #include <arch/machdep/core/region.h>
 #include <arch/machdep/core/segment.h>
 #include <arch/machdep/core/stats.h>
@@ -38,11 +44,14 @@
 #include <arch/machdep/core/cpu.h>
 #include <arch/machdep/core/io.h>
 #include <arch/machdep/core/debug.h>
-#include <arch/machdep/core/init.h>
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
+
+// XXX
+#ifndef IA32_CORE_CORE_H2
+#define IA32_CORE_CORE_H2	1
 
 #include <core/types.h>
 #include <core/id.h>

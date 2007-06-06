@@ -52,6 +52,12 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
+// XXX
+typedef int _debug_machdep_segment_1_;
+
 #include <core/segment.h>
+
+// XXX
+typedef int _debug_machdep_segment_2_;
 
 #endif

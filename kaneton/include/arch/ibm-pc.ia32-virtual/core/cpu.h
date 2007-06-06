@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/include/arch/machdep/core/cpu.h
  *
  * created       julien quintard   [mon jun  4 01:05:31 2007]
- * updated       julien quintard   [mon jun  4 01:10:00 2007]
+ * updated       julien quintard   [mon jun  4 23:35:55 2007]
  */
 
 #ifndef IA32_CORE_CPU_H
@@ -41,6 +41,12 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX #include <core/cpu.h>
+// XXX
+typedef int _debug_machdep_cpu_1_;
+
+#include <core/cpu.h>
+
+// XXX
+typedef int _debug_machdep_cpu_2_;
 
 #endif
