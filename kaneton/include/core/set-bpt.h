@@ -1,25 +1,27 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/set-bpt.h
+ * license       kaneton
  *
- * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       matthieu bucchianeri   [tue feb  6 23:22:48 2007]
+ * file          /home/mycure/kaneton/kaneton/include/core/set-bpt.h
+ *
+ * created       julien quintard   [wed jun  6 14:14:36 2007]
+ * updated       julien quintard   [wed jun  6 14:25:15 2007]
  */
 
-#ifndef CORE_SET_BPT_H
-#define CORE_SET_BPT_H		1
+#ifndef GUARD_CORE_SET_BPT
+#define GUARD_CORE_SET_BPT		1
 
 /*
- * ---------- types -----------------------------------------------------------
+ * ---------- dependencies ----------------------------------------------------
  */
 
-typedef struct s_set_bpt_inentry	t_set_bpt_inentry;
-typedef struct s_set_bpt_lfentry	t_set_bpt_lfentry;
-typedef struct s_set_bpt		t_set_bpt;
-typedef struct s_iterator_bpt		t_iterator_bpt;
+#include <core/set.h>
+
+#undef BPT_DEBUG
+#include <sys/bpt.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -34,21 +36,6 @@ typedef struct s_iterator_bpt		t_iterator_bpt;
 #define SET_BPT_UVALUE		NULL
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/set.h>
-#include <arch/machdep/machdep.h>
-
-/*
- * ---------- includes --------------------------------------------------------
- */
-
-#undef BPT_DEBUG
-
-#include <sys/bpt.h>
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -56,17 +43,17 @@ typedef struct s_iterator_bpt		t_iterator_bpt;
  * bpt inentry and lfentry structures
  */
 
-struct				s_set_bpt_inentry
+typedef struct
 {
   SET_BPT_KEY_T			id;
   SET_BPT_ADDR_T		data;
-};
+}				t_set_bpt_inentry;
 
-struct				s_set_bpt_lfentry
+typedef struct
 {
   SET_BPT_KEY_T			id;
   SET_BPT_VALUE_T		data;
-};
+}				t_set_bpt_lfentry;
 
 /*
  * bpt types
@@ -80,22 +67,22 @@ bpt_make_types(set, BPT_NODESZ_T, BPT_NDI_T, BPT_UNI_T, BPT_NODES_T,
  * specific bpt set
  */
 
-struct				s_set_bpt
+typedef struct
 {
   t_bpt_unused(set)		unused;
   t_bpt_uni(set)		unusedsz;
 
   t_bpt(set)			bpt;
-};
+}				t_set_bpt;
 
 /*
  * bpt iterator
  */
 
-struct				s_iterator_bpt
+typedef struct
 {
   t_bpt_entry(set)		entry;
-};
+}				t_iterator_bpt;
 
 /*
  * ---------- prototypes ------------------------------------------------------

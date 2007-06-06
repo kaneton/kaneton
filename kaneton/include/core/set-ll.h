@@ -1,31 +1,24 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
+ * license       kaneton
+ *
  * file          /home/mycure/kaneton/kaneton/include/core/set-ll.h
  *
- * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       julien quintard   [sat jul  8 03:17:12 2006]
+ * created       julien quintard   [wed jun  6 14:25:53 2007]
+ * updated       julien quintard   [wed jun  6 14:27:19 2007]
  */
 
-#ifndef CORE_SET_LL_H
-#define CORE_SET_LL_H		1
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef struct s_set_ll_node	t_set_ll_node;
-typedef struct s_set_ll		t_set_ll;
-typedef struct s_iterator_ll	t_iterator_ll;
+#ifndef GUARD_CORE_SET_LL
+#define GUARD_CORE_SET_LL		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <core/set.h>
-#include <arch/machdep/machdep.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -35,31 +28,31 @@ typedef struct s_iterator_ll	t_iterator_ll;
  * a node of the linked-list
  */
 
-struct				s_set_ll_node
+typedef struct
 {
   void*				data;
 
   struct s_set_ll_node*		prv;
   struct s_set_ll_node*		nxt;
-};
+}				t_set_ll_node;
 
 /*
  * specific linked-list data
  */
 
-struct				s_set_ll
+typedef struct
 {
   t_set_ll_node*		head;
   t_set_ll_node*		tail;
-};
+}				t_set_ll;
 
 /*
  * linked-list iterator
  */
 
-struct				s_iterator_ll
+typedef struct
 {
   t_set_ll_node*		node;
-};
+}				t_iterator_ll;
 
 #endif

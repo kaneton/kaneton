@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ibm-pc.ia32-virtual/core/segment.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:23:41 2005]
- * updated       matthieu bucchianeri   [tue feb  6 23:20:19 2007]
+ * file          /home/mycure/kane...eton/include/arch/machdep/core/segment.h
+ *
+ * created       julien quintard   [wed jun  6 16:25:05 2007]
+ * updated       julien quintard   [wed jun  6 16:25:24 2007]
  */
 
-#ifndef IA32_CORE_SEGMENT_H
-#define IA32_CORE_SEGMENT_H	1
+#ifndef GUARD_IA32_CORE_SEGMENT
+#define GUARD_IA32_CORE_SEGMENT		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -47,17 +49,5 @@
 #define PMODE_GDT_SERVICE_DS	0x6
 #define PMODE_GDT_PROGRAM_CS	0x7
 #define PMODE_GDT_PROGRAM_DS	0x8
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX
-typedef int _debug_machdep_segment_1_;
-
-#include <core/segment.h>
-
-// XXX
-typedef int _debug_machdep_segment_2_;
 
 #endif

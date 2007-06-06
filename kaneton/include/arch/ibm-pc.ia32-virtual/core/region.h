@@ -1,23 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/region.h
+ * license       kaneton
  *
- * created       julien quintard   [wed dec 14 07:04:32 2005]
- * updated       matthieu bucchianeri   [tue apr 11 16:16:58 2006]
+ * file          /home/mycure/kane...neton/include/arch/machdep/core/region.h
+ *
+ * created       julien quintard   [wed jun  6 16:22:05 2007]
+ * updated       julien quintard   [wed jun  6 16:23:59 2007]
  */
 
-#ifndef IA32_CORE_REGION_H
-#define IA32_CORE_REGION_H	1
-
-/*
- * ---------- macros ----------------------------------------------------------
- */
-
-#define REGION_VMEM_MIN		PAGESZ
-#define REGION_VMEM_MAX		UINT_MAX
+#ifndef GUARD_IA32_CORE_REGION
+#define GUARD_IA32_CORE_REGION		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -46,12 +41,13 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX
-typedef int _debug_machdep_region_1_;
+#include <arch/machdep/core/core.h>
 
-#include <core/region.h>
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
 
-// XXX
-typedef int _debug_machdep_region_2_;
+#define REGION_VMEM_MIN		PAGESZ
+#define REGION_VMEM_MAX		0xffffffffU
 
 #endif

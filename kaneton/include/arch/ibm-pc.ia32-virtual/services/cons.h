@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/services/cons.h
+ * license       kaneton
  *
- * created       julien quintard   [sat dec 17 17:16:27 2005]
- * updated       julien quintard   [fri mar 10 04:04:05 2006]
+ * file          /home/mycure/kane...ton/include/arch/machdep/services/cons.h
+ *
+ * created       julien quintard   [wed jun  6 15:53:35 2007]
+ * updated       julien quintard   [wed jun  6 15:54:52 2007]
  */
 
 /*
@@ -22,14 +24,14 @@
  *               4 = red        5 = magenta    6 = yellow     7 = white
  */
 
-#ifndef IA32_CONS_H
-#define IA32_CONS_H		1
+#ifndef GUARD_IA32_SERVICES_CONS_H
+#define GUARD_IA32_SERVICES_CONS_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <libia32.h>
+#include <core/core.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

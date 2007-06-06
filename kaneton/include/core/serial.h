@@ -1,16 +1,24 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/serial.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [sun jun 18 16:58:44 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/serial.h
+ *
+ * created       julien quintard   [wed jun  6 14:06:42 2007]
+ * updated       julien quintard   [wed jun  6 15:56:58 2007]
  */
 
-#ifndef	CORE_SERIAL_H
-#define	CORE_SERIAL_H		1
+#ifndef	GUARD_CORE_SERIAL
+#define	GUARD_CORE_SERIAL		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -36,12 +44,6 @@
 #define SERIAL_FIFO_8		0x87
 #define	SERIAL_FIFO_4		0x47
 #define SERIAL_FIFO_1		0x07
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

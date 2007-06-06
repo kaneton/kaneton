@@ -1,25 +1,27 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
+ * license       kaneton
+ *
  * file          /home/mycure/kaneton/kaneton/include/core/capability.h
  *
- * created       julien quintard   [sat jun 24 14:10:24 2006]
- * updated       julien quintard   [wed jun 28 12:48:09 2006]
+ * created       julien quintard   [wed jun  6 12:44:04 2007]
+ * updated       julien quintard   [wed jun  6 15:55:35 2007]
  */
 
-#ifndef CORE_CAPABILITY_H
-#define CORE_CAPABILITY_H	1
+#ifndef GUARD_CORE_CAPABILITY
+#define GUARD_CORE_CAPABILITY		1
 
 /*
- * ---------- types -----------------------------------------------------------
+ * ---------- dependencies ----------------------------------------------------
  */
 
-typedef struct s_capability		t_capability;
-typedef struct s_capability_descriptor	t_capability_descriptor;
-typedef struct sm_capability		m_capability;
-typedef struct sd_capability		d_capability;
+#include <core/core.h>
+#include <core/id.h>
+#include <core/kernel.h>
+#include <core/error.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -30,14 +32,6 @@ typedef struct sd_capability		d_capability;
  */
 
 #define CAPABILITY_CHILDREN_INITSZ	0x4
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
 
 /*
  * ---------- types -----------------------------------------------------------

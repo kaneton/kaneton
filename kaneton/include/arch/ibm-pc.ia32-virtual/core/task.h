@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/task.h
+ * license       kaneton
  *
- * created       julien quintard   [sat dec 10 15:24:34 2005]
- * updated       matthieu bucchianeri   [sat jul 29 18:36:24 2006]
+ * file          /home/mycure/kane...kaneton/include/arch/machdep/core/task.h
+ *
+ * created       julien quintard   [wed jun  6 16:25:44 2007]
+ * updated       julien quintard   [wed jun  6 16:26:41 2007]
  */
 
-#ifndef IA32_CORE_TASK_H
-#define IA32_CORE_TASK_H	1
+#ifndef GUARD_IA32_CORE_TASK
+#define GUARD_IA32_CORE_TASK		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -37,6 +39,12 @@
   ao_task				machdep
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -48,11 +56,5 @@ typedef struct
 {
   t_uint8			iomap[8192];
 }				ao_task;
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/task.h>
 
 #endif

@@ -1,16 +1,34 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
+ * license       kaneton
+ *
  * file          /home/mycure/kaneton/kaneton/include/core/error.h
  *
- * created       julien quintard   [fri feb 11 02:19:11 2005]
- * updated       julien quintard   [sat apr  1 22:42:44 2006]
+ * created       julien quintard   [wed jun  6 13:02:28 2007]
+ * updated       julien quintard   [wed jun  6 15:55:51 2007]
  */
 
-#ifndef CORE_ERROR_H
-#define CORE_ERROR_H		1
+#ifndef GUARD_CORE_ERROR
+#define GUARD_CORE_ERROR		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * error type
+ */
+
+typedef t_sint32		t_error;
 
 /*
  * ---------- macros ----------------------------------------------------------

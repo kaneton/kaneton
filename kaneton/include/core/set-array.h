@@ -1,30 +1,24 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/set_array.h
+ * license       kaneton
  *
- * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       julien quintard   [sun apr  2 13:50:56 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/set-array.h
+ *
+ * created       julien quintard   [wed jun  6 14:13:43 2007]
+ * updated       julien quintard   [wed jun  6 14:25:38 2007]
  */
 
-#ifndef CORE_SET_ARRAY_H
-#define CORE_SET_ARRAY_H	1
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef struct s_set_array	t_set_array;
-typedef struct s_iterator_array	t_iterator_array;
+#ifndef GUARD_CORE_SET_ARRAY
+#define GUARD_CORE_SET_ARRAY		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <core/set.h>
-#include <arch/machdep/machdep.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -34,21 +28,21 @@ typedef struct s_iterator_array	t_iterator_array;
  * specific array data
  */
 
-struct				s_set_array
+typedef struct
 {
   t_size			initsz;
 
   void**			array;
   t_setsz			arraysz;
-};
+}				t_set_array;
 
 /*
  * array iterator
  */
 
-struct				s_iterator_array
+typedef struct
 {
   t_setsz			i;
-};
+}				t_iterator_array;
 
 #endif

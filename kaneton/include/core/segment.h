@@ -1,24 +1,46 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/segment.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [fri jun  2 14:12:12 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/segment.h
+ *
+ * created       julien quintard   [wed jun  6 14:00:28 2007]
+ * updated       julien quintard   [wed jun  6 15:56:52 2007]
  */
 
-#ifndef CORE_SEGMENT_H
-#define CORE_SEGMENT_H		1
+#ifndef GUARD_CORE_SEGMENT
+#define GUARD_CORE_SEGMENT		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/id.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
-typedef struct so_segment	o_segment;
-typedef struct sm_segment	m_segment;
-typedef struct sd_segment	d_segment;
+/*
+ * segment object identifier
+ */
+
+typedef t_id			i_segment;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
+#include <core/stats.h>
+#include <core/set.h>
+#include <core/as.h>
+#include <core/error.h>
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -37,35 +59,6 @@ typedef struct sd_segment	d_segment;
 #define SEGMENT_TYPE_MEMORY	(1 << 0)
 #define SEGMENT_TYPE_CATCH	(1 << 1)
 
-// XXX
-#endif
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX
-#ifndef CORE_SEGMENT_H2
-#define CORE_SEGMENT_H2	1
-
-// XXX
-typedef int _debug_segment_1_;
-
-#include <arch/machdep/machdep.h>
-
-// XXX
-typedef int _debug_segment_2_;
-
-#include <core/id.h>
-
-// XXX
-typedef int _debug_segment_3_;
-
-#include <core/types.h>
-
-// XXX
-typedef int _debug_segment_4_;
-
 /*
  * ---------- types -----------------------------------------------------------
  */
@@ -74,7 +67,7 @@ typedef int _debug_segment_4_;
  * segment object
  */
 
-struct				so_segment
+typedef struct
 {
   i_segment			segid;
 
@@ -88,13 +81,13 @@ struct				so_segment
   t_perms			perms;
 
   machdep_data(o_segment);
-};
+}				o_segment;
 
 /*
  * segment manager
  */
 
-struct				sm_segment
+typedef struct
 {
   o_id				id;
 
@@ -108,13 +101,13 @@ struct				sm_segment
   i_set				segments;
 
   machdep_data(m_segment);
-};
+}				m_segment;
 
 /*
  * the segment architecture-dependent interface
  */
 
-struct				sd_segment
+typedef struct
 {
   t_error			(*segment_show)(i_segment);
   t_error			(*segment_clone)(i_as,
@@ -161,7 +154,7 @@ struct				sd_segment
   t_error			(*segment_flush)(i_as);
   t_error			(*segment_init)();
   t_error			(*segment_clean)(void);
-};
+}				d_segment;
 
 /*
  * ---------- macro functions -------------------------------------------------

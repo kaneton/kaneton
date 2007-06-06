@@ -19,7 +19,7 @@
 /*
  * base types
  */
-
+/* XXX
 typedef unsigned char		t_uint8;
 typedef signed char		t_sint8;
 typedef unsigned short		t_uint16;
@@ -28,11 +28,12 @@ typedef unsigned int		t_uint32;
 typedef signed int		t_sint32;
 typedef unsigned long long	t_uint64;
 typedef signed long long	t_sint64;
+*/
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <core/types.h>
+// XXX #include <core/types.h>
 
 #endif

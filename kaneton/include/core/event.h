@@ -1,32 +1,46 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/event.h
+ * license       kaneton
  *
- * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       matthieu bucchianeri   [wed aug 16 20:24:37 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/event.h
+ *
+ * created       julien quintard   [wed jun  6 13:13:41 2007]
+ * updated       julien quintard   [wed jun  6 15:55:57 2007]
  */
 
-#ifndef CORE_EVENT_H
-#define CORE_EVENT_H		1
+#ifndef GUARD_CORE_EVENT
+#define GUARD_CORE_EVENT		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/id.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
-typedef union u_event_handler	u_event_handler;
-
-typedef struct so_event		o_event;
-typedef struct sm_event		m_event;
-typedef struct sd_event		d_event;
-
 /*
- * generic event handler type.
+ * the event object identifier
  */
 
-typedef void			(*t_event_handler)(t_id);
+typedef t_id			i_event;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
+#include <core/task.h>
+#include <core/set.h>
+#include <core/stats.h>
+#include <core/error.h>
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -47,32 +61,30 @@ typedef void			(*t_event_handler)(t_id);
   ((u_event_handler)(t_event_handler)(_function_))
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-
-/*
  * ---------- types -----------------------------------------------------------
  */
+
+/*
+ * generic event handler type.
+ */
+
+typedef void			(*t_event_handler)(t_id);
 
 /*
  * event handler type
  */
 
-union				u_event_handler
+typedef union
 {
   t_event_handler		function;
   i_task			taskid;
-};
+}				u_event_handler;
 
 /*
  * event object
  */
 
-struct				so_event
+typedef struct
 {
   i_event			eventid;
 
@@ -81,13 +93,13 @@ struct				so_event
   u_event_handler		handler;
 
   machdep_data(o_event);
-};
+}				o_event;
 
 /*
  * event manager
  */
 
-struct				sm_event
+typedef struct
 {
   o_id				id;
 
@@ -96,13 +108,13 @@ struct				sm_event
   i_set				events;
 
   machdep_data(m_event);
-};
+}				m_event;
 
 /*
  * the event architecture dependent interface
  */
 
-struct				sd_event
+typedef struct
 {
   t_error			(*event_show)(i_event);
   t_error			(*event_notify)(i_event);
@@ -112,7 +124,7 @@ struct				sd_event
   t_error			(*event_release)(i_event);
   t_error			(*event_init)(void);
   t_error			(*event_clean)(void);
-};
+}				d_event;
 
 /*
  * ---------- macro functions -------------------------------------------------

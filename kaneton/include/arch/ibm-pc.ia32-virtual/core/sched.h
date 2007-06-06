@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ibm-pc.ia32-virtual/core/sched.h
+ * license       kaneton
  *
- * created       matthieu bucchianeri   [sat jun  3 22:47:21 2006]
- * updated       matthieu bucchianeri   [tue feb  6 23:19:56 2007]
+ * file          /home/mycure/kane...aneton/include/arch/machdep/core/sched.h
+ *
+ * created       julien quintard   [wed jun  6 16:24:14 2007]
+ * updated       julien quintard   [wed jun  6 16:24:56 2007]
  */
 
-#ifndef IA32_CORE_SCHED_H
-#define IA32_CORE_SCHED_H	1
+#ifndef GUARD_IA32_CORE_SCHED
+#define GUARD_IA32_CORE_SCHED		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -37,6 +39,13 @@
 #define		machdep_data_o_sched()
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/timer.h>
+#include <core/thread.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -54,11 +63,5 @@ typedef struct
 
 /*                                                               [cut] /k3   */
 }				am_sched;
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/sched.h>
 
 #endif

@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/io.h
+ * license       kaneton
  *
- * created       matthieu bucchianeri   [sat jul 29 18:10:14 2006]
- * updated       matthieu bucchianeri   [sat jul 29 18:10:25 2006]
+ * file          /home/mycure/kaneton/kaneton/include/arch/machdep/core/io.h
+ *
+ * created       julien quintard   [wed jun  6 16:19:54 2007]
+ * updated       julien quintard   [wed jun  6 16:20:40 2007]
  */
 
-#ifndef IA32_CORE_IO_H
-#define IA32_CORE_IO_H	1
+#ifndef GUARD_IA32_CORE_IO
+#define GUARD_IA32_CORE_IO		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -34,11 +36,5 @@
 #define		machdep_data_m_io()
 
 #define		machdep_data_o_io()
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/io.h>
 
 #endif

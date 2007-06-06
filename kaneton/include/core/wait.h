@@ -1,22 +1,26 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/wait.h
+ * license       kaneton
  *
- * created       julien quintard   [wed apr 12 05:17:42 2006]
- * updated       matthieu bucchianeri   [sun jun 18 19:07:26 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/wait.h
+ *
+ * created       julien quintard   [wed jun  6 15:48:52 2007]
+ * updated       julien quintard   [wed jun  6 17:24:52 2007]
  */
 
-#ifndef CORE_WAIT_H
-#define CORE_WAIT_H		1
+#ifndef GUARD_CORE_WAIT
+#define GUARD_CORE_WAIT			1
 
 /*
- * ---------- types -----------------------------------------------------------
+ * ---------- dependencies ----------------------------------------------------
  */
 
-typedef struct s_wait		t_wait;
+#include <core/core.h>
+#include <core/task.h>
+#include <core/thread.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -53,13 +57,6 @@ typedef struct s_wait		t_wait;
   (_wait_).error
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-#include <core/types.h>
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -67,7 +64,7 @@ typedef struct s_wait		t_wait;
  * wait type
  */
 
-struct				s_wait
+typedef struct
 {
   union
   {
@@ -78,6 +75,6 @@ struct				s_wait
   t_status			status;
 
   t_uint32			error;
-};
+}				t_wait;
 
 #endif

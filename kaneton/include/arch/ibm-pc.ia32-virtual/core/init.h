@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ibm-pc.ia32-virtual/core/init.h
+ * license       kaneton
  *
- * created       julien quintard   [sat dec 17 17:15:29 2005]
- * updated       matthieu bucchianeri   [tue feb  6 23:19:17 2007]
+ * file          /home/mycure/kane...kaneton/include/arch/machdep/core/init.h
+ *
+ * created       julien quintard   [wed jun  6 16:16:48 2007]
+ * updated       julien quintard   [wed jun  6 16:17:29 2007]
  */
 
-#ifndef IA32_CORE_INIT_H
-#define IA32_CORE_INIT_H	1
+#ifndef GUARD_IA32_CORE_INIT
+#define GUARD_IA32_CORE_INIT		1
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -66,6 +68,12 @@
   a_init			machdep
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <libia32.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -74,22 +82,5 @@ typedef struct
   t_ia32_gdt			gdt;
   t_ia32_directory		pd;
 }				a_init;
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX
-typedef int _debug_machdep_init_1_;
-
-#include <core/init.h>
-
-// XXX
-typedef int _debug_machdep_init_2_;
-
-#include <libia32.h>
-
-// XXX
-typedef int _debug_machdep_init_3_;
 
 #endif

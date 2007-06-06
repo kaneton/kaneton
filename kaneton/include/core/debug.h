@@ -1,23 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/debug.h
+ * license       kaneton
  *
- * created       julien quintard   [mon nov 28 19:37:01 2005]
- * updated       matthieu bucchianeri   [sat may  5 17:10:54 2007]
+ * file          /home/mycure/kaneton/kaneton/include/core/debug.h
+ *
+ * created       julien quintard   [wed jun  6 13:11:05 2007]
+ * updated       julien quintard   [wed jun  6 15:55:47 2007]
  */
 
-#ifndef CORE_DEBUG_H
-#define CORE_DEBUG_H		1
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef struct s_serial_data	t_serial_data;
-typedef struct s_serial_buffer	t_serial_buffer;
+#ifndef GUARD_CORE_DEBUG
+#define GUARD_CORE_DEBUG		1
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -44,6 +39,17 @@ typedef struct s_serial_buffer	t_serial_buffer;
 #define DEBUG								\
   (CONF_DEBUG)
 
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
+#include <core/error.h>
+
+/*
+ * ---------- macro functions -------------------------------------------------
+ */
+
 /*                                                                [cut] k1   */
 
 #define ASSERT(_test_)							\
@@ -59,30 +65,24 @@ typedef struct s_serial_buffer	t_serial_buffer;
 /*                                                                [cut] /k1  */
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
 /*                                                                [cut] k1   */
 
-struct				s_serial_data
+typedef struct
 {
   t_uint32			size;
   t_uint32			magic;
   t_uint32			crc;
   t_uint8*			data;
-};
+}				t_serial_data;
 
-struct				s_serial_buffer
+typedef struct
 {
  char*				name;
  void*				data;
-};
+}				t_serial_buffer;
 
 /*                                                               [cut] /k1   */
 

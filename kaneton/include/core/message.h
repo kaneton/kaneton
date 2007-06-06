@@ -1,24 +1,34 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
+ * license       kaneton
+ *
  * file          /home/mycure/kaneton/kaneton/include/core/message.h
  *
- * created       matthieu bucchianeri   [sat jun 17 19:39:50 2006]
- * updated       julien quintard   [thu jul  6 16:53:29 2006]
+ * created       julien quintard   [wed jun  6 13:34:19 2007]
+ * updated       julien quintard   [wed jun  6 16:21:53 2007]
  */
 
-#ifndef CORE_MESSAGE_H
-#define CORE_MESSAGE_H	1
+#ifndef GUARD_CORE_MESSAGE
+#define GUARD_CORE_MESSAGE		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
+#include <core/core.h>
 #include <core/id.h>
-#include <core/types.h>
+#include <core/thread.h>
+#include <core/as.h>
+#include <core/stats.h>
+#include <core/set.h>
+#include <core/task.h>
+#include <core/kernel.h>
+#include <core/error.h>
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -45,6 +55,8 @@ typedef struct
 {
   void*			data;
   t_vsize		sz;
+
+  machdep_data(o_message);
 }			o_message;
 
 typedef struct

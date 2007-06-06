@@ -1,23 +1,43 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/id.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [wed apr 12 11:47:10 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/id.h
+ *
+ * created       julien quintard   [wed jun  6 12:50:13 2007]
+ * updated       julien quintard   [wed jun  6 17:23:10 2007]
  */
 
-#ifndef CORE_ID_H
-#define CORE_ID_H		1
+#ifndef GUARD_CORE_ID
+#define GUARD_CORE_ID			1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+//#include <core/core.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
-typedef struct so_id		o_id;
-typedef struct sm_id		m_id;
+/*
+ * generic kaneton identifier
+ */
+
+typedef t_uint64		t_id;
+
+/*
+ * identifier object
+ */
+
+typedef struct
+{
+  t_id				id;
+}				o_id;
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -29,30 +49,21 @@ typedef struct sm_id		m_id;
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
-#include <core/types.h>
+#include <core/stats.h>
+#include <core/error.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
 /*
- * identifier object
- */
-
-struct				so_id
-{
-  t_id				id;
-};
-
-/*
  * the identifier manager
  */
 
-struct				sm_id
+typedef struct
 {
   i_stats			stats;
-};
+}				m_id;
 
 /*
  * ---------- macro functions -------------------------------------------------

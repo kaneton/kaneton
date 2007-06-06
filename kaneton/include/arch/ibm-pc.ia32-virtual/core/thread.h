@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ibm-pc.ia32-virtual/core/thread.h
+ * license       kaneton
  *
- * created       renaud voltz   [tue apr  4 03:10:52 2006]
- * updated       matthieu bucchianeri   [tue feb  6 23:20:57 2007]
+ * file          /home/mycure/kane...neton/include/arch/machdep/core/thread.h
+ *
+ * created       julien quintard   [wed jun  6 16:27:09 2007]
+ * updated       julien quintard   [wed jun  6 16:29:30 2007]
  */
 
-#ifndef IA32_CORE_THREAD_H
-#define IA32_CORE_THREAD_H       1
+#ifndef GUARD_IA32_CORE_THREAD
+#define GUARD_IA32_CORE_THREAD		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -38,6 +40,12 @@
   ao_thread		machdep
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <libia32.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -56,10 +64,10 @@ typedef struct
 
 typedef struct
 {
-
 /*                                                                [cut] k3   */
 
   t_ia32_context	context;
+
   union
   {
     t_x87_state		x87;
@@ -67,13 +75,6 @@ typedef struct
   }			u;
 
 /*                                                               [cut] /k3   */
-
 }			ao_thread;
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/thread.h>
 
 #endif

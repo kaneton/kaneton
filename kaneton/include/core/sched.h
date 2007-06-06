@@ -1,26 +1,31 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/sched.h
+ * license       kaneton
  *
- * created       matthieu bucchianeri   [sat jun  3 22:34:42 2006]
- * updated       julian pidancet   [fri apr 13 03:06:45 2007]
+ * file          /home/mycure/kaneton/kaneton/include/core/sched.h
+ *
+ * created       julien quintard   [wed jun  6 13:44:48 2007]
+ * updated       julien quintard   [wed jun  6 15:56:46 2007]
  */
 
-#ifndef CORE_SCHED_H
-#define CORE_SCHED_H	1
+#ifndef GUARD_CORE_SCHED
+#define GUARD_CORE_SCHED		1
 
 /*
- * ---------- types -----------------------------------------------------------
+ * ---------- dependencies ----------------------------------------------------
  */
 
-typedef struct s_scheduled	t_scheduled;
-typedef struct s_cpu_sched	t_cpu_sched;
+#include <core/core.h>
+#include <core/thread.h>
+#include <core/cpu.h>
+#include <core/set.h>
+#include <core/stats.h>
+#include <core/error.h>
 
-typedef struct sm_sched		m_sched;
-typedef struct sd_sched		d_sched;
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -56,7 +61,7 @@ typedef struct sd_sched		d_sched;
 #define SCHED_TIMESLICE_GRANULARITY	sched->quantum
 
 /*
- * ---------- macro functions--------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
 /*
@@ -132,15 +137,6 @@ typedef struct sd_sched		d_sched;
   })
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-#include <core/timer.h>
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -148,17 +144,17 @@ typedef struct sd_sched		d_sched;
  * a schedule queue element.
  */
 
-struct				s_scheduled
+typedef struct
 {
   i_thread			thread;
   t_timeslice			timeslice;
-};
+}				t_scheduled;
 
 /*
  * cpu scheduling environment.
  */
 
-struct				s_cpu_sched
+typedef struct
 {
   i_cpu				cpuid;
 
@@ -168,13 +164,13 @@ struct				s_cpu_sched
 
   i_set				active;
   i_set				expired;
-};
+}				t_cpu_sched;
 
 /*
  * scheduler manager
  */
 
-struct				sm_sched
+typedef struct
 {
   i_stats			stats;
 
@@ -183,13 +179,13 @@ struct				sm_sched
   i_set				cpus;
 
   machdep_data(m_sched);
-};
+}				m_sched;
 
 /*
  * the scheduler architecture-dependent interface
  */
 
-struct				sd_sched
+typedef struct
 {
   t_error			(*sched_quantum)(t_quantum);
   t_error			(*sched_yield)(i_cpu);
@@ -199,7 +195,7 @@ struct				sd_sched
   t_error			(*sched_update)(i_thread);
   t_error			(*sched_init)(void);
   t_error			(*sched_clean)(void);
-};
+}				d_sched;
 
 /*
  * ---------- macro functions -------------------------------------------------

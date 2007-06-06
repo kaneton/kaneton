@@ -8,11 +8,11 @@
  * file          /home/mycure/kaneton/kaneton/include/arch/machdep/core/cpu.h
  *
  * created       julien quintard   [mon jun  4 01:05:31 2007]
- * updated       julien quintard   [mon jun  4 23:35:55 2007]
+ * updated       julien quintard   [wed jun  6 16:14:46 2007]
  */
 
-#ifndef IA32_CORE_CPU_H
-#define IA32_CORE_CPU_H	1
+#ifndef GUARD_IA32_CORE_CPU
+#define GUARD_IA32_CORE_CPU		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -36,17 +36,5 @@
 #define		machdep_data_m_cpu()
 
 #define		machdep_data_o_cpu()
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX
-typedef int _debug_machdep_cpu_1_;
-
-#include <core/cpu.h>
-
-// XXX
-typedef int _debug_machdep_cpu_2_;
 
 #endif

@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/machdep.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:23:53 2005]
- * updated       julien quintard   [sat apr  1 23:00:17 2006]
+ * file          /home/mycure/kaneton/kaneton/include/arch/machdep/machdep.h
+ *
+ * created       julien quintard   [wed jun  6 15:50:24 2007]
+ * updated       julien quintard   [wed jun  6 15:50:48 2007]
  */
 
-#ifndef IA32_MACHDEP_H
-#define IA32_MACHDEP_H		1
+#ifndef GUARD_IA32_MACHDEP_H
+#define GUARD_IA32_MACHDEP_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -34,11 +36,6 @@
 /*
  * ---------- includes --------------------------------------------------------
  */
-
-// XXX
-#include <core/types.h>
-
-#include <libia32.h>
 
 #include <arch/machdep/core/core.h>
 #include <arch/machdep/services/services.h>

@@ -1,32 +1,42 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/timer.h
+ * license       kaneton
  *
- * created       renaud voltz   [sun feb 12 22:26:04 2006]
- * updated       matthieu bucchianeri   [fri dec  8 02:15:21 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/timer.h
+ *
+ * created       julien quintard   [wed jun  6 15:42:26 2007]
+ * updated       julien quintard   [wed jun  6 15:57:57 2007]
  */
 
-#ifndef CORE_TIMER_H
-#define CORE_TIMER_H		1
+#ifndef GUARD_CORE_TIMER
+#define GUARD_CORE_TIMER		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/id.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
-typedef union u_timer_handler	u_timer_handler;
-
-typedef struct so_timer		o_timer;
-typedef struct sm_timer		m_timer;
-typedef struct sd_timer		d_timer;
+typedef t_id			i_timer;
 
 /*
- * generic timer handler type.
+ * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX typedef t_error			(*t_timer_handler)(void);
+#include <core/core.h>
+#include <core/task.h>
+#include <core/stats.h>
+#include <core/set.h>
+#include <core/error.h>
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -53,35 +63,30 @@ typedef struct sd_timer		d_timer;
   ((u_timer_handler)(t_timer_handler)(_function_))
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
-// XXX
+/*
+ * generic timer handler type
+ */
+
 typedef t_error			(*t_timer_handler)(void);
 
 /*
  * timer handler type
  */
 
-union				u_timer_handler
+typedef union
 {
   t_timer_handler		function;
   i_task			taskid;
-};
+}				u_timer_handler;
 
 /*
  * timer object
  */
 
-struct				so_timer
+typedef struct
 {
   i_timer			timerid;
 
@@ -94,14 +99,13 @@ struct				so_timer
   u_timer_handler		handler;
 
   machdep_data(o_timer);
-};
-
+}				o_timer;
 
 /*
  * timer manager
  */
 
-struct				sm_timer
+typedef struct
 {
   o_id				id;
 
@@ -112,13 +116,13 @@ struct				sm_timer
   i_set				timers;
 
   machdep_data(m_timer);
-};
+}				m_timer;
 
 /*
  * the timer architecture dependent interface
  */
 
-struct				sd_timer
+typedef struct
 {
   t_error			(*timer_show)(i_timer);
   t_error			(*timer_delay)(i_timer,
@@ -137,7 +141,7 @@ struct				sd_timer
   t_error			(*timer_release)(i_timer);
   t_error			(*timer_init)(void);
   t_error			(*timer_clean)(void);
-};
+}				d_timer;
 
 /*
  * ---------- macro functions -------------------------------------------------

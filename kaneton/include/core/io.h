@@ -1,31 +1,41 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/io.h
+ * license       kaneton
  *
- * created       matthieu bucchianeri   [sat jul 29 18:06:00 2006]
- * updated       matthieu bucchianeri   [wed nov  1 17:08:12 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/io.h
+ *
+ * created       julien quintard   [wed jun  6 13:26:01 2007]
+ * updated       julien quintard   [wed jun  6 15:56:21 2007]
  */
 
-#ifndef CORE_IO_H
-#define CORE_IO_H	1
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef struct sm_io		m_io;
-typedef struct sd_io		d_io;
+#ifndef GUARD_CORE_IO
+#define GUARD_CORE_IO			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
 #include <core/id.h>
-#include <core/types.h>
+
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef t_id			i_port;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
+#include <core/stats.h>
+#include <core/task.h>
+#include <core/error.h>
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- types -----------------------------------------------------------

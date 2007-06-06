@@ -460,3 +460,56 @@ linux sans recompile.
 --
 
 compilateur: format de message -> XDR
+
+--
+
+machine doit specifier:
+ - les types: t_reg{8,16,32,64}
+ - ___endian, ___wordsz
+ - PAGESZ
+ - tous les machdep_data{o_*, init, etc.}
+
+tout ca doit etre dit dans le book kaneton.
+
+--
+
+expliquer l'utilisation des differents types: t_paddr, t_vsize, t_size
+etc. dans core book.
+
+--
+
+t_behav, t_opts a renommer en complet
+
+aucun objet ne doit etre passe en argument, toujours les id. la seule
+exception c'est la fonction _get() du manager qui gere l'objet en question.
+genre as_get() renvoie un o_as.
+
+--
+
+les pointeurs de fonctions a mettre en f_
+
+et du coup s_ ne sert plus.
+
+--
+
+changer le systeme d'error et utiliser une pile de chaines de caracteres
+comme pour les exceptions en Java par exemple. ce n'est pas a la libc
+d'afficher un message mais directement au kernel. apres il faut voir
+la rapidite et la memoire prise par ces messages.
+
+--
+
+expliquer dans dev book le nouveau systeme d'include: layout
+
+--
+
+changer le bootloader: ne pas mettre de o_ dans t_init, ca fout la
+merde. utiliser des s_segment, s_region, s_cpu.
+
+et renomer modules and inputs par exemple.
+
+en profiter opur passer au core, l'input: mod precharge!
+
+--
+
+revoir message.h, trop le bordel.

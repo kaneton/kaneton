@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/kaneton.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [wed jul 26 17:36:27 2006]
+ * file          /home/mycure/kaneton/kaneton/include/kaneton.h
+ *
+ * created       julien quintard   [wed jun  6 12:22:33 2007]
+ * updated       julien quintard   [wed jun  6 12:40:23 2007]
  */
 
-#ifndef KANETON_H
-#define KANETON_H		1
+#ifndef GUARD_KANETON
+#define GUARD_KANETON			1
 
 /*
  * ---------- defines ---------------------------------------------------------
@@ -18,6 +20,8 @@
 
 #define UNUSED								\
   __attribute__ ((unused))
+
+#endif
 
 /*
  * ---------- includes --------------------------------------------------------

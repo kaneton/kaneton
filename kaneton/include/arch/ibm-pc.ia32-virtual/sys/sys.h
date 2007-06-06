@@ -1,21 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/sys/sys.h
+ * license       kaneton
  *
- * created       julien quintard   [sat dec 17 17:17:16 2005]
- * updated       julien quintard   [sat dec 17 17:17:18 2005]
+ * file          /home/mycure/kaneton/kaneton/include/arch/machdep/sys/sys.h
+ *
+ * created       julien quintard   [wed jun  6 15:53:06 2007]
+ * updated       julien quintard   [wed jun  6 15:53:12 2007]
  */
-
-#ifndef IA32_SYS_SYS_H
-#define IA32_SYS_SYS_H		1
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
 #include <arch/machdep/sys/elf.h>
-
-#endif

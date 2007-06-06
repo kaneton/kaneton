@@ -1,21 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/core/include/arch/ia32-virtual/services/services.h
+ * license       kaneton
  *
- * created       julien quintard   [sat dec 17 17:16:19 2005]
- * updated       julien quintard   [sat dec 17 17:16:22 2005]
+ * file          /home/mycure/kane...include/arch/machdep/services/services.h
+ *
+ * created       julien quintard   [wed jun  6 15:53:20 2007]
+ * updated       julien quintard   [wed jun  6 15:53:25 2007]
  */
-
-#ifndef IA32_SERVICES_SERVICES_H
-#define IA32_SERVICES_SERVICES_H	1
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
 #include <arch/machdep/services/cons.h>
-
-#endif

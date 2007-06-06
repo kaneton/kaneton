@@ -1,31 +1,51 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/set.h
+ * license       kaneton
  *
- * created       julien quintard   [sun jun 19 14:51:33 2005]
- * updated       matthieu bucchianeri   [tue feb  6 23:22:25 2007]
+ * file          /home/mycure/kaneton/kaneton/include/core/set.h
+ *
+ * created       julien quintard   [wed jun  6 11:56:46 2007]
+ * updated       julien quintard   [wed jun  6 15:57:05 2007]
  */
 
-#ifndef CORE_SET_H
-#define CORE_SET_H		1
+#ifndef GUARD_CORE_SET
+#define GUARD_CORE_SET			1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
+#include <core/id.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
-typedef struct s_iterator	t_iterator;
+/*
+ * set object identifier
+ */
 
-typedef struct so_set		o_set;
-typedef struct sm_set		m_set;
+typedef t_id			i_set;
 
 /*
  * set size
  */
 
 typedef t_sint64		t_setsz;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/stats.h>
+
+#include <core/set-array.h>
+#include <core/set-bpt.h>
+#include <core/set-ll.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -66,22 +86,6 @@ typedef t_sint64		t_setsz;
  */
 
 #undef SET_DEBUG_TRAP
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-
-/*
- * ---------- includes --------------------------------------------------------
- */
-
-#include <core/set-array.h>
-#include <core/set-bpt.h>
-#include <core/set-ll.h>
 
 /*
  * ---------- types -----------------------------------------------------------

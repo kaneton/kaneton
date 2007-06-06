@@ -8,48 +8,39 @@
  * file          /home/mycure/kaneton/kaneton/include/core/cpu.h
  *
  * created       julien quintard   [sun jun  3 20:25:39 2007]
- * updated       julien quintard   [tue jun  5 18:29:39 2007]
+ * updated       julien quintard   [wed jun  6 16:41:56 2007]
  */
 
-#ifndef CORE_CPU_H
-#define CORE_CPU_H	1
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef struct so_cpu		o_cpu;
-typedef struct sm_cpu		m_cpu;
-typedef struct sd_cpu		d_cpu;
-
-// XXX
-#endif
+#ifndef GUARD_CORE_CPU
+#define GUARD_CORE_CPU			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX
-#ifndef CORE_CPU_H2
-#define CORE_CPU_H2	1
-
-// XXX
-typedef int _debug_cpu_1_;
-
-#include <arch/machdep/machdep.h>
-
-// XXX
-typedef int _debug_cpu_2_;
-
 #include <core/id.h>
 
-// XXX
-typedef int _debug_cpu_3_;
+/*
+ * ---------- types -----------------------------------------------------------
+ */
 
-#include <core/types.h>
+/*
+ * the identifier of a cpu object
+ */
 
-// XXX
-typedef int _debug_cpu_4_;
+typedef t_id			i_cpu;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
+#include <core/stats.h>
+#include <core/set.h>
+#include <core/task.h>
+#include <core/error.h>
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -59,33 +50,33 @@ typedef int _debug_cpu_4_;
  * cpu object
  */
 
-struct				so_cpu
+typedef struct
 {
   i_cpu				cpuid;
 
   t_timeslice			efficiency;
 
   machdep_data(o_cpu);
-};
+}				o_cpu;
 
 /*
  * cpu manager
  */
 
-struct				sm_cpu
+typedef struct
 {
   i_stats			stats;
 
   i_set				cpus;
 
   machdep_data(m_cpu);
-};
+}				m_cpu;
 
 /*
  * the cpu architecture-dependent interface
  */
 
-struct				sd_cpu
+typedef struct
 {
   t_error			(*cpu_show)(i_cpu);
   t_error			(*cpu_current)(i_cpu*);
@@ -93,7 +84,7 @@ struct				sd_cpu
 					       i_cpu);
   t_error			(*cpu_init)(void);
   t_error			(*cpu_clean)(void);
-};
+}				d_cpu;
 
 /*
  * ---------- macro functions -------------------------------------------------

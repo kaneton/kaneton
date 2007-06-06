@@ -1,25 +1,40 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/stats.h
+ * license       kaneton
  *
- * created       julien quintard   [sun jan 19 14:51:33 2005]
- * updated       matthieu bucchianeri   [thu jun 15 21:39:31 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/stats.h
+ *
+ * created       julien quintard   [wed jun  6 13:00:10 2007]
+ * updated       julien quintard   [wed jun  6 15:57:40 2007]
  */
 
-#ifndef CORE_STATS_H
-#define CORE_STATS_H		1
+#ifndef GUARD_CORE_STATS
+#define GUARD_CORE_STATS		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/id.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
-typedef struct s_stats_func	t_stats_func;
-typedef struct s_stats		t_stats;
+/*
+ * identifier of a statistic object
+ */
 
-typedef struct sm_stats		m_stats;
+typedef t_id			i_stats;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -29,15 +44,6 @@ typedef struct sm_stats		m_stats;
 #define STATS_FUNCTIONS_INITSZ	0x4
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-#include <core/conf.h>
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -45,7 +51,7 @@ typedef struct sm_stats		m_stats;
  * stats function
  */
 
-struct				s_stats_func
+struct
 {
   char*				name;
 
@@ -54,29 +60,29 @@ struct				s_stats_func
 
   t_uint32			timer_start;
   t_uint32			total;
-};
+}				t_stats_func;
 
 /*
  * stats object
  */
 
-struct				s_stats
+struct
 {
   char*				name;
 
   t_stats_func*			functions;
   t_sint64			functionssz;
-};
+}				t_stats;
 
 /*
  * stats manager
  */
 
-struct				sm_stats
+struct
 {
   t_stats*			managers;
   t_sint64			managerssz;
-};
+}				m_stats;
 
 /*
  * ---------- macro functions -------------------------------------------------

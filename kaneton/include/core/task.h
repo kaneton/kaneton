@@ -1,25 +1,48 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/task.h
+ * license       kaneton
  *
- * created       julien quintard   [tue nov 29 21:32:05 2005]
- * updated       matthieu bucchianeri   [fri aug 18 19:30:40 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/task.h
+ *
+ * created       julien quintard   [wed jun  6 14:27:31 2007]
+ * updated       julien quintard   [wed jun  6 15:57:46 2007]
  */
 
-#ifndef CORE_TASK_H
-#define CORE_TASK_H		1
+#ifndef GUARD_CORE_TASK
+#define GUARD_CORE_TASK			1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/id.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
-typedef struct so_task		o_task;
-typedef struct sm_task		m_task;
-typedef struct so_waitfor	o_waitfor;
-typedef struct sd_task		d_task;
+/*
+ * task object identifier
+ */
+
+typedef t_id			i_task;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
+#include <core/cpu.h>
+#include <core/set.h>
+#include <core/as.h>
+#include <core/stats.h>
+#include <core/thread.h>
+#include <core/wait.h>
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -76,15 +99,6 @@ typedef struct sd_task		d_task;
 #define TASK_WAITS_INITSZ	0x1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-#include <core/wait.h>
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -92,7 +106,7 @@ typedef struct sd_task		d_task;
  * task object
  */
 
-struct				so_task
+typedef struct
 {
   i_task			tskid;
 
@@ -114,13 +128,13 @@ struct				so_task
   t_wait			wait;
 
   machdep_data(o_task);
-};
+}				o_task;
 
 /*
  * task manager
  */
 
-struct				sm_task
+typedef struct
 {
   o_id				id;
 
@@ -129,13 +143,13 @@ struct				sm_task
   i_set				tasks;
 
   machdep_data(m_task);
-};
+}				m_task;
 
 /*
  * waitlist
  */
 
-struct				so_waitfor
+typedef struct
 {
   union
   {
@@ -144,13 +158,13 @@ struct				so_waitfor
   }				u;
 
   t_opts			opts;
-};
+}				o_waitfor;
 
 /*
  * the task architecture dependent interface
  */
 
-struct				sd_task
+typedef struct
 {
   t_error			(*task_show)(i_task);
   t_error			(*task_clone)(i_task,
@@ -169,7 +183,7 @@ struct				sd_task
 					     t_wait*);
   t_error			(*task_init)(void);
   t_error			(*task_clean)(void);
-};
+}				d_task;
 
 /*
  * ---------- macro functions -------------------------------------------------

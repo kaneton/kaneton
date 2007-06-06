@@ -1,30 +1,27 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/mod.h
+ * license       kaneton
  *
- * created       matthieu bucchianeri   [sat may  5 18:46:33 2007]
- * updated       matthieu bucchianeri   [sat may  5 20:40:09 2007]
+ * file          /home/mycure/kaneton/kaneton/include/core/mod.h
+ *
+ * created       julien quintard   [wed jun  6 13:39:48 2007]
+ * updated       julien quintard   [wed jun  6 13:59:39 2007]
  */
 
-#ifndef CORE_MOD_H
-#define CORE_MOD_H	1
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef struct sm_mod		m_mod;
+#ifndef GUARD_CORE_MOD
+#define GUARD_CORE_MOD			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
+#include <core/stats.h>
+#include <core/error.h>
+
 #include <sys/elf.h>
-#include <core/id.h>
-#include <core/types.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -34,10 +31,10 @@ typedef struct sm_mod		m_mod;
  * mod manager
  */
 
-struct				sm_mod
+typedef struct
 {
   i_stats			stats;
-};
+}				m_mod;
 
 /*
  * ---------- macro functions -------------------------------------------------

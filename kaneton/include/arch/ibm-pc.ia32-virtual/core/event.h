@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/event.h
+ * license       kaneton
  *
- * created       renaud voltz   [mon feb 13 00:56:13 2006]
- * updated       julien quintard   [sun apr  2 14:09:53 2006]
+ * file          /home/mycure/kane...aneton/include/arch/machdep/core/event.h
+ *
+ * created       julien quintard   [wed jun  6 16:15:26 2007]
+ * updated       julien quintard   [wed jun  6 16:15:39 2007]
  */
 
-#ifndef IA32_CORE_EVENT_H
-#define IA32_CORE_EVENT_H	1
+#ifndef GUARD_IA32_CORE_EVENT
+#define GUARD_IA32_CORE_EVENT		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -34,11 +36,5 @@
 #define		machdep_data_m_event()
 
 #define		machdep_data_o_event()
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/event.h>
 
 #endif

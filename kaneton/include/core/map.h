@@ -1,22 +1,27 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/map.h
+ * license       kaneton
  *
- * created       matthieu bucchianeri   [sun feb 26 12:23:01 2006]
- * updated       matthieu bucchianeri   [fri jul 28 18:25:36 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/map.h
+ *
+ * created       julien quintard   [wed jun  6 13:31:27 2007]
+ * updated       julien quintard   [wed jun  6 15:56:26 2007]
  */
 
-#ifndef CORE_MAP_H
-#define CORE_MAP_H	1
+#ifndef GUARD_CORE_MAP
+#define GUARD_CORE_MAP			1
 
 /*
- * ---------- types -----------------------------------------------------------
+ * ---------- dependencies ----------------------------------------------------
  */
 
-typedef struct sm_map		m_map;
+#include <core/core.h>
+#include <core/stats.h>
+#include <core/as.h>
+#include <core/error.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -32,14 +37,6 @@ typedef struct sm_map		m_map;
 #define MAP_OPT_PRIVILEGED	(1 << 1)
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -47,10 +44,10 @@ typedef struct sm_map		m_map;
  * map manager
  */
 
-struct				sm_map
+typedef struct
 {
   i_stats			stats;
-};
+}				m_stats;
 
 /*
  * ---------- macro functions -------------------------------------------------

@@ -1,24 +1,46 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
+ * license       kaneton
+ *
  * file          /home/mycure/kaneton/kaneton/include/core/as.h
  *
- * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       julien quintard   [wed jun 28 12:47:44 2006]
+ * created       julien quintard   [wed jun  6 12:25:01 2007]
+ * updated       julien quintard   [wed jun  6 15:55:23 2007]
  */
 
-#ifndef CORE_AS_H
-#define CORE_AS_H		1
+#ifndef GUARD_CORE_AS
+#define GUARD_CORE_AS			1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/id.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
-typedef struct so_as		o_as;
-typedef struct sm_as		m_as;
-typedef struct sd_as		d_as;
+/*
+ * identifier of an address space object
+ */
+
+typedef t_id			i_as;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
+#include <core/stats.h>
+#include <core/set.h>
+#include <core/task.h>
+#include <core/error.h>
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -32,14 +54,6 @@ typedef struct sd_as		d_as;
 #define AS_REGIONS_INITSZ	0x4
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -47,7 +61,7 @@ typedef struct sd_as		d_as;
  * as object
  */
 
-struct				so_as
+typedef struct
 {
   i_as				asid;
 
@@ -57,13 +71,13 @@ struct				so_as
   i_set				regions;
 
   machdep_data(o_as);
-};
+}				o_as;
 
 /*
  * as manager
  */
 
-struct				sm_as
+typedef struct
 {
   o_id				id;
 
@@ -72,13 +86,13 @@ struct				sm_as
   i_set				ass;
 
   machdep_data(m_as);
-};
+}				m_as;
 
 /*
  * the as architecture dependent interface
  */
 
-struct				sd_as
+typedef struct
 {
   t_error			(*as_show)(i_as);
   t_error			(*as_give)(i_task,
@@ -97,7 +111,7 @@ struct				sd_as
   t_error			(*as_release)(i_as);
   t_error			(*as_init)(void);
   t_error			(*as_clean)(void);
-};
+}				d_as;
 
 /*
  * ---------- macro functions -------------------------------------------------

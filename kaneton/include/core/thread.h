@@ -1,27 +1,43 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
- * project       thread
+ * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/thread.h
+ * license       kaneton
  *
- * created       renaud voltz   [tue apr  4 03:14:51 2006]
- * updated       matthieu bucchianeri   [wed apr 12 12:13:08 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/thread.h
+ *
+ * created       julien quintard   [wed jun  6 14:31:49 2007]
+ * updated       julien quintard   [wed jun  6 15:57:51 2007]
  */
 
-#ifndef CORE_THREAD_H
-#define CORE_THREAD_H		1
+#ifndef GUARD_CORE_THREAD
+#define GUARD_CORE_THREAD		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/id.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
-typedef struct s_thread_context	t_thread_context;
-typedef struct s_stack		t_stack;
+typedef t_id			i_thread;
 
-typedef struct so_thread	o_thread;
-typedef struct sm_thread	m_thread;
-typedef struct sd_thread	d_thread;
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
+#include <core/task.h>
+#include <core/set.h>
+#include <core/wait.h>
+#include <core/stats.h>
+#include <core/error.h>
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -43,15 +59,6 @@ typedef struct sd_thread	d_thread;
 #define THREAD_MIN_STACKSZ	4096
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-#include <core/wait.h>
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -59,27 +66,27 @@ typedef struct sd_thread	d_thread;
  * thread execution context
  */
 
-struct				s_thread_context
+typedef struct
 {
   t_vaddr			pc;
   t_vaddr			sp;
-};
+}				t_thread_context;
 
 /*
  * stack
  */
 
-struct				s_stack
+typedef struct
 {
   t_vaddr			base;
   t_vsize			size;
-};
+}				t_stack;
 
 /*
  * thread object
  */
 
-struct				so_thread
+typedef struct
 {
   i_thread			threadid;
 
@@ -96,13 +103,13 @@ struct				so_thread
   t_vsize			stacksz;
 
   machdep_data(o_thread);
-};
+}				o_thread;
 
 /*
  * thread manager
  */
 
-struct				sm_thread
+typedef struct
 {
   o_id				id;
 
@@ -111,13 +118,13 @@ struct				sm_thread
   i_set				threads;
 
   machdep_data(m_thread);
-};
+}				m_thread;
 
 /*
  * the thread architecture dependent interface
  */
 
-struct				sd_thread
+typedef struct
 {
   t_error			(*thread_show)(i_thread);
   t_error			(*thread_give)(i_task,
@@ -141,7 +148,7 @@ struct				sd_thread
 						t_stack);
   t_error			(*thread_init)(void);
   t_error			(*thread_clean)(void);
-};
+}				d_thread;
 
 /*
  * ---------- macro functions -------------------------------------------------

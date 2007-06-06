@@ -1,58 +1,24 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
+ * license       kaneton
+ *
  * file          /home/mycure/kaneton/kaneton/include/core/init.h
  *
- * created       julien quintard   [fri feb 11 02:19:11 2005]
- * updated       julien quintard   [thu aug 31 20:13:57 2006]
+ * created       julien quintard   [wed jun  6 13:20:24 2007]
+ * updated       julien quintard   [wed jun  6 15:56:15 2007]
  */
 
-#ifndef CORE_INIT_H
-#define CORE_INIT_H		1
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef struct s_module		t_module;
-typedef struct s_modules	t_modules;
-typedef struct s_init		t_init;
-
-// XXX
-#endif
+#ifndef GUARD_CORE_INIT
+#define GUARD_CORE_INIT			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX
-#ifndef CORE_INIT_H2
-#define CORE_INIT_H2	1
-
-// XXX
-typedef int _debug_init_1_;
-
-#include <arch/machdep/machdep.h>
-
-// XXX
-typedef int _debug_init_2_;
-
-#include <core/segment.h>
-
-// XXX
-typedef int _debug_init_3_;
-
-#include <core/region.h>
-
-// XXX
-typedef int _debug_init_4_;
-
-#include <core/cpu.h>
-
-// XXX
-typedef int _debug_init_5_;
+#include <core/core.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -83,6 +49,47 @@ struct				s_modules
  * note that the size fields represent sizes aligned on PAGESZ.
  */
 
+/* XXX temporary, hopefully */
+typedef struct
+{
+  i_segment			segid;
+
+  i_as				asid;
+
+  t_type			type;
+
+  t_paddr			address;
+  t_psize			size;
+
+  t_perms			perms;
+
+  machdep_data(o_segment);
+}				s_segment;
+
+typedef struct
+{
+  i_region			regid;
+
+  i_segment			segid;
+
+  t_vaddr			address;
+  t_paddr			offset;
+  t_vsize			size;
+  t_opts			opts;
+
+  machdep_data(o_region);
+}				s_region;
+
+typedef struct
+{
+  i_cpu				cpuid;
+
+  t_timeslice			efficiency;
+
+  machdep_data(o_cpu);
+}				s_cpu;
+/* /XXX */
+
 struct				s_init
 {
   t_paddr			mem;
@@ -98,15 +105,15 @@ struct				s_init
   t_psize			modulessz;
 
   t_uint32			nsegments;
-  o_segment*			segments;
+  s_segment*			segments;
   t_psize			segmentssz;
 
   t_uint32			nregions;
-  o_region*			regions;
+  s_region*			regions;
   t_psize			regionssz;
 
   t_uint32			ncpus;
-  o_cpu*			cpus;
+  s_cpu*			cpus;
   t_psize			cpussz;
   i_cpu				bsp;
 

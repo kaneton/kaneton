@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/core.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [thu may 17 01:50:22 2007]
+ * file          /home/mycure/kaneton/kaneton/include/core/core.h
+ *
+ * created       julien quintard   [wed jun  6 12:22:26 2007]
+ * updated       julien quintard   [wed jun  6 16:41:39 2007]
  */
 
-#ifndef CORE_CORE_H
-#define CORE_CORE_H		1
+#ifndef GUARD_PUBLIC_CORE_CORE
+#define GUARD_PUBLIC_CORE_CORE		1
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -27,6 +29,8 @@
  * word size
  */
 
+#define WORDSZ_8		(1 << 0)
+#define WORDSZ_16		(1 << 1)
 #define WORDSZ_32		(1 << 0)
 #define WORDSZ_64		(1 << 1)
 #define WORDSZ_128		(1 << 2)
@@ -55,6 +59,48 @@
 #include <arch/machdep/machdep.h>
 
 /*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * register types
+ */
+
+typedef t_uint8			t_reg8;
+typedef t_uint16		t_reg16;
+typedef t_uint32		t_reg32;
+typedef t_uint64		t_reg64;
+
+/*
+ * memory types
+ */
+
+typedef t_uint32		t_paddr;
+typedef t_uint32		t_psize;
+typedef t_uint32		t_vaddr;
+typedef t_uint32		t_vsize;
+
+typedef t_uint32		t_size;
+typedef t_uint32		t_offset;
+
+/*
+ * special types
+ */
+
+typedef t_uint32		t_opts;
+typedef t_uint32		t_perms;
+typedef t_uint32		t_type;
+typedef t_uint32		t_lookup;
+typedef t_uint32		t_state;
+typedef t_uint32		t_status;
+typedef t_uint32		t_class;
+typedef t_uint32		t_behav;
+typedef t_uint32		t_prior;
+typedef t_uint32		t_quantum;
+typedef t_uint32		t_operations;
+typedef t_uint32		t_timeslice;
+
+/*
  * ---------- macro functions -------------------------------------------------
  */
 
@@ -69,30 +115,28 @@
       ;									\
   }
 
+#endif
+
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <core/conf.h>
+// XXX deprecated
+// #include <core/conf.h>
 
-#include <core/as.h>
-
-/*                                                                [cut] k1   */
-#include <core/serial.h>
-/*                                                               [cut] /k1   */
-#include <core/debug.h>
+// XXX
+// #include <core/types.h>
 
 #include <core/error.h>
-#include <core/types.h>
-
-#include <core/kernel.h>
 #include <core/id.h>
 #include <core/init.h>
-#include <core/region.h>
-#include <core/segment.h>
-#include <core/map.h>
-#include <core/set.h>
+#include <core/kernel.h>
 #include <core/stats.h>
+#include <core/set.h>
+#include <core/as.h>
+#include <core/segment.h>
+#include <core/region.h>
+#include <core/map.h>
 #include <core/event.h>
 #include <core/timer.h>
 #include <core/thread.h>
@@ -105,6 +149,14 @@
 #include <core/io.h>
 #include <core/mod.h>
 #include <core/interface.h>
+
+#include <core/debug.h>
+/*                                                                [cut] k1   */
+#include <core/serial.h>
+/*                                                               [cut] /k1   */
+
+#ifndef GUARD_PRIVATE_CORE_CORE
+#define GUARD_PRIVATE_CORE_CORE		1
 
 /*
  * ---------- prototypes ------------------------------------------------------

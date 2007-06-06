@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/debug.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:23:53 2005]
- * updated       julien quintard   [sat apr  1 22:57:01 2006]
+ * file          /home/mycure/kane...aneton/include/arch/machdep/core/debug.h
+ *
+ * created       julien quintard   [wed jun  6 16:15:05 2007]
+ * updated       julien quintard   [wed jun  6 16:15:19 2007]
  */
 
-#ifndef IA32_CORE_DEBUG_H
-#define IA32_CORE_DEBUG_H	1
+#ifndef GUARD_IA32_CORE_DEBUG
+#define GUARD_IA32_CORE_DEBUG		1
 
 /*
  * ---------- macros ----------------------------------------------------------

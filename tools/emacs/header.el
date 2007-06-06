@@ -5,6 +5,14 @@
 ;;
 ;;   EC_DEVELOPER:   the developer name
 ;;
+;; below are listed the bindkeys:
+;;
+;;   [C-c h] generates a header section
+;;   [C-c s] generates a section: the user can enter the section's name
+;;   [C-c g] move the cursor to the specified line
+;;   [C-c f] generates a Beamer frame skeleton
+;;   [C-c i] generates a TeX itemize skeleton: can be used in Beamer as well
+;;   [C-c c] generates a kaneton comment stub
 
 ;;
 ;; each time we close emacs, the header is updated.
@@ -17,15 +25,14 @@
 ;;
 
 (setq
-   ec-asm-list               '( (o . ";") (i . ";") (c . ";") )
    ec-c-list                 '( (o . "/*") (i . " *") (c . " */") )
    ec-css-list               '( (o . "/*") (i . " *") (c . " */") )
    ec-cpp-list               '( (o . "//") (i . "//") (c . "//") )
    ec-ada-list               '( (o . "--") (i . "--") (c . "--") )
    ec-java-list              '( (o . "//") (i . "//") (c . "//") )
    ec-latex-list             '( (o . "%") (i . "%") (c . "%") )
-   ec-lisp-list              '( (o . ";") (i . ";") (c . ";") )
-   ec-scheme-list            '( (o . ";") (i . ";") (c . ";") )
+   ec-lisp-list              '( (o . ";;") (i . ";;") (c . ";;") )
+   ec-scheme-list            '( (o . ";;") (i . ";;") (c . ";;") )
    ec-xdefault-list          '( (o . "!!") (i . "!!") (c . "!!") )
    ec-makefile-list          '( (o . "#") (i . "#") (c . "#") )
    ec-shell-list             '( (o . "#") (i . "#") (c . "#") )
@@ -41,7 +48,6 @@
 ;;
 
 (setq ec-modes-list '(
-   ("Assembler"          . ec-asm-list)
    ("C"                  . ec-c-list)
    ("CSS"                . ec-c-list)
    ("C++"                . ec-cpp-list)
@@ -388,25 +394,6 @@
 
 
 ;;
-;; generates a kaneton cut marking.
-;;
-
-(defun ec-kaneton-generate-cut ()
-   (interactive)
-   (let ((stage ""))
-    (setq stage (read-from-minibuffer
-                 (format "stage: ")
-                )
-    )
-    (insert-string "/*                                         "
-                   "                         ")
-                   "[cut] "
-                   stage
-                   " */"
-   )
-)
-
-;;
 ;; binding for generating a file header.
 ;;
 
@@ -441,12 +428,6 @@
 ;;
 
 (global-set-key [(control c)(c)] 'ec-kaneton-generate-comment)
-
-;;
-;; binding for generating a kaneton cut marking.
-;;
-
-(global-set-key [(control c)(u)] 'ec-kaneton-generate-cut)
 
 ;;
 ;; prints column and line number.

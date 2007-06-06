@@ -8,11 +8,11 @@
  * file          /home/mycure/kaneton/kaneton/include/arch/machdep/core/as.h
  *
  * created       julien quintard   [sun jun  3 23:54:56 2007]
- * updated       julien quintard   [tue jun  5 18:55:56 2007]
+ * updated       julien quintard   [wed jun  6 16:12:43 2007]
  */
 
-#ifndef IA32_CORE_AS_H
-#define IA32_CORE_AS_H		1
+#ifndef GUARD_IA32_CORE_AS
+#define GUARD_IA32_CORE_AS		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -39,6 +39,12 @@
   ao_as				machdep
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <libia32.h>
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
@@ -50,12 +56,5 @@ typedef struct
 {
   t_ia32_directory		pd;
 }				ao_as;
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <libia32.h>
-#include <core/as.h>
 
 #endif

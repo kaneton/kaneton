@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/message.h
+ * license       kaneton
  *
- * created       matthieu bucchianeri   [sat jun 17 19:41:39 2006]
- * updated       matthieu bucchianeri   [sat jun 17 19:45:46 2006]
+ * file          /home/mycure/kane...eton/include/arch/machdep/core/message.h
+ *
+ * created       julien quintard   [wed jun  6 16:20:48 2007]
+ * updated       julien quintard   [wed jun  6 16:21:58 2007]
  */
 
-#ifndef IA32_CORE_MESSAGE_H
-#define IA32_CORE_MESSAGE_H	1
+#ifndef GUARD_IA32_CORE_MESSAGE
+#define GUARD_IA32_CORE_MESSAGE		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -34,11 +36,5 @@
 #define		machdep_data_m_message()
 
 #define		machdep_data_o_message()
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/message.h>
 
 #endif

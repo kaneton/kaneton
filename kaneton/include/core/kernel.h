@@ -1,31 +1,54 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
+ * license       kaneton
+ *
  * file          /home/mycure/kaneton/kaneton/include/core/kernel.h
  *
- * created       julien quintard   [sat jun 24 13:57:54 2006]
- * updated       julien quintard   [sat jun 24 14:10:18 2006]
+ * created       julien quintard   [wed jun  6 13:27:34 2007]
+ * updated       julien quintard   [wed jun  6 13:32:08 2007]
  */
 
-#ifndef CORE_KERNEL_H
-#define CORE_KERNEL_H		1
+#ifndef GUARD_CORE_KERNEL
+#define GUARD_CORE_KERNEL		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/id.h>
+#include <core/task.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
-typedef struct sm_kernel	m_kernel;
-typedef struct sd_kernel	d_kernel;
+/*
+ * this identifier identifies a unique machine in the distributed system.
+ */
+
+typedef t_id			i_machine;
+
+/*
+ * unique identifier of a node in the distributed system.
+ *
+ * a node is a communicating task located in a machine of the distributed
+ * system.
+ */
+
+typedef struct
+{
+  i_machine			machine;
+  i_task			task;
+}				i_node;
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -49,21 +72,21 @@ typedef struct sd_kernel	d_kernel;
  * the kernel manager structure
  */
 
-struct				sm_kernel
+typedef struct
 {
   t_id				machine;
 
   // XXX machdep_data(m_kernel);
-};
+}				m_kernel;
 
 /*
  * the kernel architecture dependent interface
  */
 
-struct				sd_kernel
+typedef struct
 {
   /* XXX */
-};
+}				d_kernel;
 
 /*
  * ---------- prototypes ------------------------------------------------------

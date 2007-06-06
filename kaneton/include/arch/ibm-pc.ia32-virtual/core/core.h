@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/arch/ia32-virtual/core/core.h
+ * license       kaneton
  *
- * created       julien quintard   [sat dec 17 17:13:18 2005]
- * updated       matthieu bucchianeri   [sat jul 29 18:09:16 2006]
+ * file          /home/mycure/kane...kaneton/include/arch/machdep/core/core.h
+ *
+ * created       julien quintard   [wed jun  6 15:58:22 2007]
+ * updated       julien quintard   [wed jun  6 16:07:15 2007]
  */
 
-#ifndef IA32_CORE_CORE_H
-#define IA32_CORE_CORE_H	1
+#ifndef GUARD_IA32_CORE_CORE
+#define GUARD_IA32_CORE_CORE		1
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -21,7 +23,19 @@
 
 #define PAGESZ			4096
 
-// XXX
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+typedef unsigned char		t_uint8;
+typedef signed char		t_sint8;
+typedef unsigned short		t_uint16;
+typedef signed short		t_sint16;
+typedef unsigned int		t_uint32;
+typedef signed int		t_sint32;
+typedef unsigned long long	t_uint64;
+typedef signed long long	t_sint64;
+
 #endif
 
 /*
@@ -29,11 +43,8 @@
  */
 
 #include <arch/machdep/core/as.h>
-
-#include <arch/machdep/core/init.h>
-
-#include <arch/machdep/core/region.h>
 #include <arch/machdep/core/segment.h>
+#include <arch/machdep/core/region.h>
 #include <arch/machdep/core/stats.h>
 #include <arch/machdep/core/event.h>
 #include <arch/machdep/core/timer.h>
@@ -44,24 +55,10 @@
 #include <arch/machdep/core/cpu.h>
 #include <arch/machdep/core/io.h>
 #include <arch/machdep/core/debug.h>
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
+#include <arch/machdep/core/init.h>
 
 // XXX
-#ifndef IA32_CORE_CORE_H2
-#define IA32_CORE_CORE_H2	1
-
-#include <core/types.h>
-#include <core/id.h>
-#include <core/task.h>
-#include <core/thread.h>
-#include <core/segment.h>
-#include <core/region.h>
-#include <core/as.h>
-#include <core/event.h>
-#include <core/timer.h>
+#if 0
 
 /*
  * ---------- prototypes ------------------------------------------------------

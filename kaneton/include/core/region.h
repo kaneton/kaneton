@@ -1,24 +1,42 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/region.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [wed aug 16 19:45:15 2006]
+ * file          /home/mycure/kaneton/kaneton/include/core/region.h
+ *
+ * created       julien quintard   [wed jun  6 13:40:54 2007]
+ * updated       julien quintard   [wed jun  6 15:56:39 2007]
  */
 
-#ifndef CORE_REGION_H
-#define CORE_REGION_H		1
+#ifndef GUARD_CORE_REGION
+#define GUARD_CORE_REGION		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/id.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
-typedef struct so_region	o_region;
-typedef struct sm_region	m_region;
-typedef struct sd_region	d_region;
+typedef t_id			i_region;
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/core.h>
+#include <core/segment.h>
+#include <core/as.h>
+#include <core/stats.h>
+#include <core/error.h>
+
+#include <arch/machdep/machdep.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -35,35 +53,6 @@ typedef struct sd_region	d_region;
 #define REGION_OPT_LOCAL	(0 << 2)
 #define REGION_OPT_GLOBAL	(1 << 2)
 
-// XXX
-#endif
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX
-#ifndef CORE_REGION_H2
-#define CORE_REGION_H2	1
-
-// XXX
-typedef int _debug_region_1_;
-
-#include <arch/machdep/machdep.h>
-
-// XXX
-typedef int _debug_region_2_;
-
-#include <core/id.h>
-
-// XXX
-typedef int _debug_region_3_;
-
-#include <core/types.h>
-
-// XXX
-typedef int _debug_region_4_;
-
 /*
  * ---------- types -----------------------------------------------------------
  */
@@ -76,7 +65,7 @@ typedef int _debug_region_4_;
  * the identifier is in fact identical to the virtual address of the region.
  */
 
-struct				so_region
+typedef struct
 {
   i_region			regid;
 
@@ -88,13 +77,13 @@ struct				so_region
   t_opts			opts;
 
   machdep_data(o_region);
-};
+}				o_region;
 
 /*
  * region manager
  */
 
-struct				sm_region
+typedef struct
 {
   o_id				id;
 
@@ -106,13 +95,13 @@ struct				sm_region
   i_stats			stats;
 
   machdep_data(m_region);
-};
+}				m_region;
 
 /*
  * the region architecture-dependent interface
  */
 
-struct				sd_region
+typedef struct
 {
   t_error			(*region_show)(i_as,
 					       i_region);
@@ -144,7 +133,7 @@ struct				sd_region
   t_error			(*region_init)(t_vaddr,
 					       t_vsize);
   t_error			(*region_clean)(void);
-};
+}				d_region;
 
 /*
  * ---------- macro functions -------------------------------------------------
