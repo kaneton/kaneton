@@ -1547,9 +1547,9 @@ supports a single microprocessor.}
 The \textbf{message manager} provides a complete interface to send and
 receive messages in many different ways.
 
-A \textbf{message object} \textit{o\_message} represents a message in a
-communication between two task entities. Each message object is identified
-by a unique message identifier \textit{i\_message}.
+%A \textbf{message object} \textit{o\_message} represents a message in a
+%communication between two task entities. Each message object is identified
+%by a unique message identifier \textit{i\_message}.
 
 The kaneton message interface directly comes from standards in parallel
 and distributed programming.
@@ -1565,28 +1565,48 @@ message means that no kernel bufferization is used.
 A blocking function is a function which does not return until the
 action is totally performed.
 
+A tag (\textit{t\_tag}) is a 32-bit integer which permit to mark a message
+(as coming from a a specific task for example). Each tag is associated with
+a message size.
+
+The special value \textit{MESSAGE\_TAG\_ANY} permits to send an untagged
+message or to receive a message marked with any tag.
+
 %
 % interface
 %
 
 \subsubsection{Interface}
 
-\function{message\_show}{(i\_message \argument{id})}
-	 {
-	   This function displays information on the message \argument{id}.
-	 }
+%\function{message\_show}{(i\_message \argument{id})}
+%	 {
+%	   This function displays information on the message \argument{id}.
+%	 }
 
 \function{message\_dump}{(void)}
 	 {
 	   This function displays information on all the pending messages.
 	 }
 
+\function{message\_register}{(i\_task \argument{task},
+			      t\_tag \argument{tag},
+			      t\_vsize \argument{msg\_sz})}
+	 {
+	    
+	 }
+
+\function{message\_size}{(i\_task \argument{task},
+			  t\_tag \argument{tag},
+			  t\_vsize* \argument{size})}
+	 {
+
+	 }
+
 \function{message\_send}{(i\_node \argument{node},
                           t\_tag \argument{tag},
-                          void* \argument{data},
-                          t\_size \argument{size})}
+                          void* \argument{data})}
 	 {
-	   This blocking function sends \argument{size} bytes of
+	   This blocking function sends the message described by
 	   \argument{data} to the node \argument{node}.
 
 	   The message is delivered asynchronously.
@@ -1594,11 +1614,9 @@ action is totally performed.
 
 \function{message\_throw}{(i\_node \argument{node},
                            t\_tag \argument{tag},
-                           void* \argument{data},
-                           t\_size \argument{size},
-                           i\_message* \argument{id})}
+                           void* \argument{data})}
 	 {
-	   This non-blocking function sends \argument{size} bytes of
+	   This non-blocking function sends the message described by
 	   \argument{data} to the node \argument{node}.
 
 	   The message is delivered asynchronously.
@@ -1606,34 +1624,33 @@ action is totally performed.
 
 \function{message\_transmit}{(i\_node \argument{node},
                               t\_tag \argument{tag},
-                              void* \argument{data},
-                              t\_size \argument{size})}
+                              void* \argument{data})}
 	 {
-	   This blocking function sends \argument{size} bytes of
+	   This blocking function sends the message described by
 	   \argument{data} to the node \argument{node}.
 
 	   The message is delivered synchronously.
 	 }
 
-\function{message\_post}{(i\_node \argument{node},
-                          t\_tag \argument{tag},
-                          void* \argument{data},
-                          t\_size \argument{size},
-                          i\_message* \argument{id})}
-	 {
-	   This non-blocking function sends \argument{size} bytes of
-	   \argument{data} to the node \argument{node}.
+%\function{message\_post}{(i\_node \argument{node},
+%                          t\_tag \argument{tag},
+%                          void* \argument{data},
+%                          t\_size \argument{size},
+%                          i\_message* \argument{id})}
+%	 {
+%	   This non-blocking function sends \argument{size} bytes of
+%	   \argument{data} to the node \argument{node}.
+%
+%	   The message is delivered synchronously.
+%	 }
 
-	   The message is delivered synchronously.
-	 }
-
-\function{message\_info}{(t\_message\_info \argument{info})}
-	 {
-	   This function returns information on the next pending message.
-
-	   This function was introduced to allow servers to handle
-	   multiple different messages.
-	 }
+%\function{message\_info}{(t\_message\_info \argument{info})}
+%	 {
+%	   This function returns information on the next pending message.
+%
+%	   This function was introduced to allow servers to handle
+%	   multiple different messages.
+%	 }
 
 \function{message\_receive}{(i\_node \argument{node},
                              t\_tag \argument{tag},
@@ -1644,25 +1661,24 @@ action is totally performed.
 
 \function{message\_grab}{(i\_node \argument{node},
                           t\_tag \argument{tag},
-                          void* \argument{data},
-                          i\_message* \argument{id})}
+                          void* \argument{data}}
 	 {
 	   This non-blocking function receives a message in \argument{data}.
 	 }
 
-\function{message\_get}{(i\_message \argument{id},
-                         t\_tag \argument{tag},
-                         o\_message** \argument{o})}
-	 {
-	   This function returns in \argument{o} the message object
-	   corresponding to \argument{id}.
-	 }
+%\function{message\_get}{(i\_message \argument{id},
+%                         t\_tag \argument{tag},
+%                         o\_message** \argument{o})}
+%	 {
+%	   This function returns in \argument{o} the message object
+%	   corresponding to \argument{id}.
+%	 }
 
-\function{message\_flush}{(i\_task \argument{task})}
-	 {
-	   This function removes every message that belongs to the task
-	   \argument{task}.
-	 }
+%\function{message\_flush}{(i\_task \argument{task})}
+%	 {
+%	   This function removes every message that belongs to the task
+%	   \argument{task}.
+%	 }
 
 \function{message\_init}{(void)}
 	 {
@@ -1674,7 +1690,7 @@ action is totally performed.
 	   This function cleans the message manager.
 	 }
 
-\notice{The message manager's interface is not well defined yet.}
+%\notice{The message manager's interface is not well defined yet.}
 
 % XXX
 \begin{comment}
