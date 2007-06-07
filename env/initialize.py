@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/env/initialize.py
+# file          /home/mycure/kaneton/environment/initialize.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [sun jun  3 19:43:41 2007]
+# updated       julien quintard   [thu jun  7 13:11:53 2007]
 #
 
 #
@@ -57,30 +57,21 @@ def			warning():
 #
 # machine()
 #
-# this function installs the links to the platform and architecture
+# this function installs the links to the glue, platform and architecture
 # dependent files and directories.
 def			machine():
   env.display(env.HEADER_OK,
               "installing links to machine-dependent directories",
               env.OPTION_NONE)
 
-  env.remove(env._CORE_PLATFORM_DIR_, env.OPTION_NONE)
-  env.link(env._CORE_PLATFORM_DIR_,
-           env._PLATFORM_CORE_DIR_,
-           env.OPTION_NONE)
+  env.remove(env._GLUE_CURRENT_, env.OPTION_NONE)
+  env.link(env._GLUE_CURRENT_, env._GLUE_DIR_, env.OPTION_NONE)
 
-  env.remove(env._CORE_ARCHITECTURE_DIR_, env.OPTION_NONE)
-  env.link(env._CORE_ARCHITECTURE_DIR_,
-           env._ARCHITECTURE_CORE_DIR_,
-           env.OPTION_NONE)
+  env.remove(env._PLATFORM_CURRENT_, env.OPTION_NONE)
+  env.link(env._PLATFORM_CURRENT_, env._PLATFORM_DIR_, env.OPTION_NONE)
 
-  env.remove(env._INCLUDE_PLATFORM_DIR_, env.OPTION_NONE)
-  env.link(env._INCLUDE_PLATFORM_DIR_,
-           env._PLATFORM_INCLUDE_DIR_, env.OPTION_NONE)
-
-  env.remove(env._INCLUDE_ARCHITECTURE_DIR_, env.OPTION_NONE)
-  env.link(env._INCLUDE_ARCHITECTURE_DIR_,
-           env._ARCHITECTURE_INCLUDE_DIR_, env.OPTION_NONE)
+  env.remove(env._ARCHITECTURE_CURRENT_, env.OPTION_NONE)
+  env.link(env._ARCHITECTURE_CURRENT_, env._ARCHITECTURE_DIR_, env.OPTION_NONE)
 
   # XXX deprecated
   env.remove(env._MACHDEP_LINK_DIR_, env.OPTION_NONE)

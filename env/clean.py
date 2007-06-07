@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/env/clean.py
+# file          /home/mycure/kaneton/environment/clean.py
 #
 # created       julien quintard   [sat dec 16 20:57:38 2006]
-# updated       julien quintard   [thu may 10 16:47:40 2007]
+# updated       julien quintard   [thu jun  7 13:23:01 2007]
 #
 
 #
@@ -33,11 +33,9 @@ def			machine():
               "removing links to machine-dependent directories",
               env.OPTION_NONE)
 
-  env.remove(env._CORE_PLATEFORM_DIR_, env.OPTION_NONE)
-  env.remove(env._CORE_ARCHITECTURE_DIR_, env.OPTION_NONE)
-  env.remove(env._INCLUDE_PLATEFORM_DIR_, env.OPTION_NONE)
-  env.remove(env._INCLUDE_ARCHITECTURE_DIR_, env.OPTION_NONE)
-  env.remove(env._MACHDEP_LINK_DIR_, env.OPTION_NONE)
+  env.remove(env._GLUE_CURRENT_, env.OPTION_NONE)
+  env.remove(env._ARCHITECTURE_CURRENT_, env.OPTION_NONE)
+  env.remove(env._PLATFORM_CURRENT_, env.OPTION_NONE)
 
 
 

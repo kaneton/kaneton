@@ -16,8 +16,6 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/debug.h>
-
 #define CONF_MODE_DEVELOPMENT	(1 << 0)
 #define CONF_MODE_RELEASE	(1 << 1)
 
