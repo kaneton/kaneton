@@ -163,10 +163,12 @@ static t_error		segment_first_fit(o_as*			as,
  * this function dispatchs to the good fitting method.
  */
 
-t_error			segment_space(o_as*		as,
+t_error			segment_space(void*		object,
 				      t_psize		size,
 				      t_paddr*		address)
 {
+  o_as*			as = object;
+
   SEGMENT_ENTER(segment);
 
   switch (segment->lookup)

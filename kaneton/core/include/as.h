@@ -5,42 +5,26 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/as.h
+ * file          /home/mycure/kaneton/kaneton/core/include/as.h
  *
  * created       julien quintard   [wed jun  6 12:25:01 2007]
- * updated       julien quintard   [wed jun  6 21:37:04 2007]
+ * updated       julien quintard   [thu jun  7 00:02:56 2007]
  */
 
-#ifndef GUARD_CORE_AS
-#define GUARD_CORE_AS			1
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes the t_error, identifier and basic types are defined.
+ */
+
+#ifndef CORE_AS_H
+#define CORE_AS_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/id.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * identifier of an address space object
- */
-
-typedef struct o_as		o_as;
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/core.h>
-#include <core/stats.h>
-#include <core/set.h>
-#include <core/task.h>
-#include <core/error.h>
-
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/as.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -61,7 +45,7 @@ typedef struct o_as		o_as;
  * as object
  */
 
-struct				o_as
+typedef struct
 {
   i_as				asid;
 
@@ -71,7 +55,7 @@ struct				o_as
   i_set				regions;
 
   machdep_data(o_as);
-};
+}				o_as;
 
 /*
  * as manager

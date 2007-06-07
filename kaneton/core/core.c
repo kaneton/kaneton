@@ -203,7 +203,11 @@ void			kaneton_dump(void)
   core_error("___kaneton not defined\n");
 #endif
 
-#if (___wordsz == WORDSZ_32)
+#if (___wordsz == WORDSZ_8)
+  cons_msg('#', " wordsize: 8-bit\n");
+#elif (___wordsz == WORDSZ_16)
+  cons_msg('#', " wordsize: 16-bit\n");
+#elif (___wordsz == WORDSZ_32)
   cons_msg('#', " wordsize: 32-bit\n");
 #elif (___wordsz == WORDSZ_64)
   cons_msg('#', " wordsize: 64-bit\n");

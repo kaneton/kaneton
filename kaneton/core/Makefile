@@ -77,8 +77,6 @@ KANETON_O		:=		$(_MACHDEP_LO_)			\
 
 # core binary
 
-CORE_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/core.h
-
 CORE_C			:=		core.c
 
 CORE_O			:=		$(CORE_C:.c=.o)
@@ -130,8 +128,6 @@ clear:
 
 proto:
 	$(call launch,Makefile,$(SUBDIRS),proto,)
-
-	$(call prototypes,$(CORE_INCLUDE),)
 
 dep:
 	$(call launch,Makefile,$(SUBDIRS),dep,)

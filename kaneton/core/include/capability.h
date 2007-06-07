@@ -5,23 +5,20 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/capability.h
+ * file          /home/mycure/kaneton/kaneton/core/include/capability.h
  *
  * created       julien quintard   [wed jun  6 12:44:04 2007]
- * updated       julien quintard   [wed jun  6 19:48:19 2007]
+ * updated       julien quintard   [thu jun  7 00:49:08 2007]
  */
-
-#ifndef GUARD_CORE_CAPABILITY
-#define GUARD_CORE_CAPABILITY		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes t_error, basic types and identifiers are defined.
  */
 
-// XXX #include <core/core.h>
-#include <core/id.h>
-#include <core/kernel.h>
-#include <core/error.h>
+#ifndef CORE_CAPABILITY_H
+#define CORE_CAPABILITY_H		1
 
 /*
  * ---------- macros ----------------------------------------------------------

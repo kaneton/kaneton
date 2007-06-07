@@ -5,30 +5,26 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/message.h
+ * file          /home/mycure/kaneton/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       julien quintard   [wed jun  6 19:18:18 2007]
+ * updated       julien quintard   [thu jun  7 00:48:09 2007]
  */
 
-#ifndef GUARD_CORE_MESSAGE
-#define GUARD_CORE_MESSAGE		1
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes the t_error, identifier and basic types were defined.
+ */
+
+#ifndef CORE_MESSAGE_H
+#define CORE_MESSAGE_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX #include <core/core.h>
-#include <core/id.h>
-#include <core/thread.h>
-#include <core/as.h>
-#include <core/stats.h>
-#include <core/set.h>
-#include <core/task.h>
-#include <core/kernel.h>
-#include <core/error.h>
-
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/message.h>
 
 /*
  * ---------- types -----------------------------------------------------------

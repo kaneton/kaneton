@@ -163,10 +163,12 @@ static t_error		region_first_fit(o_as*			as,
  * this function calls the good algorithm.
  */
 
-t_error			region_space(o_as*		as,
+t_error			region_space(void*		object,
 				     t_vsize		size,
 				     t_vaddr*		address)
 {
+  o_as*			as = object;
+
   REGION_ENTER(region);
 
   switch (region->lookup)

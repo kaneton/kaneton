@@ -9,14 +9,6 @@
 #define CORE_INTERFACE_H	1
 
 /*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
-#include <core/id.h>
-#include <core/types.h>
-
-/*
  * ---------- macros ----------------------------------------------------------
  */
 

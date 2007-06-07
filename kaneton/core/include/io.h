@@ -5,37 +5,26 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/io.h
+ * file          /home/mycure/kaneton/kaneton/core/include/io.h
  *
  * created       julien quintard   [wed jun  6 13:26:01 2007]
- * updated       julien quintard   [wed jun  6 19:18:08 2007]
+ * updated       julien quintard   [thu jun  7 00:29:25 2007]
  */
 
-#ifndef GUARD_CORE_IO
-#define GUARD_CORE_IO			1
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes t_error, identifier and basic types are defined.
+ */
+
+#ifndef CORE_IO_H
+#define CORE_IO_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/id.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef t_id			i_port;
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/core.h>
-#include <core/stats.h>
-#include <core/task.h>
-#include <core/error.h>
-
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/io.h>
 
 /*
  * ---------- types -----------------------------------------------------------

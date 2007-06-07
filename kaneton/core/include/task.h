@@ -5,43 +5,26 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/task.h
+ * file          /home/mycure/kaneton/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [wed jun  6 21:36:54 2007]
+ * updated       julien quintard   [thu jun  7 00:27:18 2007]
  */
 
-#ifndef GUARD_CORE_TASK
-#define GUARD_CORE_TASK			1
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes the basic stuff is defined: t_error, identifiers etc..
+ */
+
+#ifndef CORE_TASK_H
+#define CORE_TASK_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/id.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * task object identifier
- */
-
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/core.h>
-#include <core/cpu.h>
-#include <core/set.h>
-#include <core/as.h>
-#include <core/stats.h>
-#include <core/thread.h>
-#include <core/wait.h>
-
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/task.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

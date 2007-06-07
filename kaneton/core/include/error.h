@@ -5,24 +5,20 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/error.h
+ * file          /home/mycure/kaneton/kaneton/core/include/error.h
  *
  * created       julien quintard   [wed jun  6 13:02:28 2007]
- * updated       julien quintard   [wed jun  6 20:25:13 2007]
+ * updated       julien quintard   [thu jun  7 12:08:49 2007]
  */
 
-#ifndef GUARD_CORE_ERROR
-#define GUARD_CORE_ERROR		1
+#ifndef CORE_ERROR_H
+#define CORE_ERROR_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-typedef int _debug_error_1_;
-
 #include <core/types.h>
-
-typedef int _debug_error_2_;
 
 /*
  * ---------- types -----------------------------------------------------------

@@ -5,31 +5,26 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/set.h
+ * file          /home/mycure/kaneton/kaneton/core/include/set.h
  *
  * created       julien quintard   [wed jun  6 11:56:46 2007]
- * updated       julien quintard   [wed jun  6 19:31:20 2007]
+ * updated       julien quintard   [thu jun  7 12:11:24 2007]
  */
 
-#ifndef GUARD_CORE_SET
-#define GUARD_CORE_SET			1
+#ifndef CORE_SET_H
+#define CORE_SET_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX #include <core/core.h>
+#include <core/types.h>
+#include <core/error.h>
 #include <core/id.h>
 
 /*
  * ---------- types -----------------------------------------------------------
  */
-
-/*
- * set object identifier
- */
-
-typedef t_id			i_set;
 
 /*
  * set size
@@ -40,8 +35,6 @@ typedef t_sint64		t_setsz;
 /*
  * ---------- dependencies ----------------------------------------------------
  */
-
-#include <core/stats.h>
 
 #include <core/set-array.h>
 #include <core/set-bpt.h>

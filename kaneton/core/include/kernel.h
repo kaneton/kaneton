@@ -5,27 +5,22 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/kernel.h
+ * file          /home/mycure/kaneton/kaneton/core/include/kernel.h
  *
  * created       julien quintard   [wed jun  6 13:27:34 2007]
- * updated       julien quintard   [wed jun  6 21:24:16 2007]
+ * updated       julien quintard   [thu jun  7 12:12:01 2007]
  */
 
-#ifndef GUARD_CORE_KERNEL
-#define GUARD_CORE_KERNEL		1
+#ifndef CORE_KERNEL_H
+#define CORE_KERNEL_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX #include <core/task.h>
-
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/machdep.h>
+#include <core/types.h>
+#include <core/error.h>
+#include <core/id.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -53,7 +48,7 @@ typedef struct
 {
   t_id				machine;
 
-  // XXX machdep_data(m_kernel);
+  /* XXX machdep_data(m_kernel); */
 }				m_kernel;
 
 /*

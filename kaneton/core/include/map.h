@@ -5,23 +5,20 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/map.h
+ * file          /home/mycure/kaneton/kaneton/core/include/map.h
  *
  * created       julien quintard   [wed jun  6 13:31:27 2007]
- * updated       julien quintard   [wed jun  6 19:33:21 2007]
+ * updated       julien quintard   [thu jun  7 00:23:47 2007]
  */
-
-#ifndef GUARD_CORE_MAP
-#define GUARD_CORE_MAP			1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- information -----------------------------------------------------
+ *
+ * this function supposes the t_error, identifier and basic types are defined.
  */
 
-// XXX #include <core/core.h>
-#include <core/stats.h>
-#include <core/as.h>
-#include <core/error.h>
+#ifndef CORE_MAP_H
+#define CORE_MAP_H			1
 
 /*
  * ---------- macros ----------------------------------------------------------

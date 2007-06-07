@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/types.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:19:44 2005]
- * updated       matthieu bucchianeri   [fri aug 18 18:55:34 2006]
+ * file          /home/mycure/kaneton/kaneton/core/include/types.h
+ *
+ * created       julien quintard   [wed jun  6 22:38:37 2007]
+ * updated       julien quintard   [thu jun  7 00:17:56 2007]
  */
 
 #ifndef CORE_TYPES_H
@@ -16,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <arch/machdep/core/types.h>
+#include <arch/machdep/types.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -43,6 +45,12 @@ typedef t_uint32		t_vsize;
 typedef t_uint32		t_size;
 typedef t_uint32		t_offset;
 
+typedef struct
+{
+  t_vaddr			base;
+  t_vsize			size;
+}				t_stack;
+
 /*
  * special types
  */
@@ -59,46 +67,5 @@ typedef t_uint32		t_prior;
 typedef t_uint32		t_quantum;
 typedef t_uint32		t_operations;
 typedef t_uint32		t_timeslice;
-
-// XXX
-typedef t_uint64		t_id;
-
-typedef t_id			i_cpu;
-
-typedef t_id			i_task;
-
-typedef t_id			i_as;
-
-typedef t_id			i_event;
-
-typedef t_id			i_segment;
-
-typedef t_id			i_region;
-
-
-typedef t_id			i_thread;
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * this identifier identifies a unique machine in the distributed system.
- */
-
-typedef t_id			i_machine;
-
-/*
- * unique identifier of a node in the distributed system.
- *
- * a node is a communicating task located in a machine of the distributed
- * system.
- */
-
-typedef struct
-{
-  i_machine			machine;
-  /* XXX i_task */ t_id			task;
-}				i_node;
 
 #endif

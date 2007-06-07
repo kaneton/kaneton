@@ -5,42 +5,22 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/stats.h
+ * file          /home/mycure/kaneton/kaneton/core/include/stats.h
  *
  * created       julien quintard   [wed jun  6 13:00:10 2007]
- * updated       julien quintard   [wed jun  6 19:28:53 2007]
+ * updated       julien quintard   [thu jun  7 12:09:57 2007]
  */
 
-#ifndef GUARD_CORE_STATS
-#define GUARD_CORE_STATS		1
+#ifndef CORE_STATS_H
+#define CORE_STATS_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-
-typedef int _debug_stats_1_;
-
-//#include <core/id.h>
-
-typedef int _debug_stats_2_;
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * identifier of a statistic object
- */
-
-typedef t_id			i_stats;
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/core.h>
+#include <core/types.h>
 #include <core/error.h>
+#include <core/id.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

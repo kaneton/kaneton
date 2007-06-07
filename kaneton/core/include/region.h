@@ -5,38 +5,24 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/region.h
+ * file          /home/mycure/kaneton/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [wed jun  6 21:37:33 2007]
+ * updated       julien quintard   [thu jun  7 12:13:00 2007]
  */
 
-#ifndef GUARD_CORE_REGION
-#define GUARD_CORE_REGION		1
+#ifndef CORE_REGION_H
+#define CORE_REGION_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
+#include <core/types.h>
+#include <core/error.h>
 #include <core/id.h>
 
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef struct o_region		o_region;
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/core.h>
-#include <core/segment.h>
-#include <core/as.h>
-#include <core/stats.h>
-#include <core/error.h>
-
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/region.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -65,7 +51,7 @@ typedef struct o_region		o_region;
  * the identifier is in fact identical to the virtual address of the region.
  */
 
-struct				o_region
+typedef struct
 {
   i_region			regid;
 
@@ -77,7 +63,7 @@ struct				o_region
   t_opts			opts;
 
   machdep_data(o_region);
-};
+}				o_region;
 
 /*
  * region manager
@@ -174,11 +160,11 @@ typedef struct
 /*
  * ---------- common prototypes -----------------------------------------------
  */
-/*
+
 t_error			region_space(o_as*		as,
 				     t_vsize		size,
 				     t_vaddr*		address);
-*/
+
 /*
  * ---------- prototypes ------------------------------------------------------
  *

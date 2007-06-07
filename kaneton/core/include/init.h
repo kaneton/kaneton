@@ -5,30 +5,26 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/init.h
+ * file          /home/mycure/kaneton/kaneton/core/include/init.h
  *
  * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       julien quintard   [wed jun  6 21:32:57 2007]
+ * updated       julien quintard   [thu jun  7 00:58:48 2007]
  */
-
-#ifndef GUARD_CORE_INIT
-#define GUARD_CORE_INIT			1
 
 /*
- * ---------- types -----------------------------------------------------------
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes the other manager files were included before this one.
  */
 
-typedef struct t_init		t_init;
+#ifndef CORE_INIT_H
+#define CORE_INIT_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX #include <core/core.h>
-#include <core/segment.h>
-#include <core/region.h>
-#include <core/cpu.h>
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/init.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -59,7 +55,7 @@ typedef struct
  * note that the size fields represent sizes aligned on PAGESZ.
  */
 
-struct				t_init
+typedef struct
 {
   t_paddr			mem;
   t_psize			memsz;
@@ -93,6 +89,6 @@ struct				t_init
   t_psize			allocsz;
 
   machdep_data(init);
-};
+}				t_init;
 
 #endif

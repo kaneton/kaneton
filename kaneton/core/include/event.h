@@ -5,41 +5,26 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/event.h
+ * file          /home/mycure/kaneton/kaneton/core/include/event.h
  *
  * created       julien quintard   [wed jun  6 13:13:41 2007]
- * updated       julien quintard   [wed jun  6 21:37:15 2007]
+ * updated       julien quintard   [thu jun  7 00:05:28 2007]
  */
 
-#ifndef GUARD_CORE_EVENT
-#define GUARD_CORE_EVENT		1
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * as usual, this file supposes the fundamental types are defined.
+ */
+
+#ifndef CORE_EVENT_H
+#define CORE_EVENT_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/id.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * the event object identifier
- */
-
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/core.h>
-#include <core/task.h>
-#include <core/set.h>
-#include <core/stats.h>
-#include <core/error.h>
-
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/event.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...kaneton/include/arch/machdep/core/core.h
+ * file          /home/mycure/kane.../include/arch/ibm-pc.ia32-virtual/core.h
  *
  * created       julien quintard   [wed jun  6 15:58:22 2007]
- * updated       julien quintard   [wed jun  6 20:36:00 2007]
+ * updated       julien quintard   [thu jun  7 12:04:19 2007]
  */
 
-#ifndef GUARD_IA32_CORE_CORE
-#define GUARD_IA32_CORE_CORE		1
+#ifndef ARCHITECTURE_CORE_H
+#define ARCHITECTURE_CORE_H		1
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -23,28 +23,24 @@
 
 #define PAGESZ			4096
 
-#endif
-
 /*
- * ---------- includes --------------------------------------------------------
+ * ---------- macro functions -------------------------------------------------
  */
 
-#include <arch/machdep/core/types.h>
+/*
+ * machdep transparent traps
+ */
 
-#include <arch/machdep/core/as.h>
-#include <arch/machdep/core/segment.h>
-#include <arch/machdep/core/region.h>
-#include <arch/machdep/core/stats.h>
-#include <arch/machdep/core/event.h>
-#include <arch/machdep/core/timer.h>
-#include <arch/machdep/core/thread.h>
-#include <arch/machdep/core/task.h>
-#include <arch/machdep/core/sched.h>
-#include <arch/machdep/core/message.h>
-#include <arch/machdep/core/cpu.h>
-#include <arch/machdep/core/io.h>
-#include <arch/machdep/core/debug.h>
-#include <arch/machdep/core/init.h>
+#define		machdep_include(_mng_)					\
+  machdep_include_##_mng_()
+
+#define		machdep_call(_mng_, _function_, _args_...)		\
+  machdep_call_##_mng_(_function_, ##_args_)
+
+#define		machdep_data(_object_)					\
+  machdep_data_##_object_()
+
+#endif
 
 // XXX
 #if 0

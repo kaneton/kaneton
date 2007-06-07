@@ -5,37 +5,27 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/id.h
+ * file          /home/mycure/kaneton/kaneton/core/include/id.h
  *
  * created       julien quintard   [wed jun  6 12:50:13 2007]
- * updated       julien quintard   [wed jun  6 20:35:26 2007]
+ * updated       julien quintard   [thu jun  7 12:09:16 2007]
  */
 
-#ifndef GUARD_CORE_ID
-#define GUARD_CORE_ID			1
+#ifndef CORE_ID_H
+#define CORE_ID_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-typedef int _debug_id_1_;
-
-// XXX #include <core/core.h>
-
-typedef int _debug_id_2_;
+#include <core/types.h>
+#include <core/error.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
  */
 
 #define ID_UNUSED		((t_id)-1)
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/stats.h>
-#include <core/error.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -45,7 +35,35 @@ typedef int _debug_id_2_;
  * generic kaneton identifier
  */
 
-// XXX typedef t_uint64		t_id;
+typedef t_uint64		t_id;
+
+/*
+ * identifiers of the kaneton objects
+ */
+
+typedef t_id			i_stats;
+typedef t_id			i_set;
+typedef t_id			i_segment;
+typedef t_id			i_region;
+typedef t_id			i_as;
+typedef t_id			i_event;
+typedef t_id			i_port;
+typedef t_id			i_task;
+typedef t_id			i_thread;
+typedef t_id			i_cpu;
+typedef t_id			i_machine;
+
+/*
+ * a node represents a communicating task in the distributed system.
+ *
+ * such a task is first identified the but machine holding it, and then
+ * by the task identifier.
+ */
+typedef struct
+{
+  i_machine			machine;
+  i_task			task;
+}				i_node;
 
 /*
  * identifier object
@@ -62,7 +80,6 @@ typedef struct
 
 typedef struct
 {
-  // XXX i_stats			stats;
 }				m_id;
 
 /*
@@ -86,8 +103,6 @@ typedef struct
 #define ID_ENTER(_id_)							\
   {									\
     ID_CHECK((_id_));							\
-									\
-    STATS_BEGIN((_id_)->stats);						\
   }
 
 /*
@@ -96,8 +111,6 @@ typedef struct
 
 #define ID_LEAVE(_id_, _error_)						\
   {									\
-    STATS_END((_id_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 

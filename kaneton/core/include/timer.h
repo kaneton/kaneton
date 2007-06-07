@@ -5,38 +5,26 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/timer.h
+ * file          /home/mycure/kaneton/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       julien quintard   [wed jun  6 19:19:21 2007]
+ * updated       julien quintard   [thu jun  7 00:58:15 2007]
  */
 
-#ifndef GUARD_CORE_TIMER
-#define GUARD_CORE_TIMER		1
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes the t_error, identifier and basic types were defined.
+ */
+
+#ifndef CORE_TIMER_H
+#define CORE_TIMER_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/id.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-typedef t_id			i_timer;
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/core.h>
-#include <core/task.h>
-#include <core/stats.h>
-#include <core/set.h>
-#include <core/error.h>
-
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/timer.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

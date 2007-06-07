@@ -5,37 +5,27 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/thread.h
+ * file          /home/mycure/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [wed jun  6 21:38:15 2007]
+ * updated       julien quintard   [thu jun  7 00:21:57 2007]
  */
 
-#ifndef GUARD_CORE_THREAD
-#define GUARD_CORE_THREAD		1
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes t_wait, t_error, identifier and basic types are
+ * defined.
+ */
+
+#ifndef CORE_THREAD_H
+#define CORE_THREAD_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/id.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/core.h>
-#include <core/task.h>
-#include <core/set.h>
-#include <core/wait.h>
-#include <core/stats.h>
-#include <core/error.h>
-
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/thread.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -61,7 +51,7 @@
  */
 
 /*
- * thread execution context
+ * generic thread execution context
  */
 
 typedef struct
@@ -69,16 +59,6 @@ typedef struct
   t_vaddr			pc;
   t_vaddr			sp;
 }				t_thread_context;
-
-/*
- * stack
- */
-
-typedef struct
-{
-  t_vaddr			base;
-  t_vsize			size;
-}				t_stack;
 
 /*
  * thread object

@@ -5,23 +5,27 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/set-bpt.h
+ * file          /home/mycure/kaneton/kaneton/core/include/set-bpt.h
  *
  * created       julien quintard   [wed jun  6 14:14:36 2007]
- * updated       julien quintard   [wed jun  6 14:25:15 2007]
+ * updated       julien quintard   [wed jun  6 23:40:39 2007]
  */
 
-#ifndef GUARD_CORE_SET_BPT
-#define GUARD_CORE_SET_BPT		1
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes it is included by the set.h header file.
+ */
+
+#ifndef CORE_SET_BPT_H
+#define CORE_SET_BPT_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/set.h>
-
 #undef BPT_DEBUG
-#include <sys/bpt.h>
+#include <core/bpt.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

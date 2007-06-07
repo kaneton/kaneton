@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/arch/machdep/core/as.h
+ * file          /home/mycure/kane...re/include/arch/ibm-pc.ia32-virtual/as.h
  *
  * created       julien quintard   [sun jun  3 23:54:56 2007]
- * updated       julien quintard   [wed jun  6 21:20:43 2007]
+ * updated       julien quintard   [thu jun  7 12:06:12 2007]
  */
 
-#ifndef GUARD_IA32_CORE_AS
-#define GUARD_IA32_CORE_AS		1
+#ifndef ARCHITECTURE_AS_H
+#define ARCHITECTURE_AS_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------

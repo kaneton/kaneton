@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/debug.h
+ * file          /home/mycure/kaneton/kaneton/core/include/debug.h
  *
  * created       julien quintard   [wed jun  6 13:11:05 2007]
- * updated       julien quintard   [wed jun  6 19:17:17 2007]
+ * updated       julien quintard   [thu jun  7 00:57:11 2007]
  */
 
-#ifndef GUARD_CORE_DEBUG
-#define GUARD_CORE_DEBUG		1
+#ifndef CORE_DEBUG_H
+#define CORE_DEBUG_H			1
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -38,13 +38,6 @@
 
 #define DEBUG								\
   (CONF_DEBUG)
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/core.h>
-#include <core/error.h>
 
 /*
  * ---------- macro functions -------------------------------------------------

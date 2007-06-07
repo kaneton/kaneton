@@ -139,8 +139,6 @@ t_error			id_init(void)
       return (ERROR_UNKNOWN);
     }
 
-  STATS_RESERVE("id", &id->stats);
-
   return (ERROR_NONE);
 }
 
@@ -150,8 +148,6 @@ t_error			id_init(void)
 
 t_error			id_clean(void)
 {
-  STATS_RELEASE(id->stats);
-
   free(id);
 
   return (ERROR_NONE);

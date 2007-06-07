@@ -5,43 +5,24 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/segment.h
+ * file          /home/mycure/kaneton/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [wed jun  6 21:37:26 2007]
+ * updated       julien quintard   [thu jun  7 12:12:47 2007]
  */
 
-#ifndef GUARD_CORE_SEGMENT
-#define GUARD_CORE_SEGMENT		1
+#ifndef CORE_SEGMENT_H
+#define CORE_SEGMENT_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
+#include <core/types.h>
+#include <core/error.h>
 #include <core/id.h>
 
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * segment object identifier
- */
-
-typedef struct o_segment	o_segment;
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/core.h>
-#include <core/stats.h>
-#include <core/set.h>
-#include <core/as.h>
-#include <core/region.h>
-#include <core/error.h>
-
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/segment.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -68,7 +49,7 @@ typedef struct o_segment	o_segment;
  * segment object
  */
 
-struct				o_segment
+typedef struct
 {
   i_segment			segid;
 
@@ -82,7 +63,7 @@ struct				o_segment
   t_perms			perms;
 
   machdep_data(o_segment);
-};
+}				o_segment;
 
 /*
  * segment manager

@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/core.h
+ * file          /home/mycure/kaneton/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [wed jun  6 20:36:29 2007]
+ * updated       julien quintard   [thu jun  7 12:00:45 2007]
  */
 
-#ifndef GUARD_PUBLIC_CORE_CORE
-#define GUARD_PUBLIC_CORE_CORE		1
+#ifndef CORE_CORE_H
+#define CORE_CORE_H			1
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -70,65 +70,52 @@
 #endif
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <arch/machdep/core.h>
+
+/*
  * ---------- includes --------------------------------------------------------
  */
 
 // XXX deprecated
-// #include <core/conf.h>
-
-// XXX
-// #include <core/types.h>
+#include <core/conf.h>
 
 #include <core/types.h>
 #include <core/error.h>
 #include <core/id.h>
-
 #include <core/stats.h>
-#include <core/init.h>
-#include <core/kernel.h>
 #include <core/set.h>
-#include <core/as.h>
+#include <core/kernel.h>
 #include <core/segment.h>
 #include <core/region.h>
+#include <core/as.h>
 #include <core/map.h>
 #include <core/event.h>
 #include <core/timer.h>
+#include <core/io.h>
+#include <core/wait.h>
 #include <core/thread.h>
 #include <core/task.h>
-#include <core/wait.h>
+#include <core/cpu.h>
 #include <core/sched.h>
 #include <core/message.h>
 #include <core/capability.h>
-#include <core/cpu.h>
-#include <core/io.h>
-#include <core/mod.h>
-// XXX #include <core/interface.h>
+#include <core/init.h>
 
+// XXX temporary
+#include <core/mod.h>
+
+// XXX badly generated: rethink the syntax
+#include <core/interface.h>
+
+// XXX temporary
 #include <core/debug.h>
+
+// XXX temporary
 /*                                                                [cut] k1   */
 #include <core/serial.h>
 /*                                                               [cut] /k1   */
-
-#ifndef GUARD_PRIVATE_CORE_CORE
-#define GUARD_PRIVATE_CORE_CORE		1
-
-/*
- * ---------- prototypes ------------------------------------------------------
- *
- *      ../../core/core.c
- */
-
-/*
- * ../../core/core.c
- */
-
-void			kaneton(t_init*				bootloader);
-
-void			kaneton_dump(void);
-
-
-/*
- * eop
- */
 
 #endif

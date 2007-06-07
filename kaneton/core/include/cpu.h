@@ -5,43 +5,26 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/cpu.h
+ * file          /home/mycure/kaneton/kaneton/core/include/cpu.h
  *
  * created       julien quintard   [sun jun  3 20:25:39 2007]
- * updated       julien quintard   [wed jun  6 21:36:40 2007]
+ * updated       julien quintard   [thu jun  7 00:33:28 2007]
  */
 
-#ifndef GUARD_CORE_CPU
-#define GUARD_CORE_CPU			1
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * as usual, this file supposes t_error, id and basic types were defined.
+ */
+
+#ifndef CORE_CPU_H
+#define CORE_CPU_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/id.h>
-
-/*
- * ---------- types -----------------------------------------------------------
- */
-
-/*
- * the identifier of a cpu object
- */
-
-
-typedef struct o_cpu		o_cpu;
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-// XXX #include <core/core.h>
-#include <core/stats.h>
-#include <core/set.h>
-#include <core/task.h>
-#include <core/error.h>
-
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/cpu.h>
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -51,14 +34,14 @@ typedef struct o_cpu		o_cpu;
  * cpu object
  */
 
-struct				o_cpu
+typedef struct
 {
   i_cpu				cpuid;
 
   t_timeslice			efficiency;
 
   machdep_data(o_cpu);
-};
+}				o_cpu;
 
 /*
  * cpu manager

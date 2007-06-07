@@ -5,23 +5,26 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/mod.h
+ * file          /home/mycure/kaneton/kaneton/core/include/mod.h
  *
  * created       julien quintard   [wed jun  6 13:39:48 2007]
- * updated       julien quintard   [wed jun  6 13:59:39 2007]
+ * updated       julien quintard   [thu jun  7 00:54:45 2007]
  */
 
-#ifndef GUARD_CORE_MOD
-#define GUARD_CORE_MOD			1
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes basic stuff is defined.
+ */
+
+#ifndef CORE_MOD_H
+#define CORE_MOD_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/stats.h>
-#include <core/error.h>
-
-#include <sys/elf.h>
+#include <core/elf.h>
 
 /*
  * ---------- types -----------------------------------------------------------

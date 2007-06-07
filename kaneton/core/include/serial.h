@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/serial.h
+ * file          /home/mycure/kaneton/kaneton/core/include/serial.h
  *
  * created       julien quintard   [wed jun  6 14:06:42 2007]
- * updated       julien quintard   [wed jun  6 19:18:41 2007]
+ * updated       julien quintard   [thu jun  7 00:57:37 2007]
  */
 
-#ifndef	GUARD_CORE_SERIAL
-#define	GUARD_CORE_SERIAL		1
+#ifndef	CORE_SERIAL_H
+#define	CORE_SERIAL_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------

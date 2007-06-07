@@ -5,9 +5,6 @@
  *
  * made by mycure
  *         quintard julien   [quinta_j@epita.fr]
- *
- * started on    Mon Oct 25 11:26:13 2004   mycure
-** Last update Thu Aug 10 15:09:24 2006 matthieu bucchianeri
  */
 
 /*

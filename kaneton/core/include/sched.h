@@ -5,27 +5,26 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/sched.h
+ * file          /home/mycure/kaneton/kaneton/core/include/sched.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [wed jun  6 19:18:26 2007]
+ * updated       julien quintard   [thu jun  7 00:58:10 2007]
  */
 
-#ifndef GUARD_CORE_SCHED
-#define GUARD_CORE_SCHED		1
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes the fundamental types are defined.
+ */
+
+#ifndef CORE_SCHED_H
+#define CORE_SCHED_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-// XXX #include <core/core.h>
-#include <core/thread.h>
-#include <core/cpu.h>
-#include <core/set.h>
-#include <core/stats.h>
-#include <core/error.h>
-
-#include <arch/machdep/machdep.h>
+#include <arch/machdep/sched.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

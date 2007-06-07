@@ -5,22 +5,20 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/core/wait.h
+ * file          /home/mycure/kaneton/kaneton/core/include/wait.h
  *
  * created       julien quintard   [wed jun  6 15:48:52 2007]
- * updated       julien quintard   [wed jun  6 19:19:26 2007]
+ * updated       julien quintard   [thu jun  7 00:23:31 2007]
  */
-
-#ifndef GUARD_CORE_WAIT
-#define GUARD_CORE_WAIT			1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes identifier and basic types are defined.
  */
 
-// XXX #include <core/core.h>
-#include <core/task.h>
-#include <core/thread.h>
+#ifndef CORE_WAIT_H
+#define CORE_WAIT_H			1
 
 /*
  * ---------- macros ----------------------------------------------------------
