@@ -8,13 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/cpu.h
  *
  * created       julien quintard   [sun jun  3 20:25:39 2007]
- * updated       julien quintard   [thu jun  7 13:28:55 2007]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * as usual, this file supposes t_error, id and basic types were defined.
+ * updated       julien quintard   [thu jun  7 13:45:44 2007]
  */
 
 #ifndef CORE_CPU_H
