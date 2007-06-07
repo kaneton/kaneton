@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/as.h
  *
  * created       julien quintard   [wed jun  6 12:25:01 2007]
- * updated       julien quintard   [thu jun  7 12:21:36 2007]
+ * updated       julien quintard   [thu jun  7 12:48:37 2007]
  */
 
 #ifndef CORE_AS_H
@@ -22,7 +22,7 @@
 #include <core/error.h>
 #include <core/id.h>
 
-#include <arch/machdep/as.h>
+#include <machine/machine.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

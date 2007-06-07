@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [thu jun  7 12:43:19 2007]
+ * updated       julien quintard   [thu jun  7 12:48:21 2007]
  */
 
 #ifndef CORE_CORE_H
@@ -68,12 +68,6 @@
   }
 
 #endif
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/core.h>
 
 /*
  * ---------- includes --------------------------------------------------------
