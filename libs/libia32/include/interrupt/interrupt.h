@@ -186,9 +186,8 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
+#include <core/types.h>
 #include <core/id.h>
-
-#include <arch/machdep/core/types.h>
 
 /*
  * ---------- types -----------------------------------------------------------

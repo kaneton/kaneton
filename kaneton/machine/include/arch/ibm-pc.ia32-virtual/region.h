@@ -5,14 +5,20 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...neton/include/arch/machdep/core/region.h
+ * file          /home/mycure/kane...nclude/arch/ibm-pc.ia32-virtual/region.h
  *
  * created       julien quintard   [wed jun  6 16:22:05 2007]
- * updated       julien quintard   [wed jun  6 16:23:59 2007]
+ * updated       julien quintard   [thu jun  7 15:32:35 2007]
  */
 
-#ifndef GUARD_IA32_CORE_REGION
-#define GUARD_IA32_CORE_REGION		1
+/*
+ * ---------- information -----------------------------------------------------
+ *
+ * this file supposes it is included by core.h so that PAGESZ is defined.
+ */
+
+#ifndef ARCHITECTURE_REGION_H
+#define ARCHITECTURE_REGION_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -36,12 +42,6 @@
 #define		machdep_data_m_region()
 
 #define		machdep_data_o_region()
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <arch/machdep/core/core.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

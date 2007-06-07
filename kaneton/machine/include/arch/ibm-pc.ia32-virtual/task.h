@@ -5,14 +5,20 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...kaneton/include/arch/machdep/core/task.h
+ * file          /home/mycure/kane.../include/arch/ibm-pc.ia32-virtual/task.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [wed jun  6 21:25:59 2007]
+ * updated       julien quintard   [thu jun  7 15:36:25 2007]
  */
 
-#ifndef GUARD_IA32_CORE_TASK
-#define GUARD_IA32_CORE_TASK		1
+#ifndef ARCHITECTURE_TASK_H
+#define ARCHITECTURE_TASK_H		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/types.h>
 
 /*
  * ---------- macro functions -------------------------------------------------

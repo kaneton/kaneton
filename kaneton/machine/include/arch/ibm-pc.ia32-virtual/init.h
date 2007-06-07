@@ -5,14 +5,21 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...kaneton/include/arch/machdep/core/init.h
+ * file          /home/mycure/kane.../include/arch/ibm-pc.ia32-virtual/init.h
  *
  * created       julien quintard   [wed jun  6 16:16:48 2007]
- * updated       julien quintard   [wed jun  6 21:35:23 2007]
+ * updated       julien quintard   [thu jun  7 16:03:26 2007]
  */
 
-#ifndef GUARD_IA32_CORE_INIT
-#define GUARD_IA32_CORE_INIT		1
+#ifndef ARCHITECTURE_INIT_H
+#define ARCHITECTURE_INIT_H		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+/* XXX temporary */
+#include <libia32.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -70,5 +77,7 @@
     t_ia32_gdt			gdt;					\
     t_ia32_directory		pd;					\
   }				machdep;
+
+#define machdep_data_MANGEMONCUL() int SUCEAVALETOUT;
 
 #endif

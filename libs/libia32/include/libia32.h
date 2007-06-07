@@ -9,6 +9,9 @@
  * updated       matthieu bucchianeri   [wed nov  1 18:07:26 2006]
  */
 
+#ifndef LIBIA32_H
+#define LIBIA32_H
+
 /*
  * ---------- includes --------------------------------------------------------
  */
@@ -31,14 +34,11 @@
 #include "task/tss.h"
 #include "apic/apic.h"
 
-// XXX
-#ifndef LIBIA32_H
-#define LIBIA32_H
-
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
+#include <core/types.h>
 #include <core/cpu.h>
 
 /*

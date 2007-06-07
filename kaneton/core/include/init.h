@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/init.h
  *
  * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       julien quintard   [thu jun  7 13:30:06 2007]
+ * updated       julien quintard   [thu jun  7 16:04:13 2007]
  */
 
 /*

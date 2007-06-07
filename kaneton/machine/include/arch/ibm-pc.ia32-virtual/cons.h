@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ton/include/arch/machdep/services/cons.h
+ * file          /home/mycure/kane.../include/arch/ibm-pc.ia32-virtual/cons.h
  *
  * created       julien quintard   [wed jun  6 15:53:35 2007]
- * updated       julien quintard   [wed jun  6 15:54:52 2007]
+ * updated       julien quintard   [thu jun  7 14:35:23 2007]
  */
 
 /*
@@ -24,14 +24,14 @@
  *               4 = red        5 = magenta    6 = yellow     7 = white
  */
 
-#ifndef GUARD_IA32_SERVICES_CONS_H
-#define GUARD_IA32_SERVICES_CONS_H	1
+#ifndef ARCHITECTURE_CONS_H
+#define ARCHITECTURE_CONS_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/core.h>
+#include <core/types.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

@@ -17,7 +17,7 @@
  */
 
 #include <libsys/types.h>
-#include <arch/machdep/machdep.h>
+// XXX #include <arch/machdep/machdep.h>
 
 /*
  * ---------- includes --------------------------------------------------------

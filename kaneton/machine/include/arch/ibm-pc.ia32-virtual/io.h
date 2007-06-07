@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/arch/machdep/core/io.h
+ * file          /home/mycure/kane...ne/include/arch/ibm-pc.ia32-virtual/io.h
  *
  * created       julien quintard   [wed jun  6 16:19:54 2007]
- * updated       julien quintard   [wed jun  6 16:20:40 2007]
+ * updated       julien quintard   [thu jun  7 15:34:20 2007]
  */
 
-#ifndef GUARD_IA32_CORE_IO
-#define GUARD_IA32_CORE_IO		1
+#ifndef ARCHITECTURE_IO_H
+#define ARCHITECTURE_IO_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [thu jun  7 13:40:09 2007]
+ * updated       julien quintard   [thu jun  7 16:11:05 2007]
  */
 
 #ifndef CORE_THREAD_H
@@ -21,6 +21,7 @@
 #include <core/types.h>
 #include <core/error.h>
 #include <core/id.h>
+#include <core/wait.h>
 
 #include <machine/machine.h>
 

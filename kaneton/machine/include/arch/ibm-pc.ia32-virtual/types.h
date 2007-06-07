@@ -8,11 +8,11 @@
  * file          /home/mycure/kane...include/arch/ibm-pc.ia32-virtual/types.h
  *
  * created       julien quintard   [wed jun  6 19:07:02 2007]
- * updated       julien quintard   [thu jun  7 14:15:01 2007]
+ * updated       julien quintard   [thu jun  7 14:26:38 2007]
  */
 
-#ifndef ARCHITECTURE_TYPES
-#define ARCHITECTURE_TYPES		1
+#ifndef ARCHITECTURE_TYPES_H
+#define ARCHITECTURE_TYPES_H		1
 
 /*
  * ---------- types -----------------------------------------------------------

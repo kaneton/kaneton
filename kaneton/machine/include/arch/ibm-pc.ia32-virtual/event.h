@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...aneton/include/arch/machdep/core/event.h
+ * file          /home/mycure/kane...include/arch/ibm-pc.ia32-virtual/event.h
  *
  * created       julien quintard   [wed jun  6 16:15:26 2007]
- * updated       julien quintard   [wed jun  6 16:15:39 2007]
+ * updated       julien quintard   [thu jun  7 15:33:33 2007]
  */
 
-#ifndef GUARD_IA32_CORE_EVENT
-#define GUARD_IA32_CORE_EVENT		1
+#ifndef ARCHITECTURE_EVENT_H
+#define ARCHITECTURE_EVENT_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------

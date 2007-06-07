@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...eton/include/arch/machdep/core/message.h
+ * file          /home/mycure/kane...clude/arch/ibm-pc.ia32-virtual/message.h
  *
  * created       julien quintard   [wed jun  6 16:20:48 2007]
- * updated       julien quintard   [wed jun  6 16:21:58 2007]
+ * updated       julien quintard   [thu jun  7 15:40:41 2007]
  */
 
-#ifndef GUARD_IA32_CORE_MESSAGE
-#define GUARD_IA32_CORE_MESSAGE		1
+#ifndef ARCHITECTURE_MESSAGE_H
+#define ARCHITECTURE_MESSAGE_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------

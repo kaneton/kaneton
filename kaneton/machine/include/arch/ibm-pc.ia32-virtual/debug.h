@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...aneton/include/arch/machdep/core/debug.h
+ * file          /home/mycure/kane...include/arch/ibm-pc.ia32-virtual/debug.h
  *
  * created       julien quintard   [wed jun  6 16:15:05 2007]
- * updated       julien quintard   [wed jun  6 16:15:19 2007]
+ * updated       julien quintard   [thu jun  7 14:41:29 2007]
  */
 
-#ifndef GUARD_IA32_CORE_DEBUG
-#define GUARD_IA32_CORE_DEBUG		1
+#ifndef ARCHITECTURE_DEBUG_H
+#define ARCHITECTURE_DEBUG_H		1
 
 /*
  * ---------- macros ----------------------------------------------------------

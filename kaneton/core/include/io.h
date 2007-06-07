@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/io.h
  *
  * created       julien quintard   [wed jun  6 13:26:01 2007]
- * updated       julien quintard   [thu jun  7 13:30:16 2007]
+ * updated       julien quintard   [thu jun  7 16:12:07 2007]
  */
 
 #ifndef CORE_IO_H
@@ -32,18 +32,18 @@
  * io manager
  */
 
-struct				sm_io
+typedef struct
 {
   i_stats			stats;
 
   machdep_data(m_io);
-};
+}				m_io;
 
 /*
  * the io architecture-dependent interface
  */
 
-struct				sd_io
+typedef struct
 {
   t_error			(*io_grant)(i_port,
 					    i_task,
@@ -77,7 +77,7 @@ struct				sd_io
 					       t_uint64);
   t_error			(*io_init)(void);
   t_error			(*io_clean)(void);
-};
+}				d_io;
 
 /*
  * ---------- macro functions -------------------------------------------------

@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...aneton/include/arch/machdep/core/timer.h
+ * file          /home/mycure/kane...include/arch/ibm-pc.ia32-virtual/timer.h
  *
  * created       julien quintard   [wed jun  6 16:29:41 2007]
- * updated       julien quintard   [wed jun  6 16:31:18 2007]
+ * updated       julien quintard   [thu jun  7 15:33:53 2007]
  */
 
-#ifndef GUARD_IA32_CORE_TIMER
-#define GUARD_IA32_CORE_TIMER		1
+#ifndef ARCHITECTURE_TIMER_H
+#define ARCHITECTURE_TIMER_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------

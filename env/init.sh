@@ -35,7 +35,7 @@ proto()
 
   display " generating kaneton prototypes" "+"
 
-  needless=$(launch "Makefile" "${_SRC_DIR_}" "proto" "")
+  # XXX needless=$(launch "Makefile" "${_SRC_DIR_}" "proto" "")
 }
 
 
@@ -132,9 +132,6 @@ environment()
 
   remove "${_MACHDEP_CORE_DIR_}" ""
   link "${_MACHDEP_CORE_DIR_}" "${_ARCHITECTURE_}" ""
-
-  remove "${_MACHDEP_INCLUDE_DIR_}" ""
-  link "${_MACHDEP_INCLUDE_DIR_}" "${_ARCHITECTURE_}" ""
 
   remove "${_MACHDEP_LINK_DIR_}" ""
   link "${_MACHDEP_LINK_DIR_}" "${_ARCHITECTURE_}" ""

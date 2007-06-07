@@ -17,7 +17,10 @@
  */
 
 #include <libsys/types.h>
-#include <arch/machdep/machdep.h>
+
+// XXX this sould not use core types.
+#include <core/types.h>
+#include <core/id.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

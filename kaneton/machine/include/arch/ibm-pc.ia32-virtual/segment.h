@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...eton/include/arch/machdep/core/segment.h
+ * file          /home/mycure/kane...clude/arch/ibm-pc.ia32-virtual/segment.h
  *
  * created       julien quintard   [wed jun  6 16:25:05 2007]
- * updated       julien quintard   [wed jun  6 16:25:24 2007]
+ * updated       julien quintard   [thu jun  7 15:31:30 2007]
  */
 
-#ifndef GUARD_IA32_CORE_SEGMENT
-#define GUARD_IA32_CORE_SEGMENT		1
+#ifndef ARCHITECTURE_SEGMENT_H
+#define ARCHITECTURE_SEGMENT_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------

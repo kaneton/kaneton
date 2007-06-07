@@ -5,14 +5,20 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...aneton/include/arch/machdep/core/sched.h
+ * file          /home/mycure/kane...include/arch/ibm-pc.ia32-virtual/sched.h
  *
  * created       julien quintard   [wed jun  6 16:24:14 2007]
- * updated       julien quintard   [wed jun  6 20:48:56 2007]
+ * updated       julien quintard   [thu jun  7 15:40:24 2007]
  */
 
-#ifndef GUARD_IA32_CORE_SCHED
-#define GUARD_IA32_CORE_SCHED		1
+#ifndef ARCHITECTURE_SCHED_H
+#define ARCHITECTURE_SCHED_H		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/id.h>
 
 /*
  * ---------- macro functions -------------------------------------------------

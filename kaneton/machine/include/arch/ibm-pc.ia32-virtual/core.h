@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../include/arch/ibm-pc.ia32-virtual/core.h
  *
  * created       julien quintard   [wed jun  6 15:58:22 2007]
- * updated       julien quintard   [thu jun  7 14:15:36 2007]
+ * updated       julien quintard   [thu jun  7 16:10:03 2007]
  */
 
 #ifndef ARCHITECTURE_CORE_H
@@ -27,5 +27,18 @@
  * ---------- includes --------------------------------------------------------
  */
 
+#include <architecture/stats.h>
+#include <architecture/segment.h>
+#include <architecture/region.h>
+#include <architecture/as.h>
+#include <architecture/event.h>
+#include <architecture/timer.h>
+#include <architecture/io.h>
+#include <architecture/thread.h>
+#include <architecture/task.h>
+#include <architecture/cpu.h>
+#include <architecture/sched.h>
+#include <architecture/message.h>
+#include <architecture/init.h>
 
 #endif

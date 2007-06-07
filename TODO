@@ -520,14 +520,13 @@ virer les headers inutiles: ELF
 
 --
 
-doit definir:
+archi doit definir:
 
  o types.h pour la definition des types de bases t_uint* t_sint* etc..
- o core.h pour la definition de trucs avant le reste du core
- o *.h pour tous les objets kaneton
- o architecture.h || glue.h || platform.h pour les definitions propres
 
-EN REALITE tout ca n'est pas necessaire, glue doit juste definir:
+machine doit fournir:
 
- o types.h pour les types de bases: ATTENTION AUCUNE RECURSION ICI
- o glue.h || architecture.h || platform.h
+ o machine.h pour tout le reste
+
+apres, le tout c'est que les headers ne doivent jamais utilises une definition
+privee genre un objet ou un manager mais toujours les identifiants.

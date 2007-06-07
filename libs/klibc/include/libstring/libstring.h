@@ -17,7 +17,8 @@
  */
 
 #include <libsys/types.h>
-#include <arch/machdep/machdep.h>
+// XXX very ugly hack, so desperate
+#include <libia32.h>
 
 /*
  * ---------- includes --------------------------------------------------------

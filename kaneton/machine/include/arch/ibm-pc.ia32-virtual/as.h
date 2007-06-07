@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...re/include/arch/ibm-pc.ia32-virtual/as.h
+ * file          /home/mycure/kane...ne/include/arch/ibm-pc.ia32-virtual/as.h
  *
  * created       julien quintard   [sun jun  3 23:54:56 2007]
- * updated       julien quintard   [thu jun  7 12:06:12 2007]
+ * updated       julien quintard   [thu jun  7 15:33:08 2007]
  */
 
 #ifndef ARCHITECTURE_AS_H
@@ -39,6 +39,6 @@
   struct								\
   {									\
     t_ia32_directory		pd;					\
-  }				ao_as;					\
+  }				machdep;
 
 #endif

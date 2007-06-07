@@ -5,14 +5,21 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...neton/include/arch/machdep/core/thread.h
+ * file          /home/mycure/kane...nclude/arch/ibm-pc.ia32-virtual/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       julien quintard   [wed jun  6 21:20:12 2007]
+ * updated       julien quintard   [thu jun  7 15:35:34 2007]
  */
 
-#ifndef GUARD_IA32_CORE_THREAD
-#define GUARD_IA32_CORE_THREAD		1
+#ifndef ARCHITECTURE_THREAD_H
+#define ARCHITECTURE_THREAD_H		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+/* XXX temporary */
+#include <libia32.h>
 
 /*
  * ---------- macro functions -------------------------------------------------

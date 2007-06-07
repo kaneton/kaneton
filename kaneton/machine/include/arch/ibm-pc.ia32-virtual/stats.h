@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...aneton/include/arch/machdep/core/stats.h
+ * file          /home/mycure/kane...include/arch/ibm-pc.ia32-virtual/stats.h
  *
  * created       julien quintard   [wed jun  6 16:25:31 2007]
- * updated       julien quintard   [wed jun  6 16:26:04 2007]
+ * updated       julien quintard   [thu jun  7 15:29:45 2007]
  */
 
-#ifndef GUARD_IA32_CORE_STATS
-#define GUARD_IA32_CORE_STATS		1
+#ifndef ARCHITECTURE_STATS_H
+#define ARCHITECTURE_STATS_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------

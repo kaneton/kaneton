@@ -13,7 +13,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
+// XXX #include <arch/machdep/machdep.h>
 #include <klibc.h>
 
 /*
