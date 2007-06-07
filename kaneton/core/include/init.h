@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/init.h
  *
  * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       julien quintard   [thu jun  7 12:42:57 2007]
+ * updated       julien quintard   [thu jun  7 13:30:06 2007]
  */
 
 /*
@@ -43,7 +43,7 @@
 #include <core/region.h>
 #include <core/cpu.h>
 
-#include <arch/machdep/init.h>
+#include <machine/machine.h>
 
 /*
  * ---------- types -----------------------------------------------------------

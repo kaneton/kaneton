@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       julien quintard   [thu jun  7 12:33:51 2007]
+ * updated       julien quintard   [thu jun  7 13:30:27 2007]
  */
 
 #ifndef CORE_MESSAGE_H
@@ -22,7 +22,7 @@
 #include <core/error.h>
 #include <core/id.h>
 
-#include <arch/machdep/message.h>
+#include <machine/machine.h>
 
 /*
  * ---------- types -----------------------------------------------------------

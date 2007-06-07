@@ -47,7 +47,7 @@
  *	http://www.sco.com/developer/gabi/latest/ch4.eheader.html
  */
 
-#include <arch/machdep/core/types.h>
+#include <machine/machine.h>
 
 typedef	t_uint8  	Elf_Byte;
 

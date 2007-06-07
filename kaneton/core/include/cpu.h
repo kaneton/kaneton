@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/cpu.h
  *
  * created       julien quintard   [sun jun  3 20:25:39 2007]
- * updated       julien quintard   [thu jun  7 12:31:31 2007]
+ * updated       julien quintard   [thu jun  7 13:28:55 2007]
  */
 
 /*
@@ -28,7 +28,7 @@
 #include <core/error.h>
 #include <core/id.h>
 
-#include <arch/machdep/cpu.h>
+#include <machine/machine.h>
 
 /*
  * ---------- types -----------------------------------------------------------

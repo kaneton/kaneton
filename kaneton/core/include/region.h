@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [thu jun  7 12:21:24 2007]
+ * updated       julien quintard   [thu jun  7 13:38:48 2007]
  */
 
 #ifndef CORE_REGION_H
@@ -22,7 +22,7 @@
 #include <core/error.h>
 #include <core/id.h>
 
-#include <arch/machdep/region.h>
+#include <machine/machine.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

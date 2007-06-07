@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/io.h
  *
  * created       julien quintard   [wed jun  6 13:26:01 2007]
- * updated       julien quintard   [thu jun  7 12:25:03 2007]
+ * updated       julien quintard   [thu jun  7 13:30:16 2007]
  */
 
 #ifndef CORE_IO_H
@@ -22,7 +22,7 @@
 #include <core/error.h>
 #include <core/id.h>
 
-#include <arch/machdep/io.h>
+#include <machine/machine.h>
 
 /*
  * ---------- types -----------------------------------------------------------

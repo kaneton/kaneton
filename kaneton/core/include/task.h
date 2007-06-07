@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [thu jun  7 12:25:38 2007]
+ * updated       julien quintard   [thu jun  7 13:39:59 2007]
  */
 
 #ifndef CORE_TASK_H
@@ -22,7 +22,7 @@
 #include <core/error.h>
 #include <core/id.h>
 
-#include <arch/machdep/task.h>
+#include <machine/machine.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

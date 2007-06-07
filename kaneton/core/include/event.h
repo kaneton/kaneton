@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/event.h
  *
  * created       julien quintard   [wed jun  6 13:13:41 2007]
- * updated       julien quintard   [thu jun  7 12:22:49 2007]
+ * updated       julien quintard   [thu jun  7 13:29:26 2007]
  */
 
 #ifndef CORE_EVENT_H
@@ -22,7 +22,7 @@
 #include <core/error.h>
 #include <core/id.h>
 
-#include <arch/machdep/event.h>
+#include <machine/machine.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
