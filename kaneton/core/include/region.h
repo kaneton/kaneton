@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [thu jun  7 13:38:48 2007]
+ * updated       julien quintard   [thu jun  7 14:09:50 2007]
  */
 
 #ifndef CORE_REGION_H
@@ -161,7 +161,7 @@ typedef struct
  * ---------- common prototypes -----------------------------------------------
  */
 
-t_error			region_space(o_as*		as,
+t_error			region_space(void*		object,
 				     t_vsize		size,
 				     t_vaddr*		address);
 

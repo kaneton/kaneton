@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/id.h
  *
  * created       julien quintard   [wed jun  6 12:50:13 2007]
- * updated       julien quintard   [thu jun  7 12:09:16 2007]
+ * updated       julien quintard   [thu jun  7 14:10:33 2007]
  */
 
 #ifndef CORE_ID_H
@@ -47,6 +47,7 @@ typedef t_id			i_segment;
 typedef t_id			i_region;
 typedef t_id			i_as;
 typedef t_id			i_event;
+typedef t_id			i_timer;
 typedef t_id			i_port;
 typedef t_id			i_task;
 typedef t_id			i_thread;

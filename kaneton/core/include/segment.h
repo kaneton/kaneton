@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [thu jun  7 13:39:51 2007]
+ * updated       julien quintard   [thu jun  7 14:09:43 2007]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -178,7 +178,7 @@ typedef struct
  * ---------- common prototypes -----------------------------------------------
  */
 
-t_error			segment_space(o_as*		as,
+t_error			segment_space(void*		object,
 				      t_psize		size,
 				      t_paddr*		address);
 
