@@ -5,14 +5,22 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...include/arch/ibm-pc.ia32-virtual/types.h
+ * file          /home/mycure/kaneton/kaneton/machine/include/types.h
  *
- * created       julien quintard   [wed jun  6 19:07:02 2007]
- * updated       julien quintard   [thu jun  7 13:59:36 2007]
+ * created       julien quintard   [thu jun  7 14:01:50 2007]
+ * updated       julien quintard   [thu jun  7 14:02:26 2007]
  */
 
-#ifndef GUARD_IA32_KANETON
-#define GUARD_IA32_KANETON		1
+/*
+ * XXX temporary, very ugly hack
+ */
+
+#ifndef MACHINE_TYPES_H
+#define MACHINE_TYPES_H			1
+
+/* XXX future architecture!
+#include <architecture/types.h>
+*/
 
 /*
  * ---------- types -----------------------------------------------------------

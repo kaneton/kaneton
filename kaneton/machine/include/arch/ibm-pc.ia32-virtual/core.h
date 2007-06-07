@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../include/arch/ibm-pc.ia32-virtual/core.h
  *
  * created       julien quintard   [wed jun  6 15:58:22 2007]
- * updated       julien quintard   [thu jun  7 12:04:19 2007]
+ * updated       julien quintard   [thu jun  7 13:59:06 2007]
  */
 
 #ifndef ARCHITECTURE_CORE_H
