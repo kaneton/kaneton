@@ -8,14 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [thu jun  7 00:21:57 2007]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * this file supposes t_wait, t_error, identifier and basic types are
- * defined.
+ * updated       julien quintard   [thu jun  7 12:25:16 2007]
  */
 
 #ifndef CORE_THREAD_H
@@ -24,6 +17,10 @@
 /*
  * ---------- dependencies ----------------------------------------------------
  */
+
+#include <core/types.h>
+#include <core/error.h>
+#include <core/id.h>
 
 #include <arch/machdep/thread.h>
 

@@ -8,17 +8,19 @@
  * file          /home/mycure/kaneton/kaneton/core/include/capability.h
  *
  * created       julien quintard   [wed jun  6 12:44:04 2007]
- * updated       julien quintard   [thu jun  7 00:49:08 2007]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * this file supposes t_error, basic types and identifiers are defined.
+ * updated       julien quintard   [thu jun  7 12:34:09 2007]
  */
 
 #ifndef CORE_CAPABILITY_H
 #define CORE_CAPABILITY_H		1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/types.h>
+#include <core/error.h>
+#include <core/id.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

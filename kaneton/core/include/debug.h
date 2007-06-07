@@ -8,11 +8,25 @@
  * file          /home/mycure/kaneton/kaneton/core/include/debug.h
  *
  * created       julien quintard   [wed jun  6 13:11:05 2007]
- * updated       julien quintard   [thu jun  7 00:57:11 2007]
+ * updated       julien quintard   [thu jun  7 12:40:37 2007]
+ */
+
+/*
+ * XXX
+ *
+ * this file should be reworkd to keep the DEBUG_* macros. however the
+ * serial stuff should be moved in a test manager dedicated to the
+ * communication with the kaneton test suite.
  */
 
 #ifndef CORE_DEBUG_H
 #define CORE_DEBUG_H			1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/types.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

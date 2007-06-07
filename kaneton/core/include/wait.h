@@ -8,17 +8,18 @@
  * file          /home/mycure/kaneton/kaneton/core/include/wait.h
  *
  * created       julien quintard   [wed jun  6 15:48:52 2007]
- * updated       julien quintard   [thu jun  7 00:23:31 2007]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * this file supposes identifier and basic types are defined.
+ * updated       julien quintard   [thu jun  7 12:24:52 2007]
  */
 
 #ifndef CORE_WAIT_H
 #define CORE_WAIT_H			1
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/types.h>
+#include <core/id.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

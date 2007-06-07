@@ -8,13 +8,15 @@
  * file          /home/mycure/kaneton/kaneton/core/include/mod.h
  *
  * created       julien quintard   [wed jun  6 13:39:48 2007]
- * updated       julien quintard   [thu jun  7 00:54:45 2007]
+ * updated       julien quintard   [thu jun  7 12:39:17 2007]
  */
 
 /*
- * ---------- information -----------------------------------------------------
+ * XXX
  *
- * this file supposes basic stuff is defined.
+ * this file is temporary. instead the bootloader should provide core
+ * an already mapped and ready mod executable so that the core just creates
+ * a task, set PC and SP and runs it.
  */
 
 #ifndef CORE_MOD_H
@@ -23,6 +25,10 @@
 /*
  * ---------- dependencies ----------------------------------------------------
  */
+
+#include <core/types.h>
+#include <core/error.h>
+#include <core/id.h>
 
 #include <core/elf.h>
 

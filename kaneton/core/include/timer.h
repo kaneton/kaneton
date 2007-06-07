@@ -8,13 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       julien quintard   [thu jun  7 00:58:15 2007]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * this file supposes the t_error, identifier and basic types were defined.
+ * updated       julien quintard   [thu jun  7 12:23:01 2007]
  */
 
 #ifndef CORE_TIMER_H
@@ -23,6 +17,10 @@
 /*
  * ---------- dependencies ----------------------------------------------------
  */
+
+#include <core/types.h>
+#include <core/error.h>
+#include <core/id.h>
 
 #include <arch/machdep/timer.h>
 

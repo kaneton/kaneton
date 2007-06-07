@@ -8,13 +8,23 @@
  * file          /home/mycure/kaneton/kaneton/core/include/init.h
  *
  * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       julien quintard   [thu jun  7 00:58:48 2007]
+ * updated       julien quintard   [thu jun  7 12:42:57 2007]
  */
 
 /*
- * ---------- information -----------------------------------------------------
+ * XXX
  *
- * this file supposes the other manager files were included before this one.
+ * this file must be reworked as the t_init structure directly uses object
+ * definitions. this is very bad!
+ *
+ * instead, specific basic definitions should be used: s_segment, s_region etc.
+ * with less fields. for example, the bootloader ony fill the address, size,
+ * and perms fields of the segment object. so why not create a s_segment
+ * structure with these three fields.
+ *
+ * to avoid any problem at the moment, this file must be included by core.h
+ * in the very last to be sure the object are defined: o_segment, o_region
+ * and o_cpu.
  */
 
 #ifndef CORE_INIT_H
@@ -23,6 +33,15 @@
 /*
  * ---------- dependencies ----------------------------------------------------
  */
+
+#include <core/types.h>
+#include <core/error.h>
+#include <core/id.h>
+
+/* XXX */
+#include <core/segment.h>
+#include <core/region.h>
+#include <core/cpu.h>
 
 #include <arch/machdep/init.h>
 

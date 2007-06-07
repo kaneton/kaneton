@@ -8,13 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/sched.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [thu jun  7 00:58:10 2007]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * this file supposes the fundamental types are defined.
+ * updated       julien quintard   [thu jun  7 12:33:39 2007]
  */
 
 #ifndef CORE_SCHED_H
@@ -23,6 +17,10 @@
 /*
  * ---------- dependencies ----------------------------------------------------
  */
+
+#include <core/types.h>
+#include <core/error.h>
+#include <core/id.h>
 
 #include <arch/machdep/sched.h>
 

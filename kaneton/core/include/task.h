@@ -8,13 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [thu jun  7 00:27:18 2007]
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * this file supposes the basic stuff is defined: t_error, identifiers etc..
+ * updated       julien quintard   [thu jun  7 12:25:38 2007]
  */
 
 #ifndef CORE_TASK_H
@@ -23,6 +17,10 @@
 /*
  * ---------- dependencies ----------------------------------------------------
  */
+
+#include <core/types.h>
+#include <core/error.h>
+#include <core/id.h>
 
 #include <arch/machdep/task.h>
 
