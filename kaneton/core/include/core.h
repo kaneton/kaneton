@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [thu jun  7 14:08:33 2007]
+ * updated       julien quintard   [thu jun  7 16:19:22 2007]
  */
 
 #ifndef CORE_CORE_H
@@ -109,5 +109,24 @@
 /*                                                                [cut] k1   */
 #include <core/serial.h>
 /*                                                               [cut] /k1   */
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../../core/core.c
+ */
+
+/*
+ * ../../core/core.c
+ */
+
+void			kaneton(t_init*				bootloader);
+
+void			kaneton_dump(void);
+
+
+/*
+ * eop
+ */
 
 #endif

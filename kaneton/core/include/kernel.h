@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/kernel.h
  *
  * created       julien quintard   [wed jun  6 13:27:34 2007]
- * updated       julien quintard   [thu jun  7 12:12:01 2007]
+ * updated       julien quintard   [thu jun  7 16:20:10 2007]
  */
 
 #ifndef CORE_KERNEL_H
