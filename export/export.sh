@@ -254,7 +254,7 @@ dist()
   d=$(stamp "%Y%m%d" "")
 
   # make the distribution
-  pack "${_EXPORT_}" "${_EXPORT_}-${d}-${LOCATION}.tar.gz"
+  pack "${_EXPORT_}" "${_EXPORT_}-${d}-${LOCATION}.tar.bz2"
 
   # remove the working directory
   remove "${_EXPORT_}" ""

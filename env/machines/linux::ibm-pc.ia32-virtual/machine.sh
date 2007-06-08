@@ -767,7 +767,7 @@ pack()
       esac
   done
 
-  ${_TAR_} -czf ${options} ${file} ${directory}
+  ${_TAR_} -cjf ${options} ${file} ${directory}
 }
 
 
@@ -799,9 +799,9 @@ unpack()
   done
 
   if [ -n ${directory} ] ; then
-    ${_TAR_} -xzf ${options} ${file} -C ${directory}
+    ${_TAR_} -xjf ${options} ${file} -C ${directory}
   else
-    ${_TAR_} -xzf ${options} ${file}
+    ${_TAR_} -xjf ${options} ${file}
   fi
 }
 

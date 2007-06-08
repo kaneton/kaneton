@@ -102,7 +102,7 @@ def			launch(file, arguments, options):
 # this function creates an archive of the given directory.
 #
 def			pack(directory, file, options):
-  launch(_TAR_, "-czf " + file + " " + directory, OPTION_NONE)
+  launch(_TAR_, "-cjf " + file + " " + directory, OPTION_NONE)
 
 
 
@@ -113,9 +113,9 @@ def			pack(directory, file, options):
 #
 def			unpack(file, directory, options):
   if directory:
-    launch(_TAR_, "-xzf " + file + " -C " + directory, OPTION_NONE)
+    launch(_TAR_, "-xjf " + file + " -C " + directory, OPTION_NONE)
   else:
-    launch(_TAR_, "-xzf " + file, OPTION_NONE)
+    launch(_TAR_, "-xjf " + file, OPTION_NONE)
 
 
 
