@@ -123,8 +123,6 @@ int			bootloader(t_uint32			magic,
   bootloader_init_dump();
 #endif
 
-  while (1);
-
   /*
    * 7)
    */
