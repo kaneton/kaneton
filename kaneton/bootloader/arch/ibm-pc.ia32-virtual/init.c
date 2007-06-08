@@ -50,7 +50,6 @@ static t_paddr		relocate;
  * this function dumps the init structure
  */
 
-#if (IA32_DEBUG & IA32_DEBUG_INIT)
 void			bootloader_init_dump(void)
 {
   t_input*		input;
@@ -129,8 +128,8 @@ void			bootloader_init_dump(void)
 		      CONS_INT,
 		      CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) |
 		      CONS_INT,
-		      init->machdep.gdt.addr,
-		      init->machdep.gdt.size);
+		      init->machdep.gdt.descriptor,
+		      init->machdep.gdt.count);
 
   bootloader_cons_msg('#', " %#~ia32%# page directory: 0x%x\n",
 		      CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) |
@@ -139,7 +138,6 @@ void			bootloader_init_dump(void)
 		      CONS_INT,
 		      init->machdep.pd);
 }
-#endif
 
 /*
  * this function adds the segments to the init variable.
