@@ -39,7 +39,8 @@
  */
 
 #include <core/types.h>
-#include <core/cpu.h>
+
+// XXX ca fait trop chier! #include <core/cpu.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

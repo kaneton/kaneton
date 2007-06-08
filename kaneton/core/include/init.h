@@ -8,23 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/init.h
  *
  * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       julien quintard   [thu jun  7 16:04:13 2007]
- */
-
-/*
- * XXX
- *
- * this file must be reworked as the t_init structure directly uses object
- * definitions. this is very bad!
- *
- * instead, specific basic definitions should be used: s_segment, s_region etc.
- * with less fields. for example, the bootloader ony fill the address, size,
- * and perms fields of the segment object. so why not create a s_segment
- * structure with these three fields.
- *
- * to avoid any problem at the moment, this file must be included by core.h
- * in the very last to be sure the object are defined: o_segment, o_region
- * and o_cpu.
+ * updated       julien quintard   [fri jun  8 14:46:18 2007]
  */
 
 #ifndef CORE_INIT_H
@@ -38,11 +22,6 @@
 #include <core/error.h>
 #include <core/id.h>
 
-/* XXX */
-#include <core/segment.h>
-#include <core/region.h>
-#include <core/cpu.h>
-
 #include <machine/machine.h>
 
 /*
@@ -50,19 +29,59 @@
  */
 
 /*
- * modules
+ * input
  */
 
 typedef struct
 {
   char*				name;
   t_psize			size;
-}				t_module;
+}				t_input;
+
+/*
+ * inputs
+ */
 
 typedef struct
 {
-  t_uint32			nmodules;
-}				t_modules;
+  t_uint32			ninputs;
+}				t_inputs;
+
+/*
+ * segment structure description
+ */
+
+typedef struct
+{
+  t_paddr			address;
+  t_psize			size;
+  t_perms			perms;
+}				s_segment;
+
+/*
+ * region structure description
+ *
+ * the 'segment' field represents an index in the array of segments.
+ */
+
+typedef struct
+{
+  t_uint32			segment;
+
+  t_vaddr			address;
+  t_paddr			offset;
+  t_vsize			size;
+  t_opts			opts;
+}				s_region;
+
+/*
+ * cpu structure description
+ */
+
+typedef struct
+{
+  i_cpu				cpuid;
+}				s_cpu;
 
 /*
  * the init structure
@@ -85,19 +104,19 @@ typedef struct
   t_paddr			init;
   t_psize			initsz;
 
-  t_modules*			modules;
-  t_psize			modulessz;
+  t_inputs*			inputs;
+  t_psize			inputssz;
 
   t_uint32			nsegments;
-  o_segment*			segments;
+  s_segment*			segments;
   t_psize			segmentssz;
 
   t_uint32			nregions;
-  o_region*			regions;
+  s_region*			regions;
   t_psize			regionssz;
 
   t_uint32			ncpus;
-  o_cpu*			cpus;
+  s_cpu*			cpus;
   t_psize			cpussz;
   i_cpu				bsp;
 

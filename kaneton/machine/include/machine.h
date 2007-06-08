@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/machine/include/machine.h
  *
  * created       julien quintard   [thu jun  7 12:46:25 2007]
- * updated       julien quintard   [thu jun  7 14:18:22 2007]
+ * updated       julien quintard   [fri jun  8 15:55:51 2007]
  */
 
 #ifndef MACHINE_H

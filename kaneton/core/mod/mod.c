@@ -53,16 +53,16 @@ extern i_as		kasid;
    (_size_))
 
 /*
- * this function loads a module (32 bits).
+ * this function loads a input (32 bits).
  *
  * steps:
  *
  * 1) reserve the task.
  * 2) loop through the ELF segments.
- * 3) reserve the segment and map in the module's address space.
+ * 3) reserve the segment and map in the input's address space.
  * 4) copy from the file to the memory.
  * 5) create the thread.
- * 6) run the module!
+ * 6) run the input!
  */
 
 t_error			mod_load_32(Elf32_Ehdr*		header,
@@ -194,7 +194,7 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
 }
 
 /*
- * this function loads a module (64 bits).
+ * this function loads a input (64 bits).
  */
 
 t_error			mod_load_64(Elf64_Ehdr*		header,
@@ -208,22 +208,22 @@ t_error			mod_load_64(Elf64_Ehdr*		header,
 }
 
 /*
- * this function launches all modules passed to the kernel.
+ * this function launches all inputs passed to the kernel.
  *
  * steps:
  *
- * 1) map the modules in the kernel.
+ * 1) map the inputs in the kernel.
  * 2) get elf header.
- * 3) load the module.
- * 4) go on to the next module.
- * 5) unmap modules.
+ * 3) load the input.
+ * 4) go on to the next input.
+ * 5) unmap inputs.
  */
 
 t_error			mod_launch(void)
 {
   int			i;
-  t_module*		p;
-  t_modules*		modules;
+  t_input*		p;
+  t_inputs*		inputs;
   i_region		reg;
   char*			name;
   Elf32_Ehdr*		elf;
@@ -235,23 +235,23 @@ t_error			mod_launch(void)
    */
 
   if (region_reserve(kasid,
-		     (i_segment)(t_paddr)init->modules,
+		     (i_segment)(t_paddr)init->inputs,
 		     0,
 		     REGION_OPT_NONE,
 		     0,
-		     init->modulessz,
+		     init->inputssz,
 		     &reg) != ERROR_NONE)
     MOD_LEAVE(mod, ERROR_UNKNOWN);
 
-  modules = (t_modules*)(t_vaddr)reg;
+  inputs = (t_inputs*)(t_vaddr)reg;
 
-  for (i = 0, p = (t_module*)(modules + 1);
-       i < modules->nmodules;
+  for (i = 0, p = (t_input*)(inputs + 1);
+       i < inputs->ninputs;
        i++)
     {
-      name = (char*)modules + (p->name - (char*)init->modules);
+      name = (char*)inputs + (p->name - (char*)init->inputs);
 
-      cons_msg('+', "loading module %s ... ", name);
+      cons_msg('+', "loading input %s ... ", name);
 
       /*
        * 2)
@@ -282,7 +282,7 @@ t_error			mod_launch(void)
 	{
 	  if (mod_load_32(elf, name) != ERROR_NONE)
 	    {
-	      cons_msg('!', "error loading module\n");
+	      cons_msg('!', "error loading input\n");
 	      goto next;
 	    }
 	}
@@ -290,7 +290,7 @@ t_error			mod_launch(void)
 	{
 	  if (mod_load_64((Elf64_Ehdr*)elf, name) != ERROR_NONE)
 	    {
-	      cons_msg('!', "error loading module\n");
+	      cons_msg('!', "error loading input\n");
 	      goto next;
 	    }
 	}
@@ -302,7 +302,7 @@ t_error			mod_launch(void)
        */
 
     next:
-      p = (t_module*)((char*)p + sizeof (t_module) + p->size + strlen(name) + 1);
+      p = (t_input*)((char*)p + sizeof (t_input) + p->size + strlen(name) + 1);
     }
 
   /*

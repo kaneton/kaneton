@@ -69,7 +69,7 @@
  * serial port debug
  */
 
-#define SERIAL
+#undef SERIAL
 
 /*
  * ---------- prototypes ------------------------------------------------------

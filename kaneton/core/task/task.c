@@ -874,12 +874,13 @@ t_error			task_get(i_task				id,
 
 t_error			task_init(void)
 {
-  i_as			asid;
-  t_uint32		i;
   i_segment		segments[INIT_SEGMENTS];
   i_thread		needless;
-  o_region*		tmp;
-  o_segment*		tmp2;
+  i_region		useless;
+  o_segment*		segment;
+  o_region*		region;
+  i_as			asid;
+  t_uint32		i;
 
   /*
    * 1)
@@ -949,11 +950,15 @@ t_error			task_init(void)
 
   for (i = 0; i < init->nsegments; i++)
     {
-      if ((tmp2 = malloc(sizeof(o_segment))) == NULL)
+      if ((segment = malloc(sizeof(o_segment))) == NULL)
 	return (ERROR_UNKNOWN);
-      memcpy(tmp2, &init->segments[i], sizeof(o_segment));
 
-      if (segment_inject(asid, &init->segments[i], &segments[i]) != ERROR_NONE)
+      segment->type = SEGMENT_TYPE_MEMORY;
+      segment->address = init->segments[i].address;
+      segment->size = init->segments[i].size;
+      segment->perms = init->segments[i].perms;
+
+      if (segment_inject(asid, segment, &segments[i]) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot add a pre-reserved segment in "
 		   "the segment set\n");
@@ -968,13 +973,16 @@ t_error			task_init(void)
 
   for (i = 0; i < init->nregions; i++)
     {
-      init->regions[i].segid = segments[init->regions[i].segid];
-
-      if ((tmp = malloc(sizeof(o_region))) == NULL)
+      if ((region = malloc(sizeof(o_region))) == NULL)
 	return (ERROR_UNKNOWN);
-      memcpy(tmp, &init->regions[i], sizeof(o_region));
 
-      if (region_inject(asid, tmp) != ERROR_NONE)
+      region->segid = segments[init->regions[i].segment];
+      region->address = init->regions[i].address;
+      region->offset = init->regions[i].offset;
+      region->size = init->regions[i].size;
+      region->opts = init->regions[i].opts;
+
+      if (region_inject(asid, region, &useless) != ERROR_NONE)
 	{
 	  cons_msg('!', "region: cannot map a region to a pre-reserved "
 		   "region\n");

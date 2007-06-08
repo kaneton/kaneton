@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/cpu.h
  *
  * created       julien quintard   [sun jun  3 20:25:39 2007]
- * updated       julien quintard   [thu jun  7 13:45:44 2007]
+ * updated       julien quintard   [fri jun  8 14:38:39 2007]
  */
 
 #ifndef CORE_CPU_H

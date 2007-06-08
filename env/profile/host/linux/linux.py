@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
+# file          /home/mycure/kaneton/env/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [thu may 31 22:24:08 2007]
+# updated       julien quintard   [fri jun  8 11:43:14 2007]
 #
 
 #

@@ -486,20 +486,10 @@ genre as_get() renvoie un o_as.
 
 --
 
-les pointeurs de fonctions a mettre en f_
-
-et du coup s_ ne sert plus.
-
---
-
 changer le systeme d'error et utiliser une pile de chaines de caracteres
 comme pour les exceptions en Java par exemple. ce n'est pas a la libc
 d'afficher un message mais directement au kernel. apres il faut voir
 la rapidite et la memoire prise par ces messages.
-
---
-
-expliquer dans dev book le nouveau systeme d'include: layout
 
 --
 
@@ -530,3 +520,10 @@ machine doit fournir:
 
 apres, le tout c'est que les headers ne doivent jamais utilises une definition
 privee genre un objet ou un manager mais toujours les identifiants.
+
+--
+
+les pointeurs de fonctions a mettre en f_
+
+s_ pour les struct. typedef struct XXX {} s_XXX;
+

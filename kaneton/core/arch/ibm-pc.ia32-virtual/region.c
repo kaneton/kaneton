@@ -82,6 +82,7 @@ t_error			ia32_region_map_chunk(t_vaddr		v,
 					      t_paddr		p,
 					      void*		alloc)
 {
+  i_region		useless;
   t_ia32_table		pt;
   t_ia32_page		pg;
   i_segment		seg;
@@ -142,7 +143,7 @@ t_error			ia32_region_map_chunk(t_vaddr		v,
   reg->offset = 0;
   reg->size = PAGESZ;
 
-  if (region_inject(kasid, reg) != ERROR_NONE)
+  if (region_inject(kasid, reg, &useless) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
@@ -604,6 +605,7 @@ t_error			ia32_region_resize(i_as			as,
 					   t_vsize		size,
 					   i_region*		new)
 {
+  i_region		useless;
   o_region*		o;
   o_as*			oas;
   o_region*		tmp;
@@ -636,7 +638,7 @@ t_error			ia32_region_resize(i_as			as,
       tmp->size = o->size - size;
       tmp->opts = o->opts;
 
-      if (region_inject(as, tmp) != ERROR_NONE)
+      if (region_inject(as, tmp, &useless) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
       /*
@@ -667,7 +669,7 @@ t_error			ia32_region_resize(i_as			as,
       tmp->size = size - o->size;
       tmp->opts = o->opts;
 
-      if (region_inject(as, tmp) != ERROR_NONE)
+      if (region_inject(as, tmp, &useless) != ERROR_NONE)
 	REGION_LEAVE(region, ERROR_UNKNOWN);
 
       /*

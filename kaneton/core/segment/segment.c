@@ -316,7 +316,7 @@ t_error			segment_inject(i_as		asid,
    * 4)
    */
 
-  if (machdep_call(segment, segment_inject, asid, o) != ERROR_NONE)
+  if (machdep_call(segment, segment_inject, asid, o, segid) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   SEGMENT_LEAVE(segment, ERROR_NONE);

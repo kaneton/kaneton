@@ -216,6 +216,7 @@ t_error			ia32_as_reserve(i_task			tskid,
   o_thread*		oth;
   t_iterator		it;
   t_state		state;
+  i_region		useless;
 
   AS_ENTER(as);
 
@@ -266,7 +267,7 @@ t_error			ia32_as_reserve(i_task			tskid,
       preg->size = PT_MAX_ENTRIES * PAGESZ;
       preg->opts = REGION_OPT_NONE;
 
-      if (region_inject(*asid, preg) != ERROR_NONE)
+      if (region_inject(*asid, preg, &useless) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
 
       /*

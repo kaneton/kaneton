@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../arch/ibm-pc.ia32-virtual/architecture.h
  *
  * created       julien quintard   [thu jun  7 12:02:10 2007]
- * updated       julien quintard   [thu jun  7 16:10:41 2007]
+ * updated       julien quintard   [fri jun  8 15:55:45 2007]
  */
 
 #ifndef ARCHITECTURE_ARCHITECTURE_H

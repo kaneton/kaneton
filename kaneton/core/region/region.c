@@ -164,7 +164,8 @@ t_error			region_dump(i_as		asid)
  */
 
 t_error			region_inject(i_as		asid,
-				      o_region*		o)
+				      o_region*		o,
+				      i_region*		regid)
 {
   o_as*			as;
 
@@ -183,6 +184,7 @@ t_error			region_inject(i_as		asid,
 
   o->regid = (i_region)o->address;
   o->opts &= REGION_OPT_FORCE;
+  *regid = o->regid;
 
   /*
    * 3)
@@ -195,7 +197,7 @@ t_error			region_inject(i_as		asid,
    * 4)
    */
 
-  if (machdep_call(region, region_inject, asid, o) != ERROR_NONE)
+  if (machdep_call(region, region_inject, asid, o, regid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
@@ -222,6 +224,7 @@ t_error			region_split(i_as			asid,
 				     i_region*			left,
 				     i_region*			right)
 {
+  i_region		useless;
   o_region*		reg;
   o_segment*		seg;
   o_region*		new;
@@ -273,7 +276,7 @@ t_error			region_split(i_as			asid,
   new->opts = reg->opts;
   new->size = reg->size - size;
 
-  if (region_inject(asid, new) != ERROR_NONE)
+  if (region_inject(asid, new, &useless) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
