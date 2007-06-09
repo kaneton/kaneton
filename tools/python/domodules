@@ -1,2 +1,0 @@
-#python mkmodules.py build
-python mkmodules.py install
