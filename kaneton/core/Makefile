@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -96,17 +96,17 @@ VERSION_O		:=		$(VERSION_C:.c=.o)
 #
 
 libs:
-	$(call launch,Makefile,$(_KLIBC_DIR_),,)
-	$(call launch,Makefile,$(SUBDIRS),,)
+	$(call env_launch,Makefile,$(_KLIBC_DIR_),,)
+	$(call env_launch,Makefile,$(SUBDIRS),,)
 
-	$(call launch,Makefile,.,$(_CORE_),)
+	$(call env_launch,Makefile,.,$(_CORE_),)
 
 $(_CORE_):		$(CORE_O) $(KANETON_O)
-	$(call version,$(VERSION_C))
+	$(call env_version,$(VERSION_C))
 
-	$(call compile-c,$(VERSION_O),$(VERSION_C),)
+	$(call env_compile-c,$(VERSION_O),$(VERSION_C),)
 
-	$(call executable,$(_CORE_),	$(CORE_O)			\
+	$(call env_executable,$(_CORE_),	$(CORE_O)			\
 					$(VERSION_O)			\
 					$(KANETON_O)			\
 					$(_KLIBC_A_),			\
@@ -115,27 +115,27 @@ $(_CORE_):		$(CORE_O) $(KANETON_O)
                  "--no-standard-library")
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
+	$(call env_launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call remove,$(VERSION_O),)
-	$(call remove,$(VERSION_C),)
+	$(call env_remove,$(VERSION_O),)
+	$(call env_remove,$(VERSION_C),)
 
-	$(call remove,$(CORE_O),)
+	$(call env_remove,$(CORE_O),)
 
-	$(call remove,$(_CORE_),)
+	$(call env_remove,$(_CORE_),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call prototypes,$(CORE_INCLUDE),)
-	$(call launch,Makefile,$(SUBDIRS),proto,)
+	$(call env_prototypes,$(CORE_INCLUDE),)
+	$(call env_launch,Makefile,$(SUBDIRS),proto,)
 
 dep:
-	$(call launch,Makefile,$(SUBDIRS),dep,)
+	$(call env_launch,Makefile,$(SUBDIRS),dep,)
 
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(CORE_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(CORE_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

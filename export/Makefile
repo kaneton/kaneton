@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../env/.env.mk
+include			../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -28,9 +28,9 @@ include			../env/.env.mk
 all:
 
 clear:
-	$(call remove,$(_EXPORT_).tar.gz,)
+	$(call env_remove,$(_EXPORT_).tar.gz,)
 
-	$(call purge)
+	$(call env_purge)
 
 proto:
 

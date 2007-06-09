@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -39,21 +39,21 @@ PMODE_O			:=		$(PMODE_C:.c=.o)
 #
 
 $(PMODE_LO):		$(PMODE_O)
-	$(call remove,$(PMODE_LO),)
+	$(call env_remove,$(PMODE_LO),)
 
-	$(call archive,$(PMODE_LO),$(PMODE_O),)
+	$(call env_archive,$(PMODE_LO),$(PMODE_O),)
 
 clear:
-	$(call remove,$(PMODE_O),)
+	$(call env_remove,$(PMODE_O),)
 
-	$(call remove,$(PMODE_LO),)
+	$(call env_remove,$(PMODE_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(PMODE_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(PMODE_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

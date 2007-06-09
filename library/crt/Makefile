@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -36,21 +36,21 @@ CRT_INCLUDE		:=
 #
 
 $(_CRT_A_):		$(CRT_O)
-	$(call static-library,$(_CRT_A_),$(CRT_O),)
+	$(call env_static-library,$(_CRT_A_),$(CRT_O),)
 
 clear:
-	$(call remove,$(CRT_O),)
+	$(call env_remove,$(CRT_O),)
 
-	$(call remove,$(_CRT_A_),)
+	$(call env_remove,$(_CRT_A_),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(CRT_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(CRT_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

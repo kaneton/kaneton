@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../env/.env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,7 +27,7 @@ include			../../../../env/.env.mk
 
 LIST			:=		list
 
-SUBDIRS			:=		$(call contents,$(LIST),)
+SUBDIRS			:=		$(call env_contents,$(LIST),)
 
 MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 
@@ -42,23 +42,23 @@ all:			build run
 build:			$(LIBSTRING_LO)
 
 $(LIBSTRING_LO):		libs
-	$(call remove,$(LIBSTRING_LO),)
+	$(call env_remove,$(LIBSTRING_LO),)
 
-	$(call archive,$(LIBSTRING_LO),$(MODULES),)
+	$(call env_archive,$(LIBSTRING_LO),$(MODULES),)
 
 libs:
-	$(call launch,Makefile,$(SUBDIRS),,)
+	$(call env_launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
+	$(call env_launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call remove,$(LIBSTRING_LO),)
+	$(call env_remove,$(LIBSTRING_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call launch,Makefile,$(SUBDIRS),proto,)
+	$(call env_launch,Makefile,$(SUBDIRS),proto,)
 
 dep:

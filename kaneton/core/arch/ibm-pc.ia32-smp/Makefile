@@ -15,7 +15,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../env/.env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -52,27 +52,27 @@ CFLAGS			+=		-D___kernel
 #
 
 $(MACHDEP_LO):		libs $(MACHDEP_O)
-	$(call remove,$(MACHDEP_LO),)
+	$(call env_remove,$(MACHDEP_LO),)
 
-	$(call archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBIA32_A_),)
+	$(call env_archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBIA32_A_),)
 
 libs:
-	$(call launch,Makefile,$(_LIBIA32_DIR_),,)
+	$(call env_launch,Makefile,$(_LIBIA32_DIR_),,)
 
 clear:
-	$(call remove,$(MACHDEP_O),)
+	$(call env_remove,$(MACHDEP_O),)
 
-	$(call remove,$(MACHDEP_LO),)
+	$(call env_remove,$(MACHDEP_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call prototypes,$(MACHDEP_INCLUDE),)
+	$(call env_prototypes,$(MACHDEP_INCLUDE),)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(MACHDEP_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(MACHDEP_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -54,36 +54,36 @@ COMMON_INCLUDE		:=
 message_test:	$(MOD1) $(MOD2)
 
 $(MOD1):		libs $(COMMON_O) $(MOD1_O)
-	$(call executable,$(MOD1),$(MOD1_O) $(COMMON_O) $(_KLIBC_A_),	\
+	$(call env_executable,$(MOD1),$(MOD1_O) $(COMMON_O) $(_KLIBC_A_),	\
 	         "--link-script $(_MACHDEP_LINK_DIR_)/driver.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 
 $(MOD2):		libs $(COMMON_O) $(MOD2_O)
-	$(call executable,$(MOD2),$(MOD2_O) $(COMMON_O) $(_KLIBC_A_),	\
+	$(call env_executable,$(MOD2),$(MOD2_O) $(COMMON_O) $(_KLIBC_A_),	\
 	         "--link-script $(_MACHDEP_LINK_DIR_)/driver.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 libs:
-	$(call launch,Makefile,$(_KLIBC_DIR_),,)
+	$(call env_launch,Makefile,$(_KLIBC_DIR_),,)
 
 clear:
-	$(call remove,$(MOD1_O),)
-	$(call remove,$(MOD1),)
-	$(call remove,$(MOD2_O),)
-	$(call remove,$(MOD2),)
-	$(call remove,$(COMMON_O),)
+	$(call env_remove,$(MOD1_O),)
+	$(call env_remove,$(MOD1),)
+	$(call env_remove,$(MOD2_O),)
+	$(call env_remove,$(MOD2),)
+	$(call env_remove,$(COMMON_O),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(MOD1_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(MOD1_C),$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(MOD2_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(MOD2_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

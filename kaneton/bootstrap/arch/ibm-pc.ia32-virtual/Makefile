@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../env/.env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -44,22 +44,22 @@ BOOTLOADER_O		=		$(BOOTLOADER_C:.c=.o)
 #
 
 $(BOOTSTRAP):		$(BOOTLOADER)
-	$(call assemble-asm,$(BOOTSTRAP),$(BOOTSTRAP_ASM),"--format bin")
+	$(call env_assemble-asm,$(BOOTSTRAP),$(BOOTSTRAP_ASM),"--format bin")
 
 $(BOOTLOADER):		$(BOOTLOADER_O)
-	$(call executable,$(BOOTLOADER),$(BOOTLOADER_O),		\
+	$(call env_executable,$(BOOTLOADER),$(BOOTLOADER_O),		\
 	         "--link-script $(_MACHDEP_LINK_DIR_)/bootstrap.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 
 clear:
-	$(call remove,$(BOOTLOADER_O),)
+	$(call env_remove,$(BOOTLOADER_O),)
 
-	$(call remove,$(BOOTLOADER),)
+	$(call env_remove,$(BOOTLOADER),)
 
-	$(call remove,$(BOOTSTRAP),)
+	$(call env_remove,$(BOOTSTRAP),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
 

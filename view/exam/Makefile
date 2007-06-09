@@ -18,7 +18,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -38,12 +38,12 @@ SUBDIRS			:=		arch-mips			\
 #
 
 all:
-	$(call launch,Makefile,$(SUBDIRS),,)
+	$(call env_launch,Makefile,$(SUBDIRS),,)
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
+	$(call env_launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call purge)
+	$(call env_purge)
 
 proto:
 

@@ -15,7 +15,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../../env/.env.mk
+include			../../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -45,19 +45,19 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 all:			build
 
 view:			build
-	$(call view,$(PAPER),)
+	$(call env_view,$(PAPER),)
 
 build:			correction
 
 subject:
-	$(call subject,$(PAPER),)
+	$(call env_subject,$(PAPER),)
 
 correction:
-	$(call correction,$(PAPER),)
+	$(call env_correction,$(PAPER),)
 
 clear:
-	$(call remove,$(GARBAGE),)
+	$(call env_remove,$(GARBAGE),)
 
-	$(call remove,$(_KANETON_LATEX_),)
+	$(call env_remove,$(_KANETON_LATEX_),)
 
-	$(call purge)
+	$(call env_purge)

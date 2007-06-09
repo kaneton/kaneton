@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../env/.env.mk
+include			../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -28,7 +28,7 @@ include			../env/.env.mk
 all:
 
 clear:
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
 

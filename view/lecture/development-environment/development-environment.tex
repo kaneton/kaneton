@@ -254,7 +254,7 @@
       core/
       doc/
       drivers/
-      env/
+      environment/
       export/
       internship/
       libs/
@@ -332,7 +332,7 @@
   \frametitle{Tree}
 
   \begin{verbatim}
-    env/
+    environment/
       .env.conf
       clean.sh
       critical.sh
@@ -484,7 +484,7 @@
   \end{verbatim}
 
   The configuration system uses the shell variable \$KANETON\_MACHINE to
-  use the good scripts and files in \textbf{env/machines/\$KANETON\_MACHINE/}.
+  use the good scripts and files in \textbf{environment/machines/\$KANETON\_MACHINE/}.
 
   \nl
 
@@ -500,7 +500,7 @@
   \frametitle{critical.sh}
 
   This is the very first called script. It creates two files: \textbf{.env.sh}
-  and \textbf{.env.mk}.
+  and \textbf{env.mk}.
 
   \nl
 
@@ -654,7 +654,7 @@
   \end{verbatim}
 
   This configuration system uses the shell variable \$KANETON\_USER to find
-  the main configuration file: \textbf{env/users/\$KANETON\_USER/user.conf}.
+  the main configuration file: \textbf{environment/users/\$KANETON\_USER/user.conf}.
 \end{frame}
 
 % 3)
@@ -817,7 +817,7 @@
     [+] /tmp/menu.lst
     [+] core/bootloader/bootloader
     [+] core/kaneton/kaneton
-    [+] env/.kaneton.conf
+    [+] environment/.kaneton.conf
     [+] drivers/cons/cons
     [+] services/dsh/dsh
 

@@ -3,7 +3,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,21 +27,21 @@ MISC_O			:=		$(MISC_C:.c=.o)
 #
 
 $(MISC_LO):		$(MISC_O)
-	$(call remove,$(MISC_LO),)
+	$(call env_remove,$(MISC_LO),)
 
-	$(call archive,$(MISC_LO),$(MISC_O),)
+	$(call env_archive,$(MISC_LO),$(MISC_O),)
 
 clear:
-	$(call remove,$(MISC_O),)
+	$(call env_remove,$(MISC_O),)
 
-	$(call remove,$(MISC_LO),)
+	$(call env_remove,$(MISC_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(MISC_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(MISC_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

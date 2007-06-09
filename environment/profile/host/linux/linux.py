@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/env/profile/host/linux/linux.py
+# file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [fri jun  8 11:43:14 2007]
+# updated       julien quintard   [sat jun  9 23:03:25 2007]
 #
 
 #
@@ -21,6 +21,12 @@
 #
 # in addition, the host profile already imports some packages.
 #
+
+#
+# ---------- python path ------------------------------------------------------
+#
+
+os.putenv("PYTHONPATH", os.getenv("PYTHONPATH") + ":" + _PYTHON_INCLUDE_DIR_)
 
 #
 # ---------- functions --------------------------------------------------------
@@ -41,7 +47,9 @@ def			colorize(text, color, options):
   if options & OPTION_FLICKERING:
     text = "[01;05m" + text + "[39;49;00m"
 
-  if color == COLOR_RED:
+  if color == COLOR_BLACK:
+    text = "[30;01m" + text + "[39;49;00m"
+  elif color == COLOR_RED:
     text = "[31;01m" + text + "[39;49;00m"
   elif color == COLOR_GREEN:
     text = "[32;01m" + text + "[39;49;00m"
@@ -49,6 +57,10 @@ def			colorize(text, color, options):
     text = "[33;01m" + text + "[39;49;00m"
   elif color == COLOR_BLUE:
     text = "[34;01m" + text + "[39;49;00m"
+  elif color == COLOR_MAGENTA:
+    text = "[35;01m" + text + "[39;49;00m"
+  elif color == COLOR_CYAN:
+    text = "[36;01m" + text + "[39;49;00m"
   elif color == COLOR_WHITE:
     text = "[37;01m" + text + "[39;49;00m"
 
@@ -79,8 +91,6 @@ def			launch(file, arguments, options):
   if re.match("^.*\.sh$", file):
     status = os.system(_SHELL_ + " " + file + " " + arguments)
   elif re.match("^.*\.py$", file):
-    os.putenv("PYTHONPATH",
-              os.getenv("PYTHONPATH") + ":" + _PYTHON_INCLUDE_DIR_)
     status = os.system(_PYTHON_ + " " + file + " " + arguments)
   elif re.match("^.*\.pl$", file):
     status = os.system(_PERL_ + " " + file + " " + arguments)

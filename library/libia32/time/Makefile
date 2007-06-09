@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -36,21 +36,21 @@ TIME_O			:=		$(TIME_C:.c=.o)
 #
 
 $(TIME_LO):		$(TIME_O)
-	$(call remove,$(TIME_LO),)
+	$(call env_remove,$(TIME_LO),)
 
-	$(call archive,$(TIME_LO),$(TIME_O),)
+	$(call env_archive,$(TIME_LO),$(TIME_O),)
 
 clear:
-	$(call remove,$(TIME_O),)
+	$(call env_remove,$(TIME_O),)
 
-	$(call remove,$(TIME_LO),)
+	$(call env_remove,$(TIME_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(TIME_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(TIME_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

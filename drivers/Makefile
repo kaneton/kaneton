@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../env/.env.mk
+include			../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -32,15 +32,15 @@ SUBDIRS			:=		$(_DRIVERS_DEP_)
 #
 
 all:
-	$(call launch,Makefile,$(SUBDIRS),,)
+	$(call env_launch,Makefile,$(SUBDIRS),,)
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
+	$(call env_launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call launch,makefile,$(SUBDIRS),proto,)
+	$(call env_launch,makefile,$(SUBDIRS),proto,)
 
 dep:
-	$(call launch,makefile,$(SUBDIRS),dep,)
+	$(call env_launch,makefile,$(SUBDIRS),dep,)

@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -37,21 +37,21 @@ TRAPS_O		:=		$(TRAPS_C:.c=.o)
 #
 
 $(TRAPS_LO):		$(TRAPS_O)
-	$(call remove,$(TRAPS_LO),)
+	$(call env_remove,$(TRAPS_LO),)
 
-	$(call archive,$(TRAPS_LO),$(TRAPS_O),)
+	$(call env_archive,$(TRAPS_LO),$(TRAPS_O),)
 
 clear:
-	$(call remove,$(TRAPS_O),)
+	$(call env_remove,$(TRAPS_O),)
 
-	$(call remove,$(TRAPS_LO),)
+	$(call env_remove,$(TRAPS_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(TRAPS_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(TRAPS_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

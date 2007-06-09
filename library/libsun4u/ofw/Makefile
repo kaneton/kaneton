@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -39,21 +39,21 @@ OFW_O			:=		$(OFW_C:.c=.o)			\
 #
 
 $(OFW_LO):		$(OFW_O)
-	$(call remove,$(OFW_LO),)
+	$(call env_remove,$(OFW_LO),)
 
-	$(call archive,$(OFW_LO),$(OFW_O),)
+	$(call env_archive,$(OFW_LO),$(OFW_O),)
 
 clear:
-	$(call remove,$(OFW_O),)
+	$(call env_remove,$(OFW_O),)
 
-	$(call remove,$(OFW_LO),)
+	$(call env_remove,$(OFW_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(OFW_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(OFW_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

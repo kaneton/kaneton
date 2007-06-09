@@ -4,7 +4,7 @@
  * you can so use system defines to simplify your kaneton configuration
  * file and to avoid information redundancy.
  *
- * the preprocessor output file is: env/.kaneton.conf
+ * the preprocessor output file is: environment/.kaneton.conf
  *
  * you have to set this file as the kaneton configuration file in
  * you modules.conf file.

@@ -15,7 +15,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../env/.env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -52,27 +52,27 @@ CFLAGS			+=		-D___kernel
 #
 
 $(MACHDEP_LO):		libs $(MACHDEP_O)
-	$(call remove,$(MACHDEP_LO),)
+	$(call env_env_remove,$(MACHDEP_LO),)
 
-	$(call archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBMIPSR10000_A_),)
+	$(call env_env_archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBMIPSR10000_A_),)
 
 libs:
-	$(call launch,Makefile,$(_LIBMIPSR10000_DIR_),,)
+	$(call env_env_launch,Makefile,$(_LIBMIPSR10000_DIR_),,)
 
 clear:
-	$(call remove,$(MACHDEP_O),)
+	$(call env_env_remove,$(MACHDEP_O),)
 
-	$(call remove,$(MACHDEP_LO),)
+	$(call env_env_remove,$(MACHDEP_LO),)
 
-	$(call purge,)
+	$(call env_env_purge,)
 
 proto:
-	$(call prototypes,$(MACHDEP_INCLUDE),)
+	$(call env_env_prototypes,$(MACHDEP_INCLUDE),)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(MACHDEP_C),$(_MAKEFILE_MK_),)
+	$(call env_env_dependencies,$(MACHDEP_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

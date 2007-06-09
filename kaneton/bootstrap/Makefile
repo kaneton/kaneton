@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -26,15 +26,15 @@ include			../../env/.env.mk
 #
 
 all:
-	$(call launch,Makefile,arch,,)
+	$(call env_launch,Makefile,arch,,)
 
 clear:
-	$(call launch,Makefile,arch,clear,)
+	$(call env_launch,Makefile,arch,clear,)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call launch,Makefile,arch,proto,)
+	$(call env_launch,Makefile,arch,proto,)
 
 dep:
-	$(call launch,Makefile,arch,dep,)
+	$(call env_launch,Makefile,arch,dep,)

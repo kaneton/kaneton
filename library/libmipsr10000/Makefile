@@ -15,7 +15,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -38,24 +38,24 @@ LIBMIPSR10000_INCLUDE	:=		$(_LIBMIPSR10000_INCLUDE_DIR_)/libmipsr10000.h
 #
 
 libs:
-	$(call launch,Makefile,$(SUBDIRS),,)
+	$(call env_launch,Makefile,$(SUBDIRS),,)
 
-	$(call launch,Makefile,.,$(_LIBMIPSR10000_A_),)
+	$(call env_launch,Makefile,.,$(_LIBMIPSR10000_A_),)
 
 $(_LIBMIPSR10000_A_):		$(LIBARC_LO)
-	$(call remove,$(_LIBMIPSR10000_A_),)
+	$(call env_remove,$(_LIBMIPSR10000_A_),)
 
-	$(call static-library,$(_LIBMIPSR10000_A_),$(LIBARC_LO),"-crs")
+	$(call env_static-library,$(_LIBMIPSR10000_A_),$(LIBARC_LO),"-crs")
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
+	$(call env_launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call remove,$(_LIBMIPSR10000_A_),)
+	$(call env_remove,$(_LIBMIPSR10000_A_),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	#$(call launch,Makefile,$(SUBDIRS),proto,)
+	#$(call env_launch,Makefile,$(SUBDIRS),proto,)
 
 dep:
-	$(call launch,Makefile,$(SUBDIRS),dep,)
+	$(call env_launch,Makefile,$(SUBDIRS),dep,)

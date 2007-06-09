@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -39,21 +39,21 @@ INTERRUPT_O		:=		$(INTERRUPT_C:.c=.o)
 #
 
 $(INTERRUPT_LO):		$(INTERRUPT_O)
-	$(call remove,$(INTERRUPT_LO),)
+	$(call env_remove,$(INTERRUPT_LO),)
 
-	$(call archive,$(INTERRUPT_LO),$(INTERRUPT_O),)
+	$(call env_archive,$(INTERRUPT_LO),$(INTERRUPT_O),)
 
 clear:
-	$(call remove,$(INTERRUPT_O),)
+	$(call env_remove,$(INTERRUPT_O),)
 
-	$(call remove,$(INTERRUPT_LO),)
+	$(call env_remove,$(INTERRUPT_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(INTERRUPT_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(INTERRUPT_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -40,27 +40,27 @@ INTERFACE_INCLUDE	:=
 #
 
 $(INTERFACE):		libs $(INTERFACE_O)
-	$(call executable,$(INTERFACE),$(INTERFACE_O) $(_KLIBC_A_),	\
+	$(call env_executable,$(INTERFACE),$(INTERFACE_O) $(_KLIBC_A_),	\
 	         "--link-script $(_MACHDEP_LINK_DIR_)/driver.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 
 libs:
-	$(call launch,Makefile,$(_KLIBC_DIR_),,)
+	$(call env_launch,Makefile,$(_KLIBC_DIR_),,)
 
 clear:
-	$(call remove,$(INTERFACE_O),)
-	$(call remove,$(INTERFACE),)
+	$(call env_remove,$(INTERFACE_O),)
+	$(call env_remove,$(INTERFACE),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call prototypes,interface_user.h,)
+	$(call env_prototypes,interface_user.h,)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(INTERFACE_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(INTERFACE_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

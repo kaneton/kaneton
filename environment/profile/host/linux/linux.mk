@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [thu may 31 22:36:57 2007]
+# updated       julien quintard   [sat jun  9 23:02:02 2007]
 #
 
 #
@@ -19,6 +19,12 @@
 # indeed the major generic part of the interface is already provided by the
 # host profile.
 #
+
+#
+# ---------- python path ------------------------------------------------------
+#
+
+export PYTHONPATH=$(shell $(_ECHO_) $${PYTHONPATH}):$(_PYTHON_INCLUDE_DIR_)
 
 #
 # ---------- functions --------------------------------------------------------
@@ -32,35 +38,35 @@
 #
 
 define env_colorize-black
-  '\E[;30m'"\033[1m$(1)\033[0m"
+  "[30;01m$(1)[39;49;00m"
 endef
 
 define env_colorize-red
-  '\E[;31m'"\033[1m$(1)\033[0m"
+  "[31;01m$(1)[39;49;00m"
 endef
 
 define env_colorize-green
-  '\E[;32m'"\033[1m$(1)\033[0m"
+  "[32;01m$(1)[39;49;00m"
 endef
 
 define env_colorize-yellow
-  '\E[;33m'"\033[1m$(1)\033[0m"
+  "[33;01m$(1)[39;49;00m"
 endef
 
 define env_colorize-blue
-  '\E[;34m'"\033[1m$(1)\033[0m"
+  "[34;01m$(1)[39;49;00m"
 endef
 
 define env_colorize-magenta
-  '\E[;35m'"\033[1m$(1)\033[0m"
+  "[35;01m$(1)[39;49;00m"
 endef
 
 define env_colorize-cyan
-  '\E[;36m'"\033[1m$(1)\033[0m"
+  "[36;01m$(1)[39;49;00m"
 endef
 
 define env_colorize-white
-  '\E[;37m'"\033[1m$(1)\033[0m"
+  "[37;01m$(1)[39;49;00m"
 endef
 
 define env_colorize-
@@ -80,8 +86,10 @@ ifeq ($(_DISPLAY_),$(_DISPLAY_COLORED_))	# if the user wants to display
 
 define env_print
   print_options=""							; \
-  if [ $(( $(3) & $(ENV_OPTION_NO_NEWLINE) )) -ne 0 ] ; then		\
-    print_options="$${print_options} -n"				; \
+  if [ -n "$(3)" ] ; then						\
+    if [ $$(( $(3) & $(ENV_OPTION_NO_NEWLINE) )) -ne 0 ] ; then		\
+      print_options="$${print_options} -n"				; \
+    fi									; \
   fi									; \
   $(_ECHO_) $${print_options} $(call env_colorize-$(2),$(1),)
 endef
@@ -90,7 +98,7 @@ else						# if not ...
 
 define env_print
   print_options=""							; \
-  if [ $(( $(3) & $(ENV_OPTION_NO_NEWLINE) )) -ne 0 ] ; then		\
+  if [ $$(( $(3) & $(ENV_OPTION_NO_NEWLINE) )) -ne 0 ] ; then		\
     print_options="$${print_options} -n"				; \
   fi									; \
   $(_ECHO_) $${print_options} $(1)
@@ -131,21 +139,29 @@ endef
 
 define env_launch
   launch_options=""							; \
-  case "$(1)" in							\
+  cwd=$$($(_PWD_))							; \
+  directory=$$($(_DIRNAME_) $(1))					; \
+  file=$$($(_BASENAME_) $(1))						; \
+  if [ $${directory} != "." ] ; then					\
+    $(_CD_) $${directory}						; \
+  fi									; \
+  case "$${file}" in							\
     *.sh)								\
-      $(_SHELL_) $${launch_options} $(1) $(_SHELL_FLAGS_) $(2)		; \
+      $(_SHELL_) $${launch_options} $${file} $(_SHELL_FLAGS_) $(2)	; \
       ;;								\
     *.py)								\
-      export PYTHONPATH=$$(PYTHONPATH)':'$(_PYTHON_INCLUDE_DIR_)	; \
-      $(_PYTHON_) $${launch_options} $(1) $(_PYTHON_FLAGS_) $(2)	; \
+      $(_PYTHON_) $${launch_options} $${file} $(_PYTHON_FLAGS_) $(2)	; \
       ;;								\
     *.pl)								\
-      $(_PERL_) $${launch_options} $(1) $(_PERL_FLAGS_) $(2)		; \
+      $(_PERL_) $${launch_options} $${file} $(_PERL_FLAGS_) $(2)	; \
       ;;								\
     Makefile)								\
-      $(_MAKE_) $${launch_options} -f $(1) $(_MAKE_FLAGS_) ${2}		; \
+      $(_MAKE_) $${launch_options} -f $${file} $(_MAKE_FLAGS_) ${2}	; \
       ;;								\
-  esac
+  esac									; \
+  if [ $${directory} != "." ] ; then					\
+    $(_CD_) $${cwd}							; \
+  fi
 endef
 
 #
@@ -215,10 +231,10 @@ endef
 
 define env_assemble-asm
   assemble_asm_options=""						; \
-  if [ $(( $(3) & $(ENV_OUTPUT_OBJECT) )) -ne 0 ] ; then		\
+  if [ $$(( $(3) & $(ENV_OUTPUT_OBJECT) )) -ne 0 ] ; then		\
     assemble_asm_options="$${assemble_asm_options} -f elf"		; \
   fi									; \
-  if [ $(( $(3) & $(ENV_OUTPUT_BINARY) )) -ne 0 ] ; then		\
+  if [ $$(( $(3) & $(ENV_OUTPUT_BINARY) )) -ne 0 ] ; then		\
     assemble_asm_options="$${assemble_asm_options} -f bin"		; \
   fi									; \
   $(call env_display,green,ASSEMBLE-ASM,$(2),		)		; \
@@ -270,7 +286,7 @@ define env_executable
   if [ -n $(3) ] ; then							\
     executable_options="$${executable_options} -T $(3)"			; \
   fi									; \
-  if [ $(( $(4) & $(ENV_OPTION_NO_STANDARD) )) -ne 0 ] ; then		\
+  if [ $$(( $(4) & $(ENV_OPTION_NO_STANDARD) )) -ne 0 ] ; then		\
     assemble_asm_options="$${assemble_asm_options} -nostdinc -nostdlib"	; \
   fi									; \
   $(call env_display,magenta,EXECUTABLE,$(1),		)		; \
@@ -424,7 +440,7 @@ endef
 #
 
 define env_document
-  if [ $(( $(2) & $(ENV_OPTION_PRIVATE) )) -ne 0 ] ; then		\
+  if [ $$(( $(2) & $(ENV_OPTION_PRIVATE) )) -ne 0 ] ; then		\
     $(_ECHO_) '\def\mode{private}' > $(_DEPENDENCY_TEX_)		; \
   fi									; \
   $(call env_compile-tex,$(1),$(2))

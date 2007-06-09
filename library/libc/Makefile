@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -38,25 +38,25 @@ LIBSYS_LO		:=		libsys/libsys.lo
 #main:		relations
 
 relations:
-	$(call launch,Makefile,$(SUBDIRS),,)
+	$(call env_launch,Makefile,$(SUBDIRS),,)
 
-	$(call launch,Makefile,.,$(_KLIBC_A_),)
+	$(call env_launch,Makefile,.,$(_KLIBC_A_),)
 
 $(_KLIBC_A_):		$(LIBDATA_LO) $(LIBSTRING_LO) $(LIBSYS_LO)
-	$(call remove,$(_KLIBC_A_),)
+	$(call env_remove,$(_KLIBC_A_),)
 
-	$(call static-library,$(_KLIBC_A_),$(LIBDATA_LO) $(LIBSTRING_LO) \
+	$(call env_static-library,$(_KLIBC_A_),$(LIBDATA_LO) $(LIBSTRING_LO) \
           $(LIBSYS_LO),)
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
+	$(call env_launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call remove,$(_KLIBC_A_),)
+	$(call env_remove,$(_KLIBC_A_),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call launch,Makefile,$(SUBDIRS),proto,)
+	$(call env_launch,Makefile,$(SUBDIRS),proto,)
 
 dep:
-	$(call launch,Makefile,$(SUBDIRS),dep,)
+	$(call env_launch,Makefile,$(SUBDIRS),dep,)

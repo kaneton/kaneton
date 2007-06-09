@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -43,17 +43,17 @@ override _CFLAGS_	:=
 all:			$(_CTBUILD_TOOL_) $(_CTCOMPARE_TOOL_)
 
 $(_CTBUILD_TOOL_):	$(CTBUILD_O)
-	$(call executable,$(_CTBUILD_TOOL_),$(CTBUILD_O),)
+	$(call env_executable,$(_CTBUILD_TOOL_),$(CTBUILD_O),)
 
 $(_CTCOMPARE_TOOL_):	$(CTCOMPARE_O)
-	$(call executable,$(_CTCOMPARE_TOOL_),$(CTCOMPARE_O),)
+	$(call env_executable,$(_CTCOMPARE_TOOL_),$(CTCOMPARE_O),)
 
 clear:
-	$(call remove,$(_CTBUILD_TOOL_) $(_CTCOMPARE_TOOL_),)
+	$(call env_remove,$(_CTBUILD_TOOL_) $(_CTCOMPARE_TOOL_),)
 
-	$(call remove,$(CTBUILD_O) $(CTCOMPARE_O),)
+	$(call env_remove,$(CTBUILD_O) $(CTCOMPARE_O),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
 

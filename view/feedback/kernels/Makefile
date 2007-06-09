@@ -15,7 +15,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -47,12 +47,12 @@ XXX:
 all:			build
 
 view:			build
-	$(call view,$(PAPER),)
+	$(call env_view,$(PAPER),)
 
 build:
-	$(call paper,$(PAPER))
+	$(call env_paper,$(PAPER))
 
 clear:
-	$(call remove,$(GARBAGE),)
+	$(call env_remove,$(GARBAGE),)
 
-	$(call purge)
+	$(call env_purge)

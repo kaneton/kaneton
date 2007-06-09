@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -40,24 +40,24 @@ CFLAGS			+=		-D___kernel
 #
 
 $(THREAD_LO):		$(THREAD_O)
-	$(call remove,$(THREAD_LO),)
+	$(call env_remove,$(THREAD_LO),)
 
-	$(call archive,$(THREAD_LO),$(THREAD_O),)
+	$(call env_archive,$(THREAD_LO),$(THREAD_O),)
 
 clear:
-	$(call remove,$(THREAD_O),)
+	$(call env_remove,$(THREAD_O),)
 
-	$(call remove,$(THREAD_LO),)
+	$(call env_remove,$(THREAD_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call prototypes,$(THREAD_INCLUDE),)
+	$(call env_prototypes,$(THREAD_INCLUDE),)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(THREAD_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(THREAD_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

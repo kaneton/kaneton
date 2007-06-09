@@ -1,0 +1,20 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/configure/README
+#
+# created       julien quintard   [sat jun  9 23:09:33 2007]
+# updated       julien quintard   [sat jun  9 23:09:53 2007]
+#
+
+#
+# ---------- information ------------------------------------------------------
+#
+
+To configure the kaneton microkernel, just run:
+
+  $> python configure.py

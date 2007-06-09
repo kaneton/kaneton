@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -39,24 +39,24 @@ LIBSYS_INCLUDE		:=		$(_KLIBC_INCLUDE_DIR_)/libsys/libsys.h
 #
 
 $(LIBSYS_LO):		$(LIBSYS_O)
-	$(call remove,$(LIBSYS_LO),)
+	$(call env_remove,$(LIBSYS_LO),)
 
-	$(call archive,$(LIBSYS_LO),$(LIBSYS_O),)
+	$(call env_archive,$(LIBSYS_LO),$(LIBSYS_O),)
 
 clear:
-	$(call remove,$(LIBSYS_O),)
+	$(call env_remove,$(LIBSYS_O),)
 
-	$(call remove,$(LIBSYS_LO),)
+	$(call env_remove,$(LIBSYS_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call prototypes,$(LIBSYS_INCLUDE),)
+	$(call env_prototypes,$(LIBSYS_INCLUDE),)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(LIBSYS_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(LIBSYS_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

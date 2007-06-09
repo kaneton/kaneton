@@ -75,13 +75,13 @@ development environment files containing the whole kaneton environment
 stuff including variables, shell functions, make functions etc.
 
 The three kaneton development environment files are located in the
-\textit{env/} directory.
+\textit{environment/} directory.
 
 The first one contains static kaneton development environment information
 and is called \textit{.env.conf}. This file contains absolute paths
 to different kaneton directories and kaneton general information.
 
-The two others called \textit{.env.mk} and \textit{.env.sh} will be generated
+The two others called \textit{env.mk} and \textit{.env.sh} will be generated
 by the kaneton development environment system. These files contain
 everything necessary to kaneton makefiles and kaneton shell scripts
 including variables and functions.
@@ -144,7 +144,7 @@ describing the behaviour of the FreeBSD development operating system and
 generating kaneton binary object files for the SGI O2 machine running on
 a MIPS 64-bit microprocessor's architecture.
 
-The machine profiles are located in the \textit{env/machines/} directory.
+The machine profiles are located in the \textit{environment/machines/} directory.
 A subdirectory is used for every machine profiles.
 
 Notice that the kaneton development environment will use the shell
@@ -152,7 +152,7 @@ environement variable \textit{\$KANETON\_MACHINE} to locate the
 machine profile to use.
 
 Then the current machine profile's files are always located in the
-\textit{env/machines/\$KANETON\_MACHINE/} directory.
+\textit{environment/machines/\$KANETON\_MACHINE/} directory.
 
 A machine profile describes the operating system behaviour for very
 generic operations like compiling a file, assembling a file, building
@@ -179,8 +179,8 @@ used to install and uninstall the development environment for this
 machine profile.
 
 More precisly, the \textit{critical.sh} shell script must generate
-the development environment fundamental files \textit{.env.mk} and
-\textit{.env.sh} located in the \textit{env/} directory.
+the development environment fundamental files \textit{env.mk} and
+\textit{.env.sh} located in the \textit{environment/} directory.
 
 Then, the \textit{init.sh} is called to install machine specific stuff
 like links to machine dependent directories. This shell script should also
@@ -213,7 +213,7 @@ files for the target microprocessor architecture.
 \subsection{Users}
 
 Each kaneton developer has his own profile located in the kaneton
-hierarchy \textit{env/users/\$KANETON\_USER/}.
+hierarchy \textit{environment/users/\$KANETON\_USER/}.
 
 Note that this shell environment variable must be composed of a
 first name, a dot and a last name; using nickname is not allowed.

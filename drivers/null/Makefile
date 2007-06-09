@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -38,26 +38,26 @@ NULL_INCLUDE		:=
 #
 
 $(NULL):		libs $(NULL_O)
-	$(call executable,$(NULL),$(NULL_O) $(_KLIBC_A_),		\
+	$(call env_executable,$(NULL),$(NULL_O) $(_KLIBC_A_),		\
 	         "--link-script $(_MACHDEP_LINK_DIR_)/driver.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 
 libs:
-	$(call launch,Makefile,$(_KLIBC_DIR_),,)
+	$(call env_launch,Makefile,$(_KLIBC_DIR_),,)
 
 clear:
-	$(call remove,$(NULL_O),)
-	$(call remove,$(NULL),)
+	$(call env_remove,$(NULL_O),)
+	$(call env_remove,$(NULL),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(NULL_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(NULL_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

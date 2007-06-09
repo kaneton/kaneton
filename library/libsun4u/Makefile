@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -42,25 +42,25 @@ LIBSUN4U_INCLUDE	:=		$(_LIBSUN4U_INCLUDE_DIR_)/libsun4u.h
 #
 
 $(_LIBSUN4U_A_):	libs
-	$(call remove,$(_LIBSUN4U_A_),)
+	$(call env_remove,$(_LIBSUN4U_A_),)
 
-	$(call static-library,$(_LIBSUN4U_A_),$(OFW_LO) $(MISC_LO)	\
+	$(call env_static-library,$(_LIBSUN4U_A_),$(OFW_LO) $(MISC_LO)	\
 						$(TRAPS_LO) $(MMU_LO),)
 
 libs:
-	$(call launch,Makefile,$(SUBDIRS),,)
+	$(call env_launch,Makefile,$(SUBDIRS),,)
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
+	$(call env_launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call remove,$(_LIBSUN4U_A_),)
+	$(call env_remove,$(_LIBSUN4U_A_),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call launch,Makefile,$(SUBDIRS),proto,)
+	$(call env_launch,Makefile,$(SUBDIRS),proto,)
 
-	$(call prototypes,$(LIBSUN4U_INCLUDE),)
+	$(call env_prototypes,$(LIBSUN4U_INCLUDE),)
 
 dep:
-	$(call launch,Makefile,$(SUBDIRS),dep,)
+	$(call env_launch,Makefile,$(SUBDIRS),dep,)

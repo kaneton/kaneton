@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -40,24 +40,24 @@ LIBDATA_INCLUDE		:=		$(_KLIBC_INCLUDE_DIR_)/libdata/libdata.h
 #
 
 $(LIBDATA_LO):		$(LIBDATA_O)
-	$(call remove,$(LIBDATA_LO),)
+	$(call env_remove,$(LIBDATA_LO),)
 
-	$(call archive,$(LIBDATA_LO),$(LIBDATA_O),)
+	$(call env_archive,$(LIBDATA_LO),$(LIBDATA_O),)
 
 clear:
-	$(call remove,$(LIBDATA_O),)
+	$(call env_remove,$(LIBDATA_O),)
 
-	$(call remove,$(LIBDATA_LO),)
+	$(call env_remove,$(LIBDATA_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call prototypes,$(LIBDATA_INCLUDE),)
+	$(call env_prototypes,$(LIBDATA_INCLUDE),)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(LIBDATA_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(LIBDATA_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

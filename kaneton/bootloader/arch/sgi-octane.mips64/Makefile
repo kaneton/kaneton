@@ -15,7 +15,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../env/.env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -49,24 +49,24 @@ BOOTLOADER_INCLUDE	:=		bootloader.h			\
 #
 
 $(BOOTLOADER_LO):	$(BOOTLOADER_O)
-	$(call remove,$(BOOTLOADER_LO),)
+	$(call env_env_remove,$(BOOTLOADER_LO),)
 
-	$(call archive,$(BOOTLOADER_LO),$(BOOTLOADER_O),)
+	$(call env_env_archive,$(BOOTLOADER_LO),$(BOOTLOADER_O),)
 
 clear:
-	$(call remove,$(BOOTLOADER_O),)
+	$(call env_env_remove,$(BOOTLOADER_O),)
 
-	$(call remove,$(BOOTLOADER_LO),)
+	$(call env_env_remove,$(BOOTLOADER_LO),)
 
-	$(call purge,)
+	$(call env_env_purge,)
 
 proto:
-	$(call prototypes,$(BOOTLOADER_INCLUDE),)
+	$(call env_env_prototypes,$(BOOTLOADER_INCLUDE),)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(BOOTLOADER_C),$(_MAKEFILE_MK_),)
+	$(call env_env_dependencies,$(BOOTLOADER_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

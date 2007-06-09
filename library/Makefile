@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../env/.env.mk
+include			../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -37,21 +37,21 @@ ARCHSUBDIRS		:=		libia32				\
 #
 
 all:
-	$(call launch,Makefile,$(SUBDIRS),,)
+	$(call env_launch,Makefile,$(SUBDIRS),,)
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
+	$(call env_launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call launch,Makefile,$(ARCHSUBDIRS),clear,)
+	$(call env_launch,Makefile,$(ARCHSUBDIRS),clear,)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call launch,Makefile,$(SUBDIRS),proto,)
+	$(call env_launch,Makefile,$(SUBDIRS),proto,)
 
-	$(call launch,Makefile,$(ARCHSUBDIRS),proto,)
+	$(call env_launch,Makefile,$(ARCHSUBDIRS),proto,)
 
 dep:
-	$(call launch,Makefile,$(SUBDIRS),dep,)
+	$(call env_launch,Makefile,$(SUBDIRS),dep,)
 
-	$(call launch,Makefile,$(ARCHSUBDIRS),dep,)
+	$(call env_launch,Makefile,$(ARCHSUBDIRS),dep,)

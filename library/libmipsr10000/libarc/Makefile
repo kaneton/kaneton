@@ -15,7 +15,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -41,24 +41,24 @@ LIBARC_INCLUDE		:=		$(_LIBOCTANE_INCLUDE_DIR_)/libarc/arc.h		\
 #
 
 $(LIBARC_LO):		$(LIBARC_O)
-	$(call remove,$(LIBARC_LO),)
+	$(call env_remove,$(LIBARC_LO),)
 
-	$(call archive,$(LIBARC_LO),$(LIBARC_O),)
+	$(call env_archive,$(LIBARC_LO),$(LIBARC_O),)
 
 clear:
-	$(call remove,$(LIBARC_O),)
+	$(call env_remove,$(LIBARC_O),)
 
-	$(call remove,$(LIBARC_LO),)
+	$(call env_remove,$(LIBARC_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call prototypes,$(LIBARC_INCLUDE),)
+	$(call env_prototypes,$(LIBARC_INCLUDE),)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(LIBARC_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(LIBARC_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

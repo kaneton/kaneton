@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -39,21 +39,21 @@ MMU_O			:=		$(MMU_C:.c=.o)
 #
 
 $(MMU_LO):		$(MMU_O)
-	$(call remove,$(MMU_LO),)
+	$(call env_remove,$(MMU_LO),)
 
-	$(call archive,$(MMU_LO),$(MMU_O),)
+	$(call env_archive,$(MMU_LO),$(MMU_O),)
 
 clear:
-	$(call remove,$(MMU_O),)
+	$(call env_remove,$(MMU_O),)
 
-	$(call remove,$(MMU_LO),)
+	$(call env_remove,$(MMU_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(MMU_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(MMU_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

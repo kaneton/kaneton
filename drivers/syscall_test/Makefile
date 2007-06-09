@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -38,26 +38,26 @@ SYSCALL_INCLUDE		:=
 #
 
 $(SYSCALL):		libs $(SYSCALL_O)
-	$(call executable,$(SYSCALL),$(SYSCALL_O) $(_KLIBC_A_),		\
+	$(call env_executable,$(SYSCALL),$(SYSCALL_O) $(_KLIBC_A_),		\
 	         "--link-script $(_MACHDEP_LINK_DIR_)/driver.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 
 libs:
-	$(call launch,Makefile,$(_KLIBC_DIR_),,)
+	$(call env_launch,Makefile,$(_KLIBC_DIR_),,)
 
 clear:
-	$(call remove,$(SYSCALL_O),)
-	$(call remove,$(SYSCALL),)
+	$(call env_remove,$(SYSCALL_O),)
+	$(call env_remove,$(SYSCALL),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(SYSCALL_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(SYSCALL_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

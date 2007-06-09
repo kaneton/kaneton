@@ -15,7 +15,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../env/.env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -45,35 +45,35 @@ BOOTLOADER_LO		=		$(_MACHDEP_BOOTLOADER_DIR_)/bootloader.lo
 #
 
 $(BOOTSTRAP): libs bootloader_lo
-	$(call assemble-S, $(BOOTSTRAP_O), $(BOOTSTRAP_S),)
+	$(call env_env_assemble-S, $(BOOTSTRAP_O), $(BOOTSTRAP_S),)
 
-	$(call executable, $(BOOTSTRAP), $(BOOTSTRAP_O)	$(BOOTLOADER_LO)	\
+	$(call env_env_executable, $(BOOTSTRAP), $(BOOTSTRAP_O)	$(BOOTLOADER_LO)	\
 		$(_KLIBC_A_) $(_LIBMIPSR10000_A_),				\
 		"--link-script $(_MACHDEP_LINK_DIR_)/bootstrap.lks"		\
 		"--no-standard-include"						\
 		"--no-standard-library")
 
-	#$(call launch,Makefile,$(_KLIBC_DIR_),clear,)
-	#$(call launch,Makefile,$(_LIBMIPSR10000_DIR_),clear,)
+	#$(call env_env_launch,Makefile,$(_KLIBC_DIR_),clear,)
+	#$(call env_env_launch,Makefile,$(_LIBMIPSR10000_DIR_),clear,)
 
 bootloader_lo:
-	$(call launch,Makefile,$(_MACHDEP_BOOTLOADER_DIR_),,)
+	$(call env_env_launch,Makefile,$(_MACHDEP_BOOTLOADER_DIR_),,)
 	echo $(_MACHDEP_BOOTLOADER_DIR_)
 
 libs:
-	$(call launch,Makefile,$(_KLIBC_DIR_),clear,)
-	$(call launch,Makefile,$(_LIBMIPSR10000_DIR_),clear,)
+	$(call env_env_launch,Makefile,$(_KLIBC_DIR_),clear,)
+	$(call env_env_launch,Makefile,$(_LIBMIPSR10000_DIR_),clear,)
 
-	$(call launch,Makefile,$(_KLIBC_DIR_),MODE32=yes,)
+	$(call env_env_launch,Makefile,$(_KLIBC_DIR_),MODE32=yes,)
 
-	$(call launch,Makefile,$(_LIBMIPSR10000_DIR_),MODE32=yes,)
+	$(call env_env_launch,Makefile,$(_LIBMIPSR10000_DIR_),MODE32=yes,)
 
 clear:
-	$(call remove,$(BOOTSTRAP_O),)
+	$(call env_env_remove,$(BOOTSTRAP_O),)
 
-	$(call remove,$(BOOTSTRAP),)
+	$(call env_env_remove,$(BOOTSTRAP),)
 
-	$(call purge,)
+	$(call env_env_purge,)
 
 proto:
 

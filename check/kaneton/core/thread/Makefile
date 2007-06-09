@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../env/.env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,7 +27,7 @@ include			../../../../env/.env.mk
 
 LIST			:=		list
 
-SUBDIRS			:=		$(call contents,$(LIST),)
+SUBDIRS			:=		$(call env_contents,$(LIST),)
 
 MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 
@@ -42,24 +42,24 @@ all:			build run
 build:			$(THREAD_LO)
 
 $(THREAD_LO):		libs
-	$(call remove,$(THREAD_LO),)
+	$(call env_remove,$(THREAD_LO),)
 
-	$(call archive,$(THREAD_LO),$(MODULES),)
+	$(call env_archive,$(THREAD_LO),$(MODULES),)
 
 libs:
-	$(call launch,Makefile,$(SUBDIRS),,)
+	$(call env_launch,Makefile,$(SUBDIRS),,)
 
 run:
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
+	$(call env_launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call remove,$(THREAD_LO),)
+	$(call env_remove,$(THREAD_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call prototypes,"common/common.h",)
+	$(call env_prototypes,"common/common.h",)
 
 dep:
-	$(call launch,Makefile,$(SUBDIRS),dep,)
+	$(call env_launch,Makefile,$(SUBDIRS),dep,)

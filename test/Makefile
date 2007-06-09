@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../env/.env.mk
+include			../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -40,26 +40,26 @@ build:			.test.mk
 	$(MAKE) compile
 
 .test.mk:
-	$(call launch,$(_COMPILE_PY_),,)
+	$(call env_launch,$(_COMPILE_PY_),,)
 
 run:
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
+	$(call env_launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call remove,$(_TEST_LO_),)
+	$(call env_remove,$(_TEST_LO_),)
 
-	$(call remove,.test.mk,)
+	$(call env_remove,.test.mk,)
 
-	$(call remove,parse.pyc,)
+	$(call env_remove,parse.pyc,)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call launch,Makefile,$(SUBDIRS),proto,)
+	$(call env_launch,Makefile,$(SUBDIRS),proto,)
 
 dep:
-	$(call launch,Makefile,$(SUBDIRS),dep,)
+	$(call env_launch,Makefile,$(SUBDIRS),dep,)
 
   
 -include		.test.mk

@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../env/.env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -50,34 +50,34 @@ CFLAGS			+=		-D___bootloader
 #
 
 libs:
-	$(call launch,Makefile,$(_KLIBC_DIR_),,)
-	$(call launch,Makefile,$(_LIBIA32_DIR_),,)
+	$(call env_launch,Makefile,$(_KLIBC_DIR_),,)
+	$(call env_launch,Makefile,$(_LIBIA32_DIR_),,)
 
-	$(call launch,Makefile,.,$(BOOTLOADER),)
+	$(call env_launch,Makefile,.,$(BOOTLOADER),)
 
 $(BOOTLOADER):		$(BOOTLOADER_O)
-	$(call executable,$(BOOTLOADER),$(BOOTLOADER_O)			\
+	$(call env_executable,$(BOOTLOADER),$(BOOTLOADER_O)			\
 	         $(_LIBIA32_A_) $(_KLIBC_A_),				\
 	         "--link-script $(_MACHDEP_LINK_DIR_)/bootloader.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")
 
-	$(call link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
+	$(call env_link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
 
 clear:
-	$(call remove,$(BOOTLOADER_O),)
+	$(call env_remove,$(BOOTLOADER_O),)
 
-	$(call remove,$(BOOTLOADER),)
+	$(call env_remove,$(BOOTLOADER),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call prototypes,$(BOOTLOADER_INCLUDE),)
+	$(call env_prototypes,$(BOOTLOADER_INCLUDE),)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(BOOTLOADER_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(BOOTLOADER_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

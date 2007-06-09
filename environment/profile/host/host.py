@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [thu may 31 22:55:46 2007]
+# updated       julien quintard   [sat jun  9 23:03:44 2007]
 #
 
 #
@@ -43,11 +43,14 @@ HEADER_ERROR = 2
 HEADER_INTERACTIVE = 4
 
 COLOR_NONE = 0
-COLOR_RED = 1
-COLOR_GREEN = 2
-COLOR_YELLOW = 3
-COLOR_BLUE = 4
-COLOR_WHITE = 5
+COLOR_BLACK = 1
+COLOR_RED = 2
+COLOR_GREEN = 3
+COLOR_YELLOW = 4
+COLOR_BLUE = 5
+COLOR_MAGENTA = 6
+COLOR_CYAN = 7
+COLOR_WHITE = 8
 
 OPTION_NONE = 0
 OPTION_NO_NEWLINE = 1

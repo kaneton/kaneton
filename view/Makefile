@@ -15,7 +15,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../env/.env.mk
+include			../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -45,15 +45,15 @@ SUBDIRS			:=		bibliography			\
 all:		build
 
 view:
-	$(call launch,$(_VIEW_SCRIPT_),$*,)				; \
+	$(call env_launch,$(_VIEW_SCRIPT_),$*,)				; \
 
 build:
-	$(call launch,Makefile,$(SUBDIRS),,)
+	$(call env_launch,Makefile,$(SUBDIRS),,)
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
+	$(call env_launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
 

@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -39,21 +39,21 @@ PAGING_O		:=		$(PAGING_C:.c=.o)
 #
 
 $(PAGING_LO):		$(PAGING_O)
-	$(call remove,$(PAGING_LO),)
+	$(call env_remove,$(PAGING_LO),)
 
-	$(call archive,$(PAGING_LO),$(PAGING_O),)
+	$(call env_archive,$(PAGING_LO),$(PAGING_O),)
 
 clear:
-	$(call remove,$(PAGING_O),)
+	$(call env_remove,$(PAGING_O),)
 
-	$(call remove,$(PAGING_LO),)
+	$(call env_remove,$(PAGING_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(PAGING_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(PAGING_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

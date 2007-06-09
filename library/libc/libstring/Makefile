@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -58,24 +58,24 @@ LIBSTRING_INCLUDE	:=		$(_KLIBC_INCLUDE_DIR_)/libstring/libstring.h
 #
 
 $(LIBSTRING_LO):	$(LIBSTRING_O)
-	$(call remove,$(LIBSTRING_LO),)
+	$(call env_remove,$(LIBSTRING_LO),)
 
-	$(call archive,$(LIBSTRING_LO),$(LIBSTRING_O),)
+	$(call env_archive,$(LIBSTRING_LO),$(LIBSTRING_O),)
 
 clear:
-	$(call remove,$(LIBSTRING_O),)
+	$(call env_remove,$(LIBSTRING_O),)
 
-	$(call remove,$(LIBSTRING_LO),)
+	$(call env_remove,$(LIBSTRING_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call prototypes,$(LIBSTRING_INCLUDE),)
+	$(call env_prototypes,$(LIBSTRING_INCLUDE),)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(LIBSTRING_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(LIBSTRING_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

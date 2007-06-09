@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -40,20 +40,20 @@ all:			build run
 build:			$(TEST_LO)
 
 $(TEST_LO):		$(TEST_O)
-	$(call remove,$(TEST_LO),)
+	$(call env_remove,$(TEST_LO),)
 
-	$(call archive,$(TEST_LO),$(TEST_O),)
+	$(call env_archive,$(TEST_LO),$(TEST_O),)
 
 run:
 
 clear:
-	$(call remove,$(TEST_LO),)
+	$(call env_remove,$(TEST_LO),)
 
-	$(call remove,$(TEST_O),)
+	$(call env_remove,$(TEST_O),)
 
-	$(call remove,parse_res.pyc,)
+	$(call env_remove,parse_res.pyc,)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
 

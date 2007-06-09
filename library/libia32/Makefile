@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../env/.env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -48,31 +48,31 @@ LIBIA32_INCLUDE		:=		$(_LIBIA32_INCLUDE_DIR_)/libia32.h
 #
 
 libs:
-	$(call launch,Makefile,$(SUBDIRS),,)
+	$(call env_launch,Makefile,$(SUBDIRS),,)
 
-	$(call launch,Makefile,.,$(_LIBIA32_A_),)
+	$(call env_launch,Makefile,.,$(_LIBIA32_A_),)
 
 $(_LIBIA32_A_):		$(PMODE_LO) $(PAGING_LO) $(INTERRUPT_LO)	\
 			$(TIME_LO) $(TASK_LO) $(APIC_LO) $(MISC_LO)
-	$(call remove,$(_LIBIA32_A_),)
+	$(call env_remove,$(_LIBIA32_A_),)
 
-	$(call static-library,$(_LIBIA32_A_),$(PMODE_LO) $(PAGING_LO)	\
+	$(call env_static-library,$(_LIBIA32_A_),$(PMODE_LO) $(PAGING_LO)	\
 				$(INTERRUPT_LO) $(TIME_LO) $(TASK_LO)	\
 				$(APIC_LO) $(MISC_LO),)
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
+	$(call env_launch,Makefile,$(SUBDIRS),clear,)
 
-	$(call remove,$(LIBIA32_O),)
+	$(call env_remove,$(LIBIA32_O),)
 
-	$(call remove,$(_LIBIA32_A_),)
+	$(call env_remove,$(_LIBIA32_A_),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 proto:
-	$(call launch,Makefile,$(SUBDIRS),proto,)
+	$(call env_launch,Makefile,$(SUBDIRS),proto,)
 
-	$(call prototypes,$(LIBIA32_INCLUDE),)
+	$(call env_prototypes,$(LIBIA32_INCLUDE),)
 
 dep:
-	$(call launch,Makefile,$(SUBDIRS),dep,)
+	$(call env_launch,Makefile,$(SUBDIRS),dep,)

@@ -3,7 +3,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../env/.env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -26,21 +26,21 @@ APIC_O			:=		$(APIC_C:.c=.o)
 #
 
 $(APIC_LO):		$(APIC_O)
-	$(call remove,$(APIC_LO),)
+	$(call env_remove,$(APIC_LO),)
 
-	$(call archive,$(APIC_LO),$(APIC_O),)
+	$(call env_archive,$(APIC_LO),$(APIC_O),)
 
 clear:
-	$(call remove,$(APIC_O),)
+	$(call env_remove,$(APIC_O),)
 
-	$(call remove,$(APIC_LO),)
+	$(call env_remove,$(APIC_LO),)
 
-	$(call purge,)
+	$(call env_purge,)
 
 dep:
-	$(call remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_MAKEFILE_MK_),)
 
-	$(call dependencies,$(APIC_C),$(_MAKEFILE_MK_),)
+	$(call env_dependencies,$(APIC_C),$(_MAKEFILE_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

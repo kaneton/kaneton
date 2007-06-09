@@ -13,7 +13,7 @@
 # ---------- dependencies -----------------------------------------------------
 #
 
--include		env/.env.mk
+-include		environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -21,18 +21,15 @@
 
 .SILENT:
 
-.PHONY:		all init clean kaneton clear purge proto		\
-		dep build install check info dist backup		\
-		view view- export export- cheat cheat-			\
-		play play- record record-
+.PHONY:		all initialize clean kaneton clear purge prototypes	\
+		headers dependencies build install test info view view-	\
+		export export- cheat cheat- play play- record record-
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-KANETON_SHELL		?=		/bin/bash
-
-_SHELL_			?=		$(KANETON_SHELL)
+_PYTHON_		?=		$(KANETON_PYTHON)
 _MAKE_			?=		$(MAKE)
 
 #
@@ -42,18 +39,19 @@ _MAKE_			?=		$(MAKE)
 ifeq ($(_SIGNATURE_),kaneton)
   all:			kaneton
 else
-  all kaneton								\
-  clear purge								\
-  proto dep								\
+  all									\
+  kaneton clear								\
+  prototypes purge							\
+  headers dependencies							\
   build install								\
-  check info								\
+  test info								\
   view view-								\
   export export-							\
   cheat cheat-								\
   play play-								\
   record record-							\
   clean									\
-  view-% export-% cheat-% play-% record-%:	init
+  view-% export-% cheat-% play-% record-%:	initialize
 	$(_MAKE_) -f Makefile $@
 endif
 
@@ -61,9 +59,9 @@ endif
 # ---------- environment ------------------------------------------------------
 #
 
-init:
-	cd env								; \
-	$(_SHELL_) init.sh						; \
+initialize:
+	cd environment							; \
+	$(_PYTHON_) initialize.py					; \
 	cd ..
 
 #
@@ -77,170 +75,138 @@ ifeq ($(_SIGNATURE_),kaneton)
 #
 
 clean:
-	$(call change-directory,$(_ENV_DIR_),)				; \
-	$(_SHELL_) clean.sh						; \
-	$(call change-directory,$(_SRC_DIR_),)
+	$(call env_launch,$(_ENVIRONMENT_DIR_)/clean.py,,)
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		libs drivers $(_SRC_DEP_)
-
-CLEARDIRS		:=		libs view export check		\
-					cheat				\
-					$(_CTCOMPARE_DIR_)
+SUBDIRS			:=		kaneton configure library	\
+					view export check cheat		
 
 #
-# ---------- development ------------------------------------------------------
+# ---------- kaneton ----------------------------------------------------------
 #
 
 kaneton:
-	$(call launch,Makefile,$(SUBDIRS),,)
+	$(call env_launch,$(_KANETON_DIR_)/Makefile,,)
+
+#
+# ---------- clear & purge ----------------------------------------------------
+#
 
 clear:
-	$(call launch,Makefile,$(SUBDIRS),clear,)
-
-	$(call launch,Makefile,$(CLEARDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d),clear,)				; \
+	done
 
 purge:
-	$(call purge,)
+	$(call env_purge,)
 
 #
 # ---------- prototypes -------------------------------------------------------
 #
 
-proto:
-	$(call launch,Makefile,$(SUBDIRS),proto,)
+prototypes:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d),prototypes,)				; \
+	done
+
+#
+# ---------- headers ----------------------------------------------------------
+#
+
+headers:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d),headers,)				; \
+	done
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-dep:
-	$(call launch,Makefile,$(SUBDIRS),dep,)
+dependencies:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d),dependencies,)			; \
+	done
 
 #
 # ---------- boot -------------------------------------------------------------
 #
 
 build:
-	$(call change-directory,$(_MBL_DIR_)/$(_MBL_),)			; \
-	$(call launch,$(_MBL_).sh,build,)				; \
-	$(call change-directory,$(_SRC_DIR_),)
+	$(call env_launch,$(_MBL_),build,)
 
 install:		kaneton
-	$(call change-directory,$(_MBL_DIR_)/$(_MBL_),)			; \
-	$(call launch,$(_MBL_).sh,install,)				; \
-	$(call change-directory,$(_SRC_DIR_),)
+	$(call env_launch,$(_MBL_),install,)
 
 #
-# ---------- check ------------------------------------------------------------
+# ---------- test -------------------------------------------------------------
 #
 
-check:
-	$(call launch,Makefile,$(_CHECK_DIR_),,)
+test:
+	$(call env_launch,$(_TEST_DIR_)/Makefile,,)
 
 #
 # ---------- view -------------------------------------------------------------
 #
 
 view- view:
-	$(call change-directory,$(_VIEW_DIR_),)				; \
-	$(call launch,$(_VIEW_SCRIPT_),$*,)				; \
-	$(call change-directory,$(_SRC_DIR_),)
+	$(call env_launch,$(_VIEW_SCRIPT_),$*,)
 
 view-%:
-	$(call change-directory,$(_VIEW_DIR_),)				; \
-	$(call launch,$(_VIEW_SCRIPT_),$*,)				; \
-	$(call change-directory,$(_SRC_DIR_),)
+	$(call env_launch,$(_VIEW_SCRIPT_),$*,)
 
 #
 # ---------- play -------------------------------------------------------------
 #
 
 play- play:
-	$(call change-directory,$(_TRANSCRIPTS_DIR_),)			; \
-	$(call launch,$(_PLAY_SCRIPT_),$*,)				; \
-	$(call change-directory,$(_SRC_DIR_),)
+	$(call env_launch,$(_PLAY_SCRIPT_),$*,)
 
 play-%:
-	$(call change-directory,$(_TRANSCRIPTS_DIR_),)			; \
-	$(call launch,$(_PLAY_SCRIPT_),$*,)				; \
-	$(call change-directory,$(_SRC_DIR_),)
+	$(call env_launch,$(_PLAY_SCRIPT_),$*,)
 
 #
 # ---------- record -----------------------------------------------------------
 #
 
 record- record:
-	$(call change-directory,$(_TRANSCRIPTS_DIR_),)			; \
-	$(call launch,$(_RECORD_SCRIPT_),$*,)				; \
-	$(call change-directory,$(_SRC_DIR_),)
+	$(call env_launch,$(_RECORD_SCRIPT_),$*,)
 
 record-%:
-	$(call change-directory,$(_TRANSCRIPTS_DIR_),)			; \
-	$(call launch,$(_RECORD_SCRIPT_),$*,)				; \
-	$(call change-directory,$(_SRC_DIR_),)
+	$(call env_launch,$(_RECORD_SCRIPT_),$*,)
 
 #
 # ---------- information ------------------------------------------------------
 #
 
 info:
-	$(call print,white,,)
+	$(call env_print,,white,)
 
-	$(call print,blue,"--- ",--no-newline)
-	$(call print,white,http://www.kaneton.org,)
+	$(call env_print,"--- ",blue,$(ENV_OPTION_NO_NEWLINE))
+	$(call env_print,http://www.kaneton.org,white,)
 
-	$(call print,white,,)
-
-#
-# ---------- dist -------------------------------------------------------------
-#
-
-dist:			export-dist
-
-#
-# ---------- dist -------------------------------------------------------------
-#
-
-backup:			export-backup
+	$(call env_print,,white,)
 
 #
 # ---------- export -----------------------------------------------------------
 #
 
 export- export:
-	$(call change-directory,$(_EXPORT_DIR_),)			; \
-	$(call launch,$(_EXPORT_SCRIPT_),,)				; \
-	$(call change-directory,$(_SRC_DIR_),)
+	$(call env_launch,$(_EXPORT_SCRIPT_),,)
 
 export-%:
-	$(call change-directory,$(_EXPORT_DIR_),)			; \
-	$(call launch,$(_EXPORT_SCRIPT_),$*,)				; \
-	$(call change-directory,$(_SRC_DIR_),)
+	$(call env_launch,$(_EXPORT_SCRIPT_),$*,)
 
 #
 # ---------- cheat ------------------------------------------------------------
 #
 
 cheat- cheat:
-	$(call launch,Makefile,$(_CTCOMPARE_DIR_),,)
-
-	$(call change-directory,$(_CHEAT_DIR_),)			; \
-	$(call launch,$(_CHEAT_SCRIPT_),,)				; \
-	$(call change-directory,$(_SRC_DIR_),)
+	$(call env_launch,$(_CHEAT_SCRIPT_),,)
 
 cheat-%:
-	$(call launch,Makefile,$(_CTCOMPARE_DIR_),,)
-
-	$(call change-directory,$(_CHEAT_DIR_),)			; \
-	$(call launch,$(_CHEAT_SCRIPT_),$*,)				; \
-	$(call change-directory,$(_SRC_DIR_),)
-
-#
-# ---------- /conditional -----------------------------------------------------
-#
+	$(call env_launch,$(_CHEAT_SCRIPT_),$*,)
 
 endif
