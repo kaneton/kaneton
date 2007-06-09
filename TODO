@@ -527,3 +527,6 @@ les pointeurs de fonctions a mettre en f_
 
 s_ pour les struct. typedef struct XXX {} s_XXX;
 
+--
+
+virer les stats

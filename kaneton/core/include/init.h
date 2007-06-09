@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/init.h
  *
  * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       julien quintard   [fri jun  8 14:46:18 2007]
+ * updated       julien quintard   [fri jun  8 23:03:09 2007]
  */
 
 #ifndef CORE_INIT_H
@@ -100,6 +100,11 @@ typedef struct
 
   t_paddr			kcode;
   t_psize			kcodesz;
+
+  t_paddr			mcode;
+  t_psize			mcodesz;
+  t_vaddr			mlocation;
+  t_vaddr			mentry;
 
   t_paddr			init;
   t_psize			initsz;

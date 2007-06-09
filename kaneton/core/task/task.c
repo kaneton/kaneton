@@ -41,7 +41,18 @@ machdep_include(task);
 
 extern t_init*		init;
 
+/*
+ * XXX
+ */
+
 extern m_sched*		sched;
+
+/*
+ * the identifier of the pre-reserved segment containing the mod service
+ * code.
+ */
+
+extern i_segment	mod;
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -867,6 +878,9 @@ t_error			task_get(i_task				id,
  * 4) try to reserve a statistics object.
  * 5) reserve the kernel task and its address space.
  * 6) add the segments to the kernel address space.
+ *    note that for the segment corresponding to the mod service code, the
+ *    segment identifier is saved in the mod global variable so that the
+ *    core can retrieve it, build a task, map the segment, and launch it.
  * 7) add the regions to the kernel address space.
  * 8) call the machine-dependent code.
  * 9) if asked, dumps the task manager.
@@ -965,6 +979,9 @@ t_error			task_init(void)
 
 	  return (ERROR_UNKNOWN);
 	}
+
+      if (init->mcode == init->segments[i].address)
+	mod = segments[i];
     }
 
   /*

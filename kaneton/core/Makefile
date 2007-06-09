@@ -46,7 +46,6 @@ SUBDIRS			:=		arch				\
 					interface			\
 					cpu				\
 					io				\
-					mod				\
 					$(_CHECK_DIR_)
 
 # kaneton objects
@@ -72,7 +71,6 @@ KANETON_O		:=		$(_MACHDEP_LO_)			\
 					$(_INTERFACE_LO_)		\
 					$(_CPU_LO_)			\
 					$(_IO_LO_)			\
-					$(_MOD_LO_)			\
 					$(_CHECK_LO_)
 
 # core binary

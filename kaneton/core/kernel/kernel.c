@@ -79,7 +79,6 @@ extern i_as		kasid;
  * 15) initialises the capability manager.
  * 16) initialise the cpu manager.
  * 17) initialise the scheduler manager.
- * 18) initialise the module manager.
  */
 
 void			kernel_init(void)
@@ -248,15 +247,6 @@ void			kernel_init(void)
 
   if (sched_init() != ERROR_NONE)
     core_error("cannot initialise the scheduler manager\n");
-
-  /*
-   * 18)
-   */
-
-  cons_msg('+', "starting module manager\n");
-
-  if (mod_init() != ERROR_NONE)
-    core_error("cannot initialise the module manager\n");
 }
 
 /*

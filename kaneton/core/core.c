@@ -44,6 +44,17 @@ extern const char	version[];
 t_init*			init;
 
 /*
+ * this variable is filled by the task manager when it injects the
+ * pre-reserved segments. this variable holds the identifier of the
+ * segment containing the mod service code.
+ *
+ * indeed, the kernel needs to retrieve this segment to map it and then
+ * build a task for this very first service.
+ */
+
+i_segment		mod;
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -150,9 +161,9 @@ void			kaneton(t_init*				bootloader)
   smp_test();
 #endif
 
-  cons_msg('+', "starting modules\n");
-  if (mod_launch() != ERROR_NONE)
-    cons_msg('!', "failed to start initial modules\n");
+  cons_msg('+', "launching the initial service: mod\n");
+  if (kaneton_launch() != ERROR_NONE)
+    cons_msg('!', "failed to start the initial mod service\n");
 
 #if (DEBUG & DEBUG_MESSAGE)
   message_test();
@@ -224,4 +235,64 @@ void			kaneton_dump(void)
 #else
   core_error("no endian defined\n");
 #endif
+}
+
+/*
+ * this function launches the very first service.
+ */
+
+/* XXX move this macro elsewhere */
+#define PAGED_SIZE(_size_)                                              \
+  ((_size_) % PAGESZ ?                                                  \
+   (_size_) + PAGESZ - (_size_) % PAGESZ :                              \
+   (_size_))
+
+t_error			kaneton_launch(void)
+{
+  i_thread		thread;
+  i_region		region;
+  t_stack		stack;
+  i_task		task;
+  t_thread_context	ctx;
+  i_as			as;
+  o_thread*		o;
+
+  if (task_reserve(TASK_CLASS_PROGRAM,
+		   TASK_BEHAV_TIMESHARING,
+		   TASK_PRIOR_TIMESHARING,
+		   &task) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (as_reserve(task, &as) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (region_reserve(as,
+		     mod, 0,
+		     REGION_OPT_FORCE,
+		     init->mlocation, PAGED_SIZE(init->mcodesz),
+		     &region) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (thread_reserve(task, THREAD_PRIOR, &thread) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  stack.base = 0;
+  stack.size = 4 * PAGESZ;
+
+  if (thread_stack(thread, stack) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (thread_get(thread, &o) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  ctx.sp = o->stack + o->stacksz - 16;
+  ctx.pc = init->mentry;
+
+  if (thread_load(thread, ctx) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (task_state(task, SCHED_STATE_RUN) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
 }

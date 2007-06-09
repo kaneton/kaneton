@@ -8,7 +8,7 @@
  * file          /home/mycure/kane.../include/arch/ibm-pc.ia32-virtual/init.h
  *
  * created       julien quintard   [wed jun  6 16:16:48 2007]
- * updated       julien quintard   [thu jun  7 16:03:26 2007]
+ * updated       julien quintard   [fri jun  8 23:03:35 2007]
  */
 
 #ifndef ARCHITECTURE_INIT_H
@@ -34,11 +34,11 @@
  *
  * the segments are composed of ISA, kernel code, the init structure, the
  * module structures, the segment structures, the region structures, the
- * kernel stack, the malloc preallocated pages, the global offset table
- * and the page directory.
+ * kernel stack, the malloc preallocated pages, the mod service code, the
+ * global offset table and the page directory.
  */
 
-#define INIT_SEGMENTS		12
+#define INIT_SEGMENTS		13
 
 /*
  * the regions represent the physical memory to be mapped by the kernel.

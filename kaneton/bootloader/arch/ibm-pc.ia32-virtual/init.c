@@ -65,6 +65,13 @@ void			bootloader_init_dump(void)
 		      init->kcode,
 		      init->kcodesz);
 
+  bootloader_cons_msg('#', " mod code: 0x%x - %u bytes :: "
+		      "location: 0x%x\n - entry: 0x%x\n",
+		      init->mcode,
+		      init->mcodesz,
+		      init->mlocation,
+		      init->mentry);
+
   bootloader_cons_msg('#', " init structure: 0x%x - %u bytes\n",
 		      init,
 		      sizeof(t_init));
@@ -153,8 +160,9 @@ void			bootloader_init_dump(void)
  * 7) add the cpu segment.
  * 8) add the kernel stack segment.
  * 9) add the alloc segment.
- * 10) add the global offset table segment.
- * 11) add the page directory segment.
+ * 10) add the mod service code segment.
+ * 11) add the global offset table segment.
+ * 12) add the page directory segment.
  */
 
 void			bootloader_init_segments(void)
@@ -239,17 +247,25 @@ void			bootloader_init_segments(void)
    * 10)
    */
 
-  init->segments[10].address = (t_paddr)init->machdep.gdt.descriptor;
-  init->segments[10].size = PAGESZ;
-  init->segments[10].perms = PERM_READ | PERM_WRITE;
+  init->segments[10].address = init->mcode;
+  init->segments[10].size = init->mcodesz;
+  init->segments[10].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
 
   /*
    * 11)
    */
 
-  init->segments[11].address = (t_paddr)init->machdep.pd;
+  init->segments[11].address = (t_paddr)init->machdep.gdt.descriptor;
   init->segments[11].size = PAGESZ;
   init->segments[11].perms = PERM_READ | PERM_WRITE;
+
+  /*
+   * 12)
+   */
+
+  init->segments[12].address = (t_paddr)init->machdep.pd;
+  init->segments[12].size = PAGESZ;
+  init->segments[12].perms = PERM_READ | PERM_WRITE;
 }
 
 /*
@@ -360,9 +376,9 @@ void			bootloader_init_regions(void)
    * 9)
    */
 
-  init->regions[8].segment = 10;
-  init->regions[8].address = init->segments[10].address;
-  init->regions[8].size = init->segments[10].size;
+  init->regions[8].segment = 11;
+  init->regions[8].address = init->segments[11].address;
+  init->regions[8].size = init->segments[11].size;
   init->regions[8].offset = 0;
   init->regions[8].opts = REGION_OPT_PRIVILEGED;
 
@@ -370,9 +386,9 @@ void			bootloader_init_regions(void)
    * 10)
    */
 
-  init->regions[9].segment = 11;
-  init->regions[9].address = init->segments[11].address;
-  init->regions[9].size = init->segments[11].size;
+  init->regions[9].segment = 12;
+  init->regions[9].address = init->segments[12].address;
+  init->regions[9].size = init->segments[12].size;
   init->regions[9].offset = 0;
   init->regions[9].opts = REGION_OPT_PRIVILEGED;
 }
@@ -430,12 +446,13 @@ t_paddr			bootloader_init_alloc(t_psize		size,
  *    into the kernel address space to continue to provide its service.
  *    so the alloc() function needs an amount of critical pages to work with
  *    until the virtual memory is initialised.
+ * 9) allocate memory for the mod service code.
  */
 
 t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
 {
   module_t*		mod = (module_t*)mbi->mods_addr;
-  Elf32_Ehdr*		khdr = (Elf32_Ehdr*)mod->mod_start;
+  Elf32_Ehdr*		khdr;
   Elf32_Phdr*		phdr;
   t_paddr		init_relocate;
   t_uint32		ninputs = mbi->mods_count;
@@ -447,6 +464,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
   t_psize		cpussz;
   t_paddr		kcode;
   t_psize		kcodesz;
+  t_vaddr		kentry;
   t_psize		allocsz;
   t_input*		input;
   t_psize		initsz;
@@ -459,11 +477,13 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 1)
    */
 
+  khdr = (Elf32_Ehdr*)mod[0].mod_start;
   phdr = (Elf32_Phdr*)((char*)khdr + khdr->e_phoff);
 
   relocate = init_relocate = 0x1000000; // phdr->p_paddr XXX;
 
-  kcode = bootloader_init_alloc(mod->mod_end - mod->mod_start, &kcodesz);
+  kcode = bootloader_init_alloc(mod[0].mod_end - mod[0].mod_start, &kcodesz);
+  kentry = khdr->e_entry;
 
   if (kcode != init_relocate)
     {
@@ -482,7 +502,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 3)
    */
 
-  for (inputssz = 0, i = 0; i < ninputs; i++)
+  for (inputssz = 0, i = 2; i < ninputs; i++)
     inputssz += mod[i].mod_end - mod[i].mod_start +
       strlen((char*)mod[i].string) + 1;
 
@@ -532,7 +552,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 5)
    */
 
-  modsz = mod->mod_end - mod->mod_start;
+  modsz = mod[0].mod_end - mod[0].mod_start;
   memcpy((void*)init->kcode, (const void*)mod[0].mod_start, modsz);
 
   bootloader_cons_msg('+', " kernel relocated from 0x%x to 0x%x (0x%x)\n",
@@ -549,7 +569,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 7)
    */
 
-  for (i = 1,
+  for (i = 2,
 	 input = (t_input*)((t_uint32)init->inputs + sizeof(t_inputs));
        i < init->inputs->ninputs;
        i++)
@@ -583,5 +603,23 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
   init->alloc = bootloader_init_alloc(1600 * PAGESZ, &allocsz);
   init->allocsz = allocsz;
 
-  return (khdr->e_entry);
+  /*
+   * 9)
+   */
+
+  khdr = (Elf32_Ehdr*)mod[1].mod_start;
+  phdr = (Elf32_Phdr*)((char*)khdr + khdr->e_phoff);
+
+  modsz = mod[1].mod_end - mod[1].mod_start;
+
+  init->mcode = bootloader_init_alloc(modsz, &init->mcodesz);
+  init->mlocation = 0x60000000; /* XXX very ugly hard-coded value */
+  init->mentry = khdr->e_entry;
+
+  memcpy((void*)init->mcode, (const void*)mod[1].mod_start, modsz);
+
+  bootloader_cons_msg('+', " mod relocated from 0x%x to 0x%x (0x%x)\n",
+		      mod[1].mod_start, init->mcode, modsz);
+
+  return (kentry);
 }

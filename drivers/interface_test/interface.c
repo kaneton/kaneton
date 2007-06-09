@@ -86,6 +86,8 @@ int			main(void)
 
   if (syscall_map_reserve(1, MAP_OPT_NONE, PAGESZ, PERM_READ | PERM_WRITE, &addr) == ERROR_NONE)
     printf("map_reserve = 0x%p\n", addr);
+  else
+    printf("error map_reserve\n");
 
   while (1)
     ;
