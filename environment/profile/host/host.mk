@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [thu may 31 22:37:11 2007]
+# updated       julien quintard   [sun jun 10 00:36:35 2007]
 #
 
 #
@@ -82,37 +82,37 @@ ENV_OPTION_PRIVATE = 1
 #
 
 define env_display-red
-  $(call env_print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call env_print,$(1),red,$(OPTION_NO_NEWLINE))			; \
-  $(call env_print,],blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,[,blue,$(ENV_OPTION_NO_NEWLINE))			; \
+  $(call env_print,$(1),red,$(ENV_OPTION_NO_NEWLINE))			; \
+  $(call env_print,],blue,$(ENV_OPTION_NO_NEWLINE))			; \
   $(call env_print,$(3)$(2),,)
 endef
 
 define env_display-green
-  $(call env_print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call env_print,$(1),green,$(OPTION_NO_NEWLINE))			; \
-  $(call env_print,],blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,[,blue,$(ENV_OPTION_NO_NEWLINE))			; \
+  $(call env_print,$(1),green,$(ENV_OPTION_NO_NEWLINE))			; \
+  $(call env_print,],blue,$(ENV_OPTION_NO_NEWLINE))			; \
   $(call env_print,$(3)$(2),,)
 endef
 
 define env_display-yellow
-  $(call env_print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call env_print,$(1),yellow,$(OPTION_NO_NEWLINE))			; \
-  $(call env_print,],blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,[,blue,$(ENV_OPTION_NO_NEWLINE))			; \
+  $(call env_print,$(1),yellow,$(ENV_OPTION_NO_NEWLINE))		; \
+  $(call env_print,],blue,$(ENV_OPTION_NO_NEWLINE))			; \
   $(call env_print,$(3)$(2),,)
 endef
 
 define env_display-magenta
-  $(call env_print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call env_print,$(1),magenta,$(OPTION_NO_NEWLINE))			; \
-  $(call env_print,],blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,[,blue,$(ENV_OPTION_NO_NEWLINE))			; \
+  $(call env_print,$(1),magenta,$(ENV_OPTION_NO_NEWLINE))		; \
+  $(call env_print,],blue,$(ENV_OPTION_NO_NEWLINE))			; \
   $(call env_print,$(3)$(2),,)
 endef
 
 define env_display-cyan
-  $(call env_print,[,blue,$(OPTION_NO_NEWLINE))				; \
-  $(call env_print,$(1),cyan,$(OPTION_NO_NEWLINE))			; \
-  $(call env_print,],blue,$(OPTION_NO_NEWLINE))				; \
+  $(call env_print,[,blue,$(ENV_OPTION_NO_NEWLINE))			; \
+  $(call env_print,$(1),cyan,$(ENV_OPTION_NO_NEWLINE))			; \
+  $(call env_print,],blue,$(ENV_OPTION_NO_NEWLINE))			; \
   $(call env_print,$(3)$(2),,)
 endef
 

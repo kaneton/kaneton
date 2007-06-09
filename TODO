@@ -536,3 +536,5 @@ virer les stats
 all -> main
 le coup de PYTHONPATH c'est plus dans launch
 lorsqu'on met en private, ca creer un fichier temp, il faut l'effacer: DEP_TEX
+
+virtual -> educational
