@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/internship/Makefile
 #
 # created       julien quintard   [mon may 14 22:16:45 2007]
-# updated       julien quintard   [wed may 23 18:03:25 2007]
+# updated       julien quintard   [sat jun  9 23:48:01 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main build clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -34,14 +34,16 @@ SUBDIRS			:=		check				\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
+main:		build
+
+build:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,build,)			; \
+	done
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,clear,)			; \
+	done
 
 	$(call env_purge)
-
-proto:
-
-dep:

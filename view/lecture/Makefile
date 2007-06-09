@@ -24,7 +24,7 @@ include			../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main build clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -33,7 +33,6 @@ include			../../environment/env.mk
 SUBDIRS			:=		arch-ia32			\
 					arch-mips			\
 					c-preprocessor			\
-					development-environment		\
 					inline-assembly			\
 					kernels				\
 					prerequisites			
@@ -42,14 +41,17 @@ SUBDIRS			:=		arch-ia32			\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
+main:		build
+
+build:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,,)				; \
+	done
+
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,clear,)			; \
+	done
 
 	$(call env_purge)
-
-proto:
-
-dep:

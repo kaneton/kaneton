@@ -21,7 +21,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all view build clear
+.PHONY:		main view build clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -60,13 +60,13 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build
+main:			build
 
 view:			build
 	$(call env_view,$(PAPER),)
 
 build:
-	$(call env_paper,$(PAPER))
+	$(call env_document,$(PAPER),)
 
 clear:
 	$(call env_remove,$(GARBAGE),)

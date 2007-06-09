@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/lecture/arch-ia32/Makefile
 #
 # created       julien quintard   [wed may 16 18:08:19 2007]
-# updated       julien quintard   [wed may 16 18:41:23 2007]
+# updated       julien quintard   [sat jun  9 23:30:57 2007]
 #
 
 #
@@ -21,17 +21,13 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main clear
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
+main:
 
 clear:
 	$(call env_purge)
-
-proto:
-
-dep:

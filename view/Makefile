@@ -21,7 +21,7 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all view build clear proto dep
+.PHONY:		main view build clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -32,9 +32,11 @@ SUBDIRS			:=		bibliography			\
 					curriculum			\
 					exam				\
 					feedback			\
+					figures				\
 					internship			\
 					lecture				\
 					logo				\
+					package				\
 					paper				\
 					template			
 
@@ -42,19 +44,25 @@ SUBDIRS			:=		bibliography			\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:		build
+main:		build
 
 view:
-	$(call env_launch,$(_VIEW_SCRIPT_),$*,)				; \
+	$(call env_launch,$(_VIEW_SCRIPT_),$*,)
 
 build:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,build,)			; \
+	done
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,clear,)			; \
+	done
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 
-dep:
+headers:
+
+dependencies:

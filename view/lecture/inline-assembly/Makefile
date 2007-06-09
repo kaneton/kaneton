@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/lecture/inline-assembly/Makefile
 #
 # created       julien quintard   [wed may 16 18:48:18 2007]
-# updated       julien quintard   [wed may 16 18:48:43 2007]
+# updated       julien quintard   [sat jun  9 23:36:54 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all view build clear
+.PHONY:		main view build clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -45,13 +45,13 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build
+main:			build
 
 view:			build
 	$(call env_view,$(PAPER),)
 
 build:
-	$(call env_paper,$(PAPER))
+	$(call env_document,$(PAPER),)
 
 clear:
 	$(call env_remove,$(GARBAGE),)

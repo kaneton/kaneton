@@ -530,3 +530,9 @@ s_ pour les struct. typedef struct XXX {} s_XXX;
 --
 
 virer les stats
+
+-- XXX
+
+all -> main
+le coup de PYTHONPATH c'est plus dans launch
+lorsqu'on met en private, ca creer un fichier temp, il faut l'effacer: DEP_TEX

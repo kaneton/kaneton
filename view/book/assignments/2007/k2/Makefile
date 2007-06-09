@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/book/assignments/2006/k2/Makefile
+# file          /home/mycure/kaneton/view/book/assignments/2007/k2/Makefile
 #
 # created       julien quintard   [mon may 14 19:40:59 2007]
-# updated       julien quintard   [mon may 14 19:44:45 2007]
+# updated       julien quintard   [sun jun 10 00:15:03 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all view build clear
+.PHONY:		main view build clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -43,13 +43,13 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build
+main:			build
 
 view:			build
 	$(call env_view,$(PAPER),)
 
 build:
-	$(call env_paper,$(PAPER),)
+	$(call env_document,$(PAPER),)
 
 clear:
 	$(call env_remove,$(GARBAGE),)

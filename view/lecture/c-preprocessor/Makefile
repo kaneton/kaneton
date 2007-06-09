@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/lecture/c-preprocessor/Makefile
 #
 # created       julien quintard   [wed may 16 18:44:45 2007]
-# updated       julien quintard   [wed may 16 18:45:01 2007]
+# updated       julien quintard   [sat jun  9 23:33:56 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all view build clear
+.PHONY:		main view build clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -45,13 +45,13 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build
+main:			build
 
 view:			build
 	$(call env_view,$(PAPER),)
 
 build:
-	$(call env_paper,$(PAPER))
+	$(call env_document,$(PAPER),)
 
 clear:
 	$(call env_remove,$(GARBAGE),)

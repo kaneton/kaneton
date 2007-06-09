@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/feedback/kernels/Makefile
 #
 # created       julien quintard   [tue may 15 21:52:06 2007]
-# updated       julien quintard   [tue may 15 21:52:20 2007]
+# updated       julien quintard   [sat jun  9 23:51:54 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all view build clear
+.PHONY:		main view build clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -44,13 +44,13 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 
 XXX:
 
-all:			build
+main:			build
 
 view:			build
 	$(call env_view,$(PAPER),)
 
 build:
-	$(call env_paper,$(PAPER))
+	$(call env_document,$(PAPER),)
 
 clear:
 	$(call env_remove,$(GARBAGE),)

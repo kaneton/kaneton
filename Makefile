@@ -97,7 +97,7 @@ kaneton:
 
 clear:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d),clear,)				; \
+	  $(call env_launch,$$(d)/Makefile,clear,)			; \
 	done
 
 purge:
@@ -109,7 +109,7 @@ purge:
 
 prototypes:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d),prototypes,)				; \
+	  $(call env_launch,$$(d)/Makefile,prototypes,)			; \
 	done
 
 #
@@ -118,7 +118,7 @@ prototypes:
 
 headers:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d),headers,)				; \
+	  $(call env_launch,$$(d)/Makefile,headers,)			; \
 	done
 
 #
@@ -127,7 +127,7 @@ headers:
 
 dependencies:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d),dependencies,)			; \
+	  $(call env_launch,$$(d)/Makefile,dependencies,)		; \
 	done
 
 #

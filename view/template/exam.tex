@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/template/exam.tex
 %
 % created       julien quintard   [wed may 16 18:16:57 2007]
-% updated       julien quintard   [sat may 19 16:05:57 2007]
+% updated       julien quintard   [sun jun 10 00:12:09 2007]
 %
 
 %
@@ -54,25 +54,25 @@
    {
      \ifthenelse
 	 {
-	   \equal{\kaneton-latex}{subject}
-	 }
-	 {
-	   \comment
+	   \equal{\mode}{private}
 	 }
 	 {
 	   \textbf{\color{red}{ ----- correction}}
+	 }
+	 {
+	   \comment
 	 }
    }%
    {
      \ifthenelse
 	 {
-	   \equal{\kaneton-latex}{subject}
-	 }
-	 {
-	   \endcomment
+	   \equal{\mode}{private}
 	 }
 	 {
 	   \textbf{\color{red}{ ----- /correction}}
+	 }
+	 {
+	   \endcomment
 	 }
    }
 

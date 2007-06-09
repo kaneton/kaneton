@@ -7,8 +7,8 @@
 #
 # file          /home/mycure/kaneton/view/bibliography/Makefile
 #
-# created       julien quintard   [wed may 16 18:33:46 2007]
-# updated       julien quintard   [wed may 16 18:39:00 2007]
+# created       julien quintard   [wed may 16 18:08:19 2007]
+# updated       julien quintard   [sun jun 10 00:06:34 2007]
 #
 
 #
@@ -21,17 +21,15 @@ include			../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main build clear
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
+main:
+
+build:
 
 clear:
 	$(call env_purge)
-
-proto:
-
-dep:

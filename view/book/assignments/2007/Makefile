@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/crypt/kaneton/view/book/assignments/2007/Makefile
+# file          /home/mycure/kaneton/view/book/assignments/2007/Makefile
 #
 # created       julien quintard   [mon may 14 19:03:18 2007]
-# updated       matthieu bucchianeri   [tue may 29 14:56:27 2007]
+# updated       julien quintard   [sun jun 10 00:14:33 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main build clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -36,14 +36,16 @@ SUBDIRS			:=		k1				\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
+main:		build
+
+build:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,build,)			; \
+	done
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,clear,)			; \
+	done
 
 	$(call env_purge)
-
-proto:
-
-dep:

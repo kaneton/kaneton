@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/feedback/Makefile
 #
 # created       julien quintard   [mon may 14 22:16:45 2007]
-# updated       julien quintard   [mon may 14 22:17:26 2007]
+# updated       julien quintard   [sat jun  9 23:50:16 2007]
 #
 
 #
@@ -21,14 +21,13 @@ include			../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main build clear
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		arch-ia32			\
-					arch-mips			\
+SUBDIRS			:=		arch-mips			\
 					kaneton				\
 					kernels				
 
@@ -36,14 +35,16 @@ SUBDIRS			:=		arch-ia32			\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
+main:		build
+
+build:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,build,)			; \
+	done
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,clear,)			; \
+	done
 
 	$(call env_purge)
-
-proto:
-
-dep:

@@ -21,7 +21,7 @@ include			../../../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all view build clear
+.PHONY:		main view build subject correction clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -48,7 +48,7 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build
+main:			build
 
 view:			build
 	$(call env_view,$(PAPER),)
@@ -56,14 +56,14 @@ view:			build
 build:			correction
 
 subject:
-	$(call env_subject,$(PAPER),)
+	$(call env_document,$(PAPER),)
 
 correction:
-	$(call env_correction,$(PAPER),)
+	$(call env_document,$(PAPER),$(ENV_OPTION_PRIVATE))
 
 clear:
 	$(call env_remove,$(GARBAGE),)
 
-	$(call env_remove,$(_KANETON_LATEX_),)
+	$(call env_remove,$(_DEPENDENCY_TEX_),)
 
 	$(call env_purge)

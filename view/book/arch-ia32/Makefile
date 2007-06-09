@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/book/arch-ia32/Makefile
 #
 # created       julien quintard   [mon may 14 19:03:18 2007]
-# updated       julien quintard   [mon may 14 19:20:02 2007]
+# updated       julien quintard   [sun jun 10 00:09:02 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main build clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -33,14 +33,16 @@ SUBDIRS			:=		virtual
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
+main:		build
+
+build:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,build,)			; \
+	done
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,clear,)			; \
+	done
 
 	$(call env_purge)
-
-proto:
-
-dep:

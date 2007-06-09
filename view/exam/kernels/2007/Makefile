@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/exam/kernels/2007/Makefile
 #
 # created       julien quintard   [mon may 14 21:34:22 2007]
-# updated       julien quintard   [mon may 14 21:55:38 2007]
+# updated       julien quintard   [sun jun 10 00:01:39 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main build clear
 
 #
 # ---------- variables --------------------------------------------------------
@@ -34,14 +34,16 @@ SUBDIRS			:=		t5				\
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
+main:		build
+
+build:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,build,)			; \
+	done
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$$(d)/Makefile,clear,)			; \
+	done
 
 	$(call env_purge)
-
-proto:
-
-dep:
