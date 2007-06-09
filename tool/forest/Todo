@@ -1,0 +1,55 @@
+1) Au niveau du parser il faudrait repasser sur chaque regexp et les
+   rendre plus laxistes notamment sur les trailing whitespaces mais
+   egalement sur le placement des parentheses, accolades etc.
+
+2) 
+
+3) Il faudrait verifier que les macros de definition se trouvent dans les
+   fichiers header.
+
+4) Il faudrait verifier que les noms de fonction, structure, enumeration,
+   union etc. sont en minuscule.
+
+5) Il faut verifier que les variables globales statiques sont bien marquees
+   en constantes.
+
+6) Rajouter les mots clef signed, register etc. car pour l'instant les
+   regexp ne contiennent que les mots clef de base.
+
+7) Rendre le code plus evolutif en utilisant des variables python
+   pour stocker les regexp frequemment utilisees.
+
+-----------------------------
+
+# XXX
+#
+# . |, | ou |,\n|
+# . all braces must be on their own lines
+# . the closing brace must be on the same column as the open one
+# . une ligne = un seul statement (; et , interdit)
+# . ; jamais precede d'un espace
+# . goto interdit
+# . if while do for else doivent etre seuls sur une ligne
+# . for: |; | ou |;\n|, chaque partie peut avoir des virgules
+# . le ; du for et while ne doit pas etre a la fin de la ligne
+# . espaces autour des operateurs
+# . dans case, le : ne doit pas avoir d'espace avant
+# . interdit de faire des cast
+# . parentheses: |(| |)|
+
+# . { et } tous seuls: ".*\{|\}(.*)\n?"
+# . pas d'espaces avant ;
+# . goto not allowed
+
+# . checker qu il y a tjs des parentheses apres les mots clef, return aussi
+
+# . erreur dans functions.py dans ce cas:
+
+      struct file              *fct(void)
+      {
+        int                    teton;
+        int                    *suce;
+
+    il dit que teton n est pas aligne
+
+# . checker si le contenu d'un define est > a 5 lignes -> foutage de gueule

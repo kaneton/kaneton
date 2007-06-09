@@ -1,0 +1,39 @@
+#!/bin/sh
+## configure for epitar in /u/a1/akadir_a/akadir_a-tar
+##
+## Made by abass akadiri
+## Login   <akadir_a@epita.fr>
+##
+## Started on  Sat Jul  8 17:43:29 2006 abass akadiri
+## Last update Sat Jul  8 17:43:47 2006 abass akadiri
+##
+
+rm -f Makefile.rules
+touch Makefile.rules
+
+case `uname -s` in
+
+    NetBSD)
+	echo 'CC = /usr/bin/gcc' >> Makefile.rules
+	echo 'CFLAGS = -Wall -W -Werror -ansi -pedantic' >> Makefile.rules
+	echo 'LDFLAGS = -Wall -W -Werror -ansi -pedantic ' >> Makefile.rules
+	;;
+
+    OSF1)
+	echo 'CC = /bin/cc' >> Makefile.rules
+	echo 'CFLAGS = -w2 -std1 -warnprotos ' >> Makefile.rules
+	echo 'LDFLAGS = -w2 -std1 -warnprotos ' >> Makefile.rules
+	;;
+    Linux)
+	echo 'CC = /usr/bin/cc' >> Makefile.rules
+	echo 'CFLAGS = -Wall -W -Werror -pedantic' >> Makefile.rules
+
+	;;
+    SunOS)
+	echo 'CC = /usr/local/bin/gcc' >> Makefile.rules
+	echo 'CFLAGS = -Wall -W -Werror -pedantic -m64' >> Makefile.rules
+	echo 'SO = -kPIC' >> Makefile.rules
+	echo 'LDFLAGS = -Wall -W -Werror -pedantic -m64 ' >> Makefile.rules
+
+	;;
+esac

@@ -1,0 +1,438 @@
+---
+-
+  manager: as
+  interface:
+    -
+      operation: give
+      argument:
+        - i_task
+        - (capability)
+    -
+      operation: vaddr
+      argument:
+        - (capability)
+        - t_paddr
+        - (out) t_vaddr*
+    -
+      operation: paddr
+      argument:
+        - (capability)
+        - t_vaddr
+        - (out) t_paddr*
+    -
+      operation: copy
+      argument:
+        - (capability)
+        - t_vaddr
+        - i_as
+        - t_vaddr
+        - t_vsize
+    -
+      operation: clone
+      argument:
+        - i_task
+        - (capability)
+        - (out) i_as*
+    -
+      operation: reserve
+      argument:
+        - i_task
+        - (out) i_as*
+    -
+      operation: release
+      argument:
+        - (capability)
+    -
+      operation: get
+      argument:
+        - (capability)
+        - (out) o_as**
+-
+  manager: capability
+  interface:
+    -
+      operation: reserve
+      argument:
+        - t_id
+        - t_operations
+        - (out) t_capability*
+    -
+      operation: release
+      argument:
+        - t_id
+    -
+      operation: restrict
+      argument:
+        - t_id
+        - t_operations
+        - (out) t_capability*
+    -
+      operation: invalidate
+      argument:
+        - t_id
+        - t_id
+    -
+      operation: get
+      argument:
+        - t_id
+        - (out) t_capability_descriptor**
+    -
+      operation: give
+      argument:
+        - t_id
+        - i_node
+    -
+      operation: verify
+      argument:
+        - t_capability*
+-
+  manager: event
+  interface:
+    -
+      operation: reserve
+      argument:
+        - (capability)
+        - t_type
+        - u_event_handler
+    -
+      operation: release
+      argument:
+        - (capability)
+    -
+      operation: get
+      argument:
+        - (capability)
+        - (out) o_event**
+-
+  manager: io
+  interface:
+    -
+      operation: grant
+      argument:
+        - (capability)
+        - i_task
+        - t_uint8
+    -
+      operation: deny
+      argument:
+        - (capability)
+        - i_task
+        - t_uint8
+    -
+      operation: read_8
+      argument:
+        - i_task
+        - (capability)
+        - (out) t_uint8*
+    -
+      operation: read_16
+      argument:
+        - i_task
+        - (capability)
+        - (out) t_uint16*
+    -
+      operation: read_32
+      argument:
+        - i_task
+        - (capability)
+        - (out) t_uint32*
+    -
+      operation: read_64
+      argument:
+        - i_task
+        - (capability)
+        - (out) t_uint64*
+    -
+      operation: write_8
+      argument:
+        - i_task
+        - (capability)
+        - t_uint8
+
+    -
+      operation: write_16
+      argument:
+        - i_task
+        - (capability)
+        - t_uint16
+    -
+      operation: write_32
+      argument:
+        - i_task
+        - (capability)
+        - t_uint32
+    -
+      operation: write_64
+      argument:
+        - i_task
+        - (capability)
+        - t_uint64
+-
+  manager: map
+  interface:
+    -
+      operation: reserve
+      argument:
+        - (capability)
+        - t_opts
+        - t_vsize
+        - t_perms
+        - (out) t_vaddr*
+    -
+      operation: release
+      argument:
+        - (capability)
+        - t_vaddr
+    -
+      operation: resize
+      argument:
+        - (capability)
+        - t_vaddr
+        - t_vsize
+        - (out) t_vaddr*
+-
+  manager: message
+  interface:
+    -
+      operation: register
+      argument:
+        - i_task
+        - t_tag
+-
+  manager: region
+  interface:
+    -
+      operation: reserve
+      argument:
+        - (capability)
+        - i_segment
+        - t_paddr
+        - t_opts
+        - t_vaddr
+        - t_vsize
+        - (out) i_region*
+    -
+      operation: release
+      argument:
+        - i_as
+        - (capability)
+    -
+      operation: get
+      argument:
+        - i_as
+        - (capability)
+        - (out) o_region**
+-
+  manager: sched
+  interface:
+    -
+      operation: quantum
+      argument:
+        - t_quantum
+    -
+      operation: yield
+      argument:
+        - i_cpu
+    -
+      operation: current
+      argument:
+        - (out) i_thread*
+    -
+      operation: add
+      argument:
+        - i_thread
+    -
+      operation: remove
+      argument:
+        - i_thread
+    -
+      operation: update
+      argument:
+        - i_thread
+-
+  manager: segment
+  interface:
+    -
+      operation: clone
+      argument:
+        - i_as
+        - (capability)
+        - (out) i_segment*
+    -
+      operation: give
+      argument:
+        - i_as
+        - (capability)
+    -
+      operation: copy
+      argument:
+        - (capability)
+        - t_paddr
+        - i_segment
+        - t_paddr
+        - t_psize
+    -
+      operation: reserve
+      argument:
+        - i_as
+        - t_psize
+        - t_perms
+        - (out) i_segment*
+    -
+      operation: release
+      argument:
+        - i_segment
+    -
+      operation: catch
+      argument:
+        - i_as
+        - (capability)
+    -
+      operation: perms
+      argument:
+        - (capability)
+        - t_perms
+    -
+      operation: type
+      argument:
+        - (capability)
+        - t_type
+    -
+      operation: get
+      argument:
+        - (capability)
+        - (out) o_segment**
+-
+  manager: task
+  interface:
+    -
+      operation: current
+      argument:
+        - (out) i_task*
+    -
+      operation: clone
+      argument:
+        - (capability)
+        - (out) i_task*
+    -
+      operation: reserve
+      argument:
+        - t_class
+        - t_behav
+        - t_prior
+        - (out) i_task*
+    -
+      operation: release
+      argument:
+        - (capability)
+    -
+      operation: priority
+      argument:
+        - (capability)
+        - t_prior
+    -
+      operation: state
+      argument:
+        - (capability)
+        - t_state
+    -
+      operation: wait
+      argument:
+        - (capability)
+        - t_opts
+        - (out) t_wait*
+    -
+      operation: get
+      argument:
+        - (capability)
+        - (out) o_task**
+-
+  manager: thread
+  interface:
+    -
+      operation: give
+      argument:
+        - i_task
+        - (capability)
+    -
+      operation: clone
+      argument:
+        - i_task
+        - (capability)
+        - (out) i_thread*
+    -
+      operation: reserve
+      argument:
+        - i_task
+        - t_prior
+        - (out) i_thread*
+    -
+      operation: release
+      argument:
+        - (capability)
+    -
+      operation: priority
+      argument:
+        - (capability)
+        - t_prior
+    -
+      operation: state
+      argument:
+        - (capability)
+        - t_state
+    -
+      operation: stack
+      argument:
+        - (capability)
+        - t_stack
+    -
+      operation: load
+      argument:
+        - (capability)
+        - t_thread_context
+    -
+      operation: store
+      argument:
+        - (capability)
+        - (out) t_thread_context*
+    -
+      operation: get
+      argument:
+        - (capability)
+        - (out) o_thread**
+-
+  manager: timer
+  interface:
+    -
+      operation: reserve
+      argument:
+        - t_type
+        - u_timer_handler
+        - t_uint32
+        - t_uint32
+        - (out) i_timer*
+    -
+      operation: release
+      argument:
+        - (capability)
+    -
+      operation: delay
+      argument:
+        - (capability)
+        - t_uint32
+    -
+      operation: repeat
+      argument:
+        - (capability)
+        - t_uint32
+    -
+      operation: modify
+      argument:
+        - (capability)
+        - t_uint32
+        - t_uint32
+    -
+      operation: get
+      argument:
+        - (capability)
+        - (out) o_timer**
