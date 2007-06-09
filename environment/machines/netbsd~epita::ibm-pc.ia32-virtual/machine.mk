@@ -1,1 +1,0 @@
-../gnu-unix/machine.mk
