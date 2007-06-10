@@ -1,0 +1,316 @@
+/*
+ * ---------- header ----------------------------------------------------------
+ *
+ * project       kaneton
+ *
+ * license       kaneton
+ *
+ * file          /home/mycure/kane.../arch/ibm-pc.ia32-virtual/architecture.h
+ *
+ * created       julien quintard   [thu jun  7 12:02:10 2007]
+ * updated       julien quintard   [fri jun  8 15:55:45 2007]
+ */
+
+#ifndef ARCHITECTURE_ARCHITECTURE_H
+#define ARCHITECTURE_ARCHITECTURE_H	1
+
+/*
+ * ---------- macro functions -------------------------------------------------
+ */
+
+/*
+ * machdep transparent traps
+ */
+
+#define		machdep_include(_mng_)					\
+  machdep_include_##_mng_()
+
+#define		machdep_call(_mng_, _function_, _args_...)		\
+  machdep_call_##_mng_(_function_, ##_args_)
+
+#define		machdep_data(_object_)					\
+  machdep_data_##_object_()
+
+/*
+ * ---------- includes --------------------------------------------------------
+ */
+
+#include <architecture/types.h>
+#include <architecture/core.h>
+
+#include <architecture/cons.h>
+#include <architecture/debug.h>
+#include <architecture/elf.h>
+
+/* XXX here go the includes of ia32 additional stuff */
+
+/*
+ * XXX
+ *
+ * these prototypes should be moves to the respective manager-dependent files.
+ */
+
+#include <core/event.h>
+#include <core/thread.h>
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../../../../core/arch/machdep/as.c
+ *      ../../../../core/arch/machdep/region.c
+ *      ../../../../core/arch/machdep/segment.c
+ *      ../../../../core/arch/machdep/event.c
+ *	../../../../core/arch/machdep/timer.c
+ *      ../../../../core/arch/machdep/task.c
+ *      ../../../../core/arch/machdep/thread.c
+ *      ../../../../core/arch/machdep/sched.c
+ *      ../../../../core/arch/machdep/message.c
+ *      ../../../../core/arch/machdep/cpu.c
+ *      ../../../../core/arch/machdep/io.c
+ */
+
+/*
+ * ../../../../core/arch/machdep/as.c
+ */
+
+t_error			ia32_as_give(i_task			tskid,
+				     i_as			asid);
+
+t_error			ia32_as_show(i_as			asid);
+
+t_error			ia32_as_reserve(i_task			tskid,
+					i_as*			asid);
+
+
+/*
+ * ../../../../core/arch/machdep/region.c
+ */
+
+t_error			ia32_region_map_chunk(t_vaddr		v,
+					      t_paddr		p,
+					      void*		alloc);
+
+t_error			ia32_region_unmap_chunk(t_vaddr		v);
+
+t_error			ia32_region_reserve(i_as		asid,
+					    i_segment		segid,
+					    t_paddr		offset,
+					    t_opts		opts,
+					    t_vaddr		address,
+					    t_vsize		size,
+					    i_region*		regid);
+
+t_error			ia32_region_release(i_as		asid,
+					    i_region		regid);
+
+t_error			ia32_region_resize(i_as			as,
+					   i_region		old,
+					   t_vsize		size,
+					   i_region*		new);
+
+t_error			ia32_region_init(t_vaddr		start,
+					 t_vsize		size);
+
+t_error			ia32_region_clean(void);
+
+
+/*
+ * ../../../../core/arch/machdep/segment.c
+ */
+
+t_error			ia32_segment_read(i_region		segid,
+					  t_paddr		offs,
+					  void*			buff,
+					  t_psize		sz);
+
+t_error			ia32_segment_write(i_region		segid,
+					   t_paddr		offs,
+					   const void*		buff,
+					   t_psize		sz);
+
+t_error			ia32_segment_copy(i_region		dst,
+					  t_paddr		offsd,
+					  i_region		src,
+					  t_paddr		offss,
+					  t_psize		sz);
+
+t_error			ia32_segment_perms(i_segment		segid,
+					   t_perms		perms);
+
+t_error			ia32_segment_init(void);
+
+t_error			ia32_segment_clean(void);
+
+
+/*
+ * ../../../../core/arch/machdep/event.c
+ */
+
+t_error			ia32_event_reserve(i_event		id,
+					   t_type		type,
+					   u_event_handler	handler);
+
+t_error			ia32_event_release(i_event		id);
+
+t_error			ia32_event_init(void);
+
+t_error			ia32_event_clean(void);
+
+void			ia32_event_handler(t_id		id);
+
+void                    ia32_kbd_handler(t_id			id);
+
+void			ia32_gp_handler(t_id			id,
+					t_uint32		error_code);
+
+void			ia32_df_handler(t_id			id,
+					t_uint32		error_code);
+
+void			ia32_ts_handler(t_id			id,
+					t_uint32		error_code);
+
+void                    ia32_pf_handler(t_id			id,
+					t_uint32		error_code);
+
+
+/*
+ * ../../../../core/arch/machdep/timer.c
+ */
+
+t_error			ia32_timer_init(void);
+
+
+/*
+ * ../../../../core/arch/machdep/task.c
+ */
+
+t_error			ia32_task_clone(i_task			old,
+					i_task*			new);
+
+t_error			ia32_task_reserve(t_class			class,
+					  t_behav			behav,
+					  t_prior			prior,
+					  i_task*			id);
+
+t_error			ia32_task_init(void);
+
+
+/*
+ * ../../../../core/arch/machdep/thread.c
+ */
+
+t_error			ia32_thread_clone(i_task		taskid,
+					  i_thread		old,
+					  i_thread*		new);
+
+t_error			ia32_thread_reserve(i_task		taskid,
+					    i_thread*		threadid);
+
+t_error			ia32_thread_load(i_thread		threadid,
+					 t_thread_context	context);
+
+t_error			ia32_thread_store(i_thread		threadid,
+					  t_thread_context*	context);
+
+t_error			ia32_thread_stack(i_thread		threadid,
+					  t_stack		stack);
+
+t_error			ia32_thread_init(void);
+
+
+/*
+ * ../../../../core/arch/machdep/sched.c
+ */
+
+t_error			ia32_sched_quantum(t_quantum		quantum);
+
+t_error			ia32_sched_yield(i_cpu			cpuid);
+
+t_error			ia32_sched_switch(i_thread		elected);
+
+void			ia32_sched_switch_mmx(t_id			id);
+
+t_error			ia32_sched_init(void);
+
+t_error			ia32_sched_clean(void);
+
+
+/*
+ * ../../../../core/arch/machdep/message.c
+ */
+
+void			ia32_message_async_send_handler(void);
+
+void			ia32_message_sync_send_handler(void);
+
+void			ia32_message_async_recv_handler(void);
+
+void			ia32_message_sync_recv_handler(void);
+
+t_error			ia32_message_epilogue(i_thread		thread,
+					      t_error		exit_value);
+
+t_error			ia32_message_init(void);
+
+t_error			ia32_message_clean(void);
+
+
+/*
+ * ../../../../core/arch/machdep/cpu.c
+ */
+
+t_error			ia32_cpu_current(i_cpu*			cpuid);
+
+
+/*
+ * ../../../../core/arch/machdep/io.c
+ */
+
+t_error			ia32_io_grant(i_port			id,
+				      i_task			task,
+				      t_uint8			width);
+
+t_error			ia32_io_deny(i_port			id,
+				     i_task			task,
+				     t_uint8			width);
+
+t_error			ia32_io_read_8(i_task			task,
+				       i_port			id,
+				       t_uint8*			data);
+
+t_error			ia32_io_read_16(i_task			task,
+					i_port			id,
+					t_uint16*		data);
+
+t_error			ia32_io_read_32(i_task			task,
+					i_port			id,
+					t_uint32*		data);
+
+t_error			ia32_io_read_64(i_task			task,
+					i_port			id,
+					t_uint64*		data);
+
+t_error			ia32_io_write_8(i_task			task,
+					i_port			id,
+					t_uint8			data);
+
+t_error			ia32_io_write_16(i_task			task,
+					 i_port			id,
+					 t_uint16		data);
+
+t_error			ia32_io_write_32(i_task			task,
+					 i_port			id,
+					 t_uint32		data);
+
+t_error			ia32_io_write_64(i_task			task,
+					 i_port			id,
+					 t_uint64		data);
+
+t_error			ia32_io_init(void);
+
+
+/*
+ * eop
+ */
+
+#endif
