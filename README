@@ -1,1 +1,19 @@
-install/
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/README
+#
+# created       julien quintard   [sun jun 10 19:21:26 2007]
+# updated       julien quintard   [sun jun 10 19:21:49 2007]
+#
+
+#
+# ---------- information ------------------------------------------------------
+#
+
+Move to the configure/ directory and look at the README file.
+
