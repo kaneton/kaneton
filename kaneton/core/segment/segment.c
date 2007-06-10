@@ -31,7 +31,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 
 machdep_include(segment);
@@ -825,7 +825,7 @@ t_error			segment_reserve(i_as			asid,
    * 2)
    */
 
-  if (segment_space(as, size, &o->address) != ERROR_NONE)
+  if (segment_space(asid, size, &o->address) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -1202,7 +1202,6 @@ t_error			segment_init(void)
 
   segment->start = init->mem;
   segment->size = init->memsz;
-  segment->lookup = SEGMENT_LOOKUP_ALGORITHM;
 
   /*
    * 3)

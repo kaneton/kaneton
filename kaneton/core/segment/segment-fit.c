@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
+ * license       kaneton
+ *
  * file          /home/mycure/kaneton/kaneton/core/segment/segment-fit.c
  *
- * created       matthieu bucchianeri   [tue jan 10 01:03:46 2006]
- * updated       julien quintard   [sat jul  8 02:28:01 2006]
+ * created       julien quintard   [sun jun 10 17:17:15 2007]
+ * updated       julien quintard   [sun jun 10 17:26:50 2007]
  */
 
 /*
@@ -22,13 +24,13 @@
  *  - ...
  */
 
-/* XXX #if (REGION_LOOKUP_ALGORITHM == FIRST_FIT) */
+#if (SEGMENT_ALGORITHM == SEGMENT_ALGORITHM_FIT)
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 
 machdep_include(segment);
@@ -163,15 +165,18 @@ static t_error		segment_first_fit(o_as*			as,
  * this function dispatchs to the good fitting method.
  */
 
-t_error			segment_space(void*		object,
+t_error			segment_space(i_as		asid,
 				      t_psize		size,
 				      t_paddr*		address)
 {
-  o_as*			as = object;
+  o_as*			as;
 
   SEGMENT_ENTER(segment);
 
-  switch (segment->lookup)
+  if (as_get(asid, &as) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+
+  switch (SEGMENT_FIT)
     {
       case FIT_FIRST:
 	SEGMENT_LEAVE(segment, segment_first_fit(as, size, address));
@@ -183,4 +188,4 @@ t_error			segment_space(void*		object,
 
 /*                                                                 [cut] /k2 */
 
-/* XXX #endif */
+#endif

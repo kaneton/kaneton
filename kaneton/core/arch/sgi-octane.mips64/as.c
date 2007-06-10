@@ -24,7 +24,7 @@
  */
 
 #include <libmipsr10000.h>
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 
 /*

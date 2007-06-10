@@ -1,47 +1,52 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/include/libsys/types.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [mon aug 28 17:47:02 2006]
+ * file          /home/mycure/kaneton/library/libc/include/libsys/types.h
+ *
+ * created       julien quintard   [sun jun 10 17:37:19 2007]
+ * updated       julien quintard   [sun jun 10 17:42:06 2007]
  */
 
-#ifndef LIBSYS_TYPES_H
-#define LIBSYS_TYPES_H		1
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-#include <core/types.h>
+#ifndef LIBC_LIBSYS_TYPES_H
+#define LIBC_LIBSYS_TYPES_H		1
 
 /*
  * ---------- types -----------------------------------------------------------
  */
 
+/*
+ * XXX
+ *
+ * here #ifdef should appear to enable types depending on the underlying
+ * architecture
+ *
+ * more generally, this file should be reviewed!
+ */
+
 typedef unsigned char		u_char;
 typedef unsigned short		u_short;
 typedef unsigned int		u_int;
-typedef unsigned long		u_long;
+typedef unsigned long long int	u_long;
 
-typedef t_paddr			paddr_t;
-typedef t_psize			psize_t;
-typedef t_vaddr			vaddr_t;
-typedef t_vsize			vsize_t;
+typedef u_int			paddr_t;
+typedef u_int			psize_t;
+typedef u_int			vaddr_t;
+typedef u_int			vsize_t;
 
-typedef t_sint8			int8_t;
-typedef t_uint8			u_int8_t;
-typedef t_sint16		int16_t;
-typedef t_uint16		u_int16_t;
-typedef t_sint32		int32_t;
-typedef t_uint32		u_int32_t;
-typedef t_sint64		int64_t;
-typedef t_uint64		u_int64_t;
+typedef u_char			int8_t;
+typedef u_char			u_int8_t;
+typedef u_short			int16_t;
+typedef u_short			u_int16_t;
+typedef u_int			int32_t;
+typedef u_int			u_int32_t;
+typedef u_long			int64_t;
+typedef u_long			u_int64_t;
 
-typedef int			register_t;
+typedef u_int			register_t;
 
 typedef int64_t			blkcnt_t;	/* fs block count */
 typedef u_int32_t		blksize_t;	/* fs optimal block size */

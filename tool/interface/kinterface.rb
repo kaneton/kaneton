@@ -27,7 +27,7 @@ def header_kinterface(f)
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 
 /*
@@ -147,7 +147,7 @@ def header_uinterface(f)
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 
 /*

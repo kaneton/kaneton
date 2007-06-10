@@ -1,16 +1,18 @@
 /*
- * licence kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/klibc/include/libsys/errno.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       julien quintard   [fri mar 10 03:47:29 2006]
+ * file          /home/mycure/kaneton/library/libc/include/libsys/errno.h
+ *
+ * created       julien quintard   [sun jun 10 17:52:54 2007]
+ * updated       julien quintard   [sun jun 10 17:53:02 2007]
  */
 
-#ifndef LIBSYS_ERRNO_H
-#define LIBSYS_ERRNO_H		1
+#ifndef LIBC_LIBSYS_ERRNO_H
+#define LIBC_LIBSYS_ERRNO_H		1
 
 /*
  * ---------- macros ----------------------------------------------------------

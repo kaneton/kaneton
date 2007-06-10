@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/klibc/include/klibc.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 13:53:34 2005]
- * updated       julien quintard   [fri mar 10 03:48:43 2006]
+ * file          /home/mycure/kaneton/library/libc/include/libc.h
+ *
+ * created       julien quintard   [sun jun 10 17:31:41 2007]
+ * updated       julien quintard   [sun jun 10 17:32:22 2007]
  */
 
-#ifndef KLIBC_H
-#define KLIBC_H			1
+#ifndef LIBC_LIBC_H
+#define LIBC_LIBC_H			1
 
 /*
  * ---------- macros ----------------------------------------------------------

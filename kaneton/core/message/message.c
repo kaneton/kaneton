@@ -35,7 +35,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 
 machdep_include(message);

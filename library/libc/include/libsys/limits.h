@@ -1,16 +1,18 @@
 /*
- * licence kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/klibc/include/libsys/limits.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       julien quintard   [fri mar 10 03:47:22 2006]
+ * file          /home/mycure/kaneton/library/libc/include/libsys/limits.h
+ *
+ * created       julien quintard   [sun jun 10 17:53:28 2007]
+ * updated       julien quintard   [sun jun 10 17:53:52 2007]
  */
 
-#ifndef LIBSYS_LIMITS_H
-#define LIBSYS_LIMITS_H		1
+#ifndef LIBC_LIBSYS_LIMITS_H
+#define LIBC_LIBSYS_LIMITS_H		1
 
 /*
  * ---------- macros ----------------------------------------------------------

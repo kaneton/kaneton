@@ -14,7 +14,7 @@
  */
 
 // XXX #include <arch/machdep/machdep.h>
-#include <klibc.h>
+#include <libc.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

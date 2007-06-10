@@ -18,7 +18,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include <libdata/alloc.h>
 #include <kaneton.h>
 

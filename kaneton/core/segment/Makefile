@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/kaneton/core/segment/Makefile
-##
-## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [sat apr  1 23:39:29 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/segment/Makefile
+#
+# created       julien quintard   [sun jun 10 17:02:46 2007]
+# updated       julien quintard   [sun jun 10 17:13:11 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,16 +21,13 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-SEGMENT_LO		:=		segment.lo
-
-SEGMENT_C		:=		segment.c		\
-					$(_SEGMENT_FILE_)
+SEGMENT_C		:=		segment.c			
 
 SEGMENT_O		:=		$(SEGMENT_C:.c=.o)
 
@@ -40,22 +39,24 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(SEGMENT_LO):		$(SEGMENT_O)
-	$(call env_remove,$(SEGMENT_LO),)
+main:			$(_SEGMENT_LO_)
 
-	$(call env_archive,$(SEGMENT_LO),$(SEGMENT_O),)
+$(_SEGMENT_LO_):	$(SEGMENT_O)
+	$(call env_remove,$(_SEGMENT_LO_),)
+
+	$(call env_archive,$(_SEGMENT_LO_),$(SEGMENT_O),)
 
 clear:
 	$(call env_remove,$(SEGMENT_O),)
 
-	$(call env_remove,$(SEGMENT_LO),)
+	$(call env_remove,$(_SEGMENT_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(SEGMENT_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(SEGMENT_C),$(_DEPENDENCY_MK_),)

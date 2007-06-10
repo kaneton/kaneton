@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [fri jun  8 15:15:12 2007]
+ * updated       julien quintard   [sun jun 10 17:27:19 2007]
  */
 
 #ifndef CORE_REGION_H
@@ -38,6 +38,13 @@
 #define REGION_OPT_PRIVILEGED	(1 << 1)
 #define REGION_OPT_LOCAL	(0 << 2)
 #define REGION_OPT_GLOBAL	(1 << 2)
+
+/*
+ * ---------- algorithms ------------------------------------------------------
+ */
+
+#define REGION_ALGORITHM_FIT_FIRST	(1 << 0)
+#define REGION_ALGORITHM_FIT_BEST	(1 << 1)
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -72,8 +79,6 @@ typedef struct
 typedef struct
 {
   o_id				id;
-
-  t_lookup			lookup;
 
   t_vaddr			start;
   t_vsize			size;
@@ -162,7 +167,7 @@ typedef struct
  * ---------- common prototypes -----------------------------------------------
  */
 
-t_error			region_space(void*		object,
+t_error			region_space(i_as		asid,
 				     t_vsize		size,
 				     t_vaddr*		address);
 

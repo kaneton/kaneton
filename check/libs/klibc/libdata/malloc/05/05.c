@@ -10,7 +10,7 @@
  */
 
 #include <kaneton.h>
-#include <klibc.h>
+#include <libc.h>
 #include "../common/common.h"
 
 extern i_as		kasid;

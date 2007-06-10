@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/kaneton/core/kernel/Makefile
-##
-## created       julien quintard   [sat dec 10 13:50:17 2005]
-## updated       julien quintard   [sat jun 24 13:33:23 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/kernel/Makefile
+#
+# created       julien quintard   [sun jun 10 16:57:54 2007]
+# updated       julien quintard   [sun jun 10 16:58:46 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,13 +21,11 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
-
-KERNEL_LO		:=		kernel.lo
 
 KERNEL_C		:=		kernel.c			
 
@@ -39,22 +39,24 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(KERNEL_LO):		$(KERNEL_O)
-	$(call env_remove,$(KERNEL_LO),)
+main:			$(_KERNEL_LO_)
 
-	$(call env_archive,$(KERNEL_LO),$(KERNEL_O),)
+$(_KERNEL_LO_):		$(KERNEL_O)
+	$(call env_remove,$(_KERNEL_LO_),)
+
+	$(call env_archive,$(_KERNEL_LO_),$(KERNEL_O),)
 
 clear:
 	$(call env_remove,$(KERNEL_O),)
 
-	$(call env_remove,$(KERNEL_LO),)
+	$(call env_remove,$(_KERNEL_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(KERNEL_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(KERNEL_C),$(_DEPENDENCY_MK_),)

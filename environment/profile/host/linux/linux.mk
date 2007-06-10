@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [sun jun 10 14:21:13 2007]
+# updated       julien quintard   [sun jun 10 18:42:22 2007]
 #
 
 #
@@ -401,7 +401,7 @@ endef
 define env_version
   $(call env_display,yellow,VERSION,$(1),		,)		; \
   $(_ECHO_) -n "" > $(1)						; \
-  $(_ECHO_) "#include <klibc.h>" >> $(1)				; \
+  $(_ECHO_) "#include <libc.h>" >> $(1)				; \
   $(_ECHO_) "#include <kaneton.h>" >> $(1)				; \
   $(_ECHO_) "" >> $(1)							; \
   $(_ECHO_) -n "const char version[] = \"$(_TITLE_)-$(_VERSION_)" >> $(1) ; \
@@ -450,6 +450,9 @@ define env_document
     if [ $$(( $(2) & $(ENV_OPTION_PRIVATE) )) -ne 0 ] ; then		\
       $(_ECHO_) '\def\mode{private}' > $(_DEPENDENCY_TEX_)		; \
     fi									; \
+  fi									; \
+  if [ ! -f $(_DEPENDENCY_TEX_) ] ; then				\
+    $(_ECHO_) '\def\mode{public}' > $(_DEPENDENCY_TEX_)			; \
   fi									; \
   $(call env_compile-tex,$(1),$(2))
 endef

@@ -1,4 +1,4 @@
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 
 t_uint32		syscall_async_send(t_uint32* node, t_uint32 tag, void* ptr, t_uint32 size)

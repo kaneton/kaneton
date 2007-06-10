@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [sun jun 10 15:31:35 2007]
+# updated       julien quintard   [sun jun 10 16:49:52 2007]
 #
 
 #
@@ -38,6 +38,8 @@ main:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,,)				; \
 	done
+
+	XXX
 
 	$(call env_executable,$(_CORE_),$(CORE_O)			\
 					$(VERSION_O)			\

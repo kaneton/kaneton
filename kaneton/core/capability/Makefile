@@ -19,7 +19,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear prototypes headers
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -37,7 +37,9 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(_CAPABILITY_LO_):		$(CAPABILITY_O)
+main:			$(_CAPABILITY_LO_)
+
+$(_CAPABILITY_LO_):	$(CAPABILITY_O)
 	$(call env_remove,$(_CAPABILITY_LO_),)
 
 	$(call env_archive,$(_CAPABILITY_LO_),$(CAPABILITY_O),)

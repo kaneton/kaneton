@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/kaneton/core/task/Makefile
-##
-## created       julien quintard   [sat dec 10 13:50:17 2005]
-## updated       julien quintard   [wed jun 28 11:18:24 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/task/Makefile
+#
+# created       julien quintard   [sun jun 10 17:09:05 2007]
+# updated       julien quintard   [sun jun 10 17:09:34 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,13 +21,11 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
-
-TASK_LO			:=		task.lo
 
 TASK_C			:=		task.c				
 
@@ -39,22 +39,24 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(TASK_LO):		$(TASK_O)
-	$(call env_remove,$(TASK_LO),)
+main:			$(_TASK_LO_)
 
-	$(call env_archive,$(TASK_LO),$(TASK_O),)
+$(_TASK_LO_):		$(TASK_O)
+	$(call env_remove,$(_TASK_LO_),)
+
+	$(call env_archive,$(_TASK_LO_),$(TASK_O),)
 
 clear:
 	$(call env_remove,$(TASK_O),)
 
-	$(call env_remove,$(TASK_LO),)
+	$(call env_remove,$(_TASK_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(TASK_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(TASK_C),$(_DEPENDENCY_MK_),)

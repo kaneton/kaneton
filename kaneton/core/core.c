@@ -22,7 +22,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 
 /*
@@ -238,7 +238,11 @@ void			kaneton_dump(void)
 }
 
 /*
- * this function launches the very first service.
+ * this function launches the very first service by creating a new
+ * task.
+ *
+ * the new task's address space is only composed of a stack and the
+ * code which is a mapping of the code provided by the booloader: init->mcode.
  */
 
 /* XXX move this macro elsewhere */

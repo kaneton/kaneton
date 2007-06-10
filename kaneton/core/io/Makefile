@@ -19,13 +19,11 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
-
-IO_LO			:=		io.lo
 
 IO_C			:=		io.c
 
@@ -39,22 +37,24 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(IO_LO):		$(IO_O)
-	$(call env_remove,$(IO_LO),)
+main:			$(_IO_LO_)
 
-	$(call env_archive,$(IO_LO),$(IO_O),)
+$(_IO_LO_):		$(IO_O)
+	$(call env_remove,$(_IO_LO_),)
+
+	$(call env_archive,$(_IO_LO_),$(IO_O),)
 
 clear:
 	$(call env_remove,$(IO_O),)
 
-	$(call env_remove,$(IO_LO),)
+	$(call env_remove,$(_IO_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(IO_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(IO_C),$(_DEPENDENCY_MK_),)

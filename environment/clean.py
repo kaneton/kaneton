@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/clean.py
 #
 # created       julien quintard   [sat dec 16 20:57:38 2006]
-# updated       julien quintard   [thu jun  7 13:23:01 2007]
+# updated       julien quintard   [sun jun 10 18:36:29 2007]
 #
 
 #
@@ -70,7 +70,7 @@ def			dependencies():
                             env.OPTION_FILE | env.OPTION_RECURSIVE)
 
   for dep in dependencies:
-    env.remove(dep, OPTION_NONE)
+    env.remove(dep, env.OPTION_NONE)
 
 
 

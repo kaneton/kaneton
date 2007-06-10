@@ -19,7 +19,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear prototypes headers
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -38,6 +38,8 @@ LIBDATA_INCLUDE		:=		$(_KLIBC_INCLUDE_DIR_)/libdata/libdata.h
 #
 # ---------- rules ------------------------------------------------------------
 #
+
+main:			$(LIBDATA_LO)
 
 $(LIBDATA_LO):		$(LIBDATA_O)
 	$(call env_remove,$(LIBDATA_LO),)

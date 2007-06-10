@@ -1,16 +1,18 @@
 /*
- * licence kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/klibc/include/libstring/printf.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       julien quintard   [fri mar 10 03:47:57 2006]
+ * file          /home/mycure/kaneton/library/libc/include/libstring/printf.h
+ *
+ * created       julien quintard   [sun jun 10 17:36:06 2007]
+ * updated       julien quintard   [sun jun 10 17:36:23 2007]
  */
 
-#ifndef LIBSTRING_PRINTF_H
-#define LIBSTRING_PRINTF_H	1
+#ifndef LIBC_LIBSTRING_PRINTF_H
+#define LIBC_LIBSTRING_PRINTF_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -41,7 +43,6 @@
 
 /* XXX */
 #define fprintf(_stream_, _args_...) printf(_args_)
-/* XXX */
 
 /*
  * ---------- types -----------------------------------------------------------

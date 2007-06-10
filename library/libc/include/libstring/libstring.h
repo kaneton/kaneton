@@ -1,24 +1,25 @@
 /*
- * licence kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/include/libstring/libstring.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:53:27 2006]
+ * file          /home/mycure/kane...brary/libc/include/libstring/libstring.h
+ *
+ * created       julien quintard   [sun jun 10 17:35:02 2007]
+ * updated       julien quintard   [sun jun 10 18:05:16 2007]
  */
 
-#ifndef LIBSTRING_LIBSTRING_H
-#define LIBSTRING_LIBSTRING_H	1
+#ifndef LIBC_LIBSTRING_LIBSTRING_H
+#define LIBC_LIBSTRING_LIBSTRING_H	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <libsys/types.h>
-// XXX very ugly hack, so desperate
-#include <libia32.h>
+#include <libsys/stdarg.h>
 
 /*
  * ---------- includes --------------------------------------------------------

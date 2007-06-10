@@ -17,7 +17,7 @@
  */
 
 // XXX #include <core/region.h>
-#include <klibc.h>
+#include <libc.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

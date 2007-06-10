@@ -1,16 +1,18 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/klibc/include/libsys/suberrno.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       julien quintard   [fri mar 10 03:46:54 2006]
+ * file          /home/mycure/kaneton/library/libc/include/libsys/suberrno.h
+ *
+ * created       julien quintard   [sun jun 10 17:55:46 2007]
+ * updated       julien quintard   [sun jun 10 17:55:56 2007]
  */
 
-#ifndef LIBSYS_SUBERRNO_H
-#define LIBSYS_SUBERRNO_H	1
+#ifndef LIBC_LIBSYS_SUBERRNO_H
+#define LIBC_LIBSYS_SUBERRNO_H		1
 
 /*
  * ---------- macros ----------------------------------------------------------

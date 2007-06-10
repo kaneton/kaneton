@@ -120,6 +120,8 @@ void			kaneton(t_init*				bootloader);
 
 void			kaneton_dump(void);
 
+t_error			kaneton_launch(void);
+
 
 /*
  * eop

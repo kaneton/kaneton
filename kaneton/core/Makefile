@@ -19,7 +19,7 @@ include			../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear prototypes headers dependencies
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -87,11 +87,9 @@ VERSION_O		:=		$(VERSION_C:.c=.o)
 # ---------- rules ------------------------------------------------------------
 #
 
+main:			$(_CORE_LO_)
+
 $(_CORE_LO_):		dependencies $(CORE_O)
-	$(call env_version,$(VERSION_C))
-
-	$(call env_compile-c,$(VERSION_O),$(VERSION_C),)
-
 	$(call env_archive,$(_CORE_LO_),$(CORE_O)			\
 					$(VERSION_O)			\
 					$(KANETON_LO)			\
@@ -133,6 +131,9 @@ dependencies:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,,)				; \
 	done
+
+	$(call env_version,$(VERSION_C))
+	$(call env_compile-c,$(VERSION_O),$(VERSION_C),)
 
 #
 # ---------- dependencies -----------------------------------------------------

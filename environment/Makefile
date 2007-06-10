@@ -19,13 +19,15 @@ include			env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		init clean clear prototypes headers dependencies
+.PHONY:		main initialize clean clear prototypes headers dependencies
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-init:
+main:			initialize
+
+initialize:
 	$(call env_launch,$(_ENVIRONMENT_DIR_)/initialize.py,,)
 
 clean:

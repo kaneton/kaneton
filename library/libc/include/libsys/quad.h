@@ -1,24 +1,24 @@
 /*
- * licence kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/klibc/include/libsys/quad.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       julien quintard   [fri mar 10 04:08:59 2006]
+ * file          /home/mycure/kaneton/library/libc/include/libsys/quad.h
+ *
+ * created       julien quintard   [sun jun 10 17:56:26 2007]
+ * updated       julien quintard   [sun jun 10 17:56:37 2007]
  */
 
-#ifndef LIBSYS_QUAD_H
-#define LIBSYS_QUAD_H		1
+#ifndef LIBC_LIBSYS_QUAD_H
+#define LIBC_LIBSYS_QUAD_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <libsys/types.h>
-
-// XXX #include <arch/machdep/machdep.h>
 
 /*
  * ---------- types -----------------------------------------------------------

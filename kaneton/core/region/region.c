@@ -28,7 +28,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 
 machdep_include(region);
@@ -539,7 +539,7 @@ t_error			region_reserve(i_as			asid,
       o->address = address;
     }
   else
-    if (region_space(as, size, &o->address) != ERROR_NONE)
+    if (region_space(asid, size, &o->address) != ERROR_NONE)
       REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
@@ -722,7 +722,6 @@ t_error			region_init(t_vaddr			start,
    * 2)
    */
 
-  region->lookup = REGION_LOOKUP_ALGORITHM;
   region->start = start;
   region->size = size;
 

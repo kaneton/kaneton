@@ -19,7 +19,7 @@ include			../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear prototypes headers dependencies
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -34,6 +34,8 @@ CRT_INCLUDE		:=
 #
 # ---------- rules ------------------------------------------------------------
 #
+
+main:			$(_CRT_A_)
 
 $(_CRT_A_):		$(CRT_O)
 	$(call env_static-library,$(_CRT_A_),$(CRT_O),)

@@ -19,13 +19,11 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
-
-DEBUG_LO		:=		debug.lo
 
 DEBUG_C			:=		$(_CONSOLE_FILE_)		\
 					debug.c				\
@@ -43,22 +41,24 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(DEBUG_LO):		$(DEBUG_O)
-	$(call env_remove,$(DEBUG_LO),)
+main:			$(_DEBUG_LO_)
 
-	$(call env_archive,$(DEBUG_LO),$(DEBUG_O),)
+$(_DEBUG_LO_):		$(DEBUG_O)
+	$(call env_remove,$(_DEBUG_LO_),)
+
+	$(call env_archive,$(_DEBUG_LO_),$(DEBUG_O),)
 
 clear:
 	$(call env_remove,$(DEBUG_O),)
 
-	$(call env_remove,$(DEBUG_LO),)
+	$(call env_remove,$(_DEBUG_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(DEBUG_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(DEBUG_C),$(_DEPENDENCY_MK_),)

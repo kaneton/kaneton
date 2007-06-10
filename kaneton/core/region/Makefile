@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/kaneton/core/region/Makefile
-##
-## created       julien quintard   [wed nov 23 09:19:13 2005]
-## updated       julien quintard   [sat apr  1 23:39:45 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/region/Makefile
+#
+# created       julien quintard   [sun jun 10 17:00:15 2007]
+# updated       julien quintard   [sun jun 10 17:30:13 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,16 +21,13 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-REGION_LO		:=		region.lo
-
-REGION_C		:=		region.c		\
-					$(_REGION_FILE_)
+REGION_C		:=		region.c			
 
 REGION_O		:=		$(REGION_C:.c=.o)
 
@@ -40,22 +39,24 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(REGION_LO):		$(REGION_O)
-	$(call env_remove,$(REGION_LO),)
+main:			$(_REGION_LO_)
 
-	$(call env_archive,$(REGION_LO),$(REGION_O),)
+$(_REGION_LO_):		$(REGION_O)
+	$(call env_remove,$(_REGION_LO_),)
+
+	$(call env_archive,$(_REGION_LO_),$(REGION_O),)
 
 clear:
 	$(call env_remove,$(REGION_O),)
 
-	$(call env_remove,$(REGION_LO),)
+	$(call env_remove,$(_REGION_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(REGION_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(REGION_C),$(_DEPENDENCY_MK_),)

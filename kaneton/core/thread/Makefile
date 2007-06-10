@@ -1,13 +1,15 @@
-##
-## licence       Kaneton licence
-##
-## project       kaneton
-##
-## file          /home/rhino/kaneton/kaneton/core/thread/Makefile
-##
-## created       renaud voltz   [tue apr  4 03:02:16 2006]
-## updated       renaud voltz   [tue apr  4 03:02:16 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/thread/Makefile
+#
+# created       julien quintard   [sun jun 10 17:10:24 2007]
+# updated       julien quintard   [sun jun 10 17:11:17 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,13 +21,11 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
-
-THREAD_LO		:=		thread.lo
 
 THREAD_C		:=		thread.c
 
@@ -39,22 +39,24 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(THREAD_LO):		$(THREAD_O)
-	$(call env_remove,$(THREAD_LO),)
+main:			$(_THREAD_LO_)
 
-	$(call env_archive,$(THREAD_LO),$(THREAD_O),)
+$(_THREAD_LO_):		$(THREAD_O)
+	$(call env_remove,$(_THREAD_LO_),)
+
+	$(call env_archive,$(_THREAD_LO_),$(THREAD_O),)
 
 clear:
 	$(call env_remove,$(THREAD_O),)
 
-	$(call env_remove,$(THREAD_LO),)
+	$(call env_remove,$(_THREAD_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(THREAD_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(THREAD_C),$(_DEPENDENCY_MK_),)

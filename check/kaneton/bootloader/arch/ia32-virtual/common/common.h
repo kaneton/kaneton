@@ -12,7 +12,7 @@
 #ifndef CHECK_BOOTLOADER_COMMON_H_
 # define CHECK_BOOTLOADER_COMMON_H_
 
-# include <klibc.h>
+# include <libc.h>
 # include <kaneton.h>
 # include "../../../../../check/common/common.h"
 

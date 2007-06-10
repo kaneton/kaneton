@@ -3,17 +3,17 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-virtual/cons.c
+ * file          /home/mycure/kaneton/kaneton/bootloader/arch/ia32-virtual/cons.c
  *
  * created       julien quintard   [sat may 28 18:23:13 2005]
- * updated       matthieu bucchianeri   [tue feb  6 19:16:28 2007]
+ * updated       julien quintard   [sat jul  8 02:31:11 2006]
  */
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 
 #include "bootloader.h"
@@ -37,6 +37,8 @@ t_cons			cons;
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*                                                                  [cut] k1 */
 
 /*
  * this function just clears the console.
@@ -213,3 +215,5 @@ int			bootloader_cons_init(void)
 
   return (0);
 }
+
+/*                                                                 [cut] /k1 */

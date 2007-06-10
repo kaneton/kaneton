@@ -19,13 +19,11 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
-
-EVENT_LO		:=		event.lo
 
 EVENT_C			:=		event.c
 
@@ -39,22 +37,24 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(EVENT_LO):		$(EVENT_O)
-	$(call env_remove,$(EVENT_LO),)
+main:			$(_EVENT_LO_)
 
-	$(call env_archive,$(EVENT_LO),$(EVENT_O),)
+$(_EVENT_LO_):		$(EVENT_O)
+	$(call env_remove,$(_EVENT_LO_),)
+
+	$(call env_archive,$(_EVENT_LO_),$(EVENT_O),)
 
 clear:
 	$(call env_remove,$(EVENT_O),)
 
-	$(call env_remove,$(EVENT_LO),)
+	$(call env_remove,$(_EVENT_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(EVENT_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(EVENT_C),$(_DEPENDENCY_MK_),)

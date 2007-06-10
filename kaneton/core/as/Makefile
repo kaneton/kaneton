@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/core/as/Makefile
 #
 # created       julien quintard   [sun jun 10 15:47:23 2007]
-# updated       julien quintard   [sun jun 10 15:48:46 2007]
+# updated       julien quintard   [sun jun 10 16:05:22 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear prototypes headers
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -38,6 +38,8 @@ CFLAGS			+=		-D___kernel
 #
 # ---------- rules ------------------------------------------------------------
 #
+
+main:			$(_AS_LO_)
 
 $(_AS_LO_):		$(AS_O)
 	$(call env_remove,$(_AS_LO_),)

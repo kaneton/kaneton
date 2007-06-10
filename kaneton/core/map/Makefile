@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/kaneton/core/map/Makefile
-##
-## created       matthieu bucchianeri   [sun feb 26 13:05:52 2006]
-## updated       matthieu bucchianeri   [sat may  5 18:43:35 2007]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/map/Makefile
+#
+# created       julien quintard   [sun jun 10 16:58:56 2007]
+# updated       julien quintard   [sun jun 10 16:59:28 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,13 +21,11 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
-
-MAP_LO			:=		map.lo
 
 MAP_C			:=		map.c
 
@@ -39,22 +39,24 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(MAP_LO):		$(MAP_O)
-	$(call env_remove,$(MAP_LO),)
+main:			$(_MAP_LO_)
 
-	$(call env_archive,$(MAP_LO),$(MAP_O),)
+$(_MAP_LO_):		$(MAP_O)
+	$(call env_remove,$(_MAP_LO_),)
+
+	$(call env_archive,$(_MAP_LO_),$(MAP_O),)
 
 clear:
 	$(call env_remove,$(MAP_O),)
 
-	$(call env_remove,$(MAP_LO),)
+	$(call env_remove,$(_MAP_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(MAP_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(MAP_C),$(_DEPENDENCY_MK_),)

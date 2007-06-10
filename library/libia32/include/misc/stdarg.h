@@ -12,6 +12,9 @@
 #ifndef IA32_IA32_STDARG_H
 #define IA32_IA32_STDARG_H	1
 
+// XXX already defined in libc
+#if 0
+
 /*
  * ---------- types -----------------------------------------------------------
  */
@@ -39,5 +42,7 @@ extern void va_end	(va_list);
 #define		va_arg(ap, type)					\
   (ap += __va_rouded_size(type),					\
    *((type*) (ap - __va_rouded_size(type))))
+
+#endif
 
 #endif

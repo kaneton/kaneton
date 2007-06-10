@@ -1,4 +1,4 @@
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 #include "../common/common.h"
 

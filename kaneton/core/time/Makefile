@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/kaneton/core/time/Makefile
-##
-## created       julien quintard   [sat dec 10 13:50:17 2005]
-## updated       julien quintard   [sat apr  1 23:37:52 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/time/Makefile
+#
+# created       julien quintard   [sun jun 10 17:11:24 2007]
+# updated       julien quintard   [sun jun 10 17:11:56 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,13 +21,11 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
-
-TIME_LO			:=		time.lo
 
 TIME_C			:=		timer.c
 
@@ -39,22 +39,24 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(TIME_LO):		$(TIME_O)
-	$(call env_remove,$(TIME_LO),)
+main:			$(_TIME_LO_)
 
-	$(call env_archive,$(TIME_LO),$(TIME_O),)
+$(_TIME_LO_):		$(TIME_O)
+	$(call env_remove,$(_TIME_LO_),)
+
+	$(call env_archive,$(_TIME_LO_),$(TIME_O),)
 
 clear:
 	$(call env_remove,$(TIME_O),)
 
-	$(call env_remove,$(TIME_LO),)
+	$(call env_remove,$(_TIME_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(TIME_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(TIME_C),$(_DEPENDENCY_MK_),)

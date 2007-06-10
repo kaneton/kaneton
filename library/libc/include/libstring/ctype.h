@@ -1,16 +1,18 @@
 /*
- * licence kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/libs/klibc/include/libstring/ctype.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       julien quintard   [fri mar 10 03:48:32 2006]
+ * file          /home/mycure/kaneton/library/libc/include/libstring/ctype.h
+ *
+ * created       julien quintard   [sun jun 10 17:35:42 2007]
+ * updated       julien quintard   [sun jun 10 17:35:57 2007]
  */
 
-#ifndef LIBSTRING_CTYPE_H
-#define LIBSTRING_CTYPE_H	1
+#ifndef LIBC_LIBSTRING_CTYPE_H
+#define LIBC_LIBSTRING_CTYPE_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------

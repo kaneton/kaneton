@@ -22,11 +22,13 @@
  *  - ...
  */
 
+#if (REGION_ALGORITHM == REGION_ALGORITHM_FIT)
+
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 
 machdep_include(region);
@@ -163,15 +165,18 @@ static t_error		region_first_fit(o_as*			as,
  * this function calls the good algorithm.
  */
 
-t_error			region_space(void*		object,
+t_error			region_space(i_as		asid,
 				     t_vsize		size,
 				     t_vaddr*		address)
 {
-  o_as*			as = object;
+  o_as*			as;
 
   REGION_ENTER(region);
 
-  switch (region->lookup)
+  if (as_get(asid, &as) != ERROR_NONE)
+    REGION_LEAVE(region, ERROR_UNKNOWN);
+
+  switch (REGION_FIT)
     {
       case FIT_FIRST:
 	{
@@ -182,3 +187,5 @@ t_error			region_space(void*		object,
 	REGION_LEAVE(region, ERROR_UNKNOWN);
     }
 }
+
+#endif

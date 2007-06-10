@@ -19,7 +19,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear prototypes headers
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -56,6 +56,8 @@ LIBSTRING_INCLUDE	:=		$(_KLIBC_INCLUDE_DIR_)/libstring/libstring.h
 #
 # ---------- rules ------------------------------------------------------------
 #
+
+main:			$(LIBSTRING_LO)
 
 $(LIBSTRING_LO):	$(LIBSTRING_O)
 	$(call env_remove,$(LIBSTRING_LO),)

@@ -15,7 +15,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include <libmipsr10000.h>
 #include <kaneton.h>
 

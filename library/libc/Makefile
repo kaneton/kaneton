@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/library/libc/Makefile
 #
 # created       julien quintard   [sun jun 10 14:14:02 2007]
-# updated       julien quintard   [sun jun 10 14:41:46 2007]
+# updated       julien quintard   [sun jun 10 16:45:32 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear prototypes headers dependencies
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -36,6 +36,8 @@ LIBSYS_LO		:=		libsys/libsys.lo
 #
 # ---------- rules ------------------------------------------------------------
 #
+
+main:			$(_LIBC_A_)
 
 $(_LIBC_A_):		dependencies
 	$(call env_remove,$(_LIBC_A_),)

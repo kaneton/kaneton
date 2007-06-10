@@ -1,26 +1,24 @@
 /*
- * licence kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/include/libdata/alloc.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [thu aug 17 14:38:03 2006]
+ * file          /home/mycure/kaneton/library/libc/include/libdata/alloc.h
+ *
+ * created       julien quintard   [sun jun 10 17:33:03 2007]
+ * updated       julien quintard   [sun jun 10 18:02:08 2007]
  */
 
-#ifndef LIBDATA_ALLOC_H
-#define LIBDATA_ALLOC_H       	1
+#ifndef LIBC_LIBDATA_ALLOC_H
+#define LIBC_LIBDATA_ALLOC_H       	1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <libsys/types.h>
-
-// XXX this sould not use core types.
-#include <core/types.h>
-#include <core/id.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -43,13 +41,6 @@
  */
 
 /*
- * function pointers to map_reserve/map_release
- */
-
-typedef t_error (*t_pfn_map_reserve)(i_as, t_opts, t_vsize, t_perms, t_vaddr*);
-typedef t_error (*t_pfn_map_release)(i_as, t_vaddr);
-
-/*
  * chunk forward declaration.
  */
 
@@ -61,9 +52,9 @@ struct s_chunk;
 
 typedef struct			s_area
 {
-  t_vsize			size;
+  vsize_t			size;
 
-  t_uint32			signature;
+  u_int32_t			signature;
 
   struct s_chunk*		first_free_chunk;
 
@@ -77,9 +68,9 @@ typedef struct			s_area
 
 typedef struct			s_chunk
 {
-  t_vsize			size;
+  vsize_t			size;
 
-  t_uint32			signature;
+  u_int32_t			signature;
 
   struct s_chunk*		next_free;
 
@@ -89,6 +80,16 @@ typedef struct			s_chunk
 /*
  * alloc global information
  */
+
+/*
+ * XXX must not use intra-kernel stuff!!! find another way or protect
+ * these things with #ifdef ___kernel
+ */
+#include <core/types.h>
+#include <core/id.h>
+
+typedef t_error (*t_pfn_map_reserve)(i_as, t_opts, t_vsize, t_perms, t_vaddr*);
+typedef t_error (*t_pfn_map_release)(i_as, t_vaddr);
 
 typedef struct
 {
@@ -101,10 +102,10 @@ typedef struct
   t_pfn_map_release		map_release;
   i_as				asid;
 
-  t_vaddr			reserve;
+  vaddr_t			reserve;
 
-  t_uint32			nalloc;
-  t_uint32			nfree;
+  u_int32_t			nalloc;
+  u_int32_t			nfree;
 }				t_alloc;
 
 #endif

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [fri jun  8 15:15:43 2007]
+ * updated       julien quintard   [sun jun 10 17:25:20 2007]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -40,6 +40,12 @@
 
 #define SEGMENT_TYPE_MEMORY	(1 << 0)
 #define SEGMENT_TYPE_CATCH	(1 << 1)
+
+/*
+ * ---------- algorithms ------------------------------------------------------
+ */
+
+#define SEGMENT_ALGORITHM_FIT	(1 << 0)
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -77,8 +83,6 @@ typedef struct
 
   t_paddr			start;
   t_psize			size;
-
-  t_lookup			lookup;
 
   i_set				segments;
 
@@ -179,7 +183,7 @@ typedef struct
  * ---------- common prototypes -----------------------------------------------
  */
 
-t_error			segment_space(void*		object,
+t_error			segment_space(i_as		asid,
 				      t_psize		size,
 				      t_paddr*		address);
 

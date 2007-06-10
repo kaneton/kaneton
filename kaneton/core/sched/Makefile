@@ -19,15 +19,13 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-SCHED_LO		:=		sched.lo
-
-SCHED_C			:=		sched.c		\
+SCHED_C			:=		sched.c				\
 					$(_SCHED_FILE_)
 
 SCHED_O			:=		$(SCHED_C:.c=.o)
@@ -40,22 +38,24 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(SCHED_LO):		$(SCHED_O)
-	$(call env_remove,$(SCHED_LO),)
+main:			$(_SCHED_LO_)
 
-	$(call env_archive,$(SCHED_LO),$(SCHED_O),)
+$(_SCHED_LO_):		$(SCHED_O)
+	$(call env_remove,$(_SCHED_LO_),)
+
+	$(call env_archive,$(_SCHED_LO_),$(SCHED_O),)
 
 clear:
 	$(call env_remove,$(SCHED_O),)
 
-	$(call env_remove,$(SCHED_LO),)
+	$(call env_remove,$(_SCHED_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(SCHED_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(SCHED_C),$(_DEPENDENCY_MK_),)

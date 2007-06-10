@@ -1,4 +1,4 @@
-#include <klibc.h>
+#include <libc.h>
 
 const char* tutu = "Test";
 

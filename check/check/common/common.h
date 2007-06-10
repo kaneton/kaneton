@@ -12,7 +12,7 @@
 #ifndef CHECK_COMMON_H_
 # define CHECK_COMMON_H_
 
-# include <klibc.h>
+# include <libc.h>
 
 # ifndef PAGESZ
 #  define PAGESZ	4096

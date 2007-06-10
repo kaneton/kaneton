@@ -1,23 +1,24 @@
 /*
- * licence kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/libs/klibc/include/libdata/libdata.h
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 02:40:57 2005]
- * updated       matthieu bucchianeri   [tue jan 24 11:53:43 2006]
+ * file          /home/mycure/kaneton/library/libc/include/libdata/libdata.h
+ *
+ * created       julien quintard   [sun jun 10 17:32:00 2007]
+ * updated       julien quintard   [sun jun 10 17:32:54 2007]
  */
 
-#ifndef LIBDATA_LIBDATA_H
-#define LIBDATA_LIBDATA_H	1
+#ifndef LIBC_LIBDATA_LIBDATA_H
+#define LIBC_LIBDATA_LIBDATA_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include <libsys/types.h>
-// XXX #include <arch/machdep/machdep.h>
 
 /*
  * ---------- includes --------------------------------------------------------

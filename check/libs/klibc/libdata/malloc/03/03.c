@@ -9,7 +9,7 @@
  * updated       matthieu bucchianeri   [sun may 27 21:22:28 2007]
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include "../common/common.h"
 
 #define RESIZE(Array,Sz)						\

@@ -19,13 +19,11 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
-
-MESSAGE_LO		:=		message.lo
 
 MESSAGE_C		:=		message.c		\
 					node.c
@@ -40,22 +38,24 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(MESSAGE_LO):		$(MESSAGE_O)
-	$(call env_remove,$(MESSAGE_LO),)
+main:			$(_MESSAGE_LO_)
 
-	$(call env_archive,$(MESSAGE_LO),$(MESSAGE_O),)
+$(_MESSAGE_LO_):	$(MESSAGE_O)
+	$(call env_remove,$(_MESSAGE_LO_),)
+
+	$(call env_archive,$(_MESSAGE_LO_),$(MESSAGE_O),)
 
 clear:
 	$(call env_remove,$(MESSAGE_O),)
 
-	$(call env_remove,$(MESSAGE_LO),)
+	$(call env_remove,$(_MESSAGE_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(MESSAGE_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(MESSAGE_C),$(_DEPENDENCY_MK_),)

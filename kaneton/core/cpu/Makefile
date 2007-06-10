@@ -19,13 +19,11 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
-
-CPU_LO			:=		cpu.lo
 
 CPU_C			:=		cpu.c
 
@@ -33,28 +31,31 @@ CPU_O			:=		$(CPU_C:.c=.o)
 
 CPU_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/cpu.h
 
+# XXX: ugly
 CFLAGS			+=		-D___kernel
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-$(CPU_LO):		$(CPU_O)
-	$(call env_remove,$(CPU_LO),)
+main:			$(_CPU_LO_)
 
-	$(call env_archive,$(CPU_LO),$(CPU_O),)
+$(_CPU_LO_):		$(CPU_O)
+	$(call env_remove,$(_CPU_LO_),)
+
+	$(call env_archive,$(_CPU_LO_),$(CPU_O),)
 
 clear:
 	$(call env_remove,$(CPU_O),)
 
-	$(call env_remove,$(CPU_LO),)
+	$(call env_remove,$(_CPU_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(CPU_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(CPU_C),$(_DEPENDENCY_MK_),)

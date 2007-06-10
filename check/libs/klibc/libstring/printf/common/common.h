@@ -12,7 +12,7 @@
 #ifndef CHECK_PRINTF_COMMON_H_
 # define CHECK_PRINTF_COMMON_H_
 
-# include <klibc.h>
+# include <libc.h>
 # include "../../../../../check/common/common.h"
 
 #define CHECK_PRINTF(Exp,Len)						\

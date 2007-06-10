@@ -19,7 +19,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear prototypes headers
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -37,6 +37,8 @@ LIBSYS_INCLUDE		:=		$(_KLIBC_INCLUDE_DIR_)/libsys/libsys.h
 #
 # ---------- rules ------------------------------------------------------------
 #
+
+main:			$(LIBSYS_LO)
 
 $(LIBSYS_LO):		$(LIBSYS_O)
 	$(call env_remove,$(LIBSYS_LO),)

@@ -3,17 +3,17 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-virtual/bootloader.c
+ * file          /home/buckman/kaneton2/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-smp/bootloader.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [tue feb  6 19:16:07 2007]
+ * updated       matthieu bucchianeri   [tue mar 13 10:36:27 2007]
  */
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <klibc.h>
+#include <libc.h>
 #include <kaneton.h>
 
 #include "bootloader.h"
@@ -46,8 +46,10 @@ t_reg32			esp;
  * ---------- functions -------------------------------------------------------
  */
 
+/*                                                                  [cut] k1 */
+
 /*
- * a funny function which does nothing.
+ * a funny function which do nothing.
  *
  * this function is called when a fatal error occurs.
  */
@@ -63,20 +65,26 @@ void			bootloader_error(void)
  *
  * steps:
  *
- * 1) initialise the console and checks the magic number.
- * 2) relocate binaries, data, stack...
- * 3) install the protected mode.
- * 4) install the paging mode.
- * 5) compute the segments and regions to pass to the kernel.
- * 6) dump the init structure if required.
- * 7) update registers for the new kernel stack.
- * 8) then, the kernel is launched.
- * 9) this part is only reached if the kernel exit.
+ * 1) initialises the console and checks the magic number.
+ * 2) relocates binaries, data, stack
+ * 3) installs the protected mode.
+ * 4) installs the paging mode.
+ * 5) init the other processors.
+ * 6) computes the segments and regions to pass to the kernel.
+ * 7) dumps the init structure if required.
+ * 8) update registers for the new kernel stack.
+ * 9) then, the kernel is launched.
+ * 10) this part is only reached if the kernel exit.
  */
+
+/*                                                                 [cut] /k1 */
 
 int			bootloader(t_uint32			magic,
 				   multiboot_info_t*		mbi)
 {
+
+/*                                                                  [cut] k1 */
+
   /*
    * 1)
    */
@@ -101,6 +109,7 @@ int			bootloader(t_uint32			magic,
    */
 
   bootloader_pmode_init();
+  bootloader_interrupt_init();
 
   /*
    * 4)
@@ -112,11 +121,17 @@ int			bootloader(t_uint32			magic,
    * 5)
    */
 
+  bootloader_mp_init();
+
+  /*
+   * 6)
+   */
+
   bootloader_init_segments();
   bootloader_init_regions();
 
   /*
-   * 6)
+   * 7)
    */
 
 #if (IA32_DEBUG & IA32_DEBUG_INIT)
@@ -124,7 +139,7 @@ int			bootloader(t_uint32			magic,
 #endif
 
   /*
-   * 7)
+   * 8)
    */
 
   asm("movl %%ebp, %0\n\t"
@@ -143,7 +158,7 @@ int			bootloader(t_uint32			magic,
      );
 
   /*
-   * 8)
+   * 9)
    */
 
   kernel(init);
@@ -155,11 +170,13 @@ int			bootloader(t_uint32			magic,
      );
 
   /*
-   * 9)
+   * 10)
    */
 
   bootloader_cons_msg('!', "error: kernel exited\n");
   bootloader_error();
+
+/*                                                                 [cut] /k1 */
 
   return (0);
 }
