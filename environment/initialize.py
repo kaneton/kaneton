@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/initialize.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [thu jun  7 13:11:53 2007]
+# updated       julien quintard   [sun jun 10 21:01:10 2007]
 #
 
 #
@@ -72,10 +72,6 @@ def			machine():
 
   env.remove(env._ARCHITECTURE_CURRENT_, env.OPTION_NONE)
   env.link(env._ARCHITECTURE_CURRENT_, env._ARCHITECTURE_DIR_, env.OPTION_NONE)
-
-  # XXX deprecated
-  env.remove(env._MACHDEP_LINK_DIR_, env.OPTION_NONE)
-  env.link(env._MACHDEP_LINK_DIR_, env._ARCHITECTURE_, env.OPTION_NONE)
 
 
 
