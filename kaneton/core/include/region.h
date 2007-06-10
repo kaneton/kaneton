@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [sun jun 10 17:27:19 2007]
+ * updated       julien quintard   [sun jun 10 19:03:43 2007]
  */
 
 #ifndef CORE_REGION_H
@@ -83,8 +83,6 @@ typedef struct
   t_vaddr			start;
   t_vsize			size;
 
-  i_stats			stats;
-
   machdep_data(m_region);
 }				m_region;
 
@@ -148,8 +146,6 @@ typedef struct
 #define REGION_ENTER(_region_)						\
   {									\
     REGION_CHECK((_region_));						\
-									\
-    STATS_BEGIN((_region_)->stats);					\
   }
 
 /*
@@ -158,8 +154,6 @@ typedef struct
 
 #define REGION_LEAVE(_region_, _error_)					\
   {									\
-    STATS_END((_region_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 

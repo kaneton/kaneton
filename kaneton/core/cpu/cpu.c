@@ -277,8 +277,7 @@ t_error			cpu_get(i_cpu				id,
  * 1) allocate some memory for the manager structure.
  * 2) initialise a statistic object.
  * 3) initialise the cpu set.
- * 4) add the cpus to the cpu set.
- * 5) call the machine dependent code.
+ * 4) call the machine dependent code.
  */
 
 t_error			cpu_init(void)
@@ -334,12 +333,6 @@ t_error			cpu_init(void)
    * 4)
    */
 
-  STATS_RESERVE("cpu", &cpu->stats);
-
-  /*
-   * 5)
-   */
-
   if (machdep_call(cpu, cpu_init) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
@@ -353,8 +346,7 @@ t_error			cpu_init(void)
  * steps:
  *
  * 1) call the dependent code.
- * 2) release the statistics object.
- * 3) free the manager structure.
+ * 2) free the manager structure.
  */
 
 t_error			cpu_clean(void)
@@ -368,12 +360,6 @@ t_error			cpu_clean(void)
 
   /*
    * 2)
-   */
-
-  STATS_RELEASE(cpu->stats);
-
-  /*
-   * 3)
    */
 
   free(cpu);

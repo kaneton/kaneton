@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/set.h
  *
  * created       julien quintard   [wed jun  6 11:56:46 2007]
- * updated       julien quintard   [thu jun  7 12:11:24 2007]
+ * updated       julien quintard   [sun jun 10 19:04:02 2007]
  */
 
 #ifndef CORE_SET_H
@@ -133,8 +133,6 @@ typedef struct
 {
   o_id				id;
 
-  i_stats			stats;
-
   t_id				sets;
   o_set*			container;
 }				m_set;
@@ -160,8 +158,6 @@ typedef struct
 #define SET_ENTER(_set_)						\
   {									\
     SET_CHECK((_set_));							\
-									\
-    STATS_BEGIN((_set_)->stats);					\
   }
 
 /*
@@ -170,8 +166,6 @@ typedef struct
 
 #define SET_LEAVE(_set_, _error_)					\
   {									\
-    STATS_END((_set_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 

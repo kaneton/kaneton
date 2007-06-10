@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/capability.h
  *
  * created       julien quintard   [wed jun  6 12:44:04 2007]
- * updated       julien quintard   [thu jun  7 12:34:09 2007]
+ * updated       julien quintard   [sun jun 10 19:02:49 2007]
  */
 
 #ifndef CORE_CAPABILITY_H
@@ -76,8 +76,6 @@ typedef struct
 
 typedef struct
 {
-  i_stats			stats;
-
   i_set				descriptors;
 
   t_error			(*f_checksum)(char* data,
@@ -117,8 +115,6 @@ typedef struct
 #define CAPABILITY_ENTER(_capability_)					\
   {									\
     CAPABILITY_CHECK((_capability_));					\
-									\
-    STATS_BEGIN((_capability_)->stats);					\
   }
 
 /*
@@ -127,8 +123,6 @@ typedef struct
 
 #define CAPABILITY_LEAVE(_capability_, _error_)				\
   {									\
-    STATS_END((_capability_)->stats, (_error_));			\
-									\
     return (_error_);							\
   }
 

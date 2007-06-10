@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [thu jun  7 16:11:05 2007]
+ * updated       julien quintard   [sun jun 10 19:02:21 2007]
  */
 
 #ifndef CORE_THREAD_H
@@ -89,8 +89,6 @@ typedef struct
 {
   o_id				id;
 
-  i_stats			stats;
-
   i_set				threads;
 
   machdep_data(m_thread);
@@ -147,8 +145,6 @@ typedef struct
 #define THREAD_ENTER(_thread_)						\
   {									\
     THREAD_CHECK((_thread_));						\
-									\
-    STATS_BEGIN((_thread_)->stats);					\
   }
 
 /*
@@ -157,8 +153,6 @@ typedef struct
 
 #define THREAD_LEAVE(_thread_, _error_)					\
   {									\
-    STATS_END((_thread_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 

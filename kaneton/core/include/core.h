@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [sun jun 10 14:40:25 2007]
+ * updated       julien quintard   [sun jun 10 19:01:43 2007]
  */
 
 #ifndef CORE_CORE_H
@@ -77,7 +77,6 @@
 
 #include <core/init.h>
 
-#include <core/stats.h>
 #include <core/set.h>
 #include <core/kernel.h>
 #include <core/segment.h>

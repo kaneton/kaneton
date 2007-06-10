@@ -697,7 +697,6 @@ t_error			region_get(i_as				asid,
  * 1) allocates and initialises the region manager structure.
  * 2) initialises the region manager structure fields from the init
  *    structure.
- * 3) tries to reserve a statistics object.
  * 4) calls the machine-dependent code.
  */
 
@@ -729,12 +728,6 @@ t_error			region_init(t_vaddr			start,
    * 3)
    */
 
-  STATS_RESERVE("region", &region->stats);
-
-  /*
-   * 4)
-   */
-
   if (machdep_call(region, region_init, start, size) !=
       ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
@@ -748,8 +741,7 @@ t_error			region_init(t_vaddr			start,
  * steps:
  *
  * 1) calls the machine-dependent code.
- * 2) releases the stats object.
- * 3) releases the region set.
+ * 2) releases the region set.
  */
 
 t_error			region_clean(void)
@@ -763,12 +755,6 @@ t_error			region_clean(void)
 
   /*
    * 2)
-   */
-
-  STATS_RELEASE(region->stats);
-
-  /*
-   * 3)
    */
 
   free(region);

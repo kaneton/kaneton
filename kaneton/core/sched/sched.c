@@ -729,10 +729,9 @@ t_error			sched_update(i_thread			thread)
  * steps:
  *
  * 1) allocate and initialises the scheduler manager structure.
- * 2) try to reserve a statistics object.
- * 3) create the thread lists.
- * 4) create the kernel thread.
- * 5) call the machine-dependent code.
+ * 2) create the thread lists.
+ * 3) create the kernel thread.
+ * 4) call the machine-dependent code.
  */
 
 t_error			sched_init(void)
@@ -767,12 +766,6 @@ t_error			sched_init(void)
 
   /*
    * 2)
-   */
-
-  STATS_RESERVE("sched", &sched->stats);
-
-  /*
-   * 3)
    */
 
   if (set_size(cpu->cpus, &ncpus) != ERROR_NONE)
@@ -829,7 +822,7 @@ t_error			sched_init(void)
     }
 
   /*
-   * 4)
+   * 3)
    */
 
   if (thread_reserve(ktask, THREAD_PRIOR, &kthread) != ERROR_NONE)
@@ -844,7 +837,7 @@ t_error			sched_init(void)
   ent2->current = kthread;
 
   /*
-   * 5)
+   * 4)
    */
 
   if (machdep_call(sched, sched_init) != ERROR_NONE)
@@ -860,8 +853,7 @@ t_error			sched_init(void)
  *
  * 1) call the machine-dependent code.
  * 2) release the lists and the queues.
- * 3) release the stats object.
- * 4) free the scheduler manager structure's memory.
+ * 3) free the scheduler manager structure's memory.
  */
 
 t_error			sched_clean(void)
@@ -916,12 +908,6 @@ t_error			sched_clean(void)
 
   /*
    * 3)
-   */
-
-  STATS_RELEASE(sched->stats);
-
-  /*
-   * 4)
    */
 
   free(sched);

@@ -270,9 +270,8 @@ t_error			event_get(i_event			id,
  * 1) allocate and initialize the event manager.
  * 2) initialize the object identifier.
  * 3) reserve the event set.
- * 4) try to reserve a statistic object.
- * 5) call the machine dependent code.
- * 6) dump the event manager if debug is enabled.
+ * 4) call the machine dependent code.
+ * 5) dump the event manager if debug is enabled.
  */
 
 t_error			event_init(void)
@@ -318,17 +317,11 @@ t_error			event_init(void)
    * 4)
    */
 
-  STATS_RESERVE("event", &event->stats);
-
-  /*
-   * 5)
-   */
-
   if (machdep_call(event, event_init) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
-   * 6)
+   * 5)
    */
 
 #if (DEBUG & DEBUG_EVENT)
@@ -345,11 +338,10 @@ t_error			event_init(void)
  * steps:
  *
  * 1) call the machine-dependent code.
- * 2) release the statistics object.
- * 3) release every event object.
- * 4) release the event set.
- * 5) destroy the identifier object.
- * 6) free the event manager's structure memory.
+ * 2) release every event object.
+ * 3) release the event set.
+ * 4) destroy the identifier object.
+ * 5) free the event manager's structure memory.
  */
 
 t_error			event_clean(void)
@@ -368,12 +360,6 @@ t_error			event_clean(void)
    * 2)
    */
 
-  STATS_RELEASE(event->stats);
-
-  /*
-   * 3)
-   */
-
   while (set_head(event->events, &i) == ERROR_NONE)
     {
       if (set_object(event->events, i, (void**)&o) != ERROR_NONE)
@@ -389,7 +375,7 @@ t_error			event_clean(void)
     }
 
   /*
-   * 4)
+   * 3)
    */
 
   if (set_release(event->events) != ERROR_NONE)
@@ -400,7 +386,7 @@ t_error			event_clean(void)
     }
 
   /*
-   * 5)
+   * 4)
    */
 
   if (id_destroy(&event->id) != ERROR_NONE)
@@ -411,7 +397,7 @@ t_error			event_clean(void)
     }
 
   /*
-   * 6)
+   * 5)
    */
 
   free(event);

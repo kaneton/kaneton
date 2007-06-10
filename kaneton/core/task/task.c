@@ -875,15 +875,14 @@ t_error			task_get(i_task				id,
  * 2) initialise the identifier object to be able to generate
  *    the task identifiers.
  * 3) reserve the task set which will contain the tasks built later.
- * 4) try to reserve a statistics object.
- * 5) reserve the kernel task and its address space.
- * 6) add the segments to the kernel address space.
+ * 4) reserve the kernel task and its address space.
+ * 5) add the segments to the kernel address space.
  *    note that for the segment corresponding to the mod service code, the
  *    segment identifier is saved in the mod global variable so that the
  *    core can retrieve it, build a task, map the segment, and launch it.
- * 7) add the regions to the kernel address space.
- * 8) call the machine-dependent code.
- * 9) if asked, dumps the task manager.
+ * 6) add the regions to the kernel address space.
+ * 7) call the machine-dependent code.
+ * 8) if asked, dumps the task manager.
  */
 
 t_error			task_init(void)
@@ -937,12 +936,6 @@ t_error			task_init(void)
    * 4)
    */
 
-  STATS_RESERVE("task", &task->stats);
-
-  /*
-   * 5)
-   */
-
   if (task_reserve(TASK_CLASS_CORE, TASK_BEHAV_CORE,
 		   TASK_PRIOR_CORE, &ktask) != ERROR_NONE)
     {
@@ -959,7 +952,7 @@ t_error			task_init(void)
     }
 
   /*
-   * 6)
+   * 5)
    */
 
   for (i = 0; i < init->nsegments; i++)
@@ -985,7 +978,7 @@ t_error			task_init(void)
     }
 
   /*
-   * 7)
+   * 6)
    */
 
   for (i = 0; i < init->nregions; i++)
@@ -1009,14 +1002,14 @@ t_error			task_init(void)
     }
 
   /*
-   * 8)
+   * 7)
    */
 
   if (machdep_call(task, task_init) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
-   * 9)
+   * 8)
    */
 
 #if (DEBUG & DEBUG_TASK)
@@ -1032,10 +1025,9 @@ t_error			task_init(void)
  * steps:
  *
  * 1) call the machine-dependent code.
- * 2) release the statistics object.
- * 3) release the task's set.
- * 4) destroy the id object.
- * 5) free the task manager structure's memory.
+ * 2) release the task's set.
+ * 3) destroy the id object.
+ * 4) free the task manager structure's memory.
  */
 
 t_error			task_clean(void)
@@ -1052,12 +1044,6 @@ t_error			task_clean(void)
 
   /*
    * 2)
-   */
-
-  STATS_RELEASE(task->stats);
-
-  /*
-   * 3)
    */
 
   while (set_head(task->tasks, &i) == ERROR_NONE)
@@ -1082,7 +1068,7 @@ t_error			task_clean(void)
     }
 
   /*
-   * 4)
+   * 3)
    */
 
   if (id_destroy(&task->id) != ERROR_NONE)
@@ -1093,7 +1079,7 @@ t_error			task_clean(void)
     }
 
   /*
-   * 5)
+   * 4)
    */
 
   free(task);

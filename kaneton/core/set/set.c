@@ -338,11 +338,10 @@ t_error			set_get(i_set				setid,
  * 1) allocates and initialises the set manager structure.
  * 2) builds the identifier object used to generate set identifiers.
  * 3) reserves an identifier for the container.
- * 4) if needed, reserves a statistics object.
- * 5) reserves the set container which will contain the set descriptors
+ * 4) reserves the set container which will contain the set descriptors
  *    reserved later. obviously, it will be better to take a powerful
  *    data structure because it will contains millions of objects.
- * 6) if necessary, dumps the set container.
+ * 5) if necessary, dumps the set container.
  */
 
 t_error			set_init(void)
@@ -389,12 +388,6 @@ t_error			set_init(void)
    * 4)
    */
 
-  STATS_RESERVE("set", &set->stats);
-
-  /*
-   * 5)
-   */
-
   if (set_reserve(bpt, SET_OPT_CONTAINER | SET_OPT_ALLOC | SET_OPT_SORT,
 		  sizeof(o_set), PAGESZ, &needless) != ERROR_NONE)
     {
@@ -404,7 +397,7 @@ t_error			set_init(void)
     }
 
   /*
-   * 6)
+   * 5)
    */
 
 #if (DEBUG & DEBUG_SET)
@@ -421,9 +414,8 @@ t_error			set_init(void)
  *
  * 1) releases each set object the set container still contains.
  * 2) releases the set container.
- * 3) if needed, releases the stats object.
- * 4) destroys the id object.
- * 5) frees the set manager structure's memory.
+ * 3) destroys the id object.
+ * 4) frees the set manager structure's memory.
  */
 
 t_error			set_clean(void)
@@ -470,12 +462,6 @@ t_error			set_clean(void)
    * 3)
    */
 
-  STATS_RELEASE(set->stats);
-
-  /*
-   * 4)
-   */
-
   if (id_destroy(&set->id) != ERROR_NONE)
     {
       cons_msg('!', "set: unable to destroy the identifier object\n");
@@ -484,7 +470,7 @@ t_error			set_clean(void)
     }
 
   /*
-   * 5)
+   * 4)
    */
 
   free(set);

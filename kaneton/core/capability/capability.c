@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sun jun  3 19:48:52 2007]
- * updated       julien quintard   [sun jun  3 19:49:44 2007]
+ * updated       julien quintard   [sun jun 10 19:05:38 2007]
  */
 
 /*
@@ -564,12 +564,6 @@ t_error			capability_init(void)
   /*
    * 3)
    */
-
-  STATS_RESERVE("capability", &capability->stats);
-
-  /*
-   * 4)
-   */
   capability->f_checksum = simple_checksum;
 
 #if (DEBUG & DEBUG_CAPABILITY)
@@ -613,12 +607,6 @@ t_error			capability_clean(void)
    * 1)
    */
 
-  STATS_RELEASE(capability->stats);
-
-  /*
-   * 2)
-   */
-
   while (set_head(capability->descriptors, &i) == ERROR_NONE)
     {
       if (set_object(capability->descriptors, i, (void**)&data) != ERROR_NONE)
@@ -641,7 +629,7 @@ t_error			capability_clean(void)
     }
 
   /*
-   * 3)
+   * 2)
    */
 
   free(capability);

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/event.h
  *
  * created       julien quintard   [wed jun  6 13:13:41 2007]
- * updated       julien quintard   [thu jun  7 13:29:26 2007]
+ * updated       julien quintard   [sun jun 10 19:03:04 2007]
  */
 
 #ifndef CORE_EVENT_H
@@ -85,8 +85,6 @@ typedef struct
 {
   o_id				id;
 
-  i_stats			stats;
-
   i_set				events;
 
   machdep_data(m_event);
@@ -129,8 +127,6 @@ typedef struct
 #define EVENT_ENTER(_event_)						\
   {									\
     EVENT_CHECK((_event_));						\
-									\
-    STATS_BEGIN((_event_)->stats);					\
   }
 
 /*
@@ -139,8 +135,6 @@ typedef struct
 
 #define EVENT_LEAVE(_event_, _error_)					\
   {									\
-    STATS_END((_event_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 

@@ -1209,8 +1209,7 @@ t_error			as_get(i_as				asid,
  *    the address space identifiers.
  * 3) reserves the addres space set which will contain the address space
  *    built later.
- * 4) tries to reserve a statistics object.
- * 5) calls the machine-dependent code.
+ * 4) calls the machine-dependent code.
  */
 
 t_error			as_init(void)
@@ -1256,12 +1255,6 @@ t_error			as_init(void)
    * 4)
    */
 
-  STATS_RESERVE("as", &as->stats);
-
-  /*
-   * 5)
-   */
-
   if (machdep_call(as, as_init) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
@@ -1274,10 +1267,9 @@ t_error			as_init(void)
  * steps:
  *
  * 1) calls the machine-dependent code.
- * 2) releases the statistics object.
- * 3) releases the address space's set.
- * 4) destroys the id object.
- * 5) frees the address space manager structure's memory.
+ * 2) releases the address space's set.
+ * 3) destroys the id object.
+ * 4) frees the address space manager structure's memory.
  */
 
 t_error			as_clean(void)
@@ -1294,12 +1286,6 @@ t_error			as_clean(void)
 
   /*
    * 2)
-   */
-
-  STATS_RELEASE(as->stats);
-
-  /*
-   * 3)
    */
 
   while (set_head(as->ass, &i) == ERROR_NONE)
@@ -1327,7 +1313,7 @@ t_error			as_clean(void)
     }
 
   /*
-   * 4)
+   * 3)
    */
 
   if (id_destroy(&as->id) != ERROR_NONE)
@@ -1338,7 +1324,7 @@ t_error			as_clean(void)
     }
 
   /*
-   * 5)
+   * 4)
    */
 
   free(as);

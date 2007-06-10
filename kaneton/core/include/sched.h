@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/sched.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [thu jun  7 13:39:44 2007]
+ * updated       julien quintard   [sun jun 10 19:03:51 2007]
  */
 
 #ifndef CORE_SCHED_H
@@ -169,8 +169,6 @@ typedef struct
 
 typedef struct
 {
-  i_stats			stats;
-
   t_quantum			quantum;
 
   i_set				cpus;
@@ -215,8 +213,6 @@ typedef struct
 #define SCHED_ENTER(_sched_)						\
   {									\
     SCHED_CHECK((_sched_));						\
-									\
-    STATS_BEGIN((_sched_)->stats);					\
   }
 
 /*
@@ -225,8 +221,6 @@ typedef struct
 
 #define SCHED_LEAVE(_sched_, _error_)					\
   {									\
-    STATS_END((_sched_)->stats, (_error_));				\
-    									\
     return (_error_);							\
   }
 

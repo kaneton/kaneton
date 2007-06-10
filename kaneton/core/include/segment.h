@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [sun jun 10 17:25:20 2007]
+ * updated       julien quintard   [sun jun 10 19:03:55 2007]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -78,8 +78,6 @@ typedef struct
 typedef struct
 {
   o_id				id;
-
-  i_stats			stats;
 
   t_paddr			start;
   t_psize			size;
@@ -164,8 +162,6 @@ typedef struct
 #define SEGMENT_ENTER(_segment_)					\
   {									\
     SEGMENT_CHECK((_segment_));						\
-									\
-    STATS_BEGIN((_segment_)->stats);					\
   }
 
 /*
@@ -174,8 +170,6 @@ typedef struct
 
 #define SEGMENT_LEAVE(_segment_, _error_)				\
   {									\
-    STATS_END((_segment_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 

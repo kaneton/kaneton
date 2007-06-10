@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       julien quintard   [thu jun  7 13:40:19 2007]
+ * updated       julien quintard   [sun jun 10 19:02:31 2007]
  */
 
 #ifndef CORE_TIMER_H
@@ -95,8 +95,6 @@ typedef struct
 {
   o_id				id;
 
-  i_stats			stats;
-
   t_uint32			timeref;
 
   i_set				timers;
@@ -150,8 +148,6 @@ typedef struct
 #define TIMER_ENTER(_timer_)						\
   {									\
     TIMER_CHECK((_timer_));						\
-									\
-    STATS_BEGIN((_timer_)->stats);					\
   }
 
 /*
@@ -160,8 +156,6 @@ typedef struct
 
 #define TIMER_LEAVE(_timer_, _error_)					\
   {									\
-    STATS_END((_timer_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 

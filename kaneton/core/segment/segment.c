@@ -1175,9 +1175,8 @@ t_error			segment_get(i_segment			segid,
  * 2) initialises the segment manager structure fields from the init
  *    structure.
  * 3) reserves the segment set which will contain the system's segments.
- * 4) tries to reserve a statistics object.
- * 5) calls the machine-dependent code.
- * 6) if needed, dumps the segments.
+ * 4) calls the machine-dependent code.
+ * 5) if needed, dumps the segments.
  */
 
 t_error			segment_init(void)
@@ -1219,17 +1218,11 @@ t_error			segment_init(void)
    * 4)
    */
 
-  STATS_RESERVE("segment", &segment->stats);
-
-  /*
-   * 5)
-   */
-
   if (machdep_call(segment, segment_init) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
-   * 6)
+   * 5)
    */
 
 #if (DEBUG & DEBUG_SEGMENT)
@@ -1246,8 +1239,7 @@ t_error			segment_init(void)
  *
  * 1) calls the machine-dependent code.
  * 2) releases the segment set.
- * 3) releases the stats object.
- * 4) frees the segment manager structure's memory.
+ * 3) frees the segment manager structure's memory.
  */
 
 t_error			segment_clean(void)
@@ -1264,12 +1256,6 @@ t_error			segment_clean(void)
 
   /*
    * 2)
-   */
-
-  STATS_RELEASE(segment->stats);
-
-  /*
-   * 3)
    */
 
   while (set_head(segment->segments, &i) == ERROR_NONE)
@@ -1294,7 +1280,7 @@ t_error			segment_clean(void)
     }
 
   /*
-   * 4)
+   * 3)
    */
 
   free(segment);

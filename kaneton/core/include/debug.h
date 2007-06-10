@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/debug.h
  *
  * created       julien quintard   [wed jun  6 13:11:05 2007]
- * updated       julien quintard   [thu jun  7 12:40:37 2007]
+ * updated       julien quintard   [sun jun 10 18:59:13 2007]
  */
 
 /*
@@ -36,22 +36,21 @@
 #define DEBUG_AS		(1 << 1)
 #define DEBUG_SEGMENT		(1 << 2)
 #define DEBUG_SET		(1 << 3)
-#define DEBUG_STATS		(1 << 4)
-#define DEBUG_REGION		(1 << 5)
-#define DEBUG_TASK		(1 << 6)
-#define DEBUG_THREAD		(1 << 7)
-#define DEBUG_SCHEDULE		(1 << 8)
-#define DEBUG_MESSAGE		(1 << 9)
-#define DEBUG_CAPABILITY	(1 << 10)
-#define DEBUG_INTERFACE		(1 << 11)
-#define DEBUG_EVENT		(1 << 12)
-#define DEBUG_TIME		(1 << 13)
-#define DEBUG_CPU		(1 << 14)
-#define DEBUG_IO		(1 << 15)
-#define DEBUG_MAP		(1 << 16)
+#define DEBUG_REGION		(1 << 4)
+#define DEBUG_TASK		(1 << 5)
+#define DEBUG_THREAD		(1 << 6)
+#define DEBUG_SCHEDULE		(1 << 7)
+#define DEBUG_MESSAGE		(1 << 8)
+#define DEBUG_CAPABILITY	(1 << 9)
+#define DEBUG_INTERFACE		(1 << 10)
+#define DEBUG_EVENT		(1 << 11)
+#define DEBUG_TIME		(1 << 12)
+#define DEBUG_CPU		(1 << 13)
+#define DEBUG_IO		(1 << 14)
+#define DEBUG_MAP		(1 << 15)
 
 #define DEBUG								\
-  (CONF_DEBUG)
+  (0)
 
 /*
  * ---------- macro functions -------------------------------------------------

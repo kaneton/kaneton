@@ -274,7 +274,6 @@ t_error			map_resize(i_as			asid,
  * steps:
  *
  * 1) allocate the manager structure.
- * 2) reserve a statistic object.
  */
 
 t_error			map_init(void)
@@ -293,12 +292,6 @@ t_error			map_init(void)
 
   memset(map, 0x0, sizeof(m_map));
 
-  /*
-   * 2)
-   */
-
-  STATS_RESERVE("map", &map->stats);
-
   return (ERROR_NONE);
 }
 
@@ -307,20 +300,13 @@ t_error			map_init(void)
  *
  * steps:
  *
- * 1) release the stats object.
- * 2) free the manager structure.
+ * 1) free the manager structure.
  */
 
 t_error			map_clean(void)
 {
   /*
    * 1)
-   */
-
-  STATS_RELEASE(map->stats);
-
-  /*
-   * 2)
    */
 
   free(map);

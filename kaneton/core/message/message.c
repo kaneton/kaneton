@@ -64,7 +64,6 @@ extern i_task		ktask;
  * steps:
  *
  * 1) allocate some memory for the manager structure.
- * 2) initialise a statistic object.
  * 3) call the machine dependent code.
  */
 
@@ -103,12 +102,6 @@ t_error			message_init(void)
    * 2)
    */
 
-  STATS_RESERVE("message", &message->stats);
-
-  /*
-   * 3)
-   */
-
   if (machdep_call(message, message_init) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
@@ -136,12 +129,6 @@ t_error			message_clean(void)
 
   /*
    * 2)
-   */
-
-  STATS_RELEASE(message->stats);
-
-  /*
-   * 3)
    */
 
   if (set_release(message->local_boxes) != ERROR_NONE)

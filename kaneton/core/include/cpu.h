@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/cpu.h
  *
  * created       julien quintard   [sun jun  3 20:25:39 2007]
- * updated       julien quintard   [fri jun  8 14:38:39 2007]
+ * updated       julien quintard   [sun jun 10 19:02:59 2007]
  */
 
 #ifndef CORE_CPU_H
@@ -47,8 +47,6 @@ typedef struct
 
 typedef struct
 {
-  i_stats			stats;
-
   i_set				cpus;
 
   machdep_data(m_cpu);
@@ -89,8 +87,6 @@ typedef struct
 #define CPU_ENTER(_cpu_)						\
   {									\
     CPU_CHECK((_cpu_));							\
-									\
-    STATS_BEGIN((_cpu_)->stats);					\
   }
 
 /*
@@ -99,8 +95,6 @@ typedef struct
 
 #define CPU_LEAVE(_cpu_, _error_)					\
   {									\
-    STATS_END((_cpu_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 

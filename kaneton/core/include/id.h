@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/id.h
  *
  * created       julien quintard   [wed jun  6 12:50:13 2007]
- * updated       julien quintard   [thu jun  7 14:10:33 2007]
+ * updated       julien quintard   [sun jun 10 19:03:10 2007]
  */
 
 #ifndef CORE_ID_H
@@ -41,7 +41,6 @@ typedef t_uint64		t_id;
  * identifiers of the kaneton objects
  */
 
-typedef t_id			i_stats;
 typedef t_id			i_set;
 typedef t_id			i_segment;
 typedef t_id			i_region;

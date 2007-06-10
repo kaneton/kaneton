@@ -187,8 +187,7 @@ t_error			io_write_64(i_task			task,
  * steps:
  *
  * 1) allocate some memory for the manager structure.
- * 2) initialise a statistic object.
- * 3) call the machine dependent code.
+ * 2) call the machine dependent code.
  */
 
 t_error			io_init(void)
@@ -211,12 +210,6 @@ t_error			io_init(void)
    * 2)
    */
 
-  STATS_RESERVE("io", &io->stats);
-
-  /*
-   * 3)
-   */
-
   if (machdep_call(io, io_init) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
@@ -230,8 +223,7 @@ t_error			io_init(void)
  * steps:
  *
  * 1) call the dependent code.
- * 2) release the statistics object.
- * 3) free the manager structure.
+ * 2) free the manager structure.
  */
 
 t_error			io_clean(void)
@@ -245,12 +237,6 @@ t_error			io_clean(void)
 
   /*
    * 2)
-   */
-
-  STATS_RELEASE(io->stats);
-
-  /*
-   * 3)
    */
 
   free(io);

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       julien quintard   [thu jun  7 13:30:27 2007]
+ * updated       julien quintard   [sun jun 10 19:03:38 2007]
  */
 
 #ifndef CORE_MESSAGE_H
@@ -69,8 +69,6 @@ typedef struct
 
 typedef struct
 {
-  i_stats		stats;
-
   i_set			local_boxes;
 
   machdep_data(m_message);
@@ -108,8 +106,6 @@ typedef struct
 #define MESSAGE_ENTER(_message_)					\
   {									\
     MESSAGE_CHECK((_message_));						\
-									\
-    STATS_BEGIN((_message_)->stats);					\
   }
 
 /*
@@ -118,8 +114,6 @@ typedef struct
 
 #define MESSAGE_LEAVE(_message_, _error_)				\
   {									\
-    STATS_END((_message_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 

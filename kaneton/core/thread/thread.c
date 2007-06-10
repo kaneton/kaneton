@@ -794,9 +794,8 @@ t_error			thread_get(i_thread			threadid,
  * 1) allocate and initialise the thread manager.
  * 2) initialise the object identifier.
  * 3) reserve the thread set.
- * 4) try to reserve a statistic object.
- * 5) call the machine-dependent code.
- * 6) dump the thread manager if debug is enabled.
+ * 4) call the machine-dependent code.
+ * 5) dump the thread manager if debug is enabled.
  */
 
 t_error			thread_init(void)
@@ -842,17 +841,11 @@ t_error			thread_init(void)
    * 4)
    */
 
-  STATS_RESERVE("thread", &thread->stats);
-
-  /*
-   * 5)
-   */
-
   if (machdep_call(thread, thread_init) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
-   * 6)
+   * 5)
    */
 
 #if (DEBUG & DEBUG_THREAD)
@@ -869,10 +862,9 @@ t_error			thread_init(void)
  * steps:
  *
  * 1) call the machine-dependent code.
- * 2) release the statistics object.
- * 3) release every thread object.
- * 4) destroy the identifier object.
- * 5) free the thread manager's structure memory.
+ * 2) release every thread object.
+ * 3) destroy the identifier object.
+ * 4) free the thread manager's structure memory.
  */
 
 t_error			thread_clean(void)
@@ -888,12 +880,6 @@ t_error			thread_clean(void)
    * 2)
    */
 
-  STATS_RELEASE(thread->stats);
-
-  /*
-   * 3)
-   */
-
   if (set_release(thread->threads) != ERROR_NONE)
     {
       cons_msg('!', "thread: unable to release the thread set\n");
@@ -902,7 +888,7 @@ t_error			thread_clean(void)
     }
 
   /*
-   * 4)
+   * 3)
    */
 
   if (id_destroy(&thread->id) != ERROR_NONE)
@@ -913,7 +899,7 @@ t_error			thread_clean(void)
     }
 
   /*
-   * 5)
+   * 4)
    */
 
   free(thread);

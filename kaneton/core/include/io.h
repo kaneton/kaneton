@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/io.h
  *
  * created       julien quintard   [wed jun  6 13:26:01 2007]
- * updated       julien quintard   [thu jun  7 16:12:07 2007]
+ * updated       julien quintard   [sun jun 10 19:03:30 2007]
  */
 
 #ifndef CORE_IO_H
@@ -34,8 +34,6 @@
 
 typedef struct
 {
-  i_stats			stats;
-
   machdep_data(m_io);
 }				m_io;
 
@@ -100,8 +98,6 @@ typedef struct
 #define IO_ENTER(_io_)							\
   {									\
     IO_CHECK((_io_));							\
-    									\
-    STATS_BEGIN((_io_)->stats);						\
   }
 
 /*
@@ -110,8 +106,6 @@ typedef struct
 
 #define IO_LEAVE(_io_, _error_)						\
   {									\
-    STATS_END((_io_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [thu jun  7 16:11:15 2007]
+ * updated       julien quintard   [sun jun 10 19:02:09 2007]
  */
 
 #ifndef CORE_TASK_H
@@ -119,8 +119,6 @@ typedef struct
 {
   o_id				id;
 
-  i_stats			stats;
-
   i_set				tasks;
 
   machdep_data(m_task);
@@ -187,8 +185,6 @@ typedef struct
 #define TASK_ENTER(_task_)						\
   {									\
     TASK_CHECK((_task_));						\
-									\
-    STATS_BEGIN((_task_)->stats);					\
   }
 
 /*
@@ -197,8 +193,6 @@ typedef struct
 
 #define TASK_LEAVE(_task_, _error_)					\
   {									\
-    STATS_END((_task_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 

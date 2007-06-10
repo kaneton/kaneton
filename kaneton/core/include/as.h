@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/as.h
  *
  * created       julien quintard   [wed jun  6 12:25:01 2007]
- * updated       julien quintard   [thu jun  7 16:19:02 2007]
+ * updated       julien quintard   [sun jun 10 19:02:45 2007]
  */
 
 #ifndef CORE_AS_H
@@ -63,8 +63,6 @@ typedef struct
 {
   o_id				id;
 
-  i_stats			stats;
-
   i_set				ass;
 
   machdep_data(m_as);
@@ -116,8 +114,6 @@ typedef struct
 #define AS_ENTER(_as_)							\
   {									\
     AS_CHECK((_as_));							\
-									\
-    STATS_BEGIN((_as_)->stats);						\
   }
 
 /*
@@ -126,8 +122,6 @@ typedef struct
 
 #define AS_LEAVE(_as_, _error_)						\
   {									\
-    STATS_END((_as_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 

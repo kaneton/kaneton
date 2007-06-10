@@ -63,22 +63,21 @@ extern i_as		kasid;
  * steps:
  *
  * 1) allocates and initializes the kernel manager structure.
- * 2) if needed, initialises the stats manager.
- * 3) initialises the id manager.
- * 4) initialises the set manager.
- * 5) initialises the address space manager.
- * 6) initialises the segment manager.
- * 7) initialises the region manager.
- * 8) initialises the map manager
- * 9) initialises the task manager.
- * 10) initialises the thread manager.
- * 11) initialises the event manager.
- * 12) initialises the timer manager.
- * 13) initialises the io manager.
- * 14) initialises the message manager.
- * 15) initialises the capability manager.
- * 16) initialise the cpu manager.
- * 17) initialise the scheduler manager.
+ * 2) initialises the id manager.
+ * 3) initialises the set manager.
+ * 4) initialises the address space manager.
+ * 5) initialises the segment manager.
+ * 6) initialises the region manager.
+ * 7) initialises the map manager
+ * 8) initialises the task manager.
+ * 9) initialises the thread manager.
+ * 10) initialises the event manager.
+ * 11) initialises the timer manager.
+ * 12) initialises the io manager.
+ * 13) initialises the message manager.
+ * 14) initialises the capability manager.
+ * 15) initialise the cpu manager.
+ * 16) initialise the scheduler manager.
  */
 
 void			kernel_init(void)
@@ -104,23 +103,13 @@ void			kernel_init(void)
    * 2)
    */
 
-#ifdef CONF_STATS
-  cons_msg('+', "starting stats manager\n");
-#endif
-
-  STATS_INIT();
-
-  /*
-   * 3)
-   */
-
   cons_msg('+', "starting id manager\n");
 
   if (id_init() != ERROR_NONE)
     core_error("cannot initialise the id manager\n");
 
   /*
-   * 4)
+   * 3)
    */
 
   cons_msg('+', "starting set manager\n");
@@ -129,7 +118,7 @@ void			kernel_init(void)
     core_error("cannot initialise the set manager\n");
 
   /*
-   * 5)
+   * 4)
    */
 
   cons_msg('+', "starting as manager\n");
@@ -138,7 +127,7 @@ void			kernel_init(void)
     core_error("cannot initialise the address space manager\n");
 
   /*
-   * 6)
+   * 5)
    */
 
   cons_msg('+', "starting segment manager\n");
@@ -147,7 +136,7 @@ void			kernel_init(void)
     core_error("cannot initialise the segment manager\n");
 
   /*
-   * 7)
+   * 6)
    */
 
   cons_msg('+', "starting region manager\n");
@@ -157,7 +146,7 @@ void			kernel_init(void)
     core_error("cannot initialise the region manager\n");
 
   /*
-   * 8)
+   * 7)
    */
 
   cons_msg('+', "starting map manager\n");
@@ -166,7 +155,7 @@ void			kernel_init(void)
     core_error("cannot initialise the map manager\n");
 
   /*
-   * 9)
+   * 8)
    */
 
   cons_msg('+', "starting task manager\n");
@@ -177,7 +166,7 @@ void			kernel_init(void)
   alloc_setup(map_reserve, map_release, kasid);
 
   /*
-   * 10)
+   * 9)
    */
 
   cons_msg('+', "starting thread manager\n");
@@ -186,7 +175,7 @@ void			kernel_init(void)
     core_error("cannot initialise the thread manager\n");
 
   /*
-   * 11)
+   * 10)
    */
 
   cons_msg('+', "starting event manager\n");
@@ -195,7 +184,7 @@ void			kernel_init(void)
     core_error("cannot initialise the event manager\n");
 
   /*
-   * 12)
+   * 11)
    */
 
   cons_msg('+', "starting timer manager\n");
@@ -204,7 +193,7 @@ void			kernel_init(void)
     core_error("cannot initialise the timer manager\n");
 
   /*
-   * 13)
+   * 12)
    */
 
   cons_msg('+', "starting io manager\n");
@@ -213,7 +202,7 @@ void			kernel_init(void)
     core_error("cannot initialise the io manager\n");
 
   /*
-   * 14)
+   * 13)
    */
 
   cons_msg('+', "starting message manager\n");
@@ -222,7 +211,7 @@ void			kernel_init(void)
     core_error("cannot initialise the message manager\n");
 
   /*
-   * 15)
+   * 14)
    */
 
   cons_msg('+', "starting capability manager\n");
@@ -231,7 +220,7 @@ void			kernel_init(void)
     core_error("cannot initialise the capability manager\n");
 
   /*
-   * 16)
+   * 15)
    */
 
   cons_msg('+', "starting cpu manager\n");
@@ -240,7 +229,7 @@ void			kernel_init(void)
     core_error("cannot initialise the cpu manager\n");
 
   /*
-   * 17)
+   * 16)
    */
 
   cons_msg('+', "starting scheduler manager\n");
@@ -296,6 +285,4 @@ void			kernel_clean(void)
   set_clean();
 
   id_clean();
-
-  STATS_CLEAN();
 }

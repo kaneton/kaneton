@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/map.h
  *
  * created       julien quintard   [wed jun  6 13:31:27 2007]
- * updated       julien quintard   [thu jun  7 12:22:00 2007]
+ * updated       julien quintard   [sun jun 10 19:03:34 2007]
  */
 
 #ifndef CORE_MAP_H
@@ -45,7 +45,6 @@
 
 typedef struct
 {
-  i_stats			stats;
 }				m_map;
 
 /*
@@ -69,8 +68,6 @@ typedef struct
 #define MAP_ENTER(_map_)						\
   {									\
     MAP_CHECK((_map_));							\
-									\
-    STATS_BEGIN((_map_)->stats);					\
   }
 
 /*
@@ -79,8 +76,6 @@ typedef struct
 
 #define MAP_LEAVE(_map_, _error_)					\
   {									\
-    STATS_END((_map_)->stats, (_error_));				\
-									\
     return (_error_);							\
   }
 
