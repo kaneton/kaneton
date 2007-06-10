@@ -27,12 +27,12 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		virtual
+PAPER			:=		educational
 
 SOURCES			:=		bibliography.tex		\
 					bootloader.tex			\
 					event.tex			\
-					virtual.tex			\
+					educational.tex			\
 					io.tex				\
 					memory.tex			\
 					overview.tex			\
