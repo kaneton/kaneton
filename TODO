@@ -528,6 +528,12 @@ donc nous on a juste besoin de ___kernel pour la libc et ___wordsz etc.
 
 --
 
+creer un repository ivory opur le bootloader et dans
+profile/user/user.conf _BOOTLOADER_ = <null> mais override dans le user
+profile.
+
+--
+
 preciser que les adresses de segment, region etc.. ne sont pas alignees.
 par contre l'archi peut refuser un appel de fonction car une adresse
 n'est pas alignee et que ca ne colle pas avec ce qu'elle veut. une autre
