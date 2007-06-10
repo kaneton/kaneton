@@ -23,10 +23,16 @@
  - {task,thread}_wait
  - thread_args
  - pb de stack dans thread_clone
-
---
- voir pourquoi les taches de classe DRIVER et SERVICE ne fonctionnent
-pas (ca semble etre un problème de segment selectors).
+ - ia32_as_reserve: ajuster les flags G des pte du kas
+ - sched_update: optimiser car ca pue
+ - ia32_sched_yield
+ - set_array_locate : dicho desactivée
+ - thread_clone: quand on clone un thread, il faut peut etre changer le
+   cr3 plutot que le recopier.
+ - thread_give: copier la pile dans le nouvel AS ?
+ - gestion des wait
+ - voir pourquoi les taches de classe DRIVER et SERVICE ne fonctionnent
+   pas (ca semble etre un problème de segment selectors).
 
 --
  aligner les modules lors de leur relocation + tenir compte de
@@ -44,18 +50,6 @@ l'endianness dans mod_load
 
 --
  utiliser _CHECK_ pour activer ou non le debug
-
---
- stats manager: utiliser l'instruction qui compte les cycles plutot
- qu'un timer ?
-
-   + hyper precis
-   - pas dispo partout
-
- en fait, le stat manager deconne trop maintenant qu'il y a le
- scheduling. il faut augmenter vachement la latence du kernel pour
- pouvoir s'en servir (dans timer.h: TIMER_MS_PER_TICK et dans sched.h:
- SCHED_QUANTUM_INIT).
 
 --
  ecrire un paper juste sur la portabilite ou alors dans le reference
@@ -79,33 +73,6 @@ l'endianness dans mod_load
  dans chaque as.
 
  +stack expansion
-
---
-
-
- * as
-  - ia32_as_reserve: ajuster les flags G des pte du kas
- * map
-  - map_resize: a revoir en fct des modifications de region/segment
- * region
-  - region_split: a modifier - 2 regions / 1 segment
- * sched
-  - sched_update: optimiser car ca pue
-  - ia32_sched_yield
- * segment
-  - segment_resize: segment OK (bug pour le 1er/dernier seg), regions TODO
-  - segment_split: segment OK, regions TODO
-  - segment_coalesce: segment OK, regions TODO
-  - segment_perms: gestion des regions
- * set
-  - set_array_locate : dicho desactivée
- * task
-  - wait et clone a finir
- * thread
-  - thread_clone: quand on clone un thread, il faut peut etre changer le
-    cr3 plutot que le recopier.
-  - thread_give: copier la pile dans le nouvel AS ?
-  - gestion des wait
 
 --
  + moulinette triche
