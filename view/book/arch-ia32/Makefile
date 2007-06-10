@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/book/arch-ia32/Makefile
 #
 # created       julien quintard   [mon may 14 19:03:18 2007]
-# updated       julien quintard   [sun jun 10 00:09:02 2007]
+# updated       julien quintard   [sun jun 10 21:24:48 2007]
 #
 
 #
@@ -27,7 +27,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		virtual				
+SUBDIRS			:=		educational
 
 #
 # ---------- rules ------------------------------------------------------------

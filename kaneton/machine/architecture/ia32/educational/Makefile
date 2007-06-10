@@ -5,31 +5,30 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/core/arch/machdep/Makefile
+# file          /home/mycure/kane...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       julien quintard   [sun dec 10 18:38:53 2006]
+# updated       julien quintard   [sun jun 10 21:21:28 2007]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../environment/env.mk
+include			../../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-MACHDEP_LO		:=		machdep.lo
-
-MACHDEP_C		:=		as.c				\
+ARCHITECTURE_C		:=		io.c				\
+					as.c				\
 					region.c			\
 					segment.c			\
 					event.c				\
@@ -38,43 +37,37 @@ MACHDEP_C		:=		as.c				\
 					task.c				\
 					sched.c				\
 					message.c			\
-					cpu.c				\
-					io.c
+					cpu.c				
 
-MACHDEP_O		:=		$(MACHDEP_C:.c=.o)
+ARCHITECTURE_O		:=		$(ARCHITECTURE_C:.c=.o)
 
-MACHDEP_INCLUDE		:=		$(_MACHDEP_INCLUDE_DIR_)/core/core.h
-
-CFLAGS			+=		-D___kernel
+ARCHITECTURE_INCLUDE	:=		$(_ARCHITECTURE_INCLUDE_DIR_)/core.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-libs:
-	$(call env_launch,Makefile,$(_LIBIA32_DIR_),,)
+main:			$(_ARCHITECTURE_LO_)
 
-	$(call env_launch,Makefile,.,$(MACHDEP_LO),)
+$(_ARCHITECTURE_LO_):		$(ARCHITECTURE_O)
+	$(call env_remove,$(_ARCHITECTURE_LO_),)
 
-$(MACHDEP_LO):		$(MACHDEP_O)
-	$(call env_remove,$(MACHDEP_LO),)
-
-	$(call env_archive,$(MACHDEP_LO),$(MACHDEP_O) $(_LIBIA32_A_),)
+	$(call env_archive,$(_ARCHITECTURE_LO_),$(ARCHITECTURE_O),)
 
 clear:
-	$(call env_remove,$(MACHDEP_O),)
+	$(call env_remove,$(ARCHITECTURE_O),)
 
-	$(call env_remove,$(MACHDEP_LO),)
+	$(call env_remove,$(_ARCHITECTURE_LO_),)
 
 	$(call env_purge,)
 
-proto:
-	$(call env_prototypes,$(MACHDEP_INCLUDE),)
+prototypes:
+	$(call env_prototypes,$(ARCHITECTURE_INCLUDE),)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(MACHDEP_C),$(_DEPENDENCY_MK_),)
+	$(call env_headers,$(ARCHITECTURE_C),$(_DEPENDENCY_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------

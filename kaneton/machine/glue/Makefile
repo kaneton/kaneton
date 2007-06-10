@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/Makefile
+# file          /home/mycure/kaneton/kaneton/machine/glue/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [sun jun 10 21:11:49 2007]
+# updated       julien quintard   [sun jun 10 21:14:06 2007]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../environment/env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,8 +27,7 @@ include			../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		core				\
-					machine				
+SUBDIRS			:=		.current			
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -38,16 +37,6 @@ main:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,,)				; \
 	done
-
-	XXX
-
-	$(call env_executable,$(_CORE_),$(CORE_O)			\
-					$(VERSION_O)			\
-					$(KANETON_O)			\
-					$(_KLIBC_A_),			\
-                 "--link-script $(_MACHDEP_LINK_DIR_)/core.lks"		\
-                 "--no-standard-include"				\
-                 "--no-standard-library")
 
 clear:
 	for d in $(SUBDIRS) ; do					\

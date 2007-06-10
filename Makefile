@@ -21,7 +21,7 @@
 
 .SILENT:
 
-.PHONY:		main initialize clean kaneton clear purge prototypes	\
+.PHONY:		main initialize clean kaneton clear prototypes		\
 		headers dependencies build install test info view view-	\
 		export export- cheat cheat- play play- record record-
 
@@ -41,7 +41,7 @@ ifeq ($(_SIGNATURE_),kaneton)
 else
   main									\
   kaneton clear								\
-  prototypes purge							\
+  prototypes								\
   headers dependencies							\
   build install								\
   test info								\
@@ -81,8 +81,8 @@ clean:		clear
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		kaneton configure library	\
-					view export check cheat		
+SUBDIRS			:=		environment kaneton configure	\
+					library	view export check cheat	
 
 #
 # ---------- kaneton ----------------------------------------------------------
@@ -92,15 +92,14 @@ kaneton:
 	$(call env_launch,$(_KANETON_DIR_)/Makefile,,)
 
 #
-# ---------- clear & purge ----------------------------------------------------
+# ---------- clear ------------------------------------------------------------
 #
 
 clear:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d)/Makefile,clear,)			; \
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
 
-purge:
 	$(call env_purge,)
 
 #
@@ -109,7 +108,7 @@ purge:
 
 prototypes:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d)/Makefile,prototypes,)			; \
+	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
 	done
 
 #
@@ -118,7 +117,7 @@ prototypes:
 
 headers:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d)/Makefile,headers,)			; \
+	  $(call env_launch,$${d}/Makefile,headers,)			; \
 	done
 
 #
@@ -127,7 +126,7 @@ headers:
 
 dependencies:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d)/Makefile,dependencies,)		; \
+	  $(call env_launch,$${d}/Makefile,dependencies,)		; \
 	done
 
 #

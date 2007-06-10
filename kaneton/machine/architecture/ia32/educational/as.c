@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/as.c
+ * license       kaneton
  *
- * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sun may  6 18:07:25 2007]
+ * file          /home/mycure/kane...chine/architecture/ia32/educational/as.c
+ *
+ * created       julien quintard   [sun jun 10 21:18:54 2007]
+ * updated       julien quintard   [sun jun 10 21:21:09 2007]
  */
 
 /*
@@ -32,7 +34,7 @@ extern m_as*		as;
 extern i_task		ktask;
 extern t_init*		init;
 extern i_as		kasid;
-extern t_ia32_idt           idt;
+extern t_ia32_idt	idt;
 extern m_thread*	thread;
 
 /*
