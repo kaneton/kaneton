@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/template/Makefile
+# file          /home/mycure/kaneton/configure/Makefile
 #
 # created       julien quintard   [wed may 16 18:08:19 2007]
-# updated       julien quintard   [wed may 16 18:38:20 2007]
+# updated       julien quintard   [sun jun 10 14:47:10 2007]
 #
 
 #
@@ -21,17 +21,19 @@ include			../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
+main:
 
 clear:
 	$(call env_purge)
 
-proto:
+prototypes:
 
-dep:
+headers:
+
+dependencies:

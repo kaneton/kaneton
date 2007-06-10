@@ -19,7 +19,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -51,16 +51,16 @@ clear:
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(LIBDATA_INCLUDE),)
 
-dep:
-	$(call env_remove,$(_MAKEFILE_MK_),)
+headers:
+	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_dependencies,$(LIBDATA_C),$(_MAKEFILE_MK_),)
+	$(call env_headers,$(LIBDATA_C),$(_DEPENDENCY_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
--include		./$(_MAKEFILE_MK_)
+-include		./$(_DEPENDENCY_MK_)

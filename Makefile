@@ -21,7 +21,7 @@
 
 .SILENT:
 
-.PHONY:		all initialize clean kaneton clear purge prototypes	\
+.PHONY:		main initialize clean kaneton clear purge prototypes	\
 		headers dependencies build install test info view view-	\
 		export export- cheat cheat- play play- record record-
 
@@ -37,9 +37,9 @@ _MAKE_			?=		$(MAKE)
 #
 
 ifeq ($(_SIGNATURE_),kaneton)
-  all:			kaneton
+  main:			kaneton
 else
-  all									\
+  main									\
   kaneton clear								\
   prototypes purge							\
   headers dependencies							\
@@ -74,7 +74,7 @@ ifeq ($(_SIGNATURE_),kaneton)
 # ---------- environment ------------------------------------------------------
 #
 
-clean:
+clean:		clear
 	$(call env_launch,$(_ENVIRONMENT_DIR_)/clean.py,,)
 
 #

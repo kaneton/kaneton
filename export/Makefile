@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/export/Makefile
-##
-## created       julien quintard   [fri feb 11 02:59:20 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:44:36 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/export/Makefile
+#
+# created       julien quintard   [sun jun 10 14:53:00 2007]
+# updated       julien quintard   [sun jun 10 14:54:22 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,19 +21,21 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
+main:
 
 clear:
-	$(call env_remove,$(_EXPORT_).tar.gz,)
+	$(call env_remove,$(_EXPORT_).tar.bz2,)
 
 	$(call env_purge)
 
-proto:
+prototypes:
 
-dep:
+headers:
+
+dependencies:

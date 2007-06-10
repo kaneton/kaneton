@@ -538,3 +538,73 @@ le coup de PYTHONPATH c'est plus dans launch
 lorsqu'on met en private, ca creer un fichier temp, il faut l'effacer: DEP_TEX
 
 virtual -> educational
+bouger link dans glue
+
+_PROFILE_USER_ a ete enleve de environment.conf et est utilise par configure
+
+noms des fichiers dans environment: linux.ia32/ia32/virtual/ia32.conf !!!
+  pour archi et platform on prend le premier mot.
+
+env_dependencies -> env_headers
+
+recuperer les trucs dans conf.h
+
+mettre a jour development pour tout ce qui concerne les makefiles: env_,
+env.mk DEPENDENCY_MK etc.
+
+gerer TEST dans kaneton/Makefile: minimum de code, propre etc.
+
+#
+# ---------- default rule -----------------------------------------------------
+#
+# this rule is invoked when a Makefile is called without specifying a
+# rule name.
+#
+# this rule is intended to check whether the configured environment files
+# are up-to-date. if not, this rule re-builds the configured environment files.
+#
+
+_PROFILE_ARCHITECTURE_ = $(word 1,$(call subst,/, ,$(_ARCHITECTURE_)))
+_PROFILE_PLATFORM_ = $(word 1,$(call subst,/, ,$(_PLATFORM_)))
+
+$(_ENV_MK_) $(_ENV_PY):							\
+	$(_PROFILE_DIR_)/environment.conf				\
+	$(_PROFILE_DIR_)/host/host.conf					\
+	$(_PROFILE_DIR_)/host/host.mk					\
+	$(_PROFILE_DIR_)/host/host.py					\
+	$(_PROFILE_HOST_DIR_)/$(_PROFILE_ARCHITECTURE_).conf		\
+	$(_PROFILE_HOST_DIR_)/$(_PROFILE_ARCHITECTURE_).mk		\
+	$(_PROFILE_HOST_DIR_)/$(_PROFILE_ARCHITECTURE_).py		\
+	$(_PROFILE_DIR_)/kaneton/kaneton.conf				\
+	$(_PROFILE_DIR_)/kaneton/kaneton.py				\
+	$(_PROFILE_DIR_)/kaneton/kaneton.mk				\
+	$(_PROFILE_DIR_)/kaneton/core/core.conf				\
+	$(_PROFILE_DIR_)/kaneton/core/core.mk				\
+	$(_PROFILE_DIR_)/kaneton/core/core.py				\
+	$(_PROFILE_DIR_)/kaneton/platform/platform.conf			\
+	$(_PROFILE_DIR_)/kaneton/platform/platform.mk			\
+	$(_PROFILE_DIR_)/kaneton/platform/platform.py			\
+	$(_PROFILE_PLATFORM_DIR_)/$(_PROFILE_PLATFORM_).conf		\
+	$(_PROFILE_PLATFORM_DIR_)/$(_PROFILE_PLATFORM_).mk		\
+	$(_PROFILE_PLATFORM_DIR_)/$(_PROFILE_PLATFORM_).py		\
+	$(_PROFILE_DIR_)/kaneton/architecture/architecture.conf		\
+	$(_PROFILE_DIR_)/kaneton/architecture/architecture.mk		\
+	$(_PROFILE_DIR_)/kaneton/architecture/architecture.py		\
+	$(_PROFILE_ARCHITECTURE_DIR_)/$(_PROFILE_ARCHITECTURE_).conf	\
+	$(_PROFILE_ARCHITECTURE_DIR_)/$(_PROFILE_ARCHITECTURE_).mk	\
+	$(_PROFILE_ARCHITECTURE_DIR_)/$(_PROFILE_ARCHITECTURE_).py	\
+	$(_PROFILE_DIR_)/user/user.conf					\
+	$(_PROFILE_DIR_)/user/user.mk					\
+	$(_PROFILE_DIR_)/user/user.py					\
+	$(_PROFILE_USER_DIR_)/$(_USER_).conf				\
+	$(_PROFILE_USER_DIR_)/$(_USER_).mk				\
+	$(_PROFILE_USER_DIR_)/$(_USER_).py
+	$(call env_launch,$(_ENVIRONMENT_DIR_)/Makefile,init,)
+	$(call env_launch,Makefile,main,)
+
+--
+
+preciser que les adresses de segment, region etc.. ne sont pas alignees.
+par contre l'archi peut refuser un appel de fonction car une adresse
+n'est pas alignee et que ca ne colle pas avec ce qu'elle veut. une autre
+solution est de corriger l'adresse en fonction de l'archi

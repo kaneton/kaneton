@@ -19,13 +19,11 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
 #
-
-CAPABILITY_LO		:=		capability.lo
 
 CAPABILITY_C		:=		capability.c			
 
@@ -39,28 +37,28 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-$(CAPABILITY_LO):		$(CAPABILITY_O)
-	$(call env_remove,$(CAPABILITY_LO),)
+$(_CAPABILITY_LO_):		$(CAPABILITY_O)
+	$(call env_remove,$(_CAPABILITY_LO_),)
 
-	$(call env_archive,$(CAPABILITY_LO),$(CAPABILITY_O),)
+	$(call env_archive,$(_CAPABILITY_LO_),$(CAPABILITY_O),)
 
 clear:
 	$(call env_remove,$(CAPABILITY_O),)
 
-	$(call env_remove,$(CAPABILITY_LO),)
+	$(call env_remove,$(_CAPABILITY_LO_),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(CAPABILITY_INCLUDE),)
 
-dep:
-	$(call env_remove,$(_MAKEFILE_MK_),)
+headers:
+	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_dependencies,$(CAPABILITY_C),$(_MAKEFILE_MK_),)
+	$(call env_headers,$(CAPABILITY_C),$(_DEPENDENCY_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
--include		./$(_MAKEFILE_MK_)
+-include		./$(_DEPENDENCY_MK_)

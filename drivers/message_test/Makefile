@@ -79,14 +79,14 @@ clear:
 proto:
 
 dep:
-	$(call env_remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_dependencies,$(MOD1_C),$(_MAKEFILE_MK_),)
+	$(call env_headers,$(MOD1_C),$(_DEPENDENCY_MK_),)
 
-	$(call env_dependencies,$(MOD2_C),$(_MAKEFILE_MK_),)
+	$(call env_headers,$(MOD2_C),$(_DEPENDENCY_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
--include		./$(_MAKEFILE_MK_)
+-include		./$(_DEPENDENCY_MK_)

@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/libs/Makefile
-##
-## created       julien quintard   [fri feb 11 02:28:05 2005]
-## updated       matthieu bucchianeri   [thu aug 10 15:56:41 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/library/Makefile
+#
+# created       julien quintard   [sun jun 10 00:53:47 2007]
+# updated       julien quintard   [sun jun 10 13:04:15 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,39 +21,42 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		klibc				\
+SUBDIRS			:=		libc				\
 					crt
-
-ARCHSUBDIRS		:=		libia32				\
-					libsun4u			\
-					libmipsr10000
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
+main:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,,)				; \
+	done
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
-
-	$(call env_launch,Makefile,$(ARCHSUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
+	done
 
 	$(call env_purge,)
 
-proto:
-	$(call env_launch,Makefile,$(SUBDIRS),proto,)
+prototypes:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
+	done
 
-	$(call env_launch,Makefile,$(ARCHSUBDIRS),proto,)
+headers:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,headers,)			; \
+	done
 
-dep:
-	$(call env_launch,Makefile,$(SUBDIRS),dep,)
-
-	$(call env_launch,Makefile,$(ARCHSUBDIRS),dep,)
+dependencies:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,dependencies,)		; \
+	done

@@ -21,7 +21,7 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main view build clear prototypes headers
+.PHONY:		main view build clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -51,12 +51,12 @@ view:
 
 build:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d)/Makefile,build,)			; \
+	  $(call env_launch,$${d}/Makefile,build,)			; \
 	done
 
 clear:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d)/Makefile,clear,)			; \
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
 
 	$(call env_purge,)

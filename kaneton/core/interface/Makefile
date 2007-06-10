@@ -55,12 +55,12 @@ proto:
 	$(call env_prototypes,$(INTERFACE_INCLUDE),)
 
 dep:
-	$(call env_remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_dependencies,$(INTERFACE_C),$(_MAKEFILE_MK_),)
+	$(call env_headers,$(INTERFACE_C),$(_DEPENDENCY_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
--include		./$(_MAKEFILE_MK_)
+-include		./$(_DEPENDENCY_MK_)

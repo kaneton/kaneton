@@ -70,12 +70,12 @@ proto:
 	$(call env_env_prototypes,$(MACHDEP_INCLUDE),)
 
 dep:
-	$(call env_env_remove,$(_MAKEFILE_MK_),)
+	$(call env_env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_env_dependencies,$(MACHDEP_C),$(_MAKEFILE_MK_),)
+	$(call env_env_dependencies,$(MACHDEP_C),$(_DEPENDENCY_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
--include		./$(_MAKEFILE_MK_)
+-include		./$(_DEPENDENCY_MK_)

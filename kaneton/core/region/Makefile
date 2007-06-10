@@ -56,12 +56,12 @@ proto:
 	$(call env_prototypes,$(REGION_INCLUDE),)
 
 dep:
-	$(call env_remove,$(_MAKEFILE_MK_),)
+	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_dependencies,$(REGION_C),$(_MAKEFILE_MK_),)
+	$(call env_headers,$(REGION_C),$(_DEPENDENCY_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
--include		./$(_MAKEFILE_MK_)
+-include		./$(_DEPENDENCY_MK_)

@@ -38,12 +38,12 @@ main:		build
 
 build:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d)/Makefile,build,)			; \
+	  $(call env_launch,$${d}/Makefile,build,)			; \
 	done
 
 clear:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d)/Makefile,clear,)			; \
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
 
 	$(call env_purge)

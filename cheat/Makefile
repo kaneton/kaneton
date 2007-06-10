@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/cheat/Makefile
-##
-## created       julien quintard   [sat jan 21 23:56:47 2006]
-## updated       julien quintard   [mon feb 20 22:54:58 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/cheat/Makefile
+#
+# created       julien quintard   [sun jun 10 14:42:10 2007]
+# updated       julien quintard   [sun jun 10 14:42:31 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,17 +21,19 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
+main:
 
 clear:
 	$(call env_purge,)
 
-proto:
+prototypes:
 
-dep:
+headers:
+
+dependencies:

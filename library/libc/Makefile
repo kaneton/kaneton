@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/libs/klibc/Makefile
-##
-## created       julien quintard   [fri feb 11 02:29:19 2005]
-## updated       julien quintard   [thu jul 13 11:45:02 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/library/libc/Makefile
+#
+# created       julien quintard   [sun jun 10 14:14:02 2007]
+# updated       julien quintard   [sun jun 10 14:41:46 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,7 +21,7 @@ include			../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		libs clear proto dep
+.PHONY:		clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -35,28 +37,32 @@ LIBSYS_LO		:=		libsys/libsys.lo
 # ---------- rules ------------------------------------------------------------
 #
 
-#main:		relations
+$(_LIBC_A_):		dependencies
+	$(call env_remove,$(_LIBC_A_),)
 
-relations:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
-
-	$(call env_launch,Makefile,.,$(_KLIBC_A_),)
-
-$(_KLIBC_A_):		$(LIBDATA_LO) $(LIBSTRING_LO) $(LIBSYS_LO)
-	$(call env_remove,$(_KLIBC_A_),)
-
-	$(call env_static-library,$(_KLIBC_A_),$(LIBDATA_LO) $(LIBSTRING_LO) \
+	$(call env_static-library,$(_LIBC_A_),$(LIBDATA_LO) $(LIBSTRING_LO) \
           $(LIBSYS_LO),)
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
+	done
 
-	$(call env_remove,$(_KLIBC_A_),)
+	$(call env_remove,$(_LIBC_A_),)
 
 	$(call env_purge,)
 
-proto:
-	$(call env_launch,Makefile,$(SUBDIRS),proto,)
+prototypes:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
+	done
 
-dep:
-	$(call env_launch,Makefile,$(SUBDIRS),dep,)
+headers:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,headers,)			; \
+	done
+
+dependencies:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,,)				; \
+	done

@@ -19,7 +19,7 @@ include			../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -40,7 +40,7 @@ override _CFLAGS_	:=
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			$(_CTBUILD_TOOL_) $(_CTCOMPARE_TOOL_)
+main:			$(_CTBUILD_TOOL_) $(_CTCOMPARE_TOOL_)
 
 $(_CTBUILD_TOOL_):	$(CTBUILD_O)
 	$(call env_executable,$(_CTBUILD_TOOL_),$(CTBUILD_O),)
@@ -55,6 +55,8 @@ clear:
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 
-dep:
+headers:
+
+dependencies:

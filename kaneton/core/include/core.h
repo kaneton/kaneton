@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [fri jun  8 15:56:13 2007]
+ * updated       julien quintard   [sun jun 10 14:40:25 2007]
  */
 
 #ifndef CORE_CORE_H
@@ -71,9 +71,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-/* XXX deprecated */
-#include <core/conf.h>
-
 #include <core/types.h>
 #include <core/error.h>
 #include <core/id.h>
@@ -97,9 +94,6 @@
 #include <core/sched.h>
 #include <core/message.h>
 #include <core/capability.h>
-
-/* XXX temporary */
-#include <core/mod.h>
 
 /* XXX badly generated: rethink the syntax */
 #include <core/interface.h>

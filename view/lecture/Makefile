@@ -45,13 +45,13 @@ main:		build
 
 build:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d)/Makefile,,)				; \
+	  $(call env_launch,$${d}/Makefile,,)				; \
 	done
 
 
 clear:
 	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$$(d)/Makefile,clear,)			; \
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
 
 	$(call env_purge)

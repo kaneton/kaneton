@@ -56,7 +56,7 @@ Rules must be named with a single word in lower case letters.
       # ---------- dependencies -----------------------------------------------
       #
 
-      -include                ./$(_MAKEFILE_MK_)
+      -include                ./$(_DEPENDENCY_MK_)
     \end{verbatim}
   \item
     \textbf{directives}: this section contains \textit{Make} directives
@@ -117,9 +117,9 @@ Rules must be named with a single word in lower case letters.
               $(call prototypes,$(LIBSTRING_INCLUDE),)
 
       dep:
-              $(call remove,$(_MAKEFILE_MK_),)
+              $(call remove,$(_DEPENDENCY_MK_),)
 
-              $(call dependencies,$(LIBSTRING_C),$(_MAKEFILE_MK_),)
+              $(call dependencies,$(LIBSTRING_C),$(_DEPENDENCY_MK_),)
     \end{verbatim}
 \end{itemize}
 
@@ -162,7 +162,7 @@ end of many \textit{Make} files for this purpose:
   # ---------- dependencies ---------------------------------------------------
   #
 
-  -include                ./$(_MAKEFILE_MK_)
+  -include                ./$(_DEPENDENCY_MK_)
 \end{verbatim}
 
 Finally, \textit{Make} files must resolve dependencies before performing

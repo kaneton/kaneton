@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/kaneton/Makefile
-##
-## created       julien quintard   [fri feb 11 03:24:11 2005]
-## updated       julien quintard   [thu jul 13 11:44:38 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/Makefile
+#
+# created       julien quintard   [sun jun 10 14:54:43 2007]
+# updated       julien quintard   [sun jun 10 15:31:35 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,28 +21,50 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all clear proto dep
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		$(_KANETON_DEP_)
+SUBDIRS			:=		core				\
+					machine				
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-all:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
+main:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,,)				; \
+	done
+
+	$(call env_executable,$(_CORE_),$(CORE_O)			\
+					$(VERSION_O)			\
+					$(KANETON_O)			\
+					$(_KLIBC_A_),			\
+                 "--link-script $(_MACHDEP_LINK_DIR_)/core.lks"		\
+                 "--no-standard-include"				\
+                 "--no-standard-library")
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
+	done
 
 	$(call env_purge,)
 
-proto:
-	$(call env_launch,Makefile,$(SUBDIRS),proto,)
+prototypes:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
+	done
 
-dep:
-	$(call env_launch,Makefile,$(SUBDIRS),dep,)
+headers:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,headers,)			; \
+	done
+
+dependencies:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,dependencies,)		; \
+	done

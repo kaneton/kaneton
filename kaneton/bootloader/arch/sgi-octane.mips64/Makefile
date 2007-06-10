@@ -64,12 +64,12 @@ proto:
 	$(call env_env_prototypes,$(BOOTLOADER_INCLUDE),)
 
 dep:
-	$(call env_env_remove,$(_MAKEFILE_MK_),)
+	$(call env_env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_env_dependencies,$(BOOTLOADER_C),$(_MAKEFILE_MK_),)
+	$(call env_env_dependencies,$(BOOTLOADER_C),$(_DEPENDENCY_MK_),)
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
--include		./$(_MAKEFILE_MK_)
+-include		./$(_DEPENDENCY_MK_)

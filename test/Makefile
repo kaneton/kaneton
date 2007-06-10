@@ -19,7 +19,7 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all build run clear proto dep
+.PHONY:		main build run clear proto dep
 
 #
 # ---------- variables --------------------------------------------------------
@@ -34,7 +34,7 @@ _TEST_LO_	:=	test.lo
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build run
+main:			build run
 
 build:			.test.mk
 	$(MAKE) compile

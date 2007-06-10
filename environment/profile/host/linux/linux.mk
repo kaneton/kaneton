@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [sun jun 10 00:36:54 2007]
+# updated       julien quintard   [sun jun 10 14:21:13 2007]
 #
 
 #
@@ -367,15 +367,15 @@ define env_prototypes
 endef
 
 #
-# genereate dependencies
+# genereate header dependencies
 #
 # $(1):		the files for which the dependencies are generated
 # $(2):		the output file
 # $(3):		options
 #
 
-define env_dependencies
-  dependencies_options=""						; \
+define env_headers
+  headers_options=""							; \
   for o in $(3); do							\
     case "$${o}" in							\
       *)								\
@@ -385,8 +385,8 @@ define env_dependencies
   $(_TOUCH_) $(2)							; \
   for f in $(1) ; do							\
     if [ -e $${f} ] ; then						\
-      $(call env_display,yellow,DEPENDENCIES,$$i,		,)	; \
-      $(_CC_) $(_CC_FLAGS_) -M -MG $${dependencies_options}		\
+      $(call env_display,yellow,HEADERS,$$i,		,)		; \
+      $(_CC_) $(_CC_FLAGS_) -M -MG $${headers_options}			\
         $${f} >> $(2)							; \
     fi									; \
   done
