@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/exam/Makefile
 #
 # created       julien quintard   [sat jun  9 23:52:07 2007]
-# updated       julien quintard   [sat jun  9 23:59:56 2007]
+# updated       julien quintard   [mon jun 11 07:30:58 2007]
 #
 
 #
@@ -27,7 +27,7 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		arch-mips			\
+SUBDIRS			:=		mips				\
 					kernels				
 
 #
