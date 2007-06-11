@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/view.py
 #
 # created       julien quintard   [sun may 13 11:04:52 2007]
-# updated       julien quintard   [thu may 31 12:07:43 2007]
+# updated       julien quintard   [mon jun 11 06:24:52 2007]
 #
 
 #
@@ -74,7 +74,7 @@ def			usage():
   location = None
   store = None
 
-  env.display(env.HEADER_ERROR, "usage: viewer.py [document]", env.OPTION_NONE)
+  env.display(env.HEADER_ERROR, "usage: view.py [document]", env.OPTION_NONE)
 
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
