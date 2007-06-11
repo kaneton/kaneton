@@ -19,7 +19,7 @@ include			env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main initialize clean clear prototypes headers dependencies
+.PHONY:		main initialize clean clear prototypes headers
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -39,5 +39,3 @@ clear:
 prototypes:
 
 headers:
-
-dependencies:

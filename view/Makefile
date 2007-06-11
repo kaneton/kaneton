@@ -21,7 +21,7 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main view build clear prototypes headers dependencies
+.PHONY:		main view build clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -64,5 +64,3 @@ clear:
 prototypes:
 
 headers:
-
-dependencies:

@@ -30,7 +30,7 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		architectures			\
+SUBDIRS			:=		architecture			\
 					c-preprocessor			\
 					inline-assembly			\
 					kernels				\

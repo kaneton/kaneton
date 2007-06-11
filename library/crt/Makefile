@@ -19,7 +19,7 @@ include			../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main clear prototypes headers dependencies
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -53,8 +53,6 @@ headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(CRT_C),$(_DEPENDENCY_MK_),)
-
-dependencies:
 
 #
 # ---------- dependencies -----------------------------------------------------

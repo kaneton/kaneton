@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/library/Makefile
 #
 # created       julien quintard   [sun jun 10 00:53:47 2007]
-# updated       julien quintard   [sun jun 10 13:04:15 2007]
+# updated       julien quintard   [mon jun 11 19:31:17 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main clear prototypes headers dependencies
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -54,9 +54,4 @@ prototypes:
 headers:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,headers,)			; \
-	done
-
-dependencies:
-	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$${d}/Makefile,dependencies,)		; \
 	done

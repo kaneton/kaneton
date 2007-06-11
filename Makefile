@@ -22,7 +22,7 @@
 .SILENT:
 
 .PHONY:		main initialize clean kaneton clear prototypes		\
-		headers dependencies build install test info view view-	\
+		headers build install test info view view-		\
 		export export- cheat cheat- play play- record record-
 
 #
@@ -42,7 +42,7 @@ else
   main									\
   kaneton clear								\
   prototypes								\
-  headers dependencies							\
+  headers								\
   build install								\
   test info								\
   view view-								\
@@ -118,15 +118,6 @@ prototypes:
 headers:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,headers,)			; \
-	done
-
-#
-# ---------- dependencies -----------------------------------------------------
-#
-
-dependencies:
-	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$${d}/Makefile,dependencies,)		; \
 	done
 
 #
