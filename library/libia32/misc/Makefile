@@ -38,7 +38,7 @@ clear:
 
 	$(call env_purge,)
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(MISC_C),$(_DEPENDENCY_MK_),)

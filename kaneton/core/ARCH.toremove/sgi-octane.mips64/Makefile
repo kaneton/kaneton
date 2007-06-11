@@ -69,7 +69,7 @@ clear:
 proto:
 	$(call env_env_prototypes,$(MACHDEP_INCLUDE),)
 
-dep:
+headers:
 	$(call env_env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_env_dependencies,$(MACHDEP_C),$(_DEPENDENCY_MK_),)

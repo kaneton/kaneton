@@ -80,7 +80,7 @@
   automatically used by the C compiler to transform your program
   before compilation.
 
-  \nl
+  \-
 
   It is called a macro processor because it allows you to define macros,
   which are brief abbreviations for longer constructs.
@@ -134,17 +134,17 @@
   Header files contain C declarations and macro definitions to be used
   by several source files.
 
-  \nl
+  \-
 
   You can request the use of a header file using the C preprocessor
   directive \textit{\#include}.
 
-  \nl
+  \-
 
   With a header file, the related declarations appear in only one place,
   each C source file including the header file.
 
-  \nl
+  \-
 
   So the changes will only have to be made on a single header file
   instead of on each source file.
@@ -157,7 +157,7 @@
 
   \textbf{\#include $<$file$>$}
 
-  \nl
+  \-
 
   This include looks for the file in the system header directories.
 
@@ -181,7 +181,7 @@
 
   \textbf{\#include ``file''}
 
-  \nl
+  \-
 
   This include looks for the file in the current working directory.
 
@@ -202,7 +202,7 @@
 
   \textbf{\#include anythingelse}
 
-  \nl
+  \-
 
   This include looks for a macro named \textbf{anythingelse}; then resolve
   it and reinterpret the current argument with the two previous syntaxes.
@@ -239,11 +239,11 @@
   It often happens that a header file includes another header file resulting
   in header files included more than once.
 
-  \nl
+  \-
 
   This fact leads to errors if the header files define structures, types etc.
 
-  \nl
+  \-
 
   The standard way to prevent these errors is:
 
@@ -263,21 +263,21 @@
   Be careful, user's defines may not begin with the character \textbf{\_}
   because these are reserved for system defines.
 
-  \nl
+  \-
 
   To avoid conflicts, the system defines generally begin with \textbf{\_\_}.
 
-  \nl
+  \-
 
   The macros for one-only inclusion are name based on the header file name.
 
-  \nl
+  \-
 
   Moreover, and still to avoid conflicts, these macros are suffixed with
   some text. Otherwise, the two file generic/chiche.h and bsd/chiche.h
   will had generated conflicts.
 
-  \nl
+  \-
 
   The kaneton project uses a slightly different style:
 
@@ -300,7 +300,7 @@
 
   Let's take a look at a kaneton example:
 
-  \nl
+  \-
 
   The file \textit{core/include/kaneton/set.h} where \textit{core/include}
   is the include directory:
@@ -334,17 +334,17 @@
 
   A macros is a kind of abbreviation which you define and then use later.
 
-  \nl
+  \-
 
   The standard convention for macro names is to use upper case.
 
-  \nl
+  \-
 
   Nevertheless, in few cases it is better to use lower case, especially
   when trying to develop a kind of proxy design pattern or interface as
   in the kaneton's set manager which we will study later in this course.
 
-  \nl
+  \-
 
   Indeed, in these few cases the designer especially wants macro calls
   to looks like function calls the user not being aware of the implementation.
@@ -386,7 +386,7 @@
 
   Macros with parameters are called: \textbf{function-like macros}.
 
-  \nl
+  \-
 
   Be careful, the preprocessor only understand comma for separating parameters,
   so this call:
@@ -398,7 +398,7 @@
   results in a macro named \textbf{foo} which takes two parameters,
   in this case: \textbf{array[x = y} and \textbf{x + 1]}.
 
-  \nl
+  \-
 
   Moreover if a function-like macro takes one argument and the user
   wants to pass an empty argument, he has to specify it using a
@@ -413,12 +413,12 @@
   It is also possible to use function-like macros which take zero argument
   even if there is no advantage over classical macros.
 
-  \nl
+  \-
 
   Think about function-like macro declarations which names \alert{must} be
   followed by an open parenthesis without any whitespace.
 
-  \nl
+  \-
 
   Indeed if a whitespace appear between the name and the open parenthesis
   the macro will be considered as a simple macro and the open parenthesis
@@ -447,7 +447,7 @@
   will lead to an invalid use of the macro because this macro takes no
   argument.
 
-  \nl
+  \-
 
   The result will be:
 
@@ -522,21 +522,21 @@
   The stringification action means turning a code fragment into
   a string constant.
 
-  \nl
+  \-
 
   For example stringifying \textit{chiche(42)} results in
   \textit{``chiche(42)''}.
 
-  \nl
+  \-
 
   The preprocessor operator used for stringification is the simple sharp:
   \textbf{\#} which has to be placed before a name.
 
-  \nl
+  \-
 
   This preprocessor feature is very useful for debugging.
 
-  \nl
+  \-
 
   It is so possible to print useful information like the macro parameters.
 \end{frame}
@@ -575,12 +575,12 @@
 
   The concatenation means joining two words into one.
 
-  \nl
+  \-
 
   When you define a macro, you request concatenation using the special
   operator \textbf{\#\#} in the macro body.
 
-  \nl
+  \-
 
   This often takes place with one constraint word and one of the macro
   argument but it is also possible to apply concatenation between two
@@ -643,12 +643,12 @@
   used for example when reading a command and launching a corresponding
   function.
 
-  \nl
+  \-
 
   You could notice that there were many repetitions in the previous
   array declaration.
 
-  \nl
+  \-
 
   This array declaration can be simplified using a macro with concatenation:
 
@@ -670,7 +670,7 @@
 
   This action is used to cancel a definition.
 
-  \nl
+  \-
 
   The directive used is \textbf{\#undef} which is followed by the macro
   name to undefined.
@@ -697,7 +697,7 @@
 
   This code will not compile because FOO is now an undefined symbol.
 
-  \nl
+  \-
 
   The macro undefinition works for simple macros as for function-like macros.
 \end{frame}
@@ -709,17 +709,17 @@
 
   Redefining a macro means defining a name that is already in use as a macro.
 
-  \nl
+  \-
 
   If the macro redefined matchs the previous declaration (this case is possible
   with multiple inclusions) the redefinition is simply ignored.
 
-  \nl
+  \-
 
   A macro redefinition is considered identical to its previous if everything is
   exactly identical excepts whitespaces which are ignored lexical symbols.
 
-  \nl
+  \-
 
   For the other cases and to avoid c-preprocessor errors, prefer
   undefined the previous declaration with the \textbf{\#undef} directive
@@ -761,7 +761,7 @@
 
   This directive tests a condition and includes the appropriate source code.
 
-  \nl
+  \-
 
   The syntax is:
 
@@ -813,7 +813,7 @@
 
   This directive just tests the definition of the macro \textit{foo}.
 
-  \nl
+  \-
 
   The syntax is:
 
@@ -832,7 +832,7 @@
   This directive provides alternative text to be used if the condition
   is false.
 
-  \nl
+  \-
 
   The syntax is:
 
@@ -852,7 +852,7 @@
 
   This directive provides an alternative including a new conditional part.
 
-  \nl
+  \-
 
   The syntax is:
 
@@ -891,7 +891,7 @@
   Note that the directive \textbf{defined} returns 1 if the macro is
   defined and 0 otherwise.
 
-  \nl
+  \-
 
   Moreover:
 
@@ -932,7 +932,7 @@
   The directive \textbf{\#error} causes the preprocessor to report a
   fatal error.
 
-  \nl
+  \-
 
   The directive \textbf{\#error} is usually used inside of a conditional.
 
@@ -968,7 +968,7 @@
   The variadic parameters are used to not explicitly specify the number
   of parameters the macro needs.
 
-  \nl
+  \-
 
   Let's take an example:
 
@@ -1001,12 +1001,12 @@
   the compiling time, gcc will warn an error because this is a syntax
   error.
 
-  \nl
+  \-
 
   Indeed, a variadic argument is a list of one or more parameters, but at
   least one.
 
-  \nl
+  \-
 
   Nevertheless, some programs need variadic parameters to become an empty
   argument and not leading to a syntax error.
@@ -1019,12 +1019,12 @@
 
   There is absolutely no solution with the common C preprocessor.
 
-  \nl
+  \-
 
   Nevertheless, the GNU C preprocessor introduced an extension for
   this common problem.
 
-  \nl
+  \-
 
   Let's see the solution:
 
@@ -1060,11 +1060,11 @@
   Grouping parameters means placing parenthesis around macro parameters
   to avoid misunderstandings.
 
-  \nl
+  \-
 
   Think about grouping macro parameters to avoid non-wanted operations.
 
-  \nl
+  \-
 
   Let's show a very very simple example:
 
@@ -1104,7 +1104,7 @@
 
   Note that the result is not the one intended.
 
-  \nl
+  \-
 
   In fact, we wanted the macro to do:
 
@@ -1136,7 +1136,7 @@
   Sometimes it is useful to return a value from a macro, in other words
   to evaluate a macro call.
 
-  \nl
+  \-
 
   The user only has to use the parenthesis to convert a compound statement
   into an expression.
@@ -1164,7 +1164,7 @@
   The last value being the \textbf{\_r\_} variable, it will also be
   the expression's value which will be evaluated.
 
-  \nl
+  \-
 
   We can now use the macro expecting a return value:
 
@@ -1214,12 +1214,12 @@
   typical C function. For this reason, many programmers put a semicolon
   at the end of macro calls.
 
-  \nl
+  \-
 
   Another reason is the identation which will not be correct if the
   programmer do not put the semicolon in some text editors.
 
-  \nl
+  \-
 
   In many cases, putting a semicolon at the end of a macro call
   just result with an empty instruction and the compiler just ignore it,
@@ -1311,7 +1311,7 @@
   A side effect is an execution which produces a non-direct modification
   or which produces an non-wanted effect.
 
-  \nl
+  \-
 
   Consider this macro:
 
@@ -1360,7 +1360,7 @@
   you understood this kind of problems and the fact the preprocessor just copy
   and paste portions of code.
 
-  \nl
+  \-
 
   With the first non-corrected macro MIN():
 
@@ -1381,7 +1381,7 @@
   incremented two times while the programmer just wanted to post-increment
   the \textbf{a} variable one time.
 
-  \nl
+  \-
 
   The second corrected macro also correct this problem ensuring the parameters
   to be evaluated only one time.
@@ -1400,7 +1400,7 @@
 
   The macros expansion was made to avoid infinite expansion.
 
-  \nl
+  \-
 
   This fact seems to be a limitation (and it is) but also provides
   some interesting features.
@@ -1461,24 +1461,24 @@
   The kaneton set system is used to simulate functions overloading and
   functions forwarding.
 
-  \nl
+  \-
 
   The main problems are inherent to the language used: the C and the C
   preprocessor.
 
-  \nl
+  \-
 
   We wanted a generic interface used by the programmer and we wanted our
   system to distribute, forward the function calls to more specific
   functions.
 
-  \nl
+  \-
 
   The set manager is used to manage complex data structures. Then the
   programmer just call the set manager to ask it to build a precise data
   structure and to manage it: elements and memory.
 
-  \nl
+  \-
 
   The goal of the kaneton set system was to provide this very special
   interface using macros.
@@ -1491,12 +1491,12 @@
 
   The kaneton set system is composed of an interface.
 
-  \nl
+  \-
 
   The \textbf{set\_reserve()} function reserves a set specifying the desired
   data structure to use. This function returns a set identifier.
 
-  \nl
+  \-
 
   Then the user also use the identifier to manipulate its set. From this
   identifier the kaneton set system will be able to retrieve the correct
@@ -1524,7 +1524,7 @@
   interface using a trap system to forward function calls to specific
   set manager: linked-list, array etc.
 
-  \nl
+  \-
 
   \begin{verbatim}
     #define set_trap(_func_, _setid_, _args_...)                            \
@@ -1552,13 +1552,13 @@
 
   The C preprocessor can also be used to generate C functions.
 
-  \nl
+  \-
 
   The most common use of this technique is to generate a function given
   its types. Then we will be able to generate kind of overloaded
   functions.
 
-  \nl
+  \-
 
   Consider a function template which is common but the types used inside
   it change. The programmer has the choice: either program the N functions
@@ -1576,7 +1576,7 @@
   as first. The programmer has to write a function for arrays of:
   characters, shorts and integers.
 
-  \nl
+  \-
 
   We will generate a function called \textbf{dump\_array} suffixed with
   its type to easily retrieve the function name and to avoid conflicts.

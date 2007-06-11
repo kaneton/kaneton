@@ -63,7 +63,7 @@
     \item allocate space for subroutines local variables
   \end{itemize}
 
-  \nl
+  \-
 
   On more specific occasions, the stack can also be used to backup an
   environment state.
@@ -81,7 +81,7 @@
   frame is pushed. Also the frame for the executing subroutine is always on
   the top of the stack. When the subroutine returns, this frame is poped.
 
-  \nl
+  \-
 
   Thus, the current stack state is described by the contents of 2 registers:
   \begin{enumerate}
@@ -110,7 +110,7 @@
       The execution stack contains private data for the running task.
       Corrupting those data results in corrupting the whole task's behavior.
 
-      \nl
+      \-
 
     \item {\bf For practical reasons}\\
       Let us consider the following scenario:
@@ -123,7 +123,7 @@
 	\item {\em task1} pops {\em data2}
       \end{enumerate}
 
-      \nl
+      \-
 
       At step 5, {\em task1} expects to pop data1 it pushed at step 1. But if
       {\em task1} and {\em task2} both share the same execution stack,
@@ -152,7 +152,7 @@
     \pgfuseimage{rings}
   \end{center}
 
-  \nl
+  \-
 
   {\bf Fundamental rule:}\\
   An application cannot increase its own privileges.
@@ -171,7 +171,7 @@
     This privilege level is often called {\em supervisor mode} by microprocessor
     fabricants. In modern operating systems, this ring is dedicated to the kernel.
 
-    \nl
+    \-
 
   \item {\bf Userland}\\
     Also called {\em user mode}, this level is opposed to Kernelland since it
@@ -186,12 +186,12 @@
     \end{itemize}
   \end{enumerate}
 
-  \nl
+  \-
 
   Other intermediate levels can be attributed to special applications such as
   drivers or trusted operating system services.
 
-  \nl
+  \-
 
   In an operating system which uses more than 2 privilege levels, Userland is
   considered as the less privileged one.
@@ -212,13 +212,13 @@
   waste the CPU time when they are waiting for a condition that does not
   happen.
 
-  \nl
+  \-
 
   Interrupts make it possible to make a process sleep until an event wakes it
   up. Thus microprocessor cycles are saved to serve other processes. On certain
   embedded architectures, interrupts are also a easy way to save energy.
 
-  \nl
+  \-
 
   Interrupts are a critical part of code in the kernels implementation:
 
@@ -244,7 +244,7 @@
   execution from the currently running task to a special kernel routine  called
   an {\em interrupt service routine} (ISR) or an {\em interrupt handler}.\\
 
-  \nl
+  \-
 
   Events are categorized in 3 classes:
 
@@ -258,7 +258,7 @@
       Provoked by external hardware devices.
   \end{itemize}
 
-  \nl
+  \-
 
   From the microprocessor point of view, exceptions and software interrupts are
   seen as internal interrupts, whereas IRQ are treated as external interrupts.
@@ -276,7 +276,7 @@
   called to handle an event. The kernel must provide a specific ISR for each
   event which may occur.
 
-   \nl
+   \-
 
    Each ISR is characterized by:
 
@@ -285,13 +285,13 @@
     \item the privilege level which is required to invoke this ISR.
   \end{enumerate}
 
-  \nl
+  \-
 
 
   ISR are kernel routines (running with kernel's privileges) that can be
   executed on Userland programs needs, when they raise an interrupt.
 
-  \nl
+  \-
 
   Some ISR are famous:
 
@@ -351,7 +351,7 @@
 
   \end{enumerate}
 
-  \nl
+  \-
 
   {\bf Questions for both cases:}
 
@@ -374,19 +374,19 @@
   the interrupt, and therefore, it can be used to determine which ISR should
   be executed.
 
-  \nl
+  \-
 
   In the case of an exception or a software interrupt, the microprocessor
   deduces the {\em interrupt vector} internally.
 
-  \nl
+  \-
 
   Concerning the IRQ,
   Some embedded microprocessors provide a set of interrupt lines, to which
   hardware devices are directly wired. Such microprocessors associate an
   {\em interrupt vector} for each IRQ line.
 
-  \nl
+  \-
 
   Other microprocessors do not provide any unit to handle multiple IRQ lines.
   Those microprocessors communicate with an external chip called an
@@ -406,7 +406,7 @@
   towards the single microprocessor IRQ line. The {\em interrupt vector} is
   transfered via the data bus:
 
-  \nl
+  \-
 
   \begin{center}
     \pgfuseimage{pic}
@@ -425,7 +425,7 @@
   everytime an event is raised. Depending on wether this register is visible
   by the software, the kernel handles events 2 different manners:
 
-  \nl
+  \-
 
   \begin{enumerate}
     \item If the {\em interrupt vector register} is not visible\\
@@ -433,7 +433,7 @@
       kernel is unable to chose the corresponding ISR. Therefore, the ISR
       dispatch must be assumed by the microprocessor itself.
 
-      \nl
+      \-
 
     \item If the {\em interrupt vector register} is visible\\
       The microprocessor loads its PC with the base address of a generic ISR.
@@ -457,7 +457,7 @@
   {\em interrupt vector} has been detected. Instead, the microprocessor
   determines itself which ISR must be executed:
 
-  \nl
+  \-
 
   \begin{enumerate}
     \item the microprocessor gets the {\em interrupt vector}
@@ -467,7 +467,7 @@
     \item the ISR handles the event
   \end{enumerate}
 
-  \nl
+  \-
 
   That implies that the microprocessor can find the addresse of each ISR. To do
   so, the microprocessor consults an {\bf interrupt vector table}, whose base
@@ -498,7 +498,7 @@
   On other architectures, like MIPS, the microprocessor delegates the event
   handling to the kernel:
 
-  \nl
+  \-
 
   \begin{itemize}
     \item the microprocessor stores the {\em interrupt vector} in the
@@ -510,7 +510,7 @@
     \item the generic handler execute the appropriated ISR
   \end{itemize}
 
-  \nl
+  \-
 
   This implies that the {\em Cause} register is visible from the kernel.
 \end{frame}
@@ -549,7 +549,7 @@
   The {\bf execution context} is the state of the program execution at a given
   time.
 
-  \nl
+  \-
 
   Concretly, an image of the {\em execution context} can be obtained by saving
   the state of:
@@ -560,13 +560,13 @@
     \item microprocessor registers
   \end{itemize}
 
-  \nl
+  \-
 
   Loading an {\em execution context} from an image, back to the microprocessor
   registers, makes the program resume from where the context image was first
   saved.
 
-  \nl
+  \-
 
   Thus it becomes possible to interrupt a program, backup its {\em execution
   context}, execute an ISR and resume the interrupted program in a transparent
@@ -584,25 +584,25 @@
   {\bf Q:} Where is saved the context ?\\
   {\bf A:} The easiest way to backup the context is to push it on the stack.
 
-  \nl
+  \-
 
   {\bf Q;} Why not in memory ?\\
   {\bf A:} Allocation times would be too long. Allocation algorithms may
   corrupt the context before it was actually saved !
 
-  \nl
+  \-
 
   {\bf Q:} Why on the stack ?\\
   {\bf A:} In the case of nested interrupts, a LIFO structure is naturally
   appropriate.
 
-  \nl
+  \-
 
   {\bf Q:} Whose stack ?\\
   {\bf A:} The {\em execution context} should be saved and restored by whoever is
   interrupting the program. So on the ISR's stack.
 
-  \nl
+  \-
 
   {\bf Q:} When should the context be saved ?\\
   {\bf A:} As soon as the program is interrupted to ensure that no other
@@ -632,7 +632,7 @@
 
   The previous figure illustrates what happens when a program is interrupted:
 
-  \nl
+  \-
 
   \begin{enumerate}
     \item The microprocessor performs a privilege switch from User to Supervisor
@@ -658,7 +658,7 @@
     \end{itemize}
   \end{enumerate}
 
-  \nl
+  \-
 
   Steps 1 and 5 are automatically performed by the microprocessor. Some
   microprocessors also handle steps 2 and 4.
@@ -692,7 +692,7 @@
     \item ISR dispatch is organized through an interrupt vector located at
       address 0x0. This 1024-bytes table looks like the one below:
 
-      \nl
+      \-
       \begin{center}
       \pgfuseimage{m68kivt}
       \end{center}
@@ -707,13 +707,13 @@
 \begin{frame}
   \frametitle{Exercise}
 
-  \nl
+  \-
 
   When interrupted, the M68000 automatically saves the {\em CCR} and the
   {\em PC} onto the Supervisor stack {\em A7'}. The return from interrupt is
   assumed by the {\tt RTI} instruction.
 
-  \nl
+  \-
 
   Write the code which could permit to 
 
@@ -771,7 +771,7 @@ handler_1:
   \end{quote}
 
 
-  \nl
+  \-
 
   \begin{itemize}
 
@@ -779,7 +779,7 @@ handler_1:
       Required stack size can easily be approximated by testing the stack needs
       in real conditions. Testing often underestimates the real needs.
 
-    \nl
+    \-
 
     \item {\bf Analyzis}\\
       On the opposite, analyzis approach is much more complex and often
@@ -804,14 +804,14 @@ handler_1:
     porgram is finally resumed.
   \end{itemize}
 
-  \nl
+  \-
 
   During these times, neither the microprocessor nor the kernel do actually
   handle the event. They just install a safe environment to run the ISR and to
   resume the interrupted program. In other words, latency is the amount of
   {\bf lost time} when an interrupt is handled.
 
-  \nl
+  \-
 
   Part of the latency is due to inevitable microprocessor internal operations
   (such as privilege/stack switches, privilege checking\ldots). But the rest of
@@ -834,7 +834,7 @@ handler_1:
     \item too many interrupts occur
   \end{enumerate}
 
-  \nl
+  \-
 
   In both cases, a system overload leads to serious issues:
 
@@ -844,7 +844,7 @@ handler_1:
     \item making interrupt handling durations unpredictable for real-time systems
   \end{itemize}
 
-  \nl
+  \-
 
   reducing overload:
   \begin{itemize}
@@ -868,7 +868,7 @@ handler_1:
     \pgfuseimage{nested}
   \end{center}
 
-  \nl
+  \-
 
   {\bf Rule:} an ISR cannot be interrupted by an event for a lower or equal
   pritority level.
@@ -884,7 +884,7 @@ handler_1:
 
   Real-time systems commonly implement nested events.
 
-  \nl
+  \-
 
   {\bf Advantages}
 
@@ -894,7 +894,7 @@ handler_1:
     \item Allow to use events in the ISR.
   \end{itemize}
 
-  \nl
+  \-
 
   {\bf Disadvantages}
 

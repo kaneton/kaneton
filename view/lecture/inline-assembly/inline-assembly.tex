@@ -78,23 +78,23 @@
 
   Inline assembly is used to insert assembly code into C source code.
 
-  \nl
+  \-
 
   Inline assembly reduces the function-call overhead while reducing
   the number of little assembly source files.
 
-  \nl
+  \-
 
   Moreover, the inline assembly source code can evolve into the C
   source one, using C variables, C constants etc.
 
-  \nl
+  \-
 
   Inline assembly is commonly used to improve performances. Neverthless
   system programmers appreciate the inline assembly because some
   processor instructions are only available in assembly.
 
-  \nl
+  \-
 
   gcc uses the keyword \textbf{asm} to introduce inline assembly.
 \end{frame}
@@ -113,7 +113,7 @@
   gcc inline assembly uses AT\&T assembly syntax which is
   different from the Intel one.
 
-  \nl
+  \-
 
   We will study the major differences between the AT\&T syntax and the
   Intel one.
@@ -139,7 +139,7 @@
 
   Register names are prefixed by \textbf{\%} for example \textit{\%eax}.
 
-  \nl
+  \-
 
   With C input arguments, the registers are prefixed by \textbf{\%\%}
   like \textit{\%\%eax}.
@@ -152,7 +152,7 @@
 
   Immediate operands are prefixed by \textbf{\$}.
 
-  \nl
+  \-
 
   In Intel syntax, hexadecimal numbers are suffixed by \textbf{h}.
   Instead the AT\&T syntax uses \textbf{0x} as prefix.
@@ -183,7 +183,7 @@
   The Intel syntax uses \textbf{[} and \textbf{]} to specify the
   base register while AT\&T uses \textbf{(} and \textbf{)}.
 
-  \nl
+  \-
 
   Moreover, the syntaxes for the shifts are also different:
 
@@ -197,7 +197,7 @@
 
   You could think of the formula to calculate the address as:
 
-  \nl
+  \-
 
   \textbf{immed32 + basepointer + indexpointer * indexscale}
 \end{frame}
@@ -215,7 +215,7 @@
 
   where \textbf{p} is a \textit{char*}.
 
-  \nl
+  \-
 
   The AT\&T assembly code:
 
@@ -225,7 +225,7 @@
 
   where \textbf{\%eax} has the value of \textbf{p}.
 
-  \nl
+  \-
 
   The Intel assembly code:
 
@@ -305,7 +305,7 @@
   You can use multi-lines source code thinking to insert the sequence
   \verb|\n\t| at the end of each line.
 
-  \nl
+  \-
 
   Example:
 
@@ -317,7 +317,7 @@
 
   You can notice in this example that we overwrite the register %eax.
 
-  \nl
+  \-
 
   \alert{*} gcc does not know anything about the inline assembly.
   Overwritting the \textbf{eax} register could result with an error because
@@ -340,7 +340,7 @@
   output C operands and the clobbered registers i.e the
   modified registers.
 
-  \nl
+  \-
 
   The syntax of the inline assembly becomes:
 
@@ -378,7 +378,7 @@
 
   Let's study some examples:
 
-  \nl
+  \-
 
   The following one is \alert{incorrect}:
 
@@ -427,7 +427,7 @@
   The clobber list contains the name of the registers modified by the
   inline assembly source code.
 
-  \nl
+  \-
 
   Let's see how to use it to resolve our problem:
 
@@ -449,7 +449,7 @@
 
   Now, another example.
 
-  \nl
+  \-
 
   We have two C variables \textbf{A} and \textbf{B} and we want to
   move the contents of \textbf{A} into \textbf{B} but using inline
@@ -490,7 +490,7 @@
 
   Now we will look at each field in details.
 
-  \nl
+  \-
 
   Note that we do not have to tell gcc the memory was modified because
   we used the constraints \textbf{``r''} so the registers were used.
@@ -537,20 +537,20 @@
   The constraints are primarily used to decide the addressing mode for
   operands: register, memory, etc.
 
-  \nl
+  \-
 
   The operands are separated by commas inside a list.
 
-  \nl
+  \-
 
   Operands are numbered from 0 to n-1.
 
-  \nl
+  \-
 
   Output operands must be lvalues but this is obvious. Input operands
   are not restricted.
 
-  \nl
+  \-
 
   gcc will assume that the values in the output operands are dead
   and can be overwritten.
@@ -573,18 +573,18 @@
   In this example, we specify gcc to use the C variable \textbf{x}
   as the output operand.
 
-  \nl
+  \-
 
   For the input operand, we use the constraint \textbf{``0''} to
   tell gcc to use the same register for the input operand as the
   operand numbered \textbf{0} do.
 
-  \nl
+  \-
 
   So in this case, the input and output operand will be stored in the same
   register which is not precised, so gcc will decide.
 
-  \nl
+  \-
 
   So, in this example we have a read-write operand \textbf{x}.
 \end{frame}
@@ -615,12 +615,12 @@
   You can notice that in the two previous examples, we put nothing into
   the clobbered list.
 
-  \nl
+  \-
 
   In the first example, we told gcc to decide the register to use so gcc
   knows which register to restore.
 
-  \nl
+  \-
 
   In the second one, we specify gcc to use the \textbf{ecx} register.
   Once again, gcc perfectly knows which register to restore.
@@ -639,17 +639,17 @@
 
   Some instructions clobber the hardware registers.
 
-  \nl
+  \-
 
   For this reason, the inline assembly user has to indicate gcc the names
   of the registers to restore.
 
-  \nl
+  \-
 
   Note that gcc already knows the clobbered registers used via the
   constraints of the input and output operands.
 
-  \nl
+  \-
 
   Be careful with instructions which implicitly use some registers.
 \end{frame}
@@ -707,22 +707,22 @@
   First, the keyword \textbf{volatile} is used between the \textbf{asm}
   one and the first parenthesis.
 
-  \nl
+  \-
 
   You can also use the keyword \textbf{\_\_volatile\_\_} to avoid conflicts.
 
-  \nl
+  \-
 
   The keyword \textbf{volatile} is useful in one precise case:
 
-  \nl
+  \-
 
   When the user wants to tell gcc to avoid optimizations.
   For example if your assembly code is located inside a loop, gcc
   will certainly move your assembly code out of the loop.
   Using volatile avoid this optimization.
 
-  \nl
+  \-
 
   Be careful, if your assembly code does not have any side effect,
   it is better not to put the \textbf{volatile} keyword to allow gcc
@@ -743,12 +743,12 @@
   You probably noticed within this course that the constraints have got
   a lot to do with inline assembly.
 
-  \nl
+  \-
 
   Indeed, with them it is possible to specify the location of
   operands: memory, registers etc.
 
-  \nl
+  \-
 
   We will now list the different types of operands.
 \end{frame}
@@ -761,7 +761,7 @@
   When an operand is specified with a register operand constraint,
   gcc stores the operand in a GPR (General Purpose Register).
 
-  \nl
+  \-
 
   The user can also explicitly tell gcc the register to use. For this,
   he has to use specific constraints listed below:
@@ -800,18 +800,18 @@
   will occur directly in the memory location, as opposed to register
   constraints.
 
-  \nl
+  \-
 
   Register constraints are usually used with instructions which only accept
   registers as operands. Another case is to speed up the process, for example
   if a variable is needed for three consecutive instructions.
 
-  \nl
+  \-
 
   The memory constraint can be used most effeciently in cases where a C
   variable needs to be updated inside inline assembly.
 
-  \nl
+  \-
 
   For example:
 
@@ -841,7 +841,7 @@
   Then the input operand \textbf{var} uses the constraint \textbf{``0''}
   specifying gcc to use the same constraint than the \textbf{0th} operand.
 
-  \nl
+  \-
 
   After all, this inline assembly source code will use the \textbf{eax}
   register both as input and as output.
@@ -857,7 +857,7 @@
       \textbf{``i''}: an immediate integer operand (one with constant
       value) is allowed.
 
-      \nl
+      \-
 
       this includes symbolic constants whose values will be known only at
       assembly time.
@@ -901,7 +901,7 @@
   There are also constraint modifiers for more precision over the effects
   of constraints.
 
-  \nl
+  \-
 
   The common constraints modifiers are:
 

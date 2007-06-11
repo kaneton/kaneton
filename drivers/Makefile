@@ -42,5 +42,5 @@ clear:
 proto:
 	$(call env_launch,makefile,$(SUBDIRS),proto,)
 
-dep:
+headers:
 	$(call env_launch,makefile,$(SUBDIRS),dep,)

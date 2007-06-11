@@ -56,7 +56,7 @@ clear:
 
 proto:
 
-dep:
+headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(TEST_C),$(_DEPENDENCY_MK_),)

@@ -61,4 +61,4 @@ clear:
 proto:
 	$(call env_prototypes,"common/common.h",)
 
-dep:
+headers:

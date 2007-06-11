@@ -100,7 +100,7 @@
 
   Goals:
 
-  \nl
+  \-
 
   \begin{itemize}
   \item Setup a basic runtime environment for the kernel:
@@ -171,7 +171,7 @@
 
   Goals:
 
-  \nl
+  \-
 
   \begin{itemize}
   \item Allocate physical memory for processes
@@ -179,11 +179,11 @@
   \item Manipulate easily address spaces
   \end{itemize}
 
-  \nl
+  \-
 
   Components:
 
-  \nl
+  \-
 
   \begin{itemize}
   \item Address spaces (bound to a task)
@@ -206,7 +206,7 @@
 
   An address space:
 
-  \nl
+  \-
 
   \begin{itemize}
   \item Is bound to one task only
@@ -215,11 +215,11 @@
   \item Is able to clone itself
   \end{itemize}
 
-  \nl
+  \-
 
   To summarize:
 
-  \nl
+  \-
 
   \begin{itemize}
   \item A set of segments
@@ -235,7 +235,7 @@
 
   With Intel architecture, there are two main ways to implement address spaces:
 
-  \nl
+  \-
 
   \begin{itemize}
   \item Segmentation
@@ -254,7 +254,7 @@
   \item Selecting a ``window'' is made via segment selector registers
   \end{itemize}
 
-  \nl
+  \-
 
   Pros:
 
@@ -283,7 +283,7 @@
   \item Translation is done using tables: one page directory and multiple page tables
   \end{itemize}
 
-  \nl
+  \-
 
   Pros:
 
@@ -309,7 +309,7 @@
 
   For the moment, the only available solution is using the paging mecanism.
 
-  \nl
+  \-
 
   So an address space is represented only by its page-directory base register.
   Reserving an address space means:
@@ -320,7 +320,7 @@
   \item Filling an internal field holding the PDBR
   \end{itemize}
 
-  \nl
+  \-
 
   Address space switching will be detailed later in this lecture.
 
@@ -335,14 +335,14 @@
   way. We must reuse the  page-directory created by the bootloader but
   we must clean everything we've mapped and that is not longer useful.
 
-  \nl
+  \-
 
   Additionally,  we must  ensure that  currently used  page-tables (we
   don't know  how many they  are since it  depends on kernel  code and
   modules size)  will not be  erased so we  must inject them  into the
   kernel address space.
 
-  \nl
+  \-
 
   And to finish,  we must add the so  called ``mirroring'' entry, used
   to access page tables.
@@ -362,7 +362,7 @@
 
   A segment is a contiguous area of physical memory.
 
-  \nl
+  \-
 
   Segments are the entity that implements permissions (read, write and
   execute),  but this  feature is  used differently  depending  on the
@@ -386,7 +386,7 @@
   \item Cloning
   \end{itemize}
 
-  \nl
+  \-
 
   For the moment, the allocation algorithm is a simple first-fit.
 
@@ -404,7 +404,7 @@
   \item Depending on the architecture, some segments are reserved to hardware access (like the video memory or the DMA controller)
   \end{itemize}
 
-  \nl
+  \-
 
   To ensure segment reserved by the bootloader are not erased, we will
   mark   some   segments   as   prereserved   into   the   \emph{init}
@@ -422,7 +422,7 @@
   The solution  to the second problem  is to tell  the segment manager
   that some segments will be used in the future by precise managers.
 
-  \nl
+  \-
 
   So  we prereserve  some  segments and  we  do not  tell their  owner
   address  space.  These segments  without  bound  address spaces  are
@@ -443,7 +443,7 @@
 
   Regions are mapped memory locations.
 
-  \nl
+  \-
 
   A region is bound to the segment it maps and to the address space in
   which it is mapped.
@@ -462,7 +462,7 @@
   \item Mapping and unmapping virtual memory
   \end{itemize}
 
-  \nl
+  \-
 
   When  mapping some  memory,  you  can choose  to  force its  virtual
   address (for example, when allocating memory for the code section of
@@ -478,17 +478,17 @@
 
   The memory is divided into pages, each one is 4 kilo-bytes large.
 
-  \nl
+  \-
 
   Paging  is the mechanism  that makes  a page  in the  virtual address
   space corresponding to a page in physical memory.
 
-  \nl
+  \-
 
   The   translation    is   done   through    special   pages   called
   page-directories and page-tables.
 
-  \nl
+  \-
 
   Let's take an example.
 
@@ -502,7 +502,7 @@
   But we need  to map the page-directory and the  page-tables to map a
   single page !
 
-  \nl
+  \-
 
   That's why we use the mirroring technique with the kernel address space.
 
@@ -522,7 +522,7 @@
   Reserving some memory for direct use is a bit heavy since we have to
   reserve a segment and then map a region over this segment.
 
-  \nl
+  \-
 
   So we introduced the map manager which is an overlay to segments and
   regions. The map manager offers  a function that allocates a segment
@@ -538,13 +538,13 @@
   While segments and  region granularity is the page  (4k), the malloc
   function gives a fine-grain allocator.
 
-  \nl
+  \-
 
   At boot time, all memory  managers are not running, so malloc cannot
   rely on segment and  region managers during the early initialization
   stages.
 
-  \nl
+  \-
 
   To solve  this problem, we use  a ``survey area'':  we preallocate a
   dozen of pages  and malloc will allocate space  in these pages until
@@ -568,7 +568,7 @@
   own address space, we must  ensure that a process cannot access some
   memory not in its address space.
 
-  \nl
+  \-
 
   As we are using paging, it is quite simple to switch between address
   spaces. Remember we said that an address space contains a pointer to
@@ -587,20 +587,20 @@
   \emph{read}  syscall, it  must be  able to  write the  read  data at
   specified address in the process' address space.
 
-  \nl
+  \-
 
   One  solution maybe  to keep  the kernel  always present  in virtual
   memory. Then, system calls will not produce address space switching,
   but  only segment privilege  changes. Then  during the  system call,
   process' memory stay addressable.
 
-  \nl
+  \-
 
   In   kaneton,   we   choose   not   to  keep   the   kernel   mapped
   permanently.  Every context  change  implies to  switch the  address
   space.
 
-  \nl
+  \-
 
   As we switched  to the kernel address space,  process' memory is not
   still  avaiable.   To  circumvent  the  problem,  we   need  to  map
@@ -638,7 +638,7 @@
   \item Run the test script.
   \end{itemize}
 
-  \nl
+  \-
 
   Test results are transmitted via serial port.
 

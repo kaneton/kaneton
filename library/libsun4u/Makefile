@@ -62,5 +62,5 @@ proto:
 
 	$(call env_prototypes,$(LIBSUN4U_INCLUDE),)
 
-dep:
+headers:
 	$(call env_launch,Makefile,$(SUBDIRS),dep,)

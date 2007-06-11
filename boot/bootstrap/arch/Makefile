@@ -36,5 +36,5 @@ clear:
 proto:
 	$(call env_launch,Makefile,machdep,proto,)
 
-dep:
+headers:
 	$(call env_launch,Makefile,machdep,dep,)

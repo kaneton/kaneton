@@ -74,5 +74,5 @@ proto:
 
 	$(call env_prototypes,$(LIBIA32_INCLUDE),)
 
-dep:
+headers:
 	$(call env_launch,Makefile,$(SUBDIRS),dep,)

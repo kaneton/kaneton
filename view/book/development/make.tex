@@ -116,7 +116,7 @@ Rules must be named with a single word in lower case letters.
       proto:
               $(call prototypes,$(LIBSTRING_INCLUDE),)
 
-      dep:
+      headers:
               $(call remove,$(_DEPENDENCY_MK_),)
 
               $(call dependencies,$(LIBSTRING_C),$(_DEPENDENCY_MK_),)

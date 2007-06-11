@@ -139,7 +139,7 @@
   kaneton is a pedagogic microkernel developed by students of the
   EPITA System, Network and Security specialisation.
 
-  \nl
+  \-
 
   The goal of this microkernel is to be understandable by everyone
   interested in operating systems internals.
@@ -159,7 +159,7 @@
       Jean-Pascal Billaud
   \end{itemize}
 
-  \nl
+  \-
 
   \textbf{Assistants}
 
@@ -170,7 +170,7 @@
       Renaud Lienhart
   \end{itemize}
 
-  \nl
+  \-
 
   \textbf{Contributors}
 
@@ -210,7 +210,7 @@
 
   The kaneton people also try to develop a kaneton microkernel reference.
 
-  \nl
+  \-
 
   This presentation is intended to explain the kaneton microkernel
   design.
@@ -382,7 +382,7 @@
   The kaneton operating system is composed of two parts: a
   \textbf{microkernel} and the \textbf{servers}.
 
-  \nl
+  \-
 
   The kaneton microkernel has four primary functionalities
   to provide:
@@ -398,7 +398,7 @@
       I/O.
   \end{itemize}
 
-  \nl
+  \-
 
   Nevertheless, the kaneton microkernel implementation is very different
   from the other kernels such BSD, Linux, KOS, etc.
@@ -417,23 +417,23 @@
 
   The communication abstraction used in kaneton is the message.
 
-  \nl
+  \-
 
   Every event becomes a message including system calls, interrupts,
   signals etc.
 
-  \nl
+  \-
 
   No group communication is provided by the microkernel but by the distributed
   operating system.
 
-  \nl
+  \-
 
   This communication scheme is used to communicate with the servers
   of the machine as with the servers of the other machines, of
   the distributed system.
 
-  \nl
+  \-
 
   We will not detail the implementation here.
 \end{frame}
@@ -452,21 +452,21 @@
   \textbf{A distributed operating system needs to name every
     distributed object.}
 
-  \nl
+  \-
 
   An address space is composed of segments and regions.
 
-  \nl
+  \-
 
   Segments are physical memory areas while regions are virtual memory
   ones.
 
-  \nl
+  \-
 
   The address space object is just an abstraction over the segments and
   the regions.
 
-  \nl
+  \-
 
   Segments can be accessed directly or via regions.
 \end{frame}
@@ -485,17 +485,17 @@
   A distributed operating system is based on network communications, so
   the network security is crucial.
 
-  \nl
+  \-
 
   Indeed, it is not conceivable to allow a process on a machine
   to reserve an object and to manipulate it over the distributed
   system without security.
 
-  \nl
+  \-
 
   We needed a very light authentication system.
 
-  \nl
+  \-
 
   To include security while keeping good performances, distributed
   operating systems use capabilities, kinds of little cryptographic keys.
@@ -509,27 +509,27 @@
   Capabitlites are used to protect objects, permitting tasks to generate
   less privileged capabilities and to give them to other tasks.
 
-  \nl
+  \-
 
   Example: \textit{address spaces manipulation}
 
-  \nl
+  \-
 
   A capability is composed of: object identifier, permissions,
   security check, and optional fields including location, lifetime
   etc.
 
-  \nl
+  \-
 
   There exist two types of capabilities: generic capabilities and
   \alert{specific} capabilities.
 
-  \nl
+  \-
 
   Examples: \textit{file system and printers server: identifiers
     and operations}
 
-  \nl
+  \-
 
   The kaneton microkernel will use specific and specialised capabilities.
 \end{frame}
@@ -542,7 +542,7 @@
   An example of generic capability from the Amoeba distributed operating
   system.
 
-  \nl
+  \-
 
   \begin{center}
     \pgfuseimage{generic-capabilities}
@@ -604,7 +604,7 @@
   The capability security check field does not guarantee objects security on
   the entire distributed system.
 
-  \nl
+  \-
 
   So was introduced three security policies:
 
@@ -636,21 +636,21 @@
   organise internals data like tasks structures, cache structures,
   memory allocators etc.
 
-  \nl
+  \-
 
   Finally, with many pointers, the structures become very hard to understand
   and to manipulate leading to many programming errors and then to kernel
   crashes.
 
-  \nl
+  \-
 
   We decided to adopt another way.
 
-  \nl
+  \-
 
   In kaneton, all the data structures are managed by the set manager.
 
-  \nl
+  \-
 
   Using a very simple and generic interface, the entire microkernel source
   code become very elegant, so more understandable by the students.
@@ -663,30 +663,30 @@
 
   The set manager is used to organise data.
 
-  \nl
+  \-
 
   Every kernel manager use it to store its data rather than doing it
   by itself.
 
-  \nl
+  \-
 
   Examples: \textit{segments, regions, address spaces, tasks etc.}
 
-  \nl
+  \-
 
   This organisation leads to a very elegant and maintainable source code.
 
-  \nl
+  \-
 
   Optimisations are possible in the set manager \alert{but} not in every
   manager using such a data structure like other systems do.
 
-  \nl
+  \-
 
   Many different data structures will be provided: linked list, circular
   queue, pipe, stack, hash tables, binary tree, array, b+-tree etc.
 
-  \nl
+  \-
 
   Moreover, it will be so easy to change the data structure used by a manager
   to perform some benchmarks.
@@ -700,25 +700,25 @@
   The set manager needs to allocate memory. Indeed, the set manager
   is build over the malloc() function.
 
-  \nl
+  \-
 
   Nevertheless, the malloc() function needs to allocate physical and
   virtual memory so to use the segment and region managers. But, the
   segment and region managers use the set manager to store data.
 
-  \nl
+  \-
 
   To resolve this major problem, the malloc() function uses a survival area
   of memory used to provide fine-grained memory areas for the kernel
   boot time.
 
-  \nl
+  \-
 
   Then, the set manager uses the malloc() function to store data and
   every kernel manager uses the set manager. The kernel boot source code
   is so very beautiful contrary to other systems.
 
-  \nl
+  \-
 
   Moreover, the set manager has a set container to hold the set objects. This
   container is, in fact, also a set object.
@@ -760,15 +760,15 @@
       \textbf{Core}: kind of super-driver.
   \end{itemize}
 
-  \nl
+  \-
 
   The microkernel manages tasks which are non active abstraction entities.
 
-  \nl
+  \-
 
   A task is composed of an address space and one or more threads.
 
-  \nl
+  \-
 
   The thread is the active scheduled entity.
 \end{frame}
@@ -789,7 +789,7 @@
       A \textbf{priority} specifying its current priority.
   \end{itemize}
 
-  \nl
+  \-
 
   Each thread has:
 
@@ -798,7 +798,7 @@
       A \textbf{priority} specifying its current priority.
   \end{itemize}
 
-  \nl
+  \-
 
   These properties give the program many possibilities and
   permit it to choose its execution context.
@@ -825,11 +825,11 @@
       specific threads with more interactive ones.
   \end{itemize}
 
-  \nl
+  \-
 
   In kaneton, a binary will be configured to run with X processors.
 
-  \nl
+  \-
 
   Then, each thread will be able to choose its processors.
 \end{frame}
@@ -848,12 +848,12 @@
   The kaneton kernel includes a stats manager which performs statistics
   on different managers.
 
-  \nl
+  \-
 
   Indeed, this manager collects information on functions used by each
   manager.
 
-  \nl
+  \-
 
   Whenever a function is called, the stats manager knows it and updates
   its statistics including:
@@ -867,7 +867,7 @@
       How much time passed in functions.
   \end{itemize}
 
-  \nl
+  \-
 
   Via these statistics we will be able to optimise some critical managers
   and/or functions.
@@ -902,11 +902,11 @@
   The module service is used to store very used binaries to be able to
   launch a server which just crashed without any dependency to other servers.
 
-  \nl
+  \-
 
   The best example is the IDE driver.
 
-  \nl
+  \-
 
   \begin{itemize}[<+->]
     \item
@@ -937,7 +937,7 @@
 
   The shared memory service is used to provide shared memory between tasks.
 
-  \nl
+  \-
 
   \begin{itemize}[<+->]
     \item
@@ -1024,7 +1024,7 @@
       manager for its architecture so it can optimise every data structures
       for this architecture.
 
-      \nl
+      \-
 
       The major problem is the non-dependent code redundancy
       in each architecture.
@@ -1034,7 +1034,7 @@
       to perform some specific operations like: flush\_tlb(),
       new\_page\_directory() etc.
 
-      \nl
+      \-
 
       This system seems ugly but is better than the previous. Nevertheless
       some architectures may not fit in this interface.
@@ -1043,7 +1043,7 @@
       it may be needed by the architecture to perform modifications on
       architecture data structures etc.
 
-      \nl
+      \-
 
       The problem is that some problems may occur when the architecture
       needs to perform operations and is not allowed to.
@@ -1058,26 +1058,26 @@
   We decided to adopt the last solution because it provides a powerful
   abstraction to low-level programming.
 
-  \nl
+  \-
 
   In fact, rather than calling the machine dependent code to build
   a new page directory and link it to a task structure, the kaneton
   microkernel calls the machine dependent code every time an
   object is created or modified.
 
-  \nl
+  \-
 
   For example, when an address space object is created, the machine
   dependent code is called. Then the architecture performs the operations
   needed like building a new page directory and linking it to the
   new address space just created etc.
 
-  \nl
+  \-
 
   This system is experimental but seems to be correct. Nevertheless some
   problems may happen...
 
-  \nl
+  \-
 
   Theoritically, this system is the best because there is no redundancy
   and there are no constraints for the machine-dependent code.
@@ -1097,18 +1097,18 @@
   Each  developer can validate his modifications running unitary/regression
   tests on the kaneton microkernel.
 
-  \nl
+  \-
 
   We wanted a validation system based on a real execution environment,
   so we wanted to test the kernel running on real computer.
 
-  \nl
+  \-
 
   Our system uses the serial device to communicate with the microkernel. Then
   some microkernel regression tests functions are run and the result
   is returned via the serial device communication protocol.
 
-  \nl
+  \-
 
   The check script compares the result with the one expected and alerts
   the developer if something bad happened.
@@ -1164,7 +1164,7 @@
       etc.
   \end{itemize}
 
-  \nl
+  \-
 
   The language used to develop kaneton is the C language.
 \end{frame}
@@ -1182,12 +1182,12 @@
 
   The development of the microkernel is far from being finished.
 
-  \nl
+  \-
 
   Indeed, the goal was to design a powerful portable microkernel, and this
   takes much time.
 
-  \nl
+  \-
 
   The parts developed are listed below:
 
@@ -1223,25 +1223,25 @@
   The first goal of the kaneton project is to permit students to
   learn complex low-level programming and operating system concepts.
 
-  \nl
+  \-
 
   Recruiting futur maintainers is important first to give courses
   and then to develop the project.
 
-  \nl
+  \-
 
   The students wanting to work on the kaneton project should be aware
   that this project takes much time. Moreover, the selected students
   must work on this project during about \textbf{two years}.
 
-  \nl
+  \-
 
   The first year, the students will \textbf{learn} the basis of the low-level
   programming, kernel development, kaneton design etc. and
   \textbf{participate} to the kaneton design and development through
   the different subprojects listed below.
 
-  \nl
+  \-
 
   The second year, the students will have to \textbf{give courses} and
   \textbf{develop some important parts} of the kaneton reference while
@@ -1256,7 +1256,7 @@
   The maintainers of the kaneton project want to build a stable version
   of the microkernel before developing anything else.
 
-  \nl
+  \-
 
   So the futur works are:
 
@@ -1265,7 +1265,7 @@
       To validate the portability system through other architectures:
       sparc, mips, powerpc, intel etc.
 
-      \nl
+      \-
 
       Also develop very special architecture to explore different ways
       like optimisations: ia32-virtual, ia32-segment, ia32-optimised etc.
@@ -1295,11 +1295,11 @@
   the kaneton project. These two students will work at the EPITA Computer
   System Laboratory.
 
-  \nl
+  \-
 
   Moreover, we can recruit two other contributors from outside any laboratory.
 
-  \nl
+  \-
 
   Needless to say, this is a very important decision for you, for us,
   and for the EPITA SRS specialisation.

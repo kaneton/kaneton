@@ -60,5 +60,5 @@ clear:
 
 proto:
 
-dep:
+headers:
 	$(call env_launch,Makefile,$(SUBDIRS),dep,)

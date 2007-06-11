@@ -527,6 +527,8 @@ donc nous on a juste besoin de ___kernel pour la libc et ___wordsz etc.
 dans configure/critical.py checker si env.py est accessible, si non et
 que variables OK alors demander de faire make!
 
+dev book: ne plus utiliser \nl mais \-
+
 --
 
 creer un repository ivory opur le bootloader et dans
