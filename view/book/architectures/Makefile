@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/feedback/Makefile
+# file          /home/mycure/kaneton/view/book/architectures/Makefile
 #
-# created       julien quintard   [mon may 14 22:16:45 2007]
-# updated       julien quintard   [mon jun 11 07:45:55 2007]
+# created       julien quintard   [sun jun 10 00:07:26 2007]
+# updated       julien quintard   [mon jun 11 07:45:27 2007]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../environment/env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,9 +27,7 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		mips				\
-					kaneton				\
-					kernels				
+SUBDIRS			:=		ia32				
 
 #
 # ---------- rules ------------------------------------------------------------

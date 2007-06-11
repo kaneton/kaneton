@@ -30,8 +30,7 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		arch-ia32			\
-					arch-mips			\
+SUBDIRS			:=		architectures			\
 					c-preprocessor			\
 					inline-assembly			\
 					kernels				\

@@ -510,7 +510,9 @@ noms des fichiers dans environment: linux.ia32/ia32/virtual/ia32.conf !!!
 env_dependencies -> env_headers
 
 recuperer les trucs dans conf.h: CONF_ENABLE_CHECK, CONF_MACHDEP_DEBUG,
-  SERIAL, GDB_STUB
+  SERIAL, GDB_STUB, CONSOLE_FILE
+
+CONSOLE_FILE dans kaneton/core/debug/ a gerer!
 
 mettre a jour development pour tout ce qui concerne les makefiles: env_,
 env.mk DEPENDENCY_MK etc.

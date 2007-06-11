@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/book/Makefile
 #
 # created       julien quintard   [sun jun 10 00:07:26 2007]
-# updated       julien quintard   [sun jun 10 00:13:26 2007]
+# updated       julien quintard   [mon jun 11 07:45:01 2007]
 #
 
 #
@@ -27,7 +27,7 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		arch-ia32			\
+SUBDIRS			:=		architectures			\
 					assignments			\
 					development			\
 					core				\

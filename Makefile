@@ -134,10 +134,10 @@ dependencies:
 #
 
 build:
-	$(call env_launch,$(_MBL_),build,)
+	$(call env_launch,$(_MBL_SCRIPT_),build,)
 
 install:		kaneton
-	$(call env_launch,$(_MBL_),install,)
+	$(call env_launch,$(_MBL_SCRIPT_),install,)
 
 #
 # ---------- test -------------------------------------------------------------
