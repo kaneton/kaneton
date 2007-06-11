@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/source-tree.tex
 %
 % created       julien quintard   [thu may 17 22:41:36 2007]
-% updated       julien quintard   [thu jun  7 22:11:48 2007]
+% updated       julien quintard   [mon jun 11 07:24:29 2007]
 %
 
 %
@@ -154,11 +154,22 @@ The directory is composed of three important subdirectories: \textit{core/},
 \textit{machine/} and \textit{include/}. These subdirectories are described
 next.
 
+% include/
+
+\subsubsection*{include/}
+
+This directory is the unique include point of the kaneton microkernel.
+
+This directory contains symbolic links to the \textit{include/} directories
+for the \textit{machine}, \textit{glue}, \textit{platform} and
+\textit{architecture} components.
+
 % core/
 
 \subsubsection*{core/}
 
-This directory contains the kaneton core source code.
+This directory contains the kaneton core source code. The \textit{core}
+represents the machine-independent source code/
 
 The directory is divided as shown below:
 
@@ -177,31 +188,20 @@ Each directory represents a kaneton core manager. For more information on
 the kaneton core, please refer to the appropriate document:
 \textit{The kaneton microkernel :: core}
 
-XXX +include; +machine: +include, +glue
+% machine/
 
-% platform/
+\subsubsection*{machine/}
 
-\subsubsection*{platform/}
+This directory contains the machine-dependent source code.
 
-This directory contains everything in relation with what the kaneton
-microkernel project calls a \textit{platform}. The platform represents the
-board supporting the devices: microprocessor, memory, peripherals etc.
+The machine is composed of three components, the \textit{plateform} which
+represents the board supporting the devices: microprocessors, memories,
+peripherals etc.; the \textit{architecture} which represents the microprocessor
+architecture and finally the \textit{glue} which assemble these two
+components forming the \textit{machine}.
 
-This directory obviously contains subdirectories for each platform
-supported by the kaneton microkernel.
-
-% architecture/
-
-\subsubsection*{architecture/}
-
-The \textit{architecture/} directory contains the source-code related to
-the microprocessor architectures supported by the kaneton microkernel.
-
-This directory is composed of subdirectories, each one representing a
-supported architecture: \textit{ia32}, \textit{mips64} etc. Note that each
-architecture can be specialised. For instance, the \textit{ia32/optimised}
-architecture represents an optimised implementation of the \textit{Intel IA-32}
-microprocessor architecture.
+For more information on the kaneton portability system, please refer to the
+\textit{The kaneton microkernel :: core} book.
 
 %
 % library/

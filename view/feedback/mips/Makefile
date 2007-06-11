@@ -27,9 +27,9 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		arch-mips
+PAPER			:=		mips
 
-SOURCES			:=		arch-mips.tex			
+SOURCES			:=		mips.tex			
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
