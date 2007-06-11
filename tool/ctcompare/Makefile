@@ -34,7 +34,7 @@ CTCOMPARE_C		:=		ctcompare.c
 
 CTCOMPARE_O		:=		$(CTCOMPARE_C:.c=.o)
 
-override _CFLAGS_	:=		
+override _CC_FLAGS_	:=		
 
 #
 # ---------- rules ------------------------------------------------------------

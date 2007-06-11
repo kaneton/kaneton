@@ -75,7 +75,7 @@ CORE_O			:=		$(CORE_C:.c=.o)
 
 # core variables XXX ugly: to correct
 
-_CFLAGS_		+=		-D___kernel
+_CC_FLAGS_		+=		-D___kernel
 
 # version file
 
