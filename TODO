@@ -504,11 +504,6 @@ all -> main
 le coup de PYTHONPATH c'est plus dans launch
 lorsqu'on met en private, ca creer un fichier temp, il faut l'effacer: DEP_TEX
 
-virtual -> educational
-bouger link dans glue
-
-_PROFILE_USER_ a ete enleve de environment.conf et est utilise par configure
-
 noms des fichiers dans environment: linux.ia32/ia32/virtual/ia32.conf !!!
   pour archi et platform on prend le premier mot.
 
@@ -527,6 +522,9 @@ les macros genre ___OpenBSD c'est defini dans la libc pour les applis.
 donc nous on a juste besoin de ___kernel pour la libc et ___wordsz etc.
 
 faire que les .dependency.tex soit cleaner dans view/
+
+dans configure/critical.py checker si env.py est accessible, si non et
+que variables OK alors demander de faire make!
 
 --
 

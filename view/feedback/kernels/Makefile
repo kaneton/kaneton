@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/feedback/kernels/Makefile
 #
 # created       julien quintard   [tue may 15 21:52:06 2007]
-# updated       julien quintard   [sat jun  9 23:51:54 2007]
+# updated       julien quintard   [mon jun 11 06:15:37 2007]
 #
 
 #
@@ -54,5 +54,7 @@ build:
 
 clear:
 	$(call env_remove,$(GARBAGE),)
+
+	$(call env_remove,$(_DEPENDENCY_TEX_),)
 
 	$(call env_purge)

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/environment.py
 #
 # created       julien quintard   [thu may 24 16:58:00 2007]
-# updated       julien quintard   [thu may 31 21:59:51 2007]
+# updated       julien quintard   [mon jun 11 06:08:42 2007]
 #
 
 #
@@ -50,7 +50,7 @@ g_directories = (env._PROFILE_DIR_,
                  env._PROFILE_DIR_ + "/host",
                  env._PROFILE_HOST_DIR_,
                  env._PROFILE_DIR_ + "/kaneton",
-                 env._PROFILE_CORE_DIR_,
+                 env._PROFILE_DIR_ + "/kaneton/core",
                  env._PROFILE_DIR_ + "/kaneton/platform",
                  env._PROFILE_PLATFORM_DIR_,
                  env._PROFILE_DIR_ + "/kaneton/architecture",
@@ -412,7 +412,8 @@ def			modify(variable, assignment):
       break
 
   # load the user profile configuration file.
-  content = env.pull(env._PROFILE_USER_, env.OPTION_NONE) + "\n"
+  content = env.pull(env._PROFILE_USER_DIR_ + "/" + env._USER_ + ".conf",
+                     env.OPTION_NONE) + "\n"
 
   # find the assignments related to the given variable
   matches = re.findall("(" +						\
@@ -438,7 +439,8 @@ def			modify(variable, assignment):
       content = content.replace(match[0], match[1] + assignment + "\n")
 
   # finally, write back the content.
-  env.push(env._PROFILE_USER_, content, env.OPTION_NONE)
+  env.push(env._PROFILE_USER_DIR_ + "/" + env._USER_ + ".conf",
+           content, env.OPTION_NONE)
 
 
 

@@ -56,6 +56,8 @@ build:
 clear:
 	$(call env_remove,$(GARBAGE),)
 
+	$(call env_remove,$(_DEPENDENCY_TEX_),)
+
 	$(call env_purge)
 
 # XXX

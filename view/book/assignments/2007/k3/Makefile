@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/book/assignments/2007/k3/Makefile
 #
 # created       julien quintard   [mon may 14 19:40:59 2007]
-# updated       julien quintard   [sun jun 10 00:15:14 2007]
+# updated       julien quintard   [mon jun 11 06:14:08 2007]
 #
 
 #
@@ -53,5 +53,7 @@ build:
 
 clear:
 	$(call env_remove,$(GARBAGE),)
+
+	$(call env_remove,$(_DEPENDENCY_TEX_),)
 
 	$(call env_purge)

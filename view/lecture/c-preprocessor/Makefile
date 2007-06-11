@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/lecture/c-preprocessor/Makefile
 #
 # created       julien quintard   [wed may 16 18:44:45 2007]
-# updated       julien quintard   [sat jun  9 23:33:56 2007]
+# updated       julien quintard   [mon jun 11 06:16:47 2007]
 #
 
 #
@@ -55,5 +55,7 @@ build:
 
 clear:
 	$(call env_remove,$(GARBAGE),)
+
+	$(call env_remove,$(_DEPENDENCY_TEX_),)
 
 	$(call env_purge)
