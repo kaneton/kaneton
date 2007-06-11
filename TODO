@@ -529,6 +529,9 @@ que variables OK alors demander de faire make!
 
 dev book: ne plus utiliser \nl mais \-
 
+dans critical.py, dire si jamais un des shell var est foireux: genre pointe
+sur un profile inexistant!
+
 --
 
 creer un repository ivory opur le bootloader et dans

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../arch/ibm-pc.ia32-virtual/architecture.h
+ * file          /home/mycure/kane.../ia32/educational/include/architecture.h
  *
  * created       julien quintard   [thu jun  7 12:02:10 2007]
- * updated       julien quintard   [fri jun  8 15:55:45 2007]
+ * updated       julien quintard   [mon jun 11 12:01:05 2007]
  */
 
 #ifndef ARCHITECTURE_ARCHITECTURE_H
