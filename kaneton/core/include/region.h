@@ -69,7 +69,7 @@ typedef struct
   t_vsize			size;
   t_opts			opts;
 
-  machdep_data(o_region);
+  machine_data(o_region);
 }				o_region;
 
 /*
@@ -83,7 +83,7 @@ typedef struct
   t_vaddr			start;
   t_vsize			size;
 
-  machdep_data(m_region);
+  machine_data(m_region);
 }				m_region;
 
 /*

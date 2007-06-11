@@ -33,7 +33,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machdep_include(as);
+machine_include(as);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -119,7 +119,7 @@ t_error			as_show(i_as				asid)
    * 4)
    */
 
-  if (machdep_call(as, as_show, asid) != ERROR_NONE)
+  if (machine_call(as, as_show, asid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
@@ -226,7 +226,7 @@ t_error			as_give(i_task			tskid,
    * 5)
    */
 
-  if (machdep_call(as, as_give, tskid, asid) != ERROR_NONE)
+  if (machine_call(as, as_give, tskid, asid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
@@ -293,7 +293,7 @@ t_error			as_vaddr(i_as			asid,
    * 5)
    */
 
-  if (machdep_call(as, as_vaddr, asid, physical, virtual) !=
+  if (machine_call(as, as_vaddr, asid, physical, virtual) !=
       ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
@@ -366,7 +366,7 @@ t_error			as_paddr(i_as		asid,
    * 5)
    */
 
-  if (machdep_call(as, as_paddr, asid, virtual, physical) !=
+  if (machine_call(as, as_paddr, asid, virtual, physical) !=
       ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
@@ -985,7 +985,7 @@ t_error			as_clone(i_task				tskid,
    * 8)
    */
 
-  if (machdep_call(as, as_clone, tskid, old, new) != ERROR_NONE)
+  if (machine_call(as, as_clone, tskid, old, new) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
@@ -1094,7 +1094,7 @@ t_error			as_reserve(i_task			tskid,
    * 8)
    */
 
-  if (machdep_call(as, as_reserve, tskid, asid) != ERROR_NONE)
+  if (machine_call(as, as_reserve, tskid, asid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   AS_LEAVE(as, ERROR_NONE);
@@ -1168,7 +1168,7 @@ t_error			as_release(i_as			asid)
    * 6)
    */
 
-  if (machdep_call(as, as_release, asid) != ERROR_NONE)
+  if (machine_call(as, as_release, asid) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
   /*
    * 7)
@@ -1255,7 +1255,7 @@ t_error			as_init(void)
    * 4)
    */
 
-  if (machdep_call(as, as_init) != ERROR_NONE)
+  if (machine_call(as, as_init) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   return (ERROR_NONE);
@@ -1281,7 +1281,7 @@ t_error			as_clean(void)
    * 1)
    */
 
-  if (machdep_call(as, as_clean) != ERROR_NONE)
+  if (machine_call(as, as_clean) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   /*

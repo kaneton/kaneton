@@ -79,7 +79,7 @@ typedef struct
  * machdep traps
  */
 
-#define		machdep_data_init()					\
+#define		machine_data_init()					\
   a_init			machdep
 
 #endif

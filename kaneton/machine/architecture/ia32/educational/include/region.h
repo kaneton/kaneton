@@ -24,10 +24,10 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-#define		machdep_include_region()				\
+#define		machine_include_region()				\
   extern d_region		region_dispatch
 
-#define		machdep_call_region(_function_, _args_...)		\
+#define		machine_call_region(_function_, _args_...)		\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
@@ -39,9 +39,9 @@
     }									\
   )
 
-#define		machdep_data_m_region()
+#define		machine_data_m_region()
 
-#define		machdep_data_o_region()
+#define		machine_data_o_region()
 
 /*
  * ---------- macros ----------------------------------------------------------

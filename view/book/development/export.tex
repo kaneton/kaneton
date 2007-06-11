@@ -121,7 +121,7 @@ code is marked by a tag as illustrated below:
      * 4)
      */
 
-    if (machdep_call(segment, segment_clone, asid, old, new) != ERROR_NONE)
+    if (machine_call(segment, segment_clone, asid, old, new) != ERROR_NONE)
       SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
     SEGMENT_LEAVE(segment, ERROR_NONE);

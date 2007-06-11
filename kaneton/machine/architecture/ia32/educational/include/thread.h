@@ -25,10 +25,10 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-#define         machdep_include_thread()				\
+#define         machine_include_thread()				\
   extern d_thread                thread_dispatch
 
-#define         machdep_call_thread(_function_, _args_...)		\
+#define         machine_call_thread(_function_, _args_...)		\
   (									\
     {									\
       t_error   _r_ = ERROR_NONE;					\
@@ -40,13 +40,13 @@
     }									\
   )
 
-#define         machdep_data_m_thread()					\
+#define         machine_data_m_thread()					\
   struct								\
   {									\
     t_ia32_tss*		tss;						\
   }			machdep;
 
-#define         machdep_data_o_thread()					\
+#define         machine_data_o_thread()					\
   struct								\
   {									\
     /*                                                  [cut] k3   */	\

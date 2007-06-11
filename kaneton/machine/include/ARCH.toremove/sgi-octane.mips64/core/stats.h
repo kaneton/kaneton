@@ -24,9 +24,9 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-#define		machdep_include_stats()
+#define		machine_include_stats()
 
-#define		machdep_call_stats(_function_, _args_...)		\
+#define		machine_call_stats(_function_, _args_...)		\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
@@ -35,6 +35,6 @@
     }									\
   )
 
-#define		machdep_data_stats()
+#define		machine_data_stats()
 
 #endif

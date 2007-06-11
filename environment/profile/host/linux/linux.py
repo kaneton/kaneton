@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [sun jun 10 21:49:03 2007]
+# updated       julien quintard   [sun jun 10 21:59:03 2007]
 #
 
 #
@@ -26,12 +26,11 @@
 # ---------- python path ------------------------------------------------------
 #
 
-pp = os.getenv("PYTHONPATH")
+pythonpath = os.getenv("PYTHONPATH")
+if not pythonpath:
+  pythonpath = ""
 
-if not pp:
-  pp = ""
-
-os.putenv("PYTHONPATH", pp + ":" + _PYTHON_INCLUDE_DIR_)
+os.putenv("PYTHONPATH", pythonpath + ":" + _PYTHON_INCLUDE_DIR_)
 
 #
 # ---------- functions --------------------------------------------------------

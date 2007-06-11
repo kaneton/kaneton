@@ -68,7 +68,7 @@ typedef struct
 
   t_perms			perms;
 
-  machdep_data(o_segment);
+  machine_data(o_segment);
 }				o_segment;
 
 /*
@@ -84,7 +84,7 @@ typedef struct
 
   i_set				segments;
 
-  machdep_data(m_segment);
+  machine_data(m_segment);
 }				m_segment;
 
 /*

@@ -71,13 +71,13 @@
  * machdep traps
  */
 
-#define		machdep_data_init()					\
+#define		machine_data_init()					\
   struct								\
   {									\
     t_ia32_gdt			gdt;					\
     t_ia32_directory		pd;					\
   }				machdep;
 
-#define machdep_data_MANGEMONCUL() int SUCEAVALETOUT;
+#define machine_data_MANGEMONCUL() int SUCEAVALETOUT;
 
 #endif

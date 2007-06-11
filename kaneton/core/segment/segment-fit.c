@@ -33,7 +33,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machdep_include(segment);
+machine_include(segment);
 
 /*
  * ---------- extern ----------------------------------------------------------

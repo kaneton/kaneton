@@ -173,7 +173,7 @@ typedef struct
 
   i_set				cpus;
 
-  machdep_data(m_sched);
+  machine_data(m_sched);
 }				m_sched;
 
 /*

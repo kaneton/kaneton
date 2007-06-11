@@ -31,7 +31,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machdep_include(region);
+machine_include(region);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -89,7 +89,7 @@ t_error			region_show(i_as			asid,
    * 3)
    */
 
-  if (machdep_call(region, region_show, asid, regid) != ERROR_NONE)
+  if (machine_call(region, region_show, asid, regid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
@@ -197,7 +197,7 @@ t_error			region_inject(i_as		asid,
    * 4)
    */
 
-  if (machdep_call(region, region_inject, asid, o, regid) != ERROR_NONE)
+  if (machine_call(region, region_inject, asid, o, regid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
@@ -289,7 +289,7 @@ t_error			region_split(i_as			asid,
    * 6)
    */
 
-  if (machdep_call(region, region_split, asid, regid, size, left, right) !=
+  if (machine_call(region, region_split, asid, regid, size, left, right) !=
       ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
@@ -382,7 +382,7 @@ t_error			region_resize(i_as			as,
    * 4)
    */
 
-  if (machdep_call(region, region_resize, as, old, size, new) != ERROR_NONE)
+  if (machine_call(region, region_resize, as, old, size, new) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
@@ -463,7 +463,7 @@ t_error			region_coalesce(i_as		asid,
    * 6)
    */
 
-  if (machdep_call(region, region_coalesce, asid, left, right, regid) !=
+  if (machine_call(region, region_coalesce, asid, left, right, regid) !=
       ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
@@ -560,7 +560,7 @@ t_error			region_reserve(i_as			asid,
    * 4)
    */
 
-  if (machdep_call(region, region_reserve, asid, segid, offset,
+  if (machine_call(region, region_reserve, asid, segid, offset,
 		   opts, address, size, regid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
@@ -590,7 +590,7 @@ t_error			region_release(i_as			asid,
    * 1)
    */
 
-  if (machdep_call(region, region_release, asid, regid) != ERROR_NONE)
+  if (machine_call(region, region_release, asid, regid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*
@@ -661,7 +661,7 @@ t_error			region_flush(i_as			asid)
    * 3)
    */
 
-  if (machdep_call(region, region_flush, asid) != ERROR_NONE)
+  if (machine_call(region, region_flush, asid) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   REGION_LEAVE(region, ERROR_NONE);
@@ -728,7 +728,7 @@ t_error			region_init(t_vaddr			start,
    * 3)
    */
 
-  if (machdep_call(region, region_init, start, size) !=
+  if (machine_call(region, region_init, start, size) !=
       ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
@@ -750,7 +750,7 @@ t_error			region_clean(void)
    * 1)
    */
 
-  if (machdep_call(region, region_clean) != ERROR_NONE)
+  if (machine_call(region, region_clean) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
   /*

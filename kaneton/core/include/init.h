@@ -131,7 +131,7 @@ typedef struct
   t_paddr			alloc;
   t_psize			allocsz;
 
-  machdep_data(init);
+  machine_data(init);
 }				t_init;
 
 #endif

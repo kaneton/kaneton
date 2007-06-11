@@ -39,10 +39,10 @@ typedef struct
  * ---------- macro functions -------------------------------------------------
  */
 
-#define		machdep_include_sched()					\
+#define		machine_include_sched()					\
   extern d_sched		sched_dispatch
 
-#define		machdep_call_sched(_function_, _args_...)		\
+#define		machine_call_sched(_function_, _args_...)		\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
@@ -54,9 +54,9 @@ typedef struct
     }									\
   )
 
-#define		machdep_data_m_sched()					\
+#define		machine_data_m_sched()					\
   am_sched			machdep
 
-#define		machdep_data_o_sched()
+#define		machine_data_o_sched()
 
 #endif

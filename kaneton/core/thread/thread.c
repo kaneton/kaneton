@@ -27,7 +27,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machdep_include(thread);
+machine_include(thread);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -75,7 +75,7 @@ t_error			thread_show(i_thread			threadid)
    * 3)
    */
 
-  if (machdep_call(thread, thread_show, threadid) != ERROR_NONE)
+  if (machine_call(thread, thread_show, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -197,7 +197,7 @@ t_error			thread_give(i_task			taskid,
 
   // XXX update CR3 value.
 
-  if (machdep_call(thread, thread_give, taskid, threadid) != ERROR_NONE)
+  if (machine_call(thread, thread_give, taskid, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -276,7 +276,7 @@ t_error			thread_clone(i_task			taskid,
    * 5)
    */
 
-  if (machdep_call(thread, thread_clone, taskid, old, new) != ERROR_NONE)
+  if (machine_call(thread, thread_clone, taskid, old, new) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -361,7 +361,7 @@ t_error			thread_reserve(i_task			taskid,
    * 6)
    */
 
-  if (machdep_call(thread, thread_reserve, taskid, threadid) != ERROR_NONE)
+  if (machine_call(thread, thread_reserve, taskid, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -392,7 +392,7 @@ t_error			thread_release(i_thread			threadid)
    * 1)
    */
 
-  if (machdep_call(thread, thread_release, threadid) != ERROR_NONE)
+  if (machine_call(thread, thread_release, threadid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
@@ -489,7 +489,7 @@ t_error			thread_priority(i_thread		threadid,
    * 4)
    */
 
-  if (machdep_call(thread, thread_priority, threadid, prior) != ERROR_NONE)
+  if (machine_call(thread, thread_priority, threadid, prior) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
@@ -588,7 +588,7 @@ t_error			thread_state(i_thread			threadid,
    * 5)
    */
 
-  if (machdep_call(thread, thread_state, threadid, sched) != ERROR_NONE)
+  if (machine_call(thread, thread_state, threadid, sched) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
@@ -682,7 +682,7 @@ t_error			thread_stack(i_thread			threadid,
    * 5)
    */
 
-  if (machdep_call(thread, thread_stack, threadid, stack) != ERROR_NONE)
+  if (machine_call(thread, thread_stack, threadid, stack) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -711,7 +711,7 @@ t_error			thread_flush(i_task			taskid)
    * 1)
    */
 
-  if (machdep_call(thread, thread_flush, taskid) != ERROR_NONE)
+  if (machine_call(thread, thread_flush, taskid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   /*
@@ -750,7 +750,7 @@ t_error			thread_load(i_thread			threadid,
 {
   THREAD_ENTER(thread);
 
-  if (machdep_call(thread, thread_load, threadid, context) != ERROR_NONE)
+  if (machine_call(thread, thread_load, threadid, context) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -765,7 +765,7 @@ t_error			thread_store(i_thread			threadid,
 {
   THREAD_ENTER(thread);
 
-  if (machdep_call(thread, thread_store, threadid, context) != ERROR_NONE)
+  if (machine_call(thread, thread_store, threadid, context) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -841,7 +841,7 @@ t_error			thread_init(void)
    * 4)
    */
 
-  if (machdep_call(thread, thread_init) != ERROR_NONE)
+  if (machine_call(thread, thread_init) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
@@ -873,7 +873,7 @@ t_error			thread_clean(void)
    * 1)
    */
 
-  if (machdep_call(thread, thread_clean) != ERROR_NONE)
+  if (machine_call(thread, thread_clean) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*

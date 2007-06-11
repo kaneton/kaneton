@@ -48,7 +48,7 @@ typedef struct
 {
   t_id				machine;
 
-  /* XXX machdep_data(m_kernel); */
+  /* XXX machine_data(m_kernel); */
 }				m_kernel;
 
 /*

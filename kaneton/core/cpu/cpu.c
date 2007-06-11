@@ -36,7 +36,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machdep_include(cpu);
+machine_include(cpu);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -74,7 +74,7 @@ t_error			cpu_show(i_cpu				id)
   cons_msg('#', "  cpu %qd: execution time %qd ms\n", id,
 	   o->efficiency);
 
-  if (machdep_call(cpu, cpu_show, id) != ERROR_NONE)
+  if (machine_call(cpu, cpu_show, id) != ERROR_NONE)
     CPU_LEAVE(cpu, ERROR_UNKNOWN);
 
   CPU_LEAVE(cpu, ERROR_NONE);
@@ -126,7 +126,7 @@ t_error			cpu_current(i_cpu*			cpuid)
 {
   CPU_ENTER(cpu);
 
-  if (machdep_call(cpu, cpu_current, cpuid) != ERROR_NONE)
+  if (machine_call(cpu, cpu_current, cpuid) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   CPU_LEAVE(cpu, ERROR_NONE);
@@ -240,7 +240,7 @@ t_error			cpu_migrate(i_task			tskid,
    * 3)
    */
 
-  if (machdep_call(cpu, cpu_migrate, tskid, destination) != ERROR_NONE)
+  if (machine_call(cpu, cpu_migrate, tskid, destination) != ERROR_NONE)
     CPU_LEAVE(cpu, ERROR_UNKNOWN);
 
   /*
@@ -333,7 +333,7 @@ t_error			cpu_init(void)
    * 4)
    */
 
-  if (machdep_call(cpu, cpu_init) != ERROR_NONE)
+  if (machine_call(cpu, cpu_init) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);
@@ -355,7 +355,7 @@ t_error			cpu_clean(void)
    * 1)
    */
 
-  if (machdep_call(cpu, cpu_clean) != ERROR_NONE)
+  if (machine_call(cpu, cpu_clean) != ERROR_NONE)
     CPU_LEAVE(cpu, ERROR_UNKNOWN);
 
   /*

@@ -28,10 +28,10 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-#define		machdep_include_io()					\
+#define		machine_include_io()					\
   extern d_io		io_dispatch
 
-#define		machdep_call_io(_function_, _args_...)			\
+#define		machine_call_io(_function_, _args_...)			\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
@@ -43,8 +43,8 @@
     }									\
   )
 
-#define		machdep_data_m_io()
+#define		machine_data_m_io()
 
-#define		machdep_data_o_io()
+#define		machine_data_o_io()
 
 #endif

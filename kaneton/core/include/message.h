@@ -50,7 +50,7 @@ typedef struct
   void*			data;
   t_vsize		sz;
 
-  machdep_data(o_message);
+  machine_data(o_message);
 }			o_message;
 
 typedef struct
@@ -71,7 +71,7 @@ typedef struct
 {
   i_set			local_boxes;
 
-  machdep_data(m_message);
+  machine_data(m_message);
 }			m_message;
 
 /*

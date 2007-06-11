@@ -1,20 +1,19 @@
+
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/include/arch/ia32-virtual/core/timer.h
+ * license       kaneton
  *
- * created       renaud voltz   [mon feb 13 00:56:13 2006]
- * updated       julien quintard   [sun apr  2 14:09:38 2006]
+ * file          /home/mycure/kane...machine/glue/ibm-pc.ia32/include/timer.h
+ *
+ * created       julien quintard   [wed jun  6 16:29:41 2007]
+ * updated       julien quintard   [mon jun 11 05:54:33 2007]
  */
 
-#ifndef IA32_CORE_TIMER_H
-#define IA32_CORE_TIMER_H	1
-
-
-
-//typedef t_error			(*t_timer_handler)(void);
+#ifndef GLUE_TIMER_H
+#define GLUE_TIMER_H			1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -38,5 +37,22 @@
 #define		machine_data_m_timer()
 
 #define		machine_data_o_timer()
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../timer.c
+ */
+
+/*
+ * ../timer.c
+ */
+
+t_error			glue_timer_init(void);
+
+
+/*
+ * eop
+ */
 
 #endif

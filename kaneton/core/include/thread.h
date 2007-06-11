@@ -78,7 +78,7 @@ typedef struct
   t_vaddr			stack;
   t_vsize			stacksz;
 
-  machdep_data(o_thread);
+  machine_data(o_thread);
 }				o_thread;
 
 /*
@@ -91,7 +91,7 @@ typedef struct
 
   i_set				threads;
 
-  machdep_data(m_thread);
+  machine_data(m_thread);
 }				m_thread;
 
 /*

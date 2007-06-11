@@ -49,7 +49,7 @@ typedef struct
   t_operations			operations;
   t_id				descriptor;
 
-  // machdep_data(t_capability);
+  // machine_data(t_capability);
 }				t_capability;
 
 /*
@@ -82,7 +82,7 @@ typedef struct
 					      t_uint32 size,
 					      t_uint64* res);
 
-  // machdep_data(m_capability);
+  // machine_data(m_capability);
 }				m_capability;
 
 /*

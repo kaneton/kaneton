@@ -52,7 +52,7 @@ typedef struct
   i_set				segments;
   i_set				regions;
 
-  machdep_data(o_as);
+  machine_data(o_as);
 }				o_as;
 
 /*
@@ -65,7 +65,7 @@ typedef struct
 
   i_set				ass;
 
-  machdep_data(m_as);
+  machine_data(m_as);
 }				m_as;
 
 /*

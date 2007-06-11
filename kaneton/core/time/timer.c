@@ -29,7 +29,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machdep_include(timer);
+machine_include(timer);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -149,7 +149,7 @@ t_error			timer_notify(i_timer			id)
    * 2)
    */
 
-  if (machdep_call(timer, timer_notify, id) != ERROR_NONE)
+  if (machine_call(timer, timer_notify, id) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   /*
@@ -232,7 +232,7 @@ t_error			timer_reserve(t_type			type,
    * 1)
    */
 
-  if (machdep_call(timer, timer_reserve, type, handler, delay, repeat, id)
+  if (machine_call(timer, timer_reserve, type, handler, delay, repeat, id)
       != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
@@ -296,7 +296,7 @@ t_error			timer_release(i_timer			id)
    * 2)
    */
 
-  if (machdep_call(timer, timer_release, id) != ERROR_NONE)
+  if (machine_call(timer, timer_release, id) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   /*
@@ -350,7 +350,7 @@ t_error			timer_delay(i_timer			id,
    * 3)
    */
 
-  if (machdep_call(timer, timer_delay, id, delay) != ERROR_NONE)
+  if (machine_call(timer, timer_delay, id, delay) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   TIMER_LEAVE(timer, ERROR_NONE);
@@ -390,7 +390,7 @@ t_error			timer_repeat(i_timer			id,
    * 3)
    */
 
-  if (machdep_call(timer, timer_repeat, id, repeat) != ERROR_NONE)
+  if (machine_call(timer, timer_repeat, id, repeat) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   TIMER_LEAVE(timer, ERROR_NONE);
@@ -427,7 +427,7 @@ t_error			timer_modify(i_timer			id,
    * 2)
    */
 
-  if (machdep_call(timer, timer_modify, id, delay, repeat) != ERROR_NONE)
+  if (machine_call(timer, timer_modify, id, delay, repeat) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   /*
@@ -531,7 +531,7 @@ t_error			timer_init(void)
    * 4)
    */
 
-  if (machdep_call(timer, timer_init) != ERROR_NONE)
+  if (machine_call(timer, timer_init) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
@@ -563,7 +563,7 @@ t_error			timer_clean(void)
    * 1)
    */
 
-  if (machdep_call(timer, timer_clean) != ERROR_NONE)
+  if (machine_call(timer, timer_clean) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*

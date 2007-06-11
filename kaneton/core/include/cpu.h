@@ -38,7 +38,7 @@ typedef struct
 
   t_timeslice			efficiency;
 
-  machdep_data(o_cpu);
+  machine_data(o_cpu);
 }				o_cpu;
 
 /*
@@ -49,7 +49,7 @@ typedef struct
 {
   i_set				cpus;
 
-  machdep_data(m_cpu);
+  machine_data(m_cpu);
 }				m_cpu;
 
 /*

@@ -18,10 +18,10 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-#define		machdep_include_segment()				\
+#define		machine_include_segment()				\
   extern d_segment		segment_dispatch
 
-#define		machdep_call_segment(_function_, _args_...)		\
+#define		machine_call_segment(_function_, _args_...)		\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
@@ -33,9 +33,9 @@
     }									\
   )
 
-#define		machdep_data_m_segment()
+#define		machine_data_m_segment()
 
-#define		machdep_data_o_segment()
+#define		machine_data_o_segment()
 
 /*
  * ---------- macros ----------------------------------------------------------

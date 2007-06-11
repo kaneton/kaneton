@@ -26,10 +26,10 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-#define		machdep_include_cpu()					\
+#define		machine_include_cpu()					\
   extern d_cpu		cpu_dispatch
 
-#define		machdep_call_cpu(_function_, _args_...)			\
+#define		machine_call_cpu(_function_, _args_...)			\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
@@ -41,8 +41,8 @@
     }									\
   )
 
-#define		machdep_data_m_cpu()
+#define		machine_data_m_cpu()
 
-#define		machdep_data_o_cpu()
+#define		machine_data_o_cpu()
 
 #endif

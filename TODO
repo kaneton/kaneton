@@ -84,8 +84,8 @@ l'endianness dans mod_load
 --
  verifier que dans chaque manager il y a:
 
-   machdep_include()
-   tous les machdep_call()
+   machine_include()
+   tous les machine_call()
 
    la variable globale correspondante au manager
 
@@ -434,7 +434,7 @@ machine doit specifier:
  - les types: t_reg{8,16,32,64}
  - ___endian, ___wordsz
  - PAGESZ
- - tous les machdep_data{o_*, init, etc.}
+ - tous les machine_data{o_*, init, etc.}
 
 tout ca doit etre dit dans le book kaneton.
 
@@ -525,6 +525,8 @@ tous les makefiles doivent fournir une regle main!!! et regle _ est reservee
 
 les macros genre ___OpenBSD c'est defini dans la libc pour les applis.
 donc nous on a juste besoin de ___kernel pour la libc et ___wordsz etc.
+
+faire que les .dependency.tex soit cleaner dans view/
 
 --
 

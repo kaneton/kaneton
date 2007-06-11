@@ -31,7 +31,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machdep_include(region);
+machine_include(region);
 
 /*
  * ---------- extern ----------------------------------------------------------

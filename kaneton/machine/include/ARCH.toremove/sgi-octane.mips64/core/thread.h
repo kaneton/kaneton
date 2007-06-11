@@ -38,10 +38,10 @@ typedef struct
  * ---------- macro functions -------------------------------------------------
  */
 
-#define         machdep_include_thread()				\
+#define         machine_include_thread()				\
   extern d_thread                thread_dispatch
 
-#define         machdep_call_thread(_function_, _args_...)		\
+#define         machine_call_thread(_function_, _args_...)		\
   (									\
     {									\
       t_error   _r_ = ERROR_NONE;					\
@@ -53,10 +53,10 @@ typedef struct
     }									\
   )
 
-#define         machdep_data_m_thread()					\
+#define         machine_data_m_thread()					\
   am_thread		machdep
 
-#define         machdep_data_o_thread()					\
+#define         machine_data_o_thread()					\
   ao_thread		machdep
 
 /*                                                               [cut] /k4   */

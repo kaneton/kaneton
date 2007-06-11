@@ -22,7 +22,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machdep_include(event);
+machine_include(event);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -71,7 +71,7 @@ t_error			event_show(i_event			id)
    * 3)
    */
 
-  if (machdep_call(event, event_show, id) != ERROR_NONE)
+  if (machine_call(event, event_show, id) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   EVENT_LEAVE(event, ERROR_NONE);
@@ -182,7 +182,7 @@ t_error			event_reserve(i_event			id,
    * 2)
    */
 
-  if (machdep_call(event, event_reserve, id, type, handler) != ERROR_NONE)
+  if (machine_call(event, event_reserve, id, type, handler) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   /*
@@ -241,7 +241,7 @@ t_error			event_release(i_event			id)
    * 3)
    */
 
-  if (machdep_call(event, event_release, o->eventid) != ERROR_NONE)
+  if (machine_call(event, event_release, o->eventid) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   EVENT_LEAVE(event, ERROR_NONE);
@@ -317,7 +317,7 @@ t_error			event_init(void)
    * 4)
    */
 
-  if (machdep_call(event, event_init) != ERROR_NONE)
+  if (machine_call(event, event_init) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
@@ -353,7 +353,7 @@ t_error			event_clean(void)
    * 1)
    */
 
-  if (machdep_call(event, event_clean) != ERROR_NONE)
+  if (machine_call(event, event_clean) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*

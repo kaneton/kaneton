@@ -29,7 +29,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machdep_include(io);
+machine_include(io);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -55,7 +55,7 @@ t_error			io_grant(i_port				id,
 {
   IO_ENTER(io);
 
-  if (machdep_call(io, io_grant, id, task, width) != ERROR_NONE)
+  if (machine_call(io, io_grant, id, task, width) != ERROR_NONE)
     IO_LEAVE(io, ERROR_UNKNOWN);
 
   IO_LEAVE(io, ERROR_NONE);
@@ -71,7 +71,7 @@ t_error			io_deny(i_port				id,
 {
   IO_ENTER(io);
 
-  if (machdep_call(io, io_deny, id, task, width) != ERROR_NONE)
+  if (machine_call(io, io_deny, id, task, width) != ERROR_NONE)
     IO_LEAVE(io, ERROR_UNKNOWN);
 
   IO_LEAVE(io, ERROR_NONE);
@@ -87,7 +87,7 @@ t_error			io_read_8(i_task			task,
 {
   IO_ENTER(io);
 
-  IO_LEAVE(io, machdep_call(io, io_read_8, task, id, data));
+  IO_LEAVE(io, machine_call(io, io_read_8, task, id, data));
 }
 
 /*
@@ -100,7 +100,7 @@ t_error			io_read_16(i_task			task,
 {
   IO_ENTER(io);
 
-  IO_LEAVE(io, machdep_call(io, io_read_16, task, id, data));
+  IO_LEAVE(io, machine_call(io, io_read_16, task, id, data));
 }
 
 /*
@@ -113,7 +113,7 @@ t_error			io_read_32(i_task			task,
 {
   IO_ENTER(io);
 
-  IO_LEAVE(io, machdep_call(io, io_read_32, task, id, data));
+  IO_LEAVE(io, machine_call(io, io_read_32, task, id, data));
 }
 
 /*
@@ -126,7 +126,7 @@ t_error			io_read_64(i_task			task,
 {
   IO_ENTER(io);
 
-  IO_LEAVE(io, machdep_call(io, io_read_64, task, id, data));
+  IO_LEAVE(io, machine_call(io, io_read_64, task, id, data));
 }
 
 /*
@@ -139,7 +139,7 @@ t_error			io_write_8(i_task			task,
 {
   IO_ENTER(io);
 
-  IO_LEAVE(io, machdep_call(io, io_write_8, task, id, data));
+  IO_LEAVE(io, machine_call(io, io_write_8, task, id, data));
 }
 
 /*
@@ -152,7 +152,7 @@ t_error			io_write_16(i_task			task,
 {
   IO_ENTER(io);
 
-  IO_LEAVE(io, machdep_call(io, io_write_16, task, id, data));
+  IO_LEAVE(io, machine_call(io, io_write_16, task, id, data));
 }
 
 /*
@@ -165,7 +165,7 @@ t_error			io_write_32(i_task			task,
 {
   IO_ENTER(io);
 
-  IO_LEAVE(io, machdep_call(io, io_write_32, task, id, data));
+  IO_LEAVE(io, machine_call(io, io_write_32, task, id, data));
 }
 
 /*
@@ -178,7 +178,7 @@ t_error			io_write_64(i_task			task,
 {
   IO_ENTER(io);
 
-  IO_LEAVE(io, machdep_call(io, io_write_64, task, id, data));
+  IO_LEAVE(io, machine_call(io, io_write_64, task, id, data));
 }
 
 /*
@@ -210,7 +210,7 @@ t_error			io_init(void)
    * 2)
    */
 
-  if (machdep_call(io, io_init) != ERROR_NONE)
+  if (machine_call(io, io_init) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);
@@ -232,7 +232,7 @@ t_error			io_clean(void)
    * 1)
    */
 
-  if (machdep_call(io, io_clean) != ERROR_NONE)
+  if (machine_call(io, io_clean) != ERROR_NONE)
     IO_LEAVE(io, ERROR_UNKNOWN);
 
   /*

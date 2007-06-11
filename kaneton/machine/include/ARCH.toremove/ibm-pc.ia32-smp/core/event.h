@@ -22,10 +22,10 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-#define		machdep_include_event()					\
+#define		machine_include_event()					\
   extern d_event		event_dispatch
 
-#define		machdep_call_event(_function_, _args_...)		\
+#define		machine_call_event(_function_, _args_...)		\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
@@ -37,8 +37,8 @@
     }									\
   )
 
-#define		machdep_data_m_event()
+#define		machine_data_m_event()
 
-#define		machdep_data_o_event()
+#define		machine_data_o_event()
 
 #endif

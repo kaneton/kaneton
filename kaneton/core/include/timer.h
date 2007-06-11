@@ -84,7 +84,7 @@ typedef struct
 
   u_timer_handler		handler;
 
-  machdep_data(o_timer);
+  machine_data(o_timer);
 }				o_timer;
 
 /*
@@ -99,7 +99,7 @@ typedef struct
 
   i_set				timers;
 
-  machdep_data(m_timer);
+  machine_data(m_timer);
 }				m_timer;
 
 /*

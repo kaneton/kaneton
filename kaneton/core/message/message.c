@@ -38,7 +38,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machdep_include(message);
+machine_include(message);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -102,7 +102,7 @@ t_error			message_init(void)
    * 2)
    */
 
-  if (machdep_call(message, message_init) != ERROR_NONE)
+  if (machine_call(message, message_init) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   MESSAGE_LEAVE(message, ERROR_NONE);
@@ -124,7 +124,7 @@ t_error			message_clean(void)
    * 1)
    */
 
-  if (machdep_call(message, message_clean) != ERROR_NONE)
+  if (machine_call(message, message_clean) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   /*
@@ -404,7 +404,7 @@ copied:
    * 5)
    */
 
-  if (machdep_call(message, message_epilogue, receiver->thread, ERROR_NONE)
+  if (machine_call(message, message_epilogue, receiver->thread, ERROR_NONE)
         != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
@@ -522,7 +522,7 @@ copied:
    * 5)
    */
 
-  if (machdep_call(message, message_epilogue, sender->thread, ERROR_NONE)
+  if (machine_call(message, message_epilogue, sender->thread, ERROR_NONE)
         != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 

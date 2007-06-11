@@ -1110,7 +1110,7 @@ Below is an example of such calls:
      * 1)
      */
 
-    if (machdep_call(thread, thread_release, threadid) != ERROR_NONE)
+    if (machine_call(thread, thread_release, threadid) != ERROR_NONE)
       THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
     /*

@@ -34,7 +34,7 @@
 
 typedef struct
 {
-  machdep_data(m_io);
+  machine_data(m_io);
 }				m_io;
 
 /*

@@ -28,10 +28,10 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-#define		machdep_include_as()					\
+#define		machine_include_as()					\
   extern d_as			as_dispatch
 
-#define		machdep_call_as(_function_, _args_...)			\
+#define		machine_call_as(_function_, _args_...)			\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
@@ -43,8 +43,8 @@
     }									\
   )
 
-#define		machdep_data_m_as()
+#define		machine_data_m_as()
 
-#define		machdep_data_o_as()
+#define		machine_data_o_as()
 
 #endif

@@ -108,7 +108,7 @@ typedef struct
   i_set				waits;
   t_wait			wait;
 
-  machdep_data(o_task);
+  machine_data(o_task);
 }				o_task;
 
 /*
@@ -121,7 +121,7 @@ typedef struct
 
   i_set				tasks;
 
-  machdep_data(m_task);
+  machine_data(m_task);
 }				m_task;
 
 /*

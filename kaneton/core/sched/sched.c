@@ -62,7 +62,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machdep_include(sched);
+machine_include(sched);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -258,7 +258,7 @@ t_error			sched_quantum(t_quantum			quantum)
    * 2)
    */
 
-  if (machdep_call(sched, sched_quantum, quantum) != ERROR_NONE)
+  if (machine_call(sched, sched_quantum, quantum) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   SCHED_LEAVE(sched, ERROR_NONE);
@@ -298,7 +298,7 @@ t_error			sched_yield(i_cpu			cpuid)
    * 2)
    */
 
-  if (machdep_call(sched, sched_yield, cpuid) != ERROR_NONE)
+  if (machine_call(sched, sched_yield, cpuid) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   SCHED_LEAVE(sched, ERROR_NONE);
@@ -492,7 +492,7 @@ t_error			sched_switch(void)
    * 6)
    */
 
-  if (machdep_call(sched, sched_switch, elected) != ERROR_NONE)
+  if (machine_call(sched, sched_switch, elected) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   ent->current = elected;
@@ -587,7 +587,7 @@ t_error			sched_add(i_thread			thread)
    * 4)
    */
 
-  if (machdep_call(sched, sched_add, thread) != ERROR_NONE)
+  if (machine_call(sched, sched_add, thread) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   SCHED_LEAVE(sched, ERROR_NONE);
@@ -640,7 +640,7 @@ t_error			sched_remove(i_thread			thread)
    * 2)
    */
 
-  if (machdep_call(sched, sched_remove, thread) != ERROR_NONE)
+  if (machine_call(sched, sched_remove, thread) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   /*
@@ -715,7 +715,7 @@ t_error			sched_update(i_thread			thread)
    * 2)
    */
 
-  if (machdep_call(sched, sched_update, thread) != ERROR_NONE)
+  if (machine_call(sched, sched_update, thread) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   SCHED_LEAVE(sched, ERROR_NONE);
@@ -840,7 +840,7 @@ t_error			sched_init(void)
    * 4)
    */
 
-  if (machdep_call(sched, sched_init) != ERROR_NONE)
+  if (machine_call(sched, sched_init) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);
@@ -869,7 +869,7 @@ t_error			sched_clean(void)
    * 1)
    */
 
-  if (machdep_call(sched, sched_clean) != ERROR_NONE)
+  if (machine_call(sched, sched_clean) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
   /*

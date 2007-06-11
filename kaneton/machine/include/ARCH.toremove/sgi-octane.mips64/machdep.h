@@ -32,13 +32,13 @@
  * machdep transparent traps
  */
 
-#define		machdep_include(_mng_)					\
-  machdep_include_##_mng_()
+#define		machine_include(_mng_)					\
+  machine_include_##_mng_()
 
-#define		machdep_call(_mng_, _function_, _args_...)		\
-  machdep_call_##_mng_(_function_, ##_args_)
+#define		machine_call(_mng_, _function_, _args_...)		\
+  machine_call_##_mng_(_function_, ##_args_)
 
-#define		machdep_data(_object_)					\
-  machdep_data_##_object_()
+#define		machine_data(_object_)					\
+  machine_data_##_object_()
 
 #endif

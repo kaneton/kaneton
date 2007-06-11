@@ -24,10 +24,10 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-#define		machdep_include_task()					\
+#define		machine_include_task()					\
   extern d_task			task_dispatch
 
-#define		machdep_call_task(_function_, _args_...)		\
+#define		machine_call_task(_function_, _args_...)		\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
@@ -39,9 +39,9 @@
     }									\
   )
 
-#define		machdep_data_m_task()
+#define		machine_data_m_task()
 
-#define		machdep_data_o_task()					\
+#define		machine_data_o_task()					\
   struct								\
   {									\
     t_uint8			iomap[8192];				\

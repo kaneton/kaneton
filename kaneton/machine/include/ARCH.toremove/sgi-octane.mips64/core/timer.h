@@ -20,10 +20,10 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-#define		machdep_include_timer()					\
+#define		machine_include_timer()					\
   extern d_timer		timer_dispatch
 
-#define		machdep_call_timer(_function_, _args_...)		\
+#define		machine_call_timer(_function_, _args_...)		\
   (									\
     {									\
       t_error	_r_ = ERROR_NONE;					\
@@ -35,8 +35,8 @@
     }									\
   )
 
-#define		machdep_data_m_timer()
+#define		machine_data_m_timer()
 
-#define		machdep_data_o_timer()
+#define		machine_data_o_timer()
 
 #endif

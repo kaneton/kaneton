@@ -74,7 +74,7 @@ typedef struct
 
   u_event_handler		handler;
 
-  machdep_data(o_event);
+  machine_data(o_event);
 }				o_event;
 
 /*
@@ -87,7 +87,7 @@ typedef struct
 
   i_set				events;
 
-  machdep_data(m_event);
+  machine_data(m_event);
 }				m_event;
 
 /*

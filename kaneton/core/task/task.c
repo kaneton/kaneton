@@ -28,7 +28,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machdep_include(task);
+machine_include(task);
 
 /*
  * ---------- extern ----------------------------------------------------------
@@ -132,7 +132,7 @@ t_error			task_show(i_task			id)
 
   cons_msg('#', "  task %qd: %s on cpu %qd\n", id, state, o->cpuid);
 
-  if (machdep_call(task, task_show, id) != ERROR_NONE)
+  if (machine_call(task, task_show, id) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_NONE);
@@ -276,7 +276,7 @@ t_error			task_clone(i_task			old,
    * 8)
    */
 
-  if (machdep_call(task, task_clone, old, new) != ERROR_NONE)
+  if (machine_call(task, task_clone, old, new) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_NONE);
@@ -463,7 +463,7 @@ t_error			task_reserve(t_class			class,
    * 10)
    */
 
-  if (machdep_call(task, task_reserve, class,
+  if (machine_call(task, task_reserve, class,
 		   behav, prior, id) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
@@ -493,7 +493,7 @@ t_error			task_release(i_task			id)
    * 1)
    */
 
-  if (machdep_call(task, task_release, id) != ERROR_NONE)
+  if (machine_call(task, task_release, id) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
@@ -615,7 +615,7 @@ t_error			task_priority(i_task			id,
    * 4)
    */
 
-  if (machdep_call(task, task_priority, id, prior) != ERROR_NONE)
+  if (machine_call(task, task_priority, id, prior) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
@@ -727,7 +727,7 @@ t_error			task_state(i_task			id,
    * 4)
    */
 
-  if (machdep_call(task, task_state, id, sched) != ERROR_NONE)
+  if (machine_call(task, task_state, id, sched) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
@@ -843,7 +843,7 @@ t_error			task_wait(i_task			id,
    * XXX ou mettre ca !?
    */
 
-  if (machdep_call(task, task_wait, id, opts, wait) != ERROR_NONE)
+  if (machine_call(task, task_wait, id, opts, wait) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_UNKNOWN);
@@ -1005,7 +1005,7 @@ t_error			task_init(void)
    * 7)
    */
 
-  if (machdep_call(task, task_init) != ERROR_NONE)
+  if (machine_call(task, task_init) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
@@ -1039,7 +1039,7 @@ t_error			task_clean(void)
    * 1)
    */
 
-  if (machdep_call(task, task_clean) != ERROR_NONE)
+  if (machine_call(task, task_clean) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
