@@ -77,7 +77,7 @@ proto:
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(BOOTLOADER_C),$(_DEPENDENCY_MK_),)
+	$(call env_headers,$(BOOTLOADER_C),)
 
 #
 # ---------- dependencies -----------------------------------------------------

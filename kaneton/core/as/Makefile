@@ -59,7 +59,7 @@ prototypes:
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(AS_C),$(_DEPENDENCY_MK_),)
+	$(call env_headers,$(AS_C),)
 
 #
 # ---------- dependencies -----------------------------------------------------

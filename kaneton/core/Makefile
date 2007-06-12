@@ -123,7 +123,7 @@ headers:
 
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(CORE_C),$(_DEPENDENCY_MK_),)
+	$(call env_headers,$(CORE_C),)
 
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)

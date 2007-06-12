@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [tue may 29 14:24:58 2007]
+# updated       julien quintard   [tue jun 12 04:11:55 2007]
 #
 
 #
@@ -38,8 +38,8 @@ g_variables = {}
 #
 # this function displays an error and quit.
 #
-def			error(msg):
-  sys.stderr.write("[!] " + msg)
+def			error(message):
+  sys.stderr.write("[!] " + message)
   sys.exit(42)
 
 
@@ -88,7 +88,7 @@ def			load(directories, pattern):
       try:
         handle = open(directory + "/" + file, "r")
       except IOError:
-        error("unable to open the file " + directory + "/" + file + "\n")
+        error("unable to open the file " + directory + "/" + file + ".\n")
 
       for line in handle.readlines():
         content += line
@@ -203,7 +203,7 @@ def			extract():
         g_assignments.append(new)
       elif assignment[1] == "+=":
         error("appending to the undefined variable '" + assignment[0] +
-              "' is not allowed\n")
+              "' is not allowed.\n")
       else:
         error("unknown assignment token '" + assignment[1] + "' for the "
               "variable '" + assignment[0] + "'.\n")
@@ -294,13 +294,13 @@ def			generate(mfile, mcontent, pfile, pcontent):
   try:
     mhandle = open(mfile, "w")
   except IOError:
-    error("unable to open the file " + mfile + "\n")
+    error("unable to open the file " + mfile + ".\n")
 
   # open the python environment file.
   try:
     phandle = open(pfile, "w")
   except IOError:
-    error("unable to open the file " + pfile + "\n")
+    error("unable to open the file " + pfile + ".\n")
 
   # inject the kaneton environment configuration for the make and python
   # environment.
@@ -345,20 +345,30 @@ def			main():
   architecture = os.getenv("KANETON_ARCHITECTURE")
 
   # check the presence of the shell environment variable.
-  if user == None:
-    error("the shell environment variable KANETON_USER is not set")
+  if not (user != None and
+          os.path.isdir("profile/user/" + user)):
+    error("the shell environment variable KANETON_USER is not set " +	\
+          "or is incorrect.\n")
 
-  if host == None:
-    error("the shell environment variable KANETON_HOST is not set")
+  if not (python != None and
+          os.path.isfile(python)):
+    error("the shell environment variable KANETON_PYTHON is not set " +	\
+          "or is incorrect.\n")
 
-  if python == None:
-    error("the shell environment variable KANETON_PYTHON is not set")
+  if not (platform != None and
+          os.path.isdir("profile/kaneton/platform/" + platform)):
+    error("the shell environment variable KANETON_PLATFORM is not " +	\
+          "set or is incorrect.\n")
 
-  if platform == None:
-    error("the shell environment variable KANETON_PLATFORM is not set")
+  if not (architecture != None and
+          os.path.isdir("profile/kaneton/architecture/" + architecture)):
+    error("the shell environment variable KANETON_ARCHITECTURE is " +	\
+          "not set or is incorrect.\n")
 
-  if architecture == None:
-    error("the shell environment variable KANETON_ARCHITECTURE is not set")
+  if not (host != None and
+          os.path.isdir("profile/host/" + host + "." + architecture)):
+    error("the shell environment variable KANETON_HOST is not set " +	\
+          "or is incorrect.\n")
 
   # set the configuration directories based on the user variables.
   g_directories = ("profile/",
@@ -370,6 +380,7 @@ def			main():
                    "profile/kaneton/platform/" + platform + "/",
                    "profile/kaneton/architecture/",
                    "profile/kaneton/architecture/" + architecture + "/",
+                   "profile/kaneton/libc/",
                    "profile/user/",
                    "profile/user/" + user + "/")
 

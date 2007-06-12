@@ -81,9 +81,9 @@ proto:
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(MOD1_C),$(_DEPENDENCY_MK_),)
+	$(call env_headers,$(MOD1_C),)
 
-	$(call env_headers,$(MOD2_C),$(_DEPENDENCY_MK_),)
+	$(call env_headers,$(MOD2_C),)
 
 #
 # ---------- dependencies -----------------------------------------------------

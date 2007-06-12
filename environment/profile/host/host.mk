@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [sun jun 10 18:47:15 2007]
+# updated       julien quintard   [tue jun 12 02:54:28 2007]
 #
 
 #
@@ -65,41 +65,38 @@ ENV_OPTION_PRIVATE = 1
 _:		$(_ENV_MK_) $(_ENV_PY_)
 	$(call env_launch,Makefile,main,)
 
-ENV_PROFILE_ARCHITECTURE = $(word 1,$(call subst,/, ,$(_ARCHITECTURE_)))
-ENV_PROFILE_PLATFORM = $(word 1,$(call subst,/, ,$(_PLATFORM_)))
-
 $(_ENV_MK_) $(_ENV_PY):							\
-	$(_PROFILE_DIR_)/environment.conf				\
-	$(_PROFILE_DIR_)/host/host.conf					\
-	$(_PROFILE_DIR_)/host/host.mk					\
-	$(_PROFILE_DIR_)/host/host.py					\
-	$(_PROFILE_HOST_DIR_)/$(ENV_PROFILE_ARCHITECTURE).conf		\
-	$(_PROFILE_HOST_DIR_)/$(ENV_PROFILE_ARCHITECTURE).mk		\
-	$(_PROFILE_HOST_DIR_)/$(ENV_PROFILE_ARCHITECTURE).py		\
-	$(_PROFILE_DIR_)/kaneton/kaneton.conf				\
-	$(_PROFILE_DIR_)/kaneton/kaneton.py				\
-	$(_PROFILE_DIR_)/kaneton/kaneton.mk				\
-	$(_PROFILE_DIR_)/kaneton/core/core.conf				\
-	$(_PROFILE_DIR_)/kaneton/core/core.mk				\
-	$(_PROFILE_DIR_)/kaneton/core/core.py				\
-	$(_PROFILE_DIR_)/kaneton/platform/platform.conf			\
-	$(_PROFILE_DIR_)/kaneton/platform/platform.mk			\
-	$(_PROFILE_DIR_)/kaneton/platform/platform.py			\
-	$(_PROFILE_PLATFORM_DIR_)/$(ENV_PROFILE_PLATFORM).conf		\
-	$(_PROFILE_PLATFORM_DIR_)/$(ENV_PROFILE_PLATFORM).mk		\
-	$(_PROFILE_PLATFORM_DIR_)/$(ENV_PROFILE_PLATFORM).py		\
-	$(_PROFILE_DIR_)/kaneton/architecture/architecture.conf		\
-	$(_PROFILE_DIR_)/kaneton/architecture/architecture.mk		\
-	$(_PROFILE_DIR_)/kaneton/architecture/architecture.py		\
-	$(_PROFILE_ARCHITECTURE_DIR_)/$(ENV_PROFILE_ARCHITECTURE).conf	\
-	$(_PROFILE_ARCHITECTURE_DIR_)/$(ENV_PROFILE_ARCHITECTURE).mk	\
-	$(_PROFILE_ARCHITECTURE_DIR_)/$(ENV_PROFILE_ARCHITECTURE).py	\
-	$(_PROFILE_DIR_)/user/user.conf					\
-	$(_PROFILE_DIR_)/user/user.mk					\
-	$(_PROFILE_DIR_)/user/user.py					\
-	$(_PROFILE_USER_DIR_)/$(_USER_).conf				\
-	$(_PROFILE_USER_DIR_)/$(_USER_).mk				\
-	$(_PROFILE_USER_DIR_)/$(_USER_).py
+		$(_PROFILE_DIR_)/*.conf					\
+		$(_PROFILE_DIR_)/host/*.conf				\
+		$(_PROFILE_DIR_)/host/*.mk				\
+		$(_PROFILE_DIR_)/host/*.py				\
+		$(_PROFILE_HOST_DIR_)/*.conf				\
+		$(_PROFILE_HOST_DIR_)/*.mk				\
+		$(_PROFILE_HOST_DIR_)/*.py				\
+		$(_PROFILE_DIR_)/kaneton/*.conf				\
+		$(_PROFILE_DIR_)/kaneton/*.py				\
+		$(_PROFILE_DIR_)/kaneton/*.mk				\
+		$(_PROFILE_DIR_)/kaneton/core/*.conf			\
+		$(_PROFILE_DIR_)/kaneton/core/*.mk			\
+		$(_PROFILE_DIR_)/kaneton/core/*.py			\
+		$(_PROFILE_DIR_)/kaneton/platform/*.conf		\
+		$(_PROFILE_DIR_)/kaneton/platform/*.mk			\
+		$(_PROFILE_DIR_)/kaneton/platform/*.py			\
+		$(_PROFILE_PLATFORM_DIR_)/*.conf			\
+		$(_PROFILE_PLATFORM_DIR_)/*.mk				\
+		$(_PROFILE_PLATFORM_DIR_)/*.py				\
+		$(_PROFILE_DIR_)/kaneton/architecture/*.conf		\
+		$(_PROFILE_DIR_)/kaneton/architecture/*.mk		\
+		$(_PROFILE_DIR_)/kaneton/architecture/*.py		\
+		$(_PROFILE_ARCHITECTURE_DIR_)/*.conf			\
+		$(_PROFILE_ARCHITECTURE_DIR_)/*.mk			\
+		$(_PROFILE_ARCHITECTURE_DIR_)/*.py			\
+		$(_PROFILE_DIR_)/user/*.conf				\
+		$(_PROFILE_DIR_)/user/*.mk				\
+		$(_PROFILE_DIR_)/user/*.py				\
+		$(_PROFILE_USER_DIR_)/*.conf				\
+		$(_PROFILE_USER_DIR_)/*.mk				\
+		$(_PROFILE_USER_DIR_)/*.py
 	$(call env_launch,$(_ENVIRONMENT_DIR_)/Makefile,initialize,)
 
 #

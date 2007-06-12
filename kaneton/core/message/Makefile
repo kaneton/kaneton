@@ -58,7 +58,7 @@ prototypes:
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(MESSAGE_C),$(_DEPENDENCY_MK_),)
+	$(call env_headers,$(MESSAGE_C),)
 
 #
 # ---------- dependencies -----------------------------------------------------

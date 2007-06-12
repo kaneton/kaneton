@@ -1,15 +1,9 @@
 --
- corriger le probleme de makefile de libia32
-
---
  faire des screenshots pour kaneton: installation, configuration, env-dev,
  boot, into (mjpeg)
 
 --
  axe kaneton sur le multiproc car avec les multicoeurs ca va devenir courant
-
---
- catch(addr, size, asid) then the asid could be able to do: reserve(addr, size)
 
 --
  choses a faire (encore):
@@ -39,31 +33,10 @@
 l'endianness dans mod_load
 
 --
- refaire la libc et inclure une libcrypt car le kernel en a besoin
-
---
- revoir l'interface shell qui est pourrave pour tout ce qui est
- manipulation de chaines, fichiers bref regexp
-
---
  ajouter des check sur les macros via #error
 
 --
  utiliser _CHECK_ pour activer ou non le debug
-
---
- ecrire un paper juste sur la portabilite ou alors dans le reference
- book mais bien detaille car ca doit etre flou pour les lecteurs.
-
---
- trouver un nom pour les modules histoire que ce soit coherent:
- module = module noyaut, XXX = entite passive d'execution
- program -> ??? (logram)
-
---
- il doit y avoir moyen d'eviter les fichiers o2.h et octane.h
- dans la libmipsr10000 en definissant les macros dans l'archi
- et non la lib. a etudier.
 
 --
  faudrait implementer des regions copy-on-write pour gagner en
@@ -75,11 +48,7 @@ l'endianness dans mod_load
  +stack expansion
 
 --
- + moulinette triche
- + norme dans books/kaneton
-
---
- enlever QUICKSTART et expliquer ce qu'il faut sur le site
+ enlever QUICKSTART et expliquer ce qu'il faut sur le site: wiki students
 
 --
  verifier que dans chaque manager il y a:
@@ -109,28 +78,7 @@ l'endianness dans mod_load
  generation des capabilities.
 
 --
- finalement on va surement avoir besoin de mapper les modules pour que
- le core puisse extraire le premier module et le lancer.
-
- ou mieux il faudrait que le bootloader passe en argument le premier module
- a lancer comme ca le kernel ne refait pas un boulot identique au bootloader.
-
---
- tous les profiles machines sauf linux et linux.mips sont foireux
-
- il faudra les mettre a jour enfin les refaire plutot
-
---
  virer les CFLAGS = ___kernel c'est trop laid/specifique
-
---
- revoir la doc: apparamment les etudiants ne comprennent pas instinctivement
- qu il y a trois parties bien distinctes: core, machdep, libarch
-
---
- pour resoudre les forward declarations, normalement faire comme set.h
- et ca marche, cad forward declarer tous les types d'un .h AVANT de
- faire les includes recursifs.
 
 --
  ce serait interessant de rajouter un ensemble 'slab' qui ne se baserait
@@ -147,10 +95,10 @@ l'endianness dans mod_load
  donc on devrait changer pour mettre a disposition des fonctions pour
  recuperer que certaines proprietes.
 
- une unique fonction genre chiche_pick()
+ une unique fonction genre chiche_attribute(object, field)
 
 --
- revoir le bootloader:
+ revoir le bootloader meme si c'est un detail (travail pour un nouveau venu):
 
   t_modules
   {
@@ -172,36 +120,11 @@ l'endianness dans mod_load
  segment_acquire() pour acquerir un segment specifique: la memoire video.
 
 --
- hevea -exec xxdate.exe kaneton.tex pour generer du html
-
- latex -> html: HeVeA
-
- ca aurait ete bien un make web: faire un rep web/ au pire avec generation
- de doc, generation des resultats de tests et de la doc le tout en html.
-
---
  trouver un moyen de gerer un systeme d'evenements intra kernel. soit
  comme unix soit on fait differemment. sleep/wakeup
 
  en fait le systeme des pthreads est vraiment pas mal avec les condition
  variables ayant un mutex associe.
-
---
- segment:
-
- il faudra rajouter dans le bootloader init.c un segment correspondant
- au dma: SEGMENT_TYPE_CATCH
-
- on pourrait imaginer dans le fichier de conf dire que telle zone
- est en mode catch et qu elle est catchable que par telle tache (avec
- tel nom par exemple)
-
- en fait revoir le concept de catch car c'est quand meme pas clair encore.
-
---
- pour detecter les fichiers qui sont executables, ce qui n'est pas normal:
-
-   find ./ -type f -perm +111
 
 --
  dire dans kaneton design que un kernel c'est: des structures de donnees et
@@ -312,6 +235,8 @@ systeme sur ce point est impossible si l'on veut garantir l'ownership de
 ces objets a tout instant (si on veut faire les matheux, on formule LTL
 devrait suffir a le prouver).
 
+ catch(addr, size, asid) then the asid could be able to do: reserve(addr, size)
+
 --
 
  code vire du map manager (rien a faire la)
@@ -398,21 +323,9 @@ void*			mremap(void*			old_address,
 
 --
 
-il va nous falloir un bout de code glue pour effectuer le lien
-entre platform et architecture.
-
-a priori L4 font exactement comme nous.
-
-cette glue contiendrait les ld scripts mais aussi par exemple le
-fichier de conf qui decrit les zones prereservees a certains servers
-car ces zones dependent de l'archi/platform donc glue
-
-dans notre cas, on pourrait appeler la zone glue: machine car justement
-machine regroupe plateform et archi. ou alors machine = arch + plat + glue
-
---
-
-un getter par manager: *_attribute() pour recuperer un attribut d'un objet.
+la glue devrait contenir le fiichier de conf qui decrit les zones
+prereservees a certains servers car ces zones dependent de l'archi/platform
+donc glue
 
 --
 
@@ -426,9 +339,12 @@ linux sans recompile.
 
 --
 
-compilateur: format de message -> XDR
+changer le systeme d'error et utiliser une pile de chaines de caracteres
+comme pour les exceptions en Java par exemple. ce n'est pas a la libc
+d'afficher un message mais directement au kernel. apres il faut voir
+la rapidite et la memoire prise par ces messages.
 
---
+---------------------------------------------
 
 machine doit specifier:
  - les types: t_reg{8,16,32,64}
@@ -453,27 +369,11 @@ genre as_get() renvoie un o_as.
 
 --
 
-changer le systeme d'error et utiliser une pile de chaines de caracteres
-comme pour les exceptions en Java par exemple. ce n'est pas a la libc
-d'afficher un message mais directement au kernel. apres il faut voir
-la rapidite et la memoire prise par ces messages.
-
---
-
-changer le bootloader: ne pas mettre de o_ dans t_init, ca fout la
-merde. utiliser des s_segment, s_region, s_cpu.
-
-et renomer modules and inputs par exemple.
-
-en profiter opur passer au core, l'input: mod precharge!
-
---
-
 revoir message.h, trop le bordel.
 
 --
 
-virer les headers inutiles: ELF
+virer les headers inutiles: ELF -> dans le bootloader
 
 --
 
@@ -490,55 +390,33 @@ privee genre un objet ou un manager mais toujours les identifiants.
 
 --
 
-les pointeurs de fonctions a mettre en f_
-
-s_ pour les struct. typedef struct XXX {} s_XXX;
+changer les types genre pointeurs de fonctions f_ etc.. mais aussi prefix
+dependant du module etc.
 
 --
-
-virer les stats
-
--- XXX
-
-all -> main
-le coup de PYTHONPATH c'est plus dans launch
-lorsqu'on met en private, ca creer un fichier temp, il faut l'effacer: DEP_TEX
-
-noms des fichiers dans environment: linux.ia32/ia32/virtual/ia32.conf !!!
-  pour archi et platform on prend le premier mot.
-
-env_dependencies -> env_headers
 
 recuperer les trucs dans conf.h: CONF_ENABLE_CHECK, CONF_MACHDEP_DEBUG,
   SERIAL, GDB_STUB, CONSOLE_FILE
 
 CONSOLE_FILE dans kaneton/core/debug/ a gerer!
 
-mettre a jour development pour tout ce qui concerne les makefiles: env_,
-env.mk DEPENDENCY_MK etc.
-
 gerer TEST dans kaneton/Makefile: minimum de code, propre etc.
-
-tous les makefiles doivent fournir une regle main!!! et regle _ est reservee
 
 les macros genre ___OpenBSD c'est defini dans la libc pour les applis.
 donc nous on a juste besoin de ___kernel pour la libc et ___wordsz etc.
+une bonne idee sera de les definir dans l'environment plutot que dans
+l'arch de sorte que libc en profite.
+
+pour la gestion de reconfiguration des Makefiles on peut juste faire ca:
+
+  component = kaneton | bootstrap | bootloader | libc
+
+et compile-c s'adapte en rajoutant des options...
 
 dans configure/critical.py checker si env.py est accessible, si non et
 que variables OK alors demander de faire make!
 
-dev book: ne plus utiliser \nl mais \-
-
-dans critical.py, dire si jamais un des shell var est foireux: genre pointe
-sur un profile inexistant!
-
 modules -> inputs
-
---
-
-creer un repository ivory opur le bootloader et dans
-profile/user/user.conf _BOOTLOADER_ = <null> mais override dans le user
-profile.
 
 --
 

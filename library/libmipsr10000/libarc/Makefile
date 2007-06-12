@@ -58,7 +58,7 @@ proto:
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(LIBARC_C),$(_DEPENDENCY_MK_),)
+	$(call env_headers,$(LIBARC_C),)
 
 #
 # ---------- dependencies -----------------------------------------------------

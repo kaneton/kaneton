@@ -41,7 +41,7 @@ clear:
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(TASK_C),$(_DEPENDENCY_MK_),)
+	$(call env_headers,$(TASK_C),)
 
 #
 # ---------- dependencies -----------------------------------------------------

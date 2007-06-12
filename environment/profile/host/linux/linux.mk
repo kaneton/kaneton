@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [sun jun 10 18:42:22 2007]
+# updated       julien quintard   [tue jun 12 03:19:33 2007]
 #
 
 #
@@ -370,7 +370,6 @@ endef
 # genereate header dependencies
 #
 # $(1):		the files for which the dependencies are generated
-# $(2):		the output file
 # $(3):		options
 #
 
@@ -387,7 +386,7 @@ define env_headers
     if [ -e $${f} ] ; then						\
       $(call env_display,yellow,HEADERS,$$i,		,)		; \
       $(_CC_) $(_CC_FLAGS_) -M -MG $${headers_options}			\
-        $${f} >> $(2)							; \
+        $${f} >> $(_DEPENDENCY_MK_)					; \
     fi									; \
   done
 endef
