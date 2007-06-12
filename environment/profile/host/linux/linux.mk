@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [tue jun 12 03:19:33 2007]
+# updated       julien quintard   [tue jun 12 20:22:38 2007]
 #
 
 #
@@ -292,12 +292,11 @@ define env_executable
   fi									; \
   if [ -n "$(4)" ] ; then						\
     if [ $$(( $(4) & $(ENV_OPTION_NO_STANDARD) )) -ne 0 ] ; then	\
-      assemble_asm_options="$${assemble_asm_options} -nostdinc -nostdlib" ; \
+      executable_options="$${executable_options} -nostdinc -nostdlib"	; \
     fi									; \
   fi									; \
   $(call env_display,magenta,EXECUTABLE,$(1),		,)		; \
-  $(_CC_) $(_CC_FLAGS_) $(_LD_FLAGS_) $${executable_options}		\
-          -o $(1) $(2)
+  $(_CC_) $(_CC_FLAGS_) $(_LD_FLAGS_) $${executable_options} -o $(1) $(2)
 endef
 
 #
