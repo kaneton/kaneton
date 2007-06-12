@@ -35,6 +35,10 @@ BOOTSTRAP_S		=		bootstrap.S
 
 BOOTSTRAP_O		=		$(BOOTSTRAP_S:.S=.o)
 
+BOOTSTRAP_LYT		=		layout/bootstrap.lyt
+
+# bootloader
+
 BOOTLOADER_LO		=		$(_MACHDEP_BOOTLOADER_DIR_)/bootloader.lo
 
 #_CFLAGS_		=		$(_CFLAGS32_)
