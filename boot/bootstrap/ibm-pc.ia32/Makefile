@@ -1,25 +1,27 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/kaneton/bootstrap/arch/ia32-virtual/Makefile
-##
-## created       julien quintard   [fri feb 11 02:05:35 2005]
-## updated       julien quintard   [mon jul 10 22:36:09 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/boot/bootstrap/ibm-pc.ia32/Makefile
+#
+# created       julien quintard   [tue jun 12 20:07:07 2007]
+# updated       julien quintard   [tue jun 12 20:24:03 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../environment/env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		clear proto dep
+.PHONY:		main clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -30,6 +32,8 @@ include			../../../../environment/env.mk
 BOOTSTRAP		=		bootstrap
 
 BOOTSTRAP_ASM		=		bootstrap.asm
+
+BOOTSTRAP_LYT		=		layout/bootstrap.lyt
 
 # bootloader
 
@@ -43,14 +47,16 @@ BOOTLOADER_O		=		$(BOOTLOADER_C:.c=.o)
 # ---------- rules ------------------------------------------------------------
 #
 
+main:			$(BOOTSTRAP)
+
 $(BOOTSTRAP):		$(BOOTLOADER)
-	$(call env_assemble-asm,$(BOOTSTRAP),$(BOOTSTRAP_ASM),"--format bin")
+	$(call env_assemble-asm,$(BOOTSTRAP),$(BOOTSTRAP_ASM),		\
+				$(ENV_OUTPUT_BINARY))
 
 $(BOOTLOADER):		$(BOOTLOADER_O)
+	echo SUCE
 	$(call env_executable,$(BOOTLOADER),$(BOOTLOADER_O),		\
-	         "--link-script $(_MACHDEP_LINK_DIR_)/bootstrap.lks"	\
-                 "--no-standard-include"				\
-                 "--no-standard-library")
+				$(BOOTSTRAP_LYT),$(ENV_OPTION_NO_STANDARD))
 
 clear:
 	$(call env_remove,$(BOOTLOADER_O),)
@@ -61,6 +67,6 @@ clear:
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 
 headers:
