@@ -27,21 +27,11 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-ARCHITECTURE_C		:=		io.c				\
-					as.c				\
-					region.c			\
-					segment.c			\
-					event.c				\
-					timer.c				\
-					thread.c			\
-					task.c				\
-					sched.c				\
-					message.c			\
-					cpu.c				
+ARCHITECTURE_C		:=	syscalls.c
 
-ARCHITECTURE_O		:=		$(ARCHITECTURE_C:.c=.o)
+ARCHITECTURE_O		:=	$(ARCHITECTURE_C:.c=.o)
 
-ARCHITECTURE_INCLUDE	:=		$(_ARCHITECTURE_INCLUDE_DIR_)/core.h
+ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/syscalls.h
 
 #
 # ---------- rules ------------------------------------------------------------

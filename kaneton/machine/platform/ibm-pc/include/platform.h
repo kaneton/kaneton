@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/machine/platform/ibm-pc/include/platform.h
  *
  * created       julien quintard   [mon jun 11 05:59:19 2007]
- * updated       matthieu bucchianeri   [fri jun 15 01:29:34 2007]
+ * updated       matthieu bucchianeri   [fri jun 15 09:24:09 2007]
  */
 
 /*
@@ -21,7 +21,7 @@
 #define PLATFORM_PLATFORM_H		1
 
 /*
- * ---------- dependencies ----------------------------------------------------
+ * ---------- includes --------------------------------------------------------
  */
 
 #include <platform/timer.h>

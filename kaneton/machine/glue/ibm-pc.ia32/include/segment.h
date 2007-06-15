@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...clude/arch/ibm-pc.ia32-virtual/segment.h
+ * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/segment.h
  *
  * created       julien quintard   [wed jun  6 16:25:05 2007]
- * updated       julien quintard   [thu jun  7 15:31:30 2007]
+ * updated       matthieu bucchianeri   [fri jun 15 09:58:04 2007]
  */
 
-#ifndef ARCHITECTURE_SEGMENT_H
-#define ARCHITECTURE_SEGMENT_H		1
+#ifndef GLUE_SEGMENT_H
+#define GLUE_SEGMENT_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -38,16 +38,13 @@
 #define		machine_data_o_segment()
 
 /*
- * ---------- macros ----------------------------------------------------------
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../segment.c
  */
 
-#define PMODE_GDT_CORE_CS	0x1
-#define PMODE_GDT_CORE_DS	0x2
-#define PMODE_GDT_DRIVER_CS	0x3
-#define PMODE_GDT_DRIVER_DS	0x4
-#define PMODE_GDT_SERVICE_CS	0x5
-#define PMODE_GDT_SERVICE_DS	0x6
-#define PMODE_GDT_PROGRAM_CS	0x7
-#define PMODE_GDT_PROGRAM_DS	0x8
+/*
+ * eop
+ */
 
 #endif

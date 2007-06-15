@@ -5,21 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...nclude/arch/ibm-pc.ia32-virtual/thread.h
+ * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       julien quintard   [thu jun  7 15:35:34 2007]
+ * updated       matthieu bucchianeri   [fri jun 15 10:03:01 2007]
  */
 
-#ifndef ARCHITECTURE_THREAD_H
-#define ARCHITECTURE_THREAD_H		1
-
-/*
- * ---------- dependencies ----------------------------------------------------
- */
-
-/* XXX temporary */
-#include <libia32.h>
+#ifndef GLUE_THREAD_H
+#define GLUE_THREAD_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -59,5 +52,15 @@
     }			u;						\
     /*                                                  [cut] /k3   */	\
   }			machdep;
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../thread.c
+ */
+
+/*
+ * eop
+ */
 
 #endif

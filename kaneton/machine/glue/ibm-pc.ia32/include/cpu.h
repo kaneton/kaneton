@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...e/include/arch/ibm-pc.ia32-virtual/cpu.h
+ * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/cpu.h
  *
  * created       julien quintard   [mon jun  4 01:05:31 2007]
- * updated       julien quintard   [fri jun  8 15:53:42 2007]
+ * updated       matthieu bucchianeri   [fri jun 15 09:42:38 2007]
  */
 
-#ifndef ARCHITECTURE_CPU_H
-#define ARCHITECTURE_CPU_H		1
+#ifndef GLUE_CPU_H
+#define GLUE_CPU_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -36,5 +36,15 @@
 #define		machine_data_m_cpu()
 
 #define		machine_data_o_cpu()
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../cpu.c
+ */
+
+/*
+ * eop
+ */
 
 #endif

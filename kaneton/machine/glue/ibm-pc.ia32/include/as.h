@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ne/include/arch/ibm-pc.ia32-virtual/as.h
+ * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/as.h
  *
  * created       julien quintard   [sun jun  3 23:54:56 2007]
- * updated       julien quintard   [thu jun  7 15:33:08 2007]
+ * updated       matthieu bucchianeri   [fri jun 15 09:42:29 2007]
  */
 
-#ifndef ARCHITECTURE_AS_H
-#define ARCHITECTURE_AS_H		1
+#ifndef GLUE_AS_H
+#define GLUE_AS_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -40,5 +40,15 @@
   {									\
     t_ia32_directory		pd;					\
   }				machdep;
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../as.c
+ */
+
+/*
+ * eop
+ */
 
 #endif

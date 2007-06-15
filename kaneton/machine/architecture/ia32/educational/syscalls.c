@@ -3,16 +3,16 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/message.c
+ * file          /home/buckman/kaneton/kaneton/machine/architecture/ia32/educational/syscalls.c
  *
  * created       matthieu bucchianeri   [sat jun 17 19:38:22 2006]
- * updated       matthieu bucchianeri   [tue feb  6 22:41:19 2007]
+ * updated       matthieu bucchianeri   [fri jun 15 09:17:19 2007]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * XXX
+ * this file declares and implements the primitive system calls.
  */
 
 /*
@@ -22,32 +22,17 @@
 #include <libc.h>
 #include <kaneton.h>
 
+#include <architecture/architecture.h>
+
 /*
  * ---------- extern ----------------------------------------------------------
  */
 
+/*
+ * the message manager global.
+ */
+
 extern m_message*	message;
-
-/*
- * ---------- globals ---------------------------------------------------------
- */
-
-/*
- * the message manager dispatch.
- */
-
-d_message		message_dispatch =
-  {
-
-/*                                                                  [cut] k4 */
-
-    ia32_message_init,
-    ia32_message_clean,
-    ia32_message_epilogue
-
-/*                                                                 [cut] /k4 */
-
-  };
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -55,7 +40,7 @@ d_message		message_dispatch =
 
 /*                                                                  [cut] k4 */
 
-void			ia32_message_async_send_handler(void)
+void			ia32_syscalls_async_send_handler(void)
 {
   union
   {
@@ -83,7 +68,7 @@ void			ia32_message_async_send_handler(void)
   context->eax = ret;
 }
 
-void			ia32_message_sync_send_handler(void)
+void			ia32_syscalls_sync_send_handler(void)
 {
   union
   {
@@ -117,7 +102,7 @@ void			ia32_message_sync_send_handler(void)
     context->eax = ret;
 }
 
-void			ia32_message_async_recv_handler(void)
+void			ia32_syscalls_async_recv_handler(void)
 {
   t_uint32		ret;
   t_uint32		tag;
@@ -136,7 +121,7 @@ void			ia32_message_async_recv_handler(void)
   context->eax = ret;
 }
 
-void			ia32_message_sync_recv_handler(void)
+void			ia32_syscalls_sync_recv_handler(void)
 {
   t_uint32		ret;
   t_uint32		tag;
@@ -178,30 +163,30 @@ t_error			ia32_message_epilogue(i_thread		thread,
   MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
-t_error			ia32_message_init(void)
+t_error			ia32_syscalls_init(void)
 {
   MESSAGE_ENTER(message);
 
   if (event_reserve(56, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_message_async_send_handler)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_syscalls_async_send_handler)) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   if (event_reserve(57, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_message_async_recv_handler)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_syscalls_async_recv_handler)) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   if (event_reserve(58, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_message_sync_send_handler)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_syscalls_sync_send_handler)) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   if (event_reserve(59, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_message_sync_recv_handler)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_syscalls_sync_recv_handler)) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
-t_error			ia32_message_clean(void)
+t_error			ia32_syscalls_clean(void)
 {
   MESSAGE_ENTER(message);
 

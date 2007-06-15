@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../include/arch/ibm-pc.ia32-virtual/task.h
+ * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/task.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       julien quintard   [thu jun  7 15:36:25 2007]
+ * updated       matthieu bucchianeri   [fri jun 15 09:59:26 2007]
  */
 
-#ifndef ARCHITECTURE_TASK_H
-#define ARCHITECTURE_TASK_H		1
+#ifndef GLUE_TASK_H
+#define GLUE_TASK_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -46,5 +46,15 @@
   {									\
     t_uint8			iomap[8192];				\
   }				machdep;
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../task.c
+ */
+
+/*
+ * eop
+ */
 
 #endif

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...nclude/arch/ibm-pc.ia32-virtual/region.h
+ * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/region.h
  *
  * created       julien quintard   [wed jun  6 16:22:05 2007]
- * updated       julien quintard   [thu jun  7 15:32:35 2007]
+ * updated       matthieu bucchianeri   [fri jun 15 09:52:34 2007]
  */
 
 /*
@@ -17,8 +17,8 @@
  * this file supposes it is included by core.h so that PAGESZ is defined.
  */
 
-#ifndef ARCHITECTURE_REGION_H
-#define ARCHITECTURE_REGION_H		1
+#ifndef GLUE_REGION_H
+#define GLUE_REGION_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -49,5 +49,15 @@
 
 #define REGION_VMEM_MIN		PAGESZ
 #define REGION_VMEM_MAX		0xffffffffU
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../region.c
+ */
+
+/*
+ * eop
+ */
 
 #endif

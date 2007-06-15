@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../machine/glue/ibm-pc.ia32/include/glue.h
+ * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/glue.h
  *
  * created       julien quintard   [mon jun 11 05:57:15 2007]
- * updated       julien quintard   [mon jun 11 12:01:46 2007]
+ * updated       matthieu bucchianeri   [fri jun 15 09:23:49 2007]
  */
 
 #ifndef GLUE_GLUE_H
@@ -35,6 +35,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
+#include <glue/message.h>
 #include <glue/timer.h>
 
 #endif

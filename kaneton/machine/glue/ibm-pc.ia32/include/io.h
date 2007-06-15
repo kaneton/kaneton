@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ne/include/arch/ibm-pc.ia32-virtual/io.h
+ * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/io.h
  *
  * created       julien quintard   [wed jun  6 16:19:54 2007]
- * updated       julien quintard   [thu jun  7 15:34:20 2007]
+ * updated       matthieu bucchianeri   [fri jun 15 09:54:03 2007]
  */
 
-#ifndef ARCHITECTURE_IO_H
-#define ARCHITECTURE_IO_H		1
+#ifndef GLUE_IO_H
+#define GLUE_IO_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -36,5 +36,15 @@
 #define		machine_data_m_io()
 
 #define		machine_data_o_io()
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../io.c
+ */
+
+/*
+ * eop
+ */
 
 #endif

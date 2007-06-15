@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...include/arch/ibm-pc.ia32-virtual/event.h
+ * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/event.h
  *
  * created       julien quintard   [wed jun  6 16:15:26 2007]
- * updated       julien quintard   [thu jun  7 15:33:33 2007]
+ * updated       matthieu bucchianeri   [fri jun 15 09:44:35 2007]
  */
 
-#ifndef ARCHITECTURE_EVENT_H
-#define ARCHITECTURE_EVENT_H		1
+#ifndef GLUE_EVENT_H
+#define GLUE_EVENT_H		1
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -36,5 +36,15 @@
 #define		machine_data_m_event()
 
 #define		machine_data_o_event()
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../event.c
+ */
+
+/*
+ * eop
+ */
 
 #endif

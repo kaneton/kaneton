@@ -5,14 +5,14 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...include/arch/ibm-pc.ia32-virtual/sched.h
+ * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/sched.h
  *
  * created       julien quintard   [wed jun  6 16:24:14 2007]
- * updated       julien quintard   [thu jun  7 15:40:24 2007]
+ * updated       matthieu bucchianeri   [fri jun 15 09:55:54 2007]
  */
 
-#ifndef ARCHITECTURE_SCHED_H
-#define ARCHITECTURE_SCHED_H		1
+#ifndef GLUE_SCHED_H
+#define GLUE_SCHED_H		1
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -50,5 +50,15 @@
   }				machdep;
 
 #define		machine_data_o_sched()
+
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *      ../sched.c
+ */
+
+/*
+ * eop
+ */
 
 #endif
