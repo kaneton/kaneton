@@ -14,13 +14,6 @@
  *
  * manage global descriptor table.
  *
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
- * manage global descriptor table.
- *
  * gdt_import copies segment descriptors from the active gdt to a new one.
  * this is useful to create a new gdt not discarding old descriptors (for
  * example to create a larget table from an existing one).
@@ -32,11 +25,6 @@
  *
  * gdt_build_selector is used to build a segment selector (for loading in a
  * segment register).
- *
- * XXX lorsque un t_gdt* est passé en argument, la valeur NULL indique
- *     d'utiliser la GDT active. c'est un peu chiant mais ca permet d'utiliser
- *     les fonctions avant de switcher le gdtr pour preparer une nouvelle gdt.
- *
  */
 
 /*
@@ -45,6 +33,8 @@
 
 #include <libc.h>
 #include <kaneton.h>
+
+#include <architecture/architecture.h>
 
 /*
  * ---------- globals ---------------------------------------------------------

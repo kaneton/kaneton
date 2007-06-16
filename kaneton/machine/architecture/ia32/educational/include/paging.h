@@ -27,98 +27,98 @@
  * misc
  */
 
-#define PD_MAX_ENTRIES		1024
-#define PT_MAX_ENTRIES		1024
-#define PD_NOTCACHED		0
-#define PD_CACHED		1
-#define PD_WRITETHROUGH		0
-#define PD_WRITEBACK		1
+#define IA32_PD_MAX_ENTRIES	1024
+#define IA32_PT_MAX_ENTRIES	1024
+#define IA32_PD_NOTCACHED	0
+#define IA32_PD_CACHED		1
+#define IA32_PD_WRITETHROUGH	0
+#define IA32_PD_WRITEBACK	1
 
-#define PT_NOTCACHED		0
-#define PT_CACHED		1
-#define PT_WRITETHROUGH		0
-#define PT_WRITEBACK		1
-#define PT_READONLY		0
-#define PT_WRITABLE		1
-#define PT_PRIVILEGED		0
-#define PT_USER			1
+#define IA32_PT_NOTCACHED	0
+#define IA32_PT_CACHED		1
+#define IA32_PT_WRITETHROUGH	0
+#define IA32_PT_WRITEBACK	1
+#define IA32_PT_READONLY	0
+#define IA32_PT_WRITABLE	1
+#define IA32_PT_PRIVILEGED	0
+#define IA32_PT_USER		1
 
-#define PG_NOTCACHED		0
-#define PG_CACHED		1
-#define PG_WRITETHROUGH		0
-#define PG_WRITEBACK		1
-#define PG_READONLY		0
-#define PG_WRITABLE		1
-#define PG_PRIVILEGED		0
-#define PG_USER			1
-#define PG_NONGLOBAL		0
-#define PG_GLOBAL		1
+#define IA32_PG_NOTCACHED	0
+#define IA32_PG_CACHED		1
+#define IA32_PG_WRITETHROUGH	0
+#define IA32_PG_WRITEBACK	1
+#define IA32_PG_READONLY	0
+#define IA32_PG_WRITABLE	1
+#define IA32_PG_PRIVILEGED	0
+#define IA32_PG_USER		1
+#define IA32_PG_NONGLOBAL	0
+#define IA32_PG_GLOBAL		1
 
 /*
  * page directory entry flags
  */
 
-#define PDE_FLAG_A		(1 << 5)
-#define PDE_FLAG_CD		(1 << 4)
-#define PDE_FLAG_WT		(1 << 3)
-#define PDE_FLAG_USER		(1 << 2)
-#define PDE_FLAG_SUPERVISOR	(0 << 2)
-#define PDE_FLAG_RO		(0 << 1)
-#define PDE_FLAG_RW		(1 << 1)
-#define PDE_FLAG_P		(1 << 0)
+#define IA32_PDE_FLAG_A			(1 << 5)
+#define IA32_PDE_FLAG_CD		(1 << 4)
+#define IA32_PDE_FLAG_WT		(1 << 3)
+#define IA32_PDE_FLAG_USER		(1 << 2)
+#define IA32_PDE_FLAG_SUPERVISOR	(0 << 2)
+#define IA32_PDE_FLAG_RO		(0 << 1)
+#define IA32_PDE_FLAG_RW		(1 << 1)
+#define IA32_PDE_FLAG_P			(1 << 0)
 
 /*
  * the following flags are not arch-managed. they are "available" bits of the
  * entry descriptor.
  */
 
-#define PDE_FLAG_USED		(1 << 9)
+#define IA32_PDE_FLAG_USED		(1 << 9)
 
 /*
  * page table entry flags
  */
 
-#define PTE_FLAG_G		(1 << 8)
-#define PTE_FLAG_D		(1 << 6)
-#define PTE_FLAG_A		(1 << 5)
-#define PTE_FLAG_CD		(1 << 4)
-#define PTE_FLAG_WT		(1 << 3)
-#define PTE_FLAG_USER		(1 << 2)
-#define PTE_FLAG_SUPERVISOR	(0 << 2)
-#define PTE_FLAG_RO		(0 << 1)
-#define PTE_FLAG_RW		(1 << 1)
-#define PTE_FLAG_P		(1 << 0)
+#define IA32_PTE_FLAG_G			(1 << 8)
+#define IA32_PTE_FLAG_D			(1 << 6)
+#define IA32_PTE_FLAG_A			(1 << 5)
+#define IA32_PTE_FLAG_CD		(1 << 4)
+#define IA32_PTE_FLAG_WT		(1 << 3)
+#define IA32_PTE_FLAG_USER		(1 << 2)
+#define IA32_PTE_FLAG_SUPERVISOR	(0 << 2)
+#define IA32_PTE_FLAG_RO		(0 << 1)
+#define IA32_PTE_FLAG_RW		(1 << 1)
+#define IA32_PTE_FLAG_P			(1 << 0)
 
 /*
  * the following flags are not arch-managed. they are "available" bits of the
  * entry descriptor.
  */
 
-#define PTE_FLAG_USED		(1 << 9)
+#define IA32_PTE_FLAG_USED		(1 << 9)
 
 /*
  * the following value is the mirror entry in the page directory.
  */
 
-#define PD_MIRROR		1023
+#define IA32_PD_MIRROR			1023
 
 /*
  * ---------- macro functions -------------------------------------------------
  */
 
-#define PDE_ENTRY(Paddr)						\
+#define IA32_PDE_ENTRY(Paddr)						\
   (((Paddr) >> 22) & 0x3ff)
 
-#define PTE_ENTRY(Paddr)						\
+#define IA32_PTE_ENTRY(Paddr)						\
   (((Paddr) >> 12) & 0x3ff)
 
-#define ENTRY_ADDR(D,T)							\
+#define IA32_ENTRY_ADDR(D,T)						\
   ((((D) << 22) | ((T) << 12)))
 
-#define MK_BASE(V)							\
+#define IA32_MK_BASE(V)							\
   (((t_uint32)(V)) & 0xfffff000)
 
-#define MK_OFFSET(V)							\
+#define IA32_MK_OFFSET(V)						\
   (((t_uint32)(V)) & ~0xfffff000)
 
 /*
@@ -182,76 +182,74 @@ typedef t_ia32_pde* t_ia32_directory;
  * ../paging.c
  */
 
-t_error			paging_init(void);
+t_error			ia32_paging_init(void);
 
-t_error			paging_enable(void);
-
-t_error			paging_clean(void);
+t_error			ia32_paging_clean(void);
 
 
 /*
  * ../pd.c
  */
 
-t_error			pd_dump(t_ia32_directory*		dir);
+t_error			ia32_pd_dump(t_ia32_directory*		dir);
 
-t_error			pd_build(t_paddr			base,
-				 t_ia32_directory*		directory,
-				 t_uint8			clear);
+t_error			ia32_pd_build(t_paddr			base,
+				      t_ia32_directory*		directory,
+				      t_uint8			clear);
 
-t_error			pd_base(t_ia32_directory*		dir,
-				t_paddr*			base);
+t_error			ia32_pd_base(t_ia32_directory*		dir,
+				     t_paddr*			base);
 
-t_error			pd_activate(t_ia32_directory		dir,
-				    t_uint32			cached,
-				    t_uint32			writeback);
+t_error			ia32_pd_activate(t_ia32_directory	dir,
+					 t_uint32		cached,
+					 t_uint32		writeback);
 
-t_error			pd_get_cr3(t_uint32*			cr3,
-				   t_ia32_directory		dir,
-				   t_uint32			cached,
-				   t_uint32			writeback);
+t_error			ia32_pd_get_cr3(t_uint32*		cr3,
+					t_ia32_directory	dir,
+					t_uint32		cached,
+					t_uint32		writeback);
 
-t_error			pd_add_table(t_ia32_directory*		dir,
-				     t_uint16			entry,
-				     t_ia32_table		table);
+t_error			ia32_pd_add_table(t_ia32_directory*	dir,
+					  t_uint16		entry,
+					  t_ia32_table		table);
 
-t_error			pd_get_table(t_ia32_directory*		dir,
-				     t_uint16			entry,
-				     t_ia32_table*		table);
+t_error			ia32_pd_get_table(t_ia32_directory*	dir,
+					  t_uint16		entry,
+					  t_ia32_table*		table);
 
-t_error			pd_delete_table(t_ia32_directory*	dir,
-					t_uint16		entry);
+t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
+					     t_uint16		entry);
 
 
 /*
  * ../pt.c
  */
 
-t_error			pt_dump(t_ia32_pte*			tab);
+t_error			ia32_pt_dump(t_ia32_pte*		tab);
 
-t_error			pt_build(t_paddr			base,
-				 t_ia32_table*			table,
-				 t_uint8			clear);
+t_error			ia32_pt_build(t_paddr			base,
+				      t_ia32_table*		table,
+				      t_uint8			clear);
 
-t_error			pt_add_page(t_ia32_table*		tab,
-				    t_uint16			entry,
-				    t_ia32_page			page);
+t_error			ia32_pt_add_page(t_ia32_table*		tab,
+					 t_uint16		entry,
+					 t_ia32_page		page);
 
-t_error			pt_get_page(t_ia32_table*		tab,
-				    t_uint16			entry,
-				    t_ia32_page*		page);
+t_error			ia32_pt_get_page(t_ia32_table*		tab,
+					 t_uint16		entry,
+					 t_ia32_page*		page);
 
-t_error			pt_delete_page(t_ia32_table*		tab,
-				       t_uint16			entry);
+t_error			ia32_pt_delete_page(t_ia32_table*	tab,
+					    t_uint16		entry);
 
 
 /*
  * ../tlb.c
  */
 
-t_error			tlb_invalidate(t_paddr			page);
+t_error			ia32_tlb_invalidate(t_paddr			page);
 
-t_error			tlb_flush(void);
+t_error			ia32_tlb_flush(void);
 
 
 /*

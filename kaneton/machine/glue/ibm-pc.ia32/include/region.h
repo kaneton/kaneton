@@ -57,6 +57,32 @@
  */
 
 /*
+ * ../region.c
+ */
+
+t_error			glue_region_resize(i_as			as,
+					   i_region		old,
+					   t_vsize		size,
+					   i_region*		new);
+
+t_error			glue_region_reserve(i_as		asid,
+					    i_segment		segid,
+					    t_paddr		offset,
+					    t_opts		opts,
+					    t_vaddr		address,
+					    t_vsize		size,
+					    i_region*		regid);
+
+t_error			glue_region_release(i_as		asid,
+					    i_region		regid);
+
+t_error			glue_region_init(t_vaddr		start,
+					 t_vsize		size);
+
+t_error			glue_region_clean(void);
+
+
+/*
  * eop
  */
 

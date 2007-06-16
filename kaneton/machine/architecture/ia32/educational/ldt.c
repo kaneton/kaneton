@@ -12,13 +12,6 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * manage global descriptor table.
- *
- */
-
-/*
- * ---------- information -----------------------------------------------------
- *
  * manage local descriptor table.
  *
  * ldt_build reserves a new ldt segment in the current gdt. ldt_destroy removes
@@ -39,6 +32,8 @@
 
 #include <libc.h>
 #include <kaneton.h>
+
+#include <architecture/architecture.h>
 
 /*
  * ---------- functions -------------------------------------------------------

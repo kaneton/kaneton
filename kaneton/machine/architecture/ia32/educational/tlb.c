@@ -23,6 +23,8 @@
 #include <libc.h>
 #include <kaneton.h>
 
+#include <architecture/architecture.h>
+
 /*
  * ---------- functions -------------------------------------------------------
  */
@@ -31,7 +33,7 @@
  * flushes a single pte cache given a page address.
  */
 
-t_error			tlb_invalidate(t_paddr			page)
+t_error			ia32_tlb_invalidate(t_paddr			page)
 {
 
   asm volatile("invlpg (%0)"
@@ -46,13 +48,13 @@ t_error			tlb_invalidate(t_paddr			page)
  * flushes the whole pd and pt caches.
  */
 
-t_error			tlb_flush(void)
+t_error			ia32_tlb_flush(void)
 {
   asm volatile("movl %%cr3, %%eax\n\t"
 	       "movl %%eax, %%cr3"
 	       :
 	       :
-	       : "%eax");
+	       : "%eax", "memory");
 
   return ERROR_NONE;
 }

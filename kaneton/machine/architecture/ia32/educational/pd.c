@@ -23,6 +23,8 @@
 #include <libc.h>
 #include <kaneton.h>
 
+#include <architecture/architecture.h>
+
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -31,7 +33,7 @@
  * active page directory.
  */
 
-t_ia32_directory	pd;
+t_ia32_directory	ia32_pd;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -41,22 +43,22 @@ t_ia32_directory	pd;
  * dumps a page directory and its tables.
  */
 
-t_error			pd_dump(t_ia32_directory*		dir)
+t_error			ia32_pd_dump(t_ia32_directory*		dir)
 {
   t_uint32		i;
   t_ia32_pde*		d;
 
   if (!dir)
-    d = pd;
+    d = ia32_pd;
   else
     d = *dir;
 
-  for (i = 0; i < PD_MAX_ENTRIES; i++)
+  for (i = 0; i < IA32_PD_MAX_ENTRIES; i++)
     {
-      if (d[i] & PDE_FLAG_P)
+      if (d[i] & IA32_PDE_FLAG_P)
 	{
 	  printf("entry %d\n", i);
-	  pt_dump((t_ia32_pte*)(MK_BASE(d[i])));
+	  ia32_pt_dump((t_ia32_pte*)(IA32_MK_BASE(d[i])));
 	}
     }
 
@@ -73,16 +75,16 @@ t_error			pd_dump(t_ia32_directory*		dir)
  * 3) clears the directory if needed.
  */
 
-t_error			pd_build(t_paddr			base,
-				 t_ia32_directory*		directory,
-				 t_uint8			clear)
+t_error			ia32_pd_build(t_paddr			base,
+				      t_ia32_directory*		directory,
+				      t_uint8			clear)
 {
 
   /*
    * 1)
    */
 
-  if (MK_BASE(base) != base)
+  if (IA32_MK_BASE(base) != base)
     return ERROR_UNKNOWN;
 
   /*
@@ -97,7 +99,7 @@ t_error			pd_build(t_paddr			base,
 
   if (clear)
     {
-      memset((void*)base, 0, PD_MAX_ENTRIES * sizeof(t_ia32_pde));
+      memset((void*)base, 0, IA32_PD_MAX_ENTRIES * sizeof(t_ia32_pde));
     }
 
   return ERROR_NONE;
@@ -108,8 +110,8 @@ t_error			pd_build(t_paddr			base,
  *
  */
 
-t_error			pd_base(t_ia32_directory*		dir,
-				t_paddr*			base)
+t_error			ia32_pd_base(t_ia32_directory*		dir,
+				     t_paddr*			base)
 {
   t_ia32_pde*		d;
 
@@ -120,13 +122,13 @@ t_error			pd_base(t_ia32_directory*		dir,
   if (dir)
     d = *dir;
   else
-    d = pd;
+    d = ia32_pd;
 
   /*
    * 2)
    */
 
-  *base = MK_BASE(d);
+  *base = IA32_MK_BASE(d);
 
   return ERROR_NONE;
 }
@@ -141,9 +143,9 @@ t_error			pd_base(t_ia32_directory*		dir,
  * 3) sets the global variable.
  */
 
-t_error			pd_activate(t_ia32_directory		dir,
-				    t_uint32			cached,
-				    t_uint32			writeback)
+t_error			ia32_pd_activate(t_ia32_directory	dir,
+					 t_uint32		cached,
+					 t_uint32		writeback)
 {
   t_uint32		pdbr;
   t_uint32		mask = 0xfffff000;
@@ -152,9 +154,9 @@ t_error			pd_activate(t_ia32_directory		dir,
    * 1)
    */
 
-  if (cached == PD_NOTCACHED)
+  if (cached == IA32_PD_NOTCACHED)
     mask |= (1 << 4);
-  if (writeback == PD_WRITETHROUGH)
+  if (writeback == IA32_PD_WRITETHROUGH)
     mask |= (1 << 3);
 
   pdbr = ((t_uint32)dir & mask);
@@ -169,7 +171,7 @@ t_error			pd_activate(t_ia32_directory		dir,
    * 3)
    */
 
-  pd = dir;
+  ia32_pd = dir;
 
   return ERROR_NONE;
 }
@@ -178,16 +180,16 @@ t_error			pd_activate(t_ia32_directory		dir,
  * get the page-directory base register corresponding to a page-directory.
  */
 
-t_error			pd_get_cr3(t_uint32*			cr3,
-				   t_ia32_directory		dir,
-				   t_uint32			cached,
-				   t_uint32			writeback)
+t_error			ia32_pd_get_cr3(t_uint32*		cr3,
+					t_ia32_directory	dir,
+					t_uint32		cached,
+					t_uint32		writeback)
 {
   t_uint32		mask = 0xfffff000;
 
-  if (cached == PD_NOTCACHED)
+  if (cached == IA32_PD_NOTCACHED)
     mask |= (1 << 4);
-  if (writeback == PD_WRITETHROUGH)
+  if (writeback == IA32_PD_WRITETHROUGH)
     mask |= (1 << 3);
 
   *cr3 = ((t_uint32)dir & mask);
@@ -206,9 +208,9 @@ t_error			pd_get_cr3(t_uint32*			cr3,
  */
 
 
-t_error			pd_add_table(t_ia32_directory*		dir,
-				     t_uint16			entry,
-				     t_ia32_table		table)
+t_error			ia32_pd_add_table(t_ia32_directory*	dir,
+					  t_uint16		entry,
+					  t_ia32_table		table)
 {
   t_ia32_pde*		d;
   t_uint32		opts = 0;
@@ -220,31 +222,31 @@ t_error			pd_add_table(t_ia32_directory*		dir,
   if (dir)
     d = *dir;
   else
-    d = pd;
+    d = ia32_pd;
 
   /*
    * 2)
    */
 
   if (table.present)
-    opts |= PDE_FLAG_P;
+    opts |= IA32_PDE_FLAG_P;
 
-  if (table.cached == PT_NOTCACHED)
-    opts |= PDE_FLAG_CD;
-  if (table.writeback == PT_WRITETHROUGH)
-    opts |= PDE_FLAG_WT;
+  if (table.cached == IA32_PT_NOTCACHED)
+    opts |= IA32_PDE_FLAG_CD;
+  if (table.writeback == IA32_PT_WRITETHROUGH)
+    opts |= IA32_PDE_FLAG_WT;
 
-  opts |= (table.rw == PT_WRITABLE ? PDE_FLAG_RW : PDE_FLAG_RO);
+  opts |= (table.rw == IA32_PT_WRITABLE ? IA32_PDE_FLAG_RW : IA32_PDE_FLAG_RO);
 
-  opts |= (table.user == PT_USER ? PDE_FLAG_USER : PDE_FLAG_SUPERVISOR);
+  opts |= (table.user == IA32_PT_USER ? IA32_PDE_FLAG_USER : IA32_PDE_FLAG_SUPERVISOR);
 
-  opts |= PDE_FLAG_USED;
+  opts |= IA32_PDE_FLAG_USED;
 
   /*
    * 3)
    */
 
-  d[entry] = MK_BASE(table.entries) | opts;
+  d[entry] = IA32_MK_BASE(table.entries) | opts;
 
   return ERROR_NONE;
 }
@@ -259,9 +261,9 @@ t_error			pd_add_table(t_ia32_directory*		dir,
  * 3) fills the page record.
  */
 
-t_error			pd_get_table(t_ia32_directory*		dir,
-				     t_uint16			entry,
-				     t_ia32_table*		table)
+t_error			ia32_pd_get_table(t_ia32_directory*	dir,
+					  t_uint16		entry,
+					  t_ia32_table*		table)
 {
   t_ia32_directory	d;
 
@@ -272,25 +274,29 @@ t_error			pd_get_table(t_ia32_directory*		dir,
   if (dir)
     d = *dir;
   else
-    d = pd;
+    d = ia32_pd;
 
   /*
    * 2)
    */
 
-  if (!(d[entry] & PDE_FLAG_USED))
+  if (!(d[entry] & IA32_PDE_FLAG_USED))
     return ERROR_UNKNOWN;
 
   /*
    * 3)
    */
 
-  table->rw = (d[entry] & PDE_FLAG_RW) ? PT_WRITABLE : PT_READONLY;
-  table->present = !!(d[entry] & PDE_FLAG_P);
-  table->user = (d[entry] & PDE_FLAG_USER) ? PT_USER : PT_PRIVILEGED;
-  table->writeback = (d[entry] & PDE_FLAG_WT) ? PT_WRITETHROUGH : PT_WRITEBACK;
-  table->cached = (d[entry] & PDE_FLAG_CD) ? PT_NOTCACHED : PT_CACHED;
-  table->entries = MK_BASE(d[entry]);
+  table->rw = (d[entry] & IA32_PDE_FLAG_RW) ?
+    IA32_PT_WRITABLE : IA32_PT_READONLY;
+  table->present = !!(d[entry] & IA32_PDE_FLAG_P);
+  table->user = (d[entry] & IA32_PDE_FLAG_USER) ?
+    IA32_PT_USER : IA32_PT_PRIVILEGED;
+  table->writeback = (d[entry] & IA32_PDE_FLAG_WT) ?
+    IA32_PT_WRITETHROUGH : IA32_PT_WRITEBACK;
+  table->cached = (d[entry] & IA32_PDE_FLAG_CD) ?
+    IA32_PT_NOTCACHED : IA32_PT_CACHED;
+  table->entries = IA32_MK_BASE(d[entry]);
 
   return ERROR_NONE;
 }
@@ -305,8 +311,8 @@ t_error			pd_get_table(t_ia32_directory*		dir,
  * 3) resets the entry.
  */
 
-t_error			pd_delete_table(t_ia32_directory*	dir,
-					t_uint16		entry)
+t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
+					     t_uint16		entry)
 {
   t_ia32_directory	d;
 
@@ -317,13 +323,13 @@ t_error			pd_delete_table(t_ia32_directory*	dir,
   if (dir)
     d = *dir;
   else
-    d = pd;
+    d = ia32_pd;
 
   /*
    * 2)
    */
 
-  if (!(d[entry] & PDE_FLAG_USED))
+  if (!(d[entry] & IA32_PDE_FLAG_USED))
     return ERROR_UNKNOWN;
 
   /*

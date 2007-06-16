@@ -23,6 +23,8 @@
 #include <libc.h>
 #include <kaneton.h>
 
+#include <architecture/architecture.h>
+
 /*                                                                  [cut] k2 */
 
 /*

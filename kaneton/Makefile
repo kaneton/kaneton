@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/Makefile
+# file          /home/buckman/kaneton/kaneton/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [mon jun 11 19:30:26 2007]
+# updated       matthieu bucchianeri   [sat jun 16 18:24:15 2007]
 #
 
 #
@@ -28,7 +28,7 @@ include			../environment/env.mk
 #
 
 SUBDIRS			:=		core				\
-					machine				
+					machine
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -38,8 +38,6 @@ main:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,,)				; \
 	done
-
-	XXX
 
 	$(call env_executable,$(_CORE_),$(CORE_O)			\
 					$(VERSION_O)			\
