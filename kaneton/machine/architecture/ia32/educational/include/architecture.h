@@ -5,42 +5,41 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane.../ia32/educational/include/architecture.h
+ * file          /home/buckman/kan.../ia32/educational/include/architecture.h
  *
  * created       julien quintard   [thu jun  7 12:02:10 2007]
- * updated       julien quintard   [mon jun 11 12:01:05 2007]
+ * updated       matthieu bucchianeri   [sat jun 16 17:18:47 2007]
  */
 
 #ifndef ARCHITECTURE_ARCHITECTURE_H
 #define ARCHITECTURE_ARCHITECTURE_H	1
 
 /*
- * ---------- macro functions -------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
-/*
- * machdep transparent traps
- */
+#define ___endian		ENDIAN_LITTLE
+#define ___wordsz		WORDSZ_32
 
-#define		machine_include(_mng_)					\
-  machine_include_##_mng_()
-
-#define		machine_call(_mng_, _function_, _args_...)		\
-  machine_call_##_mng_(_function_, ##_args_)
-
-#define		machine_data(_object_)					\
-  machine_data_##_object_()
+#define PAGESZ			4096
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
 #include <architecture/types.h>
-#include <architecture/core.h>
 
+#include <architecture/asm.h>
 #include <architecture/cons.h>
 #include <architecture/debug.h>
 #include <architecture/elf.h>
+#include <architecture/context.h>
+#include <architecture/tss.h>
+#include <architecture/pmode.h>
+#include <architecture/gdt.h>
+#include <architecture/idt.h>
+#include <architecture/paging.h>
+
 
 /* XXX here go the includes of ia32 additional stuff */
 
