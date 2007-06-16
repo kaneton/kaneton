@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...aneton/machine/glue/ibm-pc.ia32/Makefile
+# file          /home/buckman/kan...aneton/machine/glue/ibm-pc.ia32/Makefile
 #
 # created       julien quintard   [sun jun 10 15:47:23 2007]
-# updated       julien quintard   [mon jun 11 05:53:16 2007]
+# updated       matthieu bucchianeri   [sat jun 16 18:14:15 2007]
 #
 
 #
@@ -27,11 +27,23 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-GLUE_C			:=		timer.c				
+GLUE_C			:=		as.c			\
+					segment.c		\
+					timer.c
 
 GLUE_O			:=		$(GLUE_C:.c=.o)
 
-GLUE_INCLUDE		:=		$(_GLUE_INCLUDE_DIR_)/timer.h	
+GLUE_INCLUDE		:=		$(_GLUE_INCLUDE_DIR_)/as.h	\
+					$(_GLUE_INCLUDE_DIR_)/cpu.h	\
+					$(_GLUE_INCLUDE_DIR_)/event.h	\
+					$(_GLUE_INCLUDE_DIR_)/io.h	\
+					$(_GLUE_INCLUDE_DIR_)/message.h	\
+					$(_GLUE_INCLUDE_DIR_)/region.h	\
+					$(_GLUE_INCLUDE_DIR_)/sched.h	\
+					$(_GLUE_INCLUDE_DIR_)/segment.h	\
+					$(_GLUE_INCLUDE_DIR_)/task.h	\
+					$(_GLUE_INCLUDE_DIR_)/thread.h	\
+					$(_GLUE_INCLUDE_DIR_)/timer.h
 
 #
 # ---------- rules ------------------------------------------------------------

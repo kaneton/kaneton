@@ -8,7 +8,7 @@
 # file          /home/buckman/kan...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       matthieu bucchianeri   [sat jun 16 17:17:40 2007]
+# updated       matthieu bucchianeri   [sat jun 16 17:41:27 2007]
 #
 
 #
@@ -49,7 +49,8 @@ ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/gdt.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/idt.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/paging.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/pmode.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/syscalls.h
+				$(_ARCHITECTURE_INCLUDE_DIR_)/syscalls.h\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/virtual.h
 
 #
 # ---------- rules ------------------------------------------------------------

@@ -37,53 +37,18 @@ extern t_init*		init;
  * global offset table.
  */
 
-extern t_ia32_gdt	gdt;
-
-/*
- * global interrupt descriptor table
- */
-
-extern t_ia32_idt		idt;
+extern t_ia32_gdt	ia32_gdt;
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
 /*
- * initialises protected mode.
- *
- * steps:
- *
- * 1) copie gdt and idt from the init variable.
- * 2) enable protected mode.
- */
-
-t_error			pmode_init(void)
-{
-
-  /*
-   * 1)
-   */
-
-  memcpy(&gdt, &init->machdep.gdt, sizeof (t_ia32_gdt));
-
-  /*
-   * 2)
-   */
-
-  pmode_enable();
-
-  return ERROR_NONE;
-}
-
-/*
  * enables protected mode by setting PE bit in CR0.
  */
 
-t_error			pmode_enable(void)
+static void	ia32_pmode_enable(void)
 {
-  CLI();
-
   asm volatile("movl %%cr0, %%eax\n\t"
 	       "orw $1, %%ax\n\t"
 	       "movl %%eax, %%cr0\n\t"
@@ -94,8 +59,31 @@ t_error			pmode_enable(void)
   asm volatile("jmp 1f\t\n"
 	       "1:"
 	       );
+}
 
-  /* XXX STI(); */
+/*
+ * initialises protected mode.
+ *
+ * steps:
+ *
+ * 1) copy gdt from the init variable.
+ * 2) enable protected mode.
+ */
+
+t_error		ia32_pmode_init(void)
+{
+
+  /*
+   * 1)
+   */
+
+  memcpy(&ia32_gdt, &init->machdep.gdt, sizeof (t_ia32_gdt));
+
+  /*
+   * 2)
+   */
+
+  ia32_pmode_enable();
 
   return ERROR_NONE;
 }
@@ -104,8 +92,8 @@ t_error			pmode_enable(void)
  * sets code/data/stack segment registers.
  */
 
-t_error			pmode_set_segment_registers(t_uint16	seg_code,
-						    t_uint16	seg_data)
+t_error		ia32_pmode_set_segment_registers(t_uint16	seg_code,
+						 t_uint16	seg_data)
 {
   asm volatile("pushl %0\n\t"
 	       "pushl $1f\n\t"
@@ -129,7 +117,7 @@ t_error			pmode_set_segment_registers(t_uint16	seg_code,
  * ends protected mode.
  */
 
-t_error			pmode_clean(void)
+t_error		ia32_pmode_clean(void)
 {
   return ERROR_NONE;
 }

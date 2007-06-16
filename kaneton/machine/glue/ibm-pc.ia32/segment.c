@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...neton/machine/glue/ibm-pc.ia32/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat jun 16 16:34:23 2007]
+ * updated       matthieu bucchianeri   [sat jun 16 17:38:59 2007]
  */
 
 
@@ -44,7 +44,7 @@ extern m_segment*	segment;
  * the ibm-pc.ia32 segment manager dispatch.
  */
 
-d_timer				segment_dispatch =
+d_segment				segment_dispatch =
   {
 /*								   [cut] k1 */
     NULL,
@@ -76,7 +76,7 @@ d_timer				segment_dispatch =
  * this function reads directly from a segment to a buffer.
  */
 
-t_error			glue_segment_read(i_region		segid,
+t_error			glue_segment_read(i_segment		segid,
 					  t_paddr		offs,
 					  void*			buff,
 					  t_psize		sz)
@@ -93,7 +93,7 @@ t_error			glue_segment_read(i_region		segid,
  * this function write directly to a segment from a buffer.
  */
 
-t_error			glue_segment_write(i_region		segid,
+t_error			glue_segment_write(i_segment		segid,
 					   t_paddr		offs,
 					   const void*		buff,
 					   t_psize		sz)
@@ -110,9 +110,9 @@ t_error			glue_segment_write(i_region		segid,
  * this function copies a block of bytes from one segment to another.
  */
 
-t_error			glue_segment_copy(i_region		dst,
+t_error			glue_segment_copy(i_segment		dst,
 					  t_paddr		offsd,
-					  i_region		src,
+					  i_segment		src,
 					  t_paddr		offss,
 					  t_psize		sz)
 {

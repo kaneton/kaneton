@@ -33,7 +33,7 @@
  * idt table pointer
  */
 
-t_ia32_idt           idt;
+t_ia32_idt           ia32_idt;
 
 /*                                                                 [cut] /k2 */
 
@@ -52,7 +52,7 @@ t_ia32_idt           idt;
  * 2) dump every idt entry.
  */
 
-t_error			idt_dump(t_ia32_idt*			table)
+t_error			ia32_idt_dump(t_ia32_idt*		table)
 {
   t_uint16		i;
   t_ia32_gate		gate;
@@ -63,7 +63,7 @@ t_error			idt_dump(t_ia32_idt*			table)
    */
 
   if (!table)
-    table = &idt;
+    table = &ia32_idt;
 
   /*
    * 2)
@@ -71,7 +71,7 @@ t_error			idt_dump(t_ia32_idt*			table)
 
   for (i = 0; i < table->count; i++)
     {
-      if (idt_get_gate(table, i, &gate) != ERROR_NONE)
+      if (ia32_idt_get_gate(table, i, &gate) != ERROR_NONE)
 	continue;
 
       type = NULL;
@@ -95,11 +95,11 @@ t_error			idt_dump(t_ia32_idt*			table)
  * return the size of an idt.
  */
 
-t_error			idt_size(t_ia32_idt*			table,
-				 t_uint16			*size)
+t_error			ia32_idt_size(t_ia32_idt*		table,
+				      t_uint16			*size)
 {
   if (!table)
-    table = &idt;
+    table = &ia32_idt;
 
   *size = table->count;
 
@@ -117,16 +117,16 @@ t_error			idt_size(t_ia32_idt*			table,
  * 4) clear the table if necessary.
  */
 
-t_error			idt_build(t_uint16			entries,
-				  t_paddr			base,
-				  t_uint8			clear,
-				  t_ia32_idt*			table)
+t_error			ia32_idt_build(t_uint16		entries,
+				       t_paddr		base,
+				       t_uint8		clear,
+				       t_ia32_idt*	table)
 {
   /*
    * 1)
    */
 
-  if (entries > IDT_MAX_ENTRIES)
+  if (entries > IA32_IDT_MAX_ENTRIES)
     return ERROR_UNKNOWN;
 
   /*
@@ -162,7 +162,7 @@ t_error			idt_build(t_uint16			entries,
  * 2) build and load the new idt register.
  */
 
-t_error			idt_activate(t_ia32_idt*		table)
+t_error			ia32_idt_activate(t_ia32_idt*		table)
 {
   t_ia32_idtr		idtr;
 
@@ -170,15 +170,15 @@ t_error			idt_activate(t_ia32_idt*		table)
    * 1)
    */
 
-  idt.descriptor = table->descriptor;
-  idt.count = table->count;
+  ia32_idt.descriptor = table->descriptor;
+  ia32_idt.count = table->count;
 
   /*
    * 2
    */
 
-  idtr.address = (t_paddr)idt.descriptor;
-  idtr.size = idt.count * sizeof(t_ia32_idte);
+  idtr.address = (t_paddr)ia32_idt.descriptor;
+  idtr.size = ia32_idt.count * sizeof(t_ia32_idte);
   LIDT(idtr);
 
   return ERROR_NONE;
@@ -194,7 +194,7 @@ t_error			idt_activate(t_ia32_idt*		table)
  * 3) copy to new idt address.
  */
 
-t_error			idt_import(t_ia32_idt*			table)
+t_error			ia32_idt_import(t_ia32_idt*		table)
 {
   t_ia32_idtr		sidtr;
   t_ia32_idte*		source;
@@ -236,16 +236,16 @@ t_error			idt_import(t_ia32_idt*			table)
  * 6) set the reserved field.
  */
 
-t_error			idt_add_gate(t_ia32_idt*		table,
-				     t_uint16			index,
-				     t_ia32_gate		gate)
+t_error			ia32_idt_add_gate(t_ia32_idt*		table,
+					  t_uint16		index,
+					  t_ia32_gate		gate)
 {
   /*
    * 1)
    */
 
   if (!table)
-    table = &idt;
+    table = &ia32_idt;
 
   /*
    * 2)
@@ -258,8 +258,8 @@ t_error			idt_add_gate(t_ia32_idt*		table,
    * 3
    */
 
-  table->descriptor[index].type = DESC_TYPE_PRESENT |
-    DESC_MK_DPL(gate.privilege);
+  table->descriptor[index].type = IA32_DESC_TYPE_PRESENT |
+    IA32_DESC_MK_DPL(gate.privilege);
   table->descriptor[index].type |= gate.type;
 
   /*
@@ -297,30 +297,30 @@ t_error			idt_add_gate(t_ia32_idt*		table,
  * 6) get the privileges.
  */
 
-t_error			idt_get_gate(t_ia32_idt*		table,
-				     t_uint16			index,
-				     t_ia32_gate*		gate)
+t_error			ia32_idt_get_gate(t_ia32_idt*		table,
+					  t_uint16		index,
+					  t_ia32_gate*		gate)
 {
   /*
    * 1)
    */
 
   if (!table)
-    table = &idt;
+    table = &ia32_idt;
 
   /*
    * 2)
    */
 
   if (index >= table->count ||
-      !(table->descriptor[index].type & DESC_TYPE_PRESENT))
+      !(table->descriptor[index].type & IA32_DESC_TYPE_PRESENT))
     return ERROR_UNKNOWN;
 
   /*
    * 3)
    */
 
-  gate->type = IDT_GET_TYPE(table->descriptor[index].type);
+  gate->type = IA32_IDT_GET_TYPE(table->descriptor[index].type);
 
   /*
    * 4)
@@ -339,7 +339,7 @@ t_error			idt_get_gate(t_ia32_idt*		table,
    * 6
    */
 
-  gate->privilege = DESC_GET_DPL(table->descriptor[index].type);
+  gate->privilege = IA32_DESC_GET_DPL(table->descriptor[index].type);
 
   return ERROR_NONE;
 }
@@ -354,15 +354,15 @@ t_error			idt_get_gate(t_ia32_idt*		table,
  * 3) mark the gate as non-present.
  */
 
-t_error			idt_delete_gate(t_ia32_idt*		table,
-					t_uint16		gate_id)
+t_error			ia32_idt_delete_gate(t_ia32_idt*	table,
+					     t_uint16		gate_id)
 {
   /*
    * 1)
    */
 
   if (!table)
-    table = &idt;
+    table = &ia32_idt;
 
   /*
    * 2)
@@ -375,7 +375,7 @@ t_error			idt_delete_gate(t_ia32_idt*		table,
    * 3)
    */
 
-  table->descriptor[gate_id].type &= ~DESC_TYPE_PRESENT;
+  table->descriptor[gate_id].type &= ~IA32_DESC_TYPE_PRESENT;
 
   return ERROR_UNKNOWN;
 }

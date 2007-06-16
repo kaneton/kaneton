@@ -44,6 +44,31 @@
  */
 
 /*
+ * ../segment.c
+ */
+
+t_error			glue_segment_read(i_segment		segid,
+					  t_paddr		offs,
+					  void*			buff,
+					  t_psize		sz);
+
+t_error			glue_segment_write(i_segment		segid,
+					   t_paddr		offs,
+					   const void*		buff,
+					   t_psize		sz);
+
+t_error			glue_segment_copy(i_segment		dst,
+					  t_paddr		offsd,
+					  i_segment		src,
+					  t_paddr		offss,
+					  t_psize		sz);
+
+t_error			glue_segment_init(void);
+
+t_error			glue_segment_clean(void);
+
+
+/*
  * eop
  */
 
