@@ -207,4 +207,27 @@ extern t_uint32		cpucaps;
 
 /*								[cut] /k3 */
 
+/*
+ * ---------- prototypes ------------------------------------------------------
+ *
+ *	../context.c
+ */
+
+/*
+ * ../context.c
+ */
+
+t_error			ia32_update_pdbr(i_task			tskid,
+					 i_as			asid);
+
+void			ia32_extended_context_init(void);
+
+void			ia32_context_copy(t_ia32_context*		dst,
+					  const t_ia32_context*		src);
+
+
+/*
+ * eop
+ */
+
 #endif

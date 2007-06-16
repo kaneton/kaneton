@@ -28,18 +28,20 @@
 #include <libc.h>
 #include <kaneton.h>
 
+#include <architecture/architecture.h>
+
 /*
  * ---------- functions -------------------------------------------------------
  */
 
 /*
- * update the current tss.
+ * update the given tss.
  */
 
-t_error			tss_load(t_ia32_tss*			tss,
-				 t_uint16			ss,
-				 t_uint32			esp,
-				 t_uint32			io)
+t_error			ia32_tss_load(t_ia32_tss*		tss,
+				      t_uint16			ss,
+				      t_uint32			esp,
+				      t_uint32			io)
 {
   tss->ss0 = ss;
   tss->esp0 = esp;
@@ -50,7 +52,7 @@ t_error			tss_load(t_ia32_tss*			tss,
 }
 
 /*
- * init the tss with the kernel thread.
+ * set the given tss as current.
  *
  * steps:
  *
@@ -59,7 +61,7 @@ t_error			tss_load(t_ia32_tss*			tss,
  * 3) load the task register with this segment selector.
  */
 
-t_error			tss_init(t_ia32_tss*			tss)
+t_error			ia32_tss_init(t_ia32_tss*			tss)
 {
   t_uint16		segment;
   t_uint16		selector;
@@ -71,18 +73,18 @@ t_error			tss_init(t_ia32_tss*			tss)
 
   descriptor.base = (t_uint32)tss;
   descriptor.limit = sizeof(t_ia32_tss);
-  descriptor.privilege = PRIV_RING0;
+  descriptor.privilege = IA32_PRIV_RING0;
   descriptor.is_system = 1;
-  descriptor.type.sys = SEG_TYPE_TSS;
+  descriptor.type.sys = IA32_SEG_TYPE_TSS;
 
-  if (gdt_reserve_segment(NULL, descriptor, &segment) != ERROR_NONE)
+  if (ia32_gdt_reserve_segment(NULL, descriptor, &segment) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
    * 2)
    */
 
-  if (gdt_build_selector(segment, descriptor.privilege, &selector)
+  if (ia32_gdt_build_selector(segment, descriptor.privilege, &selector)
       != ERROR_NONE)
     return ERROR_UNKNOWN;
 
@@ -91,8 +93,6 @@ t_error			tss_init(t_ia32_tss*			tss)
    */
 
   LTR(selector);
-
-  interrupt_stack = tss->esp0;
 
   return ERROR_NONE;
 }

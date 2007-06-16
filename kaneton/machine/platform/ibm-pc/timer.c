@@ -48,7 +48,7 @@ t_error			ibmpc_timer_init(void)
    * 1)
    */
 
-  latch = CLOCK_TICK_RATE / IBMPC_TIMER_FREQUENCY;
+  latch = IBMPC_CLOCK_TICK_RATE / IBMPC_TIMER_FREQUENCY;
 
   if (!latch || latch > 65536)
     return ERROR_UNKNOWN;
@@ -64,9 +64,9 @@ t_error			ibmpc_timer_init(void)
    * 3)
    */
 
-  OUTB(PIT_8254_CTRL, 0x34);
-  OUTB(TIMER_0, latch & 0xFF);
-  OUTB(TIMER_0, (latch >> 8) & 0xFF);
+  OUTB(IBMPC_PIT_8254_CTRL, 0x34);
+  OUTB(IBMPC_TIMER_0, latch & 0xFF);
+  OUTB(IBMPC_TIMER_0, (latch >> 8) & 0xFF);
 
   return ERROR_NONE;
 }

@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/as.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       matthieu bucchianeri   [sat jun 16 18:14:04 2007]
+ * updated       matthieu bucchianeri   [sat jun 16 19:43:56 2007]
  */
 
 /*
@@ -68,7 +68,12 @@ d_as				as_dispatch =
 t_error			glue_as_give(i_task			tskid,
 				     i_as			asid)
 {
-  // XXX
+  AS_ENTER(as);
+
+  if (ia32_update_pdbr(tskid, asid) != ERROR_NONE)
+    AS_LEAVE(as, ERROR_UNKNOWN);
+
+  AS_LEAVE(as, ERROR_NONE);
 }
 
 /*
@@ -78,18 +83,21 @@ t_error			glue_as_give(i_task			tskid,
 t_error			glue_as_reserve(i_task			tskid,
 					i_as*			asid)
 {
-   AS_ENTER(as);
+  AS_ENTER(as);
 
-   if (tskid == ktask)
-     {
-       if (ia32_kernel_as_init(*asid) != ERROR_NONE)
-	 AS_LEAVE(as, ERROR_UNKNOWN);
-     }
-   else
-     {
-       if (ia32_task_as_init(*asid) != ERROR_NONE)
-	 AS_LEAVE(as, ERROR_UNKNOWN);
-     }
+  if (tskid == ktask)
+    {
+      if (ia32_kernel_as_init(*asid) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+    }
+  else
+    {
+      if (ia32_task_as_init(*asid) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
 
-   AS_LEAVE(as, ERROR_NONE);
+      if (ia32_update_pdbr(tskid, *asid) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+    }
+
+  AS_LEAVE(as, ERROR_NONE);
 }

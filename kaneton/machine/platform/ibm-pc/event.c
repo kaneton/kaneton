@@ -50,36 +50,36 @@ t_error			ibmpc_pic_init(void)
    * 1)
    */
 
-  OUTB(MASTER_PORT_A, MASTER_ICW1);
-  OUTB(SLAVE_PORT_A, SLAVE_ICW1);
+  OUTB(IBMPC_MASTER_PORT_A, IBMPC_MASTER_ICW1);
+  OUTB(IBMPC_SLAVE_PORT_A, IBMPC_SLAVE_ICW1);
 
   /*
    * 2)
    */
 
-  OUTB(MASTER_PORT_B, MASTER_ICW2);
-  OUTB(SLAVE_PORT_B, SLAVE_ICW2);
+  OUTB(IBMPC_MASTER_PORT_B, IBMPC_MASTER_ICW2);
+  OUTB(IBMPC_SLAVE_PORT_B, IBMPC_SLAVE_ICW2);
 
   /*
    * 3)
    */
 
-  OUTB(MASTER_PORT_B, MASTER_ICW3);
-  OUTB(SLAVE_PORT_B, SLAVE_ICW3);
+  OUTB(IBMPC_MASTER_PORT_B, IBMPC_MASTER_ICW3);
+  OUTB(IBMPC_SLAVE_PORT_B, IBMPC_SLAVE_ICW3);
 
   /*
    * 4)
    */
 
-  OUTB(MASTER_PORT_B, MASTER_ICW4);
-  OUTB(SLAVE_PORT_B, SLAVE_ICW4);
+  OUTB(IBMPC_MASTER_PORT_B, IBMPC_MASTER_ICW4);
+  OUTB(IBMPC_SLAVE_PORT_B, IBMPC_SLAVE_ICW4);
 
   /*
    * 5)
    */
 
-  OUTB(MASTER_PORT_B, 0xfb);
-  OUTB(SLAVE_PORT_B, 0xff);
+  OUTB(IBMPC_MASTER_PORT_B, 0xfb);
+  OUTB(IBMPC_SLAVE_PORT_B, 0xff);
 
   return ERROR_NONE;
 }
@@ -97,13 +97,13 @@ t_error			ibmpc_enable_irq(t_uint8		irq)
 
   if (irq < 8)
     {
-      INB(MASTER_PORT_B, mask);
-      OUTB(MASTER_PORT_B, mask & ~(1 << irq));
+      INB(IBMPC_MASTER_PORT_B, mask);
+      OUTB(IBMPC_MASTER_PORT_B, mask & ~(1 << irq));
     }
   else
     {
-      INB(SLAVE_PORT_B, mask);
-      OUTB(SLAVE_PORT_B, mask & ~(1 << (irq - 8)));
+      INB(IBMPC_SLAVE_PORT_B, mask);
+      OUTB(IBMPC_SLAVE_PORT_B, mask & ~(1 << (irq - 8)));
     }
 
   return ERROR_NONE;
@@ -122,13 +122,13 @@ t_error			ibmpc_disable_irq(t_uint8		irq)
 
   if (irq < 8)
     {
-      INB(MASTER_PORT_B, mask);
-      OUTB(MASTER_PORT_B, mask | (1 << irq));
+      INB(IBMPC_MASTER_PORT_B, mask);
+      OUTB(IBMPC_MASTER_PORT_B, mask | (1 << irq));
     }
   else
     {
-      INB(SLAVE_PORT_B, mask);
-      OUTB(SLAVE_PORT_B, mask | (1 << (irq - 8)));
+      INB(IBMPC_SLAVE_PORT_B, mask);
+      OUTB(IBMPC_SLAVE_PORT_B, mask | (1 << (irq - 8)));
     }
 
   return ERROR_NONE;
@@ -160,16 +160,16 @@ t_error			ibmpc_irq_acknowledge(t_uint8		irq)
 
   if (irq < 8)
     {
-      INB(MASTER_PORT_B, mask);
-      OUTB(MASTER_PORT_B, mask);
-      OUTB(MASTER_PORT_A, 0x60 + irq);
+      INB(IBMPC_MASTER_PORT_B, mask);
+      OUTB(IBMPC_MASTER_PORT_B, mask);
+      OUTB(IBMPC_MASTER_PORT_A, 0x60 + irq);
     }
   else
     {
-      INB(SLAVE_PORT_B, mask);
-      OUTB(SLAVE_PORT_B, mask);
-      OUTB(SLAVE_PORT_A, 0x60 + (irq & 0x7));
-      OUTB(MASTER_PORT_A, 0x60 + 2);
+      INB(IBMPC_SLAVE_PORT_B, mask);
+      OUTB(IBMPC_SLAVE_PORT_B, mask);
+      OUTB(IBMPC_SLAVE_PORT_A, 0x60 + (irq & 0x7));
+      OUTB(IBMPC_MASTER_PORT_A, 0x60 + 2);
     }
 
   return ERROR_NONE;

@@ -8,7 +8,7 @@
 # file          /home/buckman/kan...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       matthieu bucchianeri   [sat jun 16 17:41:27 2007]
+# updated       matthieu bucchianeri   [sat jun 16 19:56:18 2007]
 #
 
 #
@@ -27,14 +27,18 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-ARCHITECTURE_LOW_C	:=	gdt.c				\
+ARCHITECTURE_LOW_C	:=	apic.c				\
+				cpuid.c				\
+				gdt.c				\
 				idt.c				\
 				ldt.c				\
 				paging.c			\
 				pd.c				\
 				pmode.c				\
 				pt.c				\
-				tlb.c
+				sse.c				\
+				tlb.c				\
+				tss.c
 
 ARCHITECTURE_HI_C	:=	context.c			\
 				syscalls.c			\
@@ -45,10 +49,14 @@ ARCHITECTURE_C		:=	$(ARCHITECTURE_LOW_C)		\
 
 ARCHITECTURE_O		:=	$(ARCHITECTURE_C:.c=.o)
 
-ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/gdt.h	\
+ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/apic.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/gdt.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/idt.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/misc.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/paging.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/pmode.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/tss.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/context.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/syscalls.h\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/virtual.h
 
