@@ -1,20 +1,21 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/arch/ibm-pc.ia32-virtual/task.c
+ * license       kaneton
  *
- * created       julien quintard   [sat dec 10 15:22:46 2005]
- * updated       matthieu bucchianeri   [tue feb  6 23:54:12 2007]
+ * file          /home/buckman/kan.../kaneton/machine/glue/ibm-pc.ia32/task.c
+ *
+ * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
+ * updated       matthieu bucchianeri   [sat jun 16 20:09:31 2007]
  */
 
 /*
  * ---------- information -----------------------------------------------------
  *
- * this file implements  dependent code for task manager  on ia32 with
- * paging architecture.
- *
+ * this file implements dependent code for as manager on ia32 with paging
+ * architecture.
  */
 
 /*
@@ -23,6 +24,10 @@
 
 #include <libc.h>
 #include <kaneton.h>
+
+#include <glue/glue.h>
+#include <architecture/architecture.h>
+#include <platform/platform.h>
 
 /*
  * ---------- extern ----------------------------------------------------------
@@ -43,13 +48,13 @@ extern t_init*		init;
 d_task			task_dispatch =
   {
     NULL,
-    ia32_task_clone,
-    ia32_task_reserve,
+    glue_task_clone,
+    glue_task_reserve,
     NULL,
     NULL,
     NULL,
     NULL,
-    ia32_task_init,
+    glue_task_init,
     NULL,
   };
 
@@ -59,47 +64,32 @@ d_task			task_dispatch =
 
 /*
  * this function clones the dependent part of a task.
- *
- * it only copies the I/O permission bitmap.
  */
 
-t_error			ia32_task_clone(i_task			old,
+t_error			glue_task_clone(i_task			old,
 					i_task*			new)
 {
-  o_task*		from;
-  o_task*		to;
-
-
   TASK_ENTER(task);
 
-  if (task_get(old, &from) != ERROR_NONE ||
-      task_get(*new, &to) != ERROR_NONE)
+  if (ia32_duplicate_io_bitmap(old, *new) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
-
-  memcpy(to->machdep.iomap, from->machdep.iomap, 8192);
 
   TASK_LEAVE(task, ERROR_NONE);
 }
 
 /*
  * this function initialize the dependent structures.
- *
- * it only clears the I/O permission bitmap, denying all I/O operations.
  */
 
-t_error			ia32_task_reserve(t_class			class,
+t_error			glue_task_reserve(t_class			class,
 					  t_behav			behav,
 					  t_prior			prior,
 					  i_task*			id)
 {
-  o_task*		o;
-
   TASK_ENTER(task);
 
-  if (task_get(*id, &o) != ERROR_NONE)
+  if (ia32_clear_io_bitmap(*id) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
-
-  memset(&o->machdep.iomap, 0xFF, 8192);
 
   TASK_LEAVE(task, ERROR_NONE);
 }
@@ -107,29 +97,13 @@ t_error			ia32_task_reserve(t_class			class,
 /*
  * this function makes some architecture dependent initialization for
  * the task manager.
- *
- * steps:
- *
- * 1) initialize libia32 context module.
- * 2) disable writing the GDT.
  */
 
-t_error			ia32_task_init(void)
+t_error			glue_task_init(void)
 {
   TASK_ENTER(task);
 
-  /*
-   * 1)
-   */
-
-  context_setup();
-
-  /*
-   * 2)
-   */
-
-  if (segment_perms((i_segment)(t_uint32)init->machdep.gdt.descriptor,
-		    PERM_READ) != ERROR_NONE)
+  if (ia32_extended_context_init() != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_NONE);

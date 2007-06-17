@@ -54,6 +54,21 @@
  */
 
 /*
+ * ../task.c
+ */
+
+t_error			glue_task_clone(i_task			old,
+					i_task*			new);
+
+t_error			glue_task_reserve(t_class			class,
+					  t_behav			behav,
+					  t_prior			prior,
+					  i_task*			id);
+
+t_error			glue_task_init(void);
+
+
+/*
  * eop
  */
 

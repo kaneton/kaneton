@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/thread.h
+ * file          /home/buckman/kan...achine/glue/ibm-pc.ia32/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       matthieu bucchianeri   [fri jun 15 10:03:01 2007]
+ * updated       matthieu bucchianeri   [sun jun 17 16:18:31 2007]
  */
 
 #ifndef GLUE_THREAD_H
@@ -54,10 +54,36 @@
   }			machdep;
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/thread.h>
+
+/*
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../thread.c
  */
+
+/*
+ * ../thread.c
+ */
+
+t_error			glue_thread_clone(i_task		taskid,
+					  i_thread		old,
+					  i_thread*		new);
+
+t_error			glue_thread_reserve(i_task		taskid,
+					    i_thread*		threadid);
+
+t_error			glue_thread_load(i_thread		threadid,
+					 t_thread_context	context);
+
+t_error			glue_thread_store(i_thread		threadid,
+					  t_thread_context*	context);
+
+t_error			glue_thread_init(void);
+
 
 /*
  * eop

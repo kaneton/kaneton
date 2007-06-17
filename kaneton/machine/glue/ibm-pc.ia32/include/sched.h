@@ -58,6 +58,23 @@
  */
 
 /*
+ * ../sched.c
+ */
+
+t_error			glue_sched_quantum(t_quantum		quantum);
+
+t_error			glue_sched_yield(i_cpu			cpuid);
+
+t_error			glue_sched_init(void);
+
+t_error			glue_sched_clean(void);
+
+void			glue_sched_switch_extended(i_event	id);
+
+t_error			glue_sched_switch(i_thread		elected);
+
+
+/*
  * eop
  */
 

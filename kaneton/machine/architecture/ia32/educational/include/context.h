@@ -220,10 +220,37 @@ extern t_uint32		cpucaps;
 t_error			ia32_update_pdbr(i_task			tskid,
 					 i_as			asid);
 
-void			ia32_extended_context_init(void);
+t_error			ia32_extended_context_init(void);
 
 void			ia32_context_copy(t_ia32_context*		dst,
 					  const t_ia32_context*		src);
+
+t_error			ia32_clear_io_bitmap(i_task		tskid);
+
+t_error			ia32_duplicate_io_bitmap(i_task		old,
+						 i_task		new);
+
+t_error			ia32_init_context(i_task		taskid,
+					  i_thread		threadid);
+
+t_error			ia32_duplicate_context(i_thread		old,
+					       i_thread		new);
+
+t_error			ia32_setup_context(i_thread		threadid,
+					   t_vaddr		pc,
+					   t_vaddr		sp);
+
+t_error			ia32_status_context(i_thread		threadid,
+					    t_vaddr*		pc,
+					    t_vaddr*		sp);
+
+t_error			ia32_init_switcher(void);
+
+t_error			ia32_context_switch(i_thread		current,
+					    i_thread		elected);
+
+t_error			ia32_extended_context_switch(i_thread	current,
+						     i_thread	elected);
 
 
 /*
