@@ -16,8 +16,8 @@
  * ibmpc.
  */
 
-#ifndef PLATFORM_EVENT_H
-#define PLATFORM_EVENT_H	1
+#ifndef PLATFORM_IRQ_H
+#define PLATFORM_IRQ_H	1
 
 /*								[cut] k2 */
 
@@ -57,14 +57,14 @@
 /*
  * ---------- prototypes ------------------------------------------------------
  *
- *	../event.c
+ *	../irq.c
  */
 
 /*
- * ../event.c
+ * ../irq.c
  */
 
-t_error			ibmpc_pic_init(void);
+t_error			ibmpc_irq_init(void);
 
 t_error			ibmpc_enable_irq(t_uint8		irq);
 

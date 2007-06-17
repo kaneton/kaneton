@@ -40,7 +40,7 @@ extern m_message*	message;
 
 /*                                                                  [cut] k4 */
 
-void			ia32_syscalls_async_send_handler(void)
+static void		ia32_syscalls_async_send_handler(void)
 {
   union
   {
@@ -68,7 +68,7 @@ void			ia32_syscalls_async_send_handler(void)
   context->eax = ret;
 }
 
-void			ia32_syscalls_sync_send_handler(void)
+static void		ia32_syscalls_sync_send_handler(void)
 {
   union
   {
@@ -102,7 +102,7 @@ void			ia32_syscalls_sync_send_handler(void)
     context->eax = ret;
 }
 
-void			ia32_syscalls_async_recv_handler(void)
+static void		ia32_syscalls_async_recv_handler(void)
 {
   t_uint32		ret;
   t_uint32		tag;
@@ -121,7 +121,7 @@ void			ia32_syscalls_async_recv_handler(void)
   context->eax = ret;
 }
 
-void			ia32_syscalls_sync_recv_handler(void)
+static void		ia32_syscalls_sync_recv_handler(void)
 {
   t_uint32		ret;
   t_uint32		tag;
@@ -148,55 +148,49 @@ void			ia32_syscalls_sync_recv_handler(void)
     context->eax = ret;
 }
 
-t_error			ia32_message_epilogue(i_thread		thread,
-					      t_error		exit_value)
+t_error			ia32_setup_syscall_ret(i_thread		thread,
+					       t_error		exit_value)
 {
   o_thread*		th;
 
-  MESSAGE_ENTER(message);
-
   if (thread_get(thread, &th) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   th->machdep.context.eax = exit_value;
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  return (ERROR_NONE);
 }
 
 t_error			ia32_syscalls_init(void)
 {
-  MESSAGE_ENTER(message);
-
   if (event_reserve(56, EVENT_FUNCTION,
 		    EVENT_HANDLER(ia32_syscalls_async_send_handler)) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   if (event_reserve(57, EVENT_FUNCTION,
 		    EVENT_HANDLER(ia32_syscalls_async_recv_handler)) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   if (event_reserve(58, EVENT_FUNCTION,
 		    EVENT_HANDLER(ia32_syscalls_sync_send_handler)) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   if (event_reserve(59, EVENT_FUNCTION,
 		    EVENT_HANDLER(ia32_syscalls_sync_recv_handler)) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  return (ERROR_NONE);
 }
 
 t_error			ia32_syscalls_clean(void)
 {
-  MESSAGE_ENTER(message);
-
   if (event_release(56) != ERROR_NONE ||
       event_release(57) != ERROR_NONE ||
       event_release(58) != ERROR_NONE ||
       event_release(59) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  return (ERROR_NONE);
 }
 
 /*                                                                 [cut] /k4 */

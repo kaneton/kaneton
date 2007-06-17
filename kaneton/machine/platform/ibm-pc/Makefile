@@ -8,7 +8,7 @@
 # file          /home/buckman/kan...kaneton/machine/platform/ibm-pc/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       matthieu bucchianeri   [sun jun 17 17:35:41 2007]
+# updated       matthieu bucchianeri   [sun jun 17 19:09:25 2007]
 #
 
 #
@@ -28,14 +28,16 @@ include			../../../../environment/env.mk
 #
 
 PLATFORM_C		:=	cons-text.c		\
-				event.c			\
+				irq.c			\
+				keyboard.c		\
 				serial.c		\
 				timer.c
 
 PLATFORM_O		:=	$(PLATFORM_C:.c=.o)
 
 PLATFORM_INCLUDE	:=	$(_PLATFORM_INCLUDE_DIR_)/cons.h	\
-				$(_PLATFORM_INCLUDE_DIR_)/event.h	\
+				$(_PLATFORM_INCLUDE_DIR_)/irq.h		\
+				$(_PLATFORM_INCLUDE_DIR_)/keyboard.h	\
 				$(_PLATFORM_INCLUDE_DIR_)/serial.h	\
 				$(_PLATFORM_INCLUDE_DIR_)/timer.h
 

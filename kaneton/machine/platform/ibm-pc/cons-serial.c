@@ -72,7 +72,7 @@ void			cons_msg(char				indicator,
 
 t_error			cons_init(void)
 {
-  serial_init(SERIAL_COM1, SERIAL_BR57600, SERIAL_8N1, SERIAL_FIFO_8);
+  serial_init(SERIAL_PRIMARY, SERIAL_BR57600, SERIAL_8N1);
 
   printf_init(cons_putc, 0);
 

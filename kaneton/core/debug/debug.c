@@ -135,7 +135,7 @@ t_error			debug_init(void)
    * 1)
    */
 
-  serial_init(SERIAL_PRIMARY, SERIAL_BR57600, SERIAL_8N1, SERIAL_FIFO_8);
+  serial_init(SERIAL_PRIMARY, SERIAL_BR57600, SERIAL_8N1);
   printf("serial port initialized\n");
 
   /*

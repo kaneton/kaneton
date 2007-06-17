@@ -8,7 +8,7 @@
 # file          /home/buckman/kan...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       matthieu bucchianeri   [sat jun 16 19:56:18 2007]
+# updated       matthieu bucchianeri   [sun jun 17 18:36:19 2007]
 #
 
 #
@@ -41,6 +41,7 @@ ARCHITECTURE_LOW_C	:=	apic.c				\
 				tss.c
 
 ARCHITECTURE_HI_C	:=	context.c			\
+				interrupt.c			\
 				syscalls.c			\
 				virtual.c
 
@@ -57,6 +58,7 @@ ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/apic.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/pmode.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/tss.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/context.h	\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/interrupt.h \
 				$(_ARCHITECTURE_INCLUDE_DIR_)/syscalls.h\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/virtual.h
 

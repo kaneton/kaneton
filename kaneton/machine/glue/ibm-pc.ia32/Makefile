@@ -8,7 +8,7 @@
 # file          /home/buckman/kan...aneton/machine/glue/ibm-pc.ia32/Makefile
 #
 # created       julien quintard   [sun jun 10 15:47:23 2007]
-# updated       matthieu bucchianeri   [sun jun 17 16:49:03 2007]
+# updated       matthieu bucchianeri   [sun jun 17 18:19:51 2007]
 #
 
 #
@@ -29,7 +29,9 @@ include			../../../../environment/env.mk
 
 GLUE_C			:=		as.c			\
 					cpu.c			\
+					event.c			\
 					io.c			\
+					message.c		\
 					region.c		\
 					sched.c			\
 					segment.c		\

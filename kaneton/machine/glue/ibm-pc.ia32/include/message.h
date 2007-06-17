@@ -44,6 +44,15 @@
  */
 
 /*
+ * ../message.c
+ */
+
+t_error		glue_message_init(void);
+
+t_error		glue_message_clean(void);
+
+
+/*
  * eop
  */
 

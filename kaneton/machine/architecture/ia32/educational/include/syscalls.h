@@ -22,16 +22,8 @@
  * ../syscalls.c
  */
 
-void			ia32_syscalls_async_send_handler(void);
-
-void			ia32_syscalls_sync_send_handler(void);
-
-void			ia32_syscalls_async_recv_handler(void);
-
-void			ia32_syscalls_sync_recv_handler(void);
-
-t_error			ia32_message_epilogue(i_thread		thread,
-					      t_error		exit_value);
+t_error			ia32_setup_syscall_ret(i_thread		thread,
+					       t_error		exit_value);
 
 t_error			ia32_syscalls_init(void);
 

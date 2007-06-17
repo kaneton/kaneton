@@ -44,7 +44,7 @@
  *
  */
 
-t_error			ibmpc_pic_init(void)
+t_error			ibmpc_irq_init(void)
 {
   /*
    * 1)
