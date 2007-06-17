@@ -16,6 +16,8 @@
 #include <libc.h>
 #include <kaneton.h>
 
+#include <architecture/architecture.h>
+
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -26,7 +28,7 @@ static t_uint64		clock_frequency = 0;
  * ---------- externs ---------------------------------------------------------
  */
 
-t_ofw_node		root_node;
+extern t_ofw_node	root_node;
 
 /*
  * ---------- functions -------------------------------------------------------
