@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/core.h
+ * file          /home/buckman/kaneton/kaneton/include/core/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [sun jun 10 19:01:43 2007]
+ * updated       matthieu bucchianeri   [sun jun 17 17:37:01 2007]
  */
 
 #ifndef CORE_CORE_H
@@ -97,13 +97,7 @@
 /* XXX badly generated: rethink the syntax */
 #include <core/interface.h>
 
-/* XXX temporary */
 #include <core/debug.h>
-
-/* XXX temporary */
-/*                                                                [cut] k1   */
-#include <core/serial.h>
-/*                                                               [cut] /k1   */
 
 /*
  * ---------- prototypes ------------------------------------------------------

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/debug.h
+ * file          /home/buckman/kaneton/kaneton/include/core/debug.h
  *
  * created       julien quintard   [wed jun  6 13:11:05 2007]
- * updated       julien quintard   [sun jun 10 18:59:13 2007]
+ * updated       matthieu bucchianeri   [sun jun 17 17:25:21 2007]
  */
 
 /*
@@ -96,8 +96,6 @@ typedef struct
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/debug/debug.c
- *      ../../core/debug/cons-text.c
- *      ../../core/debug/serial.c
  *      ../../core/debug/gdb.c
  */
 
@@ -108,56 +106,6 @@ typedef struct
 t_error			debug_init(void);
 
 t_error			debug_clean(void);
-
-
-/*
- * ../../core/debug/cons-text.c
- */
-
-void			cons_clear(void);
-
-void			cons_scroll(t_uint16			lines);
-
-void			cons_attr(t_uint8			attr);
-
-int			cons_print_char(char			c);
-
-void			cons_print_string(char*			string);
-
-void			cons_msg(char				indicator,
-				 char*				fmt,
-				 ...);
-
-t_error			cons_init(void);
-
-t_error			cons_clean(void);
-
-
-/*
- * ../../core/debug/serial.c
- */
-
-void			serial_read(t_uint32			com_port,
-				    t_uint8*			data,
-				    t_uint32 			size);
-
-void			serial_write(t_uint32			com_port,
-				     t_uint8*			data,
-				     t_uint32			size);
-
-int			serial_send(t_uint32			com_port,
-				    t_uint8*			data,
-				    t_uint32			size);
-
-int			serial_recv(t_uint32			com_port,
-				    t_serial_data		*rdata);
-
-int	serial_put(char c);
-
-void			serial_init(t_uint32			com_port,
-				    t_uint8			baud_rate,
-				    t_uint8			bit_type,
-				    t_uint8			fifo_type);
 
 
 /*

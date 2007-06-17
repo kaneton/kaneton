@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...tecture/ia32/educational/include/debug.h
+ * file          /home/buckman/kan...tecture/ia32/educational/include/debug.h
  *
  * created       julien quintard   [wed jun  6 16:15:05 2007]
- * updated       julien quintard   [mon jun 11 06:22:51 2007]
+ * updated       matthieu bucchianeri   [sun jun 17 17:03:16 2007]
  */
 
 #ifndef ARCHITECTURE_DEBUG_H
@@ -21,6 +21,7 @@
 #define IA32_DEBUG_INIT		(1 << 0)
 #define IA32_DEBUG_PMODE	(1 << 1)
 #define IA32_DEBUG_PAGING	(1 << 2)
+#define IA32_DEBUG_VIRTUAL	(IA32_DEBUG_PMODE | IA32_DEBUG_PAGING)
 
 #define IA32_DEBUG							\
   (0)

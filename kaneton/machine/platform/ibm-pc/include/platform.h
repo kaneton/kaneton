@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/platform/ibm-pc/include/platform.h
+ * file          /home/buckman/kan...chine/platform/ibm-pc/include/platform.h
  *
  * created       julien quintard   [mon jun 11 05:59:19 2007]
- * updated       matthieu bucchianeri   [fri jun 15 09:24:09 2007]
+ * updated       matthieu bucchianeri   [sun jun 17 17:36:34 2007]
  */
 
 /*
@@ -26,6 +26,9 @@
 
 #include <platform/timer.h>
 #include <platform/event.h>
+#include <platform/cons.h>
+#include <platform/vga.h>
+#include <platform/serial.h>
 
 /*
  * ---------- defines ---------------------------------------------------------

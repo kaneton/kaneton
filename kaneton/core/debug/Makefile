@@ -25,15 +25,12 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-DEBUG_C			:=		$(_CONSOLE_FILE_)		\
-					debug.c				\
-					gdb.c				\
-					serial.c
+DEBUG_C			:=		debug.c				\
+					gdb.c
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)
 
-DEBUG_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/serial.h \
-					$(_CORE_INCLUDE_DIR_)/debug.h
+DEBUG_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/debug.h
 
 CFLAGS			+=		-D___kernel
 

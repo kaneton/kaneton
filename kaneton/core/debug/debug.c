@@ -91,7 +91,7 @@ static t_error		debug_recv(void)
    * 1)
    */
 
-  serial_recv(SERIAL_COM1, &recv_type);
+  serial_recv(SERIAL_PRIMARY, &recv_type);
 
   if (!strcmp((char*)recv_type.data, "command"))
     {
@@ -101,11 +101,11 @@ static t_error		debug_recv(void)
        * 2)
        */
 
-      serial_recv(SERIAL_COM1, (t_serial_data  *) &cmd);
+      serial_recv(SERIAL_PRIMARY, (t_serial_data  *) &cmd);
       debug_exec_cmd_tab(&cmd);
       free(cmd.data);
       serial_put(-1);
-      serial_send(SERIAL_COM1, (t_uint8*)"endprintf", 9);
+      serial_send(SERIAL_PRIMARY, (t_uint8*)"endprintf", 9);
     }
   else
     printf("debug receive unknown type\n");
@@ -135,14 +135,14 @@ t_error			debug_init(void)
    * 1)
    */
 
-  serial_init(SERIAL_COM1, SERIAL_BR57600, SERIAL_8N1, SERIAL_FIFO_8);
+  serial_init(SERIAL_PRIMARY, SERIAL_BR57600, SERIAL_8N1, SERIAL_FIFO_8);
   printf("serial port initialized\n");
 
   /*
    * 2)
    */
 
-  serial_send(SERIAL_COM1, "Ready!", 6);
+  serial_send(SERIAL_PRIMARY, "Ready!", 6);
 
   /*
    * 3)
