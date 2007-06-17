@@ -44,6 +44,13 @@
  */
 
 /*
+ * ../cpu.c
+ */
+
+t_error			glue_cpu_current(i_cpu*			cpuid);
+
+
+/*
  * eop
  */
 

@@ -194,6 +194,92 @@ t_error			ia32_duplicate_io_bitmap(i_task		old,
 }
 
 /*
+ * this function modifies a bit in a bitmap.
+ */
+
+static void		io_bitmap_set(t_uint8*		bitmap,
+				      t_uint32		port,
+				      t_uint32		value)
+{
+  if (value)
+    bitmap[port / 8] |= (1 << (port % 8));
+  else
+    bitmap[port / 8] &= ~(1 << (port % 8));
+}
+
+/*
+ * this function checks one or more bits in a bitmap. bits to '1' have
+ * higher precedence.
+ */
+
+static t_uint8		io_bitmap_isset(t_uint8*	bitmap,
+					t_uint32	port,
+					t_uint8		consecutive)
+{
+  t_uint8		i;
+
+  for (i = 0 ; i < consecutive; i++)
+    if ((bitmap[port / 8] & (1 << (port % 8))) != 0)
+      return 1;
+  return 0;
+}
+
+/*
+ * this function allow I/O to a port.
+ *
+ * steps:
+ *
+ * 1) check the port id.
+ * 2) get the task.
+ * 3) change permission bitmap.
+ */
+
+t_error			ia32_set_io_bitmap(i_task		tskid,
+					   i_port		id,
+					   t_uint8		width,
+					   t_uint8		allow)
+{
+  o_task*		o;
+  t_uint8		i;
+
+  /*
+   * 1)
+   */
+
+  if (id + width >= 65536)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (task_get(tskid, &o) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  for (i = 0; i < width; i++)
+    io_bitmap_set(o->machdep.iomap, id + i, !allow);
+
+  return (ERROR_NONE);
+}
+
+/*
+ * setup current I/O PL to 0.
+ */
+
+t_error			ia32_reset_iopl(void)
+{
+  asm volatile("pushf\n\t"
+	       "andl $0xFFFFCFFF, %ss:(%esp)\n\t"
+	       "popf");
+
+  return (ERROR_NONE);
+}
+
+/*
  * this function initializes a blank context.
  *
  * steps:
