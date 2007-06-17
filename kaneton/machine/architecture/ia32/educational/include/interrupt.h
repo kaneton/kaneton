@@ -180,6 +180,9 @@
   "	movl context, %esp				\n"		\
   "1:							\n"
 
+#define IA32_CALL_HANDLER(_handler_, ...)				\
+  ((t_ia32_interrupt_handler)((_handler_).function))(__VA_ARGS__)
+
 /*
  * ---------- dependencies ----------------------------------------------------
  */
@@ -242,19 +245,6 @@ void			ia32_ipi_send_vector(t_uint8		vector,
 					     i_cpu		cpu);
 
 void			ia32_ipi_acknowledge(void);
-
-t_error			ia32_event_reserve(i_event		id,
-					   t_type		type,
-					   u_event_handler	handler);
-
-t_error			ia32_event_release(i_event		id);
-
-t_error			ia32_event_init(void);
-
-t_error			ia32_event_clean(void);
-
-void                    ia32_pf_handler(t_id			id,
-					t_uint32		error_code);
 
 
 /*

@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...kaneton/machine/glue/ibm-pc.ia32/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [sun jun 17 16:44:27 2007]
+ * updated       matthieu bucchianeri   [sun jun 17 19:29:47 2007]
  */
 
 /*
@@ -99,16 +99,12 @@ t_error			glue_sched_init(void)
 {
   SCHED_ENTER(sched);
 
-  CLI();
-
   if (timer_reserve(EVENT_FUNCTION,
 		    TIMER_HANDLER(sched_switch),
 		    sched->quantum,
 		    TIMER_REPEAT_ENABLE,
 		    &sched->machdep.timer) != ERROR_NONE)
     SCHED_LEAVE(sched, ERROR_UNKNOWN);
-
-  STI();
 
   if (event_reserve(7, EVENT_FUNCTION,
 		    EVENT_HANDLER(glue_sched_switch_extended)) != ERROR_NONE)

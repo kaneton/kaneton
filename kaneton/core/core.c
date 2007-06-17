@@ -137,6 +137,8 @@ void			kaneton(t_init*				bootloader)
 
   cons_msg('+', "kaneton started\n");
 
+  STI(); // XXX moveme
+
 
 #ifdef CONF_ENABLE_CHECK
   cons_msg('+', "running manual tests\n");

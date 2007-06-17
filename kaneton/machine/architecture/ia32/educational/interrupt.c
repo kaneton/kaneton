@@ -29,6 +29,18 @@
 /*                                                                  [cut] k2 */
 
 /*
+ * ---------- macro -----------------------------------------------------------
+ */
+
+#define UNUSED	__attribute__ ((unused))
+
+/*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+extern i_as	kasid;
+
+/*
  * ---------- non-generated prototypes ----------------------------------------
  */
 
@@ -221,19 +233,44 @@ static t_error		interrupt_add(t_uint32			nr,
  *
  * steps:
  *
- * 1) add an interrupt gate descriptor in the idt for each exception.
- * 2) add an interrupt gate descriptor in the idt for each irq.
- * 3) add an interrupt gate descriptor in the idt for each ipi.
- * 3) add an interrupt gate descriptor in the idt for each syscall.
- * 4) initialize the pic 8259A.
+ * 1) allocate space for the idt.
+ * 2) build the idt and activate it.
+ * 3) add an interrupt gate descriptor in the idt for each exception.
+ * 4) add an interrupt gate descriptor in the idt for each irq.
+ * 5) add an interrupt gate descriptor in the idt for each ipi.
+ * 6) add an interrupt gate descriptor in the idt for each syscall.
  */
 
 t_error			ia32_interrupt_vector_init(void)
 {
   int			i;
+  t_vaddr		vaddr;
+  t_ia32_idt		new_idt;
 
   /*
    * 1)
+   */
+
+  if (map_reserve(kasid,
+		  MAP_OPT_PRIVILEGED,
+		  PAGESZ,
+		  PERM_READ | PERM_WRITE,
+		  &vaddr)
+      != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  /*
+   * 2)
+   */
+
+  if (ia32_idt_build(IA32_IDT_MAX_ENTRIES, vaddr, 1, &new_idt) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  if (ia32_idt_activate(&new_idt) != ERROR_NONE)
+    return ERROR_UNKNOWN;
+
+  /*
+   * 3)
    */
 
   for (i = IA32_IDT_EXCEPTION_BASE;
@@ -243,7 +280,7 @@ t_error			ia32_interrupt_vector_init(void)
       return ERROR_UNKNOWN;
 
   /*
-   * 2)
+   * 4)
    */
 
   for (i = IA32_IDT_IRQ_BASE;
@@ -253,7 +290,7 @@ t_error			ia32_interrupt_vector_init(void)
       return ERROR_UNKNOWN;
 
   /*
-   * 3)
+   * 5)
    */
 
   for (i = IA32_IDT_IPI_BASE;
@@ -263,7 +300,7 @@ t_error			ia32_interrupt_vector_init(void)
       return ERROR_UNKNOWN;
 
   /*
-   * 4)
+   * 6)
    */
 
   for (i = IA32_IDT_SYSCALL_BASE;
@@ -292,7 +329,7 @@ static void		spurious_interrupt(i_event			id)
  * it calls the user-defined handler.
  */
 
-static void		handler_exception(t_uint32			nr,
+static void UNUSED	handler_exception(t_uint32			nr,
 					  t_uint32			code)
 {
   o_event*		o;
@@ -316,7 +353,7 @@ static void		handler_exception(t_uint32			nr,
  * call the user-defined handler.
  */
 
-static void		handler_irq(t_uint32				nr)
+static void UNUSED	handler_irq(t_uint32				nr)
 {
   o_event*		o;
   i_event		id = IA32_IDT_IRQ_BASE + nr;
@@ -326,7 +363,7 @@ static void		handler_irq(t_uint32				nr)
   if (event_get(id, &o) == ERROR_NONE)
     {
       if (o->type == EVENT_FUNCTION)
-	IA32_CALL_HANDLER(o->handler, id);
+	IA32_CALL_HANDLER(o->handler, id, 0);
       else
 	event_notify(id);
     }
@@ -341,7 +378,7 @@ static void		handler_irq(t_uint32				nr)
  * call the user-defined handler.
  */
 
-static void		handler_ipi(t_uint32				nr)
+static void UNUSED	handler_ipi(t_uint32				nr)
 {
   o_event*		o;
   i_event		id = IA32_IDT_IPI_BASE + nr;
@@ -351,7 +388,7 @@ static void		handler_ipi(t_uint32				nr)
   if (event_get(id, &o) == ERROR_NONE)
     {
       if (o->type == EVENT_FUNCTION)
-	IA32_CALL_HANDLER(o->handler, id);
+	IA32_CALL_HANDLER(o->handler, id, 0);
       else
 	event_notify(id);
     }
@@ -366,7 +403,7 @@ static void		handler_ipi(t_uint32				nr)
  * user-defined handler.
  */
 
-static void		handler_syscall(t_uint32			nr)
+static void UNUSED	handler_syscall(t_uint32			nr)
 {
   o_event*		o;
   i_event		id = IA32_IDT_SYSCALL_BASE + nr;
@@ -374,7 +411,7 @@ static void		handler_syscall(t_uint32			nr)
   if (event_get(id, &o) == ERROR_NONE)
     {
       if (o->type == EVENT_FUNCTION)
-	IA32_CALL_HANDLER(o->handler, id);
+	IA32_CALL_HANDLER(o->handler, id, 0);
       else
 	event_notify(id);
     }
@@ -518,187 +555,6 @@ void			ia32_ipi_send_vector(t_uint8		vector,
 void			ia32_ipi_acknowledge(void)
 {
   ia32_apic_write(IA32_APIC_REG_EOI, 0);
-}
-
-/*
- * reserve an event on the ia32 architecture.
- *
- * steps:
- *
- * 1) check id bounds.
- * 2) associate the handler to the given eventid.
- * 3) unmask event if eventid is an irq.
- */
-
-t_error			ia32_event_reserve(i_event		id,
-					   t_type		type,
-					   u_event_handler	handler)
-{
-  t_uint32		eventid = id;
-
-  /*
-   * 1)
-   */
-
-  if (eventid >= IA32_HANDLER_NR)
-    return ERROR_UNKNOWN;
-
-
-  if ((eventid >= IA32_IDT_IRQ_BASE) && (eventid < IA32_IDT_IRQ_BASE + IA32_IRQ_NR))
-    if (pic_enable_irq(eventid - IA32_IDT_IRQ_BASE) != ERROR_NONE)
-      return ERROR_UNKNOWN;
-
-  return ERROR_NONE;
-}
-
-/*
- * release an event on the ia32 architecture.
- *
- * steps:
- *
- * 1) check id bounds.
- * 2) clear the eventid handler.
- * 3) mask event if eventid is an irq.
- */
-
-t_error			ia32_event_release(i_event		id)
-{
-  t_uint32		eventid = id;
-
-  /*
-   * 1)
-   */
-
-  if (eventid >= IA32_HANDLER_NR)
-    return ERROR_UNKNOWN;
-
-  /*
-   * 3)
-   */
-
-  if ((eventid >= IA32_IDT_IRQ_BASE) && (eventid < IA32_IDT_IRQ_BASE + IA32_IRQ_NR))
-    if (pic_disable_irq(eventid - IA32_IDT_IRQ_BASE) != ERROR_NONE)
-      return ERROR_UNKNOWN;
-
-  return ERROR_NONE;
-}
-
-/*
- * initialize events on the ia32 architecture.
- *
- * steps:
- *
- * 1) allocate space for the idt.
- * 2) build the idt and activate it.
- * 3) init events.
- * 4) disable writing the IDT.
- * 5) set default handler for every exception.
- * 6) set default handler for every irq.
- * 7) enable external interrupts.
- * 8) setup default exception handlers.
- */
-
-t_error			ia32_event_init(void)
-{
-  int			id;
-  t_vaddr		vaddr;
-  t_ia32_idt		new_idt;
-  o_region*		oreg;
-
-  /*
-   * 1)
-   */
-
-  if (map_reserve(kasid,
-		  MAP_OPT_PRIVILEGED,
-		  PAGESZ,
-		  PERM_READ | PERM_WRITE,
-		  &vaddr)
-      != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
-  /*
-   * 2)
-   */
-
-  if (idt_build(IA32_IDT_MAX_ENTRIES, vaddr, 1, &new_idt) != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
-  if (idt_activate(&new_idt) != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
-  /*
-   * 3)
-   */
-
-  if (interrupt_init() != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
-  /*
-   * 4)
-   */
-
-  if (region_get(kasid, (i_region)vaddr, &oreg) != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
-  if (segment_perms(oreg->segid, PERM_READ) != ERROR_NONE)
-    return ERROR_UNKNOWN;
-
-
-  /*
-   * 7)
-   */
-
-  STI();
-
-  /*
-   * 8)
-   */
-
-
-  return ERROR_NONE;
-}
-
-/*
- * this function cleans events on ia32 architecture.
- *
- * 1) ignore external interrupts.
- * 2) disable exceptions.
- * 3) disable irq's.
- */
-
-t_error			ia32_event_clean(void)
-{
-  int			id;
-
-  /*
-   * 1)
-   */
-
-  CLI();
-
-  return ERROR_NONE;
-}
-
-
-
-
-void                    ia32_pf_handler(t_id			id,
-					t_uint32		error_code)
-{
-  t_uint32              addr;
-
-  SCR2(addr);
-
-  printf("error: page fault !\n"
-         "  %p trying to %s at the address 0x%x requires %s\n",
-	 context->eip,
-         (error_code & 2) ? "write" : "read",
-         addr,
-         (error_code & 1) ? "a lower DPL" : "the page to be present");
-
-  while (1)
-    ;
 }
 
 /*								[cut] /k2 */
