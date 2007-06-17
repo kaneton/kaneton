@@ -6,7 +6,7 @@
  * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [sat may  5 20:29:06 2007]
+ * updated       matthieu bucchianeri   [wed jun  6 00:53:24 2007]
  */
 
 /*
@@ -223,7 +223,7 @@ t_error			sched_quantum(t_quantum			quantum)
       if (set_object(sched->cpus, i, (void**)&ent) != ERROR_NONE)
 	SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-      ent->timeslice = SCALE_TIMESLICE(ent->timeslice);
+      ent->timeslice = SCHED_SCALE_TIMESLICE(ent->timeslice);
 
       set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
 	{
@@ -235,7 +235,7 @@ t_error			sched_quantum(t_quantum			quantum)
 	      if (set_object(*queue, iq, (void**)&entity) != ERROR_NONE)
 		SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-	      entity->timeslice = SCALE_TIMESLICE(entity->timeslice);
+	      entity->timeslice = SCHED_SCALE_TIMESLICE(entity->timeslice);
 	    }
 	}
 
@@ -249,7 +249,7 @@ t_error			sched_quantum(t_quantum			quantum)
 	      if (set_object(*queue, iq, (void**)&entity) != ERROR_NONE)
 		SCHED_LEAVE(sched, ERROR_UNKNOWN);
 
-	      entity->timeslice = SCALE_TIMESLICE(entity->timeslice);
+	      entity->timeslice = SCHED_SCALE_TIMESLICE(entity->timeslice);
 	    }
 	}
     }
@@ -383,9 +383,9 @@ t_error			sched_switch(void)
   if (ent->timeslice == 0 && ent->current != -1)
     {
       entity.thread = ent->current;
-      entity.timeslice = COMPUTE_TIMESLICE(ent->current);
+      entity.timeslice = SCHED_COMPUTE_TIMESLICE(ent->current);
 
-      prio = COMPUTE_PRIORITY(ent->current);
+      prio = SCHED_COMPUTE_PRIORITY(ent->current);
 
       p = 0;
       set_foreach(SET_OPT_FORWARD, ent->expired, &i, st)
@@ -468,7 +468,7 @@ t_error			sched_switch(void)
       entity.thread = ent->current;
       entity.timeslice = ent->timeslice;
 
-      prio = COMPUTE_PRIORITY(ent->current);
+      prio = SCHED_COMPUTE_PRIORITY(ent->current);
 
       p = 0;
       set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
@@ -540,7 +540,7 @@ t_error			sched_add(i_thread			thread)
    * 1)
    */
 
-  prio = COMPUTE_PRIORITY(thread);
+  prio = SCHED_COMPUTE_PRIORITY(thread);
 
   /*
    * 2)
@@ -564,7 +564,7 @@ t_error			sched_add(i_thread			thread)
       if (prio == p)
 	{
 	  entity.thread = thread;
-	  entity.timeslice = COMPUTE_TIMESLICE(thread);
+	  entity.timeslice = SCHED_COMPUTE_TIMESLICE(thread);
 
 	  if (set_push(*queue, &entity) != ERROR_NONE)
 	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
@@ -580,7 +580,7 @@ t_error			sched_add(i_thread			thread)
    */
 
   if (ent->timeslice > sched->quantum &&
-      prio < COMPUTE_PRIORITY(ent->current))
+      prio < SCHED_COMPUTE_PRIORITY(ent->current))
     SCHED_LEAVE(sched, sched_yield(ent->cpuid));
 
   /*
@@ -647,7 +647,7 @@ t_error			sched_remove(i_thread			thread)
    * 3)
    */
 
-  prio = COMPUTE_PRIORITY(thread);
+  prio = SCHED_COMPUTE_PRIORITY(thread);
 
   /*
    * 4)
@@ -660,7 +660,7 @@ t_error			sched_remove(i_thread			thread)
         {
 	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
 	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
-  
+
 	  if (set_remove(*queue, thread) == ERROR_NONE)
 	    removed = 1;
 	  break;

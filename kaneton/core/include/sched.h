@@ -67,7 +67,7 @@
  * priority. used for timeslice computation.
  */
 
-#define COMPUTE_GLOBAL_PRIORITY(_thread_)				\
+#define SCHED_COMPUTE_GLOBAL_PRIORITY(_thread_)				\
   ({									\
     o_thread*		oth;						\
     o_task*		otsk;						\
@@ -97,11 +97,11 @@
  * for queue index computation.
  */
 
-#define COMPUTE_PRIORITY(_thread_)					\
+#define SCHED_COMPUTE_PRIORITY(_thread_)				\
   ({									\
     t_prior		global_prior;					\
 									\
-    global_prior = COMPUTE_GLOBAL_PRIORITY((_thread_));			\
+    global_prior = SCHED_COMPUTE_GLOBAL_PRIORITY((_thread_));		\
     (SCHED_N_PRIORITY_QUEUE - global_prior / SCHED_N_PRIORITY_QUEUE);	\
   })
 
@@ -109,7 +109,7 @@
  * this macro compute a ceil timeslice taking account of granularity.
  */
 
-#define SCALE_TIMESLICE(_t_)						\
+#define SCHED_SCALE_TIMESLICE(_t_)					\
   ((_t_) % SCHED_TIMESLICE_GRANULARITY ?				\
    (_t_) + SCHED_TIMESLICE_GRANULARITY -				\
    (_t_) % SCHED_TIMESLICE_GRANULARITY					\
@@ -120,17 +120,17 @@
  * thread based on its global priority.
  */
 
-#define COMPUTE_TIMESLICE(_thread_)					\
+#define SCHED_COMPUTE_TIMESLICE(_thread_)				\
   ({									\
     t_prior		global_prior;					\
     t_timeslice		t;						\
 									\
-    global_prior = COMPUTE_GLOBAL_PRIORITY((_thread_));			\
+    global_prior = SCHED_COMPUTE_GLOBAL_PRIORITY((_thread_));		\
 									\
     t = SCHED_TIMESLICE_MIN;						\
     t += ((SCHED_TIMESLICE_MAX - SCHED_TIMESLICE_MIN) * global_prior) /	\
       (SCHED_N_PRIORITY_QUEUE * SCHED_N_PRIORITY_QUEUE);		\
-    SCALE_TIMESLICE(t);							\
+    SCHED_SCALE_TIMESLICE(t);						\
   })
 
 /*

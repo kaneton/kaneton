@@ -25,12 +25,12 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SCHED_C			:=		sched.c				\
-					$(_SCHED_FILE_)
+SCHEDULER_C		:=		scheduler.c			\
+					$(_SCHEDULER_FILE_)
 
-SCHED_O			:=		$(SCHED_C:.c=.o)
+SCHEDULER_O		:=		$(SCHEDULER_C:.c=.o)
 
-SCHED_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/sched.h
+SCHEDULER_INCLUDE	:=		$(_CORE_INCLUDE_DIR_)/scheduler.h
 
 CFLAGS			+=		-D___kernel
 
@@ -38,27 +38,27 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			$(_SCHED_LO_)
+main:			$(_SCHEDULER_LO_)
 
-$(_SCHED_LO_):		$(SCHED_O)
-	$(call env_remove,$(_SCHED_LO_),)
+$(_SCHEDULER_LO_):		$(SCHEDULER_O)
+	$(call env_remove,$(_SCHEDULER_LO_),)
 
-	$(call env_archive,$(_SCHED_LO_),$(SCHED_O),)
+	$(call env_archive,$(_SCHEDULER_LO_),$(SCHEDULER_O),)
 
 clear:
-	$(call env_remove,$(SCHED_O),)
+	$(call env_remove,$(SCHEDULER_O),)
 
-	$(call env_remove,$(_SCHED_LO_),)
+	$(call env_remove,$(_SCHEDULER_LO_),)
 
 	$(call env_purge,)
 
 prototypes:
-	$(call env_prototypes,$(SCHED_INCLUDE),)
+	$(call env_prototypes,$(SCHEDULER_INCLUDE),)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(SCHED_C),)
+	$(call env_headers,$(SCHEDULER_C),)
 
 #
 # ---------- dependencies -----------------------------------------------------
