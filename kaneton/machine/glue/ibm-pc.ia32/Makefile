@@ -8,7 +8,7 @@
 # file          /home/buckman/kan...aneton/machine/glue/ibm-pc.ia32/Makefile
 #
 # created       julien quintard   [sun jun 10 15:47:23 2007]
-# updated       matthieu bucchianeri   [sun jun 17 18:19:51 2007]
+# updated       matthieu bucchianeri   [sun jun 17 21:50:51 2007]
 #
 
 #
@@ -33,7 +33,7 @@ GLUE_C			:=		as.c			\
 					io.c			\
 					message.c		\
 					region.c		\
-					sched.c			\
+					scheduler.c		\
 					segment.c		\
 					task.c			\
 					thread.c		\
@@ -47,7 +47,7 @@ GLUE_INCLUDE		:=		$(_GLUE_INCLUDE_DIR_)/as.h	\
 					$(_GLUE_INCLUDE_DIR_)/io.h	\
 					$(_GLUE_INCLUDE_DIR_)/message.h	\
 					$(_GLUE_INCLUDE_DIR_)/region.h	\
-					$(_GLUE_INCLUDE_DIR_)/sched.h	\
+					$(_GLUE_INCLUDE_DIR_)/scheduler.h \
 					$(_GLUE_INCLUDE_DIR_)/segment.h	\
 					$(_GLUE_INCLUDE_DIR_)/task.h	\
 					$(_GLUE_INCLUDE_DIR_)/thread.h	\

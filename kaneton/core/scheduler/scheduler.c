@@ -46,7 +46,7 @@
  * are swapped so the scheduler can continue its operation.
  *
  * the machine dependent part is responsible for context switching and
- * calling  of sched_switch  and cpu_balance.  for example,  these two
+ * calling  of scheduler_switch  and cpu_balance.  for example,  these two
  * functions can be called by a timer.
  *
  * this implementation  is based on explanations  around the GNU/Linux
@@ -62,7 +62,7 @@
 #include <libc.h>
 #include <kaneton.h>
 
-machine_include(sched);
+machine_include(scheduler);
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -72,7 +72,7 @@ machine_include(sched);
  * scheduler manager variable.
  */
 
-m_sched*		sched = NULL;
+m_scheduler*		scheduler = NULL;
 
 /*                                                                 [cut] k3 */
 
@@ -102,7 +102,7 @@ extern m_cpu*		cpu;
  * 2) dump the scheduler expired queues.
  */
 
-t_error			sched_dump(void)
+t_error			scheduler_dump(void)
 {
   t_iterator		i;
   t_iterator		iq;
@@ -115,12 +115,12 @@ t_error			sched_dump(void)
   t_prior		prio;
   t_cpu_sched*		ent;
 
-  SCHED_ENTER(sched);
+  SCHEDULER_ENTER(scheduler);
 
-  set_foreach(SET_OPT_FORWARD, sched->cpus, &ic, stc)
+  set_foreach(SET_OPT_FORWARD, scheduler->cpus, &ic, stc)
     {
-      if (set_object(sched->cpus, ic, (void**)&ent) != ERROR_NONE)
-	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+      if (set_object(scheduler->cpus, ic, (void**)&ent) != ERROR_NONE)
+	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
       cons_msg('#', "cpu %qd\n", ent->cpuid);
 
@@ -141,12 +141,12 @@ t_error			sched_dump(void)
       set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
 	{
 	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
 	    {
 	      if (set_object(*queue, iq, (void**)&thread) != ERROR_NONE)
-		SCHED_LEAVE(sched, ERROR_UNKNOWN);
+		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	      printf(" %qd (%d, %d ms)", thread->thread, prio,
 		     thread->timeslice);
@@ -166,12 +166,12 @@ t_error			sched_dump(void)
       set_foreach(SET_OPT_FORWARD, ent->expired, &i, st)
 	{
 	  if (set_object(ent->expired, i, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
 	    {
 	      if (set_object(*queue, iq, (void**)&thread) != ERROR_NONE)
-		SCHED_LEAVE(sched, ERROR_UNKNOWN);
+		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	      printf(" %qd", thread->thread);
 	    }
@@ -181,7 +181,7 @@ t_error			sched_dump(void)
 
     }
 
-  SCHED_LEAVE(sched, ERROR_NONE);
+  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
@@ -194,7 +194,7 @@ t_error			sched_dump(void)
  * 3) call the architecture dependent code.
  */
 
-t_error			sched_quantum(t_quantum			quantum)
+t_error			scheduler_quantum(t_quantum			quantum)
 {
   t_iterator		i;
   t_iterator		ic;
@@ -206,50 +206,50 @@ t_error			sched_quantum(t_quantum			quantum)
   t_scheduled*		entity;
   t_cpu_sched*		ent;
 
-  SCHED_ENTER(sched);
+  SCHEDULER_ENTER(scheduler);
 
   /*
    * 1)
    */
 
-  sched->quantum = quantum;
+  scheduler->quantum = quantum;
 
   /*
    * 2)
    */
 
-  set_foreach(SET_OPT_FORWARD, sched->cpus, &ic, stc)
+  set_foreach(SET_OPT_FORWARD, scheduler->cpus, &ic, stc)
     {
-      if (set_object(sched->cpus, i, (void**)&ent) != ERROR_NONE)
-	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+      if (set_object(scheduler->cpus, i, (void**)&ent) != ERROR_NONE)
+	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-      ent->timeslice = SCHED_SCALE_TIMESLICE(ent->timeslice);
+      ent->timeslice = SCHEDULER_SCALE_TIMESLICE(ent->timeslice);
 
       set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
 	{
 	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
 	    {
 	      if (set_object(*queue, iq, (void**)&entity) != ERROR_NONE)
-		SCHED_LEAVE(sched, ERROR_UNKNOWN);
+		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-	      entity->timeslice = SCHED_SCALE_TIMESLICE(entity->timeslice);
+	      entity->timeslice = SCHEDULER_SCALE_TIMESLICE(entity->timeslice);
 	    }
 	}
 
       set_foreach(SET_OPT_FORWARD, ent->expired, &i, st)
 	{
 	  if (set_object(ent->expired, i, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  set_foreach(SET_OPT_FORWARD, *queue, &iq, stq)
 	    {
 	      if (set_object(*queue, iq, (void**)&entity) != ERROR_NONE)
-		SCHED_LEAVE(sched, ERROR_UNKNOWN);
+		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-	      entity->timeslice = SCHED_SCALE_TIMESLICE(entity->timeslice);
+	      entity->timeslice = SCHEDULER_SCALE_TIMESLICE(entity->timeslice);
 	    }
 	}
     }
@@ -258,10 +258,10 @@ t_error			sched_quantum(t_quantum			quantum)
    * 2)
    */
 
-  if (machine_call(sched, sched_quantum, quantum) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (machine_call(scheduler, scheduler_quantum, quantum) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  SCHED_LEAVE(sched, ERROR_NONE);
+  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
@@ -276,32 +276,32 @@ t_error			sched_quantum(t_quantum			quantum)
  * 2) call  the dependent code (calling switch with the good cpu).
  */
 
-t_error			sched_yield(i_cpu			cpuid)
+t_error			scheduler_yield(i_cpu			cpuid)
 {
   t_cpu_sched*		ent;
 
-  SCHED_ENTER(sched);
+  SCHEDULER_ENTER(scheduler);
 
   /*
    * 1)
    */
 
-  if (set_get(sched->cpus, cpuid, (void**)&ent) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  ent->prio = SCHED_N_PRIORITY_QUEUE + 1;
+  ent->prio = SCHEDULER_N_PRIORITY_QUEUE + 1;
 
-  if (sched_switch() != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (scheduler_switch() != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (machine_call(sched, sched_yield, cpuid) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (machine_call(scheduler, scheduler_yield, cpuid) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  SCHED_LEAVE(sched, ERROR_NONE);
+  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
@@ -309,22 +309,22 @@ t_error			sched_yield(i_cpu			cpuid)
  * thread.
  */
 
-t_error			sched_current(i_thread*			thread)
+t_error			scheduler_current(i_thread*			thread)
 {
   i_cpu			cpuid;
   t_cpu_sched*		ent;
 
-  SCHED_ENTER(sched);
+  SCHEDULER_ENTER(scheduler);
 
   if (cpu_current(&cpuid) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  if (set_get(sched->cpus, cpuid, (void**)&ent) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   *thread = ent->current;
 
-  SCHED_LEAVE(sched, ERROR_NONE);
+  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
@@ -342,7 +342,7 @@ t_error			sched_current(i_thread*			thread)
  * 7) update the scheduler internal informations.
  */
 
-t_error			sched_switch(void)
+t_error			scheduler_switch(void)
 {
   t_iterator		i;
   t_state		st;
@@ -360,13 +360,13 @@ t_error			sched_switch(void)
   i_cpu			cpuid;
   t_cpu_sched*		ent;
 
-  SCHED_ENTER(sched);
+  SCHEDULER_ENTER(scheduler);
 
   if (cpu_current(&cpuid) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  if (set_get(sched->cpus, cpuid, (void**)&ent) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   elected = ent->current;
 
@@ -374,7 +374,7 @@ t_error			sched_switch(void)
    * 1)
    */
 
-  ent->timeslice -= sched->quantum;
+  ent->timeslice -= scheduler->quantum;
 
   /*
    * 2)
@@ -383,20 +383,20 @@ t_error			sched_switch(void)
   if (ent->timeslice == 0 && ent->current != -1)
     {
       entity.thread = ent->current;
-      entity.timeslice = SCHED_COMPUTE_TIMESLICE(ent->current);
+      entity.timeslice = SCHEDULER_COMPUTE_TIMESLICE(ent->current);
 
-      prio = SCHED_COMPUTE_PRIORITY(ent->current);
+      prio = SCHEDULER_COMPUTE_PRIORITY(ent->current);
 
       p = 0;
       set_foreach(SET_OPT_FORWARD, ent->expired, &i, st)
 	{
 	  if (set_object(ent->expired, i, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  if (prio == p)
 	    {
 	      if (set_push(*queue, &entity) != ERROR_NONE)
-		SCHED_LEAVE(sched, ERROR_UNKNOWN);
+		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	      break;
 	    }
@@ -414,7 +414,7 @@ t_error			sched_switch(void)
   set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
     {
       if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
-	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
       if (p > ent->prio && ent->timeslice)
 	{
@@ -433,7 +433,7 @@ t_error			sched_switch(void)
 	  elected_timeslice = highest->timeslice;
 
 	  if (set_pop(*queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  break;
 	}
@@ -449,7 +449,7 @@ t_error			sched_switch(void)
     {
       if (second_round)
 	{
-	  SCHED_LEAVE(sched, ERROR_NONE);
+	  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 	}
       list = ent->active;
       ent->active = ent->expired;
@@ -468,18 +468,18 @@ t_error			sched_switch(void)
       entity.thread = ent->current;
       entity.timeslice = ent->timeslice;
 
-      prio = SCHED_COMPUTE_PRIORITY(ent->current);
+      prio = SCHEDULER_COMPUTE_PRIORITY(ent->current);
 
       p = 0;
       set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
 	{
 	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  if (prio == p)
 	    {
 	      if (set_push(*queue, &entity) != ERROR_NONE)
-		SCHED_LEAVE(sched, ERROR_UNKNOWN);
+		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	      break;
 	    }
@@ -492,8 +492,8 @@ t_error			sched_switch(void)
    * 6)
    */
 
-  if (machine_call(sched, sched_switch, elected) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (machine_call(scheduler, scheduler_switch, elected) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   ent->current = elected;
   ent->prio = elected_prio;
@@ -503,12 +503,12 @@ t_error			sched_switch(void)
    * 7)
    */
 
-  if (cpu_stats(cpuid, sched->quantum) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (cpu_stats(cpuid, scheduler->quantum) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 //  ipi_send_vector(48, ipi_all_but_me, 1);
 
-  SCHED_LEAVE(sched, ERROR_NONE);
+  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
@@ -522,7 +522,7 @@ t_error			sched_switch(void)
  * 4) call the machine dependent code.
  */
 
-t_error			sched_add(i_thread			thread)
+t_error			scheduler_add(i_thread			thread)
 {
   t_iterator		i;
   t_state		st;
@@ -534,40 +534,40 @@ t_error			sched_add(i_thread			thread)
   o_task*		otask;
   t_cpu_sched*		ent;
 
-  SCHED_ENTER(sched);
+  SCHEDULER_ENTER(scheduler);
 
   /*
    * 1)
    */
 
-  prio = SCHED_COMPUTE_PRIORITY(thread);
+  prio = SCHEDULER_COMPUTE_PRIORITY(thread);
 
   /*
    * 2)
    */
 
   if (thread_get(thread, &othread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   if (task_get(othread->taskid, &otask) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  if (set_get(sched->cpus, otask->cpuid, (void**)&ent) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (set_get(scheduler->cpus, otask->cpuid, (void**)&ent) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   p = 0;
   set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
     {
       if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
-	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
       if (prio == p)
 	{
 	  entity.thread = thread;
-	  entity.timeslice = SCHED_COMPUTE_TIMESLICE(thread);
+	  entity.timeslice = SCHEDULER_COMPUTE_TIMESLICE(thread);
 
 	  if (set_push(*queue, &entity) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  break;
 	}
@@ -579,18 +579,18 @@ t_error			sched_add(i_thread			thread)
    * 3)
    */
 
-  if (ent->timeslice > sched->quantum &&
-      prio < SCHED_COMPUTE_PRIORITY(ent->current))
-    SCHED_LEAVE(sched, sched_yield(ent->cpuid));
+  if (ent->timeslice > scheduler->quantum &&
+      prio < SCHEDULER_COMPUTE_PRIORITY(ent->current))
+    SCHEDULER_LEAVE(scheduler, scheduler_yield(ent->cpuid));
 
   /*
    * 4)
    */
 
-  if (machine_call(sched, sched_add, thread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (machine_call(scheduler, scheduler_add, thread) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  SCHED_LEAVE(sched, ERROR_NONE);
+  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
@@ -605,7 +605,7 @@ t_error			sched_add(i_thread			thread)
  * 4) look in both active and expired lists to remove the thread.
  */
 
-t_error			sched_remove(i_thread			thread)
+t_error			scheduler_remove(i_thread			thread)
 {
   t_iterator		i;
   t_state		st;
@@ -617,37 +617,37 @@ t_error			sched_remove(i_thread			thread)
   o_task*		otask;
   t_cpu_sched*		ent;
 
-  SCHED_ENTER(sched);
+  SCHEDULER_ENTER(scheduler);
 
   /*
    * 1)
    */
 
   if (thread_get(thread, &othread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   if (task_get(othread->taskid, &otask) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  if (set_get(sched->cpus, otask->cpuid, (void**)&ent) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (set_get(scheduler->cpus, otask->cpuid, (void**)&ent) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   if (ent->current == thread)
-    if (sched_yield(ent->cpuid) != ERROR_NONE)
-      SCHED_LEAVE(sched, ERROR_UNKNOWN);
+    if (scheduler_yield(ent->cpuid) != ERROR_NONE)
+      SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (machine_call(sched, sched_remove, thread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (machine_call(scheduler, scheduler_remove, thread) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  prio = SCHED_COMPUTE_PRIORITY(thread);
+  prio = SCHEDULER_COMPUTE_PRIORITY(thread);
 
   /*
    * 4)
@@ -659,7 +659,7 @@ t_error			sched_remove(i_thread			thread)
       if (prio == p)
         {
 	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  if (set_remove(*queue, thread) == ERROR_NONE)
 	    removed = 1;
@@ -674,19 +674,19 @@ t_error			sched_remove(i_thread			thread)
       set_foreach(SET_OPT_FORWARD, ent->expired, &i, st)
 	{
 	  if (set_object(ent->expired, i, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  if (prio == p)
 	    {
 	      if (set_remove(*queue, thread) != ERROR_NONE)
-		SCHED_LEAVE(sched, ERROR_UNKNOWN);
+		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 	      break;
 	    }
 	  p++;
 	}
     }
 
-  SCHED_LEAVE(sched, ERROR_NONE);
+  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*
@@ -699,26 +699,26 @@ t_error			sched_remove(i_thread			thread)
  * 2) call the machine dependent code.
  */
 
-t_error			sched_update(i_thread			thread)
+t_error			scheduler_update(i_thread			thread)
 {
-  SCHED_ENTER(sched);
+  SCHEDULER_ENTER(scheduler);
 
   /*
    * 1)
    */
 
-  if (sched_remove(thread) != ERROR_NONE ||
-      sched_add(thread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (scheduler_remove(thread) != ERROR_NONE ||
+      scheduler_add(thread) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  if (machine_call(sched, sched_update, thread) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (machine_call(scheduler, scheduler_update, thread) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  SCHED_LEAVE(sched, ERROR_NONE);
+  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
 
 /*                                                                [cut] /k3 */
@@ -734,7 +734,7 @@ t_error			sched_update(i_thread			thread)
  * 4) call the machine-dependent code.
  */
 
-t_error			sched_init(void)
+t_error			scheduler_init(void)
 {
   int			i;
   t_iterator		it;
@@ -751,7 +751,7 @@ t_error			sched_init(void)
    * 1)
    */
 
-  if ((sched = malloc(sizeof(m_sched))) == NULL)
+  if ((scheduler = malloc(sizeof(m_scheduler))) == NULL)
     {
       cons_msg('!', "sched: cannot allocate memory for the scheduler "
 	       "manager structure\n");
@@ -759,10 +759,10 @@ t_error			sched_init(void)
       return (ERROR_UNKNOWN);
     }
 
-  memset(sched, 0x0, sizeof(m_sched));
+  memset(scheduler, 0x0, sizeof(m_scheduler));
 
-  sched->quantum = SCHED_QUANTUM_INIT;
-  sched->cpus = ID_UNUSED;
+  scheduler->quantum = SCHEDULER_QUANTUM_INIT;
+  scheduler->cpus = ID_UNUSED;
 
   /*
    * 2)
@@ -772,7 +772,7 @@ t_error			sched_init(void)
     return (ERROR_UNKNOWN);
 
   if (set_reserve(array, SET_OPT_ALLOC, ncpus, sizeof(t_cpu_sched),
-		  &sched->cpus) != ERROR_NONE)
+		  &scheduler->cpus) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   set_foreach(SET_OPT_FORWARD, cpu->cpus, &it, st)
@@ -782,17 +782,17 @@ t_error			sched_init(void)
 
       ent.cpuid = o->cpuid;
       ent.current = ID_UNUSED;
-      ent.timeslice = sched->quantum;
-      ent.prio = SCHED_N_PRIORITY_QUEUE;
+      ent.timeslice = scheduler->quantum;
+      ent.prio = SCHEDULER_N_PRIORITY_QUEUE;
       ent.active = ID_UNUSED;
       ent.expired = ID_UNUSED;
 
-      if (set_reserve(array, SET_OPT_ALLOC, SCHED_N_PRIORITY_QUEUE + 1,
+      if (set_reserve(array, SET_OPT_ALLOC, SCHEDULER_N_PRIORITY_QUEUE + 1,
 		      sizeof(i_set), &ent.active) !=
 	  ERROR_NONE)
 	return (ERROR_UNKNOWN);
 
-      for (i = 0; i <= SCHED_N_PRIORITY_QUEUE; i++)
+      for (i = 0; i <= SCHEDULER_N_PRIORITY_QUEUE; i++)
 	{
 	  if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_scheduled), &queue) !=
 	      ERROR_NONE)
@@ -802,12 +802,12 @@ t_error			sched_init(void)
 	    return (ERROR_UNKNOWN);
 	}
 
-      if (set_reserve(array, SET_OPT_ALLOC, SCHED_N_PRIORITY_QUEUE + 1,
+      if (set_reserve(array, SET_OPT_ALLOC, SCHEDULER_N_PRIORITY_QUEUE + 1,
 		      sizeof(i_set), &ent.expired) !=
 	  ERROR_NONE)
 	return (ERROR_UNKNOWN);
 
-      for (i = 0; i <= SCHED_N_PRIORITY_QUEUE; i++)
+      for (i = 0; i <= SCHEDULER_N_PRIORITY_QUEUE; i++)
 	{
 	  if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_scheduled), &queue) !=
 	      ERROR_NONE)
@@ -817,7 +817,7 @@ t_error			sched_init(void)
 	    return (ERROR_UNKNOWN);
 	}
 
-      if (set_append(sched->cpus, &ent) != ERROR_NONE)
+      if (set_append(scheduler->cpus, &ent) != ERROR_NONE)
 	return (ERROR_UNKNOWN);
     }
 
@@ -829,10 +829,10 @@ t_error			sched_init(void)
     return (ERROR_UNKNOWN);
 
   if (cpu_current(&cpuid) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  if (set_get(sched->cpus, cpuid, (void**)&ent2) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (set_get(scheduler->cpus, cpuid, (void**)&ent2) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   ent2->current = kthread;
 
@@ -840,7 +840,7 @@ t_error			sched_init(void)
    * 4)
    */
 
-  if (machine_call(sched, sched_init) != ERROR_NONE)
+  if (machine_call(scheduler, scheduler_init) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);
@@ -856,7 +856,7 @@ t_error			sched_init(void)
  * 3) free the scheduler manager structure's memory.
  */
 
-t_error			sched_clean(void)
+t_error			scheduler_clean(void)
 {
   t_iterator		it;
   t_state		st;
@@ -869,48 +869,48 @@ t_error			sched_clean(void)
    * 1)
    */
 
-  if (machine_call(sched, sched_clean) != ERROR_NONE)
-    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+  if (machine_call(scheduler, scheduler_clean) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   /*
    * 2)
    */
 
-  set_foreach(SET_OPT_FORWARD, sched->cpus, &it2, st2)
+  set_foreach(SET_OPT_FORWARD, scheduler->cpus, &it2, st2)
     {
-      if (set_object(sched->cpus, it2, (void**)&ent) != ERROR_NONE)
-	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+      if (set_object(scheduler->cpus, it2, (void**)&ent) != ERROR_NONE)
+	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
       set_foreach(SET_OPT_FORWARD, ent->active, &it, st)
 	{
 	  if (set_object(ent->active, it, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  if (set_release(*queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 	}
 
       if (set_release(ent->active) != ERROR_NONE)
-	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
       set_foreach(SET_OPT_FORWARD, ent->expired, &it, st)
 	{
 	  if (set_object(ent->expired, it, (void**)&queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  if (set_release(*queue) != ERROR_NONE)
-	    SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 	}
 
       if (set_release(ent->expired) != ERROR_NONE)
-	SCHED_LEAVE(sched, ERROR_UNKNOWN);
+	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
     }
 
   /*
    * 3)
    */
 
-  free(sched);
+  free(scheduler);
 
   return (ERROR_NONE);
 }

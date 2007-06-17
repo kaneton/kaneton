@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/include/core/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       matthieu bucchianeri   [sun jun 17 17:37:01 2007]
+ * updated       matthieu bucchianeri   [sun jun 17 20:37:52 2007]
  */
 
 #ifndef CORE_CORE_H
@@ -90,7 +90,7 @@
 #include <core/thread.h>
 #include <core/task.h>
 #include <core/cpu.h>
-#include <core/sched.h>
+#include <core/scheduler.h>
 #include <core/message.h>
 #include <core/capability.h>
 

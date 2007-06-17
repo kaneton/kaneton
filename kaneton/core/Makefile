@@ -37,12 +37,12 @@ SUBDIRS			:=		as				\
 					map				\
 					message				\
 					region				\
-					sched				\
+					scheduler			\
 					segment				\
 					set				\
 					thread				\
 					task				\
-					time				
+					time
 
 # kaneton objects
 
@@ -58,12 +58,12 @@ KANETON_O		:=		$(_AS_LO_)			\
 					$(_MAP_LO_)			\
 					$(_MESSAGE_LO_)			\
 					$(_REGION_LO_)			\
-					$(_SCHED_LO_)			\
+					$(_SCHEDULER_LO_)		\
 					$(_SEGMENT_LO_)			\
 					$(_SET_LO_)			\
 					$(_THREAD_LO_)			\
 					$(_TASK_LO_)			\
-					$(_TIME_LO_)			
+					$(_TIME_LO_)
 
 # core component
 

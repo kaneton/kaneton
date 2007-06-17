@@ -45,7 +45,7 @@ extern t_init*		init;
  * XXX
  */
 
-extern m_sched*		sched;
+extern m_scheduler*	scheduler;
 
 /*
  * the identifier of the pre-reserved segment containing the mod service
@@ -85,14 +85,14 @@ t_error			task_current(i_task*			tsk)
 
   TASK_ENTER(task);
 
-  if (!sched)
+  if (!scheduler)
     {
       *tsk = ktask;
 
       TASK_LEAVE(task, ERROR_NONE);
     }
 
-  if (sched_current(&current) != ERROR_NONE)
+  if (scheduler_current(&current) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   if (thread_get(current, &o) != ERROR_NONE)
@@ -119,10 +119,10 @@ t_error			task_show(i_task			id)
 
   switch (o->sched)
     {
-      case SCHED_STATE_STOP:
+      case SCHEDULER_STATE_STOP:
 	state = "stopped";
 	break;
-      case SCHED_STATE_RUN:
+      case SCHEDULER_STATE_RUN:
 	state = "running";
 	break;
       default:
@@ -356,7 +356,7 @@ t_error			task_reserve(t_class			class,
   else
     o.cpuid = init->bsp;
 
-  o.sched = SCHED_STATE_STOP;
+  o.sched = SCHEDULER_STATE_STOP;
 
   /*
    * 3)
@@ -634,7 +634,7 @@ t_error			task_priority(i_task			id,
 	  TASK_LEAVE(task, ERROR_UNKNOWN);
 	}
 
-      if (sched_update(*th) != ERROR_NONE)
+      if (scheduler_update(*th) != ERROR_NONE)
 	TASK_LEAVE(task, ERROR_UNKNOWN);
     }
 
@@ -669,16 +669,16 @@ t_error			task_state(i_task			id,
 
   switch(sched)
     {
-      case SCHED_STATE_RUN:
+      case SCHEDULER_STATE_RUN:
         wakeup = WAIT_START;
         break;
-      case SCHED_STATE_STOP:
+      case SCHEDULER_STATE_STOP:
         wakeup = WAIT_STOP;
         break;
-      case SCHED_STATE_ZOMBIE:
+      case SCHEDULER_STATE_ZOMBIE:
         wakeup = WAIT_DEATH;
         break;
-      case SCHED_STATE_BLOCK:
+      case SCHEDULER_STATE_BLOCK:
 	wakeup = 0;
 	break;
       default:
@@ -718,7 +718,7 @@ t_error			task_state(i_task			id,
 	}
 
       if (w->opts & wakeup)
-	task_state(w->u.task, SCHED_STATE_RUN);
+	task_state(w->u.task, SCHEDULER_STATE_RUN);
 
       /* XXX remove */
     }
@@ -746,7 +746,7 @@ t_error			task_state(i_task			id,
 	  TASK_LEAVE(task, ERROR_UNKNOWN);
 	}
 
-      if (sched != SCHED_STATE_BLOCK &&
+      if (sched != SCHEDULER_STATE_BLOCK &&
 	  thread_state(*th, sched) != ERROR_NONE)
 	TASK_LEAVE(task, ERROR_UNKNOWN);
     }
@@ -786,13 +786,13 @@ t_error			task_wait(i_task			id,
        * b)
        */
 
-      if ((opts & WAIT_START) && o->sched == SCHED_STATE_RUN)
+      if ((opts & WAIT_START) && o->sched == SCHEDULER_STATE_RUN)
 	TASK_LEAVE(task, ERROR_NONE);
 
-      if ((opts & WAIT_STOP) && o->sched == SCHED_STATE_STOP)
+      if ((opts & WAIT_STOP) && o->sched == SCHEDULER_STATE_STOP)
 	TASK_LEAVE(task, ERROR_NONE);
 
-      if ((opts & WAIT_DEATH) && o->sched == SCHED_STATE_ZOMBIE)
+      if ((opts & WAIT_DEATH) && o->sched == SCHEDULER_STATE_ZOMBIE)
 	TASK_LEAVE(task, ERROR_NONE);
 
       /*
@@ -817,7 +817,7 @@ t_error			task_wait(i_task			id,
 	   * e)
 	   */
 
-	  if (task_state(w.u.task, SCHED_STATE_STOP) != ERROR_NONE)
+	  if (task_state(w.u.task, SCHEDULER_STATE_STOP) != ERROR_NONE)
 	    TASK_LEAVE(task, ERROR_UNKNOWN);
 	}
     }

@@ -84,7 +84,7 @@ static void		ia32_syscalls_sync_send_handler(void)
 
   task_current(&source);
 
-  sched_current(&syscall);
+  scheduler_current(&syscall);
 
   u.dword[0] = context->eax;
   u.dword[1] = context->ebx;
@@ -96,7 +96,7 @@ static void		ia32_syscalls_sync_send_handler(void)
 
   ret = message_sync_send(source, u.node, tag, ptr, size);
 
-  sched_current(&upcall);
+  scheduler_current(&upcall);
 
   if (syscall == upcall)
     context->eax = ret;
@@ -133,7 +133,7 @@ static void		ia32_syscalls_sync_recv_handler(void)
 
   task_current(&source);
 
-  sched_current(&syscall);
+  scheduler_current(&syscall);
 
   tag = context->eax;
   ptr = context->ebx;
@@ -142,7 +142,7 @@ static void		ia32_syscalls_sync_recv_handler(void)
 
   ret = message_sync_recv(source, tag, ptr, size, blocking);
 
-  sched_current(&upcall);
+  scheduler_current(&upcall);
 
   if (syscall == upcall)
     context->eax = ret;

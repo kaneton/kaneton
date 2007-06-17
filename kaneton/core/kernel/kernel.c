@@ -234,7 +234,7 @@ void			kernel_init(void)
 
   cons_msg('+', "starting scheduler manager\n");
 
-  if (sched_init() != ERROR_NONE)
+  if (scheduler_init() != ERROR_NONE)
     core_error("cannot initialise the scheduler manager\n");
 }
 
@@ -244,7 +244,7 @@ void			kernel_init(void)
 
 void			kernel_clean(void)
 {
-  sched_clean();
+  scheduler_clean();
 
 /*								    [cut] k1 */
 

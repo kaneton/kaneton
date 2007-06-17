@@ -8,7 +8,7 @@
  * file          /home/buckman/kan.../machine/glue/ibm-pc.ia32/include/glue.h
  *
  * created       julien quintard   [mon jun 11 05:57:15 2007]
- * updated       matthieu bucchianeri   [sat jun 16 17:35:13 2007]
+ * updated       matthieu bucchianeri   [sun jun 17 21:51:56 2007]
  */
 
 #ifndef GLUE_GLUE_H
@@ -45,7 +45,7 @@
 #include <glue/io.h>
 #include <glue/message.h>
 #include <glue/region.h>
-#include <glue/sched.h>
+#include <glue/scheduler.h>
 #include <glue/segment.h>
 #include <glue/task.h>
 #include <glue/thread.h>

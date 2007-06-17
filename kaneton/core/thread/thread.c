@@ -334,7 +334,7 @@ t_error			thread_reserve(i_task			taskid,
   o.threadid = *threadid;
   o.taskid = taskid;
   o.prior = prior;
-  o.sched = SCHED_STATE_STOP;
+  o.sched = SCHEDULER_STATE_STOP;
   o.waits = ID_UNUSED; // XXX
 
   /*
@@ -496,8 +496,8 @@ t_error			thread_priority(i_thread		threadid,
    * 5)
    */
 
-  if (o->sched == SCHED_STATE_RUN)
-    if (sched_update(threadid) != ERROR_NONE)
+  if (o->sched == SCHEDULER_STATE_RUN)
+    if (scheduler_update(threadid) != ERROR_NONE)
       THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -532,16 +532,16 @@ t_error			thread_state(i_thread			threadid,
 
   switch(sched)
     {
-      case SCHED_STATE_RUN:
+      case SCHEDULER_STATE_RUN:
 	wakeup = WAIT_START;
 	break;
-      case SCHED_STATE_STOP:
+      case SCHEDULER_STATE_STOP:
 	wakeup = WAIT_STOP;
 	break;
-      case SCHED_STATE_ZOMBIE:
+      case SCHEDULER_STATE_ZOMBIE:
 	wakeup = WAIT_DEATH;
 	break;
-      case SCHED_STATE_BLOCK:
+      case SCHEDULER_STATE_BLOCK:
 	wakeup = 0;
 	break;
       default:
@@ -581,7 +581,7 @@ t_error			thread_state(i_thread			threadid,
 	}
 
       if (w->opts & wakeup)
-	thread_state(w->u.thread, SCHED_STATE_RUN);
+	thread_state(w->u.thread, SCHEDULER_STATE_RUN);
     }
 */
   /*
@@ -597,24 +597,24 @@ t_error			thread_state(i_thread			threadid,
 
   switch(sched)
     {
-      case SCHED_STATE_RUN:
-	if (sched_add(threadid) != ERROR_NONE)
+      case SCHEDULER_STATE_RUN:
+	if (scheduler_add(threadid) != ERROR_NONE)
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;
-      case SCHED_STATE_STOP:
-	if (sched_remove(threadid) != ERROR_NONE)
+      case SCHEDULER_STATE_STOP:
+	if (scheduler_remove(threadid) != ERROR_NONE)
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;
-      case SCHED_STATE_ZOMBIE:
+      case SCHEDULER_STATE_ZOMBIE:
 	/* XXX */
 	break;
-      case SCHED_STATE_BLOCK:
-	if (sched_remove(threadid) != ERROR_NONE)
+      case SCHEDULER_STATE_BLOCK:
+	if (scheduler_remove(threadid) != ERROR_NONE)
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;
     }
 
-//  printf("thread %qd is %s\n", threadid, sched == SCHED_STATE_STOP ? "stopping" : "starting");
+//  printf("thread %qd is %s\n", threadid, sched == SCHEDULER_STATE_STOP ? "stopping" : "starting");
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }

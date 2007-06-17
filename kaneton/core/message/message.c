@@ -346,7 +346,7 @@ t_error			message_sync_send(i_task	sender,
      * 3)
      */
 
-    if (sched_current(&thread) != ERROR_NONE)
+    if (scheduler_current(&thread) != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
     send_waiter.thread = thread;
@@ -357,7 +357,7 @@ t_error			message_sync_send(i_task	sender,
     if (set_push(msgbox->senders, &send_waiter) != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
-    if (thread_state(thread, SCHED_STATE_BLOCK) != ERROR_NONE)
+    if (thread_state(thread, SCHEDULER_STATE_BLOCK) != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
     MESSAGE_LEAVE(message, ERROR_NONE);
@@ -408,7 +408,7 @@ copied:
         != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
-  if (thread_state(receiver->thread, SCHED_STATE_RUN) != ERROR_NONE)
+  if (thread_state(receiver->thread, SCHEDULER_STATE_RUN) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   MESSAGE_LEAVE(message, ERROR_NONE);
@@ -466,7 +466,7 @@ t_error			message_sync_recv(i_task	taskid,
      * 3)
      */
 
-    if (sched_current(&thread) != ERROR_NONE)
+    if (scheduler_current(&thread) != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
     recv_waiter.thread = thread;
@@ -477,7 +477,7 @@ t_error			message_sync_recv(i_task	taskid,
     if (set_push(msgbox->receivers, &recv_waiter) != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
-    if (thread_state(thread, SCHED_STATE_BLOCK) != ERROR_NONE)
+    if (thread_state(thread, SCHEDULER_STATE_BLOCK) != ERROR_NONE)
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
     MESSAGE_LEAVE(message, ERROR_NONE);
@@ -526,7 +526,7 @@ copied:
         != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
-  if (thread_state(sender->thread, SCHED_STATE_RUN) != ERROR_NONE)
+  if (thread_state(sender->thread, SCHEDULER_STATE_RUN) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   MESSAGE_LEAVE(message, ERROR_NONE);
@@ -582,7 +582,7 @@ t_error			message_test(void)
 
   MESSAGE_ENTER(message);
 
-  sched_dump();
+  scheduler_dump();
 
   while (1)
     {

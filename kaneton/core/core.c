@@ -297,7 +297,7 @@ t_error			kaneton_launch(void)
   if (thread_load(thread, ctx) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  if (task_state(task, SCHED_STATE_RUN) != ERROR_NONE)
+  if (task_state(task, SCHEDULER_STATE_RUN) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);

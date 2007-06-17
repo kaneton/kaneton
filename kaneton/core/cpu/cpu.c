@@ -225,8 +225,8 @@ t_error			cpu_migrate(i_task			tskid,
    */
 
   old_state = o->sched;
-  if (o->sched == SCHED_STATE_RUN)
-    if (task_state(tskid, SCHED_STATE_STOP) != ERROR_NONE)
+  if (o->sched == SCHEDULER_STATE_RUN)
+    if (task_state(tskid, SCHEDULER_STATE_STOP) != ERROR_NONE)
       CPU_LEAVE(cpu, ERROR_UNKNOWN);
 
   /*
@@ -247,8 +247,8 @@ t_error			cpu_migrate(i_task			tskid,
    * 4)
    */
 
-  if (old_state == SCHED_STATE_RUN)
-    if (task_state(tskid, SCHED_STATE_RUN) != ERROR_NONE)
+  if (old_state == SCHEDULER_STATE_RUN)
+    if (task_state(tskid, SCHEDULER_STATE_RUN) != ERROR_NONE)
       CPU_LEAVE(cpu, ERROR_UNKNOWN);
 
   CPU_LEAVE(cpu, ERROR_NONE);
@@ -447,7 +447,7 @@ void smp_test(void)
   int		i;
 
   // XXX to move
-  if (event_reserve(48, EVENT_FUNCTION, EVENT_HANDLER(sched_switch))
+  if (event_reserve(48, EVENT_FUNCTION, EVENT_HANDLER(scheduler_switch))
       != ERROR_NONE)
     return ERROR_UNKNOWN;
 
@@ -477,7 +477,7 @@ void smp_test(void)
       if (i == 3)
 	mk_thread(tsk, cpu4);
 
-      if (task_state(tsk, SCHED_STATE_RUN) != ERROR_NONE)
+      if (task_state(tsk, SCHEDULER_STATE_RUN) != ERROR_NONE)
 	{
 	  cons_msg('!', "cannot start !\n");
 
