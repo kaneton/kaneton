@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kan...machine/architecture/ultrasparc/Makefile
+# file          /home/mycure/kane...machine/architecture/ultrasparc/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       matthieu bucchianeri   [sun jun 17 19:56:10 2007]
+# updated       julien quintard   [fri jun 22 00:09:44 2007]
 #
 
 #
@@ -27,12 +27,12 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-ARCHITECTURE_LOW_C	:=	tlb.c				\
+ARCHITECTURE_LOW_C	:=	tlb.c					\
 				tick.c
 
 ARCHITECTURE_HI_C	:=	virtual.c
 
-ARCHITECTURE_C		:=	$(ARCHITECTURE_LOW_C)		\
+ARCHITECTURE_C		:=	$(ARCHITECTURE_LOW_C)			\
 				$(ARCHITECTURE_HI_C)
 
 ARCHITECTURE_O		:=	$(ARCHITECTURE_C:.c=.o)

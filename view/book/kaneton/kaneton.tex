@@ -8,7 +8,11 @@
 % file          /home/mycure/kaneton/view/book/kaneton/kaneton.tex
 %
 % created       julien quintard   [mon may 14 19:56:45 2007]
-% updated       julien quintard   [fri jun  1 15:02:48 2007]
+% updated       julien quintard   [tue jun 19 22:10:47 2007]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
 %
 
 %
@@ -59,11 +63,16 @@
 % --------- text --------------------------------------------------------------
 %
 
-This document describes the kaneton microkernel research project.
+This document describes the kaneton microkernel research project design
+and implementation.
+
+\-
 
 This document should be used by every student willing implement the
-kaneton microkernel as well as by people looking for more details on the
-kaneton microkernel design and implementation.
+kaneton educational microkernel as well as by people looking for more
+details on the kaneton microkernel design and implementation.
+
+\-
 
 All the kaneton documents are available on
 the official website
@@ -73,20 +82,20 @@ the official website
 % toc
 %
 
-\tableofcontents
+\toc
 
 %
 % chapters
 %
 
-\input{goals}
-\input{history}
-\input{overview}
-\input{portability}
-% core
-\input{architectures}
-\input{licenses}
-\input{bibliography}
+\input{introduction.tex}
+\input{prerequisites.tex}
+\input{design.tex} %avec terminology dedans ou peut etre pas!
+\input{terminology.tex}
+% \input{boot.tex}
+\input{portability.tex}
+\input{references.tex}
+\input{licenses.tex}
 
 \end{document}
 
@@ -94,8 +103,14 @@ the official website
 
 overview: kernel = arch + generic :: data-struct + proc
 
+expliquer ca dans overview pour introduire les sets!
+
 --
 
 bouger les figures dans view/figures
 XXX dans book::kaneton, archi supportees, core, glue, machdep system, syscall
     interface, dans book::core, un fichier par manager.
+
+--
+
+expliquer t_init dand book:kaneton et ensute l'implem dans arch:XXX

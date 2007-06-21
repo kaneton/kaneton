@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/configure.tex
 %
 % created       julien quintard   [tue may 22 22:34:37 2007]
-% updated       julien quintard   [sun jun  3 16:30:53 2007]
+% updated       julien quintard   [wed jun 13 22:04:06 2007]
 %
 
 %
@@ -36,7 +36,8 @@ environment but rather by the \textit{configure} tool.
 
 The \textit{configure/} directory is composed of \textit{frame} files
 which contain frame descriptions. A frame can be seen as a menu presented
-to the final user. A frame is composed of sub-frame and variable entries.
+to the final user. A frame is composed of meta-data but also sub-frame and
+variable entries.
 
 The \textit{configure} tool works as follow. It starts by processing the
 environment development configuration files as the environment engine did
@@ -58,7 +59,7 @@ Every modifications of the development environment are private to the actual
 user. Therefore, any variable modification adds or modifies an entry in the
 related \textit{user} profile's configuration file.
 
-Note that the \textit{configure} tool is not a environment configuration
+Note that the \textit{configure} tool is not an environment configuration
 files editor. Indeed, this tool targets final users and therefore tries to
 be as simple as possible.
 
@@ -86,14 +87,14 @@ Let us suppose the user enters the following value instead of the current
 one: \verb|initial addon|
 
 \begin{verbatim}
-  _FOO_                         =                       initial new
+  _FOO_                         =                       something new
 \end{verbatim}
 
 Then, the \textit{configure} tool creates a new entry into the \textit{user}
 profile configuration file:
 
 \begin{verbatim}
-  _FOO_                         =                       initial new
+  _FOO_                         =                       something new
 \end{verbatim}
 
 Finally, note that when the \textit{configure} tool is launched, it first

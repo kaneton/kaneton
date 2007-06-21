@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/asm.tex
 %
 % created       julien quintard   [sat jun  2 11:08:30 2007]
-% updated       julien quintard   [sun jun  3 16:32:01 2007]
+% updated       julien quintard   [thu jun 14 21:56:04 2007]
 %
 
 %
@@ -21,6 +21,12 @@
 The \textit{Assembly} language is used in kaneton to perform tasks which
 cannot be done in \textit{C}. Therefore, the amount of \textit{Assembly}
 code is relatively small compared to the \textit{C} one.
+
+%
+% inline assembly
+%
+
+\subsection{Inline Assembly}
 
 First of all, inline \textit{Assembly} is recommended as it avoids multiple
 files and calls to \textit{Assembly} routines.
@@ -42,6 +48,22 @@ Note that rules implied by the \textit{C} language must be respected when
 dealing with inline \textit{Assembly} as these pieces of code are integrated
 in \textit{C} functions.
 
+%
+% naming
+%
+
+\subsection{Naming}
+
+Bunches of coherent routines must be preceded by a comment, starting with
+the name of the routine in upper case letters, and followed by a description
+of the routines, in lower-case letters.
+
+%
+% layout
+%
+
+\subsection{Layout}
+
 An \textit{Assembly} file must be composed of sections:
 
 \begin{itemize}
@@ -56,10 +78,6 @@ An \textit{Assembly} file must be composed of sections:
   \item
     \textbf{data}: this section contains the data definitions.
 \end{itemize}
-
-Bunches of coherent routines must be preceded by a comment, starting with
-the name of the routine in upper case letters, and followed by a description
-of the routines, in lower case letters.
 
 Below is an example:
 

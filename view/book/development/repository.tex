@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/repository.tex
 %
 % created       julien quintard   [thu may 24 20:43:26 2007]
-% updated       julien quintard   [sat jun  2 12:30:06 2007]
+% updated       julien quintard   [wed jun 13 22:32:31 2007]
 %
 
 %
@@ -20,7 +20,7 @@
 
 The repository contains everything related to the kaneton microkernel
 project, in other words, the kaneton source tree described in
-\textit{Chapter \ref{chapter:source-tree}}. Indeed, the repository contains
+\textit{Chapter \ref{chapter:source tree}}. Indeed, the repository contains
 the whole history of the kaneton project including the documentation, the
 source code but also the students tarballs over the years.
 
@@ -41,13 +41,13 @@ following address:
 
 Note that the security is achieved by the use of \textit{SSH} keys. Therefore,
 any new contributor should get in touch with an administrator of the
-kaneton server in order to obtain an access. Also note that, even if this is
-not the case yet, a test period could be set up for any new contributor
-to get the trust of the kaneton community. For more information, please
-refer to \textit{Chapter \ref{chapter:community}}.
+kaneton server in order to obtain an access. Also note that, a test period
+could be set up for a new contributor to get the trust of the kaneton
+community. For more information, please refer to \textit{Chapter
+\ref{chapter:community}}.
 
 A contributor willing to create a \textit{SSH} key shoud simply use this
-command:
+\textit{Unix} command:
 
 \begin{verbatim}
   $> ssh-keygen -t dsa
@@ -77,14 +77,11 @@ implied by the commit. These logs must conform to the following syntax.
 
 \begin{verbatim}
   [kaneton/core/segment/]
-    1) the bug about the permissions was corrected in segment_clone().
-    2) an algorithm based on a b-tree was added.
+    o the bug about the permissions was corrected in segment_clone().
+    o an algorithm based on a b-tree was added.
 
   [environment/profile/user/julien.quintard/]
-    1) some personal configurations were modified.
-
-  [/]
-    1) the shebangs were removed from the script files.
+    o some personal configurations were modified.
 \end{verbatim}
 
 Following this syntax is very important as an email is sent to the
@@ -100,5 +97,5 @@ Indeed, the kaneton development environment knows which interpreter to
 use for every type of file. It is therefore a non-sense to introduce a
 hard-coded path to an interpreter.
 
-Tarball file names must be extended with \textit{.tar} while \textit{gzip}
-compressed tarballs must be extended with \textit{.tar.gz}.
+Tarball file names must be extended with \textit{.tar} while \textit{bzip2}
+compressed tarballs must be extended with \textit{.tar.bz2}.

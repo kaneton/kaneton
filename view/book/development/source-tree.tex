@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/source-tree.tex
 %
 % created       julien quintard   [thu may 17 22:41:36 2007]
-% updated       julien quintard   [mon jun 11 19:20:41 2007]
+% updated       julien quintard   [thu jun 14 09:15:32 2007]
 %
 
 %
@@ -31,6 +31,7 @@ The kaneton microkernel reference source tree looks like the following
 listing:
 
 \begin{verbatim}
+boot/
 cheat/
 configure/
 environment/
@@ -44,6 +45,20 @@ tool/
 transcript/
 view/
 \end{verbatim}
+
+%
+% boot/
+%
+
+\subsection*{boot/}
+
+The \textit{boot/} directory contains the component related to the kaneton
+boot process including the \textit{bootstrap} and especially the
+\textit{bootloader}.
+
+The bootstrap is kept for the kaneton educational project while the bootloader
+is actually used for setting up the execution context before launching
+the kaneton microkernel.
 
 %
 % cheat/

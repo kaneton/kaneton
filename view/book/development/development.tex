@@ -8,7 +8,11 @@
 % file          /home/mycure/kaneton/view/book/development/development.tex
 %
 % created       julien quintard   [mon may 14 19:56:45 2007]
-% updated       julien quintard   [mon jun  4 00:30:27 2007]
+% updated       julien quintard   [fri jun 15 11:51:17 2007]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
 %
 
 %
@@ -60,12 +64,17 @@
 %
 
 This document describes how people can contribute to the kaneton microkernel
-project and the rules they have to follow. This document must be read by
-everyone contributing to the kaneton microkernel reference implementation.
+project and the rules they have to follow.
+
+\-
+
+This document must be read by everyone contributing to the kaneton
+microkernel reference implementation.
+
+\-
 
 All the kaneton documents are available on
-the official website
-  \footnote{http://www.kaneton.org}.
+  the official website\footnote{http://www.kaneton.org}.
 
 %
 % toc
@@ -78,6 +87,7 @@ the official website
 %
 
 \input{introduction.tex}
+\input{history}
 \input{source-tree.tex}
 \input{community.tex}
 \input{rules.tex}
@@ -85,7 +95,6 @@ the official website
 \input{languages.tex}
 \input{people.tex}
 \input{licenses.tex}
-\input{conclusion.tex}
 
 \end{document}
 
@@ -96,25 +105,5 @@ the official website
 --
 
 systeme de redefinition de Makefiles entiers: environment + make
-
---
-
-forward declarations dans les headers de kaneton: c -> kaneton
-
---
-
-variables representant plusieurs entites on met un s a la fin
-
---
-
-pointeur sur fonction: f_
-
-s_ pour les struct car finalement on l'utilise
-
---
-
-expliquer le probleme des inclusions avec cpp et donc qu'il faut
-declarer tout ce qui peut etre utiliser par d'autres headers avant
-les inclusions de dependances
 
 --

@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/python.tex
 %
 % created       julien quintard   [sat jun  2 13:06:42 2007]
-% updated       julien quintard   [sat jun  2 13:06:49 2007]
+% updated       julien quintard   [thu jun 14 21:52:16 2007]
 %
 
 %
@@ -16,39 +16,166 @@
 %
 
 \section{Python}
+\label{section:python}
 
-XXX
+The \textit{Python} language is the other language for which the kaneton
+development environment provides an interface for performing task in
+a portable way.
 
--- XXX
-The rules which apply to the kaneton documents are listed below.
+Historically, kaneton scripts were written in \textit{Shell} but scripts
+are pretty hard to write, especially when dealing with file modification.
+Even if \textit{sed}, \textit{awk} etc. tools are very powerful, this
+is not a good solution for many reasons. Therefore, the scripts were
+re-written in \textit{Python} whilst a \textit{Python} development environment
+interface was written.
+
+%
+% naming
+%
+
+\subsection{Naming}
+
+File names but also function names must be expressed in lower-case letters
+and a dash must be used for composite names.
+
+Comments must also be written in lower-case letters.
+
+Global variable names, which are often used in \textit{Python}, must be
+prefixed by \textit{g\_}.
+
+As usual, names must be expressed in a single word as long as this is possible.
+Moreover, the shortcut prefixes and suffixes recommended for the \textit{C}
+language also stand for \textit{Python}. For more information, take a look
+at the \textit{Section \ref{section:c}}.
+
+% environment
+
+\subsection{Environment}
+
+Every \textit{Python} file must rely on the development environment as it
+provides a way for performing operations in a very simple and portable way.
+
+Therefore, each \textit{Python} must start by including the configured
+\textit{Python} environment module located in the \textit{environment/}
+directory under the name: \textit{env.py}.
+
+Also, since operations are provided by the development environment, note
+that \textit{Python} scripts must not perform operations relying on the
+\textit{sys} and/or \textit{os} modules. Others modules like \textit{re},
+\textit{yaml} etc. are allowed. Moreover, the \textit{sys} module is
+sometimes used - badly. If you do not know whether the usage of a module
+is allowed, please ask your supervisor or directly the kaneton community
+through the mailing-list for instance.
+
+%
+% layout
+%
+
+\subsection{Layout}
+
+The \textit{Python} files must be divided into sections. Below are listed
+the most common sections developers should use.
 
 \begin{itemize}
   \item
-    Each document must define where it is located from the \textit{view/}
-    directory so that every included file can retrieve things at their exact
-    location.
-
-    The \textit{$\backslash$path} must thus be defined before any other
-    \textit{\LaTeX} command and especially before including the template
-    file.
+    \textbf{header}: this section contains the well-known informations about
+    the file: dates, author, license etc.
+  \item
+    \textbf{information}: this section describes what the \textit{Pyhton}
+    do or provide if it is a package.
+  \item
+    \textbf{imports}: this section contains the module imports.
 
     \begin{verbatim}
-      %
-      % path
-      %
+      #
+      # ---------- imports ----------------------------------------------------
+      #
 
-      \def\path{../..}
+      import env
+
+      import sys
+      import re
     \end{verbatim}
   \item
-    Each document must also use a kaneton template by including the
-    appropriate file, as show below for a \textit{paper} document.
+    \textbf{globals}: this section contains the global variable declarations.
 
     \begin{verbatim}
-      %
-      % template
-      %
+      #
+      # ---------- globals ----------------------------------------------------
+      #
 
-      \input{\path/template/paper.tex}
+      g_directories = (`book',
+                       `curriculum',
+                       `exam',
+                       `feedback',
+                       `internship',
+                       `lecture',
+                       `paper')
+      g_store = []
+      g_document = None
+      g_path = None
+    \end{verbatim}
+  \item
+    \textbf{functions}: this section contains the actual \textit{Python}
+    functions.
+  \item
+    \textbf{entry point}: this section contains the real entry point.
+
+    This section was introduced in order to localise the script's entry
+    point more easily. Note that this section is generally located at
+    the end of the script.
+
+    \begin{verbatim}
+      #
+      # ---------- entry point ------------------------------------------------
+      #
+
+      if __name__ == `__main__':
+        main()
     \end{verbatim}
 \end{itemize}
---
+
+%
+% style
+%
+
+\subsection{Style}
+
+Every function must be preceded by a comment. This comment plays the role
+of visual separator but it also describes what the function does.
+
+This comment first contains the name of the function with two parentheses.
+Then follows an empty comment line and the function description.
+
+\begin{verbatim}
+  #
+  # usage()
+  #
+  # this function prints the documents names.
+  #
+  def                     usage():
+    location = None
+    store = None
+
+    env.display(env.HEADER_ERROR, ``usage: view.py [document]'',
+                env.OPTION_NONE)
+
+    env.display(env.HEADER_NONE, ``'', env.OPTION_NONE)
+
+    env.display(env.HEADER_ERROR, ``documents:'', env.OPTION_NONE)
+
+    for store in g_store:
+      for location in store:
+        env.display(env.HEADER_ERROR, ``  `` + location, env.OPTION_NONE)
+\end{verbatim}
+
+The identation used in \textit{Python} script must be fixed at \textit{2}
+whitespaces. This is a common kaneton rule which allows files to be
+readable while respecting the limitation about the \textit{80} characters
+in width.
+
+Finally, note, that in \textit{Python}, variables do not need to be declared
+before being actually used. However, kaneton people believe this lead
+to unreadable code as well as to common hard-to-find bugs. For this reason,
+every variable must be declared at the beginning of the function. Finally,
+these variable should also be initialised.

@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/make.tex
 %
 % created       julien quintard   [sat jun  2 12:34:28 2007]
-% updated       julien quintard   [tue jun 12 04:25:11 2007]
+% updated       julien quintard   [thu jun 14 21:48:18 2007]
 %
 
 %
@@ -24,10 +24,31 @@ The coding style related to \textit{Make} files is very simple.
 
 \subsection{Naming}
 
-First, \textit{Make} files must be named \textbf{Makefile}, with the first
+First, \textit{Make} files must be named \textbf{Make} file, with the first
 letter in upper case letter.
 
-Rules must be named with a single word in lower case letters.
+Rules must be named with a single word in lower-case letters while variables
+must be named in upper-case letters.
+
+% environment
+
+\subsection{Environment}
+
+Every \textit{Make} file must rely on the development environment as it
+provides a way for performing operations in a very simple and portable way.
+
+Therefore, each \textit{Make} file must start by including the configured
+\textit{Make} environment file located in the \textit{environment/} directory
+under the name: \textit{env.mk}.
+
+Note that the configured environment \textit{Make} file provides a hidden
+rule named \textit{\_}. This rule name is therefore reserved. This rule is
+triggered every time a \textit{Make} file is called without specifying
+a rule name. This rule aims at verifying the configured environment is
+up-to-date. If not, the rule regenerates it. Finally, this rule calls the
+\textit{main} rule to perform the main work of the \textit{Make} file.
+
+Therefore, every \textit{Make} file has to provide a \textit{main} rule.
 
 % layout
 
@@ -67,7 +88,7 @@ Rules must be named with a single word in lower case letters.
       # ---------- directives -------------------------------------------------
       #
 
-      .PHONY:         libs clear proto dep
+      .PHONY:         clear prototypes headers dependencies
     \end{verbatim}
   \item
     \textbf{variables}: this section contains the variable definitions.
@@ -102,24 +123,24 @@ Rules must be named with a single word in lower case letters.
       #
 
       $(LIBSTRING_LO):        $(LIBSTRING_O)
-              $(call remove,$(LIBSTRING_LO),)
+              $(call env_remove,$(LIBSTRING_LO),)
 
-              $(call archive,$(LIBSTRING_LO),$(LIBSTRING_O),)
+              $(call env_archive,$(LIBSTRING_LO),$(LIBSTRING_O),)
 
       clear:
-              $(call remove,$(LIBSTRING_O),)
+              $(call env_remove,$(LIBSTRING_O),)
 
-              $(call remove,$(LIBSTRING_LO),)
+              $(call env_remove,$(LIBSTRING_LO),)
 
-              $(call purge,)
+              $(call env_purge,)
 
-      proto:
-              $(call prototypes,$(LIBSTRING_INCLUDE),)
+      prototypes:
+              $(call env_prototypes,$(LIBSTRING_INCLUDE),)
 
       headers:
-              $(call remove,$(_DEPENDENCY_MK_),)
+              $(call env_remove,$(_DEPENDENCY_MK_),)
 
-              $(call dependencies,$(LIBSTRING_C),$(_DEPENDENCY_MK_),)
+              $(call env_headers,$(LIBSTRING_C),)
     \end{verbatim}
 \end{itemize}
 
@@ -132,15 +153,12 @@ interface allowing \textit{Make} files to perform operations in a portable
 way. Thus, \textit{Make} files must not contain any operations specific
 to any operating system.
 
-In fact, every operation should be a call to one of the \textit{Make} functions
+As such, every operation should be a call to one of the \textit{Make} functions
 provided by the kaneton development environment interface.
 
-Variables must be expressed in upper case letters while rules must be in a
-single lower case letters word.
-
-Any contributor writing a Makefile should take care of properly cleaning
-the directory from temporary files. Indeed, every \textit{Make} file
-provides a \textit{clear} rule which is intended to clean these temporary
+Any contributor writing a \textit{Make} file should take care of properly
+cleaning the directory from temporary files. Indeed, every \textit{Make} file
+provides a \textit{clear} rule which is intended to remove these temporary
 files. Therefore, every developer should take care of that and verify every
 file was cleaned before committing.
 
@@ -152,10 +170,10 @@ prototypes generation, please refer to \textit{Section
 \ref{section:prototypes}}.
 
 One of the other important rules is called \textit{headers} and generated
-a file containing all the dependencies related to a set of \textit{C}
-source files. This generated file must be included in the \textit{Make}
-so that it can use it. A \textit{Make} file inclusion is present at the
-end of many \textit{Make} files for this purpose:
+a file containing all the header file dependencies related to a set of
+\textit{C} source files. This generated file must be included in the
+\textit{Make} so that it can use it. A \textit{Make} file inclusion is
+present at the end of many \textit{Make} files for this purpose:
 
 \begin{verbatim}
   #
@@ -165,12 +183,11 @@ end of many \textit{Make} files for this purpose:
   -include                ./$(_DEPENDENCY_MK_)
 \end{verbatim}
 
-Finally, \textit{Make} files must resolve dependencies before performing
-any other task. Therefore, a rule named \textit{dependencies} launches
-every \textit{Make} file in charge of one of the dependency. Note that this
-\textit{dependencies} rule is automatically launched when you try to
-build a component.
+Additionally, \textit{Make} files must resolve dependencies before performing
+any other task. Therefore, the rule name \textit{dependencies} is reserved
+for this purpose by launching every \textit{Make} file in charge of one of
+the dependency.
 
-
-XXX dans Make: la regle dependencies doit etre utilisee opur les dependences
-XXX main: obligatoire et \_ reserve
+Finally, recall that a \textit{main} rule must be provided by every
+\textit{Make} file since this rule is called everytime the \textit{Make}
+file is launch without rule name argument.

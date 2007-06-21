@@ -29,12 +29,13 @@ include			../../../environment/env.mk
 
 PAPER			:=		kaneton
 
-SOURCES			:=		bibliography.tex		\
-					goals.tex			\
-					history.tex			\
-					kaneton.tex			\
+SOURCES			:=		kaneton.tex			\
+					introduction.tex		\
 					licenses.tex			\
-					portability.tex			
+					portability.tex			\
+					prerequisites.tex		\
+					references.tex			\
+					terminology.tex			
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\

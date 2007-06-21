@@ -413,7 +413,8 @@ pour la gestion de reconfiguration des Makefiles on peut juste faire ca:
 
   component = kaneton | bootstrap | bootloader | libc
 
-et compile-c s'adapte en rajoutant des options...
+et compile-c s'adapte en rajoutant des options... genre si ca passe dans
+core -> libc -> libstring on aura simplement: component = core:libc
 
 dans configure/critical.py checker si env.py est accessible, si non et
 que variables OK alors demander de faire make!
@@ -426,3 +427,14 @@ preciser que les adresses de segment, region etc.. ne sont pas alignees.
 par contre l'archi peut refuser un appel de fonction car une adresse
 n'est pas alignee et que ca ne colle pas avec ce qu'elle veut. une autre
 solution est de corriger l'adresse en fonction de l'archi
+
+--
+
+modifier le header.el pour que ca coupe et vire le /home/mycure/kaneton
+
+l'idee serait de partir de la fin mais probleme avec kaneton/kaneton :(
+
+--
+
+changer dans task.h les types CORE en KERNEL car core designe la partie
+independante.

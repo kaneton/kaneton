@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/c.tex
 %
 % created       julien quintard   [fri may 25 20:24:38 2007]
-% updated       julien quintard   [tue jun 12 04:25:00 2007]
+% updated       julien quintard   [thu jun 14 14:47:37 2007]
 %
 
 %
@@ -74,6 +74,13 @@ without a loss of meaning. The following rules must be used in this way:
       int                               modsz;
     \end{verbatim}
   \item
+    The \textbf{s} suffix must be used for representing mutiple entities:
+
+    \begin{verbatim}
+      int                               threads;
+      t_uint64                          sets;
+    \end{verbatim}
+  \item
     The \textbf{n} prefix must be used for variables representing a number:
 
     \begin{verbatim}
@@ -129,7 +136,7 @@ Finally, names must be expressed in English, without spelling mistakes.
 \subsubsection{Capitalization}
 
 Entities including variables, functions, types, structures, enumerations,
-unions etc. must be expressed using lower case letters, digits and underscores
+unions etc. must be expressed using lower-case letters, digits and underscores
 only. More precisely, entity names must be matched by the following
 regular expression:
 
@@ -157,7 +164,7 @@ latter ones are statically computed.
     set_reserve_##_type_(_args_)
 \end{verbatim}
 
-Comments must be written in lower case letters. Indeed, no capitalization
+Comments must be written in lower-case letters. Indeed, no capitalization
 must be used, at all.
 
 \begin{verbatim}
@@ -211,7 +218,20 @@ the prefix \textit{ao\_} represents the architecture-dependent part of
 an object.
 
 If a type does not fit into on of these groups, then it can be considered as a
-general purpose type. In this case, types are prefixed by \textit{t\_}.
+general purpose type. In this case, the following prefixes are used:
+
+\begin{itemize}
+  \item
+    Function pointers are prefixed by \textit{f\_};
+  \item
+    Structures are prefixed by \textit{s\_};
+  \item
+    Enumerations are prefixed by \textit{e\_};
+  \item
+    Unions are prefixed by \textit{u\_};
+  \item
+    General purpose aliased-types are prefixed by \textit{t\_}.
+\end{itemize}
 
 The example below illustrates this rule:
 
@@ -1164,6 +1184,3 @@ Below is an example of such calls:
 
 In this example, the types of error are not distinguished as the function
 always returns \textit{ERROR\_UNKNOWN} which is not a very good idea.
-
-XXX pointeurs de fonctions en f\_
-XXX structures en s\_

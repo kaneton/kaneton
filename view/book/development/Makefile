@@ -34,12 +34,12 @@ SOURCES			:=		asm.tex				\
 					cheat.tex			\
 					c.tex				\
 					community.tex			\
-					conclusion.tex			\
 					configure.tex			\
 					control-panel.tex		\
 					development.tex			\
 					environment.tex			\
 					export.tex			\
+					history.tex			\
 					introduction.tex		\
 					languages.tex			\
 					licenses.tex			\

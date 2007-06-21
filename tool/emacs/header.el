@@ -13,6 +13,7 @@
 ;;   [C-c f] generates a Beamer frame skeleton
 ;;   [C-c i] generates a TeX itemize skeleton: can be used in Beamer as well
 ;;   [C-c c] generates a kaneton comment stub
+;;
 
 ;;
 ;; each time we close emacs, the header is updated.
