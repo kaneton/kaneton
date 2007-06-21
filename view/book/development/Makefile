@@ -31,8 +31,8 @@ PAPER			:=		development
 
 SOURCES			:=		asm.tex				\
 					build-farm.tex			\
-					cheat.tex			\
 					c.tex				\
+					cheat.tex			\
 					community.tex			\
 					configure.tex			\
 					control-panel.tex		\
@@ -42,9 +42,10 @@ SOURCES			:=		asm.tex				\
 					history.tex			\
 					introduction.tex		\
 					languages.tex			\
+					latex.tex			\
 					licenses.tex			\
-					make.tex			\
 					mailing-list.tex		\
+					make.tex			\
 					people.tex			\
 					project-management.tex		\
 					prototypes.tex			\

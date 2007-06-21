@@ -1,0 +1,299 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/development/latex.tex
+%
+% created       julien quintard   [thu jun 14 09:53:16 2007]
+% updated       julien quintard   [thu jun 14 16:09:48 2007]
+%
+
+%
+% ---------- latex ------------------------------------------------------------
+%
+
+\section{\LaTeX}
+\label{section:latex}
+
+The kaneton documents are written in the {\LaTeX} language. These documents
+are viewable through the \textit{view} tool. For more information about
+this tool, please refer to the \textit{Section \ref{section:view}}.
+
+%
+% naming
+%
+
+\subsection{Naming}
+
+{\LaTeX} files must be expressed in lower-case letters. Moreover,
+composite file names must be separated by a dash \textit{-}.
+
+%
+% layout
+%
+
+\subsection{Layout}
+
+Since {\LaTeX} is not a very readable language, every contributor
+is asked to follow the rules described in order to make the documents
+internal representation looks like the resulted output.
+
+Indeed, writers are asked not to use {\LaTeX} commands specifying
+layout requirements especially about indentation like \verb|\paragraph|,
+\verb|\vspace| etc. Since the kaneton project provides templates, every
+kaneton document must rely on a template which specifies the paragraph
+indentation, paragraph space etc.
+
+Therefore, the writer willing to distinguish two paragraphs in his
+document should simply put a single blank line between to two texts
+in his {\LaTeX} file as shown below:
+
+\begin{verbatim}
+  This is a paragraph which is intended to explain nothing special but
+  how to construct paragraphs in a very simple and readable way.
+
+  Then, after a single blank line, this text will be considered as a new
+  paragraph.
+\end{verbatim}
+
+This rule aims at making the document code as readable as possible. However,
+if a vertical space is needed in some place the default paragraph indentation
+does not apply, then, the \verb|\-| {\LaTeX} command must be used. This is
+especially useful in \textit{lecture} documents.
+
+The example below illustrates such a \textit{lecture} document and the
+need of vertical indentation:
+
+\begin{verbatim}
+  \begin{frame}
+    \frametitle{Description}
+
+    The MIPS processor is a 32-bit little-endian processor.
+
+    \-
+
+    This processor provides \textbf{32 integer registers}, from R0 to R31.
+
+    [...]
+\end{verbatim}
+
+Obvisouly, lines must not exceed \textit{80} characters in width.
+
+The templates provided by kaneton are located in the \textit{view/template/}
+directory. These include \textit{book}, \textit{paper}, \textit{exam} etc.
+templates.
+
+Therefore, every document should start by including the template file.
+However, since the template files need to access other files like
+{\LaTeX} dependency files, additional packages etc. these templates need to
+know where the document directory is located from the root \textit{view/}
+directory. Every document must therefore specify the path to the \textit{view/}
+directory before including the template file.
+
+Every file should then starts with something similar to the following:
+
+\begin{verbatim}
+  %
+  % path
+  %
+
+  \def\path{../..}
+
+  %
+  % template
+  %
+
+  \input{\path/template/book.tex}
+\end{verbatim}
+
+As every other type of kaneton file, the {\LaTeX} files are composed of
+sections. Below are listed some of possible sections but note that it
+highly depends on the organisation of the document: multiple files, etc.
+as well as the type of document: presentation slides, paper, book etc.
+
+The best way to make things properly is to look at the existing documents.
+
+\begin{itemize}
+  \item
+    \textbf{header}: this section contains the file header which provides
+    information on the file edition: creation, last update etc.
+  \item
+    \textbf{setup}: this section contains the {\LaTeX} setup: path to the
+    \textit{view/} directory, template including, title definition etc.
+
+    \begin{verbatim}
+      %
+      % ---------- setup ------------------------------------------------------
+      %
+
+      %
+      % path
+      %
+
+      \def\path{../..}
+
+      %
+      % template
+      %
+
+      \input{\path/template/book.tex}
+
+      %
+      % header
+      %
+
+      \lhead{\scriptsize{The kaneton microkernel :: development book}}
+      \rhead{}
+
+      %
+      % title
+      %
+
+      \title{The kaneton microkernel :: development book
+             \logos}
+    \end{verbatim}
+  \item
+    \textbf{text}: this section is used when the text is relatively short
+    and likely to fit in a single file. The section then contains the
+    whole document's text.
+
+    Instead, a section whose name is based on the current chapter or section
+    can be used if the document is much more larger and generally splitted
+    into multiple files.
+
+    \begin{verbatim}
+      %
+      % ---------- latex ------------------------------------------------------
+      %
+
+      \section{\LaTeX}
+
+      The kaneton documents are written [...]
+    \end{verbatim}
+\end{itemize}
+
+%
+% style
+%
+
+\subsection{Style}
+
+First of all, comments must be written in lower-case letters. Comments
+are not intended, in {\LaTeX} files, to describe what the file do but instead
+play the role of visual separators.
+
+Note that documents are either \textit{public} or \textit{private}. Indeed,
+the \textit{\LaTeX} definition \verb|\mode|, stored in a temporary file
+included by kaneton templates, can be used to hide information which must be
+kept private to the kaneton developers community like, for instance,
+implementation details. For more information, take a look at the template
+you are interested in or at the other equivalent kaneton documents.
+
+Recall that the \textit{view/figures/} directory contains figures related
+to the kaneton microkernel documents. These figures must always be prefered
+to specific figures. Moreover, writers are asked to put their figures in
+this directory if the figure is general enough. Moreover, figures must be
+in the \textit{Fig} format. Finally, figures must be exported into a
+\textit{PDF} format as it is the only format which is accepted both by
+pure \textit{\LaTeX} documents as well as \textit{Beamer} documents.
+
+Every time the \verb|\item| element is used, for instance in \textit{itemize},
+or \textit{enumerate} environments, the text related to the item must be
+placed on a new line, aligned by two characters from the \verb|\item| element.
+
+\begin{verbatim}
+  \begin{itemize}[<+->]
+    \item
+      \textbf{R2}: return value.
+    \item
+      \textbf{R29}: frame pointer.
+    \item
+      \textbf{R30}: global variables area pointer.
+  \end{itemize}
+\end{verbatim}
+
+The remaining of this section is divided into two parts: papers and slides
+because depending on the type of document, either pure \textit{\LaTeX}
+or the \textit{Beamer} extension is used.
+
+% paper
+
+\subsubsection{Paper}
+
+A long comment separator, composed of three lines, must be used before
+every new subsections, while a single line separator must be used for
+subsubsections and other less important components.
+
+\begin{verbatim}
+  %
+  % naming
+  %
+
+  \subsection{Naming}
+
+  Names in kaneton must comply to the following rules.
+
+  % general
+
+  \subsubsection{General}
+\end{verbatim}
+
+Nevertheless, this rule also depends on the document organisation.
+
+\textit{\LaTeX} references must be used, via the commands \verb|\label| and
+\verb|\ref|, making the reading much more easier.
+
+% slides
+
+\subsubsection{Slides}
+
+Unlike papers, presentation documents are based on the \textit{Beamer} package.
+These documents are therefore composed of slides or frame in the
+\textit{Beamer} terms.
+
+\textit{Lecture} documents are based on such a package through the kaneton
+templates, especially the \textit{lecture} template.
+
+Each frame must be preceded by a commented number indicating the slide's
+number into the section of subsection.
+
+\begin{verbatim}
+  %
+  % introduction
+  %
+
+  \section{Introduction}
+
+  % 1)
+
+  \begin{frame}
+    \frametitle{Description}
+
+    \begin{itemize}[<+->]
+      \item
+        About \textbf{thirty} hours course.
+      \item
+        Concluded by an exam.
+    \end{itemize}
+  \end{frame}
+
+  % 2)
+
+  \begin{frame}
+    \frametitle{Contents}
+
+    \begin{itemize}[<+->]
+      \item
+        External architecture.
+      \item
+        Pipeline.
+      \item
+        Compiler optimisations.
+      \item
+        Memory.
+    \end{itemize}
+  \end{frame}
+\end{verbatim}
