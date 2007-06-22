@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/core/region/Makefile
 #
 # created       julien quintard   [sun jun 10 17:00:15 2007]
-# updated       julien quintard   [sun jun 10 17:30:13 2007]
+# updated       julien quintard   [fri jun 22 02:37:05 2007]
 #
 
 #
@@ -27,7 +27,8 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-REGION_C		:=		region.c			
+REGION_C		:=		region.c			\
+					region-fit.c			
 
 REGION_O		:=		$(REGION_C:.c=.o)
 

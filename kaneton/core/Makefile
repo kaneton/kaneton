@@ -46,7 +46,7 @@ SUBDIRS			:=		as				\
 
 # kaneton objects
 
-KANETON_O		:=		$(_AS_LO_)			\
+KANETON_LO		:=		$(_AS_LO_)			\
 					$(_CAPABILITY_LO_)		\
 					$(_CPU_LO_)			\
 					$(_DEBUG_LO_)			\
@@ -90,6 +90,8 @@ VERSION_O		:=		$(VERSION_C:.c=.o)
 main:			$(_CORE_LO_)
 
 $(_CORE_LO_):		dependencies $(CORE_O)
+	$(call env_remove,$(_CORE_LO_),)
+
 	$(call env_archive,$(_CORE_LO_),$(CORE_O)			\
 					$(VERSION_O)			\
 					$(KANETON_LO)			\

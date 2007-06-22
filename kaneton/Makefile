@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kaneton/kaneton/Makefile
+# file          /home/mycure/kaneton/kaneton/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       matthieu bucchianeri   [sat jun 16 18:24:15 2007]
+# updated       julien quintard   [fri jun 22 02:31:58 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main clear prototypes headers
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -34,23 +34,22 @@ SUBDIRS			:=		core				\
 # ---------- rules ------------------------------------------------------------
 #
 
-main:
-	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$${d}/Makefile,,)				; \
-	done
+main:			$(_KANETON_)
 
-	$(call env_executable,$(_CORE_),$(CORE_O)			\
-					$(VERSION_O)			\
-					$(KANETON_O)			\
-					$(_KLIBC_A_),			\
-                 "--link-script $(_MACHDEP_LINK_DIR_)/core.lks"		\
-                 "--no-standard-include"				\
-                 "--no-standard-library")
+$(_KANETON_):		dependencies
+	$(call env_remove,$(_KANETON_),)
+
+	$(call env_executable,$(_KANETON_),				\
+			      $(_CORE_LO_) $(_MACHINE_LO_),		\
+			      $(_KANETON_LAYOUT_),			\
+			      $(ENV_OPTION_NO_STANDARD))
 
 clear:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
+
+	$(call env_remove,$(_KANETON_),)
 
 	$(call env_purge,)
 
@@ -62,4 +61,9 @@ prototypes:
 headers:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,headers,)			; \
+	done
+
+dependencies:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,,)				; \
 	done

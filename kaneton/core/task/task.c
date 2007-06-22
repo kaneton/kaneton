@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/task/task.c
+ * license       kaneton
  *
- * created       julien quintard   [sat dec 10 13:56:00 2005]
- * updated       julian pidancet   [fri apr 13 03:04:55 2007]
+ * file          /home/mycure/kaneton/kaneton/core/task/task.c
+ *
+ * created       julien quintard   [fri jun 22 02:25:26 2007]
+ * updated       julien quintard   [fri jun 22 02:25:28 2007]
  */
 
 /*

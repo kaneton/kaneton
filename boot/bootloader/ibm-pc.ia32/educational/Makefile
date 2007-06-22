@@ -8,7 +8,7 @@
 # file          /home/mycure/kane...tloader/ibm-pc.ia32/educational/Makefile
 #
 # created       julien quintard   [tue jun 12 20:34:41 2007]
-# updated       julien quintard   [tue jun 12 20:35:53 2007]
+# updated       julien quintard   [fri jun 22 02:15:45 2007]
 #
 
 #
@@ -49,8 +49,10 @@ BOOTLOADER_INCLUDE	:=		bootloader.h
 # ---------- rules ------------------------------------------------------------
 #
 
+main:			$(BOOTLOADER)
+
 $(BOOTLOADER):		$(BOOTLOADER_O)
-	$(call env_executable,$(BOOTLOADER),$(BOOTLOADER_O)			\
+	$(call env_executable,$(BOOTLOADER),$(BOOTLOADER_O)		\
 	         $(_LIBIA32_A_) $(_KLIBC_A_),				\
 	         "--link-script $(_MACHDEP_LINK_DIR_)/bootloader.lks"	\
                  "--no-standard-include"				\
