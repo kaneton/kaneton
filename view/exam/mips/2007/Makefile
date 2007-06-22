@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/exam/arch-mips/2007/Makefile
+# file          /home/mycure/kaneton/view/exam/mips/2007/Makefile
 #
 # created       julien quintard   [mon may 14 21:34:22 2007]
-# updated       julien quintard   [sun jun 10 00:20:50 2007]
+# updated       julien quintard   [fri jun 22 18:09:05 2007]
 #
 
 #

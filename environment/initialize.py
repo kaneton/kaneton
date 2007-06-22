@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/initialize.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [sun jun 10 21:01:10 2007]
+# updated       julien quintard   [fri jun 22 02:46:02 2007]
 #
 
 #
@@ -111,10 +111,12 @@ def			check():
 # this function generates the kaneton prototypes.
 #
 def			prototypes():
+  useless = None
+
   env.display(env.HEADER_OK,
               "generating the kaneton prototypes",
               env.OPTION_NONE)
-# XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "prototypes")
+# XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "prototypes", env.OPTION_NONE)
 
 
 
@@ -127,7 +129,7 @@ def			headers():
   env.display(env.HEADER_OK,
               "generating the kaneton header dependencies",
               env.OPTION_NONE)
-# XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "headers")
+# XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "headers", env.OPTION_NONE)
 
 
 

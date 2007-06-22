@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/internship/Makefile
 #
 # created       julien quintard   [mon may 14 22:16:45 2007]
-# updated       julien quintard   [sat jun  9 23:48:01 2007]
+# updated       julien quintard   [fri jun 22 18:07:32 2007]
 #
 
 #

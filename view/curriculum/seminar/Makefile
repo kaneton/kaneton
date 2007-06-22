@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/curriculum/seminar/Makefile
 #
 # created       julien quintard   [mon may 14 21:14:19 2007]
-# updated       julien quintard   [sun jun 10 00:20:33 2007]
+# updated       julien quintard   [fri jun 22 18:09:56 2007]
 #
 
 #

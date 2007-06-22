@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/library/libc/Makefile
 #
 # created       julien quintard   [sun jun 10 14:14:02 2007]
-# updated       julien quintard   [sun jun 10 16:45:32 2007]
+# updated       julien quintard   [fri jun 22 18:05:06 2007]
 #
 
 #
@@ -42,8 +42,8 @@ main:			$(_LIBC_A_)
 $(_LIBC_A_):		dependencies
 	$(call env_remove,$(_LIBC_A_),)
 
-	$(call env_static-library,$(_LIBC_A_),$(LIBDATA_LO) $(LIBSTRING_LO) \
-          $(LIBSYS_LO),)
+	$(call env_static-library,$(_LIBC_A_),				\
+		  $(LIBDATA_LO) $(LIBSTRING_LO)	$(LIBSYS_LO),)
 
 clear:
 	for d in $(SUBDIRS) ; do					\

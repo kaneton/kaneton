@@ -60,8 +60,8 @@ endif
 #
 
 initialize:
-	cd environment							; \
-	$(_PYTHON_) initialize.py					; \
+	cd environment							&& \
+	$(_PYTHON_) initialize.py					&& \
 	cd ..
 
 #

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [tue jun 12 20:22:38 2007]
+# updated       julien quintard   [fri jun 22 18:00:53 2007]
 #
 
 #
@@ -85,24 +85,24 @@ ifeq ($(_DISPLAY_),$(_DISPLAY_COLORED_))	# if the user wants to display
 						# the text with color
 
 define env_print
-  print_options=""							; \
+  print_options=""							&& \
   if [ -n "$(3)" ] ; then						\
     if [ $$(( $(3) & $(ENV_OPTION_NO_NEWLINE) )) -ne 0 ] ; then		\
       print_options="$${print_options} -n"				; \
     fi									; \
-  fi									; \
+  fi									&& \
   $(_ECHO_) $${print_options} $(call env_colorize-$(2),$(1),)
 endef
 
 else						# if not ...
 
 define env_print
-  print_options=""							; \
+  print_options=""							&& \
   if [ -n "$(3)" ] ; then						\
     if [ $$(( $(3) & $(ENV_OPTION_NO_NEWLINE) )) -ne 0 ] ; then		\
       print_options="$${print_options} -n"				; \
     fi									; \
-  fi									; \
+  fi									&& \
   $(_ECHO_) $${print_options} $(1)
 endef
 
@@ -116,7 +116,7 @@ endif
 #
 
 define env_cd
-  cd_options=""								; \
+  cd_options=""								&& \
   $(_CD_) $${cd_options} $(1)
 endef
 
@@ -140,13 +140,13 @@ endef
 #
 
 define env_launch
-  launch_options=""							; \
-  cwd=$$($(_PWD_))							; \
-  directory=$$($(_DIRNAME_) $(1))					; \
-  file=$$($(_BASENAME_) $(1))						; \
+  launch_options=""							&& \
+  cwd=$$($(_PWD_))							&& \
+  directory=$$($(_DIRNAME_) $(1))					&& \
+  file=$$($(_BASENAME_) $(1))						&& \
   if [ $${directory} != "." ] ; then					\
     $(_CD_) $${directory}						; \
-  fi									; \
+  fi									&& \
   case "$${file}" in							\
     *.sh)								\
       $(_SHELL_) $${launch_options} $${file} $(_SHELL_FLAGS_) $(2)	; \
@@ -160,7 +160,7 @@ define env_launch
     Makefile)								\
       $(_MAKE_) $${launch_options} -f $${file} $(_MAKE_FLAGS_) ${2}	; \
       ;;								\
-  esac									; \
+  esac									&& \
   if [ $${directory} != "." ] ; then					\
     $(_CD_) $${cwd}							; \
   fi
@@ -175,8 +175,8 @@ endef
 #
 
 define env_preprocess
-  preprocess_options=""							; \
-  $(call env_display,green,PREPROCESS,$(2),		,)		; \
+  preprocess_options=""							&& \
+  $(call env_display,green,PREPROCESS,$(2),		,)		&& \
   $(_CPP_) -P $(_CPP_FLAGS_) $${preprocess_options} $(2) -o $(1)
 endef
 
@@ -189,8 +189,8 @@ endef
 #
 
 define env_compile-c
-  compile_c_options=""							; \
-  $(call env_display,green,COMPILE-C,$(2),		,)		; \
+  compile_c_options=""							&& \
+  $(call env_display,green,COMPILE-C,$(2),		,)		&& \
   $(_CC_) $(_CC_FLAGS_) $${compile_c_options} -c $(2) -o $(1)
 endef
 
@@ -203,8 +203,8 @@ endef
 #
 
 define env_lex-l
-  lex_l_options=""							; \
-  $(call env_display,green,LEX-L,$(2),			,)		; \
+  lex_l_options=""							&& \
+  $(call env_display,green,LEX-L,$(2),			,)		&& \
   $(_LEX_) $${lex_l_options} $(2) > $(1)
 endef
 
@@ -217,8 +217,8 @@ endef
 #
 
 define env_assemble-S
-  assemble_S_options=""							; \
-  $(call env_display,green,ASSEMBLE-S,$(2),		,)		; \
+  assemble_S_options=""							&& \
+  $(call env_display,green,ASSEMBLE-S,$(2),		,)		&& \
   $(_CC_) $(_CC_FLAGS_) $${assemble_S_options}				\
           -c $(2) -o $(1)
 endef
@@ -232,16 +232,16 @@ endef
 #
 
 define env_assemble-asm
-  assemble_asm_options=""						; \
+  assemble_asm_options=""						&& \
   if [ -n "$(3)" ] ; then						\
     if [ $$(( $(3) & $(ENV_OUTPUT_OBJECT) )) -ne 0 ] ; then		\
       assemble_asm_options="$${assemble_asm_options} -f elf"		; \
-    fi									; \
+    fi									&& \
     if [ $$(( $(3) & $(ENV_OUTPUT_BINARY) )) -ne 0 ] ; then		\
       assemble_asm_options="$${assemble_asm_options} -f bin"		; \
     fi									; \
-  fi									; \
-  $(call env_display,green,ASSEMBLE-ASM,$(2),		,)		; \
+  fi									&& \
+  $(call env_display,green,ASSEMBLE-ASM,$(2),		,)		&& \
   $(_NASM_) $${assemble_asm_options} $(2) -o $(1)
 endef
 
@@ -254,9 +254,9 @@ endef
 #
 
 define env_static-library
-  static_library_options=""						; \
-  $(call env_display,magenta,STATIC-LIBRARY,$(1),	,)		; \
-  $(_AR_) $${static_library_options} $(1) $(2)				; \
+  static_library_options=""						&& \
+  $(call env_display,magenta,STATIC-LIBRARY,$(1),	,)		&& \
+  $(_AR_) $${static_library_options} $(1) $(2)				&& \
   $(_RANLIB_) $${static_library_options} $(1)
 endef
 
@@ -270,8 +270,8 @@ endef
 #
 
 define env_dynamic-library
-  dynamic_library_options=""						; \
-  $(call env_display,magenta,DYNAMIC-LIBRARY,$(1),	,)		; \
+  dynamic_library_options=""						&& \
+  $(call env_display,magenta,DYNAMIC-LIBRARY,$(1),	,)		&& \
   $(_LD_) --shared $(_LD_FLAGS_) $${dynamic_library_options}		\
           -o $(1) $(2)
 endef
@@ -286,16 +286,16 @@ endef
 #
 
 define env_executable
-  executable_options=""							; \
+  executable_options=""							&& \
   if [ -n $(3) ] ; then							\
     executable_options="$${executable_options} -T $(3)"			; \
-  fi									; \
+  fi									&& \
   if [ -n "$(4)" ] ; then						\
     if [ $$(( $(4) & $(ENV_OPTION_NO_STANDARD) )) -ne 0 ] ; then	\
       executable_options="$${executable_options} -nostdinc -nostdlib"	; \
     fi									; \
-  fi									; \
-  $(call env_display,magenta,EXECUTABLE,$(1),		,)		; \
+  fi									&& \
+  $(call env_display,magenta,EXECUTABLE,$(1),		,)		&& \
   $(_CC_) $(_CC_FLAGS_) $(_LD_FLAGS_) $${executable_options} -o $(1) $(2)
 endef
 
@@ -310,8 +310,8 @@ endef
 #
 
 define env_archive
-  archive_options=""							; \
-  $(call env_display,magenta,ARCHIVE,$(1),		,)		; \
+  archive_options=""							&& \
+  $(call env_display,magenta,ARCHIVE,$(1),		,)		&& \
   $(_LD_) -r $(_LD_FLAGS_) $${archive_options} -o $(1) $(2)
 endef
 
@@ -323,11 +323,11 @@ endef
 #
 
 define env_remove
-  remove_options=""							; \
+  remove_options=""							&& \
   for f in $(1) ; do							\
     if [ -e $${f} ] ; then						\
       $(call env_display,red,REMOVE,$${f},		,)		; \
-    fi									; \
+    fi									&& \
     $(_RM_) $${remove_options} $${f}					; \
   done
 endef
@@ -337,7 +337,7 @@ endef
 #
 
 define env_purge
-  $(call env_display,red,PURGE,,,)					; \
+  $(call env_display,red,PURGE,,,)					&& \
   $(_PURGE_)
 endef
 
@@ -349,16 +349,10 @@ endef
 #
 
 define env_prototypes
-  prototypes_options=""							; \
-  for o in $(2); do							\
-    case "$${o}" in							\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
+  prototypes_options=""							&& \
   for f in $(1) ; do							\
     if [ -e $${f} ] ; then						\
-      $(call env_display,yellow,PROTOTYPES,$${f},		,)	; \
+      $(call env_display,yellow,PROTOTYPES,$${f},		,)	&& \
       $(call env_launch,$(_MKP_TOOL_),					\
         $${prototypes_options} $${f},)					; \
     fi									; \
@@ -373,17 +367,11 @@ endef
 #
 
 define env_headers
-  headers_options=""							; \
-  for o in $(3); do							\
-    case "$${o}" in							\
-      *)								\
-        ;;								\
-    esac								; \
-  done									; \
-  $(_TOUCH_) $(2)							; \
+  headers_options=""							&& \
+  $(_TOUCH_) $(2)							&& \
   for f in $(1) ; do							\
     if [ -e $${f} ] ; then						\
-      $(call env_display,yellow,HEADERS,$$i,		,)		; \
+      $(call env_display,yellow,HEADERS,$$i,		,)		&& \
       $(_CC_) $(_CC_FLAGS_) -M -MG $${headers_options}			\
         $${f} >> $(_DEPENDENCY_MK_)					; \
     fi									; \
@@ -397,12 +385,12 @@ endef
 #
 
 define env_version
-  $(call env_display,yellow,VERSION,$(1),		,)		; \
-  $(_ECHO_) -n "" > $(1)						; \
-  $(_ECHO_) "#include <libc.h>" >> $(1)				; \
-  $(_ECHO_) "#include <kaneton.h>" >> $(1)				; \
-  $(_ECHO_) "" >> $(1)							; \
-  $(_ECHO_) -n "const char version[] = \"$(_TITLE_)-$(_VERSION_)" >> $(1) ; \
+  $(call env_display,yellow,VERSION,$(1),		,)		&& \
+  $(_ECHO_) -n "" > $(1)						&& \
+  $(_ECHO_) "#include <libc.h>" >> $(1)					&& \
+  $(_ECHO_) "#include <kaneton.h>" >> $(1)				&& \
+  $(_ECHO_) "" >> $(1)							&& \
+  $(_ECHO_) -n "const char version[] = \"$(_TITLE_)-$(_VERSION_)" >> $(1) && \
   $(_ECHO_) " "$(shell $(_DATE_))" $(USER)@$(HOSTNAME)\";" >> $(1)
 endef
 
@@ -415,8 +403,8 @@ endef
 #
 
 define env_link
-  link_options=""							; \
-  $(call env_display,cyan,LINK,$(1),			,)		; \
+  link_options=""							&& \
+  $(call env_display,cyan,LINK,$(1),			,)		&& \
   $(_LN_) $${link_options} $(2) $(1)
 endef
 
@@ -428,11 +416,11 @@ endef
 #
 
 define env_compile-tex
-  compile_tex_options=""						; \
-  $(call env_display,green,COMPILE-TEX,$(1),		,)		; \
-  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			; \
-  $(_BIBTEX_) $(1).tex							; \
-  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			; \
+  compile_tex_options=""						&& \
+  $(call env_display,green,COMPILE-TEX,$(1),		,)		&& \
+  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			&& \
+  $(_BIBTEX_) $(1).tex							&& \
+  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			&& \
   $(_PDFLATEX_) $${compile_tex_options} $(1).tex
 endef
 
@@ -448,10 +436,10 @@ define env_document
     if [ $$(( $(2) & $(ENV_OPTION_PRIVATE) )) -ne 0 ] ; then		\
       $(_ECHO_) '\def\mode{private}' > $(_DEPENDENCY_TEX_)		; \
     fi									; \
-  fi									; \
+  fi									&& \
   if [ ! -f $(_DEPENDENCY_TEX_) ] ; then				\
     $(_ECHO_) '\def\mode{public}' > $(_DEPENDENCY_TEX_)			; \
-  fi									; \
+  fi									&& \
   $(call env_compile-tex,$(1),$(2))
 endef
 
@@ -463,6 +451,6 @@ endef
 #
 
 define env_view
-  $(call env_display,yellow,VIEW,$(1),			,)		; \
+  $(call env_display,yellow,VIEW,$(1),			,)		&& \
   $(_XPDF_) $(1).pdf
 endef

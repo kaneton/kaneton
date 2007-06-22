@@ -19,7 +19,7 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all build run libs clear proto dep
+.PHONY:		main build run libs clear proto dep
 
 #
 # ---------- variables --------------------------------------------------------
@@ -35,7 +35,7 @@ MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build run
+main:			build run
 
 build:			$(_CHECK_LO_)
 

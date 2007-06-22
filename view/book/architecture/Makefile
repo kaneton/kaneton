@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/book/architectures/Makefile
+# file          /home/mycure/kaneton/view/book/architecture/Makefile
 #
 # created       julien quintard   [sun jun 10 00:07:26 2007]
-# updated       julien quintard   [mon jun 11 07:45:27 2007]
+# updated       julien quintard   [fri jun 22 18:06:53 2007]
 #
 
 #

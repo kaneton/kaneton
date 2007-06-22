@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/boot/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [mon jun 11 19:28:31 2007]
+# updated       julien quintard   [fri jun 22 18:02:04 2007]
 #
 
 #
