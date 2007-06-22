@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       julien quintard   [sun jun 10 19:03:38 2007]
+ * updated       julien quintard   [fri jun 22 18:39:54 2007]
  */
 
 #ifndef CORE_MESSAGE_H
@@ -80,7 +80,7 @@ typedef struct
 
 typedef struct
 {
-  t_error		(*message_init)(void);
+  t_error		(*message_initialize)(void);
   t_error		(*message_clean)(void);
   t_error		(*message_epilogue)(i_thread, t_error);
 }			d_message;
@@ -128,7 +128,7 @@ typedef struct
  * ../../core/message/message.c
  */
 
-t_error			message_init(void);
+t_error			message_initialize(void);
 
 t_error			message_clean(void);
 

@@ -63,7 +63,7 @@ t_error			glue_segment_copy(i_segment		dst,
 					  t_paddr		offss,
 					  t_psize		sz);
 
-t_error			glue_segment_init(void);
+t_error			glue_segment_initialize(void);
 
 t_error			glue_segment_clean(void);
 

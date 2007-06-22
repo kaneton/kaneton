@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [sun jun 10 19:03:55 2007]
+ * updated       julien quintard   [fri jun 22 18:40:28 2007]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -137,7 +137,7 @@ typedef struct
   t_error			(*segment_type)(i_segment,
 						t_type);
   t_error			(*segment_flush)(i_as);
-  t_error			(*segment_init)();
+  t_error			(*segment_initialize)();
   t_error			(*segment_clean)(void);
 }				d_segment;
 
@@ -257,7 +257,7 @@ t_error			segment_flush(i_as			asid);
 t_error			segment_get(i_segment			segid,
 				    o_segment**			o);
 
-t_error			segment_init(void);
+t_error			segment_initialize(void);
 
 t_error			segment_clean(void);
 

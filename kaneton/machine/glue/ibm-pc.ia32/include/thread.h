@@ -82,7 +82,7 @@ t_error			glue_thread_load(i_thread		threadid,
 t_error			glue_thread_store(i_thread		threadid,
 					  t_thread_context*	context);
 
-t_error			glue_thread_init(void);
+t_error			glue_thread_initialize(void);
 
 
 /*

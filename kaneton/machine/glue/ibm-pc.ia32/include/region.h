@@ -76,8 +76,8 @@ t_error			glue_region_reserve(i_as		asid,
 t_error			glue_region_release(i_as		asid,
 					    i_region		regid);
 
-t_error			glue_region_init(t_vaddr		start,
-					 t_vsize		size);
+t_error			glue_region_initialize(t_vaddr		start,
+					       t_vsize		size);
 
 t_error			glue_region_clean(void);
 

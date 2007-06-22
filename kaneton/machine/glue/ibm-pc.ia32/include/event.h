@@ -59,7 +59,7 @@ t_error			glue_event_reserve(i_event		id,
 
 t_error			glue_event_release(i_event		id);
 
-t_error			glue_event_init(void);
+t_error			glue_event_initialize(void);
 
 t_error			glue_event_clean(void);
 

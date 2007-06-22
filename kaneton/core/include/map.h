@@ -103,7 +103,7 @@ t_error			map_resize(i_as			asid,
 				   t_vsize		size,
 				   t_vaddr*		new);
 
-t_error			map_init(void);
+t_error			map_initialize(void);
 
 t_error			map_clean(void);
 

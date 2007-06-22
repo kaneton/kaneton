@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/cpu.h
  *
  * created       julien quintard   [sun jun  3 20:25:39 2007]
- * updated       julien quintard   [sun jun 10 19:02:59 2007]
+ * updated       julien quintard   [fri jun 22 18:39:05 2007]
  */
 
 #ifndef CORE_CPU_H
@@ -62,7 +62,7 @@ typedef struct
   t_error			(*cpu_current)(i_cpu*);
   t_error			(*cpu_migrate)(i_task,
 					       i_cpu);
-  t_error			(*cpu_init)(void);
+  t_error			(*cpu_initialize)(void);
   t_error			(*cpu_clean)(void);
 }				d_cpu;
 
@@ -127,7 +127,7 @@ t_error			cpu_migrate(i_task			tskid,
 t_error			cpu_get(i_cpu				id,
 				o_cpu**				o);
 
-t_error			cpu_init(void);
+t_error			cpu_initialize(void);
 
 t_error			cpu_clean(void);
 

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/as.h
  *
  * created       julien quintard   [wed jun  6 12:25:01 2007]
- * updated       julien quintard   [sun jun 10 19:02:45 2007]
+ * updated       julien quintard   [fri jun 22 18:37:02 2007]
  */
 
 #ifndef CORE_AS_H
@@ -89,7 +89,7 @@ typedef struct
   t_error			(*as_reserve)(i_task,
 					      i_as*);
   t_error			(*as_release)(i_as);
-  t_error			(*as_init)(void);
+  t_error			(*as_initialize)(void);
   t_error			(*as_clean)(void);
 }				d_as;
 
@@ -178,7 +178,7 @@ t_error			as_release(i_as			asid);
 t_error			as_get(i_as				asid,
 			       o_as**				o);
 
-t_error			as_init(void);
+t_error			as_initialize(void);
 
 t_error			as_clean(void);
 

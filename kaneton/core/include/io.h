@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/io.h
  *
  * created       julien quintard   [wed jun  6 13:26:01 2007]
- * updated       julien quintard   [sun jun 10 19:03:30 2007]
+ * updated       julien quintard   [fri jun 22 18:39:31 2007]
  */
 
 #ifndef CORE_IO_H
@@ -73,7 +73,7 @@ typedef struct
   t_error			(*io_write_64)(i_task,
 					       i_port,
 					       t_uint64);
-  t_error			(*io_init)(void);
+  t_error			(*io_initialize)(void);
   t_error			(*io_clean)(void);
 }				d_io;
 
@@ -159,7 +159,7 @@ t_error			io_write_64(i_task			task,
 				    i_port			id,
 				    t_uint64			data);
 
-t_error			io_init(void);
+t_error			io_initialize(void);
 
 t_error			io_clean(void);
 

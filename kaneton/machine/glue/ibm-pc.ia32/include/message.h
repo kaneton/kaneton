@@ -47,7 +47,7 @@
  * ../message.c
  */
 
-t_error		glue_message_init(void);
+t_error		glue_message_initialize(void);
 
 t_error		glue_message_clean(void);
 

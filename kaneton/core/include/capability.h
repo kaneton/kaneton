@@ -161,7 +161,7 @@ t_error			capability_give(t_id			id,
 
 t_error			capability_verify(t_capability*		provided);
 
-t_error			capability_init(void);
+t_error			capability_initialize(void);
 
 t_error			capability_clean(void);
 

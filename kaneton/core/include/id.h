@@ -140,7 +140,7 @@ t_error			id_build(o_id*				o);
 
 t_error			id_destroy(o_id*			o);
 
-t_error			id_init(void);
+t_error			id_initialize(void);
 
 t_error			id_clean(void);
 

@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [sun jun 10 19:02:09 2007]
+ * updated       julien quintard   [fri jun 22 18:40:46 2007]
  */
 
 #ifndef CORE_TASK_H
@@ -160,7 +160,7 @@ typedef struct
   t_error			(*task_wait)(i_task,
 					     t_opts,
 					     t_wait*);
-  t_error			(*task_init)(void);
+  t_error			(*task_initialize)(void);
   t_error			(*task_clean)(void);
 }				d_task;
 
@@ -235,7 +235,7 @@ t_error			task_wait(i_task			id,
 t_error			task_get(i_task				id,
 				 o_task**			o);
 
-t_error			task_init(void);
+t_error			task_initialize(void);
 
 t_error			task_clean(void);
 

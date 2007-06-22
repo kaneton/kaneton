@@ -48,7 +48,7 @@
  * ../timer.c
  */
 
-t_error			glue_timer_init(void);
+t_error			glue_timer_initialize(void);
 
 
 /*

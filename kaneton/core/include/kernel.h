@@ -70,7 +70,7 @@ typedef struct
  * ../../core/kernel/kernel.c
  */
 
-void			kernel_init(void);
+void			kernel_initialize(void);
 
 void			kernel_clean(void);
 

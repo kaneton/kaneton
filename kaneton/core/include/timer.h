@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       julien quintard   [sun jun 10 19:02:31 2007]
+ * updated       julien quintard   [fri jun 22 18:40:56 2007]
  */
 
 #ifndef CORE_TIMER_H
@@ -123,7 +123,7 @@ typedef struct
 						 t_uint32,
 						 i_timer*);
   t_error			(*timer_release)(i_timer);
-  t_error			(*timer_init)(void);
+  t_error			(*timer_initialize)(void);
   t_error			(*timer_clean)(void);
 }				d_timer;
 
@@ -198,7 +198,7 @@ t_error			timer_modify(i_timer			id,
 t_error			timer_get(i_timer			id,
 				  o_timer**			o);
 
-t_error			timer_init(void);
+t_error			timer_initialize(void);
 
 t_error			timer_clean(void);
 

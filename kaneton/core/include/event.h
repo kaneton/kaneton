@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/event.h
  *
  * created       julien quintard   [wed jun  6 13:13:41 2007]
- * updated       julien quintard   [sun jun 10 19:03:04 2007]
+ * updated       julien quintard   [fri jun 22 18:39:19 2007]
  */
 
 #ifndef CORE_EVENT_H
@@ -102,7 +102,7 @@ typedef struct
 						 t_uint32,
 						 u_event_handler);
   t_error			(*event_release)(i_event);
-  t_error			(*event_init)(void);
+  t_error			(*event_initialize)(void);
   t_error			(*event_clean)(void);
 }				d_event;
 
@@ -163,7 +163,7 @@ t_error			event_release(i_event			id);
 t_error			event_get(i_event			id,
 				  o_event**			o);
 
-t_error			event_init(void);
+t_error			event_initialize(void);
 
 t_error			event_clean(void);
 

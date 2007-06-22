@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [sun jun 10 19:02:21 2007]
+ * updated       julien quintard   [fri jun 22 18:40:51 2007]
  */
 
 #ifndef CORE_THREAD_H
@@ -120,7 +120,7 @@ typedef struct
 						t_state);
   t_error			(*thread_stack)(i_thread,
 						t_stack);
-  t_error			(*thread_init)(void);
+  t_error			(*thread_initialize)(void);
   t_error			(*thread_clean)(void);
 }				d_thread;
 
@@ -203,7 +203,7 @@ t_error			thread_store(i_thread			threadid,
 t_error			thread_get(i_thread			threadid,
 				   o_thread**			o);
 
-t_error			thread_init(void);
+t_error			thread_initialize(void);
 
 t_error			thread_clean(void);
 

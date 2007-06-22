@@ -129,7 +129,7 @@ void			kaneton(t_init*				bootloader)
 
   cons_msg('+', "starting kernel manager\n");
 
-  kernel_init();
+  kernel_initialize();
 
   /*
    * 7)
@@ -149,7 +149,7 @@ void			kaneton(t_init*				bootloader)
 
 #ifdef SERIAL
   cons_msg('+', "starting debug manager\n");
-  debug_init();
+  debug_initialize();
   while(1)
     ;
 #endif

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/scheduler.h
+ * file          /home/mycure/kaneton/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       matthieu bucchianeri   [sun jun 17 21:59:12 2007]
+ * updated       julien quintard   [fri jun 22 18:40:18 2007]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -188,7 +188,7 @@ typedef struct
   t_error			(*scheduler_add)(i_thread);
   t_error			(*scheduler_remove)(i_thread);
   t_error			(*scheduler_update)(i_thread);
-  t_error			(*scheduler_init)(void);
+  t_error			(*scheduler_initialize)(void);
   t_error			(*scheduler_clean)(void);
 }				d_scheduler;
 
@@ -250,7 +250,7 @@ t_error			scheduler_remove(i_thread			thread);
 
 t_error			scheduler_update(i_thread			thread);
 
-t_error			scheduler_init(void);
+t_error			scheduler_initialize(void);
 
 t_error			scheduler_clean(void);
 

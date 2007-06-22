@@ -210,7 +210,7 @@ t_error			io_initialize(void)
    * 2)
    */
 
-  if (machine_call(io, io_init) != ERROR_NONE)
+  if (machine_call(io, io_initialize) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);

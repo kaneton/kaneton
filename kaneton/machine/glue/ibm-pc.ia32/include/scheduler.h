@@ -65,7 +65,7 @@ t_error			glue_scheduler_quantum(t_quantum	quantum);
 
 t_error			glue_scheduler_yield(i_cpu			cpuid);
 
-t_error			glue_scheduler_init(void);
+t_error			glue_scheduler_initialize(void);
 
 t_error			glue_scheduler_clean(void);
 

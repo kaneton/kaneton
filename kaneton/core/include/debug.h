@@ -103,7 +103,7 @@ typedef struct
  * ../../core/debug/debug.c
  */
 
-t_error			debug_init(void);
+t_error			debug_initialize(void);
 
 t_error			debug_clean(void);
 

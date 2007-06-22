@@ -55,7 +55,7 @@ t_error			glue_io_deny(i_port			id,
 				     i_task			task,
 				     t_uint8			width);
 
-t_error			glue_io_init(void);
+t_error			glue_io_initialize(void);
 
 
 /*

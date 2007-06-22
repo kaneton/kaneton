@@ -65,7 +65,7 @@ t_error			glue_task_reserve(t_class			class,
 					  t_prior			prior,
 					  i_task*			id);
 
-t_error			glue_task_init(void);
+t_error			glue_task_initialize(void);
 
 
 /*

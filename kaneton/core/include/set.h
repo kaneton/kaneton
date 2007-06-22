@@ -337,7 +337,7 @@ t_error			set_get(i_set				setid,
 				t_id				id,
 				void**				o);
 
-t_error			set_init(void);
+t_error			set_initialize(void);
 
 t_error			set_clean(void);
 
