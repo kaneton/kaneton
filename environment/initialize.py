@@ -136,7 +136,7 @@ def			headers():
 #
 # main()
 #
-# this function initialises the development environment.
+# this function initializes the development environment.
 #
 def			main():
   # display some stuff.

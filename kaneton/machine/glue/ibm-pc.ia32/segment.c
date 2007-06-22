@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...neton/machine/glue/ibm-pc.ia32/segment.c
+ * file          /home/mycure/kane...neton/machine/glue/ibm-pc.ia32/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       matthieu bucchianeri   [sat jun 16 17:38:59 2007]
+ * updated       julien quintard   [fri jun 22 18:34:10 2007]
  */
 
 
@@ -63,7 +63,7 @@ d_segment				segment_dispatch =
     NULL,
     NULL,
     NULL,
-    glue_segment_init,
+    glue_segment_initialize,
     glue_segment_clean
 /*								   [cut] /k1 */
   };
@@ -125,10 +125,10 @@ t_error			glue_segment_copy(i_segment		dst,
 }
 
 /*
- * this function just initialises the machine-dependent segment manager.
+ * this function just initializes the machine-dependent segment manager.
  */
 
-t_error			glue_segment_init(void)
+t_error			glue_segment_initialize(void)
 {
   SEGMENT_ENTER(segment);
 

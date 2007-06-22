@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [fri jun 22 02:25:28 2007]
+ * updated       julien quintard   [fri jun 22 18:28:56 2007]
  */
 
 /*
@@ -290,7 +290,7 @@ t_error			task_clone(i_task			old,
  * steps:
  *
  * 1) checks the validity of arguments.
- * 2) initialises the task object.
+ * 2) initializes the task object.
  * 3) reserves an identifier for the task object.
  * 4) get the parent task and add the created task to its children set.
  * 5) reserves the set of threads for the new task object.
@@ -867,14 +867,14 @@ t_error			task_get(i_task				id,
 }
 
 /*
- * this functions initialises the task manager.
+ * this functions initializes the task manager.
  *
- * this function takes care of initialising and builing the kernel task.
+ * this function takes care of initializing and builing the kernel task.
  *
  * steps:
  *
- * 1) allocate and initialises the task manager structure.
- * 2) initialise the identifier object to be able to generate
+ * 1) allocate and initializes the task manager structure.
+ * 2) initialize the identifier object to be able to generate
  *    the task identifiers.
  * 3) reserve the task set which will contain the tasks built later.
  * 4) reserve the kernel task and its address space.
@@ -887,7 +887,7 @@ t_error			task_get(i_task				id,
  * 8) if asked, dumps the task manager.
  */
 
-t_error			task_init(void)
+t_error			task_initialize(void)
 {
   i_segment		segments[INIT_SEGMENTS];
   i_thread		needless;
@@ -917,7 +917,7 @@ t_error			task_init(void)
 
   if (id_build(&task->id) != ERROR_NONE)
     {
-      cons_msg('!', "task: unable to initialise the identifier object\n");
+      cons_msg('!', "task: unable to initialize the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -1007,7 +1007,7 @@ t_error			task_init(void)
    * 7)
    */
 
-  if (machine_call(task, task_init) != ERROR_NONE)
+  if (machine_call(task, task_initialize) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   /*
@@ -1022,7 +1022,7 @@ t_error			task_init(void)
 }
 
 /*
- * this function just reinitialises the task manager.
+ * this function just reinitializes the task manager.
  *
  * steps:
  *

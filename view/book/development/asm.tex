@@ -122,12 +122,12 @@ Below is an example:
 
   main:
           mov [bootdrive], dl     ; save the bootdrive identifier
-          xor ax, ax              ; initialise ax
-          mov ds, ax              ; initialise ds
+          xor ax, ax              ; initialize ax
+          mov ds, ax              ; initialize ds
 
           cli
-          mov ss, ax              ; initialise ss
-          mov sp, 0xffff          ; initialise the stack pointer
+          mov ss, ax              ; initialize ss
+          mov sp, 0xffff          ; initialize the stack pointer
           sti
 
           mov si, newline

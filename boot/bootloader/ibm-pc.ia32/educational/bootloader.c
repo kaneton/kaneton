@@ -63,7 +63,7 @@ void			bootloader_error(void)
  *
  * steps:
  *
- * 1) initialise the console and checks the magic number.
+ * 1) initialize the console and checks the magic number.
  * 2) relocate binaries, data, stack...
  * 3) install the protected mode.
  * 4) install the paging mode.

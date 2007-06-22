@@ -59,7 +59,7 @@ extern i_task		ktask;
  */
 
 /*
- * this function initialises the message manager.
+ * this function initializes the message manager.
  *
  * steps:
  *
@@ -67,7 +67,7 @@ extern i_task		ktask;
  * 3) call the machine dependent code.
  */
 
-t_error			message_init(void)
+t_error			message_initialize(void)
 {
   /*
    * 1)
@@ -102,7 +102,7 @@ t_error			message_init(void)
    * 2)
    */
 
-  if (machine_call(message, message_init) != ERROR_NONE)
+  if (machine_call(message, message_initialize) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   MESSAGE_LEAVE(message, ERROR_NONE);

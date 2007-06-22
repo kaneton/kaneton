@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan.../kaneton/machine/glue/ibm-pc.ia32/task.c
+ * file          /home/mycure/kaneton/kaneton/machine/glue/ibm-pc.ia32/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       matthieu bucchianeri   [sat jun 16 20:09:31 2007]
+ * updated       julien quintard   [fri jun 22 18:34:32 2007]
  */
 
 /*
@@ -54,7 +54,7 @@ d_task			task_dispatch =
     NULL,
     NULL,
     NULL,
-    glue_task_init,
+    glue_task_initialize,
     NULL,
   };
 
@@ -99,7 +99,7 @@ t_error			glue_task_reserve(t_class			class,
  * the task manager.
  */
 
-t_error			glue_task_init(void)
+t_error			glue_task_initialize(void)
 {
   TASK_ENTER(task);
 

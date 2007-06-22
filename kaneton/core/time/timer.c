@@ -485,7 +485,7 @@ t_error			timer_get(i_timer			id,
  * 5) dump the timer manager if debug is enabled.
  */
 
-t_error			timer_init(void)
+t_error			timer_initialize(void)
 {
 
   /*
@@ -531,7 +531,7 @@ t_error			timer_init(void)
    * 4)
    */
 
-  if (machine_call(timer, timer_init) != ERROR_NONE)
+  if (machine_call(timer, timer_initialize) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*

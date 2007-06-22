@@ -5,10 +5,10 @@
  *
  * license
  *
- * file          /home/buckman/kan...neton/machine/glue/ibm-pc.ia32/message.c
+ * file          /home/mycure/kane...neton/machine/glue/ibm-pc.ia32/message.c
  *
  * created       matthieu bucchianeri   [sun jun 17 18:16:18 2007]
- * updated       matthieu bucchianeri   [sun jun 17 18:31:18 2007]
+ * updated       julien quintard   [fri jun 22 18:33:26 2007]
  */
 
 /*
@@ -45,7 +45,7 @@ extern m_message*	message;
 
 d_message		       	message_dispatch =
   {
-    glue_message_init,
+    glue_message_initialize,
     glue_message_clean,
     NULL
   };
@@ -58,7 +58,7 @@ d_message		       	message_dispatch =
  * initialize machdep part of message manager.
  */
 
-t_error		glue_message_init(void)
+t_error		glue_message_initialize(void)
 {
   MESSAGE_ENTER(message);
 

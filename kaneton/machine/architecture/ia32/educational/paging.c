@@ -68,7 +68,7 @@ static void		ia32_paging_enable(void)
 }
 
 /*
- * initialise paging.
+ * initialize paging.
  *
  * steps:
  *

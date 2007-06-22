@@ -35,8 +35,8 @@ extern t_init*		init;
 /*                                                                  [cut] k1 */
 
 /*
- * this  function initialises  the global  offset table  inserting two
- * default segments for the bootloader and kernel initialisation.
+ * this  function initializes  the global  offset table  inserting two
+ * default segments for the bootloader and kernel initialization.
  *
  * each segment has the same size with different rights: read/execution,
  * read/write etc.

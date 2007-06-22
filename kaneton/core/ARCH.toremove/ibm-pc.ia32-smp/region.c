@@ -691,9 +691,9 @@ t_error			ia32_region_resize(i_as			as,
 /*                                                                 [cut] /k1 */
 
 /*
- * this function just initialises the machine-dependent region manager.
+ * this function just initializes the machine-dependent region manager.
  *
- * for the intel 32-bit architecture we just initialise the paging mode.
+ * for the intel 32-bit architecture we just initialize the paging mode.
  */
 
 t_error			ia32_region_init(t_vaddr		start,

@@ -230,7 +230,7 @@ def			main():
   # initialiase the dialog package.
   dialog.init()
 
-  # initialise the 'g_path' variable.
+  # initialize the 'g_path' variable.
   g_path = "configure.frm"
   g_paths.append(g_path)
 

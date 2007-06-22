@@ -45,9 +45,9 @@ void	bootloader_cons_attr(u_int8_t	attr)
 }
 
 /*
- * this function just initialises the bootloader console.
+ * this function just initializes the bootloader console.
  *
- * this function also initialises the printf function to work with
+ * this function also initializes the printf function to work with
  * the console.
  */
 

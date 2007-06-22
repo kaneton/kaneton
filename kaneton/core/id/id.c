@@ -100,7 +100,7 @@ t_error			id_release(o_id*			o,
 }
 
 /*
- * this function initialises an id object.
+ * this function initializes an id object.
  */
 
 t_error			id_build(o_id*				o)
@@ -126,10 +126,10 @@ t_error			id_destroy(o_id*			o)
 }
 
 /*
- * this function must initialise the id manager.
+ * this function must initialize the id manager.
  */
 
-t_error			id_init(void)
+t_error			id_initialize(void)
 {
   if ((id = malloc(sizeof(m_id))) == NULL)
     {

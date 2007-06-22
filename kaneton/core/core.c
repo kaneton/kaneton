@@ -59,15 +59,15 @@ i_segment		mod;
  */
 
 /*
- * this function simply initialises and cleans the kernel manager.
+ * this function simply initializes and cleans the kernel manager.
  *
  * steps:
  *
  * 1) sets the init variable from the bootloader argument.
- * 2) initialises the console manager.
+ * 2) initializes the console manager.
  * 3) displays the current kaneton version.
  * 4) if needed, displays the kernel parameters.
- * 5) initialises the fine grained allocator.
+ * 5) initializes the fine grained allocator.
  * 6) initializes the kernel manager.
  * 7) performs the kernel work...
  * 8) cleans the kernel manager.
@@ -97,7 +97,7 @@ void			kaneton(t_init*				bootloader)
    */
 
   if (cons_init() != ERROR_NONE)
-    core_error("cannot initialise the console manager\n");
+    core_error("cannot initialize the console manager\n");
 
   /*
    * 3)

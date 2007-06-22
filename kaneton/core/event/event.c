@@ -274,7 +274,7 @@ t_error			event_get(i_event			id,
  * 5) dump the event manager if debug is enabled.
  */
 
-t_error			event_init(void)
+t_error			event_initialize(void)
 {
   /*
    * 1)
@@ -317,7 +317,7 @@ t_error			event_init(void)
    * 4)
    */
 
-  if (machine_call(event, event_init) != ERROR_NONE)
+  if (machine_call(event, event_initialize) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*

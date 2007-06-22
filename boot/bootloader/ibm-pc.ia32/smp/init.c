@@ -27,7 +27,7 @@
  *
  * this structure will be passed to the kernel describing modules,
  * physical memory reserved by the hardware etc. thus the kernel will
- * be able to initialise its managers: segment manager, module manager etc.
+ * be able to initialize its managers: segment manager, module manager etc.
  */
 
 t_init*			init;
@@ -466,12 +466,12 @@ t_paddr			bootloader_init_alloc(t_psize		size,
  * 1) allocates space for the kernel code. this memory is very special
  *    because it always be located at the address init_relocate.
  *    indeed, the kernel is especially compiled to run at this address.
- * 2) allocates and initialise memory for the init structure
+ * 2) allocates and initialize memory for the init structure
  *    which will be passed to the kernel.
  * 3) computes entire size of the modules.
- * 4) initialises the main fields of the init structure.
+ * 4) initializes the main fields of the init structure.
  * 5) copies the kernel code into its new location.
- * 6) initialises the kernel stack.
+ * 6) initializes the kernel stack.
  * 7) for each module, copies it into its new location.
  * 8) allocates memory for the alloc() function. indeed the alloc() function
  *    needs to be able to provide memory until the virtual memory manager
@@ -479,7 +479,7 @@ t_paddr			bootloader_init_alloc(t_psize		size,
  *    the virtual memory manager to provide virtual pages and to map it
  *    into the kernel address space to continue to provide its service.
  *    so the alloc() function needs an amount of critical pages to work with
- *    until the virtual memory is initialised.
+ *    until the virtual memory is initialized.
  */
 
 t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)

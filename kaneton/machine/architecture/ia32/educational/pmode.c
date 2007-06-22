@@ -64,7 +64,7 @@ static void	ia32_pmode_enable(void)
 }
 
 /*
- * initialises protected mode.
+ * initializes protected mode.
  *
  * steps:
  *

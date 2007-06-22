@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...ton/machine/glue/ibm-pc.ia32/scheduler.c
+ * file          /home/mycure/kane...ton/machine/glue/ibm-pc.ia32/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [sun jun 17 21:54:04 2007]
+ * updated       julien quintard   [fri jun 22 18:33:55 2007]
  */
 
 /*
@@ -51,7 +51,7 @@ d_scheduler			scheduler_dispatch =
     NULL,
     NULL,
     NULL,
-    glue_scheduler_init,
+    glue_scheduler_initialize,
     glue_scheduler_clean
   };
 
@@ -90,12 +90,12 @@ t_error			glue_scheduler_yield(i_cpu			cpuid)
 
 
 /*
- * this function initialises the scheduler manager.
+ * this function initializes the scheduler manager.
  *
- * initialise a new timer and fpu exception.
+ * initialize a new timer and fpu exception.
  */
 
-t_error			glue_scheduler_init(void)
+t_error			glue_scheduler_initialize(void)
 {
   SCHEDULER_ENTER(scheduler);
 

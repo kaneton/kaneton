@@ -52,7 +52,7 @@ class cl_functions:
   we will have found in the diverse files.
   """
   def __init__(self):
-    self.di_files = {} # initialise file dictionnary
+    self.di_files = {} # initialize file dictionnary
     self.beginning = []
     self.ending = []
     self.filenames = []

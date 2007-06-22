@@ -276,7 +276,7 @@ t_error			map_resize(i_as			asid,
  * 1) allocate the manager structure.
  */
 
-t_error			map_init(void)
+t_error			map_initialize(void)
 {
   /*
    * 1)

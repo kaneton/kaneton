@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/io.c
+ * file          /home/mycure/kaneton/kaneton/machine/glue/ibm-pc.ia32/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:35 2006]
- * updated       matthieu bucchianeri   [sun jun 17 16:57:44 2007]
+ * updated       julien quintard   [fri jun 22 18:33:16 2007]
  */
 
 /*
@@ -59,7 +59,7 @@ d_io		io_dispatch =
     NULL,
     NULL,
     NULL,
-    glue_io_init,
+    glue_io_initialize,
     NULL
   };
 
@@ -101,10 +101,10 @@ t_error			glue_io_deny(i_port			id,
 
 
 /*
- * this function initialise the I/O manager.
+ * this function initialize the I/O manager.
  */
 
-t_error			glue_io_init(void)
+t_error			glue_io_initialize(void)
 {
   IO_ENTER(io);
 

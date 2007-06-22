@@ -204,9 +204,9 @@ void			cons_msg(char				indicator,
 }
 
 /*
- * this function just initialises the bootloader console.
+ * this function just initializes the bootloader console.
  *
- * this function also initialises the printf function to work with the
+ * this function also initializes the printf function to work with the
  * console.
  */
 
@@ -224,7 +224,7 @@ t_error			cons_init(void)
 }
 
 /*
- * this function just reinitialises the bootloader console.
+ * this function just reinitializes the bootloader console.
  *
  * there is nothing special to do.
  */

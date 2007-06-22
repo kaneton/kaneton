@@ -157,7 +157,7 @@ void myputc(char ch, FILE *f)
   ntokens++;
 }
 
-void initialise_lists(void)
+void initialize_lists(void)
 {
   memset(idlist, 0, LIST_SIZE);
 
@@ -178,7 +178,7 @@ void reset_comments(void)
   for (i=1; i<LIST_SIZE; i++) {
     if (idlist[i]) free(idlist[i]);
   }
-  initialise_lists();
+  initialize_lists();
 }
 
 /* Output an identifer token together with its index

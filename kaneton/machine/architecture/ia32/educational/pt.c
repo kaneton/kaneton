@@ -59,7 +59,7 @@ t_error			ia32_pt_dump(t_ia32_pte*		tab)
  * steps:
  *
  * 1) checks address encoding.
- * 2) initialises the structure.
+ * 2) initializes the structure.
  * 3) clears the table if necessary.
  */
 

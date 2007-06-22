@@ -997,7 +997,7 @@ t_error			as_clone(i_task				tskid,
  * steps:
  *
  * 1) gets the task object.
- * 2) initialises the address space object.
+ * 2) initializes the address space object.
  * 3) reserves an identifier for the address space object.
  * 4) reserves the set of segments for the new address space object.
  * 5) reserves the set of regions for the new address space object.
@@ -1197,22 +1197,22 @@ t_error			as_get(i_as				asid,
 }
 
 /*
- * this function initialises the address space manager.
+ * this function initializes the address space manager.
  *
- * this function takes care of initialising and builing the kernel
+ * this function takes care of initializing and builing the kernel
  * address space.
  *
  * steps:
  *
- * 1) allocates and initialises the address space manager structure.
- * 2) initialises the identifier object to be able to generate
+ * 1) allocates and initializes the address space manager structure.
+ * 2) initializes the identifier object to be able to generate
  *    the address space identifiers.
  * 3) reserves the addres space set which will contain the address space
  *    built later.
  * 4) calls the machine-dependent code.
  */
 
-t_error			as_init(void)
+t_error			as_initialize(void)
 {
   /*
    * 1)
@@ -1234,7 +1234,7 @@ t_error			as_init(void)
 
   if (id_build(&as->id) != ERROR_NONE)
     {
-      cons_msg('!', "as: unable to initialise the identifier object\n");
+      cons_msg('!', "as: unable to initialize the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -1255,14 +1255,14 @@ t_error			as_init(void)
    * 4)
    */
 
-  if (machine_call(as, as_init) != ERROR_NONE)
+  if (machine_call(as, as_initialize) != ERROR_NONE)
     AS_LEAVE(as, ERROR_UNKNOWN);
 
   return (ERROR_NONE);
 }
 
 /*
- * this function just reinitialises the address space manager.
+ * this function just reinitializes the address space manager.
  *
  * steps:
  *

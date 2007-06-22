@@ -270,17 +270,17 @@ t_error			cpu_get(i_cpu				id,
 }
 
 /*
- * this function initialises the cpu manager.
+ * this function initializes the cpu manager.
  *
  * steps:
  *
  * 1) allocate some memory for the manager structure.
- * 2) initialise a statistic object.
- * 3) initialise the cpu set.
+ * 2) initialize a statistic object.
+ * 3) initialize the cpu set.
  * 4) call the machine dependent code.
  */
 
-t_error			cpu_init(void)
+t_error			cpu_initialize(void)
 {
   t_uint32		i;
 
@@ -333,7 +333,7 @@ t_error			cpu_init(void)
    * 4)
    */
 
-  if (machine_call(cpu, cpu_init) != ERROR_NONE)
+  if (machine_call(cpu, cpu_initialize) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);

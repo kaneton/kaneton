@@ -120,7 +120,7 @@ static t_error		debug_recv(void)
 }
 
 /*
- * this function just initialises the debug manager.
+ * this function just initializes the debug manager.
  *
  * steps:
  *
@@ -129,7 +129,7 @@ static t_error		debug_recv(void)
  * 3) receive and parse commands.
  */
 
-t_error			debug_init(void)
+t_error			debug_initialize(void)
 {
   /*
    * 1)

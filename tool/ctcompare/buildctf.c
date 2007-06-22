@@ -14,7 +14,7 @@
 #include "tokens.h"
 
 extern void reset_comments(void);
-extern void initialise_lists(void);
+extern void initialize_lists(void);
 extern int yylex(void);
 extern void yyrestart(FILE *input_file );
 
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 
   /* Output the ctf header */
   fputs("ctf", zout); fputc(0x1, zout); fputc(0x2, zout);
-  initialise_lists();
+  initialize_lists();
 
   /* Now search for files to tokenise */
   dirlist[0] = argv[1]; dirlist[1] = NULL;

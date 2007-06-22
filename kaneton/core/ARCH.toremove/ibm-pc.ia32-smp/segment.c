@@ -454,11 +454,11 @@ t_error			ia32_segment_perms(i_segment		segid,
 /*                                                                 [cut] /k1 */
 
 /*
- * this function just initialises the machine-dependent segment manager.
+ * this function just initializes the machine-dependent segment manager.
  *
  * steps:
  *
- * 1) initialise protected-mode.
+ * 1) initialize protected-mode.
  * 2) insert code and data segments for kernel task.
  * 3) insert code and data segments for drivers.
  * 4) insert code and data segments for services.

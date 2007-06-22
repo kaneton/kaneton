@@ -50,7 +50,7 @@ usage()
 #
 # BUILD
 #
-# initialise the grub boot device.
+# initialize the grub boot device.
 #
 build()
 {
@@ -241,8 +241,8 @@ ACTION="${1}"
 # choose what to do.
 case ${ACTION} in
   "build")
-    # initialising the boot system.
-    display " initialising the boot system" "+"
+    # initializing the boot system.
+    display " initializing the boot system" "+"
     display "" ""
 
     # calls the warning function.
@@ -253,8 +253,8 @@ case ${ACTION} in
 
     ;;
   "install")
-    # initialising the boot system.
-    display " initialising the boot system" "+"
+    # initializing the boot system.
+    display " initializing the boot system" "+"
     display "" ""
 
     # calls the warning function.
@@ -281,8 +281,8 @@ case ${ACTION} in
     ;;
 esac
 
-# boot system initialised.
-display " boot system initialised successfully" "+"
+# boot system initialized.
+display " boot system initialized successfully" "+"
 
 # displays some stuff.
 display "" ""

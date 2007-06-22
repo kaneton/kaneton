@@ -182,7 +182,7 @@ t_error			io_write_64(i_task			task,
 }
 
 /*
- * this function initialises the io manager.
+ * this function initializes the io manager.
  *
  * steps:
  *
@@ -190,7 +190,7 @@ t_error			io_write_64(i_task			task,
  * 2) call the machine dependent code.
  */
 
-t_error			io_init(void)
+t_error			io_initialize(void)
 {
   /*
    * 1)

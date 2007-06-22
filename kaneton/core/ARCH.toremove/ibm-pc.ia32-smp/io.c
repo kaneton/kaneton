@@ -503,7 +503,7 @@ t_error			ia32_io_write_64(i_task			task,
 }
 
 /*
- * this function initialise the I/O manager.
+ * this function initialize the I/O manager.
  *
  * steps:
  *

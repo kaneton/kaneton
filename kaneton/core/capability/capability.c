@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sun jun  3 19:48:52 2007]
- * updated       julien quintard   [sun jun 10 19:05:38 2007]
+ * updated       julien quintard   [fri jun 22 18:22:33 2007]
  */
 
 /*
@@ -531,7 +531,7 @@ t_error			capability_verify(t_capability*		provided)
  * Init
  */
 
-t_error			capability_init(void)
+t_error			capability_initialize(void)
 {
   /*
    * 1)

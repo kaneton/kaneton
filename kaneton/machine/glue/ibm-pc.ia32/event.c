@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...kaneton/machine/glue/ibm-pc.ia32/event.c
+ * file          /home/mycure/kane...kaneton/machine/glue/ibm-pc.ia32/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [sun jun 17 19:36:57 2007]
+ * updated       julien quintard   [fri jun 22 18:32:51 2007]
  */
 
 /*
@@ -43,7 +43,7 @@ d_event				event_dispatch =
     NULL,
     glue_event_reserve,
     glue_event_release,
-    glue_event_init,
+    glue_event_initialize,
     glue_event_clean
 /*								   [cut] /k2 */
   };
@@ -99,7 +99,7 @@ static void		pf_handler(t_id				id,
     ;
 }
 
-t_error			glue_event_init(void)
+t_error			glue_event_initialize(void)
 {
   EVENT_ENTER(event);
 

@@ -65,7 +65,7 @@ void			bootloader_error(void)
  *
  * steps:
  *
- * 1) initialises the console and checks the magic number.
+ * 1) initializes the console and checks the magic number.
  * 2) relocates binaries, data, stack
  * 3) installs the protected mode.
  * 4) installs the paging mode.

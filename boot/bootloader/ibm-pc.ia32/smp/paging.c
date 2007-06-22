@@ -51,11 +51,11 @@ t_ia32_table		pt;
 /*                                                                  [cut] k1 */
 
 /*
- * this function initialises the paging.
+ * this function initializes the paging.
  *
  * steps:
  *
- * 1) allocates and initialises the page directory.
+ * 1) allocates and initializes the page directory.
  * 2) sets the page directory address into the init variable.
  * 3) installs the identity mapping via the first page table.
  * 4) map the APIC registers memory.

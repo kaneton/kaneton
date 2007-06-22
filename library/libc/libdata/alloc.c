@@ -606,7 +606,7 @@ void			alloc_setup(t_pfn_map_reserve		freserve,
 }
 
 /*
- * this function initialises the allocator.
+ * this function initializes the allocator.
  *
  * the arguments addr and size specify a kind of survival area. the kernel
  * will call this allocator to dynamically reserve memory while no

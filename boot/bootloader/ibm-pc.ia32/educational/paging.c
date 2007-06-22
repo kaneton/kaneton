@@ -45,11 +45,11 @@ t_ia32_table		pt;
  */
 
 /*
- * this function initialises the paging.
+ * this function initializes the paging.
  *
  * steps:
  *
- * 1) allocate and initialise the page directory.
+ * 1) allocate and initialize the page directory.
  * 2) set the page directory address into the init variable.
  * 3) install the identity mapping via the first page table.
  * 4) install extra identity mapping to be able to map the kernel code,

@@ -274,9 +274,9 @@ void			ia32_sched_switch_mmx(t_id			id)
 }
 
 /*
- * this function initialises the scheduler manager.
+ * this function initializes the scheduler manager.
  *
- * initialise a new timer.
+ * initialize a new timer.
  */
 
 t_error			ia32_sched_init(void)

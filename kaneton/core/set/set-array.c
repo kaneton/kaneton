@@ -334,7 +334,7 @@ t_error			set_next_array(i_set			setid,
  *
  * 1) computes the new size for the array
  * 2) expands the array
- * 3) initialises created slots
+ * 3) initializes created slots
  */
 
 static t_error		set_expand_array(o_set			*o,
@@ -1287,9 +1287,9 @@ t_error			set_object_array(i_set		setid,
  * steps:
  *
  * 1) checks options for the array.
- * 2) initialises the set descriptor.
+ * 2) initializes the set descriptor.
  * 3) if necessary, reserves an unused identifier for this new set.
- * 4) initialises the set fields allocating the array.
+ * 4) initializes the set fields allocating the array.
  * 5) adds the set descriptor in the set container.
  */
 

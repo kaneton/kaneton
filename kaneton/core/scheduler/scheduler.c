@@ -724,17 +724,17 @@ t_error			scheduler_update(i_thread			thread)
 /*                                                                [cut] /k3 */
 
 /*
- * this function initialises the scheduler manager.
+ * this function initializes the scheduler manager.
  *
  * steps:
  *
- * 1) allocate and initialises the scheduler manager structure.
+ * 1) allocate and initializes the scheduler manager structure.
  * 2) create the thread lists.
  * 3) create the kernel thread.
  * 4) call the machine-dependent code.
  */
 
-t_error			scheduler_init(void)
+t_error			scheduler_initialize(void)
 {
   int			i;
   t_iterator		it;
@@ -840,14 +840,14 @@ t_error			scheduler_init(void)
    * 4)
    */
 
-  if (machine_call(scheduler, scheduler_init) != ERROR_NONE)
+  if (machine_call(scheduler, scheduler_initialize) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);
 }
 
 /*
- * this function just reinitialises the scheduler manager.
+ * this function just reinitializes the scheduler manager.
  *
  * steps:
  *

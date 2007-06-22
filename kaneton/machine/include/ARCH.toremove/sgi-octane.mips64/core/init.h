@@ -26,7 +26,7 @@
 
 /*
  * the segments represent the physical memory areas to keep safe.
- * once the kernel will be launched, it will initialise its segment manager,
+ * once the kernel will be launched, it will initialize its segment manager,
  * in other words, its physical memory manager. the segments listed in the
  * init structure specify the areas to reserve because they are to be
  * never written.
@@ -41,12 +41,12 @@
 
 /*
  * the regions represent the physical memory to be mapped by the kernel.
- * once the kernel will have initialised its segment manager, it will
- * initialise its region manager, in other words, its virtual memory manager.
- * the regions specify the segments to map after the initialisation process.
+ * once the kernel will have initialized its segment manager, it will
+ * initialize its region manager, in other words, its virtual memory manager.
+ * the regions specify the segments to map after the initialization process.
  *
  * indeed, some segments do not need to be accessed by the kernel after
- * the kernel initialisation like the module structures, the segment
+ * the kernel initialization like the module structures, the segment
  * structures and the region structures.
  *
  * moreover, the kernel will rebuild a page directory so the page tables

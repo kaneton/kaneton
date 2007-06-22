@@ -31,7 +31,7 @@
  *
  * this structure will be passed to the kernel describing modules,
  * physical memory reserved by the hardware etc. thus the kernel will
- * be able to initialise its managers: segment manager, module manager etc.
+ * be able to initialize its managers: segment manager, module manager etc.
  */
 
 t_init*		init;

@@ -44,7 +44,7 @@ ap_boot_start:
 	mov es, ax		; set the es register
 	mov fs, ax		; set the fs register
 	mov gs, ax		; set the gs register
-	mov esp, 0x9000		; reinitialise the stack pointer
+	mov esp, 0x9000		; reinitialize the stack pointer
 
 	mov esi, 0x7FFC		; call the kernel ap init
 	mov edx, [esi]		; procedure

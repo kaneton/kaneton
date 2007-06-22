@@ -1166,20 +1166,20 @@ t_error			segment_get(i_segment			segid,
 }
 
 /*
- * this function initialises the segment manager from the init
+ * this function initializes the segment manager from the init
  * variable containing segments to keep safe.
  *
  * steps:
  *
- * 1) allocates and initialises the segment manager structure.
- * 2) initialises the segment manager structure fields from the init
+ * 1) allocates and initializes the segment manager structure.
+ * 2) initializes the segment manager structure fields from the init
  *    structure.
  * 3) reserves the segment set which will contain the system's segments.
  * 4) calls the machine-dependent code.
  * 5) if needed, dumps the segments.
  */
 
-t_error			segment_init(void)
+t_error			segment_initialize(void)
 {
   /*
    * 1)
@@ -1218,7 +1218,7 @@ t_error			segment_init(void)
    * 4)
    */
 
-  if (machine_call(segment, segment_init) != ERROR_NONE)
+  if (machine_call(segment, segment_initialize) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
@@ -1233,7 +1233,7 @@ t_error			segment_init(void)
 }
 
 /*
- * this function just reinitialises the segment manager.
+ * this function just reinitializes the segment manager.
  *
  * steps:
  *

@@ -689,19 +689,19 @@ t_error			region_get(i_as				asid,
 }
 
 /*
- * this function initialises the region manager from the init
+ * this function initializes the region manager from the init
  * variable containing regions to keep safe.
  *
  * steps:
  *
- * 1) allocates and initialises the region manager structure.
- * 2) initialises the region manager structure fields from the init
+ * 1) allocates and initializes the region manager structure.
+ * 2) initializes the region manager structure fields from the init
  *    structure.
  * 4) calls the machine-dependent code.
  */
 
-t_error			region_init(t_vaddr			start,
-				    t_vsize			size)
+t_error			region_initialize(t_vaddr		start,
+					  t_vsize		size)
 {
   /*
    * 1)
@@ -728,7 +728,7 @@ t_error			region_init(t_vaddr			start,
    * 3)
    */
 
-  if (machine_call(region, region_init, start, size) !=
+  if (machine_call(region, region_initialize, start, size) !=
       ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
@@ -736,7 +736,7 @@ t_error			region_init(t_vaddr			start,
 }
 
 /*
- * this function just reinitialises the region manager.
+ * this function just reinitializes the region manager.
  *
  * steps:
  *

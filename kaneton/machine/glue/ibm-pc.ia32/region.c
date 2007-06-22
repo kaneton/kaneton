@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...aneton/machine/glue/ibm-pc.ia32/region.c
+ * file          /home/mycure/kane...aneton/machine/glue/ibm-pc.ia32/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [sat jun 16 18:37:18 2007]
+ * updated       julien quintard   [fri jun 22 18:33:47 2007]
  */
 
 /*
@@ -56,7 +56,7 @@ d_region		region_dispatch =
     glue_region_reserve,
     glue_region_release,
     NULL,
-    glue_region_init,
+    glue_region_initialize,
     glue_region_clean
 /*                                                                 [cut] /k1 */
   };
@@ -118,11 +118,11 @@ t_error			glue_region_release(i_as		asid,
 }
 
 /*
- * this function just initialises the machine-dependent region manager.
+ * this function just initializes the machine-dependent region manager.
  */
 
-t_error			glue_region_init(t_vaddr		start,
-					 t_vsize		size)
+t_error			glue_region_initialize(t_vaddr		start,
+					       t_vsize		size)
 {
   REGION_ENTER(region);
 

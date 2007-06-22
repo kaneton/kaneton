@@ -787,18 +787,18 @@ t_error			thread_get(i_thread			threadid,
 }
 
 /*
- * initialise the thread manager.
+ * initialize the thread manager.
  *
  * steps:
  *
- * 1) allocate and initialise the thread manager.
- * 2) initialise the object identifier.
+ * 1) allocate and initialize the thread manager.
+ * 2) initialize the object identifier.
  * 3) reserve the thread set.
  * 4) call the machine-dependent code.
  * 5) dump the thread manager if debug is enabled.
  */
 
-t_error			thread_init(void)
+t_error			thread_initialize(void)
 {
   /*
    * 1)
@@ -820,7 +820,7 @@ t_error			thread_init(void)
 
   if (id_build(&thread->id) != ERROR_NONE)
     {
-      cons_msg('!', "thread: unable to initialise the identifier object\n");
+      cons_msg('!', "thread: unable to initialize the identifier object\n");
 
       return ERROR_UNKNOWN;
     }
@@ -841,7 +841,7 @@ t_error			thread_init(void)
    * 4)
    */
 
-  if (machine_call(thread, thread_init) != ERROR_NONE)
+  if (machine_call(thread, thread_initialize) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*

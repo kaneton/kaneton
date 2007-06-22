@@ -385,7 +385,7 @@ t_error			ia32_task_as_init(i_as		asid)
 }
 
 /*
- * this function just initialises the machine-dependent segment manager.
+ * this function just initializes the machine-dependent segment manager.
  *
  * steps:
  *

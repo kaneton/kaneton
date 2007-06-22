@@ -29,7 +29,7 @@ void	check_malloc_tests(void)
 }
 
 /*
- * initialise memory with generated data.
+ * initialize memory with generated data.
  */
 
 void		*check_init_memory(char *s, size_t sz)
@@ -48,7 +48,7 @@ void		*check_init_memory(char *s, size_t sz)
 
 /*
  * checks the alignment and the integrity of memory chunk.
- * the block must have been initialised with previous function.
+ * the block must have been initialized with previous function.
  */
 
 void		check_memory(char *s, size_t sz)

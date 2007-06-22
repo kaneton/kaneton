@@ -59,10 +59,10 @@ t_error			set_type_stack(i_set			setid)
  *
  * steps:
  *
- * 1) initialises the set descriptor.
+ * 1) initializes the set descriptor.
  * 2) avoids bad options.
  * 3) if necessary, reserves an unused identifier for this new set.
- * 4) initialises the set descriptor fields.
+ * 4) initializes the set descriptor fields.
  * 5) adds the set descriptor to the set container.
  */
 

@@ -57,30 +57,30 @@ extern i_as		kasid;
  */
 
 /*
- * this function simply initialises the kernel manager by initializing
+ * this function simply initializes the kernel manager by initializing
  * every manager.
  *
  * steps:
  *
  * 1) allocates and initializes the kernel manager structure.
- * 2) initialises the id manager.
- * 3) initialises the set manager.
- * 4) initialises the address space manager.
- * 5) initialises the segment manager.
- * 6) initialises the region manager.
- * 7) initialises the map manager
- * 8) initialises the task manager.
- * 9) initialises the thread manager.
- * 10) initialises the event manager.
- * 11) initialises the timer manager.
- * 12) initialises the io manager.
- * 13) initialises the message manager.
- * 14) initialises the capability manager.
- * 15) initialise the cpu manager.
- * 16) initialise the scheduler manager.
+ * 2) initializes the id manager.
+ * 3) initializes the set manager.
+ * 4) initializes the address space manager.
+ * 5) initializes the segment manager.
+ * 6) initializes the region manager.
+ * 7) initializes the map manager
+ * 8) initializes the task manager.
+ * 9) initializes the thread manager.
+ * 10) initializes the event manager.
+ * 11) initializes the timer manager.
+ * 12) initializes the io manager.
+ * 13) initializes the message manager.
+ * 14) initializes the capability manager.
+ * 15) initialize the cpu manager.
+ * 16) initialize the scheduler manager.
  */
 
-void			kernel_init(void)
+void			kernel_initialize(void)
 {
   /*
    * 1)
@@ -105,8 +105,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting id manager\n");
 
-  if (id_init() != ERROR_NONE)
-    core_error("cannot initialise the id manager\n");
+  if (id_initialize() != ERROR_NONE)
+    core_error("cannot initialize the id manager\n");
 
   /*
    * 3)
@@ -114,8 +114,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting set manager\n");
 
-  if (set_init() != ERROR_NONE)
-    core_error("cannot initialise the set manager\n");
+  if (set_initialize() != ERROR_NONE)
+    core_error("cannot initialize the set manager\n");
 
   /*
    * 4)
@@ -123,8 +123,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting as manager\n");
 
-  if (as_init() != ERROR_NONE)
-    core_error("cannot initialise the address space manager\n");
+  if (as_initialize() != ERROR_NONE)
+    core_error("cannot initialize the address space manager\n");
 
   /*
    * 5)
@@ -132,8 +132,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting segment manager\n");
 
-  if (segment_init() != ERROR_NONE)
-    core_error("cannot initialise the segment manager\n");
+  if (segment_initialize() != ERROR_NONE)
+    core_error("cannot initialize the segment manager\n");
 
   /*
    * 6)
@@ -141,9 +141,9 @@ void			kernel_init(void)
 
   cons_msg('+', "starting region manager\n");
 
-  if (region_init(REGION_VMEM_MIN, REGION_VMEM_MAX - REGION_VMEM_MIN) !=
-      ERROR_NONE)
-    core_error("cannot initialise the region manager\n");
+  if (region_initialize(REGION_VMEM_MIN, REGION_VMEM_MAX -
+			REGION_VMEM_MIN) != ERROR_NONE)
+    core_error("cannot initialize the region manager\n");
 
   /*
    * 7)
@@ -151,8 +151,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting map manager\n");
 
-  if (map_init() != ERROR_NONE)
-    core_error("cannot initialise the map manager\n");
+  if (map_initialize() != ERROR_NONE)
+    core_error("cannot initialize the map manager\n");
 
   /*
    * 8)
@@ -160,8 +160,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting task manager\n");
 
-  if (task_init() != ERROR_NONE)
-    core_error("cannot initialise the task manager\n");
+  if (task_initialize() != ERROR_NONE)
+    core_error("cannot initialize the task manager\n");
 
   alloc_setup(map_reserve, map_release, kasid);
 
@@ -171,8 +171,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting thread manager\n");
 
-  if (thread_init() != ERROR_NONE)
-    core_error("cannot initialise the thread manager\n");
+  if (thread_initialize() != ERROR_NONE)
+    core_error("cannot initialize the thread manager\n");
 
   /*
    * 10)
@@ -180,8 +180,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting event manager\n");
 
-  if (event_init() != ERROR_NONE)
-    core_error("cannot initialise the event manager\n");
+  if (event_initialize() != ERROR_NONE)
+    core_error("cannot initialize the event manager\n");
 
   /*
    * 11)
@@ -189,8 +189,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting timer manager\n");
 
-  if (timer_init() != ERROR_NONE)
-    core_error("cannot initialise the timer manager\n");
+  if (timer_initialize() != ERROR_NONE)
+    core_error("cannot initialize the timer manager\n");
 
   /*
    * 12)
@@ -198,8 +198,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting io manager\n");
 
-  if (io_init() != ERROR_NONE)
-    core_error("cannot initialise the io manager\n");
+  if (io_initialize() != ERROR_NONE)
+    core_error("cannot initialize the io manager\n");
 
   /*
    * 13)
@@ -207,8 +207,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting message manager\n");
 
-  if (message_init() != ERROR_NONE)
-    core_error("cannot initialise the message manager\n");
+  if (message_initialize() != ERROR_NONE)
+    core_error("cannot initialize the message manager\n");
 
   /*
    * 14)
@@ -216,8 +216,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting capability manager\n");
 
-  if (capability_init() != ERROR_NONE)
-    core_error("cannot initialise the capability manager\n");
+  if (capability_initialize() != ERROR_NONE)
+    core_error("cannot initialize the capability manager\n");
 
   /*
    * 15)
@@ -225,8 +225,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting cpu manager\n");
 
-  if (cpu_init() != ERROR_NONE)
-    core_error("cannot initialise the cpu manager\n");
+  if (cpu_initialize() != ERROR_NONE)
+    core_error("cannot initialize the cpu manager\n");
 
   /*
    * 16)
@@ -234,8 +234,8 @@ void			kernel_init(void)
 
   cons_msg('+', "starting scheduler manager\n");
 
-  if (scheduler_init() != ERROR_NONE)
-    core_error("cannot initialise the scheduler manager\n");
+  if (scheduler_initialize() != ERROR_NONE)
+    core_error("cannot initialize the scheduler manager\n");
 }
 
 /*

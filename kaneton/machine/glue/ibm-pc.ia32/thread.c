@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...aneton/machine/glue/ibm-pc.ia32/thread.c
+ * file          /home/mycure/kane...aneton/machine/glue/ibm-pc.ia32/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       matthieu bucchianeri   [sun jun 17 16:20:04 2007]
+ * updated       julien quintard   [fri jun 22 18:34:55 2007]
  */
 
 /*
@@ -70,7 +70,7 @@ d_thread			thread_dispatch =
     NULL,
     NULL,
     NULL,
-    glue_thread_init,
+    glue_thread_initialize,
     NULL
 
 /*                                                                 [cut] /k3 */
@@ -150,7 +150,7 @@ t_error			glue_thread_store(i_thread		threadid,
  * initialize the machdep related structures for the thread manager.
  */
 
-t_error			glue_thread_init(void)
+t_error			glue_thread_initialize(void)
 {
   THREAD_ENTER(thread);
 

@@ -173,7 +173,7 @@ t_error			set_type_bpt(i_set			setid)
  *
  * steps:
  *
- * 1) allocates and initialises the unused object.
+ * 1) allocates and initializes the unused object.
  * 2) builds the needed number of elements.
  */
 
@@ -519,7 +519,7 @@ t_error			set_after_bpt(i_set			setid,
  *
  * 1) checks for non-valid identifiers.
  * 2) gets the set descriptor object from its identifier.
- * 3) initialises the leaf entry.
+ * 3) initializes the leaf entry.
  * 4) handles the options: allocate or not the object.
  * 5) adjusts the bpt unused object to perform the next operation.
  * 6) adds the built leaf entry to the tree.
@@ -896,12 +896,12 @@ t_error			set_object_bpt(i_set			setid,
  *
  * steps:
  *
- * 1) initialises the set object.
+ * 1) initializes the set object.
  * 2) checks for the options.
  * 3) reserves a identifier for the new set.
- * 4) initialises the set object.
+ * 4) initializes the set object.
  * 5) builds the unused object for the bpt calls.
- * 6) calls the bpt_init() function which initialises the tree data structure.
+ * 6) calls the bpt_init() function which initializes the tree data structure.
  * 7) adds the new set object to the set container.
  */
 

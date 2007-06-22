@@ -79,8 +79,8 @@
  * elements will always be left shifted to fulfill the array by the left.
  *
  * the two macros SET_ENTER and SET_LEAVE are used to launch operations
- * entering and leaving each set manager functions excluding the set_init()
- * and set_clean() functions which install the manager.
+ * entering and leaving each set manager functions excluding the
+ * set_initialize() and set_clean() functions which install the manager.
  *
  * if a developer wants to add something at the start of each set manager's
  * function, he simply has to add his lines in the SET_ENTER macro located
@@ -327,7 +327,7 @@ t_error			set_get(i_set				setid,
 }
 
 /*
- * this function initialises the set manager.
+ * this function initializes the set manager.
  *
  * be careful, the container have to be build using the option SET_OPT_ALLOC.
  * if this option is not set, the entire set manager will not be able
@@ -335,7 +335,7 @@ t_error			set_get(i_set				setid,
  *
  * steps:
  *
- * 1) allocates and initialises the set manager structure.
+ * 1) allocates and initializes the set manager structure.
  * 2) builds the identifier object used to generate set identifiers.
  * 3) reserves an identifier for the container.
  * 4) reserves the set container which will contain the set descriptors
@@ -344,7 +344,7 @@ t_error			set_get(i_set				setid,
  * 5) if necessary, dumps the set container.
  */
 
-t_error			set_init(void)
+t_error			set_initialize(void)
 {
   i_set			needless;
 
@@ -368,7 +368,7 @@ t_error			set_init(void)
 
   if (id_build(&set->id) != ERROR_NONE)
     {
-      cons_msg('!', "set: unable to initialise the identifier object\n");
+      cons_msg('!', "set: unable to initialize the identifier object\n");
 
       return (ERROR_UNKNOWN);
     }
@@ -408,7 +408,7 @@ t_error			set_init(void)
 }
 
 /*
- * this function just reinitialises the set manager.
+ * this function just reinitializes the set manager.
  *
  * steps:
  *
