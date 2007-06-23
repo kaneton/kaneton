@@ -1564,7 +1564,7 @@ A blocking function is a function which does not return until the
 action is totally performed. As a non-blocking function does not certify
 that the action has been performed when the function returns, that is to
 say we don't know if the given buffer has been entirely read/written. With
-non-blocking functions, sending/receiving buffers are securely accessible
+non-blocking functions, sending/receiving buffers are not securely accessible
 until we are not assured that the message is copied somewhere. Functions
 \textit{message\_wait}() and \textit{message\_status}() are provided for
 this.
@@ -1584,9 +1584,9 @@ tasks, used types must be registered.
 
 \begin{itemize}
 \function{message\_send}{(i\_task \argument{caller},
-			  i\_node \argument{dest},
+			  i\_node \argument{destination},
 			  t\_type \argument{type},
-			  t\_vaddr \argument{msg})}
+			  t\_vaddr \argument{message})}
 	 {
 	   This function performs an Asynchronous send.
 	   This function is Blocking.
@@ -1595,7 +1595,7 @@ tasks, used types must be registered.
 
 	     Identifier of the sending task.
 
-	   \item \argument{dest}
+	   \item \argument{destination}
 
 	     Destination task of the message in the distributed system.
 
@@ -1603,16 +1603,16 @@ tasks, used types must be registered.
 
 	     Registerd type of the the message to send.
 
-	   \item \argument{msg}
+	   \item \argument{message}
 
 	     Virtual adress of the message to send in the
 	     \argument{caller}'s adress space
 	 }
 
 \function{message\_transmit}{(i\_task \argument{caller},
-			     i\_node \argument{dest},
+			     i\_node \argument{destination},
 			     t\_type \argument{type},
-			     t\_vaddr \argument{msg})}
+			     t\_vaddr \argument{message})}
 	 {
 	   This function performs a Synchronous send.
 	   This function is Blocking.
@@ -1621,7 +1621,7 @@ tasks, used types must be registered.
 
 	     Identifier of the sending task.
 
-	   \item \argument{dest}
+	   \item \argument{destination}
 
 	     Destination task of the message in the distributed system.
 
@@ -1629,17 +1629,17 @@ tasks, used types must be registered.
 
 	     Registerd type of the the message to send.
 
-	   \item \argument{msg}
+	   \item \argument{message}
 
 	     Virtual adress of the message to send in the
 	     \argument{caller}'s adress space
 	 }
 
 \function{message\_throw}{(i\_task \argument{caller},
-			   i\_node \argument{dest},
+			   i\_node \argument{destination},
 			   t\_type \argument{type},
-			   t\_vaddr \argument{msg},
-			   t\_message\_request* \argument{rq})}
+			   t\_vaddr \argument{message},
+			   t\_message\_request* \argument{request})}
 	 {
 	   This function performs an Asynchronous send.
 	   This function is Non-Blocking.
@@ -1653,7 +1653,7 @@ tasks, used types must be registered.
 
 	     Identifier of the sending task.
 
-	   \item \argument{dest}
+	   \item \argument{destination}
 
 	     Destination task of the message in the distributed system.
 
@@ -1661,19 +1661,19 @@ tasks, used types must be registered.
 
 	     Registerd type of the the message to send.
 
-	   \item \argument{msg}
+	   \item \argument{message}
 
 	     Virtual adress of the message to send in the
 	     \argument{caller}'s adress space
 
-	   \item \argument{rq}
+	   \item \argument{request}
 
 	     Handle to the message transmission.
 	 }
 
 \function{message\_receive}{(i\_task \argument{caller},
 			     t\_type \argument{type},
-			     t\_vaddr \argument{buff},
+			     t\_vaddr \argument{message},
 			     i\_node* \argument{sender})}
 	 {
 	   This function performs a receive. This function is Blocking and
@@ -1687,7 +1687,7 @@ tasks, used types must be registered.
 
 	     Registered type of the the message to receive.
 
-	   \item \argument{buff}
+	   \item \argument{message}
 
 	     Virtual adress of the receiving buffer in the
 	     \argument{caller}'s adress space
@@ -1699,7 +1699,7 @@ tasks, used types must be registered.
 
 \function{message\_poll}{(i\_task \argument{caller},
 			  t\_type \argument{type},
-			  t\_vaddr \argument{buff},
+			  t\_vaddr \argument{message},
 			  i\_node* \argument{sender})}
 	 {
 	   This function performs a receive. This function is Blocking and
@@ -1713,7 +1713,7 @@ tasks, used types must be registered.
 
 	     Registerd type of the the message to receive.
 
-	   \item \argument{buff}
+	   \item \argument{message}
 
 	     Virtual adress of the receiving buffer in the
 	     \argument{caller}'s adress space
@@ -1725,9 +1725,9 @@ tasks, used types must be registered.
 
 \function{message\_grab}{(i\_task \argument{caller},
 			  t\_type \argument{type},
-			  t\_vaddr \argument{buff},
+			  t\_vaddr \argument{message},
 			  i\_node* \argument{sender},
-			  t\_message\_request* \argument{rq})}
+			  t\_message\_request* \argument{request})}
 	 {
 	   This function performs a receive. This function is Non-Blocking.
 	     
@@ -1739,7 +1739,7 @@ tasks, used types must be registered.
 	     
 	     Registerd type of the the message to receive.
 
-	   \item \argument{buff}
+	   \item \argument{message}
 	     
 	     Virtual adress of the receiving buffer in the
 	     \argument{caller}'s adress space
@@ -1750,30 +1750,30 @@ tasks, used types must be registered.
 	     \textit{message\_state}() or \textit{message\_wait}() is
 	     called.
 
-	   \item \argument{rq}
+	   \item \argument{request}
 	     
 	     Handle to the message transmission.
 	 }
 
 \function{message\_register}{(i\_task \argument{task},
 			      t\_type \argument{type},
-			      t\_vsize \argument{msgsz})}
+			      t\_vsize \argument{size})}
 	 {
 	   Register for \argument{task} the type of message
-	   \argument{type} which is \argument{msgsz} bytes long.
+	   \argument{type} which is \argument{size} bytes long.
 	 }
 
-\function{message\_wait}{(t\_message\_request \argument{rq})}
+\function{message\_wait}{(t\_message\_request \argument{request})}
 	 {
 	   Blocks the calling task until the message request described by
-	   \argument{rq} is fully completed.
+	   \argument{request} is fully completed.
 	 }
 
 
-\function{message\_state}{(t\_message\_request \argument{rq})}
+\function{message\_state}{(t\_message\_request \argument{request})}
 	 {
 	   Returns an error if the message request described by
-	   \argument{rq} is not fully completed.
+	   \argument{request} is not fully completed.
 	 }
 
 \end{itemize}
