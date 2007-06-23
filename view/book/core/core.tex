@@ -1547,30 +1547,34 @@ supports a single microprocessor.}
 The \textbf{message manager} provides a complete interface to send and
 receive messages in many different ways.
 
-%A \textbf{message object} \textit{o\_message} represents a message in a
-%communication between two task entities. Each message object is identified
-%by a unique message identifier \textit{i\_message}.
-
 The kaneton message interface directly comes from standards in parallel
 and distributed programming.
 
 The message manager provides blocking and non-blocking functions,
 synchronous and asynchronous messages etc.
 
-A sychronous message is a very specific message which follows the
-\textit{rendez-vous} scheme. Therefore, the sender and the receiver
-must be ready before exchanging the message. Internally, a synchrnous
-message means that no kernel bufferization is used.
+A synchronous function is a function which does not permit the calling
+task to execute instructions until the message is fully copied to the 
+destination buffer.
+
+In a performance perpective, in Kaneton, kernel bufferization is avoided
+as much as possible.
 
 A blocking function is a function which does not return until the
-action is totally performed.
+action is totally performed. As a non-blocking function does not certify
+that the action has been performed when the function returns, that is to
+say we don't know if the given buffer has been entirely read/written. With
+non-blocking functions, sending/receiving buffers are securely accessible
+until we are not assured that the message is copied somewhere. Functions
+\textit{message\_wait}() and \textit{message\_status}() are provided for
+this.
 
-A tag (\textit{t\_tag}) is a 32-bit integer which permit to mark a message
-(as coming from a a specific task for example). Each tag is associated with
-a message size.
+The messaging primitives are accessible from userspace through syscalls,
+functions parameters are passed through CPU registers. Messages bound for
+the kernel are directly redirected to the interface manager.
 
-The special value \textit{MESSAGE\_TAG\_ANY} permits to send an untagged
-message or to receive a message marked with any tag.
+Each messages has a type which is associated with a message size. For each
+tasks, used types must be registered.
 
 %
 % interface
@@ -1578,141 +1582,205 @@ message or to receive a message marked with any tag.
 
 \subsubsection{Interface}
 
-%\function{message\_show}{(i\_message \argument{id})}
-%	 {
-%	   This function displays information on the message \argument{id}.
-%	 }
-
-\function{message\_dump}{(void)}
+\begin{itemize}
+\function{message\_send}{(i\_task \argument{caller},
+			  i\_node \argument{dest},
+			  t\_type \argument{type},
+			  t\_vaddr \argument{msg})}
 	 {
-	   This function displays information on all the pending messages.
+	   This function performs an Asynchronous send.
+	   This function is Blocking.
+
+	   \item \argument{caller}
+
+	     Identifier of the sending task.
+
+	   \item \argument{dest}
+
+	     Destination task of the message in the distributed system.
+
+	   \item \argument{type}
+
+	     Registerd type of the the message to send.
+
+	   \item \argument{msg}
+
+	     Virtual adress of the message to send in the
+	     \argument{caller}'s adress space
+	 }
+
+\function{message\_transmit}{(i\_task \argument{caller},
+			     i\_node \argument{dest},
+			     t\_type \argument{type},
+			     t\_vaddr \argument{msg})}
+	 {
+	   This function performs a Synchronous send.
+	   This function is Blocking.
+
+	   \item \argument{caller}
+
+	     Identifier of the sending task.
+
+	   \item \argument{dest}
+
+	     Destination task of the message in the distributed system.
+
+	   \item \argument{type}
+
+	     Registerd type of the the message to send.
+
+	   \item \argument{msg}
+
+	     Virtual adress of the message to send in the
+	     \argument{caller}'s adress space
+	 }
+
+\function{message\_throw}{(i\_task \argument{caller},
+			   i\_node \argument{dest},
+			   t\_type \argument{type},
+			   t\_vaddr \argument{msg},
+			   t\_message\_request* \argument{rq})}
+	 {
+	   This function performs an Asynchronous send.
+	   This function is Non-Blocking.
+
+	   On a mono-CPU system, and on implementations which does not
+	   support SMP, this function has no meaning. In these cases or for
+	   other reasons, \textit{message\_throw}() can be an alias for
+	   \textit{message\_send}.
+
+	   \item \argument{caller}
+
+	     Identifier of the sending task.
+
+	   \item \argument{dest}
+
+	     Destination task of the message in the distributed system.
+
+	   \item \argument{type}
+
+	     Registerd type of the the message to send.
+
+	   \item \argument{msg}
+
+	     Virtual adress of the message to send in the
+	     \argument{caller}'s adress space
+
+	   \item \argument{rq}
+
+	     Handle to the message transmission.
+	 }
+
+\function{message\_receive}{(i\_task \argument{caller},
+			     t\_type \argument{type},
+			     t\_vaddr \argument{buff},
+			     i\_node* \argument{sender})}
+	 {
+	   This function performs a receive. This function is Blocking and
+	   returns only when a message is copied into the receiving buffer.
+
+	   \item \argument{caller}
+
+	     Identifier of the receiving task.
+
+	   \item \argument{type}
+
+	     Registered type of the the message to receive.
+
+	   \item \argument{buff}
+
+	     Virtual adress of the receiving buffer in the
+	     \argument{caller}'s adress space
+
+	   \item \argument{sender}
+
+	     The sender of the message newly received
+	 }
+
+\function{message\_poll}{(i\_task \argument{caller},
+			  t\_type \argument{type},
+			  t\_vaddr \argument{buff},
+			  i\_node* \argument{sender})}
+	 {
+	   This function performs a receive. This function is Blocking and
+	   returns an error if no message is pending for the calling task.
+
+	   \item \argument{caller}
+
+	     Identifier of the receiving task.
+
+	   \item \argument{type}
+
+	     Registerd type of the the message to receive.
+
+	   \item \argument{buff}
+
+	     Virtual adress of the receiving buffer in the
+	     \argument{caller}'s adress space
+
+	   \item \argument{sender}
+
+	     The sender of the message newly received
+	 }
+
+\function{message\_grab}{(i\_task \argument{caller},
+			  t\_type \argument{type},
+			  t\_vaddr \argument{buff},
+			  i\_node* \argument{sender},
+			  t\_message\_request* \argument{rq})}
+	 {
+	   This function performs a receive. This function is Non-Blocking.
+	     
+	   \item \argument{caller}
+	     
+	     Identifier of the receiving task.
+
+	   \item \argument{type}
+	     
+	     Registerd type of the the message to receive.
+
+	   \item \argument{buff}
+	     
+	     Virtual adress of the receiving buffer in the
+	     \argument{caller}'s adress space
+	  
+	   \item \argument{sender}
+	     
+	     The sender of the message newly received, written only when
+	     \textit{message\_state}() or \textit{message\_wait}() is
+	     called.
+
+	   \item \argument{rq}
+	     
+	     Handle to the message transmission.
 	 }
 
 \function{message\_register}{(i\_task \argument{task},
-			      t\_tag \argument{tag},
-			      t\_vsize \argument{msg\_sz})}
+			      t\_type \argument{type},
+			      t\_vsize \argument{msgsz})}
 	 {
-	    
+	   Register for \argument{task} the type of message
+	   \argument{type} which is \argument{msgsz} bytes long.
 	 }
 
-\function{message\_size}{(i\_task \argument{task},
-			  t\_tag \argument{tag},
-			  t\_vsize* \argument{size})}
+\function{message\_wait}{(t\_message\_request \argument{rq})}
 	 {
-
+	   Blocks the calling task until the message request described by
+	   \argument{rq} is fully completed.
 	 }
 
-\function{message\_send}{(i\_node \argument{node},
-                          t\_tag \argument{tag},
-                          void* \argument{data})}
-	 {
-	   This blocking function sends the message described by
-	   \argument{data} to the node \argument{node}.
 
-	   The message is delivered asynchronously.
+\function{message\_state}{(t\_message\_request \argument{rq})}
+	 {
+	   Returns an error if the message request described by
+	   \argument{rq} is not fully completed.
 	 }
 
-\function{message\_throw}{(i\_node \argument{node},
-                           t\_tag \argument{tag},
-                           void* \argument{data})}
-	 {
-	   This non-blocking function sends the message described by
-	   \argument{data} to the node \argument{node}.
+\end{itemize}
 
-	   The message is delivered asynchronously.
-	 }
 
-\function{message\_transmit}{(i\_node \argument{node},
-                              t\_tag \argument{tag},
-                              void* \argument{data})}
-	 {
-	   This blocking function sends the message described by
-	   \argument{data} to the node \argument{node}.
-
-	   The message is delivered synchronously.
-	 }
-
-%\function{message\_post}{(i\_node \argument{node},
-%                          t\_tag \argument{tag},
-%                          void* \argument{data},
-%                          t\_size \argument{size},
-%                          i\_message* \argument{id})}
-%	 {
-%	   This non-blocking function sends \argument{size} bytes of
-%	   \argument{data} to the node \argument{node}.
-%
-%	   The message is delivered synchronously.
-%	 }
-
-%\function{message\_info}{(t\_message\_info \argument{info})}
-%	 {
-%	   This function returns information on the next pending message.
-%
-%	   This function was introduced to allow servers to handle
-%	   multiple different messages.
-%	 }
-
-\function{message\_receive}{(i\_node \argument{node},
-                             t\_tag \argument{tag},
-                             void* \argument{data})}
-	 {
-	   This blocking function receives a message in \argument{data}.
-	 }
-
-\function{message\_grab}{(i\_node \argument{node},
-                          t\_tag \argument{tag},
-                          void* \argument{data}}
-	 {
-	   This non-blocking function receives a message in \argument{data}.
-	 }
-
-%\function{message\_get}{(i\_message \argument{id},
-%                         t\_tag \argument{tag},
-%                         o\_message** \argument{o})}
-%	 {
-%	   This function returns in \argument{o} the message object
-%	   corresponding to \argument{id}.
-%	 }
-
-%\function{message\_flush}{(i\_task \argument{task})}
-%	 {
-%	   This function removes every message that belongs to the task
-%	   \argument{task}.
-%	 }
-
-\function{message\_init}{(void)}
-	 {
-	   This function initializes the message manager.
-	 }
-
-\function{message\_clean}{(void)}
-	 {
-	   This function cleans the message manager.
-	 }
-
-%\notice{The message manager's interface is not well defined yet.}
-
-% XXX
 \begin{comment}
 
-XXX on peut mettre un tag de 32-bit dans la majeure partie des cas ca
-  suffit et si le mec est aps content, il ne l utilise pas et se met un
-  tag dans le message. mais au final autant mettre direct le tag dans
-  le message. donc c est au mec de se demerder...
-
-message_request(): demande quelque chose
-message_reply(): repond a la request
-
-message_check|test(): test si on a recu le message
-message_wait(): attend un message
-
-XXX timeout
-
-message_control(): controler son interface de message
-
-XXX pas de signaux mais ils peuvent etre emules
-
-XXX task manager: init de la task kernel a partir du bootloader init
 
 \end{comment}
 
