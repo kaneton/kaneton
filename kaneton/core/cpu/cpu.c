@@ -487,7 +487,7 @@ void smp_test(void)
 
   CLI();
 
-  ipi_send_vector(48, ipi_all_but_me, 1);
+//  ipi_send_vector(48, ipi_all_but_me, 1);
 
   STI();
 }

@@ -55,17 +55,17 @@ static void		ia32_syscalls_async_send_handler(void)
 
   task_current(&source);
 
-  u.dword[0] = context->eax;
-  u.dword[1] = context->ebx;
-  u.dword[2] = context->ecx;
-  u.dword[3] = context->edx;
-  tag = context->esi;
-  ptr = context->edi;
-  size = context->ebp;
+  u.dword[0] = ia32_context->eax;
+  u.dword[1] = ia32_context->ebx;
+  u.dword[2] = ia32_context->ecx;
+  u.dword[3] = ia32_context->edx;
+  tag = ia32_context->esi;
+  ptr = ia32_context->edi;
+  size = ia32_context->ebp;
 
   ret = message_async_send(source, u.node, tag, ptr, size);
 
-  context->eax = ret;
+  ia32_context->eax = ret;
 }
 
 static void		ia32_syscalls_sync_send_handler(void)
@@ -86,20 +86,20 @@ static void		ia32_syscalls_sync_send_handler(void)
 
   scheduler_current(&syscall);
 
-  u.dword[0] = context->eax;
-  u.dword[1] = context->ebx;
-  u.dword[2] = context->ecx;
-  u.dword[3] = context->edx;
-  tag = context->esi;
-  ptr = context->edi;
-  size = context->ebp;
+  u.dword[0] = ia32_context->eax;
+  u.dword[1] = ia32_context->ebx;
+  u.dword[2] = ia32_context->ecx;
+  u.dword[3] = ia32_context->edx;
+  tag = ia32_context->esi;
+  ptr = ia32_context->edi;
+  size = ia32_context->ebp;
 
   ret = message_sync_send(source, u.node, tag, ptr, size);
 
   scheduler_current(&upcall);
 
   if (syscall == upcall)
-    context->eax = ret;
+    ia32_context->eax = ret;
 }
 
 static void		ia32_syscalls_async_recv_handler(void)
@@ -112,13 +112,13 @@ static void		ia32_syscalls_async_recv_handler(void)
 
   task_current(&source);
 
-  tag = context->eax;
-  ptr = context->ebx;
-  size = context->ecx;
+  tag = ia32_context->eax;
+  ptr = ia32_context->ebx;
+  size = ia32_context->ecx;
 
   ret = message_async_recv(source, tag, ptr, size);
 
-  context->eax = ret;
+  ia32_context->eax = ret;
 }
 
 static void		ia32_syscalls_sync_recv_handler(void)
@@ -135,17 +135,17 @@ static void		ia32_syscalls_sync_recv_handler(void)
 
   scheduler_current(&syscall);
 
-  tag = context->eax;
-  ptr = context->ebx;
-  size = context->ecx;
-  blocking = context->edx;
+  tag = ia32_context->eax;
+  ptr = ia32_context->ebx;
+  size = ia32_context->ecx;
+  blocking = ia32_context->edx;
 
   ret = message_sync_recv(source, tag, ptr, size, blocking);
 
   scheduler_current(&upcall);
 
   if (syscall == upcall)
-    context->eax = ret;
+    ia32_context->eax = ret;
 }
 
 t_error			ia32_setup_syscall_ret(i_thread		thread,

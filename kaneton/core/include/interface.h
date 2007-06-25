@@ -9,6 +9,15 @@
 #define CORE_INTERFACE_H	1
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/id.h>
+#include <core/types.h>
+
+#include <machine/machine.h>
+
+/*
  * ---------- macros ----------------------------------------------------------
  */
 
@@ -47,12 +56,12 @@
 #define INTERFACE_REGION_RESERVE 32
 #define INTERFACE_REGION_RELEASE 33
 #define INTERFACE_REGION_GET 34
-#define INTERFACE_SCHED_QUANTUM 35
-#define INTERFACE_SCHED_YIELD 36
-#define INTERFACE_SCHED_CURRENT 37
-#define INTERFACE_SCHED_ADD 38
-#define INTERFACE_SCHED_REMOVE 39
-#define INTERFACE_SCHED_UPDATE 40
+#define INTERFACE_SCHEDULER_QUANTUM 35
+#define INTERFACE_SCHEDULER_YIELD 36
+#define INTERFACE_SCHEDULER_CURRENT 37
+#define INTERFACE_SCHEDULER_ADD 38
+#define INTERFACE_SCHEDULER_REMOVE 39
+#define INTERFACE_SCHEDULER_UPDATE 40
 #define INTERFACE_SEGMENT_CLONE 41
 #define INTERFACE_SEGMENT_GIVE 42
 #define INTERFACE_SEGMENT_COPY 43
@@ -295,23 +304,23 @@ typedef struct
 	struct
 	{
 	  t_quantum	arg1;
-	}		sched_quantum;
+	}		scheduler_quantum;
 	struct
 	{
 	  i_cpu	arg1;
-	}		sched_yield;
+	}		scheduler_yield;
 	struct
 	{
 	  i_thread	arg1;
-	}		sched_add;
+	}		scheduler_add;
 	struct
 	{
 	  i_thread	arg1;
-	}		sched_remove;
+	}		scheduler_remove;
 	struct
 	{
 	  i_thread	arg1;
-	}		sched_update;
+	}		scheduler_update;
 	struct
 	{
 	  i_as	arg1;
@@ -548,7 +557,7 @@ typedef struct
 	struct
 	{
 	  i_thread	result1;
-	}		sched_current;
+	}		scheduler_current;
 	struct
 	{
 	  i_segment	result1;
@@ -615,160 +624,6 @@ typedef struct
  *
  *      ../../core/interface/interface.c
  */
-
-/*
- * ../../core/interface/interface.c
- */
-
-t_error		interface_as_give(o_syscall*	message);
-
-t_error		interface_as_vaddr(o_syscall*	message);
-
-t_error		interface_as_paddr(o_syscall*	message);
-
-t_error		interface_as_copy(o_syscall*	message);
-
-t_error		interface_as_clone(o_syscall*	message);
-
-t_error		interface_as_reserve(o_syscall*	message);
-
-t_error		interface_as_release(o_syscall*	message);
-
-t_error		interface_as_get(o_syscall*	message);
-
-t_error		interface_capability_reserve(o_syscall*	message);
-
-t_error		interface_capability_release(o_syscall*	message);
-
-t_error		interface_capability_restrict(o_syscall*	message);
-
-t_error		interface_capability_invalidate(o_syscall*	message);
-
-t_error		interface_capability_get(o_syscall*	message);
-
-t_error		interface_capability_give(o_syscall*	message);
-
-t_error		interface_capability_verify(o_syscall*	message);
-
-t_error		interface_event_reserve(o_syscall*	message);
-
-t_error		interface_event_release(o_syscall*	message);
-
-t_error		interface_event_get(o_syscall*	message);
-
-t_error		interface_io_grant(o_syscall*	message);
-
-t_error		interface_io_deny(o_syscall*	message);
-
-t_error		interface_io_read_8(o_syscall*	message);
-
-t_error		interface_io_read_16(o_syscall*	message);
-
-t_error		interface_io_read_32(o_syscall*	message);
-
-t_error		interface_io_read_64(o_syscall*	message);
-
-t_error		interface_io_write_8(o_syscall*	message);
-
-t_error		interface_io_write_16(o_syscall*	message);
-
-t_error		interface_io_write_32(o_syscall*	message);
-
-t_error		interface_io_write_64(o_syscall*	message);
-
-t_error		interface_map_reserve(o_syscall*	message);
-
-t_error		interface_map_release(o_syscall*	message);
-
-t_error		interface_map_resize(o_syscall*	message);
-
-t_error		interface_message_register(o_syscall*	message);
-
-t_error		interface_region_reserve(o_syscall*	message);
-
-t_error		interface_region_release(o_syscall*	message);
-
-t_error		interface_region_get(o_syscall*	message);
-
-t_error		interface_sched_quantum(o_syscall*	message);
-
-t_error		interface_sched_yield(o_syscall*	message);
-
-t_error		interface_sched_current(o_syscall*	message);
-
-t_error		interface_sched_add(o_syscall*	message);
-
-t_error		interface_sched_remove(o_syscall*	message);
-
-t_error		interface_sched_update(o_syscall*	message);
-
-t_error		interface_segment_clone(o_syscall*	message);
-
-t_error		interface_segment_give(o_syscall*	message);
-
-t_error		interface_segment_copy(o_syscall*	message);
-
-t_error		interface_segment_reserve(o_syscall*	message);
-
-t_error		interface_segment_release(o_syscall*	message);
-
-t_error		interface_segment_catch(o_syscall*	message);
-
-t_error		interface_segment_perms(o_syscall*	message);
-
-t_error		interface_segment_type(o_syscall*	message);
-
-t_error		interface_segment_get(o_syscall*	message);
-
-t_error		interface_task_current(o_syscall*	message);
-
-t_error		interface_task_clone(o_syscall*	message);
-
-t_error		interface_task_reserve(o_syscall*	message);
-
-t_error		interface_task_release(o_syscall*	message);
-
-t_error		interface_task_priority(o_syscall*	message);
-
-t_error		interface_task_state(o_syscall*	message);
-
-t_error		interface_task_wait(o_syscall*	message);
-
-t_error		interface_task_get(o_syscall*	message);
-
-t_error		interface_thread_give(o_syscall*	message);
-
-t_error		interface_thread_clone(o_syscall*	message);
-
-t_error		interface_thread_reserve(o_syscall*	message);
-
-t_error		interface_thread_release(o_syscall*	message);
-
-t_error		interface_thread_priority(o_syscall*	message);
-
-t_error		interface_thread_state(o_syscall*	message);
-
-t_error		interface_thread_stack(o_syscall*	message);
-
-t_error		interface_thread_load(o_syscall*	message);
-
-t_error		interface_thread_store(o_syscall*	message);
-
-t_error		interface_thread_get(o_syscall*	message);
-
-t_error		interface_timer_reserve(o_syscall*	message);
-
-t_error		interface_timer_release(o_syscall*	message);
-
-t_error		interface_timer_delay(o_syscall*	message);
-
-t_error		interface_timer_repeat(o_syscall*	message);
-
-t_error		interface_timer_modify(o_syscall*	message);
-
-t_error		interface_timer_get(o_syscall*	message);
-
-void			interface_loop(void);
 
 
 /*

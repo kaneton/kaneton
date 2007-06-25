@@ -223,7 +223,7 @@
         - (capability)
         - (out) o_region**
 -
-  manager: sched
+  manager: scheduler
   interface:
     -
       operation: quantum

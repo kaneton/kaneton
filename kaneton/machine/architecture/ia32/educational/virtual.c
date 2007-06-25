@@ -24,8 +24,8 @@
 
 extern t_init*		init;
 extern i_as		kasid;
-extern t_uint32		interrupt_pdbr;
-extern t_uint16		interrupt_ds;
+extern volatile t_uint32		ia32_interrupt_pdbr;
+extern volatile t_uint16		ia32_interrupt_ds;
 extern m_thread*	thread;
 extern t_ia32_idt	ia32_idt;
 extern t_ia32_gdt	ia32_gdt;
@@ -214,7 +214,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
    * 8)
    */
 
-  if (ia32_pd_get_cr3(&interrupt_pdbr,
+  if (ia32_pd_get_cr3(&ia32_interrupt_pdbr,
 		      o->machdep.pd,
 		      IA32_PD_CACHED,
 		      IA32_PD_WRITEBACK) != ERROR_NONE)
@@ -495,7 +495,7 @@ t_error			ia32_segmentation_init(void)
    * 6)
    */
 
-  interrupt_ds = kds;
+  ia32_interrupt_ds = kds;
 
   return (ERROR_NONE);
 }

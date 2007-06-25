@@ -178,4 +178,15 @@
 	       : "=a" (_data_)						\
 	       : "d" (_port_))
 
+/*
+ * aliases for platform.
+ */
+
+#define ARCHITECTURE_IN_8	INB
+#define ARCHITECTURE_IN_16	INW
+#define ARCHITECTURE_IN_32	INL
+#define ARCHITECTURE_OUT_8	OUTB
+#define ARCHITECTURE_OUT_16	OUTW
+#define ARCHITECTURE_OUT_32	OUTL
+
 #endif

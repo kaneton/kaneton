@@ -29,12 +29,6 @@
 /*                                                                  [cut] k2 */
 
 /*
- * ---------- macro -----------------------------------------------------------
- */
-
-#define UNUSED	__attribute__ ((unused))
-
-/*
  * ---------- externs ---------------------------------------------------------
  */
 
@@ -318,7 +312,7 @@ t_error			ia32_interrupt_vector_init(void)
 
 static void		spurious_interrupt(i_event			id)
 {
-  printf("Unhandled exception %qu @ %p\n", id, context->eip);
+  printf("Unhandled exception %qu @ %p\n", id, ia32_context->eip);
 
   while (1)
     ;
@@ -329,8 +323,8 @@ static void		spurious_interrupt(i_event			id)
  * it calls the user-defined handler.
  */
 
-static void UNUSED	handler_exception(t_uint32			nr,
-					  t_uint32			code)
+void			ia32_handler_exception(t_uint32			nr,
+					       t_uint32			code)
 {
   o_event*		o;
   i_event		id = nr;
@@ -353,7 +347,7 @@ static void UNUSED	handler_exception(t_uint32			nr,
  * call the user-defined handler.
  */
 
-static void UNUSED	handler_irq(t_uint32				nr)
+void			ia32_handler_irq(t_uint32			nr)
 {
   o_event*		o;
   i_event		id = IA32_IDT_IRQ_BASE + nr;
@@ -378,7 +372,7 @@ static void UNUSED	handler_irq(t_uint32				nr)
  * call the user-defined handler.
  */
 
-static void UNUSED	handler_ipi(t_uint32				nr)
+void			ia32_handler_ipi(t_uint32			nr)
 {
   o_event*		o;
   i_event		id = IA32_IDT_IPI_BASE + nr;
@@ -403,7 +397,7 @@ static void UNUSED	handler_ipi(t_uint32				nr)
  * user-defined handler.
  */
 
-static void UNUSED	handler_syscall(t_uint32			nr)
+void			ia32_handler_syscall(t_uint32			nr)
 {
   o_event*		o;
   i_event		id = IA32_IDT_SYSCALL_BASE + nr;

@@ -34,21 +34,21 @@
 	 "	pushl %edi				\n"		\
 	 "	movl %cr3, %eax				\n"		\
 	 "	pushl %eax				\n"		\
-	 "	movl interrupt_pdbr, %eax		\n"		\
+	 "	movl ia32_interrupt_pdbr, %eax		\n"		\
 	 "	movl %eax, %cr3				\n"		\
 	 "	pushw %ds				\n"		\
 	 "	pushw %es				\n"		\
 	 "	pushw %fs				\n"		\
 	 "	pushw %gs				\n"		\
-	 "	movl %esp, context			\n"		\
-	 "	movw interrupt_ds, %ax			\n"		\
+	 "	movl %esp, ia32_context			\n"		\
+	 "	movw ia32_interrupt_ds, %ax		\n"		\
 	 "	movw %ax, %ds				\n"		\
 	 "	movw %ax, %es				\n"		\
 	 "	movw %ax, %fs				\n"		\
 	 "	movw %ax, %gs				\n"
 
 #define IA32_RESTORE_CONTEXT()						\
-	 "	movl $0, context			\n"		\
+	 "	movl $0, ia32_context			\n"		\
 	 "	popw %gs				\n"		\
 	 "	popw %fs				\n"		\
 	 "	popw %es				\n"		\
@@ -197,13 +197,13 @@ typedef struct
  * global variable pointing the context.
  */
 
-extern t_ia32_context*	context;
+extern t_ia32_context*	ia32_context;
 
 /*
  * CPU capabilities from CPUID.
  */
 
-extern t_uint32		cpucaps;
+extern t_uint32		ia32_cpucaps;
 
 /*								[cut] /k3 */
 

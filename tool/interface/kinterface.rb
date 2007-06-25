@@ -98,9 +98,10 @@ def header_hinterface(f)
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <arch/machdep/machdep.h>
 #include <core/id.h>
 #include <core/types.h>
+
+#include <machine/machine.h>
 
 "
 end

@@ -655,14 +655,14 @@ t_error		interface_region_get(o_syscall*	message)
 }
 
 /*
- * this function launchs the sched_quantum() function.
+ * this function launchs the scheduler_quantum() function.
  */
 
-t_error		interface_sched_quantum(o_syscall*	message)
+t_error		interface_scheduler_quantum(o_syscall*	message)
 {
   t_error	error;
 
-  error = sched_quantum(message->u.request.u.sched_quantum.arg1);
+  error = scheduler_quantum(message->u.request.u.scheduler_quantum.arg1);
 
   message->u.reply.error = error;
 
@@ -670,14 +670,14 @@ t_error		interface_sched_quantum(o_syscall*	message)
 }
 
 /*
- * this function launchs the sched_yield() function.
+ * this function launchs the scheduler_yield() function.
  */
 
-t_error		interface_sched_yield(o_syscall*	message)
+t_error		interface_scheduler_yield(o_syscall*	message)
 {
   t_error	error;
 
-  error = sched_yield(message->u.request.u.sched_yield.arg1);
+  error = scheduler_yield(message->u.request.u.scheduler_yield.arg1);
 
   message->u.reply.error = error;
 
@@ -685,46 +685,31 @@ t_error		interface_sched_yield(o_syscall*	message)
 }
 
 /*
- * this function launchs the sched_current() function.
+ * this function launchs the scheduler_current() function.
  */
 
-t_error		interface_sched_current(o_syscall*	message)
+t_error		interface_scheduler_current(o_syscall*	message)
 {
   t_error	error;
   i_thread	result1;
 
-  error = sched_current(&result1);
+  error = scheduler_current(&result1);
 
   message->u.reply.error = error;
-  message->u.reply.u.sched_current.result1 = result1;
+  message->u.reply.u.scheduler_current.result1 = result1;
 
   return (ERROR_NONE);
 }
 
 /*
- * this function launchs the sched_add() function.
+ * this function launchs the scheduler_add() function.
  */
 
-t_error		interface_sched_add(o_syscall*	message)
+t_error		interface_scheduler_add(o_syscall*	message)
 {
   t_error	error;
 
-  error = sched_add(message->u.request.u.sched_add.arg1);
-
-  message->u.reply.error = error;
-
-  return (ERROR_NONE);
-}
-
-/*
- * this function launchs the sched_remove() function.
- */
-
-t_error		interface_sched_remove(o_syscall*	message)
-{
-  t_error	error;
-
-  error = sched_remove(message->u.request.u.sched_remove.arg1);
+  error = scheduler_add(message->u.request.u.scheduler_add.arg1);
 
   message->u.reply.error = error;
 
@@ -732,14 +717,29 @@ t_error		interface_sched_remove(o_syscall*	message)
 }
 
 /*
- * this function launchs the sched_update() function.
+ * this function launchs the scheduler_remove() function.
  */
 
-t_error		interface_sched_update(o_syscall*	message)
+t_error		interface_scheduler_remove(o_syscall*	message)
 {
   t_error	error;
 
-  error = sched_update(message->u.request.u.sched_update.arg1);
+  error = scheduler_remove(message->u.request.u.scheduler_remove.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the scheduler_update() function.
+ */
+
+t_error		interface_scheduler_update(o_syscall*	message)
+{
+  t_error	error;
+
+  error = scheduler_update(message->u.request.u.scheduler_update.arg1);
 
   message->u.reply.error = error;
 
@@ -1353,12 +1353,12 @@ t_interface_dispatch dispatch[] =
   interface_region_reserve,
   interface_region_release,
   interface_region_get,
-  interface_sched_quantum,
-  interface_sched_yield,
-  interface_sched_current,
-  interface_sched_add,
-  interface_sched_remove,
-  interface_sched_update,
+  interface_scheduler_quantum,
+  interface_scheduler_yield,
+  interface_scheduler_current,
+  interface_scheduler_add,
+  interface_scheduler_remove,
+  interface_scheduler_update,
   interface_segment_clone,
   interface_segment_give,
   interface_segment_copy,

@@ -61,7 +61,7 @@
 	 IA32_FORCE_RING0_SWITCH()					\
 	 "	pushl 40(%esp)				\n"		\
 	 "	pushl $" #nr "				\n"		\
-	 "	call handler_exception			\n"		\
+	 "	call ia32_handler_exception		\n"		\
 	 "	addl $8, %esp				\n"		\
 	 IA32_FORCE_RING0_BACK()					\
 	 IA32_RESTORE_CONTEXT()						\
@@ -77,7 +77,7 @@
 	 IA32_FORCE_RING0_SWITCH()					\
 	 "	pushl $0				\n"		\
 	 "	pushl $" #nr "				\n"		\
-	 "	call handler_exception			\n"		\
+	 "	call ia32_handler_exception		\n"		\
 	 "	addl $8, %esp				\n"		\
 	 IA32_FORCE_RING0_BACK()					\
 	 IA32_RESTORE_CONTEXT()						\
@@ -92,7 +92,7 @@
 	 IA32_SAVE_CONTEXT()						\
 	 IA32_FORCE_RING0_SWITCH()					\
 	 "	pushl $" #nr "				\n"		\
-	 "	call handler_irq			\n"		\
+	 "	call ia32_handler_irq			\n"		\
 	 "	addl $4, %esp				\n"		\
 	 IA32_FORCE_RING0_BACK()					\
 	 IA32_RESTORE_CONTEXT()						\
@@ -107,7 +107,7 @@
 	 IA32_SAVE_CONTEXT()						\
 	 IA32_FORCE_RING0_SWITCH()					\
 	 "	pushl $" #nr "				\n"		\
-	 "	call handler_ipi			\n"		\
+	 "	call ia32_handler_ipi			\n"		\
 	 "	addl $4, %esp				\n"		\
 	 IA32_FORCE_RING0_BACK()					\
 	 IA32_RESTORE_CONTEXT()						\
@@ -122,7 +122,7 @@
 	 IA32_SAVE_CONTEXT()						\
 	 IA32_FORCE_RING0_SWITCH()					\
 	 "	pushl $" #nr "				\n"		\
-	 "	call handler_syscall			\n"		\
+	 "	call ia32_handler_syscall		\n"		\
 	 "	addl $4, %esp				\n"		\
 	 IA32_FORCE_RING0_BACK()					\
 	 IA32_RESTORE_CONTEXT()						\
@@ -135,20 +135,20 @@
  */
 
 #define IA32_FORCE_RING0_SWITCH()					\
-  "	movl interrupt_stack, %eax			\n"		\
+  "	movl ia32_interrupt_stack, %eax			\n"		\
   "	testl %eax, %eax				\n"		\
   "	jz 1f						\n"		\
   "	movl 48(%esp), %eax				\n"		\
   "	andl $3, %eax					\n"		\
   "	jnz 1f						\n"		\
   "	pushl $64					\n"		\
-  "	pushl context					\n"		\
-  "	movl interrupt_stack, %eax			\n"		\
+  "	pushl ia32_context				\n"		\
+  "	movl ia32_interrupt_stack, %eax			\n"		\
   "	addl $-64, %eax					\n"		\
   "	pushl %eax					\n"		\
   "	call memcpy					\n"		\
   "	popl %ebx					\n"		\
-  "	movl %ebx, context				\n"		\
+  "	movl %ebx, ia32_context				\n"		\
   "	movw 6(%ebx), %ax				\n"		\
   "	movw %ax, 60(%ebx)				\n"		\
   "	popl %eax					\n"		\
@@ -163,7 +163,7 @@
  */
 
 #define IA32_FORCE_RING0_BACK()						\
-  "	movl interrupt_stack, %eax			\n"		\
+  "	movl ia32_interrupt_stack, %eax			\n"		\
   "	testl %eax, %eax				\n"		\
   "	jz 1f						\n"		\
   "	movl 48(%esp), %eax				\n"		\
@@ -172,12 +172,12 @@
   "	movl 56(%esp), %eax				\n"		\
   "	addl $-56, %eax					\n"		\
   "	push $56					\n"		\
-  "	push context					\n"		\
+  "	push ia32_context				\n"		\
   "	push %eax					\n"		\
   "	call memcpy					\n"		\
-  "	popl context					\n"		\
+  "	popl ia32_context				\n"		\
   "	addl $8, %esp					\n"		\
-  "	movl context, %esp				\n"		\
+  "	movl ia32_context, %esp				\n"		\
   "1:							\n"
 
 #define IA32_CALL_HANDLER(_handler_, ...)				\

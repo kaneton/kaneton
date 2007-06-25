@@ -374,7 +374,7 @@ t_error			ia32_init_context(i_task		taskid,
    * 7)
    */
 
-  if (cpucaps & IA32_CAPS_SSE)
+  if (ia32_cpucaps & IA32_CAPS_SSE)
     memset(&o->machdep.u.sse, 0, sizeof(t_sse_state));
   else
     memset(&o->machdep.u.x87, 0, sizeof(t_x87_state));
@@ -400,7 +400,7 @@ t_error			ia32_duplicate_context(i_thread		old,
   memcpy(&(to->machdep.context), &(from->machdep.context),
 	 sizeof(t_ia32_context));
 
-  if (cpucaps & IA32_CAPS_SSE)
+  if (ia32_cpucaps & IA32_CAPS_SSE)
     memcpy(&to->machdep.u.sse, &from->machdep.u.sse, sizeof(t_sse_state));
   else
     memcpy(&to->machdep.u.x87, &from->machdep.u.x87, sizeof(t_x87_state));
@@ -537,7 +537,7 @@ t_error			ia32_context_switch(i_thread		current,
   o_thread*		to;
   o_task*		task;
 
-  if (!context)
+  if (ia32_context == NULL)
     {
       cons_msg('!', "unable to switch context in this state\n");
 
@@ -561,7 +561,7 @@ t_error			ia32_context_switch(i_thread		current,
       if (thread_get(current, &from) != ERROR_NONE)
 	return (ERROR_UNKNOWN);
 
-      ia32_context_copy(&from->machdep.context, context);
+      ia32_context_copy(&from->machdep.context, ia32_context);
     }
 
   /*
@@ -571,7 +571,7 @@ t_error			ia32_context_switch(i_thread		current,
   if (thread_get(elected, &to) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  ia32_context_copy(context, &to->machdep.context);
+  ia32_context_copy(ia32_context, &to->machdep.context);
 
   /*
    * 4)
@@ -625,7 +625,7 @@ t_error			ia32_extended_context_switch(i_thread	current,
   if (thread_get(current, &old) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  if (cpucaps & IA32_CAPS_SSE)
+  if (ia32_cpucaps & IA32_CAPS_SSE)
     {
       /*
        * 2)

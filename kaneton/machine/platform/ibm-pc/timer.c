@@ -23,6 +23,7 @@
 #include <libc.h>
 
 #include <platform/platform.h>
+#include <architecture/architecture.h>
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -64,9 +65,9 @@ t_error			ibmpc_timer_init(void)
    * 3)
    */
 
-  OUTB(IBMPC_PIT_8254_CTRL, 0x34);
-  OUTB(IBMPC_TIMER_0, latch & 0xFF);
-  OUTB(IBMPC_TIMER_0, (latch >> 8) & 0xFF);
+  ARCHITECTURE_OUT_8(IBMPC_PIT_8254_CTRL, 0x34);
+  ARCHITECTURE_OUT_8(IBMPC_TIMER_0, latch & 0xFF);
+  ARCHITECTURE_OUT_8(IBMPC_TIMER_0, (latch >> 8) & 0xFF);
 
   return ERROR_NONE;
 }

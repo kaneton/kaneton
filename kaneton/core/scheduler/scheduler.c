@@ -506,6 +506,11 @@ t_error			scheduler_switch(void)
   if (cpu_stats(cpuid, scheduler->quantum) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
+/*  char activity[20];
+  sprintf(activity, "thread%qu", elected);
+  if (view_signal(activity) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+*/
 //  ipi_send_vector(48, ipi_all_but_me, 1);
 
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
