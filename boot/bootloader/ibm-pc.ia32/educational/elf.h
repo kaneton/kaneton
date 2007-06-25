@@ -47,8 +47,6 @@
  *	http://www.sco.com/developer/gabi/latest/ch4.eheader.html
  */
 
-#include <machine/machine.h>
-
 typedef	t_uint8  	Elf_Byte;
 
 typedef	t_uint32	Elf32_Addr;

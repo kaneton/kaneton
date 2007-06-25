@@ -13,9 +13,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
-#include <kaneton.h>
-
 #include "bootloader.h"
 
 /*
@@ -60,7 +57,7 @@ void			bootloader_pmode_init(void)
    */
 
   if (gdt_build(PMODE_GDT_ENTRIES,
-		bootloader_init_alloc(PMODE_GDT_ENTRIES *
+		bootloader_init_alloc(IA32_PMODE_GDT_ENTRIES *
 				      sizeof(t_ia32_gdte), NULL),
 		&gdt, 1) != ERROR_NONE)
     {
@@ -104,17 +101,22 @@ void			bootloader_pmode_init(void)
    * 3)
    */
 
-  gdt_build_selector(PMODE_BOOTLOADER_CS, ia32_prvl_supervisor, &kcs);
-  gdt_build_selector(PMODE_BOOTLOADER_DS, ia32_prvl_supervisor, &kds);
+  gdt_build_selector(IA32_PMODE_BOOTLOADER_CS, ia32_prvl_supervisor, &kcs);
+  gdt_build_selector(IA32_PMODE_BOOTLOADER_DS, ia32_prvl_supervisor, &kds);
   pmode_set_segment_registers(kcs, kds);
 
-  pmode_enable();
+  asm volatile("movl %%cr0, %%eax\n\t"
+	       "orw $1, %%ax\n\t"
+	       "movl %%eax, %%cr0\n\t"
+	       :
+	       :
+	       : "%eax");
 
   /*
    * 4)
    */
 
-  WBINVD();
+  asm volatile("wbinvd");
 
   asm volatile("movl %cr0, %eax\n\t"
 	       "andl $0x3FFFFFFF, %eax\n\t"

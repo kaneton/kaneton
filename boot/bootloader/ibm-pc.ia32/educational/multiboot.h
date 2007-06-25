@@ -9,8 +9,8 @@
  * updated       julien quintard   [fri mar 10 03:54:06 2006]
  */
 
-#ifndef IA32_IA32_MULTIBOOT_H
-#define IA32_IA32_MULTIBOOT_H	1
+#ifndef BOOTLOADER_MULTIBOOT_H
+#define BOOTLOADER_MULTIBOOT_H	1
 
 /*
  * ---------- macros ----------------------------------------------------------

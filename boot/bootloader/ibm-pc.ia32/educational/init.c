@@ -13,9 +13,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
-#include <kaneton.h>
-
 #include "bootloader.h"
 
 /*
@@ -131,18 +128,22 @@ void			bootloader_init_dump(void)
 		      init->allocsz);
 
   bootloader_cons_msg('#', " %#~ia32%# global offset table: 0x%x (%u bytes)\n",
-		      CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) |
-		      CONS_INT,
-		      CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) |
-		      CONS_INT,
+		      IBMPC_CONS_FRONT(IBMPC_CONS_CYAN) |
+		      IBMPC_CONS_BACK(IBMPC_CONS_BLACK) |
+		      IBMPC_CONS_INT,
+		      IBMPC_CONS_FRONT(IBMPC_CONS_WHITE) |
+		      IBMPC_CONS_BACK(IBMPC_CONS_BLACK) |
+		      IBMPC_CONS_INT,
 		      init->machdep.gdt.descriptor,
 		      init->machdep.gdt.count);
 
   bootloader_cons_msg('#', " %#~ia32%# page directory: 0x%x\n",
-		      CONS_FRONT(CONS_CYAN) | CONS_BACK(CONS_BLACK) |
-		      CONS_INT,
-		      CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) |
-		      CONS_INT,
+		      IBMPC_CONS_FRONT(IBMPC_CONS_CYAN) |
+		      IBMPC_CONS_BACK(IBMPC_CONS_BLACK) |
+		      IBMPC_CONS_INT,
+		      IBMPC_CONS_FRONT(IBMPC_CONS_WHITE) |
+		      IBMPC_CONS_BACK(IBMPC_CONS_BLACK) |
+		      IBMPC_CONS_INT,
 		      init->machdep.pd);
 }
 

@@ -13,9 +13,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
-#include <kaneton.h>
-
 #include "bootloader.h"
 
 /*

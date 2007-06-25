@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...tloader/ibm-pc.ia32/educational/Makefile
+# file          /home/buckman/kan...tloader/ibm-pc.ia32/educational/Makefile
 #
 # created       julien quintard   [tue jun 12 20:34:41 2007]
-# updated       julien quintard   [fri jun 22 02:15:45 2007]
+# updated       matthieu bucchianeri   [mon jun 25 23:01:33 2007]
 #
 
 #
@@ -33,7 +33,8 @@ BOOTLOADER_C		:=		bootloader.c			\
 					cons.c				\
 					init.c				\
 					paging.c			\
-					pmode.c
+					pmode.c				\
+					libia32.c
 
 BOOTLOADER_ASM		:=		multiboot.asm
 
@@ -43,7 +44,9 @@ BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
 					$(BOOTLOADER_ASM:.asm=.o)	\
 					$(BOOTLOADER_S:.S=.o)
 
-BOOTLOADER_INCLUDE	:=		bootloader.h
+BOOTLOADER_INCLUDE	:=		bootloader.h			\
+					cons.h				\
+					libia32.h
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -52,8 +55,7 @@ BOOTLOADER_INCLUDE	:=		bootloader.h
 main:			$(BOOTLOADER)
 
 $(BOOTLOADER):		$(BOOTLOADER_O)
-	$(call env_executable,$(BOOTLOADER),$(BOOTLOADER_O)		\
-	         $(_LIBIA32_A_) $(_KLIBC_A_),				\
+	$(call env_executable,$(BOOTLOADER),$(BOOTLOADER_O),		\
 	         "--link-script $(_MACHDEP_LINK_DIR_)/bootloader.lks"	\
                  "--no-standard-include"				\
                  "--no-standard-library")

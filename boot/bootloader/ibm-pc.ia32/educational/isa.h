@@ -9,8 +9,8 @@
  * updated       julien quintard   [fri mar 10 03:54:19 2006]
  */
 
-#ifndef IA32_IA32_ISA_H
-#define IA32_IA32_ISA_H		1
+#ifndef PLATFORM_ISA_H
+#define PLATFORM_ISA_H		1
 
 /*
  * ---------- macros ----------------------------------------------------------

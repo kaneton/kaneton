@@ -13,13 +13,25 @@
 #define BOOTLOADER_H		1
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <core/types.h>
+#include <core/init.h>
+
+#include "multiboot.h"
+#include "isa.h"
+#include "elf.h"
+#include "libia32.h"
+
+/*
  * ---------- macros ----------------------------------------------------------
  */
 
-#define PMODE_GDT_ENTRIES	256
+#define IA32_PMODE_GDT_ENTRIES		256
 
-#define PMODE_BOOTLOADER_CS	0x1
-#define PMODE_BOOTLOADER_DS	0x2
+#define IA32_PMODE_BOOTLOADER_CS	0x1
+#define IA32_PMODE_BOOTLOADER_DS	0x2
 
 /*
  * ---------- prototypes ------------------------------------------------------

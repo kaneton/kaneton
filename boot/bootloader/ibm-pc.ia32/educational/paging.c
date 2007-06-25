@@ -13,9 +13,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
-#include <kaneton.h>
-
 #include "bootloader.h"
 
 /*
@@ -124,8 +121,8 @@ void			bootloader_paging_init(void)
       if (pd_get_table(&pd, PDE_ENTRY(addr), &pt) != ERROR_NONE)
 	{
 	  if (pt_build(bootloader_init_alloc(PT_MAX_ENTRIES *
-					     sizeof(t_ia32_pte),
-					     NULL), &pt, 1) != ERROR_NONE)
+						  sizeof(t_ia32_pte),
+						  NULL), &pt, 1) != ERROR_NONE)
 	    {
 	      printf("cannot build a page-table\n");
 	      bootloader_error();
@@ -154,5 +151,10 @@ void			bootloader_paging_init(void)
    * 6)
    */
 
-  paging_enable();
+  asm volatile("movl %%cr0, %%eax\n\t"
+	       "orl $0x80000000, %%eax\n\t"
+	       "movl %%eax, %%cr0\n\t"
+	       :
+	       :
+	       : "%eax", "memory");
 }
