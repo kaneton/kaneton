@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [tue jun 26 11:30:12 2007]
+# updated       julien quintard   [tue jun 26 17:21:54 2007]
 #
 
 #
@@ -39,8 +39,16 @@ _MAKE_			?=		$(MAKE)
 #
 
 ifeq ($(_SIGNATURE_),kaneton)
-  main:			kaneton
+
+PATHS			=		$(dir $(_INPUTS_))
+
+  main:
+	for path in $(PATHS) ; do					\
+	  $(call env_launch,$${path}/Makefile,,)			; \
+	done
+
 else
+
   main									\
   kaneton clear								\
   prototypes								\
@@ -55,6 +63,7 @@ else
   clean									\
   view-% export-% cheat-% play-% record-%:	initialize
 	$(_MAKE_) -f Makefile $@
+
 endif
 
 #
