@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kan...tloader/ibm-pc.ia32/educational/Makefile
+# file          /home/mycure/kane...tloader/ibm-pc.ia32/educational/Makefile
 #
 # created       julien quintard   [tue jun 12 20:34:41 2007]
-# updated       matthieu bucchianeri   [mon jun 25 23:01:33 2007]
+# updated       julien quintard   [tue jun 26 15:38:12 2007]
 #
 
 #

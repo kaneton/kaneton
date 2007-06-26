@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/kaneton/core/cpu/Makefile
-##
-## created       matthieu bucchianeri   [sat jun 17 19:36:16 2006]
-## updated       matthieu bucchianeri   [sat may  5 18:42:39 2007]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/cpu/Makefile
+#
+# created       julien quintard   [tue jun 26 15:43:35 2007]
+# updated       julien quintard   [tue jun 26 15:44:05 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,7 +21,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main clear prototypes headers
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -38,9 +40,9 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			$(_CPU_LO_)
+main:			dependencies $(_CPU_LO_)
 
-$(_CPU_LO_):		$(CPU_O)
+$(_CPU_LO_):		$(CPU_O) $(_LIBC_A_)
 	$(call env_remove,$(_CPU_LO_),)
 
 	$(call env_archive,$(_CPU_LO_),$(CPU_O),)
@@ -59,6 +61,9 @@ headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(CPU_C),)
+
+dependencies:
+	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 #
 # ---------- dependencies -----------------------------------------------------

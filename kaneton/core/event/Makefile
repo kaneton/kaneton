@@ -19,7 +19,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main clear prototypes headers
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -37,9 +37,9 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			$(_EVENT_LO_)
+main:			dependencies $(_EVENT_LO_)
 
-$(_EVENT_LO_):		$(EVENT_O)
+$(_EVENT_LO_):		$(EVENT_O) $(_LIBC_A_)
 	$(call env_remove,$(_EVENT_LO_),)
 
 	$(call env_archive,$(_EVENT_LO_),$(EVENT_O),)
@@ -58,6 +58,9 @@ headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(EVENT_C),)
+
+dependencies:
+	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 #
 # ---------- dependencies -----------------------------------------------------

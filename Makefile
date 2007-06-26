@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/Makefile
-##
-## created       julien quintard   [sun nov 20 14:06:01 2005]
-## updated       matthieu bucchianeri   [sat may  5 20:38:36 2007]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kanetno
+#
+# file          /home/mycure/kaneton/Makefile
+#
+# created       julien quintard   [tue jun 26 11:27:22 2007]
+# updated       julien quintard   [tue jun 26 11:30:12 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/machine/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [fri jun 22 18:03:21 2007]
+# updated       julien quintard   [tue jun 26 15:54:59 2007]
 #
 
 #
@@ -35,9 +35,9 @@ SUBDIRS			:=		architecture			\
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			$(_MACHINE_LO_)
+main:			dependencies $(_MACHINE_LO_)
 
-$(_MACHINE_LO_):	dependencies
+$(_MACHINE_LO_):	$(_GLUE_LO_) $(_ARCHITECTURE_LO_) $(_PLATFORM_LO_)
 	$(call env_remove,$(_MACHINE_LO_),)
 
 	$(call env_archive,$(_MACHINE_LO_),				\

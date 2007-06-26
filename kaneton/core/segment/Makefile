@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/core/segment/Makefile
 #
 # created       julien quintard   [sun jun 10 17:02:46 2007]
-# updated       julien quintard   [fri jun 22 02:36:55 2007]
+# updated       julien quintard   [tue jun 26 15:51:45 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main clear prototypes headers
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -40,9 +40,9 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			$(_SEGMENT_LO_)
+main:			dependencies $(_SEGMENT_LO_)
 
-$(_SEGMENT_LO_):	$(SEGMENT_O)
+$(_SEGMENT_LO_):	$(SEGMENT_O) $(_LIBC_A_)
 	$(call env_remove,$(_SEGMENT_LO_),)
 
 	$(call env_archive,$(_SEGMENT_LO_),$(SEGMENT_O),)
@@ -61,6 +61,9 @@ headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(SEGMENT_C),)
+
+dependencies:
+	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 #
 # ---------- dependencies -----------------------------------------------------

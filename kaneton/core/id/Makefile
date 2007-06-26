@@ -19,7 +19,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main clear prototypes headers
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -37,9 +37,9 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			$(_ID_LO_)
+main:			dependencies $(_ID_LO_)
 
-$(_ID_LO_):		$(ID_O)
+$(_ID_LO_):		$(ID_O) $(_LIBC_A_)
 	$(call env_remove,$(_ID_LO_),)
 
 	$(call env_archive,$(_ID_LO_),$(ID_O),)
@@ -58,6 +58,9 @@ headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(ID_C),)
+
+dependencies:
+	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 #
 # ---------- dependencies -----------------------------------------------------

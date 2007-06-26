@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/kaneton/core/Makefile
-##
-## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue may  8 13:05:45 2007]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/Makefile
+#
+# created       julien quintard   [tue jun 26 15:39:11 2007]
+# updated       julien quintard   [tue jun 26 15:41:34 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -87,10 +89,13 @@ VERSION_O		:=		$(VERSION_C:.c=.o)
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			$(_CORE_LO_)
+main:			dependencies $(_CORE_LO_)
 
-$(_CORE_LO_):		dependencies $(CORE_O)
+$(_CORE_LO_):		$(CORE_O) $(KANETON_LO) $(_LIBC_A_)
 	$(call env_remove,$(_CORE_LO_),)
+
+	$(call env_version,$(VERSION_C))
+	$(call env_compile-c,$(VERSION_O),$(VERSION_C),)
 
 	$(call env_archive,$(_CORE_LO_),$(CORE_O)			\
 					$(VERSION_O)			\
@@ -133,9 +138,6 @@ dependencies:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,,)				; \
 	done
-
-	$(call env_version,$(VERSION_C))
-	$(call env_compile-c,$(VERSION_O),$(VERSION_C),)
 
 #
 # ---------- dependencies -----------------------------------------------------

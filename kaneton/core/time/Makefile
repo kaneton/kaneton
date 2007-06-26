@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/core/time/Makefile
 #
 # created       julien quintard   [sun jun 10 17:11:24 2007]
-# updated       julien quintard   [sun jun 10 17:11:56 2007]
+# updated       julien quintard   [tue jun 26 15:53:21 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main clear prototypes headers
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -39,9 +39,9 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			$(_TIME_LO_)
+main:			dependencies $(_TIME_LO_)
 
-$(_TIME_LO_):		$(TIME_O)
+$(_TIME_LO_):		$(TIME_O) $(_LIBC_A_)
 	$(call env_remove,$(_TIME_LO_),)
 
 	$(call env_archive,$(_TIME_LO_),$(TIME_O),)
@@ -60,6 +60,9 @@ headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(TIME_C),)
+
+dependencies:
+	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 #
 # ---------- dependencies -----------------------------------------------------

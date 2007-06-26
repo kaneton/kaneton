@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/library/libc/Makefile
 #
 # created       julien quintard   [sun jun 10 14:14:02 2007]
-# updated       julien quintard   [fri jun 22 18:05:06 2007]
+# updated       julien quintard   [tue jun 26 15:37:07 2007]
 #
 
 #
@@ -37,9 +37,9 @@ LIBSYS_LO		:=		libsys/libsys.lo
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			$(_LIBC_A_)
+main:			dependencies $(_LIBC_A_)
 
-$(_LIBC_A_):		dependencies
+$(_LIBC_A_):		$(LIBDATA_LO) $(LIBSTRING_LO) $(LIBSYS_LO)
 	$(call env_remove,$(_LIBC_A_),)
 
 	$(call env_static-library,$(_LIBC_A_),				\

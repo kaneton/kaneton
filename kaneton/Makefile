@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [fri jun 22 18:04:15 2007]
+# updated       julien quintard   [tue jun 26 15:55:37 2007]
 #
 
 #
@@ -34,9 +34,9 @@ SUBDIRS			:=		core				\
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			$(_KANETON_)
+main:			dependencies $(_KANETON_)
 
-$(_KANETON_):		dependencies
+$(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_)
 	$(call env_remove,$(_KANETON_),)
 
 	$(call env_executable,$(_KANETON_),				\

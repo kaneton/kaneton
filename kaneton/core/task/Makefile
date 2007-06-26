@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/kaneton/core/task/Makefile
 #
 # created       julien quintard   [sun jun 10 17:09:05 2007]
-# updated       julien quintard   [sun jun 10 17:09:34 2007]
+# updated       julien quintard   [tue jun 26 15:52:24 2007]
 #
 
 #
@@ -21,7 +21,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main clear prototypes headers
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -39,7 +39,7 @@ CFLAGS			+=		-D___kernel
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			$(_TASK_LO_)
+main:			dependencies $(_TASK_LO_)
 
 $(_TASK_LO_):		$(TASK_O)
 	$(call env_remove,$(_TASK_LO_),)
@@ -60,6 +60,9 @@ headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(TASK_C),)
+
+dependencies:
+	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 #
 # ---------- dependencies -----------------------------------------------------

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/environment/profile/environment/boot.desc
+# file          /home/mycure/kaneton/environment/profile/user/boot.desc
 #
 # created       julien quintard   [tue may  8 13:00:28 2007]
-# updated       julien quintard   [tue may  8 13:00:47 2007]
+# updated       julien quintard   [tue jun 26 15:20:39 2007]
 #
 
 #
@@ -16,3 +16,8 @@
 #
 # XXX
 #
+
+# XXX
+#
+# _BOOT_MODE_ = { peripheral, network, image }
+# _BOOT_DEVICE = { floppy, hard-drive }
