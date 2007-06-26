@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [sat jun  9 23:03:44 2007]
+# updated       julien quintard   [tue jun 26 17:02:31 2007]
 #
 
 #
@@ -59,6 +59,7 @@ OPTION_FLICKERING = 2
 OPTION_FILE = 1
 OPTION_DIRECTORY = 2
 OPTION_RECURSIVE = 3
+OPTION_EXIST = 4
 OPTION_ALL = OPTION_FILE | OPTION_DIRECTORY
 
 OPTION_READ = 1
@@ -319,6 +320,8 @@ def			path(path, options):
     return os.path.basename(path)
   if options == OPTION_DIRECTORY:
     return os.path.dirname(path)
+  if options == OPTION_EXIST:
+    return os.path.exists(path)
 
   return None
 

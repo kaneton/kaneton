@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [sun jun 10 21:59:03 2007]
+# updated       julien quintard   [tue jun 26 16:56:43 2007]
 #
 
 #
@@ -145,7 +145,7 @@ def			load(file, device, path, options):
 
   if options == OPTION_IMAGE:
     launch(_MCOPY_, "-o -n " + "-i" + device + " " +
-           file + " ::/" + path, OPTION_NONE)
+           file + " ::" + path, OPTION_NONE)
 
 
 
