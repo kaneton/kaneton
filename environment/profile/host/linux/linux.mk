@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [sat jun 23 18:15:12 2007]
+# updated       julien quintard   [thu jun 28 14:05:57 2007]
 #
 
 #
@@ -160,9 +160,13 @@ define env_launch
     Makefile)								\
       $(_MAKE_) $${launch_options} -f $${file} $(_MAKE_FLAGS_) ${2}	; \
       ;;								\
-  esac									&& \
+  esac									; \
+  return=$${?}								&& \
   if [ $${directory} != "." ] ; then					\
     $(_CD_) $${cwd}							; \
+  fi									&& \
+  if [ $${return} -ne 0 ] ; then					\
+    $(_EXIT_) 42							; \
   fi
 endef
 
