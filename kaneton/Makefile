@@ -8,8 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [tue jun 26 15:55:37 2007]
+# updated       julien quintard   [thu jun 28 20:19:09 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		kaneton
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -33,6 +39,7 @@ SUBDIRS			:=		core				\
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_KANETON_)
 
@@ -67,3 +74,5 @@ dependencies:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,,)				; \
 	done
+
+endif

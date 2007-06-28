@@ -80,9 +80,6 @@ l'endianness dans mod_load
  generation des capabilities.
 
 --
- virer les CFLAGS = ___kernel c'est trop laid/specifique
-
---
  ce serait interessant de rajouter un ensemble 'slab' qui ne se baserait
  pas sur malloc.
 
@@ -350,9 +347,13 @@ la rapidite et la memoire prise par ces messages.
 
 machine doit specifier:
  - les types: t_reg{8,16,32,64}
- - ___endian, ___wordsz
- - PAGESZ
  - tous les machine_data{o_*, init, etc.}
+ - ENDIAN base sur ___kaneton$endian
+ - WORDSZ base sur ___kaneton$wordsz
+ - PAGESZ base sur ___kaneton$pagesz
+
+___kaneton$kernel
+___kaneton (sera defini pour les applis user aussi mais sans ___kaneton$kernel)
 
 tout ca doit etre dit dans le book kaneton.
 
@@ -403,18 +404,6 @@ recuperer les trucs dans conf.h: CONF_ENABLE_CHECK, CONF_MACHDEP_DEBUG,
 CONSOLE_FILE dans kaneton/core/debug/ a gerer!
 
 gerer TEST dans kaneton/Makefile: minimum de code, propre etc.
-
-les macros genre ___OpenBSD c'est defini dans la libc pour les applis.
-donc nous on a juste besoin de ___kernel pour la libc et ___wordsz etc.
-une bonne idee sera de les definir dans l'environment plutot que dans
-l'arch de sorte que libc en profite.
-
-pour la gestion de reconfiguration des Makefiles on peut juste faire ca:
-
-  component = kaneton | bootstrap | bootloader | libc
-
-et compile-c s'adapte en rajoutant des options... genre si ca passe dans
-core -> libc -> libstring on aura simplement: component = core:libc
 
 dans configure/critical.py checker si env.py est accessible, si non et
 que variables OK alors demander de faire make!

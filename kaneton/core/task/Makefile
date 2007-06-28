@@ -8,8 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/task/Makefile
 #
 # created       julien quintard   [sun jun 10 17:09:05 2007]
-# updated       julien quintard   [tue jun 26 15:52:24 2007]
+# updated       julien quintard   [thu jun 28 20:38:35 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		task
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -33,11 +39,10 @@ TASK_O			:=		$(TASK_C:.c=.o)
 
 TASK_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/task.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_TASK_LO_)
 
@@ -64,6 +69,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

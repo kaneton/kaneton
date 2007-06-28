@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [fri jun 22 17:51:03 2007]
+# updated       julien quintard   [thu jun 28 20:39:31 2007]
 #
 
 #
@@ -176,3 +176,23 @@ endef
 define env_display
   $(call env_display-$(1),$(2),$(3),$(4),$(5))
 endef
+
+#
+# ---------- component-based behaviour ----------------------------------------
+#
+
+#
+# behaviour
+#
+
+behaviour		:=		default
+
+#
+# components
+#
+
+ifeq ($(call findstring,$(component),$(components)),)
+  components		+=		$(component)
+endif
+
+export components

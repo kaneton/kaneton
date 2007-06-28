@@ -8,8 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/Makefile
 #
 # created       julien quintard   [tue jun 26 15:39:11 2007]
-# updated       julien quintard   [tue jun 26 15:41:34 2007]
+# updated       julien quintard   [thu jun 28 19:58:38 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		core
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -75,10 +81,6 @@ CORE_C			:=		core.c
 
 CORE_O			:=		$(CORE_C:.c=.o)
 
-# core variables XXX ugly: to correct
-
-_CC_FLAGS_		+=		-D___kernel
-
 # version file
 
 VERSION_C		:=		version.c
@@ -88,6 +90,7 @@ VERSION_O		:=		$(VERSION_C:.c=.o)
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_CORE_LO_)
 
@@ -139,6 +142,7 @@ dependencies:
 	  $(call env_launch,$${d}/Makefile,,)				; \
 	done
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

@@ -8,8 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/thread/Makefile
 #
 # created       julien quintard   [sun jun 10 17:10:24 2007]
-# updated       julien quintard   [tue jun 26 15:53:02 2007]
+# updated       julien quintard   [thu jun 28 20:38:25 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		thread
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -33,11 +39,10 @@ THREAD_O		:=		$(THREAD_C:.c=.o)
 
 THREAD_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/thread.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_THREAD_LO_)
 
@@ -64,6 +69,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

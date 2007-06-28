@@ -1,13 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/libs/crt/Makefile
-##
-## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:47:55 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/library/crt/Makefile
+#
+# created       julien quintard   [thu jun 28 19:52:18 2007]
+# updated       julien quintard   [thu jun 28 19:52:50 2007]
+#
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		crt
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -34,6 +42,7 @@ CRT_INCLUDE		:=
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			$(_CRT_A_)
 
@@ -54,6 +63,7 @@ headers:
 
 	$(call env_headers,$(CRT_C),)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

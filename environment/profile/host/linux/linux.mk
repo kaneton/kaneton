@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [thu jun 28 14:05:57 2007]
+# updated       julien quintard   [thu jun 28 23:09:16 2007]
 #
 
 #
@@ -144,7 +144,7 @@ define env_launch
   cwd=$$($(_PWD_))							&& \
   directory=$$($(_DIRNAME_) $(1))					&& \
   file=$$($(_BASENAME_) $(1))						&& \
-  if [ $${directory} != "." ] ; then					\
+  if [ "$${directory}" != "." ] ; then					\
     $(_CD_) $${directory}						; \
   fi									&& \
   case "$${file}" in							\
@@ -162,7 +162,7 @@ define env_launch
       ;;								\
   esac									; \
   return=$${?}								&& \
-  if [ $${directory} != "." ] ; then					\
+  if [ "$${directory}" != "." ] ; then					\
     $(_CD_) $${cwd}							; \
   fi									&& \
   if [ $${return} -ne 0 ] ; then					\
@@ -458,3 +458,15 @@ define env_view
   $(call env_display,yellow,VIEW,$(1),			,)		&& \
   $(_XPDF_) $(1).pdf
 endef
+
+#
+# ---------- component-based behaviour ----------------------------------------
+#
+
+#
+# meta definitions
+#
+
+ifneq ($(call findstring,kaneton,$(components)),)
+  _CC_FLAGS_		+=		-D___kaneton$$\kernel
+endif

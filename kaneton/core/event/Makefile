@@ -1,13 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/kaneton/core/event/Makefile
-##
-## created       julien quintard   [sat dec 10 13:50:17 2005]
-## updated       julien quintard   [sat apr  1 23:40:07 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/event/Makefile
+#
+# created       julien quintard   [thu jun 28 20:32:08 2007]
+# updated       julien quintard   [thu jun 28 20:44:45 2007]
+#
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		event
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -31,11 +39,10 @@ EVENT_O			:=		$(EVENT_C:.c=.o)
 
 EVENT_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/event.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_EVENT_LO_)
 
@@ -62,6 +69,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

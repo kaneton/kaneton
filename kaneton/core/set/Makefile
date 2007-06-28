@@ -8,8 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/set/Makefile
 #
 # created       julien quintard   [sun jun 10 17:04:39 2007]
-# updated       julien quintard   [tue jun 26 15:52:08 2007]
+# updated       julien quintard   [thu jun 28 20:40:28 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		set
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -38,11 +44,10 @@ SET_O			:=		$(SET_C:.c=.o)
 
 SET_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/set.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_SET_LO_)
 
@@ -69,6 +74,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

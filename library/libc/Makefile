@@ -8,8 +8,14 @@
 # file          /home/mycure/kaneton/library/libc/Makefile
 #
 # created       julien quintard   [sun jun 10 14:14:02 2007]
-# updated       julien quintard   [tue jun 26 15:37:07 2007]
+# updated       julien quintard   [thu jun 28 23:07:19 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		libc
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -36,6 +42,7 @@ LIBSYS_LO		:=		libsys/libsys.lo
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_LIBC_A_)
 
@@ -68,3 +75,5 @@ dependencies:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,,)				; \
 	done
+
+endif

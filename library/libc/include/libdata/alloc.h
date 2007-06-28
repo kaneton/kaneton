@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/library/libc/include/libdata/alloc.h
  *
  * created       julien quintard   [sun jun 10 17:33:03 2007]
- * updated       julien quintard   [sun jun 10 18:02:08 2007]
+ * updated       julien quintard   [thu jun 28 22:50:55 2007]
  */
 
 #ifndef LIBC_LIBDATA_ALLOC_H
@@ -80,11 +80,8 @@ typedef struct			s_chunk
 /*
  * alloc global information
  */
+#ifdef ___kaneton$kernel
 
-/*
- * XXX must not use intra-kernel stuff!!! find another way or protect
- * these things with #ifdef ___kernel
- */
 #include <core/types.h>
 #include <core/id.h>
 
@@ -107,5 +104,6 @@ typedef struct
   u_int32_t			nalloc;
   u_int32_t			nfree;
 }				t_alloc;
+#endif
 
 #endif

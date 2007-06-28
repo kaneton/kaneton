@@ -48,8 +48,6 @@ BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
 
 BOOTLOADER_INCLUDE	:=		bootloader.h
 
-CFLAGS			+=		-D___bootloader
-
 #
 # ---------- rules ------------------------------------------------------------
 #

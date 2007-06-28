@@ -8,8 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/cpu/Makefile
 #
 # created       julien quintard   [tue jun 26 15:43:35 2007]
-# updated       julien quintard   [tue jun 26 15:44:05 2007]
+# updated       julien quintard   [thu jun 28 20:45:13 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		cpu
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -33,12 +39,10 @@ CPU_O			:=		$(CPU_C:.c=.o)
 
 CPU_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/cpu.h
 
-# XXX: ugly
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_CPU_LO_)
 
@@ -65,6 +69,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

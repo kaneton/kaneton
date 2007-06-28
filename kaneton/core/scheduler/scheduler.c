@@ -758,7 +758,7 @@ t_error			scheduler_initialize(void)
 
   if ((scheduler = malloc(sizeof(m_scheduler))) == NULL)
     {
-      cons_msg('!', "sched: cannot allocate memory for the scheduler "
+      cons_msg('!', "scheduler: cannot allocate memory for the scheduler "
 	       "manager structure\n");
 
       return (ERROR_UNKNOWN);

@@ -1,13 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/libs/klibc/libstring/Makefile
-##
-## created       julien quintard   [fri feb 11 02:56:59 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:58:28 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/library/libc/libstring/Makefile
+#
+# created       julien quintard   [thu jun 28 20:48:10 2007]
+# updated       julien quintard   [thu jun 28 20:48:31 2007]
+#
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		libstring
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -56,6 +64,7 @@ LIBSTRING_INCLUDE	:=		$(_KLIBC_INCLUDE_DIR_)/libstring/libstring.h
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			$(LIBSTRING_LO)
 
@@ -79,6 +88,7 @@ headers:
 
 	$(call env_headers,$(LIBSTRING_C),)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

@@ -1,13 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/kaneton/core/interface/Makefile
-##
-## created       julien quintard   [sat dec 10 13:50:17 2005]
-## updated       julien quintard   [fri jun 23 21:17:52 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/interface/Makefile
+#
+# created       julien quintard   [thu jun 28 20:32:46 2007]
+# updated       julien quintard   [thu jun 28 20:44:20 2007]
+#
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		interface
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -31,11 +39,10 @@ INTERFACE_O		:=		$(INTERFACE_C:.c=.o)
 
 INTERFACE_INCLUDE	:=		$(_CORE_INCLUDE_DIR_)/interface.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_INTERFACE_LO_)
 
@@ -62,6 +69,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

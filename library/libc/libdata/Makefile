@@ -1,13 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/libs/klibc/libdata/Makefile
-##
-## created       julien quintard   [fri feb 11 03:05:40 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:54:42 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/library/libc/libdata/Makefile
+#
+# created       julien quintard   [thu jun 28 20:47:38 2007]
+# updated       julien quintard   [thu jun 28 20:48:02 2007]
+#
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		libdata
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -38,6 +46,7 @@ LIBDATA_INCLUDE		:=		$(_KLIBC_INCLUDE_DIR_)/libdata/libdata.h
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			$(LIBDATA_LO)
 
@@ -61,6 +70,7 @@ headers:
 
 	$(call env_headers,$(LIBDATA_C),)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

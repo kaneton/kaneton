@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kan...kaneton/machine/platform/ibm-pc/Makefile
+# file          /home/mycure/kane...kaneton/machine/platform/ibm-pc/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       matthieu bucchianeri   [sun jun 17 19:09:25 2007]
+# updated       julien quintard   [thu jun 28 20:04:58 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		platform
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -27,13 +33,13 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PLATFORM_C		:=	cons-text.c		\
-				irq.c			\
-				keyboard.c		\
-				serial.c		\
-				timer.c
+PLATFORM_C		:=		cons-text.c			\
+					irq.c				\
+					keyboard.c			\
+					serial.c			\
+					timer.c
 
-PLATFORM_O		:=	$(PLATFORM_C:.c=.o)
+PLATFORM_O		:=		$(PLATFORM_C:.c=.o)
 
 PLATFORM_INCLUDE	:=	$(_PLATFORM_INCLUDE_DIR_)/cons.h	\
 				$(_PLATFORM_INCLUDE_DIR_)/irq.h		\
@@ -44,6 +50,7 @@ PLATFORM_INCLUDE	:=	$(_PLATFORM_INCLUDE_DIR_)/cons.h	\
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			$(_PLATFORM_LO_)
 
@@ -67,6 +74,7 @@ headers:
 
 	$(call env_headers,$(PLATFORM_C),)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

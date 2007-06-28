@@ -1,13 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/kaneton/core/io/Makefile
-##
-## created       matthieu bucchianeri   [sat jun 17 19:36:16 2006]
-## updated       matthieu bucchianeri   [sat may  5 18:42:50 2007]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/io/Makefile
+#
+# created       julien quintard   [thu jun 28 20:33:15 2007]
+# updated       julien quintard   [thu jun 28 20:44:08 2007]
+#
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		io
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -31,11 +39,10 @@ IO_O			:=		$(IO_C:.c=.o)
 
 IO_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/io.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_IO_LO_)
 
@@ -62,6 +69,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

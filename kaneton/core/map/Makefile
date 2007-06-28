@@ -8,8 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/map/Makefile
 #
 # created       julien quintard   [sun jun 10 16:58:56 2007]
-# updated       julien quintard   [tue jun 26 15:50:02 2007]
+# updated       julien quintard   [thu jun 28 20:43:27 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		map
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -33,11 +39,10 @@ MAP_O			:=		$(MAP_C:.c=.o)
 
 MAP_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/map.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_MAP_LO_)
 
@@ -64,6 +69,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

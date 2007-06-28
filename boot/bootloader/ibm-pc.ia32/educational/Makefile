@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kan...tloader/ibm-pc.ia32/educational/Makefile
+# file          /home/mycure/kane...tloader/ibm-pc.ia32/educational/Makefile
 #
 # created       julien quintard   [tue jun 12 20:34:41 2007]
-# updated       matthieu bucchianeri   [thu jun 28 17:29:23 2007]
+# updated       julien quintard   [thu jun 28 23:08:39 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		bootloader
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -53,6 +59,7 @@ BOOTLOADER_INCLUDE	:=		$(_BOOTLOADER_DIR_)/bootloader.h \
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			$(BOOTLOADER)
 
@@ -80,7 +87,7 @@ headers:
 dependencies:
 	$(call env_launch,Makefile,.,$(BOOTLOADER),)
 
-
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

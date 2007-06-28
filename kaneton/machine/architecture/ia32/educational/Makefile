@@ -5,11 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kan...e/architecture/ia32/educational/Makefile
+# file          /home/mycure/kane...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       matthieu bucchianeri   [sun jun 17 18:36:19 2007]
+# updated       julien quintard   [thu jun 28 20:20:35 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		architecture
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -27,28 +33,28 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-ARCHITECTURE_LOW_C	:=	apic.c				\
-				cpuid.c				\
-				gdt.c				\
-				idt.c				\
-				ldt.c				\
-				paging.c			\
-				pd.c				\
-				pmode.c				\
-				pt.c				\
-				sse.c				\
-				tlb.c				\
-				tss.c
+ARCHITECTURE_LOW_C	:=		apic.c				\
+					cpuid.c				\
+					gdt.c				\
+					idt.c				\
+					ldt.c				\
+					paging.c			\
+					pd.c				\
+					pmode.c				\
+					pt.c				\
+					sse.c				\
+					tlb.c				\
+					tss.c
 
-ARCHITECTURE_HI_C	:=	context.c			\
-				interrupt.c			\
-				syscalls.c			\
-				virtual.c
+ARCHITECTURE_HI_C	:=		context.c			\
+					interrupt.c			\
+					syscalls.c			\
+					virtual.c
 
-ARCHITECTURE_C		:=	$(ARCHITECTURE_LOW_C)		\
-				$(ARCHITECTURE_HI_C)
+ARCHITECTURE_C		:=		$(ARCHITECTURE_LOW_C)		\
+					$(ARCHITECTURE_HI_C)
 
-ARCHITECTURE_O		:=	$(ARCHITECTURE_C:.c=.o)
+ARCHITECTURE_O		:=		$(ARCHITECTURE_C:.c=.o)
 
 ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/apic.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/gdt.h	\
@@ -59,12 +65,13 @@ ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/apic.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/tss.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/context.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/interrupt.h \
-				$(_ARCHITECTURE_INCLUDE_DIR_)/syscalls.h\
+				$(_ARCHITECTURE_INCLUDE_DIR_)/syscalls.h \
 				$(_ARCHITECTURE_INCLUDE_DIR_)/virtual.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			$(_ARCHITECTURE_LO_)
 
@@ -88,6 +95,7 @@ headers:
 
 	$(call env_headers,$(ARCHITECTURE_C),)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

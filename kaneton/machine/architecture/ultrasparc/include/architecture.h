@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...ecture/ultrasparc/include/architecture.h
+ * file          /home/mycure/kane...ecture/ultrasparc/include/architecture.h
  *
  * created       matthieu bucchianeri   [sun jun 17 19:57:10 2007]
- * updated       matthieu bucchianeri   [sun jun 17 19:57:36 2007]
+ * updated       julien quintard   [thu jun 28 22:55:04 2007]
  */
 
 #ifndef ARCHITECTURE_ARCHITECTURE_H
@@ -18,10 +18,9 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-#define ___endian		ENDIAN_BIG
-#define ___wordsz		WORDSZ_64
-
-#define PAGESZ			8192
+#define ENDIAN			___kaneton$endian
+#define WORDSZ			___kaneton$wordsz
+#define PAGESZ			___kaneton$pagesz
 
 /*
  * ---------- includes --------------------------------------------------------

@@ -21,7 +21,7 @@
  */
 
 #if 0
-#ifndef ___kaneton
+#ifndef $kaneton
 #include <string.h>
 #include <stdio.h>
 #endif

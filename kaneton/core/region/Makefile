@@ -8,8 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/region/Makefile
 #
 # created       julien quintard   [sun jun 10 17:00:15 2007]
-# updated       julien quintard   [tue jun 26 15:50:59 2007]
+# updated       julien quintard   [thu jun 28 20:43:06 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		region
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -34,11 +40,10 @@ REGION_O		:=		$(REGION_C:.c=.o)
 
 REGION_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/region.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_REGION_LO_)
 
@@ -65,6 +70,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

@@ -1,13 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/libs/klibc/libsys/Makefile
-##
-## created       julien quintard   [fri feb 11 03:05:40 2005]
-## updated       matthieu bucchianeri   [tue jan 24 11:59:39 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/library/libc/libsys/Makefile
+#
+# created       julien quintard   [thu jun 28 20:48:42 2007]
+# updated       julien quintard   [thu jun 28 20:49:01 2007]
+#
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		libsys
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -37,6 +45,7 @@ LIBSYS_INCLUDE		:=		$(_KLIBC_INCLUDE_DIR_)/libsys/libsys.h
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			$(LIBSYS_LO)
 
@@ -60,6 +69,7 @@ headers:
 
 	$(call env_headers,$(LIBSYS_C),)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

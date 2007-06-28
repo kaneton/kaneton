@@ -8,8 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/kernel/Makefile
 #
 # created       julien quintard   [sun jun 10 16:57:54 2007]
-# updated       julien quintard   [tue jun 26 15:46:39 2007]
+# updated       julien quintard   [thu jun 28 20:43:38 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		kernel
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -33,11 +39,10 @@ KERNEL_O		:=		$(KERNEL_C:.c=.o)
 
 KERNEL_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/kernel.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_KERNEL_LO_)
 
@@ -64,6 +69,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

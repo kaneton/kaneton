@@ -1,13 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/kaneton/core/sched/Makefile
-##
-## created       matthieu bucchianeri   [sat jun  3 22:33:32 2006]
-## updated       matthieu bucchianeri   [sat jun  3 22:33:33 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/scheduler/Makefile
+#
+# created       julien quintard   [thu jun 28 20:35:48 2007]
+# updated       julien quintard   [thu jun 28 20:43:00 2007]
+#
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		scheduler
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -25,18 +33,16 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SCHEDULER_C		:=		scheduler.c			\
-					$(_SCHEDULER_FILE_)
+SCHEDULER_C		:=		scheduler.c			
 
 SCHEDULER_O		:=		$(SCHEDULER_C:.c=.o)
 
 SCHEDULER_INCLUDE	:=		$(_CORE_INCLUDE_DIR_)/scheduler.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_SCHEDULER_LO_)
 
@@ -63,6 +69,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

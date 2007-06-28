@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/core.h
+ * file          /home/mycure/kaneton/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       matthieu bucchianeri   [sun jun 17 20:37:52 2007]
+ * updated       julien quintard   [thu jun 28 22:55:12 2007]
  */
 
 #ifndef CORE_CORE_H
@@ -17,23 +17,6 @@
 /*
  * ---------- macros ----------------------------------------------------------
  */
-
-/*
- * endian
- */
-
-#define ENDIAN_LITTLE		(1 << 0)
-#define ENDIAN_BIG		(1 << 1)
-
-/*
- * word size
- */
-
-#define WORDSZ_8		(1 << 0)
-#define WORDSZ_16		(1 << 1)
-#define WORDSZ_32		(1 << 2)
-#define WORDSZ_64		(1 << 3)
-#define WORDSZ_128		(1 << 4)
 
 /*
  * perms
@@ -110,8 +93,6 @@
  */
 
 void			kaneton(t_init*				bootloader);
-
-void			kaneton_dump(void);
 
 t_error			kaneton_launch(void);
 

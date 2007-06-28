@@ -8,7 +8,7 @@
  * file          /home/mycure/kaneton/library/libc/include/libsys/quad.h
  *
  * created       julien quintard   [sun jun 10 17:56:26 2007]
- * updated       julien quintard   [sun jun 10 17:56:37 2007]
+ * updated       julien quintard   [thu jun 28 22:53:24 2007]
  */
 
 #ifndef LIBC_LIBSYS_QUAD_H
@@ -47,10 +47,10 @@ typedef unsigned int		qshift_t;
  * define high and low longwords.
  */
 
-#if (___endian == ENDIAN_LITTLE)
+#if (___kaneton$endian == 0)			/* little endian */
 #define QUAD_HIGHWORD		1
 #define QUAD_LOWWORD		0
-#elif (___endian == ENDIAN_BIG)
+#elif (___kaneton$endian == 1)			/* big endian */
 #define QUAD_HIGHWORD		0
 #define QUAD_LOWWORD		1
 #endif

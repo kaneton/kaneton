@@ -8,8 +8,14 @@
 # file          /home/mycure/kane...aneton/machine/glue/ibm-pc.ia32/Makefile
 #
 # created       julien quintard   [sun jun 10 15:47:23 2007]
-# updated       julien quintard   [fri jun 22 00:17:44 2007]
+# updated       julien quintard   [thu jun 28 19:59:47 2007]
 #
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		glue
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -56,6 +62,7 @@ GLUE_INCLUDE		:=		$(_GLUE_INCLUDE_DIR_)/as.h	\
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			$(_GLUE_LO_)
 
@@ -79,6 +86,7 @@ headers:
 
 	$(call env_headers,$(GLUE_C),)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

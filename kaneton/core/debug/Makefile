@@ -1,13 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/crypt/kaneton/kaneton/core/debug/Makefile
-##
-## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       matthieu bucchianeri   [tue feb 13 14:51:08 2007]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/debug/Makefile
+#
+# created       julien quintard   [thu jun 28 20:31:38 2007]
+# updated       julien quintard   [thu jun 28 20:44:55 2007]
+#
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		debug
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -32,11 +40,10 @@ DEBUG_O			:=		$(DEBUG_C:.c=.o)
 
 DEBUG_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/debug.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_DEBUG_LO_)
 
@@ -63,6 +70,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

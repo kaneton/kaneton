@@ -1,13 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/kaneton/core/id/Makefile
-##
-## created       julien quintard   [fri feb 11 02:57:24 2005]
-## updated       julien quintard   [sat apr  1 23:40:00 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/id/Makefile
+#
+# created       julien quintard   [thu jun 28 20:32:29 2007]
+# updated       julien quintard   [thu jun 28 20:44:29 2007]
+#
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		id
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -31,11 +39,10 @@ ID_O			:=		$(ID_C:.c=.o)
 
 ID_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/id.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_ID_LO_)
 
@@ -62,6 +69,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

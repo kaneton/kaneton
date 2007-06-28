@@ -1,13 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/buckman/kaneton/kaneton/core/message/Makefile
-##
-## created       matthieu bucchianeri   [sat jun 17 19:36:16 2006]
-## updated       matthieu bucchianeri   [sat may  5 18:43:15 2007]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/message/Makefile
+#
+# created       julien quintard   [thu jun 28 20:34:12 2007]
+# updated       julien quintard   [thu jun 28 20:43:16 2007]
+#
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		message
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -32,11 +40,10 @@ MESSAGE_O		:=		$(MESSAGE_C:.c=.o)
 
 MESSAGE_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/message.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_MESSAGE_LO_)
 
@@ -63,6 +70,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

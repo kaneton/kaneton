@@ -1,13 +1,21 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/mycure/kaneton/kaneton/core/capability/Makefile
-##
-## created       julien quintard   [sat dec 10 13:50:17 2005]
-## updated       julien quintard   [fri jun 23 21:12:33 2006]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/kaneton/core/capability/Makefile
+#
+# created       julien quintard   [thu jun 28 20:30:19 2007]
+# updated       julien quintard   [thu jun 28 20:45:24 2007]
+#
+
+#
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		capability
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -31,11 +39,10 @@ CAPABILITY_O		:=		$(CAPABILITY_C:.c=.o)
 
 CAPABILITY_INCLUDE	:=		$(_CORE_INCLUDE_DIR_)/capability.h
 
-CFLAGS			+=		-D___kernel
-
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			dependencies $(_CAPABILITY_LO_)
 
@@ -62,6 +69,7 @@ headers:
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #
