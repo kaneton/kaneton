@@ -23,6 +23,7 @@
 #include "isa.h"
 #include "elf.h"
 #include "libia32.h"
+#include "libc.h"
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -32,6 +33,21 @@
 
 #define IA32_PMODE_BOOTLOADER_CS	0x1
 #define IA32_PMODE_BOOTLOADER_DS	0x2
+
+/*
+ * perms
+ */
+
+#define PERM_READ		(1 << 0)
+#define PERM_WRITE		(1 << 1)
+#define PERM_EXEC		(1 << 2)
+
+#define REGION_OPT_NONE		0
+#define REGION_OPT_FORCE	(1 << 0)
+#define REGION_OPT_USER		(0 << 1)
+#define REGION_OPT_PRIVILEGED	(1 << 1)
+#define REGION_OPT_LOCAL	(0 << 2)
+#define REGION_OPT_GLOBAL	(1 << 2)
 
 /*
  * ---------- prototypes ------------------------------------------------------

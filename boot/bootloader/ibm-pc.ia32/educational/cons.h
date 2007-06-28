@@ -74,6 +74,27 @@ typedef struct
  */
 
 /*
+ * cons.c
+ */
+
+void			bootloader_cons_clear(void);
+
+void			bootloader_cons_scroll(t_uint16		lines);
+
+void			bootloader_cons_attr(t_uint8		attr);
+
+int			bootloader_cons_print_char(char		c);
+
+void			bootloader_cons_print_string(char*	string);
+
+void			bootloader_cons_msg(char		indicator,
+					    char*		fmt,
+					    ...);
+
+int			bootloader_cons_init(void);
+
+
+/*
  * eop
  */
 

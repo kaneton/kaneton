@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...tloader/ibm-pc.ia32/educational/Makefile
+# file          /home/buckman/kan...tloader/ibm-pc.ia32/educational/Makefile
 #
 # created       julien quintard   [tue jun 12 20:34:41 2007]
-# updated       julien quintard   [tue jun 26 15:38:12 2007]
+# updated       matthieu bucchianeri   [thu jun 28 17:29:23 2007]
 #
 
 #
@@ -34,7 +34,8 @@ BOOTLOADER_C		:=		bootloader.c			\
 					init.c				\
 					paging.c			\
 					pmode.c				\
-					libia32.c
+					libia32.c			\
+					libc.c
 
 BOOTLOADER_ASM		:=		multiboot.asm
 
@@ -44,9 +45,10 @@ BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
 					$(BOOTLOADER_ASM:.asm=.o)	\
 					$(BOOTLOADER_S:.S=.o)
 
-BOOTLOADER_INCLUDE	:=		bootloader.h			\
-					cons.h				\
-					libia32.h
+BOOTLOADER_INCLUDE	:=		$(_BOOTLOADER_DIR_)/bootloader.h \
+					$(_BOOTLOADER_DIR_)/cons.h	\
+					$(_BOOTLOADER_DIR_)/libia32.h	\
+					$(_BOOTLOADER_DIR_)/libc.h
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -55,12 +57,10 @@ BOOTLOADER_INCLUDE	:=		bootloader.h			\
 main:			$(BOOTLOADER)
 
 $(BOOTLOADER):		$(BOOTLOADER_O)
-	$(call env_executable,$(BOOTLOADER),$(BOOTLOADER_O),		\
-	         "--link-script $(_MACHDEP_LINK_DIR_)/bootloader.lks"	\
-                 "--no-standard-include"				\
-                 "--no-standard-library")
-
-	$(call env_link,$(_BOOTLOADER_),arch/machdep/$(BOOTLOADER),)
+	$(call env_executable,$(_BOOTLOADER_),				\
+			      $(BOOTLOADER_O),				\
+			      $(_BOOTLOADER_DIR_)/layout/bootloader.lyt,\
+			      $(ENV_OPTION_NO_STANDARD))
 
 clear:
 	$(call env_remove,$(BOOTLOADER_O),)
@@ -69,7 +69,7 @@ clear:
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_prototypes,$(BOOTLOADER_INCLUDE),)
 
 headers:
@@ -78,9 +78,6 @@ headers:
 	$(call env_headers,$(BOOTLOADER_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
-	$(call env_launch,Makefile,$(_LIBIA32_DIR_),,)
-
 	$(call env_launch,Makefile,.,$(BOOTLOADER),)
 
 

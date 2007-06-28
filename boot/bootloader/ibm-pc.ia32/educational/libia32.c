@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...loader/ibm-pc.ia32/educational/libia32.c
  *
  * created       matthieu bucchianeri   [mon jun 25 22:52:22 2007]
- * updated       matthieu bucchianeri   [mon jun 25 23:04:07 2007]
+ * updated       matthieu bucchianeri   [thu jun 28 14:57:01 2007]
  */
 
 /*
@@ -16,6 +16,22 @@
  */
 
 #include "bootloader.h"
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
+
+/*
+ * gdt table pointer
+ */
+
+t_ia32_gdt	ia32_gdt;
+
+/*
+ * active page directory.
+ */
+
+t_ia32_directory	ia32_pd;
 
 /*
  * ---------- functions -------------------------------------------------------
