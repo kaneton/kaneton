@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/library/libc/libdata/Makefile
 #
 # created       julien quintard   [thu jun 28 20:47:38 2007]
-# updated       julien quintard   [thu jun 28 20:48:02 2007]
+# updated       julien quintard   [fri jun 29 08:39:12 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		libdata
+component		:=		libc/libdata
 
 #
 # ---------- dependencies -----------------------------------------------------

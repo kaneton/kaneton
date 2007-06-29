@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/scheduler/Makefile
 #
 # created       julien quintard   [thu jun 28 20:35:48 2007]
-# updated       julien quintard   [thu jun 28 20:43:00 2007]
+# updated       julien quintard   [fri jun 29 08:36:48 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		scheduler
+component		:=		kaneton/core/scheduler
 
 #
 # ---------- dependencies -----------------------------------------------------

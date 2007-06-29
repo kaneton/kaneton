@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/time/Makefile
 #
 # created       julien quintard   [sun jun 10 17:11:24 2007]
-# updated       julien quintard   [thu jun 28 20:38:10 2007]
+# updated       julien quintard   [fri jun 29 08:37:40 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		time
+component		:=		kaneton/core/time
 
 #
 # ---------- dependencies -----------------------------------------------------

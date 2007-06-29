@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/event/Makefile
 #
 # created       julien quintard   [thu jun 28 20:32:08 2007]
-# updated       julien quintard   [thu jun 28 20:44:45 2007]
+# updated       julien quintard   [fri jun 29 08:35:43 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		event
+component		:=		kaneton/core/event
 
 #
 # ---------- dependencies -----------------------------------------------------

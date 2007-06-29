@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/map/Makefile
 #
 # created       julien quintard   [sun jun 10 16:58:56 2007]
-# updated       julien quintard   [thu jun 28 20:43:27 2007]
+# updated       julien quintard   [fri jun 29 08:36:23 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		map
+component		:=		kaneton/core/map
 
 #
 # ---------- dependencies -----------------------------------------------------

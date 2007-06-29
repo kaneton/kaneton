@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/region/Makefile
 #
 # created       julien quintard   [sun jun 10 17:00:15 2007]
-# updated       julien quintard   [thu jun 28 20:43:06 2007]
+# updated       julien quintard   [fri jun 29 08:36:42 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		region
+component		:=		kaneton/core/region
 
 #
 # ---------- dependencies -----------------------------------------------------

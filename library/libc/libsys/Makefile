@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/library/libc/libsys/Makefile
 #
 # created       julien quintard   [thu jun 28 20:48:42 2007]
-# updated       julien quintard   [thu jun 28 20:49:01 2007]
+# updated       julien quintard   [fri jun 29 08:39:30 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		libsys
+component		:=		libc/libsys
 
 #
 # ---------- dependencies -----------------------------------------------------

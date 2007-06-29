@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/machine/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [thu jun 28 19:59:05 2007]
+# updated       julien quintard   [fri jun 29 08:37:54 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		machine
+component		:=		kaneton/machine
 
 #
 # ---------- dependencies -----------------------------------------------------

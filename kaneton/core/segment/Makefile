@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/segment/Makefile
 #
 # created       julien quintard   [sun jun 10 17:02:46 2007]
-# updated       julien quintard   [thu jun 28 20:40:37 2007]
+# updated       julien quintard   [fri jun 29 08:36:54 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		segment
+component		:=		kaneton/core/segment
 
 #
 # ---------- dependencies -----------------------------------------------------

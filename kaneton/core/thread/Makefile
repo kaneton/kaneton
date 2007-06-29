@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/thread/Makefile
 #
 # created       julien quintard   [sun jun 10 17:10:24 2007]
-# updated       julien quintard   [thu jun 28 20:38:25 2007]
+# updated       julien quintard   [fri jun 29 08:37:34 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		thread
+component		:=		kaneton/core/thread
 
 #
 # ---------- dependencies -----------------------------------------------------

@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/interface/Makefile
 #
 # created       julien quintard   [thu jun 28 20:32:46 2007]
-# updated       julien quintard   [thu jun 28 20:44:20 2007]
+# updated       julien quintard   [fri jun 29 08:36:01 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		interface
+component		:=		kaneton/core/interface
 
 #
 # ---------- dependencies -----------------------------------------------------

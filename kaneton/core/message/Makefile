@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/message/Makefile
 #
 # created       julien quintard   [thu jun 28 20:34:12 2007]
-# updated       julien quintard   [thu jun 28 20:43:16 2007]
+# updated       julien quintard   [fri jun 29 08:36:30 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		message
+component		:=		kaneton/core/message
 
 #
 # ---------- dependencies -----------------------------------------------------

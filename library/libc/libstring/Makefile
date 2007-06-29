@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/library/libc/libstring/Makefile
 #
 # created       julien quintard   [thu jun 28 20:48:10 2007]
-# updated       julien quintard   [thu jun 28 20:48:31 2007]
+# updated       julien quintard   [fri jun 29 08:39:23 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		libstring
+component		:=		libc/libstring
 
 #
 # ---------- dependencies -----------------------------------------------------

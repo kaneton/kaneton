@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/capability/Makefile
 #
 # created       julien quintard   [thu jun 28 20:30:19 2007]
-# updated       julien quintard   [thu jun 28 20:45:24 2007]
+# updated       julien quintard   [fri jun 29 08:35:19 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		capability
+component		:=		kaneton/core/capability
 
 #
 # ---------- dependencies -----------------------------------------------------

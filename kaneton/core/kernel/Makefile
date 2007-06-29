@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/kernel/Makefile
 #
 # created       julien quintard   [sun jun 10 16:57:54 2007]
-# updated       julien quintard   [thu jun 28 20:43:38 2007]
+# updated       julien quintard   [fri jun 29 08:36:17 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		kernel
+component		:=		kaneton/core/kernel
 
 #
 # ---------- dependencies -----------------------------------------------------

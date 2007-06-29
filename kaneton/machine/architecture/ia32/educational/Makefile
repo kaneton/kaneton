@@ -8,14 +8,14 @@
 # file          /home/mycure/kane...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       julien quintard   [thu jun 28 20:20:35 2007]
+# updated       julien quintard   [fri jun 29 08:38:16 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		architecture
+component		:=		kaneton/machine/architecture
 
 #
 # ---------- dependencies -----------------------------------------------------

@@ -8,14 +8,14 @@
 # file          /home/mycure/kaneton/kaneton/core/set/Makefile
 #
 # created       julien quintard   [sun jun 10 17:04:39 2007]
-# updated       julien quintard   [thu jun 28 20:40:28 2007]
+# updated       julien quintard   [fri jun 29 08:37:23 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		set
+component		:=		kaneton/core/set
 
 #
 # ---------- dependencies -----------------------------------------------------
