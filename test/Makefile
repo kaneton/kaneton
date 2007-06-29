@@ -1,13 +1,15 @@
-##
-## licence       kaneton licence
-##
-## project       kaneton
-##
-## file          /home/julian/kaneton/kaneton/test/Makefile
-##
-## created       julian pidancet   [thu mar 22 22:36:45 2007]
-## updated       julian pidancet   [thu mar 22 22:36:45 2007]
-##
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/test/Makefile
+#
+# created       julien quintard   [fri jun 29 11:19:40 2007]
+# updated       julien quintard   [fri jun 29 11:21:03 2007]
+#
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -19,7 +21,7 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main build run clear proto dep
+.PHONY:		main build run clear prototypes headers
 
 #
 # ---------- variables --------------------------------------------------------
@@ -34,32 +36,11 @@ _TEST_LO_	:=	test.lo
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			build run
-
-build:			.test.mk
-	$(MAKE) compile
-
-.test.mk:
-	$(call env_launch,$(_COMPILE_PY_),,)
-
-run:
+main:
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	$(call purge,)
 
-	$(call env_remove,$(_TEST_LO_),)
-
-	$(call env_remove,.test.mk,)
-
-	$(call env_remove,parse.pyc,)
-
-	$(call env_purge,)
-
-proto:
-	$(call env_launch,Makefile,$(SUBDIRS),proto,)
+prototypes:
 
 headers:
-	$(call env_launch,Makefile,$(SUBDIRS),dep,)
-
-  
--include		.test.mk

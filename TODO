@@ -320,7 +320,7 @@ void*			mremap(void*			old_address,
   return (void*)p;
 }
 
---
+----------------------------- mycure :: todo ----------------------------------
 
 la glue devrait contenir le fiichier de conf qui decrit les zones
 prereservees a certains servers car ces zones dependent de l'archi/platform
@@ -419,11 +419,12 @@ solution est de corriger l'adresse en fonction de l'archi
 
 --
 
-modifier le header.el pour que ca coupe et vire le /home/mycure/kaneton
-
-l'idee serait de partir de la fin mais probleme avec kaneton/kaneton :(
-
---
-
 changer dans task.h les types CORE en KERNEL car core designe la partie
 independante.
+
+--
+  au dessus du systeme de message, on pourrait construire un event-driven
+  systeme: request/reply messages + one-way events
+
+--
+  ajouter un check-style au commit via les svn hooks
