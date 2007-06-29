@@ -428,3 +428,7 @@ independante.
 
 --
   ajouter un check-style au commit via les svn hooks
+
+--
+  etudier RBAC pour la security des utilisateurs et programmes dans l'OS.
+  ce n'est pas lie au kernel mais a l'OS cette fois.
