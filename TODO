@@ -432,3 +432,7 @@ independante.
 --
   etudier RBAC pour la security des utilisateurs et programmes dans l'OS.
   ce n'est pas lie au kernel mais a l'OS cette fois.
+
+--
+  dans le papier sur le design, rajouter le nombre de fonctions de l'ABI
+  en fonction de la categorie: memoire, thread, security etc.
