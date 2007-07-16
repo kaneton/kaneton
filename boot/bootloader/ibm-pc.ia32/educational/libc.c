@@ -21,6 +21,11 @@
  * ---------- macros ----------------------------------------------------------
  */
 
+#define QUAD_B		((long)1 << QUAD_HALF_BITS)	/* digit base */
+
+#define QUAD_COMBINE(a, b)						\
+  (((t_uint32)(a) << QUAD_HALF_BITS) | (b))
+
 #define GET_VAL(Sign)							\
   if (quadflag)								\
     quadvalue = va_arg(args, t_sint64);					\

@@ -223,30 +223,7 @@ endef
 define env_assemble-S
   assemble_S_options=""							&& \
   $(call env_display,green,ASSEMBLE-S,$(2),		,)		&& \
-  $(_CC_) $(_CC_FLAGS_) $${assemble_S_options}				\
-          -c $(2) -o $(1)
-endef
-
-#
-# from asm file to object file
-#
-# $(1):		object file
-# $(2):		asm file
-# $(3):		options
-#
-
-define env_assemble-asm
-  assemble_asm_options=""						&& \
-  if [ -n "$(3)" ] ; then						\
-    if [ $$(( $(3) & $(ENV_OUTPUT_OBJECT) )) -ne 0 ] ; then		\
-      assemble_asm_options="$${assemble_asm_options} -f elf"		; \
-    fi									&& \
-    if [ $$(( $(3) & $(ENV_OUTPUT_BINARY) )) -ne 0 ] ; then		\
-      assemble_asm_options="$${assemble_asm_options} -f bin"		; \
-    fi									; \
-  fi									&& \
-  $(call env_display,green,ASSEMBLE-ASM,$(2),		,)		&& \
-  $(_NASM_) $${assemble_asm_options} $(2) -o $(1)
+  $(_CPP_) $(2) | $(_AS_) $(_AS_FLAGS_) $${assemble_S_options} -o $(1)
 endef
 
 #

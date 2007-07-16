@@ -1,1 +1,1 @@
-_CC_FLAGS_	+=	-O0 -ggdb
+_CC_FLAGS_	+=	-O0 -ggdb -DSERIAL

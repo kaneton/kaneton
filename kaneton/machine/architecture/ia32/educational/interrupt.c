@@ -353,6 +353,7 @@ void			ia32_handler_irq(t_uint32			nr)
   i_event		id = IA32_IDT_IRQ_BASE + nr;
 
   // XXX pic ack
+  OUTB(0x20, 0x20);
 
   if (event_get(id, &o) == ERROR_NONE)
     {

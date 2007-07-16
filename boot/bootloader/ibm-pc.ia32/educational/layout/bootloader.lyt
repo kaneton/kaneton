@@ -6,6 +6,12 @@ SECTIONS
 {
 	. = 0x200000 + SIZEOF_HEADERS;
 
+	/* must appear in first kilobytes */
+	.multiboot :
+	{
+		*(.multiboot)
+	}
+
 	.text :
 	{
 		*(.text)

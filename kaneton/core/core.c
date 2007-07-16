@@ -153,10 +153,13 @@ void			kaneton(t_init*				bootloader)
 #if (DEBUG & DEBUG_CPU)
   smp_test();
 #endif
-
+  /*
   cons_msg('+', "launching the initial service: mod\n");
   if (kaneton_launch() != ERROR_NONE)
     cons_msg('!', "failed to start the initial mod service\n");
+  */
+
+  ibmpc_keyboard_init();
 
 #if (DEBUG & DEBUG_MESSAGE)
   message_test();

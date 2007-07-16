@@ -43,12 +43,10 @@ BOOTLOADER_C		:=		bootloader.c			\
 					libia32.c			\
 					libc.c
 
-BOOTLOADER_ASM		:=		multiboot.asm
-
-BOOTLOADER_S		:=		entry.S
+BOOTLOADER_S		:=		multiboot.S			\
+					entry.S
 
 BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
-					$(BOOTLOADER_ASM:.asm=.o)	\
 					$(BOOTLOADER_S:.S=.o)
 
 BOOTLOADER_INCLUDE	:=		$(_BOOTLOADER_DIR_)/bootloader.h \

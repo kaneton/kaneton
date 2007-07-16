@@ -62,6 +62,8 @@ typedef unsigned int		qshift_t;
 #define QUAD_LONG_BITS		(sizeof(long) * CHAR_BITS)
 #define QUAD_HALF_BITS		(sizeof(long) * CHAR_BITS / 2)
 
+#define CHAR_BITS		8
+
 /*
  * ---------- macro functions -------------------------------------------------
  */
