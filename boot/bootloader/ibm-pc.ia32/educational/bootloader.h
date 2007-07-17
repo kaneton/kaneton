@@ -16,7 +16,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/types.h>
+#include "types.h"
 #include <core/init.h>
 
 #include "multiboot.h"
@@ -33,21 +33,6 @@
 
 #define IA32_PMODE_BOOTLOADER_CS	0x1
 #define IA32_PMODE_BOOTLOADER_DS	0x2
-
-/*
- * perms
- */
-
-#define PERM_READ		(1 << 0)
-#define PERM_WRITE		(1 << 1)
-#define PERM_EXEC		(1 << 2)
-
-#define REGION_OPT_NONE		0
-#define REGION_OPT_FORCE	(1 << 0)
-#define REGION_OPT_USER		(0 << 1)
-#define REGION_OPT_PRIVILEGED	(1 << 1)
-#define REGION_OPT_LOCAL	(0 << 2)
-#define REGION_OPT_GLOBAL	(1 << 2)
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -77,7 +62,7 @@ void			bootloader_cons_clear(void);
 
 void			bootloader_cons_scroll(t_uint16		lines);
 
-void			bootloader_cons_attr(t_uint8		attr);
+void			bootloader_cons_attr(t_sint8		attr);
 
 int			bootloader_cons_print_char(char		c);
 

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...ootloader/ibm-pc.ia32/educational/cons.h
+ * file          /home/buckman/cry...ootloader/ibm-pc.ia32/educational/cons.h
  *
  * created       julien quintard   [wed jun  6 15:53:35 2007]
- * updated       matthieu bucchianeri   [mon jun 25 23:02:08 2007]
+ * updated       matthieu bucchianeri   [tue jul 17 15:20:24 2007]
  */
 
 /*
@@ -23,7 +23,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/types.h>
+#include "types.h"
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -81,7 +81,7 @@ void			bootloader_cons_clear(void);
 
 void			bootloader_cons_scroll(t_uint16		lines);
 
-void			bootloader_cons_attr(t_uint8		attr);
+void			bootloader_cons_attr(t_sint8		attr);
 
 int			bootloader_cons_print_char(char		c);
 

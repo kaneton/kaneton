@@ -14,16 +14,11 @@
  */
 
 #include "bootloader.h"
+#include "cons.h"
 
 /*
  * ---------- globals ---------------------------------------------------------
  */
-
-/*
- * the init variable.
- */
-
-extern t_init*		init;
 
 /*
  * the console variable.
@@ -84,7 +79,7 @@ void			bootloader_cons_scroll(t_uint16		lines)
  * current console attributes with the sequence %#.
  */
 
-void			bootloader_cons_attr(t_uint8		attr)
+void			bootloader_cons_attr(t_sint8		attr)
 {
   cons.attr = attr;
 }

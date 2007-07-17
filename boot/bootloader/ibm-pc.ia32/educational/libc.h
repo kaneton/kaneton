@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...ootloader/ibm-pc.ia32/educational/libc.h
+ * file          /home/buckman/cry...ootloader/ibm-pc.ia32/educational/libc.h
  *
  * created       matthieu bucchianeri   [thu jun 28 14:47:59 2007]
- * updated       matthieu bucchianeri   [thu jun 28 17:42:21 2007]
+ * updated       matthieu bucchianeri   [tue jul 17 15:20:39 2007]
  */
 
 #ifndef BOOTLOADER_LIBC_H
@@ -18,8 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/types.h>
-
+#include "types.h"
 /*
  * ---------- types -----------------------------------------------------------
  */

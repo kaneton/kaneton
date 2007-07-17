@@ -75,7 +75,7 @@
  */
 
 /*
-  * user segments types
+ * user segments types
  */
 typedef enum
   {
