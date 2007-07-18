@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/library/libc/include/libc.h
+ * file          /home/buckman/crypt/kaneton/library/libc/include/libc.h
  *
  * created       julien quintard   [sun jun 10 17:31:41 2007]
- * updated       julien quintard   [sun jun 10 17:32:22 2007]
+ * updated       matthieu bucchianeri   [tue jul 17 15:52:37 2007]
  */
 
 #ifndef LIBC_LIBC_H

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/Makefile
+# file          /home/buckman/crypt/kaneton/kaneton/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       julien quintard   [thu jun 28 20:19:09 2007]
+# updated       matthieu bucchianeri   [tue jul 17 17:59:36 2007]
 #
 
 #
@@ -43,13 +43,16 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_KANETON_)
 
-$(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_)
+$(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_) libs
 	$(call env_remove,$(_KANETON_),)
 
 	$(call env_executable,$(_KANETON_),				\
-			      $(_CORE_LO_) $(_MACHINE_LO_),		\
+			      $(_CORE_LO_) $(_MACHINE_LO_)		\
+			      $(_TEST_LO_),				\
 			      $(_KANETON_LAYOUT_),			\
 			      $(ENV_OPTION_NO_STANDARD))
+libs:
+	  $(call env_launch,${_TEST_DIR_}/Makefile,,)
 
 clear:
 	for d in $(SUBDIRS) ; do					\

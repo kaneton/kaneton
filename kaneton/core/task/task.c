@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/task/task.c
+ * file          /home/buckman/crypt/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       julien quintard   [fri jun 22 18:28:56 2007]
+ * updated       matthieu bucchianeri   [wed jul 18 19:00:03 2007]
  */
 
 /*
@@ -967,6 +967,9 @@ t_error			task_initialize(void)
       segment->size = init->segments[i].size;
       segment->perms = init->segments[i].perms;
 
+      if (segment->size == 0)
+	continue; /* XXX */
+
       if (segment_inject(asid, segment, &segments[i]) != ERROR_NONE)
 	{
 	  cons_msg('!', "segment: cannot add a pre-reserved segment in "
@@ -993,6 +996,9 @@ t_error			task_initialize(void)
       region->offset = init->regions[i].offset;
       region->size = init->regions[i].size;
       region->opts = init->regions[i].opts;
+
+      if (region->size == 0)
+	continue; /* XXX */
 
       if (region_inject(asid, region, &useless) != ERROR_NONE)
 	{

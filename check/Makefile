@@ -10,6 +10,12 @@
 ##
 
 #
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test
+
+#
 # ---------- dependencies -----------------------------------------------------
 #
 
@@ -19,7 +25,7 @@ include			../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main build run libs clear proto dep
+.PHONY:		main build run libs clear prototypes dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -27,37 +33,48 @@ include			../environment/env.mk
 
 LIST			:=		list
 
-SUBDIRS			:=		$(call env_contents,$(LIST),)
+SUBDIRS			:=		$(shell $(call env_pull,$(LIST),))
 
 MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
 main:			build run
 
-build:			$(_CHECK_LO_)
+build:			$(_TEST_LO_)
 
-$(_CHECK_LO_):		libs
-	$(call env_remove,$(_CHECK_LO_),)
+$(_TEST_LO_):		libs
+	$(call env_remove,$(_TEST_LO_),)
 
-	$(call env_archive,$(_CHECK_LO_),$(MODULES),)
+	$(call env_archive,$(_TEST_LO_),$(MODULES),)
 
 libs:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,,)				; \
+	done
 
 run:
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
+	done
 
-	$(call env_remove,$(_CHECK_LO_),)
+	$(call env_remove,$(_TEST_LO_),)
 
 	$(call env_purge,)
 
-proto:
-	$(call env_launch,Makefile,$(SUBDIRS),proto,)
+prototypes:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
+	done
 
 headers:
-	$(call env_launch,Makefile,$(SUBDIRS),dep,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,dependencies,)		; \
+	done
+
+endif

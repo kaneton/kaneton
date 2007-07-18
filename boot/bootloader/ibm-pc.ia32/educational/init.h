@@ -5,28 +5,52 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/kaneton/include/core/init.h
+ * file          /home/buckman/cry...ootloader/ibm-pc.ia32/educational/init.h
  *
- * created       julien quintard   [wed jun  6 13:20:24 2007]
- * updated       matthieu bucchianeri   [wed jul 18 18:09:11 2007]
+ * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
+ * updated       matthieu bucchianeri   [wed jul 18 18:53:15 2007]
  */
 
-#ifndef CORE_INIT_H
-#define CORE_INIT_H			1
+#ifndef BOOTLOADER_INIT_H
+#define BOOTLOADER_INIT_H			1
 
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <core/types.h>
-#include <core/error.h>
-#include <core/id.h>
+#include "types.h"
+#include "libia32.h"
 
-#include <machine/machine.h>
+/*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#define INIT_SEGMENTS		13
+#define INIT_REGIONS		10
+#define INIT_KSTACKSZ		(4 * PAGESZ)
+
+/* XXX to be moved */
+
+#define PERM_READ		(1 << 0)
+#define PERM_WRITE		(1 << 1)
+#define PERM_EXEC		(1 << 2)
+#define REGION_OPT_NONE		0
+#define REGION_OPT_FORCE	(1 << 0)
+#define REGION_OPT_USER		(0 << 1)
+#define REGION_OPT_PRIVILEGED	(1 << 1)
+#define REGION_OPT_LOCAL	(0 << 2)
+#define REGION_OPT_GLOBAL	(1 << 2)
 
 /*
  * ---------- types -----------------------------------------------------------
  */
+
+/*
+ * types for compatibility
+ */
+
+typedef t_uint32	t_perms;
+typedef t_uint32	t_opts;
 
 /*
  * input
@@ -80,7 +104,7 @@ typedef struct
 
 typedef struct
 {
-  i_cpu				cpuid;
+  t_id				cpuid;
 }				s_cpu;
 
 /*
@@ -123,7 +147,7 @@ typedef struct
   t_uint32			ncpus;
   s_cpu*			cpus;
   t_psize			cpussz;
-  i_cpu				bsp;
+  t_id				bsp;
 
   t_paddr			kstack;
   t_psize			kstacksz;
@@ -131,7 +155,11 @@ typedef struct
   t_paddr			alloc;
   t_psize			allocsz;
 
-  machine_data(init);
+  struct
+  {
+    t_ia32_gdt			gdt;
+    t_ia32_directory		pd;
+  }				machdep;
 }				t_init;
 
 #endif

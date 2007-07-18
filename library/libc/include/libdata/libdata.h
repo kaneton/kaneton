@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/library/libc/include/libdata/libdata.h
+ * file          /home/buckman/cry...n/library/libc/include/libdata/libdata.h
  *
  * created       julien quintard   [sun jun 10 17:32:00 2007]
- * updated       julien quintard   [sun jun 10 17:32:54 2007]
+ * updated       matthieu bucchianeri   [tue jul 17 16:02:57 2007]
  */
 
 #ifndef LIBC_LIBDATA_LIBDATA_H
@@ -53,13 +53,14 @@ void			alloc_check_signatures(void);
 void*			realloc(void* 				ptr,
 				size_t				size);
 
+#ifdef ___kaneton$kernel
 void			alloc_setup(t_pfn_map_reserve		freserve,
 				    t_pfn_map_release		frelease,
 				    i_as			asid);
 
 int			alloc_init(t_vaddr			addr,
 				   t_size			size);
-
+#endif
 
 /*
  * ../../libdata/dump.c

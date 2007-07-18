@@ -10,6 +10,12 @@
 ##
 
 #
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/kaneton/core/id
+
+#
 # ---------- dependencies -----------------------------------------------------
 #
 
@@ -34,8 +40,9 @@ TEST_O			:=		$(TEST_C:.c=.o)
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
-all:			build run
+main:			build run
 
 build:			$(TEST_LO)
 
@@ -55,13 +62,14 @@ clear:
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
 	$(call env_headers,$(TEST_C),)
 
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

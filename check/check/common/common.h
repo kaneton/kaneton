@@ -12,6 +12,7 @@
 #ifndef CHECK_COMMON_H_
 # define CHECK_COMMON_H_
 
+# include <core/core.h>
 # include <libc.h>
 
 # ifndef PAGESZ
@@ -106,14 +107,6 @@ typedef struct
   t_uint32	nb_free;
 
 }		t_leaks;
-
-/*
- * backward compatibility types.
- */
-
-typedef i_as		t_asid;
-typedef i_segment	t_segid;
-typedef i_region	t_regid;
 
 extern i_as	kasid;
 

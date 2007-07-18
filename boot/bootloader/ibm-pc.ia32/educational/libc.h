@@ -8,7 +8,7 @@
  * file          /home/buckman/cry...ootloader/ibm-pc.ia32/educational/libc.h
  *
  * created       matthieu bucchianeri   [thu jun 28 14:47:59 2007]
- * updated       matthieu bucchianeri   [tue jul 17 15:20:39 2007]
+ * updated       matthieu bucchianeri   [wed jul 18 18:41:56 2007]
  */
 
 #ifndef BOOTLOADER_LIBC_H
@@ -46,13 +46,8 @@ typedef unsigned int		qshift_t;
 #define PRINTF_ZPAD		0x2
 #define PRINTF_DOT		0x4
 
-#if (___endian == ENDIAN_LITTLE)
 #define QUAD_HIGHWORD		1
 #define QUAD_LOWWORD		0
-#elif (___endian == ENDIAN_BIG)
-#define QUAD_HIGHWORD		0
-#define QUAD_LOWWORD		1
-#endif
 
 #define QUAD_H			QUAD_HIGHWORD
 #define QUAD_L			QUAD_LOWWORD

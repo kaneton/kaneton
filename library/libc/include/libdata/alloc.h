@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/library/libc/include/libdata/alloc.h
+ * file          /home/buckman/cry...ton/library/libc/include/libdata/alloc.h
  *
  * created       julien quintard   [sun jun 10 17:33:03 2007]
- * updated       julien quintard   [thu jun 28 22:50:55 2007]
+ * updated       matthieu bucchianeri   [tue jul 17 15:50:47 2007]
  */
 
 #ifndef LIBC_LIBDATA_ALLOC_H

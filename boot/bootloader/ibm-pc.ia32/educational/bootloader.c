@@ -36,8 +36,8 @@ extern t_init*		init;
 
 void			(*kernel)(t_init*);
 
-t_reg32			ebp;
-t_reg32			esp;
+t_uint32		ebp;
+t_uint32		esp;
 
 /*
  * ---------- functions -------------------------------------------------------

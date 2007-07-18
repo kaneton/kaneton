@@ -128,6 +128,14 @@ void			kaneton(t_init*				bootloader)
 
   cons_msg('+', "kaneton started\n");
 
+  CLI();
+
+  int i = 0;
+  //printf("CHICHE %p\n", 0xfabecc / i);
+
+  while (1)
+    ;
+
   STI(); // XXX moveme
 
 

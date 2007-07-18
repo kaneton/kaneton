@@ -8,7 +8,7 @@
  * file          /home/buckman/cry...otloader/ibm-pc.ia32/educational/types.h
  *
  * created       matthieu bucchianeri   [tue jul 17 15:14:07 2007]
- * updated       matthieu bucchianeri   [tue jul 17 15:21:48 2007]
+ * updated       matthieu bucchianeri   [wed jul 18 18:12:16 2007]
  */
 
 #ifndef BOOTLOADER_TYPES_H
@@ -38,11 +38,14 @@ typedef signed int		t_sint32;
 typedef unsigned long long int	t_uint64;
 typedef signed long long int	t_sint64;
 
+typedef t_uint64		t_id;
+
 /*
  * error type
  */
 
 typedef t_sint32		t_error;
+
 /*
  * memory types
  */

@@ -1,14 +1,50 @@
+/*-
+ * Copyright (c) 1992, 1993
+ *      The Regents of the University of California.  All rights reserved.
+ *
+ * This software was developed by the Computer Systems Engineering group
+ * at Lawrence Berkeley Laboratory under DARPA contract BG 91-66 and
+ * contributed to Berkeley.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 4. Neither the name of the University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ */
+
 /*
- * ---------- header ----------------------------------------------------------
+ * Quad arithmetic.
  *
- * project       kaneton
+ * This library makes the following assumptions:
  *
- * license       kaneton
+ *  - The type long long (aka quad_t) exists.
  *
- * file          /home/mycure/kaneton/library/libc/include/libsys/quad.h
+ *  - A quad variable is exactly twice as long as `long'.
  *
- * created       julien quintard   [sun jun 10 17:56:26 2007]
- * updated       julien quintard   [thu jun 28 22:53:24 2007]
+ *  - The machine's arithmetic is two's complement.
+ *
+ * This library can provide 128-bit arithmetic on a machine with 128-bit
+ * quads and 64-bit longs, for instance, or 96-bit arithmetic on machines
+ * with 48-bit longs.
  */
 
 #ifndef LIBC_LIBSYS_QUAD_H
@@ -24,71 +60,6 @@
  * ---------- types -----------------------------------------------------------
  */
 
-/*
- * depending on the desired operation, we view a `long long' (aka quad_t) in
- * one or more of the following formats.
- */
-
-union		uu
-{
-  quad_t	q;			/* as a (signed) quad */
-  u_quad_t	uq;			/* as an unsigned quad */
-  long		sl[2];			/* as two signed longs */
-  u_long	ul[2];			/* as two unsigned longs */
-};
-
-typedef unsigned int		qshift_t;
-
-/*
- * ---------- macros ----------------------------------------------------------
- */
-
-/*
- * define high and low longwords.
- */
-
-#if (___kaneton$endian == 0)			/* little endian */
-#define QUAD_HIGHWORD		1
-#define QUAD_LOWWORD		0
-#elif (___kaneton$endian == 1)			/* big endian */
-#define QUAD_HIGHWORD		0
-#define QUAD_LOWWORD		1
-#endif
-
-#define QUAD_H			QUAD_HIGHWORD
-#define QUAD_L			QUAD_LOWWORD
-
-/*
- * total number of bits in a quad_t and in the pieces that make it up.
- * these are used for shifting, and also below for halfword extraction
- * and assembly.
- */
-
-#define QUAD_QUAD_BITS		(sizeof(quad_t) * CHAR_BITS)
-#define QUAD_LONG_BITS		(sizeof(long) * CHAR_BITS)
-#define QUAD_HALF_BITS		(sizeof(long) * CHAR_BITS / 2)
-
-/*
- * ---------- macro functions -------------------------------------------------
- */
-
-/*
- * extract high and low shortwords from longword, and move low shortword of
- * longword to upper half of long, i.e., produce the upper longword of
- * ((quad_t)(x) << (number_of_bits_in_long/2)).  (`x' must actually be u_long.)
- *
- * these are used in the multiply code, to split a longword into upper
- * and lower halves, and to reassemble a product as a quad_t, shifted left
- * (sizeof(long)*CHAR_BITS/2).
- */
-
-#define QUAD_HHALF(x)							\
-  ((u_long)(x) >> QUAD_HALF_BITS)
-
-#define QUAD_LHALF(x)							\
-  ((u_long)(x) & (((long)1 << QUAD_HALF_BITS) - 1))
-
-#define QUAD_LHUP(x)							\
-  ((u_long)(x) << QUAD_HALF_BITS)
+typedef unsigned int    qshift_t;
 
 #endif

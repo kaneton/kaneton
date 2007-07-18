@@ -12,18 +12,29 @@
 #ifndef BOOTLOADER_H
 #define BOOTLOADER_H		1
 
+#define		machine_data(_object_)					\
+  machine_data_##_object_()
+
+#define		machine_data_init()					\
+  struct								\
+  {									\
+    t_ia32_gdt			gdt;					\
+    t_ia32_directory		pd;					\
+  }
+
 /*
  * ---------- dependencies ----------------------------------------------------
  */
 
 #include "types.h"
-#include <core/init.h>
+#include "init.h"
 
 #include "multiboot.h"
 #include "isa.h"
 #include "elf.h"
 #include "libia32.h"
 #include "libc.h"
+#include "cons.h"
 
 /*
  * ---------- macros ----------------------------------------------------------

@@ -10,6 +10,12 @@
 ##
 
 #
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/kaneton/core
+
+#
 # ---------- dependencies -----------------------------------------------------
 #
 
@@ -19,7 +25,7 @@ include			../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		all build run libs clear proto dep
+.PHONY:		all build run libs clear prototypes dependencies
 
 #
 # ---------- variables --------------------------------------------------------
@@ -27,7 +33,7 @@ include			../../../environment/env.mk
 
 LIST			:=		list
 
-SUBDIRS			:=		$(call env_contents,$(LIST),)
+SUBDIRS			:=		$(shell $(call env_pull,$(LIST),))
 
 MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 
@@ -36,8 +42,9 @@ CORE_LO			:=		core.lo
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
-all:			build run
+main:			build run
 
 build:			$(CORE_LO)
 
@@ -47,19 +54,27 @@ $(CORE_LO):		libs
 	$(call env_archive,$(CORE_LO),$(MODULES),)
 
 libs:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,,)				; \
+	done
 
 run:
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
+	done
 
 	$(call env_remove,$(CORE_LO),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 	$(call env_launch,Makefile,$(SUBDIRS),proto,)
 
 headers:
-	$(call env_launch,Makefile,$(SUBDIRS),dep,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
+	done
+
+endif

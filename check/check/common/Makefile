@@ -10,6 +10,12 @@
 ##
 
 #
+# ---------- component --------------------------------------------------------
+#
+
+component		:=		test/check
+
+#
 # ---------- dependencies -----------------------------------------------------
 #
 
@@ -34,8 +40,9 @@ TEST_O			:=		$(TEST_C:.c=.o)
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
-all:			build run
+main:			build run
 
 build:			$(TEST_LO)
 
@@ -55,6 +62,8 @@ clear:
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 
 headers:
+
+endif
