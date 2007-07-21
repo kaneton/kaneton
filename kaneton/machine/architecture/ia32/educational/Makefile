@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kan...e/architecture/ia32/educational/Makefile
+# file          /home/mycure/kane...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       matthieu bucchianeri   [sat jul 21 20:02:35 2007]
+# updated       julien quintard   [sat jul 21 19:24:50 2007]
 #
 
 #
@@ -45,18 +45,18 @@ ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/context.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/syscalls.h \
 				$(_ARCHITECTURE_INCLUDE_DIR_)/virtual.h
 
-GENERIC_DIR	:=	$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic
+GENERIC_DIR		:=	$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic
 
-GENERIC_LO	:=	$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/generic.lo
+GENERIC_LO		:=	$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/generic.lo
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			$(_ARCHITECTURE_LO_)
+main:			dependencies $(_ARCHITECTURE_LO_)
 
-$(_ARCHITECTURE_LO_):		dependencies $(ARCHITECTURE_O)
+$(_ARCHITECTURE_LO_):		$(ARCHITECTURE_O) $(GENERIC_LO)
 	$(call env_remove,$(_ARCHITECTURE_LO_),)
 
 	$(call env_archive,$(_ARCHITECTURE_LO_),$(ARCHITECTURE_O)	\

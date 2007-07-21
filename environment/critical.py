@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/critical.py
 #
 # created       julien quintard   [fri dec 15 13:43:03 2006]
-# updated       julien quintard   [tue jun 12 04:11:55 2007]
+# updated       julien quintard   [sat jul 21 11:14:38 2007]
 #
 
 #
@@ -167,13 +167,13 @@ def			extract():
   already = None
   new = None
 
-  assignments = re.findall("^"					\
+  assignments = re.findall("^"						\
                              "[ \t]*"					\
                              "([a-zA-Z0-9_]+)"				\
                              "[ \t]*"					\
                              "(\+?=)"					\
                              "[ \t]*"					\
-                             "((?:(?:\\\\\n)|[^\n])+)"			\
+                             "((?:(?:\\\\\n)|[^\n])*)"			\
                              "\n", g_contents, re.MULTILINE);
 
   for assignment in assignments:
