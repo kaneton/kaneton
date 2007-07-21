@@ -51,9 +51,9 @@ void		check_sched_priority_01(void)
 	 "error creating thread\n");
 
   CLI();
-  ASSERT(thread_state(id1, SCHED_STATE_RUN) == ERROR_NONE,
+  ASSERT(thread_state(id1, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
-  ASSERT(thread_state(id2, SCHED_STATE_RUN) == ERROR_NONE,
+  ASSERT(thread_state(id2, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
   STI();
 
@@ -64,9 +64,9 @@ void		check_sched_priority_01(void)
   ASSERT(executed1 != 0 && executed2 != 0, "Thread not executed\n");
 
   CLI();
-  ASSERT(thread_state(id1, SCHED_STATE_STOP) == ERROR_NONE,
+  ASSERT(thread_state(id1, SCHEDULER_STATE_STOP) == ERROR_NONE,
 	 "cannot start thread\n");
-  ASSERT(thread_state(id2, SCHED_STATE_STOP) == ERROR_NONE,
+  ASSERT(thread_state(id2, SCHEDULER_STATE_STOP) == ERROR_NONE,
 	 "cannot start thread\n");
 
   ASSERT(executed1 < executed2, "Priority not respected\n");

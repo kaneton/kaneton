@@ -36,9 +36,9 @@
 void		check_as_paddr_vaddr_01(void)
 {
   i_task	task;
-  t_asid	as;
-  t_segid	seg;
-  t_regid	reg;
+  i_as	as;
+  i_segment	seg;
+  i_region	reg;
   t_vaddr	v;
   t_paddr	p;
   t_uint32	i;

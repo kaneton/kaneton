@@ -35,8 +35,7 @@ include			../../../environment/env.mk
 
 LIBSYS_LO		:=		libsys.lo
 
-LIBSYS_C		:=		perror.c			\
-					quad.c
+LIBSYS_C		:=		perror.c
 
 LIBSYS_O		:=		$(LIBSYS_C:.c=.o)
 

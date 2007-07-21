@@ -16,8 +16,8 @@
 void		check_segment_multiple_reserve_02(void)
 {
   i_task	task;
-  t_asid	as;
-  t_segid	seg[4];
+  i_as	as;
+  i_segment	seg[4];
 
   TEST_ENTER();
 

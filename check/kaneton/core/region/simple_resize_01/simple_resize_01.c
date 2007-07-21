@@ -2,7 +2,7 @@
 #include <kaneton.h>
 #include "../common/common.h"
 
-extern t_asid kasid;
+extern i_as kasid;
 
 void		check_region_simple_resize_01(void)
 {

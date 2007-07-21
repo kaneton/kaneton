@@ -20,8 +20,8 @@
 void		check_segment_type_01(void)
 {
   i_task	task;
-  t_asid	as;
-  t_segid	seg;
+  i_as	as;
+  i_segment	seg;
   o_segment*	o;
 
   TEST_ENTER();

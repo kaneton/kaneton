@@ -21,9 +21,9 @@ void		check_segment_give_01(void)
 {
   i_task	task1;
   i_task	task2;
-  t_asid	as1;
-  t_asid	as2;
-  t_segid	seg;
+  i_as	as1;
+  i_as	as2;
+  i_segment	seg;
   o_segment*	o;
   o_as*		oas;
   void*		chiche;

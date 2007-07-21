@@ -2,11 +2,11 @@
 #include <kaneton.h>
 #include "../common/common.h"
 
-extern t_asid kasid;
+extern i_as kasid;
 
 void		check_region_inject_01(void)
 {
-  t_asid	as;
+  i_as	as;
   i_task	task;
   i_segment	seg;
   i_region	reg;
@@ -35,7 +35,7 @@ void		check_region_inject_01(void)
   o_dup = malloc(sizeof (o_region));
   memcpy(o_dup, o, sizeof (o_region));
 
-  ASSERT(region_inject(as, o_dup) == ERROR_NONE, "error injecting region\n");
+  ASSERT(region_inject(as, o_dup, &reg) == ERROR_NONE, "error injecting region\n");
 
   region_dump(as);
 

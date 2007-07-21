@@ -14,7 +14,7 @@
 #include "../common/common.h"
 
 extern t_init*	init;
-extern t_asid	kasid;
+extern i_as	kasid;
 extern m_as*	as;
 
 /* XXX gerer les address space */
@@ -36,29 +36,29 @@ static void check_mapping(t_vaddr start, t_vsize size, t_paddr phys)
 
   paddr = phys;
 
-  pde_start = PDE_ENTRY(start);
-  pde_end = PDE_ENTRY(start + size);
-  pte_start = PTE_ENTRY(start);
-  pte_end = PTE_ENTRY(start + size);
+  pde_start = IA32_PDE_ENTRY(start);
+  pde_end = IA32_PDE_ENTRY(start + size);
+  pte_start = IA32_PTE_ENTRY(start);
+  pte_end = IA32_PTE_ENTRY(start + size);
 
   for (br = 0, pde = pde_start; !br && pde <= pde_end; pde++)
     {
-      if (pd_get_table(NULL, pde, &pt) != ERROR_NONE)
+      if (ia32_pd_get_table(NULL, pde, &pt) != ERROR_NONE)
 	{
 	  printf("region @ %d badly mapped (no page table)\n", start);
 	  break;
 	}
 
-      pt.entries = ENTRY_ADDR(PD_MIRROR, pde);
+      pt.entries = IA32_ENTRY_ADDR(IA32_PD_MIRROR, pde);
 
       for (pte = (pde == pde_start ? pte_start : 0);
-	   pte < (pde == pde_end ? pte_end : PT_MAX_ENTRIES);
+	   pte < (pde == pde_end ? pte_end : IA32_PT_MAX_ENTRIES);
 	   pte++)
 	{
-	  if (pt_get_page(&pt, pte, &pg) != ERROR_NONE)
+	  if (ia32_pt_get_page(&pt, pte, &pg) != ERROR_NONE)
 	    {
 	      printf("region @ %d badly mapped (no pte for %p)\n",
-		     start, ENTRY_ADDR(pde, pte));
+		     start, IA32_ENTRY_ADDR(pde, pte));
 	      br = 1;
 	      break;
 	    }
@@ -66,7 +66,7 @@ static void check_mapping(t_vaddr start, t_vsize size, t_paddr phys)
 	    {
 	      printf("region @ %d badly mapped (%p mapped to %p,"
 		     "awaited address: %p\n",
-		     start, ENTRY_ADDR(pde, pte), pg.addr, paddr);
+		     start, IA32_ENTRY_ADDR(pde, pte), pg.addr, paddr);
 	      br = 1;
 	      break;
 	    }
@@ -75,7 +75,7 @@ static void check_mapping(t_vaddr start, t_vsize size, t_paddr phys)
 	}
     }
 
-  if (0 && start < ENTRY_ADDR(PD_MIRROR, 0))
+  if (0 && start < IA32_ENTRY_ADDR(IA32_PD_MIRROR, 0))
     for (; size > 0; size--, p++)
       *p = *p;
 }

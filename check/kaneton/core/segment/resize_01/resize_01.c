@@ -20,10 +20,10 @@
 void		check_segment_resize_01(void)
 {
   i_task	task;
-  t_asid	as;
-  t_segid	seg;
-  t_segid	seg2;
-  t_segid	seg3;
+  i_as	as;
+  i_segment	seg;
+  i_segment	seg2;
+  i_segment	seg3;
   t_uint32	try = 0;
   o_segment*	o;
 

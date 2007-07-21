@@ -57,9 +57,9 @@ void		check_sched_stack_01(void)
 	 "error in thread_store\n");
 
   CLI();
-  ASSERT(thread_state(id1, SCHED_STATE_RUN) == ERROR_NONE,
+  ASSERT(thread_state(id1, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
-  ASSERT(thread_state(id2, SCHED_STATE_RUN) == ERROR_NONE,
+  ASSERT(thread_state(id2, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
   STI();
 

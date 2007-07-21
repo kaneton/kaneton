@@ -79,7 +79,7 @@ void		check_sched_medium_03(void)
 
   for (i = 0; i < 8; i++)
     {
-      ASSERT(thread_state(id[i], SCHED_STATE_RUN) == ERROR_NONE,
+      ASSERT(thread_state(id[i], SCHEDULER_STATE_RUN) == ERROR_NONE,
 	     "cannot start thread\n");
     }
   STI();

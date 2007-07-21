@@ -52,7 +52,7 @@ void		check_sched_complete_02(void)
 	 "error creating thread\n");
 
   CLI();
-  ASSERT(task_state(tsk, SCHED_STATE_RUN) == ERROR_NONE,
+  ASSERT(task_state(tsk, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start task\n");
   STI();
 

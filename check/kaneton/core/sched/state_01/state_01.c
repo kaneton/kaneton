@@ -40,7 +40,7 @@ void		check_sched_state_01(void)
 	 "error creating thread\n");
 
   CLI();
-  ASSERT(thread_state(id, SCHED_STATE_RUN) == ERROR_NONE,
+  ASSERT(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
   STI();
 
@@ -51,7 +51,7 @@ void		check_sched_state_01(void)
   ASSERT(executed != 0, "Thread not executed\n");
 
   CLI();
-  ASSERT(thread_state(id, SCHED_STATE_STOP) == ERROR_NONE,
+  ASSERT(thread_state(id, SCHEDULER_STATE_STOP) == ERROR_NONE,
 	 "cannot stop thread\n");
   STI();
 

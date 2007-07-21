@@ -27,7 +27,7 @@ include			../../../../../environment/env.mk
 
 LIST			:=		list
 
-SUBDIRS			:=		$(call env_contents,$(LIST),)
+SUBDIRS			:=		$(shell $(call env_pull,$(LIST),))
 
 MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 
@@ -37,7 +37,7 @@ SET_ARRAY_LO		:=		set_array.lo
 # ---------- rules ------------------------------------------------------------
 #
 
-all:			build run
+main:			build run
 
 build:			$(SET_ARRAY_LO)
 
@@ -47,18 +47,18 @@ $(SET_ARRAY_LO):	libs
 	$(call env_archive,$(SET_ARRAY_LO),$(MODULES),)
 
 libs:
-	$(call env_launch,Makefile,$(SUBDIRS),,)
+	for d in $(SUBDIRS) ; do $(call env_launch,$${d}/Makefile,,); done
 
 run:
 
 clear:
-	$(call env_launch,Makefile,$(SUBDIRS),clear,)
+	for d in $(SUBDIRS) ; do $(call env_launch,$${d}/Makefile,clear,); done
 
 	$(call env_remove,$(SET_ARRAY_LO),)
 
 	$(call env_purge,)
 
-proto:
+prototypes:
 
 headers:
 	$(call env_launch,Makefile,$(SUBDIRS),dep,)

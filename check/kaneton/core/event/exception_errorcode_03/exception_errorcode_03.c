@@ -41,7 +41,7 @@ static void	check_pf(t_id	id, t_uint32 error_code)
     printf("Cannot segment_reserve\n");
 
   if (region_reserve(kasid, segid, 0, REGION_OPT_FORCE,
-		     MK_BASE(0x8abcdef0), PAGESZ, &regid) != ERROR_NONE)
+		     IA32_MK_BASE(0x8abcdef0), PAGESZ, &regid) != ERROR_NONE)
     printf("Cannot region_reserve\n");
 }
 

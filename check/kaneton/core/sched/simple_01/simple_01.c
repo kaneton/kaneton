@@ -39,7 +39,7 @@ void		check_sched_simple_01(void)
 	 "error creating thread\n");
 
   CLI();
-  ASSERT(thread_state(id, SCHED_STATE_RUN) == ERROR_NONE,
+  ASSERT(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
   STI();
 

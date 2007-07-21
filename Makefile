@@ -5,10 +5,10 @@
 #
 # license       kanetno
 #
-# file          /home/buckman/crypt/kaneton/Makefile
+# file          /home/buckman/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       matthieu bucchianeri   [wed jul 18 18:40:59 2007]
+# updated       matthieu bucchianeri   [sat jul 21 17:54:22 2007]
 #
 
 #
@@ -94,7 +94,7 @@ clean:		clear
 
 SUBDIRS			:=		environment configure		\
 					view export test cheat		\
-					$(PATHS)
+					library $(PATHS)
 
 #
 # ---------- kaneton ----------------------------------------------------------

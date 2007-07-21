@@ -107,13 +107,13 @@ void		check_sched_context_02(void)
   ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
 
-  ASSERT(thread_state(id, SCHED_STATE_RUN) == ERROR_NONE,
+  ASSERT(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
 
   ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread2, &id) == 0,
 	 "error creating thread\n");
 
-  ASSERT(thread_state(id, SCHED_STATE_RUN) == ERROR_NONE,
+  ASSERT(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	 "cannot start thread\n");
   STI();
 

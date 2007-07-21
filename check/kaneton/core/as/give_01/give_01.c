@@ -17,7 +17,7 @@ void		check_as_give_01(void)
 {
   i_task	task1;
   i_task	task2;
-  t_asid	as;
+  i_as	as;
   o_as*		o;
 
   TEST_ENTER();

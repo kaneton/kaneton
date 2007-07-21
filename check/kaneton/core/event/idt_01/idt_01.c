@@ -41,7 +41,7 @@ void		check_event_idt_01(void)
 
   TEST_ENTER();
 
-  gdt_build_selector(PMODE_GDT_CORE_CS, ia32_prvl_supervisor, &cs);
+  ia32_gdt_build_selector(IA32_PMODE_GDT_CORE_CS, ia32_prvl_supervisor, &cs);
 
   ASSERT(event_reserve(3,
 		       EVENT_FUNCTION,
@@ -56,7 +56,7 @@ void		check_event_idt_01(void)
 
   for (i = 0; i < idtr.size / 8; i++)
     {
-      if (!(idte[i].type & DESC_TYPE_PRESENT))
+      if (!(idte[i].type & IA32_DESC_TYPE_PRESENT))
 	continue;
 
       if (!(idte[i].type & ((1 << 3) | (1 << 2) | (1 << 1))))

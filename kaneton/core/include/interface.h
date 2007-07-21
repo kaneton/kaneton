@@ -625,6 +625,160 @@ typedef struct
  *      ../../core/interface/interface.c
  */
 
+/*
+ * ../../core/interface/interface.c
+ */
+
+t_error		interface_as_give(o_syscall*	message);
+
+t_error		interface_as_vaddr(o_syscall*	message);
+
+t_error		interface_as_paddr(o_syscall*	message);
+
+t_error		interface_as_copy(o_syscall*	message);
+
+t_error		interface_as_clone(o_syscall*	message);
+
+t_error		interface_as_reserve(o_syscall*	message);
+
+t_error		interface_as_release(o_syscall*	message);
+
+t_error		interface_as_get(o_syscall*	message);
+
+t_error		interface_capability_reserve(o_syscall*	message);
+
+t_error		interface_capability_release(o_syscall*	message);
+
+t_error		interface_capability_restrict(o_syscall*	message);
+
+t_error		interface_capability_invalidate(o_syscall*	message);
+
+t_error		interface_capability_get(o_syscall*	message);
+
+t_error		interface_capability_give(o_syscall*	message);
+
+t_error		interface_capability_verify(o_syscall*	message);
+
+t_error		interface_event_reserve(o_syscall*	message);
+
+t_error		interface_event_release(o_syscall*	message);
+
+t_error		interface_event_get(o_syscall*	message);
+
+t_error		interface_io_grant(o_syscall*	message);
+
+t_error		interface_io_deny(o_syscall*	message);
+
+t_error		interface_io_read_8(o_syscall*	message);
+
+t_error		interface_io_read_16(o_syscall*	message);
+
+t_error		interface_io_read_32(o_syscall*	message);
+
+t_error		interface_io_read_64(o_syscall*	message);
+
+t_error		interface_io_write_8(o_syscall*	message);
+
+t_error		interface_io_write_16(o_syscall*	message);
+
+t_error		interface_io_write_32(o_syscall*	message);
+
+t_error		interface_io_write_64(o_syscall*	message);
+
+t_error		interface_map_reserve(o_syscall*	message);
+
+t_error		interface_map_release(o_syscall*	message);
+
+t_error		interface_map_resize(o_syscall*	message);
+
+t_error		interface_message_register(o_syscall*	message);
+
+t_error		interface_region_reserve(o_syscall*	message);
+
+t_error		interface_region_release(o_syscall*	message);
+
+t_error		interface_region_get(o_syscall*	message);
+
+t_error		interface_scheduler_quantum(o_syscall*	message);
+
+t_error		interface_scheduler_yield(o_syscall*	message);
+
+t_error		interface_scheduler_current(o_syscall*	message);
+
+t_error		interface_scheduler_add(o_syscall*	message);
+
+t_error		interface_scheduler_remove(o_syscall*	message);
+
+t_error		interface_scheduler_update(o_syscall*	message);
+
+t_error		interface_segment_clone(o_syscall*	message);
+
+t_error		interface_segment_give(o_syscall*	message);
+
+t_error		interface_segment_copy(o_syscall*	message);
+
+t_error		interface_segment_reserve(o_syscall*	message);
+
+t_error		interface_segment_release(o_syscall*	message);
+
+t_error		interface_segment_catch(o_syscall*	message);
+
+t_error		interface_segment_perms(o_syscall*	message);
+
+t_error		interface_segment_type(o_syscall*	message);
+
+t_error		interface_segment_get(o_syscall*	message);
+
+t_error		interface_task_current(o_syscall*	message);
+
+t_error		interface_task_clone(o_syscall*	message);
+
+t_error		interface_task_reserve(o_syscall*	message);
+
+t_error		interface_task_release(o_syscall*	message);
+
+t_error		interface_task_priority(o_syscall*	message);
+
+t_error		interface_task_state(o_syscall*	message);
+
+t_error		interface_task_wait(o_syscall*	message);
+
+t_error		interface_task_get(o_syscall*	message);
+
+t_error		interface_thread_give(o_syscall*	message);
+
+t_error		interface_thread_clone(o_syscall*	message);
+
+t_error		interface_thread_reserve(o_syscall*	message);
+
+t_error		interface_thread_release(o_syscall*	message);
+
+t_error		interface_thread_priority(o_syscall*	message);
+
+t_error		interface_thread_state(o_syscall*	message);
+
+t_error		interface_thread_stack(o_syscall*	message);
+
+t_error		interface_thread_load(o_syscall*	message);
+
+t_error		interface_thread_store(o_syscall*	message);
+
+t_error		interface_thread_get(o_syscall*	message);
+
+t_error		interface_timer_reserve(o_syscall*	message);
+
+t_error		interface_timer_release(o_syscall*	message);
+
+t_error		interface_timer_delay(o_syscall*	message);
+
+t_error		interface_timer_repeat(o_syscall*	message);
+
+t_error		interface_timer_modify(o_syscall*	message);
+
+t_error		interface_timer_get(o_syscall*	message);
+
+void			interface_loop(void);
+
 
 /*
  * eop

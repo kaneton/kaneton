@@ -35,7 +35,7 @@ static void	check_int3(t_id	id)
 {
   t_uint16	ds;
 
-  gdt_build_selector(14, ia32_prvl_supervisor, &ds);
+  ia32_gdt_build_selector(14, ia32_prvl_supervisor, &ds);
 
   thrown = 1;
   asm volatile("	movl $0x10034a10, %eax		\n"
@@ -73,7 +73,7 @@ void			check_event_context_02(void)
   seg.privilege = ia32_prvl_supervisor;
   seg.is_system = 0;
   seg.type.usr = ia32_type_data;
-  ASSERT(gdt_add_segment(NULL, 14, seg) == ERROR_NONE,
+  ASSERT(ia32_gdt_add_segment(NULL, 14, seg) == ERROR_NONE,
 	 "cannot add gdt segment\n");
 
   ASSERT(event_reserve(3,

@@ -10,12 +10,6 @@
 ##
 
 #
-# ---------- component --------------------------------------------------------
-#
-
-component		:=		test
-
-#
 # ---------- dependencies -----------------------------------------------------
 #
 
@@ -40,7 +34,6 @@ MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 #
 # ---------- rules ------------------------------------------------------------
 #
-ifeq ($(behaviour),default)
 
 main:			build run
 
@@ -76,5 +69,3 @@ headers:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,dependencies,)		; \
 	done
-
-endif

@@ -32,7 +32,7 @@ void		check_event_exception_errorcode_01(void)
 {
   TEST_ENTER();
 
-  gdt_delete_segment(NULL, 16);
+  ia32_gdt_delete_segment(NULL, 16);
 
   ASSERT(event_reserve(13,
 		       EVENT_FUNCTION,

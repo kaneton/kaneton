@@ -21,10 +21,10 @@ void		check_as_clone_01(void)
 {
   i_task	task;
   i_task	forked;
-  t_asid	as;
-  t_asid	cloned;
-  t_segid	seg;
-  t_regid	reg;
+  i_as	as;
+  i_as	cloned;
+  i_segment	seg;
+  i_region	reg;
   o_as*		o;
   o_segment*	oseg;
   o_region*	oreg;

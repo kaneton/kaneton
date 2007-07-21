@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
+# file          /home/buckman/kan.../environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [thu jun 28 23:09:16 2007]
+# updated       matthieu bucchianeri   [sat jul 21 18:01:39 2007]
 #
 
 #
@@ -277,7 +277,8 @@ define env_executable
     fi									; \
   fi									&& \
   $(call env_display,magenta,EXECUTABLE,$(1),		,)		&& \
-  $(_CC_) $(_CC_FLAGS_) $(_LD_FLAGS_) $${executable_options} -o $(1) $(2)
+  $(_CC_) $(_CC_FLAGS_) $(_LD_FLAGS_) $${executable_options} -o $(1)	\
+	$(2) "`$(_CC_) -print-libgcc-file-name`"
 endef
 
 #

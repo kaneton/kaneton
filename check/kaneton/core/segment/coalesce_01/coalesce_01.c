@@ -20,9 +20,9 @@
 void		check_segment_coalesce_01(void)
 {
   i_task	task;
-  t_asid	as;
-  t_segid	seg;
-  t_segid	seg2;
+  i_as	as;
+  i_segment	seg;
+  i_segment	seg2;
   t_uint32	try = 0;
   o_segment*	o;
 

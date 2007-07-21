@@ -31,7 +31,7 @@ void		check_as_as_switching_01(void)
 	 "Error in as_get\n");
 
   ASSERT(region_reserve(as,
-			(t_segid)init->kstack,
+			(i_segment)init->kstack,
 			0,
 			REGION_OPT_FORCE,
 			(t_vaddr)init->kstack,
@@ -72,7 +72,8 @@ void		check_as_as_switching_01(void)
   ptr1 = (int*)(t_uint32)reg;
   ptr2 = (int*)addr;
 
-  ASSERT(pd_activate(o->machdep.pd, PD_CACHED, PD_WRITEBACK) == ERROR_NONE,
+  ASSERT(ia32_pd_activate(o->machdep.pd, IA32_PD_CACHED,
+			  IA32_PD_WRITEBACK) == ERROR_NONE,
 	    "cannot switch as\n");
 
   *ptr1 = 0x41424344;
@@ -80,7 +81,7 @@ void		check_as_as_switching_01(void)
   *ptr2 = 0x40414243;
   j = *ptr2;
 
-  pd_activate(kdir, PD_CACHED, PD_WRITEBACK);
+  ia32_pd_activate(kdir, IA32_PD_CACHED, IA32_PD_WRITEBACK);
 
   ASSERT(i == 0x41424344, "read/write test failed\n");
 

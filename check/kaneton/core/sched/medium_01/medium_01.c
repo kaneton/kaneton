@@ -42,7 +42,7 @@ void		check_sched_medium_01(void)
       ASSERT(check_thread_create(ktask, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 	     "error creating thread\n");
 
-      ASSERT(thread_state(id, SCHED_STATE_RUN) == ERROR_NONE,
+      ASSERT(thread_state(id, SCHEDULER_STATE_RUN) == ERROR_NONE,
 	     "cannot start thread\n");
     }
   STI();

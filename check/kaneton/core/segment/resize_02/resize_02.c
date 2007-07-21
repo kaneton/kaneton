@@ -13,7 +13,7 @@
 #include <kaneton.h>
 #include "../common/common.h"
 
-extern t_asid	kasid;
+extern i_as	kasid;
 
 /*
  * resize.
@@ -22,13 +22,13 @@ extern t_asid	kasid;
 void		check_segment_resize_02(void)
 {
   i_task	task;
-  t_asid	as;
-  t_segid	seg;
-  t_segid	seg2;
-  t_segid	seg3;
+  i_as	as;
+  i_segment	seg;
+  i_segment	seg2;
+  i_segment	seg3;
   t_uint32	try = 0;
   o_segment*	o;
-  t_regid	reg;
+  i_region	reg;
   t_uint32	i;
   t_uint8*	buff;
 

@@ -2,17 +2,17 @@
 #include <kaneton.h>
 #include "../common/common.h"
 
-extern t_asid kasid;
+extern i_as kasid;
 
 void		check_region_split_coalesce_01(void)
 {
    i_task	task;
-  t_asid	as;
-  t_segid	seg;
-  t_regid	reg;
+  i_as	as;
+  i_segment	seg;
+  i_region	reg;
   o_region*	o;
-  t_regid	left;
-  t_regid	right;
+  i_region	left;
+  i_region	right;
 
   TEST_ENTER();
 

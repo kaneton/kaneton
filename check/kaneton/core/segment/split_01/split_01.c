@@ -20,9 +20,9 @@
 void		check_segment_split_01(void)
 {
   i_task	task;
-  t_asid	as;
-  t_segid	seg;
-  t_segid	seg2;
+  i_as	as;
+  i_segment	seg;
+  i_segment	seg2;
   o_segment*	o;
 
   TEST_ENTER();
