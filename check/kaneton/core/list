@@ -1,9 +1,4 @@
-id
-set
-segment
-region
 map
 as
 event
-time
 sched

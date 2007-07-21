@@ -68,7 +68,7 @@
  */
 
 #include <core/types.h>
-#include <architecture/pmode.h>
+#include <architecture/generic/pmode.h>
 
 /*
  * ---------- types -----------------------------------------------------------

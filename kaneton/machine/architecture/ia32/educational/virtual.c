@@ -289,13 +289,13 @@ t_error			ia32_task_as_init(i_as		asid)
    * 6)
    */
 
-#if 0 // XXX
+#ifdef IA32_KERNEL_MAPPED
   if (region_reserve(asid,
 		     (i_segment)0x1000,
 		     0,
 		     REGION_OPT_FORCE | REGION_OPT_GLOBAL,
 		     0x1000,
-		     INIT_ISA_SIZE - 0x1000,
+		     0x00100000 - 0x1000,
 		     &reg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 

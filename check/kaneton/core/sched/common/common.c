@@ -35,7 +35,7 @@ static unsigned char	bcd2bin(unsigned char c)
 /*
  * get seconds from RTC
  */
-#if 0
+#if 1
 t_uint32 check_cmos_sec(void)
 {
   int i;

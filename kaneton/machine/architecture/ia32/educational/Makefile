@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...e/architecture/ia32/educational/Makefile
+# file          /home/buckman/kan...e/architecture/ia32/educational/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       julien quintard   [fri jun 29 08:38:16 2007]
+# updated       matthieu bucchianeri   [sat jul 21 20:02:35 2007]
 #
 
 #
@@ -27,46 +27,27 @@ include			../../../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main clear prototypes headers
+.PHONY:		main clear prototypes headers dependencies
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-ARCHITECTURE_LOW_C	:=		apic.c				\
-					cpuid.c				\
-					gdt.c				\
-					idt.c				\
-					ldt.c				\
-					paging.c			\
-					pd.c				\
-					pmode.c				\
-					pt.c				\
-					sse.c				\
-					tlb.c				\
-					tss.c
+ARCHITECTURE_C		:=	context.c				\
+				interrupt.c				\
+				syscalls.c				\
+				virtual.c
 
-ARCHITECTURE_HI_C	:=		context.c			\
-					interrupt.c			\
-					syscalls.c			\
-					virtual.c
+ARCHITECTURE_O		:=	$(ARCHITECTURE_C:.c=.o)
 
-ARCHITECTURE_C		:=		$(ARCHITECTURE_LOW_C)		\
-					$(ARCHITECTURE_HI_C)
-
-ARCHITECTURE_O		:=		$(ARCHITECTURE_C:.c=.o)
-
-ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/apic.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/gdt.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/idt.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/misc.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/paging.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/pmode.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/tss.h	\
-				$(_ARCHITECTURE_INCLUDE_DIR_)/context.h	\
+ARCHITECTURE_INCLUDE	:=	$(_ARCHITECTURE_INCLUDE_DIR_)/context.h	\
 				$(_ARCHITECTURE_INCLUDE_DIR_)/interrupt.h \
 				$(_ARCHITECTURE_INCLUDE_DIR_)/syscalls.h \
 				$(_ARCHITECTURE_INCLUDE_DIR_)/virtual.h
+
+GENERIC_DIR	:=	$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic
+
+GENERIC_LO	:=	$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/generic.lo
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -75,12 +56,18 @@ ifeq ($(behaviour),default)
 
 main:			$(_ARCHITECTURE_LO_)
 
-$(_ARCHITECTURE_LO_):		$(ARCHITECTURE_O)
+$(_ARCHITECTURE_LO_):		dependencies $(ARCHITECTURE_O)
 	$(call env_remove,$(_ARCHITECTURE_LO_),)
 
-	$(call env_archive,$(_ARCHITECTURE_LO_),$(ARCHITECTURE_O),)
+	$(call env_archive,$(_ARCHITECTURE_LO_),$(ARCHITECTURE_O)	\
+						$(GENERIC_LO),)
+
+dependencies:
+	$(call env_launch,$(GENERIC_DIR)/Makefile,,)
 
 clear:
+	$(call env_launch,$(GENERIC_DIR)/Makefile,clear,)
+
 	$(call env_remove,$(ARCHITECTURE_O),)
 
 	$(call env_remove,$(_ARCHITECTURE_LO_),)
@@ -89,6 +76,8 @@ clear:
 
 prototypes:
 	$(call env_prototypes,$(ARCHITECTURE_INCLUDE),)
+
+	$(call env_launch,$(GENERIC_DIR)/Makefile,prototypes,)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)

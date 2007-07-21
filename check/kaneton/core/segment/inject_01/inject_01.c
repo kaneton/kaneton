@@ -6,7 +6,7 @@ void		check_segment_inject_01(void)
 {
   i_task	task;
   o_segment*	o;
-  o_segment	new_seg;
+  o_segment*	new_seg;
   i_as		as;
   i_segment	seg;
 
@@ -15,11 +15,12 @@ void		check_segment_inject_01(void)
 
   TEST_NEW_AS(task, as);
 
-  new_seg.address = 0x400000;
-  new_seg.perms = PERM_READ | PERM_EXEC;
-  new_seg.size = 2 * PAGESZ;
+  new_seg = malloc(sizeof (o_segment));
+  new_seg->address = 0x400000;
+  new_seg->perms = PERM_READ | PERM_EXEC;
+  new_seg->size = 2 * PAGESZ;
 
-  ASSERT(segment_inject(as, &new_seg, &seg) == ERROR_NONE,
+  ASSERT(segment_inject(as, new_seg, &seg) == ERROR_NONE,
 	    "error injecting segment\n");
 
   ASSERT((t_paddr)seg == 0x400000, "Bad segment id after segment_inject\n");
