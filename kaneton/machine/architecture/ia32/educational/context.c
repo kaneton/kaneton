@@ -140,6 +140,9 @@ t_error			ia32_extended_context_init(void)
 void			ia32_context_copy(t_ia32_context*		dst,
 					  const t_ia32_context*		src)
 {
+  ASSERT(dst != NULL);
+  ASSERT(src != NULL);
+
   dst->eax = src->eax;
   dst->ebx = src->ebx;
   dst->ecx = src->ecx;
@@ -346,21 +349,29 @@ t_error			ia32_init_context(i_task		taskid,
   switch(task->class)
     {
       case TASK_CLASS_CORE:
-	code_segment = IA32_SEGSEL(IA32_PMODE_GDT_CORE_CS, IA32_PRIV_RING0);
-	data_segment = IA32_SEGSEL(IA32_PMODE_GDT_CORE_DS, IA32_PRIV_RING0);
+	ia32_gdt_build_selector(IA32_PMODE_GDT_CORE_CS, ia32_prvl_supervisor,
+				&code_segment);
+	ia32_gdt_build_selector(IA32_PMODE_GDT_CORE_DS, ia32_prvl_supervisor,
+				&data_segment);
 	break;
       case TASK_CLASS_DRIVER:
-	code_segment = IA32_SEGSEL(IA32_PMODE_GDT_DRIVER_CS, IA32_PRIV_RING1);
-	data_segment = IA32_SEGSEL(IA32_PMODE_GDT_DRIVER_DS, IA32_PRIV_RING1);
+	ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_CS, ia32_prvl_driver,
+				&code_segment);
+	ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_DS, ia32_prvl_driver,
+				&data_segment);
 	o->machdep.context.eflags |= (1 << 12);
 	break;
       case TASK_CLASS_SERVICE:
-	code_segment = IA32_SEGSEL(IA32_PMODE_GDT_SERVICE_CS, IA32_PRIV_RING2);
-	data_segment = IA32_SEGSEL(IA32_PMODE_GDT_SERVICE_DS, IA32_PRIV_RING2);
+	ia32_gdt_build_selector(IA32_PMODE_GDT_SERVICE_CS, ia32_prvl_service,
+				&code_segment);
+	ia32_gdt_build_selector(IA32_PMODE_GDT_SERVICE_DS, ia32_prvl_service,
+				&data_segment);
 	break;
       default:
-	code_segment = IA32_SEGSEL(IA32_PMODE_GDT_PROGRAM_CS, IA32_PRIV_RING3);
-	data_segment = IA32_SEGSEL(IA32_PMODE_GDT_PROGRAM_DS, IA32_PRIV_RING3);
+	ia32_gdt_build_selector(IA32_PMODE_GDT_PROGRAM_CS, ia32_prvl_user,
+				&code_segment);
+	ia32_gdt_build_selector(IA32_PMODE_GDT_PROGRAM_DS, ia32_prvl_user,
+				&data_segment);
     }
 
   o->machdep.context.cs = code_segment;
@@ -438,6 +449,9 @@ t_error			ia32_status_context(i_thread		threadid,
 					    t_vaddr*		sp)
 {
   o_thread*		o;
+
+  ASSERT(pc != NULL);
+  ASSERT(sp != NULL);
 
   if (thread_get(threadid, &o) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -614,10 +628,12 @@ t_error			ia32_extended_context_switch(i_thread	current,
   o_thread*		o;
   o_thread*		old;
 
+  if (current == elected)
+    return (ERROR_NONE);
+
   /*
    * 1)
    */
-
 
   if (thread_get(elected, &o) != ERROR_NONE)
     return (ERROR_UNKNOWN);

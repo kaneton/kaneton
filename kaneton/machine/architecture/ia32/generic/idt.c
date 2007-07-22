@@ -98,8 +98,10 @@ t_error			ia32_idt_dump(t_ia32_idt*		table)
  */
 
 t_error			ia32_idt_size(t_ia32_idt*		table,
-				      t_uint16			*size)
+				      t_uint16*			size)
 {
+  ASSERT(size != NULL);
+
   if (!table)
     table = &ia32_idt;
 
@@ -124,6 +126,8 @@ t_error			ia32_idt_build(t_uint16		entries,
 				       t_uint8		clear,
 				       t_ia32_idt*	table)
 {
+  ASSERT(table != NULL);
+
   /*
    * 1)
    */
@@ -167,6 +171,8 @@ t_error			ia32_idt_build(t_uint16		entries,
 t_error			ia32_idt_activate(t_ia32_idt*		table)
 {
   t_ia32_idtr		idtr;
+
+  ASSERT(table != NULL);
 
   /*
    * 1)
@@ -303,6 +309,8 @@ t_error			ia32_idt_get_gate(t_ia32_idt*		table,
 					  t_uint16		index,
 					  t_ia32_gate*		gate)
 {
+  ASSERT(gate != NULL);
+
   /*
    * 1)
    */

@@ -82,7 +82,7 @@ t_error			ibmpc_irq_init(void)
   ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_B, 0xfb);
   ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_B, 0xff);
 
-  return ERROR_NONE;
+  return (ERROR_NONE);
 }
 
 /*
@@ -94,7 +94,7 @@ t_error			ibmpc_enable_irq(t_uint8		irq)
   t_uint8		mask;
 
   if (irq > 15)
-    return ERROR_UNKNOWN;
+    return (ERROR_UNKNOWN);
 
   if (irq < 8)
     {
@@ -107,7 +107,7 @@ t_error			ibmpc_enable_irq(t_uint8		irq)
       ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_B, mask & ~(1 << (irq - 8)));
     }
 
-  return ERROR_NONE;
+  return (ERROR_NONE);
 }
 
 /*
@@ -119,7 +119,7 @@ t_error			ibmpc_disable_irq(t_uint8		irq)
   t_uint8		mask;
 
   if (irq > 15)
-    return ERROR_UNKNOWN;
+    return (ERROR_UNKNOWN);
 
   if (irq < 8)
     {
@@ -132,7 +132,7 @@ t_error			ibmpc_disable_irq(t_uint8		irq)
       ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_B, mask | (1 << (irq - 8)));
     }
 
-  return ERROR_NONE;
+  return (ERROR_NONE);
 }
 
 /*
@@ -153,7 +153,7 @@ t_error			ibmpc_irq_acknowledge(t_uint8		irq)
    */
 
   if (irq > 15)
-    return ERROR_UNKNOWN;
+    return (ERROR_UNKNOWN);
 
   /*
    * 2)
@@ -173,7 +173,7 @@ t_error			ibmpc_irq_acknowledge(t_uint8		irq)
       ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_A, 0x60 + 2);
     }
 
-  return ERROR_NONE;
+  return (ERROR_NONE);
 }
 
 /*                                                                 [cut] /k2 */

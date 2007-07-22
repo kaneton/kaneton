@@ -154,7 +154,7 @@ int			serial_put(char				c)
       serial_send(SERIAL_PRIMARY, (t_uint8*)buffer, n);
       n = 0;
     }
-  return 1;
+  return (1);
 }
 
 /*

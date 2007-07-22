@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...aneton/machine/glue/ibm-pc.ia32/region.c
+ * file          /home/buckman/kan...aneton/machine/glue/ibm-pc.ia32/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       julien quintard   [fri jun 22 18:33:47 2007]
+ * updated       matthieu bucchianeri   [sun jul 22 19:51:36 2007]
  */
 
 /*

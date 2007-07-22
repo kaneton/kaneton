@@ -179,6 +179,8 @@ t_error			timer_insert(o_timer*			o)
 
   TIMER_ENTER(timer);
 
+  ASSERT(o != NULL);
+
   /*
    * 1)
    */
@@ -227,6 +229,9 @@ t_error			timer_reserve(t_type			type,
   o_timer		o;
 
   TIMER_ENTER(timer);
+
+  ASSERT((type == EVENT_FUNCTION) || (type == EVENT_MESSAGE));
+  ASSERT(id != NULL);
 
   /*
    * 1)
@@ -465,6 +470,8 @@ t_error			timer_get(i_timer			id,
 {
   TIMER_ENTER(timer);
 
+  ASSERT(o != NULL);
+
   if (set_get(timer->timers, id, (void**)o) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
@@ -482,7 +489,6 @@ t_error			timer_get(i_timer			id,
  * 2) initialize the object identifier.
  * 3) reserve the timer set.
  * 4) call the machine dependent code.
- * 5) dump the timer manager if debug is enabled.
  */
 
 t_error			timer_initialize(void)
@@ -497,7 +503,7 @@ t_error			timer_initialize(void)
       cons_msg('!', "timer: cannot allocate memory for the timer manager "
                "structure\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_UNKNOWN);
     }
 
   memset(timer, 0x0, sizeof(m_timer));
@@ -510,7 +516,7 @@ t_error			timer_initialize(void)
     {
       cons_msg('!', "timer: unable to initialize the identifier object\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_UNKNOWN);
     }
 
   timer->timeref = 0;
@@ -524,7 +530,7 @@ t_error			timer_initialize(void)
     {
       cons_msg('!', "timer: unable to reserve the timer set\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -532,18 +538,9 @@ t_error			timer_initialize(void)
    */
 
   if (machine_call(timer, timer_initialize) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+    return (ERROR_UNKNOWN);
 
-  /*
-   * 5)
-   */
-
-#if (DEBUG & DEBUG_TIMER)
-  if (timer_dump() != ERROR_UNKNOWN)
-    return ERROR_UNKNOWN;
-#endif
-
-  return ERROR_NONE;
+  return (ERROR_NONE);
 }
 
 /*
@@ -564,7 +561,7 @@ t_error			timer_clean(void)
    */
 
   if (machine_call(timer, timer_clean) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+    return (ERROR_UNKNOWN);
 
   /*
    * 2)
@@ -574,7 +571,7 @@ t_error			timer_clean(void)
     {
       cons_msg('!', "timer: unable to release the timer set\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -585,7 +582,7 @@ t_error			timer_clean(void)
     {
       cons_msg('!', "timer: unable to destroy the identifier object\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -594,7 +591,7 @@ t_error			timer_clean(void)
 
   free(timer);
 
-  return ERROR_NONE;
+  return (ERROR_NONE);
 }
 
 /*								   [cut] k2 */

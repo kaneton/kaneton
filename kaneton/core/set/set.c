@@ -166,6 +166,8 @@ t_error			set_size(i_set				setid,
 
   SET_ENTER(set);
 
+  ASSERT(size != NULL);
+
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
@@ -187,6 +189,8 @@ t_error			set_size(i_set				setid,
 t_error			set_new(o_set*				o)
 {
   SET_ENTER(set);
+
+  ASSERT(o != NULL);
 
   /*
    * 1)
@@ -270,6 +274,8 @@ t_error			set_descriptor(i_set			setid,
 {
   SET_ENTER(set);
 
+  ASSERT(o != NULL);
+
   /*
    * 1)
    */
@@ -309,6 +315,8 @@ t_error			set_get(i_set				setid,
 
   SET_ENTER(set);
 
+  ASSERT(o != NULL);
+
   /*
    * 1)
    */
@@ -341,7 +349,6 @@ t_error			set_get(i_set				setid,
  * 4) reserves the set container which will contain the set descriptors
  *    reserved later. obviously, it will be better to take a powerful
  *    data structure because it will contains millions of objects.
- * 5) if necessary, dumps the set container.
  */
 
 t_error			set_initialize(void)
@@ -395,14 +402,6 @@ t_error			set_initialize(void)
 
       return (ERROR_UNKNOWN);
     }
-
-  /*
-   * 5)
-   */
-
-#if (DEBUG & DEBUG_SET)
-  set_dump();
-#endif
 
   return (ERROR_NONE);
 }

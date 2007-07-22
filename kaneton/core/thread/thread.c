@@ -225,6 +225,8 @@ t_error			thread_clone(i_task			taskid,
 
   THREAD_ENTER(thread);
 
+  ASSERT(new != NULL);
+
   /*
    * 1)
    */
@@ -303,6 +305,8 @@ t_error			thread_reserve(i_task			taskid,
   o_thread		o;
 
   THREAD_ENTER(thread);
+
+  ASSERT(threadid != NULL);
 
   /*
    * 1)
@@ -520,8 +524,8 @@ t_error			thread_state(i_thread			threadid,
 				     t_state			sched)
 {
   o_thread*		o;
-  t_iterator		i;
-  t_state		state;
+  //  t_iterator		i;
+  //  t_state		state;
   t_state		wakeup;
 
   THREAD_ENTER(thread);
@@ -613,8 +617,6 @@ t_error			thread_state(i_thread			threadid,
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;
     }
-
-//  printf("thread %qd is %s\n", threadid, sched == SCHEDULER_STATE_STOP ? "stopping" : "starting");
 
   THREAD_LEAVE(thread, ERROR_NONE);
 }
@@ -780,6 +782,8 @@ t_error			thread_get(i_thread			threadid,
 {
   THREAD_ENTER(thread);
 
+  ASSERT(o != NULL);
+
   if (set_get(thread->threads, threadid, (void**)o) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
@@ -795,7 +799,6 @@ t_error			thread_get(i_thread			threadid,
  * 2) initialize the object identifier.
  * 3) reserve the thread set.
  * 4) call the machine-dependent code.
- * 5) dump the thread manager if debug is enabled.
  */
 
 t_error			thread_initialize(void)
@@ -843,15 +846,6 @@ t_error			thread_initialize(void)
 
   if (machine_call(thread, thread_initialize) != ERROR_NONE)
     return ERROR_UNKNOWN;
-
-  /*
-   * 5)
-   */
-
-#if (DEBUG & DEBUG_THREAD)
-  if (thread_dump() != ERROR_NONE)
-    return ERROR_UNKNOWN;
-#endif
 
   return ERROR_NONE;
 }

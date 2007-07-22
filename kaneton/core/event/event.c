@@ -171,6 +171,8 @@ t_error			event_reserve(i_event			id,
 
   EVENT_ENTER(event);
 
+  ASSERT(type == EVENT_FUNCTION || type == EVENT_MESSAGE);
+
   /*
    * 1)
    */
@@ -256,6 +258,8 @@ t_error			event_get(i_event			id,
 {
   EVENT_ENTER(event);
 
+  ASSERT(o != NULL);
+
   if (set_get(event->events, id, (void**)o) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
@@ -271,7 +275,6 @@ t_error			event_get(i_event			id,
  * 2) initialize the object identifier.
  * 3) reserve the event set.
  * 4) call the machine dependent code.
- * 5) dump the event manager if debug is enabled.
  */
 
 t_error			event_initialize(void)
@@ -285,7 +288,7 @@ t_error			event_initialize(void)
       cons_msg('!', "event: cannot allocate memory for the event manager "
 	       "structure\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_UNKNOWN);
     }
 
   memset(event, 0x0, sizeof(m_event));
@@ -298,7 +301,7 @@ t_error			event_initialize(void)
     {
       cons_msg('!', "event: unable to initialize the identifier object\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -310,7 +313,7 @@ t_error			event_initialize(void)
     {
       cons_msg('!', "event: unable to reserve the event set\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -318,18 +321,9 @@ t_error			event_initialize(void)
    */
 
   if (machine_call(event, event_initialize) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+    return (ERROR_UNKNOWN);
 
-  /*
-   * 5)
-   */
-
-#if (DEBUG & DEBUG_EVENT)
-  if (event_dump() != ERROR_NONE)
-    return ERROR_UNKNOWN;
-#endif
-
-  return ERROR_NONE;
+  return (ERROR_NONE);
 }
 
 /*
@@ -354,7 +348,7 @@ t_error			event_clean(void)
    */
 
   if (machine_call(event, event_clean) != ERROR_NONE)
-    return ERROR_UNKNOWN;
+    return (ERROR_UNKNOWN);
 
   /*
    * 2)
@@ -382,7 +376,7 @@ t_error			event_clean(void)
     {
       cons_msg('!', "event: unable to release the event set\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -393,7 +387,7 @@ t_error			event_clean(void)
     {
       cons_msg('!', "event: unable to destroy the identifier object\n");
 
-      return ERROR_UNKNOWN;
+      return (ERROR_UNKNOWN);
     }
 
   /*
@@ -402,5 +396,5 @@ t_error			event_clean(void)
 
   free(event);
 
-  return ERROR_NONE;
+  return (ERROR_NONE);
 }

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/map.h
+ * file          /home/buckman/kaneton/kaneton/core/include/map.h
  *
  * created       julien quintard   [wed jun  6 13:31:27 2007]
- * updated       julien quintard   [sun jun 10 19:03:34 2007]
+ * updated       matthieu bucchianeri   [sun jul 22 12:07:47 2007]
  */
 
 #ifndef CORE_MAP_H
@@ -34,6 +34,8 @@
 #define MAP_OPT_FORCE		(1 << 0)
 #define MAP_OPT_USER		(0 << 1)
 #define MAP_OPT_PRIVILEGED	(1 << 1)
+
+#define MAP_OPT_INVALID		(~((1 << 1) | (1 << 0)))
 
 /*
  * ---------- types -----------------------------------------------------------

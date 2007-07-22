@@ -116,8 +116,10 @@ t_error			ia32_gdt_dump(t_ia32_gdt*		dump_gdt)
  */
 
 t_error			ia32_gdt_size(t_ia32_gdt*		table,
-				      t_uint16			*size)
+				      t_uint16*			size)
 {
+  ASSERT(size != NULL);
+
   if (!table)
     table = &ia32_gdt;
 
@@ -142,6 +144,7 @@ t_error			ia32_gdt_build(t_uint16			entries,
 				       t_ia32_gdt*		gdt,
 				       t_uint8			clear)
 {
+  ASSERT(gdt != NULL);
 
   /*
    * 1)
@@ -345,6 +348,8 @@ t_error			ia32_gdt_reserve_segment(t_ia32_gdt*	table,
 {
   t_uint16		look;
 
+  ASSERT(segment != NULL);
+
   /*
    * 1)
    */
@@ -390,6 +395,8 @@ t_error			ia32_gdt_get_segment(t_ia32_gdt*	table,
 					     t_uint16		index,
 					     t_ia32_segment*	segment)
 {
+  ASSERT(segment != NULL);
+
   /*
    * 1)
    */
@@ -485,6 +492,7 @@ t_error			ia32_gdt_build_selector(t_uint16	segment,
 						t_ia32_prvl	privilege,
 						t_uint16*	selector)
 {
+  ASSERT(selector != NULL);
 
   /*
    * 1)

@@ -208,6 +208,8 @@ t_error			scheduler_quantum(t_quantum			quantum)
 
   SCHEDULER_ENTER(scheduler);
 
+  ASSERT(quantum != 0);
+
   /*
    * 1)
    */
@@ -315,6 +317,8 @@ t_error			scheduler_current(i_thread*			thread)
   t_cpu_sched*		ent;
 
   SCHEDULER_ENTER(scheduler);
+
+  ASSERT(thread != NULL);
 
   if (cpu_current(&cpuid) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
@@ -834,10 +838,10 @@ t_error			scheduler_initialize(void)
     return (ERROR_UNKNOWN);
 
   if (cpu_current(&cpuid) != ERROR_NONE)
-    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   if (set_get(scheduler->cpus, cpuid, (void**)&ent2) != ERROR_NONE)
-    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   ent2->current = kthread;
 
@@ -875,7 +879,7 @@ t_error			scheduler_clean(void)
    */
 
   if (machine_call(scheduler, scheduler_clean) != ERROR_NONE)
-    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   /*
    * 2)
@@ -884,31 +888,31 @@ t_error			scheduler_clean(void)
   set_foreach(SET_OPT_FORWARD, scheduler->cpus, &it2, st2)
     {
       if (set_object(scheduler->cpus, it2, (void**)&ent) != ERROR_NONE)
-	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+	return (ERROR_UNKNOWN);
 
       set_foreach(SET_OPT_FORWARD, ent->active, &it, st)
 	{
 	  if (set_object(ent->active, it, (void**)&queue) != ERROR_NONE)
-	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+	    return (ERROR_UNKNOWN);
 
 	  if (set_release(*queue) != ERROR_NONE)
-	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+	    return (ERROR_UNKNOWN);
 	}
 
       if (set_release(ent->active) != ERROR_NONE)
-	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+	return (ERROR_UNKNOWN);
 
       set_foreach(SET_OPT_FORWARD, ent->expired, &it, st)
 	{
 	  if (set_object(ent->expired, it, (void**)&queue) != ERROR_NONE)
-	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+	    return (ERROR_UNKNOWN);
 
 	  if (set_release(*queue) != ERROR_NONE)
-	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+	    return (ERROR_UNKNOWN);
 	}
 
       if (set_release(ent->expired) != ERROR_NONE)
-	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+	return (ERROR_UNKNOWN);
     }
 
   /*

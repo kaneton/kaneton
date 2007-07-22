@@ -222,6 +222,8 @@ t_error			segment_clone(i_as			asid,
 
   SEGMENT_ENTER(segment);
 
+  ASSERT(new != NULL);
+
   /*
    * 1)
    */
@@ -282,6 +284,12 @@ t_error			segment_inject(i_as		asid,
   o_as			*as;
 
   SEGMENT_ENTER(segment);
+
+  ASSERT(o != NULL);
+  ASSERT(o->type == SEGMENT_TYPE_MEMORY || o->type == SEGMENT_TYPE_CATCH);
+  ASSERT(o->size != 0);
+  ASSERT((o->perms & PERM_INVALID) == 0);
+  ASSERT(segid != NULL);
 
   /*
    * 1)
@@ -420,6 +428,9 @@ t_error			segment_resize(i_segment	old,
 
   SEGMENT_ENTER(segment);
 
+  ASSERT(size != 0);
+  ASSERT(new != NULL);
+
   /*
    * 1)
    */
@@ -529,6 +540,10 @@ t_error			segment_split(i_segment		segid,
 
   SEGMENT_ENTER(segment);
 
+  ASSERT(size != 0);
+  ASSERT(left != NULL);
+  ASSERT(right != NULL);
+
   /*
    * 1)
    */
@@ -599,6 +614,9 @@ t_error			segment_coalesce(i_segment	left,
 
   SEGMENT_ENTER(segment);
 
+  ASSERT(left != right);
+  ASSERT(segid != NULL);
+
   /*
    * 1)
    */
@@ -661,6 +679,8 @@ t_error			segment_read(i_segment		segid,
 
   SEGMENT_ENTER(segment);
 
+  ASSERT(sz != 0);
+
   /*
    * 1)
    */
@@ -706,6 +726,8 @@ t_error			segment_write(i_segment		segid,
   o_segment*		o;
 
   SEGMENT_ENTER(segment);
+
+  ASSERT(sz != 0);
 
   /*
    * 1)
@@ -755,6 +777,8 @@ t_error			segment_copy(i_segment		dst,
   o_segment*		o2;
 
   SEGMENT_ENTER(segment);
+
+  ASSERT(sz != 0);
 
   /*
    * 1)
@@ -810,6 +834,10 @@ t_error			segment_reserve(i_as			asid,
   o_segment*		o;
 
   SEGMENT_ENTER(segment);
+
+  ASSERT(size != 0);
+  ASSERT((perms & PERM_INVALID) == 0);
+  ASSERT(segid != NULL);
 
   /*
    * 1)
@@ -1017,6 +1045,8 @@ t_error			segment_perms(i_segment			segid,
 
   SEGMENT_ENTER(segment);
 
+  ASSERT((perms & PERM_INVALID) == 0);
+
   /*
    * 1)
    */
@@ -1064,6 +1094,8 @@ t_error			segment_type(i_segment			segid,
   o_segment*		o;
 
   SEGMENT_ENTER(segment);
+
+  ASSERT(type == SEGMENT_TYPE_MEMORY || type == SEGMENT_TYPE_CATCH);
 
   /*
    * 1)
@@ -1159,6 +1191,8 @@ t_error			segment_get(i_segment			segid,
 {
   SEGMENT_ENTER(segment);
 
+  ASSERT(o != NULL);
+
   if (set_get(segment->segments, segid, (void**)o) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
@@ -1176,7 +1210,6 @@ t_error			segment_get(i_segment			segid,
  *    structure.
  * 3) reserves the segment set which will contain the system's segments.
  * 4) calls the machine-dependent code.
- * 5) if needed, dumps the segments.
  */
 
 t_error			segment_initialize(void)
@@ -1219,15 +1252,7 @@ t_error			segment_initialize(void)
    */
 
   if (machine_call(segment, segment_initialize) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  /*
-   * 5)
-   */
-
-#if (DEBUG & DEBUG_SEGMENT)
-  segment_dump();
-#endif
+    return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);
 }
@@ -1252,7 +1277,7 @@ t_error			segment_clean(void)
    */
 
   if (machine_call(segment, segment_clean) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   /*
    * 2)

@@ -365,6 +365,8 @@ t_error			set_head_bpt(i_set			setid,
 
   SET_ENTER(set);
 
+  ASSERT(iterator != NULL);
+
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
@@ -396,6 +398,8 @@ t_error			set_tail_bpt(i_set			setid,
 
   SET_ENTER(set);
 
+  ASSERT(iterator != NULL);
+
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
@@ -426,6 +430,8 @@ t_error			set_previous_bpt(i_set			setid,
 
   SET_ENTER(set);
 
+  ASSERT(previous != NULL);
+
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
@@ -447,6 +453,8 @@ t_error			set_next_bpt(i_set			setid,
   o_set*		o;
 
   SET_ENTER(set);
+
+  ASSERT(next != NULL);
 
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
@@ -533,6 +541,8 @@ t_error			set_add_bpt(i_set			setid,
   o_set*		o;
 
   SET_ENTER(set);
+
+  ASSERT(data != NULL);
 
   /*
    * 1)
@@ -852,6 +862,8 @@ t_error			set_locate_bpt(i_set			setid,
 
   SET_ENTER(set);
 
+  ASSERT(iterator != NULL);
+
   if (id == ID_UNUSED)
     SET_LEAVE(set, ERROR_UNKNOWN);
 
@@ -878,6 +890,8 @@ t_error			set_object_bpt(i_set			setid,
   o_set*		o;
 
   SET_ENTER(set);
+
+  ASSERT(data != NULL);
 
   if (set_descriptor(setid, &o) != ERROR_NONE)
     SET_LEAVE(set, ERROR_UNKNOWN);
@@ -913,6 +927,9 @@ t_error			set_reserve_bpt(t_opts			opts,
   o_set			o;
 
   SET_ENTER(set);
+
+  ASSERT(datasz >= sizeof (t_id));
+  ASSERT(setid != NULL);
 
   /*
    * 1)

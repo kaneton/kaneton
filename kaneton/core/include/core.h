@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/core.h
+ * file          /home/buckman/kaneton/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       julien quintard   [thu jun 28 22:55:12 2007]
+ * updated       matthieu bucchianeri   [sun jul 22 12:09:03 2007]
  */
 
 #ifndef CORE_CORE_H
@@ -25,6 +25,8 @@
 #define PERM_READ		(1 << 0)
 #define PERM_WRITE		(1 << 1)
 #define PERM_EXEC		(1 << 2)
+
+#define PERM_INVALID		(~((PERM_READ) | (PERM_WRITE) | (PERM_EXEC)))
 
 /*
  * fits

@@ -55,6 +55,8 @@ t_error			io_grant(i_port				id,
 {
   IO_ENTER(io);
 
+  ASSERT(width > 0 && width <= 8);
+
   if (machine_call(io, io_grant, id, task, width) != ERROR_NONE)
     IO_LEAVE(io, ERROR_UNKNOWN);
 
@@ -70,6 +72,8 @@ t_error			io_deny(i_port				id,
 				t_uint8				width)
 {
   IO_ENTER(io);
+
+  ASSERT(width > 0 && width <= 8);
 
   if (machine_call(io, io_deny, id, task, width) != ERROR_NONE)
     IO_LEAVE(io, ERROR_UNKNOWN);
@@ -87,6 +91,8 @@ t_error			io_read_8(i_task			task,
 {
   IO_ENTER(io);
 
+  ASSERT(data != NULL);
+
   IO_LEAVE(io, machine_call(io, io_read_8, task, id, data));
 }
 
@@ -99,6 +105,8 @@ t_error			io_read_16(i_task			task,
 				   t_uint16*			data)
 {
   IO_ENTER(io);
+
+  ASSERT(data != NULL);
 
   IO_LEAVE(io, machine_call(io, io_read_16, task, id, data));
 }
@@ -113,6 +121,8 @@ t_error			io_read_32(i_task			task,
 {
   IO_ENTER(io);
 
+  ASSERT(data != NULL);
+
   IO_LEAVE(io, machine_call(io, io_read_32, task, id, data));
 }
 
@@ -125,6 +135,8 @@ t_error			io_read_64(i_task			task,
 				   t_uint64*			data)
 {
   IO_ENTER(io);
+
+  ASSERT(data != NULL);
 
   IO_LEAVE(io, machine_call(io, io_read_64, task, id, data));
 }
@@ -233,7 +245,7 @@ t_error			io_clean(void)
    */
 
   if (machine_call(io, io_clean) != ERROR_NONE)
-    IO_LEAVE(io, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   /*
    * 2)

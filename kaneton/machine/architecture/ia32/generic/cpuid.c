@@ -49,7 +49,7 @@ t_uint32		ia32_cpu_is_genuine(void)
   buff[1] = edx;
   buff[2] = ecx;
 
-  return !strcmp((char*)buff, "GenuineIntel");
+  return (!strcmp((char*)buff, "GenuineIntel"));
 }
 
 /*
@@ -69,7 +69,7 @@ char*			ia32_cpu_get_brand(char*		brand,
   CPUID(0x80000000, eax, ebx, ecx, edx);
 
   if (!(eax & 0x80000000) || eax < 0x80000004)
-    return strncpy(brand, "Unknown", n);
+    return (strncpy(brand, "Unknown", n));
 
   memset(buff, 0, sizeof(buff));
 
@@ -82,7 +82,7 @@ char*			ia32_cpu_get_brand(char*		brand,
       buff[i * 4 + 2] = ecx;
       buff[i * 4 + 3] = edx;
     }
-  return strncpy(brand, (char*)buff, n);
+  return (strncpy(brand, (char*)buff, n));
 }
 
 /*
@@ -98,7 +98,7 @@ t_uint32		ia32_cpu_has_mmx(void)
 
   CPUID(0x1, eax, ebx, ecx, edx);
 
-  return !!(edx & (1 << 23));
+  return (!!(edx & (1 << 23)));
 }
 
 /*
@@ -114,7 +114,7 @@ t_uint32		ia32_cpu_has_sse(void)
 
   CPUID(0x1, eax, ebx, ecx, edx);
 
-  return !!(edx & (1 << 25));
+  return (!!(edx & (1 << 25)));
 }
 
 /*
@@ -130,7 +130,7 @@ t_uint32		ia32_cpu_has_sse2(void)
 
   CPUID(0x1, eax, ebx, ecx, edx);
 
-  return !!(edx & (1 << 26));
+  return (!!(edx & (1 << 26)));
 }
 
 /*
@@ -146,7 +146,7 @@ t_uint32		ia32_cpu_has_sse3(void)
 
   CPUID(0x1, eax, ebx, ecx, edx);
 
-  return !!(ecx & (1 << 0));
+  return (!!(ecx & (1 << 0)));
 }
 
 /*
@@ -162,7 +162,7 @@ t_uint32		ia32_cpu_has_fxstate(void)
 
   CPUID(0x1, eax, ebx, ecx, edx);
 
-  return !!(edx & (1 << 24));
+  return (!!(edx & (1 << 24)));
 }
 
 /*
@@ -178,5 +178,5 @@ t_uint32		ia32_cpu_has_apic(void)
 
   CPUID(0x1, eax, ebx, ecx, edx);
 
-  return !!(edx & (1 << 9));
+  return (!!(edx & (1 << 9)));
 }

@@ -49,7 +49,7 @@ t_uint32		ia32_apic_read(t_uint32			reg)
 {
   t_uint32*		addr = (t_uint32*)reg;
 
-  return *addr;
+  return (*addr);
 }
 
 /*
@@ -58,7 +58,7 @@ t_uint32		ia32_apic_read(t_uint32			reg)
 
 t_uint32		ia32_apic_id(void)
 {
-  return ia32_apic_read(IA32_APIC_REG_APICID) >> 24;
+  return (ia32_apic_read(IA32_APIC_REG_APICID) >> 24);
 }
 
 /*

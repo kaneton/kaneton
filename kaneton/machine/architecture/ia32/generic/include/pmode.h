@@ -106,7 +106,8 @@
 typedef enum
   {
     ia32_prvl_supervisor	= IA32_PRIV_RING0,
-    ia32_prvl_privileged	= IA32_PRIV_RING1,
+    ia32_prvl_driver		= IA32_PRIV_RING1,
+    ia32_prvl_service		= IA32_PRIV_RING2,
     ia32_prvl_user		= IA32_PRIV_RING3,
   }				t_ia32_prvl;
 

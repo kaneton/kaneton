@@ -75,6 +75,11 @@ t_error			map_reserve(i_as		asid,
 
   MAP_ENTER(map);
 
+  ASSERT((opts & MAP_OPT_INVALID) == 0);
+  ASSERT((perms & PERM_INVALID) == 0);
+  ASSERT(size != 0);
+  ASSERT(addr != NULL);
+
   /*
    * 1)
    */
@@ -190,6 +195,9 @@ t_error			map_resize(i_as			asid,
   t_opts		opts;
 
   MAP_ENTER(map);
+
+  ASSERT(size != 0);
+  ASSERT(new != NULL);
 
   if (region_get(asid, (i_region)old, &o) != ERROR_NONE)
     MAP_LEAVE(map, ERROR_UNKNOWN);

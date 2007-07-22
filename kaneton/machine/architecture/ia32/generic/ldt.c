@@ -46,6 +46,8 @@
 t_error			ia32_ldt_base(t_ia32_ldt*		table,
 				      t_paddr*			addr)
 {
+  ASSERT(addr != NULL);
+
   *addr = (t_paddr)table->descriptor;
 
   return ERROR_NONE;
@@ -56,8 +58,10 @@ t_error			ia32_ldt_base(t_ia32_ldt*		table,
  */
 
 t_error			ia32_ldt_size(t_ia32_ldt*		table,
-				      t_uint16			*size)
+				      t_uint16*			size)
 {
+  ASSERT(size != NULL);
+
   *size = table->count;
 
   return ERROR_NONE;
@@ -70,6 +74,8 @@ t_error			ia32_ldt_size(t_ia32_ldt*		table,
 t_error			ia32_ldt_dump(t_ia32_ldt*		table)
 {
   t_ia32_gdt		n;
+
+  ASSERT(table != NULL);
 
   n.count = table->count;
   n.descriptor = (t_ia32_gdte*)table->descriptor;
@@ -106,6 +112,8 @@ t_error			ia32_ldt_build(t_uint16			entries,
 				       t_uint8			clear)
 {
   t_ia32_segment	seg;
+
+  ASSERT(ldt != NULL);
 
   /*
    * 1)
@@ -160,6 +168,8 @@ t_error			ia32_ldt_build(t_uint16			entries,
 
 t_error			ia32_ldt_destroy(t_ia32_ldt		*ldt)
 {
+  ASSERT(ldt != NULL);
+
   return ia32_gdt_delete_segment(NULL, ldt->gdt_entry);
 }
 
@@ -246,6 +256,8 @@ t_error			ia32_ldt_reserve_segment(t_ia32_ldt*	table,
 {
   t_uint16		look;
 
+  ASSERT(segment != NULL);
+
   /*
    * 1)
    */
@@ -330,6 +342,7 @@ t_error			ia32_ldt_build_selector(t_ia32_ldt*	table,
 						t_ia32_prvl	privilege,
 						t_uint16*	selector)
 {
+  ASSERT(selector != NULL);
 
   /*
    * 1)

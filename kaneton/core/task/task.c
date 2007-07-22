@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/kaneton/core/task/task.c
+ * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       matthieu bucchianeri   [wed jul 18 19:00:03 2007]
+ * updated       matthieu bucchianeri   [sun jul 22 19:49:24 2007]
  */
 
 /*
@@ -86,6 +86,8 @@ t_error			task_current(i_task*			tsk)
   o_thread*		o;
 
   TASK_ENTER(task);
+
+  ASSERT(tsk != NULL);
 
   if (!scheduler)
     {
@@ -210,6 +212,8 @@ t_error			task_clone(i_task			old,
 
   TASK_ENTER(task);
 
+  ASSERT(new != NULL);
+
   /*
    * 1)
    */
@@ -311,6 +315,8 @@ t_error			task_reserve(t_class			class,
 
   TASK_ENTER(task);
 
+  ASSERT(id != NULL);
+
   /*
    * 1)
    */
@@ -328,13 +334,31 @@ t_error			task_reserve(t_class			class,
       (behav != TASK_BEHAV_BACKGROUND))
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
-/* XXX bogus */
-  if (0 && (prior != TASK_PRIOR_CORE) &&
-      (prior != TASK_PRIOR_REALTIME) &&
-      (prior != TASK_PRIOR_INTERACTIVE) &&
-      (prior != TASK_PRIOR_TIMESHARING) &&
-      (prior != TASK_PRIOR_BACKGROUND))
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+  switch (behav)
+    {
+      case TASK_BEHAV_CORE:
+	if (prior < TASK_LPRIOR_CORE || prior > TASK_HPRIOR_CORE)
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	break;
+      case TASK_BEHAV_REALTIME:
+	if (prior < TASK_LPRIOR_REALTIME || prior > TASK_HPRIOR_REALTIME)
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	break;
+      case TASK_BEHAV_INTERACTIVE:
+	if (prior < TASK_LPRIOR_INTERACTIVE || prior > TASK_HPRIOR_INTERACTIVE)
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	break;
+      case TASK_BEHAV_TIMESHARING:
+	if (prior < TASK_LPRIOR_TIMESHARING || prior > TASK_HPRIOR_TIMESHARING)
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	break;
+      case TASK_BEHAV_BACKGROUND:
+	if (prior < TASK_LPRIOR_BACKGROUND || prior > TASK_HPRIOR_BACKGROUND)
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	break;
+      default:
+	TASK_LEAVE(task, ERROR_UNKNOWN);
+    }
 
   /*
    * 2)
@@ -769,6 +793,8 @@ t_error			task_wait(i_task			id,
 
   TASK_ENTER(task);
 
+  ASSERT(wait != NULL);
+
   /* XXX */
 
   if (opts & WAIT_ID)
@@ -860,6 +886,8 @@ t_error			task_get(i_task				id,
 {
   TASK_ENTER(task);
 
+  ASSERT(o != NULL);
+
   if (set_get(task->tasks, id, (void**)o) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
@@ -884,13 +912,11 @@ t_error			task_get(i_task				id,
  *    core can retrieve it, build a task, map the segment, and launch it.
  * 6) add the regions to the kernel address space.
  * 7) call the machine-dependent code.
- * 8) if asked, dumps the task manager.
  */
 
 t_error			task_initialize(void)
 {
   i_segment		segments[INIT_SEGMENTS];
-  i_thread		needless;
   i_region		useless;
   o_segment*		segment;
   o_region*		region;
@@ -1014,15 +1040,7 @@ t_error			task_initialize(void)
    */
 
   if (machine_call(task, task_initialize) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
-
-  /*
-   * 8)
-   */
-
-#if (DEBUG & DEBUG_TASK)
-  task_dump();
-#endif
+    return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);
 }
@@ -1048,7 +1066,7 @@ t_error			task_clean(void)
    */
 
   if (machine_call(task, task_clean) != ERROR_NONE)
-    TASK_LEAVE(task, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   /*
    * 2)

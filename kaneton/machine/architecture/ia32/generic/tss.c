@@ -43,6 +43,8 @@ t_error			ia32_tss_load(t_ia32_tss*		tss,
 				      t_uint32			esp,
 				      t_uint32			io)
 {
+  ASSERT(tss != NULL);
+
   tss->ss0 = ss;
   tss->esp0 = esp;
   tss->io = io;
@@ -66,6 +68,8 @@ t_error			ia32_tss_init(t_ia32_tss*			tss)
   t_uint16		segment;
   t_uint16		selector;
   t_ia32_segment	descriptor;
+
+  ASSERT(tss != NULL);
 
   /*
    * 1)

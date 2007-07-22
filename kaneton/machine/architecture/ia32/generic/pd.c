@@ -79,6 +79,7 @@ t_error			ia32_pd_build(t_paddr			base,
 				      t_ia32_directory*		directory,
 				      t_uint8			clear)
 {
+  ASSERT(directory != NULL);
 
   /*
    * 1)
@@ -115,6 +116,8 @@ t_error			ia32_pd_base(t_ia32_directory*		dir,
 {
   t_ia32_pde*		d;
 
+  ASSERT(base != NULL);
+
   /*
    * 1)
    */
@@ -149,6 +152,9 @@ t_error			ia32_pd_activate(t_ia32_directory	dir,
 {
   t_uint32		pdbr;
   t_uint32		mask = 0xfffff000;
+
+  ASSERT(cached == IA32_PD_CACHED || cached == IA32_PD_NOTCACHED);
+  ASSERT(writeback == IA32_PD_WRITEBACK || writeback == IA32_PD_WRITETHROUGH);
 
   /*
    * 1)
@@ -187,6 +193,10 @@ t_error			ia32_pd_get_cr3(t_uint32*		cr3,
 {
   t_uint32		mask = 0xfffff000;
 
+  ASSERT(cr3 != NULL);
+  ASSERT(cached == IA32_PD_CACHED || cached == IA32_PD_NOTCACHED);
+  ASSERT(writeback == IA32_PD_WRITEBACK || writeback == IA32_PD_WRITETHROUGH);
+
   if (cached == IA32_PD_NOTCACHED)
     mask |= (1 << 4);
   if (writeback == IA32_PD_WRITETHROUGH)
@@ -214,6 +224,8 @@ t_error			ia32_pd_add_table(t_ia32_directory*	dir,
 {
   t_ia32_pde*		d;
   t_uint32		opts = 0;
+
+  ASSERT(entry < IA32_PD_MAX_ENTRIES);
 
   /*
    * 1)
@@ -266,6 +278,8 @@ t_error			ia32_pd_get_table(t_ia32_directory*	dir,
 					  t_ia32_table*		table)
 {
   t_ia32_directory	d;
+
+  ASSERT(table != NULL);
 
   /*
    * 1)

@@ -149,6 +149,8 @@ t_error			set_head_array(i_set			setid,
 
   SET_ENTER(set);
 
+  ASSERT(iterator != NULL);
+
   /*
    * 1)
    */
@@ -198,6 +200,8 @@ t_error			set_tail_array(i_set			setid,
   t_setsz		i;
 
   SET_ENTER(set);
+
+  ASSERT(iterator != NULL);
 
   /*
    * 1)
@@ -249,6 +253,8 @@ t_error			set_previous_array(i_set		setid,
 
   SET_ENTER(set);
 
+  ASSERT(previous != NULL);
+
   /*
    * 1)
    */
@@ -297,6 +303,8 @@ t_error			set_next_array(i_set			setid,
 
   SET_ENTER(set);
 
+  ASSERT(next != NULL);
+
   /*
    * 1)
    */
@@ -342,6 +350,8 @@ static t_error		set_expand_array(o_set			*o,
 {
   t_setsz		i;
   t_setsz		sz;
+
+  ASSERT(o != NULL);
 
   i = o->u.array.arraysz;
 
@@ -391,6 +401,8 @@ static t_error		set_insert_at(o_set			*o,
 				      void			*data)
 {
   t_setsz		limit;
+
+  ASSERT(o != NULL);
 
   /*
    * 1)
@@ -467,6 +479,8 @@ t_error			set_insert_array(i_set			setid,
 
   SET_ENTER(set);
 
+  ASSERT(data != NULL);
+
   /*
    * 1)
    */
@@ -532,6 +546,8 @@ t_error			set_append_array(i_set			setid,
   void*			cpy;
 
   SET_ENTER(set);
+
+  ASSERT(data != NULL);
 
   /*
    * 1)
@@ -611,6 +627,8 @@ t_error			set_before_array(i_set			setid,
 
   SET_ENTER(set);
 
+  ASSERT(data != NULL);
+
   /*
    * 1)
    */
@@ -683,6 +701,8 @@ t_error			set_after_array(i_set			setid,
   void*			cpy;
 
   SET_ENTER(set);
+
+  ASSERT(data != NULL);
 
   /*
    * 1)
@@ -766,6 +786,8 @@ t_error			set_add_array(i_set			setid,
   t_setsz		last;
 
   SET_ENTER(set);
+
+  ASSERT(data != NULL);
 
   /*
    * 1)
@@ -1164,6 +1186,8 @@ t_error			set_locate_array(i_set			setid,
 
   SET_ENTER(set);
 
+  ASSERT(iterator != NULL);
+
   /*
    * 1)
    */
@@ -1247,13 +1271,15 @@ t_error			set_locate_array(i_set			setid,
  * 3) gets data for given position.
  */
 
-t_error			set_object_array(i_set		setid,
+t_error			set_object_array(i_set			setid,
 					 t_iterator		iterator,
 					 void**			data)
 {
   o_set*       		o;
 
   SET_ENTER(set);
+
+  ASSERT(data != NULL);
 
   /*
    * 1)
@@ -1302,6 +1328,9 @@ t_error			set_reserve_array(t_opts		opts,
   t_setsz		i;
 
   SET_ENTER(set);
+
+  ASSERT(datasz >= sizeof (t_id));
+  ASSERT(setid != NULL);
 
   /*
    * 1)

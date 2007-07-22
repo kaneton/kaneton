@@ -28,7 +28,7 @@
  - voir pourquoi les taches de classe DRIVER et SERVICE ne fonctionnent
    pas (ca semble etre un problème de segment selectors).
  - ajouter PD_CURRENT, GDT_CURRENT, etc...
- - mettre des ASSRET
+ - revoir les fonctions de PD/PT pour gerer mieux le paddr/vaddr.
 
 --
  aligner les modules lors de leur relocation + tenir compte de

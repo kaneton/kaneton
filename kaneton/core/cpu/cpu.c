@@ -187,10 +187,6 @@ t_error			cpu_stats(i_cpu				cpuid,
 
 t_error			cpu_balance(void)
 {
-  t_state		state;
-  o_cpu*		o;
-  t_iterator		i;
-
   CPU_ENTER(cpu);
 
   /* XXX */
@@ -449,7 +445,7 @@ void smp_test(void)
   // XXX to move
   if (event_reserve(48, EVENT_FUNCTION, EVENT_HANDLER(scheduler_switch))
       != ERROR_NONE)
-    return ERROR_UNKNOWN;
+    return;
 
   for (i = 0; i < init->ncpus; i++)
     {

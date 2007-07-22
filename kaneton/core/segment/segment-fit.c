@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/segment/segment-fit.c
+ * file          /home/buckman/kaneton/kaneton/core/segment/segment-fit.c
  *
  * created       julien quintard   [sun jun 10 17:17:15 2007]
- * updated       julien quintard   [sun jun 10 17:26:50 2007]
+ * updated       matthieu bucchianeri   [sun jul 22 12:30:26 2007]
  */
 
 /*
@@ -172,6 +172,9 @@ t_error			segment_space(i_as		asid,
   o_as*			as;
 
   SEGMENT_ENTER(segment);
+
+  ASSERT(size != 0);
+  ASSERT(address != NULL);
 
   if (as_get(asid, &as) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);

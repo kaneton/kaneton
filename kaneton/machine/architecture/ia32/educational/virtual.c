@@ -193,6 +193,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
 		  if ((pt_seg = malloc(sizeof(o_segment))) == NULL)
 		    return (ERROR_UNKNOWN);
 
+		  pt_seg->type = SEGMENT_TYPE_MEMORY;
 		  pt_seg->address = (t_paddr)pt.entries;
 		  pt_seg->size = PAGESZ;
 		  pt_seg->perms = PERM_READ | PERM_WRITE;
@@ -214,7 +215,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
    * 8)
    */
 
-  if (ia32_pd_get_cr3(&ia32_interrupt_pdbr,
+  if (ia32_pd_get_cr3((t_uint32*)&ia32_interrupt_pdbr,
 		      o->machdep.pd,
 		      IA32_PD_CACHED,
 		      IA32_PD_WRITEBACK) != ERROR_NONE)
@@ -429,7 +430,7 @@ t_error			ia32_segmentation_init(void)
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = ia32_prvl_privileged;
+  seg.privilege = ia32_prvl_driver;
   seg.is_system = 0;
   seg.type.usr = ia32_type_code;
   if (ia32_gdt_add_segment(NULL, IA32_PMODE_GDT_DRIVER_CS, seg) != ERROR_NONE)
@@ -437,7 +438,7 @@ t_error			ia32_segmentation_init(void)
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = ia32_prvl_privileged;
+  seg.privilege = ia32_prvl_driver;
   seg.is_system = 0;
   seg.type.usr = ia32_type_data;
   if (ia32_gdt_add_segment(NULL, IA32_PMODE_GDT_DRIVER_DS, seg) != ERROR_NONE)
@@ -449,7 +450,7 @@ t_error			ia32_segmentation_init(void)
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = ia32_prvl_privileged;
+  seg.privilege = ia32_prvl_service;
   seg.is_system = 0;
   seg.type.usr = ia32_type_code;
   if (ia32_gdt_add_segment(NULL, IA32_PMODE_GDT_SERVICE_CS, seg) != ERROR_NONE)
@@ -457,7 +458,7 @@ t_error			ia32_segmentation_init(void)
 
   seg.base = 0;
   seg.limit = 0xffffffff;
-  seg.privilege = ia32_prvl_privileged;
+  seg.privilege = ia32_prvl_service;
   seg.is_system = 0;
   seg.type.usr = ia32_type_data;
   if (ia32_gdt_add_segment(NULL, IA32_PMODE_GDT_SERVICE_DS, seg) != ERROR_NONE)
@@ -748,6 +749,9 @@ t_error			ia32_map_chunk(t_vaddr		v,
   i_segment		seg;
   o_region*		reg = alloc;
 
+  ASSERT(!(v % PAGESZ));
+  ASSERT(!(p % PAGESZ));
+
   if (reg == NULL)
     return (ERROR_UNKNOWN);
 
@@ -831,6 +835,8 @@ t_error			ia32_unmap_chunk(t_vaddr	v)
   t_ia32_table		pt;
   o_as*			as;
 
+  ASSERT(!(v % PAGESZ));
+
   /*
    * 1)
    */
@@ -911,6 +917,8 @@ t_error			ia32_map_region(i_as		asid,
   void*			tmp;
 
   ASSERT(!(size % PAGESZ));
+  ASSERT(!(offset % PAGESZ));
+  ASSERT(!(address % PAGESZ));
 
   /*
    * 1)
@@ -1099,6 +1107,9 @@ t_error			ia32_unmap_region(i_as		asid,
   t_vaddr		chunk;
   t_paddr		table_address;
   void*			tmp;
+
+  ASSERT(!(address % PAGESZ));
+  ASSERT(!(size % PAGESZ));
 
   /*
    * 1)

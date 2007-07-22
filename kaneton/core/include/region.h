@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/region.h
+ * file          /home/buckman/kaneton/kaneton/core/include/region.h
  *
  * created       julien quintard   [wed jun  6 13:40:54 2007]
- * updated       julien quintard   [fri jun 22 18:40:11 2007]
+ * updated       matthieu bucchianeri   [sun jul 22 12:11:45 2007]
  */
 
 #ifndef CORE_REGION_H
@@ -38,6 +38,8 @@
 #define REGION_OPT_PRIVILEGED	(1 << 1)
 #define REGION_OPT_LOCAL	(0 << 2)
 #define REGION_OPT_GLOBAL	(1 << 2)
+
+#define REGION_OPT_INVALID	(~((1 << 2) | (1 << 1) | (1 << 0)))
 
 /*
  * ---------- algorithms ------------------------------------------------------

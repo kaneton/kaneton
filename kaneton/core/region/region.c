@@ -171,6 +171,11 @@ t_error			region_inject(i_as		asid,
 
   REGION_ENTER(region);
 
+  ASSERT(o != NULL);
+  ASSERT(regid != NULL);
+  ASSERT((o->opts & REGION_OPT_INVALID) == 0);
+  ASSERT(o->size != 0);
+
   /*
    * 1)
    */
@@ -231,6 +236,10 @@ t_error			region_split(i_as			asid,
   t_perms		perms;
 
   REGION_ENTER(region);
+
+  ASSERT(size != 0);
+  ASSERT(left != NULL);
+  ASSERT(right != NULL);
 
   /*
    * 1)
@@ -322,6 +331,9 @@ t_error			region_resize(i_as			as,
   t_state		state;
 
   REGION_ENTER(region);
+
+  ASSERT(size != 0);
+  ASSERT(new != NULL);
 
   /*
    * 1)
@@ -418,6 +430,9 @@ t_error			region_coalesce(i_as		asid,
 
   REGION_ENTER(region);
 
+  ASSERT(left != right);
+  ASSERT(regid != NULL);
+
   /*
    * 1)
    */
@@ -501,6 +516,10 @@ t_error			region_reserve(i_as			asid,
   o_region*		data;
 
   REGION_ENTER(region);
+
+  ASSERT((opts & REGION_OPT_INVALID) == 0);
+  ASSERT(size != 0);
+  ASSERT(regid != NULL);
 
   /*
    * 1)
@@ -679,6 +698,8 @@ t_error			region_get(i_as				asid,
 
   REGION_ENTER(region);
 
+  ASSERT(o != NULL);
+
   if (as_get(asid, &as) != ERROR_NONE)
     REGION_LEAVE(region, ERROR_UNKNOWN);
 
@@ -697,7 +718,7 @@ t_error			region_get(i_as				asid,
  * 1) allocates and initializes the region manager structure.
  * 2) initializes the region manager structure fields from the init
  *    structure.
- * 4) calls the machine-dependent code.
+ * 3) calls the machine-dependent code.
  */
 
 t_error			region_initialize(t_vaddr		start,
@@ -706,6 +727,8 @@ t_error			region_initialize(t_vaddr		start,
   /*
    * 1)
    */
+
+  ASSERT(size != 0);
 
   if ((region = malloc(sizeof(m_region))) == NULL)
     {
@@ -730,7 +753,7 @@ t_error			region_initialize(t_vaddr		start,
 
   if (machine_call(region, region_initialize, start, size) !=
       ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);
 }
@@ -751,7 +774,7 @@ t_error			region_clean(void)
    */
 
   if (machine_call(region, region_clean) != ERROR_NONE)
-    REGION_LEAVE(region, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   /*
    * 2)

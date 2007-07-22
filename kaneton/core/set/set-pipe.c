@@ -74,6 +74,9 @@ t_error			set_reserve_pipe(t_opts			opts,
 
   SET_ENTER(set);
 
+  ASSERT(datasz >= sizeof (t_id));
+  ASSERT(setid != NULL);
+
   /*
    * 1)
    */
