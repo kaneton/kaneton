@@ -131,7 +131,7 @@ typedef struct
 t_error			ia32_idt_dump(t_ia32_idt*		table);
 
 t_error			ia32_idt_size(t_ia32_idt*		table,
-				      t_uint16			*size);
+				      t_uint16*			size);
 
 t_error			ia32_idt_build(t_uint16		entries,
 				       t_paddr		base,

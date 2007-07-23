@@ -13,6 +13,18 @@
  * ---------- information -----------------------------------------------------
  *
  * this file declares and implements the primitive system calls.
+ *
+ * syscalls map is:
+ *
+ *  + 56: message_register
+ *  + 57: message_send
+ *  + 58: message_transmit
+ *  + 59: message_throw
+ *  + 60: message_receive
+ *  + 61: message_grab
+ *  + 62: message_poll
+ *  + 63: message_state
+ *  + 64: message_wait
  */
 
 /*
@@ -40,154 +52,282 @@ extern m_message*	message;
 
 /*                                                                  [cut] k4 */
 
-static void		ia32_syscalls_async_send_handler(void)
+/*
+ * handler for message_register syscall. prerequisites: message_register never
+ * blocks.
+ */
+
+void			ia32_syshandler_register(void)
 {
+  t_error		res;
+  i_thread		caller;
+  i_task		task;
+  t_type		type;
+  t_vsize		size;
+
+  ASSERT(scheduler_current(&caller) == ERROR_NONE);
+
+  ASSERT(task_current(&task) == ERROR_NONE);
+
+  type = ia32_context->eax;
+  size = ia32_context->ebx;
+
+  res = message_register(task, type, size);
+
+  ia32_context->eax = res;
+}
+
+/*
+ * handler for message_send syscall. prerequisites: message_send never blocks.
+ */
+
+void			ia32_syshandler_send(void)
+{
+  t_error		res;
+  i_thread		caller;
+  i_task		task;
+  t_type		type;
+  t_vaddr		data;
+  t_vsize		size;
   union
   {
     i_node		node;
-    t_uint32		dword[4];
+    t_uint32		reg[4];
   }			u;
-  t_vaddr		ptr;
-  t_uint32		tag;
-  t_uint32		size;
-  i_task		source;
-  t_uint32		ret;
 
-  task_current(&source);
+  ASSERT(scheduler_current(&caller) == ERROR_NONE);
 
-  u.dword[0] = ia32_context->eax;
-  u.dword[1] = ia32_context->ebx;
-  u.dword[2] = ia32_context->ecx;
-  u.dword[3] = ia32_context->edx;
-  tag = ia32_context->esi;
-  ptr = ia32_context->edi;
+  ASSERT(task_current(&task) == ERROR_NONE);
+
+  u.reg[0] = ia32_context->eax;
+  u.reg[1] = ia32_context->ebx;
+  u.reg[2] = ia32_context->ecx;
+  u.reg[3] = ia32_context->edx;
+  type = ia32_context->esi;
+  data = ia32_context->edi;
   size = ia32_context->ebp;
 
-  ret = message_async_send(source, u.node, tag, ptr, size);
+  res = message_send(task, u.node, type, data, size);
 
-  ia32_context->eax = ret;
+  ia32_context->eax = res;
 }
 
-static void		ia32_syscalls_sync_send_handler(void)
+/*
+ * handler for message_transmit syscall. message_transmit can block.
+ */
+
+void			ia32_syshandler_transmit(void)
 {
+  t_error		res;
+  i_thread		caller;
+  i_thread		current;
+  i_task		task;
+  t_type		type;
+  t_vaddr		data;
+  t_vsize		size;
   union
   {
     i_node		node;
-    t_uint32		dword[4];
+    t_uint32		reg[4];
   }			u;
-  t_vaddr		ptr;
-  t_uint32		tag;
-  t_uint32		size;
-  i_task		source;
-  t_uint32		ret;
-  i_thread		syscall, upcall;
 
-  task_current(&source);
+  ASSERT(scheduler_current(&caller) == ERROR_NONE);
 
-  scheduler_current(&syscall);
+  ASSERT(task_current(&task) == ERROR_NONE);
 
-  u.dword[0] = ia32_context->eax;
-  u.dword[1] = ia32_context->ebx;
-  u.dword[2] = ia32_context->ecx;
-  u.dword[3] = ia32_context->edx;
-  tag = ia32_context->esi;
-  ptr = ia32_context->edi;
+  u.reg[0] = ia32_context->eax;
+  u.reg[1] = ia32_context->ebx;
+  u.reg[2] = ia32_context->ecx;
+  u.reg[3] = ia32_context->edx;
+  type = ia32_context->esi;
+  data = ia32_context->edi;
   size = ia32_context->ebp;
 
-  ret = message_sync_send(source, u.node, tag, ptr, size);
+  res = message_transmit(task, u.node, type, data, size);
 
-  scheduler_current(&upcall);
+  ASSERT(scheduler_current(&current) == ERROR_NONE);
 
-  if (syscall == upcall)
-    ia32_context->eax = ret;
+  if (current == caller)
+    ia32_context->eax = res;
 }
 
-static void		ia32_syscalls_async_recv_handler(void)
+/*
+ * handler for message_receive syscall. message_receive can block.
+ */
+
+void			ia32_syshandler_receive(void)
 {
-  t_uint32		ret;
-  t_uint32		tag;
-  t_vaddr		ptr;
-  t_uint32		size;
-  i_task		source;
+  t_error		res;
+  i_thread		caller;
+  i_thread		current;
+  i_task		task;
+  t_type		type;
+  t_vaddr		data;
+  t_vsize		size;
+  union
+  {
+    i_node		node;
+    t_uint32		reg[4];
+  }			u;
 
-  task_current(&source);
+  ASSERT(scheduler_current(&caller) == ERROR_NONE);
 
-  tag = ia32_context->eax;
-  ptr = ia32_context->ebx;
-  size = ia32_context->ecx;
+  ASSERT(task_current(&task) == ERROR_NONE);
 
-  ret = message_async_recv(source, tag, ptr, size);
+  type = ia32_context->eax;
+  data = ia32_context->ebx;
 
-  ia32_context->eax = ret;
+  res = message_receive(task, type, data, &size, &u.node);
+
+  ASSERT(scheduler_current(&current) == ERROR_NONE);
+
+  if (current == caller)
+    {
+      ia32_context->eax = res;
+      ia32_context->ebx = size;
+      ia32_context->ecx = u.reg[0];
+      ia32_context->edx = u.reg[1];
+      ia32_context->esi = u.reg[2];
+      ia32_context->edi = u.reg[3];
+    }
 }
 
-static void		ia32_syscalls_sync_recv_handler(void)
+/*
+ * handler for message_poll syscall. prerequisites: message_poll neven blocks.
+ */
+
+void			ia32_syshandler_poll(void)
 {
-  t_uint32		ret;
-  t_uint32		tag;
-  t_vaddr		ptr;
-  t_uint32		size;
-  t_state		blocking;
-  i_task		source;
-  i_thread		syscall, upcall;
+  t_error		res;
+  i_thread		caller;
+  i_task		task;
+  t_type		type;
+  t_vaddr		data;
+  t_vsize		size;
+  union
+  {
+    i_node		node;
+    t_uint32		reg[4];
+  }			u;
 
-  task_current(&source);
+  ASSERT(scheduler_current(&caller) == ERROR_NONE);
 
-  scheduler_current(&syscall);
+  ASSERT(task_current(&task) == ERROR_NONE);
 
-  tag = ia32_context->eax;
-  ptr = ia32_context->ebx;
-  size = ia32_context->ecx;
-  blocking = ia32_context->edx;
+  type = ia32_context->eax;
+  data = ia32_context->ebx;
 
-  ret = message_sync_recv(source, tag, ptr, size, blocking);
+  res = message_poll(task, type, data, &size, &u.node);
 
-  scheduler_current(&upcall);
-
-  if (syscall == upcall)
-    ia32_context->eax = ret;
+  ia32_context->eax = res;
+  ia32_context->ebx = size;
+  ia32_context->ecx = u.reg[0];
+  ia32_context->edx = u.reg[1];
+  ia32_context->esi = u.reg[2];
+  ia32_context->edi = u.reg[3];
 }
 
-t_error			ia32_setup_syscall_ret(i_thread		thread,
-					       t_error		exit_value)
-{
-  o_thread*		th;
+/*
+ * this function set the return code of a blocked syscall (message_transmit).
+ * the thread must not be executing.
+ */
 
-  if (thread_get(thread, &th) != ERROR_NONE)
+t_error			ia32_syscall_set_code(i_thread		thread,
+					      t_error		error)
+{
+  o_thread*		o;
+
+  if (thread_get(thread, &o) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  th->machdep.context.eax = exit_value;
+  o->machdep.context.eax = error;
 
   return (ERROR_NONE);
 }
+
+/*
+ * this function set the returned info of a blocked syscall (message_receive).
+ * the thread must not be executing.
+ */
+
+t_error			ia32_syscall_set_info(i_thread		thread,
+					      t_error		error,
+					      t_vsize		size,
+					      i_node		sender)
+{
+  o_thread*		o;
+  union
+  {
+    i_node		node;
+    t_uint32		reg[4];
+  }			u;
+
+  if (thread_get(thread, &o) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  u.node = sender;
+
+  o->machdep.context.eax = error;
+  o->machdep.context.ebx = size;
+  o->machdep.context.ecx = u.reg[0];
+  o->machdep.context.edx = u.reg[1];
+  o->machdep.context.esi = u.reg[2];
+  o->machdep.context.edi = u.reg[3];
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function registers the different syscalls.
+ */
 
 t_error			ia32_syscalls_init(void)
 {
   if (event_reserve(56, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syscalls_async_send_handler)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_syshandler_register)) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   if (event_reserve(57, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syscalls_async_recv_handler)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_syshandler_send)) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   if (event_reserve(58, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syscalls_sync_send_handler)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_syshandler_transmit)) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  if (event_reserve(59, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syscalls_sync_recv_handler)) != ERROR_NONE)
+  /* XXX 59 */
+
+  if (event_reserve(60, EVENT_FUNCTION,
+		    EVENT_HANDLER(ia32_syshandler_receive)) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+
+  /* XXX 61 */
+
+  if (event_reserve(62, EVENT_FUNCTION,
+		    EVENT_HANDLER(ia32_syshandler_poll)) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /* XXX 63 */
+  /* XXX 64 */
 
   return (ERROR_NONE);
 }
+
+/*
+ * this function unregisters the different syscalls.
+ */
 
 t_error			ia32_syscalls_clean(void)
 {
   if (event_release(56) != ERROR_NONE ||
       event_release(57) != ERROR_NONE ||
       event_release(58) != ERROR_NONE ||
-      event_release(59) != ERROR_NONE)
+      event_release(59) != ERROR_NONE ||
+      event_release(60) != ERROR_NONE ||
+      event_release(61) != ERROR_NONE ||
+      event_release(62) != ERROR_NONE ||
+      event_release(63) != ERROR_NONE ||
+      event_release(64) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);

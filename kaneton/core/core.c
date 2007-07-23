@@ -130,7 +130,7 @@ void			kaneton(t_init*				bootloader)
 
   STI(); // XXX moveme
 
-  check_sched_complete_02();
+  check_message_async_01();
 
 #ifdef CONF_ENABLE_CHECK
   cons_msg('+', "running manual tests\n");

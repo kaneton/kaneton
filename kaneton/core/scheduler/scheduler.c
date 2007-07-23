@@ -74,6 +74,8 @@ machine_include(scheduler);
 
 m_scheduler*		scheduler = NULL;
 
+i_thread		kthread = ID_UNUSED;
+
 /*                                                                 [cut] k3 */
 
 /*
@@ -290,6 +292,9 @@ t_error			scheduler_yield(i_cpu			cpuid)
 
   if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+
+  if (ent->current == kthread)
+    SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 
   ent->prio = SCHEDULER_N_PRIORITY_QUEUE + 1;
 
@@ -749,7 +754,6 @@ t_error			scheduler_initialize(void)
   t_iterator		it;
   t_state		st;
   i_set			queue;
-  i_thread		kthread;
   t_cpu_sched		ent;
   t_cpu_sched*		ent2;
   i_cpu			cpuid;

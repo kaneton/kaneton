@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/types.h
+ * file          /home/buckman/kaneton/kaneton/core/include/types.h
  *
  * created       julien quintard   [wed jun  6 22:38:37 2007]
- * updated       julien quintard   [sun jun 10 17:21:38 2007]
+ * updated       matthieu bucchianeri   [mon jul 23 11:45:26 2007]
  */
 
 #ifndef CORE_TYPES_H

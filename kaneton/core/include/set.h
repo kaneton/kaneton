@@ -393,7 +393,7 @@ t_error			set_locate_array(i_set			setid,
 					 t_id			id,
 					 t_iterator*		iterator);
 
-t_error			set_object_array(i_set		setid,
+t_error			set_object_array(i_set			setid,
 					 t_iterator		iterator,
 					 void**			data);
 

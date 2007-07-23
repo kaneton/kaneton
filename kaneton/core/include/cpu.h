@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/cpu.h
+ * file          /home/buckman/kaneton/kaneton/core/include/cpu.h
  *
  * created       julien quintard   [sun jun  3 20:25:39 2007]
- * updated       julien quintard   [fri jun 22 18:39:05 2007]
+ * updated       matthieu bucchianeri   [mon jul 23 12:16:41 2007]
  */
 
 #ifndef CORE_CPU_H
@@ -47,6 +47,8 @@ typedef struct
 
 typedef struct
 {
+  t_setsz			ncpus;
+
   i_set				cpus;
 
   machine_data(m_cpu);
@@ -113,6 +115,8 @@ t_error			cpu_show(i_cpu				id);
 t_error			cpu_dump(void);
 
 t_error			cpu_current(i_cpu*			cpuid);
+
+t_error			cpu_multiprocessor(void);
 
 t_error			cpu_select(i_cpu*			cpuid);
 

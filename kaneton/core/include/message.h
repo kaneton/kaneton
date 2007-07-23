@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/message.h
+ * file          /home/buckman/kaneton/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       julien quintard   [fri jun 22 18:39:54 2007]
+ * updated       matthieu bucchianeri   [mon jul 23 23:53:40 2007]
  */
 
 #ifndef CORE_MESSAGE_H
@@ -25,43 +25,69 @@
 #include <machine/machine.h>
 
 /*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+/*
+ * set parameters
+ */
+
+#define MESSAGE_BPT_NODESZ	4096
+
+/*
+ * values for completed member
+ */
+
+#define MESSAGE_REQUEST_PENDING		0
+#define MESSAGE_REQUEST_COMPLETED	1
+
+/*
  * ---------- types -----------------------------------------------------------
  */
 
 /*
- * message box
+ * message copying request
  */
 
-typedef t_id		i_message_queue;
-typedef t_id		i_message;
-typedef t_id		i_message_waitqueue;
-typedef t_uint32	t_tag;
+typedef struct
+{
+  t_status		completed;
+}			t_message_request;
+
+/*
+ * message object
+ */
 
 typedef struct
 {
-  t_vaddr		data;
-  t_vsize		sz;
-  i_thread		thread;
+  t_id			message;
+
   i_as			asid;
-}			t_message_waiter;
-
-typedef struct
-{
+  i_thread		blocked;
   void*			data;
-  t_vsize		sz;
+  t_vsize		size;
+  i_node		sender;
 
   machine_data(o_message);
 }			o_message;
 
+/*
+ * message type object
+ */
+
 typedef struct
 {
+  t_id			type;
+
   t_id			id;
 
-  i_message_queue	msgqueue;
+  t_vsize		size;
 
-  i_message_waitqueue	receivers;
-  i_message_waitqueue	senders;
-}			t_message_box;
+  i_set			queue;
+  i_set			waiters;
+
+  machine_data(o_message_type);
+}			o_message_type;
 
 /*
  * message manager
@@ -69,8 +95,6 @@ typedef struct
 
 typedef struct
 {
-  i_set			local_boxes;
-
   machine_data(m_message);
 }			m_message;
 
@@ -80,9 +104,53 @@ typedef struct
 
 typedef struct
 {
+  t_error		(*message_register)(i_task,
+					    t_type,
+					    t_vsize);
+  t_error		(*message_send)(i_task,
+					i_node,
+					t_type,
+					t_vaddr,
+					t_vsize);
+  t_error		(*message_transmit)(i_task,
+					    i_node,
+					    t_type,
+					    t_vaddr,
+					    t_vsize);
+  t_error		(*message_throw)(i_task,
+					 i_node,
+					 t_type,
+					 t_vaddr,
+					 t_vsize,
+					 t_message_request*);
+  t_error		(*message_receive)(i_task,
+					   t_type,
+					   t_vaddr,
+					   t_vsize*,
+					   i_node*);
+  t_error		(*message_grab)(i_task,
+					t_type,
+				       t_vaddr,
+				       t_message_request*);
+  t_error		(*message_poll)(i_task,
+					t_type,
+					t_vaddr,
+					t_vsize*,
+					i_node*);
+  t_error		(*message_state)(i_task,
+					 t_message_request);
+  t_error		(*message_wait)(i_task,
+					t_message_request,
+					t_vsize*,
+					i_node*);
+  t_error		(*message_return)(i_thread,
+					  t_error);
+  t_error		(*message_return_info)(i_thread,
+					       t_error,
+					       t_vsize,
+					       i_node);
   t_error		(*message_initialize)(void);
   t_error		(*message_clean)(void);
-  t_error		(*message_epilogue)(i_thread, t_error);
 }			d_message;
 
 /*
@@ -128,37 +196,104 @@ typedef struct
  * ../../core/message/message.c
  */
 
+t_error			message_register(i_task			task,
+					 t_type			type,
+					 t_vsize		size);
+
+t_error			message_send(i_task			task,
+				     i_node			destination,
+				     t_type			type,
+				     t_vaddr			data,
+				     t_vsize			size);
+
+t_error			message_transmit(i_task			task,
+					 i_node			destination,
+					 t_type			type,
+					 t_vaddr		data,
+					 t_vsize		size);
+
+t_error			message_throw(i_task			task,
+				      i_node			destination,
+				      t_type			type,
+				      t_vaddr			data,
+				      t_vsize			size,
+				      t_message_request*	request);
+
+t_error			message_receive(i_task			task,
+					t_type			type,
+					t_vaddr			data,
+					t_vsize*		size,
+					i_node*			sender);
+
+t_error			message_grab(i_task			task,
+				     t_type			type,
+				     t_vaddr			data,
+				     t_message_request*		request);
+
+t_error			message_poll(i_task			task,
+				     t_type			type,
+				     t_vaddr			data,
+				     t_vsize*			size,
+				     i_node*			sender);
+
+t_error			message_state(i_task			task,
+				      t_message_request		request);
+
+t_error			message_wait(i_task			task,
+				     t_message_request		request,
+				     t_vsize*			size,
+				     i_node*			sender);
+
+t_error			message_return(i_thread			thread,
+				       t_error			code);
+
+t_error			message_return_info(i_thread		thread,
+					    t_error		code,
+					    t_vsize		size,
+					    i_node		sender);
+
 t_error			message_initialize(void);
 
 t_error			message_clean(void);
 
-t_error			message_async_send(i_task	sender,
-					   i_node	dest,
-					   t_tag	tag,
-					   t_vaddr	data,
-					   t_vsize	size);
+t_error			syscall_message_register(t_type		type,
+						 t_vsize	size);
 
-t_error			message_async_recv(i_task	taskid,
-					   t_tag	tag,
-					   t_vaddr	data,
-					   t_vsize	maxsz);
+t_error			syscall_message_send(i_node		destination,
+					     t_type		type,
+					     t_vaddr		data,
+					     t_vsize		size);
 
-t_error			message_sync_send(i_task	sender,
-					  i_node	dest,
-					  t_tag		tag,
-					  t_vaddr	data,
-					  t_vsize	size);
+t_error			syscall_message_transmit(i_node		destination,
+						 t_type		type,
+						 t_vaddr	data,
+						 t_vsize	size);
 
-t_error			message_sync_recv(i_task	taskid,
-					  t_tag		tag,
-					  t_vaddr	data,
-					  t_vsize	maxsz,
-					  t_state	blocking);
+t_error			syscall_message_throw(i_node		destination,
+					      t_type		type,
+					      t_vaddr		data,
+					      t_vsize		size,
+					      t_message_request*request);
 
-t_error			message_register(i_task	taskid,
-					 t_tag	tag);
+t_error			syscall_message_receive(t_type		type,
+						t_vaddr		data,
+						t_vsize*	size,
+						i_node*		sender);
 
-t_error			message_test(void);
+t_error			syscall_message_grab(t_type		type,
+					     t_vaddr		data,
+					     t_message_request*	request);
+
+t_error			syscall_message_poll(t_type		type,
+					     t_vaddr		data,
+					     t_vsize*		size,
+					     i_node*		sender);
+
+t_error			syscall_message_state(t_message_request	request);
+
+t_error			syscall_message_wait(t_message_request	request,
+					     t_vsize*		size,
+					     i_node*		sender);
 
 
 /*

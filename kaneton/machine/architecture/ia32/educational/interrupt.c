@@ -38,69 +38,7 @@ extern i_as	kasid;
  * ---------- non-generated prototypes ----------------------------------------
  */
 
-void	prehandler_exception0(void);
-void	prehandler_exception1(void);
-void	prehandler_exception2(void);
-void	prehandler_exception3(void);
-void	prehandler_exception4(void);
-void	prehandler_exception5(void);
-void	prehandler_exception6(void);
-void	prehandler_exception7(void);
-void	prehandler_exception8(void);
-void	prehandler_exception9(void);
-void	prehandler_exception10(void);
-void	prehandler_exception11(void);
-void	prehandler_exception12(void);
-void	prehandler_exception13(void);
-void	prehandler_exception14(void);
-void	prehandler_exception15(void);
-void	prehandler_exception16(void);
-void	prehandler_exception17(void);
-void	prehandler_exception18(void);
-void	prehandler_exception19(void);
-void	prehandler_exception20(void);
-void	prehandler_exception21(void);
-void	prehandler_exception22(void);
-void	prehandler_exception23(void);
-void	prehandler_exception24(void);
-void	prehandler_exception25(void);
-void	prehandler_exception26(void);
-void	prehandler_exception27(void);
-void	prehandler_exception28(void);
-void	prehandler_exception29(void);
-void	prehandler_exception30(void);
-void	prehandler_exception31(void);
-
-void	prehandler_irq0(void);
-void	prehandler_irq1(void);
-void	prehandler_irq2(void);
-void	prehandler_irq3(void);
-void	prehandler_irq4(void);
-void	prehandler_irq5(void);
-void	prehandler_irq6(void);
-void	prehandler_irq7(void);
-void	prehandler_irq8(void);
-void	prehandler_irq9(void);
-void	prehandler_irq10(void);
-void	prehandler_irq11(void);
-void	prehandler_irq12(void);
-void	prehandler_irq13(void);
-void	prehandler_irq14(void);
-void	prehandler_irq15(void);
-
-void	prehandler_ipi0(void);
-void	prehandler_ipi1(void);
-void	prehandler_ipi2(void);
-void	prehandler_ipi3(void);
-void	prehandler_ipi4(void);
-void	prehandler_ipi5(void);
-void	prehandler_ipi6(void);
-void	prehandler_ipi7(void);
-
-void	prehandler_syscall0(void);
-void	prehandler_syscall1(void);
-void	prehandler_syscall2(void);
-void	prehandler_syscall3(void);
+PREHANDLER_PROTOTYPES();
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -185,7 +123,12 @@ static t_ia32_interrupt_prehandler		prehandlers[IA32_HANDLER_NR] =
     prehandler_syscall0,
     prehandler_syscall1,
     prehandler_syscall2,
-    prehandler_syscall3
+    prehandler_syscall3,
+    prehandler_syscall4,
+    prehandler_syscall5,
+    prehandler_syscall6,
+    prehandler_syscall7,
+    prehandler_syscall8
   };
 
 /*
@@ -497,6 +440,11 @@ IA32_SYSCALL_PREHANDLER(0);
 IA32_SYSCALL_PREHANDLER(1);
 IA32_SYSCALL_PREHANDLER(2);
 IA32_SYSCALL_PREHANDLER(3);
+IA32_SYSCALL_PREHANDLER(4);
+IA32_SYSCALL_PREHANDLER(5);
+IA32_SYSCALL_PREHANDLER(6);
+IA32_SYSCALL_PREHANDLER(7);
+IA32_SYSCALL_PREHANDLER(8);
 
 /*                                                                 [cut] /k2 */
 /*

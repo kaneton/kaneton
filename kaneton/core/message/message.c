@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
+ * license       kaneton
+ *
  * file          /home/buckman/kaneton/kaneton/core/message/message.c
  *
- * created       julien quintard   [sat jul  1 23:25:14 2006]
- * updated       julian pidancet   [sat may  26 02:17:07 2007]
+ * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
+ * updated       matthieu bucchianeri   [tue jul 24 00:33:10 2007]
  */
 
 /*
@@ -50,8 +52,20 @@ machine_include(message);
 
 m_message*		message = NULL;
 
-extern m_segment*	segment;
-extern i_as		kasid;
+/*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+/*
+ * kernel manager structure
+ */
+
+extern m_kernel*	kernel;
+
+/*
+ * kernel task id
+ */
+
 extern i_task		ktask;
 
 /*
@@ -59,12 +73,720 @@ extern i_task		ktask;
  */
 
 /*
+ * this function retrieves a message box of a task by its type.
+ */
+
+static t_error		message_box(i_task			task,
+				    t_type			type,
+				    o_message_type**		o)
+{
+  t_id			typeid = type;
+  o_task*		otask;
+
+  MESSAGE_ENTER(message);
+
+  ASSERT(o != NULL);
+
+  if (task_get(task, &otask) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  if (set_get(otask->messages, typeid, (void**)o) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
+}
+
+/*
+ * this function registers a new message type with its maximum length.
+ *
+ * only registered types of messages can be sent through the kernel. unknown
+ * types will be rejected.
+ *
+ * steps:
+ *
+ * 1) get the message box from the task.
+ * 2) check if this type is already registered.
+ * 3) build the message type structure.
+ * 4) add it to the task messages set.
+ */
+
+t_error			message_register(i_task			task,
+					 t_type			type,
+					 t_vsize		size)
+{
+  t_id			typeid = type;
+  o_task*		o;
+  void*			needless;
+  o_message_type	msgtype;
+
+  MESSAGE_ENTER(message);
+
+  /*
+   * 1)
+   */
+
+  if (task_get(task, &o) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (set_get(o->messages, typeid, (void**)&needless) == ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  msgtype.id = 0;
+  msgtype.type = typeid;
+  msgtype.size = size;
+
+  if (set_reserve(pipe, SET_OPT_ALLOC, sizeof (o_message),
+		  &msgtype.queue) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  if (set_reserve(pipe, SET_OPT_ALLOC, sizeof (o_message),
+		  &msgtype.waiters) != ERROR_NONE)
+    {
+      set_release(msgtype.queue);
+
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 4)
+   */
+
+  if (set_add(o->messages, &msgtype) != ERROR_NONE)
+    {
+      set_release(msgtype.waiters),
+      set_release(msgtype.queue);
+
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
+}
+
+/*
+ * this function sends a message to a task. the message is delivered
+ * asynchronously and the function returns only when the buffer was safely
+ * copied.
+ *
+ * steps:
+ *
+ * 1) get the destination message box.
+ * 2) check the size.
+ * 3) if a thread is waiting for a message, then send it synchronously.
+ * 4) build the message.
+ *  a) fill the buffer, intra-kernel case.
+ *  b) fill the buffer, inter-as case.
+ * 5) push the message into the message box.
+ * 6) call the machine dependent code.
+ */
+
+t_error			message_send(i_task			task,
+				     i_node			destination,
+				     t_type			type,
+				     t_vaddr			data,
+				     t_vsize			size)
+{
+  t_id			typeid = type;
+  o_message_type*	o;
+  o_task*		otsk;
+  o_message		msg;
+  t_setsz		setsz;
+
+  MESSAGE_ENTER(message);
+
+  /*
+   * 1)
+   */
+
+  if (message_box(destination.task, typeid, &o) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (size > o->size)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (set_size(o->waiters, &setsz) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  if (setsz != 0)
+    {
+      t_error		res;
+
+      res = message_transmit(task, destination, type, data, size);
+
+      MESSAGE_LEAVE(message, res);
+    }
+
+  /*
+   * 4)
+   */
+
+  if (size)
+    {
+      if ((msg.data = malloc(size)) == NULL)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+  else
+    msg.data = NULL;
+
+  if (size)
+    {
+      if (task == ktask)
+	{
+	  /*
+	   * a)
+	   */
+
+	  memcpy(msg.data, (void*)data, size);
+	}
+      else
+	{
+	  /*
+	   * b)
+	   */
+
+	  if (task_get(task, &otsk) != ERROR_NONE)
+	    {
+	      free(msg.data);
+
+	      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	    }
+
+	  if (as_read(otsk->asid, data, size, msg.data) != ERROR_NONE)
+	    {
+	      free(msg.data);
+
+	      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	    }
+	}
+    }
+
+  msg.asid = ID_UNUSED;
+  msg.size = size;
+  msg.sender.machine = kernel->machine;
+  msg.sender.task = task;
+
+  /*
+   * 5)
+   */
+
+  msg.message = o->id++;
+
+  if (set_push(o->queue, &msg) != ERROR_NONE)
+    {
+      if (msg.data != NULL)
+	free(msg.data);
+
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 6)
+   */
+
+  if (machine_call(message, message_send, task, destination, type,
+		   data, size) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
+}
+
+/*
+ * this function sends a message to a task. the message is delivered
+ * synchronously and the function returns only when the message is delivered
+ * correctly.
+ *
+ * there is no kernel bufferization.
+ *
+ * steps:
+ *
+ * 1) get message box and task object.
+ * 2) check size.
+ * 3) do the transmission.
+ *  a) immediately if a message is being waited.
+ *  b) later if no rendezvous has been established.
+ * 4) call machine dependent code.
+ */
+
+t_error			message_transmit(i_task			task,
+					 i_node			destination,
+					 t_type			type,
+					 t_vaddr		data,
+					 t_vsize		size)
+{
+  t_id			typeid = type;
+  o_message_type*	o;
+  o_task*		otsk;
+  o_message		msg;
+  o_message*		pmsg;
+  t_setsz		setsz;
+  i_thread		thread;
+
+  MESSAGE_ENTER(message);
+
+  /*
+   * 1)
+   */
+
+  if (message_box(destination.task, typeid, &o) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  if (task_get(task, &otsk) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (size > o->size)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (set_size(o->waiters, &setsz) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  if (setsz != 0)
+    {
+      i_node		sender;
+
+      /*
+       * a)
+       */
+
+      if (set_pick(o->waiters, (void*)&pmsg) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      if (size)
+	if (as_copy(otsk->asid, data, pmsg->asid, (t_vaddr)pmsg->data,
+		    size) != ERROR_NONE)
+	  MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      sender.machine = kernel->machine;
+      sender.task = task;
+
+      if (message_return_info(pmsg->blocked, ERROR_NONE, size,
+			      sender) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      if (set_pop(o->waiters) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+  else
+    {
+      /*
+       * b)
+       */
+
+      if (scheduler_current(&thread) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      msg.asid = otsk->asid;
+      msg.data = (void*)data;
+      msg.size = size;
+      msg.sender.machine = kernel->machine;
+      msg.sender.task = task;
+      msg.blocked = thread;
+
+      msg.message = o->id++;
+
+      if (set_push(o->queue, &msg) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      if (thread_state(thread, SCHEDULER_STATE_BLOCK) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 4)
+   */
+
+  if (machine_call(message, message_transmit, task, destination, type,
+		   data, size) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
+}
+
+/*
+ * this function sends a message to a task. the message is delivered
+ * asynchronously and the function returns immediately. the request parameter
+ * is used to poll or wait until the buffer is safely copied.
+ *
+ * on non-multiprocessor systems, this function is totally equivalent to
+ * message_send.
+ */
+
+t_error			message_throw(i_task			task,
+				      i_node			destination,
+				      t_type			type,
+				      t_vaddr			data,
+				      t_vsize			size,
+				      t_message_request*	request)
+{
+  MESSAGE_ENTER(message);
+
+  ASSERT(request != NULL);
+
+  if (cpu_multiprocessor() == ERROR_NONE)
+    {
+      /* XXX smp */
+
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+  else
+    {
+      t_error		res;
+
+      res = message_send(task, destination, type, data, size);
+
+      if (res != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      request->completed = MESSAGE_REQUEST_COMPLETED;
+    }
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
+}
+
+/*
+ * this function waits and receives a message, whether it is delivered
+ * asynchronously or synchronously.
+ *
+ * steps:
+ *
+ * 1) get the message box.
+ * 2) look for pending message.
+ *  a) no pending message, block.
+ *  b) incoming message, get it.
+ * 3) call machdep code.
+ */
+
+t_error			message_receive(i_task			task,
+					t_type			type,
+					t_vaddr			data,
+					t_vsize*		size,
+					i_node*			sender)
+{
+  t_id			typeid = type;
+  o_message_type*	o;
+  t_setsz		setsz;
+  i_thread		thread;
+  o_message		msg;
+  o_task*		otsk;
+
+  MESSAGE_ENTER(message);
+
+  /*
+   * 1)
+   */
+
+  if (message_box(task, typeid, &o) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (set_size(o->queue, &setsz) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  if (setsz == 0)
+    {
+      /*
+       * a)
+       */
+
+      if (task_get(task, &otsk) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      if (scheduler_current(&thread) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      msg.message = o->id++;
+      msg.asid = otsk->asid;
+      msg.data = (void*)data;
+      msg.blocked = thread;
+
+      if (set_push(o->waiters, &msg) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      if (thread_state(thread, SCHEDULER_STATE_BLOCK) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+  else
+    {
+      t_error		res;
+
+      /*
+       * b)
+       */
+
+      res = message_poll(task, type, data, size, sender);
+
+      MESSAGE_LEAVE(message, res);
+    }
+
+  /*
+   * 3)
+   */
+
+  if (machine_call(message, message_poll, task, type, data,
+		   size, sender) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
+}
+
+/*
+ * this function starts receiving asynchronous messages. the function returns
+ * immediately, so it is not safe to use the buffer until the request has been
+ * completely executed.
+ *
+ * on non-multiprocessor systems, this function is stricly equivalent to
+ * message_receive.
+ */
+
+t_error			message_grab(i_task			task,
+				     t_type			type,
+				     t_vaddr			data,
+				     t_message_request*		request)
+{
+  MESSAGE_ENTER(message);
+
+  if (cpu_multiprocessor() == ERROR_NONE)
+    {
+      /* XXX smp */
+
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+  else
+    {
+      t_error		res;
+      t_vsize		size;
+      i_node		sender;
+
+      res = message_receive(task, type, data, &size, &sender);
+
+      if (res != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      request->completed = MESSAGE_REQUEST_COMPLETED;
+      /*      request->size = size;
+	      request->sender = sender;*/
+    }
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
+}
+
+/*
+ * this function checks for an incoming message, receives it or returns an
+ * error immediately. this function can be used with asynchronous ou
+ * synchronous messages.
+ *
+ * steps:
+ *
+ * 1) get the destination message box.
+ * 2) poll for incoming message.
+ * 3) treat the message.
+ *  a) synchronous case.
+ *  b) asynchronous, intra-kernel case.
+ *  c) asynchronous, inter-address space case.
+ * 4) call the machine dependent code.
+ */
+
+t_error			message_poll(i_task			task,
+				     t_type			type,
+				     t_vaddr			data,
+				     t_vsize*			size,
+				     i_node*			sender)
+{
+  t_id			typeid = type;
+  o_message_type*	o;
+  o_task*		otsk;
+  o_message*		msg;
+
+  MESSAGE_ENTER(message);
+
+  /*
+   * 1)
+   */
+
+  if (message_box(task, typeid, &o) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  /*
+   * 2
+   */
+
+  if (set_pick(o->queue, (void*)&msg) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (msg->asid != ID_UNUSED)
+    {
+      /*
+       * a)
+       */
+
+      if (msg->size)
+	{
+	  if (task_get(task, &otsk) != ERROR_NONE)
+	    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+	  if (as_copy(msg->asid, (t_vaddr)msg->data, otsk->asid, data,
+		      msg->size) != ERROR_NONE)
+	    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	}
+
+      if (message_return(msg->blocked, ERROR_NONE) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+  else
+    {
+      if (task == ktask)
+	{
+	  /*
+	   * b)
+	   */
+
+	  if (msg->size)
+	    memcpy((void*)data, msg->data, msg->size);
+	}
+      else
+	{
+	  /*
+	   * c)
+	   */
+
+	  if (msg->size)
+	    {
+	      if (task_get(task, &otsk) != ERROR_NONE)
+		MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+	      if (as_write(otsk->asid, msg->data, msg->size,
+			   data) != ERROR_NONE)
+		MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	    }
+	}
+
+      free(msg->data);
+    }
+
+  *size = msg->size;
+  *sender = msg->sender;
+
+  if (set_pop(o->queue) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (machine_call(message, message_poll, task, type, data,
+		   size, sender) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
+}
+
+/*
+ * this function checks if a message copy (though message_throw or
+ * message_grab) is finished yet.
+ */
+
+t_error			message_state(i_task			task,
+				      t_message_request		request)
+{
+  MESSAGE_ENTER(message);
+
+  /* XXX smp */
+
+  MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+}
+
+/*
+ * this function checks if a message copy (though message_throw or
+ * message_grab) is finished yet and waits for the operation to be completed.
+ */
+
+t_error			message_wait(i_task			task,
+				     t_message_request		request,
+				     t_vsize*			size,
+				     i_node*			sender)
+{
+  MESSAGE_ENTER(message);
+
+  /* XXX smp */
+
+  MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+}
+
+/*
+ * this function resumes a blocked thread on a syscall with given return value.
+ */
+
+t_error			message_return(i_thread			thread,
+				       t_error			code)
+{
+  MESSAGE_ENTER(message);
+
+  if (machine_call(message, message_return, thread, code) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  if (thread_state(thread, SCHEDULER_STATE_RUN) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
+}
+
+/*
+ * this function resumes a blocked thread on a syscall with given info.
+ */
+
+t_error			message_return_info(i_thread		thread,
+					    t_error		code,
+					    t_vsize		size,
+					    i_node		sender)
+{
+  MESSAGE_ENTER(message);
+
+  if (machine_call(message, message_return_info, thread, code, size,
+		   sender) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  if (thread_state(thread, SCHEDULER_STATE_RUN) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
+}
+
+/*
  * this function initializes the message manager.
  *
  * steps:
  *
  * 1) allocate some memory for the manager structure.
- * 3) call the machine dependent code.
+ * 2) call the machine dependent code.
  */
 
 t_error			message_initialize(void)
@@ -83,21 +805,6 @@ t_error			message_initialize(void)
 
   memset(message, 0x0, sizeof(m_message));
 
-
-
-  if (set_reserve(bpt, SET_OPT_SORT | SET_OPT_ALLOC, sizeof(t_message_box),
-                  SEGMENT_BPT_NODESZ, &message->local_boxes) != ERROR_NONE)
-  {
-    cons_msg('!', "message: unable to reserve the msgboxes set.\n");
-    return (ERROR_UNKNOWN);
-  }
-
-  if (message_register(ktask, 0) != ERROR_NONE)
-  {
-    cons_msg('!', "message: unable to register ktask msgbox.\n");
-    return (ERROR_UNKNOWN);
-  }
-
   /*
    * 2)
    */
@@ -114,8 +821,7 @@ t_error			message_initialize(void)
  * steps:
  *
  * 1) call the dependent code.
- * 2) release the statistics object.
- * 3) free the manager structure.
+ * 2) free the manager structure.
  */
 
 t_error			message_clean(void)
@@ -125,17 +831,11 @@ t_error			message_clean(void)
    */
 
   if (machine_call(message, message_clean) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    return (ERROR_UNKNOWN);
 
   /*
    * 2)
    */
-
-  if (set_release(message->local_boxes) != ERROR_NONE)
-  {
-    free(message);
-    return (ERROR_UNKNOWN);
-  }
 
   free(message);
 
@@ -143,455 +843,143 @@ t_error			message_clean(void)
 }
 
 /*
- * send asynchronously a message in a node msgbox
- *
- * steps:
- *
- * 1) allocate a buffer in the kernel as
- * 2) if the node is not on this machine (FIXME)
- * 3) copy the message from the given task's as to the kernel buffer
- * 4) enqueue the buffer into the node's messagebox
+ * ---------- syscalls --------------------------------------------------------
  */
 
-t_error			message_async_send(i_task	sender,
-					   i_node	dest,
-					   t_tag	tag,
-					   t_vaddr	data,
-					   t_vsize	size)
+t_error			syscall_message_register(t_type		type,
+						 t_vsize	size)
 {
-  o_task*		sender_task;
-  void*			kernel_buffer;
-  o_message		msg;
-  t_message_box*	msgbox;
+  t_error		res;
 
-  MESSAGE_ENTER(message);
+  asm ("int $56"
+       : "=a" (res)
+       : "a" (type), "b" (size));
 
-  if (task_get(sender, &sender_task) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  /*
-   * 1)
-   */
-
-  if (!(kernel_buffer = malloc(size)))
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (!is_local_node(dest))
-  {
-    /* XXX Redirect the message to the gate */
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-  }
-
-  /*
-   * 3)
-   */
-
-  if (sender_task->asid != kasid)
-  {
-    if (as_read(sender_task->asid, data, size, kernel_buffer)
-	  != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-  }
-  else
-  {
-    memcpy(kernel_buffer, (void *)data, size);
-  }
-
-  /*
-   * 4)
-   */
-
-  msg.sz = size;
-  msg.data = kernel_buffer;
-
-  if (set_get(message->local_boxes, get_node_task(dest), (void**)&msgbox)
-	!= ERROR_NONE)
-  {
-    free(kernel_buffer);
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-  }
-
-  tag = tag;
-
-  if (set_push(msgbox->msgqueue, &msg) != ERROR_NONE)
-  {
-    free(kernel_buffer);
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-  }
-
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  return res;
 }
 
-/*
- * receive asynchronously a message from a node msgbox
- *
- * steps:
- *
- * 1) retrieve the message box and check if a message is pending, retrieve it.
- * 2) copy the message from the kernel buffer to the given task's as.
- * 3) pop the message from the queue and free kernel buffer.
- */
-
-t_error			message_async_recv(i_task	taskid,
-					   t_tag	tag,
-					   t_vaddr	data,
-					   t_vsize	maxsz)
+t_error			syscall_message_send(i_node		destination,
+					     t_type		type,
+					     t_vaddr		data,
+					     t_vsize		size)
 {
-  t_message_box*	msgbox;
-  o_message*		msg;
-  o_task*		task;
-
-  MESSAGE_ENTER(message);
-
-  /*
-   * 1)
-   */
-
-  if (task_get(taskid, &task) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-  if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  tag = tag;
-
-  if (set_pick(msgbox->msgqueue, (void**)&msg) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (task->asid != kasid)
+  union
   {
-    if (as_write(task->asid, msg->data, (maxsz < msg->sz ? maxsz : msg->sz),
-	data) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-  }
-  else
-  {
-    memcpy((void*)data, (void*)msg->data,
-	(maxsz < msg->sz ? maxsz : msg->sz));
-  }
+    i_node		node;
+    t_uint32		reg[4];
+  }			u;
+  t_error		res;
 
-  /*
-   * 3)
-   */
+  u.node = destination;
 
-  free(msg->data);
+  asm("pushl %%ebp		\n\t"
+      "movl %7, %%ebp		\n\t"
+      "int $57			\n\t"
+      "popl %%ebp"
+      : "=a" (res)
+      :  "a" (u.reg[0]), "b" (u.reg[1]), "c" (u.reg[2]), "d" (u.reg[3]),
+	 "S" (type), "D" (data), "m" (size));
 
-  if (set_pop(msgbox->msgqueue) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  return res;
 }
 
-/*
- * send synchronously a message by direct memory transfert
- *
- * steps:
- *
- * 1) if the node is not on this machine, redirect the message through the gate (FIXME)
- * 2) retrieve the message box and check if a sync_recv is pending
- * 3) if not, register to the senders queue, block the thread and return
- *    (another thread will be elected while returning from isr).
- * 4) if it is, as-to-as mem copy, pop the receiver from the queue
- * 5) unblock the receiver's task
- */
-
-t_error			message_sync_send(i_task	sender,
-					  i_node	dest,
-					  t_tag		tag,
-					  t_vaddr	data,
-					  t_vsize	size)
+t_error			syscall_message_transmit(i_node		destination,
+						 t_type		type,
+						 t_vaddr	data,
+						 t_vsize	size)
 {
-  t_message_box*	msgbox;
-  o_task*		task;
-  t_message_waiter*	receiver;
-  t_message_waiter	send_waiter;
-  i_thread		thread;
-  t_size		sz;
-
-  MESSAGE_ENTER(message);
-
-
-  /*
-   * 1)
-   */
-
-  if (!is_local_node(dest))
+  union
   {
-    /* XXX Redirect the message to the gate */
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-  }
+    i_node		node;
+    t_uint32		reg[4];
+  }			u;
+  t_error		res;
 
-  /*
-   * 2)
-   */
+  u.node = destination;
 
-  if (task_get(sender, &task) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-  if (set_get(message->local_boxes, get_node_task(dest), (void**)&msgbox)
-      != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+  asm("pushl %%ebp		\n\t"
+      "movl %7, %%ebp		\n\t"
+      "int $58			\n\t"
+      "popl %%ebp"
+      : "=a" (res)
+      :  "a" (u.reg[0]), "b" (u.reg[1]), "c" (u.reg[2]), "d" (u.reg[3]),
+	 "S" (type), "D" (data), "m" (size));
 
-  tag = tag;
-
-  if (set_pick(msgbox->receivers, (void**)&receiver) != ERROR_NONE)
-  {
-    /*
-     * 3)
-     */
-
-    if (scheduler_current(&thread) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-    send_waiter.thread = thread;
-    send_waiter.data = data;
-    send_waiter.sz = size;
-    send_waiter.asid = task->asid;
-
-    if (set_push(msgbox->senders, &send_waiter) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-    if (thread_state(thread, SCHEDULER_STATE_BLOCK) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-    MESSAGE_LEAVE(message, ERROR_NONE);
-  }
-
-  /*
-   * 4)
-   */
-
-  sz = size <= receiver->sz ? size : receiver->sz;
-
-  if (receiver->asid == kasid && task->asid == kasid)
-  {
-    memcpy((void*)receiver->data, (void *)data, sz);
-    goto copied;
-  }
-
-  if (receiver->asid == kasid)
-  {
-    if (as_read(task->asid, data, sz, (void*)receiver->data)
-	!= ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-    goto copied;
-  }
-
-  if (task->asid == kasid)
-  {
-    if (as_write(receiver->asid, (void *)data, sz, receiver->data)
-	!= ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-    goto copied;
-  }
-
-  if (as_copy(task->asid, data, receiver->asid, receiver->data, sz)
-      != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-copied:
-
-  if (set_pop(msgbox->receivers) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  /*
-   * 5)
-   */
-
-  if (machine_call(message, message_epilogue, receiver->thread, ERROR_NONE)
-        != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  if (thread_state(receiver->thread, SCHEDULER_STATE_RUN) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  return res;
 }
 
-/*
- * receive synchronously a message by direct memory transfert
- *
- * steps:
- *
- * 1) retrieve the message box and check if a sync_send is pending
- * 2) if no sync is pending, return if function not blocking.
- * 3) if no sync is pending and function blocking,
- *    register to the receivers queue, sleep & reschedule.
- * 4) if it is, pop the sender from the queue, proceed to transfert
- * 5) unblock the sender's task
- */
-
-t_error			message_sync_recv(i_task	taskid,
-					  t_tag		tag,
-					  t_vaddr	data,
-					  t_vsize	maxsz,
-					  t_state	blocking)
+t_error			syscall_message_throw(i_node		destination,
+					      t_type		type,
+					      t_vaddr		data,
+					      t_vsize		size,
+					      t_message_request*request)
 {
-  t_message_box*	msgbox;
-  o_task*		task;
-  t_message_waiter*	sender;
-  t_message_waiter	recv_waiter;
-  i_thread		thread;
-  t_size		sz;
-
-  MESSAGE_ENTER(message);
-
-  /*
-   * 1)
-   */
-
-  if (task_get(taskid, &task) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-  if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  tag = tag;
-
-  if (set_pick(msgbox->senders, (void**)&sender) != ERROR_NONE)
-  {
-    /*
-     * 2)
-     */
-
-    if (!blocking)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-    /*
-     * 3)
-     */
-
-    if (scheduler_current(&thread) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-    recv_waiter.thread = thread;
-    recv_waiter.data = data;
-    recv_waiter.sz = maxsz;
-    recv_waiter.asid = task->asid;
-
-    if (set_push(msgbox->receivers, &recv_waiter) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-    if (thread_state(thread, SCHEDULER_STATE_BLOCK) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-    MESSAGE_LEAVE(message, ERROR_NONE);
-  }
-
-  /*
-   * 4)
-   */
-
-  sz = maxsz <= sender->sz ? maxsz : sender->sz;
-
-  if (sender->asid == kasid && task->asid == kasid)
-  {
-    memcpy((void *)data, (void*)sender->data, sz);
-    goto copied;
-  }
-
-  if (task->asid == kasid)
-  {
-    if (as_read(sender->asid, sender->data, sz, (void*)data) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-    goto copied;
-  }
-
-  if (sender->asid == kasid)
-  {
-    if (as_write(task->asid, (void*)sender->data, sz, data) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-    goto copied;
-  }
-
-  if (as_copy(sender->asid, sender->data, task->asid, data, sz)
-      != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-copied:
-
-  if (set_pop(msgbox->senders) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  /*
-   * 5)
-   */
-
-  if (machine_call(message, message_epilogue, sender->thread, ERROR_NONE)
-        != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  if (thread_state(sender->thread, SCHEDULER_STATE_RUN) != ERROR_NONE)
-    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  /* XXX */
 }
 
-/*
- * register a message box for a task in the message manager
- *
- * steps:
- *
- * 1) create the message box if it doesn't exists
- */
-
-t_error			message_register(i_task	taskid,
-					 t_tag	tag)
+t_error			syscall_message_receive(t_type		type,
+						t_vaddr		data,
+						t_vsize*	size,
+						i_node*		sender)
 {
-  t_message_box*	msgbox;
-  t_message_box		new;
-
-  MESSAGE_ENTER(message);
-
-  /*
-   * 1)
-   */
-
-  if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
+  union
   {
-    new.id = taskid;
-    if (set_reserve(pipe, SET_OPT_ALLOC, sizeof(o_message), &new.msgqueue)
-	  != ERROR_NONE ||
-	set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_message_waiter), &new.receivers)
-	  != ERROR_NONE ||
-	set_reserve(pipe, SET_OPT_ALLOC, sizeof(t_message_waiter), &new.senders)
-	  != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-    if (set_add(message->local_boxes, &new) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-    if (set_get(message->local_boxes, taskid, (void**)&msgbox) != ERROR_NONE)
-      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
-  }
+    i_node		node;
+    t_uint32		reg[4];
+  }			u;
+  t_error		res;
+  t_vsize		r_size;
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  asm("int $60"
+      : "=a" (res), "=b" (r_size), "=c" (u.reg[0]), "=d" (u.reg[1]),
+	"=S" (u.reg[2]), "=D" (u.reg[3])
+      : "a" (type), "b" (data));
+
+  *size = r_size;
+  *sender = u.node;
+
+  return res;
 }
 
-/*
- * ---------- tests -----------------------------------------------------------
- */
-
-
-t_error			message_test(void)
+t_error			syscall_message_grab(t_type		type,
+					     t_vaddr		data,
+					     t_message_request*	request)
 {
-  char			recv[128];
+  /* XXX */
+}
 
-  MESSAGE_ENTER(message);
+t_error			syscall_message_poll(t_type		type,
+					     t_vaddr		data,
+					     t_vsize*		size,
+					     i_node*		sender)
+{
+  union
+  {
+    i_node		node;
+    t_uint32		reg[4];
+  }			u;
+  t_error		res;
+  t_vsize		r_size;
 
-  scheduler_dump();
+  asm("int $62"
+      : "=a" (res), "=b" (r_size), "=c" (u.reg[0]), "=d" (u.reg[1]),
+	"=S" (u.reg[2]), "=D" (u.reg[3])
+      : "a" (type), "b" (data));
 
-  while (1)
-    {
-      if (message_async_recv(ktask, 0, (t_vaddr)recv, 128) == ERROR_NONE)
-	{
-	  printf("received %d bytes : %s\n", strlen(recv) + 1, recv);
-	  break;
-	}
-    }
+  *size = r_size;
+  *sender = u.node;
 
-  MESSAGE_LEAVE(message, ERROR_NONE);
+  return res;
+}
+
+t_error			syscall_message_state(t_message_request	request)
+{
+  /* XXX */
+}
+
+t_error			syscall_message_wait(t_message_request	request,
+					     t_vsize*		size,
+					     i_node*		sender)
+{
+  /* XXX */
 }

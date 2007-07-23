@@ -22,8 +22,23 @@
  * ../syscalls.c
  */
 
-t_error			ia32_setup_syscall_ret(i_thread		thread,
-					       t_error		exit_value);
+void			ia32_syshandler_register(void);
+
+void			ia32_syshandler_send(void);
+
+void			ia32_syshandler_transmit(void);
+
+void			ia32_syshandler_receive(void);
+
+void			ia32_syshandler_poll(void);
+
+t_error			ia32_syscall_set_code(i_thread		thread,
+					      t_error		error);
+
+t_error			ia32_syscall_set_info(i_thread		thread,
+					      t_error		error,
+					      t_vsize		size,
+					      i_node		sender);
 
 t_error			ia32_syscalls_init(void);
 

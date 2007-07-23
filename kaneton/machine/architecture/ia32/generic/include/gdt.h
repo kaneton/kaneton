@@ -200,7 +200,7 @@ typedef struct
 t_error			ia32_gdt_dump(t_ia32_gdt*		dump_gdt);
 
 t_error			ia32_gdt_size(t_ia32_gdt*		table,
-				      t_uint16			*size);
+				      t_uint16*			size);
 
 t_error			ia32_gdt_build(t_uint16			entries,
 				       t_paddr			base,
@@ -239,7 +239,7 @@ t_error			ia32_ldt_base(t_ia32_ldt*		table,
 				      t_paddr*			addr);
 
 t_error			ia32_ldt_size(t_ia32_ldt*		table,
-				      t_uint16			*size);
+				      t_uint16*			size);
 
 t_error			ia32_ldt_dump(t_ia32_ldt*		table);
 

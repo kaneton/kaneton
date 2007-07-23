@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/task.h
+ * file          /home/buckman/kaneton/kaneton/core/include/task.h
  *
  * created       julien quintard   [wed jun  6 14:27:31 2007]
- * updated       julien quintard   [fri jun 22 18:40:46 2007]
+ * updated       matthieu bucchianeri   [mon jul 23 12:38:19 2007]
  */
 
 #ifndef CORE_TASK_H
@@ -107,6 +107,8 @@ typedef struct
 
   i_set				waits;
   t_wait			wait;
+
+  i_set				messages;
 
   machine_data(o_task);
 }				o_task;

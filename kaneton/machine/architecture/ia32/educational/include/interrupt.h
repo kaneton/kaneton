@@ -31,7 +31,7 @@
 #define IA32_EXCEPTION_NR	32
 #define IA32_IRQ_NR		16
 #define IA32_IPI_NR		8
-#define IA32_SYSCALL_NR		4
+#define IA32_SYSCALL_NR		9
 
 #define IA32_HANDLER_NR		IA32_EXCEPTION_NR + IA32_IRQ_NR +	\
 				IA32_IPI_NR + IA32_SYSCALL_NR
@@ -182,6 +182,76 @@
 
 #define IA32_CALL_HANDLER(_handler_, ...)				\
   ((t_ia32_interrupt_handler)((_handler_).function))(__VA_ARGS__)
+
+#define PREHANDLER_PROTOTYPES()						\
+  void	prehandler_exception0(void);					\
+  void	prehandler_exception1(void);					\
+  void	prehandler_exception2(void);					\
+  void	prehandler_exception3(void);					\
+  void	prehandler_exception4(void);					\
+  void	prehandler_exception5(void);					\
+  void	prehandler_exception6(void);					\
+  void	prehandler_exception7(void);					\
+  void	prehandler_exception8(void);					\
+  void	prehandler_exception9(void);					\
+  void	prehandler_exception10(void);					\
+  void	prehandler_exception11(void);					\
+  void	prehandler_exception12(void);					\
+  void	prehandler_exception13(void);					\
+  void	prehandler_exception14(void);					\
+  void	prehandler_exception15(void);					\
+  void	prehandler_exception16(void);					\
+  void	prehandler_exception17(void);					\
+  void	prehandler_exception18(void);					\
+  void	prehandler_exception19(void);					\
+  void	prehandler_exception20(void);					\
+  void	prehandler_exception21(void);					\
+  void	prehandler_exception22(void);					\
+  void	prehandler_exception23(void);					\
+  void	prehandler_exception24(void);					\
+  void	prehandler_exception25(void);					\
+  void	prehandler_exception26(void);					\
+  void	prehandler_exception27(void);					\
+  void	prehandler_exception28(void);					\
+  void	prehandler_exception29(void);					\
+  void	prehandler_exception30(void);					\
+  void	prehandler_exception31(void);					\
+  									\
+  void	prehandler_irq0(void);						\
+  void	prehandler_irq1(void);						\
+  void	prehandler_irq2(void);						\
+  void	prehandler_irq3(void);						\
+  void	prehandler_irq4(void);						\
+  void	prehandler_irq5(void);						\
+  void	prehandler_irq6(void);						\
+  void	prehandler_irq7(void);						\
+  void	prehandler_irq8(void);						\
+  void	prehandler_irq9(void);						\
+  void	prehandler_irq10(void);						\
+  void	prehandler_irq11(void);						\
+  void	prehandler_irq12(void);						\
+  void	prehandler_irq13(void);						\
+  void	prehandler_irq14(void);						\
+  void	prehandler_irq15(void);						\
+  									\
+  void	prehandler_ipi0(void);						\
+  void	prehandler_ipi1(void);						\
+  void	prehandler_ipi2(void);						\
+  void	prehandler_ipi3(void);						\
+  void	prehandler_ipi4(void);						\
+  void	prehandler_ipi5(void);						\
+  void	prehandler_ipi6(void);						\
+  void	prehandler_ipi7(void);						\
+  									\
+  void	prehandler_syscall0(void);					\
+  void	prehandler_syscall1(void);					\
+  void	prehandler_syscall2(void);					\
+  void	prehandler_syscall3(void);					\
+  void	prehandler_syscall4(void);					\
+  void	prehandler_syscall5(void);					\
+  void	prehandler_syscall6(void);					\
+  void	prehandler_syscall7(void);					\
+  void	prehandler_syscall8(void);
 
 /*
  * ---------- dependencies ----------------------------------------------------

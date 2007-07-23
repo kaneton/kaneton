@@ -133,6 +133,15 @@ t_error			cpu_current(i_cpu*			cpuid)
 }
 
 /*
+ * this function tells if the kernel is running in multiprocessor mode.
+ */
+
+t_error			cpu_multiprocessor(void)
+{
+  return ((cpu->ncpus == 1) ? ERROR_UNKNOWN : ERROR_NONE);
+}
+
+/*
  * this function is used to select a cpu when creating a task.
  */
 
@@ -318,6 +327,8 @@ t_error			cpu_initialize(void)
 
 	  return (ERROR_UNKNOWN);
 	}
+
+      cpu->ncpus++;
     }
 
   if (init->ncpus == 1)

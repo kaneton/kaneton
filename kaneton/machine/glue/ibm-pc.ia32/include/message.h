@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/message.h
+ * file          /home/buckman/kan...chine/glue/ibm-pc.ia32/include/message.h
  *
  * created       julien quintard   [wed jun  6 16:20:48 2007]
- * updated       matthieu bucchianeri   [fri jun 15 09:23:31 2007]
+ * updated       matthieu bucchianeri   [mon jul 23 12:40:53 2007]
  */
 
 #ifndef GLUE_MESSAGE_H
@@ -37,6 +37,8 @@
 
 #define		machine_data_o_message()
 
+#define		machine_data_o_message_type()
+
 /*
  * ---------- prototypes ------------------------------------------------------
  *
@@ -46,6 +48,14 @@
 /*
  * ../message.c
  */
+
+t_error			glue_message_return(i_thread		thread,
+					    t_error		code);
+
+t_error			glue_message_return_info(i_thread	thread,
+						 t_error	code,
+						 t_vsize	size,
+						 i_node		sender);
 
 t_error		glue_message_initialize(void);
 

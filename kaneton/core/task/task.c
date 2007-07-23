@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       matthieu bucchianeri   [sun jul 22 19:49:24 2007]
+ * updated       matthieu bucchianeri   [mon jul 23 19:23:49 2007]
  */
 
 /*
@@ -300,7 +300,7 @@ t_error			task_clone(i_task			old,
  * 5) reserves the set of threads for the new task object.
  * 6) reserves the set of waits for the new task object.
  * 7) reserves the set of children for the new task object.
- * 8) register a message box into the message manager.
+ * 8) create a message box for the task.
  * 9) adds the new task object in the task set.
  * 10) calls the machine-dependent code.
  */
@@ -416,7 +416,7 @@ t_error			task_reserve(t_class			class,
    */
 
   if (set_reserve(array, SET_OPT_SORT | SET_OPT_ALLOC, TASK_THREADS_INITSZ,
-		  sizeof(i_thread), &o.threads) != ERROR_NONE)
+		  sizeof (i_thread), &o.threads) != ERROR_NONE)
     {
       id_release(&task->id, o.tskid);
 
@@ -428,7 +428,7 @@ t_error			task_reserve(t_class			class,
    */
 
   if (set_reserve(array, SET_OPT_ALLOC, TASK_WAITS_INITSZ,
-		  sizeof(o_waitfor), &o.waits) != ERROR_NONE)
+		  sizeof (o_waitfor), &o.waits) != ERROR_NONE)
     {
       id_release(&task->id, o.tskid);
 
@@ -442,7 +442,7 @@ t_error			task_reserve(t_class			class,
    */
 
   if (set_reserve(ll, SET_OPT_SORT | SET_OPT_ALLOC,
-		  sizeof(i_task), &o.children) != ERROR_NONE)
+		  sizeof (i_task), &o.children) != ERROR_NONE)
     {
       id_release(&task->id, o.tskid);
 
@@ -456,10 +456,9 @@ t_error			task_reserve(t_class			class,
    * 8)
    */
 
-  if (o.tskid != 0)
+  if (set_reserve(bpt, SET_OPT_SORT | SET_OPT_ALLOC, sizeof (o_message_type),
+		  MESSAGE_BPT_NODESZ, &o.messages) != ERROR_NONE)
   {
-    if (message_register(o.tskid, 0) != ERROR_NONE)
-    {
       id_release(&task->id, o.tskid);
 
       set_release(o.threads);
@@ -467,7 +466,6 @@ t_error			task_reserve(t_class			class,
       set_release(o.children);
 
       TASK_LEAVE(task, ERROR_UNKNOWN);
-    }
   }
 
   /*
@@ -501,12 +499,13 @@ t_error			task_reserve(t_class			class,
  *
  * steps:
  *
- * 1) calls the machine-dependent code.
- * 2) gets the task object given its identifier.
- * 3) releases the task's object identifier.
- * 4) releases the task object's set of threads.
- * 5) releases the task object's set of waits.
- * 6) removes the task object from the task set.
+ * 1) call the machine-dependent code.
+ * 2) get the task object given its identifier.
+ * 3) release the task's object identifier.
+ * 4) release the task object's set of threads.
+ * 5) release the task object's set of waits.
+ * 6) release the task's list of messages.
+ * 7) remove the task object from the task set.
  */
 
 t_error			task_release(i_task			id)
@@ -565,6 +564,15 @@ t_error			task_release(i_task			id)
 
   /*
    * 6)
+   */
+
+  /* XXX clear ALL */
+
+  if (set_release(o->messages) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  /*
+   * 7)
    */
 
   if (set_remove(task->tasks, o->tskid) != ERROR_NONE)
