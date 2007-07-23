@@ -805,6 +805,7 @@ t_error			ia32_map_chunk(t_vaddr		v,
   reg->address = v;
   reg->offset = 0;
   reg->size = PAGESZ;
+  reg->opts = REGION_OPT_NONE;
 
   if (region_inject(kasid, reg, &useless) != ERROR_NONE)
     return (ERROR_UNKNOWN);

@@ -521,6 +521,8 @@ t_error			ia32_init_switcher(void)
 		    0x68) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
+  ia32_interrupt_stack = int_stack + 2 * PAGESZ - 16;
+
   /*
    * 5)
    */
