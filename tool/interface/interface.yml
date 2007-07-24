@@ -42,11 +42,6 @@
       operation: release
       argument:
         - (capability)
-    -
-      operation: get
-      argument:
-        - (capability)
-        - (out) o_as**
 -
   manager: capability
   interface:
@@ -98,11 +93,6 @@
       operation: release
       argument:
         - (capability)
-    -
-      operation: get
-      argument:
-        - (capability)
-        - (out) o_event**
 -
   manager: io
   interface:
@@ -191,14 +181,6 @@
         - t_vsize
         - (out) t_vaddr*
 -
-  manager: message
-  interface:
-    -
-      operation: register
-      argument:
-        - i_task
-        - t_tag
--
   manager: region
   interface:
     -
@@ -216,12 +198,6 @@
       argument:
         - i_as
         - (capability)
-    -
-      operation: get
-      argument:
-        - i_as
-        - (capability)
-        - (out) o_region**
 -
   manager: scheduler
   interface:
@@ -297,11 +273,6 @@
       argument:
         - (capability)
         - t_type
-    -
-      operation: get
-      argument:
-        - (capability)
-        - (out) o_segment**
 -
   manager: task
   interface:
@@ -341,11 +312,6 @@
         - (capability)
         - t_opts
         - (out) t_wait*
-    -
-      operation: get
-      argument:
-        - (capability)
-        - (out) o_task**
 -
   manager: thread
   interface:
@@ -395,11 +361,6 @@
       argument:
         - (capability)
         - (out) t_thread_context*
-    -
-      operation: get
-      argument:
-        - (capability)
-        - (out) o_thread**
 -
   manager: timer
   interface:
@@ -431,8 +392,3 @@
         - (capability)
         - t_uint32
         - t_uint32
-    -
-      operation: get
-      argument:
-        - (capability)
-        - (out) o_timer**

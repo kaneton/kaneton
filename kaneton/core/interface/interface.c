@@ -24,3 +24,1289 @@
 #include <libc.h>
 #include <kaneton.h>
 
+/*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+extern i_task		ktask;
+
+/*
+ * ---------- functions -------------------------------------------------------
+ */
+
+/*
+ * this function launchs the as_give() function.
+ */
+
+t_error		interface_as_give(o_syscall*	message)
+{
+  t_error	error;
+
+  error = as_give(message->u.request.u.as_give.arg1,
+			message->u.request.u.as_give.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the as_vaddr() function.
+ */
+
+t_error		interface_as_vaddr(o_syscall*	message)
+{
+  t_error	error;
+  t_vaddr	result1;
+
+  error = as_vaddr(message->u.request.u.as_vaddr.arg1,
+			message->u.request.u.as_vaddr.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.as_vaddr.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the as_paddr() function.
+ */
+
+t_error		interface_as_paddr(o_syscall*	message)
+{
+  t_error	error;
+  t_paddr	result1;
+
+  error = as_paddr(message->u.request.u.as_paddr.arg1,
+			message->u.request.u.as_paddr.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.as_paddr.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the as_copy() function.
+ */
+
+t_error		interface_as_copy(o_syscall*	message)
+{
+  t_error	error;
+
+  error = as_copy(message->u.request.u.as_copy.arg1,
+			message->u.request.u.as_copy.arg2,
+			message->u.request.u.as_copy.arg3,
+			message->u.request.u.as_copy.arg4,
+			message->u.request.u.as_copy.arg5);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the as_clone() function.
+ */
+
+t_error		interface_as_clone(o_syscall*	message)
+{
+  t_error	error;
+  i_as	result1;
+
+  error = as_clone(message->u.request.u.as_clone.arg1,
+			message->u.request.u.as_clone.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.as_clone.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the as_reserve() function.
+ */
+
+t_error		interface_as_reserve(o_syscall*	message)
+{
+  t_error	error;
+  i_as	result1;
+
+  error = as_reserve(message->u.request.u.as_reserve.arg1,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.as_reserve.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the as_release() function.
+ */
+
+t_error		interface_as_release(o_syscall*	message)
+{
+  t_error	error;
+
+  error = as_release(message->u.request.u.as_release.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the capability_reserve() function.
+ */
+
+t_error		interface_capability_reserve(o_syscall*	message)
+{
+  t_error	error;
+  t_capability	result1;
+
+  error = capability_reserve(message->u.request.u.capability_reserve.arg1,
+			message->u.request.u.capability_reserve.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.capability_reserve.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the capability_release() function.
+ */
+
+t_error		interface_capability_release(o_syscall*	message)
+{
+  t_error	error;
+
+  error = capability_release(message->u.request.u.capability_release.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the capability_restrict() function.
+ */
+
+t_error		interface_capability_restrict(o_syscall*	message)
+{
+  t_error	error;
+  t_capability	result1;
+
+  error = capability_restrict(message->u.request.u.capability_restrict.arg1,
+			message->u.request.u.capability_restrict.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.capability_restrict.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the capability_invalidate() function.
+ */
+
+t_error		interface_capability_invalidate(o_syscall*	message)
+{
+  t_error	error;
+
+  error = capability_invalidate(message->u.request.u.capability_invalidate.arg1,
+			message->u.request.u.capability_invalidate.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the capability_get() function.
+ */
+
+t_error		interface_capability_get(o_syscall*	message)
+{
+  t_error	error;
+  t_capability_descriptor*	result1;
+
+  error = capability_get(message->u.request.u.capability_get.arg1,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.capability_get.result1 = *result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the capability_give() function.
+ */
+
+t_error		interface_capability_give(o_syscall*	message)
+{
+  t_error	error;
+
+  error = capability_give(message->u.request.u.capability_give.arg1,
+			message->u.request.u.capability_give.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the capability_verify() function.
+ */
+
+t_error		interface_capability_verify(o_syscall*	message)
+{
+  t_error	error;
+
+  error = capability_verify(&message->u.request.u.capability_verify.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the event_reserve() function.
+ */
+
+t_error		interface_event_reserve(o_syscall*	message)
+{
+  t_error	error;
+
+  error = event_reserve(message->u.request.u.event_reserve.arg1,
+			message->u.request.u.event_reserve.arg2,
+			message->u.request.u.event_reserve.arg3);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the event_release() function.
+ */
+
+t_error		interface_event_release(o_syscall*	message)
+{
+  t_error	error;
+
+  error = event_release(message->u.request.u.event_release.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the io_grant() function.
+ */
+
+t_error		interface_io_grant(o_syscall*	message)
+{
+  t_error	error;
+
+  error = io_grant(message->u.request.u.io_grant.arg1,
+			message->u.request.u.io_grant.arg2,
+			message->u.request.u.io_grant.arg3);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the io_deny() function.
+ */
+
+t_error		interface_io_deny(o_syscall*	message)
+{
+  t_error	error;
+
+  error = io_deny(message->u.request.u.io_deny.arg1,
+			message->u.request.u.io_deny.arg2,
+			message->u.request.u.io_deny.arg3);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the io_read_8() function.
+ */
+
+t_error		interface_io_read_8(o_syscall*	message)
+{
+  t_error	error;
+  t_uint8	result1;
+
+  error = io_read_8(message->u.request.u.io_read_8.arg1,
+			message->u.request.u.io_read_8.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.io_read_8.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the io_read_16() function.
+ */
+
+t_error		interface_io_read_16(o_syscall*	message)
+{
+  t_error	error;
+  t_uint16	result1;
+
+  error = io_read_16(message->u.request.u.io_read_16.arg1,
+			message->u.request.u.io_read_16.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.io_read_16.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the io_read_32() function.
+ */
+
+t_error		interface_io_read_32(o_syscall*	message)
+{
+  t_error	error;
+  t_uint32	result1;
+
+  error = io_read_32(message->u.request.u.io_read_32.arg1,
+			message->u.request.u.io_read_32.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.io_read_32.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the io_read_64() function.
+ */
+
+t_error		interface_io_read_64(o_syscall*	message)
+{
+  t_error	error;
+  t_uint64	result1;
+
+  error = io_read_64(message->u.request.u.io_read_64.arg1,
+			message->u.request.u.io_read_64.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.io_read_64.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the io_write_8() function.
+ */
+
+t_error		interface_io_write_8(o_syscall*	message)
+{
+  t_error	error;
+
+  error = io_write_8(message->u.request.u.io_write_8.arg1,
+			message->u.request.u.io_write_8.arg2,
+			message->u.request.u.io_write_8.arg3);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the io_write_16() function.
+ */
+
+t_error		interface_io_write_16(o_syscall*	message)
+{
+  t_error	error;
+
+  error = io_write_16(message->u.request.u.io_write_16.arg1,
+			message->u.request.u.io_write_16.arg2,
+			message->u.request.u.io_write_16.arg3);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the io_write_32() function.
+ */
+
+t_error		interface_io_write_32(o_syscall*	message)
+{
+  t_error	error;
+
+  error = io_write_32(message->u.request.u.io_write_32.arg1,
+			message->u.request.u.io_write_32.arg2,
+			message->u.request.u.io_write_32.arg3);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the io_write_64() function.
+ */
+
+t_error		interface_io_write_64(o_syscall*	message)
+{
+  t_error	error;
+
+  error = io_write_64(message->u.request.u.io_write_64.arg1,
+			message->u.request.u.io_write_64.arg2,
+			message->u.request.u.io_write_64.arg3);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the map_reserve() function.
+ */
+
+t_error		interface_map_reserve(o_syscall*	message)
+{
+  t_error	error;
+  t_vaddr	result1;
+
+  error = map_reserve(message->u.request.u.map_reserve.arg1,
+			message->u.request.u.map_reserve.arg2,
+			message->u.request.u.map_reserve.arg3,
+			message->u.request.u.map_reserve.arg4,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.map_reserve.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the map_release() function.
+ */
+
+t_error		interface_map_release(o_syscall*	message)
+{
+  t_error	error;
+
+  error = map_release(message->u.request.u.map_release.arg1,
+			message->u.request.u.map_release.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the map_resize() function.
+ */
+
+t_error		interface_map_resize(o_syscall*	message)
+{
+  t_error	error;
+  t_vaddr	result1;
+
+  error = map_resize(message->u.request.u.map_resize.arg1,
+			message->u.request.u.map_resize.arg2,
+			message->u.request.u.map_resize.arg3,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.map_resize.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the region_reserve() function.
+ */
+
+t_error		interface_region_reserve(o_syscall*	message)
+{
+  t_error	error;
+  i_region	result1;
+
+  error = region_reserve(message->u.request.u.region_reserve.arg1,
+			message->u.request.u.region_reserve.arg2,
+			message->u.request.u.region_reserve.arg3,
+			message->u.request.u.region_reserve.arg4,
+			message->u.request.u.region_reserve.arg5,
+			message->u.request.u.region_reserve.arg6,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.region_reserve.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the region_release() function.
+ */
+
+t_error		interface_region_release(o_syscall*	message)
+{
+  t_error	error;
+
+  error = region_release(message->u.request.u.region_release.arg1,
+			message->u.request.u.region_release.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the scheduler_quantum() function.
+ */
+
+t_error		interface_scheduler_quantum(o_syscall*	message)
+{
+  t_error	error;
+
+  error = scheduler_quantum(message->u.request.u.scheduler_quantum.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the scheduler_yield() function.
+ */
+
+t_error		interface_scheduler_yield(o_syscall*	message)
+{
+  t_error	error;
+
+  error = scheduler_yield(message->u.request.u.scheduler_yield.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the scheduler_current() function.
+ */
+
+t_error		interface_scheduler_current(o_syscall*	message)
+{
+  t_error	error;
+  i_thread	result1;
+
+  error = scheduler_current(&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.scheduler_current.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the scheduler_add() function.
+ */
+
+t_error		interface_scheduler_add(o_syscall*	message)
+{
+  t_error	error;
+
+  error = scheduler_add(message->u.request.u.scheduler_add.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the scheduler_remove() function.
+ */
+
+t_error		interface_scheduler_remove(o_syscall*	message)
+{
+  t_error	error;
+
+  error = scheduler_remove(message->u.request.u.scheduler_remove.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the scheduler_update() function.
+ */
+
+t_error		interface_scheduler_update(o_syscall*	message)
+{
+  t_error	error;
+
+  error = scheduler_update(message->u.request.u.scheduler_update.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the segment_clone() function.
+ */
+
+t_error		interface_segment_clone(o_syscall*	message)
+{
+  t_error	error;
+  i_segment	result1;
+
+  error = segment_clone(message->u.request.u.segment_clone.arg1,
+			message->u.request.u.segment_clone.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.segment_clone.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the segment_give() function.
+ */
+
+t_error		interface_segment_give(o_syscall*	message)
+{
+  t_error	error;
+
+  error = segment_give(message->u.request.u.segment_give.arg1,
+			message->u.request.u.segment_give.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the segment_copy() function.
+ */
+
+t_error		interface_segment_copy(o_syscall*	message)
+{
+  t_error	error;
+
+  error = segment_copy(message->u.request.u.segment_copy.arg1,
+			message->u.request.u.segment_copy.arg2,
+			message->u.request.u.segment_copy.arg3,
+			message->u.request.u.segment_copy.arg4,
+			message->u.request.u.segment_copy.arg5);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the segment_reserve() function.
+ */
+
+t_error		interface_segment_reserve(o_syscall*	message)
+{
+  t_error	error;
+  i_segment	result1;
+
+  error = segment_reserve(message->u.request.u.segment_reserve.arg1,
+			message->u.request.u.segment_reserve.arg2,
+			message->u.request.u.segment_reserve.arg3,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.segment_reserve.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the segment_release() function.
+ */
+
+t_error		interface_segment_release(o_syscall*	message)
+{
+  t_error	error;
+
+  error = segment_release(message->u.request.u.segment_release.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the segment_catch() function.
+ */
+
+t_error		interface_segment_catch(o_syscall*	message)
+{
+  t_error	error;
+
+  error = segment_catch(message->u.request.u.segment_catch.arg1,
+			message->u.request.u.segment_catch.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the segment_perms() function.
+ */
+
+t_error		interface_segment_perms(o_syscall*	message)
+{
+  t_error	error;
+
+  error = segment_perms(message->u.request.u.segment_perms.arg1,
+			message->u.request.u.segment_perms.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the segment_type() function.
+ */
+
+t_error		interface_segment_type(o_syscall*	message)
+{
+  t_error	error;
+
+  error = segment_type(message->u.request.u.segment_type.arg1,
+			message->u.request.u.segment_type.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the task_current() function.
+ */
+
+t_error		interface_task_current(o_syscall*	message)
+{
+  t_error	error;
+  i_task	result1;
+
+  error = task_current(&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.task_current.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the task_clone() function.
+ */
+
+t_error		interface_task_clone(o_syscall*	message)
+{
+  t_error	error;
+  i_task	result1;
+
+  error = task_clone(message->u.request.u.task_clone.arg1,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.task_clone.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the task_reserve() function.
+ */
+
+t_error		interface_task_reserve(o_syscall*	message)
+{
+  t_error	error;
+  i_task	result1;
+
+  error = task_reserve(message->u.request.u.task_reserve.arg1,
+			message->u.request.u.task_reserve.arg2,
+			message->u.request.u.task_reserve.arg3,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.task_reserve.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the task_release() function.
+ */
+
+t_error		interface_task_release(o_syscall*	message)
+{
+  t_error	error;
+
+  error = task_release(message->u.request.u.task_release.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the task_priority() function.
+ */
+
+t_error		interface_task_priority(o_syscall*	message)
+{
+  t_error	error;
+
+  error = task_priority(message->u.request.u.task_priority.arg1,
+			message->u.request.u.task_priority.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the task_state() function.
+ */
+
+t_error		interface_task_state(o_syscall*	message)
+{
+  t_error	error;
+
+  error = task_state(message->u.request.u.task_state.arg1,
+			message->u.request.u.task_state.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the task_wait() function.
+ */
+
+t_error		interface_task_wait(o_syscall*	message)
+{
+  t_error	error;
+  t_wait	result1;
+
+  error = task_wait(message->u.request.u.task_wait.arg1,
+			message->u.request.u.task_wait.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.task_wait.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the thread_give() function.
+ */
+
+t_error		interface_thread_give(o_syscall*	message)
+{
+  t_error	error;
+
+  error = thread_give(message->u.request.u.thread_give.arg1,
+			message->u.request.u.thread_give.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the thread_clone() function.
+ */
+
+t_error		interface_thread_clone(o_syscall*	message)
+{
+  t_error	error;
+  i_thread	result1;
+
+  error = thread_clone(message->u.request.u.thread_clone.arg1,
+			message->u.request.u.thread_clone.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.thread_clone.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the thread_reserve() function.
+ */
+
+t_error		interface_thread_reserve(o_syscall*	message)
+{
+  t_error	error;
+  i_thread	result1;
+
+  error = thread_reserve(message->u.request.u.thread_reserve.arg1,
+			message->u.request.u.thread_reserve.arg2,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.thread_reserve.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the thread_release() function.
+ */
+
+t_error		interface_thread_release(o_syscall*	message)
+{
+  t_error	error;
+
+  error = thread_release(message->u.request.u.thread_release.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the thread_priority() function.
+ */
+
+t_error		interface_thread_priority(o_syscall*	message)
+{
+  t_error	error;
+
+  error = thread_priority(message->u.request.u.thread_priority.arg1,
+			message->u.request.u.thread_priority.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the thread_state() function.
+ */
+
+t_error		interface_thread_state(o_syscall*	message)
+{
+  t_error	error;
+
+  error = thread_state(message->u.request.u.thread_state.arg1,
+			message->u.request.u.thread_state.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the thread_stack() function.
+ */
+
+t_error		interface_thread_stack(o_syscall*	message)
+{
+  t_error	error;
+
+  error = thread_stack(message->u.request.u.thread_stack.arg1,
+			message->u.request.u.thread_stack.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the thread_load() function.
+ */
+
+t_error		interface_thread_load(o_syscall*	message)
+{
+  t_error	error;
+
+  error = thread_load(message->u.request.u.thread_load.arg1,
+			message->u.request.u.thread_load.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the thread_store() function.
+ */
+
+t_error		interface_thread_store(o_syscall*	message)
+{
+  t_error	error;
+  t_thread_context	result1;
+
+  error = thread_store(message->u.request.u.thread_store.arg1,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.thread_store.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the timer_reserve() function.
+ */
+
+t_error		interface_timer_reserve(o_syscall*	message)
+{
+  t_error	error;
+  i_timer	result1;
+
+  error = timer_reserve(message->u.request.u.timer_reserve.arg1,
+			message->u.request.u.timer_reserve.arg2,
+			message->u.request.u.timer_reserve.arg3,
+			message->u.request.u.timer_reserve.arg4,
+			&result1);
+
+  message->u.reply.error = error;
+  message->u.reply.u.timer_reserve.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the timer_release() function.
+ */
+
+t_error		interface_timer_release(o_syscall*	message)
+{
+  t_error	error;
+
+  error = timer_release(message->u.request.u.timer_release.arg1);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the timer_delay() function.
+ */
+
+t_error		interface_timer_delay(o_syscall*	message)
+{
+  t_error	error;
+
+  error = timer_delay(message->u.request.u.timer_delay.arg1,
+			message->u.request.u.timer_delay.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the timer_repeat() function.
+ */
+
+t_error		interface_timer_repeat(o_syscall*	message)
+{
+  t_error	error;
+
+  error = timer_repeat(message->u.request.u.timer_repeat.arg1,
+			message->u.request.u.timer_repeat.arg2);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function launchs the timer_modify() function.
+ */
+
+t_error		interface_timer_modify(o_syscall*	message)
+{
+  t_error	error;
+
+  error = timer_modify(message->u.request.u.timer_modify.arg1,
+			message->u.request.u.timer_modify.arg2,
+			message->u.request.u.timer_modify.arg3);
+
+  message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this structure dispatchs incoming system calls.
+ */
+
+t_interface_dispatch dispatch[] =
+{
+  interface_as_give,
+  interface_as_vaddr,
+  interface_as_paddr,
+  interface_as_copy,
+  interface_as_clone,
+  interface_as_reserve,
+  interface_as_release,
+  interface_capability_reserve,
+  interface_capability_release,
+  interface_capability_restrict,
+  interface_capability_invalidate,
+  interface_capability_get,
+  interface_capability_give,
+  interface_capability_verify,
+  interface_event_reserve,
+  interface_event_release,
+  interface_io_grant,
+  interface_io_deny,
+  interface_io_read_8,
+  interface_io_read_16,
+  interface_io_read_32,
+  interface_io_read_64,
+  interface_io_write_8,
+  interface_io_write_16,
+  interface_io_write_32,
+  interface_io_write_64,
+  interface_map_reserve,
+  interface_map_release,
+  interface_map_resize,
+  interface_region_reserve,
+  interface_region_release,
+  interface_scheduler_quantum,
+  interface_scheduler_yield,
+  interface_scheduler_current,
+  interface_scheduler_add,
+  interface_scheduler_remove,
+  interface_scheduler_update,
+  interface_segment_clone,
+  interface_segment_give,
+  interface_segment_copy,
+  interface_segment_reserve,
+  interface_segment_release,
+  interface_segment_catch,
+  interface_segment_perms,
+  interface_segment_type,
+  interface_task_current,
+  interface_task_clone,
+  interface_task_reserve,
+  interface_task_release,
+  interface_task_priority,
+  interface_task_state,
+  interface_task_wait,
+  interface_thread_give,
+  interface_thread_clone,
+  interface_thread_reserve,
+  interface_thread_release,
+  interface_thread_priority,
+  interface_thread_state,
+  interface_thread_stack,
+  interface_thread_load,
+  interface_thread_store,
+  interface_timer_reserve,
+  interface_timer_release,
+  interface_timer_delay,
+  interface_timer_repeat,
+  interface_timer_modify,
+};
+
+/*
+ * this function receives, dispatch and reply incoming system calls.
+ *
+ * steps:
+ *
+ * 1) check for syscall correctness.
+ * 2) execute the system call.
+ * 3) send the reply.
+ */
+
+t_error			interface_notify(t_uint8*		buffer,
+					 t_vsize		size,
+					 i_node			source)
+{
+  o_syscall*		message = (o_syscall*)buffer;
+
+  /*
+   * 1)
+   */
+
+  if (size < sizeof (o_syscall))
+    return (ERROR_UNKNOWN);
+
+  if (message->u.request.operation >= INTERFACE_NSYSCALLS)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (dispatch[message->u.request.operation](message) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (message_send(ktask,
+		   source,
+		   0,
+		   (t_vaddr)message,
+		   sizeof (o_syscall)) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function initialises the interface manager.
+ */
+
+t_error			interface_initialize(void)
+{
+  if (message_register(ktask, 0, sizeof (o_syscall)) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function cleans the interface manager.
+ */
+
+t_error			interface_clean(void)
+{
+  return (ERROR_NONE);
+}

@@ -52,8 +52,6 @@ def process(kinterface, hinterface, uinterface, manager, func)
   code_serialize = ""
   code_output = ""
   message = "  message.id = 0;
-  message.node.machine = dest.machine;
-  message.node.task = 1;
 
   message.u.request.operation = INTERFACE_#{manager.upcase}_#{func['operation'].upcase};\n"
   j = i = 1
@@ -139,19 +137,19 @@ def process(kinterface, hinterface, uinterface, manager, func)
 
   kinterface.puts "  return (ERROR_NONE);\n}\n\n"
 
-  uinterface.puts "t_error\t\tsyscall_#{operation}(#{uargs})\n{\n  o_syscall\t\tmessage;\n  i_node\t\tdest;\n\n"
+  uinterface.puts "t_error\t\tsyscall_#{operation}(#{uargs})\n{\n  o_syscall\t\tmessage;\n  i_node\t\tnode;\n  t_vsize\t\tsize;\n\n"
 
-  uinterface.puts "  dest.machine = 2^64;
-  dest.task = 0;
+  uinterface.puts "  node.machine = 0;
+  node.task = 0;
 
 " # XXX this is bad
 
   uinterface.puts message + "\n"
 
-  uinterface.puts "  syscall_async_send((t_uint32*)&dest, 0, &message, sizeof (message));
+  uinterface.puts "  syscall_message_send(node, 0, &message, sizeof (message));
 
-  while (syscall_async_recv(0, &message, sizeof (message)) != ERROR_NONE)
-    ;
+  if (syscall_message_receive(0, &message, &size, &node) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
 
 "
 
@@ -206,12 +204,9 @@ t_interface_dispatch dispatch[] =\n{\n#{$dispatch}};\n\n"
  * ---------- types -----------------------------------------------------------
  */
 
-typedef t_error (*t_interface_dispatch)(void*);
-
 typedef struct
 {
   t_id			id;
-  i_node		node;
   union
   {
     struct
@@ -230,7 +225,11 @@ typedef struct
 #{$type_reply}      } u;
     } reply;
   } u;
-}			o_syscall;\n\n"
+}			o_syscall;
+
+typedef t_error (*t_interface_dispatch)(o_syscall*);
+
+"
 
   footer_kinterface(kinterface)
   footer_hinterface(hinterface)

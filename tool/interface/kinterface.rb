@@ -50,32 +50,72 @@ end
 def footer_kinterface(f)
   f.puts "/*
  * this function receives, dispatch and reply incoming system calls.
+ *
+ * steps:
+ *
+ * 1) check for syscall correctness.
+ * 2) execute the system call.
+ * 3) send the reply.
  */
 
-void			interface_loop(void)
+t_error			interface_notify(t_uint8*		buffer,
+					 t_vsize		size,
+					 i_node			source)
 {
-  o_syscall		message;
+  o_syscall*		message = (o_syscall*)buffer;
 
-  if (message_async_recv(ktask,
-			 0,
-			 &message,
-			 sizeof (message)) == ERROR_NONE)
-    {
-      if (message.u.request.operation < INTERFACE_NSYSCALLS)
-        {
-          dispatch[message.u.request.operation](&message);
+  /*
+   * 1)
+   */
 
-          if (message_async_send(ktask,
-			         message.node,
-			         0,
-			         &message,
-			         sizeof (message)) != ERROR_NONE)
-	    {
-	      cons_msg('!', \"error in interface, async_send\\n\");
-	    }
-        }
-    }
-}"
+  if (size < sizeof (o_syscall))
+    return (ERROR_UNKNOWN);
+
+  if (message->u.request.operation >= INTERFACE_NSYSCALLS)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (dispatch[message->u.request.operation](message) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (message_send(ktask,
+		   source,
+		   0,
+		   (t_vaddr)message,
+		   sizeof (o_syscall)) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function initialises the interface manager.
+ */
+
+t_error			interface_initialize(void)
+{
+  if (message_register(ktask, 0, sizeof (o_syscall)) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function cleans the interface manager.
+ */
+
+t_error			interface_clean(void)
+{
+  return (ERROR_NONE);
+}
+"
 end
 
 

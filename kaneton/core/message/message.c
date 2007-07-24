@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/message/message.c
  *
  * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
- * updated       matthieu bucchianeri   [tue jul 24 00:33:10 2007]
+ * updated       matthieu bucchianeri   [tue jul 24 16:17:41 2007]
  */
 
 /*
@@ -179,12 +179,13 @@ t_error			message_register(i_task			task,
  *
  * 1) get the destination message box.
  * 2) check the size.
- * 3) if a thread is waiting for a message, then send it synchronously.
- * 4) build the message.
+ * 3) system call special case.
+ * 4) if a thread is waiting for a message, then send it synchronously.
+ * 5) build the message.
  *  a) fill the buffer, intra-kernel case.
  *  b) fill the buffer, inter-as case.
- * 5) push the message into the message box.
- * 6) call the machine dependent code.
+ * 6) push the message into the message box.
+ * 7) call the machine dependent code.
  */
 
 t_error			message_send(i_task			task,
@@ -219,6 +220,42 @@ t_error			message_send(i_task			task,
    * 3)
    */
 
+  if (destination.task == ktask && type == 0)
+    {
+      t_error		res;
+      void*		buffer;
+      i_node		source;
+
+      ASSERT(task != ktask);
+      ASSERT(size != 0);
+
+      source.machine = kernel->machine;
+      source.task = task;
+
+      if (task_get(task, &otsk) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      if ((buffer = malloc(size)) == NULL)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      if (as_read(otsk->asid, data, size, buffer) != ERROR_NONE)
+	{
+	  free(buffer);
+
+	  MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	}
+
+      res = interface_notify(buffer, size, source);
+
+      free(buffer);
+
+      MESSAGE_LEAVE(message, res);
+    }
+
+  /*
+   * 4)
+   */
+
   if (set_size(o->waiters, &setsz) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
@@ -232,7 +269,7 @@ t_error			message_send(i_task			task,
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if (size)
@@ -281,7 +318,7 @@ t_error			message_send(i_task			task,
   msg.sender.task = task;
 
   /*
-   * 5)
+   * 6)
    */
 
   msg.message = o->id++;
@@ -295,7 +332,7 @@ t_error			message_send(i_task			task,
     }
 
   /*
-   * 6)
+   * 7)
    */
 
   if (machine_call(message, message_send, task, destination, type,
@@ -689,7 +726,8 @@ t_error			message_poll(i_task			task,
 	    }
 	}
 
-      free(msg->data);
+      if (msg->data != NULL)
+	free(msg->data);
     }
 
   *size = msg->size;
