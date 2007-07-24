@@ -28,14 +28,11 @@ static void	thread1(void)
   t_size	recv_sz = 0;
   int		i;
 
-  ASSERT(syscall_message_register(0, 64) == ERROR_NONE,
-	 "cannot register message type\n");
-
   executed1 = 1;
 
-  while (syscall_message_poll(0, (t_vaddr)recv,  &recv_sz,
-			      &from) != ERROR_NONE)
-    ;
+  ASSERT(syscall_message_receive(0, (t_vaddr)recv,  &recv_sz,
+				 &from) == ERROR_NONE,
+	 "cannot receive message\n");
 
   for (i = 0; i < 64; i++)
     if (recv[i] != (char)('A' + i))
@@ -53,13 +50,7 @@ static void	thread2(void)
   char		buff[64];
   int		i;
 
-  ASSERT(syscall_message_register(0, 64) == ERROR_NONE,
-	 "cannot register message type\n");
-
   executed2 = 1;
-
-  while (!executed1)
-    ;
 
   dest.machine = machine;
   dest.task = destt;
@@ -67,7 +58,7 @@ static void	thread2(void)
   for (i = 0; i < 64; i++)
     buff[i] = 'A' + i;
 
-  syscall_message_send(dest, 0, (t_vaddr)buff, 64);
+  syscall_message_transmit(dest, 0, (t_vaddr)buff, 64);
 
   while (1)
     ;
@@ -77,7 +68,7 @@ static void	thread2(void)
  * XXX
  */
 
-void		check_message_async_01(void)
+void		check_message_sync_01(void)
 {
   i_task	tsk1, tsk2;
   t_id		id;
@@ -91,11 +82,17 @@ void		check_message_async_01(void)
   machine = kernel->machine;
   destt = tsk1;
 
+  ASSERT(message_register(tsk1, 0, 64) == ERROR_NONE,
+	 "cannot register message type\n");
+
   ASSERT(check_thread_create(tsk1, THREAD_HPRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
 
   ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk2) == 0,
 	"error creating task\n");
+
+  ASSERT(message_register(tsk2, 0, 64) == ERROR_NONE,
+	 "cannot register message type\n");
 
   ASSERT(check_thread_create(tsk2, THREAD_HPRIOR, (t_vaddr)thread2, &id) == 0,
 	 "error creating thread\n");

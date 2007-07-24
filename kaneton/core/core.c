@@ -131,6 +131,8 @@ void			kaneton(t_init*				bootloader)
   STI(); // XXX moveme
 
   check_message_async_01();
+  check_message_async_02();
+  check_message_async_03();
 
 #ifdef CONF_ENABLE_CHECK
   cons_msg('+', "running manual tests\n");
@@ -142,8 +144,6 @@ void			kaneton(t_init*				bootloader)
 #ifdef SERIAL
   cons_msg('+', "starting debug manager\n");
   debug_initialize();
-  while(1)
-    ;
 #endif
 
 #ifdef GDB_STUB
@@ -161,13 +161,6 @@ void			kaneton(t_init*				bootloader)
   */
 
   ibmpc_keyboard_init();
-
-#if (DEBUG & DEBUG_MESSAGE)
-  message_test();
-#endif
-
-  while(1)
-    interface_loop();
 
   cons_msg('#', "kaneton is stopping...\n");
 

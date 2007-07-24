@@ -8,10 +8,8 @@
 --
  choses a faire (encore):
 
- - reorganiser et nettoyer check/ et check-students/
  - tester as_clone
  - faire les messages pour les event + timers
- - interface
  - map_resize, {region,segment}_{split,resize,coalesce}
  - malloc qui foire...
  - {task,thread}_wait
@@ -24,15 +22,11 @@
  - thread_clone: quand on clone un thread, il faut peut etre changer le
    cr3 plutot que le recopier.
  - thread_give: copier la pile dans le nouvel AS ?
- - gestion des wait
  - voir pourquoi les taches de classe DRIVER et SERVICE ne fonctionnent
    pas (ca semble etre un problème de segment selectors).
  - ajouter PD_CURRENT, GDT_CURRENT, etc...
  - revoir les fonctions de PD/PT pour gerer mieux le paddr/vaddr.
-
---
- aligner les modules lors de leur relocation + tenir compte de
-l'endianness dans mod_load
+ - refaite cswitch
 
 --
  ajouter des check sur les macros via #error

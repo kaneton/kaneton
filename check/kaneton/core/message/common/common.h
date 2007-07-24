@@ -17,6 +17,7 @@
 # include "../../../../check/common/common.h"
 
 extern i_task ktask;
+extern m_kernel* kernel;
 
 /*
  * ---------- prototypes ------------------------------------------------------

@@ -62,6 +62,8 @@ static t_error		debug_exec_cmd_tab(t_serial_data *cmd)
    * 3)
    */
 
+  STI(); /* XXX this is machdep */
+
   func();
 
   /*

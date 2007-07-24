@@ -17,19 +17,15 @@ static volatile int executed1 = 0;
 static volatile int executed2 = 0;
 static volatile int finished = 0;
 static volatile int error = 0;
-
 static i_task destt;
 static t_id machine;
 
 static void	thread1(void)
 {
-  char		recv[64];
+  static char	recv[3000];
   i_node	from;
   t_size	recv_sz = 0;
   int		i;
-
-  ASSERT(syscall_message_register(0, 64) == ERROR_NONE,
-	 "cannot register message type\n");
 
   executed1 = 1;
 
@@ -37,8 +33,8 @@ static void	thread1(void)
 			      &from) != ERROR_NONE)
     ;
 
-  for (i = 0; i < 64; i++)
-    if (recv[i] != (char)('A' + i))
+  for (i = 0; i < 3000; i++)
+    if (recv[i] != (char)i)
       error = 1;
 
   finished = 1;
@@ -50,24 +46,18 @@ static void	thread1(void)
 static void	thread2(void)
 {
   i_node        dest;
-  char		buff[64];
+  static char	buff[3000];
   int		i;
 
-  ASSERT(syscall_message_register(0, 64) == ERROR_NONE,
-	 "cannot register message type\n");
-
   executed2 = 1;
-
-  while (!executed1)
-    ;
 
   dest.machine = machine;
   dest.task = destt;
 
-  for (i = 0; i < 64; i++)
-    buff[i] = 'A' + i;
+  for (i = 0; i < 3000; i++)
+    buff[i] = i;
 
-  syscall_message_send(dest, 0, (t_vaddr)buff, 64);
+  syscall_message_send(dest, 0, (t_vaddr)buff, 3000);
 
   while (1)
     ;
@@ -77,7 +67,7 @@ static void	thread2(void)
  * XXX
  */
 
-void		check_message_async_01(void)
+void		check_message_async_02(void)
 {
   i_task	tsk1, tsk2;
   t_id		id;
@@ -88,6 +78,9 @@ void		check_message_async_01(void)
   ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk1) == 0,
 	"error creating task\n");
 
+  ASSERT(message_register(tsk1, 0, 3000) == ERROR_NONE,
+	 "cannot register message type\n");
+
   machine = kernel->machine;
   destt = tsk1;
 
@@ -97,7 +90,10 @@ void		check_message_async_01(void)
   ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk2) == 0,
 	"error creating task\n");
 
-  ASSERT(check_thread_create(tsk2, THREAD_HPRIOR, (t_vaddr)thread2, &id) == 0,
+  ASSERT(message_register(tsk2, 0, 3000) == ERROR_NONE,
+	 "cannot register message type\n");
+
+  ASSERT(check_thread_create(tsk2, THREAD_PRIOR, (t_vaddr)thread2, &id) == 0,
 	 "error creating thread\n");
 
   CLI();
