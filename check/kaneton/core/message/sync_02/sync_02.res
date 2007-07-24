@@ -1,0 +1,2 @@
+Test check_message_sync_02
+check_message_sync_02 done.

@@ -23,19 +23,24 @@ static t_id machine;
 
 static void	thread1(void)
 {
-  char		recv[64];
+  static char	recv[10000];
   i_node	from;
   t_size	recv_sz = 0;
   int		i;
 
   executed1 = 1;
 
-  ASSERT(syscall_message_receive(0, (t_vaddr)recv,  &recv_sz,
-				 &from) == ERROR_NONE,
-	 "cannot receive message\n");
+  if (syscall_message_receive(0, (t_vaddr)recv,  &recv_sz,
+			      &from) != ERROR_NONE)
+    {
+      printf("cannot receive message\n");
 
-  for (i = 0; i < 64; i++)
-    if (recv[i] != (char)('A' + i))
+      while (1)
+	;
+    }
+
+  for (i = 0; i < 10000; i++)
+    if (recv[i] != (char)(i * 3))
       error = 1;
 
   finished = 1;
@@ -47,7 +52,7 @@ static void	thread1(void)
 static void	thread2(void)
 {
   i_node        dest;
-  char		buff[64];
+  static char	buff[10000];
   int		i;
 
   executed2 = 1;
@@ -55,10 +60,10 @@ static void	thread2(void)
   dest.machine = machine;
   dest.task = destt;
 
-  for (i = 0; i < 64; i++)
-    buff[i] = 'A' + i;
+  for (i = 0; i < 10000; i++)
+    buff[i] = i * 3;
 
-  syscall_message_transmit(dest, 0, (t_vaddr)buff, 64);
+  syscall_message_transmit(dest, 0, (t_vaddr)buff, 10000);
 
   while (1)
     ;
@@ -68,7 +73,7 @@ static void	thread2(void)
  * XXX
  */
 
-void		check_message_sync_01(void)
+void		check_message_sync_03(void)
 {
   i_task	tsk1, tsk2;
   t_id		id;
@@ -82,7 +87,7 @@ void		check_message_sync_01(void)
   machine = kernel->machine;
   destt = tsk1;
 
-  ASSERT(message_register(tsk1, 0, 64) == ERROR_NONE,
+  ASSERT(message_register(tsk1, 0, 10000) == ERROR_NONE,
 	 "cannot register message type\n");
 
   ASSERT(check_thread_create(tsk1, THREAD_HPRIOR, (t_vaddr)thread1, &id) == 0,
@@ -91,7 +96,7 @@ void		check_message_sync_01(void)
   ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk2) == 0,
 	"error creating task\n");
 
-  ASSERT(message_register(tsk2, 0, 64) == ERROR_NONE,
+  ASSERT(message_register(tsk2, 0, 10000) == ERROR_NONE,
 	 "cannot register message type\n");
 
   ASSERT(check_thread_create(tsk2, THREAD_PRIOR, (t_vaddr)thread2, &id) == 0,

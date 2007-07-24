@@ -52,6 +52,24 @@ extern m_message*	message;
 
 /*                                                                  [cut] k4 */
 
+t_ia32_context*		ia32_context_of(i_thread	thread)
+{
+  i_thread		current;
+  o_thread*		o;
+
+  ASSERT(scheduler_current(&current) == ERROR_NONE);
+
+  if (current == thread)
+    return ia32_context;
+
+  ASSERT(thread_get(thread, &o) == ERROR_NONE);
+
+  if (o->sched != SCHEDULER_STATE_BLOCK)
+    return &o->machdep.context;
+
+  return NULL;
+}
+
 /*
  * handler for message_register syscall. prerequisites: message_register never
  * blocks.
@@ -120,7 +138,7 @@ void			ia32_syshandler_transmit(void)
 {
   t_error		res;
   i_thread		caller;
-  i_thread		current;
+  t_ia32_context*	context;
   i_task		task;
   t_type		type;
   t_vaddr		data;
@@ -145,10 +163,8 @@ void			ia32_syshandler_transmit(void)
 
   res = message_transmit(task, u.node, type, data, size);
 
-  ASSERT(scheduler_current(&current) == ERROR_NONE);
-
-  if (current == caller)
-    ia32_context->eax = res;
+  if ((context = ia32_context_of(caller)) != NULL)
+    context->eax = res;
 }
 
 /*
@@ -159,7 +175,7 @@ void			ia32_syshandler_receive(void)
 {
   t_error		res;
   i_thread		caller;
-  i_thread		current;
+  t_ia32_context*	context;
   i_task		task;
   t_type		type;
   t_vaddr		data;
@@ -179,16 +195,14 @@ void			ia32_syshandler_receive(void)
 
   res = message_receive(task, type, data, &size, &u.node);
 
-  ASSERT(scheduler_current(&current) == ERROR_NONE);
-
-  if (current == caller)
+  if ((context = ia32_context_of(caller)) != NULL)
     {
-      ia32_context->eax = res;
-      ia32_context->ebx = size;
-      ia32_context->ecx = u.reg[0];
-      ia32_context->edx = u.reg[1];
-      ia32_context->esi = u.reg[2];
-      ia32_context->edi = u.reg[3];
+      context->eax = res;
+      context->ebx = size;
+      context->ecx = u.reg[0];
+      context->edx = u.reg[1];
+      context->esi = u.reg[2];
+      context->edi = u.reg[3];
     }
 }
 

@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/message/message.c
  *
  * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
- * updated       matthieu bucchianeri   [tue jul 24 16:17:41 2007]
+ * updated       matthieu bucchianeri   [tue jul 24 22:57:17 2007]
  */
 
 /*
