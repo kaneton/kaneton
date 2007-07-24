@@ -42,6 +42,16 @@
       operation: release
       argument:
         - (capability)
+  attribute:
+    -
+      name: tskid
+      type: i_task
+    -
+      name: segments
+      type: o_segment[]
+    -
+      name: regions
+      type: o_region[]
 -
   manager: capability
   interface:
@@ -93,6 +103,13 @@
       operation: release
       argument:
         - (capability)
+  attribute:
+    -
+      name: type
+      type: t_type
+    -
+      name: handler
+      type: u_event_handler
 -
   manager: io
   interface:
@@ -198,6 +215,22 @@
       argument:
         - i_as
         - (capability)
+  attribute:
+    -
+      name: segid
+      type: i_segment
+    -
+      name: address
+      type: t_vaddr
+    -
+      name: offset
+      type: t_paddr
+    -
+      name: size
+      type: t_vsize
+    -
+      name: opts
+      type: t_opts
 -
   manager: scheduler
   interface:
@@ -273,6 +306,22 @@
       argument:
         - (capability)
         - t_type
+  attribute:
+    -
+      name: asid
+      type: i_as
+    -
+      name: type
+      type: t_type
+    -
+      name: address
+      type: t_paddr
+    -
+      name: size
+      type: t_psize
+    -
+      name: perms
+      type: t_perms
 -
   manager: task
   interface:
@@ -312,6 +361,40 @@
         - (capability)
         - t_opts
         - (out) t_wait*
+  attribute:
+    -
+      name: parent
+      type: i_task
+    -
+      name: children
+      type: i_task[]
+    -
+      name: class
+      type: t_class
+    -
+      name: behav
+      type: t_behav
+    -
+      name: prior
+      type: t_prior
+    -
+      name: asid
+      type: i_as
+    -
+      name: threads
+      type: i_thread[]
+    -
+      name: sched
+      type: t_state
+    -
+      name: waits
+      type: o_wait[]
+    -
+      name: wait
+      type: t_wait
+    -
+      name: messages
+      type: o_message_type[]
 -
   manager: thread
   interface:
@@ -361,6 +444,28 @@
       argument:
         - (capability)
         - (out) t_thread_context*
+  attribute:
+    -
+      name: taskid
+      type: i_task
+    -
+      name: prior
+      type: t_prior
+    -
+      name: sched
+      type: t_state
+    -
+      name: waits
+      type: o_wait[]
+    -
+      name: wait
+      type: t_wait
+    -
+      name: stack
+      type: t_vaddr
+    -
+      name: stacksz
+      type: t_vsize
 -
   manager: timer
   interface:
@@ -392,3 +497,16 @@
         - (capability)
         - t_uint32
         - t_uint32
+  attribute:
+    -
+      name: delay
+      type: t_uint32
+    -
+      name: repeat
+      type: t_uint32
+    -
+      name: type
+      type: t_type
+    -
+      name: handler
+      type: u_timer_handler
