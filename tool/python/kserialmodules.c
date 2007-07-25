@@ -199,6 +199,96 @@ static PyObject*	kserial_serial_recv(PyObject*		self,
 }
 
 /*
+ * this is a python exported function. this function receive cycle count.
+ *
+ * steps:
+ *
+ * 1) receive the header packet.
+ * 2) receive the data itself.
+ * 3) send ack or error.
+ */
+
+static PyObject*	kserial_serial_recv_cycle(PyObject*	self,
+						  PyObject*	args)
+{
+  t_data		rdata;
+  int			n = 0;
+  PyObject*		ret;
+
+  /*
+   * 1)
+   */
+
+  n = allreadwrite(read, fd, (void*)&rdata, sizeof(rdata));
+  if (n == -1)
+    {
+      fprintf(stderr, "serial_recv_cycle: Couldn't get packet header\n");
+      return Py_BuildValue("i", 0);
+    }
+  if (n == 0 || errno == EPIPE)
+    {
+      fprintf(stderr, "serial_recv_cycle: Connection time-out\n");
+      return Py_BuildValue("i", 0);
+    }
+  if (rdata.magic != 0xF4859632)
+    {
+      fprintf(stderr, "serial_recv_cycle: Bad magic\n");
+      return Py_BuildValue("i", 0);
+    }
+  rdata.data = malloc((rdata.size + 1) * sizeof(unsigned char));
+
+  /*
+   * 2)
+   */
+
+  n = allreadwrite(read, fd, (void*)rdata.data, rdata.size);
+  *(rdata.data + rdata.size) = 0;
+
+  if (n != rdata.size || errno == EPIPE)
+    {
+      fprintf(stderr, "serial_recv_cycle: Connection time-out\n");
+      return Py_BuildValue("i", 0);
+    }
+
+  /*
+   * 3)
+   */
+
+  if (n == -1)
+    {
+      free(rdata.data);
+      fprintf(stderr, "serial_recv_cycle: Couldn't get packet\n");
+      return Py_BuildValue("i", 0);
+    }
+  if (rdata.crc == chk_sum(rdata.data, rdata.size))
+    {
+      unsigned long long val64;
+      unsigned int val;
+      allreadwrite(write, fd, "crc-ok" , 6);
+
+      val64 = *(unsigned long long*)rdata.data;
+      if (val64 == (unsigned long long*)-1)
+	val = -1;
+      else if (val64 == (unsigned long long*)-2)
+	val = -2;
+      else if (val64 == (unsigned long long*)-3)
+	val = -3;
+      else
+	val = val64 / 1000;
+      free(rdata.data);
+
+      return Py_BuildValue("i", val);
+    }
+  else
+    {
+      fprintf(stderr, "serial_recv_cycle: Bad crc\n");
+      allreadwrite(write, fd, "badcrc", 6);
+      free(rdata.data);
+      return Py_BuildValue("i", 0);
+    }
+}
+
+/*
  * this  function is python-exported.  it sends  data over  the serial
  * port.
  *
@@ -385,6 +475,10 @@ static PyMethodDef kserialMethods[] =
       (PyCFunction)kserial_serial_recv,
       METH_VARARGS,
       "serial receive"},
+    { "serial_recv_cycle",
+      (PyCFunction)kserial_serial_recv_cycle,
+      METH_VARARGS,
+      "serial receive cycle count"},
     { "serial_send",
       (PyCFunction)kserial_serial_send,
       METH_VARARGS,

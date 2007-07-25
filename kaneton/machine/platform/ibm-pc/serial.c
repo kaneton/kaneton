@@ -161,7 +161,7 @@ int			serial_put(char				c)
  * this function initializes the serial port.
  */
 
-void			serial_init(t_uint32			com_port,
+t_error			serial_init(t_uint32			com_port,
 				    t_uint8			baud_rate,
 				    t_uint8			bit_type)
 {
@@ -172,4 +172,6 @@ void			serial_init(t_uint32			com_port,
   OUTB(com_port + 3, bit_type);
   OUTB(com_port + 2, IBMPC_SERIAL_FIFO_8);
   OUTB(com_port + 4, 0x08);
+
+  return (ERROR_NONE);
 }

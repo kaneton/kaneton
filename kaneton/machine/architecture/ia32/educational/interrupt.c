@@ -294,6 +294,9 @@ void			ia32_handler_irq(t_uint32			nr)
 {
   o_event*		o;
   i_event		id = IA32_IDT_IRQ_BASE + nr;
+  i_thread		current;
+
+  ASSERT(view_signal("irq", nr, VIEW_SIGNAL_IRQ) == ERROR_NONE);
 
   // XXX pic ack
   if (nr >= 8)
@@ -311,6 +314,9 @@ void			ia32_handler_irq(t_uint32			nr)
     {
       spurious_interrupt(id);
     }
+
+  ASSERT(scheduler_current(&current) == ERROR_NONE);
+  ASSERT(view_signal("thread", current, VIEW_SIGNAL_RESUME) == ERROR_NONE);
 }
 
 /*
@@ -347,6 +353,9 @@ void			ia32_handler_syscall(t_uint32			nr)
 {
   o_event*		o;
   i_event		id = IA32_IDT_SYSCALL_BASE + nr;
+  i_thread		current;
+
+  ASSERT(view_signal("syscall", nr, VIEW_SIGNAL_SYSCALL) == ERROR_NONE);
 
   if (event_get(id, &o) == ERROR_NONE)
     {
@@ -359,6 +368,9 @@ void			ia32_handler_syscall(t_uint32			nr)
     {
       spurious_interrupt(id);
     }
+
+  ASSERT(scheduler_current(&current) == ERROR_NONE);
+  ASSERT(view_signal("thread", current, VIEW_SIGNAL_RESUME) == ERROR_NONE);
 }
 
 /*

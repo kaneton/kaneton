@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...ton/machine/glue/ibm-pc.ia32/scheduler.c
+ * file          /home/buckman/kan...ton/machine/glue/ibm-pc.ia32/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       julien quintard   [fri jun 22 18:33:55 2007]
+ * updated       matthieu bucchianeri   [wed jul 25 12:43:47 2007]
  */
 
 /*
@@ -60,6 +60,15 @@ d_scheduler			scheduler_dispatch =
  */
 
 /*
+ * timer handler that calls scheduler_switch().
+ */
+
+static void		glue_scheduler_switch_handler(void)
+{
+  ASSERT(scheduler_switch() == ERROR_NONE);
+}
+
+/*
  * this function sets the scheduler quantum value.
  *
  * just update the timer delay.
@@ -100,7 +109,7 @@ t_error			glue_scheduler_initialize(void)
   SCHEDULER_ENTER(scheduler);
 
   if (timer_reserve(EVENT_FUNCTION,
-		    TIMER_HANDLER(scheduler_switch),
+		    TIMER_HANDLER(glue_scheduler_switch_handler),
 		    scheduler->quantum,
 		    TIMER_REPEAT_ENABLE,
 		    &scheduler->machdep.timer) != ERROR_NONE)

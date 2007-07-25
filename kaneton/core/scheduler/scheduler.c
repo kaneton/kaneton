@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/sched/sched.c
+ * license       kaneton
+ *
+ * file          /home/buckman/kaneton/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [wed jun  6 00:53:24 2007]
+ * updated       matthieu bucchianeri   [wed jul 25 22:53:16 2007]
  */
 
 /*
@@ -515,11 +517,9 @@ t_error			scheduler_switch(void)
   if (cpu_stats(cpuid, scheduler->quantum) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-/*  char activity[20];
-  sprintf(activity, "thread%qu", elected);
-  if (view_signal(activity) != ERROR_NONE)
+  if (view_signal("thread", elected, VIEW_SIGNAL_PREEMPT) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
-*/
+
 //  ipi_send_vector(48, ipi_all_but_me, 1);
 
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);

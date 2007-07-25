@@ -602,10 +602,14 @@ t_error			thread_state(i_thread			threadid,
   switch(sched)
     {
       case SCHEDULER_STATE_RUN:
+	if (view_signal("thread", threadid, VIEW_SIGNAL_RUN) != ERROR_NONE)
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	if (scheduler_add(threadid) != ERROR_NONE)
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;
       case SCHEDULER_STATE_STOP:
+	if (view_signal("thread", threadid, VIEW_SIGNAL_STOP) != ERROR_NONE)
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	if (scheduler_remove(threadid) != ERROR_NONE)
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;
@@ -613,6 +617,8 @@ t_error			thread_state(i_thread			threadid,
 	/* XXX */
 	break;
       case SCHEDULER_STATE_BLOCK:
+	if (view_signal("thread", threadid, VIEW_SIGNAL_BLOCK) != ERROR_NONE)
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	if (scheduler_remove(threadid) != ERROR_NONE)
 	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
 	break;

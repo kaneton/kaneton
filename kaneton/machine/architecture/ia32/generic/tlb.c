@@ -33,7 +33,7 @@
  * flushes a single pte cache given a page address.
  */
 
-t_error			ia32_tlb_invalidate(t_paddr			page)
+t_error			ia32_tlb_invalidate(t_vaddr			page)
 {
 
   asm volatile("invlpg (%0)"

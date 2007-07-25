@@ -247,7 +247,7 @@ t_error			ia32_pt_delete_page(t_ia32_table*	tab,
  * ../tlb.c
  */
 
-t_error			ia32_tlb_invalidate(t_paddr			page);
+t_error			ia32_tlb_invalidate(t_vaddr			page);
 
 t_error			ia32_tlb_flush(void);
 

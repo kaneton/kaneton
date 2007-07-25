@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/core.h
  *
  * created       julien quintard   [wed jun  6 12:22:26 2007]
- * updated       matthieu bucchianeri   [sun jul 22 12:09:03 2007]
+ * updated       matthieu bucchianeri   [wed jul 25 20:03:56 2007]
  */
 
 #ifndef CORE_CORE_H
@@ -83,6 +83,7 @@
 #include <core/interface.h>
 
 #include <core/debug.h>
+#include <core/view.h>
 
 /*
  * ---------- prototypes ------------------------------------------------------

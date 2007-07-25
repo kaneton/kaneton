@@ -73,7 +73,7 @@ int			serial_recv(t_uint32			com_port,
 
 int			serial_put(char				c);
 
-void			serial_init(t_uint32			com_port,
+t_error			serial_init(t_uint32			com_port,
 				    t_uint8			baud_rate,
 				    t_uint8			bit_type);
 

@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/core/debug/Makefile
+# file          /home/buckman/kaneton/kaneton/core/debug/Makefile
 #
 # created       julien quintard   [thu jun 28 20:31:38 2007]
-# updated       julien quintard   [fri jun 29 08:35:37 2007]
+# updated       matthieu bucchianeri   [wed jul 25 20:05:34 2007]
 #
 
 #
@@ -34,12 +34,13 @@ include			../../../environment/env.mk
 #
 
 DEBUG_C			:=		debug.c				\
+					view.c				\
 					gdb.c
 
 DEBUG_O			:=		$(DEBUG_C:.c=.o)
 
-DEBUG_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/debug.h
-
+DEBUG_INCLUDE		:=		$(_CORE_INCLUDE_DIR_)/debug.h	\
+					$(_CORE_INCLUDE_DIR_)/view.h
 #
 # ---------- rules ------------------------------------------------------------
 #

@@ -122,26 +122,24 @@ void			kaneton(t_init*				bootloader)
 
   kernel_initialize();
 
+  view_initialize();
+
   /*
    * 6)
    */
 
   cons_msg('+', "kaneton started\n");
 
-  STI(); // XXX moveme
-
   ibmpc_keyboard_init();
 
-  check_message_async_01();
-  /*  check_message_async_02();
-  check_message_async_03();
-  check_message_sync_01();
+  STI(); // XXX moveme
+
   check_message_sync_02();
-  check_message_sync_03();
-  check_message_return_01();
-  check_message_return_02();
-  check_message_return_03();
-  */
+
+  CLI();
+
+  view_download();
+
 #ifdef CONF_ENABLE_CHECK
   cons_msg('+', "running manual tests\n");
   check_tests();
@@ -167,8 +165,6 @@ void			kaneton(t_init*				bootloader)
   if (kaneton_launch() != ERROR_NONE)
     cons_msg('!', "failed to start the initial mod service\n");
   */
-
-  ibmpc_keyboard_init();
 
   cons_msg('#', "kaneton is stopping...\n");
 
