@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/view.c
  *
  * created       matthieu bucchianeri   [wed jun 20 23:51:47 2007]
- * updated       matthieu bucchianeri   [wed jul 25 23:07:37 2007]
+ * updated       matthieu bucchianeri   [wed jul 25 23:41:38 2007]
  */
 
 /*
@@ -71,6 +71,7 @@ t_error			view_reset(void)
     }
 
   view->record.id = ID_UNUSED;
+  view->cycles = 0;
 
   VIEW_LEAVE(view, ERROR_UNKNOWN);
 }
@@ -145,6 +146,7 @@ t_error			view_signal(const char*			name,
   if (view->record.id != ID_UNUSED)
     {
       view->record.time = timestamp - view->record.time;
+      view->cycles += view->record.time;
 
       if (set_append(view->views, &view->record) != ERROR_NONE)
 	VIEW_LEAVE(view, ERROR_UNKNOWN);
@@ -216,6 +218,8 @@ t_error			view_download(void)
   if (serial_init(SERIAL_PRIMARY, SERIAL_BR57600, SERIAL_8N1) != ERROR_NONE)
     VIEW_LEAVE(view, ERROR_UNKNOWN);
 
+  serial_send(SERIAL_PRIMARY, (t_uint8*)&view->cycles, sizeof (t_uint64));
+
   /*
    * 2)
    */
@@ -269,6 +273,7 @@ t_error			view_download(void)
    */
 
   view->record.id = ID_UNUSED;
+  view->cycles = 0;
 
   VIEW_LEAVE(view, ERROR_NONE);
 }

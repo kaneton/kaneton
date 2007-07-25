@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/view.h
  *
  * created       matthieu bucchianeri   [thu jun 21 00:19:44 2007]
- * updated       matthieu bucchianeri   [wed jul 25 22:58:39 2007]
+ * updated       matthieu bucchianeri   [wed jul 25 23:39:59 2007]
  */
 
 #ifndef CORE_VIEW_H
@@ -60,6 +60,7 @@ typedef struct
   o_id				id;
 
   o_view			record;
+  t_uint64			cycles;
 
   char*				flyweight[999];
 
