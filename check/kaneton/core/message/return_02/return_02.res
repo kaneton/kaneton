@@ -1,0 +1,2 @@
+Test check_message_return_02
+check_message_return_02 done.

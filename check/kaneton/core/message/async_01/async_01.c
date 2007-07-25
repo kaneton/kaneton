@@ -28,8 +28,15 @@ static void	thread1(void)
   t_size	recv_sz = 0;
   int		i;
 
-  ASSERT(syscall_message_register(0, 64) == ERROR_NONE,
-	 "cannot register message type\n");
+  printf("--");
+
+  if (syscall_message_register(0, 64) != ERROR_NONE)
+    {
+      printf("cannot register message type\n");
+
+      while (1)
+	;
+    }
 
   executed1 = 1;
 
@@ -53,8 +60,15 @@ static void	thread2(void)
   char		buff[64];
   int		i;
 
-  ASSERT(syscall_message_register(0, 64) == ERROR_NONE,
-	 "cannot register message type\n");
+  printf("++");
+
+  if (syscall_message_register(0, 64) != ERROR_NONE)
+    {
+      printf("cannot register message type\n");
+
+      while (1)
+	;
+    }
 
   executed2 = 1;
 
@@ -91,13 +105,13 @@ void		check_message_async_01(void)
   machine = kernel->machine;
   destt = tsk1;
 
-  ASSERT(check_thread_create(tsk1, THREAD_HPRIOR, (t_vaddr)thread1, &id) == 0,
+  ASSERT(check_thread_create(tsk1, THREAD_PRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
 
   ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk2) == 0,
 	"error creating task\n");
 
-  ASSERT(check_thread_create(tsk2, THREAD_HPRIOR, (t_vaddr)thread2, &id) == 0,
+  ASSERT(check_thread_create(tsk2, THREAD_PRIOR, (t_vaddr)thread2, &id) == 0,
 	 "error creating thread\n");
 
   CLI();

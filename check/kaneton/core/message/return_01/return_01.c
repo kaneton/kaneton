@@ -17,31 +17,28 @@ static volatile int executed1 = 0;
 static volatile int executed2 = 0;
 static volatile int finished = 0;
 static volatile int error = 0;
-
 static i_task destt;
+static i_task source;
 static t_id machine;
 
 static void	thread1(void)
 {
-  char		recv[64];
+  static char	recv[64];
   i_node	from;
   t_size	recv_sz = 0;
-  int		i;
 
   executed1 = 1;
 
-  if (syscall_message_receive(0, (t_vaddr)recv,  &recv_sz,
+  while (syscall_message_poll(0, (t_vaddr)recv,  &recv_sz,
 			      &from) != ERROR_NONE)
+    ;
+
+  if (recv_sz != 64 || from.task != source)
     {
-      printf("cannot receive message\n");
-
-      while (1)
-	;
-    }
-
-  for (i = 0; i < 64; i++)
-    if (recv[i] != (char)('A' + i))
+      printf("recvsz = %u ( != %u ); sender.task = %qd ( != %qd )\n",
+	     recv_sz, 64, from.task, source);
       error = 1;
+    }
 
   finished = 1;
 
@@ -52,7 +49,7 @@ static void	thread1(void)
 static void	thread2(void)
 {
   i_node        dest;
-  char		buff[64];
+  static char	buff[64];
   int		i;
 
   executed2 = 1;
@@ -61,9 +58,9 @@ static void	thread2(void)
   dest.task = destt;
 
   for (i = 0; i < 64; i++)
-    buff[i] = 'A' + i;
+    buff[i] = i;
 
-  syscall_message_transmit(dest, 0, (t_vaddr)buff, 64);
+  syscall_message_send(dest, 0, (t_vaddr)buff, 64);
 
   while (1)
     ;
@@ -73,7 +70,7 @@ static void	thread2(void)
  * XXX
  */
 
-void		check_message_sync_01(void)
+void		check_message_return_01(void)
 {
   i_task	tsk1, tsk2;
   t_id		id;
@@ -84,11 +81,11 @@ void		check_message_sync_01(void)
   ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk1) == 0,
 	"error creating task\n");
 
+  ASSERT(message_register(tsk1, 0, 3000) == ERROR_NONE,
+	 "cannot register message type\n");
+
   machine = kernel->machine;
   destt = tsk1;
-
-  ASSERT(message_register(tsk1, 0, 64) == ERROR_NONE,
-	 "cannot register message type\n");
 
   ASSERT(check_thread_create(tsk1, THREAD_HPRIOR, (t_vaddr)thread1, &id) == 0,
 	 "error creating thread\n");
@@ -96,8 +93,10 @@ void		check_message_sync_01(void)
   ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk2) == 0,
 	"error creating task\n");
 
-  ASSERT(message_register(tsk2, 0, 64) == ERROR_NONE,
+  ASSERT(message_register(tsk2, 0, 3000) == ERROR_NONE,
 	 "cannot register message type\n");
+
+  source = tsk2;
 
   ASSERT(check_thread_create(tsk2, THREAD_PRIOR, (t_vaddr)thread2, &id) == 0,
 	 "error creating thread\n");
@@ -119,7 +118,7 @@ void		check_message_sync_01(void)
 
   ASSERT(finished == 1, "Messages not exchanged\n");
 
-  ASSERT(error == 0, "Error in exchanged data\n");
+  ASSERT(error == 0, "Invalid sender or size\n");
 
   task_state(tsk1, SCHEDULER_STATE_STOP);
   task_state(tsk2, SCHEDULER_STATE_STOP);

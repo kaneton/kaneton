@@ -130,6 +130,18 @@ void			kaneton(t_init*				bootloader)
 
   STI(); // XXX moveme
 
+  ibmpc_keyboard_init();
+
+  check_message_async_01();
+  /*  check_message_async_02();
+  check_message_async_03();
+  check_message_sync_01();
+  check_message_sync_02();
+  check_message_sync_03();
+  check_message_return_01();
+  check_message_return_02();
+  check_message_return_03();
+  */
 #ifdef CONF_ENABLE_CHECK
   cons_msg('+', "running manual tests\n");
   check_tests();
