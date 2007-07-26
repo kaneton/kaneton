@@ -96,7 +96,7 @@ objects.
 	   This function destroys an identifier object.
 	 }
 
-\function{id\_init}{(void)}
+\function{id\_initialize}{(void)}
 	 {
 	   This function just initializes the id manager.
 	 }
@@ -379,7 +379,7 @@ with certain data structures.
 	   This function releases the set \argument{id}.
 	 }
 
-\function{set\_init}{(void)}
+\function{set\_initialize}{(void)}
 	 {
 	   This function initializes the set manager.
 	 }
@@ -479,7 +479,7 @@ For this reason, the stats manager uses a specific data structure.
 	   This function releases a stats object.
 	 }
 
-\function{stats\_init}{(void)}
+\function{stats\_initialize}{(void)}
 	 {
 	   This function initializes the stats manager.
 	 }
@@ -585,7 +585,7 @@ identifiers while the set of regions holds region objects.
 	   corresponding to the address space identifier \argument{id}.
 	 }
 
-\function{as\_init}{(void)}
+\function{as\_initialize}{(void)}
 	 {
 	   This function initializes the address space manager.
 	 }
@@ -753,7 +753,7 @@ so the segment objects can be stored in a set object without effort.
 	   address space \argument{as}.
 	 }
 
-\function{segment\_init}{(void)}
+\function{segment\_initialize}{(void)}
 	 {
 	   This function initializes the segment manager.
 	 }
@@ -834,7 +834,7 @@ As for segments, regions identifiers are set from the region base address.
 	   address space \argument{as}.
 	 }
 
-\function{region\_init}{(void)}
+\function{region\_initialize}{(void)}
 	 {
 	   This function initializes the region manager.
 	 }
@@ -888,7 +888,7 @@ and a region mapping it.
 	   This function releases a previously reserved map.
 	 }
 
-\function{map\_init}{(void)}
+\function{map\_initialize}{(void)}
 	 {
 	   This function initializes the map manager.
 	 }
@@ -936,12 +936,18 @@ send an event message to a specific kaneton task.
 
 \function{event\_reserve}{(i\_event \argument{id},
                            e\_event\_type \argument{type},
-                           u\_event\_handler \argument{handler})}
+                           u\_event\_handler \argument{handler},
+			   t\_vaddr \argument{data})}
 	 {
-	   This function installs an event object.
+	   This function installs an event handler. The \argument{data}
+	   value will be passed as an argument of the handler.
+
+	   The handler \argument{handler} is a function pointer when
+	   \argument{type} is EVENT\_FUNCTION or a task identifier when
+	   \argument{type} is EVENT\_MESSAGE.
 	 }
 
-\function{event\_releases}{(i\_event \argument{id})}
+\function{event\_release}{(i\_event \argument{id})}
 	 {
 	   This function releases an event object.
 	 }
@@ -953,7 +959,7 @@ send an event message to a specific kaneton task.
 	   corresponding to \argument{id}.
 	 }
 
-\function{event\_init}{(void)}
+\function{event\_initialize}{(void)}
 	 {
 	   This function initializes the event manager.
 	 }
@@ -989,7 +995,9 @@ relative time. Each timer object is identified by a unique timer identifier
 	   This function displays information on all the timers.
 	 }
 
-\function{timer\_reserve}{(i\_task \argument{task},
+\function{timer\_reserve}{(t\_type \argument{type},
+			   u\_timer\_handler \argument{handler},
+			   t\_vaddr \argument{data},
                            t\_uint32 \argument{delay},
                            t\_uint32 \argument{repeat},
                            i\_timer* \argument{id})}
@@ -999,6 +1007,13 @@ relative time. Each timer object is identified by a unique timer identifier
 
 	   The \argument{repeat} argument specifies if the timer
 	   must be re-inserted once expired.
+
+	   The \argument{data} value will be passed as an argument
+	   of the handler.
+
+	   The handler \argument{handler} is a function pointer when
+	   \argument{type} is EVENT\_FUNCTION or a task identifier when
+	   \argument{type} is EVENT\_MESSAGE.
 	 }
 
 \function{timer\_release}{(i\_timer \argument{id})}
@@ -1025,7 +1040,7 @@ relative time. Each timer object is identified by a unique timer identifier
 	   corresponding to \argument{id}.
 	 }
 
-\function{timer\_init}{(void)}
+\function{timer\_initialize}{(void)}
 	 {
 	   This function initializes the timer manager.
 	 }
@@ -1184,7 +1199,7 @@ still is in the behaviour priority interval.
 	   to \argument{id}.
 	 }
 
-\function{task\_init}{(void)}
+\function{task\_initialize}{(void)}
 	 {
 	   This function initializes the task manager.
 	 }
@@ -1366,7 +1381,7 @@ macro \textit{THREAD\_PRIOR} representing the default priority.
 	   this array onto the stack.
 	 }
 
-\function{thread\_init}{(void)}
+\function{thread\_initialize}{(void)}
 	 {
 	   This function initializes the thread manager.
 	 }
@@ -1399,51 +1414,51 @@ manager}, supports multiple processors.
 
 \subsubsection{Interface}
 
-\function{sched\_quantum}{(t\_quantum \argument{quantum})}
+\function{scheduler\_quantum}{(t\_quantum \argument{quantum})}
 	 {
 	   This function sets the scheduler quantum to \argument{quantum}.
 	 }
 
-\function{sched\_yield}{(void)}
+\function{scheduler\_yield}{(i\_cpu \argument{cpuid})}
 	 {
 	   This function permits the current task to relinquish
-	   the processor voluntarily.
+	   the processor \argument{cpuid} voluntarily.
 	 }
 
-\function{sched\_add}{(i\_thread \argument{thread})}
+\function{scheduler\_add}{(i\_thread \argument{thread})}
 	 {
 	   This function adds a runnable thread to the scheduler.
 	 }
 
-\function{sched\_remove}{(i\_thread \argument{thread})}
+\function{scheduler\_remove}{(i\_thread \argument{thread})}
 	 {
 	   This function remove a thread from the scheduler.
 	 }
 
-\function{sched\_update}{(i\_thread \argument{thread})}
+\function{scheduler\_update}{(i\_thread \argument{thread})}
 	 {
 	   This function asks the scheduler to update the thread
 	   \argument{thread} in its internal data structures since
 	   for example the thread's priority just changed.
 	 }
 
-\function{sched\_current}{(i\_thread* \argument{thread})}
+\function{scheduler\_current}{(i\_thread* \argument{thread})}
 	 {
 	   This function returns in \argument{thread} the identifier
-	   of the thread currently executed.
+	   of the thread currently executed on the current processor.
 	 }
 
-\function{sched\_switch}{(void)}
+\function{scheduler\_switch}{(void)}
 	 {
 	   This function just schedules a new elected thread.
 	 }
 
-\function{sched\_init}{(void)}
+\function{scheduler\_initialize}{(void)}
 	 {
 	   This function initializes the scheduler.
 	 }
 
-\function{sched\_clean}{(void)}
+\function{scheduler\_clean}{(void)}
 	 {
 	   This function cleans the scheduler.
 	 }
@@ -1525,7 +1540,7 @@ microprocessor.
 	   \argument{id}.
 	 }
 
-\function{cpu\_init}{(void)}
+\function{cpu\_initialize}{(void)}
 	 {
 	   This function initializes the cpu manager.
 	 }
@@ -1554,7 +1569,7 @@ The message manager provides blocking and non-blocking functions,
 synchronous and asynchronous messages etc.
 
 A synchronous function is a function which does not permit the calling
-task to execute instructions until the message is fully copied to the 
+task to execute instructions until the message is fully copied to the
 destination buffer.
 
 In a performance perpective, in Kaneton, kernel bufferization is avoided
@@ -1576,208 +1591,144 @@ the kernel are directly redirected to the interface manager.
 Each messages has a type which is associated with a message size. For each
 tasks, used types must be registered.
 
+\notice{The system calls corresponding to these functions do not take
+the first argument, which is in all cases an \argument{i\_task}}
+
 %
 % interface
 %
 
 \subsubsection{Interface}
 
-\begin{itemize}
-\function{message\_send}{(i\_task \argument{caller},
-			  i\_node \argument{destination},
-			  t\_type \argument{type},
-			  t\_vaddr \argument{message})}
-	 {
-	   This function performs an Asynchronous send.
-	   This function is Blocking.
-
-	   \item \argument{caller}
-
-	     Identifier of the sending task.
-
-	   \item \argument{destination}
-
-	     Destination task of the message in the distributed system.
-
-	   \item \argument{type}
-
-	     Registerd type of the the message to send.
-
-	   \item \argument{message}
-
-	     Virtual adress of the message to send in the
-	     \argument{caller}'s adress space
-	 }
-
-\function{message\_transmit}{(i\_task \argument{caller},
-			     i\_node \argument{destination},
-			     t\_type \argument{type},
-			     t\_vaddr \argument{message})}
-	 {
-	   This function performs a Synchronous send.
-	   This function is Blocking.
-
-	   \item \argument{caller}
-
-	     Identifier of the sending task.
-
-	   \item \argument{destination}
-
-	     Destination task of the message in the distributed system.
-
-	   \item \argument{type}
-
-	     Registerd type of the the message to send.
-
-	   \item \argument{message}
-
-	     Virtual adress of the message to send in the
-	     \argument{caller}'s adress space
-	 }
-
-\function{message\_throw}{(i\_task \argument{caller},
-			   i\_node \argument{destination},
-			   t\_type \argument{type},
-			   t\_vaddr \argument{message},
-			   t\_message\_request* \argument{request})}
-	 {
-	   This function performs an Asynchronous send.
-	   This function is Non-Blocking.
-
-	   On a mono-CPU system, and on implementations which does not
-	   support SMP, this function has no meaning. In these cases or for
-	   other reasons, \textit{message\_throw}() can be an alias for
-	   \textit{message\_send}.
-
-	   \item \argument{caller}
-
-	     Identifier of the sending task.
-
-	   \item \argument{destination}
-
-	     Destination task of the message in the distributed system.
-
-	   \item \argument{type}
-
-	     Registerd type of the the message to send.
-
-	   \item \argument{message}
-
-	     Virtual adress of the message to send in the
-	     \argument{caller}'s adress space
-
-	   \item \argument{request}
-
-	     Handle to the message transmission.
-	 }
-
-\function{message\_receive}{(i\_task \argument{caller},
-			     t\_type \argument{type},
-			     t\_vaddr \argument{message},
-			     i\_node* \argument{sender})}
-	 {
-	   This function performs a receive. This function is Blocking and
-	   returns only when a message is copied into the receiving buffer.
-
-	   \item \argument{caller}
-
-	     Identifier of the receiving task.
-
-	   \item \argument{type}
-
-	     Registered type of the the message to receive.
-
-	   \item \argument{message}
-
-	     Virtual adress of the receiving buffer in the
-	     \argument{caller}'s adress space
-
-	   \item \argument{sender}
-
-	     The sender of the message newly received
-	 }
-
-\function{message\_poll}{(i\_task \argument{caller},
-			  t\_type \argument{type},
-			  t\_vaddr \argument{message},
-			  i\_node* \argument{sender})}
-	 {
-	   This function performs a receive. This function is Blocking and
-	   returns an error if no message is pending for the calling task.
-
-	   \item \argument{caller}
-
-	     Identifier of the receiving task.
-
-	   \item \argument{type}
-
-	     Registerd type of the the message to receive.
-
-	   \item \argument{message}
-
-	     Virtual adress of the receiving buffer in the
-	     \argument{caller}'s adress space
-
-	   \item \argument{sender}
-
-	     The sender of the message newly received
-	 }
-
-\function{message\_grab}{(i\_task \argument{caller},
-			  t\_type \argument{type},
-			  t\_vaddr \argument{message},
-			  i\_node* \argument{sender},
-			  t\_message\_request* \argument{request})}
-	 {
-	   This function performs a receive. This function is Non-Blocking.
-	     
-	   \item \argument{caller}
-	     
-	     Identifier of the receiving task.
-
-	   \item \argument{type}
-	     
-	     Registerd type of the the message to receive.
-
-	   \item \argument{message}
-	     
-	     Virtual adress of the receiving buffer in the
-	     \argument{caller}'s adress space
-	  
-	   \item \argument{sender}
-	     
-	     The sender of the message newly received, written only when
-	     \textit{message\_state}() or \textit{message\_wait}() is
-	     called.
-
-	   \item \argument{request}
-	     
-	     Handle to the message transmission.
-	 }
-
 \function{message\_register}{(i\_task \argument{task},
 			      t\_type \argument{type},
 			      t\_vsize \argument{size})}
 	 {
-	   Register for \argument{task} the type of message
-	   \argument{type} which is \argument{size} bytes long.
+	   This function registers for the task \argument{task} the type
+	   of message \argument{type} for which the maximum size is
+	   \argument{size} bytes long.
 	 }
 
-\function{message\_wait}{(t\_message\_request \argument{request})}
+\function{message\_send}{(i\_task \argument{task},
+			  i\_node \argument{destination},
+			  t\_type \argument{type},
+			  t\_vaddr \argument{data},
+			  t\_vsize \argument{size})}
 	 {
-	   Blocks the calling task until the message request described by
-	   \argument{request} is fully completed.
+	   This blocking function performs an asynchronous send of the
+	   message of registered type \argument{type} located at
+	   \argument{data} of size \argument{size} to the node
+	   \argument{destination} in the distributed system.
 	 }
 
-
-\function{message\_state}{(t\_message\_request \argument{request})}
+\function{message\_transmit}{(i\_task \argument{task},
+			      i\_node \argument{destination},
+			      t\_type \argument{type},
+			      t\_vaddr \argument{data},
+			      t\_vsize \argument{size})}
 	 {
-	   Returns an error if the message request described by
-	   \argument{request} is not fully completed.
+	   This blocking function performs a synchronous send of the
+	   message of registered type \argument{type} located at
+	   \argument{data} of size \argument{size} to the node
+	   \argument{destination} in the distributed system.
 	 }
 
-\end{itemize}
+\function{message\_throw}{(i\_task \argument{task},
+			   i\_node \argument{destination},
+			   t\_type \argument{type},
+			   t\_vaddr \argument{data},
+			   t\_vsize \argument{size},
+			   t\_message\_request* \argument{request})}
+	 {
+	   This blocking function performs an asynchronous send of the
+	   message of registered type \argument{type} located at
+	   \argument{data} of size \argument{size} to the node
+	   \argument{destination} in the distributed system.
 
+	   The \argument{request} argument will be needed after the call
+	   to control the completeness of the operation.
+
+	   \notice{On uniprocessor systems, this function is simply an
+	     alias to \argument{message\_send()}}
+	 }
+
+\function{message\_receive}{(i\_task \argument{task},
+			     t\_type \argument{type},
+			     t\_vaddr \argument{data},
+			     i\_node* \argument{sender})}
+	 {
+	   This blocking function waits (stop calling thread execution)
+	   until a message of register type \argument{type} is received.
+	   The message content is copied at address \argument{data} and
+	   the sender is returned in \argument{sender}.
+	 }
+
+\function{message\_poll}{(i\_task \argument{task},
+			  t\_type \argument{type},
+			  t\_vaddr \argument{data},
+			  i\_node* \argument{sender})}
+	 {
+	   This blocking function look for a message of register type
+	   \argument{type} being received, and otherwise returns an error.
+	   The message content is copied at address \argument{data} and
+	   the sender is returned in \argument{sender}.
+	 }
+
+\function{message\_grab}{(i\_task \argument{task},
+			  t\_type \argument{type},
+			  t\_vaddr \argument{data},
+			  i\_node* \argument{sender},
+			  t\_message\_request* \argument{request})}
+	 {
+	   This non-blocking function receives a message of register
+	   type \argument{type}.
+	   The message content is copied at address \argument{data} and
+	   the sender is returned in \argument{sender}.
+
+	   The argument \argument{request} is later used to check the
+	   status of the operation.
+
+	   \notice{On uniprocessor systems, this function is simply an
+	     alias to \argument{message\_receive()}}
+	 }
+
+\function{message\_wait}{(i\_task \argument{task},
+			  t\_message\_request \argument{request})}
+	 {
+	   This function blocks the calling task until the message request
+	   described by \argument{request} is fully completed.
+	 }
+
+
+\function{message\_state}{(i\_task \argument{task},
+			   t\_message\_request \argument{request})}
+	 {
+	   This function returns whether the message request described
+	   by \argument{request} is fully completed or not.
+	 }
+
+\function{message\_return}{(i\_thread \argument{thread},
+			    t\_error \argument{code})}
+	 {
+	   This function sets the return value \argument{code} for a
+	   blocked thread during a \argument{message\_transmit()} operation.
+
+	   \notice{This function is used internally by the manager and
+	     thus is not exported as a system call.}
+	 }
+
+\function{message\_return\_info}{(i\_thread \argument{thread},
+				  t\_error \argument{code},
+				  t\_vsize \argument{size},
+				  i\_node \argument{sender})}
+	 {
+	   This function sets the return values \argument{code},
+	   \argument{size} and \argument{sender} for a blocked thread
+	   during a \argument{message\_receive()} operation.
+
+	   \notice{This function is used internally by the manager and
+	     thus is not exported as a system call.}
+	 }
 
 \begin{comment}
 
@@ -1893,7 +1844,7 @@ architecture dependent part.
 	   \argument{task}.
          }
 
-\function{io\_init}{(void)}
+\function{io\_initialize}{(void)}
 	 {
 	   This function initializes the io manager.
 	 }
