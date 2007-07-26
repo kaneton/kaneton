@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/view.c
  *
  * created       matthieu bucchianeri   [wed jun 20 23:51:47 2007]
- * updated       matthieu bucchianeri   [wed jul 25 23:41:38 2007]
+ * updated       matthieu bucchianeri   [thu jul 26 22:11:50 2007]
  */
 
 /*
@@ -219,6 +219,13 @@ t_error			view_download(void)
     VIEW_LEAVE(view, ERROR_UNKNOWN);
 
   serial_send(SERIAL_PRIMARY, (t_uint8*)&view->cycles, sizeof (t_uint64));
+
+  for (n = 0; n < 999 && view->flyweight[n] != NULL; n++)
+    ;
+
+  n *= 1000;
+  serial_send(SERIAL_PRIMARY, (t_uint8*)&n, sizeof (t_uint64));
+  n = 0;
 
   /*
    * 2)

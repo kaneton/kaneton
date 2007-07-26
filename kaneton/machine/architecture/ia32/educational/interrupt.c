@@ -271,6 +271,9 @@ void			ia32_handler_exception(t_uint32			nr,
 {
   o_event*		o;
   i_event		id = nr;
+  i_thread		current;
+
+  ASSERT(view_signal("exception", nr, VIEW_SIGNAL_IRQ) == ERROR_NONE);
 
   if (event_get(id, &o) == ERROR_NONE)
     {
@@ -283,6 +286,9 @@ void			ia32_handler_exception(t_uint32			nr,
     {
       spurious_interrupt(id);
     }
+
+  ASSERT(scheduler_current(&current) == ERROR_NONE);
+  ASSERT(view_signal("thread", current, VIEW_SIGNAL_RESUME) == ERROR_NONE);
 }
 
 /*
@@ -328,6 +334,9 @@ void			ia32_handler_ipi(t_uint32			nr)
 {
   o_event*		o;
   i_event		id = IA32_IDT_IPI_BASE + nr;
+  i_thread		current;
+
+  ASSERT(view_signal("ipi", nr, VIEW_SIGNAL_SYSCALL) == ERROR_NONE);
 
   ia32_ipi_acknowledge();
 
@@ -342,6 +351,9 @@ void			ia32_handler_ipi(t_uint32			nr)
     {
       spurious_interrupt(id);
     }
+
+  ASSERT(scheduler_current(&current) == ERROR_NONE);
+  ASSERT(view_signal("thread", current, VIEW_SIGNAL_RESUME) == ERROR_NONE);
 }
 
 /*

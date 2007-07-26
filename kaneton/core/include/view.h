@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/view.h
+ * file          /home/buckman/kaneton/kaneton/include/core/view.h
  *
  * created       matthieu bucchianeri   [thu jun 21 00:19:44 2007]
- * updated       matthieu bucchianeri   [wed jul 25 23:39:59 2007]
+ * updated       matthieu bucchianeri   [thu jul 26 22:30:53 2007]
  */
 
 #ifndef CORE_VIEW_H
@@ -33,6 +33,7 @@
 #define VIEW_SIGNAL_IRQ		5
 #define VIEW_SIGNAL_SYSCALL	6
 #define VIEW_SIGNAL_PREEMPT	7
+#define VIEW_SIGNAL_SCHEDULING	8
 
 /*
  * ---------- types -----------------------------------------------------------

@@ -1,3 +1,5 @@
+import time
+import datetime
 from kserial import *
 from struct  import *
 from re      import *
@@ -6,8 +8,9 @@ import os, array, sys
 
 funcs = [""];
 scale = 500;
-colors = ["aqua","crimson","gold","pink","lime","maroon","navy","orange"];
+colors = ["aqua","crimson","gold","pink","lime","maroon","navy","orange","beige","darkred"];
 left = 100;
+top = 20;
 
 def	get_func(name):
 	i = 0;
@@ -19,15 +22,15 @@ def	get_func(name):
 	return i;
 
 def	activity(draw,id,frm,to):
-	x1 = 100 + frm / scale;
-	x2 = 100 + to / scale;
-	y = id * 15;
+	x1 = left + frm / scale;
+	x2 = left + to / scale;
+	y = top + id * 15;
 
-	draw.line([(x1, y), (x2, y)], fill=colors[id]);
+	draw.line([(x1, y), (x2, y)], fill=colors[id % len(colors)]);
 
 def	state(draw,id,at,state):
-	x = 100 + at / scale;
-	y = id * 15;
+	x = left + at / scale;
+	y = top + id * 15;
 	if state == -1:
 		col = "green";
 	if state == -2:
@@ -44,8 +47,9 @@ def     main():
 	serial_init(sys.argv[1]);
 	serial_timeout(300000);
 	cycle = serial_recv_cycle();
+	nb = serial_recv_cycle();
 
-	img = Image.new("RGB", (cycle / scale + left, 200));
+	img = Image.new("RGB", (cycle / scale + left, top + (nb + 2) * 15 + 2));
 	draw = ImageDraw.Draw(img);
 	draw.rectangle([(0, 0), (img.size[0], img.size[1])], fill="black");
 
@@ -73,11 +77,21 @@ def     main():
 	i = 0;
 	while i < len(funcs):
 		x = draw.textsize(funcs[i], )[0];
-		draw.text([(left - x - 10, (i * 15) - 5)], funcs[i], fill="white");
+		draw.text([(left - x - 10, top + (i * 15) - 5)], funcs[i], fill="white");
+		draw.line([(left - 2, top + i * 15), (left + 2, top + i * 15)], fill="white");
 		i += 1;
-	draw.line([(left, 0), (left, i * 15)], fill="white");
-	draw.line([(left, i * 15), (img.size[0], i * 15)], fill="white");
+	draw.line([(left, top), (left, top + i * 15)], fill="white");
+	draw.line([(left, top + i * 15), (img.size[0], top + i * 15)], fill="white");
+	y = top + i * 15;
+	i = left;
+	while (i < img.size[0]):
+		draw.line([(i, y - 2), (i, y + 2)], fill="white");
+		val = (i - left) * 1000;
+		x = draw.textsize(str(val), )[0];
+		draw.text((i - x / 2, y + 2), str(val), fill="white");
+		i += 100;
 
+	draw.text((left, 0), "kaneton `view' graphic. made " + datetime.datetime.now().strftime("%A %B %d %I:%M:%S %p %Y"), fill="white");
 	img.save("view.png");
 
 main()

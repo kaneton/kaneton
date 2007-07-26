@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [wed jul 25 22:53:16 2007]
+ * updated       matthieu bucchianeri   [thu jul 26 22:30:34 2007]
  */
 
 /*
@@ -374,6 +374,9 @@ t_error			scheduler_switch(void)
   SCHEDULER_ENTER(scheduler);
 
   if (cpu_current(&cpuid) != ERROR_NONE)
+    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+
+  if (view_signal("scheduler", cpuid, VIEW_SIGNAL_SCHEDULING) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
