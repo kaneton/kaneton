@@ -193,7 +193,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
 		  if ((pt_seg = malloc(sizeof(o_segment))) == NULL)
 		    return (ERROR_UNKNOWN);
 
-		  pt_seg->type = SEGMENT_TYPE_MEMORY;
+		  pt_seg->type = SEGMENT_TYPE_SYSTEM;
 		  pt_seg->address = (t_paddr)pt.entries;
 		  pt_seg->size = PAGESZ;
 		  pt_seg->perms = PERM_READ | PERM_WRITE;
@@ -219,6 +219,29 @@ t_error			ia32_kernel_as_init(i_as	asid)
 		      o->machdep.pd,
 		      IA32_PD_CACHED,
 		      IA32_PD_WRITEBACK) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function finalize the kernel as creation by marking the system
+ * segments.
+ */
+
+t_error			ia32_kernel_as_finalize(void)
+{
+  if (segment_type((i_segment)init->segments[0].address,
+		   SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+  if (segment_type((i_segment)init->segments[1].address,
+		   SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+  if (segment_type((i_segment)init->segments[11].address,
+		   SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+  if (segment_type((i_segment)init->segments[12].address,
+		   SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);
@@ -258,6 +281,9 @@ t_error			ia32_task_as_init(i_as		asid)
 
   if (segment_reserve(asid, PAGESZ, PERM_READ | PERM_WRITE,
 		      &seg) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   /*
@@ -765,6 +791,9 @@ t_error			ia32_map_chunk(t_vaddr		v,
 			  &seg) != ERROR_NONE)
 	return (ERROR_UNKNOWN);
 
+      if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
+	return (ERROR_UNKNOWN);
+
       pt.rw = IA32_PT_WRITABLE;
       pt.present = 1;
       pt.user = IA32_PT_PRIVILEGED;
@@ -999,6 +1028,9 @@ t_error			ia32_map_region(i_as		asid,
 
 	  if (segment_reserve(asid, PAGESZ, PERM_READ | PERM_WRITE,
 			      &ptseg) != ERROR_NONE)
+	    return (ERROR_UNKNOWN);
+
+	  if (segment_type(ptseg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
 	    return (ERROR_UNKNOWN);
 
 	  pt.entries = ptseg;

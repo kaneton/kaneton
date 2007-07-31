@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...neton/machine/platform/ibm-pc/keyboard.c
  *
  * created       matthieu bucchianeri   [sun jun 17 19:04:00 2007]
- * updated       matthieu bucchianeri   [wed jul 25 20:06:53 2007]
+ * updated       matthieu bucchianeri   [tue jul 31 14:37:15 2007]
  */
 
 /*
@@ -64,5 +64,5 @@ static void		ibmpc_kbd_handler(t_id			id)
 
 t_error			ibmpc_keyboard_init(void)
 {
-  return (event_reserve(33, EVENT_FUNCTION, EVENT_HANDLER(ibmpc_kbd_handler)));
+  return (event_reserve(33, EVENT_FUNCTION, EVENT_HANDLER(ibmpc_kbd_handler), 0));
 }

@@ -265,7 +265,7 @@
  */
 
 typedef void			(*t_ia32_interrupt_prehandler)(void);
-typedef void			(*t_ia32_interrupt_handler)(t_id, t_uint32);
+typedef void			(*t_ia32_interrupt_handler)();
 
 typedef enum
   {

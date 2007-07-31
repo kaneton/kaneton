@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/event.h
+ * file          /home/buckman/kaneton/kaneton/core/include/event.h
  *
  * created       julien quintard   [wed jun  6 13:13:41 2007]
- * updated       julien quintard   [fri jun 22 18:39:19 2007]
+ * updated       matthieu bucchianeri   [tue jul 31 14:27:35 2007]
  */
 
 #ifndef CORE_EVENT_H
@@ -50,7 +50,7 @@
  * generic event handler type.
  */
 
-typedef void			(*t_event_handler)(t_id);
+typedef void			(*t_event_handler)(i_event, t_vaddr);
 
 /*
  * event handler type
@@ -73,9 +73,21 @@ typedef struct
   t_type			type;
 
   u_event_handler		handler;
+  t_vaddr			data;
 
   machine_data(o_event);
 }				o_event;
+
+/*
+ * message object for event
+ */
+
+typedef struct
+{
+  i_event			id;
+
+  t_vaddr			data;
+}				o_event_message;
 
 /*
  * event manager
@@ -100,7 +112,8 @@ typedef struct
   t_error			(*event_notify)(i_event);
   t_error			(*event_reserve)(i_event,
 						 t_uint32,
-						 u_event_handler);
+						 u_event_handler,
+						 t_vaddr);
   t_error			(*event_release)(i_event);
   t_error			(*event_initialize)(void);
   t_error			(*event_clean)(void);
@@ -156,7 +169,8 @@ t_error			event_notify(i_event			id);
 
 t_error			event_reserve(i_event			id,
 				      t_type			type,
-				      u_event_handler		handler);
+				      u_event_handler		handler,
+				      t_vaddr			data);
 
 t_error			event_release(i_event			id);
 

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/segment.h
+ * file          /home/buckman/kaneton/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       julien quintard   [fri jun 22 18:40:28 2007]
+ * updated       matthieu bucchianeri   [mon jul 30 17:32:42 2007]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -40,6 +40,7 @@
 
 #define SEGMENT_TYPE_MEMORY	(1 << 0)
 #define SEGMENT_TYPE_CATCH	(1 << 1)
+#define SEGMENT_TYPE_SYSTEM	(1 << 2)
 
 /*
  * ---------- algorithms ------------------------------------------------------

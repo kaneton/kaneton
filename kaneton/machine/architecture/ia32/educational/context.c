@@ -478,6 +478,8 @@ t_error			ia32_status_context(i_thread		threadid,
 t_error			ia32_init_switcher(void)
 {
   o_as*			as;
+  i_segment		seg;
+  i_region		reg;
   t_vaddr		int_stack;
 
   /*
@@ -491,12 +493,18 @@ t_error			ia32_init_switcher(void)
    * 2)
    */
 
-  if (map_reserve(kasid,
-		  MAP_OPT_PRIVILEGED,
-		  3 * PAGESZ,
-		  PERM_READ | PERM_WRITE,
-		  (t_vaddr*)&thread->machdep.tss) != ERROR_NONE)
+  if (segment_reserve(kasid, 3 * PAGESZ, PERM_READ | PERM_WRITE,
+		      &seg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+
+  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (region_reserve(kasid, seg, 0, REGION_OPT_GLOBAL | REGION_OPT_PRIVILEGED,
+		     0, 3 * PAGESZ, &reg) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  thread->machdep.tss = (t_vaddr)reg;
 
   memset(thread->machdep.tss, 0x0, sizeof(t_ia32_tss));
 
@@ -504,12 +512,18 @@ t_error			ia32_init_switcher(void)
    * 3)
    */
 
-  if (map_reserve(kasid,
-		  MAP_OPT_PRIVILEGED,
-		  2 * PAGESZ,
-		  PERM_READ | PERM_WRITE,
-		  &int_stack) != ERROR_NONE)
+  if (segment_reserve(kasid, 2 * PAGESZ, PERM_READ | PERM_WRITE,
+		      &seg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+
+  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (region_reserve(kasid, seg, 0, REGION_OPT_GLOBAL | REGION_OPT_PRIVILEGED,
+		     0, 2 * PAGESZ, &reg) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  int_stack = (t_vaddr)reg;
 
   /*
    * 4)

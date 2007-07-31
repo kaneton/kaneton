@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/machine/glue/ibm-pc.ia32/task.c
+ * file          /home/buckman/kan.../kaneton/machine/glue/ibm-pc.ia32/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       julien quintard   [fri jun 22 18:34:32 2007]
+ * updated       matthieu bucchianeri   [mon jul 30 18:02:40 2007]
  */
 
 /*
@@ -104,6 +104,9 @@ t_error			glue_task_initialize(void)
   TASK_ENTER(task);
 
   if (ia32_extended_context_init() != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  if (ia32_kernel_as_finalize() != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
 
   TASK_LEAVE(task, ERROR_NONE);

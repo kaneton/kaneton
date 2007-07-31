@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/timer.h
+ * file          /home/buckman/kaneton/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       julien quintard   [fri jun 22 18:40:56 2007]
+ * updated       matthieu bucchianeri   [tue jul 31 14:26:19 2007]
  */
 
 #ifndef CORE_TIMER_H
@@ -29,6 +29,13 @@
  */
 
 /*
+ * timer handling way
+ */
+
+#define TIMER_FUNCTION		0
+#define TIMER_MESSAGE		1
+
+/*
  * timer repeat mode.
  */
 
@@ -39,7 +46,7 @@
  * number of millisecond between each tick.
  */
 
-#define TIMER_MS_PER_TICK	5
+#define TIMER_MS_PER_TICK	25
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -56,7 +63,7 @@
  * generic timer handler type
  */
 
-typedef t_error			(*t_timer_handler)(void);
+typedef t_error			(*t_timer_handler)(i_timer, t_vaddr);
 
 /*
  * timer handler type
@@ -83,9 +90,21 @@ typedef struct
   t_type			type;
 
   u_timer_handler		handler;
+  t_vaddr			data;
 
   machine_data(o_timer);
 }				o_timer;
+
+/*
+ * message object for event
+ */
+
+typedef struct
+{
+  i_timer			id;
+
+  t_vaddr			data;
+}				o_timer_message;
 
 /*
  * timer manager
@@ -119,6 +138,7 @@ typedef struct
   t_error			(*timer_notify)(i_timer);
   t_error			(*timer_reserve)(t_type,
 						 u_timer_handler,
+						 t_vaddr,
 						 t_uint32,
 						 t_uint32,
 						 i_timer*);
@@ -179,6 +199,7 @@ t_error			timer_insert(o_timer*			o);
 
 t_error			timer_reserve(t_type			type,
 				      u_timer_handler		handler,
+				      t_vaddr			data,
 				      t_uint32			delay,
 				      t_uint32			repeat,
 				      i_timer*			id);

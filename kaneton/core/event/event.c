@@ -35,6 +35,22 @@ machine_include(event);
 m_event*                 event = NULL;
 
 /*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+/*
+ * the kernel manager.
+ */
+
+extern m_kernel*	kernel;
+
+/*
+ * the kernel task identifier.
+ */
+
+extern i_task		ktask;
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -127,11 +143,14 @@ t_error			event_dump(void)
  *
  * 1) get the event object from the set.
  * 2) notify the task its event has occured.
+ * 3) call machdep.
  */
 
 t_error			event_notify(i_event			id)
 {
   o_event*              o;
+  o_event_message	msg;
+  i_node		node;
 
   EVENT_ENTER(event);
 
@@ -146,7 +165,21 @@ t_error			event_notify(i_event			id)
    * 2)
    */
 
-  /* XXX EVENT message the task ! */
+  msg.id = id;
+  msg.data = o->data;
+  node.machine = kernel->machine;
+  node.task = o->handler.taskid;
+
+  if (message_send(ktask, node, MESSAGE_TYPE_EVENT, (t_vaddr)&msg,
+		   sizeof (o_event_message)) != ERROR_NONE)
+    EVENT_LEAVE(event, ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (machine_call(event, event_notify, id) != ERROR_NONE)
+    TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   EVENT_LEAVE(event, ERROR_NONE);
 }
@@ -157,14 +190,15 @@ t_error			event_notify(i_event			id)
  * steps:
  *
  * 1) check that the event has not been already reserved.
- * 2) call the machine dependent code.
- * 3) create a new event object and give it its arch dependent eventid.
- * 4) add the new event to the event manager.
+ * 2) create a new event object and give it its arch dependent eventid.
+ * 3) add the new event to the event manager.
+ * 4) call the machine dependent code.
  */
 
 t_error			event_reserve(i_event			id,
 				      t_type			type,
-				      u_event_handler		handler)
+				      u_event_handler		handler,
+				      t_vaddr			data)
 {
   o_event*		tmp;
   o_event		o;
@@ -184,13 +218,6 @@ t_error			event_reserve(i_event			id,
    * 2)
    */
 
-  if (machine_call(event, event_reserve, id, type, handler) != ERROR_NONE)
-    EVENT_LEAVE(event, ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
   memset(&o, 0x0, sizeof(o_event));
 
   o.eventid = id;
@@ -198,12 +225,21 @@ t_error			event_reserve(i_event			id,
   o.type = type;
 
   o.handler = handler;
+  o.data = data;
+
+  /*
+   * 3)
+   */
+
+  if (set_add(event->events, &o) != ERROR_NONE)
+    EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   /*
    * 4)
    */
 
-  if (set_add(event->events, &o) != ERROR_NONE)
+  if (machine_call(event, event_reserve, id, type, handler,
+		   data) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   EVENT_LEAVE(event, ERROR_NONE);

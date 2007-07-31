@@ -55,7 +55,8 @@
 
 t_error			glue_event_reserve(i_event		id,
 					   t_type		type,
-					   u_event_handler	handler);
+					   u_event_handler	handler,
+					   t_vaddr		data);
 
 t_error			glue_event_release(i_event		id);
 

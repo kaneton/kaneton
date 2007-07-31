@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/message/message.c
  *
  * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
- * updated       matthieu bucchianeri   [tue jul 24 22:57:17 2007]
+ * updated       matthieu bucchianeri   [mon jul 30 19:31:11 2007]
  */
 
 /*
@@ -108,6 +108,7 @@ static t_error		message_box(i_task			task,
  * 2) check if this type is already registered.
  * 3) build the message type structure.
  * 4) add it to the task messages set.
+ * 5) call the machine dependent code.
  */
 
 t_error			message_register(i_task			task,
@@ -167,6 +168,101 @@ t_error			message_register(i_task			task,
       MESSAGE_LEAVE(message, ERROR_UNKNOWN);
     }
 
+  /*
+   * 5)
+   */
+
+  if (machine_call(message, message_register, task, type, size) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
+}
+
+/*
+ * this function free all the message types for one task.
+ *
+ * steps:
+ *
+ * 1) loop though the message types.
+ * 2) unblock waiters.
+ * 3) free outgoing messages.
+ * 4) release the sets.
+ * 5) call machdep.
+ */
+
+t_error			message_flush(i_task			task)
+{
+  o_task*		o;
+  o_message_type*	otype;
+  o_message*		omsg;
+  t_iterator		it;
+
+  MESSAGE_ENTER(message);
+
+  if (task_get(task, &o) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  /*
+   * 1)
+   */
+
+  while (set_head(o->messages, &it) != ERROR_NONE)
+    {
+      if (set_object(o->messages, it, (void**)&otype) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      /*
+       * 2)
+       */
+
+      while (set_pick(otype->waiters, (void**)&omsg) != ERROR_NONE)
+	{
+	  if (message_return(omsg->blocked, ERROR_UNKNOWN) != ERROR_NONE)
+	    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+	  if (set_pop(otype->waiters) != ERROR_NONE)
+	    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	}
+
+      /*
+       * 3)
+       */
+
+      while (set_pick(otype->queue, (void**)&omsg) != ERROR_NONE)
+	{
+	  if (set_pop(otype->waiters) != ERROR_NONE)
+	    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+	  if (omsg->asid == ID_UNUSED)
+	    {
+	      if (message_return(omsg->blocked, ERROR_UNKNOWN) != ERROR_NONE)
+		MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+	    }
+	  else
+	    {
+	      if (omsg->size != 0)
+		free(omsg->data);
+	    }
+	}
+
+      /*
+       * 4)
+       */
+
+      if (set_release(otype->waiters) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+      if (set_release(otype->queue) != ERROR_NONE)
+	MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 5)
+   */
+
+  if (machine_call(message, message_flush, task) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
   MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
@@ -177,15 +273,16 @@ t_error			message_register(i_task			task,
  *
  * steps:
  *
- * 1) get the destination message box.
- * 2) check the size.
- * 3) system call special case.
- * 4) if a thread is waiting for a message, then send it synchronously.
- * 5) build the message.
+ * 1) check message destination.
+ * 2) get the destination message box.
+ * 3) check the size.
+ * 4) system call special case.
+ * 5) if a thread is waiting for a message, then send it synchronously.
+ * 6) build the message.
  *  a) fill the buffer, intra-kernel case.
  *  b) fill the buffer, inter-as case.
- * 6) push the message into the message box.
- * 7) call the machine dependent code.
+ * 7) push the message into the message box.
+ * 8) call the machine dependent code.
  */
 
 t_error			message_send(i_task			task,
@@ -206,18 +303,28 @@ t_error			message_send(i_task			task,
    * 1)
    */
 
+  if (destination.machine != kernel->machine)
+    {
+      /* XXX distr */
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 2)
+   */
+
   if (message_box(destination.task, typeid, &o) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   /*
-   * 2)
+   * 3)
    */
 
   if (size > o->size)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   /*
-   * 3)
+   * 4)
    */
 
   if (destination.task == ktask && type == 0)
@@ -253,7 +360,7 @@ t_error			message_send(i_task			task,
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if (set_size(o->waiters, &setsz) != ERROR_NONE)
@@ -269,7 +376,7 @@ t_error			message_send(i_task			task,
     }
 
   /*
-   * 5)
+   * 6)
    */
 
   if (size)
@@ -318,7 +425,7 @@ t_error			message_send(i_task			task,
   msg.sender.task = task;
 
   /*
-   * 6)
+   * 7)
    */
 
   msg.message = o->id++;
@@ -332,7 +439,7 @@ t_error			message_send(i_task			task,
     }
 
   /*
-   * 7)
+   * 8)
    */
 
   if (machine_call(message, message_send, task, destination, type,
@@ -351,12 +458,13 @@ t_error			message_send(i_task			task,
  *
  * steps:
  *
- * 1) get message box and task object.
- * 2) check size.
- * 3) do the transmission.
+ * 1) check for message destination.
+ * 2) get message box and task object.
+ * 3) check size.
+ * 4) do the transmission.
  *  a) immediately if a message is being waited.
  *  b) later if no rendezvous has been established.
- * 4) call machine dependent code.
+ * 5) call machine dependent code.
  */
 
 t_error			message_transmit(i_task			task,
@@ -379,6 +487,16 @@ t_error			message_transmit(i_task			task,
    * 1)
    */
 
+  if (destination.machine != kernel->machine)
+    {
+      /* XXX distr */
+      MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+    }
+
+  /*
+   * 2)
+   */
+
   if (message_box(destination.task, typeid, &o) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
@@ -386,14 +504,14 @@ t_error			message_transmit(i_task			task,
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   /*
-   * 2)
+   * 3)
    */
 
   if (size > o->size)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
   /*
-   * 3)
+   * 4)
    */
 
   if (set_size(o->waiters, &setsz) != ERROR_NONE)
@@ -451,7 +569,7 @@ t_error			message_transmit(i_task			task,
     }
 
   /*
-   * 4)
+   * 5)
    */
 
   if (machine_call(message, message_transmit, task, destination, type,
@@ -824,7 +942,8 @@ t_error			message_return_info(i_thread		thread,
  * steps:
  *
  * 1) allocate some memory for the manager structure.
- * 2) call the machine dependent code.
+ * 2) create message types for the kernel task.
+ * 3) call the machine dependent code.
  */
 
 t_error			message_initialize(void)
@@ -847,6 +966,22 @@ t_error			message_initialize(void)
    * 2)
    */
 
+  if (message_register(ktask, MESSAGE_TYPE_INTERFACE,
+		       sizeof (o_syscall)) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (message_register(ktask, MESSAGE_TYPE_EVENT,
+		       sizeof (o_event_message)) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (message_register(ktask, MESSAGE_TYPE_TIMER,
+		       sizeof (o_timer_message)) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
   if (machine_call(message, message_initialize) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 
@@ -859,6 +994,7 @@ t_error			message_initialize(void)
  * steps:
  *
  * 1) call the dependent code.
+ * 3) free kernel message types.
  * 2) free the manager structure.
  */
 
@@ -873,6 +1009,13 @@ t_error			message_clean(void)
 
   /*
    * 2)
+   */
+
+  if (message_flush(ktask)  != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 3)
    */
 
   free(message);

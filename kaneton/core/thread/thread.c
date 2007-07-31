@@ -696,6 +696,70 @@ t_error			thread_stack(i_thread			threadid,
   THREAD_LEAVE(thread, ERROR_NONE);
 }
 
+/*
+ * this function pushes arguments on a thread's stack.
+ *
+ * steps:
+ *
+ * 1) get thread and task object.
+ * 2) get current thread context and decrement the stack pointer.
+ * 3) copy the argument onto the stack.
+ * 4) update the thread context.
+ * 5) call machine dependent code.
+ */
+
+t_error			thread_args(i_thread			threadid,
+				    void*			args,
+				    t_vsize			size)
+{
+  o_thread*		o;
+  o_task*		otask;
+  t_thread_context	context;
+
+  THREAD_ENTER(thread);
+
+  /*
+   * 1)
+   */
+
+  if (thread_get(threadid, &o) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  if (task_get(o->taskid, &otask) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (thread_store(threadid, &context) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  context.sp -= size;
+
+  /*
+   * 3)
+   */
+
+  if (as_write(otask->asid, args, size, context.sp) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (thread_load(threadid, context) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  /*
+   * 5)
+   */
+
+  if (machine_call(thread, thread_args, threadid, args, size) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
 
 /*
  * this function removes every thread that belongs to the specified task.

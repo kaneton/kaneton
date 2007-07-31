@@ -27,20 +27,26 @@ $type_reply = ""
 
 def process(kinterface, hinterface, uinterface, manager, func)
   operation = manager + "_" + func['operation']
+  if func['operation'].index("attribute_") == 0 then
+    chiche = true
+  else
+    chiche = false
+  end
   if func['capability'] == nil then
     capability = manager.upcase + "_OPERATION_" + func['operation'].upcase
   else
     capability = manager.upcase + "_OPERATION_" + func['capability']
   end
 
-  kinterface.puts "/*
+  if !chiche then
+    kinterface.puts "/*
  * this function launchs the #{operation}() function.
  */
 
 "
-  kinterface.puts "t_error\t\tinterface_#{operation}(o_syscall*\tmessage)\n{\n"
-
-  kinterface.puts "  t_error\terror;\n"
+    kinterface.puts "t_error\t\tinterface_#{operation}(o_syscall*\tmessage)\n{\n"
+    kinterface.puts "  t_error\terror;\n"
+  end
 
   code_cap = "  if (capability_check(#{manager}, #{capability}) != ERROR_NONE)\n    return (ERROR_UNKNOWN);\n\n"
 
@@ -125,17 +131,14 @@ def process(kinterface, hinterface, uinterface, manager, func)
     end
   end
 
-  kinterface.puts code_decl + "\n"
-
-  #kinterface.puts code_cap # FIXME
-
-  kinterface.puts "  error = #{operation}(#{args});\n\n"
-
-  kinterface.puts "  message->u.reply.error = error;\n"
-
-  kinterface.puts code_serialize + "\n"
-
-  kinterface.puts "  return (ERROR_NONE);\n}\n\n"
+  if !chiche then
+    kinterface.puts code_decl + "\n"
+    #kinterface.puts code_cap # FIXME
+    kinterface.puts "  error = #{operation}(#{args});\n\n"
+    kinterface.puts "  message->u.reply.error = error;\n"
+    kinterface.puts code_serialize + "\n"
+    kinterface.puts "  return (ERROR_NONE);\n}\n\n"
+  end
 
   uinterface.puts "t_error\t\tsyscall_#{operation}(#{uargs})\n{\n  o_syscall\t\tmessage;\n  i_node\t\tnode;\n  t_vsize\t\tsize;\n\n"
 
@@ -146,9 +149,9 @@ def process(kinterface, hinterface, uinterface, manager, func)
 
   uinterface.puts message + "\n"
 
-  uinterface.puts "  syscall_message_send(node, 0, &message, sizeof (message));
+  uinterface.puts "  syscall_message_send(node, MESSAGE_TYPE_INTERFACE, &message, sizeof (message));
 
-  if (syscall_message_receive(0, &message, &size, &node) != ERROR_NONE)
+  if (syscall_message_receive(MESSAGE_TYPE_INTERFACE, &message, &size, &node) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
 "
@@ -168,6 +171,41 @@ def process(kinterface, hinterface, uinterface, manager, func)
   $nsyscalls += 1
 end
 
+def process_attribute(kinterface, hinterface, uinterface, manager, attr)
+  name = attr['name'];
+  type = attr['type'];
+
+  func = {
+    'operation' => "attribute_#{name}",
+    'argument' => ['(capability)', "(out) #{type}*"]
+  }
+
+  kinterface.puts "/*
+ * this function get the #{name} attribute of the o_#{manager} object.
+ */
+
+"
+
+  kinterface.puts "t_error\t\tinterface_#{manager}_attribute_#{name}(o_syscall*\tmessage)\n"
+
+  kinterface.puts "{\n  o_#{manager}*\t\to;\n\n"
+
+  # XXX cap
+  kinterface.puts "  if (#{manager}_get(message->u.request.u.#{manager}_attribute_#{name}.arg1, &o) != ERROR_NONE)\n"
+  kinterface.puts "    {\n"
+  kinterface.puts "      message->u.reply.error = ERROR_UNKNOWN;\n"
+  kinterface.puts "    }\n"
+  kinterface.puts "  else\n"
+  kinterface.puts "    {\n"
+  kinterface.puts "      message->u.reply.error = ERROR_NONE;\n"
+  kinterface.puts "      message->u.reply.u.#{manager}_attribute_#{name}.result1 = o->#{name};\n"
+  kinterface.puts "    }\n"
+  kinterface.puts "\n  return (ERROR_NONE);"
+  kinterface.puts "}\n\n"
+
+  process(kinterface, hinterface, uinterface, manager, func);
+end
+
 kinterface = File.open("interface.c", "w")
 hinterface = File.open("interface.h", "w")
 uinterface = File.open("interface_user.c", "w")
@@ -183,6 +221,11 @@ begin
     manager = section["manager"]
     section["interface"].each do | func |
       process(kinterface, hinterface, uinterface, manager, func)
+    end
+    if section["attribute"] != nil then
+      section["attribute"].each do | attr |
+        process_attribute(kinterface, hinterface, uinterface, manager, attr)
+      end
     end
   end
 

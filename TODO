@@ -1,19 +1,33 @@
---
- faire des screenshots pour kaneton: installation, configuration, env-dev,
- boot, into (mjpeg)
+------------------------------ buck :: todo -----------------------------------
 
---
- axe kaneton sur le multiproc car avec les multicoeurs ca va devenir courant
+check/
+  - revoir tous les tests bootloader
+  - event/message_**
+  - timer/message_**
+  - finir message/*
+  - task/driver_**
+  - task/service_**
+  - task/clone_**, thread/clone_**
+  - task/priority_**, thread/priority_**
+  - task/state_**
+  - deplacer sched/state_** dans thread/state_**
+  - thread/give_**
+  - sched/fpu_**
 
---
- choses a faire (encore):
+chiant et important:
+ - malloc qui foire...!!!
 
- - tester as_clone
- - faire les messages pour les event + timers
+rapide et facile:
+ - ajouter PD_CURRENT, GDT_CURRENT, etc...
+
+demande reflexion:
+ - revoir les fonctions de PD/PT pour gerer mieux le paddr/vaddr.
+ - refaite cswitch
+
+autre:
+ - finir task_clone
  - map_resize, {region,segment}_{split,resize,coalesce}
- - malloc qui foire...
  - {task,thread}_wait
- - thread_args
  - pb de stack dans thread_clone
  - ia32_as_reserve: ajuster les flags G des pte du kas
  - sched_update: optimiser car ca pue
@@ -22,29 +36,43 @@
  - thread_clone: quand on clone un thread, il faut peut etre changer le
    cr3 plutot que le recopier.
  - thread_give: copier la pile dans le nouvel AS ?
- - voir pourquoi les taches de classe DRIVER et SERVICE ne fonctionnent
-   pas (ca semble etre un problème de segment selectors).
- - ajouter PD_CURRENT, GDT_CURRENT, etc...
- - revoir les fonctions de PD/PT pour gerer mieux le paddr/vaddr.
- - refaite cswitch
+
+--
+ probleme de nomenclature: chiche_get(o* o) ca marche pour recuperer un
+ objet mais quand ce seront des programs userland, recuperer l objet
+ entier ca ne les interesse pas, c'est lourd et c est pas le but.
+
+ donc on devrait changer pour mettre a disposition des fonctions pour
+ recuperer que certaines proprietes.
+
+ une unique fonction genre chiche_attribute(object, field)
+
+ -> moi j'etais plutot partie pour generer plusieurs fonctions (une
+    par attribute) grace a mon gen_interface. non?
+
+------------------------------ misc :: todo -----------------------------------
+
+ revoir le bootloader meme si c'est un detail (travail pour un nouveau venu):
+
+  t_modules
+  {
+    + t_module* modules;
+  }
+  t_module
+  {
+    + void* content;
+    + t_module* next;
+  }
+
+--
+ faire des screenshots pour kaneton: installation, configuration, env-dev,
+ boot, into (mjpeg)
 
 --
  ajouter des check sur les macros via #error
 
 --
  utiliser _CHECK_ pour activer ou non le debug
-
---
- faudrait implementer des regions copy-on-write pour gagner en
- performance. qui plus est, il faut de toute facon pouvoir préciser si
- un segment doit etre cloné en cas d'as_clone. par exemple, on a pas
- envie de dupliquer la GDT, l'IDT, la kstack etc. qui sont mappés
- dans chaque as.
-
- +stack expansion
-
---
- enlever QUICKSTART et expliquer ce qu'il faut sur le site: wiki students
 
 --
  verifier que dans chaque manager il y a:
@@ -55,6 +83,14 @@
    la variable globale correspondante au manager
 
 --
+ ce serait interessant de rajouter un ensemble 'slab' qui ne se baserait
+ pas sur malloc.
+
+ ca montrerait la possibilite du set manager et en plus on pourrait faire
+ des tests de perf avec le slab.
+
+---------------------------------- info --------------------------------------
+
  au lancement du core, celui-ci genere un nombre sur 64-bit.
 
  ce nombre va devenir son machine-id.
@@ -72,36 +108,6 @@
  ainsi chaque tache du systeme reparti aura un node-id unique et de plus
  les cores a leurs lancements auront un id, ce qui est requis pour la
  generation des capabilities.
-
---
- ce serait interessant de rajouter un ensemble 'slab' qui ne se baserait
- pas sur malloc.
-
- ca montrerait la possibilite du set manager et en plus on pourrait faire
- des tests de perf avec le slab.
-
---
- probleme de nomenclature: chiche_get(o* o) ca marche pour recuperer un
- objet mais quand ce seront des programs userland, recuperer l objet
- entier ca ne les interesse pas, c'est lourd et c est pas le but.
-
- donc on devrait changer pour mettre a disposition des fonctions pour
- recuperer que certaines proprietes.
-
- une unique fonction genre chiche_attribute(object, field)
-
---
- revoir le bootloader meme si c'est un detail (travail pour un nouveau venu):
-
-  t_modules
-  {
-    + t_module* modules;
-  }
-  t_module
-  {
-    + void* content;
-    + t_module* next;
-  }
 
 --
  il faut prevoir que tout le demarrage des services via fichier de conf
@@ -230,89 +236,6 @@ devrait suffir a le prouver).
 
  catch(addr, size, asid) then the asid could be able to do: reserve(addr, size)
 
---
-
- code vire du map manager (rien a faire la)
-
- mais on pourra le reutiliser pour la libunix, donc je garde :-)
-
-/*
- * this function is a wrapper of mmap to map_reserve.
- */
-
-void*			mmap(void*			start,
-			     size_t			length,
-			     int			prot,
-			     int			flags,
-			     int			fd,
-			     off_t			offset)
-{
-  t_vaddr		addr;
-  t_perms		perms = 0;
-
-  if (flags)
-    return MAP_FAILED;
-
-  if (prot & PROT_READ)
-    perms |= PERM_READ;
-  if (prot & PROT_WRITE)
-    perms |= PERM_WRITE;
-
-  if (map_reserve(kasid,
-		  MAP_OPT_NONE,
-		  length,
-		  perms,
-		  &addr) != ERROR_NONE)
-    return MAP_FAILED;
-
-  return (void*)addr;
-}
-
-/*
- * this function is a wrapper to munmap.
- */
-
-int			munmap(void*			start,
-			       size_t			length)
-{
-  if (map_release(kasid, (t_vaddr)start) != ERROR_NONE)
-    return -1;
-
-  return 0;
-}
-
-/*
- * this is a wrapper to mremap.
- */
-
-void*			mremap(void*			old_address,
-			       size_t			old_size,
-			       size_t			new_size,
-			       unsigned long		flags)
-{
-  o_region*		o = NULL;
-  t_opts		opts;
-  t_vaddr		p;
-
-  if (!(flags & MREMAP_MAYMOVE))
-    {
-      if (region_get(kasid, (i_region)(t_vaddr)old_address, &o) != ERROR_NONE)
-	return MAP_FAILED;
-
-      opts = o->opts;
-      o->opts &= REGION_OPT_FORCE;
-    }
-
-  if (map_resize(kasid, old_address, new_size, &p) != ERROR_NONE)
-    return MAP_FAILED;
-
-  if (o)
-    {
-      o->opts = opts;
-    }
-
-  return (void*)p;
-}
 
 ----------------------------- mycure :: todo ----------------------------------
 
@@ -363,14 +286,6 @@ t_behav, t_opts a renommer en complet
 aucun objet ne doit etre passe en argument, toujours les id. la seule
 exception c'est la fonction _get() du manager qui gere l'objet en question.
 genre as_get() renvoie un o_as.
-
---
-
-revoir message.h, trop le bordel.
-
---
-
-virer les headers inutiles: ELF -> dans le bootloader
 
 --
 

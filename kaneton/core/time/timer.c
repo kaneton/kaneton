@@ -42,6 +42,22 @@ machine_include(timer);
 m_timer*		timer = NULL;
 
 /*
+ * ---------- externs ---------------------------------------------------------
+ */
+
+/*
+ * the kernel manager.
+ */
+
+extern m_kernel*	kernel;
+
+/*
+ * the kernel task identifier.
+ */
+
+extern i_task		ktask;
+
+/*
  * ---------- functions -------------------------------------------------------
  */
 
@@ -128,13 +144,15 @@ t_error			timer_dump(void)
  * steps:
  *
  * 1) get the timer object from the set.
- * 2) call the machine-dependent code.
- * 3) notify the task for its timer expiration.
+ * 2) notify the task for its timer expiration.
+ * 3) call the machine-dependent code.
  */
 
 t_error			timer_notify(i_timer			id)
 {
   o_timer*		o;
+  o_timer_message	msg;
+  i_node		node;
 
   TIMER_ENTER(timer);
 
@@ -149,15 +167,21 @@ t_error			timer_notify(i_timer			id)
    * 2)
    */
 
-  if (machine_call(timer, timer_notify, id) != ERROR_NONE)
+  msg.id = id;
+  msg.data = o->data;
+  node.machine = kernel->machine;
+  node.task = o->handler.taskid;
+
+  if (message_send(ktask, node, MESSAGE_TYPE_TIMER, (t_vaddr)&msg,
+		   sizeof (o_timer_message)) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   /*
    * 3)
    */
 
-  /* XXX TIMER send a message to o->taskid */
-  printf("timer_notify: id = %qd, taskid = %qd\n", id, o->handler.taskid);
+  if (machine_call(timer, timer_notify, id) != ERROR_NONE)
+    TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   TIMER_LEAVE(timer, ERROR_NONE);
 }
@@ -214,14 +238,15 @@ t_error			timer_insert(o_timer*			o)
  *
  * steps:
  *
- * 1) call the machine-dependent code.
- * 2) create a new timer object and give it an identifier.
- * 3) setup delay and repeat mode.
- * 4) add the new timer to the timer manager.
+ * 1) create a new timer object and give it an identifier.
+ * 2) setup delay and repeat mode.
+ * 3) add the new timer to the timer manager.
+ * 4) call the machine-dependent code.
  */
 
 t_error			timer_reserve(t_type			type,
 				      u_timer_handler		handler,
+				      t_vaddr			data,
 				      t_uint32			delay,
 				      t_uint32			repeat,
 				      i_timer*			id)
@@ -237,14 +262,6 @@ t_error			timer_reserve(t_type			type,
    * 1)
    */
 
-  if (machine_call(timer, timer_reserve, type, handler, delay, repeat, id)
-      != ERROR_NONE)
-    TIMER_LEAVE(timer, ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
   if (id_reserve(&timer->id, id) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
@@ -253,9 +270,10 @@ t_error			timer_reserve(t_type			type,
   o.timerid = *id;
   o.type = type;
   o.handler = handler;
+  o.data = data;
 
   /*
-   * 3)
+   * 2)
    */
 
   if (repeat)
@@ -264,10 +282,18 @@ t_error			timer_reserve(t_type			type,
   o.delay = timer->timeref + delay;
 
   /*
-   * 4)
+   * 3)
    */
 
   if (timer_insert(&o) != ERROR_NONE)
+    TIMER_LEAVE(timer, ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (machine_call(timer, timer_reserve, type, handler, data, delay, repeat,
+		   id) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   TIMER_LEAVE(timer, ERROR_NONE);
@@ -642,7 +668,7 @@ t_error			timer_check(void)
 	}
       else
 	{
-	  o->handler.function();
+	  o->handler.function(o->timerid, o->data);
 	}
 
       /*

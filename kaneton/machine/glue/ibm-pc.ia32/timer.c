@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...kaneton/machine/glue/ibm-pc.ia32/timer.c
+ * file          /home/buckman/kan...kaneton/machine/glue/ibm-pc.ia32/timer.c
  *
  * created       julien quintard   [mon jun 11 05:41:14 2007]
- * updated       julien quintard   [fri jun 22 18:35:04 2007]
+ * updated       matthieu bucchianeri   [mon jul 30 16:51:39 2007]
  */
 
 /*
@@ -75,8 +75,8 @@ t_error			glue_timer_initialize(void)
   if (ibmpc_timer_init() != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
-  if (event_reserve(32, EVENT_FUNCTION, EVENT_HANDLER(timer_handler)) !=
-      ERROR_NONE)
+  if (event_reserve(32, EVENT_FUNCTION, EVENT_HANDLER(timer_handler),
+		    0) != ERROR_NONE)
     TIMER_LEAVE(timer, ERROR_UNKNOWN);
 
   TIMER_LEAVE(timer, ERROR_NONE);

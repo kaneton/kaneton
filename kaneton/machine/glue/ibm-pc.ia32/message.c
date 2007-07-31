@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...neton/machine/glue/ibm-pc.ia32/message.c
  *
  * created       matthieu bucchianeri   [sun jun 17 18:16:18 2007]
- * updated       matthieu bucchianeri   [tue jul 24 00:12:37 2007]
+ * updated       matthieu bucchianeri   [mon jul 30 16:33:50 2007]
  */
 
 /*
@@ -45,6 +45,7 @@ extern m_message*	message;
 
 d_message		       	message_dispatch =
   {
+    NULL,
     NULL,
     NULL,
     NULL,

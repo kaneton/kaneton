@@ -48,10 +48,10 @@
       type: i_task
     -
       name: segments
-      type: o_segment[]
+      type: i_segment[]
     -
       name: regions
-      type: o_region[]
+      type: i_region[]
 -
   manager: capability
   interface:
@@ -99,6 +99,7 @@
         - (capability)
         - t_type
         - u_event_handler
+        - t_vaddr
     -
       operation: release
       argument:
@@ -110,6 +111,9 @@
     -
       name: handler
       type: u_event_handler
+    -
+      name: data
+      type: t_vaddr
 -
   manager: io
   interface:
@@ -474,6 +478,7 @@
       argument:
         - t_type
         - u_timer_handler
+        - t_vaddr
         - t_uint32
         - t_uint32
         - (out) i_timer*
@@ -510,3 +515,6 @@
     -
       name: handler
       type: u_timer_handler
+    -
+      name: data
+      type: t_vaddr

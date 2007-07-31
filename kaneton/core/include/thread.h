@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/thread.h
+ * file          /home/buckman/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       julien quintard   [fri jun 22 18:40:51 2007]
+ * updated       matthieu bucchianeri   [mon jul 30 17:07:31 2007]
  */
 
 #ifndef CORE_THREAD_H
@@ -120,6 +120,9 @@ typedef struct
 						t_state);
   t_error			(*thread_stack)(i_thread,
 						t_stack);
+  t_error			(*thread_args)(i_thread,
+					      void*,
+					      t_size);
   t_error			(*thread_initialize)(void);
   t_error			(*thread_clean)(void);
 }				d_thread;
@@ -191,6 +194,10 @@ t_error			thread_state(i_thread			threadid,
 
 t_error			thread_stack(i_thread			threadid,
 				     t_stack			stack);
+
+t_error			thread_args(i_thread			threadid,
+				    void*			args,
+				    t_vsize			size);
 
 t_error			thread_flush(i_task			taskid);
 

@@ -454,7 +454,7 @@ void smp_test(void)
   int		i;
 
   // XXX to move
-  if (event_reserve(48, EVENT_FUNCTION, EVENT_HANDLER(scheduler_switch))
+  if (event_reserve(48, EVENT_FUNCTION, EVENT_HANDLER(scheduler_switch), 0)
       != ERROR_NONE)
     return;
 

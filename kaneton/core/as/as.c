@@ -946,6 +946,7 @@ t_error			as_clone(i_task				tskid,
     {
       i_segment		needless;
       i_segment*	data;
+      o_segment*	o;
 
       if (set_object(from->segments, i, (void**)&data) != ERROR_NONE)
 	{
@@ -954,6 +955,12 @@ t_error			as_clone(i_task				tskid,
 
 	  AS_LEAVE(as, ERROR_UNKNOWN);
 	}
+
+      if (segment_get(*data, &o) != ERROR_NONE)
+	AS_LEAVE(as, ERROR_UNKNOWN);
+
+      if (o->type == SEGMENT_TYPE_SYSTEM)
+	continue;
 
       if (segment_clone(to->asid, *data, &needless) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
@@ -982,11 +989,8 @@ t_error			as_clone(i_task				tskid,
 	  AS_LEAVE(as, ERROR_UNKNOWN);
 	}
 
-      if (data->opts & REGION_OPT_GLOBAL)
-	continue;
-
       if (set_get(mapping, data->segid, (void**)&map) != ERROR_NONE)
-	map[1] = data->segid;
+	continue;
 
       if (region_reserve(to->asid, map[1], data->offset,
 			 data->opts | REGION_OPT_FORCE,

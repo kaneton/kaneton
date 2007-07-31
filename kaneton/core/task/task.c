@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       matthieu bucchianeri   [mon jul 23 19:23:49 2007]
+ * updated       matthieu bucchianeri   [mon jul 30 18:21:43 2007]
  */
 
 /*
@@ -303,6 +303,7 @@ t_error			task_clone(i_task			old,
  * 8) create a message box for the task.
  * 9) adds the new task object in the task set.
  * 10) calls the machine-dependent code.
+ * 11) create the default message types for the task.
  */
 
 t_error			task_reserve(t_class			class,
@@ -476,6 +477,7 @@ t_error			task_reserve(t_class			class,
     {
       id_release(&task->id, o.tskid);
 
+      set_release(o.messages);
       set_release(o.threads);
       set_release(o.waits);
       set_release(o.children);
@@ -490,6 +492,59 @@ t_error			task_reserve(t_class			class,
   if (machine_call(task, task_reserve, class,
 		   behav, prior, id) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  /*
+   * 11)
+   */
+
+  if (o.tskid != ktask)
+    {
+      if (message_register(o.tskid, MESSAGE_TYPE_INTERFACE,
+			   sizeof (o_syscall)) != ERROR_NONE)
+	{
+	  message_flush(o.tskid);
+
+	  id_release(&task->id, o.tskid);
+
+	  set_release(o.messages);
+	  set_release(o.threads);
+	  set_release(o.waits);
+	  set_release(o.children);
+
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	}
+
+      if (message_register(o.tskid, MESSAGE_TYPE_EVENT,
+			   sizeof (o_event_message)) != ERROR_NONE)
+	{
+	  message_flush(o.tskid);
+
+	  id_release(&task->id, o.tskid);
+
+	  set_release(o.messages);
+	  set_release(o.threads);
+	  set_release(o.waits);
+	  set_release(o.children);
+
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	}
+
+      if (message_register(o.tskid, MESSAGE_TYPE_TIMER,
+			   sizeof (o_timer_message)) != ERROR_NONE)
+
+	{
+	  message_flush(o.tskid);
+
+	  id_release(&task->id, o.tskid);
+
+	  set_release(o.messages);
+	  set_release(o.threads);
+	  set_release(o.waits);
+	  set_release(o.children);
+
+	  TASK_LEAVE(task, ERROR_UNKNOWN);
+	}
+    }
 
   TASK_LEAVE(task, ERROR_NONE);
 }
@@ -566,7 +621,8 @@ t_error			task_release(i_task			id)
    * 6)
    */
 
-  /* XXX clear ALL */
+  if (message_flush(id) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
 
   if (set_release(o->messages) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);

@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       matthieu bucchianeri   [mon jul 23 23:53:40 2007]
+ * updated       matthieu bucchianeri   [mon jul 30 16:33:10 2007]
  */
 
 #ifndef CORE_MESSAGE_H
@@ -40,6 +40,14 @@
 
 #define MESSAGE_REQUEST_PENDING		0
 #define MESSAGE_REQUEST_COMPLETED	1
+
+/*
+ * predefined message types
+ */
+
+#define MESSAGE_TYPE_INTERFACE		0
+#define MESSAGE_TYPE_EVENT		1
+#define MESSAGE_TYPE_TIMER		2
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -107,6 +115,7 @@ typedef struct
   t_error		(*message_register)(i_task,
 					    t_type,
 					    t_vsize);
+  t_error		(*message_flush)(i_task);
   t_error		(*message_send)(i_task,
 					i_node,
 					t_type,
@@ -199,6 +208,8 @@ typedef struct
 t_error			message_register(i_task			task,
 					 t_type			type,
 					 t_vsize		size);
+
+t_error			message_flush(i_task			task);
 
 t_error			message_send(i_task			task,
 				     i_node			destination,

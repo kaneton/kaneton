@@ -29,7 +29,7 @@ static void	thread1(void)
 
   executed1 = 1;
 
-  while (syscall_message_poll(0, (t_vaddr)recv,  &recv_sz,
+  while (syscall_message_poll(42, (t_vaddr)recv,  &recv_sz,
 			      &from) != ERROR_NONE)
     ;
 
@@ -57,7 +57,7 @@ static void	thread2(void)
   for (i = 0; i < 3000; i++)
     buff[i] = i;
 
-  syscall_message_send(dest, 0, (t_vaddr)buff, 3000);
+  syscall_message_send(dest, 42, (t_vaddr)buff, 3000);
 
   while (1)
     ;
@@ -78,7 +78,7 @@ void		check_message_async_02(void)
   ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk1) == 0,
 	"error creating task\n");
 
-  ASSERT(message_register(tsk1, 0, 3000) == ERROR_NONE,
+  ASSERT(message_register(tsk1, 42, 3000) == ERROR_NONE,
 	 "cannot register message type\n");
 
   machine = kernel->machine;
@@ -90,7 +90,7 @@ void		check_message_async_02(void)
   ASSERT(check_task_create(TASK_CLASS_PROGRAM, &tsk2) == 0,
 	"error creating task\n");
 
-  ASSERT(message_register(tsk2, 0, 3000) == ERROR_NONE,
+  ASSERT(message_register(tsk2, 42, 3000) == ERROR_NONE,
 	 "cannot register message type\n");
 
   ASSERT(check_thread_create(tsk2, THREAD_PRIOR, (t_vaddr)thread2, &id) == 0,

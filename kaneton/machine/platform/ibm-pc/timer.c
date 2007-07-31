@@ -20,6 +20,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
+#include <kaneton.h>
 #include <libc.h>
 
 #include <platform/platform.h>
@@ -49,7 +50,7 @@ t_error			ibmpc_timer_init(void)
    * 1)
    */
 
-  latch = IBMPC_CLOCK_TICK_RATE / IBMPC_TIMER_FREQUENCY;
+  latch = IBMPC_CLOCK_TICK_RATE / (1000 / TIMER_MS_PER_TICK);
 
   if (!latch || latch > 65536)
     return (ERROR_UNKNOWN);

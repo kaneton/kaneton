@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...ton/machine/glue/ibm-pc.ia32/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [wed jul 25 12:43:47 2007]
+ * updated       matthieu bucchianeri   [mon jul 30 16:49:16 2007]
  */
 
 /*
@@ -108,15 +108,17 @@ t_error			glue_scheduler_initialize(void)
 {
   SCHEDULER_ENTER(scheduler);
 
-  if (timer_reserve(EVENT_FUNCTION,
+  if (timer_reserve(TIMER_FUNCTION,
 		    TIMER_HANDLER(glue_scheduler_switch_handler),
+		    0,
 		    scheduler->quantum,
 		    TIMER_REPEAT_ENABLE,
 		    &scheduler->machdep.timer) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   if (event_reserve(7, EVENT_FUNCTION,
-		    EVENT_HANDLER(glue_scheduler_switch_extended)) != ERROR_NONE)
+		    EVENT_HANDLER(glue_scheduler_switch_extended),
+		    0) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);

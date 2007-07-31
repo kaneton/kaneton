@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...aneton/machine/glue/ibm-pc.ia32/thread.c
+ * file          /home/buckman/kan...aneton/machine/glue/ibm-pc.ia32/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       julien quintard   [fri jun 22 18:34:55 2007]
+ * updated       matthieu bucchianeri   [mon jul 30 17:06:58 2007]
  */
 
 /*
@@ -66,6 +66,7 @@ d_thread			thread_dispatch =
     glue_thread_load,
     glue_thread_store,
     glue_thread_reserve,
+    NULL,
     NULL,
     NULL,
     NULL,

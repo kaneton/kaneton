@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/scheduler.h
+ * file          /home/buckman/kaneton/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       julien quintard   [fri jun 22 18:40:18 2007]
+ * updated       matthieu bucchianeri   [mon jul 30 18:38:29 2007]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -41,7 +41,7 @@
  * initial value for the scheduler quantum in milliseconds.
  */
 
-#define SCHEDULER_QUANTUM_INIT		5
+#define SCHEDULER_QUANTUM_INIT		TIMER_MS_PER_TICK
 
 /*
  * the number of priority levels for the scheduler.

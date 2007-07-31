@@ -87,7 +87,7 @@ t_error			interface_notify(t_uint8*		buffer,
 
   if (message_send(ktask,
 		   source,
-		   0,
+		   MESSAGE_TYPE_INTERFACE,
 		   (t_vaddr)message,
 		   sizeof (o_syscall)) != ERROR_NONE)
     return (ERROR_UNKNOWN);

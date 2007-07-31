@@ -28,6 +28,7 @@
  *	../as_with_map_01/as_with_map_01.c
  *	../as_switching_01/as_switching_01.c
  *	../clone_01/clone_01.c
+ *	../clone_02/clone_02.c
  *	../give_01/give_01.c
  *	../mapping_01/mapping_01.c
  *	../paddr_vaddr_01/paddr_vaddr_01.c

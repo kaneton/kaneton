@@ -287,7 +287,8 @@ t_error		interface_event_reserve(o_syscall*	message)
 
   error = event_reserve(message->u.request.u.event_reserve.arg1,
 			message->u.request.u.event_reserve.arg2,
-			message->u.request.u.event_reserve.arg3);
+			message->u.request.u.event_reserve.arg3,
+			message->u.request.u.event_reserve.arg4);
 
   message->u.reply.error = error;
 
@@ -1097,6 +1098,7 @@ t_error		interface_timer_reserve(o_syscall*	message)
 			message->u.request.u.timer_reserve.arg2,
 			message->u.request.u.timer_reserve.arg3,
 			message->u.request.u.timer_reserve.arg4,
+			message->u.request.u.timer_reserve.arg5,
 			&result1);
 
   message->u.reply.error = error;
@@ -1282,7 +1284,7 @@ t_error			interface_notify(t_uint8*		buffer,
 
   if (message_send(ktask,
 		   source,
-		   0,
+		   MESSAGE_TYPE_INTERFACE,
 		   (t_vaddr)message,
 		   sizeof (o_syscall)) != ERROR_NONE)
     return (ERROR_UNKNOWN);

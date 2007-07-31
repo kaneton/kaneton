@@ -134,11 +134,7 @@ void			kaneton(t_init*				bootloader)
 
   STI(); // XXX moveme
 
-  check_message_sync_02();
-
-  CLI();
-
-  view_download();
+  check_as_clone_02();
 
 #ifdef CONF_ENABLE_CHECK
   cons_msg('+', "running manual tests\n");

@@ -106,6 +106,9 @@ t_error			segment_show(i_segment			segid)
     case SEGMENT_TYPE_CATCH:
       type = "catch";
       break;
+    case SEGMENT_TYPE_SYSTEM:
+      type = "system";
+      break;
     default:
       type = "(unknown)";
       break;
@@ -231,6 +234,8 @@ t_error			segment_clone(i_as			asid,
   if (segment_get(old, &from) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
+  ASSERT(from->type != SEGMENT_TYPE_SYSTEM);
+
   /*
    * 2)
    */
@@ -244,14 +249,20 @@ t_error			segment_clone(i_as			asid,
 
   perms = from->perms;
 
-  if (segment_perms(old, PERM_READ) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+  if (!(perms & PERM_READ))
+    {
+      if (segment_perms(old, PERM_READ) != ERROR_NONE)
+	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (segment_copy(*new, 0, old, 0, from->size) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      if (segment_copy(*new, 0, old, 0, from->size) != ERROR_NONE)
+	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
-  if (segment_perms(old, perms) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+      if (segment_perms(old, perms) != ERROR_NONE)
+	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
+    }
+  else
+    if (segment_copy(*new, 0, old, 0, from->size) != ERROR_NONE)
+      SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   if (segment_perms(*new, perms) != ERROR_NONE)
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
@@ -286,7 +297,9 @@ t_error			segment_inject(i_as		asid,
   SEGMENT_ENTER(segment);
 
   ASSERT(o != NULL);
-  ASSERT(o->type == SEGMENT_TYPE_MEMORY || o->type == SEGMENT_TYPE_CATCH);
+  ASSERT(o->type == SEGMENT_TYPE_MEMORY ||
+	 o->type == SEGMENT_TYPE_CATCH ||
+	 o->type == SEGMENT_TYPE_SYSTEM);
   ASSERT(o->size != 0);
   ASSERT((o->perms & PERM_INVALID) == 0);
   ASSERT(segid != NULL);
@@ -1095,8 +1108,6 @@ t_error			segment_type(i_segment			segid,
 
   SEGMENT_ENTER(segment);
 
-  ASSERT(type == SEGMENT_TYPE_MEMORY || type == SEGMENT_TYPE_CATCH);
-
   /*
    * 1)
    */
@@ -1108,7 +1119,9 @@ t_error			segment_type(i_segment			segid,
    * 2)
    */
 
-  if ((type != SEGMENT_TYPE_MEMORY) && (type != SEGMENT_TYPE_CATCH))
+  if ((type != SEGMENT_TYPE_MEMORY) &&
+      (type != SEGMENT_TYPE_CATCH) &&
+      (type != SEGMENT_TYPE_SYSTEM))
     SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*

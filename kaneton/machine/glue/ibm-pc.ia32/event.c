@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...kaneton/machine/glue/ibm-pc.ia32/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [mon jun 25 21:48:27 2007]
+ * updated       matthieu bucchianeri   [tue jul 31 14:43:26 2007]
  */
 
 /*
@@ -56,7 +56,8 @@ d_event				event_dispatch =
 
 t_error			glue_event_reserve(i_event		id,
 					   t_type		type,
-					   u_event_handler	handler)
+					   u_event_handler	handler,
+					   t_vaddr		data)
 {
   EVENT_ENTER(event);
 
@@ -82,6 +83,7 @@ t_error			glue_event_release(i_event		id)
 }
 
 static void		pf_handler(t_id				id,
+				   t_vaddr			data,
 				   t_uint32			error_code)
 {
   t_uint32              addr;
@@ -110,7 +112,7 @@ t_error			glue_event_initialize(void)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   if (event_reserve(14, EVENT_FUNCTION,
-		    EVENT_HANDLER(pf_handler)) != ERROR_NONE)
+		    EVENT_HANDLER(pf_handler), 0) != ERROR_NONE)
     EVENT_LEAVE(event, ERROR_UNKNOWN);
 
   EVENT_LEAVE(event, ERROR_NONE);

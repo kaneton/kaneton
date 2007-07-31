@@ -298,27 +298,27 @@ t_error			ia32_syscall_set_info(i_thread		thread,
 t_error			ia32_syscalls_init(void)
 {
   if (event_reserve(56, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_register)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_syshandler_register), 0) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   if (event_reserve(57, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_send)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_syshandler_send), 0) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   if (event_reserve(58, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_transmit)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_syshandler_transmit), 0) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   /* XXX 59 */
 
   if (event_reserve(60, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_receive)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_syshandler_receive), 0) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   /* XXX 61 */
 
   if (event_reserve(62, EVENT_FUNCTION,
-		    EVENT_HANDLER(ia32_syshandler_poll)) != ERROR_NONE)
+		    EVENT_HANDLER(ia32_syshandler_poll), 0) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   /* XXX 63 */

@@ -179,6 +179,7 @@ typedef struct
 	  t_id	arg1;
 	  t_type	arg2;
 	  u_event_handler	arg3;
+	  t_vaddr	arg4;
 	}		event_reserve;
 	struct
 	{
@@ -411,8 +412,9 @@ typedef struct
 	{
 	  t_type	arg1;
 	  u_timer_handler	arg2;
-	  t_uint32	arg3;
+	  t_vaddr	arg3;
 	  t_uint32	arg4;
+	  t_uint32	arg5;
 	}		timer_reserve;
 	struct
 	{

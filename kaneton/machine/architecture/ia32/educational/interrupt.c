@@ -181,6 +181,8 @@ static t_error		interrupt_add(t_uint32			nr,
 t_error			ia32_interrupt_vector_init(void)
 {
   int			i;
+  i_segment		seg;
+  i_region		reg;
   t_vaddr		vaddr;
   t_ia32_idt		new_idt;
 
@@ -188,13 +190,18 @@ t_error			ia32_interrupt_vector_init(void)
    * 1)
    */
 
-  if (map_reserve(kasid,
-		  MAP_OPT_PRIVILEGED,
-		  PAGESZ,
-		  PERM_READ | PERM_WRITE,
-		  &vaddr)
-      != ERROR_NONE)
-    return ERROR_UNKNOWN;
+  if (segment_reserve(kasid, PAGESZ, PERM_READ | PERM_WRITE,
+		      &seg) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (region_reserve(kasid, seg, 0, REGION_OPT_GLOBAL | REGION_OPT_PRIVILEGED,
+		     0, PAGESZ, &reg) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  vaddr = reg;
 
   /*
    * 2)
@@ -278,7 +285,7 @@ void			ia32_handler_exception(t_uint32			nr,
   if (event_get(id, &o) == ERROR_NONE)
     {
       if (o->type == EVENT_FUNCTION)
-	IA32_CALL_HANDLER(o->handler, id, code);
+	IA32_CALL_HANDLER(o->handler, id, o->data, code);
       else
 	event_notify(id);
     }
@@ -312,7 +319,7 @@ void			ia32_handler_irq(t_uint32			nr)
   if (event_get(id, &o) == ERROR_NONE)
     {
       if (o->type == EVENT_FUNCTION)
-	IA32_CALL_HANDLER(o->handler, id, 0);
+	IA32_CALL_HANDLER(o->handler, id, o->data);
       else
 	event_notify(id);
     }
@@ -343,7 +350,7 @@ void			ia32_handler_ipi(t_uint32			nr)
   if (event_get(id, &o) == ERROR_NONE)
     {
       if (o->type == EVENT_FUNCTION)
-	IA32_CALL_HANDLER(o->handler, id, 0);
+	IA32_CALL_HANDLER(o->handler, id, o->data);
       else
 	event_notify(id);
     }
@@ -372,7 +379,7 @@ void			ia32_handler_syscall(t_uint32			nr)
   if (event_get(id, &o) == ERROR_NONE)
     {
       if (o->type == EVENT_FUNCTION)
-	IA32_CALL_HANDLER(o->handler, id, 0);
+	IA32_CALL_HANDLER(o->handler, id, o->data);
       else
 	event_notify(id);
     }
