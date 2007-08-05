@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/library/libc/include/libdata/alloc.h
  *
  * created       julien quintard   [sun jun 10 17:33:03 2007]
- * updated       matthieu bucchianeri   [sat aug  4 19:13:53 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 00:18:43 2007]
  */
 
 #ifndef LIBC_LIBDATA_ALLOC_H
@@ -84,10 +84,10 @@ typedef struct			s_chunk
 /*
  * alloc global information
  */
-#ifdef ___kaneton$kernel
 
 #include <core/types.h>
 #include <core/id.h>
+#include <core/error.h>
 
 typedef t_error (*t_pfn_map_reserve)(i_as, t_opts, t_vsize, t_perms, t_vaddr*);
 typedef t_error (*t_pfn_map_release)(i_as, t_vaddr);
@@ -108,6 +108,5 @@ typedef struct
   u_int32_t			nalloc;
   u_int32_t			nfree;
 }				t_alloc;
-#endif
 
 #endif

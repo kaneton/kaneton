@@ -28,68 +28,88 @@
 #define INTERFACE_AS_CLONE 4
 #define INTERFACE_AS_RESERVE 5
 #define INTERFACE_AS_RELEASE 6
-#define INTERFACE_CAPABILITY_RESERVE 7
-#define INTERFACE_CAPABILITY_RELEASE 8
-#define INTERFACE_CAPABILITY_RESTRICT 9
-#define INTERFACE_CAPABILITY_INVALIDATE 10
-#define INTERFACE_CAPABILITY_GET 11
-#define INTERFACE_CAPABILITY_GIVE 12
-#define INTERFACE_CAPABILITY_VERIFY 13
-#define INTERFACE_EVENT_RESERVE 14
-#define INTERFACE_EVENT_RELEASE 15
-#define INTERFACE_IO_GRANT 16
-#define INTERFACE_IO_DENY 17
-#define INTERFACE_IO_READ_8 18
-#define INTERFACE_IO_READ_16 19
-#define INTERFACE_IO_READ_32 20
-#define INTERFACE_IO_READ_64 21
-#define INTERFACE_IO_WRITE_8 22
-#define INTERFACE_IO_WRITE_16 23
-#define INTERFACE_IO_WRITE_32 24
-#define INTERFACE_IO_WRITE_64 25
-#define INTERFACE_MAP_RESERVE 26
-#define INTERFACE_MAP_RELEASE 27
-#define INTERFACE_MAP_RESIZE 28
-#define INTERFACE_REGION_RESERVE 29
-#define INTERFACE_REGION_RELEASE 30
-#define INTERFACE_SCHEDULER_QUANTUM 31
-#define INTERFACE_SCHEDULER_YIELD 32
-#define INTERFACE_SCHEDULER_CURRENT 33
-#define INTERFACE_SCHEDULER_ADD 34
-#define INTERFACE_SCHEDULER_REMOVE 35
-#define INTERFACE_SCHEDULER_UPDATE 36
-#define INTERFACE_SEGMENT_CLONE 37
-#define INTERFACE_SEGMENT_GIVE 38
-#define INTERFACE_SEGMENT_COPY 39
-#define INTERFACE_SEGMENT_RESERVE 40
-#define INTERFACE_SEGMENT_RELEASE 41
-#define INTERFACE_SEGMENT_CATCH 42
-#define INTERFACE_SEGMENT_PERMS 43
-#define INTERFACE_SEGMENT_TYPE 44
-#define INTERFACE_TASK_CURRENT 45
-#define INTERFACE_TASK_CLONE 46
-#define INTERFACE_TASK_RESERVE 47
-#define INTERFACE_TASK_RELEASE 48
-#define INTERFACE_TASK_PRIORITY 49
-#define INTERFACE_TASK_STATE 50
-#define INTERFACE_TASK_WAIT 51
-#define INTERFACE_THREAD_GIVE 52
-#define INTERFACE_THREAD_CLONE 53
-#define INTERFACE_THREAD_RESERVE 54
-#define INTERFACE_THREAD_RELEASE 55
-#define INTERFACE_THREAD_PRIORITY 56
-#define INTERFACE_THREAD_STATE 57
-#define INTERFACE_THREAD_STACK 58
-#define INTERFACE_THREAD_LOAD 59
-#define INTERFACE_THREAD_STORE 60
-#define INTERFACE_TIMER_RESERVE 61
-#define INTERFACE_TIMER_RELEASE 62
-#define INTERFACE_TIMER_DELAY 63
-#define INTERFACE_TIMER_REPEAT 64
-#define INTERFACE_TIMER_MODIFY 65
+#define INTERFACE_AS_ATTRIBUTE_TSKID 7
+#define INTERFACE_EVENT_RESERVE 8
+#define INTERFACE_EVENT_RELEASE 9
+#define INTERFACE_EVENT_ATTRIBUTE_TYPE 10
+#define INTERFACE_EVENT_ATTRIBUTE_HANDLER 11
+#define INTERFACE_EVENT_ATTRIBUTE_DATA 12
+#define INTERFACE_IO_GRANT 13
+#define INTERFACE_IO_DENY 14
+#define INTERFACE_IO_READ_8 15
+#define INTERFACE_IO_READ_16 16
+#define INTERFACE_IO_READ_32 17
+#define INTERFACE_IO_READ_64 18
+#define INTERFACE_IO_WRITE_8 19
+#define INTERFACE_IO_WRITE_16 20
+#define INTERFACE_IO_WRITE_32 21
+#define INTERFACE_IO_WRITE_64 22
+#define INTERFACE_MAP_RESERVE 23
+#define INTERFACE_MAP_RELEASE 24
+#define INTERFACE_MAP_RESIZE 25
+#define INTERFACE_REGION_RESERVE 26
+#define INTERFACE_REGION_RELEASE 27
+#define INTERFACE_SCHEDULER_QUANTUM 28
+#define INTERFACE_SCHEDULER_YIELD 29
+#define INTERFACE_SCHEDULER_CURRENT 30
+#define INTERFACE_SCHEDULER_ADD 31
+#define INTERFACE_SCHEDULER_REMOVE 32
+#define INTERFACE_SCHEDULER_UPDATE 33
+#define INTERFACE_SEGMENT_CLONE 34
+#define INTERFACE_SEGMENT_GIVE 35
+#define INTERFACE_SEGMENT_COPY 36
+#define INTERFACE_SEGMENT_RESERVE 37
+#define INTERFACE_SEGMENT_RELEASE 38
+#define INTERFACE_SEGMENT_CATCH 39
+#define INTERFACE_SEGMENT_PERMS 40
+#define INTERFACE_SEGMENT_TYPE 41
+#define INTERFACE_SEGMENT_ATTRIBUTE_ASID 42
+#define INTERFACE_SEGMENT_ATTRIBUTE_TYPE 43
+#define INTERFACE_SEGMENT_ATTRIBUTE_ADDRESS 44
+#define INTERFACE_SEGMENT_ATTRIBUTE_SIZE 45
+#define INTERFACE_SEGMENT_ATTRIBUTE_PERMS 46
+#define INTERFACE_TASK_CURRENT 47
+#define INTERFACE_TASK_CLONE 48
+#define INTERFACE_TASK_RESERVE 49
+#define INTERFACE_TASK_RELEASE 50
+#define INTERFACE_TASK_PRIORITY 51
+#define INTERFACE_TASK_STATE 52
+#define INTERFACE_TASK_WAIT 53
+#define INTERFACE_TASK_ATTRIBUTE_PARENT 54
+#define INTERFACE_TASK_ATTRIBUTE_CLASS 55
+#define INTERFACE_TASK_ATTRIBUTE_BEHAV 56
+#define INTERFACE_TASK_ATTRIBUTE_PRIOR 57
+#define INTERFACE_TASK_ATTRIBUTE_ASID 58
+#define INTERFACE_TASK_ATTRIBUTE_SCHED 59
+#define INTERFACE_TASK_ATTRIBUTE_WAIT 60
+#define INTERFACE_THREAD_GIVE 61
+#define INTERFACE_THREAD_CLONE 62
+#define INTERFACE_THREAD_RESERVE 63
+#define INTERFACE_THREAD_RELEASE 64
+#define INTERFACE_THREAD_PRIORITY 65
+#define INTERFACE_THREAD_STATE 66
+#define INTERFACE_THREAD_STACK 67
+#define INTERFACE_THREAD_LOAD 68
+#define INTERFACE_THREAD_STORE 69
+#define INTERFACE_THREAD_ATTRIBUTE_TASKID 70
+#define INTERFACE_THREAD_ATTRIBUTE_PRIOR 71
+#define INTERFACE_THREAD_ATTRIBUTE_SCHED 72
+#define INTERFACE_THREAD_ATTRIBUTE_WAIT 73
+#define INTERFACE_THREAD_ATTRIBUTE_STACK 74
+#define INTERFACE_THREAD_ATTRIBUTE_STACKSZ 75
+#define INTERFACE_TIMER_RESERVE 76
+#define INTERFACE_TIMER_RELEASE 77
+#define INTERFACE_TIMER_DELAY 78
+#define INTERFACE_TIMER_REPEAT 79
+#define INTERFACE_TIMER_MODIFY 80
+#define INTERFACE_TIMER_ATTRIBUTE_DELAY 81
+#define INTERFACE_TIMER_ATTRIBUTE_REPEAT 82
+#define INTERFACE_TIMER_ATTRIBUTE_TYPE 83
+#define INTERFACE_TIMER_ATTRIBUTE_HANDLER 84
+#define INTERFACE_TIMER_ATTRIBUTE_DATA 85
 
 
-#define INTERFACE_NSYSCALLS 66
+#define INTERFACE_NSYSCALLS 86
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -145,35 +165,7 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
-	  t_operations	arg2;
-	}		capability_reserve;
-	struct
-	{
-	  t_id	arg1;
-	}		capability_release;
-	struct
-	{
-	  t_id	arg1;
-	  t_operations	arg2;
-	}		capability_restrict;
-	struct
-	{
-	  t_id	arg1;
-	  t_id	arg2;
-	}		capability_invalidate;
-	struct
-	{
-	  t_id	arg1;
-	}		capability_get;
-	struct
-	{
-	  t_id	arg1;
-	  i_node	arg2;
-	}		capability_give;
-	struct
-	{
-	  t_capability	arg1;
-	}		capability_verify;
+	}		as_attribute_tskid;
 	struct
 	{
 	  t_id	arg1;
@@ -185,6 +177,18 @@ typedef struct
 	{
 	  t_id	arg1;
 	}		event_release;
+	struct
+	{
+	  t_id	arg1;
+	}		event_attribute_type;
+	struct
+	{
+	  t_id	arg1;
+	}		event_attribute_handler;
+	struct
+	{
+	  t_id	arg1;
+	}		event_attribute_data;
 	struct
 	{
 	  t_id	arg1;
@@ -339,6 +343,26 @@ typedef struct
 	struct
 	{
 	  t_id	arg1;
+	}		segment_attribute_asid;
+	struct
+	{
+	  t_id	arg1;
+	}		segment_attribute_type;
+	struct
+	{
+	  t_id	arg1;
+	}		segment_attribute_address;
+	struct
+	{
+	  t_id	arg1;
+	}		segment_attribute_size;
+	struct
+	{
+	  t_id	arg1;
+	}		segment_attribute_perms;
+	struct
+	{
+	  t_id	arg1;
 	}		task_clone;
 	struct
 	{
@@ -365,6 +389,34 @@ typedef struct
 	  t_id	arg1;
 	  t_opts	arg2;
 	}		task_wait;
+	struct
+	{
+	  t_id	arg1;
+	}		task_attribute_parent;
+	struct
+	{
+	  t_id	arg1;
+	}		task_attribute_class;
+	struct
+	{
+	  t_id	arg1;
+	}		task_attribute_behav;
+	struct
+	{
+	  t_id	arg1;
+	}		task_attribute_prior;
+	struct
+	{
+	  t_id	arg1;
+	}		task_attribute_asid;
+	struct
+	{
+	  t_id	arg1;
+	}		task_attribute_sched;
+	struct
+	{
+	  t_id	arg1;
+	}		task_attribute_wait;
 	struct
 	{
 	  i_task	arg1;
@@ -410,6 +462,30 @@ typedef struct
 	}		thread_store;
 	struct
 	{
+	  t_id	arg1;
+	}		thread_attribute_taskid;
+	struct
+	{
+	  t_id	arg1;
+	}		thread_attribute_prior;
+	struct
+	{
+	  t_id	arg1;
+	}		thread_attribute_sched;
+	struct
+	{
+	  t_id	arg1;
+	}		thread_attribute_wait;
+	struct
+	{
+	  t_id	arg1;
+	}		thread_attribute_stack;
+	struct
+	{
+	  t_id	arg1;
+	}		thread_attribute_stacksz;
+	struct
+	{
 	  t_type	arg1;
 	  u_timer_handler	arg2;
 	  t_vaddr	arg3;
@@ -436,6 +512,26 @@ typedef struct
 	  t_uint32	arg2;
 	  t_uint32	arg3;
 	}		timer_modify;
+	struct
+	{
+	  t_id	arg1;
+	}		timer_attribute_delay;
+	struct
+	{
+	  t_id	arg1;
+	}		timer_attribute_repeat;
+	struct
+	{
+	  t_id	arg1;
+	}		timer_attribute_type;
+	struct
+	{
+	  t_id	arg1;
+	}		timer_attribute_handler;
+	struct
+	{
+	  t_id	arg1;
+	}		timer_attribute_data;
       }	u;
     } request;
     struct
@@ -461,16 +557,20 @@ typedef struct
 	}		as_reserve;
 	struct
 	{
-	  t_capability	result1;
-	}		capability_reserve;
+	  i_task	result1;
+	}		as_attribute_tskid;
 	struct
 	{
-	  t_capability	result1;
-	}		capability_restrict;
+	  t_type	result1;
+	}		event_attribute_type;
 	struct
 	{
-	  t_capability_descriptor	result1;
-	}		capability_get;
+	  u_event_handler	result1;
+	}		event_attribute_handler;
+	struct
+	{
+	  t_vaddr	result1;
+	}		event_attribute_data;
 	struct
 	{
 	  t_uint8	result1;
@@ -513,6 +613,26 @@ typedef struct
 	}		segment_reserve;
 	struct
 	{
+	  i_as	result1;
+	}		segment_attribute_asid;
+	struct
+	{
+	  t_type	result1;
+	}		segment_attribute_type;
+	struct
+	{
+	  t_paddr	result1;
+	}		segment_attribute_address;
+	struct
+	{
+	  t_psize	result1;
+	}		segment_attribute_size;
+	struct
+	{
+	  t_perms	result1;
+	}		segment_attribute_perms;
+	struct
+	{
 	  i_task	result1;
 	}		task_current;
 	struct
@@ -529,6 +649,34 @@ typedef struct
 	}		task_wait;
 	struct
 	{
+	  i_task	result1;
+	}		task_attribute_parent;
+	struct
+	{
+	  t_class	result1;
+	}		task_attribute_class;
+	struct
+	{
+	  t_behav	result1;
+	}		task_attribute_behav;
+	struct
+	{
+	  t_prior	result1;
+	}		task_attribute_prior;
+	struct
+	{
+	  i_as	result1;
+	}		task_attribute_asid;
+	struct
+	{
+	  t_state	result1;
+	}		task_attribute_sched;
+	struct
+	{
+	  t_wait	result1;
+	}		task_attribute_wait;
+	struct
+	{
 	  i_thread	result1;
 	}		thread_clone;
 	struct
@@ -541,8 +689,52 @@ typedef struct
 	}		thread_store;
 	struct
 	{
+	  i_task	result1;
+	}		thread_attribute_taskid;
+	struct
+	{
+	  t_prior	result1;
+	}		thread_attribute_prior;
+	struct
+	{
+	  t_state	result1;
+	}		thread_attribute_sched;
+	struct
+	{
+	  t_wait	result1;
+	}		thread_attribute_wait;
+	struct
+	{
+	  t_vaddr	result1;
+	}		thread_attribute_stack;
+	struct
+	{
+	  t_vsize	result1;
+	}		thread_attribute_stacksz;
+	struct
+	{
 	  i_timer	result1;
 	}		timer_reserve;
+	struct
+	{
+	  t_uint32	result1;
+	}		timer_attribute_delay;
+	struct
+	{
+	  t_uint32	result1;
+	}		timer_attribute_repeat;
+	struct
+	{
+	  t_type	result1;
+	}		timer_attribute_type;
+	struct
+	{
+	  u_timer_handler	result1;
+	}		timer_attribute_handler;
+	struct
+	{
+	  t_vaddr	result1;
+	}		timer_attribute_data;
       } u;
     } reply;
   } u;
@@ -574,23 +766,17 @@ t_error		interface_as_reserve(o_syscall*	message);
 
 t_error		interface_as_release(o_syscall*	message);
 
-t_error		interface_capability_reserve(o_syscall*	message);
-
-t_error		interface_capability_release(o_syscall*	message);
-
-t_error		interface_capability_restrict(o_syscall*	message);
-
-t_error		interface_capability_invalidate(o_syscall*	message);
-
-t_error		interface_capability_get(o_syscall*	message);
-
-t_error		interface_capability_give(o_syscall*	message);
-
-t_error		interface_capability_verify(o_syscall*	message);
+t_error		interface_as_attribute_tskid(o_syscall*	message);
 
 t_error		interface_event_reserve(o_syscall*	message);
 
 t_error		interface_event_release(o_syscall*	message);
+
+t_error		interface_event_attribute_type(o_syscall*	message);
+
+t_error		interface_event_attribute_handler(o_syscall*	message);
+
+t_error		interface_event_attribute_data(o_syscall*	message);
 
 t_error		interface_io_grant(o_syscall*	message);
 
@@ -650,6 +836,16 @@ t_error		interface_segment_perms(o_syscall*	message);
 
 t_error		interface_segment_type(o_syscall*	message);
 
+t_error		interface_segment_attribute_asid(o_syscall*	message);
+
+t_error		interface_segment_attribute_type(o_syscall*	message);
+
+t_error		interface_segment_attribute_address(o_syscall*	message);
+
+t_error		interface_segment_attribute_size(o_syscall*	message);
+
+t_error		interface_segment_attribute_perms(o_syscall*	message);
+
 t_error		interface_task_current(o_syscall*	message);
 
 t_error		interface_task_clone(o_syscall*	message);
@@ -663,6 +859,20 @@ t_error		interface_task_priority(o_syscall*	message);
 t_error		interface_task_state(o_syscall*	message);
 
 t_error		interface_task_wait(o_syscall*	message);
+
+t_error		interface_task_attribute_parent(o_syscall*	message);
+
+t_error		interface_task_attribute_class(o_syscall*	message);
+
+t_error		interface_task_attribute_behav(o_syscall*	message);
+
+t_error		interface_task_attribute_prior(o_syscall*	message);
+
+t_error		interface_task_attribute_asid(o_syscall*	message);
+
+t_error		interface_task_attribute_sched(o_syscall*	message);
+
+t_error		interface_task_attribute_wait(o_syscall*	message);
 
 t_error		interface_thread_give(o_syscall*	message);
 
@@ -682,6 +892,18 @@ t_error		interface_thread_load(o_syscall*	message);
 
 t_error		interface_thread_store(o_syscall*	message);
 
+t_error		interface_thread_attribute_taskid(o_syscall*	message);
+
+t_error		interface_thread_attribute_prior(o_syscall*	message);
+
+t_error		interface_thread_attribute_sched(o_syscall*	message);
+
+t_error		interface_thread_attribute_wait(o_syscall*	message);
+
+t_error		interface_thread_attribute_stack(o_syscall*	message);
+
+t_error		interface_thread_attribute_stacksz(o_syscall*	message);
+
 t_error		interface_timer_reserve(o_syscall*	message);
 
 t_error		interface_timer_release(o_syscall*	message);
@@ -691,6 +913,16 @@ t_error		interface_timer_delay(o_syscall*	message);
 t_error		interface_timer_repeat(o_syscall*	message);
 
 t_error		interface_timer_modify(o_syscall*	message);
+
+t_error		interface_timer_attribute_delay(o_syscall*	message);
+
+t_error		interface_timer_attribute_repeat(o_syscall*	message);
+
+t_error		interface_timer_attribute_type(o_syscall*	message);
+
+t_error		interface_timer_attribute_handler(o_syscall*	message);
+
+t_error		interface_timer_attribute_data(o_syscall*	message);
 
 t_error			interface_notify(t_uint8*		buffer,
 					 t_vsize		size,

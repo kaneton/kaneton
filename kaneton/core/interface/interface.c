@@ -160,119 +160,22 @@ t_error		interface_as_release(o_syscall*	message)
 }
 
 /*
- * this function launchs the capability_reserve() function.
+ * this function get the tskid attribute of the o_as object.
  */
 
-t_error		interface_capability_reserve(o_syscall*	message)
+t_error		interface_as_attribute_tskid(o_syscall*	message)
 {
-  t_error	error;
-  t_capability	result1;
+  o_as*		o;
 
-  error = capability_reserve(message->u.request.u.capability_reserve.arg1,
-			message->u.request.u.capability_reserve.arg2,
-			&result1);
-
-  message->u.reply.error = error;
-  message->u.reply.u.capability_reserve.result1 = result1;
-
-  return (ERROR_NONE);
-}
-
-/*
- * this function launchs the capability_release() function.
- */
-
-t_error		interface_capability_release(o_syscall*	message)
-{
-  t_error	error;
-
-  error = capability_release(message->u.request.u.capability_release.arg1);
-
-  message->u.reply.error = error;
-
-  return (ERROR_NONE);
-}
-
-/*
- * this function launchs the capability_restrict() function.
- */
-
-t_error		interface_capability_restrict(o_syscall*	message)
-{
-  t_error	error;
-  t_capability	result1;
-
-  error = capability_restrict(message->u.request.u.capability_restrict.arg1,
-			message->u.request.u.capability_restrict.arg2,
-			&result1);
-
-  message->u.reply.error = error;
-  message->u.reply.u.capability_restrict.result1 = result1;
-
-  return (ERROR_NONE);
-}
-
-/*
- * this function launchs the capability_invalidate() function.
- */
-
-t_error		interface_capability_invalidate(o_syscall*	message)
-{
-  t_error	error;
-
-  error = capability_invalidate(message->u.request.u.capability_invalidate.arg1,
-			message->u.request.u.capability_invalidate.arg2);
-
-  message->u.reply.error = error;
-
-  return (ERROR_NONE);
-}
-
-/*
- * this function launchs the capability_get() function.
- */
-
-t_error		interface_capability_get(o_syscall*	message)
-{
-  t_error	error;
-  t_capability_descriptor*	result1;
-
-  error = capability_get(message->u.request.u.capability_get.arg1,
-			&result1);
-
-  message->u.reply.error = error;
-  message->u.reply.u.capability_get.result1 = *result1;
-
-  return (ERROR_NONE);
-}
-
-/*
- * this function launchs the capability_give() function.
- */
-
-t_error		interface_capability_give(o_syscall*	message)
-{
-  t_error	error;
-
-  error = capability_give(message->u.request.u.capability_give.arg1,
-			message->u.request.u.capability_give.arg2);
-
-  message->u.reply.error = error;
-
-  return (ERROR_NONE);
-}
-
-/*
- * this function launchs the capability_verify() function.
- */
-
-t_error		interface_capability_verify(o_syscall*	message)
-{
-  t_error	error;
-
-  error = capability_verify(&message->u.request.u.capability_verify.arg1);
-
-  message->u.reply.error = error;
+  if (as_get(message->u.request.u.as_attribute_tskid.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.as_attribute_tskid.result1 = o->tskid;
+    }
 
   return (ERROR_NONE);
 }
@@ -306,6 +209,69 @@ t_error		interface_event_release(o_syscall*	message)
   error = event_release(message->u.request.u.event_release.arg1);
 
   message->u.reply.error = error;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the type attribute of the o_event object.
+ */
+
+t_error		interface_event_attribute_type(o_syscall*	message)
+{
+  o_event*		o;
+
+  if (event_get(message->u.request.u.event_attribute_type.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.event_attribute_type.result1 = o->type;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the handler attribute of the o_event object.
+ */
+
+t_error		interface_event_attribute_handler(o_syscall*	message)
+{
+  o_event*		o;
+
+  if (event_get(message->u.request.u.event_attribute_handler.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.event_attribute_handler.result1 = o->handler;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the data attribute of the o_event object.
+ */
+
+t_error		interface_event_attribute_data(o_syscall*	message)
+{
+  o_event*		o;
+
+  if (event_get(message->u.request.u.event_attribute_data.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.event_attribute_data.result1 = o->data;
+    }
 
   return (ERROR_NONE);
 }
@@ -814,6 +780,111 @@ t_error		interface_segment_type(o_syscall*	message)
 }
 
 /*
+ * this function get the asid attribute of the o_segment object.
+ */
+
+t_error		interface_segment_attribute_asid(o_syscall*	message)
+{
+  o_segment*		o;
+
+  if (segment_get(message->u.request.u.segment_attribute_asid.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.segment_attribute_asid.result1 = o->asid;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the type attribute of the o_segment object.
+ */
+
+t_error		interface_segment_attribute_type(o_syscall*	message)
+{
+  o_segment*		o;
+
+  if (segment_get(message->u.request.u.segment_attribute_type.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.segment_attribute_type.result1 = o->type;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the address attribute of the o_segment object.
+ */
+
+t_error		interface_segment_attribute_address(o_syscall*	message)
+{
+  o_segment*		o;
+
+  if (segment_get(message->u.request.u.segment_attribute_address.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.segment_attribute_address.result1 = o->address;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the size attribute of the o_segment object.
+ */
+
+t_error		interface_segment_attribute_size(o_syscall*	message)
+{
+  o_segment*		o;
+
+  if (segment_get(message->u.request.u.segment_attribute_size.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.segment_attribute_size.result1 = o->size;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the perms attribute of the o_segment object.
+ */
+
+t_error		interface_segment_attribute_perms(o_syscall*	message)
+{
+  o_segment*		o;
+
+  if (segment_get(message->u.request.u.segment_attribute_perms.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.segment_attribute_perms.result1 = o->perms;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
  * this function launchs the task_current() function.
  */
 
@@ -930,6 +1001,153 @@ t_error		interface_task_wait(o_syscall*	message)
 
   message->u.reply.error = error;
   message->u.reply.u.task_wait.result1 = result1;
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the parent attribute of the o_task object.
+ */
+
+t_error		interface_task_attribute_parent(o_syscall*	message)
+{
+  o_task*		o;
+
+  if (task_get(message->u.request.u.task_attribute_parent.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.task_attribute_parent.result1 = o->parent;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the class attribute of the o_task object.
+ */
+
+t_error		interface_task_attribute_class(o_syscall*	message)
+{
+  o_task*		o;
+
+  if (task_get(message->u.request.u.task_attribute_class.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.task_attribute_class.result1 = o->class;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the behav attribute of the o_task object.
+ */
+
+t_error		interface_task_attribute_behav(o_syscall*	message)
+{
+  o_task*		o;
+
+  if (task_get(message->u.request.u.task_attribute_behav.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.task_attribute_behav.result1 = o->behav;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the prior attribute of the o_task object.
+ */
+
+t_error		interface_task_attribute_prior(o_syscall*	message)
+{
+  o_task*		o;
+
+  if (task_get(message->u.request.u.task_attribute_prior.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.task_attribute_prior.result1 = o->prior;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the asid attribute of the o_task object.
+ */
+
+t_error		interface_task_attribute_asid(o_syscall*	message)
+{
+  o_task*		o;
+
+  if (task_get(message->u.request.u.task_attribute_asid.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.task_attribute_asid.result1 = o->asid;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the sched attribute of the o_task object.
+ */
+
+t_error		interface_task_attribute_sched(o_syscall*	message)
+{
+  o_task*		o;
+
+  if (task_get(message->u.request.u.task_attribute_sched.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.task_attribute_sched.result1 = o->sched;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the wait attribute of the o_task object.
+ */
+
+t_error		interface_task_attribute_wait(o_syscall*	message)
+{
+  o_task*		o;
+
+  if (task_get(message->u.request.u.task_attribute_wait.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.task_attribute_wait.result1 = o->wait;
+    }
 
   return (ERROR_NONE);
 }
@@ -1086,6 +1304,132 @@ t_error		interface_thread_store(o_syscall*	message)
 }
 
 /*
+ * this function get the taskid attribute of the o_thread object.
+ */
+
+t_error		interface_thread_attribute_taskid(o_syscall*	message)
+{
+  o_thread*		o;
+
+  if (thread_get(message->u.request.u.thread_attribute_taskid.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.thread_attribute_taskid.result1 = o->taskid;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the prior attribute of the o_thread object.
+ */
+
+t_error		interface_thread_attribute_prior(o_syscall*	message)
+{
+  o_thread*		o;
+
+  if (thread_get(message->u.request.u.thread_attribute_prior.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.thread_attribute_prior.result1 = o->prior;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the sched attribute of the o_thread object.
+ */
+
+t_error		interface_thread_attribute_sched(o_syscall*	message)
+{
+  o_thread*		o;
+
+  if (thread_get(message->u.request.u.thread_attribute_sched.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.thread_attribute_sched.result1 = o->sched;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the wait attribute of the o_thread object.
+ */
+
+t_error		interface_thread_attribute_wait(o_syscall*	message)
+{
+  o_thread*		o;
+
+  if (thread_get(message->u.request.u.thread_attribute_wait.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.thread_attribute_wait.result1 = o->wait;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the stack attribute of the o_thread object.
+ */
+
+t_error		interface_thread_attribute_stack(o_syscall*	message)
+{
+  o_thread*		o;
+
+  if (thread_get(message->u.request.u.thread_attribute_stack.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.thread_attribute_stack.result1 = o->stack;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the stacksz attribute of the o_thread object.
+ */
+
+t_error		interface_thread_attribute_stacksz(o_syscall*	message)
+{
+  o_thread*		o;
+
+  if (thread_get(message->u.request.u.thread_attribute_stacksz.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.thread_attribute_stacksz.result1 = o->stacksz;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
  * this function launchs the timer_reserve() function.
  */
 
@@ -1172,6 +1516,111 @@ t_error		interface_timer_modify(o_syscall*	message)
 }
 
 /*
+ * this function get the delay attribute of the o_timer object.
+ */
+
+t_error		interface_timer_attribute_delay(o_syscall*	message)
+{
+  o_timer*		o;
+
+  if (timer_get(message->u.request.u.timer_attribute_delay.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.timer_attribute_delay.result1 = o->delay;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the repeat attribute of the o_timer object.
+ */
+
+t_error		interface_timer_attribute_repeat(o_syscall*	message)
+{
+  o_timer*		o;
+
+  if (timer_get(message->u.request.u.timer_attribute_repeat.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.timer_attribute_repeat.result1 = o->repeat;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the type attribute of the o_timer object.
+ */
+
+t_error		interface_timer_attribute_type(o_syscall*	message)
+{
+  o_timer*		o;
+
+  if (timer_get(message->u.request.u.timer_attribute_type.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.timer_attribute_type.result1 = o->type;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the handler attribute of the o_timer object.
+ */
+
+t_error		interface_timer_attribute_handler(o_syscall*	message)
+{
+  o_timer*		o;
+
+  if (timer_get(message->u.request.u.timer_attribute_handler.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.timer_attribute_handler.result1 = o->handler;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function get the data attribute of the o_timer object.
+ */
+
+t_error		interface_timer_attribute_data(o_syscall*	message)
+{
+  o_timer*		o;
+
+  if (timer_get(message->u.request.u.timer_attribute_data.arg1, &o) != ERROR_NONE)
+    {
+      message->u.reply.error = ERROR_UNKNOWN;
+    }
+  else
+    {
+      message->u.reply.error = ERROR_NONE;
+      message->u.reply.u.timer_attribute_data.result1 = o->data;
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
  * this structure dispatchs incoming system calls.
  */
 
@@ -1184,15 +1633,12 @@ t_interface_dispatch dispatch[] =
   interface_as_clone,
   interface_as_reserve,
   interface_as_release,
-  interface_capability_reserve,
-  interface_capability_release,
-  interface_capability_restrict,
-  interface_capability_invalidate,
-  interface_capability_get,
-  interface_capability_give,
-  interface_capability_verify,
+  interface_as_attribute_tskid,
   interface_event_reserve,
   interface_event_release,
+  interface_event_attribute_type,
+  interface_event_attribute_handler,
+  interface_event_attribute_data,
   interface_io_grant,
   interface_io_deny,
   interface_io_read_8,
@@ -1222,6 +1668,11 @@ t_interface_dispatch dispatch[] =
   interface_segment_catch,
   interface_segment_perms,
   interface_segment_type,
+  interface_segment_attribute_asid,
+  interface_segment_attribute_type,
+  interface_segment_attribute_address,
+  interface_segment_attribute_size,
+  interface_segment_attribute_perms,
   interface_task_current,
   interface_task_clone,
   interface_task_reserve,
@@ -1229,6 +1680,13 @@ t_interface_dispatch dispatch[] =
   interface_task_priority,
   interface_task_state,
   interface_task_wait,
+  interface_task_attribute_parent,
+  interface_task_attribute_class,
+  interface_task_attribute_behav,
+  interface_task_attribute_prior,
+  interface_task_attribute_asid,
+  interface_task_attribute_sched,
+  interface_task_attribute_wait,
   interface_thread_give,
   interface_thread_clone,
   interface_thread_reserve,
@@ -1238,11 +1696,22 @@ t_interface_dispatch dispatch[] =
   interface_thread_stack,
   interface_thread_load,
   interface_thread_store,
+  interface_thread_attribute_taskid,
+  interface_thread_attribute_prior,
+  interface_thread_attribute_sched,
+  interface_thread_attribute_wait,
+  interface_thread_attribute_stack,
+  interface_thread_attribute_stacksz,
   interface_timer_reserve,
   interface_timer_release,
   interface_timer_delay,
   interface_timer_repeat,
   interface_timer_modify,
+  interface_timer_attribute_delay,
+  interface_timer_attribute_repeat,
+  interface_timer_attribute_type,
+  interface_timer_attribute_handler,
+  interface_timer_attribute_data,
 };
 
 /*

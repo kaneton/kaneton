@@ -27,6 +27,12 @@ $type_reply = ""
 
 def process(kinterface, hinterface, uinterface, manager, func)
   operation = manager + "_" + func['operation']
+
+  if operation.index("capability_") != nil then
+    puts "ignoring unsupported operation #{operation}"
+    return
+  end
+
   if func['operation'].index("attribute_") == 0 then
     chiche = true
   else
@@ -140,7 +146,7 @@ def process(kinterface, hinterface, uinterface, manager, func)
     kinterface.puts "  return (ERROR_NONE);\n}\n\n"
   end
 
-  uinterface.puts "t_error\t\tsyscall_#{operation}(#{uargs})\n{\n  o_syscall\t\tmessage;\n  i_node\t\tnode;\n  t_vsize\t\tsize;\n\n"
+  uinterface.puts "t_error\t\t#{operation}(#{uargs})\n{\n  o_syscall\t\tmessage;\n  i_node\t\tnode;\n  t_vsize\t\tsize;\n\n"
 
   uinterface.puts "  node.machine = 0;
   node.task = 0;
@@ -149,9 +155,9 @@ def process(kinterface, hinterface, uinterface, manager, func)
 
   uinterface.puts message + "\n"
 
-  uinterface.puts "  syscall_message_send(node, MESSAGE_TYPE_INTERFACE, &message, sizeof (message));
+  uinterface.puts "  message_send(node, MESSAGE_TYPE_INTERFACE, (t_vaddr)&message, sizeof (message));
 
-  if (syscall_message_receive(MESSAGE_TYPE_INTERFACE, &message, &size, &node) != ERROR_NONE)
+  if (message_receive(MESSAGE_TYPE_INTERFACE, (t_vaddr)&message, &size, &node) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
 "
@@ -174,6 +180,16 @@ end
 def process_attribute(kinterface, hinterface, uinterface, manager, attr)
   name = attr['name'];
   type = attr['type'];
+
+  if manager.index("region") != nil then
+    puts "ignoring unsupported object region"
+    return
+  end
+
+  if type.index("[]") != nil then
+    puts "ignoring unsupported attribute #{name}"
+    return
+  end
 
   func = {
     'operation' => "attribute_#{name}",
@@ -208,7 +224,7 @@ end
 
 kinterface = File.open("interface.c", "w")
 hinterface = File.open("interface.h", "w")
-uinterface = File.open("interface_user.c", "w")
+uinterface = File.open("libkaneton.c", "w")
 begin
 
   header_kinterface(kinterface)

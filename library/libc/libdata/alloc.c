@@ -672,8 +672,5 @@ int			alloc_init(t_vaddr			addr,
   first_area->next_area = NULL;
   SIGN(AREA, first_area);
 
-  cons_msg('#', " survival area of size %u bytes at address 0x%p\n", size,
-	   addr);
-
   return (0);
 }

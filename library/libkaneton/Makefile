@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kaneton/library/crt/Makefile
+# file          /home/buckman/kaneton/library/libkaneton/Makefile
 #
-# created       julien quintard   [thu jun 28 19:52:18 2007]
-# updated       matthieu bucchianeri   [mon aug  6 00:27:55 2007]
+# created       matthieu bucchianeri   [sun aug  5 23:11:44 2007]
+# updated       matthieu bucchianeri   [sun aug  5 23:22:55 2007]
 #
 
 #
 # ---------- component --------------------------------------------------------
 #
 
-component		:=		crt
+component		:=		libkaneton
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -33,31 +33,37 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-CRT_C			:=		crt.c
+LIBKANETON_C		:=		messaging.c			\
+					libkaneton.c
 
-CRT_O			:=		$(CRT_C:.c=.o)
+LIBKANETON_O		:=		$(LIBKANETON_C:.c=.o)
 
-CRT_INCLUDE		:=		$(_CRT_INCLUDE_DIR_)/crt.h
+LIBKANETON_INCLUDE	:=		$(_LIBKANETON_INCLUDE_DIR_)/libkaneton.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			$(_CRT_O_)
+main:			$(_LIBKANETON_A_)
+
+$(_LIBKANETON_A_):		$(LIBKANETON_O)
+	$(call env_static-library,$(_LIBKANETON_A_),$(LIBKANETON_O),)
 
 clear:
-	$(call env_remove,$(CRT_O),)
+	$(call env_remove,$(LIBKANETON_O),)
+
+	$(call env_remove,$(_LIBKANETON_A_),)
 
 	$(call env_purge,)
 
 prototypes:
-	$(call env_prototypes,$(CRT_INCLUDE),)
+	$(call env_prototypes,$(LIBKANETON_INCLUDE),)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(CRT_C),)
+	$(call env_headers,$(LIBKANETON_C),)
 
 endif
 #

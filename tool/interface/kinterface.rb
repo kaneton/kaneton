@@ -189,7 +189,8 @@ def header_uinterface(f)
  */
 
 #include <libc.h>
-#include <kaneton.h>
+#include <core/core.h>
+#include <libkaneton.h>
 
 /*
  * ---------- functions -------------------------------------------------------

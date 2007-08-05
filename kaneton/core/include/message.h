@@ -267,45 +267,6 @@ t_error			message_initialize(void);
 
 t_error			message_clean(void);
 
-t_error			syscall_message_register(t_type		type,
-						 t_vsize	size);
-
-t_error			syscall_message_send(i_node		destination,
-					     t_type		type,
-					     t_vaddr		data,
-					     t_vsize		size);
-
-t_error			syscall_message_transmit(i_node		destination,
-						 t_type		type,
-						 t_vaddr	data,
-						 t_vsize	size);
-
-t_error			syscall_message_throw(i_node		destination,
-					      t_type		type,
-					      t_vaddr		data,
-					      t_vsize		size,
-					      t_message_request*request);
-
-t_error			syscall_message_receive(t_type		type,
-						t_vaddr		data,
-						t_vsize*	size,
-						i_node*		sender);
-
-t_error			syscall_message_grab(t_type		type,
-					     t_vaddr		data,
-					     t_message_request*	request);
-
-t_error			syscall_message_poll(t_type		type,
-					     t_vaddr		data,
-					     t_vsize*		size,
-					     i_node*		sender);
-
-t_error			syscall_message_state(t_message_request	request);
-
-t_error			syscall_message_wait(t_message_request	request,
-					     t_vsize*		size,
-					     i_node*		sender);
-
 
 /*
  * ../../core/message/node.c
