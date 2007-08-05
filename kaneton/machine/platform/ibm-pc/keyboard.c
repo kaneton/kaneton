@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...neton/machine/platform/ibm-pc/keyboard.c
  *
  * created       matthieu bucchianeri   [sun jun 17 19:04:00 2007]
- * updated       matthieu bucchianeri   [tue jul 31 14:37:15 2007]
+ * updated       matthieu bucchianeri   [sat aug  4 19:27:09 2007]
  */
 
 /*
@@ -50,7 +50,11 @@ static void		ibmpc_kbd_handler(t_id			id)
 	    printf("\n");
 	    break;
 	  case 'd':
+#ifdef VIEW_ENABLE
 	    view_download();
+#else
+	    cons_msg('!', "view manager support not enabled\n");
+#endif
 	    break;
 	  default:
 	    printf("%c", scancodes[scancode]);

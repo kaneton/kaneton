@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...kaneton/machine/glue/ibm-pc.ia32/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [tue jul 31 14:43:26 2007]
+ * updated       matthieu bucchianeri   [sat aug  4 17:55:44 2007]
  */
 
 /*

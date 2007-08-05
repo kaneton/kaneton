@@ -42,11 +42,17 @@
    (_size_) + PAGESZ - (_size_) % PAGESZ :				\
    (_size_))
 
-#define SIGN(_type_,_obj_)						\
+#ifdef MALLOC_SIGN_ENABLE
+# define SIGN(_type_,_obj_)						\
   (_obj_)->signature = _type_##_SIGNATURE;
 
-#define CHECK_SIGN(_type_,_obj_)					\
+# define CHECK_SIGN(_type_,_obj_)					\
   ((_obj_)->signature == _type_##_SIGNATURE)
+#else
+# define SIGN(_type_,_obj_)
+# define CHECK_SIGN(_type_,_obj_)					\
+  (1)
+#endif
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -113,7 +119,7 @@ void*			malloc(size_t				size)
        * 3)
        */
 
-      for (chunk = area->first_free_chunk;
+      for (chunk = area->first_free_chunk, prev_free = NULL;
 	   chunk != NULL && allocated == NULL;
 	   prev_free = chunk, chunk = chunk->next_free)
 	{
@@ -186,8 +192,6 @@ void*			malloc(size_t				size)
 
       if (stucked)
 	{
-	  printf("Warning: allocating the reserve.\n");
-
 	  addr = alloc.reserve;
 
 	  alloc.reserve = 0;
@@ -238,6 +242,11 @@ void*			malloc(size_t				size)
 		  while (1)
 		    ;
 		}
+
+	      if (prev_area != NULL)
+		prev_area = prev_area->next_area;
+	      else
+		prev_area = alloc.areas;
 	    }
 	}
 
@@ -300,7 +309,9 @@ void*			malloc(size_t				size)
   if (allocated > alloc.highest)
     alloc.highest = allocated;
 
+#ifdef MALLOC_SIGN_ENABLE
   alloc_check_signatures();
+#endif
 
   return (allocated);
 }
@@ -323,7 +334,6 @@ void			free(void*				ptr)
   t_chunk*		chunk = (t_chunk*)ptr - 1;
   t_area*		area;
   t_chunk*		l;
-  t_chunk*		prev_free = NULL;
   t_chunk*		next;
 
   /*
@@ -353,7 +363,7 @@ void			free(void*				ptr)
 
   for (l = area->first_free_chunk;
        l != NULL;
-       prev_free = l, l = l->next_free)
+       l = l->next_free)
     {
       if (l == chunk)
 	{
@@ -368,10 +378,10 @@ void			free(void*				ptr)
    * 3)
    */
 
-  if (prev_free)
+  if (l != NULL)
     {
-      chunk->next_free = prev_free->next_free;
-      prev_free->next_free = chunk;
+      chunk->next_free = l->next_free;
+      l->next_free = chunk;
     }
   else
     {
@@ -390,10 +400,10 @@ void			free(void*				ptr)
       chunk->size += sizeof(t_chunk) + next->size;
     }
 
-  if (prev_free != NULL && NEXT_CHUNK(prev_free) == chunk)
+  if (l != NULL && NEXT_CHUNK(l) == chunk)
     {
-      prev_free->next_free = chunk->next_free;
-      prev_free->size += sizeof(t_chunk) + chunk->size;
+      l->next_free = chunk->next_free;
+      l->size += sizeof(t_chunk) + chunk->size;
     }
 
   /*
@@ -415,7 +425,9 @@ void			free(void*				ptr)
 
   alloc.nfree++;
 
+#ifdef MALLOC_SIGN_ENABLE
   alloc_check_signatures();
+#endif
 }
 
 /*
@@ -515,7 +527,6 @@ void			alloc_check_signatures(void)
   t_chunk*		chunk;
   void*			limit;
   t_chunk*		next;
-  t_chunk*		next_free;
 
   /*
    * 2)
@@ -660,6 +671,9 @@ int			alloc_init(t_vaddr			addr,
   first_area->prev_area = NULL;
   first_area->next_area = NULL;
   SIGN(AREA, first_area);
+
+  cons_msg('#', " survival area of size %u bytes at address 0x%p\n", size,
+	   addr);
 
   return (0);
 }

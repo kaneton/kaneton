@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/view.h
+ * file          /home/buckman/kaneton/kaneton/core/include/view.h
  *
  * created       matthieu bucchianeri   [thu jun 21 00:19:44 2007]
- * updated       matthieu bucchianeri   [thu jul 26 22:30:53 2007]
+ * updated       matthieu bucchianeri   [sat aug  4 19:32:04 2007]
  */
 
 #ifndef CORE_VIEW_H
@@ -99,6 +99,19 @@ typedef struct
   {									\
     return (_error_);							\
   }
+
+/*
+ * view signal macro
+ */
+
+#ifdef VIEW_ENABLE
+# define VIEW_SIGNAL(_name_,_nr_,_action_)				\
+  (view_signal((_name_), (_nr_), (_action_)))
+#else
+# define VIEW_SIGNAL(_name_,_nr_,_action_)				\
+  (ERROR_NONE)
+#endif
+
 
 /*
  * ---------- prototypes ------------------------------------------------------

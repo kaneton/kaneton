@@ -14,9 +14,6 @@ check/
   - thread/give_**
   - sched/fpu_**
 
-chiant et important:
- - malloc qui foire...!!!
-
 rapide et facile:
  - ajouter PD_CURRENT, GDT_CURRENT, etc...
 

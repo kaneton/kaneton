@@ -601,26 +601,35 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
    * 8)
    */
 
-  init->alloc = bootloader_init_alloc(1600 * PAGESZ, &allocsz);
+  init->alloc = bootloader_init_alloc(16 * PAGESZ, &allocsz);
   init->allocsz = allocsz;
 
   /*
    * 9)
    */
 
-  khdr = (Elf32_Ehdr*)mod[1].mod_start;
-  phdr = (Elf32_Phdr*)((char*)khdr + khdr->e_phoff);
+  if (mbi->mods_count >= 1)
+    {
+      khdr = (Elf32_Ehdr*)mod[1].mod_start;
+      phdr = (Elf32_Phdr*)((char*)khdr + khdr->e_phoff);
 
-  modsz = mod[1].mod_end - mod[1].mod_start;
+      modsz = mod[1].mod_end - mod[1].mod_start;
 
-  init->mcode = bootloader_init_alloc(modsz, &init->mcodesz);
-  init->mlocation = 0x60000000; /* XXX very ugly hard-coded value */
-  init->mentry = khdr->e_entry;
+      init->mcode = bootloader_init_alloc(modsz, &init->mcodesz);
+      init->mlocation = 0x60000000; /* XXX very ugly hard-coded value */
+      init->mentry = khdr->e_entry;
 
-  memcpy((void*)init->mcode, (const void*)mod[1].mod_start, modsz);
+      memcpy((void*)init->mcode, (const void*)mod[1].mod_start, modsz);
 
-  bootloader_cons_msg('+', " mod relocated from 0x%x to 0x%x (0x%x)\n",
-		      mod[1].mod_start, init->mcode, modsz);
+      bootloader_cons_msg('+', " mod relocated from 0x%x to 0x%x (0x%x)\n",
+			  mod[1].mod_start, init->mcode, modsz);
+    }
+  else
+    {
+      init->mcode = 0;
+      init->mlocation = 0;
+      init->mentry = 0;
+    }
 
   return (kentry);
 }

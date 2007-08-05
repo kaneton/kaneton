@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...ton/library/libc/include/libdata/alloc.h
+ * file          /home/buckman/kaneton/library/libc/include/libdata/alloc.h
  *
  * created       julien quintard   [sun jun 10 17:33:03 2007]
- * updated       matthieu bucchianeri   [tue jul 17 15:50:47 2007]
+ * updated       matthieu bucchianeri   [sat aug  4 19:13:53 2007]
  */
 
 #ifndef LIBC_LIBDATA_ALLOC_H
@@ -54,7 +54,9 @@ typedef struct			s_area
 {
   vsize_t			size;
 
+#ifdef MALLOC_SIGN_ENABLE
   u_int32_t			signature;
+#endif
 
   struct s_chunk*		first_free_chunk;
 
@@ -70,7 +72,9 @@ typedef struct			s_chunk
 {
   vsize_t			size;
 
+#ifdef MALLOC_SIGN_ENABLE
   u_int32_t			signature;
+#endif
 
   struct s_chunk*		next_free;
 

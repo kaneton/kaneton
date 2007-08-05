@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/library/libc/include/libsys/types.h
+ * file          /home/buckman/kaneton/library/libc/include/libsys/types.h
  *
  * created       julien quintard   [sun jun 10 17:37:19 2007]
- * updated       julien quintard   [sun jun 10 17:42:06 2007]
+ * updated       matthieu bucchianeri   [sun aug  5 17:52:11 2007]
  */
 
 #ifndef LIBC_LIBSYS_TYPES_H
@@ -45,6 +45,12 @@ typedef u_int			int32_t;
 typedef u_int			u_int32_t;
 typedef u_long			int64_t;
 typedef u_long			u_int64_t;
+
+typedef u_int8_t		uint8_t;
+typedef u_int16_t		uint16_t;
+typedef u_int32_t		uint32_t;
+typedef u_int64_t		uint64_t;
+
 
 typedef u_int			register_t;
 

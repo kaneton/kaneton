@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/debug/view.c
  *
  * created       matthieu bucchianeri   [wed jun 20 23:51:47 2007]
- * updated       matthieu bucchianeri   [thu jul 26 22:11:50 2007]
+ * updated       matthieu bucchianeri   [sat aug  4 19:32:17 2007]
  */
 
 /*
@@ -118,10 +118,6 @@ t_error			view_signal(const char*			name,
   t_uint64		timestamp;
   o_view		o;
   char*			activity = NULL;
-
-#ifndef VIEW_ACTIVATED
-  return (ERROR_NONE);
-#endif
 
   VIEW_ENTER(view);
 

@@ -66,11 +66,11 @@ i_segment		mod;
  * 1) sets the init variable from the bootloader argument.
  * 2) initializes the console manager.
  * 3) displays the current kaneton version.
- * 5) initializes the fine grained allocator.
- * 6) initializes the kernel manager.
- * 7) performs the kernel work...
- * 8) cleans the kernel manager.
- * 9) shutdown the system.
+ * 4) initializes the fine grained allocator.
+ * 5) initializes the kernel manager.
+ * 6) performs the kernel work...
+ * 7) cleans the kernel manager.
+ * 8) shutdown the system.
  */
 
 void			kaneton(t_init*				bootloader)
@@ -122,7 +122,9 @@ void			kaneton(t_init*				bootloader)
 
   kernel_initialize();
 
+#ifdef VIEW_ENABLE
   view_initialize();
+#endif
 
   /*
    * 6)
@@ -132,41 +134,33 @@ void			kaneton(t_init*				bootloader)
 
   ibmpc_keyboard_init();
 
-  STI(); // XXX moveme
+  STI();
 
-  check_as_clone_02();
-
-#ifdef CONF_ENABLE_CHECK
+#ifdef TESTSUITE_MANUAL_ENABLE
   cons_msg('+', "running manual tests\n");
   check_tests();
-  while(1)
-    ;
 #endif
 
-#ifdef SERIAL
+#if TESTSUITE_DEBUG_ENABLE
   cons_msg('+', "starting debug manager\n");
   debug_initialize();
 #endif
 
-#ifdef GDB_STUB
-  cons_msg('+', "stating gdb manager\n");
-  gdb_init();
-#endif
-
-#if (DEBUG & DEBUG_CPU)
-  smp_test();
-#endif
-  /*
   cons_msg('+', "launching the initial service: mod\n");
   if (kaneton_launch() != ERROR_NONE)
     cons_msg('!', "failed to start the initial mod service\n");
-  */
+
+  CLI();
 
   cons_msg('#', "kaneton is stopping...\n");
 
   /*
    * 7)
    */
+
+#ifdef VIEW_ENABLE
+  view_clean();
+#endif
 
   kernel_clean();
 
@@ -176,8 +170,7 @@ void			kaneton(t_init*				bootloader)
 
   cons_msg('+', "system shutdown\n");
 
-  while (1)
-    ;
+  HLT();
 }
 
 /*
@@ -188,12 +181,6 @@ void			kaneton(t_init*				bootloader)
  * code which is a mapping of the code provided by the booloader: init->mcode.
  */
 
-/* XXX move this macro elsewhere */
-#define PAGED_SIZE(_size_)                                              \
-  ((_size_) % PAGESZ ?                                                  \
-   (_size_) + PAGESZ - (_size_) % PAGESZ :                              \
-   (_size_))
-
 t_error			kaneton_launch(void)
 {
   i_thread		thread;
@@ -203,6 +190,13 @@ t_error			kaneton_launch(void)
   t_thread_context	ctx;
   i_as			as;
   o_thread*		o;
+
+  if (init->mcodesz == 0)
+    {
+      cons_msg('!', "no initial module\n");
+
+      return (ERROR_UNKNOWN);
+    }
 
   if (task_reserve(TASK_CLASS_PROGRAM,
 		   TASK_BEHAV_TIMESHARING,
@@ -216,7 +210,7 @@ t_error			kaneton_launch(void)
   if (region_reserve(as,
 		     mod, 0,
 		     REGION_OPT_FORCE,
-		     init->mlocation, PAGED_SIZE(init->mcodesz),
+		     init->mlocation, init->mcodesz,
 		     &region) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
