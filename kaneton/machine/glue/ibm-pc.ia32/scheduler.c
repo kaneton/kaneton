@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...ton/machine/glue/ibm-pc.ia32/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [mon jul 30 16:49:16 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 23:19:25 2007]
  */
 
 /*
@@ -35,6 +35,8 @@ extern m_thread*	thread;
 
 extern i_task		ktask;
 
+extern void		glue_scheduler_idle();
+
 /*
  * ---------- globals ---------------------------------------------------------
  */
@@ -46,7 +48,7 @@ extern i_task		ktask;
 d_scheduler			scheduler_dispatch =
   {
     glue_scheduler_quantum,
-    glue_scheduler_yield,
+    NULL,
     glue_scheduler_switch,
     NULL,
     NULL,
@@ -58,6 +60,17 @@ d_scheduler			scheduler_dispatch =
 /*
  * ---------- functions -------------------------------------------------------
  */
+
+/*
+ * the idle thread assembly.
+ */
+
+asm (".text				\n"
+     "glue_scheduler_idle:		\n"
+     "1:				\n"
+     "	hlt				\n"
+     "	jmp 1b				\n"
+     ".text				\n");
 
 /*
  * timer handler that calls scheduler_switch().
@@ -85,20 +98,6 @@ t_error			glue_scheduler_quantum(t_quantum	quantum)
 }
 
 /*
- * this function calls switch in the good context.
- */
-
-t_error			glue_scheduler_yield(i_cpu			cpuid)
-{
-  SCHEDULER_ENTER(scheduler);
-
-  // XXX
-
-  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
-}
-
-
-/*
  * this function initializes the scheduler manager.
  *
  * initialize a new timer and fpu exception.
@@ -106,6 +105,10 @@ t_error			glue_scheduler_yield(i_cpu			cpuid)
 
 t_error			glue_scheduler_initialize(void)
 {
+  t_thread_context	ctx;
+  t_stack		stack;
+  o_thread*		o;
+
   SCHEDULER_ENTER(scheduler);
 
   if (timer_reserve(TIMER_FUNCTION,
@@ -120,6 +123,24 @@ t_error			glue_scheduler_initialize(void)
 		    EVENT_HANDLER(glue_scheduler_switch_extended),
 		    0) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+
+  if (thread_reserve(ktask, THREAD_PRIOR, &scheduler->idle) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  stack.base = 0;
+  stack.size = PAGESZ;
+
+  if (thread_stack(scheduler->idle, stack) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (thread_get(scheduler->idle, &o) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  ctx.sp = o->stack + o->stacksz - 16;
+  ctx.pc = (t_vaddr)glue_scheduler_idle;
+
+  if (thread_load(scheduler->idle, ctx) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
 
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }

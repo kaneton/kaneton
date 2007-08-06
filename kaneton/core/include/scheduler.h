@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       matthieu bucchianeri   [mon jul 30 18:38:29 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 22:53:24 2007]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -170,6 +170,8 @@ typedef struct
 typedef struct
 {
   t_quantum			quantum;
+
+  i_thread			idle;
 
   i_set				cpus;
 

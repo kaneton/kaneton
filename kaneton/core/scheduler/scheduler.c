@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [mon aug  6 22:22:31 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 23:19:53 2007]
  */
 
 /*
@@ -295,9 +295,6 @@ t_error			scheduler_yield(i_cpu			cpuid)
   if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  if (ent->current == kthread)
-    SCHEDULER_LEAVE(scheduler, ERROR_NONE);
-
   ent->prio = SCHEDULER_N_PRIORITY_QUEUE + 1;
 
   if (scheduler_switch() != ERROR_NONE)
@@ -394,7 +391,8 @@ t_error			scheduler_switch(void)
    * 2)
    */
 
-  if (ent->timeslice == 0 && ent->current != -1)
+  if (elected != kthread && elected != scheduler->idle &&
+      ent->timeslice == 0 && ent->current != -1)
     {
       entity.thread = ent->current;
       entity.timeslice = SCHEDULER_COMPUTE_TIMESLICE(ent->current);
@@ -463,9 +461,11 @@ t_error			scheduler_switch(void)
     {
       if (second_round)
 	{
-	  /* XXX goto idle */
+	  elected = scheduler->idle;
+	  elected_prio = 0;
+	  elected_timeslice = scheduler->quantum;
 
-	  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
+	  goto ok;
 	}
       list = ent->active;
       ent->active = ent->expired;
@@ -475,11 +475,14 @@ t_error			scheduler_switch(void)
       goto try;
     }
 
+ ok:
+
   /*
    * 5)
    */
 
-  if (ent->timeslice != 0 && elected != ent->current)
+  if (ent->current != kthread && ent->current != scheduler->idle &&
+      ent->timeslice != 0 && elected != ent->current)
     {
       entity.thread = ent->current;
       entity.timeslice = ent->timeslice;
@@ -761,6 +764,7 @@ t_error			scheduler_initialize(void)
   t_cpu_sched*		ent2;
   i_cpu			cpuid;
   o_cpu*		o;
+  o_thread*		oth;
   t_setsz		ncpus;
 
   /*
@@ -843,6 +847,11 @@ t_error			scheduler_initialize(void)
 
   if (thread_reserve(ktask, THREAD_PRIOR, &kthread) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+
+  if (thread_get(kthread, &oth) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  oth->sched = SCHEDULER_STATE_RUN;
 
   if (cpu_current(&cpuid) != ERROR_NONE)
     return (ERROR_UNKNOWN);

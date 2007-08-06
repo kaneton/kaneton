@@ -134,8 +134,6 @@ void			kaneton(t_init*				bootloader)
 
   ibmpc_keyboard_init();
 
-  STI();
-
 #ifdef TESTSUITE_MANUAL_ENABLE
   cons_msg('+', "running manual tests\n");
   check_tests();
@@ -150,8 +148,23 @@ void			kaneton(t_init*				bootloader)
   if (kaneton_launch() != ERROR_NONE)
     cons_msg('!', "failed to start the initial mod service\n");
 
+  STI();
+
+  char c = '-';
+
   while (1) /* XXX become IDLE */
-    ;
+    {
+      if (c == '-')
+	c = '\\';
+      else if (c == '\\')
+	c = '|';
+      else if (c == '|')
+	c = '/';
+      else
+	c = '-';
+
+      printf("\r %c", c);
+    }
 
   CLI();
 
