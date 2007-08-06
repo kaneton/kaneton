@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/library/Makefile
+# file          /home/buckman/kaneton/library/Makefile
 #
 # created       julien quintard   [sun jun 10 00:53:47 2007]
-# updated       julien quintard   [fri jun 22 18:04:26 2007]
+# updated       matthieu bucchianeri   [mon aug  6 17:59:11 2007]
 #
 
 #
@@ -28,7 +28,8 @@ include			../environment/env.mk
 #
 
 SUBDIRS			:=		libc				\
-					crt
+					crt				\
+					libkaneton
 
 #
 # ---------- rules ------------------------------------------------------------

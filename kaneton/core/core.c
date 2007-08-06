@@ -132,7 +132,7 @@ void			kaneton(t_init*				bootloader)
 
   cons_msg('+', "kaneton started\n");
 
-  ibmpc_keyboard_init();
+  //  ibmpc_keyboard_init();
 
   STI();
 
@@ -149,6 +149,9 @@ void			kaneton(t_init*				bootloader)
   cons_msg('+', "launching the initial service: mod\n");
   if (kaneton_launch() != ERROR_NONE)
     cons_msg('!', "failed to start the initial mod service\n");
+
+  while (1) /* XXX become IDLE */
+    ;
 
   CLI();
 
@@ -190,6 +193,12 @@ t_error			kaneton_launch(void)
   t_thread_context	ctx;
   i_as			as;
   o_thread*		o;
+  struct
+  {
+    i_task		taskid;
+    i_as		asid;
+    i_task		mod;
+  }			args;
 
   if (init->mcodesz == 0)
     {
@@ -230,6 +239,13 @@ t_error			kaneton_launch(void)
   ctx.pc = init->mentry;
 
   if (thread_load(thread, ctx) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  args.taskid = task;
+  args.asid = as;
+  args.mod = ID_UNUSED;
+
+  if (thread_args(thread, &args, sizeof (args)) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   if (task_state(task, SCHEDULER_STATE_RUN) != ERROR_NONE)

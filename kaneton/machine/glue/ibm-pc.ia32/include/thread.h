@@ -82,6 +82,10 @@ t_error			glue_thread_load(i_thread		threadid,
 t_error			glue_thread_store(i_thread		threadid,
 					  t_thread_context*	context);
 
+t_error			glue_thread_args(i_thread		threadid,
+					 void*			args,
+					 t_vsize		size);
+
 t_error			glue_thread_initialize(void);
 
 

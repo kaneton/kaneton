@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod.c
  *
  * created       matthieu bucchianeri   [sat may  5 18:43:57 2007]
- * updated       matthieu bucchianeri   [mon aug  6 00:10:46 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 17:56:21 2007]
  */
 
 /*
@@ -287,6 +287,9 @@ void			mod_launch(void)
 	    }
 	}
 
+      /* hack: call the CRT function that attaches the console to the driver */
+      _crt_attach_cons();
+
       printf(" -- mod: loaded.\n");
 
       /*
@@ -317,9 +320,6 @@ void			mod_serve(void)
 int			main(int argc, char** argv, char** envp)
 {
   mod_launch();
-
-  /* hack: call the CRT function that attaches the console to the driver */
-  _crt_attach_cons();
 
   printf(" -- mod: moduler loader service started.\n");
 

@@ -141,7 +141,7 @@ int			serial_recv(t_uint32			com_port,
 int			serial_put(char				c)
 {
   static int n = 0;
-  static char buffer[512];
+  static char buffer[513];
 
   if (c != '\n' && n < 512 && c != -1)
     buffer[n++] = c;

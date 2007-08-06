@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/library/libc/libstring/Makefile
+# file          /home/buckman/kaneton/library/libc/libstring/Makefile
 #
 # created       julien quintard   [thu jun 28 20:48:10 2007]
-# updated       julien quintard   [fri jun 29 08:39:23 2007]
+# updated       matthieu bucchianeri   [mon aug  6 17:12:47 2007]
 #
 
 #
@@ -59,7 +59,7 @@ LIBSTRING_C		:=		ctype.c				\
 
 LIBSTRING_O		:=		$(LIBSTRING_C:.c=.o)
 
-LIBSTRING_INCLUDE	:=		$(_KLIBC_INCLUDE_DIR_)/libstring/libstring.h
+LIBSTRING_INCLUDE	:=		$(_LIBC_INCLUDE_DIR_)/libstring/libstring.h
 
 #
 # ---------- rules ------------------------------------------------------------

@@ -1734,8 +1734,8 @@ t_error			interface_notify(t_uint8*		buffer,
    * 1)
    */
 
-  if (size < sizeof (o_syscall))
-    return (ERROR_UNKNOWN);
+  /*  if (size < sizeof (o_syscall))
+      return (ERROR_UNKNOWN); XXX */
 
   if (message->u.request.operation >= INTERFACE_NSYSCALLS)
     return (ERROR_UNKNOWN);

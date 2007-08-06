@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...aneton/machine/glue/ibm-pc.ia32/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       matthieu bucchianeri   [mon jul 30 17:06:58 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 18:38:42 2007]
  */
 
 /*
@@ -70,7 +70,7 @@ d_thread			thread_dispatch =
     NULL,
     NULL,
     NULL,
-    NULL,
+    glue_thread_args,
     glue_thread_initialize,
     NULL
 
@@ -142,6 +142,22 @@ t_error			glue_thread_store(i_thread		threadid,
   THREAD_ENTER(thread);
 
   if (ia32_status_context(threadid, &context->pc, &context->sp) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  THREAD_LEAVE(thread, ERROR_NONE);
+}
+
+/*
+ * this function pushes function arguments onto the stack.
+ */
+
+t_error			glue_thread_args(i_thread		threadid,
+					 void*			args,
+					 t_vsize		size)
+{
+  THREAD_ENTER(thread);
+
+  if (ia32_push_args(threadid, args, size) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);

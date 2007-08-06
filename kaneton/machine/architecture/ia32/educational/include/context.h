@@ -259,6 +259,10 @@ t_error			ia32_context_switch(i_thread		current,
 t_error			ia32_extended_context_switch(i_thread	current,
 						     i_thread	elected);
 
+t_error			ia32_push_args(i_thread			threadid,
+				       void*			args,
+				       t_vsize			size);
+
 
 /*
  * eop

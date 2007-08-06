@@ -8,7 +8,7 @@
  * file          /home/buckman/kan.../library/libkaneton/include/libkaneton.h
  *
  * created       matthieu bucchianeri   [sun aug  5 23:20:36 2007]
- * updated       matthieu bucchianeri   [sun aug  5 23:58:01 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 17:40:21 2007]
  */
 
 #ifndef LIBKANETON_LIBKANETON_H
@@ -32,31 +32,31 @@
  */
 
 #define message_register(...)						\
-  syscall_message_send(__VA_ARGS__)
+  syscall_message_register(__VA_ARGS__)
 
 #define message_send(...)						\
   syscall_message_send(__VA_ARGS__)
 
 #define message_transmit(...)						\
-  syscall_message_send(__VA_ARGS__)
+  syscall_message_transmit(__VA_ARGS__)
 
 #define message_throw(...)						\
-  syscall_message_send(__VA_ARGS__)
+  syscall_message_throw(__VA_ARGS__)
 
 #define message_receive(...)						\
   syscall_message_receive(__VA_ARGS__)
 
 #define message_grab(...)						\
-  syscall_message_receive(__VA_ARGS__)
+  syscall_message_grab(__VA_ARGS__)
 
 #define message_poll(...)						\
-  syscall_message_receive(__VA_ARGS__)
+  syscall_message_poll(__VA_ARGS__)
 
 #define message_state(...)						\
-  syscall_message_receive(__VA_ARGS__)
+  syscall_message_state(__VA_ARGS__)
 
 #define message_wait(...)						\
-  syscall_message_receive(__VA_ARGS__)
+  syscall_message_wait(__VA_ARGS__)
 
 /*
  * ---------- prototypes ------------------------------------------------------

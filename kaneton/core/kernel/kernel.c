@@ -94,7 +94,7 @@ void			kernel_initialize(void)
 
   // XXX srand(time(0)) // init from the number of ticks for example
 
-  kernel->machine = /*rand() %*/ 2^64; // XXX bien sur ca c'est foireux car
+  kernel->machine = 0; /*rand() %*/ //2^64; // XXX bien sur ca c'est foireux car
 				   // rand ne genere pas sur 64-bit
 
   // XXX kernel->node = ...

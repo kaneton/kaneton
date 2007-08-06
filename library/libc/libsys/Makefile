@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/library/libc/libsys/Makefile
+# file          /home/buckman/kaneton/library/libc/libsys/Makefile
 #
 # created       julien quintard   [thu jun 28 20:48:42 2007]
-# updated       julien quintard   [fri jun 29 08:39:30 2007]
+# updated       matthieu bucchianeri   [mon aug  6 17:13:18 2007]
 #
 
 #
@@ -39,7 +39,7 @@ LIBSYS_C		:=		perror.c
 
 LIBSYS_O		:=		$(LIBSYS_C:.c=.o)
 
-LIBSYS_INCLUDE		:=		$(_KLIBC_INCLUDE_DIR_)/libsys/libsys.h
+LIBSYS_INCLUDE		:=		$(_LIBC_INCLUDE_DIR_)/libsys/libsys.h
 
 #
 # ---------- rules ------------------------------------------------------------

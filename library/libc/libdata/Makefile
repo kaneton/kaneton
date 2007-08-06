@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/library/libc/libdata/Makefile
+# file          /home/buckman/kaneton/library/libc/libdata/Makefile
 #
 # created       julien quintard   [thu jun 28 20:47:38 2007]
-# updated       julien quintard   [fri jun 29 08:39:12 2007]
+# updated       matthieu bucchianeri   [mon aug  6 17:12:33 2007]
 #
 
 #
@@ -41,7 +41,7 @@ LIBDATA_C		:=		dump.c				\
 
 LIBDATA_O		:=		$(LIBDATA_C:.c=.o)
 
-LIBDATA_INCLUDE		:=		$(_KLIBC_INCLUDE_DIR_)/libdata/libdata.h
+LIBDATA_INCLUDE		:=		$(_LIBC_INCLUDE_DIR_)/libdata/libdata.h
 
 #
 # ---------- rules ------------------------------------------------------------
