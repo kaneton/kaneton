@@ -3,10 +3,10 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/drivers/interface_test/Makefile
+## file          /home/buckman/kaneton/drivers/pci/Makefile
 ##
 ## created       julien quintard   [fri feb 11 03:00:09 2005]
-## updated       matthieu bucchianeri   [tue may 22 00:56:41 2007]
+## updated       matthieu bucchianeri   [sat may  5 18:22:24 2007]
 ##
 
 #
@@ -25,43 +25,46 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-INTERFACE		:=		interface
+PCI			:=		pci
 
-INTERFACE_C		:=		interface.c		\
-					interface_user.c
+PCI_C			:=		pci.c
 
-INTERFACE_O		:=		$(INTERFACE_C:.c=.o)
+PCI_O			:=		$(PCI_C:.c=.o)
 
-INTERFACE_INCLUDE	:=
-
+PCI_INCLUDE		:=		pci.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
+ifeq ($(behaviour),default)
 
-$(INTERFACE):		libs $(INTERFACE_O)
-	$(call env_executable,$(INTERFACE),$(INTERFACE_O) $(_KLIBC_A_),	\
-	         "--link-script $(_MACHDEP_LINK_DIR_)/driver.lks"	\
-                 "--no-standard-include"				\
-                 "--no-standard-library")
+main:			dependencies $(PCI)
 
-libs:
-	$(call env_launch,Makefile,$(_KLIBC_DIR_),,)
+$(PCI):		libs $(PCI_O)
+	$(call env_executable,$(PCI),					\
+			      $(PCI_O)					\
+			      $(_CRT_O_) $(_LIBC_A_) $(_LIBKANETON_A_),	\
+			      $(_DRIVER_LAYOUT_),			\
+			      $(ENV_OPTION_NO_STANDARD))
 
 clear:
-	$(call env_remove,$(INTERFACE_O),)
-	$(call env_remove,$(INTERFACE),)
+	$(call env_remove,$(PCI_O),)
+	$(call env_remove,$(PCI),)
 
 	$(call env_purge,)
 
-proto:
-	$(call env_prototypes,interface_user.h,)
+prototypes:
+	$(call env_prototypes,$(PCI_INCLUDE),)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(INTERFACE_C),)
+	$(call env_headers,$(PCI_C),)
 
+dependencies:
+	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
+
+endif
 #
 # ---------- dependencies -----------------------------------------------------
 #

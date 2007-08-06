@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/library/crt/crt.c
  *
  * created       matthieu bucchianeri   [mon aug  6 00:22:07 2007]
- * updated       matthieu bucchianeri   [mon aug  6 22:16:46 2007]
+ * updated       matthieu bucchianeri   [tue aug  7 00:11:58 2007]
  */
 
 /*
@@ -111,6 +111,13 @@ int		_start(i_task		task,
 
   res = main(argc, argv, envp);
 
+  /* XXX not safe to return */
+
+  printf("warning: program terminated.\n");
+
+  while (1)
+    ;
+
   return res;
 }
 
@@ -207,39 +214,37 @@ void	_crt_attach_cons_to(i_task	cons)
 
 void	_crt_attach_cons(void)
 {
-  {
-    t_service_mod_message*	message;
-    i_node			mod_service;
-    t_vsize			size;
+  t_service_mod_message*	message;
+  i_node			mod_service;
+  t_vsize			size;
 
-    mod_service.machine = 0;
-    mod_service.task = modid;
+  mod_service.machine = 0;
+  mod_service.task = modid;
 
-    if ((message = malloc(sizeof (*message) + 12)) == NULL)
-      {
-	/* XXX fatal error */
-      }
+  if ((message = malloc(sizeof (*message) + 12)) == NULL)
+    {
+      /* XXX fatal error */
+    }
 
-    message->u.request.operation = MOD_SERVICE_GET_SERVICE;
-    strcpy(message->u.request.u.get_service.name, "cons-simple");
+  message->u.request.operation = MOD_SERVICE_GET_SERVICE;
+  strcpy(message->u.request.u.get_service.name, "cons-simple");
 
-    if (message_send(mod_service,
-		     MESSAGE_TYPE_SERVICE_MOD, (t_vaddr)message,
-		     sizeof (*message) + 12) != ERROR_NONE)
-      {
-	/* XXX fatal error */
-      }
+  if (message_send(mod_service,
+		   MESSAGE_TYPE_SERVICE_MOD, (t_vaddr)message,
+		   sizeof (*message) + 12) != ERROR_NONE)
+    {
+      /* XXX fatal error */
+    }
 
-    if (message_receive(MESSAGE_TYPE_SERVICE_MOD, (t_vaddr)message,
-			&size, &mod_service) != ERROR_NONE)
-      {
-	/* XXX fatal error */
-      }
+  if (message_receive(MESSAGE_TYPE_SERVICE_MOD, (t_vaddr)message,
+		      &size, &mod_service) != ERROR_NONE)
+    {
+      /* XXX fatal error */
+    }
 
-    print_console = message->u.reply.u.get_service.id;
+  print_console = message->u.reply.u.get_service.id;
 
-    free(message);
-  }
+  free(message);
 
   if (message_register(MESSAGE_TYPE_DRIVER_CONS_SIMPLE,
 		       MESSAGE_SIZE_DRIVER_CONS_SIMPLE) != ERROR_NONE)

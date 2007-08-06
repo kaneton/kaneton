@@ -266,6 +266,14 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
   for (i = 0; i < width; i++)
     io_bitmap_set(o->machdep.iomap, id + i, !allow);
 
+  o->machdep.ioflush = 1;
+
+  /* XXX beurk */
+  memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
+	 &o->machdep.iomap,
+	 8192);
+
+
   return (ERROR_NONE);
 }
 

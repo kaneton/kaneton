@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/drivers/cons-simple/cons-simple.c
  *
  * created       matthieu bucchianeri   [sat jun  9 18:36:19 2007]
- * updated       matthieu bucchianeri   [mon aug  6 18:54:08 2007]
+ * updated       matthieu bucchianeri   [tue aug  7 00:11:36 2007]
  */
 
 #include <libc.h>
@@ -96,7 +96,7 @@ static int		print_char(char			c)
  * initialize VGA text console and console structure.
  */
 
-static void		cons_init(void)
+static int		cons_init(void)
 {
   i_region		reg;
   t_uint16		line;
@@ -110,9 +110,7 @@ static void		cons_init(void)
 		     0,
 		     PAGESZ,
 		     &reg) != ERROR_NONE)
-    {
-      /* XXX fatal */
-    }
+    return (-1);
 
   cons.attr = CONS_FRONT(CONS_WHITE) | CONS_BACK(CONS_BLACK) | CONS_INT;
   cons.vga = (char*)(t_vaddr)reg;
@@ -138,28 +136,25 @@ static void		cons_init(void)
       cons.line = line + 1;
 
   printf(" -- cons-simple: Simple Console driver started.\n");
+
+  return (0);
 }
 
 /*
  * service console requests.
  */
 
-static void		cons_serve(void)
+static int		cons_serve(void)
 {
   t_driver_cons_simple_message*	message;
   t_driver_cons_simple_size	count, i;
   i_node			sender;
   t_vsize			size;
 
-  if (message_register(MESSAGE_TYPE_DRIVER_CONS_SIMPLE,
-		       MESSAGE_SIZE_DRIVER_CONS_SIMPLE) != ERROR_NONE)
-    {
-      /* XXX fatal error */
-    }
-
   if ((message = malloc(sizeof (*message) + CONS_SIMPLE_MAX_BUFFER)) == NULL)
     {
-      /* XXX fatal */
+      printf(" -- cons-simple: memory exhausted\n");
+      return (-1);
     }
 
   while (1)
@@ -186,6 +181,8 @@ static void		cons_serve(void)
 	    }
 	}
     }
+
+  return (0);
 }
 
 /*
@@ -194,9 +191,11 @@ static void		cons_serve(void)
 
 int			main(void)
 {
-  cons_init();
+  if (cons_init())
+    return (-1);
 
-  cons_serve();
+  if (cons_serve())
+    return (-1);
 
   return 0;
 }

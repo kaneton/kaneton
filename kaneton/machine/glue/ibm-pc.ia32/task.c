@@ -8,7 +8,7 @@
  * file          /home/buckman/kan.../kaneton/machine/glue/ibm-pc.ia32/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       matthieu bucchianeri   [mon jul 30 18:02:40 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 23:33:25 2007]
  */
 
 /*
@@ -86,10 +86,17 @@ t_error			glue_task_reserve(t_class			class,
 					  t_prior			prior,
 					  i_task*			id)
 {
+  o_task*		o;
+
   TASK_ENTER(task);
 
   if (ia32_clear_io_bitmap(*id) != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  if (task_get(*id, &o) != ERROR_NONE)
+    TASK_LEAVE(task, ERROR_UNKNOWN);
+
+  o->machdep.ioflush = 0;
 
   TASK_LEAVE(task, ERROR_NONE);
 }

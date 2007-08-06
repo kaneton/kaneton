@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/include/task.h
+ * file          /home/buckman/kan.../machine/glue/ibm-pc.ia32/include/task.h
  *
  * created       julien quintard   [wed jun  6 16:25:44 2007]
- * updated       matthieu bucchianeri   [fri jun 15 09:59:26 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 23:32:43 2007]
  */
 
 #ifndef GLUE_TASK_H
@@ -45,6 +45,7 @@
   struct								\
   {									\
     t_uint8			iomap[8192];				\
+    t_uint8			ioflush;				\
   }				machdep;
 
 /*
