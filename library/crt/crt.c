@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/library/crt/crt.c
  *
  * created       matthieu bucchianeri   [mon aug  6 00:22:07 2007]
- * updated       matthieu bucchianeri   [mon aug  6 17:57:32 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 19:17:00 2007]
  */
 
 /*
@@ -60,7 +60,10 @@ static char	print_buffer[PRINT_BUFFER];
 
 int		_start(i_task		task,
 		       i_as		as,
-		       i_task		mod)
+		       i_task		mod,
+		       int		argc,
+		       char**		argv,
+		       char**		envp)
 {
   int		res;
   t_vaddr	page;
@@ -92,7 +95,7 @@ int		_start(i_task		task,
    * call entry point.
    */
 
-  res = main(0, NULL, NULL);
+  res = main(argc, argv, envp);
 
   return res;
 }

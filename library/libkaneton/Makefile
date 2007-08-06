@@ -8,7 +8,7 @@
 # file          /home/buckman/kaneton/library/libkaneton/Makefile
 #
 # created       matthieu bucchianeri   [sun aug  5 23:11:44 2007]
-# updated       matthieu bucchianeri   [sun aug  5 23:22:55 2007]
+# updated       matthieu bucchianeri   [mon aug  6 19:10:40 2007]
 #
 
 #
@@ -34,7 +34,8 @@ include			../../environment/env.mk
 #
 
 LIBKANETON_C		:=		messaging.c			\
-					libkaneton.c
+					libkaneton.c			\
+					thread_args.c
 
 LIBKANETON_O		:=		$(LIBKANETON_C:.c=.o)
 

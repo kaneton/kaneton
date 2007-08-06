@@ -57,7 +57,7 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
 t_error			mod_load_64(Elf64_Ehdr*		header,
 				    char*		name);
 
-void			mod_launch(void);
+void			mod_launch(t_inputs*	inputs);
 
 void			mod_serve(void);
 

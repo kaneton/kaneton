@@ -44,7 +44,7 @@ $(CONS_SIMPLE):			libs $(CONS_SIMPLE_O)
 	$(call env_executable,$(CONS_SIMPLE),				\
 			      $(CONS_SIMPLE_O)				\
 			      $(_CRT_O_) $(_LIBC_A_) $(_LIBKANETON_A_),	\
-			      $(_MOD_LAYOUT_),				\
+			      $(_DRIVER_LAYOUT_),			\
 			      $(ENV_OPTION_NO_STANDARD))
 
 libs:

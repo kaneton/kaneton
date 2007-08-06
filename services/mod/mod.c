@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod.c
  *
  * created       matthieu bucchianeri   [sat may  5 18:43:57 2007]
- * updated       matthieu bucchianeri   [mon aug  6 17:56:21 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 19:38:28 2007]
  */
 
 /*
@@ -76,6 +76,9 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
     i_task		tskid;
     i_as		asid;
     i_task		mod;
+    int			argc;
+    char**		argv;
+    char**		envp;
   }			args;
 
   /*
@@ -147,11 +150,11 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
        * 4)
        */
 
-      if (segment_write(seg,
-			0,
-			(char*)header + phdr->p_offset,
-			phdr->p_filesz) != ERROR_NONE)
+      if (as_copy(_crt_get_as_id(), (t_vaddr)((char*)header + phdr->p_offset),
+		  as, phdr->p_vaddr, phdr->p_filesz) != ERROR_NONE)
 	return (ERROR_UNKNOWN);
+
+      /* XXX blank BSS */
 
       if (segment_perms(seg, perms) != ERROR_NONE)
 	return (ERROR_UNKNOWN);
@@ -186,6 +189,9 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
   args.tskid = tsk;
   args.asid = as;
   args.mod = _crt_get_task_id();
+  args.argc = 0;
+  args.argv = NULL;
+  args.envp = NULL;
 
   if (thread_args(thr, &args, sizeof (args)) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -223,11 +229,10 @@ t_error			mod_load_64(Elf64_Ehdr*		header,
  * 4) go on to the next input.
  */
 
-void			mod_launch(void)
+void			mod_launch(t_inputs*	inputs)
 {
   int			i;
   t_input*		p;
-  t_inputs*		inputs;
   char*			name;
   Elf32_Ehdr*		elf;
 
@@ -319,7 +324,7 @@ void			mod_serve(void)
 
 int			main(int argc, char** argv, char** envp)
 {
-  mod_launch();
+  mod_launch((t_inputs*)argv);
 
   printf(" -- mod: moduler loader service started.\n");
 

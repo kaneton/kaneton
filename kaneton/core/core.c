@@ -198,6 +198,9 @@ t_error			kaneton_launch(void)
     i_task		taskid;
     i_as		asid;
     i_task		mod;
+    int			argc;
+    char**		argv;
+    char**		envp;
   }			args;
 
   if (init->mcodesz == 0)
@@ -223,6 +226,13 @@ t_error			kaneton_launch(void)
 		     &region) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
+  if (region_reserve(as,
+		     (i_segment)(t_vaddr)init->inputs, 0,
+		     REGION_OPT_FORCE,
+		     (t_vaddr)init->inputs, init->inputssz,
+		     &region) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
   if (thread_reserve(task, THREAD_PRIOR, &thread) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
@@ -244,6 +254,9 @@ t_error			kaneton_launch(void)
   args.taskid = task;
   args.asid = as;
   args.mod = ID_UNUSED;
+  args.argc = 1;
+  args.argv = (char**)init->inputs;
+  args.envp = NULL;
 
   if (thread_args(thread, &args, sizeof (args)) != ERROR_NONE)
     return (ERROR_UNKNOWN);

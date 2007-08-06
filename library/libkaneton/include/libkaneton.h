@@ -8,7 +8,7 @@
  * file          /home/buckman/kan.../library/libkaneton/include/libkaneton.h
  *
  * created       matthieu bucchianeri   [sun aug  5 23:20:36 2007]
- * updated       matthieu bucchianeri   [mon aug  6 17:40:21 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 19:11:16 2007]
  */
 
 #ifndef LIBKANETON_LIBKANETON_H
@@ -60,8 +60,10 @@
 
 /*
  * ---------- prototypes ------------------------------------------------------
+ *
  *	../messaging.c
  *	../libkaneton.c
+ *	../thread_args.c
  */
 
 /*
@@ -400,6 +402,15 @@ t_error		timer_attribute_handler(t_id		arg1,
 
 t_error		timer_attribute_data(t_id		arg1,
 			t_vaddr*		result1);
+
+
+/*
+ * ../thread_args.c
+ */
+
+t_error			thread_args(i_thread			threadid,
+				    void*			args,
+				    t_vsize			size);
 
 
 /*

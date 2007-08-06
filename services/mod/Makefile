@@ -44,7 +44,7 @@ $(MOD):			libs $(MOD_O)
 	$(call env_executable,$(MOD),					\
 			      $(MOD_O)					\
 			      $(_CRT_O_) $(_LIBC_A_) $(_LIBKANETON_A_),	\
-			      $(_DRIVER_LAYOUT_),			\
+			      $(_MOD_LAYOUT_),				\
 			      $(ENV_OPTION_NO_STANDARD))
 
 libs:

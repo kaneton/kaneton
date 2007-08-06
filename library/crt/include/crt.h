@@ -46,7 +46,10 @@ extern int	main();
 
 int		_start(i_task		task,
 		       i_as		as,
-		       i_task		mod);
+		       i_task		mod,
+		       int		argc,
+		       char**		argv,
+		       char**		envp);
 
 i_task	_crt_get_task_id(void);
 
