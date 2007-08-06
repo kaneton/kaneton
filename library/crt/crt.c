@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/library/crt/crt.c
  *
  * created       matthieu bucchianeri   [mon aug  6 00:22:07 2007]
- * updated       matthieu bucchianeri   [mon aug  6 19:17:00 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 22:16:46 2007]
  */
 
 /*
@@ -19,6 +19,7 @@
 #include <crt.h>
 #include <libkaneton.h>
 #include "../../drivers/cons-simple/cons-simple-driver.h"
+#include "../../services/mod/mod-service.h"
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -36,6 +37,7 @@
 
 static i_task	taskid;
 static i_as	asid;
+static i_task	modid;
 
 /*
  * store the current print status.
@@ -70,6 +72,7 @@ int		_start(i_task		task,
 
   taskid = task;
   asid = as;
+  modid = mod;
 
   /*
    * initialize malloc();
@@ -86,10 +89,21 @@ int		_start(i_task		task,
   alloc_setup(map_reserve, map_release, as);
 
   /*
+   * attach to mod service.
+   */
+
+  if (message_register(MESSAGE_TYPE_SERVICE_MOD,
+		       MESSAGE_SIZE_SERVICE_MOD) != ERROR_NONE)
+    {
+      /* XXX fatal error */
+    }
+
+  /*
    * initialize printf().
    */
 
-  _crt_attach_cons();
+  if (mod != ID_UNUSED)
+    _crt_attach_cons();
 
   /*
    * call entry point.
@@ -142,11 +156,12 @@ static int	crt_printchar(char c)
       {
 	t_driver_cons_simple_message*	message;
 	i_node				cons_driver;
+	t_vsize				size;
 
 	cons_driver.machine = 0;
 	cons_driver.task = print_console;
 
-	if ((message = malloc(sizeof (message) + PRINT_BUFFER)) == NULL)
+	if ((message = malloc(sizeof (*message) + PRINT_BUFFER)) == NULL)
 	  {
 	    /* XXX fatal error */
 	  }
@@ -162,6 +177,9 @@ static int	crt_printchar(char c)
 	    /* XXX fatal error */
 	  }
 
+	message_receive(MESSAGE_TYPE_DRIVER_CONS_SIMPLE, (t_vaddr)message,
+			&size, &cons_driver);
+
 	free(message);
       }
 
@@ -174,10 +192,54 @@ static int	crt_printchar(char c)
  * attach printf to the console driver.
  */
 
+void	_crt_attach_cons_to(i_task	cons)
+{
+  message_register(MESSAGE_TYPE_DRIVER_CONS_SIMPLE,
+		   MESSAGE_SIZE_DRIVER_CONS_SIMPLE);
+
+  print_console = cons;
+  printf_init(crt_printchar, NULL);
+}
+
+/*
+ * attach printf to the console driver.
+ */
+
 void	_crt_attach_cons(void)
 {
-  /* print_console = XXX get cons service id */
-  print_console = 2;
+  {
+    t_service_mod_message*	message;
+    i_node			mod_service;
+    t_vsize			size;
+
+    mod_service.machine = 0;
+    mod_service.task = modid;
+
+    if ((message = malloc(sizeof (*message) + 12)) == NULL)
+      {
+	/* XXX fatal error */
+      }
+
+    message->u.request.operation = MOD_SERVICE_GET_SERVICE;
+    strcpy(message->u.request.u.get_service.name, "cons-simple");
+
+    if (message_send(mod_service,
+		     MESSAGE_TYPE_SERVICE_MOD, (t_vaddr)message,
+		     sizeof (*message) + 12) != ERROR_NONE)
+      {
+	/* XXX fatal error */
+      }
+
+    if (message_receive(MESSAGE_TYPE_SERVICE_MOD, (t_vaddr)message,
+			&size, &mod_service) != ERROR_NONE)
+      {
+	/* XXX fatal error */
+      }
+
+    print_console = message->u.reply.u.get_service.id;
+
+    free(message);
+  }
 
   if (message_register(MESSAGE_TYPE_DRIVER_CONS_SIMPLE,
 		       MESSAGE_SIZE_DRIVER_CONS_SIMPLE) != ERROR_NONE)

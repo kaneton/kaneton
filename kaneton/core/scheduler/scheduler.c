@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [sat aug  4 19:28:40 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 22:22:31 2007]
  */
 
 /*
@@ -463,6 +463,8 @@ t_error			scheduler_switch(void)
     {
       if (second_round)
 	{
+	  /* XXX goto idle */
+
 	  SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 	}
       list = ent->active;
@@ -522,8 +524,6 @@ t_error			scheduler_switch(void)
 
   if (VIEW_SIGNAL("thread", elected, VIEW_SIGNAL_PREEMPT) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
-
-//  ipi_send_vector(48, ipi_all_but_me, 1);
 
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }

@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod.h
  *
  * created       matthieu bucchianeri   [mon aug  6 00:05:12 2007]
- * updated       matthieu bucchianeri   [mon aug  6 00:06:46 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 21:44:10 2007]
  */
 
 #ifndef MOD_MOD_H
@@ -21,6 +21,12 @@
 #include <libc.h>
 
 #include "elf.h"
+
+/*
+ * ---------- macros  ---------------------------------------------------------
+ */
+
+#define	MOD_MAX_SERVICE		32
 
 /*
  * ---------- types -----------------------------------------------------------

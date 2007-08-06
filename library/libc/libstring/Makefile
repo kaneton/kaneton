@@ -8,7 +8,7 @@
 # file          /home/buckman/kaneton/library/libc/libstring/Makefile
 #
 # created       julien quintard   [thu jun 28 20:48:10 2007]
-# updated       matthieu bucchianeri   [mon aug  6 17:12:47 2007]
+# updated       matthieu bucchianeri   [mon aug  6 21:54:40 2007]
 #
 
 #
@@ -54,6 +54,7 @@ LIBSTRING_C		:=		ctype.c				\
 					strncat.c			\
 					strncmp.c			\
 					strncpy.c			\
+					strrchr.c			\
 					strtol.c			\
 					strtoul.c
 

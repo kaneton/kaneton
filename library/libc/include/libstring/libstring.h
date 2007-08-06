@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...brary/libc/include/libstring/libstring.h
+ * file          /home/buckman/kan...brary/libc/include/libstring/libstring.h
  *
  * created       julien quintard   [sun jun 10 17:35:02 2007]
- * updated       julien quintard   [sun jun 10 18:05:16 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 21:55:08 2007]
  */
 
 #ifndef LIBC_LIBSTRING_LIBSTRING_H
@@ -50,6 +50,7 @@
  *      ../../libstring/strncat.c
  *      ../../libstring/strncmp.c
  *      ../../libstring/strncpy.c
+ *	../../libstring/strrchr.c
  *      ../../libstring/strtol.c
  *      ../../libstring/strtoul.c
  */
@@ -225,6 +226,14 @@ int			strncmp(const char*			s1,
 char*			strncpy(char*				to,
 				char*				from,
 				size_t				n);
+
+
+/*
+ * ../../libstring/strrchr.c
+ */
+
+char*			strrchr(const char*			p,
+				int				ch);
 
 
 /*

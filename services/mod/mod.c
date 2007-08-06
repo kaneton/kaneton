@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod.c
  *
  * created       matthieu bucchianeri   [sat may  5 18:43:57 2007]
- * updated       matthieu bucchianeri   [mon aug  6 19:38:28 2007]
+ * updated       matthieu bucchianeri   [mon aug  6 22:17:54 2007]
  */
 
 /*
@@ -26,10 +26,17 @@
 #include <crt.h>
 
 #include "mod.h"
+#include "mod-service.h"
 
 /*
  * ---------- globals ---------------------------------------------------------
  */
+
+struct
+{
+  char*		name;
+  i_task	id;
+}		services[MOD_MAX_SERVICE];
 
 /*
  * ---------- macro-functions -------------------------------------------------
@@ -56,6 +63,7 @@
  * 5) create the thread.
  * 6) pushes arguments onto the stack.
  * 7) run the input!
+ * 8) register to the directory.
  */
 
 t_error			mod_load_32(Elf32_Ehdr*		header,
@@ -203,6 +211,31 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
   if (task_state(tsk, SCHEDULER_STATE_RUN) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
+  /*
+   * 8)
+   */
+
+  for (i = 0; i < MOD_MAX_SERVICE && services[i].name != NULL; i++)
+    ;
+
+  if (i == MOD_MAX_SERVICE)
+    {
+      printf("warning: too many services. mod directory is full.\n");
+    }
+  else
+    {
+      services[i].name = strrchr(name, '/') + 1;
+      services[i].id = tsk;
+
+#if 0
+      /* XXX */
+      if (!strcmp(services[i].name, "cons-simple"))
+	_crt_attach_cons_to(tsk);
+      printf(" -- mod: attached to console driver.\n");
+#endif
+    }
+
+
   return (ERROR_NONE);
 }
 
@@ -223,10 +256,9 @@ t_error			mod_load_64(Elf64_Ehdr*		header,
  *
  * steps:
  *
- * 1) XXX
- * 2) get elf header.
- * 3) load the input.
- * 4) go on to the next input.
+ * 1) get elf header.
+ * 2) load the input.
+ * 3) go on to the next input.
  */
 
 void			mod_launch(t_inputs*	inputs)
@@ -235,12 +267,6 @@ void			mod_launch(t_inputs*	inputs)
   t_input*		p;
   char*			name;
   Elf32_Ehdr*		elf;
-
-  /*
-   * 1)
-   */
-
-  /* XXX inputs = */
 
   for (i = 0, p = (t_input*)(inputs + 1);
        i < inputs->ninputs;
@@ -251,7 +277,7 @@ void			mod_launch(t_inputs*	inputs)
       printf(" -- mod: loading input %s ... ", name);
 
       /*
-       * 2)
+       * 1)
        */
 
       elf = (Elf32_Ehdr*)(p + 1);
@@ -272,7 +298,7 @@ void			mod_launch(t_inputs*	inputs)
 	}
 
       /*
-       * 3)
+       * 2)
        */
 
       if (elf->e_ident[EI_CLASS] == ELFCLASS32)
@@ -292,13 +318,10 @@ void			mod_launch(t_inputs*	inputs)
 	    }
 	}
 
-      /* hack: call the CRT function that attaches the console to the driver */
-      _crt_attach_cons();
-
       printf(" -- mod: loaded.\n");
 
       /*
-       * 4)
+       * 3)
        */
 
     next:
@@ -310,11 +333,46 @@ void			mod_launch(t_inputs*	inputs)
  * modules directory serving loop.
  */
 
-void			mod_serve(void)
+void				mod_serve(void)
 {
+  t_service_mod_message*	message;
+  i_node			sender;
+  t_vsize			size;
+  int				i;
+
+  if ((message = malloc(MESSAGE_SIZE_SERVICE_MOD)) == NULL)
+    {
+      /* XXX fatal */
+    }
+
   while (1)
     {
-      /* XXX */
+      if (message_receive(MESSAGE_TYPE_SERVICE_MOD,
+			  (t_vaddr)message,
+			  &size,
+			  &sender) == ERROR_NONE)
+	{
+	  if (message->u.request.operation == MOD_SERVICE_GET_SERVICE)
+	    {
+	      for (i = 0; i < MOD_MAX_SERVICE && services[i].name != NULL; i++)
+		if (!strcmp(services[i].name,
+			    message->u.request.u.get_service.name))
+		  break;
+
+	      if (i == MOD_MAX_SERVICE || services[i].name == NULL)
+		message->u.reply.u.get_service.id = ID_UNUSED;
+	      else
+		message->u.reply.u.get_service.id = services[i].id;
+
+	      if (message_send(sender,
+			       MESSAGE_TYPE_SERVICE_MOD,
+			       (t_vaddr)message,
+			       sizeof (*message)) != ERROR_NONE)
+		{
+		  /* XXX fatal */
+		}
+	    }
+	}
     }
 }
 
@@ -324,6 +382,8 @@ void			mod_serve(void)
 
 int			main(int argc, char** argv, char** envp)
 {
+  memset(services, 0, sizeof (services));
+
   mod_launch((t_inputs*)argv);
 
   printf(" -- mod: moduler loader service started.\n");

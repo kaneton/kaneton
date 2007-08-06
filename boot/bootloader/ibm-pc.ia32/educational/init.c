@@ -520,12 +520,12 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
 
   init->inputs =
     (t_inputs*)bootloader_init_alloc(sizeof(t_inputs) +
-				      ninputs * sizeof(t_input) +
-				      inputssz,
-				      &inputssz);
+				     (ninputs - 2) * sizeof(t_input) +
+				     inputssz,
+				     &inputssz);
   memset(init->inputs, 0x0, inputssz);
   init->inputssz = inputssz;
-  init->inputs->ninputs = ninputs;
+  init->inputs->ninputs = ninputs - 2;
 
   init->segments =
     (s_segment*)bootloader_init_alloc(nsegments * sizeof(s_segment),
@@ -572,7 +572,7 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
 
   for (i = 2,
 	 input = (t_input*)((t_uint32)init->inputs + sizeof(t_inputs));
-       i < init->inputs->ninputs;
+       i < ninputs;
        i++)
     {
       modsz = mod[i].mod_end - mod[i].mod_start;
@@ -594,8 +594,6 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
       input = (t_input*)((t_uint32)input + sizeof(t_input) +
 			   input->size + strlen(input->name) + 1);
     }
-
-  init->inputs->ninputs--;
 
   /*
    * 8)

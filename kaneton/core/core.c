@@ -132,7 +132,7 @@ void			kaneton(t_init*				bootloader)
 
   cons_msg('+', "kaneton started\n");
 
-  //  ibmpc_keyboard_init();
+  ibmpc_keyboard_init();
 
   STI();
 
