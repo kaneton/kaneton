@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/python.tex
 %
 % created       julien quintard   [sat jun  2 13:06:42 2007]
-% updated       julien quintard   [thu jun 14 21:52:16 2007]
+% updated       julien quintard   [thu aug 16 23:10:17 2007]
 %
 
 %
@@ -157,16 +157,16 @@ Then follows an empty comment line and the function description.
     location = None
     store = None
 
-    env.display(env.HEADER_ERROR, ``usage: view.py [document]'',
+    env.display(env.HEADER_ERROR, `usage: view.py [document]',
                 env.OPTION_NONE)
 
-    env.display(env.HEADER_NONE, ``'', env.OPTION_NONE)
+    env.display(env.HEADER_NONE, `', env.OPTION_NONE)
 
-    env.display(env.HEADER_ERROR, ``documents:'', env.OPTION_NONE)
+    env.display(env.HEADER_ERROR, `documents:', env.OPTION_NONE)
 
     for store in g_store:
       for location in store:
-        env.display(env.HEADER_ERROR, ``  `` + location, env.OPTION_NONE)
+        env.display(env.HEADER_ERROR, `  ' + location, env.OPTION_NONE)
 \end{verbatim}
 
 The identation used in \textit{Python} script must be fixed at \textit{2}
