@@ -5,10 +5,10 @@
 #
 # license       kanetno
 #
-# file          /home/buckman/kaneton/Makefile
+# file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       matthieu bucchianeri   [sat jul 21 17:54:22 2007]
+# updated       julien quintard   [sat aug 18 20:25:42 2007]
 #
 
 #
@@ -139,7 +139,7 @@ headers:
 build:
 	$(call env_launch,$(_MBL_SCRIPT_),build,)
 
-install:		kaneton
+install:		main
 	$(call env_launch,$(_MBL_SCRIPT_),install,)
 
 #
