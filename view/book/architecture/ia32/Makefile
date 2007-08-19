@@ -37,14 +37,16 @@ SOURCES			:=		bibliography.tex		\
 					memory.tex			\
 					overview.tex			\
 					references.tex			\
-					task.tex			
+					syscalls.tex			\
+					task.tex			\
+					timer.tex
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
 					$(SOURCES:.tex=.toc)		\
 					$(SOURCES:.tex=.pdf)		\
 					$(SOURCES:.tex=.bbl)		\
-					$(SOURCES:.tex=.blg)		
+					$(SOURCES:.tex=.blg)
 
 #
 # ---------- rules ------------------------------------------------------------

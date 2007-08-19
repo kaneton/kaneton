@@ -1,5 +1,9 @@
 ------------------------------ buck :: todo -----------------------------------
 
+ un truc qui me parait bizarre dans le bootloader: la stack courant
+elle est pas mappée explicitement !
+
+--
 check/
   - revoir tous les tests bootloader
   - event/message_**

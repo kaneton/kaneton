@@ -1,0 +1,73 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/buckman/kaneton/view/book/architecture/ia32/timer.tex
+%
+% created       matthieu bucchianeri   [tue aug 14 20:09:50 2007]
+% updated       matthieu bucchianeri   [thu aug 16 17:50:18 2007]
+%
+
+%
+% timer management
+%
+
+\chapter{Timer management}
+
+This chapter describes the architecture-dependent code driving the
+kaneton timer manager.
+
+\newpage
+
+%
+% fixed frequency interrupts
+%
+
+\section{Fixed frequency interrupts}
+
+The kaneton timer manager requires the function
+\textit{timer\_handler()} to be called every
+\textit{TIMER\_MS\_PER\_TICK} milliseconds.
+
+There are three components able to throw an interrupt at fixed rate:
+
+\begin{itemize}
+  \item
+    The microprocessor itself, through the local APIC;
+  \item
+    The Programmable Interval Timer (PIT);
+  \item
+    The Real Time Clock (RTC).
+\end{itemize}
+
+The first solution is the most accurate but needs to be calibrated,
+which is a more complex process. The last solution is also very
+accurate but the available frequencies need floating point computing.
+
+To keep the code as simple as possible, we will use the PIT, which is
+a very easily programmable component.
+
+The PIT is connected to a fixed frequency oscillator of 1193180
+Hz. The component act as a counter/decounter. We use the mode 2: a
+value is loaded in the counter register and then decremented on each
+clock tick. Once the counter register reaches zero, an interrupt is
+signaled and the counter is reset to its initially loaded value.
+
+The interrupt pin is connected to the IRQ line 0.
+
+The very short function \textit{ibmpc\_timer\_init()} setup the PIT
+channel 0 at mode 2 with an initial counter register computed as
+follow:
+
+$$
+latch = \frac{IBMPC\_CLOCK\_TICK\_RATE}{\frac{1000}{TIMER\_MS\_PER\_TICK}}
+$$
+
+Where \textit{IBMPC\_CLOCK\_TICK\_RATE} is the fixed oscillator
+frequency (1193180 Hz).
+
+To finish, the glue code of \textit{timer\_initialize()} hooks the IRQ
+0 to the function \textit{timer\_handler()}.

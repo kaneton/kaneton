@@ -1,15 +1,15 @@
-%%
-%% ---------- header ----------------------------------------------------------
-%%
-%% project       kaneton
-%%
-%% license       kaneton
-%%
-%% file          /home/mycure/kane.../book/arch-ia32/virtual/ia32-virtual.tex
-%%
-%% created       julien quintard   [mon may 14 19:18:46 2007]
-%% updated       julien quintard   [mon may 14 19:18:48 2007]
-%%
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/buckman/kaneton/view/book/architecture/ia32/ia32.tex
+%
+% created       julien quintard   [mon may 14 19:18:46 2007]
+% updated       matthieu bucchianeri   [tue aug 14 20:23:52 2007]
+%
 
 %
 % path
@@ -27,14 +27,15 @@
 % header
 %
 
-\lhead{\scriptsize{The kaneton microkernel :: ia32 architecture}}
+\lhead{\scriptsize{The kaneton microkernel :: ia32/ibm-pc educational
+implementation}}
 \rhead{}
 
 %
 % title
 %
 
-\title{The kaneton microkernel :: ia32 architecture
+\title{The kaneton microkernel :: ia32/ibm-pc educational implementation
        \logos}
 
 %
@@ -61,7 +62,7 @@
 %
 
 This document describes the kaneton microkernel reference project over
-Intel IA-32 architecture.
+Intel IA-32 architecture on IBM-PC platform (for educational purpose).
 
 This document should be used by every student willing implement the
 kaneton microkernel as people looking for more details on the kaneton
@@ -72,8 +73,10 @@ the official website
   \footnote{http://www.kaneton.org}.
 
 \textbf{Prerequisites}: this document details the kaneton implementation
-for IA-32 architecture. A knowledge of this architecture's basics is
-strongly recommended.
+for IA-32 architecture on IBM-PC platform (for educational purpose). A
+knowledge of this architecture's basics is strongly recommended as
+this document is not intended to be an IA-32 lesson (see
+\textit{Bibliography} for references).
 
 %
 % toc
@@ -89,8 +92,10 @@ strongly recommended.
 \include{bootloader}
 \include{memory}
 \include{event}
+\include{timer}
 \include{task}
 \include{io}
+\include{syscalls}
 \include{references}
 \include{bibliography}
 

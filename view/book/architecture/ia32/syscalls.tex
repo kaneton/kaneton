@@ -1,0 +1,148 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/buckman/kan...view/book/architecture/ia32/syscalls.tex
+%
+% created       matthieu bucchianeri   [tue aug 14 20:10:52 2007]
+% updated       matthieu bucchianeri   [thu aug 16 19:33:03 2007]
+%
+
+%
+% system calls
+%
+
+\chapter{System calls}
+
+This chapter describes the implementation details of the low-level
+system calls used in the message manager.
+
+\newpage
+
+%
+% software interrupts and register parameter-passing
+%
+
+\section{Software interrupts and register parameter-passing}
+
+The IA-32 microprocessors offers two facilities to implement system
+calls:
+
+\begin{itemize}
+  \item
+    The software interrupts with the \textit{INT} instruction;
+  \item
+    The \textit{SYSENTER} and \textit{SYSEXIT} instructions.
+\end{itemize}
+
+We use the first technique as it is widely used and supported on any
+IA-32 microprocessor.
+
+The fastest way to pass parameters to a system call is to use the
+registers. We can pass 32 bits per register. As the message primitives
+take many arguments, it is difficult to put all of them in the
+registers. For this reason, we have to economize one register by
+associating one interrupt per system call.
+
+%
+% kernel-side code
+%
+
+\subsection{Kernel-side code}
+
+The function \textit{ia32\_syscalls\_init()} calls
+\textit{event\_reserve()} for each system call as defined in the table
+in the \textit{System calls map} section.
+
+In every handler, we use the interrupted context pointer to get the
+register values and to set the output values.
+
+\begin{verbatim}
+ia32_syshandler_register()
+{
+  type_1    arg1;
+  type_2    arg2;
+  t_error   res;
+
+  arg1 = ia32_context->eax;
+  arg2 = ia32_context->ebx;
+
+  res = function(arg1, arg2);
+
+  ia32_context->eax = res;
+}
+\end{verbatim}
+
+%
+% user-side code
+%
+
+\subsection{User-side code}
+
+The user-side system call code put the arguments in registers, call
+the corresponding software interrupt and get back the result(s) from
+registers.
+
+\begin{verbatim}
+syscall(arg1, arg2)
+{
+  eax <- arg1
+  ebx <- arg2
+
+  int 56
+
+  res <- eax
+
+  return (res);
+}
+\end{verbatim}
+
+%
+% system calls map
+%
+
+\section{System calls map}
+
+As explained just above, one software interrupt slot is allocated for
+each system call. Here is the table of these indexes, the associated
+system call and the register mapping of the parameters.
+
+\begin{center}
+\begin{tabular}{| c | c | c |}
+\hline
+Soft-int & Syscall           & Registers \\
+\hline
+56       & message\_register & \textit{eax} = type; \textit{ebx} = size \\
+\hline
+57       & message\_send     & \textit{eax,ebx,ecx,edx} = node; \textit{esi} = type; \textit{edi} = data; \textit{ebp} = size \\
+\hline
+58       & message\_transmit & \textit{eax,ebx,ecx,edx} = node; \textit{esi} = type; \textit{edi} = data; \textit{ebp} = size \\
+\hline
+59       & message\_throw    & XXX \\
+\hline
+60       & message\_receive  & \textit{eax} = type; \textit{ebx} = data; \textbf{output}: \textit{ebx} = size; \textit{ecx,edx,esi,edi} = node \\
+\hline
+61       & message\_grab     & XXX \\
+\hline
+62       & message\_poll     & \textit{eax} = type; \textit{ebx} = data; \textbf{output}: \textit{ebx} = size; \textit{ecx,edx,esi,edi} = node \\
+\hline
+63       & message\_state    & XXX \\
+\hline
+64       & message\_wait     & XXX \\
+\hline
+\end{tabular}
+\end{center}
+
+The register \textit{eax} is always used as the result output register
+(of type \textit{t\_error}).
+
+%
+% upcalls
+%
+
+\section{Upcalls}
+
+XXX

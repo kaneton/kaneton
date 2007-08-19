@@ -1,13 +1,15 @@
-%%
-%% licence       kaneton licence
-%%
-%% project       kaneton
-%%
-%% file          /home/buckman/kaneton/view/books/arch-ia32-virtual/bootloader.tex
-%%
-%% created       matthieu bucchianeri   [sat sep  2 11:40:18 2006]
-%% updated       matthieu bucchianeri   [sat nov  4 16:43:05 2006]
-%%
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/buckman/kan...ew/book/architecture/ia32/bootloader.tex
+%
+% created       matthieu bucchianeri   [sat sep  2 11:40:18 2006]
+% updated       matthieu bucchianeri   [tue aug 14 20:13:43 2007]
+%
 
 %
 % bootloader
@@ -72,18 +74,21 @@ working exclusively with addresses above 16 Mb is to keep the
 beginning of the memory free, since some hardware using memory
 accesses such as DMA can only address with 24-bits.
 
+XXX ``mod'' module relocation
+
 In order to determine the kernel base address, we need to read the
 binary's ELF header. With this value, we are now able to copy the
 kernel to a good location and to setup a simple page allocator. The
 need of such allocator is to create structures like the \textit{init}
 variable. This allocator can be used through the
-\textit{bootloader\_init\_alloc} function. It acts like a classical
+\textit{bootloader\_init\_alloc()} function. It acts like a classical
 malloc function, except that it is not fine-grain, meaning we must
 allocate spaces with a size multiple of the page size (4 Kb).
 
 Next, we must take care of the modules. We must calculate the total
 size of all the modules, then we use the allocator to reserve some
-space, and to finish we copy every modules to its new location.
+space, and to finish we copy every modules to its new location (no
+real relocation).
 
 Needless to say that we keep filling the \textit{init} structure all
 along the process.
@@ -98,8 +103,10 @@ Putting the processor's  MMU in optimal running conditions  is done in
 two steps (as Intel's MMU is divided in two major parts):
 
 \begin{enumerate}
-  \item Setting up the segmentation unit
-  \item Preparing an identity mapping and enabling paging
+  \item
+    Setting up the segmentation unit;
+  \item
+    Preparing an identity mapping and enabling paging.
 \end{enumerate}
 
 %
@@ -108,20 +115,9 @@ two steps (as Intel's MMU is divided in two major parts):
 
 \subsection{Segmentation model}
 
-Segmentation is useful to restrict some code accessing only a defined
-area of data with limited permissions for example.
-
-A segment is mainly defined by:
-
-\begin{itemize}
-  \item A base address
-  \item A limit (the size of the segment)
-  \item Access permissions and privileged required
-\end{itemize}
-
 Using the segmentation mecanism is used to prevent one tasks from
-accessing another task's address space. Each task has its pair of
-segments (code and data), and then can only address its memory.
+accessing another task's address space. Each task has its set of
+segments (code and data) and then can only address its memory.
 
 In kaneton implemetation with virtual memory, the above condition is
 filled using the virtual memory mecanism. So the segmentation becomes
@@ -167,35 +163,12 @@ conditions.
 
 \subsection{Entering in paging-mode}
 
-The IA-32 with virtual memory implementation relies on using virtual
-address spaces. The principles of virtual memory is to create a
-mapping between a so-called virtual address (a couple formed of a
-context and an address) and a physical address. To be more precise, as
-it would be to difficult to apply the previous rule to each byte of
-the memory, we divide it in areas called pages. So, we talk of a
-mapping between a virtual page (formerly called a page) and a physical
-page (or page frame).
-
-With virtual memory, protecting an address space against being
-accessed by anyone else that its owner is simple as assigning one
-precise context to the address space and linking each task with a
-context. The ability of accessing an address space is determined by
-the ``context''.
-
-The definition of the ``context'' depends on the architecture. With
-some MMU, the context is only an integer identifier. On IA-32, the
-context is the page-directory and page-table tree.
-
-Each address space is represented by a tree made of tables, each
-table's entry defining a translation between a page and a page
-frame. Details about paging will be discussed later in the
-\textbf{Memory management} chapter.
-
 Before enabling the virtual memory (called paging-mode on IA-32), we
 must prepare one address space, used once the paging enabled. This
 address space must contains all the structures referenced by the
 \textit{init} structure even itself. The address space must also
-contains the kernel code.
+contains the currently executing code and the kernel code (to which we
+will jump later) and its stack.
 
 The file \textit{paging.c} accomplishes several tasks in order to
 enable virtual memory.
@@ -223,6 +196,8 @@ processor's \textbf{control register} number 0.
 %
 
 \section{Summary of the \textit{init} structure}
+
+XXX update this!
 
 Here is a summary of all the fields of the \textit{init} variable and
 how they are filled:
