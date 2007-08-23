@@ -3,7 +3,7 @@
 ##
 ## project       kaneton
 ##
-## file          /home/buckman/kaneton/drivers/pci/Makefile
+## file          /home/buckman/kaneton/drivers/mod/Makefile
 ##
 ## created       julien quintard   [fri feb 11 03:00:09 2005]
 ## updated       matthieu bucchianeri   [sat may  5 18:22:24 2007]
@@ -25,41 +25,46 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PCI			:=		pci
+VGA		:=		vga
 
-PCI_C			:=		pci.c
+VGA_C		:=		vga.c
 
-PCI_O			:=		$(PCI_C:.c=.o)
+VGA_O		:=		$(VGA_C:.c=.o)
 
-PCI_INCLUDE		:=		pci.h
+VGA_INCLUDE	:=		vga.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			dependencies $(PCI)
+main:			dependencies $(VGA)
 
-$(PCI):		libs $(PCI_O)
-	$(call env_executable,$(PCI),					\
-			      $(PCI_O)					\
+$(VGA):			libs $(VGA_O)
+	$(call env_executable,$(VGA),					\
+			      $(VGA_O)					\
 			      $(_CRT_O_) $(_LIBC_A_) $(_LIBKANETON_A_),	\
 			      $(_DRIVER_LAYOUT_),			\
 			      $(ENV_OPTION_NO_STANDARD))
 
+libs:
+	$(call env_launch,${_LIBC_DIR_}/Makefile,,)
+	$(call env_launch,${_CRT_DIR_}/Makefile,,)
+	$(call env_launch,${_LIBKANETON_DIR_}/Makefile,,)
+
 clear:
-	$(call env_remove,$(PCI_O),)
-	$(call env_remove,$(PCI),)
+	$(call env_remove,$(VGA_O),)
+	$(call env_remove,$(VGA),)
 
 	$(call env_purge,)
 
 prototypes:
-	$(call env_prototypes,${_DRIVERS_DIR_}/pci/$(PCI_INCLUDE),)
+	$(call env_prototypes,${_DRIVERS_DIR_}/vga/$(VGA_INCLUDE),)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(PCI_C),)
+	$(call env_headers,$(VGA_C),)
 
 dependencies:
 	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)

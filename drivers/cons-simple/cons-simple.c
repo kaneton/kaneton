@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/drivers/cons-simple/cons-simple.c
  *
  * created       matthieu bucchianeri   [sat jun  9 18:36:19 2007]
- * updated       matthieu bucchianeri   [tue aug  7 00:11:36 2007]
+ * updated       matthieu bucchianeri   [thu aug 23 16:07:18 2007]
  */
 
 #include <libc.h>
@@ -27,7 +27,7 @@ static t_simple_cons	cons;
  * this function scrolls the screen.
  */
 
-void			cons_scroll(t_uint16			lines)
+static void	       	cons_scroll(t_uint16			lines)
 {
   t_uint16		src;
   t_uint16		dst;
@@ -176,7 +176,7 @@ static int		cons_serve(void)
 			       (t_vaddr)message,
 			       sizeof (*message)) != ERROR_NONE)
 		{
-		  /* XXX fatal */
+		  printf(" -- cons-simple: error in request\n");
 		}
 	    }
 	}

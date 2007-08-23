@@ -55,6 +55,8 @@ i_task	_crt_get_task_id(void);
 
 i_as	_crt_get_as_id(void);
 
+i_task	_crt_get_mod_id(void);
+
 void	_crt_attach_cons_to(i_task	cons);
 
 void	_crt_attach_cons(void);

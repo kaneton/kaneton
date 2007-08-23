@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod-service.h
  *
  * created       matthieu bucchianeri   [mon aug  6 21:35:25 2007]
- * updated       matthieu bucchianeri   [mon aug  6 21:41:02 2007]
+ * updated       matthieu bucchianeri   [thu aug 23 16:44:23 2007]
  */
 
 #ifndef SERVICES_MOD_SERVICE_H
@@ -79,5 +79,63 @@ typedef struct
   } u;
 }			t_service_mod_message;
 
+/*
+ * ---------- interface -------------------------------------------------------
+ */
+
+#ifdef MOD_SPAWN_INTERFACE
+
+#ifdef MOD_INLINE_INTERFACE
+# define MOD_ATTRIBUTE_INTERFACE	inline __attribute__((unused))
+#else
+# define MOD_ATTRIBUTE_INTERFACE	__attribute__((unused))
+#endif
+
+static MOD_ATTRIBUTE_INTERFACE t_error
+mod_init(void)
+{
+  return message_register(MESSAGE_TYPE_SERVICE_MOD, MESSAGE_SIZE_SERVICE_MOD);
+}
+
+static MOD_ATTRIBUTE_INTERFACE t_error
+mod_get_service(i_task mod, char* name, i_task* service)
+{
+  t_service_mod_message*	message;
+  i_node			mod_service;
+  t_vsize			size;
+
+  mod_service.machine = 0;
+  mod_service.task = mod;
+
+  if ((message = malloc(sizeof (*message) + 12)) == NULL)
+    return (ERROR_UNKNOWN);
+
+  message->u.request.operation = MOD_SERVICE_GET_SERVICE;
+  strcpy(message->u.request.u.get_service.name, name);
+
+  if (message_send(mod_service,
+		   MESSAGE_TYPE_SERVICE_MOD, (t_vaddr)message,
+		   sizeof (*message) + strlen(name) + 1) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  if (message_receive(MESSAGE_TYPE_SERVICE_MOD, (t_vaddr)message,
+		      &size, &mod_service) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  if (service != NULL)
+    *service = message->u.reply.u.get_service.id;
+
+  free(message);
+
+  return (ERROR_NONE);
+}
+
+#endif
 
 #endif

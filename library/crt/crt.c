@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/library/crt/crt.c
  *
  * created       matthieu bucchianeri   [mon aug  6 00:22:07 2007]
- * updated       matthieu bucchianeri   [tue aug  7 00:11:58 2007]
+ * updated       matthieu bucchianeri   [thu aug 23 17:06:07 2007]
  */
 
 /*
@@ -18,7 +18,11 @@
 #include <libc.h>
 #include <crt.h>
 #include <libkaneton.h>
+#define CONS_SIMPLE_SPAWN_INTERFACE
+#define CONS_SIMPLE_INLINE_INTERFACE
 #include "../../drivers/cons-simple/cons-simple-driver.h"
+#define MOD_SPAWN_INTERFACE
+#define MOD_INLINE_INTERFACE
 #include "../../services/mod/mod-service.h"
 
 /*
@@ -92,8 +96,7 @@ int		_start(i_task		task,
    * attach to mod service.
    */
 
-  if (message_register(MESSAGE_TYPE_SERVICE_MOD,
-		       MESSAGE_SIZE_SERVICE_MOD) != ERROR_NONE)
+  if (mod_init() != ERROR_NONE)
     {
       /* XXX fatal error */
     }
@@ -140,6 +143,15 @@ i_as	_crt_get_as_id(void)
 }
 
 /*
+ * return the mod service identifier.
+ */
+
+i_task	_crt_get_mod_id(void)
+{
+  return modid;
+}
+
+/*
  * print one character (buffered).
  */
 
@@ -160,35 +172,7 @@ static int	crt_printchar(char c)
 	  /* XXX fatal error */
 	}
 
-      {
-	t_driver_cons_simple_message*	message;
-	i_node				cons_driver;
-	t_vsize				size;
-
-	cons_driver.machine = 0;
-	cons_driver.task = print_console;
-
-	if ((message = malloc(sizeof (*message) + PRINT_BUFFER)) == NULL)
-	  {
-	    /* XXX fatal error */
-	  }
-
-	message->u.request.operation = CONS_SIMPLE_DRIVER_WRITE;
-	message->u.request.u.write.count = print_n;
-	memcpy(&message->u.request.u.write.c[0], print_buffer, print_n);
-
-	if (message_send(cons_driver,
-			 MESSAGE_TYPE_DRIVER_CONS_SIMPLE, (t_vaddr)message,
-			 sizeof (*message) + PRINT_BUFFER) != ERROR_NONE)
-	  {
-	    /* XXX fatal error */
-	  }
-
-	message_receive(MESSAGE_TYPE_DRIVER_CONS_SIMPLE, (t_vaddr)message,
-			&size, &cons_driver);
-
-	free(message);
-      }
+      cons_simple_write(print_console, print_n, print_buffer, NULL);
 
       print_n = 0;
     }
@@ -201,8 +185,10 @@ static int	crt_printchar(char c)
 
 void	_crt_attach_cons_to(i_task	cons)
 {
-  message_register(MESSAGE_TYPE_DRIVER_CONS_SIMPLE,
-		   MESSAGE_SIZE_DRIVER_CONS_SIMPLE);
+  if (cons_simple_init() != ERROR_NONE)
+    {
+      /* XXX fatal error */
+    }
 
   print_console = cons;
   printf_init(crt_printchar, NULL);
@@ -214,40 +200,12 @@ void	_crt_attach_cons_to(i_task	cons)
 
 void	_crt_attach_cons(void)
 {
-  t_service_mod_message*	message;
-  i_node			mod_service;
-  t_vsize			size;
-
-  mod_service.machine = 0;
-  mod_service.task = modid;
-
-  if ((message = malloc(sizeof (*message) + 12)) == NULL)
+  if (mod_get_service(modid, "cons-simple", &print_console) != ERROR_NONE)
     {
       /* XXX fatal error */
     }
 
-  message->u.request.operation = MOD_SERVICE_GET_SERVICE;
-  strcpy(message->u.request.u.get_service.name, "cons-simple");
-
-  if (message_send(mod_service,
-		   MESSAGE_TYPE_SERVICE_MOD, (t_vaddr)message,
-		   sizeof (*message) + 12) != ERROR_NONE)
-    {
-      /* XXX fatal error */
-    }
-
-  if (message_receive(MESSAGE_TYPE_SERVICE_MOD, (t_vaddr)message,
-		      &size, &mod_service) != ERROR_NONE)
-    {
-      /* XXX fatal error */
-    }
-
-  print_console = message->u.reply.u.get_service.id;
-
-  free(message);
-
-  if (message_register(MESSAGE_TYPE_DRIVER_CONS_SIMPLE,
-		       MESSAGE_SIZE_DRIVER_CONS_SIMPLE) != ERROR_NONE)
+  if (cons_simple_init() != ERROR_NONE)
     {
       /* XXX fatal error */
     }

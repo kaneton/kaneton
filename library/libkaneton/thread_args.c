@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/library/libkaneton/thread_args.c
  *
  * created       matthieu bucchianeri   [mon aug  6 19:07:18 2007]
- * updated       matthieu bucchianeri   [mon aug  6 19:13:17 2007]
+ * updated       matthieu bucchianeri   [mon aug 20 21:09:38 2007]
  */
 
 /*
@@ -73,9 +73,16 @@ t_error			thread_args(i_thread			threadid,
    * 3)
    */
 
-  if (as_copy(_crt_get_as_id(), (t_vaddr)args,
-	      asid, context.sp, size) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  if (_crt_get_as_id() != asid)
+    {
+      if (as_copy(_crt_get_as_id(), (t_vaddr)args,
+		  asid, context.sp, size) != ERROR_NONE)
+	return (ERROR_UNKNOWN);
+    }
+  else
+    {
+      memcpy((void*)context.sp, args, size);
+    }
 
   /*
    * 4)

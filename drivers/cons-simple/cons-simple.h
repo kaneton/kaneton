@@ -70,8 +70,6 @@ typedef struct
  * cons-simple.c
  */
 
-void			cons_scroll(t_uint16			lines);
-
 int			main(void);
 
 

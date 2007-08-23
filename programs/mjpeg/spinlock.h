@@ -19,10 +19,16 @@
 #define IA32_SPIN_DECLARE(_spin_)					\
   volatile t_uint8	(_spin_) = 0;
 
+#define IA32_SPIN_FIELD_DECLARE(_spin_)					\
+  t_uint8	(_spin_);
+
+#define IA32_SPIN_FIELD_INIT(_spin_)					\
+  (_spin_) = 0;
+
 #define IA32_SPIN_LOCK(_spin_)						\
   asm volatile("	movb		$1, %%al		\n"	\
 	       "1:						\n"	\
-	       "	lock xchgb      %0, %%al		\n"	\
+	       "	lock xchgb	%0, %%al		\n"	\
 	       "	test		%%al, %%al		\n"	\
 	       "	jnz		1b"				\
 	       :							\
@@ -30,7 +36,7 @@
 	       : "%al");
 
 #define IA32_SPIN_UNLOCK(_spin_)					\
-  asm volatile("	movb		$0, %0			\n"	\
+  asm volatile("	movb		$0, %0		\n"		\
 	       :							\
 	       : "m" (_spin_));
 

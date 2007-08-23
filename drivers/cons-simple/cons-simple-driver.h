@@ -82,4 +82,66 @@ typedef struct
   } u;
 }			t_driver_cons_simple_message;
 
+/*
+ * ---------- interface -------------------------------------------------------
+ */
+
+#ifdef CONS_SIMPLE_SPAWN_INTERFACE
+
+#ifdef CONS_SIMPLE_INLINE_INTERFACE
+# define CONS_SIMPLE_ATTRIBUTE_INTERFACE	inline __attribute__((unused))
+#else
+# define CONS_SIMPLE_ATTRIBUTE_INTERFACE	__attribute__((unused))
+#endif
+
+static CONS_SIMPLE_ATTRIBUTE_INTERFACE t_error
+cons_simple_init(void)
+{
+  return message_register(MESSAGE_TYPE_DRIVER_CONS_SIMPLE,
+			  MESSAGE_SIZE_DRIVER_CONS_SIMPLE);
+}
+
+static CONS_SIMPLE_ATTRIBUTE_INTERFACE t_error
+cons_simple_write(i_task cons_simple, t_driver_cons_simple_size n, char* buff,
+		  t_driver_cons_simple_size* wrote)
+{
+  t_driver_cons_simple_message*	message;
+  i_node			cons_driver;
+  t_vsize			size;
+
+  cons_driver.machine = 0;
+  cons_driver.task = cons_simple;
+
+  if ((message = malloc(sizeof (*message) + n)) == NULL)
+    return (ERROR_UNKNOWN);
+
+  message->u.request.operation = CONS_SIMPLE_DRIVER_WRITE;
+  message->u.request.u.write.count = n;
+  memcpy(&message->u.request.u.write.c[0], buff, n);
+
+  if (message_send(cons_driver,
+		   MESSAGE_TYPE_DRIVER_CONS_SIMPLE, (t_vaddr)message,
+		   sizeof (*message) + n) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  if (message_receive(MESSAGE_TYPE_DRIVER_CONS_SIMPLE, (t_vaddr)message,
+		      &size, &cons_driver) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  if (wrote != NULL)
+    *wrote = message->u.reply.u.write.wrote;
+
+  free(message);
+
+  return (ERROR_NONE);
+}
+
+#endif
+
 #endif
