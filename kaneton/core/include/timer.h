@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       matthieu bucchianeri   [tue jul 31 14:26:19 2007]
+ * updated       matthieu bucchianeri   [sun aug 26 23:55:27 2007]
  */
 
 #ifndef CORE_TIMER_H
@@ -54,6 +54,9 @@
 
 #define TIMER_HANDLER(_function_)					\
   ((u_timer_handler)(t_timer_handler)(_function_))
+
+#define TIMER_TASK(_task_)						\
+  ((u_timer_handler)(i_task)(_task_))
 
 /*
  * ---------- types -----------------------------------------------------------

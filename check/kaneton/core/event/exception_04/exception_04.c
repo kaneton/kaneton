@@ -35,7 +35,7 @@ void		check_event_exception_04(void)
 
   ASSERT(event_reserve(0,
 		       EVENT_FUNCTION,
-		       EVENT_HANDLER(check_dv)) == ERROR_NONE,
+		       EVENT_HANDLER(check_dv), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   printf(" - Throwing exception\n");

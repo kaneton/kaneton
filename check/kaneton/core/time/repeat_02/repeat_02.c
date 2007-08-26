@@ -33,7 +33,7 @@ void		check_time_repeat_02(void)
 
   TEST_ENTER();
 
-  ASSERT(timer_reserve(EVENT_FUNCTION, TIMER_HANDLER(check_timer_handler),
+  ASSERT(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer_handler), 0,
 		       300, TIMER_REPEAT_DISABLE, &id) == ERROR_NONE,
 	 "Cannot timer_reserve\n");
 

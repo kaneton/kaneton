@@ -45,7 +45,7 @@ void		check_event_idt_01(void)
 
   ASSERT(event_reserve(3,
 		       EVENT_FUNCTION,
-		       EVENT_HANDLER(check_int3)) == ERROR_NONE,
+		       EVENT_HANDLER(check_int3), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   memset(&idtr, 0, sizeof (idtr));

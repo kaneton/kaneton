@@ -39,7 +39,7 @@ void		check_event_pic_02(void)
 
   ASSERT(event_reserve(32 + 9,
 		       EVENT_FUNCTION,
-		       EVENT_HANDLER(check_irq)) == ERROR_NONE,
+		       EVENT_HANDLER(check_irq), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   printf(" - Checking Master PIC\n");

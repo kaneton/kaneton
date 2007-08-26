@@ -49,15 +49,15 @@ void		check_event_softint_02(void)
 
   ASSERT(event_reserve(0x42,
 		       EVENT_FUNCTION,
-		       EVENT_HANDLER(check_softint1)) == ERROR_NONE,
+		       EVENT_HANDLER(check_softint1), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
   ASSERT(event_reserve(0x43,
 		       EVENT_FUNCTION,
-		       EVENT_HANDLER(check_softint2)) == ERROR_NONE,
+		       EVENT_HANDLER(check_softint2), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
   ASSERT(event_reserve(0x44,
 		       EVENT_FUNCTION,
-		       EVENT_HANDLER(check_softint3)) == ERROR_NONE,
+		       EVENT_HANDLER(check_softint3), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   printf(" - Softint\n");

@@ -23,6 +23,7 @@
  *	../as_map_01/as_map_01.c
  *	../context_01/context_01.c
  *	../context_02/context_02.c
+ *	../data_01/data_01.c
  *	../exception_01/exception_01.c
  *	../exception_02/exception_02.c
  *	../exception_03/exception_03.c
@@ -35,6 +36,7 @@
  *	../int_state_01/int_state_01.c
  *	../irq_01/irq_01.c
  *	../irq_02/irq_02.c
+ *	../message_01/message_01.c
  *	../pic_01/pic_01.c
  *	../pic_02/pic_02.c
  *	../pic_03/pic_03.c

@@ -1,0 +1,2 @@
+Test check_thread_fpu_01
+check_thread_fpu_01 done.

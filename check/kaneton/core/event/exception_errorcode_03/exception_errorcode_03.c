@@ -17,7 +17,7 @@ extern i_as		kasid;
 
 static volatile int	thrown = 0;
 
-static void	check_pf(t_id	id, t_uint32 error_code)
+static void	check_pf(t_id	id, t_vaddr pv, t_uint32 error_code)
 {
   i_segment	segid;
   i_region	regid;
@@ -57,7 +57,7 @@ void		check_event_exception_errorcode_03(void)
 
   ASSERT(event_reserve(14,
 		       EVENT_FUNCTION,
-		       EVENT_HANDLER(check_pf)) == ERROR_NONE,
+		       EVENT_HANDLER(check_pf), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   printf(" - Throwing exception\n");

@@ -39,7 +39,7 @@ void		check_event_pic_03(void)
 
   ASSERT(event_reserve(32 + 3,
 		       EVENT_FUNCTION,
-		       EVENT_HANDLER(check_irq)) == ERROR_NONE,
+		       EVENT_HANDLER(check_irq), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   ASSERT(event_release(32 + 3) == ERROR_NONE,

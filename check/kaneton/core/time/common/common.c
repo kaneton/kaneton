@@ -21,30 +21,6 @@ void	check_time_common(void)
    */
 }
 
-static unsigned char	bcd2bin(unsigned char c)
-{
-  unsigned char res = 0;
-
-  unsigned char c1 = (c & 0xF0) >> 4;
-  res += 10 * c1;
-  c1 = c & 0x0F;
-  res += c1;
-  return res;
-}
-
-/*
- * get seconds from RTC
- */
-
-t_uint32 check_cmos_sec(void)
-{
-  int i;
-
-  OUTB(0x70, 0);
-  INB(0x71, i);
-  return bcd2bin(i);
-}
-
 /*
  * starts ALL tests related to time manager
  */
@@ -153,7 +129,7 @@ void check_rtc_init(void)
 {
   event_reserve(32 + 8,
 		EVENT_FUNCTION,
-		EVENT_HANDLER(rtc_irq));
+		EVENT_HANDLER(rtc_irq), 0);
 
   check_enable_irq(8);
 

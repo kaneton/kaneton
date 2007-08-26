@@ -20,6 +20,8 @@
  * ---------- prototypes ------------------------------------------------------
  *
  *      common.c
+ *	../data_01/data_01.c
+ *	../message_01/message_01.c
  *	../multiple_reserve_01/multiple_reserve_01.c
  *	../precision_01/precision_01.c
  *	../precision_02/precision_02.c

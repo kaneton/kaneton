@@ -36,14 +36,14 @@ void		check_time_precision_03(void)
 
   printf("Timer precision 32ms\n");
 
-  ASSERT(timer_reserve(EVENT_FUNCTION, TIMER_HANDLER(check_timer_handler),
+  ASSERT(timer_reserve(TIMER_FUNCTION, TIMER_HANDLER(check_timer_handler), 0,
 		       1000, TIMER_REPEAT_DISABLE, &id) == ERROR_NONE,
 	 "Cannot timer_reserve\n");
 
   check_rtc_init();
 
   start = check_cmos_sec();
-  while ((start + 3) % 60 != check_cmos_sec())
+  while ((start + 3) % 60 != check_cmos_sec() && !timed)
     ;
 
   ASSERT(timed == 1, "Timer failed\n");

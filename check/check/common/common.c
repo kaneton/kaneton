@@ -26,9 +26,7 @@ void	check_check_common(void)
 
 void	check_tests(void)
 {
-  check_task_driver_01();
-  check_task_service_01();
-  check_task_program_01();
+  check_time_message_01();
   /* XXX */
 }
 

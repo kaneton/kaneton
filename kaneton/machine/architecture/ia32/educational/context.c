@@ -394,9 +394,19 @@ t_error			ia32_init_context(i_task		taskid,
    */
 
   if (ia32_cpucaps & IA32_CAPS_SSE)
-    memset(&o->machdep.u.sse, 0, sizeof(t_sse_state));
+    {
+      memset(&o->machdep.u.sse, 0, sizeof(t_sse_state));
+
+      o->machdep.u.sse.fcw = 0x37f;
+      o->machdep.u.sse.ftw = 0xffff;
+    }
   else
-    memset(&o->machdep.u.x87, 0, sizeof(t_x87_state));
+    {
+      memset(&o->machdep.u.x87, 0, sizeof(t_x87_state));
+
+      o->machdep.u.x87.fcw = 0x37f;
+      o->machdep.u.x87.ftw = 0xffff;
+    }
 
   return (ERROR_NONE);
 }
@@ -636,14 +646,14 @@ t_error			ia32_context_switch(i_thread		current,
  *
  * steps:
  *
- * 1) get both executing and old contexts.
- * 2) SSE case
+ * 1) clears the TS bit in CR0.
+ * 2) get both executing and old contexts.
+ * 3) SSE case
  *  a) save the SSE & FPU context into the previous thread context.
  *  b) restore the SSE & FPU context of the executing thread.
- * 3) FPU or MMX case
+ * 4) FPU or MMX case
  *  a) save the FPU/MMX context into the previous thread context.
  *  b) restore the FPU/MMX context of the executing thread.
- * 4) clears the TS bit in CR0.
  */
 
 t_error			ia32_extended_context_switch(i_thread	current,
@@ -652,11 +662,17 @@ t_error			ia32_extended_context_switch(i_thread	current,
   o_thread*		o;
   o_thread*		old;
 
+  /*
+   * 1)
+   */
+
+  CLTS();
+
   if (current == elected)
     return (ERROR_NONE);
 
   /*
-   * 1)
+   * 2)
    */
 
   if (thread_get(elected, &o) != ERROR_NONE)
@@ -668,7 +684,7 @@ t_error			ia32_extended_context_switch(i_thread	current,
   if (ia32_cpucaps & IA32_CAPS_SSE)
     {
       /*
-       * 2)
+       * 3)
        */
 
       /*
@@ -686,7 +702,7 @@ t_error			ia32_extended_context_switch(i_thread	current,
   else
     {
       /*
-       * 3)
+       * 4)
        */
 
       /*
@@ -701,12 +717,6 @@ t_error			ia32_extended_context_switch(i_thread	current,
 
       FRSTOR(o->machdep.u.x87);
     }
-
-  /*
-   * 4)
-   */
-
-  CLTS();
 
   return (ERROR_NONE);
 }

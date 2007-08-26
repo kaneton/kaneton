@@ -14,7 +14,6 @@ check/
   - task/state_**
   - deplacer sched/state_** dans thread/state_**
   - thread/give_**
-  - thread/fpu_**
   - interface/**
   - io/**
 

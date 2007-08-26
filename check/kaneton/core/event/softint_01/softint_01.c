@@ -33,7 +33,7 @@ void		check_event_softint_01(void)
 
   ASSERT(event_reserve(0x42,
 		       EVENT_FUNCTION,
-		       EVENT_HANDLER(check_softint)) == ERROR_NONE,
+		       EVENT_HANDLER(check_softint), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   printf(" - Softint\n");

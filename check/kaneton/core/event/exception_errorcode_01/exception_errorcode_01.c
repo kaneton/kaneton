@@ -17,7 +17,7 @@ static volatile unsigned short	gs = (16 << 3);
 
 static volatile int	thrown = 0;
 
-static void	check_np(t_id	id, t_uint32 error_code)
+static void	check_np(t_id	id, t_vaddr pv, t_uint32 error_code)
 {
   printf(" + Exception thrown\n");
   thrown = 1;
@@ -36,7 +36,7 @@ void		check_event_exception_errorcode_01(void)
 
   ASSERT(event_reserve(13,
 		       EVENT_FUNCTION,
-		       EVENT_HANDLER(check_np)) == ERROR_NONE,
+		       EVENT_HANDLER(check_np), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   printf(" - Throwing exception\n");

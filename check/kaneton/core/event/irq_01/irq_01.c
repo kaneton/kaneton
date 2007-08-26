@@ -33,7 +33,7 @@ void		check_event_irq_01(void)
 
   ASSERT(event_reserve(32 + 6,
 		       EVENT_FUNCTION,
-		       EVENT_HANDLER(check_irq6)) == ERROR_NONE,
+		       EVENT_HANDLER(check_irq6), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   printf(" - Triggering IRQ\n");

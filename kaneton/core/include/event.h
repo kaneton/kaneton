@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/event.h
  *
  * created       julien quintard   [wed jun  6 13:13:41 2007]
- * updated       matthieu bucchianeri   [tue jul 31 14:27:35 2007]
+ * updated       matthieu bucchianeri   [sun aug 26 23:45:32 2007]
  */
 
 #ifndef CORE_EVENT_H
@@ -41,6 +41,9 @@
 
 #define EVENT_HANDLER(_function_)					\
   ((u_event_handler)(t_event_handler)(_function_))
+
+#define EVENT_TASK(_task_)						\
+  ((u_event_handler)(i_task)(_task_))
 
 /*
  * ---------- types -----------------------------------------------------------
