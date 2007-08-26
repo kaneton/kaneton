@@ -8,7 +8,7 @@
  * file          /home/buckman/kan.../library/libkaneton/include/libkaneton.h
  *
  * created       matthieu bucchianeri   [sun aug  5 23:20:36 2007]
- * updated       matthieu bucchianeri   [mon aug  6 19:11:16 2007]
+ * updated       matthieu bucchianeri   [sat aug 25 00:32:35 2007]
  */
 
 #ifndef LIBKANETON_LIBKANETON_H
@@ -37,6 +37,9 @@
 #define message_send(...)						\
   syscall_message_send(__VA_ARGS__)
 
+#define message_send_unlock(...)					\
+  syscall_message_send_unlock(__VA_ARGS__)
+
 #define message_transmit(...)						\
   syscall_message_transmit(__VA_ARGS__)
 
@@ -64,6 +67,7 @@
  *	../messaging.c
  *	../libkaneton.c
  *	../thread_args.c
+ *	../thread_state_unlock.c
  */
 
 /*
@@ -108,6 +112,12 @@ t_error			syscall_message_state(t_message_request	request);
 t_error			syscall_message_wait(t_message_request	request,
 					     t_vsize*		size,
 					     i_node*		sender);
+
+t_error			syscall_message_send_unlock(i_node		dest,
+						    t_type		type,
+						    t_vaddr		data,
+						    t_vsize		size,
+						    t_uint8*		lock);
 
 
 /*
@@ -411,6 +421,15 @@ t_error		timer_attribute_data(t_id		arg1,
 t_error			thread_args(i_thread			threadid,
 				    void*			args,
 				    t_vsize			size);
+
+
+/*
+ * ../thread_state_unlock.c
+ */
+
+t_error		thread_state_unlock(t_id		arg1,
+				    t_state		arg2,
+				    t_uint8*		lock);
 
 
 /*

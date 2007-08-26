@@ -16,9 +16,14 @@ struct thargs {
 	vld_args_t *args;
 };
 
+volatile int __n = 0;
+
 static void* vld_thread( void *_args )
 {
 	struct thargs *args = _args;
+
+	while (__n != 7)
+	  ;
 
 	while(1)
 	  vld_func_vld( args->args );

@@ -16,9 +16,14 @@ struct thargs {
 	ramdac_args_t *args;
 };
 
+extern volatile int __n;
+
 static void* ramdac_thread( void *_args )
 {
 	struct thargs *args = _args;
+
+	while (__n != 7)
+	  ;
 
 	while(1)
 	  ramdac_func_ramdac( args->args );

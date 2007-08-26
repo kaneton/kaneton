@@ -16,11 +16,16 @@ struct thargs {
 	demux_args_t *args;
 };
 
+extern volatile int __n;
+
 static void* demux_thread( void *_args )
 {
 	struct thargs *args = _args;
 
 	printf("demux args = %p\n", args);
+
+	while (__n != 7)
+	  ;
 
 	while(1)
 	  demux_func_demux( args->args );

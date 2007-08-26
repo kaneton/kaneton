@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [mon aug  6 23:19:53 2007]
+ * updated       matthieu bucchianeri   [sat aug 25 23:16:25 2007]
  */
 
 /*
@@ -295,7 +295,7 @@ t_error			scheduler_yield(i_cpu			cpuid)
   if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
-  ent->prio = SCHEDULER_N_PRIORITY_QUEUE + 1;
+  ent->yield = 1;
 
   if (scheduler_switch() != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
@@ -459,6 +459,15 @@ t_error			scheduler_switch(void)
 
   if (!nonempty)
     {
+      if (ent->yield && ent->timeslice)
+	{
+	  elected = ent->current;
+	  elected_prio = ent->prio;
+	  elected_timeslice = ent->timeslice;
+
+	  goto ok;
+	}
+
       if (second_round)
 	{
 	  elected = scheduler->idle;
@@ -467,6 +476,7 @@ t_error			scheduler_switch(void)
 
 	  goto ok;
 	}
+
       list = ent->active;
       ent->active = ent->expired;
       ent->expired = list;
@@ -517,6 +527,7 @@ t_error			scheduler_switch(void)
   ent->current = elected;
   ent->prio = elected_prio;
   ent->timeslice = elected_timeslice;
+  ent->yield = 0;
 
   /*
    * 7)
@@ -652,9 +663,16 @@ t_error			scheduler_remove(i_thread			thread)
   if (set_get(scheduler->cpus, otask->cpuid, (void**)&ent) != ERROR_NONE)
     SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
+  /* XXX extend to MP: check all sched_ents */
   if (ent->current == thread)
-    if (scheduler_yield(ent->cpuid) != ERROR_NONE)
-      SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+    {
+      ent->timeslice = scheduler->quantum;
+
+      /* XXX */
+
+      if (scheduler_switch() != ERROR_NONE)
+	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+    }
 
   /*
    * 2)
@@ -806,6 +824,7 @@ t_error			scheduler_initialize(void)
       ent.prio = SCHEDULER_N_PRIORITY_QUEUE;
       ent.active = ID_UNUSED;
       ent.expired = ID_UNUSED;
+      ent.yield = 0;
 
       if (set_reserve(array, SET_OPT_ALLOC, SCHEDULER_N_PRIORITY_QUEUE + 1,
 		      sizeof(i_set), &ent.active) !=

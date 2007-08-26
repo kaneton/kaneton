@@ -28,6 +28,7 @@
 #include "../../services/mod/mod-service.h"
 
 unsigned char *framebuffer;
+extern volatile int __n;
 
 int	main()
 {
@@ -53,8 +54,8 @@ int	main()
 
   printf("MJPEG test application...\n");
 
-  for (th = 0; th < 10000000; th++)
-    ;
+  for (th = 0; th < 100; th++)
+    scheduler_yield(0);
 
   if (vga_init() != ERROR_NONE)
     {
@@ -68,12 +69,14 @@ int	main()
       return (-1);
     }
 
-  if (vga_framebuffer(vga, 320, 200, 8, (vaddr_t*)&framebuffer) != ERROR_NONE ||
+  if (0 && vga_framebuffer(vga, 320, 200, 8, (vaddr_t*)&framebuffer) != ERROR_NONE ||
       framebuffer == ((vaddr_t)-1))
     {
       printf("cannot start vga framebuffer.\n");
       return (-1);
     }
+
+  memset(framebuffer, 0x0, 64000);
 
   dsx_mwmr_alloc(&tg_demux, 8, 2, "tg_demux");
   dsx_mwmr_alloc(&quanti, 8, 4, "quanti");
@@ -153,8 +156,9 @@ int	main()
       printf("not all thread started !\n");
     }
 
+  __n = 7;
 
-  if (scheduler_current(&th) != ERROR_NONE)
+  if (scheduler_current(&th) == ERROR_NONE)
     {
       thread_state(th, SCHEDULER_STATE_STOP);
     }

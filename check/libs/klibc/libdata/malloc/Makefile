@@ -59,6 +59,6 @@ clear:
 	$(call env_purge,)
 
 prototypes:
-	$(call env_prototypes,"common/common.h",)
+	$(call env_prototypes,$(shell pwd)"/common/common.h",)
 
 headers:

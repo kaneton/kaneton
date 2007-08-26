@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/library/libkaneton/messaging.c
  *
  * created       matthieu bucchianeri   [sun aug  5 23:13:37 2007]
- * updated       matthieu bucchianeri   [sun aug  5 23:50:12 2007]
+ * updated       matthieu bucchianeri   [sat aug 25 00:30:09 2007]
  */
 
 /*
@@ -159,4 +159,36 @@ t_error			syscall_message_wait(t_message_request	request,
 					     i_node*		sender)
 {
   /* XXX */
+}
+
+/*
+ * special send with unlocking.
+ */
+
+t_error			syscall_message_send_unlock(i_node		dest,
+						    t_type		type,
+						    t_vaddr		data,
+						    t_vsize		size,
+						    t_uint8*		lock)
+{
+  union
+  {
+    i_node		node;
+    t_uint32		reg[4];
+  }			u;
+  t_error		res;
+
+  u.node = dest;
+
+  *lock = 0; /* XXX should be done in assembly below... but not enough regs! */
+
+  asm("pushl %%ebp		\n\t"
+      "movl %7, %%ebp		\n\t"
+      "int $57			\n\t"
+      "popl %%ebp"
+      : "=a" (res)
+      :  "a" (u.reg[0]), "b" (u.reg[1]), "c" (u.reg[2]), "d" (u.reg[3]),
+	 "S" (type), "D" (data), "m" (size), "m" (lock));
+
+  return res;
 }

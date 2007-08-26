@@ -9,14 +9,14 @@ check/
   - event/message_**
   - timer/message_**
   - finir message/*
-  - task/driver_**
-  - task/service_**
   - task/clone_**, thread/clone_**
   - task/priority_**, thread/priority_**
   - task/state_**
   - deplacer sched/state_** dans thread/state_**
   - thread/give_**
-  - sched/fpu_**
+  - thread/fpu_**
+  - interface/**
+  - io/**
 
 rapide et facile:
  - ajouter PD_CURRENT, GDT_CURRENT, etc...

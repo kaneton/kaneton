@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       matthieu bucchianeri   [mon aug  6 22:53:24 2007]
+ * updated       matthieu bucchianeri   [sat aug 25 18:27:06 2007]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -158,6 +158,7 @@ typedef struct
   i_thread			current;
   t_timeslice			timeslice;
   t_prior			prio;
+  t_opts			yield;
 
   i_set				active;
   i_set				expired;

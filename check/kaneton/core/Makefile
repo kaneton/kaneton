@@ -70,11 +70,10 @@ clear:
 	$(call env_purge,)
 
 prototypes:
-	$(call env_launch,Makefile,$(SUBDIRS),proto,)
-
-headers:
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
 	done
+
+headers:
 
 endif

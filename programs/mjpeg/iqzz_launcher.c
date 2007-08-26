@@ -16,9 +16,14 @@ struct thargs {
 	iqzz_args_t *args;
 };
 
+extern volatile int __n;
+
 static void* iqzz_thread( void *_args )
 {
 	struct thargs *args = _args;
+
+	while (__n != 7)
+	  ;
 
 	while(1)
 	  iqzz_func_iqzz( args->args );

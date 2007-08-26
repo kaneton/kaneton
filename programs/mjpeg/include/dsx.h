@@ -40,9 +40,10 @@ struct _mwmr_t {
   const char *name;
   void *fd;
   int offset;
-  IA32_SPIN_FIELD_DECLARE(lock);
-  i_thread reader;
-  i_thread writer;
+
+  pthread_mutex_t	lock;
+  pthread_cond_t	nfull;
+  pthread_cond_t	nempty;
 };
 
 typedef struct _memspace_t* dsx_memspace_t;

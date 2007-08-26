@@ -16,9 +16,14 @@ struct thargs {
 	libu_args_t *args;
 };
 
+extern volatile int __n;
+
 static void* libu_thread( void *_args )
 {
 	struct thargs *args = _args;
+
+	while (__n != 7)
+	  ;
 
 	while(1)
 	  libu_func_libu( args->args );

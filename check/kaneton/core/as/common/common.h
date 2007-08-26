@@ -100,6 +100,13 @@ void		check_as_clone_01(void);
 
 
 /*
+ * ../clone_02/clone_02.c
+ */
+
+void		check_as_clone_02(void);
+
+
+/*
  * ../give_01/give_01.c
  */
 

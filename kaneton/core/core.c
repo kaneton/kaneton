@@ -135,8 +135,18 @@ void			kaneton(t_init*				bootloader)
   ibmpc_keyboard_init();
 
 #ifdef TESTSUITE_MANUAL_ENABLE
+  extern i_thread kthread;
+
+  kthread = ID_UNUSED;
+
+  STI();
+
   cons_msg('+', "running manual tests\n");
   check_tests();
+
+  CLI();
+
+  kthread = 0;
 #endif
 
 #if TESTSUITE_DEBUG_ENABLE

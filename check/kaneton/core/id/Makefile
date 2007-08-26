@@ -70,7 +70,7 @@ clear:
 	$(call env_purge,)
 
 prototypes:
-	$(call env_prototypes,"common/common.h",)
+	$(call env_prototypes,$(shell pwd)"/common/common.h",)
 
 headers:
 	$(call env_launch,Makefile,$(SUBDIRS),dep,)

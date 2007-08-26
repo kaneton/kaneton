@@ -8,7 +8,7 @@
 # file          /home/buckman/kaneton/programs/mjpeg/Makefile
 #
 # created       matthieu bucchianeri   [mon aug 20 19:52:55 2007]
-# updated       matthieu bucchianeri   [thu aug 23 17:38:30 2007]
+# updated       matthieu bucchianeri   [thu aug 23 18:01:07 2007]
 #
 
 #
@@ -53,7 +53,7 @@ MJPEG_C			:=		bit_reading.c		\
 
 MJPEG_O			:=		$(MJPEG_C:.c=.o)
 
-_CC_FLAGS_		+=		-I. -Iinclude -O2
+_CC_FLAGS_		+=		-I. -Iinclude
 
 #
 # ---------- rules ------------------------------------------------------------

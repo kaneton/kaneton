@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/drivers/vga/vga.c
  *
  * created       matthieu bucchianeri   [tue aug 21 23:15:42 2007]
- * updated       matthieu bucchianeri   [thu aug 23 17:14:58 2007]
+ * updated       matthieu bucchianeri   [sat aug 25 18:00:37 2007]
  */
 
 #include <libc.h>
@@ -62,12 +62,33 @@ static unsigned char g_320x200x8[] =
   };
 
 /*
+ * dump for 640x480x4
+ */
+
+static unsigned char g_640x480x4[] =
+  {
+    0xe3,
+    0x03, 0x01, 0x0F, 0x00, 0x06,
+    0x5F, 0x4F, 0x50, 0x82, 0x54, 0x80, 0x0B, 0x3E,
+    0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0xEA, 0x8C, 0xDF, 0x28, 0x00, 0xE7, 0x04, 0xE3,
+    0xFF,
+    0x00, 0x0F, 0x00, 0x00, 0x00, 0x00, 0x05, 0x0F,
+    0xFF,
+    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+    0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+    0x01, 0x00, 0x0F, 0x00, 0x00
+  };
+
+/*
  * modes list.
  */
 
 static t_vga_driver_modes modes[] =
   {
     { .width = 320, .height = 200, .bpp = 8, .dump = g_320x200x8,
+      .base = 0xa0000 },
+    { .width = 640, .height = 480, .bpp = 4, .dump = g_640x480x4,
       .base = 0xa0000 },
     { .width = -1, .height = -1, .bpp = -1, .dump = NULL, .base = 0x0 }
   };
@@ -165,8 +186,8 @@ static vaddr_t		vga_goto_mode(i_task	task,
 		     modes[i].base - 0x1000,
 		     REGION_OPT_NONE,
 		     0,
-		     PAGED_SIZE(modes[i].width * modes[i].height *
-				modes[i].bpp / 8),
+		     PAGED_SIZE((modes[i].width * modes[i].height *
+				 modes[i].bpp) / 8),
 		     &reg) != ERROR_NONE)
     return ((vaddr_t)-1);
 
@@ -220,7 +241,6 @@ int			vga_driver_serve(void)
 	  if (message->u.request.operation == VGA_DRIVER_FRAMEBUFFER)
 	    {
 	      /* XXX critical section begins */
-	      printf("youhou\n");
 
 	      message->u.reply.u.framebuffer.base =
 		vga_goto_mode(sender.task,

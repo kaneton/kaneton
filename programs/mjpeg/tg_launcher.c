@@ -16,11 +16,16 @@ struct thargs {
 	tg_args_t *args;
 };
 
+extern volatile int __n;
+
 static void* tg_thread( void *_args )
 {
 	struct thargs *args = _args;
 
 	printf("tg args = %p\n", args);
+
+	while (__n != 7)
+	  ;
 
 	while (1)
 	  tg_func_tg( args->args );

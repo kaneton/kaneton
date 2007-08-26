@@ -135,6 +135,16 @@ void	check_exc_catch(t_exc*		exc);
 
 void	check_exc_reset(t_exc*		exc);
 
+t_uint32 check_cmos_sec(void);
+
+int		check_task_create(t_class		class,
+				  i_task		*task);
+
+int		check_thread_create(i_task		task,
+				    t_prior		prior,
+				    t_vaddr		entry,
+				    i_thread		*thread);
+
 
 /*
  * eop
