@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...aneton/machine/glue/ibm-pc.ia32/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       matthieu bucchianeri   [mon aug  6 18:38:42 2007]
+ * updated       matthieu bucchianeri   [mon aug 27 22:13:50 2007]
  */
 
 /*
@@ -92,9 +92,17 @@ t_error			glue_thread_clone(i_task		taskid,
 					  i_thread		old,
 					  i_thread*		new)
 {
+  o_task*		o;
+
   THREAD_ENTER(thread);
 
   if (ia32_duplicate_context(old, *new) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  if (task_get(taskid, &o) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+  if (ia32_update_thread_pdbr(*new, o->asid) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
   THREAD_LEAVE(thread, ERROR_NONE);
@@ -152,7 +160,7 @@ t_error			glue_thread_store(i_thread		threadid,
  */
 
 t_error			glue_thread_args(i_thread		threadid,
-					 void*			args,
+					 const void*	       	args,
 					 t_vsize		size)
 {
   THREAD_ENTER(thread);

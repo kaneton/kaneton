@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/task/task.c
  *
  * created       julien quintard   [fri jun 22 02:25:26 2007]
- * updated       matthieu bucchianeri   [mon jul 30 18:21:43 2007]
+ * updated       matthieu bucchianeri   [mon aug 27 17:59:45 2007]
  */
 
 /*
@@ -44,7 +44,7 @@ machine_include(task);
 extern t_init*		init;
 
 /*
- * XXX
+ * the scheduler manager.
  */
 
 extern m_scheduler*	scheduler;
@@ -1057,8 +1057,7 @@ t_error			task_initialize(void)
       segment->size = init->segments[i].size;
       segment->perms = init->segments[i].perms;
 
-      if (segment->size == 0)
-	continue; /* XXX */
+      ASSERT(segment->size != 0);
 
       if (segment_inject(asid, segment, &segments[i]) != ERROR_NONE)
 	{
@@ -1087,8 +1086,7 @@ t_error			task_initialize(void)
       region->size = init->regions[i].size;
       region->opts = init->regions[i].opts;
 
-      if (region->size == 0)
-	continue; /* XXX */
+      ASSERT(region->size != 0);
 
       if (region_inject(asid, region, &useless) != ERROR_NONE)
 	{

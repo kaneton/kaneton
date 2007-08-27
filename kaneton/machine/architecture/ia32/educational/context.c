@@ -101,6 +101,47 @@ t_error			ia32_update_pdbr(i_task			tskid,
 }
 
 /*
+ * this function set the pdbr value to one thread.
+ *
+ * steps:
+ *
+ * 1) get the as object.
+ * 2) get the destination thread.
+ * 3) update the context's pdbr value.
+ */
+
+t_error			ia32_update_thread_pdbr(i_thread	threadid,
+						i_as	       	asid)
+{
+  o_as*			o;
+  o_thread*		oth;
+
+  /*
+   * 1)
+   */
+
+  if (as_get(asid, &o) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (thread_get(threadid, &oth) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (ia32_pd_get_cr3(&oth->machdep.context.cr3, o->machdep.pd,
+		      IA32_PD_CACHED, IA32_PD_WRITEBACK) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
+}
+
+/*
  * initialize a few things about extended contexts.
  *
  * steps:
@@ -733,7 +774,7 @@ t_error			ia32_extended_context_switch(i_thread	current,
  */
 
 t_error			ia32_push_args(i_thread			threadid,
-				       void*			args,
+				       const void*		args,
 				       t_vsize			size)
 {
   o_thread*		o;

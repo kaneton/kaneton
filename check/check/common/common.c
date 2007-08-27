@@ -26,7 +26,7 @@ void	check_check_common(void)
 
 void	check_tests(void)
 {
-  check_time_message_01();
+  check_task_clone_01();
   /* XXX */
 }
 

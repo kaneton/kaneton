@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...ton/machine/glue/ibm-pc.ia32/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [mon aug  6 23:19:25 2007]
+ * updated       matthieu bucchianeri   [mon aug 27 19:03:57 2007]
  */
 
 /*
@@ -35,7 +35,7 @@ extern m_thread*	thread;
 
 extern i_task		ktask;
 
-extern void		glue_scheduler_idle();
+extern void		glue_scheduler_idle ();
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -179,7 +179,9 @@ void			glue_scheduler_switch_extended(i_event	id)
   if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
     return;
 
-  if (ia32_extended_context_switch(scheduler->machdep.mmx_context,
+  if (ia32_extended_context_switch(scheduler->machdep.mmx_context, /* XXX
+								      should be
+								      in ent */
 				   ent->current) != ERROR_NONE)
     return;
 

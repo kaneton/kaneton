@@ -23,6 +23,7 @@ rapide et facile:
 demande reflexion:
  - revoir les fonctions de PD/PT pour gerer mieux le paddr/vaddr.
  - refaite cswitch
+ - migrer la variable mmx_context dans le ent
 
 autre:
  - finir task_clone

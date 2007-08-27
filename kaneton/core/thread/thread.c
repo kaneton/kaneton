@@ -210,6 +210,7 @@ t_error			thread_give(i_task			taskid,
  * 1) get the thread to clone.
  * 2) reserve the clone objet.
  * 3) copy data from the original thead to the new one.
+ * 4) update thread state.
  * 4) copy the waits set from the original thread to the new one.
  * 5) call the machine-dependent code.
  */
@@ -222,6 +223,7 @@ t_error			thread_clone(i_task			taskid,
   o_thread*		to;
   t_state		state;
   t_iterator		i;
+  i_thread		threadid;
 
   THREAD_ENTER(thread);
 
@@ -241,15 +243,17 @@ t_error			thread_clone(i_task			taskid,
   if (thread_reserve(taskid, from->prior, new) != ERROR_NONE)
     THREAD_LEAVE(thread, ERROR_UNKNOWN);
 
+  threadid = *new;
+
+  if (thread_get(threadid, &to) != ERROR_NONE)
+    THREAD_LEAVE(thread, ERROR_UNKNOWN);
+
+
   /*
    * 3)
    */
 
-  // XXX do reserve !
-
   to->sched = from->sched;
-
-  to->wait = from->wait;
 
   to->stack = from->stack;
   to->stacksz = from->stacksz;
@@ -258,6 +262,35 @@ t_error			thread_clone(i_task			taskid,
    * 4)
    */
 
+  switch(to->sched)
+    {
+      case SCHEDULER_STATE_RUN:
+	if (VIEW_SIGNAL("thread", threadid, VIEW_SIGNAL_RUN) != ERROR_NONE)
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	if (scheduler_add(threadid) != ERROR_NONE)
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	break;
+      case SCHEDULER_STATE_STOP:
+	if (VIEW_SIGNAL("thread", threadid, VIEW_SIGNAL_STOP) != ERROR_NONE)
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	if (scheduler_remove(threadid) != ERROR_NONE)
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	break;
+      case SCHEDULER_STATE_ZOMBIE:
+	/* XXX */
+	break;
+      case SCHEDULER_STATE_BLOCK:
+	if (VIEW_SIGNAL("thread", threadid, VIEW_SIGNAL_BLOCK) != ERROR_NONE)
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	if (scheduler_remove(threadid) != ERROR_NONE)
+	  THREAD_LEAVE(thread, ERROR_UNKNOWN);
+	break;
+    }
+
+  /*
+   * 4)
+   */
+  /*
   set_foreach(SET_OPT_FORWARD, from->waits, &i, state)
     {
       i_thread*		data;
@@ -273,7 +306,7 @@ t_error			thread_clone(i_task			taskid,
       if (set_add(to->waits, data) != ERROR_NONE)
 	THREAD_LEAVE(thread, ERROR_UNKNOWN);
     }
-
+  */
   /*
    * 5)
    */
@@ -701,7 +734,7 @@ t_error			thread_stack(i_thread			threadid,
  */
 
 t_error			thread_args(i_thread			threadid,
-				    void*			args,
+				    const void*			args,
 				    t_vsize			size)
 {
   THREAD_ENTER(thread);

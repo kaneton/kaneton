@@ -220,6 +220,9 @@ extern t_uint32		ia32_cpucaps;
 t_error			ia32_update_pdbr(i_task			tskid,
 					 i_as			asid);
 
+t_error			ia32_update_thread_pdbr(i_thread	threadid,
+						i_as	       	asid);
+
 t_error			ia32_extended_context_init(void);
 
 void			ia32_context_copy(t_ia32_context*		dst,

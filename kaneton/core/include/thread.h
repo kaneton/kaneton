@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/thread.h
  *
  * created       julien quintard   [wed jun  6 14:31:49 2007]
- * updated       matthieu bucchianeri   [mon jul 30 17:07:31 2007]
+ * updated       matthieu bucchianeri   [mon aug 27 22:13:21 2007]
  */
 
 #ifndef CORE_THREAD_H
@@ -121,7 +121,7 @@ typedef struct
   t_error			(*thread_stack)(i_thread,
 						t_stack);
   t_error			(*thread_args)(i_thread,
-					      void*,
+					      const void*,
 					      t_size);
   t_error			(*thread_initialize)(void);
   t_error			(*thread_clean)(void);

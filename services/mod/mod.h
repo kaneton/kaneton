@@ -65,7 +65,7 @@ t_error			mod_load_64(Elf64_Ehdr*		header,
 
 void			mod_launch(t_inputs*	inputs);
 
-void			mod_serve(void);
+void				mod_serve(void);
 
 int			main(int argc, char** argv, char** envp);
 
