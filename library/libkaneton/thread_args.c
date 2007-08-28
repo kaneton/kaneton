@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/library/libkaneton/thread_args.c
  *
  * created       matthieu bucchianeri   [mon aug  6 19:07:18 2007]
- * updated       matthieu bucchianeri   [mon aug 20 21:09:38 2007]
+ * updated       matthieu bucchianeri   [tue aug 28 23:13:28 2007]
  */
 
 /*
@@ -42,7 +42,7 @@
  */
 
 t_error			thread_args(i_thread			threadid,
-				    void*			args,
+				    const void*			args,
 				    t_vsize			size)
 {
   i_task		taskid;

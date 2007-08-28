@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/capability/capability.c
+ * file          /home/buckman/kaneton/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sun jun  3 19:48:52 2007]
- * updated       julien quintard   [fri jun 22 18:22:33 2007]
+ * updated       matthieu bucchianeri   [tue aug 28 23:12:44 2007]
  */
 
 /*
@@ -79,6 +79,12 @@ m_capability*		capability = NULL;
  */
 
 extern m_kernel*	kernel;
+
+/*
+ * the kernel task id.
+ */
+
+extern i_task		ktask;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -224,7 +230,9 @@ t_error			capability_reserve(t_id			object,
   /*
    * 1)
    */
-  get_kernel_node(&new->node);
+
+  new->node.machine = kernel->machine;
+  new->node.task = ktask;
   new->object = object;
   new->operations = operations;
 

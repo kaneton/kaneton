@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/core/message/Makefile
+# file          /home/buckman/kaneton/kaneton/core/message/Makefile
 #
 # created       julien quintard   [thu jun 28 20:34:12 2007]
-# updated       julien quintard   [fri jun 29 08:36:30 2007]
+# updated       matthieu bucchianeri   [mon aug 27 22:25:35 2007]
 #
 
 #
@@ -33,8 +33,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-MESSAGE_C		:=		message.c		\
-					node.c
+MESSAGE_C		:=		message.c
 
 MESSAGE_O		:=		$(MESSAGE_C:.c=.o)
 

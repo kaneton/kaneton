@@ -196,7 +196,7 @@ t_error			thread_stack(i_thread			threadid,
 				     t_stack			stack);
 
 t_error			thread_args(i_thread			threadid,
-				    void*			args,
+				    const void*			args,
 				    t_vsize			size);
 
 t_error			thread_flush(i_task			taskid);

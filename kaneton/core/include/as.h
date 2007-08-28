@@ -156,7 +156,7 @@ t_error			as_read(i_as				asid,
 				void*				dst);
 
 t_error			as_write(i_as				asid,
-				 void*				src,
+				 const void*			src,
 				 t_vsize			size,
 				 t_vaddr			dst);
 

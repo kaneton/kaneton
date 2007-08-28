@@ -419,7 +419,7 @@ t_error		timer_attribute_data(t_id		arg1,
  */
 
 t_error			thread_args(i_thread			threadid,
-				    void*			args,
+				    const void*			args,
 				    t_vsize			size);
 
 

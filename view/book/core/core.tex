@@ -479,6 +479,12 @@ identifiers while the set of regions holds region objects.
 	   This function reads \argument{size} bytes at address
 	   \argument{src} in the address space \argument{asid} and
 	   copy them into the buffer \argument{dst}.
+
+	   This function can read memory area spanning on multiple
+	   regions and segments.
+
+	   \notice{This function is not exported by the interface
+	   manager. Prefer using the \textit{as\_copy}() function.}
 	 }
 
 \function{as\_write}{(i\_as \argument{asid},
@@ -488,6 +494,12 @@ identifiers while the set of regions holds region objects.
 	 {
 	   This function write \argument{size} bytes of \argument{src}
 	   into the address space \argument{asid} at address \argument{dst}.
+
+	   This function can write memory area spanning on multiple
+	   regions and segments.
+
+	   \notice{This function is not exported by the interface
+	   manager. Prefer using the \textit{as\_copy}() function.}
 	 }
 
 \function{as\_copy}{(i\_as \argument{src\_as},
@@ -496,6 +508,9 @@ identifiers while the set of regions holds region objects.
                      t\_vaddr \argument{dst},
                      t\_vsize \argument{size})}
 	 {
+	   This function can copy memory areas spanning on multiple
+	   regions and segments.
+
 	   This function copies data from the address space
 	   \argument{src\_as} to the address space \argument{dst\_as}.
 	 }
@@ -595,6 +610,9 @@ so the segment objects can be stored in a set object without effort.
 	   This function injects a pre-allocated segment in the set of
 	   segments. The identifier of the injected segment is returned into
 	   \argument{segid}.
+
+	   \notice{\textbt{The given segment object must have been
+	   allocated by the \textit{malloc}() function.}}
 	 }
 
 \function{segment\_give}{(i\_as \argument{as},
@@ -808,6 +826,8 @@ As for segments, regions identifiers are set from the region base address.
                             i\_region* \argument{id})}
 	 {
 	   This function reserves a region with specified properties.
+
+	   % XXX opts
 	 }
 
 \function{region\_release}{(i\_as \argument{as},
@@ -878,6 +898,8 @@ and a region mapping it.
 	   \argument{perms} while the region will map the whole segment.
 
 	   The virtual address is returned in \argument{address}.
+
+	   % XXX opts
 	 }
 
 \function{map\_release}{(i\_as \argument{as},
@@ -1018,7 +1040,7 @@ relative time. Each timer object is identified by a unique timer identifier
 	   \argument{delay} microseconds.
 
 	   The \argument{repeat} argument specifies if the timer
-	   must be re-inserted once expired.
+	   must be re-inserted once expired. % XXX macro
 
 	   The \argument{data} value will be passed as an argument
 	   of the handler.
@@ -1043,7 +1065,7 @@ relative time. Each timer object is identified by a unique timer identifier
                           t\_uint32 \argument{repeat})}
 	 {
 	   This function updates the repeat property of the timer
-	   \argument{id}.
+	   \argument{id}. % XXX macro
 	 }
 
 \function{timer\_modify}{(i\_timer \argument{id},
@@ -1051,7 +1073,7 @@ relative time. Each timer object is identified by a unique timer identifier
 			  t\_uint32 \argument{repeat})}
 	 {
 	   This function updates both the timer delay and repeat property
-	   of the timer \argument{id}.
+	   of the timer \argument{id}. % XXX macro
 	 }
 
 \function{timer\_get}{(i\_timer \argument{id},
@@ -1165,6 +1187,8 @@ still is in the behaviour priority interval.
 	   \argument{prior}.
 
 	   Note that once reserved, the task is marked as stopped.
+
+	   % XXX macros
 	 }
 
 \function{task\_release}{(i\_task \argument{id})}
@@ -1182,6 +1206,8 @@ still is in the behaviour priority interval.
 			t\_state \argument{state})}
 	 {
 	   This function update the state of the task \argument{id}.
+
+	   % XXX macros
 	 }
 
 \function{task\_wait}{(i\_task \argument{id},
@@ -1312,6 +1338,8 @@ macro \textit{THREAD\_PRIOR} representing the default priority.
 			  t\_state \argument{state})}
 	 {
 	   This function change the state of the thread \argument{id}.
+
+	   % XXX macros
 	 }
 
 \function{thread\_stack}{(i\_thread \argument{id},
@@ -1319,6 +1347,8 @@ macro \textit{THREAD\_PRIOR} representing the default priority.
 	 {
 	   This function allocates a stack of \argument{size} bytes
 	   for the thread \argument{id}.
+
+	   % XXX prototype
 	 }
 
 \function{thread\_args}{(i\_thread \argument{id},
@@ -1353,6 +1383,8 @@ macro \textit{THREAD\_PRIOR} representing the default priority.
 
 	   This function waits for the thread's state to change depending on
 	   the options \argument{opts}.
+
+	   \notice{This operation is not yet implemented.}
 	 }
 
 \function{thread\_flush}{(i\_task \argument{task})}
@@ -1514,6 +1546,8 @@ microprocessor.
 	 {
 	   This function is called when a new task is created. It gives
 	   the identifier of the microprocessor with the lowest load.
+
+	   \notice{This operation is not yet implemented.}
 	 }
 
 \function{cpu\_stats}{(i\_cpu \argument{id},
@@ -1529,6 +1563,8 @@ microprocessor.
 	 {
 	   This function -- called periodically -- performs a
 	   load-balancing on all processors.
+
+	   \notice{This operation is not yet implemented.}
 	 }
 
 \function{cpu\_migrate}{(i\_task \argument{tskid},
@@ -1661,6 +1697,8 @@ the first argument, which is in all cases an \argument{i\_task}}
 
 	   \notice{On uniprocessor systems, this function is simply an
 	     alias to \argument{message\_send()}}
+
+	   \notice{This operation is not yet implemented.}
 	 }
 
 \function{message\_receive}{(i\_task \argument{task},
@@ -1701,6 +1739,8 @@ the first argument, which is in all cases an \argument{i\_task}}
 
 	   \notice{On uniprocessor systems, this function is simply an
 	     alias to \argument{message\_receive()}}
+
+	   \notice{This operation is not yet implemented.}
 	 }
 
 \function{message\_wait}{(i\_task \argument{task},
@@ -1708,6 +1748,8 @@ the first argument, which is in all cases an \argument{i\_task}}
 	 {
 	   This function blocks the calling task until the message request
 	   described by \argument{request} is fully completed.
+
+	   \notice{This operation is not yet implemented.}
 	 }
 
 
@@ -1716,6 +1758,8 @@ the first argument, which is in all cases an \argument{i\_task}}
 	 {
 	   This function returns whether the message request described
 	   by \argument{request} is fully completed or not.
+
+	   \notice{This operation is not yet implemented.}
 	 }
 
 \function{message\_initialize}{(void)}

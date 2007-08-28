@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       matthieu bucchianeri   [mon jul 30 16:33:10 2007]
+ * updated       matthieu bucchianeri   [mon aug 27 22:25:25 2007]
  */
 
 #ifndef CORE_MESSAGE_H
@@ -198,7 +198,6 @@ typedef struct
  * ---------- prototypes ------------------------------------------------------
  *
  *      ../../core/message/message.c
- *	../../core/message/node.c
  */
 
 /*
@@ -266,23 +265,6 @@ t_error			message_return_info(i_thread		thread,
 t_error			message_initialize(void);
 
 t_error			message_clean(void);
-
-
-/*
- * ../../core/message/node.c
- */
-
-i_machine get_node_machine(i_node node);
-
-i_task get_node_task(i_node node);
-
-void get_node(i_machine m, i_task t, i_node* node);
-
-void get_kernel_node(i_node* node);
-
-t_uint32 is_local_node(i_node node);
-
-t_uint32 node_cmp(i_node a, i_node b);
 
 
 /*
