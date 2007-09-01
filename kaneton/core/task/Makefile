@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/core/task/Makefile
+# file          /home/buckman/kaneton/kaneton/core/task/Makefile
 #
 # created       julien quintard   [sun jun 10 17:09:05 2007]
-# updated       julien quintard   [fri jun 29 08:37:28 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:29:38 2007]
 #
 
 #
@@ -33,7 +33,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-TASK_C			:=		task.c				
+TASK_C			:=		task.c
 
 TASK_O			:=		$(TASK_C:.c=.o)
 
@@ -67,7 +67,6 @@ headers:
 	$(call env_headers,$(TASK_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 endif
 #

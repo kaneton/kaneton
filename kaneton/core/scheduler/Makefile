@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/core/scheduler/Makefile
+# file          /home/buckman/kaneton/kaneton/core/scheduler/Makefile
 #
 # created       julien quintard   [thu jun 28 20:35:48 2007]
-# updated       julien quintard   [fri jun 29 08:36:48 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:29:59 2007]
 #
 
 #
@@ -33,7 +33,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SCHEDULER_C		:=		scheduler.c			
+SCHEDULER_C		:=		scheduler.c
 
 SCHEDULER_O		:=		$(SCHEDULER_C:.c=.o)
 
@@ -46,7 +46,7 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_SCHEDULER_LO_)
 
-$(_SCHEDULER_LO_):		$(SCHEDULER_O) $(_LIBC_A_)
+$(_SCHEDULER_LO_):		$(SCHEDULER_O)
 	$(call env_remove,$(_SCHEDULER_LO_),)
 
 	$(call env_archive,$(_SCHEDULER_LO_),$(SCHEDULER_O),)
@@ -67,7 +67,6 @@ headers:
 	$(call env_headers,$(SCHEDULER_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 endif
 #

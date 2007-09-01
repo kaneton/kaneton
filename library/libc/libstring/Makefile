@@ -60,7 +60,7 @@ LIBSTRING_C		:=		ctype.c				\
 
 LIBSTRING_O		:=		$(LIBSTRING_C:.c=.o)
 
-LIBSTRING_INCLUDE	:=		$(_LIBC_INCLUDE_DIR_)/libstring/libstring.h
+LIBSTRING_INCLUDE	:=		$(_ULIBC_INCLUDE_DIR_)/libstring/libstring.h
 
 #
 # ---------- rules ------------------------------------------------------------

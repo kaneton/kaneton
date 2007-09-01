@@ -8,7 +8,7 @@
 # file          /home/buckman/kaneton/kaneton/core/debug/Makefile
 #
 # created       julien quintard   [thu jun 28 20:31:38 2007]
-# updated       matthieu bucchianeri   [wed jul 25 20:05:34 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:31:27 2007]
 #
 
 #
@@ -48,7 +48,7 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_DEBUG_LO_)
 
-$(_DEBUG_LO_):		$(DEBUG_O) $(_LIBC_A_)
+$(_DEBUG_LO_):		$(DEBUG_O)
 	$(call env_remove,$(_DEBUG_LO_),)
 
 	$(call env_archive,$(_DEBUG_LO_),$(DEBUG_O),)
@@ -69,7 +69,6 @@ headers:
 	$(call env_headers,$(DEBUG_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 endif
 #

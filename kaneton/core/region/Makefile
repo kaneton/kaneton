@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/core/region/Makefile
+# file          /home/buckman/kaneton/kaneton/core/region/Makefile
 #
 # created       julien quintard   [sun jun 10 17:00:15 2007]
-# updated       julien quintard   [fri jun 29 08:36:42 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:30:07 2007]
 #
 
 #
@@ -34,7 +34,7 @@ include			../../../environment/env.mk
 #
 
 REGION_C		:=		region.c			\
-					region-fit.c			
+					region-fit.c
 
 REGION_O		:=		$(REGION_C:.c=.o)
 
@@ -47,7 +47,7 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_REGION_LO_)
 
-$(_REGION_LO_):		$(REGION_O) $(_LIBC_A_)
+$(_REGION_LO_):		$(REGION_O)
 	$(call env_remove,$(_REGION_LO_),)
 
 	$(call env_archive,$(_REGION_LO_),$(REGION_O),)
@@ -68,7 +68,6 @@ headers:
 	$(call env_headers,$(REGION_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 endif
 #

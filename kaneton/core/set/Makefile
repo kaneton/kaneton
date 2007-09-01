@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/core/set/Makefile
+# file          /home/buckman/kaneton/kaneton/core/set/Makefile
 #
 # created       julien quintard   [sun jun 10 17:04:39 2007]
-# updated       julien quintard   [fri jun 29 08:37:23 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:29:45 2007]
 #
 
 #
@@ -38,7 +38,7 @@ SET_C			:=		set.c				\
 					set-bpt.c			\
 					set-ll.c			\
 					set-pipe.c			\
-					set-stack.c			
+					set-stack.c
 
 SET_O			:=		$(SET_C:.c=.o)
 
@@ -51,7 +51,7 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_SET_LO_)
 
-$(_SET_LO_):		$(SET_O) $(_LIBC_A_)
+$(_SET_LO_):		$(SET_O)
 	$(call env_remove,$(_SET_LO_),)
 
 	$(call env_archive,$(_SET_LO_),$(SET_O),)
@@ -72,7 +72,6 @@ headers:
 	$(call env_headers,$(SET_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 endif
 #

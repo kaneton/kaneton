@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/core/Makefile
+# file          /home/buckman/kaneton/kaneton/core/Makefile
 #
 # created       julien quintard   [tue jun 26 15:39:11 2007]
-# updated       julien quintard   [fri jun 29 08:44:47 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:28:58 2007]
 #
 
 #
@@ -94,7 +94,7 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_CORE_LO_)
 
-$(_CORE_LO_):		$(CORE_O) $(KANETON_LO) $(_LIBC_A_)
+$(_CORE_LO_):		$(CORE_O) $(KANETON_LO)
 	$(call env_remove,$(_CORE_LO_),)
 
 	$(call env_version,$(VERSION_C))
@@ -102,8 +102,7 @@ $(_CORE_LO_):		$(CORE_O) $(KANETON_LO) $(_LIBC_A_)
 
 	$(call env_archive,$(_CORE_LO_),$(CORE_O)			\
 					$(VERSION_O)			\
-					$(KANETON_LO)			\
-					$(_LIBC_A_),)
+					$(KANETON_LO),)
 
 clear:
 	for d in $(SUBDIRS) ; do					\
@@ -136,8 +135,6 @@ headers:
 	$(call env_headers,$(CORE_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
-
 	for d in $(SUBDIRS) ; do					\
 	  $(call env_launch,$${d}/Makefile,,)				; \
 	done

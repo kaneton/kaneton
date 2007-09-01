@@ -39,7 +39,7 @@ LIBSYS_C		:=		perror.c
 
 LIBSYS_O		:=		$(LIBSYS_C:.c=.o)
 
-LIBSYS_INCLUDE		:=		$(_LIBC_INCLUDE_DIR_)/libsys/libsys.h
+LIBSYS_INCLUDE		:=		$(_ULIBC_INCLUDE_DIR_)/libsys/libsys.h
 
 #
 # ---------- rules ------------------------------------------------------------

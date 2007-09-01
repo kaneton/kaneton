@@ -8,7 +8,7 @@
 # file          /home/buckman/kaneton/kaneton/core/message/Makefile
 #
 # created       julien quintard   [thu jun 28 20:34:12 2007]
-# updated       matthieu bucchianeri   [mon aug 27 22:25:35 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:30:14 2007]
 #
 
 #
@@ -46,7 +46,7 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_MESSAGE_LO_)
 
-$(_MESSAGE_LO_):	$(MESSAGE_O) $(_LIBC_A_)
+$(_MESSAGE_LO_):	$(MESSAGE_O)
 	$(call env_remove,$(_MESSAGE_LO_),)
 
 	$(call env_archive,$(_MESSAGE_LO_),$(MESSAGE_O),)
@@ -67,7 +67,6 @@ headers:
 	$(call env_headers,$(MESSAGE_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 endif
 #

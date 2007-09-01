@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/core/map/Makefile
+# file          /home/buckman/kaneton/kaneton/core/map/Makefile
 #
 # created       julien quintard   [sun jun 10 16:58:56 2007]
-# updated       julien quintard   [fri jun 29 08:36:23 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:30:25 2007]
 #
 
 #
@@ -46,7 +46,7 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_MAP_LO_)
 
-$(_MAP_LO_):		$(MAP_O) $(_LIBC_A_)
+$(_MAP_LO_):		$(MAP_O)
 	$(call env_remove,$(_MAP_LO_),)
 
 	$(call env_archive,$(_MAP_LO_),$(MAP_O),)
@@ -67,7 +67,6 @@ headers:
 	$(call env_headers,$(MAP_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 endif
 #

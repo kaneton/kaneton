@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/core/interface/Makefile
+# file          /home/buckman/kaneton/kaneton/core/interface/Makefile
 #
 # created       julien quintard   [thu jun 28 20:32:46 2007]
-# updated       julien quintard   [fri jun 29 08:36:01 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:30:53 2007]
 #
 
 #
@@ -33,7 +33,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-INTERFACE_C		:=		interface.c			
+INTERFACE_C		:=		interface.c
 
 INTERFACE_O		:=		$(INTERFACE_C:.c=.o)
 
@@ -46,7 +46,7 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_INTERFACE_LO_)
 
-$(_INTERFACE_LO_):	$(INTERFACE_O) $(_LIBC_A_)
+$(_INTERFACE_LO_):	$(INTERFACE_O)
 	$(call env_remove,$(_INTERFACE_LO_),)
 
 	$(call env_archive,$(_INTERFACE_LO_),$(INTERFACE_O),)
@@ -67,7 +67,6 @@ headers:
 	$(call env_headers,$(INTERFACE_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 endif
 #

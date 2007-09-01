@@ -43,7 +43,7 @@ main:			dependencies $(PCI)
 $(PCI):		libs $(PCI_O)
 	$(call env_executable,$(PCI),					\
 			      $(PCI_O)					\
-			      $(_CRT_O_) $(_LIBC_A_) $(_LIBKANETON_A_),	\
+			      $(_CRT_O_) $(_ULIBC_A_) $(_LIBKANETON_A_),	\
 			      $(_DRIVER_LAYOUT_),			\
 			      $(ENV_OPTION_NO_STANDARD))
 
@@ -62,7 +62,7 @@ headers:
 	$(call env_headers,$(PCI_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
+	$(call env_launch,$(_ULIBC_DIR_)/Makefile,,)
 
 endif
 #

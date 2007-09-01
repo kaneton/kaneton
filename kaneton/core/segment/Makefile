@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/core/segment/Makefile
+# file          /home/buckman/kaneton/kaneton/core/segment/Makefile
 #
 # created       julien quintard   [sun jun 10 17:02:46 2007]
-# updated       julien quintard   [fri jun 29 08:36:54 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:29:53 2007]
 #
 
 #
@@ -34,7 +34,7 @@ include			../../../environment/env.mk
 #
 
 SEGMENT_C		:=		segment.c			\
-					segment-fit.c			
+					segment-fit.c
 
 SEGMENT_O		:=		$(SEGMENT_C:.c=.o)
 
@@ -47,7 +47,7 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_SEGMENT_LO_)
 
-$(_SEGMENT_LO_):	$(SEGMENT_O) $(_LIBC_A_)
+$(_SEGMENT_LO_):	$(SEGMENT_O)
 	$(call env_remove,$(_SEGMENT_LO_),)
 
 	$(call env_archive,$(_SEGMENT_LO_),$(SEGMENT_O),)
@@ -68,7 +68,6 @@ headers:
 	$(call env_headers,$(SEGMENT_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 endif
 #

@@ -43,12 +43,12 @@ main:			dependencies $(VGA)
 $(VGA):			libs $(VGA_O)
 	$(call env_executable,$(VGA),					\
 			      $(VGA_O)					\
-			      $(_CRT_O_) $(_LIBC_A_) $(_LIBKANETON_A_),	\
+			      $(_CRT_O_) $(_ULIBC_A_) $(_LIBKANETON_A_),	\
 			      $(_DRIVER_LAYOUT_),			\
 			      $(ENV_OPTION_NO_STANDARD))
 
 libs:
-	$(call env_launch,${_LIBC_DIR_}/Makefile,,)
+	$(call env_launch,${_ULIBC_DIR_}/Makefile,,)
 	$(call env_launch,${_CRT_DIR_}/Makefile,,)
 	$(call env_launch,${_LIBKANETON_DIR_}/Makefile,,)
 
@@ -67,7 +67,7 @@ headers:
 	$(call env_headers,$(VGA_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
+	$(call env_launch,$(_ULIBC_DIR_)/Makefile,,)
 
 endif
 #

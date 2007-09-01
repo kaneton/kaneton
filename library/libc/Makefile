@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/library/libc/Makefile
+# file          /home/buckman/kaneton/library/libc/Makefile
 #
 # created       julien quintard   [sun jun 10 14:14:02 2007]
-# updated       julien quintard   [fri jun 29 08:44:50 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:24:18 2007]
 #
 
 #
@@ -44,12 +44,12 @@ LIBSYS_LO		:=		libsys/libsys.lo
 #
 ifeq ($(behaviour),default)
 
-main:			dependencies $(_LIBC_A_)
+main:			dependencies $(_ULIBC_A_)
 
-$(_LIBC_A_):		$(LIBDATA_LO) $(LIBSTRING_LO) $(LIBSYS_LO)
-	$(call env_remove,$(_LIBC_A_),)
+$(_ULIBC_A_):		$(LIBDATA_LO) $(LIBSTRING_LO) $(LIBSYS_LO)
+	$(call env_remove,$(_ULIBC_A_),)
 
-	$(call env_static-library,$(_LIBC_A_),				\
+	$(call env_static-library,$(_ULIBC_A_),				\
 		  $(LIBDATA_LO) $(LIBSTRING_LO)	$(LIBSYS_LO),)
 
 clear:
@@ -57,7 +57,7 @@ clear:
 	  $(call env_launch,$${d}/Makefile,clear,)			; \
 	done
 
-	$(call env_remove,$(_LIBC_A_),)
+	$(call env_remove,$(_ULIBC_A_),)
 
 	$(call env_purge,)
 

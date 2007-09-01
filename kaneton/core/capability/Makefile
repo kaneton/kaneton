@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/kaneton/core/capability/Makefile
+# file          /home/buckman/kaneton/kaneton/core/capability/Makefile
 #
 # created       julien quintard   [thu jun 28 20:30:19 2007]
-# updated       julien quintard   [fri jun 29 08:35:19 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:31:47 2007]
 #
 
 #
@@ -33,7 +33,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-CAPABILITY_C		:=		capability.c			
+CAPABILITY_C		:=		capability.c
 
 CAPABILITY_O		:=		$(CAPABILITY_C:.c=.o)
 
@@ -46,7 +46,7 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_CAPABILITY_LO_)
 
-$(_CAPABILITY_LO_):	$(CAPABILITY_O) $(_LIBC_A_)
+$(_CAPABILITY_LO_):	$(CAPABILITY_O)
 	$(call env_remove,$(_CAPABILITY_LO_),)
 
 	$(call env_archive,$(_CAPABILITY_LO_),$(CAPABILITY_O),)
@@ -67,7 +67,6 @@ headers:
 	$(call env_headers,$(CAPABILITY_C),)
 
 dependencies:
-	$(call env_launch,$(_LIBC_DIR_)/Makefile,,)
 
 endif
 #

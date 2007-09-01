@@ -41,7 +41,7 @@ LIBDATA_C		:=		dump.c				\
 
 LIBDATA_O		:=		$(LIBDATA_C:.c=.o)
 
-LIBDATA_INCLUDE		:=		$(_LIBC_INCLUDE_DIR_)/libdata/libdata.h
+LIBDATA_INCLUDE		:=		$(_ULIBC_INCLUDE_DIR_)/libdata/libdata.h
 
 #
 # ---------- rules ------------------------------------------------------------

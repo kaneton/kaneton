@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/crypt/kaneton/kaneton/Makefile
+# file          /home/buckman/kaneton/kaneton/Makefile
 #
 # created       julien quintard   [sun jun 10 14:54:43 2007]
-# updated       matthieu bucchianeri   [tue jul 17 17:59:36 2007]
+# updated       matthieu bucchianeri   [sat sep  1 12:11:51 2007]
 #
 
 #
@@ -34,7 +34,8 @@ include			../environment/env.mk
 #
 
 SUBDIRS			:=		core				\
-					machine
+					machine				\
+					libc
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -47,7 +48,7 @@ $(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_) libs
 	$(call env_remove,$(_KANETON_),)
 
 	$(call env_executable,$(_KANETON_),				\
-			      $(_CORE_LO_) $(_MACHINE_LO_)		\
+			      $(_CORE_LO_) $(_MACHINE_LO_) $(_LIBC_LO_)	\
 			      $(_TEST_LO_),				\
 			      $(_KANETON_LAYOUT_),			\
 			      $(ENV_OPTION_NO_STANDARD))
