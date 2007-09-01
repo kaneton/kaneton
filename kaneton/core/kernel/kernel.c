@@ -22,7 +22,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <libc/libc.h>
 #include <kaneton.h>
 
 /*
@@ -163,7 +163,7 @@ void			kernel_initialize(void)
   if (task_initialize() != ERROR_NONE)
     core_error("cannot initialize the task manager\n");
 
-  alloc_setup(map_reserve, map_release, kasid);
+  alloc_setup();
 
   /*
    * 9)

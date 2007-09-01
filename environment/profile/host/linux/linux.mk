@@ -8,7 +8,7 @@
 # file          /home/buckman/kan.../environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       matthieu bucchianeri   [sat jul 21 18:01:39 2007]
+# updated       matthieu bucchianeri   [sat sep  1 13:06:13 2007]
 #
 
 #
@@ -369,9 +369,6 @@ endef
 define env_version
   $(call env_display,yellow,VERSION,$(1),		,)		&& \
   $(_ECHO_) -n "" > $(1)						&& \
-  $(_ECHO_) "#include <libc.h>" >> $(1)					&& \
-  $(_ECHO_) "#include <kaneton.h>" >> $(1)				&& \
-  $(_ECHO_) "" >> $(1)							&& \
   $(_ECHO_) -n "const char version[] = \"$(_TITLE_)-$(_VERSION_)" >> $(1) && \
   $(_ECHO_) " "$(shell $(_DATE_))" $(USER)@$(HOSTNAME)\";" >> $(1)
 endef

@@ -8,7 +8,7 @@
  * file          /home/buckman/kan.../ia32/educational/include/architecture.h
  *
  * created       julien quintard   [thu jun  7 12:02:10 2007]
- * updated       matthieu bucchianeri   [sat jul 21 19:56:34 2007]
+ * updated       matthieu bucchianeri   [sat sep  1 13:24:57 2007]
  */
 
 #ifndef ARCHITECTURE_ARCHITECTURE_H
@@ -25,6 +25,10 @@
 /*
  * ---------- includes --------------------------------------------------------
  */
+
+#include <core/id.h>
+#include <core/types.h>
+#include <core/error.h>
 
 #include <architecture/types.h>
 #include <architecture/debug.h>

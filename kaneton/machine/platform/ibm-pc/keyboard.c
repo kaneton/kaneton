@@ -16,7 +16,7 @@
  */
 
 #include <kaneton.h>
-#include <libc.h>
+#include <libc/libc.h>
 
 #include <platform/platform.h>
 

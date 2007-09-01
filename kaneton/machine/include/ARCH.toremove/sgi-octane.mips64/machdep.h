@@ -22,7 +22,7 @@
 #include <arch/machdep/core/core.h>
 #include <arch/machdep/services/services.h>
 #include <arch/machdep/sys/sys.h>
-#include <libc.h>
+#include <libc/libc.h>
 
 /*
  * ---------- macro functions -------------------------------------------------

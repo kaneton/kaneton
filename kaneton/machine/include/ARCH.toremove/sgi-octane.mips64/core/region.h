@@ -19,7 +19,7 @@
  */
 
 // XXX #include <core/region.h>
-//#include <libc.h>
+//#include <libc/libc.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

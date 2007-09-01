@@ -21,7 +21,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <libc/libc.h>
 
 #include <platform/platform.h>
 #include <architecture/architecture.h>
