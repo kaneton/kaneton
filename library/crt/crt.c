@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/library/crt/crt.c
  *
  * created       matthieu bucchianeri   [mon aug  6 00:22:07 2007]
- * updated       matthieu bucchianeri   [thu aug 23 17:06:07 2007]
+ * updated       matthieu bucchianeri   [sat sep  1 19:34:25 2007]
  */
 
 /*
@@ -82,15 +82,7 @@ int		_start(i_task		task,
    * initialize malloc();
    */
 
-  if (map_reserve(as, MAP_OPT_NONE, 4096, PERM_READ | PERM_WRITE,
-		  &page) != ERROR_NONE)
-    {
-      /* XXX throw fatal error */
-    }
-
-  alloc_init(page, 4096);
-
-  alloc_setup(map_reserve, map_release, as);
+  _alloc_init();
 
   /*
    * attach to mod service.

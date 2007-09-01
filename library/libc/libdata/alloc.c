@@ -21,6 +21,7 @@
 #include <libc.h>
 #include <libdata/alloc.h>
 #include <kaneton.h>
+#include <crt.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -86,7 +87,6 @@ t_alloc			alloc;
 
 void*			malloc(size_t				size)
 {
-  static int		stucked = 0;
   t_area*		area;
   t_area*		prev_area = NULL;
   t_chunk*		chunk;
@@ -182,72 +182,24 @@ void*			malloc(size_t				size)
 
   if (allocated == NULL)
     {
-      if (alloc.map_reserve == NULL)
+      /*
+       * a)
+       */
+
+      pagesz = PAGED_SIZE(size + sizeof(t_area) + sizeof(t_chunk));
+
+      err = map_reserve(_crt_get_as_id(),
+			MAP_OPT_USER,
+			pagesz,
+			PERM_READ | PERM_WRITE,
+			&addr);
+
+      if (err != ERROR_NONE)
 	{
-	  printf("FATAL ERROR: survey area exhausted !\n");
+	  printf("FATAL ERROR: physical memory exhausted !\n");
 
 	  while (1)
 	    ;
-	}
-
-      if (stucked)
-	{
-	  addr = alloc.reserve;
-
-	  alloc.reserve = 0;
-
-	  pagesz = PAGESZ;
-	}
-      else
-	{
-
-	  /*
-	   * a)
-	   */
-
-	  pagesz = PAGED_SIZE(size + sizeof(t_area) + sizeof(t_chunk));
-
-	  stucked = 1;
-
-	  err = alloc.map_reserve(alloc.asid,
-				  alloc.asid ?
-					  MAP_OPT_USER : MAP_OPT_PRIVILEGED,
-				  pagesz,
-				  PERM_READ | PERM_WRITE,
-				  &addr);
-
-	  stucked = 0;
-
-	  if (err != ERROR_NONE)
-	    {
-	      printf("FATAL ERROR: physical memory exhausted !\n");
-
-	      while (1)
-		;
-	    }
-
-	  if (alloc.reserve == 0)
-	    {
-	      err = alloc.map_reserve(alloc.asid,
-				      alloc.asid ?
-				        MAP_OPT_USER : MAP_OPT_PRIVILEGED,
-				      PAGESZ,
-				      PERM_READ | PERM_WRITE,
-				      &alloc.reserve);
-
-	      if (err != ERROR_NONE)
-		{
-		  printf("FATAL ERROR: physical memory exhausted !\n");
-
-		  while (1)
-		    ;
-		}
-
-	      if (prev_area != NULL)
-		prev_area = prev_area->next_area;
-	      else
-		prev_area = alloc.areas;
-	    }
 	}
 
       /*
@@ -415,7 +367,7 @@ void			free(void*				ptr)
     {
       area->prev_area->next_area = NULL;
 
-      if (alloc.map_release(alloc.asid, (t_vaddr)area) != ERROR_NONE)
+      if (map_release(_crt_get_as_id(), (t_vaddr)area) != ERROR_NONE)
 	printf("warning: unable to release area.\n");
     }
 
@@ -434,7 +386,7 @@ void			free(void*				ptr)
  * this function returns the number of allocation calls.
  */
 
-u_int32_t		alloc_nalloc(void)
+u_int32_t		_alloc_nalloc(void)
 {
   return (alloc.nalloc);
 }
@@ -443,7 +395,7 @@ u_int32_t		alloc_nalloc(void)
  * this function returns the number of release calls.
  */
 
-u_int32_t		alloc_nfree(void)
+u_int32_t		_alloc_nfree(void)
 {
   return (alloc.nfree);
 }
@@ -458,7 +410,7 @@ u_int32_t		alloc_nfree(void)
  * 3) loop through chunks in an area.
  */
 
-void			alloc_dump(void)
+void			_alloc_dump(void)
 {
   t_area*		area;
   t_chunk*		chunk;
@@ -520,7 +472,7 @@ void			alloc_dump(void)
  * 1) loop through areas.
  * 2) loop through chunks in an area.
  */
-
+#ifdef MALLOC_SIGN_ENABLE
 void			alloc_check_signatures(void)
 {
   t_area*		area;
@@ -552,6 +504,7 @@ void			alloc_check_signatures(void)
 	}
     }
 }
+#endif
 
 /*
  * this fonction reallocates memory, meaning this function resizes a memory
@@ -587,90 +540,14 @@ void*			realloc(void* 				ptr,
 }
 
 /*
- * this function setup the map_reserve/map_release pointers.
- */
-
-void			alloc_setup(t_pfn_map_reserve		freserve,
-				    t_pfn_map_release		frelease,
-				    i_as			asid)
-{
-  t_error		err;
-
-  alloc.map_reserve = freserve;
-  alloc.map_release = frelease;
-  alloc.asid = asid;
-
-  err = alloc.map_reserve(alloc.asid,
-			  alloc.asid ?
-				  MAP_OPT_USER : MAP_OPT_PRIVILEGED,
-			  PAGESZ,
-			  PERM_READ | PERM_WRITE,
-			  &alloc.reserve);
-
-  if (err != ERROR_NONE)
-    {
-      printf("FATAL ERROR: physical memory exhausted !\n");
-
-      while (1)
-	;
-    }
-}
-
-/*
  * this function initializes the allocator.
- *
- * the arguments addr and size specify a kind of survival area. the kernel
- * will call this allocator to dynamically reserve memory while no
- * kernel memory manager is installed yet. so this area will be used in a
- * very special way.
- *
- * steps:
- *
- * 1) initialize the allocator global structure.
- * 2) create the first chunk.
- * 3) create the first area and put the first chunk in.
  */
 
-int			alloc_init(t_vaddr			addr,
-				   t_size			size)
+int			_alloc_init(void)
 {
-  t_area*		first_area;
-  t_chunk*		first_chunk;
-
-  /*
-   * 1)
-   */
-
   memset(&alloc, 0x0, sizeof(t_alloc));
 
-  first_area = alloc.areas = (t_area*)addr;
-  alloc.nalloc = 0;
-  alloc.nfree = 0;
   alloc.lowest = (void*)((t_vaddr)-1);
-  alloc.highest = (void*)0;
-  alloc.map_reserve = NULL;
-  alloc.map_release = NULL;
-  alloc.reserve = 0;
-
-  /*
-   * 2)
-   */
-
-  first_chunk = (t_chunk*)(first_area + 1);
-  first_chunk->size = size - sizeof(t_area) - sizeof(t_chunk);
-  first_chunk->next_free = NULL;
-  first_chunk->area = first_area;
-  SIGN(CHUNK, first_chunk);
-
-  /*
-   * 3)
-   */
-
-  first_area->size = size - sizeof(t_area);
-  first_area->first_free_chunk = first_chunk;
-  first_area->prev_area = NULL;
-  first_area->next_area = NULL;
-  SIGN(AREA, first_area);
 
   return (0);
 }

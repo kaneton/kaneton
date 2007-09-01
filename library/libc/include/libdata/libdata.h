@@ -42,23 +42,18 @@ void*			malloc(size_t				size);
 
 void			free(void*				ptr);
 
-u_int32_t		alloc_nalloc(void);
+u_int32_t		_alloc_nalloc(void);
 
-u_int32_t		alloc_nfree(void);
+u_int32_t		_alloc_nfree(void);
 
-void			alloc_dump(void);
+void			_alloc_dump(void);
 
 void			alloc_check_signatures(void);
 
 void*			realloc(void* 				ptr,
 				size_t				size);
 
-void			alloc_setup(t_pfn_map_reserve		freserve,
-				    t_pfn_map_release		frelease,
-				    i_as			asid);
-
-int			alloc_init(t_vaddr			addr,
-				   t_size			size);
+int			_alloc_init(void);
 
 
 /*

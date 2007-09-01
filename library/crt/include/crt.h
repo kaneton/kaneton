@@ -8,11 +8,18 @@
  * file          /home/buckman/kaneton/library/crt/include/crt.h
  *
  * created       matthieu bucchianeri   [mon aug  6 00:12:02 2007]
- * updated       matthieu bucchianeri   [mon aug  6 17:48:40 2007]
+ * updated       matthieu bucchianeri   [sat sep  1 19:35:48 2007]
  */
 
 #ifndef CRT_CRT_H
 #define CRT_CRT_H
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <libc.h>
+#include <libkaneton.h>
 
 /*
  * ---------- macros ----------------------------------------------------------

@@ -517,6 +517,7 @@ void			alloc_dump(void)
  * 2) loop through chunks in an area.
  */
 
+#ifdef MALLOC_SIGN_ENABLE
 void			alloc_check_signatures(void)
 {
   t_area*		area;
@@ -548,6 +549,7 @@ void			alloc_check_signatures(void)
 	}
     }
 }
+#endif
 
 /*
  * this fonction reallocates memory, meaning this function resizes a memory
