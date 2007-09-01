@@ -5,47 +5,33 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/library/libc/include/libsys/stdarg.h
+ * file          /home/buckman/kaneton/kaneton/libc/include/stdarg.h
  *
  * created       julien quintard   [sun jun 10 18:04:06 2007]
- * updated       julien quintard   [sun jun 10 18:05:43 2007]
+ * updated       matthieu bucchianeri   [sat sep  1 13:35:36 2007]
  */
 
 #ifndef LIBC_LIBSYS_STDARD_H
 #define LIBC_LIBSYS_STDARD_H		1
 
 /*
- * XXX
- *
- * these macro highly rely on the underlying microprocessor architecture.
- */
-
-/*
  * ---------- types -----------------------------------------------------------
  */
 
-typedef char*			va_list;
+typedef __builtin_va_list va_list;
 
 /*
- * ---------- extern ----------------------------------------------------------
+ * ---------- macros ----------------------------------------------------------
  */
 
-extern void va_end	(va_list);
+#define va_end          __builtin_va_end
+#define va_arg          __builtin_va_arg
 
 /*
- * ---------- macro functions -------------------------------------------------
+ * ---------- macro-functions -------------------------------------------------
  */
 
-#define		__va_rouded_size(type)					\
-  (((sizeof(type) + sizeof(int) - 1) / sizeof(int)) * sizeof(int))
-
-#define		va_start(ap, lastarg)					\
-  (ap = ((char*) &(lastarg) + __va_rouded_size(lastarg)))
-
-#define		va_end(ap)	/* nothing to do */
-
-#define		va_arg(ap, type)					\
-  (ap += __va_rouded_size(type),					\
-   *((type*) (ap - __va_rouded_size(type))))
+#define va_start(v,l)   __builtin_stdarg_start((v),l)
+#define va_copy(d,s)    __builtin_va_copy((d),(s))
 
 #endif

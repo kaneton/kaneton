@@ -5,77 +5,100 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/library/libc/include/libsys/limits.h
+ * file          /home/buckman/kaneton/kaneton/libc/include/limits.h
  *
  * created       julien quintard   [sun jun 10 17:53:28 2007]
- * updated       julien quintard   [sun jun 10 17:53:52 2007]
+ * updated       matthieu bucchianeri   [sat sep  1 19:20:14 2007]
  */
 
 #ifndef LIBC_LIBSYS_LIMITS_H
 #define LIBC_LIBSYS_LIMITS_H		1
 
 /*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include <libc/types.h>
+
+/*
+ * ---------- macro-functions -------------------------------------------------
+ */
+
+/*
+ * integer types MAX and MIN values. thanks to alexandre becoulet.
+ */
+
+/*
+ * return max integer value for a type
+ */
+
+#define __MINOF_TYPE(t)        ((typeof(t))(((typeof(t))-1) < 0 ?  (((typeof(t))1) << sizeof(typeof(t)) * 8 - 1) :  0))
+
+/*
+ * return min integer value for a type
+ */
+
+#define __MAXOF_TYPE(t)        ((typeof(t))(((typeof(t))-1) < 0 ? ~(((typeof(t))1) << sizeof(typeof(t)) * 8 - 1) : -1))
+
+/*
  * ---------- macros ----------------------------------------------------------
  */
 
 /*
- * char size
+ * char type
  */
 
-#define CHAR_BITS		8
-#define SCHAR_MIN		(-0x7f - 1)
-#define SCHAR_MAX		0x7f
-#define UCHAR_MIN		0x00U
-#define UCHAR_MAX		0xffU
+#define CHAR_BITS	(sizeof(char) * 8)
+
+#define SCHAR_MIN	(__MINOF_TYPE(signed char))
+#define SCHAR_MAX	(__MAXOF_TYPE(signed char))
+#define UCHAR_MAX	(__MAXOF_TYPE(unsigned char))
+#define CHAR_MIN	SCHAR_MIN
+#define CHAR_MAX	SCHAR_MAX
 
 /*
- * short size
+ * short type
  */
 
-#define SHORT_BITS		16
-#define SSHORT_MIN		(-0x7fff - 1)
-#define SSHORT_MAX		0x7fff
-#define USHORT_MIN		0x0000U
-#define USHORT_MAX		0xffffU
+#define SHORT_BITS	(sizeof(short) * 8)
+#define SHRT_MIN	(__MINOF_TYPE(signed short))
+#define SHRT_MAX	(__MAXOF_TYPE(signed short))
+#define USHRT_MAX	(__MAXOF_TYPE(unsigned short))
 
 /*
- * int size
+ * int type
  */
 
-#define INT_BITS		32
-#define SINT_MIN		(-0x7fffffff - 1)
-#define SINT_MAX		0x7fffffff
-#define UINT_MIN		0x00000000U
-#define UINT_MAX		0xffffffffU
+#define INT_BITS	(sizeof(int) * 8)
+#define INT_MIN		(__MINOF_TYPE(signed int))
+#define INT_MAX		(__MAXOF_TYPE(signed int))
+#define UINT_MAX	(__MAXOF_TYPE(unsigned int))
 
 /*
- * long size
+ * long type
  */
 
-#define LONG_BITS		32
-#define SLONG_MIN		(-0x7fffffff - 1)
-#define SLONG_MAX		0x7fffffff
-#define ULONG_MIN		0x00000000U
-#define ULONG_MAX		0xffffffffU
+#define LONG_BITS	(sizeof(long) * 8)
+#define SLONG_MIN	(__MINOF_TYPE(signed long))
+#define SLONG_MAX	(__MAXOF_TYPE(signed long))
+#define ULONG_MAX	(__MAXOF_TYPE(unsigned long))
 
 /*
- * long long size
+ * long long type
  */
 
-#define LLONG_BITS		64
-#define SLLONG_MIN		(-0x7fffffffffffffffLL - 1)
-#define SLLONG_MAX		0x7fffffffffffffffLL
-#define ULLONG_MIN		0x0000000000000000ULL
-#define ULLONG_MAX		0xffffffffffffffffULL
+#define LLONG_BITS	(sizeof(long long) * 8)
+#define LLONG_MIN	(__MINOF_TYPE(signed long long))
+#define LLONG_MAX	(__MAXOF_TYPE(signed long long))
+#define ULLONG_MAX	(__MAXOF_TYPE(unsigned long long))
 
 /*
- * quad size
+ * quad type
  */
 
-#define QUAD_BITS		64
-#define SQUAD_MIN		(-0x7fffffffffffffffLL - 1)
-#define SQUAD_MAX		0x7fffffffffffffffLL
-#define UQUAD_MIN		0x0000000000000000ULL
-#define UQUAD_MAX		0xffffffffffffffffULL
+#define QUAD_BITS	LLONG_BITS
+#define SQUAD_MIN	LLONG_MIN
+#define SQUAD_MAX	LLONG_MAX
+#define UQUAD_MAX	ULLONG_MAX
 
 #endif
