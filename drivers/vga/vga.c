@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/drivers/vga/vga.c
  *
  * created       matthieu bucchianeri   [tue aug 21 23:15:42 2007]
- * updated       matthieu bucchianeri   [sat aug 25 18:00:37 2007]
+ * updated       matthieu bucchianeri   [sun sep  2 12:40:13 2007]
  */
 
 #include <libc.h>
@@ -276,6 +276,10 @@ int		main()
 
   printf(" -- vga: VGA Framebuffer driver started.\n");
 
+  if (message_register(MESSAGE_TYPE_DRIVER_VGA,
+		       MESSAGE_SIZE_DRIVER_VGA) != ERROR_NONE)
+    return (-1);
+
   for (port = 0x3C0; port < 0x3DF; port++)
     if (io_grant(port, _crt_get_task_id(), 1) != ERROR_NONE)
       {
@@ -283,10 +287,6 @@ int		main()
 
 	return (-1);
       }
-
-  if (message_register(MESSAGE_TYPE_DRIVER_VGA,
-		       MESSAGE_SIZE_DRIVER_VGA) != ERROR_NONE)
-    return (-1);
 
   if (vga_driver_serve())
     return (-1);

@@ -1,12 +1,14 @@
 /*
- * licence       kaneton licence
+ * ---------- header ----------------------------------------------------------
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton.bak/drivers/pci/pci.c
+ * license       kaneton
+ *
+ * file          /home/buckman/kaneton/drivers/pci/pci.c
  *
  * created       matthieu bucchianeri   [sat jun  9 17:26:20 2007]
- * updated       matthieu bucchianeri   [sat jun  9 22:05:37 2007]
+ * updated       matthieu bucchianeri   [sun sep  2 12:58:10 2007]
  */
 
 /*
@@ -97,11 +99,11 @@ static void	pci_register(uint16_t	vendor,
   for (count = 0; io_base[count] != 0; count++)
     ;
   memset(devices[device_id].io, 0, sizeof (devices[device_id].io));
-  memcpy(devices[device_id].io, io_base, count);
+  memcpy(devices[device_id].io, io_base, count * sizeof (t_driver_pci_io));
   for (count = 0; mem_base[count] != 0; count++)
     ;
   memset(devices[device_id].mem, 0, sizeof (devices[device_id].mem));
-  memcpy(devices[device_id].mem, mem_base, count);
+  memcpy(devices[device_id].mem, mem_base, count * sizeof (paddr_t));
   if (irq == 0xff)
     devices[device_id].irq = (t_driver_pci_irq)-1;
   else
@@ -189,12 +191,11 @@ void		pci_probe(void)
 	   * 4)
 	   */
 
-	  irq = pci_conf_read(bus, dev, fun, PCI_REG_IRQLINE);
+	  irq = (uint8_t)pci_conf_read(bus, dev, fun, PCI_REG_IRQLINE);
 
 	  /*
 	   * 5)
 	   */
-
 	  io_base[io_index] = 0;
 	  mem_base[mem_index] = 0;
 	  pci_register(vendor, device, class, io_base, mem_base, irq);
@@ -205,43 +206,34 @@ void		pci_probe(void)
  * build list of devices by vendor:device ids.
  */
 
-static t_driver_pci_message*	pci_enum_devices(t_driver_pci_vendor	vendor,
-						 t_driver_pci_device	device,
-						 uint32_t*		size)
+static void	pci_enum_devices(t_driver_pci_vendor	vendor,
+				 t_driver_pci_device	device,
+				 i_node			source)
 {
   uint32_t		i;
-  t_driver_pci_message*	reply;
-  uint32_t		sz = 0;
+  t_driver_pci_message	message;
 
   for (i = 0; i < PCI_MAX_DEVICE; i++)
     {
       if (devices[i].vendor == vendor &&
 	  devices[i].device == device)
 	{
-	  sz += sizeof (t_driver_pci_dev);
-	}
-    }
-
-  sz += sizeof (t_driver_pci_message) - 1;
-  if ((reply = malloc(sz)) == NULL)
-    return (NULL);
-  reply->u.reply.u.get_device.count = 0;
-
-  for (i = 0; i < PCI_MAX_DEVICE; i++)
-    {
-      if (devices[i].vendor == vendor &&
-	  devices[i].device == device)
-	{
-	  memcpy(&reply->u.reply.u.get_device.devices[reply->u.reply.u.get_device.count],
+	  message.u.reply.u.get_device.status = ERROR_NONE;
+	  message.u.reply.u.get_device.has_more = 1;
+	  memcpy(&message.u.reply.u.get_device.device,
 		 &devices[i],
 		 sizeof (t_driver_pci_dev));
 
-	  reply->u.reply.u.get_device.count++;
+	  if (message_send(source,
+			   MESSAGE_TYPE_DRIVER_PCI,
+			   (t_vaddr)&message,
+			   sizeof (message)) != ERROR_NONE)
+	    {
+	      printf(" -- pci: error in reply\n");
+	    }
 	}
     }
 
-  *size = sz;
-  return (reply);
 }
 
 /*
@@ -253,37 +245,35 @@ void		pci_driver_serve(void)
   t_driver_pci_message	message;
   t_driver_pci_vendor	vendor;
   t_driver_pci_device	device;
-  t_driver_pci_message*	reply;
   t_vsize		size;
-  i_node		node;
+  i_node		sender;
 
   while (1)
     {
-#if 0
-      if (message_receive(0,
-			  &message,
-			  sizeof (message),
-			  1) == ERROR_NONE)
+      if (message_receive(MESSAGE_TYPE_DRIVER_PCI,
+			  (t_vaddr)&message,
+			  &size,
+			  &sender) == ERROR_NONE)
 	{
 	  if (message.u.request.operation == PCI_DRIVER_GET_DEVICE)
 	    {
 	      vendor = message.u.request.u.get_device.vendor;
 	      device = message.u.request.u.get_device.device;
 
-	      reply = pci_enum_devices(vendor, device, &size);
+	      pci_enum_devices(vendor, device, sender);
 
-	      if (reply == NULL || syscall_sync_send(&message.node,
-						     0,
-						     reply,
-						     size) != ERROR_NONE)
+	      message.u.reply.u.get_device.status = ERROR_NONE;
+	      message.u.reply.u.get_device.has_more = 0;
+
+	      if (message_send(sender,
+			       MESSAGE_TYPE_DRIVER_PCI,
+			       (t_vaddr)&message,
+			       sizeof (message)) != ERROR_NONE)
 		{
-		  /* XXX */
+		  printf(" -- pci: error in request\n");
 		}
-
-	      free(reply);
 	    }
 	}
-#endif
     }
 }
 
@@ -294,6 +284,10 @@ void		pci_driver_serve(void)
 int		main(void)
 {
   printf(" -- pci: Tiny PCI driver started.\n");
+
+  if (message_register(MESSAGE_TYPE_DRIVER_PCI,
+		       MESSAGE_SIZE_DRIVER_PCI) != ERROR_NONE)
+    return (-1);
 
   if (io_grant(PCI_ADDRIO, _crt_get_task_id(), 4) != ERROR_NONE ||
       io_grant(PCI_DATAIO, _crt_get_task_id(), 4) != ERROR_NONE)

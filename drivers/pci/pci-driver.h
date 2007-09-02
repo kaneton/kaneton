@@ -28,7 +28,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-# include <libc.h>
+#include <libc.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -38,14 +38,17 @@
  * some constants.
  */
 
-# define PCI_MAX_DEVICE		256
-# define PCI_MAX_ADDRESS_COUNT	6
+#define PCI_MAX_DEVICE		256
+#define PCI_MAX_ADDRESS_COUNT	6
 
 /*
  * driver messages.
  */
 
-# define PCI_DRIVER_GET_DEVICE	1
+#define MESSAGE_TYPE_DRIVER_PCI	(MESSAGE_TYPE_CRT + 3)
+#define MESSAGE_SIZE_DRIVER_PCI	(sizeof (t_driver_pci_message))
+
+#define PCI_DRIVER_GET_DEVICE	1
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -156,12 +159,80 @@ typedef struct
       {
 	struct
 	{
-	  uint32_t			count;
-	  uint8_t			devices[1];
+	  t_error			status;
+	  t_uint32			has_more;
+	  t_driver_pci_dev		device;
 	}				get_device;
       }			u;
     }			reply;
   } u;
 }			t_driver_pci_message;
+
+/*
+ * ---------- interface -------------------------------------------------------
+ */
+
+#ifdef PCI_SPAWN_INTERFACE
+
+#ifdef PCI_INLINE_INTERFACE
+# define PCI_ATTRIBUTE_INTERFACE	inline __attribute__((unused))
+#else
+# define PCI_ATTRIBUTE_INTERFACE	__attribute__((unused))
+#endif
+
+typedef void (*t_driver_pci_new_device)(t_driver_pci_dev*, void*);
+
+static PCI_ATTRIBUTE_INTERFACE t_error
+pci_init(void)
+{
+  return message_register(MESSAGE_TYPE_DRIVER_PCI,
+			  MESSAGE_SIZE_DRIVER_PCI);
+}
+
+static PCI_ATTRIBUTE_INTERFACE t_error
+pci_get_device(i_task pci, t_driver_pci_vendor vendor,
+	       t_driver_pci_device device, t_driver_pci_new_device callback,
+	       void* pv)
+{
+  t_driver_pci_message	message;
+  i_node		pci_driver;
+  t_vsize		size;
+
+  pci_driver.machine = 0;
+  pci_driver.task = pci;
+
+  message.u.request.operation = PCI_DRIVER_GET_DEVICE;
+  message.u.request.u.get_device.vendor = vendor;
+  message.u.request.u.get_device.device = device;
+
+  if (message_send(pci_driver,
+		   MESSAGE_TYPE_DRIVER_PCI,
+		   (t_vaddr)&message,
+		   sizeof (message)) != ERROR_NONE)
+    {
+      return (ERROR_UNKNOWN);
+    }
+
+  do
+    {
+      if (message_receive(MESSAGE_TYPE_DRIVER_PCI,
+			  (t_vaddr)&message,
+			  &size,
+			  &pci_driver) != ERROR_NONE)
+	{
+	  return (ERROR_UNKNOWN);
+	}
+
+      if (!message.u.reply.u.get_device.has_more)
+	break;
+
+      callback(&message.u.reply.u.get_device.device, pv);
+
+    } while (1);
+
+  return (ERROR_NONE);
+}
+
+#endif
 
 #endif

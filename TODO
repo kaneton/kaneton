@@ -26,16 +26,11 @@ demande reflexion:
  - migrer la variable mmx_context dans le ent
 
 autre:
- - finir task_clone
  - map_resize, {region,segment}_{split,resize,coalesce}
  - {task,thread}_wait
- - pb de stack dans thread_clone
  - ia32_as_reserve: ajuster les flags G des pte du kas
  - sched_update: optimiser car ca pue
- - ia32_sched_yield
  - set_array_locate : dicho desactivée
- - thread_clone: quand on clone un thread, il faut peut etre changer le
-   cr3 plutot que le recopier.
  - thread_give: copier la pile dans le nouvel AS ?
 
 --
