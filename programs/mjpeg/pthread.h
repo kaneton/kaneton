@@ -16,10 +16,13 @@
 #include "queue.h"
 #include "spinlock.h"
 
+#define PTHREAD_BARRIER_SERIAL_THREAD	42
+
 typedef i_thread	pthread_t;
 
 typedef void		pthread_mutexattr_t;
 typedef void		pthread_condattr_t;
+typedef void		pthread_barrierattr_t;
 
 SIMPLEQ_HEAD(threadqueue, threadqueue_entry);
 
@@ -40,7 +43,15 @@ typedef struct
 {
   struct threadqueue	queue;
   IA32_SPIN_FIELD_DECLARE(lock);
-}	pthread_cond_t;
+}			pthread_cond_t;
+
+typedef struct
+{
+  int			count;
+  int			initial;
+  struct threadqueue	queue;
+  IA32_SPIN_FIELD_DECLARE(lock);
+}			pthread_barrier_t;
 
 int	pthread_create(pthread_t*,
 		       const void*,
@@ -63,5 +74,12 @@ int	pthread_cond_wait(pthread_cond_t*,
 			  pthread_mutex_t*);
 
 int	pthread_cond_signal(pthread_cond_t*);
+
+int	pthread_barrier_init(pthread_barrier_t*,
+			     const pthread_barrierattr_t*,
+			     unsigned);
+
+int	pthread_barrier_wait(pthread_barrier_t*);
+
 
 #endif

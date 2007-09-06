@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/drivers/cons-simple/cons-simple.c
  *
  * created       matthieu bucchianeri   [sat jun  9 18:36:19 2007]
- * updated       matthieu bucchianeri   [thu aug 23 16:07:18 2007]
+ * updated       matthieu bucchianeri   [thu sep  6 01:19:22 2007]
  */
 
 #include <libc.h>

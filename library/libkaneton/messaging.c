@@ -8,13 +8,14 @@
  * file          /home/buckman/kaneton/library/libkaneton/messaging.c
  *
  * created       matthieu bucchianeri   [sun aug  5 23:13:37 2007]
- * updated       matthieu bucchianeri   [sat aug 25 00:30:09 2007]
+ * updated       matthieu bucchianeri   [thu sep  6 01:13:50 2007]
  */
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
+#include <libc.h>
 #include <core/core.h>
 #include <libkaneton.h>
 
@@ -28,9 +29,42 @@ t_error			syscall_message_register(t_type		type,
 {
   t_error		res;
 
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  size += sizeof (t_uint32);
+#endif
+
   asm ("int $56"
        : "=a" (res)
        : "a" (type), "b" (size));
+
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  t_vsize		sz;
+
+  if (message_size(type, &sz) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (size != sz + 4)
+    printf("message: bad message box size\n");
+#endif
+
+  return res;
+}
+
+t_error			syscall_message_size(t_type		type,
+					     t_vsize*		size)
+{
+  t_error		res;
+  t_vsize		r_size;
+
+  asm ("int $65"
+       : "=a" (res), "=b" (r_size)
+       : "a" (type));
+
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  r_size -= sizeof (t_uint32);
+#endif
+
+  *size = r_size;
 
   return res;
 }
@@ -49,6 +83,25 @@ t_error			syscall_message_send(i_node		destination,
 
   u.node = destination;
 
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  void*			p;
+  t_uint32*		chk;
+  t_uint8		inf[sizeof (o_syscall) + sizeof (t_uint32)];
+
+  if (destination.task == 0 && type == MESSAGE_TYPE_INTERFACE)
+    p = (void*)inf;
+  else
+    if ((p = malloc(size + sizeof (t_uint32))) == NULL)
+      return (ERROR_UNKNOWN);
+
+  memcpy(p, (void*)data, size);
+
+  chk = (t_uint32*)((t_uint8*)p + size);
+  *chk = sum2((void*)data, size);
+
+  data = (t_vaddr)p;
+#endif
+
   asm("pushl %%ebp		\n\t"
       "movl %7, %%ebp		\n\t"
       "int $57			\n\t"
@@ -56,6 +109,11 @@ t_error			syscall_message_send(i_node		destination,
       : "=a" (res)
       :  "a" (u.reg[0]), "b" (u.reg[1]), "c" (u.reg[2]), "d" (u.reg[3]),
 	 "S" (type), "D" (data), "m" (size));
+
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  if (!(destination.task == 0 && type == MESSAGE_TYPE_INTERFACE))
+    free(p);
+#endif
 
   return res;
 }
@@ -74,6 +132,21 @@ t_error			syscall_message_transmit(i_node		destination,
 
   u.node = destination;
 
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  void*			p;
+  t_uint32*		chk;
+
+  if ((p = malloc(size + sizeof (t_uint32))) == NULL)
+    return (ERROR_UNKNOWN);
+
+  memcpy(p, (void*)data, size);
+
+  chk = (t_uint32*)((t_uint8*)p + size);
+  *chk = sum2((void*)data, size);
+
+  data = (t_vaddr)p;
+#endif
+
   asm("pushl %%ebp		\n\t"
       "movl %7, %%ebp		\n\t"
       "int $58			\n\t"
@@ -81,6 +154,10 @@ t_error			syscall_message_transmit(i_node		destination,
       : "=a" (res)
       :  "a" (u.reg[0]), "b" (u.reg[1]), "c" (u.reg[2]), "d" (u.reg[3]),
 	 "S" (type), "D" (data), "m" (size));
+
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  free(p);
+#endif
 
   return res;
 }
@@ -107,10 +184,45 @@ t_error			syscall_message_receive(t_type		type,
   t_error		res;
   t_vsize		r_size;
 
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  void*			p;
+  t_vaddr		real_data = data;
+  t_vsize		sz;
+  t_uint8		inf[sizeof (o_syscall) + sizeof (t_uint32)];
+
+  if (type == MESSAGE_TYPE_INTERFACE)
+    p = (void*)inf;
+  else
+    {
+      if (message_size(type, &sz) != ERROR_NONE)
+	return (ERROR_UNKNOWN);
+
+      if ((p = malloc(sz + sizeof (t_uint32))) == NULL)
+	return (ERROR_UNKNOWN);
+    }
+
+  data = (t_vaddr)p;
+#endif
+
   asm("int $60"
       : "=a" (res), "=b" (r_size), "=c" (u.reg[0]), "=d" (u.reg[1]),
 	"=S" (u.reg[2]), "=D" (u.reg[3])
       : "a" (type), "b" (data));
+
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  t_uint32*		chk;
+
+  r_size -= sizeof (t_uint32);
+
+  chk = (t_uint32*)((t_uint8*)data + r_size);
+  if (*chk != sum2((void*)data, r_size))
+    printf("message: bad checksum\n");
+
+  memcpy((void*)real_data, (void*)data, r_size);
+
+  if (!(type == MESSAGE_TYPE_INTERFACE))
+    free(p);
+#endif
 
   *size = r_size;
   *sender = u.node;
@@ -138,6 +250,20 @@ t_error			syscall_message_poll(t_type		type,
   t_error		res;
   t_vsize		r_size;
 
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  void*			p;
+  t_vaddr		real_data = data;
+  t_vsize		sz;
+
+  if (message_size(type, &sz) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if ((p = malloc(sz + sizeof (t_uint32))) == NULL)
+    return (ERROR_UNKNOWN);
+
+  data = (t_vaddr)p;
+#endif
+
   asm("int $62"
       : "=a" (res), "=b" (r_size), "=c" (u.reg[0]), "=d" (u.reg[1]),
 	"=S" (u.reg[2]), "=D" (u.reg[3])
@@ -145,6 +271,20 @@ t_error			syscall_message_poll(t_type		type,
 
   *size = r_size;
   *sender = u.node;
+
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  t_uint32*		chk;
+
+  r_size -= sizeof (t_uint32);
+
+  chk = (t_uint32*)((t_uint8*)data + r_size);
+  if (*chk != sum2((void*)data, r_size))
+    printf("message: bad checksum\n");
+
+  memcpy((void*)real_data, (void*)data, r_size);
+
+  free(p);
+#endif
 
   return res;
 }
@@ -180,6 +320,21 @@ t_error			syscall_message_send_unlock(i_node		dest,
 
   u.node = dest;
 
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  void*			p;
+  t_uint32*		chk;
+
+  if ((p = malloc(size + sizeof (t_uint32))) == NULL)
+    return (ERROR_UNKNOWN);
+
+  memcpy(p, (void*)data, size);
+
+  chk = (t_uint32*)((t_uint8*)p + size);
+  *chk = sum2((void*)data, size);
+
+  data = (t_vaddr)p;
+#endif
+
   *lock = 0; /* XXX should be done in assembly below... but not enough regs! */
 
   asm("pushl %%ebp		\n\t"
@@ -189,6 +344,10 @@ t_error			syscall_message_send_unlock(i_node		dest,
       : "=a" (res)
       :  "a" (u.reg[0]), "b" (u.reg[1]), "c" (u.reg[2]), "d" (u.reg[3]),
 	 "S" (type), "D" (data), "m" (size), "m" (lock));
+
+#ifdef MESSAGE_CHECKSUM_ENABLE
+  free(p);
+#endif
 
   return res;
 }

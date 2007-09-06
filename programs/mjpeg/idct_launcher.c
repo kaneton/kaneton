@@ -16,14 +16,15 @@ struct thargs {
 	idct_args_t *args;
 };
 
-extern volatile int __n;
+extern pthread_barrier_t	barrier;
 
 static void* idct_thread( void *_args )
 {
 	struct thargs *args = _args;
 
-	while (__n != 7)
-	  ;
+	printf("idct ready!\n");
+
+	pthread_barrier_wait(&barrier);
 
 	while(1)
 	  idct_func_idct( args->args );

@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/message.h
  *
  * created       julien quintard   [wed jun  6 13:34:19 2007]
- * updated       matthieu bucchianeri   [mon aug 27 22:25:25 2007]
+ * updated       matthieu bucchianeri   [thu sep  6 00:19:29 2007]
  */
 
 #ifndef CORE_MESSAGE_H

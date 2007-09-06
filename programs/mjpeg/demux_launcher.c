@@ -16,16 +16,15 @@ struct thargs {
 	demux_args_t *args;
 };
 
-extern volatile int __n;
+extern pthread_barrier_t	barrier;
 
 static void* demux_thread( void *_args )
 {
 	struct thargs *args = _args;
 
-	printf("demux args = %p\n", args);
+	printf("demux ready!\n");
 
-	while (__n != 7)
-	  ;
+	pthread_barrier_wait(&barrier);
 
 	while(1)
 	  demux_func_demux( args->args );

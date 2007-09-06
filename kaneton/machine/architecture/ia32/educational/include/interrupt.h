@@ -31,7 +31,7 @@
 #define IA32_EXCEPTION_NR	32
 #define IA32_IRQ_NR		16
 #define IA32_IPI_NR		8
-#define IA32_SYSCALL_NR		9
+#define IA32_SYSCALL_NR		10
 
 #define IA32_HANDLER_NR		IA32_EXCEPTION_NR + IA32_IRQ_NR +	\
 				IA32_IPI_NR + IA32_SYSCALL_NR
@@ -251,7 +251,8 @@
   void	prehandler_syscall5(void);					\
   void	prehandler_syscall6(void);					\
   void	prehandler_syscall7(void);					\
-  void	prehandler_syscall8(void);
+  void	prehandler_syscall8(void);					\
+  void	prehandler_syscall9(void);
 
 /*
  * ---------- dependencies ----------------------------------------------------

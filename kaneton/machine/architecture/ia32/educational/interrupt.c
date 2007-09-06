@@ -128,7 +128,8 @@ static t_ia32_interrupt_prehandler		prehandlers[IA32_HANDLER_NR] =
     prehandler_syscall5,
     prehandler_syscall6,
     prehandler_syscall7,
-    prehandler_syscall8
+    prehandler_syscall8,
+    prehandler_syscall9
   };
 
 /*
@@ -476,6 +477,7 @@ IA32_SYSCALL_PREHANDLER(5);
 IA32_SYSCALL_PREHANDLER(6);
 IA32_SYSCALL_PREHANDLER(7);
 IA32_SYSCALL_PREHANDLER(8);
+IA32_SYSCALL_PREHANDLER(9);
 
 /*                                                                 [cut] /k2 */
 /*

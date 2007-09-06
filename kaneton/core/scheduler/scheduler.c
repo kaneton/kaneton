@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [sat aug 25 23:16:25 2007]
+ * updated       matthieu bucchianeri   [wed sep  5 23:53:39 2007]
  */
 
 /*
@@ -402,11 +402,11 @@ t_error			scheduler_switch(void)
       p = 0;
       set_foreach(SET_OPT_FORWARD, ent->expired, &i, st)
 	{
-	  if (set_object(ent->expired, i, (void**)&queue) != ERROR_NONE)
-	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
-
 	  if (prio == p)
 	    {
+	      if (set_object(ent->expired, i, (void**)&queue) != ERROR_NONE)
+		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+
 	      if (set_push(*queue, &entity) != ERROR_NONE)
 		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
@@ -425,10 +425,7 @@ t_error			scheduler_switch(void)
   p = 0;
   set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
     {
-      if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
-	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
-
-      if (p > ent->prio && ent->timeslice)
+      if (p > ent->prio && ent->timeslice && !ent->dead)
 	{
 	  nonempty = 1;
 	  elected = ent->current;
@@ -436,6 +433,9 @@ t_error			scheduler_switch(void)
 	  elected_timeslice = ent->timeslice;
 	  break;
 	}
+
+      if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
+	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
       if (set_pick(*queue, (void**)&highest) == ERROR_NONE)
 	{
@@ -502,11 +502,11 @@ t_error			scheduler_switch(void)
       p = 0;
       set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
 	{
-	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
-	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
-
 	  if (prio == p)
 	    {
+	      if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
+		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+
 	      if (set_push(*queue, &entity) != ERROR_NONE)
 		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
@@ -528,6 +528,7 @@ t_error			scheduler_switch(void)
   ent->prio = elected_prio;
   ent->timeslice = elected_timeslice;
   ent->yield = 0;
+  ent->dead = 0;
 
   /*
    * 7)
@@ -589,13 +590,13 @@ t_error			scheduler_add(i_thread			thread)
   p = 0;
   set_foreach(SET_OPT_FORWARD, ent->active, &i, st)
     {
-      if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
-	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
-
       if (prio == p)
 	{
 	  entity.thread = thread;
 	  entity.timeslice = SCHEDULER_COMPUTE_TIMESLICE(thread);
+
+	  if (set_object(ent->active, i, (void**)&queue) != ERROR_NONE)
+	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 
 	  if (set_push(*queue, &entity) != ERROR_NONE)
 	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
@@ -667,11 +668,15 @@ t_error			scheduler_remove(i_thread			thread)
   if (ent->current == thread)
     {
       ent->timeslice = scheduler->quantum;
-
-      /* XXX */
+      ent->dead = 1;
 
       if (scheduler_switch() != ERROR_NONE)
 	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+
+      if (set_get(scheduler->cpus, otask->cpuid, (void**)&ent) != ERROR_NONE)
+	SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+
+      ASSERT(ent->current != thread);
     }
 
   /*
@@ -711,11 +716,11 @@ t_error			scheduler_remove(i_thread			thread)
       p = 0;
       set_foreach(SET_OPT_FORWARD, ent->expired, &i, st)
 	{
-	  if (set_object(ent->expired, i, (void**)&queue) != ERROR_NONE)
-	    SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
-
 	  if (prio == p)
 	    {
+	      if (set_object(ent->expired, i, (void**)&queue) != ERROR_NONE)
+		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
+
 	      if (set_remove(*queue, thread) != ERROR_NONE)
 		SCHEDULER_LEAVE(scheduler, ERROR_UNKNOWN);
 	      break;
@@ -825,6 +830,7 @@ t_error			scheduler_initialize(void)
       ent.active = ID_UNUSED;
       ent.expired = ID_UNUSED;
       ent.yield = 0;
+      ent.dead = 0;
 
       if (set_reserve(array, SET_OPT_ALLOC, SCHEDULER_N_PRIORITY_QUEUE + 1,
 		      sizeof(i_set), &ent.active) !=

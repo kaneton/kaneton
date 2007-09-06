@@ -16,14 +16,15 @@ struct thargs {
 	vld_args_t *args;
 };
 
-volatile int __n = 0;
+extern pthread_barrier_t	barrier;
 
 static void* vld_thread( void *_args )
 {
 	struct thargs *args = _args;
 
-	while (__n != 7)
-	  ;
+	printf("vld ready\n");
+
+	pthread_barrier_wait(&barrier);
 
 	while(1)
 	  vld_func_vld( args->args );

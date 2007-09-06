@@ -25,6 +25,7 @@
  *  + 62: message_poll
  *  + 63: message_state
  *  + 64: message_wait
+ *  + 65: message_size
  */
 
 /*
@@ -93,6 +94,31 @@ void			ia32_syshandler_register(void)
   res = message_register(task, type, size);
 
   ia32_context->eax = res;
+}
+
+/*
+ * handler for message_size syscall. prerequisites: message_size never
+ * blocks.
+ */
+
+void			ia32_syshandler_size(void)
+{
+  t_error		res;
+  i_thread		caller;
+  i_task		task;
+  t_type		type;
+  t_vsize		size;
+
+  ASSERT(scheduler_current(&caller) == ERROR_NONE);
+
+  ASSERT(task_current(&task) == ERROR_NONE);
+
+  type = ia32_context->eax;
+
+  res = message_size(task, type, &size);
+
+  ia32_context->eax = res;
+  ia32_context->ebx = size;
 }
 
 /*
@@ -324,6 +350,10 @@ t_error			ia32_syscalls_init(void)
   /* XXX 63 */
   /* XXX 64 */
 
+  if (event_reserve(65, EVENT_FUNCTION,
+		    EVENT_HANDLER(ia32_syshandler_size), 0) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
   return (ERROR_NONE);
 }
 
@@ -341,7 +371,8 @@ t_error			ia32_syscalls_clean(void)
       event_release(61) != ERROR_NONE ||
       event_release(62) != ERROR_NONE ||
       event_release(63) != ERROR_NONE ||
-      event_release(64) != ERROR_NONE)
+      event_release(64) != ERROR_NONE ||
+      event_release(65) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);

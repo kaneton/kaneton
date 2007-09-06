@@ -446,6 +446,14 @@ static void		ne2000_pci_init(t_driver_pci_dev*	device,
       return;
     }
 
+  if (event_reserve(device->irq, EVENT_MESSAGE, EVENT_TASK(_crt_get_task_id()),
+		    (t_vaddr)dev) != ERROR_NONE)
+    {
+      free(dev);
+      printf(" -- ne2000-pci: error, cannot register IRQ.\n");
+      return;
+    }
+
   ne2000_init(dev);
 
   printf(" -- ne2000-pci: is a %s (%d bits) with %d kb of RAM\n",

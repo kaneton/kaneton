@@ -43,11 +43,22 @@ int		pthread_create(pthread_t*	th,
   if (thread_args(*th, &arg, sizeof (void*)) != ERROR_NONE)
     return (-1);
 
+  if (thread_state(*th, SCHEDULER_STATE_RUN) != ERROR_NONE)
+    return (-1);
+
+  printf(" STARTED %qd\n", *th);
+
   return 0;
 }
 
 void	pthread_yield(void)
 {
+#if 0
+  i_cpu	c;
+
+  if (cpu_current(&c) == ERROR_NONE)
+    scheduler_yield(c);
+#endif
   scheduler_yield(0);
 }
 
@@ -198,4 +209,76 @@ int	pthread_cond_signal(pthread_cond_t*		cond)
   IA32_SPIN_UNLOCK(cond->lock);
 
   return (0);
+}
+
+int	pthread_barrier_init(pthread_barrier_t*			barrier,
+			    const pthread_barrierattr_t*	attr,
+			    unsigned				count)
+{
+  barrier->count = barrier->initial = count;
+  SIMPLEQ_INIT(&barrier->queue);
+  IA32_SPIN_FIELD_INIT(barrier->lock);
+
+  return (0);
+}
+
+int	pthread_barrier_wait(pthread_barrier_t*		barrier)
+{
+  int				res = -1;
+  struct threadqueue_entry*	e;
+  i_thread			th;
+
+  IA32_SPIN_LOCK(barrier->lock);
+
+  barrier->count--;
+
+  if (barrier->count == 0)
+    {
+      printf (" *** unblocking *** \n");
+
+      while ((e = SIMPLEQ_FIRST(&barrier->queue)) != NULL)
+	{
+	  th = e->thread;
+
+	  SIMPLEQ_REMOVE_HEAD(&barrier->queue, entry);
+
+	  free(e);
+
+	  thread_state(th, SCHEDULER_STATE_RUN);
+	}
+
+      barrier->count = barrier->initial;
+
+      res = PTHREAD_BARRIER_SERIAL_THREAD;
+
+      goto leave;
+    }
+  else
+    {
+      if (scheduler_current(&th) != ERROR_NONE)
+	goto leave;
+
+      printf("blocking %qd with %d\n", th, barrier->count);
+
+      if ((e = malloc(sizeof (*e))) == NULL)
+	goto leave;
+
+      e->thread = th;
+
+      SIMPLEQ_INSERT_TAIL(&barrier->queue, e, entry);
+
+      if (thread_state_unlock(th, SCHEDULER_STATE_STOP, &barrier->lock) !=
+	  ERROR_NONE)
+	printf("STOP failed\n");
+
+      printf("++\n");
+
+      return (0);
+    }
+
+  res = 0;
+ leave:
+  IA32_SPIN_UNLOCK(barrier->lock);
+
+  return (res);
 }

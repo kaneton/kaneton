@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/library/libkaneton/thread_args.c
  *
  * created       matthieu bucchianeri   [mon aug  6 19:07:18 2007]
- * updated       matthieu bucchianeri   [tue aug 28 23:13:28 2007]
+ * updated       matthieu bucchianeri   [thu sep  6 00:03:29 2007]
  */
 
 /*

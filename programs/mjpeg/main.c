@@ -28,7 +28,7 @@
 #include "../../services/mod/mod-service.h"
 
 unsigned char *framebuffer;
-extern volatile int __n;
+pthread_barrier_t	barrier;
 
 int	main()
 {
@@ -76,7 +76,7 @@ int	main()
       return (-1);
     }
 
-  memset(framebuffer, 0x0, 64000);
+  //memset(framebuffer, 0x0, 64000);
 
   dsx_mwmr_alloc(&tg_demux, 8, 2, "tg_demux");
   dsx_mwmr_alloc(&quanti, 8, 4, "quanti");
@@ -87,6 +87,7 @@ int	main()
   dsx_mwmr_alloc(&idct_libu, 16, 2, "idct_libu");
   dsx_mwmr_alloc(&libu_ramdac, 96, 2, "libu_ramdac");
 
+  pthread_barrier_init(&barrier, NULL, 7);
 
   static tg_args_t tg_args = {
     .output = &tg_demux,
@@ -145,18 +146,18 @@ int	main()
   };
   ramdac = ramdac_launcher( &ramdac_args );
 
-  if (thread_state(tg, SCHEDULER_STATE_RUN) != ERROR_NONE ||
-      thread_state(demux, SCHEDULER_STATE_RUN) != ERROR_NONE ||
-      thread_state(vld, SCHEDULER_STATE_RUN) != ERROR_NONE ||
-      thread_state(iqzz, SCHEDULER_STATE_RUN) != ERROR_NONE ||
-      thread_state(idct, SCHEDULER_STATE_RUN) != ERROR_NONE ||
-      thread_state(libu, SCHEDULER_STATE_RUN) != ERROR_NONE ||
-      thread_state(ramdac, SCHEDULER_STATE_RUN) != ERROR_NONE)
+  while (0)
     {
-      printf("not all thread started !\n");
-    }
+      scheduler_current(&th);
 
-  __n = 7;
+      printf("th = %qd\n", th);
+
+      if (th > 15)
+	{
+	  while (1)
+	    ;
+	}
+    }
 
   if (scheduler_current(&th) == ERROR_NONE)
     {

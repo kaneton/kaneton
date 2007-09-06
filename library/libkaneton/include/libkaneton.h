@@ -8,7 +8,7 @@
  * file          /home/buckman/kan.../library/libkaneton/include/libkaneton.h
  *
  * created       matthieu bucchianeri   [sun aug  5 23:20:36 2007]
- * updated       matthieu bucchianeri   [sat aug 25 00:32:35 2007]
+ * updated       matthieu bucchianeri   [thu sep  6 00:49:51 2007]
  */
 
 #ifndef LIBKANETON_LIBKANETON_H
@@ -33,6 +33,9 @@
 
 #define message_register(...)						\
   syscall_message_register(__VA_ARGS__)
+
+#define message_size(...)						\
+  syscall_message_size(__VA_ARGS__)
 
 #define message_send(...)						\
   syscall_message_send(__VA_ARGS__)
@@ -76,6 +79,9 @@
 
 t_error			syscall_message_register(t_type		type,
 						 t_vsize	size);
+
+t_error			syscall_message_size(t_type		type,
+					     t_vsize*		size);
 
 t_error			syscall_message_send(i_node		destination,
 					     t_type		type,

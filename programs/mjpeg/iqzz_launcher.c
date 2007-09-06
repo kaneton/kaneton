@@ -16,14 +16,15 @@ struct thargs {
 	iqzz_args_t *args;
 };
 
-extern volatile int __n;
+extern pthread_barrier_t	barrier;
 
 static void* iqzz_thread( void *_args )
 {
 	struct thargs *args = _args;
 
-	while (__n != 7)
-	  ;
+	printf("iqzz ready!\n");
+
+	pthread_barrier_wait(&barrier);
 
 	while(1)
 	  iqzz_func_iqzz( args->args );

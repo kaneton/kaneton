@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/message/message.c
  *
  * created       matthieu bucchianeri   [mon jul 23 11:37:30 2007]
- * updated       matthieu bucchianeri   [sun aug  5 23:13:58 2007]
+ * updated       matthieu bucchianeri   [thu sep  6 00:55:15 2007]
  */
 
 /*
@@ -174,6 +174,26 @@ t_error			message_register(i_task			task,
 
   if (machine_call(message, message_register, task, type, size) != ERROR_NONE)
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  MESSAGE_LEAVE(message, ERROR_NONE);
+}
+
+/*
+ * this function returns the maximum size of a message in a message box.
+ */
+
+t_error			message_size(i_task			task,
+				     t_type			type,
+				     t_vsize*			size)
+{
+  o_message_type*	o;
+
+  MESSAGE_ENTER(message);
+
+  if (message_box(task, type, &o) != ERROR_NONE)
+    MESSAGE_LEAVE(message, ERROR_UNKNOWN);
+
+  *size = o->size;
 
   MESSAGE_LEAVE(message, ERROR_NONE);
 }
