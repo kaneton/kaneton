@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...library/libkaneton/include/core_macros.h
  *
  * created       matthieu bucchianeri   [sun aug  5 23:37:49 2007]
- * updated       matthieu bucchianeri   [mon aug  6 00:03:51 2007]
+ * updated       matthieu bucchianeri   [thu sep  6 21:35:24 2007]
  */
 
 #ifndef LIBKANETON_CORE_MACROS_H
@@ -20,6 +20,9 @@
 
 #define EVENT_FUNCTION		0
 #define EVENT_MESSAGE		1
+
+#define EVENT_TASK(_task_)						\
+  ((u_event_handler)(i_task)(_task_))
 
 #define MAP_OPT_NONE		0
 #define MAP_OPT_FORCE		(1 << 0)
@@ -83,6 +86,9 @@
 
 #define TIMER_FUNCTION		0
 #define TIMER_MESSAGE		1
+
+#define TIMER_TASK(_task_)						\
+  ((u_timer_handler)(i_task)(_task_))
 
 #define TIMER_REPEAT_DISABLE    0
 #define TIMER_REPEAT_ENABLE     1

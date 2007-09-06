@@ -17,6 +17,8 @@
 #include <libc.h>
 #include <crt.h>
 #include <libkaneton.h>
+#include <pthread.h>
+#include <queue.h>
 #include "ne2000-pci.h"
 #include "ne2000-pci-driver.h"
 
@@ -53,6 +55,25 @@
 	       : "=a" (_data_)						\
 	       : "d" (_port_))
 
+t_error			ibmpc_irq_acknowledge(uint8_t		irq)
+{
+  if (irq > 15)
+    return (ERROR_UNKNOWN);
+
+  if (irq < 8)
+    {
+      OUTB(0x20, 0x60 + irq);
+    }
+  else
+    {
+      OUTB(0xa0, 0x60 + (irq - 8));
+      OUTB(0x20, 0x60 + 2);
+    }
+
+  return (ERROR_NONE);
+}
+/* ---*/
+
 /*
  * pci identifiers of compatible cards.
  */
@@ -76,10 +97,10 @@ static const t_driver_pci_ids	net_ne2000[] =
  */
 
 static void	ne2000_command(t_driver_ne2000_dev*	dev,
-			       t_uint8			cmd)
+			       uint8_t			cmd)
 {
-  t_uint16	addr = dev->addr + NE2000_CMD;
-  t_uint8	val;
+  uint16_t	addr = dev->addr + NE2000_CMD;
+  uint8_t	val;
 
   INB(addr, val);
   OUTB(addr, val | cmd);
@@ -90,10 +111,10 @@ static void	ne2000_command(t_driver_ne2000_dev*	dev,
  */
 
 static void	ne2000_dma(t_driver_ne2000_dev*	dev,
-			   t_uint8		cmd)
+			   uint8_t		cmd)
 {
-  t_uint16	addr = dev->addr + NE2000_CMD;
-  t_uint8	val;
+  uint16_t	addr = dev->addr + NE2000_CMD;
+  uint8_t	val;
 
   INB(addr, val);
   OUTB(addr, (val & ~NE2000_DMA_MASK) | cmd);
@@ -104,10 +125,10 @@ static void	ne2000_dma(t_driver_ne2000_dev*	dev,
  */
 
 static void	ne2000_page(t_driver_ne2000_dev*dev,
-			    t_uint8		cmd)
+			    uint8_t		cmd)
 {
-  t_uint16	addr = dev->addr + NE2000_CMD;
-  t_uint8	val;
+  uint16_t	addr = dev->addr + NE2000_CMD;
+  uint8_t	val;
 
   INB(addr, val);
   OUTB(addr, (val & ~NE2000_PG_MASK) | cmd);
@@ -118,12 +139,12 @@ static void	ne2000_page(t_driver_ne2000_dev*dev,
  */
 
 static void	ne2000_mem_read(t_driver_ne2000_dev*	dev,
-				t_uint16		offs,
+				uint16_t		offs,
 				void*			dst,
-				t_uint16		size)
+				uint16_t		size)
 {
-  t_uint16	val16;
-  t_uint8	val8;
+  uint16_t	val16;
+  uint8_t	val8;
 
   /* select register bank 0 */
   ne2000_page(dev, NE2000_P0);
@@ -146,8 +167,8 @@ static void	ne2000_mem_read(t_driver_ne2000_dev*	dev,
   /* copy the whole packet */
   if (dev->io_16)
     {
-      t_uint16*	d = (t_uint16*)dst;
-      t_uint16	size_w = size >> 1;
+      uint16_t*	d = (uint16_t*)dst;
+      uint16_t	size_w = size >> 1;
 
       while (size_w--)
 	{
@@ -157,12 +178,12 @@ static void	ne2000_mem_read(t_driver_ne2000_dev*	dev,
       if (size & 0x1)
 	{
 	  INB(dev->addr + NE2000_DATA, val8);
-	  *(t_uint8*)d = val8;
+	  *(uint8_t*)d = val8;
 	}
     }
   else
     {
-      t_uint8*	d = dst;
+      uint8_t*	d = dst;
 
       while (size--)
 	{
@@ -177,8 +198,8 @@ static void	ne2000_mem_read(t_driver_ne2000_dev*	dev,
  */
 
 static void	ne2000_dma_init_write(t_driver_ne2000_dev*	dev,
-				      t_uint16			offs,
-				      t_uint16			size)
+				      uint16_t			offs,
+				      uint16_t			size)
 {
   /* select register bank 0 */
   ne2000_page(dev, NE2000_P0);
@@ -205,12 +226,12 @@ static void	ne2000_dma_init_write(t_driver_ne2000_dev*	dev,
 
 static void	ne2000_dma_do_write(t_driver_ne2000_dev*	dev,
 				    void*			src,
-				    t_uint16			size)
+				    uint16_t			size)
 {
   /* copy the whole packet */
   if (dev->io_16)
     {
-      t_uint16*	d = (t_uint16*)src;
+      uint16_t*	d = (uint16_t*)src;
 
       if (size % 2)
 	size++;
@@ -221,7 +242,7 @@ static void	ne2000_dma_do_write(t_driver_ne2000_dev*	dev,
     }
   else
     {
-      t_uint8*	d = src;
+      uint8_t*	d = src;
 
       while (size--)
 	{
@@ -236,11 +257,11 @@ static void	ne2000_dma_do_write(t_driver_ne2000_dev*	dev,
 
 static int	ne2000_rw_test(t_driver_ne2000_dev*	dev)
 {
-  t_uint8	endian;
-  t_uint32	timeout = 2000;
+  uint8_t	endian;
+  uint32_t	timeout = 2000;
   char		ref[] = "kaneton NE2000 Driver";
   char		buf[sizeof (ref)];
-  t_uint8	val;
+  uint8_t	val;
 
   /* configure the device for the test */
   /* send a reset signal */
@@ -293,7 +314,7 @@ static int	ne2000_rw_test(t_driver_ne2000_dev*	dev)
 
 static int	ne2000_probe(t_driver_ne2000_dev*	dev)
 {
-  t_uint8			buf[ETH_ALEN * 2];
+  uint8_t			buf[ETH_ALEN * 2];
   int				i;
 
   /* try 16 bits mode with 32k */
@@ -357,7 +378,7 @@ static int	ne2000_probe(t_driver_ne2000_dev*	dev)
 
 static void	ne2000_init(t_driver_ne2000_dev*	dev)
 {
-  t_uint8	endian;
+  uint8_t	endian;
   int		i;
 
   /* stop completely the device */
@@ -409,6 +430,349 @@ static void	ne2000_init(t_driver_ne2000_dev*	dev)
 }
 
 /*
+ * send a packet
+ */
+
+static void	ne2000_send(t_driver_ne2000_dev*	device,
+			    char*			mac,
+			    char*			packet,
+			    uint16_t			size,
+			    uint16_t			proto)
+{
+  uint8_t	st;
+
+  /* take lock */
+  IA32_SPIN_LOCK(device->lock);
+
+  /* if the device is busy */
+  INB(device->addr + NE2000_CMD, st);
+  if ((st & NE2000_TXP) ||
+      device->current.packet != NULL)
+    {
+      /* queue the packet */
+      struct __packetqueue_entry*	e;
+
+      if ((e = malloc(sizeof (*e))) == NULL)
+	{
+	  free(packet);
+	  goto leave;
+	}
+
+      e->packet = packet;
+      e->size = size;
+      memcpy(e->mac, mac, ETH_ALEN);
+      e->proto = proto;
+
+      SIMPLEQ_INSERT_TAIL(&device->sendqueue, e, entry);
+    }
+  else
+    {
+      /* otherwise, send the datagram immediately */
+      device->current.packet = packet;
+      device->current.size = size;
+      memcpy(device->current.header.ether_shost, device->mac, ETH_ALEN);
+      memcpy(device->current.header.ether_dhost, mac, ETH_ALEN);
+      device->current.header.ether_type = proto;
+
+      /* reset the tries counter */
+      device->current.tries = 0;
+
+      /* initialize writing */
+      ne2000_dma_init_write(device, device->tx_buf << 8,
+			    sizeof (struct ether_header) + size);
+
+      /* write header then data */
+      ne2000_dma_do_write(device, &device->current.header,
+			  sizeof (struct ether_header));
+      ne2000_dma_do_write(device, packet, size);
+
+      /* the data being written we wait for remote DMA to be completed (IRQ) */
+    }
+
+ leave:
+  /* release lock */
+  IA32_SPIN_UNLOCK(device->lock);
+}
+
+/*
+ * read a packet from the NIC
+ */
+
+static t_error			ne2000_rx(t_driver_ne2000_dev*	dev,
+					  uint8_t**		data,
+					  uint16_t*		size)
+{
+  struct ne2000_header_s	hdr;
+  uint16_t			next;
+  uint16_t			curr;
+  uint16_t			dma;
+  uint8_t*			buf;
+
+  /* get next packet pointer */
+  INB(dev->addr + NE2000_BOUND, next);
+  next++;
+  if (next > dev->mem)
+    next = dev->rx_buf;
+  ne2000_page(dev, NE2000_P1);
+  INB(dev->addr + NE2000_CURR, curr);
+  if (curr > dev->mem)
+    curr = dev->rx_buf;
+  ne2000_page(dev, NE2000_P0);
+  if (curr == next)
+    return (ERROR_UNKNOWN);
+
+  /* read the packet header (automatically appended by the chip) */
+  dma = next << 8;
+  ne2000_mem_read(dev, dma, (struct ne2000_header_s *)&hdr,
+		  sizeof (struct ne2000_header_s));
+
+  /* read the packet itself */
+  *size = hdr.size - sizeof (struct ne2000_header_s);
+
+  if ((buf = *data = malloc(*size)) == NULL)
+    return (ERROR_UNKNOWN);
+  ne2000_mem_read(dev, dma + sizeof (struct ne2000_header_s),
+		  buf, *size);
+
+  /* update the next packet pointer */
+  next = hdr.next;
+  if (next > dev->mem)
+    next = dev->rx_buf;
+  OUTB(dev->addr + NE2000_BOUND, next - 1);
+  return (ERROR_NONE);
+}
+
+/*
+ * push a packet into the network service
+ */
+
+static void	ne2000_push(t_driver_ne2000_dev*	dev,
+			    uint8_t*			data,
+			    uint16_t			size)
+{
+  struct ether_header*		hdr;
+
+  /* get the good header */
+  hdr = (struct ether_header *)data;
+
+  /* fill some info */
+  printf(" -- ne2000-pci: new packet %02x:%02x:%02x:%02x:%02x:%02x of %d\n",
+	 hdr->ether_shost[0], hdr->ether_shost[1], hdr->ether_shost[2],
+	 hdr->ether_shost[3], hdr->ether_shost[4], hdr->ether_shost[5],
+	 hdr->ether_type);
+
+  /* XXX */
+
+  free(data);
+}
+
+/*
+ * IRQ handler
+ */
+
+static void	ne2000_irq(t_driver_ne2000_dev*		dev)
+{
+  uint8_t	isr;
+  uint8_t	tx_serviced = 0;
+  uint8_t	aborted = 0;
+  uint8_t	max_svc = 0;
+
+  /* lock the device */
+  IA32_SPIN_LOCK(dev->lock);
+
+  /* select register bank 0 */
+  ne2000_page(dev, NE2000_P0);
+
+  while (1)
+    {
+      INB(dev->addr + NE2000_ISR, isr);
+
+      if (!isr || max_svc++ > 6)
+	break;
+
+      /* remote DMA completed */
+      if (isr & NE2000_RDC)
+	{
+	  if (dev->current.packet != NULL)
+	    {
+	      uint16_t	length = dev->current.size;
+
+	      /* the packet is in the device memory, we can send it */
+	      ne2000_dma(dev, NE2000_DMA_ABRT);
+
+	      /* set page start */
+	      OUTB(dev->addr + NE2000_TPSR, dev->tx_buf);
+
+	      /* set packet size */
+	      if (length < ETH_ZLEN)
+		length = ETH_ZLEN;
+	      OUTB(dev->addr + NE2000_TBCR0, length);
+	      OUTB(dev->addr + NE2000_TBCR1, length >> 8);
+
+	      /* send it ! */
+	      ne2000_command(dev, NE2000_TXP);
+	    }
+	}
+
+      /* transmit error */
+      if (isr & NE2000_TXE)
+	{
+	  /* increment the retry counter */
+	  dev->current.tries++;
+
+	  /* too many retries, abording */
+	  if (dev->current.tries > 3)
+	    {
+	      /* set the interrupt flags as "transmitted without error",
+		 so the next queued packet can be sent */
+	      aborted = 1;
+	    }
+	  else
+	    {
+	      /* resend the transmit command */
+	      ne2000_command(dev, NE2000_TXP);
+	    }
+	}
+
+      /* packet transmitted */
+      if (isr & NE2000_PTX || aborted)
+	{
+	  /* the big dirty test. on some device, the PTX bit of ISR is
+	     not correctly acknowleged */
+	  if (!tx_serviced && dev->current.packet != NULL)
+	    {
+	      struct __packetqueue_entry*	e;
+
+	      /* packet sent successfully, drop it */
+	      free(dev->current.packet);
+	      dev->current.packet = NULL;
+
+	      /* one or more packets in the wait queue ? */
+	      if ((e = SIMPLEQ_FIRST(&dev->sendqueue)) != NULL)
+		{
+		  SIMPLEQ_REMOVE_HEAD(&dev->sendqueue, entry);
+
+		  ne2000_send(dev, e->mac, e->packet, e->size, e->proto);
+
+		  free(e);
+		}
+
+	      tx_serviced = 1;
+	      aborted = 0;
+	    }
+	}
+
+      /* buffer full */
+      if (isr & NE2000_OVW)
+	{
+	  uint8_t	cr;
+	  uint8_t	resend = 0;
+	  uint16_t	total;
+
+	  /* save the NIC state */
+	  INB(dev->addr + NE2000_CMD, cr);
+
+	  /* stop completely the device */
+	  OUTB(dev->addr + NE2000_CMD,
+	       NE2000_P0 | NE2000_DMA_ABRT | NE2000_STP);
+
+	  /* wait for the NIC to complete operations */
+	  /* usleep(1600); XXX */
+
+	  /* reset remote byte count registers */
+	  OUTB(dev->addr + NE2000_RBCR0, 0);
+	  OUTB(dev->addr + NE2000_RBCR1, 0);
+
+	  /* do we need to resend the outgoing packet ? */
+	  resend = (cr & NE2000_TXP) && !((isr & NE2000_PTX) || (isr & NE2000_TXE));
+
+	  /* enter loopback mode */
+	  OUTB(dev->addr + NE2000_TCR, 0x2);
+
+	  /* bring the device up */
+	  OUTB(dev->addr + NE2000_CMD,
+	       NE2000_P0 | NE2000_DMA_ABRT | NE2000_STA);
+
+	  /* read some packets until half the memory is free */
+	  for (total = 0; total < ((dev->mem - dev->rx_buf) << 8) / 2; )
+	    {
+	      uint16_t	size;
+	      uint8_t*	data;
+
+	      /* read a packet */
+	      if (ne2000_rx(dev, &data, &size) != ERROR_NONE)
+		break;
+
+	      /* push the packet into the network stack */
+	      ne2000_push(dev, data, size);
+
+	      total += size;
+	    }
+
+	  /* force ISR reset */
+	  OUTB(dev->addr + NE2000_ISR, isr);
+
+	  /* setup transmit configuration register (disable loopback) */
+	  OUTB(dev->addr + NE2000_TCR, NE2000_AUTOCRC);
+
+	  /* if a transmission was aborted, restart it */
+	  if (resend)
+	    ne2000_command(dev, NE2000_PTX);
+	}
+
+      /* packet received */
+      if (isr & NE2000_PRX)
+	{
+	  uint8_t	err;
+
+	  /* no errors */
+	  INB(dev->addr + NE2000_RSR, err);
+	  if (err & NE2000_SPRX)
+	    {
+	      uint16_t	size;
+	      uint8_t*	data;
+
+	      /* read the packet */
+	      while (ne2000_rx(dev, &data, &size) == ERROR_NONE)
+		{
+		  /* push the packet into the network stack */
+		  ne2000_push(dev, data, size);
+		}
+	    }
+	}
+
+      OUTB(dev->addr + NE2000_ISR, isr);
+    }
+
+  /* release lock */
+  IA32_SPIN_UNLOCK(dev->lock);
+}
+
+/*
+ * IRQ server thread
+ */
+
+static void*	ne2000_pci_irq_serve(void*		device)
+{
+  o_event_message	evt;
+  t_vsize		sz;
+  i_node		sender;
+
+  while (1)
+    {
+      if (message_receive(MESSAGE_TYPE_EVENT, (t_vaddr)&evt, &sz, &sender) ==
+	  ERROR_NONE)
+	{
+	  ne2000_irq((t_driver_ne2000_dev*)evt.data);
+
+	  ibmpc_irq_acknowledge(evt.id - 32);
+	}
+    }
+
+  return (NULL);
+}
+
+/*
  * initialize a ne2000 device.
  */
 
@@ -438,6 +802,7 @@ static void		ne2000_pci_init(t_driver_pci_dev*	device,
     }
 
   dev->addr = device->io[0];
+  memset(&dev->current, 0, sizeof (dev->current));
 
   if (!ne2000_probe(dev))
     {
@@ -446,11 +811,20 @@ static void		ne2000_pci_init(t_driver_pci_dev*	device,
       return;
     }
 
-  if (event_reserve(device->irq, EVENT_MESSAGE, EVENT_TASK(_crt_get_task_id()),
+  if (event_reserve(32 + device->irq, EVENT_MESSAGE,
+		    EVENT_TASK(_crt_get_task_id()),
 		    (t_vaddr)dev) != ERROR_NONE)
     {
       free(dev);
       printf(" -- ne2000-pci: error, cannot register IRQ.\n");
+      return;
+    }
+
+  if (pthread_create(&dev->irq_thread, NULL, ne2000_pci_irq_serve, &dev))
+    {
+      event_release(device->irq);
+      free(dev);
+      printf(" -- ne2000-pci: error, cannot create IRQ server.\n");
       return;
     }
 
@@ -466,7 +840,7 @@ static void		ne2000_pci_init(t_driver_pci_dev*	device,
  * probe the system for ne2000 devices.
  */
 
-void		ne2000_pci_probe(void)
+static void    	ne2000_pci_probe(void)
 {
   int		i;
   i_task	pci;
@@ -482,7 +856,7 @@ void		ne2000_pci_probe(void)
   for (i = 0; i < sizeof (net_ne2000) / sizeof (t_driver_pci_ids); i++)
     {
       if (pci_get_device(pci, net_ne2000[i].vendor, net_ne2000[i].device,
-			 ne2000_pci_init, net_ne2000[i].string) != ERROR_NONE)
+			 ne2000_pci_init, (char*)net_ne2000[i].string) != ERROR_NONE)
 	printf(" -- ne2000-pci: error while probing.\n");
     }
 }
@@ -491,7 +865,7 @@ void		ne2000_pci_probe(void)
  * serve requests.
  */
 
-void	ne2000_pci_driver_serve(void)
+static void	ne2000_pci_driver_serve(void)
 {
   while (1)
     {
@@ -510,6 +884,10 @@ int	main(void)
   /* init dependencies */
   mod_init();
   pci_init();
+
+  /* XXX to be moved */
+  io_grant(0x20, _crt_get_task_id(), 1);
+  io_grant(0xa0, _crt_get_task_id(), 1);
 
   ne2000_pci_probe();
 

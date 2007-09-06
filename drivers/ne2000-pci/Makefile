@@ -43,7 +43,8 @@ main:			dependencies $(NE2000)
 $(NE2000):		libs $(NE2000_O)
 	$(call env_executable,$(NE2000),				\
 			      $(NE2000_O)				\
-			      $(_CRT_O_) $(_ULIBC_A_) $(_LIBKANETON_A_),\
+			      $(_CRT_O_) $(_ULIBC_A_) $(_LIBPTHREAD_A_)	\
+			      $(_LIBKANETON_A_),			\
 			      $(_DRIVER_LAYOUT_),			\
 			      $(ENV_OPTION_NO_STANDARD))
 
@@ -54,7 +55,7 @@ clear:
 	$(call env_purge,)
 
 prototypes:
-	$(call env_prototypes,${_DRIVERS_DIR_}/ne2000/$(NE2000_INCLUDE),)
+	$(call env_prototypes,${_DRIVERS_DIR_}/ne2000-pci/$(NE2000_INCLUDE),)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
@@ -63,6 +64,8 @@ headers:
 
 dependencies:
 	$(call env_launch,$(_ULIBC_DIR_)/Makefile,,)
+	$(call env_launch,$(_LIBKANETON_DIR_)/Makefile,,)
+	$(call env_launch,$(_LIBPTHREAD_DIR_)/Makefile,,)
 
 endif
 #

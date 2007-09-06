@@ -8,7 +8,7 @@
  * file          /home/buckman/kan.../library/libkaneton/include/core_types.h
  *
  * created       matthieu bucchianeri   [sun aug  5 23:36:14 2007]
- * updated       matthieu bucchianeri   [sun aug  5 23:37:43 2007]
+ * updated       matthieu bucchianeri   [thu sep  6 21:48:46 2007]
  */
 
 #ifndef LIBKANETON_CORE_TYPES_H
@@ -32,12 +32,26 @@ typedef union
   i_task			taskid;
 }				u_event_handler;
 
+typedef struct
+{
+  i_event			id;
+
+  t_vaddr			data;
+}				o_event_message;
+
 typedef t_error			(*t_timer_handler)(i_timer, t_vaddr);
 typedef union
 {
   t_timer_handler		function;
   i_task			taskid;
 }				u_timer_handler;
+
+typedef struct
+{
+  i_timer			id;
+
+  t_vaddr			data;
+}				o_timer_message;
 
 typedef struct
 {

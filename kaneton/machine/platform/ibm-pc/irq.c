@@ -169,7 +169,7 @@ t_error			ibmpc_irq_acknowledge(t_uint8		irq)
     {
       ARCHITECTURE_IN_8(IBMPC_SLAVE_PORT_B, mask);
       ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_B, mask);
-      ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_A, 0x60 + (irq & 0x7));
+      ARCHITECTURE_OUT_8(IBMPC_SLAVE_PORT_A, 0x60 + (irq - 8));
       ARCHITECTURE_OUT_8(IBMPC_MASTER_PORT_A, 0x60 + 2);
     }
 

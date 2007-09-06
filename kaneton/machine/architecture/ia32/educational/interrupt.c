@@ -264,9 +264,6 @@ t_error			ia32_interrupt_vector_init(void)
 static void		spurious_interrupt(i_event			id)
 {
   printf("Unhandled exception %qu @ %p\n", id, ia32_context->eip);
-
-  while (1)
-    ;
 }
 
 /*
@@ -312,15 +309,14 @@ void			ia32_handler_irq(t_uint32			nr)
 
   ASSERT(VIEW_SIGNAL("irq", nr, VIEW_SIGNAL_IRQ) == ERROR_NONE);
 
-  // XXX pic ack
-  if (nr >= 8)
-    OUTB(0xA0, 0x20);
-  OUTB(0x20, 0x20);
-
   if (event_get(id, &o) == ERROR_NONE)
     {
       if (o->type == EVENT_FUNCTION)
-	IA32_CALL_HANDLER(o->handler, id, o->data);
+	{
+	  IA32_CALL_HANDLER(o->handler, id, o->data);
+
+	  ibmpc_irq_acknowledge(nr);
+	}
       else
 	event_notify(id);
     }

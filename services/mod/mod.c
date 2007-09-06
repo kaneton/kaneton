@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod.c
  *
  * created       matthieu bucchianeri   [sat may  5 18:43:57 2007]
- * updated       matthieu bucchianeri   [thu aug 23 16:37:04 2007]
+ * updated       matthieu bucchianeri   [fri sep  7 00:42:49 2007]
  */
 
 /*

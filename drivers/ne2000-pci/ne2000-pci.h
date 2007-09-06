@@ -17,6 +17,10 @@
  */
 
 # include <libc.h>
+# include <pthread.h>
+# include <queue.h>
+# include <spinlock.h>
+# include "ether.h"
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -169,21 +173,65 @@
  * ---------- types -----------------------------------------------------------
  */
 
+/*
+ * packet queue
+ */
+
+SIMPLEQ_HEAD(__packetqueue, __packetqueue_entry);
+
+struct __packetqueue_entry
+{
+  char*					packet;
+  size_t				size;
+  uint8_t				mac[ETH_ALEN];
+  uint16_t				proto;
+  SIMPLEQ_ENTRY(__packetqueue_entry)	entry;
+};
+
+/*
+ * device
+ */
+
 typedef struct
 {
   /* io base address */
-  t_uint32	addr;
+  uint32_t			addr;
   /* is it a 8 bit or 16 bit controller */
-  t_uint8	io_16;
+  uint8_t			io_16;
   /* memory size in 256 bytes blocks */
-  t_uint8	mem;
+  uint8_t			mem;
   /* transmit buffer offset in 256 bytes blocks */
-  t_uint8	tx_buf;
+  uint8_t			tx_buf;
   /* receive buffer offset in 256 bytes blocks */
-  t_uint8	rx_buf;
+  uint8_t			rx_buf;
   /* device physical address */
-  t_uint8	mac[ETH_ALEN];
+  uint8_t			mac[ETH_ALEN];
+  /* irq thread id */
+  pthread_t			irq_thread;
+  /* spinlock */
+  IA32_SPIN_FIELD_DECLARE(lock);
+  /* current packet */
+  struct
+  {
+    char*			packet;
+    size_t			size;
+    struct ether_header		header;
+    uint8_t			tries;
+  }				current;
+  /* send queue */
+  struct __packetqueue		sendqueue;
 }		t_driver_ne2000_dev;
+
+/*
+ * ne2000 ring buffer header
+ */
+
+struct		ne2000_header_s
+{
+  uint8_t	status;
+  uint8_t	next;
+  uint16_t	size;
+} __attribute__ ((packed));
 
 /*
  * ---------- prototypes ------------------------------------------------------
@@ -195,9 +243,7 @@ typedef struct
  * ne2000-pci.c
  */
 
-void	ne2000_pci_probe(void);
-
-void	ne2000_pci_driver_serve(void);
+t_error			ibmpc_irq_acknowledge(uint8_t		irq);
 
 int	main(void);
 
