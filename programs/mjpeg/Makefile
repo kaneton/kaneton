@@ -8,7 +8,7 @@
 # file          /home/buckman/kaneton/programs/mjpeg/Makefile
 #
 # created       matthieu bucchianeri   [mon aug 20 19:52:55 2007]
-# updated       matthieu bucchianeri   [sun sep  2 20:17:34 2007]
+# updated       matthieu bucchianeri   [fri sep  7 01:27:28 2007]
 #
 
 #
@@ -43,7 +43,6 @@ MJPEG_C			:=		bit_reading.c		\
 					main.c			\
 					mwmr.c			\
 					parser.c		\
-					pthread.c		\
 					ramdac.c		\
 					ramdac_launcher.c	\
 					tg_launcher.c		\
@@ -65,7 +64,8 @@ main:	dependencies $(MJPEG)
 $(MJPEG):	libs $(MJPEG_O)
 	$(call env_executable,$(MJPEG),					\
 			      $(MJPEG_O)				\
-			      $(_CRT_O_) $(_ULIBC_A_) $(_LIBKANETON_A_),\
+			      $(_CRT_O_) $(_ULIBC_A_) $(_LIBPTHREAD_A_)	\
+			      $(_LIBKANETON_A_),			\
 			      $(_PROGRAM_LAYOUT_),			\
 			      $(ENV_OPTION_NO_STANDARD))
 

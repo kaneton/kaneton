@@ -447,7 +447,7 @@ static void	ne2000_send(t_driver_ne2000_dev*	device,
   /* if the device is busy */
   INB(device->addr + NE2000_CMD, st);
   if ((st & NE2000_TXP) ||
-      device->current.packet != NULL)
+      device->current.busy)
     {
       /* queue the packet */
       struct __packetqueue_entry*	e;
@@ -467,12 +467,14 @@ static void	ne2000_send(t_driver_ne2000_dev*	device,
     }
   else
     {
+      struct ether_header	header;
+
       /* otherwise, send the datagram immediately */
-      device->current.packet = packet;
+      device->current.busy = 1;
       device->current.size = size;
-      memcpy(device->current.header.ether_shost, device->mac, ETH_ALEN);
-      memcpy(device->current.header.ether_dhost, mac, ETH_ALEN);
-      device->current.header.ether_type = proto;
+      memcpy(header.ether_shost, device->mac, ETH_ALEN);
+      memcpy(header.ether_dhost, mac, ETH_ALEN);
+      header.ether_type = proto;
 
       /* reset the tries counter */
       device->current.tries = 0;
@@ -482,7 +484,7 @@ static void	ne2000_send(t_driver_ne2000_dev*	device,
 			    sizeof (struct ether_header) + size);
 
       /* write header then data */
-      ne2000_dma_do_write(device, &device->current.header,
+      ne2000_dma_do_write(device, &header,
 			  sizeof (struct ether_header));
       ne2000_dma_do_write(device, packet, size);
 
@@ -503,8 +505,8 @@ static t_error			ne2000_rx(t_driver_ne2000_dev*	dev,
 					  uint16_t*		size)
 {
   struct ne2000_header_s	hdr;
-  uint16_t			next;
-  uint16_t			curr;
+  uint8_t			next;
+  uint8_t			curr;
   uint16_t			dma;
   uint8_t*			buf;
 
@@ -559,7 +561,7 @@ static void	ne2000_push(t_driver_ne2000_dev*	dev,
   printf(" -- ne2000-pci: new packet %02x:%02x:%02x:%02x:%02x:%02x of %d\n",
 	 hdr->ether_shost[0], hdr->ether_shost[1], hdr->ether_shost[2],
 	 hdr->ether_shost[3], hdr->ether_shost[4], hdr->ether_shost[5],
-	 hdr->ether_type);
+	 size);
 
   /* XXX */
 
@@ -593,7 +595,7 @@ static void	ne2000_irq(t_driver_ne2000_dev*		dev)
       /* remote DMA completed */
       if (isr & NE2000_RDC)
 	{
-	  if (dev->current.packet != NULL)
+	  if (dev->current.busy)
 	    {
 	      uint16_t	length = dev->current.size;
 
@@ -639,13 +641,12 @@ static void	ne2000_irq(t_driver_ne2000_dev*		dev)
 	{
 	  /* the big dirty test. on some device, the PTX bit of ISR is
 	     not correctly acknowleged */
-	  if (!tx_serviced && dev->current.packet != NULL)
+	  if (!tx_serviced && dev->current.busy)
 	    {
 	      struct __packetqueue_entry*	e;
 
 	      /* packet sent successfully, drop it */
-	      free(dev->current.packet);
-	      dev->current.packet = NULL;
+	      dev->current.busy = 0;
 
 	      /* one or more packets in the wait queue ? */
 	      if ((e = SIMPLEQ_FIRST(&dev->sendqueue)) != NULL)

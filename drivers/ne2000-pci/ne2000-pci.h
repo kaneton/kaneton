@@ -213,9 +213,8 @@ typedef struct
   /* current packet */
   struct
   {
-    char*			packet;
-    size_t			size;
-    struct ether_header		header;
+    uint8_t			busy;
+    uint16_t			size;
     uint8_t			tries;
   }				current;
   /* send queue */

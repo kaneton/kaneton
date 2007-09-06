@@ -15,7 +15,7 @@
 
 #include <libc.h>
 #include <libkaneton.h>
-#include "../pthread.h"
+#include <pthread.h>
 #include "../spinlock.h"
 #include <dsx_endianness.h>
 #include "dsx_ext.h"
