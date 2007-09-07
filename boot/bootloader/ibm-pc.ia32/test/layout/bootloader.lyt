@@ -1,0 +1,37 @@
+OUTPUT_FORMAT("elf32-i386")
+OUTPUT_ARCH("i386")
+ENTRY(bootloader_entry)
+
+SECTIONS
+{
+	. = 0x200000 + SIZEOF_HEADERS;
+
+	_bootloader_begin = .;
+
+	/* must appear in first kilobytes */
+	.multiboot :
+	{
+		*(.multiboot)
+	}
+
+	.text :
+	{
+		*(.text)
+	}
+
+	.rodata :
+	{
+		*(.rodata)
+	}
+
+	_bootloader_end = .;
+
+	_bootloader_data_begin = .;
+
+	.data :
+	{
+		*(.data) *(.bss) *(COMMON)
+	}
+
+	_bootloader_data_end = .;
+}

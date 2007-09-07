@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/drivers/pci/pci.c
+ * file          /home/buckman/crypt/kaneton/drivers/pci/pci.c
  *
  * created       matthieu bucchianeri   [sat jun  9 17:26:20 2007]
- * updated       matthieu bucchianeri   [sun sep  2 12:58:10 2007]
+ * updated       matthieu bucchianeri   [fri sep  7 15:28:27 2007]
  */
 
 /*
@@ -87,9 +87,15 @@ static void	pci_register(uint16_t	vendor,
 			     uint32_t	class,
 			     uint32_t*	io_base,
 			     uint32_t*	mem_base,
-			     uint32_t	irq)
+			     uint8_t	irq)
 {
   uint32_t	count;
+  uint32_t	i;
+
+  for (i = 0; i < device_id; i++)
+    if (devices[i].vendor == vendor && devices[i].device == device &&
+	devices[i].class == class && devices[i].io[0] == io_base[0])
+      return;
 
   printf(" -- pci: new device detected: %x:%x\n", vendor, device);
 
@@ -133,7 +139,7 @@ void		pci_probe(void)
   uint32_t	mem_base[PCI_MAX_ADDRESS_COUNT];
   uint32_t	io_index;
   uint32_t	mem_index;
-  uint32_t	irq;
+  uint8_t	irq;
   uint32_t	i;
   uint32_t	reg;
   uint32_t	val;
@@ -159,7 +165,7 @@ void		pci_probe(void)
 	  mem_index = 0;
 	  irq = 0;
 
-	  device = pci_conf_read(bus, dev, fun, PCI_REG_DEVID);
+	  device = (uint16_t)pci_conf_read(bus, dev, fun, PCI_REG_DEVID);
 	  class = (pci_conf_read(bus, dev, fun, PCI_REG_CLASS) & 0x00ffff00) >> 8;
 
 	  /*
@@ -191,11 +197,12 @@ void		pci_probe(void)
 	   * 4)
 	   */
 
-	  irq = (uint8_t)pci_conf_read(bus, dev, fun, PCI_REG_IRQLINE);
+	  irq = pci_conf_read(bus, dev, fun, PCI_REG_IRQLINE);
 
 	  /*
 	   * 5)
 	   */
+
 	  io_base[io_index] = 0;
 	  mem_base[mem_index] = 0;
 	  pci_register(vendor, device, class, io_base, mem_base, irq);

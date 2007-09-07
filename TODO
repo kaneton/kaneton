@@ -1,5 +1,8 @@
 ------------------------------ buck :: todo -----------------------------------
 
+ systeme de stack pour release lors d'un object.
+
+--
  un truc qui me parait bizarre dans le bootloader: la stack courant
 elle est pas mappée explicitement !
 
