@@ -68,7 +68,7 @@ t_error			ia32_gdt_dump(t_ia32_gdt*		dump_gdt)
    * 1)
    */
 
-  if (!dump_gdt)
+  if (dump_gdt == IA32_GDT_CURRENT)
     dump_gdt = &ia32_gdt;
 
   /*
@@ -120,7 +120,7 @@ t_error			ia32_gdt_size(t_ia32_gdt*		table,
 {
   ASSERT(size != NULL);
 
-  if (!table)
+  if (table == IA32_GDT_CURRENT)
     table = &ia32_gdt;
 
   *size = table->count;
@@ -276,7 +276,7 @@ t_error			ia32_gdt_add_segment(t_ia32_gdt*	table,
    * 1)
    */
 
-  if (!table)
+  if (table == IA32_GDT_CURRENT)
     table = &ia32_gdt;
 
   /*
@@ -354,7 +354,7 @@ t_error			ia32_gdt_reserve_segment(t_ia32_gdt*	table,
    * 1)
    */
 
-  if (!table)
+  if (table == IA32_GDT_CURRENT)
     table = &ia32_gdt;
 
   /*
@@ -401,7 +401,7 @@ t_error			ia32_gdt_get_segment(t_ia32_gdt*	table,
    * 1)
    */
 
-  if (!table)
+  if (table == IA32_GDT_CURRENT)
     table = &ia32_gdt;
 
   /*
@@ -460,7 +460,7 @@ t_error			ia32_gdt_delete_segment(t_ia32_gdt*	table,
    * 1)
    */
 
-  if (!table)
+  if (table == IA32_GDT_CURRENT)
     table = &ia32_gdt;
 
   /*

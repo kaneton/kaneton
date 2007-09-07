@@ -48,7 +48,7 @@ t_error			ia32_pd_dump(t_ia32_directory*		dir)
   t_uint32		i;
   t_ia32_pde*		d;
 
-  if (!dir)
+  if (dir == IA32_PD_CURRENT)
     d = ia32_pd;
   else
     d = *dir;
@@ -72,12 +72,10 @@ t_error			ia32_pd_dump(t_ia32_directory*		dir)
  *
  * 1) checks address alignement.
  * 2) fills the record.
- * 3) clears the directory if needed.
  */
 
 t_error			ia32_pd_build(t_paddr			base,
-				      t_ia32_directory*		directory,
-				      t_uint8			clear)
+				      t_ia32_directory*		directory)
 {
   ASSERT(directory != NULL);
 
@@ -93,15 +91,6 @@ t_error			ia32_pd_build(t_paddr			base,
    */
 
   *directory = (t_ia32_directory)base;
-
-  /*
-   * 3)
-   */
-
-  if (clear)
-    {
-      memset((void*)base, 0, IA32_PD_MAX_ENTRIES * sizeof(t_ia32_pde));
-    }
 
   return ERROR_NONE;
 }
@@ -122,7 +111,7 @@ t_error			ia32_pd_base(t_ia32_directory*		dir,
    * 1)
    */
 
-  if (dir)
+  if (dir != IA32_PD_CURRENT)
     d = *dir;
   else
     d = ia32_pd;
@@ -231,7 +220,7 @@ t_error			ia32_pd_add_table(t_ia32_directory*	dir,
    * 1)
    */
 
-  if (dir)
+  if (dir != IA32_PD_CURRENT)
     d = *dir;
   else
     d = ia32_pd;
@@ -258,7 +247,7 @@ t_error			ia32_pd_add_table(t_ia32_directory*	dir,
    * 3)
    */
 
-  d[entry] = IA32_MK_BASE(table.entries) | opts;
+  d[entry] = IA32_MK_BASE(table.paddr) | opts;
 
   return ERROR_NONE;
 }
@@ -285,7 +274,7 @@ t_error			ia32_pd_get_table(t_ia32_directory*	dir,
    * 1)
    */
 
-  if (dir)
+  if (dir != IA32_PD_CURRENT)
     d = *dir;
   else
     d = ia32_pd;
@@ -310,7 +299,7 @@ t_error			ia32_pd_get_table(t_ia32_directory*	dir,
     IA32_PT_WRITETHROUGH : IA32_PT_WRITEBACK;
   table->cached = (d[entry] & IA32_PDE_FLAG_CD) ?
     IA32_PT_NOTCACHED : IA32_PT_CACHED;
-  table->entries = IA32_MK_BASE(d[entry]);
+  table->paddr = IA32_MK_BASE(d[entry]);
 
   return ERROR_NONE;
 }
@@ -334,7 +323,7 @@ t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
    * 1)
    */
 
-  if (dir)
+  if (dir != IA32_PD_CURRENT)
     d = *dir;
   else
     d = ia32_pd;

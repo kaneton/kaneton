@@ -208,6 +208,10 @@ t_error			message_register(i_task			task,
 					 t_type			type,
 					 t_vsize		size);
 
+t_error			message_size(i_task			task,
+				     t_type			type,
+				     t_vsize*			size);
+
 t_error			message_flush(i_task			task);
 
 t_error			message_send(i_task			task,

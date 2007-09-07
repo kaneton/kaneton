@@ -565,7 +565,7 @@ t_error			ia32_init_switcher(void)
 		     0, 3 * PAGESZ, &reg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  thread->machdep.tss = (t_vaddr)reg;
+  thread->machdep.tss = (t_ia32_tss*)(t_vaddr)reg;
 
   memset(thread->machdep.tss, 0x0, sizeof(t_ia32_tss));
 

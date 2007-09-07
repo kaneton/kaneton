@@ -151,8 +151,7 @@ typedef struct
 {
   t_uint16	fcw;
   t_uint16	fsw;
-  t_uint8	ftw;
-  t_uint8	reserved1;
+  t_uint16	ftw;
   t_uint16	fop;
   t_uint32	fpu_eip;
   t_uint16	fpu_cs;

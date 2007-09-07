@@ -33,6 +33,7 @@
 #define IA32_PD_CACHED		1
 #define IA32_PD_WRITETHROUGH	0
 #define IA32_PD_WRITEBACK	1
+#define IA32_PD_CURRENT		NULL
 
 #define IA32_PT_NOTCACHED	0
 #define IA32_PT_CACHED		1
@@ -152,7 +153,8 @@ typedef struct
 
 typedef struct
 {
-  t_paddr	entries;
+  t_paddr	paddr;
+  t_vaddr	vaddr;
   t_uint8	present;
   t_uint8	rw;
   t_uint8	user;
@@ -194,8 +196,7 @@ t_error			ia32_paging_clean(void);
 t_error			ia32_pd_dump(t_ia32_directory*		dir);
 
 t_error			ia32_pd_build(t_paddr			base,
-				      t_ia32_directory*		directory,
-				      t_uint8			clear);
+				      t_ia32_directory*		directory);
 
 t_error			ia32_pd_base(t_ia32_directory*		dir,
 				     t_paddr*			base);
@@ -228,8 +229,7 @@ t_error			ia32_pd_delete_table(t_ia32_directory*	dir,
 t_error			ia32_pt_dump(t_ia32_pte*		tab);
 
 t_error			ia32_pt_build(t_paddr			base,
-				      t_ia32_table*		table,
-				      t_uint8			clear);
+				      t_ia32_table*		table);
 
 t_error			ia32_pt_add_page(t_ia32_table*		tab,
 					 t_uint16		entry,

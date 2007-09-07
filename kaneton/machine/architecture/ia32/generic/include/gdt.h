@@ -29,6 +29,7 @@
 
 #define IA32_GDT_MAX_ENTRIES	8191
 #define IA32_LDT_MAX_ENTRIES	8191
+#define IA32_GDT_CURRENT	NULL
 
 /*
  * gdt flags

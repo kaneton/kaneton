@@ -81,7 +81,8 @@ t_error			ia32_tss_init(t_ia32_tss*			tss)
   descriptor.is_system = 1;
   descriptor.type.sys = IA32_SEG_TYPE_TSS;
 
-  if (ia32_gdt_reserve_segment(NULL, descriptor, &segment) != ERROR_NONE)
+  if (ia32_gdt_reserve_segment(IA32_GDT_CURRENT, descriptor,
+			       &segment) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*

@@ -60,12 +60,10 @@ t_error			ia32_pt_dump(t_ia32_pte*		tab)
  *
  * 1) checks address encoding.
  * 2) initializes the structure.
- * 3) clears the table if necessary.
  */
 
 t_error			ia32_pt_build(t_paddr			base,
-				      t_ia32_table*		table,
-				      t_uint8			clear)
+				      t_ia32_table*		table)
 {
   ASSERT(table != NULL);
 
@@ -80,16 +78,8 @@ t_error			ia32_pt_build(t_paddr			base,
    * 2)
    */
 
-  table->entries = base;
-
-  /*
-   * 3)
-   */
-
-  if (clear)
-    {
-      memset((void*)base, 0, IA32_PT_MAX_ENTRIES * sizeof(t_ia32_pte));
-    }
+  table->paddr = base;
+  table->vaddr = 0;
 
   return ERROR_NONE;
 }
@@ -124,7 +114,8 @@ t_error			ia32_pt_add_page(t_ia32_table*		tab,
    * 2)
    */
 
-  t = (t_ia32_pte*)tab->entries;
+  ASSERT(tab->vaddr != 0);
+  t = (t_ia32_pte*)tab->vaddr;
 
   /*
    * 3)
@@ -175,7 +166,8 @@ t_error			ia32_pt_get_page(t_ia32_table*		tab,
    * 1)
    */
 
-  t = (t_ia32_pte*)tab->entries;
+  ASSERT(tab->vaddr != 0);
+  t = (t_ia32_pte*)tab->vaddr;
 
   /*
    * 2)
@@ -223,7 +215,8 @@ t_error			ia32_pt_delete_page(t_ia32_table*	tab,
    * 1)
    */
 
-  t = (t_ia32_pte*)tab->entries;
+  ASSERT(tab->vaddr != 0);
+  t = (t_ia32_pte*)tab->vaddr;
 
   /*
    * 2)

@@ -147,7 +147,8 @@ t_error			ia32_ldt_build(t_uint16			entries,
   seg.is_system = 1;
   seg.type.sys = ia32_type_ldt;
 
-  if (ia32_gdt_reserve_segment(NULL, seg, &ldt->gdt_entry) != ERROR_NONE)
+  if (ia32_gdt_reserve_segment(IA32_GDT_CURRENT, seg,
+			       &ldt->gdt_entry) != ERROR_NONE)
     return ERROR_UNKNOWN;
 
   /*
@@ -170,7 +171,7 @@ t_error			ia32_ldt_destroy(t_ia32_ldt		*ldt)
 {
   ASSERT(ldt != NULL);
 
-  return ia32_gdt_delete_segment(NULL, ldt->gdt_entry);
+  return ia32_gdt_delete_segment(IA32_GDT_CURRENT, ldt->gdt_entry);
 }
 
 /*

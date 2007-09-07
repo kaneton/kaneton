@@ -20,11 +20,7 @@ check/
   - interface/**
   - io/**
 
-rapide et facile:
- - ajouter PD_CURRENT, GDT_CURRENT, etc...
-
 demande reflexion:
- - revoir les fonctions de PD/PT pour gerer mieux le paddr/vaddr.
  - refaite cswitch
  - migrer la variable mmx_context dans le ent
 
