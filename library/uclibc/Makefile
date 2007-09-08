@@ -11,3 +11,5 @@ top_builddir=./
 #all: libs
 include Makefile.in
 include $(top_srcdir)Makerules
+
+clear: distclean

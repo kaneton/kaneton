@@ -44,7 +44,7 @@ include $(top_srcdir)libc/Makefile.in
 
 include/bits/uClibc_config.h:
 	$(Q)$(INSTALL) -d $(dir $@)
-	$(Q)@$< -o $(top_srcdir)extra/Configs/Config.in
+#	$(Q)@$< -o $(top_srcdir)extra/Configs/Config.in
 	$(top_srcdir)extra/scripts/conf-header.sh .config > include/bits/uClibc_config.h
 
 
@@ -323,7 +323,6 @@ clean:
 
 distclean: clean
 	-find . \( -name core -o -name \*.orig -o -name \*~ \) -exec $(RM) {} \;
-	$(RM) .config .config.old .config.cmd
 	$(RM) extra/locale/*.tgz
 #	$(MAKE) -C extra/config distclean
 
