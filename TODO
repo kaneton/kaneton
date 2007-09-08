@@ -9,8 +9,6 @@ elle est pas mappée explicitement !
 --
 check/
   - revoir tous les tests bootloader
-  - event/message_**
-  - timer/message_**
   - finir message/*
   - task/clone_**, thread/clone_**
   - task/priority_**, thread/priority_**

@@ -8,7 +8,7 @@
 # file          /home/buckman/kaneton/library/Makefile
 #
 # created       julien quintard   [sun jun 10 00:53:47 2007]
-# updated       matthieu bucchianeri   [thu sep  6 21:59:13 2007]
+# updated       matthieu bucchianeri   [sat sep  8 17:14:16 2007]
 #
 
 #
@@ -27,9 +27,7 @@ include			../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		libc				\
-					crt				\
-					libkaneton			\
+SUBDIRS			:=		libkaneton			\
 					libpthread
 
 #

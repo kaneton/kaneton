@@ -263,7 +263,23 @@ t_error			ia32_interrupt_vector_init(void)
 
 static void		spurious_interrupt(i_event			id)
 {
+  t_uint32		stack[8];
+  i_task		tsk;
+  o_task*		o;
+
   printf("Unhandled exception %qu @ %p\n", id, ia32_context->eip);
+  printf("%%eax=%08x\t%%ebx=%08x\n", ia32_context->eax, ia32_context->ebx);
+  printf("%%ecx=%08x\t%%edx=%08x\n", ia32_context->ecx, ia32_context->edx);
+  printf("%%esi=%08x\t%%edi=%08x\n", ia32_context->esi, ia32_context->edi);
+  printf("%%esp=%08x\t%%ebp=%08x\n", ia32_context->esp, ia32_context->ebp);
+
+  if (task_current(&tsk) == ERROR_NONE &&
+      task_get(tsk, &o) == ERROR_NONE &&
+      as_read(o->asid, ia32_context->esp, 32, stack) == ERROR_NONE)
+    {
+      printf("%08x %08x %08x %08x\n", stack[0], stack[1], stack[2], stack[3]);
+      printf("%08x %08x %08x %08x\n", stack[4], stack[5], stack[6], stack[7]);
+    }
 }
 
 /*

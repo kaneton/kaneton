@@ -15,7 +15,7 @@
 #define PTHREAD_H
 
 #include <libkaneton.h>
-#include "queue.h"
+#include "sys/queue.h"
 #include "spinlock.h"
 
 #define PTHREAD_BARRIER_SERIAL_THREAD	42

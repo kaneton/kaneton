@@ -18,7 +18,7 @@
 #include <crt.h>
 #include <libkaneton.h>
 #include <pthread.h>
-#include <queue.h>
+#include <sys/queue.h>
 #include "ne2000-pci.h"
 #include "ne2000-pci-driver.h"
 

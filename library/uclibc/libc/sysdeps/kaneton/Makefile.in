@@ -1,0 +1,10 @@
+# Makefile for uClibc
+#
+# Copyright (C) 2007 Matthieu Bucchianeri <mbucchia@gmail.com>
+#
+# Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
+#
+
+# order is relevant
+-include $(top_srcdir)libc/sysdeps/kaneton/$(TARGET_ARCH)/Makefile.arch
+include $(top_srcdir)libc/sysdeps/kaneton/common/Makefile.in

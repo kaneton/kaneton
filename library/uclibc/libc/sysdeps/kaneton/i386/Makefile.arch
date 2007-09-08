@@ -1,0 +1,14 @@
+# Makefile for uClibc
+#
+# Copyright (C) 2007 Matthieu Bucchianeri <mbucchia@gmail.com>
+#
+# Licensed under the LGPL v2.1, see the file COPYING.LIB in this tarball.
+#
+
+CSRC := __syscall_error.c mmap.c munmap.c write.c exit.c ioctl.c
+
+SSRC := __longjmp.S setjmp.S
+
+include $(top_srcdir)libc/sysdeps/kaneton/Makefile.commonarch
+
+CFLAGS	+=	-I../../../../../../library/libkaneton/include -I../../../../../../library/uclibc/crt/include -I../../../../../../kaneton/include

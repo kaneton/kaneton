@@ -233,8 +233,8 @@ t_error			kaneton_launch(void)
     i_as		asid;
     i_task		mod;
     int			argc;
-    char**		argv;
-    char**		envp;
+    char*		argv;
+    char*		envp;
   }			args;
 
   if (init->mcodesz == 0)
@@ -289,7 +289,7 @@ t_error			kaneton_launch(void)
   args.asid = as;
   args.mod = ID_UNUSED;
   args.argc = 1;
-  args.argv = (char**)init->inputs;
+  args.argv = (char*)init->inputs;
   args.envp = NULL;
 
   if (thread_args(thread, &args, sizeof (args)) != ERROR_NONE)

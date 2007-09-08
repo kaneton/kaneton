@@ -813,8 +813,6 @@ t_error			ia32_push_args(i_thread			threadid,
    * 4)
    */
 
-  context.sp -= 4;
-
   if (thread_load(threadid, context) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 

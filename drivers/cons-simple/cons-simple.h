@@ -70,6 +70,8 @@ typedef struct
  * cons-simple.c
  */
 
+int			print_string(const char* p, size_t len);
+
 int			main(void);
 
 

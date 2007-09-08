@@ -49,7 +49,6 @@ $(CONS_SIMPLE):			libs $(CONS_SIMPLE_O)
 
 libs:
 	$(call env_launch,${_ULIBC_DIR_}/Makefile,,)
-	$(call env_launch,${_CRT_DIR_}/Makefile,,)
 	$(call env_launch,${_LIBKANETON_DIR_}/Makefile,,)
 
 clear:

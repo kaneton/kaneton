@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [wed sep  5 23:53:39 2007]
+ * updated       matthieu bucchianeri   [sat sep  8 23:16:20 2007]
  */
 
 /*

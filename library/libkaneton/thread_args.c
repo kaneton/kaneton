@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/library/libkaneton/thread_args.c
  *
  * created       matthieu bucchianeri   [mon aug  6 19:07:18 2007]
- * updated       matthieu bucchianeri   [thu sep  6 00:03:29 2007]
+ * updated       matthieu bucchianeri   [sat sep  8 21:24:02 2007]
  */
 
 /*
@@ -87,8 +87,6 @@ t_error			thread_args(i_thread			threadid,
   /*
    * 4)
    */
-
-  context.sp -= 4;
 
   if (thread_load(threadid, context) != ERROR_NONE)
     return (ERROR_UNKNOWN);

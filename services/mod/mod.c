@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod.c
  *
  * created       matthieu bucchianeri   [sat may  5 18:43:57 2007]
- * updated       matthieu bucchianeri   [fri sep  7 00:42:49 2007]
+ * updated       matthieu bucchianeri   [sat sep  8 21:27:51 2007]
  */
 
 /*
@@ -41,6 +41,7 @@ struct
 /*
  * ---------- macro-functions -------------------------------------------------
  */
+
 
 #define PAGED_SIZE(_size_)						\
   ((_size_) % PAGESZ ?							\
@@ -85,8 +86,8 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
     i_as		asid;
     i_task		mod;
     int			argc;
-    char**		argv;
-    char**		envp;
+    char*		argv;
+    char*		envp;
   }			args;
 
   /*
@@ -384,7 +385,7 @@ int			main(int argc, char** argv, char** envp)
 {
   memset(services, 0, sizeof (services));
 
-  mod_launch((t_inputs*)argv);
+  mod_launch((t_inputs*)argv[0]);
 
   printf(" -- mod: moduler loader service started.\n");
 

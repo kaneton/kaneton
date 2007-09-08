@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/drivers/cons-simple/cons-simple.c
  *
  * created       matthieu bucchianeri   [sat jun  9 18:36:19 2007]
- * updated       matthieu bucchianeri   [thu sep  6 01:19:22 2007]
+ * updated       matthieu bucchianeri   [sat sep  8 23:09:06 2007]
  */
 
 #include <libc.h>
@@ -21,7 +21,7 @@
  * console instance.
  */
 
-static t_simple_cons	cons;
+static t_simple_cons	cons = { .vga = 0 };
 
 /*
  * this function scrolls the screen.
@@ -93,6 +93,23 @@ static int		print_char(char			c)
 }
 
 /*
+ * print a string
+ */
+
+int			print_string(const char* p, size_t len)
+{
+  size_t		i;
+
+  if (cons.vga == 0)
+    return (-1);
+
+  for (i = 0; i < len; i++)
+    print_char(p[i]);
+
+  return (len);
+}
+
+/*
  * initialize VGA text console and console structure.
  */
 
@@ -116,7 +133,6 @@ static int		cons_init(void)
   cons.vga = (char*)(t_vaddr)reg;
   cons.line = 0;
   cons.column = 0;
-  printf_init(print_char, NULL);
 
   for (br = 1, line = CONS_LINES - 1; br && line > 0; line--)
     {
@@ -135,7 +151,7 @@ static int		cons_init(void)
   else
       cons.line = line + 1;
 
-  printf(" -- cons-simple: Simple Console driver started.\n");
+  print_string(" -- cons-simple: Simple Console driver started.\n", 48);
 
   return (0);
 }
@@ -147,13 +163,12 @@ static int		cons_init(void)
 static int		cons_serve(void)
 {
   t_driver_cons_simple_message*	message;
-  t_driver_cons_simple_size	count, i;
   i_node			sender;
   t_vsize			size;
 
   if ((message = malloc(sizeof (*message) + CONS_SIMPLE_MAX_BUFFER)) == NULL)
     {
-      printf(" -- cons-simple: memory exhausted\n");
+      print_string(" -- cons-simple: memory exhausted\n", 34);
       return (-1);
     }
 
@@ -166,17 +181,14 @@ static int		cons_serve(void)
 	{
 	  if (message->u.request.operation == CONS_SIMPLE_DRIVER_WRITE)
 	    {
-	      count = message->u.request.u.write.count;
-	      message->u.reply.u.write.wrote = 0;
-	      for (i = 0 ; i < count; i++)
-		message->u.reply.u.write.wrote += print_char(message->u.request.u.write.c[i]);
+	      message->u.reply.u.write.wrote = print_string(message->u.request.u.write.c, message->u.request.u.write.count);
 
 	      if (message_send(sender,
 			       MESSAGE_TYPE_DRIVER_CONS_SIMPLE,
 			       (t_vaddr)message,
 			       sizeof (*message)) != ERROR_NONE)
 		{
-		  printf(" -- cons-simple: error in request\n");
+		  print_string(" -- cons-simple: error in request\n", 34);
 		}
 	    }
 	}
@@ -191,6 +203,10 @@ static int		cons_serve(void)
 
 int			main(void)
 {
+  if (message_register(MESSAGE_TYPE_DRIVER_CONS_SIMPLE,
+		       MESSAGE_SIZE_DRIVER_CONS_SIMPLE) != ERROR_NONE)
+    return (-1);
+
   if (cons_init())
     return (-1);
 

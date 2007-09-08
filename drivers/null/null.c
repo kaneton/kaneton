@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/drivers/null/null.c
  *
  * created       matthieu bucchianeri   [mon aug  6 22:05:34 2007]
- * updated       matthieu bucchianeri   [mon aug  6 23:01:55 2007]
+ * updated       matthieu bucchianeri   [sat sep  8 22:50:52 2007]
  */
 
 #include <libc.h>

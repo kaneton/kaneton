@@ -18,7 +18,7 @@
 
 # include <libc.h>
 # include <pthread.h>
-# include <queue.h>
+# include <sys/queue.h>
 # include <spinlock.h>
 # include "ether.h"
 

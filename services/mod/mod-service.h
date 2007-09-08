@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod-service.h
  *
  * created       matthieu bucchianeri   [mon aug  6 21:35:25 2007]
- * updated       matthieu bucchianeri   [thu aug 23 16:44:23 2007]
+ * updated       matthieu bucchianeri   [sat sep  8 22:18:38 2007]
  */
 
 #ifndef SERVICES_MOD_SERVICE_H
@@ -107,7 +107,7 @@ mod_get_service(i_task mod, char* name, i_task* service)
   mod_service.machine = 0;
   mod_service.task = mod;
 
-  if ((message = malloc(sizeof (*message) + 12)) == NULL)
+  if ((message = malloc(sizeof (*message) + strlen(name))) == NULL)
     return (ERROR_UNKNOWN);
 
   message->u.request.operation = MOD_SERVICE_GET_SERVICE;
