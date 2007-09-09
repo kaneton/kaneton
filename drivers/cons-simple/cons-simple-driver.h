@@ -34,10 +34,30 @@
  * ---------- macros ----------------------------------------------------------
  */
 
+/*
+ * driver name.
+ */
+
+#define DRIVER_CONS_SIMPLE_NAME		"cons-simple"
+
+/*
+ * driver operations.
+ */
+
 #define	CONS_SIMPLE_DRIVER_WRITE	1
+
+/*
+ * message type description.
+ */
+
 #define MESSAGE_TYPE_DRIVER_CONS_SIMPLE	(MESSAGE_TYPE_CRT + 0)
-#define CONS_SIMPLE_MAX_BUFFER		512
 #define MESSAGE_SIZE_DRIVER_CONS_SIMPLE	(sizeof (t_driver_cons_simple_message) + CONS_SIMPLE_MAX_BUFFER)
+
+/*
+ * maximum buffer to display.
+ */
+
+#define CONS_SIMPLE_MAX_BUFFER		512
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -88,26 +108,29 @@ typedef struct
 
 #ifdef CONS_SIMPLE_SPAWN_INTERFACE
 
-#ifdef CONS_SIMPLE_INLINE_INTERFACE
-# define CONS_SIMPLE_ATTRIBUTE_INTERFACE	inline __attribute__((unused))
-#else
-# define CONS_SIMPLE_ATTRIBUTE_INTERFACE	__attribute__((unused))
+#define CONS_SIMPLE_ATTRIBUTE_DEFAULT		static inline
+
+#ifndef CONS_SIMPLE_ATTRIBUTE_INTERFACE
+# define CONS_SIMPLE_ATTRIBUTE_INTERFACE	CONS_SIMPLE_ATTRIBUTE_DEFAULT
 #endif
 
-static CONS_SIMPLE_ATTRIBUTE_INTERFACE t_error
+CONS_SIMPLE_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
 cons_simple_init(void)
 {
   return message_register(MESSAGE_TYPE_DRIVER_CONS_SIMPLE,
 			  MESSAGE_SIZE_DRIVER_CONS_SIMPLE);
 }
 
-static CONS_SIMPLE_ATTRIBUTE_INTERFACE t_error
+CONS_SIMPLE_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
 cons_simple_write(i_task cons_simple, t_driver_cons_simple_size n, char* buff,
 		  t_driver_cons_simple_size* wrote)
 {
   t_driver_cons_simple_message*	message;
   i_node			cons_driver;
   t_vsize			size;
+
+  if (n > CONS_SIMPLE_MAX_BUFFER)
+    return (ERROR_UNKNOWN);
 
   cons_driver.machine = 0;
   cons_driver.task = cons_simple;

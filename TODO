@@ -20,7 +20,6 @@ check/
 
 demande reflexion:
  - refaite cswitch
- - migrer la variable mmx_context dans le ent
 
 autre:
  - map_resize, {region,segment}_{split,resize,coalesce}

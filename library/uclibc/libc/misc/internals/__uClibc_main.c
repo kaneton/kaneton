@@ -29,7 +29,6 @@
 #include <sys/sysmacros.h>
 #include <libkaneton.h>
 #define MOD_SPAWN_INTERFACE
-#define MOD_INLINE_INTERFACE
 #include "../../../../../services/mod/mod-service.h"
 
 libc_hidden_proto(exit)

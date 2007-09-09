@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod-service.h
  *
  * created       matthieu bucchianeri   [mon aug  6 21:35:25 2007]
- * updated       matthieu bucchianeri   [sat sep  8 22:18:38 2007]
+ * updated       matthieu bucchianeri   [sun sep  9 19:25:53 2007]
  */
 
 #ifndef SERVICES_MOD_SERVICE_H
@@ -36,11 +36,30 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-#define	MOD_SERVICE_GET_SERVICE	1
-#define MESSAGE_TYPE_SERVICE_MOD	(MESSAGE_TYPE_CRT + 1)
-#define MOD_MAX_LEN			64
-#define MESSAGE_SIZE_SERVICE_MOD	(sizeof (t_service_mod_message) + MOD_MAX_LEN)
+/*
+ * service name.
+ */
 
+#define MOD_SERVICE_STRING		"mod"
+
+/*
+ * service operations.
+ */
+
+#define	MOD_SERVICE_GET_SERVICE		1
+
+/*
+ * message channel description.
+ */
+
+#define MESSAGE_TYPE_SERVICE_MOD	(MESSAGE_TYPE_CRT + 1)
+#define MESSAGE_SIZE_SERVICE_MOD	(sizeof (t_service_mod_message) + MOD_MAX_LENGTH)
+
+/*
+ * maximum module name length.
+ */
+
+#define MOD_MAX_LENGTH			64
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -85,29 +104,35 @@ typedef struct
 
 #ifdef MOD_SPAWN_INTERFACE
 
-#ifdef MOD_INLINE_INTERFACE
-# define MOD_ATTRIBUTE_INTERFACE	inline __attribute__((unused))
-#else
-# define MOD_ATTRIBUTE_INTERFACE	__attribute__((unused))
+#define MOD_ATTRIBUTE_DEFAULT		static inline
+
+#ifndef MOD_ATTRIBUTE_INTERFACE
+# define MOD_ATTRIBUTE_INTERFACE	MOD_ATTRIBUTE_DEFAULT
 #endif
 
-static MOD_ATTRIBUTE_INTERFACE t_error
+MOD_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
 mod_init(void)
 {
   return message_register(MESSAGE_TYPE_SERVICE_MOD, MESSAGE_SIZE_SERVICE_MOD);
 }
 
-static MOD_ATTRIBUTE_INTERFACE t_error
+MOD_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
 mod_get_service(i_task mod, char* name, i_task* service)
 {
   t_service_mod_message*	message;
   i_node			mod_service;
   t_vsize			size;
+  size_t			len;
+
+  len = strlen(name);
+
+  if (len > MOD_MAX_LENGTH)
+    return (ERROR_UNKNOWN);
 
   mod_service.machine = 0;
   mod_service.task = mod;
 
-  if ((message = malloc(sizeof (*message) + strlen(name))) == NULL)
+  if ((message = malloc(sizeof (*message) + len)) == NULL)
     return (ERROR_UNKNOWN);
 
   message->u.request.operation = MOD_SERVICE_GET_SERVICE;

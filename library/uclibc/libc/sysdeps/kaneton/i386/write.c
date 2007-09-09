@@ -4,10 +4,8 @@
 #include <crt.h>
 #include <libkaneton.h>
 #define CONS_SIMPLE_SPAWN_INTERFACE
-#define CONS_SIMPLE_INLINE_INTERFACE
 #include "../../../../../../drivers/cons-simple/cons-simple-driver.h"
 #define MOD_SPAWN_INTERFACE
-#define MOD_INLINE_INTERFACE
 #include "../../../../../../services/mod/mod-service.h"
 
 static i_task	cons = ID_UNUSED;
@@ -24,7 +22,8 @@ ssize_t __libc_write(int fd, const __ptr_t buf, size_t count)
   if (cons == ID_UNUSED)
     {
       if (_crt_get_mod_id() == ID_UNUSED ||
-	  mod_get_service(_crt_get_mod_id(), "cons-simple", &cons) != ERROR_NONE)
+	  mod_get_service(_crt_get_mod_id(),
+			  DRIVER_CONS_SIMPLE_NAME, &cons) != ERROR_NONE)
 	return (count);
 
       cons_simple_init();

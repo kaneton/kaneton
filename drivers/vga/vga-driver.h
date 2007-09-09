@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/drivers/vga/vga-driver.h
  *
  * created       matthieu bucchianeri   [thu aug 23 16:09:27 2007]
- * updated       matthieu bucchianeri   [thu aug 23 17:27:51 2007]
+ * updated       matthieu bucchianeri   [sun sep  9 19:18:17 2007]
  */
 
 #ifndef DRIVERS_VGA_DRIVER_H
@@ -36,7 +36,22 @@
  * ---------- macros ----------------------------------------------------------
  */
 
+/*
+ * driver name.
+ */
+
+#define DRIVER_VGA_NAME			"vga"
+
+/*
+ * operations.
+ */
+
 #define	VGA_DRIVER_FRAMEBUFFER		1
+
+/*
+ * message types.
+ */
+
 #define MESSAGE_TYPE_DRIVER_VGA		(MESSAGE_TYPE_CRT + 2)
 #define MESSAGE_SIZE_DRIVER_VGA		(sizeof (t_driver_vga_message))
 
@@ -90,19 +105,19 @@ typedef struct
 
 #ifdef VGA_SPAWN_INTERFACE
 
-#ifdef VGA_INLINE_INTERFACE
-# define VGA_ATTRIBUTE_INTERFACE	inline __attribute__((unused))
-#else
-# define VGA_ATTRIBUTE_INTERFACE	__attribute__((unused))
+#define VGA_ATTRIBUTE_DEFAULT		static inline
+
+#ifndef VGA_ATTRIBUTE_INTERFACE
+# define VGA_ATTRIBUTE_INTERFACE	VGA_ATTRIBUTE_DEFAULT
 #endif
 
-static VGA_ATTRIBUTE_INTERFACE t_error
+VGA_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
 vga_init(void)
 {
   return message_register(MESSAGE_TYPE_DRIVER_VGA, MESSAGE_SIZE_DRIVER_VGA);
 }
 
-static VGA_ATTRIBUTE_INTERFACE t_error
+VGA_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
 vga_framebuffer(i_task vga, t_driver_vga_metric width,
 		t_driver_vga_metric height, t_driver_vga_metric bpp,
 		vaddr_t* base)

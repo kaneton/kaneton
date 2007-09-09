@@ -27,10 +27,8 @@
  */
 
 #define PCI_SPAWN_INTERFACE
-#define PCI_INLINE_INTERFACE
 #include "../pci/pci-driver.h"
 #define MOD_SPAWN_INTERFACE
-#define MOD_INLINE_INTERFACE
 #include "../../services/mod/mod-service.h"
 
 /* XXX elsewhere */
@@ -848,7 +846,7 @@ static void    	ne2000_pci_probe(void)
 
   printf(" -- ne2000-pci: probing devices.\n");
 
-  if (mod_get_service(_crt_get_mod_id(), "pci", &pci) != ERROR_NONE)
+  if (mod_get_service(_crt_get_mod_id(), DRIVER_PCI_NAME, &pci) != ERROR_NONE)
     {
       printf(" -- ne2000-pci: cannot find pci driver.\n");
       return ;

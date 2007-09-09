@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...ton/machine/glue/ibm-pc.ia32/scheduler.c
+ * file          /home/buckman/kan...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [mon aug 27 19:03:57 2007]
+ * updated       matthieu bucchianeri   [sun sep  9 13:34:28 2007]
  */
 
 /*
@@ -171,7 +171,7 @@ t_error			glue_scheduler_clean(void)
 void			glue_scheduler_switch_extended(i_event	id)
 {
   i_cpu			cpuid;
-  t_cpu_sched*		ent;
+  o_scheduler*		ent;
 
   if (cpu_current(&cpuid) != ERROR_NONE)
     return;
@@ -179,13 +179,11 @@ void			glue_scheduler_switch_extended(i_event	id)
   if (set_get(scheduler->cpus, cpuid, (void**)&ent) != ERROR_NONE)
     return;
 
-  if (ia32_extended_context_switch(scheduler->machdep.mmx_context, /* XXX
-								      should be
-								      in ent */
+  if (ia32_extended_context_switch(ent->machdep.mmx_context,
 				   ent->current) != ERROR_NONE)
     return;
 
-  scheduler->machdep.mmx_context = ent->current;
+  ent->machdep.mmx_context = ent->current;
 }
 
 /*
@@ -195,7 +193,7 @@ void			glue_scheduler_switch_extended(i_event	id)
 t_error			glue_scheduler_switch(i_thread		elected)
 {
   i_cpu			cpuid;
-  t_cpu_sched*		ent;
+  o_scheduler*		ent;
 
   SCHEDULER_ENTER(scheduler);
 

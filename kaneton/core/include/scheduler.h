@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       matthieu bucchianeri   [wed sep  5 22:40:00 2007]
+ * updated       matthieu bucchianeri   [sun sep  9 13:31:57 2007]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -148,7 +148,7 @@ typedef struct
 }				t_scheduled;
 
 /*
- * cpu scheduling environment.
+ * cpu scheduling environment for one processor.
  */
 
 typedef struct
@@ -163,7 +163,9 @@ typedef struct
 
   i_set				active;
   i_set				expired;
-}				t_cpu_sched;
+
+  machine_data(o_scheduler);
+}				o_scheduler;
 
 /*
  * scheduler manager

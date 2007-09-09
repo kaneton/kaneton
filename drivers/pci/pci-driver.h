@@ -35,6 +35,12 @@
  */
 
 /*
+ * driver name
+ */
+
+#define DRIVER_PCI_NAME		"pci"
+
+/*
  * some constants.
  */
 
@@ -42,11 +48,15 @@
 #define PCI_MAX_ADDRESS_COUNT	6
 
 /*
- * driver messages.
+ * driver messages description.
  */
 
 #define MESSAGE_TYPE_DRIVER_PCI	(MESSAGE_TYPE_CRT + 3)
 #define MESSAGE_SIZE_DRIVER_PCI	(sizeof (t_driver_pci_message))
+
+/*
+ * driver operations
+ */
 
 #define PCI_DRIVER_GET_DEVICE	1
 
@@ -174,22 +184,22 @@ typedef struct
 
 #ifdef PCI_SPAWN_INTERFACE
 
-#ifdef PCI_INLINE_INTERFACE
-# define PCI_ATTRIBUTE_INTERFACE	inline __attribute__((unused))
-#else
-# define PCI_ATTRIBUTE_INTERFACE	__attribute__((unused))
+#define PCI_ATTRIBUTE_DEFAULT		static inline
+
+#ifndef PCI_ATTRIBUTE_INTERFACE
+# define PCI_ATTRIBUTE_INTERFACE	PCI_ATTRIBUTE_DEFAULT
 #endif
 
 typedef void (*t_driver_pci_new_device)(t_driver_pci_dev*, void*);
 
-static PCI_ATTRIBUTE_INTERFACE t_error
+PCI_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
 pci_init(void)
 {
   return message_register(MESSAGE_TYPE_DRIVER_PCI,
 			  MESSAGE_SIZE_DRIVER_PCI);
 }
 
-static PCI_ATTRIBUTE_INTERFACE t_error
+PCI_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
 pci_get_device(i_task pci, t_driver_pci_vendor vendor,
 	       t_driver_pci_device device, t_driver_pci_new_device callback,
 	       void* pv)

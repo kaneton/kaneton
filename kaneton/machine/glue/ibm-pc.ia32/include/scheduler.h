@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...ine/glue/ibm-pc.ia32/include/scheduler.h
+ * file          /home/buckman/kan...-pc.ia32/educational/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 16:24:14 2007]
- * updated       matthieu bucchianeri   [sun jun 17 21:52:20 2007]
+ * updated       matthieu bucchianeri   [sun sep  9 13:33:25 2007]
  */
 
 #ifndef GLUE_SCHEDULER_H
@@ -44,12 +44,16 @@
   {									\
     /*                                                   [cut] k3   */	\
     i_timer			timer;					\
-									\
-    i_thread			mmx_context;				\
     /*                                                   [cut] /k3   */	\
   }				machdep;
 
-#define		machine_data_o_scheduler()
+#define		machine_data_o_scheduler()				\
+  struct								\
+  {									\
+    /*                                                   [cut] k3   */	\
+    i_thread			mmx_context;				\
+    /*                                                   [cut] /k3   */	\
+  }				machdep;
 
 /*
  * ---------- prototypes ------------------------------------------------------

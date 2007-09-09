@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [sat sep  8 23:16:20 2007]
+ * updated       matthieu bucchianeri   [sun sep  9 13:32:45 2007]
  */
 
 /*
@@ -117,7 +117,7 @@ t_error			scheduler_dump(void)
   i_set*		queue;
   t_scheduled*		thread;
   t_prior		prio;
-  t_cpu_sched*		ent;
+  o_scheduler*		ent;
 
   SCHEDULER_ENTER(scheduler);
 
@@ -208,7 +208,7 @@ t_error			scheduler_quantum(t_quantum			quantum)
   t_state		stq;
   i_set*		queue;
   t_scheduled*		entity;
-  t_cpu_sched*		ent;
+  o_scheduler*		ent;
 
   SCHEDULER_ENTER(scheduler);
 
@@ -284,7 +284,7 @@ t_error			scheduler_quantum(t_quantum			quantum)
 
 t_error			scheduler_yield(i_cpu			cpuid)
 {
-  t_cpu_sched*		ent;
+  o_scheduler*		ent;
 
   SCHEDULER_ENTER(scheduler);
 
@@ -318,7 +318,7 @@ t_error			scheduler_yield(i_cpu			cpuid)
 t_error			scheduler_current(i_thread*			thread)
 {
   i_cpu			cpuid;
-  t_cpu_sched*		ent;
+  o_scheduler*		ent;
 
   SCHEDULER_ENTER(scheduler);
 
@@ -366,7 +366,7 @@ t_error			scheduler_switch(void)
   int			second_round = 0;
   i_set			list;
   i_cpu			cpuid;
-  t_cpu_sched*		ent;
+  o_scheduler*		ent;
 
   SCHEDULER_ENTER(scheduler);
 
@@ -564,7 +564,7 @@ t_error			scheduler_add(i_thread			thread)
   t_scheduled		entity;
   o_thread*		othread;
   o_task*		otask;
-  t_cpu_sched*		ent;
+  o_scheduler*		ent;
 
   SCHEDULER_ENTER(scheduler);
 
@@ -647,7 +647,7 @@ t_error			scheduler_remove(i_thread			thread)
   int			removed = 0;
   o_thread*		othread;
   o_task*		otask;
-  t_cpu_sched*		ent;
+  o_scheduler*		ent;
 
   SCHEDULER_ENTER(scheduler);
 
@@ -783,8 +783,8 @@ t_error			scheduler_initialize(void)
   t_iterator		it;
   t_state		st;
   i_set			queue;
-  t_cpu_sched		ent;
-  t_cpu_sched*		ent2;
+  o_scheduler		ent;
+  o_scheduler*		ent2;
   i_cpu			cpuid;
   o_cpu*		o;
   o_thread*		oth;
@@ -814,7 +814,7 @@ t_error			scheduler_initialize(void)
   if (set_size(cpu->cpus, &ncpus) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  if (set_reserve(array, SET_OPT_ALLOC, ncpus, sizeof(t_cpu_sched),
+  if (set_reserve(array, SET_OPT_ALLOC, ncpus, sizeof(o_scheduler),
 		  &scheduler->cpus) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
@@ -913,7 +913,7 @@ t_error			scheduler_clean(void)
   t_iterator		it2;
   t_state		st2;
   i_set*		queue;
-  t_cpu_sched*		ent;
+  o_scheduler*		ent;
 
   /*
    * 1)
