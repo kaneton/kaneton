@@ -16,7 +16,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <stdint.h>
 #include <core/core.h>
 #include <libkaneton.h>
 

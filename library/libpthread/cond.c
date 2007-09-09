@@ -8,12 +8,13 @@
  * file          /home/buckman/kaneton/library/libpthread/cond.c
  *
  * created       matthieu bucchianeri   [thu sep  6 21:55:24 2007]
- * updated       matthieu bucchianeri   [thu sep  6 21:55:42 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 00:12:57 2007]
  */
 
 #include <pthread.h>
 #include <crt.h>
-#include <libc.h>
+#include <sys/queue.h>
+#include <stdlib.h>
 
 int	pthread_cond_init(pthread_cond_t*		cond,
 			  const pthread_condattr_t*	attr)

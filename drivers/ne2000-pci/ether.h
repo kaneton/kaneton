@@ -22,7 +22,7 @@
 #ifndef ETHER_H_
 #define ETHER_H_
 
-#include <libc.h>
+#include <stdint.h>
 
 /*
  *	IEEE 802.3 Ethernet magic constants.  The frame sizes omit the preamble

@@ -16,7 +16,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-# include <libc.h>
+# include <stdint.h>
 # include <pthread.h>
 # include <sys/queue.h>
 # include <spinlock.h>

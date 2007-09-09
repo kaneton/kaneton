@@ -14,7 +14,10 @@
  *					<matthieu.bucchianeri@epita.fr>
  */
 
-#include <libc.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <crt.h>
 #include <libkaneton.h>
 #include <pthread.h>

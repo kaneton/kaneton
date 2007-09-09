@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/drivers/pci/pci.c
  *
  * created       matthieu bucchianeri   [sat jun  9 17:26:20 2007]
- * updated       matthieu bucchianeri   [sun sep  9 19:40:43 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 00:18:44 2007]
  */
 
 /*
@@ -16,7 +16,10 @@
  *					<alexandre.becoulet@lip6.fr>
  */
 
-#include <libc.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <crt.h>
 #include <libkaneton.h>
 #include "pci.h"
@@ -98,7 +101,7 @@ static void	pci_register(uint16_t	vendor,
   for (count = 0; mem_base[count] != 0; count++)
     ;
   memset(devices[device_id].mem, 0, sizeof (devices[device_id].mem));
-  memcpy(devices[device_id].mem, mem_base, count * sizeof (paddr_t));
+  memcpy(devices[device_id].mem, mem_base, count * sizeof (uint32_t));
   if (irq == 0xff)
     devices[device_id].irq = (t_driver_pci_irq)-1;
   else

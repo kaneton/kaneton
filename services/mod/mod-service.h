@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod-service.h
  *
  * created       matthieu bucchianeri   [mon aug  6 21:35:25 2007]
- * updated       matthieu bucchianeri   [sun sep  9 19:25:53 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 00:15:05 2007]
  */
 
 #ifndef SERVICES_MOD_SERVICE_H
@@ -29,7 +29,9 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <libc.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include <crt.h>
 
 /*

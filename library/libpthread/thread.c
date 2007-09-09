@@ -8,13 +8,12 @@
  * file          /home/buckman/kaneton/library/libpthread/thread.c
  *
  * created       matthieu bucchianeri   [thu sep  6 21:53:57 2007]
- * updated       matthieu bucchianeri   [thu sep  6 21:54:09 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 00:13:19 2007]
  */
 
 
 #include <pthread.h>
 #include <crt.h>
-#include <libc.h>
 
 int		pthread_create(pthread_t*	th,
 			       const void*	attr,

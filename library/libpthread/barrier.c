@@ -8,12 +8,13 @@
  * file          /home/buckman/kaneton/library/libpthread/barrier.c
  *
  * created       matthieu bucchianeri   [thu sep  6 21:54:23 2007]
- * updated       matthieu bucchianeri   [thu sep  6 21:54:54 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 00:12:50 2007]
  */
 
 #include <pthread.h>
 #include <crt.h>
-#include <libc.h>
+#include <sys/queue.h>
+#include <stdlib.h>
 
 int	pthread_barrier_init(pthread_barrier_t*			barrier,
 			    const pthread_barrierattr_t*	attr,

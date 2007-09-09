@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/library/libkaneton/thread_args.c
  *
  * created       matthieu bucchianeri   [mon aug  6 19:07:18 2007]
- * updated       matthieu bucchianeri   [sat sep  8 21:24:02 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 00:11:30 2007]
  */
 
 /*
@@ -22,7 +22,8 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <stdint.h>
+#include <string.h>
 #include <crt.h>
 #include <libkaneton.h>
 

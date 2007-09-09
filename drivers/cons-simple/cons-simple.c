@@ -8,10 +8,13 @@
  * file          /home/buckman/kaneton/drivers/cons-simple/cons-simple.c
  *
  * created       matthieu bucchianeri   [sat jun  9 18:36:19 2007]
- * updated       matthieu bucchianeri   [sat sep  8 23:09:06 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 00:14:07 2007]
  */
 
-#include <libc.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <crt.h>
 #include <libkaneton.h>
 #include "cons-simple.h"

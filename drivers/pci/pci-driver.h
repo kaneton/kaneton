@@ -28,7 +28,9 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <libc.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -108,7 +110,7 @@ typedef struct
    * device mem bases.
    */
 
-  paddr_t		mem[PCI_MAX_ADDRESS_COUNT];
+  uint32_t		mem[PCI_MAX_ADDRESS_COUNT];
 
   /*
    * device irq line.

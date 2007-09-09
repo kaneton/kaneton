@@ -8,14 +8,15 @@
  * file          /home/buckman/kaneton/library/libkaneton/messaging.c
  *
  * created       matthieu bucchianeri   [sun aug  5 23:13:37 2007]
- * updated       matthieu bucchianeri   [thu sep  6 01:13:50 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 00:11:09 2007]
  */
 
 /*
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <core/core.h>
 #include <libkaneton.h>
 

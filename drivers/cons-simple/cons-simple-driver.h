@@ -27,7 +27,9 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <libc.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 #include <crt.h>
 
 /*

@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...library/libkaneton/thread_state_unlock.c
  *
  * created       matthieu bucchianeri   [sat aug 25 00:25:17 2007]
- * updated       matthieu bucchianeri   [sat aug 25 00:31:55 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 00:11:39 2007]
  */
 
 /*
@@ -22,7 +22,7 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <stdint.h>
 #include <core/core.h>
 #include <libkaneton.h>
 

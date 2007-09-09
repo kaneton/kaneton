@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod.c
  *
  * created       matthieu bucchianeri   [sat may  5 18:43:57 2007]
- * updated       matthieu bucchianeri   [sat sep  8 21:27:51 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 00:09:28 2007]
  */
 
 /*
@@ -21,7 +21,10 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <libkaneton.h>
 #include <crt.h>
 

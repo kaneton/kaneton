@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod.h
  *
  * created       matthieu bucchianeri   [mon aug  6 00:05:12 2007]
- * updated       matthieu bucchianeri   [mon aug  6 21:44:10 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 00:08:50 2007]
  */
 
 #ifndef MOD_MOD_H
@@ -18,7 +18,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <libc.h>
+#include <stdint.h>
 
 #include "elf.h"
 

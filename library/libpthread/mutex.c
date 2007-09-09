@@ -8,12 +8,13 @@
  * file          /home/buckman/kaneton/library/libpthread/mutex.c
  *
  * created       matthieu bucchianeri   [thu sep  6 21:55:57 2007]
- * updated       matthieu bucchianeri   [thu sep  6 21:56:08 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 00:13:06 2007]
  */
 
 #include <pthread.h>
 #include <crt.h>
-#include <libc.h>
+#include <sys/queue.h>
+#include <stdlib.h>
 
 int	pthread_mutex_init(pthread_mutex_t*		mutex,
 			   const pthread_mutexattr_t*	attr)
