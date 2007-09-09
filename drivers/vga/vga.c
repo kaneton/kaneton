@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/drivers/vga/vga.c
  *
  * created       matthieu bucchianeri   [tue aug 21 23:15:42 2007]
- * updated       matthieu bucchianeri   [sun sep  2 12:40:13 2007]
+ * updated       matthieu bucchianeri   [sun sep  9 19:44:08 2007]
  */
 
 #include <libc.h>
@@ -16,6 +16,8 @@
 #include <libkaneton.h>
 #include "vga.h"
 #include "vga-driver.h"
+
+#include <sys/io.h>
 
 /*
  * ---------- macro-functions -------------------------------------------------
@@ -25,18 +27,6 @@
   ((_size_) % PAGESZ ?							\
    (_size_) + PAGESZ - (_size_) % PAGESZ :				\
    (_size_))
-
-/* XXX elsewhere */
-
-#define		OUTB(_port_, _data_)					\
-  asm volatile("outb %%al, %%dx\n"					\
-	       :							\
-	       : "d" (_port_), "a" (_data_))
-
-#define		INB(_port_, _data_)					\
-  asm volatile("inb %%dx, %%al\n"					\
-	       : "=a" (_data_)						\
-	       : "d" (_port_))
 
 /*
  * ---------- globals  --------------------------------------------------------
@@ -111,43 +101,43 @@ static void		write_regs(unsigned char *regs)
 {
   unsigned int	i, a;
 
-  OUTB(VGA_MISC_WRITE, *regs);
+  outb(*regs, VGA_MISC_WRITE);
   regs++;
   for(i = 0; i < VGA_NUM_SEQ_REGS; i++)
     {
-      OUTB(VGA_SEQ_INDEX, i);
-      OUTB(VGA_SEQ_DATA, *regs);
+      outb(i, VGA_SEQ_INDEX);
+      outb(*regs, VGA_SEQ_DATA);
       regs++;
     }
-  OUTB(VGA_CRTC_INDEX, 0x03);
-  INB(VGA_CRTC_DATA, a);
-  OUTB(VGA_CRTC_DATA, a | 0x80);
-  OUTB(VGA_CRTC_INDEX, 0x11);
-  INB(VGA_CRTC_DATA, a);
-  OUTB(VGA_CRTC_DATA, a & ~0x80);
+  outb(0x03, VGA_CRTC_INDEX);
+  a = inb(VGA_CRTC_DATA);
+  outb(a | 0x80, VGA_CRTC_DATA);
+  outb(0x11, VGA_CRTC_INDEX);
+  a = inb(VGA_CRTC_DATA);
+  outb(a & ~0x80, VGA_CRTC_DATA);
   regs[0x03] |= 0x80;
   regs[0x11] &= ~0x80;
   for(i = 0; i < VGA_NUM_CRTC_REGS; i++)
     {
-      OUTB(VGA_CRTC_INDEX, i);
-      OUTB(VGA_CRTC_DATA, *regs);
+      outb(i, VGA_CRTC_INDEX);
+      outb(*regs, VGA_CRTC_DATA);
       regs++;
     }
   for(i = 0; i < VGA_NUM_GC_REGS; i++)
     {
-      OUTB(VGA_GC_INDEX, i);
-      OUTB(VGA_GC_DATA, *regs);
+      outb(i, VGA_GC_INDEX);
+      outb(*regs, VGA_GC_DATA);
       regs++;
     }
   for(i = 0; i < VGA_NUM_AC_REGS; i++)
     {
       INB(VGA_INSTAT_READ, a);
-      OUTB(VGA_AC_INDEX, i);
-      OUTB(VGA_AC_WRITE, *regs);
+      outb(i, VGA_AC_INDEX);
+      outb(*regs, VGA_AC_WRITE);
       regs++;
     }
-  INB(VGA_INSTAT_READ, a);
-  OUTB(VGA_AC_INDEX, 0x20);
+  inb(VGA_INSTAT_READ);
+  outb(0x20, VGA_AC_INDEX);
 }
 
 /*
@@ -206,12 +196,12 @@ static vaddr_t		vga_goto_mode(i_task	task,
 
 static void		vga_set_palette(void)
 {
-/*   OUTB(VGA_DAC_WRITE_INDEX, 0); */
+/*   outb(VGA_DAC_WRITE_INDEX, 0); */
 /*   for (i = 0; i < 256; i++) */
 /*     { */
-/*       OUTB(VGA_DAC_DATA, i >> 2); */
-/*       OUTB(VGA_DAC_DATA, i >> 2); */
-/*       OUTB(VGA_DAC_DATA, i >> 2); */
+/*       outb(VGA_DAC_DATA, i >> 2); */
+/*       outb(VGA_DAC_DATA, i >> 2); */
+/*       outb(VGA_DAC_DATA, i >> 2); */
 /*     } */
 }
 

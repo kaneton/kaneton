@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/drivers/pci/pci.c
+ * file          /home/buckman/kaneton/drivers/pci/pci.c
  *
  * created       matthieu bucchianeri   [sat jun  9 17:26:20 2007]
- * updated       matthieu bucchianeri   [fri sep  7 15:28:27 2007]
+ * updated       matthieu bucchianeri   [sun sep  9 19:40:43 2007]
  */
 
 /*
@@ -22,18 +22,7 @@
 #include "pci.h"
 #include "pci-driver.h"
 
-/* XXX elsewhere */
-
-#define		OUTL(_port_, _data_)					\
-  asm volatile("outl %%eax, %%dx\n"					\
-	       :							\
-	       : "d" (_port_), "a" (_data_))
-
-#define		INL(_port_, _data_)					\
-  asm volatile("inl %%dx, %%eax\n"					\
-	       : "=a" (_data_)						\
-	       : "d" (_port_))
-
+#include <sys/io.h>
 
 /*
  * registered devices.
@@ -55,8 +44,8 @@ static uint32_t	pci_conf_read(uint32_t	bus,
     (bus << 16) | (dev << 11) | (fun << 8) | (reg & 0xfc);
   uint32_t	val;
 
-  OUTL(PCI_ADDRIO, addr);
-  INL(PCI_DATAIO, val);
+  outl(addr, PCI_ADDRIO);
+  val = inl(PCI_DATAIO);
 
   return (val >> (8 * (reg & 3)));
 }
@@ -74,8 +63,8 @@ static void	pci_conf_write(uint32_t	bus,
   uint32_t	addr = 0x80000000 |
     (bus << 16) | (dev << 11) | (fun << 8) | reg;
 
-  OUTL(PCI_ADDRIO, addr);
-  OUTL(PCI_DATAIO, data);
+  outl(addr, PCI_ADDRIO);
+  outl(data, PCI_DATAIO);
 }
 
 /*

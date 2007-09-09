@@ -22,6 +22,8 @@
 #include "ne2000-pci.h"
 #include "ne2000-pci-driver.h"
 
+#include <sys/io.h>
+
 /*
  * ---------- dependencies ----------------------------------------------------
  */
@@ -31,28 +33,6 @@
 #define MOD_SPAWN_INTERFACE
 #include "../../services/mod/mod-service.h"
 
-/* XXX elsewhere */
-
-#define		OUTB(_port_, _data_)					\
-  asm volatile("outb %%al, %%dx\n"					\
-	       :							\
-	       : "d" (_port_), "a" (_data_))
-
-#define		OUTW(_port_, _data_)					\
-  asm volatile("outw %%ax, %%dx\n"					\
-	       :							\
-	       : "d" (_port_), "a" (_data_))
-
-#define		INB(_port_, _data_)					\
-  asm volatile("inb %%dx, %%al\n"					\
-	       : "=a" (_data_)						\
-	       : "d" (_port_))
-
-#define		INW(_port_, _data_)					\
-  asm volatile("inw %%dx, %%ax\n"					\
-	       : "=a" (_data_)						\
-	       : "d" (_port_))
-
 t_error			ibmpc_irq_acknowledge(uint8_t		irq)
 {
   if (irq > 15)
@@ -60,17 +40,21 @@ t_error			ibmpc_irq_acknowledge(uint8_t		irq)
 
   if (irq < 8)
     {
-      OUTB(0x20, 0x60 + irq);
+      outb(0x60 + irq, 0x20);
     }
   else
     {
-      OUTB(0xa0, 0x60 + (irq - 8));
-      OUTB(0x20, 0x60 + 2);
+      outb(0x60 + (irq - 8), 0xa0);
+      outb(0x60 + 2, 0x20);
     }
 
   return (ERROR_NONE);
 }
 /* ---*/
+
+/*
+ * ---------- globals ---------------------------------------------------------
+ */
 
 /*
  * pci identifiers of compatible cards.
@@ -98,10 +82,8 @@ static void	ne2000_command(t_driver_ne2000_dev*	dev,
 			       uint8_t			cmd)
 {
   uint16_t	addr = dev->addr + NE2000_CMD;
-  uint8_t	val;
 
-  INB(addr, val);
-  OUTB(addr, val | cmd);
+  outb(inb(addr) | cmd, addr);
 }
 
 /*
@@ -112,10 +94,8 @@ static void	ne2000_dma(t_driver_ne2000_dev*	dev,
 			   uint8_t		cmd)
 {
   uint16_t	addr = dev->addr + NE2000_CMD;
-  uint8_t	val;
 
-  INB(addr, val);
-  OUTB(addr, (val & ~NE2000_DMA_MASK) | cmd);
+  outb((inb(addr) & ~NE2000_DMA_MASK) | cmd, addr);
 }
 
 /*
@@ -126,10 +106,8 @@ static void	ne2000_page(t_driver_ne2000_dev*dev,
 			    uint8_t		cmd)
 {
   uint16_t	addr = dev->addr + NE2000_CMD;
-  uint8_t	val;
 
-  INB(addr, val);
-  OUTB(addr, (val & ~NE2000_PG_MASK) | cmd);
+  outb((inb(addr) & ~NE2000_PG_MASK) | cmd, addr);
 }
 
 /*
@@ -141,23 +119,20 @@ static void	ne2000_mem_read(t_driver_ne2000_dev*	dev,
 				void*			dst,
 				uint16_t		size)
 {
-  uint16_t	val16;
-  uint8_t	val8;
-
   /* select register bank 0 */
   ne2000_page(dev, NE2000_P0);
 
   /* ensure dma operations are reset */
   ne2000_dma(dev, NE2000_DMA_ABRT);
-  OUTB(dev->addr + NE2000_ISR, NE2000_RDC);
+  outb(NE2000_RDC, dev->addr + NE2000_ISR);
 
   /* setup size */
-  OUTB(dev->addr + NE2000_RBCR0, size);
-  OUTB(dev->addr + NE2000_RBCR1, size >> 8);
+  outb(size, dev->addr + NE2000_RBCR0);
+  outb(size >> 8, dev->addr + NE2000_RBCR1);
 
   /* setup position */
-  OUTB(dev->addr + NE2000_RSAR0, offs);
-  OUTB(dev->addr + NE2000_RSAR1, offs >> 8);
+  outb(offs, dev->addr + NE2000_RSAR0);
+  outb(offs >> 8, dev->addr + NE2000_RSAR1);
 
   /* start read operation */
   ne2000_dma(dev, NE2000_DMA_RD);
@@ -170,13 +145,11 @@ static void	ne2000_mem_read(t_driver_ne2000_dev*	dev,
 
       while (size_w--)
 	{
-	  INW(dev->addr + NE2000_DATA, val16);
-	  *d++ = val16;
+	  *d++ = inw(dev->addr + NE2000_DATA);
 	}
       if (size & 0x1)
 	{
-	  INB(dev->addr + NE2000_DATA, val8);
-	  *(uint8_t*)d = val8;
+	  *(uint8_t*)d = inb(dev->addr + NE2000_DATA);
 	}
     }
   else
@@ -185,8 +158,7 @@ static void	ne2000_mem_read(t_driver_ne2000_dev*	dev,
 
       while (size--)
 	{
-	  INB(dev->addr + NE2000_DATA, val8);
-	  *d++ = val8;
+	  *d++ = inb(dev->addr + NE2000_DATA);
 	}
     }
 }
@@ -204,15 +176,15 @@ static void	ne2000_dma_init_write(t_driver_ne2000_dev*	dev,
 
   /* ensure dma operations are reset */
   ne2000_dma(dev, NE2000_DMA_ABRT);
-  OUTB(dev->addr + NE2000_ISR, NE2000_RDC);
+  outb(NE2000_RDC, dev->addr + NE2000_ISR);
 
   /* setup size */
-  OUTB(dev->addr + NE2000_RBCR0, size);
-  OUTB(dev->addr + NE2000_RBCR1, size >> 8);
+  outb(size, dev->addr + NE2000_RBCR0);
+  outb(size >> 8, dev->addr + NE2000_RBCR1);
 
   /* setup position */
-  OUTB(dev->addr + NE2000_RSAR0, offs);
-  OUTB(dev->addr + NE2000_RSAR1, offs >> 8);
+  outb(offs, dev->addr + NE2000_RSAR0);
+  outb(offs >> 8, dev->addr + NE2000_RSAR1);
 
   /* start write operation */
   ne2000_dma(dev, NE2000_DMA_WR);
@@ -236,7 +208,7 @@ static void	ne2000_dma_do_write(t_driver_ne2000_dev*	dev,
 
       size >>= 1;
       while (size--)
-	OUTW(dev->addr + NE2000_DATA, *d++);
+	outw(*d++, dev->addr + NE2000_DATA);
     }
   else
     {
@@ -244,7 +216,7 @@ static void	ne2000_dma_do_write(t_driver_ne2000_dev*	dev,
 
       while (size--)
 	{
-	  OUTB(dev->addr + NE2000_DATA, *d++);
+	  outb(*d++, dev->addr + NE2000_DATA);
 	}
     }
 }
@@ -259,12 +231,10 @@ static int	ne2000_rw_test(t_driver_ne2000_dev*	dev)
   uint32_t	timeout = 2000;
   char		ref[] = "kaneton NE2000 Driver";
   char		buf[sizeof (ref)];
-  uint8_t	val;
 
   /* configure the device for the test */
   /* send a reset signal */
-  INB(dev->addr + NE2000_RESET, val);
-  OUTB(dev->addr + NE2000_RESET, val);
+  outb(inb(dev->addr + NE2000_RESET), dev->addr + NE2000_RESET);
 
   /* wait a moment */
   while (timeout)
@@ -272,34 +242,31 @@ static int	ne2000_rw_test(t_driver_ne2000_dev*	dev)
   timeout = 200000;
 
   /* stop completely the device */
-  OUTB(dev->addr + NE2000_CMD, NE2000_P0 | NE2000_DMA_ABRT | NE2000_STP);
+  outb(NE2000_P0 | NE2000_DMA_ABRT | NE2000_STP, dev->addr + NE2000_CMD);
 
   endian = NE2000_LE;
 
   /* setup data configuration registers */
   if (dev->io_16)
-    OUTB(dev->addr + NE2000_DCR,
-	 NE2000_16BITS | endian | NE2000_NORMAL | NE2000_FIFO4);
+    outb(NE2000_16BITS | endian | NE2000_NORMAL | NE2000_FIFO4,
+	 dev->addr + NE2000_DCR);
   else
-    OUTB(dev->addr + NE2000_DCR,
-	 NE2000_8BITS | endian | NE2000_NORMAL | NE2000_FIFO4);
+    outb(NE2000_8BITS | endian | NE2000_NORMAL | NE2000_FIFO4,
+	 dev->addr + NE2000_DCR);
   /* setup transmit and receive in loopback */
-  OUTB(dev->addr + NE2000_RCR, NE2000_MONITOR);
+  outb(NE2000_MONITOR, dev->addr + NE2000_RCR);
   /* setup rw ring */
-  OUTB(dev->addr + NE2000_PSTART, dev->tx_buf);
-  OUTB(dev->addr + NE2000_PSTOP, dev->mem);
+  outb(dev->tx_buf, dev->addr + NE2000_PSTART);
+  outb(dev->mem, dev->addr + NE2000_PSTOP);
 
   /* start the device */
-  OUTB(dev->addr + NE2000_CMD, NE2000_P0 | NE2000_DMA_ABRT | NE2000_STA);
+  outb(NE2000_P0 | NE2000_DMA_ABRT | NE2000_STA, dev->addr + NE2000_CMD);
 
   /* do the r/w test */
   ne2000_dma_init_write(dev, dev->tx_buf << 8, sizeof (ref));
   ne2000_dma_do_write(dev, ref, sizeof (ref));
-  while (timeout && !(val & NE2000_RDC))
-    {
-      INB(dev->addr + NE2000_ISR, val);
-      timeout--;
-    }
+  while (timeout && !(inb(dev->addr + NE2000_ISR) & NE2000_RDC))
+    timeout--;
   memset(buf, 0, sizeof (ref));
   ne2000_mem_read(dev, dev->tx_buf << 8, buf, sizeof (ref));
 
@@ -380,51 +347,50 @@ static void	ne2000_init(t_driver_ne2000_dev*	dev)
   int		i;
 
   /* stop completely the device */
-  OUTB(dev->addr + NE2000_CMD, NE2000_P0 | NE2000_DMA_ABRT | NE2000_STP);
+  outb(NE2000_P0 | NE2000_DMA_ABRT | NE2000_STP, dev->addr + NE2000_CMD);
 
   endian = NE2000_LE;
 
   /* setup data configuration registers */
   if (dev->io_16)
-    OUTB(dev->addr + NE2000_DCR,
-	 NE2000_16BITS | endian | NE2000_NORMAL | NE2000_FIFO4);
+    outb(NE2000_16BITS | endian | NE2000_NORMAL | NE2000_FIFO4,
+	 dev->addr + NE2000_DCR);
   else
-    OUTB(dev->addr + NE2000_DCR,
-	 NE2000_8BITS | endian | NE2000_NORMAL | NE2000_FIFO4);
+    outb(NE2000_8BITS | endian | NE2000_NORMAL | NE2000_FIFO4,
+	 dev->addr + NE2000_DCR);
   /* clear dma state */
-  OUTB(dev->addr + NE2000_RBCR0, 0);
-  OUTB(dev->addr + NE2000_RBCR1, 0);
+  outb(0, dev->addr + NE2000_RBCR0);
+  outb(0, dev->addr + NE2000_RBCR1);
   /* setup receive configuration register */
-  OUTB(dev->addr + NE2000_RCR,
-       NE2000_REJECT_ON_ERROR | NE2000_ACCEPT_BCAST | NE2000_REJECT_MCAST);
+  outb(NE2000_REJECT_ON_ERROR | NE2000_ACCEPT_BCAST | NE2000_REJECT_MCAST,
+       dev->addr + NE2000_RCR);
   /* enter loopback mode */
-  OUTB(dev->addr + NE2000_TCR, 0x2);
+  outb(0x2, dev->addr + NE2000_TCR);
   /* initialize tx and rx buffers */
-  OUTB(dev->addr + NE2000_TPSR, dev->tx_buf);
-  OUTB(dev->addr + NE2000_PSTART, dev->rx_buf);
-  OUTB(dev->addr + NE2000_PSTOP, dev->mem);
-  OUTB(dev->addr + NE2000_BOUND, dev->rx_buf);
+  outb(dev->tx_buf, dev->addr + NE2000_TPSR);
+  outb(dev->rx_buf, dev->addr + NE2000_PSTART);
+  outb(dev->mem, dev->addr + NE2000_PSTOP);
+  outb(dev->rx_buf, dev->addr + NE2000_BOUND);
   /* clear isr */
-  OUTB(dev->addr + NE2000_ISR, 0xff);
+  outb(0xff, dev->addr + NE2000_ISR);
   /* activate interrupts */
-  OUTB(dev->addr + NE2000_IMR,
-		 NE2000_PRXE | NE2000_PTXE | NE2000_TXEE | NE2000_OVWE |
-		 NE2000_RDCE);
+  outb(NE2000_PRXE | NE2000_PTXE | NE2000_TXEE | NE2000_OVWE | NE2000_RDCE,
+       dev->addr + NE2000_IMR);
   /* init mac */
   ne2000_page(dev, NE2000_P1);
   for (i = 0; i < ETH_ALEN; i++)
-    OUTB(dev->addr + NE2000_PAR + i, dev->mac[i]);
+    outb(dev->mac[i], dev->addr + NE2000_PAR + i);
   for (i = 0; i < ETH_ALEN; i++)
-    OUTB(dev->addr + NE2000_MAR + i, 0xff);
+    outb(0xff, dev->addr + NE2000_MAR + i);
   /* init current receive buffer pointer */
-  OUTB(dev->addr + NE2000_CURR, dev->rx_buf + 1);
+  outb(dev->rx_buf + 1, dev->addr + NE2000_CURR);
   /* bring the device up */
-  OUTB(dev->addr + NE2000_CMD,
-		 NE2000_P0 | NE2000_DMA_ABRT | NE2000_STA);
+  outb(NE2000_P0 | NE2000_DMA_ABRT | NE2000_STA,
+       dev->addr + NE2000_CMD);
   /* setup transmit configuration register */
-  OUTB(dev->addr + NE2000_TCR, NE2000_AUTOCRC);
+  outb(NE2000_AUTOCRC, dev->addr + NE2000_TCR);
   /* clear isr */
-  OUTB(dev->addr + NE2000_ISR, 0xff);
+  outb(0xff, dev->addr + NE2000_ISR);
 }
 
 /*
@@ -437,14 +403,11 @@ static void	ne2000_send(t_driver_ne2000_dev*	device,
 			    uint16_t			size,
 			    uint16_t			proto)
 {
-  uint8_t	st;
-
   /* take lock */
   IA32_SPIN_LOCK(device->lock);
 
   /* if the device is busy */
-  INB(device->addr + NE2000_CMD, st);
-  if ((st & NE2000_TXP) ||
+  if (inb(device->addr + NE2000_CMD) & NE2000_TXP ||
       device->current.busy)
     {
       /* queue the packet */
@@ -509,12 +472,11 @@ static t_error			ne2000_rx(t_driver_ne2000_dev*	dev,
   uint8_t*			buf;
 
   /* get next packet pointer */
-  INB(dev->addr + NE2000_BOUND, next);
-  next++;
+  next = inb(dev->addr + NE2000_BOUND) + 1;
   if (next > dev->mem)
     next = dev->rx_buf;
   ne2000_page(dev, NE2000_P1);
-  INB(dev->addr + NE2000_CURR, curr);
+  curr = inb(dev->addr + NE2000_CURR);
   if (curr > dev->mem)
     curr = dev->rx_buf;
   ne2000_page(dev, NE2000_P0);
@@ -538,7 +500,7 @@ static t_error			ne2000_rx(t_driver_ne2000_dev*	dev,
   next = hdr.next;
   if (next > dev->mem)
     next = dev->rx_buf;
-  OUTB(dev->addr + NE2000_BOUND, next - 1);
+  outb(next - 1, dev->addr + NE2000_BOUND);
   return (ERROR_NONE);
 }
 
@@ -583,13 +545,8 @@ static void	ne2000_irq(t_driver_ne2000_dev*		dev)
   /* select register bank 0 */
   ne2000_page(dev, NE2000_P0);
 
-  while (1)
+  while ((isr = inb(dev->addr + NE2000_ISR)) && max_svc++ < 6)
     {
-      INB(dev->addr + NE2000_ISR, isr);
-
-      if (!isr || max_svc++ > 6)
-	break;
-
       /* remote DMA completed */
       if (isr & NE2000_RDC)
 	{
@@ -601,13 +558,13 @@ static void	ne2000_irq(t_driver_ne2000_dev*		dev)
 	      ne2000_dma(dev, NE2000_DMA_ABRT);
 
 	      /* set page start */
-	      OUTB(dev->addr + NE2000_TPSR, dev->tx_buf);
+	      outb(dev->tx_buf, dev->addr + NE2000_TPSR);
 
 	      /* set packet size */
 	      if (length < ETH_ZLEN)
 		length = ETH_ZLEN;
-	      OUTB(dev->addr + NE2000_TBCR0, length);
-	      OUTB(dev->addr + NE2000_TBCR1, length >> 8);
+	      outb(length, dev->addr + NE2000_TBCR0);
+	      outb(length >> 8, dev->addr + NE2000_TBCR1);
 
 	      /* send it ! */
 	      ne2000_command(dev, NE2000_TXP);
@@ -669,28 +626,28 @@ static void	ne2000_irq(t_driver_ne2000_dev*		dev)
 	  uint16_t	total;
 
 	  /* save the NIC state */
-	  INB(dev->addr + NE2000_CMD, cr);
+	  cr = inb(dev->addr + NE2000_CMD);
 
 	  /* stop completely the device */
-	  OUTB(dev->addr + NE2000_CMD,
-	       NE2000_P0 | NE2000_DMA_ABRT | NE2000_STP);
+	  outb(NE2000_P0 | NE2000_DMA_ABRT | NE2000_STP,
+	       dev->addr + NE2000_CMD);
 
 	  /* wait for the NIC to complete operations */
 	  /* usleep(1600); XXX */
 
 	  /* reset remote byte count registers */
-	  OUTB(dev->addr + NE2000_RBCR0, 0);
-	  OUTB(dev->addr + NE2000_RBCR1, 0);
+	  outb(0, dev->addr + NE2000_RBCR0);
+	  outb(0, dev->addr + NE2000_RBCR1);
 
 	  /* do we need to resend the outgoing packet ? */
 	  resend = (cr & NE2000_TXP) && !((isr & NE2000_PTX) || (isr & NE2000_TXE));
 
 	  /* enter loopback mode */
-	  OUTB(dev->addr + NE2000_TCR, 0x2);
+	  outb(0x2, dev->addr + NE2000_TCR);
 
 	  /* bring the device up */
-	  OUTB(dev->addr + NE2000_CMD,
-	       NE2000_P0 | NE2000_DMA_ABRT | NE2000_STA);
+	  outb(NE2000_P0 | NE2000_DMA_ABRT | NE2000_STA,
+	       dev->addr + NE2000_CMD);
 
 	  /* read some packets until half the memory is free */
 	  for (total = 0; total < ((dev->mem - dev->rx_buf) << 8) / 2; )
@@ -709,10 +666,10 @@ static void	ne2000_irq(t_driver_ne2000_dev*		dev)
 	    }
 
 	  /* force ISR reset */
-	  OUTB(dev->addr + NE2000_ISR, isr);
+	  outb(isr, dev->addr + NE2000_ISR);
 
 	  /* setup transmit configuration register (disable loopback) */
-	  OUTB(dev->addr + NE2000_TCR, NE2000_AUTOCRC);
+	  outb(NE2000_AUTOCRC, dev->addr + NE2000_TCR);
 
 	  /* if a transmission was aborted, restart it */
 	  if (resend)
@@ -722,11 +679,8 @@ static void	ne2000_irq(t_driver_ne2000_dev*		dev)
       /* packet received */
       if (isr & NE2000_PRX)
 	{
-	  uint8_t	err;
-
 	  /* no errors */
-	  INB(dev->addr + NE2000_RSR, err);
-	  if (err & NE2000_SPRX)
+	  if (inb(dev->addr + NE2000_RSR) & NE2000_SPRX)
 	    {
 	      uint16_t	size;
 	      uint8_t*	data;
@@ -740,7 +694,7 @@ static void	ne2000_irq(t_driver_ne2000_dev*		dev)
 	    }
 	}
 
-      OUTB(dev->addr + NE2000_ISR, isr);
+      outb(isr, dev->addr + NE2000_ISR);
     }
 
   /* release lock */
