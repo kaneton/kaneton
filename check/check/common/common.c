@@ -9,7 +9,7 @@
  * updated       matthieu bucchianeri   [sun may 27 13:02:26 2007]
  */
 
-#include <libc.h>
+#include <libc/libc.h>
 #include "common.h"
 
 void	check_check_common(void)

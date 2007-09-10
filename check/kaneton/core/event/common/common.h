@@ -12,7 +12,7 @@
 #ifndef CHECK_EVENT_COMMON_H_
 # define CHECK_EVENT_COMMON_H_
 
-# include <libc.h>
+# include <libc/libc.h>
 # include <kaneton.h>
 # include "../../../../check/common/common.h"
 
@@ -72,6 +72,13 @@ void			check_event_context_01(void);
  */
 
 void			check_event_context_02(void);
+
+
+/*
+ * ../data_01/data_01.c
+ */
+
+void		check_event_data_01(void);
 
 
 /*
@@ -156,6 +163,13 @@ void		check_event_irq_01(void);
  */
 
 void		check_event_irq_02(void);
+
+
+/*
+ * ../message_01/message_01.c
+ */
+
+void		check_event_message_01(void);
 
 
 /*

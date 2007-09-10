@@ -9,7 +9,7 @@
  * updated       matthieu bucchianeri   [sun may 27 21:12:40 2007]
  */
 
-#include <libc.h>
+#include <libc/libc.h>
 #include "../common/common.h"
 
 /*

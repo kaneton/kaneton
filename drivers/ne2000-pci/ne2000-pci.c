@@ -466,7 +466,7 @@ static void	ne2000_send(t_driver_ne2000_dev*	device,
 
       /* otherwise, send the datagram immediately */
       device->current.busy = 1;
-      device->current.size = size;
+      device->current.size = size + sizeof (struct ether_header);
       memcpy(header.ether_shost, device->mac, ETH_ALEN);
       memcpy(header.ether_dhost, mac, ETH_ALEN);
       header.ether_type = proto;
@@ -552,12 +552,16 @@ static void	ne2000_push(t_driver_ne2000_dev*	dev,
   hdr = (struct ether_header *)data;
 
   /* fill some info */
-  printf(" -- ne2000-pci: new packet %02x:%02x:%02x:%02x:%02x:%02x of %d\n",
+  /*  printf(" -- ne2000-pci: new packet %02x:%02x:%02x:%02x:%02x:%02x of %d\n",
 	 hdr->ether_shost[0], hdr->ether_shost[1], hdr->ether_shost[2],
 	 hdr->ether_shost[3], hdr->ether_shost[4], hdr->ether_shost[5],
 	 size);
-
-  /* XXX */
+  */
+  if (inet_if_pushpkt(inet, dev->iface, dev->mac, hdr->ether_shost, ETH_ALEN,
+		      hdr->ether_type,
+		      data + sizeof (struct ether_header),
+		      size - sizeof (struct ether_header)) != ERROR_NONE)
+    printf(" -- ne2000-pci: failed to push packet.\n");
 
   free(data);
 }

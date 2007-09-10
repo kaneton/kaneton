@@ -12,7 +12,7 @@
 #ifndef CHECK_MALLOC_COMMON_H_
 # define CHECK_MALLOC_COMMON_H_
 
-# include <libc.h>
+# include <libc/libc.h>
 # include "../../../../../check/common/common.h"
 
 /*

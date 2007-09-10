@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [sun sep  9 13:32:45 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 23:52:04 2007]
  */
 
 /*
@@ -483,6 +483,13 @@ t_error			scheduler_switch(void)
       second_round = 1;
 
       goto try;
+    }
+
+  if (ent->dead && ent->current == elected)
+    {
+      elected = scheduler->idle;
+      elected_prio = 0;
+      elected_timeslice = scheduler->quantum;
     }
 
  ok:

@@ -9,7 +9,7 @@
  * updated       matthieu bucchianeri   [sun may 27 17:06:04 2007]
  */
 
-#include <libc.h>
+#include <libc/libc.h>
 #include "common.h"
 
 void	check_printf_common(void)

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/crypt/kaneton/services/inet/inet-service.h
+ * file          /home/buckman/kaneton/services/inet/inet-service.h
  *
  * created       matthieu bucchianeri   [mon sep 10 00:00:58 2007]
- * updated       matthieu bucchianeri   [mon sep 10 17:59:41 2007]
+ * updated       matthieu bucchianeri   [tue sep 11 01:05:20 2007]
  */
 
 #ifndef SERVICES_INET_SERVICE_H
@@ -88,6 +88,13 @@ typedef struct
 	}				if_unregister;
 	struct
 	{
+	  t_id				iface;
+	  uint8_t			s_mac[16];
+	  uint8_t			d_mac[16];
+	  size_t			mac_len;
+	  uint16_t			proto;
+	  uint16_t			size;
+	  uint8_t			packet[1];
 	}				if_pushpkt;
 	struct
 	{
@@ -149,7 +156,7 @@ inet_init(void)
 
 INET_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
 inet_if_register(i_task inet, t_id dev, uint32_t type, uint8_t* mac,
-		 size_t mac_len, uint16_t mtu, t_id* iface)
+		size_t mac_len, uint16_t mtu, t_id* iface)
 {
   t_service_inet_message	message;
   i_node			inet_service;
@@ -176,6 +183,41 @@ inet_if_register(i_task inet, t_id dev, uint32_t type, uint8_t* mac,
 
   if (iface != NULL)
     *iface =  message.u.reply.u.if_register.iface;
+
+  return (ERROR_NONE);
+}
+
+INET_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
+inet_if_pushpkt(i_task inet, t_id iface, uint8_t* s_mac, uint8_t* d_mac,
+		size_t mac_len, uint16_t proto, uint8_t* packet, uint16_t size)
+{
+  t_service_inet_message*	message;
+  i_node			inet_service;
+
+  inet_service.machine = 0;
+  inet_service.task = inet;
+
+  if ((message = malloc(sizeof (*message) + size)) == NULL)
+    return (ERROR_UNKNOWN);
+
+  message->u.request.operation = INET_SERVICE_IF_PUSHPKT;
+  message->u.request.u.if_pushpkt.iface = iface;
+  memcpy(message->u.request.u.if_pushpkt.s_mac, s_mac, mac_len);
+  memcpy(message->u.request.u.if_pushpkt.d_mac, d_mac, mac_len);
+  message->u.request.u.if_pushpkt.mac_len = mac_len;
+  message->u.request.u.if_pushpkt.proto = proto;
+  message->u.request.u.if_pushpkt.size = size;
+  memcpy(message->u.request.u.if_pushpkt.packet, packet, size);
+
+  if (message_send(inet_service,
+		   MESSAGE_TYPE_SERVICE_INET, (t_vaddr)message,
+		   sizeof (*message) + size) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  free(message);
 
   return (ERROR_NONE);
 }

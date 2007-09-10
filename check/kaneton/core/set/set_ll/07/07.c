@@ -9,7 +9,7 @@
  * updated       matthieu bucchianeri   [tue jan  3 23:49:35 2006]
  */
 
-#include <libc.h>
+#include <libc/libc.h>
 #include <kaneton.h>
 #include "../../common/common.h"
 

@@ -12,7 +12,7 @@
 #ifndef CHECK_TIME_COMMON_H_
 # define CHECK_TIME_COMMON_H_
 
-# include <libc.h>
+# include <libc/libc.h>
 # include <kaneton.h>
 # include "../../../../check/common/common.h"
 
@@ -38,13 +38,25 @@
 
 void	check_time_common(void);
 
-t_uint32 check_cmos_sec(void);
-
 void	check_time_tests(void);
 
 unsigned long check_rtc_ticks(void);
 
 void check_rtc_init(void);
+
+
+/*
+ * ../data_01/data_01.c
+ */
+
+void		check_time_data_01(void);
+
+
+/*
+ * ../message_01/message_01.c
+ */
+
+void		check_time_message_01(void);
 
 
 /*

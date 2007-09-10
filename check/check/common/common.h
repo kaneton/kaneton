@@ -13,7 +13,7 @@
 # define CHECK_COMMON_H_
 
 # include <core/core.h>
-# include <libc.h>
+# include <libc/libc.h>
 
 # ifndef PAGESZ
 #  define PAGESZ	4096

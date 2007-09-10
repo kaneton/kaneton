@@ -12,7 +12,7 @@
 #ifndef CHECK_MAP_COMMON_H_
 # define CHECK_MAP_COMMON_H_
 
-# include <libc.h>
+# include <libc/libc.h>
 # include <kaneton.h>
 # include "../../../../check/common/common.h"
 
