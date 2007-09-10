@@ -1,12 +1,12 @@
 driver class net:
-  ---> (inet) if_register
-  ---> (inet) if_pushpkt	** on packet arrival
+  ---> (inet) if_register		< OK
+  ---> (inet) if_pushpkt		** on packet arrival
   ---> (inet) if_unregister
-  <--- sendpkt
+  <--- sendpkt				< OK
 
 inet:
-  ---> (driver net) sendpkt
-  <--- if_register
+  ---> (driver net) sendpkt		< OK
+  <--- if_register			< OK
   <--- if_unregister
   <--- if_pushpkt
   <--- if_config

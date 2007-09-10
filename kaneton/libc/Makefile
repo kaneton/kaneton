@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kaneton/kaneton/libc/Makefile
+# file          /home/buckman/crypt/kaneton/kaneton/libc/Makefile
 #
 # created       matthieu bucchianeri   [sat sep  1 12:40:51 2007]
-# updated       matthieu bucchianeri   [sat sep  1 13:19:15 2007]
+# updated       matthieu bucchianeri   [fri sep  7 16:52:20 2007]
 #
 
 #
@@ -36,6 +36,7 @@ include			../../environment/env.mk
 LIBC_C			:=		alloc.c				\
 					ctype.c				\
 					memcpy.c			\
+					memcmp.c			\
 					memset.c			\
 					printf.c			\
 					strchr.c			\

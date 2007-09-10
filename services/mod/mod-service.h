@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/services/mod/mod-service.h
+ * file          /home/buckman/crypt/kaneton/services/mod/mod-service.h
  *
  * created       matthieu bucchianeri   [mon aug  6 21:35:25 2007]
- * updated       matthieu bucchianeri   [mon sep 10 00:15:05 2007]
+ * updated       matthieu bucchianeri   [mon sep 10 17:36:13 2007]
  */
 
 #ifndef SERVICES_MOD_SERVICE_H
@@ -29,6 +29,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
+#include <libkaneton.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,7 +43,7 @@
  * service name.
  */
 
-#define MOD_SERVICE_STRING		"mod"
+#define MOD_SERVICE_NAME		"mod"
 
 /*
  * service operations.

@@ -19,8 +19,8 @@
 /* Based on the FreeBSD version of this file. Curiously, that file
    lacks a copyright in the header. */
 
-#ifndef ETHER_H_
-#define ETHER_H_
+#ifndef NETINET_ETHER_H_
+#define NETINET_ETHER_H_
 
 #include <stdint.h>
 

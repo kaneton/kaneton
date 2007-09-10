@@ -27,6 +27,9 @@
 
 #include <sys/io.h>
 
+#define INET_SPAWN_INTERFACE
+#include "../../services/inet/inet-service.h"
+
 /*
  * ---------- dependencies ----------------------------------------------------
  */
@@ -56,6 +59,22 @@ t_error			ibmpc_irq_acknowledge(uint8_t		irq)
 /* ---*/
 
 /*
+ * ---------- macros ----------------------------------------------------------
+ */
+
+#define LOOKUP_INET()							\
+  if (inet == ID_UNUSED)						\
+    {									\
+      if (mod_get_service(_crt_get_mod_id(), SERVICE_INET_NAME, &inet) != \
+	  ERROR_NONE)							\
+	{								\
+	  printf(" -- ne2000-pci: cannot find inet service\n");		\
+	  while (1)							\
+	    ;								\
+	}								\
+    }
+
+/*
  * ---------- globals ---------------------------------------------------------
  */
 
@@ -76,6 +95,12 @@ static const t_driver_pci_ids	net_ne2000[] =
     { .vendor = 0x1106, .device = 0x0926, .string = "Via 86C926" },
     { .vendor = 0x10bd, .device = 0x0e34, .string = "SureCom NE34" },
   };
+
+/*
+ * bound inet service.
+ */
+
+static i_task	inet = ID_UNUSED;
 
 /*
  * update the command register.
@@ -415,10 +440,16 @@ static void	ne2000_send(t_driver_ne2000_dev*	device,
     {
       /* queue the packet */
       struct __packetqueue_entry*	e;
+      void*				copy;
+
+      if ((copy = malloc(size)) == NULL)
+	goto leave;
+
+      memcpy(copy, packet, size);
 
       if ((e = malloc(sizeof (*e))) == NULL)
 	{
-	  free(packet);
+	  free(copy);
 	  goto leave;
 	}
 
@@ -613,6 +644,7 @@ static void	ne2000_irq(t_driver_ne2000_dev*		dev)
 
 		  ne2000_send(dev, e->mac, e->packet, e->size, e->proto);
 
+		  free(e->packet);
 		  free(e);
 		}
 
@@ -790,6 +822,10 @@ static void		ne2000_pci_init(t_driver_pci_dev*	device,
 	 string, dev->io_16 ? 16 : 8, dev->mem << 8);
   printf(" -- ne2000-pci: MAC %02x:%02x:%02x:%02x:%02x:%02x\n", dev->mac[0],
 	 dev->mac[1], dev->mac[2], dev->mac[3], dev->mac[4], dev->mac[5]);
+
+  LOOKUP_INET();
+  inet_if_register(inet, (t_id)(t_vaddr)dev, INET_IF_TYPE_ETHERNET, dev->mac,
+		   ETH_ALEN, ETH_DATA_LEN, &dev->iface);
 }
 
 /*
@@ -821,12 +857,42 @@ static void    	ne2000_pci_probe(void)
  * serve requests.
  */
 
-static void	ne2000_pci_driver_serve(void)
+static int	ne2000_pci_driver_serve(void)
 {
+  t_driver_ne2000_pci_message*	message;
+  i_node			sender;
+  t_vsize			size;
+
+  if ((message = malloc(sizeof (*message) + ETH_DATA_LEN)) == NULL)
+    {
+      printf(" -- ne2000-pci: memory exhausted\n");
+      return (-1);
+    }
+
   while (1)
     {
-      /* XXX */
+      if (message_receive(MESSAGE_TYPE_DRIVER_NE2000_PCI,
+			  (t_vaddr)message,
+			  &size,
+			  &sender) == ERROR_NONE)
+	{
+	  if (message->u.request.operation == NE2000_PCI_DRIVER_SENDPKT)
+	    {
+	      t_driver_ne2000_dev*	dev;
+
+	      /* XXX use id rather than pointers */
+	      dev = (t_driver_ne2000_dev*)(t_vaddr)message->u.request.u.sendpkt.dev;
+
+	      ne2000_send(dev,
+			  message->u.request.u.sendpkt.mac,
+			  message->u.request.u.sendpkt.packet,
+			  message->u.request.u.sendpkt.size,
+			  message->u.request.u.sendpkt.proto);
+	    }
+	}
     }
+
+  return (0);
 }
 
 /*
@@ -835,11 +901,16 @@ static void	ne2000_pci_driver_serve(void)
 
 int	main(void)
 {
+  if (message_register(MESSAGE_TYPE_DRIVER_NE2000_PCI,
+		       MESSAGE_SIZE_DRIVER_NE2000_PCI) != ERROR_NONE)
+    return (-1);
+
   printf(" -- ne2000-pci: NE2000-PCI driver started.\n");
 
   /* init dependencies */
   mod_init();
   pci_init();
+  inet_init();
 
   /* XXX to be moved */
   io_grant(0x20, _crt_get_task_id(), 1);

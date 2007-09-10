@@ -161,8 +161,16 @@ void			kaneton(t_init*				bootloader)
 #endif
 
 #if TESTSUITE_DEBUG_ENABLE
+  extern i_thread kthread;
+
   cons_msg('+', "starting debug manager\n");
+  kthread = ID_UNUSED;
+
+  STI();
   debug_initialize();
+  CLI();
+
+  kthread = 0;
 #endif
 
   cons_msg('+', "launching the initial service: mod\n");

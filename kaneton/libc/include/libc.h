@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libc/include/libc.h
+ * file          /home/buckman/crypt/kaneton/kaneton/libc/include/libc.h
  *
  * created       julien quintard   [sun jun 10 17:31:41 2007]
- * updated       matthieu bucchianeri   [sat sep  1 13:20:35 2007]
+ * updated       matthieu bucchianeri   [fri sep  7 16:52:36 2007]
  */
 
 #ifndef LIBC_LIBC_H
@@ -49,6 +49,7 @@ typedef void			(*t_printf_attr_fn)(u_int8_t	attr);
  *
  *	../alloc.c
  *	../memcpy.c
+ *	../memcmp.c
  *	../memset.c
  *	../printf.c
  *	../strchr.c
@@ -95,6 +96,15 @@ int			alloc_init(vaddr_t			addr,
 
 void*			memcpy(void*				dest,
 			       const void*			src,
+			       size_t				n);
+
+
+/*
+ * ../memcmp.c
+ */
+
+int			memcmp(const void*			s1,
+			       const void*			s2,
 			       size_t				n);
 
 

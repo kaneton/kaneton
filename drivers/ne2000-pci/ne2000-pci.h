@@ -16,6 +16,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
+# include <libkaneton.h>
 # include <stdint.h>
 # include <pthread.h>
 # include <sys/queue.h>
@@ -219,6 +220,8 @@ typedef struct
   }				current;
   /* send queue */
   struct __packetqueue		sendqueue;
+  /* bound interface */
+  t_id				iface;
 }		t_driver_ne2000_dev;
 
 /*
