@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/scheduler/scheduler.c
+ * file          /home/buckman/cry...neton/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [mon sep 10 23:52:04 2007]
+ * updated       matthieu bucchianeri   [tue sep 11 16:51:34 2007]
  */
 
 /*

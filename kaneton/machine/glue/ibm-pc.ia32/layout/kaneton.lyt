@@ -13,7 +13,7 @@ SECTIONS
 
 	.text :
 	{
-		*(.text)
+		*(.text*)
 		. = ALIGN(0x1000);
 		_handler_begin = .;
 		*(.handler)
@@ -23,12 +23,12 @@ SECTIONS
 
 	.rodata :
 	{
-		*(.rodata)
+		*(.rodata*)
 	} : uniq
 
 	.data :
 	{
-		*(.data) *(.bss) *(COMMON)
+		*(.data*) *(.bss) *(COMMON)
 		. = ALIGN(0x1000);
 		_handler_data_begin = .;
 		*(.handler_data)

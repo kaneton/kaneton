@@ -15,16 +15,16 @@ SECTIONS
 
 	.text ALIGN(0x1000):
 	{
-		*(.text)
+		*(.text*)
 	} : code
 
 	.rodata ALIGN(0x1000):
 	{
-		*(.rodata)
+		*(.rodata*)
 	} : rodata
 
 	.data ALIGN(0x1000):
 	{
-		*(.data) *(.bss) *(COMMON)
+		*(.data*) *(.bss) *(COMMON)
 	} : data
 }
