@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/services/inet/inet-service.h
+ * file          /home/buckman/crypt/kaneton/services/inet/inet-service.h
  *
  * created       matthieu bucchianeri   [mon sep 10 00:00:58 2007]
- * updated       matthieu bucchianeri   [tue sep 11 01:05:20 2007]
+ * updated       matthieu bucchianeri   [tue sep 11 15:16:24 2007]
  */
 
 #ifndef SERVICES_INET_SERVICE_H
@@ -45,6 +45,13 @@
 #define	INET_SERVICE_IF_UP		5
 #define	INET_SERVICE_IF_DOWN		6
 
+#define INET_SERVICE_ROUTE_ADD		7
+#define INET_SERVICE_ROUTE_FLUSH	8
+#define INET_SERVICE_ROUTE_DEL		9
+
+#define INET_SERVICE_IF_DUMP		100
+#define INET_SERVICE_ROUTE_DUMP		101
+
 /*
  * message type description.
  */
@@ -58,9 +65,29 @@
 
 #define INET_IF_TYPE_ETHERNET		1
 
+#define INET_IF_CONFIG_SET		1
+#define INET_IF_CONFIG_ADD		2
+#define INET_IF_CONFIG_DEL		3
+
 /*
  * ---------- types -----------------------------------------------------------
  */
+
+/*
+ * inet address
+ */
+
+typedef struct
+{
+  enum
+    {
+      e_service_inet_ipv4
+    }				type;
+  union
+  {
+    uint32_t			ipv4;
+  }				addr;
+}				t_service_inet_addr;
 
 /*
  * inet messages.
@@ -85,6 +112,7 @@ typedef struct
 	}				if_register;
 	struct
 	{
+	  t_id				iface;
 	}				if_unregister;
 	struct
 	{
@@ -98,13 +126,42 @@ typedef struct
 	}				if_pushpkt;
 	struct
 	{
+	  t_service_inet_addr		addr;
+	  t_service_inet_addr		mask;
+	  uint32_t			op;
+	  uint8_t			name[1];
 	}				if_config;
 	struct
 	{
+	  uint8_t			name[1];
 	}				if_up;
 	struct
 	{
+	  uint8_t			name[1];
 	}				if_down;
+	struct
+	{
+	  t_service_inet_addr		target;
+	  t_service_inet_addr		mask;
+	  uint32_t			routed;
+	  t_service_inet_addr		router;
+	  uint8_t			name[1];
+	}				route_add;
+	struct
+	{
+	  uint8_t			name[1];
+	}				route_flush;
+	struct
+	{
+	  /* XXX route_del */
+	}				route_del;
+	struct
+	{
+	  uint8_t			name[1];
+	}				if_dump;
+	struct
+	{
+	}				route_dump;
       }			u;
     }			request;
     struct
@@ -123,13 +180,31 @@ typedef struct
 	}				if_pushpkt;
 	struct
 	{
+	  t_error			result;
 	}				if_config;
 	struct
 	{
+	  t_error			result;
 	}				if_up;
 	struct
 	{
 	}				if_down;
+	struct
+	{
+	  t_error			result;
+	}				route_add;
+	struct
+	{
+	}				route_flush;
+	struct
+	{
+	}				route_del;
+	struct
+	{
+	}				if_dump;
+	struct
+	{
+	}				route_dump;
       }			u;
     }			reply;
   } u;
@@ -188,6 +263,26 @@ inet_if_register(i_task inet, t_id dev, uint32_t type, uint8_t* mac,
 }
 
 INET_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
+inet_if_unregister(i_task inet, t_id iface)
+{
+  t_service_inet_message	message;
+  i_node			inet_service;
+
+  inet_service.machine = 0;
+  inet_service.task = inet;
+
+  message.u.request.operation = INET_SERVICE_IF_UNREGISTER;
+  message.u.request.u.if_unregister.iface = iface;
+
+  if (message_send(inet_service,
+		   MESSAGE_TYPE_SERVICE_INET, (t_vaddr)&message,
+		   sizeof (message)) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
+}
+
+INET_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
 inet_if_pushpkt(i_task inet, t_id iface, uint8_t* s_mac, uint8_t* d_mac,
 		size_t mac_len, uint16_t proto, uint8_t* packet, uint16_t size)
 {
@@ -218,6 +313,243 @@ inet_if_pushpkt(i_task inet, t_id iface, uint8_t* s_mac, uint8_t* d_mac,
     }
 
   free(message);
+
+  return (ERROR_NONE);
+}
+
+INET_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
+inet_if_config(i_task inet, char* iface, uint32_t op, t_service_inet_addr* addr,
+	       t_service_inet_addr* mask)
+{
+  t_service_inet_message*	message;
+  i_node			inet_service;
+  t_vsize			size = strlen(iface);
+  t_error			res;
+
+  inet_service.machine = 0;
+  inet_service.task = inet;
+
+  if ((message = malloc(sizeof (*message) + size)) == NULL)
+    return (ERROR_UNKNOWN);
+
+  message->u.request.operation = INET_SERVICE_IF_CONFIG;
+  memcpy(&message->u.request.u.if_config.addr, addr, sizeof (*addr));
+  memcpy(&message->u.request.u.if_config.mask, mask, sizeof (*mask));
+  message->u.request.u.if_config.op = op;
+  strcpy(message->u.request.u.if_config.name, iface);
+
+  if (message_send(inet_service,
+		   MESSAGE_TYPE_SERVICE_INET, (t_vaddr)message,
+		   sizeof (*message) + size) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  if (message_receive(MESSAGE_TYPE_SERVICE_INET, (t_vaddr)message,
+		      &size, &inet_service) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  res = message->u.reply.u.if_config.result;
+
+  free(message);
+
+  return (res);
+}
+
+INET_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
+inet_if_up(i_task inet, char* iface)
+{
+  t_service_inet_message*	message;
+  i_node			inet_service;
+  t_vsize			size = strlen(iface);
+  t_error			res;
+
+  inet_service.machine = 0;
+  inet_service.task = inet;
+
+  if ((message = malloc(sizeof (*message) + size)) == NULL)
+    return (ERROR_UNKNOWN);
+
+  message->u.request.operation = INET_SERVICE_IF_UP;
+  strcpy(message->u.request.u.if_up.name, iface);
+
+  if (message_send(inet_service,
+		   MESSAGE_TYPE_SERVICE_INET, (t_vaddr)message,
+		   sizeof (*message) + size) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  if (message_receive(MESSAGE_TYPE_SERVICE_INET, (t_vaddr)message,
+		      &size, &inet_service) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  res = message->u.reply.u.if_up.result;
+
+  free(message);
+
+  return (res);
+}
+
+INET_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
+inet_if_down(i_task inet, char* iface)
+{
+  t_service_inet_message*	message;
+  i_node			inet_service;
+  t_vsize			size = strlen(iface);
+
+  inet_service.machine = 0;
+  inet_service.task = inet;
+
+  if ((message = malloc(sizeof (*message) + size)) == NULL)
+    return (ERROR_UNKNOWN);
+
+  message->u.request.operation = INET_SERVICE_IF_DOWN;
+  strcpy(message->u.request.u.if_down.name, iface);
+
+  if (message_send(inet_service,
+		   MESSAGE_TYPE_SERVICE_INET, (t_vaddr)message,
+		   sizeof (*message) + size) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  free(message);
+
+  return (ERROR_NONE);
+}
+
+INET_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
+inet_route_add(i_task inet, char* iface, t_service_inet_addr* target,
+	       t_service_inet_addr* mask, t_service_inet_addr* router)
+{
+  t_service_inet_message*	message;
+  i_node			inet_service;
+  t_vsize			size = strlen(iface);
+  t_error			res;
+
+  inet_service.machine = 0;
+  inet_service.task = inet;
+
+  if ((message = malloc(sizeof (*message) + size)) == NULL)
+    return (ERROR_UNKNOWN);
+
+  message->u.request.operation = INET_SERVICE_ROUTE_ADD;
+  memcpy(&message->u.request.u.route_add.target, target, sizeof (*target));
+  memcpy(&message->u.request.u.route_add.mask, mask, sizeof (*mask));
+  if (router == NULL)
+    message->u.request.u.route_add.routed = 0;
+  else
+    {
+      message->u.request.u.route_add.routed = 1;
+      memcpy(&message->u.request.u.route_add.router, router, sizeof (*router));
+    }
+  strcpy(message->u.request.u.route_add.name, iface);
+
+  if (message_send(inet_service,
+		   MESSAGE_TYPE_SERVICE_INET, (t_vaddr)message,
+		   sizeof (*message) + size) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  if (message_receive(MESSAGE_TYPE_SERVICE_INET, (t_vaddr)message,
+		      &size, &inet_service) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  res = message->u.reply.u.route_add.result;
+
+  free(message);
+
+  return (res);
+}
+
+INET_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
+inet_route_flush(i_task inet, char* iface)
+{
+  t_service_inet_message*	message;
+  i_node			inet_service;
+  t_vsize			size = strlen(iface);
+
+  inet_service.machine = 0;
+  inet_service.task = inet;
+
+  if ((message = malloc(sizeof (*message) + size)) == NULL)
+    return (ERROR_UNKNOWN);
+
+  message->u.request.operation = INET_SERVICE_ROUTE_FLUSH;
+  strcpy(message->u.request.u.route_flush.name, iface);
+
+  if (message_send(inet_service,
+		   MESSAGE_TYPE_SERVICE_INET, (t_vaddr)message,
+		   sizeof (*message) + size) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  free(message);
+
+  return (ERROR_NONE);
+}
+
+INET_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
+inet_if_dump(i_task inet, char* iface)
+{
+  t_service_inet_message*	message;
+  i_node			inet_service;
+  t_vsize			size = strlen(iface);
+
+  inet_service.machine = 0;
+  inet_service.task = inet;
+
+  if ((message = malloc(sizeof (*message) + size)) == NULL)
+    return (ERROR_UNKNOWN);
+
+  message->u.request.operation = INET_SERVICE_IF_DUMP;
+  strcpy(message->u.request.u.if_dump.name, iface);
+
+  if (message_send(inet_service,
+		   MESSAGE_TYPE_SERVICE_INET, (t_vaddr)message,
+		   sizeof (*message) + size) != ERROR_NONE)
+    {
+      free(message);
+      return (ERROR_UNKNOWN);
+    }
+
+  free(message);
+
+  return (ERROR_NONE);
+}
+
+INET_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
+inet_route_dump(i_task inet)
+{
+  t_service_inet_message	message;
+  i_node			inet_service;
+
+  inet_service.machine = 0;
+  inet_service.task = inet;
+
+  message.u.request.operation = INET_SERVICE_ROUTE_DUMP;
+
+  if (message_send(inet_service,
+		   MESSAGE_TYPE_SERVICE_INET, (t_vaddr)&message,
+		   sizeof (message)) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);
 }

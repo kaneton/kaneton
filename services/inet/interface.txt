@@ -1,17 +1,24 @@
 driver class net:
   ---> (inet) if_register		< OK
-  ---> (inet) if_pushpkt		** on packet arrival
+  ---> (inet) if_pushpkt		< OK
   ---> (inet) if_unregister
   <--- sendpkt				< OK
 
 inet:
   ---> (driver net) sendpkt		< OK
   <--- if_register			< OK
-  <--- if_unregister
-  <--- if_pushpkt
-  <--- if_config
-  <--- if_up
-  <--- if_down
+  <--- if_unregister			< OK
+  <--- if_pushpkt			< OK
+  <--- if_config			< OK
+  <--- if_up				< OK
+  <--- if_down				< OK
+  <--- route_add			< OK
+  <--- route_flush			< OK
+  <--- route_del
+  <--- libudp*
+
+  <--- if_dump				< OK
+  <--- route_dump			< OK
 
 - trouver un moyen de gérer les net_if_s*, c'est crade, idem pour le
   device_s*

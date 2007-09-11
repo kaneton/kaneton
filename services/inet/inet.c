@@ -5,10 +5,10 @@
  *
  * license
  *
- * file          /home/buckman/kaneton/services/inet/inet.c
+ * file          /home/buckman/crypt/kaneton/services/inet/inet.c
  *
  * created       matthieu bucchianeri   [fri sep  7 23:49:49 2007]
- * updated       matthieu bucchianeri   [tue sep 11 01:20:08 2007]
+ * updated       matthieu bucchianeri   [tue sep 11 15:15:54 2007]
  */
 
 #include <stdio.h>
@@ -56,7 +56,8 @@ static int	inet_serve(void)
 
 	      dev = (struct device_s*)(t_vaddr)message->u.request.u.if_register.dev;
 
-	      if ((mac = malloc(message->u.request.u.if_register.mac_len)) == NULL)
+	      if ((mac = malloc(message->u.request.u.if_register.mac_len)) ==
+		  NULL)
 		{
 		  /* XXX mega echec */
 		}
@@ -64,7 +65,15 @@ static int	inet_serve(void)
 	      memcpy(mac, message->u.request.u.if_register.mac,
 		     message->u.request.u.if_register.mac_len);
 
-	      type = IF_ETHERNET; /* XXX */
+	      switch (message->u.request.u.if_register.type)
+		{
+		  case INET_IF_TYPE_ETHERNET:
+		    type = IF_ETHERNET;
+		    break;
+		  default:
+		    /* XXX fail */
+		    break;
+		}
 
 	      message->u.reply.u.if_register.iface = (t_id)(t_vaddr)
 		if_register(dev,
@@ -79,25 +88,14 @@ static int	inet_serve(void)
 		{
 		  printf(" -- inet: error in request\n");
 		}
+	    }
+	  else if (message->u.request.operation == INET_SERVICE_IF_UNREGISTER)
+	    {
+	      struct net_if_s*	iface;
 
-	      /* XXX remove me */
-  struct net_addr_s	addr;
-  struct net_addr_s	mask;
-  struct net_addr_s	target;
-  struct net_if_s	*interface;
-  struct net_route_s	*route;
-  if_up("eth0");
-  interface = if_get_by_name("eth0");
-  IPV4_ADDR_SET(addr, 0xC0A80201);
-  IPV4_ADDR_SET(mask, 0xffffff00);
-  if_config(interface->index, IF_SET, &addr, &mask);
-  IPV4_ADDR_SET(target, 0xC0A80200);
-  route = route_obj_new(NULL, &target, &mask, interface);
-  route->is_routed = 0;
-  route_add(route);
-  if_dump("eth0");
-  route_dump();
+	      iface = (struct net_if_s*)(t_vaddr)message->u.request.u.if_unregister.iface;
 
+	      if_unregister(iface);
 	    }
 	  else if (message->u.request.operation == INET_SERVICE_IF_PUSHPKT)
 	    {
@@ -139,6 +137,138 @@ static int	inet_serve(void)
 	      packet->stage = 1;
 
 	      if_pushpkt(iface, packet);
+	    }
+	  else if (message->u.request.operation == INET_SERVICE_IF_CONFIG)
+	    {
+	      struct net_if_s	*iface;
+	      struct net_addr_s	addr;
+	      struct net_addr_s	mask;
+
+	      if ((iface = if_get_by_name(message->u.request.u.if_config.name)) != NULL)
+		{
+		  uint32_t	op;
+
+		  switch(message->u.request.u.if_config.op)
+		    {
+		      case INET_IF_CONFIG_SET:
+			op = IF_SET;
+			break;
+		      case INET_IF_CONFIG_ADD:
+			op = IF_ADD;
+			break;
+		      case INET_IF_CONFIG_DEL:
+			op = IF_DEL;
+			break;
+		      default:
+			/* XXX fail */
+			break;
+		    }
+
+		  if (message->u.request.u.if_config.addr.type == e_service_inet_ipv4)
+		    {
+		      IPV4_ADDR_SET(addr, message->u.request.u.if_config.addr.addr.ipv4);
+		      IPV4_ADDR_SET(mask, message->u.request.u.if_config.mask.addr.ipv4);
+
+		      message->u.reply.u.if_config.result =
+			if_config(iface->index, op, &addr, &mask) ? ERROR_UNKNOWN :
+			ERROR_NONE;
+		    }
+		  else
+		    message->u.reply.u.if_config.result = ERROR_UNKNOWN;
+		}
+	      else
+		message->u.reply.u.if_config.result = ERROR_UNKNOWN;
+
+	      if (message_send(sender,
+			       MESSAGE_TYPE_SERVICE_INET,
+			       (t_vaddr)message,
+			       sizeof (*message)) != ERROR_NONE)
+		{
+		  printf(" -- inet: error in request\n");
+		}
+	    }
+	  else if (message->u.request.operation == INET_SERVICE_IF_UP)
+	    {
+	      message->u.reply.u.if_up.result = if_up(message->u.request.u.if_up.name) ?
+		ERROR_UNKNOWN : ERROR_NONE;
+
+	      if (message_send(sender,
+			       MESSAGE_TYPE_SERVICE_INET,
+			       (t_vaddr)message,
+			       sizeof (*message)) != ERROR_NONE)
+		{
+		  printf(" -- inet: error in request\n");
+		}
+	    }
+	  else if (message->u.request.operation == INET_SERVICE_IF_DOWN)
+	    {
+	      if_down(message->u.request.u.if_down.name);
+	    }
+	  else if (message->u.request.operation == INET_SERVICE_ROUTE_ADD)
+	    {
+	      struct net_if_s		*iface;
+	      struct net_addr_s		target;
+	      struct net_addr_s		mask;
+	      struct net_route_s	*route;
+
+	      if ((iface = if_get_by_name(message->u.request.u.route_add.name)) != NULL)
+		{
+		  if (message->u.request.u.route_add.target.type == e_service_inet_ipv4)
+		    {
+		      IPV4_ADDR_SET(target, message->u.request.u.route_add.target.addr.ipv4);
+		      IPV4_ADDR_SET(mask, message->u.request.u.route_add.mask.addr.ipv4);
+
+		      if ((route = route_obj_new(NULL, &target, &mask, iface)) == NULL)
+			{
+			  /* XXX fail */
+			}
+
+		      if (message->u.request.u.route_add.routed)
+			{
+			  route->is_routed = 1;
+			  IPV4_ADDR_SET(route->router,
+					message->u.request.u.route_add.router.addr.ipv4);
+			}
+		      else
+			{
+			  route->is_routed = 0;
+			}
+
+		      message->u.reply.u.if_config.result = route_add(route) ?
+			ERROR_UNKNOWN : ERROR_NONE;
+		    }
+		  else
+		    message->u.reply.u.if_config.result = ERROR_UNKNOWN;
+		}
+	      else
+		message->u.reply.u.if_config.result = ERROR_UNKNOWN;
+
+	      if (message_send(sender,
+			       MESSAGE_TYPE_SERVICE_INET,
+			       (t_vaddr)message,
+			       sizeof (*message)) != ERROR_NONE)
+		{
+		  printf(" -- inet: error in request\n");
+		}
+	    }
+	  else if (message->u.request.operation == INET_SERVICE_ROUTE_FLUSH)
+	    {
+	      struct net_if_s*	iface;
+
+	      if ((iface = if_get_by_name(message->u.request.u.route_flush.name)) != NULL)
+		route_flush(iface);
+	    }
+	  else if (message->u.request.operation == INET_SERVICE_ROUTE_DEL)
+	    {
+	      /* XXX route_del */
+	    }
+	  else if (message->u.request.operation == INET_SERVICE_IF_DUMP)
+	    {
+	      if_dump(message->u.request.u.if_dump.name);
+	    }
+	  else if (message->u.request.operation == INET_SERVICE_ROUTE_DUMP)
+	    {
+	      route_dump();
 	    }
 	}
     }
@@ -189,6 +319,7 @@ void	inet_send_packet(struct device_s*	dev,
 	}
     }
 
+  /* XXX this can be optimized by rewriting this op & preparepkt */
   if (ne2000_pci_sendpkt(ne2000,
 			 (t_id)(t_vaddr)dev,
 			 (uint8_t*)packet->tMAC,

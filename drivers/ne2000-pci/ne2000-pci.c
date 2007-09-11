@@ -27,9 +27,6 @@
 
 #include <sys/io.h>
 
-#define INET_SPAWN_INTERFACE
-#include "../../services/inet/inet-service.h"
-
 /*
  * ---------- dependencies ----------------------------------------------------
  */
@@ -38,7 +35,10 @@
 #include "../pci/pci-driver.h"
 #define MOD_SPAWN_INTERFACE
 #include "../../services/mod/mod-service.h"
+#define INET_SPAWN_INTERFACE
+#include "../../services/inet/inet-service.h"
 
+/* XXX beurk */
 t_error			ibmpc_irq_acknowledge(uint8_t		irq)
 {
   if (irq > 15)
@@ -551,12 +551,7 @@ static void	ne2000_push(t_driver_ne2000_dev*	dev,
   /* get the good header */
   hdr = (struct ether_header *)data;
 
-  /* fill some info */
-  /*  printf(" -- ne2000-pci: new packet %02x:%02x:%02x:%02x:%02x:%02x of %d\n",
-	 hdr->ether_shost[0], hdr->ether_shost[1], hdr->ether_shost[2],
-	 hdr->ether_shost[3], hdr->ether_shost[4], hdr->ether_shost[5],
-	 size);
-  */
+  /* XXX this can be optimized by rewriting the if_pushpkt operation */
   if (inet_if_pushpkt(inet, dev->iface, dev->mac, hdr->ether_shost, ETH_ALEN,
 		      hdr->ether_type,
 		      data + sizeof (struct ether_header),

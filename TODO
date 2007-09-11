@@ -1,5 +1,12 @@
 ------------------------------ buck :: todo -----------------------------------
 
+ inet:
+  * exporter les ops restants
+  * virer les 2 copies de packet inutile
+  * t_id et pas pointeurs castes
+  * faire une class driver net, avec l'op qui va bien
+
+--
  systeme de stack pour release lors d'un object.
 
 --
