@@ -39,6 +39,8 @@ void		check_event_message_01(void)
   ASSERT(message_poll(ktask, MESSAGE_TYPE_EVENT, (t_vaddr)&evt, &sz,
 		      &sender) == ERROR_NONE, " x Exception not caught\n");
 
+  printf(" + Exception thrown\n");
+
   ASSERT(evt.id == 3, " x Bad event id in message\n");
   ASSERT(evt.data == 0x42424242, " x Bad pv data in message\n");
 

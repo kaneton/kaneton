@@ -16,6 +16,11 @@
 static volatile int executed = 0;
 static volatile int esp = 0;
 
+#undef TEST_LEAVE
+# define TEST_LEAVE()							\
+  printf("%s done.\n", __FUNCTION__);					\
+  return
+
 static void	thread1(void)
 {
   t_uint32	cs;

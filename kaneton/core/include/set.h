@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/set.h
+ * file          /home/buckman/crypt/kaneton/kaneton/core/include/set.h
  *
  * created       julien quintard   [wed jun  6 11:56:46 2007]
- * updated       julien quintard   [sun jun 10 19:04:02 2007]
+ * updated       matthieu bucchianeri   [thu sep 13 16:49:37 2007]
  */
 
 #ifndef CORE_SET_H

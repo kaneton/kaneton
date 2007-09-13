@@ -548,7 +548,7 @@ t_error			as_write(i_as				asid,
   t_iterator		next;
   t_paddr		offs;
   t_psize		copy;
-  t_uint8*		buff = src;
+  const t_uint8*	buff = src;
 
   AS_ENTER(as);
 

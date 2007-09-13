@@ -1,12 +1,3 @@
-id
-set
-segment
-region
-map
-as
-event
-time
 task
 thread
 sched
-message

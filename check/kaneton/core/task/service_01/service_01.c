@@ -13,6 +13,11 @@
 #include <kaneton.h>
 #include "../common/common.h"
 
+#undef TEST_LEAVE
+# define TEST_LEAVE()							\
+  printf("%s done.\n", __FUNCTION__);					\
+  return
+
 static volatile int executed = 0;
 static volatile int esp = 0;
 

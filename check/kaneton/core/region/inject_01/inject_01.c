@@ -11,7 +11,6 @@ void		check_region_inject_01(void)
   i_segment	seg;
   i_region	reg;
   o_region*	o;
-  o_region*	o_dup;
 
   TEST_ENTER();
   TEST_NEW_AS(task, as);
@@ -21,23 +20,14 @@ void		check_region_inject_01(void)
 			    PERM_READ | PERM_WRITE,
 			    &seg) == ERROR_NONE, "error segment_reserve\n");
 
-  ASSERT(region_reserve(kasid,
-			   seg,
-			   PAGESZ,
-			   REGION_OPT_NONE,
-			   0,
-			   2 * PAGESZ,
-			   &reg) == ERROR_NONE, "error region_reserve\n");
+  o = malloc(sizeof (o_region));
+  o->segid = seg;
+  o->address = 0x40000000;
+  o->offset = PAGESZ;
+  o->size = 2 * PAGESZ;
+  o->opts = REGION_OPT_FORCE;
 
-  ASSERT(region_get(kasid, reg, &o) == ERROR_NONE,
-	    "error getting region\n");
-
-  o_dup = malloc(sizeof (o_region));
-  memcpy(o_dup, o, sizeof (o_region));
-
-  ASSERT(region_inject(as, o_dup, &reg) == ERROR_NONE, "error injecting region\n");
-
-  region_dump(as);
+  ASSERT(region_inject(as, o, &reg) == ERROR_NONE, "error injecting region\n");
 
   ASSERT(region_get(as, reg, &o) == ERROR_NONE,
 	    "error getting region\n");
@@ -47,13 +37,7 @@ void		check_region_inject_01(void)
   ASSERT(o->address == (t_vaddr)reg, "Bad address field\n");
   ASSERT(o->offset == PAGESZ, "Bad offset field\n");
   ASSERT(o->size == 2 * PAGESZ, "Bad size field\n");
-
-
-  ASSERT(region_release(kasid, reg) == ERROR_NONE,
-	    "failed to release kernel region\n");
-
-  ASSERT(region_release(as, reg) == ERROR_NONE,
-	    "failed to release region\n");
+  ASSERT(o->opts == REGION_OPT_FORCE, "Bad opts field\n");
 
   ASSERT(segment_release(seg) == ERROR_NONE,
 	    "failed to release segment\n");

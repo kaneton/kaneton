@@ -5,13 +5,13 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/drivers/null/null.c
+ * file          /home/buckman/crypt/kaneton/drivers/null/null.c
  *
  * created       matthieu bucchianeri   [mon aug  6 22:05:34 2007]
- * updated       matthieu bucchianeri   [sat sep  8 22:50:52 2007]
+ * updated       matthieu bucchianeri   [thu sep 13 13:46:41 2007]
  */
 
-#include <libc.h>
+#include <stdio.h>
 #include <crt.h>
 #include <libkaneton.h>
 

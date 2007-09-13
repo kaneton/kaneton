@@ -1058,8 +1058,6 @@ t_error			segment_perms(i_segment			segid,
 
   SEGMENT_ENTER(segment);
 
-  ASSERT((perms & PERM_INVALID) == 0);
-
   /*
    * 1)
    */

@@ -18,26 +18,27 @@ static volatile int	thrown = 0;
 static void	check_softint(t_id	id)
 {
   printf(" + Softint thrown\n");
-  if (id != 0x42)
+  if (id != 56)
     printf(" x Bad event identifier passed to handler\n");
   thrown = 1;
 }
 
 /*
- * reserve event onto int 0x42 and call int 0x42.
+ * reserve event onto int 56 and call int 56.
  */
 
 void		check_event_softint_01(void)
 {
   TEST_ENTER();
 
-  ASSERT(event_reserve(0x42,
+  event_release(56);
+  ASSERT(event_reserve(56,
 		       EVENT_FUNCTION,
 		       EVENT_HANDLER(check_softint), 0) == ERROR_NONE,
 	 "cannot event_reserve\n");
 
   printf(" - Softint\n");
-  asm volatile("int $0x42");
+  asm volatile("int $56");
   ASSERT(thrown == 1, " x Softint not caught\n");
   printf(" - Execution resumed\n");
 
