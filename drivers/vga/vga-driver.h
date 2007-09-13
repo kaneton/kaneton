@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/drivers/vga/vga-driver.h
+ * file          /home/buckman/crypt/kaneton/drivers/vga/vga-driver.h
  *
  * created       matthieu bucchianeri   [thu aug 23 16:09:27 2007]
- * updated       matthieu bucchianeri   [sun sep  9 19:18:17 2007]
+ * updated       matthieu bucchianeri   [tue sep 11 18:24:26 2007]
  */
 
 #ifndef DRIVERS_VGA_DRIVER_H
@@ -29,7 +29,7 @@
  * ---------- dependencies ----------------------------------------------------
  */
 
-#include <libc.h>
+#include <stdint.h>
 #include <crt.h>
 
 /*
@@ -92,7 +92,7 @@ typedef struct
       {
 	struct
 	{
-	  vaddr_t			base;
+	  t_vaddr			base;
 	}				framebuffer;
       }			u;
     }			reply;
@@ -120,7 +120,7 @@ vga_init(void)
 VGA_ATTRIBUTE_INTERFACE __attribute__((unused)) t_error
 vga_framebuffer(i_task vga, t_driver_vga_metric width,
 		t_driver_vga_metric height, t_driver_vga_metric bpp,
-		vaddr_t* base)
+		t_vaddr* base)
 {
   t_driver_vga_message*	message;
   i_node		vga_driver;

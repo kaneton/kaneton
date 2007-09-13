@@ -5,13 +5,15 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/drivers/vga/vga.c
+ * file          /home/buckman/crypt/kaneton/drivers/vga/vga.c
  *
  * created       matthieu bucchianeri   [tue aug 21 23:15:42 2007]
- * updated       matthieu bucchianeri   [sun sep  9 19:44:08 2007]
+ * updated       matthieu bucchianeri   [tue sep 11 18:23:27 2007]
  */
 
-#include <libc.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <crt.h>
 #include <libkaneton.h>
 #include "vga.h"
@@ -131,7 +133,7 @@ static void		write_regs(unsigned char *regs)
     }
   for(i = 0; i < VGA_NUM_AC_REGS; i++)
     {
-      INB(VGA_INSTAT_READ, a);
+      a = inb(VGA_INSTAT_READ);
       outb(i, VGA_AC_INDEX);
       outb(*regs, VGA_AC_WRITE);
       regs++;
@@ -144,7 +146,7 @@ static void		write_regs(unsigned char *regs)
  * goto specified video mode.
  */
 
-static vaddr_t		vga_goto_mode(i_task	task,
+static t_vaddr		vga_goto_mode(i_task	task,
 				      int32_t	width,
 				      int32_t	height,
 				      int32_t	bpp)
@@ -157,7 +159,7 @@ static vaddr_t		vga_goto_mode(i_task	task,
     {
       printf(" -- vga: cannot switch mode: device alreay in use.\n");
 
-      return ((vaddr_t)-1);
+      return ((t_vaddr)-1);
     }
 
   for (i = 0; modes[i].width != -1; i++)
@@ -166,10 +168,10 @@ static vaddr_t		vga_goto_mode(i_task	task,
       break;
 
   if (modes[i].width == -1)
-    return ((vaddr_t)-1);
+    return ((t_vaddr)-1);
 
   if (task_attribute_asid(task, &asid) != ERROR_NONE)
-    return ((vaddr_t)-1);
+    return ((t_vaddr)-1);
 
   if (region_reserve(asid,
 		     0x1000,
@@ -179,7 +181,7 @@ static vaddr_t		vga_goto_mode(i_task	task,
 		     PAGED_SIZE((modes[i].width * modes[i].height *
 				 modes[i].bpp) / 8),
 		     &reg) != ERROR_NONE)
-    return ((vaddr_t)-1);
+    return ((t_vaddr)-1);
 
   printf(" -- vga: entering mode %dx%dx%d\n", width, height, bpp);
 
@@ -187,7 +189,7 @@ static vaddr_t		vga_goto_mode(i_task	task,
 
   write_regs(modes[i].dump);
 
-  return (vaddr_t)reg;
+  return (t_vaddr)reg;
 }
 
 /*

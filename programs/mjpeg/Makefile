@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kaneton/programs/mjpeg/Makefile
+# file          /home/buckman/crypt/kaneton/programs/mjpeg/Makefile
 #
 # created       matthieu bucchianeri   [mon aug 20 19:52:55 2007]
-# updated       matthieu bucchianeri   [fri sep  7 01:27:28 2007]
+# updated       matthieu bucchianeri   [tue sep 11 18:58:00 2007]
 #
 
 #
@@ -70,8 +70,8 @@ $(MJPEG):	libs $(MJPEG_O)
 			      $(ENV_OPTION_NO_STANDARD))
 
 libs:
-	$(call env_launch,${_LIBC_DIR_}/Makefile,,)
-	$(call env_launch,${_CRT_DIR_}/Makefile,,)
+	$(call env_launch,${_ULIBC_DIR_}/Makefile,,)
+	$(call env_launch,${_LIBPTHREAD_DIR_}/Makefile,,)
 	$(call env_launch,${_LIBKANETON_DIR_}/Makefile,,)
 
 clear:

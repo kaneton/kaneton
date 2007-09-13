@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/drivers/vga/vga.h
+ * file          /home/buckman/crypt/kaneton/drivers/vga/vga.h
  *
  * created       matthieu bucchianeri   [tue aug 21 23:20:44 2007]
- * updated       matthieu bucchianeri   [thu aug 23 16:59:24 2007]
+ * updated       matthieu bucchianeri   [tue sep 11 18:21:41 2007]
  */
 
 #ifndef DRIVERS_VGA_H
@@ -54,7 +54,7 @@ typedef struct
   int32_t	height;
   int32_t	bpp;
   void*		dump;
-  paddr_t	base;
+  int32_t	base;
 }		t_vga_driver_modes;
 
 /*

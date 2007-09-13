@@ -69,8 +69,8 @@ int	main()
       return (-1);
     }
 
-  if (0 && vga_framebuffer(vga, 320, 200, 8, (vaddr_t*)&framebuffer) != ERROR_NONE ||
-      framebuffer == ((vaddr_t)-1))
+  if (0 && vga_framebuffer(vga, 320, 200, 8, (t_vaddr*)&framebuffer) != ERROR_NONE ||
+      framebuffer == ((t_vaddr)-1))
     {
       printf("cannot start vga framebuffer.\n");
       return (-1);

@@ -495,9 +495,10 @@ static void	ne2000_send(t_driver_ne2000_dev*	device,
  * read a packet from the NIC
  */
 
-static t_error			ne2000_rx(t_driver_ne2000_dev*	dev,
-					  uint8_t**		data,
-					  uint16_t*		size)
+static t_error			ne2000_rx(t_driver_ne2000_dev*		dev,
+					  t_service_inet_message**	data,
+					  struct ether_header*		header,
+					  uint16_t*			size)
 {
   struct ne2000_header_s	hdr;
   uint8_t			next;
@@ -523,11 +524,17 @@ static t_error			ne2000_rx(t_driver_ne2000_dev*	dev,
 		  sizeof (struct ne2000_header_s));
 
   /* read the packet itself */
-  *size = hdr.size - sizeof (struct ne2000_header_s);
-
-  if ((buf = *data = malloc(*size)) == NULL)
-    return (ERROR_UNKNOWN);
   ne2000_mem_read(dev, dma + sizeof (struct ne2000_header_s),
+		  header, ETH_HLEN);
+
+  *size = hdr.size - sizeof (struct ne2000_header_s) - ETH_HLEN;
+
+  if ((*data = malloc(sizeof (t_service_inet_message) + *size)) == NULL)
+    return (ERROR_UNKNOWN);
+
+  buf = (*data)->u.request.u.if_pushpkt.packet;
+
+  ne2000_mem_read(dev, dma + sizeof (struct ne2000_header_s) + ETH_HLEN,
 		  buf, *size);
 
   /* update the next packet pointer */
@@ -543,22 +550,29 @@ static t_error			ne2000_rx(t_driver_ne2000_dev*	dev,
  */
 
 static void	ne2000_push(t_driver_ne2000_dev*	dev,
-			    uint8_t*			data,
+			    t_service_inet_message*	message,
+			    struct ether_header*	hdr,
 			    uint16_t			size)
 {
-  struct ether_header*		hdr;
+  i_node			inet_service;
 
-  /* get the good header */
-  hdr = (struct ether_header *)data;
+  inet_service.machine = 0;
+  inet_service.task = inet;
 
-  /* XXX this can be optimized by rewriting the if_pushpkt operation */
-  if (inet_if_pushpkt(inet, dev->iface, dev->mac, hdr->ether_shost, ETH_ALEN,
-		      hdr->ether_type,
-		      data + sizeof (struct ether_header),
-		      size - sizeof (struct ether_header)) != ERROR_NONE)
+  message->u.request.operation = INET_SERVICE_IF_PUSHPKT;
+  message->u.request.u.if_pushpkt.iface = dev->iface;
+  memcpy(message->u.request.u.if_pushpkt.s_mac, dev->mac, ETH_ALEN);
+  memcpy(message->u.request.u.if_pushpkt.d_mac, hdr->ether_shost, ETH_ALEN);
+  message->u.request.u.if_pushpkt.mac_len = ETH_ALEN;
+  message->u.request.u.if_pushpkt.proto = hdr->ether_type;
+  message->u.request.u.if_pushpkt.size = size;
+
+  if (message_send(inet_service,
+		   MESSAGE_TYPE_SERVICE_INET, (t_vaddr)message,
+		   sizeof (*message) + size) != ERROR_NONE)
     printf(" -- ne2000-pci: failed to push packet.\n");
 
-  free(data);
+  free(message);
 }
 
 /*
@@ -686,15 +700,16 @@ static void	ne2000_irq(t_driver_ne2000_dev*		dev)
 	  /* read some packets until half the memory is free */
 	  for (total = 0; total < ((dev->mem - dev->rx_buf) << 8) / 2; )
 	    {
-	      uint16_t	size;
-	      uint8_t*	data;
+	      uint16_t			size;
+	      t_service_inet_message*	data;
+	      struct ether_header	header;
 
 	      /* read a packet */
-	      if (ne2000_rx(dev, &data, &size) != ERROR_NONE)
+	      if (ne2000_rx(dev, &data, &header, &size) != ERROR_NONE)
 		break;
 
 	      /* push the packet into the network stack */
-	      ne2000_push(dev, data, size);
+	      ne2000_push(dev, data, &header, size);
 
 	      total += size;
 	    }
@@ -716,14 +731,15 @@ static void	ne2000_irq(t_driver_ne2000_dev*		dev)
 	  /* no errors */
 	  if (inb(dev->addr + NE2000_RSR) & NE2000_SPRX)
 	    {
-	      uint16_t	size;
-	      uint8_t*	data;
+	      uint16_t			size;
+	      t_service_inet_message*	data;
+	      struct ether_header	header;
 
 	      /* read the packet */
-	      while (ne2000_rx(dev, &data, &size) == ERROR_NONE)
+	      while (ne2000_rx(dev, &data, &header, &size) == ERROR_NONE)
 		{
 		  /* push the packet into the network stack */
-		  ne2000_push(dev, data, size);
+		  ne2000_push(dev, data, &header, size);
 		}
 	    }
 	}
