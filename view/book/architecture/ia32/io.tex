@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/buckman/kaneton/view/book/architecture/ia32/io.tex
+% file          /home/buckman/cry...neton/view/book/architecture/ia32/io.tex
 %
 % created       matthieu bucchianeri   [sat sep  2 11:39:52 2006]
-% updated       matthieu bucchianeri   [thu aug 16 17:48:12 2007]
+% updated       matthieu bucchianeri   [mon oct  1 20:04:37 2007]
 %
 
 %
@@ -17,12 +17,61 @@
 
 \chapter{I/O management}
 
-XXX
+This part provides information about input and output control under
+kaneton. These kind of operations should be performed only by driver
+class tasks, but kaneton also offers the possibility to classical
+non-privileged programs to communicate with hardware via I/O (though
+capability checking).
 
 \newpage
 
 %
-% allowing or denying ios
+% driver class tasks
 %
 
-\section{Allowing or denying I/Os}
+\section{Driver class tasks}
+
+Performing I/O on IA-32 is done through special instructions
+\textit{IN} and \textit{OUT} or through memory-mapped I/O.
+
+With the I/O specialized instruction set, two check are performed to
+ensure the process has the right to execute such operation:
+
+\begin{itemize}
+\item
+  The \textit{IOPL} field of the \textit{eflags} register is compared
+  with the current privilege level. If the latter is more or equaly
+  privileged than the \textit{IOPL}, the operation is granted;
+\item
+  Otherwise, the microprocessor check the I/O Permission Bitmap. This
+  bitmap associates one bit to one port and is located in the current
+  TSS. When the n\textit{th} bit of the bitmap is set, I/O operations
+  to the n\textit{th} port are granted.
+\end{itemize}
+
+For drivers, the \textit{ia32\_init\_context} function sets the
+\textit{IOPL} to 1, which is the running privilege level for driver
+class tasks. Thus, drivers can access all I/O ports in the whole
+system with very good performances (no need to check the IO Bitmap in
+memory).
+
+In other cases, \textit{IOPL} is set to 0 (no privileges for I/O).
+
+%
+% allowing or denying ios to userland
+%
+
+\section{Allowing or denying I/Os to userland}
+
+For userland processes (of class service or program), accessing I/O
+ports requires the capability to \textit{io\_grant} the given port.
+
+The machine-dependent code of this operation calls the
+\textit{ia32\_set\_io\_bitmap} function which sets or clears the
+needed bit in the IO Permission Bitmap of the task. This is possible
+because this bitmap is part of the \textit{o\_task} machine-dependent
+struct.
+
+But the context switching is slown down because the I/O Permission
+Bitmap is 8192 bytes large and needs to be copied into the current TSS
+on task switch.

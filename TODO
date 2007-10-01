@@ -1,5 +1,12 @@
 ------------------------------ buck :: todo -----------------------------------
 
+--
+ cswitch: no io bitmap copy when class < 1
+ et puis meme ca s'optimise encore : faire un set de i_port a granter,
+c'est tjs mieux que 8192 bytes a memcpy.
+
+--
+
  inet:
   * exporter les ops restants
   * virer les 2 copies de packet inutile
