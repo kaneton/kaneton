@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/buckman/kaneton/view/book/architecture/ia32/timer.tex
+% file          /home/buckman/cry...on/view/book/architecture/ia32/timer.tex
 %
 % created       matthieu bucchianeri   [tue aug 14 20:09:50 2007]
-% updated       matthieu bucchianeri   [thu aug 16 17:50:18 2007]
+% updated       matthieu bucchianeri   [tue oct  2 16:14:31 2007]
 %
 
 %
@@ -45,7 +45,8 @@ There are three components able to throw an interrupt at fixed rate:
 
 The first solution is the most accurate but needs to be calibrated,
 which is a more complex process. The last solution is also very
-accurate but the available frequencies need floating point computing.
+accurate but the available frequencies need floating point computing
+to be millisecond-accurate.
 
 To keep the code as simple as possible, we will use the PIT, which is
 a very easily programmable component.

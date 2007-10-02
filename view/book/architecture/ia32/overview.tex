@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/buckman/kan...view/book/architecture/ia32/overview.tex
+% file          /home/buckman/cry...view/book/architecture/ia32/overview.tex
 %
 % created       matthieu bucchianeri   [sat sep  2 11:42:35 2006]
-% updated       matthieu bucchianeri   [tue aug 14 20:11:55 2007]
+% updated       matthieu bucchianeri   [tue oct  2 16:13:04 2007]
 %
 
 %
@@ -16,3 +16,34 @@
 %
 
 \chapter{Overview}
+
+The IA-32 architecture, often called x86, x86-32 or i386, is one of
+the most successful CISC microprocessor architecture developed by
+Intel and mainly used by Intel and AMD though the 80x86, Pentium, K6
+and K7 processors.
+
+Processors of x86 architecture support backward compatibility with
+older 16-bits microprocessors, offer multiple privileged or
+unprivileged execution mode, provide full MMU implementation of
+segmentation and paging, permit customizable interrupts catching and
+are shipped with an internal floating point unit.
+
+Through the years and the different microarchitectures and
+innovations, the Pentium series from Intel has become the most
+suitable for home use, workstation and servers.
+
+In contrast with other microprocessors like MIPS or SPARC, only a few
+platform's architectures are based on IA-32 processors. The most known
+is the IBM-PC, derived from IBM AT, XT and PS/2. An IBM-PC platform is
+composed of one x86 CPU, two interrupt controllers, two direct memory
+access controllers, one CMOS memory chip and one programmable timer.
+
+The educational version of kaneton for IA-32 on IBM-PC takes advantage
+of the CPU's running modes, the MMU, the FPU, the interrupt controller
+and the timer. The goal of this port is to be as simple as
+possible. For this reason, only the basic mecanisms of memory
+management, context switching and interrupt management are
+implemented.
+
+Later, a more complete version using all IA-32 features will be
+release under the name ``IA-32 Optimised''.

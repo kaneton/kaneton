@@ -8,7 +8,7 @@
 % file          /home/buckman/cry...neton/view/book/architecture/ia32/io.tex
 %
 % created       matthieu bucchianeri   [sat sep  2 11:39:52 2006]
-% updated       matthieu bucchianeri   [mon oct  1 20:04:37 2007]
+% updated       matthieu bucchianeri   [tue oct  2 14:35:53 2007]
 %
 
 %
@@ -75,3 +75,14 @@ struct.
 But the context switching is slown down because the I/O Permission
 Bitmap is 8192 bytes large and needs to be copied into the current TSS
 on task switch.
+
+To minimize performance loss, we have to change the I/O Permission
+Bitmap only when it is necessary:
+\begin{itemize}
+\item
+  The thread being switched to is not from the same task of the thread
+  switched;
+\item
+  The thread being switched to is not I/O privileged (ie: of class
+  service or program).
+\end{itemize}
