@@ -671,9 +671,12 @@ t_error			ia32_context_switch(i_thread		current,
   if (task_get(to->taskid, &task) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
-	 &task->machdep.iomap,
-	 8192);
+  if (current == ID_UNUSED || (from->taskid != to->taskid &&
+			       (task->class == TASK_CLASS_SERVICE||
+				task->class == TASK_CLASS_PROGRAM)))
+    memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
+	   &task->machdep.iomap,
+	   8192);
 
   /*
    * 5)
