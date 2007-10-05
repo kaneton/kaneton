@@ -355,3 +355,9 @@ independante.
 --
   les quads sont geres par le compilo donc si un developeur veut utilier
   un autre compilo, a lui de se demerder.
+
+--
+ calculer la taille necessaire a malloc pour eviter la recursion
+
+--
+ virer les ERROR_UNKNOWN et utiliser un vrai systeme d'erreurs

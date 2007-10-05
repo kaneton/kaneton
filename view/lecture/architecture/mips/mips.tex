@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/lecture/architecture/mips/mips.tex
 %
 % created       julien quintard   [wed may 16 18:42:56 2007]
-% updated       julien quintard   [thu jun 14 16:07:39 2007]
+% updated       julien quintard   [mon sep 17 16:37:11 2007]
 %
 
 %
@@ -276,7 +276,7 @@
 \begin{frame}
   \frametitle{Description}
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       About \textbf{thirty} hours course.
     \item
@@ -289,7 +289,7 @@
 \begin{frame}
   \frametitle{Contents}
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       External architecture.
     \item
@@ -326,7 +326,7 @@
 \begin{frame}
   \frametitle{History}
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{1975}: IBM invented the pipelining technique but seemed
       difficult to implement due to interlocks for complex instructions like
@@ -350,7 +350,7 @@
 \begin{frame}
   \frametitle{History}
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{1991}: The R4000 is released, a 64-bit microprocessor.
     \item
@@ -378,7 +378,7 @@
 
   An architecture is composed of:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Visible registers.
     \item
@@ -405,7 +405,7 @@
 
   Nevertheless two registers have special meaning:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{R0}: Trash Register: this register returns zero on read and
       write operations are ignored.
@@ -417,7 +417,7 @@
   Some other registers have special meanings from the compiler view, but
   this is just a basic MIPS rule:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{R2}: return value.
     \item
@@ -434,7 +434,7 @@
 
   There are other special registers:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{HI and LO} are used for multiplications and divisions.
   \end{itemize}
@@ -442,7 +442,7 @@
   The MIPS processor has four registers very interesting for system
   programming:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{SR}: Status Register: used to distinguish the two context
       modes: user and supervisor.
@@ -571,7 +571,7 @@
 
   The MIPS processor classifies its 57 instructions into three groups.
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       \textbf{R}: Register to register instructions: Register-Type.
     \item
@@ -595,7 +595,7 @@
     \pgfuseimage{r-format}
   \end{center}
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{OPCODE}: the operation code.
     \item
@@ -620,7 +620,7 @@
 
   Let's see some examples of register to register instructions.
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Add Rd, Rs, Rt
     \item
@@ -641,7 +641,7 @@
     \pgfuseimage{i-format}
   \end{center}
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{OPCODE}: the operation code.
     \item
@@ -660,7 +660,7 @@
 
   Let's see some examples of immediate instructions.
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Addi Rt, Rs, Immed
     \item
@@ -681,7 +681,7 @@
     \pgfuseimage{j-format}
   \end{center}
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{OPCODE}: the operation code.
     \item
@@ -696,7 +696,7 @@
 
   Let's see some examples of jump instructions.
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       J Immed
   \end{itemize}
@@ -794,7 +794,7 @@
 
   The MIPS processor is composed of \textbf{57 instructions}:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{33} arithmetic and logic instructions.
     \item
@@ -1069,7 +1069,7 @@
   First of all, the instructions set is not build without reflexion
   but on statistics, rules and logic:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{MIX}
     \item
@@ -1195,7 +1195,7 @@
 
   Any question?
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Why the \textbf{Subi} instruction does not exist?
     \item
@@ -1210,7 +1210,7 @@
 
   The answers are:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Opcode is a very expensive resource.
     \item
@@ -1360,7 +1360,7 @@
 \begin{frame}
   \frametitle{Add Rd, Rs, Rt}
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       Reads the instruction.
     \item
@@ -1383,7 +1383,7 @@
 \begin{frame}
   \frametitle{Lw Rt, Immed(Rs)}
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       Reads the instruction.
     \item
@@ -1406,7 +1406,7 @@
 \begin{frame}
   \frametitle{Sw Rt, Immed(Rs)}
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       Reads the instruction.
     \item
@@ -1429,7 +1429,7 @@
 \begin{frame}
   \frametitle{Jr Rs}
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       Reads the instruction.
     \item
@@ -1454,7 +1454,7 @@
 
   The goal of a processor designer is to choose:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       the instructions set.
     \item
@@ -1566,7 +1566,7 @@
 
   The pipelining rules are:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       The pipeline stages must be balanced.
     \item
@@ -1690,7 +1690,7 @@
   to access memory instructions and memory data because the IFC and MEM
   stages have to access memory at the same time:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{Instruction-Access}: location of the memory instruction.
     \item
@@ -1709,7 +1709,7 @@
 
   These are the rules to follow to build a correct pipeline:
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       Stages must be balanced.
     \item
@@ -1740,7 +1740,7 @@
 
   Make the detailed pipeline for these instructions:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{Sllv Rd, Rs, Rt}: nothing special
     \item
@@ -1783,7 +1783,7 @@
 
   There are two solutions to solve the delay slot problem:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Just do not touch to this instruction which will be executed
       in the pipeline.
@@ -1829,7 +1829,7 @@
 
   There are two cases:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{Rs == Rt}:
         $target~address = branch~instruction~address + 4 + (Immediate * 4)$
@@ -1869,7 +1869,7 @@
 
   Indeed, while the EXE stage performs an addition, the DEC stage performs:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{Multiplication}: Immed * 4
     \item
@@ -2063,7 +2063,7 @@
 
   So, there are two solutions:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       To respect the RISC spirit and reject the important stuff into the
       compiler.
@@ -2142,7 +2142,7 @@
 
   The additional hardware is composed of two components:
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       Multiplexers.
     \item
@@ -2481,7 +2481,7 @@
 
   There are currently two stalls:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Between \textbf{Lw} and \textbf{Sll}.
     \item
@@ -2590,7 +2590,7 @@
 
   We could analyse loop's bodies instructions like this:
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       \textbf{L}oad: first, an element of an array for example is read from
       the memory.
@@ -2687,7 +2687,7 @@
   For our example, the loop body is composed of five instructions, but
   two of them are used to manage the loop:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Addiu R5, R5, 4
     \item
@@ -2857,7 +2857,7 @@
 \begin{frame}
   \frametitle{Notices}
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       There may be memory accesses in the IFC1 and IFC2 stage. From this
       fact, the memory should be pipelined.
@@ -2872,7 +2872,7 @@
 
   To conclude:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       More time to perform memory access.
     \item
@@ -2974,7 +2974,7 @@
 
   One iteration takes:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{MIPS5}: $8~cycles / 100~Mhz = 8 / 100 * 10^{6} = 80~ns$
     \item
@@ -2989,7 +2989,7 @@
 
   One iteration takes:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{MIPS5}: $5~cycles / 100~Mhz = 5 / 100 * 10^{6} = 50~ns$
     \item
@@ -3004,7 +3004,7 @@
 
   One iteration takes:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{MIPS5}: $5~cycles / 100~Mhz = 5 / 100 * 10^{6} = 50~ns$
     \item
@@ -3019,7 +3019,7 @@
 
   One \textbf{element} takes:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{MIPS5}: $4~cycles / 100~Mhz = 4 / 100 * 10^{6} = 40~ns$
     \item
@@ -3108,7 +3108,7 @@
 
   Then, we introduced the superpipelines with inherent properties:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       More stalls.
     \item
@@ -3156,7 +3156,7 @@
   You can notice some differencies or problems inherent to this new pipeline
   organisation:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       The memory stage is critical since the memory is not able to handle
       two memory accesses in parallel.
@@ -3323,7 +3323,7 @@
 
   There exists about three techniques to do so:
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       \textbf{Fifty-Fifty}: a simple and stupid way consisting in a
       50\% choice: either the next instructions or the branched instructions.
@@ -3345,7 +3345,7 @@
 
   Let's summerise the superscalar microprocessor rules:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Only one memory access at a time in the MEM stage.
     \item
@@ -3405,7 +3405,7 @@
 \begin{frame}
   \frametitle{Work}
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       Make this assembly code run on MIPS processors.
     \item
@@ -3448,7 +3448,7 @@
     \pgfuseimage{pibus-overview}
   \end{center}
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       \textbf{Masters}: microprocessors.
     \item
@@ -3465,7 +3465,7 @@
 
   The Pi-Bus steps are explained below:
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       First, every master interested in acquiring the bus has to set
       its REQi bit.
@@ -3531,7 +3531,7 @@
   To bypass this limitation a default master is always chosen and a GRANT
   is sent to this master, so:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Either this master asks for the bus in this cycle so it already
       holds the bus and we won one cycle using a default master.
@@ -3549,7 +3549,7 @@
   \textit{What is the algorithm used to acquire the bus?}
   \textit{How to avoid famine?}
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       \textbf{Static Strategy}: an identifier is assigned to each master.
       This strategy is very dangerous introducing famine.
@@ -3587,7 +3587,7 @@
   Through this course we studied the MIPS microprocessor based on few
   requirements:
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       The memory must provide:
 
@@ -3613,7 +3613,7 @@
 
   There exists different memory types or storage types:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{Static Memory}: This memory is very fast with an access time
       equal to the processor's one. But this type of memory is very
@@ -3753,7 +3753,7 @@
 
   We could decomposed an hard drive access into two very distinctive steps:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{A}: Move the reading head over the correct sector to
       perform the reading.
@@ -3849,7 +3849,7 @@
 
   There exists two different cache types:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{Unified Caches}.
     \item
@@ -3868,7 +3868,7 @@
 
   The properties are:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Complex because must respond to multiple requests: instruction and data
       because there are two memory accesses per cycles, in the IFC and MEM
@@ -3907,7 +3907,7 @@
   These caches simply distinguish the instruction from the data and are
   in fact composed of two caches:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Instruction Cache.
     \item
@@ -3952,7 +3952,7 @@
 
   There exists three different cache policies:
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       \textbf{Direct Mapping}: one block can only be located in one
       slot in the cache at a time.
@@ -4037,7 +4037,7 @@
   Let's notice that a directory entry like a data entry can take exactly
   \textbf{nine} values, in the case of our example.
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       The eight different possible blocks.
     \item
@@ -4124,7 +4124,7 @@
 
   There exists three interesting algorithms:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       FIFO.
     \item
@@ -4214,7 +4214,7 @@
   The caches are in fact implemented through the three different policies
   below:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Direct Mapping.
     \item
@@ -4257,7 +4257,7 @@
 
   There exists two different Write Policies:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{Write Through}: Simpler caches. Every writing goes to the
       memory with taking care of updating the cache.
@@ -4370,7 +4370,7 @@
 
   Then the following automata is used for every writing:
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       If M is equal to zero, then an Invalidation Signal is sent and the
       Modified Bit M is set to one.
@@ -4400,7 +4400,7 @@
 
   Then the following steps take place:
 
-  \begin{enumerate}[<+->]
+  \begin{enumerate}
     \item
       The bus access will be refused. A \textit{RETRACT} signal is sent
       to the master.
@@ -4476,7 +4476,7 @@
 
   The different Cache Policies can be easily summarise:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       Write Through.
 
@@ -4563,7 +4563,7 @@
 
   Note that we can classify instructions into three categories:
 
-  \begin{itemize}[<+->]
+  \begin{itemize}
     \item
       \textbf{Load Instructions}
     \item
