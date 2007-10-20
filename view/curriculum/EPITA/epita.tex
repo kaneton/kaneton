@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/curriculum/EPITA/epita.tex
 %
 % created       julien quintard   [sat oct 20 09:31:28 2007]
-% updated       julien quintard   [sat oct 20 14:27:30 2007]
+% updated       julien quintard   [sat oct 20 17:34:49 2007]
 %
 
 %
@@ -67,9 +67,12 @@
 % ---------- introduction -----------------------------------------------------
 %
 
+%XXX
+\tableofcontents
+
 \section{Introduction}
 
-\textit{kaneton} is part of a larger project consisting in an educational
+kaneton is part of a larger project consisting in an educational
 triology composed of:
   \textbf{k}\footnote{http://k.kaneton.org},
   \textbf{kaneton}\footnote{http://www.kaneton.org} and
@@ -360,7 +363,8 @@ XXX
 
 \section{k}
 
-XXX
+XXX[decribe brievement le truc et detailler les points aborder par le
+    cours et par les tranches du projet]
 
 %
 % ---------- kaneton ----------------------------------------------------------
@@ -506,7 +510,7 @@ course:
 % kernel
 %
 
-\section{Kernel}
+\subsection{Kernel}
 
 \textit{Name}: \textbf{KER}
 
@@ -563,6 +567,15 @@ The list below details the different sessions for the kernel course.
 \end{enumerate}
 
 %
+% ---------- preparation ------------------------------------------------------
+%
+
+\section{Preparation}
+
+XXX[lister ce que doit faire chaque poussins, plus precisement pour les cours
+    des inge2]
+
+%
 % ---------- project suggestions ----------------------------------------------
 %
 
@@ -612,7 +625,105 @@ to develop a security service based on the concept of user.
 
 \subsection{POSIX}
 
-XXX
+kaneton provides its own interface whish has nothing to do with interfaces
+of others \textit{UNIX} like \textit{Linux}, \textit{BSD} or others etc.
+
+\textit{POSIX} is an interface which was introduced in order to normalise the
+\textit{C Library} layer. Most applications --- at least in the \textit{UNIX}
+world --- rely in this software layer.
+
+If we want our operating system to benefit from the already existing and
+futures softwares without having to re-develop everything, we need to develop
+a software layer complying to the \textit{POSIX} standard. In our case,
+the \textit{POSIX} functionalities must be translated into either
+functionalities provided either by kaneton or one or more micro-kernel
+servers.
+
+The student will have to study very precisely the \textit{POSIX} standard
+as well as the kaneton interface in order to develop the emulation library:
+\textit{libposix}.
+
+In order to test the library, the student will be in charge of porting some
+services and applications. Since \textit{UNIX} highly relies on the concept
+of \textit{files}, it is very likely that the student will have to port
+or develop a hard-disk driver as well as a basic file system.
+
+The student could take advantage of the different work existing on the
+Internet, especially \textit{LSE/OS} which was designed and implemented
+at the EPITA Computer Systems Laboratory.
+
+%
+% amd64
+%
+
+\subsection{AMD-64}
+
+This project consists in porting kaneton to a new microprocessor architecture,
+in this case, \textit{AMD-64}.
+
+This architecture is very interesting for two reasons. First, \textit{AMD}
+architectures have many in common with \textit{IA32} ones. Since, kaneton
+already supports \textit{IA-32}, it would be easy to support this new
+architecture. Secondly, this architecture runs in 64-bit and its implementation
+could reveal design mistakes and/or implementation bugs in the generic
+part of the microkernel, commonly called \textit{core}. Besides, supporting
+an additional architecture means that the kaneton's portability scheme
+is correct.
+
+The student will have to study a complete new architecture by reader the
+microprocessor specifications. Besides, the student will have to report
+any problem encountered in his project, especially about the microkernel's
+design. Types handling in the \textit{core} is very likely to be problematic
+for example.
+
+The student will have to modify several parts in the kernel but also
+make suggestions about design improvements based on his observations.
+
+Besides, the student will have to complete the microkernel implementation
+in various ways: functionality not implemented yet, bugs correction, error
+handling improvement, etc.
+
+%
+% mips
+%
+
+\subsection{MIPS-64}
+
+This projects simply consists in contributing to the portage of kaneton
+on the \textit{MIPS-64} architecture.
+
+The remarks of the \textit{AMD-64} project apply here as well.
+
+%
+% dht
+%
+
+\subsection{DHT}
+
+This project consists in developing a \textit{DHT} --- Distributed Hash Table.
+This abstraction is crucial for distributed applications as these applications
+need to store data and make them accessible to the other nodes of the
+distributed system.
+
+The \textit{DHT} is built over what is called a \textit{KBR} --- Key-Based
+Routing. The r\^ole of this \textit{KBR} is to, given a key, locate the
+node which is in charge for storing a piece of data.
+
+This \textit{DHT} will be heavily used in kayou, especially for the distributed
+file system, but could also be used by many distributed applications.
+
+There does not exist any good implementation of such \textit{DHT}. Indeed,
+the well-known implementations were written in Java and are therefore
+useless in a true system where performances matter.
+
+The student will have to briefly study this research field through the
+well-known papers and projects: Chord, \textit{CAN}, Pastry etc. and then
+to design and finally implement the complete \textit{DHT}.
+
+This project is clearly research-oriented since the concepts directly come
+from research. However, many firms are highly interested in such a
+performant and secure implementation in order to build large-scale storage
+systems.
 
 \end{multicols}
 
@@ -622,13 +733,13 @@ XXX
 % ---------- XXX --------------------------------------------------------------
 %
 
-XXX intro + history
-XXX ensuite mettre l'organisation d'un cursus de poussin
-XXX liste des cours a partir du document schedule
+XXX intro + history [DONE]
+XXX ensuite mettre l'organisation d'un cursus de poussin [TODO]
+XXX liste des cours a partir du document schedule [~]
 XXX ensuite mettre ce que chaque poussins doit faire dans chaque de
     ses phases. par exemple le poussins + 1 doit donner les cours de remise
     a niveau, refaire la decoupe de la tarball, clean l'intra, preparer la
     pres aux inge2 mais egalement le recrutement inge1 avec des idees de
     projet etc. grace a ca, un poussin aura a lire ce qu'il doit penser
-    a faire.
-XXX finir avec des idees de projet
+    a faire. [TODO]
+XXX finir avec des idees de projet [DONE]
