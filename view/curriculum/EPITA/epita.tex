@@ -5,32 +5,133 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kaneton/view/book/development/history.tex
+% file          /home/mycure/kaneton/view/curriculum/EPITA/epita.tex
 %
-% created       julien quintard   [fri jun  1 14:33:16 2007]
-% updated       julien quintard   [sat oct 20 10:24:59 2007]
+% created       julien quintard   [sat oct 20 09:31:28 2007]
+% updated       julien quintard   [sat oct 20 11:28:55 2007]
 %
+
+%
+% ---------- path -------------------------------------------------------------
+%
+
+\def\path{../..}
+
+%
+% ---------- packages ---------------------------------------------------------
+%
+
+%
+% template
+%
+
+\input{\path/template/paper.tex}
+
+%
+% header
+%
+
+\lhead{\scriptsize{The kaneton microkernel :: EPITA}}
+
+%
+% title
+%
+
+\title{The kaneton microkernel :: EPITA}
+
+%
+% authors
+%
+
+\author{\small{Julien Quintard}}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+\begin{multicols}{2}
+
+%
+% ---------- introduction -----------------------------------------------------
+%
+
+\section{Introduction}
+
+\textit{kaneton} is part of a larger project consisting in an educational
+triology composed of:
+  \textbf{k}\footnote{http://k.kaneton.org},
+  \textbf{kaneton}\footnote{http://www.kaneton.org} and
+  \textbf{kayou}\footnote{http://kayou.kaneton.org}; the
+\textit{k* educational trilogy}.
+
+Note that the purpose of these three projects remains educational. However,
+for each one, there exists a research project in parallel consisting in the
+development of a novative operating system.
+
+Thus, people in charge of the teaching of kaneton work in parallel on the
+development of the research project. Additionally, past teachers continue
+to contribute to the project either by developing or supervising the
+new comers.
+
+%
+% k
+%
+
+\subsection{k}
+
+\textit{k} is an introduction course targeting low-level programming. The
+project lasts several weeks and allows students to understand what is the
+microprocessor's r\^ole in an operating system. Additionally, this course
+allows the students to see what is the link between the user-land applications
+and the operating system's kernel.
+
+%
+% kaneton
+%
+
+\subsection{kaneton}
+
+\textit{kaneton} is probably the most important project of the trilogy. This
+project, taught to second-year engineering students, lasts for about five
+months. This project focuses on making students fully understand
+internals of a micro-kernel based operating system.
+
+%
+% kayou
+%
+
+\subsection{kayou}
+
+\textit{kayou} is a distributed operating system built over the kaneton
+micro-kernel. The kayou's originality resides in its fully distributed
+architecture. In such an architecture, all the machines of the network share
+their resources with each others including the memory, the processor, the
+storage and devices etc. \textit{kayou} is not taught at EPITA, at least
+for now. However, that could be the case, especially for the last-year
+students.
 
 %
 % ---------- history ----------------------------------------------------------
 %
 
-\chapter{History}
-
-In this chapter we detail the kaneton history from the first
-year with low-level programming introduction to the last kaneton
-microkernel implementation.
-
-\newpage
-
-%
-% ---------- text -------------------------------------------------------------
-%
+\section{History}
 
 During the kaneton history, the project evolved and courses were added
 to the curriculum to make the whole kaneton project more interesting and
 understandable by the students. Moreover, the educational project, which
-was already targetting the \textit{EPITA}'s \textit{System, Network and
+was already targeting the \textit{EPITA}'s \textit{System, Network and
 Security} major, was also used in other contexts, victim of its success
 and of the very hard work achieved by kaneton people over the years.
 
@@ -38,10 +139,10 @@ and of the very hard work achieved by kaneton people over the years.
 % 2004
 %
 
-\section{2004}
+\subsection{2004}
 
 The first year, a low-level programming introduction course named \textbf{k}
-was proposed for the \textit{EPITA} Engineering School's first year students.
+was proposed for the \textit{EPITA} Engineering School's first-year students.
 
 About fourteen hours courses were taught introducing the \textit{Intel 32-bit}
 microprocessor's external architecture and low-level programming.
@@ -62,7 +163,7 @@ learn more about operating systems internals.
 % 2005
 %
 
-\section{2005}
+\subsection{2005}
 
 The two, still students, \textit{Julien Quintard} and \textit{Jean-Pascal
 Billaud} then prepared a complete microkernel design the students will have
@@ -76,10 +177,10 @@ to the servers with an \textit{IDE} device driver and finally a \textit{FAT}
 file system.
 
 Notice that the majority of the students did not success in implementing a
-complete scheduling system allowing the creation of user-land task. Indeed,
+complete scheduling system allowing the creation of user-land tasks. Indeed,
 the best groups achieved in providing the management of kernel-land tasks only.
 Therefore, the \textit{IDE} driver, \textit{FAT} file system etc. were
-running in the kernel.
+running inside the kernel.
 
 Inspite of this, once again, the whole project was a success. However,
 kaneton people noticed that the students took much time doing boring work
@@ -100,19 +201,19 @@ new project: the \textbf{kaneton microkernel research project}.
 % 2006
 %
 
-\section{2006}
+\subsection{2006}
 
 While \textit{Jean-Pascal Billaud} leaved the project, people joined it
-starting with \textit{EPITA} last year students \textit{C\'edric Aubouy},
+starting with \textit{EPITA} last-year students \textit{C\'edric Aubouy},
 \textit{Renaud Lienhart} but also \textit{Fabien Le-Mentec} from
 \textit{EPITECH} who knew these people from the \textit{EPITA Computer Systems
 Laboratory} where they were all working together a year before.
 \textit{C\'edric Aubouy} and \textit{Renaud Lienhard} were in charge of the
 kernel and \textit{Intel 32-bit Architecture} courses, respectively.
 \textit{Julien Quintard} was still in charge of the kaneton educational
-project given to the students.
+project taught to the students.
 
-More over two \textit{EPITA} first year students joined the \textit{EPITA
+Moreover two \textit{EPITA} first-year students joined the \textit{EPITA
 Computer Systems Laboratory}, \textit{Matthieu Bucchianeri} and \textit{Renaud
 Voltz}. Indeed, from this date, the \textit{EPITA Computer Systems Laboratory}
 was a strong partner of the kaneton microkernel project. These two students
@@ -123,8 +224,7 @@ educational project the following year.
 \textit{Matthieu Bucchianeri} and \textit{Renaud Voltz} did an amazing work
 on the kaneton research project implementation. Indeed, most of the
 code related to the \textit{Intel 32-bit Architecture} comes from them. In
-addition, the test suite as well as many tests were written by them. Thanks
-to their work.
+addition, the test suite as well as many tests were written by them.
 
 This year, kaneton people decided to introduce a development environment,
 based on the kaneton research reference implementation, including everything
@@ -160,7 +260,7 @@ lines for the \textit{Intel 32-bit Architecture} implementation.
 % 2007
 %
 
-\section{2007}
+\subsection{2007}
 
 People affiliated with the \textit{EPITA Computer Systems Laboratory} joined
 the project: \textit{Pierre Duteil} and \textit{Julian Pidancet}. Moreover,
@@ -198,4 +298,58 @@ implementation was able to start modules - as standalone binaries - in
 user-land as well as to make them communicate through the kaneton messaging
 system.
 
-This year, \textit{Pierre Duteil} leaved the project.
+This year, \textit{Pierre Duteil} leaved the project. Since the project
+needed two students for teaching kaneton to the second-year students,
+\textit{Elie Bleton} joined the project. As a first-year student, he had
+to work by himself to learn everything about the kaneton concepts and
+implementation.
+
+This year was not as good as people were expecting it to be. As a result,
+kaneton people decided to re-organise the curriculum of students working
+on kaneton so that they can learn everything about kaneton in a very
+short period of time to be then able to work on their project without any
+lack of knowledge.
+
+%
+% ---------- schedule ---------------------------------------------------------
+%
+
+\section{Schedule}
+
+XXX
+
+\end{multicols}
+
+\end{document}
+
+XXX ensuite mettre l'organisation d'un cursus de poussin
+XXX liste des cours a partir du document schedule
+XXX ensuite mettre ce que chaque poussins doit faire dans chaque de
+    ses phases. par exemple le poussins + 1 doit donner les cours de remise
+    a niveau, refaire la decoupe de la tarball, clean l'intra, preparer la
+    pres aux inge2 mais egalement le recrutement inge1 avec des idees de
+    projet etc.
+XXX finir avec des idees de projet
+
+--
+
+
+The kaneton microkernel project is born from students of the EPITA Computer
+Science Engineering School. Furthermore, EPITA was used as a testbed for
+the educational project.
+
+Indeed, the project started in 2004 with an optional course named \textbf{k}
+taught to the first-year engineering students. The next year, kaneton was
+taught as a practical material of the advanced operating systems course.
+
+In 2006, a partnership was established with the EPITA Computer Systems
+Laboratory. Indeed, the laboratory recruit first-year engineering students
+in a specifically arranged curriculum so that they have the chance to take
+part in research activities of a laboratory.
+
+Two of these students were assigned to the kaneton microkernel project, their
+work being to contribute to the development of the kaneton microkernel
+research project in the first place. The following year, these students
+become in charge of the teaching of the kaneton microkernel educational
+project to the second-year engineering students of EPITA.
+--
