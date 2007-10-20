@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/curriculum/EPITA/epita.tex
 %
 % created       julien quintard   [sat oct 20 09:31:28 2007]
-% updated       julien quintard   [sat oct 20 11:28:55 2007]
+% updated       julien quintard   [sat oct 20 14:27:30 2007]
 %
 
 %
@@ -316,40 +316,319 @@ lack of knowledge.
 
 \section{Schedule}
 
+Until 2007, two students were recruited every year, in January, via the EPITA
+Computer Systems Laboratory. These students were assigned a project and had
+to work on it from February to the end of July.
+
+The project assigned was, in the first years, directly related to the
+development of the kaneton research project \textit{i.e} the reference
+implementation. Through these projects, the recruited students discovered
+and learned the concepts related to kaneton: micro-kernel design,
+\textit{IA-32} microprocessor external architecture etc.
+
+Unfortunately, this is no longer the case. Indeed, the development of the
+kaneton reference reaches its end. Thus, the new recruited students do not
+have the possibility to learn through their project since the
+\textit{IA-32}-related source code is already developed.
+
+The next steps relate to the operating system, \textit{kayou}.
+
+Since students cannot learn about the kaneton design and \textit{IA-32}
+programming, they will not be capable of teaching the kaneton courses and
+project to the second-year students of EPITA.
+
+As a result, in order to make students capable of teaching, they have to
+be taught the fundamentals by older kaneton people. This reasoning led to
+the curriculum's schedule described below.
+
+The timetable below describes the teaching of the \textit{k* triology's}
+projects. Assistants are named \textit{``Poussins''} followed by the year
+they have been recruited. For convenience and clarity, three years of the
+EPITA's curriculum are detailled starting in 2008, as an example.
+
+%
+% 2008
+%
+
+\subsection{2008}
+
+XXX
+
+%
+% ---------- k ----------------------------------------------------------------
+%
+
+\section{k}
+
+XXX
+
+%
+% ---------- kaneton ----------------------------------------------------------
+%
+
+\section{kaneton}
+
+The kaneton microkernel project's goal is to lead students to understand
+what really is an operating system and more precisely a kernel.
+
+Every group, composed of two students, will have to develop parts of
+the kaneton microkernel.
+
+To simplify the project, each group receives a development environment
+containing everything necessary to start the project including a
+working microkernel base, documentation, assignments etc.
+
+The project comes with two fundamental courses:
+
+\begin{itemize}
+  \item
+    \textbf{Kernel}: this course explores the kernels internals including
+    microkernel architectures, memory management, processes and threads,
+    synchronisation, communications, and complete case studies.
+  \item
+    \textbf{MIPS architecture}: this course is dedicated to the MIPS internal
+    architecture although this course actually explains modern microprocessors
+    concepts: pipelining, optimizations, caches etc.
+\end{itemize}
+
+%
+% project
+%
+
+\subsection{Project}
+
+The whole kaneton project is subdivided into stages:
+
+\begin{itemize}
+  \item
+    \textbf{k0}: this project will be entirely developed during a
+    special coding session of about 6 hours and under the teachers'
+    supervisation. This project consists in an introduction to the
+    IA-32 external architecture: basic memory management model,
+    IA-32 assembly language, development tools etc.
+  \item
+    \textbf{k1}: this project will lead the students to an higher abstraction
+    level. The goal of the project is to develop the segment manager to be
+    able to manage physical memory and the architecture-dependent part of the
+    region manager to be able to control the virtual memory. This project
+    is \textbf{two weeks} long.
+  \item
+    \textbf{k2}: this project introduces the interrupts management and
+    the driver development. Indeed, the student will have to install
+    everything necessary to handle interrupts. Then, some drivers will
+    be developed including the keyboard, the timer and a demonstration shell.
+    This project is \textbf{two weeks} long.
+  \item
+    \textbf{k3}: the students will have to provide everything necessary
+    to handle execution contexts. Indeed, the student will have to
+    develop the scheduler but also to implement the context switchs from
+    the microprocessor point of view. This project is \textbf{three weeks}
+    long
+  \item
+    \textbf{k4}: this project introduces the communication into the
+    microkernel. Indeed, the students will have to provide some
+    communication primitives including sychronous and asynchronous
+    functions as well as blocking and non-blocking functions. This project
+    is \textbf{two weeks} long.
+\end{itemize}
+
+%
+% mips architecture
+%
+
+\subsection{MIPS Architecture}
+
+\textit{Name}: \textbf{MIA}
+
+\textit{Hours}: \textbf{30 hours} divided into \textbf{10 sessions}
+
+This course is intended to give students a complete view of how a RISC
+microprocessor works and what choices the designers made to build the
+future modern microprocessors.
+
+Below are listed the concepts studied in this course:
+
+\begin{itemize}
+  \item
+    External architecture: we will study the instructions set,
+    the memory management model etc.
+  \item
+    Pipeline: we will study the MIPS pipeline, its inherent problems
+    and limitations. Advanced pipelines will also be studied.
+  \item
+    Compiler optimisations: we will study the different direct assembly
+    source code optimisations: rescheduling, software pipelining etc.
+  \item
+    Memory: we will study the bus used on the MIPS processor and
+    the different cache management techniques.
+\end{itemize}
+
+The list below details the different sessions for the MIPS architecture
+course:
+
+\begin{enumerate}
+  \item
+    Course presentation, MIPS history, introduction to MIPS external
+    architecture: registers and instructions set. Introduction to
+    instruction formats and to inherent limitations. (3 hours)
+  \item
+    End of instruction formats introduction, explanations of architecture
+    designers choices: MIXs and Amdhal Rule. Some exercises to practice.
+    Introduction to MIPS architecture addressing and to MIPS pipeline.
+    (3 hours)
+  \item
+    Introduction to MIPS spirit and to its pipeline. Moore Law and
+    pipeline rules. Introduction to different pipeline representations:
+    simplified and detailed. Some exercises to pratice these representations.
+    (3 hours)
+  \item
+    We will study in this session the next instruction address computation
+    problem and the delay slot. Then, study of branch instruction and their
+    problems and limitations. Some exercises to pratice. (3 hours)
+  \item
+    Complete study of instruction dependencies. Some exercise to practice.
+    (3 hours)
+  \item
+    Partial exam correction. Introduction to optimisations. (3 hours)
+  \item
+    Study of different optimisations used by compilers. Study of
+    advanced pipelines: superpipeline, superscalar pipelines etc. (3 hours)
+  \item
+    Introduction to the Pi-Bus used by the MIPS microprocessor. Then complete
+    study of memory including cache management. (3 hours)
+  \item
+    End of memory course. Some exercises to practice. (3 hours)
+  \item
+    Revisions for the final exam. (3 hours)
+\end{enumerate}
+
+%
+% kernel
+%
+
+\section{Kernel}
+
+\textit{Name}: \textbf{KER}
+
+\textit{Hours}: \textbf{20 hours} divided into \textbf{10 sessions}
+
+This course is intended to give the students a general overview of
+kernel internals and its problematics.
+
+Below are listed the studied notions:
+
+\begin{itemize}
+  \item
+    Understand how kernel developpement evolves and why, receive a
+    minimal general culture on kernel internals and history.
+  \item
+    We will see how to manage and share common resources (memory,
+    execution time) with increasing constraints and needs.
+  \item
+    In each aspect of the kernel studies, students will learn the
+    common security issues and how to solve them.
+  \item
+    The common kernel design issues will be totally understood by the
+    students and they will be able to build their own design.
+  \item
+    The course aims at giving the students a precise idea of how it
+    works inside, thus giving them the ability to fully understand
+    the kaneton project.
+\end{itemize}
+
+The list below details the different sessions for the kernel course.
+
+\begin{enumerate}
+  \item
+    \textbf{Microkernel}: quick introduction to the courses. Overview
+    of kernel history and trends. Birth and evolution of microkernels, their
+    fundamentals. (2 hours)
+  \item
+    \textbf{Memory management}: hardware base of memory management. What
+    kind of resulting constraints? Physcical and virtual memory
+    management. (2 hours)
+  \item
+    \textbf{Processes \& threads}: current kernels manage simultaneous
+    executions. What kind of solutions to handle them? (2 hours)
+  \item
+    \textbf{Synchronisation}: concurrent access to shared resources is a
+    common problem in all levels of multithreaded kernels. How to resolve it,
+    famous case studies. (2 hours)
+  \item
+    \textbf{Communication (IPC)}: quick overview of communications forms
+    from signals to message passing. New problems in the security and shape of
+    IPC, introduced by the microkernel design. (2 hours)
+  \item
+    \textbf{Case studies}: studies on L4, Mach, Hurd and Chorus. (4 x 2 hours)
+\end{enumerate}
+
+%
+% ---------- project suggestions ----------------------------------------------
+%
+
+\section{Project Suggestions}
+
+This section contains some project suggestions for the new \textit{Poussins}.
+
+%
+% security
+%
+
+\subsection{Security}
+
+Security is a very important topic in operating system, even more in
+distributed systems. Indeed, in such a system, resources are completely
+shared among the machines of the system. It is therefore crucial to protect
+these resources from being accessed by unauthorised entities.
+
+This project consists in designing and implementing a complete security
+model composed of some in-kernel primitives as well as at the operating
+system level.
+
+For now, the kaneton microkernel provides the concept of \textit{capabilities}
+which seems to perfectly fit the distributed systems' requirements. The student
+will have to confirm that this concept is suitable for our needs. The student
+will also have to complete the current implementation in order to move to
+the study of the security in the operating system, even its in distributed
+form.
+
+A possibly suitable access control scheme could be the RBAC - Role-Based
+Access Control. The student will have, once again, to confirm this
+possibility via a preliminary study and then implement the services
+necessary to this scheme so that applications can use it.
+
+The student will have to tackle the notion of multi-users at the operating
+system level. Indeed, although this notion is integrated at the kernel
+level in every \textit{UNIX} system, kaneton designers decided to handle this
+notion outside the microkernel.
+
+The student will then have to study this concept and implement the necessary
+services. Besides, the student could also investigate further in order
+to develop a security service based on the concept of user.
+
+%
+% posix
+%
+
+\subsection{POSIX}
+
 XXX
 
 \end{multicols}
 
 \end{document}
 
+%
+% ---------- XXX --------------------------------------------------------------
+%
+
+XXX intro + history
 XXX ensuite mettre l'organisation d'un cursus de poussin
 XXX liste des cours a partir du document schedule
 XXX ensuite mettre ce que chaque poussins doit faire dans chaque de
     ses phases. par exemple le poussins + 1 doit donner les cours de remise
     a niveau, refaire la decoupe de la tarball, clean l'intra, preparer la
     pres aux inge2 mais egalement le recrutement inge1 avec des idees de
-    projet etc.
+    projet etc. grace a ca, un poussin aura a lire ce qu'il doit penser
+    a faire.
 XXX finir avec des idees de projet
-
---
-
-
-The kaneton microkernel project is born from students of the EPITA Computer
-Science Engineering School. Furthermore, EPITA was used as a testbed for
-the educational project.
-
-Indeed, the project started in 2004 with an optional course named \textbf{k}
-taught to the first-year engineering students. The next year, kaneton was
-taught as a practical material of the advanced operating systems course.
-
-In 2006, a partnership was established with the EPITA Computer Systems
-Laboratory. Indeed, the laboratory recruit first-year engineering students
-in a specifically arranged curriculum so that they have the chance to take
-part in research activities of a laboratory.
-
-Two of these students were assigned to the kaneton microkernel project, their
-work being to contribute to the development of the kaneton microkernel
-research project in the first place. The following year, these students
-become in charge of the teaching of the kaneton microkernel educational
-project to the second-year engineering students of EPITA.
---

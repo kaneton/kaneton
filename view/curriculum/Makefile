@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/curriculum/Makefile
 #
 # created       julien quintard   [sun jun 10 00:03:39 2007]
-# updated       julien quintard   [fri jun 22 18:05:27 2007]
+# updated       julien quintard   [sat oct 20 14:30:40 2007]
 #
 
 #
@@ -27,8 +27,8 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		presentation			\
-					schedule			\
+SUBDIRS			:=		EPITA				\
+					presentation			\
 					seminar				
 
 #
