@@ -8,7 +8,7 @@
 % file          /home/buckman/kaneton/view/curriculum/EPITA/epita.tex
 %
 % created       julien quintard   [sat oct 20 09:31:28 2007]
-% updated       matthieu bucchianeri   [thu oct 25 00:35:31 2007]
+% updated       matthieu bucchianeri   [thu oct 25 01:08:45 2007]
 %
 
 %
@@ -596,8 +596,9 @@ Below are listed the studied notions:
     We will see how to manage and share common resources (memory,
     execution time) with increasing constraints and needs.
   \item
-    In each aspect of the kernel studies, students will learn the
-    common security issues and how to solve them.
+    The microprocessor's facilities are very detailed to make the
+    students fully understand the mecanisms. Examples are taken from
+    many different architectures.
   \item
     The common kernel design issues will be totally understood by the
     students and they will be able to build their own design.
@@ -611,26 +612,37 @@ The list below details the different sessions for the kernel course.
 
 \begin{enumerate}
   \item
-    \textbf{Microkernel}: quick introduction to the courses. Overview
-    of kernel history and trends. Birth and evolution of microkernels, their
-    fundamentals. (2 hours)
+    \textbf{Recalls and prerequisites}: presentation of the diffent
+    kind of kernels and the role in an operating system. Recalls of
+    low-level basics (3 hours).
   \item
-    \textbf{Memory management}: hardware base of memory management. What
-    kind of resulting constraints? Physcical and virtual memory
-    management. (2 hours)
+    \textbf{Bootstrap}: details about processor bootup and bootloading
+    (2 hours)
+\item
+    \textbf{Memory management (part one)}: fundamental concepts of
+    memory management, overview of memory management unit and address
+    translation though paging (3 hours).
   \item
-    \textbf{Processes \& threads}: current kernels manage simultaneous
-    executions. What kind of solutions to handle them? (2 hours)
+    \textbf{Memory management (part two)}: high-level mecanisms like
+    page swapping, copy-on-write, etc. Presentation of most known
+    allocation algorithms (3 hours).
   \item
-    \textbf{Synchronisation}: concurrent access to shared resources is a
-    common problem in all levels of multithreaded kernels. How to resolve it,
-    famous case studies. (2 hours)
+    \textbf{Events and I/O (part one)}: interrupt mecanism, interrupt
+    vector and processor running modes (3 hours).
   \item
-    \textbf{Communication (IPC)}: quick overview of communications forms
-    from signals to message passing. New problems in the security and shape of
-    IPC, introduced by the microkernel design. (2 hours)
+    \textbf{Events and I/O (part two)}: hardware interrupts, interrupt
+    controllers, port-mapped input/output, memory-mapped input/output
+    (3 hours).
   \item
-    \textbf{Case studies}: studies on L4, Mach, Hurd and Chorus. (4 x 2 hours)
+    \textbf{Task and scheduling (part one)}: recalls on
+    multiprogramming, execution context, context switching (3 hours).
+  \item
+    \textbf{Task and scheduling (part two)}: process control block on
+    known operating systems, task life cycle, scheduling automaton,
+    scheduling algorithms (3 hours).
+  \item
+    \textbf{Inter-Process Communication}: ipc in a microkernel,
+    message passing, classical ipc, locking (3 hours).
 \end{enumerate}
 
 %
