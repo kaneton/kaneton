@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/mycure/kaneton/view/curriculum/EPITA/epita.tex
+% file          /home/buckman/kaneton/view/curriculum/EPITA/epita.tex
 %
 % created       julien quintard   [sat oct 20 09:31:28 2007]
-% updated       julien quintard   [sun oct 21 18:13:55 2007]
+% updated       matthieu bucchianeri   [thu oct 25 00:35:31 2007]
 %
 
 %
@@ -376,8 +376,62 @@ XXX
 
 \section{k}
 
-XXX[decribe brievement le truc et detailler les points aborder par le
-    cours et par les tranches du projet]
+k is a short but complete introduction to low-level programming and
+operating system basics.
+
+Students - in groups of four - will develop a tiny monolithic kernel
+intended to run very simple applications in a mono-task environment.
+
+While dealing with many fundamental aspects of operating systems like
+device drivers and system calls, the project is funny and visual. The
+programs to run are tiny 2D-arcade games with graphic rendering and
+sound.
+
+The project comes with a few lessons:
+
+\begin{itemize}
+  \item
+    Introduction to memory management, presenting the segmentation
+    mecanism.
+  \item
+    Presentation of the x86 calling convention.
+  \item
+    Event handling, including hardware interrupts.
+  \item
+    Privilege modes and system calls.
+  \item
+    Device driver implementation and filesystems.
+  \item
+    Binary formats and ELF loading.
+\end{itemize}
+
+%
+% project
+%
+
+\subsection{Project}
+
+The project is divided into several parts:
+
+\begin{itemize}
+  \item
+    \textbf{pm manager} that takes care of memory management.
+  \item
+    \textbf{event} and \textbf{syscall manager} handling external
+    event and userland to kernelspace transitions.
+  \item
+    \textbf{cons}, \textbf{vga} and \textbf{speaker manager} for
+    multimedia operations.
+  \item
+    \textbf{kbd} and \textbf{mouse manager} to provide user inputs.
+  \item
+    \textbf{time manager} to measure time intervals.
+  \item
+    \textbf{fs manager} to manage the root filesystem.
+\end{itemize}
+
+The project lasts two months and is concluded by an evaluation of the
+final projects with each groups.
 
 %
 % ---------- kaneton ----------------------------------------------------------
