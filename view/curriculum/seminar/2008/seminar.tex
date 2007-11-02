@@ -8,7 +8,7 @@
 % file          /home/buckman/cry...view/curriculum/seminar/2008/seminar.tex
 %
 % created       matthieu bucchianeri   [fri nov  2 14:14:33 2007]
-% updated       matthieu bucchianeri   [fri nov  2 15:27:29 2007]
+% updated       matthieu bucchianeri   [fri nov  2 21:02:38 2007]
 %
 
 %
@@ -242,7 +242,77 @@
 % -)
 
 \begin{frame}
-  \frametitle{void}
+  \frametitle{Kernel roles}
+
+  The kernel is the part of the operating system managing:
+
+  \begin{itemize}
+  \item
+    Memory
+  \item
+    Processes
+  \item
+    I/O
+  \item
+    Communication
+  \end{itemize}
+
+  In OS like Linux or *BSD, drivers are included into the kernel, and
+  a few services like the network stack are included too.
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Project Goals}
+
+  The goals of the kaneton project are:
+
+  \begin{itemize}
+    \item
+      To build a pedagogical project.
+    \item
+      With the clearest possible design.
+    \item
+      Able to fit distributed operating systems requirements.
+    \item
+      Dealing with portability.
+    \item
+      Easily maintainable.
+    \item
+      Able to run UNIX{\scriptsize \copyright} programs via
+      an emulation library.
+    \item
+      Finally, an \textbf{all easy to understand}: source code, design,
+      etc.
+  \end{itemize}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Microkernel design}
+
+  Microkernel topology tends to reduce the amount of code running in
+  privileged mode. Only the critical code requiring supervisor
+  privileges is left in the kernel.
+
+  \begin{center}
+    \pgfuseimage{kaneton}
+  \end{center}
+
+  All non critical code (drivers \& services) are pushed out of the
+  kernel and runs in non-privileged mode.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{XXX}
+
+  XXX more about kaneton
+
 \end{frame}
 
 %
@@ -254,7 +324,38 @@
 % -)
 
 \begin{frame}
-  \frametitle{void}
+  \frametitle{Cursus}
+
+  XXX piscine
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{POSIX}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{AMD-64}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Security}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Distributed Hash Table}
+
 \end{frame}
 
 %
@@ -266,7 +367,46 @@
 % -)
 
 \begin{frame}
-  \frametitle{void}
+  \frametitle{Ing1}
+
+  After the intensive upgrade week, you are attended to work on their
+  projects. Some projects of the classical cursus will be removed to
+  give you more time for the laboratory. These grades will be replaced
+  by grades from your supervisor.
+
+  \-
+
+  You are encouraged to work on other projects about kaneton: we have
+  a long TODO list and a lot of tiny enhancements.
+
+  \-
+
+  In addition, kaneton teachers will probably need help for practical
+  work or assisting students.
+
+  \-
+
+  Depending on your progress on your project, you will be assigned to
+  give the k course to ing1. This includes:
+
+  \begin{itemize}
+  \item
+    Giving the lessons
+  \item
+    Assisting the project
+  \item
+    Evaluating the students
+  \end{itemize}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Ing2 \& Ing3}
+
+  During your ing2,
+
 \end{frame}
 
 \end{document}
