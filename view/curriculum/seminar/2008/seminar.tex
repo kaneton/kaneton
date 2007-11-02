@@ -1,0 +1,149 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/buckman/cry...view/curriculum/seminar/2008/seminar.tex
+%
+% created       matthieu bucchianeri   [fri nov  2 14:14:33 2007]
+% updated       matthieu bucchianeri   [fri nov  2 14:47:20 2007]
+%
+
+%
+% path
+%
+
+\def\path{../../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{the kaneton microkernel project\\http://www.kaneton.org}
+
+%
+% authors
+%
+
+\author
+{
+  Matthieu~Bucchianeri,
+  Renaud~Voltz
+}
+
+%
+% figures
+%
+
+%\pgfdeclareimage[interpolate=true,width=200pt,height=140pt]
+%                {set}
+%		{figures/set}
+
+\pgfdeclareimage[interpolate=true,width=200pt,height=160pt]
+                {kaneton}
+		{figures/kaneton}
+
+\pgfdeclareimage[interpolate=true,width=200pt,height=100pt]
+                {kernel-in-os}
+		{figures/kernel-in-os}
+
+\pgfdeclareimage[interpolate=true,width=200pt,height=100pt]
+                {servers-in-os}
+		{figures/servers-in-os}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+
+  \begin{center}
+    \logos
+  \end{center}
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Contents}
+  \tableofcontents
+\end{frame}
+
+%
+% overview
+%
+
+\section{Overview}
+
+% -)
+
+\begin{frame}
+  \frametitle{Project overview}
+
+  kaneton is a microkernel designed and developed for pedagogical
+  purposes.
+
+  \begin{center}
+    \pgfuseimage{kernel-in-os}
+  \end{center}
+
+  However, kaneton is also meant to be the basis of a distributed
+  oeprating system called kayou.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Lessons overview}
+
+  kaneton is also a set of lessons in SRS and GISTR specializations:
+
+  \begin{itemize}
+  \item
+    Kernels, Operating systems and low-level programnming;
+  \item
+    Microprocessors design and architecture
+  \end{itemize}
+
+  \-
+
+  And 5 projects in both specializations:
+
+  \begin{itemize}
+  \item
+    K0: bootstrap
+  \item
+    K1: memory management
+  \item
+    K2: interrupts and event handling
+  \item
+    K3: multitasking and multithreading
+  \item
+    K4: inter-process communication
+  \end{itemize}
+
+  \-
+
+  The whole course is given to about 60 students every years.
+
+\end{frame}
+
+\end{document}
