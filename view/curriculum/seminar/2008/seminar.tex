@@ -8,7 +8,7 @@
 % file          /home/buckman/kan...view/curriculum/seminar/2008/seminar.tex
 %
 % created       matthieu bucchianeri   [fri nov  2 14:14:33 2007]
-% updated       matthieu bucchianeri   [sun nov  4 19:19:26 2007]
+% updated       matthieu bucchianeri   [sun nov  4 20:00:39 2007]
 %
 
 %
@@ -66,6 +66,14 @@
 \pgfdeclareimage[interpolate=true,width=200pt,height=100pt]
                 {machdep}
 		{figures/machdep}
+
+\pgfdeclareimage[interpolate=true,width=200pt,height=100pt]
+                {driver}
+		{figures/driver}
+
+\pgfdeclareimage[interpolate=true,width=200pt,height=90pt]
+                {test}
+		{figures/test}
 
 %
 % document
@@ -431,18 +439,61 @@
 
 \begin{frame}
   \frametitle{Drivers and services}
+
+  In classical operating systems, drivers and services are libraries
+  or source files. Interacting with them is simple function or system
+  call.
+
+  \begin{center}
+    \pgfuseimage{driver}
+    \\\emph{Example of PCI driver query}
+  \end{center}
+
+  In kaneton (and more generaly microkernels), drivers and services
+  are programs, exactly like user applications. Calls are now
+  IPC. Communication with the hardware can be achieved only by drivers
+  because they have specific attributes (privileges).
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Testsuite}
+
+  kaneton has the ability to be fully validated. This is useful to
+  avoid regression while working on the code.
+
+  \-
+
+  In addition, the testsuite is used to evalutate the ing2 projects
+  and to give grades.
+
+  \begin{center}
+    \pgfuseimage{test}
+    \\\emph{Testing on real machines through serial port}
+  \end{center}
+
+  The testsuite is made of about 200 unitary and global tests covering
+  almost every features of the kernel.
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Current progress}
+
+  The kaneton microkernel is nearly finished. Recently, we tested the
+  whole kernel writing drivers and test applications. As an example,
+  we ported a network stack and kaneton answered ping.
+
+  \-
+
+  For this reason, future work around kaneton is the Operating System
+  based on it. But the kernel needs to be maintained and a few
+  functionality are missing.
+
 \end{frame}
 
 %
@@ -456,7 +507,25 @@
 \begin{frame}
   \frametitle{Cursus}
 
-  XXX piscine
+  Before working on kaneton, recruited students will follow a one week
+  intensive upgrade course.
+
+  \-
+
+  This week includes:
+
+  \begin{itemize}
+  \item
+    Lessons on the IA-32 architecture
+  \item
+    Lessons on kernels implementation
+  \item
+    Complete review of the kaneton design
+  \item
+    Presentation of the kaneton tools an environment
+  \item
+    Practical work: implementation of critical parts of the kernel
+  \end{itemize}
 
 \end{frame}
 
@@ -500,7 +569,7 @@
   \frametitle{Ing1}
 
   After the intensive upgrade week, recruits are attended to work on
-  your projects. Some projects of the classical cursus will be removed
+  their projects. Some projects of the classical cursus will be removed
   to give more time for the laboratory. These grades will be replaced
   by grades from kaneton supervisor.
 
@@ -558,6 +627,11 @@
   students are blocked, to learn how the testing facility works, and
   to communicate with the administration (planning, grades\ldots).
 
+  \-
+
+  In ing3, your work is to ensure the project continuation in the
+  school (this presentation is an example).
+
 \end{frame}
 
 % -)
@@ -578,7 +652,7 @@
 
   \-
 
-  The continuation of the project in EPITA and the ing2 students
+  The continuation of the project at EPITA and the ing2 students
   depends on the kaneton recruits. For these reasons, the administration
   (in particular Christian Dujardin), the future SRS \& GISTR
   specialization students and us are counting on the recruits.
