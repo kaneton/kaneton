@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/buckman/cry...view/curriculum/seminar/2008/seminar.tex
+% file          /home/buckman/kan...view/curriculum/seminar/2008/seminar.tex
 %
 % created       matthieu bucchianeri   [fri nov  2 14:14:33 2007]
-% updated       matthieu bucchianeri   [fri nov  2 21:07:36 2007]
+% updated       matthieu bucchianeri   [sun nov  4 19:19:26 2007]
 %
 
 %
@@ -62,6 +62,10 @@
 \pgfdeclareimage[interpolate=true,width=200pt,height=100pt]
                 {servers-in-os}
 		{figures/servers-in-os}
+
+\pgfdeclareimage[interpolate=true,width=200pt,height=100pt]
+                {machdep}
+		{figures/machdep}
 
 %
 % document
@@ -309,10 +313,136 @@
 % -)
 
 \begin{frame}
-  \frametitle{XXX}
+  \frametitle{Inter-Process Communication}
 
-  XXX more about kaneton
+  The whole Operating System is based on IPC. Every driver, service
+  and application requests goes through messages.
 
+  \-
+
+  kaneton supports message queues as the basic IPC. Messages are sent
+  from one task to another, but for security reasons, all the messages
+  are handled by the kernel.
+
+  \-
+
+  When an application needs to request data from a service, it sends
+  through the kernel a message to this service. Then, the service
+  replies, also passing through the kernel.
+
+  \-
+
+  The entire microkernel principles are based on IPC.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Tasks \& address spaces}
+
+  kaneton is a fully isolated multitask, preemptive multithread kernel.
+
+  \-
+
+  Tasks have their own address space, not accessible by other
+  tasks. This protection mecanism is achieved through virtual memory.
+
+  \-
+
+  An IPC is a transfer of a buffer from one address space to another.
+
+  \-
+
+  A task is made of one ore more threads. Threads are implements on
+  kernel-side (1:1 model). The kernel implements a multilevel feedback
+  queue scheduler.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Portability}
+
+  kaneton is designed to be portable, even if for the moment, kaneton
+  only runs on Intel IA-32 architecture.
+
+  \-
+
+  Each functionality in kaneton is divided in common independent code
+  and machine dependent code. For example:
+
+  \begin{center}
+    \pgfuseimage{machdep}
+    \\\emph{Code hierarchy for thread switching}
+  \end{center}
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Object oriented \& sets}
+
+  Not only the design allows kaneton to be simply understandable.
+
+  \-
+
+  The kernel uses concepts directly taken from object-oriented
+  programming (while being developed in C). Everything is object:
+  tasks, threads, memory regions, messages\ldots
+
+  \-
+
+  Because the kernel is used to store all these object to process
+  them, a special mecanism called ``sets'' is used for containers.
+
+  \-
+
+  Sets implement different common containers (list, stack,
+  FIFO\ldots), so the kernel code to manipulate objects is unified and
+  clear.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Capabilities}
+
+  Object manipulation inside and outside the kernel must implement
+  controls.
+
+  \-
+
+  kaneton uses capabilities for managing permissions on objects. A
+  capability is a reference to an object plus a bitmap enumerating
+  permissions on this object. A security mecanism based on
+  cryptography is used to prevent anyone modifying a capability.
+
+  \-
+
+  All objects are manipulated using capabilities by the applications.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Drivers and services}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Testsuite}
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Current progress}
 \end{frame}
 
 %
@@ -369,14 +499,14 @@
 \begin{frame}
   \frametitle{Ing1}
 
-  After the intensive upgrade week, you are attended to work on your
-  projects. Some projects of the classical cursus will be removed to
-  give you more time for the laboratory. These grades will be replaced
-  by grades from your supervisor.
+  After the intensive upgrade week, recruits are attended to work on
+  your projects. Some projects of the classical cursus will be removed
+  to give more time for the laboratory. These grades will be replaced
+  by grades from kaneton supervisor.
 
   \-
 
-  You are encouraged to work on other projects about kaneton: we have
+  Recruits are encouraged to work on other projects about kaneton: we have
   a long TODO list and a lot of tiny enhancements.
 
   \-
@@ -386,7 +516,7 @@
 
   \-
 
-  Depending on your progress on your project, you will be assigned to
+  Depending on the progress on recruits projects, recruits will be assigned to
   give the k course to ing1. This includes:
 
   \begin{itemize}
@@ -405,8 +535,61 @@
 \begin{frame}
   \frametitle{Ing2 \& Ing3}
 
-  During your ing2, your main job will be to give the kaneton lessons
-  to ing2 and to assist the project.
+  During your ing2, recruits main job will be to give the kaneton course:
+
+  \begin{itemize}
+  \item
+    Giving the lessons
+  \item
+    Doing the project presentations (1 per stage)
+  \item
+    Issuing and correcting the written evaluation (= \emph{partiel})
+  \item
+    Assisting the project
+  \item
+    Correcting the students tarballs
+  \end{itemize}
+
+  \-
+
+  Recruits will have to appropriate to yourself the currently existing
+  lessons (more than 300 slides), to prepare the presentations, to
+  write or update the subjects, to issue additional lessons when
+  students are blocked, to learn how the testing facility works, and
+  to communicate with the administration (planning, grades\ldots).
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Duties}
+
+  People integrating the LSE for kaneton are not like other ing1
+  integrating the lab.
+
+  \-
+
+  The students recruited for kaneton are commited to stay in the LSE
+  from now to the moment they leave for their end-of-study
+  internship. While classical ing1 in the lab can leave after ing1,
+  \textbf{kaneton recruits have no other option than staying in the
+  lab}.
+
+  \-
+
+  The continuation of the project in EPITA and the ing2 students
+  depends on the kaneton recruits. For these reasons, the administration
+  (in particular Christian Dujardin), the future SRS \& GISTR
+  specialization students and us are counting on the recruits.
+
+  \-
+
+  Applying for kaneton is an important and serious commitment. Do not
+  apply until you are \textbf{100\% sure of your interest} in the
+  project and the course. Any wrong can lead the project to
+  \underline{die}. So please, by respect to all the people that
+  invested time in the project, do not disappoint us.
 
 \end{frame}
 
