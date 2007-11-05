@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/buckman/kan...view/curriculum/seminar/2008/seminar.tex
+% file          /home/buckman/cry...view/curriculum/seminar/2008/seminar.tex
 %
 % created       matthieu bucchianeri   [fri nov  2 14:14:33 2007]
-% updated       matthieu bucchianeri   [sun nov  4 20:10:40 2007]
+% updated       matthieu bucchianeri   [mon nov  5 21:23:48 2007]
 %
 
 %
@@ -134,7 +134,7 @@
 
   \begin{itemize}
   \item
-    Kernels, Operating systems and low-level programnming;
+    Kernels, Operating systems and low-level programming;
   \item
     Microprocessors design and architecture
   \end{itemize}
@@ -258,7 +258,7 @@
 
   The kernel is the part of the operating system managing:
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
   \item
     Memory
   \item
@@ -313,7 +313,7 @@
     \pgfuseimage{kaneton}
   \end{center}
 
-  All non critical code (drivers \& services) are pushed out of the
+  All non critical code (drivers \& services) is pushed out of the
   kernel and runs in non-privileged mode.
 
 \end{frame}
@@ -354,7 +354,7 @@
   \-
 
   Tasks have their own address space, not accessible by other
-  tasks. This protection mecanism is achieved through virtual memory.
+  tasks. This protection mechanism is achieved through virtual memory.
 
   \-
 
@@ -404,7 +404,7 @@
   \-
 
   Because the kernel is used to store all these object to process
-  them, a special mecanism called ``sets'' is used for containers.
+  them, a special mechanism called ``sets'' is used for containers.
 
   \-
 
@@ -426,7 +426,7 @@
 
   kaneton uses capabilities for managing permissions on objects. A
   capability is a reference to an object plus a bitmap enumerating
-  permissions on this object. A security mecanism based on
+  permissions on this object. A security mechanism based on
   cryptography is used to prevent anyone modifying a capability.
 
   \-
@@ -492,7 +492,7 @@
 
   For this reason, future work around kaneton is the Operating System
   based on it. But the kernel needs to be maintained and a few
-  functionality are missing.
+  functionalities are missing.
 
 \end{frame}
 
@@ -514,7 +514,7 @@
 
   This week includes:
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
   \item
     Lessons on the IA-32 architecture
   \item
@@ -534,6 +534,53 @@
 \begin{frame}
   \frametitle{POSIX}
 
+  kaneton provides its own interface, completely different from \emph(UNIX).
+
+  \-
+
+  \emph{POSIX} is an interface which was introduced in order to
+  normalise the \emph{C Library} layer.
+
+  \-
+
+  This project consists in implementing a \emph{POSIX} compliant layer
+  that translates \emph{POSIX} functionalities into kaneton interface
+  calls.
+
+  \-
+
+  The student will have to study very precisely the \textit{POSIX}
+  standard as well as the kaneton interface in order to develop the
+  emulation library.
+
+  \-
+
+  Since \textit{UNIX} highly relies on the concept of \textit{files},
+  it is very likely that the student will have to port or develop a
+  hard-disk driver as well as a basic file system.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{POSIX}
+
+  Deliverables:
+
+  \begin{itemize}[<+->]
+    \item
+    The emulation layer: \emph{libposix}
+    \item
+    A Virtual Filesystem Switch (VFS), plus one or more usable block
+    device drivers and filesystems
+    \item
+    A few test application taken from \emph{UNIX} systems
+    \item
+    Optionally, an emulation service to run applications without
+    recompiling it
+  \end{itemize}
+
 \end{frame}
 
 % -)
@@ -541,12 +588,100 @@
 \begin{frame}
   \frametitle{AMD-64}
 
+  This project consists in porting kaneton to a new microprocessor
+  architecture, in this case, \textit{AMD-64}.
+
+  \-
+
+  This architecture will probably become more and more used soon, so
+  it is a good idea to support it in kaneton.
+
+  \-
+
+  It is interesting to port kaneton to AMD-64 since this architecture
+  is 64-bit and its implementation could reveal design mistakes and/or
+  implementation bugs in the generic part of the microkernel.
+
+  \-
+
+  In addition, having kaneton running on two different platforms means
+  that the kaneton portability scheme is correct.
+
+  \-
+
+  The student will have to study a complete new architecture by reading
+  the microprocessor specifications.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{AMD-64}
+
+  Deliverables:
+
+  \begin{itemize}[<+->]
+    \item
+    The bootloader ported to AMD-64
+    \item
+    The machine-dependent code for AMD-64
+    \item
+    Some new specific tests for this architecture
+    \item
+    A port of a few basic services if needed
+  \end{itemize}
+
 \end{frame}
 
 % -)
 
 \begin{frame}
   \frametitle{Security}
+
+  This project consists in designing and implementing a complete
+  security model composed of some in-kernel primitives as well as at
+  the operating system level.
+
+  \-
+
+  For now, the kaneton microkernel provides the concept of
+  \textit{capabilities}. The student will have to complete the current
+  implementation in order to move to the study of the security in the
+  operating system, even its in distributed form.
+
+  \-
+
+  A possibly suitable access control scheme could be the RBAC -
+  Role-Based Access Control. The student will have, once again, to
+  confirm this possibility via a preliminary study and then implement
+  the services necessary to this scheme so that applications can use
+  it.
+
+  \-
+
+  The student will have to implement multi-users environment for
+  kaneton, completing the work of the POSIX project.
+
+\end{frame}
+
+% -)
+
+\begin{frame}
+  \frametitle{Security}
+
+  Deliverables:
+
+  \begin{itemize}[<+->]
+    \item
+    A complete description of the chosen solutions
+    \item
+    One or more services implementing your security model
+    \item
+    A service implementing \emph{POSIX} multi-users environment
+    \item
+    A set of tests showing the efficiency of your solution
+  \end{itemize}
 
 \end{frame}
 
@@ -588,7 +723,7 @@
   Depending on the progress on recruits projects, recruits will be assigned to
   give the k course to ing1. This includes:
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
   \item
     Giving the lessons
   \item
@@ -606,7 +741,7 @@
 
   During your ing2, recruits main job will be to give the kaneton course:
 
-  \begin{itemize}
+  \begin{itemize}[<+->]
   \item
     Giving the lessons
   \item
@@ -621,7 +756,7 @@
 
   \-
 
-  Recruits will have to appropriate to yourself the currently existing
+  Recruits will have to appropriate to themrselves the currently existing
   lessons (more than 300 slides), to prepare the presentations, to
   write or update the subjects, to issue additional lessons when
   students are blocked, to learn how the testing facility works, and
