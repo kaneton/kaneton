@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/buckman/cry...view/curriculum/seminar/2008/seminar.tex
+% file          /home/mycure/kane...view/curriculum/seminar/2008/seminar.tex
 %
 % created       matthieu bucchianeri   [fri nov  2 14:14:33 2007]
-% updated       matthieu bucchianeri   [mon nov  5 21:42:29 2007]
+% updated       julien quintard   [mon nov  5 20:59:58 2007]
 %
 
 %
@@ -42,10 +42,6 @@
 %
 % figures
 %
-
-%\pgfdeclareimage[interpolate=true,width=200pt,height=140pt]
-%                {set}
-%		{figures/set}
 
 \pgfdeclareimage[interpolate=true,width=200pt,height=160pt]
                 {kaneton}
@@ -158,7 +154,7 @@
 
   \-
 
-  The whole course is given to about 60 students every years.
+  The whole course is given to about 60 students every year.
 
 \end{frame}
 
@@ -197,7 +193,7 @@
 	\item
 	Project manager and designer
 	\item
-	Responsible of kaneton course from 2004 to 2006
+	Responsible of kaneton courses from 2004 to 2006
         \item
 	Lecturer of Microprocessors architecture lessons
       \end{itemize}
@@ -209,7 +205,7 @@
 	\item
 	Core and IA-32 developers
 	\item
-	Responsibles of kaneton course in 2007
+	Responsibles of the kaneton course in 2007
 	\item
 	Lecturers of Kernels and operating systems lessons in 2007
       \end{itemize}
@@ -227,7 +223,7 @@
 
   \begin{itemize}
     \item
-      Mathieu Sélariès: Assistant project manager
+      Mathieu Sélariès: Assistant project manager and occasional developer
     \item
       Enguerrand Raymond: MIPS Developer
   \end{itemize}
@@ -240,7 +236,7 @@
     \item
       Renaud Lienhart: IA-32 architecture lecturer for 2006
     \item
-      Jean-Pascal Billaud: kaneton course for 2004 and 2005
+      Jean-Pascal Billaud: kaneton courses for 2004 and 2005
   \end{itemize}
 
 \end{frame}
@@ -269,7 +265,7 @@
     Communication
   \end{itemize}
 
-  In OS like Linux or *BSD, drivers are included into the kernel, and
+  In OSes like Linux or *BSD, drivers are included in the kernel, and
   a few services like the network stack are included too.
 \end{frame}
 
@@ -295,7 +291,7 @@
       Able to run UNIX{\scriptsize \copyright} programs via
       an emulation library.
     \item
-      Finally, an \textbf{all easy to understand}: source code, design,
+      Finally, an \textbf{all-easy-to-understand}: source code, design,
       etc.
   \end{itemize}
 \end{frame}
@@ -324,7 +320,7 @@
   \frametitle{Inter-Process Communication}
 
   The whole Operating System is based on IPC. Every driver, service
-  and application requests goes through messages.
+  and application's request goes through messages.
 
   \-
 
@@ -362,7 +358,7 @@
 
   \-
 
-  A task is made of one ore more threads. Threads are implements on
+  A task is made of one or more threads. Threads are implemented on
   kernel-side (1:1 model). The kernel implements a multilevel feedback
   queue scheduler.
 
@@ -404,12 +400,13 @@
   \-
 
   Because the kernel is used to store all these object to process
-  them, a special mechanism called ``sets'' is used for containers.
+  them, a special mechanism called ``sets'' is used for containing those
+  objects.
 
   \-
 
   Sets implement different common containers (list, stack,
-  FIFO\ldots), so the kernel code to manipulate objects is unified and
+  FIFO\ldots), so the kernel code for manipulating objects is unified and
   clear.
 
 \end{frame}
@@ -441,8 +438,8 @@
   \frametitle{Drivers and services}
 
   In classical operating systems, drivers and services are libraries
-  or source files. Interacting with them is simple function or system
-  call.
+  or source files. Interacting with them means issuing a simple function or
+  system call.
 
   \begin{center}
     \pgfuseimage{driver}
@@ -466,7 +463,7 @@
 
   \-
 
-  In addition, the testsuite is used to evalutate the ing2 projects
+  In addition, this testsuite is used to evalutate the ing2 projects
   and to give grades.
 
   \begin{center}
@@ -475,7 +472,7 @@
   \end{center}
 
   The testsuite is made of about 200 unitary and global tests covering
-  almost every features of the kernel.
+  almost every feature of the kernel.
 
 \end{frame}
 
@@ -534,7 +531,7 @@
 \begin{frame}
   \frametitle{POSIX}
 
-  kaneton provides its own interface, completely different from \emph(UNIX).
+  kaneton provides its own interface, completely different from \emph{UNIX}.
 
   \-
 
@@ -604,7 +601,7 @@
 
   \-
 
-  In addition, having kaneton running on two different platforms means
+  In addition, having kaneton running on two different platforms would mean
   that the kaneton portability scheme is correct.
 
   \-
@@ -749,7 +746,7 @@
   After the intensive upgrade week, recruits are attended to work on
   their projects. Some projects of the classical cursus will be removed
   to give more time for the laboratory. These grades will be replaced
-  by grades from kaneton supervisor.
+  by grades from kaneton supervisors.
 
   \-
 
@@ -799,16 +796,16 @@
 
   \-
 
-  Recruits will have to appropriate to themrselves the currently existing
+  Recruits will have to appropriate to themselves the currently existing
   lessons (more than 300 slides), to prepare the presentations, to
   write or update the subjects, to issue additional lessons when
   students are blocked, to learn how the testing facility works, and
-  to communicate with the administration (planning, grades\ldots).
+  to communicate with the EPITA administration (planning, grades\ldots).
 
   \-
 
-  In ing3, your work is to ensure the project continuation in the
-  school (this presentation is an example).
+  In ing3, your work is to ensure the project continuation at EPITA
+  (this presentation is an example).
 
 \end{frame}
 
