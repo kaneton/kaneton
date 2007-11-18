@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [thu jun 28 20:39:31 2007]
+# updated       julien quintard   [sun nov 18 15:33:17 2007]
 #
 
 #
@@ -62,10 +62,7 @@ ENV_OPTION_PRIVATE = 1
 # are up-to-date. if not, this rule re-builds the configured environment files.
 #
 
-_:		$(_ENV_MK_) $(_ENV_PY_)
-	$(call env_launch,Makefile,main,)
-
-$(_ENV_MK_) $(_ENV_PY):							\
+ENV_DEPENDENCIES := $(wildcard						\
 		$(_PROFILE_DIR_)/*.conf					\
 		$(_PROFILE_DIR_)/host/*.conf				\
 		$(_PROFILE_DIR_)/host/*.mk				\
@@ -96,7 +93,13 @@ $(_ENV_MK_) $(_ENV_PY):							\
 		$(_PROFILE_DIR_)/user/*.py				\
 		$(_PROFILE_USER_DIR_)/*.conf				\
 		$(_PROFILE_USER_DIR_)/*.mk				\
-		$(_PROFILE_USER_DIR_)/*.py
+		$(_PROFILE_USER_DIR_)/*.py)
+
+_:		$(_ENV_MK_) $(_ENV_PY_)
+	$(call env_launch,Makefile,main,)
+
+$(_ENV_MK_) $(_ENV_PY):							\
+		$(ENV_DEPENDENCIES)
 	$(call env_launch,$(_ENVIRONMENT_DIR_)/Makefile,initialize,)
 
 #

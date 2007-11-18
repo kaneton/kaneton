@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/curriculum/seminar/Makefile
 #
 # created       julien quintard   [mon may 14 21:14:19 2007]
-# updated       julien quintard   [fri jun 22 18:09:56 2007]
+# updated       julien quintard   [sun nov 18 15:40:32 2007]
 #
 
 #
@@ -28,7 +28,8 @@ include			../../../environment/env.mk
 #
 
 SUBDIRS			:=		2006				\
-					2007				
+					2007				\
+					2008				
 
 #
 # ---------- rules ------------------------------------------------------------
