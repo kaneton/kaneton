@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/export/export.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [thu may 31 22:55:26 2007]
+# updated       julien quintard   [sun dec  2 17:42:27 2007]
 #
 
 #
@@ -159,9 +159,19 @@ def			dist():
   # move to the directory parent to the kaneton repository copy.
   env.cd(g_directory, env.OPTION_NONE)
 
+  # a message.
+  env.display(env.HEADER_OK,
+              "packing the processed distribution...",
+              env.OPTION_NONE)
+
   # create an archive.
   env.pack(env._EXPORT_,
            env._EXPORT_DIR_ + "/" + g_distribution, env.OPTION_NONE)
+
+  # a message.
+  env.display(env.HEADER_OK,
+              "removing temporary files and directories...",
+              env.OPTION_NONE)
 
   # remove the temporary stuff.
   env.remove(g_file, env.OPTION_NONE)
@@ -185,6 +195,11 @@ def			stages():
   # of code.
   files = env.search(g_directory, "^.*\.(c|S|h|asm)$", env.OPTION_FILE)
 
+  # a message.
+  env.display(env.HEADER_OK,
+              "hiding stages...",
+              env.OPTION_NONE)
+
   # for each file, remove the tags
   for file in files:
     content = env.pull(file, env.OPTION_NONE)
@@ -194,7 +209,7 @@ def			stages():
       # find the pieces of code
       markings = re.findall("("						\
                               "^.*\[cut\] k" + str(stage) + ".*\n"	\
-                              "(?:.|\n)*"				\
+                              "(?:.|\n)*?"				\
                               "^.*\[cut\] /k" + str(stage) + ".*\n"	\
                             ")",
                             content, re.MULTILINE)
@@ -231,6 +246,11 @@ def			tags():
   # of code.
   files = env.search(g_directory, "^.*\.(c|S|h|asm)$", env.OPTION_FILE)
 
+  # a message.
+  env.display(env.HEADER_OK,
+              "removing tags...",
+              env.OPTION_NONE)
+
   # for each file, remove the tags
   for file in files:
     content = env.pull(file, env.OPTION_NONE)
@@ -260,6 +280,11 @@ def			clean():
   entries = None
   entry = None
 
+  # a message.
+  env.display(env.HEADER_OK,
+              "cleaning the distribution from unwanted/private stuff...",
+              env.OPTION_NONE)
+
   # remove the subversion directories
   entries = env.search(g_directory, "^\.svn$",
                        env.OPTION_DIRECTORY | env.OPTION_RECURSIVE)
@@ -283,6 +308,11 @@ def			clean():
 def			build():
   # go to the root directory.
   env.cd(env._SOURCE_DIR_, env.OPTION_NONE)
+
+  # a message.
+  env.display(env.HEADER_OK,
+              "building a copy of the working tree...",
+              env.OPTION_NONE)
 
   # creates a tarball of the kaneton root directory.
   env.pack(env.info(env.OPTION_CURRENT_DIRECTORY), g_file, env.OPTION_NONE)

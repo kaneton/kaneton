@@ -361,3 +361,11 @@ independante.
 
 --
  virer les ERROR_UNKNOWN et utiliser un vrai systeme d'erreurs
+
+--
+ systeme de messagerie: Nuntion calcule la taille max d'un message * la taille
+ de la queue max = ceil(S)
+
+ on demande une autorisation de comm avec un process. si c'est accepte on
+ mappe ceil(S) octets de son AS et on copie les messages direct dans son
+ AS.

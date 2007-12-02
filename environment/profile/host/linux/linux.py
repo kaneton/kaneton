@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [tue jun 26 16:56:43 2007]
+# updated       julien quintard   [sun dec  2 17:49:45 2007]
 #
 
 #
