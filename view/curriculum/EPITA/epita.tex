@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/curriculum/EPITA/epita.tex
 %
 % created       julien quintard   [sat oct 20 09:31:28 2007]
-% updated       julien quintard   [wed dec  5 15:34:48 2007]
+% updated       julien quintard   [sat dec  8 03:00:19 2007]
 %
 
 %
@@ -79,14 +79,14 @@ triology composed of:
   \textbf{kayou}\footnote{http://kayou.kaneton.org}; the
 \textit{k* educational trilogy}.
 
-Note that the purpose of these three projects remains educational. However,
-for each one, there exists an aside research project consisting in the
-development of a novative operating system.
+Although these project remain educational, there exists an aside related
+research project consisting in designing and implementing a novative operating
+system.
 
-Thus, people in charge of the teaching of kaneton work in parallel on the
-development of the research project. Additionally, past teachers keep
+Thus, people in charge of the teaching at \textit{EPITA} also contribute to
+the development of the research project. Additionally, past teachers keep
 contributing to the project either by developing or supervising the
-new comers.
+new comers whilst some past students join the project.
 
 %
 % k
@@ -120,7 +120,7 @@ internals of a micro-kernel based operating system.
 \textit{kayou} is a distributed operating system built over the kaneton
 micro-kernel. The kayou's originality resides in its fully distributed
 architecture. In such an architecture, all the machines of the network share
-their resources with each others. Shared resources include memory, processor,
+resources with each others. Shared resources include memory, processor,
 storage, devices and so forth. kayou is not taught at EPITA, yet. However,
 it would be a very good material for distributed systems courses.
 
@@ -131,7 +131,7 @@ it would be a very good material for distributed systems courses.
 \section{History}
 
 During the kaneton history, the project evolved and courses were added
-to the curriculum to make the whole educational project more interesting and
+to the curriculum, making the whole educational project more interesting and
 understandable to the students. Moreover, the educational project, which
 was already targeting the \textit{EPITA}'s \textit{System, Network and
 Security} major, was also used in other contexts, victim of its success
@@ -143,23 +143,21 @@ and of the very hard work achieved by kaneton people over the years.
 
 \subsection{2004}
 
-The first year, a low-level programming introductory course named \textbf{k}
-was proposed to the \textit{EPITA} Engineering School's first-year students.
+The first year, an optional low-level programming introductory course named
+\textbf{k} was proposed to the \textit{EPITA} Engineering School's first-year
+students.
 
 About fourteen hours courses were taught introducing the \textit{Intel 32-bit}
 microprocessor's external architecture and low-level programming.
 
 The students had to develop small, poor and messy device drivers for the
-console and keyboard peripherals. Moreover, a tiny command interpreter was
-developed by students so that they can trigger a kernel action by entering
-a command.
+console and keyboard peripherals.
 
-The course was a bit chaotic but this first shot was a success.
-
-Therefore, the students majoring in \textit{System, Network and Security}
-asked the two students \textit{Julien Quintard} and \textit{Jean-Pascal
-Billaud} a complete kernel project for their curriculum so that they can
-learn more about operating systems internals.
+The course was a bit chaotic but this first shot was a success. Therefore, the
+students majoring in \textit{System, Network and Security} asked the two
+students \textit{Julien Quintard} and \textit{Jean-Pascal Billaud} for a
+complete kernel project within their curriculum so that they can learn more
+about operating systems internals.
 
 %
 % 2005
@@ -168,25 +166,25 @@ learn more about operating systems internals.
 \subsection{2005}
 
 The two, still students, \textit{Julien Quintard} and \textit{Jean-Pascal
-Billaud} then prepared a complete microkernel design the students will have
-to implement. This was the premises of the \textbf{kaneton microkernel
-educational project}. Additionally, two complete courses on kernel design and
-\textit{Intel 32-bit Architecture} programming were prepared.
+Billaud} then started to work on a complete microkernel design the students
+will have to implement. This was the premises of the \textbf{kaneton
+microkernel educational project}. Additionally, two complete courses on kernels
+design and \textit{Intel 32-bit Architecture} programming were prepared.
 
 The project was composed of six steps, from the bootstrap, through the
 kernel internals including memory management, task management etc.
 to the servers with an \textit{IDE} device driver and finally a \textit{FAT}
 file system.
 
-Notice that the majority of the students did not success in implementing a
+The large majority of the students did not success in implementing a
 complete scheduling system allowing the creation of user-land tasks. Indeed,
 the best groups achieved in providing the management of kernel-land tasks only.
 Therefore, the \textit{IDE} driver, \textit{FAT} file system etc. were
 running inside the kernel, leading more to a monolithic kernel model.
 
 Inspite of this, once again, the whole project was a success. However,
-kaneton people noticed that the students took much time doing boring and
-time-demanding work like filling in header files, dealing with versionning
+kaneton people noticed that the students took too much time doing unnecessary
+time-demanding work like filling header files, dealing with versionning
 problems, writing \textit{Make} files and \textit{Shell} scripts etc.
 
 Moreover, the courses were too messy and the students had difficulties
@@ -208,8 +206,8 @@ new project: the \textbf{kaneton microkernel research project}.
 While \textit{Jean-Pascal Billaud} leaved the project, people joined it
 starting with \textit{EPITA} last-year students \textit{C\'edric Aubouy},
 \textit{Renaud Lienhart} but also \textit{Fabien Le-Mentec} from
-\textit{EPITECH} who knew these people from the \textit{EPITA Computer Systems
-Laboratory} where they were all working together a year before.
+\textit{EPITECH} who knew all these people from the \textit{EPITA Computer
+Systems Laboratory} where they were all working together a year before.
 \textit{C\'edric Aubouy} and \textit{Renaud Lienhard} were in charge of the
 kernel and \textit{Intel 32-bit Architecture} courses, respectively.
 \textit{Julien Quintard} was still in charge of the kaneton educational
@@ -221,7 +219,7 @@ Voltz}. Indeed, from this date, the \textit{EPITA Computer Systems Laboratory}
 was a strong partner of the kaneton microkernel project. These two students
 were hired for contributing to the development of the kaneton research project.
 Moreover, these students were supposed to teach and supervise the kaneton
-educational project the following year.
+educational project a year after.
 
 \textit{Matthieu Bucchianeri} and \textit{Renaud Voltz} did an amazing work
 on the kaneton research project implementation. Indeed, most of the
@@ -232,12 +230,12 @@ This year, kaneton people decided to introduce a development environment,
 based on the kaneton research reference implementation, including everything
 necessary to set up a collaborative kernel development.
 
-While, previously, the students had to write the entire microkernel and
+Whilst, previously, students had to write the entire microkernel and
 servers from scratch, this year, students only had to write precise parts
 of the microkernel including some set implementations, memory management,
 task scheduling etc.
 
-Few mistakes were made especially about the choice of parts the students
+A few mistakes were made especially about the choice of parts the students
 had to implement. Indeed, asking the students to implement set implementations
 like linked-list, array etc. was a very bad idea. This year, the project
 was not completed and students stopped the project before the messaging
@@ -250,8 +248,8 @@ course was introduced and taught by \textit{Julien Quintard}.
 In conclusion, the kaneton educational project was not a real success this year
 and needed some modifications. For instance, the course about the \textit{Intel
 32-bit Architecture} was too specific and hard to understand but also hard
-to teach. Instead, kaneton people decided to introduce a more general course
-about kernel principles for the next year.
+to teach. Instead, kaneton people decided to replace it with a more general
+course about kernel principles.
 
 The kaneton research project implementation, in 2006,
   counted\footnote{Estimations realised with the software \textit{sloccount}.}
@@ -268,11 +266,11 @@ People affiliated with the \textit{EPITA Computer Systems Laboratory} joined
 the project: \textit{Pierre Duteil} and \textit{Julian Pidancet}. Moreover,
 students who implemented the kaneton educational project the previous year
 decided to join the project: \textit{Enguerrand Raymond} and \textit{Mathieu
-S\'elari\`es}, mainly working on the \textit{MIPS Architecture} portage among
+S\'elari\`es}, mainly working on the \textit{MIPS Architecture} portage amongst
 other contributions.
 
 This year, \textit{Matthieu Bucchianeri} and \textit{Renaud Voltz} were in
-charge of the educational project by giving the kaneton courses as well
+charge of the educational project by giving the kernel course as well
 as supervising students' educational implementations.
 
 As the kaneton research implementation was much more advanced as in 2006,
@@ -280,18 +278,18 @@ the students were given more code and then focused only on interesting and
 system-related parts.
 
 Students totally implemented the physical and virtual memory management, the
-event and timers, the thread manager, the scheduler and the messaging system.
-As for the previous years, the implementation was based on the \textit{Intel
-32-bit Architecture}.
+event and timer managers, the thread manager, the scheduler and the messaging
+system. As for the previous years, the implementation was based on the
+\textit{Intel 32-bit Architecture}.
 
 This year, the whole kaneton educational project was also given to students
-from the \textit{Realtime \& Embedded Systems} specialization, for a total
+from the \textit{Realtime \& Embedded Systems} specialisation, for a total
 of about $50$ students. The project was evaluated using a test suite,
 developed for the kaneton research project, of about a hundred tests.
 
 This year, the kaneton educational project was an amazing success as many
 students completed a working microkernel, able to run tasks and to implement
-some servers running on top of the kaneton microkernel.
+servers running on top of the kaneton microkernel.
 
 The kaneton research implementation has grown to \textit{9,000} lines of source
 code for the \textit{core} and \textit{5,500} lines for the microprocessor's
@@ -300,16 +298,14 @@ implementation was able to start modules - as standalone binaries - in
 user-land as well as to make them communicate through the kaneton messaging
 system.
 
-This year, \textit{Pierre Duteil} leaved the project. Since the project
-needed two students for teaching kaneton to the second-year students,
-\textit{Elie Bleton} joined the project. As a first-year student, he had
-to work by himself to learn everything about the kaneton concepts and
-implementation.
+This year, \textit{Pierre Duteil} leaved the project prematurely. Since the
+educational project needed two students for teaching kaneton to the second-year
+students, \textit{Elie Bleton} joined the project.
 
 This year was not as good as expected for the kaneton research project. As a
 result, kaneton people decided to re-organise the curriculum of students
-working on kaneton so that they can learn everything about kaneton in a very
-short period of time to be then able to work on their project without any
+working on kaneton so that they can learn everything related to kaneton in a
+very short period of time to be then able to work on their project without any
 lack of knowledge.
 
 %
@@ -329,26 +325,25 @@ and learned the concepts related to kaneton: micro-kernel design,
 \textit{IA-32} microprocessor external architecture etc.
 
 Unfortunately, this is no longer the case. Indeed, the development of the
-kaneton reference reaches its end. Thus, the new recruited students do not
-have the possibility to learn through their project since the
-\textit{IA-32}-related source code is already developed.
-
-The next steps relate to the operating system: \textit{kayou}.
+kaneton reference reaches its end, the next steps being related to the kayou
+distributed operating system. Thus, the new recruited students do not have
+the opportunity to learn through their project.
 
 Since students cannot learn about the kaneton design and \textit{IA-32}
 programming, they will not be capable of teaching the kaneton courses and
 project to the second-year students of EPITA.
 
-As a result, in order to make students capable of teaching, they have to
-be taught the fundamentals by more experienced kaneton people. This reasoning
-led to the curriculum's schedule described below.
+As a result, these students have to be taught the fundamentals by more
+experienced kaneton people. This reasoning led to the curriculum's schedule
+described below.
 
 The timetable below describes the teaching of the \textit{k* triology's}
-projects. Assistants are named \textit{Poussins} followed by the year
-they have been recruited: \textit{Poussins'08}, \textit{Poussins'11} etc.
-For convenience and clarity, the whole year $\gamma$ of the \textit{EPITA}
-curriculum is detailled next so that $\alpha < \beta < \gamma < \delta$. If
-$\gamma$ represents the year 2008, then $\alpha$ equals 2006 and $\beta$, 2007.
+projects at EPITA. Assistants are named \textit{Poussins} followed by the year
+they have been recruited, \textit{Poussins'11} or \textit{Poussins$_{11}$} for
+assistants recruited in 2011. For convenience and clarity, the whole year
+$\gamma$ of the \textit{EPITA} curriculum is detailed next. As an example,
+If $\gamma$ represents the year 2008, then, obviously,
+\textit{Poussins$_{\gamma - 2}$} are assistants recruited in 2006.
 
 %
 % january \gamma
@@ -358,13 +353,13 @@ $\gamma$ represents the year 2008, then $\alpha$ equals 2006 and $\beta$, 2007.
 
 At the beginning of January, the \textit{EPITA Computer Systems Laboratory}
 recruitment takes place. At the end of this period, a few students ---
-ideally two or three --- would have been accepted to work on kaneton and
-kayou.
+ideally two or three --- would have been accepted to work on the kaneton and
+kayou projects: the \textit{Poussins'$\gamma$}.
 
 As explained above, these new comers need to be taught the fundamentals so
 that they can work on their project with no lack of knowledge but also so
 that they can teach and supervise the \textit{kaneton educational project}
-in $\delta$. A one-week specific and very intensive period called
+in $\gamma + 1$. A one-week specific and very intensive period called
 \textit{``piscine''} --- swimming pool in English --- is used to teach
 the \textit{Poussins'$\gamma$} about everything related to kaneton.
 Since these students have to acquire many notions in a very short period of
@@ -372,10 +367,10 @@ time, \textit{EPITA} is asked to arrange a special one-week curriculum for
 these students.
 
 This \textit{``piscine''} will be taugh by more experienced kaneton people,
-especially the \textit{Poussins'$\alpha$} possibly assisted by the
-\textit{Poussins'$\beta$}.
+especially the \textit{Poussins$_{\gamma - 2}$} possibly assisted by the
+\textit{Poussins$_{\gamma - 1}$}.
 
-At the end of this \textit{``piscine''}, \textit{Poussins} judged too week
+At the end of this \textit{``piscine''}, \textit{Poussins} judged too weak
 could be expelled. At the same time, projects are proposed to these students.
 The \textit{Poussins} choose the project they will work on for the next
 months. Every project, hence \textit{Poussin}, will be assigned a supervisor.
@@ -391,12 +386,13 @@ kaneton and/or kayou without any relation with \textit{EPITA}.
 \textit{Poussins'$\gamma$} work on their assigned project in close relation
 with their supervisor.
 
-Depending on the progress status of the \textit{Poussins'$\gamma$}' projects,
+Depending on the progress status of the \textit{Poussins'$\gamma$} projects,
 two students will be chosen for teaching and supervising the
 \textit{k educational project} to the \textit{EPITA} first-year students.
 
-If the supervisors consider that no student is ready to carry out this task,
-then the courses will be given by the \textit{Poussins'$\beta$}.
+If the \textit{Poussins'$\gamma$} supervisors consider that no student is
+ready to carry out this task, then the courses will be taught by the
+\textit{Poussins$_{\gamma - 1}$}, one-year more experienced.
 
 %
 % july \gamma
@@ -405,23 +401,24 @@ then the courses will be given by the \textit{Poussins'$\beta$}.
 \subsection{July $\gamma$}
 
 \textit{Poussins'$\gamma$} are asked to write and submit a report on the
-work undertaken through the five previous months. Additionally, every student
-will have to give a talk presenting the methods which led to such results.
+work achieved through the five previous months. Additionally, every student
+will have to give a talk, hence presenting their work to other students,
+researchers, teachers etc.
 
 This talk will be used by the head of \textit{EPITA Computer Systems
 Laboratory} for assigning a student mark which will be used by the
 \textit{EPITA Board of Studies}.
 
-Once evaluated, two students are picked for carrying out the teaching and
-supervising of the \textit{kaneton educational project} to the second-year
-students major in both \textit{System, Network and Security}; and
-\textit{Embedded and Real-Time Systems}.
+Once evaluated, two \textit{Poussins'$\gamma$} are picked for carrying out,
+in February, the teaching and supervising of the \textit{kaneton educational
+project} to the second-year students major in both \textit{System, Network and
+Security}; and \textit{Embedded and Real-Time Systems}.
 
 %
-% august \gamma - january \delta
+% august \gamma - january \gamma + 1
 %
 
-\subsection{August $\gamma$ - January $\gamma$}
+\subsection{August $\gamma$ - January $\gamma + 1$}
 
 Whilst interns, \textit{Poussins'$\gamma$} are due to prepare the teaching
 starting in February. This preparation includes the source code, tests,
@@ -429,23 +426,33 @@ lectures, subjects, documentation as well as any administrative task: budget,
 timetable and so forth.
 
 %
-% february \delta - june \delta
+% february \gamma + 1 - june \gamma + 1
 %
 
-\subsection{February $\delta$ - June $\delta$}
+\subsection{February $\gamma + 1$ - June $\gamma + 1$}
 
-The selected \textit{Poussins'$\gamma$} teach and supervisor the second-year
+The selected \textit{Poussins'$\gamma$} teach and supervise the second-year
 students through the \textit{kaneton educational project}.
 
 %
-% july \delta - december \delta
+% july \gamma + 1 - january \gamma + 2
 %
 
-\subsection{July $\delta$ - December $\delta$}
+\subsection{July $\gamma + 1$ - January $\gamma + 2$}
 
 The \textit{Poussins'$\gamma$}, before leaving \textit{EPITA} for their
 last-year internship, can take some time to contribute to the \textit{kaneton}
 and/or \textit{kayou} research projects.
+
+%
+% february \gamma + 2 - \infinity
+%
+
+\subsection{February $\gamma + 2$ - $\infty$}
+
+The \textit{Poussins'$\gamma$} are more than welcome to keep contributing
+to any project of the \textit{k* educational trilogy} or to one of the related
+research projects.
 
 %
 % ---------- k* educational triology ------------------------------------------
@@ -462,7 +469,7 @@ and/or \textit{kayou} research projects.
 k is a short but complete introduction to low-level programming and
 operating system basics.
 
-Students - in groups of four - will develop a tiny monolithic kernel
+Students - in groups of four - develop a tiny monolithic kernel
 intended to run very simple applications in a mono-task environment.
 
 While dealing with many fundamental aspects of operating systems like
@@ -478,19 +485,19 @@ The project is divided into several parts:
 
 \begin{itemize}
   \item
-    \textbf{pm manager} that takes care of memory management.
+    \textbf{pm} manager that takes care of memory management;
   \item
-    \textbf{event} and \textbf{syscall manager} handling external
-    event and userland to kernelspace transitions.
+    \textbf{event} and \textbf{syscall} managers handling external
+    events and user-land to kernel-space transitions;
   \item
-    \textbf{cons}, \textbf{vga} and \textbf{speaker manager} for
-    multimedia operations.
+    \textbf{cons}, \textbf{vga} and \textbf{speaker} managers for
+    multimedia operations;
   \item
-    \textbf{kbd} and \textbf{mouse manager} to provide user inputs.
+    \textbf{kbd} and \textbf{mouse} managers to provide user inputs;
   \item
-    \textbf{time manager} to measure time intervals.
+    \textbf{time} manager to measure time intervals;
   \item
-    \textbf{fs manager} to manage the root filesystem.
+    \textbf{fs} manager to manage the root filesystem.
 \end{itemize}
 
 The project lasts two months and is concluded by an evaluation of the
@@ -502,22 +509,24 @@ final projects with each groups.
 
 The project comes with a single course.
 
+% XXX[cette section devrait etre completee avec 1) les points abordes 2)
+%     un detail de chaque session. voir MIA et KER ci dessous pour un modele]
+
 \textit{Name}: \textbf{K}
 
-\textit{Hours}: \textbf{14 hours} divided into \textbf{6 sessions}
+\textit{Hours}: 14 hours divided into 6 sessions
 
 \begin{itemize}
   \item
-    Introduction to memory management, presenting the segmentation
-    mechanism.
+    Introduction to memory management, especially the segmentation mechanism;
   \item
-    Presentation of the x86 calling convention.
+    Presentation of the \textit{IA-32} calling convention;
   \item
-    Event handling, including hardware interrupts.
+    Event handling, including hardware interrupts;
   \item
-    Privilege modes and system calls.
+    Privilege modes and system calls;
   \item
-    Device driver implementation and filesystems.
+    Device driver implementation and filesystems;
   \item
     Binary formats and ELF loading.
 \end{itemize}
@@ -528,11 +537,11 @@ The project comes with a single course.
 
 \subsection{kaneton}
 
-The kaneton microkernel project's goal is to lead students to understand
+The kaneton microkernel project aims at leading students to understand
 what really is an operating system and more precisely a kernel.
 
-Every group, composed of two students, will have to develop parts of
-the kaneton microkernel.
+Every group, composed of two students, has to develop parts of the kaneton
+microkernel.
 
 To simplify the project, each group receives a development environment
 containing everything necessary to start the project including a
@@ -547,34 +556,31 @@ The whole kaneton project is subdivided into stages:
 \begin{itemize}
   \item
     \textbf{k0}: this project will be entirely developed during a
-    special coding session of about 6 hours and under the teachers'
+    special practical session of about 6 hours and under the teachers'
     supervisation. This project consists in an introduction to the
     IA-32 external architecture: basic memory management model,
-    IA-32 assembly language, development tools etc.
+    IA-32 assembly language, development tools etc; (1 day)
   \item
     \textbf{k1}: this project will lead the students to an higher abstraction
-    level. The goal of the project is to develop the segment manager to be
-    able to manage physical memory and the architecture-dependent part of the
-    region manager to be able to control the virtual memory. This project
-    is \textbf{two weeks} long.
+    level. The goal of the project is to develop: the segment manager to be
+    able to manage physical memory; and the architecture-dependent part of the
+    region manager to be able to control the virtual memory; (2 weeks)
   \item
     \textbf{k2}: this project introduces the interrupts management and
-    the driver development. Indeed, the student will have to install
+    the driver development. Indeed, the student will have to set up
     everything necessary to handle interrupts. Then, some drivers will
-    be developed including the keyboard, the timer and a demonstration shell.
-    This project is \textbf{two weeks} long.
+    be developed including the keyboard and timer drivers as well as a
+    demonstration shell; (2 weeks)
   \item
-    \textbf{k3}: the students will have to provide everything necessary
+    \textbf{k3}: the students have to provide everything necessary
     to handle execution contexts. Indeed, the student will have to
     develop the scheduler but also to implement the context switchs from
-    the microprocessor point of view. This project is \textbf{three weeks}
-    long
+    the microprocessor point of view; (3 weeks)
   \item
     \textbf{k4}: this project introduces the communication into the
     microkernel. Indeed, the students will have to provide some
     communication primitives including sychronous and asynchronous
-    functions as well as blocking and non-blocking functions. This project
-    is \textbf{two weeks} long.
+    functions as well as blocking and non-blocking functions. (2 weeks)
 \end{itemize}
 
 % courses
@@ -585,20 +591,20 @@ The project comes with two fundamental courses:
 
 \begin{itemize}
   \item
+    \textbf{MIPS Architecture}: this course is dedicated to the MIPS internal
+    architecture although this course actually explains modern microprocessors
+    concepts: pipelining, optimizations, caches etc;
+  \item
     \textbf{Kernel}: this course explores the kernels internals including
     microkernel architectures, memory management, processes and threads,
     synchronisation, communications, and complete case studies.
-  \item
-    \textbf{MIPS architecture}: this course is dedicated to the MIPS internal
-    architecture although this course actually explains modern microprocessors
-    concepts: pipelining, optimizations, caches etc.
 \end{itemize}
 
 % _mips architecture_
 
 \textit{Name}: \textbf{MIA}
 
-\textit{Hours}: \textbf{30 hours} divided into \textbf{10 sessions}
+\textit{Hours}: 30 hours divided into 10 sessions
 
 This course is intended to give students a complete view of how a RISC
 microprocessor works and what choices the designers made to build the
@@ -608,17 +614,17 @@ Below are listed the concepts studied in this course:
 
 \begin{itemize}
   \item
-    External architecture: we will study the instructions set,
-    the memory management model etc.
+    External architecture: the instructions set, the memory management model
+    etc;
   \item
-    Pipeline: we will study the MIPS pipeline, its inherent problems
-    and limitations. Advanced pipelines will also be studied.
+    Pipeline: its inherent problems and limitations. Advanced pipelines will
+    also be studied;
   \item
-    Compiler optimisations: we will study the different direct assembly
-    source code optimisations: rescheduling, software pipelining etc.
+    Compiler optimisations: direct assembly source code optimisations:
+    rescheduling, software pipelining etc;
   \item
-    Memory: we will study the bus used on the MIPS processor and
-    the different cache management techniques.
+    Memory: bus used on some experimental processors and the different cache
+    management techniques.
 \end{itemize}
 
 The list below details the different sessions for the MIPS architecture
@@ -628,34 +634,34 @@ course:
   \item
     Course presentation, MIPS history, introduction to MIPS external
     architecture: registers and instructions set. Introduction to
-    instruction formats and to inherent limitations. (3 hours)
+    instruction formats and to inherent limitations; (3 hours)
   \item
     End of instruction formats introduction, explanations of architecture
     designers choices: MIXs and Amdhal Rule. Some exercises to practice.
-    Introduction to MIPS architecture addressing and to MIPS pipeline.
+    Introduction to MIPS architecture addressing and to MIPS pipeline;
     (3 hours)
   \item
     Introduction to MIPS spirit and to its pipeline. Moore Law and
     pipeline rules. Introduction to different pipeline representations:
-    simplified and detailed. Some exercises to pratice these representations.
+    simplified and detailed. Some exercises to practice these representations;
     (3 hours)
   \item
     We will study in this session the next instruction address computation
     problem and the delay slot. Then, study of branch instruction and their
-    problems and limitations. Some exercises to pratice. (3 hours)
+    problems and limitations. Some exercises to practice; (3 hours)
   \item
-    Complete study of instruction dependencies. Some exercise to practice.
+    Complete study of instruction dependencies. Some exercise to practice;
     (3 hours)
   \item
-    Partial exam correction. Introduction to optimisations. (3 hours)
+    Partial exam correction. Introduction to optimisations; (3 hours)
   \item
     Study of different optimisations used by compilers. Study of
-    advanced pipelines: superpipeline, superscalar pipelines etc. (3 hours)
+    advanced pipelines: superpipeline, superscalar pipelines etc; (3 hours)
   \item
     Introduction to the Pi-Bus. Then complete study of memory including
-    cache management. (3 hours)
+    cache management; (3 hours)
   \item
-    End of memory course. Some exercises to practice. (3 hours)
+    End of memory course. Some exercises to practice; (3 hours)
   \item
     Revisions for the final exam. (3 hours)
 \end{enumerate}
@@ -664,7 +670,7 @@ course:
 
 \textit{Name}: \textbf{KER}
 
-\textit{Hours}: \textbf{26 hours} divided into \textbf{9 sessions}
+\textit{Hours}: 26 hours divided into 9 sessions
 
 This course is intended to give the students a general overview of
 kernel internals and its problematics.
@@ -673,18 +679,18 @@ Below are listed the studied notions:
 
 \begin{itemize}
   \item
-    Understand how kernel developpement evolves and why, receive a
-    minimal general culture on kernel internals and history.
+    Understand how kernel developement evolves and why, receive a
+    minimal general culture on kernel internals and history;
   \item
-    We will see how to manage and share common resources (memory,
-    execution time) with increasing constraints and needs.
+    Resources --- memory, execution time --- sharing and management with
+    increasing constraints and needs;
   \item
     The microprocessor's facilities are detailed to get the students
     to fully understand the mechanisms. Examples are taken from
-    many different architectures.
+    many different architectures;
   \item
     The common kernel design issues will be totally understood by the
-    students and they will be able to build their own design.
+    students and they will be able to build their own design;
   \item
     The course aims at giving the students a precise idea of how it
     works inside, thus giving them the ability to fully understand
@@ -695,37 +701,34 @@ The list below details the different sessions for the kernel course.
 
 \begin{enumerate}
   \item
-    \textbf{Recalls and prerequisites}: presentation of the diffent
-    kind of kernels and the role in an operating system. Recalls of
-    low-level basics (3 hours).
+    Recalls and prerequisites: presentation of the diffent kind of kernels
+    and the role in an operating system. Recalls of low-level basics; (3 hours)
   \item
-    \textbf{Bootstrap}: details about processor bootup and bootloading
-    (2 hours)
-\item
-    \textbf{Memory management - part one}: fundamental concepts of
-    memory management, overview of memory management unit and address
-    translation though paging (3 hours).
+    Bootstrap: details about processor bootup and bootloading; (2 hours)
   \item
-    \textbf{Memory management - part two}: high-level mechanisms like
-    page swapping, copy-on-write, etc. Presentation of most known
-    allocation algorithms (3 hours).
+    Memory management - part one: fundamental concepts of memory management,
+    overview of memory management unit and address translation though paging;
+    (3 hours)
   \item
-    \textbf{Events and I/O - part one}: interrupt mechanism, interrupt
-    vector and processor running modes (3 hours).
+    Memory management - part two: high-level mechanisms like page swapping,
+    copy-on-write, etc. Presentation of most known allocation algorithms;
+    (3 hours)
   \item
-    \textbf{Events and I/O - part two}: hardware interrupts, interrupt
-    controllers, port-mapped input/output, memory-mapped input/output
-    (3 hours).
+    Events and I/O - part one: interrupt mechanism, interrupt vector and
+    processor running modes; (3 hours)
   \item
-    \textbf{Task and scheduling - part one}: recalls on
-    multiprogramming, execution context, context switching (3 hours).
+    Events and I/O - part two: hardware interrupts, interrupt controllers,
+    port-mapped input/output, memory-mapped input/output; (3 hours)
   \item
-    \textbf{Task and scheduling - part two}: process control block on
-    known operating systems, task life cycle, scheduling automaton,
-    scheduling algorithms (3 hours).
+    Task and scheduling - part one: recalls on multiprogramming, execution
+    context, context switching; (3 hours)
   \item
-    \textbf{Inter-Process Communication}: \textit{IPC} in a microkernel,
-    message passing, classical \textit{IPC}, locking (3 hours).
+    Task and scheduling - part two: process control block on known operating
+    systems, task life cycle, scheduling automaton, scheduling algorithms;
+    (3 hours)
+  \item
+    Inter-Process Communication: \textit{IPC} in a microkernel, message
+    passing, classical \textit{IPC}, locking. (3 hours)
 \end{enumerate}
 
 %
@@ -735,38 +738,6 @@ The list below details the different sessions for the kernel course.
 \subsection{kayou}
 
 kayou is not taught at \textit{EPITA} yet.
-
-%
-% ---------- preparation ------------------------------------------------------
-%
-
-\section{Preparation}
-
-This section lists --- in a more or less chronologic manner --- the tasks that
-new kaneton teachers must undertake before February.
-
-\begin{itemize}
-  \item
-    Plan the sub-projects the students will have to complete probably from
-    \textit{k0} to \textit{k4};
-  \item
-    According to the previous planning, update the kaneton research project's
-    source code so that tags are well placed.
-
-    \-
-
-    The student tarball could then be generated via the kaneton
-    \textit{export} tool;
-  \item
-    Plan the lectures, practical sessions, exams and surgerie hours.
-
-    \-
-
-    Especially, a few hours courses are given to the students to find XXX
-
-the \textit{k0} project is generally performed as a pratical
-    session.
-\end{itemize}
 
 %
 % ---------- project suggestions ----------------------------------------------
@@ -782,9 +753,9 @@ This section contains some project suggestions for the new \textit{Poussins}.
 
 \subsection{Security}
 
-Security is a very important topic in operating system, even more in
+Security is a very important topic in operating systems, even more in
 distributed systems. Indeed, in such a system, resources are completely
-shared among the machines of the system. It is therefore crucial to protect
+shared amongst the machines of the system. It is therefore crucial to protect
 these resources from being accessed by unauthorised entities.
 
 This project consists in designing and implementing a complete security
@@ -793,24 +764,25 @@ system level.
 
 For now, the kaneton microkernel provides the concept of \textit{capabilities}
 which seems to perfectly fit the distributed systems' requirements. The student
-will have to confirm that this concept is suitable for our needs. The student
-will also have to complete the current implementation in order to move to
-the study of the security in the operating system, even its in distributed
+will have to confirm that this concept is suitable for kayou's needs. The
+student will also have to complete the current implementation in order to move
+to the study of the security in the operating system, even its in distributed
 form.
 
-A possibly suitable access control scheme could be the RBAC - Role-Based
-Access Control. The student will have, once again, to confirm this
+A possibly suitable access control scheme could be the \textit{RBAC} -
+Role-Based Access Control. The student will have, once again, to confirm this
 possibility via a preliminary study and then implement the services
 necessary to this scheme so that applications can use it.
 
 The student will have to tackle the notion of multi-users at the operating
 system level. Indeed, although this notion is integrated at the kernel
-level in every \textit{UNIX} system, kaneton designers decided to handle this
+level in every \textit{UNIX} systems, kaneton designers decided to handle this
 notion outside the microkernel.
 
 The student will then have to study this concept and implement the necessary
 services. Besides, the student could also investigate further in order
-to develop a security service based on the concept of user.
+to develop a security service based on the concept of user. \textit{RBAC}
+could, once again, turn out to be a good choice.
 
 %
 % posix
@@ -818,19 +790,18 @@ to develop a security service based on the concept of user.
 
 \subsection{POSIX}
 
-kaneton provides its own interface whish has nothing to do with interfaces
+kaneton provides its own interface which has nothing to do with interfaces
 of others \textit{UNIX} like \textit{Linux}, \textit{BSD} or others etc.
 
 \textit{POSIX} is an interface which was introduced in order to normalise the
 \textit{C Library} layer. Most applications --- at least in the \textit{UNIX}
-world --- rely in this software layer.
+world --- rely on this software layer.
 
-If we want our operating system to benefit from the already existing and
-futures softwares without having to re-develop everything, we need to develop
-a software layer complying to the \textit{POSIX} standard. In our case,
+If we want our operating system to benefit from the --- already existing and
+future --- software without having to re-develop everything, we need to
+develop a software layer complying to the \textit{POSIX} standard. In our case,
 the \textit{POSIX} functionalities must be translated into either
-functionalities provided either by kaneton or one or more micro-kernel
-servers.
+functionalities provided either by kaneton or one or more kayou servers.
 
 The student will have to study very precisely the \textit{POSIX} standard
 as well as the kaneton interface in order to develop the emulation library:
@@ -855,34 +826,32 @@ This project consists in porting kaneton to a new microprocessor architecture,
 in this case, \textit{AMD-64}.
 
 This architecture is very interesting for two reasons. First, \textit{AMD}
-architectures have many in common with \textit{IA32} ones. Since, kaneton
-already supports \textit{IA-32}, it would be easy to support this new
+architectures have many commonalities with \textit{IA-32} architectures. Since,
+kaneton already supports \textit{IA-32}, it would be easy to support this new
 architecture. Secondly, this architecture runs in 64-bit and its implementation
 could reveal design mistakes and/or implementation bugs in the generic
-part of the microkernel, commonly called \textit{core}. Besides, supporting
-an additional architecture means that the kaneton's portability scheme
-is correct.
+part of the microkernel, commonly called \textit{core}.
 
-The student will have to study a complete new architecture by reader the
+The student will have to study a complete new architecture by reading the
 microprocessor specifications. Besides, the student will have to report
 any problem encountered in his project, especially about the microkernel's
-design. Types handling in the \textit{core} is very likely to be problematic
-for example.
+design. For example, types handling in the \textit{core} is very likely to
+be problematic.
 
 The student will have to modify several parts in the kernel but also
 make suggestions about design improvements based on his observations.
 
 Besides, the student will have to complete the microkernel implementation
-in various ways: functionality not implemented yet, bugs correction, error
+in various ways: functionalities not yet implemented, bugs correction, error
 handling improvement, etc.
 
 %
-% mips
+% mips-64
 %
 
 \subsection{MIPS-64}
 
-This projects simply consists in contributing to the portage of kaneton
+This project simply consists in contributing to the portage of kaneton
 on the \textit{MIPS-64} architecture.
 
 The remarks about the \textit{AMD-64} project apply here as well.
@@ -899,13 +868,13 @@ need to store data and make them accessible to the other nodes of the
 distributed system.
 
 The \textit{DHT} is built over what is called a \textit{KBR} --- Key-Based
-Routing. The r\^ole of this \textit{KBR} is to, given a key, locate the
+Routing. The r\^ole of the \textit{KBR} is to, given a key, locate the
 node which is in charge for storing a piece of data.
 
 This \textit{DHT} will be heavily used in kayou, especially for the distributed
 file system, but could also be used by many distributed applications.
 
-There does not exist any good implementation of such \textit{DHT}. Indeed,
+There does not exist any good implementation of such \textit{DHT}s. Indeed,
 the well-known implementations were written in Java and are therefore
 useless in a true system where performances matter.
 
@@ -916,7 +885,12 @@ to design and finally implement the complete \textit{DHT}.
 This project is clearly research-oriented since the concepts directly come
 from research. However, many firms are highly interested in such a
 performant and secure implementation in order to build large-scale storage
-systems.
+systems. Note that the student will have the opportunity to write a paper and
+possibly present the work achieved on this project.
+
+The student will probably contribute to the development of a peer-to-peer
+file system in order to test the \textit{DHT} but also to contribute to
+another kayou project.
 
 \end{multicols}
 
@@ -926,29 +900,6 @@ systems.
 % ---------- XXX --------------------------------------------------------------
 %
 
-XXX intro + history [DONE]
-XXX ensuite mettre l'organisation d'un cursus de poussin [TODO]
-XXX liste des cours a partir du document schedule [~]
-XXX ensuite mettre ce que chaque poussins doit faire dans chaque de
-    ses phases. par exemple le poussins + 1 doit donner les cours de remise
-    a niveau, refaire la decoupe de la tarball, clean l'intra, preparer la
-    pres aux inge2 mais egalement le recrutement inge1 avec des idees de
-    projet etc. grace a ca, un poussin aura a lire ce qu'il doit penser
-    a faire. [TODO]
-XXX finir avec des idees de projet [DONE]
-
----
-
-- planning des tranches
-- decoupage de la tarball (tags dans la ref) + generation automatique
-- prevision des cours/tp/soutenances/exams/perm
-    o a l'heure actuelle aucune soutenance car correction par moulette
-    o tp pour k0
-    o cours de remise a niveau: C, asm inline, etc.
-    o cours noyau
-    o pres. kaneton (pour chaque tranche afin de faire le lien entre Intel
-                     et kaneton)
-    o presentation du projet au tout debut (genre 1 ou 2h)
 - planifier les cours/tp etc. en fonction des terms, des tranches etc.
   pour que les exams tombent bien! en deduire la longeur des tranches.
 - prevoir le budget.
@@ -976,3 +927,42 @@ XXX finir avec des idees de projet [DONE]
   moulette, recuperer tarball uploadees etc.
 - prendre en main la moulette pour faire tourner les tests et obtenir des
   traces utilisables.
+
+---
+
+la suite doit aller sur le wiki Teachers
+
+% preparation
+
+\subsubsection{Preparation}
+
+This section lists --- in a more or less chronologic manner --- the tasks that
+new kaneton teachers must undertake before February.
+
+\begin{itemize}
+  \item
+    Plan the sub-projects the students will have to complete probably from
+    \textit{k0} to \textit{k4};
+  \item
+    According to the previous planning, update the kaneton research project's
+    source code so that tags are well placed.
+
+    \-
+
+    The student tarball could then be generated via the kaneton
+    \textit{export} tool;
+  \item
+    Plan the lectures, practical sessions, exams and surgerie hours.
+
+    \-
+
+    Especially, a general presentation about the upcoming project is held
+    at the beginning of the term, in February. Additionally, few hours courses
+    are given to the students focusing on the project's requirements:
+    \textit{C} language, \textit{Assembler} language, \textit{inline Assembler}
+    etc. Finally, the \textit{k0} project is generally performed as a practical
+    session;
+  \item
+    XXX
+\end{itemize}
+
