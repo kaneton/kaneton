@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/book/assignments/2007/Makefile
+# file          /home/mycure/kaneton/view/book/assignments/2008/Makefile
 #
 # created       julien quintard   [mon may 14 19:03:18 2007]
-# updated       julien quintard   [fri jun 22 18:07:10 2007]
+# updated       julien quintard   [sun dec  9 19:45:50 2007]
 #
 
 #
@@ -27,10 +27,10 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		k1				\
-					k2				\
-					k3				\
-					k4
+SUBDIRS			:=		k1				
+#					k2				\
+#					k3				\
+#					k4
 
 #
 # ---------- rules ------------------------------------------------------------
