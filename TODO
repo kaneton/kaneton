@@ -369,3 +369,35 @@ independante.
  on demande une autorisation de comm avec un process. si c'est accepte on
  mappe ceil(S) octets de son AS et on copie les messages direct dans son
  AS.
+
+--
+  ---[ Liberation des objets
+
+  Actuellement les objets ne sont pas liberes lorsqu'une erreur est detectee.
+  Il faut donc modifier le code pour les liberer proprement. Il semble que la
+  meilleure technique soit via l'utilisation de goto mais si vous avez des
+  idees...
+
+  J'ai aborde la possibilite de code un outil qui detecterait les objets non
+  reserves. Quand pensez vous? Necessaire ou pas?
+
+  ---[ Gestion des erreurs
+
+  Pour ce qui est des erreurs il faut clairement, comme l'on fait remarque
+  Julian et Elie, revoir leur gestion. Il faut plus particulierement distinguer
+  les erreurs des echecs _i.e_ les erreurs graves des simples appels
+  incorrects.
+
+  Les erreurs devraient mener a des informations de debug completes.
+  Il est inutile d'essayer de remonter cette information a l'application
+  car elle n'est certainement pas a l'origine de l'erreur.
+
+  Les echecs sont detectes via des simples conditions sur des
+  variables (arguments, retour de fonction etc.) et devrait construire
+  un message d'erreur (ou une trace d'erreurs) qui doit etre remontee
+  a l'application.
+
+  Il faut donc refaire une lecture du code et modifier le necessaire
+  pour ne pas bloquer sur un echec et afficher des infos de debug
+  completes lors d'une erreur (probablement dans le handler d'exception
+  uniquement).
