@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...achine/glue/ibm-pc.ia32/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       matthieu bucchianeri   [sun jun 17 16:18:31 2007]
+ * updated       matthieu bucchianeri   [sat dec  8 19:54:46 2007]
  */
 
 #ifndef GLUE_THREAD_H
@@ -37,6 +37,15 @@
   struct								\
   {									\
     t_ia32_tss*		tss;						\
+									\
+    t_uint16		core_cs;					\
+    t_uint16		core_ds;					\
+    t_uint16		driver_cs;					\
+    t_uint16		driver_ds;					\
+    t_uint16		service_cs;					\
+    t_uint16		service_ds;					\
+    t_uint16		program_cs;					\
+    t_uint16		program_ds;					\
   }			machdep;
 
 #define         machine_data_o_thread()					\
@@ -44,6 +53,7 @@
   {									\
     /*                                                  [cut] k3   */	\
     t_ia32_context	context;					\
+    t_vaddr		interrupt_stack;				\
 									\
     union								\
     {									\

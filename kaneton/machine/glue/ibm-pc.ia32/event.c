@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...kaneton/machine/glue/ibm-pc.ia32/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [sat aug  4 17:55:44 2007]
+ * updated       matthieu bucchianeri   [sat dec  8 20:17:17 2007]
  */
 
 /*
@@ -92,7 +92,7 @@ static void		pf_handler(t_id				id,
 
   printf("error: page fault !\n"
          "  %p trying to %s at the address 0x%x requires %s\n",
-	 ia32_context->eip,
+	 /* XXX ia32_context->eip */ 0,
          (error_code & 2) ? "write" : "read",
          addr,
          (error_code & 1) ? "a lower DPL" : "the page to be present");

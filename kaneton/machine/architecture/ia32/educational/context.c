@@ -23,12 +23,6 @@
  */
 
 /*
- * stores the interrupted context.
- */
-
-t_ia32_context*	ia32_context = NULL;
-
-/*
  * tells the processor capabilities.
  */
 
@@ -44,102 +38,6 @@ extern i_as		kasid;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * this function set the pdbr value to all the threads in a task.
- *
- * steps:
- *
- * 1) get the as object.
- * 2) get the destination task.
- * 3) for each thread, update the context's pdbr value.
- */
-
-t_error			ia32_update_pdbr(i_task			tskid,
-					 i_as			asid)
-{
-  o_as*			o;
-  o_task*		otask;
-  o_thread*		oth;
-  t_iterator		it;
-  t_state		state;
-
-  /*
-   * 1)
-   */
-
-  if (as_get(asid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (task_get(tskid, &otask) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
-  set_foreach(SET_OPT_FORWARD, otask->threads, &it, state)
-    {
-      i_thread*		th;
-
-      if (set_object(otask->threads, it, (void**)&th) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
-
-      if (thread_get(*th, &oth) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
-
-      if (ia32_pd_get_cr3(&oth->machdep.context.cr3, o->machdep.pd,
-			  IA32_PD_CACHED, IA32_PD_WRITEBACK) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
-    }
-
-  return (ERROR_NONE);
-}
-
-/*
- * this function set the pdbr value to one thread.
- *
- * steps:
- *
- * 1) get the as object.
- * 2) get the destination thread.
- * 3) update the context's pdbr value.
- */
-
-t_error			ia32_update_thread_pdbr(i_thread	threadid,
-						i_as	       	asid)
-{
-  o_as*			o;
-  o_thread*		oth;
-
-  /*
-   * 1)
-   */
-
-  if (as_get(asid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  /*
-   * 2)
-   */
-
-  if (thread_get(threadid, &oth) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  /*
-   * 3)
-   */
-
-  if (ia32_pd_get_cr3(&oth->machdep.context.cr3, o->machdep.pd,
-		      IA32_PD_CACHED, IA32_PD_WRITEBACK) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  return (ERROR_NONE);
-}
 
 /*
  * initialize a few things about extended contexts.
@@ -174,35 +72,6 @@ t_error			ia32_extended_context_init(void)
     }
 
   return (ERROR_NONE);
-}
-
-/*
- * this function copies a context. useful for context switching.
- */
-
-void			ia32_context_copy(t_ia32_context*		dst,
-					  const t_ia32_context*		src)
-{
-  ASSERT(dst != NULL);
-  ASSERT(src != NULL);
-
-  dst->eax = src->eax;
-  dst->ebx = src->ebx;
-  dst->ecx = src->ecx;
-  dst->edx = src->edx;
-  dst->esi = src->esi;
-  dst->edi = src->edi;
-  dst->esp = src->esp;
-  dst->ebp = src->ebp;
-  dst->eip = src->eip;
-  dst->cr3 = src->cr3;
-  dst->cs = src->cs;
-  dst->ds = src->ds;
-  dst->es = src->es;
-  dst->fs = src->fs;
-  dst->gs = src->gs;
-  dst->ss = src->ss;
-  dst->eflags = src->eflags;
 }
 
 /*
@@ -340,22 +209,18 @@ t_error			ia32_reset_iopl(void)
  *
  * 1) get the thread object for the specified thread.
  * 2) get the task object the thread belongs to.
- * 3) get the task's address space.
- * 4) reset the context to zero.
- * 5) setup the pdbr and the eflags in the context.
- * 6) depending on the task class, update the segment selectors into
- *    the context.
- * 7) reset advanced context (FPU or SSE).
+ * 3) reserve the thread privileged stack.
+ * 4) reset the context to zero and initialize constants.
+ * 5) reset advanced context (FPU or SSE).
  */
 
 t_error			ia32_init_context(i_task		taskid,
 					  i_thread		threadid)
 {
-  o_task*		task;
-  o_as*			as;
   o_thread*		o;
-  t_uint16		code_segment;
-  t_uint16		data_segment;
+  o_task*		task;
+  t_ia32_context	ctx;
+
 
   /*
    * 1)
@@ -375,65 +240,22 @@ t_error			ia32_init_context(i_task		taskid,
    * 3)
    */
 
-  if (as_get(task->asid, &as) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  /* XXX */
 
   /*
    * 4)
    */
 
-  memset(&(o->machdep.context), 0x0, sizeof(t_ia32_context));
+  memset(&ctx, 0, sizeof (t_ia32_context));
+  ctx.eflags = (1 << 9) | (1 << 1);
+  if (task->class == TASK_CLASS_DRIVER)
+    ctx.eflags |= (1 << 12);
+
+  if (ia32_set_context(threadid, &ctx, IA32_CONTEXT_FULL) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
 
   /*
    * 5)
-   */
-
-  ia32_pd_get_cr3(&(o->machdep.context.cr3), as->machdep.pd,
-		  IA32_PD_CACHED, IA32_PD_WRITEBACK);
-
-  o->machdep.context.eflags = (1 << 9) | (1 << 1);
-
-  /*
-   * 6)
-   */
-
-  switch(task->class)
-    {
-      case TASK_CLASS_CORE:
-	ia32_gdt_build_selector(IA32_PMODE_GDT_CORE_CS, ia32_prvl_supervisor,
-				&code_segment);
-	ia32_gdt_build_selector(IA32_PMODE_GDT_CORE_DS, ia32_prvl_supervisor,
-				&data_segment);
-	break;
-      case TASK_CLASS_DRIVER:
-	ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_CS, ia32_prvl_driver,
-				&code_segment);
-	ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_DS, ia32_prvl_driver,
-				&data_segment);
-	o->machdep.context.eflags |= (1 << 12);
-	break;
-      case TASK_CLASS_SERVICE:
-	ia32_gdt_build_selector(IA32_PMODE_GDT_SERVICE_CS, ia32_prvl_service,
-				&code_segment);
-	ia32_gdt_build_selector(IA32_PMODE_GDT_SERVICE_DS, ia32_prvl_service,
-				&data_segment);
-	break;
-      default:
-	ia32_gdt_build_selector(IA32_PMODE_GDT_PROGRAM_CS, ia32_prvl_user,
-				&code_segment);
-	ia32_gdt_build_selector(IA32_PMODE_GDT_PROGRAM_DS, ia32_prvl_user,
-				&data_segment);
-    }
-
-  o->machdep.context.cs = code_segment;
-  o->machdep.context.ds = data_segment;
-  o->machdep.context.es = data_segment;
-  o->machdep.context.fs = data_segment;
-  o->machdep.context.gs = data_segment;
-  o->machdep.context.ss = data_segment;
-
-  /*
-   * 7)
    */
 
   if (ia32_cpucaps & IA32_CAPS_SSE)
@@ -464,13 +286,15 @@ t_error			ia32_duplicate_context(i_thread		old,
 {
   o_thread*		from;
   o_thread*		to;
+  t_ia32_context	ctx;
 
   if (thread_get(old, &from) != ERROR_NONE ||
       thread_get(new, &to) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  memcpy(&(to->machdep.context), &(from->machdep.context),
-	 sizeof(t_ia32_context));
+  if (ia32_get_context(old, &ctx) != ERROR_NONE ||
+      ia32_set_context(new, &ctx, IA32_CONTEXT_FULL) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
 
   if (ia32_cpucaps & IA32_CAPS_SSE)
     memcpy(&to->machdep.u.sse, &from->machdep.u.sse, sizeof(t_sse_state));
@@ -489,15 +313,13 @@ t_error			ia32_setup_context(i_thread		threadid,
 					   t_vaddr		pc,
 					   t_vaddr		sp)
 {
-  o_thread*		o;
+  t_ia32_context	ctx;
 
-  if (thread_get(threadid, &o) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
+  ctx.eip = pc;
+  ctx.esp = sp;
 
-  o->machdep.context.eip = pc;
-  o->machdep.context.esp = sp;
-
-  return (ERROR_NONE);
+  return (ia32_set_context(threadid, &ctx,
+			   IA32_CONTEXT_EIP | IA32_CONTEXT_ESP));
 }
 
 /*
@@ -509,16 +331,16 @@ t_error			ia32_status_context(i_thread		threadid,
 					    t_vaddr*		pc,
 					    t_vaddr*		sp)
 {
-  o_thread*		o;
+  t_ia32_context	ctx;
 
   ASSERT(pc != NULL);
   ASSERT(sp != NULL);
 
-  if (thread_get(threadid, &o) != ERROR_NONE)
+  if (ia32_get_context(threadid, &ctx) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  *pc = o->machdep.context.eip;
-  *sp = o->machdep.context.esp;
+  *pc = ctx.eip;
+  *sp = ctx.esp;
 
   return (ERROR_NONE);
 }
@@ -605,6 +427,27 @@ t_error			ia32_init_switcher(void)
   if (ia32_tss_init(thread->machdep.tss) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
+  /*
+   *
+   */
+
+  ia32_gdt_build_selector(IA32_PMODE_GDT_CORE_CS, ia32_prvl_supervisor,
+			  &thread->machdep.core_cs);
+  ia32_gdt_build_selector(IA32_PMODE_GDT_CORE_DS, ia32_prvl_supervisor,
+			  &thread->machdep.core_ds);
+  ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_CS, ia32_prvl_driver,
+			  &thread->machdep.driver_cs);
+  ia32_gdt_build_selector(IA32_PMODE_GDT_DRIVER_DS, ia32_prvl_driver,
+			  &thread->machdep.driver_ds);
+  ia32_gdt_build_selector(IA32_PMODE_GDT_SERVICE_CS, ia32_prvl_service,
+			  &thread->machdep.service_cs);
+  ia32_gdt_build_selector(IA32_PMODE_GDT_SERVICE_DS, ia32_prvl_service,
+			  &thread->machdep.service_ds);
+  ia32_gdt_build_selector(IA32_PMODE_GDT_PROGRAM_CS, ia32_prvl_user,
+			  &thread->machdep.program_cs);
+  ia32_gdt_build_selector(IA32_PMODE_GDT_PROGRAM_DS, ia32_prvl_user,
+			  &thread->machdep.program_ds);
+
   return (ERROR_NONE);
 }
 
@@ -628,14 +471,6 @@ t_error			ia32_context_switch(i_thread		current,
   o_thread*		to;
   o_task*		task;
 
-  if (ia32_context == NULL)
-    {
-      cons_msg('!', "unable to switch context in this state\n");
-
-      while (1)
-	;
-    }
-
   /*
    * 1)
    */
@@ -643,26 +478,7 @@ t_error			ia32_context_switch(i_thread		current,
   if (current == elected)
       return (ERROR_NONE);
 
-  /*
-   * 2)
-   */
-
-  if (current != ID_UNUSED)
-    {
-      if (thread_get(current, &from) != ERROR_NONE)
-	return (ERROR_UNKNOWN);
-
-      ia32_context_copy(&from->machdep.context, ia32_context);
-    }
-
-  /*
-   * 3)
-   */
-
-  if (thread_get(elected, &to) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  ia32_context_copy(ia32_context, &to->machdep.context);
+  /* XXX */
 
   /*
    * 4)
@@ -672,7 +488,7 @@ t_error			ia32_context_switch(i_thread		current,
     return (ERROR_UNKNOWN);
 
   if (current == ID_UNUSED || (from->taskid != to->taskid &&
-			       (task->class == TASK_CLASS_SERVICE||
+			       (task->class == TASK_CLASS_SERVICE ||
 				task->class == TASK_CLASS_PROGRAM)))
     memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
 	   &task->machdep.iomap,
@@ -817,6 +633,122 @@ t_error			ia32_push_args(i_thread			threadid,
    */
 
   if (thread_load(threadid, context) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function retrieves the context of a given thread.
+ *
+ * steps:
+ *
+ * 1) get thread & task objects.
+ * 2) read the context.
+ */
+
+t_error			ia32_get_context(i_thread		thread,
+					 t_ia32_context*	context)
+{
+  o_thread*		o;
+  o_task*		otask;
+
+  /*
+   * 1)
+   */
+
+  if (thread_get(thread, &o) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (task_get(o->taskid, &otask) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (as_read(otask->asid,
+	      o->machdep.interrupt_stack - sizeof (t_ia32_context),
+	      sizeof (t_ia32_context),
+	      context) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  return (ERROR_NONE);
+}
+
+/*
+ * this function updates the context of a thread given a set of register
+ * values.
+ *
+ * steps:
+ *
+ * 1) get thread & task objects.
+ * 2) read the current context.
+ * 3) according to the mask, update the required registers.
+ * 4) store back the context to the thread's stack.
+ */
+
+t_error			ia32_set_context(i_thread		thread,
+					 t_ia32_context*	context,
+					 t_uint32		mask)
+{
+  o_thread*		o;
+  o_task*		otask;
+  t_ia32_context	temp;
+
+  /*
+   * 1)
+   */
+
+  if (thread_get(thread, &o) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (task_get(o->taskid, &otask) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (as_read(otask->asid,
+	      o->machdep.interrupt_stack - sizeof (t_ia32_context),
+	      sizeof (t_ia32_context),
+	      &temp) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 3)
+   */
+
+  if (mask & IA32_CONTEXT_EAX)
+    temp.eax = context->eax;
+  if (mask & IA32_CONTEXT_EBX)
+    temp.ebx = context->ebx;
+  if (mask & IA32_CONTEXT_ECX)
+    temp.ecx = context->ecx;
+  if (mask & IA32_CONTEXT_EDX)
+    temp.edx = context->edx;
+  if (mask & IA32_CONTEXT_ESI)
+    temp.esi = context->esi;
+  if (mask & IA32_CONTEXT_EDI)
+    temp.edi = context->edi;
+  if (mask & IA32_CONTEXT_EBP)
+    temp.ebp = context->ebp;
+  if (mask & IA32_CONTEXT_ESP)
+    temp.esp = context->esp;
+  if (mask & IA32_CONTEXT_EIP)
+    temp.eip = context->eip;
+  if (mask & IA32_CONTEXT_EFLAGS)
+    temp.eflags = context->eflags;
+
+  /*
+   * 4)
+   */
+
+  if (as_write(otask->asid,
+	       &temp, sizeof
+	       (t_ia32_context),
+	       o->machdep.interrupt_stack - sizeof (t_ia32_context)) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   return (ERROR_NONE);

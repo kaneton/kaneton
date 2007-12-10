@@ -53,24 +53,6 @@ extern m_message*	message;
 
 /*                                                                  [cut] k4 */
 
-t_ia32_context*		ia32_context_of(i_thread	thread)
-{
-  i_thread		current;
-  o_thread*		o;
-
-  ASSERT(scheduler_current(&current) == ERROR_NONE);
-
-  if (current == thread)
-    return ia32_context;
-
-  ASSERT(thread_get(thread, &o) == ERROR_NONE);
-
-  if (o->sched != SCHEDULER_STATE_BLOCK)
-    return &o->machdep.context;
-
-  return NULL;
-}
-
 /*
  * handler for message_register syscall. prerequisites: message_register never
  * blocks.

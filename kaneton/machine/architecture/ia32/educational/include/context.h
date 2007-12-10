@@ -79,6 +79,23 @@
 #define IA32_CAPS_SSE		(1 << 1)
 
 /*
+ * context mask fields.
+ */
+
+#define IA32_CONTEXT_EAX	(1 << 0)
+#define IA32_CONTEXT_EBX	(1 << 1)
+#define IA32_CONTEXT_ECX	(1 << 2)
+#define IA32_CONTEXT_EDX	(1 << 3)
+#define IA32_CONTEXT_ESI	(1 << 4)
+#define IA32_CONTEXT_EDI	(1 << 5)
+#define IA32_CONTEXT_EBP	(1 << 6)
+#define IA32_CONTEXT_ESP	(1 << 7)
+#define IA32_CONTEXT_EIP	(1 << 8)
+#define IA32_CONTEXT_EFLAGS	(1 << 9)
+
+#define IA32_CONTEXT_FULL	0x3ff
+
+/*
  * ---------- dependencies ----------------------------------------------------
  */
 
@@ -94,24 +111,20 @@
 
 typedef struct
 {
-  t_uint16	gs;
-  t_uint16	fs;
-  t_uint16	es;
-  t_uint16	ds;
-  t_uint32	cr3;
   t_uint32	edi;
   t_uint32	esi;
+  t_uint32	ebp;
+  t_uint32	orig_esp;
+  t_uint32	ebx;
   t_uint32	edx;
   t_uint32	ecx;
-  t_uint32	ebx;
   t_uint32	eax;
-  t_uint32	ebp;
-  t_uint32	code;
+  t_uint32	error_code;
   t_uint32	eip;
-  t_uint32	cs;
+  t_uint32	reserved1;
   t_uint32	eflags;
   t_uint32	esp;
-  t_uint32	ss;
+  t_uint32	reserved2;
 }		__attribute__ ((packed)) t_ia32_context;
 
 /*
@@ -193,12 +206,6 @@ typedef struct
  */
 
 /*
- * global variable pointing the context.
- */
-
-extern t_ia32_context*	ia32_context;
-
-/*
  * CPU capabilities from CPUID.
  */
 
@@ -216,16 +223,7 @@ extern t_uint32		ia32_cpucaps;
  * ../context.c
  */
 
-t_error			ia32_update_pdbr(i_task			tskid,
-					 i_as			asid);
-
-t_error			ia32_update_thread_pdbr(i_thread	threadid,
-						i_as	       	asid);
-
 t_error			ia32_extended_context_init(void);
-
-void			ia32_context_copy(t_ia32_context*		dst,
-					  const t_ia32_context*		src);
 
 t_error			ia32_clear_io_bitmap(i_task		tskid);
 
@@ -264,6 +262,13 @@ t_error			ia32_extended_context_switch(i_thread	current,
 t_error			ia32_push_args(i_thread			threadid,
 				       const void*		args,
 				       t_vsize			size);
+
+t_error			ia32_get_context(i_thread		thread,
+					 t_ia32_context*	context);
+
+t_error			ia32_set_context(i_thread		thread,
+					 t_ia32_context*	context,
+					 t_uint32		mask);
 
 
 /*

@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/as.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       matthieu bucchianeri   [sat jun 16 19:43:56 2007]
+ * updated       matthieu bucchianeri   [sat dec  8 20:20:59 2007]
  */
 
 /*
@@ -47,7 +47,7 @@ extern i_task		ktask;
 d_as				as_dispatch =
   {
     NULL,
-    glue_as_give,
+    NULL,
     NULL,
     NULL,
     NULL,
@@ -60,21 +60,6 @@ d_as				as_dispatch =
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*
- * this function give an address space to a task.
- */
-
-t_error			glue_as_give(i_task			tskid,
-				     i_as			asid)
-{
-  AS_ENTER(as);
-
-  if (ia32_update_pdbr(tskid, asid) != ERROR_NONE)
-    AS_LEAVE(as, ERROR_UNKNOWN);
-
-  AS_LEAVE(as, ERROR_NONE);
-}
 
 /*
  * this function reserves an address space.
@@ -93,9 +78,6 @@ t_error			glue_as_reserve(i_task			tskid,
   else
     {
       if (ia32_task_as_init(*asid) != ERROR_NONE)
-	AS_LEAVE(as, ERROR_UNKNOWN);
-
-      if (ia32_update_pdbr(tskid, *asid) != ERROR_NONE)
 	AS_LEAVE(as, ERROR_UNKNOWN);
     }
 
