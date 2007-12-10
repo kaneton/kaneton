@@ -25,47 +25,45 @@
  */
 
 #define	IA32_SAVE_CONTEXT()						\
-	 "	pushl %ebp				\n"		\
-	 "	pushl %eax				\n"		\
-	 "	pushl %ebx				\n"		\
-	 "	pushl %ecx				\n"		\
-	 "	pushl %edx				\n"		\
-	 "	pushl %esi				\n"		\
-	 "	pushl %edi				\n"		\
-	 "	movl %cr3, %eax				\n"		\
-	 "	pushl %eax				\n"		\
+	 "	pusha					\n"		\
 	 "	movl ia32_interrupt_pdbr, %eax		\n"		\
 	 "	movl %eax, %cr3				\n"		\
-	 "	pushw %ds				\n"		\
-	 "	pushw %es				\n"		\
-	 "	pushw %fs				\n"		\
-	 "	pushw %gs				\n"		\
-	 "	movl %esp, ia32_context			\n"		\
 	 "	movw ia32_interrupt_ds, %ax		\n"		\
 	 "	movw %ax, %ds				\n"		\
 	 "	movw %ax, %es				\n"		\
 	 "	movw %ax, %fs				\n"		\
-	 "	movw %ax, %gs				\n"
+	 "	movw %ax, %gs				\n"		\
+	 "	pushl %esp				\n"		\
+	 "	pushl $ia32_local_jump_stack		\n"		\
+	 "	call ia32_cpu_local_set			\n"		\
+	 "	addl $8, %esp				\n"		\
+	 "	pushl ia32_local_interrupt_stack	\n"		\
+	 "	call ia32_cpu_local_get			\n"		\
+	 "	addl $4, %esp				\n"		\
+	 "	movl %eax, %esp				\n"
 
 #define IA32_RESTORE_CONTEXT()						\
-	 "	movl $0, ia32_context			\n"		\
-	 "	popw %gs				\n"		\
-	 "	popw %fs				\n"		\
-	 "	popw %es				\n"		\
-	 "	popw %ds				\n"		\
-	 "	popl %eax				\n"		\
+	 "	pushl ia32_local_jump_ds		\n"		\
+	 "	call ia32_cpu_local_get			\n"		\
+	 "	addl $4, %esp				\n"		\
+	 "	movw %ax, %ds				\n"		\
+	 "	movw %ax, %es				\n"		\
+	 "	movw %ax, %fs				\n"		\
+	 "	movw %ax, %gs				\n"		\
+	 "	pushl ia32_local_jump_stack		\n"		\
+	 "	call ia32_cpu_local_get			\n"		\
+	 "	addl $4, %esp				\n"		\
+	 "	movl %eax, %edx				\n"		\
+	 "	pushl ia32_local_jump_pdbr		\n"		\
+	 "	call ia32_cpu_local_get			\n"		\
+	 "	addl $4, %esp				\n"		\
 	 "	movl %cr3, %ebx				\n"		\
 	 "	cmp %eax, %ebx				\n"		\
 	 "	je 1f					\n"		\
 	 "	movl %eax, %cr3				\n"		\
 	 "1:						\n"		\
-	 "	popl %edi				\n"		\
-	 "	popl %esi				\n"		\
-	 "	popl %edx				\n"		\
-	 "	popl %ecx				\n"		\
-	 "	popl %ebx				\n"		\
-	 "	popl %eax				\n"		\
-	 "	popl %ebp				\n"
+	 "	movl %edx, %esp				\n"		\
+	 "	popa					\n"
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -92,8 +90,11 @@
 #define IA32_CONTEXT_ESP	(1 << 7)
 #define IA32_CONTEXT_EIP	(1 << 8)
 #define IA32_CONTEXT_EFLAGS	(1 << 9)
+#define IA32_CONTEXT_CS		(1 << 10)
+#define IA32_CONTEXT_SS		(1 << 11)
 
-#define IA32_CONTEXT_FULL	0x3ff
+
+#define IA32_CONTEXT_FULL	0xfff
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -121,10 +122,10 @@ typedef struct
   t_uint32	eax;
   t_uint32	error_code;
   t_uint32	eip;
-  t_uint32	reserved1;
+  t_uint32	cs;
   t_uint32	eflags;
   t_uint32	esp;
-  t_uint32	reserved2;
+  t_uint32	ss;
 }		__attribute__ ((packed)) t_ia32_context;
 
 /*

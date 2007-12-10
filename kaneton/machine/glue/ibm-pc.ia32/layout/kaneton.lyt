@@ -17,6 +17,7 @@ SECTIONS
 		. = ALIGN(0x1000);
 		_handler_begin = .;
 		*(.handler)
+		*(.handler.*)
 		. = ALIGN(0x1000);
 		_handler_end = .;
 	} : uniq

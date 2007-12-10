@@ -48,15 +48,13 @@ PREHANDLER_PROTOTYPES();
  * the segment selector to load on interrupt.
  */
 
-volatile IA32_HANDLER_DATA_SECTION t_uint16	ia32_interrupt_ds = 0;
+IA32_HANDLER_DATA_SECTION t_uint16	ia32_interrupt_ds = 0;
 
 /*
  * the page directory to load on interrupt.
  */
 
-volatile IA32_HANDLER_DATA_SECTION t_uint32	ia32_interrupt_pdbr = 0;
-
-volatile IA32_HANDLER_DATA_SECTION t_uint32	ia32_interrupt_stack = 0;
+IA32_HANDLER_DATA_SECTION t_uint32	ia32_interrupt_pdbr = 0;
 
 /*
  * ---------- functions -------------------------------------------------------

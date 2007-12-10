@@ -24,8 +24,6 @@
 
 extern t_init*		init;
 extern i_as		kasid;
-extern volatile t_uint32		ia32_interrupt_pdbr;
-extern volatile t_uint16		ia32_interrupt_ds;
 extern m_thread*	thread;
 extern t_ia32_idt	ia32_idt;
 extern t_ia32_gdt	ia32_gdt;
@@ -260,7 +258,7 @@ t_error			ia32_kernel_as_finalize(void)
  * 2) reserve a segment for the directory.
  * 3) build a new page directory for the as.
  * 4) release the kernel-side region mapping the directory.
- * 5) map the mandatory regions (gdt, idt, kernel stack & handlers, tss)
+ * 5) map the mandatory regions (gdt, idt, kernel handlers, tss)
  */
 
 t_error			ia32_task_as_init(i_as		asid)
@@ -385,22 +383,6 @@ t_error			ia32_task_as_init(i_as		asid)
 		     REGION_OPT_GLOBAL,
 		     (t_vaddr)ia32_idt.descriptor,
 		     PAGESZ,
-		     &reg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  base = thread->machdep.tss->esp0 - 2 * PAGESZ + 16;
-
-  if (region_get(kasid, (i_region)base,
-		 &preg) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
-  if (region_reserve(asid,
-		     preg->segid,
-		     0,
-		     REGION_OPT_FORCE | REGION_OPT_PRIVILEGED |
-		     REGION_OPT_GLOBAL,
-		     base,
-		     2 * PAGESZ,
 		     &reg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 

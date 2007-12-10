@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...kaneton/machine/glue/ibm-pc.ia32/event.c
+ * file          /home/buckman/cry...kaneton/machine/glue/ibm-pc.ia32/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [sat dec  8 20:17:17 2007]
+ * updated       matthieu bucchianeri   [mon dec 10 16:04:25 2007]
  */
 
 /*
@@ -86,13 +86,20 @@ static void		pf_handler(t_id				id,
 				   t_vaddr			data,
 				   t_uint32			error_code)
 {
+  i_thread		th;
   t_uint32              addr;
+  t_ia32_context	ctx;
+
+  ASSERT(scheduler_current(&th) == ERROR_NONE);
+
+  ASSERT(ia32_get_context(th, &ctx) == ERROR_NONE);
+
 
   SCR2(addr);
 
   printf("error: page fault !\n"
          "  %p trying to %s at the address 0x%x requires %s\n",
-	 /* XXX ia32_context->eip */ 0,
+	 ctx.eip,
          (error_code & 2) ? "write" : "read",
          addr,
          (error_code & 1) ? "a lower DPL" : "the page to be present");

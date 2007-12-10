@@ -58,12 +58,10 @@
   asm	(".section .handler				\n"		\
 	 "prehandler_exception" #nr ":			\n"		\
 	 IA32_SAVE_CONTEXT()						\
-	 IA32_FORCE_RING0_SWITCH()					\
 	 "	pushl 40(%esp)				\n"		\
 	 "	pushl $" #nr "				\n"		\
 	 "	call ia32_handler_exception		\n"		\
 	 "	addl $8, %esp				\n"		\
-	 IA32_FORCE_RING0_BACK()					\
 	 IA32_RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
 	 "	iret					\n"		\
@@ -74,12 +72,10 @@
 	 "prehandler_exception" #nr ":			\n"		\
 	 "	addl $-4, %esp				\n"		\
 	 IA32_SAVE_CONTEXT()						\
-	 IA32_FORCE_RING0_SWITCH()					\
 	 "	pushl $0				\n"		\
 	 "	pushl $" #nr "				\n"		\
 	 "	call ia32_handler_exception		\n"		\
 	 "	addl $8, %esp				\n"		\
-	 IA32_FORCE_RING0_BACK()					\
 	 IA32_RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
 	 "	iret					\n"		\
@@ -90,11 +86,9 @@
 	 "prehandler_irq" #nr ":			\n"		\
 	 "	addl $-4, %esp				\n"		\
 	 IA32_SAVE_CONTEXT()						\
-	 IA32_FORCE_RING0_SWITCH()					\
 	 "	pushl $" #nr "				\n"		\
 	 "	call ia32_handler_irq			\n"		\
 	 "	addl $4, %esp				\n"		\
-	 IA32_FORCE_RING0_BACK()					\
 	 IA32_RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
 	 "	iret					\n"		\
@@ -105,11 +99,9 @@
 	 "prehandler_ipi" #nr ":			\n"		\
 	 "	addl $-4, %esp				\n"		\
 	 IA32_SAVE_CONTEXT()						\
-	 IA32_FORCE_RING0_SWITCH()					\
 	 "	pushl $" #nr "				\n"		\
 	 "	call ia32_handler_ipi			\n"		\
 	 "	addl $4, %esp				\n"		\
-	 IA32_FORCE_RING0_BACK()					\
 	 IA32_RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
 	 "	iret					\n"		\
@@ -120,65 +112,13 @@
 	 "prehandler_syscall" #nr ":			\n"		\
 	 "	addl $-4, %esp				\n"		\
 	 IA32_SAVE_CONTEXT()						\
-	 IA32_FORCE_RING0_SWITCH()					\
 	 "	pushl $" #nr "				\n"		\
 	 "	call ia32_handler_syscall		\n"		\
 	 "	addl $4, %esp				\n"		\
-	 IA32_FORCE_RING0_BACK()					\
 	 IA32_RESTORE_CONTEXT()						\
 	 "	addl $4, %esp				\n"		\
 	 "	iret					\n"		\
 	 ".text						")
-
-/*
- * force a stack switch event if coming from ring0.
- */
-
-#define IA32_FORCE_RING0_SWITCH()					\
-  "	movl ia32_interrupt_stack, %eax			\n"		\
-  "	testl %eax, %eax				\n"		\
-  "	jz 1f						\n"		\
-  "	movl 48(%esp), %eax				\n"		\
-  "	andl $3, %eax					\n"		\
-  "	jnz 1f						\n"		\
-  "	pushl $64					\n"		\
-  "	pushl ia32_context				\n"		\
-  "	movl ia32_interrupt_stack, %eax			\n"		\
-  "	addl $-64, %eax					\n"		\
-  "	pushl %eax					\n"		\
-  "	call memcpy					\n"		\
-  "	popl %ebx					\n"		\
-  "	movl %ebx, ia32_context				\n"		\
-  "	movw 6(%ebx), %ax				\n"		\
-  "	movw %ax, 60(%ebx)				\n"		\
-  "	popl %eax					\n"		\
-  "	addl $56, %eax					\n"		\
-  "	movl %eax, 56(%ebx)				\n"		\
-  "	addl $4, %esp					\n"		\
-  "	movl %ebx, %esp					\n"		\
-  "1:							\n"
-
-/*
- * force a stack switch if coming to ring 0.
- */
-
-#define IA32_FORCE_RING0_BACK()						\
-  "	movl ia32_interrupt_stack, %eax			\n"		\
-  "	testl %eax, %eax				\n"		\
-  "	jz 1f						\n"		\
-  "	movl 48(%esp), %eax				\n"		\
-  "	andl $3, %eax					\n"		\
-  "	jnz 1f						\n"		\
-  "	movl 56(%esp), %eax				\n"		\
-  "	addl $-56, %eax					\n"		\
-  "	push $56					\n"		\
-  "	push ia32_context				\n"		\
-  "	push %eax					\n"		\
-  "	call memcpy					\n"		\
-  "	popl ia32_context				\n"		\
-  "	addl $8, %esp					\n"		\
-  "	movl ia32_context, %esp				\n"		\
-  "1:							\n"
 
 #define IA32_CALL_HANDLER(_handler_, ...)				\
   ((t_ia32_interrupt_handler)((_handler_).function))(__VA_ARGS__)
@@ -283,15 +223,22 @@ typedef enum
  * on-interrupt data segment to load.
  */
 
-extern volatile t_uint16	ia32_interrupt_ds;
+extern t_uint16	ia32_interrupt_ds;
 
 /*
  * on-interrupt PDBR to load.
  */
 
-extern volatile t_uint32	ia32_interrupt_pdbr;
+extern t_uint32	ia32_interrupt_pdbr;
 
-extern volatile t_uint32	ia32_interrupt_stack;
+/*
+ * stack switching addresses
+ */
+
+extern t_ia32_cpu_local	ia32_local_interrupt_stack;
+extern t_ia32_cpu_local	ia32_local_jump_stack;
+extern t_ia32_cpu_local	ia32_local_jump_ds;
+extern t_ia32_cpu_local	ia32_local_jump_pdbr;
 
 /*                                                                 [cut] /k2 */
 

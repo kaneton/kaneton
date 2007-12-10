@@ -22,8 +22,6 @@
  * ../syscalls.c
  */
 
-t_ia32_context*		ia32_context_of(i_thread	thread);
-
 void			ia32_syshandler_register(void);
 
 void			ia32_syshandler_size(void);

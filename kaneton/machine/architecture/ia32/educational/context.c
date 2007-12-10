@@ -29,6 +29,15 @@
 t_uint32	ia32_cpucaps = 0;
 
 /*
+ * stack switching addresses
+ */
+
+IA32_HANDLER_DATA_SECTION t_ia32_cpu_local	ia32_local_interrupt_stack = 0;
+IA32_HANDLER_DATA_SECTION t_ia32_cpu_local	ia32_local_jump_stack = 0;
+IA32_HANDLER_DATA_SECTION t_ia32_cpu_local	ia32_local_jump_ds = 0;
+IA32_HANDLER_DATA_SECTION t_ia32_cpu_local	ia32_local_jump_pdbr = 0;
+
+/*
  * ---------- externs ---------------------------------------------------------
  */
 
@@ -240,7 +249,11 @@ t_error			ia32_init_context(i_task		taskid,
    * 3)
    */
 
-  /* XXX */
+  if (map_reserve(task->asid, MAP_OPT_NONE, PAGESZ, PERM_READ | PERM_WRITE,
+		  &o->machdep.interrupt_stack) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  o->machdep.interrupt_stack += (PAGESZ - 16);
 
   /*
    * 4)
@@ -250,6 +263,26 @@ t_error			ia32_init_context(i_task		taskid,
   ctx.eflags = (1 << 9) | (1 << 1);
   if (task->class == TASK_CLASS_DRIVER)
     ctx.eflags |= (1 << 12);
+
+  switch (task->class)
+    {
+      case TASK_CLASS_CORE:
+	ctx.ss = thread->machdep.core_ds;
+	ctx.cs = thread->machdep.core_cs;
+	break;
+      case TASK_CLASS_DRIVER:
+	ctx.ss = thread->machdep.driver_ds;
+	ctx.cs = thread->machdep.driver_cs;
+	break;
+      case TASK_CLASS_SERVICE:
+	ctx.ss = thread->machdep.service_ds;
+	ctx.cs = thread->machdep.service_cs;
+	break;
+      case TASK_CLASS_PROGRAM:
+	ctx.ss = thread->machdep.program_ds;
+	ctx.cs = thread->machdep.program_cs;
+	break;
+    }
 
   if (ia32_set_context(threadid, &ctx, IA32_CONTEXT_FULL) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -418,7 +451,7 @@ t_error			ia32_init_switcher(void)
 		    0x68) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  ia32_interrupt_stack = int_stack + 2 * PAGESZ - 16;
+  ia32_cpu_local_set(&ia32_local_interrupt_stack, int_stack + 2 * PAGESZ - 16);
 
   /*
    * 5)
@@ -470,6 +503,10 @@ t_error			ia32_context_switch(i_thread		current,
   o_thread*		from;
   o_thread*		to;
   o_task*		task;
+  o_task*		task2;
+  o_as*			as;
+  t_uint16		ds;
+  t_vaddr		cr3;
 
   /*
    * 1)
@@ -478,13 +515,23 @@ t_error			ia32_context_switch(i_thread		current,
   if (current == elected)
       return (ERROR_NONE);
 
-  /* XXX */
-
   /*
    * 4)
    */
 
+  if (thread_get(current, &from) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (thread_get(elected, &to) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
   if (task_get(to->taskid, &task) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (task_get(from->taskid, &task2) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (as_get(task->asid, &as) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   if (current == ID_UNUSED || (from->taskid != to->taskid &&
@@ -493,6 +540,51 @@ t_error			ia32_context_switch(i_thread		current,
     memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
 	   &task->machdep.iomap,
 	   8192);
+
+  /*
+   *
+   */
+
+  /* XXX moveme earlier in c-s */
+  if (task2->class == TASK_CLASS_CORE)
+    {
+      from->machdep.interrupt_stack = ia32_cpu_local_get(ia32_local_jump_stack);
+      from->machdep.interrupt_stack += sizeof (t_ia32_context);
+    }
+
+  switch (task->class)
+    {
+      case TASK_CLASS_CORE:
+	ds = thread->machdep.core_ds;
+	break;
+      case TASK_CLASS_DRIVER:
+	ds = thread->machdep.driver_ds;
+	break;
+      case TASK_CLASS_SERVICE:
+	ds = thread->machdep.service_ds;
+	break;
+      case TASK_CLASS_PROGRAM:
+	ds = thread->machdep.program_ds;
+	break;
+    }
+
+  if (ia32_pd_get_cr3(&cr3,
+		      as->machdep.pd,
+		      IA32_PD_CACHED,
+		      IA32_PD_WRITEBACK) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  ia32_cpu_local_set(&ia32_local_jump_ds, ds);
+  ia32_cpu_local_set(&ia32_local_jump_pdbr, cr3);
+
+  ia32_cpu_local_set(&ia32_local_jump_stack, to->machdep.interrupt_stack -
+		     sizeof (t_ia32_context));
+
+  if (ia32_tss_load(thread->machdep.tss,
+		    IA32_SEGSEL(IA32_PMODE_GDT_CORE_DS, IA32_PRIV_RING0),
+		    to->machdep.interrupt_stack,
+		    0x68) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
 
   /*
    * 5)
@@ -740,6 +832,10 @@ t_error			ia32_set_context(i_thread		thread,
     temp.eip = context->eip;
   if (mask & IA32_CONTEXT_EFLAGS)
     temp.eflags = context->eflags;
+  if (mask & IA32_CONTEXT_CS)
+    temp.cs = context->cs;
+  if (mask & IA32_CONTEXT_SS)
+    temp.ss = context->ss;
 
   /*
    * 4)

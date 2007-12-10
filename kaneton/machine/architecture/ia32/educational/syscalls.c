@@ -65,18 +65,23 @@ void			ia32_syshandler_register(void)
   i_task		task;
   t_type		type;
   t_vsize		size;
+  t_ia32_context	ctx;
 
   ASSERT(scheduler_current(&caller) == ERROR_NONE);
-
   ASSERT(task_current(&task) == ERROR_NONE);
 
-  type = ia32_context->eax;
-  size = ia32_context->ebx;
+  ASSERT(ia32_get_context(caller, &ctx));
+
+  type = ctx.eax;
+  size = ctx.ebx;
 
   res = message_register(task, type, size);
 
-  ia32_context->eax = res;
+  ctx.eax = res;
+
+  ASSERT(ia32_set_context(caller, &ctx, IA32_CONTEXT_EAX));
 }
+
 
 /*
  * handler for message_size syscall. prerequisites: message_size never
@@ -90,17 +95,21 @@ void			ia32_syshandler_size(void)
   i_task		task;
   t_type		type;
   t_vsize		size;
+  t_ia32_context	ctx;
 
   ASSERT(scheduler_current(&caller) == ERROR_NONE);
-
   ASSERT(task_current(&task) == ERROR_NONE);
 
-  type = ia32_context->eax;
+  ASSERT(ia32_get_context(caller, &ctx));
+
+  type = ctx.eax;
 
   res = message_size(task, type, &size);
 
-  ia32_context->eax = res;
-  ia32_context->ebx = size;
+  ctx.eax = res;
+  ctx.ebx = size;
+
+  ASSERT(ia32_set_context(caller, &ctx, IA32_CONTEXT_EAX | IA32_CONTEXT_EBX));
 }
 
 /*
@@ -115,6 +124,7 @@ void			ia32_syshandler_send(void)
   t_type		type;
   t_vaddr		data;
   t_vsize		size;
+  t_ia32_context	ctx;
   union
   {
     i_node		node;
@@ -122,20 +132,23 @@ void			ia32_syshandler_send(void)
   }			u;
 
   ASSERT(scheduler_current(&caller) == ERROR_NONE);
-
   ASSERT(task_current(&task) == ERROR_NONE);
 
-  u.reg[0] = ia32_context->eax;
-  u.reg[1] = ia32_context->ebx;
-  u.reg[2] = ia32_context->ecx;
-  u.reg[3] = ia32_context->edx;
-  type = ia32_context->esi;
-  data = ia32_context->edi;
-  size = ia32_context->ebp;
+  ASSERT(ia32_get_context(caller, &ctx));
+
+  u.reg[0] = ctx.eax;
+  u.reg[1] = ctx.ebx;
+  u.reg[2] = ctx.ecx;
+  u.reg[3] = ctx.edx;
+  type = ctx.esi;
+  data = ctx.edi;
+  size = ctx.ebp;
 
   res = message_send(task, u.node, type, data, size);
 
-  ia32_context->eax = res;
+  ctx.eax = res;
+
+  ASSERT(ia32_set_context(caller, &ctx, IA32_CONTEXT_EAX));
 }
 
 /*
@@ -146,11 +159,11 @@ void			ia32_syshandler_transmit(void)
 {
   t_error		res;
   i_thread		caller;
-  t_ia32_context*	context;
   i_task		task;
   t_type		type;
   t_vaddr		data;
   t_vsize		size;
+  t_ia32_context	ctx;
   union
   {
     i_node		node;
@@ -158,21 +171,23 @@ void			ia32_syshandler_transmit(void)
   }			u;
 
   ASSERT(scheduler_current(&caller) == ERROR_NONE);
-
   ASSERT(task_current(&task) == ERROR_NONE);
 
-  u.reg[0] = ia32_context->eax;
-  u.reg[1] = ia32_context->ebx;
-  u.reg[2] = ia32_context->ecx;
-  u.reg[3] = ia32_context->edx;
-  type = ia32_context->esi;
-  data = ia32_context->edi;
-  size = ia32_context->ebp;
+  ASSERT(ia32_get_context(caller, &ctx));
+
+  u.reg[0] = ctx.eax;
+  u.reg[1] = ctx.ebx;
+  u.reg[2] = ctx.ecx;
+  u.reg[3] = ctx.edx;
+  type = ctx.esi;
+  data = ctx.edi;
+  size = ctx.ebp;
 
   res = message_transmit(task, u.node, type, data, size);
 
-  if ((context = ia32_context_of(caller)) != NULL)
-    context->eax = res;
+  ctx.eax = res;
+
+  ASSERT(ia32_set_context(caller, &ctx, IA32_CONTEXT_EAX));
 }
 
 /*
@@ -183,11 +198,11 @@ void			ia32_syshandler_receive(void)
 {
   t_error		res;
   i_thread		caller;
-  t_ia32_context*	context;
   i_task		task;
   t_type		type;
   t_vaddr		data;
   t_vsize		size;
+  t_ia32_context	ctx;
   union
   {
     i_node		node;
@@ -195,23 +210,27 @@ void			ia32_syshandler_receive(void)
   }			u;
 
   ASSERT(scheduler_current(&caller) == ERROR_NONE);
-
   ASSERT(task_current(&task) == ERROR_NONE);
 
-  type = ia32_context->eax;
-  data = ia32_context->ebx;
+  ASSERT(ia32_get_context(caller, &ctx));
+
+  type = ctx.eax;
+  data = ctx.ebx;
 
   res = message_receive(task, type, data, &size, &u.node);
 
-  if ((context = ia32_context_of(caller)) != NULL)
-    {
-      context->eax = res;
-      context->ebx = size;
-      context->ecx = u.reg[0];
-      context->edx = u.reg[1];
-      context->esi = u.reg[2];
-      context->edi = u.reg[3];
-    }
+  ctx.eax = res;
+  ctx.ebx = size;
+  ctx.ecx = u.reg[0];
+  ctx.edx = u.reg[1];
+  ctx.esi = u.reg[2];
+  ctx.edi = u.reg[3];
+
+  ASSERT(ia32_set_context(caller,
+			  &ctx,
+			  IA32_CONTEXT_EAX | IA32_CONTEXT_EBX |
+			  IA32_CONTEXT_ECX | IA32_CONTEXT_EDX |
+			  IA32_CONTEXT_ESI | IA32_CONTEXT_EDI));
 }
 
 /*
@@ -226,6 +245,7 @@ void			ia32_syshandler_poll(void)
   t_type		type;
   t_vaddr		data;
   t_vsize		size;
+  t_ia32_context	ctx;
   union
   {
     i_node		node;
@@ -233,20 +253,27 @@ void			ia32_syshandler_poll(void)
   }			u;
 
   ASSERT(scheduler_current(&caller) == ERROR_NONE);
-
   ASSERT(task_current(&task) == ERROR_NONE);
 
-  type = ia32_context->eax;
-  data = ia32_context->ebx;
+  ASSERT(ia32_get_context(caller, &ctx));
+
+  type = ctx.eax;
+  data = ctx.ebx;
 
   res = message_poll(task, type, data, &size, &u.node);
 
-  ia32_context->eax = res;
-  ia32_context->ebx = size;
-  ia32_context->ecx = u.reg[0];
-  ia32_context->edx = u.reg[1];
-  ia32_context->esi = u.reg[2];
-  ia32_context->edi = u.reg[3];
+  ctx.eax = res;
+  ctx.ebx = size;
+  ctx.ecx = u.reg[0];
+  ctx.edx = u.reg[1];
+  ctx.esi = u.reg[2];
+  ctx.edi = u.reg[3];
+
+  ASSERT(ia32_set_context(caller,
+			  &ctx,
+			  IA32_CONTEXT_EAX | IA32_CONTEXT_EBX |
+			  IA32_CONTEXT_ECX | IA32_CONTEXT_EDX |
+			  IA32_CONTEXT_ESI | IA32_CONTEXT_EDI));
 }
 
 /*
@@ -257,14 +284,14 @@ void			ia32_syshandler_poll(void)
 t_error			ia32_syscall_set_code(i_thread		thread,
 					      t_error		error)
 {
-  o_thread*		o;
+  t_ia32_context	ctx;
 
-  if (thread_get(thread, &o) != ERROR_NONE)
+  if (ia32_get_context(thread, &ctx) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  o->machdep.context.eax = error;
+  ctx.eax = error;
 
-  return (ERROR_NONE);
+  return (ia32_set_context(thread, &ctx, IA32_CONTEXT_EAX));
 }
 
 /*
@@ -277,26 +304,30 @@ t_error			ia32_syscall_set_info(i_thread		thread,
 					      t_vsize		size,
 					      i_node		sender)
 {
-  o_thread*		o;
+  t_ia32_context	ctx;
   union
   {
     i_node		node;
     t_uint32		reg[4];
   }			u;
 
-  if (thread_get(thread, &o) != ERROR_NONE)
+  if (ia32_get_context(thread, &ctx) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
   u.node = sender;
 
-  o->machdep.context.eax = error;
-  o->machdep.context.ebx = size;
-  o->machdep.context.ecx = u.reg[0];
-  o->machdep.context.edx = u.reg[1];
-  o->machdep.context.esi = u.reg[2];
-  o->machdep.context.edi = u.reg[3];
+  ctx.eax = error;
+  ctx.ebx = size;
+  ctx.ecx = u.reg[0];
+  ctx.edx = u.reg[1];
+  ctx.esi = u.reg[2];
+  ctx.edi = u.reg[3];
 
-  return (ERROR_NONE);
+  return (ia32_set_context(thread,
+			   &ctx,
+			   IA32_CONTEXT_EAX | IA32_CONTEXT_EBX |
+			   IA32_CONTEXT_ECX | IA32_CONTEXT_EDX |
+			   IA32_CONTEXT_ESI | IA32_CONTEXT_EDI));
 }
 
 /*
