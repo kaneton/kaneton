@@ -231,15 +231,6 @@ extern t_uint16	ia32_interrupt_ds;
 
 extern t_uint32	ia32_interrupt_pdbr;
 
-/*
- * stack switching addresses
- */
-
-extern t_ia32_cpu_local	ia32_local_interrupt_stack;
-extern t_ia32_cpu_local	ia32_local_jump_stack;
-extern t_ia32_cpu_local	ia32_local_jump_ds;
-extern t_ia32_cpu_local	ia32_local_jump_pdbr;
-
 /*                                                                 [cut] /k2 */
 
 /*

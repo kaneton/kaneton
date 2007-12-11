@@ -57,6 +57,11 @@ void			ia32_cpu_local_set(t_ia32_cpu_local*	var,
 
 t_uint32		ia32_cpu_local_get(t_ia32_cpu_local	var);
 
+void	ia32_cpu_local_set(t_ia32_cpu_local*	var,
+						   t_uint32		value);
+
+t_uint32	ia32_cpu_local_get(t_ia32_cpu_local	var);
+
 
 /*
  * eop

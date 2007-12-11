@@ -51,9 +51,6 @@
  * ../as.c
  */
 
-t_error			glue_as_give(i_task			tskid,
-				     i_as			asid);
-
 t_error			glue_as_reserve(i_task			tskid,
 					i_as*			asid);
 

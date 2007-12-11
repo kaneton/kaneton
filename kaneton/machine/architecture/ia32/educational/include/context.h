@@ -26,6 +26,8 @@
 
 #define	IA32_SAVE_CONTEXT()						\
 	 "	pusha					\n"		\
+	 "	movw %ds, %ax				\n"		\
+	 "	pushl %eax				\n"		\
 	 "	movl ia32_interrupt_pdbr, %eax		\n"		\
 	 "	movl %eax, %cr3				\n"		\
 	 "	movw ia32_interrupt_ds, %ax		\n"		\
@@ -43,13 +45,6 @@
 	 "	movl %eax, %esp				\n"
 
 #define IA32_RESTORE_CONTEXT()						\
-	 "	pushl ia32_local_jump_ds		\n"		\
-	 "	call ia32_cpu_local_get			\n"		\
-	 "	addl $4, %esp				\n"		\
-	 "	movw %ax, %ds				\n"		\
-	 "	movw %ax, %es				\n"		\
-	 "	movw %ax, %fs				\n"		\
-	 "	movw %ax, %gs				\n"		\
 	 "	pushl ia32_local_jump_stack		\n"		\
 	 "	call ia32_cpu_local_get			\n"		\
 	 "	addl $4, %esp				\n"		\
@@ -63,6 +58,11 @@
 	 "	movl %eax, %cr3				\n"		\
 	 "1:						\n"		\
 	 "	movl %edx, %esp				\n"		\
+	 "	popl %eax				\n"		\
+	 "	movw %ax, %ds				\n"		\
+	 "	movw %ax, %es				\n"		\
+	 "	movw %ax, %fs				\n"		\
+	 "	movw %ax, %gs				\n"		\
 	 "	popa					\n"
 
 /*
@@ -91,10 +91,11 @@
 #define IA32_CONTEXT_EIP	(1 << 8)
 #define IA32_CONTEXT_EFLAGS	(1 << 9)
 #define IA32_CONTEXT_CS		(1 << 10)
-#define IA32_CONTEXT_SS		(1 << 11)
+#define IA32_CONTEXT_DS		(1 << 11)
+#define IA32_CONTEXT_SS		(1 << 12)
 
 
-#define IA32_CONTEXT_FULL	0xfff
+#define IA32_CONTEXT_FULL	0x1fff
 
 /*
  * ---------- dependencies ----------------------------------------------------
@@ -112,6 +113,7 @@
 
 typedef struct
 {
+  t_uint32	ds;
   t_uint32	edi;
   t_uint32	esi;
   t_uint32	ebp;
@@ -212,6 +214,14 @@ typedef struct
 
 extern t_uint32		ia32_cpucaps;
 
+/*
+ * stack switching addresses
+ */
+
+extern t_ia32_cpu_local	ia32_local_interrupt_stack;
+extern t_ia32_cpu_local	ia32_local_jump_stack;
+extern t_ia32_cpu_local	ia32_local_jump_pdbr;
+
 /*								[cut] /k3 */
 
 /*
@@ -253,6 +263,8 @@ t_error			ia32_status_context(i_thread		threadid,
 					    t_vaddr*		sp);
 
 t_error			ia32_init_switcher(void);
+
+t_error			ia32_context_ring0_stack(void);
 
 t_error			ia32_context_switch(i_thread		current,
 					    i_thread		elected);

@@ -34,7 +34,6 @@ t_uint32	ia32_cpucaps = 0;
 
 IA32_HANDLER_DATA_SECTION t_ia32_cpu_local	ia32_local_interrupt_stack = 0;
 IA32_HANDLER_DATA_SECTION t_ia32_cpu_local	ia32_local_jump_stack = 0;
-IA32_HANDLER_DATA_SECTION t_ia32_cpu_local	ia32_local_jump_ds = 0;
 IA32_HANDLER_DATA_SECTION t_ia32_cpu_local	ia32_local_jump_pdbr = 0;
 
 /*
@@ -190,10 +189,11 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
   o->machdep.ioflush = 1;
 
   /* XXX beurk */
+#if 0
   memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
 	 &o->machdep.iomap,
 	 8192);
-
+#endif
 
   return (ERROR_NONE);
 }
@@ -249,6 +249,7 @@ t_error			ia32_init_context(i_task		taskid,
    * 3)
    */
 
+  /* XXX can be deleted after first cs when task->class == TASK_CLASS_CORE*/
   if (map_reserve(task->asid, MAP_OPT_NONE, PAGESZ, PERM_READ | PERM_WRITE,
 		  &o->machdep.interrupt_stack) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -267,19 +268,19 @@ t_error			ia32_init_context(i_task		taskid,
   switch (task->class)
     {
       case TASK_CLASS_CORE:
-	ctx.ss = thread->machdep.core_ds;
+	ctx.ds = ctx.ss = thread->machdep.core_ds;
 	ctx.cs = thread->machdep.core_cs;
 	break;
       case TASK_CLASS_DRIVER:
-	ctx.ss = thread->machdep.driver_ds;
+	ctx.ds = ctx.ss = thread->machdep.driver_ds;
 	ctx.cs = thread->machdep.driver_cs;
 	break;
       case TASK_CLASS_SERVICE:
-	ctx.ss = thread->machdep.service_ds;
+	ctx.ds = ctx.ss = thread->machdep.service_ds;
 	ctx.cs = thread->machdep.service_cs;
 	break;
       case TASK_CLASS_PROGRAM:
-	ctx.ss = thread->machdep.program_ds;
+	ctx.ds = ctx.ss = thread->machdep.program_ds;
 	ctx.cs = thread->machdep.program_cs;
 	break;
     }
@@ -485,13 +486,41 @@ t_error			ia32_init_switcher(void)
 }
 
 /*
+ * this function store back a core thread stack pointer into the thread object.
+ */
+
+t_error			ia32_context_ring0_stack(void)
+{
+  i_thread		current;
+  o_thread*		o;
+  o_task*		otask;
+
+  if (scheduler_current(&current) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (thread_get(current, &o) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (task_get(o->taskid, &otask) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (otask->class == TASK_CLASS_CORE)
+    {
+      o->machdep.interrupt_stack = ia32_cpu_local_get(ia32_local_jump_stack);
+      o->machdep.interrupt_stack += sizeof (t_ia32_context);
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
  * this function switches execution to the specified thread.
  *
  * steps:
  *
  * 1) check if a switch is necessary.
- * 2) store back the executing context into the executing thread.
- * 3) set current context as the elected thread one.
+ * 2) get necessary objects.
+ * 3) set jump stack & pdbr. update tss for next interrupt.
  * 4) update the I/O permissions bit map.
  * 5) set the TS flag so any use of FPU, MMX or SSE instruction will
  *    generate an exception.
@@ -503,9 +532,7 @@ t_error			ia32_context_switch(i_thread		current,
   o_thread*		from;
   o_thread*		to;
   o_task*		task;
-  o_task*		task2;
   o_as*			as;
-  t_uint16		ds;
   t_vaddr		cr3;
 
   /*
@@ -516,7 +543,7 @@ t_error			ia32_context_switch(i_thread		current,
       return (ERROR_NONE);
 
   /*
-   * 4)
+   * 2)
    */
 
   if (thread_get(current, &from) != ERROR_NONE)
@@ -528,45 +555,12 @@ t_error			ia32_context_switch(i_thread		current,
   if (task_get(to->taskid, &task) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  if (task_get(from->taskid, &task2) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-
   if (as_get(task->asid, &as) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  if (current == ID_UNUSED || (from->taskid != to->taskid &&
-			       (task->class == TASK_CLASS_SERVICE ||
-				task->class == TASK_CLASS_PROGRAM)))
-    memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
-	   &task->machdep.iomap,
-	   8192);
-
   /*
-   *
+   * 3)
    */
-
-  /* XXX moveme earlier in c-s */
-  if (task2->class == TASK_CLASS_CORE)
-    {
-      from->machdep.interrupt_stack = ia32_cpu_local_get(ia32_local_jump_stack);
-      from->machdep.interrupt_stack += sizeof (t_ia32_context);
-    }
-
-  switch (task->class)
-    {
-      case TASK_CLASS_CORE:
-	ds = thread->machdep.core_ds;
-	break;
-      case TASK_CLASS_DRIVER:
-	ds = thread->machdep.driver_ds;
-	break;
-      case TASK_CLASS_SERVICE:
-	ds = thread->machdep.service_ds;
-	break;
-      case TASK_CLASS_PROGRAM:
-	ds = thread->machdep.program_ds;
-	break;
-    }
 
   if (ia32_pd_get_cr3(&cr3,
 		      as->machdep.pd,
@@ -574,7 +568,6 @@ t_error			ia32_context_switch(i_thread		current,
 		      IA32_PD_WRITEBACK) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
-  ia32_cpu_local_set(&ia32_local_jump_ds, ds);
   ia32_cpu_local_set(&ia32_local_jump_pdbr, cr3);
 
   ia32_cpu_local_set(&ia32_local_jump_stack, to->machdep.interrupt_stack -
@@ -585,6 +578,17 @@ t_error			ia32_context_switch(i_thread		current,
 		    to->machdep.interrupt_stack,
 		    0x68) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+
+  /*
+   * 4)
+   */
+
+  if (current == ID_UNUSED || (from->taskid != to->taskid &&
+			       (task->class == TASK_CLASS_SERVICE ||
+				task->class == TASK_CLASS_PROGRAM)))
+    memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
+	   &task->machdep.iomap,
+	   8192);
 
   /*
    * 5)
@@ -836,6 +840,8 @@ t_error			ia32_set_context(i_thread		thread,
     temp.cs = context->cs;
   if (mask & IA32_CONTEXT_SS)
     temp.ss = context->ss;
+  if (mask & IA32_CONTEXT_DS)
+    temp.ds = context->ds;
 
   /*
    * 4)

@@ -267,6 +267,8 @@ static void		spurious_interrupt(i_event			id)
   o_task*		o;
   t_ia32_context	ctx;
 
+  ASSERT(ia32_context_ring0_stack() == ERROR_NONE);
+
   if (scheduler_current(&th) != ERROR_NONE ||
       ia32_get_context(th, &ctx) != ERROR_NONE)
     {
@@ -301,6 +303,8 @@ void			ia32_handler_exception(t_uint32			nr,
   i_event		id = nr;
   i_thread		current;
 
+  ASSERT(ia32_context_ring0_stack() == ERROR_NONE);
+
   ASSERT(VIEW_SIGNAL("exception", nr, VIEW_SIGNAL_IRQ) == ERROR_NONE);
 
   if (event_get(id, &o) == ERROR_NONE)
@@ -329,6 +333,8 @@ void			ia32_handler_irq(t_uint32			nr)
   o_event*		o;
   i_event		id = IA32_IDT_IRQ_BASE + nr;
   i_thread		current;
+
+  ASSERT(ia32_context_ring0_stack() == ERROR_NONE);
 
   ASSERT(VIEW_SIGNAL("irq", nr, VIEW_SIGNAL_IRQ) == ERROR_NONE);
 
@@ -363,6 +369,8 @@ void			ia32_handler_ipi(t_uint32			nr)
   i_event		id = IA32_IDT_IPI_BASE + nr;
   i_thread		current;
 
+  ASSERT(ia32_context_ring0_stack() == ERROR_NONE);
+
   ASSERT(VIEW_SIGNAL("ipi", nr, VIEW_SIGNAL_SYSCALL) == ERROR_NONE);
 
   ia32_ipi_acknowledge();
@@ -393,6 +401,8 @@ void			ia32_handler_syscall(t_uint32			nr)
   o_event*		o;
   i_event		id = IA32_IDT_SYSCALL_BASE + nr;
   i_thread		current;
+
+  ASSERT(ia32_context_ring0_stack() == ERROR_NONE);
 
   ASSERT(VIEW_SIGNAL("syscall", nr, VIEW_SIGNAL_SYSCALL) == ERROR_NONE);
 
