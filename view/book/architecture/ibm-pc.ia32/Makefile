@@ -27,12 +27,12 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		ia32
+PAPER			:=		ibm-pc.ia32
 
 SOURCES			:=		bibliography.tex		\
 					bootloader.tex			\
 					event.tex			\
-					ia32.tex			\
+					ibm-pc.ia32.tex			\
 					io.tex				\
 					memory.tex			\
 					overview.tex			\
