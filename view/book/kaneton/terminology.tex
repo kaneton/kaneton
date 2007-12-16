@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/terminology.tex
 %
 % created       julien quintard   [mon jun 18 15:45:43 2007]
-% updated       julien quintard   [tue jun 19 15:32:03 2007]
+% updated       julien quintard   [sun dec 16 17:24:00 2007]
 %
 
 %
@@ -19,7 +19,7 @@
 \label{chapter:terminology}
 
 In this chapter the kaneton terminology is detailed. This terminology is
-quite different from other kernel and operating system projects on many points.
+quite different from other kernel and operating system projects in many ways.
 
 \newpage
 
@@ -38,16 +38,8 @@ when used together in the same sentence. Therefore, kaneton people decided to
 introduce a well defined terminology to make things clear and more
 understandable.
 
-First, note that the kaneton project is actually composed of two projects:
-the \textit{kaneton microkernel educational project} which provides everything
-necessary to students willing to learn about kernels internals; and the
-\textit{kaneton microkernel research project} which focuses on designing and
-implementing a powerful, reliable, flexible microkernel. Obviously these
-two projects are highly related as the kaneton educational project relies on
-the implementation of the kaneton research project.
-
-This section tries to detail the terminology inherent to these projects by
-classifying the terms according to their context. Indeed, the remaining of
+This section tries to detail the terminology inherent to the kaneton project
+by classifying the terms according to their context. The remaining of
 this chapter is divided into two categories: \textit{Design} and
 \textit{Implementation}. The \textit{Design} section contains the kaneton
 general terminology while the \textit{Implementation} section contains some
@@ -65,18 +57,24 @@ parts. This subdivision was introduced to make the whole microkernel clearer
 and more understandable.
 
 The kaneton microkernel is thus divided into \textbf{managers}. These
-managers are generally responsible of a \textbf{kaneton object} type but there
+managers are generally responsible for a \textbf{kaneton object} type but there
 exist managers which manage something else or just create an abstraction over
 other kaneton managers. A kaneton object represents a logical and fundamental
 kernel entity. These objects are described later in this section.
 
-\textit{Figure XXX} illustrates the decomposition of the microkernel into
-multiples managers.
+\textit{Figure \ref{figure:managers-organisation}} illustrates the
+decomposition of the microkernel into multiples managers.
 
-XXX [figure]
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=0.7]{\path/figures/managers-organisation.pdf}
+    \caption{kaneton managers.}
+    \label{figure:managers-organisation}
+  \end{center}
+\end{figure}
 
-Note that this decomposition has no direct relation with \textit{Object
-Programming}. Indeed, even if kaneton designers tried to reduce the
+Note that this decomposition has no direct relation with the \textit{Object
+Programming} paradigm. Indeed, even if kaneton designers tried to reduce the
 dependencies between the managers, some managers remain intrusive as they
 access the data structures of one or more other managers.
 
@@ -102,7 +100,7 @@ Below are listed the most important objects:
     An \textit{as} is composed of a set of \textit{segments} and a set of
     \textit{regions}.
   \item
-    A \textbf{task} is represents a complete execution context.
+    A \textbf{task} represents a complete execution context.
 
     \-
 
@@ -116,19 +114,35 @@ Below are listed the most important objects:
     An \textbf{event} describes an external event including hardware
     events like interrupts as well as software events also known as
     \textit{system calls} or \textit{syscalls}.
+  \item
+    \textbf{Message}s are used for communicating betweens tasks.
 \end{itemize}
 
 The reader should notice that there is a hierarchical relation between
-these objects as it is illustrated by \textit{Figure XXX}.
+these objects as it is illustrated by \textit{Figure
+\ref{figure:objects-hierarchy}}.
 
-XXX [figure]
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=0.7]{\path/figures/objects-hierarchy.pdf}
+    \caption{kaneton objects hierarchy.}
+    \label{figure:objects-hierarchy}
+  \end{center}
+\end{figure}
+
+XXX
+
+overview: kernel = arch + generic :: data-struct + proc
+expliquer ca dans overview pour introduire les sets!
+
+XXX
 
 There is another kaneton object which is internally widely used: the
 \textbf{set} object. A \textit{set} object is an abstract data structure
 managed by a dedicated manager, the \textit{set manager}. The \textit{set
 manager} is used by the other kaneton managers for storing data without taking
 care of how it is technically done. The set concept was introduced to make the
-microkernel code as clear as a pseudo code. For more information on the
+microkernel code as clear as pseudo code. For more information on the
 \textit{set manager}, please refer to the book \textit{The kaneton
 microkernel :: core}.
 

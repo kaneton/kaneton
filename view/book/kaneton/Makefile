@@ -29,11 +29,11 @@ include			../../../environment/env.mk
 
 PAPER			:=		kaneton
 
-SOURCES			:=		kaneton.tex			\
+SOURCES			:=		background.tex			\
+					kaneton.tex			\
 					introduction.tex		\
 					licenses.tex			\
 					portability.tex			\
-					prerequisites.tex		\
 					references.tex			\
 					terminology.tex			
 
