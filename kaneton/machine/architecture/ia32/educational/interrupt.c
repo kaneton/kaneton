@@ -277,6 +277,8 @@ static void		spurious_interrupt(i_event			id)
     }
 
   printf("Unhandled exception %qu @ %p\n", id, ctx.eip);
+  printf("eflags=%08x\tcs=%04x\tds=%04x\tss=%04x\n", ctx.eflags,
+	 ctx.cs, ctx.ds, ctx.ss);
   printf("%%eax=%08x\t%%ebx=%08x\n", ctx.eax, ctx.ebx);
   printf("%%ecx=%08x\t%%edx=%08x\n", ctx.ecx, ctx.edx);
   printf("%%esi=%08x\t%%edi=%08x\n", ctx.esi, ctx.edi);
@@ -289,6 +291,9 @@ static void		spurious_interrupt(i_event			id)
       printf("%08x %08x %08x %08x\n", stack[0], stack[1], stack[2], stack[3]);
       printf("%08x %08x %08x %08x\n", stack[4], stack[5], stack[6], stack[7]);
     }
+
+  while (1)
+    ;
 }
 
 /*

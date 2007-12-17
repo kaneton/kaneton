@@ -5,10 +5,10 @@
  *
  * license
  *
- * file          /home/buckman/crypt/kaneton/services/inet/inet.c
+ * file          /home/buckman/kaneton/services/inet/inet.c
  *
  * created       matthieu bucchianeri   [fri sep  7 23:49:49 2007]
- * updated       matthieu bucchianeri   [tue sep 11 15:15:54 2007]
+ * updated       matthieu bucchianeri   [mon dec 17 01:38:37 2007]
  */
 
 #include <stdio.h>
@@ -189,8 +189,8 @@ static int	inet_serve(void)
 	    }
 	  else if (message->u.request.operation == INET_SERVICE_IF_UP)
 	    {
-	      message->u.reply.u.if_up.result = if_up(message->u.request.u.if_up.name) ?
-		ERROR_UNKNOWN : ERROR_NONE;
+	      message->u.reply.u.if_up.result = ERROR_NONE;
+	      if_up(message->u.request.u.if_up.name);
 
 	      if (message_send(sender,
 			       MESSAGE_TYPE_SERVICE_INET,

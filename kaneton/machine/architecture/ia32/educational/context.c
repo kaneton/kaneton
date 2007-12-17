@@ -583,12 +583,16 @@ t_error			ia32_context_switch(i_thread		current,
    * 4)
    */
 
-  if (current == ID_UNUSED || (from->taskid != to->taskid &&
-			       (task->class == TASK_CLASS_SERVICE ||
-				task->class == TASK_CLASS_PROGRAM)))
-    memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
-	   &task->machdep.iomap,
-	   8192);
+  if (1 || current == ID_UNUSED || /* XXX */
+      (from->taskid != to->taskid && (task->class == TASK_CLASS_SERVICE ||
+				      task->class == TASK_CLASS_PROGRAM)) ||
+      task->machdep.ioflush)
+    {
+      memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
+	     &task->machdep.iomap,
+	     8192);
+      task->machdep.ioflush = 0;
+    }
 
   /*
    * 5)

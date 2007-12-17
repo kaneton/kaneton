@@ -122,6 +122,15 @@ int			cons_print_char(char			c)
       return (1);
     }
 
+  if (c == '\t')
+    {
+      cons.column += 8;
+      if (cons.column & 0x7)
+	cons.column = cons.column & ~0x7;
+
+      return (1);
+    }
+
   if (cons.column >= IBMPC_CONS_COLUMNS)
     {
       cons.column = 0;

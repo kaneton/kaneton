@@ -791,12 +791,14 @@ static void		ne2000_pci_init(t_driver_pci_dev*	device,
 	 device->vendor, device->device, device->io[0], device->irq);
 
   for (i = 0; i < 0x20; i++)
-    if (io_grant(device->io[0] + i, _crt_get_task_id(), 1) != ERROR_NONE)
-      {
-	printf(" -- net2000-pci: cannot acquire i/o ports. abording.\n");
+    {
+      if (io_grant(device->io[0] + i, _crt_get_task_id(), 1) != ERROR_NONE)
+	{
+	  printf(" -- net2000-pci: cannot acquire i/o ports. abording.\n");
 
-	return;
-      }
+	  return;
+	}
+    }
 
   if ((dev = malloc(sizeof (t_driver_ne2000_dev))) == NULL)
     {
