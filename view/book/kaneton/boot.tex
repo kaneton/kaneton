@@ -1,0 +1,57 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/kaneton/boot.tex
+%
+% created       julien quintard   [mon dec 17 21:36:28 2007]
+% updated       julien quintard   [mon dec 17 23:52:00 2007]
+%
+
+%
+% ---------- boot -------------------------------------------------------------
+%
+
+\chapter{Boot}
+\label{chapter:label}
+
+This chapter contains the kaneton boot specifications. Every bootloader
+willing to run a kaneton microkernel instance needs to XXX
+
+\newpage
+
+%
+% ---------- text -------------------------------------------------------------
+%
+
+XXX
+The kaneton microkernel is not directly launched when the computer is
+turned on. Indeed, a \textbf{bootloader} first set up an execution environment
+so that the kernel can be launched properly. The \textit{bootloader} takes
+some \textbf{inputs} which represents additional files: configuration
+files, execution files etc. For example, the first \textit{input} the
+\textit{bootloader} uses is the kaneton microkernel binary file which is
+loaded and launched by the \textit{bootloader} itself.
+
+The kaneton microkernel manages tasks which are classified into \textit{four}
+categories according to the privileges they get on the system. These different
+classes of task are described next.
+
+A \textbf{program} is the lowest priviliged task of the system. The common
+user programs are the well known UNIX{\copyright} binaries like
+\textit{/bin/ls}, \textit{/bin/sh} etc. A \textbf{service} is a microkernel
+server which provides a logical service. For example, a service could be the
+\textit{Virtual File System} which dispatches the calls to the file systems
+servers. A \textbf{driver} is a service which performs hardware communication.
+For example, a \textit{Wireless driver} is a \textit{driver} in the kaneton
+terms. Finally, a \textbf{kernel} is a task which is a kind of super-driver
+in which it has full rights on the whole underlying hardware.
+
+For more information on the design on the kaneton microkernel, please
+refer to the paper \textit{The kaneton microkernel project}.
+XXX
+
+XXX[expliquer t\_init dand book:kaneton et ensute l'implem dans arch:XXX]

@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/goals.tex
 %
 % created       julien quintard   [fri jun  1 13:58:12 2007]
-% updated       julien quintard   [tue jun 19 15:32:29 2007]
+% updated       julien quintard   [mon dec 17 12:06:53 2007]
 %
 
 %
@@ -16,6 +16,7 @@
 %
 
 \chapter{Goals}
+\label{chapter:goals}
 
 In this chapter we will briefly introduce the kaneton microkernel
 through the kaneton microkernel goals.
@@ -26,3 +27,99 @@ through the kaneton microkernel goals.
 % ---------- text -------------------------------------------------------------
 %
 
+The project was primarily designed by two students in computer science,
+\textit{Julien Quintard} and \textit{Jean-Pascal Billaud}.
+
+These two students previously actively contributed to the development
+of a nanokernel-based operating system project in a French research laboratory.
+This system was not powerful enough from the design point of view.
+
+Therefore, the two students started the design of a new microkernel
+by their own, called \textbf{kaneton}, for educational purposes.
+
+The design was based on five fundamental guidelines.
+
+\begin{enumerate}
+  \item
+    \textbf{Educational}
+
+    \-
+
+    The kaneton project is built to become an educational project. The design
+    as well as the implementation must therefore be as understandable as
+    possible so that everyone interested in kernel internals can go through the
+    documents and source code and actually understand how it works.
+
+    \-
+
+    This \textit{understandable} property can be achieved through a very clear
+    and coherent design. Moreover, the implementation should be written using
+    modern tools and techniques to make the code as generic as possible and
+    easily readable.
+  \item
+    \textbf{Portability}
+
+    \-
+
+    The microkernel was particularly designed to be portable. The designers
+    tried to develop a portability system powerful enough to port kaneton on
+    any, existing or not, architectures.
+  \item
+    \textbf{Maintanability}
+
+    \-
+
+    Although microkernel-based operating systems rely on a modular design,
+    kaneton designers also wanted the microkernel itself to be modular and
+    maintainable.
+  \item
+    \textbf{Distributed Computing}
+
+    \-
+
+    The kaneton microkernel must be designed to fit distributed operating
+    systems requirements. Indeed, the kaneton microkernel was developed in
+    order to design and implement a distributed operating system named
+    \textbf{kayou}.
+
+    \-
+
+    This point led to many specific choices in the kaneton microkernel design.
+  \item
+    \textbf{Demystification}
+
+    \-
+
+    kaneton people wanted to break some well-known kind of computer
+    science rules. Indeed, for instance, many computer scientists consider
+    the source code as the actual documentation. Also, for many low-level
+    programmers, the kernel boot source code and more generally the
+    kernel source code itself cannot be understandable, clear and coherent as
+    it is related to low-level programming: microprocessor, devices etc.
+
+    kaneton people paid particular attention to the microkernel source code to
+    be easily understandable, maintainable and extendable. Moreover, kaneton
+    people tried to write documentation for every part of the project.
+\end{enumerate}
+
+Notice that building an educational microkernel project is nothing innovative.
+Indeed few other projects already exist; the most popular being \textit{MINIX}
+from \textit{Vrije Universiteit}, \textit{NachOS} from \textit{Berkeley
+University} or \textit{PintOS} from \textit{Stanford University}.
+
+kaneton people tried to design and implement a modern microkernel since, the
+original \textit{MINIX} microkernel for example, do not use modern development
+tools. Moreover, the kaneton source code is heavily commented and use modern
+languages techniques while trying to stay easily understandable.
+
+The educational characteristic of kaneton does not constraint it from being
+optimised afterwards. kaneton people believe that implementing optimised
+algorithms in the first place does not lead to maintainable implementations.
+
+Finally, note that the kaneton project is actually composed of two projects:
+the \textit{kaneton microkernel educational project} which provides everything
+necessary to students willing to learn about kernels internals; and the
+\textit{kaneton microkernel research project} which focuses on designing and
+implementing a powerful, reliable, flexible microkernel. Obviously these
+two projects are highly related as the kaneton educational project relies on
+the implementation of the kaneton research project.

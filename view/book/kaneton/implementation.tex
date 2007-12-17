@@ -1,0 +1,134 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/kaneton/implementation.tex
+%
+% created       julien quintard   [mon dec 17 12:05:06 2007]
+% updated       julien quintard   [mon dec 17 21:19:44 2007]
+%
+
+%
+% ---------- implementation ---------------------------------------------------
+%
+
+\chapter{Implementation}
+\label{chapter:implementation}
+
+This chapter specifies some general rules enabling the reader to explore
+the kaneton implementation without any difficulty.
+
+\newpage
+
+%
+% ---------- text -------------------------------------------------------------
+%
+
+%
+% interface
+%
+
+\section{Interface}
+
+As explained earlier, the kaneton microkernel is subdivided into multiple
+managers. Each manager provides an interface to manipulate the kaneton object
+it is responsible for or something the manager abstracts.
+
+The naming scheme used for these provided functions is normalised and
+detailed below.
+
+% manager
+
+\subsection*{Manager}
+
+Every manager must provide functions for being initialised and, on the
+contrary, cleaned.
+
+Therefore, the \texttt{initialize()} function initialises a manager given
+parameters though these parameters are, most of the time, absent.
+
+The \texttt{clean()} function, cleans the manager from anything so that it
+can return to a stable and clean state.
+
+% information
+
+\subsection*{Information}
+
+The following functions are provided for displaying information on either
+the manager, its objets or both.
+
+The function \texttt{show()} displays information on a given identified object.
+
+On the other hand, the \texttt{dump()} function displays information on the
+manager, including a dump of every object held by the manager.
+
+% object
+
+\subsection*{Object}
+
+The function \texttt{reserve()} allocates an object given some properties
+whilst the \texttt{release()} function releases it.
+
+The function \texttt{clone()} creates a copy of the given object. Cloning an
+object implies cloning every object this object holds or depends on.
+
+The \texttt{get()} function is used to retrieve a kaneton object given its
+identifier. Note that this function is private to the manager though it is
+sometimes used by other intrusive managers.
+
+% attributes
+
+\subsection*{Attributes}
+
+The following functions enables the caller to access an object attributes.
+
+The function \texttt{give()} gives the ownership to another entity whilst
+the function \texttt{flush()} releases every object previously reserved.
+
+In addition, the kaneton managers generally provide functions for modifying
+a property of a given identified object. Such functions typically take the
+name of the property to modify.
+
+Finally, every manager provides an \texttt{attribute()} function which
+returns the state of an object's property.
+
+%
+% organisation
+%
+
+\section{Organisation}
+
+The \texttt{kaneton/} directory is organised as follows:
+
+\begin{verbatim}
+  core/
+  include/
+  libc/
+  machine/
+\end{verbatim}
+
+The \texttt{libc/} directory contains the microkernel-specific C library
+whilst the \texttt{include/} directory contains links to the include
+directories of every component.
+
+The \texttt{core/} directory obviously contains everything related to the
+core including the source code and header files. This directory contains
+an \texttt{include/} directory with the core header files and a directory
+for every manager.
+
+The \texttt{machine/} directory contains three subdirectories: \texttt{glue},
+\texttt{platform} and \texttt{architecture}, one for each machine-related
+component.
+
+The \texttt{glue/} directory contains subdirectories for every couple
+platform/architecture supported. Each of these directories contains the
+source code files, an \texttt{include/} directory for the header files and
+a \texttt{layout/} directory which contains information used by the linker
+in order to place the different elements at precise memory locations.
+
+The \texttt{platform/} and \texttt{architecture/} directories are organised
+the same way with subdirectories for every supported platforms and
+architectures, respectively.
