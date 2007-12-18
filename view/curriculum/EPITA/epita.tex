@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/curriculum/EPITA/epita.tex
 %
 % created       julien quintard   [sat oct 20 09:31:28 2007]
-% updated       julien quintard   [sat dec  8 18:42:40 2007]
+% updated       julien quintard   [tue dec 18 01:24:58 2007]
 %
 
 %
@@ -902,6 +902,31 @@ possibly present the work achieved on this project.
 The student will probably contribute to the development of a peer-to-peer
 file system in order to test the \textit{DHT} but also to contribute to
 another kayou project.
+
+%
+% virtualization
+%
+
+\subsection{Virtualization}
+
+This project consists in porting kaneton for a paravirtualizer, probably
+\textit{Xen}.
+
+This project would be very useful for the kaneton microkernel project. Indeed,
+once ported, the kaneton microkernel could be run on a real machine for
+launching the test suite for instance without all the constraints we are
+facing at this time. It would be much more easier to debug in a real, but
+controlled, environment.
+
+Additionally, the kayou distributed operating system needs to be tested in
+a real environment as well, meaning with several computers running the kayou
+operating system. It would be wise to use virtualization for running multiple
+instances of the kayou operating system on a single machine rather than
+setting up a dozen of real computers.
+
+The student will have to study the different existing virtualization techniques
+and especially the paravirtualization systems so that one can be picked
+for portage.
 
 \end{multicols}
 
