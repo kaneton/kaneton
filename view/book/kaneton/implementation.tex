@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/implementation.tex
 %
 % created       julien quintard   [mon dec 17 12:05:06 2007]
-% updated       julien quintard   [mon dec 17 21:19:44 2007]
+% updated       julien quintard   [wed dec 19 20:21:05 2007]
 %
 
 %
@@ -44,8 +44,7 @@ detailed below.
 
 \subsection*{Manager}
 
-Every manager must provide functions for being initialised and, on the
-contrary, cleaned.
+Every manager must provide functions for being initialised and cleaned.
 
 Therefore, the \texttt{initialize()} function initialises a manager given
 parameters though these parameters are, most of the time, absent.
@@ -75,7 +74,7 @@ whilst the \texttt{release()} function releases it.
 The function \texttt{clone()} creates a copy of the given object. Cloning an
 object implies cloning every object this object holds or depends on.
 
-The \texttt{get()} function is used to retrieve a kaneton object given its
+The \texttt{get()} function is used for retrieving a kaneton object given its
 identifier. Note that this function is private to the manager though it is
 sometimes used by other intrusive managers.
 
@@ -83,7 +82,7 @@ sometimes used by other intrusive managers.
 
 \subsection*{Attributes}
 
-The following functions enables the caller to access an object attributes.
+The following functions enables the caller to access an object attribute.
 
 The function \texttt{give()} gives the ownership to another entity whilst
 the function \texttt{flush()} releases every object previously reserved.
@@ -119,9 +118,14 @@ core including the source code and header files. This directory contains
 an \texttt{include/} directory with the core header files and a directory
 for every manager.
 
-The \texttt{machine/} directory contains three subdirectories: \texttt{glue},
-\texttt{platform} and \texttt{architecture}, one for each machine-related
-component.
+The \texttt{machine/} directory contains three subdirectories, one for each
+machine-related component:
+
+\begin{verbatim}
+  architecture/
+  glue/
+  platform/
+\end{verbatim}
 
 The \texttt{glue/} directory contains subdirectories for every couple
 platform/architecture supported. Each of these directories contains the

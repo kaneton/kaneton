@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/portability.tex
 %
 % created       julien quintard   [tue jun 19 15:44:42 2007]
-% updated       julien quintard   [mon dec 17 21:20:26 2007]
+% updated       julien quintard   [wed dec 19 21:04:03 2007]
 %
 
 %
@@ -79,7 +79,7 @@ of the two following categories:
 
 \section{kaneton}
 
-The two previous portability systems are actually used in some kernels but
+The two previous portability concepts are actually used in some kernels but
 kaneton people were not satisfied by those.
 
 Therefore, they decided to design a specific kaneton portability system
@@ -94,7 +94,8 @@ destroyed.
 
 The kaneton portability system is therefore based on an interface. However,
 this interface, rather than being well established on well-known architectures
-functionalities, follows the implicit interface dicted by the kaneton managers.
+functionalities, follows the implicit interface dictated by the kaneton
+managers.
 
 In other words, rather than calling the machine-dependent code to create
 a new page directory, the as manager will call the machine-dependent code
@@ -103,7 +104,7 @@ machine-dependent code might be able to set up an appropriate page directory
 each time an address space object is reserved.
 
 Having said that the objects represented the kernel state, the
-machine-dependent code must be able to include machine-dependent data in
+machine-dependent code must be able to include machine-dependent data into
 these objects. For instance, a thread object, from the core point of view,
 does not contain the registers necessary for storing the state of the current
 execution context. The machine-dependent code must therefore include some
@@ -122,11 +123,11 @@ machine-dependent code.
 
 \section{Interface}
 
-The kaneton portability relies on c-prepreccesor macros and macro functions
-as it enables the machine-dependent source code to \textit{link} itself with
-the core without anything more.
+The kaneton portability system relies on c-prepreccesor macros and
+macro-functions as it enables the machine-dependent source code to
+\textit{link} itself with the core without anything more.
 
-Therefore, everything is transparent as the core functions use a macro function
+Therefore, everything is transparent as the core functions use a macro-function
 and do not know what is called.
 
 Note that these macro-functions are generally handled by the glue component
@@ -141,13 +142,13 @@ portability depending on the underlying platform and architecture.
 	   \-
 
 	   More precisely, this enables the machine-dependent code to declare
-	   machine-dependent things in the core.
+	   machine-dependent variables in the core.
 	 }
 
 \function{machine\_data}{(\argument{object})}
 	 {
 	   This macro-function can be used by the machine-dependent code
-	   to add data in the kaneton object \argument{object}.
+	   to add extra fields into the kaneton object type \argument{object}.
 	 }
 
 \function{machine\_call}{(\argument{manager},
@@ -157,11 +158,6 @@ portability depending on the underlying platform and architecture.
 	   This macro-function can be used by the core to call the
 	   machine-dependent function \argument{function} of the manager
 	   \argument{manager}.
-
-	   \-
-
-	   Note that a manager's core function must always call the
-	   machine-dependent with the arguments it received.
 	 }
 
 %
@@ -174,8 +170,8 @@ As said before, the glue component is responsible for setting the links between
 the core and the platform and architecture components through the portability
 macro-functions.
 
-Below is presented a common example of how to use these macros through
-the tread object.
+Below is presented a common example of how to use these macros in the
+thread object.
 
 \begin{verbatim}
   typedef struct
@@ -188,7 +184,7 @@ the tread object.
 
 In this example, the thread object structure is only composed of a priority
 attribute which is not sufficient. The architecture probably needs to
-adds fields for storing the registers state.
+adds fields for storing the registers state i.e the context.
 
 In order to do that, the glue component has to define the
 \texttt{machine\_data()} macro-function:
@@ -201,7 +197,7 @@ In order to do that, the glue component has to define the
 This way, every call to \textit{machine\_data()} will be redirected to another
 specific macro-function for the given object type i.e \texttt{o\_thread}.
 
-Then, for each object type, a macro must be defined. The following
+Then, for each object type, a macro-function must be defined. The following
 illustrates the case of the \texttt{o\_thread} object type.
 
 \begin{verbatim}
@@ -219,7 +215,7 @@ illustrates the case of the \texttt{o\_thread} object type.
 \end{verbatim}
 
 On that architecture, the developers decided to store the thread context
-on a specific task at the address \texttt{interrupt\_stack}.
+on a specific stack at the \texttt{interrupt\_stack} address.
 
 Therefore, once the initial call to the \texttt{machine\_data()} macro-function
 is processed, the \texttt{o\_thread} structure will look like:

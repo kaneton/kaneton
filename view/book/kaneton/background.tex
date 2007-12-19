@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/background.tex
 %
 % created       julien quintard   [tue jun 19 11:48:36 2007]
-% updated       julien quintard   [mon dec 17 02:33:07 2007]
+% updated       julien quintard   [wed dec 19 15:47:51 2007]
 %
 
 %
@@ -46,10 +46,10 @@ way.
 
 For instance, when a user launches a program, the distributed operating system
 decides on which machine of the network to run it. More generally, for
-any action performed, the distributed operating system will find the better
-place and way to perform it.
+any action to perform, the distributed operating system tries to find the
+most suitable place for executing it depending on resources availability.
 
-Then, while the processes generally communicate with each other on the same
+While the processes generally communicate with each other on the same
 machine, in a distributed operating system, they also communicate with the
 other processes of other machines as illustrated in \textit{Figure
 \ref{figure:distributed-operating-system}}.
@@ -64,7 +64,7 @@ other processes of other machines as illustrated in \textit{Figure
 
 In \textit{Figure \ref{figure:distributed-operating-system}}, the machine
 named \textit{E} is running three processes. One is just running some
-calculations performing no communication, another is receiving a message
+computations performing no communication, another is receiving a message
 from the latter which is also sending two messages to processes over the
 network.
 
@@ -88,13 +88,13 @@ and reliable by nature.
 
 \section{Microkernel}
 
-A microkernel is a kernel type designed to be modular. Instead of
-building a large binary object containing the kernel itself, the drivers,
-the file systems etc. microkernels try to be as small as possible,
-providing only the fundamental services for managing memory, execution
-contexts, communication and input/output. Then the other classical operating
-system services are provided by userland processes with special privileges
-called.
+A microkernel is a kernel type designed to be modular hence more reliable than
+monolithic kernels. Instead of building a large binary object containing the
+kernel itself, the drivers, the file systems etc. microkernels try to be as
+small as possible, providing only the fundamental services for managing
+memory, execution contexts, communication and input/output. Besides, the other
+classical operating system services are provided by userland processes with
+special privileges.
 
 This very specific design is very interesting for security, maintainability
 and extensibility. Moreover, this type of design perfectly fits
@@ -108,16 +108,16 @@ layers.
 \begin{figure}[h]
   \begin{center}
     \includegraphics[scale=0.4]{\path/figures/microkernel-behaviour.pdf}
-    \caption{Communications in a microkernel's hierarchy.}
+    \caption{Communications in a microkernel hierarchy.}
     \label{figure:microkernel}
   \end{center}
 \end{figure}
 
 The whole microkernel design is based on the client-server communication
 model where clients ask servers to perform a specific task. For instance,
-to print some text to the screen a user program has to ask the \textit{tty}
-server to do so because the user program itself does not have the permission
-to access the video card device.
+to print some text to the screen, a user program has to ask the \textit{tty}
+server to do it for him because the user program itself does not have any
+right to perform such an action.
 
 To avoid complications and deadlocks the microkernel follows a fundamental
 rule which restrict communication from clients only to more or equal
