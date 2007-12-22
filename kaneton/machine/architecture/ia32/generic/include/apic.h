@@ -23,6 +23,12 @@
  */
 
 #define IA32_APIC_REG_BASE		0xFEE00000
+#define IA32_IOAPIC_REG_SEL		0xFEC00000
+#define IA32_IOAPIC_REG_DATA		0xFEC00010
+
+/*
+ * APIC registers.
+ */
 
 #define IA32_APIC_REG_APICID		0xFEE00020
 #define IA32_APIC_REG_VERSION		0xFEE00030
@@ -34,6 +40,15 @@
 #define IA32_APIC_REG_TIMER		0xFEE00380
 #define IA32_APIC_REG_COUNT		0xFEE00390
 #define IA32_APIC_REG_DIV		0xFEE003E0
+
+/*
+ * IO-APIC registers.
+ */
+
+#define IA32_IOAPIC_REG_APICID		0x0
+#define IA32_IOAPIC_REG_VERSION		0x1
+#define IA32_IOAPIC_REG_ARBITRATION	0x2
+#define IA32_IOAPIC_REG_TABLE		0x10
 
 /*
  * ---------- prototypes ------------------------------------------------------

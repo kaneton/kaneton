@@ -208,13 +208,6 @@
 typedef void			(*t_ia32_interrupt_prehandler)(void);
 typedef void			(*t_ia32_interrupt_handler)();
 
-typedef enum
-  {
-	ipi_all,
-	ipi_all_but_me,
-	ipi_cpu
-  }	t_ia32_ipi_dest;
-
 /*
  * ---------- extern ----------------------------------------------------------
  */
@@ -253,16 +246,6 @@ void			ia32_handler_irq(t_uint32			nr);
 void			ia32_handler_ipi(t_uint32			nr);
 
 void			ia32_handler_syscall(t_uint32			nr);
-
-void			ia32_ipi_send_init(void);
-
-void			ia32_ipi_send_startup(void);
-
-void			ia32_ipi_send_vector(t_uint8		vector,
-					     t_ia32_ipi_dest	dest,
-					     i_cpu		cpu);
-
-void			ia32_ipi_acknowledge(void);
 
 
 /*

@@ -12,7 +12,8 @@
 /*
  * ---------- information -----------------------------------------------------
  *
- * manage the Advanced Programmable Interrupt Controlle (APIC).
+ * manage the Advanced Programmable Interrupt Controlle (APIC) and the I/O
+ * APIC.
  *
  */
 
@@ -69,4 +70,34 @@ void			ia32_apic_enable(void)
 {
   ia32_apic_write(IA32_APIC_REG_SVR,
 		  ia32_apic_read(IA32_APIC_REG_SVR) | 0x100);
+}
+
+/*
+ * write an io apic register.
+ */
+
+void			ia32_ioapic_write(t_uint32		reg,
+					  t_uint32		value)
+{
+  ia32_apic_write(IA32_IOAPIC_REG_SEL, reg);
+  ia32_apic_write(IA32_IOAPIC_REG_DATA, value);
+}
+
+/*
+ * read an io apic register.
+ */
+
+t_uint32		ia32_ioapic_read(t_uint32		reg)
+{
+  ia32_apic_write(IA32_IOAPIC_REG_SEL, reg);
+  return (ia32_apic_read(IA32_IOAPIC_REG_DATA));
+}
+
+/*
+ * enable io apic.
+ */
+
+void			ia32_ioapic_enable(void)
+{
+  /* XXX */
 }
