@@ -8,7 +8,7 @@
 % file          /home/buckman/kaneton/view/book/architecture/ia32/task.tex
 %
 % created       matthieu bucchianeri   [sat sep  2 11:41:15 2006]
-% updated       matthieu bucchianeri   [thu aug 16 17:49:33 2007]
+% updated       matthieu bucchianeri   [sat dec 22 23:11:16 2007]
 %
 
 %
@@ -28,34 +28,22 @@ the contexts.
 \newpage
 
 %
-% overview of execution contexts on ia-32
-%
-
-\section{Overview of execution contexts on IA-32}
-
-%
 % reserving a task
 %
 
-\section{Reserving a task}
-
-%
-% setting up the execution context
-%
-
-\section{Setting up the execution context}
+\section{Reserving a task} % XXX
 
 %
 % preparing a new thread
 %
 
-\section{Preparing a new thread}
+\section{Preparing a new thread} % XXX
 
 %
 % scheduling and context switch
 %
 
-\section{Scheduling and context switch}
+\section{Thread switching}
 
 The thread's scheduling involves many mecanisms and operations on
 contexts. The following sections describes the manipulations of
@@ -75,45 +63,69 @@ The code of the low-level interrupt and exception handlers must be
 generated using one of these four macro functions:
 
 \begin{itemize}
-\item \textit{EXCEPTION\_PREHANDLER\_CODE}, for exceptions with error
+\item \textit{IA32\_EXCEPTION\_PREHANDLER\_CODE}, for exceptions with error
 code appended by the microprocessor ;
-\item \textit{EXCEPTION\_PREHANDLER\_NOCODE}, for exceptions without
+\item \textit{IA32\_EXCEPTION\_PREHANDLER\_NOCODE}, for exceptions without
 any error code ;
-\item \textit{INTERRUPT\_PREHANDLER}, for interrupts ;
-\item \textit{IRQ\_PREHANDLER}, for interrupts with PIC aknowlegment.
+\item \textit{IA32\_INTERRUPT\_PREHANDLER}, for interrupts ;
+\item \textit{IA32\_IRQ\_PREHANDLER}, for interrupts with PIC aknowlegment ;
+\item \textit{IA32\_SYSCALL\_PREHANDLER}, for system calls.
 \end{itemize}
 
 The macro functions generates the context management code, which
 skeleton is:
 
 \begin{itemize}
-\item Saving the context, \textit{SAVE\_CONTEXT()} ;
-\item Handling ``from-Ring 0'' switch ;
+\item Switching to the thread's kernel stack (hardware performed) ;
+\item Saving the context, \textit{IA32\_SAVE\_CONTEXT()} ;
+\item Switching to the kernel interrupt stack ;
 \item Calling the higher-level handler ;
-\item Handling ``to-Ring 0'' switch-back ;
-\item Restoring the context, \textit{RESTORE\_CONTEXT()} ;
+\item Switching to the resuming thread's kernel stack ;
+\item Restoring the context, \textit{IA32\_RESTORE\_CONTEXT()} ;
 \item Returning from interrupt or exception.
 \end{itemize}
 
-The ``from-Ring 0'' and ``to-Ring 0'' steps are explained in the
-section \textbf{Ring 0 to Ring 0 switch}.
+The \textit{IA32\_SAVE\_CONTEXT} step makes a \textit{pusha} to save
+all the general purpose registers and then pushes the data segment
+register. Then, it changes the value of the page-directory base
+register with kernel page-directory base (stored by the kernel in the
+\textit{ia32\_interrupt\_pdbr} variable). Next it sets the kernel
+segments (variable \textit{ia32\_interrupt\_ds}). To finish, it saves
+the current stack pointer to \textit{ia32\_local\_jump\_stack} before
+jumping to the interrupt dedicated stack
+(\textit{ia32\_local\_interrupt\_stack}).
 
-The \textit{SAVE\_CONTEXT} step makes successive \textit{push} of all
-general purpose registers onto the stack, plus the CR3 register. Then,
-it changes the value of the page-directory base register with kernel
-page-directory base (stored by the kernel in the
-\textit{interrupt\_pdbr} variable). To finish, it pushes the segment
-selectors onto the stack and set the kernel segments (variable
-\textit{interrupt\_ds}).
-
-\textit{RESTORE\_CONTEXT} does the opposite: it pops every registers
-pushed on the spack.
+\textit{RESTORE\_CONTEXT} does the opposite: it switches back to the
+stack \textit{ia32\_local\_jump\_stack}, it pops every registers
+pushed on the stack and then switches address space to the one stored
+in \textit{ia32\_local\_jump\_pdbr}.
 
 The code of the generated handlers is then placed into the
 \textit{.handler} ELF section, which will be mapped in every address
 space.
 
-We'll talk about the FPU and SSE contexts in the next section.
+We'll talk about the FPU and SSE contexts in the section
+\textbf{Context switching}.
+
+%
+% accessing a thread's context
+%
+
+\subsection{Accessing a thread's context}
+
+As the execution context of one thread is stored on its kernel stack,
+it is impossible to access it directly since this kernel stack is only
+mapped into the thread's address space.
+
+Accessing a thread's context requires calling the \textit{as\_read}
+and \textit{as\_write} operations.
+
+The function \textit{ia32\_get\_context} retrieve the address of a
+thread's kernel stack and uses \textit{as\_read} to read the stored
+context. The function \textit{ia32\_set\_context} does the opposite,
+except you can specify a mask of registers to update in the thread's
+context. This requires to read the context and then to rewrite only
+the masked registers, which is slower but easier for the programer.
 
 %
 % context switching
@@ -125,24 +137,19 @@ The context of a thread is stored onto the kernel stack of the thread
 when an exception or an interrupt occurs. When resuming, the context
 at the top of the stack is used to resume execution.
 
-Accessing the context for reading is quite simple: the
-\textit{context} variable points the place where the context has been
-stored. Editing the context of the running thread is also done
-\textit{via} this variable.
-
 Therefore, the implementation of \textit{sched\_switch} dependent code
 consists only in few steps:
 
 \begin{enumerate}
-\item Saving back the context of the currently executing thread ;
-\item Copying the context of the newly executed thread on the stack ;
+\item Setting the \textit{ia32\_local\_jump\_pdbr} variable to the
+PDBR of the resuming thread ;
+\item Setting the \textit{ia32\_local\_jump\_stack} variable to the
+address of the kernel stack of the resuming thread ;
+\item Setting up the TSS to switch stack to the thread's kernel stack
+on interrupt ;
 \item Copying the permission bitmap of the task into the active TSS
 (see \textbf{I/O management} for details about the permission bitmap).
 \end{enumerate}
-
-The code is incrediblely short: the \textit{context\_copy} function is
-used for both steps 1 and 2. A simple \textit{memcpy} is used for step
-3.
 
 The context switching of FPU and extended registers (SSE and SSE2) is
 implemented using IA-32 facilities: when the TS bit of CR0 is set, an
@@ -152,7 +159,7 @@ executed.
 Thus, switching from one thread to another sets the TS bit to 1. If
 the thread executes no special instruction, the FPU \& extended context
 stay unchanged. If the thread executes such instruction, an exception
-is thrown. The exception handler (\textit{ia32\_sched\_switch\_mmx}):
+is thrown. The exception handler (\textit{ia32\_extended\_context\_switch}):
 
 \begin{enumerate}
 \item Save the FPU \& extended register set into the \textit{mmx\_context}
@@ -172,50 +179,21 @@ extensions are present, \textit{fxsave} and \textit{fxrstor} when SSE
 is supported.
 
 %
-% ring 0 to ring 0 switch
-%
-
-\subsection{Ring 0 to Ring 0 switch}
-
-On interrupts and exceptions, the microprocessor enters in supervisor
-state (also known as ring 0) and jumps to the appropriated event
-handler.
-
-On IA-32 architecture, these operations are preceded by a stack
-switch: the ESP and SS registers ared loaded with the values extracted
-from the TSS (ESP0 and SS0).
-
-But this stack switch only occurs when the microprocessor is not
-running on supervisor mode (when it is running in ring 1, 2 or
-3). This leads to a special case when an interrupt or exception
-happend in ring 0: this stack switching (needed for the whole context
-switching) must be done by hand.
-
-The \textit{FORCE\_RING0\_SWITCH} macro function is used to perform
-the stack switching when coming from ring 0. The destination stack is
-pointed by \textit{interrupt\_stack} (filled by the kernel). As this
-process uses a few registers, it must be executed after the context
-switching, and then it must copy the saved context to the destination
-stack (using \textit{memcpy}).
-
-When resuming from an interrupt or exception, the
-\textit{FORCE\_RING0\_BACK} macro function performs a stack switch
-when the resuming thread runs in ring 0. As described previously it
-copies the content of the stack to the destination stack, which is
-determined by the value of ESP in the new context.
-
-%
 % address space switching
 %
 
 \subsection{Address space switching}
 
-The address space switching was implicitely described in previous
-sections: as the only thing to do in order to switch the current
-address space to another one is changing the page-directory base
-register's value, this is done when saving and restoring the
-registers.
+No additional operation is required, since loading the CR3 register
+involves flushing the translation caches.
 
-The CR3 register is saved and restored the same way as EAX or
-EBX\ldots{} No additional operation is required, since loading the CR3
-register involves flushing the translation caches.
+%
+% stack switching switching
+%
+
+\subsection{Stack switching}
+
+As explained above, the code executed by the kernel on
+interrupt/exception runs on a global kernel stack.
+
+XXX creation + TSS

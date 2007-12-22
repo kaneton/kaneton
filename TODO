@@ -32,9 +32,6 @@ check/
   - interface/**
   - io/**
 
-demande reflexion:
- - refaite cswitch
-
 autre:
  - map_resize, {region,segment}_{split,resize,coalesce}
  - {task,thread}_wait

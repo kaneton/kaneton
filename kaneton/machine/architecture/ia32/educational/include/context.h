@@ -24,6 +24,8 @@
  * ---------- macro functions -------------------------------------------------
  */
 
+// XXX better remove cpu local variables in this version!
+
 #define	IA32_SAVE_CONTEXT()						\
 	 "	pusha					\n"		\
 	 "	movw %ds, %ax				\n"		\
