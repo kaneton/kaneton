@@ -13,9 +13,6 @@
  * ---------- includes --------------------------------------------------------
  */
 
-#include <libc.h>
-#include <kaneton.h>
-
 #include "bootloader.h"
 
 /*
@@ -44,25 +41,13 @@ static volatile t_uint32 ticks;
 
 static void		bootloader_apic_calibrate_tick(void)
 {
-  asm volatile("push	%eax				\n"
-	       "push	%ebx				\n"
-	       "push	%ecx				\n"
-	       "push	%edx				\n"
-	       "push	%esi				\n"
-	       "push	%edi				\n"
-	       );
+  asm volatile("pusha");
 
   ticks += 5;
 
   pic_acknowledge(0);
 
-  asm volatile("pop	%edi				\n"
-	       "pop	%esi				\n"
-	       "pop	%edx				\n"
-	       "pop	%ecx		  		\n"
-	       "pop	%ebx				\n"
-	       "pop	%eax				\n"
-	       );
+  asm volatile("popa");
 
   LEAVE();
   IRET();
@@ -163,4 +148,45 @@ void			bootloader_apic_wait(t_uint32			delay)
 
   while (apic_read(APIC_REG_COUNT))
     ;
+}
+
+/*
+ * write an apic register.
+ */
+
+void			apic_write(t_uint32		reg,
+				   t_uint32		value)
+{
+  t_uint32*		addr = (t_uint32*)reg;
+
+  *addr = value;
+}
+
+/*
+ * read an apic register.
+ */
+
+t_uint32		apic_read(t_uint32			reg)
+{
+  t_uint32*		addr = (t_uint32*)reg;
+
+  return (*addr);
+}
+
+/*
+ * get the current cpu apic id.
+ */
+
+t_uint32		apic_id(void)
+{
+  return (apic_read(APIC_REG_APICID) >> 24);
+}
+
+/*
+ * enable the local apic.
+ */
+
+void			apic_enable(void)
+{
+  apic_write(APIC_REG_SVR, apic_read(APIC_REG_SVR) | 0x100);
 }

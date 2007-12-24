@@ -3,40 +3,60 @@
  *
  * project       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/bootloader/arch/ia32-smp/bootloader.h
+ * file          /home/buckman/kaneton/kaneton/bootloader/arch/ibm-pc.ia32-virtual/bootloader.h
  *
  * created       julien quintard   [fri feb 11 02:23:53 2005]
- * updated       matthieu bucchianeri   [mon aug 21 14:45:33 2006]
+ * updated       matthieu bucchianeri   [tue feb  6 19:16:13 2007]
  */
 
 #ifndef BOOTLOADER_H
 #define BOOTLOADER_H		1
 
-/*                                                                  [cut] k1 */
+#define		machine_data(_object_)					\
+  machine_data_##_object_()
+
+#define		machine_data_init()					\
+  struct								\
+  {									\
+    t_ia32_gdt			gdt;					\
+    t_ia32_directory		pd;					\
+  }
+
+/*
+ * ---------- dependencies ----------------------------------------------------
+ */
+
+#include "types.h"
+#include "init.h"
+
+#include "multiboot.h"
+#include "isa.h"
+#include "elf.h"
+#include "libia32.h"
+#include "libc.h"
+#include "cons.h"
+#include "apic.h"
 
 /*
  * ---------- macros ----------------------------------------------------------
  */
 
-#define PMODE_GDT_ENTRIES	256
+#define IA32_PMODE_GDT_ENTRIES		256
 
-#define PMODE_BOOTLOADER_CS	0x1
-#define PMODE_BOOTLOADER_DS	0x2
-
-/*                                                                 [cut] /k1 */
-
+#define IA32_PMODE_BOOTLOADER_CS	0x1
+#define IA32_PMODE_BOOTLOADER_DS	0x2
 
 /*
  * ---------- prototypes ------------------------------------------------------
  *
+ *	apic.c
  *      bootloader.c
  *      cons.c
  *      init.c
+ *	interrupt.c
+ *	mp.c
  *      paging.c
  *      pmode.c
- *      mp.c
- *      apic.c
- *      interrupt.c
  */
 
 /*
@@ -57,7 +77,7 @@ void			bootloader_cons_clear(void);
 
 void			bootloader_cons_scroll(t_uint16		lines);
 
-void			bootloader_cons_attr(t_uint8		attr);
+void			bootloader_cons_attr(t_sint8		attr);
 
 int			bootloader_cons_print_char(char		c);
 
@@ -92,49 +112,12 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi);
 
 void			bootloader_paging_init(void);
 
-void			bootloader_paging_ap_init(void);
-
 
 /*
  * pmode.c
  */
 
 void			bootloader_pmode_init(void);
-
-void			bootloader_pmode_ap_init(void);
-
-
-/*
- * mp.c
- */
-
-void			bootloader_mp_init(void);
-
-t_sint32		bootloader_get_cpu(t_uint32		apicid);
-
-t_sint32		bootloader_add_cpu(t_uint32		apicid);
-
-void			bootloader_mp_ap_init(void);
-
-
-/*
- * apic.c
- */
-
-void			bootloader_apic_calibrate_timer(void);
-
-void			bootloader_apic_wait(t_uint32			delay);
-
-
-/*
- * interrupt.c
- */
-
-void			bootloader_interrupt_init(void);
-
-void			bootloader_interrupt_ap_init(void);
-
-void			bootloader_interrupt_dummy(void);
 
 
 /*
