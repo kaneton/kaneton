@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/machine/glue/ibm-pc.ia32/cpu.c
+ * file          /home/buckman/kan...machine/glue/ibm-pc.ia32/optimised/cpu.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:01 2006]
- * updated       matthieu bucchianeri   [sun jun 17 16:47:22 2007]
+ * updated       matthieu bucchianeri   [mon dec 24 19:37:13 2007]
  */
 
 /*
@@ -61,7 +61,7 @@ t_error			glue_cpu_current(i_cpu*			cpuid)
 {
   CPU_ENTER(cpu);
 
-  *cpuid = init->bsp;
+  *cpuid = ia32_apic_id();
 
   CPU_LEAVE(cpu, ERROR_NONE);
 }
