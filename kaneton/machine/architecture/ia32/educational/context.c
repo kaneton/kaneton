@@ -62,9 +62,9 @@ t_error			ia32_extended_context_init(void)
    * 1)
    */
 
-  CLTS();
+  CLTS();	/* XXX broadcast to AP */
 
-  FINIT();
+  FINIT();	/* XXX broadcast to AP */
 
   /*
    * 2)

@@ -8,7 +8,7 @@
  * file          /home/buckman/kan...ture/ia32/generic/include/architecture.h
  *
  * created       julien quintard   [thu jun  7 12:02:10 2007]
- * updated       matthieu bucchianeri   [sat dec 22 21:55:52 2007]
+ * updated       matthieu bucchianeri   [mon dec 24 19:29:02 2007]
  */
 
 #ifndef GENERIC_ARCHITECTURE_H
@@ -38,5 +38,7 @@
 #include <architecture/generic/idt.h>
 #include <architecture/generic/paging.h>
 #include <architecture/generic/ipi.h>
+#include <architecture/generic/segment.h>
+#include <architecture/generic/mapping.h>
 
 #endif

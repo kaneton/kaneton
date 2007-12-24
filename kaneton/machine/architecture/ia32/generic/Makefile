@@ -8,7 +8,7 @@
 # file          /home/buckman/kan...chine/architecture/ia32/generic/Makefile
 #
 # created       julien quintard   [sun dec 10 18:38:17 2006]
-# updated       matthieu bucchianeri   [sat dec 22 21:56:06 2007]
+# updated       matthieu bucchianeri   [mon dec 24 19:29:49 2007]
 #
 
 #
@@ -42,10 +42,12 @@ GENERIC_C	:=	apic.c					\
 			ipi.c					\
 			ldt.c					\
 			local.c					\
+			mapping.c				\
 			paging.c				\
 			pd.c					\
 			pmode.c					\
 			pt.c					\
+			segment.c				\
 			sse.c					\
 			tlb.c					\
 			tss.c
@@ -56,9 +58,11 @@ GENERIC_INCLUDE	:=	$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/include/apic.h	\
 			$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/include/gdt.h	\
 			$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/include/idt.h	\
 			$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/include/ipi.h	\
+			$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/include/mapping.h	\
 			$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/include/misc.h	\
 			$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/include/paging.h	\
 			$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/include/pmode.h	\
+			$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/include/segment.h	\
 			$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/include/tss.h	\
 			$(_MACHINE_ARCHITECTURE_DIR_)/ia32/generic/include/local.h
 

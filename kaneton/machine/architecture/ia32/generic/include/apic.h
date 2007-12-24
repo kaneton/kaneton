@@ -69,6 +69,13 @@ t_uint32		ia32_apic_id(void);
 
 void			ia32_apic_enable(void);
 
+void			ia32_ioapic_write(t_uint32		reg,
+					  t_uint32		value);
+
+t_uint32		ia32_ioapic_read(t_uint32		reg);
+
+void			ia32_ioapic_enable(void);
+
 
 /*
  * eop
