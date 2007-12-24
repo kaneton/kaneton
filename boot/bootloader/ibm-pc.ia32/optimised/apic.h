@@ -39,4 +39,19 @@
 #define APIC_REG_COUNT		0xFEE00390
 #define APIC_REG_DIV		0xFEE003E0
 
+/*
+ * ---------- types -----------------------------------------------------------
+ */
+
+/*
+ * enumerate ipi possible destinations.
+ */
+
+typedef enum
+  {
+	ipi_all,
+	ipi_all_but_me,
+	ipi_cpu
+  }	t_ipi_dest;
+
 #endif

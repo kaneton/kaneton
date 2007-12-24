@@ -110,7 +110,7 @@ void			bootloader_mp_init(void)
   gdtr->size = init->machdep.gdt.count * sizeof (t_ia32_gdte);
   memcpy(temp_gdtr, init->machdep.gdt.descriptor, gdtr->size);
 
-  WBINVD();
+  asm volatile("wbinvd");
 
   /*
    * 5)
@@ -175,7 +175,7 @@ t_sint32		bootloader_get_cpu(t_uint32		apicid)
 
 t_sint32		bootloader_add_cpu(t_uint32		apicid)
 {
-  i_cpu			id;
+  t_id			id;
 
   /*
    * 1)

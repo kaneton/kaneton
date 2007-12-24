@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...loader/ibm-pc.ia32/educational/libia32.c
+ * file          /home/buckman/kan...otloader/ibm-pc.ia32/optimised/libia32.c
  *
  * created       matthieu bucchianeri   [mon jun 25 22:52:22 2007]
- * updated       matthieu bucchianeri   [thu jun 28 14:57:01 2007]
+ * updated       matthieu bucchianeri   [mon dec 24 18:18:31 2007]
  */
 
 /*
@@ -25,13 +25,19 @@
  * gdt table pointer
  */
 
-t_ia32_gdt	ia32_gdt;
+t_ia32_gdt		ia32_gdt;
 
 /*
  * active page directory.
  */
 
 t_ia32_directory	ia32_pd;
+
+/*
+ * idt table pointer
+ */
+
+t_ia32_idt		ia32_idt;
 
 /*
  * ---------- functions -------------------------------------------------------
@@ -536,4 +542,344 @@ t_error			pt_add_page(t_ia32_table*	tab,
   t[entry] = IA32_MK_BASE(page.addr) | opts;
 
   return ERROR_NONE;
+}
+
+/*
+ * build an idt.
+ *
+ * steps:
+ *
+ * 1) check the number of entries.
+ * 2) align address (for best performances).
+ * 3) build the idt structure.
+ * 4) clear the table if necessary.
+ */
+
+t_error			idt_build(t_uint16		entries,
+				  t_paddr		base,
+				  t_uint8		clear,
+				  t_ia32_idt*		table)
+{
+  /*
+   * 1)
+   */
+
+  if (entries > IA32_IDT_MAX_ENTRIES)
+    return ERROR_UNKNOWN;
+
+  /*
+   * 2)
+   */
+
+  if (base % sizeof(t_ia32_idte))
+    base += sizeof(t_ia32_idte) - (base % sizeof(t_ia32_idte));
+
+  /*
+   * 3)
+   */
+
+  table->descriptor = (t_ia32_idte*)base;
+  table->count = entries;
+
+  /*
+   * 4)
+   */
+
+  if (clear)
+    memset(table->descriptor, 0, entries * sizeof(t_ia32_idte));
+
+  return ERROR_NONE;
+}
+
+/*
+ * activate an idt.
+ *
+ * steps:
+ *
+ * 1) upate idt record.
+ * 2) build and load the new idt register.
+ */
+
+t_error			idt_activate(t_ia32_idt*		table)
+{
+  t_ia32_idtr		idtr;
+
+  /*
+   * 1)
+   */
+
+  ia32_idt.descriptor = table->descriptor;
+  ia32_idt.count = table->count;
+
+  /*
+   * 2
+   */
+
+  idtr.address = (t_paddr)ia32_idt.descriptor;
+  idtr.size = ia32_idt.count * sizeof(t_ia32_idte);
+  LIDT(idtr);
+
+  return ERROR_NONE;
+}
+
+/*
+ * add a gate, overwritting previous present one.
+ *
+ * steps:
+ *
+ * 1) retrieve the global pointer if needed.
+ * 2) check the size of the table.
+ * 3) set the type field.
+ * 4) set the segsel field.
+ * 5) set the offset fields.
+ * 6) set the reserved field.
+ */
+
+t_error			idt_add_gate(t_ia32_idt*		table,
+				     t_uint16			index,
+				     t_ia32_gate		gate)
+{
+  /*
+   * 1)
+   */
+
+  if (!table)
+    table = &ia32_idt;
+
+  /*
+   * 2)
+   */
+
+  if (index >= table->count)
+    return ERROR_UNKNOWN;
+
+  /*
+   * 3
+   */
+
+  table->descriptor[index].type = IA32_DESC_TYPE_PRESENT |
+    IA32_DESC_MK_DPL(gate.privilege);
+  table->descriptor[index].type |= gate.type;
+
+  /*
+   * 4)
+   */
+
+  table->descriptor[index].segsel = gate.segsel;
+
+  /*
+   * 5)
+   */
+
+  table->descriptor[index].offset_00_15 = gate.offset & 0xffff;
+  table->descriptor[index].offset_16_31 = (gate.offset >> 16) & 0xffff;
+
+  /*
+   * 6)
+   */
+
+  table->descriptor[index].reserved = 0;
+
+  return ERROR_NONE;
+}
+
+/*
+ * initialize the pics
+ *
+ * steps:
+ *
+ * 1) send ICW1
+ * 2) send ICW2
+ * 3) send ICW3
+ * 4) send ICW4
+ * 5) all interrupts are set off at initialization
+ *
+ */
+
+t_error			pic_init(void)
+{
+  /*
+   * 1)
+   */
+
+  OUTB(IBMPC_MASTER_PORT_A, IBMPC_MASTER_ICW1);
+  OUTB(IBMPC_SLAVE_PORT_A, IBMPC_SLAVE_ICW1);
+
+  /*
+   * 2)
+   */
+
+  OUTB(IBMPC_MASTER_PORT_B, IBMPC_MASTER_ICW2);
+  OUTB(IBMPC_SLAVE_PORT_B, IBMPC_SLAVE_ICW2);
+
+  /*
+   * 3)
+   */
+
+  OUTB(IBMPC_MASTER_PORT_B, IBMPC_MASTER_ICW3);
+  OUTB(IBMPC_SLAVE_PORT_B, IBMPC_SLAVE_ICW3);
+
+  /*
+   * 4)
+   */
+
+  OUTB(IBMPC_MASTER_PORT_B, IBMPC_MASTER_ICW4);
+  OUTB(IBMPC_SLAVE_PORT_B, IBMPC_SLAVE_ICW4);
+
+  /*
+   * 5)
+   */
+
+  OUTB(IBMPC_MASTER_PORT_B, 0xfb);
+  OUTB(IBMPC_SLAVE_PORT_B, 0xff);
+
+  return (ERROR_NONE);
+}
+
+/*
+ * turn on a given interrupt enabling its flag
+ */
+
+t_error			pic_enable_irq(t_uint8		irq)
+{
+  t_uint8		mask;
+
+  if (irq > 15)
+    return (ERROR_UNKNOWN);
+
+  if (irq < 8)
+    {
+      INB(IBMPC_MASTER_PORT_B, mask);
+      OUTB(IBMPC_MASTER_PORT_B, mask & ~(1 << irq));
+    }
+  else
+    {
+      INB(IBMPC_SLAVE_PORT_B, mask);
+      OUTB(IBMPC_SLAVE_PORT_B, mask & ~(1 << (irq - 8)));
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * turn off a given interrupt
+ */
+
+t_error			pic_disable_irq(t_uint8		irq)
+{
+  t_uint8		mask;
+
+  if (irq > 15)
+    return (ERROR_UNKNOWN);
+
+  if (irq < 8)
+    {
+      INB(IBMPC_MASTER_PORT_B, mask);
+      OUTB(IBMPC_MASTER_PORT_B, mask | (1 << irq));
+    }
+  else
+    {
+      INB(IBMPC_SLAVE_PORT_B, mask);
+      OUTB(IBMPC_SLAVE_PORT_B, mask | (1 << (irq - 8)));
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * acknowlegde the pics
+ *
+ * steps:
+ *
+ * 1) check irq bounds
+ * 2) send normal EOI
+ */
+
+t_error			pic_acknowledge(t_uint8		irq)
+{
+  t_uint8		mask;
+
+  /*
+   * 1)
+   */
+
+  if (irq > 15)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (irq < 8)
+    {
+      INB(IBMPC_MASTER_PORT_B, mask);
+      OUTB(IBMPC_MASTER_PORT_B, mask);
+      OUTB(IBMPC_MASTER_PORT_A, 0x60 + irq);
+    }
+  else
+    {
+      INB(IBMPC_SLAVE_PORT_B, mask);
+      OUTB(IBMPC_SLAVE_PORT_B, mask);
+      OUTB(IBMPC_SLAVE_PORT_A, 0x60 + (irq - 8));
+      OUTB(IBMPC_MASTER_PORT_A, 0x60 + 2);
+    }
+
+  return (ERROR_NONE);
+}
+
+/*
+ * initialize the pit 8254.
+ *
+ * steps:
+ *
+ * 1) calculate and check counter limit for the given frequency.
+ * 2) the pit 8254 interprets value 0 as 65536.
+ * 3) setup the timer0 to run in mode 2 (rate generator).
+ */
+
+t_error			pit_init(t_uint32	freq)
+{
+  t_uint32	latch;
+
+  /*
+   * 1)
+   */
+
+  latch = IBMPC_CLOCK_TICK_RATE / freq;
+
+  if (!latch || latch > 65536)
+    return (ERROR_UNKNOWN);
+
+  /*
+   * 2)
+   */
+
+  if (latch == 65536)
+    latch = 0;
+
+  /*
+   * 3)
+   */
+
+  OUTB(IBMPC_PIT_8254_CTRL, 0x34);
+  OUTB(IBMPC_TIMER_0, latch & 0xFF);
+  OUTB(IBMPC_TIMER_0, (latch >> 8) & 0xFF);
+
+  return (ERROR_NONE);
+}
+
+/*
+ * tell if the CPU embed a local APIC
+ */
+
+t_uint32		cpuid_has_apic(void)
+{
+  t_uint32		eax;
+  t_uint32		ebx;
+  t_uint32		ecx;
+  t_uint32		edx;
+
+  CPUID(0x1, eax, ebx, ecx, edx);
+
+  return (!!(edx & (1 << 9)));
 }

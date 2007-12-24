@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...ootloader/ibm-pc.ia32/educational/init.h
+ * file          /home/buckman/kan.../bootloader/ibm-pc.ia32/optimised/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated       matthieu bucchianeri   [wed jul 18 18:53:15 2007]
+ * updated       matthieu bucchianeri   [mon dec 24 18:10:28 2007]
  */
 
 #ifndef BOOTLOADER_INIT_H
@@ -158,6 +158,7 @@ typedef struct
   struct
   {
     t_ia32_gdt			gdt;
+    t_ia32_idt			idt;
     t_ia32_directory		pd;
   }				machdep;
 }				t_init;

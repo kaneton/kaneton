@@ -8,7 +8,7 @@
 # file          /home/buckman/kan.../environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       matthieu bucchianeri   [sat sep  1 13:06:13 2007]
+# updated       matthieu bucchianeri   [mon dec 24 17:43:41 2007]
 #
 
 #
@@ -224,6 +224,20 @@ define env_assemble-S
   assemble_S_options=""							&& \
   $(call env_display,green,ASSEMBLE-S,$(2),		,)		&& \
   $(_CPP_) $(2) | $(_AS_) $(_AS_FLAGS_) $${assemble_S_options} -o $(1)
+endef
+
+#
+# from asm file to object file
+#
+# $(1):		object file
+# $(2):		asm file
+# $(3):		options
+#
+
+define env_assemble-asm
+  assemble_ASM_options=""						&& \
+  $(call env_display,green,ASSEMBLE-ASM,$(2),		,)		&& \
+  $(_NASM_) $(_NASM_FLAGS_) $${assemble_ASM_options} $(2) -o $(1) -f elf
 endef
 
 #

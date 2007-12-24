@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...loader/ibm-pc.ia32/educational/libia32.h
+ * file          /home/buckman/kan...otloader/ibm-pc.ia32/optimised/libia32.h
  *
  * created       matthieu bucchianeri   [mon jun 25 23:02:50 2007]
- * updated       matthieu bucchianeri   [tue jul 17 15:23:19 2007]
+ * updated       matthieu bucchianeri   [mon dec 24 18:17:00 2007]
  */
 
 #ifndef BOOTLOADER_LIBIA32_H
@@ -30,6 +30,7 @@
 
 #define IA32_GDT_MAX_ENTRIES	8191
 #define IA32_LDT_MAX_ENTRIES	8191
+#define IA32_IDT_MAX_ENTRIES	256
 
 /*
  * gdt flags
@@ -203,6 +204,63 @@
 #define IA32_PTE_FLAG_USED		(1 << 9)
 
 /*
+ * gate types (for idt entries)
+ */
+
+#define IA32_GATE_TYPE_TASK          ((1 << 3) | (1 << 2))
+#define IA32_GATE_TYPE_TRAP          ((1 << 3) | (1 << 2) | (1 << 1) | (1 << 0))
+#define IA32_GATE_TYPE_INTERRUPT     ((1 << 3) | (1 << 2) | (1 << 1))
+
+/*
+ * gate type
+ */
+
+#define IA32_IDT_GET_TYPE(Type)						\
+((Type) & ((1 << 4) | (1 << 3) | (1 << 2) | (1 << 1) | (1 <<  0)))
+
+/*
+ * pics addresses
+ */
+
+#define IBMPC_MASTER_PORT_A           0x20
+#define IBMPC_MASTER_PORT_B           0x21
+#define IBMPC_SLAVE_PORT_A            0xa0
+#define IBMPC_SLAVE_PORT_B            0xa1
+
+/*
+ * master icw's
+ */
+
+#define IBMPC_MASTER_ICW1             0x11
+#define IBMPC_MASTER_ICW2             0x20
+#define IBMPC_MASTER_ICW3             0x04
+#define IBMPC_MASTER_ICW4             0x01
+
+/*
+ * slave icw's
+ */
+
+#define IBMPC_SLAVE_ICW1              0x11
+#define IBMPC_SLAVE_ICW2              0x28
+#define IBMPC_SLAVE_ICW3              0x02
+#define IBMPC_SLAVE_ICW4              0x01
+
+/*
+ * pit ports
+ */
+
+#define IBMPC_TIMER_0		0x40
+#define IBMPC_TIMER_1		0x41
+#define IBMPC_TIMER_2		0x42
+#define IBMPC_PIT_8254_CTRL	0x43
+
+/*
+ * pit oscillator frequency
+ */
+
+#define IBMPC_CLOCK_TICK_RATE	1193180
+
+/*
  * ---------- macro functions -------------------------------------------------
  */
 
@@ -226,11 +284,31 @@
 	       :							\
 	       : "m" (_var_))
 
+#define		LIDT(_var_)						\
+  asm volatile("lidt %0\n"						\
+	       :							\
+	       : "m" (_var_))
+
 #define		LCR3(_var_)						\
   asm volatile("movl %0, %%eax\n"					\
 	       "movl %%eax, %%cr3\n"					\
 	       :							\
 	       : "m" (_var_))
+
+#define		OUTB(_port_, _data_)					\
+  asm volatile("outb %%al, %%dx\n"					\
+	       :							\
+	       : "d" (_port_), "a" (_data_))
+
+#define		INB(_port_, _data_)					\
+  asm volatile("inb %%dx, %%al\n"					\
+	       : "=a" (_data_)						\
+	       : "d" (_port_))
+
+#define		CPUID(_var_,_eax_,_ebx_,_ecx_,_edx_)			\
+  asm volatile("cpuid\n\t"						\
+	       : "=a" (_eax_), "=b" (_ebx_), "=c" (_ecx_), "=d" (_edx_)	\
+	       : "a" (_var_))
 
 /*
  * ---------- types -----------------------------------------------------------
@@ -363,6 +441,61 @@ typedef t_uint32		t_ia32_pte;
 typedef t_ia32_pde* t_ia32_directory;
 
 /*
+ * gates types
+ */
+typedef enum
+  {
+	ia32_type_gate_task		= IA32_GATE_TYPE_TASK,
+	ia32_type_gate_interrupt	= IA32_GATE_TYPE_INTERRUPT,
+	ia32_type_gate_trap		= IA32_GATE_TYPE_TRAP,
+  }	t_ia32_gate_type;
+
+/*
+ * abstract gate descriptor
+ */
+
+typedef struct
+{
+  t_uint32			offset;
+  t_uint16			segsel;
+  t_ia32_prvl			privilege;
+  t_ia32_gate_type		type;
+}				t_ia32_gate;
+
+/*
+ * idt entry
+ */
+
+typedef struct
+{
+  t_uint16			offset_00_15;
+  t_uint16			segsel;
+  t_uint8			reserved;
+  t_uint8			type;
+  t_uint16			offset_16_31;
+}				__attribute__ ((packed)) t_ia32_idte;
+
+/*
+ * idt
+ */
+
+typedef struct
+{
+  t_ia32_idte			*descriptor;
+  t_uint16			count;
+}				t_ia32_idt;
+
+/*
+ * idt register
+ */
+
+typedef struct
+{
+  t_uint16			size;
+  t_uint32			address;
+}				__attribute__ ((packed)) t_ia32_idtr;
+
+/*
  * ---------- prototypes ------------------------------------------------------
  *
  *	libia32.c
@@ -413,6 +546,29 @@ t_error			pt_build(t_paddr		base,
 t_error			pt_add_page(t_ia32_table*	tab,
 				    t_uint16		entry,
 				    t_ia32_page		page);
+
+t_error			idt_build(t_uint16		entries,
+				  t_paddr		base,
+				  t_uint8		clear,
+				  t_ia32_idt*		table);
+
+t_error			idt_activate(t_ia32_idt*		table);
+
+t_error			idt_add_gate(t_ia32_idt*		table,
+				     t_uint16			index,
+				     t_ia32_gate		gate);
+
+t_error			pic_init(void);
+
+t_error			pic_enable_irq(t_uint8		irq);
+
+t_error			pic_disable_irq(t_uint8		irq);
+
+t_error			pic_acknowledge(t_uint8		irq);
+
+t_error			pit_init(t_uint32	freq);
+
+t_uint32		cpuid_has_apic(void);
 
 
 /*

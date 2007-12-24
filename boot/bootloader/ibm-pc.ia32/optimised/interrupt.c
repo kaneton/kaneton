@@ -29,6 +29,8 @@ extern t_init*			init;
  * ---------- functions -------------------------------------------------------
  */
 
+extern void bootloader_interrupt_dummy(void);
+
 /*
  * this function initialize interrupts for the boot processor.
  *
@@ -76,7 +78,7 @@ void			bootloader_interrupt_init(void)
   for (i = 0; i < 256; i++)
     {
       gate.offset = (t_uint32)bootloader_interrupt_dummy;
-      gate.segsel = PMODE_GDT_CORE_CS << 3;
+      gate.segsel = IA32_PMODE_BOOTLOADER_CS << 3;
       gate.privilege = 0;
       gate.type = ia32_type_gate_interrupt;
 
@@ -97,7 +99,7 @@ void			bootloader_interrupt_init(void)
       bootloader_error();
     }
 
-  STI();
+  asm volatile("sti");
 
   memcpy(&init->machdep.idt, &idt, sizeof (t_ia32_idt));
 }
@@ -126,19 +128,23 @@ void			bootloader_interrupt_ap_init(void)
       bootloader_error();
     }
 
-  STI();
+  asm volatile("sti");
 }
 
 /*
  * dummy interrupt handler.
  */
 
-void			bootloader_interrupt_dummy(void)
-{
-  printf("dummy on %d!\n", apic_id());
+static const char* __attribute__((unused)) spurious_interrupt = "spurious interrupt on %d!\n";
 
-  ipi_acknowledge();
-
-  LEAVE();
-  IRET();
-}
+asm (".text					\n"
+     "bootloader_interrupt_dummy:		\n"
+     "	pusha					\n"
+     "	call apic_id				\n"
+     "	pushl %eax				\n"
+     "	pushl $spurious_interrupt		\n"
+     "	call printf				\n"
+     "	addl $8, %esp				\n"
+     "	call ipi_acknowledge			\n"
+     "	popa					\n"
+     "	iret					");

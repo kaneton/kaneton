@@ -19,6 +19,7 @@
   struct								\
   {									\
     t_ia32_gdt			gdt;					\
+    t_ia32_idt			idt;					\
     t_ia32_directory		pd;					\
   }
 
@@ -36,6 +37,7 @@
 #include "libc.h"
 #include "cons.h"
 #include "apic.h"
+#include "spinlock.h"
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -58,6 +60,47 @@
  *      paging.c
  *      pmode.c
  */
+
+/*
+ * apic.c
+ */
+
+void	bootloader_apic_calibrate_tick(void);
+
+/*
+ * this function calibrates the APIC timer.
+ *
+ * steps:
+ *
+ * 1) setup the timer for one shot with a divisor equal to 1.
+ * 2) setup the initial count to a big number.
+ * 3) wait for the sample amout of time.
+ * 4) compute the time reference.
+ */
+
+void			bootloader_apic_calibrate_timer(void);
+
+void			bootloader_apic_wait(t_uint32			delay);
+
+void			apic_write(t_uint32		reg,
+				   t_uint32		value);
+
+t_uint32		apic_read(t_uint32			reg);
+
+t_uint32		apic_id(void);
+
+void			apic_enable(void);
+
+void			ipi_send_init(void);
+
+void			ipi_send_startup(void);
+
+void			ipi_send_vector(t_uint8		vector,
+					t_ipi_dest	dest,
+					t_id		cpu);
+
+void			ipi_acknowledge(void);
+
 
 /*
  * bootloader.c
@@ -107,10 +150,47 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi);
 
 
 /*
+ * interrupt.c
+ */
+
+extern void bootloader_interrupt_dummy(void);
+
+/*
+ * this function initialize interrupts for the boot processor.
+ *
+ * steps:
+ *
+ * 1) build an IDT.
+ * 2) load it.
+ * 3) setup default handlers.
+ * 4) setup the PIC and activate interrupts.
+ */
+
+void			bootloader_interrupt_init(void);
+
+void			bootloader_interrupt_ap_init(void);
+
+
+/*
+ * mp.c
+ */
+
+void			bootloader_mp_init(void);
+
+t_sint32		bootloader_get_cpu(t_uint32		apicid);
+
+t_sint32		bootloader_add_cpu(t_uint32		apicid);
+
+void			bootloader_mp_ap_init(void);
+
+
+/*
  * paging.c
  */
 
 void			bootloader_paging_init(void);
+
+void			bootloader_paging_ap_init(void);
 
 
 /*
@@ -118,6 +198,8 @@ void			bootloader_paging_init(void);
  */
 
 void			bootloader_pmode_init(void);
+
+void			bootloader_pmode_ap_init(void);
 
 
 /*

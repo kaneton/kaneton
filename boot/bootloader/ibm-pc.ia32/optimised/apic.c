@@ -39,19 +39,17 @@ static volatile t_uint32 ticks;
  * This is the PIT IRQ handler. Used to calibrate the APIC timer frequency.
  */
 
-static void		bootloader_apic_calibrate_tick(void)
-{
-  asm volatile("pusha");
+asm (".text						\n"
+     "bootloader_apic_calibrate_tick:			\n"
+     "	pusha						\n"
+     "	addl $5, ticks					\n"
+     "	pushl $0					\n"
+     "	call pic_acknowledge				\n"
+     "	addl $4, %esp					\n"
+     "	popa						\n"
+     "	iret						");
 
-  ticks += 5;
-
-  pic_acknowledge(0);
-
-  asm volatile("popa");
-
-  LEAVE();
-  IRET();
-}
+void	bootloader_apic_calibrate_tick(void);
 
 /*
  * this function calibrates the APIC timer.
@@ -88,7 +86,7 @@ void			bootloader_apic_calibrate_timer(void)
    */
 
   gate.offset = (t_uint32)bootloader_apic_calibrate_tick;
-  gate.segsel = PMODE_GDT_CORE_CS << 3;
+  gate.segsel = IA32_PMODE_BOOTLOADER_CS << 3;
   gate.privilege = 0;
   gate.type = ia32_type_gate_interrupt;
 
@@ -189,4 +187,59 @@ t_uint32		apic_id(void)
 void			apic_enable(void)
 {
   apic_write(APIC_REG_SVR, apic_read(APIC_REG_SVR) | 0x100);
+}
+
+/*
+ * send a INIT IPI.
+ */
+
+void			ipi_send_init(void)
+{
+  apic_write(APIC_REG_ICR_HI, 0);
+  apic_write(APIC_REG_ICR_LOW, 0xC4500);
+}
+
+/*
+ * send a SIPI.
+ */
+
+void			ipi_send_startup(void)
+{
+  apic_write(APIC_REG_ICR_HI, 0);
+  apic_write(APIC_REG_ICR_LOW, 0xC4608);
+}
+
+/*
+ * send a vector IPI.
+ */
+
+void			ipi_send_vector(t_uint8		vector,
+					t_ipi_dest	dest,
+					t_id		cpu)
+{
+  switch (dest)
+    {
+      case ipi_all:
+	apic_write(APIC_REG_ICR_HI, 0);
+	apic_write(APIC_REG_ICR_LOW, (1 << 19) | (1 << 14) | vector);
+	break;
+      case ipi_all_but_me:
+	apic_write(APIC_REG_ICR_HI, 0);
+	apic_write(APIC_REG_ICR_LOW, (1 << 19) | (1 << 18) | (1 << 14) |
+		   vector);
+	break;
+      case ipi_cpu:
+	apic_write(APIC_REG_ICR_HI, (t_uint8)cpu << 24);
+	apic_write(APIC_REG_ICR_LOW, (1 << 14) | vector);
+	break;
+    }
+}
+
+/*
+ * sends EOI.
+ */
+
+void			ipi_acknowledge(void)
+{
+  apic_write(APIC_REG_EOI, 0);
 }

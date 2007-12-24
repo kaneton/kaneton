@@ -8,7 +8,7 @@
 # file          /home/buckman/kan...ootloader/ibm-pc.ia32/optimised/Makefile
 #
 # created       julien quintard   [tue jun 12 20:34:41 2007]
-# updated       matthieu bucchianeri   [mon dec 24 17:13:10 2007]
+# updated       matthieu bucchianeri   [mon dec 24 18:11:11 2007]
 #
 
 #
@@ -35,9 +35,12 @@ include			../../../../environment/env.mk
 
 BOOTLOADER		:=		bootloader
 
-BOOTLOADER_C		:=		bootloader.c			\
+BOOTLOADER_C		:=		apic.c				\
+					bootloader.c			\
 					cons.c				\
 					init.c				\
+					interrupt.c			\
+					mp.c				\
 					paging.c			\
 					pmode.c				\
 					libia32.c			\
