@@ -8,7 +8,7 @@
  * file          /home/buckman/kan.../bootloader/ibm-pc.ia32/optimised/init.h
  *
  * created       matthieu bucchianeri   [wed jul 18 18:10:19 2007]
- * updated       matthieu bucchianeri   [mon dec 24 18:10:28 2007]
+ * updated       matthieu bucchianeri   [mon dec 24 18:43:22 2007]
  */
 
 #ifndef BOOTLOADER_INIT_H
@@ -25,8 +25,8 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-#define INIT_SEGMENTS		13
-#define INIT_REGIONS		10
+#define INIT_SEGMENTS		14
+#define INIT_REGIONS		11
 #define INIT_KSTACKSZ		(4 * PAGESZ)
 
 /* XXX to be moved */

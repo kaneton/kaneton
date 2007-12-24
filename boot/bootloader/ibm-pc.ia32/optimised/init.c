@@ -137,6 +137,16 @@ void			bootloader_init_dump(void)
 		      init->machdep.gdt.descriptor,
 		      init->machdep.gdt.count);
 
+  bootloader_cons_msg('#', " %#~ia32%# interrupt table: 0x%x (%u bytes)\n",
+		      IBMPC_CONS_FRONT(IBMPC_CONS_CYAN) |
+		      IBMPC_CONS_BACK(IBMPC_CONS_BLACK) |
+		      IBMPC_CONS_INT,
+		      IBMPC_CONS_FRONT(IBMPC_CONS_WHITE) |
+		      IBMPC_CONS_BACK(IBMPC_CONS_BLACK) |
+		      IBMPC_CONS_INT,
+		      init->machdep.idt.descriptor,
+		      init->machdep.idt.count);
+
   bootloader_cons_msg('#', " %#~ia32%# page directory: 0x%x\n",
 		      IBMPC_CONS_FRONT(IBMPC_CONS_CYAN) |
 		      IBMPC_CONS_BACK(IBMPC_CONS_BLACK) |
@@ -163,7 +173,8 @@ void			bootloader_init_dump(void)
  * 9) add the alloc segment.
  * 10) add the mod service code segment.
  * 11) add the global offset table segment.
- * 12) add the page directory segment.
+ * 12) add the interrupt descriptor table segment.
+ * 13) add the page directory segment.
  */
 
 void			bootloader_init_segments(void)
@@ -264,9 +275,17 @@ void			bootloader_init_segments(void)
    * 12)
    */
 
-  init->segments[12].address = (t_paddr)init->machdep.pd;
+  init->segments[12].address = (t_paddr)init->machdep.idt.descriptor;
   init->segments[12].size = PAGESZ;
   init->segments[12].perms = PERM_READ | PERM_WRITE;
+
+  /*
+   * 13)
+   */
+
+  init->segments[13].address = (t_paddr)init->machdep.pd;
+  init->segments[13].size = PAGESZ;
+  init->segments[13].perms = PERM_READ | PERM_WRITE;
 }
 
 /*
@@ -288,7 +307,8 @@ void			bootloader_init_segments(void)
  * 7) add the kernel stack region.
  * 8) add the alloc region.
  * 9) add the global offset table region.
- * 10) add the page directory region.
+ * 10) add the interrupt descriptor table region.
+ * 11) add the page directory region.
  */
 
 void			bootloader_init_regions(void)
@@ -384,7 +404,7 @@ void			bootloader_init_regions(void)
   init->regions[8].opts = REGION_OPT_PRIVILEGED;
 
   /*
-   * 10)
+   * 9)
    */
 
   init->regions[9].segment = 12;
@@ -392,6 +412,16 @@ void			bootloader_init_regions(void)
   init->regions[9].size = init->segments[12].size;
   init->regions[9].offset = 0;
   init->regions[9].opts = REGION_OPT_PRIVILEGED;
+
+  /*
+   * 10)
+   */
+
+  init->regions[10].segment = 13;
+  init->regions[10].address = init->segments[13].address;
+  init->regions[10].size = init->segments[13].size;
+  init->regions[10].offset = 0;
+  init->regions[10].opts = REGION_OPT_PRIVILEGED;
 }
 
 /*
