@@ -143,10 +143,12 @@ void			bootloader_mp_init(void)
    * 9)
    */
 
+  bootloader_apic_wait(100000);
+
   bootloader_cons_msg('+', " multiprocessor ok, %d processor(s)\n",
 		      init->ncpus);
 
-  bootloader_apic_wait(10000000);
+  bootloader_apic_wait(1000000);
 }
 
 /*

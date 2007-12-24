@@ -23,7 +23,7 @@
  * needed to convert nanoseconds to APIC timer ticks.
  */
 
-static t_uint32		timeref = 0;
+static t_uint64		timeref = 0;
 
 /*
  * counter used to calibrate.
@@ -56,7 +56,7 @@ void	bootloader_apic_calibrate_tick(void);
  *
  * steps:
  *
- * 1) setup the timer for one shot with a divisor equal to 1.
+ * 1) setup the timer for one shot with a divisor equal to 128.
  * 2) setup the initial count to a big number.
  * 3) wait for the sample amout of time.
  * 4) compute the time reference.
@@ -72,7 +72,7 @@ void			bootloader_apic_calibrate_timer(void)
    * 1)
    */
 
-  apic_write(APIC_REG_DIV, 11);
+  apic_write(APIC_REG_DIV, 10);
   apic_write(APIC_REG_TIMER_CONF, 1 << 16);
 
   /*
@@ -110,7 +110,7 @@ void			bootloader_apic_calibrate_timer(void)
    * 4)
    */
 
-  timeref = (t1 - t2) / (ticks * 1000);
+  timeref = (t1 - t2);
 }
 
 /*
@@ -131,7 +131,7 @@ void			bootloader_apic_wait(t_uint32			delay)
    * 1)
    */
 
-  total = (delay * timeref) / 128;
+  total = (timeref * delay) / 100000;
 
   /*
    * 2)

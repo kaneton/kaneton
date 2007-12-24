@@ -62,9 +62,9 @@ t_error			ia32_extended_context_init(void)
    * 1)
    */
 
-  CLTS();
+  CLTS();	/* XXX broadcast to AP */
 
-  FINIT();
+  FINIT();	/* XXX broadcast to AP */
 
   /*
    * 2)
@@ -425,6 +425,8 @@ t_error			ia32_init_switcher(void)
 
   memset(thread->machdep.tss, 0x0, sizeof(t_ia32_tss));
 
+  /* XXX one TSS per CPU */
+
   /*
    * 3)
    */
@@ -442,6 +444,8 @@ t_error			ia32_init_switcher(void)
 
   int_stack = (t_vaddr)reg;
 
+  /* XXX one int_stack per CPU */
+
   /*
    * 4)
    */
@@ -458,7 +462,7 @@ t_error			ia32_init_switcher(void)
    * 5)
    */
 
-  if (ia32_tss_init(thread->machdep.tss) != ERROR_NONE)
+  if (ia32_tss_init(thread->machdep.tss) != ERROR_NONE)	/* XXX per CPU */
     return (ERROR_UNKNOWN);
 
   /*
@@ -573,7 +577,7 @@ t_error			ia32_context_switch(i_thread		current,
   ia32_cpu_local_set(&ia32_local_jump_stack, to->machdep.interrupt_stack -
 		     sizeof (t_ia32_context));
 
-  if (ia32_tss_load(thread->machdep.tss,
+  if (ia32_tss_load(thread->machdep.tss,	/* XXX per CPU */
 		    IA32_SEGSEL(IA32_PMODE_GDT_CORE_DS, IA32_PRIV_RING0),
 		    to->machdep.interrupt_stack,
 		    0x68) != ERROR_NONE)

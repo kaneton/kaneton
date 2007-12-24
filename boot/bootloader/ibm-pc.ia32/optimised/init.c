@@ -571,13 +571,10 @@ t_vaddr			bootloader_init_relocate(multiboot_info_t*	mbi)
   init->nregions = nregions;
   init->regionssz = regionssz;
 
-  init->cpus = (s_cpu*)bootloader_init_alloc(sizeof(s_cpu), &cpussz);
+  init->cpus = (s_cpu*)bootloader_init_alloc(16 * sizeof(s_cpu), &cpussz);
   memset(init->cpus, 0x0, cpussz);
-  init->ncpus = 1;
+  init->ncpus = 0;
   init->cpussz = cpussz;
-
-  init->cpus[0].cpuid = 0;
-  init->bsp = 0;
 
   /*
    * 5)
