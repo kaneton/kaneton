@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...aneton/machine/glue/ibm-pc.ia32/Makefile
+# file          /home/mycure/kaneton/kaneton/machine/glue/.current/Makefile
 #
 # created       julien quintard   [sun jun 10 15:47:23 2007]
-# updated       julien quintard   [fri jun 29 08:38:04 2007]
+# updated       julien quintard   [wed jan  2 17:21:01 2008]
 #
 
 #
@@ -21,7 +21,7 @@ component		:=		kaneton/machine/glue
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../environment/env.mk
+include			../../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
