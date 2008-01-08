@@ -47,8 +47,6 @@ extern m_region*       region;
  * ---------- functions -------------------------------------------------------
  */
 
-/*								    [cut] k1 */
-
 /*
  * this function tries to find free space in the region set via the
  * first fit algorithm.
@@ -60,6 +58,8 @@ extern m_region*       region;
  * 3) for each region, tries to find space after it.
  * 4) gets the last region.
  * 5) tries to find space after the last region.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 static t_error		region_first_fit(o_as*			as,

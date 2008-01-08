@@ -710,6 +710,8 @@ t_error			region_get(i_as				asid,
 }
 
 /*
+ * [cutted commentary]
+ *
  * this function initializes the region manager from the init
  * variable containing regions to keep safe.
  *
@@ -765,6 +767,7 @@ t_error			region_initialize(t_vaddr		start,
  *
  * 1) calls the machine-dependent code.
  * 2) releases the region set.
+ *
  */
 
 t_error			region_clean(void)

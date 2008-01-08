@@ -61,8 +61,6 @@ m_segment*		segment;
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k1 */
-
 /*
  * this function shows a segment.
  *
@@ -73,6 +71,9 @@ m_segment*		segment;
  * 3) compute the perms string.
  * 4) display the entry.
  * 5) call machine dependent code.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
+ *
  */
 
 t_error			segment_show(i_segment			segid)
@@ -160,6 +161,9 @@ t_error			segment_show(i_segment			segid)
  * 2) prints the header message.
  * 3) for each entry in the segment set, prints the area,
  *    its size and permissions.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
+ *
  */
 
 t_error			segment_dump(void)
@@ -214,6 +218,9 @@ t_error			segment_dump(void)
  * 2) reserve a new segment of same size with same permissions.
  * 3) copy the data from the old segment.
  * 4) call machine-dependent code.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
+ *
  */
 
 t_error			segment_clone(i_as			asid,
@@ -286,6 +293,9 @@ t_error			segment_clone(i_as			asid,
  * 2) fills the segment.
  * 3) adds the segment.
  * 4) calls dependent code.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
+ *
  */
 
 t_error			segment_inject(i_as		asid,
@@ -343,6 +353,7 @@ t_error			segment_inject(i_as		asid,
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
+/* [cut k1] */
 /*
  * this function gives a segment to an address space.
  *
@@ -423,8 +434,8 @@ t_error			segment_give(i_as		asid,
  * 2) if we are increasing the size.
  *  a) check for the next segment.
  *  b) if there is no room for the segment, create a new one, copy data
-       and release previous one.
-   3) otherwise, simply change the size field.
+ *     and release previous one.
+ * 3) otherwise, simply change the size field.
  * 4) call machine dependent code.
  */
 
@@ -672,6 +683,7 @@ t_error			segment_coalesce(i_segment	left,
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
+/* [/cut] */
 
 /*
  * this function reads directly from a segment to a buffer.
@@ -681,6 +693,9 @@ t_error			segment_coalesce(i_segment	left,
  * 1) get segment object.
  * 2) check permissions and boundaries.
  * 3) call machine dependent code.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
+ *
  */
 
 t_error			segment_read(i_segment		segid,
@@ -729,6 +744,9 @@ t_error			segment_read(i_segment		segid,
  * 1) get segment object.
  * 2) check permissions and boundaries.
  * 3) call the dependent code.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
+ *
  */
 
 t_error			segment_write(i_segment		segid,
@@ -778,6 +796,9 @@ t_error			segment_write(i_segment		segid,
  * 1) get segment objects.
  * 2) check permissions and boundaries.
  * 3) call machine dependent code.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
+ *
  */
 
 t_error			segment_copy(i_segment		dst,
@@ -836,6 +857,9 @@ t_error			segment_copy(i_segment		dst,
  * 2) find some free space.
  * 3) builds the segment.
  * 4) calls the machine dependent code.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
+ *
  */
 
 t_error			segment_reserve(i_as			asid,
@@ -911,6 +935,9 @@ t_error			segment_reserve(i_as			asid,
  * 3) gets the as object from its identifier.
  * 4) removes the segment from the address space.
  * 5) removes the segment from the segment set.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
+ *
  */
 
 t_error			segment_release(i_segment		segid)
@@ -958,6 +985,7 @@ t_error			segment_release(i_segment		segid)
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
+/* [cut k1] */
 /*
  * this function permits to get entire possession of a memory
  * area.
@@ -1039,6 +1067,7 @@ t_error			segment_catch(i_as			asid,
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
+/* [/cut] */
 
 /*
  * this function sets the permissions of a segment.
@@ -1049,6 +1078,9 @@ t_error			segment_catch(i_as			asid,
  * 2) checks the perms argument.
  * 3) finally, sets the new permissions.
  * 4) calls the machine-dependent code.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
+ *
  */
 
 t_error			segment_perms(i_segment			segid,
@@ -1088,6 +1120,7 @@ t_error			segment_perms(i_segment			segid,
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
 
+/* [cut k1] */
 /*
  * this function changes the type of a segment.
  *
@@ -1137,6 +1170,7 @@ t_error			segment_type(i_segment			segid,
 
   SEGMENT_LEAVE(segment, ERROR_NONE);
 }
+/* [/cut] */
 
 /*
  * this function removes every segment that belongs to the address space
@@ -1148,6 +1182,9 @@ t_error			segment_type(i_segment			segid,
  * 2) gets the address space object.
  * 3) for every segment in the address space, removes the segment from
  *    the segment set to destroy it.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
+ *
  */
 
 t_error			segment_flush(i_as			asid)
@@ -1195,6 +1232,8 @@ t_error			segment_flush(i_as			asid)
 
 /*
  * this function returns a segment object.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			segment_get(i_segment			segid,
@@ -1221,6 +1260,7 @@ t_error			segment_get(i_segment			segid,
  *    structure.
  * 3) reserves the segment set which will contain the system's segments.
  * 4) calls the machine-dependent code.
+ *
  */
 
 t_error			segment_initialize(void)
@@ -1276,6 +1316,9 @@ t_error			segment_initialize(void)
  * 1) calls the machine-dependent code.
  * 2) releases the segment set.
  * 3) frees the segment manager structure's memory.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
+ *
  */
 
 t_error			segment_clean(void)
@@ -1323,5 +1366,3 @@ t_error			segment_clean(void)
 
   return (ERROR_NONE);
 }
-
-/*                                                                 [cut] /k1 */

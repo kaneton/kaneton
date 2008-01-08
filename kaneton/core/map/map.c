@@ -62,6 +62,8 @@ extern i_as	kasid;
  * 2) reserve a region.
  *  a) force using the given virtual address.
  *  b) do not specify a virtual address.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			map_reserve(i_as		asid,
@@ -129,6 +131,8 @@ t_error			map_reserve(i_as		asid,
  * 1) get the region object to extract the segment id.
  * 2) release the region.
  * 3) release the segment.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			map_release(i_as		asid,
@@ -168,6 +172,7 @@ t_error			map_release(i_as		asid,
   MAP_LEAVE(map, ERROR_NONE);
 }
 
+/* [cut k1] */
 /*
  * this function remap some memory.
  *
@@ -274,7 +279,7 @@ t_error			map_resize(i_as			asid,
   MAP_LEAVE(map, ERROR_NONE);
 }
 
-/*                                                                 [cut] /k1 */
+/* [/cut] */
 
 /*
  * initialize the map manager.

@@ -11,6 +11,7 @@
  * updated       matthieu bucchianeri   [tue sep 11 16:51:34 2007]
  */
 
+/* [cut k3] */
 /*
  * ---------- information -----------------------------------------------------
  *
@@ -56,6 +57,7 @@
  * scheduler   and  the  current   GNU/Linux  implementation   can  be
  * downloaded at http://josh.trancesoftware.com/linux.
  */
+/* [/cut] */
 
 /*
  * ---------- includes --------------------------------------------------------
@@ -104,6 +106,8 @@ extern m_cpu*		cpu;
  * 1) dump the current thread.
  * 2) dump the scheduler active queues.
  * 2) dump the scheduler expired queues.
+ *
+ * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_dump(void)
@@ -196,6 +200,8 @@ t_error			scheduler_dump(void)
  * 1) set the new quantum value.
  * 2) update all thread timeslices to take account of new granularity.
  * 3) call the architecture dependent code.
+ *
+ * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_quantum(t_quantum			quantum)
@@ -280,6 +286,8 @@ t_error			scheduler_quantum(t_quantum			quantum)
  *    switch function  will force switching  to another active  thread
  *    if possible.
  * 2) call  the dependent code (calling switch with the good cpu).
+ *
+ * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_yield(i_cpu			cpuid)
@@ -313,6 +321,8 @@ t_error			scheduler_yield(i_cpu			cpuid)
 /*
  * this  function returns  the  identifier of  the currently  executed
  * thread.
+ *
+ * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_current(i_thread*			thread)
@@ -348,6 +358,9 @@ t_error			scheduler_current(i_thread*			thread)
  *    timeslice is not expired, push it back to the active list.
  * 6) call the machine dependent code that performs the context switching.
  * 7) update the scheduler internal informations.
+ *
+ *
+ * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_switch(void)
@@ -559,6 +572,8 @@ t_error			scheduler_switch(void)
  * 2) add the thread to the right queue.
  * 3) preempt current thread if added thread has an higher priority.
  * 4) call the machine dependent code.
+ *
+ * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_add(i_thread			thread)
@@ -642,6 +657,8 @@ t_error			scheduler_add(i_thread			thread)
  * 2) call architecture dependent code.
  * 3) compute the thread priority.
  * 4) look in both active and expired lists to remove the thread.
+ *
+ * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_remove(i_thread			thread)
@@ -741,12 +758,13 @@ t_error			scheduler_remove(i_thread			thread)
 
 /*
  * this function updates a thread into the scheduler.
-
  *
  * steps:
  *
  * 1) XXX optimize this !!!
  * 2) call the machine dependent code.
+ *
+ * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_update(i_thread			thread)
@@ -782,6 +800,8 @@ t_error			scheduler_update(i_thread			thread)
  * 2) create the thread lists.
  * 3) create the kernel thread.
  * 4) call the machine-dependent code.
+ *
+ * [fxcut k3 code: return (ERROR_NONE);]
  */
 
 t_error			scheduler_initialize(void)
@@ -911,6 +931,8 @@ t_error			scheduler_initialize(void)
  * 1) call the machine-dependent code.
  * 2) release the lists and the queues.
  * 3) free the scheduler manager structure's memory.
+ *
+ * [fxcut k3 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			scheduler_clean(void)
@@ -971,5 +993,3 @@ t_error			scheduler_clean(void)
 
   return (ERROR_NONE);
 }
-
-/*                                                                 [cut] k3 */

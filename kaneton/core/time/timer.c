@@ -70,6 +70,8 @@ extern i_task		ktask;
  *
  * 1) get the timer object from its identifier.
  * 2) display its delay.
+ *
+ * [fxcut k2 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			timer_show(i_timer			id)
@@ -102,6 +104,8 @@ t_error			timer_show(i_timer			id)
  *
  * 1) get the size of the timer set.
  * 2) display information about every timer.
+ *
+ * [fxcut k2 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			timer_dump(void)
@@ -146,6 +150,8 @@ t_error			timer_dump(void)
  * 1) get the timer object from the set.
  * 2) notify the task for its timer expiration.
  * 3) call the machine-dependent code.
+ *
+ * [fxcut k2 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			timer_notify(i_timer			id)
@@ -186,6 +192,7 @@ t_error			timer_notify(i_timer			id)
   TIMER_LEAVE(timer, ERROR_NONE);
 }
 
+/* [cut] */
 /*
  * insert a timer in the timer set.
  *
@@ -232,6 +239,7 @@ t_error			timer_insert(o_timer*			o)
 
   TIMER_LEAVE(timer, ERROR_NONE);
 }
+/* [/cut] */
 
 /*
  * reserve a timer.
@@ -242,6 +250,8 @@ t_error			timer_insert(o_timer*			o)
  * 2) setup delay and repeat mode.
  * 3) add the new timer to the timer manager.
  * 4) call the machine-dependent code.
+ *
+ * [fxcut k2 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			timer_reserve(t_type			type,
@@ -308,6 +318,8 @@ t_error			timer_reserve(t_type			type,
  * 2) call the machine dependant code.
  * 3) destroy the identifier object.
  * 4) remove the timer object from the timer set.
+ *
+ * [fxcut k2 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			timer_release(i_timer			id)
@@ -355,6 +367,8 @@ t_error			timer_release(i_timer			id)
  * 1) get the timer object.
  * 2) set the delay.
  # 3) call the machine-dependent code.
+ *
+ * [fxcut k2 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			timer_delay(i_timer			id,
@@ -395,6 +409,8 @@ t_error			timer_delay(i_timer			id,
  * 1) get the timer object.
  * 2) set the repeat mode.
  * 3) call the machine-dependent code.
+ *
+ * [fxcut k2 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			timer_repeat(i_timer			id,
@@ -436,6 +452,8 @@ t_error			timer_repeat(i_timer			id,
  * 2) call the machdep code.
  * 3) clone the timer and update its delay and repeat mode.
  * 4) reorganize the timer position within the set.
+ *
+ * [fxcut k2 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			timer_modify(i_timer			id,
@@ -489,6 +507,8 @@ t_error			timer_modify(i_timer			id,
 
 /*
  * this function finds a timer object in the timer set.
+ *
+ * [fxcut k2 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			timer_get(i_timer			id,
@@ -515,6 +535,8 @@ t_error			timer_get(i_timer			id,
  * 2) initialize the object identifier.
  * 3) reserve the timer set.
  * 4) call the machine dependent code.
+ *
+ * [fxcut k2 code: return (ERROR_NONE);]
  */
 
 t_error			timer_initialize(void)
@@ -578,6 +600,8 @@ t_error			timer_initialize(void)
  * 2) release the timer set.
  * 3) destroy the identifier object.
  * 4) free the timer manager's structure memory.
+ *
+ * [fxcut k2 code: return (ERROR_NONE);]
  */
 
 t_error			timer_clean(void)
@@ -620,8 +644,7 @@ t_error			timer_clean(void)
   return (ERROR_NONE);
 }
 
-/*								   [cut] k2 */
-
+/* [cut] */
 /*
  * check timer expiration.
  *
@@ -705,5 +728,4 @@ void			timer_handler(t_id			id)
 
   timer_check();
 }
-
-/*								   [cut] /k2 */
+/* [/cut] */

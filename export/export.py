@@ -33,6 +33,7 @@ import sys
 import re
 
 import env
+import CodeCutter
 
 #
 # ---------- globals ----------------------------------------------------------
@@ -63,23 +64,22 @@ def			usage():
   stage = None
   type = None
 
-  env.display(env.HEADER_ERROR, "usage: export.py [type]|k[stage,stage]",
+  env.display(env.HEADER_NONE, "usage: export.py [type]|k[stage,stage]",
               env.OPTION_NONE)
 
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
-  env.display(env.HEADER_ERROR, "types:", env.OPTION_NONE)
+  env.display(env.HEADER_NONE, "types:", env.OPTION_NONE)
 
   for type in g_types:
-    env.display(env.HEADER_ERROR, "  " + type, env.OPTION_NONE)
+    env.display(env.HEADER_NONE, "  " + type, env.OPTION_NONE)
 
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
-  env.display(env.HEADER_ERROR, "stages:", env.OPTION_NONE)
+  env.display(env.HEADER_NONE, "stages:", env.OPTION_NONE)
 
   for stage in g_stages:
-    env.display(env.HEADER_ERROR, "  " + stage, env.OPTION_NONE)
-
+    env.display(env.HEADER_NONE, "  " + stage, env.OPTION_NONE)
 
 
 #
@@ -177,15 +177,13 @@ def			dist():
   env.remove(g_file, env.OPTION_NONE)
   env.remove(g_directory, env.OPTION_NONE)
 
-
-
 #
 # stages()
 #
 # this function removes the pieces of code tagged as a stage comprised
 # between g_from and g_to, included.
 #
-def			stages():
+def			stages(strip_only_tags):
   content = None
   stage = None
   files = None
@@ -200,75 +198,16 @@ def			stages():
               "hiding stages...",
               env.OPTION_NONE)
 
-  # for each file, remove the tags
+  # for each file, cut the file
   for file in files:
-    content = env.pull(file, env.OPTION_NONE)
+    print "Processing <" + file + "> ..."
+    f = open(file, "r")
+    cutter = CodeCutter.CodeCutter(f, strip_only_tags)
+    f.close()
 
-    # for each stage in the range [g_from, g_to]
-    for stage in range(g_stages.index(g_from), g_stages.index(g_to) + 1):
-      # find the pieces of code
-      markings = re.findall("("						\
-                              "^.*\[cut\] k" + str(stage) + ".*\n"	\
-                              "(?:.|\n)*?"				\
-                              "^.*\[cut\] /k" + str(stage) + ".*\n"	\
-                            ")",
-                            content, re.MULTILINE)
-
-      if not markings:
-        continue
-
-      # remove the pieces of code
-      for marking in markings:
-        content = content.replace(marking, "")
-
-    # finally rewrite the file
-    env.push(file, content, env.OPTION_NONE)
-
-
-
-#
-# tags()
-#
-# this function removes the cut lines.
-#
-# these lines indicate the location of pieces of code which need to be
-# remove depending on the stage.
-#
-# this function does not cut the pieces of code but the lines indicating
-# where to cut the code off.
-#
-def			tags():
-  content = None
-  files = None
-  file = None
-
-  # look for any source file which could possibly contain unwanted pieces
-  # of code.
-  files = env.search(g_directory, "^.*\.(c|S|h|asm)$", env.OPTION_FILE)
-
-  # a message.
-  env.display(env.HEADER_OK,
-              "removing tags...",
-              env.OPTION_NONE)
-
-  # for each file, remove the tags
-  for file in files:
-    content = env.pull(file, env.OPTION_NONE)
-
-    # locate the tags
-    markings = re.findall("^(.*\[cut\].*)$", content, re.MULTILINE)
-
-    if not markings:
-      continue
-
-    # remove the tags
-    for marking in markings:
-      content = content.replace(marking, "")
-
-    # rewrite the file
-    env.push(file, content, env.OPTION_NONE)
-
-
+    f = open(file, "w")
+    f.write(cutter.result)
+    f.close()
 
 #
 # clean()
@@ -333,13 +272,10 @@ def			build():
       pass
     elif g_type == "dist":
       clean()
-      tags()
+      stages(True) # strip only tags
   else:
     clean()
-    stages()
-    tags()
-
-
+    stages(False) # strip tags & cutted content
 
 #
 # main()
@@ -356,6 +292,9 @@ def			main():
 
   # check the number of arguments.
   if len(sys.argv) != 2:
+    env.display(env.HEADER_ERROR,
+                "command line parse error: invalid argument count (" + str(len(sys.argv)) + ")",
+                env.OPTION_NONE)
     usage()
     sys.exit(42)
 

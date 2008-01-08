@@ -62,6 +62,9 @@ extern m_segment*	segment;
  * 3) for each segment, tries to find space after it.
  * 4) gets the last segment.
  * 5) tries to find space after the last segment.
+ *
+ * [fxcut code: return (ERROR_UNKNOWN);]
+ *
  */
 
 static t_error		segment_first_fit(o_as*			as,

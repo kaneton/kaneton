@@ -72,6 +72,8 @@ extern i_task		ktask;
  * ---------- functions -------------------------------------------------------
  */
 
+/* [cut k4] */
+
 /*
  * this function retrieves a message box of a task by its type.
  */
@@ -956,6 +958,8 @@ t_error			message_return_info(i_thread		thread,
   MESSAGE_LEAVE(message, ERROR_NONE);
 }
 
+/* [/cut] */
+
 /*
  * this function initializes the message manager.
  *
@@ -964,6 +968,8 @@ t_error			message_return_info(i_thread		thread,
  * 1) allocate some memory for the manager structure.
  * 2) create message types for the kernel task.
  * 3) call the machine dependent code.
+ *
+ * [fxcut k4 code: return(ERROR_NONE);]
  */
 
 t_error			message_initialize(void)
@@ -1016,6 +1022,8 @@ t_error			message_initialize(void)
  * 1) call the dependent code.
  * 3) free kernel message types.
  * 2) free the manager structure.
+ *
+ * [fxcut k4 code: return(ERROR_NONE);]
  */
 
 t_error			message_clean(void)
