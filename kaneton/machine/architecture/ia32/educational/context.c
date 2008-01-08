@@ -1,4 +1,4 @@
-*
+/*
  * licence       kaneton licence
  *
  * project       kaneton
