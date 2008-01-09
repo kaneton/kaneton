@@ -209,7 +209,7 @@ t_error			region_inject(i_as		asid,
 }
 
 
-/* [/cut] */
+/* [cut] */
 
 /*
  * this function splits a region in two regions.
@@ -487,7 +487,7 @@ t_error			region_coalesce(i_as		asid,
 
   REGION_LEAVE(region, ERROR_NONE);
 }
-/* [cut] */
+/* [/cut] */
 
 
 /*
@@ -711,8 +711,6 @@ t_error			region_get(i_as				asid,
 }
 
 /*
- * [cutted commentary]
- *
  * this function initializes the region manager from the init
  * variable containing regions to keep safe.
  *

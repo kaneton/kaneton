@@ -8,7 +8,7 @@
  * file          /home/buckman/crypt/kaneton/kaneton/core/include/segment.h
  *
  * created       julien quintard   [wed jun  6 14:00:28 2007]
- * updated       matthieu bucchianeri   [wed jan  9 11:06:22 2008]
+ * updated       matthieu bucchianeri   [wed jan  9 15:31:19 2008]
  */
 
 #ifndef CORE_SEGMENT_H
@@ -58,7 +58,6 @@
 
 typedef struct
 {
-  /* [cut k1] */
   i_segment			segid;
 
   i_as				asid;
@@ -69,7 +68,6 @@ typedef struct
   t_psize			size;
 
   t_perms			perms;
-  /* [/cut] */
 
   machine_data(o_segment);
 }				o_segment;

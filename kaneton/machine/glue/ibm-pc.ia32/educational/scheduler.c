@@ -8,7 +8,7 @@
  * file          /home/buckman/cry...glue/ibm-pc.ia32/educational/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:45:19 2006]
- * updated       matthieu bucchianeri   [wed jan  9 11:58:56 2008]
+ * updated       matthieu bucchianeri   [wed jan  9 15:05:33 2008]
  */
 
 /*
@@ -61,7 +61,7 @@ d_scheduler			scheduler_dispatch =
  * ---------- functions -------------------------------------------------------
  */
 
-/* [cut k3]
+/* [cut k3] */
 /*
  * the idle thread assembly.
  */

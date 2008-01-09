@@ -245,6 +245,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
 
   ia32_tlb_flush();
 
+  /* [cut] */
   /*
    * 8)
    */
@@ -254,6 +255,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
 		      IA32_PD_CACHED,
 		      IA32_PD_WRITEBACK) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+  /* [/cut] */
 
   return (ERROR_NONE);
 }
@@ -265,6 +267,7 @@ t_error			ia32_kernel_as_init(i_as	asid)
 
 t_error			ia32_kernel_as_finalize(void)
 {
+  /* [cut] */
   if (segment_type((i_segment)init->segments[0].address,
 		   SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
     return (ERROR_UNKNOWN);
@@ -280,6 +283,7 @@ t_error			ia32_kernel_as_finalize(void)
   if (segment_type((i_segment)init->segments[13].address,
 		   SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+  /* [/cut] */
 
   return (ERROR_NONE);
 }
@@ -320,8 +324,10 @@ t_error			ia32_task_as_init(i_as		asid)
 		      &seg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
+  /* [cut] */
   if (segment_type(seg, SEGMENT_TYPE_SYSTEM) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+  /* [/cut] */
 
   /*
    * 3)
@@ -411,6 +417,7 @@ t_error			ia32_task_as_init(i_as		asid)
 		     &reg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 
+  /* [cut] */
   if (region_reserve(asid,
 		     (i_segment)(t_uint32)ia32_idt.descriptor,
 		     0,
@@ -420,6 +427,7 @@ t_error			ia32_task_as_init(i_as		asid)
 		     PAGESZ,
 		     &reg) != ERROR_NONE)
     return (ERROR_UNKNOWN);
+  /* [/cut] */
 
   if (region_reserve(asid,
 		     (i_segment)IA32_APIC_REG_BASE,
@@ -551,11 +559,13 @@ t_error			ia32_segmentation_init(void)
 
   /* XXX flush AP */
 
+  /* [cut] */
   /*
    * 6)
    */
 
   ia32_interrupt_ds = kds;
+  /* [/cut] */
 
   return (ERROR_NONE);
 }

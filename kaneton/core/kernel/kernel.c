@@ -212,6 +212,7 @@ void			kernel_initialize(void)
   if (message_initialize() != ERROR_NONE)
     core_error("cannot initialize the message manager\n");
 
+  /* [cut] */
   /*
    * 14)
    */
@@ -220,6 +221,7 @@ void			kernel_initialize(void)
 
   if (capability_initialize() != ERROR_NONE)
     core_error("cannot initialize the capability manager\n");
+  /* [/cut] */
 
   /*
    * 15)
@@ -248,7 +250,9 @@ void			kernel_clean(void)
 {
   scheduler_clean();
 
+  /* [cut] */
   capability_clean();
+  /* [/cut] */
 
   message_clean();
 

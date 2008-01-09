@@ -8,7 +8,7 @@
  * file          /home/buckman/crypt/kaneton/kaneton/core/include/debug.h
  *
  * created       julien quintard   [wed jun  6 13:11:05 2007]
- * updated       matthieu bucchianeri   [wed jan  9 13:09:59 2008]
+ * updated       matthieu bucchianeri   [wed jan  9 16:55:34 2008]
  */
 
 /*
@@ -84,6 +84,7 @@ typedef struct
  void*				data;
 }				t_serial_buffer;
 
+/* [cut] */
 /*
  * ---------- prototypes ------------------------------------------------------
  *
@@ -137,5 +138,6 @@ t_error		gdb_clean(void);
 /*
  * eop
  */
+/* [/cut] */
 
 #endif
