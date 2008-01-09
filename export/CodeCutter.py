@@ -39,7 +39,7 @@ class CodeCutter:
             content += line
 
         content = self.cut_functions(content, only_strip_markup)
-        # content = self.cut_code(content, only_strip_markup)
+        content = self.cut_code(content, only_strip_markup)
         self.result = content
 
     def set_lower_cut_boundary(self, low_boundary):
@@ -128,7 +128,7 @@ class CodeCutter:
         fxcut = self.re_fxmarkup.search(content, searchpos)
 
         while (fxcut != None):
-            searchpos = fxcut.endpos
+            searchpos = fxcut.end()
             startline = self.position_to_line(content, fxcut.start())
             endline = self.position_to_line(content, fxcut.end())
 
