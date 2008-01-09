@@ -5,15 +5,16 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...machine/platform/ibm-pc/include/serial.h
+ * file          /home/buckman/cry...machine/platform/ibm-pc/include/serial.h
  *
  * created       julien quintard   [wed jun  6 14:06:42 2007]
- * updated       matthieu bucchianeri   [sun jun 17 17:38:12 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 21:03:42 2008]
  */
 
 #ifndef	PLATFORM_SERIAL_H
 #define	PLATFORM_SERIAL_H		1
 
+/* [cut] */
 /*
  * ---------- dependencies ----------------------------------------------------
  */
@@ -81,5 +82,6 @@ t_error			serial_init(t_uint32			com_port,
 /*
  * eop
  */
+/* [/cut] */
 
 #endif
