@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/scheduler.h
+ * file          /home/buckman/crypt/kaneton/kaneton/core/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 13:44:48 2007]
- * updated       matthieu bucchianeri   [sun sep  9 13:31:57 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 11:04:24 2008]
  */
 
 #ifndef CORE_SCHEDULER_H
@@ -43,6 +43,7 @@
 
 #define SCHEDULER_QUANTUM_INIT		TIMER_MS_PER_TICK
 
+/* [cut k3] */
 /*
  * the number of priority levels for the scheduler.
  */
@@ -167,17 +168,21 @@ typedef struct
   machine_data(o_scheduler);
 }				o_scheduler;
 
+/* [/cut] */
+
 /*
  * scheduler manager
  */
 
 typedef struct
 {
+  /* [cut k3] */
   t_quantum			quantum;
 
   i_thread			idle;
 
   i_set				cpus;
+  /* [/cut] */
 
   machine_data(m_scheduler);
 }				m_scheduler;

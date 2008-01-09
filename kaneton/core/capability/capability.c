@@ -5,12 +5,13 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/capability/capability.c
+ * file          /home/buckman/cry...ton/kaneton/core/capability/capability.c
  *
  * created       julien quintard   [sun jun  3 19:48:52 2007]
- * updated       matthieu bucchianeri   [tue aug 28 23:12:44 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 10:41:06 2008]
  */
 
+/* [cut] */
 /*
  * ---------- information -----------------------------------------------------
  *
@@ -650,3 +651,4 @@ t_error			capability_clean(void)
 // XXX changer car actuellement on a pas de fonctions de hash correct
 
 // XXX fonction random pour les id ou pas? cela est-il vraiment necessaire?
+/* [/cut] */

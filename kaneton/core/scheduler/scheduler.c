@@ -8,7 +8,7 @@
  * file          /home/buckman/cry...neton/kaneton/core/scheduler/scheduler.c
  *
  * created       matthieu bucchianeri   [sat jun  3 22:36:59 2006]
- * updated       matthieu bucchianeri   [tue sep 11 16:51:34 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 10:53:57 2008]
  */
 
 /* [cut k3] */
@@ -79,8 +79,6 @@ machine_include(scheduler);
 m_scheduler*		scheduler = NULL;
 
 i_thread		kthread = ID_UNUSED;
-
-/*                                                                 [cut] k3 */
 
 /*
  * kernel task id.
@@ -788,8 +786,6 @@ t_error			scheduler_update(i_thread			thread)
 
   SCHEDULER_LEAVE(scheduler, ERROR_NONE);
 }
-
-/*                                                                [cut] /k3 */
 
 /*
  * this function initializes the scheduler manager.

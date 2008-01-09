@@ -92,12 +92,14 @@ void			kernel_initialize(void)
 
   memset(kernel, 0x0, sizeof(m_kernel));
 
+  /* [cut] */
   // XXX srand(time(0)) // init from the number of ticks for example
 
   kernel->machine = 0; /*rand() %*/ //2^64; // XXX bien sur ca c'est foireux car
 				   // rand ne genere pas sur 64-bit
 
   // XXX kernel->node = ...
+  /* [/cut] */
 
   /*
    * 2)
@@ -246,29 +248,17 @@ void			kernel_clean(void)
 {
   scheduler_clean();
 
-/*								    [cut] k1 */
-
   capability_clean();
-
-/*								   [cut] /k1 */
 
   message_clean();
 
-/*								    [cut] k1 */
-
   io_clean();
-
-/*								   [cut] /k1 */
 
   timer_clean();
 
   event_clean();
 
-/*								    [cut] k1 */
-
   cpu_clean();
-
-/*								   [cut] /k1 */
 
   thread_clean();
 

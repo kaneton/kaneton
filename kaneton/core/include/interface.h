@@ -8,6 +8,7 @@
 #ifndef CORE_INTERFACE_H
 #define CORE_INTERFACE_H	1
 
+/* [cut] */
 /*
  * ---------- dependencies ----------------------------------------------------
  */
@@ -741,6 +742,8 @@ typedef struct
 }			o_syscall;
 
 typedef t_error (*t_interface_dispatch)(o_syscall*);
+
+/* [/cut] */
 
 /*
  * ---------- prototypes ------------------------------------------------------

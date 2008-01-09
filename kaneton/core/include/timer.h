@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/include/timer.h
+ * file          /home/buckman/crypt/kaneton/kaneton/core/include/timer.h
  *
  * created       julien quintard   [wed jun  6 15:42:26 2007]
- * updated       matthieu bucchianeri   [sun aug 26 23:55:27 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 11:09:53 2008]
  */
 
 #ifndef CORE_TIMER_H
@@ -84,6 +84,7 @@ typedef union
 
 typedef struct
 {
+  /* [cut k2] */
   i_timer			timerid;
 
   t_uint32			delay;
@@ -94,6 +95,7 @@ typedef struct
 
   u_timer_handler		handler;
   t_vaddr			data;
+  /* [/cut] */
 
   machine_data(o_timer);
 }				o_timer;
@@ -115,11 +117,13 @@ typedef struct
 
 typedef struct
 {
+  /* [cut k2] */
   o_id				id;
 
   t_uint32			timeref;
 
   i_set				timers;
+  /* [/cut] */
 
   machine_data(m_timer);
 }				m_timer;

@@ -208,7 +208,8 @@ t_error			region_inject(i_as		asid,
   REGION_LEAVE(region, ERROR_NONE);
 }
 
-/*								    [cut] k1 */
+
+/* [/cut] */
 
 /*
  * this function splits a region in two regions.
@@ -486,8 +487,8 @@ t_error			region_coalesce(i_as		asid,
 
   REGION_LEAVE(region, ERROR_NONE);
 }
+/* [cut] */
 
-/*								   [cut] /k1 */
 
 /*
  * this function reserves a region given the desired segment.

@@ -5,15 +5,16 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kaneton/kaneton/core/include/capability.h
+ * file          /home/buckman/cry...aneton/kaneton/core/include/capability.h
  *
  * created       julien quintard   [wed jun  6 12:44:04 2007]
- * updated       julien quintard   [sun jun 10 19:02:49 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 10:59:58 2008]
  */
 
 #ifndef CORE_CAPABILITY_H
 #define CORE_CAPABILITY_H		1
 
+/* [cut] */
 /*
  * ---------- dependencies ----------------------------------------------------
  */
@@ -169,5 +170,6 @@ t_error			capability_clean(void);
 /*
  * eop
  */
+/* [/cut] */
 
 #endif

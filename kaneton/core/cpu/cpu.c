@@ -143,6 +143,8 @@ t_error			cpu_multiprocessor(void)
 
 /*
  * this function is used to select a cpu when creating a task.
+ *
+ * [fxcut k1 code: *cpuid = 0; return (ERROR_NONE);]
  */
 
 t_error			cpu_select(i_cpu*			cpuid)
@@ -169,6 +171,8 @@ t_error			cpu_select(i_cpu*			cpuid)
 
 /*
  * this function count the execution time of useful code.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			cpu_stats(i_cpu				cpuid,
@@ -192,6 +196,8 @@ t_error			cpu_stats(i_cpu				cpuid,
 
 /*
  * this function is called for load balancing.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			cpu_balance(void)
@@ -212,6 +218,8 @@ t_error			cpu_balance(void)
  * 2) change the running cpu.
  * 3) call the dependent code.
  * 4) restart the task if necessary.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			cpu_migrate(i_task			tskid,
@@ -372,129 +380,4 @@ t_error			cpu_clean(void)
   free(cpu);
 
   return (ERROR_NONE);
-}
-
-
-/*
- * --------------
- *
- */
-
-void cpu1(void)
-{
-  printf("This is cpu1\n");
-  while (1)
-    ;
-}
-
-void cpu2(void)
-{
-  printf("This is cpu2\n");
-  while (1)
-    ;
-}
-
-void cpu3(void)
-{
-  printf("This is cpu3\n");
-  while (1)
-    ;
-}
-
-void cpu4(void)
-{
-  printf("This is cpu4\n");
-  while (1)
-    ;
-}
-i_thread	mk_thread(i_task tsk,
-			  void *func)
-{
-  i_thread		thr;
-  o_thread*		o;
-  t_thread_context	ctx;
-  t_stack		stack;
-
-  if (thread_reserve(tsk, 150, &thr) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot reserve thread\n");
-      while (1);
-    }
-
-  stack.base = 0;
-  stack.size = THREAD_MIN_STACKSZ;
-  if (thread_stack(thr, stack) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot set stack\n");
-      while (1);
-    }
-
-  if (thread_get(thr, &o) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot get thread\n");
-      while (1);
-    }
-
-  ctx.sp = o->stack + o->stacksz - 16;
-  ctx.pc = (t_uint32)func;
-
-  if (thread_load(thr, ctx) != ERROR_NONE)
-    {
-      cons_msg('!', "cannot load context\n");
-      while (1);
-    }
-
-  return thr;
-}
-
-void smp_test(void)
-{
-  i_task	tsk;
-  i_as		as;
-  int		i;
-
-  // XXX to move
-  if (event_reserve(48, EVENT_FUNCTION, EVENT_HANDLER(scheduler_switch), 0)
-      != ERROR_NONE)
-    return;
-
-  for (i = 0; i < init->ncpus; i++)
-    {
-      if (task_reserve(TASK_CLASS_PROGRAM,
-		       TASK_BEHAV_INTERACTIVE,
-		       TASK_PRIOR_INTERACTIVE,
-		       &tsk) != ERROR_NONE)
-	{
-	  cons_msg('!', "cannot reserve task\n");
-	  while (1);
-	}
-
-      if (as_reserve(tsk, &as) != ERROR_NONE)
-	{
-	  cons_msg('!', "cannot reserve as\n");
-	  while (1);
-	}
-
-      if (i == 0)
-	mk_thread(tsk, cpu1);
-      if (i == 1)
-	mk_thread(tsk, cpu2);
-      if (i == 2)
-	mk_thread(tsk, cpu3);
-      if (i == 3)
-	mk_thread(tsk, cpu4);
-
-      if (task_state(tsk, SCHEDULER_STATE_RUN) != ERROR_NONE)
-	{
-	  cons_msg('!', "cannot start !\n");
-
-	  while (1);
-	}
-    }
-
-  CLI();
-
-//  ipi_send_vector(48, ipi_all_but_me, 1);
-
-  STI();
 }

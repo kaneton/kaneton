@@ -159,8 +159,6 @@ static t_error		region_first_fit(o_as*			as,
   REGION_LEAVE(region, ERROR_UNKNOWN);
 }
 
-/*								   [cut] /k1 */
-
 /*
  * this function calls the good algorithm.
  */
