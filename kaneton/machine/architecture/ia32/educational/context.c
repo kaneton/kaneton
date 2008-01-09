@@ -22,6 +22,7 @@
  * ---------- globals ---------------------------------------------------------
  */
 
+/* [cut k3] */
 /*
  * tells the processor capabilities.
  */
@@ -859,3 +860,4 @@ t_error			ia32_set_context(i_thread		thread,
 
   return (ERROR_NONE);
 }
+/* [/cut] */

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...hine/architecture/ia32/generic/mapping.c
+ * file          /home/buckman/cry...hine/architecture/ia32/generic/mapping.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:26:06 2007]
- * updated       matthieu bucchianeri   [mon dec 24 19:31:08 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 11:24:48 2008]
  */
 
 /*
@@ -40,6 +40,7 @@ extern i_as		kasid;
  * ---------- functions -------------------------------------------------------
  */
 
+/* [cut k1] */
 /*
  * this function directly maps a chunk of memory.
  *
@@ -550,3 +551,4 @@ t_error			ia32_unmap_region(i_as		asid,
 
   return (ERROR_NONE);
 }
+/* [/cut] */

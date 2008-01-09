@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/segment/segment-fit.c
+ * file          /home/buckman/cry...neton/kaneton/core/segment/segment-fit.c
  *
  * created       julien quintard   [sun jun 10 17:17:15 2007]
- * updated       matthieu bucchianeri   [sun jul 22 12:30:26 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 13:09:08 2008]
  */
 
 /*
@@ -48,8 +48,6 @@ extern m_segment*	segment;
 /*
  * ---------- functions -------------------------------------------------------
  */
-
-/*                                                                  [cut] k2 */
 
 /*
  * this function tries to find free space in the segment set via the
@@ -191,7 +189,5 @@ t_error			segment_space(i_as		asid,
 	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
     }
 }
-
-/*                                                                 [cut] /k2 */
 
 #endif

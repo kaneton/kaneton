@@ -19,7 +19,7 @@
 #ifndef PLATFORM_IRQ_H
 #define PLATFORM_IRQ_H	1
 
-/*								[cut] k2 */
+/* [cut k2] */
 
 /*
  * ---------- defines ---------------------------------------------------------
@@ -52,7 +52,7 @@
 #define IBMPC_SLAVE_ICW3              0x02
 #define IBMPC_SLAVE_ICW4              0x01
 
-/*								[cut] /k2 */
+/* [/cut] */
 
 /*
  * ---------- prototypes ------------------------------------------------------

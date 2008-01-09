@@ -18,7 +18,7 @@
 #ifndef ARCHITECTURE_CONTEXT_H
 #define ARCHITECTURE_CONTEXT_H	1
 
-/*								[cut] k3 */
+/* [cut k3] */
 
 /*
  * ---------- macro functions -------------------------------------------------
@@ -224,7 +224,7 @@ extern t_ia32_cpu_local	ia32_local_interrupt_stack;
 extern t_ia32_cpu_local	ia32_local_jump_stack;
 extern t_ia32_cpu_local	ia32_local_jump_pdbr;
 
-/*								[cut] /k3 */
+/* [/cut] */
 
 /*
  * ---------- prototypes ------------------------------------------------------

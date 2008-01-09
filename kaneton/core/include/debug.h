@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/include/core/debug.h
+ * file          /home/buckman/crypt/kaneton/kaneton/core/include/debug.h
  *
  * created       julien quintard   [wed jun  6 13:11:05 2007]
- * updated       matthieu bucchianeri   [sun jun 17 17:25:21 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 13:09:59 2008]
  */
 
 /*
@@ -56,8 +56,6 @@
  * ---------- macro functions -------------------------------------------------
  */
 
-/*                                                                [cut] k1   */
-
 #define ASSERT(_test_)							\
   if (!(_test_))							\
     {									\
@@ -68,13 +66,9 @@
 	;								\
     }
 
-/*                                                                [cut] /k1  */
-
 /*
  * ---------- types -----------------------------------------------------------
  */
-
-/*                                                                [cut] k1   */
 
 typedef struct
 {
@@ -89,8 +83,6 @@ typedef struct
  char*				name;
  void*				data;
 }				t_serial_buffer;
-
-/*                                                               [cut] /k1   */
 
 /*
  * ---------- prototypes ------------------------------------------------------

@@ -19,8 +19,7 @@
 #ifndef ARCHITECTURE_IDT_H
 #define ARCHITECTURE_IDT_H	1
 
-/*                                                                  [cut] k2 */
-
+/* [cut k2] */
 /*
  * ---------- macros ----------------------------------------------------------
  */
@@ -116,7 +115,7 @@ typedef struct
   t_uint32			address;
 }				__attribute__ ((packed)) t_ia32_idtr;
 
-/*                                                                 [cut] /k2 */
+/* [/cut] */
 
 /*
  * ---------- prototypes ------------------------------------------------------

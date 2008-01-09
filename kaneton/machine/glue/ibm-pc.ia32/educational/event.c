@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...kaneton/machine/glue/ibm-pc.ia32/event.c
+ * file          /home/buckman/cry...ine/glue/ibm-pc.ia32/educational/event.c
  *
  * created       renaud voltz   [mon feb 13 01:05:52 2006]
- * updated       matthieu bucchianeri   [mon dec 10 16:04:25 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 11:49:03 2008]
  */
 
 /*
@@ -38,20 +38,20 @@ extern m_event*		event;
 
 d_event				event_dispatch =
   {
-/*								    [cut] k2 */
     NULL,
     NULL,
     glue_event_reserve,
     glue_event_release,
     glue_event_initialize,
     glue_event_clean
-/*								   [cut] /k2 */
   };
-
-/*								    [cut] k2 */
 
 /*
  * ---------- functions -------------------------------------------------------
+ */
+
+/*
+ * [fxcut k2 code: return (ERROR_NONE);]
  */
 
 t_error			glue_event_reserve(i_event		id,
@@ -71,6 +71,10 @@ t_error			glue_event_reserve(i_event		id,
   EVENT_LEAVE(event, ERROR_NONE);
 }
 
+/*
+ * [fxcut k2 code: return (ERROR_NONE);]
+ */
+
 t_error			glue_event_release(i_event		id)
 {
   EVENT_ENTER(event);
@@ -82,6 +86,7 @@ t_error			glue_event_release(i_event		id)
   EVENT_LEAVE(event, ERROR_NONE);
 }
 
+/* [cut k2] */
 static void		pf_handler(t_id				id,
 				   t_vaddr			data,
 				   t_uint32			error_code)
@@ -107,6 +112,11 @@ static void		pf_handler(t_id				id,
   while (1)
     ;
 }
+/* [/cut] */
+
+/*
+ * [fxcut k2 code: return (ERROR_NONE);]
+ */
 
 t_error			glue_event_initialize(void)
 {
@@ -124,6 +134,10 @@ t_error			glue_event_initialize(void)
 
   EVENT_LEAVE(event, ERROR_NONE);
 }
+
+/*
+ * [fxcut k2 code: return (ERROR_NONE);]
+ */
 
 t_error			glue_event_clean(void)
 {

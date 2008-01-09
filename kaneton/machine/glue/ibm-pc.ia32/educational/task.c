@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan.../kaneton/machine/glue/ibm-pc.ia32/task.c
+ * file          /home/buckman/cry...hine/glue/ibm-pc.ia32/educational/task.c
  *
  * created       matthieu bucchianeri   [sat jun 16 18:10:38 2007]
- * updated       matthieu bucchianeri   [mon aug  6 23:33:25 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 12:00:40 2008]
  */
 
 /*
@@ -64,6 +64,8 @@ d_task			task_dispatch =
 
 /*
  * this function clones the dependent part of a task.
+ *
+ * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_task_clone(i_task			old,
@@ -79,6 +81,8 @@ t_error			glue_task_clone(i_task			old,
 
 /*
  * this function initialize the dependent structures.
+ *
+ * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_task_reserve(t_class			class,
@@ -110,8 +114,10 @@ t_error			glue_task_initialize(void)
 {
   TASK_ENTER(task);
 
+  /* [cut] */
   if (ia32_extended_context_init() != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);
+  /* [/cut] */
 
   if (ia32_kernel_as_finalize() != ERROR_NONE)
     TASK_LEAVE(task, ERROR_UNKNOWN);

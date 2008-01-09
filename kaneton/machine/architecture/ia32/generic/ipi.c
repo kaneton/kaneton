@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan.../machine/architecture/ia32/generic/ipi.c
+ * file          /home/buckman/cry.../machine/architecture/ia32/generic/ipi.c
  *
  * created       matthieu bucchianeri   [sat dec 22 21:53:19 2007]
- * updated       matthieu bucchianeri   [sat dec 22 21:53:57 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 11:23:21 2008]
  */
 
 /*
@@ -26,7 +26,7 @@
 
 #include <architecture/architecture.h>
 
-/*                                                                 [cut] /k2 */
+/* [cut] */
 /*
  * send a INIT IPI.
  */
@@ -81,5 +81,4 @@ void			ia32_ipi_acknowledge(void)
 {
   ia32_apic_write(IA32_APIC_REG_EOI, 0);
 }
-
-/*								[cut] /k2 */
+/* [/cut] */

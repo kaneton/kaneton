@@ -30,7 +30,7 @@
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k2 */
+/* [cut k2] */
 
 /*
  * initialize the pics
@@ -176,4 +176,4 @@ t_error			ibmpc_irq_acknowledge(t_uint8		irq)
   return (ERROR_NONE);
 }
 
-/*                                                                 [cut] /k2 */
+/* [/cut] */

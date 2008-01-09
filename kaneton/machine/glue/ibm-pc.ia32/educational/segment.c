@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/mycure/kane...neton/machine/glue/ibm-pc.ia32/segment.c
+ * file          /home/buckman/cry...e/glue/ibm-pc.ia32/educational/segment.c
  *
  * created       julien quintard   [fri feb 11 03:04:40 2005]
- * updated       julien quintard   [fri jun 22 18:34:10 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 11:59:43 2008]
  */
 
 
@@ -46,7 +46,6 @@ extern m_segment*	segment;
 
 d_segment				segment_dispatch =
   {
-/*								   [cut] k1 */
     NULL,
     NULL,
     NULL,
@@ -65,7 +64,6 @@ d_segment				segment_dispatch =
     NULL,
     glue_segment_initialize,
     glue_segment_clean
-/*								   [cut] /k1 */
   };
 
 /*
@@ -74,6 +72,8 @@ d_segment				segment_dispatch =
 
 /*
  * this function reads directly from a segment to a buffer.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_segment_read(i_segment		segid,
@@ -91,6 +91,8 @@ t_error			glue_segment_read(i_segment		segid,
 
 /*
  * this function write directly to a segment from a buffer.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_segment_write(i_segment		segid,
@@ -108,6 +110,8 @@ t_error			glue_segment_write(i_segment		segid,
 
 /*
  * this function copies a block of bytes from one segment to another.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_segment_copy(i_segment		dst,

@@ -8,9 +8,10 @@
  * file          /home/buckman/cry...achine/architecture/ia32/generic/local.c
  *
  * created       matthieu bucchianeri   [mon dec 10 13:54:28 2007]
- * updated       matthieu bucchianeri   [mon dec 10 17:45:30 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 11:24:04 2008]
  */
 
+/* [cut] */
 /*
  * ---------- information -----------------------------------------------------
  *
@@ -89,3 +90,4 @@ t_uint32	ia32_cpu_local_get(t_ia32_cpu_local	var)
 {
   return (var);
 }
+/* [/cut] */

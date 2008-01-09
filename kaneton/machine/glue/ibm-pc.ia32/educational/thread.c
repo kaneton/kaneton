@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...aneton/machine/glue/ibm-pc.ia32/thread.c
+ * file          /home/buckman/cry...ne/glue/ibm-pc.ia32/educational/thread.c
  *
  * created       renaud voltz   [tue apr  4 03:08:03 2006]
- * updated       matthieu bucchianeri   [sat dec  8 20:20:48 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 13:07:50 2008]
  */
 
 /*
@@ -36,15 +36,11 @@
 
 extern m_thread*	thread;
 
-/*                                                                  [cut] k3 */
-
 /*
  * we'll use the kernel address space identifier.
  */
 
 extern i_as		kasid;
-
-/*                                                                 [cut] /k3 */
 
 /*
  * ---------- globals ---------------------------------------------------------
@@ -56,9 +52,6 @@ extern i_as		kasid;
 
 d_thread			thread_dispatch =
   {
-
-/*                                                                  [cut] k3 */
-
     NULL,
     NULL,
     glue_thread_clone,
@@ -73,19 +66,16 @@ d_thread			thread_dispatch =
     glue_thread_args,
     glue_thread_initialize,
     NULL
-
-/*                                                                 [cut] /k3 */
-
   };
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k3 */
-
 /*
  * clone the ia32 architecture dependent part of a thread.
+ *
+ * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_thread_clone(i_task		taskid,
@@ -107,6 +97,8 @@ t_error			glue_thread_clone(i_task		taskid,
 
 /*
  * reserve a thread on the ia32 architecture
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_thread_reserve(i_task		taskid,
@@ -123,6 +115,8 @@ t_error			glue_thread_reserve(i_task		taskid,
 /*
  * this function updates the context with the new stack and
  * instruction pointers.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_thread_load(i_thread		threadid,
@@ -139,6 +133,8 @@ t_error			glue_thread_load(i_thread		threadid,
 /*
  * this function reads from the context both the stack and instruction
  * pointers.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_thread_store(i_thread		threadid,
@@ -154,6 +150,8 @@ t_error			glue_thread_store(i_thread		threadid,
 
 /*
  * this function pushes function arguments onto the stack.
+ *
+ * [fxcut k1 code: return (ERROR_UNKNOWN);]
  */
 
 t_error			glue_thread_args(i_thread		threadid,
@@ -170,6 +168,8 @@ t_error			glue_thread_args(i_thread		threadid,
 
 /*
  * initialize the machdep related structures for the thread manager.
+ *
+ * [fxcut k1 code: return (ERROR_NONE);]
  */
 
 t_error			glue_thread_initialize(void)

@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...hine/architecture/ia32/generic/segment.c
+ * file          /home/buckman/cry...hine/architecture/ia32/generic/segment.c
  *
  * created       matthieu bucchianeri   [mon dec 24 19:25:22 2007]
- * updated       matthieu bucchianeri   [mon dec 24 19:31:21 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 11:35:24 2008]
  */
 
 /*
@@ -40,6 +40,7 @@ extern i_as		kasid;
  * ---------- functions -------------------------------------------------------
  */
 
+/* [cut k1] */
 /*
  * this function reads directly from a segment to a buffer.
  *
@@ -264,3 +265,4 @@ t_error			ia32_segment_copy(i_region		dst,
 
   return (ERROR_NONE);
 }
+/* [/cut] */

@@ -9,7 +9,7 @@
  * updated       matthieu bucchianeri   [wed mar 21 22:45:19 2007]
  */
 
-
+/* [cut] */
 /*
  * ---------- information -----------------------------------------------------
  *
@@ -180,3 +180,4 @@ t_uint32		ia32_cpu_has_apic(void)
 
   return (!!(edx & (1 << 9)));
 }
+/* [/cut] */

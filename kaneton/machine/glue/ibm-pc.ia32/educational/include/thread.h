@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...achine/glue/ibm-pc.ia32/include/thread.h
+ * file          /home/buckman/cry...ibm-pc.ia32/educational/include/thread.h
  *
  * created       julien quintard   [wed jun  6 16:27:09 2007]
- * updated       matthieu bucchianeri   [mon dec 10 13:14:36 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 12:08:26 2008]
  */
 
 #ifndef GLUE_THREAD_H
@@ -51,7 +51,7 @@
 #define         machine_data_o_thread()					\
   struct								\
   {									\
-    /*                                                  [cut] k3   */	\
+    /* [cut k3] */							\
     t_vaddr		interrupt_stack;				\
 									\
     union								\
@@ -59,7 +59,7 @@
       t_x87_state	x87;						\
       t_sse_state	sse;						\
     }			u;						\
-    /*                                                  [cut] /k3   */	\
+    /* [/cut] */							\
   }			machdep;
 
 /*

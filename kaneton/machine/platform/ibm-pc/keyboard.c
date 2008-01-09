@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...neton/machine/platform/ibm-pc/keyboard.c
+ * file          /home/buckman/cry...neton/machine/platform/ibm-pc/keyboard.c
  *
  * created       matthieu bucchianeri   [sun jun 17 19:04:00 2007]
- * updated       matthieu bucchianeri   [sat aug  4 19:27:09 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 11:44:33 2008]
  */
 
 /*
@@ -30,6 +30,7 @@ IBMPC_KEYBOARD_MAPPING(scancodes);
  * ---------- functions -------------------------------------------------------
  */
 
+/* [cut k2] */
 /*
  * keyboard irq handler.
  */
@@ -70,3 +71,4 @@ t_error			ibmpc_keyboard_init(void)
 {
   return (event_reserve(33, EVENT_FUNCTION, EVENT_HANDLER(ibmpc_kbd_handler), 0));
 }
+/* [/cut] */

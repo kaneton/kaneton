@@ -9,6 +9,7 @@
  * updated       matthieu bucchianeri   [tue feb  6 19:36:44 2007]
  */
 
+/* [cut] */
 /*
  * ---------- information -----------------------------------------------------
  *
@@ -361,3 +362,4 @@ t_error			ia32_ldt_build_selector(t_ia32_ldt*	table,
 
   return ERROR_NONE;
 }
+/* [/cut] */

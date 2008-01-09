@@ -25,26 +25,23 @@
 
 #include <architecture/architecture.h>
 
-/*                                                                  [cut] k2 */
-
 /*
  * ---------- globals ---------------------------------------------------------
  */
 
+/* [cut k2] */
 /*
  * idt table pointer
  */
 
 t_ia32_idt           ia32_idt;
-
-/*                                                                 [cut] /k2 */
+/* [/cut] */
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
-/*                                                                  [cut] k2 */
-
+/* [cut k2] */
 /*
  * dumps an idt.
  *
@@ -389,5 +386,4 @@ t_error			ia32_idt_delete_gate(t_ia32_idt*	table,
 
   return ERROR_UNKNOWN;
 }
-
-/*                                                                 [cut] /k2 */
+/* [/cut] */

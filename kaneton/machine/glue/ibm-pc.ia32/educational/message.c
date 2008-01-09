@@ -5,10 +5,10 @@
  *
  * license
  *
- * file          /home/buckman/kan...neton/machine/glue/ibm-pc.ia32/message.c
+ * file          /home/buckman/cry...e/glue/ibm-pc.ia32/educational/message.c
  *
  * created       matthieu bucchianeri   [sun jun 17 18:16:18 2007]
- * updated       matthieu bucchianeri   [mon jul 30 16:33:50 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 11:51:43 2008]
  */
 
 /*
@@ -45,6 +45,7 @@ extern m_message*	message;
 
 d_message		       	message_dispatch =
   {
+    /* [cut k4] */
     NULL,
     NULL,
     NULL,
@@ -59,12 +60,14 @@ d_message		       	message_dispatch =
     glue_message_return_info,
     glue_message_initialize,
     glue_message_clean
+    /* [/cut] */
   };
 
 /*
  * ---------- functions -------------------------------------------------------
  */
 
+/* [cut k4] */
 /*
  * set return code for a blocked syscall.
  */
@@ -124,3 +127,4 @@ t_error		glue_message_clean(void)
 
   MESSAGE_LEAVE(message, ERROR_NONE);
 }
+/* [/cut] */

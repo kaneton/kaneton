@@ -61,8 +61,6 @@ extern i_task		ktask;
  * ---------- functions -------------------------------------------------------
  */
 
-/*								    [cut] k2 */
-
 /*
  * this function shows a given timer.
  *
@@ -523,8 +521,6 @@ t_error			timer_get(i_timer			id,
 
   TIMER_LEAVE(timer, ERROR_NONE);
 }
-
-/*								   [cut] /k2 */
 
 /*
  * initialize the timer manager.

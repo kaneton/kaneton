@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...-pc.ia32/educational/include/scheduler.h
+ * file          /home/buckman/cry...-pc.ia32/educational/include/scheduler.h
  *
  * created       julien quintard   [wed jun  6 16:24:14 2007]
- * updated       matthieu bucchianeri   [sun sep  9 13:33:25 2007]
+ * updated       matthieu bucchianeri   [wed jan  9 12:07:11 2008]
  */
 
 #ifndef GLUE_SCHEDULER_H
@@ -42,17 +42,17 @@
 #define		machine_data_m_scheduler()				\
   struct								\
   {									\
-    /*                                                   [cut] k3   */	\
+    /* [cut k3] */							\
     i_timer			timer;					\
-    /*                                                   [cut] /k3   */	\
+    /* [/cut] */							\
   }				machdep;
 
 #define		machine_data_o_scheduler()				\
   struct								\
   {									\
-    /*                                                   [cut] k3   */	\
+    /* [cut k3] */							\
     i_thread			mmx_context;				\
-    /*                                                   [cut] /k3   */	\
+    /* [/cut] */							\
   }				machdep;
 
 /*

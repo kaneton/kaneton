@@ -26,7 +26,7 @@
 
 #include <architecture/architecture.h>
 
-/*                                                                  [cut] k2 */
+/* [cut k2] */
 
 /*
  * ---------- externs ---------------------------------------------------------
@@ -512,3 +512,5 @@ IA32_SYSCALL_PREHANDLER(6);
 IA32_SYSCALL_PREHANDLER(7);
 IA32_SYSCALL_PREHANDLER(8);
 IA32_SYSCALL_PREHANDLER(9);
+
+/* [/cut] */
