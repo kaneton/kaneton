@@ -132,8 +132,11 @@ class CodeCutter:
             startline = self.position_to_line(content, fxcut.start())
             endline = self.position_to_line(content, fxcut.end())
 
-            cutlist.append([startline, endline, self.nearest_function_block(startline), self.parse_cut_params(fxcut.groups(0)[0])])
+            cutlist.append([startline, endline, self.nearest_function_block(endline), self.parse_cut_params(fxcut.groups(0)[0])])
             fxcut = self.re_fxmarkup.search(content, searchpos)
+
+        print "Cutlist:"
+        pprint.pprint(cutlist)
 
         # Initializes the cutting subsystem
         cutting = False
