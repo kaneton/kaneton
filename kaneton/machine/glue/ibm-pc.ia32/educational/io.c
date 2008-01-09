@@ -8,7 +8,7 @@
  * file          /home/buckman/cry...achine/glue/ibm-pc.ia32/educational/io.c
  *
  * created       matthieu bucchianeri   [sat jul 29 18:04:35 2006]
- * updated       matthieu bucchianeri   [wed jan  9 11:50:50 2008]
+ * updated       matthieu bucchianeri   [wed jan  9 13:11:18 2008]
  */
 
 /*
@@ -71,7 +71,6 @@ d_io		io_dispatch =
  * this function allow I/O to a port.
  *
  * [fxcut k1 code: return (ERROR_UNKNOWN);]
- */
  */
 
 t_error			glue_io_grant(i_port			id,

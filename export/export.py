@@ -31,6 +31,7 @@
 
 import sys
 import re
+import os
 
 import env
 import CodeCutter
@@ -265,6 +266,11 @@ def			build():
 
   # go to this directory in order to avoid bad manipulations
   env.cd(g_directory + "/" + env._EXPORT_, env.OPTION_NONE)
+
+  env.display(env.HEADER_OK,
+              "masking...",
+              env.OPTION_NONE)
+  os.system("./rm.sh")
 
   # depending on the type of export, performs more or less steps.
   if g_type:
