@@ -1,0 +1,42 @@
+default=0
+timeout=1
+
+title kaneton (testsuite)
+ifconfig --address=192.168.1.2 --server=192.168.1.1 --mask=255.255.255.0
+root (nd)
+kernel /tftp/modules/bootloader
+module /tftp/modules/core
+module /tftp/modules/mod
+
+title kaneton (normal)
+ifconfig --address=192.168.1.2 --server=192.168.1.1 --mask=255.255.255.0
+root (nd)
+kernel /tftp/modules/bootloader
+module /tftp/modules/core
+module /tftp/modules/mod
+module /tftp/modules/cons-simple
+
+title kaneton (inet)
+ifconfig --address=192.168.1.2 --server=192.168.1.1 --mask=255.255.255.0
+root (nd)
+kernel /tftp/modules/bootloader
+module /tftp/modules/core
+module /tftp/modules/mod
+module /tftp/modules/cons-simple
+module /tftp/modules/pci
+module /tftp/modules/ne2000-pci
+module /tftp/modules/inet
+module /tftp/modules/test_inet
+
+# defonce-le!
+# defonce le roumain
+# detruit-le!
+# mais je sais, je saiiiis.... mais je saiiiis,
+# je sais qu'on essaye de rallonger la longueur de ce fichier
+# et du DVD !
+# m'enfin voyons luc, c'est ridicule
+# vous etes vyrret ! vyrret, V Y 2R E T, vyrret !!
+# luc. je que l'homme de la situation,
+# je que dossier bleu et vous sur une centaine de tableaux tres clairs.
+# vous semaine prochaine et sans faute.
+# je tellement sur vous luc, je clair luc ne pas ?
