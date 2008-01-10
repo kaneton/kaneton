@@ -207,8 +207,8 @@
 \begin{frame}
   \frametitle{Overview}
 
-  Interrupts were introduced to replace polling which is based on active
-  loops. Active loops are very performant when they handle lots of events, but
+  Interrupts were introduced to replace polling which is based on busy waiting.
+  Active loops are very performant when they handle lots of events, but
   waste the CPU time when they are waiting for a condition that does not
   happen.
 
@@ -216,16 +216,16 @@
 
   Interrupts make it possible to make a process sleep until an event wakes it
   up. Thus microprocessor cycles are saved to serve other processes. On certain
-  embedded architectures, interrupts are also a easy way to save energy.
+  embedded architectures, interrupts are also an easy way to save energy.
 
   \-
 
-  Interrupts are a critical part of code in the kernels implementation:
+  Interrupts are a critical part of code in kernels implementation:
 
   \begin{itemize}
-    \item The code is non-portable accros compilers and platforms
+    \item The code is non-portable accross compilers and platforms
     \item the code is difficult to debug
-    \item kernel performances highly depends on interrupt handling implementation
+    \item kernel performances highly depend on interrupt handling implementation
   \end{itemize}
 
 \end{frame}
@@ -240,7 +240,7 @@
 
   {\bf Definition:}\\
   Events indicate to the processor that something happened in the system
-  and requires kernel attention. They typically result in a forced transfer of
+  and requires the kernel attention. They basically result in a forced transfer of
   execution from the currently running task to a special kernel routine  called
   an {\em interrupt service routine} (ISR) or an {\em interrupt handler}.\\
 
@@ -371,7 +371,7 @@
 
   Every event in the system is given its own identifier called an
   {\bf interrupt vector}. The {\em interrupt vector} specifies the source of
-  the interrupt, and therefore, it can be used to determine which ISR should
+  the interrupt, and therefore, it should be used to determine which ISR must
   be executed.
 
   \-
@@ -389,7 +389,7 @@
   \-
 
   Other microprocessors do not provide any unit to handle multiple IRQ lines.
-  Those microprocessors communicate with an external chip called an
+  These microprocessors communicate with an external chip called an
   {\bf Interrupt Controller}.
 
 
@@ -422,7 +422,7 @@
   \frametitle{Finding the ISR}
 
   An {\em interrupt vector} is loaded in a microprocessor internal register
-  everytime an event is raised. Depending on wether this register is visible
+  every time an event is raised. Depending on wether this register is visible
   by the software, the kernel handles events 2 different manners:
 
   \-
@@ -463,7 +463,7 @@
     \item the microprocessor gets the {\em interrupt vector}
     \item the microprocessor determines the corresponding ISR
     \item the microprocessor loads the ISR's first instruction into the
-      {\em Programm Counter}
+      {\em Program Counter}
     \item the ISR handles the event
   \end{enumerate}
 
@@ -507,7 +507,7 @@
       address of the generic handler's first instruction
     \item the generic handler retrieves the {\em interrupt vector} from
       the {\em Cause} register
-    \item the generic handler execute the appropriated ISR
+    \item the generic handler executes the appropriated ISR
   \end{itemize}
 
   \-
@@ -551,7 +551,7 @@
 
   \-
 
-  Concretly, an image of the {\em execution context} can be obtained by saving
+  Concretly, an image of the {\em execution context} is obtained by saving
   the state of:
 
   \begin{itemize}
@@ -645,7 +645,7 @@
       \end{itemize}
     \item The event handler saves the task's execution context on the kernel
       stack.
-    \item The event handler execute the appropriate ISR.
+    \item The event handler executes the appropriate ISR.
     \item The event handler restores the task's execution context from the
       kernel stack.
     \item The event handler provokes a {\em Return From Interrupt}. Therefore,
@@ -801,7 +801,7 @@ handler_1:
   \item From the moment the microprocessor detects an interrupt, until the
     execution of the ISR's first instruction.
   \item From the moment the ISR has finished executing, until the interrupted
-    porgram is finally resumed.
+    program is finally resumed.
   \end{itemize}
 
   \-
