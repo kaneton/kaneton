@@ -25,8 +25,8 @@
  * ---------- macros ----------------------------------------------------------
  */
 
-#define INIT_SEGMENTS		13
-#define INIT_REGIONS		10
+#define INIT_SEGMENTS		14
+#define INIT_REGIONS		11
 #define INIT_KSTACKSZ		(4 * PAGESZ)
 
 /* XXX to be moved */

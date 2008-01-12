@@ -26,4 +26,20 @@ SECTIONS
 	{
 		*(.data) *(.bss) *(COMMON)
 	}
+
+	. = ALIGN(0x1000);
+
+	__early_start = .;
+
+	.early.text :
+	{
+		*(.early.text)
+	}
+
+	.early.data :
+	{
+		*(.early.data)
+	}
+
+	__early_end = .;
 }

@@ -41,7 +41,8 @@ BOOTLOADER_C		:=		bootloader.c			\
 					paging.c			\
 					pmode.c				\
 					libia32.c			\
-					libc.c
+					libc.c				\
+					early.c
 
 BOOTLOADER_S		:=		multiboot.S			\
 					entry.S

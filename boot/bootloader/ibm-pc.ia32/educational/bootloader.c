@@ -98,6 +98,7 @@ int			bootloader(t_uint32			magic,
    */
 
   bootloader_pmode_init();
+  faultcatcher_init();
 
   /*
    * 4)
