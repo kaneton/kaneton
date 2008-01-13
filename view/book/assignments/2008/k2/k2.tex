@@ -67,7 +67,7 @@ Remember that you can add code whereever you want. Even if there isn't any FIXME
 
 \newpage
 
-\section{\textbf{event} manager}
+\section{event manager}
 
 \subsection* {Overview}
 
@@ -82,7 +82,7 @@ There are two possibilities when redirecting events:
   a given event and called when the event occurs.
 \item
   Messages. IPC can be thrown on events. \textbf{At this point
-    of the project, these kind of hooks must not be implemented}.\\
+    of the project, these kind of hooks must not be implemented}.
 \end{itemize}
 
 \subsection* {Assignments}
@@ -101,29 +101,29 @@ libia32.
 
 When receiving events, your kernel \textbf{must} save and restore
 the execution context, for the moment only the processor's
-registers need to be saved (address space switch is for K3).\\
+registers need to be saved (address space switch is for K3).
 
 \subsection*{Files}
 
-    {\color{filerefcolor} \textbf{machine-independent}}
-    {\color{filerefcolor} \textbf{machine-dependant : architecture}}
-    {\color{filerefcolor} \textbf{machine-dependant : machine}}
+\subsubsection{\color{filerefcolor} machine-independent}
+\begin{itemize}
+\item kaneton/core/event/event.c
+\item kaneton/core/include/event.h
+\end{itemize}
 
-    FIXME !!
+\subsubsection{\color{filerefcolor} machine-dependant : architecture}
+\begin{itemize}
+\item FIXME: kaneton/include/arch/ibm-pc.ia32-virtual/core/event.h
+\end{itemize}
 
-    \begin{tabular}{| l | l |}
-      \hline
-      machine-independent & {\em kaneton/core/event/event.c}\\
-      &  {\em kaneton/include/core/event.h}\\\hline
-      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/event.c}\\
-      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/event.h}\\\hline
-      libarch & {\em libs/libia32/pmode/idt.c}\\
-      & {\em libs/libia32/include/pmode/idt.h}\\
-      & {\em libs/libia32/interrupt/*.c}\\
-      & {\em libs/libia32/include/interrupt/*.h}\\\hline
-    \end{tabular}
+\subsubsection{\color{filerefcolor} machine-dependant : machine}
+\begin{itemize}
+\item FIXME: libs/libia32/pmode/idt.c
+\item FIXME: libs/libia32/include/pmode/idt.h
+\item FIXME: libs/libia32/interrupt/*.c
+\item FIXME: libs/libia32/include/interrupt/*.h
+\end{itemize}
 
-\newline
 \subsection*{Required implementation}
 You \textit{must} implement these functions. We give you their prototypes
 and a small description of what they are expected to do.
@@ -193,33 +193,52 @@ and a small description of what they are expected to do.
 
 \newpage
 
-\section{\textbf{time} manager}
+\section{time manager}
+\subsection*{Overview}
+
+The timer manager is helpful to create one-shot or repeated
+periodical actions. Like in the event manager, the action
+performed can be either a callback or a message (\textbf{only
+  callbacks must be supported for K2}).
+
+The component required to measure time is called the PIT (8254) on
+IA-32.
+
+\subsection*{Assignments}
+
+Your work is to develop the whole timer manager.
+
+Code used to program the PIT must be placed in the libia32.
+
+\textbf{The accuracy of your time manager will be tested. An error
+  of more than a ten milliseconds will lead our tests to fail.}
+
+The machine-dependent part of the manager will only consist in
+initializing the PIT and then counting ticks. The independent code
+of the manager will offer the higher level functionnalities listed
+below.
+
+\subsection*{Files}
+\subsubsection{\color{filerefcolor} machine-independent}
 \begin{itemize}
-  \item {\bf Overview}\\
+\item kaneton/core/time/timer.c
+\item kaneton/include/core/timer.h
+\end{itemize}
 
-    The timer manager is helpful to create one-shot or repeated
-    periodical actions. Like in the event manager, the action
-    performed can be either a callback or a message (\textbf{only
-    callbacks must be supported for K2}).
+\subsubsection{\color{filerefcolor} machine-dependent : machine}
+\begin{itemize}
+\item FIXME: kaneton/core/arch/ibm-pc.ia32-virtual/timer.c
+\item FIXME: kaneton/include/arch/ibm-pc.ia32-virtual/core/timer.h
+\end{itemize}
 
-    The component required to measure time is called the PIT (8254) on
-    IA-32.\\
+\subsubsection{\color{filerefcolor} machine-dependent : architecture}
+\begin{itemize}
+\item libs/libia32/time/timer.c
+\item libs/libia32/include/time/pit.h
+\end{itemize}
 
-  \item {\bf Assignments}\\
-
-    Your work is to develop the whole timer manager.
-
-    Code used to program the PIT must be placed in the libia32.
-
-    \textbf{The accuracy of your time manager will be tested. An error
-    of more than a ten milliseconds will lead our tests to fail.}
-
-    The machine-dependent part of the manager will only consist in
-    initializing the PIT and then counting ticks. The independent code
-    of the manager will offer the higher level functionnalities listed
-    below.\\
-
-  \item {\bf Interface}\\
+\newpage
+\subsection*{Interface}
 
 \function{timer\_show}{(i\_timer \argument{id})}
 	 {
@@ -294,20 +313,6 @@ and a small description of what they are expected to do.
 	   This function cleans the timer manager.
 	 }
 
-  \item {\bf Files}\\
-
-    \begin{tabular}{| l | l |}
-      \hline
-      machine-independent & {\em kaneton/core/time/timer.c}\\
-      &  {\em kaneton/include/core/timer.h}\\\hline
-      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/timer.c}\\
-      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/timer.h}\\\hline
-      libarch & {\em libs/libia32/time/timer.c}\\
-      &  {\em libs/libia32/include/time/pit.h}\\\hline
-    \end{tabular}
-
-\end{itemize}
-
 %
 % advanced topics
 %
@@ -324,10 +329,10 @@ Nevertheless, we will always encourage students who want to write
 additional bonuses, as far as they respect the following rules:
 
 \begin{enumerate}
-  \item Bonuses will be evaluated only if a basic implementation is
+\item Bonuses will be evaluated only if a basic implementation is
   actually working.
-  \item Bonuses must be either picked from the following list, or
-  accepted by the kaneton team.\\
+\item Bonuses must be accepted \textbf{prior to the implementation}
+  by the kaneton team.
 \end{enumerate}
 
 Bonuses ideas:

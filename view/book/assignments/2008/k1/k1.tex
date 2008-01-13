@@ -90,7 +90,7 @@ The architecture-dependent code must always be invoked using the kaneton
 internal portability facilities.\\
 \\
 Your segment manager must be compliant to the kaneton segment manager
-interface as described below.\\
+interface as described below.
 
 \subsection*{Files}
 
@@ -241,7 +241,7 @@ The region manager thus provides:
 {\em Warning:}\\
 the region manager always deals with existing valid segments. In
 other terms, it never reserves, releases or modifies a segment to fit the mapping
-needs. Such an initiative is handled by the map manager.\\
+needs. Such an initiative is handled by the map manager.
 
 \subsection*{Assignments}
 In k1, you will write the machine-dependent code of the kaneton region manager.
@@ -341,7 +341,7 @@ For example, reserving a map consists in the two following steps:
 
 {\em Note:}\\
 As the map manager's role is to delegate its tasks to lower managers, it does
-not require to implement a machine-dependent interface.\\
+not require to implement a machine-dependent interface.
 
 \subsection*{Assignments}
 In k1, you will write the whole map manager. This manager will use the segment
