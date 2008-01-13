@@ -31,6 +31,7 @@
 \usepackage{color}
 \usepackage{xcolor}
 \usepackage{verbatim}
+\usepackage[pdftex]{hyperref}
 
 \usepackage{aeguill}
 
@@ -61,6 +62,7 @@
 \definecolor{commandcolor}{rgb}{0.00,0.00,0.40}
 \definecolor{verbatimcolor}{rgb}{0.00,0.40,0.00}
 \definecolor{noticecolor}{rgb}{0.87,0.84,0.02}
+\definecolor{filerefcolor}{rgb}{0.39, 0.00, 0.90}
 
 %
 % function
@@ -152,3 +154,12 @@
 \rfoot{\scriptsize{The kaneton microkernel project}}
 
 \date{\scriptsize{\today}}
+
+%
+% hyperref setup
+%
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue
+}
