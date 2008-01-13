@@ -28,39 +28,64 @@
  * ---------- functions -------------------------------------------------------
  */
 
-void print_string(char *s) __attribute__ ((section(".early.text")));
-void print_string(char *s)
-{
-  t_uint16 *video = (t_uint16 *)0xB8000;
-
-  while (*s)
-  {
-    *video++ = (*s++) | (0x4F << 8);
-  }
-}
-
-#define EXN_DEF(name, string)						\
-  void name (void) __attribute__ ((section(".early.text")));		\
-  void name (void) { print_string(string);				\
-    for (;;) asm ("hlt"); }
-
-#define FUNC_LOW(func)	    ((t_uint16)((t_uint32)func & 0xFFFF))
-#define FUNC_HIGH(func)	    ((t_uint16)(((t_uint32)func >> 16) & 0xFFFF))
-
 char* strings[]  __attribute__ ((section(".early.data"))) =
 {
   "Divide Error",
   "Double Fault",
   "Stack Segment Fault",
   "Global Protection",
-  "Page Fault"
+  "Page Fault",
+  " at address 0x"
 };
 
-EXN_DEF(de_exn, strings[0]);
-EXN_DEF(df_exn, strings[1]);
-EXN_DEF(ss_exn, strings[2]);
-EXN_DEF(gp_exn, strings[3]);
-EXN_DEF(pf_exn, strings[4]);
+void print_error(char *s, t_uint32 address) __attribute__ ((section(".early.text")));
+void print_error(char *s, t_uint32 address)
+{
+  t_uint16 *video = (t_uint16 *)0xB8000;
+  t_sint32 i;
+
+  while (*s)
+  {
+    *video++ = (*s++) | (0x4F << 8);
+  }
+
+  s = strings[(sizeof (strings) / 4) - 1];
+
+  while (*s)
+  {
+    *video++ = (*s++) | (0x4F << 8);
+  }
+
+  for (i = 7; i >= 0; i--)
+  {
+    char digit = (address >> (i * 4)) & 0xF;
+
+    if (digit < 10)
+      *video++ = (digit + '0') | (0x4F << 8);
+    else
+      *video++ = ((digit - 10) + 'a') | (0x4F << 8);
+  }
+}
+
+#define EXN_DEF(name, string, addr_offset)				\
+  void name (void) __attribute__ ((section(".early.text")));		\
+  void name (void)							\
+  {									\
+    t_uint32 fault_addr;						\
+    asm ("movl " #addr_offset "(%%esp), %0\n" : "=r" (fault_addr));	\
+    print_error(string, fault_addr);					\
+    for (;;)								\
+      asm ("hlt");							\
+  }
+
+#define FUNC_LOW(func)	    ((t_uint16)((t_uint32)func & 0xFFFF))
+#define FUNC_HIGH(func)	    ((t_uint16)(((t_uint32)func >> 16) & 0xFFFF))
+
+EXN_DEF(de_exn, strings[0], 28);
+EXN_DEF(df_exn, strings[1], 32);
+EXN_DEF(ss_exn, strings[2], 32);
+EXN_DEF(gp_exn, strings[3], 32);
+EXN_DEF(pf_exn, strings[4], 32);
 
 struct
 {
