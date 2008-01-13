@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/book/assignments/2007/k1/Makefile
+# file          /home/mycure/kaneton/view/book/assignments/2007/k2/Makefile
 #
 # created       julien quintard   [mon may 14 19:40:59 2007]
-# updated       julien quintard   [mon jun 11 06:14:00 2007]
+# updated       julien quintard   [mon jun 11 06:14:04 2007]
 #
 
 #
@@ -30,7 +30,7 @@ include			../../../../../environment/env.mk
 PAPER			:=		assignments
 
 SOURCES			:=		assignments.tex			\
-					k1.tex
+					k2.tex
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
