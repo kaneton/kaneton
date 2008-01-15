@@ -359,15 +359,14 @@ endef
 # genereate header dependencies
 #
 # $(1):		the files for which the dependencies are generated
-# $(3):		options
+# $(2):		options
 #
 
 define env_headers
   headers_options=""							&& \
-  $(_TOUCH_) $(2)							&& \
   for f in $(1) ; do							\
     if [ -e $${f} ] ; then						\
-      $(call env_display,yellow,HEADERS,$$i,		,)		&& \
+      $(call env_display,yellow,HEADERS,$$f,		,)		&& \
       $(_CC_) $(_CC_FLAGS_) -M -MG $${headers_options}			\
         $${f} >> $(_DEPENDENCY_MK_)					; \
     fi									; \

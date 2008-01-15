@@ -238,8 +238,6 @@ def			clean():
   for entity in entities:
     env.remove(entity, env.OPTION_NONE)
 
-
-
 #
 # build()
 #
