@@ -103,6 +103,17 @@ When receiving events, your kernel \textbf{must} save and restore
 the execution context, for the moment only the processor's
 registers need to be saved (address space switch is for K3).
 
+\subsection*{Useful documentation}
+
+\begin{itemize}
+  \item \url{http://developer.intel.com/design/processor/manuals/253668.pdf}
+	    {\textbf{IA-32 Intel Architecture Software Developer's Manual,
+	    Volume 3A: System Programming Guide Part 1.}}
+	    Chapter 5 : Interrupt and Exception Handling.
+  \item \url{http://pdos.csail.mit.edu/6.828/2005/readings/hardware/8259A.pdf}
+	    {\textbf{8259A Programmable Interrupt Controller datasheet}}
+\end{itemize}
+
 \subsection*{Files}
 
 \subsubsection{\color{filerefcolor} machine-independent}
