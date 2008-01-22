@@ -140,6 +140,7 @@ t_error			timer_dump(void)
   TIMER_LEAVE(timer, ERROR_NONE);
 }
 
+/* [cut] */
 /*
  * notify a task that one of its timers expired.
  *
@@ -190,7 +191,6 @@ t_error			timer_notify(i_timer			id)
   TIMER_LEAVE(timer, ERROR_NONE);
 }
 
-/* [cut] */
 /*
  * insert a timer in the timer set.
  *
