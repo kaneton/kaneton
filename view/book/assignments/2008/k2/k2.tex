@@ -122,17 +122,24 @@ registers need to be saved (address space switch is for K3).
 \item kaneton/core/include/event.h
 \end{itemize}
 
-\subsubsection{\color{filerefcolor} machine-dependant : architecture}
+\subsubsection{\color{filerefcolor} machine-dependant : glue}
 \begin{itemize}
-\item FIXME: kaneton/include/arch/ibm-pc.ia32-virtual/core/event.h
+\item kaneton/machine/glue/ibm-pc.ia32/educational/include/event.h
+\item kaneton/machine/glue/ibm-pc.ia32/educational/event.c
 \end{itemize}
 
-\subsubsection{\color{filerefcolor} machine-dependant : machine}
+\subsubsection{\color{filerefcolor} machine-dependant : architecture}
 \begin{itemize}
-\item FIXME: libs/libia32/pmode/idt.c
-\item FIXME: libs/libia32/include/pmode/idt.h
-\item FIXME: libs/libia32/interrupt/*.c
-\item FIXME: libs/libia32/include/interrupt/*.h
+\item kaneton/machine/architecture/ia32/educational/include/interrupt.h
+\item kaneton/machine/architecture/ia32/educational/interrupt.c
+\item kaneton/machine/architecture/ia32/generic/include/idt.h
+\item kaneton/machine/architecture/ia32/generic/idt.c
+\end{itemize}
+
+\subsubsection{\color{filerefcolor} machine-dependant : platform}
+\begin{itemize}
+\item kaneton/machine/platform/ibm-pc/include/irq.h
+\item kaneton/machine/platform/ibm-pc/irq.c
 \end{itemize}
 
 \subsection*{Required implementation}
