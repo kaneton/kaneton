@@ -236,23 +236,30 @@ initializing the PIT and then counting ticks. The independent code
 of the manager will offer the higher level functionnalities listed
 below.
 
+\subsection*{Useful documentation}
+
+\begin{itemize}
+  \item \url{http://pdos.csail.mit.edu/6.828/2005/readings/hardware/82C54.pdf}
+	    {\textbf{82C54 Programmable Interval Timer Datasheet}}
+\end{itemize}
+
 \subsection*{Files}
 \subsubsection{\color{filerefcolor} machine-independent}
 \begin{itemize}
+\item kaneton/core/include/timer.h
 \item kaneton/core/time/timer.c
-\item kaneton/include/core/timer.h
 \end{itemize}
 
-\subsubsection{\color{filerefcolor} machine-dependent : machine}
+\subsubsection{\color{filerefcolor} machine-dependent : glue}
 \begin{itemize}
-\item FIXME: kaneton/core/arch/ibm-pc.ia32-virtual/timer.c
-\item FIXME: kaneton/include/arch/ibm-pc.ia32-virtual/core/timer.h
+\item kaneton/machine/glue/ibm-pc.ia32/educational/include/timer.h
+\item kaneton/machine/glue/ibm-pc.ia32/educational/timer.c
 \end{itemize}
 
-\subsubsection{\color{filerefcolor} machine-dependent : architecture}
+\subsubsection{\color{filerefcolor} machine-dependent : platform}
 \begin{itemize}
-\item libs/libia32/time/timer.c
-\item libs/libia32/include/time/pit.h
+\item kaneton/machine/platform/ibm-pc/include/timer.h
+\item kaneton/machine/platform/ibm-pc/timer.c
 \end{itemize}
 
 \newpage
@@ -272,6 +279,7 @@ below.
 
 \function{timer\_reserve}{(t\_type \argument{type},
                            u\_timer\_handler \argument{handler},
+			   t\_vaddr \argument{data},
                            t\_uint32 \argument{delay},
                            t\_uint32 \argument{repeat},
                            i\_timer* \argument{id})}
@@ -282,7 +290,8 @@ below.
 	   The arguments \argument{type} and \argument{handler} works
 	   the same way as for \emph{event\_reserve}, but the
 	   prototype of the callback is different (returning void and
-	   taking no argument).
+	   taking the current timer \argument{id} and \argument{data}
+	   arguments).
 
 	   The \argument{repeat} argument specifies if the timer
 	   must be re-inserted once expired.
@@ -321,7 +330,7 @@ below.
 	   corresponding to \argument{id}.
 	 }
 
-\function{timer\_init}{(void)}
+\function{timer\_initialize}{(void)}
 	 {
 	   This function initializes the timer manager.
 	 }
@@ -355,7 +364,7 @@ additional bonuses, as far as they respect the following rules:
 
 Bonuses ideas:
 \begin{itemize}
-\item More accurate timer using the APIC
+\item More accurate interrupt controler and timer using the APIC
 \item Managing nested interrupts and priorities
 \end{itemize}
 
@@ -397,7 +406,7 @@ void          sched_switch(void)
 
 ...
 
-timer_reserve(EVENT_FUNCTION, TIMER_HANDLER(sched_switch),
+timer_reserve(EVENT_FUNCTION, TIMER_HANDLER(sched_switch), 42,
               sched->quantum, TIMER_REPEAT_ENABLE,
               &sched->machdep.timer);
 \end{verbatim}
