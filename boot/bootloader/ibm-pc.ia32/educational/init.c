@@ -330,8 +330,8 @@ void			bootloader_init_regions(void)
    */
 
   init->regions[2].segment = 3;
-  init->regions[2].address = init->segments[2].address;
-  init->regions[2].size = init->segments[2].size;
+  init->regions[2].address = init->segments[3].address;
+  init->regions[2].size = init->segments[3].size;
   init->regions[2].offset = 0;
   init->regions[2].opts = REGION_OPT_PRIVILEGED;
 
