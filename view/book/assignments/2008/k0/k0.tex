@@ -36,7 +36,7 @@ the kaneton project, you will deal with :
 \begin{enumerate}
   \item
     {\bf Intel x86}\\
-    Introduction to x86 assembly and architecture\\
+    x86 assembly and architecture\\
   \item
     {\bf BIOS interrupts}\\
     How to use BIOS services\\
@@ -51,7 +51,7 @@ the kaneton project, you will deal with :
 
 \begin{itemize}
 \item
-  You have to use \textbf{gas} syntax. Use \textbf{gcc} to assemble your
+  You have to follow \textbf{gas} syntax. Use \textbf{gcc} to assemble your
   code and \textbf{ld} to output the flat binary.
   \begin{verbatim}
 gcc  -c bootsect.S -o bootsect.o
@@ -73,7 +73,7 @@ qemu -fda bootsect
   must insert blank bytes after your code until byte 510, and then dump
   the signature.
 \item
-  Screeb output will be strictly tested, so be careful : it must not
+  Screen output will be strictly tested, so be careful : it must not
   differ.
 \item
   Your test code must be removed from final source but the signature must be
@@ -202,7 +202,7 @@ a function which will dump the values stored in some registers.
 \section{Keyboard inputs}
 
 \subsection*{Overview}
-Now that you are more familiar with BIOS services and assembly programmation,
+Now that you are more familiar with BIOS services and assembly programming,
 you're going to write a basic keyboard driver.
 
 \subsection*{Assignments}
@@ -238,7 +238,7 @@ buffer, and then, use this function to print entered text on the screen.
 
 \subsection*{Overview}
 During this exercise you are going to work with floppy drives using BIOS
-interrupts. The final goad is to load the first sector of a floppy in order
+interrupts. The final goal is to load the first sector of a floppy in order
 to check whether it's a bootsector or not.
 
 \subsection*{Assignments}
@@ -336,7 +336,7 @@ mode, see \emph{VGA text Framebuffer} appendix to know how to do.
 
 \section{BIOS services}
 
-We give you the documentation about the BIOS interrupts you need for this
+We give you the documentation about BIOS interrupts you need for this
 project.
 
 If you want to call interrupt \argument{N,M} you need to put \argument{M} in
