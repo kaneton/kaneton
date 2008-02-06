@@ -97,7 +97,7 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
    * 1)
    */
 
-  if (task_reserve(TASK_CLASS_PROGRAM,
+  if (task_reserve(TASK_CLASS_DRIVER,
 		   TASK_BEHAV_TIMESHARING,
 		   TASK_PRIOR_TIMESHARING,
 		   &tsk) != ERROR_NONE)

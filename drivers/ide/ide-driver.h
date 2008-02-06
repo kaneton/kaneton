@@ -14,7 +14,7 @@
 #include <string.h>
 #include <crt.h>
 
-#include "ide.h"
+#include "ide-share.h"
 
 /*
  * ---------- macros ----------------------------------------------------------
@@ -29,7 +29,7 @@
 t_error
 ide_node_init(i_task	*ide);
 t_error
-ide_write(const char* text, char* buf, size_t max);
+ide_read(uint8_t ctr, uint8_t dev, char* buf, size_t max);
 
 
 t_error
@@ -40,10 +40,10 @@ ide_node_init(i_task	*ide)
   if (!is_init)
     {
       is_init = 1;
-      if (message_register(MESSAGE_TYPE_SERVICE_IDE,
-			   MESSAGE_SIZE_SERVICE_IDE) != ERROR_NONE)
+      if (message_register(MESSAGE_TYPE_DRIVER_IDE,
+			   MESSAGE_SIZE_DRIVER_IDE) != ERROR_NONE)
 	return (ERROR_UNKNOWN);
-      if (mod_get_service(_crt_get_mod_id(), SERVICE_IDE_NAME, ide) != ERROR_NONE)
+      if (mod_get_service(_crt_get_mod_id(), DRIVER_IDE_NAME, ide) != ERROR_NONE)
 	{
 	  printf(" -- test_ide: error mog_get_service()\n");
 	  return (ERROR_UNKNOWN);
@@ -53,10 +53,10 @@ ide_node_init(i_task	*ide)
 }
 
 t_error
-ide_write(const char* text, char* buf, size_t max)
+ide_read(uint8_t ctr, uint8_t dev, char* buf, size_t max)
 {
-  t_service_ide_message		message;
-  i_node			ide_service;
+  t_driver_ide_message		message;
+  i_node			ide_driver;
   t_vsize			size;
   i_task			ide;
   
@@ -65,23 +65,33 @@ ide_write(const char* text, char* buf, size_t max)
       printf(" -- test_ide: error ide_init()\n");
       return (ERROR_UNKNOWN);
     }
-  ide_service.machine = 0;
-  ide_service.task = ide;
+  ide_driver.machine = 0;
+  ide_driver.task = ide;
 
-  message.u.request.operation = IDE_SERVICE_IDE;
-  strcpy(message.u.request.u.ide.text, text);
-
-  if (message_send(ide_service,
-		   MESSAGE_TYPE_SERVICE_IDE, (t_vaddr)&message,
+  message.u.req_read.ctr = ctr;
+  message.u.req_read.dev = dev;
+  message.operation = IDE_DRIVER_REQ_READ;
+  if (message_send(ide_driver,
+		   MESSAGE_TYPE_DRIVER_IDE, (t_vaddr)&message,
 		   sizeof (message)) != ERROR_NONE)
     return (ERROR_UNKNOWN);
-
-  if (message_receive(MESSAGE_TYPE_SERVICE_IDE, (t_vaddr)&message,
-		      &size, &ide_service) != ERROR_NONE)
+  if (message_receive(MESSAGE_TYPE_DRIVER_IDE, (t_vaddr)&message,
+		      &size, &ide_driver) != ERROR_NONE)
     return (ERROR_UNKNOWN);
-
-  strncpy(buf, message.u.reply.u.ide.text, max);
-
+  switch (message.operation)
+    {
+    case IDE_DRIVER_REP_ERR:
+      printf("ide driver send to you an error: '%s'\n", message.u.rep_err.text);
+      return (ERROR_UNKNOWN);
+      break;
+    case IDE_DRIVER_REP_READ:
+      strncpy(buf, message.u.rep_read.buf, max);
+      break;
+    default:
+      printf("error, bad message");
+      return (ERROR_UNKNOWN);
+      break;
+    }
   return (ERROR_NONE);
 }
 

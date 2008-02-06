@@ -27,24 +27,24 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-ECHO			:=		ide
+IDE			:=		ide
 
-ECHO_C			:=		ide.c
+IDE_C			:=		ide.c
 
-ECHO_O			:=		$(ECHO_C:.c=.o)
+IDE_O			:=		$(IDE_C:.c=.o)
 
-ECHO_INCLUDE		:=		$(_DRIVERS_DIR_)/ide/ide.h
+IDE_INCLUDE		:=		$(_DRIVERS_DIR_)/ide/ide.h
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 ifeq ($(behaviour),default)
 
-main:			dependencies $(ECHO)
+main:			dependencies $(IDE)
 
-$(ECHO):			libs $(ECHO_O)
-	$(call env_executable,$(ECHO),					\
-			      $(ECHO_O)					\
+$(IDE):			libs $(IDE_O)
+	$(call env_executable,$(IDE),					\
+			      $(IDE_O)					\
 			      $(_CRT_O_) $(_ULIBC_A_)			\
 			      $(_LIBKANETON_A_),			\
 			      $(_SERVICE_LAYOUT_),			\
@@ -55,18 +55,18 @@ libs:
 	$(call env_launch,${_LIBKANETON_DIR_}/Makefile,,)
 
 clear:
-	$(call env_remove,$(ECHO_O),)
-	$(call env_remove,$(ECHO),)
+	$(call env_remove,$(IDE_O),)
+	$(call env_remove,$(IDE),)
 
 	$(call env_purge,)
 
 prototypes:
-	$(call env_prototypes,$(ECHO_INCLUDE),)
+	$(call env_prototypes,$(IDE_INCLUDE),)
 
 headers:
 	$(call env_remove,$(_DEPENDENCY_MK_),)
 
-	$(call env_headers,$(ECHO_C),)
+	$(call env_headers,$(IDE_C),)
 
 dependencies:
 	$(call env_launch,$(_ULIBC_DIR_)/Makefile,,)

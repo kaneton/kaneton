@@ -5,10 +5,9 @@
 
 int		main(void)
 {
- 
-  char		buf[IDE_SERVICE_MAX];
+  char		buf[IDE_DRIVER_MAX];
 
-  if (!(ide_write("chiche donne nous tout", buf, IDE_SERVICE_MAX) != ERROR_NONE))
+  if (!(ide_read(0, 1, buf, IDE_DRIVER_MAX) != ERROR_NONE))
     printf(" -- test_ide: %s\n", buf);
   else
     printf(" -- test_ide: reply KO\n");
