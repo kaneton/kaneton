@@ -40,7 +40,7 @@
  * ide buffer size.
  */
 
-#define IDE_DRIVER_MAX		100
+#define IDE_DRIVER_MAX		128
 
 
 /*
@@ -56,6 +56,7 @@ typedef struct
     {
       uint8_t	ctr;
       uint8_t	dev;
+      size_t	size;
     }		req_read;
     struct
     {

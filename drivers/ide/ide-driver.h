@@ -29,7 +29,7 @@
 t_error
 ide_node_init(i_task	*ide);
 t_error
-ide_read(uint8_t ctr, uint8_t dev, char* buf, size_t max);
+ide_read(uint8_t ctr, uint8_t dev, char* buf, size_t size);
 
 
 t_error
@@ -53,11 +53,10 @@ ide_node_init(i_task	*ide)
 }
 
 t_error
-ide_read(uint8_t ctr, uint8_t dev, char* buf, size_t max)
+ide_read(uint8_t ctr, uint8_t dev, char* buf, size_t size)
 {
   t_driver_ide_message		message;
   i_node			ide_driver;
-  t_vsize			size;
   i_task			ide;
   
   if (ide_node_init(&ide) != ERROR_NONE)
@@ -70,6 +69,7 @@ ide_read(uint8_t ctr, uint8_t dev, char* buf, size_t max)
 
   message.u.req_read.ctr = ctr;
   message.u.req_read.dev = dev;
+  message.u.req_read.size = size;
   message.operation = IDE_DRIVER_REQ_READ;
   if (message_send(ide_driver,
 		   MESSAGE_TYPE_DRIVER_IDE, (t_vaddr)&message,
@@ -85,7 +85,7 @@ ide_read(uint8_t ctr, uint8_t dev, char* buf, size_t max)
       return (ERROR_UNKNOWN);
       break;
     case IDE_DRIVER_REP_READ:
-      strncpy(buf, message.u.rep_read.buf, max);
+      strncpy(buf, message.u.rep_read.buf, size);
       break;
     default:
       printf("error, bad message");

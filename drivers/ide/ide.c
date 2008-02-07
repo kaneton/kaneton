@@ -37,10 +37,9 @@ static int			ide_check_disk(uint16_t	ctr,
     device.buf[i] = 0;
   for (i = 0; i < 256; i++)
     device.buf[i] = inw(dx);
-  for (i = 0; i < 256; i++) 
-    device.buf[i] = device.buf[i];//Print disk info
+  //for (i = 0; i < 256; i++) 
+  //  device.buf[i] = device.buf[i];//Print disk info
   
-  printf("\n");
   return (1);
 }
 
@@ -67,17 +66,17 @@ static int			ide_init(uint8_t	nb,
   al = al >> 4;
   if (al == bl)
     {
-      printf("|   -IDE %d                         |\n", nb);
+      printf("|   -IDE %d @ 0x%x                  |\n", nb, ctr);
       return (ERROR_UNKNOWN);
     }
-  printf("|   +IDE %d                         |\n", nb);
+  printf("|   +IDE %d @ 0x%x                 |\n", nb, ctr);
   device.dev[nb * 2 + 0] = ide_check_disk(ctr, HD_M);
-  if (!device.dev[nb * 2 + 0])
+  if (device.dev[nb * 2 + 0])
     printf("|     --> Master disk detected     |\n");
   else
     printf("|     -->                          |\n");
   device.dev[nb * 2 + 1] = ide_check_disk(ctr, HD_S);  
-  if (!device.dev[nb * 2 + 1])
+  if (device.dev[nb * 2 + 1])
     printf("|     --> Slave disk detected      |\n");
   else
     printf("|     -->                          |\n");
@@ -85,9 +84,12 @@ static int			ide_init(uint8_t	nb,
 }
 
 static int			ide_read(uint16_t	ctr,
-					 uint8_t	dev)
+					 uint8_t	dev,
+					 size_t		size,
+					 char		**buf)
 {
-  return (0);
+  return (ERROR_UNKNOWN);
+  return (ERROR_NONE);
 }
 
 
@@ -131,10 +133,15 @@ static int			ide_serve()
 		  break;
 		}
 	      message.operation = IDE_DRIVER_REP_READ;
-	      ide_read(ctr, dev);
-	      memmove(message.u.rep_read.buf,
-		      "I READ\n",
-		      8);		
+	      if (ide_read(ctr, dev, message.u.req_read.size,
+			   &(message.u.rep_read.buf)) != ERROR_NONE)
+		{
+		  message.operation = IDE_DRIVER_REP_ERR;
+		  memmove(message.u.rep_err.text,
+			  "error, reading fail\n",
+			  21);
+		  break;
+		}
 	      break;
 	    default:
 	      message.operation = IDE_DRIVER_REP_ERR;
@@ -170,6 +177,7 @@ int		main(void)
   ide_init(3, PHD_4); 
   printf("====================================\n\n");
   
+
   ide_serve();
   
   return (0);
