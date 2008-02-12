@@ -12,7 +12,8 @@ t_driver_ide			device;
 static int			ide_check_disk(uint16_t	ctr,
 					       uint16_t	dev)
 {
-  uint16_t			dx, al;
+  uint16_t			dx;
+  uint8_t			al;
   uint32_t			ecx;
   int				i;
 
@@ -32,7 +33,7 @@ static int			ide_check_disk(uint16_t	ctr,
   if (ecx == 0)
     return (0);
   
-  dx = ctr;
+  dx = ctr - 6;
   for (i = 0; i < 256; i++)
     device.buf[i] = 0;
   for (i = 0; i < 256; i++)
@@ -85,11 +86,72 @@ static int			ide_init(uint8_t	nb,
 
 static int			ide_read(uint16_t	ctr,
 					 uint8_t	dev,
-					 size_t		size,
-					 char		**buf)
+					 uint32_t	start,
+					 char		*buf)
 {
-  return (ERROR_UNKNOWN);
-  return (ERROR_NONE);
+    uint16_t			dx, al;
+    uint32_t			i = 0;
+    
+    dx = ctr + 0x200;
+    al = inb(dx);
+    al = al | (1 << 2);
+    outb(al, dx);
+    for (i = 0; i < 100000; i++) //DON'T FORGE TTO CHECK
+      ;				//IF INIT IS 
+    al = al & ~(1 << 2);
+    outb(al, dx);
+
+    //size to read (sector)
+    dx = ctr - 4;
+    al = 1;
+    outb(al, dx);
+    
+    //start point (sector first=0)
+    dx = ctr - 3;
+    al = 0;
+    outb(al, dx);
+
+    //Octet inférieur du numéro de cylindre du 1e secteur à transférer
+    dx = ctr - 2;
+    al = 0;
+    outb(al, dx);
+
+    //Octet supérieur du numéro de cylindre du 1e secteur à transférer
+    dx = ctr - 1;
+    al = 0;
+    outb(al, dx);
+    
+    //Disque et numéro de tête du 1e secteur à transférer
+    dx = ctr;
+    al = dev + 0x40;
+    outb(al, dx);
+
+    //Commande
+    dx = ctr + 1;
+    al = 0x20;
+    outb(al, dx);
+    
+    i = 5000;
+    dx = ctr + 1;
+    do {
+      al = inb(dx);
+      al = al & 0xd8;
+      i--;
+    } while ((0x58 != al) && (i > 0));
+    if (i == 0)
+      {
+	printf("ide: 0x20 cmd error: Timeout\n");
+	return (ERROR_UNKNOWN);
+      }    
+
+    //transfer
+    dx = ctr - 6;
+    short	*b;
+    b = (short *)buf;
+    for (i = 0; i < 256; i++)
+	b[i] = inw(dx);
+	
+    return (ERROR_NONE);
 }
 
 
@@ -133,8 +195,8 @@ static int			ide_serve()
 		  break;
 		}
 	      message.operation = IDE_DRIVER_REP_READ;
-	      if (ide_read(ctr, dev, message.u.req_read.size,
-			   &(message.u.rep_read.buf)) != ERROR_NONE)
+	      if (ide_read(ctr, dev, message.u.req_read.start,
+			   message.u.rep_read.buf) != ERROR_NONE)
 		{
 		  message.operation = IDE_DRIVER_REP_ERR;
 		  memmove(message.u.rep_err.text,

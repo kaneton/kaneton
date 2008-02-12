@@ -22,16 +22,6 @@
 //head and disk
 #define	HD_M	0xa0	
 #define	HD_S	0xb0
-//Port command
-#define	PC_1	0x1f7
-#define	PC_2	0x177
-#define	PC_3	0xf7
-#define	PC_4	0x77
-//Port stat
-#define	PS_1	0x1f7
-#define	PS_2	0x177
-#define	PS_3	0xf7
-#define	PS_4	0x77
 
 
 /*

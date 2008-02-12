@@ -29,7 +29,11 @@
 t_error
 ide_node_init(i_task	*ide);
 t_error
-ide_read(uint8_t ctr, uint8_t dev, char* buf, size_t size);
+ide_read(uint8_t	ctr,
+	 uint8_t	dev,
+	 uint32_t	start,
+	 size_t		size,
+	 char		*buf);
 
 
 t_error
@@ -52,12 +56,17 @@ ide_node_init(i_task	*ide)
   return (ERROR_NONE);
 }
 
-t_error
-ide_read(uint8_t ctr, uint8_t dev, char* buf, size_t size)
+t_error	ide_read(uint8_t	ctr,
+		 uint8_t	dev,
+		 uint32_t	start,
+		 size_t		size, //in sector (512bytes)
+		 char		*buf)
 {
   t_driver_ide_message		message;
   i_node			ide_driver;
   i_task			ide;
+  size_t			i = 0;
+  size_t			nothing;
   
   if (ide_node_init(&ide) != ERROR_NONE)
     {
@@ -66,31 +75,33 @@ ide_read(uint8_t ctr, uint8_t dev, char* buf, size_t size)
     }
   ide_driver.machine = 0;
   ide_driver.task = ide;
-
-  message.u.req_read.ctr = ctr;
-  message.u.req_read.dev = dev;
-  message.u.req_read.size = size;
-  message.operation = IDE_DRIVER_REQ_READ;
-  if (message_send(ide_driver,
-		   MESSAGE_TYPE_DRIVER_IDE, (t_vaddr)&message,
-		   sizeof (message)) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-  if (message_receive(MESSAGE_TYPE_DRIVER_IDE, (t_vaddr)&message,
-		      &size, &ide_driver) != ERROR_NONE)
-    return (ERROR_UNKNOWN);
-  switch (message.operation)
+  for (i = 0; size != 0; ++i, --size)
     {
-    case IDE_DRIVER_REP_ERR:
-      printf("ide driver send to you an error: '%s'\n", message.u.rep_err.text);
-      return (ERROR_UNKNOWN);
-      break;
-    case IDE_DRIVER_REP_READ:
-      strncpy(buf, message.u.rep_read.buf, size);
-      break;
-    default:
-      printf("error, bad message");
-      return (ERROR_UNKNOWN);
-      break;
+      message.operation = IDE_DRIVER_REQ_READ;
+      message.u.req_read.ctr = ctr;
+      message.u.req_read.dev = dev;  
+      message.u.req_read.start = start + i;      
+      if (message_send(ide_driver,
+		       MESSAGE_TYPE_DRIVER_IDE, (t_vaddr)&message,
+		       sizeof (message)) != ERROR_NONE)
+	return (ERROR_UNKNOWN);
+      if (message_receive(MESSAGE_TYPE_DRIVER_IDE, (t_vaddr)&message,
+			  &nothing, &ide_driver) != ERROR_NONE)
+	return (ERROR_UNKNOWN);
+      switch (message.operation)
+	{
+	case IDE_DRIVER_REP_ERR:
+	  printf("ide driver send to you an error: '%s'\n", message.u.rep_err.text);
+	  return (ERROR_UNKNOWN);
+	  break;
+	case IDE_DRIVER_REP_READ:
+	  strncpy(buf + IDE_DRIVER_MAX * i, message.u.rep_read.buf, IDE_DRIVER_MAX);
+	  break;
+	default:
+	  printf("error, bad message");
+	  return (ERROR_UNKNOWN);
+	  break;
+	}
     }
   return (ERROR_NONE);
 }
