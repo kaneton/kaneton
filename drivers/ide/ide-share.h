@@ -28,6 +28,8 @@
 #define IDE_DRIVER_REQ_READ		1
 #define IDE_DRIVER_REP_READ		2
 #define IDE_DRIVER_REP_ERR		3
+#define IDE_DRIVER_REP_WRITE		4
+#define IDE_DRIVER_REQ_WRITE		5
 
 /*
  * message type description.
@@ -52,6 +54,13 @@ typedef struct
   t_id		operation;
   union
   {
+    struct
+    {
+      uint8_t	ctr;
+      uint8_t	dev;
+      uint32_t	start;
+      char	buf[IDE_DRIVER_MAX];
+    }		req_write;
     struct
     {
       uint8_t	ctr;

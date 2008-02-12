@@ -14,8 +14,7 @@ static int			ide_check_disk(uint16_t	ctr,
 {
   uint16_t			dx;
   uint8_t			al;
-  uint32_t			ecx;
-  int				i;
+  uint32_t			ecx, i;
 
   dx = ctr;
   al = dev;
@@ -47,7 +46,8 @@ static int			ide_check_disk(uint16_t	ctr,
 static int			ide_init(uint8_t	nb,
 					 uint16_t	ctr)
 { 
-  uint16_t			al, bl, dx;
+  uint16_t			dx;
+  uint8_t			al, bl;
   
   dx = ctr;
   al = inb(dx);
@@ -89,69 +89,124 @@ static int			ide_read(uint16_t	ctr,
 					 uint32_t	start,
 					 char		*buf)
 {
-    uint16_t			dx, al;
-    uint32_t			i = 0;
-    
-    dx = ctr + 0x200;
+  uint16_t			dx;
+  uint8_t			al;
+  uint32_t			i = 0;
+  
+  /* dx = ctr + 0x200; */
+  /*   al = inb(dx); */
+  /*   al = al | (1 << 2); */
+  /*   outb(al, dx); */
+  /*   for (i = 0; i < 100000; i++) //Init is not necesary */
+  /*     ; */
+  /*   al = al & ~(1 << 2); */
+  /*   outb(al, dx); */
+  
+  //Port definition for CHS    //// for LBA
+  
+  //size to read (sector)
+  dx = ctr - 4;
+  al = 1;
+  outb(al, dx);    
+  //start point (sector first=0)/// bit 0 to 7 of LBA adresse
+  dx = ctr - 3;
+  al = 0xFF & start;
+  outb(al, dx);
+  //lower bytes of start sector /// bit 8 to 15 of LBA adresse
+  dx = ctr - 2;
+  al = 0xFF & (start >> 8);
+  outb(al, dx);
+  //highter bytes of start sector// bit 16 to 23 of LBA adresse
+  dx = ctr - 1;
+  al = 0xFF & (start >> 16);
+  outb(al, dx);
+  //bit 4 (0=master,1=slave) /// bit 5 and 7 = 1 /// bit 6 (0=CHS,1=LBA)  /// bit 0 to 3 are bit 24 to 27 of LBA adresse
+  dx = ctr;
+  al = (dev + 0x40) | (0xF & (start >> 24));
+  outb(al, dx);
+  //Commande
+  dx = ctr + 1;
+  al = 0x20;
+  outb(al, dx);
+  
+  i = 5000;
+  dx = ctr + 1;
+  do {
     al = inb(dx);
-    al = al | (1 << 2);
-    outb(al, dx);
-    for (i = 0; i < 100000; i++) //DON'T FORGE TTO CHECK
-      ;				//IF INIT IS 
-    al = al & ~(1 << 2);
-    outb(al, dx);
+    al = al & 0xd8;
+    i--;
+  } while ((0x58 != al) && (i > 0));
+  if (i == 0)
+    {
+      printf("ide: 0x20 cmd error: Timeout\n");
+      return (ERROR_UNKNOWN);
+    }    
+  
+  //transfer
+  dx = ctr - 6;
+  short	*b;
+  b = (short *)buf;
+  for (i = 0; i < 256; i++)
+    b[i] = inw(dx);
+  
+  return (ERROR_NONE);
+}
 
-    //size to read (sector)
-    dx = ctr - 4;
-    al = 1;
-    outb(al, dx);
-    
-    //start point (sector first=0)
-    dx = ctr - 3;
-    al = 0;
-    outb(al, dx);
 
-    //Octet inférieur du numéro de cylindre du 1e secteur à transférer
-    dx = ctr - 2;
-    al = 0;
-    outb(al, dx);
-
-    //Octet supérieur du numéro de cylindre du 1e secteur à transférer
-    dx = ctr - 1;
-    al = 0;
-    outb(al, dx);
-    
-    //Disque et numéro de tête du 1e secteur à transférer
-    dx = ctr;
-    al = dev + 0x40;
-    outb(al, dx);
-
-    //Commande
-    dx = ctr + 1;
-    al = 0x20;
-    outb(al, dx);
-    
-    i = 5000;
-    dx = ctr + 1;
-    do {
-      al = inb(dx);
-      al = al & 0xd8;
-      i--;
-    } while ((0x58 != al) && (i > 0));
-    if (i == 0)
-      {
-	printf("ide: 0x20 cmd error: Timeout\n");
-	return (ERROR_UNKNOWN);
-      }    
-
-    //transfer
-    dx = ctr - 6;
-    short	*b;
-    b = (short *)buf;
-    for (i = 0; i < 256; i++)
-	b[i] = inw(dx);
-	
-    return (ERROR_NONE);
+static int			ide_write(uint16_t	ctr,
+					  uint8_t	dev,
+					  uint32_t	start,
+					  char		*buf)
+{
+  uint16_t			dx;
+  uint8_t			al;
+  uint32_t			i = 0;
+  
+  dx = ctr - 4;
+  al = 1;
+  outb(al, dx);    
+  //start point (sector first=0)/// bit 0 to 7 of LBA adresse
+  dx = ctr - 3;
+  al = 0xFF & start;
+  outb(al, dx);
+  //lower bytes of start sector /// bit 8 to 15 of LBA adresse
+  dx = ctr - 2;
+  al = 0xFF & (start >> 8);
+  outb(al, dx);
+  //highter bytes of start sector// bit 16 to 23 of LBA adresse
+  dx = ctr - 1;
+  al = 0xFF & (start >> 16);
+  outb(al, dx);
+  //bit 4 (0=master,1=slave) /// bit 5 and 7 = 1 /// bit 6 (0=CHS,1=LBA)  /// bit 0 to 3 are bit 24 to 27 of LBA adresse
+  dx = ctr;
+  al = (dev + 0x40) | (0xF & (start >> 24));
+  outb(al, dx);
+  //Commande
+  dx = ctr + 1;
+  al = 0x30;
+  outb(al, dx);
+  
+  i = 5000;
+  dx = ctr + 1;
+  do {
+    al = inb(dx);
+    al = al & 0xd8;
+    i--;
+  } while ((0x58 != al) && (i > 0));
+  if (i == 0)
+    {
+      printf("ide: 0x30 cmd error: Timeout\n");
+      return (ERROR_UNKNOWN);
+    }    
+  
+  //transfer
+  dx = ctr - 6;
+  short	*b;
+  b = (short *)buf;
+  for (i = 0; i < 256; i++)
+    outw(b[i], dx);
+  
+  return (ERROR_NONE);
 }
 
 
@@ -197,6 +252,27 @@ static int			ide_serve()
 	      message.operation = IDE_DRIVER_REP_READ;
 	      if (ide_read(ctr, dev, message.u.req_read.start,
 			   message.u.rep_read.buf) != ERROR_NONE)
+		{
+		  message.operation = IDE_DRIVER_REP_ERR;
+		  memmove(message.u.rep_err.text,
+			  "error, reading fail\n",
+			  21);
+		  break;
+		}
+	      break;
+	    case IDE_DRIVER_REQ_WRITE:
+	      if ((message.u.req_write.ctr > 3) || (message.u.req_write.dev > 1) || 
+		  (!device.dev[message.u.req_write.ctr * 2 + message.u.req_write.dev]))
+		{
+		  message.operation = IDE_DRIVER_REP_ERR;
+		  memmove(message.u.rep_err.text,
+			  "error, bad disk",
+			  17);
+		  break;
+		}
+	      message.operation = IDE_DRIVER_REP_WRITE;
+	      if (ide_write(ctr, dev, message.u.req_write.start,
+			    message.u.req_write.buf) != ERROR_NONE)
 		{
 		  message.operation = IDE_DRIVER_REP_ERR;
 		  memmove(message.u.rep_err.text,
