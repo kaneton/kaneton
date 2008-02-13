@@ -234,11 +234,6 @@ endef
 # $(3):		options
 #
 
-define env_assemble-asm
-  assemble_ASM_options=""						&& \
-  $(call env_display,green,ASSEMBLE-ASM,$(2),		,)		&& \
-  $(_NASM_) $(_NASM_FLAGS_) $${assemble_ASM_options} $(2) -o $(1) -f elf
-endef
 
 #
 # create a static library from object files
