@@ -55,7 +55,7 @@ the kaneton project, you will deal with :
   code and \textbf{ld} to output the flat binary.
   \begin{verbatim}
 gcc  -c bootsect.S -o bootsect.o
-ld bootsect.o -o bootsect --oformat binary --Ttext 0x7c00
+ld bootsect.o -o bootsect ---oformat binary ---Ttext 0x7c00
   \end{verbatim}
 \item
   You will use \textbf{qemu} to test your binary.
@@ -107,19 +107,19 @@ a string.
 \subsection*{Interface}
 \function{print\_char}{}
 {
-  Print the character which ASCII code is \argument{\%ah} at current cursor
+  Print the character which ASCII code is \argument{\%al} at current cursor
   position.
 }
 
 \function{cursor\_set}{}
 {
-  Set cursor position at row \argument{\%ah} and column \argument{\%al}.
+  Set cursor position at row \argument{\%dh} and column \argument{\%dl}.
 }
 
 \function{print\_string}{}
 {
-  Print the string pointed by \argument{\%si} at row \argument{\%ah} and
-  column \argument{\%al}.
+  Print the string pointed by \argument{\%si} at row \argument{\%dh} and
+  column \argument{\%dl}.
 }
 
 %
@@ -149,19 +149,19 @@ a function which will dump the values stored in some registers.
   This function allocates memory in a very simple way. Declare the heap and
   declare a break value at its beginning.
   Your malloc must allocate \argument{\%ax} bytes and return the address
-  in the same register.
+  in \argument{\%di}.
 }
 
 \function{itoa}{}
 {
   Convert the integer \argument{\%ax} into string whose address will be
-  stored in \argument{\%ax}. Use this function to check your malloc.
+  stored in \argument{\%si}. Use this function to check your malloc.
 }
 
 \function{itoa\_hex}{}
 {
   Convert the integer in \argument{\%ax} into string using hexadecimal
-  representation and store in \argument{\%ax} the address of the string.
+  representation and store in \argument{\%si} the address of the string.
   The format must follow the regular expression 0x[0-9a-f]\{4\}.
   42 must for instance be printed as 0x002a.
 }
@@ -301,15 +301,15 @@ mode, see \emph{VGA text Framebuffer} appendix to know how to do.
 \end{itemize}
 
 \subsection*{Interface}
-\function{pmode\_enabled}{}
+\function{pmode\_switch}{}
 {
   Switch from real mode to protected mode.
 }
 
 \function{print\_string32}{}
 {
-  Print the string \argument{\%si} on the screen at row \argument{\%ah}
-  and column \argument{\%al}. We don't care about colors, you can change them
+  Print the string \argument{\%esi} on the screen at row \argument{\%ecx}
+  and column \argument{\%edx}. We don't care about colors, you can change them
   or not.
 }
 
@@ -395,7 +395,7 @@ Cursor advances after write.
 On return :
 
 \begin{itemize}
-  \item{AH = disk operationstatus}
+  \item{AH = disk operation status}
   \item{CF = 0 if successful, 1 if error}
 \end{itemize}
 
@@ -447,75 +447,34 @@ Halts program until a key with a scancode is pressed.
 
 \newpage
 \section{Intel IA-32 mode switching procedure}
-\textbf{FIXME}
 
-%% To use the processor in protected mode after hardware or software reset, a mode
-%% switch must be performed from real-address mode. Once in protected mode, soft-
-%% ware generally does not need to return to real-address mode. To run software written
-%% to run in real-address mode (8086 mode), it is generally more convenient to run the
-%% software in virtual-8086 mode, than to switch back to real-address mode.
+To use the processor in protected mode after hardware or software reset, a mode
+switch must be performed from real-address mode.
 
-%% Before switching to protected mode from real mode, a minimum set of system data
-%% structures and code modules must be loaded into memory, as described in Section
-%% 9.8, “Software Initialization for Protected-Mode Operation.” Once these tables are
-%% created, software initialization code can switch into protected mode.
+Before switching to protected mode from real mode, a minimum set of system data
+structures and code modules must be loaded into memory. In our case, we must
+set up the GDT.
 
-%% Protected mode is entered by executing a MOV CR0 instruction that sets the PE flag
-%% in the CR0 register. (In the same instruction, the PG flag in register CR0 can be set to
-%% enable paging.) Execution in protected mode begins with a CPL of 0.
+Once this tables is created, software initialization code can switch into
+protected mode by following these instructions :
 
-%% Intel 64 and IA-32 processors have slightly different requirements for switching to
-%% protected mode. To insure upwards and downwards code compatibility with Intel 64
-%% and IA-32 processors, we recommend that you follow these steps:
+1. Disable interrupts. A \textbf{cli} instruction disables maskable hardware
+interrupts.
 
-%% 1. Disable interrupts. A CLI instruction disables maskable hardware interrupts. NMI
-%%      interrupts can be disabled with external circuitry. (Software must guarantee
-%%      that no exceptions or interrupts are generated during the mode switching
-%%      operation.)
+2. Execute the \textbf{lgdt} instruction to load the GDTR register with the
+base address of the GDT.
 
-%% 2. Execute the LGDT instruction to load the GDTR register with the base address of
-%%      the GDT.
+3. Set the PE flag in control register CR0.
 
-%% 3. Execute a MOV CR0 instruction that sets the PE flag (and optionally the PG flag)
-%%      in control register CR0.
+4. Immediately execute a long jump, using instruction \textbf{ljmp}. This
+operation is typically a far jump to the next instruction in the instruction
+stream. It changes the flow of execution and serializes the processor.
 
-%% 4. Immediately following the MOV CR0 instruction, execute a far JMP or far CALL
-%%      instruction. (This operation is typically a far jump or call to the next instruction in
-%%      the instruction stream.)
-%%      The JMP or CALL instruction immediately after the MOV CR0 instruction changes
-%%      the flow of execution and serializes the processor.
-%%      If paging is enabled, the code for the MOV CR0 instruction and the JMP or CALL
-%%      instruction must come from a page that is identity mapped (that is, the linear
-%%      address before the jump is the same as the physical address after paging and
-%%      protected mode is enabled). The target instruction for the JMP or CALL instruction
-%%      does not need to be identity mapped.
-
-%% 5. If a local descriptor table is going to be used, execute the LLDT instruction to load
-%%      the segment selector for the LDT in the LDTR register.
-
-%% 6. Execute the LTR instruction to load the task register with a segment selector to
-%%     the initial protected-mode task or to a writable area of memory that can be used
-%%     to store TSS information on a task switch.
-
-%% 7. After entering protected mode, the segment registers continue to hold the
-%%     contents they had in real-address mode. The JMP or CALL instruction in step 4
-%%     resets the CS register. Perform one of the following operations to update the
-%%     contents of the remaining segment registers.
-%%     — Reload segment registers DS, SS, ES, FS, and GS. If the ES, FS, and/or GS
-%%         registers are not going to be used, load them with a null selector.
-%%     — Perform a JMP or CALL instruction to a new task, which automatically resets
-%%         the values of the segment registers and branches to a new code segment.
-
-%% 8. Execute the LIDT instruction to load the IDTR register with the address and limit
-%%     of the protected-mode IDT.
-
-%% 9. Execute the STI instruction to enable maskable hardware interrupts and perform
-%%     the necessary hardware operation to enable NMI interrupts.
-
-%% Random failures can occur if other instructions exist between steps 3 and 4 above.
-%% Failures will be readily seen in some situations, such as when instructions that refer-
-%% ence memory are inserted between steps 3 and 4 while in system management
-%% mode.
+5. After entering protected mode, the segment registers continue to hold the
+contents they had in real-address mode. The long jump instruction in step 4
+resets the CS register. Reload segment registers DS, ES, FS, GS and SS. Random
+failures can occur if other instructions exist between steps 3 and 4
+above.
 
 
 %
