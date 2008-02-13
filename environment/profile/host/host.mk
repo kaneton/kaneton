@@ -45,9 +45,6 @@ ENV_OPTION_NONE = 0
 ENV_OPTION_NO_NEWLINE = 1
 ENV_OPTION_FLICKERING = 2
 
-ENV_OUTPUT_OBJECT = 1
-ENV_OUTPUT_BINARY = 2
-
 ENV_OPTION_NO_STANDARD = 1
 
 ENV_OPTION_PRIVATE = 1
@@ -105,9 +102,6 @@ $(_ENV_MK_) $(_ENV_PY):							\
 #
 # ---------- traps ------------------------------------------------------------
 #
-
-%.o:			%.asm
-	$(call env_assemble-asm,$@,$<,$(ENV_OUTPUT_OBJECT))
 
 %.o:			%.S
 	$(call env_assemble-S,$@,$<,)

@@ -227,15 +227,6 @@ define env_assemble-S
 endef
 
 #
-# from asm file to object file
-#
-# $(1):		object file
-# $(2):		asm file
-# $(3):		options
-#
-
-
-#
 # create a static library from object files
 #
 # $(1):		static library file name
