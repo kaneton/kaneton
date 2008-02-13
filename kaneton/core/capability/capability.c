@@ -94,6 +94,7 @@ extern i_task		ktask;
 /*
  * Make a checksum on a capability, this one is simple but can be easily change
  */
+// XXX
 static t_error		simple_checksum(char*			data,
 					t_uint32		size,
 					t_uint64*		res)
