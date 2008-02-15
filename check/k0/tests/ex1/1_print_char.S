@@ -3,6 +3,7 @@
 
 .globl _start
 _start:
+	call __vga_clear
 	mov $'A', %al
 	call print_char
 	call __vga_dump
