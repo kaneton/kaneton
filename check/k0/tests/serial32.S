@@ -31,15 +31,40 @@
  * output : nothing
  */
 __serial32_init:
-	outb $0x00, $COM1 + $1	/* IER : Disable interrupts */
-	outb $0x80, $COM1 + $3	/* LCR: Enable DLAB (set baud rate divisor) */
-	outb $0x0C, $COM1 + $0	/* DLL: Set divisor LSB (set divisor to 12) */
-	outb $0x00, $COM1 + $1	/* DLM: Set divisor MSB */
-	outb $0x03, $COM1 + $3	/* LCR: Disable DLAB,
+	push %edx
+
+	movb $0x00, %al
+	movw $COM1 + 1, %dx
+	outb %al, %dx		/* IER : Disable interrupts */
+	
+	movb $0x80, %al
+	movw $COM1 + 3, %dx
+	outb %al, %dx		/* LCR: Enable DLAB (set baud rate divisor) */
+	
+	movb $0x0C, %al
+	movw $COM1 + 0, %dx
+	outb %al, %dx		/* DLL: Set divisor LSB (set divisor to 12) */
+	
+
+	movb $0x00, %al
+	movw $COM1 + 1, %dx
+	outb %al, %dx		/* DLM: Set divisor MSB */
+
+	movb $0x03, %al
+	movw $COM1 + 3, %dx
+	outb %al, %dx		/* LCR: Disable DLAB,
 				   set 8 data bits, no parity transmission */
-	outb $0xC7, $COM1 + $2	/* ???: Enable FIFO, clear them,
+	
+	movb $0xC7, %al
+	movw $COM1 + 2, %dx
+	outb %al, %dx		/* ???: Enable FIFO, clear them,
 				   with 14-byte treshold*/
-	outb $0x0B, $COM1 + $4	/* MCR: IRQ enabled, RTS/DSR set */
+
+	movb $0x0B, %al
+	movw $COM1 + 4, %dx
+	outb %al, %dx		/* MCR: IRQ enabled, RTS/DSR set */
+	
+	pop %edx
 	ret
 
 /*
@@ -50,12 +75,20 @@ __serial32_init:
  * output : nothing
  */
 __serial32_dump:
-	push %bl
-1:	inb $COM1 + $5, %bl	/* LSR */
-	andb $0x20, %bl		/* Get THRE bit */
+	push %ebx
+	movb %al, %bl
+
+1:
+	mov $COM1 + 5, %dx
+	inb %dx, %al		/* LSR */
+	andb $0x20, %al		/* Get THRE bit */
 	jz 1b			/* Spin until THR is ready to accept byte */
-	outb $COM1, %al		/* Send %al throuh THR */
-	pop %bl
+
+	movw $COM1, %dx
+	movb %bl, %al
+	outb %al, %dx		/* Send %al throuh THR */
+	
+	pop %ebx
 	ret
 
 /*
@@ -66,7 +99,6 @@ __serial32_dump:
  * output : nothing
  */
 __serial32_strdump:
-	push %al
 	cld
 1:
 	lodsb
@@ -75,6 +107,5 @@ __serial32_strdump:
 	call __serial32_dump
 	jmp 1b
 2:
-	pop %al
 	ret
 
