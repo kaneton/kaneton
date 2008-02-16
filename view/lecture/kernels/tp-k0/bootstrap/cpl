@@ -1,6 +1,0 @@
-#!/bin/sh
-nasm -f bin bootstrap.asm
-gcc -c bootloader.c -g
-ld -o bootloader -T lds bootloader.o
-cat bootloader >> bootstrap
-dd if=/dev/zero of=bootstrap bs=512 count=2850 seek=30
