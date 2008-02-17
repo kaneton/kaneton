@@ -20,12 +20,12 @@
 %
 
 \begin{tabular}{p{7cm}l}
-Duration: & 1 week \\
+Deadline: & Feb 24, 11h42 \\
 File name: & {\em login\_x}-k0.tar.bz2 \\
-In charge: & Julian Pidancet \& Elie Bleton\\
-Mailing-list: & kaneton-students@googlegroups.com \\
-Languages: & x86 assembly, C and ld scripts \\
-Students per group: & 1 \\
+In charge: & Elie Bleton, Nicolas Grandemange,\\
+        & Laurent Lec \& Julian Pidancet\\
+Newsgroup: & epita.cours.kaneton\\
+Language: & x86 assembly\\
 \end{tabular}
 
 \section{Abstract}
@@ -72,12 +72,17 @@ qemu -fda bootsect
   Your bootsector must end with signature 0xaa55 to be valid. This means you
   must insert blank bytes after your code until byte 510, and then dump
   the signature.
+  \begin{verbatim}
+signature:
+        .org 510, 0
+        .short 0xaa55
+  \end{verbatim}
 \item
-  Screen output will be strictly tested, so be careful : it must not
-  differ.
+  Screen output will be strictly tested, so be careful : it must not differ.
 \item
   Your test code must be removed from final source but the signature must be
-  present. Your code must not include a label \textbf{\_start}.
+  present. Your code must not include a label \textbf{\_start} or labels
+  starting with two underscores.
 \end{itemize}
 
 Good luck and have fun !
@@ -189,8 +194,8 @@ a function which will dump the values stored in some registers.
 
   Start output at current cursor position. To simulate a line return, just move
   the cursor to the first column of the line under. Even though it could be
-  ugly, don't move the cursor before and don't erase the characters printed by
-  \textbf{qemu}, just move the cursor !
+  ugly, don't move the cursor before printing and don't erase the characters
+  printed by \textbf{qemu} !
 }
 
 %
@@ -292,7 +297,7 @@ function to switch to that mode. Then, you will have to display a string in
 
 {\em Warning:}\\
 Don't forget that the code executed after switching to protected mode must be
-32-byte assembled code. Moreover, BIOS interrupts are never used in protected
+32-byte assembled code. Moreover, BIOS interrupts cannot be used in protected
 mode, see \emph{VGA text Framebuffer} appendix to know how to do.
 
 \subsection*{File}
@@ -437,15 +442,38 @@ Halts program until a key with a scancode is pressed.
 %
 % VGA text framebuffer
 %
-\newpage
 \section{VGA text framebuffer}
 \textbf{FIXME}
+
+The VGA text framebuffer is a buffer which can be used to display text on the
+screen. It starts at 0xb8000 and is a matrix of the following structures :
+
+\begin{verbatim}
+        struct          s_cell
+        {
+                char    ascii_code      :8;
+                char    fg_color        :3;
+                char    sur_intensity   :1;
+                char    bg_color        :3;
+                char    blink           :1;
+        }
+        __attribute__((__packed__));
+\end{verbatim}
+
+When \emph{qemu} starts, it uses this buffer in 80x24 mode.
 
 %
 % Intel mode switching
 %
 
 \newpage
+\section{Intel IA-32 instruction set}
+
+The  \emph{Intel Architecture Software Developer's Manual, Volume 2:
+Instruction Set Reference Manual} can be downloaded for free at :
+
+http://download.intel.com/design/pentium/MANUALS/24319101.PDF
+
 \section{Intel IA-32 mode switching procedure}
 
 To use the processor in protected mode after hardware or software reset, a mode
@@ -457,25 +485,22 @@ set up the GDT.
 
 Once this tables is created, software initialization code can switch into
 protected mode by following these instructions :
-
-1. Disable interrupts. A \textbf{cli} instruction disables maskable hardware
-interrupts.
-
-2. Execute the \textbf{lgdt} instruction to load the GDTR register with the
-base address of the GDT.
-
-3. Set the PE flag in control register CR0.
-
-4. Immediately execute a long jump, using instruction \textbf{ljmp}. This
-operation is typically a far jump to the next instruction in the instruction
-stream. It changes the flow of execution and serializes the processor.
-
-5. After entering protected mode, the segment registers continue to hold the
-contents they had in real-address mode. The long jump instruction in step 4
-resets the CS register. Reload segment registers DS, ES, FS, GS and SS. Random
-failures can occur if other instructions exist between steps 3 and 4
-above.
-
+\begin{itemize}
+  \item[1] Disable interrupts. A \textbf{cli} instruction disables maskable
+    hardware interrupts.
+  \item[2] Execute the \textbf{lgdt} instruction to load the GDTR register
+    with the base address of the GDT.
+  \item[3] Set the PE flag in control register CR0.
+  \item[4] Immediately execute a long jump, using instruction \textbf{ljmp}.
+    This operation is typically a far jump to the next instruction in the
+    instruction stream. It changes the flow of execution and serializes the
+    processor.
+  \item[5] After entering protected mode, the segment registers continue to
+    hold the contents they had in real-address mode. The long jump instruction
+    in step 4 resets the CS register. Reload segment registers DS, ES, FS, GS
+    and SS. Random failures can occur if other instructions exist between
+    steps 3 and 4 above.
+\end{itemize}
 
 %
 % The ELF file format

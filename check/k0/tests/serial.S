@@ -47,7 +47,6 @@ __serial_strdump:
 	mov $1, %ah
 	cld
 1:
-	xor %dx, %dx
 	mov $1, %ah
 	lodsb
 	test %al, %al
