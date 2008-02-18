@@ -326,8 +326,47 @@ mode, see \emph{VGA text Framebuffer} appendix to know how to do.
 
 \section{ELF Loader}
 
-\textbf{FIXME}
+\subsection*{Overview}
+Any bootloader must be able to load a kernel binary into the memory and start
+executing it. ELF is the ``Executable and Linking Format'', a binary executable
+file format used on many UNIX platform. The goal of this part is to give an 
+introductory to the binary file format structure. You will learn how to load
+and execute such a file.
 
+\subsection*{Assignments}
+You will now write a complete bootloader. This one will load an ELF file from
+the disk (located at the sector just after the bootsector) and then relocate
+it in memory at the right place, before jumping to it.
+
+An example kernel ELF file to load with your bootsector is provided. To build
+a disk image with your bootsector on the first sector, and the kernel on the
+next sectors of the disk (for your personal tests only) :
+
+\begin{verbatim}
+        42sh> cat bootsector kernel.elf /dev/zero | dd bs=512 count=2880 of=disk.img
+\end{verbatim}
+
+To load and execute an ELF file, you will have to parse the ELF headers at the
+beginning of the file. Each ELF file is divided into ``segments'' which are
+located into the file at different offsets, and must be separately relocated
+at different memory locations.
+
+The segment list of the executable file is described by the ``Program Headers''
+(Phdr) table in the ELF headers.
+
+The structure of ELF headers are described by the elf.h file located in many
+UNIX systems at \verb+/usr/include/elf.h+  .
+
+\subsection*{File}
+\begin{itemize}
+  \item k0-login\_x/ex6/ex6.S
+\end{itemize}
+
+\subsection*{Interface}
+\function{load\_kernel}{}
+{
+  Load and execute the kernel located after the first sector of the disk.
+}
 
 %
 % Appendix
