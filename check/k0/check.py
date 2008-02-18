@@ -220,7 +220,7 @@ def	students() :
 			for j in range (0, len(out)) :
 				ref = out_ref + "/" + ex_name + "/" + out[j]
 				stu = stu_ref + "/" + ex_name + "/" + out[j]
-				args = "diff " + ref + " " + stu
+				args = "diff -u " + ref + " " + stu
 				p = subprocess.Popen(args.split(' '),
 						     stdout=None, stderr=None)
 				p.wait()
