@@ -15,8 +15,8 @@ _start:
 	nop
 
 	mov $15, %ecx
-	mov $5, %edx
-	mov __str, %esi
+	mov $6, %ebx
+	mov $__str, %esi
 
 	call print_string32
 
@@ -25,7 +25,7 @@ _start:
 	jmp 1b
 	
 __str:
-.string	"Chiche, donnes nous tout !\0"
+.ascii	"Chiche, donne nous tout !\0"
 
 
 #include "serial32.S"

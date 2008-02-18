@@ -45,13 +45,14 @@ gdt_ds:
  *
  * desc   : Print a string in 32-bit mode.
  * input  : %ecx, row
-            %edx, column
+            %ebx, column
 	    %esi, string
  * output : nothing
  */
 print_string32:
 	pusha
 	mov $0xb8000, %edi
+	
 	mov $160, %eax
 	mul %ebx
 	add %eax, %edi

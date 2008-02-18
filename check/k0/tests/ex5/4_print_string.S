@@ -16,7 +16,7 @@ _start:
 
 	mov $15, %ecx
 	mov $5, %edx
-	mov __str, %esi
+	mov $__str, %esi
 
 	call print_string32
 
