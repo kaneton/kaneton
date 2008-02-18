@@ -327,35 +327,32 @@ mode, see \emph{VGA text Framebuffer} appendix to know how to do.
 \section{ELF Loader}
 
 \subsection*{Overview}
-Any bootloader must be able to load a kernel binary into the memory and start
-executing it. ELF is the ``Executable and Linking Format'', a binary executable
-file format used on many UNIX platform. The goal of this part is to give an 
-introductory to the binary file format structure. You will learn how to load
-and execute such a file.
+Any bootloader must be able to load a kernel binary and to execute it.
+The ``Executable and Linking Format'' is a binary executable format used on
+many UNIX platform. The goal of this part is to give an introduction to the
+ELF structure so that you will learn how to load and execute such a file.
 
 \subsection*{Assignments}
-You will now write a complete bootloader. This one will load an ELF file from
-the disk (located at the sector just after the bootsector) and then relocate
-it in memory at the right place, before jumping to it.
+You will write a complete bootloader which loads and executes an ELF file
+- located right after the bootsector - and then relocate it in memory
+before jumping on it.
 
-An example kernel ELF file to load with your bootsector is provided. To build
+An ELF binary is provided to be loaded with your bootsector. To build
 a disk image with your bootsector on the first sector, and the kernel on the
-next sectors of the disk (for your personal tests only) :
+next ones, you can use the following command :
 
 \begin{verbatim}
-        42sh> cat bootsector kernel.elf /dev/zero | dd bs=512 count=2880 of=disk.img
+42sh$ cat bootsector kernel.elf /dev/zero | dd bs=512 count=2880 of=disk.img
 \end{verbatim}
 
-To load and execute an ELF file, you will have to parse the ELF headers at the
+To load and execute an ELF file, you will have to parse the ELF header at the
 beginning of the file. Each ELF file is divided into ``segments'' which are
-located into the file at different offsets, and must be separately relocated
-at different memory locations.
+located into different offsets, and must be separately relocated at different
+memory locations. The segment list of the executable file is described by the
+``Program Headers'' table - \emph{Phdr} - in the ELF header.
 
-The segment list of the executable file is described by the ``Program Headers''
-(Phdr) table in the ELF headers.
-
-The structure of ELF headers are described by the elf.h file located in many
-UNIX systems at \verb+/usr/include/elf.h+  .
+The structure of the ELF header is described in \emph{elf.h}, located in many
+UNIX systems in \verb+/usr/include/+.
 
 \subsection*{File}
 \begin{itemize}
@@ -482,7 +479,6 @@ Halts program until a key with a scancode is pressed.
 % VGA text framebuffer
 %
 \section{VGA text framebuffer}
-\textbf{FIXME}
 
 The VGA text framebuffer is a buffer which can be used to display text on the
 screen. It starts at 0xb8000 and is a matrix of the following structures :
@@ -540,11 +536,3 @@ protected mode by following these instructions :
     and SS. Random failures can occur if other instructions exist between
     steps 3 and 4 above.
 \end{itemize}
-
-%
-% The ELF file format
-%
-
-\newpage
-\section{The ELF file format}
-\textbf{FIXME}
