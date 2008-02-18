@@ -31,18 +31,21 @@ Language: & x86 assembly\\
 \section{Abstract}
 
 k0 is an introduction to low level programming. During this first step of
-the kaneton project, you will deal with :
+the kaneton project, you will deal with:
 
 \begin{enumerate}
   \item
-    {\bf Intel x86}\\
-    x86 assembly and architecture\\
+    {\bf Intel x86}
+
+    x86 assembly and architecture
   \item
-    {\bf BIOS interrupts}\\
-    How to use BIOS services\\
+    {\bf BIOS interrupts}
+
+    How to use BIOS services
   \item
-    {\bf ELF binaries}\\
-    Structure and execution of an ELF file\\
+    {\bf ELF binaries}
+
+    Structure and execution of an ELF file
 \end{enumerate}
 
 \clearpage
@@ -78,14 +81,14 @@ signature:
         .short 0xaa55
   \end{verbatim}
 \item
-  Screen output will be strictly tested, so be careful : it must not differ.
+  Screen output will be strictly tested, so be careful: it must not differ.
 \item
   Your test code must be removed from final source but the signature must be
   present. Your code must not include a label \textbf{\_start} or labels
   starting with two underscores.
 \end{itemize}
 
-Good luck and have fun !
+Good luck and have fun!
 
 %
 % String display
@@ -175,7 +178,7 @@ a function which will dump the values stored in some registers.
 {
   Program a function which dumps the registers. You will start writing
   at current cursor position, i.e. you \emph{must not} modify it. You have to
-  follow this output :
+  follow this output:
 }
 \begin{verbatim}
         ax = 0x1234 = 4660
@@ -195,7 +198,7 @@ a function which will dump the values stored in some registers.
   Start output at current cursor position. To simulate a line return, just move
   the cursor to the first column of the line under. Even though it could be
   ugly, don't move the cursor before printing and don't erase the characters
-  printed by \textbf{qemu} !
+  printed by \textbf{qemu}!
 }
 
 %
@@ -265,7 +268,7 @@ the floppy, and check the signature. A valid bootsector ends with 0xaa55.
 {
   Load the first sector of the floppy and check whether it is a valid
   bootsector. It must print the following output at current cursor
-  position for each case :
+  position for each case:
 }
 \begin{verbatim}
         magic found: 0xaa55
@@ -295,7 +298,8 @@ You will first read \emph{Intel IA-32 mode switching procedure} and code a
 function to switch to that mode. Then, you will have to display a string in
 32-bit mode.
 
-{\em Warning:}\\
+{\em Warning:}
+
 Don't forget that the code executed after switching to protected mode must be
 32-byte assembled code. Moreover, BIOS interrupts cannot be used in protected
 mode, see \emph{VGA text Framebuffer} appendix to know how to do.
@@ -339,7 +343,7 @@ before jumping on it.
 
 An ELF binary is provided to be loaded with your bootsector. To build
 a disk image with your bootsector on the first sector, and the kernel on the
-next ones, you can use the following command :
+next ones, you can use the following command:
 
 \begin{verbatim}
 42sh$ cat bootsector kernel.elf /dev/zero | dd bs=512 count=2880 of=disk.img
@@ -390,36 +394,50 @@ interrupt code is always given in its hexadecimal representation. Therefore,
 %
 \subsection{INT 10,2 Set cursor position}
 \begin{itemize}
-  \item{AH = 0x02}
-  \item{BH = page number (0 for graphics modes)}
-  \item{DH = row}
-  \item{DL = column}
+  \item
+    AH = 0x02
+  \item
+    BH = page number (0 for graphics modes)
+  \item
+    DH = row
+  \item
+    DL = column
 \end{itemize}
 
 80x25 mode uses coordinates (0, 0) to (24, 79).
 
 \subsection{INT 10,3 Read cursor position and size}
 \begin{itemize}
-  \item{AH = 0x03}
-  \item{BH = page number (0 for graphics modes)}
+  \item
+    AH = 0x03
+  \item
+    BH = page number (0 for graphics modes)
 \end{itemize}
 
-On return :
+On return:
 
 \begin{itemize}
-  \item{CH = cursor starting scan line (low order 5 bits)}
-  \item{CL = cursor ending scan line (low order 5 bits)}
-  \item{DH = row}
-  \item{DL = column}
+  \item
+    CH = cursor starting scan line (low order 5 bits)
+  \item
+    CL = cursor ending scan line (low order 5 bits)
+  \item
+    DH = row
+  \item
+    DL = column
 \end{itemize}
 
 
 \subsection{INT 10,E Write text in teletype mode}
 \begin{itemize}
-  \item{AH = 0x0e}
-  \item{AL = ASCII character to write}
-  \item{DH = page number (text modes)}
-  \item{BL = foreground pixel color (graphics mode)}
+  \item
+    AH = 0x0e
+  \item
+    AL = ASCII character to write
+  \item
+    DH = page number (text modes)
+  \item
+    BL = foreground pixel color (graphics mode)
 \end{itemize}
 
 Cursor advances after write.
@@ -429,48 +447,65 @@ Cursor advances after write.
 %
 \subsection{INT 13,0 Reset disk system}
 \begin{itemize}
-  \item{AH = 0x00}
-  \item{DL = drive number}
+  \item
+    AH = 0x00
+  \item
+    DL = drive number
 \end{itemize}
 
-On return :
+On return:
 
 \begin{itemize}
-  \item{AH = disk operation status}
-  \item{CF = 0 if successful, 1 if error}
+  \item
+    AH = disk operation status
+  \item
+    CF = 0 if successful, 1 if error
 \end{itemize}
 
 \subsection{INT 13,2 Read disk sectors}
 \begin{itemize}
-  \item{AH = 0x02}
-  \item{AL = number of sectors to read}
-  \item{CH = track/cylinder number}
-  \item{CL = sector number}
-  \item{DH = head number}
-  \item{DL = drive number}
-  \item{ES:BX = pointer to buffer}
+  \item
+    AH = 0x02
+  \item
+    AL = number of sectors to read
+  \item
+    CH = track/cylinder number
+  \item
+    CL = sector number
+  \item
+    DH = head number
+  \item
+    DL = drive number
+  \item
+    ES:BX = pointer to buffer
 \end{itemize}
 
-On return :
+On return:
 
 \begin{itemize}
-  \item{AH = disk operationstatus}
-  \item{AL = number of sectors read}
-  \item{CF = 0 if successful, 1 if error}
+  \item
+    AH = disk operationstatus
+  \item
+    AL = number of sectors read
+  \item
+    CF = 0 if successful, 1 if error
 \end{itemize}
 %
 % Keyboard BIOS Services
 %
 \subsection{INT 16,0 Wait for keypress and read character}
 \begin{itemize}
-  \item{AH = 0x00}
+  \item
+    AH = 0x00
 \end{itemize}
 
-On return :
+On return:
 
 \begin{itemize}
-  \item{AH = keyboard scan code}
-  \item{AL = ASCII character or zero if special function key}
+  \item
+    AH = keyboard scan code
+  \item
+    AL = ASCII character or zero if special function key
 \end{itemize}
 
 Halts program until a key with a scancode is pressed.
@@ -481,7 +516,7 @@ Halts program until a key with a scancode is pressed.
 \section{VGA text framebuffer}
 
 The VGA text framebuffer is a buffer which can be used to display text on the
-screen. It starts at 0xb8000 and is a matrix of the following structures :
+screen. It starts at 0xb8000 and is a matrix of the following structures:
 
 \begin{verbatim}
         struct          s_cell
@@ -505,7 +540,7 @@ When \emph{qemu} starts, it uses this buffer in 80x24 mode.
 \section{Intel IA-32 instruction set}
 
 The  \emph{Intel Architecture Software Developer's Manual, Volume 2:
-Instruction Set Reference Manual} can be downloaded for free at :
+Instruction Set Reference Manual} can be downloaded for free at:
 
 http://download.intel.com/design/pentium/MANUALS/24319101.PDF
 
@@ -519,20 +554,25 @@ structures and code modules must be loaded into memory. In our case, we must
 set up the GDT.
 
 Once this tables is created, software initialization code can switch into
-protected mode by following these instructions :
-\begin{itemize}
-  \item[1] Disable interrupts. A \textbf{cli} instruction disables maskable
+protected mode by following these instructions:
+\begin{enumerate}
+  \item
+    Disable interrupts. A \textbf{cli} instruction disables maskable
     hardware interrupts.
-  \item[2] Execute the \textbf{lgdt} instruction to load the GDTR register
+  \item
+    Execute the \textbf{lgdt} instruction to load the GDTR register
     with the base address of the GDT.
-  \item[3] Set the PE flag in control register CR0.
-  \item[4] Immediately execute a long jump, using instruction \textbf{ljmp}.
+  \item
+    Set the PE flag in control register CR0.
+  \item
+    Immediately execute a long jump, using instruction \textbf{ljmp}.
     This operation is typically a far jump to the next instruction in the
     instruction stream. It changes the flow of execution and serializes the
     processor.
-  \item[5] After entering protected mode, the segment registers continue to
+  \item
+    After entering protected mode, the segment registers continue to
     hold the contents they had in real-address mode. The long jump instruction
     in step 4 resets the CS register. Reload segment registers DS, ES, FS, GS
     and SS. Random failures can occur if other instructions exist between
     steps 3 and 4 above.
-\end{itemize}
+\end{enumerate}

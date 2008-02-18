@@ -33,8 +33,7 @@ SUBDIRS			:=		bootstrap			\
 					ipc				\
 					memory-management		\
 					prerequisites			\
-					task-scheduling			\
-					tp-k0				
+					task-scheduling
 
 #
 # ---------- rules ------------------------------------------------------------

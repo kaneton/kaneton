@@ -27,7 +27,8 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		k1				\
+SUBDIRS			:=		k0				\
+					k1				\
 					k2				
 #					k3				\
 #					k4

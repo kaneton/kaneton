@@ -246,7 +246,7 @@ def     main() :
 	init()
 	reference()
 	students()
-#	clean()
+	clean()
 
         return 0
 
