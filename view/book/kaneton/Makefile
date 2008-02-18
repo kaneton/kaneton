@@ -40,6 +40,7 @@ SOURCES			:=		background.tex			\
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
 					$(SOURCES:.tex=.toc)		\
+					$(SOURCES:.tex=.out)		\
 					$(SOURCES:.tex=.pdf)		\
 					$(SOURCES:.tex=.bbl)		\
 					$(SOURCES:.tex=.blg)		
