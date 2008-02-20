@@ -70,7 +70,7 @@ qemu -fda bootsect
   directive to tell \textbf{gcc} to assemble 16-bit code. When you later
   switch to protected mode, find another directive to assemble 32-bit code.
 \item
-  \emph{No} register shall be modified unless explicitly requested.
+  \emph{No} register other than \argument{\%eax} shall be modified unless explicitly requested.
 \item
   Your bootsector must end with signature 0xaa55 to be valid. This means you
   must insert blank bytes after your code until byte 510, and then dump
@@ -358,15 +358,74 @@ memory locations. The segment list of the executable file is described by the
 The structure of the ELF header is described in \emph{elf.h}, located in many
 UNIX systems in \verb+/usr/include/+.
 
+Here is a simplified view of the elf.h file :
+
+\begin{verbatim}
+typedef uint16_t Elf32_Half;
+typedef uint32_t Elf32_Word;
+typedef uint32_t Elf32_Addr;
+typedef uint32_t Elf32_Off;
+
+/* The ELF file header.  This appears at the start of every ELF file.  */
+
+#define EI_NIDENT (16)
+
+typedef struct                      /* Offset   Description */
+{
+  unsigned char e_ident[EI_NIDENT]; /* +0       Magic number and other info */
+  Elf32_Half    e_type;             /* +16      Object file type */
+  Elf32_Half    e_machine;          /* +18      Architecture */
+  Elf32_Word    e_version;          /* +20      Object file version */
+  Elf32_Addr    e_entry;            /* +24      Entry point virtual address */
+  Elf32_Off     e_phoff;            /* +28      Program header table file offset */
+  Elf32_Off     e_shoff;            /* +32      Section header table file offset */
+  Elf32_Word    e_flags;            /* +36      Processor-specific flags */
+  Elf32_Half    e_ehsize;           /* +40      ELF header size in bytes */
+  Elf32_Half    e_phentsize;        /* +42      Program header table entry size */
+  Elf32_Half    e_phnum;            /* +44      Program header table entry count */
+  Elf32_Half    e_shentsize;        /* +46      Section header table entry size */
+  Elf32_Half    e_shnum;            /* +48      Section header table entry count */
+  Elf32_Half    e_shstrndx;         /* +50      Section header string table index */
+} Elf32_Ehdr;                       /* sizeof(Elf32_Ehdr) = 52 */
+
+/* Conglomeration of the identification bytes, for easy testing as a word.  */
+#define	ELFMAG		"\177ELF"
+#define	SELFMAG		4
+
+typedef struct                      /* Offset   Description */
+{
+  Elf32_Word    p_type;             /* +0       Segment type */
+  Elf32_Off     p_offset;           /* +4       Segment file offset */
+  Elf32_Addr    p_vaddr;            /* +8       Segment virtual address */
+  Elf32_Addr    p_paddr;            /* +12      Segment physical address */
+  Elf32_Word    p_filesz;           /* +16      Segment size in file */
+  Elf32_Word    p_memsz;            /* +20      Segment size in memory */
+  Elf32_Word    p_flags;            /* +24      Segment flags */
+  Elf32_Word    p_align;            /* +28      Segment alignment */
+} Elf32_Phdr;                       /* sizeof(Elf32_Phdr) = 32 */
+\end{verbatim}
+
 \subsection*{File}
 \begin{itemize}
   \item k0-login\_x/ex6/ex6.S
 \end{itemize}
 
 \subsection*{Interface}
-\function{load\_kernel}{}
+
+\function{kernel\_preload}
 {
-  Load and execute the kernel located after the first sector of the disk.
+  This function has to load into memory the number of sectors given into
+  \argument{\%al}, of the drive given into \argument{\%dl}, starting at
+  the second sector just next to the bootsector.
+
+  The function must next switch to protected mode, and return into
+  \argument{\%eax} the address of the sector load in memory.
+}
+
+\function{elf\_load}{}
+{
+  Load and execute the elf file located in memory at the address given by 
+  \argument{\%esi}
 }
 
 %

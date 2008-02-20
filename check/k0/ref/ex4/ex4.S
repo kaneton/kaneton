@@ -10,6 +10,7 @@
  */
 floppy_init:
 	push %ax
+	mov $0x00, %dl // drive number
 1:
 	xor %ah, %ah
 	int $0x13
