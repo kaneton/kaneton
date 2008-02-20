@@ -13,8 +13,8 @@ import env
 import os, array, sys, time, glob, subprocess
 
 __author__ = "lec_l@lse.epita.fr"
-__version__ = "0.1a"
-__date__ = "mon feb 14 2008"
+__version__ = "1.0b"
+__date__ = "mon feb 20 2008"
 
 OUT_PATH = TMP_PATH + "/output"
 SRC_PATH = TMP_PATH + "/src"
@@ -36,6 +36,10 @@ def	init() :
 	os.mkdir(TRC_PATH)
 	os.mkdir(OUT_PATH)
 	os.mkdir(SRC_PATH)
+
+	# Compile elf
+	p = subprocess.Popen(["make", "-C", "tests/elf_binary", "all"])
+	p.wait()
 
 	return
 
@@ -87,6 +91,11 @@ def	clean() :
 	env.display(env.HEADER_OK, "cleaning temporary files", env.OPTION_NONE)
 	p = subprocess.Popen(["rm", "-rf", TMP_PATH])
 	p.wait()
+
+	# Elf
+	p = subprocess.Popen(["make", "-C", "test/elf_binary", "clean"])
+	p.wait()
+
 
 	return
 
@@ -140,6 +149,17 @@ def	check_tarball(out_path, src_path) :
 					    "  linkage failed, abort!",
 					    env.OPTION_NONE)
 				continue
+
+
+			if ex_name == "ex6" :
+				p = subprocess.Popen(["mv", "binary", bin + "tmp"])
+				p.wait()
+
+				#cat bootsector exec_elf /dev/zero | dd ds=512 count=2880 of=bootsector
+
+				p = subprocess.Popen(["rm", "-f", bin + "tmp"])
+				p.wait()
+
 
 			# run qemu with the flat binary and
 			# redirect serial port to output file

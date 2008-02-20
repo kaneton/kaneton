@@ -9,7 +9,7 @@ struct s_char_attrib
   int blink : 1;
 };
 
-short * const video = 0xB8000;
+short* const video = (short*) 0xB8000;
 
 struct s_frame
 {
