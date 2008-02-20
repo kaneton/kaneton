@@ -32,7 +32,7 @@ is_bootsector:
 	mov $0x02, %ah // interrupt number
 	mov $0x01, %al // number of sectors to read
 	mov $0x00, %ch // cylinder number
-	mov $0x00, %cl // sector number
+	mov $0x01, %cl // sector number
 	mov $0x00, %dh // head number
 	mov $0x00, %dl // drive number
 	xor %bx, %bx

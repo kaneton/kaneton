@@ -164,12 +164,15 @@ def	check_tarball(out_path, src_path) :
 
 			# run qemu with the flat binary and
 			# redirect serial port to output file
-			args = "qemu -fda " + bin + " -no-kqemu -nographic -serial /dev/stdout"
-			output = open(out_file, 'w+')
-			p = subprocess.Popen(args.split(' '), stdout=output)
+#			args = "qemu -fda " + bin + " -no-kqemu -nographic -serial /dev/stdout"
+			args = "qemu -fda " + bin + " -no-kqemu -serial file:"+out_file
+#			output = open(out_file, 'w+')
+#			p = subprocess.Popen(args.split(' '), stdout=output)
+			p = subprocess.Popen(args.split(' '))
+
 			time.sleep(1)
 			os.kill(p.pid, 9)
-			output.close()
+#			output.close()
 
 	return
 
@@ -267,7 +270,7 @@ def     main() :
 	init()
 	reference()
 	students()
-	clean()
+#	clean()
 
         return 0
 
