@@ -10,7 +10,7 @@ TAR_PATH = "tarballs"
 TMP_PATH = "tmp"
 
 import env
-import os, array, sys, time, glob, subprocess
+import os, array, sys, time, glob, subprocess, popen2
 
 __author__ = "lec_l@lse.epita.fr"
 __version__ = "1.0b"
@@ -93,7 +93,7 @@ def	clean() :
 	p.wait()
 
 	# Elf
-	p = subprocess.Popen(["make", "-C", "test/elf_binary", "clean"])
+	p = subprocess.Popen(["make", "-C", "tests/elf_binary", "clean"])
 	p.wait()
 
 
@@ -152,18 +152,19 @@ def	check_tarball(out_path, src_path) :
 
 
 			if ex_name == "ex6" :
-				p = subprocess.Popen(["mv", "binary", bin + "tmp"])
+				p = subprocess.Popen(["mv", bin, "bootsector_tmp"])
 				p.wait()
 
-				#cat bootsector exec_elf /dev/zero | dd ds=512 count=2880 of=bootsector
+				p = subprocess.Popen(["bash", "-c", "cat bootsector_tmp tests/elf_binary/LOADME.elf /dev/zero | dd bs=512 count=2880 of=tmp/bootsector"])
+				p.wait()
 
-				p = subprocess.Popen(["rm", "-f", bin + "tmp"])
+				p = subprocess.Popen(["rm", "-f", "bootsector_tmp"])
 				p.wait()
 
 
 			# run qemu with the flat binary and
 			# redirect serial port to output file
-			args = "qemu -fda " + bin + " -nographic -no-kqemu"
+			args = "qemu -fda " + bin + " -no-kqemu -nographic -serial /dev/stdout"
 			output = open(out_file, 'w+')
 			p = subprocess.Popen(args.split(' '), stdout=output)
 			time.sleep(1)
