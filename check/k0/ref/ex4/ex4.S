@@ -27,12 +27,12 @@ floppy_init:
  * input  : nothing
  */
 is_bootsector:
-	pusha
 	call floppy_init
+	pusha
 	mov $0x02, %ah // interrupt number
 	mov $0x01, %al // number of sectors to read
 	mov $0x00, %ch // cylinder number
-	mov $0x01, %cl // sector number
+	mov $0x02, %cl // sector number
 	mov $0x00, %dh // head number
 	mov $0x00, %dl // drive number
 	xor %bx, %bx
@@ -46,7 +46,7 @@ is_bootsector:
 	add $510, %bx
 	mov %es:(%bx), %ax
 	cmp $0xaa55, %ax
-	jz 1b
+	jnz 1f
 	// it is a valid bootsector
 	mov $2f, %si
 	call print_string
@@ -56,10 +56,8 @@ is_bootsector:
 	// it is not a valid bootsector
 	mov $3f, %si
 	call print_string
-/*
 	call itoa_hex
 	call print_string
-*/
 	popa
 	ret
 
@@ -92,15 +90,13 @@ print_string:
 	popa
 	ret
 
-
 /*
  * itoa_hex
  *
- * desc   : Converts an integer into string using hexadecimal representation.
+ * desc   : Convert an integer into string using hexadecimal representation.
  * input  : %ax, number to convert
  * output : %si, pointer to the string
  */
-/*
 itoa_hex:
 	push %ax
 	xor %cx, %cx	// cx = 0
@@ -139,8 +135,24 @@ itoa_hex:
 
 	movb $'x', (%di)
 	movb $'0', -1(%di)
+
 	ret
-*/
+
+
+/*
+ * malloc
+ *
+ * desc   : Allocate memory in a very simple way.
+ * input  : %ax, size to allocate
+ * output : %di, pointer to the memory area
+ */
+malloc:
+	mov (break), %di
+	add %ax, break
+	ret
+break:
+	.short 0x9000
+
 
 /*
  * signature

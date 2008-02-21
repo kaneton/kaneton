@@ -48,6 +48,9 @@ the kaneton project, you will deal with:
     Structure and execution of an ELF file
 \end{enumerate}
 
+The final goal is to write a complete ELF bootloader, which could be used to
+load a kernel.
+
 \clearpage
 
 \section{Before starting}
@@ -70,11 +73,11 @@ qemu -fda bootsect
   directive to tell \textbf{gcc} to assemble 16-bit code. When you later
   switch to protected mode, find another directive to assemble 32-bit code.
 \item
-  \emph{No} register other than \argument{\%eax} shall be modified unless explicitly requested.
+  \emph{No} register shall be modified unless explicitly requested.
 \item
   Your bootsector must end with signature 0xaa55 to be valid. This means you
-  must insert blank bytes after your code until byte 510, and then dump
-  the signature.
+  have to insert bytes after your code until byte 510, and then dump the
+  signature.
   \begin{verbatim}
 signature:
         .org 510, 0
@@ -160,18 +163,13 @@ a function which will dump the values stored in some registers.
   in \argument{\%di}.
 }
 
-\function{itoa}{}
-{
-  Convert the integer \argument{\%ax} into string whose address will be
-  stored in \argument{\%si}. Use this function to check your malloc.
-}
-
 \function{itoa\_hex}{}
 {
   Convert the integer in \argument{\%ax} into string using hexadecimal
   representation and store in \argument{\%si} the address of the string.
   The format must follow the regular expression 0x[0-9a-f]\{4\}.
-  42 must for instance be printed as 0x002a.
+  42 must for instance be printed as 0x002a. You could use this function
+  to check your malloc.
 }
 
 \function{dump\_registers}{}
@@ -181,14 +179,12 @@ a function which will dump the values stored in some registers.
   follow this output:
 }
 \begin{verbatim}
-        ax = 0x1234 = 4660
-        bx = 0x0000 = 0
-        cx = 0xabcd = 43981
-        dx = 0x00ff = 255
-
-        bp = 0x1000 = 4096
-        sp = 0x0ff8 = 4088
-        ip = 0x7c00 = 317445
+        ax = 0x1234
+        bx = 0x0000
+        cx = 0xabcd
+        dx = 0x00ff
+        si = 0x1000
+        di = 0x0ff8
 \end{verbatim}
 
 \function{}{}
@@ -246,17 +242,16 @@ buffer, and then, use this function to print entered text on the screen.
 
 \subsection*{Overview}
 During this exercise you are going to work with floppy drives using BIOS
-interrupts. The final goal is to load the second sector of a floppy in order
-to check whether it's a bootsector or not. (In this exercise, we load the
-second sector, because se first sector is already load as a valid bootsector)
-This technique is used for example by GRUB to perform ``chainloading''
+interrupts. The final goal is to load the second sector from the floppy drive
+in order to check whether it's a bootsector or not. In this exercise, we load the
+second sector, because the first sector is already loaded. This technique is used
+for example by GRUB to perform \emph{chainloading}.
 
 \subsection*{Assignments}
 The drive must be initialized before any reading. Then, get the second sector of
 the floppy, and check the signature. A valid bootsector ends with 0xaa55.
 
-Be careful, the value correspond to the second sector is ``2'' (and not 1), because
-the sectors of a disk are numbered starting a the number 1.
+Be careful, sectors are actually numbered starting from 1, and not 0.
 
 \subsection*{File}
 \begin{itemize}
@@ -273,7 +268,8 @@ the sectors of a disk are numbered starting a the number 1.
 {
   Load the second sector of the floppy and check whether it is a valid
   bootsector. It must print the following output at current cursor
-  position for each case:
+  position for the following cases - respectively valid, and invalid $0x0042$
+  signatures:
 }
 \begin{verbatim}
         magic found: 0xaa55
@@ -296,7 +292,7 @@ or
 
 \subsection*{Overview}
 Since kernels generally use 32-bit mode, it's time to know how to switch from
-``real'' 16-bit mode to ``protected'' 32-bit mode.
+\emph{real} 16-bit mode to \emph{protected} 32-bit mode.
 
 \subsection*{Assignments}
 You will first read \emph{Intel IA-32 mode switching procedure} and code a
@@ -337,7 +333,7 @@ mode, see \emph{VGA text Framebuffer} appendix to know how to do.
 
 \subsection*{Overview}
 Any bootloader must be able to load a kernel binary and to execute it.
-The ``Executable and Linking Format'' is a binary executable format used on
+The \emph{Executable and Linking Format} is a binary executable format used on
 many UNIX platform. The goal of this part is to give an introduction to the
 ELF structure so that you will learn how to load and execute such a file.
 
@@ -355,10 +351,10 @@ next ones, you can use the following command:
 \end{verbatim}
 
 To load and execute an ELF file, you will have to parse the ELF header at the
-beginning of the file. Each ELF file is divided into ``segments'' which are
+beginning of the file. Each ELF file is divided into \emph{segments} which are
 located into different offsets, and must be separately relocated at different
 memory locations. The segment list of the executable file is described by the
-``Program Headers'' table - \emph{Phdr} - in the ELF header.
+\emph{Program Headers} table - \emph{Phdr} - in the ELF header.
 
 The structure of the ELF header is described in \emph{elf.h}, located in many
 UNIX systems in \verb+/usr/include/+.
@@ -392,7 +388,9 @@ typedef struct                      /* Offset   Description */
   Elf32_Half    e_shnum;            /* +48      Section header table entry count */
   Elf32_Half    e_shstrndx;         /* +50      Section header string table index */
 } Elf32_Ehdr;                       /* sizeof(Elf32_Ehdr) = 52 */
-
+\end{verbatim}
+\newpage
+\begin{verbatim}
 /* Conglomeration of the identification bytes, for easy testing as a word.  */
 #define	ELFMAG		"\177ELF"
 #define	SELFMAG		4
@@ -420,17 +418,16 @@ typedef struct                      /* Offset   Description */
 \function{kernel\_preload}
 {
   This function has to load into memory the number of sectors given into
-  \argument{\%al}, of the drive given into \argument{\%dl}, starting at
-  the second sector just next to the bootsector.
+  \argument{\%al}, from the drive given into \argument{\%dl}, starting from
+  the second sector.
 
-  The function must next switch to protected mode, and return into
-  \argument{\%eax} the address of the sector load in memory.
+  The function must switch to protected mode, and return into \argument{\%eax}
+  the address of the memory area where sectors are loaded.
 }
 
 \function{elf\_load}{}
 {
-  Load and execute the elf file located in memory at the address given by 
-  \argument{\%esi}
+  Load and execute the elf file located at address \argument{\%esi}.
 }
 
 %

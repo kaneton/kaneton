@@ -17,48 +17,6 @@ break:
 
 
 /*
- * itoa
- *
- * desc   : Convert an integer into string.
- * input  : %ax, number to convert
- * output : %si, pointer to the string
- */
-itoa:
-	push %ax
-	xor %cx, %cx	// cx = 0
-	mov $10, %bx	// dl = 10
-1:
-	xor %dx, %dx	// dx = 0
-	div %bx		// ax = dx:ax / bx, dx = dx:ax mod dx
-	inc %cl		// cx += 1
-	test %ax, %ax	// if (ax != 0)
-	jnz 1b		//   goto 1b
-
-	mov %cx, %ax
-	add $1, %ax
-	call malloc	// malloc(strlen + 1)
-	mov %ax, %di	// di = ax
-	mov %di, %si	// si = di
-
-	add %cx, %di
-	movb $0, (%di)
-	dec %di
-
-	pop %ax
-	mov $10, %bx
-2:
-	xor %dx, %dx	// dx = 0
-	div %bx		// ax = dx:ax / bx, dx = dx:ax mod dx
-	add $'0', %dl	// dl += '0'
-	mov %dl, (%di)	// *di = dl
-	dec %di		// di--
-	test %ax, %ax	// if (ax != 0)
-	jnz 2b		//   goto 2b
-
-	ret
-
-
-/*
  * itoa_hex
  *
  * desc   : Convert an integer into string using hexadecimal representation.
@@ -107,7 +65,7 @@ itoa_hex:
 	ret
 
 /*
- * itoa_hex
+ * dump_registers
  *
  * desc   : Dump some register values.
  * input  : nothing
