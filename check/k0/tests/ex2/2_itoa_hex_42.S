@@ -5,7 +5,7 @@
 
 _start:
 	mov $42, %ax
-	call itoa
+	call itoa_hex
 	call __serial_strdump
 1:
 	jmp 1b
