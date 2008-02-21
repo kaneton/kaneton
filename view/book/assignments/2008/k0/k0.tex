@@ -246,12 +246,17 @@ buffer, and then, use this function to print entered text on the screen.
 
 \subsection*{Overview}
 During this exercise you are going to work with floppy drives using BIOS
-interrupts. The final goal is to load the first sector of a floppy in order
-to check whether it's a bootsector or not.
+interrupts. The final goal is to load the second sector of a floppy in order
+to check whether it's a bootsector or not. (In this exercise, we load the
+second sector, because se first sector is already load as a valid bootsector)
+This technique is used for example by GRUB to perform ``chainloading''
 
 \subsection*{Assignments}
-The drive must be initialized before any reading. Then, get the first sector of
+The drive must be initialized before any reading. Then, get the second sector of
 the floppy, and check the signature. A valid bootsector ends with 0xaa55.
+
+Be careful, the value correspond to the second sector is ``2'' (and not 1), because
+the sectors of a disk are numbered starting a the number 1.
 
 \subsection*{File}
 \begin{itemize}
@@ -266,7 +271,7 @@ the floppy, and check the signature. A valid bootsector ends with 0xaa55.
 
 \function{is\_bootsector}{}
 {
-  Load the first sector of the floppy and check whether it is a valid
+  Load the second sector of the floppy and check whether it is a valid
   bootsector. It must print the following output at current cursor
   position for each case:
 }
