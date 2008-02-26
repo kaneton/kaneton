@@ -5,6 +5,7 @@ TARGET=LOADME.elf
 
 OBJS=main.o \
      video.o \
+     serial.o \
      init.o
 
 LDSCRIPT=layout.ld

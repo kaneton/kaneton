@@ -45,8 +45,8 @@ gdt_ds:
  *
  * desc   : Print a string in 32-bit mode.
  * input  : %ecx, row
-            %ebx, column
-	    %esi, string
+ *          %edx, column
+ *          %esi, string
  * output : nothing
  */
 print_string32:
@@ -54,10 +54,12 @@ print_string32:
 	mov $0xb8000, %edi
 	
 	mov $160, %eax
-	mul %ebx
+	push %edx
+	mul %ecx
 	add %eax, %edi
-	add %ecx, %edi
-	add %ecx, %edi
+	pop %edx
+	add %edx, %edi
+	add %edx, %edi
 1:
 	lodsb
 	test %al, %al

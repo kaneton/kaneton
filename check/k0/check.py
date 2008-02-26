@@ -88,9 +88,9 @@ def	config() :
 #
 def	clean() :
 
-	env.display(env.HEADER_OK, "cleaning temporary files", env.OPTION_NONE)
-	p = subprocess.Popen(["rm", "-rf", TMP_PATH])
-	p.wait()
+#	env.display(env.HEADER_OK, "cleaning temporary files", env.OPTION_NONE)
+#	p = subprocess.Popen(["rm", "-rf", TMP_PATH])
+#	p.wait()
 
 	# Elf
 	p = subprocess.Popen(["make", "-C", "tests/elf_binary", "clean"])

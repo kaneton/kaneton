@@ -15,8 +15,8 @@ _start:
 	nop
 	nop
 
-	mov $15, %ecx
-	mov $6, %ebx
+	mov $3, %ecx
+	mov $12, %edx
 	mov $__str, %esi
 
 	call print_string32

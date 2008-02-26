@@ -24,6 +24,12 @@ break:
  * output : %si, pointer to the string
  */
 itoa_hex:
+        push %ax
+	push %cx
+	push %bx
+	push %di
+	push %dx
+
 	push %ax
 	xor %cx, %cx	// cx = 0
 	mov $16, %bx	// dl = 10
@@ -62,6 +68,11 @@ itoa_hex:
 	movb $'x', (%di)
 	movb $'0', -1(%di)
 
+        pop %dx
+	pop %di
+	pop %bx
+	pop %cx
+	pop %ax
 	ret
 
 /*
@@ -73,6 +84,9 @@ itoa_hex:
  */
 dump_registers:
 	pusha
+
+	push %si
+
 	mov $1f, %si
 	call print_string
 	call itoa_hex
@@ -102,6 +116,7 @@ dump_registers:
 
 	mov $5f, %si
 	call print_string
+	pop %si
 	mov %si, %ax
 	call itoa_hex
 	call print_string
