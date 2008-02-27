@@ -228,10 +228,10 @@ def	students() :
 
 		# get trace name
 		traceno = 1
-		tracepath = TRC_PATH + "/" + login + '-K0-' + str(traceno)
+		tracepath = TRC_PATH + "/" + login + '-K0-' + str(traceno) + '.inc.php'
 		while os.path.exists(tracepath):
 			traceno = traceno + 1
-			tracepath = TRC_PATH + "/" + login + '-K0-' + str(traceno)
+			tracepath = TRC_PATH + "/" + login + '-K0-' + str(traceno) + '.inc.php'
 
 		# open trace
 		trace = open(tracepath, 'w+')
