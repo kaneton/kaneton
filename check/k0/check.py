@@ -248,9 +248,8 @@ def	students() :
 				p = subprocess.Popen(args.split(' '),
 						     stdout=None, stderr=None)
 				p.wait()
-				trace.write("$" + ex_name + "_" + out[j] + \
-						" = " + str(p.returncode) + \
-						    ";\n")
+				trace.write("$trace["+ex_name+"]["+out[j]
+					    +"] = "+str(p.returncode)+";\n")
 
 		trace.close()
 
