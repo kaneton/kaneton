@@ -226,7 +226,8 @@ def	students() :
 		os.mkdir(OUT_PATH + "/" + src)
 		check_tarball(OUT_PATH + "/" + src, SRC_PATH + "/" + src)
 
-		trace = open(TRC_PATH + "/" + login, 'w+')
+		trace = open(TRC_PATH + "/" + login, 'w+'
+		trace.write("<?php")
 		out_ref = OUT_PATH + "/" + REF_PATH
 		stu_ref = OUT_PATH + "/" + src
 		# getting list of exercices in the test folder
@@ -250,7 +251,7 @@ def	students() :
 				p.wait()
 				trace.write("$trace["+ex_name+"]["+out[j]
 					    +"] = "+str(p.returncode)+";\n")
-
+		trace.write("?>")
 		trace.close()
 
 	env.display(env.HEADER_NONE, "", env.OPTION_NONE)
