@@ -42,10 +42,22 @@ __vga_dump:
 	mov $0x8000, %si
 1:
 	mov %fs:(%si), %al
-	call __serial_dump
+	
+	cmp $'\n', %al		/* Ignore \n and \r on VGA frambuffer  */
+	jz 2f
+	cmp $'\r', %al
+	jz 2f
+	jmp 3f
+
+2:	mov $' ', %al
+
+3:	call __serial_dump
+
 	add $0x02, %si
 	inc %cx
 	cmp $1920, %cx
 	jl 1b
+	mov $'\n', %al		/* Add \n to diff files (more clean) */
+	call __serial_dump
 	popa
 	ret

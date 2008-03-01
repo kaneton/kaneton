@@ -3,6 +3,8 @@
 .text
 .code16
 
+#define SKIP_KERNEL_PRELOAD
+
 _start:
 	push $0				/* This if for the 32bit ret */
 	mov $32, %al

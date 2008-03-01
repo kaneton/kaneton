@@ -11,21 +11,20 @@ _start:
 	call malloc
 	mov %di, %cx
 	call malloc
+	mov %di, %dx
+
+	sub %cx, %dx /* Compute allocated memory space */
+	sub %bx, %cx
 
 	call __serial_init
-	mov %bl, %al
-	call __serial_dump
-	mov %bh, %al
-	call __serial_dump
 	mov %cl, %al
 	call __serial_dump
 	mov %ch, %al
 	call __serial_dump
-	mov %di, %ax
+	mov %dl, %al
 	call __serial_dump
-	mov %ah, %al
+	mov %dh, %al
 	call __serial_dump
-
 1:
 	jmp 1b
 

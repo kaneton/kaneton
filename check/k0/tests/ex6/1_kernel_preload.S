@@ -3,6 +3,8 @@
 .text
 .code16
 
+#define SKIP_ELF_LOAD
+
 _start:
 	push $0				/* This if for the 32bit ret */
 	mov $32, %al
@@ -10,8 +12,6 @@ _start:
 .code32
 	mov %eax, %esi			/* Get kernel file pointer */
 	call __elf_load
-
-
 
 __memcpy:
 	push   %esi
