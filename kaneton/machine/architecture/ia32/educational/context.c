@@ -156,6 +156,7 @@ static t_uint8		io_bitmap_isset(t_uint8*	bitmap,
  * 1) check the port id.
  * 2) get the task.
  * 3) change permission bitmap.
+ * 4) if we are updating the current task, then flushes the bitmap.
  */
 
 t_error			ia32_set_io_bitmap(i_task		tskid,
@@ -164,6 +165,7 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
 					   t_uint8		allow)
 {
   o_task*		o;
+  i_task		current;
   t_uint8		i;
 
   /*
@@ -187,14 +189,19 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
   for (i = 0; i < width; i++)
     io_bitmap_set(o->machdep.iomap, id + i, !allow);
 
-  o->machdep.ioflush = 1;
+  /*
+   * 4)
+   */
 
-  /* XXX beurk */
-#if 0
-  memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
-	 &o->machdep.iomap,
-	 8192);
-#endif
+  if (task_current(&current) != ERROR_NONE)
+    return (ERROR_UNKNOWN);
+
+  if (current == tskid)
+    memcpy((t_uint8*)thread->machdep.tss + thread->machdep.tss->io,
+	   &o->machdep.iomap,
+	   8192);
+  else
+    o->machdep.ioflush = 1;
 
   return (ERROR_NONE);
 }
@@ -584,7 +591,7 @@ t_error			ia32_context_switch(i_thread		current,
    * 4)
    */
 
-  if (1 || current == ID_UNUSED || /* XXX */
+  if (current == ID_UNUSED ||
       (from->taskid != to->taskid && (task->class == TASK_CLASS_SERVICE ||
 				      task->class == TASK_CLASS_PROGRAM)) ||
       task->machdep.ioflush)

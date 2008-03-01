@@ -8,7 +8,7 @@
  * file          /home/buckman/kaneton/services/mod/mod.c
  *
  * created       matthieu bucchianeri   [sat may  5 18:43:57 2007]
- * updated       matthieu bucchianeri   [mon sep 10 00:09:28 2007]
+ * updated       matthieu bucchianeri   [fri feb 29 11:26:18 2008]
  */
 
 /*
@@ -97,7 +97,7 @@ t_error			mod_load_32(Elf32_Ehdr*		header,
    * 1)
    */
 
-  if (task_reserve(TASK_CLASS_DRIVER,
+  if (task_reserve(TASK_CLASS_PROGRAM,
 		   TASK_BEHAV_TIMESHARING,
 		   TASK_PRIOR_TIMESHARING,
 		   &tsk) != ERROR_NONE)
