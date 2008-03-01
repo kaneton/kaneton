@@ -1752,9 +1752,6 @@ t_error			interface_notify(t_uint8*		buffer,
    * 3)
    */
 
-  if (message->u.reply.error != ERROR_NONE)
-    cons_msg('!', "REPLY TO %d IS ERROR\n", op);
-
   if (message_send(ktask,
 		   source,
 		   MESSAGE_TYPE_INTERFACE,
