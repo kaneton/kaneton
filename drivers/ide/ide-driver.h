@@ -61,7 +61,7 @@ i_task			ide;
 t_error
 ide_node_init(void)
 {
-  static int	is_init = 0;
+  static uint8_t	is_init = 0;
   
   if (!is_init)
     {
