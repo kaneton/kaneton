@@ -45,6 +45,11 @@
                 {mips-as}
 		{figures/mips-as}
 
+\pgfdeclareimage[interpolate=true,width=286pt,height=180pt]
+                {tlb-powerpc}
+		{figures/tlb-translation-setup-mpc745x-ppc}
+
+
 % paging
 
 \pgfdeclareimage[interpolate=true,width=233pt,height=100pt]
@@ -376,10 +381,20 @@
 % -)
 
 \begin{frame}
-  \frametitle{MIPS example}
+  \frametitle{MIPS32 example}
 
   \begin{center}
    \pgfuseimage{mips-as}
+  \end{center}
+
+\end{frame}
+
+% -)
+\begin{frame}
+  \frametitle{PowerPC example}
+
+  \begin{center}
+   \pgfuseimage{tlb-powerpc}
   \end{center}
 
 \end{frame}
@@ -539,6 +554,10 @@
     UltraSPARC IIi & Data & 64 entries, full associative \\
     \hline
     MIPS R8000 & Mixed & 384 entries, 3-way set associative \\
+    \hline
+    MIPS R10000 & Instruction & 8 entries, fully associative \\
+    \hline
+    MIPS R10000 & Data & 64 entries, fully associative \\
     \hline
     \end{tabular}
   \end{itemize}
