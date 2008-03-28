@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/exam/mips/Makefile
+# file          /home/lec_l/kaneton/view/exam/mips/Makefile
 #
 # created       julien quintard   [mon may 14 21:34:22 2007]
-# updated       julien quintard   [fri jun 22 18:08:48 2007]
+# updated       laurent lec   [fri mar 28 16:44:52 2008]
 #
 
 #
@@ -28,8 +28,7 @@ include			../../../environment/env.mk
 #
 
 SUBDIRS			:=		2006				\
-					2007				\
-					2008				
+					2007
 
 #
 # ---------- rules ------------------------------------------------------------
