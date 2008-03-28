@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/libc/include/limits.h
+ * file          /home/lec_l/kaneton/kaneton/libc/include/limits.h
  *
  * created       julien quintard   [sun jun 10 17:53:28 2007]
- * updated       matthieu bucchianeri   [sat sep  1 19:20:14 2007]
+ * updated       laurent lec   [thu mar 27 22:03:24 2008]
  */
 
 #ifndef LIBC_LIBSYS_LIMITS_H
@@ -32,13 +32,13 @@
  * return max integer value for a type
  */
 
-#define __MINOF_TYPE(t)        ((typeof(t))(((typeof(t))-1) < 0 ?  (((typeof(t))1) << sizeof(typeof(t)) * 8 - 1) :  0))
+#define __MINOF_TYPE(t)        ((__typeof__(t))(((__typeof__(t))-1) < 0 ?  (((__typeof__(t))1) << sizeof(__typeof__(t)) * 8 - 1) :  0))
 
 /*
  * return min integer value for a type
  */
 
-#define __MAXOF_TYPE(t)        ((typeof(t))(((typeof(t))-1) < 0 ? ~(((typeof(t))1) << sizeof(typeof(t)) * 8 - 1) : -1))
+#define __MAXOF_TYPE(t)        ((__typeof__(t))(((__typeof__(t))-1) < 0 ? ~(((__typeof__(t))1) << sizeof(__typeof__(t)) * 8 - 1) : -1))
 
 /*
  * ---------- macros ----------------------------------------------------------

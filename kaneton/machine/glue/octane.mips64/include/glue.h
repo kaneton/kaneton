@@ -7,8 +7,8 @@
  *
  * file          /home/lec_l/kanet...achine/glue/octane.mips64/include/glue.h
  *
- * created       julien quintard   [mon jun 11 05:57:15 2007]
- * updated       laurent lec   [wed mar 26 18:14:09 2008]
+ * created       laurent lec   [fri mar 28 17:18:12 2008]
+ * updated       laurent lec   [fri mar 28 17:18:56 2008]
  */
 
 #ifndef GLUE_GLUE_H
@@ -33,7 +33,7 @@
 
 #define machine_include(_manager_)
 
-#define machine_call(_manager_, _function_, _arguments_...)
+#define machine_call(_manager_, _function_, _arguments_...) ERROR_NONE
 
 #define machine_data(_object_)
 
@@ -41,20 +41,12 @@
  * ---------- includes --------------------------------------------------------
  */
 
+#define REGION_VMEM_MIN             PAGESZ
+#define REGION_VMEM_MAX             0xffffffffU
+
 #include <architecture/architecture.h>
 #include <platform/platform.h>
 
-#include <glue/as.h>
-#include <glue/cpu.h>
-#include <glue/event.h>
 #include <glue/init.h>
-#include <glue/io.h>
-#include <glue/message.h>
-#include <glue/region.h>
-#include <glue/scheduler.h>
-#include <glue/segment.h>
-#include <glue/task.h>
-#include <glue/thread.h>
-#include <glue/timer.h>
 
 #endif

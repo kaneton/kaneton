@@ -8,7 +8,7 @@
 # file          /home/lec_l/kanet...profile/host/linux/ia32.mips64/mips64.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       laurent lec   [tue mar 25 13:35:18 2008]
+# updated       laurent lec   [fri mar 28 16:06:23 2008]
 #
 
 #
@@ -59,4 +59,50 @@ override define env_compile-c
   $(_CC_) $(_CC_FLAGS_) $${compile_c_options} -c $(2) -o $(1)
 endef
 
+
+ifeq ($(component),kaneton)
+
+main:			dependencies $(_KANETON_)
+
+$(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_)
+	$(call env_remove,$(_KANETON_),)
+
+	$(call env_executable,$(_KANETON_),				\
+			      $(_MACHINE_LO_) $(_LIBC_LO_)		\
+			      $(_TEST_LO_) $(_BOOTLOADER_LO_),		\
+			      $(_KANETON_LAYOUT_),			\
+			      $(ENV_OPTION_NO_STANDARD))
+
+
+#			      $(_CORE_LO_)
+
+clear:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
+	done
+
+	$(call env_remove,$(_KANETON_),)
+
+	$(call env_purge,)
+
+prototypes:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
+	done
+
+headers:
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,headers,)			; \
+	done
+
+dependencies:
+	$(call env_launch,$(_BOOTLOADER_DIR_)/Makefile,,)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,,)				; \
+	done
+
+
+behaviour             :=              specific
+
+endif
 
