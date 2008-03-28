@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kaneton/kaneton/core/debug/view.c
+ * file          /home/lec_l/kaneton/kaneton/core/debug/view.c
  *
  * created       matthieu bucchianeri   [wed jun 20 23:51:47 2007]
- * updated       matthieu bucchianeri   [sat aug  4 19:32:17 2007]
+ * updated       laurent lec   [thu mar 27 21:27:10 2008]
  */
 
 /*
@@ -44,8 +44,10 @@ t_uint64		read_timestamp(void)
   t_uint32		high;
   t_uint32		low;
 
+#ifdef IA32_DEPENDENT
   asm ("rdtsc"
        : "=d" (high), "=a" (low));
+#endif
 
   return ((t_uint64)high << 32 | low);
 }
@@ -211,9 +213,9 @@ t_error			view_download(void)
    * 1)
    */
 
+#ifdef IA32_DEPENDENT
   if (serial_init(SERIAL_PRIMARY, SERIAL_BR57600, SERIAL_8N1) != ERROR_NONE)
     VIEW_LEAVE(view, ERROR_UNKNOWN);
-
   serial_send(SERIAL_PRIMARY, (t_uint8*)&view->cycles, sizeof (t_uint64));
 
   for (n = 0; n < 999 && view->flyweight[n] != NULL; n++)
@@ -222,6 +224,7 @@ t_error			view_download(void)
   n *= 1000;
   serial_send(SERIAL_PRIMARY, (t_uint8*)&n, sizeof (t_uint64));
   n = 0;
+#endif
 
   /*
    * 2)
@@ -239,8 +242,10 @@ t_error			view_download(void)
        * 3)
        */
 
+#ifdef IA32_DEPENDENT
       serial_send(SERIAL_PRIMARY, o->name, strlen(o->name));
       serial_send(SERIAL_PRIMARY, (t_uint8*)&o->time, sizeof (t_uint64));
+#endif
 
       printf("\r--> %c (%u records / %u)", c, ++n, sz);
 
@@ -267,7 +272,9 @@ t_error			view_download(void)
    * 5)
    */
 
+#ifdef IA32_DEPENDENT
   serial_send(SERIAL_PRIMARY, "eof", 3);
+#endif
 
   cons_msg('+', "done.\n");
 

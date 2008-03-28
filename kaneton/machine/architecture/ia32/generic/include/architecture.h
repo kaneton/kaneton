@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/kan...ture/ia32/generic/include/architecture.h
+ * file          /home/lec_l/kanet...ture/ia32/generic/include/architecture.h
  *
  * created       julien quintard   [thu jun  7 12:02:10 2007]
- * updated       matthieu bucchianeri   [mon dec 24 19:29:02 2007]
+ * updated       laurent lec   [thu mar 27 21:06:00 2008]
  */
 
 #ifndef GENERIC_ARCHITECTURE_H
@@ -23,6 +23,7 @@
 #define PAGESZ			___kaneton$pagesz
 
 #define IA32_CPU_MAX		16
+#define IA32_DEPENDENT
 
 /*
  * ---------- includes --------------------------------------------------------

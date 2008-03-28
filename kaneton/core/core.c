@@ -135,7 +135,9 @@ void			kaneton(t_init*				bootloader)
   cons_msg('+', "kaneton started\n");
 
   /* [cut] */
+#ifdef IA32_DEPENDENT
   ibmpc_keyboard_init();
+#endif
 
 #ifdef TESTSUITE_MANUAL_ENABLE
   extern i_thread kthread;
@@ -176,9 +178,13 @@ void			kaneton(t_init*				bootloader)
   cons_msg('+', "starting debug manager\n");
   kthread = ID_UNUSED;
 
+#ifdef IA32_DEPENDENT
   STI();
+#endif
   debug_initialize();
+#ifdef IA32_DEPENDENT
   CLI();
+#endif
 
 #ifdef TESTSUITE_FAST_REBOOT
   /* disable paging to remap the bootloader */
@@ -203,7 +209,9 @@ void			kaneton(t_init*				bootloader)
   if (kaneton_launch() != ERROR_NONE)
     cons_msg('!', "failed to start the initial mod service\n");
 
+#ifdef IA32_DEPENDENT
   STI();
+#endif
 
   char c = '-';
 
@@ -221,7 +229,9 @@ void			kaneton(t_init*				bootloader)
       printf("\r %c", c);
     }
 
+#ifdef IA32_DEPENDENT
   CLI();
+#endif
   /* [/cut] */
 
   cons_msg('#', "kaneton is stopping...\n");
@@ -242,7 +252,9 @@ void			kaneton(t_init*				bootloader)
 
   cons_msg('+', "system shutdown\n");
 
+#ifdef IA32_DEPENDENT
   HLT();
+#endif
 }
 
 /* [cut] */

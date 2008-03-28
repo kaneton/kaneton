@@ -54,13 +54,17 @@ static t_error		debug_exec_cmd_tab(t_serial_data *cmd)
    * 2)
    */
 
+#ifdef IA32_DEPENDENT
   printf_init(serial_put, 0);
+#endif
 
   /*
    * 3)
    */
 
+#ifdef IA32_DEPENDENT
   STI(); /* XXX this is machdep */
+#endif
 
   func();
 
@@ -91,21 +95,24 @@ static t_error		debug_recv(void)
    * 1)
    */
 
+#ifdef IA32_DEPENDENT
   serial_recv(SERIAL_PRIMARY, &recv_type);
+#endif
 
   if (!strcmp((char*)recv_type.data, "command"))
     {
+#ifdef IA32_DEPENDENT
       t_serial_data		cmd;
 
       /*
        * 2)
        */
-
       serial_recv(SERIAL_PRIMARY, (t_serial_data  *) &cmd);
       debug_exec_cmd_tab(&cmd);
       free(cmd.data);
       serial_put(-1);
       serial_send(SERIAL_PRIMARY, (t_uint8*)"endprintf", 9);
+#endif
     }
   else
     printf("debug receive unknown type\n");
@@ -135,14 +142,18 @@ t_error			debug_initialize(void)
    * 1)
    */
 
+#ifdef IA32_DEPENDENT
   serial_init(SERIAL_PRIMARY, SERIAL_BR57600, SERIAL_8N1);
+#endif
   printf("serial port initialized\n");
 
   /*
    * 2)
    */
 
+#ifdef IA32_DEPENDENT
   serial_send(SERIAL_PRIMARY, "Ready!", 6);
+#endif
 
   /*
    * 3)
