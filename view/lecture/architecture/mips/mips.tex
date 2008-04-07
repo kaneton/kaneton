@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/lecture/architecture/mips/mips.tex
 %
 % created       julien quintard   [wed may 16 18:42:56 2007]
-% updated       julien quintard   [sun mar 23 17:25:54 2008]
+% updated       julien quintard   [mon apr  7 01:56:53 2008]
 %
 
 %
@@ -180,14 +180,14 @@
 		{figures/superscalar-correction}
 
 \pgfdeclareimage[interpolate=true,width=101pt,height=61pt]
-                {pibus-overview}
-		{figures/pibus-overview}
+                {tetonbus-overview}
+		{figures/tetonbus-overview}
 \pgfdeclareimage[interpolate=true,width=218pt,height=121pt]
-                {pibus-communication}
-		{figures/pibus-communication}
+                {tetonbus-communication}
+		{figures/tetonbus-communication}
 \pgfdeclareimage[interpolate=true,width=185pt,height=130pt]
-                {pibus-example}
-		{figures/pibus-example}
+                {tetonbus-example}
+		{figures/tetonbus-example}
 \pgfdeclareimage[interpolate=true,width=251pt,height=125pt]
                 {memory-organisation}
 		{figures/memory-organisation}
@@ -204,8 +204,8 @@
                 {cache-overview}
 		{figures/cache-overview}
 \pgfdeclareimage[interpolate=true,width=208pt,height=111pt]
-                {pibus-cache}
-		{figures/pibus-cache}
+                {tetonbus-cache}
+		{figures/tetonbus-cache}
 \pgfdeclareimage[interpolate=true,width=128pt,height=93pt]
                 {natural-partitionning}
 		{figures/natural-partitionning}
@@ -727,13 +727,11 @@
 
   \-
 
-  \textbf{opcodes}:
-
-  $~~~~~= opcode~field - 1 + function~field$
-
-  $~~~~~= 2^{6} - 1 + 2^{6}$
-
-  $~~~~~= 127$
+  \begin{eqnarray*}
+    \# opcodes & = & opcode~field~size - 1 + function~field \\
+              & = & 2^{6} - 1 + 2^{6} \\
+              & = & 127
+  \end{eqnarray*}
 \end{frame}
 
 %
@@ -764,7 +762,7 @@
           Jr R31                        ; return
   \end{verbatim}
 
-  \textbf{Result}: $2 + N * 3 + 3 + 2$ cycles
+  \textbf{Result}: $2 + N \times 3 + 3 + 2$ cycles
 \end{frame}
 
 %
@@ -1029,7 +1027,9 @@
 
   \-
 
-  $~~~~~target~address = branch~instruction~address + 4 + (Immediate << 2)$
+  \begin{center}
+    $target~address = branch~instruction~address + (Immediate \times 4)$
+  \end{center}
 
   \-
 
@@ -1115,15 +1115,12 @@
 
   \-
 
-  \textbf{loss}:
-
-  $~~~~~= cycle~loss * frequency$
-
-  $~~~~~= 50\% * 1\%$
-
-  $~~~~~= 0.005$
-
-  $~~~~~= 0.5\%$
+  \begin{eqnarray*}
+    loss & = & cycle~loss \times frequency \\
+         & = & 50\% \times 1\% \\
+         & = & 0.005 \\
+         & = & 0.5\%
+  \end{eqnarray*}
 
   \-
 
@@ -1155,7 +1152,9 @@
 
   \-
 
-  $~~~~~real~earning = earning * use$
+  \begin{center}
+    $real~earning = earning \times use$
+  \end{center}
 \end{frame}
 
 % 17)
@@ -1176,11 +1175,10 @@
 
   \-
 
-  \textbf{performance}:
-
-  $~~~~~= frequency / number~of~cyles~per~instruction$
-
-  $~~~~~= F / CPI$
+  \begin{eqnarray*}
+    performance & = & \frac{frequency}{number~of~cyles~per~instruction} \\
+                & = & \frac{F}{CPI}
+  \end{eqnarray*}
 
   \-
 
@@ -1274,7 +1272,7 @@
           Jr R31                        ; return
   \end{verbatim}
 
-  \textbf{Result}: $6 + N * 10 + 10 + 1$ cycles
+  \textbf{Result}: $6 + N \times 10 + 10 + 1$ cycles
 \end{frame}
 
 %
@@ -1496,9 +1494,9 @@
 
   \begin{itemize}
     \item
-      \textbf{Latency}: 100 ns = 1 cycle
+      \textbf{Latency}: $100~ns = 1~cycle$
     \item
-      \textbf{Frequency}: 1 instruction / 100 ns = 10 Mhz
+      \textbf{Frequency}: $\frac{1~instruction}{100~ns} = 10~Mhz$
     \item
       \textbf{CPI}: 1
   \end{itemize}
@@ -1509,9 +1507,9 @@
 
   \begin{itemize}
     \item
-      \textbf{Latency}: 105 ns = 2 cycles
+      \textbf{Latency}: $105~ns = 2~cycles$
     \item
-      \textbf{Frequency}: 1 instruction / 50 ns = 20 Mhz
+      \textbf{Frequency}: $\frac{1~instruction}{50~ns} = 20~Mhz$
     \item
       \textbf{CPI}: 1
   \end{itemize}
@@ -1829,26 +1827,35 @@
 \begin{frame}
   \frametitle{Next Instruction Address Computation}
 
-  Let's review the \textbf{logic} next instruction address formula:
-
-  \-
-
-  There are two cases:
+  In the case of a branch, two different computations can be performed:
 
   \begin{itemize}
     \item
-      \textbf{Rs == Rt}:
-        $target~address = branch~instruction~address + 4 + (Immediate * 4)$
+      \textbf{Branch}:
+      $target~address = branch~instruction~address + (Immediate \times 4)$
     \item
-      \textbf{Rs != Rt}:
-        $target~address = next~instruction~address$
+      \textbf{Continue}:
+      $target~address = branch~instruction~address + 4$
   \end{itemize}
 
   \-
 
-  First of all, the part of the formula: \textbf{branch address + 4}
-  was already computed between the IFC stage and the DEC stage because
-  the previous instruction computed the next instruction address.
+  First, note that $Immediate \times 4$ is different from $Immediate << 2$ as
+  the former enables relative jumps.
+
+  \-
+
+  Noteworthy is also that the DEC stage actually does not have access to
+  the branch instruction address as the PC register does not contains its
+  instruction address but the address of the instruction which is, at the
+  same time, in the IFC stage.
+
+  \-
+
+  As a result, rather than substracting $4$ to the PC register contents, the
+  microprocessor relies on the compiler for adjusting the Immediate so that
+  the calculation becomes:
+  $target~address = branch~instruction~address + 4 + (Immediate \times 4)$.
 \end{frame}
 
 % 25)
@@ -1877,7 +1884,7 @@
 
   \begin{itemize}
     \item
-      \textbf{Multiplication}: Immed * 4
+      \textbf{Multiplication}: $Immed \times 4$
     \item
       \textbf{Comparison}
     \item
@@ -1896,18 +1903,15 @@
 \begin{frame}
   \frametitle{Multiplication Solution}
 
-  First of all, we can handle the multiplication \textbf{Immed * 4}
-  in a more quickly way.
-
-  \-
-
-  In fact, this muliplication operation will takes exactly zero time
-  to compute.
+  First of all, we can handle the multiplication \textbf{$Immed \times 4$}
+  in a more quickly way. In fact, this muliplication operation will takes
+  exactly zero time to compute.
 
   \-
 
   This solution is to add a hardware just to perform a multiplexing
-  between a multiplication by four and the number four.
+  between a multiplication by four and the number four. Note that the bit
+  sign must be wired to the correct multiplexer.
 
   \begin{center}
     \pgfuseimage{decode-multiplexer}
@@ -1919,7 +1923,7 @@
 \begin{frame}
   \frametitle{Still Problem}
 
-  We success to optimise the multiplication so let's now compare the
+  We succeeded in optimising the multiplication so let's now compare the
   two stages DEC and EXE.
 
   \begin{center}
@@ -1988,7 +1992,7 @@
 
   \-
 
-  MIPS architecture specification tells that two following branchs are
+  MIPS architecture specifications specify that two following branchs are
   not allowed.
 \end{frame}
 
@@ -2273,9 +2277,9 @@
 
   \-
 
-  $CPI = 9 / 7$
+  $CPI = \frac{9}{7}$
 
-  $CPIu = 9 / 6$
+  $CPIu = \frac{9}{6}$
 
   \-
 
@@ -2292,9 +2296,9 @@
 
   \-
 
-  $CPI = 6 / 6$
+  $CPI = \frac{6}{6}$
 
-  $CPI = 6 / 6$ \alert{= 1}
+  $CPI = \frac{6}{6} = $ \alert{1}
 \end{frame}
 
 % 13)
@@ -2526,9 +2530,9 @@
 
   \-
 
-  $CPI = 9 / 7$
+  $CPI = \frac{9}{7}$
 
-  $CPIu = 9 / 6$
+  $CPIu = \frac{9}{6}$
 \end{frame}
 
 % 4)
@@ -2555,9 +2559,9 @@
 
   \-
 
-  $CPI = 8 / 6$
+  $CPI = \frac{8}{6}$
 
-  $CPIu = 8 / 5$
+  $CPIu = \frac{8}{5}$
 \end{frame}
 
 % 5)
@@ -2580,9 +2584,9 @@
 
   \-
 
-  $CPI = 6 / 6$
+  $CPI = \frac{6}{6}$
 
-  $CPIu = 6 / 5$
+  $CPIu = \frac{6}{5}$
 \end{frame}
 
 % 6)
@@ -2603,9 +2607,9 @@
 
   \-
 
-  $CPI = 5 / 5$
+  $CPI = \frac{5}{5}$
 
-  $CPIu = 5 / 5$ \alert{= 1}
+  $CPIu = \frac{5}{5} = $ \alert{1}
 \end{frame}
 
 % 7)
@@ -2674,9 +2678,9 @@
 
   \-
 
-  $CPI = 8 / 6$
+  $CPI = \frac{8}{6}$
 
-  $CPIu = 8 / 5$
+  $CPIu = \frac{8}{5}$
 \end{frame}
 
 % 10)
@@ -2697,9 +2701,9 @@
 
   \-
 
-  $CPI = 5 / 5$
+  $CPI = \frac{5}{5}$
 
-  $CPIu = 5 / 5$ \alert{= 1}
+  $CPIu = \frac{5}{5} = $ \alert{1}
 
   \-
 
@@ -2753,9 +2757,9 @@
 
   \-
 
-  \textbf{Performances}: $8 cycles / iteration$
+  \textbf{Performances}: $\frac{8~cycles}{iteration}$
 
-  \textbf{Performances}: $4 cycles / element$
+  \textbf{Performances}: $\frac{4~cycles}{element}$
 \end{frame}
 
 % 13
@@ -3010,9 +3014,13 @@
 
   \begin{itemize}
     \item
-      \textbf{MIPS5}: $8~cycles / 100~Mhz = 8 / 100 * 10^{6} = 80~ns$
+      \textbf{MIPS5}: $\frac{8~cycles}{100~Mhz} =
+                       \frac{8}{100} \times 10^{6} =
+                       80~ns$
     \item
-      \textbf{MIPS7}: $10~cycles / 150~Mhz = 10 / 150 * 10^{6} = 66~ns$
+      \textbf{MIPS7}: $\frac{10~cycles}{150~Mhz} =
+                       \frac{10}{150} \times 10^{6} =
+                       66~ns$
   \end{itemize}
 \end{frame}
 
@@ -3025,9 +3033,13 @@
 
   \begin{itemize}
     \item
-      \textbf{MIPS5}: $5~cycles / 100~Mhz = 5 / 100 * 10^{6} = 50~ns$
+      \textbf{MIPS5}: $\frac{5~cycles}{100~Mhz} =
+                       \frac{5}{100} \times 10^{6} =
+                       50~ns$
     \item
-      \textbf{MIPS7}: $6~cycles / 150 Mhz = 6 / 150 * 10^{6} = 40~ns$
+      \textbf{MIPS7}: $\frac{6~cycles}{150~Mhz} =
+                       \frac{6}{150} \times 10^{6} =
+                       40~ns$
   \end{itemize}
 \end{frame}
 
@@ -3040,9 +3052,13 @@
 
   \begin{itemize}
     \item
-      \textbf{MIPS5}: $5~cycles / 100~Mhz = 5 / 100 * 10^{6} = 50~ns$
+      \textbf{MIPS5}: $\frac{5~cycles}{100~Mhz} =
+                       \frac{5}{100} \times 10^{6} =
+                       50~ns$
     \item
-      \textbf{MIPS7}: $5~cycles / 150~Mhz = 5 / 150 * 10^{6} = 33~ns$
+      \textbf{MIPS7}: $\frac{5~cycles}{150~Mhz} =
+                       \frac{5}{150} \times 10^{6} =
+                       33~ns$
   \end{itemize}
 \end{frame}
 
@@ -3055,9 +3071,13 @@
 
   \begin{itemize}
     \item
-      \textbf{MIPS5}: $4~cycles / 100~Mhz = 4 / 100 * 10^{6} = 40~ns$
+      \textbf{MIPS5}: $\frac{4~cycles}{100~Mhz} =
+                       \frac{4}{100} \times 10^{6} =
+                       40~ns$
     \item
-      \textbf{MIPS7}: $4~cycles / 150~Mhz = 4 / 150 * 10^{6} = 26~ns$
+      \textbf{MIPS7}: $\frac{4~cycles}{150~Mhz} =
+                       \frac{4}{150} \times 10^{6} =
+                       26~ns$
   \end{itemize}
 \end{frame}
 
@@ -3131,7 +3151,7 @@
 \begin{frame}
   \frametitle{Futur Works}
 
-  \textbf{P = F / CPIu}
+  \textbf{$P = \frac{F}{CPIu}$}
 
   \-
 
@@ -3309,7 +3329,7 @@
           z
   \end{verbatim}
 
-  Be careful, a branch or jump instruction cannot be executed since its delay
+  Be careful, a branch or jump instruction cannot be executed if its delay
   slots are not loaded in the instruction buffer.
 \end{frame}
 
@@ -3451,6 +3471,32 @@
   \end{enumerate}
 \end{frame}
 
+% 32)
+
+\begin{frame}
+  \frametitle{Furter}
+
+  Researchers, limited by the capacity of \textbf{instruction-level
+  parallelism} moved to other techniques including:
+
+  \begin{itemize}
+    \item
+      \textbf{Out-of-Order Execution}: by detecting non-dependent instructions
+      in order to dynamically re-schedule instructions for filling stalls in;
+    \item
+      \textbf{VLIW - Very Long Instruction Word}: dynamic re-scheduling
+      introducing too much complexity, the complexity was rejected on the
+      compiler which informs the microprocessor of independent instructions;
+    \item
+      \textbf{SMT - Simultaneous Multithreading}: by allowing the compiler
+      to specify multiples execution streams, the microprocessor can take
+      advantage of semantically independent instructions for filling stalls in;
+    \item
+      \textbf{Multi-Core}: combines two or more independent cores into a
+      single package composed of a single integrated circuit.
+  \end{itemize}
+\end{frame}
+
 %
 % memory
 %
@@ -3462,24 +3508,24 @@
 \begin{frame}
   \frametitle{Overview}
 
-  We will study the Pi-Bus to understand how different entities can
+  We will study the TetonBus to understand how different entities can
   access memory sequentially.
 
   \-
 
   Then we will concentrate on the memory and especially the different
-  cache and policies used by the microprocessors.
+  caches and policies used by the microprocessors.
 \end{frame}
 
 % 2)
 
 \begin{frame}
-  \frametitle{Pi-Bus}
+  \frametitle{TetonBus}
 
   There are three types of objects:
 
   \begin{center}
-    \pgfuseimage{pibus-overview}
+    \pgfuseimage{tetonbus-overview}
   \end{center}
 
   \begin{enumerate}
@@ -3497,7 +3543,7 @@
 \begin{frame}
   \frametitle{Steps}
 
-  The Pi-Bus steps are explained below:
+  The TetonBus steps are explained below:
 
   \begin{enumerate}
     \item
@@ -3522,10 +3568,10 @@
 % 4)
 
 \begin{frame}
-  \frametitle{Pi-Bus Communication}
+  \frametitle{TetonBus Communication}
 
   \begin{center}
-    \pgfuseimage{pibus-communication}
+    \pgfuseimage{tetonbus-communication}
   \end{center}
 \end{frame}
 
@@ -3535,7 +3581,7 @@
   \frametitle{\textbf{Sw} Instruction Example}
 
   \begin{center}
-    \pgfuseimage{pibus-example}
+    \pgfuseimage{tetonbus-example}
   \end{center}
 \end{frame}
 
@@ -3552,7 +3598,7 @@
 
   \-
 
-  Indeed, the Pi-Bus is in fact pipelined since it handles memory location
+  Indeed, the TetonBus is in fact pipelined since it handles memory location
   while transfering the previous data.
 
   \-
@@ -3679,7 +3725,7 @@
 \begin{frame}
   \frametitle{Caches}
 
-  You can notice that each memory type fulfills in a MIPS requirement but never
+  You can notice that each memory type fulfils a MIPS requirement but never
   all.
 
   \-
@@ -3714,17 +3760,12 @@
     \pgfuseimage{memory-access-time}
   \end{center}
 
-  \-
-
-  \textbf{cycles per access}:
-
-  $~~~~~= 1 * (4~Kb / 4~Gb) +$
-
-  $~~~~~~~ 10 * ((4~Mb - 4~Kb) / 4~Gb) +$
-
-  $~~~~~~~ 10^{6} * ((4~Gb - 4~Mb) / 4~Gb)$
-
-  $~~~~~= 999 023$ cycles
+  \begin{eqnarray*}
+    \frac{cycles}{access} & = & 1 \times \frac{4~Kb}{4~Gb} + \\
+                          &   & 10 \times \frac{4~Mb - 4~Kb}{4~Gb} + \\
+                          &   & 10^{6} \times \frac{4~Gb - 4~Mb}{4~Gb} \\
+                          & = & 999 023
+  \end{eqnarray*}
 \end{frame}
 
 % 13)
@@ -3732,8 +3773,8 @@
 \begin{frame}
   \frametitle{Spatial Locality}
 
-  The previous result is theorically correct but we need to take care
-  of the spatial locality.
+  The previous result is theorically correct but we need to take the
+  spatial locality into consideration.
 
   \-
 
@@ -3765,15 +3806,13 @@
 
   \-
 
-  \textbf{cycles per access}:
-
-  $~~~~~ = 1 * 0.90 +$
-
-  $~~~~~~~ 8 * 10 * 0.10 * (1 - 10^{-7}) +$
-
-  $~~~~~~~ 1024 * 10^{6} x 10^{-7}$
-
-  $~~~~~ = 111$ cycles
+  \begin{eqnarray*}
+    \frac{cycles}{access} & = & 1 \times 0.90 + \\
+                          &   & 8 \times 10 \times 0.10 \times
+                                (1 - 10^{-7}) + \\
+                          &   & 1024 \times 10^{6} \times 10^{-7} \\
+                          & = & 111
+  \end{eqnarray*}
 \end{frame}
 
 % 15)
@@ -3806,7 +3845,7 @@
   \-
 
   Moreover, to perform an hard drive reading of \textbf{N} consecutive
-  words, the access time is in fact: \textbf{A + N x B}.
+  words, the access time is in fact: \textbf{$A + N \times B$}.
 \end{frame}
 
 % 16)
@@ -3827,7 +3866,7 @@
   \-
 
   So previous computations were false because we used a bad formula:
-  \textbf{N x (A + B)}.
+  \textbf{$N \times (A + B)$}.
 
   \-
 
@@ -3848,15 +3887,13 @@
 
   \-
 
-  \textbf{cycles per access}:
-
-  $~~~~~ = 1 x 0.97 +$
-
-  $~~~~~~~ (9 + (8 x 1)) x 0.03 x (1 - 10^-7) +$
-
-  $~~~~~~~ (999900 + (1024 x 100)) x 10^-7$
-
-  $~~~~~ = 1.62$ cycles
+  \begin{eqnarray*}
+    \frac{cycles}{access} & = & 1 \times 0.97 + \\
+                          &   & (9 + (8 \times 1)) \times 0.03 \times
+                                (1 - 10^-7) + \\
+                          &   & (999900 + (1024 \times 100)) \times 10^-7 \\
+                          & = & 1.62
+  \end{eqnarray*}
 \end{frame}
 
 % 18)
@@ -3967,11 +4004,11 @@
 \begin{frame}
   \frametitle{Cache Manager}
 
-  We will call the Cache Manager the Master on the Pi-Bus which communicates
+  We will call the Cache Manager the Master on the TetonBus which communicates
   with the memories.
 
   \begin{center}
-    \pgfuseimage{pibus-cache}
+    \pgfuseimage{tetonbus-cache}
   \end{center}
 \end{frame}
 
@@ -4107,7 +4144,9 @@
 
   \-
 
-  $Miss~Rate = Number~of~Misses / Number~of~Accesses$
+  \begin{center}
+    $Miss~Rate = \frac{Number~of~Misses}{Number~of~Accesses}$
+  \end{center}
 
   \-
 
@@ -4640,15 +4679,13 @@
 
   \-
 
-  \textbf{RP}:
-
-  $~~~~~= penalty / reading * reading~number / instruction$
-
-  $~~~~~= 9 * (0.2 * 2 + 0.1 * 1 + 0.7 * 1)$
-
-  $~~~~~= 9 * 1.2$
-
-  $~~~~~= 10.8$ cycles
+  \begin{eqnarray*}
+    RP & = & \frac{penalty}{reading} \times
+             \frac{reading~number}{instruction} \\
+       & = & 9 \times (0.2 \times 2 + 0.1 \times 1 + 0.7 \times 1) \\
+       & = & 9 \times 1.2 \\
+       & = & 10.8
+  \end{eqnarray*}
 \end{frame}
 
 % 56)
@@ -4656,16 +4693,11 @@
 \begin{frame}
   \frametitle{Write Penalty}
 
-  The same calculations come for writings.
+  The same calculations come for writings. On a perfect system a writing
+  takes one cycle while in a concrete system a writing takes 4 cycles; the
+  writing penalty is therefore \textbf{3} cycles per instruction.
 
   \-
-
-  On a perfect system a writing takes one cycle while in a concrete system
-  a writing takes 4 cycles.
-
-  \-
-
-  The writing penalty is so \textbf{3} cycles per instruction.
 
   \begin{tabular}{|p{3cm}|p{3cm}|p{3cm}|}
     \hline
@@ -4688,19 +4720,17 @@
     \hline
   \end{tabular}
 
-  Finally, the writing penalty is equal to:
-
   \-
 
-  \textbf{WP}:
+  Finally, the writing penalty is equal to:
 
-  $~~~~~= penalty / writing * writing~number / instruction$
-
-  $~~~~~= 3 * (0.2 * 0 + 0.1 * 1 + 0.7 * 0)$
-
-  $~~~~~= 3 * 0.1$
-
-  $~~~~~= 0.3$ cycles
+  \begin{eqnarray*}
+    WP & = & \frac{penalty}{writing} \times
+             \frac{writing~number}{instruction} \\
+       & = & 3 \times (0.2 \times 0 + 0.1 \times 1 + 0.7 \times 0) \\
+       & = & 3 \times 0.1 \\
+       & = & 0.3
+  \end{eqnarray*}
 \end{frame}
 
 % 57)
@@ -4720,11 +4750,10 @@
 
   \-
 
-  \textbf{CPI}:
-
-  $~~~~~= 1.1 + 10.8 + 0.3$
-
-  $~~~~~= 12.2$ cycles
+  \begin{eqnarray*}
+    CPI & = & 1.1 + 10.8 + 0.3 \\
+        & = & 12.2
+  \end{eqnarray*}
 \end{frame}
 
 % 59)
@@ -4762,17 +4791,12 @@
 
   The number of sets in the cache is:
 
-  \-
 
-  \textbf{sets number}:
-
-  $~~~~~= cache~size / block~size / associative~degree$
-
-  $~~~~~= 16~Kb / 16~b / 2$
-
-  $~~~~~= 512$ sets
-
-  \-
+  \begin{eqnarray*}
+    \# sets & = & \frac{\frac{cache~size}{block~size}}{associative~degree} \\
+            & = & \frac{\frac{16~Kb}{16~b}}{2} \\
+            & = & 512
+  \end{eqnarray*}
 
   Note that with a 64 Mbytes memory composed of blocks of 16 bytes size,
   there are exactly 4 Mblocks or $2^{22}$ blocks of physical memory.
@@ -4886,7 +4910,9 @@
 
   \-
 
-  $1 + (4 + (2 + 4) x 4) + 1 = 30$ cycles
+  \begin{center}
+    $1 + (4 + (2 + 4) \times 4) + 1 = 30$ cycles
+  \end{center}
 \end{frame}
 
 % 68)
@@ -4924,18 +4950,17 @@
       \textbf{Hit}: 0 cycles because the data is in cache so the access time
       is one cycle so no penalty.
     \item
-      \textbf{Miss}: $(30 - 1) x 1.2 = 34.8$ penalty cycles.
+      \textbf{Miss}: $(30 - 1) \times 1.2 = 34.8$ penalty cycles.
   \end{itemize}
 
   To conclude, the reading penalty is equal to:
 
   \-
 
-  \textbf{RP}:
-
-  $~~~~~= 0 * 0.95 + 34.8 * 0.05$
-
-  $~~~~~= 1.740$ cycles per instruction
+  \begin{eqnarray*}
+    RP & = & 0 \times 0.95 + 34.8 \times 0.05 \\
+       & = & 1.740
+  \end{eqnarray*}
 \end{frame}
 
 % 71)
@@ -4955,11 +4980,10 @@
 
   \-
 
-  \textbf{CPI}:
-
-  $~~~~~= 1.1 + 0.3 + 1.740$
-
-  $~~~~~= 3.140$ cycles
+  \begin{eqnarray*}
+    CPI & = & 1.1 + 0.3 + 1.740 \\
+        & = & 3.140
+  \end{eqnarray*}
 \end{frame}
 
 %

@@ -367,8 +367,8 @@ def			main():
 
   if not (host != None and
           os.path.isdir("profile/host/" + host + "." + architecture)):
-    error("the shell environment variable KANETON_HOST is not set " +	\
-          "or is incorrect.\n")
+    error("the shell environment variable KANETON_HOST or " +           \
+          "KANETON_ARCHITECTURE is not set or is incorrect.\n")
 
   # set the configuration directories based on the user variables.
   g_directories = ("profile/",

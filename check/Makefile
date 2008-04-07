@@ -31,13 +31,19 @@ SUBDIRS			:=		$(shell $(call env_pull,$(LIST),))
 
 MODULES			:=		$(foreach s,$(SUBDIRS),$s/$s.lo)
 
+TEST_LO			:=		$(if $(_TESTSUITE_),$(_TEST_LO_),null)
+
 #
 # ---------- rules ------------------------------------------------------------
 #
 
 main:			build run
 
-build:			$(_TEST_LO_)
+build:			$(TEST_LO)
+
+# XXX hyper crade mais honnetement jmen branle vu la non conformite de check
+null:
+	touch $(_TEST_LO_)
 
 $(_TEST_LO_):		libs
 	$(call env_remove,$(_TEST_LO_),)

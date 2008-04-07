@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [sun nov 18 15:38:48 2007]
+# updated       julien quintard   [thu mar 27 23:54:17 2008]
 #
 
 #
@@ -210,5 +210,12 @@ cheat- cheat:
 
 cheat-%:
 	$(call env_launch,$(_CHEAT_SCRIPT_),$*,)
+
+#
+# ---------- env --------------------------------------------------------------
+#
+
+env-%:
+	echo "$($*)"
 
 endif

@@ -35,7 +35,8 @@ include			../environment/env.mk
 
 SUBDIRS			:=		core				\
 					machine				\
-					libc
+					libc				\
+					$(_TEST_DIR_)			
 
 #
 # ---------- rules ------------------------------------------------------------
@@ -44,7 +45,7 @@ ifeq ($(behaviour),default)
 
 main:			dependencies $(_KANETON_)
 
-$(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_) libs
+$(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_)
 	$(call env_remove,$(_KANETON_),)
 
 	$(call env_executable,$(_KANETON_),				\
@@ -52,8 +53,6 @@ $(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_) libs
 			      $(_TEST_LO_),				\
 			      $(_KANETON_LAYOUT_),			\
 			      $(ENV_OPTION_NO_STANDARD))
-libs:
-	  $(call env_launch,${_TEST_DIR_}/Makefile,,)
 
 clear:
 	for d in $(SUBDIRS) ; do					\
