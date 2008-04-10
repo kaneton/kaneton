@@ -153,18 +153,18 @@ void			bootloader_init_dump(void)
  * steps:
  *
  * 1) add the ISA segment from 0 to 1Mb.
- * 2)
+ * 2) add the bootloader segment.
  * 3) add the kernel code segment.
  * 4) add the init structure segment.
- * 5) add the inputs segment.
- * 6) add the segments segment.
- * 7) add the regions segment.
- * 8) add the cpu segment.
- * 9) add the kernel stack segment.
- * 10) add the alloc segment.
- * 11) add the mod service code segment.
- * 12) add the global offset table segment.
- * 13) add the page directory segment.
+ * 5) add the segments segment.
+ * 6) add the regions segment.
+ * 7) add the cpu segment.
+ * 8) add the kernel stack segment.
+ * 9) add the alloc segment.
+ * 10) add the global offset table segment.
+ * 11) add the page directory segment.
+ * 12) add the inputs segment.
+ * 13) add the mod service code segment.
  */
 
 void			bootloader_init_segments(void)
@@ -211,73 +211,83 @@ void			bootloader_init_segments(void)
    * 5)
    */
 
-  init->segments[5].address = (t_paddr)init->inputs;
-  init->segments[5].size = init->inputssz;
-  init->segments[5].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
+  init->segments[5].address = (t_paddr)init->segments;
+  init->segments[5].size = init->segmentssz;
+  init->segments[5].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 6)
    */
 
-  init->segments[6].address = (t_paddr)init->segments;
-  init->segments[6].size = init->segmentssz;
+  init->segments[6].address = (t_paddr)init->regions;
+  init->segments[6].size = init->regionssz;
   init->segments[6].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 7)
    */
 
-  init->segments[7].address = (t_paddr)init->regions;
-  init->segments[7].size = init->regionssz;
+  init->segments[7].address = (t_paddr)init->cpus;
+  init->segments[7].size = init->cpussz;
   init->segments[7].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 8)
    */
 
-  init->segments[8].address = (t_paddr)init->cpus;
-  init->segments[8].size = init->cpussz;
+  init->segments[8].address = init->kstack;
+  init->segments[8].size = init->kstacksz;
   init->segments[8].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 9)
    */
 
-  init->segments[9].address = init->kstack;
-  init->segments[9].size = init->kstacksz;
+  init->segments[9].address = init->alloc;
+  init->segments[9].size = init->allocsz;
   init->segments[9].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 10)
    */
 
-  init->segments[10].address = init->alloc;
-  init->segments[10].size = init->allocsz;
+  init->segments[10].address = (t_paddr)init->machdep.gdt.descriptor;
+  init->segments[10].size = PAGESZ;
   init->segments[10].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 11)
    */
 
-  init->segments[11].address = init->mcode;
-  init->segments[11].size = init->mcodesz;
-  init->segments[11].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
+  init->segments[11].address = (t_paddr)init->machdep.pd;
+  init->segments[11].size = PAGESZ;
+  init->segments[11].perms = PERM_READ | PERM_WRITE;
 
   /*
    * 12)
    */
 
-  init->segments[12].address = (t_paddr)init->machdep.gdt.descriptor;
-  init->segments[12].size = PAGESZ;
-  init->segments[12].perms = PERM_READ | PERM_WRITE;
+  if (init->inputssz != 0) // some input ?
+  {
+    init->segments[12].address = (t_paddr)init->inputs;
+    init->segments[12].size = init->inputssz;
+    init->segments[12].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
+  }
+  else
+    init->nsegments--;
 
   /*
    * 13)
    */
 
-  init->segments[13].address = (t_paddr)init->machdep.pd;
-  init->segments[13].size = PAGESZ;
-  init->segments[13].perms = PERM_READ | PERM_WRITE;
+  if (init->mcodesz != 0) // mod is loaded ?
+  {
+    init->segments[13].address = init->mcode;
+    init->segments[13].size = init->mcodesz;
+    init->segments[13].perms = PERM_READ | PERM_WRITE | PERM_EXEC;
+  }
+  else
+    init->nsegments--;
 }
 
 /*
@@ -291,7 +301,7 @@ void			bootloader_init_segments(void)
  * steps:
  *
  * 1) add the ISA region.
- * 2)
+ * 2) add the bootloader region.
  * 3) add the kernel code region.
  * 4) add the init structure region.
  * 5) add the segments region.
@@ -349,9 +359,9 @@ void			bootloader_init_regions(void)
    * 5)
    */
 
-  init->regions[4].segment = 6;
-  init->regions[4].address = init->segments[6].address;
-  init->regions[4].size = init->segments[6].size;
+  init->regions[4].segment = 5;
+  init->regions[4].address = init->segments[5].address;
+  init->regions[4].size = init->segments[5].size;
   init->regions[4].offset = 0;
   init->regions[4].opts = REGION_OPT_PRIVILEGED;
 
@@ -359,9 +369,9 @@ void			bootloader_init_regions(void)
    * 6)
    */
 
-  init->regions[5].segment = 7;
-  init->regions[5].address = init->segments[7].address;
-  init->regions[5].size = init->segments[7].size;
+  init->regions[5].segment = 6;
+  init->regions[5].address = init->segments[6].address;
+  init->regions[5].size = init->segments[6].size;
   init->regions[5].offset = 0;
   init->regions[5].opts = REGION_OPT_PRIVILEGED;
 
@@ -369,9 +379,9 @@ void			bootloader_init_regions(void)
    * 7)
    */
 
-  init->regions[6].segment = 8;
-  init->regions[6].address = init->segments[8].address;
-  init->regions[6].size = init->segments[8].size;
+  init->regions[6].segment = 7;
+  init->regions[6].address = init->segments[7].address;
+  init->regions[6].size = init->segments[7].size;
   init->regions[6].offset = 0;
   init->regions[6].opts = REGION_OPT_PRIVILEGED;
 
@@ -379,9 +389,9 @@ void			bootloader_init_regions(void)
    * 8)
    */
 
-  init->regions[7].segment = 9;
-  init->regions[7].address = init->segments[9].address;
-  init->regions[7].size = init->segments[9].size;
+  init->regions[7].segment = 8;
+  init->regions[7].address = init->segments[8].address;
+  init->regions[7].size = init->segments[8].size;
   init->regions[7].offset = 0;
   init->regions[7].opts = REGION_OPT_PRIVILEGED;
 
@@ -389,9 +399,9 @@ void			bootloader_init_regions(void)
    * 9)
    */
 
-  init->regions[8].segment = 10;
-  init->regions[8].address = init->segments[10].address;
-  init->regions[8].size = init->segments[10].size;
+  init->regions[8].segment = 9;
+  init->regions[8].address = init->segments[9].address;
+  init->regions[8].size = init->segments[9].size;
   init->regions[8].offset = 0;
   init->regions[8].opts = REGION_OPT_PRIVILEGED | REGION_OPT_GLOBAL;
 
@@ -399,9 +409,9 @@ void			bootloader_init_regions(void)
    * 10)
    */
 
-  init->regions[9].segment = 12;
-  init->regions[9].address = init->segments[12].address;
-  init->regions[9].size = init->segments[12].size;
+  init->regions[9].segment = 10;
+  init->regions[9].address = init->segments[10].address;
+  init->regions[9].size = init->segments[10].size;
   init->regions[9].offset = 0;
   init->regions[9].opts = REGION_OPT_PRIVILEGED;
 
@@ -409,9 +419,9 @@ void			bootloader_init_regions(void)
    * 11)
    */
 
-  init->regions[10].segment = 13;
-  init->regions[10].address = init->segments[13].address;
-  init->regions[10].size = init->segments[13].size;
+  init->regions[10].segment = 11;
+  init->regions[10].address = init->segments[11].address;
+  init->regions[10].size = init->segments[11].size;
   init->regions[10].offset = 0;
   init->regions[10].opts = REGION_OPT_PRIVILEGED;
 }

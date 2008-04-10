@@ -8,7 +8,7 @@
 # file          /home/lec_l/kanet...profile/host/linux/ia32.mips64/mips64.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       laurent lec   [fri mar 28 16:06:23 2008]
+# updated       laurent lec   [wed apr  2 20:00:55 2008]
 #
 
 #
@@ -24,6 +24,8 @@ include ../linux.mk
 
 #
 # create an executable file from object file and/or library files
+#
+# this version of the function uses ld instead of gcc as defined in linux.mk
 #
 # $(1):		executable file name
 # $(2):		objects files and/or libraries
@@ -45,20 +47,14 @@ define env_executable
   $(_LD_) $(_LD_FLAGS_) $${executable_options} $(2) -o $(1)
 endef
 
-#
-# from c file to object file
-#
-# $(1):		object file
-# $(2):		c file
-# $(3):		options
-#
 
-override define env_compile-c
-  compile_c_options=""							&& \
-  $(call env_display,green,COMPILE-C,$(2),		,)		&& \
-  $(_CC_) $(_CC_FLAGS_) $${compile_c_options} -c $(2) -o $(1)
-endef
-
+#
+# overrides rules for kaneton/Makefile
+# the $(_KANETON_) rule is overrided in order to link the kernel with the
+# bootloader, which is not the default behavior
+#
+# the behavior is then set to specific
+#
 
 ifeq ($(component),kaneton)
 

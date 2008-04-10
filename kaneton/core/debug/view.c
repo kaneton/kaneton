@@ -8,7 +8,7 @@
  * file          /home/lec_l/kaneton/kaneton/core/debug/view.c
  *
  * created       matthieu bucchianeri   [wed jun 20 23:51:47 2007]
- * updated       laurent lec   [thu mar 27 21:27:10 2008]
+ * updated       laurent lec   [sat mar 29 11:51:11 2008]
  */
 
 /*
@@ -243,7 +243,7 @@ t_error			view_download(void)
        */
 
 #ifdef IA32_DEPENDENT
-      serial_send(SERIAL_PRIMARY, o->name, strlen(o->name));
+      serial_send(SERIAL_PRIMARY, (t_uint8*)o->name, strlen(o->name));
       serial_send(SERIAL_PRIMARY, (t_uint8*)&o->time, sizeof (t_uint64));
 #endif
 
@@ -273,7 +273,7 @@ t_error			view_download(void)
    */
 
 #ifdef IA32_DEPENDENT
-  serial_send(SERIAL_PRIMARY, "eof", 3);
+  serial_send(SERIAL_PRIMARY, (t_uint8*)"eof", 3);
 #endif
 
   cons_msg('+', "done.\n");

@@ -221,8 +221,8 @@ t_error			thread_clone(i_task			taskid,
 {
   o_thread*		from;
   o_thread*		to;
-  t_state		state;
-  t_iterator		i;
+  //  t_state		state; USED IN 4)
+  //  t_iterator	i; USED IN 4)
   i_thread		threadid;
 
   THREAD_ENTER(thread);

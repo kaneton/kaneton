@@ -152,7 +152,7 @@ t_error			debug_initialize(void)
    */
 
 #ifdef IA32_DEPENDENT
-  serial_send(SERIAL_PRIMARY, "Ready!", 6);
+  serial_send(SERIAL_PRIMARY, (t_uint8*)"Ready!", 6);
 #endif
 
   /*

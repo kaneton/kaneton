@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...ne/glue/ibm-pc.ia32/educational/region.c
+ * file          /home/lec_l/kanet...ne/glue/ibm-pc.ia32/educational/region.c
  *
  * created       julien quintard   [wed dec 14 07:06:44 2005]
- * updated       matthieu bucchianeri   [wed jan  9 16:08:38 2008]
+ * updated       laurent lec   [sat mar 29 11:56:52 2008]
  */
 
 /*
@@ -73,6 +73,7 @@ t_error			glue_region_resize(i_as			as,
 					   i_region*		new)
 {
   // XXX
+  return (ERROR_NONE);
 }
 
 /*

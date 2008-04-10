@@ -1745,6 +1745,7 @@ t_error			interface_notify(t_uint8*		buffer,
    * 2)
    */
   t_uint32 op =  message->u.request.operation;
+  (void) op; /* XXX: UNUSED VAR */
   if (dispatch[message->u.request.operation](message) != ERROR_NONE)
     return (ERROR_UNKNOWN);
 

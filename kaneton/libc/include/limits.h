@@ -8,7 +8,7 @@
  * file          /home/lec_l/kaneton/kaneton/libc/include/limits.h
  *
  * created       julien quintard   [sun jun 10 17:53:28 2007]
- * updated       laurent lec   [thu mar 27 22:03:24 2008]
+ * updated       laurent lec   [sun mar 30 17:55:59 2008]
  */
 
 #ifndef LIBC_LIBSYS_LIMITS_H
@@ -32,13 +32,13 @@
  * return max integer value for a type
  */
 
-#define __MINOF_TYPE(t)        ((__typeof__(t))(((__typeof__(t))-1) < 0 ?  (((__typeof__(t))1) << sizeof(__typeof__(t)) * 8 - 1) :  0))
+#define __MINOF_TYPE(t)        ((__typeof__(t))(((__typeof__(t))-1) < 0 ?  (((__typeof__(t))1) << (sizeof(__typeof__(t)) * 8 - 1)) :  0))
 
 /*
  * return min integer value for a type
  */
 
-#define __MAXOF_TYPE(t)        ((__typeof__(t))(((__typeof__(t))-1) < 0 ? ~(((__typeof__(t))1) << sizeof(__typeof__(t)) * 8 - 1) : -1))
+#define __MAXOF_TYPE(t)        ((__typeof__(t))(((__typeof__(t))-1) < 0 ? ~(((__typeof__(t))1) << (sizeof(__typeof__(t)) * 8 - 1)) : -1))
 
 /*
  * ---------- macros ----------------------------------------------------------

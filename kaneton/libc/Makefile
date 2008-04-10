@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/crypt/kaneton/kaneton/libc/Makefile
+# file          /home/lec_l/kaneton/kaneton/libc/Makefile
 #
 # created       matthieu bucchianeri   [sat sep  1 12:40:51 2007]
-# updated       matthieu bucchianeri   [fri sep  7 16:52:20 2007]
+# updated       laurent lec   [thu apr 10 13:40:30 2008]
 #
 
 #
@@ -50,6 +50,8 @@ LIBC_C			:=		alloc.c				\
 					strtol.c			\
 					strtoul.c			\
 					sum2.c
+
+# allo.c & strdup.c
 
 LIBC_O			:=		$(LIBC_C:.c=.o)
 

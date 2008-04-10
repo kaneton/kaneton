@@ -5,10 +5,10 @@
 #
 # license       kanetno
 #
-# file          /home/mycure/kaneton/Makefile
+# file          /home/lec_l/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [thu mar 27 23:54:17 2008]
+# updated       laurent lec   [thu mar 27 22:09:40 2008]
 #
 
 #
@@ -210,12 +210,5 @@ cheat- cheat:
 
 cheat-%:
 	$(call env_launch,$(_CHEAT_SCRIPT_),$*,)
-
-#
-# ---------- env --------------------------------------------------------------
-#
-
-env-%:
-	echo "$($*)"
 
 endif

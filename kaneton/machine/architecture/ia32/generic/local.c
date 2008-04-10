@@ -5,10 +5,10 @@
  *
  * license       kaneton
  *
- * file          /home/buckman/cry...achine/architecture/ia32/generic/local.c
+ * file          /home/lec_l/kanet...achine/architecture/ia32/generic/local.c
  *
  * created       matthieu bucchianeri   [mon dec 10 13:54:28 2007]
- * updated       matthieu bucchianeri   [wed jan  9 11:24:04 2008]
+ * updated       laurent lec   [sat mar 29 11:53:32 2008]
  */
 
 /* [cut] */
@@ -31,8 +31,10 @@
  * ---------- globals ---------------------------------------------------------
  */
 
+/* XXX: not used
 static IA32_HANDLER_DATA_SECTION t_ia32_cpu_local*	cpu_local_area[IA32_CPU_MAX * IA32_CPU_LOCAL_SIZE];
 static t_vaddr		cpu_local_current = 1;
+*/
 
 /*
  * ---------- externs ---------------------------------------------------------

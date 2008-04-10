@@ -120,4 +120,6 @@ void			bootloader_pmode_init(void);
  * eop
  */
 
+void			faultcatcher_init(void);
+
 #endif

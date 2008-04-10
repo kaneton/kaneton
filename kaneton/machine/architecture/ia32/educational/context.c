@@ -168,6 +168,8 @@ t_error			ia32_set_io_bitmap(i_task		tskid,
   i_task		current;
   t_uint8		i;
 
+  (void) io_bitmap_isset;
+
   /*
    * 1)
    */

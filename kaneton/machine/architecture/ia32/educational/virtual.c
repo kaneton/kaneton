@@ -267,7 +267,7 @@ t_error			ia32_task_as_init(i_as		asid)
   i_segment	        seg;
   i_region		reg;
   o_region*		preg;
-  t_paddr		base;
+  //  t_paddr		base; XXX: unused
   t_ia32_directory	pd;
 
   /*
