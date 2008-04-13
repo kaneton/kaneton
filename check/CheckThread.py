@@ -215,9 +215,7 @@ class CheckThread(threading.Thread):
 
 
     def terminate(self):
-        self.serial.flushInput()
-        self.serial.flushOutput()
-        self.serial.close()
+        self.serial.die()
         _async_raise(self._get_my_tid(), SystemExit)
 
 

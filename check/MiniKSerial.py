@@ -35,6 +35,7 @@ import time
 class SerialException(exceptions.Exception):
 	def __init__(self, msg):
 		self.msg = msg
+		self.dead = False
 		return
 
 	def __str__(self):
@@ -52,7 +53,14 @@ class MiniKSerial:
             self.serial_line = serial.Serial('/dev/ttyS0', 57600)
 
     def __del__(self):
-        self.serial_line.close()
+	    if (!self.dead):
+		    self.die()
+
+    def die(self):
+	    self.serial.flushInput()
+	    self.serial.flushOutput()
+	    self.serial_line.close()
+	    self.dead = True
 
     def checksum(self, data):
         '''This checksum is the worst I've ever seen.
