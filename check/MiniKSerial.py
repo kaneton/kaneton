@@ -57,8 +57,8 @@ class MiniKSerial:
 		    self.die()
 
     def die(self):
-	    self.serial.flushInput()
-	    self.serial.flushOutput()
+	    self.serial_line.flushInput()
+	    self.serial_line.flushOutput()
 	    self.serial_line.close()
 	    self.dead = True
 
