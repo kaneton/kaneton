@@ -53,7 +53,7 @@ class MiniKSerial:
             self.serial_line = serial.Serial('/dev/ttyS0', 57600)
 
     def __del__(self):
-	    if (!self.dead):
+	    if (not self.dead):
 		    self.die()
 
     def die(self):
