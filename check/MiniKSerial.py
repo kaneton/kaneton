@@ -83,6 +83,7 @@ class MiniKSerial:
 
         if (crc[0] != self.checksum(buf)):
             self.serial_line.write("badcrc")
+	    self.die()
             raise SerialException("Bad CRC while reading")
         else:
             self.serial_line.write("crc-ok")
@@ -100,4 +101,5 @@ class MiniKSerial:
 
         ack = self.serial_line.read(6)
         if (ack == "badcrc"):
-            raise SerialException("Bad CRC while sending")
+		self.die()
+		raise SerialException("Bad CRC while sending")
