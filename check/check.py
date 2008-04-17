@@ -129,7 +129,7 @@ def	usage():
 	sys.exit(1)
 
 def	main():
-	i = 0			#on peut donner l'index de demarrage pour qu il se relance ou sa couille
+	i = 12			#on peut donner l'index de demarrage pour qu il se relance ou sa couille
 				#il faut donc avant l afficher en cas de deco ou le sauvegarder
 				#ne pas oublier de reload les files du test ds ce cas
 				# if i != 0
@@ -167,6 +167,7 @@ def	main():
 				checker.setDaemon(True)
 				checker.start()
 				checker.join(30) # 30s timeout per test
+
 			except KeyboardInterrupt:
 				sys.stderr.write("\n\n=> user interrupt, leaving\n")
 				sys.exit(1)
@@ -176,7 +177,13 @@ def	main():
 				sys.stderr.write("(timeout)\n")
 				checker.trace_result_log(partname, testname, "0", "Timeout (30s)")
 				checker.terminate()
+				serial.die()
 				serial = MiniKSerial.MiniKSerial()
+
+			if (checker.new_serial_required):
+				sys.stderr.write("Serial driver got renewed\n")
+				serial = MiniKSerial.MiniKSerial()
+
 
 		i += 1
 		trace.flush()

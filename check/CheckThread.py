@@ -88,12 +88,17 @@ def get_function_addr(cmd):
 #
 
 class CheckException(exceptions.Exception):
-	def __init__(self, msg):
-		self.msg = msg
-		return
+    def __init__(self, msg):
+        self.msg = msg
+        return
 
-	def __str__(self):
-		print "","Check error: " + self.msg
+    def __str__(self):
+        print "","Check error: " + self.msg
+
+class RenewTheSerialInstanceDaamit(exceptions.Exception):
+    def __init__(self, msg):
+        self.msg = msg
+        return
 
 #
 # PYTHON THREAD MAGIC
@@ -131,6 +136,7 @@ class CheckThread(threading.Thread):
         self.serial = serial
         self.trace_file = trace
         self.user_interrupt = False
+        self.new_serial_required = False
 
     def setup(self, testpath, partname, testname):
         self.__setup = True
@@ -150,6 +156,8 @@ class CheckThread(threading.Thread):
         except MiniKSerial.SerialException, e:
             sys.stderr.write("serial failure.\n");
             self.trace_result_log(self.partname, self.testname, 0, "Fatal serial error ("+e.msg+")")
+            self.new_serial_required = True
+
         except KeyboardInterrupt:
             self.user_interrupt = True
 
@@ -159,8 +167,8 @@ class CheckThread(threading.Thread):
 
         hello = self.serial.read_trame()
         if hello != 'Ready!':
-            sys.stderr.write("(not ready) ");
-            raise CheckException('Not ready on time');
+            sys.stderr.write("(hello)\n");
+            raise CheckException('Bad hello (got ' + hello + ')');
 
 	result = self.send_command(testname)
 	if check_result(testpath, result):

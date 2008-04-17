@@ -35,7 +35,6 @@ import time
 class SerialException(exceptions.Exception):
 	def __init__(self, msg):
 		self.msg = msg
-		self.dead = False
 		return
 
 	def __str__(self):
@@ -44,6 +43,7 @@ class SerialException(exceptions.Exception):
 class MiniKSerial:
     def __init__(self, serial_line = False):
         self.serial_magic = 0xF4859632
+	self.dead = False
 
         if (serial_line != False):
             assert(type(serial_line) is serial.Serial)
@@ -53,14 +53,14 @@ class MiniKSerial:
             self.serial_line = serial.Serial('/dev/ttyS0', 57600)
 
     def __del__(self):
-	    if (not self.dead):
-		    self.die()
+	    self.die()
 
     def die(self):
-	    self.serial_line.flushInput()
-	    self.serial_line.flushOutput()
-	    self.serial_line.close()
-	    self.dead = True
+	    if (not self.dead):
+		    self.serial_line.flushInput()
+		    self.serial_line.flushOutput()
+		    self.serial_line.close()
+		    self.dead = True
 
     def checksum(self, data):
         '''This checksum is the worst I've ever seen.
@@ -71,13 +71,17 @@ class MiniKSerial:
         return csum
 
     def read_trame(self):
+	if (self.dead):
+		raise SerialException("Dead serial can't read")
+
         size = struct.unpack("<I", self.serial_line.read(4))
         magic = struct.unpack("<I", self.serial_line.read(4))
         crc = struct.unpack("<I", self.serial_line.read(4))
         self.serial_line.read(4) # junk data as per protocol
 
         if (magic[0] != self.serial_magic):
-            raise SerialException("Bad magic while reading")
+	    self.die()
+            raise SerialException("Bad magic while reading (got " + str(magic[0]) + ")")
 
         buf = self.serial_line.read(size[0])
 
@@ -91,6 +95,9 @@ class MiniKSerial:
         return buf
 
     def write_trame(self, data):
+	if (self.dead):
+		raise SerialException("Dead serial can't write")
+
         format = "<IIII" + str(len(data) + 1) + "s"
         trame = struct.pack(format,
                             len(data) + 1,
