@@ -93,11 +93,12 @@ manager for Intel IA-32 architecture.
 Low-level includes that you will write some code in the
 machine-dependent part of the manager. But for the first time, you
 will also have to write a significant part of the IA-32 library
-(\emph{libia32}).
+(\emph{architecture:IA32 platform:IBM-PC}).
 
 For example, the functions used to fill the interrupt vector table
-(called IDT on IA-32) or to initialize the PIC (8259A) will be placed in
-libia32.
+(called IDT on IA-32) or to initialize the PIC (8259A) should be placed
+in libia32. \textbf{You're free to architecture your code freely for
+the ia32\_ functions.}
 
 When receiving events, your kernel \textbf{must} save and restore
 the execution context, for the moment only the processor's
@@ -114,7 +115,9 @@ registers need to be saved (address space switch is for K3).
 	    {\textbf{8259A Programmable Interrupt Controller datasheet}}
 \end{itemize}
 
+\newpage
 \subsection*{Files}
+You're not required to implement code in every file that is linked here. However, keep in mind that the architecture dependant part of the event manager will resolve first in the glue. You're free to dispatch the code as you want from there.
 
 \subsubsection{\color{filerefcolor} machine-independent}
 \begin{itemize}
@@ -142,23 +145,15 @@ registers need to be saved (address space switch is for K3).
 \item kaneton/machine/platform/ibm-pc/irq.c
 \end{itemize}
 
+\newpage
 \subsection*{Required implementation}
 You \textit{must} implement these functions. We give you their prototypes
 and a small description of what they are expected to do.
 
-\function{event\_show}{(i\_event \argument{id})}
-	 {
-	   This function displays information on an event object.
-	 }
-
-\function{event\_dump}{(void)}
-	 {
-	   This function displays information on all the event objects.
-	 }
-
 \function{event\_reserve}{(i\_event \argument{id},
                            e\_event\_type \argument{type},
-                           u\_event\_handler \argument{handler})}
+                           u\_event\_handler \argument{handler},
+                           t\_vaddr \argument{data}))}
 	 {
 	   This function installs an event handler.
 
@@ -171,27 +166,24 @@ and a small description of what they are expected to do.
 	     \item
 	       \textbf{EVENT\_MESSAGE}: this means that the event will
 	       generate an IPC to the task given in the union
-	       \argument{handler}. Not implemented.
+	       \argument{handler}. \textup{Not to implement yet}.
 	   \end{itemize}
 
-	   The union \argument{handler} contains a pointer to a
+	   \paragraph{The union \argument{handler}} contains a pointer to a
 	   function returning void and getting an event identifier in
-	   argument and an optional error code (integer). The union
-	   also contains a task identifier in the case of IPC action.
+	   argument and an optional data field (integer virtual address).
+           The union also contains a task identifier in the case of IPC action.
 
-	   See appendix for an example of call.
+
+           \paragraph{The \argument{data} argument} should be simply forwarded to the
+           handler. We don't expect any specific behavior regarding this argument.
+
+           \paragraph{} See appendix for an example of call.
 	 }
 
 \function{event\_release}{(i\_event \argument{id})}
 	 {
 	   This function releases an event handler.
-	 }
-\newpage
-\function{event\_get}{(i\_event \argument{id},
-                       o\_event** \argument{o})}
-	 {
-	   This function returns in \argument{o} the event object
-	   corresponding to \argument{id}.
 	 }
 
 \function{event\_init}{(void)}
@@ -225,8 +217,6 @@ IA-32.
 \subsection*{Assignments}
 
 Your work is to develop the whole timer manager.
-
-Code used to program the PIT must be placed in the libia32.
 
 \textbf{The accuracy of your time manager will be tested. An error
   of more than a ten milliseconds will lead our tests to fail.}
@@ -264,18 +254,6 @@ below.
 
 \newpage
 \subsection*{Interface}
-
-\function{timer\_show}{(i\_timer \argument{id})}
-	 {
-	   This (\textbf{optional}) function displays information on a
-	   timer object.
-	 }
-
-\function{timer\_dump}{(void)}
-	 {
-	   This (\textbf{optional}) function displays information on
-	   all the timers.
-	 }
 
 \function{timer\_reserve}{(t\_type \argument{type},
                            u\_timer\_handler \argument{handler},
@@ -366,6 +344,7 @@ Bonuses ideas:
 \begin{itemize}
 \item More accurate interrupt controler and timer using the APIC
 \item Managing nested interrupts and priorities
+\item Any bonus relevant for K1
 \end{itemize}
 
 %
@@ -376,15 +355,62 @@ Bonuses ideas:
 
 \section{Appendix}
 
+\subsection{Errata}
+
+\subsubsection*{Rationale}
+
+The given source doesn't make a clear, typed, distinction between
+handlers that accept error codes as a third argument and those who
+don't. We provide you a short typedef patch as an indication of
+how you could proceed to handle this problem in a less ``hackish''
+way.
+
+\subsubsection*{Patches}
+
+The code to fix is located in \textit{kaneton/core/include/event.h}.
+There you will find the definition of the generic event handler,
+and the union that holds it. \\
+
+We suggest you to enhance this union with the additon of another
+handler type, \textit{t\_event\_handler\_errcode}, which designates a
+callback for exceptions accepting an errorcode, as per the Intel IA32
+architecture specifications
+
+\begin{verbatim}
+typedef void			(*t_event_handler)(i_event, t_vaddr);
+typedef void			(*t_event_handler_errcode)(i_event, t_vaddr, t_uint32); // NEW
+\end{verbatim}
+
+And the assorted union.
+\begin{verbatim}
+typedef union
+{
+    t_event_handler		function;
+    t_event_handler_errcode	function_errcode; //NEW
+    i_task			taskid;
+}				u_event_handler;
+\end{verbatim}
+
+\subsubsection*{Usage}
+The same file provides a macro (\texttt{EVENT\_HANDLER}) that will cast
+anything into the right handler type. Using this macro removes the
+\textit{need} of the patch we give here as you may use any kind of
+handler in practice. You're free to either use our patch without
+casting, or using casting without our patch.
+
+\newpage
+\subsection{Exemples}
+
 \textbf{Example of event\_reserve}
 
 \begin{verbatim}
-void          ia32_pf_handler(t_id         id,
+void          ia32_pf_handler(i_event      id,
+                              t_vaddr      data,
                               t_uint32     error_code)
 {
   t_uint32    addr;
 
-  SCR2(addr);
+  /* rape the stack to get addr */
   printf("#PF @ %p\n", addr);
 
   while (1)
@@ -393,7 +419,7 @@ void          ia32_pf_handler(t_id         id,
 
 ...
 
-event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
+event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler), 0xDEADBEEF);
 \end{verbatim}
 
 \textbf{Example of timer\_reserve}
