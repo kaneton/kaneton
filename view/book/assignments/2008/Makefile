@@ -29,7 +29,7 @@ include			../../../../environment/env.mk
 
 SUBDIRS			:=		k0				\
 					k1				\
-					k2				
+					k2				\
 					k3				\
 #					k4
 

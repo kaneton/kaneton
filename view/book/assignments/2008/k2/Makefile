@@ -27,9 +27,9 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		assignments
+PAPER			:=		assignments-k2
 
-SOURCES			:=		assignments.tex			\
+SOURCES			:=		assignments-k2.tex		\
 					k2.tex
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
