@@ -20,12 +20,12 @@
 %
 
 \begin{tabular}{p{7cm}l}
-Duration: & 2 weeks \\
+Duration: & 3 weeks \\
 Directory name: & kaneton/ \\
-In charge: & Matthieu Bucchianeri \& Renaud Voltz\\
-Mailing-list: & kaneton-students@googlegroups.com \\
+In charge: & Julian Pidancet \& Elie Bleton\\
+Newsgroup: & epita.cours.kaneton \\
 Languages: & C \\
-Students per group: & 2 (same groups as for previous stages) \\
+Students per group: & 2 (\textit{pour le meilleur et pour le pire}) \\
 \end{tabular}
 
 \section{Abstract}
@@ -71,7 +71,7 @@ Remember that you can add code even if there is no FIXME.
 
 \newpage
 
-\section{\textbf{task} manager}
+\section{Introduction to the \textbf{task} manager}
 
 \begin{itemize}
   \item {\bf Overview}\\
@@ -93,6 +93,9 @@ Remember that you can add code even if there is no FIXME.
 
     \textbf{Warning:} remember to ``unpatch'' the line is
     \emph{task\_current} (modified for K1 and K2).
+
+  \item {\bf The \emph{task} interface}\\
+    XXX FIXME
 
   \item {\bf Interface}\\
 
@@ -145,7 +148,7 @@ Remember that you can add code even if there is no FIXME.
 
 	   \begin{enumerate}
 	     \item \emph{TASK\_BEHAV\_CORE}
-	     \item \emph{TASK\_BEHAV\_REATIME}
+	     \item \emph{TASK\_BEHAV\_REALTIME}
 	     \item \emph{TASK\_BEHAV\_INTERACTIVE}
 	     \item \emph{TASK\_BEHAV\_TIMESHARING}
 	     \item \emph{TASK\_BEHAV\_BACKGROUND}
@@ -236,45 +239,47 @@ Remember that you can add code even if there is no FIXME.
 \newpage
 
 \section{\textbf{thread} manager}
-\begin{itemize}
-  \item {\bf Overview}\\
+\subsection*{Overview}
 
-    The \textbf{thread manager} manages the real active execution
-    context called threads.
+The \textbf{thread manager} manages the real active execution
+context called threads.
 
-    A \textbf{thread object} is an active entity which describes the
-    current state of an execution context including the
-    \textit{program counter}, the \textit{stack pointer} etc.
+A \textbf{thread object} is an active entity which describes the
+current state of an execution context including the
+\textit{program counter}, the \textit{stack pointer} etc.
 
-    Indeed, a thread is composed of a current \textit{program counter}
-    which keeps the next instruction address to execute and the
-    \textit{stack pointer} which keeps the stack address. With these
-    two characteristics, a thread can be described.
+Indeed, a thread is composed of a current \textit{program counter}
+which keeps the next instruction address to execute and the
+\textit{stack pointer} which keeps the stack address. With these
+two characteristics, a thread can be described.
 
-    Needless to say, some additional architecture-dependent properties
-    are required to fully describe a thread context.
+Needless to say, some additional architecture-dependent properties
+are required to fully describe a thread context.
 
-  \item {\bf Assignments}\\
+\subsection*{Types overview}
+XXX FIXME
 
-    Part of your work for K3 is to write the IA-32 part of the thread
-    manager.
 
-    This part of the manager manages execution context of the threads,
-    which is by definition of context very specific between
-    architectures. First of all, you will have to create a structure
-    in the machine-dependent part of the \emph{o\_thread} object that
-    represents the execution context of the thread.
+\subsection*{Assignments}
 
-    Next, your only work is to maintain this structure.
+You have to write the IA-32 part of the thread manager.
 
-    \textbf{Hint:} values of segment selector registers depend on the
-    task's class. See \emph{ia32\_segment\_init} for details.
+This part of the manager manages execution context of the threads,
+which is by definition of context very specific between
+architectures. First of all, you will have to create a structure
+in the machine-dependent part of the \emph{o\_thread} object that
+represents the execution context of the thread.
 
-    \textbf{Hint:} flags must be set correctly in a new
-    thread. Interrupt Flag (IF) must be enabled in order to process
-    interrupts correctly.
+Next, your only work is to maintain this structure.
 
-  \item {\bf Interface}\\
+\textbf{Hint:} Values of segment selector registers depend on the
+task's class. See \emph{ia32\_segment\_init} for details.
+
+\textbf{Hint:} Flags must be set correctly in a new
+thread. Interrupt Flag (IF) must be enabled in order to process
+interrupts correctly.
+
+\subsection*{Interface}
 
 \function{thread\_show}{(i\_thread \argument{id})}
 	 {
@@ -403,7 +408,7 @@ Remember that you can add code even if there is no FIXME.
 	   thread execution context of the thread object \argument{id}.
 	 }
 
-\function{thread\_init}{(void)}
+\function{thread\_initialize}{(void)}
 	 {
 	   This function initializes the thread manager.
 	 }
@@ -415,19 +420,17 @@ Remember that you can add code even if there is no FIXME.
 
 \newpage
 
-  \item {\bf Files}\\
+\subsection*{Files}
 
-    \begin{tabular}{| l | l |}
-      \hline
-      machine-independent & {\em kaneton/core/thread/thread.c}\\
-      &  {\em kaneton/include/core/thread.h}\\\hline
-      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/thread.c}\\
-      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/thread.h}\\\hline
-      libarch & {\em libs/libia32/task/*.c}\\
-      &  {\em libs/libia32/include/task/*.h}\\\hline
-    \end{tabular}
-
-\end{itemize}
+\begin{tabular}{| l | l |}
+  \hline
+  machine-independent & {\em kaneton/core/thread/thread.c}\\
+  &  {\em kaneton/include/core/thread.h}\\\hline
+  machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/thread.c}\\
+  & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/thread.h}\\\hline
+  libarch & {\em libs/libia32/task/*.c}\\
+  &  {\em libs/libia32/include/task/*.h}\\\hline
+\end{tabular}
 
 
 %
@@ -437,122 +440,119 @@ Remember that you can add code even if there is no FIXME.
 \newpage
 
 \section{\textbf{sched} manager}
-\begin{itemize}
-  \item {\bf Overview}\\
+\subsection*{Overview}
 
-    The scheduler's role is to allocate cpu's resources to the
-    active threads depending on their priorities.
+The scheduler's role is to allocate cpu's resources to the
+active threads depending on their priorities.
 
-    Be careful, the scheduler schedules the threads which are the active
-    execution entities and not the tasks.
+Be careful, the scheduler schedules the threads which are the active
+execution entities and not the tasks.
 
-  \item {\bf Assignments}\\
+\subsection*{Assignments}
 
-    For K3, you have to implement the whole sched manager, consisting
-    in a simple round-robin algorithm with fixed priorities and the
-    machine-dependent part doing the context switching.
+For K3, you have to implement the whole sched manager, consisting
+in a simple round-robin algorithm with fixed priorities and the
+machine-dependent part doing the context switching.
 
-    The architecture-dependent part of the scheduler is also
-    responsible of calling the \emph{sched\_switch} periodically. This
-    is typically done with a timer.
+The architecture-dependent part of the scheduler is also
+responsible of calling the \emph{sched\_switch} periodically. This
+is typically done with a timer.
 
-    \textbf{Hint:} the special case of the kernel main thread must be
-    considered. The scheduler must create a kernel thread
-    (corresponding to the execution context in the kernel). Think
-    twice about it, there is a very simple implementation.
+\textbf{Hint:} the special case of the kernel main thread must be
+considered. The scheduler must create a kernel thread
+(corresponding to the execution context in the kernel). Think
+twice about it, there is a very simple implementation.
 
-    \textbf{Note about priorities:} the task priority will not be
-    used. Only priorities of thread are used for scheduling. There is
-    no real policiy required for priorities. Our tests will check that
-    on a given amount of time, higher-priority threads are executed
-    more often than lower-priority one.
+\textbf{Note about priorities:} the task priority will not be
+used. Only priorities of thread are used for scheduling. There is
+no real policiy required for priorities. Our tests will check that
+on a given amount of time, higher-priority threads are executed
+more often than lower-priority one.
 
-  \item {\bf Interface}\\
+\subsection*{Interface}
 
 \function{sched\_dump}{(void)}
-	 {
-	   This (\textbf{optional}) function displays the scheduler state.
-	 }
+{
+  This (\textbf{optional}) function displays the scheduler state.
+}
 
 \function{sched\_quantum}{(t\_quantum \argument{quantum})}
-	 {
-	   This function sets the scheduler quantum to \argument{quantum}.
+{
+  This function sets the scheduler quantum to \argument{quantum}.
 
-	   The quantum corresponds to the period the scheduler is called.
-	 }
+  The quantum corresponds to the period the scheduler is called.
+}
 
 \function{sched\_yield}{(i\_cpu \argument{cpuid})}
-	 {
-	   This function permits the current thread to relinquish
-	   the processor voluntarily.
+{
+  This function permits the current thread to relinquish
+  the processor voluntarily.
 
-	   Do not care about the argument \argument{cpuid}.
-	 }
+  Do not care about the argument \argument{cpuid}.
+}
 
 \function{sched\_add}{(i\_thread \argument{thread})}
-	 {
-	   This function adds a runnable thread to the scheduler. Even
-	   if the added thread has the highest priority, do not yield
-	   the current thread.
-	 }
+{
+  This function adds a runnable thread to the scheduler. Even
+  if the added thread has the highest priority, do not yield
+  the current thread.
+}
 
 \function{sched\_remove}{(i\_thread \argument{thread})}
-	 {
-	   This function removes a thread from the
-	   scheduler. \textbf{Be careful:} the thread to remove can be
-	   the currently executing thread.
-	 }
+{
+  This function removes a thread from the
+  scheduler. \textbf{Be careful:} the thread to remove can be
+  the currently executing thread.
+}
 
 \function{sched\_update}{(i\_thread \argument{thread})}
-	 {
-	   This function asks the scheduler to update the thread
-	   \argument{thread} in its internal data structures since
-	   for example the thread's priority just changed.
-	 }
+{
+  This function asks the scheduler to update the thread
+  \argument{thread} in its internal data structures since
+  for example the thread's priority just changed.
+}
 
 \function{sched\_current}{(i\_thread* \argument{thread})}
-	 {
-	   This function returns in \argument{thread} the identifier
-	   of the thread currently executed.
-	 }
+{
+  This function returns in \argument{thread} the identifier
+  of the thread currently executed.
+}
 
 \function{sched\_switch}{(void)}
-	 {
-	   This function just elects and schedules a new thread.
+{
+  This function just elects and schedules a new thread.
 
-	   \textbf{Note}: the machine-dependent code of this function
-	   takes an additional parameter.
+  \textbf{Note}: the machine-dependent code of this function
+  takes an additional parameter.
 
-	   \function{ia32\_sched\_switch}{(i\_thread \argument{elected})}
-		    {
-		      The argument \argument{elected} is the new
-		      thread to run.
-		    }
-	 }
+  \function{ia32\_sched\_switch}{(i\_thread \argument{elected})}
+  {
+    The argument \argument{elected} is the new
+    thread to run.
+  }
+}
 
 \function{sched\_init}{(void)}
-	 {
-	   This function initializes the scheduler.
-	 }
+{
+  This function initializes the scheduler.
+}
 
 \function{sched\_clean}{(void)}
-	 {
-	   This function cleans the scheduler.
-	 }
+{
+  This function cleans the scheduler.
+}
 
-  \item {\bf Files}\\
+\subsection*{Files}
 
-    \begin{tabular}{| l | l |}
-      \hline
-      machine-independent & {\em kaneton/core/sched/sched.c}\\
-      &  {\em kaneton/include/core/sched.h}\\\hline
-      machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/sched.c}\\
-      & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/sched.h}\\\hline
-      libarch & {\em libs/libia32/task/*.c}\\
-      &  {\em libs/libia32/include/task/*.h}\\\hline
-    \end{tabular}
-
-\end{itemize}
+\begin{tabular}{| l | l |}
+  \hline
+  machine-independent & {\em kaneton/core/sched/sched.c}\\
+  &  {\em kaneton/include/core/sched.h}\\\hline
+  machine-dependent & {\em kaneton/core/arch/ibm-pc.ia32-virtual/sched.c}\\
+  & {\em kaneton/include/arch/ibm-pc.ia32-virtual/core/sched.h}\\\hline
+  libarch & {\em libs/libia32/task/*.c}\\
+  &  {\em libs/libia32/include/task/*.h}\\\hline
+\end{tabular}
 
 %
 % advanced topics
@@ -629,7 +629,7 @@ ctx.pc = (t_vaddr)entry_point;
 
 thread_load(thr, ctx);
 
-task_state(tsk, SCHED_STATE_RUN);
+task_state(tsk, SCHEDULER_STATE_RUN);
 
 ...
 
