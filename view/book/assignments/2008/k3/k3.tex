@@ -93,7 +93,7 @@ required. The following interface is given as information.
 \textbf{Warning:} remember to ``unpatch'' the line in
 \emph{task\_current} (modified for K1 and K2).
 
-\subsection{Interface}
+\subsection*{Interface}
 
 \function{task\_show}{(i\_task \argument{id})}
 {
@@ -174,7 +174,7 @@ required. The following interface is given as information.
 \function{task\_state}{(i\_task \argument{id},
   t\_state \argument{sched})}
 {
-  This function starts or stop a task (this means all its
+  This function starts or stops a task (this means all its
   threads).
 
   Values for \argument{sched} are:
@@ -304,6 +304,8 @@ interrupts correctly.
   \emph{THREAD\_HPRIOR}.
 }
 
+\newpage
+
 \function{thread\_release}{(i\_thread \argument{id})}
 {
   This function releases the thread object \argument{id}.
@@ -400,8 +402,6 @@ interrupts correctly.
   This function cleans the thread manager.
 }
 
-\newpage
-
 \subsection*{Files}
 
 \subsubsection{\color{filerefcolor} machine-independent}
@@ -425,7 +425,7 @@ interrupts correctly.
 \section{\textbf{sched} manager}
 \subsection*{Overview}
 
-The scheduler's role is to allocate cpu's resources to the
+The role of the scheduler is to allocate cpu's resources to the
 active threads depending on their priorities.
 
 Be careful, the scheduler schedules the threads which are the active
@@ -448,7 +448,7 @@ twice about it, there is a very simple implementation.
 
 \textbf{Note about priorities:} the task priority will not be
 used. Only priorities of thread are used for scheduling. There is
-no real policiy required for priorities. Our tests will check that
+no real policy required for priorities. Our tests will check that
 on a given amount of time, higher-priority threads are executed
 more often than lower-priority one.
 
@@ -491,7 +491,7 @@ more often than lower-priority one.
 \function{scheduler\_update}{(i\_thread \argument{thread})}
 {
   This function asks the scheduler to update the thread
-  \argument{thread} in its internal data structures since
+  \argument{thread} in its internal data structures because
   for example the thread's priority just changed.
 }
 
