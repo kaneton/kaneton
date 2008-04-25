@@ -50,7 +50,7 @@ The concerned managers are:
     manager manages both this part of the thread object plus the
     machine-dependent object made of the thread's execution context.
   \item
-    {\bf The sched manager}\\ This manager implements the
+    {\bf The scheduler manager}\\ This manager implements the
     scheduler. The scheduler is called periodically (on timer for
     example) to allocate the microprocessor's time.
 \end{enumerate}
@@ -204,7 +204,7 @@ required. The following interface is given as information.
   to \argument{id}.
 }
 
-\function{task\_init}{(void)}
+\function{task\_initialize}{(void)}
 {
   This function initializes the task manager.
 }
@@ -265,23 +265,13 @@ represents the execution context of the thread.
 Next, your only work is to maintain this structure.
 
 \textbf{Hint:} Values of segment selector registers depend on the
-task's class. See \emph{ia32\_segment\_init} for details.
+task's class. See \emph{ia32\_segment\_initialize} for details.
 
 \textbf{Hint:} Flags must be set correctly in a new
 thread. Interrupt Flag (IF) must be enabled in order to process
 interrupts correctly.
 
 \subsection*{Interface}
-
-\function{thread\_show}{(i\_thread \argument{id})}
-{
-  This function displays information about the thread \argument{id}.
-}
-
-\function{thread\_dump}{(void)}
-{
-  This function displays information about all the threads.
-}
 
 \function{thread\_give}{(i\_task \argument{task},
   i\_thread \argument{id})}
@@ -427,7 +417,7 @@ interrupts correctly.
 \end{itemize}
 
 %
-% sched manager
+% scheduler manager
 %
 
 \newpage
@@ -443,12 +433,12 @@ execution entities and not the tasks.
 
 \subsection*{Assignments}
 
-For K3, you have to implement the whole sched manager, consisting
+For K3, you have to implement the whole scheduler manager, consisting
 in a simple round-robin algorithm with fixed priorities and the
 machine-dependent part doing the context switching.
 
 The architecture-dependent part of the scheduler is also
-responsible of calling the \emph{sched\_switch} periodically. This
+responsible of calling the \emph{scheduler\_switch} periodically. This
 is typically done with a timer.
 
 \textbf{Hint:} the special case of the kernel main thread must be
@@ -464,19 +454,19 @@ more often than lower-priority one.
 
 \subsection*{Interface}
 
-\function{sched\_dump}{(void)}
+\function{scheduler\_dump}{(void)}
 {
   This (\textbf{optional}) function displays the scheduler state.
 }
 
-\function{sched\_quantum}{(t\_quantum \argument{quantum})}
+\function{scheduler\_quantum}{(t\_quantum \argument{quantum})}
 {
   This function sets the scheduler quantum to \argument{quantum}.
 
   The quantum corresponds to the period the scheduler is called.
 }
 
-\function{sched\_yield}{(i\_cpu \argument{cpuid})}
+\function{scheduler\_yield}{(i\_cpu \argument{cpuid})}
 {
   This function permits the current thread to relinquish
   the processor voluntarily.
@@ -484,53 +474,53 @@ more often than lower-priority one.
   Do not care about the argument \argument{cpuid}.
 }
 
-\function{sched\_add}{(i\_thread \argument{thread})}
+\function{scheduler\_add}{(i\_thread \argument{thread})}
 {
   This function adds a runnable thread to the scheduler. Even
   if the added thread has the highest priority, do not yield
   the current thread.
 }
 
-\function{sched\_remove}{(i\_thread \argument{thread})}
+\function{scheduler\_remove}{(i\_thread \argument{thread})}
 {
   This function removes a thread from the
   scheduler. \textbf{Be careful:} the thread to remove can be
   the currently executing thread.
 }
 
-\function{sched\_update}{(i\_thread \argument{thread})}
+\function{scheduler\_update}{(i\_thread \argument{thread})}
 {
   This function asks the scheduler to update the thread
   \argument{thread} in its internal data structures since
   for example the thread's priority just changed.
 }
 
-\function{sched\_current}{(i\_thread* \argument{thread})}
+\function{scheduler\_current}{(i\_thread* \argument{thread})}
 {
   This function returns in \argument{thread} the identifier
   of the thread currently executed.
 }
 
-\function{sched\_switch}{(void)}
+\function{scheduler\_switch}{(void)}
 {
   This function just elects and schedules a new thread.
 
   \textbf{Note}: the machine-dependent code of this function
   takes an additional parameter.
 
-  \function{ia32\_sched\_switch}{(i\_thread \argument{elected})}
+  \function{ia32\_scheduler\_switch}{(i\_thread \argument{elected})}
   {
     The argument \argument{elected} is the new
     thread to run.
   }
 }
 
-\function{sched\_init}{(void)}
+\function{scheduler\_initialize}{(void)}
 {
   This function initializes the scheduler.
 }
 
-\function{sched\_clean}{(void)}
+\function{scheduler\_clean}{(void)}
 {
   This function cleans the scheduler.
 }
