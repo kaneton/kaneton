@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/lecture/architecture/mips/mips.tex
 %
 % created       julien quintard   [wed may 16 18:42:56 2007]
-% updated       julien quintard   [mon apr  7 01:56:53 2008]
+% updated       julien quintard   [thu may  1 09:17:05 2008]
 %
 
 %
@@ -1992,7 +1992,7 @@
 
   \-
 
-  MIPS architecture specifications specify that two following branchs are
+  MIPS architecture specifications specify that two following branches are
   not allowed.
 \end{frame}
 
@@ -2718,7 +2718,7 @@
 
   \textbf{Analogy}: When you take your car to go to school you move
   about 1000 kg metal for a 80 kg body. So the ratio is 80/1000. But
-  if you take the bus, the ratio is about: 2000/5000.
+  if you take the bus, the ratio is about: 5000/4000.
 
   \-
 
@@ -2732,7 +2732,7 @@
       Bne R5, R7, loop
   \end{itemize}
 
-  The idea behing the loop unrolling is to handle for exemple two
+  The idea behind the loop unrolling is to handle for exemple two
   iterations per loop to pay the overhead only once.
 \end{frame}
 
@@ -2832,7 +2832,7 @@
 \begin{frame}
   \frametitle{Superpipelines}
 
-  We called superpipelines or deep pipelines, extended pipelines which
+  We call superpipelines or deep pipelines, extended pipelines which
   raise very huge sizes.
 
   \-
@@ -2842,7 +2842,7 @@
 
   \-
 
-  Of course, such pipelines are so complicated to study so we will concentrate
+  Of course, such pipelines are too complicated to study so we will concentrate
   on superpipelines with only \textbf{seven} stages.
 
   \-
@@ -3364,13 +3364,13 @@
 \begin{frame}
   \frametitle{Branch Prediction Overview}
 
-  You can easily notice that branchs are cumbersome since everytime
+  You can easily notice that branches are cumbersome since everytime
   the prefetch instruction buffer is flushed so a cycle is lost.
 
   \-
 
   To bypass this restriction researchers tried to find a way to predict
-  branchs so to preload either the following instructions or the
+  branches so to preload either the following instructions or the
   branched instructions.
 
   \-
@@ -3388,7 +3388,8 @@
     \item
       \textbf{Static Branch Prediction}: this technique uses the same
       method than the Dynamic Branch Prediction but in static. In other words,
-      the information bit is set by the compiler or the programmer.
+      the information bit is set by the compiler or the programmer \textit{i.e}
+      \textit{VLIW - Very Long Instruction Word}.
   \end{enumerate}
 \end{frame}
 
@@ -3493,7 +3494,10 @@
       advantage of semantically independent instructions for filling stalls in;
     \item
       \textbf{Multi-Core}: combines two or more independent cores into a
-      single package composed of a single integrated circuit.
+      single package composed of a single integrated circuit;
+    \item  
+      \textbf{SMP - Simultaneous Multiprocessor}: multiple microprocessors
+      that applications and compilers can take advantage of.
   \end{itemize}
 \end{frame}
 
