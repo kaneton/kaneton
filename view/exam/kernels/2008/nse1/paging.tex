@@ -1,0 +1,60 @@
+\section*{Exercice 4 : Pagination (6 points)}
+
+Nous souhaitons developper un systeme de gestion de la m\'emoire virtuelle
+pour ChicheOS sur l'architecture Intel. Trois mots d\'ecrivent la philosophie
+de ChicheOS :
+``maintenir, r\'eparer et pr\'evoir''. C'est pour cela que nous avons choisi
+dans notre design de ne pas utiliser la technique du mirroring, contrairement
+\`a kaneton.
+
+Nous avons besoin dans ChicheOS d'un syst\`eme nous permettant de pouvoir
+mapper nimporte quelle page de la m\'emoire physique dans l'espace d'adressage
+du noyau, et optimiser l'utilisation du TLB (cache de translation d'adresse).
+
+Pour cela, nous avons d\'ecid\'e d'utiliser une table de page accessible en
+m\'emoire virtuelle dans l'espace d'adressage du noyau de mani\`ere similaire
+\`a un cache. Ce cache cr\'eerai donc des translations vers des
+adresses physiques et serai manipulable directement par le noyau.
+
+Le but
+final serai de pouvoir appliquer un algorithme de remplacement d'entr\'e
+sur cette Page Table afin de mettre a jour les translations de mani\`ere
+\`a ne pas supprimer les plus utilis\'ees, ce qui optimiserai par la m\`eme
+occasion l'utilisation du TLB (qui est mis a jour, je le rappelle, en
+fonction du contenu des Page Tables).
+
+\begin{itemize}
+  \item La Page Table ``cache'' se situe en m\'emoire physique \`a l'adresse
+  physique \verb+0x100b000+, et est accessible dans l'espace d'addressage du
+  kernel \`a l'adresse \verb+0xc0000000+. L'entr\'e num\'ero \verb+0x380+ du
+  Page Directory du noyau contient l'adresse physique de cette Page Table.
+  \item La fonction \verb+int rand_1024()+ renvoie un nombre al\'eatoire entre
+  0 et 1023 inclus.
+  \item La fonction \verb+void pt_entry(int entry, vaddr_t pt, paddr_t page);+ ajoute une
+  entr\'ee dans une Page Table \`a l'index \verb+entry+. Cette fonction ajuste
+  les param\`etres de l'entr\'ee de mani\`ere \`a cr\'eer une translation
+  d'adresse privil\'egi\'ee valide pour le noyau.
+  \item Les fonctions \verb+char get_entry_data(int entry, vaddr_t pt)+ et
+  \verb+void set_entry_data(int entry, vaddr_t pt, char data)+ lisent et
+  \'ecrivent les 3 bits du champs AVL d'une entr\'ee de Page Table. Il est
+  indiqu\'e dans le manuel Intel que ces 3 bits sont ``Available for
+  programmer use''.
+\end{itemize}
+
+\subsection*{Questions}
+
+\begin{enumerate}
+  \item \`A quelle quantit\'e au total de m\'emoire virtuelle notre cache nous
+  donne t'il acces ?
+  \item \`A quelles adresses (en m\'emoire virtuelle) peut-t'on acceder au mappings
+  que l'on cr\'ee avec notre Page Table ?
+  \item \'Ecrivez la fonction \verb+vaddr_t cache_get_mapping(paddr_t phys)+.
+  Cette fonction retourne l'adresse virtuelle d'un mapping vers \verb+phys+
+  si la translation existe d\'ej\`a, ou cr/'ee le mapping dans le cache le
+  cas \'ech\'eant. L'utilisation d'un algorithme type LRU est un plus.
+  \item Expliquez comment on peut fabriquer un espace d'adressage utilisateur
+  \`a partir de z\'ero en utilisant la fonction \verb+cache_get_mapping()+ et
+  une fonction \verb+paddr_t get_physical_page()+ qui alloue des pages de
+  m\'emoire physique.
+\end{enumerate}
+

@@ -1,0 +1,84 @@
+\section*{Exercice 2 : Allocation Mémoire (6 points)}
+
+SunOS 5.4 introduit en 1994 un nouveau type d'allocateur mémoire grain fin
+appelé ``slab allocator''.
+
+Des allocateurs mémoire similaires ont ensuite été implémentés dans Linux,
+FreeBSD et beaucoup d'autres systèmes d'exploitations.
+
+Le principe de l'allocateur se base sur plusieurs hypothèses :
+\begin{itemize}
+  \item Les blocs de mémoire alloués par l'utilisateur sont souvent de
+        taille identique. Car la plupart du temps, ceux-ci correspondent
+	a des objets pour le noyau.
+  \item Lors de la libération d'un objet, la libération de la mémoire physique
+        correspondante est prématurée. Un comportement de cache est préférable.
+  \item La gestion des structures internes de l'allocateur ne doit pas être
+	plus lourde que l'allocation mémoire elle-m\^eme.
+\end{itemize}
+
+Cet allocateur est composé d'objets appelés ``caches'' et ``slabs''.
+Un cache maintient une liste de slabs qu'il gère. Un slab contient
+physiquement un ensemble de blocs mémoire de taille identique.
+
+Dans notre noyau expérimental chicheOS, nous disposons du code suivant :
+
+\begin{verbatim}
+
+/* Objet cache */
+typedef struct
+{
+  kmem_slab_t   *slab_list;     /* Liste de slabs du cache */
+  kmem_slab_t   *free_slab;     /* Pointe vers un slab qui contient au moins
+                                   un bloc libre */
+
+  size_t	obj_size;       /* Taille des objets stockes dans les slabs du
+                                   cache */
+
+  ...
+
+} kmem_cache_t;
+
+/* Descripteur de slab */
+typedef struct
+{
+  int           nobjs_max;      /* Nombre de blocs contenus dans le slabs */
+  int           nobjs;          /* Nombre de blocs alloues */
+
+  int		first_free;	/* Index d'un bloc libre */
+
+  char*         block_list;	/* Pointe vers la liste des blocs mémoire */
+  int*		free_list;	/* Tableau d'entiers contenant pour chaque bloc :
+                                   -1 si le bloc est deja alloué
+                                   l'index d'un autre bloc libre si le bloc
+				     est libre */
+
+  kmem_slab_t   *next;          /* Liste doublement chainée circulaire des */
+  kmem_slab_t   *prev;          /* slabs du cache */
+
+  kmem_cache_t  *cache;         /* Pointeur vers le cache qui possede ce slab */
+
+} kmem_slab_t;
+
+\end{verbatim}
+
+On suppose que chaque slab occupe exactement 1 page mémoire de 4096 octets :
+
+\includegraphics[width=\textwidth]{figures/slablayout.png}
+
+\subsection*{Questions}
+
+\begin{enumerate}
+\item Vous disposez de \verb+kmem_cache_t * kmem_cache_region+, un pointeur vers
+le cache qui gère tout les objets de type \verb+region_t+.  Ecrivez la fonction
+\verb+region_t * kmem_region_alloc()+ qui alloue un objet
+\verb+region_t+ en mémoire. (Vous ne devez pas gérer le cas d'ajout d'un slab dans le cache)
+\item On souhaite libérer un objet \verb+region_t+ alloué préalablement par la fonction
+\verb+kmem_region_alloc()+. Proposez une solution simple pour retrouver le slab
+dans lequel se situe notre objet, \`a partir de son adresse.
+\item Quels types d'objets ne peuvent pas être alloué le slab allocator de ChicheOS ?
+\item ChicheOS est écrit en C, néammoins, on souhaite pouvoir initialiser et nettoyer
+le contenu des objets \verb+region_t+ lors de leur allocation et libération.
+Comment peut-on s'y prendre ?
+\end{enumerate}
+

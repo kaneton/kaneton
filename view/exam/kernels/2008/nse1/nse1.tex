@@ -1,0 +1,121 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/exam/kernels/2007/t5/t5.tex
+%
+% created       julien quintard   [mon may 14 21:56:41 2007]
+% updated       julien quintard   [mon may 14 21:58:01 2007]
+%
+
+%
+% path
+%
+
+\def\path{../../../..}
+
+%
+% template
+%
+
+\input{\path/template/exam.tex}
+
+%
+% header
+%
+
+\lhead{\scriptsize{Noyaux et Syst\`emes d'exploitation}}
+\rhead{\scriptsize{2008}}
+
+%
+% title
+%
+
+\title{{\huge {\bf Noyaux et Systèmes d'exploitation}}}
+
+%
+% authors
+%
+
+\author{{Julian Pidancet \& Elie Bleton}}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title
+%
+
+\maketitle
+
+%
+% --------- information -------------------------------------------------------
+%
+
+\begin{center}
+\vspace{1cm}
+
+{\huge {\bf Examen NSE1}}
+
+\vspace{2cm}
+
+{\large
+{\bf Ordinateurs, PDA et téléphones non autorisés}
+
+{\bf Documents autorisés}
+
+\vspace{1cm}
+
+{\bf Durée : 2 heures}
+}
+\end{center}
+
+\vspace{2cm}
+
+{\large {\bf Important :}}\\
+\begin{itemize}
+\item Le barème est donné à titre indicatif, en cas de modifications,
+      aucune contestation ne sera possible.
+
+\item Un point de malus sur la note globale sanctionnera les copies peu
+      soign\'ees ou mal orthographi\'ees.
+
+\item Vos r\'eponses seront concises : {\bf courtes, claires et pr\'ecises}.
+
+\item Lorsqu'il vous est demand\'e d'\'ecrire du code vous pourrez
+     n\'egliger la gestion des erreurs uniquement lorsqu'elle
+     n'apporte rien au probl\`eme. En revanche, vous devrez g\'erer les
+     erreurs provoquant un segfault.
+\end{itemize}
+
+
+%
+% --------- text --------------------------------------------------------------
+%
+
+\vspace{3cm}
+
+\newpage
+\part*{Exercices}
+
+\input{asm.tex}
+
+\newpage
+
+\input{alloc.tex}
+
+\newpage
+
+\input{interrupts.tex}
+
+\newpage
+
+\input{paging.tex}
+
+\end{document}

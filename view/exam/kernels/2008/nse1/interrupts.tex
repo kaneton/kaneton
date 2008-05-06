@@ -1,0 +1,90 @@
+\section*{Exercice 3 : Interruptions (6 points)}
+
+Nous souhaitons \'ecrire un driver pour port s\'erie sur ChicheOS.
+L'architecture de la machine est de type x86, et le controlleur s\'erie
+est un Vatican V6942.
+
+Le Vatican V6942 est un UART (Universal Asynchronous Receiver Transmitter).
+Le Vatican V6942 est reli\'e au PIC esclave de mani\`ere a pouvoir
+d\'eclencher une IRQ7.
+Le Vatican V6942 contient 3 registres 8 bits accessibles sur le bus de
+controle de notre processeur :
+
+\begin{itemize}
+  \item CR (Control Register), accessible \`a l'addresse 0x340 sur le bus
+  de controle.
+
+  Il contient 3 bits importants:
+  \begin{itemize}
+    \item TR (Transmitter Ready) bit 0 : Le registre THR est pret a recevoir un nouvel octet \`a envoyer.
+    \item DR (Data Ready) bit 1 : Le registre RBR contient un octet re\c{u} du port s\'erie.
+    \item IE (Interrupt Enable) bit 2 : Active le d\'eclenchement des interruptions.
+  \end{itemize}
+
+  \item THR (Transmit Holding Register), accessible \`a l'addresse 0x341 sur
+  le bus de controle : 
+  
+  Lorsque le processeur \'ecrit un octet dans ce registre,
+  celui-ci est transmis sur le port s\'erie, moyennant un court d\'elai. Si
+  le bit TR (Transmitter Ready) de CR est positionn\'e \`a 1, cela indique
+  que les donn\'ee ont bien \'et\'e envoy\'ees et
+  que THR est pret \`a recevoir un nouvel octet. Lorsque le bit TR est
+  positionn\'e \`a 0 et que le processeur effectue une \'ecriture dans le registre
+  THR, le comportement du Vatican V6942 sur le port s\'erie est ind\'etermin\'e.
+
+  Si le bit IE de CR est \`a 1, une interruption est d\'eclench\'ee a chaque fois
+  qu'un octet est transmis sur le port s\'erie et que le registre THR est pret
+  a recevoir un autre octet.
+
+  \item RBR (Receive Buffer Register), accessible \`a l'addresse 0x342 sur
+  le bus de controle :
+
+  Ce registre contient le dernier octet non-lu re\c{c}u sur le port s\'erie.
+  Si, le bit DR (Data Ready) de CR est positionn\'e \`a 1, une lecture dans RBR
+  est possible et passera automatiquement le bit DR \`a 0.
+  Dans le cas contraire, le contenu de RBR est ind\'etermin\'e.
+
+  Si le bit IE de CR est \`a 1, une interruption est d\'eclench\'ee a chaque fois
+  qu'un octet est disponible dans le registre RBR.
+
+\end{itemize}
+
+Les \'el\'ements suivants sont disponibles dans l'API de ChicheOS :
+
+\begin{itemize}
+  \item \verb+void outb(short port, char data);+ : Ecrit un octet sur le bus de controle.
+  \item \verb+char inb(short port);+ : Lis un octet depuis le bus de controle.
+  \item \verb+SAVE_CONTEXT();+ : Sauvegarde sur la pile le contexte \'etendu \`a la suite d'une interruption.
+  \item \verb+RESTORE_CONTEXT();+ : Restore depuis la pile le contexte \'etendu.
+  \item \verb+void pic_acknlowledge(void);+ : Indique au PIC que l'on \`a pris en charge l'interruption.
+  \item \verb+void pic_unmask(int irq);+ : Masque l'IRQ fourni en parametre.
+  \item \verb+void idt_set_irq_handler(int irq, void (*handler)(void));+ : Installe un gestionnaire d'interruption dans l'IDT pour l'IRQ fourni en parametre.
+\end{itemize}
+
+\begin{enumerate}
+\item Ecrivez la fonction \verb+void serial_send(char *buff, int size)+
+  pour ChicheOS, sans utiliser les interruptions.
+\item Ecrivez la fonctions \verb+void serial_send(char *buff, int size)+
+  pour ChicheOS, en tirant profit des interruptions. De plus,
+  vous fournirez une fonction \verb+void serial_init()+
+  qui initialisera vos structures de donn\'ees et activera les interruptions.
+
+  Attention : Pour cela, il est possible que vous deviez \'ecrire des fonctions que nous
+  ne vous demandons pas explicitement.
+
+\item Qu'apporte l'utilisation des interruptions dans notre cas ? 
+
+\item Sur wikipedia, nous pouvons trouver :
+
+\textit{The 8259 generates spurious interrupts in response to a number of conditions.}
+
+\textit{The first is an IRQ line being deasserted before it is acknowledged. This may occur due to noise on the IRQ lines. In edge triggered mode, the noise must maintain the line in the low state for 100nS. When the noise diminishes, a pull-up resistor returns the IRQ line to high, thus generating a false interrupt. In level triggered mode, the noise may cause a high signal level on the systems INTR line. If the system sends an acknowledgment request, the 8259 has nothing to resolve and thus sends an IRQ7 in response. This first case will generate spurious IRQ7's.}
+
+Expliquez avec vos mots le ph\'enom\`ene des ``spurious interrupts''.
+
+Quelles pr\'ecautions le noyau doit t'il prendre vis-a-vis des ``spurious interrupts'' ?
+
+Votre code est-t'il concern\'e par le probl\`eme ?
+
+\end{enumerate}
+

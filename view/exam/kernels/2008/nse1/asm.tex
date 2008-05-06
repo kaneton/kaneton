@@ -1,0 +1,54 @@
+\section*{Exercice 1 : Assembleur (4 points)}
+
+Le code assembleur suivant est executé sur un microprocesseur x86.
+Les instructions sont au format AT\&T. C'est à dire : l'opérande source
+est suivie de l'opérande destination.
+
+Indiquez, pour chaque instruction, ce qu'elle fait. Puis expliquez de manière
+globale ce que fait le code.
+
+Rappel: La syntaxe de GAS permet de déclarer des labels locaux sous forme de
+numéro. Pour faire référence à ces labels, la notation est composée du numéro
+en question, suivi de la lettre \verb+b+ si l'on fait référence en arrière,
+ou de la lettre \verb+f+ si l'on fait référence en avant.
+
+\begin{enumerate}
+\item
+\begin{verbatim}
+        lgdt gdtr
+        mov %cr0, %eax
+        or $1, %eax
+        mov %eax, %cr0
+        ljmp $0x8,$1f
+1:
+        mov $0x10, %ax
+        mov %ax, %ds
+        mov %ax, %es
+        mov %ax, %fs
+        mov %ax, %gs
+        mov %ax, %ss
+\end{verbatim}
+
+
+
+\item
+\begin{verbatim}
+        mov $0xb8000, %edi
+        mov $160, %eax
+        mul %ebx
+        add %eax, %edi
+        shl $1, %ecx
+        add %ecx, %edi
+1:
+        movb (%esi), %al
+        add $1, %esi
+        test %al, %al
+        jz 2f
+        movb %al, (%edi)
+        add $2, %edi
+        jmp 1b
+2:
+        ret
+\end{verbatim}
+\end{enumerate}
+
