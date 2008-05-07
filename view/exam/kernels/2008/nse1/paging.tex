@@ -1,60 +1,69 @@
 \section*{Exercice 4 : Pagination (6 points)}
 
-Nous souhaitons developper un systeme de gestion de la m\'emoire virtuelle
-pour ChicheOS sur l'architecture Intel. Trois mots d\'ecrivent la philosophie
-de ChicheOS :
-``maintenir, r\'eparer et pr\'evoir''. C'est pour cela que nous avons choisi
-dans notre design de ne pas utiliser la technique du mirroring, contrairement
-\`a kaneton.
+Nous souhaitons développer un système de gestion de la mémoire
+virtuelle pour ChicheOS sur l'architecture Intel. Trois mots décrivent
+la philosophie de ChicheOS : ``maintenir, réparer et prévoir''. En
+conséquence, ChicheOS évite avec prudence la périlleuse technique du
+\textit{mirroring}.
 
-Nous avons besoin dans ChicheOS d'un syst\`eme nous permettant de pouvoir
-mapper nimporte quelle page de la m\'emoire physique dans l'espace d'adressage
-du noyau, et optimiser l'utilisation du TLB (cache de translation d'adresse).
+Le noyau ChicheOS doit pouvoir accéder \`a n'importe quelle adresse
+physique par le biais de traductions d'adresses temporaires, tout en
+optimisant l'utilisation du TLB \footnote{\emph{Rappel:} Translation
+  Lookaside Buffer : cache de traduction d'adresse}.
 
-Pour cela, nous avons d\'ecid\'e d'utiliser une table de page accessible en
-m\'emoire virtuelle dans l'espace d'adressage du noyau de mani\`ere similaire
-\`a un cache. Ce cache cr\'eerai donc des translations vers des
-adresses physiques et serai manipulable directement par le noyau.
+Afin de permettre la mise en place de traductions temporaires,
+ChicheOS rend accessible une table de page particulière depuis
+l'espace d'adressage du noyau. Cette table de page particulière est
+nommée CPT \footnote{Chiche Page Table}. \textup{La CPT est utilisée
+  comme un \textbf{cache} de traduction d'adresses}.
 
-Le but
-final serai de pouvoir appliquer un algorithme de remplacement d'entr\'e
-sur cette Page Table afin de mettre a jour les translations de mani\`ere
-\`a ne pas supprimer les plus utilis\'ees, ce qui optimiserai par la m\`eme
-occasion l'utilisation du TLB (qui est mis a jour, je le rappelle, en
-fonction du contenu des Page Tables).
 
 \begin{itemize}
-  \item La Page Table ``cache'' se situe en m\'emoire physique \`a l'adresse
-  physique \verb+0x100b000+, et est accessible dans l'espace d'addressage du
-  kernel \`a l'adresse \verb+0xc0000000+. L'entr\'e num\'ero \verb+0x380+ du
-  Page Directory du noyau contient l'adresse physique de cette Page Table.
-  \item La fonction \verb+int rand_1024()+ renvoie un nombre al\'eatoire entre
-  0 et 1023 inclus.
-  \item La fonction \verb+void pt_entry(int entry, vaddr_t pt, paddr_t page);+ ajoute une
-  entr\'ee dans une Page Table \`a l'index \verb+entry+. Cette fonction ajuste
-  les param\`etres de l'entr\'ee de mani\`ere \`a cr\'eer une translation
-  d'adresse privil\'egi\'ee valide pour le noyau.
-  \item Les fonctions \verb+char get_entry_data(int entry, vaddr_t pt)+ et
-  \verb+void set_entry_data(int entry, vaddr_t pt, char data)+ lisent et
-  \'ecrivent les 3 bits du champs AVL d'une entr\'ee de Page Table. Il est
-  indiqu\'e dans le manuel Intel que ces 3 bits sont ``Available for
-  programmer use''.
+\item La CPT se situe en mémoire physique \`a l'adresse physique
+  \verb+0x100b000+, et est accessible dans l'espace d'adressage du
+  noyau \`a l'adresse \verb+0xC0000000+. L'entrée numéro \verb+0x380+
+  du Page Directory du noyau contient l'adresse physique de cette Page
+  Table.
+\item La fonction \verb+int rand_1024()+ renvoie un nombre aléatoire
+  entre 0 et 1023 inclus.
+\item La fonction
+  \verb+void pt_entry(int entry, vaddr_t pt, paddr_t page);+ ajoute
+  une entrée dans une Page Table \`a l'index \verb+entry+. Cette
+  fonction ajuste les paramètres de l'entrée de manière \`a créer une
+  translation d'adresse privilégiée valide pour le noyau.
+\item Les fonctions \verb+char get_entry_data(int entry, vaddr_t pt)+
+  et \verb+void set_entry_data(int entry, vaddr_t pt, char data)+
+  lisent et écrivent les 3 bits du champs AVL d'une entrée de Page
+  Table. Les spécifications Intel documentent ces 3 bits comme
+  ``Available for programmer use''.
 \end{itemize}
 
 \subsection*{Questions}
 
 \begin{enumerate}
-  \item \`A quelle quantit\'e au total de m\'emoire virtuelle notre cache nous
-  donne t'il acces ?
-  \item \`A quelles adresses (en m\'emoire virtuelle) peut-t'on acceder au mappings
-  que l'on cr\'ee avec notre Page Table ?
-  \item \'Ecrivez la fonction \verb+vaddr_t cache_get_mapping(paddr_t phys)+.
-  Cette fonction retourne l'adresse virtuelle d'un mapping vers \verb+phys+
-  si la translation existe d\'ej\`a, ou cr/'ee le mapping dans le cache le
-  cas \'ech\'eant. L'utilisation d'un algorithme type LRU est un plus.
-  \item Expliquez comment on peut fabriquer un espace d'adressage utilisateur
-  \`a partir de z\'ero en utilisant la fonction \verb+cache_get_mapping()+ et
-  une fonction \verb+paddr_t get_physical_page()+ qui alloue des pages de
-  m\'emoire physique.
+\item Quelle quantité au total de mémoire virtuelle est rendue
+  accessible par notre cache ?
+
+\item \`A quelles adresses (en mémoire virtuelle) est-il possible
+  d'accéder aux traductions contenues par la Page Table ?
+
+\item Si la CPT est pleine\footnote{Toutes les traductions possibles
+    sont fa\^ites}, l'ajout d'une nouvelle entrée suppose la
+  suppression d'une vieille entrée. Pour déterminer l'entrée du cache
+  a retirer, écrivez une fonction implémentant un des algorithmes de
+  remplacement d'entrées vu en cours (LRU, NFU ...). \footnote{Si vous
+    séchez, vous pouvez utiliser la fonction rand\_1024()}
+
+\item Écrivez la fonction
+  \verb+vaddr_t cache_get_mapping(paddr_t phys)+. Cette fonction
+  retourne l'adresse virtuelle d'une traduction vers \verb+phys+ si la
+  traduction existe déjà, ou crée la traduction dans le cache le cas
+  échéant.
+
+\item Expliquez comment on peut fabriquer un espace d'adressage
+  utilisateur \`a partir de zéro en utilisant la fonction
+  \verb+cache_get_mapping()+ et une fonction
+  \verb+paddr_t get_physical_page()+ qui alloue des pages de mémoire
+  physique.
 \end{enumerate}
 

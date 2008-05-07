@@ -23,12 +23,26 @@
 
 \input{\path/template/exam.tex}
 
+
+%
+% listings package
+%
+
+\usepackage{listings}
+\definecolor{darkgray}{rgb}{0.95,0.95,0.95}
+\lstset{language=C}
+\lstset{backgroundcolor=\color{darkgray}}
+\lstset{numbers=left, numberstyle=\tiny, tabsize=4, stepnumber=1, numbersep=5pt}
+\lstset{keywordstyle=\bfseries}
+\lstset{basicstyle=\footnotesize}
+
+\setlength{\marginparwidth}{10pt}
 %
 % header
 %
 
-\lhead{\scriptsize{Noyaux et Syst\`emes d'exploitation}}
-\rhead{\scriptsize{2008}}
+% \lhead{\scriptsize{Noyaux et Syst\`emes d'exploitation}}
+% \rhead{\scriptsize{2008}}
 
 %
 % title
@@ -84,13 +98,13 @@
       aucune contestation ne sera possible.
 
 \item Un point de malus sur la note globale sanctionnera les copies peu
-      soign\'ees ou mal orthographi\'ees.
+      soignées ou mal orthographiées.
 
-\item Vos r\'eponses seront concises : {\bf courtes, claires et pr\'ecises}.
+\item Vos réponses seront concises : {\bf courtes, claires et précises}.
 
-\item Lorsqu'il vous est demand\'e d'\'ecrire du code vous pourrez
-     n\'egliger la gestion des erreurs uniquement lorsqu'elle
-     n'apporte rien au probl\`eme. En revanche, vous devrez g\'erer les
+\item Lorsqu'il vous est demandé d'écrire du code vous pourrez
+     négliger la gestion des erreurs uniquement lorsqu'elle
+     n'apporte rien au problème. En revanche, vous devrez gérer les
      erreurs provoquant un segfault.
 \end{itemize}
 

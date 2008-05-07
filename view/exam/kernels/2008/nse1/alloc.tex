@@ -23,7 +23,7 @@ physiquement un ensemble de blocs mémoire de taille identique.
 
 Dans notre noyau expérimental chicheOS, nous disposons du code suivant :
 
-\begin{verbatim}
+\begin{lstlisting}
 
 /* Objet cache */
 typedef struct
@@ -32,7 +32,7 @@ typedef struct
   kmem_slab_t   *free_slab;     /* Pointe vers un slab qui contient au moins
                                    un bloc libre */
 
-  size_t	obj_size;       /* Taille des objets stockes dans les slabs du
+  size_t        obj_size;       /* Taille des objets stockes dans les slabs du
                                    cache */
 
   ...
@@ -45,13 +45,13 @@ typedef struct
   int           nobjs_max;      /* Nombre de blocs contenus dans le slabs */
   int           nobjs;          /* Nombre de blocs alloues */
 
-  int		first_free;	/* Index d'un bloc libre */
+  int	        first_free;	/* Index d'un bloc libre */
 
   char*         block_list;	/* Pointe vers la liste des blocs mémoire */
-  int*		free_list;	/* Tableau d'entiers contenant pour chaque bloc :
+  int*	        free_list;	/* Tableau d'entiers contenant pour chaque bloc :
                                    -1 si le bloc est deja alloué
                                    l'index d'un autre bloc libre si le bloc
-				     est libre */
+                                   est libre */
 
   kmem_slab_t   *next;          /* Liste doublement chainée circulaire des */
   kmem_slab_t   *prev;          /* slabs du cache */
@@ -60,8 +60,9 @@ typedef struct
 
 } kmem_slab_t;
 
-\end{verbatim}
+\end{lstlisting}
 
+\newpage
 On suppose que chaque slab occupe exactement 1 page mémoire de 4096 octets :
 
 \includegraphics[width=\textwidth]{figures/slablayout.png}
@@ -70,13 +71,13 @@ On suppose que chaque slab occupe exactement 1 page mémoire de 4096 octets :
 
 \begin{enumerate}
 \item Vous disposez de \verb+kmem_cache_t * kmem_cache_region+, un pointeur vers
-le cache qui gère tout les objets de type \verb+region_t+.  Ecrivez la fonction
+le cache qui gère tout les objets de type \verb+region_t+.  Écrivez la fonction
 \verb+region_t * kmem_region_alloc()+ qui alloue un objet
 \verb+region_t+ en mémoire. (Vous ne devez pas gérer le cas d'ajout d'un slab dans le cache)
 \item On souhaite libérer un objet \verb+region_t+ alloué préalablement par la fonction
 \verb+kmem_region_alloc()+. Proposez une solution simple pour retrouver le slab
 dans lequel se situe notre objet, \`a partir de son adresse.
-\item Quels types d'objets ne peuvent pas être alloué le slab allocator de ChicheOS ?
+\item Quels types d'objets ne peuvent pas être alloués le slab allocator de ChicheOS ?
 \item ChicheOS est écrit en C, néammoins, on souhaite pouvoir initialiser et nettoyer
 le contenu des objets \verb+region_t+ lors de leur allocation et libération.
 Comment peut-on s'y prendre ?
