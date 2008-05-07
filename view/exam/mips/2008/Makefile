@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/lec_l/kaneton/view/exam/mips/Makefile
+# file          /home/mycure/kaneton/view/exam/mips/2007/Makefile
 #
 # created       julien quintard   [mon may 14 21:34:22 2007]
-# updated       laurent lec   [fri mar 28 16:44:52 2008]
+# updated       julien quintard   [fri jun 22 18:09:05 2007]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../environment/env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,9 +27,8 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		2006				\
-					2007				\
-					2008				
+SUBDIRS			:=		mid				
+#					final				
 
 #
 # ---------- rules ------------------------------------------------------------

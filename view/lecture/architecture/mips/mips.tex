@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/lecture/architecture/mips/mips.tex
 %
 % created       julien quintard   [wed may 16 18:42:56 2007]
-% updated       julien quintard   [thu may  1 09:17:05 2008]
+% updated       julien quintard   [wed may  7 23:42:26 2008]
 %
 
 %
@@ -2809,6 +2809,26 @@
 
   Let's optimise this assembly code: source code, instructions rescheduling,
   software pipelining and finally loop unrolling.
+\end{frame}
+
+% 15)
+
+\begin{frame}
+  \frametitle{Exercises}
+
+  The software pipeline optimisation is particularly interesting in this
+  exercise as the mapping between instructions and generic operations cannot
+  be done that easily.
+
+  \-
+
+  Indeed, the \texttt{Sw} instruction for instance is not part of the
+  Store generic stage as it is executed only if \texttt{v[i]} is negative.
+
+  \-
+
+  This exercise is therefore a good example of how software pipeline can
+  be difficult.
 \end{frame}
 
 %
