@@ -7,7 +7,7 @@ le contrôleur série est un Vatican V6942.
 \subsection*{Vatican V6942}
 
 Le Vatican V6942 est un UART (Universal Asynchronous Receiver Transmitter).
-Le Vatican V6942 est reli\'e au PIC esclave de mani\`ere (XXX PIC MAITRE ?) a pouvoir
+Le Vatican V6942 est reli\'e au PIC maitre de mani\`ere \`a pouvoir
 déclencher une IRQ7.
 Le Vatican V6942 contient 3 registres 8 bits accessibles sur le bus de
 controle de notre processeur :
@@ -26,42 +26,29 @@ controle de notre processeur :
 \item THR (Transmit Holding Register), accessible \`a l'adresse 0x341
   sur le bus de contrôle :
 
-  Lorsque le processeur écrit un octet dans ce registre, celui-ci est
-  transmis sur le port série, moyennant un court d\'elai. Si le bit TR
-  (Transmitter Ready) de CR est positionné \`a 1, cela indique que les
-  données ont bien été envoyées et que THR est prêt \`a recevoir un
-  nouvel octet. Lorsque le bit TR est positionné \`a 0 et que le
-  processeur effectue une écriture dans le registre THR, le
-  comportement du Vatican V6942 sur le port série est
-  indéterminé.
-
-  Si le bit IE de CR est \`a 1, une interruption est déclenchée a
-  chaque fois qu'un octet est transmis sur le port série et que le
-  registre THR est prêt a recevoir un autre octet.
-
-\item RBR (Receive Buffer Register), accessible \`a l'addresse 0x342
-  sur le bus de controle :
-
-  Ce registre contient le dernier octet non lu reçu sur le port série.
-  Si, le bit DR (Data Ready) de CR est positionné \`a 1, une lecture dans RBR
-  est possible et passera automatiquement le bit DR \`a 0.
-  Dans le cas contraire, le contenu de RBR est indéterminé.
-
-  Si le bit IE de CR est \`a 1, une interruption est déclenchée a chaque fois
-  qu'un octet est disponible dans le registre RBR.
-
+  \begin{itemize}
+  \item Les octets écrits dans ce registre sont transmis sur le port série
+        apres un certain délai.
+  \item Le bit TR du registre CR détermine si le dernier octet écrit \`a
+	bien été transmis. (Celui-ci doit etre positionné \`a 1). Il détermine
+	donc également si il est possible de placer un nouvel octet \`a
+	transmettre.
+  \item Le composant l\`eve une interruption si le bit IE de CR est \`a
+	1, et que l'octet écrit dans THR viens d'etre transmis sur le port
+	série.
+  \end{itemize}
 \end{itemize}
 
 \subsection*{API ChicheOS}
 
 \begin{itemize}
-  \item \verb+void outb(short port, char data);+ : Écrit un octet sur le bus de contrôle.
-  \item \verb+char inb(short port);+ : Lis un octet depuis le bus de contrôle.
-  \item \verb+SAVE_CONTEXT();+ : Sauvegarde sur la pile le contexte étendu \`a la suite d'une interruption.
-  \item \verb+RESTORE_CONTEXT();+ : Charge depuis la pile le contexte étendu.
-  \item \verb+void pic_acknlowledge(void);+ : Indique au PIC que l'on \`a pris en charge l'interruption.
-  \item \verb+void pic_unmask(int irq);+ : Masque l'IRQ fourni en paramètre.
-  \item \verb+void idt_set_irq_handler(int irq, void (*handler)(void));+ : Installe un gestionnaire d'interruption dans l'IDT pour l'IRQ fourni en paramètre.
+  \item \verb+void outb(short port, char data)+ : Écrit un octet sur le bus de contrôle.
+  \item \verb+char inb(short port)+ : Lis un octet depuis le bus de contrôle.
+  \item \verb+SAVE_CONTEXT()+ : Sauvegarde sur la pile le contexte étendu \`a la suite d'une interruption.
+  \item \verb+RESTORE_CONTEXT()+ : Charge depuis la pile le contexte étendu.
+  \item \verb+void pic_acknlowledge(void)+ : Indique au PIC que l'on \`a pris en charge l'interruption.
+  \item \verb+void pic_unmask(int irq)+ : Masque l'IRQ fourni en paramètre.
+  \item \verb+void idt_set_irq_handler(int irq, void (*handler)(void))+ : Installe un gestionnaire d'interruption dans l'IDT pour l'IRQ fourni en paramètre.
 \end{itemize}
 
 \subsection*{Questions}

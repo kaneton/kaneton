@@ -17,25 +17,29 @@ l'espace d'adressage du noyau. Cette table de page particulière est
 nommée CPT \footnote{Chiche Page Table}. \textup{La CPT est utilisée
   comme un \textbf{cache} de traduction d'adresses}.
 
-
 \begin{itemize}
 \item La CPT se situe en mémoire physique \`a l'adresse physique
-  \verb+0x100b000+, et est accessible dans l'espace d'adressage du
-  noyau \`a l'adresse \verb+0xC0000000+. L'entrée numéro \verb+0x380+
-  du Page Directory du noyau contient l'adresse physique de cette Page
-  Table.
-\item La fonction \verb+int rand_1024()+ renvoie un nombre aléatoire
+  \verb+0x100b000+.
+\item La CPT est accessible dans l'espace d'adressage du
+  noyau \`a l'adresse \verb+0xC0000000+.
+\item L'entrée numéro \verb+0x380+
+  du Page Directory du noyau contient l'adresse physique de la CPT.
+\end{itemize}
+
+\subsection*{API ChicheOS}
+\begin{itemize}
+\item \verb+int rand_1024()+ : Renvoie un nombre aléatoire
   entre 0 et 1023 inclus.
-\item La fonction
-  \verb+void pt_entry(int entry, vaddr_t pt, paddr_t page);+ ajoute
-  une entrée dans une Page Table \`a l'index \verb+entry+. Cette
-  fonction ajuste les paramètres de l'entrée de manière \`a créer une
+\item \verb+void pt_entry(int entry, vaddr_t pt, paddr_t page)+ : Ajoute
+  une entrée dans une Page Table \`a l'index \verb+entry+ et ajuste les
+  paramètres de l'entrée de manière \`a créer une
   translation d'adresse privilégiée valide pour le noyau.
-\item Les fonctions \verb+char get_entry_data(int entry, vaddr_t pt)+
-  et \verb+void set_entry_data(int entry, vaddr_t pt, char data)+
-  lisent et écrivent les 3 bits du champs AVL d'une entrée de Page
-  Table. Les spécifications Intel documentent ces 3 bits comme
-  ``Available for programmer use''.
+\item \verb+char get_entry_data(int entry, vaddr_t pt)+ : Retourne les 3
+  bits du champ AVL d'une entrée de Page Table. Les spécifications Intel
+  documentent ces 3 bits comme ``Available for programmer use''.
+\item \verb+void set_entry_data(int entry, vaddr_t pt, char data)+ :
+  Ecris les 3 bits du champs AVL d'une entrée de Page Table avec la valeur
+  des 3 bits de poid faible de \verb+data+.
 \end{itemize}
 
 \subsection*{Questions}

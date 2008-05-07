@@ -33,7 +33,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-KERNEL_C		:=		kernel.c
+KERNEL_C		:=		kernel.c exn.c
 
 KERNEL_O		:=		$(KERNEL_C:.c=.o)
 
