@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/lecture/architecture/mips/mips.tex
 %
 % created       julien quintard   [wed may 16 18:42:56 2007]
-% updated       julien quintard   [wed may  7 23:42:26 2008]
+% updated       julien quintard   [thu may  8 11:43:21 2008]
 %
 
 %
@@ -2693,8 +2693,8 @@
 
   \begin{verbatim}
     loop: Sw R10, -8(R5)
-          Sll R10, R9, 1
           Addiu R5, R5, 4
+          Sll R10, R9, 1
           Bne R5, R7, loop
           Lw R9, -4(R5)
   \end{verbatim}
