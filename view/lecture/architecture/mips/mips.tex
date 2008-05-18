@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/lecture/architecture/mips/mips.tex
 %
 % created       julien quintard   [wed may 16 18:42:56 2007]
-% updated       julien quintard   [thu may  8 11:43:21 2008]
+% updated       julien quintard   [sun may 18 23:28:53 2008]
 %
 
 %
@@ -180,14 +180,14 @@
 		{figures/superscalar-correction}
 
 \pgfdeclareimage[interpolate=true,width=101pt,height=61pt]
-                {tetonbus-overview}
-		{figures/tetonbus-overview}
+                {jointure-overview}
+		{figures/jointure-overview}
 \pgfdeclareimage[interpolate=true,width=218pt,height=121pt]
-                {tetonbus-communication}
-		{figures/tetonbus-communication}
+                {jointure-communication}
+		{figures/jointure-communication}
 \pgfdeclareimage[interpolate=true,width=185pt,height=130pt]
-                {tetonbus-example}
-		{figures/tetonbus-example}
+                {jointure-example}
+		{figures/jointure-example}
 \pgfdeclareimage[interpolate=true,width=251pt,height=125pt]
                 {memory-organisation}
 		{figures/memory-organisation}
@@ -204,8 +204,8 @@
                 {cache-overview}
 		{figures/cache-overview}
 \pgfdeclareimage[interpolate=true,width=208pt,height=111pt]
-                {tetonbus-cache}
-		{figures/tetonbus-cache}
+                {jointure-cache}
+		{figures/jointure-cache}
 \pgfdeclareimage[interpolate=true,width=128pt,height=93pt]
                 {natural-partitionning}
 		{figures/natural-partitionning}
@@ -3532,8 +3532,8 @@
 \begin{frame}
   \frametitle{Overview}
 
-  We will study the TetonBus to understand how different entities can
-  access memory sequentially.
+  We will study the Jointure, a virtual bus, to understand how different
+  entities can access memory sequentially.
 
   \-
 
@@ -3544,12 +3544,12 @@
 % 2)
 
 \begin{frame}
-  \frametitle{TetonBus}
+  \frametitle{JointureBus}
 
   There are three types of objects:
 
   \begin{center}
-    \pgfuseimage{tetonbus-overview}
+    \pgfuseimage{jointure-overview}
   \end{center}
 
   \begin{enumerate}
@@ -3567,7 +3567,7 @@
 \begin{frame}
   \frametitle{Steps}
 
-  The TetonBus steps are explained below:
+  The Jointure steps are explained below:
 
   \begin{enumerate}
     \item
@@ -3592,10 +3592,10 @@
 % 4)
 
 \begin{frame}
-  \frametitle{TetonBus Communication}
+  \frametitle{Jointure Communication}
 
   \begin{center}
-    \pgfuseimage{tetonbus-communication}
+    \pgfuseimage{jointure-communication}
   \end{center}
 \end{frame}
 
@@ -3605,7 +3605,7 @@
   \frametitle{\textbf{Sw} Instruction Example}
 
   \begin{center}
-    \pgfuseimage{tetonbus-example}
+    \pgfuseimage{jointure-example}
   \end{center}
 \end{frame}
 
@@ -3622,7 +3622,7 @@
 
   \-
 
-  Indeed, the TetonBus is in fact pipelined since it handles memory location
+  Indeed, the Jointure is in fact pipelined since it handles memory location
   while transfering the previous data.
 
   \-
@@ -4028,11 +4028,11 @@
 \begin{frame}
   \frametitle{Cache Manager}
 
-  We will call the Cache Manager the Master on the TetonBus which communicates
+  We will call the Cache Manager the Master on the Jointure which communicates
   with the memories.
 
   \begin{center}
-    \pgfuseimage{tetonbus-cache}
+    \pgfuseimage{jointure-cache}
   \end{center}
 \end{frame}
 
