@@ -1,0 +1,434 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kane...curriculum/presentation/presentation.tex
+%
+% created       julien quintard   [mon may 14 21:02:29 2007]
+% updated       julien quintard   [wed feb 13 16:53:32 2008]
+%
+
+%
+% path
+%
+
+\def\path{../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{kaneton}
+
+%
+% authors
+%
+
+\author
+{
+  Elie~Bleton,
+  Julian~Pidancet
+}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+
+  \begin{center}
+    \logos
+  \end{center}
+\end{frame}
+
+%
+% overview
+%
+
+\section{Overview}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Who are the kaneton people ?}
+
+  \-
+
+  \textbf{Kaneton People}
+
+  \begin{itemize}
+    \item
+      Julien Quintard
+      \begin{itemize}
+	\item Creator of the project a few years ago
+        \item Microprocessors architecture lessons
+      \end{itemize}
+    \item
+      Elie Bleton \& Julian Pidancet
+      \begin{itemize}
+	\item Working at LSE since last year
+	\item Kernels and operating systems (KOS) lessons
+        \item Kaneton ``student project'' advisors
+      \end{itemize}
+    \item
+      Renaud Voltz \& Matthieu Bucchianeri
+      \begin{itemize}
+	\item Working at LSE since last year
+	\item Former KOS teachers \& project advisors
+      \end{itemize}
+  \end{itemize}
+
+  \textbf{Former Contributors}
+  \begin{itemize}
+    \item C\'{e}dric Aubouy (Kernel and operating systems lessons for 2007)
+    \item Renaud Lienhart (IA-32 architecture for 2007)
+    \item Jean-Pascal Billaud (kaneton course for 2006)
+  \end{itemize}
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Description}
+
+  kaneton is a \textbf{microkernel} with \textbf{pedagogical purpose}.
+
+  \-
+  \textbf{The kernel}
+  \begin{itemize}
+  \item The kaneton \textbf{reference} is developped by the LSE
+  \item The kaneton reference is used as a basis for the \textbf{students tarball}
+  \item The students tarball contains \textit{a functional build system}, lots of code and structure, with appropriate parts \textit{to implement} or \textit{to complete}.
+  \end{itemize}
+
+  \-
+\textbf{The lectures}
+  \begin{itemize}
+    \item Microprocessor's architecture: describing completely the \textbf{design} and \textbf{mecanisms} of a \textbf{modern microprocessor}
+    \item Kernels and operating systems: analysing \textbf{main parts} of a kernel such as low-level programming, memory and tasks, and introducing
+    \textbf{higher-level concepts} like scheduling
+  \end{itemize}
+
+\end{frame}
+
+% 3)
+
+% 4)
+
+\begin{frame}
+  \frametitle{Reference implementation}
+
+  \begin{itemize}
+  \item kaneton is implemented in \textbf{C and assembly}
+  \item kaneton is a microkernel : very few components are available in the core
+  \item kaneton is designed with portability in mind : hardware-independant code, architecture-specific and platform-specific code are isolated from each other.
+  \end{itemize}
+
+  \-
+
+  \begin{itemize}
+  \item the kaneton core is made of several \textbf{managers}, dedicated to one task
+  \item Most managers are split between hardware-specific code and generic code.
+  \end{itemize}
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Evaluation}
+
+  Your final grade for each term is made of two grades:
+
+  \begin{itemize}
+  \item The written evaluation (\emph{partiel})
+  \item The grades for each stage of the project
+  \end{itemize}
+
+  \-
+
+  Each stage is evaluated using a \textbf{testsuite}. You upload the
+  tarball, we run the testsuite, you get your trace and grade. It's
+  ACU-style.
+
+
+\end{frame}
+
+%
+% details
+%
+
+\section{Stage details}
+
+\begin{frame}
+  \frametitle{Stages}
+
+  kaneton is divided into \textbf{five stages} :
+
+  \-
+
+  \begin{itemize}
+  \item
+    K0: bootstrap
+  \item
+    K1: memory management
+  \item
+    K2: interrupts \& IRQ handling
+  \item
+    K3: process management \& scheduling
+  \item
+    K4: inter-process communication
+  \end{itemize}
+
+  \-
+
+  For those who made the ``introduction to kernels'' (K) course in
+  Ing1: kaneton is very different -- microkernel design, virtual
+  memory, multitasking, IPCs\ldots -- you will learn lot of thing we
+  did not talk about last year.
+
+\end{frame}
+
+% 5)
+
+% Commented out in 2008 because the presentation took place
+% after K0
+
+% \begin{frame}
+%   \frametitle{K0 - bootstrap}
+
+%   \-
+
+%   The bootstrap phase is one of the early stage of the boot
+%   sequence. Its goals are:
+
+%   \begin{itemize}
+%   \item
+%     To put the hardware in a known state
+%   \item
+%     To load the kernel from a media (usually disk or network )
+%   \item
+%     To prepare the kernel's environment
+%   \item
+%     To print funny messages like ``we all love Chiche''
+%   \item
+%     To jump on the kernel!
+%   \end{itemize}
+
+%   \-
+
+%   IA-32 bootstrap is very specific because of historical reasons. So
+%   this project will teach you how to deal with a restricted and
+%   unfriendly environment. You will enjoy assembly programming,
+%   printf-debugging, joys of addressing\ldots
+
+% \end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{K1 - memory management}
+
+  This stages will last \textbf{three weeks}. \\
+
+  You will:
+  \begin{itemize}
+  \item Enter the kaneton world
+    \begin{itemize}
+    \item Discover the \textit{kaneton student tarball 2008 edition}
+    \item Taste the build system
+    \item Familiarize yourself with kaneton's directory layout
+    \end{itemize}
+
+  \item Write the architecture-independant part of the \textbf{segment} manager
+    \begin{itemize}
+    \item Use common kaneton primitives and learn kaneton code-practices by doing
+    \item Provide an abstraction for physical memory allocation
+    \end{itemize}
+  \item Write the IA-32 part of the \textbf{region} manager
+    \begin{itemize}
+    \item Handle \textit{virtual memory} management
+    \item Take your shower on pagination handling
+    \item See the MMU like you never seen it before.
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+% 7)
+
+\begin{frame}
+  \frametitle{K2 - interrupt \& IRQ handling}
+
+  This stage is \textbf{two weeks} long. You will have to develop:
+
+  \begin{itemize}
+  \item The low-level part of the \textbf{event} manager
+    \begin{itemize}
+    \item Taste CPU interrupt vector
+    \item Program the IRQ controller
+    \item Save \& Restore execution contexts
+    \end{itemize}
+  \item The whole \textbf{timer} manager providing one-shot or periodical timers
+  \item A simple keyboard driver. Let your imagination speak and display poetry such as ``w00T s1gL 1s n()()bZ0r''
+  \end{itemize}
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{K3 - process management \& scheduling}
+
+  The development of this part will spread on \textbf{three
+  weeks}. Enjoy the menu:
+
+  \begin{itemize}
+  \item
+    Contexts management and switching
+  \item
+    Round-Robin scheduling
+  \end{itemize}
+
+  \-
+
+  All your code will be based on previous work. Context switching will
+  allow multithreading and multitasking while the scheduler will deal
+  execution timeslices to every threads.
+
+  \-
+
+  Once this stage is working, your kaneton will be able to run simple
+  processes (we made a demonstration to Ing1 of kaneton running an
+  MJPEG player without IPC).
+
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{K4 - inter-process communication}
+
+  The final part of kaneton is \textbf{two weeks} long and deals with
+  Inter-Process Communication (IPC).
+
+  \-
+
+  The code consists in writing the whole \textbf{message} manager,
+  with primitives for synchroneous, asynchroneous, blocking and
+  non-blocking message sending and receiving.
+
+  \-
+
+  In addition, you will write a few common synchronization objects,
+  such as semaphore or RW-locks.
+
+  \-
+
+  Once K4 finished, your kaneton is able to run multithreaded programs
+  or drivers in separated address spaces, with variable privilege
+  level and providind IPC.
+
+\end{frame}
+
+% 9)
+
+% \begin{frame}
+%   \frametitle{Scheduling}
+
+%   Lessons are scheduled, four hours a week.
+
+%   \begin{itemize}
+%   \item Lesson 1: Prerequisites, January 16$^{th}$ (3 hours)
+%   \item Lesson 2: Bootstrap, January 23$^{rd}$ (3 hours)
+%   \item Lesson 3: Memory Management, January 30$^{th}$ and Febuary 6$^{th}$ (3 hours each)
+%   \end{itemize}
+
+%   \begin{itemize}
+%   \item K1: 3 weeks, from March 3$^{rd}$ to March 23$^{th}$
+%   \end{itemize}
+
+% \end{frame}
+
+%
+% homework
+%
+
+\section{Your part of the job}
+
+% 11)
+
+\begin{frame}
+  \frametitle{kaneton student implementation}
+
+  {\Large How to work} \\
+  \begin{itemize}
+  \item Groups of two
+  \item Each stage is graded separately
+  \item Stage $N$ \textbf{always relies} on stage $N-1$. Don't get late.
+  \end{itemize}
+
+  \-
+
+  {\Large What to do} \\
+  \begin{itemize}
+  \item You will work on stages 1 to 4
+  \item For each stage, you will only have to implement the \textbf{most important} parts : most of the less interesting details are in the tarball.
+  \item The assignments define the level of freedom you have while implementing a stage
+  \item You will develop for \textbf{IA-32 architecture} (aka x86) on the \textbf{IBM-PC platform}.
+  \item Your work will be tested on a \textit{real machine}, and not in an emulator.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Your part of the job}
+
+  {\Large Come to the lessons.} \\
+  \begin{itemize}
+  \item The project \textbf{very hardly feasible} without.
+  \end{itemize}
+
+  \-
+
+  {\Large Pay attention}
+
+  \begin{itemize}
+  \item Visit the kaneton intranet : \textbf{http://www.lse.epita.fr/kaneton}
+    \begin{itemize}
+    \item Grab tarballs \& assignments regarding \textit{your} kaneton
+    \item Check your traces \& logs
+    \item Find additional information regarding kaneton
+    \end{itemize}
+  \item Don't forget the EPITA newsgroup : \textbf{epita.cours.kaneton}
+  \end{itemize}
+
+  \-
+
+  {\Large Take it seriously}
+  \begin{itemize}
+  \item Care for deadlines !
+  \item Care for your tarballs
+  \item Care for code warnings
+  \item Debug your kernel, not qemu.
+  \item Impress us !
+  \end{itemize}
+
+\end{frame}
+
+\end{document}
