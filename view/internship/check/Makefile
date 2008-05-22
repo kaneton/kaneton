@@ -48,7 +48,7 @@ view:			build
 	$(call env_view,$(PAPER),)
 
 build:
-	$(call env_documentr,$(PAPER),)
+	$(call env_document,$(PAPER),)
 
 clear:
 	$(call env_remove,$(GARBAGE),)
