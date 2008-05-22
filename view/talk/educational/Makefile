@@ -27,9 +27,9 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		presentation
+PAPER			:=		educational
 
-SOURCES			:=		presentation.tex		
+SOURCES			:=		educational.tex		
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
