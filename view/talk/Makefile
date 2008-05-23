@@ -28,7 +28,6 @@ include			../../environment/env.mk
 #
 
 SUBDIRS			:=		educational			\
-					LSE				\
 					recruitment			
 
 #
