@@ -45,9 +45,8 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 # ---------- rules ------------------------------------------------------------
 #
 
-XXX:
-
-main:			build
+# XXX
+main:
 
 view:			build
 	$(call env_view,$(PAPER),)

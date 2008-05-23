@@ -8,7 +8,11 @@
 % file          /home/mycure/kaneton/view/book/core/kaneton.tex
 %
 % created       julien quintard   [mon may 14 19:56:45 2007]
-% updated       julien quintard   [mon dec 17 23:55:38 2007]
+% updated       julien quintard   [thu may 22 19:50:19 2008]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
 %
 
 %
@@ -28,23 +32,14 @@
 %
 
 \lhead{\scriptsize{The kaneton microkernel :: core}}
-\rhead{}
 
 %
 % title
 %
 
 \title{The kaneton microkernel :: core \\
-       \version \\
-       \logos}
-
-%
-% authors
-%
-
-\author{\small{Julien Quintard},
-        \small{Matthieu Bucchianeri} and
-        \small{Renaud Voltz}}
+       \version
+       \logo}
 
 %
 % document
@@ -76,34 +71,40 @@ All the kaneton documents are available on
   the official website\footnote{http://www.kaneton.org}.
 
 %
-% toc
+% table of contents
 %
 
-\toc
+\tableofcontents
+
+%
+% indentation
+%
+
+\indentation{}
 
 %
 % chapters
 %
 
-\include{goals}
-\include{history}
-\include{overview}
-\include{source-tree}
-\include{development-environment}
-\include{nomenclature}
-\include{coding-style}
-\include{boot}
-\include{core}
-\include{drivers}
-\include{services}
-\include{portability}
-\include{architectures}
+\input{goals.tex}
+\input{history.tex}
+\input{overview.tex}
+\input{source-tree.tex}
+\input{development-environment.tex}
+\input{nomenclature.tex}
+\input{coding-style.tex}
+\input{boot.tex}
+\input{core.tex}
+\input{drivers.tex}
+\input{services.tex}
+\input{portability.tex}
+\input{architectures.tex}
 
-%\include{test}
-%\include{cheat}
+%\input{test.tex}
+%\input{cheat.tex}
 
-\include{licenses}
-\include{bibliography}
+\input{licenses.tex}
+\input{bibliography.tex}
 
 \end{document}
 

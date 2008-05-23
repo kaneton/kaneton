@@ -18,7 +18,7 @@
 
 \subsection*{as interface}
 
-\function{as\_vaddr}{(i\_as \argument{id},
+\function{}{as\_vaddr}{(i\_as \argument{id},
                       t\_paddr \argument{physical},
                       t\_vaddr \argument{virtual})}
 	 {
@@ -26,7 +26,7 @@
 	   address.
 	 }
 
-\function{as\_paddr}{(i\_as \argument{id},
+\function{}{as\_paddr}{(i\_as \argument{id},
                       t\_vaddr \argument{virtual},
                       t\_paddr \argument{physical})}
 	 {
@@ -34,7 +34,7 @@
 	   address.
 	 }
 
-\function{as\_clone}{(i\_task \argument{task},
+\function{}{as\_clone}{(i\_task \argument{task},
                       i\_as \argument{old},
                       i\_as* \argument{new})}
 	 {
@@ -42,7 +42,7 @@
 	   all the necessary: segments, regions etc\ldots
 	 }
 
-\function{as\_reserve}{(i\_task \argument{task},
+\function{}{as\_reserve}{(i\_task \argument{task},
                         i\_as* \argument{id})}
 	 {
 	   This function reserves an address space object for the
@@ -52,12 +52,12 @@
 	   in \argument{id}.
 	 }
 
-\function{as\_release}{(i\_as \argument{id})}
+\function{}{as\_release}{(i\_as \argument{id})}
 	 {
 	   This function just releases the address space \argument{id}.
 	 }
 
-\function{as\_get}{(i\_as \argument{id},
+\function{}{as\_get}{(i\_as \argument{id},
                     o\_as** \argument{o})}
 	 {
 	   This function should only be used by the as manager, the segment
@@ -89,7 +89,7 @@
 
 \subsection*{segment interface}
 
-\function{segment\_clone}{(i\_as \argument{as},
+\function{}{segment\_clone}{(i\_as \argument{as},
                            i\_segment \argument{old},
                            i\_segment* \argument{new})}
 	 {
@@ -99,7 +99,7 @@
 	   exact same properties and copying its content.
 	 }
 
-\function{segment\_read}{(i\_segment \argument{id},
+\function{}{segment\_read}{(i\_segment \argument{id},
                           t\_paddr \argument{offset},
                           void* \argument{buffer},
                           t\_psize \argument{size})}
@@ -108,7 +108,7 @@
 	   \argument{offset} from the segment \argument{id}.
 	 }
 
-\function{segment\_write}{(i\_segment \argument{id},
+\function{}{segment\_write}{(i\_segment \argument{id},
                            t\_paddr \argument{offset},
                            const void* \argument{buffer},
                            t\_psize \argument{size})}
@@ -117,7 +117,7 @@
 	   segment \argument{id}.
 	 }
 
-\function{segment\_copy}{(i\_segment \argument{dst},
+\function{}{segment\_copy}{(i\_segment \argument{dst},
                           t\_paddr \argument{offd},
                           i\_segment \argument{src},
                           t\_paddr \argument{offs},
@@ -127,7 +127,7 @@
 	   segment \argument{dst}.
 	 }
 
-\function{segment\_reserve}{(i\_as \argument{as},
+\function{}{segment\_reserve}{(i\_as \argument{as},
                              t\_psize \argument{size},
                              t\_perms \argument{perms},
                              i\_segment* \argument{id})}
@@ -135,12 +135,12 @@
 	   This function reserves a segment with specified properties.
 	 }
 
-\function{segment\_release}{(i\_segment \argument{id})}
+\function{}{segment\_release}{(i\_segment \argument{id})}
 	 {
 	   This function releases the segment \argument{id}.
 	 }
 
-\function{segment\_perms}{(i\_segment \argument{id},
+\function{}{segment\_perms}{(i\_segment \argument{id},
                            t\_perms \argument{perms})}
 	 {
 	   This function changes the permissions of the segment \argument{id}.
@@ -168,7 +168,7 @@
 
 \subsection*{region interface}
 
-\function{region\_reserve}{(i\_as \argument{as},
+\function{}{region\_reserve}{(i\_as \argument{as},
                             i\_segment \argument{segment},
                             t\_paddr \argument{offset},
                             t\_opts \argument{opts},
@@ -179,7 +179,7 @@
 	   This function reserves a region with specified properties.
 	 }
 
-\function{region\_release}{(i\_as \argument{as},
+\function{}{region\_release}{(i\_as \argument{as},
                             i\_region \argument{id})}
 	 {
 	   This function releases the region \argument{id} that belongs
@@ -193,12 +193,12 @@
 
 \subsection*{Interface}
 
-\functionn{t\_vaddr}{mips\_bad\_vaddr}{()}
+\function{t\_vaddr}{mips\_bad\_vaddr}{}
 {
   Get the virtual address that caused the fault.
 }
 
-\function{mips\_set\_tlb}{(t\_uint32 \argument{entry},
+\function{}{mips\_set\_tlb}{(t\_uint32 \argument{entry},
 			   t\_uint32 \argument{id},
 			   t\_vaddr \argument{vaddr},
 			   t\_paddr \argument{paddr},
@@ -211,7 +211,7 @@
   Permissions \argument{perms} are associated with the translation.
 }
 
-\function{mips\_get\_tlb}{(t\_uint32 \argument{entry},
+\function{}{mips\_get\_tlb}{(t\_uint32 \argument{entry},
 			   t\_vaddr* \argument{vaddr},
 			   t\_uint32* \argument{id})}
 {
@@ -220,17 +220,17 @@
   \argument{entry} of the TLB.
 }
 
-\function{mips\_del\_tlb}{(t\_uint32 \argument{entry})}
+\function{}{mips\_del\_tlb}{(t\_uint32 \argument{entry})}
 {
   Mark the \argument{entry} of the TLB as invalid (remove it).
 }
 
-\functionn{t\_uint32}{mips\_number\_entry}{()}
+\function{t\_uint32}{mips\_number\_entry}{}
 {
   Get the total number of entries in the TLB.
 }
 
-\functionn{t\_uint32}{mips\_random\_entry}{()}
+\function{t\_uint32}{mips\_random\_entry}{}
 {
   Get the index of a random entry in the TLB that can be replaced.
 }

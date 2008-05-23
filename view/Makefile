@@ -38,6 +38,7 @@ SUBDIRS			:=		bibliography			\
 					logo				\
 					package				\
 					paper				\
+					talk				\
 					template			
 
 #

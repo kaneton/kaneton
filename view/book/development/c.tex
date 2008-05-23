@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/c.tex
 %
 % created       julien quintard   [fri may 25 20:24:38 2007]
-% updated       julien quintard   [sat jul 14 11:14:24 2007]
+% updated       julien quintard   [tue may 20 17:03:43 2008]
 %
 
 %
@@ -18,14 +18,14 @@
 \section{C}
 \label{section:c}
 
-This section is intended to detail the kaneton \textit{C} coding style.
+This section is intended to detail the kaneton \name{C} coding style.
 The specifications in this document are to be well-known by every kaneton
 developer.
 
-The kaneton coding style was introduced in order to uniformize the \textit{C}
+The kaneton coding style was introduced in order to uniformize the \name{C}
 coding styles of kaneton project contributors. Indeed, as explained in this
 section, the kaneton coding style is very different from the coding styles
-of other open source projects especially the \textit{GNU} style.
+of other open source projects especially the \name{GNU} style.
 
 The key aspect of the coding style is the clarity through the coherency.
 Indeed, every choice was made for the good of the project so that everyone
@@ -43,14 +43,14 @@ Names in kaneton must comply to the following rules.
 
 \subsubsection{General}
 
-Entities generally belong to a higher component: manager, module, package etc.
-Since the \textit{C} language does not provide any namespace feature, the
+Entities generally belong to a higher component: manager, module, package
+\etc{} Since the \name{C} language does not provide any namespace feature, the
 programmer must rigorously name entities by prefixing them with the name
 of the higher components.
 
-Composite names must be separated by underscores: \textit{\_}.
+Composite names must be separated by underscores: \code{\_}.
 
-Moreover, entities including variables, functions, macros, types etc. must
+Moreover, entities including variables, functions, macros, types \etc{} must
 have explicit and/or mnemonic names.
 
 \begin{verbatim}
@@ -66,7 +66,7 @@ without a loss of meaning. The following rules must be used in this way:
 
 \begin{itemize}
   \item
-    The suffix \textbf{sz} must be used to represent a size:
+    The suffix \code{sz} must be used to represent a size:
 
     \begin{verbatim}
       #define PAGESZ                    4096
@@ -74,14 +74,14 @@ without a loss of meaning. The following rules must be used in this way:
       int                               modsz;
     \end{verbatim}
   \item
-    The \textbf{s} suffix must be used for representing mutiple entities:
+    The \code{s} suffix must be used for representing mutiple entities:
 
     \begin{verbatim}
       int                               threads;
       t_uint64                          sets;
     \end{verbatim}
   \item
-    The \textbf{n} prefix must be used for variables representing a number:
+    The \code{n} prefix must be used for variables representing a number:
 
     \begin{verbatim}
       int                               ntasks;
@@ -136,8 +136,8 @@ Finally, names must be expressed in English, without spelling mistakes.
 \subsubsection{Capitalization}
 
 Entities including variables, functions, types, structures, enumerations,
-unions etc. must be expressed using lower-case letters, digits and underscores
-only. More precisely, entity names must be matched by the following
+unions \etc{} must be expressed using lower-case letters, digits and
+underscores only. More precisely, entity names must be matched by the following
 regular expression:
 
 \begin{verbatim}
@@ -147,12 +147,12 @@ regular expression:
 This is the common rule. However, some exceptions exist.
 
 Macro names must be entirely capitalized except for macros which create
-an abstraction as it is the case for the \textit{set manager} interface. Macro
+an abstraction as it is the case for the \name{set manager} interface. Macro
 arguments, must be prefixed and suffixed by an underscore so that naming
 collision is avoided.
 
 Note that the kaneton coding style names function arguments as
-\textit{arguments} and macro arguments as \textit{parameters} as these
+\term{arguments} and macro arguments as \term{parameters} as these
 latter ones are statically computed.
 
 \begin{verbatim}
@@ -200,21 +200,21 @@ Below are listed the different prefix groups:
 
 \begin{itemize}
   \item
-    Manager types are prefixed by \textit{m\_};
+    Manager types are prefixed by \code{m\_};
   \item
-    kaneton object types are prefixed by \textit{o\_};
+    kaneton object types are prefixed by \code{o\_};
   \item
-    Dispatch interfaces are prefixed by \textit{d\_};
+    Dispatch interfaces are prefixed by \code{d\_};
   \item
-    Architecture-dependent types are prefixed by \textit{a\_};
+    Architecture-dependent types are prefixed by \code{a\_};
   \item
-    Platform-dependent types are prefixed by \textit{p\_};
+    Platform-dependent types are prefixed by \code{p\_};
   \item
-    kaneton identifiers are prefixed by \textit{i\_}.
+    kaneton identifiers are prefixed by \code{i\_}.
 \end{itemize}
 
 Note that group prefixes can be combined in several ways. For instance,
-the prefix \textit{ao\_} represents the architecture-dependent part of
+the prefix \code{ao\_} represents the architecture-dependent part of
 an object.
 
 If a type does not fit into on of these groups, then it can be considered as a
@@ -222,15 +222,15 @@ general purpose type. In this case, the following prefixes are used:
 
 \begin{itemize}
   \item
-    Function pointers are prefixed by \textit{f\_};
+    Function pointers are prefixed by \code{f\_};
   \item
-    Structures are prefixed by \textit{s\_};
+    Structures are prefixed by \code{s\_};
   \item
-    Enumerations are prefixed by \textit{e\_};
+    Enumerations are prefixed by \code{e\_};
   \item
-    Unions are prefixed by \textit{u\_};
+    Unions are prefixed by \code{u\_};
   \item
-    General purpose aliased-types are prefixed by \textit{t\_}.
+    General purpose aliased-types are prefixed by \code{t\_}.
 \end{itemize}
 
 The example below illustrates this rule:
@@ -251,11 +251,9 @@ The example below illustrates this rule:
   }                               o_segment;
 \end{verbatim}
 
-The use of \textit{C} standard types like \textit{int}, \textit{long long}
-is prohibited since there exist kaneton-specific types \textit{t\_uint32},
-\textit{t\_uint64} which provide a size guarantee. Indeed, the \textit{C}
-standard does not specify the size of the types \textit{int}, \textit{short}
-etc. depending on the architecture.
+The use of \name{C} standard types like \code{int}, \code{long long}
+is prohibited since there exist kaneton-specific types \code{t\_uint32},
+\code{t\_uint64} which provide a size guarantee.
 
 %
 % layout
@@ -263,12 +261,12 @@ etc. depending on the architecture.
 
 \subsection{Layout}
 
-The global layout of files and sections of code pertaining to the \textit{C}
+The global layout of files and sections of code pertaining to the \name{C}
 preprocessor, including file inclusion and inclusion protection, must
 comply to specifications detailed in the following.
 
-Note that an \textit{Emacs} configuration file is provided in the
-developers' private \textit{Wiki}. This file contains bindkeys for generating
+Note that an \name{Emacs} configuration file is provided in the
+developers' private \name{Wiki}. This file contains bindkeys for generating
 many of the syntaxes explained in this section. If some contributors are using
 a different text editor, then it is their responsibility to follow the rules
 by developing a plugin for their text editor, for instance.
@@ -277,7 +275,7 @@ by developing a plugin for their text editor, for instance.
 
 \subsubsection{File}
 
-\textit{C} source and header files are composed of sections. The example
+\name{C} source and header files are composed of sections. The example
 below illustrates these sections:
 
 \begin{verbatim}
@@ -314,8 +312,8 @@ Next are listed some of the most important sections:
 
 \begin{itemize}
   \item
-    \textbf{header}: this section contains the file header which provides
-    information on the file edition: creation, last update etc.
+    \term{header}: this section contains the file header which provides
+    information on the file edition: creation, last update \etc{}
 
     \-
 
@@ -328,7 +326,7 @@ Next are listed some of the most important sections:
     This section must be present in every source and header file as it
     contains the file creation and last updates.
   \item
-    \textbf{information}: this section contains a general description of
+    \term{information}: this section contains a general description of
     what this file provides.
 
     \-
@@ -354,21 +352,21 @@ Next are listed some of the most important sections:
        */
     \end{verbatim}
   \item
-    \textbf{dependencies}: this section contains inclusions of dependency
+    \term{dependencies}: this section contains inclusions of dependency
     files.
 
     \-
 
-    This is the common section which contains the well-known \textit{\#include}
+    This is the common section which contains the well-known \code{\#include}
     preprocessor directives.
   \item
-    \textbf{includes}: this section contains inclusion statements of additional
+    \term{includes}: this section contains inclusion statements of additional
     files.
 
     \-
 
     This section must not be misused since there also exist a
-    \textit{dependencies} section.
+    \name{dependencies} section.
 
     \begin{verbatim}
       /*
@@ -387,14 +385,14 @@ Next are listed some of the most important sections:
       #include <core/set-ll.h>
     \end{verbatim}
   \item
-    \textbf{macros}: this section contains macro definitions.
+    \term{macros}: this section contains macro definitions.
 
     \-
 
     This section must not contain macro functions as there is a section
     dedicated to these.
   \item
-    \textbf{macro functions}: this section contains the macro function
+    \term{macro functions}: this section contains the macro function
     definitions which are dissociated from the basic macro definitions.
 
     \begin{verbatim}
@@ -426,15 +424,15 @@ Next are listed some of the most important sections:
         set_reserve_##_type_(_args_)
     \end{verbatim}
   \item
-    \textbf{types}: this section contains de type definitions.
+    \term{types}: this section contains de type definitions.
   \item
-    \textbf{prototypes}: this section contains the prototype definititions.
+    \term{prototypes}: this section contains the prototype definititions.
 
     \-
 
     This section is specific as the kaneton microkernel project uses a
-    tool for generating prototypes from \textit{C} source file. For more
-    information, please refer to \textit{Section \ref{section:prototypes}}.
+    tool for generating prototypes from \name{C} source file. For more
+    information, please refer to \reference{Section \ref{section:prototypes}}.
 
     \begin{verbatim}
       /*
@@ -458,7 +456,7 @@ Next are listed some of the most important sections:
                                        t_setsz*                       size);
     \end{verbatim}
   \item
-    \textbf{externs}: this section contains external declarations.
+    \term{externs}: this section contains external declarations.
 
     \begin{verbatim}
       /*
@@ -473,7 +471,7 @@ Next are listed some of the most important sections:
       extern t_init*          init;
     \end{verbatim}
   \item
-    \textbf{globals}: this section contains global variable declarations.
+    \term{globals}: this section contains global variable declarations.
 
     \begin{verbatim}
       /*
@@ -487,18 +485,18 @@ Next are listed some of the most important sections:
       m_segment*              segment;
     \end{verbatim}
   \item
-    \textbf{functions}: this section contains function definitions.
+    \term{functions}: this section contains function definitions.
 \end{itemize}
 
-More specifically, \textit{C} header files are likely to contain the sections:
-\textit{header}, \textit{dependencies}, \textit{macros}, \textit{types},
-\textit{includes}, \textit{macro functions}, \textit{prototypes} etc. while
-the \textit{C} source files should contain the sections: \textit{header},
-\textit{information}, \textit{includes}, \textit{externs}, \textit{globals},
-\textit{functions} etc.
+More specifically, \name{C} header files are likely to contain the sections:
+\name{header}, \name{dependencies}, \name{macros}, \name{types},
+\name{includes}, \name{macro functions}, \name{prototypes} \etc{} while
+the \name{C} source files should contain the sections: \name{header},
+\name{information}, \name{includes}, \name{externs}, \name{globals},
+\name{functions} \etc{}
 
-The \textit{header} section is basically the file header which was described
-in \textit{Chapter \ref{chapter:rules}}.
+The \name{header} section is basically the file header which was described
+in \reference{Chapter \ref{chapter:rules}}.
 
 % preprocessor
 
@@ -534,7 +532,7 @@ identation:
 
 All header files must be protected against multiple inclusions. The
 guard macro must be named according to the location of the header file
-with the suffix \textit{\_H} in order to avoid guard macro name collision.
+with the suffix \code{\_H} in order to avoid guard macro name collision.
 
 \begin{verbatim}
   #ifndef ARCHITECTURE_IA32_SEGMENT_H
@@ -546,11 +544,11 @@ with the suffix \textit{\_H} in order to avoid guard macro name collision.
 \end{verbatim}
 
 Spanning macros over multiple lines is encouraged for the sake of clarity. In
-such cases, escaped line breaks \textit{$\backslash$-newline} must appear
+such cases, escaped line breaks \code{$\backslash$-newline} must appear
 on the same column. For this purpose, tabulations must be used.
 
 Moreover, the body of macro functions must start on a new line, idented by
-\textit{2} whitespaces.
+$2$ whitespaces.
 
 \begin{verbatim}
   /*
@@ -600,7 +598,7 @@ actions the function performs. Moreover, some function parts need additional
 descriptions. In order not to overload the function body with heavy comments,
 a kaneton-specific function organisation was introduced.
 
-Indeed, functions body are composed of \textit{steps}, each step representing
+Indeed, functions body are composed of \term{steps}, each step representing
 a bunch of coherent actions. These actions are not described in the body
 of the function, but rather in the comment preceding the function. Thus,
 the body is clearly decomposed into steps for the sake of clarity
@@ -683,14 +681,14 @@ are examples of bad comments:
 
 The following sections specify various aspects of what constitutes good
 programming behaviour at the language level. They cover various aspects
-of the \textit{C} constructs.
+of the \name{C} constructs.
 
 % blocs
 
 \subsubsection{Blocks}
 
 All braces must be on their own line. This rule implies a programming style
-very different from the \textit{BSD} or \textit{GNU} coding styles which
+very different from the \name{BSD} or \name{GNU} coding styles which
 put the open brace at the end of the line.
 
 \begin{verbatim}
@@ -704,14 +702,14 @@ In addition, closing braces must appear on the same column as the
 corresponding opening brace.
 
 The text between two braces must be indented by a fixed, homogeneous amount
-of whitespaces. This amount is fixed to \textit{2} whitespaces. Note that
-the \textit{Emacs} default identation comply to this rule.
+of whitespaces. This amount is fixed to $2$ whitespaces. Note that
+the \name{Emacs} default identation comply to this rule.
 
-Moreover, the braces must also be indented by the amount of \textit{2}
+Moreover, the braces must also be indented by the amount of $2$
 spaces from the previous line. However, some exceptions exist, especially
 with nested block declarations.
 
-In \textit{C} functions, the declaration part must be separated from statements
+In \name{C} functions, the declaration part must be separated from statements
 with a single blank line. Note that when there are no declarations, there
 must not be any blank line separator.
 
@@ -757,8 +755,8 @@ to the length of the identifier, starting with the longer, as shown below.
   }
 \end{verbatim}
 
-In \textit{C}, pointerness is not part of the type. However, in the kaneton
-coding style, the \textit{*} pointer symbol in declarations must appear next
+In \name{C}, pointerness is not part of the type. However, in the kaneton
+coding style, the \code{*} pointer symbol in declarations must appear next
 to the type.
 
 Function argument lists must be broken between each argument, after the
@@ -794,10 +792,10 @@ must be only one field declaration per line.
 
 Enumerations values must be capitalized and must appear on their own line.
 
-When an expression, declaration, assignment etc. spans over multiple lines,
+When an expression, declaration, assignment \etc{} spans over multiple lines,
 the additional lines must be indented according to the type of statement.
 It is indeed the responsibility of the developer to align these lines
-properly. Note that \textit{Emacs}'s alignment comply to many of the
+properly. Note that \name{Emacs}'s alignment comply to many of the
 kaneton rules.
 
 \begin{verbatim}
@@ -863,11 +861,11 @@ a whitespace, except if alone on its line.
 \end{verbatim}
 
 There exist exception to the above rules. For more information, please
-refer to the section about \textit{Control Structures}.
+refer to the subsection about \name{Control Structures}.
 
 Statement keywords must be followed by a single whitespace, except
-those without arguments. This especially implies the \texttt{return} without
-argument, like \texttt{continue} and \texttt{break}, must not be separated
+those without arguments. This especially implies the \code{return} without
+argument, like \code{continue} and \code{break}, must not be separated
 from the following semicolon.
 
 Statement keywords which take an argument must enclose the argument
@@ -889,7 +887,7 @@ between parentheses, as illustrated next.
   }
 \end{verbatim}
 
-Finally, the use of the \texttt{goto} statement must be extremely limited.
+Finally, the use of the \code{goto} statement must be extremely limited.
 
 % expressions
 
@@ -903,7 +901,7 @@ the right.
 
 When necessary, padding is always done with a single whitespace.
 
-The \verb|.| and \verb|->| operators must no be padded.
+The \code{.} and \code{->} operators must no be padded.
 
 Below is an example illustrating these rules.
 
@@ -935,8 +933,8 @@ binary operator must not be padded on the right by a whitespace.
 \subsubsection{General}
 
 Control structure keywords must be followed by a whitespace. The conditional
-parts of algorithmic constructs - \texttt{if}, \textit{while}, \texttt{do},
-\textit{for}, \textit{else} - must be alone on their line.
+parts of algorithmic constructs - \code{if}, \code{while}, \code{do},
+\code{for}, \code{else} - must be alone on their line.
 
 The following constructs are incorrect:
 
@@ -986,7 +984,7 @@ The following must be prefered:
 \end{verbatim}
 
 Finally, the conditional control structures must always use a full
-comparison and avoid the use of the logical not operator: \textit{!}
+comparison and avoid the use of the logical not operator: \code{!}
 
 For instance, the following construct is very wrong:
 
@@ -995,11 +993,11 @@ For instance, the following construct is very wrong:
     MESSAGE_LEAVE(message, ERROR_UNKNOWN);
 \end{verbatim}
 
-Indeed, this construct supposes the \textit{malloc()} function returns
-\textit{0} when it fails. However, the \textit{malloc()} function returns
-\textit{NULL} when it fails and no specification actually indicates what
-is the value of the \textit{NULL} macro. Many programmers consider this
-macro is always equivalent to the \textit{zero} integer value but this is
+Indeed, this construct supposes the \code{malloc()} function returns
+\code{0} when it fails. However, the \code{malloc()} function returns
+\code{NULL} when it fails and no specification actually indicates what
+is the value of the \code{NULL} macro. Many programmers consider this
+macro is always equivalent to the \code{zero} integer value but this is
 not true.
 
 Therefore, kaneton developers must use comparison operators to avoid such
@@ -1015,15 +1013,15 @@ more simple to read and understand:
 
 \subsubsection{for}
 
-As a general exception, the \texttt{for} construct breaks many of the
+As a general exception, the \code{for} construct breaks many of the
 previously defined rules.
 
 Multiple statements may appear in the initial and iteration part of the
-\texttt{for} structure. For this effect, commas must be used to separate
+\code{for} structure. For this effect, commas must be used to separate
 statements.
 
-The three part of the \texttt{for} construct may span over multiple lines. The
-\texttt{while} construct must be prefered to a \texttt{for} construct with
+The three part of the \code{for} construct may span over multiple lines. The
+\code{while} construct must be prefered to a \code{for} construct with
 three empty parts.
 
 The following examples are very wrong:
@@ -1058,7 +1056,7 @@ Instead, prefer:
   }
 \end{verbatim}
 
-Finally, single-line loops - \texttt{for} and \texttt{while} - must have
+Finally, single-line loops - \code{for} and \code{while} - must have
 their terminating semicolon on the following line, as illustrated above.
 
 %
@@ -1072,11 +1070,11 @@ itself.
 
 In kaneton, function declarations follow the same template. Indeed, the
 return value must always indicate whether the function call successed or not.
-The return type is therefore always the same: \textit{t\_error}.
+The return type is therefore always the same: \code{t\_error}.
 
 Function arguments must be ordered, starting with input argument and
 finishing with ouput arguments. Moreover, the first argument must
-be the more important \textit{i.e} the kaneton object identifier or
+be the more important \ie{} the kaneton object identifier or
 capability on which the action is performed.
 
 \begin{verbatim}
@@ -1086,9 +1084,9 @@ capability on which the action is performed.
                                        i_task*                    id);
 \end{verbatim}
 
-In this example, \textit{class}, \textit{behav} and \textit{prior} are
+In this example, \code{class}, \code{behav} and \code{prior} are
 input arguments. The function creates a new task object and returns the
-identifier of this new task into the \textit{id} output argument, which
+identifier of this new task into the \code{id} output argument, which
 is the last of the list.
 
 Especially note that kaneton does not have any function returning a value.
@@ -1096,10 +1094,10 @@ The return value is always used as an error status, thus leading to a more
 uniform and coherent programming style.
 
 Functions located in a kaneton manager must start with a call to the
-\textit{ENTER()} macro function and finish with a call to the \textit{LEAVE()}
+\code{ENTER()} macro function and finish with a call to the \code{LEAVE()}
 macro function. These macro functions were introduced in order to
 facilitate the process of adding a statement at the beginning and/or at
-the end of a function. Especially, the \texttt{return} keyword should no
+the end of a function. Especially, the \code{return} keyword should no
 longer be used.
 
 Below is an example of such calls:
@@ -1183,4 +1181,4 @@ Below is an example of such calls:
 \end{verbatim}
 
 In this example, the types of error are not distinguished as the function
-always returns \textit{ERROR\_UNKNOWN} which is not a very good idea.
+always returns \code{ERROR\_UNKNOWN} which is not a very good idea.

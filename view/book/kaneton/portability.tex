@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/portability.tex
 %
 % created       julien quintard   [tue jun 19 15:44:42 2007]
-% updated       julien quintard   [wed dec 19 21:04:03 2007]
+% updated       julien quintard   [mon may 19 23:09:54 2008]
 %
 
 %
@@ -63,8 +63,8 @@ of the two following categories:
   \item
     The second type of portability system consists in the definition of
     a machine interface. This machine interface defines common machine-specific
-    basic operations like flushing the \textit{Translation Lookaside Buffer},
-    installing a new virtual address space etc.
+    basic operations like flushing the \name{Translation Lookaside Buffer},
+    installing a new virtual address space \etc{}
 
     \-
 
@@ -134,7 +134,7 @@ Note that these macro-functions are generally handled by the glue component
 as it is the most suitable for knowing what to do when dealing with
 portability depending on the underlying platform and architecture.
 
-\function{machine\_include}{(\argument{manager})}
+\function{machine\_include}{\argument{manager}}
 	 {
 	   This macro-function can be used by the core to include
 	   machine-dependent code for the precise manager \argument{manager}.
@@ -145,15 +145,15 @@ portability depending on the underlying platform and architecture.
 	   machine-dependent variables in the core.
 	 }
 
-\function{machine\_data}{(\argument{object})}
+\function{machine\_data}{\argument{object}}
 	 {
 	   This macro-function can be used by the machine-dependent code
 	   to add extra fields into the kaneton object type \argument{object}.
 	 }
 
-\function{machine\_call}{(\argument{manager},
-                          \argument{function},
-                          \argument{args...})}
+\function{machine\_call}{\argument{manager},
+                         \argument{function},
+                         \argument{args...}}
 	 {
 	   This macro-function can be used by the core to call the
 	   machine-dependent function \argument{function} of the manager
@@ -187,18 +187,18 @@ attribute which is not sufficient. The architecture probably needs to
 adds fields for storing the registers state i.e the context.
 
 In order to do that, the glue component has to define the
-\texttt{machine\_data()} macro-function:
+\code{machine\_data()} macro-function:
 
 \begin{verbatim}
   #define         machine_data(_object_)                                  \
     machine_data_##_object_()
 \end{verbatim}
 
-This way, every call to \textit{machine\_data()} will be redirected to another
-specific macro-function for the given object type i.e \texttt{o\_thread}.
+This way, every call to \code{machine\_data()} will be redirected to another
+specific macro-function for the given object type \ie{} \code{o\_thread}.
 
 Then, for each object type, a macro-function must be defined. The following
-illustrates the case of the \texttt{o\_thread} object type.
+illustrates the case of the \code{o\_thread} object type.
 
 \begin{verbatim}
   #define         machine_data_o_thread()                                 \
@@ -215,10 +215,10 @@ illustrates the case of the \texttt{o\_thread} object type.
 \end{verbatim}
 
 On that architecture, the developers decided to store the thread context
-on a specific stack at the \texttt{interrupt\_stack} address.
+on a specific stack at the \code{interrupt\_stack} address.
 
-Therefore, once the initial call to the \texttt{machine\_data()} macro-function
-is processed, the \texttt{o\_thread} structure will look like:
+Therefore, once the initial call to the \code{machine\_data()} macro-function
+is processed, the \code{o\_thread} structure will look like:
 
 \begin{verbatim}
   typedef struct
@@ -242,4 +242,3 @@ Finally, the core will behave normally, not knowing that additional fields
 have been added by the machine-related components whilst the architecture
 component for instance will be able to access its machine-specific fields
 without any difficulty.
-

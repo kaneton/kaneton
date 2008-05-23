@@ -27,9 +27,7 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		EPITA				\
-					presentation			\
-					seminar				
+SUBDIRS			:=		EPITA				
 
 #
 # ---------- rules ------------------------------------------------------------

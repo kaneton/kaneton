@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/design.tex
 %
 % created       julien quintard   [mon dec 17 12:26:46 2007]
-% updated       julien quintard   [wed dec 19 20:13:37 2007]
+% updated       julien quintard   [mon may 19 23:09:20 2008]
 %
 
 %
@@ -37,13 +37,13 @@ people wanted the microkernel itself to be modular, subdivided into logical
 parts. This subdivision was introduced to make the whole microkernel clearer
 and more understandable.
 
-The kaneton microkernel is thus divided into \textbf{managers}. These
-managers are generally responsible for a \textbf{kaneton object} type but there
+The kaneton microkernel is thus divided into \term{managers}. These
+managers are generally responsible for a \term{kaneton object} type but there
 exist managers which manage something else or just create an abstraction over
 other kaneton managers. A kaneton object represents a logical and fundamental
 kernel entity. These objects are described later in this section.
 
-\textit{Figure \ref{figure:managers-organisation}} illustrates the
+\reference{Figure \ref{figure:managers-organisation}} illustrates the
 decomposition of the microkernel into multiples managers.
 
 \begin{figure}[h]
@@ -55,21 +55,21 @@ decomposition of the microkernel into multiples managers.
 \end{figure}
 
 Note that this decomposition has no direct relation with the
-\textit{Object-Oriented Programming} paradigm. Indeed, even if kaneton
+\name{Object-Oriented Programming} paradigm. Indeed, even if kaneton
 designers tried to reduce the dependencies between managers, some managers
 remain intrusive as they access the data structures of one or more other
 managers.
 
 A kaneton object represents a kernel entity. Every object is identified by
-an unique identifier issued and managed by the \textbf{id} manager.
+an unique identifier issued and managed by the \term{id} manager.
 
 kaneton people believe kernels are composed of data structures and processing,
-each of these should be very clearly dissociated. Thus, the \textbf{set}
+each of these should be very clearly dissociated. Thus, the \term{set}
 manager was introduced so that the other kaneton managers use it for storing
 data without taking care of how it is technically done. The result of such
 a concept is that the kaneton core source code looks as clear as pseudo code.
 
-\textit{Figure \ref{figure:sets-organisation}} depicts the set manager
+\reference{Figure \ref{figure:sets-organisation}} depicts the set manager
 composed of a set container which holds descriptor of the actual data
 structures.
 
@@ -81,15 +81,15 @@ structures.
   \end{center}
 \end{figure}
 
-The kaneton microkernel basically provide the few following functionalities:
+The kaneton microkernel basically provides the few following functionalities:
 
 \begin{itemize}
   \item
-    Memory Management.
+    Memory Management;
   \item
-    Execution Contexts Management.
+    Execution Contexts Management;
   \item
-    Communication Management.
+    Communication Management;
   \item
     Inputs/Outputs Management.
 \end{itemize}
@@ -109,21 +109,21 @@ one.
 
 In kaneton, there are three managers involved in the memory management.
 
-The first one, called the \textbf{address space} or \textbf{as} manager
+The first one, called the \term{address space} or \term{as} manager
 manages address space objects. An address space object contains a list of
 addressable memory locations including physical memory locations and virtual
 memory locations.
 
 The second manager involved in the memory management is called the
-\textbf{segment} manager. This manager manages the physical memory areas
+\term{segment} manager. This manager manages the physical memory areas
 also known as segment objects.
 
-The latter is the \textbf{region} manager and is equivalent to the
+The latter is the \term{region} manager and is equivalent to the
 virtual memory manager of other kernels. This manager basically manages
 virtual memory areas called regions and the mappings between virtual and
 physical memory locations.
 
-Additionally, the \textbf{map} manager provides functionalities for performing
+Additionally, the \term{map} manager provides functionalities for performing
 both tasks on the segment and region managers, providing a more user-friendly
 abstraction.
 
@@ -132,21 +132,21 @@ abstraction.
 \subsection*{Execution Contexts Management}
 
 The execution contexts management consits in providing a complete interface
-for creating, extending, destroying etc. execution contexts.
+for creating, extending, destroying \etc{} execution contexts.
 
-The \textbf{task} manager manages task objects. A task, in kaneton terms, is
+The \term{task} manager manages task objects. A task, in kaneton terms, is
 exactly an execution context. A task object is basically composed of an
 address space and one or more threads.
 
 The second manager involved in execution contexts management is the
-\textbf{thread} manager since its r\^ole is to manage threads. In kaneton, the
+\term{thread} manager since its role is to manage threads. In kaneton, the
 active scheduled entity is the thread whilst the task is an abstraction of an
 entire execution context.
 
-In addition, the \textbf{cpu} manager is responsible for handling
+In addition, the \term{cpu} manager is responsible for handling
 multiprocessor-specific contexts.
 
-Note that another manager, the \textbf{scheduler}, takes care of scheduling
+Note that another manager, the \term{scheduler}, takes care of scheduling
 the threads for execution.
 
 % communication management
@@ -156,13 +156,13 @@ the threads for execution.
 Communication is an important issue since very first microkernels had poor
 performances due to bad communication design and implementation.
 
-The kaneton \textbf{message} manager provides mechanisms for enabling tasks
+The kaneton \term{message} manager provides mechanisms for enabling tasks
 to communicate with each other through different techniques.
 
-The \textbf{capability} manager takes responsibility for securing objects
+The \term{capability} manager takes responsibility for securing objects
 sent over a possibly insecure network through cryptographic techniques.
 
-Finally, the \textbf{interface} manager represents the point where system
+Finally, the \term{interface} manager represents the point where system
 calls are received and processed.
 
 % inputs/outputs management
@@ -170,9 +170,9 @@ calls are received and processed.
 \subsection*{Inputs/Outputs Management}
 
 In kaneton, every input/output is abstracted in an event through the
-\textbf{event} manager.
+\term{event} manager.
 
-kaneton also provides direct device communication through the \textbf{io}
+kaneton also provides direct device communication through the \term{io}
 manager.
 
 %
@@ -183,23 +183,23 @@ manager.
 
 The kaneton microkernel was designed to be ported on many different - existing
 or not - architectures. Therefore, the microkernel is divided into two
-major components: the \textbf{core} and the \textbf{machine}. The core
+major components: the \term{core} and the \term{machine}. The core
 represents the kaneton source code that is independent from the underlying
 computer. On the contrary, the machine component contains the source code
 related to the underlying specific hardware.
 
 Since a microprocessor architecture can be used on different mother boards
 with various chipsets, the machine component is also divided into a
-\textbf{platform} which represents the board package; and an
-\textbf{architecture} which represents the microprocessor.
+\term{platform} which represents the board package; and an
+\term{architecture} which represents the microprocessor.
 
-Note that the behaviour of the \textit{machine} component can change depending
-on the \textit{platform}/\textit{architecture} coupling. Therefore, the
-\textbf{glue} component was introduced to deal with the multiple
-\textit{platform}/\textit{architecture} combinations.
+Note that the behaviour of the \term{machine} component can change depending
+on the \name{platform}/\name{architecture} coupling. Therefore, the
+\term{glue} component was introduced to deal with the multiple
+\name{platform}/\name{architecture} combinations.
 
 For more information on the portability system, please refer to
-\textit{Chapter \ref{chapter:portability}}.
+\reference{Chapter \ref{chapter:portability}}.
 
 \begin{figure}[h]
   \begin{center}
@@ -209,8 +209,9 @@ For more information on the portability system, please refer to
   \end{center}
 \end{figure}
 
-\textit{Figure \ref{figure:kernel-layers}} illustrates this decomposition where
-system calls are first processed by the core which then calls the glue
-component. This component knows how to handle operations depending on the
-current couple platform/architecture. It then re-distributes the calls to
-either the platform or architecture components.
+\reference{Figure \ref{figure:kernel-layers}} illustrates this decomposition
+where system calls are first processed by the \name{core} which then calls the
+\name{glue} component. This component knows how to handle operations depending
+on the current couple \name{platform}/\name{architecture}. It then
+re-distributes the calls to either the \name{platform} or \name{architecture}
+components.

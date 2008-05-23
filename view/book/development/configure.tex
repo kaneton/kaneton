@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/configure.tex
 %
 % created       julien quintard   [tue may 22 22:34:37 2007]
-% updated       julien quintard   [wed jun 13 22:04:06 2007]
+% updated       julien quintard   [tue may 20 00:58:26 2008]
 %
 
 %
@@ -18,36 +18,36 @@
 \subsection{Configure}
 \label{section:configure}
 
-The \textit{configure} tool provides the final user a very user-friendly
+The \name{configure} tool provides the final user a very user-friendly
 software for customizing its development environment.
 
 Recall the development environment is basically composed of three profiles:
-\textit{host} which describes the operating system behaviour, \textit{kaneton}
-which parameterizes the kaneton microkernel and \textit{user} which contains
+\name{host} which describes the operating system behaviour, \name{kaneton}
+which parameterizes the kaneton microkernel and \name{user} which contains
 some user-specific definitions.
 
 The kaneton development environment is thus used to configure the environment
 behaviour as well as the kaneton microkernel itself.
 
-The \textit{environment/} directory, and more precisely the environment
-profile directories, contain \textit{description} files which actually
+The \location{environment/} directory, and more precisely the environment
+profile directories, contain \name{description} files which actually
 describe the environment variables. These files are not used by the development
-environment but rather by the \textit{configure} tool.
+environment but rather by the \name{configure} tool.
 
-The \textit{configure/} directory is composed of \textit{frame} files
+The \location{configure/} directory is composed of \name{frame} files
 which contain frame descriptions. A frame can be seen as a menu presented
 to the final user. A frame is composed of meta-data but also sub-frame and
 variable entries.
 
-The \textit{configure} tool works as follow. It starts by processing the
+The \name{configure} tool works as follow. It starts by processing the
 environment development configuration files as the environment engine did
 for the generation of the configured environment files. Note that the
-\textit{configure} tool also processes the description files. Also, it
-focuses on variables and actually ignores the \textit{Make} and \textit{Python}
+\name{configure} tool also processes the description files. Also, it
+focuses on variables and actually ignores the \name{Make} and \name{Python}
 functions.
 
 Once this step is done, the tool gets a list of configured and fully described
-variables. Then, the \textit{configure} tool displays the first frame and
+variables. Then, the \name{configure} tool displays the first frame and
 waits for the user to choose an entry.
 
 The user has the possibility to either move to another menu - if any sub-frame
@@ -57,27 +57,27 @@ variable's description.
 
 Every modifications of the development environment are private to the actual
 user. Therefore, any variable modification adds or modifies an entry in the
-related \textit{user} profile's configuration file.
+related \name{user} profile's configuration file.
 
-Note that the \textit{configure} tool is not an environment configuration
+Note that the \name{configure} tool is not an environment configuration
 files editor. Indeed, this tool targets final users and therefore tries to
 be as simple as possible.
 
-The basic \textit{configure} behaviour consists in displaying the final
+The basic \name{configure} behaviour consists in displaying the final
 variable's value. If the user enters a new value, no matter whether there is
 a relation with its previous value, the tool creates/modifies an entry in the
-\textit{user} profile's configuration file overriding any previous definition.
+\name{user} profile's configuration file overriding any previous definition.
 
-For instance, consider the \textit{\_FOO\_} development environment variable
+For instance, consider the \code{\_FOO\_} development environment variable
 and the following configuration files:
 
-In \textit{environment/profile/environment.conf}:
+In \location{environment/profile/environment.conf}:
 
 \begin{verbatim}
   _FOO_                         =                       initial
 \end{verbatim}
 
-In \textit{environment/profile/core/core.conf}:
+In \location{environment/profile/core/core.conf}:
 
 \begin{verbatim}
   _FOO_                         +=                      addon
@@ -90,46 +90,46 @@ one: \verb|initial addon|
   _FOO_                         =                       something new
 \end{verbatim}
 
-Then, the \textit{configure} tool creates a new entry into the \textit{user}
+Then, the \name{configure} tool creates a new entry into the \name{user}
 profile configuration file:
 
 \begin{verbatim}
   _FOO_                         =                       something new
 \end{verbatim}
 
-Finally, note that when the \textit{configure} tool is launched, it first
+Finally, note that when the \name{configure} tool is launched, it first
 tries to detect whether the user is a newcomer or not. If it is, then the
-tool asks the user to create a new \textit{user} profile, step by step. These
-actions are performed in the \textit{critical.py} script of the
-\textit{configure/} directory.
+tool asks the user to create a new \name{user} profile, step by step. These
+actions are performed in the \location{critical.py} script of the
+\location{configure/} directory.
 
 % requirements
 
 \subsubsubsection{Requirements}
 
-The \textit{configure} tool relies on the \textit{Dialog} software which
-is present on many \textit{Unix} systems. Indeed, the \textit{configure}
+The \name{configure} tool relies on the \name{Dialog} software which
+is present on many \name{Unix} systems. Indeed, the \name{configure}
 tool is a user-friendly configuration utility.
 
-Since \textit{configure} needs to update the \textit{user} profile
+Since \name{configure} needs to update the \name{user} profile
 configuration file, this file must be unique and easy to locate. Therefore,
-the \textit{configure} tool supposes this configuration file is accessible at:
+the \name{configure} tool supposes this configuration file is accessible at:
 
 \begin{verbatim}
   environment/profile/user/${KANETON_USER}/${KANETON_USER}.conf
 \end{verbatim}
 
-Finally, the \textit{Python} module \textit{PyYAML} is required as the
-description and frame files use the \textit{YAML} syntax, as described next.
+Finally, the \name{Python} module \name{PyYAML} is required as the
+description and frame files use the \name{YAML} syntax, as described next.
 
 % syntax
 
 \subsubsubsection{Syntax}
 
-The syntax of the \textit{frame} files \textit{.frm} is based on \textit{YAML}.
+The syntax of the \name{frame} files \location{.frm} is based on \name{YAML}.
 
 As said previously, a frame is composed of sub-frame and variable entries. A
-sub-frame entry contains a name and a path to the sub-frame \textit{frame}
+sub-frame entry contains a name and a path to the sub-frame \name{frame}
 file while a variable entry only contains the name of the variable. This
 variable name is then used to retrieve the variable description.
 

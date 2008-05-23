@@ -1,0 +1,168 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/package/opk/article.tex
+%
+% created       julien quintard   [wed may 16 18:16:50 2007]
+% updated       julien quintard   [fri may 23 18:52:59 2008]
+%
+
+%
+% ---------- packages ---------------------------------------------------------
+%
+
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{a4wide}
+\usepackage{fancyheadings}
+\usepackage{multicol}
+\usepackage{indentfirst}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{verbatim}
+\usepackage{ifthen}
+\usepackage[pdftex]{hyperref}
+\usepackage{aeguill}
+
+\usepackage[Lenny]{\path/package/fancy/fncychap}
+
+\pagestyle{fancy}
+
+%
+% ---------- indentation ------------------------------------------------------
+%
+% this command initialises the identiation.
+%
+
+\newcommand{\indentation}
+  {
+    \setlength{\footrulewidth}{0.3pt}
+    \setlength{\parindent}{0.3cm}
+    \setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
+    \renewcommand{\-}{\vspace{\parskip}}
+  }
+
+%
+% ---------- logo -------------------------------------------------------------
+%
+% this function displays the kaneton logo.
+%
+
+\newcommand{\logo}
+  {
+    \begin{center}
+      \includegraphics[scale=0.8]{\path/logo/kaneton.pdf}
+    \end{center}
+  }
+
+%
+% ---------- date -------------------------------------------------------------
+%
+
+\date{\scriptsize{\today}}
+
+%
+% ---------- environments -----------------------------------------------------
+%
+
+%
+% version
+%
+
+\newcommand{\version}
+  {
+    \ifthenelse
+        {
+	  \equal{\mode}{private}
+	}
+	{%
+	  \scriptsize{\textit{private version}} \\
+	}
+	{
+	}
+  }
+
+%
+% details
+%
+
+\newenvironment{details}
+   {
+     \ifthenelse
+	 {
+	   \equal{\mode}{private}
+	 }
+	 {%
+	   \textbf{ \color{red}{[details]}}
+	 }
+	 {%
+	   \comment
+	 }
+   }
+   {
+     \ifthenelse
+	 {
+	   \equal{\mode}{private}
+	 }
+	 {%
+	   \textbf{ \color{red}{[/details]}}
+	 }
+	 {%
+	   \endcomment
+	 }
+   }
+
+%
+% correction
+%
+
+\newenvironment{correction}
+   {
+     \ifthenelse
+	 {
+	   \equal{\mode}{private}
+	 }
+	 {%
+	   \textbf{ \color{red}{[correction]}}
+	 }
+	 {%
+	   \comment
+	 }
+   }
+   {
+     \ifthenelse
+	 {
+	   \equal{\mode}{private}
+	 }
+	 {%
+	   \textbf{ \color{red}{[/correction]}}
+	 }
+	 {%
+	   \endcomment
+	 }
+   }
+
+%
+% ---------- configuration ----------------------------------------------------
+%
+
+%
+% hyperref
+%
+
+\hypersetup
+  {
+    colorlinks = true,
+    linkcolor = black
+  }
+
+%
+% ---------- common -----------------------------------------------------------
+%
+
+\input{\path/package/opk/common.tex}

@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/implementation.tex
 %
 % created       julien quintard   [mon dec 17 12:05:06 2007]
-% updated       julien quintard   [wed dec 19 20:21:05 2007]
+% updated       julien quintard   [mon may 19 22:04:47 2008]
 %
 
 %
@@ -46,10 +46,10 @@ detailed below.
 
 Every manager must provide functions for being initialised and cleaned.
 
-Therefore, the \texttt{initialize()} function initialises a manager given
+Therefore, the \code{initialize()} function initialises a manager given
 parameters though these parameters are, most of the time, absent.
 
-The \texttt{clean()} function, cleans the manager from anything so that it
+The \code{clean()} function, cleans the manager from anything so that it
 can return to a stable and clean state.
 
 % information
@@ -59,22 +59,22 @@ can return to a stable and clean state.
 The following functions are provided for displaying information on either
 the manager, its objets or both.
 
-The function \texttt{show()} displays information on a given identified object.
+The function \code{show()} displays information on a given identified object.
 
-On the other hand, the \texttt{dump()} function displays information on the
+On the other hand, the \code{dump()} function displays information on the
 manager, including a dump of every object held by the manager.
 
 % object
 
 \subsection*{Object}
 
-The function \texttt{reserve()} allocates an object given some properties
-whilst the \texttt{release()} function releases it.
+The function \code{reserve()} allocates an object given some properties
+whilst the \code{release()} function releases it.
 
-The function \texttt{clone()} creates a copy of the given object. Cloning an
+The function \code{clone()} creates a copy of the given object. Cloning an
 object implies cloning every object this object holds or depends on.
 
-The \texttt{get()} function is used for retrieving a kaneton object given its
+The \code{get()} function is used for retrieving a kaneton object given its
 identifier. Note that this function is private to the manager though it is
 sometimes used by other intrusive managers.
 
@@ -84,14 +84,14 @@ sometimes used by other intrusive managers.
 
 The following functions enables the caller to access an object attribute.
 
-The function \texttt{give()} gives the ownership to another entity whilst
-the function \texttt{flush()} releases every object previously reserved.
+The function \code{give()} gives the ownership to another entity whilst
+the function \code{flush()} releases every object previously reserved.
 
 In addition, the kaneton managers generally provide functions for modifying
 a property of a given identified object. Such functions typically take the
 name of the property to modify.
 
-Finally, every manager provides an \texttt{attribute()} function which
+Finally, every manager provides an \code{attribute()} function which
 returns the state of an object's property.
 
 %
@@ -100,7 +100,7 @@ returns the state of an object's property.
 
 \section{Organisation}
 
-The \texttt{kaneton/} directory is organised as follows:
+The \location{kaneton/} directory is organised as follows:
 
 \begin{verbatim}
   core/
@@ -109,16 +109,16 @@ The \texttt{kaneton/} directory is organised as follows:
   machine/
 \end{verbatim}
 
-The \texttt{libc/} directory contains the microkernel-specific C library
-whilst the \texttt{include/} directory contains links to the include
+The \location{libc/} directory contains the microkernel-specific C library
+whilst the \location{include/} directory contains links to the include
 directories of every component.
 
-The \texttt{core/} directory obviously contains everything related to the
+The \location{core/} directory obviously contains everything related to the
 core including the source code and header files. This directory contains
-an \texttt{include/} directory with the core header files and a directory
+an \location{include/} directory with the core header files and a directory
 for every manager.
 
-The \texttt{machine/} directory contains three subdirectories, one for each
+The \location{machine/} directory contains three subdirectories, one for each
 machine-related component:
 
 \begin{verbatim}
@@ -127,12 +127,12 @@ machine-related component:
   platform/
 \end{verbatim}
 
-The \texttt{glue/} directory contains subdirectories for every couple
+The \location{glue/} directory contains subdirectories for every couple
 platform/architecture supported. Each of these directories contains the
-source code files, an \texttt{include/} directory for the header files and
-a \texttt{layout/} directory which contains information used by the linker
+source code files, an \location{include/} directory for the header files and
+a \location{layout/} directory which contains information used by the linker
 in order to place the different elements at precise memory locations.
 
-The \texttt{platform/} and \texttt{architecture/} directories are organised
+The \location{platform/} and \location{architecture/} directories are organised
 the same way with subdirectories for every supported platforms and
 architectures, respectively.

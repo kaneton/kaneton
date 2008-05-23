@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/repository.tex
 %
 % created       julien quintard   [thu may 24 20:43:26 2007]
-% updated       julien quintard   [wed jun 13 22:32:31 2007]
+% updated       julien quintard   [tue may 20 01:22:55 2008]
 %
 
 %
@@ -20,42 +20,39 @@
 
 The repository contains everything related to the kaneton microkernel
 project, in other words, the kaneton source tree described in
-\textit{Chapter \ref{chapter:source tree}}. Indeed, the repository contains
+\reference{Chapter \ref{chapter:source tree}}. Indeed, the repository contains
 the whole history of the kaneton project including the documentation, the
 source code but also the students tarballs over the years.
 
-The actual repository is based on the \textit{Subversion} software which
-provides far more advanced features than its historical rival \textit{CVS}.
+The actual repository is based on the \name{Subversion} software which
+provides far more advanced features than its historical rival \name{CVS}.
 
-The repository is actually hosted on the \textit{kaneton.org} server which
+The repository is actually hosted on the \location{kaneton.org} server which
 also contains the web server and everything else related to the management
 of the kaneton microkernel project.
 
-The repository is accessed in a secure way through a \textit{SSH} channel.
-Indeed, the kaneton \textit{Subversion} repository can be accessed at the
+The repository is accessed in a secure way through a \name{SSH} channel.
+Indeed, the kaneton \name{Subversion} repository can be accessed at the
 following address:
+\location{svn+ssh://subversion@repositories.kaneton.org/kaneton}.
 
-\begin{verbatim}
-  svn+ssh://subversion@repositories.kaneton.org/kaneton
-\end{verbatim}
-
-Note that the security is achieved by the use of \textit{SSH} keys. Therefore,
+Note that the security is achieved by the use of \name{SSH} keys. Therefore,
 any new contributor should get in touch with an administrator of the
 kaneton server in order to obtain an access. Also note that, a test period
 could be set up for a new contributor to get the trust of the kaneton
-community. For more information, please refer to \textit{Chapter
+community. For more information, please refer to \reference{Chapter
 \ref{chapter:community}}.
 
-A contributor willing to create a \textit{SSH} key shoud simply use this
-\textit{Unix} command:
+A contributor willing to create a \name{SSH} key shoud simply use this
+\name{Unix} command:
 
 \begin{verbatim}
   $> ssh-keygen -t dsa
 \end{verbatim}
 
 For more information about how to use the repository, please refer to the
-official \textit{Subversion} documentation. The same goes for the
-\textit{SSH} tools suite.
+official \name{Subversion} documentation. The same goes for the
+\name{SSH} tools suite.
 
 The example below illustrates the checkout of the kaneton repository.
 
@@ -85,7 +82,7 @@ implied by the commit. These logs must conform to the following syntax.
 \end{verbatim}
 
 Following this syntax is very important as an email is sent to the
-\textit{kaneton-developers} mailing-list every time a commit is performed.
+\name{kaneton-developers} mailing-list every time a commit is performed.
 Therefore, the contributors reading the mailing-list are aware of every
 modification in the kaneton source code. This feature can also be used
 to review the modifications done by a new contributor in order to help
@@ -97,5 +94,5 @@ Indeed, the kaneton development environment knows which interpreter to
 use for every type of file. It is therefore a non-sense to introduce a
 hard-coded path to an interpreter.
 
-Tarball file names must be extended with \textit{.tar} while \textit{bzip2}
-compressed tarballs must be extended with \textit{.tar.bz2}.
+Tarball file names must be extended with \location{.tar} while \name{bzip2}
+compressed tarballs must be extended with \location{.tar.bz2}.

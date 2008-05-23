@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/view.tex
 %
 % created       julien quintard   [wed may 23 00:36:53 2007]
-% updated       julien quintard   [wed jun 13 22:09:19 2007]
+% updated       julien quintard   [tue may 20 17:06:41 2008]
 %
 
 %
@@ -18,11 +18,11 @@
 \subsection{View}
 \label{section:view}
 
-The \textit{view} tool serves as a document database as well as a tool for
+The \name{view} tool serves as a document database as well as a tool for
 building and displaying documents in an easy way.
 
 The kaneton documents are classified, each directory corresponding to a
-class of documents. Below are listed the subdirectories of the \textit{view/}
+class of documents. Below are listed the subdirectories of the \location{view/}
 directory.
 
 \begin{verbatim}
@@ -40,46 +40,46 @@ directory.
   template/
 \end{verbatim}
 
-The \textit{template/} directory contains templates for every class of
-document. The \textit{bibliography/} and \textit{logo/} directories contain,
-obviously, the bibliography which is common to all the documents, and the
-logos, respectively. The \textit{figures/} directory contains figures
-common to all the documents while the \textit{package/} directory contains
+The \location{template/} directory contains templates for every class of
+document. The \location{bibliography/} and \location{logo/} directories
+contain, obviously, the bibliography which is common to all the documents, and
+the logos, respectively. The \location{figures/} directory contains figures
+common to all the documents while the \location{package/} directory contains
 additional {\LaTeX} packages.
 
-The directories \textit{curriculum/}, \textit{exam/} and \textit{feedback/}
-contain documents in relation with teaching. The \textit{curriculum/}
-directory contains official documents like the project year planning,
-presentations of the education project etc. The \textit{feedback/}
-directory contains documents which are distributed to the students
-at the end of the kaneton project in order to get feedback for improving
-the project for the next years. Needless to say the \textit{exam/} directory
-contains everything related to examinations.
+The directories \location{curriculum/}, \location{exam/} and
+\location{feedback/} contain documents in relation with teaching. The
+\location{curriculum/} directory contains official documents like the project
+year planning, presentations of the education project \etc{} The
+\location{feedback/} directory contains documents which are distributed to the
+students at the end of the kaneton project in order to get feedback for
+improving the project for the next years. Needless to say the \location{exam/}
+directory contains everything related to examinations.
 
 The other directories contain the actual kaneton documentation. The
-\textit{books} represent the main documents targeting any public:
-contributors, teachers, students etc.. The \textit{papers} are lighter
-documents intended to present a specific feature, design etc. The
-\textit{lectures} are the courses materials, generally composed of
-presentation slides. Finally, the \textit{internship} documentation is
+\name{books} represent the main documents targeting any public:
+contributors, teachers, students \etc{} The \name{papers} are lighter
+documents intended to present a specific feature, design \etc{} The
+\name{lectures} are the courses materials, generally composed of
+presentation slides. Finally, the \name{internship} documentation is
 composed of documents written by people partially involved in the kaneton
 project.
 
-Any document is composed of a \textit{Make} file and one or more
-\textit{\LaTeX} files. The \textit{Make} file always has the same form
+Any document is composed of a \name{Make} file and one or more
+{\LaTeX} files. The \name{Make} file always has the same form
 with little variations depending on the type of document. For more information
-on the rules applying to the \textit{Make} and \textit{\LaTeX} files, please
-refer to their respective sections: \textit{Section \ref{section:make}}
-and \textit{Section \ref{section:python}}.
+on the rules applying to the \name{Make} and {\LaTeX} files, please
+refer to their respective sections: \reference{Section \ref{section:make}}
+and \reference{Section \ref{section:python}}.
 
-The \textit{view} tool basically starts looking for \textit{.tex} files
+The \name{view} tool basically starts looking for \location{.tex} files
 and builds a list of directories containing documents. Then, it provides
 to the user the possibility to build and display a given document. If no
 document name is given on the command line, then the tool draws a list
 of the available documents.
 
 People contributing to the kaneton documents must take care of following
-the rules in relation with the \textit{\LaTeX} language. Moreover, contributors
+the rules in relation with the {\LaTeX} language. Moreover, contributors
 should look at the existing documents to understand to logic behind all
 these rules.
 

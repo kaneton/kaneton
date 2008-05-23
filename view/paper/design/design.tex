@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/paper/design/design.tex
 %
 % created       julien quintard   [wed may 16 18:26:51 2007]
-% updated       julien quintard   [wed dec 19 20:27:11 2007]
+% updated       julien quintard   [thu may 22 16:19:53 2008]
 %
 
 %
@@ -39,12 +39,6 @@
 
 \title{The kaneton microkernel :: design \\
        \scriptsize{http://www.kaneton.org}}
-
-%
-% authors
-%
-
-\author{\small{Julien Quintard}}
 
 %
 % document
@@ -125,7 +119,7 @@ special interest for the portability.
 
 The kaneton microkernel was developed in a very specific way, to build
 a pedagogical project, with the clearest possible design to become an
-all easy-to-understand project including source code, design etc.
+all easy-to-understand project including source code, design \etc{}
 
 The kaneton microkernel will become the base of a distributed operating
 system. For this reason, the kaneton microkernel was designed to fit
@@ -173,7 +167,7 @@ architectures.
 A microkernel based operating system is composed of two parts:
 a \textbf{microkernel} which runs on every processor machine of the system
 and a collection of \textbf{servers} that provides most of traditional
-operating system functionalities: drivers, file servers etc.
+operating system functionalities: drivers, file servers \etc{}
 
 The microkernel has four primary functionalities to provide:
 
@@ -194,7 +188,7 @@ a better understanding since each manager provides an interface to control
 a precise type of kaneton object.
 
 For example, there exists an address space manager, a task manager,
-a thread manager etc. So the reader interested in understanding how
+a thread manager \etc{} So the reader interested in understanding how
 the threads are implemented in kaneton just has to read the source code
 in relation with the thread manager, nothing more.
 
@@ -204,7 +198,7 @@ microkernel.
 
 This paper will now describe microkernel's components to understand how
 the kaneton microkernel provides communication, memory management, process
-management etc.
+management \etc{}
 
 %
 % communication
@@ -232,7 +226,7 @@ Moreover, unlike UNIX-like operating systems, the kaneton microkernel does
 not use signals. Indeed, the goal of the kaneton microkernel is not to
 be as fast as a monolithic type kernel like Linux.
 
-The kaneton project focuses on genericity, coherency, abstractions etc.
+The kaneton project focuses on genericity, coherency, abstractions \etc{}
 
 Finally, the kaneton message passing interface was designed based on
 well-known parallel and distributed programming libraries like MPI. From
@@ -249,19 +243,19 @@ The memory model of the kaneton microkernel is very simple.
 
 Each address space of the system is composed of segments and regions.
 
-A \textbf{segment} consists in a linear sequence of physical addresses.
+A \term{segment} consists in a linear sequence of physical addresses.
 A segment describes one area of physical memory including the
 first address, the last but also some properties like the owner of this
-segment, the permissions: execution, read, write etc. and some
+segment, the permissions: execution, read, write \etc{} and some
 extra attributes. Segments can be accessed via mappings or directly via
 the segment manager interface provided by the kaneton microkernel.
 
-A \textbf{region} consists in a linear sequence of virtual addresses.
+A \term{region} consists in a linear sequence of virtual addresses.
 A region has no properties and is only used to map a valid segment.
 Using a region in the virtual memory will reference the segment's data
 it maps.
 
-An \textbf{address space} is a list of memory locations. In the kaneton
+An \term{address space} is a list of memory locations. In the kaneton
 microkernel, an address space includes the list of the segments and regions.
 So, an address space describes the available process' memory.
 
@@ -329,7 +323,7 @@ the distributed operating system.
 The kaneton designers then decided to use capabilites to handle these
 two distributed-specific features in relation with the security.
 
-A \textbf{capability} provides an easy way to allow a task of the
+A \term{capability} provides an easy way to allow a task of the
 system to access a privileged object via a very simple cryptographic
 technique.
 
@@ -354,7 +348,7 @@ the segment but not to write it.
 A common capability format includes the object identifier, the permissions
 of the capability on the object listing the allowed operations, a check field
 ensuring security and other specific fields like for example the location
-of the service, a lifetime etc.
+of the service, a lifetime \etc{}
 
 The figure below illustrates the capability generic format used in the Amoeba
 distributed operating sytem, this capability format being used by every
@@ -412,16 +406,16 @@ distributed operating system can evolve with three security policies:
 
 \begin{enumerate}
   \item
-    \textbf{No security}: with this policy, the security field of the
+    \term{No security}: with this policy, the security field of the
     capabilities is not used. No cryptography is used on the system
     to guarantee security.
   \item
-    \textbf{Local security}: with it, the capabilities are protected from
+    \term{Local security}: with it, the capabilities are protected from
     malicious programs and users using the check field. So, while there
     is no network message passing of capabilites, the system can be
     considered as safe.
   \item
-    \textbf{Global security}: with this security policy, the distributed
+    \term{Global security}: with this security policy, the distributed
     operating system is safe. Every capability is protected with its check
     field but in addition each message on the network is protected by
     cryptographic algorithms.
@@ -439,7 +433,7 @@ for other kernel managers. The entire microkernel is based on the sets.
 Using this manager leads to a very elegant and maintenable source code. For
 example the task manager uses the set manager to store every task of the
 system. Additionnaly, each task contains a set composed of the threads of
-this task etc.
+this task \etc{}
 
 Such a system provides an easy way to store data without effort. The task
 manager for example does not care about how to store data.
@@ -457,10 +451,10 @@ kaneton being an educational microkernel project, kaneton people wanted
 to use the simplest design possible.
 
 The set manager provides many different data structures like double
-linked-list, stack, pipe, array, b+-tree etc. In addition, the set
+linked-list, stack, pipe, array, b+-tree \etc{} In addition, the set
 manager can be extended without affecting the other managers using it.
 
-The set manager also provides tools like \textbf{iterators} to easily and
+The set manager also provides tools like \term{iterators} to easily and
 quickly go through sets object.
 
 The set manager's interface is generic, independently of the underlying set
@@ -473,12 +467,12 @@ The set manager is a key concept of kaneton because the whole kaneton
 core source code uses it leading to a very coherent and understandable
 source code.
 
-The set manager manages what are called \textbf{set objects}. These set
+The set manager manages what are called \term{set objects}. These set
 objects are actually used to store data. Note that, the set objects are
 also stored in a set object.
 
 Indeed, the set manager uses itself to store the set objects. The special
-set object which stores the set objects is called the \textbf{set container}.
+set object which stores the set objects is called the \term{set container}.
 
 The figure below illustrates the sets interconnections.
 
@@ -515,30 +509,30 @@ from other operating systems.
 
 The system is composed of five different entities in relation with execution.
 
-A \textbf{module} represents a passive execution entity in main memory.
+A \term{module} represents a passive execution entity in main memory.
 Indeed, a module does not run and has no execution context. The modules are
 managed by the module service to reside in main memory the time it is
-necessary. For example a very used program like \textit{/bin/ls} will
+necessary. For example a very used program like \location{/bin/ls} will
 certainly become an important module due to its frequent use.
 
 Fundamental system's drivers and services are persistent modules because
 they would be used in the case of a crash to restart the crashed service
 without any dependency to the hard drive device driver for example.
 
-A \textbf{program} is the lowest privileged task on the system.
+A \term{program} is the lowest privileged task on the system.
 The common user programs are the well-known UNIX{\scriptsize \copyright}
-programs like \textit{/bin/ls}, \textit{/bin/wc}, \textit{/usr/bin/cc} etc.
-A program is a task with no privilege. All it can do is compute some things,
-manage data and send messages to more privileged processes.
+programs like \location{/bin/ls}, \location{/bin/wc}, \location{/usr/bin/cc}
+\etc{} A program is a task with no privilege. All it can do is compute some
+things, manage data and send messages to more privileged processes.
 
-A \textbf{service} is a server which provides a so-called service. A service
+A \term{service} is a server which provides a so-called service. A service
 waits for messages, performs a task, and returns the result of the service
 replying the caller.
 
-A \textbf{driver} is a service which can communicate with hardware devices.
+A \term{driver} is a service which can communicate with hardware devices.
 So, the I/O operations are reserved to tasks which are at least a driver.
 
-Finally, a \textbf{core} is a kind of super-driver in which it provides
+Finally, a \term{core} is a kind of super-driver in which it provides
 many services and communicates with hardware devices. Moreover, it is
 the only task able to modify every system's internal data structure.
 
@@ -550,37 +544,37 @@ messages, so hardware and software communications are not possible.
 
 The kaneton microkernel does not have processes in the
 UNIX{\scriptsize \copyright} sens of the term. Indeed, the kaneton
-microkernel manages tasks. A \textbf{task} is a non-active entity because
+microkernel manages tasks. A \term{task} is a non-active entity because
 a task is never scheduled. A task, in the kaneton terms, is an abstraction
 which describes an execution environment, a context. Each task has an
 address space describing its useable memory and one or more threads.
 A task with only an address space and one thread is essentially identical
-to a UNIX{\scriptsize \copyright} process. The term \textbf{process} is
+to a UNIX{\scriptsize \copyright} process. The term \term{process} is
 sometimes used in the kaneton documentation to describe a kaneton task.
 
-The \textbf{threads} are the active entities because they are the one
+The \term{threads} are the active entities because they are the one
 scheduled. Such a thread belongs to a single task, has a set of registers,
 a program counter and finally a stack. Needless to say that the kaneton
 microkernel handles threads as kernel threads.
 
 Each task has three important properties: a class, a behaviour and a priority.
 
-The \textbf{class} is chosen at the task creation time. This property
+The \term{class} is chosen at the task creation time. This property
 informs the kernel about the nature of the task, its role on the system.
 In addition, this class will implicitly determine the rights of the task
-on the system. The different classes are \textit{core}, \textit{driver},
-\textit{service}, \textit{program}. On many architectures, the core, driver
+on the system. The different classes are \name{core}, \name{driver},
+\name{service}, \name{program}. On many architectures, the core, driver
 and service classes will have the same hardware system priority.
 Nevertheless, few architectures provide different hardware system privileges
 like the Intel 32-bit Architecture.
 
-The \textbf{behaviour} specifies the kernel, the type of the task from the
+The \term{behaviour} specifies the kernel, the type of the task from the
 scheduler point of view. The different values for the behaviour are
-\textit{core}, \textit{realtime}, \textit{interactive}, \textit{timesharing}
-and \textit{backgroud}. Each behaviour defines a range of priorities for the
+\name{core}, \name{realtime}, \name{interactive}, \name{timesharing}
+and \name{backgroud}. Each behaviour defines a range of priorities for the
 task.
 
-The \textbf{priority} is a value included in the range defined by the
+The \term{priority} is a value included in the range defined by the
 task's behaviour. Any thread of a task can update the priority of its
 task in this range, modifying the task priority from the scheduler
 point of view.
@@ -639,8 +633,8 @@ it is possible to use every external architecture facilities to optimise
 the kernel execution on this architecture.
 
 The second way consists in the design of an architecture interface defining
-the common architecture operations like \textit{tlb\_flush()},
-\textit{install\_page\_directory()} etc. This system is better than the
+the common architecture operations like \code{tlb\_flush()},
+\code{install\_page\_directory()} \etc{} This system is better than the
 first from the redundancy point of view. Nonetheless, optimisations are more
 difficult to implement. Furthermore, it is still possible for an architecture
 not to fit in this interface. Then, the kernel could not be ported on
@@ -705,7 +699,7 @@ programmers to manage memory and execution context as they want to.
 
 A special interest was ported on parallel and distributed programming
 providing complete primitives to manage priorities on many levels:
-thread, task etc. but also via a complete message passing interface.
+thread, task \etc{} but also via a complete message passing interface.
 
 The set manager is used to make the kernel source code very elegant
 and then understandable by everyone including students. Moreover, the

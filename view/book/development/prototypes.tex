@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/prototypes.tex
 %
 % created       julien quintard   [fri jun  1 01:07:42 2007]
-% updated       julien quintard   [wed jun 13 22:16:11 2007]
+% updated       julien quintard   [tue may 20 01:07:59 2008]
 %
 
 %
@@ -18,12 +18,12 @@
 \subsection{Prototypes}
 \label{section:prototypes}
 
-The \textit{tool/} directory contains a interesting tool developed by
-the kaneton community for generating \textit{C} prototypes automatically.
+The \location{tool/} directory contains a interesting tool developed by
+the kaneton community for generating \name{C} prototypes automatically.
 
-This tool named \textit{mkp} must not be used directly as the prototypes
-automatic generation can be triggered from the \textit{Make} files via the
-\textit{prototypes} rule. This rule should be called everytime a developer
+This tool named \name{mkp} must not be used directly as the prototypes
+automatic generation can be triggered from the \name{Make} files via the
+\name{prototypes} rule. This rule should be called everytime a developer
 wants the prototypes to be correct, for instance, before starting a compiling
 process.
 
@@ -31,8 +31,8 @@ This tool was introduced to avoid spending time writing prototypes.
 Since, this utility generates the prototypes automatically, developers
 should no longer write prototypes manually.
 
-This script takes a list of \textit{C} header files as arguments. These header
-files are supposed to contain a \textit{prototypes} section as illustrated
+This script takes a list of \name{C} header files as arguments. These header
+files are supposed to contain a \name{prototypes} section as illustrated
 below:
 
 \begin{verbatim}
@@ -54,15 +54,15 @@ below:
    */
 \end{verbatim}
 
-The \textit{mkp} tool then retrieve the list of the \textit{C} source files
-listed in the \textit{prototypes} section and remove the text between
-the \textit{prototypes} opening section and the \textit{eop} tag.
+The \name{mkp} tool then retrieve the list of the \name{C} source files
+listed in the \name{prototypes} section and remove the text between
+the \name{prototypes} opening section and the \code{eop} tag.
 
 Then, the script goes through each of the listed source files and tries to
-detect \textit{C} function declarations. For each function declaration found,
+detect \name{C} function declarations. For each function declaration found,
 the tool generates a prototype in the corresponding header file.
 
-Below is an example of a header file with such a \textit{prototypes}
+Below is an example of a header file with such a \name{prototypes}
 section and generated prototypes.
 
 \begin{verbatim}

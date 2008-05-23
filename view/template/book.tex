@@ -8,227 +8,23 @@
 % file          /home/mycure/kaneton/view/template/book.tex
 %
 % created       julien quintard   [wed may 16 18:16:50 2007]
-% updated       julien quintard   [sun feb 10 22:16:31 2008]
+% updated       julien quintard   [fri may 23 18:50:20 2008]
 %
 
 %
-% kaneton latex dependency
+% ---------- dependency -------------------------------------------------------
 %
 
 \input{.dependency.tex}
 
 %
-% class
+% ---------- class ------------------------------------------------------------
 %
 
 \documentclass[10pt,a4wide]{book}
 
 %
-% packages
+% ---------- common -----------------------------------------------------------
 %
 
-\usepackage[english]{babel}
-\usepackage[T1]{fontenc}
-\usepackage{a4wide}
-\usepackage{fancyheadings}
-\usepackage{multicol}
-\usepackage{indentfirst}
-\usepackage{graphicx}
-\usepackage{color}
-\usepackage{xcolor}
-\usepackage{verbatim}
-\usepackage{ifthen}
-\usepackage[pdftex]{hyperref}
-
-\usepackage{aeguill}
-
-\usepackage[Lenny]{\path/package/fncychap}
-
-\pagestyle{fancy}
-
-%
-% toc
-%
-
-\newcommand{\toc}
-  {
-    \tableofcontents
-    \setlength{\footrulewidth}{0.3pt}
-    \setlength{\parindent}{0.3cm}
-    \setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
-    \renewcommand{\-}{\vspace{\parskip}}
-  }
-
-%
-% version
-%
-
-\newcommand{\version}
-  {
-    \ifthenelse
-        {
-	  \equal{\mode}{private}
-	}
-	{
-	  \scriptsize{\textit{private version}}
-	}
-	{
-	  \scriptsize{\textit{public version}}
-	}
-  }
-
-%
-% details environment
-%
-
-\newenvironment{details}%
-   {
-     \ifthenelse
-	 {
-	   \equal{\mode}{private}
-	 }
-	 {
-	   \textbf{\color{red}{ ----- details}}
-	 }
-	 {
-	   \comment
-	 }
-   }%
-   {
-     \ifthenelse
-	 {
-	   \equal{\mode}{private}
-	 }
-	 {
-	   \textbf{\color{red}{ ----- /details}}
-	 }
-	 {
-	   \endcomment
-	 }
-   }
-
-%
-% logos
-%
-
-\newcommand{\logos}
-  {
-    \begin{center}
-      \includegraphics[scale=0.8]{\path/logo/kaneton.pdf}
-    \end{center}
-  }
-
-%
-% colors
-%
-
-\definecolor{functioncolor}{rgb}{0.40,0.00,0.00}
-\definecolor{commandcolor}{rgb}{0.00,0.00,0.40}
-\definecolor{verbatimcolor}{rgb}{0.00,0.40,0.00}
-\definecolor{noticecolor}{rgb}{0.87,0.84,0.02}
-
-%
-% hyperref
-%
-
-\hypersetup
-{
-  colorlinks=true,
-  linkcolor=black
-}
-
-%
-% function
-%
-
-\newcommand\function[3]{
-  \begin{tabular}{p{0.2cm}p{13.8cm}}
-  & {\color{functioncolor}\textbf{#1}}#2
-  \end{tabular}
-
-  \begin{tabular}{p{1cm}p{13cm}}
-  & #3
-  \end{tabular}}
-
-%
-% align
-%
-
-\newcommand\align[1]{
-  \\ & \hspace{#1}}
-
-%
-% argument
-%
-
-\newcommand\argument[1]{\textit{#1}}
-
-%
-% command
-%
-
-\newcommand\command[2]{
-  \begin{tabular}{p{0.2cm}p{13.8cm}}
-  & {\color{commandcolor}\textbf{#1}}
-  \end{tabular}
-
-  \begin{tabular}{p{1cm}p{13cm}}
-  & #2
-  \end{tabular}}
-
-%
-% notice
-%
-
-\newcommand\notice[1]{
-  {\color{noticecolor}\textbf{Notice}}
-
-  \begin{tabular}{p{0.2cm}p{13.8cm}}
-  & #1
-  \end{tabular}}
-
-%
-% subsubsubsection
-%
-
-\newcommand\subsubsubsection[1]{\textbf{#1}}
-
-%
-% example
-%
-
-\newcommand\example[1]{
-  \textit{Example:}
-
-  \begin{tabular}{p{0.2cm}p{13.8cm}}
-  & \textit{#1}
-  \end{tabular}}
-
-%
-% warning XXX
-%
-
-\renewcommand{\familydefault}{\sfdefault}
-
-%
-% verbatim stuff
-%
-
-\makeatletter
-
-\renewcommand{\verbatim@font}
-  {\ttfamily\footnotesize\selectfont}
-
-\def\verbatim@processline
-  {\hskip15ex{\color{verbatimcolor}\the\verbatim@line}\par}
-
-\makeatother
-
-%
-% header
-%
-
-\rhead{}
-\rfoot{\scriptsize{The kaneton microkernel project}}
-
-\date{\scriptsize{\today}}
+\input{\path/package/opk/article.tex}

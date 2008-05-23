@@ -8,83 +8,23 @@
 % file          /home/mycure/kaneton/view/template/paper.tex
 %
 % created       julien quintard   [wed may 16 18:17:37 2007]
-% updated       julien quintard   [wed dec 19 22:26:16 2007]
+% updated       julien quintard   [fri may 23 18:54:07 2008]
 %
 
 %
-% class
+% ---------- dependency -------------------------------------------------------
+%
+
+\input{.dependency.tex}
+
+%
+% ---------- class ------------------------------------------------------------
 %
 
 \documentclass[10pt,a4wide]{article}
 
 %
-% packages
+% ---------- common -----------------------------------------------------------
 %
 
-\usepackage[english]{babel}
-\usepackage[T1]{fontenc}
-\usepackage{a4wide}
-\usepackage{fancyheadings}
-\usepackage{multicol}
-\usepackage{indentfirst}
-\usepackage{graphicx}
-\usepackage{color}
-\usepackage{xcolor}
-\usepackage{verbatim}
-\usepackage{aeguill}
-
-\pagestyle{fancy}
-
-\setlength{\footrulewidth}{0.3pt}
-\setlength{\parindent}{0.3cm}
-\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
-
-%
-% logos
-%
-
-\newcommand{\logos}
-  {
-    \begin{center}
-      \includegraphics[scale=0.8]{\path/logo/kaneton.pdf}
-    \end{center}
-  }
-
-%
-% prototype
-%
-
-\newcommand\prototype[2]{
-  \begin{tabular}{p{0.2cm}p{13.8cm}}
-  & #1
-  \end{tabular}
-
-  \begin{tabular}{p{1cm}p{13cm}}
-  & #2
-  \end{tabular}}
-
-%
-% verbatim stuff
-%
-
-\definecolor{verbatimcolor}{rgb}{0.00,0.40,0.00}
-
-\makeatletter
-
-\renewcommand{\verbatim@font}
-  {\ttfamily\footnotesize\selectfont}
-
-\def\verbatim@processline{
-  {\color{verbatimcolor}\the\verbatim@line}\par
-}
-
-\makeatother
-
-%
-% header
-%
-
-\rhead{}
-\rfoot{\scriptsize{The kaneton microkernel project}}
-
-\date{\scriptsize{\today}}
+\input{\path/package/opk/article.tex}

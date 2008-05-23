@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/boot.tex
 %
 % created       julien quintard   [mon dec 17 21:36:28 2007]
-% updated       julien quintard   [sun feb 10 18:28:52 2008]
+% updated       julien quintard   [mon may 19 23:09:13 2008]
 %
 
 %
@@ -29,15 +29,15 @@ specifications.
 %
 
 The kaneton microkernel is not directly launched when the computer is
-turned on. Indeed, a \textbf{bootloader} first set up an execution environment
+turned on. Indeed, a \term{bootloader} first set up an execution environment
 so that the kernel can be launched properly. The bootloader takes some
-\textbf{inputs} which represents additional files: configuration files,
-execution files etc. For example, the first input the bootloader uses is
+\term{inputs} which represents additional files: configuration files,
+execution files \etc{} For example, the first input the bootloader uses is
 the kaneton microkernel binary file which is loaded and launched by the
-bootloader itself. In addition, the second input must be the \textit{mod}
+bootloader itself. In addition, the second input must be the \term{mod}
 service which is launched by the kernel.
 
-The kaneton microkernel is launched with an \textbf{init} structure
+The kaneton microkernel is launched with an \term{init} structure
 as argument. This structure is described next.
 
 \begin{verbatim}
@@ -83,11 +83,11 @@ as argument. This structure is described next.
   }                               t_init;
 \end{verbatim}
 
-This structure informs the kernel about the memory layout i.e the location
+This structure informs the kernel about the memory layout \ie{} the location
 of the different elements in memory as these locations vary according to
 the machine.
 
-Note that size fields must be aligned on \texttt{PAGESZ}. Indeed, the
+Note that size fields must be aligned on \code{PAGESZ}. Indeed, the
 core memory managers behave at the byte level. It is the machine responsibility
 to call the core with properly aligned sizes.
 
@@ -101,60 +101,60 @@ to call the core with properly aligned sizes.
 
 \subsection*{Memory}
 
-The \texttt{mem} and \texttt{memsz} fileds specify the offset and the size of
+The \code{mem} and \code{memsz} fileds specify the offset and the size of
 the underlying hardware's RAM.
 
-The \texttt{mem} attribute is very likely to be set to zero but could
+The \code{mem} attribute is very likely to be set to zero but could
 vary on specific platforms.
 
 % kernel code
 
 \subsection*{Kernel Code}
 
-The two fields \texttt{kcode} and \texttt{kcodesz} specify the physical memory
+The two fields \code{kcode} and \code{kcodesz} specify the physical memory
 location and size of the kernel code.
 
 % mod service
 
-\subsection*{\textit{mod} Service}
+\subsection*{\name{mod} Service}
 
-The \textit{mod} service is the very first server launched by the kaneton
+The \name{mod} service is the very first server launched by the kaneton
 microkernel. This server is responsible for creating and starting the
 other servers.
 
-Fields \texttt{mcode} and \texttt{mcodesz} specify the location of the physical
-memory area containing the \textit{mod} service code.
+Fields \code{mcode} and \code{mcodesz} specify the location of the physical
+memory area containing the \code{mod} service code.
 
-\texttt{mlocation} contains the virtual memory address the code area must
-be mapped whilst \texttt{mentry} contains the virtual address of the code's
+\code{mlocation} contains the virtual memory address the code area must
+be mapped whilst \code{mentry} contains the virtual address of the code's
 entry point.
 
-These fields were introduced so that the parsing of the \textit{mod} binary
+These fields were introduced so that the parsing of the \name{mod} binary
 is performed by the bootloader. This way, the kernel does not have take
-care of handling multiples executable file formats like \textit{ELF},
-\textit{COFF} etc.
+care of handling multiples executable file formats like \name{ELF},
+\name{COFF} \etc{}
 
-Indeed, the kernel receives the \textit{init} structure, creates a new task,
-maps the \textit{mod} service code and points the task's thread to the
+Indeed, the kernel receives the \name{init} structure, creates a new task,
+maps the \name{mod} service code and points the task's thread to the
 entry point.
 
 % init structure
 
-\subsection*{\textit{init} Structure}
+\subsection*{\name{init} Structure}
 
-The \texttt{init} and \texttt{initsz} fields contain the location and size
-of the \textit{init} structure itself.
+The \code{init} and \code{initsz} fields contain the location and size
+of the \name{init} structure itself.
 
 % inputs
 
 \subsection*{Inputs}
 
-Inputs are additional files passed to the \textit{mod} service.
+Inputs are additional files passed to the \name{mod} service.
 
 Theses files are gathered together in a single memory area specified through
-the \texttt{input} and \texttt{inputsz} fields.
+the \code{input} and \code{inputsz} fields.
 
-This area first contains metadata with the \texttt{t\_inputs} structure:
+This area first contains metadata with the \code{t\_inputs} structure:
 
 \begin{verbatim}
   typedef struct
@@ -163,12 +163,12 @@ This area first contains metadata with the \texttt{t\_inputs} structure:
   }                               t_inputs;
 \end{verbatim}
 
-The \texttt{ninputs} field of the metadata obviously indicates the number
+The \code{ninputs} field of the metadata obviously indicates the number
 of inputs. These inputs follow the metadata as explained next.
 
 Inputs are actually organised in an array of elements composed of the input
 metadata and the input contents. The input metadata is described by the
-\texttt{t\_init} structure:
+\code{t\_init} structure:
 
 \begin{verbatim}
   typedef struct
@@ -179,8 +179,8 @@ metadata and the input contents. The input metadata is described by the
 \end{verbatim}
 
 Everything related to inputs is packed in a single location so that passing
-these information to the \textit{mod} service is as simple as passing the
-address and size of this memory area i.e \texttt{inputs} and \texttt{inputssz}.
+these information to the \name{mod} service is as simple as passing the
+address and size of this memory area \ie{} \code{inputs} and \code{inputssz}.
 
 % segments
 
@@ -191,9 +191,9 @@ physical memory which are already used. Thus, the kaneton microkernel can
 initialise its memory managers, especially the segment manager, according
 to those zones.
 
-The \texttt{nsegments} attribute indicates the number of segments in the
-array located in the memory area specified by \texttt{segments} and
-\texttt{segmentssz}.
+The \code{nsegments} attribute indicates the number of segments in the
+array located in the memory area specified by \code{segments} and
+\code{segmentssz}.
 
 Elements of the array of segment are of the following type:
 
@@ -210,14 +210,14 @@ Elements of the array of segment are of the following type:
 
 \subsection*{Regions}
 
-Regions provided through the \textit{init} structure indicate the kernel
+Regions provided through the \name{init} structure indicate the kernel
 which memory locations are already mapped.
 
 The kernel can use these information for initialising its memory managers,
 in this case the region manager, so that data structures are coherent.
 
-As for the segments, the \texttt{nregions} regions are gathered in an
-array located at \texttt{regions} of size \texttt{regionssz}.
+As for the segments, the \code{nregions} regions are gathered in an
+array located at \code{regions} of size \code{regionssz}.
 
 Every element of the region array are of the following type:
 
@@ -233,15 +233,15 @@ Every element of the region array are of the following type:
   }                               s_region;
 \end{verbatim}
 
-Note that the \texttt{segment} field of this last structure correspond to
+Note that the \code{segment} field of this last structure correspond to
 an index in the array of segments.
 
 % processors
 
 \subsection*{Processors}
 
-The \texttt{ncpus} field indicates the number of cpu elements in the array
-located at \texttt{cpus} of size \texttt{cpussz}. Each element is of the
+The \code{ncpus} field indicates the number of cpu elements in the array
+located at \code{cpus} of size \code{cpussz}. Each element is of the
 following form:
 
 \begin{verbatim}
@@ -251,21 +251,21 @@ following form:
   }                               s_cpu;
 \end{verbatim}
 
-Additionally, the \texttt{bsp} field indicates the identifier of the boot
+Additionally, the \code{bsp} field indicates the identifier of the boot
 processor.
 
 % kernel stack
 
 \subsection*{Kernel Stack}
 
-The kernel stack is specified through the \texttt{kstack} and
-\texttt{kstacksz}.
+The kernel stack is specified through the \code{kstack} and
+\code{kstacksz}.
 
 % allocator's pre-reserved memory
 
 \subsection*{Allocator's Pre-Reserved Memory}
 
-The memory area specified by \texttt{alloc} and \texttt{allocsz} is used
+The memory area specified by \code{alloc} and \code{allocsz} is used
 by the kaneton microkernel for performing allocations in order to set up
 the memory managers.
 
@@ -283,15 +283,15 @@ memory area provided by the bootloader.
 
 \section{Machine}
 
-The reader would have probably noticed the use of the \texttt{machine\_data()}
-macro-function in the \textit{init} structure.
+The reader would have probably noticed the use of the \code{machine\_data()}
+macro-function in the \name{init} structure.
 
-Indeed, the \textit{init} structure can include machine-dependent information
+Indeed, the \name{init} structure can include machine-dependent information
 that will be later used by the kaneton machine components.
 
-For instance, the \textit{IA-32} kaneton bootloader includes, through
-the \texttt{machine\_data()} macro-function, the following information in
-the \textit{init} structure:
+For instance, the \name{Intel Architecture 32-bit} kaneton bootloader
+includes, through the \code{machine\_data()} macro-function, the following
+information in the \name{init} structure:
 
 \begin{verbatim}
   #define         machine_data_init()                                     \

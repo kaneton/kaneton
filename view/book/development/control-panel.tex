@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/control-panel.tex
 %
 % created       julien quintard   [sun may 20 15:22:52 2007]
-% updated       julien quintard   [tue jun 26 17:19:05 2007]
+% updated       julien quintard   [tue may 20 17:04:08 2008]
 %
 
 %
@@ -19,40 +19,28 @@
 \label{section:control panel}
 
 The kaneton environment allows the developer to trigger every action from
-the \textit{Make} file of the project's root directory.
+the \name{Make} file of the project's root directory.
 
 These actions are listed below:
 
-\command{initialize}
+\command{make initialize}
         {
 	  This action initializes the kaneton development environment by
-	  invoking the \textit{init.py} script of the \textit{environment/}
+	  invoking the \location{init.py} script of the \location{environment/}
 	  directory.
-
-	  \-
-
-	  \example{\$ make initialize}
 	}
 
-\command{clean}
+\command{make clean}
 	{
 	  This action cleans the kaneton development environment.
-
-	  \-
-
-	  \example{\$ make clean}
 	}
 
-\command{kaneton}
+\command{make kaneton}
 	{
 	  This action builds the kaneton microkernel.
-
-	  \-
-
-	  \example{\$ make kaneton}
 	}
 
-\command{main}
+\command{make main}
 	{
 	  This action triggers the default rule which aims at compiling every
 	  piece the final system needs to be set up on a bootable device.
@@ -64,45 +52,29 @@ These actions are listed below:
 	  \example{\$ make}
 	}
 
-\command{clear}
+\command{make clear}
 	{
 	  This action removes every compiled files.
-
-	  \-
-
-	  \example{\$ make clear}
 	}
 
-\command{headers}
+\command{make headers}
 	{
-	  This action generates \textit{Make} files' \textit{C} header
+	  This action generates \name{Make} files' \name{C} header
 	  files dependencies.
-
-	  \-
-
-	  \example{\$ make headers}
 	}
 
-\command{prototypes}
+\command{make prototypes}
 	{
 	  This action generates C prototypes.
-
-	  \-
-
-	  \example{\$ make prototypes}
 	}
 
-\command{test}
+\command{make test}
 	{
 	  This action runs the test suite in order to validate the kaneton
 	  microkernel behaviour.
-
-	  \-
-
-	  \example{\$ make test}
 	}
 
-\command{cheat}
+\command{make cheat}
 	{
 	  This action launches the cheat tests on students kaneton
 	  implementations.
@@ -116,26 +88,18 @@ These actions are listed below:
 	  \example{\$ make cheat-EPITA::2006.k3}
 	}
 
-\command{build}
+\command{make build}
 	{
 	  This action builds the boot device.
-
-	  \-
-
-	  \example{\$ make build}
 	}
 
-\command{install}
+\command{make install}
 	{
 	  This action installs the kaneton microkernel with its dependencies:
-	  configuration files, bootloader etc. on the boot device.
-
-	  \-
-
-	  \example{\$ make install}
+	  configuration files, bootloader \etc{} on the boot device.
 	}
 
-\command{export}
+\command{make export}
 	{
 	  This action builds a kaneton distribution package.
 
@@ -152,7 +116,7 @@ These actions are listed below:
 	  \example{\$ make export-back}
 	}
 
-\command{view}
+\command{make view}
 	{
 	  This action builds and displays a kaneton document.
 
@@ -169,7 +133,7 @@ These actions are listed below:
 	  \example{\$ make view-book::kaneton}
 	}
 
-\command{record}
+\command{make record}
 	{
 	  This action records a real-time session.
 
@@ -182,7 +146,7 @@ These actions are listed below:
 	  \example{\$ make record-basic::test.ts}
 	}
 
-\command{play}
+\command{make play}
 	{
 	  This action plays a recorded session.
 
@@ -192,18 +156,14 @@ These actions are listed below:
 
 	  \-
 
-	  \example{\$ make play-session::prototypes.ts}
+	  \example{\$ make play-basic::prototypes.ts}
 
 	  \-
 
 	  \example{\$ make play-prototy}
 	}
 
-\command{info}
+\command{make info}
 	{
 	  This action displays general information about kaneton.
-
-	  \-
-
-	  \example{\$ make info}
 	}

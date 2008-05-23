@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/kaneton/background.tex
 %
 % created       julien quintard   [tue jun 19 11:48:36 2007]
-% updated       julien quintard   [wed dec 19 15:47:51 2007]
+% updated       julien quintard   [mon may 19 23:09:01 2008]
 %
 
 %
@@ -51,7 +51,7 @@ most suitable place for executing it depending on resources availability.
 
 While the processes generally communicate with each other on the same
 machine, in a distributed operating system, they also communicate with the
-other processes of other machines as illustrated in \textit{Figure
+other processes of other machines as illustrated in \reference{Figure
 \ref{figure:distributed-operating-system}}.
 
 \begin{figure}[h]
@@ -62,8 +62,8 @@ other processes of other machines as illustrated in \textit{Figure
   \end{center}
 \end{figure}
 
-In \textit{Figure \ref{figure:distributed-operating-system}}, the machine
-named \textit{E} is running three processes. One is just running some
+In \reference{Figure \ref{figure:distributed-operating-system}}, the machine
+named \name{E} is running three processes. One is just running some
 computations performing no communication, another is receiving a message
 from the latter which is also sending two messages to processes over the
 network.
@@ -90,7 +90,7 @@ and reliable by nature.
 
 A microkernel is a kernel type designed to be modular hence more reliable than
 monolithic kernels. Instead of building a large binary object containing the
-kernel itself, the drivers, the file systems etc. microkernels try to be as
+kernel itself, the drivers, the file systems \etc{} microkernels try to be as
 small as possible, providing only the fundamental services for managing
 memory, execution contexts, communication and input/output. Besides, the other
 classical operating system services are provided by userland processes with
@@ -102,8 +102,8 @@ distributed operating systems requirements where special processes
 communicate with other node's processes to organize the whole distributed
 system resources.
 
-Figure \ref{figure:microkernel} illustrates a microkernel view with different
-layers.
+\reference{Figure \ref{figure:microkernel}} illustrates a microkernel view
+with different layers.
 
 \begin{figure}[h]
   \begin{center}
@@ -115,13 +115,13 @@ layers.
 
 The whole microkernel design is based on the client-server communication
 model where clients ask servers to perform a specific task. For instance,
-to print some text to the screen, a user program has to ask the \textit{tty}
+to print some text to the screen, a user program has to ask the \name{tty}
 server to do it for him because the user program itself does not have any
 right to perform such an action.
 
 To avoid complications and deadlocks the microkernel follows a fundamental
 rule which restrict communication from clients only to more or equal
-privileged tasks. On the Figure \ref{figure:microkernel}, the \textit{vfs}
-server can ask the \textit{ata} server and the \textit{kernel} to peform a
-task but the kernel cannot ask a less privileged server to do something for
-him.
+privileged tasks. On the \reference{Figure \ref{figure:microkernel}}, the
+\name{vfs} server can ask the \name{ata} server and the \name{kernel} to
+peform a task but the kernel cannot ask a less privileged server to do
+something for him.

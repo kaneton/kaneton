@@ -5,17 +5,17 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/curriculum/seminar/Makefile
+# file          /home/mycure/kaneton/view/curriculum/Makefile
 #
-# created       julien quintard   [mon may 14 21:14:19 2007]
-# updated       julien quintard   [sun nov 18 15:40:32 2007]
+# created       julien quintard   [sun jun 10 00:03:39 2007]
+# updated       julien quintard   [sat oct 20 14:30:40 2007]
 #
 
 #
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../environment/env.mk
+include			../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
@@ -27,9 +27,9 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		2006				\
-					2007				\
-					2008				
+SUBDIRS			:=		educational			\
+					LSE				\
+					recruitment			
 
 #
 # ---------- rules ------------------------------------------------------------

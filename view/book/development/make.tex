@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/make.tex
 %
 % created       julien quintard   [sat jun  2 12:34:28 2007]
-% updated       julien quintard   [thu jun 14 21:48:18 2007]
+% updated       julien quintard   [tue may 20 17:05:42 2008]
 %
 
 %
@@ -18,13 +18,13 @@
 \section{Make}
 \label{section:make}
 
-The coding style related to \textit{Make} files is very simple.
+The coding style related to \name{Make} files is very simple.
 
 % naming
 
 \subsection{Naming}
 
-First, \textit{Make} files must be named \textbf{Make} file, with the first
+First, \name{Make} files must be named \location{Makefile}, with the first
 letter in upper case letter.
 
 Rules must be named with a single word in lower-case letters while variables
@@ -34,34 +34,34 @@ must be named in upper-case letters.
 
 \subsection{Environment}
 
-Every \textit{Make} file must rely on the development environment as it
+Every \name{Make} file must rely on the development environment as it
 provides a way for performing operations in a very simple and portable way.
 
-Therefore, each \textit{Make} file must start by including the configured
-\textit{Make} environment file located in the \textit{environment/} directory
-under the name: \textit{env.mk}.
+Therefore, each \name{Make} file must start by including the configured
+\name{Make} environment file located in the \location{environment/} directory
+under the name: \location{env.mk}.
 
-Note that the configured environment \textit{Make} file provides a hidden
-rule named \textit{\_}. This rule name is therefore reserved. This rule is
-triggered every time a \textit{Make} file is called without specifying
+Note that the configured environment \name{Make} file provides a hidden
+rule named \code{\_}. This rule name is therefore reserved. This rule is
+triggered every time a \name{Make} file is called without specifying
 a rule name. This rule aims at verifying the configured environment is
 up-to-date. If not, the rule regenerates it. Finally, this rule calls the
-\textit{main} rule to perform the main work of the \textit{Make} file.
+\code{main} rule to perform the main work of the \name{Make} file.
 
-Therefore, every \textit{Make} file has to provide a \textit{main} rule.
+Therefore, every \name{Make} file has to provide a \code{main} rule.
 
 % layout
 
 \subsection{Layout}
 
-\textit{Make} files must be organised as sections.
+\name{Make} files must be organised as sections.
 
 \begin{itemize}
   \item
-    \textbf{header}: this section contains the file header which provides
-    information on the file edition: creation, last update etc.
+    \term{header}: this section contains the file header which provides
+    information on the file edition: creation, last update \etc{}
   \item
-    \textbf{dependencies}: this section contains the \textit{include}
+    \term{dependencies}: this section contains the \code{include}
     directives.
 
     \begin{verbatim}
@@ -80,8 +80,8 @@ Therefore, every \textit{Make} file has to provide a \textit{main} rule.
       -include                ./$(_DEPENDENCY_MK_)
     \end{verbatim}
   \item
-    \textbf{directives}: this section contains \textit{Make} directives
-    like \textit{.PHONY}, \textit{.SUFFIXES} etc.
+    \term{directives}: this section contains \name{Make} directives
+    like \code{.PHONY}, \code{.SUFFIXES} \etc{}
 
     \begin{verbatim}
       #
@@ -91,7 +91,7 @@ Therefore, every \textit{Make} file has to provide a \textit{main} rule.
       .PHONY:         clear prototypes headers dependencies
     \end{verbatim}
   \item
-    \textbf{variables}: this section contains the variable definitions.
+    \term{variables}: this section contains the variable definitions.
 
     \begin{verbatim}
       #
@@ -115,7 +115,7 @@ Therefore, every \textit{Make} file has to provide a \textit{main} rule.
       CORE_O                  :=              $(CORE_C:.c=.o)
     \end{verbatim}
   \item
-    \textbf{rules}: this section contains the \textit{Make} rules.
+    \term{rules}: this section contains the \name{Make} rules.
 
     \begin{verbatim}
       #
@@ -148,32 +148,32 @@ Therefore, every \textit{Make} file has to provide a \textit{main} rule.
 
 \subsection{Style}
 
-Recall that the kaneton development environment provides a \textit{Make}
-interface allowing \textit{Make} files to perform operations in a portable
-way. Thus, \textit{Make} files must not contain any operations specific
+Recall that the kaneton development environment provides a \name{Make}
+interface allowing \name{Make} files to perform operations in a portable
+way. Thus, \name{Make} files must not contain any operations specific
 to any operating system.
 
-As such, every operation should be a call to one of the \textit{Make} functions
+As such, every operation should be a call to one of the \name{Make} functions
 provided by the kaneton development environment interface.
 
-Any contributor writing a \textit{Make} file should take care of properly
-cleaning the directory from temporary files. Indeed, every \textit{Make} file
-provides a \textit{clear} rule which is intended to remove these temporary
+Any contributor writing a \name{Make} file should take care of properly
+cleaning the directory from temporary files. Indeed, every \name{Make} file
+provides a \code{clear} rule which is intended to remove these temporary
 files. Therefore, every developer should take care of that and verify every
 file was cleaned before committing.
 
-The kaneton project provides a tool for generating \textit{C} prototypes
-through a \textit{Make} rule called \textit{prototypes}. Therefore, the
-\textit{Make} file must carefully use this rule to trigger the generation
+The kaneton project provides a tool for generating \name{C} prototypes
+through a \name{Make} rule called \code{prototypes}. Therefore, the
+\name{Make} file must carefully use this rule to trigger the generation
 of prototypes in the right header files. For more information about the
-prototypes generation, please refer to \textit{Section
+prototypes generation, please refer to \reference{Section
 \ref{section:prototypes}}.
 
-One of the other important rules is called \textit{headers} and generated
+One of the other important rules is called \code{headers} and generated
 a file containing all the header file dependencies related to a set of
-\textit{C} source files. This generated file must be included in the
-\textit{Make} so that it can use it. A \textit{Make} file inclusion is
-present at the end of many \textit{Make} files for this purpose:
+\name{C} source files. This generated file must be included in the
+\name{Make} so that it can use it. A \name{Make} file inclusion is
+present at the end of many \name{Make} files for this purpose:
 
 \begin{verbatim}
   #
@@ -183,11 +183,11 @@ present at the end of many \textit{Make} files for this purpose:
   -include                ./$(_DEPENDENCY_MK_)
 \end{verbatim}
 
-Additionally, \textit{Make} files must resolve dependencies before performing
-any other task. Therefore, the rule name \textit{dependencies} is reserved
-for this purpose by launching every \textit{Make} file in charge of one of
+Additionally, \name{Make} files must resolve dependencies before performing
+any other task. Therefore, the rule name \code{dependencies} is reserved
+for this purpose by launching every \name{Make} file in charge of one of
 the dependency.
 
-Finally, recall that a \textit{main} rule must be provided by every
-\textit{Make} file since this rule is called everytime the \textit{Make}
+Finally, recall that a \code{main} rule must be provided by every
+\name{Make} file since this rule is called everytime the \name{Make}
 file is launch without rule name argument.

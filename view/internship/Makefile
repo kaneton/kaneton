@@ -28,7 +28,7 @@ include			../../environment/env.mk
 #
 
 SUBDIRS			:=		check				\
-					lse				
+					reports				
 
 #
 # ---------- rules ------------------------------------------------------------

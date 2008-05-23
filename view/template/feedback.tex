@@ -7,70 +7,18 @@
 %
 % file          /home/mycure/kaneton/view/template/feedback.tex
 %
-% created       julien quintard   [wed may 16 18:17:07 2007]
-% updated       julien quintard   [sat may 19 16:06:01 2007]
+% created       julien quintard   [wed may 16 18:16:50 2007]
+% updated       julien quintard   [fri may 23 18:50:39 2008]
 %
 
 %
-% class
+% ---------- class ------------------------------------------------------------
 %
 
 \documentclass[10pt,a4wide]{article}
 
 %
-% packages
+% ---------- common -----------------------------------------------------------
 %
 
-\usepackage[english]{babel}
-\usepackage[T1]{fontenc}
-\usepackage{a4wide}
-\usepackage{graphicx}
-\usepackage{fancyheadings}
-\usepackage{multicol}
-\usepackage{indentfirst}
-\usepackage{color}
-\usepackage{ifthen}
-\usepackage{comment}
-\usepackage{verbatim}
-\usepackage{aeguill}
-
-\pagestyle{fancy}
-
-\setlength{\footrulewidth}{0.3pt}
-\setlength{\parindent}{0.3cm}
-\setlength{\parskip}{2ex plus 0.5ex minus 0.2ex}
-
-%
-% question
-%
-
-\newcommand\question[2]{
-  \textbf{#1}
-
-  \vspace{#2}}
-
-%
-% verbatim stuff
-%
-
-\definecolor{verbatimcolor}{rgb}{0.00,0.40,0.00}
-
-\makeatletter
-
-\renewcommand{\verbatim@font}
-  {\ttfamily\footnotesize\selectfont}
-
-\def\verbatim@processline{
-  \hskip15ex{\color{verbatimcolor}\the\verbatim@line}\par
-}
-
-\makeatother
-
-%
-% header
-%
-
-\rhead{}
-\rfoot{\scriptsize{Feedback}}
-
-\date{\scriptsize{\today}}
+\input{\path/package/opk/article.tex}

@@ -27,7 +27,7 @@
 /*
  * this macro makes a function call using a new stack
  *
- * the prototype of the called function is: void (arg1, arg2
+ * the prototype of the called function is: void (arg1, arg2)
  */
 
 #define call(_stacksz_, _function_, _arg1_, _arg2_)			\

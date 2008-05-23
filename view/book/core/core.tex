@@ -483,7 +483,7 @@ identifiers while the set of regions holds region objects.
 	   This function can read memory area spanning on multiple
 	   regions and segments.
 
-	   \notice{This function is not exported by the interface
+	   \note{This function is not exported by the interface
 	   manager. Prefer using the \textit{as\_copy}() function.}
 	 }
 
@@ -498,7 +498,7 @@ identifiers while the set of regions holds region objects.
 	   This function can write memory area spanning on multiple
 	   regions and segments.
 
-	   \notice{This function is not exported by the interface
+	   \note{This function is not exported by the interface
 	   manager. Prefer using the \textit{as\_copy}() function.}
 	 }
 
@@ -611,7 +611,7 @@ so the segment objects can be stored in a set object without effort.
 	   segments. The identifier of the injected segment is returned into
 	   \argument{segid}.
 
-	   \notice{\textbt{The given segment object must have been
+	   \note{\textit{The given segment object must have been
 	   allocated by the \textit{malloc}() function.}}
 	 }
 
@@ -631,7 +631,7 @@ so the segment objects can be stored in a set object without effort.
 	   The new segment, which can be the same, is returned in
 	   \argument{new}.
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{segment\_split}{(i\_segment \argument{id},
@@ -643,7 +643,7 @@ so the segment objects can be stored in a set object without effort.
 
 	   The size \argument{size} specifies the size of the new left segment.
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{segment\_coalesce}{(i\_segment \argument{left},
@@ -653,7 +653,7 @@ so the segment objects can be stored in a set object without effort.
 	   This function merges two adjacent segments into a single
 	   one \argument{id}.
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{segment\_read}{(i\_segment \argument{id},
@@ -703,7 +703,7 @@ so the segment objects can be stored in a set object without effort.
 	   This function is used to force a segment to be given to an address
 	   space.
 
-	   \notice{Catchable segments are reserved by the module service
+	   \note{Catchable segments are reserved by the module service
 	     for architecture specific servers. Catchable segments
 	     are defined in the \argument{kaneton.conf} file.}
 	 }
@@ -789,7 +789,7 @@ As for segments, regions identifiers are set from the region base address.
 	   \argument{left} and \argument{right}, the left one being of size
 	   \argument{size}.
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{region\_resize}{(i\_as \argument{as},
@@ -803,7 +803,7 @@ As for segments, regions identifiers are set from the region base address.
 	   The new region, which can be the same, is returned in
 	   \argument{new}.
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{region\_coalesce}{(i\_as \argument{asid},
@@ -814,7 +814,7 @@ As for segments, regions identifiers are set from the region base address.
 	   This function merges two neighbor regions \argument{left} and
 	   \argument{right} into a single region \argument{regid}.
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{region\_reserve}{(i\_as \argument{as},
@@ -919,7 +919,7 @@ and a region mapping it.
 	   \argument{new} is the new address of the area and may not be
 	   equal to the original address.
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{map\_initialize}{(void)}
@@ -1134,7 +1134,7 @@ Moreover, this classification permit to build a tasks hierarchy.
 Therefore, a task will be authorized to call another task only if
 greater or equal privileged.
 
-\notice{This calls hierarchy must be validated.}
+\note{This calls hierarchy must be validated.}
 
 The \textbf{behaviour} \textit{t\_behav} describes a priority
 interval, each task being able to evolve in it by itself. The different
@@ -1228,9 +1228,9 @@ still is in the behaviour priority interval.
 	   Finally, another flag \textit{WAIT\_NOHANG} can be used
 	   to make the function non-blocking if no task's state has changed.
 
-	   \notice{All these features are not implemented yet.}
+	   \note{All these features are not implemented yet.}
 
-	   \notice{We could probably extend the waiting states to more
+	   \note{We could probably extend the waiting states to more
 	     exotic ones like WAIT\_IO etc.}
 	 }
 
@@ -1371,7 +1371,7 @@ macro \textit{THREAD\_PRIOR} representing the default priority.
 	   \textbf{thread\_args}() function can be used to install
 	   this array onto the stack.
 
-	   \notice{The \textit{libkaneton} version of this function is
+	   \note{The \textit{libkaneton} version of this function is
 	 implemented in a different way than the kernel internal one.}
 	 }
 
@@ -1384,7 +1384,7 @@ macro \textit{THREAD\_PRIOR} representing the default priority.
 	   This function waits for the thread's state to change depending on
 	   the options \argument{opts}.
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{thread\_flush}{(i\_task \argument{task})}
@@ -1547,7 +1547,7 @@ microprocessor.
 	   This function is called when a new task is created. It gives
 	   the identifier of the microprocessor with the lowest load.
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{cpu\_stats}{(i\_cpu \argument{id},
@@ -1555,7 +1555,7 @@ microprocessor.
 	 {
 	   This function updates statistics for the processor \argument{id}.
 
-	   \notice{This function will be extended to provide more
+	   \note{This function will be extended to provide more
 	   precise statistics.}
 	 }
 
@@ -1564,7 +1564,7 @@ microprocessor.
 	   This function -- called periodically -- performs a
 	   load-balancing on all processors.
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{cpu\_migrate}{(i\_task \argument{tskid},
@@ -1591,7 +1591,7 @@ microprocessor.
 	   This function cleans the cpu manager.
 	 }
 
-\notice{The cpu manager is not yet finished. For the moment, it only
+\note{The cpu manager is not yet finished. For the moment, it only
 supports a single microprocessor.}
 
 %
@@ -1632,7 +1632,7 @@ the kernel are directly redirected to the interface manager.
 Each messages has a type which is associated with a message size. For each
 tasks, used types must be registered.
 
-\notice{The system calls corresponding to these functions do not take
+\note{The system calls corresponding to these functions do not take
 the first argument, which is in all cases an \argument{i\_task}}
 
 %
@@ -1695,10 +1695,10 @@ the first argument, which is in all cases an \argument{i\_task}}
 	   The \argument{request} argument will be needed after the call
 	   to control the completeness of the operation.
 
-	   \notice{On uniprocessor systems, this function is simply an
+	   \note{On uniprocessor systems, this function is simply an
 	     alias to \argument{message\_send()}}
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{message\_receive}{(i\_task \argument{task},
@@ -1737,10 +1737,10 @@ the first argument, which is in all cases an \argument{i\_task}}
 	   The argument \argument{request} is later used to check the
 	   status of the operation.
 
-	   \notice{On uniprocessor systems, this function is simply an
+	   \note{On uniprocessor systems, this function is simply an
 	     alias to \argument{message\_receive()}}
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{message\_wait}{(i\_task \argument{task},
@@ -1749,7 +1749,7 @@ the first argument, which is in all cases an \argument{i\_task}}
 	   This function blocks the calling task until the message request
 	   described by \argument{request} is fully completed.
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 
@@ -1759,7 +1759,7 @@ the first argument, which is in all cases an \argument{i\_task}}
 	   This function returns whether the message request described
 	   by \argument{request} is fully completed or not.
 
-	   \notice{This operation is not yet implemented.}
+	   \note{This operation is not yet implemented.}
 	 }
 
 \function{message\_initialize}{(void)}
@@ -1896,5 +1896,5 @@ architecture dependent part.
 	   This function cleans the io manager.
 	 }
 
-\notice{All read/write functions may not be implemented depending of
+\note{All read/write functions may not be implemented depending of
 the architecture.}

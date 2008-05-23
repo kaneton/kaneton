@@ -8,7 +8,11 @@
 % file          /home/mycure/kaneton/view/book/architecture/ia32/ia32.tex
 %
 % created       julien quintard   [mon may 14 19:18:46 2007]
-% updated       julien quintard   [mon dec 17 23:55:59 2007]
+% updated       julien quintard   [thu may 22 19:49:27 2008]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
 %
 
 %
@@ -28,22 +32,14 @@
 %
 
 \lhead{\scriptsize{The kaneton microkernel :: ia32}}
-\rhead{}
 
 %
 % title
 %
 
 \title{The kaneton microkernel :: ia32 \\
-       \version \\
-       \logos}
-
-%
-% authors
-%
-
-\author{\small{Matthieu Bucchianeri} and
-        \small{Renaud Voltz}}
+       \version
+       \logo}
 
 %
 % document
@@ -85,24 +81,30 @@ this document is not intended to be an IA-32 lesson (see
 \textit{Bibliography} for references).
 
 %
-% toc
+% table of contents
 %
 
-\toc
+\tableofcontents
+
+%
+% identation
+%
+
+\indentation{}
 
 %
 % chapters
 %
 
-\include{overview}
-\include{bootloader}
-\include{memory}
-\include{event}
-\include{timer}
-\include{task}
-\include{io}
-\include{syscalls}
-\include{references}
-\include{bibliography}
+\input{overview.tex}
+\input{bootloader.tex}
+\input{memory.tex}
+\input{event.tex}
+\input{timer.tex}
+\input{task.tex}
+\input{io.tex}
+\input{syscalls.tex}
+\input{references.tex}
+\input{bibliography.tex}
 
 \end{document}

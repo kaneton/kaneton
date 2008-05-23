@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/rules.tex
 %
 % created       julien quintard   [mon may 28 19:44:49 2007]
-% updated       julien quintard   [sat jul 14 11:15:17 2007]
+% updated       julien quintard   [tue may 20 17:06:05 2008]
 %
 
 %
@@ -36,12 +36,12 @@ to know how to write its name.
 
 The authors of the project decided kaneton must be written in lower case:
 \textbf{kaneton}. The same goes for the kaneton project names which contain
-a \textit{k} letter in lower-case: \textbf{k1}, \textbf{k2}, \textbf{k3} and
+a \textit{k} letter in lower-case: \name{k1}, \name{k2}, \name{k3} and
 so on.
 
 Also remember that the kaneton project is composed of two distincts
-sub-projects named, the \textit{kaneton educational project} and the
-\textit{kaneton research project}.
+sub-projects named, the \name{kaneton microkernel educational project} and the
+\name{kaneton microkernel research project}.
 
 % header
 
@@ -52,7 +52,7 @@ project name, the license of this file, the file name, the author and
 date of the file creation and finally the author and date of the last
 edition. This header must comply to the following template, depending
 on the sequence of characters used for comments. The example below illustrates
-the template for \textit{C} files.
+the template for \name{C} files.
 
 \begin{verbatim}
   /*
@@ -69,7 +69,7 @@ the template for \textit{C} files.
    */
 \end{verbatim}
 
-Then, an example for \textit{TeX} files:
+Then, an example for {\LaTeX} files:
 
 \begin{verbatim}
   %
@@ -86,22 +86,22 @@ Then, an example for \textit{TeX} files:
   %
 \end{verbatim}
 
-Note that the kaneton project provides an \textit{Emacs} file which contains
-everything necessary to build such headers. This file is located in the
-developers' private \textit{Wiki}.
+Note that the kaneton project provides an \name{Emacs} file which contains
+everything necessary to build such headers. This file is located on the
+developers' private \name{Wiki} \aka{} the \name{Developers Wiki}.
 
 Obviously, the project and license fields must be filled, in the kaneton
-project context, with \textit{kaneton} and \textit{kaneton}, respectively. The
+project context, with \name{kaneton} and \name{kaneton}, respectively. The
 author field must contain the author's full name - firsname and lastname -
 in lower-case letters. Note that auto-generated values must comply to
 the general kaneton rules especially they must be in lower-case letters and
-must not exceed \textit{80} characters in width.
+must not exceed $80$ characters in width.
 
 % markings
 
 \subsubsection{Markings}
 
-Any developer must put the sequence \textit{XXX} everywhere a piece of code
+Any developer must put the sequence \code{XXX} everywhere a piece of code
 is considered as unfinished. This way, any unfixed piece of code can be
 easily retrieved via a very simple command line or script.
 
@@ -110,7 +110,7 @@ easily retrieved via a very simple command line or script.
 \subsubsection{Naming}
 
 When using a language which does not support namespaces, the developer should
-prefix every entity by the package, module etc. name it actually belongs to.
+prefix every entity by the package, module \etc{} name it actually belongs to.
 
 As long as it is possible, entities must be named with a \textit{unique}
 word, excluding the namespace prefix.
@@ -127,80 +127,77 @@ allows it, including file names. Otherwise, the underscore character
 \subsubsection{Layout}
 
 Files are composed of sections in order to make the organisation clearer.
-Each section starts with a specific header and then contains code, text etc.
+Each section starts with a specific header and then contains code, text \etc{}
 related to the section.
 
 A section header is basically a commented separator.
 
-Any file must include a \textit{header} section as explained above. Moreover,
+Any file must include a \name{header} section as explained above. Moreover,
 some sections are mandatory depending of the type of file. For instance,
-even configuration files, description files, frame file, \textit{Python}
-files etc. must provide an \textit{information} section.
+even configuration files, description files, frame file, \name{Python}
+files \etc{} must provide an \name{information} section.
 
-Below is an example of a \textit{Python} script which illustrates the
+Below is an example of a \name{Python} script which illustrates the
 use of sections:
 
 \begin{verbatim}
-#
-# ---------- header -----------------------------------------------------------
-#
-# project       kaneton
-#
-# license       kaneton
-#
-# file          /home/mycure/kaneton/foo/foo.py
-#
-# created       julien quintard   [sun may 13 11:04:52 2007]
-# updated       julien quintard   [mon may 28 12:42:57 2007]
-#
+  #
+  # ---------- header ---------------------------------------------------------
+  #
+  # project       kaneton
+  #
+  # license       kaneton
+  #
+  # file          /home/mycure/kaneton/foo/foo.py
+  #
+  # created       julien quintard   [sun may 13 11:04:52 2007]
+  # updated       julien quintard   [mon may 28 12:42:57 2007]
+  #
 
-#
-# ---------- information ------------------------------------------------------
-#
-# this script is used to illustrates the use of sections in kaneton
-# files.
-#
+  #
+  # ---------- information ----------------------------------------------------
+  #
+  # this script is used to illustrates the use of sections in kaneton
+  # files.
+  #
 
-#
-# ---------- imports ----------------------------------------------------------
-#
+  #
+  # ---------- imports --------------------------------------------------------
+  #
 
-import env
+  import env
 
-import sys
-import re
+  import sys
+  import re
 
-#
-# ---------- globals ----------------------------------------------------------
-#
+  #
+  # ---------- globals --------------------------------------------------------
+  #
 
-g_string = `kaneton'
+  g_string = `kaneton'
 
-#
-# ---------- functions --------------------------------------------------------
-#
+  #
+  # ---------- functions ------------------------------------------------------
+  #
 
-#
-# main()
-#
-# this function does the main work: displaying a string.
-#
-def			main():
-  env.display(env.HEADER_NONE, g_string, env.OPTION_NONE)
+  #
+  # main()
+  #
+  # this function does the main work: displaying a string.
+  #
+  def			main():
+    env.display(env.HEADER_NONE, g_string, env.OPTION_NONE)
 
+  #
+  # ---------- entry point ----------------------------------------------------
+  #
 
-
-#
-# ---------- entry point ------------------------------------------------------
-#
-
-if __name__ == "__main__":
-  main()
-
+  if __name__ == "__main__":
+    main()
 \end{verbatim}
 
 Files related to any language should provide a section for the core
-content like \textit{rules} for \textit{Make} files or \textit{functions}
+content like \name{rules} for \name{Make} files or \name{functions}
 for many other languages.
 
 For more information on the mandatory sections, please refer to
@@ -210,12 +207,11 @@ examples in the kaneton repository.
 However, note that a section which does not contain any code must not
 appear in the file.
 
-Files must not exceed \textit{80} characters in width, including
-the trailing newline character. Moreover, the \textit{DOS} \textit{CR+LF}
-line terminator must not be used. Finally, there must not be any whitespace
-at the end of a line.
+Files must not exceed $80$ characters in width, including the trailing newline
+character. Moreover, the \name{DOS} \name{CR+LF} line terminator must not be
+used. Finally, there must not be any whitespace at the end of a line.
 
-An indentation a two spaces must be used. Moreover, the \textit{Emacs}
+An indentation a two spaces must be used. Moreover, the \name{Emacs}
 default indentation must always be taken as a referencial.
 
 % rules

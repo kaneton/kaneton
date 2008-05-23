@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/python.tex
 %
 % created       julien quintard   [sat jun  2 13:06:42 2007]
-% updated       julien quintard   [thu aug 16 23:10:17 2007]
+% updated       julien quintard   [tue may 20 17:05:55 2008]
 %
 
 %
@@ -18,15 +18,15 @@
 \section{Python}
 \label{section:python}
 
-The \textit{Python} language is the other language for which the kaneton
+The \name{Python} language is the other language for which the kaneton
 development environment provides an interface for performing task in
 a portable way.
 
-Historically, kaneton scripts were written in \textit{Shell} but scripts
+Historically, kaneton scripts were written in \name{Shell} but scripts
 are pretty hard to write, especially when dealing with file modification.
-Even if \textit{sed}, \textit{awk} etc. tools are very powerful, this
+Even if \name{sed}, \name{awk} \etc{} tools are very powerful, this
 is not a good solution for many reasons. Therefore, the scripts were
-re-written in \textit{Python} whilst a \textit{Python} development environment
+re-written in \name{Python} whilst a \name{Python} development environment
 interface was written.
 
 %
@@ -40,29 +40,29 @@ and a dash must be used for composite names.
 
 Comments must also be written in lower-case letters.
 
-Global variable names, which are often used in \textit{Python}, must be
-prefixed by \textit{g\_}.
+Global variable names, which are often used in \name{Python}, must be
+prefixed by \code{g\_}.
 
 As usual, names must be expressed in a single word as long as this is possible.
-Moreover, the shortcut prefixes and suffixes recommended for the \textit{C}
-language also stand for \textit{Python}. For more information, take a look
-at the \textit{Section \ref{section:c}}.
+Moreover, the shortcut prefixes and suffixes recommended for the \name{C}
+language also stand for \name{Python}. For more information, take a look
+at the \reference{Section \ref{section:c}}.
 
 % environment
 
 \subsection{Environment}
 
-Every \textit{Python} file must rely on the development environment as it
+Every \name{Python} file must rely on the development environment as it
 provides a way for performing operations in a very simple and portable way.
 
-Therefore, each \textit{Python} must start by including the configured
-\textit{Python} environment module located in the \textit{environment/}
-directory under the name: \textit{env.py}.
+Therefore, each \name{Python} must start by including the configured
+\name{Python} environment module located in the \location{environment/}
+directory under the name: \location{env.py}.
 
 Also, since operations are provided by the development environment, note
-that \textit{Python} scripts must not perform operations relying on the
-\textit{sys} and/or \textit{os} modules. Others modules like \textit{re},
-\textit{yaml} etc. are allowed. Moreover, the \textit{sys} module is
+that \name{Python} scripts must not perform operations relying on the
+\code{sys} and/or \code{os} modules. Others modules like \code{re},
+\code{yaml} \etc{} are allowed. Moreover, the \code{sys} module is
 sometimes used - badly. If you do not know whether the usage of a module
 is allowed, please ask your supervisor or directly the kaneton community
 through the mailing-list for instance.
@@ -73,18 +73,18 @@ through the mailing-list for instance.
 
 \subsection{Layout}
 
-The \textit{Python} files must be divided into sections. Below are listed
+The \name{Python} files must be divided into sections. Below are listed
 the most common sections developers should use.
 
 \begin{itemize}
   \item
-    \textbf{header}: this section contains the well-known informations about
-    the file: dates, author, license etc.
+    \term{header}: this section contains the well-known informations about
+    the file: dates, author, license \etc{}
   \item
-    \textbf{information}: this section describes what the \textit{Pyhton}
+    \term{information}: this section describes what the \name{Pyhton}
     do or provide if it is a package.
   \item
-    \textbf{imports}: this section contains the module imports.
+    \term{imports}: this section contains the module imports.
 
     \begin{verbatim}
       #
@@ -97,7 +97,7 @@ the most common sections developers should use.
       import re
     \end{verbatim}
   \item
-    \textbf{globals}: this section contains the global variable declarations.
+    \term{globals}: this section contains the global variable declarations.
 
     \begin{verbatim}
       #
@@ -116,10 +116,10 @@ the most common sections developers should use.
       g_path = None
     \end{verbatim}
   \item
-    \textbf{functions}: this section contains the actual \textit{Python}
+    \term{functions}: this section contains the actual \name{Python}
     functions.
   \item
-    \textbf{entry point}: this section contains the real entry point.
+    \term{entry point}: this section contains the real entry point.
 
     This section was introduced in order to localise the script's entry
     point more easily. Note that this section is generally located at
@@ -169,12 +169,12 @@ Then follows an empty comment line and the function description.
         env.display(env.HEADER_ERROR, `  ' + location, env.OPTION_NONE)
 \end{verbatim}
 
-The identation used in \textit{Python} script must be fixed at \textit{2}
+The identation used in \name{Python} script must be fixed at $2$
 whitespaces. This is a common kaneton rule which allows files to be
-readable while respecting the limitation about the \textit{80} characters
+readable while respecting the limitation about the $80$ characters
 in width.
 
-Finally, note, that in \textit{Python}, variables do not need to be declared
+Finally, note, that in \name{Python}, variables do not need to be declared
 before being actually used. However, kaneton people believe this lead
 to unreadable code as well as to common hard-to-find bugs. For this reason,
 every variable must be declared at the beginning of the function. Finally,

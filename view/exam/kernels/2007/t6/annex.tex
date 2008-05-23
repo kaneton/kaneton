@@ -2,7 +2,7 @@
 
 \subsection*{event interface}
 
-\function{event\_reserve}{(i\_event \argument{id},
+\function{}{event\_reserve}{(i\_event \argument{id},
                            e\_event\_type \argument{type},
                            u\_event\_handler \argument{handler})}
 	 {
@@ -24,7 +24,7 @@
 	   also contains a task identifier in the case of an IPC action.
 	 }
 
-\function{event\_release}{(i\_event \argument{id})}
+\function{}{event\_release}{(i\_event \argument{id})}
 	 {
 	   Release an event handler.
 	 }
@@ -55,7 +55,7 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
 
 \subsection*{thread interface}
 
-\function{thread\_reserve}{(i\_task \argument{task},
+\function{}{thread\_reserve}{(i\_task \argument{task},
                             t\_prior \argument{prior},
                             i\_thread* \argument{id})}
 	 {
@@ -67,12 +67,12 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
 	   Priority takes its value from \emph{THREAD\_LPRIOR} to \emph{THREAD\_HPRIOR}.
 	 }
 
-\function{thread\_release}{(i\_thread \argument{id})}
+\function{}{thread\_release}{(i\_thread \argument{id})}
 	 {
 	   Release the thread object \argument{id}.
 	 }
 
-\function{thread\_priority}{(i\_thread \argument{id},
+\function{}{thread\_priority}{(i\_thread \argument{id},
                              t\_prior \argument{prior})}
 	 {
 	   Update the current thread priority to \argument{prior}.
@@ -80,7 +80,7 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
 	   Priority takes its value from \emph{THREAD\_LPRIOR} to \emph{THREAD\_HPRIOR}.
 	 }
 
-\function{thread\_state}{(i\_thread \argument{id},
+\function{}{thread\_state}{(i\_thread \argument{id},
                           t\_state \argument{sched})}
 	 {
 	   Stops or start a thread.
@@ -95,13 +95,13 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
 	   \end{itemize}
 	 }
 
-\function{thread\_get}{(i\_thread \argument{id},
+\function{}{thread\_get}{(i\_thread \argument{id},
                         o\_thread** \argument{o})}
 	 {
 	   Find the thread object corresponding to \argument{id} and return it in \argument{o}.
 	 }
 
-\function{thread\_stack}{(i\_thread \argument{id},
+\function{}{thread\_stack}{(i\_thread \argument{id},
                           t\_stack \argument{stack})}
 	 {
 	   Allocates a stack for the thread \argument{id}.
@@ -112,7 +112,7 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
 	   is set to the address \argument{base}.
 	 }
 
-\function{thread\_load}{(i\_thread \argument{id},
+\function{}{thread\_load}{(i\_thread \argument{id},
                          t\_thread\_context \argument{context})}
 	 {
 	   Load a new execution context in the thread object \argument{id}.
@@ -128,33 +128,33 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
 
 \subsection*{sched interface}
 
-\function{sched\_yield}{(i\_cpu \argument{cpuid})}
+\function{}{sched\_yield}{(i\_cpu \argument{cpuid})}
 	 {
 	   Permit the current thread to relinquish the processor voluntarily.
 
 	   Do not care about the argument \argument{cpuid}.
 	 }
 
-\function{sched\_add}{(i\_thread \argument{thread})}
+\function{}{sched\_add}{(i\_thread \argument{thread})}
 	 {
 	   Adds a runnable thread to the scheduler. Even if the added thread
 	   has the highest priority, do not yield the current thread.
 	 }
 
-\function{sched\_remove}{(i\_thread \argument{thread})}
+\function{}{sched\_remove}{(i\_thread \argument{thread})}
 	 {
 	   Remove a thread from the scheduler. \textbf{Be careful:}
 	   the thread to remove can be executing.
 	 }
 
-\function{sched\_update}{(i\_thread \argument{thread})}
+\function{}{sched\_update}{(i\_thread \argument{thread})}
 	 {
 	   Asks the scheduler to update the thread \argument{thread} in its
 	   internal data structures since for example the thread's priority
 	   just changed.
 	 }
 
-\function{sched\_current}{(i\_thread* \argument{thread})}
+\function{}{sched\_current}{(i\_thread* \argument{thread})}
 	 {
 	   Find the identifier of the currently executing thread and return
 	   it in \argument{thread}
@@ -164,58 +164,58 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
 
 \subsection*{set interface}
 
-\function{set\_size}{(i\_set \argument{id},
+\function{}{set\_size}{(i\_set \argument{id},
                       t\_setsz \argument{size})}
 	 {
 	   Returns in \argument{size} the number of elements in the set.
 	 }
 
-\function{set\_add}{(i\_set \argument{id},
+\function{}{set\_add}{(i\_set \argument{id},
                      void* \argument{data})}
 	 {
 	   Adds a data object into the set \argument{id}.
 	 }
 
-\function{set\_remove}{(i\_set \argument{id},
+\function{}{set\_remove}{(i\_set \argument{id},
                         t\_id \argument{i})}
 	 {
 	   Remove an object identified by \argument{i} from the set
 	   \argument{id}.
 	 }
 
-\function{set\_object}{(i\_set \argument{id},
+\function{}{set\_object}{(i\_set \argument{id},
                         t\_iterator \argument{iterator},
                         void** \argument{data})}
 	 {
 	   Return the data object matching the iterator.
 	 }
 
-\function{set\_get}{(i\_set \argument{setid},
+\function{}{set\_get}{(i\_set \argument{setid},
                      t\_id \argument{id},
                      void** \argument{o})}
          {
 	   Find an element in the set given its identifier \argument{id}.
 	 }
 
-\function{set\_push}{(i\_set \argument{id},
+\function{}{set\_push}{(i\_set \argument{id},
                       void* \argument{data})}
 	 {
 	   Add an object to a FIFO or LIFO structure.
 	 }
 
-\function{set\_pop}{(i\_set \argument{id})}
+\function{}{set\_pop}{(i\_set \argument{id})}
 	 {
 	   Remove the next object of a FIFO or a LIFO structure.
 	 }
 
-\function{set\_pick}{(i\_set \argument{id},
+\function{}{set\_pick}{(i\_set \argument{id},
                       void** \argument{data})}
 	 {
 	   Return the next object of a FIFO or a LIFO structure
 	   without deleting it.
 	 }
 
-\function{set\_reserve}{(\argument{type},
+\function{}{set\_reserve}{(\argument{type},
                          t\_opts \argument{opts},
                          t\_size \argument{datasz},
                          i\_set* \argument{id})}
@@ -238,7 +238,7 @@ event_reserve(14, EVENT_FUNCTION, EVENT_HANDLER(ia32_pf_handler));
 	   \end{itemize}
 	 }
 
-\function{set\_release}{(i\_set \argument{id})}
+\function{}{set\_release}{(i\_set \argument{id})}
 	 {
 	   Release the set \argument{id}.
 	 }

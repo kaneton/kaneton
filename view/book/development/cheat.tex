@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/cheat.tex
 %
 % created       julien quintard   [thu may 24 11:57:37 2007]
-% updated       julien quintard   [wed jun 13 22:15:16 2007]
+% updated       julien quintard   [tue may 20 01:06:51 2008]
 %
 
 %
@@ -18,27 +18,27 @@
 \subsection{Cheat}
 \label{section:cheat}
 
-The \textit{cheat} tool checks whether students cheated by using pieces of
+The \name{cheat} tool checks whether students cheated by using pieces of
 code from kaneton projects of the previous years.
 
-The \textit{history/} directory is composed of directories organizing the
+The \location{history/} directory is composed of directories organizing the
 kaneton students implementations over the years and for every school and
 university the education project was used. Then each subdirectory represents
 a year and contains subdirectories for each students group of this year.
 
-Each student group directory contains a \textit{sources/} subdirectory
-containing the tarballs of the different kaneton stages: \textit{k0},
-\textit{k1}, \textit{k2} and so on; a \textit{fingerprints/} directory
+Each student group directory contains a \location{sources/} subdirectory
+containing the tarballs of the different kaneton stages: \name{k0},
+\name{k1}, \name{k2} and so on; a \location{fingerprints/} directory
 containing an internal source representation used for detecting cheating,
-and a \textit{cheats/} directory which contains a list of commonalities
+and a \location{cheats/} directory which contains a list of commonalities
 with other kaneton implementations of the same and previous years.
 
-The \textit{cheat} tool takes a year and a stage as arguments. Its first
+The \name{cheat} tool takes a year and a stage as arguments. Its first
 task is to generate the fingerprints of the other kaneton implementations
 for this stage of the same and previous years.
 
 Once the fingerprints are generated, the tool performs the checks by
 comparing each pair of kaneton implementations for this stage.
 
-The \textit{cheat} tool is based on another tool whose name cannot be revealed
+The \name{cheat} tool is based on another tool whose name cannot be revealed
 here. For more information, please contact your supervisor.

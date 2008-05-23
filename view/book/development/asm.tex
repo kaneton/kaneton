@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/asm.tex
 %
 % created       julien quintard   [sat jun  2 11:08:30 2007]
-% updated       julien quintard   [thu jun 14 21:56:04 2007]
+% updated       julien quintard   [tue may 20 17:03:06 2008]
 %
 
 %
@@ -18,9 +18,9 @@
 \section{Assembly}
 \label{section:assembly}
 
-The \textit{Assembly} language is used in kaneton to perform tasks which
-cannot be done in \textit{C}. Therefore, the amount of \textit{Assembly}
-code is relatively small compared to the \textit{C} one.
+The \name{Assembly} language is used in kaneton to perform tasks which
+cannot be done in \name{C}. Therefore, the amount of \name{Assembly}
+code is relatively small compared to the \name{C} one.
 
 %
 % inline assembly
@@ -28,11 +28,11 @@ code is relatively small compared to the \textit{C} one.
 
 \subsection{Inline Assembly}
 
-First of all, inline \textit{Assembly} is recommended as it avoids multiple
-files and calls to \textit{Assembly} routines.
+First of all, inline \name{Assembly} is recommended as it avoids multiple
+files and calls to \name{Assembly} routines.
 
-Inline \textit{Assembly} code must be composed of lines with single
-instructions. Lines must be ended by a newline character \textit{$\backslash$n}
+Inline \name{Assembly} code must be composed of lines with single
+instructions. Lines must be ended by a newline character \code{$\backslash$n}
 and aligned to make the code readable even when nested in the body of a macro
 or macro function.
 
@@ -44,9 +44,9 @@ or macro function.
         `iret                                          ')
 \end{verbatim}
 
-Note that rules implied by the \textit{C} language must be respected when
-dealing with inline \textit{Assembly} as these pieces of code are integrated
-in \textit{C} functions.
+Note that rules implied by the \name{C} language must be respected when
+dealing with inline \name{Assembly} as these pieces of code are integrated
+in \name{C} functions.
 
 %
 % naming
@@ -64,19 +64,19 @@ of the routines, in lower-case letters.
 
 \subsection{Layout}
 
-An \textit{Assembly} file must be composed of sections:
+An \name{Assembly} file must be composed of sections:
 
 \begin{itemize}
   \item
-    \textbf{header}: this section contains the file header which provides
-    information on the file edition: creation, last update etc.
+    \term{header}: this section contains the file header which provides
+    information on the file edition: creation, last update \etc{}
   \item
-    \textbf{information}: this section describes what the file is intended
+    \term{information}: this section describes what the file is intended
     to do or provide.
   \item
-    \textbf{routines}: this section contains the \textit{Assembly} routines.
+    \term{routines}: this section contains the \name{Assembly} routines.
   \item
-    \textbf{data}: this section contains the data definitions.
+    \term{data}: this section contains the data definitions.
 \end{itemize}
 
 Below is an example:

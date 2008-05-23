@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/export.tex
 %
 % created       julien quintard   [wed may 23 18:58:41 2007]
-% updated       julien quintard   [fri apr 25 19:02:27 2008]
+% updated       julien quintard   [tue may 20 17:04:56 2008]
 %
 
 %
@@ -21,7 +21,7 @@
 XXX[This section is \textbf{deprecated} as the tool was \textbf{temporarily}
 re-written while the documentation has not been updated.]
 
-The \textit{export} tool was introduced for making the releasing process
+The \name{export} tool was introduced for making the releasing process
 easier. The tool takes an argument specifying the type of target release.
 
 Recall the kaneton microkernel project is used as a material for operating
@@ -31,29 +31,29 @@ these pieces of code in order to prove their well-understanding of the
 kernel internals. Additionnaly, the kaneton project is also a research project
 in operating systems design.
 
-As a result, the \textit{export} tool sometimes has to build a release
+As a result, the \name{export} tool sometimes has to build a release
 with pieces of code removed, sometimes not. Below are listed the different
 type of release:
 
 \begin{itemize}
   \item
-    \textbf{backup}: this release type is basically a bare backup of
+    \term{backup}: this release type is basically a bare backup of
     the kaneton microkernel project repository.
   \item
-    \textbf{dist}: the distribution release is performed by removing
-    the repository-specific stuff: \textit{.svn/}, \textit{CVS/} etc.
+    \term{dist}: the distribution release is performed by removing
+    the repository-specific stuff: \location{.svn/}, \location{CVS/} \etc{}
   \item
-    \textbf{k}$\gamma$\textbf{,}$\tau$: this type of release is intended
+    \term{k$\gamma$,$\tau$}: this type of release is intended
     to students. Therefore, repository-specific stuff is removed. Also,
     teaching materials such as courses, testing scripts, cheating scripts
-    etc.. - specified in the kaneton development environment variable
-    \textit{\_HIDDEN\_} - are removed.
+    \etc{}. - specified in the kaneton development environment variable
+    \code{\_HIDDEN\_} - are removed.
 
     \-
 
     Finally, the pieces of code comprised in the range $[\gamma,\tau]$
     are removed from the release. These pieces of code are marked using the
-    \textit{export} syntax described next.
+    \name{export} syntax described next.
 
     \-
 
@@ -61,30 +61,30 @@ type of release:
 
     \begin{itemize}
       \item
-	\textbf{k0}: boot stuff: boostrap, bootloader etc..;
+	\term{k0}: boot stuff: boostrap, bootloader \etc{};
       \item
-	\textbf{k1}: memory management;
+	\term{k1}: memory management;
       \item
-	\textbf{k2}: event management: interrupts, I/O etc..;
+	\term{k2}: event management: interrupts, I/O \etc{};
       \item
-	\textbf{k3}: task management, scheduling;
+	\term{k3}: task management, scheduling;
       \item
-	\textbf{k4}: communication management.
+	\term{k4}: communication management.
     \end{itemize}
 \end{itemize}
 
-Finally, the generated release is named based on the \textit{\_EXPORT\_}
+Finally, the generated release is named based on the \code{\_EXPORT\_}
 kaneton environment variable followed by the date and type of the release:
-\textit{backup}, \textit{dist} or \textit{k}$\gamma$\textit{,}$\tau$.
+\name{backup}, \name{dist} or \name{k$\gamma$,$\tau$}.
 
 % syntax
 
 \subsubsubsection{Syntax}
 
 As explained previously, pieces of code are removed in order to build
-\textit{stage} releases.
+\name{stage} releases.
 
-The kaneton source code is marked so that the \textit{export} tool knows
+The kaneton source code is marked so that the \name{export} tool knows
 what stage a piece of code belongs to. Indeed, every piece of educational
 code is marked by a tag as illustrated below:
 
@@ -133,14 +133,14 @@ code is marked by a tag as illustrated below:
   /*                                                               [cut] /k1 */
 \end{verbatim}
 
-In this example, the kaneton teachers decided \textit{segment\_clone()}
+In this example, the kaneton teachers decided \code{segment\_clone()}
 was a functionality the students should implement.
 
-The markings at the top \verb|[cut] k1| and bottom \verb|[cut] /k1| of this
-example indicate the \textit{export} tool the location of the piece of code
-to remove for the stage \textit{k1}.
+The markings at the top \code{[cut] k1} and bottom \code{[cut] /k1} of this
+example indicate the \name{export} tool the location of the piece of code
+to remove for the stage \name{k1}.
 
-Note that the marked areas must not overlap, the \textit{export} tool's
+Note that the marked areas must not overlap, the \name{export} tool's
 behaviour being undetermined in such cases.
 
 Let us suppose a teacher $T_{1}$ wants to use kaneton leading the students to
@@ -153,12 +153,12 @@ to avoid cheating between students of different universities for instance.
 In the first case, since the students have to implement the kaneton managers
 around the memory management, $T_{1}$ has to provide the students everything
 the memory management stuff relies on, including some fundamental managers,
-the bootloader etc.. Also, the teacher does not need to provide the source
-code of the upper-level managers. As a result, a \textit{k1,1} release will
+the bootloader \etc{} Also, the teacher does not need to provide the source
+code of the upper-level managers. As a result, a \name{k1,1} release will
 remove the pieces of codes marked $k_{\alpha}$ for $1 \le \alpha \le 1$.
 
 The teacher $T_{2}$ needs something different since the students are going
 to implement every major pieces of the kaneton source code. Since this teacher
-wants their students to implement all the steps, starting with \textit{k0}
-to \textit{k4}, a \textit{k0,4} release will not contain the pieces of source
+wants their students to implement all the steps, starting with \name{k0}
+to \name{k4}, a \name{k0,4} release will not contain the pieces of source
 code marked $k_{\alpha}$ for $0 \le \alpha \le 4$.
