@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/latex.tex
 %
 % created       julien quintard   [thu jun 14 09:53:16 2007]
-% updated       julien quintard   [tue may 20 17:30:06 2008]
+% updated       julien quintard   [fri may 23 20:29:54 2008]
 %
 
 %
@@ -92,9 +92,14 @@ know where the document directory is located from the root \location{view/}
 directory. Every document must therefore specify the path to the
 \location{view/} directory before including the template file.
 
-Every file should then start with something similar to the following:
+Every file should then start with something a \name{setup} section similar
+to the following:
 
 \begin{verbatim}
+  %
+  % ---------- setup ----------------------------------------------------------
+  %
+
   %
   % path
   %
@@ -194,14 +199,16 @@ you are interested in or at the other equivalent kaneton documents.
 Recall that the \location{view/figures/} directory contains figures related
 to the kaneton microkernel documents. These figures must always be prefered
 to specific figures. Moreover, writers are asked to put their figures in
-this directory if the figure is general enough. Moreover, figures must be
+this directory if the figure is general enough. Furthermore, figures must be
 in the \name{FIG} format. Finally, figures must be exported into a
 \name{PDF} format as it is the only format which is accepted both by
-pure {\LaTeX} documents as well as \name{Beamer} documents.
+pure {\LaTeX} documents as well as \name{Beamer} documents while rendering
+without quality loss.
 
-Every time the \verb|\item| element is used, for instance in \code{itemize},
-or \code{enumerate} environments, the text related to the item must be
-placed on a new line, aligned by two characters from the \verb|\item| element.
+Remember that every element must be aligned according to its parent. For
+instance, in the \code{enumerate} environment, the text related to the item
+must be placed on a new line, aligned by two characters from the \verb|\item|
+element as shown below.
 
 \begin{verbatim}
   \begin{itemize}[<+->]
@@ -214,9 +221,11 @@ placed on a new line, aligned by two characters from the \verb|\item| element.
   \end{itemize}
 \end{verbatim}
 
-The remaining of this section is divided into two parts: papers and slides
-because depending on the type of document, either pure {\LaTeX}
-or the \name{Beamer} extension is used.
+XXX
+
+The remaining of this section is divided into two parts: \name{Article} and
+\name{Presentation} because depending on the type of document, either pure
+{\LaTeX} or the \name{Beamer} extension is used.
 
 % article
 
