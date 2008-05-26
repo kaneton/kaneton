@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/package/opk/common.tex
 %
 % created       julien quintard   [fri may 23 18:51:54 2008]
-% updated       julien quintard   [fri may 23 20:17:55 2008]
+% updated       julien quintard   [mon may 26 17:37:53 2008]
 %
 
 %
@@ -51,6 +51,70 @@
 \definecolor{c_type}{rgb}{0.30,0.50,0.70}
 \definecolor{c_argument}{rgb}{0.20,0.30,0.80}
 \definecolor{c_return}{rgb}{0.70,0.70,0.00}
+
+%
+% ---------- environments -----------------------------------------------------
+%
+
+%
+% details
+%
+
+\newenvironment{details}
+   {
+     \ifthenelse
+	 {
+	   \equal{\mode}{private}
+	 }
+	 {%
+	   \textbf{ \color{red}{[details]}}
+	 }
+	 {%
+	   \comment
+	 }
+   }
+   {
+     \ifthenelse
+	 {
+	   \equal{\mode}{private}
+	 }
+	 {%
+	   \textbf{ \color{red}{[/details]}}
+	 }
+	 {%
+	   \endcomment
+	 }
+   }
+
+%
+% correction
+%
+
+\newenvironment{correction}
+   {
+     \ifthenelse
+	 {
+	   \equal{\mode}{private}
+	 }
+	 {%
+	   \textbf{ \color{red}{[correction]}}
+	 }
+	 {%
+	   \comment
+	 }
+   }
+   {
+     \ifthenelse
+	 {
+	   \equal{\mode}{private}
+	 }
+	 {%
+	   \textbf{ \color{red}{[/correction]}}
+	 }
+	 {%
+	   \endcomment
+	 }
+   }
 
 %
 % ---------- commands ---------------------------------------------------------
@@ -101,7 +165,7 @@
 % reference
 %
 % this command is used for referencing a figure or section or anything else.
-% this command should encapsulates the whole text e.g
+% this command should encapsulate the whole text e.g
 % \reference{Figure \ref{XXX}}, \reference{Chapter \ref{XXX}} etc.
 %
 % #1:   section/figure/etc.
@@ -151,7 +215,7 @@
 %
 % type
 %
-% this command is can only be used in the function() command and is used
+% this command should only be used in the function() command and is used
 % for describing a type.
 %
 % #1:   type name
@@ -224,6 +288,19 @@
   \textbf{\subsubsection*{#1}}
 
   \vspace{#2}
+}
+
+%
+% latex
+%
+% this command latexify the given text by putting a backslah in front of it.
+%
+% #1:   command name
+%
+
+\newcommand\latex[1]
+{%
+  $\backslash$#1%
 }
 
 %

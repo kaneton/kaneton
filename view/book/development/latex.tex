@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/latex.tex
 %
 % created       julien quintard   [thu jun 14 09:53:16 2007]
-% updated       julien quintard   [fri may 23 20:29:54 2008]
+% updated       julien quintard   [mon may 26 17:48:56 2008]
 %
 
 %
@@ -42,9 +42,9 @@ is asked to follow the rules described in order to make the documents
 internal representation looks like the resulted output.
 
 Indeed, writers are asked not to use {\LaTeX} commands specifying
-layout requirements especially about indentation like \verb|\paragraph|,
-\verb|\vspace| \etc{} Since the kaneton project provides templates, every
-kaneton document must rely on a template which specifies the paragraph
+layout requirements especially about indentation like \code{\latex{paragraph}},
+\code{\latex{vspace}} \etc{} Since the kaneton project provides templates,
+every kaneton document must rely on a template which specifies the paragraph
 indentation, paragraph space \etc{}
 
 Thus, the writer willing to distinguish two paragraphs in his
@@ -61,8 +61,8 @@ in his {\LaTeX} file as shown below:
 
 This rule aims at making the document code as readable as possible. However,
 if a vertical space is needed in some place the default paragraph indentation
-does not apply, then, the \verb|\-| {\LaTeX} command must be used. This is
-especially useful in \name{lecture} documents.
+does not apply, then, the \code{\latex{-}} {\LaTeX} command must be used. This
+is especially useful in \name{lecture} documents.
 
 The example below illustrates such a \name{lecture} document and the
 need of vertical indentation:
@@ -92,8 +92,8 @@ know where the document directory is located from the root \location{view/}
 directory. Every document must therefore specify the path to the
 \location{view/} directory before including the template file.
 
-Every file should then start with something a \name{setup} section similar
-to the following:
+Every file should then start with a \name{setup} section similar to the
+following:
 
 \begin{verbatim}
   %
@@ -149,13 +149,13 @@ The best way to make things properly is to look at the existing documents.
       % header
       %
 
-      \lhead{\scriptsize{The kaneton microkernel :: development book}}
+      \lhead{\scriptsize{The kaneton microkernel :: development}}
 
       %
       % title
       %
 
-      \title{The kaneton microkernel :: development book
+      \title{The kaneton microkernel :: development
              \version
              \logo}
     \end{verbatim}
@@ -165,7 +165,7 @@ The best way to make things properly is to look at the existing documents.
     whole document's text.
 
     Instead, a section whose name is based on the current chapter or section
-    can be used if the document is much more larger and generally splitted
+    can be used if the document is much more larger and generally split
     into multiple files.
 
     \begin{verbatim}
@@ -190,7 +190,7 @@ are not intended, in {\LaTeX} files, to describe what the file do but instead
 play the role of visual separators.
 
 Note that documents are either \name{public} or \name{private}. Indeed,
-the {\LaTeX} definition \verb|\mode|, stored in a temporary file
+the {\LaTeX} definition \code{\latex{mode}}, stored in a temporary file
 included by kaneton templates, can be used to hide information which must be
 kept private to the kaneton developers community like, for instance,
 implementation details. For more information, take a look at the template
@@ -200,15 +200,15 @@ Recall that the \location{view/figures/} directory contains figures related
 to the kaneton microkernel documents. These figures must always be prefered
 to specific figures. Moreover, writers are asked to put their figures in
 this directory if the figure is general enough. Furthermore, figures must be
-in the \name{FIG} format. Finally, figures must be exported into a
+in the \name{FIG} format. Finally, figures must be exported into the
 \name{PDF} format as it is the only format which is accepted both by
 pure {\LaTeX} documents as well as \name{Beamer} documents while rendering
 without quality loss.
 
 Remember that every element must be aligned according to its parent. For
-instance, in the \code{enumerate} environment, the text related to the item
-must be placed on a new line, aligned by two characters from the \verb|\item|
-element as shown below.
+instance, in the \name{enumerate} environment, the text related to the item
+must be placed on a new line, aligned by two characters from the
+\code{\latex{item}} element as shown below.
 
 \begin{verbatim}
   \begin{itemize}[<+->]
@@ -221,15 +221,26 @@ element as shown below.
   \end{itemize}
 \end{verbatim}
 
-XXX
+% templates
 
-The remaining of this section is divided into two parts: \name{Article} and
-\name{Presentation} because depending on the type of document, either pure
-{\LaTeX} or the \name{Beamer} extension is used.
+\subsubsection{Templates}
+
+The \name{kaneton} development environment provides templates in order to
+making writing documents easier. The provided templates can be grouped
+into two categories depending on the type of rendering: \term{article}s
+are pure {\LaTeX} documents while \term{presentation}s are \name{Beamer}-based
+slides.
+
+The templates \name{book}, \name{exam}, \name{feedback}, \name{internship}
+and \name{paper} belong to the \name{article} category while the templates
+\name{lecture} and \name{talk} are \name{presentation}s.
+
+The remaining of this section is details the style according to the document
+category.
 
 % article
 
-\subsubsection{Article}
+\subsubsubsection{Article}
 
 A long comment separator, composed of three lines, must be used before
 every new subsections, while a single line separator must be used for
@@ -251,19 +262,13 @@ subsubsections and other less important components.
 
 Nevertheless, this rule also depends on the document organisation.
 
-{\LaTeX} references must be used, via the commands \verb|\label| and
-\verb|\ref|, making the reading much more easier.
-
 % presentation
 
-\subsubsection{Presentation}
+\subsubsubsection{Presentation}
 
-Unlike papers, presentation documents are based on the \name{Beamer} package.
-These documents are therefore composed of slides or frame in the
-\name{Beamer} terms.
-
-\name{Lecture} documents are based on such a package through the kaneton
-templates, especially the \name{lecture} template.
+Unlike \name{article}s, \name{presentation}s are based on the \name{Beamer}
+package. These documents are therefore composed of slides --- frames in the
+\name{Beamer} terminology.
 
 Each frame must be preceded by a commented number indicating the slide's
 number into the section of subsection.
@@ -306,8 +311,157 @@ number into the section of subsection.
   \end{frame}
 \end{verbatim}
 
-% commands
+% _opk_ package
 
-\subsubsection{Commands}
+\subsubsection{\name{opk} Package}
 
-XXX[lister les commandes en fonction du type de document: article/presentatoin]
+Since every template is likely to need providing writers the same set
+of functionalities, a {\LaTeX} package has been written. The \term{opk} package
+includes a set of commands useful for building function definitions,
+referencing {\LaTeX} labels \etc{} This package is located in
+\location{view/package/opk/} and is composed of the functions below.
+
+First, needless to define the \code{\latex{author}} directive as the \name{opk}
+package does it automatically, unless the writer knows what he is doing.
+Additionally, the package redefines the \name{verbatim} environment.
+
+\function{}{\latex{term}}{\argument{text}}
+         {
+           This function is used for introducing new terms.
+         }
+
+\function{}{\latex{name}}{\argument{text}}
+         {
+           This function is used for referering to already introduced names.
+         }
+
+\function{}{\latex{code}}{\argument{text}}
+         {
+           This function is used for words that represent function names
+           or anything related to source code.
+         }
+
+\function{}{\latex{reference}}{\argument{section/figure/\etc{}}}
+         {
+           This command is used for referencing figures, sections \etc{}.
+
+           \-
+
+           Note that this command should encapsulate the whole text such
+           as: \code{\latex{reference}\{Figure \latex{ref}\{figure:XXX\}\}}.
+         }
+
+\function{}{\latex{location}}{\argument{location}}
+         {
+           This command is used for describing locations: path, \name{URL}
+           \etc{}
+         }
+
+\function{}{\latex{function}}{\argument{return type},
+                              \argument{function name},
+                              \argument{arguments list},
+                              \argument{description text}}
+         {
+           This special command is used for describing function definitions.
+         }
+
+\function{}{\latex{type}}{\argument{argument}}
+         {
+           This function is for describing arguments.
+
+           \-
+
+           This command should only be used in the \code{\latex{function}()}
+           command.
+         }
+
+\function{}{\latex{command}}{\argument{command line},
+                             \argument{description text}}
+         {
+           This function is equivalent to the \code{\latex{function}()} one
+           but targets \name{Shell}, \name{Python} \etc{} commands rather than
+           language functions.
+         }
+
+\function{}{\latex{subsubsubsection}}{\argument{section name}}
+         {
+           This weird command is just an easier way of sub-dividing the
+           text, once more.
+         }
+
+\function{}{\latex{question}}{\argument{text},
+                              \argument{answer length}}
+         {
+           This command is used in \name{feedback}-template document for
+           creating questions.
+         }
+
+\function{}{\latex{latex}}{\argument{command name}}
+         {
+           This command ``latexify'' the given command name by putting
+           a backslash in front of it.
+         }
+
+\function{}{\latex{note}}{\argument{text}}
+         {
+           This command is used for making little notes, tips, hints \etc{}
+         }
+
+\function{}{\latex{example}}{\argument{text}}
+         {
+           This command is used for creating examples.
+         }
+
+\function{}{\latex{ie}}{}
+         {
+           This command genereates \ie{}.
+         }
+
+\function{}{\latex{eg}}{}
+         {
+           This command genereates \eg{}.
+         }
+
+\function{}{\latex{etc}}{}
+         {
+           This command genereates \etc{}.
+         }
+
+\function{}{\latex{aka}}{}
+         {
+           This command genereates \aka{}.
+         }
+
+Plus, layout-oriented commands are also provided.
+
+\function{}{\latex{indentation}}{}
+         {
+           This command initialises the indentation for the document.
+         }
+
+\function{}{\latex{logo}}{}
+         {
+           This command displays the \name{kaneton} logo.
+         }
+
+\function{}{\latex{version}}{}
+         {
+           This command displays the version type of this document according
+           to the \code{\latex{mode}} definition.
+         }
+
+In addition, specific {\LaTeX} environments are provided.
+
+\function{}{\latex{details}}{}
+         {
+           The \name{details} environment enables writers to include additional
+           information which will only be viewable to private members \ie{}
+           in the private version of the document.
+         }
+
+\function{}{\latex{correction}}{}
+         {
+           The \name{correction} environment plays the same role as the
+           \name{details} environment but is used in \name{exam}-template
+           documents for providing exercises' answer.
+         }
