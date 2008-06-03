@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/lecture/architecture/mips/mips.tex
 %
 % created       julien quintard   [wed may 16 18:42:56 2007]
-% updated       julien quintard   [fri may 23 19:23:32 2008]
+% updated       julien quintard   [sat may 31 20:47:54 2008]
 %
 
 %
@@ -3492,7 +3492,7 @@
 % 32)
 
 \begin{frame}
-  \frametitle{Furter}
+  \frametitle{Further}
 
   Researchers, limited by the capacity of \textbf{instruction-level
   parallelism} moved to other techniques including:
@@ -3690,7 +3690,7 @@
 
   \begin{enumerate}
     \item
-      The memory must provide:
+      The memory provided:
 
       \begin{itemize}
 	\item
@@ -3699,9 +3699,9 @@
 	  one data per cycle.
       \end{itemize}
     \item
-      A memory cycle will have to be as fast as the processor cycle.
+      A memory cycle was as fast as the processor cycle.
     \item
-      The memory address space must be 4 Gb.
+      The memory address space is 4 Gb.
     \item
       The memory must not be expensive.
   \end{enumerate}
@@ -3831,8 +3831,9 @@
     \frac{cycles}{access} & = & 1 \times 0.90 + \\
                           &   & 8 \times 10 \times 0.10 \times
                                 (1 - 10^{-7}) + \\
-                          &   & 1024 \times 10^{6} \times 10^{-7} \\
-                          & = & 111
+                          &   & 1024 \times 10^{6} \times 0.10 \times
+                                10^{-7} \\
+                          & = & 19.1
   \end{eqnarray*}
 \end{frame}
 
@@ -3912,8 +3913,9 @@
     \frac{cycles}{access} & = & 1 \times 0.97 + \\
                           &   & (9 + (8 \times 1)) \times 0.03 \times
                                 (1 - 10^-7) + \\
-                          &   & (999900 + (1024 \times 100)) \times 10^-7 \\
-                          & = & 1.62
+                          &   & (999900 + (1024 \times 100)) \times
+                                0.03 \times 10^-7 \\
+                          & = & 1.48
   \end{eqnarray*}
 \end{frame}
 
@@ -4175,14 +4177,18 @@
 
   \-
 
-  Reloading the cache takes time, about \textbf{50} cycles.
+  Unfortunately, reloading the cache takes time, about \textbf{50} cycles
+  to copy a whole block from the memory.
 
   \-
 
-  Conclusion, the Direct Mapping Policy is powerful, but not enough because
-  too restrictive on the block placement in cache. If data operations
-  are made on blocks of a same set, the cache will always load then unload
-  a block of the cache.
+  Therefore, the Direct Mapping Policy is powerful, but not enough because
+  too restrictive on the block placement in cache.
+
+  \-
+
+  Ineed, if data operations are made on blocks of a same set, the cache will
+  always load then unload a block of the cache.
 \end{frame}
 
 % 33)
@@ -4255,29 +4261,6 @@
 % 37)
 
 \begin{frame}
-  \frametitle{Pseudo LRU}
-
-  The pseudo LRU is a lightweigth LRU implemented through only one bit
-  per block.
-
-  \-
-
-  The algorithm works as follows.
-
-  \-
-
-  Consider a binary search tree for the items in question. Each node of
-  the tree has a one-bit flag denoting ``go left to find a pseudo-LRU element''
-  or ``go right to find a pseudo-LRU element''. To find a pseudo-LRU element,
-  traverse the tree according to the values of the flags. To update the
-  tree with an access to an item N, traverse the tree to find N and, during
-  the traversal, set the node flags to denote the direction that is opposite
-  to the direction taken.
-\end{frame}
-
-% 38)
-
-\begin{frame}
   \frametitle{Full Associative Overview}
 
   The Full Associative Cache Policy is in fact a Set Associative Policy
@@ -4292,40 +4275,9 @@
 
   In our example, a Full Associative Cache would be the same cache than a
   Set Associative Cache with a Degree Eight.
-
-  \-
-
-  Of courses these types of cache are theoritical since the
-  hardware become too complex with many multiplexers slowing down
-  the microprocessor CPI so the frequency.
 \end{frame}
 
-% 39)
-
-\begin{frame}
-  \frametitle{Implementations}
-
-  The caches are in fact implemented through the three different policies
-  below:
-
-  \begin{itemize}
-    \item
-      Direct Mapping.
-    \item
-      Set Associative Degree Two.
-    \item
-      Set Associative Degree Four.
-  \end{itemize}
-
-  Then every cache with a more complex implementation is usually avoided
-  since the multiplexers become too complex.
-
-  \-
-
-  Of course the Full Associative Policy is never implemented.
-\end{frame}
-
-% 40)
+% 38)
 
 \begin{frame}
   \frametitle{Data Caches Overview}
@@ -4344,7 +4296,7 @@
   which describe the way to update the data in cache, in main memory etc.
 \end{frame}
 
-% 41)
+% 39)
 
 \begin{frame}
   \frametitle{Write Policies Overview}
@@ -4368,7 +4320,7 @@
   \end{itemize}
 \end{frame}
 
-% 42)
+% 40)
 
 \begin{frame}
   \frametitle{Dirty Bit}
@@ -4450,33 +4402,6 @@
 % 46)
 
 \begin{frame}
-  \frametitle{Modified Bit}
-
-  Of course, sending an Invalidation Signal takes time because the bus needs
-  to be acquired first.
-
-  \-
-
-  To minimise the number of Invalidation Signals sent a \textbf{Modified Bit}
-  was added to every cache directory entry.
-
-  \-
-
-  Then the following automata is used for every writing:
-
-  \begin{enumerate}
-    \item
-      If M is equal to zero, then an Invalidation Signal is sent and the
-      Modified Bit M is set to one.
-    \item
-      If M is equal to one, then nothing is done because every processor
-      already know that this block is dirty.
-  \end{enumerate}
-\end{frame}
-
-% 47)
-
-\begin{frame}
   \frametitle{Synchronisation}
 
   The remaining question is: \textit{How to make processors synchronised?}
@@ -4523,6 +4448,33 @@
 \end{frame}
 
 % 49)
+
+\begin{frame}
+  \frametitle{Modified Bit}
+
+  Of course, sending an Invalidation Signal takes time because the bus needs
+  to be acquired first.
+
+  \-
+
+  To minimise the number of Invalidation Signals sent a \textbf{Modified Bit}
+  was added to every cache directory entry.
+
+  \-
+
+  Then the following automata is used for every writing:
+
+  \begin{enumerate}
+    \item
+      If M is equal to zero, then an Invalidation Signal is sent and the
+      Modified Bit M is set to one.
+    \item
+      If M is equal to one, then nothing is done because every processor
+      already know that this block is dirty.
+  \end{enumerate}
+\end{frame}
+
+% 47)
 
 \begin{frame}
   \frametitle{Store Buffer}
