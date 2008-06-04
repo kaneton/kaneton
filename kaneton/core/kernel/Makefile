@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kaneton/kaneton/core/kernel/Makefile
+# file          /home/lec_l/kaneton/kaneton/core/kernel/Makefile
 #
 # created       julien quintard   [sun jun 10 16:57:54 2007]
-# updated       matthieu bucchianeri   [sat sep  1 12:30:37 2007]
+# updated       laurent lec   [wed jun  4 17:24:24 2008]
 #
 
 #
@@ -33,7 +33,7 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-KERNEL_C		:=		kernel.c exn.c
+KERNEL_C		:=		kernel.c
 
 KERNEL_O		:=		$(KERNEL_C:.c=.o)
 
