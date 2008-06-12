@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/environment.tex
 %
 % created       julien quintard   [sun may 20 14:49:26 2007]
-% updated       julien quintard   [thu may 22 19:44:17 2008]
+% updated       julien quintard   [thu jun 12 11:06:22 2008]
 %
 
 %
@@ -527,6 +527,18 @@ Note that the \name{Make} development environment must take care of
 setting the \code{PYTHONPATH} shell environment variable with a value
 including the \code{\_PYTHON\_INCLUDE\_DIR\_} kaneton environment variable
 so that scripts can use kaneton \name{Python} packages.
+
+\function{}{env\_perform}{\argument{command}}
+         {
+           This function performs an action according to the given
+           \argument{command} argument.
+
+           \-
+
+           Additionally, if the \code{\_OUTPUT\_} environment variable is
+           set to \code{\_OUTPUT\_VERBOSE\_}, the function displays the
+           command on the output before performing it.
+         }
 
 \function{}{env\_display}{\argument{color},
                           \argument{action},

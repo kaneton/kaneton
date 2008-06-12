@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kan.../environment/profile/host/linux/linux.mk
+# file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       matthieu bucchianeri   [mon dec 24 17:43:41 2007]
+# updated       julien quintard   [thu jun 12 11:44:06 2008]
 #
 
 #
@@ -74,6 +74,28 @@ define env_colorize-
 endef
 
 #
+# perform function
+#
+# 1:		command
+#
+
+ifeq ($(_OUTPUT_),$(_OUTPUT_VERBOSE_))		# if the user wants to display
+						# additional debug information
+
+define env_perform
+  $(_ECHO_) "   $(1)"							&& \
+  $(1)
+endef
+
+else
+
+define env_perform
+  $(1)
+endef
+
+endif
+
+#
 # print functions wrapper
 #
 # 1:		text
@@ -117,7 +139,8 @@ endif
 
 define env_cd
   cd_options=""								&& \
-  $(_CD_) $${cd_options} $(1)
+  $(call env_perform,							\
+    $(_CD_) $${cd_options} $(1))
 endef
 
 #
@@ -145,25 +168,31 @@ define env_launch
   directory=$$($(_DIRNAME_) $(1))					&& \
   file=$$($(_BASENAME_) $(1))						&& \
   if [ "$${directory}" != "." ] ; then					\
-    $(_CD_) $${directory}						; \
+    $(call env_perform,							\
+      $(_CD_) $${directory})						; \
   fi									&& \
   case "$${file}" in							\
     *.sh)								\
-      $(_SHELL_) $${launch_options} $${file} $(_SHELL_FLAGS_) $(2)	; \
+      $(call env_perform,						\
+        $(_SHELL_) $${launch_options} $${file} $(_SHELL_FLAGS_) $(2))	; \
       ;;								\
     *.py)								\
-      $(_PYTHON_) $${launch_options} $${file} $(_PYTHON_FLAGS_) $(2)	; \
+      $(call env_perform,						\
+        $(_PYTHON_) $${launch_options} $${file} $(_PYTHON_FLAGS_) $(2))	; \
       ;;								\
     *.pl)								\
-      $(_PERL_) $${launch_options} $${file} $(_PERL_FLAGS_) $(2)	; \
+      $(call env_perform,						\
+        $(_PERL_) $${launch_options} $${file} $(_PERL_FLAGS_) $(2))	; \
       ;;								\
     Makefile)								\
-      $(_MAKE_) $${launch_options} -f $${file} $(_MAKE_FLAGS_) ${2}	; \
+      $(call env_perform,						\
+        $(_MAKE_) $${launch_options} -f $${file} $(_MAKE_FLAGS_) ${2})	; \
       ;;								\
   esac									; \
   return=$${?}								&& \
   if [ "$${directory}" != "." ] ; then					\
-    $(_CD_) $${cwd}							; \
+    $(call env_perform,							\
+      $(_CD_) $${cwd})							; \
   fi									&& \
   if [ $${return} -ne 0 ] ; then					\
     $(_EXIT_) 42							; \
@@ -181,7 +210,8 @@ endef
 define env_preprocess
   preprocess_options=""							&& \
   $(call env_display,green,PREPROCESS,$(2),		,)		&& \
-  $(_CPP_) -P $(_CPP_FLAGS_) $${preprocess_options} $(2) -o $(1)
+  $(call env_perform,							\
+    $(_CPP_) -P $(_CPP_FLAGS_) $${preprocess_options} $(2) -o $(1))
 endef
 
 #
@@ -195,7 +225,8 @@ endef
 define env_compile-c
   compile_c_options=""							&& \
   $(call env_display,green,COMPILE-C,$(2),		,)		&& \
-  $(_CC_) $(_CC_FLAGS_) $${compile_c_options} -c $(2) -o $(1)
+  $(call env_perform,							\
+    $(_CC_) $(_CC_FLAGS_) $${compile_c_options} -c $(2) -o $(1))
 endef
 
 #
@@ -209,7 +240,8 @@ endef
 define env_lex-l
   lex_l_options=""							&& \
   $(call env_display,green,LEX-L,$(2),			,)		&& \
-  $(_LEX_) $${lex_l_options} $(2) > $(1)
+  $(call env_perform,							\
+    $(_LEX_) $${lex_l_options} $(2) > $(1))
 endef
 
 #
@@ -223,7 +255,8 @@ endef
 define env_assemble-S
   assemble_S_options=""							&& \
   $(call env_display,green,ASSEMBLE-S,$(2),		,)		&& \
-  $(_CPP_) $(2) | $(_AS_) $(_AS_FLAGS_) $${assemble_S_options} -o $(1)
+  $(call env_perform,							\
+    $(_CPP_) $(2) | $(_AS_) $(_AS_FLAGS_) $${assemble_S_options} -o $(1))
 endef
 
 #
@@ -237,8 +270,10 @@ endef
 define env_static-library
   static_library_options=""						&& \
   $(call env_display,magenta,STATIC-LIBRARY,$(1),	,)		&& \
-  $(_AR_) $${static_library_options} $(1) $(2)				&& \
-  $(_RANLIB_) $${static_library_options} $(1)
+  $(call env_perform,							\
+    $(_AR_) $${static_library_options} $(1) $(2))			&& \
+  $(call env_perform,							\
+    $(_RANLIB_) $${static_library_options} $(1))
 endef
 
 #
@@ -253,8 +288,9 @@ endef
 define env_dynamic-library
   dynamic_library_options=""						&& \
   $(call env_display,magenta,DYNAMIC-LIBRARY,$(1),	,)		&& \
-  $(_LD_) --shared $(_LD_FLAGS_) $${dynamic_library_options}		\
-          -o $(1) $(2)
+  $(call env_perform,							\
+    $(_LD_) --shared $(_LD_FLAGS_) $${dynamic_library_options}		\
+            -o $(1) $(2))
 endef
 
 #
@@ -277,8 +313,9 @@ define env_executable
     fi									; \
   fi									&& \
   $(call env_display,magenta,EXECUTABLE,$(1),		,)		&& \
-  $(_CC_) $(_CC_FLAGS_) $(_LD_FLAGS_) $${executable_options} -o $(1)	\
-	$(2) "`$(_CC_) -print-libgcc-file-name`"
+  $(call env_perform,							\
+    $(_CC_) $(_CC_FLAGS_) $(_LD_FLAGS_) $${executable_options} -o $(1)	\
+	    $(2) "`$(_CC_) -print-libgcc-file-name`")
 endef
 
 #
@@ -294,7 +331,8 @@ endef
 define env_archive
   archive_options=""							&& \
   $(call env_display,magenta,ARCHIVE,$(1),		,)		&& \
-  $(_LD_) -r $(_LD_FLAGS_) $${archive_options} -o $(1) $(2)
+  $(call env_perform,							\
+    $(_LD_) -r $(_LD_FLAGS_) $${archive_options} -o $(1) $(2))
 endef
 
 #
@@ -310,7 +348,8 @@ define env_remove
     if [ -e $${f} ] ; then						\
       $(call env_display,red,REMOVE,$${f},		,)		; \
     fi									&& \
-    $(_RM_) $${remove_options} $${f}					; \
+    $(call env_perform,							\
+      $(_RM_) $${remove_options} $${f})					; \
   done
 endef
 
@@ -320,7 +359,8 @@ endef
 
 define env_purge
   $(call env_display,red,PURGE,,,)					&& \
-  $(_PURGE_)
+  $(call env_perform,							\
+    $(_PURGE_))
 endef
 
 #
@@ -353,8 +393,9 @@ define env_headers
   for f in $(1) ; do							\
     if [ -e $${f} ] ; then						\
       $(call env_display,yellow,HEADERS,$$f,		,)		&& \
-      $(_CC_) $(_CC_FLAGS_) -M -MG $${headers_options}			\
-        $${f} >> $(_DEPENDENCY_MK_)					; \
+      $(call env_perform,						\
+        $(_CC_) $(_CC_FLAGS_) -M -MG $${headers_options}		\
+          $${f} >> $(_DEPENDENCY_MK_))					; \
     fi									; \
   done
 endef
@@ -383,7 +424,8 @@ endef
 define env_link
   link_options=""							&& \
   $(call env_display,cyan,LINK,$(1),			,)		&& \
-  $(_LN_) $${link_options} $(2) $(1)
+  $(call env_perform,							\
+    $(_LN_) $${link_options} $(2) $(1))
 endef
 
 #
@@ -396,10 +438,14 @@ endef
 define env_compile-tex
   compile_tex_options=""						&& \
   $(call env_display,green,COMPILE-TEX,$(1),		,)		&& \
-  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			&& \
-  $(_BIBTEX_) $(1).tex							&& \
-  $(_PDFLATEX_) $${compile_tex_options} $(1).tex			; \
-  $(_PDFLATEX_) $${compile_tex_options} $(1).tex
+  $(call env_perform,							\
+    $(_PDFLATEX_) $${compile_tex_options} $(1).tex)			&& \
+  $(call env_perform,							\
+    $(_BIBTEX_) $(1).tex)						&& \
+  $(call env_perform,							\
+    $(_PDFLATEX_) $${compile_tex_options} $(1).tex)			; \
+  $(call env_perform,							\
+    $(_PDFLATEX_) $${compile_tex_options} $(1).tex)
 endef
 
 #
@@ -430,7 +476,8 @@ endef
 
 define env_view
   $(call env_display,yellow,VIEW,$(1),			,)		&& \
-  $(_XPDF_) $(1).pdf
+  $(call env_perform,							\
+    $(_XPDF_) $(1).pdf)
 endef
 
 #

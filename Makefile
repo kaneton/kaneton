@@ -5,10 +5,10 @@
 #
 # license       kanetno
 #
-# file          /home/lec_l/kaneton/Makefile
+# file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       laurent lec   [thu mar 27 22:09:40 2008]
+# updated       julien quintard   [thu jun 12 10:50:29 2008]
 #
 
 #
