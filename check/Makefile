@@ -67,11 +67,5 @@ clear:
 	$(call env_purge,)
 
 prototypes:
-	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
-	done
 
 headers:
-	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$${d}/Makefile,dependencies,)		; \
-	done

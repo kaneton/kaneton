@@ -83,6 +83,11 @@ def			launch(file, arguments, options):
   status = 0
   wd = None
 
+  if options & OPTION_QUIET:
+    output = " >/dev/null 2>&1"
+  else:
+    output = ""
+
   info = os.path.split(file)
 
   directory = info[0]
@@ -93,15 +98,15 @@ def			launch(file, arguments, options):
     cd(directory, OPTION_NONE)
 
   if re.match("^.*\.sh$", file):
-    status = os.system(_SHELL_ + " " + file + " " + arguments)
+    status = os.system(_SHELL_ + " " + file + " " + arguments + output)
   elif re.match("^.*\.py$", file):
-    status = os.system(_PYTHON_ + " " + file + " " + arguments)
+    status = os.system(_PYTHON_ + " " + file + " " + arguments + output)
   elif re.match("^.*\.pl$", file):
-    status = os.system(_PERL_ + " " + file + " " + arguments)
+    status = os.system(_PERL_ + " " + file + " " + arguments + output)
   elif re.match("^Makefile$", file):
-    status = os.system(_MAKE_ + " -f " + file + " " + arguments)
+    status = os.system(_MAKE_ + " -f " + file + " " + arguments + output)
   else:
-    status = os.system(file + " " + arguments)
+    status = os.system(file + " " + arguments + output)
 
   if directory:
     cd(wd, OPTION_NONE)

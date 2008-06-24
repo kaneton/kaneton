@@ -13,3 +13,7 @@ include Makefile.in
 include $(top_srcdir)Makerules
 
 clear: distclean
+
+prototypes:
+
+headers:

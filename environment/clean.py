@@ -48,7 +48,7 @@ def			clear():
   env.display(env.HEADER_OK,
               "clearing the kaneton development tree",
               env.OPTION_NONE)
-# XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "clear")
+  env.launch(env._SOURCE_DIR_ + "/Makefile", "clear", env.OPTION_QUIET)
 
 
 
@@ -62,7 +62,7 @@ def			dependencies():
   dep = None
 
   env.display(env.HEADER_OK,
-              "removing the kaneton dependencies",
+              "removing the kaneton header dependencies",
               env.OPTION_NONE)
 
   dependencies = env.search(env._SOURCE_DIR_,
@@ -95,7 +95,7 @@ def			main():
   # display some stuff.
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
   env.display(env.HEADER_OK,
-              "environment files generated successfully",
+              "cleaning the kaneton development environment",
               env.OPTION_NONE)
   env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 

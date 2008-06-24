@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [thu jun 12 10:50:29 2008]
+# updated       julien quintard   [fri jun 13 11:12:48 2008]
 #
 
 #
@@ -85,7 +85,7 @@ ifeq ($(_SIGNATURE_),kaneton)
 # ---------- environment ------------------------------------------------------
 #
 
-clean:		clear
+clean:
 	$(call env_launch,$(_ENVIRONMENT_DIR_)/clean.py,,)
 
 #

@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/environment.tex
 %
 % created       julien quintard   [sun may 20 14:49:26 2007]
-% updated       julien quintard   [thu jun 12 11:06:22 2008]
+% updated       julien quintard   [fri jun 13 11:09:43 2008]
 %
 
 %
@@ -536,7 +536,7 @@ so that scripts can use kaneton \name{Python} packages.
            \-
 
            Additionally, if the \code{\_OUTPUT\_} environment variable is
-           set to \code{\_OUTPUT\_VERBOSE\_}, the function displays the
+           set to \code{\$\{\_OUTPUT\_VERBOSE\_\}}, the function displays the
            command on the output before performing it.
          }
 
@@ -674,11 +674,11 @@ so that scripts can use kaneton \name{Python} packages.
          {
 	   This function generates header dependencies for the \argument{files}
 	   by building a \name{Make} dependency file named
-	   \code{\_DEPENDENCY\_MK\_}.
+	   \code{\$\{\_DEPENDENCY\_MK\_\}}.
 
 	   \-
 
-	   The generated files \code{\_DEPENDENCY\_MK\_} are removed by
+	   The generated files \code{\$\{\_DEPENDENCY\_MK\_\}} are removed by
 	   the environment engine when cleaning the configured development
 	   environment.
 	 }
@@ -711,7 +711,7 @@ so that scripts can use kaneton \name{Python} packages.
 
 	   \-
 
-           The option \code{ENV\_OPTION\_PRIVATE} configures the document
+           The option \code{\$(ENV\_OPTION\_PRIVATE)} configures the document
 	   by setting the {\LaTeX} definition \code{$\backslash$mode} to
 	   the value \code{private}. This option was introduced to deal with
 	   documents which contain information which must be kept private to
@@ -719,7 +719,7 @@ so that scripts can use kaneton \name{Python} packages.
 
 	   \-
 
-	   Note that a temporary file named \code{\_DEPENDENCY\_TEX\_}
+	   Note that a temporary file named \code{\$\{\_DEPENDENCY\_TEX\_\}}
 	   is created by this functions storing the {\LaTeX} definition
 	   \code{$\backslash$mode}. The developer should take care of
 	   removing this file in the \code{clear} \name{Make} file rule.
@@ -813,6 +813,11 @@ so that scripts can use kaneton \name{Python} packages.
 	   This function must look at the file name in order to determine
 	   how to launch it. Moreover, the function must move the the
 	   directory where is located the file before launching it.
+
+           \-
+
+           The option \code{OPTION\_QUIET} makes the \code{launch()} function
+           do not print anything on the output screen.
 	 }
 
 \function{}{copy}{\argument{source},

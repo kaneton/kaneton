@@ -36,3 +36,9 @@ autre:
  - sched_update: optimiser car ca pue
  - set_array_locate : dicho desactivée
  - thread_give: copier la pile dans le nouvel AS ?
+
+--
+  on devrait (dans kaneton) fournir la possibilite de creer une capability
+  utilisable une fois, ou dans une periode de temps etc.
+
+  inclure le nom du process dans la capability pour que ce ne soit pas anonyme?

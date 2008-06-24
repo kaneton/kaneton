@@ -116,7 +116,7 @@ def			prototypes():
   env.display(env.HEADER_OK,
               "generating the kaneton prototypes",
               env.OPTION_NONE)
-# XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "prototypes", env.OPTION_NONE)
+  env.launch(env._SOURCE_DIR_ + "/Makefile", "prototypes", env.OPTION_QUIET)
 
 
 
@@ -129,7 +129,7 @@ def			headers():
   env.display(env.HEADER_OK,
               "generating the kaneton header dependencies",
               env.OPTION_NONE)
-# XXX  env.launch(env._SOURCE_DIR_ + "/Makefile", "headers", env.OPTION_NONE)
+  env.launch(env._SOURCE_DIR_ + "/Makefile", "headers", env.OPTION_QUIET)
 
 
 
