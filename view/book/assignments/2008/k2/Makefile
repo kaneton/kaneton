@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/book/assignments/2007/k2/Makefile
+# file          /home/mycure/kaneton/view/book/assignments/2008/k2/Makefile
 #
 # created       julien quintard   [mon may 14 19:40:59 2007]
-# updated       julien quintard   [mon jun 11 06:14:04 2007]
+# updated       julien quintard   [sun jul 27 21:45:50 2008]
 #
 
 #

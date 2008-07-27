@@ -1,15 +1,15 @@
-#
-# ---------- header -----------------------------------------------------------
-#
-# project       kaneton
-#
-# license       kaneton
-#
-# file          /home/mycure/kaneton/view/book/assignments/2008/k3/Makefile
-#
-# created       julien quintard   [mon may 14 19:40:59 2007]
-# updated       julien quintard   [sun jul 27 21:47:20 2008]
-#
+##
+## ---------- header ----------------------------------------------------------
+##
+## project       kaneton
+##
+## license       kaneton
+##
+## file          /home/mycure/kaneton/view/books/ia32-virtual/Makefile
+##
+## created       julien quintard   [sat oct 14 11:07:49 2006]
+## updated       julien quintard   [sat oct 14 11:08:09 2006]
+##
 
 #
 # ---------- dependencies -----------------------------------------------------
@@ -21,16 +21,15 @@ include			../../../../../environment/env.mk
 # ---------- directives -------------------------------------------------------
 #
 
-.PHONY:		main view build clear
+.PHONY:		main view build subject correction clear
 
 #
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		assignments
+PAPER			:=		final
 
-SOURCES			:=		assignments.tex			\
-					k3.tex				
+SOURCES			:=		final.tex			
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
@@ -49,8 +48,13 @@ main:			build
 view:			build
 	$(call env_view,$(PAPER),)
 
-build:
+build:			correction
+
+subject:
 	$(call env_document,$(PAPER),)
+
+correction:
+	$(call env_document,$(PAPER),$(ENV_OPTION_PRIVATE))
 
 clear:
 	$(call env_remove,$(GARBAGE),)

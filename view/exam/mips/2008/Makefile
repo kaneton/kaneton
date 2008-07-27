@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/view/exam/mips/2007/Makefile
+# file          /home/mycure/kaneton/view/exam/mips/2008/Makefile
 #
 # created       julien quintard   [mon may 14 21:34:22 2007]
-# updated       julien quintard   [fri jun 22 18:09:05 2007]
+# updated       julien quintard   [sun jul 27 21:49:00 2008]
 #
 
 #
@@ -27,8 +27,8 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		mid				
-#					final				
+SUBDIRS			:=		mid				\
+					final				
 
 #
 # ---------- rules ------------------------------------------------------------
