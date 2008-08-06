@@ -1,0 +1,33 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/fanfwe/kane...nvironment/profile/host/darwin/darwin.desc
+#
+# created       julien quintard   [tue may  8 13:20:04 2007]
+# updated       francois goudal   [mon aug  4 15:54:31 2008]
+#
+
+#
+# ---------- information ------------------------------------------------------
+#
+# this file describes the darwin environment variables.
+#
+
+- variable: _SHELL_
+  string: Shell
+  type: any
+  description: The shell binary path
+
+- variable: _CC_
+  string: C Compiler
+  type: any
+  description: The C compiler binary path
+
+- variable: _MAKE_
+  string: Make
+  type: any
+  description: The make binary path
