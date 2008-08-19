@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/buckman/kaneton/library/Makefile
+# file          /home/mycure/kaneton/library/Makefile
 #
 # created       julien quintard   [sun jun 10 00:53:47 2007]
-# updated       matthieu bucchianeri   [sat sep  8 23:28:26 2007]
+# updated       julien quintard   [tue aug 19 18:33:15 2008]
 #
 
 #
@@ -27,9 +27,9 @@ include			../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		uclibc				\
-					libkaneton			\
-					libpthread
+SUBDIRS			:=		libkaneton			\
+					libpthread			\
+					uclibc				
 
 #
 # ---------- rules ------------------------------------------------------------

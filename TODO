@@ -42,3 +42,6 @@ autre:
   utilisable une fois, ou dans une periode de temps etc.
 
   inclure le nom du process dans la capability pour que ce ne soit pas anonyme?
+
+--
+ profiles: netbsd, cygwin etc.
