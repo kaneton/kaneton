@@ -69,6 +69,8 @@ void				mod_serve(void);
 
 int			main(int argc, char** argv, char** envp);
 
+int			print_string(const char* p, size_t len);
+
 
 /*
  * eop
