@@ -11,7 +11,7 @@ int				echo_serve(void)
   i_node			sender;
   t_vsize			size;
 
-  printf("sefver echo OK\n");
+  printf("server echo OK\n");
   if ((message = malloc(sizeof (*message))) == NULL)
     {
       printf(" -- echo: memory exhausted\n");
