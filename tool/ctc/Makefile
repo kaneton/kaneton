@@ -25,14 +25,12 @@ include			../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-CTBUILD_C		:=		buildctf.c			\
-					clexer.c			
+CTC_BUILD_C		:=		build.c				\
+					lexer.c			
+CTC_BUILD_O		:=		$(CTC_BUILD_C:.c=.o)
 
-CTBUILD_O		:=		$(CTBUILD_C:.c=.o)
-
-CTCOMPARE_C		:=		ctcompare.c			
-
-CTCOMPARE_O		:=		$(CTCOMPARE_C:.c=.o)
+CTC_COMPARE_C		:=		compare.c			
+CTC_COMPARE_O		:=		$(CTC_COMPARE_C:.c=.o)
 
 override _CC_FLAGS_	:=		
 
@@ -40,22 +38,22 @@ override _CC_FLAGS_	:=
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			$(_CTBUILD_TOOL_) $(_CTCOMPARE_TOOL_)
+main:			$(_CTC_BUILD_TOOL_) $(_CTC_COMPARE_TOOL_)
 
-$(_CTBUILD_TOOL_):	$(CTBUILD_O)
-	$(call env_executable,$(_CTBUILD_TOOL_),			\
-			      $(CTBUILD_O),,				\
+$(_CTC_BUILD_TOOL_):	$(CTC_BUILD_O)
+	$(call env_executable,$(_CTC_BUILD_TOOL_),			\
+			      $(CTC_BUILD_O),,				\
 			      $(ENV_OPTION_STANDARD))
 
-$(_CTCOMPARE_TOOL_):	$(CTCOMPARE_O)
-	$(call env_executable,$(_CTCOMPARE_TOOL_),			\
-			      $(CTCOMPARE_O),,				\
+$(_CTC_COMPARE_TOOL_):	$(CTC_COMPARE_O)
+	$(call env_executable,$(_CTC_COMPARE_TOOL_),			\
+			      $(CTC_COMPARE_O),,			\
 			      $(ENV_OPTION_STANDARD))
 
 clear:
-	$(call env_remove,$(_CTBUILD_TOOL_) $(_CTCOMPARE_TOOL_),)
+	$(call env_remove,$(_CTC_BUILD_TOOL_) $(_CTC_COMPARE_TOOL_),)
 
-	$(call env_remove,$(CTBUILD_O) $(CTCOMPARE_O),)
+	$(call env_remove,$(CTC_BUILD_O) $(CTC_COMPARE_O),)
 
 	$(call env_purge,)
 
