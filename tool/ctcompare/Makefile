@@ -43,10 +43,14 @@ override _CC_FLAGS_	:=
 main:			$(_CTBUILD_TOOL_) $(_CTCOMPARE_TOOL_)
 
 $(_CTBUILD_TOOL_):	$(CTBUILD_O)
-	$(call env_executable,$(_CTBUILD_TOOL_),$(CTBUILD_O),)
+	$(call env_executable,$(_CTBUILD_TOOL_),			\
+			      $(CTBUILD_O),,				\
+			      $(ENV_OPTION_STANDARD))
 
 $(_CTCOMPARE_TOOL_):	$(CTCOMPARE_O)
-	$(call env_executable,$(_CTCOMPARE_TOOL_),$(CTCOMPARE_O),)
+	$(call env_executable,$(_CTCOMPARE_TOOL_),			\
+			      $(CTCOMPARE_O),,				\
+			      $(ENV_OPTION_STANDARD))
 
 clear:
 	$(call env_remove,$(_CTBUILD_TOOL_) $(_CTCOMPARE_TOOL_),)

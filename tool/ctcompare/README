@@ -169,3 +169,7 @@ The set of tokens representing a single file in the ctf file is
 terminated either by the beginning 0x09 of a new file, or the end
 of the ctf file itself. It goes without saying that the value 0x09
 does not represent a token.
+
+--
+
+This program has been modified for the kaneton project.
