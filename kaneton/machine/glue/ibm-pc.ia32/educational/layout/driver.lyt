@@ -25,4 +25,6 @@ SECTIONS
 	{
 		*(.data*) *(.bss) *(COMMON)
 	} : global
+
+	_end = .;
 }

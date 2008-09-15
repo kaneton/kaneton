@@ -304,6 +304,10 @@ t_error			segment_inject(i_as		asid,
 {
   o_as			*as;
 
+  // XXX[to fix]
+  if ((o->size & 0xfffff000) != o->size)
+      o->size = (o->size + 4096) & 0xfffff000;
+
   SEGMENT_ENTER(segment);
 
   ASSERT(o != NULL);
@@ -987,6 +991,10 @@ t_error			segment_release(i_segment		segid)
 
 /* [cut k1] */
 /*
+ * XXX[this function should not exist anymore. the more general functionality
+ *     consists in reserving protected objects including memory areas, IRQ
+ *     lines etc.]
+ *
  * this function permits to get entire possession of a memory
  * area.
  *

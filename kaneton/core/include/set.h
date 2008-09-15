@@ -183,7 +183,7 @@ typedef struct
 
 #else
 
-#define set_debug(_func_, _id_, _args...)
+#define set_debug(_func_, _id_, _args_...)
 
 #endif
 

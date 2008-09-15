@@ -100,6 +100,22 @@ void			kaneton(t_init*				bootloader)
   if (cons_init() != ERROR_NONE)
     core_error("cannot initialize the console manager\n");
 
+// XXX
+// note that a define has been added to the file:
+//
+//  kaneton/machine/platform/ibm-pc/serial.c
+//
+// so that the "printf" message is not displayed
+// prior to any serial transmission.
+//
+#ifdef DEBUG_SERIAL
+  serial_init(SERIAL_PRIMARY, SERIAL_BR57600, SERIAL_8N1);
+  printf_init(serial_put, 0);
+
+  printf("[DEBUG_SERIAL] activated!\n");
+#endif
+// XXX
+
   /*
    * 3)
    */
@@ -213,6 +229,8 @@ void			kaneton(t_init*				bootloader)
   STI();
 #endif
 
+  // XXX this should never be reached. since a least a task
+  // has been created, syscalls are made!
   char c = '-';
 
   while (1) /* XXX become IDLE */
@@ -319,7 +337,7 @@ t_error			kaneton_launch(void)
     return (ERROR_UNKNOWN);
 
   stack.base = 0;
-  stack.size = 4 * PAGESZ;
+  stack.size = 10 * PAGESZ;
 
   if (thread_stack(thread, stack) != ERROR_NONE)
     return (ERROR_UNKNOWN);

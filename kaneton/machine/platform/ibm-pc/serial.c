@@ -150,7 +150,9 @@ int			serial_put(char				c)
       if (c != -1)
 	buffer[n++] = c;
       buffer[n] = 0;
+#ifndef DEBUG_SERIAL // XXX
       serial_send(SERIAL_PRIMARY, (t_uint8*)"printf", 6);
+#endif
       serial_send(SERIAL_PRIMARY, (t_uint8*)buffer, n);
       n = 0;
     }

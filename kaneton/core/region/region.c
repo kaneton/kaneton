@@ -559,8 +559,10 @@ t_error			region_reserve(i_as			asid,
       o->address = address;
     }
   else
-    if (region_space(asid, size, &o->address) != ERROR_NONE)
-      REGION_LEAVE(region, ERROR_UNKNOWN);
+    {
+      if (region_space(asid, size, &o->address) != ERROR_NONE)
+	REGION_LEAVE(region, ERROR_UNKNOWN);
+    }
 
   /*
    * 3)

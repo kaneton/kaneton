@@ -65,17 +65,24 @@ extern m_segment*	segment;
  *
  */
 
-static t_error		segment_first_fit(o_as*			as,
-					  t_psize		size,
-					  t_paddr*		address)
+t_error			segment_space(i_as		asid,
+				      t_psize		size,
+				      t_paddr*		address)
 {
   o_segment*		current;
   t_state		state;
   o_segment*		head;
   o_segment*		tail;
   t_iterator		i;
+  o_as*			as;
 
   SEGMENT_ENTER(segment);
+
+  ASSERT(size != 0);
+  ASSERT(address != NULL);
+
+  if (as_get(asid, &as) != ERROR_NONE)
+    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
 
   /*
    * 1)
@@ -160,34 +167,6 @@ static t_error		segment_first_fit(o_as*			as,
     }
 
   SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-}
-
-/*
- * this function dispatchs to the good fitting method.
- */
-
-t_error			segment_space(i_as		asid,
-				      t_psize		size,
-				      t_paddr*		address)
-{
-  o_as*			as;
-
-  SEGMENT_ENTER(segment);
-
-  ASSERT(size != 0);
-  ASSERT(address != NULL);
-
-  if (as_get(asid, &as) != ERROR_NONE)
-    SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-
-  switch (SEGMENT_FIT)
-    {
-      case FIT_FIRST:
-	SEGMENT_LEAVE(segment, segment_first_fit(as, size, address));
-	break;
-      default:
-	SEGMENT_LEAVE(segment, ERROR_UNKNOWN);
-    }
 }
 
 #endif
