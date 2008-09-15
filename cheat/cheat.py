@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/cheat/cheat.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [mon sep 15 16:05:37 2008]
+# updated       julien quintard   [mon sep 15 17:50:37 2008]
 #
 
 #
@@ -573,7 +573,7 @@ def                     generate():
                 env.OPTION_NONE)
 
     # create the token file
-    env.launch("/home/mycure/CTC/ctc/buildctf",
+    env.launch(env._CTC_BUILD_TOOL_,
                "'" + student["sources"] + "/kaneton/'" + " " +
                "'" + student["fingerprint"] + "'",
                env.OPTION_QUIET)
@@ -610,7 +610,7 @@ def                     generate():
         fingerprints += [ snapshot["fingerprint"] ]
 
       # finally, gather the information into a single database.
-      env.launch("/home/mycure/CTC/ctc/enhashctf",
+      env.launch(env._CTC_GATHER_TOOL_,
                  student["database"] + " " + " ".join(fingerprints),
                  env.OPTION_QUIET)
 
@@ -642,7 +642,7 @@ def                     compare():
       student["trace"] = env.temporary(env.OPTION_FILE)
 
       # launch the program.
-      env.launch("/home/mycure/CTC/ctc/ctcompare",
+      env.launch(env._CTC_COMPARE_TOOL_,
                  student["trace"] + " " + student["database"] + " -r " +
                  student["fingerprint"],
                  env.OPTION_NONE)
