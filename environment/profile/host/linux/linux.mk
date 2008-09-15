@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [thu jun 12 11:44:06 2008]
+# updated       julien quintard   [fri aug 29 20:10:32 2008]
 #
 
 #
@@ -304,7 +304,7 @@ endef
 
 define env_executable
   executable_options=""							&& \
-  if [ -n $(3) ] ; then							\
+  if [ -n "$(3)" ] ; then						\
     executable_options="$${executable_options} -T $(3)"			; \
   fi									&& \
   if [ -n "$(4)" ] ; then						\

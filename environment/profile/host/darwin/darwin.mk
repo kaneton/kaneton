@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/fanfwe/kaneton/environment/profile/host/darwin/darwin.mk
+# file          /home/mycure/kane...nvironment/profile/host/darwin/darwin.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       francois goudal   [mon aug  4 15:55:06 2008]
+# updated       julien quintard   [fri aug 29 20:03:17 2008]
 #
 
 #
@@ -304,7 +304,7 @@ endef
 
 define env_executable
   executable_options=""							&& \
-  if [ -n $(3) ] ; then							\
+  if [ -n "$(3)" ] ; then						\
     executable_options="$${executable_options} -T $(3)"			; \
   fi									&& \
   if [ -n "$(4)" ] ; then						\

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [thu jun 12 11:41:13 2008]
+# updated       julien quintard   [fri aug 29 20:09:20 2008]
 #
 
 #
@@ -46,6 +46,7 @@ ENV_OPTION_NO_NEWLINE = 1
 ENV_OPTION_FLICKERING = 2
 
 ENV_OPTION_NO_STANDARD = 1
+ENV_OPTION_STANDARD = 2
 
 ENV_OPTION_PRIVATE = 1
 

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.py
 #
 # created       julien quintard   [tue may  8 13:20:21 2007]
-# updated       julien quintard   [sun dec  2 17:49:45 2007]
+# updated       julien quintard   [mon sep 15 17:29:33 2008]
 #
 
 #
@@ -106,6 +106,9 @@ def			launch(file, arguments, options):
   elif re.match("^Makefile$", file):
     status = os.system(_MAKE_ + " -f " + file + " " + arguments + output)
   else:
+    if directory:
+      file = "./" + file
+
     status = os.system(file + " " + arguments + output)
 
   if directory:
@@ -209,7 +212,7 @@ def			play(transcript, options):
 
   unpack(transcript, tmp, OPTION_NONE)
 
-  launch(_SCRIPTREPLAY_TOOL_, time + " " + log, OPTION_NONE)
+  launch(_REPLAY_TOOL_, time + " " + log, OPTION_NONE)
 
   remove(tmp, OPTION_NONE)
 

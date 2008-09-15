@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/host.py
 #
 # created       julien quintard   [tue may  8 13:03:40 2007]
-# updated       julien quintard   [sun jul 29 19:17:09 2007]
+# updated       julien quintard   [sat sep 13 16:44:46 2008]
 #
 
 #
@@ -61,12 +61,10 @@ OPTION_FLICKERING = 2
 
 OPTION_FILE = 1
 OPTION_DIRECTORY = 2
-OPTION_RECURSIVE = 3
-OPTION_EXIST = 4
+OPTION_RECURSIVE = 4
+OPTION_EXIST = 8
+OPTION_HIDDEN = 16
 OPTION_ALL = OPTION_FILE | OPTION_DIRECTORY
-
-OPTION_READ = 1
-OPTION_WRITE = 2
 
 OPTION_DEVICE = 1
 OPTION_IMAGE = 2
@@ -160,7 +158,11 @@ def			temporary(options):
   location = None
 
   if options == OPTION_FILE:
-    location = tempfile.mkstemp()[1]
+    tuple = tempfile.mkstemp()
+
+    os.close(tuple[0])
+
+    location = tuple[1]
   elif options == OPTION_DIRECTORY:
     location = tempfile.mkdtemp()
 
@@ -241,6 +243,9 @@ def			list(directory, options):
   entries = os.listdir(directory)
 
   for entry in entries:
+    if not (options & OPTION_HIDDEN) and                                \
+       (entry[0:1] == "."):
+      continue
     if (options & OPTION_FILE) and					\
        (os.path.isfile(directory + "/" + entry)):
       elements += [ entry ]
@@ -299,7 +304,20 @@ def			search(directory, pattern, options):
 # this function creates a directory.
 #
 def			mkdir(directory, options):
-  os.mkdir(directory)
+  path = None
+  steps = None
+  step = None
+
+  steps = directory.strip("/").split("/")
+
+  for step in steps:
+    if not path:
+      path = "/" + step
+    else:
+      path = path + "/" + step
+
+    if not os.path.exists(path):
+      os.mkdir(path)
 
 
 
