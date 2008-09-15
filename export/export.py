@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/export/export.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [sun dec  2 17:42:27 2007]
+# updated       julien quintard   [sun sep 14 15:56:50 2008]
 #
 
 #
@@ -21,8 +21,8 @@
 #
 # the argument 'backup' makes a simple backup of the whole project.
 #
-# the _HIDDEN_ variable contains the list of directories not to include in
-# exported distributions.
+# the _EXPORT_FILTER_ variable contains the list of directories not to include
+# in exported distributions.
 #
 
 #
@@ -213,8 +213,8 @@ def			stages(strip_only_tags):
 #
 # clean()
 #
-# this function removes unwanted stuff i.e the env._HIDDEN_ stuff as well
-# as the subversion directories.
+# this function removes unwanted stuff i.e the env._EXPORT_FILTER_
+# stuff as well as the subversion directories.
 #
 def			clean():
   entries = None
@@ -232,8 +232,8 @@ def			clean():
   for entry in entries:
     env.remove(entry, env.OPTION_NONE)
 
-  # remove the env._HIDDEN_ stuff
-  entities = re.findall("([^\t ]+)", env._HIDDEN_)
+  # remove the env._EXPORT_FILTER_ stuff
+  entities = re.findall("([^\t ]+)", env._EXPORT_FILTER_)
 
   for entity in entities:
     env.remove(entity, env.OPTION_NONE)
@@ -268,7 +268,7 @@ def			build():
   env.display(env.HEADER_OK,
               "masking...",
               env.OPTION_NONE)
-  os.system("./rm.sh")
+  os.system("./rm.sh") # XXX!!!!!
 
   # depending on the type of export, performs more or less steps.
   if g_type:
@@ -296,9 +296,6 @@ def			main():
 
   # check the number of arguments.
   if len(sys.argv) != 2:
-    env.display(env.HEADER_ERROR,
-                "command line parse error: invalid argument count (" + str(len(sys.argv)) + ")",
-                env.OPTION_NONE)
     usage()
     sys.exit(42)
 
