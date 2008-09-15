@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/book/assignments/2006/Makefile
 #
 # created       julien quintard   [mon may 14 19:24:19 2007]
-# updated       julien quintard   [mon jun 11 06:13:53 2007]
+# updated       julien quintard   [mon sep 15 18:12:34 2008]
 #
 
 #
@@ -40,6 +40,7 @@ GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
 					$(SOURCES:.tex=.toc)		\
 					$(SOURCES:.tex=.pdf)		\
+					$(SOURCES:.tex=.out)		\
 					$(SOURCES:.tex=.bbl)		\
 					$(SOURCES:.tex=.blg)		
 
