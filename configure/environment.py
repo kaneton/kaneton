@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/configure/environment.py
 #
 # created       julien quintard   [thu may 24 16:58:00 2007]
-# updated       julien quintard   [tue jun 12 04:07:43 2007]
+# updated       julien quintard   [sat aug 23 20:50:21 2008]
 #
 
 #
@@ -147,7 +147,7 @@ def			load(directories, pattern, option):
       if (option & OPTION_COMMENTS):
         content = comments(content)
 
-      if not (option & OPTION_INCLUDES):
+      if (option & OPTION_INCLUDES):
         includes = re.findall("("					\
                                 "^"					\
                                 "include"				\
@@ -163,8 +163,10 @@ def			load(directories, pattern, option):
                                                    env.OPTION_DIRECTORY)],
                                          "^" + env.path(directory +
                                                         "/" +
-                                                        include[1]) +
-                                         "$"))
+                                                        include[1],
+                                                   env.OPTION_FILE) +
+                                         "$",
+                                         OPTION_COMMENTS | OPTION_INCLUDES))
 
   return content
 
