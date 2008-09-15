@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/cheat/cheat.py
 #
 # created       julien quintard   [thu may 24 01:40:40 2007]
-# updated       julien quintard   [wed sep  3 19:20:49 2008]
+# updated       julien quintard   [mon sep 15 16:05:37 2008]
 #
 
 #
@@ -25,6 +25,7 @@ import sys
 import re
 import string
 import random
+import difflib
 
 import env
 
@@ -39,52 +40,12 @@ g_year = None
 g_stage = None
 
 g_directory = None
-g_file = None
 
 g_history = []
+g_bases = {}
 
 g_output = None
 g_descriptor = None
-
-# XXX
-import yaml
-
-def STORE():
-  stream = {}
-  descriptor = None
-
-  stream["school"] = g_school
-  stream["year"] = g_year
-  stream["stage"] = g_stage
-  stream["directory"] = g_directory
-  stream["file"] = g_file
-  stream["history"] = g_history
-  stream["output"] = g_output
-
-  descriptor = file(".dump", 'w')
-
-  yaml.dump(stream, descriptor)
-
-def LOAD():
-  global g_school
-  global g_year
-  global g_stage
-  global g_directory
-  global g_file
-  global g_history
-  global g_output
-
-  stream = yaml.load(env.pull(".dump", env.OPTION_NONE))
-
-  g_school = stream["school"]
-  g_year = stream["year"]
-  g_stage = stream["stage"]
-  g_directory = stream["directory"]
-  g_file = stream["file"]
-  g_history = stream["history"]
-  g_output = stream["output"]
-
-# XXX
 
 #
 # ---------- constants --------------------------------------------------------
@@ -92,13 +53,13 @@ def LOAD():
 
 RANDOM_LENGTH = 32
 
-THRESHOLD_BENIGN = 20
-THRESHOLD_SUSPECT = 50
-THRESHOLD_CRITICAL = 100
+THRESHOLD_BENIGN = 30
+THRESHOLD_SUSPECT = 70
+THRESHOLD_CRITIC = 100
 
-LEVEL_BENIGN = "yellow"
-LEVEL_SUSPECT = "orange"
-LEVEL_CRITICAL = "red"
+LEVEL_BENIGN = "benign"
+LEVEL_SUSPECT = "suspect"
+LEVEL_CRITIC = "critic"
 
 HTML_HEADER = """
 <html>
@@ -172,42 +133,49 @@ HTML_STYLE = """
     padding-top: 2px;
   }
 
+  .people
+  {
+    margin-left: 5px;
+    text-style: italic;
+    font-size: 15px;
+  }
+
   .categories
   {
     margin-left: 10px;
   }
 
-  .category-red
+  .category-critic
   {
     width: inherit;
     border: 1px solid #e51616;
   }
 
-  .category-orange
+  .category-suspect
   {
     width: inherit;
     border: 1px solid #d7801a;
   }
 
-  .category-yellow
+  .category-benign
   {
     width: inherit;
     border: 1px solid #d0ca22;
   }
 
-  .header-red
+  .header-critic
   {
     background-color: #e51616;
     color: #cccccc;
   }
 
-  .header-orange
+  .header-suspect
   {
     background-color: #d7801a;
     color: #cccccc;
   }
 
-  .header-yellow
+  .header-benign
   {
     background-color: #d0ca22;
     color: #cccccc;
@@ -225,6 +193,7 @@ HTML_STYLE = """
 
   .matches
   {
+    color: #eeeeee;
     font-size: 65%;
     font-style: italic;
     float: right;
@@ -358,6 +327,10 @@ HTML_INNER = """
   <body>
 """
 
+STATUS_INSERT="+"
+STATUS_DELETE="-"
+STATUS_EQUAL=" "
+
 #
 # ---------- functions --------------------------------------------------------
 #
@@ -368,7 +341,8 @@ HTML_INNER = """
 # this function displays the usage.
 #
 def			usage():
-  env.display(env.HEADER_NONE, "usage: cheat.py [school].[year].[stage]",
+  env.display(env.HEADER_ERROR,
+              "usage: cheat.py [school]::[year]::[stage]",
               env.OPTION_NONE)
 
 #
@@ -435,8 +409,8 @@ def                     check():
 def                     prepare():
   global g_history
   global g_directory
-  global g_file
   global g_output
+  global g_bases
   years = None
   year = None
   stages = None
@@ -447,11 +421,9 @@ def                     prepare():
   env.display(env.HEADER_OK,
               "preparing the verification process",
               env.OPTION_NONE)
-  env.display(env.HEADER_NONE, "", env.OPTION_NONE)
 
   # create a temporary directory for holding unpacked snapshots.
   g_directory = env.temporary(env.OPTION_DIRECTORY)
-  g_file = env.temporary(env.OPTION_FILE)
 
   # set the output file path.
   g_output = env._HISTORY_DIR_ + "/" + g_school + "/" + g_year + "/" +  \
@@ -462,11 +434,12 @@ def                     prepare():
 
   # retreive the list of other snapshots to compare. neighbours are the
   # students in the same year while alumni are old students.
-  years = env.list(env._HISTORY_DIR_ + "/" + g_school, env.OPTION_DIRECTORY)
+  years = sorted(env.list(env._HISTORY_DIR_ + "/" + g_school,
+                          env.OPTION_DIRECTORY))
 
   for year in years:
-    students = env.list(env._HISTORY_DIR_ + "/" + g_school + "/" + year,
-                        env.OPTION_DIRECTORY)
+    students = sorted(env.list(env._HISTORY_DIR_ + "/" + g_school + "/" + year,
+                               env.OPTION_DIRECTORY))
 
     if year > g_year:
       continue
@@ -487,12 +460,18 @@ def                     prepare():
         if (year == g_year) and (stage > g_stage):
           continue
 
+        if base and (not (base in g_bases)):
+          g_bases[base] = env.temporary(env.OPTION_DIRECTORY)
+
         g_history += [                                                  \
           {
             "name": year + "/" + student + "/" + stage,
             "year": year,
             "student": student,
             "stage": stage,
+            "people": env.pull(env._HISTORY_DIR_ + "/" + g_school + "/" +
+                               year + "/" + student + "/people",
+                               env.OPTION_NONE).strip("\n").replace("<", "&lt;").replace(">", "&gt;").replace("\n", " - "),
             "snapshot": env._HISTORY_DIR_ + "/" + g_school + "/" + year + "/" +
                         student + "/sources/" + stage + ".tar.bz2",
             "sources": g_directory + "/" + year + "/" + student + "/" + stage,
@@ -508,33 +487,67 @@ def                     prepare():
 # all the alumni snapshots for all stages and extract them.
 #
 def                     extract():
-  element = None
+  student = None
+  base = None
+
+  # display a message.
+  env.display(env.HEADER_OK,
+              "extracting the students' snapshots",
+              env.OPTION_NONE)
 
   # extract the history snapshots.
-  for element in g_history:
-    env.mkdir(element["sources"], env.OPTION_NONE)
+  for student in g_history:
+    # message.
+    env.display(env.HEADER_OK,
+                "  " + student["name"],
+                env.OPTION_NONE)
 
-    if env.path(element["snapshot"], env.OPTION_EXIST):
-      pass
-      env.unpack(element["snapshot"],
-                 element["sources"],
+    env.mkdir(student["sources"], env.OPTION_NONE)
+
+    if env.path(student["snapshot"], env.OPTION_EXIST):
+      env.unpack(student["snapshot"],
+                 student["sources"],
                  env.OPTION_NONE)
     else:
-      env.mkdir(element["sources"] + "/kaneton/", env.OPTION_NONE)
+      env.mkdir(student["sources"] + "/kaneton/", env.OPTION_NONE)
 
     # verify that the extracted snapshot has created a 'kaneton/' directory.
-    if not (env.path(element["sources"] + "/kaneton/",
+    if not (env.path(student["sources"] + "/kaneton/",
                      env.OPTION_EXIST)):
       env.display(env.HEADER_ERROR,
-                  "the extracted snapshot '" + element + "' does not "
-                  "contain any 'kaneton/' directory",
+                  "the extracted student snapshot '" + student + "' does not "
+                  "contain a 'kaneton/' directory",
                   env.OPTION_NONE)
 
-    if len(env.list(element["sources"],
+    if len(env.list(student["sources"],
                     env.OPTION_FILE | env.OPTION_DIRECTORY)) != 1:
       env.display(env.HEADER_ERROR,
-                  "the extracted snapshot '" + element + "' contains more "
-                  "than just the 'kaneton/' directory",
+                  "the extracted student snapshot '" + student + "' contains "
+                  "more than just the 'kaneton/' directory",
+                  env.OPTION_NONE)
+
+  # extract the bases.
+  for base in g_bases:
+    if env.path(base, env.OPTION_EXIST):
+      env.unpack(base,
+                 g_bases[base],
+                 env.OPTION_NONE)
+    else:
+      env.mkdir(g_bases[base] + "/kaneton/", env.OPTION_NONE)
+
+    # verify that the extracted snapshot has created a 'kaneton/' directory.
+    if not (env.path(g_bases[base] + "/kaneton/",
+                     env.OPTION_EXIST)):
+      env.display(env.HEADER_ERROR,
+                  "the extracted base snapshot '" + student + "' does not "
+                  "contain a 'kaneton/' directory",
+                  env.OPTION_NONE)
+
+    if len(env.list(g_bases[base],
+                    env.OPTION_FILE | env.OPTION_DIRECTORY)) != 1:
+      env.display(env.HEADER_ERROR,
+                  "the extracted base snapshot '" + student + "' contains "
+                  "more than just the 'kaneton/' directory",
                   env.OPTION_NONE)
 
 #
@@ -543,23 +556,63 @@ def                     extract():
 # this function generates the extracted snapshots' fingerprint.
 #
 def                     generate():
-  fingerprints = []
-  element = None
+  snapshot = None
+  student = None
+  file = None
+
+  # display a message.
+  env.display(env.HEADER_OK,
+              "generating the snapshots' fingerprints",
+              env.OPTION_NONE)
 
   # generate the token files.
-  for element in g_history:
+  for student in g_history:
+    # message.
+    env.display(env.HEADER_OK,
+                "  " + student["name"],
+                env.OPTION_NONE)
+
+    # create the token file
     env.launch("/home/mycure/CTC/ctc/buildctf",
-               "'" + element["sources"] + "/kaneton/'" + " " +
-               "'" + element["fingerprint"] + "'",
+               "'" + student["sources"] + "/kaneton/'" + " " +
+               "'" + student["fingerprint"] + "'",
                env.OPTION_QUIET)
 
-  for element in g_history:
-    fingerprints += [ element["fingerprint"] ]
+  # display a message.
+  env.display(env.HEADER_OK,
+              "generating the snapshots' tokens database",
+              env.OPTION_NONE)
 
-  # gather the information in a single database.
-  env.launch("/home/mycure/CTC/ctc/enhashctf",
-             g_file + " " + " ".join(fingerprints),
-             env.OPTION_QUIET)
+  # generate the database file.
+  for student in g_history:
+    # if this student is part of the ones to test, continue.
+    if (student["year"] == g_year) and                          \
+       (student["stage"] == g_stage):
+      fingerprints = []
+
+      # message.
+      env.display(env.HEADER_OK,
+                  "  " + student["name"],
+                  env.OPTION_NONE)
+
+      # generate a temporary file for the database related to this user.
+      student["database"] = env.temporary(env.OPTION_FILE)
+
+      # find the list of student snaphosts that will be tested against it.
+      for snapshot in g_history:
+        # skip the previous stages of the same user.
+        if (student["year"] == snapshot["year"]) and            \
+           (student["student"] == snapshot["student"]) and      \
+           (student["stage"] != snapshot["stage"]):
+          continue
+
+        # add the fingerprint to the list.
+        fingerprints += [ snapshot["fingerprint"] ]
+
+      # finally, gather the information into a single database.
+      env.launch("/home/mycure/CTC/ctc/enhashctf",
+                 student["database"] + " " + " ".join(fingerprints),
+                 env.OPTION_QUIET)
 
 #
 # compare()
@@ -568,20 +621,30 @@ def                     generate():
 # with other extract snapshots.
 #
 def                     compare():
-  element = None
+  student = None
+
+  # display a message.
+  env.display(env.HEADER_OK,
+              "comparing the snapshots with each others",
+              env.OPTION_NONE)
 
   # for every snapshot to test, generate the trace of comparisons against
   # other snapshots.
-  for element in g_history:
-    if (element["year"] == g_year) and                       \
-       (element["stage"] == g_stage):
+  for student in g_history:
+    if (student["year"] == g_year) and                       \
+       (student["stage"] == g_stage):
+      # message.
+      env.display(env.HEADER_OK,
+                  "  " + student["name"],
+                  env.OPTION_NONE)
+
       # create a temporary file.
-      element["trace"] = env.temporary(env.OPTION_FILE)
+      student["trace"] = env.temporary(env.OPTION_FILE)
 
       # launch the program.
       env.launch("/home/mycure/CTC/ctc/ctcompare",
-                 element["trace"] + " " + g_file + " -r " +
-                 element["fingerprint"],
+                 student["trace"] + " " + student["database"] + " -r " +
+                 student["fingerprint"],
                  env.OPTION_NONE)
 
 #
@@ -720,23 +783,92 @@ def                     identifier(path):
            "file": match.group(2) }
 
 #
-# rand()
+# label()
 #
-# this function generates a random string.
+# this function generates a random label.
 #
-def                     rand():
+def                     label():
   alphabet = None
-  id = None
+  label = None
+  i = None
 
   alphabet = string.letters + string.digits
 
   for i in range(RANDOM_LENGTH):
-    if not id:
-      id = alphabet[random.randint(0, len(alphabet) - 1)]
+    if not label:
+      label = alphabet[random.randint(0, len(alphabet) - 1)]
     else:
-      id = id + alphabet[random.randint(0, len(alphabet) - 1)]
+      label = label + alphabet[random.randint(0, len(alphabet) - 1)]
 
-  return id
+  return label
+
+#
+# build()
+#
+# this function takes a list of records a organises them in a
+# meaningful trace.
+#
+def                     build(name, data):
+  trace = { LEVEL_CRITIC: [], LEVEL_SUSPECT: [], LEVEL_BENIGN: [] }
+  record = None
+
+  for record in data:
+    level = None
+    match = None
+
+    # look for a record
+    match = re.match("^(([0-9]+) +([^:]+):([0-9]+)-([0-9]+) +([^:]+):([0-9]+)-([0-9]+))$", record)
+
+    if not match:
+      continue
+
+    # retrieve the arguments.
+    tokens = int(match.group(2))
+
+    # determine the level of this record.
+    if tokens >= THRESHOLD_CRITIC:
+      level = LEVEL_CRITIC
+    elif tokens >= THRESHOLD_SUSPECT:
+      level = LEVEL_SUSPECT
+    elif tokens >= THRESHOLD_BENIGN:
+      level = LEVEL_BENIGN
+    else:
+      continue
+
+    # add the record to the trace, taking care that 'student' represents the
+    # student side.
+    if name == identifier(match.group(3))["name"]:
+      trace[level] += [ { "label": label(),
+                          "tokens": tokens,
+                          "student": { "path": match.group(3),
+                                       "from": int(match.group(4)),
+                                       "to": int(match.group(5)),
+                                       "name": identifier(match.group(3))["name"],
+                                       "file": identifier(match.group(3))["file"],
+                                       "code": region(match.group(3), int(match.group(4)), int(match.group(5))) },
+                          "neighbour": { "path": match.group(6),
+                                         "from": int(match.group(7)),
+                                         "to": int(match.group(8)),
+                                         "name": identifier(match.group(6))["name"],
+                                         "file": identifier(match.group(6))["file"],
+                                         "code": region(match.group(6), int(match.group(7)), int(match.group(8))) } } ]
+    else:
+      trace[level] += [ { "label": label(),
+                          "tokens": tokens,
+                          "neighbour": { "path": match.group(3),
+                                         "from": int(match.group(4)),
+                                         "to": int(match.group(5)),
+                                         "name": identifier(match.group(3))["name"],
+                                         "file": identifier(match.group(3))["file"],
+                                         "code": region(match.group(3), int(match.group(4)), int(match.group(5))) },
+                          "student": { "path": match.group(6),
+                                       "from": int(match.group(7)),
+                                       "to": int(match.group(8)),
+                                       "name": identifier(match.group(6))["name"],
+                                       "file": identifier(match.group(6))["file"],
+                                       "code": region(match.group(6), int(match.group(7)), int(match.group(8))) } } ]
+
+  return trace
 
 #
 # output()
@@ -745,11 +877,12 @@ def                     rand():
 # HTML page.
 #
 def                     output():
-  contents = None
-  offset = 0
-  lines = None
-  line = None
-  level = None
+  student = None
+
+  # display a message.
+  env.display(env.HEADER_OK,
+              "generating the output file '" + g_output + "'",
+              env.OPTION_NONE)
 
   # initialise the output file.
   initialise()
@@ -761,148 +894,92 @@ def                     output():
   write(HTML_SCRIPT)
   write(HTML_INNER)
 
-  write("""<div class="title">[""" + g_school + " :: " + g_year + " :: " + g_stage + """]</div>""")
-
-  # for every snapshot to test, retrieve the trace and include them in the
+  # for every student to test, retrieve the trace and include it in the
   # output HTML page.
-  for element in g_history:
-    if (element["year"] == g_year) and                       \
-       (element["stage"] == g_stage):
-      student = None
+  for student in g_history:
+    data = None
+    trace = None
 
-      # generate a student random identifier.
-      student = rand()
+    # only treat the student from the given year and stage.
+    if not ((student["year"] == g_year) and                     \
+            (student["stage"] == g_stage)):
+      continue
 
-      # load the trace.
-      contents = env.pull(element["trace"], env.OPTION_NONE)
+    # load the trace.
+    data = env.pull(student["trace"], env.OPTION_NONE).strip("\n").split("\n")
 
-      # cut the contents into lines.
-      lines = contents.strip("\n").split("\n")
+    # build a meaningful trace from the chaotic records
+    trace = build(student["name"], data)
 
-      # initialise the output for this student.
-      write("""
+    # initialise the output for this student.
+    write("""
 <div class="instance">
-  <span class="student">""" + element["student"] + """</span>
+  <span class="student">""" + student["student"] + """</span>
+  <span class="people">""" + student["people"] + """</span>
   <div class="categories">
 """)
 
-      # for every record in the trace.
-      for line in lines:
-        source = None
-        destination = None
-        record = None
-        tokens = None
-        match = None
-        id = None
+    # go through every level of the trace.
+    for level in [ LEVEL_CRITIC, LEVEL_SUSPECT, LEVEL_BENIGN ]:
+      L = None
+
+      # skip empty categories.
+      if len(trace[level]) == 0:
+        continue
+
+      # generate a label for the category.
+      L = label()
+
+      # output the category header.
+      write("""
+<div class="category-""" + level + """">
+  <div class="header-""" + level + """">
+    <div class="symbol"><a href="javascript:Show('""" + L + """');" id="symbol:""" + L + """">+</a></div>
+    <div class="matches">""" + str(len(trace[level])) + """ matches</div>
+    <div class="clear"></div>
+  </div>
+  <div class="traces" id="traces:""" + L + """">
+""")
+
+      # for every record in this level.
+      for record in trace[level]:
         bar = None
-        trace = None
-        category = None
 
-        # look for a record
-        match = re.match("^(([0-9]+) +([^:]+):([0-9]+)-([0-9]+) +([^:]+):([0-9]+)-([0-9]+))$", line)
-        if not match:
-          continue
-
-        # if this is not the first record, put a bar on top of this record.
-        if line != lines[0]:
+        # is this the first record in this level?
+        if record != trace[level][0]:
           bar = " bar"
         else:
           bar = ""
 
-        # retrieve the arguments.
-        record = match.group(1)
-
-        tokens = int(match.group(2))
-
-        # generate a trace identifier.
-        trace = rand()
-
-        # according to the matching token level, produce the proper category.
-        if tokens < THRESHOLD_BENIGN:
-          break
-
-        # if this is the first category.
-        if not level:
-          if tokens >= THRESHOLD_CRITICAL:
-            level = LEVEL_CRITICAL
-          elif tokens >= THRESHOLD_SUSPECT:
-            level = LEVEL_SUSPECT
-          elif tokens >= THRESHOLD_BENIGN:
-            level = LEVEL_BENIGN
-
-          write("""
-<div class="category""" + level + """">
-  <div class="header""" + level + """">
-    <div class="symbol"><a href="javascript:Show('""" + student + """');" id="symbol:""" + student + """">+</a></div>
-    <div class="matches">""" + str(len(lines)) + """ matches</div>
-    <div class="clear"></div>
-  </div>
-  <div class="traces" id="traces:""" + student + """">
+        # write the content.
+        write("""
+<table class="description""" + bar + """" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="me">""" + record["student"]["name"] + """ :: """ + record["student"]["file"] + """</td>
+    <td class="tokens"><a href="javascript:Open('""" + record["label"] + """');" id="symbol:""" + record["label"] + """">""" + str(record["tokens"]) + """ tokens</a></td>
+    <td class="you">""" + record["neighbour"]["file"] + """ :: """ + record["neighbour"]["name"] + """</td>
+  </tr>
+</table>
+<table class="trace" id="trace:""" + record["label"] + """">
+  <tr>
+    <td class="left">
+      <pre class="sources">""" + record["student"]["code"] + """</pre>
+    </td>
+    <td class="right">
+      <pre class="sources">""" + record["neighbour"]["code"] + """</pre>
+    </td>
+  </tr>
+</table>
 """)
-        # if this is a new category, close the old one and open the new one.
-        else:
-          if tokens >= THRESHOLD_CRITICAL:
-            category = LEVEL_CRITICAL
-          elif tokens >= THRESHOLD_SUSPECT:
-            category = LEVEL_SUSPECT
-          elif tokens >= THRESHOLD_BENIGN:
-            category = LEVEL_BENIGN
 
-          if level != category:
-            write("""
+      # close the category.
+      write("""
       </div>
     </div>
 """)
 
-            level = category
-
-            write("""
-<div class="category""" + level + """">
-  <div class="header""" + level + """">
-    <div class="symbol"><a href="javascript:Show('""" + student + """');" id="symbol:""" + student + """">+</a></div>
-    <div class="matches">""" + str(len(lines)) + """ matches</div>
-    <div class="clear"></div>
-  </div>
-  <div class="traces" id="traces:""" + student + """">
-""")
-
-# XXX[len(lines) is wrong]
-
-        # keep retrieving the arguments.
-        source = { "path": match.group(3),
-                   "from": int(match.group(4)),
-                   "to": int(match.group(5)),
-                   "name": identifier(match.group(3))["name"] + " :: " + identifier(match.group(3))["file"],
-                   "code": region(match.group(3), int(match.group(4)), int(match.group(5))) }
-
-        destination = { "path": match.group(6),
-                        "from": int(match.group(7)),
-                        "to": int(match.group(8)),
-                        "name": identifier(match.group(6))["name"] + " :: " + identifier(match.group(6))["file"],
-                        "code": region(match.group(6), int(match.group(7)), int(match.group(8))) }
-
-        write("""
-<table class="description """ + bar + """" border="0" cellspacing="0" cellpadding="0">
-  <tr>
-    <td class="me">""" + source["name"] + """</td>
-    <td class="tokens"><a href="javascript:Open('""" + trace + """');" id="symbol:""" + trace + """">""" + str(tokens) + """ tokens</a></td>
-    <td class="you">""" + destination["name"] + """</td>
-  </tr>
-</table>
-<table class="trace" id="trace:""" + trace + """">
-  <tr>
-    <td class="left">
-      <pre class="sources">""" + source["code"] + """</pre>
-    </td>
-    <td class="right">
-      <pre class="sources">""" + destination["code"] + """</pre>
-    </td>
-  </tr>
-</table>
-""")
-
-      # finish the generation for this student.
-      write("""
+    # finish the generation for this student.
+    write("""
   </div>
 </div>
 <br/>
@@ -912,6 +989,147 @@ def                     output():
   write(HTML_FOOTER)
 
   clean()
+
+#
+# reduce()
+#
+# this function reduces the given student file according to the
+# reference.
+#
+def             reduce(student, reference):
+  differences = None
+  contents = None
+  differ = None
+  status = None
+  line = None
+  r = None
+  s = None
+
+  if not ((env.path(reference, env.OPTION_EXIST)) and                   \
+          (env.path(reference, env.OPTION_FILE))):
+    return
+
+  # load the reference and student files.
+  r = env.pull(reference, env.OPTION_NONE).split("\n")
+  s = env.pull(student, env.OPTION_NONE).split("\n")
+
+  # build an differ object.
+  differ = difflib.Differ()
+
+  # look for the differences.
+  differences = differ.compare(r, s)
+
+  # only keep the added lines.
+  status = STATUS_EQUAL
+
+  contents=""
+
+  for line in differences:
+    if line[len(line) - 1] == "\n":
+      line = line[:len(line) - 1]
+
+    if (line[0] == STATUS_INSERT) and (line[0] != status):
+      contents += "_____ctc_gate_____\n";
+
+    status = line[0]
+
+    if line[0] == STATUS_INSERT:
+      contents += line[2:] + "\n"
+
+  # save the contents in the student file.
+  env.push(student, contents, env.OPTION_NONE)
+
+#
+# walk()
+#
+# this function takes a directory and two static directories: the
+# student sources and the base sources. the goal of this function
+# is to remove parts that were given in the base sources.
+#
+def             walk(snapshot, base, directory):
+  student = None
+  reference = None
+  directories = None
+  files = None
+  entry = None
+
+  # adjust the directory:
+  if not directory:
+    directory = ""
+
+  # retrieve the list of directories and files.
+  files = env.list(snapshot + "/" + directory, env.OPTION_FILE | env.OPTION_HIDDEN)
+
+  # try to reduce every file
+  for entry in files:
+    reduce(snapshot + "/" + directory + "/" + entry, base + "/" + directory + "/" + entry)
+
+  # keep walking through the hierarchy
+  directories = env.list(snapshot + "/" + directory, env.OPTION_DIRECTORY | env.OPTION_HIDDEN)
+
+  for entry in directories:
+    walk(snapshot, base, directory + "/" + entry)
+
+#
+# filter()
+#
+# this function removes the files and directories that should not be
+# taken into consideration by the cheat verification system.
+#
+def             filter(student):
+  entities = None
+  entity = None
+
+  # remove the env._CHEAT_FILTER_ stuff
+  entities = re.findall("([^\t ]+)", env._CHEAT_FILTER_)
+
+  for entity in entities:
+    env.remove(student["sources"] + "/kaneton/" + entity, env.OPTION_NONE)
+
+#
+# shear()
+#
+# this function walks through the extracted snapshots and tries to
+# remove the parts that have been given to the students as a basis.
+#
+def             shear():
+  # display a message.
+  env.display(env.HEADER_OK,
+              "shearing the students' snaphosts",
+              env.OPTION_NONE)
+
+  # for each student.
+  for student in g_history:
+    # message.
+    env.display(env.HEADER_OK,
+                "  " + student["name"],
+                env.OPTION_NONE)
+
+    # remove the extra useless stuff.
+    filter(student)
+
+    # if the student has a base snapshot, remove the common parts.
+    if student["base"]:
+      walk(student["sources"] + "/kaneton", g_bases[student["base"]] + "/kaneton", None)
+
+#
+# clean()
+#
+# this function cleans the files and directories created by the
+# verification process.
+#
+def                     clean():
+  env.remove(g_directory, env.OPTION_NONE)
+
+  for base in g_bases:
+    env.remove(g_bases[base], env.OPTION_NONE)
+
+  for student in g_history:
+    if "trace" in student:
+      env.remove(student["trace"], env.OPTION_NONE)
+    if "database" in student:
+      env.remove(student["database"] + "-id.db", env.OPTION_NONE)
+      env.remove(student["database"] + "-nodes.db", env.OPTION_NONE)
 
 #
 # main()
@@ -930,7 +1148,12 @@ def			main():
     sys.exit(42)
 
   # retrive the actual arguments.
-  args = sys.argv[1].split(".")
+  args = sys.argv[1].split("::")
+
+  # check the number of arguments.
+  if len(args) != 3:
+    usage()
+    sys.exit(42)
 
   # set the global variables.
   g_school = args[0]
@@ -938,31 +1161,33 @@ def			main():
   g_stage = args[2]
 
   # check that the school and year are valid.
-#  check()
+  check()
 
   # warn the user about what is about to happen.
-#  warning()
+  warning()
 
   # prepare the process.
-#  prepare()
+  prepare()
 
   # extract all the student snapshots in a temporary directory so that
   # the CTC tool can access the sources.
-#  extract()
+  extract()
+
+  # shear the snapshots according to the year's base snapshot.
+  shear()
 
   # generate the token files and the database.
-#  generate()
+  generate()
 
   # compare the given snapshots with the other ones, generating cheat
   # traces.
-#  compare()
-
-# XXX
-#  STORE()
-  LOAD()
+  compare()
 
   # generate the HTML output.
   output()
+
+  # clean the temporary files and directories.
+  clean()
 
   # a final message.
   env.display(env.HEADER_OK,
