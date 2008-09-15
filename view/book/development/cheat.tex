@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/development/cheat.tex
 %
 % created       julien quintard   [thu may 24 11:57:37 2007]
-% updated       julien quintard   [tue may 20 01:06:51 2008]
+% updated       julien quintard   [mon sep 15 13:17:04 2008]
 %
 
 %
@@ -19,26 +19,44 @@
 \label{section:cheat}
 
 The \name{cheat} tool checks whether students cheated by using pieces of
-code from kaneton projects of the previous years.
+code from other students' implementation of the current and/or previous years.
 
 The \location{history/} directory is composed of directories organizing the
 kaneton students implementations over the years and for every school and
-university the education project was used. Then each subdirectory represents
-a year and contains subdirectories for each students group of this year.
+university the education project has been used for. Then, each subdirectory
+represents a year and contains subdirectories for each students group of this
+year.
 
 Each student group directory contains a \location{sources/} subdirectory
-containing the tarballs of the different kaneton stages: \name{k0},
-\name{k1}, \name{k2} and so on; a \location{fingerprints/} directory
-containing an internal source representation used for detecting cheating,
-and a \location{cheats/} directory which contains a list of commonalities
-with other kaneton implementations of the same and previous years.
+containing the snapshots of the different kaneton stages: \name{k0},
+\name{k1}, \name{k2} and so on.
 
-The \name{cheat} tool takes a year and a stage as arguments. Its first
-task is to generate the fingerprints of the other kaneton implementations
-for this stage of the same and previous years.
+The \name{cheat} tool takes a school, a year and a stage as arguments. Its
+first task is to generate the fingerprints of the other kaneton
+implementations.
 
-Once the fingerprints are generated, the tool performs the checks by
-comparing each pair of kaneton implementations for this stage.
+Once the fingerprints have been generated, they are gathered into a database
+file. The tool then performs the verification process by comparing snapshots
+against each others.
+
+Note that in order to prevent the tool from detecting matches in the source
+code that has been provided by the teachers, the tool first removes the parts
+common to both the students snapshots and the base snapshot. Additionally,
+to reduce the amount of work to be done, everything contained in the
+\code{\_CHEAT\_FILTER\_} environment variable is removed from the students'
+snapshots. This variable is likely to contain directories such as
+\location{environment/}, \location{license/}, \location{tool/} \etc{}
+
+Finally, the tool generates a \name{HTML} page summarising the matches
+found between the students. The matches are classified according to the number
+of tokens found.
+
+Note that teachers are asked to add student snapshots to the repository
+in a careful way, taking care that snapshots do not contain any object file,
+revision control directories such as \location{.svn/} \etc{} and that once
+extracted, the snapshot produced a single \location{kaneton/} directory.
+Moreover, if the student snapshot does not follow the base organisation,
+false-positive matches will emerge.
 
 The \name{cheat} tool is based on another tool whose name cannot be revealed
 here. For more information, please contact your supervisor.
