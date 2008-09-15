@@ -31,6 +31,11 @@ TETON_C			:=		teton.c
 
 TETON_O			:=		$(TETON_C:.c=.o)
 
+#XXX := /home/mycure/kayou/library/kayou/d/compilers/dmd/test/_crt.o /home/mycure/kayou/library/kayou/d/compilers/dmd/test/_kayou.o /home/mycure/kayou/library/kayou/d/compilers/dmd/test/test.o /home/mycure/kayou/library/kayou/d/compilers/dmd/libkayou.a
+#XXX := /home/mycure/kayou/library/kayou/d/compilers/dmd/test/_crt.o /home/mycure/kayou/library/kayou/d/compilers/dmd/test/_kayou.o
+
+XXX := $(_CRT_O_) /home/mycure/kayou/library/kayou/d/compilers/dmd/libkayou.a /home/mycure/kayou/library/kayou/d/compilers/dmd/test/test.o $(_ULIBC_A_)
+
 #
 # ---------- rules ------------------------------------------------------------
 #
@@ -41,7 +46,8 @@ main:			dependencies $(TETON)
 $(TETON):			$(TETON_O)
 	$(call env_executable,$(TETON),					\
 			      $(TETON_O)				\
-			      $(_CRT_O_) $(_ULIBC_A_) $(_LIBKANETON_A_),\
+			      $(_LIBKANETON_A_) \
+			      $(XXX), \
 			      $(_DRIVER_LAYOUT_),			\
 			      $(ENV_OPTION_NO_STANDARD))
 
@@ -60,7 +66,7 @@ headers:
 
 dependencies:
 	$(call env_launch,$(_ULIBC_DIR_)/Makefile,,)
-	$(call env_launch,${_LIBKANETON_DIR_}/Makefile,,)
+	$(call env_launch,$(_LIBKANETON_DIR_)/Makefile,,)
 
 endif
 #

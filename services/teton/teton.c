@@ -31,14 +31,15 @@ static void	       	cons_scroll(t_uint16			lines)
   for (src = lines * CONS_COLUMNS * CONS_BPC, dst = 0;
        src < CONS_SIZE;
        src++, dst++)
-    cons.vga[dst] = cons.vga[src];
-
-  for (src = (CONS_LINES - lines) * CONS_COLUMNS * CONS_BPC;
-       src < CONS_SIZE;
-       src += 2)
     {
-      cons.vga[src + 0] = 0;
-      cons.vga[src + 1] = cons.attr;
+      cons.vga[dst] = cons.vga[src];
+
+      if ((src >= ((CONS_LINES - lines) * CONS_COLUMNS * CONS_BPC)) &&
+	  ((src % 2) == 0))
+	{
+	  cons.vga[src + 0] = 0;
+	  cons.vga[src + 1] = cons.attr;
+	}
     }
 
   cons.line -= lines;
@@ -105,11 +106,41 @@ int			print_string(const char* p)
   return (i - 1);
 }
 
+// XXX
+int			print_raw(const char* p, unsigned int n)
+{
+  size_t		i;
+
+  if (cons.vga == 0)
+    return (-1);
+
+  for (i = 0; i < n; i++)
+    print_char(p[i]);
+
+  return (n);
+}
+
+// XXX
+
+void                    cons_clear(void)
+{
+  t_uint16              i;
+
+  for (i = 0; i < 0xfa0; i++)
+    {
+      cons.vga[i + 0] = 0;
+      cons.vga[i + 1] = cons.attr;
+    }
+
+  cons.line = 0;
+  cons.column = 0;
+}
+
 /*
  * initialize VGA text console and console structure.
  */
 
-static int		cons_init(void)
+int			cons_init(void)
 {
   i_region		reg;
   t_uint16		line;
@@ -130,6 +161,8 @@ static int		cons_init(void)
   cons.line = 0;
   cons.column = 0;
 
+  /* XXX[needless with the serial kernel redirection since
+     we've got the whole screen for ourselves]
   for (br = 1, line = CONS_LINES - 1; br && line > 0; line--)
     {
       for (c = 0; c < CONS_COLUMNS * CONS_BPC; c += CONS_BPC)
@@ -146,6 +179,9 @@ static int		cons_init(void)
     }
   else
       cons.line = line + 1;
+  */
+
+  cons_clear();
 
   return (0);
 }
@@ -167,16 +203,150 @@ static int		cons_serve(void)
 /*
  * driver's main function.
  */
-
-int			main(void)
+int			XXXmain(void)
 {
   if (cons_init())
     return (-1);
 
   print_string("[teton] initialised\n");
 
-  if (cons_serve())
-    return (-1);
+  return 0;
+}
+
+// ----------------------------------------------------------------
+
+typedef void* pthread_mutexattr_t;
+typedef void* pthread_mutex_t;
+typedef void* sem_t;
+
+void print(const char* msg)
+{
+  //printf("%s\n", msg);
+}
+
+// sem_wait()
+
+int sem_wait(sem_t* sem)
+{
+  print("[kayou] sem_wait()\n");
+
+  return (0);
+}
+
+// sem_init()
+
+int sem_init(sem_t* sem, int pshared, unsigned int value)
+{
+  print("[kayou] sem_init()\n");
+
+  return (0);
+}
+
+// sem_post()
+
+int sem_post(sem_t* sem)
+{
+  print("[kayou] sem_post()\n");
+
+  return (0);
+}
+
+// pthread
+
+typedef unsigned int pthread_t;
+
+// pthread_self()
+
+pthread_t pthread_self()
+{
+  print("[kayou] pthread_self()\n");
 
   return 0;
+}
+
+// pthread_equal()
+
+int pthread_equal(pthread_t p1, pthread_t p2)
+{
+  print("[kayou] pthread_equal()\n");
+
+  return p1 == p2;
+}
+
+// pthread_mutex_lock()
+
+int pthread_mutex_lock(pthread_mutex_t *mutex)
+{
+  // XXX print("[kayou] pthread_mutex_lock()\n");
+
+  // XXX[???]
+
+  return (0);
+}
+
+// pthread_mutex_unlock()
+
+int pthread_mutex_unlock(pthread_mutex_t *mutex)
+{
+  // XXX print("[kayou] pthread_mutex_unlock()\n");
+
+  // XXX[???]
+
+  return (0);
+}
+
+// pthread_mutexattr_init()
+
+int pthread_mutexattr_init(pthread_mutexattr_t *attr)
+{
+  // XXX print("[kayou] pthread_mutexattr_init()\n");
+
+  // XXX[???]
+
+  return (0);
+}
+
+// pthread_mutexattr_destroy()
+
+int pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
+{
+  // XXX print("[kayou] pthread_mutexattr_destroy()\n");
+
+  // XXX[???]
+
+  return (0);
+}
+
+// pthread_mutexattr_settype()
+
+int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type)
+{
+  // XXX print("[kayou] pthread_mutexattr_settype()\n");
+
+  // XXX[???]
+
+  return (0);
+}
+
+// pthread_mutex_init()
+
+int pthread_mutex_init(pthread_mutex_t * mutex,
+                       const pthread_mutexattr_t * attr)
+{
+  // XXX print("[kayou] pthread_mutex_init()\n");
+
+  // XXX[???]
+
+  return (0);
+}
+
+// pthread_mutex_destroy()
+
+int pthread_mutex_destroy(pthread_mutex_t *mutex)
+{
+  // XXX print("[kayou] pthread_mutex_destroy()\n");
+
+  // XXX[???]
+
+  return (0);
 }
