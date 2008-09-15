@@ -1,0 +1,480 @@
+		       Code Token Comparator Version 2.5
+
+	  	  (c) 2007-2008, Warren Toomey wkt@tuhs.org
+			   under the GPL v3 license
+
+INTRODUCTION
+------------
+
+The purpose of this set of programs is to allow you to compare several sets
+of C or Java code trees on a token basis, rather than on a line by line basis.
+The programs help to identify similarities between snippets of code in both
+trees, even if the actual lines are dissimilar. For background on how the
+tools work, see the papers, slides and audio at this website:
+		http://minnie.tuhs.org/Programs/Ctcompare
+
+CHANGES
+-------
+
+2.5: ctcompare's speed has been doubled, with some hand-coding of the
+     hotspot loops. Note: users with existing CTF files need to append
+     an 0x00 (NUL) byte to the end of the files, as this is now used to
+     detect the end of the token stream. A new database (HCTF) has been
+     added, with read speeds comparable to Berkeley DB 4 but with faster
+     write speeds. The GNU gdbm database has been removed. Compile-time
+     support for code comparisons within a source tree has been added.
+
+2.4: ctcompare's speed has been significantly improved again, i.e. 8 times
+     or more. Michael Stefaniuc sent in some changes which replaced the
+     stdio operations with mmap() operations.
+
+2.3: ctcompare's speed has been significantly improved, especially when
+     there are large amounts of similarities between code trees. However,
+     this comes at a cost. Version 2.2 used to do an exhaustive comparison
+     to eliminate similarity runs which were subsets of larger runs.
+     Version 2.3 now does this heuristically, but a few subset runs
+     are not caught and eliminated. Thus, this version reports slightly
+     more similarity runs than 2.2 did.
+
+     ctcompare now has a command-line option to sort the results by
+     the number of tokens in a run.
+
+     enhashctf was modified to allow the same CTF file to be inserted
+     multiple times. If this is attempted, the same token tuples are
+     not reinserted.
+
+     Initial support for Java source files added. See the end of this file.
+
+2.2: The ctcompare program was modified to limit the number of
+     isomorphic identifier relations. This helps to reduce the
+     number of false positives when the isomorphic option is
+     selected.
+
+2.1: The comparison method has been completely rewritten. A database
+     is now used to hold 16-token "tuples" as keys; the result
+     attached to each key is the list of source file which have that
+     tuple. Tuples with multiple files from different source trees
+     indicate potential code similarity. These are then fully tested
+     to find actual code similarity.
+     
+BUILDING THE TOOLS, CONFIGURING THE MAKEFILE
+--------------------------------------------
+
+This is still a research-oriented work in progress, so there's
+no ./configure; make install here. You will need: make, lex or
+flex, a C Compiler, Berkeley DB version 4, the fts(3) function and
+a FreeBSD or Linux box.
+
+Before you compile, you need to choose which flat database to use. The
+choices are HCTF or the Berkeley DB library. HCTF has faster database
+inserts, but is slightly slower than Berkeley DB when reading, and HCTF
+requires more RAM than Berkeley DB. I recommend:
+
+   - if you are modifying the database with frequent inserts, and the
+     ctcompare program runs without any paging to disk, use HCTF.
+   - if you are tight on RAM ( <128M ), or have a database which changes
+     rarely but you do lots of ctcompares, use Berkeley DB.
+
+The Makefile is set up to use HCTF by default, and to do optimized compiling.
+However, read through the Makefile before you run 'make' to make the five
+programs: buildctf, detok, enhashctf, showkeys and ctcompare.
+
+If the make fails, you're on your own! The programs are small
+enough to make the chore of fixing them not too difficult.
+The code compiles and runs on FreeBSD 5.x and FreeBSD 6.x,
+and Ubuntu Linux with a 2.6.22 kernel.
+
+You can either leave the five programs here, or you can copy them
+into a directory in your $PATH, e.g. /usr/local/bin. I assume
+below that you are going to run them from this directory.
+
+TOKENISING A CODE TREE
+----------------------
+
+If you have a C or Java code tree in /some/where/code and you want to
+tokenise the files in the tree and store the result in a
+"Code Token File" (CTF file) called mytree.ctf, you would do:
+
+  $ ./buildctf  /some/where/code   mytree.ctf
+
+The directory name can be relative or absolute (i.e. it doesn't have to
+start with a /). However note that other tools like ctcompare may need
+to open the source files to print out snippets of code. If you choose
+a relative directory name, you will need to run ctcompare in the same
+directory that you ran buildctf.
+
+WHAT DOES A CTF FILE REVEAL ABOUT THE SOURCE CODE?
+--------------------------------------------------
+
+The aim of the CTF file format is to allow a compact representation of
+a code tree to be exported in a way that allows similarities to be found,
+but in such a way that the complete source code is not revealed. This
+should allow proprietary code trees to be exported in CTF format.
+
+A CTF file will reveal this about your source code tree:
+  - the name of every source file in your tree
+  - the last modification time for each source file
+  - a syntactical representation of each source file, i.e.
+    syntax elements such as () [] {} -> == += #include etc.
+  - where literal elements occur in the file's syntax; this
+    includes labels, string literals, character literals,
+    numeric literals, and identifiers
+  - a 16-bit hashed value of each literal element
+
+Note that the actual values for literal constants and identifiers are
+not revealed, i.e. if you use the variable foobar, then this will not
+be revealed. However, a 16-bit hash of the word "foobar" is revealed,
+so a dictionary attack will provide a list of possible variable names
+that produce the same hash value. A 16-bit hash was purposefully chosen
+to increase the likelihood of collisions, thus reducing the effectiveness
+of a dictionary attack. Full details of the CTF file format are given below.
+
+VIEWING THE TOKENISED RESULTS FILE
+----------------------------------
+
+To view the resulting CTF file, use the detok command:
+
+  $ ./detok mytree.ctf | less
+
+This shows you the basic code tokens for each file in your source tree.
+An example CTF file is provided in the ctcompare tarball.
+
+INSERTING ONE OR MORE CTF FILES INTO THE DATABASE
+-------------------------------------------------
+
+In version 2.x of ctcompare, you must insert all of your CTF files
+into a database before they can be compared. This is done as follows:
+
+  $ ./enhashctf mytree.ctf [anothertree.ctf ...]
+
+i.e. name one or more CTF files on the command line which are to be inserted.
+As the program runs, the names of all the source files represented in
+the CTF files are printed out. The result is a flat database file called
+fileid.db which holds the names of all the CTF files in the database,
+and a flat database file called ctfnode.db with the 16-octet "tuples"
+and which source files contain them.
+
+Note that the ctfnode.db file is many times bigger than the CTF files
+inserted into it: typically hundreds of megabytes in size. Also note
+that, as the ctfnode.db file grows, the speed at which new CTF files
+can be added to the database slows.
+
+The filenames for the CTF files given to enhashctf can be relative or
+absolute (i.e. they do not have to start with a /). However note that
+other tools like ctcompare will need to open the CTF files to do a full
+token comparison. If you use a relative CTF filename, you will need to
+run ctcompare in the same directory that you ran enhashctf.
+
+The showkeys program will print out all of the tuple keys in the database,
+e.g.
+
+  $ ./showkeys | less
+
+You can also see details of which source files have which tuples by doing:
+
+  $ ./showkeys -v | less
+
+COMPARING ONE, TWO OR ALL SOURCE TREES
+--------------------------------------
+
+With all the CTF files you want inserted into the database, you can now
+search for code similarities. This is done with the ctcompare tool:
+
+  $ ./ctcompare | less
+
+will compare all the trees in the database, and print out the source
+files from different trees which have 16 or more matching tokens, and
+literal elements (e.g. identifiers) with the same hash value. The result
+has 3 tab-separated columns:
+
+#tokens_in_common    filename:start-end_line   filename:start-end_line
+
+1st column is the number of source code tokens found to be consecutive.
+2nd column names a file, start and end line of the run of matching tokens.
+3rd column names a file, start and end line of the run of matching tokens.
+
+OPTIONS TO CTCOMPARE
+--------------------
+
+ctcompare has several options:
+
+   Usage: ctcompare [-n nnn] [-r] [-t] [-x] [-s] [file1.ctf] [file2.ctf]
+
+   -n nnn	Set the minimum number of tokens in the run to nnn.
+		Only runs of length nnn or greater will be reported.
+		The default threshold value is 16.
+   -r           Sort the result by run length, highest to lowest.
+   -t		When a token run is found, print out the list of tokens
+		in the token run to stdout, after the 3-column header.
+   -x		When a token run is found, attempt to open up the actual
+		source code files, and print out the relevant source
+		lines from both files after the 3-column header. If
+		ctcompare cannot open a source file, the token run for that
+		file will be shown. Note: -t and -x are mutually exclusive.
+   -s		When a token run is found, attempt to open up the actual
+                source code files, and print out the relevant source
+                lines from both files after the 3-column header. Unlike
+		the -x option, the source code for the 2 files is printed
+		side by side. I recommend that you have a 160 column wide
+		terminal window with this option. If ctcompare cannot open
+		a source file, the token run for that file will be shown.
+		Note: -t and -s are mutually exclusive.
+
+If you name one CTF file on the command-line, then ctcompare will only
+print out results that relate to that source tree, i.e. ctcompare will
+compare that source tree to all the other trees in the database. If you
+name two CTF files on the command-line, then ctcompare will only print
+out results that relate to both source trees, i.e. ctcompare will only
+compare the first source tree to the second source tree.
+
+ISOMORPHIC CODE COMPARISON
+--------------------------
+
+The default code comparison is an exact comparison: not only must
+lexical elements (such as () {} [] ++ += etc.) match, but variable
+names must also match. ctcompare also supports "isomorphic" code
+comparison with the -i and -I nnn options.
+
+Code that is isomorphic can be detected if there is a 1-to-1
+relationship between identifiers. For example, the following
+two functions perform the same action although the variable
+names are different.
+
+int maxofthree(int x, int y, int z)
+{
+  if ((x>y) && (x>z)) return(x);
+  if (y>z) return(y);
+  return(z);
+}          
+
+int bigtriple(int b, int a, int c)
+{
+  if ((b>a) && (b>c)) return(b);
+  if (a>c) return(a);
+  return(c);
+}
+
+ctcompare, with the -i option, will perform isomorphic code comparison
+and will find code similarities such as the one above. Note, however,
+that this does slow the operation down significantly, and there will
+be many false positives.
+
+By default, ctcompare will give up on a potential run when the number
+of isomorphic relations exceeds 3, e.g. in the above example there are
+3 relations: x <=> b, y <=> a and z <=> c. If a new variable called
+"fred" appeared in the top function that was isomorphic to a new variable
+"mary" in the bottom function, ctcompare would give up as that would be
+a 4th isomorphic relation. You can control the number of isomorphic
+relations with the -I nnn option, e.g.
+
+  $ ./ctcompare -i | less	# isomorphic comparison with <=3 relations
+  $ ./ctcompare -I 10 | less	# isomorphic comparison with <=10 relations
+
+With high -I values (10 or more), you will start to see lots of false
+positives. I recommend that you start with a high token threshold such as
+-n 50 and the default -I 3 to find the largest matches with few
+isomorphic relations, and then iteratively lower -n and/or raise -I
+until you start to see lots of false positives.
+
+COMPARISONS WITHIN A SOURCE TREE
+--------------------------------
+By default, ctcompare will only compare source files in different source
+trees; in other words, you have to have at least two CTF files in the
+database. If you wish to compare source files within the same source tree
+(e.g. to find code duplication which could be removed), then recompile
+ctcompare.c with the NO_INTRA_TREE_COMPARISONS pre-processor directive
+undefined. This will compare source files within the same source tree, but
+will not compare any source file with itself.
+
+MEMORY ERRORS
+-------------
+If you are running ctcompare and receive the error message "avltrees: out of
+memory", then you have hit a hard limit on the amount of RAM that ctcompare
+can allocate. To solve this, change the Makefile to use Berkeley DB 4 database
+files, and edit db4files.c and reduce the size of DB_CACHE_SIZE from the
+default 300 (Meg) to a smaller size like 64. This will reduce the memory
+footprint of ctcompare, but may cause enhashctf to do much more disk I/O when
+it inserts new CTF files into the database.
+
+OTHER SCRIPTS
+-------------
+There are a couple of Perl scripts that help you deal with the output
+from ctcompare. Assume that you have done the following:
+
+  $ ./ctcompare -i -n 30 -x > output
+
+but output has thousands of results, and many are ignorable, e.g.
+
+41  Linux0.96c/chr_drv/keyboard.c:1083-1088  /Net2/sys/kern/tty_conf.c:63-69
+        do_self,do_self,do_self,do_self,        /* 04-07 3 4 5 6 */
+        do_self,do_self,do_self,do_self,        /* 08-0B 7 8 9 0 */
+        do_self,do_self,do_self,do_self,        /* 0C-0F + ' bs tab */
+        do_self,do_self,do_self,do_self,        /* 10-13 q w e r */
+        do_self,do_self,do_self,do_self,        /* 14-17 t y u i */
+=====================================
+        enodev, enodev, enodev, enodev, enodev,         /* 1- defunct */
+        enodev, enodev, enodev, enodev, enodev,
+        enodev, enodev, enodev, enodev, enodev,         /* 2- defunct */
+        enodev, enodev, enodev, enodev, enodev,
+
+The Perl script filter_result can be used to filter out unwanted results
+from the output file. Usage is:
+
+  $ ./filter_result file minimum maximum [exclude regex pattern ...]
+
+	minimum is the minimum run size to show, default 16
+	maximum is the maximum run size to show, default infinity. If
+	  you set maximum to 0, it is interpreted as infinity.
+	Exclude patterns apply only to lines in the output file which
+	  have source filename
+
+Now you can eliminate keyboard.c from the output, and show runs with 40 or
+more tokens:
+
+  $ ./filter_result output 40 0 keyboard.c | less
+
+A second Perl script takes the output from ctcompare, and shows the file
+pairs in the output that are most related, i.e. have the largest number of
+token runs. You can do this:
+
+  $ ./sum_filepairs output | less
+
+to see output similar to this:
+
+14600: Src/32V/sys/sys/tty.c  Src/V7/dev/tty.c
+3630: Src/32V/sys/sys/mx2.c  Src/V7/dev/mx2.c
+2573: Src/32V/sys/sys/sys1.c  Src/V7/sys/sys1.c
+2511: Src/32V/sys/sys/bio.c  Src/V7/dev/bio.c
+2300: Src/32V/sys/sys/mx1.c  Src/V7/dev/mx1.c
+1939: Src/32V/sys/sys/sys4.c  Src/V7/sys/sys4.c
+1938: Src/32V/sys/sys/prim.c  Src/V7/sys/prim.c
+1926: Src/32V/sys/sys/sys2.c  Src/V7/sys/sys2.c
+
+Note: both filter_result and sum_filepairs can read from standard input if
+"-" is given as the filename, so you can even do this if you wish:
+
+  $ ./ctcompare -i -n 30 -x | ./filter_result - 40 0 keyboard.c | \
+						    ./sum_filepairs - | less
+
+COMPARING OTHER LANGUAGES
+-------------------------
+At present ctcompare supports 2 languages: C and Java. However, only one
+language can be chosen at compile time. Edit the Makefile to use clexer for C,
+jlexer for Java.
+
+To add support for another language: choose up to 255 tokens (remember, each
+token is an octet), copy one of the existing lexers and modify it to
+perform the lexical analysis for the new language. Then modify the Makefile
+to use it.
+
+KNOWN BUGS
+----------
+Versions 2.3 and on do not eliminate all subset runs, so the output is much
+faster than 2.2 but not 100% accurate.
+
+FEEDBACK AND SUPPORT
+--------------------
+
+I probably can't offer much in the way of support, as this is a tool to
+scratch my itch and to do some academic research. However, I am interested
+in your feedback and bug fixes :-) Please e-mail me with any comments at
+wkt@tuhs.org.
+
+I am especially interested in CTF files of proprietary UNIX source trees,
+especially for SysVR4 onwards. If you can provide any of these, I would
+be most grateful.
+
+RELATED PROGRAMS
+----------------
+
+Eric Raymond has written a tool called comparator, available at
+http://www.catb.org/~esr/comparator/. It works as follows:
+
+    [comparator] works by first chopping the specified trees into
+    overlapping shreds (by default 3 lines long) and computing a hash
+    of each shred. The resulting list of shreds is examined and all
+    unique hashes are thrown out. Then comparator generates a report
+    listing all cliques of lines with duplicate hashes, with overlapping
+    ranges merged. ... A consequence of the method is that comparator
+    will find common code segments wherever they are. It is insensitive
+    to rearrangements of the source trees.
+
+Dick Grune has written a token-based tool called SIM, available at
+http://www.cs.vu.nl/~dick/sim.html. It uses tokens in the same way
+as Ctcompare, but does not seem to use literal or identifer values
+in the code comparison.
+
+If anybody knows of any other freely available tools dealing with code
+comparison, I would be grateful if you e-mailed me the details.
+
+
+CTF FILE FORMAT
+---------------
+
+The aim of the CTF file format is to allow a representation of a code
+tree to be exported in a way that allows similarities to be found, but
+in such a way that the complete source code is not revealed. This should
+allow proprietary code trees to be exported in CTF format.
+
+A CTF file contains:
+ - strings, which occur in normal text format and are terminated 
+   with a 0x00 octet, as per C,
+ - single-octet tokens, and
+ - multi-octet unsigned integer (16- or 32-bit) values in big-endian format.
+
+Each CTF file begins with a string header indicating the CTF version.
+Currently, this is "CTF2.1" followed by a 0x00 octet.
+
+After the CTF header, the CTF file is composed of a set of
+variable-length records, one for each file which has been tokenised.
+Each file record starts with the octet 0x09. This is followed by
+the file's 4-octet last modification timestamp (seconds since 1970) in
+big-endian format. This is followed by the filename in ASCII, terminated
+by a 0x00 octet. This is then followed by a set of tokens for the file.
+
+Most tokens are 1 octet long, and are listed in tokens.h. However, the
+following token values represent literal elements with values:
+
+IDENTIFIER: 0x5f
+INTVAL:     0x39
+CHARCONST:  0x27
+STRINGLIT:  0x22
+LABEL:	    0x60
+
+Each of these tokens is followed by 2 octets which represent, in big-endian
+format, the hashed value of that specific literal element in the file.
+For example, take the short C code:
+
+	void print_word(char *str) {
+	  char *c;
+	  
+	  c=str;
+	  while ((c!='\0') && (c!=' ')) putchar(c++);
+	  putchar('\n');
+ 	}
+
+There are several identifiers and character constants in the code.
+As buildctf parses the file, it creates a 16-bit hash for each one:
+
+	Literal value   Hash Value
+	--------------------------
+	print_word	13043
+	str		6928
+	c		23749
+	putchar		32886
+
+Thus, the code would be represented in the CTF file as follows:
+
+  void id13043 ( char * id6928 ) { 
+    char * id23749; 
+
+    id23749 = id6928; 
+    while ((id23749 != 'c7388') && (id23749 != 'c20789')) id32886(id23749++); 
+    id32886 ('c12652'); 
+  } 
+
+The set of tokens representing a single source file in the CTF file is
+terminated either by 0x09, i.e. the beginning of a new file, or the end of
+file token (0x00). It goes without saying that the values 0x09 and 0x00 do
+not represent actual source tokens. Similarly, the value 0x0A represents a
+newline in the source file, and does not represent an actual source token.
