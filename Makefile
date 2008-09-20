@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [fri jun 13 11:12:48 2008]
+# updated       julien quintard   [mon sep 15 13:02:33 2008]
 #
 
 #
