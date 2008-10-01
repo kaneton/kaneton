@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/book/architecture/Makefile
 #
 # created       julien quintard   [sun jun 10 00:07:26 2007]
-# updated       julien quintard   [sun dec 16 17:36:36 2007]
+# updated       enguerrand raymond   [wed oct 01 19:01:36 2008]
 #
 
 #
@@ -27,7 +27,8 @@ include			../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-SUBDIRS			:=		ia32			
+SUBDIRS			:=		ia32				\
+					MIPS64
 
 #
 # ---------- rules ------------------------------------------------------------
