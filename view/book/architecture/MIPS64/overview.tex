@@ -1,0 +1,34 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/enguerrand/kanton/view/book/architecture/MIPS64/overview.tex
+%
+% created       enguerrand raymond   [sun oct  5 16:54:35 2008]
+% updated       enguerrand raymond   [sun oct  5 16:54:04 2008]
+%
+
+%
+% overview
+%
+
+\chapter{Overview}
+
+The MIPS64 kaneton implementation is born two purchase three main goals.
+The first one is the kaneton kernel architecture portability system test,
+the second is the development for 64 bits architecture and the third is pedagogical.
+In fact, the EPITA students must follow MIPS architecture lessons, so it is interesting 
+for them to develop on MIPS architecture concurently to the kaneton microkernel development
+project.
+
+We do not have MIPS machine enough in EPITA laboratories. We have decided to develop the MIPS64 kaneton
+port on QEMU only. The student must already develop on ia32 architecture, they must execute their kernel
+on real machine. So, it is not necessary to have real MIPS 86 bits machine.
+
+The first 64 bits MIPS microprocessor was the R4000, it released in 1991 but MIPS could not produce it themselves.
+In 1992 SGI bought the MIPS company that becam MIPS technologies. Thus the microprocessor could be produce for SGI platforms. The MIPS R4000 has been designed in three configurations for low-cost system (R4000PC), high performance uniprocessor system (R4000SC) and for high multiprocessor platform (R4000MC).
+
+This document is composed of X parts, each part corresponds to one or several source files. The memory management for example is deveolped in Region dependant code and MIPS64 library. For each chapter, the source files concerned will be given.

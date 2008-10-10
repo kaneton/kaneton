@@ -29,7 +29,11 @@ include			../../../../environment/env.mk
 
 PAPER			:=		mips64
 
-SOURCES			:=		mips64.tex
+SOURCES			:=		mips64.tex			\
+					overview.tex			\
+					bootloader.tex			\
+					memory.tex			\
+					bibliography.tex
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\
