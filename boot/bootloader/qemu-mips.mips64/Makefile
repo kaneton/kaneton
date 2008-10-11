@@ -7,8 +7,8 @@
 #
 # file          /home/enguerrand/kaneton/qemu-mips.mips64/Makefile
 #
-# created       julien quintard   [sat oct 11 18:44:41 2008]
-# updated       julien quintard   [sat oct 11 18:44:39 2008]
+# created       enguerrand raymond   [sat oct 11 18:44:41 2008]
+# updated       enguerrand raymond   [sat oct 11 18:44:39 2008]
 #
 
 #
@@ -21,7 +21,7 @@ component		:=		bootloader
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../../environment/env.mk
+include			../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
