@@ -1,3 +1,0 @@
-\select@language {english}
-\contentsline {chapter}{\numberline {1}Introduction}{5}{chapter.1}
-\contentsline {chapter}{\numberline {2}Requirements}{7}{chapter.2}
