@@ -1,0 +1,71 @@
+#
+# ---------- header -----------------------------------------------------------
+#
+# project       kaneton
+#
+# license       kaneton
+#
+# file          /home/mycure/kaneton/view/lecture/kernels/future/Makefile
+#
+# created       julien quintard   [wed may 16 18:54:58 2007]
+# updated       julien quintard   [fri oct 24 17:16:25 2008]
+#
+
+#
+# ---------- dependencies -----------------------------------------------------
+#
+
+include			../../../../environment/env.mk
+
+#
+# ---------- directives -------------------------------------------------------
+#
+
+.PHONY:		main build clear
+
+#
+# ---------- variables --------------------------------------------------------
+#
+
+PAPER			:=		kernels
+
+SOURCES			:=		boot.tex			\
+					generalities.tex		\
+					portability.tex			\
+					memory.tex			\
+					interrupts.tex			\
+					concurrency.tex			\
+					scheduling.tex			\
+					ipc.tex				\
+					bus.tex				\
+					security.tex			\
+					file-systems.tex			
+
+GARBAGE			:=		$(SOURCES:.tex=.aux)		\
+					$(SOURCES:.tex=.log)		\
+					$(SOURCES:.tex=.toc)		\
+					$(SOURCES:.tex=.pdf)		\
+					$(SOURCES:.tex=.bbl)		\
+					$(SOURCES:.tex=.blg)		\
+					$(SOURCES:.tex=.nav)		\
+					$(SOURCES:.tex=.out)		\
+					$(SOURCES:.tex=.snm)		
+
+#
+# ---------- rules ------------------------------------------------------------
+#
+
+main:			build
+
+view:			build
+	$(call env_view,$(PAPER),)
+
+build:
+	$(call env_document,$(PAPER),)
+
+clear:
+	$(call env_remove,$(GARBAGE),)
+
+	$(call env_remove,$(_DEPENDENCY_TEX_),)
+
+	$(call env_purge)
