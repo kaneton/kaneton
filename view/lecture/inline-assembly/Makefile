@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/lecture/inline-assembly/Makefile
 #
 # created       julien quintard   [wed may 16 18:48:18 2007]
-# updated       julien quintard   [mon jun 11 06:16:55 2007]
+# updated       julien quintard   [fri oct 24 17:16:21 2008]
 #
 
 #
