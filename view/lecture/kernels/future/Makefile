@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/lecture/kernels/future/Makefile
 #
 # created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [fri oct 24 17:16:25 2008]
+# updated       julien quintard   [fri oct 24 17:34:55 2008]
 #
 
 #
@@ -27,45 +27,32 @@ include			../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		kernels
-
-SOURCES			:=		boot.tex			\
-					generalities.tex		\
-					portability.tex			\
-					memory.tex			\
-					interrupts.tex			\
-					concurrency.tex			\
-					scheduling.tex			\
-					ipc.tex				\
-					bus.tex				\
-					security.tex			\
-					file-systems.tex			
-
-GARBAGE			:=		$(SOURCES:.tex=.aux)		\
-					$(SOURCES:.tex=.log)		\
-					$(SOURCES:.tex=.toc)		\
-					$(SOURCES:.tex=.pdf)		\
-					$(SOURCES:.tex=.bbl)		\
-					$(SOURCES:.tex=.blg)		\
-					$(SOURCES:.tex=.nav)		\
-					$(SOURCES:.tex=.out)		\
-					$(SOURCES:.tex=.snm)		
+SUBDIRS			:=		boot				\
+					generalities			\
+					portability			\
+					memory				\
+					interrupts			\
+					concurrency			\
+					scheduling			\
+					ipc				\
+					bus				\
+					security			\
+					file-systems			
 
 #
 # ---------- rules ------------------------------------------------------------
 #
 
-main:			build
-
-view:			build
-	$(call env_view,$(PAPER),)
+main:		build
 
 build:
-	$(call env_document,$(PAPER),)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,build,)			; \
+	done
 
 clear:
-	$(call env_remove,$(GARBAGE),)
-
-	$(call env_remove,$(_DEPENDENCY_TEX_),)
+	for d in $(SUBDIRS) ; do					\
+	  $(call env_launch,$${d}/Makefile,clear,)			; \
+	done
 
 	$(call env_purge)

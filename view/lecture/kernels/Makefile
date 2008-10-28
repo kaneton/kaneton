@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/view/lecture/kernels/Makefile
 #
 # created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [fri oct 24 17:10:49 2008]
+# updated       julien quintard   [fri oct 24 17:34:50 2008]
 #
 
 #

@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [fri aug 29 20:10:32 2008]
+# updated       julien quintard   [tue oct 28 16:19:44 2008]
 #
 
 #
@@ -439,13 +439,17 @@ define env_compile-tex
   compile_tex_options=""						&& \
   $(call env_display,green,COMPILE-TEX,$(1),		,)		&& \
   $(call env_perform,							\
-    $(_PDFLATEX_) $${compile_tex_options} $(1).tex)			&& \
+    $(_PDFLATEX_) $${compile_tex_options} $(1))				&& \
   $(call env_perform,							\
-    $(_BIBTEX_) $(1).tex)						&& \
+    $(_PDFLATEX_) $${compile_tex_options} $(1))				&& \
   $(call env_perform,							\
-    $(_PDFLATEX_) $${compile_tex_options} $(1).tex)			; \
+    $(_BIBTEX_) $(1))							&& \
   $(call env_perform,							\
-    $(_PDFLATEX_) $${compile_tex_options} $(1).tex)
+    $(_BIBTEX_) $(1))							&& \
+  $(call env_perform,							\
+    $(_PDFLATEX_) $${compile_tex_options} $(1))				; \
+  $(call env_perform,							\
+    $(_PDFLATEX_) $${compile_tex_options} $(1))
 endef
 
 #
