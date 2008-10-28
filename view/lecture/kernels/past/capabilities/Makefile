@@ -24,35 +24,14 @@ include			../../../../../environment/env.mk
 .PHONY:		main view build clear
 
 #
-# ---------- variables --------------------------------------------------------
-#
-
-PAPER			:=		kernel-capabilities
-
-SOURCES			:=		kernel-capabilities.tex		
-
-GARBAGE			:=		$(SOURCES:.tex=.aux)		\
-					$(SOURCES:.tex=.log)		\
-					$(SOURCES:.tex=.toc)		\
-					$(SOURCES:.tex=.pdf)		\
-					$(SOURCES:.tex=.bbl)		\
-					$(SOURCES:.tex=.blg)		\
-					$(SOURCES:.tex=.nav)		\
-					$(SOURCES:.tex=.out)		\
-					$(SOURCES:.tex=.snm)		
-
-#
 # ---------- rules ------------------------------------------------------------
 #
 
-# XXX
 main:
 
 view:			build
-	$(call env_view,$(PAPER),)
 
 build:
-	$(call env_document,$(PAPER),)
 
 clear:
 	$(call env_remove,$(GARBAGE),)
