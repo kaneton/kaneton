@@ -1,0 +1,233 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kane...ure/kernels/future/security/security.tex
+%
+% created       julien quintard   [fri oct 24 17:31:58 2008]
+% updated       julien quintard   [wed nov  5 00:06:39 2008]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../../../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{Security}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \tableofcontents
+\end{frame}
+
+%
+% introduction
+%
+
+\section{Introduction}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  - Is *not* about: unit testing, model checking, secure architecture, vulnerabilities etc.
+  - Is about: access control in operating systems
+\end{frame}
+
+%
+% terminology
+%
+
+\section{Terminology}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  - subject/initiator
+  - object/target
+  - policy
+\end{frame}
+
+%
+% overview
+%
+
+\section{Overview}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  o Why?
+    - obvious
+  o What?
+    - any ``object'' being file, kernel data, network access, shared memory etc.
+\end{frame}
+
+%
+% history
+%
+
+\section{History}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  - Just to give a glimpse of history
+  o Multics: started 1964 with a first release in 1969.
+             was the first system to emphasize security from the design perspective. In spite of this,
+             Multics extreme complexity opened the way to many security flaws.
+             however break-ins became very rare with the second generation of hardware: ring-oriented security
+    o Goals: high availability, scalability (by adding resources such as main memory, storage capacity etc.)
+             -> ACLs on every file
+  o Cambridge CAP Computer: in the 1970s
+    o Goals: complete security
+             -> Capabilities both in hardware and software
+  o UNIX: started in 1969 (with UNIX-PDP7)
+    o Goals: portable, multi-tasking, multi-user, time sharing .. everything is file
+             -> UNIX permissions: u/g/o
+  o Linux: started in 1991 ... until now
+    o Goals: Free and Open UNIX
+             -> UNIX permissions
+\end{frame}
+
+%
+% principles
+%
+
+\section{Principles}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  o Design/Obscurity
+    - Security through obscurity
+        - controversial principle, especially used by governements and organizations which consists in
+          relying on secrecy for ensuring security
+    - Security by design: opposite to security through obscurity
+  o Least Privilege
+\end{frame}
+
+%
+% types
+%
+
+\section{Types}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  o MAC
+  o DAC
+\end{frame}
+
+%
+% models
+%
+
+\section{Models}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  - A computer security model is a scheme for specifying and enforcing security policies.
+  o Unix Permissions: which is a specificity of ACLs
+  o ACL - Access Control List
+    - Insecure in many ways: Confused deputy problem
+    o Examples:
+      o NTFS
+  o Capabilities
+    - Unfortunately, only implemented in research operating systems while, *at best*, commercial
+      systems use ACLs. A reason might be that fixing security with ACLs does not require
+      a complete review of the system design.
+    o Hardware/Software/Language
+    o Examples
+      o CAP
+      o Amoeba
+      o kaneton
+      o Language E
+      o TrustedBSD
+  o Certificates
+    o Certified Capabilities
+    o Examples:
+      o Singularity
+  o MLS - Multi-Level Security
+  o RBAC - Role-Based Access Control
+  o LBAC - Lattice-Based Access Control
+\end{frame}
+
+%
+% conclusion
+%
+
+\section{Conclusion}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Overview}
+
+  XXX
+\end{frame}
+
+%
+% bibliography
+%
+
+\begin{frame}
+  \frametitle{Bibliography}
+
+  \bibliographystyle{amsplain}
+  \bibliography{\path/bibliography/bibliography}
+\end{frame}
+
+\end{document}
