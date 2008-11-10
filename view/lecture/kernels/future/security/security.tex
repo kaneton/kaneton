@@ -8,7 +8,7 @@
 % file          /home/mycure/kane...ure/kernels/future/security/security.tex
 %
 % created       julien quintard   [fri oct 24 17:31:58 2008]
-% updated       julien quintard   [fri nov  7 04:47:41 2008]
+% updated       julien quintard   [sun nov  9 19:12:26 2008]
 %
 
 %
@@ -72,8 +72,61 @@
 \begin{frame}
   \frametitle{Overview}
 
-  - Is *not* about: unit testing, model checking, secure architecture, vulnerabilities etc.
-  - Is about: access control in operating systems
+  This course targets security in operating systems.
+
+  \-
+
+  Note that providing security inside a kernel is different.
+
+  \-
+
+  We will focus on describing tools for controlling the access to well-defined
+  objects, these objects being created and managed by the kernel, a server,
+  a service or whatever independent entity.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Assumptions}
+
+  Obviously, providing security would not make much sense in an unsafe
+  system.
+
+  \-
+
+  We will therefore consider in this course that the studied operating system
+  is safe enough so that security makes sense.
+
+  \-
+
+  More precisely, in systems such as critical, real-time \etc{} systems,
+  ensuring safety would be far more important than providing access control
+  because without strong safety guarantees, security would have an impact.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Summary}
+
+  Therefore, this course will targets \term{access control} and none of
+  the following topics will be discussed:
+
+  \-
+
+  \begin{itemize}
+    \item
+      Unit testing;
+    \item
+      Model checking;
+    \item
+      Secure architecture;
+    \item
+      Vulnerabilities;
+    \item
+      \etc{}
+  \end{itemize}
 \end{frame}
 
 %
@@ -85,11 +138,67 @@
 % 1)
 
 \begin{frame}
-  \frametitle{Overview}
+  \frametitle{Subject/Initiator}
 
-  - subject/initiator
-  - object/target
-  - policy
+  The \term{subject}/\term{initiator} represents the entity trying to access
+  an object.
+
+  \-
+
+  According to the security model and the rights the subject has on the
+  object, the request operation is granted.
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Object/Target}
+
+  The \term{object}/\term{target} represents the information that is kept
+  from being seen from unauthorised subjects through a security model.
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Model}
+
+  The security model defines a set a rules and techniques on which the
+  managers rely to control the access granted to subjects.
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Manager}
+
+  A \term{manager} represents an entity providing access to targets.
+
+  \-
+
+  Managers follow the rules defined by the security model in use.
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Operation}
+
+  The \term{operation} represents the action requested by a subject on
+  a target.
+
+  \-
+
+  The manager receiving the request checks if the subject has the right
+  to perform this operation and acts accordingly.
+\end{frame}
+
+% 6)
+
+\begin{frame}
+  \frametitle{Example}
+
+  XXX file system?
 \end{frame}
 
 %
