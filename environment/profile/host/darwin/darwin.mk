@@ -410,7 +410,7 @@ define env_version
   $(call env_display,yellow,VERSION,$(1),		,)		&& \
   $(_ECHO_) -n "" > $(1)						&& \
   $(_ECHO_) -n "const char version[] = \"$(_TITLE_)-$(_VERSION_)" >> $(1) && \
-  $(_ECHO_) " "$(shell $(_DATE_))" $(USER)@$(HOSTNAME)\";" >> $(1)
+  $(_ECHO_) " "$(shell LANG=C $(_DATE_))" $(USER)@$(HOSTNAME)\";" >> $(1)
 endef
 
 #

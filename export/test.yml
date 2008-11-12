@@ -1,0 +1,16 @@
+---
+-
+  operation: remove
+  path: history
+-
+  operation: remove
+  path: check
+-
+  operation: remove
+  path: cheat
+-
+  operation: remove
+  path: test
+-
+  operation: remove
+  path: export
