@@ -40,5 +40,5 @@ def module_init():
 # value.
 #
 def module_action(export_dir, arg):
+    env.display(env.HEADER_OK, 'action remove ' + arg['path'], env.OPTION_NONE)
     env.remove(export_dir + '/' + arg['path'], env.OPTION_NONE)
-    print 'action remove ' + arg['path']

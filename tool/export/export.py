@@ -15,7 +15,6 @@
 # ---------- imports ----------------------------------------------------------
 #
 
-import os
 import sys
 import yaml
 import tempfile
@@ -35,18 +34,6 @@ g_export_dir = ""
 # ---------- functions --------------------------------------------------------
 #
 
-
-#
-# myprint(str)
-#
-# overlay to the print statement that only prints str if g_verbose is set
-#
-def myprint(str):
-  global g_verbose
-
-  if (g_verbose != 0):
-    print str
-
 #
 # modules_load()
 #
@@ -55,14 +42,15 @@ def myprint(str):
 def modules_load():
   global g_modules
 
-  if (os.path.dirname(sys.argv[0]) == ""):
+  env.display(env.HEADER_OK, 'loading action modules', env.OPTION_NONE)
+  if (env.path(sys.argv[0], env.OPTION_DIRECTORY) == ""):
     moduledir = './modules'
   else:
-    moduledir = os.path.dirname(sys.argv[0]) + '/modules'
+    moduledir = env.path(sys.argv[0], env.OPTION_DIRECTORY) + '/modules'
   sys.path.append(moduledir)
-  for i in os.listdir(moduledir):
-    if os.path.splitext(i)[1] == '.py':
-      mod = __import__(os.path.splitext(i)[0])
+  for i in env.list(moduledir, env.OPTION_FILE):
+    if i.endswith('.py'):
+      mod = __import__(i[:-3])
       try:
         init_str = mod.module_init()
       except AttributeError:
@@ -71,21 +59,37 @@ def modules_load():
         sys.exit(1)
       g_modules[init_str[0]] = mod
       g_modules_parameters[init_str[0]] = init_str
-      myprint("Loaded module " + init_str[0])
-
-
+      env.display(env.HEADER_OK, "  loaded module " + init_str[0], env.OPTION_NONE)
 
 #
 # action_data_load()
 #
 # loads the action data from the YAML file
 #
-def action_data_load():
-  global g_action_data
+def action_data_load(filename):
+  env.display(env.HEADER_OK, 'loading action data description file ' + filename, env.OPTION_NONE)
+  stream = file(env._EXPORT_DIR_ + '/' + filename + '.yml', 'r')
+  return yaml.load(stream)
 
-  stream = file(env._EXPORT_DIR_ + '/' + sys.argv[1] + '.yml', 'r')
-  g_action_data = yaml.load(stream)
-  myprint(g_action_data)
+
+
+def parse_data_file(filename):
+  global g_action_data
+  global g_modules
+  global g_export_dir
+  global g_modules_parameters
+
+  g_action_data = action_data_load(filename)
+  for i in g_action_data:
+    if i['operation'] == 'import':
+      env.display(env.HEADER_OK, 'action import ' + i['filename'], env.OPTION_NONE)
+      parse_data_file(i['filename'])
+    else:   
+      arg = {}
+      for j in range(1, len(g_modules_parameters[i['operation']])):
+        arg[g_modules_parameters[i['operation']][j]] = i[g_modules_parameters[
+            i['operation']][j]];
+        g_modules[i['operation']].module_action(g_export_dir, arg)
 
 
 
@@ -99,29 +103,18 @@ def main():
   global g_action_data
   global g_export_dir
 
-  g_export_dir = tempfile.mkdtemp('','kaneton-export_', '/tmp')
-  myprint('Copying the source tree to ' + g_export_dir + ' ...')
+  modules_load()
+
+  g_export_dir = env.temporary(env.OPTION_DIRECTORY) + '/kaneton'
+  env.mkdir(g_export_dir, env.OPTION_NONE)
+  env.display(env.HEADER_OK, 'copying the source tree to ' + g_export_dir, env.OPTION_NONE)
   env.launch(env._CP_, "-r " + env._SOURCE_DIR_ + "/* " +
              g_export_dir, env.OPTION_QUIET)
-  myprint('Done.')
 
-  myprint('Loading action modules...')
-  modules_load()
-  myprint('Done.')
+  env.display(env.HEADER_OK, 'running export actions', env.OPTION_NONE)
 
-  myprint('Loading action data description file...')
-  action_data_load()
-  myprint('Done.')
-
-  for i in g_action_data:
-    arg = {}
-    for j in range(1, len(g_modules_parameters[i['operation']])):
-      arg[g_modules_parameters[i['operation']][j]] = i[g_modules_parameters[
-          i['operation']][j]];
-    g_modules[i['operation']].module_action(g_export_dir, arg)
-
-
-
+  parse_data_file(sys.argv[1])
+  
 #
 # ---------- entry point ------------------------------------------------------
 #
