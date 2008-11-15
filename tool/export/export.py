@@ -89,8 +89,8 @@ def parse_data_file(filename):
       for j in range(1, len(g_modules_parameters[i['operation']])):
         arg[g_modules_parameters[i['operation']][j]] = i[g_modules_parameters[
             i['operation']][j]];
-        g_modules[i['operation']].module_action(g_export_dir, arg)
-
+      print arg
+      g_modules[i['operation']].module_action(g_export_dir, arg)
 
 
 #

@@ -1,4 +1,12 @@
 ---
 -
-  operation: remove
+  operation: fremove
   path: view
+-
+  operation: fmove
+  src: kaneton/core/core.c
+  dst: core.c
+-
+  operation: fmove
+  src: README
+  dst: kaneton/core/README

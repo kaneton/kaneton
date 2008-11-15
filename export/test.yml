@@ -1,18 +1,18 @@
 ---
 -
-  operation: remove
+  operation: fremove
   path: history
 -
-  operation: remove
+  operation: fremove
   path: check
 -
-  operation: remove
+  operation: fremove
   path: cheat
 -
-  operation: remove
+  operation: fremove
   path: test
 -
-  operation: remove
+  operation: fremove
   path: export
 -
   operation: import

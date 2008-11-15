@@ -5,7 +5,7 @@
 #
 # license       kaneton
 #
-# file          /Users/francois/kaneton/tool/export/modules/remove.py
+# file          /Users/francois/kaneton/tool/export/modules/fmove.py
 #
 # created       francois goudal   [sat oct 25 20:57:38 2008]
 # updated       francois goudal   [wed nov 12 05:26:29 2008]
@@ -29,7 +29,7 @@ import env
 # others are the parameters required in the YAML file.
 #
 def module_init():
-    return ['remove','path']
+    return ['fmove','src','dst']
 
 #
 # module_action(export_dir, arg)
@@ -40,5 +40,6 @@ def module_init():
 # value.
 #
 def module_action(export_dir, arg):
-    env.display(env.HEADER_OK, 'action remove ' + arg['path'], env.OPTION_NONE)
-    env.remove(export_dir + '/' + arg['path'], env.OPTION_NONE)
+    env.display(env.HEADER_OK, 'action fmove ' + arg['src'] + ' to ' + arg['dst'], env.OPTION_NONE)
+    env.copy(export_dir + '/' + arg['src'], export_dir + '/' + arg['dst'], env.OPTION_NONE)
+    env.remove(export_dir + '/' + arg['src'], env.OPTION_NONE)
