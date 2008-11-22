@@ -1,0 +1,42 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/enguerrand/...ew/book/architecture/MIPS64/platform.tex
+%
+% created       enguerrand raymond   [mon oct 13 11:31:56 2008]
+% updated       enguerrand raymond   [sat nov  8 20:35:17 2008]
+%
+
+%
+% platform
+%
+
+\chapter{MIPS64 platforms}
+
+This chapter describes the different platform for which kaneton has been developed.
+These platforms are described following you need to understand the current document.
+
+\subsection*{qemu-mips platform}
+
+In 2008 We did not have MIPS machine enough in EPITA laboratories. We have decided to develop the first MIPS64 kaneton
+port on MIPS64 emulator only. The student must already develop on ia32 architecture and they must execute their kernel
+on real machine. So, it is not necessary to have a real MIPS 64 bits machine.
+
+The qemu-mips platform is the simplest emulated platform to develop kernel for MIPS 64 bits architecture. So, we have decided to develop firstly on this platform. It is composed of the following devices :
+
+\begin{itemize}
+  \item
+    \textbf{A big range of MIPS64 microprocessor}
+  \item
+    \textbf{IBM PC style serial port}
+  \item
+    \textbf{IBM PC style IDE disk}
+  \item
+    \textbf{NE2000 network card}
+\end{itemize}
+ 
+However, qemu-mips does not have any firmware (on MIPS platform the bios is called a firmware).
