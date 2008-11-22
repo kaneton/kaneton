@@ -1,0 +1,314 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kane...ecture/c-preprocessor/c-preprocessor.tex
+%
+% created       julien quintard   [wed may 16 18:45:05 2007]
+% updated       julien quintard   [fri may 23 19:20:34 2008]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+%
+% path
+%
+
+\def\path{../..}
+
+%
+% template
+%
+
+\input{\path/template/lecture.tex}
+
+%
+% title
+%
+
+\title{Windows NT}
+
+%
+% document
+%
+
+\begin{document}
+
+%
+% title frame
+%
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+%
+% outline frame
+%
+
+\begin{frame}
+  \frametitle{Outline}
+
+  \tableofcontents
+\end{frame}
+
+%
+% Object Manager
+%
+
+\section{Object Manager}
+
+% 1)
+
+\begin{frame}
+  \frametitle{Introduction}
+
+ The goal of every operating system is to manage \textbf{resources}, may
+ they be physical or virtual.
+
+  \-
+
+ The NT kernel approach is to represent resources as objects managed by a
+ subsystem, the \textbf{Object Manager}.
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Issues}
+
+  the Object Manager addresses the following issues
+
+  \begin{itemize}
+    \item
+      resource naming
+    \item
+      resource referencing
+    \item
+      resource access control
+ \end{itemize}
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Resources As Objects}
+
+  NT is very wide regarding what it calls a resource
+
+  \begin{itemize}
+    \item
+      file (FILE\_OBJECT), device (DEVICE\_OBJECT), driver (DRIVER\_OBJECT) ...
+    \item
+      process (KPROCESS), thread (KTHREAD)
+    \item
+      synchronization: mutex (KMUTEX), event (KEVENT), callbacks ...
+    \item
+      even types are objects (OBJECT\_TYPE)
+  \end{itemize}
+
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Objects Representation}
+
+  In memory object instances are splitted into a \textbf{header}, common to every
+  object type, and a type specific \textbf{body}. Since the header is common,
+  NT can manipulate every resource using the same interface. This header contains:
+
+  \begin{itemize}
+    \item
+      a pointer to the object OBJECT\_TYPE
+    \item
+      methods: Dump, Open, Close, Delete, Parse, Security ...
+    \item
+      security descriptor pointer
+    \item
+      reference counting information 
+  \end{itemize}
+\end{frame}
+
+% 5)
+
+\begin{frame}
+  \frametitle{Naming}
+
+  Every system needs to bind a \textbf{resource} to a \textbf{name}. The NT object
+  manager uses a tree naming scheme. Conceptually, the manager is thus very similar
+  to a filesystem as far as naming is concerned.
+
+  \begin{itemize}
+    \item
+      everything is stored  under a root directory
+    \item
+      (unfollowed) convention: one directory per object type (``/Driver/'', ``/Callback/'', ``/Device/'' ...)
+    \item
+      subdirectory structure is type specific
+
+      \begin{itemize}
+        \item
+          ``/Device/HarddiskVolume0/Dr0''
+        \item
+          ``/Driver/Ntfs''
+        \item
+          ``/Callback/PowerState''
+      \end{itemize}
+
+    \item
+      special directories: ``/GLOBAL??/'' seen in userland as ``//./'')
+    \item
+      symbolic links allowed: ``//./C:'' points to ``/Device/HarddiskVolume0''
+  \end{itemize}
+
+\end{frame}
+
+
+% 6)
+
+\begin{frame}
+  \frametitle{Referencing}
+
+  Object lifetime relies upon a \textbf{reference count} stored in the object header.
+  Obtaining an object reference can be done by \textbf{address}, \textbf{name} or by
+  \textbf{handle}.
+
+  \begin{itemize}
+    \item
+      most of the time, kernel and drivers reference objects by address
+
+      \begin{itemize}
+        \item
+          FILE\_OBJECT*, DEVICE\_OBJECT*, DRIVER\_OBJECT*...
+        \item
+          ObjectHeader = CONTAINER\_OF(Address, OBJECT\_HEADER, ObjectBody)
+        \item
+          no lookup, access is done in o(1)
+      \end{itemize}
+
+    \item
+      userland (Windows Native API) references objects by HANDLE
+      \begin{itemize}
+        \item
+          NtCreateFile, NtCreateProcess, NtClose ...
+        \item
+          syscall has to find the object given its HANDLE
+      \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+% 7)
+
+\begin{frame}
+  \frametitle{Scalability}
+
+  As seen, object referencing is done in O(1) by the kernel. But the
+  userland manipulates HANDLEs, and this handle has to be resolved in
+  the corresponding object at every request (system call).
+
+  \begin{itemize}
+    \item
+       one handle table per process plus one for the system
+    \item
+      three level index table
+  \end{itemize}
+\end{frame}
+
+% 8)
+
+\begin{frame}
+  \frametitle{Access Control}
+
+  Every object has a \textbf{security descriptor}. Security descriptors are covered in
+  another section, but the object manager is the place where security controls actually
+  occur.
+
+  \begin{itemize}
+    \item
+      the basic function is ObRerefenceObject
+    \item
+      according to argument passed, perform access control or not
+   \item
+     generally, objects comming from the kernel are trusted and access control
+     is only done on HANDLEs provided by the userland.
+  \end{itemize}
+\end{frame}
+
+% 9)
+
+\begin{frame}
+  \frametitle{Putting It All Together}
+
+  \begin{itemize}
+    \item
+      userland process
+      \begin{itemize}
+        \item
+          CreateFile(``C://foo'');
+        \item
+          real system call NtCreateFile(``//./C:/foo'');
+      \end{itemize}
+
+    \item
+      kernel syscall implementation
+      \begin{itemize}
+        \item
+          ObReferenceObjectByName(``C://foo'')
+      \end{itemize}
+
+    \item
+      object manager
+      \begin{itemize}
+        \item
+          translates ``//./C:/foo'' to ``/GLOBAL??/C:/foo''
+        \item
+          resolves the symlink to ``/Device/HarddiskVolume0/foo''
+        \item
+          translates ``//./C:/foo'' to ``/GLOBAL??/C:/foo''
+        \item
+          gets a DEVICE\_OBJECT on ``/Device/HarddiskVolume0''
+        \item
+          sends an IRP\_MJ\_CREATE irp to io manager for the device object,  with ``/foo'' as argument
+      \end{itemize}
+
+    \item
+      io manager
+      \begin{itemize}
+        \item
+          finds the top most driver associated to this device object, (ie. ntfs)
+        \item
+          calls the driver dispatch routine for IRP\_MJ\_CREATE
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+%
+% security
+%
+
+\section{Security}
+
+%
+% IO Manager
+%
+
+\section{IO Manager}
+
+%
+% Bibliography
+%
+
+\section{Bibliography}
+
+\end{document}
