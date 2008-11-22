@@ -58,6 +58,107 @@
 \end{frame}
 
 %
+% Overview
+%
+
+\section{Overview}
+
+% 1)
+
+\begin{frame}
+  \frametitle{History}
+
+  \begin{itemize}
+    \item
+      Windows NT is a kernel designed in the 90s by Microsoft
+    \item
+      The very core concepts did not change since then
+    \item
+      The team led by David Cutler, previously working at DEC on VAX/VMS
+  \end{itemize}
+
+\end{frame}
+
+% 2)
+
+\begin{frame}
+  \frametitle{Design}
+
+  NT kernel was far ahead of his time regarding today s general purpose kernels evolution
+
+  \begin{itemize}
+    \item
+      monolithic kernel
+    \item
+      drivers communicate by passing messages
+    \item
+      stackable model
+    \item
+      asynchronous IO
+    \item
+      multithreaded
+    \item
+      ``hybrid'' is a marketing term (from Torvald: \textit{http://en.wikipedia.org/wiki/Hybrid\_kernel})
+  \end{itemize}
+
+\end{frame}
+
+% 3)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Kernel As Seen By The Userland (1)}
+   
+  Look at the following userland code
+
+  \begin{verbatim}
+
+  HANDLE Handles[3];
+
+  // object model
+  Handles[0] = CreateFile(...);
+  Handles[1] = CreateThread(...);
+  Handles[2] = CreateEvent(...);
+  Handles[3] = CreateMutex(...);
+
+  // asynchronous io model
+  Overlapped.hEvent = Handles[2];
+  ReadFile(Handles[0], ..., &Overlapped);
+
+  // homogeneous model
+  WaitForMultipleObjects(Handles, 4, ...);
+
+  // common interface
+  CloseHandle(Handles[0]);
+  CloseHandle(Handles[1]);
+  CloseHandle(Handles[2]);
+  CloseHandle(Handles[3]);
+
+  \end{verbatim}
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Kernel As Seen By The Userland (2)}
+
+ It tells us long about the NT design
+
+ \begin{itemize}
+   \item
+     there is a design :)
+   \item
+     NT has been designed around the object model
+   \item
+     everything is object, manipulated by HANDLE in userland
+   \item
+     the scheduler acts as a central place for object synchronization
+   \item
+     IO requests are asynchronous
+ \end{itemize}
+
+\end{frame}
+
+
+%
 % Object Manager
 %
 
@@ -299,11 +400,144 @@
 
 \section{Security}
 
+
+% 1)
+
+\begin{frame}
+  \frametitle{Security Building Blocks}
+
+  NT security model relies 3 building blocks to address the
+  \textbf{identification} and \textbf{permission} issues.
+
+  \begin{itemize}
+
+    \item
+      security identifier (SID)
+      \begin{itemize}
+      \item
+        couple (domain, account)
+      \item
+        given to the user at login time
+      \item
+        every object has an owner and a group SID
+      \end{itemize}
+
+    \item
+      Access Control Entry (ACE)
+      \begin{itemize}
+        \item
+          triple (access - deny, permissions, SID)
+        \item
+          grant or refuse a permission mask to a given SID. An audit feature is available too.
+        \item
+          permission: read, write, syncrhonize, delete, traverse...
+      \end{itemize}
+
+    \item
+      Access Control List (ACL)
+      \begin{itemize}
+        \item
+          list of ACEs
+        \item
+          Discretionnary Access Control List (DACL) defines object accessibility
+        \item
+          System Access Control List (SACL) for object audit purpose
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+% 2)
+
+\begin{frame}[containsverbatim]
+  \frametitle{Security As Seen By Userland}
+
+  \begin{itemize}
+    \item
+      HANDLE CreateEvent(\textbf{LPSECURITY\_ATTRIBUTES}, ...);
+    \item
+      HANDLE CreateMutex(\textbf{LPSECURITY\_ATTRIBUTES}, ...);
+    \item
+      HANDLE CreateFile(... , \textbf{LPSECURITY\_ATTRIBUTES}, ...);
+    \item
+      HANDLE CreateThread(\textbf{LPSECURITY\_ATTRIBUTES}, ...);
+  \end{itemize}
+
+\end{frame}
+
+% 3)
+
+\begin{frame}
+  \frametitle{Security Lifecycle}
+
+  At login, every process(hence, every thread) gets an access token containing its SIDs.
+  When a thread requests access to an object, 2 passes algorithm:
+
+  \begin{itemize}
+    \item
+      first, if the thread's SID is found in a denying ACE, access is denied
+    \item
+      then, an intersection is done between the requested permissions and the allowing ACEs permission
+  \end{itemize}
+\end{frame}
+
+% 4)
+
+\begin{frame}
+  \frametitle{Insecurity of Windows NT}
+
+  While NT core pieces were designed to besecure, \textbf{conceptual} and \textbf{implementation}
+  holes remain, making the whole kernel unsecure. Most of the kernel exploitable bugs come from:
+
+  \begin{itemize}
+    \item
+      old and unmaintained code. For instance, the graphical user interface is implemented as a kernel driver
+    \item
+      NT programming model complexity. Many security issues found in third party drivers
+  \end{itemize}
+
+\end{frame}
+
+
 %
 % IO Manager
 %
 
 \section{IO Manager}
+
+%
+% Programming For Windows NT
+%
+
+\section{Programming For Windows NT}
+
+% 1
+
+\begin{frame}
+  \frametitle{Windows Driver Model}
+
+  \textbf{TODO}
+
+\end{frame}
+
+% 2
+
+\begin{frame}
+  \frametitle{Driver Anatomy}
+
+  \textbf{TODO}
+
+\end{frame}
+
+% 3
+
+\begin{frame}
+  \frametitle{Case: NDIS}
+
+  \textbf{TODO}
+
+\end{frame}
 
 %
 % Bibliography
