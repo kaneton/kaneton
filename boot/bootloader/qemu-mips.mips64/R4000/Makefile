@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/enguerrand/kaneton/qemu-mips.mips64/Makefile
+# file          /home/enguerrand/...oot/bootloader/qemu-mips.mips64/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated       enguerrand raymond   [sat oct 11 18:44:39 2008]
+# updated       enguerrand raymond   [sun oct 12 18:38:16 2008]
 #
 
 #
@@ -42,10 +42,7 @@ BOOTLOADER_S		:=
 BOOTLOADER_O		:=		$(BOOTLOADER_C:.c=.o)		\
 					$(BOOTLOADER_S:.S=.o)
 
-BOOTLOADER_INCLUDE	:=		$(_BOOTLOADER_DIR_)/bootloader.h \
-					$(_BOOTLOADER_DIR_)/cons.h	\
-					$(_BOOTLOADER_DIR_)/libia32.h	\
-					$(_BOOTLOADER_DIR_)/libc.h
+BOOTLOADER_INCLUDE	:=
 
 #
 # ---------- rules ------------------------------------------------------------
