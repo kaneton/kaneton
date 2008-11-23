@@ -10,3 +10,13 @@
   operation: fmove
   src: README
   dst: kaneton/core/README
+-
+  operation: breplace
+  id: kaneton/core/id/id.c::test2
+  data: |
+    /*
+     * TEST
+     */
+-
+  operation: bremove
+  id: kaneton/core/id/id.c::test

@@ -42,3 +42,4 @@ def module_init():
 def module_action(export_dir, arg):
     env.display(env.HEADER_OK, 'action fremove ' + arg['path'], env.OPTION_NONE)
     env.remove(export_dir + '/' + arg['path'], env.OPTION_NONE)
+    return 0

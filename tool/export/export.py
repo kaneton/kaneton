@@ -17,7 +17,6 @@
 
 import sys
 import yaml
-import tempfile
 import env
 
 #
@@ -89,8 +88,8 @@ def parse_data_file(filename):
       for j in range(1, len(g_modules_parameters[i['operation']])):
         arg[g_modules_parameters[i['operation']][j]] = i[g_modules_parameters[
             i['operation']][j]];
-      print arg
-      g_modules[i['operation']].module_action(g_export_dir, arg)
+      if g_modules[i['operation']].module_action(g_export_dir, arg) != 0:
+        sys.exit(1)
 
 
 #

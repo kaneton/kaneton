@@ -137,9 +137,11 @@ t_error			id_destroy(o_id*			o)
   ID_LEAVE(id, ERROR_NONE);
 }
 
+/* [block::test2] */
 /*
  * this function must initialize the id manager.
  */
+/* [endblock::test2] */
 
 t_error			id_initialize(void)
 {
@@ -154,6 +156,8 @@ t_error			id_initialize(void)
   return (ERROR_NONE);
 }
 
+/* [block::test] */
+
 /*
  * this function cleans the id manager.
  */
@@ -164,3 +168,5 @@ t_error			id_clean(void)
 
   return (ERROR_NONE);
 }
+
+/* [endblock::test] */
