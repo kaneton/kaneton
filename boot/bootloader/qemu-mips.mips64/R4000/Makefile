@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/enguerrand/...oot/bootloader/qemu-mips.mips64/Makefile
+# file          /home/enguerrand/...otloader/qemu-mips.mips64/R4000/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated       enguerrand raymond   [sun oct 12 18:38:16 2008]
+# updated       enguerrand raymond   [sun nov  9 04:19:57 2008]
 #
 
 #
@@ -21,7 +21,7 @@ component		:=		bootloader
 # ---------- dependencies -----------------------------------------------------
 #
 
-include			../../../environment/env.mk
+include			../../../../environment/env.mk
 
 #
 # ---------- directives -------------------------------------------------------
