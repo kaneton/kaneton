@@ -1,5 +1,9 @@
 ---
 -
+  operation: freplace
+  src: export/data/Makefile
+  dst: Makefile
+-
   operation: fremove
   path: history
 -
