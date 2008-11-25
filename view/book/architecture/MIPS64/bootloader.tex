@@ -5,10 +5,10 @@
 %
 % license       kaneton
 %
-% file          /home/enguerrand/kanton/view/book/architecture/MIPS64/bootloader.tex
+% file          /home/enguerrand/.../book/architecture/MIPS64/bootloader.tex
 %
 % created       enguerrand raymond   [sun oct  5 16:54:35 2008]
-% updated       enguerrand raymond   [sun oct  5 16:54:04 2008]
+% updated          [mon nov 24 17:20:26 2008]
 %
 
 %
@@ -17,5 +17,17 @@
 
 \chapter{Bootloader}
 
-The MIPS R4000 Microprocessor exist in three configurations destinated in three distinct usage.
-Configurations and usage are following:
+This chapter describes the boot phase of kaneton on MIPS 64 systems. Each processor bootrsap are described. For the moment, the kaneton bootloader and the kernel will be loaded at this address. Later a firmware will be developed to load from floppy disk the kernel and these modules.
+
+\subsection{MIPS R40000 initialization}
+
+At starting, the R4000 microprocessor begins to execute instruction at the following address :
+
+\begin{itemize}
+  \item
+    \textbf{0xBFC00000 in 32 bits mode}
+  \item
+    \textbf{0xFFFFFFFF BFC00000 in 64 bits mode}
+\end{itemize}
+
+Comparing to IA32 architecture, the pagination is already activated at initialization. But, as we will explain in the Memory chapter

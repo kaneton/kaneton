@@ -8,7 +8,7 @@
 % file          /home/enguerrand/...ew/book/architecture/MIPS64/platform.tex
 %
 % created       enguerrand raymond   [mon oct 13 11:31:56 2008]
-% updated       enguerrand raymond   [sat nov  8 20:35:17 2008]
+% updated          [mon nov 24 17:24:25 2008]
 %
 
 %
@@ -17,10 +17,12 @@
 
 \chapter{MIPS64 platforms}
 
-This chapter describes the different platform for which kaneton has been developed.
-These platforms are described following you need to understand the current document.
+This chapter describes the different platform for which kaneton has been developed. These platforms are described following you need to understand the current document.
 
-\subsection*{qemu-mips platform}
+
+\subsection{qemu-mips platform}
+
+\subsubsection{Description}
 
 In 2008 We did not have MIPS machine enough in EPITA laboratories. We have decided to develop the first MIPS64 kaneton
 port on MIPS64 emulator only. The student must already develop on ia32 architecture and they must execute their kernel
@@ -39,4 +41,21 @@ The qemu-mips platform is the simplest emulated platform to develop kernel for M
     \textbf{NE2000 network card}
 \end{itemize}
  
-However, qemu-mips does not have any firmware (on MIPS platform the bios is called a firmware).
+\subsubsection{Emulation launching}
+
+Qemu-mips does not have any firmware (on MIPS platform the bios is called a firmware).
+
+We use the qemu-mips platform with the R4000 microprocessor. The command line to launch him it the following :
+
+\begin{verbatim}
+  qemu-system-mips64el [-L path ot bios] -fda kaneton.img -M mips -cpu R4000
+\end{verbatim}
+
+There is no mips firmware (or bios for qemu) today but we will launch the kernel as it. It will load at the address \code{0xFFFFFFFFBFC00000}. To do that, the kernel must be copied to \code{mips\_bios.bin} and the \code{L} option must indicate the path to this file. We will develop a firmware later.
+
+\subsubsection{MIPS R4000 microprocessor}
+
+The first 64 bits MIPS microprocessor was the R4000, it released in 1991 but MIPS could not produce it themselves.
+In 1992 SGI bought the MIPS company that becam MIPS technologies. Thus the microprocessor could be produce for SGI platforms. The MIPS R4000 has been designed in three configurations for low-cost system (R4000PC), high performance uniprocessor system (R4000SC) and for high multiprocessor platform (R4000MC).
+
+Whe have chosen this processor because it is the simplest MIPS 64 bits microprocessor and it has all functionalities that we need for the pedagogical purposes.

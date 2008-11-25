@@ -1,10 +1,10 @@
-OUTPUT_FORMAT("elf64-bigmips")
+OUTPUT_FORMAT("elf64-littlemips")
 
 SECTIONS
 {
 	ENTRY(_start)
 	__kvaddr_sp = 0xa800000020070000;
-	. = 0xa800000020080000;
+	. = 0xffffffffbfc00000;
 	.text : { *(.text) }
 	.data : { *(.data) *(.rdata) *(.rodata) }
 	_gp = ALIGN(16);
