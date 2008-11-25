@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kaneton/environment/profile/host/linux/linux.mk
+# file          /home/enguerrand/.../environment/profile/host/linux/linux.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       julien quintard   [tue oct 28 16:19:44 2008]
+# updated       enguerrand raymond   [wed nov 26 00:54:45 2008]
 #
 
 #
@@ -256,7 +256,7 @@ define env_assemble-S
   assemble_S_options=""							&& \
   $(call env_display,green,ASSEMBLE-S,$(2),		,)		&& \
   $(call env_perform,							\
-    $(_CPP_) $(2) | $(_AS_) $(_AS_FLAGS_) $${assemble_S_options} -o $(1))
+    $(_CPP_) $(2) | $(_AS_) $(_ASM_FLAGS_) $${assemble_S_options} -o $(1))
 endef
 
 #
