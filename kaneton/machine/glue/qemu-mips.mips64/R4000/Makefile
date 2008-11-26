@@ -8,7 +8,7 @@
 # file          /home/enguerrand/...ine/glue/qemu-mips.mips64/R4000/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 19:32:08 2008]
-# updated       enguerrand raymond   [sun nov  9 04:20:51 2008]
+# updated          [wed nov 26 01:22:30 2008]
 #
 
 #
@@ -33,7 +33,7 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-GLUE_C			:=
+GLUE_C			:=		as.c
 
 GLUE_O			:=		$(GLUE_C:.c=.o)
 

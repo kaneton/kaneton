@@ -8,7 +8,7 @@
 # file          /home/enguerrand/...otloader/qemu-mips.mips64/R4000/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated       enguerrand raymond   [tue nov 25 11:01:29 2008]
+# updated          [wed nov 26 01:47:51 2008]
 #
 
 #
@@ -49,18 +49,21 @@ BOOTLOADER_INCLUDE	:=
 #
 ifeq ($(behaviour),default)
 
-main:			$(BOOTLOADER)
+main:			$(_BOOTLOADER_LO_)
 
-$(BOOTLOADER):		$(BOOTLOADER_O)
-	$(call env_executable,$(_BOOTLOADER_),				\
-			      $(BOOTLOADER_O),				\
-			      $(_BOOTLOADER_DIR_)/layout/bootloader.lyt,\
-			      $(ENV_OPTION_NO_STANDARD))
+$(_BOOTLOADER_LO_):	$(BOOTLOADER_O)
+	$(call env_remove,$(_BOOTLOADER_LO_),)
+
+	$(call env_archive,$(_BOOTLOADER_LO_),$(BOOTLOADER_O),)
+	#$(call env_executable,$(_BOOTLOADER_),				\
+	#		      $(BOOTLOADER_O),				\
+	#		      $(_BOOTLOADER_DIR_)/layout/bootloader.lyt,\
+	#		      $(ENV_OPTION_NO_STANDARD))
 
 clear:
 	$(call env_remove,$(BOOTLOADER_O),)
 
-	$(call env_remove,$(BOOTLOADER),)
+	$(call env_remove,$(_BOOTLOADER_LO_),)
 
 	$(call env_purge,)
 
