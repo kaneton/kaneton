@@ -1,7 +1,10 @@
-_start:
-	j _loop
 
-_loop:
+	.extern start
+	
+start:
+	j loop
+
+loop:
 	.set noat
 	move $1, $0
 	.set at
@@ -34,4 +37,4 @@ _loop:
 	move $28, $0
 	move $29, $0
 	move $30, $0
-	j _start
+	j start

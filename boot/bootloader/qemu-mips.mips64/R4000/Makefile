@@ -8,7 +8,7 @@
 # file          /home/enguerrand/...otloader/qemu-mips.mips64/R4000/Makefile
 #
 # created       enguerrand raymond   [sat oct 11 18:44:41 2008]
-# updated          [wed nov 26 01:47:51 2008]
+# updated          [wed nov 26 14:59:30 2008]
 #
 
 #
@@ -62,6 +62,8 @@ $(_BOOTLOADER_LO_):	$(BOOTLOADER_O)
 
 clear:
 	$(call env_remove,$(BOOTLOADER_O),)
+
+	$(call env_remove,$(BOOTLOADER),)
 
 	$(call env_remove,$(_BOOTLOADER_LO_),)
 

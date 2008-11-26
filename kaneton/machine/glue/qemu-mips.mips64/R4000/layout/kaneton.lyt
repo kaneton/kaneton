@@ -1,9 +1,8 @@
 OUTPUT_FORMAT("elf64-littlemips")
+ENTRY(start)
 
 SECTIONS
 {
-	ENTRY(_start)
-	__kvaddr_sp = 0xa800000020070000;
 	. = 0xffffffffbfc00000;
 	.text : { *(.text) }
 	.data : { *(.data) *(.rdata) *(.rodata) }

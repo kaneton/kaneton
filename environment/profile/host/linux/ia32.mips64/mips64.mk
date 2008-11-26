@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/lec_l/kanet...profile/host/linux/ia32.mips64/mips64.mk
+# file          /home/enguerrand/...profile/host/linux/ia32.mips64/mips64.mk
 #
 # created       julien quintard   [tue may  8 13:03:34 2007]
-# updated       laurent lec   [wed apr  2 20:00:55 2008]
+# updated          [wed nov 26 15:43:23 2008]
 #
 
 #
@@ -36,7 +36,7 @@ include ../linux.mk
 define env_executable
   executable_options=""							&& \
   if [ -n $(3) ] ; then							\
-    executable_options="$${executable_options} $(3)"			; \
+    executable_options="$${executable_options} -T $(3)"			; \
   fi									&& \
   if [ -n "$(4)" ] ; then						\
     if [ $$(( $(4) & $(ENV_OPTION_NO_STANDARD) )) -ne 0 ] ; then	\
@@ -61,20 +61,18 @@ ifeq ($(component),kaneton)
 main:			dependencies $(_KANETON_)
 
 $(_KANETON_):		$(_CORE_LO_) $(_MACHINE_LO_)
-	$(call env_remove,$(_KANETON_),)
+	$(call env_remove, $(_KANETON_),)
 
-	$(call env_executable,$(_KANETON_),				\
-			      $(_MACHINE_LO_) $(_LIBC_LO_)		\
-			      $(_TEST_LO_) $(_BOOTLOADER_LO_),		\
-			      $(_KANETON_LAYOUT_),			\
-			      $(ENV_OPTION_NO_STANDARD))
-
-
-#			      $(_CORE_LO_)
+	$(call env_executable,	$(_KANETON_),			\
+				$(_BOOTLOADER_LO_),		\
+				$(_KANETON_LAYOUT_),		\
+				$(ENV_OPTION_NO_STANDARD))
+#$(_CORE_LO_)
+#$(_MACHINE_LO_) $(_LIBC_LO_) $(_TEST_LO_)
 
 clear:
-	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$${d}/Makefile,clear,)			; \
+	for d in $(SUBDIRS) ; do				\
+	  $(call env_launch,$${d}/Makefile,clear,);		\
 	done
 
 	$(call env_remove,$(_KANETON_),)
@@ -82,19 +80,19 @@ clear:
 	$(call env_purge,)
 
 prototypes:
-	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$${d}/Makefile,prototypes,)			; \
+	for d in $(SUBDIRS) ; do				\
+	  $(call env_launch,$${d}/Makefile,prototypes,);	\
 	done
 
 headers:
-	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$${d}/Makefile,headers,)			; \
+	for d in $(SUBDIRS) ; do				\
+	  $(call env_launch,$${d}/Makefile,headers,);		\
 	done
 
 dependencies:
 	$(call env_launch,$(_BOOTLOADER_DIR_)/Makefile,,)
-	for d in $(SUBDIRS) ; do					\
-	  $(call env_launch,$${d}/Makefile,,)				; \
+	for d in $(SUBDIRS) ; do				\
+	  $(call env_launch,$${d}/Makefile,,);			\
 	done
 
 
