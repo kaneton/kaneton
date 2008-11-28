@@ -43,13 +43,13 @@ SOURCES			:=		introduction.tex		\
 					further.tex			\
 					faq.tex
 
-GARBAGE			:=		$(SOURCES:.tex=.aux)		\
-					$(SOURCES:.tex=.log)		\
-					$(SOURCES:.tex=.toc)		\
-					$(SOURCES:.tex=.out)		\
-					$(SOURCES:.tex=.pdf)		\
-					$(SOURCES:.tex=.bbl)		\
-					$(SOURCES:.tex=.blg)		
+GARBAGE			:=		$(PAPER).aux			\
+					$(PAPER).log			\
+					$(PAPER).toc			\
+					$(PAPER).out			\
+					$(PAPER).pdf			\
+					$(PAPER).bbl			\
+					$(PAPER).blg		
 
 #
 # ---------- rules ------------------------------------------------------------

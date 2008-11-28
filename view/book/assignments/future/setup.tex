@@ -1,0 +1,248 @@
+%
+% ---------- header -----------------------------------------------------------
+%
+% project       kaneton
+%
+% license       kaneton
+%
+% file          /home/mycure/kaneton/view/book/assignments/future/setup.tex
+%
+% created       julien quintard   [fri may 23 21:47:38 2008]
+% updated       julien quintard   [fri nov 28 13:45:30 2008]
+%
+
+%
+% ---------- setup ------------------------------------------------------------
+%
+
+\chapter{Set-up}
+\label{chapter:setup}
+
+This chapter contains information regarding how to, very simply, set up the
+\name{kaneton} development environment and build your first microkernel image
+to finally run it wherever you want: emulator, real computer \etc{}
+
+\newpage
+
+%
+% ---------- text -------------------------------------------------------------
+%
+
+%
+% requirements
+%
+
+\section{Requirements}
+
+Note that the kaneton development environment relies on two well-known tools:
+
+\begin{itemize}
+  \item
+    \term{GNU Make};
+  \item
+    \term{Python}.
+\end{itemize}
+
+Without all of those tools, a student would not be able to develop the
+kaneton educational project.
+
+%
+% profile
+%
+
+\section{Profile}
+
+This step consists for the developer to specify the kaneton development
+environment user-specific configuration values.
+
+As a user, say, \name{foo}, the following directory should be created:
+
+\begin{center}
+  \location{environment/profile/user/foo/}
+\end{center}
+
+This directory must, at least, a file named \location{foo.conf} specifying
+the user's personal configuration variables. The following gives an example of
+what this file should at least contain:
+
+\begin{verbatim}
+  _MAKE_                          =       make
+
+  _MBL_SCRIPT_                    =       ${_MBL_DIR_}/grub/grub.py
+
+  _BOOT_MODE_                     =       image
+  _BOOT_DEVICE_                   =       floppy
+
+  _IMAGE_                         =       ${_SOURCE_DIR_}/kaneton.img
+\end{verbatim}
+
+Change the value of \code{\_MAKE\_} if the binary name for \name{GNU Make}
+is not \code{make} but \code{gmake} for instance.
+
+The stack protections should also be disabled if a recent version of \name{GCC}
+is used:
+
+\begin{verbatim}
+  _CC_FLAGS_                     +=       -fno-stack-protector
+\end{verbatim}
+
+This configuration tells the kaneton environment system to build kernel images
+for floppy devices based on the \name{GRUB} multi-bootloader. The kaneton
+micro-kernel image will be generated at the repository root directory.
+
+This file is not mandatory but without it, the user would not be able to
+build a complete bootable image, though she could still build the micro-kernel
+binary file.
+
+%
+% environment variables
+%
+
+\section{Environment Variables}
+
+kaneton benefits from a complete and extremely sophisticated development
+environment.
+
+This environment allows, amongst others, the developer to choose which
+platform and architecture the micro-kernel must be built for in a completely
+cooperative way.
+
+The development environment needs to know which user profile, which
+architecture and platform to use when compiling the micro-kernel, but also
+which compiler to use in order to produce the right assembly language.
+
+Therefore, every developer is to provide the following \name{UNIX} environment
+variables:
+
+\begin{itemize}
+  \item
+    \code{\$\{KANETON\_USER\}} contains the name of the user profile;
+  \item
+    \code{\$\{KANETON\_HOST\}} contains the host profile name which is
+    composed of a couple: operating system and microprocessor;
+  \item
+    \code{\$\{KANETON\_PLATEFORM\}} holds the name of the target platform;
+  \item
+    \code{\$\{KANETON\_ARCHITECTURE\}} holds the name of the target
+    architecture;
+  \item
+    \code{\$\{KANETON\_PYTHON\}} contains the path of the python binary. This
+    variable is used once in order to generate the current user's development
+    environment;
+\end{itemize}
+
+The very common case consists in compiling kaneton on for an \name{IBM PC}
+with an \name{IA-32 microprocessor}. In such cases, the following values
+could be used:
+
+\begin{verbatim}
+  export KANETON_USER="foo"
+  export KANETON_HOST="linux/ia32"
+  export KANETON_PLATFORM="ibm-pc"
+  export KANETON_ARCHITECTURE="ia32/educational"
+  export KANETON_PYTHON="/usr/bin/python"
+\end{verbatim}
+
+%
+% initialising
+%
+
+\section{Initialising}
+
+Once the \name{UNIX} environment variables are set, the development environment
+can be initialised through the command below:
+
+\begin{verbatim}
+  $> make initialize
+\end{verbatim}
+
+This command will display the user's current configuration values and ask
+her to confirm.
+
+%
+% compiling
+%
+
+\section{Compiling}
+
+Every script, \name{Make} file \etc{} can now behave properly by relying on
+the development environment.
+
+The next step consists in compiling the kaneton micro-kernel. This is done
+through the following command:
+
+\begin{verbatim}
+  $> make kaneton
+\end{verbatim}
+
+If everything goes fine, the micro-kernel binary file should have been
+generated at the following location:
+
+\begin{center}
+  \location{kaneton/kaneton}
+\end{center}
+
+The following command can be used for building both the kaneton micro-kernel
+along with everything necessary including the bootloader as well as libraries,
+modules and so forth.
+
+\begin{verbatim}
+  $> make
+\end{verbatim}
+
+%
+% building
+%
+
+\section{Building}
+
+This step consists in initializing the boot device with the multi-bootloader
+specified in your configuration file --- probably \name{GRUB} --- through the
+command below:
+
+\begin{verbatim}
+  $> make build
+\end{verbatim}
+
+Once again, the script asks the user to confirm the values the kaneton
+development environment has detected. Many of these are irrelevant has
+it depends on your boot mode.
+
+For instance, for an \name{image} boot mode, the only other relevant variable
+is the image path.
+
+Note that this step only needs to be performed once. Once this is done, the
+kaneton micro-kernel can be installed as many times as necessary. Obviously,
+if the user changes some of the boot-related environment variables, the image
+should be rebuilt.
+
+%
+% installing
+%
+
+\section{Installing}
+
+The final step consists in copying the kaneton micro-kernel binary as well as
+its dependencies: modules, configuration files \etc{} onto the boot device
+or image, depending on your configuration.
+
+\begin{verbatim}
+  $> make install
+\end{verbatim}
+
+If everything went fine, the device should be ready for usage.
+
+%
+% launching
+%
+
+\section{Launching}
+
+You can test your freshly built kaneton micro-kernel via an emulator
+for instance.
+
+The command below illustrates such a test with the \name{QEMU} emulator:
+
+\begin{verbatim}
+  $> qemu -fda kaneton.img
+\end{verbatim}

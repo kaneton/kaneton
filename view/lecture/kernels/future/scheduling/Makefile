@@ -5,10 +5,10 @@
 #
 # license       kaneton
 #
-# file          /home/mycure/kane...iew/lecture/kernels/future/boot/Makefile
+# file          /home/mycure/kane...cture/kernels/future/scheduling/Makefile
 #
 # created       julien quintard   [wed may 16 18:54:58 2007]
-# updated       julien quintard   [fri nov 28 16:28:01 2008]
+# updated       julien quintard   [fri nov 28 16:29:43 2008]
 #
 
 #
@@ -27,9 +27,9 @@ include			../../../../../environment/env.mk
 # ---------- variables --------------------------------------------------------
 #
 
-PAPER			:=		boot
+PAPER			:=		scheduling
 
-SOURCES			:=		boot.tex			
+SOURCES			:=		scheduling.tex			
 
 GARBAGE			:=		$(SOURCES:.tex=.aux)		\
 					$(SOURCES:.tex=.log)		\

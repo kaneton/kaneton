@@ -8,7 +8,7 @@
 # file          /home/mycure/kaneton/Makefile
 #
 # created       julien quintard   [tue jun 26 11:27:22 2007]
-# updated       julien quintard   [mon sep 15 13:02:33 2008]
+# updated       julien quintard   [fri nov 28 16:25:30 2008]
 #
 
 #
@@ -94,7 +94,7 @@ clean:
 
 SUBDIRS			:=		environment configure		\
 					view export test cheat		\
-					library $(PATHS)
+					library tool $(PATHS)
 
 #
 # ---------- kaneton ----------------------------------------------------------
