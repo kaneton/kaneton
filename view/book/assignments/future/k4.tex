@@ -8,7 +8,7 @@
 % file          /home/mycure/kaneton/view/book/assignments/future/k4.tex
 %
 % created       julien quintard   [fri nov 28 05:25:37 2008]
-% updated       julien quintard   [fri nov 28 16:20:52 2008]
+% updated       julien quintard   [sat nov 29 16:06:13 2008]
 %
 
 %
@@ -34,15 +34,15 @@ a file system.
 \section{Objectives}
 
 This project will lead the students to explore the multiple ways of providing
-the file system abstraction but also to study the pros and cons of every
-technique in order to choose the right algorithms to implement within the
-dedicated time.
+the file system abstraction. Students will have to study the pros and cons of
+every technique in order to choose the right algorithms to use in their
+implementation.
 
 %
-% prerequisites
+% requirements
 %
 
-\section{Prerequisites}
+\section{Requirements}
 
 This stage requires a working storage device driver such as an \name{ATA -
 Advanced Technology Attachment} driver.
@@ -64,21 +64,26 @@ innovate.
 
 \section{Assignments}
 
-% study
+% design
 
-\subsection{Study}
+\subsection*{Design}
 
-First, students are asked to study the different data structures and algorithms
-that could be used.
+Students are asked to study the different data structures and algorithms
+that could be used for providing the well-known file abstraction in
+order to sketch a file system design.
 
-Once studied, the student should decide what techniques to use in their
-file system implementation.
+Note that students' file system is not meant to be compliant to any standard.
+As such, points could be granted to students showing interest in designing
+a modern interface as long as students can argue for such a choice.
 
 % implementation
 
-\subsection{Implementation}
+\subsection*{Implementation}
 
-implementation
+Students are then asked to implement the file system they designed.
+
+In order to illustrate the functionalities of the file system, students
+should also provide user-level applications.
 
 %
 % evaluation
@@ -86,9 +91,12 @@ implementation
 
 \section{Evaluation}
 
-viva: design(why), interface, test applications.
+This project will be evaluated through a viva.
 
-XXX: note that the interface is completely free, as such points will be given
-  to students that think about such problems that POSIX limitations etc.
-  take advantage of this freedom
-XXX: plus, distributed file systems could also be implemented
+During this viva, students will have to first describe their choices in
+terms of design before detailling what problems they encountered afterwards
+regarding the previously sketched design.
+
+The file system interface and user-level applications should also be discussed.
+
+The viva will last for $10$ minutes with possibly $5$ minutes for questions.
